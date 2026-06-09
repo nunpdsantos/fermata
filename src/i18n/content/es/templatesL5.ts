@@ -208,64 +208,15 @@ const overlay: TemplateLevelOverlay = {
     },
   ],
 
-  // ---- l5u16m2: Modulación Directa / De Frase ----
+  // ---- l5u16m2: Modulación a Tonalidades Cercanas ----
+  // (re-asignada desde l5u16m4 para corresponder al tema del currículo)
   l5u16m2: [
-    {
-      // multiple_choice
-      promptTemplate:
-        'Identifica las características de esta técnica de modulación.',
-      hintTemplate:
-        'La modulación directa (de frase) cambia de tonalidad abruptamente en un límite de frase sin acorde pivote. Es habitual en la música pop y en los himnos.',
-      choiceSets: [
-        [
-          'Una modulación directa cambia a una nueva tonalidad en un límite de frase sin acorde pivote',
-          'Una modulación directa usa siempre un acorde pivote',
-          'Una modulación directa es lo mismo que la tonicización',
-          'Una modulación directa solo sube medio tono',
-        ],
-        [
-          'La modulación «del camionero» sube medio tono o un tono para efecto dramático',
-          'La modulación del camionero va siempre a la dominante',
-          'Esta técnica es exclusiva de la música clásica',
-          'Esta modulación es siempre descendente',
-        ],
-      ],
-    },
-  ],
-
-  // ---- l5u16m3: Modulación por Nota Común ----
-  l5u16m3: [
-    {
-      // multiple_choice
-      promptTemplate:
-        '¿Cómo funciona la modulación por nota común?',
-      hintTemplate:
-        'La modulación por nota común sostiene una única nota que se reinterpreta en la nueva tonalidad. Se usa frecuentemente para modulaciones distantes donde existen pocos acordes pivote.',
-      choiceSets: [
-        [
-          'La modulación por nota común sostiene una nota que se convierte en un grado de la escala diferente en la nueva tonalidad',
-          'La modulación por nota común requiere que todas las notas sean comunes',
-          'La modulación por nota común nunca involucra notas sostenidas',
-          'La modulación por nota común es lo mismo que la modulación por acorde pivote',
-        ],
-        [
-          'La modulación por nota común es especialmente útil para tonalidades distantes que comparten pocos acordes',
-          'La modulación por nota común solo funciona para tonalidades cercanas',
-          'Esta técnica requiere secuencias cromáticas',
-          'Esta técnica se limita a la relativa mayor/menor',
-        ],
-      ],
-    },
-  ],
-
-  // ---- l5u16m4: Tonalidades Cercanas ----
-  l5u16m4: [
     {
       // scale_build
       promptTemplate:
-        'Construye la escala mayor de una tonalidad cercana de {root} mayor.',
+        'Construye la escala menor natural de {root} (la relativa menor, una tonalidad cercana).',
       hintTemplate:
-        'Las tonalidades cercanas difieren en como máximo 1 sostenido o bemol. Para {root} mayor, las tonalidades cercanas incluyen la dominante, la subdominante y sus relativas menores.',
+        'Una tonalidad y su relativa menor comparten la misma armadura (0 alteraciones de diferencia), por lo que la relativa menor es una de las tonalidades cercanas. Construye {root} menor natural: la escala menor natural que comienza en {root}.',
     },
     {
       // multiple_choice
@@ -290,10 +241,54 @@ const overlay: TemplateLevelOverlay = {
     },
   ],
 
-  // ---- l5u16m5: Modulación Cromática ----
-  l5u16m5: [
+  // ---- l5u16m3: Modulación Directa, por Nota Común y Cromática ----
+  // (fusionados los bloques Directa/De Frase, Nota Común y Cromática — el currículo
+  //  agrupa los tres en este módulo; antes divididos en m2/m3/m5)
+  l5u16m3: [
     {
-      // multiple_choice
+      // multiple_choice — modulación directa / de frase
+      promptTemplate:
+        'Identifica las características de esta técnica de modulación.',
+      hintTemplate:
+        'La modulación directa (de frase) cambia de tonalidad abruptamente en un límite de frase sin acorde pivote. Es habitual en la música pop y en los himnos.',
+      choiceSets: [
+        [
+          'Una modulación directa cambia a una nueva tonalidad en un límite de frase sin acorde pivote',
+          'Una modulación directa usa siempre un acorde pivote',
+          'Una modulación directa es lo mismo que la tonicización',
+          'Una modulación directa solo sube medio tono',
+        ],
+        [
+          'La modulación «del camionero» sube medio tono o un tono para efecto dramático',
+          'La modulación del camionero va siempre a la dominante',
+          'Esta técnica es exclusiva de la música clásica',
+          'Esta modulación es siempre descendente',
+        ],
+      ],
+    },
+    {
+      // multiple_choice — modulación por nota común
+      promptTemplate:
+        '¿Cómo funciona la modulación por nota común?',
+      hintTemplate:
+        'La modulación por nota común sostiene una única nota que se reinterpreta en la nueva tonalidad. Se usa frecuentemente para modulaciones distantes donde existen pocos acordes pivote.',
+      choiceSets: [
+        [
+          'La modulación por nota común sostiene una nota que se convierte en un grado de la escala diferente en la nueva tonalidad',
+          'La modulación por nota común requiere que todas las notas sean comunes',
+          'La modulación por nota común nunca involucra notas sostenidas',
+          'La modulación por nota común es lo mismo que la modulación por acorde pivote',
+        ],
+        [
+          'La modulación por nota común es especialmente útil para tonalidades distantes que comparten pocos acordes',
+          'La modulación por nota común solo funciona para tonalidades cercanas',
+          'Esta técnica requiere secuencias cromáticas',
+          'Esta técnica se limita a la relativa mayor/menor',
+        ],
+      ],
+    },
+    {
+      // multiple_choice — modulación cromática
       promptTemplate:
         'Analiza esta técnica de modulación cromática.',
       hintTemplate:
@@ -315,18 +310,15 @@ const overlay: TemplateLevelOverlay = {
     },
   ],
 
-  // =========================================================================
-  // Unidad 17: Mezcla Modal y Forma Musical
-  // =========================================================================
-
-  // ---- l5u17m1: Mezcla Modal (Acordes Prestados) ----
-  l5u17m1: [
+  // ---- l5u16m4: Mezcla Modal — Acordes Prestados ----
+  // (re-asignada desde l5u17m1 para corresponder al tema del currículo)
+  l5u16m4: [
     {
       // chord_build
       promptTemplate:
-        'Construye el acorde prestado del modo menor paralelo en {root} mayor.',
+        'Construye el acorde prestado {root} (un acorde de mezcla modal en Do mayor).',
       hintTemplate:
-        'La mezcla modal toma prestados acordes de la tonalidad menor paralela. Acordes prestados habituales: bVI, bVII, bIII, iv. En {root} mayor, rebaja el 3.er, 6.º o 7.º grado.',
+        'La mezcla modal toma prestados acordes del modo menor paralelo. En Do mayor estos acordes prestados son bVI (Lab mayor), bIII (Mib mayor), bVII (Sib mayor) y iv (Fa menor). Construye {root} tal como está escrito: las fundamentales rebajadas forman tríadas mayores, el acorde iv es Fa menor.',
     },
     {
       // multiple_choice
@@ -342,17 +334,25 @@ const overlay: TemplateLevelOverlay = {
           'bVI no existe en la mezcla modal',
         ],
         [
-          'La tercera de Picardía eleva la 3.ª del acorde de tónica final en una tonalidad menor a mayor',
-          'La tercera de Picardía rebaja la 3.ª de un acorde mayor',
-          'La tercera de Picardía es un tipo de mezcla modal solo en tonalidades mayores',
-          'La tercera de Picardía cambia la indicación de compás',
+          'El acorde iv en Do mayor es Fa menor (prestado de Do menor)',
+          'El acorde iv en Do mayor es Fa mayor sin alterar',
+          'El acorde iv en Do mayor es La menor',
+          'La mezcla modal no puede alterar la subdominante',
         ],
       ],
     },
   ],
 
-  // ---- l5u17m2: Forma Binaria y Ternaria ----
-  l5u17m2: [
+  // ---- l5u16m5: Tercera de Picardía y Mezcla Modal en Menor ----
+  // Sin plantilla generada (laguna de cobertura reconocida en la auditoría WS5).
+
+  // =========================================================================
+  // Unidad 17: Forma, Textura y Conducción de Voces
+  // =========================================================================
+
+  // ---- l5u17m1: Formas Binaria y Ternaria ----
+  // (re-asignada desde l5u17m2 para corresponder al tema del currículo)
+  l5u17m1: [
     {
       // multiple_choice
       promptTemplate:
@@ -382,10 +382,12 @@ const overlay: TemplateLevelOverlay = {
     },
   ],
 
-  // ---- l5u17m3: Rondó y Variaciones ----
-  l5u17m3: [
+  // ---- l5u17m2: Formas Canción y Grandes Formas ----
+  // (fusionados los bloques Rondó/Variaciones y Sonata — el currículo agrupa rondó,
+  //  tema con variaciones y sonata en este módulo; antes divididos en m3/m4)
+  l5u17m2: [
     {
-      // multiple_choice
+      // multiple_choice — rondó y variaciones
       promptTemplate:
         'Identifica las características de esta forma musical.',
       hintTemplate:
@@ -411,12 +413,8 @@ const overlay: TemplateLevelOverlay = {
         ],
       ],
     },
-  ],
-
-  // ---- l5u17m4: Introducción a la Forma Sonata ----
-  l5u17m4: [
     {
-      // multiple_choice
+      // multiple_choice — forma sonata
       promptTemplate:
         'Responde a esta pregunta sobre la estructura de la forma sonata.',
       hintTemplate:
@@ -449,6 +447,12 @@ const overlay: TemplateLevelOverlay = {
       ],
     },
   ],
+
+  // ---- l5u17m3: Textura ----
+  // Sin plantilla generada (laguna de cobertura reconocida en la auditoría WS5).
+
+  // ---- l5u17m4: Líneas de Notas Guía ----
+  // Sin plantilla generada (laguna de cobertura reconocida en la auditoría WS5).
 };
 
 export default overlay;

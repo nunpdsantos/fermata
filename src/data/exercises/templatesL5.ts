@@ -58,8 +58,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build the secondary dominant chord that tonicizes the given target in {root} major.',
-        hintTemplate: 'A secondary dominant is a major triad or dominant 7th that resolves to a diatonic chord other than I. Build a dominant-quality chord a P5 above the target.',
+        promptTemplate: 'Build a {root} dominant 7th chord (the chord quality used for every secondary dominant).',
+        hintTemplate: 'A secondary dominant is a dominant 7th built a perfect 5th above the chord it tonicizes. Here just build {root}7: root + major 3rd + perfect 5th + minor 7th. For example, A7 (A-C#-E-G) is V7/ii in C major, tonicizing D minor.',
         params: {
           roots: ['C', 'G', 'D', 'F', 'A'],
           accidentals: ['', '', '', '', ''],
@@ -243,76 +243,21 @@ const templates: ModuleTemplateConfig[] = [
     targetCount: 5,
   },
 
-  // ---- l5u16m2: Direct/Phrase Modulation ----
+  // ---- l5u16m2: Modulation to Closely Related Keys ----
+  // (was keyed to l5u16m4 — re-keyed to match curriculum topic)
   {
     moduleId: 'l5u16m2',
     templates: [
       {
-        type: 'multiple_choice',
-        promptTemplate: 'Identify the characteristics of this modulation technique.',
-        hintTemplate: 'Direct (phrase) modulation changes key abruptly at a phrase boundary without a pivot chord. Common in pop music and hymns.',
-        params: {
-          choiceSets: [
-            [
-              { label: 'A direct modulation shifts to a new key at a phrase boundary without a pivot chord', correct: true },
-              { label: 'A direct modulation always uses a pivot chord', correct: false },
-              { label: 'A direct modulation is the same as tonicization', correct: false },
-              { label: 'A direct modulation only goes up by half step', correct: false },
-            ],
-            [
-              { label: 'The "truck driver" modulation shifts up by half or whole step for dramatic effect', correct: true },
-              { label: 'The truck driver modulation always goes to the dominant', correct: false },
-              { label: 'This technique is unique to classical music', correct: false },
-              { label: 'This modulation always descends', correct: false },
-            ],
-          ],
-        },
-      },
-    ],
-    targetCount: 5,
-  },
-
-  // ---- l5u16m3: Common-Tone Modulation ----
-  {
-    moduleId: 'l5u16m3',
-    templates: [
-      {
-        type: 'multiple_choice',
-        promptTemplate: 'How does common-tone modulation work?',
-        hintTemplate: 'Common-tone modulation sustains a single pitch that is reinterpreted in the new key. Often used for remote modulations where few pivot chords exist.',
-        params: {
-          choiceSets: [
-            [
-              { label: 'Common-tone modulation sustains one note that becomes a different scale degree in the new key', correct: true },
-              { label: 'Common-tone modulation requires all notes to be in common', correct: false },
-              { label: 'Common-tone modulation never involves held notes', correct: false },
-              { label: 'Common-tone modulation is the same as pivot chord modulation', correct: false },
-            ],
-            [
-              { label: 'Common-tone modulation is especially useful for distant keys that share few chords', correct: true },
-              { label: 'Common-tone modulation only works for closely related keys', correct: false },
-              { label: 'This technique requires chromatic sequences', correct: false },
-              { label: 'This technique is limited to relative major/minor', correct: false },
-            ],
-          ],
-        },
-      },
-    ],
-    targetCount: 5,
-  },
-
-  // ---- l5u16m4: Closely Related Keys ----
-  {
-    moduleId: 'l5u16m4',
-    templates: [
-      {
         type: 'scale_build',
-        promptTemplate: 'Build the major scale of a closely related key to {root} major.',
-        hintTemplate: 'Closely related keys differ by at most 1 sharp or flat. For {root} major, the closely related keys include the dominant, subdominant, and their relative minors.',
+        promptTemplate: 'Build the {root} natural minor scale (the relative minor — a closely related key).',
+        hintTemplate: 'A key and its relative minor share the same key signature (0 accidentals apart), so the relative minor is one of the closely related keys. Build {root} natural minor: the natural minor scale starting on {root}.',
         params: {
-          roots: ['G', 'F', 'D', 'A', 'E', 'C'],
-          accidentals: ['', '', '', '', '', ''],
-          scaleTypes: ['major'],
+          // Relative minors of common major keys: C->Am, G->Em, F->Dm, D->Bm, A->F#m, E->C#m.
+          // Each is a genuine closely related key of its relative major.
+          roots: ['A', 'E', 'D', 'B', 'F', 'C'],
+          accidentals: ['', '', '', '', '#', '#'],
+          scaleTypes: ['natural_minor'],
           noteCounts: [7],
         },
         points: 2,
@@ -342,10 +287,54 @@ const templates: ModuleTemplateConfig[] = [
     targetCount: 5,
   },
 
-  // ---- l5u16m5: Chromatic Modulation ----
+  // ---- l5u16m3: Direct, Common-Tone, and Chromatic Modulation ----
+  // (merged the Direct/Phrase, Common-Tone, and Chromatic blocks — the curriculum
+  //  collapses all three into this one module; previously split across m2/m3/m5)
   {
-    moduleId: 'l5u16m5',
+    moduleId: 'l5u16m3',
     templates: [
+      {
+        type: 'multiple_choice',
+        promptTemplate: 'Identify the characteristics of this modulation technique.',
+        hintTemplate: 'Direct (phrase) modulation changes key abruptly at a phrase boundary without a pivot chord. Common in pop music and hymns.',
+        params: {
+          choiceSets: [
+            [
+              { label: 'A direct modulation shifts to a new key at a phrase boundary without a pivot chord', correct: true },
+              { label: 'A direct modulation always uses a pivot chord', correct: false },
+              { label: 'A direct modulation is the same as tonicization', correct: false },
+              { label: 'A direct modulation only goes up by half step', correct: false },
+            ],
+            [
+              { label: 'The "truck driver" modulation shifts up by half or whole step for dramatic effect', correct: true },
+              { label: 'The truck driver modulation always goes to the dominant', correct: false },
+              { label: 'This technique is unique to classical music', correct: false },
+              { label: 'This modulation always descends', correct: false },
+            ],
+          ],
+        },
+      },
+      {
+        type: 'multiple_choice',
+        promptTemplate: 'How does common-tone modulation work?',
+        hintTemplate: 'Common-tone modulation sustains a single pitch that is reinterpreted in the new key. Often used for remote modulations where few pivot chords exist.',
+        params: {
+          choiceSets: [
+            [
+              { label: 'Common-tone modulation sustains one note that becomes a different scale degree in the new key', correct: true },
+              { label: 'Common-tone modulation requires all notes to be in common', correct: false },
+              { label: 'Common-tone modulation never involves held notes', correct: false },
+              { label: 'Common-tone modulation is the same as pivot chord modulation', correct: false },
+            ],
+            [
+              { label: 'Common-tone modulation is especially useful for distant keys that share few chords', correct: true },
+              { label: 'Common-tone modulation only works for closely related keys', correct: false },
+              { label: 'This technique requires chromatic sequences', correct: false },
+              { label: 'This technique is limited to relative major/minor', correct: false },
+            ],
+          ],
+        },
+      },
       {
         type: 'multiple_choice',
         promptTemplate: 'Analyze this chromatic modulation technique.',
@@ -371,22 +360,21 @@ const templates: ModuleTemplateConfig[] = [
     targetCount: 5,
   },
 
-  // =========================================================================
-  // Unit 17: Mode Mixture and Musical Form
-  // =========================================================================
-
-  // ---- l5u17m1: Mode Mixture (Borrowed Chords) ----
+  // ---- l5u16m4: Mode Mixture — Borrowed Chords ----
+  // (was keyed to l5u17m1 — re-keyed to match curriculum topic)
   {
-    moduleId: 'l5u17m1',
+    moduleId: 'l5u16m4',
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build the borrowed chord from the parallel minor in {root} major.',
-        hintTemplate: 'Mode mixture borrows chords from the parallel minor key. Common borrowed chords: bVI, bVII, bIII, iv. In {root} major, lower the 3rd, 6th, or 7th degree.',
+        promptTemplate: 'Build the {root} borrowed chord (a mode-mixture chord in C major).',
+        hintTemplate: 'Mode mixture borrows chords from the parallel minor. In C major these borrowed chords are bVI (Ab major), bIII (Eb major), bVII (Bb major), and iv (F minor). Build {root} as written: lowered roots take major triads, the iv chord is F minor.',
         params: {
-          roots: ['A', 'E', 'D', 'G', 'C', 'F'],
-          accidentals: ['b', 'b', 'b', 'b', 'b', ''],
-          chordQualities: ['major'],
+          // Genuine parallel-minor borrowings IN A FIXED C major context:
+          // Ab=bVI, Eb=bIII, Bb=bVII (major triads); F minor=iv.
+          roots: ['A', 'E', 'B', 'F'],
+          accidentals: ['b', 'b', 'b', ''],
+          chordQualities: ['major', 'major', 'major', 'minor'],
           noteCounts: [3],
         },
         points: 2,
@@ -404,21 +392,33 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'bVI does not exist in mode mixture', correct: false },
             ],
             [
-              { label: 'The Picardy third raises the 3rd of the final tonic chord in a minor key to major', correct: true },
-              { label: 'The Picardy third lowers the 3rd of a major chord', correct: false },
-              { label: 'The Picardy third is a type of mode mixture in major keys only', correct: false },
-              { label: 'The Picardy third changes the time signature', correct: false },
+              { label: 'The iv chord in C major is F minor (borrowed from C minor)', correct: true },
+              { label: 'The iv chord in C major is F major unchanged', correct: false },
+              { label: 'The iv chord in C major is A minor', correct: false },
+              { label: 'Mode mixture cannot alter the subdominant', correct: false },
             ],
           ],
         },
       },
     ],
-    targetCount: 6,
+    targetCount: 5,
   },
 
-  // ---- l5u17m2: Binary and Ternary Form ----
+  // ---- l5u16m5: Picardy Third and Mode Mixture in Minor ----
+  // No generated template: the template set has no item that teaches the Picardy
+  // third / mixture-in-minor concept. (The mode-mixture chord_build belongs to the
+  // major-key borrowing module l5u16m4.) Rather than attach an off-topic generated
+  // exercise, this module relies on its hand-authored exercises only. Coverage gap
+  // acknowledged in the WS5 audit (L5 E1).
+
+  // =========================================================================
+  // Unit 17: Form, Texture, and Voice Leading
+  // =========================================================================
+
+  // ---- l5u17m1: Binary and Ternary Forms ----
+  // (was keyed to l5u17m2 — re-keyed to match curriculum topic)
   {
-    moduleId: 'l5u17m2',
+    moduleId: 'l5u17m1',
     templates: [
       {
         type: 'multiple_choice',
@@ -451,9 +451,11 @@ const templates: ModuleTemplateConfig[] = [
     targetCount: 5,
   },
 
-  // ---- l5u17m3: Rondo and Variations ----
+  // ---- l5u17m2: Song Forms and Large Forms Introduction ----
+  // (merged the Rondo/Variations and Sonata blocks — the curriculum covers rondo,
+  //  theme & variations, and sonata together in this module; previously split across m3/m4)
   {
-    moduleId: 'l5u17m3',
+    moduleId: 'l5u17m2',
     templates: [
       {
         type: 'multiple_choice',
@@ -482,14 +484,6 @@ const templates: ModuleTemplateConfig[] = [
           ],
         },
       },
-    ],
-    targetCount: 5,
-  },
-
-  // ---- l5u17m4: Sonata Form Introduction ----
-  {
-    moduleId: 'l5u17m4',
-    templates: [
       {
         type: 'multiple_choice',
         promptTemplate: 'Answer this question about sonata form structure.',
@@ -526,6 +520,16 @@ const templates: ModuleTemplateConfig[] = [
     ],
     targetCount: 6,
   },
+
+  // ---- l5u17m3: Texture ----
+  // No generated template: the template set has no item teaching texture types
+  // (monophony, homophony, polyphony, etc.). This module relies on its
+  // hand-authored exercises only. Coverage gap acknowledged in the WS5 audit (L5 E1).
+
+  // ---- l5u17m4: Guide Tone Lines ----
+  // No generated template: the template set has no item teaching guide-tone lines
+  // (3rds and 7ths through progressions). This module relies on its hand-authored
+  // exercises only. Coverage gap acknowledged in the WS5 audit (L5 E1).
 ];
 
 export default templates;
