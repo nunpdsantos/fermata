@@ -88,12 +88,6 @@ describe('ChordGrid interactions', () => {
     expect(state.selectedChord!.quality).toBe('major');
   });
 
-  it('clicking chord opens detail panel', () => {
-    render(<ChordGrid />);
-    fireEvent.click(screen.getAllByRole('button')[0]);
-    expect(useAppStore.getState().detailPanelOpen).toBe(true);
-  });
-
   it('clicking selected chord deselects it', () => {
     render(<ChordGrid />);
     const buttons = screen.getAllByRole('button');

@@ -1,14 +1,11 @@
-import { useCallback, useState, Suspense, lazy } from 'react';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import { KeySelector } from '../components/navigation/KeySelector.tsx';
 import { ScaleDegreeBar } from '../components/theory/ScaleDegreeBar.tsx';
 import { ScaleComparison } from '../components/theory/ScaleComparison.tsx';
-import { ChordGrid } from '../components/theory/ChordGrid.tsx';
-import { ChordBrowser } from '../components/theory/ChordBrowser.tsx';
-import { ChordBuilderPanel } from '../components/theory/ChordBuilderPanel.tsx';
+import { ChordWorkspace } from '../components/theory/ChordWorkspace.tsx';
 import { CircleOfFifths } from '../components/theory/CircleOfFifths.tsx';
-import { DetailPanel } from '../components/panels/DetailPanel.tsx';
 import { useKeyContext } from '../hooks/useKeyContext.ts';
 import { noteToString } from '../core/types/music.ts';
 import { SCALE_TYPE_NAMES } from '../core/constants/scales.ts';
@@ -22,13 +19,6 @@ import {
 import { getSynthConfig } from '../services/synthConfig.ts';
 import { generateScaleSummary, copyToClipboard } from '../utils/exportHelpers.ts';
 import { toast } from '../state/toastStore.ts';
-import { getScaleNotesWithOctaves } from '../core/utils/pianoLayout.ts';
-import { getKeySignatureForScale } from '../utils/notationHelpers.ts';
-import { StaffNotationSkeleton } from '../components/notation/StaffNotationSkeleton.tsx';
-
-const StaffNotation = lazy(() =>
-  import('../components/notation/StaffNotation.tsx').then((m) => ({ default: m.StaffNotation }))
-);
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -48,17 +38,8 @@ export function ExploreView() {
   const { scale, diatonicChords } = useKeyContext();
   const selectedScale = useAppStore((s) => s.selectedScale);
   const selectedChord = useAppStore((s) => s.selectedChord);
-  const setDetailPanelOpen = useAppStore((s) => s.setDetailPanelOpen);
-  const setSelectedChord = useAppStore((s) => s.setSelectedChord);
-  const detailPanelOpen = useAppStore((s) => s.detailPanelOpen);
   const synthPreset = useAppStore((s) => s.synthPreset);
   const baseOctave = useAppStore((s) => s.baseOctave);
-  const [chordMode, setChordMode] = useState<'diatonic' | 'all' | 'build'>('diatonic');
-
-  const handleShowScale = () => {
-    setSelectedChord(null);
-    setDetailPanelOpen(true);
-  };
 
   const handleQuickPlay = useCallback(async () => {
     await resumeAudio();
@@ -137,20 +118,6 @@ export function ExploreView() {
                   {t('common.play')}
                 </button>
                 <button
-                  onClick={handleShowScale}
-                  className="flex items-center gap-1.5 px-3 py-1.5 max-sm:py-2 rounded-xl text-xs font-medium transition-all duration-150 active:scale-[0.97] max-sm:justify-center"
-                  style={{
-                    color: 'var(--text-muted)',
-                    backgroundColor: 'color-mix(in srgb, var(--card) 40%, transparent)',
-                    border: '1px solid color-mix(in srgb, var(--border) 40%, transparent)',
-                  }}
-                >
-                  {t('common.details')}
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 18l6-6-6-6" />
-                  </svg>
-                </button>
-                <button
                   onClick={async () => {
                     const text = generateScaleSummary(scale, diatonicChords, selectedChord);
                     const ok = await copyToClipboard(text);
@@ -196,78 +163,17 @@ export function ExploreView() {
             <ScaleDegreeBar />
           </m.div>
 
-          {/* ─── Staff Notation ─────────────────────────────────── */}
-          <m.div variants={fadeUp}>
-            <h3 className="type-section mb-2.5">
-              {t('explore.staffNotation')}
-            </h3>
-            <div className="rounded-xl p-3" style={{ border: '1px solid color-mix(in srgb, var(--card) 50%, transparent)', backgroundColor: 'color-mix(in srgb, var(--bg) 30%, transparent)', boxShadow: 'var(--shadow-sm)' }}>
-              <Suspense fallback={<StaffNotationSkeleton height={130} />}>
-                <StaffNotation
-                  notes={getScaleNotesWithOctaves(scale.notes, 4)}
-                  keySignature={getKeySignatureForScale(scale.root, selectedScale) ?? undefined}
-                  noteColors={degreeColorsOn ? Object.fromEntries(
-                    scale.notes.map((_, i) => [i, DEGREE_COLORS[(i + 1) as keyof typeof DEGREE_COLORS] ?? 'var(--text-muted)'])
-                  ) : undefined}
-                  height={130}
-                  duration="q"
-                />
-              </Suspense>
-            </div>
-          </m.div>
-
           {/* ─── Scale Comparison ────────────────────────────────── */}
           <m.div variants={fadeUp}>
             <ScaleComparison />
           </m.div>
 
-          {/* ─── Chord Grid + Circle of Fifths ─────────────────── */}
+          {/* ─── Chord Workspace + Circle of Fifths ────────────── */}
           <m.div
             variants={fadeUp}
             className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6"
           >
-            <div>
-              <div className="flex items-center gap-3 mb-2.5">
-                <h3 className="type-section">
-                  {t('explore.chords')}
-                </h3>
-                <div className="flex rounded-lg overflow-hidden" style={{ border: '1px solid var(--card)' }}>
-                  <button
-                    onClick={() => setChordMode('diatonic')}
-                    className="px-2 py-0.5 text-2xs font-medium transition-colors max-sm:px-3 max-sm:py-1.5 max-sm:text-xs"
-                    style={{
-                      backgroundColor: chordMode === 'diatonic' ? 'var(--card-hover)' : 'transparent',
-                      color: chordMode === 'diatonic' ? 'var(--text)' : 'var(--text-dim)',
-                    }}
-                  >
-                    {t('explore.diatonic')}
-                  </button>
-                  <button
-                    onClick={() => setChordMode('all')}
-                    className="px-2 py-0.5 text-2xs font-medium transition-colors max-sm:px-3 max-sm:py-1.5 max-sm:text-xs"
-                    style={{
-                      backgroundColor: chordMode === 'all' ? 'var(--card-hover)' : 'transparent',
-                      color: chordMode === 'all' ? 'var(--text)' : 'var(--text-dim)',
-                    }}
-                  >
-                    {t('explore.allChords')}
-                  </button>
-                  <button
-                    onClick={() => setChordMode('build')}
-                    className="px-2 py-0.5 text-2xs font-medium transition-colors max-sm:px-3 max-sm:py-1.5 max-sm:text-xs"
-                    style={{
-                      backgroundColor: chordMode === 'build' ? 'var(--card-hover)' : 'transparent',
-                      color: chordMode === 'build' ? 'var(--text)' : 'var(--text-dim)',
-                    }}
-                  >
-                    {t('explore.build')}
-                  </button>
-                </div>
-              </div>
-              {chordMode === 'diatonic' && <ChordGrid />}
-              {chordMode === 'all' && <ChordBrowser />}
-              {chordMode === 'build' && <ChordBuilderPanel />}
-            </div>
+            <ChordWorkspace />
             <div>
               <h3 className="type-section mb-2.5">
                 {t('explore.circleOfFifths')}
@@ -279,9 +185,6 @@ export function ExploreView() {
           </m.div>
         </m.div>
       </div>
-
-      {/* Detail panel */}
-      {detailPanelOpen && <DetailPanel />}
     </div>
   );
 }

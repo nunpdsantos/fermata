@@ -54,7 +54,8 @@ describe('view transitions', () => {
       ],
     });
     setSelectedDegree(1);
-    expect(useAppStore.getState().detailPanelOpen).toBe(true);
+    // WS4: selecting a chord no longer auto-opens the panel.
+    expect(useAppStore.getState().detailPanelOpen).toBe(false);
 
     // Switch to Learn
     setView('learn');
@@ -80,7 +81,7 @@ describe('view transitions', () => {
 // Chord selection flow
 // ---------------------------------------------------------------------------
 describe('chord selection flow', () => {
-  it('select chord → detail panel opens → deselect → panel closes', () => {
+  it('select chord → chord set + inversion reset, no sidebar auto-pop → deselect clears', () => {
     const { setSelectedChord } = useAppStore.getState();
 
     const cMajor = {
@@ -94,7 +95,8 @@ describe('chord selection flow', () => {
     };
 
     setSelectedChord(cMajor);
-    expect(useAppStore.getState().detailPanelOpen).toBe(true);
+    // WS4: the chord surface is inline now — selecting must not open a sidebar.
+    expect(useAppStore.getState().detailPanelOpen).toBe(false);
     expect(useAppStore.getState().selectedChord).toEqual(cMajor);
     expect(useAppStore.getState().chordInversion).toBe(0);
 
