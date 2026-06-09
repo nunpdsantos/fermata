@@ -5,6 +5,9 @@
 import type { ExerciseDefinition, ExerciseConfig } from '../../core/types/exercise';
 import type { ModuleTemplateConfig, ExerciseTemplate } from './exerciseTemplates';
 import type { ContentLanguage } from '../../i18n/content/types';
+import type { Note, NaturalNote, Accidental, ScaleType } from '../../core/types/music';
+import { noteToString } from '../../core/types/music';
+import { buildScale } from '../../core/constants/scales';
 import { translateScaleType, translateChordQuality, translateDirection } from '../../i18n/content/musicTerms';
 
 // ─── Seeded PRNG (mulberry32) ───────────────────────────────────────────────
@@ -118,18 +121,28 @@ function buildConfig(template: ExerciseTemplate, rand: () => number): ExerciseCo
       const scaleTypes = p.scaleTypes ?? ['major'];
       const degrees = p.degrees ?? [1, 2, 3, 4, 5, 6, 7];
       const idx = Math.floor(rand() * roots.length);
+      const scaleType = pick(scaleTypes, rand);
+      // Resolve the chosen degree to the ACTUAL note at that position in the
+      // built scale, so the prompt can name a concrete note and correctDegree
+      // truly matches it. (A degree of N maps to scale note index N-1.)
+      const root: Note = {
+        natural: roots[idx] as NaturalNote,
+        accidental: (accidentals[idx] ?? '') as Accidental,
+      };
+      const scaleNotes = buildScale(root, scaleType as ScaleType).notes;
       const degree = pick(degrees, rand);
-      // Note: the actual note for a given degree depends on the scale,
-      // but the template system can't compute that. Use root as placeholder;
-      // the validation engine resolves from root + scaleType + degree.
+      // Clamp to the scale length in case a degree exceeds a shorter scale.
+      const degreeIndex = Math.min(degree, scaleNotes.length) - 1;
+      const correctDegree = degreeIndex + 1;
+      const note = scaleNotes[degreeIndex];
       return {
         type: 'scale_degree_id',
         root: roots[idx],
         rootAccidental: accidentals[idx] ?? '',
-        scaleType: pick(scaleTypes, rand),
-        note: roots[idx], // placeholder — overridden below
-        noteAccidental: accidentals[idx] ?? '',
-        correctDegree: degree,
+        scaleType,
+        note: note.natural,
+        noteAccidental: note.accidental,
+        correctDegree,
       };
     }
 
@@ -165,6 +178,10 @@ function fillTemplate(template: string, config: ExerciseConfig, lang: ContentLan
     case 'scale_degree_id':
       replacements['root'] = config.root + config.rootAccidental;
       replacements['scaleType'] = translateScaleType(config.scaleType, lang);
+      replacements['note'] = noteToString({
+        natural: config.note as NaturalNote,
+        accidental: (config.noteAccidental || '') as Accidental,
+      });
       replacements['degree'] = String(config.correctDegree);
       break;
   }

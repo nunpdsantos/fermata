@@ -254,8 +254,8 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'scale_degree_id',
-        promptTemplate: 'In the {root} {scaleType} scale, identify the scale degree of the given note.',
-        hintTemplate: 'Count up from {root} (degree 1) through the {scaleType} scale to find the degree number.',
+        promptTemplate: 'In the {root} {scaleType} scale, what degree is the note {note}?',
+        hintTemplate: 'Count up from {root} (degree 1) through the {scaleType} scale until you reach {note}.',
         params: {
           roots: ['C', 'G', 'F'],
           accidentals: ['', '', ''],

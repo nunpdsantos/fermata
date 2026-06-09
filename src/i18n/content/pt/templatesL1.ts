@@ -194,9 +194,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // scale_degree_id
       promptTemplate:
-        'Na escala de {root} {scaleType}, identifica o grau da nota indicada.',
+        'Na escala de {root} {scaleType}, qual e o grau da nota {note}?',
       hintTemplate:
-        'Conta a partir de {root} (grau 1) ao longo da escala {scaleType} para encontrar o numero do grau.',
+        'Conta a partir de {root} (grau 1) ao longo da escala {scaleType} ate chegares a nota {note}.',
     },
   ],
 
