@@ -153,12 +153,38 @@ function connectWithReverb(node: AudioNode): void {
   }
 }
 
+// ============================================================================
+// Pluggable piano voice
+// ============================================================================
+// The app can register a higher-quality piano voice (the sampled Salamander
+// piano in src/services/pianoSampler.ts). When the voice handles a note it
+// returns true and the FM synth stays silent; when it isn't ready (samples
+// still loading/offline) the synth plays exactly as before. Registration
+// keeps this module framework-agnostic — core never imports app code.
+
+export interface PianoVoice {
+  /** One-shot at `when` seconds from now, released after `duration`. */
+  playNote(midi: number, when: number, duration: number, velocity: number): boolean;
+  /** Sustained note-on; pairs with stopNote. */
+  startNote(midi: number, velocity: number): boolean;
+  stopNote(midi: number): void;
+  setVolume(volume: number): void;
+  resume(): Promise<void>;
+}
+
+let pianoVoice: PianoVoice | null = null;
+
+export function setPianoVoice(voice: PianoVoice | null): void {
+  pianoVoice = voice;
+}
+
 // Resume audio context (required after user interaction)
 export async function resumeAudio(): Promise<void> {
   const ctx = getAudioContext();
   if (ctx.state === 'suspended') {
     await ctx.resume();
   }
+  await pianoVoice?.resume();
 }
 
 // ============================================================================
@@ -173,6 +199,7 @@ export function setMasterVolume(volume: number): void {
     // Smooth transition to avoid clicks
     masterGainNode.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.05);
   }
+  pianoVoice?.setVolume(masterVolume);
 }
 
 // Get current master volume
@@ -311,6 +338,13 @@ export function playNote(
   const ctx = getAudioContext();
   const frequency = getNoteFrequency(note, octave);
   const synthConfig = { ...DEFAULT_SYNTH_CONFIG, ...config };
+
+  // Sampled piano takes over when registered and ready for this note
+  const midiNumber = 12 + octave * 12 + getPitchClass(note);
+  const whenOffset = startTime !== undefined ? Math.max(0, startTime - ctx.currentTime) : 0;
+  if (pianoVoice?.playNote(midiNumber, whenOffset, duration, synthConfig.volume)) {
+    return;
+  }
 
   // Create oscillator and gain nodes
   const oscillator = ctx.createOscillator();
@@ -482,6 +516,11 @@ export function startSustainedNote(
   // If already playing this note, don't restart
   if (sustainedNotes.has(midiNumber)) return midiNumber;
 
+  // Sampled piano takes over when registered and ready for this note
+  if (pianoVoice?.startNote(midiNumber, synthConfig.volume)) {
+    return midiNumber;
+  }
+
   // Voice stealing: if at polyphony limit, evict the oldest sustained note
   if (sustainedNotes.size >= MAX_POLYPHONY) {
     let oldestMidi = -1;
@@ -596,7 +635,11 @@ export function startSustainedNote(
 // Stop a sustained note with a smooth release
 export function stopSustainedNote(midiNumber: number): void {
   const entry = sustainedNotes.get(midiNumber);
-  if (!entry) return;
+  if (!entry) {
+    // The sampled voice may own this note (no synth entry was created)
+    pianoVoice?.stopNote(midiNumber);
+    return;
+  }
 
   const ctx = getAudioContext();
   const { oscillator, gainNode, filterNode, modOsc, modGain, detuneOsc, detuneGainNode } = entry;

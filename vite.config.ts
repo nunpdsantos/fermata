@@ -61,6 +61,16 @@ export default defineConfig({
               expiration: { maxEntries: 2, maxAgeSeconds: 30 * 24 * 60 * 60 },
             },
           },
+          // Salamander piano samples (~2 MB total): immutable, fetched lazily,
+          // cached forever so the sampled piano works offline after first use.
+          {
+            urlPattern: /\/samples\/piano\/.*\.mp3$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'piano-samples',
+              expiration: { maxEntries: 40, maxAgeSeconds: 365 * 24 * 60 * 60 },
+            },
+          },
           // Curriculum levels + exercises + templates + view chunks + the
           // notation/celebration satellites those views lazy-import:
           // StaleWhileRevalidate so users get offline support after first

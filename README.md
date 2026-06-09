@@ -22,3 +22,7 @@ npm run build    # production build to dist/
 ## Repository notes
 
 `docs/superpowers/` contains AI-assisted engineering plans and audits kept for the record.
+
+## Credits
+
+Piano sound: [Salamander Grand Piano](https://archive.org/details/SalamanderGrandPianoV3) by Alexander Holm (CC-BY-3.0), via the [Tone.js audio collection](https://tonejs.github.io/audio/salamander/).

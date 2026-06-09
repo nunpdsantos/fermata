@@ -1,0 +1,5 @@
+Piano samples: Salamander Grand Piano (Yamaha C5) by Alexander Holm,
+licensed under Creative Commons Attribution 3.0 (CC-BY-3.0).
+https://archive.org/details/SalamanderGrandPianoV3
+This subset (one velocity layer, minor-third spacing, MP3) via the
+Tone.js audio collection: https://tonejs.github.io/audio/salamander/

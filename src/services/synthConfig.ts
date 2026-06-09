@@ -17,13 +17,17 @@ import { SYNTH_PRESETS } from '../core/services/audio.ts';
 // FM synthesis is inherently metallic — these overrides aggressively tame
 // sidebands and add lowpass filtering for warm, round tones.
 const WARMTH_OVERRIDES: Record<string, Record<string, number | string>> = {
+  // NOTE: since the sampled Salamander piano (src/services/pianoSampler.ts)
+  // took over as the piano voice, this FM config is only the fallback for the
+  // first seconds before samples decode (or offline on a first visit). Tuned
+  // softer than the old "bright hammer" setting, which read as percussion.
   piano: {
     volume: 0.65,       // 0.5 → 0.65: boost to match KS guitar levels
-    fmIndex: 70,        // 150 → 70: restores a bright hammer-strike attack
-    fmDecay: 0.15,      // 0.8 → 0.15: brightness dies fast — bright attack, mellow sustain (piano envelope)
+    fmIndex: 45,        // gentler strike — the old 70 sounded like a struck bar
+    fmDecay: 0.5,       // brightness fades naturally instead of dying instantly
     fmSustain: 0,       // no sustained FM modulation
     filterType: 'lowpass',
-    filterFreq: 4500,   // 2500 → 4500: opened up so upper partials survive (clarity, not a filtered sine)
+    filterFreq: 4000,
     filterQ: 0.4,
   },
   classic: {
