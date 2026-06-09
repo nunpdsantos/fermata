@@ -27,6 +27,8 @@ This is the lowest-regret restructure that satisfies the brief: bigger UX payoff
 
 ## 3. Unified "focus" model (the spine)
 
+> **Refined during planning — see §13, authoritative where it conflicts.** In short: a degree click selects that degree's *diatonic chord* (the Fretboard can't highlight a single note), `selectedChord` is the single source of truth, and `useKeyContext` + the instruments stay untouched.
+
 One source of truth in `musicSlice`, consumed by `useKeyContext`, reflected everywhere:
 
 - **State:** `selectedChord: Chord | null`, `selectedDegree: number | null`, `chordInversion: number` (all already exist).
@@ -110,3 +112,16 @@ One selection, many consistent views — replacing four independently-fed render
 ## 12. Execution
 
 One branch (`ws4-explore-unify`) → subagent-driven tasks (one at a time, each green) → spec + per-task code review → forced `tsc` + full `vitest` + `build` → PR with Vercel preview for Nuno's merge. Commit trailer: `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>`.
+
+---
+
+## 13. Refinements after planning recon (authoritative where they conflict with §3–§10)
+
+Reading the instrument components (`Piano.tsx`, `Fretboard.tsx`) and the store persist config during planning changed three design points — all toward *simpler and lower-risk*:
+
+1. **Degree click → the degree's diatonic chord** (not a single scale-degree note highlight). The Fretboard has **no single-pitch highlight path** — it lights via chord *shapes* (`selectedChord`) or whole-scale *CAGED positions*, never an individual note. Isolating one note would mean risky edits to the complex `Piano` / `Fretboard` / `FretboardString` / `FretCell`. So `ScaleDegreeBar` clicking degree *n* calls `setSelectedChord(diatonicChords[n-1].chord)` — guard: no-op when the scale has no diatonic chord at *n* — lighting piano + guitar + staff through the **existing** chord path with **zero instrument changes**. The bar's active chip is **derived** from `selectedChord`. Pedagogically coherent (degree 5 → V chord), and the bare scale tones are already shown degree-coloured at all times.
+2. **`selectedChord` is the single source of truth — no `selectedChord`/`selectedDegree` XOR, no `useKeyContext` change.** Everything resolves to `selectedChord`; `useKeyContext` already converts it to instrument + staff highlights. `selectedDegree` becomes vestigial (the bar derives active from `selectedChord`); removing it is an *optional* cleanup (blast radius into `navigationSlice` / `CircleOfFifths`), not required.
+3. **Build with an unrecognised note-set does not synthesise a chord** (drops §3's "light raw toggled notes"). There is no `Chord` object for an unidentified set; the instruments simply keep showing the scale, and the Build tab's own readout shows the interval analysis / "no match." Build still writes `selectedChord` live (via effect) the moment the toggled notes *do* form a recognised chord.
+4. **Persist is RESOLVED — no migration.** `state/store.ts:26-38` `partialize` does not persist `selectedChord` / `selectedDegree` / `chordInversion`; they are transient. Persist stays at **v5**.
+
+Net effect: `useKeyContext` and the instrument components are **untouched**. The work concentrates in `ScaleDegreeBar`, the three pickers, `ChordDetail` → `CurrentChordPanel`, a new `ChordWorkspace`, `ExploreView`, and deletions.
