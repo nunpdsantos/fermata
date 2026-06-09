@@ -1,6 +1,8 @@
 /**
  * Weighted Exercise Selector — reorders exercises for review sessions
  * based on concept weakness. Exercises touching weak concepts get 3x weight.
+ * Called with an empty `weakConcepts` array it degrades to a plain Fisher-Yates
+ * shuffle — the path the exercise runner uses now that concept tracking was removed.
  */
 import type { ExerciseDefinition } from '../core/types/exercise';
 import { getExerciseConcepts } from './conceptTagger';

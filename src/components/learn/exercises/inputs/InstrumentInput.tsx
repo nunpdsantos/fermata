@@ -16,7 +16,6 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
   const [toggledPCs, setToggledPCs] = useState<Set<number>>(new Set());
   const activeNotes = useAppStore((s) => s.activeNotes);
   const setHighlightedNotes = useAppStore((s) => s.setHighlightedNotes);
-  const midiInputEnabled = useAppStore((s) => s.midiInputEnabled);
 
   // When a note is played on the instrument, toggle its pitch class
   useEffect(() => {
@@ -71,11 +70,6 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
         </span>
         <span className="text-[10px] flex items-center gap-1.5" style={{ color: 'var(--text-dim)' }}>
           {t('exercise.instrumentToggle')}
-          {midiInputEnabled && (
-            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-blue-500/15 text-blue-400">
-              {t('midiInput.badge')}
-            </span>
-          )}
         </span>
       </div>
 

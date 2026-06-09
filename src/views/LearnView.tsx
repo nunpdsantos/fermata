@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, m } from 'framer-motion';
 import type { CurriculumLevel } from '../core/types/curriculum';
@@ -8,19 +8,13 @@ import { loadLevel, getLevelModuleCount } from '../data/curriculumLoader';
 import { loadExercises } from '../data/exerciseLoader';
 import { useAppStore } from '../state/store.ts';
 import { useLearnProgress } from '../hooks/useLearnProgress';
-import { useGamificationStore } from '../state/gamificationStore';
-import { useShallow } from 'zustand/shallow';
-import { computeModuleXP } from '../services/gamification';
 import { toast } from '../state/toastStore';
-import { useGamificationEffects } from '../hooks/useGamificationEffects';
 import { LevelsOverview } from '../components/learn/LevelsOverview';
 import { LevelDetail } from '../components/learn/LevelDetail';
 import { UnitDetail } from '../components/learn/UnitDetail';
 import { ModuleView } from '../components/learn/ModuleView';
 import { LevelAchievement } from '../components/learn/LevelAchievement';
 import { SPRING_NAV } from '../design/tokens/motion';
-
-const ProgressDashboard = lazy(() => import('../components/gamification/ProgressDashboard').then((m) => ({ default: m.ProgressDashboard })));
 
 // ─── Screen state machine ───────────────────────────────────────────────────
 
@@ -29,9 +23,7 @@ type LearnScreen =
   | { type: 'level'; levelId: string }
   | { type: 'unit'; levelId: string; unitId: string }
   | { type: 'module'; levelId: string; unitId: string; moduleId: string }
-  | { type: 'review'; levelId: string; unitId: string; moduleId: string }
-  | { type: 'dashboard' };
-
+  | { type: 'review'; levelId: string; unitId: string; moduleId: string };
 
 interface LevelCelebration {
   levelNumber: number;
@@ -45,32 +37,6 @@ export function LearnView() {
   const [direction, setDirection] = useState<'forward' | 'back'>('forward');
   const [levelCelebration, setLevelCelebration] = useState<LevelCelebration | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  // Consume gamification events (streaks, achievements) → toasts + sounds
-  useGamificationEffects();
-
-  // Gamification store — single selector with shallow equality (9 subscriptions → 1)
-  const {
-    logActivity,
-    addXP,
-    incrementModulesCompleted,
-    incrementReviewsCompleted,
-    checkAchievementsFromProgress,
-    backfillIfNeeded,
-    pruneAndResetWeekly,
-    dashboardRequested,
-    clearDashboardRequest,
-  } = useGamificationStore(useShallow((s) => ({
-    logActivity: s.logActivity,
-    addXP: s.addXP,
-    incrementModulesCompleted: s.incrementModulesCompleted,
-    incrementReviewsCompleted: s.incrementReviewsCompleted,
-    checkAchievementsFromProgress: s.checkAchievementsFromProgress,
-    backfillIfNeeded: s.backfillIfNeeded,
-    pruneAndResetWeekly: s.pruneAndResetWeekly,
-    dashboardRequested: s.dashboardRequested,
-    clearDashboardRequest: s.clearDashboardRequest,
-  })));
 
   const {
     progress,
@@ -100,27 +66,6 @@ export function LearnView() {
   const goToUnitBack = useCallback((levelId: string, unitId: string) => navigate({ type: 'unit', levelId, unitId }, 'back'), [navigate]);
   const goToModule = useCallback((levelId: string, unitId: string, moduleId: string) => navigate({ type: 'module', levelId, unitId, moduleId }, 'forward'), [navigate]);
   const goToReview = useCallback((levelId: string, unitId: string, moduleId: string) => navigate({ type: 'review', levelId, unitId, moduleId }, 'forward'), [navigate]);
-  const goToDashboard = useCallback(() => navigate({ type: 'dashboard' }, 'forward'), [navigate]);
-
-  // Gamification effects
-  const gamBackfillDone = useRef(false);
-  useEffect(() => {
-    if (gamBackfillDone.current) return;
-    gamBackfillDone.current = true;
-    backfillIfNeeded(progress);
-    pruneAndResetWeekly();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    checkAchievementsFromProgress(progress);
-  }, [progress, checkAchievementsFromProgress]);
-
-  useEffect(() => {
-    if (dashboardRequested) {
-      clearDashboardRequest();
-      queueMicrotask(() => navigate({ type: 'dashboard' }, 'forward'));
-    }
-  }, [dashboardRequested, clearDashboardRequest, navigate]);
 
   // Consume deep-link targets set by Explore or QuickSearch so the user lands
   // directly on a module view instead of the levels overview.
@@ -144,7 +89,7 @@ export function LearnView() {
   const levelCacheRef = useRef<Map<string, CurriculumLevel>>(new Map());
   const exerciseCacheRef = useRef<Map<string, Record<string, ExerciseDefinition[]>>>(new Map());
 
-  const activeLevelId = (screen.type === 'levels' || screen.type === 'dashboard') ? null : screen.levelId;
+  const activeLevelId = screen.type === 'levels' ? null : screen.levelId;
   const language = useAppStore((s) => s.language) as ContentLanguage;
 
   useEffect(() => {
@@ -229,7 +174,6 @@ export function LearnView() {
                 const unitId = unitMatch ? unitMatch[1] + unitMatch[2] : '';
                 goToReview(levelId, unitId, moduleId);
               }}
-              onOpenDashboard={goToDashboard}
             />
           </m.div>
         )}
@@ -315,18 +259,7 @@ export function LearnView() {
                   exercisesPassed={isModuleExercisesPassed(mod.id, modExercises.length)}
                   levelCompletedModuleCount={getLevelCompletedModuleCount(loadedLevel)}
                   onToggleTask={toggleTask}
-                  onCompleteModule={(moduleId) => {
-                    completeModule(moduleId);
-                    logActivity();
-                    incrementModulesCompleted();
-                    addXP('module_complete', computeModuleXP(moduleId), moduleId);
-                    // Check if level is now complete
-                    const levelNum = parseInt(moduleId.slice(1), 10);
-                    const LEVEL_MODULE_COUNTS: Record<number, number> = { 1: 10, 2: 12, 3: 13, 4: 15, 5: 14, 6: 12, 7: 16, 8: 11, 9: 15 };
-                    if (getLevelCompletedModuleCount(loadedLevel!) + 1 >= (LEVEL_MODULE_COUNTS[levelNum] ?? 0)) {
-                      addXP('level_complete', 50, `l${levelNum}`);
-                    }
-                  }}
+                  onCompleteModule={completeModule}
                   onRecordExerciseResult={(exerciseId, score) => recordExerciseResult(mod.id, exerciseId, score)}
                   onExercisesComplete={(passed) => { if (passed) markExercisesPassed(mod.id); }}
                   onBack={() => goToUnitBack(screen.levelId, screen.unitId)}
@@ -381,9 +314,6 @@ export function LearnView() {
                   onRecordExerciseResult={(exerciseId, score) => recordExerciseResult(mod.id, exerciseId, score)}
                   onExercisesComplete={(passed) => {
                     recordReviewResult(mod.id, passed);
-                    logActivity();
-                    incrementReviewsCompleted();
-                    addXP('review_on_time', 5, mod.id);
                     toast(
                       passed
                         ? t('toast.reviewPassed', { title: mod.title })
@@ -397,22 +327,6 @@ export function LearnView() {
                 />
               );
             })()}
-          </m.div>
-        )}
-        {screen.type === 'dashboard' && (
-          <m.div
-            key="dashboard"
-            initial={{ opacity: 0, x: xOffset }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -xOffset }}
-            transition={SPRING_NAV}
-          >
-            <Suspense fallback={loadingSpinner}>
-              <ProgressDashboard
-                progress={progress}
-                onBack={goToLevels}
-              />
-            </Suspense>
           </m.div>
         )}
       </AnimatePresence>

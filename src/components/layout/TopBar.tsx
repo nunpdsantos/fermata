@@ -1,10 +1,8 @@
 import { useRef, useLayoutEffect, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore, type ViewMode, type ThemeMode } from '../../state/store.ts';
-import { useGamificationStore } from '../../state/gamificationStore.ts';
 import { SUPPORTED_LANGUAGES } from '../../i18n/index.ts';
 import { toast } from '../../state/toastStore.ts';
-import { StreakBadge } from '../gamification/StreakBadge.tsx';
 
 const VIEWS: ViewMode[] = ['explore', 'play', 'learn'];
 const VIEW_KEYS: Record<ViewMode, string> = {
@@ -72,7 +70,6 @@ export function TopBar() {
   const setThemeMode = useAppStore((s) => s.setThemeMode);
   const language = useAppStore((s) => s.language);
   const setLanguage = useAppStore((s) => s.setLanguage);
-  const currentStreak = useGamificationStore((s) => s.streak.currentStreak);
   const navRef = useRef<HTMLElement>(null);
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
 
@@ -151,15 +148,6 @@ export function TopBar() {
       </nav>
 
       <div className="flex items-center gap-2">
-        {/* Streak badge */}
-        <StreakBadge
-          streak={currentStreak}
-          onClick={() => {
-            setView('learn');
-            useGamificationStore.getState().requestDashboard();
-          }}
-        />
-
         {/* Language selector */}
         <select
           value={language}

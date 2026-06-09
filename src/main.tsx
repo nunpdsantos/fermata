@@ -5,6 +5,11 @@ import './index.css'
 import App from './App.tsx'
 import { ErrorBoundary } from './components/ErrorBoundary.tsx'
 
+// One-time eviction of the persisted stores for the removed gamification +
+// concept-tracking features. After the first load the keys are gone and
+// removeItem is a harmless no-op.
+['music-theory-gamification', 'music-theory-concept-tracking'].forEach((k) => localStorage.removeItem(k));
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
