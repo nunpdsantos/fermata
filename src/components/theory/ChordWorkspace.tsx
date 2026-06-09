@@ -7,8 +7,6 @@
  * inversion via `invertedNotes`), otherwise the current scale. This retires the
  * duplicate staves that previously lived inside ChordDetail and
  * ChordBuilderStaff.
- *
- * Additive for now (Task 4): not yet wired into ExploreView — that's Task 5.
  */
 import { Suspense, lazy, useState } from 'react';
 import { useTranslation } from 'react-i18next';
