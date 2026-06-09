@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../../../state/store';
 import type { PitchedNote } from '../../../../core/types/music';
@@ -28,24 +28,28 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
   // Toggle a pitch class once per NOTE-ON. Diffing against the previous
   // active set means held notes and dyads toggle each note exactly once
   // (the old all-active reprocessing made two held notes cancel out).
-  const prevActiveNotes = useRef<Set<number>>(new Set());
-  useEffect(() => {
+  // The diff runs during render with state-tracked previous value (react.dev
+  // "storing information from previous renders") rather than setState inside
+  // an effect body.
+  const [prevActiveNotes, setPrevActiveNotes] = useState<Set<number>>(() => new Set());
+  if (activeNotes !== prevActiveNotes) {
     const added: number[] = [];
     for (const midi of activeNotes) {
-      if (!prevActiveNotes.current.has(midi)) added.push(midi);
+      if (!prevActiveNotes.has(midi)) added.push(midi);
     }
-    prevActiveNotes.current = activeNotes;
-    if (submitted || added.length === 0) return;
-    setToggledPCs((prev) => {
-      const next = new Set(prev);
-      for (const midi of added) {
-        const pc = midi % 12;
-        if (next.has(pc)) next.delete(pc);
-        else next.add(pc);
-      }
-      return next;
-    });
-  }, [activeNotes, submitted]);
+    setPrevActiveNotes(activeNotes);
+    if (!submitted && added.length > 0) {
+      setToggledPCs((prev) => {
+        const next = new Set(prev);
+        for (const midi of added) {
+          const pc = midi % 12;
+          if (next.has(pc)) next.delete(pc);
+          else next.add(pc);
+        }
+        return next;
+      });
+    }
+  }
 
   // Update highlighted notes on instrument whenever toggled set changes
   useEffect(() => {

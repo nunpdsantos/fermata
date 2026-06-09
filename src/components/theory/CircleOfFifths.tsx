@@ -1,6 +1,3 @@
-/* eslint-disable no-restricted-syntax -- inherits hex literals from
-   circleOfFifthsConstants (greyscale ramp) for matching animations.
-   Migration deferred alongside the constants file. */
 import { memo, useMemo, useState, useCallback, useEffect, useRef } from 'react';
 import { noteToString, type Note, type ScaleType } from '../../core/types/music.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';

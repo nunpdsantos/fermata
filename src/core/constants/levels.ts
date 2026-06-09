@@ -1,3 +1,6 @@
+/* eslint-disable no-restricted-syntax -- the per-level accentColor hex values
+   defined here ARE the canonical curriculum identity colors; src/core is
+   framework-agnostic and cannot reference CSS custom properties. */
 import type { CurriculumLevel } from '../types/curriculum';
 import { L1_UNITS } from './curriculumL1';
 import { L2_UNITS } from './curriculumL2';

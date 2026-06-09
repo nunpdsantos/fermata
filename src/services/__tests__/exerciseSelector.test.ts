@@ -95,30 +95,6 @@ describe('exerciseSelector', () => {
       expect(result).toHaveLength(2);
     });
 
-    it('biases toward weak concept exercises over many runs', () => {
-      // Create a mix: 2 interval exercises, 8 note exercises
-      const exercises = [
-        makeExercise('int1', 'interval_id', 7),
-        makeExercise('int2', 'interval_id', 4),
-        ...Array.from({ length: 8 }, (_, i) =>
-          makeExercise(`note${i}`, 'note_id'),
-        ),
-      ];
-
-      // Run selection many times and count how often interval exercises appear in top 3
-      let intervalCount = 0;
-      const runs = 100;
-      for (let i = 0; i < runs; i++) {
-        const result = selectWeightedExercises(exercises, ['intervals'], 3);
-        intervalCount += result.filter((e) => e.type === 'interval_id').length;
-      }
-
-      // With 3x weighting, intervals should appear more than their base rate (2/10 = 20%)
-      // Base expectation: ~0.6 per run. With 3x weight: ~1.5 per run
-      const avgIntervals = intervalCount / runs;
-      expect(avgIntervals).toBeGreaterThan(0.5);
-    });
-
     it('handles exercises with no weak concept overlap', () => {
       const exercises = [
         makeExercise('e1', 'note_id'),

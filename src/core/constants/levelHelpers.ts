@@ -1,6 +1,5 @@
-import type { CurriculumLevel, CurriculumUnit, CurriculumModule, LevelState, CurriculumProgress } from '../types/curriculum';
+import type { CurriculumLevel, CurriculumUnit, LevelState } from '../types/curriculum';
 import { CURRICULUM_LEVELS } from './levels';
-import { arePrerequisitesMet } from './curriculum';
 
 export function getLevelById(levelId: string): CurriculumLevel | undefined {
   return CURRICULUM_LEVELS.find((l) => l.id === levelId);

@@ -219,7 +219,7 @@ export function ChordBuilderPanel() {
           className="rounded-md px-3 py-1.5 text-sm"
           style={{
             backgroundColor: active.size === 0 ? 'var(--input-bg)' : 'var(--accent)',
-            color: active.size === 0 ? 'var(--text-muted)' : '#fff',
+            color: active.size === 0 ? 'var(--text-muted)' : 'var(--bg)',
             border: '1px solid var(--border)',
             opacity: active.size === 0 ? 0.5 : 1,
             cursor: active.size === 0 ? 'not-allowed' : 'pointer',
