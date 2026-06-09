@@ -56,7 +56,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
   // hierarchy because the warm walnut accent looks like a black key. Switch to
   // a soft top-tint so the key still reads as white while the colour signals
   // "in scale".
-  const isFermata = useAppStore((s) => s.themeMode === 'fermata');
+  const isFermata = useAppStore((s) => s.themeMode === 'fermata' || s.themeMode === 'fermata-night');
 
   useEffect(() => {
     if (isFocused && elementRef.current && document.activeElement !== elementRef.current) {

@@ -35,7 +35,7 @@ beforeEach(() => {
     scaleOctaves: 1,
     baseOctave: 4,
     guitarTuningId: 'standard',
-    themeMode: 'dark',
+    themeMode: 'fermata',
     comparisonScale: null,
     language: 'en',
   });
@@ -277,18 +277,15 @@ describe('preferences actions', () => {
   });
 
   it('setThemeMode changes theme', () => {
-    useAppStore.getState().setThemeMode('light');
-    expect(useAppStore.getState().themeMode).toBe('light');
+    useAppStore.getState().setThemeMode('fermata-night');
+    expect(useAppStore.getState().themeMode).toBe('fermata-night');
 
-    useAppStore.getState().setThemeMode('system');
-    expect(useAppStore.getState().themeMode).toBe('system');
-
-    useAppStore.getState().setThemeMode('dark');
-    expect(useAppStore.getState().themeMode).toBe('dark');
+    useAppStore.getState().setThemeMode('fermata');
+    expect(useAppStore.getState().themeMode).toBe('fermata');
   });
 
-  it('has dark theme as default', () => {
-    expect(useAppStore.getState().themeMode).toBe('dark');
+  it('has fermata theme as default', () => {
+    expect(useAppStore.getState().themeMode).toBe('fermata');
   });
 
   it('setLanguage changes language', () => {
