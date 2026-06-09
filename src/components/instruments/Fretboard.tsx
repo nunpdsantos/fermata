@@ -41,7 +41,23 @@ export function Fretboard() {
   // ─── Chord shapes (standard tuning only) ─────────────
   const chordShapes = useMemo(() => {
     if (!selectedChord || !isStandardTuning) return [];
-    return getChordShapesWithFallback(selectedChord);
+    // Sort nut-closest first so the DEFAULT voicing is the familiar one
+    // (Cm defaults to the A-shape barre at fret 3, not a barre at fret 8).
+    const shapes = getChordShapesWithFallback(selectedChord);
+    const positionOf = ({ shape, baseFret }: (typeof shapes)[number]) => {
+      // Absolute fret of the lowest FRETTED note. Transposed open shapes
+      // encode the barre as open strings + baseFret, so filter on the
+      // absolute fret, not the shape-relative one.
+      let min = Infinity;
+      for (const pos of shape.strings) {
+        if (pos.fret !== null) {
+          const abs = baseFret + pos.fret;
+          if (abs > 0) min = Math.min(min, abs);
+        }
+      }
+      return min === Infinity ? 0 : min;
+    };
+    return [...shapes].sort((a, b) => positionOf(a) - positionOf(b));
   }, [selectedChord, isStandardTuning]);
 
   useEffect(() => {
@@ -395,6 +411,24 @@ export function Fretboard() {
   const isScalePosView = currentScalePos !== null;
   const lowestVisibleFret = (isChordView || isScalePosView) ? visibleFrets[visibleFrets.length - 1] : null;
 
+  // The fret the hand anchors on — the lowest fretted note of the shape (the
+  // barre fret for barre chords). This is what distinguishes Cm at 8 from F#m
+  // at 2, so it gets a loud visual marker instead of a 9px footnote.
+  const anchorFret = useMemo(() => {
+    if (currentShape && !isOpenPosition) {
+      let min = Infinity;
+      for (const pos of currentShape.shape.strings) {
+        if (pos.fret !== null) {
+          const abs = currentShape.baseFret + pos.fret;
+          if (abs > 0) min = Math.min(min, abs);
+        }
+      }
+      return min === Infinity ? null : min;
+    }
+    if (currentScalePos) return Math.max(1, currentScalePos.baseFret);
+    return null;
+  }, [currentShape, isOpenPosition, currentScalePos]);
+
   const fretMinWidth = isChordView
     ? (mobile ? 40 : 56)
     : (mobile ? 36 : 44);
@@ -484,8 +518,8 @@ export function Fretboard() {
           </div>
         )}
 
-        {/* Fret markers row */}
-        <div className="flex mb-1">
+        {/* Fret markers row — carries the loud position badge in chord/scale view */}
+        <div className="flex mb-1 items-center">
           <div style={{ width: 32 }} />
           <div className="flex flex-1">
             {visibleFrets.map((f) => (
@@ -494,7 +528,19 @@ export function Fretboard() {
                 className="flex-1 text-center"
                 style={{ color: 'var(--text-dim)', minWidth: fretMinWidth, fontSize: mobile ? 11 : 9 }}
               >
-                {FRET_MARKERS.includes(f) ? (
+                {anchorFret === f ? (
+                  <span
+                    className="inline-block px-1.5 rounded font-bold font-mono"
+                    style={{
+                      fontSize: mobile ? 12 : 12,
+                      color: '#000',
+                      backgroundColor: 'var(--accent)',
+                      lineHeight: '16px',
+                    }}
+                  >
+                    {f}fr
+                  </span>
+                ) : FRET_MARKERS.includes(f) ? (
                   <span>{DOUBLE_MARKERS.includes(f) ? '••' : '•'}</span>
                 ) : (
                   ''
@@ -548,7 +594,7 @@ export function Fretboard() {
           ))}
         </div>
 
-        {/* Fret numbers row */}
+        {/* Fret numbers row — larger in chord view; the anchor fret is accented */}
         <div className="flex mt-1">
           <div style={{ width: 32 }} />
           <div className="flex flex-1">
@@ -556,7 +602,12 @@ export function Fretboard() {
               <div
                 key={f}
                 className="flex-1 text-center"
-                style={{ color: 'var(--text-dim)', minWidth: fretMinWidth, fontSize: mobile ? 11 : 9 }}
+                style={{
+                  color: anchorFret === f ? 'var(--accent)' : 'var(--text-dim)',
+                  fontWeight: anchorFret === f ? 700 : 400,
+                  minWidth: fretMinWidth,
+                  fontSize: isChordView ? (mobile ? 12 : 12) : (mobile ? 11 : 9),
+                }}
               >
                 {f}
               </div>
@@ -565,7 +616,7 @@ export function Fretboard() {
           <div style={{ width: isChordView && !isOpenPosition ? 2 : 6 }} />
           <div style={{ width: 40 }} className="flex items-center justify-center">
             {(isChordView || isScalePosView) && !isOpenPosition ? (
-              <span className="font-mono" style={{ color: 'var(--text-dim)', fontSize: mobile ? 11 : 9 }}>{lowestVisibleFret}fr</span>
+              <span className="font-mono" style={{ color: 'var(--text-dim)', fontSize: mobile ? 11 : 10 }}>{lowestVisibleFret}fr</span>
             ) : (
               <span style={{ color: 'var(--text-dim)', fontSize: mobile ? 11 : 9 }}>0</span>
             )}
