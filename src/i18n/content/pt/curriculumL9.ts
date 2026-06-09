@@ -661,7 +661,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Solfejo Movel',
           explanation:
-            'No solfejo movel, "do" representa sempre a tonica da tonalidade atual -- independentemente de que nota seja. C maior: do=C. G maior: do=G. Bb maior: do=Bb. Isto mapeia silabas a funcao, nao a altura absoluta. "Sol" soa sempre como dominante, "ti" soa sempre como a sensivel puxando para "do." Esta e a abordagem Kodaly/Berklee e reforca a audicao funcional -- aprendes a ouvir relacoes, nao apenas nomes de notas. O solfejo fixo (onde do e sempre C) e usado em Franca e Italia mas nao treina a audicao funcional da mesma forma.',
+            'No solfejo movel, "do" representa sempre a tonica da tonalidade atual -- independentemente de que nota seja. C maior: do=C. G maior: do=G. Bb maior: do=Bb. Isto mapeia silabas a funcao, nao a altura absoluta. "Sol" soa sempre como dominante, "ti" soa sempre como a sensivel puxando para "do." Esta e a abordagem Kodaly/Berklee, e os seus defensores argumentam que treina a audicao funcional de forma mais direta -- aprendes a ouvir relacoes, nao apenas nomes de notas. O solfejo fixo (onde do e sempre C), o padrao nos conservatorios de muitos paises incluindo Franca e Italia, constroi em vez disso a associacao de altura absoluta -- ambos os sistemas sao amplamente usados.',
           tryThisLabel: 'Canta junto: do-re-mi-fa-sol-la-ti-do',
         },
         {
@@ -669,7 +669,7 @@ const curriculumL9: CurriculumLevelOverlay = {
           explanation:
             'Tonalidades menores requerem silabas modificadas para os graus baixados. No menor baseado em do: 3.a b = "me," 6.a b = "le," 7.a b = "te." Menor natural torna-se: do-re-me-fa-sol-le-te-do. Menor harmonica eleva o 7.o de volta a "ti": do-re-me-fa-sol-le-ti-do. Menor melodica ascendente eleva ambos: do-re-me-fa-sol-la-ti-do. Para alteracoes cromaticas: sustenidos ascendentes usam -i (di, ri, fi, si, li); bemois descendentes usam vogais modificadas (ra, me, se, le, te). Estas silabas tornam os graus alterados explicitos quando cantas.',
           tryThisLabel:
-            'Canta: do-re-me-fa-sol-le-te-do (baseado em la: la-ti-do-re-mi-fa-sol)',
+            'Canta: do-re-me-fa-sol-le-te-do (menor baseado em la, um sistema alternativo comum na pratica Kodaly: la-ti-do-re-mi-fa-sol)',
         },
         {
           title: 'Processo de Leitura a Primeira Vista',

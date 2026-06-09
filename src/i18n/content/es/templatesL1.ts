@@ -15,7 +15,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Identifica la nota {note} en el pentagrama en clave de sol.',
+        'Identifica la nota {note} en el pentagrama en clave de sol o justo alrededor de él.',
       hintTemplate:
         'Esta nota es {note} en la octava {octave}. Usa las posiciones en la clave de sol: líneas Mi-Sol-Si-Re-Fa, espacios Fa-La-Do-Mi.',
     },

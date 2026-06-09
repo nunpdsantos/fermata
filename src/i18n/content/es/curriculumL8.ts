@@ -322,7 +322,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         {
           title: 'Conjuntos de Clases de Altura: Forma Normal y Forma Prima',
           explanation:
-            'Un conjunto de clases de altura es una colección no ordenada de clases de altura distintas — el equivalente postonal de un acorde. La forma normal es la disposición ascendente más compacta: se rota el conjunto hasta que la extensión del primer al último elemento sea la menor (usando compactación a la izquierda para desempatar). La forma prima transpone la forma normal para comenzar en 0, después compara con la inversión para seleccionar la más compactada a la izquierda. La forma prima es la etiqueta canónica: {C, E, G} y {D, F, A} ambos se reducen a la forma prima [0, 3, 7]. El catálogo de Allen Forte asigna a cada forma prima un número — 3-11 para [0, 3, 7] — creando un sistema universal de clasificación para sonoridades postonales.',
+            'Un conjunto de clases de altura es una colección no ordenada de clases de altura distintas — el equivalente postonal de un acorde. La forma normal es la disposición ascendente más compacta: se rota el conjunto hasta que la extensión del primer al último elemento sea la menor (usando compactación a la izquierda para desempatar). La forma prima transpone la forma normal para comenzar en 0, después compara con la inversión para seleccionar la más compactada a la izquierda. La forma prima es la etiqueta canónica: {C, E, G} y {D, F, A} ambos se reducen a la forma prima [0, 3, 7]. El catálogo de Allen Forte asigna a cada forma prima un número — 3-11 para [0, 3, 7] — creando un sistema universal de clasificación para sonoridades postonales. Existen dos convenciones de compactación — la de Forte, «compactado a la izquierda» (usada aquí), y la de Rahn, «compactado desde la derecha» — y discrepan en un puñado de clases de conjuntos (ninguna usada en este nivel).',
           tryThisLabel: 'Observa Do menor — conjunto de Forte 3-11, forma prima [0,3,7]',
         },
         {
@@ -343,7 +343,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Calcula el vector interválico para el conjunto [0, 1, 4]: pares (0,1)=CI1, (0,4)=CI4, (1,4)=CI3. VIC = <1,0,1,1,0,0>. Ahora haz lo mismo para [0, 3, 4]. ¿Son iguales? ¿Qué te dice esto sobre los dos conjuntos?',
+            'Calcula el vector interválico para el conjunto [0, 1, 4]: pares (0,1)=CI1, (0,4)=CI4, (1,4)=CI3. VIC = <1,0,1,1,0,0>. Ahora haz lo mismo para [0, 3, 4] y verifica que obtienes el VIC idéntico. Esto es esperable — [0,3,4] es la inversión de [0,1,4], por lo que pertenecen a la misma clase de conjuntos (3-3). La relación-Z se da cuando dos conjuntos comparten un vector interválico sin estar relacionados por transposición o inversión; el par Z verdadero más pequeño es 4-Z15 [0,1,4,6] y 4-Z29 [0,1,3,7].',
         },
       ],
     },

@@ -221,7 +221,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'Quatro Resolucoes Possiveis',
           explanation:
-            'Como qualquer uma das quatro notas pode servir de sensivel, um unico acorde de setima diminuta pode funcionar como viio7 em quatro tonalidades diferentes. Si-Re-Fa-Lab resolve para Do menor (Si e sensivel). Reescrito como Re-Fa-Lab-Dob: resolve para Mib menor (Re e sensivel). Reescrito como Fa-Lab-Dob-Mibb: resolve para Solb menor. Reescrito como Lab-Dob-Mibb-Solbb: resolve para La menor (estritamente Sibb menor; La menor via reescrita enarminica como Sol#-Si-Re-Fa). As quatro tonalidades-alvo distam uma terca menor entre si.',
+            'Como qualquer uma das quatro notas pode servir de sensivel, um unico acorde de setima diminuta pode funcionar como viio7 em quatro tonalidades diferentes. Si-Re-Fa-Lab resolve para Do menor (Si e sensivel). Reescrito como Re-Fa-Lab-Dob: resolve para Mib menor (Re e sensivel). Reescrito como Fa-Lab-Dob-Mibb: resolve para Solb menor. Reescrito como Sol#-Si-Re-Fa (Sol# como sensivel): resolve para La menor. As quatro tonalidades-alvo -- Do, Mib, Solb, La -- distam uma terca menor entre si.',
           tryThisLabel: 'Ve Do menor -- uma das quatro resolucoes possiveis',
         },
         {

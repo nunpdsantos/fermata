@@ -322,7 +322,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         {
           title: 'Conjuntos de Classes de Altura: Forma Normal e Forma Primaria',
           explanation:
-            'Um conjunto de classes de altura e uma colecao nao ordenada de classes de altura distintas — o equivalente pos-tonal de um acorde. A forma normal e o arranjo ascendente mais compacto: roda-se o conjunto ate que a extensao do primeiro ao ultimo elemento seja a menor (usando compactacao a esquerda para desempatar). A forma primaria transpoe a forma normal para comecar em 0, depois compara com a inversao para selecionar a que estiver mais compactada a esquerda. A forma primaria e a etiqueta canonica: {C, E, G} e {D, F, A} ambos se reduzem a forma primaria [0, 3, 7]. O catalogo de Allen Forte atribui a cada forma primaria um numero — 3-11 para [0, 3, 7] — criando um sistema universal de classificacao para sonoridades pos-tonais.',
+            'Um conjunto de classes de altura e uma colecao nao ordenada de classes de altura distintas — o equivalente pos-tonal de um acorde. A forma normal e o arranjo ascendente mais compacto: roda-se o conjunto ate que a extensao do primeiro ao ultimo elemento seja a menor (usando compactacao a esquerda para desempatar). A forma primaria transpoe a forma normal para comecar em 0, depois compara com a inversao para selecionar a que estiver mais compactada a esquerda. A forma primaria e a etiqueta canonica: {C, E, G} e {D, F, A} ambos se reduzem a forma primaria [0, 3, 7]. O catalogo de Allen Forte atribui a cada forma primaria um numero — 3-11 para [0, 3, 7] — criando um sistema universal de classificacao para sonoridades pos-tonais. Existem duas convencoes de compactacao — a de Forte, "compactado a esquerda" (usada aqui), e a de Rahn, "compactado a partir da direita" — e discordam num punhado de classes de conjuntos (nenhuma usada neste nivel).',
           tryThisLabel: 'Ve Do menor — conjunto de Forte 3-11, forma primaria [0,3,7]',
         },
         {
@@ -343,7 +343,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Calcula o vetor intervalar para o conjunto [0, 1, 4]: pares (0,1)=CI1, (0,4)=CI4, (1,4)=CI3. VIC = <1,0,1,1,0,0>. Agora faz o mesmo para [0, 3, 4]. Sao iguais? O que e que isto te diz sobre os dois conjuntos?',
+            'Calcula o vetor intervalar para o conjunto [0, 1, 4]: pares (0,1)=CI1, (0,4)=CI4, (1,4)=CI3. VIC = <1,0,1,1,0,0>. Agora faz o mesmo para [0, 3, 4] e verifica que obtens o VIC identico. Isto e esperado — [0,3,4] e a inversao de [0,1,4], por isso pertencem a mesma classe de conjuntos (3-3). A relacao-Z ocorre quando dois conjuntos partilham um vetor intervalar sem estarem relacionados por transposicao ou inversao; o menor par Z verdadeiro e 4-Z15 [0,1,4,6] e 4-Z29 [0,1,3,7].',
         },
       ],
     },

@@ -15,9 +15,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Construye el acorde napolitano (bII6) en {root} menor. Es una tríada mayor sobre el 2.º grado rebajado, típicamente en primera inversión.',
+        'Construye el acorde napolitano en {root} menor. Es una tríada mayor sobre el 2.º grado rebajado.',
       hintTemplate:
-        'El napolitano en {root} menor es una tríada mayor construida en la nota medio tono por encima de {root}. En primera inversión, el 4.º grado está en el bajo.',
+        'El napolitano en {root} menor es una tríada mayor construida en la nota medio tono por encima de {root}.',
     },
     {
       // multiple_choice

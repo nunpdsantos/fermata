@@ -15,9 +15,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Constroi o acorde napolitano (bII6) em {root} menor. E uma triade maior sobre o 2.o grau rebaixado, tipicamente na primeira inversao.',
+        'Constroi o acorde napolitano em {root} menor. E uma triade maior sobre o 2.o grau rebaixado.',
       hintTemplate:
-        'O napolitano em {root} menor e uma triade maior construida na nota meio-tom acima de {root}. Na primeira inversao, o 4.o grau esta no baixo.',
+        'O napolitano em {root} menor e uma triade maior construida na nota meio-tom acima de {root}.',
     },
     {
       // multiple_choice

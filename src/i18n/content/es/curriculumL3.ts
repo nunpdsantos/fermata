@@ -242,7 +242,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'En papel, escribe una tríada de Do mayor en SATB: Bajo Do2, Tenor Sol3, Contralto Mi4, Soprano Do5. Verifica todas las reglas de espaciado: intervalo soprano-contralto (6.ª menor — inferior a una octava), contralto-tenor (3.ª mayor — inferior a una octava), tenor-bajo (5.ª justa). Todo válido.',
+            'En papel, escribe una tríada de Do mayor en SATB: Bajo Do2, Tenor Sol3, Contralto Mi4, Soprano Do5. Verifica todas las reglas de espaciado: intervalo soprano-contralto (6.ª menor — inferior a una octava), contralto-tenor (6.ª mayor — inferior a una octava), tenor-bajo (12.ª justa — entre tenor y bajo puede exceder la octava). Todo válido.',
         },
         {
           instruction:

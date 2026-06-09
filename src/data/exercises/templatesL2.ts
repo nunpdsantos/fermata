@@ -334,9 +334,28 @@ const templates: ModuleTemplateConfig[] = [
         promptTemplate: 'Build a {root} {quality} triad. Select the 3 notes that form this chord.',
         hintTemplate: 'Major = root + M3(4) + P5(7). Minor = root + m3(3) + P5(7). Diminished = root + m3(3) + dim5(6). Augmented = root + M3(4) + aug5(8). Build from {root}.',
         params: {
-          roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
-          accidentals: ['', '', '', '', '', '', ''],
-          chordQualities: ['major', 'minor', 'diminished', 'augmented'],
+          // roots.length === chordQualities.length → the generator pairs each
+          // root with the quality at the same index. B is omitted from the
+          // augmented group only: B augmented spells B-D#-F## (double sharp),
+          // which is out of scope at Level 2.
+          roots: [
+            'C', 'D', 'E', 'F', 'G', 'A', 'B', // major
+            'C', 'D', 'E', 'F', 'G', 'A', 'B', // minor
+            'C', 'D', 'E', 'F', 'G', 'A', 'B', // diminished
+            'C', 'D', 'E', 'F', 'G', 'A',      // augmented (no B)
+          ],
+          accidentals: [
+            '', '', '', '', '', '', '',
+            '', '', '', '', '', '', '',
+            '', '', '', '', '', '', '',
+            '', '', '', '', '', '',
+          ],
+          chordQualities: [
+            'major', 'major', 'major', 'major', 'major', 'major', 'major',
+            'minor', 'minor', 'minor', 'minor', 'minor', 'minor', 'minor',
+            'diminished', 'diminished', 'diminished', 'diminished', 'diminished', 'diminished', 'diminished',
+            'augmented', 'augmented', 'augmented', 'augmented', 'augmented', 'augmented',
+          ],
           noteCounts: [3],
         },
         points: 2,

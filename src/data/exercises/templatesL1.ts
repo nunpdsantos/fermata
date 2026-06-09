@@ -17,7 +17,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'note_id',
-        promptTemplate: 'Identify the note {note} on the treble clef staff.',
+        promptTemplate: 'Identify the note {note} on or just around the treble staff.',
         hintTemplate: 'This note is {note} in octave {octave}. Use the treble clef line/space positions: lines are E-G-B-D-F, spaces are F-A-C-E.',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],

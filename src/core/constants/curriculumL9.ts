@@ -769,7 +769,7 @@ const l9u32m4: CurriculumModule = {
     {
       title: 'Movable-Do Solfege',
       explanation:
-        'In movable-do solfege, "do" always represents the tonic of the current key — regardless of what note that is. C major: do=C. G major: do=G. Bb major: do=Bb. This maps syllables to function, not absolute pitch. "Sol" always feels like the dominant, "ti" always feels like the leading tone pulling toward "do." This is the Kodaly/Berklee approach and it reinforces functional hearing — you learn to hear relationships, not just note names. Fixed-do (where do always equals C) is used in France and Italy but does not train functional hearing the same way.',
+        'In movable-do solfege, "do" always represents the tonic of the current key — regardless of what note that is. C major: do=C. G major: do=G. Bb major: do=Bb. This maps syllables to function, not absolute pitch. "Sol" always feels like the dominant, "ti" always feels like the leading tone pulling toward "do." This is the Kodaly/Berklee approach, and its proponents argue it trains functional hearing more directly — you learn to hear relationships, not just note names. Fixed-do (where do always equals C), the standard in conservatories of many countries including France and Italy, builds absolute-pitch association instead — both systems are mainstream.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Sing along: do-re-mi-fa-sol-la-ti-do',
     },
@@ -778,7 +778,7 @@ const l9u32m4: CurriculumModule = {
       explanation:
         'Minor keys require modified syllables for the lowered degrees. In do-based minor: flat 3 = "me," flat 6 = "le," flat 7 = "te." Natural minor becomes: do-re-me-fa-sol-le-te-do. Harmonic minor raises the 7th back to "ti": do-re-me-fa-sol-le-ti-do. Melodic minor ascending raises both: do-re-me-fa-sol-la-ti-do. For chromatic alterations: ascending sharps use -i (di, ri, fi, si, li); descending flats use modified vowels (ra, me, se, le, te). These syllables make altered degrees explicit when you sing.',
       tryThisQuery: 'A natural minor scale',
-      tryThisLabel: 'Sing: do-re-me-fa-sol-le-te-do (la-based: la-ti-do-re-mi-fa-sol)',
+      tryThisLabel: 'Sing: do-re-me-fa-sol-le-te-do (la-based minor, an alternative system common in Kodaly practice: la-ti-do-re-mi-fa-sol)',
     },
     {
       title: 'Sight Reading Process',

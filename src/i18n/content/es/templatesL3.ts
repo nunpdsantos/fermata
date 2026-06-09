@@ -139,7 +139,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Responde a esta pregunta sobre los fundamentos de conducción de voces SATB.',
       hintTemplate:
-        'Tesituras SATB: Soprano C4-G5, Contralto F3-D5, Tenor C3-G4, Bajo E2-D4. Las voces superiores adyacentes deben mantenerse a menos de una octava entre sí (excepto bajo-tenor).',
+        'Tesituras SATB: Soprano C4-G5, Contralto F3-C5, Tenor C3-G4, Bajo E2-C4. Las voces superiores adyacentes deben mantenerse a menos de una octava entre sí (excepto bajo-tenor).',
       choiceSets: [
         [
           'Las voces superiores adyacentes (S-C, C-T) deben mantenerse generalmente a menos de una octava entre sí',

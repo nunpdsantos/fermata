@@ -171,7 +171,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Answer this question about SATB voice leading fundamentals.',
-        hintTemplate: 'SATB ranges: Soprano C4-G5, Alto F3-D5, Tenor C3-G4, Bass E2-D4. Adjacent voices should stay within an octave (except bass-tenor).',
+        hintTemplate: 'SATB ranges: Soprano C4-G5, Alto F3-C5, Tenor C3-G4, Bass E2-C4. Adjacent voices should stay within an octave (except bass-tenor).',
         params: {
           choiceSets: [
             [

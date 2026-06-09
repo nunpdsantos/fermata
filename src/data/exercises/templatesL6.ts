@@ -17,8 +17,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root}{accidental} major triad in first inversion (Neapolitan chord).',
-        hintTemplate: 'The Neapolitan is a major triad typically in first inversion. Build a major triad on {root}{accidental} and place the 3rd in the bass.',
+        promptTemplate: 'Build a {root}{accidental} major triad (Neapolitan chord).',
+        hintTemplate: 'The Neapolitan is a major triad built on the lowered 2nd scale degree. Build a major triad on {root}{accidental}.',
         params: {
           roots: ['D', 'E', 'A', 'G', 'C', 'F'],
           accidentals: ['b', 'b', 'b', 'b', 'b', ''],

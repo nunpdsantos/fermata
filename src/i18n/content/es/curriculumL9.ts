@@ -661,7 +661,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Solfeo Móvil',
           explanation:
-            'En el solfeo móvil, «do» representa siempre la tónica de la tonalidad actual — independientemente de qué nota sea. C mayor: do=C. G mayor: do=G. Bb mayor: do=Bb. Esto asigna sílabas a función, no a altura absoluta. «Sol» suena siempre como dominante, «ti» suena siempre como la sensible atrayendo hacia «do». Este es el enfoque Kodály/Berklee y refuerza la escucha funcional — aprendes a escuchar relaciones, no solo nombres de notas. El solfeo fijo (donde do es siempre C) se usa en Francia e Italia pero no entrena la escucha funcional de la misma manera.',
+            'En el solfeo móvil, «do» representa siempre la tónica de la tonalidad actual — independientemente de qué nota sea. C mayor: do=C. G mayor: do=G. Bb mayor: do=Bb. Esto asigna sílabas a función, no a altura absoluta. «Sol» suena siempre como dominante, «ti» suena siempre como la sensible atrayendo hacia «do». Este es el enfoque Kodály/Berklee, y sus defensores argumentan que entrena la escucha funcional de forma más directa — aprendes a escuchar relaciones, no solo nombres de notas. El solfeo fijo (donde do es siempre C), el estándar en los conservatorios de muchos países incluyendo Francia e Italia, construye en cambio la asociación de altura absoluta — ambos sistemas son ampliamente usados.',
           tryThisLabel: 'Canta: do-re-mi-fa-sol-la-ti-do',
         },
         {
@@ -669,7 +669,7 @@ const curriculumL9: CurriculumLevelOverlay = {
           explanation:
             'Las tonalidades menores requieren sílabas modificadas para los grados descendidos. En el menor basado en do: 3.a b = «me», 6.a b = «le», 7.a b = «te». Menor natural se convierte en: do-re-me-fa-sol-le-te-do. Menor armónica eleva el 7.o de vuelta a «ti»: do-re-me-fa-sol-le-ti-do. Menor melódica ascendente eleva ambos: do-re-me-fa-sol-la-ti-do. Para alteraciones cromáticas: sostenidos ascendentes usan -i (di, ri, fi, si, li); bemoles descendentes usan vocales modificadas (ra, me, se, le, te). Estas sílabas hacen explícitos los grados alterados al cantar.',
           tryThisLabel:
-            'Canta: do-re-me-fa-sol-le-te-do (basado en la: la-ti-do-re-mi-fa-sol)',
+            'Canta: do-re-me-fa-sol-le-te-do (menor basado en la, un sistema alternativo común en la práctica Kodály: la-ti-do-re-mi-fa-sol)',
         },
         {
           title: 'Proceso de Lectura a Primera Vista',

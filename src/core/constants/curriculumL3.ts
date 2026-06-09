@@ -283,7 +283,7 @@ const l3u10m1: CurriculumModule = {
     {
       id: 'l3u10m1t1',
       instruction:
-        'On paper, write a C major triad in SATB: Bass C2, Tenor G3, Alto E4, Soprano C5. Verify all spacing rules: soprano-alto gap (a minor 6th — under an octave), alto-tenor gap (a major 3rd — under an octave), tenor-bass gap (a perfect 5th). All valid.',
+        'On paper, write a C major triad in SATB: Bass C2, Tenor G3, Alto E4, Soprano C5. Verify all spacing rules: soprano-alto gap (a minor 6th — under an octave), alto-tenor gap (a major 6th — under an octave), tenor-bass gap (a perfect 12th — tenor-bass may exceed an octave). All valid.',
     },
     {
       id: 'l3u10m1t2',

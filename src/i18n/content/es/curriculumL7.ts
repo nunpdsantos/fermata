@@ -100,7 +100,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Dominantes Suspendidas: 7sus4',
           explanation:
-            'El acorde 7sus4 sustituye la tercera por una cuarta en un acorde de séptima dominante, creando un sonido abierto y no resuelto. C7sus4 contiene C-F-G-Bb — sin Mi, por lo tanto sin identidad mayor/menor. En el jazz, el 7sus4 funciona como voicing previo a la resolución: la cuarta suspendida resuelve a la tercera, y luego el acorde entero resuelve al I. El 7sus4 también sirve como sonoridad dórica (el voicing sus4 construido sobre la quinta de un acorde menor crea un sabor dórico). El sus2 funciona de forma similar, sustituyendo la tercera por una segunda para una cualidad brillante y abierta.',
+            'El acorde 7sus4 sustituye la tercera por una cuarta en un acorde de séptima dominante, creando un sonido abierto y no resuelto. C7sus4 contiene C-F-G-Bb — sin Mi, por lo tanto sin identidad mayor/menor. En el jazz, el 7sus4 funciona como voicing previo a la resolución: la cuarta suspendida resuelve a la tercera, y luego el acorde entero resuelve al I. El 7sus4 también sirve como sonoridad modal de tendencia dórica: un acorde 9sus construido una quinta justa por encima de la fundamental de un acorde menor (la posición V-de-ii, por ejemplo G9sus sobre Dm o en su lugar) sustituye al acorde ii — Dm11/G es una grafía común del mismo sonido. El sus2 funciona de forma similar, sustituyendo la tercera por una segunda para una cualidad brillante y abierta.',
           tryThisLabel: 'Escucha G7sus4 — dominante suspendida, sin tercera',
         },
       ],
@@ -194,7 +194,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'El Dominante de la Puerta de Atrás',
           explanation:
-            'El dominante de la puerta de atrás (bVII7-I) aborda la tónica desde un tono por debajo en lugar de una quinta por encima. En Do: Bb7-Cmaj7. La tercera de Bb7 (Re) resuelve hacia arriba a la tercera de Cmaj7 (Mi), y la séptima de Bb7 (Lab) resuelve hacia abajo a la quinta de Cmaj7 (Sol). Esto crea una resolución sorprendente y cálida que evita la cadencia V7-I esperada. Habitual en estándares de jazz y bossa nova, el dominante de la puerta de atrás es un pariente de la sustitución tritonal — Bb7 es la sustitución tritonal de E7, el V7/iii.',
+            'El dominante de la puerta de atrás (bVII7-I) aborda la tónica desde un tono por debajo en lugar de una quinta por encima. En Do: Bb7-Cmaj7. La tercera de Bb7 (Re) resuelve hacia arriba a la tercera de Cmaj7 (Mi), y la séptima de Bb7 (Lab) resuelve hacia abajo a la quinta de Cmaj7 (Sol). Esto crea una resolución sorprendente y cálida que evita la cadencia V7-I esperada. Habitual en estándares de jazz y bossa nova, el dominante de la puerta de atrás se entiende mejor como un préstamo del menor paralelo — es el dominante de bIII (Mib) que llega, en cambio, al I. Sus notas guía (Re y Lab) también existen en el dominante alterado de la tonalidad (G7b9), y por eso Bb7 tira tan convincentemente hacia Do: Re sube a Mi y Lab baja a Sol, ambas sensibles superiores hacia Cmaj7.',
           tryThisLabel: 'Escucha Bb7 — el dominante de la puerta de atrás en Do',
         },
       ],
@@ -302,7 +302,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Aplica el turnaround cromático: toca «Cmaj7», «Eb7», «Ab7», «Db7». Cada acorde tras el I es una sustitución tritonal — Eb7 sustituye a A7, Ab7 sustituye a D7, Db7 sustituye a G7. El bajo desciende cromáticamente: C-Eb-Ab-Db.',
+            'Aplica el turnaround cromático: toca «Cmaj7», «Eb7», «Ab7», «Db7». Cada acorde tras el I es una sustitución tritonal — Eb7 sustituye a A7, Ab7 sustituye a D7, Db7 sustituye a G7. Las fundamentales C-Eb-Ab-Db suben una tercera menor y luego dos cuartas justas — y el Db7 final resuelve medio tono abajo hacia Do, la recompensa cromática de las sustituciones.',
         },
       ],
     },
@@ -479,7 +479,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Progresiones de Acordes Modales',
           explanation:
-            'Cada modo soporta movimientos de acordes específicos que refuerzan su color. El dórico favorece i, II y IV — el acorde mayor II contiene la sexta elevada característica (ej: Dm-Em-C-Dm). El frigio se centra en i y bII — el bII está un semitono por encima de la tónica, la firma sonora del frigio (Em-F-Em). El lidio gravita hacia I, II y vii — la cuarta elevada aparece tanto en II como en vii (C-D-Bm-C). El mixolidio se apoya en I y bVII — la séptima rebajada está en el acorde bVII (G-F-Dm-G). Evita cualquier acorde que implique resolución dominante-tónica.',
+            'Cada modo soporta movimientos de acordes específicos que refuerzan su color. El acorde de color característico del dórico es el IV mayor sobre la tónica i — la sexta elevada vive en él (Dm-G-Dm); ii y bVII funcionan como colores secundarios. El frigio se centra en i y bII — el bII está un semitono por encima de la tónica, la firma sonora del frigio (Em-F-Em). El acorde de color característico del lidio es el II mayor sobre la tónica I — la cuarta elevada vive en él (C-D-C); vii comparte esa cuarta elevada como color secundario. El mixolidio se apoya en I y bVII — la séptima rebajada está en el acorde bVII (G-F-Dm-G). Evita cualquier acorde que implique resolución dominante-tónica.',
           tryThisLabel: 'Observa Sol mixolidio — bVII es el acorde clave',
         },
       ],
@@ -565,7 +565,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Progresiones Pop Habituales',
           explanation:
-            'La música pop se apoya en un pequeño conjunto de bucles de acordes con firmas emocionales distintas. La progresión I-V-vi-IV «Axis» suena edificante y himnica. Su rotación vi-IV-I-V («Sensitive») suena emocional y moderna. I-bVII-IV produce una sensación mixolidia, blues rock. La cadencia i-bVI-bIII-bVII «Andaluza» suena oscura y cinematográfica. I-vi-IV-V es la progresión clásica de los años 50, nostálgica y cálida. Estos bucles se repiten a lo largo de secciones enteras — la variación armónica proviene de la melodía, la producción y el arreglo en lugar de cambios de acordes.',
+            'La música pop se apoya en un pequeño conjunto de bucles de acordes con firmas emocionales distintas. La progresión I-V-vi-IV «Axis» suena edificante y himnica. Su rotación vi-IV-I-V («Sensitive») suena emocional y moderna. I-bVII-IV produce una sensación mixolidia, blues rock. La cadencia «Andaluza» i-bVII-bVI-V — un bajo descendente por grados conjuntos desde la tónica hasta la dominante, directamente del flamenco — suena oscura y cinematográfica. I-vi-IV-V es la progresión clásica de los años 50, nostálgica y cálida. Estos bucles se repiten a lo largo de secciones enteras — la variación armónica proviene de la melodía, la producción y el arreglo en lugar de cambios de acordes.',
           tryThisLabel: 'Empieza con el acorde I de una progresión pop en Do',
         },
         {
