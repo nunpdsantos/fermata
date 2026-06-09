@@ -7,9 +7,9 @@ import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
 import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
 import {
   playScale,
-  SYNTH_PRESETS,
   resumeAudio,
 } from '../../core/services/audio.ts';
+import { getSynthConfig } from '../../services/synthConfig.ts';
 import { SCALE_TYPE_NAMES, SCALE_FORMULAS, getScaleDegreeIntervalLabel } from '../../core/constants/scales.ts';
 import { LearnMoreButton } from './LearnMoreButton.tsx';
 import { buildAscendingMidi, buildDescendingMidi } from '../../utils/midiHelpers.ts';
@@ -136,7 +136,7 @@ export function ScaleDetail() {
     async (ascending: boolean, descending: boolean, noteDuration: number) => {
       await resumeAudio();
       clearVisualTimeouts();
-      const config = SYNTH_PRESETS[synthPreset] ?? {};
+      const config = getSynthConfig(synthPreset);
       const midiSequence = computeScaleSequenceMidi(scale.notes, baseOctave, ascending, descending);
       playScale(
         scale.notes,
