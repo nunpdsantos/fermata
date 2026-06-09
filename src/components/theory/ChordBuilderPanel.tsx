@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Note, NaturalNote, Accidental, noteToString, ChordIdentification } from '../../core/types/music.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
@@ -9,7 +9,6 @@ import { useAppStore } from '../../state/store.ts';
 import { resumeAudio, playChordVoiced } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import { ChromaticStrip } from './ChromaticStrip.tsx';
-import { ChordBuilderStaff } from './ChordBuilderStaff.tsx';
 
 // Default chromatic spelling fallback when a pitch isn't in the current scale.
 const PC_TO_NOTE_SHARP: Record<number, Note> = {
@@ -122,14 +121,20 @@ export function ChordBuilderPanel() {
   const identification = useMemo(() => identifyChordFromNotes(inputNotes), [inputNotes]);
   const top: ChordIdentification | undefined = identification.results[0];
 
+  // Drive the shared selection live: as soon as the strip forms a recognised
+  // chord, the workspace staff and instruments update immediately; when the
+  // note-set is unrecognised, selectedChord clears (instruments fall back to
+  // the scale — per spec §13.3 we do NOT synthesise a chord from an
+  // unrecognised note-set).
+  useEffect(() => {
+    setSelectedChord(top && top.confidence === 'exact' ? top.chord : null);
+  }, [top, setSelectedChord]);
+
   const handlePlay = useCallback(async () => {
     if (active.size === 0 || inputNotes.length === 0) return;
     await resumeAudio();
     playChordVoiced(inputNotes, baseOctave, 1.2, getSynthConfig(synthPreset));
-    if (top && top.confidence === 'exact') {
-      setSelectedChord(top.chord);
-    }
-  }, [active.size, inputNotes, baseOctave, synthPreset, top, setSelectedChord]);
+  }, [active.size, inputNotes, baseOctave, synthPreset]);
 
   const stepsSorted = useMemo(() => [...active].sort((a, b) => a - b), [active]);
   const intervalsLabel = stepsSorted.map((s) => INTERVAL_SHORT[s]).join(', ');
@@ -232,11 +237,6 @@ export function ChordBuilderPanel() {
         inKeyPitchClasses={scalePitchClasses}
         pitchClassToDegree={pitchClassToDegree}
         pitchClassAtStep={pitchClassAtStep}
-      />
-
-      <ChordBuilderStaff
-        notes={inputNotes}
-        detectedChord={top && top.confidence === 'exact' ? top.chord : undefined}
       />
 
       <div
