@@ -303,3 +303,71 @@ describe('preferences actions', () => {
     expect(useAppStore.getState().language).toBe('en');
   });
 });
+
+describe('appStore persistence shape guard', () => {
+  const KEY = 'music-theory-app';
+
+  const seed = (state: unknown, version = 5) => {
+    localStorage.setItem(KEY, JSON.stringify({ state, version }));
+  };
+
+  it('falls back to default selectedKey when natural is out of range, keeping other fields', async () => {
+    seed({ selectedKey: { natural: 'H', accidental: '' }, volume: 0.42 });
+    await useAppStore.persist.rehydrate();
+    const s = useAppStore.getState();
+    expect(s.selectedKey).toEqual({ natural: 'C', accidental: '' });
+    expect(s.volume).toBe(0.42);
+  });
+
+  it('falls back to default selectedKey on an invalid accidental', async () => {
+    seed({ selectedKey: { natural: 'D', accidental: 'x' } });
+    await useAppStore.persist.rehydrate();
+    expect(useAppStore.getState().selectedKey).toEqual({ natural: 'C', accidental: '' });
+  });
+
+  it('falls back to default selectedScale on an unknown scale, keeping other fields', async () => {
+    seed({ selectedScale: 'mega_locrian', selectedKey: { natural: 'G', accidental: '#' } });
+    await useAppStore.persist.rehydrate();
+    const s = useAppStore.getState();
+    expect(s.selectedScale).toBe('major');
+    expect(s.selectedKey).toEqual({ natural: 'G', accidental: '#' });
+  });
+
+  it('falls back per-field on non-numeric numeric fields without nuking valid ones', async () => {
+    seed({ volume: 'loud', baseOctave: null, scaleOctaves: 2, selectedScale: 'dorian' });
+    await useAppStore.persist.rehydrate();
+    const s = useAppStore.getState();
+    expect(s.volume).toBe(0.7);
+    expect(s.baseOctave).toBe(4);
+    expect(s.scaleOctaves).toBe(2);
+    expect(s.selectedScale).toBe('dorian');
+  });
+
+  it('rehydrates to current defaults without throwing when the whole state is garbage', async () => {
+    seed('total garbage');
+    await useAppStore.persist.rehydrate();
+    const s = useAppStore.getState();
+    expect(s.selectedKey).toEqual({ natural: 'C', accidental: '' });
+    expect(s.selectedScale).toBe('major');
+    expect(s.volume).toBe(0.7);
+  });
+
+  it('keeps a fully valid persisted state intact', async () => {
+    seed({
+      selectedKey: { natural: 'E', accidental: 'b' },
+      selectedScale: 'harmonic_minor',
+      volume: 0.25,
+      baseOctave: 3,
+      scaleOctaves: 2,
+      preferencesUpdatedAt: 123,
+    });
+    await useAppStore.persist.rehydrate();
+    const s = useAppStore.getState();
+    expect(s.selectedKey).toEqual({ natural: 'E', accidental: 'b' });
+    expect(s.selectedScale).toBe('harmonic_minor');
+    expect(s.volume).toBe(0.25);
+    expect(s.baseOctave).toBe(3);
+    expect(s.scaleOctaves).toBe(2);
+    expect(s.preferencesUpdatedAt).toBe(123);
+  });
+});

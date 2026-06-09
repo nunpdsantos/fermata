@@ -121,6 +121,8 @@ Ordered by severity (errors first), then by level. Every item here has its fix i
 
 ## Category B — Core (escalate to the shared-core owner)
 
+> **RESOLVED 2026-06-09 in WS6** — `src/core` became fermata-owned (the Music AI source project no longer exists) and every Category B item was fixed directly in core.
+
 `src/core/` is read-only here. Each item: file, what's wrong, correct value, and app-side-mitigation note.
 
 ### B1. RECURRING — `INTERVAL_LABELS[8] = 'Augmented 5th'` should be 'Minor 6th' (and `INTERVAL_SHORT_LABELS[8] = '#5'`).

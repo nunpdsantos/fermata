@@ -1,3 +1,5 @@
+> **RESOLVED 2026-06-09 in WS6** — `src/core` became fermata-owned (the Music AI source project no longer exists) and every item below (B1–B7, B3a) was fixed directly in core. Kept for the record.
+
 # WS5 Audit — Core Escalation (8 bugs + 4 Category-C imprecisions in `src/core/`)
 
 These items were found during the Fermata WS5 music-theory audit (L1–L9). Every defect below lives in

@@ -193,6 +193,8 @@ export function KeySelector() {
               <button
                 key={label}
                 data-root={label}
+                aria-label={label}
+                aria-pressed={isSelected}
                 onClick={() => setKey(root)}
                 className={`relative px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 max-sm:px-3 max-sm:py-2 max-sm:min-w-[34px] ${
                   hasAccidental ? 'min-w-[30px]' : 'min-w-[26px]'

@@ -77,8 +77,11 @@ export default defineConfig({
           },
         ],
       },
+      // Dev service worker disabled: a registered SW during development
+      // serves stale-cached modules and causes confusing behavior. Production
+      // registration is unaffected.
       devOptions: {
-        enabled: true,
+        enabled: false,
       },
     }),
   ],

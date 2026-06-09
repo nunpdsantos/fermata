@@ -37,6 +37,20 @@ export class ErrorBoundary extends Component<Props, State> {
     this.setState({ hasError: false, error: null });
   };
 
+  /**
+   * Last-resort recovery: corrupted persisted state can crash the app on
+   * every reload. Clears all app localStorage (keys prefixed 'music-theory')
+   * and reloads fresh.
+   */
+  private handleResetAppData = () => {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('music-theory')) {
+        localStorage.removeItem(key);
+      }
+    }
+    window.location.reload();
+  };
+
   render() {
     if (this.state.hasError) {
       const error = this.state.error ?? new Error('An unexpected error occurred.');
@@ -73,9 +87,14 @@ export class ErrorBoundary extends Component<Props, State> {
             <p style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 20 }}>
               {error.message}
             </p>
-            <Button variant="accent" onClick={() => window.location.reload()}>
-              {i18n.t('common.reload')}
-            </Button>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+              <Button variant="accent" onClick={() => window.location.reload()}>
+                {i18n.t('common.reload')}
+              </Button>
+              <Button variant="ghost" onClick={this.handleResetAppData}>
+                {i18n.t('error.resetAppData')}
+              </Button>
+            </div>
           </div>
         </div>
       );

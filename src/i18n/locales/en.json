@@ -257,7 +257,8 @@
   "error": {
     "somethingWentWrong": "Something went wrong",
     "unexpectedError": "An unexpected error occurred.",
-    "viewError": "This view encountered an error."
+    "viewError": "This view encountered an error.",
+    "resetAppData": "Reset app data — clears saved progress"
   },
   "toast": {
     "copiedToClipboard": "Copied to clipboard",
