@@ -44,7 +44,10 @@ describe('translateChordQuality', () => {
   it('returns Portuguese for pt', () => {
     expect(translateChordQuality('major', 'pt')).toBe('maior');
     expect(translateChordQuality('minor', 'pt')).toBe('menor');
-    expect(translateChordQuality('dominant7', 'pt')).toBe('dominante com 7.ª');
+    // dominant7/diminished7 follow the root in templates ('um acorde de Dó
+    // {quality}'), so they must read 'de sétima ...' to stay grammatical.
+    expect(translateChordQuality('dominant7', 'pt')).toBe('de sétima da dominante');
+    expect(translateChordQuality('diminished7', 'pt')).toBe('de sétima diminuta');
     expect(translateChordQuality('half_diminished7', 'pt')).toBe('meio-diminuto');
     expect(translateChordQuality('augmented', 'pt')).toBe('aumentado');
   });
@@ -52,7 +55,8 @@ describe('translateChordQuality', () => {
   it('returns Spanish for es', () => {
     expect(translateChordQuality('major', 'es')).toBe('mayor');
     expect(translateChordQuality('diminished', 'es')).toBe('disminuido');
-    expect(translateChordQuality('dominant7', 'es')).toBe('dominante con 7.ª');
+    expect(translateChordQuality('dominant7', 'es')).toBe('de séptima de dominante');
+    expect(translateChordQuality('diminished7', 'es')).toBe('de séptima disminuida');
     expect(translateChordQuality('half_diminished7', 'es')).toBe('semidisminuido');
   });
 

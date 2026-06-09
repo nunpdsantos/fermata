@@ -51,11 +51,55 @@ const overlay: TemplateLevelOverlay = {
   // ---- l7u21m2: Voicings de Shell ----
   l7u21m2: [
     {
-      // chord_build
+      // multiple_choice — el EN es una pregunta de opción múltiple, no un chord_build
       promptTemplate:
-        'Construye un voicing de shell de {root} {quality}. Usa solo fundamental, tercera y séptima.',
+        '¿Qué conjunto de tres notas es el voicing de shell correcto?',
       hintTemplate:
-        'Los voicings de shell usan fundamental + tercera + séptima (omitiendo la quinta). Esto capta el carácter esencial del acorde con el mínimo de notas. Construye a partir de {root}.',
+        'Un voicing de shell usa solo fundamental, tercera y séptima — la quinta se omite. La tercera define la cualidad del acorde (mayor/menor); la séptima define el tipo de acorde de séptima (maj7 / m7 / dom7).',
+      choiceSets: [
+        [
+          'Shell de Cmaj7: C, E, B',
+          'Cmaj7 completo: C, E, G, B',
+          'Cmaj7 sin la tercera: C, G, B',
+          'Cmaj7 sin la séptima: C, E, G',
+        ],
+        [
+          'Shell de Dm7: D, F, C',
+          'Dm7 completo: D, F, A, C',
+          'Dm7 sin la tercera: D, A, C',
+          'Dm7 sin la séptima: D, F, A',
+        ],
+        [
+          'Shell de G7: G, B, F',
+          'G7 completo: G, B, D, F',
+          'G7 sin la tercera: G, D, F',
+          'G7 sin la séptima: G, B, D',
+        ],
+        [
+          'Shell de Fmaj7: F, A, E',
+          'Fmaj7 completo: F, A, C, E',
+          'Fmaj7 sin la tercera: F, C, E',
+          'Fmaj7 sin la séptima: F, A, C',
+        ],
+        [
+          'Shell de Am7: A, C, G',
+          'Am7 completo: A, C, E, G',
+          'Am7 sin la tercera: A, E, G',
+          'Am7 sin la séptima: A, C, E',
+        ],
+        [
+          'Shell de E7: E, G#, D',
+          'E7 completo: E, G#, B, D',
+          'E7 sin la tercera: E, B, D',
+          'E7 sin la séptima: E, G#, B',
+        ],
+        [
+          'Shell de Bbmaj7: Bb, D, A',
+          'Bbmaj7 completo: Bb, D, F, A',
+          'Bbmaj7 sin la tercera: Bb, F, A',
+          'Bbmaj7 sin la séptima: Bb, D, F',
+        ],
+      ],
     },
     {
       // multiple_choice
@@ -85,9 +129,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Construye el acorde ii7 para una progresión ii-V-I en {root} mayor.',
+        'Construye un acorde de séptima menor sobre {root} — el sonido ii7 de una progresión ii-V-I.',
       hintTemplate:
-        'En {root} mayor, el ii7 es un acorde m7 construido sobre el 2.º grado. En el jazz, la ii-V-I es la progresión más fundamental.',
+        'Un ii7 es un acorde de séptima menor sobre {root}: fundamental + 3.ª menor + 5.ª justa + 7.ª menor. En el jazz, la ii-V-I es la progresión más fundamental.',
     },
     {
       // multiple_choice
@@ -214,9 +258,10 @@ const overlay: TemplateLevelOverlay = {
   // ---- l7u22m1: Escalas Modales y Características ----
   l7u22m1: [
     {
-      // scale_build
+      // scale_build — 'el modo X de {root}': {scaleType} renderiza nombres
+      // masculinos (dórico, lidio...) que no concuerdan con 'la escala'
       promptTemplate:
-        'Construye la escala de {root} {scaleType}.',
+        'Construye el modo {scaleType} de {root}.',
       hintTemplate:
         'Los modos: jónico (mayor), dórico (b3, b7), frigio (b2, b3, b6, b7), lidio (#4), mixolidio (b7), eólico (menor natural), locrio (b2, b3, b5, b6, b7).',
     },
@@ -264,9 +309,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Construye el acorde prestado del modo paralelo en {root} mayor.',
+        'Construye una tríada {quality} sobre {root} — un acorde que la música pop toma prestado de un modo paralelo.',
       hintTemplate:
-        'La música pop toma prestados frecuentemente acordes de modos paralelos: bVII del mixolidio, bIII del dórico/menor, iv del eólico. Construye sobre {root}.',
+        'La música pop toma prestados frecuentemente acordes de modos paralelos: bVII del mixolidio, bIII del dórico/menor, iv del eólico. Construye una tríada {quality} sobre {root}.',
     },
     {
       // multiple_choice
@@ -382,9 +427,10 @@ const overlay: TemplateLevelOverlay = {
   // ---- l7u23m3: Escalas Bebop y Jazz ----
   l7u23m3: [
     {
-      // scale_build
+      // scale_build — 'el modo X de {root}': {scaleType} renderiza nombres
+      // masculinos (dórico, mixolidio) que no concuerdan con 'la escala'
       promptTemplate:
-        'Construye la escala de {root} {scaleType}.',
+        'Construye el modo {scaleType} de {root}.',
       hintTemplate:
         'Dórico: 1-2-b3-4-5-6-b7 (7 notas). Mixolidio: 1-2-3-4-5-6-b7 (7 notas). Estos modos son la base de muchas improvisaciones jazz.',
     },

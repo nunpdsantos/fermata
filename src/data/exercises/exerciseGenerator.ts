@@ -151,8 +151,11 @@ function buildConfig(template: ExerciseTemplate, rand: () => number): ExerciseCo
   }
 }
 
+/** Templates already warned about, so each leftover token is reported once. */
+const warnedLeftoverTemplates = new Set<string>();
+
 /** Fill {param} placeholders in a template string with values from config */
-function fillTemplate(template: string, config: ExerciseConfig, lang: ContentLanguage = 'en'): string {
+function fillTemplate(template: string, config: ExerciseConfig, lang: ContentLanguage = 'en', templateId = ''): string {
   let result = template;
   const replacements: Record<string, string> = {};
 
@@ -188,6 +191,24 @@ function fillTemplate(template: string, config: ExerciseConfig, lang: ContentLan
 
   for (const [key, value] of Object.entries(replacements)) {
     result = result.replace(new RegExp(`\\{${key}\\}`, 'g'), value);
+  }
+
+  // Legacy templates write '{root}{accidental}', but the {root} replacement
+  // above already carries the accidental (e.g. 'Gb'), so the token is dropped.
+  result = result.replace(/\{accidental\}/g, '');
+
+  // Dev guard: any other leftover {token} means the template references a
+  // parameter this generator cannot fill. Warn once per template (don't throw —
+  // the exercise still renders and grading is unaffected).
+  const leftover = result.match(/\{[a-z]+\}/i);
+  if (leftover) {
+    const warnKey = `${templateId}:${template}`;
+    if (!warnedLeftoverTemplates.has(warnKey)) {
+      warnedLeftoverTemplates.add(warnKey);
+      console.warn(
+        `[exerciseGenerator] Unreplaced token ${leftover[0]}${templateId ? ` in template for ${templateId}` : ''}: "${template}"`,
+      );
+    }
   }
 
   return result;
@@ -226,9 +247,9 @@ export function generateExercises(
     exercises.push({
       id,
       type: template.type,
-      prompt: fillTemplate(template.promptTemplate, exerciseConfig, lang),
+      prompt: fillTemplate(template.promptTemplate, exerciseConfig, lang, config.moduleId),
       config: exerciseConfig,
-      hint: fillTemplate(template.hintTemplate, exerciseConfig, lang),
+      hint: fillTemplate(template.hintTemplate, exerciseConfig, lang, config.moduleId),
       points: template.points ?? 1,
     });
   }

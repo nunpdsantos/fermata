@@ -107,11 +107,12 @@ const overlay: TemplateLevelOverlay = {
   // ---- l4u12m4: Regras de Resolução do V7 ----
   l4u12m4: [
     {
-      // chord_build
+      // chord_build — {root} é a fundamental do acorde, não a tonalidade:
+      // a resposta avaliada é uma sétima da dominante SOBRE {root}. Espelha o EN.
       promptTemplate:
-        'Constrói o acorde V7 (sétima da dominante) na tonalidade de {root} maior.',
+        'Constrói um acorde de sétima da dominante de {root}.',
       hintTemplate:
-        'O V7 é construído sobre o 5.º grau de {root} maior. É um acorde de sétima da dominante: tríade maior + 7.ª menor. A 7.ª resolve para baixo, a sensível resolve para cima.',
+        'Um acorde de sétima da dominante: tríade maior + 7.ª menor. A 7.ª resolve para baixo, a sensível resolve para cima.',
     },
     {
       // multiple_choice
@@ -180,11 +181,12 @@ const overlay: TemplateLevelOverlay = {
   // ---- l4u13m1: Sétimas Pré-Dominantes ----
   l4u13m1: [
     {
-      // chord_build
+      // chord_build — {root} é a fundamental do acorde, não a tonalidade:
+      // a resposta avaliada é uma sétima menor SOBRE {root}. Espelha o EN.
       promptTemplate:
-        'Constrói o acorde ii7 em {root} maior. Este acorde de sétima pré-dominante conduz a V.',
+        'Constrói um acorde de sétima menor de {root}.',
       hintTemplate:
-        'O ii7 em maior é um acorde de sétima menor construído sobre o 2.º grau de {root} maior. Funciona como pré-dominante, conduzindo a V ou V7.',
+        'Um acorde de sétima menor: tríade menor + 7.ª menor. Funciona como pré-dominante, conduzindo a V ou V7.',
     },
     {
       // multiple_choice
@@ -338,11 +340,12 @@ const overlay: TemplateLevelOverlay = {
       ],
     },
     {
-      // chord_build
+      // chord_build — {root} é a fundamental do acorde, não a tonalidade:
+      // a resposta avaliada é uma tríade maior SOBRE {root}. Espelha o EN.
       promptTemplate:
-        'Constrói o acorde IV em {root} maior. Este é um acorde pré-dominante principal.',
+        'Constrói uma tríade maior de {root}.',
       hintTemplate:
-        'O acorde IV é uma tríade maior construída sobre o 4.º grau de {root} maior. Tem um carácter quente e subdominante.',
+        'Uma tríade maior: fundamental + 3.ª maior + 5.ª perfeita. O acorde IV tem um carácter quente e subdominante.',
     },
   ],
 

@@ -164,6 +164,24 @@ describe('applyExerciseOverlay', () => {
         hint: 'G clef',
         points: 1,
       },
+      {
+        id: 'l1u1m1e_ear1',
+        type: 'ear_training',
+        prompt: 'Listen to this chord and identify its quality.',
+        config: {
+          type: 'ear_training',
+          mode: 'chord',
+          chordRoot: 'C',
+          chordRootAccidental: '',
+          quality: 'major',
+          choices: [
+            { label: 'Major', correct: true },
+            { label: 'Minor', correct: false },
+          ],
+        },
+        hint: 'Major chords sound bright',
+        points: 1,
+      },
     ],
   };
 
@@ -214,6 +232,41 @@ describe('applyExerciseOverlay', () => {
     };
     const result = applyExerciseOverlay(exercises, overlay);
     expect(result.l1u1m1[1].prompt).toBe('Which clef?');
+  });
+
+  // ExerciseRunner reads ear_training (chord mode) answer labels from
+  // exercise.config.choices, so translated choices must apply there too —
+  // previously only multiple_choice got them (PT/ES l3u9m1e_ear1..4 dropped).
+  it('translates ear_training chord-mode choice labels', () => {
+    const overlay: ExerciseLevelOverlay = {
+      l1u1m1e_ear1: {
+        prompt: 'Ouve este acorde e identifica a sua qualidade.',
+        choices: ['Maior', 'Menor'],
+      },
+    };
+    const result = applyExerciseOverlay(exercises, overlay);
+    const config = result.l1u1m1[2].config;
+    expect(config.type).toBe('ear_training');
+    if (config.type === 'ear_training') {
+      expect(config.choices?.[0].label).toBe('Maior');
+      expect(config.choices?.[1].label).toBe('Menor');
+      // Correctness and audio params preserved
+      expect(config.choices?.[0].correct).toBe(true);
+      expect(config.choices?.[1].correct).toBe(false);
+      expect(config.chordRoot).toBe('C');
+      expect(config.quality).toBe('major');
+    }
+  });
+
+  it('leaves ear_training exercises without overlay choices untouched', () => {
+    const overlay: ExerciseLevelOverlay = {
+      l1u1m1e_ear1: { prompt: 'Ouve este acorde.' },
+    };
+    const result = applyExerciseOverlay(exercises, overlay);
+    const config = result.l1u1m1[2].config;
+    if (config.type === 'ear_training') {
+      expect(config.choices?.[0].label).toBe('Major');
+    }
   });
 });
 

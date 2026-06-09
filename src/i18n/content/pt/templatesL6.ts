@@ -13,11 +13,12 @@ const overlay: TemplateLevelOverlay = {
   // ---- l6u18m1: Acorde Napolitano bII ----
   l6u18m1: [
     {
-      // chord_build
+      // chord_build — {root} is the chord root (the bII itself), not the key:
+      // the graded answer is a major triad ON {root}. Mirrors EN.
       promptTemplate:
-        'Constroi o acorde napolitano em {root} menor. E uma triade maior sobre o 2.o grau rebaixado.',
+        'Constroi uma triade maior de {root}{accidental} (acorde napolitano).',
       hintTemplate:
-        'O napolitano em {root} menor e uma triade maior construida na nota meio-tom acima de {root}.',
+        'O acorde napolitano e uma triade maior construida sobre o 2.o grau rebaixado. Constroi uma triade maior sobre {root}{accidental}.',
     },
     {
       // multiple_choice
@@ -109,11 +110,12 @@ const overlay: TemplateLevelOverlay = {
       ],
     },
     {
-      // chord_build
+      // chord_build — {root} is the chord root of the enharmonic dom7, not the
+      // key: the graded answer is a dominant 7th ON {root}. Mirrors EN.
       promptTemplate:
-        'Constroi o acorde de sexta alema em {root} menor. Inclui as 4 notas.',
+        'Constroi um acorde de setima da dominante de {root}{accidental} (sexta alema enarmonica).',
       hintTemplate:
-        'Em {root} menor, a sexta alema usa: 6.o grau rebaixado, tonica, 3.a rebaixada e 4.o grau elevado. As vozes extremas formam uma sexta aumentada.',
+        'A sexta alema e enarmonicamente equivalente a um acorde de setima da dominante. Constroi uma setima da dominante sobre {root}{accidental}: fundamental + 3.a maior + 5.a perfeita + 7.a menor.',
     },
   ],
 
