@@ -42,8 +42,18 @@ Scale degree function is encoded in color throughout the app:
 
 - `npm run dev` — start dev server (localhost:5173)
 - `npm run build` — production build to `dist/`
-- `npx tsc -b` — type-check (no emit)
+- `npx tsc -b --force` — type-check (ALWAYS `--force`: the incremental cache gives false "clean" results after file deletions/renames; IDE/LSP diagnostics also lag behind edits — trust forced tsc, not stale diagnostics)
 - `npx vitest run` — run all tests
+- `npm run lint` — eslint (covers src/core too)
+- `npm run audit:all` — music-theory content audits (engine + exercises + generated templates); expected steady state: engine 0 serious (4 INFO enharmonic-respell notes), exercises 0, generated 0
+- `npm run test:e2e` — Playwright (manifest test self-skips against the dev server)
+
+### Deploy & conventions
+
+- Vercel auto-deploys `main` → https://fermata-music.vercel.app (production). Any pushed branch gets a preview. Verify a deploy by comparing the live `index-*.js` bundle hash against a local `npm run build` of the same commit.
+- One workstream = one branch → PR → squash-merge + delete branch. Direct pushes to `main` are fine for small fixes Nuno has asked for.
+- Perceptual changes (sound, look) cannot be verified by an agent — ship behind green gates, then ask Nuno to judge with his eyes/ears, and iterate.
+- WS6 decisions log (D1–D20: every editorial/content call and its rationale): `docs/superpowers/plans/2026-06-09-ws6-hardening.md`.
 
 ### Gotchas
 
@@ -56,6 +66,9 @@ Scale degree function is encoded in color throughout the app:
 - VexFlow 5.0 uses camelCase API: `numBeats`/`beatValue` (not `num_beats`/`beat_value`).
 - VexFlow loads its music fonts as base64 `data:` FontFaces at runtime — the CSP in `vercel.json` must keep `font-src 'self' data:` or production notation renders missing-glyph boxes (dev has no CSP, so local checks won't catch it).
 - Header-only deploys never reach installed PWAs: the service worker precaches `index.html` WITH its response headers, and identical content means no SW update. Any `vercel.json` header change must be paired with a content change (e.g. the build comment atop `index.html`).
+- **Fretboard orientation is SETTLED — do not "fix" it.** It renders nut-RIGHT, low E on top (mirrored from printed chord charts). A flip to textbook orientation was shipped and **reverted on Nuno's feedback** (2026-06-09): he reads the original natively. Position legibility is handled instead by the anchor-fret badge ("3fr") + nut-closest default voicing (see Audio & instruments below).
+- PT overlay files vary in diacritic usage (older files are diacritic-free) — match each file's existing style when editing; full restoration is tracked in `docs/pt-diacritic-todo.md`.
+- The i18n content overlays REPLACE English text wholesale (keyed by module id + array index). Every English curriculum/template edit needs hand-mirrored PT + ES edits; `templateParity.test.ts` enforces token parity and will fail the suite if overlays drift.
 
 ### Architecture
 
@@ -89,13 +102,19 @@ src/
       exercises/     ExerciseRunner, ExercisePrompt, ExerciseFeedback, ExerciseProgress
         inputs/      ChoiceInput, InstrumentInput
   views/             ExploreView, LearnView
-  hooks/             useAudio, useKeyContext, useTheme, usePWA, useLanguage, useLearnProgress, useMediaQuery
-  services/          spacedRepetition, conceptTagger, exerciseSelector
-  utils/             exportHelpers, notationHelpers, vexflowLoader, midiHelpers, celebrationSound, queryExecutor
+  hooks/             useAudio, useKeyContext (incl. exercise-input mode), useTheme, usePWA, useLanguage, useLearnProgress, useMediaQuery, useDegreeColors
+  services/          spacedRepetition, exerciseSelector, synthConfig (FM fallback voice),
+                     karplusStrong (guitar engine), pianoSampler (sampled piano engine),
+                     pianoVoiceRegistration (wires sampler into core audio at boot)
+  utils/             exportHelpers, notationHelpers, vexflowLoader, midiHelpers, celebrationSound,
+                     queryExecutor (Try-This executor — routes through the core parsers; contract-tested
+                     against every curriculum tryThisQuery)
   data/
     curriculumLoader.ts      Dynamic import + LEVEL_METADATA (accepts lang param for overlay loading)
     exerciseLoader.ts        Merges hand-authored + generated, lazy-loads per level (accepts lang param)
-    songReferences.ts        Module→song reference map (L1–L3, ~80 entries)
+    moduleIndex.ts           Static 118-module search index (Cmd+K lesson hits)
+    qualityToModule.ts       Static ChordQuality→moduleId map for "Learn about this" deep links
+    songReferences.ts        Module→song reference map (L1–L3 + l4u14m2, ~70 entries)
     exercises/
       exercisesL1-L9.ts      Hand-authored exercises (~385 total)
       templatesL1-L9.ts      Exercise generation templates (118 modules, 156 templates)
@@ -103,6 +122,30 @@ src/
 ```
 
 **Interaction model:** Instrument-first. Piano/fretboard always visible at bottom. Two views: Explore (theory), Learn (curriculum). Cmd+K for power-user search. Color encodes scale degree function (tonic=blue, dominant=amber, leading=red).
+
+### Audio & instruments (state as of 2026-06-09)
+
+- **Piano sound = sampled Salamander Grand** (30 mp3s, minor-third ladder A0–C8, ~2 MB,
+  CC-BY-3.0 — `public/samples/piano/` + LICENSE.txt; credited in README).
+  `src/services/pianoSampler.ts` is the engine; `pianoVoiceRegistration.ts` (called in
+  `main.tsx`) registers it into core audio via the `setPianoVoice()` seam in
+  `src/core/services/audio.ts`. EVERY piano path (keyboard sustain, chord/arpeggio/scale
+  playback, ear training) goes through core `playNote`/`startSustainedNote`, which try the
+  sampler first and fall back to the FM synth (`synthConfig.ts` WARMTH_OVERRIDES) until
+  samples decode — so sound is never silent, including a first visit offline. Samples are
+  runtime-cached CacheFirst (`piano-samples` cache) for offline reuse.
+- **Guitar sound = Karplus-Strong** (`src/services/karplusStrong.ts`) — separate engine,
+  separate AudioContext, untouched by the sampler work.
+- **Fretboard chord display:** shapes default to the NUT-CLOSEST voicing (position chips
+  sorted the same way), and the anchor fret (lowest fretted note = the barre) wears a bold
+  accent badge ("3fr") above the board plus an accented number below. This is the fix for
+  "every barre shape looks identical"; orientation itself is nut-right by Nuno's explicit
+  preference (see Gotchas). Anchor math must use ABSOLUTE frets (baseFret + pos.fret>0
+  filter is wrong: transposed open shapes encode the barre as open strings + baseFret).
+- **Exercise instrument input:** `useKeyContext` has an exercise-input mode
+  (`exerciseInputActive` in the instrument slice) that suppresses Explore's scale/chord
+  visuals during exercises and surfaces the learner's toggled notes through the
+  chord-highlight channel on every octave.
 
 ---
 
@@ -171,8 +214,37 @@ src/
 - **ESLint config:** Added argsIgnorePattern/varsIgnorePattern for _ prefix convention, excluded src/core from linting
 - 793 tests passing, 35 test files. 0 lint errors. 0 type errors.
 
+### Hardening & Sound (WS6–WS7, 2026-06-09) — COMPLETE
+- **WS6** (PR #12 + follow-ups): all 8 CORE-ESCALATION theory bugs fixed at the source
+  (src/core became fermata-owned — the shared Music AI project no longer exists);
+  C-item editorial queue settled (decisions log D1–D20 in docs/superpowers/plans/);
+  Try-This executor rebuilt on the core parsers (was ~60% dead buttons); "Learn about
+  this" now uses the static quality→module map; exercise input wired to the instruments;
+  9 PT/ES mis-grading templates repaired + templateParity test (1,400 assertions);
+  real security headers via vercel.json; persisted-state shape guards + reset-app-data;
+  22 dead modules deleted; eslint covers src/core; npm audit 0; docs rewritten.
+- **Production hotfixes learned the hard way:** CSP must allow `data:` fonts (VexFlow),
+  and header-only deploys never reach installed PWAs (see Gotchas — both documented).
+- **WS7 (sound + fretboard):** sampled Salamander piano replaced the FM synth voice
+  (see Audio & instruments); fretboard chord display gained nut-closest default voicings
+  + the anchor-fret badge after the orientation flip experiment was reverted on Nuno's
+  feedback.
+
 ---
 
 ## Current State
 
-The app is now a lean, single-user, Explore-centred personal tool — no accounts, no cloud sync, no gamification. The curriculum and spaced-repetition review are fully functional. WS4, WS5, and WS6 are done. Remaining known wants: PT diacritics restoration (docs/pt-diacritic-todo.md) and a fretboard orientation toggle (nut-right is the current deliberate rendering).
+The app is a lean, single-user, Explore-centred personal tool — no accounts, no cloud
+sync, no gamification. Curriculum, exercises, spaced repetition, trilingual content,
+offline PWA, sampled piano: all functional, all gates green (≈2,265 tests / 46 files,
+eslint 0/0, content audits clean).
+
+**Open items, in rough priority:**
+- PT diacritics restoration across the older overlay files (`docs/pt-diacritic-todo.md`).
+- Chord-quality names / interval labels render in English inside PT/ES feedback
+  sentences (deliberate "nomenclature untranslated" convention — revisit only as a
+  product decision).
+- The L6/L7 "Learn about this" gap: scales/modes/intervals have no deep link (only
+  chords do, via qualityToModule).
+- Welcome banner in LevelsOverview is unreachable (fresh users always get the Continue
+  card) — harmless; remove or repurpose someday.
