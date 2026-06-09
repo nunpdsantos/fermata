@@ -85,66 +85,6 @@ export const FretboardString = memo(function FretboardString({
         {openLabel}
       </div>
 
-      {/* Open string / muted indicator */}
-      <div
-        role="button"
-        aria-label={isMuted ? `String ${6 - stringIdx} muted` : `${openLabel} open string`}
-        className="flex items-center justify-center cursor-pointer"
-        style={{ width: 40 }}
-        onClick={() => !isMuted && handleFretClick(openFretNote)}
-      >
-        {isMuted ? (
-          <span className="font-bold" style={{ fontSize: 14, color: '#ef4444aa' }}>
-            ✕
-          </span>
-        ) : isOpenVoicing ? (
-          <div
-            className="rounded-full flex items-center justify-center font-bold"
-            style={{
-              width: isChordView ? 22 : 20,
-              height: isChordView ? 22 : 20,
-              fontSize: 9,
-              backgroundColor: openColor ?? 'var(--accent)',
-              color: '#000',
-              boxShadow: isOpenRoot
-                ? `0 0 16px ${(openColor ?? 'var(--accent)')}aa, 0 0 6px ${(openColor ?? 'var(--accent)')}88`
-                : `0 0 10px ${(openColor ?? 'var(--accent)')}88`,
-              border: isOpenRoot
-                ? '3px solid #ffffff'
-                : `2px solid ${openColor ?? 'var(--accent)'}`,
-            }}
-          >
-            {openLabel}
-          </div>
-        ) : openColor && !currentShape ? (
-          <div
-            className="rounded-full flex items-center justify-center font-bold"
-            style={{
-              width: 20,
-              height: 20,
-              fontSize: 8,
-              backgroundColor: isOpenActive ? openColor : `${openColor}cc`,
-              color: '#000',
-              transform: isOpenActive ? 'scale(1.15)' : 'scale(1)',
-              boxShadow: isOpenActive ? `0 0 8px ${openColor}` : 'none',
-            }}
-          >
-            {openLabel}
-          </div>
-        ) : (
-          <span className="text-[9px]" style={{ color: 'var(--text-dim)' }}>{openLabel}</span>
-        )}
-      </div>
-      {/* Nut */}
-      <div
-        style={{
-          width: !isChordView || isOpenPosition ? 6 : 2,
-          backgroundColor: !isChordView || isOpenPosition ? 'var(--text-muted)' : 'var(--border)',
-          height: '100%',
-        }}
-      />
-
-
       {/* Fretboard area */}
       <div className="flex flex-1 self-stretch items-stretch">
         {visibleFrets.map((fret) => {
@@ -198,6 +138,65 @@ export const FretboardString = memo(function FretboardString({
         })}
       </div>
 
+      {/* Nut */}
+      <div
+        style={{
+          width: !isChordView || isOpenPosition ? 6 : 2,
+          backgroundColor: !isChordView || isOpenPosition ? 'var(--text-muted)' : 'var(--border)',
+          height: '100%',
+        }}
+      />
+
+      {/* Open string / muted indicator */}
+      <div
+        role="button"
+        aria-label={isMuted ? `String ${6 - stringIdx} muted` : `${openLabel} open string`}
+        className="flex items-center justify-center cursor-pointer"
+        style={{ width: 40 }}
+        onClick={() => !isMuted && handleFretClick(openFretNote)}
+      >
+        {isMuted ? (
+          <span className="font-bold" style={{ fontSize: 14, color: '#ef4444aa' }}>
+            ✕
+          </span>
+        ) : isOpenVoicing ? (
+          <div
+            className="rounded-full flex items-center justify-center font-bold"
+            style={{
+              width: isChordView ? 22 : 20,
+              height: isChordView ? 22 : 20,
+              fontSize: 9,
+              backgroundColor: openColor ?? 'var(--accent)',
+              color: '#000',
+              boxShadow: isOpenRoot
+                ? `0 0 16px ${(openColor ?? 'var(--accent)')}aa, 0 0 6px ${(openColor ?? 'var(--accent)')}88`
+                : `0 0 10px ${(openColor ?? 'var(--accent)')}88`,
+              border: isOpenRoot
+                ? '3px solid #ffffff'
+                : `2px solid ${openColor ?? 'var(--accent)'}`,
+            }}
+          >
+            {openLabel}
+          </div>
+        ) : openColor && !currentShape ? (
+          <div
+            className="rounded-full flex items-center justify-center font-bold"
+            style={{
+              width: 20,
+              height: 20,
+              fontSize: 8,
+              backgroundColor: isOpenActive ? openColor : `${openColor}cc`,
+              color: '#000',
+              transform: isOpenActive ? 'scale(1.15)' : 'scale(1)',
+              boxShadow: isOpenActive ? `0 0 8px ${openColor}` : 'none',
+            }}
+          >
+            {openLabel}
+          </div>
+        ) : (
+          <span className="text-[9px]" style={{ color: 'var(--text-dim)' }}>{openLabel}</span>
+        )}
+      </div>
     </div>
   );
 });

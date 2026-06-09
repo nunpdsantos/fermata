@@ -115,13 +115,13 @@ export function Fretboard() {
       const start = Math.max(1, baseFret);
       const end = Math.min(FULL_FRETS, baseFret + position.fretSpan + 1);
       const frets: number[] = [];
-      for (let f = start; f <= end; f++) frets.push(f);
+      for (let f = end; f >= start; f--) frets.push(f);
       return { visibleFrets: frets, isChordView: true };
     }
 
     if (!currentShape) {
       const frets: number[] = [];
-      for (let f = 1; f <= FULL_FRETS; f++) frets.push(f);
+      for (let f = FULL_FRETS; f >= 1; f--) frets.push(f);
       return { visibleFrets: frets, isChordView: false };
     }
 
@@ -147,7 +147,7 @@ export function Fretboard() {
     const end = Math.min(FULL_FRETS, Math.max(start + CHORD_FRET_WINDOW - 1, maxUsed + 1));
 
     const frets: number[] = [];
-    for (let f = start; f <= end; f++) frets.push(f);
+    for (let f = end; f >= start; f--) frets.push(f);
     return { visibleFrets: frets, isChordView: true };
   }, [currentShape, currentScalePos]);
 
@@ -288,17 +288,15 @@ export function Fretboard() {
       return;
     }
 
-    const rectA = topCell.getBoundingClientRect();
-    const rectB = bottomCell.getBoundingClientRect();
-    const upper = rectA.top <= rectB.top ? rectA : rectB;
-    const lower = rectA.top <= rectB.top ? rectB : rectA;
+    const topRect = topCell.getBoundingClientRect();
+    const bottomRect = bottomCell.getBoundingClientRect();
 
     setBarreStyle({
       position: 'absolute',
-      left: upper.left - containerRect.left + upper.width / 2 - 12,
-      top: upper.top - containerRect.top + upper.height / 2 - 12,
+      left: topRect.left - containerRect.left + topRect.width / 2 - 12,
+      top: topRect.top - containerRect.top + topRect.height / 2 - 12,
       width: 24,
-      height: lower.top - upper.top + 24,
+      height: bottomRect.top - topRect.top + 24,
       borderRadius: 12,
       backgroundColor: '#ffffff30',
       border: '3px solid #ffffffaa',
@@ -331,7 +329,7 @@ export function Fretboard() {
       setFocusedCell((prev) => {
         // Initialize focus at first visible cell if none selected
         if (!prev) {
-          const initFret = visibleFrets[0] ?? 1;
+          const initFret = visibleFrets[visibleFrets.length - 1] ?? 1;
           return { stringIdx: 0, fret: initFret };
         }
 
@@ -342,14 +340,13 @@ export function Fretboard() {
         }
 
         let { stringIdx, fret } = prev;
-        const minFret = visibleFrets[0] ?? 0;
-        const maxFret = visibleFrets[visibleFrets.length - 1] ?? FULL_FRETS;
+        const minFret = visibleFrets[visibleFrets.length - 1] ?? 0;
+        const maxFret = visibleFrets[0] ?? FULL_FRETS;
 
         if (key === 'ArrowRight') fret = Math.min(fret + 1, maxFret);
         if (key === 'ArrowLeft') fret = Math.max(fret - 1, minFret);
-        // Rows render high E (idx 5) at top, so visually-up = higher index
-        if (key === 'ArrowUp') stringIdx = Math.min(stringIdx + 1, 5);
-        if (key === 'ArrowDown') stringIdx = Math.max(stringIdx - 1, 0);
+        if (key === 'ArrowUp') stringIdx = Math.max(stringIdx - 1, 0);
+        if (key === 'ArrowDown') stringIdx = Math.min(stringIdx + 1, 5);
 
         return { stringIdx, fret };
       });
@@ -396,14 +393,11 @@ export function Fretboard() {
   // ─── Display state ────────────────────────────────────
   const isOpenPosition = currentShape !== null && currentShape.baseFret === 0;
   const isScalePosView = currentScalePos !== null;
-  const lowestVisibleFret = (isChordView || isScalePosView) ? visibleFrets[0] : null;
+  const lowestVisibleFret = (isChordView || isScalePosView) ? visibleFrets[visibleFrets.length - 1] : null;
 
   const fretMinWidth = isChordView
     ? (mobile ? 40 : 56)
     : (mobile ? 36 : 44);
-
-  // Nut bar thickness (matches FretboardString) — rows above/below align to it
-  const nutWidth = !isChordView || isOpenPosition ? 6 : 2;
 
   return (
     <div
@@ -493,8 +487,6 @@ export function Fretboard() {
         {/* Fret markers row */}
         <div className="flex mb-1">
           <div style={{ width: 32 }} />
-          <div style={{ width: 40 }} />
-          <div style={{ width: nutWidth }} />
           <div className="flex flex-1">
             {visibleFrets.map((f) => (
               <div
@@ -510,12 +502,14 @@ export function Fretboard() {
               </div>
             ))}
           </div>
+          <div style={{ width: 6 }} />
+          <div style={{ width: 40 }} />
         </div>
 
         {/* Fretboard grid with barre overlay */}
         <div ref={fretboardRef} className="relative">
           {/* Continuous fret lines overlay */}
-          <div className="absolute inset-0 flex pointer-events-none" style={{ zIndex: 1, left: 32 + 40 + nutWidth, right: 0 }}>
+          <div className="absolute inset-0 flex pointer-events-none" style={{ zIndex: 1, left: 32, right: 46 }}>
             {visibleFrets.map((f) => (
               <div
                 key={f}
@@ -528,9 +522,8 @@ export function Fretboard() {
           {/* Barre bar overlay */}
           {barreStyle && <div style={barreStyle} />}
 
-          {/* Strings: 1st (high E) at top → 6th (low E) at bottom — standard
-              chord-chart/tab orientation (nut at left, frets ascending). */}
-          {[5, 4, 3, 2, 1, 0].map((stringIdx) => (
+          {/* Strings: 6th (low E) at top → 1st (high E) at bottom */}
+          {[0, 1, 2, 3, 4, 5].map((stringIdx) => (
             <FretboardString
               key={stringIdx}
               stringIdx={stringIdx}
@@ -558,14 +551,6 @@ export function Fretboard() {
         {/* Fret numbers row */}
         <div className="flex mt-1">
           <div style={{ width: 32 }} />
-          <div style={{ width: 40 }} className="flex items-center justify-center">
-            {(isChordView || isScalePosView) && !isOpenPosition ? (
-              <span className="font-mono" style={{ color: 'var(--text-dim)', fontSize: mobile ? 11 : 9 }}>{lowestVisibleFret}fr</span>
-            ) : (
-              <span style={{ color: 'var(--text-dim)', fontSize: mobile ? 11 : 9 }}>0</span>
-            )}
-          </div>
-          <div style={{ width: nutWidth }} />
           <div className="flex flex-1">
             {visibleFrets.map((f) => (
               <div
@@ -576,6 +561,14 @@ export function Fretboard() {
                 {f}
               </div>
             ))}
+          </div>
+          <div style={{ width: isChordView && !isOpenPosition ? 2 : 6 }} />
+          <div style={{ width: 40 }} className="flex items-center justify-center">
+            {(isChordView || isScalePosView) && !isOpenPosition ? (
+              <span className="font-mono" style={{ color: 'var(--text-dim)', fontSize: mobile ? 11 : 9 }}>{lowestVisibleFret}fr</span>
+            ) : (
+              <span style={{ color: 'var(--text-dim)', fontSize: mobile ? 11 : 9 }}>0</span>
+            )}
           </div>
         </div>
       </div>
