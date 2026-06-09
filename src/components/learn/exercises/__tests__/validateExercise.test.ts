@@ -69,6 +69,39 @@ describe('validateAnswer', () => {
       expect(result.correct).toBe(false);
       expect(result.expected).toBe('Perfect 5th');
     });
+
+    // WS5 mitigation (REMEDIATION B1): 8 semitones is a Minor 6th in interval-ID,
+    // not core INTERVAL_LABELS[8]='Augmented 5th'. Covers L2/L9 interval items.
+    it('labels an 8-semitone interval as "Minor 6th", not "Augmented 5th"', () => {
+      const m6Config: IntervalIdConfig = { ...config, targetSemitones: 8 };
+      const correct = validateAnswer(m6Config, '8');
+      expect(correct.correct).toBe(true);
+      expect(correct.expected).toBe('Minor 6th');
+      expect(correct.explanation).toContain('Minor 6th');
+      expect(correct.explanation).not.toContain('Augmented 5th');
+
+      const wrong = validateAnswer(m6Config, '7');
+      expect(wrong.correct).toBe(false);
+      expect(wrong.expected).toBe('Minor 6th');
+      expect(wrong.explanation).not.toContain('Augmented 5th');
+    });
+
+    // The same path backs ear_training interval-mode feedback (L9 m6 by ear).
+    it('labels an 8-semitone ear-training interval as "Minor 6th"', () => {
+      const earM6: EarTrainingConfig = {
+        type: 'ear_training',
+        mode: 'interval',
+        root: 'C',
+        rootAccidental: '',
+        rootOctave: 4,
+        targetSemitones: 8,
+        direction: 'ascending',
+      };
+      const result = validateAnswer(earM6, '8');
+      expect(result.correct).toBe(true);
+      expect(result.expected).toBe('Minor 6th');
+      expect(result.explanation).not.toContain('Augmented 5th');
+    });
   });
 
   describe('scale_build', () => {

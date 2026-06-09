@@ -12,6 +12,18 @@ export interface ChoiceOption {
   correct: boolean;
 }
 
+// WS5 mitigation: core INTERVAL_LABELS[8]='Augmented 5th' is wrong for interval-ID (should be 'Minor 6th', per SEMITONES_TO_INTERVAL[8]). Override here until the core constant is fixed (REMEDIATION B1).
+const INTERVAL_LABEL_OVERRIDES: Readonly<Record<number, string>> = { 8: 'Minor 6th' };
+
+/** Interval name for a semitone count, applying the WS5 label override before INTERVAL_LABELS. */
+function intervalLabelFor(semitones: number): string {
+  return (
+    INTERVAL_LABEL_OVERRIDES[semitones] ??
+    INTERVAL_LABELS[semitones] ??
+    `${semitones} semitones`
+  );
+}
+
 /**
  * Generate 4 note-name choices: the correct note + 3 distractors.
  * Avoids enharmonic equivalents of the correct note as distractors.
@@ -53,7 +65,7 @@ export function generateNoteChoices(
  * Generate 4 interval-name choices: the correct interval + 3 distractors.
  */
 export function generateIntervalChoices(correctSemitones: number): ChoiceOption[] {
-  const correctLabel = INTERVAL_LABELS[correctSemitones] || `${correctSemitones} semitones`;
+  const correctLabel = intervalLabelFor(correctSemitones);
 
   const distractorPool: number[] = [];
   for (let offset = -3; offset <= 3; offset++) {
@@ -77,7 +89,7 @@ export function generateIntervalChoices(correctSemitones: number): ChoiceOption[
   const options: ChoiceOption[] = [
     { label: correctLabel, value: String(correctSemitones), correct: true },
     ...distractors.map((s) => ({
-      label: INTERVAL_LABELS[s] || `${s} semitones`,
+      label: intervalLabelFor(s),
       value: String(s),
       correct: false,
     })),
