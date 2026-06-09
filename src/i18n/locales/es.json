@@ -513,6 +513,7 @@
     "inversion": {
       "root": "Fund.",
       "nth": "Inv {{n}}"
-    }
+    },
+    "play": "Tocar"
   }
 }
