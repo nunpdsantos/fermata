@@ -86,7 +86,6 @@ function resetStore() {
     baseOctave: 4,
     scaleOctaves: 1 as 1 | 2,
     volume: 0.7,
-    isPlaying: false,
     view: 'explore' as const,
     detailPanelOpen: false,
     quickSearchOpen: false,

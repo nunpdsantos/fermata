@@ -25,7 +25,6 @@ function resetStore() {
     guitarScalePosition: null,
     synthPreset: 'piano',
     volume: 0.7,
-    isPlaying: false,
     view: 'explore',
     detailPanelOpen: false,
     quickSearchOpen: false,

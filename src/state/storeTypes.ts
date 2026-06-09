@@ -50,9 +50,7 @@ export interface AudioSlice {
    *  preset chooser (guitar forces Karplus-Strong regardless of this value). */
   synthPreset: SynthPresetName;
   volume: number;
-  isPlaying: boolean;
   setVolume: (volume: number) => void;
-  setIsPlaying: (playing: boolean) => void;
 }
 
 export interface LearnDeepLink {

@@ -89,7 +89,7 @@ src/
   views/             ExploreView, LearnView
   hooks/             useAudio, useKeyContext, useTheme, usePWA, useLanguage, useLearnProgress, useMediaQuery
   services/          spacedRepetition, conceptTagger, exerciseSelector
-  utils/             exportHelpers, notationHelpers, vexflowLoader, celebrationSound, queryExecutor
+  utils/             exportHelpers, notationHelpers, vexflowLoader, midiHelpers, celebrationSound, queryExecutor
   data/
     curriculumLoader.ts      Dynamic import + LEVEL_METADATA (accepts lang param for overlay loading)
     exerciseLoader.ts        Merges hand-authored + generated, lazy-loads per level (accepts lang param)

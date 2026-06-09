@@ -28,7 +28,6 @@ beforeEach(() => {
     guitarScalePosition: null,
     synthPreset: 'piano',
     volume: 0.7,
-    isPlaying: false,
     view: 'explore',
     detailPanelOpen: false,
     quickSearchOpen: false,
@@ -258,11 +257,6 @@ describe('audio actions', () => {
   it('setVolume updates volume', () => {
     useAppStore.getState().setVolume(0.5);
     expect(useAppStore.getState().volume).toBe(0.5);
-  });
-
-  it('setIsPlaying toggles playing state', () => {
-    useAppStore.getState().setIsPlaying(true);
-    expect(useAppStore.getState().isPlaying).toBe(true);
   });
 });
 
