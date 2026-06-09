@@ -2,11 +2,10 @@
 
 ## Product Overview
 
-Interactive music theory education platform that teaches through instrument-first pedagogy — theory emerges from playing, not the other way around. Users interact with a virtual piano or guitar fretboard that's always visible at the bottom of the screen, with three main views above it:
+Interactive music theory education platform that teaches through instrument-first pedagogy — theory emerges from playing, not the other way around. Users interact with a virtual piano or guitar fretboard that's always visible at the bottom of the screen, with two main views above it:
 
 - **Explore** — browse scales, chords, intervals, and keys. The Circle of Fifths, scale degree bar, and chord grid let users visualize relationships. Selecting any entity highlights it on the instrument below. Detail panels show staff notation, constituent notes, and related structures.
-- **Play** — performance tools: metronome with configurable BPM/time signature, MIDI input/output for connecting real instruments, audio recording with playback, and a chord progression builder with diatonic palette.
-- **Learn** — structured 9-level curriculum (beginner → advanced) with 118 modules, 1,000+ exercises, spaced repetition review, and adaptive difficulty. Progress is tracked per-module with gamification (streaks, XP, achievements).
+- **Learn** — structured 9-level curriculum (beginner → advanced) with 118 modules, 1,000+ exercises, spaced repetition review. Progress is tracked per-module.
 
 ### Curriculum (9 Levels, 118 Modules)
 
@@ -34,11 +33,10 @@ Scale degree function is encoded in color throughout the app:
 
 **Name:** Music Theory App
 **Domain:** Music theory education / interactive instrument
-**Stack:** React 19 + TypeScript 5.9 + Vite 7 + Tailwind CSS v4 + Zustand 5 + Framer Motion 12 + Supabase
-**Tests:** 841 passing (Vitest + React Testing Library, 45 test files)
+**Stack:** React 19 + TypeScript 5.9 + Vite 7 + Tailwind CSS v4 + Zustand 5 + Framer Motion 12
+**Tests:** 793 passing (Vitest + React Testing Library, 35 test files)
 **Languages:** English + Portuguese + Spanish (react-i18next + content overlay system)
 **PWA:** Offline-capable with Workbox precaching
-**Backend:** Supabase (optional — app works fully without env vars)
 
 ### Commands
 
@@ -63,15 +61,11 @@ Scale degree function is encoded in color throughout the app:
 src/
   core/              ~40 files, framework-agnostic music theory engine (types, constants, utils)
   design/tokens/     Color system (degree colors, surface colors) + motion tokens
-  lib/               supabase.ts (client singleton, null when no env vars), database.types.ts
-  state/store.ts     Single Zustand store v3 (music, instrument, audio, navigation, metronome, preferences)
-  state/storeTypes.ts Type definitions for all 6 slices (avoids circular imports)
-  state/slices/      6 slice creators (musicSlice, instrumentSlice, audioSlice, navigationSlice, metronomeSlice, preferencesSlice)
-  state/progressStore.ts  Zustand curriculum progress (persisted, sync-ready)
+  state/store.ts     Single Zustand store (music, instrument, audio, navigation, preferences)
+  state/storeTypes.ts Type definitions for store slices (avoids circular imports)
+  state/slices/      Slice creators (musicSlice, instrumentSlice, audioSlice, navigationSlice, preferencesSlice)
+  state/progressStore.ts  Zustand curriculum progress (persisted)
   state/toastStore.ts  Standalone toast queue (Zustand, not in main store)
-  state/syncStore.ts   Sync UI state (not persisted)
-  state/gamificationStore.ts  Streaks, XP, achievements (persisted)
-  state/conceptStore.ts  Concept mastery tracking (30-day sliding window)
   i18n/              i18next config + locales (en.json, pt.json, es.json) — 366 keys, 35 namespaces
   i18n/content/      Translation overlay system for educational content (lazy-loaded per level)
     types.ts         ContentLanguage, CurriculumLevelOverlay, ExerciseLevelOverlay, TemplateLevelOverlay, SongOverlay
@@ -87,18 +81,15 @@ src/
     theory/          ScaleDegreeBar, ChordGrid, ChordBrowser, CircleOfFifths (+ circleOfFifthsConstants.ts), ScaleComparison
     panels/          DetailPanel, ChordDetail, ScaleDetail (with staff notation)
     navigation/      KeySelector, QuickSearch (Cmd+K)
-    layout/          AppShell, TopBar, Toast, PWAPrompts, GuidedTour (4-step onboarding)
+    layout/          AppShell, TopBar, Toast, PWAPrompts
     notation/        StaffNotation, StaffNotationSkeleton, useStaffNotation (VexFlow 5.0)
-    play/            MetronomeControl, MidiOutputControl, MidiInputControl, RecordingControl, ChordProgressionBuilder
     learn/           LevelsOverview, LevelCard, LevelDetail, LevelIcon, LevelAchievement, UnitCard, UnitDetail, ModuleView, ModuleRow, ReviewQueue, ContinueBanner, LearnBreadcrumb, ProgressBar, DifficultyBadge, Confetti
       exercises/     ExerciseRunner, ExercisePrompt, ExerciseFeedback, ExerciseProgress
         inputs/      ChoiceInput, InstrumentInput
-    auth/            AuthModal (magic link), AccountMenu (dropdown)
-    gamification/    ProgressDashboard, ConceptRadar, StreakBadge, XPDisplay, StreakCalendar, WeeklyChart, AchievementCard, AchievementGrid, StatCard
-  views/             ExploreView, PlayView, LearnView
-  hooks/             useAudio, useMidi, useKeyContext, useMetronome, useTheme, usePWA, useLanguage, useLearnProgress, useAuth, useSync, useGamificationEffects, useMediaQuery
-  services/          midiAccess (shared singleton), midiInput, midiOutput, metronome, noteRecorder, spacedRepetition, gamification, sync, syncMerge, conceptTagger, exerciseSelector
-  utils/             exportHelpers, notationHelpers, vexflowLoader, midiHelpers, celebrationSound, queryExecutor
+  views/             ExploreView, LearnView
+  hooks/             useAudio, useKeyContext, useTheme, usePWA, useLanguage, useLearnProgress, useMediaQuery
+  services/          spacedRepetition, conceptTagger, exerciseSelector
+  utils/             exportHelpers, notationHelpers, vexflowLoader, celebrationSound, queryExecutor
   data/
     curriculumLoader.ts      Dynamic import + LEVEL_METADATA (accepts lang param for overlay loading)
     exerciseLoader.ts        Merges hand-authored + generated, lazy-loads per level (accepts lang param)
@@ -109,7 +100,7 @@ src/
       exerciseGenerator.ts   Seeded PRNG generator (~627 generated, accepts lang for music term translation)
 ```
 
-**Interaction model:** Instrument-first. Piano/fretboard always visible at bottom. Three views: Explore (theory), Play (performance), Learn (curriculum). Cmd+K for power-user search. Color encodes scale degree function (tonic=blue, dominant=amber, leading=red).
+**Interaction model:** Instrument-first. Piano/fretboard always visible at bottom. Two views: Explore (theory), Learn (curriculum). Cmd+K for power-user search. Color encodes scale degree function (tonic=blue, dominant=amber, leading=red).
 
 ---
 
@@ -134,16 +125,12 @@ src/
 - ~380 hand-authored exercises across 118 modules in 9 levels
 
 ### Features (Phase 6)
-- Metronome (Web Audio look-ahead scheduler, BPM/time sig/volume)
 - Custom guitar tunings (6 presets, chord shapes gated for non-standard)
 - Theme system (dark/light/system, CSS custom properties, full migration)
 - PWA (offline, install prompt, update notification, font caching)
 - Scale comparison (chromatic diff grid, shared/unique visualization)
 - Ear training + scale degree ID exercises
-- MIDI output (device discovery, hot-plug, note-on/off)
-- Chord progression builder (diatonic palette, sequential playback)
 - Print/export (print stylesheet, clipboard copy)
-- Audio recording (note event capture, timed playback)
 - i18n (English + Portuguese + Spanish, 366 keys, 35 namespaces, language selector)
 
 ### Advanced (Phase 7)
@@ -154,42 +141,14 @@ src/
 ### Polish & Reach (Phase 8) — COMPLETE
 - **8A:** Self-hosted fonts, toast system, typography tokens
 - **8B:** Mobile responsiveness (all views + instruments WCAG-compliant)
-- **8C:** Card elevation, empty states, micro-interactions, completion celebrations, first-run guided tour
+- **8C:** Card elevation, empty states, micro-interactions, completion celebrations
 - Small-screen optimization: piano keys 36px/130px, fretboard cells 36px/32px rows, compacted chrome, native touch scroll
 - AppShell containers: guitar 240px, piano 195px (`overflow-x-hidden overflow-y-auto`), drag-to-scroll disabled on mobile
 
-### Gamification (Phase 9) — COMPLETE
-- Streak tracking with 1-day grace period, XP system, 20 achievements, progress dashboard
-- Standalone Zustand store with localStorage persistence
-
-### Backend + Auth + Cloud Sync (Phase 10) — COMPLETE
-- **Supabase client:** `src/lib/supabase.ts` — null when env vars missing (zero breaking changes)
-- **Auth:** Magic link (email OTP) via `useAuth` hook, `AuthModal` + `AccountMenu` components
-- **Cloud sync:** Debounced push (2s), pull-on-login, offline queue in localStorage
-- **Merge functions:** `src/services/syncMerge.ts` — preferences (LWW), progress (union), gamification (max), concepts (max per-date)
-- **Progress store:** Converted `useLearnProgress` from useState to Zustand (`progressStore.ts`)
-- **Store versioning:** `store.ts` v1→v2 migration (added `preferencesUpdatedAt`)
-- **PWA:** Workbox `NetworkOnly` for Supabase URLs
-- **i18n:** 18 auth/sync keys (en + pt)
-
-### Adaptive Difficulty (Phase 11) — COMPLETE
-- **Concept tagger:** Derives concept tags from ExerciseConfig (pure function, no manual tagging)
-- **Concept store:** 30-day sliding window accuracy tracking per concept
-- **Exercise selector:** Weighted Fisher-Yates selection (3x weight for weak concepts)
-- **Concept radar:** Hand-rolled SVG radar chart (6 axes) in ProgressDashboard
-- **Sync:** `mergeConceptTracking` for 4th sync domain (concept_tracking table)
-
-### MIDI Input + Song References (Phase 12) — COMPLETE
-- **Shared MIDIAccess singleton:** `src/services/midiAccess.ts` — lazy init, concurrent-call deduplication, multi-listener statechange
-- **MIDI input service:** `src/services/midiInput.ts` — device enumeration (mirrors midiOutput pattern)
-- **MIDI output refactored:** Uses shared midiAccess singleton instead of own requestMIDIAccess
-- **MIDI input UI:** Toggle + device dropdown in PlayView (`MidiInputControl.tsx`)
-- **useMidi hook:** Respects `midiInputEnabled` + `midiInputDeviceId` from store
-- **MIDI badge:** Shown in instrument exercises when MIDI input enabled
-- **Store v2→v3:** Migration adds `midiInputEnabled: true`, `midiInputDeviceId: null`
+### Song References (Phase 12) — COMPLETE
 - **Song references:** ~80 entries for L1–L3 modules (song + artist + educational context)
 - **ModuleView:** "Songs That Use This" card between concepts and exercises sections
-- **i18n:** `midiInput` (6 keys) + `songRef` (1 key) in en.json + pt.json
+- **i18n:** `songRef` key in en.json + pt.json
 
 ### Content Translation Overlay System (Phase 12.5) — COMPLETE
 - **Architecture:** Lazy-loaded per-language, per-level overlays that merge with English source data at load time
@@ -200,22 +159,18 @@ src/
 - **Spanish:** 100% complete — 29 overlay files (levelMeta + 9×curriculum + 9×exercises + 9×templates + songs), 13,310 lines
 - **Music term dictionaries:** Scale types, chord qualities, directions for PT + ES (used by exercise generator)
 - **Tests:** 45 new tests (contentResolver 22, musicTerms 11, generatorLang 7, levelMetaResolver 5)
-- 841 tests passing, 45 test files
 
 ### Audit Remediation (Phase 12.6) — COMPLETE
 - **React 19 lint compliance:** Fixed Date.now() in render, setState in effects, ref mutations during render, incomplete dep arrays (9 components)
-- **Type safety:** Removed all `as any` casts from source files, replaced with proper types (ChordQuality, typed Supabase helpers, Record<string, unknown>)
+- **Type safety:** Removed all `as any` casts from source files, replaced with proper types (ChordQuality, Record<string, unknown>)
 - **Dead code removal:** Unused imports, variables, and functions across 6 source files
 - **PWA offline:** Added VexFlow runtime CacheFirst caching to workbox config
-- **Store migrations:** Added migration placeholders for gamificationStore and conceptStore
 - **Code splitting:** Converted celebrationSound to dynamic import in LevelAchievement + ModuleView
-- **Supabase schema:** Added concept_tracking table, RLS policies, signup trigger, database types
-- **Async safety:** Added cancelled-flag pattern to useMidi hook for race condition prevention
 - **ESLint config:** Added argsIgnorePattern/varsIgnorePattern for _ prefix convention, excluded src/core from linting
-- 841 tests passing, 45 test files. 0 lint errors. 0 type errors.
+- 793 tests passing, 35 test files. 0 lint errors. 0 type errors.
 
 ---
 
-## Current Phase: See ROADMAP.md
+## Current State
 
-**Next:** Phase 13 (Distribution) — landing page, embeddable widgets, app store wrappers.
+The app is now a lean, single-user, Explore-centred personal tool — no accounts, no cloud sync, no gamification. The curriculum and spaced-repetition review are fully functional. Next workstreams: real piano sound for the audio engine, theme consolidation (Fermata theme + a night variant), a unified Explore chord/degree surface, and a theory-content audit.
