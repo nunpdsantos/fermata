@@ -3,7 +3,21 @@
  * All user data tables use JSONB `data` columns for flexibility.
  */
 
-import type { PreferencesSnapshot } from '../services/syncMerge';
+// Inlined from the deleted services/syncMerge.ts (file retained for next cleanup task)
+interface PreferencesSnapshot {
+  selectedKey: { natural: string; accidental: string };
+  selectedScale: string;
+  instrument: string;
+  guitarTuningId: string;
+  baseOctave: number;
+  colorMode: string;
+  scaleOctaves: 1 | 2;
+  volume: number;
+  themeMode: string;
+  synthPreset: string;
+  updatedAt: number;
+}
+
 import type { CurriculumProgress } from '../core/types/curriculum';
 import type { GamificationData } from '../core/types/gamification';
 import type { ConceptRecord } from '../state/conceptStore';

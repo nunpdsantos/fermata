@@ -9,8 +9,6 @@ import { ToastContainer } from './components/layout/Toast.tsx';
 import { useMidi } from './hooks/useMidi.ts';
 import { useTheme } from './hooks/useTheme.ts';
 import { useLanguage } from './hooks/useLanguage.ts';
-import { useAuth } from './hooks/useAuth.ts';
-import { useSync } from './hooks/useSync.ts';
 import { useAppStore } from './state/store.ts';
 
 function ViewLoadingFallback() {
@@ -68,9 +66,6 @@ function App() {
   useTheme();
   // Sync language preference to i18next
   useLanguage();
-  // Auth + cloud sync
-  const { user } = useAuth();
-  useSync(user);
 
   return (
     <LazyMotion features={domAnimation}>
