@@ -6,7 +6,8 @@ import { noteToString, type Note, type ScaleType } from '../../core/types/music.
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { useAppStore } from '../../state/store.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
-import { resumeAudio, playChordVoiced, SYNTH_PRESETS } from '../../core/services/audio.ts';
+import { resumeAudio, playChordVoiced } from '../../core/services/audio.ts';
+import { getSynthConfig } from '../../services/synthConfig.ts';
 import {
   CIRCLE_MAJOR, CIRCLE_MINOR, KEY_SIGNATURES,
   MINOR_SCALES, MINOR_SCALE_LABELS, ROMAN_NUMERALS,
@@ -80,7 +81,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
         selectedDegree: null,
       });
       await resumeAudio();
-      const config = SYNTH_PRESETS[synthPreset] ?? {};
+      const config = getSynthConfig(synthPreset);
       playChordVoiced([note], 4, 0.5, config);
     },
     [synthPreset],

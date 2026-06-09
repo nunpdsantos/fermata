@@ -17,9 +17,9 @@ import { DEGREE_COLORS } from '../design/tokens/colors.ts';
 import { useDegreeColorsEnabled } from '../hooks/useDegreeColors.ts';
 import {
   playScale,
-  SYNTH_PRESETS,
   resumeAudio,
 } from '../core/services/audio.ts';
+import { getSynthConfig } from '../services/synthConfig.ts';
 import { generateScaleSummary, copyToClipboard } from '../utils/exportHelpers.ts';
 import { toast } from '../state/toastStore.ts';
 import { getScaleNotesWithOctaves } from '../core/utils/pianoLayout.ts';
@@ -62,7 +62,7 @@ export function ExploreView() {
 
   const handleQuickPlay = useCallback(async () => {
     await resumeAudio();
-    const config = SYNTH_PRESETS[synthPreset] ?? {};
+    const config = getSynthConfig(synthPreset);
     playScale(scale.notes, baseOctave, true, false, 0.25, () => {}, () => {}, config);
   }, [scale, synthPreset, baseOctave]);
 

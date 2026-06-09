@@ -15,9 +15,9 @@ function alpha(color: string, hex: string): string {
 import {
   playChordVoiced,
   playArpeggioAscending,
-  SYNTH_PRESETS,
   resumeAudio,
 } from '../../core/services/audio.ts';
+import { getSynthConfig } from '../../services/synthConfig.ts';
 import { useAppStore } from '../../state/store.ts';
 import { buildAscendingMidi } from '../../utils/midiHelpers.ts';
 import {
@@ -103,7 +103,7 @@ export function ChordDetail({ chord }: ChordDetailProps) {
   const handlePlayChord = useCallback(async () => {
     await resumeAudio();
     clearVisualTimeouts();
-    const config = SYNTH_PRESETS[synthPreset] ?? {};
+    const config = getSynthConfig(synthPreset);
     const duration = 1.5;
     const midiNumbers = computeVoicedMidi(notesForPlayback, baseOctave);
     for (const m of midiNumbers) addActiveNote(m);
@@ -117,7 +117,7 @@ export function ChordDetail({ chord }: ChordDetailProps) {
   const handlePlayArpeggio = useCallback(async () => {
     await resumeAudio();
     clearVisualTimeouts();
-    const config = SYNTH_PRESETS[synthPreset] ?? {};
+    const config = getSynthConfig(synthPreset);
     const noteDuration = 0.35;
     const midiNumbers = computeVoicedMidi(notesForPlayback, baseOctave);
     const litNotes: number[] = [];

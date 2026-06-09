@@ -11,6 +11,7 @@ import { ExerciseFeedback } from './ExerciseFeedback';
 import { ChoiceInput } from './inputs/ChoiceInput';
 import { InstrumentInput } from './inputs/InstrumentInput';
 import { playNote, playChord, resumeAudio } from '../../../core/services/audio';
+import { getSynthConfig } from '../../../services/synthConfig';
 import type { NaturalNote, Accidental, Note, ChordQuality } from '../../../core/types/music';
 import { buildChord } from '../../../core/constants/chords';
 import { palette } from '../../../design/tokens/palette';
@@ -78,13 +79,14 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
     try {
       await resumeAudio();
       const cfg = exercise.config as EarTrainingConfig;
+      const pianoConfig = getSynthConfig('piano');
       if (cfg.mode === 'note' && cfg.note) {
         const note: Note = { natural: cfg.note as NaturalNote, accidental: (cfg.accidental ?? '') as Accidental };
-        playNote(note, cfg.octave ?? 4, 1.0);
+        playNote(note, cfg.octave ?? 4, 1.0, pianoConfig);
       } else if (cfg.mode === 'interval' && cfg.root && cfg.targetSemitones !== undefined) {
         const rootNote: Note = { natural: cfg.root as NaturalNote, accidental: (cfg.rootAccidental ?? '') as Accidental };
         const oct = cfg.rootOctave ?? 4;
-        playNote(rootNote, oct, 0.6);
+        playNote(rootNote, oct, 0.6, pianoConfig);
         // Play second note after a short delay via AudioContext scheduling
         setTimeout(() => {
           // Compute the interval note pitch class
@@ -99,12 +101,12 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
           const targetPC = ((rootPC + semitones) % 12 + 12) % 12;
           const targetNote: Note = { natural: NATURALS[targetPC], accidental: ACCIDENTALS[targetPC] };
           const targetOct = oct + (rootPC + semitones >= 12 ? 1 : rootPC + semitones < 0 ? -1 : 0);
-          playNote(targetNote, targetOct, 0.6);
+          playNote(targetNote, targetOct, 0.6, pianoConfig);
         }, 700);
       } else if (cfg.mode === 'chord' && cfg.chordRoot && cfg.quality) {
         const root: Note = { natural: cfg.chordRoot as NaturalNote, accidental: (cfg.chordRootAccidental ?? '') as Accidental };
         const chord = buildChord(root, cfg.quality as ChordQuality);
-        playChord(chord.notes, 4, 1.2);
+        playChord(chord.notes, 4, 1.2, pianoConfig);
       }
     } finally {
       setTimeout(() => { playingRef.current = false; }, 800);
