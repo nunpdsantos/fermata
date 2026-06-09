@@ -40,7 +40,7 @@ export default defineConfig({
         // Precache only the app shell + small core deps. Curriculum data,
         // exercises, and VexFlow stream in via runtimeCaching on demand —
         // a Level-1 user shouldn't pay for Level-9 content on first visit.
-        globPatterns: ['**/*.{css,html,ico,png,svg,woff2}', 'assets/index-*.js', 'assets/i18next-*.js', 'assets/framer-motion-*.js', 'assets/zustand-*.js', 'assets/supabase-*.js'],
+        globPatterns: ['**/*.{css,html,ico,png,svg,woff2}', 'assets/index-*.js', 'assets/i18next-*.js', 'assets/framer-motion-*.js', 'assets/zustand-*.js'],
         globIgnores: [
           '**/vexflow*',
           '**/curriculum[lL]*',
@@ -52,10 +52,6 @@ export default defineConfig({
           '**/LearnView-*',
         ],
         runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
-            handler: 'NetworkOnly',
-          },
           {
             urlPattern: /\/assets\/vexflow-.*\.js$/,
             handler: 'CacheFirst',
@@ -90,7 +86,6 @@ export default defineConfig({
           if (id.includes('node_modules/framer-motion')) return 'framer-motion';
           if (id.includes('node_modules/zustand')) return 'zustand';
           if (id.includes('node_modules/react-i18next') || id.includes('node_modules/i18next')) return 'i18next';
-          if (id.includes('node_modules/@supabase')) return 'supabase';
         },
       },
     },
