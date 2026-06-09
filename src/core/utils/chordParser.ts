@@ -2,7 +2,9 @@
 // This parser bypasses AI for chord lookups, providing fast, deterministic results
 // Falls back to algorithmic chord builder for complex chords not in the explicit quality list
 
-import { Note, NaturalNote, Accidental, ChordQuality } from '../types/music';
+import { Note, NaturalNote, Accidental, ChordQuality, Chord } from '../types/music';
+import { buildChord } from '../constants/chords';
+import { getPitchClass } from '../constants/notes';
 import {
   buildAlgorithmicChord,
   getAlgorithmicChordIntervalLabels,
@@ -23,6 +25,33 @@ export interface ParsedChord {
 // Special marker type for algorithmic chords
 // This extends ChordQuality conceptually but is handled specially in the system
 export type ExtendedChordQuality = ChordQuality | 'algorithmic';
+
+/**
+ * Materialize a ParsedChord into a playable/selectable Chord: algorithmic
+ * notes win when present, otherwise the quality formula builds the notes; a
+ * slash-chord bass is prepended when its pitch class is not already present.
+ * Single source for QuickSearch and the Try-This query executor.
+ */
+export function chordFromParsed(parsed: ParsedChord): Chord {
+  const chord: Chord =
+    parsed.algorithmicNotes && parsed.algorithmicNotes.length > 0
+      ? { root: parsed.root, quality: parsed.quality, notes: parsed.algorithmicNotes }
+      : buildChord(parsed.root, parsed.quality);
+  if (parsed.algorithmicDisplayName) {
+    chord.algorithmicDisplayName = parsed.algorithmicDisplayName;
+  }
+  if (parsed.algorithmicIntervalLabels) {
+    chord.algorithmicIntervalLabels = parsed.algorithmicIntervalLabels;
+  }
+  if (parsed.bassNote) {
+    chord.bassNote = parsed.bassNote;
+    const bassPc = getPitchClass(parsed.bassNote);
+    if (!chord.notes.some((n) => getPitchClass(n) === bassPc)) {
+      chord.notes = [parsed.bassNote, ...chord.notes];
+    }
+  }
+  return chord;
+}
 
 /**
  * Normalize accidental symbols to standard notation

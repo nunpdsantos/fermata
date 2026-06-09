@@ -18,7 +18,9 @@ export function LevelAchievement({ levelNumber, accentColor, moduleCount, onDism
   const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {
-    import('../../utils/celebrationSound').then(({ playCelebrationSound }) => playCelebrationSound());
+    import('../../utils/celebrationSound')
+      .then(({ playCelebrationSound }) => playCelebrationSound())
+      .catch(() => {}); // offline without the chunk cached — celebration is optional
     const timer = setTimeout(onDismiss, AUTO_DISMISS_MS);
     return () => clearTimeout(timer);
   }, [onDismiss]);

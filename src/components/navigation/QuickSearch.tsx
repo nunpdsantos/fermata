@@ -4,9 +4,8 @@ import { AnimatePresence, m } from 'framer-motion';
 import { useAppStore } from '../../state/store.ts';
 import { noteToString, stringToNote, type ScaleType, type ChordQuality } from '../../core/types/music.ts';
 import { buildChord, CHORD_QUALITY_NAMES, CHORD_SYMBOLS } from '../../core/constants/chords.ts';
-import { getPitchClass } from '../../core/constants/notes.ts';
 import { SCALE_TYPE_NAMES } from '../../core/constants/scales.ts';
-import { parseChordSymbol, formatParsedChordName } from '../../core/utils/chordParser.ts';
+import { parseChordSymbol, formatParsedChordName, chordFromParsed } from '../../core/utils/chordParser.ts';
 import { parseScaleSymbol, formatParsedScaleName } from '../../core/utils/scaleParser.ts';
 import { findModulesByQuery } from '../../data/moduleIndex.ts';
 import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
@@ -56,31 +55,12 @@ function getResults(query: string): SearchResult[] {
   // Try chord parser (handles all 42+ qualities + slash chords + algorithmic)
   const parsedChord = parseChordSymbol(q);
   if (parsedChord) {
-    const label = `${noteToString(parsedChord.root)} ${formatParsedChordName(parsedChord)}`;
+    // formatParsedChordName already includes the root ("C Major", "Cmaj7#9")
+    const label = formatParsedChordName(parsedChord);
     const key = `chord:${noteToString(parsedChord.root)}:${parsedChord.quality}`;
     if (!seen.has(key)) {
       seen.add(key);
-      // Use algorithmically computed notes for complex chords (e.g., Cmaj7#9, G7b9#11)
-      // that don't map cleanly to one of the 42 explicit qualities.
-      // Fall back to buildChord for standard qualities.
-      const chord = parsedChord.algorithmicNotes && parsedChord.algorithmicNotes.length > 0
-        ? { root: parsedChord.root, quality: parsedChord.quality, notes: parsedChord.algorithmicNotes }
-        : buildChord(parsedChord.root, parsedChord.quality);
-      if (parsedChord.algorithmicDisplayName) {
-        chord.algorithmicDisplayName = parsedChord.algorithmicDisplayName;
-      }
-      if (parsedChord.algorithmicIntervalLabels) {
-        chord.algorithmicIntervalLabels = parsedChord.algorithmicIntervalLabels;
-      }
-      if (parsedChord.bassNote) {
-        chord.bassNote = parsedChord.bassNote;
-        // Prepend bass note to chord.notes if its pitch class isn't already present
-        const bassPc = getPitchClass(parsedChord.bassNote);
-        const alreadyPresent = chord.notes.some((n) => getPitchClass(n) === bassPc);
-        if (!alreadyPresent) {
-          chord.notes = [parsedChord.bassNote, ...chord.notes];
-        }
-      }
+      const chord = chordFromParsed(parsedChord);
       results.push({
         type: 'Chord',
         label,

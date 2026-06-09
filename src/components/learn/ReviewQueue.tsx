@@ -2,7 +2,7 @@
  * ReviewQueue — amber-themed card list showing modules due for spaced repetition review.
  * Displayed in LevelsOverview between Continue banner and level grid.
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import type { CurriculumProgress } from '../../core/types/curriculum';
@@ -37,7 +37,13 @@ function parseModuleId(moduleId: string): { level: number; unit: number; module:
 
 export function ReviewQueue({ progress, onStartReview }: ReviewQueueProps) {
   const { t } = useTranslation();
-  const [now] = useState(() => Date.now());
+  // Refresh every minute so reviews that come due while the app sits open
+  // (e.g. across midnight) surface without a remount.
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 60_000);
+    return () => clearInterval(id);
+  }, []);
 
   const dueModuleIds = useMemo(
     () => getDueReviewModuleIds(progress, now),

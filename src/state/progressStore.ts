@@ -69,12 +69,19 @@ export const useProgressStore = create<ProgressStore>()(
         }),
 
       uncompleteModule: (moduleId) =>
-        set((state) => ({
-          progress: {
-            ...state.progress,
-            completedModules: state.progress.completedModules.filter((id) => id !== moduleId),
-          },
-        })),
+        set((state) => {
+          // Drop the review schedule too — an un-completed module must not
+          // keep surfacing in the review queue.
+          const schedules = { ...(state.progress.reviewSchedules ?? {}) };
+          delete schedules[moduleId];
+          return {
+            progress: {
+              ...state.progress,
+              completedModules: state.progress.completedModules.filter((id) => id !== moduleId),
+              reviewSchedules: schedules,
+            },
+          };
+        }),
 
       recordExerciseResult: (moduleId, exerciseId, score) =>
         set((state) => {
