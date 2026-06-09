@@ -369,7 +369,7 @@ const l8u27m1: CurriculumModule = {
     {
       title: 'Pitch-Class Sets: Normal Order and Prime Form',
       explanation:
-        'A pitch-class set is an unordered collection of distinct pitch classes — the post-tonal equivalent of a chord. Normal order is the most compact ascending arrangement: rotate the set until the span from first to last element is smallest (using left-packing to break ties). Prime form transposes the normal order to start on 0, then compares with the inversion to select whichever is more tightly packed to the left. {C, E, G} has normal order [0,4,7]; its inversion gives [0,3,7], which is more tightly left-packed, so prime form = [0,3,7]. {D, F, A} reduces directly to [0,3,7]. Allen Forte\'s catalog assigns each prime form a number — 3-11 for [0, 3, 7] — creating a universal classification system for post-tonal sonorities.',
+        'A pitch-class set is an unordered collection of distinct pitch classes — the post-tonal equivalent of a chord. Normal order is the most compact ascending arrangement: rotate the set until the span from first to last element is smallest (using left-packing to break ties). Prime form transposes the normal order to start on 0, then compares with the inversion to select whichever is more tightly packed to the left. {C, E, G} has normal order [0,4,7]; its inversion gives [0,3,7], which is more tightly left-packed, so prime form = [0,3,7]. {D, F, A} reduces directly to [0,3,7]. Allen Forte\'s catalog assigns each prime form a number — 3-11 for [0, 3, 7] — creating a universal classification system for post-tonal sonorities. Two packing conventions exist — Forte\'s "packed to the left" (used here) and Rahn\'s "packed from the right" — and they disagree for a handful of set classes (none used in this level).',
       tryThisQuery: 'Cm',
       tryThisLabel: 'See C minor — Forte set 3-11, prime form [0,3,7]',
     },
@@ -395,7 +395,7 @@ const l8u27m1: CurriculumModule = {
     {
       id: 'l8u27m1t3',
       instruction:
-        'Compute the interval class vector for set [0, 1, 4]: pairs are (0,1)=IC1, (0,4)=IC4, (1,4)=IC3. ICV = <1,0,1,1,0,0>. Now do the same for [0, 3, 4]. Are they the same? What does this tell you about the two sets?',
+        'Compute the interval class vector for set [0, 1, 4]: pairs are (0,1)=IC1, (0,4)=IC4, (1,4)=IC3. ICV = <1,0,1,1,0,0>. Now do the same for [0, 3, 4] and verify you get the identical ICV. This is expected — [0,3,4] is the inversion of [0,1,4], so they belong to the same set class (3-3). The Z-relation is when two sets share an interval vector without being related by transposition or inversion; the smallest true Z-pair is 4-Z15 [0,1,4,6] and 4-Z29 [0,1,3,7].',
     },
   ],
   prerequisites: ['l8u26m3'],

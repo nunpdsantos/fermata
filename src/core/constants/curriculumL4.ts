@@ -566,7 +566,7 @@ const l4u14m1: CurriculumModule = {
     {
       title: 'First and Second Species',
       explanation:
-        'First species (1:1) places one counterpoint note against each note in the cantus firmus (given melody). Every interval must be consonant. Begin and end on P1, P5, or P8, use mostly imperfect consonances, and never approach perfect consonances in parallel motion. Second species (2:1) adds two notes against each cantus firmus note. Strong beats must be consonant; weak beats may be dissonant if they are passing tones or neighbor tones approached and left by step. Weak beats may also be consonant — a leap to a consonant interval is permitted. This is where non-chord tones first enter counterpoint.',
+        'First species (1:1) places one counterpoint note against each note in the cantus firmus (given melody). Every interval must be consonant. Begin and end on P1, P5, or P8, use mostly imperfect consonances, and never approach perfect consonances in parallel motion. Second species (2:1) adds two notes against each cantus firmus note. Strong beats must be consonant; in strict species the only dissonance allowed on a weak beat is the passing tone, approached and left by step (dissonant neighbor tones arrive later, in third species — though some modern texts admit them earlier). Weak beats may also be consonant — a leap to a consonant interval is permitted. This is where non-chord tones first enter counterpoint.',
       tryThisQuery: 'G major scale',
       tryThisLabel: 'Imagine a second voice against this line',
     },
@@ -619,7 +619,7 @@ const l4u14m2: CurriculumModule = {
     {
       title: 'Mixed Meters and Cut Time',
       explanation:
-        'Mixed meter changes the time signature from measure to measure: one bar of 4/4, the next of 3/4, then 5/4. This creates an unpredictable, shifting rhythmic surface common in film scores and progressive rock. Cut time (alla breve, 2/2) uses two half-note beats per measure \u2014 the same written notes as 4/4 but felt in 2, giving a faster tempo feel with stronger metric drive. Cut time is standard in marches and fast Classical movements.',
+        'Mixed meter changes the time signature from measure to measure: one bar of 4/4, the next of 3/4, then 5/4. This creates an unpredictable, shifting rhythmic surface common in film scores and progressive rock. Cut time (alla breve, 2/2) uses two half-note beats per measure \u2014 a 2/2 bar has the same total duration as a 4/4 bar, but the beat unit is the half note rather than the quarter, so the music is counted in 2 and gains a broader, faster-moving feel with stronger metric drive. Cut time is standard in marches and fast Classical movements.',
       tryThisQuery: 'C major chord',
       tryThisLabel: 'Tap along in cut time: 2 beats per bar',
     },

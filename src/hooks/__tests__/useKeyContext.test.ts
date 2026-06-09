@@ -248,3 +248,38 @@ describe('key/scale changes', () => {
     expect(result.current.getNoteDegree({ natural: 'F', accidental: '#' })).toBe(1);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Exercise instrument-input mode (WS6) — Explore visuals must not leak into
+// exercises, and the learner's toggled notes surface via the chord channel.
+// ---------------------------------------------------------------------------
+describe('exercise input mode', () => {
+  it('suppresses scale/degree visuals and surfaces toggled notes on all octaves', () => {
+    setStoreState({});
+    useAppStore.setState({
+      exerciseInputActive: true,
+      highlightedNotes: [
+        { natural: 'D', accidental: '', octave: 4 },
+        { natural: 'F', accidental: '#', octave: 4 },
+      ],
+    });
+    const { result } = renderHook(() => useKeyContext());
+    expect(result.current.scaleMidiNumbers.size).toBe(0);
+    expect(result.current.scalePitchClasses.size).toBe(0);
+    expect(result.current.getNoteColor({ natural: 'C', accidental: '' })).toBeUndefined();
+    expect(result.current.chordPitchClasses).toEqual(new Set([2, 6]));
+    expect(result.current.chordVoicingMidi.has(62)).toBe(true); // D4
+    expect(result.current.chordVoicingMidi.has(74)).toBe(true); // D5 — every octave
+    expect(result.current.hasSelectedChord).toBe(true);
+    useAppStore.setState({ exerciseInputActive: false, highlightedNotes: [] });
+  });
+
+  it('with nothing toggled, shows a neutral instrument (no dimming)', () => {
+    setStoreState({});
+    useAppStore.setState({ exerciseInputActive: true, highlightedNotes: [] });
+    const { result } = renderHook(() => useKeyContext());
+    expect(result.current.hasSelectedChord).toBe(false);
+    expect(result.current.chordVoicingMidi.size).toBe(0);
+    useAppStore.setState({ exerciseInputActive: false });
+  });
+});

@@ -5,10 +5,48 @@ import { createInstrumentSlice } from './slices/instrumentSlice.ts';
 import { createAudioSlice } from './slices/audioSlice.ts';
 import { createNavigationSlice } from './slices/navigationSlice.ts';
 import { createPreferencesSlice } from './slices/preferencesSlice.ts';
+import { SCALE_FORMULAS } from '../core/constants/scales.ts';
 import type { AppState } from './storeTypes.ts';
 
 // Re-export types so consumers don't need to change imports
 export type { AppState, ViewMode, InstrumentType, ColorMode, ThemeMode } from './storeTypes.ts';
+
+const NUMERIC_KEYS = ['baseOctave', 'scaleOctaves', 'volume', 'preferencesUpdatedAt'] as const;
+
+/**
+ * Per-field shape guard for persisted app state. localStorage is
+ * user-editable; a corrupted field must fall back to the slice default
+ * without nuking the rest of the persisted state. Invalid fields are
+ * deleted so the slice-created defaults win in the merge.
+ */
+function sanitizePersistedAppState(persisted: unknown): Record<string, unknown> | null {
+  if (typeof persisted !== 'object' || persisted === null || Array.isArray(persisted)) return null;
+  const state = { ...(persisted as Record<string, unknown>) };
+
+  // selectedKey: { natural: A-G, accidental: '' | '#' | 'b' }
+  const key = state.selectedKey as Record<string, unknown> | null | undefined;
+  if (
+    typeof key !== 'object' || key === null ||
+    typeof key.natural !== 'string' || !/^[A-G]$/.test(key.natural) ||
+    (key.accidental !== '' && key.accidental !== '#' && key.accidental !== 'b')
+  ) {
+    delete state.selectedKey;
+  }
+
+  // selectedScale: must be a known scale type
+  if (typeof state.selectedScale !== 'string' || !(state.selectedScale in SCALE_FORMULAS)) {
+    delete state.selectedScale;
+  }
+
+  // Numeric fields: anything non-finite falls back to the slice default
+  for (const k of NUMERIC_KEYS) {
+    if (typeof state[k] !== 'number' || !Number.isFinite(state[k])) {
+      delete state[k];
+    }
+  }
+
+  return state;
+}
 
 export const useAppStore = create<AppState>()(
   persist(
@@ -58,6 +96,14 @@ export const useAppStore = create<AppState>()(
           s.themeMode = s.themeMode === 'dark' ? 'fermata-night' : 'fermata';
         }
         return state;
+      },
+      // zustand skips migrate() when the stored version matches, so corrupt
+      // same-version data must be caught here on the merge path. Per-field:
+      // a single bad field falls back to its default, the rest survive.
+      merge: (persisted, current) => {
+        const sanitized = sanitizePersistedAppState(persisted);
+        if (sanitized === null) return current;
+        return { ...current, ...sanitized };
       },
     }
   )

@@ -107,11 +107,12 @@ const overlay: TemplateLevelOverlay = {
   // ---- l4u12m4: Reglas de Resolución del V7 ----
   l4u12m4: [
     {
-      // chord_build
+      // chord_build — {root} es la fundamental del acorde, no la tonalidad:
+      // la respuesta evaluada es una séptima de dominante SOBRE {root}. Refleja el EN.
       promptTemplate:
-        'Construye el acorde V7 (séptima de dominante) en la tonalidad de {root} mayor.',
+        'Construye un acorde de séptima de dominante de {root}.',
       hintTemplate:
-        'El V7 se construye sobre el 5.º grado de {root} mayor. Es un acorde de séptima de dominante: tríada mayor + 7.ª menor. La 7.ª resuelve hacia abajo, la sensible resuelve hacia arriba.',
+        'Un acorde de séptima de dominante: tríada mayor + 7.ª menor. La 7.ª resuelve hacia abajo, la sensible resuelve hacia arriba.',
     },
     {
       // multiple_choice
@@ -180,11 +181,12 @@ const overlay: TemplateLevelOverlay = {
   // ---- l4u13m1: Séptimas Predominantes ----
   l4u13m1: [
     {
-      // chord_build
+      // chord_build — {root} es la fundamental del acorde, no la tonalidad:
+      // la respuesta evaluada es una séptima menor SOBRE {root}. Refleja el EN.
       promptTemplate:
-        'Construye el acorde ii7 en {root} mayor. Este acorde de séptima predominante conduce a V.',
+        'Construye un acorde de séptima menor de {root}.',
       hintTemplate:
-        'El ii7 en mayor es un acorde de séptima menor construido sobre el 2.º grado de {root} mayor. Funciona como predominante, conduciendo a V o V7.',
+        'Un acorde de séptima menor: tríada menor + 7.ª menor. Funciona como predominante, conduciendo a V o V7.',
     },
     {
       // multiple_choice
@@ -338,11 +340,12 @@ const overlay: TemplateLevelOverlay = {
       ],
     },
     {
-      // chord_build
+      // chord_build — {root} es la fundamental del acorde, no la tonalidad:
+      // la respuesta evaluada es una tríada mayor SOBRE {root}. Refleja el EN.
       promptTemplate:
-        'Construye el acorde IV en {root} mayor. Este es un acorde predominante principal.',
+        'Construye una tríada mayor de {root}.',
       hintTemplate:
-        'El acorde IV es una tríada mayor construida sobre el 4.º grado de {root} mayor. Tiene un carácter cálido y subdominante.',
+        'Una tríada mayor: fundamental + 3.ª mayor + 5.ª justa. El acorde IV tiene un carácter cálido y subdominante.',
     },
   ],
 

@@ -505,7 +505,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Primeira e Segunda Espécie',
           explanation:
-            'A primeira espécie (1:1) coloca uma nota do contraponto contra cada nota do cantus firmus (melodia dada). Cada intervalo deve ser consonante. Começa e termina em P1, P5 ou P8, usa maioritariamente consonâncias imperfeitas, e nunca se aproxima de consonâncias perfeitas em movimento paralelo. A segunda espécie (2:1) acrescenta duas notas contra cada nota do cantus firmus. Tempos fortes devem ser consonantes; tempos fracos podem ser dissonantes se forem notas de passagem ou bordaduras abordadas e abandonadas por grau conjunto. É aqui que as notas estranhas ao acorde entram pela primeira vez no contraponto.',
+            'A primeira espécie (1:1) coloca uma nota do contraponto contra cada nota do cantus firmus (melodia dada). Cada intervalo deve ser consonante. Começa e termina em P1, P5 ou P8, usa maioritariamente consonâncias imperfeitas, e nunca se aproxima de consonâncias perfeitas em movimento paralelo. A segunda espécie (2:1) acrescenta duas notas contra cada nota do cantus firmus. Tempos fortes devem ser consonantes; na espécie estrita, a única dissonância permitida num tempo fraco é a nota de passagem, abordada e abandonada por grau conjunto (as bordaduras dissonantes chegam mais tarde, na terceira espécie — embora alguns textos modernos as admitam mais cedo). É aqui que as notas estranhas ao acorde entram pela primeira vez no contraponto.',
           tryThisLabel: 'Imagina uma segunda voz contra esta linha',
         },
       ],
@@ -551,7 +551,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Compassos Mistos e Tempo Cortado',
           explanation:
-            'O compasso misto muda a indicação de compasso de compasso para compasso: um compasso de 4/4, o seguinte de 3/4, depois 5/4. Isto cria uma superfície rítmica imprevisível e mutável, comum em bandas sonoras de cinema e rock progressivo. O tempo cortado (alla breve, 2/2) usa dois tempos de mínima por compasso — as mesmas notas escritas que 4/4 mas sentidas em 2, dando uma sensação de tempo mais rápida com maior impulso métrico. O tempo cortado é padrão em marchas e movimentos rápidos do período Clássico.',
+            'O compasso misto muda a indicação de compasso de compasso para compasso: um compasso de 4/4, o seguinte de 3/4, depois 5/4. Isto cria uma superfície rítmica imprevisível e mutável, comum em bandas sonoras de cinema e rock progressivo. O tempo cortado (alla breve, 2/2) usa dois tempos de mínima por compasso — um compasso de 2/2 tem a mesma duração total que um compasso de 4/4, mas a unidade de tempo é a mínima em vez da semínima, pelo que a música é contada em 2 e ganha uma sensação mais ampla e de movimento mais rápido, com maior impulso métrico. O tempo cortado é padrão em marchas e movimentos rápidos do período Clássico.',
           tryThisLabel: 'Acompanha em tempo cortado: 2 tempos por compasso',
         },
       ],

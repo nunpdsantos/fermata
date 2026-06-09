@@ -1,7 +1,3 @@
-/* eslint-disable no-restricted-syntax -- the Circle of Fifths uses a
-   hand-tuned greyscale ramp (plus tonic hue) to make sharps/flats legible
-   against theme backgrounds. The ramp is not a design-token value; it's a
-   calibrated perceptual gradient. Migration would flatten the visualization. */
 import type { Note, ScaleType } from '../../core/types/music.ts';
 
 // Circle of fifths order (clockwise from top = C)

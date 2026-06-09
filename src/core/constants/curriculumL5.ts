@@ -139,7 +139,7 @@ const l5u15m3: CurriculumModule = {
     {
       title: 'Fully Diminished vs. Half-Diminished',
       explanation:
-        'viio7/X (fully diminished seventh) is more intense and more common in minor keys. All intervals are minor thirds, making the chord symmetrical — any note could function as the root. viiø7/X (half-diminished seventh) is less intense and more common in major keys. The fully diminished seventh enables enharmonic reinterpretation, which becomes important for distant modulation in Level 6.',
+        'viio7/X (fully diminished seventh) is the more intense of the two, and the choice between them keys off the chord being tonicized rather than the home mode: minor targets take the fully diminished viio7/X, while major targets may be approached by either viio7/X or the milder viiø7/X — fully diminished secondary chords are common in major keys too. All intervals in viio7 are minor thirds, making the chord symmetrical — any note could function as the root. That symmetry enables enharmonic reinterpretation, which becomes important for distant modulation in Level 6.',
       tryThisQuery: 'Bdim7',
       tryThisLabel: 'Hear Bdim7 — a fully diminished seventh chord',
     },

@@ -257,7 +257,8 @@
   "error": {
     "somethingWentWrong": "Algo correu mal",
     "unexpectedError": "Ocorreu um erro inesperado.",
-    "viewError": "Esta vista encontrou um erro."
+    "viewError": "Esta vista encontrou um erro.",
+    "resetAppData": "Repor dados da aplicação — apaga o progresso guardado"
   },
   "toast": {
     "copiedToClipboard": "Copiado para a \u00e1rea de transfer\u00eancia",

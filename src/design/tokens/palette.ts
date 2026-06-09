@@ -13,7 +13,7 @@
 export const palette = {
   /** Brand anchor — also L1 curriculum + tonic degree. */
   accent: '#60A5FA',
-  /** Secondary info tone — sky. Used for L2 curriculum + sync info. */
+  /** Secondary info tone — sky. Used for L2 curriculum. */
   info: '#38BDF8',
   /** Success / completion / emerald — L3 curriculum, mediant/subdominant, toast. */
   success: '#34D399',
@@ -21,18 +21,4 @@ export const palette = {
   warning: '#FBBF24',
   /** Danger / error / red — L9 curriculum, leading tone, toast error, recording. */
   danger: '#F87171',
-} as const;
-
-/**
- * Alt tones: distinct hues that appear in small UI chrome (sync dots,
- * achievement icon, etc.). Kept separate because they don't match the core
- * palette tones exactly and changing them would drift those affordances.
- */
-export const paletteAlt = {
-  /** Brighter red for UI signal dots (stands out against chrome). */
-  dangerBright: '#EF4444',
-  /** Brighter green for sync-ok dot. */
-  successBright: '#22C55E',
-  /** Deeper amber for achievement icon. */
-  warningDeep: '#F59E0B',
 } as const;

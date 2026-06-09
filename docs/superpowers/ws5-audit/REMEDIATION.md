@@ -121,6 +121,8 @@ Ordered by severity (errors first), then by level. Every item here has its fix i
 
 ## Category B — Core (escalate to the shared-core owner)
 
+> **RESOLVED 2026-06-09 in WS6** — `src/core` became fermata-owned (the Music AI source project no longer exists) and every Category B item was fixed directly in core.
+
 `src/core/` is read-only here. Each item: file, what's wrong, correct value, and app-side-mitigation note.
 
 ### B1. RECURRING — `INTERVAL_LABELS[8] = 'Augmented 5th'` should be 'Minor 6th' (and `INTERVAL_SHORT_LABELS[8] = '#5'`).
@@ -196,7 +198,7 @@ Grouped by theme. These are NOT proposed changes — reputable sources differ; p
 - **C14. L9 Q1–Q4 — opening-interval song mnemonics** (`curriculumL9.ts` `l9u30m3`/`m4`): ascending small (Jaws m2, Happy Birthday M2, Greensleeves m3, When the Saints M3, Here Comes the Bride P4, Simpsons TT, Twinkle P5); descending (Hey Jude m3, Mary Had a Little Lamb M2); descending P5 = Feelings; large (Love Story m6, My Bonnie M6, Somewhere/WSS m7, Take On Me M7, Over the Rainbow P8). Auditor could not verify each song's literal *opening* interval; flagged, not asserted wrong. *Call/action:* a web-verified pass to confirm each opening interval (Happy Birthday's M2 is not literally the first interval — repeated note then M2 — minor concern).
 
 ### Theme 5 — Post-tonal & analysis convention (L8)
-- **C15. L8 Q2 — prime-form algorithm stated as universal (Forte vs Rahn).** `curriculumL8.ts` `l8u27m1` concept 2: presents one "most packed to the left" algorithm (= Rahn) as *the* method; Forte/Rahn diverge for a handful of hexachords (none used in L8). *Call:* add a one-clause caveat naming both conventions, or leave (awareness-level module).
+- **C15. L8 Q2 — prime-form algorithm stated as universal (Forte vs Rahn).** `curriculumL8.ts` `l8u27m1` concept 2: presents one "most packed to the left" algorithm (= **Forte**; Rahn packs from the right) as *the* method; Forte/Rahn diverge for a handful of hexachords (none used in L8). *Call:* add a one-clause caveat naming both conventions, or leave (awareness-level module).
 - **C16. L8 Q1 — Z-relation task conflates inversional equivalence with the Z-relation.** `curriculumL8.ts` `l8u27m1t3` + template hint (`templatesL8.ts` `l8u27m2`: "Sets with the same interval vector are Z-related"). [0,1,4] and [0,3,4] are *inversions* (same set class 3-3), not a Z-pair; the pedagogy walks the student into the misconception. *Note:* the template-hint half ("same interval vector are Z-related") is **editable** (`templatesL8.ts`) and could be tightened app-side ("...that are NOT related by transposition or inversion are Z-related"); the task text `l8u27m1t3` is core. Mixed — surfaced under C because the right pedagogical framing is a judgment, but the template-hint correction is a concrete app-side option if Nuno wants it.
 - **C17. L5 Q1 — "vii°7/x more common in minor, viiø7/x more common in major."** `curriculumL5.ts` `l5u15m3`. Over-broad for *secondary* leading-tone chords (fully-dim is very common in major too). *Call:* soften per a chosen authority (Kostka/Payne).
 - **C18. L5 Q2 — bVII "borrowed from parallel minor" (L5 text) vs "from Mixolydian" (Explore data).** `curriculumL5.ts` `l5u16m4` vs `progressionPatterns.ts`. Both valid sources; cross-surface labelling inconsistency. *Call:* optionally note bVII is shared with Mixolydian.

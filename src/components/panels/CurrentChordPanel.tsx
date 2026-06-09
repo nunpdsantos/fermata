@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import { noteToString, type Chord, type Note } from '../../core/types/music.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
+import { QUALITY_TO_MODULE } from '../../data/qualityToModule.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
 import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
 
@@ -166,7 +167,10 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
             {t('panel.degree', { n: degree })}
           </Badge>
         )}
-        <LearnMoreButton query={CHORD_QUALITY_NAMES[chord.quality]} />
+        <LearnMoreButton
+          query={CHORD_QUALITY_NAMES[chord.quality]}
+          moduleId={QUALITY_TO_MODULE[chord.quality]}
+        />
       </div>
 
       {/* Notes */}

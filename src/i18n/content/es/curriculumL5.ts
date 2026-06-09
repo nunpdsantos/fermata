@@ -131,7 +131,7 @@ const curriculumL5: CurriculumLevelOverlay = {
         {
           title: 'Totalmente Disminuido vs. Semidisminuido',
           explanation:
-            'viio7/X (totalmente disminuido) es más intenso y más habitual en tonalidades menores. Todos los intervalos son terceras menores, lo que hace al acorde simétrico — cualquier nota puede funcionar como fundamental. viiø7/X (semidisminuido) es menos intenso y más habitual en tonalidades mayores. La séptima totalmente disminuida permite la reinterpretación enarmónica, lo que se vuelve importante para las modulaciones a tonalidades lejanas en el Nivel 6.',
+            'viio7/X (totalmente disminuido) es el más intenso de los dos, y la elección entre ellos depende del acorde que se toniciza y no del modo de la tonalidad de partida: los objetivos menores reciben el viio7/X totalmente disminuido, mientras que los objetivos mayores pueden abordarse tanto con viio7/X como con el más suave viiø7/X — los acordes secundarios totalmente disminuidos también son habituales en tonalidades mayores. Todos los intervalos del viio7 son terceras menores, lo que hace al acorde simétrico — cualquier nota puede funcionar como fundamental. Esa simetría permite la reinterpretación enarmónica, lo que se vuelve importante para las modulaciones a tonalidades lejanas en el Nivel 6.',
           tryThisLabel: 'Escucha Bdim7 — un acorde de séptima totalmente disminuida',
         },
         {

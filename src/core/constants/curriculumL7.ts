@@ -91,7 +91,7 @@ const l7u21m2: CurriculumModule = {
     {
       title: 'Suspended Dominants: 7sus4',
       explanation:
-        'The 7sus4 chord replaces the 3rd with a 4th in a dominant 7th, creating an open, unresolved sound. C7sus4 contains C-F-G-Bb — no E, so no major/minor identity. In jazz, 7sus4 functions as a pre-resolution voicing: the sus4 resolves to the 3rd, then the entire chord resolves to I. The 7sus4 also serves as a Dorian sound (the sus4 voicing built on the 5th of a minor chord creates a Dorian flavor). Sus2 works similarly, replacing the 3rd with a 2nd for a bright, open quality.',
+        'The 7sus4 chord replaces the 3rd with a 4th in a dominant 7th, creating an open, unresolved sound. C7sus4 contains C-F-G-Bb — no E, so no major/minor identity. In jazz, 7sus4 functions as a pre-resolution voicing: the sus4 resolves to the 3rd, then the entire chord resolves to I. The 7sus4 also serves as a modal, Dorian-leaning sound: a 9sus chord built a perfect 5th above the root of a minor chord (the V-of-ii position, e.g. G9sus over or instead of Dm) substitutes for the ii chord — Dm11/G is a common spelling of the same sound. Sus2 works similarly, replacing the 3rd with a 2nd for a bright, open quality.',
       tryThisQuery: 'G7sus4',
       tryThisLabel: 'Hear G7sus4 — suspended dominant, no 3rd',
     },
@@ -201,7 +201,7 @@ const l7u21m4: CurriculumModule = {
     {
       title: 'The Back-Door Dominant',
       explanation:
-        'The back-door dominant (bVII7-I) approaches the tonic from a whole step below instead of a fifth above. In C: Bb7-Cmaj7. The 3rd of Bb7 (D) resolves up to the 3rd of Cmaj7 (E), and the 7th of Bb7 (Ab) resolves down to the 5th of Cmaj7 (G). This creates a surprising, warm resolution that avoids the expected V7-I cadence. Common in jazz standards and bossa nova, the back-door dominant is a relative of tritone substitution — Bb7 is the tritone sub of E7, the V7/vi.',
+        'The back-door dominant (bVII7-I) approaches the tonic from a whole step below instead of a fifth above. In C: Bb7-Cmaj7. The 3rd of Bb7 (D) resolves up to the 3rd of Cmaj7 (E), and the 7th of Bb7 (Ab) resolves down to the 5th of Cmaj7 (G). This creates a surprising, warm resolution that avoids the expected V7-I cadence. Common in jazz standards and bossa nova, the back-door dominant is best understood as borrowed from the parallel minor — it is the dominant of bIII (Eb), arriving instead at I. Its guide tones (D and Ab) are shared with the altered home dominant (G7b9), which is why Bb7 pulls so convincingly to C: D rises to E and Ab falls to G, both upper leading tones into Cmaj7.',
       tryThisQuery: 'Bb7',
       tryThisLabel: 'Hear Bb7 — the back-door dominant in C',
     },
@@ -330,7 +330,7 @@ const l7u21m6: CurriculumModule = {
     {
       id: 'l7u21m6t3',
       instruction:
-        "Apply the chromatic turnaround: play 'Cmaj7', 'Eb7', 'Ab7', 'Db7'. Every chord after the I is a tritone substitution — Eb7 subs for A7, Ab7 subs for D7, Db7 subs for G7. The bass descends chromatically by minor thirds and fourths: C–Eb–Ab–Db.",
+        "Apply the chromatic turnaround: play 'Cmaj7', 'Eb7', 'Ab7', 'Db7'. Every chord after the I is a tritone substitution — Eb7 subs for A7, Ab7 subs for D7, Db7 subs for G7. The roots C–Eb–Ab–Db move up a minor 3rd, then up two perfect 4ths — and the final Db7 resolves down a half step to C, the chromatic payoff of the substitutions.",
     },
   ],
   prerequisites: ['l7u21m5'],
@@ -538,7 +538,7 @@ const l7u22m4: CurriculumModule = {
     {
       title: 'Modal Chord Progressions',
       explanation:
-        'Each mode supports specific chord movements that reinforce its color. Dorian favors i, II, and IV — the major II chord contains the characteristic raised 6th (e.g., Dm-Em-C-Dm). Phrygian centers on i and bII — the bII is a half step above the tonic, the signature Phrygian sound (Em-F-Em). Lydian gravitates to I, II, and vii — the raised 4th appears in both II and vii (C-D-Bm-C). Mixolydian leans on I and bVII — the lowered 7th sits in the bVII chord (G-F-Dm-G). Avoid any chord that implies dominant-tonic resolution.',
+        'Each mode supports specific chord movements that reinforce its color. Dorian\'s defining color chord is the major IV over an i tonic — the raised 6th lives in it (Dm-G-Dm); ii and bVII serve as secondary colors. Phrygian centers on i and bII — the bII is a half step above the tonic, the signature Phrygian sound (Em-F-Em). Lydian\'s defining color chord is the major II over a I tonic — the raised 4th lives in it (C-D-C); vii shares that raised 4th as a secondary color. Mixolydian leans on I and bVII — the lowered 7th sits in the bVII chord (G-F-Dm-G). Avoid any chord that implies dominant-tonic resolution.',
       tryThisQuery: 'G mixolydian',
       tryThisLabel: 'See G Mixolydian — bVII is the key chord',
     },
@@ -641,7 +641,7 @@ const l7u23m1: CurriculumModule = {
     {
       title: 'Common Pop Progressions',
       explanation:
-        'Pop music relies on a small set of chord loops with distinct emotional signatures. The I-V-vi-IV "Axis" progression feels uplifting and anthemic. Its rotation vi-IV-I-V ("Sensitive") feels emotional and modern. I-bVII-IV produces a Mixolydian, bluesy rock feel. The i-bVI-bIII-bVII "Andalusian" cadence sounds dark and cinematic. I-vi-IV-V is the classic 50s progression, nostalgic and warm. These loops repeat through entire sections — harmonic variation comes from melody, production, and arrangement rather than chord changes.',
+        'Pop music relies on a small set of chord loops with distinct emotional signatures. The I-V-vi-IV "Axis" progression feels uplifting and anthemic. Its rotation vi-IV-I-V ("Sensitive") feels emotional and modern. I-bVII-IV produces a Mixolydian, bluesy rock feel. The i-bVII-bVI-V "Andalusian" cadence — a stepwise descending bass from tonic to dominant, straight out of flamenco — sounds dark and cinematic. I-vi-IV-V is the classic 50s progression, nostalgic and warm. These loops repeat through entire sections — harmonic variation comes from melody, production, and arrangement rather than chord changes.',
       tryThisQuery: 'C major chord',
       tryThisLabel: 'Start the I chord of a pop progression in C',
     },

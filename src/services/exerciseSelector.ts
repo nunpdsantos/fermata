@@ -1,11 +1,13 @@
 /**
- * Weighted Exercise Selector — reorders exercises for review sessions
- * based on concept weakness. Exercises touching weak concepts get 3x weight.
- * Called with an empty `weakConcepts` array it degrades to a plain Fisher-Yates
- * shuffle — the path the exercise runner uses now that concept tracking was removed.
+ * Exercise Selector — shuffles exercises for review sessions.
+ *
+ * Historically this weighted exercises by concept weakness (3x weight for
+ * weak concepts), but concept tracking was removed and the exercise runner
+ * always calls this with an empty `weakConcepts` array, so the weighting
+ * branch was dead in practice and has been removed (WS6). The parameter is
+ * kept for call-site compatibility.
  */
 import type { ExerciseDefinition } from '../core/types/exercise';
-import { getExerciseConcepts } from './conceptTagger';
 
 /**
  * Fisher-Yates shuffle (in-place, returns same array).
@@ -19,52 +21,13 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 /**
- * Select and reorder exercises for a review session based on concept weakness.
- *
- * Algorithm:
- * 1. Tag each exercise with concepts via getExerciseConcepts
- * 2. Exercises touching weak concepts get weight 3, others get weight 1
- * 3. Build weighted pool, shuffle, pick targetCount unique exercises
- *
- * For first-time module exercises (not review), pass empty weakConcepts
- * to preserve pedagogical ordering.
+ * Return up to `targetCount` exercises in shuffled order (input untouched).
  */
 export function selectWeightedExercises(
   exercises: ExerciseDefinition[],
-  weakConcepts: string[],
+  _weakConcepts: string[],
   targetCount: number,
 ): ExerciseDefinition[] {
   if (exercises.length === 0) return [];
-  if (weakConcepts.length === 0 || targetCount >= exercises.length) {
-    // No weak concepts or requesting all exercises — return shuffled copy
-    return shuffle([...exercises]).slice(0, targetCount);
-  }
-
-  const weakSet = new Set(weakConcepts);
-
-  // Build weighted pool: each exercise appears 1x or 3x
-  const pool: ExerciseDefinition[] = [];
-  for (const ex of exercises) {
-    const concepts = getExerciseConcepts(ex.config, ex.id);
-    const touchesWeak = concepts.some((c) => weakSet.has(c));
-    const weight = touchesWeak ? 3 : 1;
-    for (let i = 0; i < weight; i++) {
-      pool.push(ex);
-    }
-  }
-
-  // Shuffle the pool
-  shuffle(pool);
-
-  // Pick unique exercises up to targetCount
-  const seen = new Set<string>();
-  const selected: ExerciseDefinition[] = [];
-  for (const ex of pool) {
-    if (seen.has(ex.id)) continue;
-    seen.add(ex.id);
-    selected.push(ex);
-    if (selected.length >= targetCount) break;
-  }
-
-  return selected;
+  return shuffle([...exercises]).slice(0, targetCount);
 }

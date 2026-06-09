@@ -91,7 +91,24 @@ const SEVEN_NOTE_SCALES: ScaleType[] = [
   'neapolitan_minor', 'neapolitan_major',
 ];
 
-// Every letter used exactly once for 7-note scales
+// Every letter used exactly once for 7-note scales.
+// Exception (WS6): root/scale combos whose pure spelling would need a TRIPLE
+// accidental (e.g. F### in B# lydian augmented) are respelled enharmonically
+// by the engine — pitch correctness beats letter purity there. Detect those
+// combos from the formula and accept the letter duplicate.
+function needsTripleAccidental(root: Note, type: ScaleType): boolean {
+  const formula = SCALE_FORMULAS[type];
+  const rootPc = getPitchClass(root);
+  const naturalPc: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  const letters = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+  const rootIdx = letters.indexOf(root.natural);
+  return formula.some((semitones, i) => {
+    const letter = letters[(rootIdx + i) % 7];
+    const diff = ((rootPc + semitones) % 12 - naturalPc[letter] + 12) % 12;
+    return ![0, 1, 2, 10, 11].includes(diff);
+  });
+}
+
 for (const root of ALL_ROOTS) {
   for (const type of SEVEN_NOTE_SCALES) {
     totalChecks++;
@@ -99,11 +116,19 @@ for (const root of ALL_ROOTS) {
     const letters = scale.notes.map(n => n.natural);
     const letterSet = new Set(letters);
     if (letters.length !== 7 || letterSet.size !== 7) {
-      record({
-        severity: 'serious',
-        tag: 'scale-spelling',
-        detail: `${noteToString(root)} ${type}: letters ${letters.join(',')} (duplicates/missing)`,
-      });
+      if (needsTripleAccidental(root, type)) {
+        record({
+          severity: 'info',
+          tag: 'scale-spelling',
+          detail: `${noteToString(root)} ${type}: enharmonic respell accepted (pure spelling would need a triple accidental)`,
+        });
+      } else {
+        record({
+          severity: 'serious',
+          tag: 'scale-spelling',
+          detail: `${noteToString(root)} ${type}: letters ${letters.join(',')} (duplicates/missing)`,
+        });
+      }
     }
   }
 }
@@ -622,25 +647,21 @@ for (const quality of Object.keys(CHORD_FORMULAS) as ChordQuality[]) {
 // ─── 10. INTERVAL_LABELS consistency (compound intervals labelled as "Augmented" vs degree-aware) ────
 section('10. INTERVAL_LABELS sanity');
 
-// INTERVAL_LABELS[8] is labelled "Augmented 5th" (enharmonic with minor 6th).
-// When used in chord contexts: augmented triad [0,4,8] — 8 is the #5 (correct).
-// When used in scale contexts at degree 6 (submediant): 8 is b6 (the degree-aware label handles this).
-// But INTERVAL_LABELS is used directly by validateIntervalId for feedback, so when the
-// user asks "what is the interval from C to Ab" (8 semitones), the feedback says
-// "Augmented 5th" even though the musically correct answer depends on spelling.
-// This is flagged as tier-4 known limitation (see AUDIT_TRACKER.md).
-console.log(`  INTERVAL_LABELS[8] = '${INTERVAL_LABELS[8]}' (known: tritone-like aug5/m6 conflation is a tier-4 limitation)`);
+// WS6 (CORE-ESCALATION B1): INTERVAL_LABELS[8] is now 'Minor 6th' — the generic
+// interval name, matching SEMITONES_TO_INTERVAL[8]. Chord displays preserve the
+// augmented-family '#5' spelling via CHORD_CONTEXT_LABELS in chords.ts.
+// INTERVAL_LABELS[6]='Tritone' stays by design (quality-neutral name; the
+// validator works from semitone counts and cannot distinguish aug4 vs dim5).
+console.log(`  INTERVAL_LABELS[8] = '${INTERVAL_LABELS[8]}' (B1 fixed: generic m6; chord context handles #5)`);
 console.log(`  INTERVAL_LABELS[6] = '${INTERVAL_LABELS[6]}' (tritone; app can't distinguish aug4 vs dim5)`);
 console.log(`  INTERVAL_SHORT_LABELS[8] = '${INTERVAL_SHORT_LABELS[8]}'`);
-
-// Note — the stored `8 = Augmented 5th` is inconsistent with the *scale-degree-aware*
-// label `b6` which maps the same semitone count to minor 6th. Both are correct in
-// different contexts; the inconsistency is in unlabelled (tritone/aug-5) feedback.
-record({
-  severity: 'info',
-  tag: 'interval-label-choice',
-  detail: `INTERVAL_LABELS[8]='Augmented 5th' conflates #5 and b6; INTERVAL_LABELS[6]='Tritone' conflates #4 and b5. Tier-4 limitation (validator uses semitone count only).`,
-});
+if (INTERVAL_LABELS[8] !== 'Minor 6th' || INTERVAL_SHORT_LABELS[8] !== 'b6') {
+  record({
+    severity: 'serious',
+    tag: 'interval-label-choice',
+    detail: `INTERVAL_LABELS[8]='${INTERVAL_LABELS[8]}'/SHORT='${INTERVAL_SHORT_LABELS[8]}' — B1 regression: expected 'Minor 6th'/'b6'.`,
+  });
+}
 
 // ─── 11. getSeventhDegreeName sanity ────────────────────────────────────────
 section('11. Seventh-degree name (leading vs subtonic)');

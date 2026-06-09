@@ -15,7 +15,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Identifica a nota {note} na pauta em clave de sol.',
+        'Identifica a nota {note} na pauta em clave de sol ou logo junto dela.',
       hintTemplate:
         'Esta nota e {note} na oitava {octave}. Usa as posicoes na clave de sol: linhas Mi-Sol-Si-Re-Fa, espacos Fa-La-Do-Mi.',
     },

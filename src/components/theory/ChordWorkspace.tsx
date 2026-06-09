@@ -47,6 +47,7 @@ export function ChordWorkspace() {
           <div className="flex rounded-lg overflow-hidden" style={{ border: '1px solid var(--card)' }}>
             <button
               onClick={() => setMode('diatonic')}
+              aria-pressed={mode === 'diatonic'}
               className="px-2 py-0.5 text-2xs font-medium transition-colors max-sm:px-3 max-sm:py-1.5 max-sm:text-xs"
               style={{
                 backgroundColor: mode === 'diatonic' ? 'var(--card-hover)' : 'transparent',
@@ -57,6 +58,7 @@ export function ChordWorkspace() {
             </button>
             <button
               onClick={() => setMode('all')}
+              aria-pressed={mode === 'all'}
               className="px-2 py-0.5 text-2xs font-medium transition-colors max-sm:px-3 max-sm:py-1.5 max-sm:text-xs"
               style={{
                 backgroundColor: mode === 'all' ? 'var(--card-hover)' : 'transparent',
@@ -67,6 +69,7 @@ export function ChordWorkspace() {
             </button>
             <button
               onClick={() => setMode('build')}
+              aria-pressed={mode === 'build'}
               className="px-2 py-0.5 text-2xs font-medium transition-colors max-sm:px-3 max-sm:py-1.5 max-sm:text-xs"
               style={{
                 backgroundColor: mode === 'build' ? 'var(--card-hover)' : 'transparent',

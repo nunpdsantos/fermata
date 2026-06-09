@@ -34,7 +34,7 @@ Scale degree function is encoded in color throughout the app:
 **Name:** Music Theory App
 **Domain:** Music theory education / interactive instrument
 **Stack:** React 19 + TypeScript 5.9 + Vite 7 + Tailwind CSS v4 + Zustand 5 + Framer Motion 12
-**Tests:** 793 passing (Vitest + React Testing Library, 35 test files)
+**Tests:** ~2,250 passing (Vitest + React Testing Library, 45 test files)
 **Languages:** English + Portuguese + Spanish (react-i18next + content overlay system)
 **PWA:** Offline-capable with Workbox precaching
 
@@ -47,8 +47,8 @@ Scale degree function is encoded in color throughout the app:
 
 ### Gotchas
 
-- `src/core/` is copied from the original app at `~/Desktop/studio/projects/Music AI/src/`. Do not modify these files — they're framework-agnostic shared logic.
-- TypeScript strictness is relaxed (`noUnusedLocals: false`, `noUnusedParameters: false`) to accommodate copied core files.
+- `src/core/` is fermata-owned (the original shared source project was deleted); it is the framework-agnostic theory engine — edit freely but keep it framework-agnostic.
+- TypeScript strictness is fully on (`noUnusedLocals: true`, `noUnusedParameters: true` since WS6); prefix genuinely-needed-but-unused params with `_`.
 - Three core files were removed (queryProcessor, parserRegistry, queryOptionHandler) because they had unresolvable imports to UI components from the old app.
 - `visual.ts` has `SynthPresetName` inlined (was imported from a hook in the old app).
 - Tailwind v4 uses CSS-first config (`@import "tailwindcss"` in index.css) + `@tailwindcss/vite` plugin.
@@ -78,12 +78,12 @@ src/
   components/
     ErrorBoundary    App-level error boundary with auto-recovery
     instruments/     Piano, PianoKey, Fretboard, FretCell, FretboardString, FretboardPositionSelector, InstrumentSelector
-    theory/          ScaleDegreeBar, ChordGrid, ChordBrowser, CircleOfFifths (+ circleOfFifthsConstants.ts), ScaleComparison
-    panels/          DetailPanel, ChordDetail, ScaleDetail (with staff notation)
+    theory/          ScaleDegreeBar, ChordGrid, ChordBrowser, ChordWorkspace, ChordBuilderPanel, ChromaticStrip, CircleOfFifths (+ circleOfFifthsConstants.ts), ScaleComparison
+    panels/          CurrentChordPanel, LearnMoreButton
     navigation/      KeySelector, QuickSearch (Cmd+K)
     layout/          AppShell, TopBar, Toast, PWAPrompts
     notation/        StaffNotation, StaffNotationSkeleton, useStaffNotation (VexFlow 5.0)
-    learn/           LevelsOverview, LevelCard, LevelDetail, LevelIcon, LevelAchievement, UnitCard, UnitDetail, ModuleView, ModuleRow, ReviewQueue, ContinueBanner, LearnBreadcrumb, ProgressBar, DifficultyBadge, Confetti
+    learn/           LevelsOverview, LevelCard, LevelDetail, LevelAchievement, UnitCard, UnitDetail, ModuleView, ModuleRow, ReviewQueue, ContinueBanner, LearnBreadcrumb, ProgressBar, DifficultyBadge, Confetti
       exercises/     ExerciseRunner, ExercisePrompt, ExerciseFeedback, ExerciseProgress
         inputs/      ChoiceInput, InstrumentInput
   views/             ExploreView, LearnView
@@ -126,7 +126,7 @@ src/
 
 ### Features (Phase 6)
 - Custom guitar tunings (6 presets, chord shapes gated for non-standard)
-- Theme system (dark/light/system, CSS custom properties, full migration)
+- Theme system (fermata day + fermata-night, CSS custom properties, full migration)
 - PWA (offline, install prompt, update notification, font caching)
 - Scale comparison (chromatic diff grid, shared/unique visualization)
 - Ear training + scale degree ID exercises
@@ -173,4 +173,4 @@ src/
 
 ## Current State
 
-The app is now a lean, single-user, Explore-centred personal tool — no accounts, no cloud sync, no gamification. The curriculum and spaced-repetition review are fully functional. Next workstreams: real piano sound for the audio engine, theme consolidation (Fermata theme + a night variant), a unified Explore chord/degree surface, and a theory-content audit.
+The app is now a lean, single-user, Explore-centred personal tool — no accounts, no cloud sync, no gamification. The curriculum and spaced-repetition review are fully functional. WS4, WS5, and WS6 are done. Remaining known wants: PT diacritics restoration (docs/pt-diacritic-todo.md) and a fretboard orientation toggle (nut-right is the current deliberate rendering).

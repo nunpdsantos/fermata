@@ -146,8 +146,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build the ii7 chord for a ii-V-I progression in {root} major.',
-        hintTemplate: 'In {root} major, the ii7 is a minor 7th chord built on the 2nd degree. In jazz, ii-V-I is the most fundamental progression.',
+        promptTemplate: 'Build a minor 7th chord on {root} — the ii7 sound of a ii-V-I progression.',
+        hintTemplate: 'A ii7 is a minor 7th chord on {root}: root + minor 3rd + perfect 5th + minor 7th. In jazz, ii-V-I is the most fundamental progression.',
         params: {
           roots: ['C', 'G', 'F', 'D', 'A', 'E', 'B'],
           accidentals: ['', '', '', '', '', '', 'b'],
@@ -369,8 +369,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build the borrowed chord from the parallel mode in {root} major.',
-        hintTemplate: 'Pop music frequently borrows chords from parallel modes: bVII from Mixolydian, bIII from Dorian/minor, iv from Aeolian. Build on {root}.',
+        promptTemplate: 'Build a {quality} triad on {root} — a chord pop music borrows from a parallel mode.',
+        hintTemplate: 'Pop music frequently borrows chords from parallel modes: bVII from Mixolydian, bIII from Dorian/minor, iv from Aeolian. Build a {quality} triad on {root}.',
         params: {
           roots: ['B', 'E', 'A', 'D', 'G', 'C', 'F'],
           accidentals: ['b', 'b', 'b', '', '', '', ''],

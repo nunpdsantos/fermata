@@ -1,7 +1,7 @@
 // Scale formulas and definitions
 
 import { ScaleType, Note, NaturalNote, Scale } from '../types/music';
-import { getPitchClass, getNaturalAtInterval, NATURAL_TO_PITCH_CLASS } from './notes';
+import { getPitchClass, getNaturalAtInterval, NATURAL_TO_PITCH_CLASS, getSimplestSpelling } from './notes';
 import { INTERVAL_SHORT_LABELS } from './chords';
 
 // Scale formulas as semitone intervals from root
@@ -199,8 +199,10 @@ function getAccidentalForPitchClass(targetPitchClass: number, natural: NaturalNo
     return { natural, accidental: 'bb' };
   }
 
-  // Fallback - shouldn't reach here in normal scale construction
-  return { natural, accidental: diff > 6 ? 'b' : '#' };
+  // Out of double-accidental range (e.g. F### in B#-rooted scales): the
+  // one-letter-per-degree rule yields and the pitch is respelled
+  // enharmonically — a right-sounding note beats a pure letter name.
+  return getSimplestSpelling(targetPitchClass as Parameters<typeof getSimplestSpelling>[0]);
 }
 
 // Build a scale with correct enharmonic spelling

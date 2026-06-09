@@ -97,8 +97,14 @@ export function applyExerciseOverlay(
         hint: exOv.hint ?? ex.hint,
       };
 
-      // Translate multiple_choice labels
-      if (exOv.choices && ex.config.type === 'multiple_choice') {
+      // Translate answer-choice labels. multiple_choice always carries them;
+      // ear_training carries them in chord mode (ExerciseRunner reads
+      // ear-training answer labels from exercise.config.choices).
+      if (
+        exOv.choices &&
+        (ex.config.type === 'multiple_choice' || ex.config.type === 'ear_training') &&
+        ex.config.choices
+      ) {
         translated.config = {
           ...ex.config,
           choices: ex.config.choices.map((choice, i) => ({

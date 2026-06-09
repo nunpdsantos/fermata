@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { findModulesByQuery } from '../../data/moduleIndex.ts';
+import { findModulesByQuery, MODULE_INDEX } from '../../data/moduleIndex.ts';
 import { useAppStore } from '../../state/store.ts';
 import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
@@ -8,15 +8,23 @@ import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
 interface LearnMoreButtonProps {
   /** Text to search the module index with, e.g. "Dorian", "Major Seventh" */
   query: string;
+  /** Exact module to link to — wins over the fuzzy query when provided. */
+  moduleId?: string;
 }
 
 /**
  * Deep-links from Explore detail panels into the matching Learn module, if
  * the curriculum has one. Renders nothing when no lesson covers the query.
  */
-export function LearnMoreButton({ query }: LearnMoreButtonProps) {
+export function LearnMoreButton({ query, moduleId }: LearnMoreButtonProps) {
   const { t } = useTranslation();
-  const match = useMemo(() => findModulesByQuery(query, 1)[0] ?? null, [query]);
+  const match = useMemo(
+    () =>
+      (moduleId ? MODULE_INDEX.find((m) => m.id === moduleId) : undefined) ??
+      findModulesByQuery(query, 1)[0] ??
+      null,
+    [query, moduleId],
+  );
   const degreeColorsOn = useDegreeColorsEnabled();
   if (!match) return null;
 

@@ -38,8 +38,8 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
     { song: 'Billie Jean', artist: 'Michael Jackson', context: 'The bass line demonstrates steady quarter-note pulse with eighth-note subdivisions.' },
   ],
   'l1u2m2': [
-    { song: 'America', artist: 'Leonard Bernstein (West Side Story)', context: 'Alternates between 6/8 and 3/4 meter, highlighting how time signatures shape rhythmic feel.' },
-    { song: 'Take Five', artist: 'Dave Brubeck', context: 'Written in 5/4 time, demonstrating how unusual meters create distinctive rhythmic character.' },
+    { song: 'The Blue Danube', artist: 'Johann Strauss II', context: 'The archetypal waltz — count ONE-two-three throughout and the 3/4 meter reveals itself instantly.' },
+    { song: 'Yankee Doodle', artist: 'Traditional', context: 'A brisk 2/4 march — two beats per bar, with the strong-weak pattern that defines duple meter.' },
   ],
 
   // L1U3: Scales, Intervals, and First Chords
@@ -91,6 +91,7 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
   'l2u6m1': [
     { song: 'House of the Rising Sun', artist: 'Traditional (The Animals)', context: 'The arpeggiated accompaniment in 6/8 time demonstrates compound-duple meter, where each of the two main beats subdivides into groups of three eighth notes (some editions notate it in 12/8; the compound-duple feel is the same).' },
     { song: 'We Are the Champions', artist: 'Queen', context: 'The verse is in 6/8 before the chorus shifts feel — a contrast between compound and simple meter.' },
+    { song: 'America', artist: 'Leonard Bernstein (West Side Story)', context: 'Alternates between 6/8 and 3/4 meter — the same six eighth notes regrouped, the classic compound-vs-simple hemiola.' },
   ],
   'l2u6m2': [
     { song: 'Maple Leaf Rag', artist: 'Scott Joplin', context: 'A defining example of syncopation in ragtime — accents consistently fall between beats.' },
@@ -156,7 +157,7 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
 
   // L3U11: Cadences, Phrases, and Embellishment
   'l3u11m1': [
-    { song: 'Hallelujah', artist: 'Leonard Cohen', context: 'Each verse ends with a clear authentic cadence (V–I) on the word "Hallelujah." The iconic pre-chorus motion (IV–V–vi = "the minor fall, the major lift") is a textbook deceptive-cadence gesture.' },
+    { song: 'Hallelujah', artist: 'Leonard Cohen', context: 'Each verse ends with a clear authentic cadence (V–I) on the word "Hallelujah." The lyric narrates its own harmony: "the fourth, the fifth" (IV–V), "the minor fall" (vi), "the major lift" (IV) — and that V–vi move is a textbook deceptive-cadence gesture.' },
     { song: 'Yesterday', artist: 'The Beatles', context: 'Contains both half cadences (pausing on V) and authentic cadences within its phrase structure.' },
   ],
   'l3u11m2': [
@@ -174,6 +175,12 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
   'l3u11m5': [
     { song: 'Air on the G String', artist: 'J.S. Bach', context: 'The ornate melody line is built on chains of suspensions and passing tones over a simple bass.' },
     { song: 'Nocturne in Eb Major (Op. 9 No. 2)', artist: 'Frédéric Chopin', context: 'The ornamented melody weaves chromatic passing tones and neighbor tones around structural chord tones.' },
+  ],
+
+  // L4U14: Asymmetric and Mixed Meters
+  'l4u14m2': [
+    { song: 'Take Five', artist: 'Dave Brubeck', context: 'Written in 5/4 time (3+2), demonstrating how asymmetric meters create distinctive rhythmic character.' },
+    { song: 'Money', artist: 'Pink Floyd', context: 'The famous bass riff is in 7/4 — count the loop and feel the extra beat that simple meter would not allow.' },
   ],
 };
 

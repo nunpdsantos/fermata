@@ -14,6 +14,46 @@ import {
   backfillSchedules,
 } from '../services/spacedRepetition';
 
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === 'string');
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+const SCHEDULE_NUMERIC_FIELDS = [
+  'completedAt',
+  'nextReviewAt',
+  'intervalLevel',
+  'reviewCount',
+  'lastReviewedAt',
+] as const;
+
+/**
+ * Shape guard for persisted progress. localStorage contents are
+ * user-editable and can be corrupted by anything sharing the origin —
+ * never blind-cast them. On any mismatch the caller falls back to defaults.
+ */
+function isValidPersistedProgress(value: unknown): value is { progress: CurriculumProgress } {
+  if (!isPlainObject(value)) return false;
+  const progress = value.progress;
+  if (!isPlainObject(progress)) return false;
+  if (!isStringArray(progress.completedModules)) return false;
+  if (!isPlainObject(progress.moduleProgress)) return false;
+  if (!Object.values(progress.moduleProgress).every(isStringArray)) return false;
+  if (progress.reviewSchedules !== undefined) {
+    if (!isPlainObject(progress.reviewSchedules)) return false;
+    for (const schedule of Object.values(progress.reviewSchedules)) {
+      if (!isPlainObject(schedule)) return false;
+      if (SCHEDULE_NUMERIC_FIELDS.some((field) => typeof schedule[field] !== 'number')) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 interface ProgressStore {
   progress: CurriculumProgress;
 
@@ -69,12 +109,19 @@ export const useProgressStore = create<ProgressStore>()(
         }),
 
       uncompleteModule: (moduleId) =>
-        set((state) => ({
-          progress: {
-            ...state.progress,
-            completedModules: state.progress.completedModules.filter((id) => id !== moduleId),
-          },
-        })),
+        set((state) => {
+          // Drop the review schedule too — an un-completed module must not
+          // keep surfacing in the review queue.
+          const schedules = { ...(state.progress.reviewSchedules ?? {}) };
+          delete schedules[moduleId];
+          return {
+            progress: {
+              ...state.progress,
+              completedModules: state.progress.completedModules.filter((id) => id !== moduleId),
+              reviewSchedules: schedules,
+            },
+          };
+        }),
 
       recordExerciseResult: (moduleId, exerciseId, score) =>
         set((state) => {
@@ -189,7 +236,17 @@ export const useProgressStore = create<ProgressStore>()(
           }
           return { progress: getDefaultProgress() };
         }
-        return persisted as { progress: CurriculumProgress };
+        return isValidPersistedProgress(persisted)
+          ? persisted
+          : { progress: getDefaultProgress() };
+      },
+      // zustand skips migrate() when the stored version matches, so corrupt
+      // same-version data must be caught here on the merge path.
+      merge: (persisted, current) => {
+        if (!isValidPersistedProgress(persisted)) {
+          return { ...current, progress: getDefaultProgress() };
+        }
+        return { ...current, ...persisted };
       },
     },
   ),

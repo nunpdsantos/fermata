@@ -33,9 +33,11 @@ const pt: MusicTermDictionary = {
     augmented: 'aumentado',
     major7: 'maior com 7.ª M',
     minor7: 'menor com 7.ª',
-    dominant7: 'dominante com 7.ª',
+    // Interpolated after the root ('um acorde de Dó {quality}'), so these read
+    // 'um acorde de Dó de sétima da dominante' — standard PT terminology.
+    dominant7: 'de sétima da dominante',
     half_diminished7: 'meio-diminuto',
-    diminished7: 'diminuto com 7.ª',
+    diminished7: 'de sétima diminuta',
     major9: 'maior com 9.ª',
     minor9: 'menor com 9.ª',
   },
@@ -71,9 +73,11 @@ const es: MusicTermDictionary = {
     augmented: 'aumentado',
     major7: 'mayor con 7.ª M',
     minor7: 'menor con 7.ª',
-    dominant7: 'dominante con 7.ª',
+    // Interpolado tras la fundamental ('un acorde de Do {quality}'), así que se
+    // lee 'un acorde de Do de séptima de dominante' — terminología estándar.
+    dominant7: 'de séptima de dominante',
     half_diminished7: 'semidisminuido',
-    diminished7: 'disminuido con 7.ª',
+    diminished7: 'de séptima disminuida',
     major9: 'mayor con 9.ª',
     minor9: 'menor con 9.ª',
   },

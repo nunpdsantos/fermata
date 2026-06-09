@@ -131,7 +131,7 @@ const curriculumL5: CurriculumLevelOverlay = {
         {
           title: 'Totalmente Diminuto vs. Meio-Diminuto',
           explanation:
-            'viio7/X (sétima totalmente diminuta) é mais intenso e mais comum em tonalidades menores. Todos os intervalos são terceiras menores, tornando o acorde simétrico — qualquer nota pode funcionar como fundamental. viio7/X com sétima meio-diminuta é menos intenso e mais comum em tonalidades maiores. A sétima totalmente diminuta permite reinterpretação enarmónica, o que se torna importante para modulações distantes no Nível 6.',
+            'viio7/X (sétima totalmente diminuta) é o mais intenso dos dois, e a escolha entre eles depende do acorde a ser tonicizado e não do modo da tonalidade de partida: alvos menores recebem o viio7/X totalmente diminuto, enquanto alvos maiores podem ser abordados tanto por viio7/X como pelo mais suave viiø7/X — acordes secundários totalmente diminutos também são comuns em tonalidades maiores. Todos os intervalos do viio7 são terceiras menores, tornando o acorde simétrico — qualquer nota pode funcionar como fundamental. Essa simetria permite a reinterpretação enarmónica, o que se torna importante para modulações distantes no Nível 6.',
           tryThisLabel: 'Ouve Bdim7 — um acorde de sétima totalmente diminuta',
         },
         {

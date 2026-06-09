@@ -13,11 +13,12 @@ const overlay: TemplateLevelOverlay = {
   // ---- l5u15m1: Dominantes Secundarias V/V ----
   l5u15m1: [
     {
-      // chord_build
+      // chord_build — {root} es la fundamental del acorde, no la tonalidad:
+      // la respuesta evaluada es una tríada mayor SOBRE {root}. Refleja el EN.
       promptTemplate:
-        'Construye V/V (la dominante secundaria de V) en la tonalidad de {root} mayor.',
+        'Construye una tríada mayor de {root}.',
       hintTemplate:
-        'V/V es la dominante de la dominante. En {root} mayor, encuentra el acorde V y después construye una séptima dominante (o tríada mayor) sobre su 5.º grado de la escala.',
+        'Una tríada mayor: fundamental + 3.ª mayor + 5.ª justa. Esta cualidad de acorde se usa para dominantes secundarias como V/V.',
     },
     {
       // multiple_choice

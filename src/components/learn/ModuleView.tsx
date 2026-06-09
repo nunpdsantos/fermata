@@ -387,16 +387,26 @@ export function ModuleView({
             <div className="divide-y" style={{ borderColor: 'color-mix(in srgb, var(--border) 50%, transparent)' }}>
               {module.tasks.map((task) => {
                 const done = isTaskCompleted(module.id, task.id);
+                // Row is a div, not a button: the instruction text embeds
+                // query-link buttons and nesting button-in-button is invalid
+                // HTML (React 19 errors on it). The checkbox button carries
+                // focus and keyboard toggling; row clicks still toggle.
                 return (
-                  <button
+                  <div
                     key={task.id}
                     onClick={() => onToggleTask(module.id, task.id)}
-                    className="w-full text-left px-4 py-3 flex items-start gap-3 transition-colors group"
-                    style={{ ['--tw-bg-opacity' as string]: undefined }}
+                    className="w-full text-left px-4 py-3 flex items-start gap-3 transition-colors group cursor-pointer"
                     onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'color-mix(in srgb, var(--card-hover) 30%, transparent)'; }}
                     onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
                   >
-                    <span
+                    <button
+                      type="button"
+                      aria-pressed={done}
+                      aria-label={task.instruction}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleTask(module.id, task.id);
+                      }}
                       className={`mt-0.5 w-4 h-4 rounded-md border flex items-center justify-center shrink-0 transition-all duration-200 ${
                         done
                           ? 'border-emerald-500 bg-emerald-500/20'
@@ -418,14 +428,14 @@ export function ModuleView({
                           </m.svg>
                         )}
                       </AnimatePresence>
-                    </span>
+                    </button>
                     <span
                       className={`text-sm transition-colors ${done ? 'line-through' : ''}`}
                       style={{ color: done ? 'var(--text-dim)' : 'var(--text-muted)' }}
                     >
                       {renderTaskInstruction(task.instruction, handleTryThis, accent)}
                     </span>
-                  </button>
+                  </div>
                 );
               })}
             </div>
@@ -443,7 +453,9 @@ export function ModuleView({
             <button
               onClick={() => {
                 onCompleteModule(module.id);
-                import('../../utils/celebrationSound').then(({ playCelebrationSound }) => playCelebrationSound());
+                import('../../utils/celebrationSound')
+                  .then(({ playCelebrationSound }) => playCelebrationSound())
+                  .catch(() => {}); // offline without the chunk cached — celebration is optional
                 setShowConfetti(true);
 
                 // Check if this was the last module in the level

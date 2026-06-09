@@ -46,10 +46,11 @@ export default defineConfig({
           '**/curriculum[lL]*',
           '**/exercisesL*',
           '**/templatesL*',
-          '**/songReferences*',
           '**/ExploreView-*',
-          '**/PlayView-*',
           '**/LearnView-*',
+          '**/StaffNotation*',
+          '**/notationHelpers*',
+          '**/celebrationSound*',
         ],
         runtimeCaching: [
           {
@@ -60,11 +61,14 @@ export default defineConfig({
               expiration: { maxEntries: 2, maxAgeSeconds: 30 * 24 * 60 * 60 },
             },
           },
-          // Curriculum levels + exercises + templates + song refs + view chunks:
-          // StaleWhileRevalidate so users get offline support after first touch
-          // without blowing up the first-visit precache.
+          // Curriculum levels + exercises + templates + view chunks + the
+          // notation/celebration satellites those views lazy-import:
+          // StaleWhileRevalidate so users get offline support after first
+          // touch without blowing up the first-visit precache. StaffNotation
+          // is the entry point for the cached vexflow chunk — without it,
+          // notation exercises broke offline even with vexflow cached.
           {
-            urlPattern: /\/assets\/(curriculum[Ll]|exercisesL|templatesL|songReferences|ExploreView-|PlayView-|LearnView-).*\.js$/,
+            urlPattern: /\/assets\/(curriculum[Ll]|exercisesL|templatesL|ExploreView-|LearnView-|StaffNotation|notationHelpers|celebrationSound).*\.js$/,
             handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'content-cache',
@@ -73,8 +77,11 @@ export default defineConfig({
           },
         ],
       },
+      // Dev service worker disabled: a registered SW during development
+      // serves stale-cached modules and causes confusing behavior. Production
+      // registration is unaffected.
       devOptions: {
-        enabled: true,
+        enabled: false,
       },
     }),
   ],

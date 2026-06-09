@@ -35,9 +35,14 @@ test.describe('Learn flow — curriculum navigation', () => {
     await expect(page.getByText(/unit/i).first()).toBeVisible({ timeout: 10_000 });
   });
 
-  test('welcome banner shows Start Level 1 for fresh user', async ({ page }) => {
-    // With no progress, we should see the welcome banner
-    const startButton = page.getByRole('button', { name: 'Start Level 1' });
-    await expect(startButton).toBeVisible({ timeout: 10_000 });
+  test('fresh user gets a Continue entry point into the first module', async ({ page }) => {
+    // A fresh user always has a nextUp target (the first module), so the
+    // Continue card — not the welcome banner — is the entry point.
+    const continueCard = page.getByRole('button', { name: /The Staff and Clefs/ });
+    await expect(continueCard).toBeVisible({ timeout: 10_000 });
+    await continueCard.click();
+    await expect(page.getByRole('heading', { name: 'The Staff and Clefs' })).toBeVisible({
+      timeout: 10_000,
+    });
   });
 });

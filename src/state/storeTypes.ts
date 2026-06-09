@@ -34,6 +34,9 @@ export interface InstrumentSlice {
   instrument: InstrumentType;
   activeNotes: Set<number>;
   highlightedNotes: PitchedNote[];
+  /** True while an instrument-input exercise is mounted — instruments then
+   *  suppress Explore key/chord visuals and render highlightedNotes instead. */
+  exerciseInputActive: boolean;
   guitarScalePosition: number | null;
   guitarTuningId: string;
   setInstrument: (instrument: InstrumentType) => void;
@@ -41,6 +44,7 @@ export interface InstrumentSlice {
   removeActiveNote: (midi: number) => void;
   clearActiveNotes: () => void;
   setHighlightedNotes: (notes: PitchedNote[]) => void;
+  setExerciseInputActive: (active: boolean) => void;
   setGuitarScalePosition: (position: number | null) => void;
   setGuitarTuningId: (id: string) => void;
 }

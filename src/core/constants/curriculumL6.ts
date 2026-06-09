@@ -256,7 +256,7 @@ const l6u19m1: CurriculumModule = {
     {
       title: 'Four Possible Resolutions',
       explanation:
-        'Because any of the four notes can serve as the leading tone, one diminished seventh chord can function as viio7 in four different keys. B-D-F-Ab resolves to C minor (B is leading tone). Respell as D-F-Ab-Cb: resolves to Eb minor (D is leading tone). Respell as F-Ab-Cb-Ebb: resolves to Gb minor. Respell as Ab-Cb-Ebb-Gbb: resolves to A minor (strictly Bbb minor; A minor via enharmonic respelling as G#-B-D-F). The four target keys are each a minor third apart.',
+        'Because any of the four notes can serve as the leading tone, one diminished seventh chord can function as viio7 in four different keys. B-D-F-Ab resolves to C minor (B is leading tone). Respell as D-F-Ab-Cb: resolves to Eb minor (D is leading tone). Respell as F-Ab-Cb-Ebb: resolves to Gb minor. Respell as G#-B-D-F (G# as leading tone): resolves to A minor. The four target keys — C, Eb, Gb, A — are each a minor third apart.',
       tryThisQuery: 'C minor scale',
       tryThisLabel: 'See C minor \u2014 one of four possible resolutions',
     },

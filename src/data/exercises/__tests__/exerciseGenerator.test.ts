@@ -4,6 +4,7 @@ import type { ModuleTemplateConfig } from '../exerciseTemplates';
 import type { ExerciseDefinition } from '../../../core/types/exercise';
 import templatesL1 from '../templatesL1';
 import templatesL4 from '../templatesL4';
+import templatesL6 from '../templatesL6';
 import { buildScale } from '../../../core/constants/scales';
 import { noteToString } from '../../../core/types/music';
 import type { NaturalNote, Accidental, ScaleType } from '../../../core/types/music';
@@ -186,6 +187,26 @@ describe('exerciseGenerator', () => {
       for (const id of ['l4u14m2', 'l4u14m3', 'l4u14m4', 'l4u14m5']) {
         for (const ex of generated[id] ?? []) {
           expect(ex.prompt, `${id} generated a counterpoint prompt`).not.toMatch(/species counterpoint/i);
+        }
+      }
+    });
+  });
+
+  // ── WS6 T1 regression guard ──────────────────────────────────────────────
+  // templatesL6 l6u18m1/l6u18m3 prompts use '{root}{accidental}', but
+  // fillTemplate renders the accidental as part of {root} (e.g. 'Gb') and had
+  // no 'accidental' replacement — learners saw literal
+  // 'Build a Gb{accidental} major triad'. fillTemplate must strip the legacy
+  // {accidental} token so no generated prompt/hint carries an unreplaced token.
+  describe('L6 leftover-token rendering (WS6 T1)', () => {
+    it('generates l6u18m1 exercises and leaves no unreplaced {token} in any L6 EN prompt or hint', () => {
+      const generated = generateAllForLevel(templatesL6, 'en');
+      expect(generated['l6u18m1']?.length, 'l6u18m1 should generate exercises').toBeGreaterThan(0);
+
+      for (const exercises of Object.values(generated)) {
+        for (const ex of exercises) {
+          expect(ex.prompt, `${ex.id} prompt contains an unreplaced token: "${ex.prompt}"`).not.toContain('{');
+          expect(ex.hint ?? '', `${ex.id} hint contains an unreplaced token: "${ex.hint}"`).not.toContain('{');
         }
       }
     });

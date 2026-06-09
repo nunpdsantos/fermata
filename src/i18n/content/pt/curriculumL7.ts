@@ -100,7 +100,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Dominantes Suspensas: 7sus4',
           explanation:
-            'O acorde 7sus4 substitui a terca por uma quarta num acorde de setima dominante, criando um som aberto e nao resolvido. C7sus4 contem C-F-G-Bb — sem Mi, portanto sem identidade maior/menor. No jazz, o 7sus4 funciona como voicing pre-resolucao: a quarta suspensa resolve para a terca, e depois o acorde inteiro resolve para I. O 7sus4 tambem serve como sonoridade dorica (o voicing sus4 construido sobre a quinta de um acorde menor cria um sabor dorico). O sus2 funciona de forma semelhante, substituindo a terca por uma segunda para uma qualidade brilhante e aberta.',
+            'O acorde 7sus4 substitui a terca por uma quarta num acorde de setima dominante, criando um som aberto e nao resolvido. C7sus4 contem C-F-G-Bb — sem Mi, portanto sem identidade maior/menor. No jazz, o 7sus4 funciona como voicing pre-resolucao: a quarta suspensa resolve para a terca, e depois o acorde inteiro resolve para I. O 7sus4 tambem serve como sonoridade modal de pendor dorico: um acorde 9sus construido uma quinta perfeita acima da fundamental de um acorde menor (a posicao V-de-ii, por exemplo G9sus sobre Dm ou no lugar dele) substitui o acorde ii — Dm11/G e uma grafia comum do mesmo som. O sus2 funciona de forma semelhante, substituindo a terca por uma segunda para uma qualidade brilhante e aberta.',
           tryThisLabel: 'Ouve G7sus4 — dominante suspensa, sem terca',
         },
       ],
@@ -194,7 +194,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'O Dominante da Porta de Tras',
           explanation:
-            'O dominante da porta de tras (bVII7-I) aborda a tonica a partir de um tom abaixo em vez de uma quinta acima. Em Do: Bb7-Cmaj7. A terca de Bb7 (Re) resolve para cima para a terca de Cmaj7 (Mi), e a setima de Bb7 (Lab) resolve para baixo para a quinta de Cmaj7 (Sol). Isto cria uma resolucao surpreendente e quente que evita a cadencia V7-I esperada. Comum em standards de jazz e bossa nova, o dominante da porta de tras e um parente da substituicao tritonica — Bb7 e a substituicao tritonica de E7, o V7/iii.',
+            'O dominante da porta de tras (bVII7-I) aborda a tonica a partir de um tom abaixo em vez de uma quinta acima. Em Do: Bb7-Cmaj7. A terca de Bb7 (Re) resolve para cima para a terca de Cmaj7 (Mi), e a setima de Bb7 (Lab) resolve para baixo para a quinta de Cmaj7 (Sol). Isto cria uma resolucao surpreendente e quente que evita a cadencia V7-I esperada. Comum em standards de jazz e bossa nova, o dominante da porta de tras entende-se melhor como um emprestimo do menor paralelo — e o dominante de bIII (Mib) que chega, em vez disso, a I. As suas notas-guia (Re e Lab) tambem existem no dominante alterado da tonalidade (G7b9), e e por isso que Bb7 puxa tao convincentemente para Do: Re sobe para Mi e Lab desce para Sol, ambas sensiveis superiores em direcao a Cmaj7.',
           tryThisLabel: 'Ouve Bb7 — o dominante da porta de tras em Do',
         },
       ],
@@ -302,7 +302,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Aplica o turnaround cromatico: toca "Cmaj7", "Eb7", "Ab7", "Db7". Cada acorde apos o I e uma substituicao tritonica — Eb7 substitui A7, Ab7 substitui D7, Db7 substitui G7. O baixo desce cromaticamente: C-Eb-Ab-Db.',
+            'Aplica o turnaround cromatico: toca "Cmaj7", "Eb7", "Ab7", "Db7". Cada acorde apos o I e uma substituicao tritonica — Eb7 substitui A7, Ab7 substitui D7, Db7 substitui G7. As fundamentais C-Eb-Ab-Db sobem uma terca menor e depois duas quartas perfeitas — e o Db7 final resolve meio tom abaixo para Do, a recompensa cromatica das substituicoes.',
         },
       ],
     },
@@ -479,7 +479,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Progressoes de Acordes Modais',
           explanation:
-            'Cada modo suporta movimentos de acordes especificos que reforcam a sua cor. O dorico favorece i, II e IV — o acorde maior II contem a sexta elevada caracteristica (ex: Dm-Em-C-Dm). O frigio centra-se em i e bII — o bII esta um meio-tom acima da tonica, a assinatura sonora do frigio (Em-F-Em). O lidio gravita para I, II e vii — a quarta elevada aparece tanto em II como em vii (C-D-Bm-C). O mixolidio apoia-se em I e bVII — a setima rebaixada esta no acorde bVII (G-F-Dm-G). Evita qualquer acorde que implique resolucao dominante-tonica.',
+            'Cada modo suporta movimentos de acordes especificos que reforcam a sua cor. O acorde de cor caracteristico do dorico e o IV maior sobre a tonica i — a sexta elevada vive nele (Dm-G-Dm); ii e bVII funcionam como cores secundarias. O frigio centra-se em i e bII — o bII esta um meio-tom acima da tonica, a assinatura sonora do frigio (Em-F-Em). O acorde de cor caracteristico do lidio e o II maior sobre a tonica I — a quarta elevada vive nele (C-D-C); vii partilha essa quarta elevada como cor secundaria. O mixolidio apoia-se em I e bVII — a setima rebaixada esta no acorde bVII (G-F-Dm-G). Evita qualquer acorde que implique resolucao dominante-tonica.',
           tryThisLabel: 'Ve Sol mixolidio — bVII e o acorde-chave',
         },
       ],
@@ -565,7 +565,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Progressoes Pop Comuns',
           explanation:
-            'A musica pop assenta num pequeno conjunto de loops de acordes com assinaturas emocionais distintas. A progressao I-V-vi-IV "Axis" soa edificante e antemica. A sua rotacao vi-IV-I-V ("Sensitive") soa emocional e moderna. I-bVII-IV produz uma sensacao mixolidia, blues rock. A cadencia i-bVI-bIII-bVII "Andaluza" soa escura e cinematica. I-vi-IV-V e a progressao classica dos anos 50, nostalgica e quente. Estes loops repetem-se ao longo de seccoes inteiras — a variacao harmonica provem da melodia, producao e arranjo em vez de mudancas de acordes.',
+            'A musica pop assenta num pequeno conjunto de loops de acordes com assinaturas emocionais distintas. A progressao I-V-vi-IV "Axis" soa edificante e antemica. A sua rotacao vi-IV-I-V ("Sensitive") soa emocional e moderna. I-bVII-IV produz uma sensacao mixolidia, blues rock. A cadencia "Andaluza" i-bVII-bVI-V — um baixo descendente por graus conjuntos da tonica ate a dominante, vinda diretamente do flamenco — soa escura e cinematica. I-vi-IV-V e a progressao classica dos anos 50, nostalgica e quente. Estes loops repetem-se ao longo de seccoes inteiras — a variacao harmonica provem da melodia, producao e arranjo em vez de mudancas de acordes.',
           tryThisLabel: 'Comeca o acorde I de uma progressao pop em Do',
         },
         {

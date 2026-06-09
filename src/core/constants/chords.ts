@@ -7,9 +7,8 @@ import {
   Chord,
   SlashChord,
   PitchedNote,
-  Accidental,
 } from '../types/music';
-import { getPitchClass, NATURAL_TO_PITCH_CLASS } from './notes';
+import { getPitchClass, NATURAL_TO_PITCH_CLASS, getSimplestSpelling } from './notes';
 
 // Natural notes in order for letter distance calculations
 const NATURALS: NaturalNote[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
@@ -21,24 +20,21 @@ function getNaturalAtLetterDistance(rootNatural: NaturalNote, letterDistance: nu
   return NATURALS[targetIndex];
 }
 
-// Calculate the accidental needed to reach a target pitch class from a natural note
-function getAccidentalForTargetPitchClass(
-  targetPitchClass: number,
-  targetNatural: NaturalNote
-): Accidental {
+// Spell a target pitch class on a preferred natural letter. When the correct
+// spelling would need a triple accidental (e.g. F### in B#-rooted chords), the
+// letter rule yields and the pitch is respelled enharmonically — a
+// right-sounding note beats a pure letter name.
+function spellTargetPitchClass(targetPitchClass: number, targetNatural: NaturalNote): Note {
   const naturalPitchClass = NATURAL_TO_PITCH_CLASS[targetNatural];
   const diff = (targetPitchClass - naturalPitchClass + 12) % 12;
 
-  // Handle the wraparound cases
-  if (diff === 0) return '';
-  if (diff === 1) return '#';
-  if (diff === 11) return 'b';
-  if (diff === 2) return '##';
-  if (diff === 10) return 'bb';
+  if (diff === 0) return { natural: targetNatural, accidental: '' };
+  if (diff === 1) return { natural: targetNatural, accidental: '#' };
+  if (diff === 11) return { natural: targetNatural, accidental: 'b' };
+  if (diff === 2) return { natural: targetNatural, accidental: '##' };
+  if (diff === 10) return { natural: targetNatural, accidental: 'bb' };
 
-  // For cases that shouldn't normally happen in standard music theory
-  console.warn(`Unexpected pitch class difference: ${diff} for natural ${targetNatural}`);
-  return diff > 6 ? 'b' : '#';
+  return getSimplestSpelling(targetPitchClass as Parameters<typeof getSimplestSpelling>[0]);
 }
 
 // Build a Note from a natural note and target pitch class
@@ -46,8 +42,7 @@ function buildNoteFromNaturalAndPitchClass(
   targetNatural: NaturalNote,
   targetPitchClass: number
 ): Note {
-  const accidental = getAccidentalForTargetPitchClass(targetPitchClass, targetNatural);
-  return { natural: targetNatural, accidental };
+  return spellTargetPitchClass(targetPitchClass, targetNatural);
 }
 
 // Chord formulas as semitone intervals from root
@@ -79,7 +74,7 @@ export const CHORD_FORMULAS: Record<ChordQuality, number[]> = {
   dominant7sharp9: [0, 4, 7, 10, 15], // 7#9 - dominant 7th + augmented 9th
   dominant7flat5: [0, 4, 6, 10], // 7b5 - dominant 7th with diminished 5th
   dominant7sharp5: [0, 4, 8, 10], // 7#5 - same as augmented7
-  dominant7alt: [0, 4, 6, 10, 13], // 7alt - root, 3rd, b5, b7, b9 (altered dominant)
+  dominant7alt: [0, 4, 10, 13, 15, 18, 20], // 7alt - R, 3, b7 + all four alterations: b9, #9, #11, b13 (5th omitted, standard for alt)
   // Extended Chords
   dominant11: [0, 7, 10, 14, 17], // 11 - 3rd omitted (minor 9th clash with 11th)
   major11: [0, 7, 11, 14, 17], // maj11 - 3rd omitted (minor 9th clash with 11th)
@@ -160,7 +155,7 @@ export const CHORD_LETTER_DISTANCES: Record<ChordQuality, number[]> = {
   dominant7sharp9: [0, 2, 4, 6, 1],
   dominant7flat5: [0, 2, 4, 6],
   dominant7sharp5: [0, 2, 4, 6],
-  dominant7alt: [0, 2, 4, 6, 1],
+  dominant7alt: [0, 2, 6, 1, 1, 3, 5], // R, 3rd, b7th, b9 + #9 share the 2nd letter (Db/D# over C), #11 on the 4th, b13 on the 6th
 
   // 11th chords: Root, 5th, 7th, 9th, 11th (3rd omitted)
   dominant11: [0, 4, 6, 1, 3],
@@ -332,13 +327,8 @@ export function buildChord(root: Note, quality: ChordQuality): Chord {
     // Calculate what pitch class we need
     const targetPitchClass = (rootPitchClass + semitones) % 12;
 
-    // Determine the accidental needed to reach that pitch class from the natural
-    const accidental = getAccidentalForTargetPitchClass(targetPitchClass, targetNatural);
-
-    notes.push({
-      natural: targetNatural,
-      accidental,
-    });
+    // Spell the tone on the structural letter (respelled if out of accidental range)
+    notes.push(spellTargetPitchClass(targetPitchClass, targetNatural));
   }
 
   return { root, quality, notes };
@@ -422,7 +412,7 @@ export const INTERVAL_LABELS: Record<number, string> = {
   5: 'Perfect 4th',
   6: 'Tritone',
   7: 'Perfect 5th',
-  8: 'Augmented 5th',
+  8: 'Minor 6th',
   9: 'Major 6th',
   10: 'Minor 7th',
   11: 'Major 7th',
@@ -449,7 +439,7 @@ export const INTERVAL_SHORT_LABELS: Record<number, string> = {
   5: '4',
   6: 'b5',
   7: '5',
-  8: '#5',
+  8: 'b6',
   9: '6',
   10: 'b7',
   11: '7',
@@ -466,16 +456,34 @@ export const INTERVAL_SHORT_LABELS: Record<number, string> = {
   22: '#13',
 };
 
+// Chord-context interval-label overrides. The generic tables name 8 semitones
+// "Minor 6th"/"b6" (correct for interval ID and scale degrees), but inside the
+// augmented chord family that tone is spelled as a raised 5th.
+const CHORD_CONTEXT_LABELS: Partial<Record<ChordQuality, Record<number, { label: string; short: string }>>> = {
+  augmented: { 8: { label: 'Augmented 5th', short: '#5' } },
+  augmented7: { 8: { label: 'Augmented 5th', short: '#5' } },
+  augmented_major7: { 8: { label: 'Augmented 5th', short: '#5' } },
+  dominant7sharp5: { 8: { label: 'Augmented 5th', short: '#5' } },
+  dominant7sharp5flat9: { 8: { label: 'Augmented 5th', short: '#5' } },
+  dominant7sharp5sharp9: { 8: { label: 'Augmented 5th', short: '#5' } },
+};
+
 // Get interval labels for a chord quality
 export function getChordIntervalLabels(quality: ChordQuality): string[] {
   const formula = CHORD_FORMULAS[quality];
-  return formula.map((semitones) => INTERVAL_LABELS[semitones] || `${semitones} st`);
+  return formula.map(
+    (semitones) =>
+      CHORD_CONTEXT_LABELS[quality]?.[semitones]?.label ?? INTERVAL_LABELS[semitones] ?? `${semitones} st`,
+  );
 }
 
 // Get short interval labels for a chord quality
 export function getChordShortIntervalLabels(quality: ChordQuality): string[] {
   const formula = CHORD_FORMULAS[quality];
-  return formula.map((semitones) => INTERVAL_SHORT_LABELS[semitones] || `${semitones}`);
+  return formula.map(
+    (semitones) =>
+      CHORD_CONTEXT_LABELS[quality]?.[semitones]?.short ?? INTERVAL_SHORT_LABELS[semitones] ?? `${semitones}`,
+  );
 }
 
 // Get interval labels for a chord with current inversion

@@ -505,7 +505,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Primera y Segunda Especie',
           explanation:
-            'La primera especie (1:1) coloca una nota del contrapunto contra cada nota del cantus firmus (melodía dada). Cada intervalo debe ser consonante. Comienza y termina en P1, P5 o P8, usa mayoritariamente consonancias imperfectas y nunca se aproxima a consonancias perfectas en movimiento paralelo. La segunda especie (2:1) añade dos notas contra cada nota del cantus firmus. Los tiempos fuertes deben ser consonantes; los tiempos débiles pueden ser disonantes si son notas de paso o bordaduras abordadas y abandonadas por grado conjunto. Es aquí donde las notas extrañas al acorde entran por primera vez en el contrapunto.',
+            'La primera especie (1:1) coloca una nota del contrapunto contra cada nota del cantus firmus (melodía dada). Cada intervalo debe ser consonante. Comienza y termina en P1, P5 o P8, usa mayoritariamente consonancias imperfectas y nunca se aproxima a consonancias perfectas en movimiento paralelo. La segunda especie (2:1) añade dos notas contra cada nota del cantus firmus. Los tiempos fuertes deben ser consonantes; en la especie estricta, la única disonancia permitida en un tiempo débil es la nota de paso, abordada y abandonada por grado conjunto (las bordaduras disonantes llegan más tarde, en la tercera especie — aunque algunos textos modernos las admiten antes). Es aquí donde las notas extrañas al acorde entran por primera vez en el contrapunto.',
           tryThisLabel: 'Imagina una segunda voz contra esta línea',
         },
       ],
@@ -551,7 +551,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Compases Mixtos y Tiempo Cortado',
           explanation:
-            'El compás mixto cambia la indicación de compás de un compás a otro: un compás de 4/4, el siguiente de 3/4, luego 5/4. Esto crea una superficie rítmica impredecible y cambiante, habitual en bandas sonoras de cine y rock progresivo. El tiempo cortado (alla breve, 2/2) usa dos tiempos de blanca por compás — las mismas notas escritas que en 4/4 pero sentidas en 2, dando una sensación de tempo más rápido con mayor impulso métrico. El tiempo cortado es estándar en marchas y movimientos rápidos del periodo Clásico.',
+            'El compás mixto cambia la indicación de compás de un compás a otro: un compás de 4/4, el siguiente de 3/4, luego 5/4. Esto crea una superficie rítmica impredecible y cambiante, habitual en bandas sonoras de cine y rock progresivo. El tiempo cortado (alla breve, 2/2) usa dos tiempos de blanca por compás — un compás de 2/2 tiene la misma duración total que un compás de 4/4, pero la unidad de tiempo es la blanca en lugar de la negra, por lo que la música se cuenta en 2 y gana una sensación más amplia y de movimiento más rápido, con mayor impulso métrico. El tiempo cortado es estándar en marchas y movimientos rápidos del periodo Clásico.',
           tryThisLabel: 'Sigue en tiempo cortado: 2 tiempos por compás',
         },
       ],
