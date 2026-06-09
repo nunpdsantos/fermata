@@ -624,7 +624,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Any time signature where the note values are halved', correct: false },
         ],
       },
-      hint: 'Cut time (alla breve) is 2/2: two half-note beats per measure. While it contains the same number of quarter notes as 4/4, the conductor beats in 2 rather than 4, giving a lighter, faster-moving feel at the same tempo.',
+      hint: 'Cut time (alla breve) is 2/2: two half-note beats per measure. A 2/2 bar has the same total duration as a 4/4 bar, but it is counted in 2 (half-note beat) rather than 4 (quarter-note beat) — the same notes felt in two beats, giving a broader, faster-moving pulse.',
       points: 1,
     },
   ],

@@ -2,6 +2,12 @@ import { describe, it, expect } from 'vitest';
 import { generateExercises, generateAllForLevel, mergeExerciseMaps } from '../exerciseGenerator';
 import type { ModuleTemplateConfig } from '../exerciseTemplates';
 import type { ExerciseDefinition } from '../../../core/types/exercise';
+import templatesL1 from '../templatesL1';
+import templatesL4 from '../templatesL4';
+import { buildScale } from '../../../core/constants/scales';
+import { noteToString } from '../../../core/types/music';
+import type { NaturalNote, Accidental, ScaleType } from '../../../core/types/music';
+import { validateAnswer } from '../../../components/learn/exercises/validateExercise';
 
 const SIMPLE_CONFIG: ModuleTemplateConfig = {
   moduleId: 'l1u1m1',
@@ -146,6 +152,95 @@ describe('exerciseGenerator', () => {
       expect(merged['l1u1m1'][1].id).toBe('l1u1m1g1');
       // New module from generated
       expect(merged['l1u1m2'].length).toBe(1);
+    });
+  });
+
+  // ── WS5 A2 regression guard ──────────────────────────────────────────────
+  // Counterpoint generation templates must key ONLY to the counterpoint module
+  // (l4u14m1 = "First and Second Species Counterpoint"). They were previously
+  // mis-mapped onto l4u14m2 (Asymmetric Meters), m3 (Chromatic Embellishment),
+  // m4 (Roman Numeral Analysis), and m5 (Minor Key Harmony) per curriculumL4.ts.
+  describe('L4 Unit 14 counterpoint template mapping (WS5 A2)', () => {
+    const configById = (id: string) => templatesL4.find((c) => c.moduleId === id);
+
+    const mentionsSpeciesCounterpoint = (cfg: ModuleTemplateConfig | undefined) =>
+      !!cfg &&
+      cfg.templates.some((t) =>
+        /species counterpoint/i.test(t.promptTemplate) || /species counterpoint/i.test(t.hintTemplate),
+      );
+
+    it('keys species-counterpoint templates to l4u14m1', () => {
+      const m1 = configById('l4u14m1');
+      expect(m1, 'l4u14m1 template config should exist').toBeTruthy();
+      expect(mentionsSpeciesCounterpoint(m1)).toBe(true);
+    });
+
+    it('does not key any counterpoint template to the non-counterpoint u14 modules', () => {
+      for (const id of ['l4u14m2', 'l4u14m3', 'l4u14m4', 'l4u14m5']) {
+        expect(mentionsSpeciesCounterpoint(configById(id)), `${id} must not carry counterpoint templates`).toBe(false);
+      }
+    });
+
+    it('generates only on-topic (non-counterpoint) prompts for the chromatic/RN/minor modules', () => {
+      const generated = generateAllForLevel(templatesL4);
+      for (const id of ['l4u14m2', 'l4u14m3', 'l4u14m4', 'l4u14m5']) {
+        for (const ex of generated[id] ?? []) {
+          expect(ex.prompt, `${id} generated a counterpoint prompt`).not.toMatch(/species counterpoint/i);
+        }
+      }
+    });
+  });
+
+  // ── WS5 A6 regression guard ──────────────────────────────────────────────
+  // The generated l1u3m1 scale_degree_id drill was unanswerable: it never named
+  // a note in the prompt and computed a RANDOM correctDegree unrelated to any
+  // note. The fix resolves the chosen degree to the real note in the built scale,
+  // names it in the prompt, and makes correctDegree match that note's position.
+  describe('L1 generated scale_degree_id answerability (WS5 A6)', () => {
+    const l1u3m1 = templatesL1.find((c) => c.moduleId === 'l1u3m1');
+
+    it('l1u3m1 still defines a scale_degree_id template', () => {
+      expect(l1u3m1, 'l1u3m1 template config should exist').toBeTruthy();
+      expect(
+        l1u3m1!.templates.some((t) => t.type === 'scale_degree_id'),
+        'l1u3m1 should carry a scale_degree_id template',
+      ).toBe(true);
+    });
+
+    it('every generated scale_degree_id item names a real scale note whose correctDegree is its position, and grades correctly', () => {
+      const exercises = generateExercises(l1u3m1!);
+      const degreeItems = exercises.filter((e) => e.config.type === 'scale_degree_id');
+      expect(degreeItems.length, 'expected at least one generated scale_degree_id item').toBeGreaterThan(0);
+
+      for (const ex of degreeItems) {
+        const cfg = ex.config;
+        if (cfg.type !== 'scale_degree_id') continue;
+
+        // No unresolved placeholders, and the named note appears in the prompt.
+        const noteName = noteToString({
+          natural: cfg.note as NaturalNote,
+          accidental: (cfg.noteAccidental || '') as Accidental,
+        });
+        expect(ex.prompt, `${ex.id} left an unresolved {note} token`).not.toContain('{note}');
+        expect(ex.prompt, `${ex.id} left an unresolved {root} token`).not.toContain('{root}');
+        expect(ex.prompt, `${ex.id} does not name the note to identify`).toContain(noteName);
+
+        // correctDegree must be the note's true 1-based position in the built scale.
+        const scale = buildScale(
+          { natural: cfg.root as NaturalNote, accidental: (cfg.rootAccidental || '') as Accidental },
+          cfg.scaleType as ScaleType,
+        );
+        const realIndex = scale.notes.findIndex(
+          (n) => n.natural === cfg.note && n.accidental === cfg.noteAccidental,
+        );
+        expect(realIndex, `${ex.id}: note ${noteName} not found in ${cfg.root} ${cfg.scaleType}`).toBeGreaterThanOrEqual(0);
+        expect(cfg.correctDegree, `${ex.id}: correctDegree mismatch`).toBe(realIndex + 1);
+
+        // validateAnswer accepts the keyed degree and rejects a different one.
+        expect(validateAnswer(cfg, String(cfg.correctDegree)).correct).toBe(true);
+        const wrongDegree = cfg.correctDegree === 1 ? 2 : 1;
+        expect(validateAnswer(cfg, String(wrongDegree)).correct).toBe(false);
+      }
     });
   });
 });

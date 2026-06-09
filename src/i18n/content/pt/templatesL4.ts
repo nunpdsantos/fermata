@@ -2,7 +2,8 @@ import type { TemplateLevelOverlay } from '../types';
 
 // ---------------------------------------------------------------------------
 // European Portuguese (PT-PT) overlay for Level 4 exercise templates
-// 15 modules, ~80 generated exercises
+// 11 module configs (Unit 14 counterpoint pooled onto l4u14m1, mirroring
+// the EN source). Entry order per module must match templatesL4.ts.
 // ---------------------------------------------------------------------------
 
 const overlay: TemplateLevelOverlay = {
@@ -17,7 +18,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Analisa esta figura de suspensão e a sua resolução.',
       hintTemplate:
-        'Suspensões: 4-3 resolve para uma 3.ª, 7-6 para uma 6.ª, 9-8 para uma oitava. A suspensão de baixo 2-3 resolve para cima. Cadeias de suspensões criam sequências.',
+        'Suspensões: 4-3 resolve para uma 3.ª, 7-6 para uma 6.ª, 9-8 para uma oitava. A suspensão de baixo 2-3 resolve para baixo (o baixo desce por grau conjunto; o intervalo acima do baixo cresce de uma 2.ª para uma 3.ª). Cadeias de suspensões criam sequências.',
       choiceSets: [
         [
           'Uma cadeia de suspensões 7-6 cria um movimento descendente por grau conjunto na voz superior',
@@ -346,13 +347,19 @@ const overlay: TemplateLevelOverlay = {
   ],
 
   // =========================================================================
-  // Unidade 14: Contraponto
+  // Unidade 14: Contraponto, Métrica, Análise e Harmonia Menor
   // =========================================================================
+  //
+  // NOTA (correção WS5 A2): em EN, todos os modelos de contraponto foram
+  // agrupados em l4u14m1 (o único módulo de contraponto de espécies). A ordem
+  // das entradas tem de coincidir com a ordem dos modelos em EN
+  // (templatesL4.ts): [1.ª espécie, 2.ª espécie, identificação de intervalo].
+  // Os módulos m2–m5 deixaram de ter modelos gerados.
 
-  // ---- l4u14m1: Primeira Espécie ----
+  // ---- l4u14m1: Contraponto de Primeira e Segunda Espécie ----
   l4u14m1: [
     {
-      // multiple_choice
+      // multiple_choice — primeira espécie
       promptTemplate:
         'Responde a esta questão sobre contraponto de primeira espécie.',
       hintTemplate:
@@ -378,12 +385,8 @@ const overlay: TemplateLevelOverlay = {
         ],
       ],
     },
-  ],
-
-  // ---- l4u14m2: Segunda Espécie ----
-  l4u14m2: [
     {
-      // multiple_choice
+      // multiple_choice — segunda espécie
       promptTemplate:
         'Responde a esta questão sobre contraponto de segunda espécie.',
       hintTemplate:
@@ -409,93 +412,6 @@ const overlay: TemplateLevelOverlay = {
         'Qual é o intervalo formado entre as duas vozes? Partindo de {root}.',
       hintTemplate:
         'No contraponto de espécies, consonâncias são 3.as, 6.as e intervalos perfeitos (P1, P5, P8). Dissonâncias (2.as, 7.as, trítono) requerem tratamento especial.',
-    },
-  ],
-
-  // ---- l4u14m3: Terceira Espécie ----
-  l4u14m3: [
-    {
-      // multiple_choice
-      promptTemplate:
-        'Responde a esta questão sobre contraponto de terceira espécie.',
-      hintTemplate:
-        'Terceira espécie: quatro notas contra uma. Introduz bordaduras e duplas bordaduras além de notas de passagem. A primeira nota de cada grupo deve ser consonante.',
-      choiceSets: [
-        [
-          'A terceira espécie permite bordaduras e notas de passagem em tempos fracos',
-          'A terceira espécie só permite consonâncias',
-          'A terceira espécie permite dissonância no primeiro tempo',
-          'A terceira espécie não tem padrão rítmico',
-        ],
-        [
-          'Uma cambiata (figura de nota cambiada) na terceira espécie afasta-se por grau conjunto e depois salta na mesma direção',
-          'Uma cambiata é o mesmo que uma suspensão',
-          'Uma cambiata aparece apenas na quarta espécie',
-          'Uma cambiata deve resolver por movimento contrário',
-        ],
-      ],
-    },
-  ],
-
-  // ---- l4u14m4: Quarta Espécie (Suspensões) ----
-  l4u14m4: [
-    {
-      // multiple_choice
-      promptTemplate:
-        'Responde a esta questão sobre contraponto de quarta espécie e suspensões.',
-      hintTemplate:
-        'Quarta espécie: sincopada, usando suspensões. Uma consonância é ligada através da barra de compasso, criando uma dissonância no tempo forte que resolve por grau conjunto descendente.',
-      choiceSets: [
-        [
-          'O contraponto de quarta espécie apresenta síncopa através de notas ligadas (suspensas)',
-          'A quarta espécie usa quatro notas contra uma',
-          'A quarta espécie evita toda a síncopa',
-          'A quarta espécie não tem suspensões',
-        ],
-        [
-          'Quando não é possível formar uma suspensão, passa-se para a primeira espécie (consonância no tempo forte)',
-          'Quando as suspensões falham, usa-se dissonância no tempo forte',
-          'O contraponto deve parar se não for possível formar uma suspensão',
-          'Saltam-se notas quando as suspensões não estão disponíveis',
-        ],
-        [
-          'A suspensão 7-6 é a mais comum na quarta espécie em voz superior',
-          'A 2-3 é a suspensão mais comum em voz superior',
-          'A 9-10 é o tipo de suspensão mais comum',
-          'Não existem tipos de suspensão comuns',
-        ],
-      ],
-    },
-  ],
-
-  // ---- l4u14m5: Quinta Espécie (Livre) ----
-  l4u14m5: [
-    {
-      // multiple_choice
-      promptTemplate:
-        'Responde a esta questão sobre contraponto de quinta espécie (livre).',
-      hintTemplate:
-        'A quinta espécie combina todas as espécies anteriores livremente. Usa notas de passagem, bordaduras, suspensões e ritmos variados. É o mais próximo da composição musical real.',
-      choiceSets: [
-        [
-          'A quinta espécie combina livremente elementos rítmicos de todas as quatro espécies anteriores',
-          'A quinta espécie introduz regras inteiramente novas',
-          'A quinta espécie usa apenas semibreves',
-          'A quinta espécie ignora todas as regras de condução de vozes',
-        ],
-        [
-          'No contraponto livre, o clímax da melodia deve aparecer uma vez e ser abordado/abandonado por grau conjunto',
-          'O clímax pode aparecer várias vezes',
-          'O clímax deve estar sempre na primeira nota',
-          'O contraponto livre não tem objetivos melódicos',
-        ],
-        [
-          'O contraponto livre deve manter um equilíbrio entre movimento por grau conjunto e saltos pequenos ocasionais',
-          'O contraponto livre deve usar maioritariamente saltos grandes',
-          'O contraponto livre deve usar apenas movimento por grau conjunto',
-          'O contraponto livre não tem orientações melódicas',
-        ],
-      ],
     },
   ],
 };

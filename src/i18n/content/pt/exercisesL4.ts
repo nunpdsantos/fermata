@@ -392,7 +392,7 @@ const overlay: ExerciseLevelOverlay = {
       '2/4 com o andamento cortado ao meio',
       'Qualquer indicação de compasso onde os valores das notas são reduzidos a metade',
     ],
-    hint: 'O tempo cortado (alla breve) é 2/2: dois tempos de mínima por compasso. Embora contenha o mesmo número de semínimas que 4/4, o maestro bate em 2 em vez de 4, dando uma sensação mais leve e fluida ao mesmo andamento.',
+    hint: 'O tempo cortado (alla breve) é 2/2: dois tempos de mínima por compasso. Um compasso de 2/2 tem a mesma duração total que um de 4/4, mas conta-se em 2 (tempo de mínima) em vez de 4 (tempo de semínima) — as mesmas notas sentidas em dois tempos, dando uma pulsação mais ampla e fluida.',
   },
 
   // ---- l4u14m3: Ornamentação Cromática ----

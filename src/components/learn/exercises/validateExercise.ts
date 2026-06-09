@@ -105,8 +105,15 @@ function getDegreeName(degree: number, t: TranslateFn): string {
   return t('exerciseFeedback.degreeNameFallback', { n: degree });
 }
 
+// WS5 mitigation: core INTERVAL_LABELS[8]='Augmented 5th' is wrong for interval-ID (should be 'Minor 6th', per SEMITONES_TO_INTERVAL[8]). Override here until the core constant is fixed (REMEDIATION B1).
+const INTERVAL_LABEL_OVERRIDES: Readonly<Record<number, string>> = { 8: 'Minor 6th' };
+
 function getIntervalLabel(semitones: number, t: TranslateFn): string {
-  return INTERVAL_LABELS[semitones] || t('exerciseFeedback.semitones', { count: semitones });
+  return (
+    INTERVAL_LABEL_OVERRIDES[semitones] ||
+    INTERVAL_LABELS[semitones] ||
+    t('exerciseFeedback.semitones', { count: semitones })
+  );
 }
 
 function buildMissingExtraParts(

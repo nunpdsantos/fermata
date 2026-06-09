@@ -89,7 +89,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Escucha estas dos notas tocadas simultáneamente a partir de {root} e identifica el intervalo armónico.',
       hintTemplate:
-        'Los intervalos armónicos suenan con ambas notas a la vez. Las consonancias (3, 4, 5, 8, 9, 12) se funden suavemente. Las disonancias (1, 2, 6, 10, 11) crean tensión. A partir de {root}.',
+        'Los intervalos armónicos suenan con ambas notas a la vez. Las consonancias (3, 4, 5, 7, 8, 9, 12) se funden suavemente. Las disonancias (1, 2, 6, 10, 11) crean tensión. A partir de {root}.',
     },
   ],
 

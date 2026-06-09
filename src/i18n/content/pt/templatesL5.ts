@@ -47,9 +47,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Constroi o acorde de dominante secundaria que toniciza o alvo indicado em {root} maior.',
+        'Constroi um acorde de dominante de setima em {root} (a qualidade de acorde usada em todas as dominantes secundarias).',
       hintTemplate:
-        'Uma dominante secundaria e uma triade maior ou setima dominante que resolve para um acorde diatonico diferente de I. Constroi um acorde de qualidade dominante uma 5.aP acima do alvo.',
+        'Uma dominante secundaria e uma setima de dominante construida uma 5.aP acima do acorde que toniciza. Aqui constroi apenas {root}7: fundamental + 3.a maior + 5.aP + 7.a menor. Por exemplo, A7 (A-C#-E-G) e V7/ii em Do maior, tonicizando Re menor.',
     },
     {
       // multiple_choice
@@ -208,64 +208,15 @@ const overlay: TemplateLevelOverlay = {
     },
   ],
 
-  // ---- l5u16m2: Modulacao Direta/De Frase ----
+  // ---- l5u16m2: Modulacao para Tonalidades Proximas ----
+  // (re-keyada de l5u16m4 para corresponder ao topico do curriculo)
   l5u16m2: [
-    {
-      // multiple_choice
-      promptTemplate:
-        'Identifica as caracteristicas desta tecnica de modulacao.',
-      hintTemplate:
-        'A modulacao direta (de frase) muda de tonalidade abruptamente numa fronteira de frase sem acorde pivot. Comum na musica pop e nos hinos.',
-      choiceSets: [
-        [
-          'Uma modulacao direta muda para uma nova tonalidade numa fronteira de frase sem acorde pivot',
-          'Uma modulacao direta usa sempre um acorde pivot',
-          'Uma modulacao direta e o mesmo que tonicizacao',
-          'Uma modulacao direta so sobe meio-tom',
-        ],
-        [
-          'A modulacao "do camionista" sobe meio-tom ou um tom para efeito dramatico',
-          'A modulacao do camionista vai sempre para a dominante',
-          'Esta tecnica e exclusiva da musica classica',
-          'Esta modulacao e sempre descendente',
-        ],
-      ],
-    },
-  ],
-
-  // ---- l5u16m3: Modulacao por Nota Comum ----
-  l5u16m3: [
-    {
-      // multiple_choice
-      promptTemplate:
-        'Como funciona a modulacao por nota comum?',
-      hintTemplate:
-        'A modulacao por nota comum sustém uma unica nota que e reinterpretada na nova tonalidade. Frequentemente usada para modulacoes distantes onde existem poucos acordes pivot.',
-      choiceSets: [
-        [
-          'A modulacao por nota comum sustém uma nota que se torna um grau da escala diferente na nova tonalidade',
-          'A modulacao por nota comum requer que todas as notas sejam comuns',
-          'A modulacao por nota comum nunca envolve notas sustidas',
-          'A modulacao por nota comum e o mesmo que modulacao por acorde pivot',
-        ],
-        [
-          'A modulacao por nota comum e especialmente util para tonalidades distantes que partilham poucos acordes',
-          'A modulacao por nota comum so funciona para tonalidades proximas',
-          'Esta tecnica requer sequencias cromaticas',
-          'Esta tecnica esta limitada a relativa maior/menor',
-        ],
-      ],
-    },
-  ],
-
-  // ---- l5u16m4: Tonalidades Proximas ----
-  l5u16m4: [
     {
       // scale_build
       promptTemplate:
-        'Constroi a escala maior de uma tonalidade proxima de {root} maior.',
+        'Constroi a escala menor natural de {root} (a relativa menor — uma tonalidade proxima).',
       hintTemplate:
-        'Tonalidades proximas diferem no maximo em 1 sustenido ou bemol. Para {root} maior, as tonalidades proximas incluem a dominante, a subdominante e as suas relativas menores.',
+        'Uma tonalidade e a sua relativa menor partilham a mesma armacao de clave (0 acidentes de diferenca), por isso a relativa menor e uma das tonalidades proximas. Constroi {root} menor natural: a escala menor natural a comecar em {root}.',
     },
     {
       // multiple_choice
@@ -290,10 +241,54 @@ const overlay: TemplateLevelOverlay = {
     },
   ],
 
-  // ---- l5u16m5: Modulacao Cromatica ----
-  l5u16m5: [
+  // ---- l5u16m3: Modulacao Direta, por Nota Comum e Cromatica ----
+  // (fundidos os blocos Direta/De Frase, Nota Comum e Cromatica — o curriculo
+  //  agrupa os tres neste modulo; antes divididos por m2/m3/m5)
+  l5u16m3: [
     {
-      // multiple_choice
+      // multiple_choice — modulacao direta/de frase
+      promptTemplate:
+        'Identifica as caracteristicas desta tecnica de modulacao.',
+      hintTemplate:
+        'A modulacao direta (de frase) muda de tonalidade abruptamente numa fronteira de frase sem acorde pivot. Comum na musica pop e nos hinos.',
+      choiceSets: [
+        [
+          'Uma modulacao direta muda para uma nova tonalidade numa fronteira de frase sem acorde pivot',
+          'Uma modulacao direta usa sempre um acorde pivot',
+          'Uma modulacao direta e o mesmo que tonicizacao',
+          'Uma modulacao direta so sobe meio-tom',
+        ],
+        [
+          'A modulacao "do camionista" sobe meio-tom ou um tom para efeito dramatico',
+          'A modulacao do camionista vai sempre para a dominante',
+          'Esta tecnica e exclusiva da musica classica',
+          'Esta modulacao e sempre descendente',
+        ],
+      ],
+    },
+    {
+      // multiple_choice — modulacao por nota comum
+      promptTemplate:
+        'Como funciona a modulacao por nota comum?',
+      hintTemplate:
+        'A modulacao por nota comum sustém uma unica nota que e reinterpretada na nova tonalidade. Frequentemente usada para modulacoes distantes onde existem poucos acordes pivot.',
+      choiceSets: [
+        [
+          'A modulacao por nota comum sustém uma nota que se torna um grau da escala diferente na nova tonalidade',
+          'A modulacao por nota comum requer que todas as notas sejam comuns',
+          'A modulacao por nota comum nunca envolve notas sustidas',
+          'A modulacao por nota comum e o mesmo que modulacao por acorde pivot',
+        ],
+        [
+          'A modulacao por nota comum e especialmente util para tonalidades distantes que partilham poucos acordes',
+          'A modulacao por nota comum so funciona para tonalidades proximas',
+          'Esta tecnica requer sequencias cromaticas',
+          'Esta tecnica esta limitada a relativa maior/menor',
+        ],
+      ],
+    },
+    {
+      // multiple_choice — modulacao cromatica
       promptTemplate:
         'Analisa esta tecnica de modulacao cromatica.',
       hintTemplate:
@@ -315,18 +310,15 @@ const overlay: TemplateLevelOverlay = {
     },
   ],
 
-  // =========================================================================
-  // Unidade 17: Mistura Modal e Forma Musical
-  // =========================================================================
-
-  // ---- l5u17m1: Mistura Modal (Acordes de Emprestimo) ----
-  l5u17m1: [
+  // ---- l5u16m4: Mistura Modal — Acordes de Emprestimo ----
+  // (re-keyada de l5u17m1 para corresponder ao topico do curriculo)
+  l5u16m4: [
     {
       // chord_build
       promptTemplate:
-        'Constroi o acorde de emprestimo do modo menor paralelo em {root} maior.',
+        'Constroi o acorde de emprestimo {root} (um acorde de mistura modal em Do maior).',
       hintTemplate:
-        'Mistura modal empresta acordes da tonalidade menor paralela. Acordes de emprestimo comuns: bVI, bVII, bIII, iv. Em {root} maior, rebaixa o 3.o, 6.o ou 7.o grau.',
+        'A mistura modal empresta acordes do modo menor paralelo. Em Do maior, estes acordes de emprestimo sao bVI (Lab maior), bIII (Mib maior), bVII (Sib maior) e iv (Fa menor). Constroi {root} como escrito: as fundamentais rebaixadas formam triades maiores, o acorde iv e Fa menor.',
     },
     {
       // multiple_choice
@@ -342,17 +334,25 @@ const overlay: TemplateLevelOverlay = {
           'bVI nao existe na mistura modal',
         ],
         [
-          'A terca picardia eleva a 3.a do acorde de tonica final numa tonalidade menor para maior',
-          'A terca picardia rebaixa a 3.a de um acorde maior',
-          'A terca picardia e um tipo de mistura modal apenas em tonalidades maiores',
-          'A terca picardia muda a formula de compasso',
+          'O acorde iv em Do maior e Fa menor (emprestado de Do menor)',
+          'O acorde iv em Do maior e Fa maior inalterado',
+          'O acorde iv em Do maior e La menor',
+          'A mistura modal nao pode alterar a subdominante',
         ],
       ],
     },
   ],
 
-  // ---- l5u17m2: Forma Binaria e Ternaria ----
-  l5u17m2: [
+  // ---- l5u16m5: Terca Picardia e Mistura Modal em Menor ----
+  // Sem template gerado (lacuna de cobertura reconhecida na auditoria WS5).
+
+  // =========================================================================
+  // Unidade 17: Forma, Textura e Conducao de Vozes
+  // =========================================================================
+
+  // ---- l5u17m1: Formas Binaria e Ternaria ----
+  // (re-keyada de l5u17m2 para corresponder ao topico do curriculo)
+  l5u17m1: [
     {
       // multiple_choice
       promptTemplate:
@@ -382,10 +382,12 @@ const overlay: TemplateLevelOverlay = {
     },
   ],
 
-  // ---- l5u17m3: Rondo e Variacoes ----
-  l5u17m3: [
+  // ---- l5u17m2: Formas Cancao e Grandes Formas ----
+  // (fundidos os blocos Rondo/Variacoes e Sonata — o curriculo agrupa rondo,
+  //  tema com variacoes e sonata neste modulo; antes divididos por m3/m4)
+  l5u17m2: [
     {
-      // multiple_choice
+      // multiple_choice — rondo e variacoes
       promptTemplate:
         'Identifica as caracteristicas desta forma musical.',
       hintTemplate:
@@ -411,12 +413,8 @@ const overlay: TemplateLevelOverlay = {
         ],
       ],
     },
-  ],
-
-  // ---- l5u17m4: Introducao a Forma Sonata ----
-  l5u17m4: [
     {
-      // multiple_choice
+      // multiple_choice — forma sonata
       promptTemplate:
         'Responde a esta questao sobre a estrutura da forma sonata.',
       hintTemplate:
@@ -449,6 +447,12 @@ const overlay: TemplateLevelOverlay = {
       ],
     },
   ],
+
+  // ---- l5u17m3: Textura ----
+  // Sem template gerado (lacuna de cobertura reconhecida na auditoria WS5).
+
+  // ---- l5u17m4: Linhas de Notas-Guia ----
+  // Sem template gerado (lacuna de cobertura reconhecida na auditoria WS5).
 };
 
 export default overlay;
