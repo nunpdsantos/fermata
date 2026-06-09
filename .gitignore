@@ -43,3 +43,7 @@ Codex review.md
 
 # Brainstorm visual companion scratch
 .superpowers/
+
+# Playwright
+test-results/
+playwright-report/
