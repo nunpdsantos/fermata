@@ -1,4 +1,7 @@
 <!doctype html>
+<!-- build 2026-06-09b: content change required so the service worker refetches
+     this document — its precached copy carries the response HEADERS from fetch
+     time, so header-only deploys (like a CSP fix) never reach installed PWAs. -->
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
