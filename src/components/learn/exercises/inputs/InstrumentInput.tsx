@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../../../state/store';
 import type { PitchedNote } from '../../../../core/types/music';
@@ -16,26 +16,36 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
   const [toggledPCs, setToggledPCs] = useState<Set<number>>(new Set());
   const activeNotes = useAppStore((s) => s.activeNotes);
   const setHighlightedNotes = useAppStore((s) => s.setHighlightedNotes);
+  const setExerciseInputActive = useAppStore((s) => s.setExerciseInputActive);
 
-  // When a note is played on the instrument, toggle its pitch class
+  // While mounted, the instruments suppress Explore visuals and render the
+  // toggled selection instead (see useKeyContext exercise-input mode).
   useEffect(() => {
-    if (submitted) return;
-    if (activeNotes.size === 0) return;
+    setExerciseInputActive(true);
+    return () => setExerciseInputActive(false);
+  }, [setExerciseInputActive]);
 
-    // Get pitch classes of all currently active notes
-    // activeNotes is Set<number> of MIDI note numbers
-    const newPCs = new Set(toggledPCs);
+  // Toggle a pitch class once per NOTE-ON. Diffing against the previous
+  // active set means held notes and dyads toggle each note exactly once
+  // (the old all-active reprocessing made two held notes cancel out).
+  const prevActiveNotes = useRef<Set<number>>(new Set());
+  useEffect(() => {
+    const added: number[] = [];
     for (const midi of activeNotes) {
-      const pc = midi % 12;
-      if (newPCs.has(pc)) {
-        newPCs.delete(pc);
-      } else {
-        newPCs.add(pc);
-      }
+      if (!prevActiveNotes.current.has(midi)) added.push(midi);
     }
-    queueMicrotask(() => setToggledPCs(newPCs));
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- toggledPCs read via closure intentionally; submitted not relevant here
-  }, [activeNotes]);
+    prevActiveNotes.current = activeNotes;
+    if (submitted || added.length === 0) return;
+    setToggledPCs((prev) => {
+      const next = new Set(prev);
+      for (const midi of added) {
+        const pc = midi % 12;
+        if (next.has(pc)) next.delete(pc);
+        else next.add(pc);
+      }
+      return next;
+    });
+  }, [activeNotes, submitted]);
 
   // Update highlighted notes on instrument whenever toggled set changes
   useEffect(() => {

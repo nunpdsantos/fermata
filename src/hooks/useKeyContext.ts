@@ -35,6 +35,10 @@ function rotateNotes(notes: Note[], inversion: number): Note[] {
   return [...notes.slice(n), ...notes.slice(0, n)];
 }
 
+const EMPTY_SET: Set<number> = new Set();
+const MIDI_RANGE_START = 21; // A0
+const MIDI_RANGE_END = 108; // C8
+
 export function useKeyContext(): KeyContextValue {
   const selectedKey = useAppStore((s) => s.selectedKey);
   const selectedScale = useAppStore((s) => s.selectedScale);
@@ -43,6 +47,8 @@ export function useKeyContext(): KeyContextValue {
   const scaleOctaves = useAppStore((s) => s.scaleOctaves);
   const baseOctave = useAppStore((s) => s.baseOctave);
   const degreeColorsOn = useDegreeColorsEnabled();
+  const exerciseInputActive = useAppStore((s) => s.exerciseInputActive);
+  const highlightedNotes = useAppStore((s) => s.highlightedNotes);
 
   const scale = useMemo(
     () => buildScale(selectedKey, selectedScale),
@@ -149,6 +155,41 @@ export function useKeyContext(): KeyContextValue {
     }
     return s;
   }, [selectedChord, invertedNotes, baseOctave]);
+
+  // Exercise instrument-input mode: the learner is answering on the
+  // instrument, so Explore's key/chord visuals would be misleading hints (or
+  // noise from an unrelated key). Suppress them and surface the learner's
+  // toggled notes through the chord-highlight channel, on every octave —
+  // grading is pitch-class based, so every octave of a toggled note is "lit".
+  const exerciseHighlight = useMemo(() => {
+    const pcs = new Set<number>();
+    const midi = new Set<number>();
+    if (exerciseInputActive) {
+      for (const n of highlightedNotes) pcs.add(getPitchClass(n));
+      if (pcs.size > 0) {
+        for (let m = MIDI_RANGE_START; m <= MIDI_RANGE_END; m++) {
+          if (pcs.has(m % 12)) midi.add(m);
+        }
+      }
+    }
+    return { pcs, midi };
+  }, [exerciseInputActive, highlightedNotes]);
+
+  if (exerciseInputActive) {
+    return {
+      scale,
+      scaleNotesWithOctaves,
+      diatonicChords,
+      getNoteColor: () => undefined,
+      getNoteDegree: () => undefined,
+      scalePitchClasses: EMPTY_SET,
+      scaleMidiNumbers: EMPTY_SET,
+      chordPitchClasses: exerciseHighlight.pcs,
+      chordVoicingMidi: exerciseHighlight.midi,
+      hasSelectedChord: exerciseHighlight.pcs.size > 0,
+      invertedNotes: [],
+    };
+  }
 
   return {
     scale,

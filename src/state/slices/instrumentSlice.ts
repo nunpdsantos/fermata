@@ -5,6 +5,7 @@ export const createInstrumentSlice: StateCreator<AppState, [], [], InstrumentSli
   instrument: 'piano',
   activeNotes: new Set<number>(),
   highlightedNotes: [],
+  exerciseInputActive: false,
   guitarScalePosition: null,
   guitarTuningId: 'standard',
 
@@ -24,6 +25,7 @@ export const createInstrumentSlice: StateCreator<AppState, [], [], InstrumentSli
     }),
   clearActiveNotes: () => set({ activeNotes: new Set<number>() }),
   setHighlightedNotes: (notes) => set({ highlightedNotes: notes }),
+  setExerciseInputActive: (active) => set({ exerciseInputActive: active }),
   setGuitarScalePosition: (position) => set({ guitarScalePosition: position }),
   setGuitarTuningId: (id) =>
     set({ guitarTuningId: id, guitarScalePosition: null, preferencesUpdatedAt: Date.now() }),
