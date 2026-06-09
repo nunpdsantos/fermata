@@ -47,9 +47,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Construye el acorde de dominante secundaria que toniciza el objetivo indicado en {root} mayor.',
+        'Construye un acorde de séptima de dominante en {root} (la cualidad de acorde usada en todas las dominantes secundarias).',
       hintTemplate:
-        'Una dominante secundaria es una tríada mayor o séptima dominante que resuelve hacia un acorde diatónico distinto de I. Construye un acorde de cualidad dominante una 5.ªJ por encima del objetivo.',
+        'Una dominante secundaria es una séptima de dominante construida una 5.ªJ por encima del acorde que toniciza. Aquí solo construye {root}7: fundamental + 3.ª mayor + 5.ªJ + 7.ª menor. Por ejemplo, A7 (A-C#-E-G) es V7/ii en Do mayor, tonicizando Re menor.',
     },
     {
       // multiple_choice

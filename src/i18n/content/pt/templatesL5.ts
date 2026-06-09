@@ -47,9 +47,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Constroi o acorde de dominante secundaria que toniciza o alvo indicado em {root} maior.',
+        'Constroi um acorde de dominante de setima em {root} (a qualidade de acorde usada em todas as dominantes secundarias).',
       hintTemplate:
-        'Uma dominante secundaria e uma triade maior ou setima dominante que resolve para um acorde diatonico diferente de I. Constroi um acorde de qualidade dominante uma 5.aP acima do alvo.',
+        'Uma dominante secundaria e uma setima de dominante construida uma 5.aP acima do acorde que toniciza. Aqui constroi apenas {root}7: fundamental + 3.a maior + 5.aP + 7.a menor. Por exemplo, A7 (A-C#-E-G) e V7/ii em Do maior, tonicizando Re menor.',
     },
     {
       // multiple_choice
