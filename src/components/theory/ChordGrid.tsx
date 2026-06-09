@@ -1,36 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import { noteToString } from '../../core/types/music.ts';
+import { CHORD_SYMBOLS, CHORD_QUALITY_NAMES } from '../../core/constants/chords.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAppStore } from '../../state/store.ts';
 import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
-
-const QUALITY_LABELS: Record<string, string> = {
-  major: '',
-  minor: 'm',
-  diminished: 'dim',
-  augmented: 'aug',
-  major7: 'maj7',
-  minor7: 'm7',
-  dominant7: '7',
-  half_diminished7: 'ø7',
-  diminished7: 'dim7',
-  augmented_major7: 'aug(maj7)',
-  minor_major7: 'm(maj7)',
-};
-
-const QUALITY_FULL: Record<string, string> = {
-  major: 'Major',
-  minor: 'Minor',
-  diminished: 'Dim',
-  augmented: 'Aug',
-  major7: 'Maj 7',
-  minor7: 'Min 7',
-  dominant7: 'Dom 7',
-  half_diminished7: 'Half-dim',
-  diminished7: 'Dim 7',
-};
 
 export function ChordGrid() {
   const { t } = useTranslation();
@@ -68,8 +43,8 @@ export function ChordGrid() {
           ? DEGREE_COLORS[degree as keyof typeof DEGREE_COLORS]
           : 'var(--accent)';
         const rootLabel = noteToString(chord.root);
-        const qualityLabel = QUALITY_LABELS[chord.quality] ?? chord.quality;
-        const qualityFull = QUALITY_FULL[chord.quality] ?? chord.quality;
+        const qualityLabel = CHORD_SYMBOLS[chord.quality] ?? chord.quality;
+        const qualityFull = CHORD_QUALITY_NAMES[chord.quality] ?? chord.quality;
         const isSelected =
           selectedChord !== null &&
           noteToString(selectedChord.root) === rootLabel &&
