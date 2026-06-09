@@ -240,6 +240,15 @@ offline PWA, sampled piano: all functional, all gates green (≈2,265 tests / 46
 eslint 0/0, content audits clean).
 
 **Open items, in rough priority:**
+- **NEXT SESSION (Nuno's request, 2026-06-09):** the Explore play buttons (Chord /
+  Arpeggio / scale Play) always sound as piano — they should follow the selected
+  instrument: piano voice when the keyboard is shown, Karplus-Strong guitar when the
+  fretboard is shown. Sketch: give `karplusStrong.ts` a scheduled one-shot
+  (`playNote(midi, when, duration)` — it currently only has sustained
+  startNote/stopNote), then route the one-shot call sites (CurrentChordPanel,
+  ChordBuilderPanel, ExploreView playScale, CircleOfFifths) by `instrument` from the
+  store instead of calling the core piano path unconditionally. Decide with Nuno
+  whether ear-training playback should also follow the instrument or stay piano.
 - PT diacritics restoration across the older overlay files (`docs/pt-diacritic-todo.md`).
 - Chord-quality names / interval labels render in English inside PT/ES feedback
   sentences (deliberate "nomenclature untranslated" convention — revisit only as a
