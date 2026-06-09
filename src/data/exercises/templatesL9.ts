@@ -127,7 +127,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'interval_id',
         promptTemplate: 'Listen to these two notes played simultaneously from {root} and identify the harmonic interval.',
-        hintTemplate: 'Harmonic intervals sound both notes at once. Consonances (3, 4, 5, 8, 9, 12) blend smoothly. Dissonances (1, 2, 6, 10, 11) create tension. From {root}.',
+        hintTemplate: 'Harmonic intervals sound both notes at once. Consonances (3, 4, 5, 7, 8, 9, 12) blend smoothly. Dissonances (1, 2, 6, 10, 11) create tension. From {root}.',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A'],
           accidentals: ['', '', '', '', '', ''],

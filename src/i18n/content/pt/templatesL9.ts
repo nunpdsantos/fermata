@@ -89,7 +89,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve estas duas notas tocadas simultaneamente a partir de {root} e identifica o intervalo harmonico.',
       hintTemplate:
-        'Intervalos harmonicos soam ambas as notas de uma vez. Consonancias (3, 4, 5, 8, 9, 12) fundem-se suavemente. Dissonancias (1, 2, 6, 10, 11) criam tensao. A partir de {root}.',
+        'Intervalos harmonicos soam ambas as notas de uma vez. Consonancias (3, 4, 5, 7, 8, 9, 12) fundem-se suavemente. Dissonancias (1, 2, 6, 10, 11) criam tensao. A partir de {root}.',
     },
   ],
 
