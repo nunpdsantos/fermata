@@ -14,9 +14,6 @@ import { playNote, playChord, resumeAudio } from '../../../core/services/audio';
 import type { NaturalNote, Accidental, Note, ChordQuality } from '../../../core/types/music';
 import { buildChord } from '../../../core/constants/chords';
 import { palette } from '../../../design/tokens/palette';
-import { useGamificationStore } from '../../../state/gamificationStore';
-import { useConceptStore } from '../../../state/conceptStore';
-import { getExerciseConcepts } from '../../../services/conceptTagger';
 import { selectWeightedExercises } from '../../../services/exerciseSelector';
 
 type Phase = 'active' | 'submitted';
@@ -32,19 +29,12 @@ interface ExerciseRunnerProps {
 
 export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onRecordResult, onComplete }: ExerciseRunnerProps) {
   const { t } = useTranslation();
-  const gamLogActivity = useGamificationStore((s) => s.logActivity);
-  const gamIncrementExercise = useGamificationStore((s) => s.incrementExerciseAttempt);
-  const gamAddXP = useGamificationStore((s) => s.addXP);
-  const recordConceptResult = useConceptStore((s) => s.recordResult);
-  const getWeakConcepts = useConceptStore((s) => s.getWeakConcepts);
 
-  // In review mode, reorder exercises to emphasize weak concepts
-  const orderedExercises = useMemo(() => {
-    if (!reviewMode) return exercises;
-    const weak = getWeakConcepts();
-    if (weak.length === 0) return exercises;
-    return selectWeightedExercises(exercises, weak, exercises.length);
-  }, [exercises, reviewMode, getWeakConcepts]);
+  // Plain shuffle — no concept weighting after gamification removal
+  const orderedExercises = useMemo(
+    () => selectWeightedExercises(exercises, [], exercises.length),
+    [exercises],
+  );
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>('active');
@@ -140,23 +130,14 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
     setValidationResult(result);
     setPhase('submitted');
 
-    const concepts = getExerciseConcepts(exercise.config, exercise.id);
-
     if (result.correct) {
       const score: 0 | 0.5 | 1 = attempt === 1 ? 1 : 0.5;
       onRecordResult(exercise.id, score);
       setAccumulatedScore((prev) => prev + score);
-      gamLogActivity();
-      gamIncrementExercise(attempt === 1);
-      gamAddXP(attempt === 1 ? 'exercise_perfect' : 'exercise_accuracy', attempt === 1 ? 2 : 1, exercise.id);
-      recordConceptResult(concepts, true);
     } else if (attempt >= 2) {
       onRecordResult(exercise.id, 0);
-      gamLogActivity();
-      gamIncrementExercise(false);
-      recordConceptResult(concepts, false);
     }
-  }, [exercise, selected, attempt, onRecordResult, gamLogActivity, gamIncrementExercise, gamAddXP, recordConceptResult, t]);
+  }, [exercise, selected, attempt, onRecordResult, t]);
 
   const handleSubmitInstrument = useCallback((pitchClasses: Set<number>) => {
     if (!exercise) return;
@@ -164,23 +145,14 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
     setValidationResult(result);
     setPhase('submitted');
 
-    const concepts = getExerciseConcepts(exercise.config, exercise.id);
-
     if (result.correct) {
       const score: 0 | 0.5 | 1 = attempt === 1 ? 1 : 0.5;
       onRecordResult(exercise.id, score);
       setAccumulatedScore((prev) => prev + score);
-      gamLogActivity();
-      gamIncrementExercise(attempt === 1);
-      gamAddXP(attempt === 1 ? 'exercise_perfect' : 'exercise_accuracy', attempt === 1 ? 2 : 1, exercise.id);
-      recordConceptResult(concepts, true);
     } else if (attempt >= 2) {
       onRecordResult(exercise.id, 0);
-      gamLogActivity();
-      gamIncrementExercise(false);
-      recordConceptResult(concepts, false);
     }
-  }, [exercise, attempt, onRecordResult, gamLogActivity, gamIncrementExercise, gamAddXP, recordConceptResult, t]);
+  }, [exercise, attempt, onRecordResult, t]);
 
   const handleTryAgain = useCallback(() => {
     setAttempt(2);

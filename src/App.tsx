@@ -6,12 +6,8 @@ import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import { QuickSearch } from './components/navigation/QuickSearch.tsx';
 import { PWAPrompts } from './components/layout/PWAPrompts.tsx';
 import { ToastContainer } from './components/layout/Toast.tsx';
-import { GuidedTour } from './components/layout/GuidedTour.tsx';
-import { useMidi } from './hooks/useMidi.ts';
 import { useTheme } from './hooks/useTheme.ts';
 import { useLanguage } from './hooks/useLanguage.ts';
-import { useAuth } from './hooks/useAuth.ts';
-import { useSync } from './hooks/useSync.ts';
 import { useAppStore } from './state/store.ts';
 
 function ViewLoadingFallback() {
@@ -50,12 +46,10 @@ function TryAgainText() {
 }
 
 const ExploreView = lazy(() => import('./views/ExploreView.tsx').then((m) => ({ default: m.ExploreView })));
-const PlayView = lazy(() => import('./views/PlayView.tsx').then((m) => ({ default: m.PlayView })));
 const LearnView = lazy(() => import('./views/LearnView.tsx').then((m) => ({ default: m.LearnView })));
 
 const VIEW_COMPONENTS = {
   explore: ExploreView,
-  play: PlayView,
   learn: LearnView,
 } as const;
 
@@ -63,15 +57,10 @@ function App() {
   const view = useAppStore((s) => s.view);
   const ViewComponent = VIEW_COMPONENTS[view];
 
-  // Wire MIDI input globally
-  useMidi();
   // Sync theme preference to <html> class
   useTheme();
   // Sync language preference to i18next
   useLanguage();
-  // Auth + cloud sync
-  const { user } = useAuth();
-  useSync(user);
 
   return (
     <LazyMotion features={domAnimation}>
@@ -100,7 +89,6 @@ function App() {
       <QuickSearch />
       <PWAPrompts />
       <ToastContainer />
-      <GuidedTour />
       </MotionConfig>
     </LazyMotion>
   );

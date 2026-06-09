@@ -16,10 +16,7 @@ import { ContinueBanner } from './ContinueBanner';
 import { ReviewQueue } from './ReviewQueue';
 import { LevelCard } from './LevelCard';
 import { ProgressBar } from './ProgressBar';
-import { XPDisplay } from '../gamification/XPDisplay';
-import { Button } from '../ui/Button';
 import { DEGREE_COLORS } from '../../design/tokens/colors';
-import { useGamificationStore } from '../../state/gamificationStore';
 import { useAppStore } from '../../state/store.ts';
 
 interface LevelsOverviewProps {
@@ -27,7 +24,6 @@ interface LevelsOverviewProps {
   onOpenLevel: (levelId: string) => void;
   onOpenModule: (moduleId: string, unitId: string, levelId: string) => void;
   onStartReview?: (moduleId: string) => void;
-  onOpenDashboard?: () => void;
 }
 
 export function LevelsOverview({
@@ -35,12 +31,9 @@ export function LevelsOverview({
   onOpenLevel,
   onOpenModule,
   onStartReview,
-  onOpenDashboard,
 }: LevelsOverviewProps) {
   const { t } = useTranslation();
   const language = useAppStore((s) => s.language) as ContentLanguage;
-  const weeklyXP = useGamificationStore((s) => s.weeklyXP);
-  const totalXP = useGamificationStore((s) => s.totalXP);
   // Async-load full levels for continue banner
   const [allLevels, setAllLevels] = useState<CurriculumLevel[] | null>(null);
   useEffect(() => {
@@ -103,14 +96,6 @@ export function LevelsOverview({
           </span>
         </div>
 
-        <div className="mt-2 flex items-center justify-between">
-          <XPDisplay weeklyXP={weeklyXP} totalXP={totalXP} />
-          {onOpenDashboard && (
-            <Button variant="ghost" size="sm" onClick={onOpenDashboard}>
-              {t('gamification.stats')}
-            </Button>
-          )}
-        </div>
       </m.div>
 
       {/* Welcome banner — shown only when zero progress */}

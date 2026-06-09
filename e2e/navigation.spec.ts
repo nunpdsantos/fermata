@@ -2,10 +2,6 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Navigation — first load', () => {
   test.beforeEach(async ({ page }) => {
-    // Clear onboarding flag so guided tour doesn't interfere
-    await page.addInitScript(() => {
-      localStorage.setItem('music-theory-onboarding-complete', '1');
-    });
     await page.goto('/');
   });
 
@@ -23,12 +19,11 @@ test.describe('Navigation — first load', () => {
     expect(realErrors).toHaveLength(0);
   });
 
-  test('three view tabs are visible (Explore, Play, Learn)', async ({ page }) => {
+  test('two view tabs are visible (Explore, Learn)', async ({ page }) => {
     const tablist = page.getByRole('tablist', { name: 'App views' });
     await expect(tablist).toBeVisible();
 
     await expect(page.getByRole('tab', { name: 'Explore' })).toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Play' })).toBeVisible();
     await expect(page.getByRole('tab', { name: 'Learn' })).toBeVisible();
   });
 
@@ -38,14 +33,6 @@ test.describe('Navigation — first load', () => {
   });
 
   test('can switch between views', async ({ page }) => {
-    // Switch to Play
-    await page.getByRole('tab', { name: 'Play' }).click();
-    await expect(page.getByRole('tab', { name: 'Play' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
-    await expect(page.locator('#play-panel')).toBeVisible();
-
     // Switch to Learn
     await page.getByRole('tab', { name: 'Learn' }).click();
     await expect(page.getByRole('tab', { name: 'Learn' })).toHaveAttribute(

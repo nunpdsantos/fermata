@@ -1,18 +1,12 @@
 import { useRef, useLayoutEffect, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore, type ViewMode, type ThemeMode } from '../../state/store.ts';
-import { useGamificationStore } from '../../state/gamificationStore.ts';
 import { SUPPORTED_LANGUAGES } from '../../i18n/index.ts';
 import { toast } from '../../state/toastStore.ts';
-import { StreakBadge } from '../gamification/StreakBadge.tsx';
-import { AuthModal } from '../auth/AuthModal.tsx';
-import { AccountMenu } from '../auth/AccountMenu.tsx';
-import { useAuth } from '../../hooks/useAuth.ts';
 
-const VIEWS: ViewMode[] = ['explore', 'play', 'learn'];
+const VIEWS: ViewMode[] = ['explore', 'learn'];
 const VIEW_KEYS: Record<ViewMode, string> = {
   explore: 'nav.explore',
-  play: 'nav.play',
   learn: 'nav.learn',
 };
 
@@ -75,11 +69,8 @@ export function TopBar() {
   const setThemeMode = useAppStore((s) => s.setThemeMode);
   const language = useAppStore((s) => s.language);
   const setLanguage = useAppStore((s) => s.setLanguage);
-  const currentStreak = useGamificationStore((s) => s.streak.currentStreak);
   const navRef = useRef<HTMLElement>(null);
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
-  const { isAvailable, isAuthenticated, user, signIn, signOut } = useAuth();
-  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   useLayoutEffect(() => {
     const nav = navRef.current;
@@ -92,7 +83,6 @@ export function TopBar() {
   const themeLabel = t(THEME_KEYS[themeMode]);
 
   return (
-    <>
     <header
       className="flex items-center justify-between px-4 max-sm:px-2.5 h-12 backdrop-blur-md shrink-0"
       style={{
@@ -157,38 +147,6 @@ export function TopBar() {
       </nav>
 
       <div className="flex items-center gap-2">
-        {/* Auth button */}
-        {isAvailable && (
-          isAuthenticated && user?.email ? (
-            <AccountMenu email={user.email} onSignOut={signOut} />
-          ) : (
-            <button
-              onClick={() => setAuthModalOpen(true)}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition-colors"
-              style={{
-                color: 'var(--text-dim)',
-                border: '1px solid color-mix(in srgb, var(--border) 50%, transparent)',
-              }}
-              aria-label={t('auth.signIn')}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-              <span className="max-sm:hidden">{t('auth.signIn')}</span>
-            </button>
-          )
-        )}
-
-        {/* Streak badge */}
-        <StreakBadge
-          streak={currentStreak}
-          onClick={() => {
-            setView('learn');
-            useGamificationStore.getState().requestDashboard();
-          }}
-        />
-
         {/* Language selector */}
         <select
           value={language}
@@ -244,10 +202,6 @@ export function TopBar() {
         </button>
       </div>
     </header>
-    {isAvailable && (
-      <AuthModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} onSignIn={signIn} />
-    )}
-    </>
   );
 }
 
