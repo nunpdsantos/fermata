@@ -1,7 +1,9 @@
 import type { ModuleTemplateConfig } from './exerciseTemplates';
 
 // ---------------------------------------------------------------------------
-// Level 4 Templates — 15 modules, ~80 generated exercises
+// Level 4 Templates — 11 module configs (Unit 14 counterpoint pooled onto
+// l4u14m1; see the Unit 14 note below). Modules without a config fall back to
+// hand-authored exercises in exercisesL4.ts.
 // Focus: Advanced non-chord tones, dominant seventh, harmonic function,
 //        sequences, counterpoint
 // ---------------------------------------------------------------------------
@@ -18,7 +20,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Analyze this suspension figure and its resolution.',
-        hintTemplate: 'Suspensions: 4-3 resolves to a 3rd, 7-6 to a 6th, 9-8 to an octave. The bass suspension 2-3 resolves upward. Chain suspensions create sequences.',
+        hintTemplate: 'Suspensions: 4-3 resolves to a 3rd, 7-6 to a 6th, 9-8 to an octave. The bass suspension 2-3 resolves downward (the bass descends by step; the interval above the bass grows from a 2nd to a 3rd). Chain suspensions create sequences.',
         params: {
           choiceSets: [
             [
@@ -408,10 +410,25 @@ const templates: ModuleTemplateConfig[] = [
   },
 
   // =========================================================================
-  // Unit 14: Counterpoint
+  // Unit 14: Counterpoint, Meter, Analysis, and Minor Harmony
   // =========================================================================
+  //
+  // NOTE (WS5 A2 fix): The only species-counterpoint module in Unit 14 is
+  // l4u14m1 ("First and Second Species Counterpoint"). The other u14 modules
+  // are l4u14m2 (Asymmetric and Mixed Meters), l4u14m3 (Chromatic
+  // Embellishment), l4u14m4 (Roman Numeral Analysis), and l4u14m5 (Minor Key
+  // Harmony) — see curriculumL4.ts. Counterpoint generation templates had been
+  // mis-keyed onto m2–m5, so learners on those topics were served counterpoint
+  // questions. All genuinely-counterpoint templates (first species, second
+  // species, and the species-interval-ID drill) are pooled here under l4u14m1.
+  // m2–m5 now have no generated templates and fall back to their (correct)
+  // hand-authored exercises in exercisesL4.ts.
+  //
+  // The former third/fourth/fifth-species template blocks were removed: this
+  // curriculum does not teach 3rd/4th/5th species, so that content has no
+  // matching module and was NOT invented onto an unrelated topic.
 
-  // ---- l4u14m1: First Species ----
+  // ---- l4u14m1: First and Second Species Counterpoint ----
   {
     moduleId: 'l4u14m1',
     templates: [
@@ -442,14 +459,6 @@ const templates: ModuleTemplateConfig[] = [
           ],
         },
       },
-    ],
-    targetCount: 5,
-  },
-
-  // ---- l4u14m2: Second Species ----
-  {
-    moduleId: 'l4u14m2',
-    templates: [
       {
         type: 'multiple_choice',
         promptTemplate: 'Answer this question about second species counterpoint.',
@@ -484,106 +493,7 @@ const templates: ModuleTemplateConfig[] = [
         },
       },
     ],
-    targetCount: 5,
-  },
-
-  // ---- l4u14m3: Third Species ----
-  {
-    moduleId: 'l4u14m3',
-    templates: [
-      {
-        type: 'multiple_choice',
-        promptTemplate: 'Answer this question about third species counterpoint.',
-        hintTemplate: 'Third species: four notes against one. Introduces neighbor tones and double neighbors in addition to passing tones. The first note of each group must be consonant.',
-        params: {
-          choiceSets: [
-            [
-              { label: 'Third species allows neighbor tones and passing tones on weak beats', correct: true },
-              { label: 'Third species only allows consonances', correct: false },
-              { label: 'Third species allows dissonance on the first beat', correct: false },
-              { label: 'Third species has no rhythmic pattern', correct: false },
-            ],
-            [
-              { label: 'A cambiata (changing-tone figure) in third species steps away then leaps in the same direction', correct: true },
-              { label: 'A cambiata is the same as a suspension', correct: false },
-              { label: 'A cambiata only appears in fourth species', correct: false },
-              { label: 'A cambiata must resolve by contrary motion', correct: false },
-            ],
-          ],
-        },
-      },
-    ],
-    targetCount: 5,
-  },
-
-  // ---- l4u14m4: Fourth Species (Suspensions) ----
-  {
-    moduleId: 'l4u14m4',
-    templates: [
-      {
-        type: 'multiple_choice',
-        promptTemplate: 'Answer this question about fourth species counterpoint and suspensions.',
-        hintTemplate: 'Fourth species: syncopated, using suspensions. A consonance is tied across the barline, creating a dissonance on the strong beat that resolves down by step.',
-        params: {
-          choiceSets: [
-            [
-              { label: 'Fourth species counterpoint features syncopation through tied-over (suspended) notes', correct: true },
-              { label: 'Fourth species uses four notes against one', correct: false },
-              { label: 'Fourth species avoids all syncopation', correct: false },
-              { label: 'Fourth species has no suspensions', correct: false },
-            ],
-            [
-              { label: 'When a suspension cannot be formed, break into first species (consonance on the downbeat)', correct: true },
-              { label: 'When suspensions fail, use dissonance on the downbeat', correct: false },
-              { label: 'The counterpoint must stop if a suspension cannot be formed', correct: false },
-              { label: 'Skip notes when suspensions are unavailable', correct: false },
-            ],
-            [
-              { label: 'The 7-6 suspension is the most common in upper-voice fourth species', correct: true },
-              { label: 'The 2-3 is the most common upper-voice suspension', correct: false },
-              { label: 'The 9-10 is the most common suspension type', correct: false },
-              { label: 'There are no common suspension types', correct: false },
-            ],
-          ],
-        },
-      },
-    ],
-    targetCount: 5,
-  },
-
-  // ---- l4u14m5: Fifth Species (Free) ----
-  {
-    moduleId: 'l4u14m5',
-    templates: [
-      {
-        type: 'multiple_choice',
-        promptTemplate: 'Answer this question about fifth species (free) counterpoint.',
-        hintTemplate: 'Fifth species combines all previous species freely. It uses passing tones, neighbors, suspensions, and varied rhythms. This is closest to real musical composition.',
-        params: {
-          choiceSets: [
-            [
-              { label: 'Fifth species freely combines rhythmic elements from all four previous species', correct: true },
-              { label: 'Fifth species introduces entirely new rules', correct: false },
-              { label: 'Fifth species only uses whole notes', correct: false },
-              { label: 'Fifth species ignores all voice-leading rules', correct: false },
-            ],
-            [
-              { label: 'In free counterpoint, the climax of the melody should appear once and be approached/left by step', correct: true },
-              { label: 'The climax can appear multiple times', correct: false },
-              { label: 'The climax should always be on the first note', correct: false },
-              { label: 'Free counterpoint has no melodic goals', correct: false },
-            ],
-            [
-              { label: 'Free counterpoint should maintain a balance of stepwise motion and occasional small leaps', correct: true },
-              { label: 'Free counterpoint should use mostly large leaps', correct: false },
-              { label: 'Free counterpoint must use only stepwise motion', correct: false },
-              { label: 'Free counterpoint has no melodic guidelines', correct: false },
-            ],
-          ],
-        },
-      },
-    ],
-    targetCount: 6,
+    targetCount: 8,
   },
 ];
 

@@ -2,7 +2,8 @@ import type { TemplateLevelOverlay } from '../types';
 
 // ---------------------------------------------------------------------------
 // Castilian Spanish overlay for Level 4 exercise templates
-// 15 modules, ~80 generated exercises
+// 11 module configs (Unit 14 counterpoint pooled onto l4u14m1, mirroring
+// the EN source). Entry order per module must match templatesL4.ts.
 // ---------------------------------------------------------------------------
 
 const overlay: TemplateLevelOverlay = {
@@ -17,7 +18,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Analiza esta figura de retardo y su resolución.',
       hintTemplate:
-        'Retardos: 4-3 resuelve a una 3.ª, 7-6 a una 6.ª, 9-8 a una octava. El retardo de bajo 2-3 resuelve hacia arriba. Las cadenas de retardos crean secuencias.',
+        'Retardos: 4-3 resuelve a una 3.ª, 7-6 a una 6.ª, 9-8 a una octava. El retardo de bajo 2-3 resuelve hacia abajo (el bajo desciende por grado conjunto; el intervalo sobre el bajo crece de una 2.ª a una 3.ª). Las cadenas de retardos crean secuencias.',
       choiceSets: [
         [
           'Una cadena de retardos 7-6 crea un movimiento descendente por grado conjunto en la voz superior',
@@ -346,13 +347,19 @@ const overlay: TemplateLevelOverlay = {
   ],
 
   // =========================================================================
-  // Unidad 14: Contrapunto
+  // Unidad 14: Contrapunto, Métrica, Análisis y Armonía Menor
   // =========================================================================
+  //
+  // NOTA (corrección WS5 A2): en EN, todas las plantillas de contrapunto se
+  // agruparon en l4u14m1 (el único módulo de contrapunto de especies). El orden
+  // de las entradas debe coincidir con el orden de las plantillas en EN
+  // (templatesL4.ts): [1.ª especie, 2.ª especie, identificación de intervalo].
+  // Los módulos m2–m5 ya no tienen plantillas generadas.
 
-  // ---- l4u14m1: Primera Especie ----
+  // ---- l4u14m1: Contrapunto de Primera y Segunda Especie ----
   l4u14m1: [
     {
-      // multiple_choice
+      // multiple_choice — primera especie
       promptTemplate:
         'Responde a esta pregunta sobre contrapunto de primera especie.',
       hintTemplate:
@@ -378,12 +385,8 @@ const overlay: TemplateLevelOverlay = {
         ],
       ],
     },
-  ],
-
-  // ---- l4u14m2: Segunda Especie ----
-  l4u14m2: [
     {
-      // multiple_choice
+      // multiple_choice — segunda especie
       promptTemplate:
         'Responde a esta pregunta sobre contrapunto de segunda especie.',
       hintTemplate:
@@ -409,93 +412,6 @@ const overlay: TemplateLevelOverlay = {
         '¿Cuál es el intervalo formado entre las dos voces? Partiendo de {root}.',
       hintTemplate:
         'En el contrapunto de especies, las consonancias son 3.as, 6.as e intervalos justos (P1, P5, P8). Las disonancias (2.as, 7.as, tritono) requieren tratamiento especial.',
-    },
-  ],
-
-  // ---- l4u14m3: Tercera Especie ----
-  l4u14m3: [
-    {
-      // multiple_choice
-      promptTemplate:
-        'Responde a esta pregunta sobre contrapunto de tercera especie.',
-      hintTemplate:
-        'Tercera especie: cuatro notas contra una. Introduce bordaduras y dobles bordaduras además de notas de paso. La primera nota de cada grupo debe ser consonante.',
-      choiceSets: [
-        [
-          'La tercera especie permite bordaduras y notas de paso en tiempos débiles',
-          'La tercera especie solo permite consonancias',
-          'La tercera especie permite disonancia en el primer tiempo',
-          'La tercera especie no tiene patrón rítmico',
-        ],
-        [
-          'Una cambiata (figura de nota cambiata) en la tercera especie se aleja por grado conjunto y luego salta en la misma dirección',
-          'Una cambiata es lo mismo que un retardo',
-          'Una cambiata aparece solo en la cuarta especie',
-          'Una cambiata debe resolver por movimiento contrario',
-        ],
-      ],
-    },
-  ],
-
-  // ---- l4u14m4: Cuarta Especie (Retardos) ----
-  l4u14m4: [
-    {
-      // multiple_choice
-      promptTemplate:
-        'Responde a esta pregunta sobre contrapunto de cuarta especie y retardos.',
-      hintTemplate:
-        'Cuarta especie: sincopada, usando retardos. Una consonancia se liga a través de la barra de compás, creando una disonancia en el tiempo fuerte que resuelve por grado conjunto descendente.',
-      choiceSets: [
-        [
-          'El contrapunto de cuarta especie presenta síncopa a través de notas ligadas (suspendidas)',
-          'La cuarta especie usa cuatro notas contra una',
-          'La cuarta especie evita toda la síncopa',
-          'La cuarta especie no tiene retardos',
-        ],
-        [
-          'Cuando no es posible formar un retardo, se pasa a la primera especie (consonancia en el tiempo fuerte)',
-          'Cuando los retardos fallan, se usa disonancia en el tiempo fuerte',
-          'El contrapunto debe detenerse si no es posible formar un retardo',
-          'Se saltan notas cuando los retardos no están disponibles',
-        ],
-        [
-          'El retardo 7-6 es el más común en la cuarta especie en voz superior',
-          'El 2-3 es el retardo más común en voz superior',
-          'El 9-10 es el tipo de retardo más común',
-          'No existen tipos de retardo comunes',
-        ],
-      ],
-    },
-  ],
-
-  // ---- l4u14m5: Quinta Especie (Libre) ----
-  l4u14m5: [
-    {
-      // multiple_choice
-      promptTemplate:
-        'Responde a esta pregunta sobre contrapunto de quinta especie (libre).',
-      hintTemplate:
-        'La quinta especie combina todas las especies anteriores libremente. Usa notas de paso, bordaduras, retardos y ritmos variados. Es lo más cercano a la composición musical real.',
-      choiceSets: [
-        [
-          'La quinta especie combina libremente elementos rítmicos de todas las cuatro especies anteriores',
-          'La quinta especie introduce reglas enteramente nuevas',
-          'La quinta especie usa solo redondas',
-          'La quinta especie ignora todas las reglas de conducción de voces',
-        ],
-        [
-          'En el contrapunto libre, el clímax de la melodía debe aparecer una vez y ser abordado/abandonado por grado conjunto',
-          'El clímax puede aparecer varias veces',
-          'El clímax debe estar siempre en la primera nota',
-          'El contrapunto libre no tiene objetivos melódicos',
-        ],
-        [
-          'El contrapunto libre debe mantener un equilibrio entre movimiento por grado conjunto y saltos pequeños ocasionales',
-          'El contrapunto libre debe usar mayoritariamente saltos grandes',
-          'El contrapunto libre debe usar solo movimiento por grado conjunto',
-          'El contrapunto libre no tiene directrices melódicas',
-        ],
-      ],
     },
   ],
 };

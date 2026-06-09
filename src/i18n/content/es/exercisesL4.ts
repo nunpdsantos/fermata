@@ -392,7 +392,7 @@ const overlay: ExerciseLevelOverlay = {
       '2/4 con el tempo cortado a la mitad',
       'Cualquier indicación de compás donde los valores de las notas se reducen a la mitad',
     ],
-    hint: 'El tiempo cortado (alla breve) es 2/2: dos tiempos de blanca por compás. Aunque contiene el mismo número de negras que 4/4, el director marca en 2 en lugar de 4, dando una sensación más ligera y fluida al mismo tempo.',
+    hint: 'El tiempo cortado (alla breve) es 2/2: dos tiempos de blanca por compás. Un compás de 2/2 tiene la misma duración total que uno de 4/4, pero se cuenta en 2 (tiempo de blanca) en lugar de 4 (tiempo de negra) — las mismas notas sentidas en dos tiempos, dando un pulso más amplio y fluido.',
   },
 
   // ---- l4u14m3: Ornamentación Cromática ----
