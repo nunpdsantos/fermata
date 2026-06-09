@@ -506,6 +506,15 @@
     "outOfKey": "fuera de tonalidad ({{key}})",
     "staff": "Pentagrama",
     "staffChord": "Acorde",
-    "staffArpeggio": "Arpegio"
+    "staffArpeggio": "Arpegio",
+    "register": {
+      "low": "Grave",
+      "mid": "Medio",
+      "high": "Agudo"
+    },
+    "inversion": {
+      "root": "Fund.",
+      "nth": "Inv {{n}}"
+    }
   }
 }

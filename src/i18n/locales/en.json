@@ -506,6 +506,15 @@
     "outOfKey": "out of key ({{key}})",
     "staff": "Staff",
     "staffChord": "Chord",
-    "staffArpeggio": "Arpeggio"
+    "staffArpeggio": "Arpeggio",
+    "register": {
+      "low": "Low",
+      "mid": "Mid",
+      "high": "High"
+    },
+    "inversion": {
+      "root": "Root",
+      "nth": "Inv {{n}}"
+    }
   }
 }

@@ -506,6 +506,15 @@
     "outOfKey": "fora da tonalidade ({{key}})",
     "staff": "Pauta",
     "staffChord": "Acorde",
-    "staffArpeggio": "Arpejo"
+    "staffArpeggio": "Arpejo",
+    "register": {
+      "low": "Grave",
+      "mid": "Médio",
+      "high": "Agudo"
+    },
+    "inversion": {
+      "root": "Fund.",
+      "nth": "Inv {{n}}"
+    }
   }
 }

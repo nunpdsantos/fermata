@@ -205,7 +205,10 @@ export function ChordBuilderPanel() {
         pitchClassAtStep={pitchClassAtStep}
       />
 
-      <ChordBuilderStaff notes={inputNotes} />
+      <ChordBuilderStaff
+        notes={inputNotes}
+        detectedChord={top && top.confidence === 'exact' ? top.chord : undefined}
+      />
 
       <div
         className="rounded-xl p-3 text-sm"
