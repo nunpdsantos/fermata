@@ -1,4 +1,4 @@
-import { useCallback, useRef, useMemo, Suspense, lazy } from 'react';
+import { useCallback, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import { noteToString, type Chord, type Note } from '../../core/types/music.ts';
@@ -24,18 +24,13 @@ import {
   CHORD_QUALITY_NAMES,
   getChordShortIntervalLabels,
 } from '../../core/constants/chords.ts';
-import { getVoicedChordNotes } from '../../core/utils/pianoLayout.ts';
-import { StaffNotationSkeleton } from '../notation/StaffNotationSkeleton.tsx';
 import { LearnMoreButton } from './LearnMoreButton.tsx';
 import { Badge } from '../ui/Badge';
 
-const StaffNotation = lazy(() =>
-  import('../notation/StaffNotation.tsx').then((m) => ({ default: m.StaffNotation }))
-);
 import { getScaleSuggestions } from '../../core/constants/chordScaleRelationships.ts';
 import { SCALE_TYPE_NAMES } from '../../core/constants/scales.ts';
 
-interface ChordDetailProps {
+interface CurrentChordPanelProps {
   chord: Chord;
 }
 
@@ -59,7 +54,7 @@ const FIT_COLORS_MUTED: Record<keyof typeof FIT_COLORS, string> = {
   color: 'var(--text-dim)',
 };
 
-export function ChordDetail({ chord }: ChordDetailProps) {
+export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
   const { t } = useTranslation();
   const { getNoteDegree, invertedNotes } = useKeyContext();
   const synthPreset = useAppStore((s) => s.synthPreset);
@@ -208,20 +203,6 @@ export function ChordDetail({ chord }: ChordDetailProps) {
             );
           })}
         </div>
-      </div>
-
-      {/* Staff Notation */}
-      <div>
-        <h3 className="type-section mb-2">
-          {t('panel.staff')}
-        </h3>
-        <Suspense fallback={<StaffNotationSkeleton height={120} />}>
-          <StaffNotation
-            notes={getVoicedChordNotes(notesForPlayback, 4)}
-            height={120}
-            duration="w"
-          />
-        </Suspense>
       </div>
 
       {/* Inversions */}

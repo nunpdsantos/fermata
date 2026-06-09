@@ -13,7 +13,7 @@ export const createMusicSlice: StateCreator<AppState, [], [], MusicSlice> = (set
   setScale: (scale) =>
     set({ selectedScale: scale, selectedChord: null, selectedDegree: null, guitarScalePosition: null, comparisonScale: null }),
   setSelectedChord: (chord) =>
-    set({ selectedChord: chord, chordInversion: 0, detailPanelOpen: chord !== null }),
+    set({ selectedChord: chord, chordInversion: 0 }),
   setSelectedDegree: (degree) => set({ selectedDegree: degree }),
   setChordInversion: (inversion) => set({ chordInversion: inversion }),
 });

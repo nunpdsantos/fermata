@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { ChordGrid } from '../ChordGrid';
 import { useAppStore } from '../../../state/store';
+import { CHORD_SYMBOLS, CHORD_QUALITY_NAMES } from '../../../core/constants/chords';
 
 afterEach(cleanup);
 
@@ -64,11 +65,11 @@ describe('ChordGrid rendering', () => {
     expect(screen.getByText('dim')).toBeDefined(); // vii°
   });
 
-  it('renders QUALITY_FULL labels (Minor, Dim, Major)', () => {
+  it('renders QUALITY_FULL labels (Minor, Diminished, Major)', () => {
     render(<ChordGrid />);
     expect(screen.getAllByText('Major').length).toBe(3); // I, IV, V
     expect(screen.getAllByText('Minor').length).toBe(3); // ii, iii, vi
-    expect(screen.getByText('Dim')).toBeDefined(); // vii°
+    expect(screen.getByText('Diminished')).toBeDefined(); // vii°
   });
 });
 
@@ -85,12 +86,6 @@ describe('ChordGrid interactions', () => {
     expect(state.selectedChord).not.toBeNull();
     expect(state.selectedChord!.root.natural).toBe('C');
     expect(state.selectedChord!.quality).toBe('major');
-  });
-
-  it('clicking chord opens detail panel', () => {
-    render(<ChordGrid />);
-    fireEvent.click(screen.getAllByRole('button')[0]);
-    expect(useAppStore.getState().detailPanelOpen).toBe(true);
   });
 
   it('clicking selected chord deselects it', () => {
@@ -124,6 +119,26 @@ describe('ChordGrid interactions', () => {
     render(<ChordGrid />);
     const pressed = screen.getAllByRole('button').filter(b => b.getAttribute('aria-pressed') === 'true');
     expect(pressed).toHaveLength(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Core map unification (Task 1 — ws4-explore-unify)
+// ---------------------------------------------------------------------------
+describe('ChordGrid uses CHORD_SYMBOLS and CHORD_QUALITY_NAMES from core', () => {
+  it('ii chord (D minor in C major) shows symbol and name from core maps', () => {
+    render(<ChordGrid />);
+    // CHORD_SYMBOLS['minor'] = 'm'; CHORD_QUALITY_NAMES['minor'] = 'Minor'
+    // The ii chip renders the root "D" and quality symbol in adjacent spans,
+    // and the full quality name in a smaller span below.
+    const expectedSymbol = CHORD_SYMBOLS['minor'];
+    const expectedName = CHORD_QUALITY_NAMES['minor'];
+    // Symbol: 'm' should appear at least 3 times (ii, iii, vi)
+    const symbolEls = screen.getAllByText(expectedSymbol);
+    expect(symbolEls.length).toBeGreaterThanOrEqual(3);
+    // Full name: 'Minor' should appear at least 3 times
+    const nameEls = screen.getAllByText(expectedName);
+    expect(nameEls.length).toBeGreaterThanOrEqual(3);
   });
 });
 

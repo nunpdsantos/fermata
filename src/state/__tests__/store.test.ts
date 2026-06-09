@@ -100,7 +100,7 @@ describe('music actions', () => {
     expect(s.guitarScalePosition).toBeNull();
   });
 
-  it('setSelectedChord opens detail panel and resets inversion', () => {
+  it('setSelectedChord resets inversion and does NOT auto-open the detail panel', () => {
     const { setChordInversion, setSelectedChord } = useAppStore.getState();
 
     setChordInversion(2);
@@ -110,15 +110,18 @@ describe('music actions', () => {
 
     const s = useAppStore.getState();
     expect(s.selectedChord).toEqual(A_MINOR);
-    expect(s.detailPanelOpen).toBe(true);
+    // WS4: selecting a chord no longer pops a sidebar — detailPanelOpen is untouched.
+    expect(s.detailPanelOpen).toBe(false);
     expect(s.chordInversion).toBe(0);
   });
 
-  it('setSelectedChord(null) closes detail panel', () => {
+  it('setSelectedChord(null) clears the chord without touching the detail panel', () => {
     const { setSelectedChord } = useAppStore.getState();
 
     setSelectedChord(C_MAJOR);
-    expect(useAppStore.getState().detailPanelOpen).toBe(true);
+    expect(useAppStore.getState().selectedChord).toEqual(C_MAJOR);
+    // No auto-open side-effect either way.
+    expect(useAppStore.getState().detailPanelOpen).toBe(false);
 
     setSelectedChord(null);
     expect(useAppStore.getState().selectedChord).toBeNull();
