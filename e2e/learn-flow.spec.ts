@@ -2,10 +2,6 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Learn flow — curriculum navigation', () => {
   test.beforeEach(async ({ page }) => {
-    // Skip onboarding tour
-    await page.addInitScript(() => {
-      localStorage.setItem('music-theory-onboarding-complete', '1');
-    });
     await page.goto('/');
 
     // Navigate to Learn view

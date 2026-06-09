@@ -1,12 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('PWA basics', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => {
-      localStorage.setItem('music-theory-onboarding-complete', '1');
-    });
-  });
-
   test('page has correct title', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle('Music Theory');

@@ -2,10 +2,6 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Navigation — first load', () => {
   test.beforeEach(async ({ page }) => {
-    // Clear onboarding flag so guided tour doesn't interfere
-    await page.addInitScript(() => {
-      localStorage.setItem('music-theory-onboarding-complete', '1');
-    });
     await page.goto('/');
   });
 
