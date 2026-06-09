@@ -12,16 +12,9 @@ export interface ChoiceOption {
   correct: boolean;
 }
 
-// WS5 mitigation: core INTERVAL_LABELS[8]='Augmented 5th' is wrong for interval-ID (should be 'Minor 6th', per SEMITONES_TO_INTERVAL[8]). Override here until the core constant is fixed (REMEDIATION B1).
-const INTERVAL_LABEL_OVERRIDES: Readonly<Record<number, string>> = { 8: 'Minor 6th' };
-
-/** Interval name for a semitone count, applying the WS5 label override before INTERVAL_LABELS. */
+/** Interval name for a semitone count. */
 function intervalLabelFor(semitones: number): string {
-  return (
-    INTERVAL_LABEL_OVERRIDES[semitones] ??
-    INTERVAL_LABELS[semitones] ??
-    `${semitones} semitones`
-  );
+  return INTERVAL_LABELS[semitones] ?? `${semitones} semitones`;
 }
 
 /**
