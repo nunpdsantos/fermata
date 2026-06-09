@@ -6,6 +6,8 @@ import { identifyChordFromNotes } from '../../core/utils/reverseChordParser.ts';
 import { CHORD_QUALITY_NAMES } from '../../core/constants/chords.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAppStore } from '../../state/store.ts';
+import { resumeAudio, playChordVoiced } from '../../core/services/audio.ts';
+import { getSynthConfig } from '../../services/synthConfig.ts';
 import { ChromaticStrip } from './ChromaticStrip.tsx';
 import { ChordBuilderStaff } from './ChordBuilderStaff.tsx';
 
@@ -66,6 +68,9 @@ export function ChordBuilderPanel() {
   const { t } = useTranslation();
   const { scale, scalePitchClasses, diatonicChords } = useKeyContext();
   const selectedKey = useAppStore((s) => s.selectedKey);
+  const synthPreset = useAppStore((s) => s.synthPreset);
+  const baseOctave = useAppStore((s) => s.baseOctave);
+  const setSelectedChord = useAppStore((s) => s.setSelectedChord);
 
   const [chordRoot, setChordRoot] = useState<Note>(selectedKey);
   const [active, setActive] = useState<Set<number>>(new Set([0]));
@@ -116,6 +121,15 @@ export function ChordBuilderPanel() {
   );
   const identification = useMemo(() => identifyChordFromNotes(inputNotes), [inputNotes]);
   const top: ChordIdentification | undefined = identification.results[0];
+
+  const handlePlay = useCallback(async () => {
+    if (active.size === 0 || inputNotes.length === 0) return;
+    await resumeAudio();
+    playChordVoiced(inputNotes, baseOctave, 1.2, getSynthConfig(synthPreset));
+    if (top && top.confidence === 'exact') {
+      setSelectedChord(top.chord);
+    }
+  }, [active.size, inputNotes, baseOctave, synthPreset, top, setSelectedChord]);
 
   const stepsSorted = useMemo(() => [...active].sort((a, b) => a - b), [active]);
   const intervalsLabel = stepsSorted.map((s) => INTERVAL_SHORT[s]).join(', ');
@@ -192,6 +206,21 @@ export function ChordBuilderPanel() {
           title={t('chordBuilder.syncRootTitle', { tonic: noteToString(selectedKey) })}
         >
           {t('chordBuilder.syncRoot')}
+        </button>
+        <button
+          type="button"
+          onClick={handlePlay}
+          disabled={active.size === 0}
+          className="rounded-md px-3 py-1.5 text-sm"
+          style={{
+            backgroundColor: active.size === 0 ? 'var(--input-bg)' : 'var(--accent)',
+            color: active.size === 0 ? 'var(--text-muted)' : '#fff',
+            border: '1px solid var(--border)',
+            opacity: active.size === 0 ? 0.5 : 1,
+            cursor: active.size === 0 ? 'not-allowed' : 'pointer',
+          }}
+        >
+          {t('chordBuilder.play')}
         </button>
       </div>
 
