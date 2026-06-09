@@ -15,10 +15,8 @@
     "languageLabel": "Idioma"
   },
   "theme": {
-    "dark": "Escuro",
-    "light": "Claro",
-    "system": "Sistema",
-    "fermata": "Fermata"
+    "fermata": "Fermata",
+    "fermataNight": "Fermata Noite"
   },
   "common": {
     "play": "Tocar",

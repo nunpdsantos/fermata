@@ -3,7 +3,7 @@ import type { AppState, PreferencesSlice } from '../storeTypes.ts';
 
 export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesSlice> = (set) => ({
   colorMode: 'functional',
-  themeMode: 'dark',
+  themeMode: 'fermata',
   scaleOctaves: 1,
   baseOctave: 4,
   language: 'en',

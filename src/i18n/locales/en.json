@@ -15,10 +15,8 @@
     "languageLabel": "Language"
   },
   "theme": {
-    "dark": "Dark",
-    "light": "Light",
-    "system": "System",
-    "fermata": "Fermata"
+    "fermata": "Fermata",
+    "fermataNight": "Fermata Night"
   },
   "common": {
     "play": "Play",

@@ -3,35 +3,9 @@ import { renderHook } from '@testing-library/react';
 import { useAppStore } from '../../state/store';
 import { useTheme } from '../useTheme';
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-/** Minimal matchMedia stub that supports listener registration. */
-function createMatchMediaMock(matches: boolean) {
-  const listeners: Array<(e: MediaQueryListEvent) => void> = [];
-  const mql = {
-    matches,
-    media: '(prefers-color-scheme: light)',
-    addEventListener: vi.fn((_: string, cb: (e: MediaQueryListEvent) => void) => {
-      listeners.push(cb);
-    }),
-    removeEventListener: vi.fn((_: string, cb: (e: MediaQueryListEvent) => void) => {
-      const idx = listeners.indexOf(cb);
-      if (idx !== -1) listeners.splice(idx, 1);
-    }),
-    dispatchChange(newMatches: boolean) {
-      listeners.forEach((cb) => cb({ matches: newMatches } as MediaQueryListEvent));
-    },
-  };
-  return mql;
-}
-
-let matchMediaMock: ReturnType<typeof createMatchMediaMock>;
-
 beforeEach(() => {
-  // Reset store to dark
-  useAppStore.setState({ themeMode: 'dark' });
+  // Reset store to the new default
+  useAppStore.setState({ themeMode: 'fermata' });
 
   // Ensure meta tag exists
   let meta = document.querySelector('meta[name="theme-color"]');
@@ -42,118 +16,96 @@ beforeEach(() => {
     document.head.appendChild(meta);
   }
 
-  // Remove .light class
-  document.documentElement.classList.remove('light');
-
-  // Default matchMedia mock: system prefers dark
-  matchMediaMock = createMatchMediaMock(false);
-  vi.stubGlobal('matchMedia', vi.fn(() => matchMediaMock));
+  // Remove .fermata-night class if present
+  document.documentElement.classList.remove('fermata-night');
 });
 
 afterEach(() => {
   vi.restoreAllMocks();
+  document.documentElement.classList.remove('fermata-night');
 });
 
 // ---------------------------------------------------------------------------
-// Dark mode
+// Fermata (day)
 // ---------------------------------------------------------------------------
-describe('useTheme — dark mode', () => {
-  it('removes .light class from html element', () => {
-    document.documentElement.classList.add('light');
-    useAppStore.setState({ themeMode: 'dark' });
+describe('useTheme — fermata (day)', () => {
+  it('applies no theme class to html element', () => {
+    document.documentElement.classList.add('fermata-night');
+    useAppStore.setState({ themeMode: 'fermata' });
 
     renderHook(() => useTheme());
 
-    expect(document.documentElement.classList.contains('light')).toBe(false);
+    expect(document.documentElement.classList.contains('fermata-night')).toBe(false);
   });
 
-  it('sets meta theme-color to dark value', () => {
-    useAppStore.setState({ themeMode: 'dark' });
+  it('sets meta theme-color to #f5efe2', () => {
+    useAppStore.setState({ themeMode: 'fermata' });
     renderHook(() => useTheme());
 
     const meta = document.querySelector('meta[name="theme-color"]');
-    expect(meta?.getAttribute('content')).toBe('#0a0a12');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Light mode
-// ---------------------------------------------------------------------------
-describe('useTheme — light mode', () => {
-  it('adds .light class to html element', () => {
-    useAppStore.setState({ themeMode: 'light' });
-    renderHook(() => useTheme());
-
-    expect(document.documentElement.classList.contains('light')).toBe(true);
-  });
-
-  it('sets meta theme-color to light value', () => {
-    useAppStore.setState({ themeMode: 'light' });
-    renderHook(() => useTheme());
-
-    const meta = document.querySelector('meta[name="theme-color"]');
-    expect(meta?.getAttribute('content')).toBe('#f8f7f4');
+    expect(meta?.getAttribute('content')).toBe('#f5efe2');
   });
 });
 
 // ---------------------------------------------------------------------------
-// System mode
+// Fermata Night
 // ---------------------------------------------------------------------------
-describe('useTheme — system mode', () => {
-  it('applies light when system prefers light', () => {
-    matchMediaMock = createMatchMediaMock(true);
-    vi.stubGlobal('matchMedia', vi.fn(() => matchMediaMock));
-
-    useAppStore.setState({ themeMode: 'system' });
+describe('useTheme — fermata-night', () => {
+  it('adds .fermata-night class to html element', () => {
+    useAppStore.setState({ themeMode: 'fermata-night' });
     renderHook(() => useTheme());
 
-    expect(document.documentElement.classList.contains('light')).toBe(true);
+    expect(document.documentElement.classList.contains('fermata-night')).toBe(true);
+  });
+
+  it('sets meta theme-color to #181208', () => {
+    useAppStore.setState({ themeMode: 'fermata-night' });
+    renderHook(() => useTheme());
+
     const meta = document.querySelector('meta[name="theme-color"]');
-    expect(meta?.getAttribute('content')).toBe('#f8f7f4');
+    expect(meta?.getAttribute('content')).toBe('#181208');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Switching between themes
+// ---------------------------------------------------------------------------
+describe('useTheme — switching', () => {
+  it('adds .fermata-night when switching from fermata to fermata-night', () => {
+    useAppStore.setState({ themeMode: 'fermata' });
+    const { rerender } = renderHook(() => useTheme());
+
+    expect(document.documentElement.classList.contains('fermata-night')).toBe(false);
+
+    useAppStore.setState({ themeMode: 'fermata-night' });
+    rerender();
+
+    expect(document.documentElement.classList.contains('fermata-night')).toBe(true);
   });
 
-  it('applies dark when system prefers dark', () => {
-    matchMediaMock = createMatchMediaMock(false);
-    vi.stubGlobal('matchMedia', vi.fn(() => matchMediaMock));
+  it('removes .fermata-night when switching from fermata-night to fermata', () => {
+    useAppStore.setState({ themeMode: 'fermata-night' });
+    const { rerender } = renderHook(() => useTheme());
 
-    useAppStore.setState({ themeMode: 'system' });
-    renderHook(() => useTheme());
+    expect(document.documentElement.classList.contains('fermata-night')).toBe(true);
 
-    expect(document.documentElement.classList.contains('light')).toBe(false);
-    const meta = document.querySelector('meta[name="theme-color"]');
-    expect(meta?.getAttribute('content')).toBe('#0a0a12');
+    useAppStore.setState({ themeMode: 'fermata' });
+    rerender();
+
+    expect(document.documentElement.classList.contains('fermata-night')).toBe(false);
   });
 
-  it('registers a change listener on matchMedia', () => {
-    useAppStore.setState({ themeMode: 'system' });
-    renderHook(() => useTheme());
+  it('updates meta theme-color when switching themes', () => {
+    useAppStore.setState({ themeMode: 'fermata' });
+    const { rerender } = renderHook(() => useTheme());
 
-    expect(matchMediaMock.addEventListener).toHaveBeenCalledWith('change', expect.any(Function));
-  });
+    let meta = document.querySelector('meta[name="theme-color"]');
+    expect(meta?.getAttribute('content')).toBe('#f5efe2');
 
-  it('reacts to media query changes at runtime', () => {
-    matchMediaMock = createMatchMediaMock(false);
-    vi.stubGlobal('matchMedia', vi.fn(() => matchMediaMock));
+    useAppStore.setState({ themeMode: 'fermata-night' });
+    rerender();
 
-    useAppStore.setState({ themeMode: 'system' });
-    renderHook(() => useTheme());
-
-    expect(document.documentElement.classList.contains('light')).toBe(false);
-
-    // Simulate system switch to light
-    matchMediaMock.dispatchChange(true);
-
-    expect(document.documentElement.classList.contains('light')).toBe(true);
-    const meta = document.querySelector('meta[name="theme-color"]');
-    expect(meta?.getAttribute('content')).toBe('#f8f7f4');
-  });
-
-  it('removes event listener on unmount', () => {
-    useAppStore.setState({ themeMode: 'system' });
-    const { unmount } = renderHook(() => useTheme());
-
-    unmount();
-
-    expect(matchMediaMock.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+    meta = document.querySelector('meta[name="theme-color"]');
+    expect(meta?.getAttribute('content')).toBe('#181208');
   });
 });

@@ -107,82 +107,8 @@
 
 /* ─── Theme tokens ─────────────────────────────────────────────── */
 
-/* Dark theme (default) */
+/* Fermata day — warm cream/walnut/ivory, editorial/luthier aesthetic (default) */
 :root {
-  color-scheme: dark;
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-serif: 'Source Serif 4', 'Georgia', serif;
-  --bg: #0a0a12;
-  --bg-raised: #10101e;
-  --card: #13132a;
-  --card-hover: #1c1c38;
-  --card-active: #242448;
-  --border: #2a2a48;
-  --border-light: #3a3a5a;
-  --border-subtle: #1e1e3a;
-  --text: #f0f0f5;
-  --text-muted: #9898b0;
-  --text-dim: #606078;
-  --input-bg: rgba(19, 19, 42, 0.6);
-  --scrollbar: #2a2a48;
-  --scrollbar-hover: #3a3a5a;
-  --accent: #60A5FA;
-  --accent-hover: #7ab8ff;
-  --accent-dim: rgba(96, 165, 250, 0.15);
-  --accent-bg: rgba(96, 165, 250, 0.08);
-  --focus-ring: rgba(96, 165, 250, 0.6);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 12px rgba(96, 165, 250, 0.25);
-  --piano-white: #e8e8ec;
-  --piano-white-hover: #f0f0f4;
-  --piano-white-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.15);
-  --piano-black: #1c1c2e;
-  --piano-black-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), inset 0 -1px 2px rgba(255, 255, 255, 0.05);
-  --piano-border: #2a2a48;
-  --piano-label: #9898b0;
-}
-
-/* Light theme */
-:root.light {
-  color-scheme: light;
-  --bg: #f8f7f4;
-  --bg-raised: #f2f1ec;
-  --card: #f0efe8;
-  --card-hover: #e8e7df;
-  --card-active: #dddcd4;
-  --border: #d5d4cb;
-  --border-light: #b8b7ae;
-  --border-subtle: #e2e1d9;
-  --text: #1a1a22;
-  --text-muted: #55554e;
-  --text-dim: #8a8a82;
-  --input-bg: rgba(240, 239, 232, 0.8);
-  --scrollbar: #d5d4cb;
-  --scrollbar-hover: #b8b7ae;
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
-  --accent-dim: rgba(59, 130, 246, 0.12);
-  --accent-bg: rgba(59, 130, 246, 0.06);
-  --focus-ring: rgba(59, 130, 246, 0.5);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
-  --shadow-glow: 0 0 12px rgba(59, 130, 246, 0.2);
-  --piano-white: #fffff5;
-  --piano-white-hover: #ffffff;
-  --piano-white-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.06);
-  --piano-black: #1a1a2e;
-  --piano-black-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 -1px 2px rgba(255, 255, 255, 0.05);
-  --piano-border: #d5d4cb;
-  --piano-label: #55554e;
-}
-
-/* Fermata theme — warm cream + walnut + ivory, editorial/luthier aesthetic.
-   Opt-in via themeMode='fermata'. Explore view is the primary design target;
-   Learn, Play, Progress fall back to these tokens but may need follow-up work. */
-:root.fermata {
   color-scheme: light;
   --font-sans: 'Source Serif 4', 'Georgia', serif;
   --font-serif: 'Source Serif 4', 'Georgia', serif;
@@ -216,6 +142,43 @@
   --piano-black-shadow: 0 2px 6px rgba(0, 0, 0, 0.35), inset 0 -1px 2px rgba(255, 255, 255, 0.08);
   --piano-border: #8b5e2a;
   --piano-label: #8b7551;
+}
+
+/* Fermata Night — warm walnut/espresso dark variant of the Fermata aesthetic. */
+:root.fermata-night {
+  color-scheme: dark;
+  --font-sans: 'Source Serif 4', 'Georgia', serif;
+  --font-serif: 'Source Serif 4', 'Georgia', serif;
+  --bg: #181208;
+  --bg-raised: #211a0f;
+  --card: #271f12;
+  --card-hover: #322817;
+  --card-active: #3e3220;
+  --border: #4a3c28;
+  --border-light: #5f4e34;
+  --border-subtle: #2e2516;
+  --text: #f1e9d8;
+  --text-muted: #c3ad86;
+  --text-dim: #8f7c5a;
+  --input-bg: rgba(39, 31, 18, 0.6);
+  --scrollbar: #4a3c28;
+  --scrollbar-hover: #5f4e34;
+  --accent: #d2804a;
+  --accent-hover: #e6915a;
+  --accent-dim: rgba(210, 128, 74, 0.18);
+  --accent-bg: rgba(210, 128, 74, 0.10);
+  --focus-ring: rgba(210, 128, 74, 0.55);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 14px rgba(210, 128, 74, 0.28);
+  --piano-white: #e9dcbf;
+  --piano-white-hover: #f4e9cd;
+  --piano-white-shadow: inset 0 -3px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  --piano-black: #120d06;
+  --piano-black-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), inset 0 -1px 2px rgba(255, 255, 255, 0.06);
+  --piano-border: #6b4a26;
+  --piano-label: #a8916a;
 }
 
 body {
@@ -451,10 +414,11 @@ body {
   font-family: var(--font-serif);
 }
 
-/* ─── Fermata-theme typography overrides ───────────────────────────
+/* ─── Fermata typography overrides ────────────────────────────────
    Editorial/luthier aesthetic: italic serif titles, warm tracked labels,
-   body prose in serif. Scoped to :root.fermata so dark/light unaffected. */
-:root.fermata .learn-serif {
+   body prose in serif. Applies globally since both themes (Fermata day and
+   Fermata Night) share the Source Serif 4 aesthetic. */
+.learn-serif {
   font-style: italic;
   font-weight: 400;
   letter-spacing: -0.015em;
@@ -462,16 +426,16 @@ body {
   line-height: 1.15;
 }
 
-:root.fermata .type-section {
+.type-section {
   color: var(--text-muted);
   letter-spacing: 0.18em;
   font-weight: var(--font-weight-semibold);
 }
 
-/* Body prose — under fermata, make description text italic serif.
+/* Body prose — make description text italic serif.
    Scoped to paragraphs inside the hero block and detail panels. */
-:root.fermata .explore-prose,
-:root.fermata p.explore-prose {
+.explore-prose,
+p.explore-prose {
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 400;

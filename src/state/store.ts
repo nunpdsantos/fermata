@@ -21,7 +21,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'music-theory-app',
-      version: 4,
+      version: 5,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         selectedKey: state.selectedKey,
@@ -52,6 +52,10 @@ export const useAppStore = create<AppState>()(
             'midiInputEnabled', 'midiInputDeviceId',
             'metronomeBPM', 'metronomeBeats', 'metronomeVolume',
           ]) delete s[k];
+        }
+        if (version < 5 && state && typeof state === 'object') {
+          const s = state as Record<string, unknown>;
+          s.themeMode = s.themeMode === 'dark' ? 'fermata-night' : 'fermata';
         }
         return state;
       },
