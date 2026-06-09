@@ -1,9 +1,11 @@
-# WS5 Audit — Core Escalation (8 bugs in `src/core/`)
+# WS5 Audit — Core Escalation (8 bugs + 4 Category-C imprecisions in `src/core/`)
 
-These bugs were found during the Fermata WS5 music-theory audit (L1–L9). Every defect below lives in
+These items were found during the Fermata WS5 music-theory audit (L1–L9). Every defect below lives in
 `src/core/constants/` — the shared-engine constants and curriculum files that Fermata imports **read-only**
 from Music AI. Fermata cannot fix these at the source; the corrections must be applied in the Music AI repo
-and then re-synced. Items are ordered by learner-facing impact.
+and then re-synced. The first block (B1–B7 + B3a) are confirmed errors, ordered by learner-facing impact;
+a second block (C7, C8, C17, C19), appended below from the Category-C triage, are IMPRECISE / convention-
+dependent core-prose fixes (C19 CONDITIONAL).
 
 ---
 
@@ -260,6 +262,129 @@ text is not).
 
 ---
 
+# Additional escalations — WS5 Category-C triage (imprecise / convention-dependent core prose)
+
+The four items below come from the Category-C triage (`C-DISPOSITION.md`). Unlike B1–B7 (outright errors),
+these are **IMPRECISE** core-prose statements — defensible-but-loose, or convention-dependent — confirmed by
+the triage as worth tightening at the source. They are not "wrong under all conventions"; severity is
+**Questionable** (clarity/correctness improvements), and C19 is explicitly **CONDITIONAL**. All live under
+read-only `src/core/` and must be applied in the Music AI repo. Exact corrected statements are quoted from
+`C-DISPOSITION.md`.
+
+---
+
+## C7 — Back-door dominant derived as "tritone sub of E7 (V7/vi)" (non-standard) (`curriculumL7.ts`)
+
+**File + line:** `src/core/constants/curriculumL7.ts` (~line 204), module `l7u21m4`, concept "The Back-Door
+Dominant"
+
+**What's wrong now:**
+```
+The back-door dominant bVII7 is derived as "the tritone sub of E7 (V7/vi)".
+```
+
+**Correct statement:** Bb *is* a tritone from E, so the literal sentence is not false — but the standard
+derivation of bVII7→I is **borrowed from the parallel minor / the dominant of bIII (Eb)**, sharing guide
+tones with an **altered V (G7)**, not with E7. The E7 framing obscures why Bb7 resolves to C: Bb7's 3rd
+(D→E) and 7th (Ab→G) are upper leading-tones into Cmaj7. Re-derive as the parallel-minor / bIII-dominant
+account (guide-tone sharing with an altered V).
+
+**Why:** The tritone-sub-of-E7 derivation is arithmetically true but non-standard and misleading; it points
+the student at the wrong functional origin of the chord. The guide-tone / parallel-minor account is the
+canonical one and actually explains the resolution.
+
+**Impact:** Module `l7u21m4` (Back-Door Dominant). Teaching prose; no exercise-grading consequence. A student
+who internalizes the E7 framing will mis-explain why bVII7 resolves to I.
+
+**Severity:** Questionable (IMPRECISE — not flatly false; escalate as a clarity/correctness improvement).
+
+**App-side mitigation:** None possible — core teaching prose.
+
+---
+
+## C8 — "7sus4 on the 5th of a minor chord = Dorian" is loose/backwards (`curriculumL7.ts`)
+
+**File + line:** `src/core/constants/curriculumL7.ts` (~line 94), module `l7u21m2`, concept "Suspended
+Dominants: 7sus4"
+
+**What's wrong now:**
+```
+A 7sus4/9sus4 built on the 5th of a minor chord creates a Dorian flavor.
+```
+
+**Correct statement:** Restate as a **9sus chord a P5 above (= P4 below) a minor/ii chord — the V-of-ii
+position** — which yields a Dorian/modal color and substitutes for ii (e.g. G9sus over Dm ≈ Dm11/G).
+"On the 5th *of* a minor chord" is shaky: G is the V-related root of Dm, not a chord-tone "of" a D-minor
+triad. The Dorian-color claim itself is sound; only the location/derivation phrasing is backwards.
+
+**Why:** The phrasing conflates "the 5th of the chord" with "a P5 above the chord's root," which is the
+actual relationship. As written it is loose enough to mislead a student building the sus chord on the
+literal 5th scale-degree.
+
+**Impact:** Module `l7u21m2` (Suspended Dominants). Teaching prose; low impact; not false, just imprecise.
+
+**Severity:** Questionable (IMPRECISE — loose/backwards phrasing).
+
+**App-side mitigation:** None possible — core teaching prose.
+
+---
+
+## C17 — "vii°7 ≈ minor / viiø7 ≈ major" for secondary leading-tone chords is over-broad (`curriculumL5.ts`)
+
+**File + line:** `src/core/constants/curriculumL5.ts`, module `l5u15m3`
+
+**What's wrong now:**
+```
+vii°7/x is more common in minor; viiø7/x is more common in major.
+```
+
+**Correct statement:** For *secondary* leading-tone chords the fully-diminished form is **very common in
+major keys too** — major targets may be tonicized by either ø7 or °7, while minor targets (and V-in-minor)
+**require** the fully-diminished °7. So "vii°7 ≈ minor / viiø7 ≈ major" oversimplifies; the real rule keys
+off the **quality of the tonicized chord**, not the home mode. Soften per the chosen authority
+(e.g. Kostka/Payne).
+
+**Why:** The home-mode shorthand is defensible as a rough heuristic but over-broad; it will mislead a
+student into thinking a fully-diminished secondary leading-tone chord is a minor-key-only phenomenon, when
+it is routine in major.
+
+**Impact:** Module `l5u15m3` (Secondary Leading-Tone Chords). Teaching prose; no grading consequence.
+
+**Severity:** Questionable (IMPRECISE — defensible-but-loose / over-broad, not flatly wrong).
+
+**App-side mitigation:** None possible — core teaching prose.
+
+---
+
+## C19 — Second-species "passing OR neighbor tones" (CONDITIONAL — strict-Fux only) (`curriculumL4.ts`)
+
+**File + line:** `src/core/constants/curriculumL4.ts`, module `l4u14m1`, concept "First and Second Species"
+
+**What's wrong now:**
+```
+Second-species weak-beat dissonance is described as "passing tones OR neighbor tones".
+```
+
+**Correct statement (under strict Fux only):** Under **strict Fux**, the only *dissonance* allowed in 2nd
+species is the **passing tone**; a neighbor may appear in 2nd species only if **consonant** — dissonant
+neighbors are deferred to 3rd species. The module's own exercise `l4u14m1e3` already states the strict rule
+correctly, so the concept prose is looser than both Fux and its own exercise. Tighten to "passing tones
+only" for 2nd-species *dissonance* **if** strict species is the intended convention.
+
+**Why:** Some modern texts legitimately admit dissonant neighbors earlier, so this is genuinely
+convention-dependent. The factual sub-claim (strict Fux = passing only) is confirmed; the *whether* to
+tighten is a deliberate strict-Fux stance.
+
+**Impact:** Module `l4u14m1` (First and Second Species). Teaching prose; no grading consequence. Internal
+inconsistency with `l4u14m1e3` only matters under the strict reading.
+
+**Severity:** **CONDITIONAL** — only an error under a deliberate strict-Fux stance; otherwise
+convention-dependent (escalate only on a conscious strict-species choice).
+
+**App-side mitigation:** None possible — core teaching prose. (`l4u14m1e3` already states the strict rule.)
+
+---
+
 ## Summary table
 
 | # | File | Symbol / line | One-line fix |
@@ -272,6 +397,16 @@ text is not).
 | B6 | `curriculumL7.ts:644` | `l7u23m1` concept "Common Pop Progressions" | Rename "Andalusian" to i–bVII–bVI–V, or relabel the given chords |
 | B7 | `chords.ts:82` | `dominant7alt` formula | Expand to include b9+#9+b5/#11+#5/b13; align L7 text to chosen formula |
 | B3a | `curriculumL4.ts` | `l4u14m2` concept (search "same written notes as 4/4") | Fix cut-time beat-unit vs. duration conflation (mirrors app-side A12) |
+| C7 | `curriculumL7.ts:~204` | `l7u21m4` concept "The Back-Door Dominant" | Re-derive bVII7 as parallel-minor / bIII-dominant (guide tones with altered V), not "tritone sub of E7" |
+| C8 | `curriculumL7.ts:~94` | `l7u21m2` concept "Suspended Dominants: 7sus4" | Restate as a 9sus a P5 above the ii-chord (V-of-ii) substituting for ii, not "on the 5th of a minor chord" |
+| C17 | `curriculumL5.ts` | `l5u15m3` (secondary leading-tone chords) | Soften "vii°7≈minor / viiø7≈major"; fully-dim secondary LT chords are common in major too |
+| C19 | `curriculumL4.ts` | `l4u14m1` concept "First and Second Species" | **CONDITIONAL:** tighten "passing OR neighbor" → "passing only" for 2nd-species dissonance (strict-Fux stance only) |
+
+**Severity note:** B1–B7 + B3a are confirmed errors. C7, C8, C17 are IMPRECISE (Questionable) core-prose
+clarity fixes from the Category-C triage; **C19 is CONDITIONAL** — only an error under a deliberate
+strict-Fux convention, otherwise convention-dependent.
 
 **Items not confirmed to exact line:** B3a (`curriculumL4.ts` cut-time concept) — line not pinned; the
-symbol/search string above will locate it.
+symbol/search string above will locate it. C17 (`curriculumL5.ts` `l5u15m3`) and C19 (`curriculumL4.ts`
+`l4u14m1`) cite the module id rather than a pinned line. C7/C8 line numbers (~204 / ~94) are approximate
+(from `C-DISPOSITION.md`).

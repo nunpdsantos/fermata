@@ -289,7 +289,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Analyze interval vectors and set class properties.',
-        hintTemplate: 'Interval vector: counts of each interval class (ic 1-6) in a set, written as <x x x x x x>. Sets with the same interval vector are Z-related.',
+        hintTemplate: 'Interval vector: counts of each interval class (ic 1-6) in a set, written as <x x x x x x>. Two sets are Z-related when they share the same interval vector but are NOT related by transposition or inversion (they belong to different set classes).',
         params: {
           choiceSets: [
             [

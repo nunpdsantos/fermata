@@ -260,7 +260,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Analiza vectores intervalares y propiedades de clases de conjuntos.',
       hintTemplate:
-        'Vector intervalar: conteos de cada clase de intervalo (ci 1-6) en un conjunto, escrito como <x x x x x x>. Conjuntos con el mismo vector intervalar son Z-relacionados.',
+        'Vector intervalar: conteos de cada clase de intervalo (ci 1-6) en un conjunto, escrito como <x x x x x x>. Dos conjuntos son Z-relacionados cuando comparten el mismo vector intervalar pero NO están relacionados por transposición o inversión (pertenecen a clases de conjuntos diferentes).',
       choiceSets: [
         [
           'El vector intervalar cuenta ocurrencias de cada clase de intervalo (1 a 6) en un conjunto de clases de altura',
