@@ -35,26 +35,6 @@ vi.mock('../../services/karplusStrong.ts', () => ({
   setVolume: (...args: unknown[]) => mockKSSetVolume(...args),
 }));
 
-const mockSendNoteOn = vi.fn();
-const mockSendNoteOff = vi.fn();
-const mockInitMidiOutput = vi.fn();
-const mockSelectOutput = vi.fn();
-
-vi.mock('../../services/midiOutput.ts', () => ({
-  sendNoteOn: (...args: unknown[]) => mockSendNoteOn(...args),
-  sendNoteOff: (...args: unknown[]) => mockSendNoteOff(...args),
-  initMidiOutput: () => mockInitMidiOutput(),
-  selectOutput: (...args: unknown[]) => mockSelectOutput(...args),
-}));
-
-const mockRecordNoteOn = vi.fn();
-const mockRecordNoteOff = vi.fn();
-
-vi.mock('../../services/noteRecorder.ts', () => ({
-  recordNoteOn: (...args: unknown[]) => mockRecordNoteOn(...args),
-  recordNoteOff: (...args: unknown[]) => mockRecordNoteOff(...args),
-}));
-
 import { useAudio } from '../useAudio';
 import { useAppStore } from '../../state/store';
 
@@ -68,8 +48,6 @@ beforeEach(() => {
   useAppStore.setState({
     synthPreset: 'piano',
     volume: 0.7,
-    midiOutputEnabled: false,
-    midiOutputDeviceId: null,
     activeNotes: new Set<number>(),
   });
 });
@@ -174,37 +152,6 @@ describe('useAudio — noteOn', () => {
     expect(useAppStore.getState().activeNotes.has(60)).toBe(true);
   });
 
-  it('records note-on event', async () => {
-    const { result } = renderHook(() => useAudio());
-
-    await act(async () => {
-      await result.current.noteOn(noteC, 4);
-    });
-
-    expect(mockRecordNoteOn).toHaveBeenCalledWith(60);
-  });
-
-  it('sends MIDI note-on when MIDI output enabled', async () => {
-    useAppStore.setState({ midiOutputEnabled: true });
-    const { result } = renderHook(() => useAudio());
-
-    await act(async () => {
-      await result.current.noteOn(noteC, 4);
-    });
-
-    expect(mockSendNoteOn).toHaveBeenCalledWith(60);
-  });
-
-  it('does not send MIDI when output disabled', async () => {
-    const { result } = renderHook(() => useAudio());
-
-    await act(async () => {
-      await result.current.noteOn(noteC, 4);
-    });
-
-    expect(mockSendNoteOn).not.toHaveBeenCalled();
-  });
-
   it('sets master volume on both engines', async () => {
     useAppStore.setState({ volume: 0.42 });
     const { result } = renderHook(() => useAudio());
@@ -254,57 +201,5 @@ describe('useAudio — noteOff', () => {
       result.current.noteOff(60);
     });
     expect(useAppStore.getState().activeNotes.has(60)).toBe(false);
-  });
-
-  it('sends MIDI note-off when output enabled', () => {
-    useAppStore.setState({ midiOutputEnabled: true });
-    const { result } = renderHook(() => useAudio());
-
-    act(() => {
-      result.current.noteOff(60);
-    });
-
-    expect(mockSendNoteOff).toHaveBeenCalledWith(60);
-  });
-
-  it('records note-off event', () => {
-    const { result } = renderHook(() => useAudio());
-
-    act(() => {
-      result.current.noteOff(60);
-    });
-
-    expect(mockRecordNoteOff).toHaveBeenCalledWith(60);
-  });
-});
-
-// =========================================================================
-// MIDI output management
-// =========================================================================
-describe('useAudio — MIDI output', () => {
-  it('initializes MIDI output when first enabled', () => {
-    useAppStore.setState({ midiOutputEnabled: true });
-    renderHook(() => useAudio());
-
-    expect(mockInitMidiOutput).toHaveBeenCalledOnce();
-  });
-
-  it('does not init MIDI output when disabled', () => {
-    renderHook(() => useAudio());
-    expect(mockInitMidiOutput).not.toHaveBeenCalled();
-  });
-
-  it('syncs selected output device', () => {
-    useAppStore.setState({ midiOutputEnabled: true, midiOutputDeviceId: 'dev-1' });
-    renderHook(() => useAudio());
-
-    expect(mockSelectOutput).toHaveBeenCalledWith('dev-1');
-  });
-
-  it('passes null to selectOutput when MIDI disabled', () => {
-    useAppStore.setState({ midiOutputEnabled: false, midiOutputDeviceId: 'dev-1' });
-    renderHook(() => useAudio());
-
-    expect(mockSelectOutput).toHaveBeenCalledWith(null);
   });
 });

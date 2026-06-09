@@ -4,7 +4,6 @@ import { createMusicSlice } from './slices/musicSlice.ts';
 import { createInstrumentSlice } from './slices/instrumentSlice.ts';
 import { createAudioSlice } from './slices/audioSlice.ts';
 import { createNavigationSlice } from './slices/navigationSlice.ts';
-import { createMetronomeSlice } from './slices/metronomeSlice.ts';
 import { createPreferencesSlice } from './slices/preferencesSlice.ts';
 import type { AppState } from './storeTypes.ts';
 
@@ -18,12 +17,11 @@ export const useAppStore = create<AppState>()(
       ...createInstrumentSlice(...a),
       ...createAudioSlice(...a),
       ...createNavigationSlice(...a),
-      ...createMetronomeSlice(...a),
       ...createPreferencesSlice(...a),
     }),
     {
       name: 'music-theory-app',
-      version: 3,
+      version: 4,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         selectedKey: state.selectedKey,
@@ -35,14 +33,6 @@ export const useAppStore = create<AppState>()(
         scaleOctaves: state.scaleOctaves,
         volume: state.volume,
         themeMode: state.themeMode,
-        synthPreset: state.synthPreset,
-        midiOutputEnabled: state.midiOutputEnabled,
-        midiOutputDeviceId: state.midiOutputDeviceId,
-        midiInputEnabled: state.midiInputEnabled,
-        midiInputDeviceId: state.midiInputDeviceId,
-        metronomeBPM: state.metronomeBPM,
-        metronomeBeats: state.metronomeBeats,
-        metronomeVolume: state.metronomeVolume,
         language: state.language,
         preferencesUpdatedAt: state.preferencesUpdatedAt,
       }),
@@ -53,10 +43,15 @@ export const useAppStore = create<AppState>()(
         if (version < 2 && state && typeof state === 'object') {
           (state as Record<string, unknown>).preferencesUpdatedAt = 0;
         }
-        if (version < 3 && state && typeof state === 'object') {
+        // (v3 added midiInput* defaults; those keys left the schema in v4, so the
+        //  v3 step is gone — the v4 step below strips any stale values from old state.)
+        if (version < 4 && state && typeof state === 'object') {
           const s = state as Record<string, unknown>;
-          if (s.midiInputEnabled === undefined) s.midiInputEnabled = true;
-          if (s.midiInputDeviceId === undefined) s.midiInputDeviceId = null;
+          for (const k of [
+            'synthPreset', 'midiOutputEnabled', 'midiOutputDeviceId',
+            'midiInputEnabled', 'midiInputDeviceId',
+            'metronomeBPM', 'metronomeBeats', 'metronomeVolume',
+          ]) delete s[k];
         }
         return state;
       },

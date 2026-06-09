@@ -10,7 +10,7 @@ import type { SynthPresetName } from '../core/types/visual.ts';
 
 // ─── Enums ──────────────────────────────────────────────────────────────────
 
-export type ViewMode = 'explore' | 'play' | 'learn';
+export type ViewMode = 'explore' | 'learn';
 export type InstrumentType = 'piano' | 'guitar';
 export type ColorMode = 'functional' | 'absolute';
 export type ThemeMode = 'dark' | 'light' | 'system' | 'fermata';
@@ -46,20 +46,13 @@ export interface InstrumentSlice {
 }
 
 export interface AudioSlice {
+  /** Fixed at the 'piano' default — its setter was removed with the Play view's
+   *  preset chooser (guitar forces Karplus-Strong regardless of this value). */
   synthPreset: SynthPresetName;
   volume: number;
   isPlaying: boolean;
-  midiOutputEnabled: boolean;
-  midiOutputDeviceId: string | null;
-  midiInputEnabled: boolean;
-  midiInputDeviceId: string | null;
-  setSynthPreset: (preset: SynthPresetName) => void;
   setVolume: (volume: number) => void;
   setIsPlaying: (playing: boolean) => void;
-  setMidiOutputEnabled: (enabled: boolean) => void;
-  setMidiOutputDeviceId: (id: string | null) => void;
-  setMidiInputEnabled: (enabled: boolean) => void;
-  setMidiInputDeviceId: (id: string | null) => void;
 }
 
 export interface LearnDeepLink {
@@ -80,15 +73,6 @@ export interface NavigationSlice {
   setQuickSearchOpen: (open: boolean) => void;
   setComparisonScale: (scale: ScaleType | null) => void;
   setPendingLearnTarget: (target: LearnDeepLink | null) => void;
-}
-
-export interface MetronomeSlice {
-  metronomeBPM: number;
-  metronomeBeats: number;
-  metronomeVolume: number;
-  setMetronomeBPM: (bpm: number) => void;
-  setMetronomeBeats: (beats: number) => void;
-  setMetronomeVolume: (volume: number) => void;
 }
 
 export interface PreferencesSlice {
@@ -113,5 +97,4 @@ export type AppState =
   InstrumentSlice &
   AudioSlice &
   NavigationSlice &
-  MetronomeSlice &
   PreferencesSlice;

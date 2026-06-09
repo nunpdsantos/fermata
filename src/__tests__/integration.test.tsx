@@ -57,20 +57,17 @@ describe('view transitions', () => {
     setSelectedDegree(1);
     expect(useAppStore.getState().detailPanelOpen).toBe(true);
 
-    // Switch to Play
-    setView('play');
+    // Switch to Learn
+    setView('learn');
     const s = useAppStore.getState();
-    expect(s.view).toBe('play');
+    expect(s.view).toBe('learn');
     expect(s.selectedChord).toBeNull();
     expect(s.selectedDegree).toBeNull();
     expect(s.detailPanelOpen).toBe(false);
   });
 
-  it('Explore → Play → Learn → Explore round-trip', () => {
+  it('Explore → Learn → Explore round-trip', () => {
     const { setView } = useAppStore.getState();
-
-    setView('play');
-    expect(useAppStore.getState().view).toBe('play');
 
     setView('learn');
     expect(useAppStore.getState().view).toBe('learn');
@@ -246,7 +243,7 @@ describe('persistence', () => {
         { natural: 'G', accidental: '' },
       ],
     });
-    setView('play');
+    setView('learn');
     addActiveNote(60);
 
     const stored = JSON.parse(localStorage.getItem(STORE_KEY)!);

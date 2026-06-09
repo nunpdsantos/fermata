@@ -36,15 +36,8 @@ beforeEach(() => {
     scaleOctaves: 1,
     baseOctave: 4,
     guitarTuningId: 'standard',
-    metronomeBPM: 120,
-    metronomeBeats: 4,
-    metronomeVolume: 0.7,
     themeMode: 'dark',
     comparisonScale: null,
-    midiOutputEnabled: false,
-    midiOutputDeviceId: null,
-    midiInputEnabled: true,
-    midiInputDeviceId: null,
     language: 'en',
   });
 });
@@ -262,11 +255,6 @@ describe('navigation actions', () => {
 });
 
 describe('audio actions', () => {
-  it('setSynthPreset changes preset', () => {
-    useAppStore.getState().setSynthPreset('strings');
-    expect(useAppStore.getState().synthPreset).toBe('strings');
-  });
-
   it('setVolume updates volume', () => {
     useAppStore.getState().setVolume(0.5);
     expect(useAppStore.getState().volume).toBe(0.5);
@@ -275,61 +263,6 @@ describe('audio actions', () => {
   it('setIsPlaying toggles playing state', () => {
     useAppStore.getState().setIsPlaying(true);
     expect(useAppStore.getState().isPlaying).toBe(true);
-  });
-
-  it('setMidiOutputEnabled toggles MIDI output', () => {
-    useAppStore.getState().setMidiOutputEnabled(true);
-    expect(useAppStore.getState().midiOutputEnabled).toBe(true);
-
-    useAppStore.getState().setMidiOutputEnabled(false);
-    expect(useAppStore.getState().midiOutputEnabled).toBe(false);
-  });
-
-  it('setMidiOutputDeviceId selects device', () => {
-    useAppStore.getState().setMidiOutputDeviceId('device-1');
-    expect(useAppStore.getState().midiOutputDeviceId).toBe('device-1');
-
-    useAppStore.getState().setMidiOutputDeviceId(null);
-    expect(useAppStore.getState().midiOutputDeviceId).toBeNull();
-  });
-});
-
-describe('metronome actions', () => {
-  it('setMetronomeBPM updates BPM with clamping', () => {
-    useAppStore.getState().setMetronomeBPM(60);
-    expect(useAppStore.getState().metronomeBPM).toBe(60);
-
-    useAppStore.getState().setMetronomeBPM(10); // below min
-    expect(useAppStore.getState().metronomeBPM).toBe(30);
-
-    useAppStore.getState().setMetronomeBPM(400); // above max
-    expect(useAppStore.getState().metronomeBPM).toBe(300);
-  });
-
-  it('setMetronomeBeats updates time signature', () => {
-    useAppStore.getState().setMetronomeBeats(3);
-    expect(useAppStore.getState().metronomeBeats).toBe(3);
-
-    useAppStore.getState().setMetronomeBeats(6);
-    expect(useAppStore.getState().metronomeBeats).toBe(6);
-  });
-
-  it('setMetronomeVolume updates volume with clamping', () => {
-    useAppStore.getState().setMetronomeVolume(0.5);
-    expect(useAppStore.getState().metronomeVolume).toBe(0.5);
-
-    useAppStore.getState().setMetronomeVolume(-0.1);
-    expect(useAppStore.getState().metronomeVolume).toBe(0);
-
-    useAppStore.getState().setMetronomeVolume(1.5);
-    expect(useAppStore.getState().metronomeVolume).toBe(1);
-  });
-
-  it('has correct defaults', () => {
-    const s = useAppStore.getState();
-    expect(s.metronomeBPM).toBe(120);
-    expect(s.metronomeBeats).toBe(4);
-    expect(s.metronomeVolume).toBe(0.7);
   });
 });
 
@@ -374,37 +307,5 @@ describe('preferences actions', () => {
 
   it('has English as default language', () => {
     expect(useAppStore.getState().language).toBe('en');
-  });
-});
-
-describe('midi input actions', () => {
-  it('has midiInputEnabled true by default', () => {
-    expect(useAppStore.getState().midiInputEnabled).toBe(true);
-  });
-
-  it('has midiInputDeviceId null by default', () => {
-    expect(useAppStore.getState().midiInputDeviceId).toBeNull();
-  });
-
-  it('setMidiInputEnabled toggles MIDI input', () => {
-    useAppStore.getState().setMidiInputEnabled(false);
-    expect(useAppStore.getState().midiInputEnabled).toBe(false);
-
-    useAppStore.getState().setMidiInputEnabled(true);
-    expect(useAppStore.getState().midiInputEnabled).toBe(true);
-  });
-
-  it('setMidiInputDeviceId selects device', () => {
-    useAppStore.getState().setMidiInputDeviceId('input-1');
-    expect(useAppStore.getState().midiInputDeviceId).toBe('input-1');
-
-    useAppStore.getState().setMidiInputDeviceId(null);
-    expect(useAppStore.getState().midiInputDeviceId).toBeNull();
-  });
-
-  it('setMidiInputEnabled updates preferencesUpdatedAt', () => {
-    const before = useAppStore.getState().preferencesUpdatedAt;
-    useAppStore.getState().setMidiInputEnabled(false);
-    expect(useAppStore.getState().preferencesUpdatedAt).toBeGreaterThanOrEqual(before);
   });
 });

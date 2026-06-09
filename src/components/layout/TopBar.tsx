@@ -4,10 +4,9 @@ import { useAppStore, type ViewMode, type ThemeMode } from '../../state/store.ts
 import { SUPPORTED_LANGUAGES } from '../../i18n/index.ts';
 import { toast } from '../../state/toastStore.ts';
 
-const VIEWS: ViewMode[] = ['explore', 'play', 'learn'];
+const VIEWS: ViewMode[] = ['explore', 'learn'];
 const VIEW_KEYS: Record<ViewMode, string> = {
   explore: 'nav.explore',
-  play: 'nav.play',
   learn: 'nav.learn',
 };
 
