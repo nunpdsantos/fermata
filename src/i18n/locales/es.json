@@ -581,6 +581,8 @@
       "roman": "Numerales romanos",
       "function": "Función armónica"
     },
+    "clear": "Borrar",
+    "done": "Listo",
     "a11y": {
       "notes": "notas",
       "scaleNotes": "notas de la escala",
@@ -589,7 +591,59 @@
     "feedback": {
       "correct": "Correcto",
       "wrong": "Casi",
-      "continue": "Continuar"
+      "nearMiss": "Mismo sonido, escritura incorrecta — la grafía correcta aquí es {{expected}}",
+      "continue": "Continuar",
+      "learnMore": "Aprender sobre esto"
+    },
+    "prompts": {
+      "keyToCount": "¿Cuántos sostenidos o bemoles tiene {{key}}?",
+      "keyToAcc": "¿Qué alteraciones tiene {{key}}?",
+      "sigToKeyMajor": "¿Qué tonalidad MAYOR tiene {{sig}}?",
+      "sigToKeyMinor": "¿Qué tonalidad MENOR tiene {{sig}}?",
+      "relMinor": "¿Cuál es la relativa menor de {{key}}?",
+      "relMajor": "¿Cuál es la relativa mayor de {{key}}?",
+      "nextSharp": "En las armaduras de clave, ¿qué sostenido se añade después de {{acc}}?",
+      "nextFlat": "En las armaduras de clave, ¿qué bemol se añade después de {{acc}}?",
+      "fifthUp": "¿Una quinta justa ARRIBA de {{note}}?",
+      "fifthDown": "¿Una quinta justa ABAJO de {{note}}?",
+      "numToName": "El grado {{num}} de la escala se llama…?",
+      "nameToNum": "¿{{name}} es qué grado de la escala?",
+      "pairToName": "De {{lower}} hasta {{upper}} ¿es qué intervalo?",
+      "noteAbove": "¿Una {{interval}} por encima de {{root}}?",
+      "letterThird": "¿Una tercera por encima de {{letter}} (solo la letra)?",
+      "semitonesToName": "{{n}} semitonos ¿es qué intervalo?",
+      "spellChord": "Deletrea {{chord}}",
+      "nameChord": "{{notes}} — ¿qué acorde es este?",
+      "spellScale": "Deletrea la escala de {{scale}}",
+      "degreeOf": "¿Cuál es el grado {{num}} de {{key}}?",
+      "degreeToChord": "¿Qué es {{numeral}} en {{key}}?",
+      "chordToDegree": "En {{key}}, {{chord}} ¿es qué grado?",
+      "pattern": "En cualquier tonalidad {{mode}}, la tríada del grado {{num}} es…?",
+      "isDiatonic": "¿{{chord}} es diatónico en {{key}}?",
+      "harmonicFact": "En las tonalidades menores con la 7.ª elevada, el acorde del grado {{num}} es…?",
+      "chordFunction": "En {{key}}, {{chord}} funciona como…?",
+      "cadence": "{{pair}} al final de una frase ¿es qué cadencia?",
+      "v7Of": "¿Cuál es el V7 de {{key}}?"
+    },
+    "why": {
+      "keyToCount": "{{key}} tiene {{answer}}. Cuenta a lo largo del círculo de quintas desde C (sin alteraciones).",
+      "lastSharp": "El último sostenido es la sensible — un semitono por debajo de la tónica. {{key}}: {{answer}}.",
+      "penultimateFlat": "El penúltimo bemol da nombre a la tonalidad. {{key}}: {{answer}}.",
+      "sigToKey": "{{sig}} pertenece a {{answer}} — lee la armadura en el círculo de quintas.",
+      "relative": "Las tonalidades relativas comparten la armadura de clave, a una tercera menor de distancia. {{key}}: {{answer}}.",
+      "circleOrder": "Los sostenidos se añaden por F C G D A E B; los bemoles siguen el orden inverso B E A D G C F. Cada paso es una quinta justa.",
+      "degreeName": "El grado {{num}} de la escala es {{name}}.",
+      "intervalLetterFirst": "Cuenta primero las letras y luego fija la cualidad por semitonos. La respuesta es {{answer}}.",
+      "semitoneFact": "Un dato de reconocimiento: {{n}} semitonos es {{answer}}. Nunca deletrees contando semitonos — primero las letras.",
+      "triadStack": "{{chord}} apila {{stack}} desde la fundamental: {{notes}}.",
+      "scaleKeySig": "La escala de {{scale}} usa su armadura de clave: {{accs}}.",
+      "harmonicRaise": "La escala de {{scale}} eleva {{raised}} respecto a la menor natural.",
+      "seventhLadder": "Parte de la séptima mayor y luego {{step}}. Eso da {{chord}}.",
+      "diatonicMember": "{{chord}} es el acorde diatónico construido sobre ese grado de {{key}}.",
+      "harmonicFact": "Con la 7.ª elevada, el grado {{num}} da {{correct}}.",
+      "functionPull": "{{chord}} tira {{direction}} — esa es su función armónica.",
+      "cadenceDef": "{{answer}} (RU: {{uk}}).",
+      "v7Derivation": "El grado 5 de {{key}} es {{five}}; su séptima de dominante es {{answer}}."
     }
   }
 }
