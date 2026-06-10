@@ -59,7 +59,7 @@ const BLACK_OFFSET_MOBILE = 22;
 
 export function Piano() {
   const { t } = useTranslation();
-  const { noteOn, noteOff } = useAudio('piano');
+  const { noteOn, noteOff } = useAudio();
   const activeNotes = useAppStore((s) => s.activeNotes);
   const baseOctave = useAppStore((s) => s.baseOctave);
   const setBaseOctave = useAppStore((s) => s.setBaseOctave);

@@ -23,16 +23,17 @@ vi.mock('../../core/services/audio.ts', () => ({
   },
 }));
 
-const mockKSResumeContext = vi.fn().mockResolvedValue(undefined);
+// The hook must never touch an engine directly — the InstrumentVoice seam
+// (instrumentVoices.ts) owns engine choice. This mock exists purely to pin
+// that regression: a direct KS call here is what bypassed the WS10 sampler.
 const mockKSStartNote = vi.fn();
 const mockKSStopNote = vi.fn();
-const mockKSSetVolume = vi.fn();
 
 vi.mock('../../services/karplusStrong.ts', () => ({
-  resumeContext: (...args: unknown[]) => mockKSResumeContext(...args),
+  resumeContext: vi.fn().mockResolvedValue(undefined),
   startNote: (...args: unknown[]) => mockKSStartNote(...args),
   stopNote: (...args: unknown[]) => mockKSStopNote(...args),
-  setVolume: (...args: unknown[]) => mockKSSetVolume(...args),
+  setVolume: vi.fn(),
 }));
 
 import { useAudio } from '../useAudio';
@@ -45,6 +46,7 @@ const noteC = { natural: 'C', accidental: '' } as const;
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mockResumeAudio.mockResolvedValue(undefined);
   useAppStore.setState({
     synthPreset: 'piano',
     volume: 0.7,
@@ -71,18 +73,7 @@ describe('useAudio — API shape', () => {
 // noteOn
 // =========================================================================
 describe('useAudio — noteOn', () => {
-  it('resumes both AudioContexts on first call', async () => {
-    const { result } = renderHook(() => useAudio());
-
-    await act(async () => {
-      await result.current.noteOn(noteC, 4);
-    });
-
-    expect(mockResumeAudio).toHaveBeenCalledOnce();
-    expect(mockKSResumeContext).toHaveBeenCalledOnce();
-  });
-
-  it('resumes only once across multiple calls', async () => {
+  it('resumes core audio (and thus the registered voice) on every call', async () => {
     const { result } = renderHook(() => useAudio());
 
     await act(async () => {
@@ -90,11 +81,13 @@ describe('useAudio — noteOn', () => {
       await result.current.noteOn(noteC, 5);
     });
 
-    expect(mockResumeAudio).toHaveBeenCalledOnce();
+    // Per-call resume keeps engines awake across instrument flips; it is a
+    // no-op when the context is already running.
+    expect(mockResumeAudio).toHaveBeenCalledTimes(2);
   });
 
-  it('uses FM synth (startSustainedNote) for piano preset', async () => {
-    const { result } = renderHook(() => useAudio('piano'));
+  it('routes every note through core startSustainedNote (seam decides the engine)', async () => {
+    const { result } = renderHook(() => useAudio());
 
     await act(async () => {
       await result.current.noteOn(noteC, 4);
@@ -105,30 +98,32 @@ describe('useAudio — noteOn', () => {
       4,
       expect.objectContaining({ volume: expect.any(Number) }),
     );
+  });
+
+  it('NEVER calls Karplus-Strong directly — the regression that hid the guitar sampler', async () => {
+    const { result } = renderHook(() => useAudio());
+
+    await act(async () => {
+      await result.current.noteOn(noteC, 4);
+    });
+    act(() => {
+      result.current.noteOff(60);
+    });
+
     expect(mockKSStartNote).not.toHaveBeenCalled();
+    expect(mockKSStopNote).not.toHaveBeenCalled();
   });
 
-  it('uses KS engine (startNote) for guitar instrument', async () => {
-    const { result } = renderHook(() => useAudio('guitar'));
-
-    await act(async () => {
-      await result.current.noteOn(noteC, 4);
-    });
-
-    expect(mockKSStartNote).toHaveBeenCalledWith(60); // C4 = MIDI 60
-    expect(mockStartSustainedNote).not.toHaveBeenCalled();
-  });
-
-  it('uses KS engine for pluck preset regardless of instrument', async () => {
+  it('routes the vestigial pluck preset through core like everything else', async () => {
     useAppStore.setState({ synthPreset: 'pluck' });
-    const { result } = renderHook(() => useAudio('piano'));
+    const { result } = renderHook(() => useAudio());
 
     await act(async () => {
       await result.current.noteOn(noteC, 4);
     });
 
-    expect(mockKSStartNote).toHaveBeenCalledWith(60);
-    expect(mockStartSustainedNote).not.toHaveBeenCalled();
+    expect(mockStartSustainedNote).toHaveBeenCalled();
+    expect(mockKSStartNote).not.toHaveBeenCalled();
   });
 
   it('returns the MIDI number', async () => {
@@ -139,7 +134,7 @@ describe('useAudio — noteOn', () => {
       midi = await result.current.noteOn(noteC, 4);
     });
 
-    expect(midi).toBe(60);
+    expect(midi).toBe(60); // C4
   });
 
   it('adds MIDI number to activeNotes in store', async () => {
@@ -152,7 +147,7 @@ describe('useAudio — noteOn', () => {
     expect(useAppStore.getState().activeNotes.has(60)).toBe(true);
   });
 
-  it('sets master volume on both engines', async () => {
+  it('pushes the session volume through core before sounding', async () => {
     useAppStore.setState({ volume: 0.42 });
     const { result } = renderHook(() => useAudio());
 
@@ -161,7 +156,20 @@ describe('useAudio — noteOn', () => {
     });
 
     expect(mockSetMasterVolume).toHaveBeenCalledWith(0.42);
-    expect(mockKSSetVolume).toHaveBeenCalledWith(0.42);
+  });
+
+  it('still sounds the note when resume fails (warns, does not throw)', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    mockResumeAudio.mockRejectedValueOnce(new Error('blocked'));
+    const { result } = renderHook(() => useAudio());
+
+    await act(async () => {
+      await result.current.noteOn(noteC, 4);
+    });
+
+    expect(mockStartSustainedNote).toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalled();
+    warnSpy.mockRestore();
   });
 });
 
@@ -169,24 +177,14 @@ describe('useAudio — noteOn', () => {
 // noteOff
 // =========================================================================
 describe('useAudio — noteOff', () => {
-  it('stops FM note via stopSustainedNote', () => {
-    const { result } = renderHook(() => useAudio('piano'));
+  it('stops via core stopSustainedNote', () => {
+    const { result } = renderHook(() => useAudio());
 
     act(() => {
       result.current.noteOff(60);
     });
 
     expect(mockStopSustainedNote).toHaveBeenCalledWith(60);
-  });
-
-  it('stops KS note via ksEngine.stopNote for guitar', () => {
-    const { result } = renderHook(() => useAudio('guitar'));
-
-    act(() => {
-      result.current.noteOff(60);
-    });
-
-    expect(mockKSStopNote).toHaveBeenCalledWith(60);
   });
 
   it('removes MIDI number from activeNotes', async () => {
