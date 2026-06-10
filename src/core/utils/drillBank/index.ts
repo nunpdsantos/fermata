@@ -13,9 +13,12 @@ import type { DrillFamily, DrillItem } from '../../types/drill';
 import { genDegree } from './genDegree';
 import { genCircle } from './genCircle';
 import { genKeysig } from './genKeysig';
+import { genInterval } from './genInterval';
+import { genTriad } from './genTriad';
+import { genScale } from './genScale';
 
 export function generateDrillBank(): DrillItem[] {
-  const items = [...genDegree(), ...genCircle(), ...genKeysig()];
+  const items = [...genDegree(), ...genCircle(), ...genKeysig(), ...genInterval(), ...genTriad(), ...genScale()];
   return items.sort((a, b) => a.rank - b.rank);
 }
 

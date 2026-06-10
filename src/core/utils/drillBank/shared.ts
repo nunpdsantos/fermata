@@ -161,5 +161,23 @@ export function keySignatureOf(majorTonic: Note): KeySig {
   return { count: altered.length, type, accidentals: order.slice(0, altered.length) };
 }
 
+/** All 14 practical roots used by triad and interval generators. */
+export const PRACTICAL_ROOTS: Note[] = [
+  N('C'),
+  N('C', '#'),
+  N('D', 'b'),
+  N('D'),
+  N('E', 'b'),
+  N('E'),
+  N('F'),
+  N('F', '#'),
+  N('G', 'b'),
+  N('G'),
+  N('A', 'b'),
+  N('A'),
+  N('B', 'b'),
+  N('B'),
+];
+
 // Re-export for convenience in generators
 export { noteToString, getRelativeMinor };

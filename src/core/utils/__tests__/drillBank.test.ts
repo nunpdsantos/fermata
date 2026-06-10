@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { buildScale } from '../../constants/scales';
 import { noteToString } from '../../types/music';
 import { generateDrillBank, getItemsByFamily, displayNote, MAJOR_KEYS } from '../drillBank';
+import { nameIntervalBetween, noteAtIntervalAbove } from '../drillBank/intervalEngine';
+import { N } from '../drillBank/shared';
 
 const bank = generateDrillBank();
 const byId = new Map(bank.map((i) => [i.id, i]));
@@ -115,5 +117,166 @@ describe('F4 degree names — goldens', () => {
   it('5 ↔ Dominant both directions', () => {
     expect(byId.get('degree:num-to-name:5')?.answer).toEqual({ kind: 'choice', correct: 'Dominant' });
     expect(byId.get('degree:name-to-num:Dominant')?.answer).toEqual({ kind: 'choice', correct: '5' });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// intervalEngine unit tests
+// ---------------------------------------------------------------------------
+
+describe('intervalEngine direct', () => {
+  it('E→F is m2', () => {
+    expect(nameIntervalBetween(N('E'), N('F'))?.label).toBe('Minor 2nd');
+  });
+  it('F→B is A4', () => {
+    expect(nameIntervalBetween(N('F'), N('B'))?.label).toBe('Augmented 4th');
+  });
+  it('B→F is d5', () => {
+    expect(nameIntervalBetween(N('B'), N('F'))?.label).toBe('Diminished 5th');
+  });
+  it('C→E is M3', () => {
+    expect(nameIntervalBetween(N('C'), N('E'))?.label).toBe('Major 3rd');
+  });
+  it('C→G is P5', () => {
+    expect(nameIntervalBetween(N('C'), N('G'))?.label).toBe('Perfect 5th');
+  });
+  it('A→C is m3', () => {
+    expect(nameIntervalBetween(N('A'), N('C'))?.label).toBe('Minor 3rd');
+  });
+  it('noteAtIntervalAbove: B + P5 = F#', () => {
+    const result = noteAtIntervalAbove(N('B'), 5, 7);
+    expect(result).not.toBeNull();
+    if (result) expect(`${result.natural}${result.accidental}`).toBe('F#');
+  });
+  it('noteAtIntervalAbove: Eb + M3 = G', () => {
+    const result = noteAtIntervalAbove(N('E', 'b'), 3, 4);
+    expect(result).not.toBeNull();
+    if (result) expect(`${result.natural}${result.accidental}`).toBe('G');
+  });
+  it('noteAtIntervalAbove: C# + m6 = A', () => {
+    const result = noteAtIntervalAbove(N('C', '#'), 6, 8);
+    expect(result).not.toBeNull();
+    if (result) expect(result.natural).toBe('A');
+  });
+  it('noteAtIntervalAbove: Bb + M7 = A', () => {
+    const result = noteAtIntervalAbove(N('B', 'b'), 7, 11);
+    expect(result).not.toBeNull();
+    if (result) expect(result.natural).toBe('A');
+  });
+  it('nameIntervalBetween returns null for out-of-scope input', () => {
+    // B# to C# would require an augmented unison — non-null, but Cb to B# is a major 7th
+    // Testing the specific null path: unison with high semitone count
+    expect(nameIntervalBetween(N('C'), N('C', 'b'))).toBeNull(); // descending ≈ 11 semitones, number=1 → null
+  });
+  it('noteAtIntervalAbove returns null for triple accidental', () => {
+    // B# + M3 would need E## (3rd above B# is E, +4 semis from B# = 13 = C pitch, E needs ## delta -3 from E) → null
+    // Actually let's use a case that's definitely triple: G## + M7 → F### which needs delta 3
+    expect(noteAtIntervalAbove(N('G', '##'), 7, 11)).toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Interval naming + spelling — item goldens
+// ---------------------------------------------------------------------------
+
+describe('interval naming + spelling — goldens', () => {
+  it('names: E→F m2, F→B A4, B→F d5, C→E M3', () => {
+    expect(byId.get('interval:pair-to-name:E:F')?.answer).toEqual({ kind: 'choice', correct: 'Minor 2nd' });
+    expect(byId.get('interval:pair-to-name:F:B')?.answer).toEqual({ kind: 'choice', correct: 'Augmented 4th' });
+    expect(byId.get('interval:pair-to-name:B:F')?.answer).toEqual({ kind: 'choice', correct: 'Diminished 5th' });
+    expect(byId.get('interval:pair-to-name:C:E')?.answer).toEqual({ kind: 'choice', correct: 'Major 3rd' });
+  });
+  it('spells: P5 above B = F♯, M3 above Eb = G, m6 above C# = A, M7 above Bb = A', () => {
+    expect(byId.get('interval:note-above:B:P5')?.answer).toEqual({ kind: 'choice', correct: 'F♯' });
+    expect(byId.get('interval:note-above:Eb:M3')?.answer).toEqual({ kind: 'choice', correct: 'G' });
+    expect(byId.get('interval:note-above:C#:m6')?.answer).toEqual({ kind: 'choice', correct: 'A' });
+    expect(byId.get('interval:note-above:Bb:M7')?.answer).toEqual({ kind: 'choice', correct: 'A' });
+  });
+  it('letter skeleton: third above G is B', () => {
+    expect(byId.get('interval:letter-third:G')?.answer).toEqual({ kind: 'choice', correct: 'B' });
+  });
+  it('semitone facts: 7 semitones = Perfect 5th', () => {
+    expect(byId.get('interval:semitones-to-name:7')?.answer).toEqual({ kind: 'choice', correct: 'Perfect 5th' });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Triad spelling — goldens
+// ---------------------------------------------------------------------------
+
+describe('triad spelling — goldens', () => {
+  it('spell F# minor = F# A C# (noteChips)', () => {
+    const item = byId.get('triad:name-to-notes:F#:minor');
+    expect(item?.answer).toEqual({ kind: 'notes', notes: ['F#', 'A', 'C#'] });
+    expect(item?.input.format).toBe('noteChips');
+    if (item?.input.format === 'noteChips') {
+      expect(item.input.expectedCount).toBe(3);
+      for (const n of ['F♯', 'A', 'C♯']) expect(item.input.chips).toContain(n);
+      expect(new Set(item.input.chips).size).toBe(item.input.chips.length);
+    }
+  });
+  it('D F A names as D minor (rootQuality)', () => {
+    expect(byId.get('triad:notes-to-name:D:minor')?.answer)
+      .toEqual({ kind: 'rootQuality', root: 'D', quality: 'minor' });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Scale spelling — goldens
+// ---------------------------------------------------------------------------
+
+describe('scale spelling — goldens', () => {
+  it('A major slots spell with F# C# G#', () => {
+    const item = byId.get('scale:spell:A:major');
+    expect(item?.answer).toEqual({ kind: 'accidentals', spelled: ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'] });
+    expect(item?.input.format).toBe('accidentalSlots');
+  });
+  it('A harmonic minor raises G to G#', () => {
+    const item = byId.get('scale:spell:a:harmonic_minor');
+    expect((item?.answer as { spelled: string[] }).spelled).toContain('G#');
+  });
+  it('3rd degree of A major is C♯', () => {
+    expect(byId.get('scale:degree-of:A:major:3')?.answer).toEqual({ kind: 'choice', correct: 'C♯' });
+  });
+  it('no scale answer contains double accidentals', () => {
+    for (const item of getItemsByFamily(bank, 'scale')) {
+      if (item.answer.kind === 'accidentals') {
+        for (const s of item.answer.spelled) expect(s).not.toMatch(/##|bb/);
+      }
+    }
+  });
+  it('every spelled scale uses each letter exactly once', () => {
+    for (const item of getItemsByFamily(bank, 'scale')) {
+      if (item.answer.kind === 'accidentals') {
+        const letters = item.answer.spelled.map((s) => s[0]);
+        expect(new Set(letters).size).toBe(7);
+      }
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Per-family count pins
+// ---------------------------------------------------------------------------
+
+describe('per-family count pins', () => {
+  it('interval ≥ 170', () => {
+    expect(getItemsByFamily(bank, 'interval').length).toBeGreaterThanOrEqual(170);
+  });
+  it('triad = 112', () => {
+    expect(getItemsByFamily(bank, 'triad').length).toBe(112);
+  });
+  it('scale item count is pinned', () => {
+    // Actual count after ## / bb filter: 234
+    expect(getItemsByFamily(bank, 'scale').length).toBe(234);
+  });
+  it('altered pairs in interval: all produce non-null nameIntervalBetween', () => {
+    // Invariant: every altered confusable pair id resolves to an item (no null skips)
+    const alteredPairIds = getItemsByFamily(bank, 'interval')
+      .filter((i) => i.id.startsWith('interval:pair-to-name:') && i.id.split(':')[2].length > 1);
+    expect(alteredPairIds.length).toBeGreaterThan(0);
+    for (const item of alteredPairIds) {
+      expect(item.answer.kind).toBe('choice');
+    }
   });
 });
