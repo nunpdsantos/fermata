@@ -1,4 +1,8 @@
-/** Deterministic PRNG (mulberry32). Same algorithm previously private to exerciseGenerator. */
+/**
+ * Mulberry32 seeded PRNG. Returns a stateful generator function.
+ * Each call to the returned function advances the state and returns a float in [0, 1).
+ * Same seed → identical sequence across calls and environments.
+ */
 export function mulberry32(seed: number): () => number {
   let s = seed | 0;
   return () => {
