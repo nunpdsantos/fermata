@@ -12,7 +12,7 @@
  * forward on `advance()` — never as a side effect of recording.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { DrillItem } from '../../core/types/drill';
+import type { DrillFamily, DrillItem, MasteryTier } from '../../core/types/drill';
 import { generateDrillBank } from '../../core/utils/drillBank';
 import {
   useDrillStore,
@@ -21,6 +21,41 @@ import {
 } from '../../state/drillStore';
 import { gradeAnswer, type AnswerPayload, type GradeResult } from './grading';
 import { playAnswerAudio } from './answerAudio';
+
+// ─── In-memory session log (drives SessionSummary) ───────────────────────────
+// The runner accumulates a lightweight per-session record so the summary can
+// show a per-family breakdown and tier-change callouts WITHOUT adding any store
+// fields. It lives only in a ref for the life of one session — a mid-session app
+// kill loses it (acceptable: the spec scopes it to in-memory only).
+
+/** Per-family answered tally for the current session. */
+export interface FamilySessionTally {
+  asked: number;
+  correct: number;
+}
+
+export interface SessionSummaryData {
+  correct: number;
+  asked: number;
+  /** Only families that were actually answered this session appear here. */
+  byFamily: Partial<Record<DrillFamily, FamilySessionTally>>;
+  /** Count of answered items whose tier crossed UP into 'byHeart' this session. */
+  newlyByHeart: number;
+  /** Count of answered items whose tier crossed UP into 'review' this session. */
+  newlyReview: number;
+}
+
+function emptyLog(): SessionSummaryData {
+  return { correct: 0, asked: 0, byFamily: {}, newlyByHeart: 0, newlyReview: 0 };
+}
+
+/** Ordinal rank of a tier, for detecting an upward crossing. */
+const TIER_RANK: Record<MasteryTier, number> = {
+  new: 0,
+  learning: 1,
+  review: 2,
+  byHeart: 3,
+};
 
 // ─── Module-level bank memo ──────────────────────────────────────────────────
 // generateDrillBank() is expensive (~1,300 items). Build it once per module
@@ -66,6 +101,8 @@ export interface DrillRunner {
   total: number;
   correctCount: number;
   sessionComplete: boolean;
+  /** In-memory per-session breakdown for the summary screen. */
+  summary: SessionSummaryData;
   answer: (payload: AnswerPayload) => void; // grades, records, enters feedback
   advance: () => void; // feedback → next question (manual; used on wrong answers)
   endSession: () => void;
@@ -92,6 +129,11 @@ export function useDrillRunner(): DrillRunner {
   // the session, so the summary reads its score from here. null = not ended this
   // way (either running or completed naturally — which keeps its live session).
   const [endedSummary, setEndedSummary] = useState<{ asked: number; correct: number } | null>(null);
+
+  // In-memory session log — accumulates per-family tallies + tier-up crossings.
+  // A ref (not state): mutating it must not re-render; the summary reads it once
+  // the session completes. Reset on every fresh session (mount-start + restart).
+  const sessionLog = useRef<SessionSummaryData>(emptyLog());
 
   // Timestamp the displayed prompt was shown; reset whenever it changes.
   const promptShownAt = useRef<number>(performance.now());
@@ -163,7 +205,21 @@ export function useDrillRunner(): DrillRunner {
       if (phase !== 'answering' || !item) return;
       const ms = performance.now() - promptShownAt.current;
       const graded = gradeAnswer(item, payload);
+      // Capture the tier BEFORE recording so the summary can report crossings.
+      const tierBefore = useDrillStore.getState().items[item.id]?.tier ?? 'new';
       recordAnswer(item, graded.correct, ms, Date.now()); // advances store pointer
+      // Read the post-answer tier and log this answer in-memory for the summary.
+      const tierAfter = useDrillStore.getState().items[item.id]?.tier ?? 'new';
+      const log = sessionLog.current;
+      log.asked += 1;
+      if (graded.correct) log.correct += 1;
+      const fam = (log.byFamily[item.family] ??= { asked: 0, correct: 0 });
+      fam.asked += 1;
+      if (graded.correct) fam.correct += 1;
+      if (TIER_RANK[tierAfter] > TIER_RANK[tierBefore]) {
+        if (tierAfter === 'byHeart') log.newlyByHeart += 1;
+        else if (tierAfter === 'review') log.newlyReview += 1;
+      }
       setResult(graded);
       setPhase('feedback'); // displayId stays on the answered item
       // Reveal audio: play the answer (chords/intervals/scales) on every answer,
@@ -201,6 +257,7 @@ export function useDrillRunner(): DrillRunner {
     setResult(null);
     setPhase('answering');
     setEndedSummary(null);
+    sessionLog.current = emptyLog(); // fresh log for the new session
     startSession(bank, Date.now());
     // Read the freshly-composed queue's first id immediately.
     const session = useDrillStore.getState().activeSession;
@@ -208,14 +265,24 @@ export function useDrillRunner(): DrillRunner {
     promptShownAt.current = performance.now();
   }, [clearAdvanceTimer, startSession, bank, byId]);
 
+  const asked = endedSummary?.asked ?? activeSession?.asked ?? 0;
+  const correctCount = endedSummary?.correct ?? activeSession?.correct ?? 0;
+
   return {
     phase,
     item: complete ? null : item,
     result,
-    asked: endedSummary?.asked ?? activeSession?.asked ?? 0,
+    asked,
     total: settings.length,
-    correctCount: endedSummary?.correct ?? activeSession?.correct ?? 0,
+    correctCount,
     sessionComplete: complete,
+    // Headline numbers track the store/snapshot (authoritative even on resume);
+    // the per-family breakdown + crossings come from the in-memory log.
+    summary: {
+      ...sessionLog.current,
+      asked,
+      correct: correctCount,
+    },
     answer,
     advance,
     endSession,

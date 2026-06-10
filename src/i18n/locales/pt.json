@@ -523,11 +523,63 @@
     "endSession": "Terminar sessão",
     "settings": {
       "title": "Definições de treino",
-      "length": "Duração da sessão"
+      "length": "Duração da sessão",
+      "newPerSession": "Factos novos por sessão",
+      "families": "Tópicos",
+      "sound": "Som da resposta",
+      "showTimer": "Mostrar cronómetro",
+      "back": "Voltar"
     },
     "summary": {
+      "title": "Sessão concluída",
       "score": "{{correct}} de {{asked}} corretas",
-      "newSession": "Nova sessão"
+      "newSession": "Nova sessão",
+      "byHeartCallout_one": "{{count}} facto agora de cor",
+      "byHeartCallout_other": "{{count}} factos agora de cor",
+      "reviewCallout_one": "{{count}} facto passou para revisão",
+      "reviewCallout_other": "{{count}} factos passaram para revisão",
+      "familyScore": "{{correct}}/{{asked}}",
+      "masteryMap": "Mapa de domínio",
+      "sprint": "Sprint"
+    },
+    "mastery": {
+      "title": "Domínio",
+      "back": "Voltar",
+      "byHeartTotal_one": "{{count}} facto de cor",
+      "byHeartTotal_other": "{{count}} factos de cor",
+      "dueToday_one": "{{count}} para hoje",
+      "dueToday_other": "{{count}} para hoje",
+      "counts": "{{byHeart}} de cor · {{total}} no total",
+      "tier": {
+        "new": "Novo",
+        "learning": "A aprender",
+        "review": "Revisão",
+        "byHeart": "De cor"
+      }
+    },
+    "sprint": {
+      "title": "Sprint",
+      "start": "Iniciar sprint",
+      "timeLeft": "{{seconds}}s",
+      "score_one": "{{count}} correta",
+      "score_other": "{{count}} corretas",
+      "best": "Melhor: {{count}}",
+      "newBest": "Novo recorde!",
+      "again": "Outro sprint",
+      "exit": "Concluir",
+      "empty": "Ainda não há nada dominado para treinar",
+      "emptyHint": "Treina alguns factos para revisão primeiro e volta depois."
+    },
+    "families": {
+      "keysig": "Armações de clave",
+      "circle": "Círculo das quintas",
+      "scale": "Escalas",
+      "degree": "Graus da escala",
+      "interval": "Intervalos",
+      "triad": "Tríades",
+      "seventh": "Acordes de sétima",
+      "roman": "Numerais romanos",
+      "function": "Função harmónica"
     },
     "a11y": {
       "notes": "notas",

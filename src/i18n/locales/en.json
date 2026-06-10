@@ -523,11 +523,63 @@
     "endSession": "End session",
     "settings": {
       "title": "Drill settings",
-      "length": "Session length"
+      "length": "Session length",
+      "newPerSession": "New facts per session",
+      "families": "Topics",
+      "sound": "Answer sound",
+      "showTimer": "Show timer",
+      "back": "Back"
     },
     "summary": {
+      "title": "Session complete",
       "score": "{{correct}} of {{asked}} correct",
-      "newSession": "New session"
+      "newSession": "New session",
+      "byHeartCallout_one": "{{count}} fact now by heart",
+      "byHeartCallout_other": "{{count}} facts now by heart",
+      "reviewCallout_one": "{{count}} fact moved to review",
+      "reviewCallout_other": "{{count}} facts moved to review",
+      "familyScore": "{{correct}}/{{asked}}",
+      "masteryMap": "Mastery map",
+      "sprint": "Sprint"
+    },
+    "mastery": {
+      "title": "Mastery",
+      "back": "Back",
+      "byHeartTotal_one": "{{count}} fact by heart",
+      "byHeartTotal_other": "{{count}} facts by heart",
+      "dueToday_one": "{{count}} due today",
+      "dueToday_other": "{{count}} due today",
+      "counts": "{{byHeart}} by heart · {{total}} total",
+      "tier": {
+        "new": "New",
+        "learning": "Learning",
+        "review": "Review",
+        "byHeart": "By heart"
+      }
+    },
+    "sprint": {
+      "title": "Sprint",
+      "start": "Start sprint",
+      "timeLeft": "{{seconds}}s",
+      "score_one": "{{count}} correct",
+      "score_other": "{{count}} correct",
+      "best": "Best: {{count}}",
+      "newBest": "New best!",
+      "again": "Sprint again",
+      "exit": "Done",
+      "empty": "Nothing mastered yet to sprint on",
+      "emptyHint": "Drill some facts to review first, then come back."
+    },
+    "families": {
+      "keysig": "Key signatures",
+      "circle": "Circle of fifths",
+      "scale": "Scales",
+      "degree": "Scale degrees",
+      "interval": "Intervals",
+      "triad": "Triads",
+      "seventh": "Seventh chords",
+      "roman": "Roman numerals",
+      "function": "Harmonic function"
     },
     "clear": "Clear",
     "done": "Done",

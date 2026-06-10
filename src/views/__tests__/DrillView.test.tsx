@@ -417,3 +417,81 @@ describe('DrillView — learn deep-link (Task 10)', () => {
     expect(screen.queryByRole('button', { name: /Learn about this/ })).toBeNull();
   });
 });
+
+// ── Task 11: sub-screen navigation (settings / mastery / sprint) ──────────────
+
+describe('DrillView — settings sub-screen', () => {
+  it('⚙ opens the full settings screen and Back returns to the running question', () => {
+    render(<DrillView />);
+    // A question is on screen.
+    expect(screen.getByText(/1 of 24/)).toBeDefined();
+
+    // Open settings via the gear (aria-label "Drill settings").
+    fireEvent.click(screen.getByRole('button', { name: 'Drill settings' }));
+    // Settings screen: the "New facts per session" control renders.
+    expect(screen.getByText('New facts per session')).toBeDefined();
+    // The session is NOT ended (still active) — settings overlay only.
+    expect(useDrillStore.getState().activeSession).not.toBeNull();
+
+    // Back returns to the question.
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+    expect(screen.getByText(/1 of 24/)).toBeDefined();
+  });
+
+  it('changing session length from settings writes the store', () => {
+    render(<DrillView />);
+    fireEvent.click(screen.getByRole('button', { name: 'Drill settings' }));
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: '40' }));
+    });
+    expect(useDrillStore.getState().settings.length).toBe(40);
+  });
+});
+
+describe('DrillView — summary navigation to sub-screens', () => {
+  it('Mastery map button from the summary opens the mastery screen', () => {
+    render(<DrillView />);
+    fireEvent.click(screen.getByRole('button', { name: 'End session' }));
+    // Summary is up.
+    expect(screen.getByRole('button', { name: 'Mastery map' })).toBeDefined();
+
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: 'Mastery map' }));
+    });
+    // Mastery screen header renders, with a family switch.
+    expect(screen.getByRole('switch', { name: 'Triads' })).toBeDefined();
+
+    // Back returns to the summary.
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+    });
+    expect(screen.getByRole('button', { name: 'New session' })).toBeDefined();
+  });
+
+  it('Sprint button from the summary opens the sprint (empty-state on a fresh store)', () => {
+    render(<DrillView />);
+    fireEvent.click(screen.getByRole('button', { name: 'End session' }));
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: 'Sprint' }));
+    });
+    // Fresh store has no mastered items → empty-state, not a started run.
+    expect(screen.getByText('Nothing mastered yet to sprint on')).toBeDefined();
+  });
+});
+
+// ── Task 11: showTimer elapsed counter ───────────────────────────────────────
+
+describe('DrillView — showTimer setting', () => {
+  it('renders the elapsed mm:ss counter only when showTimer is ON', () => {
+    vi.useFakeTimers();
+    // OFF (default): no mm:ss counter in the header.
+    const { unmount } = render(<DrillView />);
+    expect(screen.queryByText(/^\d+:\d{2}$/)).toBeNull();
+    unmount();
+
+    // ON: the counter renders.
+    useDrillStore.getState().updateSettings({ showTimer: true });
+    render(<DrillView />);
+    expect(screen.getByText(/^\d+:\d{2}$/)).toBeDefined();
+  });
+});

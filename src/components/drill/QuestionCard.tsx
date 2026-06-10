@@ -8,6 +8,9 @@ interface QuestionCardProps {
   prompt: string;
   onEndSession: () => void;
   onOpenSettings: () => void;
+  /** Elapsed session seconds — rendered subtly when the showTimer setting is on.
+   *  undefined hides the counter entirely (the default). */
+  elapsedSeconds?: number;
   children: ReactNode;
 }
 
@@ -17,6 +20,7 @@ export function QuestionCard({
   prompt,
   onEndSession,
   onOpenSettings,
+  elapsedSeconds,
   children,
 }: QuestionCardProps) {
   const { t } = useTranslation();
@@ -24,11 +28,20 @@ export function QuestionCard({
 
   return (
     <div className="flex flex-col">
-      {/* Slim header: progress · spacer · settings · end-session */}
+      {/* Slim header: progress · [elapsed] · spacer · settings · end-session */}
       <div className="flex items-center gap-2 mb-5">
         <span className="text-xs font-medium tabular-nums" style={{ color: 'var(--text-dim)' }}>
           {t('drill.progress', { current, total })}
         </span>
+        {elapsedSeconds !== undefined && (
+          <span
+            className="font-mono text-xs tabular-nums"
+            style={{ color: 'var(--text-dim)' }}
+            aria-hidden="true"
+          >
+            {formatElapsed(elapsedSeconds)}
+          </span>
+        )}
         <div className="flex-1" />
         <button
           type="button"
@@ -64,4 +77,12 @@ export function QuestionCard({
       {children}
     </div>
   );
+}
+
+/** mm:ss for the subtle elapsed-time counter (clamped at non-negative). */
+function formatElapsed(totalSeconds: number): string {
+  const s = Math.max(0, Math.floor(totalSeconds));
+  const mm = Math.floor(s / 60);
+  const ss = s % 60;
+  return `${mm}:${ss.toString().padStart(2, '0')}`;
 }
