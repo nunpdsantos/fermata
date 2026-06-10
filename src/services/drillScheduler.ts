@@ -133,7 +133,9 @@ export function computeTier(
   // Latest answer is wrong → demote
   if (!latest.correct) return 'review';
 
-  // Take the 3 most recent distinct sessions
+  // Take the 3 most recent distinct sessions. NOTE: "recent" = Map first-seen
+  // order, which equals answer order because session ids (`s${startedAt}`) are
+  // unique and in-session repeats are contiguous — sessions never interleave.
   const last3 = sessionList.slice(-3);
 
   if (last3.length === 3) {

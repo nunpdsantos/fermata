@@ -23,8 +23,9 @@ export interface SessionConfig {
  * Swap the offender forward to the next non-colliding slot.
  * If no such slot exists, drop the duplicate.
  *
- * Exported for tests and for store-side requeue safety (requeueAfterMiss /
- * requeueSecondExposure may re-introduce an adjacent duplicate).
+ * Exported for tests. Used by composeSession on the initial queue; requeue
+ * insertions (offsets +4..6 / +6..10 with a 2-requeue cap) cannot create an
+ * adjacent duplicate in practice, so the store does not re-run it per answer.
  */
 export function dedupeAdjacent(ids: string[]): string[] {
   const out = ids.slice();

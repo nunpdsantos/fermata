@@ -390,8 +390,10 @@ src/components/drill/              QuestionCard, NoteChips, AccidentalSlots, Cho
    triggers on (at minimum) F♯/G♭, C♯/D♭, D♯/E♭ confusions in spelling items.
 3. A wrong answer always shows the why-line; its content states the rule, not just the
    answer.
-4. New-item introductions per session never exceed the setting; due items always
-   precede new ones; mastery map counts reconcile with store state.
+4. New-item introductions per session never exceed the setting; the session opens
+   with due reviews (two warmups) before the new-item mini-block, with remaining
+   due items following it (§3.6's algorithm — new material never opens a session);
+   mastery map counts reconcile with store state.
 5. An item answered correctly < 3 s (median) across 3 sessions shows as "by heart";
    one lapse demotes it.
 6. PT and ES render every drill string (no raw keys), nomenclature untranslated.
