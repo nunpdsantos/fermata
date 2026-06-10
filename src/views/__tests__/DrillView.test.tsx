@@ -421,10 +421,19 @@ describe('DrillView — learn deep-link (Task 10)', () => {
 // ── Task 11: sub-screen navigation (settings / mastery / sprint) ──────────────
 
 describe('DrillView — settings sub-screen', () => {
-  it('⚙ opens the full settings screen and Back returns to the running question', () => {
+  it('⚙ opens the full settings screen and Back returns to the SAME running question (no restart)', () => {
     render(<DrillView />);
     // A question is on screen.
     expect(screen.getByText(/1 of 24/)).toBeDefined();
+
+    // Capture the exact session identity + current item BEFORE opening settings.
+    // The settings round-trip must be a pure overlay: same session, same index,
+    // same queued item — a restart (new id / re-shuffled queue / reset index)
+    // would silently lose the learner's place, which this pins against.
+    const before = useDrillStore.getState().activeSession!;
+    const beforeSessionId = before.id;
+    const beforeIndex = before.index;
+    const beforeItemId = before.queue[before.index];
 
     // Open settings via the gear (aria-label "Drill settings").
     fireEvent.click(screen.getByRole('button', { name: 'Drill settings' }));
@@ -436,6 +445,13 @@ describe('DrillView — settings sub-screen', () => {
     // Back returns to the question.
     fireEvent.click(screen.getByRole('button', { name: 'Back' }));
     expect(screen.getByText(/1 of 24/)).toBeDefined();
+
+    // Same session id, same index, same current item id — proven identical, not
+    // merely "a question at position 1" (which a fresh restart would also show).
+    const after = useDrillStore.getState().activeSession!;
+    expect(after.id).toBe(beforeSessionId);
+    expect(after.index).toBe(beforeIndex);
+    expect(after.queue[after.index]).toBe(beforeItemId);
   });
 
   it('changing session length from settings writes the store', () => {

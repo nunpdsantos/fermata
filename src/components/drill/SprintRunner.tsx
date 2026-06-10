@@ -127,29 +127,40 @@ function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t 
   // and the input `key` so each question remounts a fresh input instance.
   const [step, setStep] = useState(0);
 
-  // Latest correct count, mirrored into a ref so the 1 Hz countdown can read it
-  // without re-subscribing each second. Written in an effect (never during
-  // render) per React 19 purity rules.
+  // Latest correct count, mirrored into a ref so the finish effect can read the
+  // final score without re-subscribing the recorder each answer. Written in an
+  // effect (never during render) per React 19 purity rules.
   const correctRef = useRef(0);
   useEffect(() => {
     correctRef.current = correct;
   }, [correct]);
 
-  // Single 1 Hz countdown. On reaching 0: stop, record the score once.
+  // One persistent 1 Hz countdown, mounted once. The functional updater is
+  // PURE — it only computes the next value (clamped at 0) with no side effects.
+  // This matters under React 19, where a Strict-Mode dev double-invoke of the
+  // updater would otherwise fire onRecord/setStatus twice. Stopping the timer
+  // and all finishing work live in the effects below, keyed off secondsLeft.
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(() => {
     const id = setInterval(() => {
-      setSecondsLeft((s) => {
-        if (s <= 1) {
-          clearInterval(id);
-          onRecord(familiesKey, correctRef.current);
-          setStatus('finished');
-          return 0;
-        }
-        return s - 1;
-      });
+      setSecondsLeft((s) => (s <= 0 ? 0 : s - 1));
     }, 1000);
+    intervalRef.current = id;
     return () => clearInterval(id);
-  }, [familiesKey, onRecord]);
+  }, []);
+
+  // Finish exactly once when the clock reaches 0: stop the interval, record the
+  // final score, and flip to the finished screen. Guarded on `status` so the
+  // effect can't record twice if it re-runs after the transition.
+  useEffect(() => {
+    if (secondsLeft > 0 || status === 'finished') return;
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    onRecord(familiesKey, correctRef.current);
+    setStatus('finished');
+  }, [secondsLeft, status, familiesKey, onRecord]);
 
   // Esc exits early WITHOUT recording.
   useEffect(() => {
