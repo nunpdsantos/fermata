@@ -34,7 +34,7 @@ Scale degree function is encoded in color throughout the app:
 **Name:** Music Theory App
 **Domain:** Music theory education / interactive instrument
 **Stack:** React 19 + TypeScript 5.9 + Vite 7 + Tailwind CSS v4 + Zustand 5 + Framer Motion 12
-**Tests:** ~2,250 passing (Vitest + React Testing Library, 45 test files)
+**Tests:** ~2,286 passing (Vitest + React Testing Library, 48 test files)
 **Languages:** English + Portuguese + Spanish (react-i18next + content overlay system)
 **PWA:** Offline-capable with Workbox precaching
 
@@ -146,6 +146,19 @@ src/
   (`exerciseInputActive` in the instrument slice) that suppresses Explore's scale/chord
   visuals during exercises and surfaces the learner's toggled notes through the
   chord-highlight channel on every octave.
+- **One-shot playback follows the selected instrument (WS8, 2026-06-10).** Core's
+  voice seam is now `InstrumentVoice`/`setInstrumentVoice()` (was PianoVoice);
+  `src/services/instrumentVoices.ts` registers the sampler-backed piano voice or a
+  Karplus-Strong-backed guitar voice per `store.instrument` (persisted — boot can
+  land on either) and re-registers on change, pushing the session volume into the
+  swapped-in voice. Explore play buttons, Circle of Fifths, **ear training**
+  (Nuno's call, 2026-06-10) and the celebration fanfare all follow. The FM synth
+  remains the piano-only fallback while samples decode; the guitar voice never
+  declines, so no synth leak in guitar mode.
+  `karplusStrong.playNote(midi, when, duration, velocity)` is the scheduled
+  one-shot (gain = velocity × 0.9; 0.3 s finger-lift release after duration;
+  buffer capped to ~duration + 0.5 s for cheap scheduling). KS `setVolume` now
+  remembers a value set before the chain exists (latent fix).
 
 ---
 
@@ -229,6 +242,12 @@ src/
   (see Audio & instruments); fretboard chord display gained nut-closest default voicings
   + the anchor-fret badge after the orientation flip experiment was reverted on Nuno's
   feedback.
+- **WS8 (2026-06-10):** one-shot playback follows the selected instrument — core
+  seam renamed to `InstrumentVoice`, KS gained a scheduled one-shot, registration
+  (`instrumentVoices.ts`) tracks the store. Ear training follows the instrument
+  (decided with Nuno). Also fixed: KS volume set before the first note now applies.
+  First direct contract tests for the core audio seam
+  (`src/core/services/__tests__/audio.test.ts`).
 
 ---
 
@@ -236,19 +255,10 @@ src/
 
 The app is a lean, single-user, Explore-centred personal tool — no accounts, no cloud
 sync, no gamification. Curriculum, exercises, spaced repetition, trilingual content,
-offline PWA, sampled piano: all functional, all gates green (≈2,265 tests / 46 files,
-eslint 0/0, content audits clean).
+offline PWA, sampled piano, instrument-aware playback: all functional, all gates green
+(≈2,286 tests / 48 files, eslint 0/0, content audits clean).
 
 **Open items, in rough priority:**
-- **NEXT SESSION (Nuno's request, 2026-06-09):** the Explore play buttons (Chord /
-  Arpeggio / scale Play) always sound as piano — they should follow the selected
-  instrument: piano voice when the keyboard is shown, Karplus-Strong guitar when the
-  fretboard is shown. Sketch: give `karplusStrong.ts` a scheduled one-shot
-  (`playNote(midi, when, duration)` — it currently only has sustained
-  startNote/stopNote), then route the one-shot call sites (CurrentChordPanel,
-  ChordBuilderPanel, ExploreView playScale, CircleOfFifths) by `instrument` from the
-  store instead of calling the core piano path unconditionally. Decide with Nuno
-  whether ear-training playback should also follow the instrument or stay piano.
 - PT diacritics restoration across the older overlay files (`docs/pt-diacritic-todo.md`).
 - Chord-quality names / interval labels render in English inside PT/ES feedback
   sentences (deliberate "nomenclature untranslated" convention — revisit only as a

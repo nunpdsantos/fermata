@@ -46,7 +46,7 @@ Chosen: generalize the seam that already exists. The `PianoVoice` interface is a
 
 - `PianoVoice` → `InstrumentVoice`; `setPianoVoice()` → `setInstrumentVoice()`; module-local `pianoVoice` → `instrumentVoice`. Doc comment rewritten: the seam is "the active melodic voice", not "a better piano".
 - Behavior unchanged: one-shot and sustained paths offer the note to the voice first; FM synth fires only on `false`. The FM fallback's remaining role is piano-mode-while-samples-decode (and first-visit offline).
-- `setInstrumentVoice()` additionally pushes the current master volume into the incoming voice (`voice.setVolume(masterVolume)`), so a voice registered after boot starts at the right level. (Today the sampler only receives volume on later `setMasterVolume` calls — latent mismatch, fixed by this invariant.)
+- **Amended during planning:** the volume push lives in the registration swap path (`instrumentVoices.ts`), not in core — `sampler.setVolume()` eagerly creates its AudioContext, and a core-side push at boot registration would create it during initial script eval. On swap, registration pushes `state.volume` into the incoming voice; boot volume arrives via `useAudio`'s mount sync as before. Additionally `ks.setVolume()` now remembers a value set before the chain exists (latent fix — the persisted volume previously never applied to guitar until the slider moved).
 - Core stays framework-agnostic: no store imports, no app imports.
 
 ### 4.2 Karplus-Strong one-shot (`src/services/karplusStrong.ts`)
