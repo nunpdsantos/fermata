@@ -8,6 +8,8 @@
 
 **Tech Stack:** React 19, TypeScript 5.9, Vite 7, Zustand 5 (persist), ts-fsrs 5.x (MIT), Vitest + RTL.
 
+**Test placement:** vitest only discovers `src/**/__tests__/**/*.test.{ts,tsx}` — every new test file goes in a `__tests__/` subdirectory next to its subject.
+
 **Commit convention:** every commit message ends with a blank line then:
 `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`
 
@@ -42,7 +44,7 @@ git commit -m "docs: WS9 drill mode implementation plan" -m "Co-Authored-By: Cla
 - Create: `src/core/types/drill.ts`
 - Create: `src/core/utils/prng.ts`
 - Modify: `src/data/exercises/exerciseGenerator.ts` (import mulberry32 from the new util instead of its private copy)
-- Test: `src/core/utils/prng.test.ts`
+- Test: `src/core/utils/__tests__/prng.test.ts`
 
 - [ ] **Step 1: Install ts-fsrs**
 
@@ -154,7 +156,7 @@ export interface ItemSrsState {
 
 Note: before finalizing `SerializedCard`, open `node_modules/ts-fsrs/dist/index.d.ts` and mirror the actual `Card` fields of the installed version exactly (5.x added `learning_steps`). Adjust if the installed shape differs.
 
-- [ ] **Step 5: PRNG tests** — `src/core/utils/prng.test.ts`:
+- [ ] **Step 5: PRNG tests** — `src/core/utils/__tests__/prng.test.ts`:
 
 ```ts
 import { describe, expect, it } from 'vitest';
@@ -197,7 +199,7 @@ Expected: all tests pass including the exerciseGenerator seed-stability tests (p
 
 **Files:**
 - Create: `src/core/utils/drillBank.ts`
-- Test: `src/core/utils/drillBank.test.ts`
+- Test: `src/core/utils/__tests__/drillBank.test.ts`
 
 Everything in this file is pure and framework-agnostic. Display strings use unicode ♯/♭ for prompts/chips (people-facing); `DrillAnswerSpec` stores canonical ASCII spellings (`#`/`b`, matching `noteToString` from `src/core/types/music.ts:202`).
 
@@ -274,7 +276,7 @@ describe('F4 degree names — goldens', () => {
 });
 ```
 
-Run: `npx vitest run src/core/utils/drillBank.test.ts` → FAIL (module missing).
+Run: `npx vitest run src/core/utils/__tests__/drillBank.test.ts` → FAIL (module missing).
 
 - [ ] **Step 2: Implement `drillBank.ts` foundations + F1/F2/F4.** Core structure:
 
@@ -374,7 +376,7 @@ export function getItemsByFamily(bank: DrillItem[], family: DrillFamily): DrillI
 }
 ```
 
-- [ ] **Step 3: Run the tests** — `npx vitest run src/core/utils/drillBank.test.ts` → PASS. Also add the **engine-roundtrip invariant** inside the test file: for every `keysig:key-to-acc` item, re-derive via `buildScale` and assert every altered scale note appears in the answer string (catches order-table drift).
+- [ ] **Step 3: Run the tests** — `npx vitest run src/core/utils/__tests__/drillBank.test.ts` → PASS. Also add the **engine-roundtrip invariant** inside the test file: for every `keysig:key-to-acc` item, re-derive via `buildScale` and assert every altered scale note appears in the answer string (catches order-table drift).
 
 - [ ] **Step 4: Full green + commit**
 
@@ -389,7 +391,7 @@ git add -A && git commit -m "feat(drill): item bank foundations — key signatur
 
 **Files:**
 - Modify: `src/core/utils/drillBank.ts`
-- Test: `src/core/utils/drillBank.test.ts` (extend)
+- Test: `src/core/utils/__tests__/drillBank.test.ts` (extend)
 
 - [ ] **Step 1: Failing goldens first** (extend test file):
 
@@ -526,7 +528,7 @@ git add -A && git commit -m "feat(drill): interval, triad, and scale drill famil
 
 **Files:**
 - Modify: `src/core/utils/drillBank.ts`
-- Test: `src/core/utils/drillBank.test.ts` (extend)
+- Test: `src/core/utils/__tests__/drillBank.test.ts` (extend)
 
 - [ ] **Step 1: Failing goldens first:**
 
@@ -601,7 +603,7 @@ git add -A && git commit -m "feat(drill): seventh-chord, roman-numeral, and func
 
 **Files:**
 - Create: `src/services/drillScheduler.ts`
-- Test: `src/services/drillScheduler.test.ts`
+- Test: `src/services/__tests__/drillScheduler.test.ts`
 
 All functions take injectable `now: number` (repo convention — see `spacedRepetition.ts`).
 
@@ -738,7 +740,7 @@ git add -A && git commit -m "feat(drill): FSRS-backed scheduler with latency gra
 
 **Files:**
 - Create: `src/services/drillSession.ts`
-- Test: `src/services/drillSession.test.ts`
+- Test: `src/services/__tests__/drillSession.test.ts`
 
 - [ ] **Step 1: Failing tests first** — assertions: due items precede new; new-per-session cap respected (incl. 0 = review-only); families filtered; no item twice in a row in the composed list; deterministic per seed; all-caught-up fallback fills from review/byHeart tiers; wrong-answer requeue inserts at +4..6; new-item second exposure inserts at +6 or later.
 
@@ -813,7 +815,7 @@ git add -A && git commit -m "feat(drill): seeded session composer with due/learn
 
 **Files:**
 - Create: `src/state/drillStore.ts`
-- Test: `src/state/drillStore.test.ts`
+- Test: `src/state/__tests__/drillStore.test.ts`
 - Modify: the reset-app-data path (find it: `rg -n "reset-app-data\|resetAppData\|Reset app data" src/` — wire drill key into the same flow)
 
 - [ ] **Step 1: Failing tests first** — persistence round-trip via the same pattern as `progressStore.test.ts` (look at how it tests persist + migrate); corrupt persisted shape (e.g. `items: 'garbage'`) falls back to empty state instead of crashing (mirror progressStore's WS6 guard tests); `recordAnswer` updates item state AND active session counters atomically; mid-session resume: `startSession` → 3 `recordAnswer`s → simulate reload (new store from persisted JSON) → `activeSession.index === 3`.
@@ -872,7 +874,7 @@ git add -A && git commit -m "feat(drill): persisted drill store with session res
 - Modify: `src/state/storeTypes.ts` (ViewMode), `src/components/layout/TopBar.tsx` (VIEWS, VIEW_KEYS), `src/App.tsx` (lazy view + VIEW_COMPONENTS), `src/components/layout/AppShell.tsx` (hide instrument area when drill)
 - Create: `src/views/DrillView.tsx`, `src/components/drill/QuestionCard.tsx`, `src/components/drill/ChoiceChips.tsx`, `src/components/drill/FeedbackStrip.tsx`, `src/components/drill/useDrillRunner.ts`
 - Modify: `src/i18n/locales/en.json` (+ pt/es: `nav.drill` only in this task)
-- Test: `src/views/DrillView.test.tsx`, `src/components/drill/ChoiceChips.test.tsx`
+- Test: `src/views/__tests__/DrillView.test.tsx`, `src/components/drill/__tests__/ChoiceChips.test.tsx`
 
 - [ ] **Step 1: ViewMode + tab.** `export type ViewMode = 'explore' | 'learn' | 'drill';` — update `VIEWS`/`VIEW_KEYS` in TopBar (`nav.drill`), `VIEW_COMPONENTS` + lazy import in App.tsx (copy the LearnView lazy pattern verbatim). In `AppShell.tsx`, read `const view = useAppStore((s) => s.view);` and wrap the entire instrument area (selector + collapse button + Piano/Fretboard block) in `{view !== 'drill' && (...)}`.
 
@@ -939,7 +941,7 @@ git add -A && git commit -m "feat(drill): note-chip, accidental-slot, and root-q
 **Files:**
 - Create: `src/data/drillFamilyToModule.ts`
 - Modify: `src/components/drill/FeedbackStrip.tsx`, `src/components/drill/useDrillRunner.ts`
-- Test: `src/data/drillFamilyToModule.test.ts`
+- Test: `src/data/__tests__/drillFamilyToModule.test.ts`
 
 - [ ] **Step 1: Audio on reveal.** On feedback phase, if `settings.sound`: play the answer — chord families arpeggiate the answer notes quickly via the core audio path used by `CurrentChordPanel` (read it; reuse its play helper or pattern — sampled piano with synth fallback, octave 4); interval items play both notes; scale items play the first 5 notes; choice-only concept items play nothing. Never block grading/advance on audio.
 - [ ] **Step 2: Deep links.** `drillFamilyToModule.ts`: static `Record<DrillFamily, string>` mapping each family to the most relevant module id. Pick ids by reading `src/data/moduleIndex.ts` (search titles: key signatures → the L2 key-signature module; circle → same; scale → L2 minor-scales or L1 major-scale; degree → L2 scale-degrees; interval → L1 intervals; triad → L2 triad-types; seventh → L3 seventh-chords; roman → L2 diatonic-harmony; function → L3 cadences). Test asserts every mapped id exists in `moduleIndex`. FeedbackStrip (wrong answers only) renders a "Learn about this →" link that calls the same navigation the Learn breadcrumb/"Learn about this" buttons use (`rg -n "qualityToModule" src/components` and copy the navigation call).
@@ -1003,7 +1005,7 @@ git add -A && git commit -m "feat(drill): boot view param, last-view restore (pe
 
 **Files:**
 - Modify: `src/i18n/locales/en.json`, `pt.json`, `es.json`
-- Test: `src/i18n/drillKeysParity.test.ts`
+- Test: `src/i18n/__tests__/drillKeysParity.test.ts`
 
 - [ ] **Step 1: Parity test first**: imports `DRILL_PROMPT_KEYS` / `DRILL_WHY_KEYS` from drillBank (exported in Task 4) plus a static list of UI keys; asserts every key resolves in all three locales (i18next `exists`) and that `{{param}}` token sets match across languages (reuse the approach of `templateParity.test.ts` — read it first).
 
