@@ -40,8 +40,6 @@ interface SprintRunnerProps {
   onExit: () => void;
 }
 
-type Status = 'running' | 'finished';
-
 export function SprintRunner({
   bank,
   items,
@@ -120,8 +118,10 @@ interface SprintActiveProps {
 }
 
 function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t }: SprintActiveProps) {
-  const [status, setStatus] = useState<Status>('running');
   const [secondsLeft, setSecondsLeft] = useState(SPRINT_SECONDS);
+  // 'finished' is DERIVED from the clock, never stored — so the finish effect
+  // below performs side effects only (no setState-in-effect cascade).
+  const finished = secondsLeft <= 0;
   const [correct, setCorrect] = useState(0);
   // Monotonic question counter — drives both the pool index (modulo recycle)
   // and the input `key` so each question remounts a fresh input instance.
@@ -138,8 +138,8 @@ function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t 
   // One persistent 1 Hz countdown, mounted once. The functional updater is
   // PURE — it only computes the next value (clamped at 0) with no side effects.
   // This matters under React 19, where a Strict-Mode dev double-invoke of the
-  // updater would otherwise fire onRecord/setStatus twice. Stopping the timer
-  // and all finishing work live in the effects below, keyed off secondsLeft.
+  // updater would otherwise record twice. Stopping the timer and the one-shot
+  // recording live in the effect below, keyed off the derived `finished`.
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(() => {
     const id = setInterval(() => {
@@ -149,18 +149,19 @@ function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t 
     return () => clearInterval(id);
   }, []);
 
-  // Finish exactly once when the clock reaches 0: stop the interval, record the
-  // final score, and flip to the finished screen. Guarded on `status` so the
-  // effect can't record twice if it re-runs after the transition.
+  // Finish exactly once when the clock reaches 0: stop the interval and record
+  // the final score. The ref guard makes the recording one-shot even if the
+  // effect re-runs; the finished SCREEN is pure render off `finished`.
+  const recordedRef = useRef(false);
   useEffect(() => {
-    if (secondsLeft > 0 || status === 'finished') return;
+    if (!finished || recordedRef.current) return;
+    recordedRef.current = true;
     if (intervalRef.current !== null) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
     onRecord(familiesKey, correctRef.current);
-    setStatus('finished');
-  }, [secondsLeft, status, familiesKey, onRecord]);
+  }, [finished, familiesKey, onRecord]);
 
   // Esc exits early WITHOUT recording.
   useEffect(() => {
@@ -184,16 +185,16 @@ function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t 
 
   const handleAnswer = useCallback(
     (payload: AnswerPayload) => {
-      if (status !== 'running') return;
+      if (finished) return;
       const graded = gradeAnswer(currentItem, payload);
       if (graded.correct) setCorrect((c) => c + 1);
       // No feedback phase — advance immediately to keep the sprint fast.
       setStep((s) => s + 1);
     },
-    [status, currentItem],
+    [finished, currentItem],
   );
 
-  if (status === 'finished') {
+  if (finished) {
     const isNewBest = correct > priorBest;
     const best = Math.max(priorBest, correct);
     return (
