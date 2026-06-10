@@ -38,6 +38,11 @@ function sanitizePersistedAppState(persisted: unknown): Record<string, unknown> 
     delete state.selectedScale;
   }
 
+  // lastView: must be a known ViewMode; anything else falls back to the default.
+  if (state.lastView !== 'explore' && state.lastView !== 'learn' && state.lastView !== 'drill') {
+    delete state.lastView;
+  }
+
   // Numeric fields: anything non-finite falls back to the slice default
   for (const k of NUMERIC_KEYS) {
     if (typeof state[k] !== 'number' || !Number.isFinite(state[k])) {
@@ -59,7 +64,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'music-theory-app',
-      version: 5,
+      version: 6,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         selectedKey: state.selectedKey,
@@ -73,6 +78,7 @@ export const useAppStore = create<AppState>()(
         themeMode: state.themeMode,
         language: state.language,
         preferencesUpdatedAt: state.preferencesUpdatedAt,
+        lastView: state.lastView,
       }),
       migrate: (persisted: unknown, version: number) => {
         const state = persisted && typeof persisted === 'object'
@@ -94,6 +100,11 @@ export const useAppStore = create<AppState>()(
         if (version < 5 && state && typeof state === 'object') {
           const s = state as Record<string, unknown>;
           s.themeMode = s.themeMode === 'dark' ? 'fermata-night' : 'fermata';
+        }
+        if (version < 6 && state && typeof state === 'object') {
+          // lastView is new in v6; inject the default when an older blob lacks it.
+          const s = state as Record<string, unknown>;
+          if (s.lastView === undefined) s.lastView = 'explore';
         }
         return state;
       },

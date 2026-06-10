@@ -4,6 +4,7 @@
     "explore": "Explorar",
     "play": "Tocar",
     "learn": "Aprender",
+    "drill": "Práctica",
     "search": "Buscar",
     "appViews": "Vistas de la app",
     "skipToContent": "Ir al contenido",
@@ -516,5 +517,134 @@
       "nth": "Inv {{n}}"
     },
     "play": "Tocar"
+  },
+  "drill": {
+    "progress": "{{current}} de {{total}}",
+    "endSession": "Terminar sesión",
+    "settings": {
+      "title": "Ajustes de práctica",
+      "length": "Duración de la sesión",
+      "newPerSession": "Conceptos nuevos por sesión",
+      "families": "Temas",
+      "sound": "Sonido de la respuesta",
+      "showTimer": "Mostrar cronómetro",
+      "back": "Volver"
+    },
+    "summary": {
+      "title": "Sesión completada",
+      "score": "{{correct}} de {{asked}} correctas",
+      "newSession": "Nueva sesión",
+      "byHeartCallout_one": "{{count}} concepto ya de memoria",
+      "byHeartCallout_other": "{{count}} conceptos ya de memoria",
+      "reviewCallout_one": "{{count}} concepto pasó a repaso",
+      "reviewCallout_other": "{{count}} conceptos pasaron a repaso",
+      "familyScore": "{{correct}}/{{asked}}",
+      "masteryMap": "Mapa de dominio",
+      "sprint": "Sprint"
+    },
+    "mastery": {
+      "title": "Dominio",
+      "back": "Volver",
+      "byHeartTotal_one": "{{count}} concepto de memoria",
+      "byHeartTotal_other": "{{count}} conceptos de memoria",
+      "dueToday_one": "{{count}} para hoy",
+      "dueToday_other": "{{count}} para hoy",
+      "counts": "{{byHeart}} de memoria · {{total}} en total",
+      "tier": {
+        "new": "Nuevo",
+        "learning": "Aprendiendo",
+        "review": "Repaso",
+        "byHeart": "De memoria"
+      }
+    },
+    "sprint": {
+      "title": "Sprint",
+      "start": "Empezar sprint",
+      "timeLeft": "{{seconds}}s",
+      "score_one": "{{count}} correcta",
+      "score_other": "{{count}} correctas",
+      "best": "Mejor: {{count}}",
+      "newBest": "¡Nuevo récord!",
+      "again": "Otro sprint",
+      "exit": "Listo",
+      "empty": "Aún no hay nada dominado para practicar",
+      "emptyHint": "Practica algunos conceptos para repaso primero y vuelve luego."
+    },
+    "families": {
+      "keysig": "Armaduras de clave",
+      "circle": "Círculo de quintas",
+      "scale": "Escalas",
+      "degree": "Grados de la escala",
+      "interval": "Intervalos",
+      "triad": "Tríadas",
+      "seventh": "Acordes de séptima",
+      "roman": "Numerales romanos",
+      "function": "Función armónica"
+    },
+    "clear": "Borrar",
+    "done": "Listo",
+    "a11y": {
+      "notes": "notas",
+      "scaleNotes": "notas de la escala",
+      "choices": "opciones"
+    },
+    "feedback": {
+      "correct": "Correcto",
+      "wrong": "Casi",
+      "nearMiss": "Mismo sonido, escritura incorrecta — la grafía correcta aquí es {{expected}}",
+      "continue": "Continuar",
+      "learnMore": "Aprender sobre esto"
+    },
+    "prompts": {
+      "keyToCount": "¿Cuántos sostenidos o bemoles tiene {{key}}?",
+      "keyToAcc": "¿Qué alteraciones tiene {{key}}?",
+      "sigToKeyMajor": "¿Qué tonalidad MAYOR tiene {{sig}}?",
+      "sigToKeyMinor": "¿Qué tonalidad MENOR tiene {{sig}}?",
+      "relMinor": "¿Cuál es la relativa menor de {{key}}?",
+      "relMajor": "¿Cuál es la relativa mayor de {{key}}?",
+      "nextSharp": "En las armaduras de clave, ¿qué sostenido se añade después de {{acc}}?",
+      "nextFlat": "En las armaduras de clave, ¿qué bemol se añade después de {{acc}}?",
+      "fifthUp": "¿Una quinta justa ARRIBA de {{note}}?",
+      "fifthDown": "¿Una quinta justa ABAJO de {{note}}?",
+      "numToName": "El grado {{num}} de la escala se llama…?",
+      "nameToNum": "¿{{name}} es qué grado de la escala?",
+      "pairToName": "De {{lower}} hasta {{upper}} ¿es qué intervalo?",
+      "noteAbove": "¿Una {{interval}} por encima de {{root}}?",
+      "letterThird": "¿Una tercera por encima de {{letter}} (solo la letra)?",
+      "semitonesToName": "{{n}} semitonos ¿es qué intervalo?",
+      "spellChord": "Deletrea {{chord}}",
+      "nameChord": "{{notes}} — ¿qué acorde es este?",
+      "spellScale": "Deletrea la escala de {{scale}}",
+      "degreeOf": "¿Cuál es el grado {{num}} de {{key}}?",
+      "degreeToChord": "¿Qué es {{numeral}} en {{key}}?",
+      "chordToDegree": "En {{key}}, {{chord}} ¿es qué grado?",
+      "pattern": "En cualquier tonalidad {{mode}}, la tríada del grado {{num}} es…?",
+      "isDiatonic": "¿{{chord}} es diatónico en {{key}}?",
+      "harmonicFact": "En las tonalidades menores con la 7.ª elevada, el acorde del grado {{num}} es…?",
+      "chordFunction": "En {{key}}, {{chord}} funciona como…?",
+      "cadence": "{{pair}} al final de una frase ¿es qué cadencia?",
+      "v7Of": "¿Cuál es el V7 de {{key}}?"
+    },
+    "why": {
+      "keyToCount": "{{key}} tiene {{answer}}. Cuenta a lo largo del círculo de quintas desde C (sin alteraciones).",
+      "lastSharp": "El último sostenido es la sensible — un semitono por debajo de la tónica. {{key}}: {{answer}}.",
+      "penultimateFlat": "El penúltimo bemol da nombre a la tonalidad. {{key}}: {{answer}}.",
+      "sigToKey": "{{sig}} pertenece a {{answer}} — lee la armadura en el círculo de quintas.",
+      "relative": "Las tonalidades relativas comparten la armadura de clave, a una tercera menor de distancia. {{key}}: {{answer}}.",
+      "circleOrder": "Los sostenidos se añaden por F C G D A E B; los bemoles siguen el orden inverso B E A D G C F. Cada paso es una quinta justa.",
+      "degreeName": "El grado {{num}} de la escala es {{name}}.",
+      "intervalLetterFirst": "Cuenta primero las letras y luego fija la cualidad por semitonos. La respuesta es {{answer}}.",
+      "semitoneFact": "Un dato de reconocimiento: {{n}} semitonos es {{answer}}. Nunca deletrees contando semitonos — primero las letras.",
+      "triadStack": "{{chord}} apila {{stack}} desde la fundamental: {{notes}}.",
+      "scaleKeySig": "La escala de {{scale}} usa su armadura de clave: {{accs}}.",
+      "harmonicRaise": "La escala de {{scale}} eleva {{raised}} respecto a la menor natural.",
+      "seventhLadder": "Parte de la séptima mayor y luego {{step}}. Eso da {{chord}}.",
+      "diatonicMember": "{{chord}} es el acorde diatónico construido sobre ese grado de {{key}}.",
+      "romanPattern": "En cualquier tonalidad {{mode}}, la tríada del grado {{num}} es {{chord}} — el patrón de cualidades nunca cambia.",
+      "harmonicFact": "Con la 7.ª elevada, el grado {{num}} da {{correct}}.",
+      "functionPull": "{{chord}} tira {{direction}} — esa es su función armónica.",
+      "cadenceDef": "{{answer}} (RU: {{uk}}).",
+      "v7Derivation": "El grado 5 de {{key}} es {{five}}; su séptima de dominante es {{answer}}."
+    }
   }
 }

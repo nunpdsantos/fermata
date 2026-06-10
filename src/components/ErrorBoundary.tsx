@@ -3,6 +3,17 @@ import type { ErrorInfo, ReactNode } from 'react';
 import i18n from '../i18n';
 import { Button } from './ui/Button';
 
+/**
+ * Drill store localStorage key, inlined as a literal.
+ *
+ * ErrorBoundary is eager and app-level, so importing it would statically pull
+ * `drillStore` → `drillScheduler` → ts-fsrs into the ENTRY chunk. ts-fsrs must
+ * live only in the drill chunk (spec). Keep this in sync with DRILL_STORE_KEY in
+ * src/state/drillStore.ts — src/state/__tests__/errorBoundaryDrillKey.test.ts
+ * asserts the two are equal (the test imports both; ErrorBoundary imports neither).
+ */
+const DRILL_STORE_KEY_LITERAL = 'fermata-drill-v1';
+
 interface Props {
   children: ReactNode;
   /** When this value changes, the boundary resets (clears the error). */
@@ -39,8 +50,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
   /**
    * Last-resort recovery: corrupted persisted state can crash the app on
-   * every reload. Clears all app localStorage (keys prefixed 'music-theory')
-   * and reloads fresh.
+   * every reload. Clears all app localStorage (keys prefixed 'music-theory'
+   * or matching known fermata-* store keys) and reloads fresh.
    */
   private handleResetAppData = () => {
     for (const key of Object.keys(localStorage)) {
@@ -48,7 +59,15 @@ export class ErrorBoundary extends Component<Props, State> {
         localStorage.removeItem(key);
       }
     }
-    window.location.reload();
+    // Drill store uses a 'fermata-' prefix — clear its storage FIRST (the
+    // literal avoids a static drillStore import, keeping ts-fsrs out of the
+    // entry chunk). Then lazily load the store for a best-effort in-memory
+    // reset; the reload ALWAYS happens, even if that import fails.
+    localStorage.removeItem(DRILL_STORE_KEY_LITERAL);
+    import('../state/drillStore')
+      .then((m) => m.useDrillStore.getState().resetDrillData())
+      .catch(() => {})
+      .finally(() => window.location.reload());
   };
 
   render() {

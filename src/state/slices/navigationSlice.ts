@@ -10,9 +10,12 @@ export const createNavigationSlice: StateCreator<AppState, [], [], NavigationSli
 
   setView: (view) =>
     // Clear view-bound selections + stop any held notes so audio doesn't bleed
-    // across views (e.g. MIDI/keyboard note held while switching tabs).
+    // across views (e.g. MIDI/keyboard note held while switching tabs). Also
+    // mirror the destination into lastView (a PreferencesSlice field — written
+    // here via the combined store set) so a fresh boot can restore it.
     set({
       view,
+      lastView: view,
       detailPanelOpen: false,
       selectedChord: null,
       selectedDegree: null,

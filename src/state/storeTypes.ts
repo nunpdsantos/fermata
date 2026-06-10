@@ -10,7 +10,7 @@ import type { SynthPresetName } from '../core/types/visual.ts';
 
 // ─── Enums ──────────────────────────────────────────────────────────────────
 
-export type ViewMode = 'explore' | 'learn';
+export type ViewMode = 'explore' | 'learn' | 'drill';
 export type InstrumentType = 'piano' | 'guitar';
 export type ColorMode = 'functional' | 'absolute';
 export type ThemeMode = 'fermata' | 'fermata-night';
@@ -84,6 +84,9 @@ export interface PreferencesSlice {
   baseOctave: number;
   language: string;
   preferencesUpdatedAt: number;
+  /** Last view the user was on — persisted so a fresh boot (no ?view= param)
+   *  restores where they left off. Written by navigationSlice.setView. */
+  lastView: ViewMode;
   setColorMode: (mode: ColorMode) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setScaleOctaves: (octaves: 1 | 2) => void;

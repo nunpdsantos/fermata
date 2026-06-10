@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useLayoutEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LazyMotion, MotionConfig, domAnimation, AnimatePresence, m } from 'framer-motion';
 import { AppShell } from './components/layout/AppShell.tsx';
@@ -9,6 +9,7 @@ import { ToastContainer } from './components/layout/Toast.tsx';
 import { useTheme } from './hooks/useTheme.ts';
 import { useLanguage } from './hooks/useLanguage.ts';
 import { useAppStore } from './state/store.ts';
+import { pickBootView } from './state/bootView.ts';
 
 function ViewLoadingFallback() {
   return (
@@ -47,10 +48,12 @@ function TryAgainText() {
 
 const ExploreView = lazy(() => import('./views/ExploreView.tsx').then((m) => ({ default: m.ExploreView })));
 const LearnView = lazy(() => import('./views/LearnView.tsx').then((m) => ({ default: m.LearnView })));
+const DrillView = lazy(() => import('./views/DrillView.tsx').then((m) => ({ default: m.DrillView })));
 
 const VIEW_COMPONENTS = {
   explore: ExploreView,
   learn: LearnView,
+  drill: DrillView,
 } as const;
 
 function App() {
@@ -61,6 +64,30 @@ function App() {
   useTheme();
   // Sync language preference to i18next
   useLanguage();
+
+  // Boot view resolution (runs ONCE, before first paint of the view):
+  //  - a valid ?view= param wins (PWA shortcut / deep link), else restore
+  //    the persisted lastView. The param is then stripped from the URL so a
+  //    plain refresh doesn't re-force it. `view` itself isn't persisted, so on
+  //    a fresh boot it is the slice default 'explore' until this resolves it.
+  const bootResolved = useRef(false);
+  useLayoutEffect(() => {
+    if (bootResolved.current) return; // guard StrictMode's double-invoke
+    bootResolved.current = true;
+
+    const params = new URLSearchParams(window.location.search);
+    const paramView = params.get('view');
+    const { setView, lastView } = useAppStore.getState();
+    setView(pickBootView(window.location.search, lastView));
+
+    // Strip ?view= from the URL (keep other params) without a navigation.
+    if (paramView !== null) {
+      params.delete('view');
+      const qs = params.toString();
+      const url = window.location.pathname + (qs ? `?${qs}` : '') + window.location.hash;
+      window.history.replaceState(window.history.state, '', url);
+    }
+  }, []); // run-once on mount
 
   return (
     <LazyMotion features={domAnimation}>

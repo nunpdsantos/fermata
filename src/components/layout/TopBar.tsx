@@ -4,10 +4,11 @@ import { useAppStore, type ViewMode, type ThemeMode } from '../../state/store.ts
 import { SUPPORTED_LANGUAGES } from '../../i18n/index.ts';
 import { toast } from '../../state/toastStore.ts';
 
-const VIEWS: ViewMode[] = ['explore', 'learn'];
+const VIEWS: ViewMode[] = ['explore', 'learn', 'drill'];
 const VIEW_KEYS: Record<ViewMode, string> = {
   explore: 'nav.explore',
   learn: 'nav.learn',
+  drill: 'nav.drill',
 };
 
 const THEME_OPTIONS: ThemeMode[] = ['fermata', 'fermata-night'];

@@ -2,10 +2,11 @@
 
 ## Product Overview
 
-Interactive music theory education platform that teaches through instrument-first pedagogy — theory emerges from playing, not the other way around. Users interact with a virtual piano or guitar fretboard that's always visible at the bottom of the screen, with two main views above it:
+Interactive music theory education platform that teaches through instrument-first pedagogy — theory emerges from playing, not the other way around. Users interact with a virtual piano or guitar fretboard that's always visible at the bottom of the screen (hidden in Drill, which owns its vertical space), with three main views above it:
 
 - **Explore** — browse scales, chords, intervals, and keys. The Circle of Fifths, scale degree bar, and chord grid let users visualize relationships. Selecting any entity highlights it on the instrument below. Detail panels show staff notation, constituent notes, and related structures.
 - **Learn** — structured 9-level curriculum (beginner → advanced) with 118 modules, 1,000+ exercises, spaced repetition review. Progress is tracked per-module.
+- **Drill** (WS9) — phone-first spaced-retrieval micro-sessions over ~1,315 fundamentals facts (key signatures, circle of fifths, scales, degrees, intervals, triad/seventh spelling both directions, Roman numerals, cadences/function). Per-fact FSRS scheduling (`ts-fsrs`), "by heart" mastery = correct + <3s median across 3 distinct sessions, enharmonic near-miss feedback, mastery map, optional 60s sprint. The item bank is GENERATED from `src/core/` at runtime (`src/core/utils/drillBank/`) — no authored drill content. State lives in its own persisted store `fermata-drill-v1` (`src/state/drillStore.ts`); deliberately NO coupling to curriculum/module progress, no XP/streaks/badges (spec: docs/superpowers/specs/2026-06-10-fermata-drill-mode-design.md). ts-fsrs must stay out of the entry chunk (ErrorBoundary uses a dynamic import + inlined key literal for its reset path).
 
 ### Curriculum (9 Levels, 118 Modules)
 
@@ -253,12 +254,24 @@ src/
 
 ## Current State
 
-The app is a lean, single-user, Explore-centred personal tool — no accounts, no cloud
-sync, no gamification. Curriculum, exercises, spaced repetition, trilingual content,
-offline PWA, sampled piano, instrument-aware playback: all functional, all gates green
-(≈2,286 tests / 48 files, eslint 0/0, content audits clean).
+The app is a lean, single-user personal tool — no accounts, no cloud sync, no
+gamification. Curriculum, exercises, spaced repetition, trilingual content, offline
+PWA, sampled piano, instrument-aware playback, and (WS9, branch `ws9-drill-mode`)
+the phone-first Drill view: all functional, all gates green (≈2,642 tests / 71 files,
+eslint 0/0, content audits clean).
+
+WS9 details worth knowing: drill bank generated from core (`drillBank/` directory
+module, ~1,315 items, token/params contract-tested against the i18n templates);
+`drillScheduler` wraps ts-fsrs (request_retention 0.9, Easy never granted);
+`drillSession` composes due→learning→new→confidence with seeded shuffles; persist
+key `fermata-drill-v1` v1 with WS6-style shape guards; main store persist bumped
+v6 (`lastView` restore + `?view=` boot param + PWA "Start Drill" shortcut).
 
 **Open items, in rough priority:**
+- Drill why-templates `functionPull` / `seventhLadder` embed English clause params
+  inside translated sentences (works, reads mixed) — proposed v2: keyed short tokens
+  translated per-language; needs an EN-side generator refactor. Nuno to judge on
+  the preview whether it bothers him.
 - PT diacritics restoration across the older overlay files (`docs/pt-diacritic-todo.md`).
 - Chord-quality names / interval labels render in English inside PT/ES feedback
   sentences (deliberate "nomenclature untranslated" convention — revisit only as a
