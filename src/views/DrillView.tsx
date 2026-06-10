@@ -8,6 +8,9 @@ import { AccidentalSlots } from '../components/drill/AccidentalSlots';
 import { RootQualityChips } from '../components/drill/RootQualityChips';
 import { FeedbackStrip } from '../components/drill/FeedbackStrip';
 import { useDrillStore } from '../state/drillStore';
+import { useAppStore } from '../state/store';
+import { MODULE_INDEX } from '../data/moduleIndex';
+import { DRILL_FAMILY_TO_MODULE } from '../data/drillFamilyToModule';
 import type { DrillItem } from '../core/types/drill';
 import type { AnswerPayload } from '../components/drill/grading';
 
@@ -50,6 +53,10 @@ export function DrillView() {
                 whyText={t(item.whyKey, item.whyParams)}
                 onContinue={runner.advance}
                 showContinue={!result.correct}
+                // Deep link on wrong / near-miss only (correct answers
+                // auto-advance and need no remediation prompt).
+                learnMoreLabel={!result.correct ? t('drill.feedback.learnMore') : undefined}
+                onLearnMore={!result.correct ? () => openLearnModule(item) : undefined}
               />
             )}
 
@@ -223,4 +230,23 @@ function canonicalAnswer(item: DrillItem): string {
     case 'rootQuality':
       return `${item.answer.root} ${item.answer.quality}`;
   }
+}
+
+/**
+ * Navigate to the Learn module most relevant to this item's family — the same
+ * store handoff the Explore "Learn about this" buttons use (setView('learn') +
+ * pendingLearnTarget). Read-only: never touches module progress.
+ */
+function openLearnModule(item: DrillItem): void {
+  const moduleId = DRILL_FAMILY_TO_MODULE[item.family];
+  const match = MODULE_INDEX.find((m) => m.id === moduleId);
+  if (!match) return;
+  useAppStore.setState({
+    view: 'learn',
+    pendingLearnTarget: {
+      levelId: match.level,
+      unitId: match.unitId,
+      moduleId: match.id,
+    },
+  });
 }

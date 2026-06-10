@@ -2,8 +2,17 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, cleanup, fireEvent, act } from '@testing-library/react';
 import { DrillView } from '../DrillView';
 import { useDrillStore, type ActiveSession, DEFAULT_SETTINGS } from '../../state/drillStore';
+import { useAppStore } from '../../state/store';
 import { generateDrillBank } from '../../core/utils/drillBank';
+import { DRILL_FAMILY_TO_MODULE } from '../../data/drillFamilyToModule';
 import type { DrillFamily, DrillItem } from '../../core/types/drill';
+
+// Spy on the reveal-audio player so we can assert it's invoked (Task 10)
+// without a real AudioContext. The real planner logic is unit-tested separately.
+vi.mock('../../components/drill/answerAudio', () => ({
+  playAnswerAudio: vi.fn(),
+}));
+import { playAnswerAudio } from '../../components/drill/answerAudio';
 
 // ── framer-motion → plain elements (mirrors sibling view tests) ───────────────
 // The component TYPE per tag must be cached: constructed-input components hold
@@ -328,5 +337,83 @@ describe('DrillView — noteChips end-to-end (triad family)', () => {
     act(() => fireEvent.click(cont));
     expect(screen.queryByText(/Same sound, wrong spelling/)).toBeNull();
     expect(screen.getByText(/2 of 12/)).toBeDefined();
+  });
+});
+
+// ── Task 10: reveal audio + learn deep-link ───────────────────────────────────
+function startDegreeSession() {
+  useDrillStore.getState().resetDrillData();
+  useDrillStore.getState().updateSettings({
+    families: {
+      keysig: false, circle: false, degree: true, scale: false, interval: false,
+      triad: false, seventh: false, roman: false, function: false,
+    },
+    length: 12,
+    newPerSession: 12,
+  });
+}
+
+describe('DrillView — reveal audio (Task 10)', () => {
+  it('plays the answer on reveal when sound is ON (chord item)', () => {
+    vi.clearAllMocks();
+    startTriadSession(); // sound defaults to true
+    render(<DrillView />);
+    expect(playAnswerAudio).not.toHaveBeenCalled();
+
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'C' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'E' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'G' })));
+
+    expect(playAnswerAudio).toHaveBeenCalledTimes(1);
+    // It received the C-major item.
+    const arg = (playAnswerAudio as unknown as ReturnType<typeof vi.fn>).mock.calls[0][0] as DrillItem;
+    expect(arg.id).toBe('triad:name-to-notes:C:major');
+  });
+
+  it('does NOT play audio when sound is OFF', () => {
+    vi.clearAllMocks();
+    startTriadSession();
+    useDrillStore.getState().updateSettings({ sound: false });
+    render(<DrillView />);
+
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'C' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'E' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'G' })));
+
+    expect(playAnswerAudio).not.toHaveBeenCalled();
+  });
+});
+
+describe('DrillView — learn deep-link (Task 10)', () => {
+  it('navigates to the family module on a wrong answer', () => {
+    vi.clearAllMocks();
+    // Reset the app store navigation state before asserting on it.
+    useAppStore.setState({ view: 'drill', pendingLearnTarget: null });
+    startDegreeSession();
+    render(<DrillView />);
+
+    // The first degree question is on screen; tap a wrong choice.
+    const session = useDrillStore.getState().activeSession!;
+    const item = BY_ID.get(session.queue[session.index])!;
+    const correct = item.answer.kind === 'choice' ? item.answer.correct : '';
+    const choices = item.input.format === 'choice' ? item.input.choices : [];
+    const wrong = choices.find((c) => c !== correct)!;
+    act(() => fireEvent.click(screen.getByRole('button', { name: wrong })));
+
+    // The "Learn about this" link appears (wrong answers only) and navigates.
+    const link = screen.getByRole('button', { name: /Learn about this/ });
+    act(() => fireEvent.click(link));
+
+    const app = useAppStore.getState();
+    expect(app.view).toBe('learn');
+    expect(app.pendingLearnTarget?.moduleId).toBe(DRILL_FAMILY_TO_MODULE.degree);
+  });
+
+  it('shows no learn link on a correct answer', () => {
+    vi.clearAllMocks();
+    startDegreeSession();
+    render(<DrillView />);
+    act(() => answerCurrentCorrectly());
+    expect(screen.queryByRole('button', { name: /Learn about this/ })).toBeNull();
   });
 });

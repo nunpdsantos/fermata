@@ -20,6 +20,7 @@ import {
   type ActiveSession,
 } from '../../state/drillStore';
 import { gradeAnswer, type AnswerPayload, type GradeResult } from './grading';
+import { playAnswerAudio } from './answerAudio';
 
 // ─── Module-level bank memo ──────────────────────────────────────────────────
 // generateDrillBank() is expensive (~1,300 items). Build it once per module
@@ -165,6 +166,9 @@ export function useDrillRunner(): DrillRunner {
       recordAnswer(item, graded.correct, ms, Date.now()); // advances store pointer
       setResult(graded);
       setPhase('feedback'); // displayId stays on the answered item
+      // Reveal audio: play the answer (chords/intervals/scales) on every answer,
+      // right or wrong, when sound is on. Fire-and-forget — never blocks advance.
+      if (settings.sound) playAnswerAudio(item);
       if (graded.correct) {
         // Auto-advance after a brief feedback flash. (Timing is not an
         // animation — keep it even under prefers-reduced-motion.)
@@ -177,7 +181,7 @@ export function useDrillRunner(): DrillRunner {
         }, AUTO_ADVANCE_MS);
       }
     },
-    [phase, item, recordAnswer, clearAdvanceTimer, goToCurrent],
+    [phase, item, recordAnswer, clearAdvanceTimer, goToCurrent, settings.sound],
   );
 
   const endSession = useCallback(() => {
