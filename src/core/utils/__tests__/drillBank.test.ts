@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { buildScale } from '../../constants/scales';
 import { noteToString } from '../../types/music';
-import { generateDrillBank, getItemsByFamily, displayNote, MAJOR_KEYS } from '../drillBank';
+import {
+  generateDrillBank,
+  getItemsByFamily,
+  displayNote,
+  MAJOR_KEYS,
+  DRILL_PROMPT_KEYS,
+  DRILL_WHY_KEYS,
+} from '../drillBank';
 import { nameIntervalBetween, noteAtIntervalAbove } from '../drillBank/intervalEngine';
 import { N } from '../drillBank/shared';
 import { ALTERED_PAIRS } from '../drillBank/genInterval';
@@ -321,6 +328,184 @@ describe('per-family count pins', () => {
       const named = nameIntervalBetween(lower, upper);
       expect(named).not.toBeNull();
       expect((item!.answer as { kind: 'choice'; correct: string }).correct).toBe(named!.label);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Seventh-chord goldens
+// ---------------------------------------------------------------------------
+
+describe('sevenths — goldens', () => {
+  it('spell C#m7b5 = C# E G B', () => {
+    expect(byId.get('seventh:name-to-notes:C#:half_diminished7')?.answer)
+      .toEqual({ kind: 'notes', notes: ['C#', 'E', 'G', 'B'] });
+  });
+  it('G B D F names as G dominant 7', () => {
+    expect(byId.get('seventh:notes-to-name:G:dominant7')?.answer)
+      .toEqual({ kind: 'rootQuality', root: 'G', quality: 'dominant7' });
+  });
+  it('seventh family exists with 140 items (14 roots × 5 qualities × 2 directions)', () => {
+    expect(getItemsByFamily(bank, 'seventh').length).toBe(140);
+  });
+  it('Cdim7 chips include B𝄫 (double-flat 7th)', () => {
+    const item = byId.get('seventh:name-to-notes:C:diminished7');
+    expect(item?.input.format).toBe('noteChips');
+    if (item?.input.format === 'noteChips') {
+      expect(item.input.expectedCount).toBe(4);
+      // Answer notes include Bbb (double flat)
+      expect(item.answer).toEqual({ kind: 'notes', notes: ['C', 'Eb', 'Gb', 'Bbb'] });
+      // chip pool includes 𝄫 variant
+      expect(item.input.chips.some((c: string) => c.includes('𝄫'))).toBe(true);
+    }
+  });
+  it('all seventh noteChips have unique chips and exactly 4 expected', () => {
+    for (const item of getItemsByFamily(bank, 'seventh')) {
+      if (item.input.format === 'noteChips') {
+        expect(item.input.expectedCount).toBe(4);
+        expect(new Set(item.input.chips).size).toBe(item.input.chips.length);
+      }
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Roman numeral goldens
+// ---------------------------------------------------------------------------
+
+describe('roman numerals — goldens', () => {
+  it('vi of E major is C♯ minor', () => {
+    expect(byId.get('roman:degree-to-chord:E:major:6')?.answer)
+      .toEqual({ kind: 'choice', correct: 'C♯ minor' });
+  });
+  it('in G major, A minor is ii', () => {
+    expect(byId.get('roman:chord-to-degree:G:major:2')?.answer)
+      .toEqual({ kind: 'choice', correct: 'ii' });
+  });
+  it('major-key quality pattern fact for degree 7', () => {
+    expect(byId.get('roman:pattern:major:7')?.answer)
+      .toEqual({ kind: 'choice', correct: 'diminished (vii°)' });
+  });
+  it('harmonic-minor facts', () => {
+    expect(byId.get('roman:harmonic-fact:5')?.answer).toEqual({ kind: 'choice', correct: 'major (V)' });
+    expect(byId.get('roman:harmonic-fact:7')?.answer).toEqual({ kind: 'choice', correct: 'diminished (vii°)' });
+  });
+  it('roman family has expected count (15 major × 14 + 15 minor × 14 + 14 pattern + 20 is-diatonic + 2 harmonic-fact)', () => {
+    const romanItems = getItemsByFamily(bank, 'roman');
+    expect(romanItems.length).toBeGreaterThanOrEqual(450);
+  });
+  it('all roman choice items have 4 distinct choices', () => {
+    for (const item of getItemsByFamily(bank, 'roman')) {
+      if (item.input.format === 'choice' && item.answer.kind === 'choice') {
+        expect(item.input.choices).toContain(item.answer.correct);
+        expect(new Set(item.input.choices).size).toBe(item.input.choices.length);
+      }
+    }
+  });
+  it('minor key degree-to-chord ids use lowercase tonic', () => {
+    const minorItems = getItemsByFamily(bank, 'roman').filter((i) =>
+      i.id.startsWith('roman:degree-to-chord:') && i.id.split(':')[3] === 'minor',
+    );
+    expect(minorItems.length).toBeGreaterThan(0);
+    for (const item of minorItems) {
+      const tonic = item.id.split(':')[2];
+      expect(tonic).toBe(tonic.toLowerCase());
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Function & cadence goldens
+// ---------------------------------------------------------------------------
+
+describe('function & cadences — goldens', () => {
+  it('V7 of Eb is B♭7', () => {
+    expect(byId.get('function:v7-of:Eb')?.answer).toEqual({ kind: 'choice', correct: 'B♭7' });
+  });
+  it('V → vi is deceptive', () => {
+    expect(byId.get('function:cadence:V-vi')?.answer)
+      .toEqual({ kind: 'choice', correct: 'Deceptive cadence' });
+  });
+  it('IV functions as subdominant in C', () => {
+    expect(byId.get('function:chord-function:C:IV')?.answer)
+      .toEqual({ kind: 'choice', correct: 'Subdominant (pre-dominant)' });
+  });
+  it('function family has 50 items (30 chord-function + 5 cadence + 15 v7-of)', () => {
+    expect(getItemsByFamily(bank, 'function').length).toBe(50);
+  });
+  it('cadence choices are exactly the 4 distinct cadence names', () => {
+    const cadenceItems = getItemsByFamily(bank, 'function').filter((i) =>
+      i.id.startsWith('function:cadence:'),
+    );
+    expect(cadenceItems.length).toBe(5);
+    for (const item of cadenceItems) {
+      if (item.input.format === 'choice') {
+        expect(item.input.choices.length).toBe(4);
+        expect(new Set(item.input.choices).size).toBe(4);
+      }
+    }
+  });
+  it('V7-of answers contain the correct V7 for all 15 major keys', () => {
+    for (const key of MAJOR_KEYS) {
+      const keyStr = noteToString(key);
+      const item = byId.get(`function:v7-of:${keyStr}`);
+      expect(item, `missing v7-of:${keyStr}`).toBeDefined();
+      expect(item!.answer.kind).toBe('choice');
+      const correct = (item!.answer as { kind: 'choice'; correct: string }).correct;
+      // Must end in '7' and use display unicode
+      expect(correct).toMatch(/7$/);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Final bank invariants (Step 6)
+// ---------------------------------------------------------------------------
+
+describe('final bank invariants (Step 6)', () => {
+  it('total bank is between 900 and 1400 items', () => {
+    expect(bank.length).toBeGreaterThanOrEqual(900);
+    expect(bank.length).toBeLessThanOrEqual(1400);
+  });
+  it('every id matches /^[a-z]+:[a-z0-9-]+:.+$/i', () => {
+    for (const item of bank) {
+      expect(item.id).toMatch(/^[a-z]+:[a-z0-9-]+:.+$/i);
+    }
+  });
+  it('cross-family rank separation for all 9 families', () => {
+    const families = ['degree','circle','keysig','interval','triad','scale','seventh','roman','function'] as const;
+    let prevMax = -Infinity;
+    for (const family of families) {
+      const items = getItemsByFamily(bank, family);
+      expect(items.length, `${family} should have items`).toBeGreaterThan(0);
+      const min = Math.min(...items.map((i) => i.rank));
+      const max = Math.max(...items.map((i) => i.rank));
+      expect(min, `${family} min rank should exceed prev family max`).toBeGreaterThan(prevMax);
+      prevMax = max;
+    }
+  });
+  it('every item promptKey is in DRILL_PROMPT_KEYS', () => {
+    const set = new Set(DRILL_PROMPT_KEYS);
+    for (const item of bank) {
+      expect(set.has(item.promptKey), `unknown promptKey: ${item.promptKey}`).toBe(true);
+    }
+  });
+  it('every item whyKey is in DRILL_WHY_KEYS', () => {
+    const set = new Set(DRILL_WHY_KEYS);
+    for (const item of bank) {
+      expect(set.has(item.whyKey), `unknown whyKey: ${item.whyKey}`).toBe(true);
+    }
+  });
+  it('DRILL_PROMPT_KEYS contains only keys that appear in the bank', () => {
+    const usedKeys = new Set(bank.map((i) => i.promptKey));
+    for (const key of DRILL_PROMPT_KEYS) {
+      expect(usedKeys.has(key), `DRILL_PROMPT_KEYS has unused key: ${key}`).toBe(true);
+    }
+  });
+  it('DRILL_WHY_KEYS contains only keys that appear in the bank', () => {
+    const usedKeys = new Set(bank.map((i) => i.whyKey));
+    for (const key of DRILL_WHY_KEYS) {
+      expect(usedKeys.has(key), `DRILL_WHY_KEYS has unused key: ${key}`).toBe(true);
     }
   });
 });
