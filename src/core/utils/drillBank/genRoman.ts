@@ -8,7 +8,7 @@
  *   - roman:is-diatonic:<tonic>:<n>:yes/no        (choice, first 10 major keys)
  *   - roman:harmonic-fact:5 and :7               (choice, 2 items)
  *
- * Rank layout: FAMILY_BASE.roman = 3000, stride 12 per key.
+ * Rank layout: FAMILY_BASE.roman = 3000, stride 16 per key.
  * Minor key tonic ASCII uses LOWERCASE in ids.
  */
 
@@ -84,7 +84,8 @@ export function genRoman(): DrillItem[] {
 
   // We assign ranks explicitly by sub-group rather than per-key stride for simplicity.
   // Pattern items, is-diatonic, and harmonic-fact get sequential ranks after key-based items.
-  // Key-based ranks: 0..14 * 12 = 0..168. So sub-group ranges start at FAMILY_BASE.roman + 15*12 = 3180.
+  // Key-based ranks use stride 16: majors span +0..+237 (14*16 + 13 offsets); the minor
+  // block starts at FAMILY_BASE.roman + 15*16 = 3240; pattern/is-diatonic/harmonic-fact follow.
 
   // ---------------------------------------------------------------------------
   // 1. degree-to-chord and chord-to-degree items (15 major + 15 minor keys)
