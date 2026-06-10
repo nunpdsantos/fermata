@@ -3,7 +3,7 @@
  * All time and seeds are injected; no Math.random / Date.now inside the store.
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { useDrillStore, DEFAULT_SETTINGS, DRILL_STORE_KEY } from '../drillStore';
+import { useDrillStore, DEFAULT_SETTINGS, DRILL_STORE_KEY, isSessionComplete } from '../drillStore';
 import type { DrillItem, ItemSrsState, DrillFamily } from '../../core/types/drill';
 import type { DrillSettings } from '../drillStore';
 
@@ -507,20 +507,44 @@ describe('determinism', () => {
     expect(q1_after).toEqual(q2_after);
   });
 
-  it('different seeds → different queues (with high probability for distinct now values)', () => {
+  it('different seeds → different queue orders for shuffled (due) items', () => {
+    // Fresh (stateless) items are rank-ordered and seed-INDEPENDENT, so a
+    // meaningful seed test needs due review items — those get seeded-shuffled.
     const bank = Array.from({ length: 8 }, (_, i) => makeItem(`item${i}`, 'interval', i));
+    const dueState = (dueAt: number): ItemSrsState => ({
+      card: {
+        due: dueAt, stability: 1, difficulty: 5, elapsed_days: 0,
+        scheduled_days: 1, reps: 3, lapses: 0, state: 2, last_review: dueAt - 1000,
+        learning_steps: 0,
+      },
+      history: [{ ts: dueAt - 1000, correct: true, ms: 2000, sessionId: 'sPrev' }],
+      tier: 'review',
+      introSessionId: 'sPrev',
+      introCorrectCount: 2,
+    });
+    const items = Object.fromEntries(bank.map((b, i) => [b.id, dueState(NOW - 1000 - i)]));
+    useDrillStore.setState({ items });
 
     useDrillStore.getState().startSession(bank, NOW);
     const q1 = useDrillStore.getState().activeSession!.queue.slice();
-    resetStore();
 
+    useDrillStore.setState({ items, activeSession: null });
     useDrillStore.getState().startSession(bank, NOW + 7777);
     const q2 = useDrillStore.getState().activeSession!.queue.slice();
 
-    // Not guaranteed identical — with 8 items and different seeds, very likely different
-    // We just assert both are non-empty valid queues
-    expect(q1.length).toBeGreaterThan(0);
-    expect(q2.length).toBeGreaterThan(0);
+    expect([...q1].sort()).toEqual([...q2].sort()); // same membership
+    expect(q1).not.toEqual(q2); // different order — seed actually drives the shuffle
+  });
+});
+
+// ─── isSessionComplete ────────────────────────────────────────────────────────
+
+describe('isSessionComplete', () => {
+  const base = { id: 's1', queue: ['a', 'b', 'c'], index: 0, asked: 0, correct: 0, startedAt: 0, seed: 1, missRequeues: {} };
+  it('false mid-session, true at asked target, true on queue exhaustion', () => {
+    expect(isSessionComplete({ ...base, asked: 5, index: 1 }, DEFAULT_SETTINGS)).toBe(false);
+    expect(isSessionComplete({ ...base, asked: 24, index: 2 }, DEFAULT_SETTINGS)).toBe(true);
+    expect(isSessionComplete({ ...base, asked: 3, index: 3 }, DEFAULT_SETTINGS)).toBe(true);
   });
 });
 

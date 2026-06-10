@@ -52,8 +52,13 @@ export class ErrorBoundary extends Component<Props, State> {
     // Drill store uses a 'fermata-' prefix — clear it explicitly and reset
     // the in-memory store so a hot reload doesn't serve stale state.
     localStorage.removeItem(DRILL_STORE_KEY);
-    useDrillStore.getState().resetDrillData();
-    window.location.reload();
+    try {
+      // Best-effort in-memory reset — storage is already cleared above, so even
+      // if the store module itself is the crash source, the reload boots clean.
+      useDrillStore.getState().resetDrillData();
+    } finally {
+      window.location.reload();
+    }
   };
 
   render() {

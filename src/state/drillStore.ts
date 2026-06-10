@@ -100,7 +100,7 @@ function isValidSettings(v: unknown): v is DrillSettings {
 function isValidActiveSession(v: unknown): v is ActiveSession {
   if (!isPlainObject(v)) return false;
   if (typeof v.id !== 'string') return false;
-  if (!Array.isArray(v.queue)) return false;
+  if (!Array.isArray(v.queue) || !v.queue.every((x) => typeof x === 'string')) return false;
   if (typeof v.index !== 'number') return false;
   if (typeof v.asked !== 'number') return false;
   if (typeof v.correct !== 'number') return false;
@@ -171,6 +171,17 @@ function validatePersistedShape(value: unknown): {
         : null;
 
   return { items, settings, sprintBests, lifetime, activeSession };
+}
+
+// ─── Derived helpers ──────────────────────────────────────────────────────────
+
+/**
+ * A session is complete when the question target is reached or the queue is
+ * exhausted. The store never auto-ends — the UI checks this and shows the
+ * summary, then calls endSession() once the user moves on.
+ */
+export function isSessionComplete(session: ActiveSession, settings: DrillSettings): boolean {
+  return session.asked >= settings.length || session.index >= session.queue.length;
 }
 
 // ─── Store ────────────────────────────────────────────────────────────────────
