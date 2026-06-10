@@ -79,6 +79,17 @@ export default defineConfig({
               expiration: { maxEntries: 40, maxAgeSeconds: 365 * 24 * 60 * 60 },
             },
           },
+          // FreePats classical-guitar samples (~1.7 MB, 39 notes): immutable,
+          // fetched lazily, cached forever so the sampled guitar works offline
+          // after first use. Mirrors the piano-samples entry.
+          {
+            urlPattern: /\/samples\/guitar\/.*\.mp3$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'guitar-samples',
+              expiration: { maxEntries: 45, maxAgeSeconds: 365 * 24 * 60 * 60 },
+            },
+          },
           // Curriculum levels + exercises + templates + view chunks + the
           // notation/celebration satellites those views lazy-import:
           // StaleWhileRevalidate so users get offline support after first

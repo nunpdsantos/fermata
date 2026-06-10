@@ -26,3 +26,5 @@ npm run build    # production build to dist/
 ## Credits
 
 Piano sound: [Salamander Grand Piano](https://archive.org/details/SalamanderGrandPianoV3) by Alexander Holm (CC-BY-3.0), via the [Tone.js audio collection](https://tonejs.github.io/audio/salamander/).
+
+Guitar sound: [Spanish Classical Guitar](https://freepats.zenvoid.org/Guitar/acoustic-guitar.html) (nylon-string) from the [FreePats project](https://freepats.zenvoid.org/), recorded by Roberto (CC0 / public domain).

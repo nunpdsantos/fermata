@@ -1,0 +1,19 @@
+Spanish Classical Guitar (nylon-string) samples
+================================================
+
+Source:  FreePats project — "Nylon-String Acoustic Guitar" (Spanish Classical
+         Guitar), recorded by Roberto (zenvoid.org), version 2019-06-18.
+         https://freepats.zenvoid.org/Guitar/acoustic-guitar.html
+         https://github.com/freepats/spanish-classical-guitar
+
+License: Creative Commons CC0 1.0 Universal (public domain dedication).
+         https://creativecommons.org/publicdomain/zero/1.0/
+         No attribution is required; this credit is given with thanks.
+
+Preparation (from the upstream FLAC files):
+  39 individual notes covering the classical guitar range E2–C6
+  (upstream gaps at A#2, C#3, D#3, G#4 are pitch-shifted from neighbors
+  by the sampler engine). Each file:
+    ffmpeg -i <NOTE>.flac -t 4.0 -af "afade=t=out:st=3.4:d=0.6" \
+           -ar 44100 -ac 1 -b:a 128k <NOTE>.mp3
+  Sharp note names use 's' in filenames (F#3 → Fs3.mp3).
