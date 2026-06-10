@@ -4,6 +4,7 @@ import { noteToString } from '../../types/music';
 import { generateDrillBank, getItemsByFamily, displayNote, MAJOR_KEYS } from '../drillBank';
 import { nameIntervalBetween, noteAtIntervalAbove } from '../drillBank/intervalEngine';
 import { N } from '../drillBank/shared';
+import { ALTERED_PAIRS } from '../drillBank/genInterval';
 
 const bank = generateDrillBank();
 const byId = new Map(bank.map((i) => [i.id, i]));
@@ -201,6 +202,33 @@ describe('interval naming + spelling — goldens', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Interval lure correctness — class-aware augmented/diminished branches
+// ---------------------------------------------------------------------------
+
+describe('interval lures — class-aware quality flip', () => {
+  it('C→E♯ (Augmented 3rd): choices contain Major 3rd, NOT Perfect 3rd', () => {
+    // A3 is augmented of interval number 3 (imperfect class) → confusable is Major, never Perfect
+    const item = byId.get('interval:pair-to-name:C:E#');
+    expect(item).toBeDefined();
+    expect(item!.input.format).toBe('choice');
+    if (item!.input.format === 'choice') {
+      expect(item!.input.choices).toContain('Major 3rd');
+      expect(item!.input.choices).not.toContain('Perfect 3rd');
+    }
+  });
+
+  it('B→F (Diminished 5th): choices contain Perfect 5th', () => {
+    // d5 is diminished of interval number 5 (perfect class) → confusable is Perfect 5th
+    const item = byId.get('interval:pair-to-name:B:F');
+    expect(item).toBeDefined();
+    expect(item!.input.format).toBe('choice');
+    if (item!.input.format === 'choice') {
+      expect(item!.input.choices).toContain('Perfect 5th');
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Triad spelling — goldens
 // ---------------------------------------------------------------------------
 
@@ -270,13 +298,29 @@ describe('per-family count pins', () => {
     // Actual count after ## / bb filter: 234
     expect(getItemsByFamily(bank, 'scale').length).toBe(234);
   });
-  it('altered pairs in interval: all produce non-null nameIntervalBetween', () => {
-    // Invariant: every altered confusable pair id resolves to an item (no null skips)
-    const alteredPairIds = getItemsByFamily(bank, 'interval')
-      .filter((i) => i.id.startsWith('interval:pair-to-name:') && i.id.split(':')[2].length > 1);
-    expect(alteredPairIds.length).toBeGreaterThan(0);
-    for (const item of alteredPairIds) {
-      expect(item.answer.kind).toBe('choice');
+  it('altered pairs: every non-duplicate pair resolves to an item with the correct answer label', () => {
+    // Natural-note pair ids that are already covered by sub-group 2
+    const naturalIds = new Set(
+      getItemsByFamily(bank, 'interval')
+        .filter((i) => i.id.startsWith('interval:pair-to-name:') && i.id.split(':')[2].length === 1 && i.id.split(':')[3].length === 1)
+        .map((i) => i.id),
+    );
+
+    for (const [lower, upper] of ALTERED_PAIRS) {
+      const lowerAscii = noteToString(lower);
+      const upperAscii = noteToString(upper);
+      const id = `interval:pair-to-name:${lowerAscii}:${upperAscii}`;
+
+      // Pairs that duplicate a natural-pair id are intentionally skipped in genInterval
+      if (naturalIds.has(id)) continue;
+
+      const item = byId.get(id);
+      expect(item, `missing item for altered pair ${lowerAscii}→${upperAscii}`).toBeDefined();
+      expect(item!.answer.kind).toBe('choice');
+
+      const named = nameIntervalBetween(lower, upper);
+      expect(named).not.toBeNull();
+      expect((item!.answer as { kind: 'choice'; correct: string }).correct).toBe(named!.label);
     }
   });
 });

@@ -25,7 +25,7 @@ export const DRILL_FAMILIES: readonly DrillFamily[] = [
 
 export type DrillInputSpec =
   | { format: 'choice'; choices: string[] }
-  | { format: 'noteChips'; chips: string[]; expectedCount: number } // canonical ASCII spellings ('#'/'b') matching noteToString output
+  | { format: 'noteChips'; chips: string[]; expectedCount: number } // unicode display strings (♯/♭) as shown on the chips; grading normalizes back to ASCII
   | { format: 'accidentalSlots'; letters: NaturalNote[] }
   | { format: 'rootQuality'; roots: string[]; qualities: ChordQuality[] };
 

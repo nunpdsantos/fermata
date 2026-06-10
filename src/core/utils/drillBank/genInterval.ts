@@ -78,7 +78,7 @@ const NOTE_ABOVE_ABBRS: string[] = ['m3', 'M3', 'P4', 'P5', 'm6', 'M6', 'm7', 'M
 // Hardcoded altered confusable pairs: [lower, upper]
 // These are real confusions (same semitone count different spelling, or boundary M3/P4)
 // Every pair produces non-null nameIntervalBetween — tested in invariant suite
-const ALTERED_PAIRS: [Note, Note][] = [
+export const ALTERED_PAIRS: [Note, Note][] = [
   [N('C'), N('E', '#')],          // A3
   [N('C'), N('F')],                // P4
   [N('C', '#'), N('E')],           // m3
@@ -105,15 +105,13 @@ const ALTERED_PAIRS: [Note, Note][] = [
   [N('A', 'b'), N('E', 'b')],      // P5
 ];
 
-// Sequential rank counter — reset on each genInterval() call for determinism
-let rankCounter = FAMILY_BASE.interval;
-function nextRank(): number {
-  return rankCounter++;
-}
-
 export function genInterval(): DrillItem[] {
-  // Reset for determinism
-  rankCounter = FAMILY_BASE.interval;
+  // Local rank counter — starts fresh on every call for determinism.
+  let rankCounter = FAMILY_BASE.interval;
+  function nextRank(): number {
+    return rankCounter++;
+  }
+
   const items: DrillItem[] = [];
   const seenIds = new Set<string>();
 
@@ -172,7 +170,7 @@ export function genInterval(): DrillItem[] {
       const li = NATURAL_NOTE_ORDER.indexOf(lower.natural);
       const ui = NATURAL_NOTE_ORDER.indexOf(upper.natural);
       const letterCount = ((ui - li + 7) % 7) + 1;
-      const letterText = `${lower.natural}–${upper.natural} = ${letterCount} letters`;
+      const letterText = `${displayNote(lower)}–${displayNote(upper)} = ${letterCount} letters`;
 
       pushItem({
         id,
@@ -278,15 +276,25 @@ export function genInterval(): DrillItem[] {
 // Choice builder helpers
 // ---------------------------------------------------------------------------
 
+// ORDINAL has 8 entries so lure builders can reference "8th" for edge cases.
+// nameIntervalBetween itself only produces numbers 1–7 (letter arithmetic is
+// mod 7), so index 7 ('8th') is never used by genInterval's pair items.
 const ORDINAL = ['Unison', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
+// Interval numbers whose quality class is perfect (1, 4, 5, 8).
 const PERFECT_NUMBERS = new Set([1, 4, 5, 8]);
+// Interval numbers whose quality class is major/minor (2, 3, 6, 7).
+const IMPERFECT_NUMBERS = new Set([2, 3, 6, 7]);
 
 function buildPairLures(named: { number: number; quality: string }): string[] {
   const lures: string[] = [];
   const { number, quality } = named;
   const ordinal = ORDINAL[number - 1] ?? `${number}th`;
 
-  // Quality flip (m↔M, aug/dim sibling)
+  // Quality flip — must be class-aware:
+  //   augmented of a perfect-class interval → the natural confusable is Perfect
+  //   augmented of an imperfect-class interval → the natural confusable is Major
+  //   diminished of a perfect-class interval → the natural confusable is Perfect
+  //   diminished of an imperfect-class interval → the natural confusable is Minor
   if (quality === 'minor') lures.push(`Major ${ordinal}`);
   else if (quality === 'major') lures.push(`Minor ${ordinal}`);
   else if (quality === 'augmented' && number === 4) {
@@ -301,9 +309,15 @@ function buildPairLures(named: { number: number; quality: string }): string[] {
     lures.push(`Augmented ${ordinal}`);
     lures.push(`Diminished ${ordinal}`);
   } else if (quality === 'augmented') {
-    lures.push(`Perfect ${ordinal}`);
+    // Class-aware: augmented of 4/5 is handled above; for 2,3,6,7 the
+    // natural confusable is Major (not Perfect — "Perfect 3rd" does not exist).
+    if (IMPERFECT_NUMBERS.has(number)) lures.push(`Major ${ordinal}`);
+    else lures.push(`Perfect ${ordinal}`);
   } else if (quality === 'diminished') {
-    lures.push(`Minor ${ordinal}`);
+    // Class-aware: diminished of 4/5 is handled above; for 2,3,6,7 the
+    // natural confusable is Minor (not Perfect — "Perfect 3rd" does not exist).
+    if (IMPERFECT_NUMBERS.has(number)) lures.push(`Minor ${ordinal}`);
+    else lures.push(`Perfect ${ordinal}`);
   }
 
   // Adjacent number same quality

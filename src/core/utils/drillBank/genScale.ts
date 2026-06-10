@@ -114,7 +114,9 @@ export function genScale(): DrillItem[] {
       // Rank layout: majors use FAMILY_BASE.scale + idx*10; minors get a separate range
       // after all major keys: FAMILY_BASE.scale + KEY_PRIORITY.length * 10 + (idx * 3 + typeIdx) * 10
       const typeIdx = MINOR_TYPES.indexOf(type);
-      const minorKeyRankBase = FAMILY_BASE.scale + (KEY_PRIORITY.length + KEY_PRIORITY.indexOf(majorKeyAscii) * 3 + typeIdx) * 10;
+      const majorKeyIdx = KEY_PRIORITY.indexOf(majorKeyAscii);
+      if (majorKeyIdx === -1) throw new Error(`genScale: unknown major key "${majorKeyAscii}" in KEY_PRIORITY`);
+      const minorKeyRankBase = FAMILY_BASE.scale + (KEY_PRIORITY.length + majorKeyIdx * 3 + typeIdx) * 10;
 
       // --- spell item ---
       const isHarmonicOrMelodic = type === 'harmonic_minor' || type === 'melodic_minor';
