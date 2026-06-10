@@ -66,6 +66,8 @@ interface DrillStoreState {
   updateSettings: (patch: Partial<DrillSettings>) => void;
   recordSprint: (familiesKey: string, score: number) => void;
   resetDrillData: () => void;
+  /** Clears progress (items, sprintBests, lifetime, activeSession) but keeps settings. */
+  resetDrillProgress: () => void;
 }
 
 // ─── Shape Guards ──────────────────────────────────────────────────────────────
@@ -296,6 +298,16 @@ export const useDrillStore = create<DrillStoreState>()(
           lifetime: INITIAL_LIFETIME,
           activeSession: null,
         }),
+
+      resetDrillProgress: () =>
+        set((prev) => ({
+          items: {},
+          sprintBests: {},
+          lifetime: INITIAL_LIFETIME,
+          activeSession: null,
+          // Preserve the user's settings intact.
+          settings: prev.settings,
+        })),
     }),
     {
       name: DRILL_STORE_KEY,

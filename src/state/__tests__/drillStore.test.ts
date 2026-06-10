@@ -371,6 +371,71 @@ describe('resetDrillData', () => {
   });
 });
 
+// ─── resetDrillProgress ───────────────────────────────────────────────────────
+
+describe('resetDrillProgress', () => {
+  it('clears items, sprintBests, lifetime, and activeSession', () => {
+    const bank = [makeItem('i1')];
+    useDrillStore.getState().startSession(bank, NOW);
+    useDrillStore.getState().recordAnswer(makeItem('i1'), true, 500, NOW);
+    useDrillStore.getState().recordSprint('all', 77);
+
+    useDrillStore.getState().resetDrillProgress();
+
+    const s = useDrillStore.getState();
+    expect(s.items).toEqual({});
+    expect(s.sprintBests).toEqual({});
+    expect(s.lifetime).toEqual({ answered: 0, correct: 0 });
+    expect(s.activeSession).toBeNull();
+  });
+
+  it('PRESERVES settings when progress is reset', () => {
+    const customSettings: DrillSettings = {
+      length: 40,
+      newPerSession: 6,
+      families: { ...DEFAULT_SETTINGS.families, interval: false },
+      sound: false,
+      showTimer: true,
+    };
+    useDrillStore.setState({ settings: customSettings });
+
+    useDrillStore.getState().resetDrillProgress();
+
+    expect(useDrillStore.getState().settings).toEqual(customSettings);
+  });
+
+  it('does not touch settings even with a non-default settings object', () => {
+    useDrillStore.getState().updateSettings({ length: 12, sound: false });
+    const settingsBefore = useDrillStore.getState().settings;
+
+    // Seed some progress
+    useDrillStore.getState().startSession([makeItem('i1')], NOW);
+    useDrillStore.getState().recordAnswer(makeItem('i1'), true, 500, NOW);
+
+    useDrillStore.getState().resetDrillProgress();
+
+    expect(useDrillStore.getState().settings).toEqual(settingsBefore);
+  });
+
+  it('persists correctly after reset (no stale progress survives rehydration)', async () => {
+    useDrillStore.getState().startSession([makeItem('i1')], NOW);
+    useDrillStore.getState().recordAnswer(makeItem('i1'), true, 500, NOW);
+    useDrillStore.getState().updateSettings({ length: 40 });
+
+    useDrillStore.getState().resetDrillProgress();
+
+    // Force a serialize+rehydrate cycle
+    await useDrillStore.persist.rehydrate();
+
+    const s = useDrillStore.getState();
+    expect(s.items).toEqual({});
+    expect(s.activeSession).toBeNull();
+    expect(s.lifetime).toEqual({ answered: 0, correct: 0 });
+    // Settings (length: 40) must survive the round-trip
+    expect(s.settings.length).toBe(40);
+  });
+});
+
 // ─── Mid-session resume (persistence) ────────────────────────────────────────
 
 describe('mid-session resume', () => {

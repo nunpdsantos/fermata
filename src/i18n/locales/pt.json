@@ -528,7 +528,11 @@
       "families": "Tópicos",
       "sound": "Som da resposta",
       "showTimer": "Mostrar cronómetro",
-      "back": "Voltar"
+      "back": "Voltar",
+      "resetLabel": "Repor progresso de treino",
+      "resetWarning": "Isto apaga permanentemente a memória, mestria e recordes de sprint. O progresso de aprendizagem e as definições não são afetados.",
+      "resetConfirm": "Confirmar reset",
+      "resetCancel": "Cancelar"
     },
     "summary": {
       "title": "Sessão concluída",

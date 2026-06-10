@@ -528,7 +528,11 @@
       "families": "Topics",
       "sound": "Answer sound",
       "showTimer": "Show timer",
-      "back": "Back"
+      "back": "Back",
+      "resetLabel": "Reset drill progress",
+      "resetWarning": "This permanently erases your drill memory, mastery and sprint bests. Learn progress and your settings are untouched.",
+      "resetConfirm": "Confirm reset",
+      "resetCancel": "Cancel"
     },
     "summary": {
       "title": "Session complete",

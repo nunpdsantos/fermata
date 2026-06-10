@@ -10,7 +10,10 @@
  *
  * A Back button returns to the running question (settings do NOT end a session);
  * a Mastery-map link makes the map reachable from here too.
+ * A destructive "Reset drill progress" section at the bottom clears SRS state
+ * while preserving settings.
  */
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DRILL_FAMILIES } from '../../core/types/drill';
 import type { DrillFamily } from '../../core/types/drill';
@@ -26,10 +29,12 @@ interface DrillSettingsProps {
   onUpdate: (patch: Partial<DrillSettingsState>) => void;
   onBack: () => void;
   onMasteryMap: () => void;
+  onResetProgress: () => void;
 }
 
-export function DrillSettings({ settings, onUpdate, onBack, onMasteryMap }: DrillSettingsProps) {
+export function DrillSettings({ settings, onUpdate, onBack, onMasteryMap, onResetProgress }: DrillSettingsProps) {
   const { t } = useTranslation();
+  const [confirmingReset, setConfirmingReset] = useState(false);
 
   return (
     <div className="flex flex-col gap-6 py-4">
@@ -163,6 +168,58 @@ export function DrillSettings({ settings, onUpdate, onBack, onMasteryMap }: Dril
       >
         {t('drill.summary.masteryMap')} →
       </button>
+
+      {/* ── Destructive zone ─────────────────────────────────────────────── */}
+      <div
+        className="flex flex-col gap-3 pt-4"
+        style={{ borderTop: '1px solid color-mix(in srgb, var(--border) 50%, transparent)' }}
+      >
+        {!confirmingReset ? (
+          <button
+            type="button"
+            onClick={() => setConfirmingReset(true)}
+            className="self-start text-sm font-medium transition-colors"
+            style={{ color: 'color-mix(in srgb, var(--text-dim) 80%, red)' }}
+          >
+            {t('drill.settings.resetLabel')}
+          </button>
+        ) : (
+          <div className="flex flex-col gap-3">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              {t('drill.settings.resetWarning')}
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setConfirmingReset(false);
+                  onResetProgress();
+                }}
+                className="flex-1 min-h-[44px] rounded-lg text-sm font-medium transition-colors"
+                style={{
+                  backgroundColor: 'color-mix(in srgb, red 15%, transparent)',
+                  border: '1px solid color-mix(in srgb, red 40%, transparent)',
+                  color: 'color-mix(in srgb, red 70%, var(--text))',
+                }}
+              >
+                {t('drill.settings.resetConfirm')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmingReset(false)}
+                className="flex-1 min-h-[44px] rounded-lg text-sm font-medium transition-colors"
+                style={{
+                  backgroundColor: 'color-mix(in srgb, var(--card) 60%, transparent)',
+                  border: '1px solid color-mix(in srgb, var(--border) 50%, transparent)',
+                  color: 'var(--text-muted)',
+                }}
+              >
+                {t('drill.settings.resetCancel')}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

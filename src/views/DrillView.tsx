@@ -39,6 +39,7 @@ export function DrillView() {
   const sprintBests = useDrillStore((s) => s.sprintBests);
   const updateSettings = useDrillStore((s) => s.updateSettings);
   const recordSprint = useDrillStore((s) => s.recordSprint);
+  const resetDrillProgress = useDrillStore((s) => s.resetDrillProgress);
   const activeSession = useDrillStore((s) => s.activeSession);
 
   const { item, phase, result, asked, total, sessionComplete } = runner;
@@ -60,6 +61,13 @@ export function DrillView() {
             onUpdate={updateSettings}
             onBack={() => setSubScreen(null)}
             onMasteryMap={goToMastery}
+            onResetProgress={() => {
+              resetDrillProgress();
+              setSubScreen(null);
+              // activeSession is now null after reset; kick a fresh session
+              // explicitly so the runner doesn't sit on a stale frozen displayId.
+              runner.startNewSession();
+            }}
           />
         ) : subScreen === 'mastery' ? (
           <MasteryMap

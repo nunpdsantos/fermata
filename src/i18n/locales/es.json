@@ -528,7 +528,11 @@
       "families": "Temas",
       "sound": "Sonido de la respuesta",
       "showTimer": "Mostrar cronómetro",
-      "back": "Volver"
+      "back": "Volver",
+      "resetLabel": "Restablecer progreso de práctica",
+      "resetWarning": "Esto borra permanentemente tu memoria, dominio y récords de sprint. El progreso de aprendizaje y tus ajustes no se verán afectados.",
+      "resetConfirm": "Confirmar restablecimiento",
+      "resetCancel": "Cancelar"
     },
     "summary": {
       "title": "Sesión completada",
