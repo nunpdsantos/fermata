@@ -66,7 +66,7 @@ describe('tier promotion', () => {
     expect(lapsed.tier).toBe('review');
   });
 
-  it('slow-correct keeps tier at review and does NOT count toward byHeart (single slow session)', () => {
+  it('slow session does not block byHeart when the 3-session median still qualifies', () => {
     // Arrive at review via intro session
     const base = answerSeq([
       { correct: true, ms: 2000, session: 'S1', at: t0 },

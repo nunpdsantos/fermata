@@ -56,7 +56,7 @@ export function toCard(s: SerializedCard): Card {
     due: new Date(s.due),
     stability: s.stability,
     difficulty: s.difficulty,
-    elapsed_days: s.elapsed_days,
+    elapsed_days: s.elapsed_days, // @deprecated in ts-fsrs 5.x; keep for round-trip fidelity
     scheduled_days: s.scheduled_days,
     reps: s.reps,
     lapses: s.lapses,
@@ -75,7 +75,7 @@ export function fromCard(c: Card): SerializedCard {
     due: c.due.getTime(),
     stability: c.stability,
     difficulty: c.difficulty,
-    elapsed_days: c.elapsed_days,
+    elapsed_days: c.elapsed_days, // @deprecated in ts-fsrs 5.x; keep for round-trip fidelity
     scheduled_days: c.scheduled_days,
     reps: c.reps,
     lapses: c.lapses,
