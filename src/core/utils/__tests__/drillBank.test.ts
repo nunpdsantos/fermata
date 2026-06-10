@@ -26,6 +26,17 @@ describe('drillBank invariants', () => {
     expect(getItemsByFamily(bank, 'circle').length).toBeGreaterThanOrEqual(20);
     expect(getItemsByFamily(bank, 'degree').length).toBe(14);
   });
+  it('circle family has exactly 36 items (M4)', () => {
+    expect(getItemsByFamily(bank, 'circle').length).toBe(36);
+  });
+  it('within-family ranks are unique (M5)', () => {
+    const families = [...new Set(bank.map((i) => i.family))];
+    for (const family of families) {
+      const items = getItemsByFamily(bank, family);
+      const ranks = items.map((i) => i.rank);
+      expect(new Set(ranks).size).toBe(ranks.length);
+    }
+  });
   it('rank ordering respects family bases (degree < circle < keysig)', () => {
     const maxDegree = Math.max(...getItemsByFamily(bank, 'degree').map((i) => i.rank));
     const minCircle = Math.min(...getItemsByFamily(bank, 'circle').map((i) => i.rank));
