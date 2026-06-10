@@ -43,6 +43,8 @@ const DEFAULT_PARAMS: KSParams = {
 
 const MAX_POLYPHONY = 16;
 const FADE_OUT_MS = 50;
+const ONESHOT_RELEASE_S = 0.3; // "finger lift" after a scheduled note's duration
+const ONESHOT_MIN_BUFFER_S = 1;
 
 // ---------------------------------------------------------------------------
 // Module state
@@ -58,6 +60,8 @@ let reverb: ConvolverNode | null = null;
 const voices = new Map<number, Voice>();
 let voiceCounter = 0;
 const voiceOrder = new Map<number, number>(); // midiNumber → creation order
+let masterVolume = 0.9;
+const oneShots = new Set<Voice>();
 
 // ---------------------------------------------------------------------------
 // AudioContext + signal chain (lazy)
@@ -73,7 +77,7 @@ function getContext(): AudioContext {
 
 function setupChain(ctx: AudioContext): void {
   masterGain = ctx.createGain();
-  masterGain.gain.value = 0.9;
+  masterGain.gain.value = masterVolume;
 
   compressor = ctx.createDynamicsCompressor();
   compressor.threshold.value = -12;
@@ -355,13 +359,81 @@ export function stopNote(midiNumber: number): void {
   voiceOrder.delete(midiNumber);
 }
 
+/**
+ * Scheduled one-shot pluck for chord/scale/ear-training playback — the
+ * guitar counterpart of pianoSampler.playNote. `when` is seconds from now
+ * (offsets transfer across AudioContexts; the caller computes them against
+ * core audio's clock). The pluck holds until `when + duration`, then a short
+ * release ramp mimics a finger lift so fast scales stay articulate. The
+ * generated buffer is capped to what will actually be heard, so scheduling a
+ * 16-note scale stays cheap. One-shots live outside the sustained-voice map:
+ * a scheduled scale must never voice-steal a held fret note.
+ */
+export function playNote(
+  midiNumber: number,
+  when: number,
+  duration: number,
+  velocity: number,
+): void {
+  const ctx = getContext();
+  const frequency = midiToFrequency(midiNumber);
+  const bufferDuration = Math.max(
+    ONESHOT_MIN_BUFFER_S,
+    Math.min(DEFAULT_PARAMS.duration, duration + 0.5),
+  );
+  const samples = generateKSBuffer(ctx.sampleRate, frequency, {
+    ...DEFAULT_PARAMS,
+    duration: bufferDuration,
+  });
+
+  const buffer = ctx.createBuffer(1, samples.length, ctx.sampleRate);
+  buffer.getChannelData(0).set(samples);
+
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+
+  const gain = ctx.createGain();
+  // 0.5 default velocity → 0.45, the sustained-pluck level
+  gain.gain.value = velocity * 0.9;
+
+  const startAt = ctx.currentTime + when;
+  const endAt = startAt + duration;
+  gain.gain.setValueAtTime(velocity * 0.9, endAt);
+  gain.gain.linearRampToValueAtTime(0, endAt + ONESHOT_RELEASE_S);
+
+  source.connect(gain);
+  gain.connect(masterGain!);
+  source.start(startAt);
+  source.stop(endAt + ONESHOT_RELEASE_S + 0.05);
+
+  const voice: Voice = { source, gain };
+  oneShots.add(voice);
+  source.onended = () => {
+    oneShots.delete(voice);
+  };
+}
+
 export function stopAll(): void {
   for (const midi of [...voices.keys()]) {
     stopNote(midi);
   }
+  const ctx = getContext();
+  const now = ctx.currentTime;
+  for (const voice of oneShots) {
+    voice.gain.gain.cancelScheduledValues(now);
+    voice.gain.gain.setValueAtTime(voice.gain.gain.value, now);
+    voice.gain.gain.linearRampToValueAtTime(0, now + FADE_OUT_MS / 1000);
+    try {
+      voice.source.stop(now + FADE_OUT_MS / 1000 + 0.01);
+    } catch {
+      // already stopped
+    }
+  }
+  oneShots.clear();
 }
 
 export function setVolume(vol: number): void {
+  masterVolume = vol;
   if (masterGain) {
     masterGain.gain.value = vol;
   }
@@ -381,7 +453,9 @@ export async function resumeContext(): Promise<void> {
 export function _resetForTesting(): void {
   voices.clear();
   voiceOrder.clear();
+  oneShots.clear();
   voiceCounter = 0;
+  masterVolume = 0.9;
   audioContext = null;
   masterGain = null;
   compressor = null;

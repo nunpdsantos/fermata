@@ -154,15 +154,16 @@ function connectWithReverb(node: AudioNode): void {
 }
 
 // ============================================================================
-// Pluggable piano voice
+// Pluggable instrument voice
 // ============================================================================
-// The app can register a higher-quality piano voice (the sampled Salamander
-// piano in src/services/pianoSampler.ts). When the voice handles a note it
-// returns true and the FM synth stays silent; when it isn't ready (samples
-// still loading/offline) the synth plays exactly as before. Registration
-// keeps this module framework-agnostic — core never imports app code.
+// The app registers the active melodic voice here — the sampled Salamander
+// piano or the Karplus-Strong guitar, following the instrument selected in
+// the UI. When the voice handles a note it returns true and the FM synth
+// stays silent; when it declines (piano samples still loading/offline) the
+// synth plays exactly as before. Registration keeps this module
+// framework-agnostic — core never imports app code.
 
-export interface PianoVoice {
+export interface InstrumentVoice {
   /** One-shot at `when` seconds from now, released after `duration`. */
   playNote(midi: number, when: number, duration: number, velocity: number): boolean;
   /** Sustained note-on; pairs with stopNote. */
@@ -172,10 +173,10 @@ export interface PianoVoice {
   resume(): Promise<void>;
 }
 
-let pianoVoice: PianoVoice | null = null;
+let instrumentVoice: InstrumentVoice | null = null;
 
-export function setPianoVoice(voice: PianoVoice | null): void {
-  pianoVoice = voice;
+export function setInstrumentVoice(voice: InstrumentVoice | null): void {
+  instrumentVoice = voice;
 }
 
 // Resume audio context (required after user interaction)
@@ -184,7 +185,7 @@ export async function resumeAudio(): Promise<void> {
   if (ctx.state === 'suspended') {
     await ctx.resume();
   }
-  await pianoVoice?.resume();
+  await instrumentVoice?.resume();
 }
 
 // ============================================================================
@@ -199,7 +200,7 @@ export function setMasterVolume(volume: number): void {
     // Smooth transition to avoid clicks
     masterGainNode.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.05);
   }
-  pianoVoice?.setVolume(masterVolume);
+  instrumentVoice?.setVolume(masterVolume);
 }
 
 // Get current master volume
@@ -339,10 +340,10 @@ export function playNote(
   const frequency = getNoteFrequency(note, octave);
   const synthConfig = { ...DEFAULT_SYNTH_CONFIG, ...config };
 
-  // Sampled piano takes over when registered and ready for this note
+  // The registered voice takes over when it can handle this note
   const midiNumber = 12 + octave * 12 + getPitchClass(note);
   const whenOffset = startTime !== undefined ? Math.max(0, startTime - ctx.currentTime) : 0;
-  if (pianoVoice?.playNote(midiNumber, whenOffset, duration, synthConfig.volume)) {
+  if (instrumentVoice?.playNote(midiNumber, whenOffset, duration, synthConfig.volume)) {
     return;
   }
 
@@ -516,8 +517,8 @@ export function startSustainedNote(
   // If already playing this note, don't restart
   if (sustainedNotes.has(midiNumber)) return midiNumber;
 
-  // Sampled piano takes over when registered and ready for this note
-  if (pianoVoice?.startNote(midiNumber, synthConfig.volume)) {
+  // The registered voice takes over when it can handle this note
+  if (instrumentVoice?.startNote(midiNumber, synthConfig.volume)) {
     return midiNumber;
   }
 
@@ -636,8 +637,8 @@ export function startSustainedNote(
 export function stopSustainedNote(midiNumber: number): void {
   const entry = sustainedNotes.get(midiNumber);
   if (!entry) {
-    // The sampled voice may own this note (no synth entry was created)
-    pianoVoice?.stopNote(midiNumber);
+    // The active voice may own this note (no synth entry was created)
+    instrumentVoice?.stopNote(midiNumber);
     return;
   }
 
