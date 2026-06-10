@@ -47,10 +47,12 @@ function TryAgainText() {
 
 const ExploreView = lazy(() => import('./views/ExploreView.tsx').then((m) => ({ default: m.ExploreView })));
 const LearnView = lazy(() => import('./views/LearnView.tsx').then((m) => ({ default: m.LearnView })));
+const DrillView = lazy(() => import('./views/DrillView.tsx').then((m) => ({ default: m.DrillView })));
 
 const VIEW_COMPONENTS = {
   explore: ExploreView,
   learn: LearnView,
+  drill: DrillView,
 } as const;
 
 function App() {

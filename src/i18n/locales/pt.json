@@ -4,6 +4,7 @@
     "explore": "Explorar",
     "play": "Tocar",
     "learn": "Aprender",
+    "drill": "Treino",
     "search": "Pesquisar",
     "appViews": "Vistas da app",
     "skipToContent": "Ir para o conte\u00fado",
@@ -516,5 +517,23 @@
       "nth": "Inv {{n}}"
     },
     "play": "Tocar"
+  },
+  "drill": {
+    "progress": "{{current}} de {{total}}",
+    "endSession": "Terminar sessão",
+    "settings": {
+      "title": "Definições de treino",
+      "length": "Duração da sessão"
+    },
+    "summary": {
+      "score": "{{correct}} de {{asked}} corretas",
+      "newSession": "Nova sessão"
+    },
+    "feedback": {
+      "correct": "Correto",
+      "wrong": "Não é bem isso",
+      "continue": "Continuar"
+    },
+    "unsupported": "Este tipo de pergunta chega mais tarde neste ramo"
   }
 }

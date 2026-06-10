@@ -4,6 +4,7 @@
     "explore": "Explorar",
     "play": "Tocar",
     "learn": "Aprender",
+    "drill": "Práctica",
     "search": "Buscar",
     "appViews": "Vistas de la app",
     "skipToContent": "Ir al contenido",
@@ -516,5 +517,23 @@
       "nth": "Inv {{n}}"
     },
     "play": "Tocar"
+  },
+  "drill": {
+    "progress": "{{current}} de {{total}}",
+    "endSession": "Terminar sesión",
+    "settings": {
+      "title": "Ajustes de práctica",
+      "length": "Duración de la sesión"
+    },
+    "summary": {
+      "score": "{{correct}} de {{asked}} correctas",
+      "newSession": "Nueva sesión"
+    },
+    "feedback": {
+      "correct": "Correcto",
+      "wrong": "Casi",
+      "continue": "Continuar"
+    },
+    "unsupported": "Este tipo de pregunta llega más adelante en esta rama"
   }
 }

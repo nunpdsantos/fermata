@@ -10,7 +10,7 @@ import type { SynthPresetName } from '../core/types/visual.ts';
 
 // ─── Enums ──────────────────────────────────────────────────────────────────
 
-export type ViewMode = 'explore' | 'learn';
+export type ViewMode = 'explore' | 'learn' | 'drill';
 export type InstrumentType = 'piano' | 'guitar';
 export type ColorMode = 'functional' | 'absolute';
 export type ThemeMode = 'fermata' | 'fermata-night';

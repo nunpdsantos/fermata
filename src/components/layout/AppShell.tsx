@@ -13,6 +13,7 @@ interface AppShellProps {
 export function AppShell({ children }: AppShellProps) {
   const { t } = useTranslation();
   const instrument = useAppStore((s) => s.instrument);
+  const view = useAppStore((s) => s.view);
   const [instrumentCollapsed, setInstrumentCollapsed] = useState(false);
 
   return (
@@ -28,6 +29,9 @@ export function AppShell({ children }: AppShellProps) {
       <main id="main-content" className="flex-1 overflow-hidden flex flex-col min-h-0">
         {children}
       </main>
+      {/* Instrument area — hidden entirely in Drill, which owns its full vertical space. */}
+      {view !== 'drill' && (
+        <>
       {/* Instrument bar */}
       <div
         className="flex items-center justify-between px-3 max-sm:px-2 py-1 max-sm:py-1.5"
@@ -70,6 +74,8 @@ export function AppShell({ children }: AppShellProps) {
         >
           {instrument === 'piano' ? <Piano /> : <Fretboard />}
         </div>
+      )}
+        </>
       )}
     </div>
   );
