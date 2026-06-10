@@ -9,18 +9,7 @@ import type { Note, NaturalNote, Accidental, ScaleType } from '../../core/types/
 import { noteToString } from '../../core/types/music';
 import { buildScale } from '../../core/constants/scales';
 import { translateScaleType, translateChordQuality, translateDirection } from '../../i18n/content/musicTerms';
-
-// ─── Seeded PRNG (mulberry32) ───────────────────────────────────────────────
-
-function mulberry32(seed: number): () => number {
-  let s = seed | 0;
-  return () => {
-    s = (s + 0x6D2B79F5) | 0;
-    let t = Math.imul(s ^ (s >>> 15), 1 | s);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
+import { mulberry32 } from '../../core/utils/prng';
 
 /** Simple string hash → 32-bit integer */
 function hashString(str: string): number {
