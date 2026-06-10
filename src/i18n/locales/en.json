@@ -531,6 +531,11 @@
     },
     "clear": "Clear",
     "done": "Done",
+    "a11y": {
+      "notes": "notes",
+      "scaleNotes": "scale notes",
+      "choices": "choices"
+    },
     "feedback": {
       "correct": "Correct",
       "wrong": "Not quite",

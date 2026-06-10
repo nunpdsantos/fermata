@@ -51,8 +51,11 @@ export function planAnswerAudio(item: DrillItem): Note[] | null {
       // nothing — there is no single "answer pitch" to sound.
       if (!item.id.startsWith('interval:note-above:')) return null;
       if (item.answer.kind !== 'choice') return null;
-      const rootAscii = item.promptParams.root;
-      if (typeof rootAscii !== 'string') return null;
+      // promptParams.root is a unicode display string (e.g. "F♯") — normalizeDisplay
+      // converts it to ASCII before stringToNote, which only understands ASCII.
+      const rootParam = item.promptParams.root;
+      if (typeof rootParam !== 'string') return null;
+      const rootAscii = normalizeDisplay(rootParam);
       return [stringToNote(rootAscii), stringToNote(normalizeDisplay(item.answer.correct))];
     }
 
@@ -81,7 +84,7 @@ export function playAnswerAudio(item: DrillItem): void {
   const notes = planAnswerAudio(item);
   if (!notes || notes.length === 0) return;
   try {
-    void resumeAudio();
+    resumeAudio().catch(() => {});
     playArpeggioAscending(notes, 4, REVEAL_NOTE_DURATION);
   } catch {
     // Swallow — a missing/locked AudioContext must not affect the drill.

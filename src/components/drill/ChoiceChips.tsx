@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { m } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { SPRING_MICRO } from '../../design/tokens/motion';
 
 interface ChoiceChipsProps {
@@ -22,6 +23,7 @@ export function ChoiceChips({
   correctChoice,
   onSelect,
 }: ChoiceChipsProps) {
+  const { t } = useTranslation();
   // First-tap guard: once a tap fires we lock locally and ignore the rest.
   // This stops a fast double-tap from double-submitting BEFORE React re-renders
   // with `disabled` — the #1 competitor complaint. The runner guards again.
@@ -44,6 +46,7 @@ export function ChoiceChips({
   return (
     <div
       role="group"
+      aria-label={t('drill.a11y.choices')}
       className={`grid gap-2 ${oneColumn ? 'grid-cols-1' : 'grid-cols-2'}`}
     >
       {choices.map((choice) => {

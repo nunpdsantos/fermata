@@ -76,11 +76,15 @@ export function AccidentalSlots({
 
   return (
     <div className="flex flex-col gap-3">
-      <div role="group" className="grid grid-cols-7 gap-1.5 max-sm:gap-1">
+      <div role="group" aria-label={t('drill.a11y.scaleNotes')} className="grid grid-cols-7 gap-1.5 max-sm:gap-1">
         {letters.map((letter, i) => {
           const spelling = slotSpelling(letter, steps[i]);
           const correctAscii = feedback?.correctSpelled[i];
           const showCorrect = disabled && correctAscii !== undefined && normalizeDisplay(spelling) === correctAscii;
+          // Amber (enharmonic near-miss) does NOT apply here: each slot is fixed to one
+          // letter and cycles only through '', '#', 'b'. For any given natural note X,
+          // X♮ / X♯ / X♭ always differ by at least 1 semitone, so same-letter
+          // different-accidental is always a pitch-class mismatch — amber can never fire.
           const showWrong = disabled && correctAscii !== undefined && normalizeDisplay(spelling) !== correctAscii;
 
           let stateClass = '';

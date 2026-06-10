@@ -529,6 +529,11 @@
       "score": "{{correct}} de {{asked}} correctas",
       "newSession": "Nueva sesión"
     },
+    "a11y": {
+      "notes": "notas",
+      "scaleNotes": "notas de la escala",
+      "choices": "opciones"
+    },
     "feedback": {
       "correct": "Correcto",
       "wrong": "Casi",

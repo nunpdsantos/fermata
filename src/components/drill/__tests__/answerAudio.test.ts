@@ -51,6 +51,20 @@ describe('planAnswerAudio', () => {
     expect(notes?.map(noteToString)).toEqual(['C', 'D', 'E', 'F', 'G']);
   });
 
+  it('returns root then note-above for a non-natural sharp root (F♯ + P4 → B)', () => {
+    // interval:note-above:F#:P4 — promptParams.root is the unicode "F♯"
+    const item = get('interval:note-above:F#:P4');
+    const notes = planAnswerAudio(item);
+    expect(notes?.map(noteToString)).toEqual(['F#', 'B']);
+  });
+
+  it('returns root then note-above for a flat root (Eb + M3 → G)', () => {
+    // interval:note-above:Eb:M3 — promptParams.root is the unicode "E♭"
+    const item = get('interval:note-above:Eb:M3');
+    const notes = planAnswerAudio(item);
+    expect(notes?.map(noteToString)).toEqual(['Eb', 'G']);
+  });
+
   it('returns null for an interval NAMING item (no single answer pitch)', () => {
     const naming = BANK.find((i) => i.id.startsWith('interval:pair-to-name:'));
     expect(naming).toBeDefined();

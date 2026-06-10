@@ -33,6 +33,9 @@ const DRILL_UI_KEYS: readonly string[] = [
   'drill.feedback.nearMiss',
   'drill.feedback.continue',
   'drill.feedback.learnMore',
+  'drill.a11y.notes',
+  'drill.a11y.scaleNotes',
+  'drill.a11y.choices',
 ];
 
 function resolvesInEnglish(key: string): boolean {

@@ -14,13 +14,14 @@
  */
 import type { DrillItem } from '../../core/types/drill';
 import { getPitchClass } from '../../core/constants/notes';
+import type { ChordQuality } from '../../core/types/music';
 import { stringToNote } from '../../core/types/music';
 
 export type AnswerPayload =
   | { format: 'choice'; choice: string }
   | { format: 'noteChips'; notes: string[] } // DISPLAY strings as tapped
   | { format: 'accidentalSlots'; spelled: string[] }
-  | { format: 'rootQuality'; root: string; quality: string };
+  | { format: 'rootQuality'; root: string; quality: ChordQuality };
 
 export interface GradeResult {
   correct: boolean;
@@ -38,7 +39,7 @@ export function normalizeDisplay(s: string): string {
 }
 
 /** Pitch class (0–11) of an ASCII spelling like 'C#', 'Bbb'. */
-function pcOf(ascii: string): number {
+export function pcOf(ascii: string): number {
   return getPitchClass(stringToNote(ascii));
 }
 

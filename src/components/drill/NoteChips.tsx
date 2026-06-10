@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { SPRING_MICRO } from '../../design/tokens/motion';
-import { normalizeDisplay } from './grading';
+import { normalizeDisplay, pcOf } from './grading';
 
 interface NoteChipsProps {
   /** Display strings shown on the chips (unicode ♯/♭/𝄪/𝄫). */
@@ -41,9 +41,14 @@ export function NoteChips({
   // before React re-renders with `disabled`. Reset by remount on the next item.
   const locked = useRef(false);
 
-  // Normalized set of correct spellings for feedback highlighting.
+  // Normalized set of correct spellings (ASCII) for feedback highlighting.
   const correctSet = feedback
     ? new Set(feedback.correctNotes.map(normalizeDisplay))
+    : null;
+
+  // Set of pitch classes expected by the correct answer, for amber near-miss.
+  const correctPcSet = feedback
+    ? new Set(feedback.correctNotes.map((n) => pcOf(normalizeDisplay(n))))
     : null;
 
   const toggle = (chip: string) => {
@@ -66,21 +71,32 @@ export function NoteChips({
 
   return (
     <div className="flex flex-col gap-3">
-      <div role="group" className="grid grid-cols-3 gap-2 max-sm:grid-cols-3">
+      <div role="group" aria-label={t('drill.a11y.notes')} className="grid grid-cols-3 gap-2 max-sm:grid-cols-3">
         {chips.map((chip, i) => {
           const isSelected = selected.includes(chip);
           const ascii = normalizeDisplay(chip);
           const showCorrect = disabled && correctSet?.has(ascii);
-          const showWrong = disabled && isSelected && !correctSet?.has(ascii);
+          // Amber: selected chip whose spelling differs from any correct note but
+          // whose pitch class matches one — i.e. an enharmonic near-miss at the
+          // chip level (e.g. G♭ selected when F♯ is correct).
+          const showAmber =
+            disabled &&
+            isSelected &&
+            !showCorrect &&
+            correctPcSet != null &&
+            correctPcSet.has(pcOf(ascii));
+          const showWrong = disabled && isSelected && !showCorrect && !showAmber;
 
           let stateClass = '';
           if (showCorrect) {
             stateClass = 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300';
+          } else if (showAmber) {
+            stateClass = 'bg-amber-500/15 border-amber-500/40 text-amber-300';
           } else if (showWrong) {
             stateClass = 'bg-red-500/15 border-red-500/40 text-red-300';
           }
 
-          const neutral = !showCorrect && !showWrong;
+          const neutral = !showCorrect && !showAmber && !showWrong;
           // While answering, a selected (but not yet graded) chip gets an accent ring.
           const activeSelect = !disabled && isSelected;
 
