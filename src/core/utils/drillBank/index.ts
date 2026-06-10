@@ -121,6 +121,7 @@ export const DRILL_WHY_KEYS: readonly string[] = [
   'drill.why.seventhLadder',
   // F8 roman numerals
   'drill.why.diatonicMember',
+  'drill.why.harmonicFact',
   // F9 function & cadences
   'drill.why.functionPull',
   'drill.why.cadenceDef',

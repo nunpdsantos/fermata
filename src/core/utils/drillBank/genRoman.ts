@@ -336,7 +336,7 @@ export function genRoman(): DrillItem[] {
       promptParams: { num: n },
       input: { format: 'choice', choices },
       answer: { kind: 'choice', correct },
-      whyKey: 'drill.why.harmonicRaise',
+      whyKey: 'drill.why.harmonicFact',
       whyParams: { num: n, correct },
       rank: rank++,
     });
