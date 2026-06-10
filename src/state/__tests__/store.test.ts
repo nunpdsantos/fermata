@@ -38,6 +38,7 @@ beforeEach(() => {
     themeMode: 'fermata',
     comparisonScale: null,
     language: 'en',
+    lastView: 'explore',
   });
 });
 
@@ -254,6 +255,18 @@ describe('navigation actions', () => {
     useAppStore.getState().setScale('harmonic_minor');
     expect(useAppStore.getState().comparisonScale).toBeNull();
   });
+
+  it('setView mirrors the destination into lastView', () => {
+    // Default lastView is 'explore'.
+    expect(useAppStore.getState().lastView).toBe('explore');
+
+    useAppStore.getState().setView('drill');
+    expect(useAppStore.getState().view).toBe('drill');
+    expect(useAppStore.getState().lastView).toBe('drill');
+
+    useAppStore.getState().setView('learn');
+    expect(useAppStore.getState().lastView).toBe('learn');
+  });
 });
 
 describe('audio actions', () => {
@@ -360,6 +373,7 @@ describe('appStore persistence shape guard', () => {
       baseOctave: 3,
       scaleOctaves: 2,
       preferencesUpdatedAt: 123,
+      lastView: 'drill',
     });
     await useAppStore.persist.rehydrate();
     const s = useAppStore.getState();
@@ -369,5 +383,32 @@ describe('appStore persistence shape guard', () => {
     expect(s.baseOctave).toBe(3);
     expect(s.scaleOctaves).toBe(2);
     expect(s.preferencesUpdatedAt).toBe(123);
+    expect(s.lastView).toBe('drill');
+  });
+
+  it('migrates a v5 blob to v6 by injecting lastView=explore', async () => {
+    // A v5 persisted shape has no lastView. The migrate step must add it.
+    seed({ selectedScale: 'dorian', volume: 0.5 }, 5);
+    await useAppStore.persist.rehydrate();
+    const s = useAppStore.getState();
+    expect(s.lastView).toBe('explore');
+    // The rest of the v5 state survives the migration.
+    expect(s.selectedScale).toBe('dorian');
+    expect(s.volume).toBe(0.5);
+  });
+
+  it('preserves an existing lastView across the v5→v6 migration when present', async () => {
+    // (Defensive: a v5 blob that already happens to carry last='learn' keeps it.)
+    seed({ lastView: 'learn' }, 5);
+    await useAppStore.persist.rehydrate();
+    expect(useAppStore.getState().lastView).toBe('learn');
+  });
+
+  it('falls back to default lastView on an invalid persisted value', async () => {
+    seed({ lastView: 'nonsense', volume: 0.33 }, 6);
+    await useAppStore.persist.rehydrate();
+    const s = useAppStore.getState();
+    expect(s.lastView).toBe('explore'); // slice default wins
+    expect(s.volume).toBe(0.33); // other fields untouched
   });
 });

@@ -8,6 +8,7 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
   baseOctave: 4,
   language: 'en',
   preferencesUpdatedAt: 0,
+  lastView: 'explore',
 
   setColorMode: (mode) => set({ colorMode: mode, preferencesUpdatedAt: Date.now() }),
   setThemeMode: (mode) => set({ themeMode: mode, preferencesUpdatedAt: Date.now() }),

@@ -84,6 +84,9 @@ export interface PreferencesSlice {
   baseOctave: number;
   language: string;
   preferencesUpdatedAt: number;
+  /** Last view the user was on — persisted so a fresh boot (no ?view= param)
+   *  restores where they left off. Written by navigationSlice.setView. */
+  lastView: ViewMode;
   setColorMode: (mode: ColorMode) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setScaleOctaves: (octaves: 1 | 2) => void;

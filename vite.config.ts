@@ -35,6 +35,14 @@ export default defineConfig({
             purpose: 'any maskable',
           },
         ],
+        shortcuts: [
+          {
+            name: 'Start Drill',
+            short_name: 'Drill',
+            url: '/?view=drill',
+            icons: [{ src: '/icon-192.png', sizes: '192x192', type: 'image/png' }],
+          },
+        ],
       },
       workbox: {
         // Precache only the app shell + small core deps. Curriculum data,
