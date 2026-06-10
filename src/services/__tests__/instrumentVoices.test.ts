@@ -80,6 +80,11 @@ describe('registerInstrumentVoices', () => {
     expect(guitarSampler.playNote).toHaveBeenCalledWith(60, 0, 0.5, 0.5);
     expect(ks.playNote).not.toHaveBeenCalled();
     expect(pianoSampler.playNote).not.toHaveBeenCalled();
+
+    // Sustained path: sampler owns the note — KS must NOT double-pluck.
+    expect(voice.startNote(64, 0.5)).toBe(true);
+    expect(guitarSampler.startNote).toHaveBeenCalledWith(64, 0.5);
+    expect(ks.startNote).not.toHaveBeenCalled();
   });
 
   it('falls back to Karplus-Strong when the guitar sampler is not yet ready (still reports handled)', () => {

@@ -2,7 +2,7 @@
  * guitarSampler — sample-based classical-guitar voice (FreePats CC0 subset).
  *
  * 39 individually-recorded notes span E2–C6. The set is IRREGULAR: most
- * semitones are sampled, with four upstream gaps (A#2, C#3, D#3, G#4) that
+ * semitones are sampled, with six upstream gaps (F#2, G#2, A#2, C#3, D#3, G#4) that
  * resolve to a ±1-semitone neighbour and pitch-shift via playbackRate. Until a
  * note's sample is decoded, callers fall back to Karplus-Strong (startNote /
  * playNote return false). Mirrors the pianoSampler suite.

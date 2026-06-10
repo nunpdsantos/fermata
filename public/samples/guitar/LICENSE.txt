@@ -12,7 +12,7 @@ License: Creative Commons CC0 1.0 Universal (public domain dedication).
 
 Preparation (from the upstream FLAC files):
   39 individual notes covering the classical guitar range E2–C6
-  (upstream gaps at A#2, C#3, D#3, G#4 are pitch-shifted from neighbors
+  (upstream gaps at F#2, G#2, A#2, C#3, D#3, G#4 are pitch-shifted from neighbors
   by the sampler engine). Each file:
     ffmpeg -i <NOTE>.flac -t 4.0 -af "afade=t=out:st=3.4:d=0.6" \
            -ar 44100 -ac 1 -b:a 128k <NOTE>.mp3

@@ -5,8 +5,8 @@
  *
  * 39 individually-recorded notes spanning the guitar range E2–C6 live under
  * /samples/guitar/. Unlike the piano's regular minor-third ladder, this set is
- * IRREGULAR — most semitones are sampled, with only four gaps (A#2, C#3, D#3,
- * G#4) that the upstream recording skipped. Those gaps resolve to a ±1-semitone
+ * IRREGULAR — most semitones are sampled, with six gaps (F#2, G#2, A#2, C#3,
+ * D#3, G#4) that the upstream recording skipped. Those gaps resolve to a ±1-semitone
  * neighbour and pitch-shift via playbackRate, an artifact-free shift on nylon.
  * The ladder is therefore an explicit literal, not a generated loop.
  *
@@ -24,7 +24,7 @@ const SAMPLE_BASE_URL = '/samples/guitar';
 
 // The 39 recorded notes, E2 (MIDI 40) … C6 (MIDI 84). Sharps use 's' in the
 // filename (F#3 → Fs3). Explicit because the set is irregular: the four upstream
-// gaps (A#2=46, C#3=49, D#3=51, G#4=68) are absent and pitch-shifted from a
+// gaps (F#2=42, G#2=44, A#2=46, C#3=49, D#3=51, G#4=68) are absent and pitch-shifted from a
 // neighbour at playback time. Do NOT replace with a generator loop.
 const LADDER: ReadonlyArray<{ file: string; midi: number }> = [
   { file: 'E2', midi: 40 },
