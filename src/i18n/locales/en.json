@@ -640,6 +640,7 @@
       "harmonicRaise": "The {{scale}} scale raises {{raised}} relative to the natural minor.",
       "seventhLadder": "Build from the major 7th, then {{step}}. That gives {{chord}}.",
       "diatonicMember": "{{chord}} is the diatonic chord built on that degree of {{key}}.",
+      "romanPattern": "In any {{mode}} key, the triad on degree {{num}} is {{chord}} — the quality pattern never changes.",
       "harmonicFact": "With the raised 7th, degree {{num}} gives {{correct}}.",
       "functionPull": "{{chord}} pulls {{direction}} — that is its harmonic function.",
       "cadenceDef": "{{answer}} (UK: {{uk}}).",

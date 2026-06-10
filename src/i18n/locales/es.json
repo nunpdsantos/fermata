@@ -640,6 +640,7 @@
       "harmonicRaise": "La escala de {{scale}} eleva {{raised}} respecto a la menor natural.",
       "seventhLadder": "Parte de la séptima mayor y luego {{step}}. Eso da {{chord}}.",
       "diatonicMember": "{{chord}} es el acorde diatónico construido sobre ese grado de {{key}}.",
+      "romanPattern": "En cualquier tonalidad {{mode}}, la tríada del grado {{num}} es {{chord}} — el patrón de cualidades nunca cambia.",
       "harmonicFact": "Con la 7.ª elevada, el grado {{num}} da {{correct}}.",
       "functionPull": "{{chord}} tira {{direction}} — esa es su función armónica.",
       "cadenceDef": "{{answer}} (RU: {{uk}}).",

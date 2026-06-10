@@ -12,6 +12,7 @@ import {
 import { nameIntervalBetween, noteAtIntervalAbove } from '../drillBank/intervalEngine';
 import { N } from '../drillBank/shared';
 import { ALTERED_PAIRS } from '../drillBank/genInterval';
+import enLocale from '../../../i18n/locales/en.json';
 
 const bank = generateDrillBank();
 const byId = new Map(bank.map((i) => [i.id, i]));
@@ -507,5 +508,64 @@ describe('final bank invariants (Step 6)', () => {
     for (const key of DRILL_WHY_KEYS) {
       expect(usedKeys.has(key), `DRILL_WHY_KEYS has unused key: ${key}`).toBe(true);
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Token/params contract — every {{token}} in the EN template must be present
+// in the corresponding item's params object. Closes the class of bugs where a
+// param is missing and the learner sees a literal "{{key}}" in the why-line.
+// ---------------------------------------------------------------------------
+
+/** Navigate a dotted key path like "drill.why.diatonicMember" into a nested object. */
+function getNestedValue(obj: Record<string, unknown>, path: string): string | undefined {
+  const parts = path.split('.');
+  let current: unknown = obj;
+  for (const part of parts) {
+    if (current === null || typeof current !== 'object') return undefined;
+    current = (current as Record<string, unknown>)[part];
+  }
+  return typeof current === 'string' ? current : undefined;
+}
+
+/** Extract {{token}} names from a template string. */
+function extractTokens(template: string): string[] {
+  const matches = template.matchAll(/\{\{([a-zA-Z]+)\}\}/g);
+  return [...new Set([...matches].map((m) => m[1]))].sort();
+}
+
+describe('token/params contract — EN template tokens ⊆ item params', () => {
+  const en = enLocale as Record<string, unknown>;
+
+  it('every whyKey EN template token is present in whyParams for every bank item', () => {
+    const leaks: string[] = [];
+    for (const item of bank) {
+      const template = getNestedValue(en, item.whyKey);
+      if (!template) continue; // registry tests already catch missing keys
+      const tokens = extractTokens(template);
+      const params = item.whyParams as Record<string, unknown> | undefined;
+      for (const token of tokens) {
+        if (!params || !(token in params)) {
+          leaks.push(`item ${item.id}: whyKey "${item.whyKey}" needs "{{${token}}}" but whyParams lacks it`);
+        }
+      }
+    }
+    expect(leaks, leaks.join('\n')).toHaveLength(0);
+  });
+
+  it('every promptKey EN template token is present in promptParams for every bank item', () => {
+    const leaks: string[] = [];
+    for (const item of bank) {
+      const template = getNestedValue(en, item.promptKey);
+      if (!template) continue;
+      const tokens = extractTokens(template);
+      const params = item.promptParams as Record<string, unknown> | undefined;
+      for (const token of tokens) {
+        if (!params || !(token in params)) {
+          leaks.push(`item ${item.id}: promptKey "${item.promptKey}" needs "{{${token}}}" but promptParams lacks it`);
+        }
+      }
+    }
+    expect(leaks, leaks.join('\n')).toHaveLength(0);
   });
 });

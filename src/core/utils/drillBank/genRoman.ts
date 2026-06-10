@@ -231,7 +231,7 @@ export function genRoman(): DrillItem[] {
       promptParams: { mode: 'major', num: n },
       input: { format: 'choice', choices },
       answer: { kind: 'choice', correct },
-      whyKey: 'drill.why.diatonicMember',
+      whyKey: 'drill.why.romanPattern',
       whyParams: { mode: 'major', num: n, chord: correct },
       rank: rank++,
     });
@@ -256,7 +256,7 @@ export function genRoman(): DrillItem[] {
       promptParams: { mode: 'minor', num: n },
       input: { format: 'choice', choices },
       answer: { kind: 'choice', correct },
-      whyKey: 'drill.why.diatonicMember',
+      whyKey: 'drill.why.romanPattern',
       whyParams: { mode: 'minor', num: n, chord: correct },
       rank: rank++,
     });
