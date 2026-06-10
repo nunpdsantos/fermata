@@ -22,8 +22,11 @@ export interface SessionConfig {
  * Deduplicate adjacent identical ids.
  * Swap the offender forward to the next non-colliding slot.
  * If no such slot exists, drop the duplicate.
+ *
+ * Exported for tests and for store-side requeue safety (requeueAfterMiss /
+ * requeueSecondExposure may re-introduce an adjacent duplicate).
  */
-function dedupeAdjacent(ids: string[]): string[] {
+export function dedupeAdjacent(ids: string[]): string[] {
   const out = ids.slice();
   let i = 0;
   while (i < out.length - 1) {
@@ -97,21 +100,23 @@ export function composeSession(
     (item) => !dueIds.has(item.id) && states[item.id]?.tier === 'learning',
   );
 
-  // 4. Fresh items (no state entry), sorted by rank, capped at newPerSession
+  // 4. Fresh items (no state entry), sorted by rank, capped at newPerSession.
+  //    Items WITH states but tier 'new' are deliberately excluded from every
+  //    bucket here — state must reach tier 'learning' via an answer before the
+  //    item re-enters any bucket (store task: ensure the answer handler upgrades
+  //    tier before the next session compose).
   const freshItems = pool
     .filter((item) => !states[item.id])
     .sort((a, b) => a.rank - b.rank)
     .slice(0, config.newPerSession);
 
-  const freshIds = new Set(freshItems.map((i) => i.id));
-  const learningIds = new Set(learningItems.map((i) => i.id));
-
   // 5. Confidence: remaining pool items with state and tier review|byHeart
   const confidenceItems = pool
     .filter((item) => {
       if (dueIds.has(item.id)) return false;
-      if (learningIds.has(item.id)) return false;
-      if (freshIds.has(item.id)) return false;
+      // No learningIds/freshIds guard needed here: learning items have tier
+      // 'learning' (not review|byHeart) and fresh items have no state — both
+      // are excluded by the tier check below, making extra set lookups redundant.
       const s = states[item.id];
       return s !== undefined && (s.tier === 'review' || s.tier === 'byHeart');
     })
@@ -131,9 +136,7 @@ export function composeSession(
     rand,
   );
 
-  const freshIds_arr = freshItems.map((i) => i.id);
-
-  const assembled = [...head, ...freshIds_arr, ...tail, ...confidenceIds].slice(
+  const assembled = [...head, ...freshItems.map((i) => i.id), ...tail, ...confidenceIds].slice(
     0,
     config.length,
   );

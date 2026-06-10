@@ -6,6 +6,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   composeSession,
+  dedupeAdjacent,
   requeueAfterMiss,
   requeueSecondExposure,
   type SessionConfig,
@@ -184,12 +185,11 @@ describe('composeSession: family filtering', () => {
 // ─── composeSession: no adjacent duplicates ───────────────────────────────────
 
 describe('composeSession: dedupeAdjacent', () => {
-  it('produces no adjacent duplicates even when input forces collision', () => {
-    // Build a situation where a fresh item AND a due item have the same family
-    // distribution that might cause seededShuffle to place the same id adjacent.
-    // We do this by restricting the pool to a single item repeated across
-    // due+confidence — we cannot test an exact collision without knowing the
-    // shuffle output, so we verify the contract on a range of seeds.
+  it('output contains no adjacent duplicates across 200 seeds with a 2-item review pool', () => {
+    // Restricts the pool to 2 review items so the assembled queue is short and
+    // the seeded shuffle has limited room to vary — verifies the no-adjacent-dup
+    // contract holds across many shuffle outcomes without relying on a specific
+    // collision happening. Direct collision coverage lives in dedupeAdjacent unit tests.
     const bank = [
       item('a', 'keysig', 0),
       item('b', 'keysig', 1),
@@ -223,6 +223,53 @@ describe('composeSession: dedupeAdjacent', () => {
       expect(queue[i]).not.toBe(queue[i + 1]);
     }
     expect(queue.length).toBeLessThanOrEqual(1);
+  });
+});
+
+// ─── dedupeAdjacent: unit tests ──────────────────────────────────────────────
+
+describe('dedupeAdjacent', () => {
+  it('leaves a non-colliding sequence unchanged: [a,b,a]', () => {
+    expect(dedupeAdjacent(['a', 'b', 'a'])).toEqual(['a', 'b', 'a']);
+  });
+
+  it('empty array returns empty', () => {
+    expect(dedupeAdjacent([])).toEqual([]);
+  });
+
+  it('single element returns unchanged: [a]', () => {
+    expect(dedupeAdjacent(['a'])).toEqual(['a']);
+  });
+
+  it('[a,a,b] — swap relocates the duplicate so result has no adjacent dups and same multiset', () => {
+    const input = ['a', 'a', 'b'];
+    const result = dedupeAdjacent(input);
+
+    // No adjacent duplicates
+    for (let i = 0; i < result.length - 1; i++) {
+      expect(result[i]).not.toBe(result[i + 1]);
+    }
+
+    // Same multiset (both 'a' and 'b' present)
+    const sorted = result.slice().sort();
+    expect(sorted).toEqual(['a', 'b', 'a'].slice().sort());
+
+    // Swap actually relocated: result is one of the valid permutations
+    expect(result).toEqual(['a', 'b', 'a']);
+  });
+
+  it('[a,a,a] — drops duplicates until no adjacent dups remain; output is ["a"] (pinned)', () => {
+    // Trace: i=0, out[0]===out[1]; scan j from 2: out[2]==='a'===out[0], j=3 (past end).
+    // No forward slot → splice out[1]; out=['a','a'].
+    // i still 0; out[0]===out[1]; scan j from 2: past end. Splice out[1]; out=['a'].
+    // i still 0; i < out.length-1 is 0 < 0 → false → exit.
+    const result = dedupeAdjacent(['a', 'a', 'a']);
+    // No adjacent duplicates
+    for (let i = 0; i < result.length - 1; i++) {
+      expect(result[i]).not.toBe(result[i + 1]);
+    }
+    // Pinned exact output
+    expect(result).toEqual(['a']);
   });
 });
 
