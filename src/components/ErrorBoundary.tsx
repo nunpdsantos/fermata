@@ -2,6 +2,7 @@ import { Component } from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
 import i18n from '../i18n';
 import { Button } from './ui/Button';
+import { DRILL_STORE_KEY, useDrillStore } from '../state/drillStore';
 
 interface Props {
   children: ReactNode;
@@ -39,8 +40,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
   /**
    * Last-resort recovery: corrupted persisted state can crash the app on
-   * every reload. Clears all app localStorage (keys prefixed 'music-theory')
-   * and reloads fresh.
+   * every reload. Clears all app localStorage (keys prefixed 'music-theory'
+   * or matching known fermata-* store keys) and reloads fresh.
    */
   private handleResetAppData = () => {
     for (const key of Object.keys(localStorage)) {
@@ -48,6 +49,10 @@ export class ErrorBoundary extends Component<Props, State> {
         localStorage.removeItem(key);
       }
     }
+    // Drill store uses a 'fermata-' prefix — clear it explicitly and reset
+    // the in-memory store so a hot reload doesn't serve stale state.
+    localStorage.removeItem(DRILL_STORE_KEY);
+    useDrillStore.getState().resetDrillData();
     window.location.reload();
   };
 
