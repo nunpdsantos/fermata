@@ -5,6 +5,7 @@ import {
   stopNote,
   stopAll,
   setVolume,
+  playNote,
   resumeContext,
   _resetForTesting,
 } from '../karplusStrong';
@@ -266,5 +267,75 @@ describe('resumeContext', () => {
     mockCtx.state = 'running';
     await resumeContext();
     expect(mockCtx.resume).not.toHaveBeenCalled();
+  });
+});
+
+describe('playNote (scheduled one-shot)', () => {
+  it('schedules the source at currentTime + when and stops it after the release', () => {
+    const { mockCtx, sources } = setupMockAudioContext();
+    mockCtx.currentTime = 2;
+    playNote(60, 1.5, 0.35, 0.5);
+    const src = sources[sources.length - 1];
+    // startAt = 2 + 1.5 = 3.5; endAt = 3.85; stop at endAt + 0.3 release + 0.05
+    expect(src.start).toHaveBeenCalledWith(3.5);
+    expect(src.stop).toHaveBeenCalledWith(4.2);
+  });
+
+  it('maps velocity to gain at the sustained-pluck level (×0.9)', () => {
+    const { gains } = setupMockAudioContext();
+    playNote(60, 0, 0.35, 0.5);
+    const g = gains[gains.length - 1];
+    expect(g.gain.value).toBeCloseTo(0.45);
+  });
+
+  it('schedules a release ramp to zero starting at note end', () => {
+    const { mockCtx, gains } = setupMockAudioContext();
+    mockCtx.currentTime = 0;
+    playNote(60, 0, 1, 0.5);
+    const g = gains[gains.length - 1];
+    expect(g.gain.setValueAtTime).toHaveBeenCalledWith(expect.closeTo(0.45), 1);
+    expect(g.gain.linearRampToValueAtTime).toHaveBeenCalledWith(0, expect.closeTo(1.3));
+  });
+
+  it('caps the generated buffer to what will be heard (short notes)', () => {
+    const { mockCtx } = setupMockAudioContext();
+    playNote(60, 0, 0.35, 0.5);
+    // bufferDuration = max(1, min(5, 0.35 + 0.5)) = 1 second
+    const lastCall = mockCtx.createBuffer.mock.calls.at(-1)!;
+    expect(lastCall[1]).toBe(44100 * 1);
+  });
+
+  it('never generates more than the engine default 5 s of buffer', () => {
+    const { mockCtx } = setupMockAudioContext();
+    playNote(60, 0, 10, 0.5);
+    const lastCall = mockCtx.createBuffer.mock.calls.at(-1)!;
+    expect(lastCall[1]).toBe(44100 * 5);
+  });
+
+  it('does not occupy the sustained-voice map (same MIDI can still be fretted)', () => {
+    const { sources } = setupMockAudioContext();
+    playNote(60, 0, 0.35, 0.5);
+    const afterOneShot = sources.length;
+    startNote(60); // must create a NEW sustained voice, not be deduped
+    expect(sources.length).toBe(afterOneShot + 1);
+  });
+
+  it('stopAll silences scheduled one-shots too', () => {
+    const { sources } = setupMockAudioContext();
+    playNote(60, 0, 2, 0.5);
+    playNote(64, 0.5, 2, 0.5);
+    stopAll();
+    for (const s of sources.slice(-2)) {
+      expect(s.stop).toHaveBeenCalled();
+    }
+  });
+});
+
+describe('setVolume before chain creation', () => {
+  it('applies a volume set before the first note once the chain is built', () => {
+    const { gains } = setupMockAudioContext();
+    setVolume(0.4); // chain does not exist yet — must be remembered
+    startNote(60); // chain is created here
+    expect(gains[0].gain.value).toBe(0.4); // gains[0] is the master gain
   });
 });
