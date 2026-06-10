@@ -6,17 +6,24 @@ import { generateDrillBank } from '../../core/utils/drillBank';
 import type { DrillFamily, DrillItem } from '../../core/types/drill';
 
 // ── framer-motion → plain elements (mirrors sibling view tests) ───────────────
+// The component TYPE per tag must be cached: constructed-input components hold
+// local selection state, and a fresh proxy fn each render would remount them.
 vi.mock('framer-motion', async () => {
   const React = await import('react');
   const MOTION_RE = /^(while|initial|animate|exit|transition|layout|variants|drag|onDrag)/;
+  const cache = new Map<string, React.FC<Record<string, unknown>>>();
   function makeMotion(tag: string) {
-    return function MotionProxy(props: Record<string, unknown>) {
+    const cached = cache.get(tag);
+    if (cached) return cached;
+    const Comp = function MotionProxy(props: Record<string, unknown>) {
       const clean: Record<string, unknown> = {};
       for (const [k, v] of Object.entries(props)) {
         if (k === 'children' || !MOTION_RE.test(k)) clean[k] = v;
       }
       return React.createElement(tag, clean);
     };
+    cache.set(tag, Comp);
+    return Comp;
   }
   const proxy = new Proxy({}, { get: (_t: unknown, prop: string) => makeMotion(prop) });
   return {
@@ -235,5 +242,91 @@ describe('DrillView — instrument area absent', () => {
     // DrillView itself must not contain any instrument area; AppShell gates it.
     const { container } = render(<DrillView />);
     expect(container.querySelector('[data-tour="play-note"]')).toBeNull();
+  });
+});
+
+// ── noteChips (constructed input) end-to-end ──────────────────────────────────
+// Triad-only families surface the lowest-rank triad item first:
+// `triad:name-to-notes:C:major` (noteChips, answer C E G). This exercises the
+// full Task 9 path: NoteChips → grading.gradeAnswer('noteChips') →
+// recordAnswer → FeedbackStrip, including the enharmonic near-miss branch.
+const TRIAD_FAMILIES: Record<DrillFamily, boolean> = {
+  keysig: false,
+  circle: false,
+  degree: false,
+  scale: false,
+  interval: false,
+  triad: true,
+  seventh: false,
+  roman: false,
+  function: false,
+};
+
+function startTriadSession() {
+  useDrillStore.getState().resetDrillData();
+  useDrillStore.getState().updateSettings({
+    families: TRIAD_FAMILIES,
+    length: 12,
+    newPerSession: 12,
+  });
+}
+
+describe('DrillView — noteChips end-to-end (triad family)', () => {
+  it('renders a note-chip question and grades a correct spelling, then auto-advances', () => {
+    vi.useFakeTimers();
+    startTriadSession();
+    render(<DrillView />);
+
+    // First triad item is C major spelling; its prompt renders.
+    expect(screen.getByText('Spell C major')).toBeDefined();
+    // The chip group is present (not the choice group — these are note chips).
+    expect(screen.getByRole('group')).toBeDefined();
+
+    // Tap the three correct chips (C, E, G are naturals → display == ascii).
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'C' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'E' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'G' })));
+
+    // Graded correct → feedback + store recorded one correct answer.
+    expect(screen.getByText('Correct')).toBeDefined();
+    expect(useDrillStore.getState().activeSession!.asked).toBe(1);
+    expect(useDrillStore.getState().activeSession!.correct).toBe(1);
+
+    // Auto-advances after 600ms to the next triad question.
+    act(() => {
+      vi.advanceTimersByTime(600);
+    });
+    expect(screen.queryByText('Correct')).toBeNull();
+    expect(screen.getByText(/2 of 12/)).toBeDefined();
+  });
+
+  it('flags an enharmonic spelling as a near-miss (wrong, hold for Continue)', () => {
+    vi.useFakeTimers();
+    startTriadSession();
+    render(<DrillView />);
+
+    expect(screen.getByText('Spell C major')).toBeDefined();
+
+    // B♯ is enharmonic with C — same sound, wrong spelling. {B♯,E,G} matches
+    // the pitch classes of {C,E,G} so grading returns a near-miss.
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'B♯' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'E' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'G' })));
+
+    // Near-miss copy appears (amber variant) and it counts as WRONG.
+    expect(screen.getByText(/Same sound, wrong spelling/)).toBeDefined();
+    expect(useDrillStore.getState().activeSession!.asked).toBe(1);
+    expect(useDrillStore.getState().activeSession!.correct).toBe(0);
+
+    // No auto-advance for a near-miss; a Continue button holds the feedback.
+    const cont = screen.getByRole('button', { name: 'Continue' });
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+    expect(screen.getByText(/Same sound, wrong spelling/)).toBeDefined();
+
+    act(() => fireEvent.click(cont));
+    expect(screen.queryByText(/Same sound, wrong spelling/)).toBeNull();
+    expect(screen.getByText(/2 of 12/)).toBeDefined();
   });
 });

@@ -3,9 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { useDrillRunner } from '../components/drill/useDrillRunner';
 import { QuestionCard } from '../components/drill/QuestionCard';
 import { ChoiceChips } from '../components/drill/ChoiceChips';
+import { NoteChips } from '../components/drill/NoteChips';
+import { AccidentalSlots } from '../components/drill/AccidentalSlots';
+import { RootQualityChips } from '../components/drill/RootQualityChips';
 import { FeedbackStrip } from '../components/drill/FeedbackStrip';
 import { useDrillStore } from '../state/drillStore';
 import type { DrillItem } from '../core/types/drill';
+import type { AnswerPayload } from '../components/drill/grading';
 
 const SESSION_LENGTHS = [12, 24, 40] as const;
 
@@ -34,11 +38,9 @@ export function DrillView() {
               onEndSession={runner.endSession}
               onOpenSettings={() => setSettingsOpen((v) => !v)}
             >
-              <DrillInput
-                item={item}
-                phase={phase}
-                onAnswer={(choice) => runner.answer({ format: 'choice', choice })}
-              />
+              {/* Key by item id so each question gets a fresh input instance —
+                  resets selection/commit-guard state without a transition effect. */}
+              <DrillInput key={item.id} item={item} phase={phase} onAnswer={runner.answer} />
             </QuestionCard>
 
             {phase === 'feedback' && result && (
@@ -67,46 +69,67 @@ export function DrillView() {
 interface DrillInputProps {
   item: DrillItem;
   phase: 'answering' | 'feedback';
-  onAnswer: (choice: string) => void;
-}
-
-function DrillInput({ item, phase, onAnswer }: DrillInputProps) {
-  if (item.input.format === 'choice') {
-    const correct = item.answer.kind === 'choice' ? item.answer.correct : null;
-    return (
-      <ChoiceChips
-        choices={item.input.choices}
-        disabled={phase === 'feedback'}
-        selected={null}
-        correctChoice={phase === 'feedback' ? correct : null}
-        onSelect={onAnswer}
-      />
-    );
-  }
-  return <UnsupportedInput format={item.input.format} />;
+  onAnswer: (payload: AnswerPayload) => void;
 }
 
 /**
- * TEMPORARY placeholder for non-choice input formats. Task 9 replaces this
- * with real noteChips / accidentalSlots / rootQuality inputs. Honest and
- * visible rather than a crash. Drill settings in tests restrict families to
- * choice-only, so this never renders there.
+ * Routes each item to its tap-only answer component by input.format and wires
+ * the per-format feedback highlight from the canonical answer. The input is
+ * disabled during the feedback phase; the answer payload carries display
+ * strings (grading normalizes display → ASCII).
  */
-function UnsupportedInput({ format }: { format: string }) {
-  const { t } = useTranslation();
-  return (
-    <div
-      className="rounded-xl p-4 text-sm"
-      style={{
-        backgroundColor: 'color-mix(in srgb, var(--card) 60%, transparent)',
-        border: '1px dashed color-mix(in srgb, var(--border) 60%, transparent)',
-        color: 'var(--text-muted)',
-      }}
-      data-format={format}
-    >
-      {t('drill.unsupported')}
-    </div>
-  );
+function DrillInput({ item, phase, onAnswer }: DrillInputProps) {
+  const disabled = phase === 'feedback';
+
+  switch (item.input.format) {
+    case 'choice': {
+      const correct = item.answer.kind === 'choice' ? item.answer.correct : null;
+      return (
+        <ChoiceChips
+          choices={item.input.choices}
+          disabled={disabled}
+          selected={null}
+          correctChoice={disabled ? correct : null}
+          onSelect={(choice) => onAnswer({ format: 'choice', choice })}
+        />
+      );
+    }
+    case 'noteChips': {
+      const correctNotes = item.answer.kind === 'notes' ? item.answer.notes : [];
+      return (
+        <NoteChips
+          chips={item.input.chips}
+          expectedCount={item.input.expectedCount}
+          disabled={disabled}
+          onAnswer={(notes) => onAnswer({ format: 'noteChips', notes })}
+          feedback={disabled ? { correctNotes } : undefined}
+        />
+      );
+    }
+    case 'accidentalSlots': {
+      const correctSpelled = item.answer.kind === 'accidentals' ? item.answer.spelled : [];
+      return (
+        <AccidentalSlots
+          letters={item.input.letters}
+          disabled={disabled}
+          onAnswer={(spelled) => onAnswer({ format: 'accidentalSlots', spelled })}
+          feedback={disabled ? { correctSpelled } : undefined}
+        />
+      );
+    }
+    case 'rootQuality': {
+      const rq = item.answer.kind === 'rootQuality' ? item.answer : null;
+      return (
+        <RootQualityChips
+          roots={item.input.roots}
+          qualities={item.input.qualities}
+          disabled={disabled}
+          onAnswer={({ root, quality }) => onAnswer({ format: 'rootQuality', root, quality })}
+          feedback={disabled && rq ? { correctRoot: rq.root, correctQuality: rq.quality } : undefined}
+        />
+      );
+    }
+  }
 }
 
 // ─── Session summary (minimal — full screen is Task 11) ───────────────────────

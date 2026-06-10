@@ -533,7 +533,6 @@
       "correct": "Correcto",
       "wrong": "Casi",
       "continue": "Continuar"
-    },
-    "unsupported": "Este tipo de pregunta llega más adelante en esta rama"
+    }
   }
 }

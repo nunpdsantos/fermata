@@ -529,12 +529,15 @@
       "score": "{{correct}} of {{asked}} correct",
       "newSession": "New session"
     },
+    "clear": "Clear",
+    "done": "Done",
     "feedback": {
       "correct": "Correct",
       "wrong": "Not quite",
-      "continue": "Continue"
+      "nearMiss": "Same sound, wrong spelling — the correct spelling here is {{expected}}",
+      "continue": "Continue",
+      "learnMore": "Learn about this"
     },
-    "unsupported": "This question type arrives later in this branch",
     "prompts": {
       "keyToCount": "How many sharps or flats does {{key}} have?",
       "keyToAcc": "Which accidentals does {{key}} have?",
@@ -547,7 +550,23 @@
       "fifthUp": "A perfect fifth UP from {{note}}?",
       "fifthDown": "A perfect fifth DOWN from {{note}}?",
       "numToName": "Scale degree {{num}} is called…?",
-      "nameToNum": "The {{name}} is which scale degree?"
+      "nameToNum": "The {{name}} is which scale degree?",
+      "pairToName": "{{lower}} up to {{upper}} is which interval?",
+      "noteAbove": "A {{interval}} above {{root}}?",
+      "letterThird": "A third above {{letter}} (letter only)?",
+      "semitonesToName": "{{n}} semitones is which interval?",
+      "spellChord": "Spell {{chord}}",
+      "nameChord": "{{notes}} — which chord is this?",
+      "spellScale": "Spell the {{scale}} scale",
+      "degreeOf": "What is degree {{num}} of {{key}}?",
+      "degreeToChord": "What is {{numeral}} in {{key}}?",
+      "chordToDegree": "In {{key}}, {{chord}} is which degree?",
+      "pattern": "In any {{mode}} key, the triad on degree {{num}} is…?",
+      "isDiatonic": "Is {{chord}} diatonic in {{key}}?",
+      "harmonicFact": "In minor keys with the raised 7th, the chord on degree {{num}} is…?",
+      "chordFunction": "In {{key}}, {{chord}} functions as…?",
+      "cadence": "{{pair}} at a phrase end is which cadence?",
+      "v7Of": "What is the V7 of {{key}}?"
     },
     "why": {
       "keyToCount": "{{key}} has {{answer}}. Count along the circle of fifths from C (no accidentals).",
@@ -556,7 +575,18 @@
       "sigToKey": "{{sig}} belongs to {{answer}} — read the signature off the circle of fifths.",
       "relative": "Relative keys share a key signature, a minor third apart. {{key}}: {{answer}}.",
       "circleOrder": "Sharps are added F C G D A E B; flats reverse it B E A D G C F. Each step is a perfect fifth.",
-      "degreeName": "Scale degree {{num}} is the {{name}}."
+      "degreeName": "Scale degree {{num}} is the {{name}}.",
+      "intervalLetterFirst": "Count letters first, then set the quality by half steps. The answer is {{answer}}.",
+      "semitoneFact": "A recognition fact: {{n}} semitones is a {{answer}}. Never spell by counting semitones — letters first.",
+      "triadStack": "{{chord}} stacks {{stack}} from the root: {{notes}}.",
+      "scaleKeySig": "The {{scale}} scale uses its key signature: {{accs}}.",
+      "harmonicRaise": "The {{scale}} scale raises {{raised}} relative to the natural minor.",
+      "seventhLadder": "Build from the major 7th, then {{step}}. That gives {{chord}}.",
+      "diatonicMember": "{{chord}} is the diatonic chord built on that degree of {{key}}.",
+      "harmonicFact": "With the raised 7th, degree {{num}} gives {{correct}}.",
+      "functionPull": "{{chord}} pulls {{direction}} — that is its harmonic function.",
+      "cadenceDef": "{{answer}} (UK: {{uk}}).",
+      "v7Derivation": "Degree 5 of {{key}} is {{five}}; its dominant seventh is {{answer}}."
     }
   }
 }

@@ -533,7 +533,6 @@
       "correct": "Correto",
       "wrong": "Não é bem isso",
       "continue": "Continuar"
-    },
-    "unsupported": "Este tipo de pergunta chega mais tarde neste ramo"
+    }
   }
 }
