@@ -46,7 +46,7 @@ export interface AmbienceOptions {
  *   MORE separation between dry/wet → raise `preDelayMs`
  */
 export const PIANO_AMBIENCE: AmbienceOptions = {
-  wet: 0.16,          // additive wet level — calibration knob (see above)
+  wet: 0.12,          // additive wet level — calibration knob (Nuno 2026-06-11: 0.16 "a bit" too much)
   decaySeconds: 1.6,  // ~mid-size hall tail; keeps single notes readable
   preDelayMs: 18,     // 18 ms pre-delay keeps the piano's attack articulate
 };
