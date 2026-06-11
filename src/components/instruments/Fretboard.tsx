@@ -252,7 +252,7 @@ export function Fretboard() {
   const fretboardRef = useRef<HTMLDivElement>(null);
   const [barreStyle, setBarreStyle] = useState<React.CSSProperties | null>(null);
 
-  /* eslint-disable react-hooks/set-state-in-effect -- synchronous setState required in useLayoutEffect for DOM measurement */
+   
   useLayoutEffect(() => {
     if (!fretboardRef.current || !currentShape?.shape.barreInfo) {
       setBarreStyle(null);
@@ -294,7 +294,7 @@ export function Fretboard() {
       zIndex: 5,
     });
   }, [currentShape, visibleFrets]);
-  /* eslint-enable react-hooks/set-state-in-effect */
+   
 
   // ─── Keyboard navigation (roving tabindex on 2D grid) ─
   const [focusedCell, setFocusedCell] = useState<{ stringIdx: number; fret: number } | null>(null);
@@ -345,7 +345,7 @@ export function Fretboard() {
   );
 
   // Announce focused note for screen readers + auto-scroll focused cell into view
-  /* eslint-disable react-hooks/set-state-in-effect -- screen reader announcement is a leaf update, not cascading */
+   
   useEffect(() => {
     if (!focusedCell) {
       setAnnouncedNote('');
@@ -366,7 +366,7 @@ export function Fretboard() {
       cell.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
     }
   }, [focusedCell, getFretNote]);
-  /* eslint-enable react-hooks/set-state-in-effect */
+   
 
   // Open the board at the NUT end on first paint. The board renders nut-RIGHT
   // (settled orientation — Nuno's explicit call, 2026-06-09; do not flip), so
