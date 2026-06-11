@@ -84,3 +84,36 @@ describe('Fretboard desktop drag-to-scroll (useDragScroll)', () => {
     expect(grid.style.touchAction).toBeFalsy();
   });
 });
+
+// ─── Initial scroll position (nut end) ─────────────────────────────────────
+import { Fretboard as FretboardForNut } from '../Fretboard';
+
+describe('Fretboard — opens at the nut end', () => {
+  let swSpy: PropertyDescriptor | undefined;
+  let cwSpy: PropertyDescriptor | undefined;
+
+  beforeEach(() => {
+    swSpy = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollWidth');
+    cwSpy = Object.getOwnPropertyDescriptor(Element.prototype, 'clientWidth');
+    Object.defineProperty(Element.prototype, 'scrollWidth', { configurable: true, get: () => 660 });
+    Object.defineProperty(Element.prototype, 'clientWidth', { configurable: true, get: () => 300 });
+  });
+
+  afterEach(() => {
+    // jsdom defines both on Element.prototype, so the captured descriptors
+    // always exist — restore them unconditionally.
+    if (swSpy) Object.defineProperty(Element.prototype, 'scrollWidth', swSpy);
+    if (cwSpy) Object.defineProperty(Element.prototype, 'clientWidth', cwSpy);
+    cleanup();
+  });
+
+  it('scrolls to the far right (nut-RIGHT layout) on mount when nothing is selected', () => {
+    useAppStore.setState({ selectedChord: null });
+    const { container } = render(<FretboardForNut />);
+    const scrollers = [...container.querySelectorAll('div')].filter(
+      (d) => getComputedStyle(d).overflowX === 'auto' || d.className.includes('overflow-x-auto'),
+    );
+    // The board's horizontal scroller should start at the nut end: scrollWidth - clientWidth.
+    expect(scrollers.some((d) => d.scrollLeft === 360)).toBe(true);
+  });
+});

@@ -368,6 +368,22 @@ export function Fretboard() {
   }, [focusedCell, getFretNote]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
+  // Open the board at the NUT end on first paint. The board renders nut-RIGHT
+  // (settled orientation — Nuno's explicit call, 2026-06-09; do not flip), so
+  // scrollLeft 0 shows the HIGH frets and the playing-start position (nut,
+  // open strings, frets 0-5) sits at the far right. Without this, the
+  // fretboard opens at the wrong end of the neck. A persisted chord/scale
+  // selection wins instead via the auto-scroll effects below.
+  const initialNutScrollDone = useRef(false);
+  useLayoutEffect(() => {
+    if (initialNutScrollDone.current) return;
+    initialNutScrollDone.current = true;
+    if (currentShape || currentScalePos) return;
+    const el = scrollContainerRef.current;
+    if (el) el.scrollLeft = el.scrollWidth - el.clientWidth;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run-once on mount; selection presence is only read, not subscribed
+  }, []);
+
   // Auto-scroll to CAGED position when selected
   useEffect(() => {
     if (!currentScalePos || !scrollContainerRef.current) return;
