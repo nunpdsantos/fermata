@@ -220,3 +220,18 @@ describe('chord-search matrix — every ChordQuality reachable by a canonical sy
     expect(covered.size).toBe(50);
   });
 });
+
+describe('chord-search matrix — iOS ordinal autocorrect (º for °)', () => {
+  // Typing the degree sign ° (U+00B0) on an iPhone frequently autocorrects to
+  // the masculine ordinal º (U+00BA). Both that and the ring operator ∘ (U+2218)
+  // normalize to ° so diminished chords still resolve. A leading "m" before the
+  // symbol stays a reject (genuinely malformed: "G minor diminished 7").
+  const ORDINAL: Array<[string, ChordQuality | null]> = [
+    ['Cº', 'diminished'], ['Cº7', 'diminished7'], ['F#º7', 'diminished7'],
+    ['Dbº', 'diminished'], ['C∘', 'diminished'], ['C∘7', 'diminished7'],
+    ['Gmº7', null],
+  ];
+  it.each(ORDINAL)('%s → %s', (symbol, quality) => {
+    expect(parseChordSymbol(symbol)?.quality ?? null, `${symbol}`).toBe(quality);
+  });
+});

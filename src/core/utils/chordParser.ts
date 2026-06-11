@@ -119,6 +119,7 @@ function isWellFormedQuality(qualityPart: string): boolean {
   // expanded, parens and spaces removed, lowercased. The root has already been
   // stripped by the caller, so this is the quality portion only.
   const q = qualityPart
+    .replace(/[º∘]/g, '°') // iOS autocorrects ° (U+00B0) → º ordinal (U+00BA); also the ring operator
     .replace(/♯/g, '#')
     .replace(/♭/g, 'b')
     .replace(/Δ/g, 'maj7')
@@ -135,7 +136,14 @@ function isWellFormedQuality(qualityPart: string): boolean {
 function parseQualityString(q: string): ChordQuality | null {
   // Strip spaces and normalize unicode accidentals BEFORE lowercasing
   // so we can check case-sensitive patterns (M, M7, Δ, Δ7, etc.) first.
-  const raw = q.replace(/\s+/g, '').replace(/♯/g, '#').replace(/♭/g, 'b');
+  // Normalize the iOS-autocorrected ordinal º (U+00BA) and the ring operator ∘
+  // back to the degree sign ° (U+00B0) so "F#º7" finds the diminished chord —
+  // typing ° on an iPhone frequently autocorrects to º.
+  const raw = q
+    .replace(/\s+/g, '')
+    .replace(/[º∘]/g, '°')
+    .replace(/♯/g, '#')
+    .replace(/♭/g, 'b');
 
   // === Case-sensitive checks (M = major, Δ = major) ===
   // These MUST run before lowercasing, because M → m would match minor.

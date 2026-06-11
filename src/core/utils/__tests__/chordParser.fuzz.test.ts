@@ -281,17 +281,20 @@ describe('chord-parser fuzz — garbage regression wall (vs WS13 false-positives
     expect(parseChordSymbol(input)).toBeNull();
   });
 
-  it('a 1000-input seeded garbage stream never produces a chord', () => {
+  it('a 1000-input seeded garbage stream stays structurally valid and mostly rejects', () => {
     const rand = mulberry32(0xDEAD_BEEF);
+    let rejected = 0;
     for (let i = 0; i < 1000; i++) {
       // root letter + 1..4 pure-garbage fragments (no valid quality token).
       const input = pick(VALID_ROOT_LETTERS, rand) + runs(GARBAGE_FRAGMENTS, rand, 4);
       const r = probe(input);
-      // Not a hard "must be null" (a fragment like '69' is a real quality token),
-      // but if it DID parse it must still be structurally valid. The pure-garbage
-      // fragments here exclude real tokens, so we additionally assert the vast
-      // majority reject — catching any new leniency leak.
+      // Anything that parses must still be structurally valid (a stray fragment
+      // like '69' is a real quality token, so a few legitimately parse)…
       assertValidResult(input, r);
+      if (r === null) rejected++;
     }
+    // …but pure-garbage fragments should overwhelmingly reject — the assertion
+    // the old comment claimed but never made. Guards against a leniency leak.
+    expect(rejected).toBeGreaterThan(900);
   });
 });
