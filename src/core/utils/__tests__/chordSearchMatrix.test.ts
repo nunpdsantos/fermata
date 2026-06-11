@@ -230,6 +230,9 @@ describe('chord-search matrix — iOS ordinal autocorrect (º for °)', () => {
     ['Cº', 'diminished'], ['Cº7', 'diminished7'], ['F#º7', 'diminished7'],
     ['Dbº', 'diminished'], ['C∘', 'diminished'], ['C∘7', 'diminished7'],
     ['Gmº7', null],
+    // Redundant minor before the half-dim sign (ø already implies minor) resolves;
+    // plain minor 7 is untouched.
+    ['Bbmø7', 'half_diminished7'], ['Cmø', 'half_diminished7'], ['Bbm7', 'minor7'],
   ];
   it.each(ORDINAL)('%s → %s', (symbol, quality) => {
     expect(parseChordSymbol(symbol)?.quality ?? null, `${symbol}`).toBe(quality);

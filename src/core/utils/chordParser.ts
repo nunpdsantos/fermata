@@ -210,6 +210,8 @@ function parseQualityString(q: string): ChordQuality | null {
     s === 'min7♭5' ||
     s === 'ø' ||
     s === 'ø7' ||
+    s === 'mø' ||  // redundant minor before the half-dim sign (ø already implies minor)
+    s === 'mø7' ||
     s === 'o/' ||
     s === 'o/7' ||
     s === 'halfdim' ||
