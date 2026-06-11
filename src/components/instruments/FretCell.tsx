@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax -- legacy instrument palette (fret
    marker outlines, contrast borders). Migration deferred alongside
    PianoKey — needs instrument-specific SURFACE tokens. */
-import { memo } from 'react';
+import { memo, useCallback, useRef } from 'react';
 import { noteToString } from '../../core/types/music.ts';
 import type { PitchedNote } from '../../core/types/music.ts';
 import type { FingerNumber } from '../../core/constants/guitarChordShapes.ts';
@@ -56,6 +56,34 @@ export const FretCell = memo(function FretCell({
 }: FretCellProps) {
   const noteLabel = noteToString(pitched);
 
+  // Mobile fires on pointerdown for instant, scroll-arbitration-free triggering
+  // (the cell carries touch-action:none, so a finger here never scrolls — the
+  // scroll strip handles that). preventDefault on pointerdown suppresses the
+  // compatibility click; firedFromPointer guards the rare browser that still
+  // emits one, so a tap never double-fires. Desktop keeps onClick so the
+  // container's drag-to-scroll click-suppression (onClickCapture) still works.
+  const firedFromPointer = useRef(false);
+
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (!mobile) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      e.preventDefault(); // suppress the synthetic click that would double-fire
+      firedFromPointer.current = true;
+      onClick();
+    },
+    [mobile, onClick],
+  );
+
+  const handleClick = useCallback(() => {
+    if (firedFromPointer.current) {
+      // The pointerdown already fired this cell; swallow the compat click.
+      firedFromPointer.current = false;
+      return;
+    }
+    onClick();
+  }, [onClick]);
+
   return (
     <div
       data-fret={fret}
@@ -66,13 +94,17 @@ export const FretCell = memo(function FretCell({
       className="flex-1 flex items-center justify-center relative cursor-pointer"
       style={{
         minWidth: fretMinWidth,
+        // Mobile: the cell owns its touch so a tap fires instantly and is never
+        // arbitrated into a scroll (that arbitration dropped taps — WS12).
+        ...(mobile ? { touchAction: 'none' } : undefined),
         ...(isFocused ? {
           outline: '2px solid var(--focus-ring)',
           outlineOffset: -2,
           borderRadius: 4,
         } : undefined),
       }}
-      onClick={onClick}
+      onPointerDown={handlePointerDown}
+      onClick={handleClick}
     >
       {/* String line */}
       <div

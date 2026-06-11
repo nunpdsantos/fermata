@@ -49,9 +49,39 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
   onKeyUp,
   onFocus,
 }: PianoKeyProps) {
+  const isMobile = sizeMode === 'mobile';
+
+  // Two input models, deliberately separate:
+  //
+  //  • DESKTOP + keyboard (Enter/Space): a single `isPressed` boolean, fired
+  //    unconditionally on press, released on up/leave/blur — IDENTICAL to the
+  //    pre-WS12 behaviour. Desktop note-OFF is owned by the Piano container
+  //    (it captures the pointer for drag-to-scroll), so the key's own up rarely
+  //    fires; gating note-on behind a long-lived "is it on?" ref would desync
+  //    and silence the second press. Unconditional fire is correct here.
+  //
+  //  • MOBILE touch: per-pointerId tracking in `touchPointers`, so a chord of
+  //    fingers across keys plays them all and releasing one finger releases
+  //    only its key. The key captures its pointer, so its up/cancel always
+  //    lands here (a finger sliding off releases THIS key, no neighbour
+  //    retrigger — v1 choice). noteOn fires when the set goes 0→1, noteOff when
+  //    it returns to 0, so two fingers on one key never double-fire.
   const isPressed = useRef(false);
+  const touchPointers = useRef<Set<number>>(new Set());
+  const touchNoteOn = useRef(false);
   const elementRef = useRef<HTMLDivElement>(null);
   const dims = DIMS[sizeMode];
+
+  const refreshTouchNote = useCallback(() => {
+    const desired = touchPointers.current.size > 0;
+    if (desired && !touchNoteOn.current) {
+      touchNoteOn.current = true;
+      onNoteOn(keyData);
+    } else if (!desired && touchNoteOn.current) {
+      touchNoteOn.current = false;
+      onNoteOff(keyData);
+    }
+  }, [keyData, onNoteOn, onNoteOff]);
   // Fermata theme: solid colour fills on white keys destroy the white/black
   // hierarchy because the warm walnut accent looks like a black key. Switch to
   // a soft top-tint so the key still reads as white while the colour signals
@@ -102,38 +132,57 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
-      if (sizeMode !== 'mobile') {
+      if (isMobile) {
+        // Own the touch: capture so this pointer's up/cancel always lands here
+        // even if the finger slides off the key. Guarded — jsdom lacks capture.
         e.preventDefault();
-        // Don't capture pointer on desktop — container handles drag-to-scroll
+        try {
+          (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+        } catch {
+          // capture unsupported (jsdom) — pointerup still arrives here
+        }
+        touchPointers.current.add(e.pointerId);
+        refreshTouchNote();
+        return;
       }
-      // No setPointerCapture on mobile — it blocks native touch scrolling.
-      // pointerLeave / pointerCancel handle note-off when finger moves away.
+      // Desktop: unconditional note-on (matches pre-WS12); container owns drag.
+      e.preventDefault();
       isPressed.current = true;
       onNoteOn(keyData);
     },
-    [keyData, onNoteOn, sizeMode]
+    [keyData, onNoteOn, refreshTouchNote, isMobile]
   );
 
   const handlePointerUp = useCallback(
     (e: React.PointerEvent) => {
-      if (sizeMode !== 'mobile') e.preventDefault();
+      if (isMobile) {
+        touchPointers.current.delete(e.pointerId);
+        refreshTouchNote();
+        return;
+      }
+      e.preventDefault();
       if (isPressed.current) {
         isPressed.current = false;
         onNoteOff(keyData);
       }
     },
-    [keyData, onNoteOff, sizeMode]
+    [keyData, onNoteOff, refreshTouchNote, isMobile]
   );
 
   const handlePointerLeave = useCallback(
     (e: React.PointerEvent) => {
-      if (sizeMode !== 'mobile') e.preventDefault();
+      // Mobile: the pointer is captured, so a finger sliding off the key does
+      // NOT release via leave — it releases on this key's pointerup/cancel
+      // (v1: no cross-key slide retriggering). Leave is a no-op on touch.
+      if (isMobile) return;
+      // Desktop: the mouse leaving a pressed key releases that note.
+      e.preventDefault();
       if (isPressed.current) {
         isPressed.current = false;
         onNoteOff(keyData);
       }
     },
-    [keyData, onNoteOff, sizeMode]
+    [keyData, onNoteOff, isMobile]
   );
 
   const label = noteToString(keyData.note);
@@ -190,7 +239,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
         aria-pressed={isActive}
         tabIndex={isFocused ? 0 : -1}
         data-focus-ring="custom"
-        className={`absolute z-10 cursor-pointer select-none ${sizeMode === 'mobile' ? 'touch-pan-x' : 'touch-none'}`}
+        className="absolute z-10 cursor-pointer select-none touch-none"
         style={{
           width: bw + touchPad * 2,
           height: bh + touchPad,
@@ -282,7 +331,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
       aria-pressed={isActive}
       tabIndex={isFocused ? 0 : -1}
       data-focus-ring="custom"
-      className={`relative shrink-0 cursor-pointer select-none ${sizeMode === 'mobile' ? 'touch-pan-x' : 'touch-none'}`}
+      className="relative shrink-0 cursor-pointer select-none touch-none"
       style={{
         width: ww,
         height: wh,

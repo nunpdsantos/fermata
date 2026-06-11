@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-syntax -- legacy instrument palette (string
    shading, muted/active markers). Migration deferred alongside PianoKey. */
-import { memo } from 'react';
+import { memo, useCallback, useRef } from 'react';
 import { noteToString } from '../../core/types/music.ts';
 import type { PitchedNote } from '../../core/types/music.ts';
 import type { ChordShape, FingerNumber } from '../../core/constants/guitarChordShapes.ts';
@@ -74,6 +74,27 @@ export const FretboardString = memo(function FretboardString({
 
   // Scale position notes for this string
   const scalePosNotes = scalePositionLookup.get(stringIdx);
+
+  // Open-string indicator: same instant-pointerdown behaviour as FretCell so a
+  // touch on it fires without scroll arbitration (mobile); desktop keeps click.
+  const openFiredFromPointer = useRef(false);
+  const handleOpenPointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (!mobile || isMuted) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      e.preventDefault();
+      openFiredFromPointer.current = true;
+      handleFretClick(openFretNote);
+    },
+    [mobile, isMuted, handleFretClick, openFretNote],
+  );
+  const handleOpenClick = useCallback(() => {
+    if (openFiredFromPointer.current) {
+      openFiredFromPointer.current = false;
+      return;
+    }
+    if (!isMuted) handleFretClick(openFretNote);
+  }, [isMuted, handleFretClick, openFretNote]);
 
   return (
     <div className="flex items-center" style={{ height: mobile ? 32 : (isChordView ? 30 : 28) }}>
@@ -152,8 +173,9 @@ export const FretboardString = memo(function FretboardString({
         role="button"
         aria-label={isMuted ? `String ${6 - stringIdx} muted` : `${openLabel} open string`}
         className="flex items-center justify-center cursor-pointer"
-        style={{ width: 40 }}
-        onClick={() => !isMuted && handleFretClick(openFretNote)}
+        style={{ width: 40, ...(mobile ? { touchAction: 'none' } : undefined) }}
+        onPointerDown={handleOpenPointerDown}
+        onClick={handleOpenClick}
       >
         {isMuted ? (
           <span className="font-bold" style={{ fontSize: 14, color: '#ef4444aa' }}>

@@ -13,6 +13,8 @@ import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAudio } from '../../hooks/useAudio.ts';
 import { useAppStore } from '../../state/store.ts';
 import { useIsMobile } from '../../hooks/useMediaQuery.ts';
+import { useDragScroll } from '../../hooks/useDragScroll.ts';
+import { ScrollStrip } from './ScrollStrip.tsx';
 import { FULL_FRETS, CHORD_FRET_WINDOW, FRET_MARKERS, DOUBLE_MARKERS } from './fretboardConstants.ts';
 import type { FretNote } from './fretboardConstants.ts';
 import { FretboardPositionSelector } from './FretboardPositionSelector.tsx';
@@ -231,48 +233,20 @@ export function Fretboard() {
     });
   }, [chordShapes]);
 
-  // ─── Drag-to-scroll ───────────────────────────────────
+  // ─── Drag-to-scroll (desktop mouse) ───────────────────
+  // Shared with the mobile scroll strip via useDragScroll. On desktop the
+  // press starts on the scroll container itself, so the hook falls back to
+  // document listeners (capturing the container would swallow per-fret pointer
+  // events). The mobile strip below captures on its own handle instead.
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const dragState = useRef({ startX: 0, startScroll: 0, dragged: false });
-
-  const onDragEndRef = useRef<() => void>(() => {});
-
-  const onDragMove = useCallback((e: PointerEvent) => {
-    const el = scrollContainerRef.current;
-    if (!el) return;
-    const dx = e.clientX - dragState.current.startX;
-    if (Math.abs(dx) > 5) {
-      dragState.current.dragged = true;
-      el.scrollLeft = dragState.current.startScroll - dx;
-    }
-  }, []);
-
-  // Assign in an effect to avoid ref mutation during render
-  useEffect(() => {
-    onDragEndRef.current = () => {
-      document.removeEventListener('pointermove', onDragMove);
-      document.removeEventListener('pointerup', onDragEndRef.current);
-    };
-  }, [onDragMove]);
-
-  const handleFretboardPointerDown = useCallback((e: React.PointerEvent) => {
-    if ((e.target as HTMLElement).closest('button')) return;
-    if (e.button !== 0) return;
-    e.preventDefault();
-    dragState.current.dragged = false;
-    dragState.current.startX = e.clientX;
-    dragState.current.startScroll = scrollContainerRef.current?.scrollLeft ?? 0;
-    document.addEventListener('pointermove', onDragMove);
-    document.addEventListener('pointerup', onDragEndRef.current);
-  }, [onDragMove]);
+  const dragScroll = useDragScroll(scrollContainerRef, { threshold: 5, button: 0 });
 
   const handleFretboardClickCapture = useCallback((e: React.MouseEvent) => {
-    if (dragState.current.dragged) {
+    if (dragScroll.consumeDragged()) {
       e.stopPropagation();
       e.preventDefault();
-      dragState.current.dragged = false;
     }
-  }, []);
+  }, [dragScroll]);
 
   // ─── Barre bar measurement ────────────────────────────
   const fretboardRef = useRef<HTMLDivElement>(null);
@@ -434,6 +408,7 @@ export function Fretboard() {
     : (mobile ? 36 : 44);
 
   return (
+    <div className="w-full" style={{ backgroundColor: 'var(--bg)' }}>
     <div
       ref={scrollContainerRef}
       role="grid"
@@ -446,9 +421,13 @@ export function Fretboard() {
         userSelect: 'none',
         backgroundColor: 'var(--bg)',
         borderTop: '1px solid var(--border-subtle)',
-        ...(mobile ? { scrollSnapType: 'x proximity', WebkitOverflowScrolling: 'touch' } : {}),
+        // Mobile: the container is still scrollable (strip / keyboard / scrollbar
+        // drive it) but a finger landing on a fret must NOT scroll — the cells
+        // carry touch-action:none so a tap fires instantly. pan-x here would let
+        // the browser arbitrate fret taps as scrolls again (the WS12 bug).
+        ...(mobile ? { touchAction: 'none', WebkitOverflowScrolling: 'touch' } : {}),
       }}
-      onPointerDown={mobile ? undefined : handleFretboardPointerDown}
+      onPointerDown={mobile ? undefined : dragScroll.onPointerDown}
       onClickCapture={mobile ? undefined : handleFretboardClickCapture}
       onKeyDown={handleKeyDown}
     >
@@ -623,6 +602,11 @@ export function Fretboard() {
           </div>
         </div>
       </div>
+    </div>
+    {/* Mobile: dedicated scroll handle. The fretboard surface owns its touches
+        (taps fire notes), so reaching other positions happens here, via the
+        position chips, or (desktop) wheel/drag. */}
+    {mobile && <ScrollStrip containerRef={scrollContainerRef} label={t('fretboard.label')} />}
     </div>
   );
 }

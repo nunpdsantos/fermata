@@ -11,6 +11,7 @@ import { useAudio } from '../../hooks/useAudio.ts';
 import { useAppStore } from '../../state/store.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useIsMobile, useIsCompact } from '../../hooks/useMediaQuery.ts';
+import { ScrollStrip } from './ScrollStrip.tsx';
 
 const START_OCTAVE = 0;
 const END_OCTAVE = 8;
@@ -374,7 +375,12 @@ export function Piano() {
           height: containerHeight,
           cursor: mobile ? undefined : 'grab',
           scrollbarWidth: 'none',
-          touchAction: mobile ? 'pan-x' : undefined,
+          // Mobile: the keys carry touch-action:none and fire on pointerdown, so
+          // a finger on a key never scrolls (that scroll/tap arbitration was
+          // dropping notes — WS12). The container stays overflow-scrollable for
+          // the strip / keyboard / scrollbar; pan-x here would re-introduce the
+          // arbitration on key presses, so it must be 'none' too.
+          touchAction: mobile ? 'none' : undefined,
           overscrollBehavior: 'contain',
         }}
         onPointerDown={mobile ? undefined : handleContainerPointerDown}
@@ -432,6 +438,11 @@ export function Piano() {
           ))}
         </div>
       </div>
+
+      {/* Mobile: dedicated scroll handle. Keys own their touches (taps fire
+          notes), so reaching other octaves happens here or via the octave
+          buttons above; desktop scrolls by wheel/drag. */}
+      {mobile && <ScrollStrip containerRef={containerRef} label={t('instrument.pianoKeyboard')} />}
     </div>
   );
 }
