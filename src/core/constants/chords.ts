@@ -80,10 +80,20 @@ export const CHORD_FORMULAS: Record<ChordQuality, number[]> = {
   major11: [0, 7, 11, 14, 17], // maj11 - 3rd omitted (minor 9th clash with 11th)
   minor11: [0, 3, 7, 10, 14, 17], // m11 - minor 9th + perfect 11th
   dominant9sharp11: [0, 4, 7, 10, 14, 18], // 9#11 - dominant 9th + augmented 11th
+  // 7#11 - R, M3, P5, m7, #11. The no-9 sibling of dominant9sharp11 (which adds the
+  // major 9th). #11 = 18 st (octave + tritone). R=0,3=4,5=7,b7=10,#11=18.
+  dominant7sharp11: [0, 4, 7, 10, 18],
+  // maj9#11 - R, M3, P5, M7, M9, #11. Lydian-major colour carrying the 9th, distinct
+  // from major7sharp11 (no 9) and major11 (3rd omitted, natural 11). M7=11,M9=14,#11=18.
+  major9sharp11: [0, 4, 7, 11, 14, 18],
   dominant13: [0, 4, 7, 10, 14, 21], // 13 - dominant 9th + major 13th
   major13: [0, 4, 7, 11, 14, 21], // maj13 - major 9th + major 13th
   minor13: [0, 3, 7, 10, 14, 21], // m13 - minor 9th + major 13th
   dominant13flat9: [0, 4, 7, 10, 13, 21], // 13b9 - dominant 13th with flat 9
+  // 7b13 - R, M3, P5, m7, b13. The b13 (Ab over C) sits a semitone above the natural
+  // 5th, which is RETAINED (unlike 7alt). No 9th unless explicitly written. b13 = 20 st
+  // (octave + minor 6th). R=0,3=4,5=7,b7=10,b13=20.
+  dominant7flat13: [0, 4, 7, 10, 20],
   // Added Tones
   add11: [0, 4, 7, 17], // add11 - major triad + perfect 11th
   six_nine: [0, 4, 7, 9, 14], // 6/9 - major 6th + major 9th
@@ -162,12 +172,18 @@ export const CHORD_LETTER_DISTANCES: Record<ChordQuality, number[]> = {
   major11: [0, 4, 6, 1, 3],
   minor11: [0, 2, 4, 6, 1, 3],
   dominant9sharp11: [0, 2, 4, 6, 1, 3],
+  // 7#11: Root, 3rd, 5th, 7th, #11 (no 9th). #11 letter distance 3 (the 4th letter).
+  dominant7sharp11: [0, 2, 4, 6, 3],
+  // maj9#11: Root, 3rd, 5th, 7th, 9th, #11. 9th=letter 1, #11=letter 3.
+  major9sharp11: [0, 2, 4, 6, 1, 3],
 
   // 13th chords: Root, 3rd, 5th, 7th, 9th, 13th (11th often omitted)
   dominant13: [0, 2, 4, 6, 1, 5],
   major13: [0, 2, 4, 6, 1, 5],
   minor13: [0, 2, 4, 6, 1, 5],
   dominant13flat9: [0, 2, 4, 6, 1, 5],
+  // 7b13: Root, 3rd, 5th, 7th, b13 (no 9th). b13 letter distance 5 (the 6th letter).
+  dominant7flat13: [0, 2, 4, 6, 5],
 
   // 6/9 chords: Root, 3rd, 5th, 6th, 9th
   six_nine: [0, 2, 4, 5, 1],
@@ -218,10 +234,13 @@ export const CHORD_QUALITY_NAMES: Record<ChordQuality, string> = {
   major11: 'Major 11th',
   minor11: 'Minor 11th',
   dominant9sharp11: 'Dominant 9th Sharp 11',
+  dominant7sharp11: 'Dominant 7th Sharp 11',
+  major9sharp11: 'Major 9th Sharp 11',
   dominant13: 'Dominant 13th',
   major13: 'Major 13th',
   minor13: 'Minor 13th',
   dominant13flat9: 'Dominant 13th Flat 9',
+  dominant7flat13: 'Dominant 7th Flat 13',
   // Added Tones
   add11: 'Add 11',
   six_nine: '6/9',
@@ -278,10 +297,13 @@ export const CHORD_SYMBOLS: Record<ChordQuality, string> = {
   major11: 'maj11',
   minor11: 'm11',
   dominant9sharp11: '9#11',
+  dominant7sharp11: '7#11',
+  major9sharp11: 'maj9#11',
   dominant13: '13',
   major13: 'maj13',
   minor13: 'm13',
   dominant13flat9: '13b9',
+  dominant7flat13: '7b13',
   // Added Tones
   add11: 'add11',
   six_nine: '6/9',

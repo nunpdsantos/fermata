@@ -62,10 +62,13 @@ export const QUALITY_TO_MODULE: Record<ChordQuality, string> = {
   minor11: 'l7u21m1',
   dominant11: 'l7u21m1',
   dominant9sharp11: 'l7u21m1',
+  dominant7sharp11: 'l7u21m1',
+  major9sharp11: 'l7u21m1',
   major13: 'l7u21m1',
   minor13: 'l7u21m1',
   dominant13: 'l7u21m1',
   dominant13flat9: 'l7u21m1',
+  dominant7flat13: 'l7u21m2', // altered-tension dominant → Shell Voicings and Altered Chords
   major7sharp11: 'l7u21m1',
 
   // Special structures

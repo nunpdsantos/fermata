@@ -73,9 +73,10 @@ describe('QuickSearch hint completions', () => {
 
   it('"C7#" surfaces the sharp-altered dominants', () => {
     const labels = chordLabels('C7#');
-    // 7#9 → "C 7#9"; 7#11 (no 9) → algorithmic "C7#11"; 7#5 → augmented7 "C Augmented 7"
+    // 7#9 → "C 7#9"; 7#11 (no 9) → named dominant7sharp11 "C 7#11" (WS14: was algorithmic);
+    // 7#5 → augmented7 "C Augmented 7"
     expect(labels).toEqual(
-      expect.arrayContaining(['C 7#9', 'C7#11', 'C Augmented 7']),
+      expect.arrayContaining(['C 7#9', 'C 7#11', 'C Augmented 7']),
     );
   });
 

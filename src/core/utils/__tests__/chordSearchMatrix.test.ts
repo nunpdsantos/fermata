@@ -148,11 +148,14 @@ const NEGATIVE: string[] = [
   'Czzz', 'C123', 'Cqwerty', 'Cmaj7xyz', 'Ch', 'C55', 'C25',
 ];
 
-// ── 3. COMPLEX: algorithmic-only, must still parse (non-null) ───────────────
+// ── 3. COMPLEX: must still parse (non-null) ────────────────────────────────
+// Mostly algorithmic-path chords. WS14 promoted Cmaj9#11 / C7b13 / C7#11 to
+// named qualities (now asserted in the CANONICAL block below); the remainder
+// still resolve through the lenient algorithmic builder.
 const COMPLEX_MUST_PARSE: string[] = [
-  'Cmaj7#11', 'G7b9#11', 'Dm9b5', 'C7#9#11', 'Cmaj9#11', 'Am9', 'Cm11b5', 'C7b9b13',
+  'Cmaj7#11', 'G7b9#11', 'Dm9b5', 'C7#9#11', 'Am9', 'Cm11b5', 'C7b9b13',
   'Cadd#11', 'Cm(add9)', 'C7sus4b9', 'Cmaj7#5', 'C6/9', 'Bb7sus4', 'Am(add9)', 'Fmaj13#11',
-  'C9sus4', 'C13#11', 'C7#9b13', 'Cm7add11', 'C7b13', 'C7#11', 'Cmaj7b5', 'Co7', 'C-7b5',
+  'C9sus4', 'C13#11', 'C7#9b13', 'Cm7add11', 'Cmaj7b5', 'Co7', 'C-7b5',
   'D7alt', 'C13b9', 'Cmaj13', 'C7b5#9', 'Cdim(maj7)',
 ];
 
@@ -177,11 +180,13 @@ describe('chord-search matrix — complex (algorithmic, must still parse)', () =
 });
 
 describe('chord-search matrix — every ChordQuality reachable by a canonical symbol', () => {
-  // The engine defines 47 chord qualities (CHORD_FORMULAS / CHORD_SYMBOLS /
-  // CHORD_QUALITY_NAMES all have 47 keys; the spec's "49" was an approximation).
-  // This guards that the parser can produce EACH from at least one symbol (the
-  // canonical/primary one). dominant7sharp5 has no distinct primary symbol —
-  // bare 7#5 collapses to augmented7 (same notes) — so it is reached via '+'.
+  // The engine defines 50 chord qualities (CHORD_FORMULAS / CHORD_SYMBOLS /
+  // CHORD_QUALITY_NAMES all have 50 keys). WS14 closed three taxonomy gaps that
+  // previously fell to the algorithmic path: major9sharp11, dominant7sharp11,
+  // dominant7flat13. This guards that the parser can produce EACH from at least
+  // one symbol (the canonical/primary one). dominant7sharp5 has no distinct
+  // primary symbol — bare 7#5 collapses to augmented7 (same notes) — so it is
+  // reached via '+'.
   const CANONICAL: Array<[string, ChordQuality]> = [
     ['C', 'major'], ['Cm', 'minor'], ['Cdim', 'diminished'], ['Caug', 'augmented'],
     ['C6', 'major6'], ['Cm6', 'minor6'], ['Cmaj7', 'major7'], ['Cm7', 'minor7'],
@@ -199,16 +204,19 @@ describe('chord-search matrix — every ChordQuality reachable by a canonical sy
     ['Cmaj7#11', 'major7sharp11'], ['Cdim(maj7)', 'diminished_major7'],
     ['C7#5b9', 'dominant7sharp5flat9'], ['C7b5b9', 'dominant7flat5flat9'],
     ['C7#5#9', 'dominant7sharp5sharp9'], ['C7b5#9', 'dominant7flat5sharp9'],
+    // WS14: three closed taxonomy gaps, each now reached by its canonical symbol.
+    ['Cmaj9#11', 'major9sharp11'], ['C7#11', 'dominant7sharp11'],
+    ['C7b13', 'dominant7flat13'],
   ];
 
   it.each(CANONICAL)('%s → %s', (symbol, quality) => {
     expect(parseChordSymbol(symbol)?.quality, `${symbol}`).toBe(quality);
   });
 
-  it('covers all 47 engine ChordQuality values via the canonical map', () => {
-    // Locks the count so a dropped row is caught. All 47 qualities are reached
+  it('covers all 50 engine ChordQuality values via the canonical map', () => {
+    // Locks the count so a dropped row is caught. All 50 qualities are reached
     // exactly by their canonical symbol (verified by the audit harness).
     const covered = new Set(CANONICAL.map(([, q]) => q));
-    expect(covered.size).toBe(47);
+    expect(covered.size).toBe(50);
   });
 });

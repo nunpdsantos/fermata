@@ -109,10 +109,13 @@ export type ChordQuality =
   | 'major11'
   | 'minor11'
   | 'dominant9sharp11'
+  | 'dominant7sharp11' // 7#11 — dominant 7th + #11, NO 9th (sibling of dominant9sharp11)
+  | 'major9sharp11' // maj9#11 — major 7th + 9th + #11 (Lydian-major with the 9th)
   | 'dominant13'
   | 'major13'
   | 'minor13'
   | 'dominant13flat9'
+  | 'dominant7flat13' // 7b13 — dominant 7th + b13, NO 9th unless written
   // Added Tones
   | 'add11'
   | 'six_nine'

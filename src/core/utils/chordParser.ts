@@ -147,6 +147,8 @@ function parseQualityString(q: string): ChordQuality | null {
   if (raw === 'M13' || raw === 'Δ13') return 'major13';
   if (raw === 'M7#11' || raw === 'M7(#11)' || raw === 'Δ7#11' || raw === 'Δ7(#11)')
     return 'major7sharp11';
+  if (raw === 'M9#11' || raw === 'M9(#11)' || raw === 'Δ9#11' || raw === 'Δ9(#11)')
+    return 'major9sharp11'; // capital M / Δ major-9 #11 (lowercased it would read as minor)
   if (raw === 'M7b5' || raw === 'Δ7b5') return 'major7flat5';
   if (raw === 'M7#5' || raw === '+M7' || raw === '+Δ7' || raw === 'augΔ7' || raw === 'augM7')
     return 'augmented_major7';
@@ -275,6 +277,12 @@ function parseQualityString(q: string): ChordQuality | null {
     return 'major7sharp11';
   }
 
+  // === MAJOR 9 #11 (Lydian-major carrying the 9th) ===
+  // Distinct from maj7#11 (no 9) and maj11 (3rd omitted, natural 11).
+  if (s === 'maj9#11' || s === 'major9#11' || s === 'maj9(#11)' || s === 'major9sharp11') {
+    return 'major9sharp11';
+  }
+
   // === MINOR VARIATIONS ===
   if (s === 'm' || s === 'min' || s === 'minor' || s === '-') return 'minor';
   if (s === 'm7' || s === 'min7' || s === 'minor7' || s === '-7' || s === 'mi7') return 'minor7';
@@ -349,6 +357,30 @@ function parseQualityString(q: string): ChordQuality | null {
     s === 'dominant9sharp11'
   ) {
     return 'dominant9sharp11';
+  }
+  // 7#11 — dominant 7th + #11, NO 9th. The no-9 sibling of 9#11.
+  if (
+    s === '7#11' ||
+    s === '7♯11' ||
+    s === '7(#11)' ||
+    s === '7(♯11)' ||
+    s === 'dom7#11' ||
+    s === 'dominant7#11' ||
+    s === 'dominant7sharp11'
+  ) {
+    return 'dominant7sharp11';
+  }
+  // 7b13 — dominant 7th + b13, NO 9th (no b9 implied for a plain 7b13).
+  if (
+    s === '7b13' ||
+    s === '7♭13' ||
+    s === '7(b13)' ||
+    s === '7(♭13)' ||
+    s === 'dom7b13' ||
+    s === 'dominant7b13' ||
+    s === 'dominant7flat13'
+  ) {
+    return 'dominant7flat13';
   }
   if (
     s === '13b9' ||
@@ -822,10 +854,13 @@ export function formatParsedChordName(parsed: ParsedChord): string {
     major11: 'Major 11',
     minor11: 'Minor 11',
     dominant9sharp11: '9#11',
+    dominant7sharp11: '7#11',
+    major9sharp11: 'Maj9#11',
     dominant13: '13',
     major13: 'Major 13',
     minor13: 'Minor 13',
     dominant13flat9: '13b9',
+    dominant7flat13: '7b13',
     add11: 'Add11',
     six_nine: '6/9',
     minor_six_nine: 'm6/9',

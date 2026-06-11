@@ -360,6 +360,10 @@ section('5. Chord parser — tricky inputs');
 
 const CHORD_PARSE_CASES: Array<{ input: string; expectQuality?: ChordQuality; expectNoteCount?: number; expectNull?: boolean; note?: string }> = [
   { input: 'Cmaj7#11', expectQuality: 'major7sharp11', expectNoteCount: 5 },
+  // WS14 — three closed taxonomy gaps (were algorithmic / approximate labels):
+  { input: 'Cmaj9#11', expectQuality: 'major9sharp11', expectNoteCount: 6, note: 'C E G B D F#' },
+  { input: 'C7#11', expectQuality: 'dominant7sharp11', expectNoteCount: 5, note: 'C E G Bb F# (no 9)' },
+  { input: 'C7b13', expectQuality: 'dominant7flat13', expectNoteCount: 5, note: 'C E G Bb Ab (no 9)' },
   { input: 'C7alt', expectQuality: 'dominant7alt' },
   { input: 'C7b9#11', expectNoteCount: 6, note: '7b9#11 → algorithmic' },
   { input: 'Cm(maj7)', expectQuality: 'minor_major7' },

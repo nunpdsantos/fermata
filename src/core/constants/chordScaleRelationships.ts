@@ -201,6 +201,30 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
       context: '#11 defines this chord — 4th mode of melodic minor',
     },
   ],
+  dominant7sharp11: [
+    {
+      scale: 'lydian_dominant',
+      fit: 'primary',
+      context: '#11 over a dominant 7th — lydian dominant (4th mode of melodic minor)',
+    },
+    { scale: 'whole_tone', fit: 'secondary', context: 'b7 and #11(=b5) both present' },
+  ],
+  major9sharp11: [
+    { scale: 'lydian', fit: 'primary', context: '#11 IS the lydian 4th, with the major 7th and 9th' },
+    {
+      scale: 'lydian_dominant',
+      fit: 'color',
+      context: 'Swap to b7 for a dominant flavour over the same #11',
+    },
+  ],
+  dominant7flat13: [
+    {
+      scale: 'mixolydian_b6',
+      fit: 'primary',
+      context: 'b6 (=b13) over a dominant 7th — 5th mode of melodic minor',
+    },
+    { scale: 'altered', fit: 'secondary', context: 'b13 is one of the altered tensions' },
+  ],
   dominant13flat9: [
     {
       scale: 'diminished_half_whole',
