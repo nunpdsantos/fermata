@@ -3246,7 +3246,11 @@ const QUALITY_MAP: Record<string, string> = {
   '°Maj7': 'diminished_major7',
 };
 
-// Note to pitch class for calculating barre positions
+// Note to pitch class for calculating barre positions and validating that a
+// shape sounds only chord tones. MUST include double accidentals: diminished
+// 7ths spell a bb7, and many diminished/augmented/altered chords carry bb/##
+// tones (e.g. Ab dim = Ab, Cb, Ebb). Missing keys would fall back to the
+// natural letter and mis-compute both barre frets and the no-wrong-note filter.
 const NOTE_TO_PITCH_CLASS: Record<string, number> = {
   C: 0,
   'C#': 1,
@@ -3269,6 +3273,21 @@ const NOTE_TO_PITCH_CLASS: Record<string, number> = {
   B: 11,
   'B#': 0,
   Cb: 11,
+  // Double accidentals
+  Cbb: 10,
+  'C##': 2,
+  Dbb: 0,
+  'D##': 4,
+  Ebb: 2,
+  'E##': 6,
+  Fbb: 3,
+  'F##': 7,
+  Gbb: 5,
+  'G##': 9,
+  Abb: 7,
+  'A##': 11,
+  Bbb: 9,
+  'B##': 1,
 };
 
 // Open string pitch classes (6th to 1st)
@@ -3335,34 +3354,201 @@ export function getDefaultChordShape(
 
 // Import the algorithmic generator for fallback
 import { generateChordShapes as generateAlgorithmicShapes } from '../utils/guitarVoicingGenerator';
-import { Chord } from '../types/music';
+import { Chord, ChordQuality } from '../types/music';
+import { CHORD_FORMULAS } from './chords';
+
+// Sounding pitch classes of a single shape under STANDARD tuning. A string is
+// muted when fret === null; otherwise its absolute fret is baseFret + fret (the
+// exact resolution the Fretboard renderer's voicingLookup performs), so this is
+// the ground-truth set of notes the shape produces.
+function shapeSoundingPitchClasses(
+  shape: ChordShape,
+  baseFret: number
+): number[] {
+  const pcs: number[] = [];
+  shape.strings.forEach((pos, stringIndex) => {
+    if (pos.fret === null) return;
+    const absFret = baseFret + pos.fret;
+    pcs.push((OPEN_STRING_PITCH_CLASSES[stringIndex] + absFret) % 12);
+  });
+  return pcs;
+}
+
+// A shape is correct only if EVERY note it sounds belongs to the chord. A
+// shape that sounds a pitch class outside the chord is a wrong-note bug (a
+// "C major" grip that rings a B, say) and must never reach the fretboard. This
+// guard is data-driven: it catches any mis-authored hand shape AND any stray
+// algorithmic voicing, measured against the chord's own pitch-class set.
+function shapeHasOnlyChordTones(
+  entry: { shape: ChordShape; baseFret: number },
+  chordPitchClasses: Set<number>
+): boolean {
+  return shapeSoundingPitchClasses(entry.shape, entry.baseFret).every((pc) =>
+    chordPitchClasses.has(pc)
+  );
+}
+
+// ── Essential / defining chord tones (derived from the engine formula) ────────
+//
+// A guitar voicing of a 5–6 note chord can't sound every tone on six strings,
+// and a heuristic voicing search will happily drop the very tone that gives the
+// chord its name (a "7#9" with no #9, a "maj7" rendered as a plain triad). The
+// essential-tone set is the minimum a voicing MUST carry to still BE the chord:
+//
+//   • root (always)
+//   • the 3rd (m3 or M3) — or, for sus chords, the suspension (2 or 4)
+//   • the 7th (m7 or M7) whenever the formula carries one
+//   • the DEFINING tension — the b5/#5/b9/#9/#11/b13/6/add tone that is the
+//     chord's identity and would make the voicing read as a plainer chord if
+//     dropped.
+//
+// Omitting the 5th, or 9/11/13 COLOUR tones on a crowded chord, is acceptable
+// and is NOT in this set. Returns the required pitch classes for `chord`.
+function essentialPitchClasses(chord: Chord): Set<number> {
+  const rootPc = getPitchClass(chord.root);
+  const quality = chord.quality;
+  const formula = CHORD_FORMULAS[quality as ChordQuality];
+  const required = new Set<number>();
+  if (!formula) {
+    // Unknown/exotic quality with no formula (algorithmic display chords): fall
+    // back to requiring just the root — the no-wrong-note filter still applies.
+    required.add(rootPc);
+    return required;
+  }
+  const offsets = new Set(formula.map((s) => ((s % 12) + 12) % 12));
+  const add = (off: number) => required.add((rootPc + off) % 12);
+
+  // Root
+  add(0);
+
+  // Third slot: 3rd, else sus.
+  if (offsets.has(4)) add(4);
+  else if (offsets.has(3)) add(3);
+  else if (offsets.has(5) && quality.includes('sus')) add(5);
+  else if (offsets.has(2) && quality.includes('sus')) add(2);
+  // power chords (no 3rd / no sus) keep no third-slot requirement.
+
+  // Seventh (only one of m7/M7 is ever present).
+  if (offsets.has(11)) add(11);
+  else if (offsets.has(10)) add(10);
+
+  // Defining tensions / identity tones, per quality. Mirrors the chordDisplay
+  // verification harness — the tones without which the chord is mislabelled.
+  const DEFINING: Partial<Record<ChordQuality, number[]>> = {
+    diminished: [6],
+    diminished7: [6, 9],
+    half_diminished7: [6],
+    major7flat5: [6],
+    diminished_major7: [6],
+    dominant7flat5: [6],
+    dominant7flat5flat9: [6, 1],
+    dominant7flat5sharp9: [6, 3],
+    augmented: [8],
+    augmented7: [8],
+    augmented_major7: [8],
+    dominant7sharp5: [8],
+    dominant7sharp5flat9: [8, 1],
+    dominant7sharp5sharp9: [8, 3],
+    major6: [9],
+    minor6: [9],
+    // 6/9 chords are named for BOTH the 6 and the 9 — keep both (drop the 5th).
+    six_nine: [9, 2],
+    minor_six_nine: [9, 2],
+    add9: [2],
+    add11: [5],
+    dominant7flat9: [1],
+    dominant7sharp9: [3],
+    dominant13flat9: [1],
+    dominant7sharp11: [6],
+    major7sharp11: [6],
+    dominant9sharp11: [6],
+    major9sharp11: [6],
+    dominant7flat13: [8],
+  };
+  for (const off of DEFINING[quality as ChordQuality] ?? []) add(off);
+
+  return required;
+}
+
+/** Does this shape sound every essential tone of the chord? */
+function shapeHasEssentials(
+  entry: { shape: ChordShape; baseFret: number },
+  essentials: Set<number>
+): boolean {
+  const sounding = new Set(shapeSoundingPitchClasses(entry.shape, entry.baseFret));
+  for (const pc of essentials) {
+    if (!sounding.has(pc)) return false;
+  }
+  return true;
+}
 
 // Get chord shapes with algorithmic fallback for any chord
 // This function accepts a full Chord object and will generate shapes algorithmically
-// if no pre-defined shapes are available for the chord quality
+// if no pre-defined shapes are available for the chord quality.
+//
+// Selection contract (graceful degradation — NEVER a blank board for a real
+// chord, and NEVER a wrong note):
+//   1. Prefer hand-authored shapes that are wrong-note-free AND carry every
+//      essential tone (idiomatic and complete).
+//   2. Else the algorithmic generator's wrong-note-free, essentials-complete
+//      voicings (covers exotic chords and qualities whose every hand shape was
+//      broken or incomplete).
+//   3. Else any wrong-note-free shape (hand first, then generated) — a complete
+//      voicing isn't physically reachable, so the best no-wrong-note grip wins.
+//   4. Else (only if generation fails) empty.
 export function getChordShapesWithFallback(
   chord: Chord
 ): { shape: ChordShape; baseFret: number }[] {
+  // The chord's pitch-class set — the contract every rendered shape must honour.
+  const chordPitchClasses = new Set(chord.notes.map((n) => getPitchClass(n)));
+  const essentials = essentialPitchClasses(chord);
+
   // For algorithmically-built chords (those with algorithmicDisplayName),
-  // ALWAYS use algorithmic generation since their quality might not match pre-defined shapes
+  // their quality may not match a library key, so skip the hand library.
   const isAlgorithmicChord = !!chord.algorithmicDisplayName;
 
-  if (!isAlgorithmicChord) {
-    // Try pre-defined shapes only for standard chords
-    const predefinedShapes = getChordShapes(chord.root, chord.quality);
-    if (predefinedShapes.length > 0) {
-      return predefinedShapes;
-    }
+  const handClean = isAlgorithmicChord
+    ? []
+    : getChordShapes(chord.root, chord.quality).filter((e) =>
+        shapeHasOnlyChordTones(e, chordPitchClasses)
+      );
+
+  // 1. Hand shapes that are also essentials-complete.
+  const handComplete = handClean.filter((e) => shapeHasEssentials(e, essentials));
+  if (handComplete.length > 0) return handComplete;
+
+  // 2. Generated shapes that are essentials-complete. Ask the generator to keep
+  //    every essential tone (it searches harder for these dense chords), then
+  //    enforce no-wrong-note on the result.
+  try {
+    const genEssential = generateAlgorithmicShapes(chord, undefined, essentials).filter((e) =>
+      shapeHasOnlyChordTones(e, chordPitchClasses)
+    );
+    if (genEssential.length > 0) return genEssential;
+  } catch (e) {
+    console.warn('Failed to generate essentials-complete chord shapes:', e);
   }
 
-  // Use algorithmic generation for:
-  // 1. Algorithmic chords (exotic ones like Cmaj7#11)
-  // 2. Standard chords with no pre-defined shapes
+  // Unconstrained generated candidates (the safety net), held to no-wrong-note.
+  let genClean: { shape: ChordShape; baseFret: number }[] = [];
   try {
-    const algorithmicShapes = generateAlgorithmicShapes(chord);
-    return algorithmicShapes;
+    genClean = generateAlgorithmicShapes(chord).filter((e) =>
+      shapeHasOnlyChordTones(e, chordPitchClasses)
+    );
   } catch (e) {
     console.warn('Failed to generate algorithmic chord shapes:', e);
-    return [];
+    genClean = [];
   }
+
+  // A generated shape that happens to be essentials-complete (belt-and-braces;
+  // the strict pass above is the primary source).
+  const genComplete = genClean.filter((e) => shapeHasEssentials(e, essentials));
+  if (genComplete.length > 0) return genComplete;
+
+  // 3. Graceful degradation: no essentials-complete voicing is reachable, so
+  //    return the best no-wrong-note grips (hand first — they're idiomatic),
+  //    rather than a blank board. Such a chord is flagged by the verification
+  //    harness's allow-list so the omission is documented, not silent.
+  if (handClean.length > 0) return handClean;
+  return genClean;
 }

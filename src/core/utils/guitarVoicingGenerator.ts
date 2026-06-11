@@ -16,7 +16,11 @@ import { Note, Chord } from '../types/music';
 import { ChordShape, ChordStringPosition, FingerNumber } from '../constants/guitarChordShapes';
 import { GuitarTuning, TUNING_STANDARD, getTuningPitchClasses } from '../constants/guitarTunings';
 
-// Note to pitch class mapping
+// Note to pitch class mapping. MUST include double accidentals: diminished 7th
+// chords always spell a bb7, and diminished/augmented/altered-dominant chords on
+// many roots carry bb or ## chord tones (e.g. Ab dim = Ab, Cb, Ebb). Without
+// these keys getPitchClass falls back to the natural letter and the generator
+// targets the WRONG pitch class — injecting non-chord notes into the voicing.
 const NOTE_TO_PITCH_CLASS: Record<string, number> = {
   C: 0,
   'C#': 1,
@@ -39,6 +43,21 @@ const NOTE_TO_PITCH_CLASS: Record<string, number> = {
   B: 11,
   Cb: 11,
   'B#': 0,
+  // Double accidentals
+  Cbb: 10,
+  'C##': 2,
+  Dbb: 0,
+  'D##': 4,
+  Ebb: 2,
+  'E##': 6,
+  Fbb: 3,
+  'F##': 7,
+  Gbb: 5,
+  'G##': 9,
+  Abb: 7,
+  'A##': 11,
+  Bbb: 9,
+  'B##': 1,
 };
 
 /** Convert a Note to its pitch class (0–11, where C=0). */
@@ -288,7 +307,12 @@ function generateVoicings(
   minFret: number,
   maxFret: number,
   requireRoot: boolean = true,
-  openStringPitchClasses: number[] = getTuningPitchClasses(TUNING_STANDARD)
+  openStringPitchClasses: number[] = getTuningPitchClasses(TUNING_STANDARD),
+  // When provided, only voicings that sound EVERY pitch class in this set are
+  // accepted. Used to guarantee the essential/defining tones of dense altered
+  // chords survive (a "7b9" must keep its b9, a "7b13" its b13, etc.). When the
+  // set is empty, the search is unconstrained (the historical behaviour).
+  requiredPitchClasses: Set<number> = new Set()
 ): Voicing[] {
   const positions = getAllPositions(chordNotes, minFret, maxFret, openStringPitchClasses);
   const voicings: Voicing[] = [];
@@ -306,8 +330,9 @@ function generateVoicings(
 
   // Generate combinations (limit to avoid explosion)
   // We'll use a smarter approach: for each starting bass string, find valid voicings
-
-  for (let bassString = 0; bassString <= 2; bassString++) {
+  // Bass strings 0–3 (6th..3rd): dense altered chords often need the root on the
+  // 4th string to fit all essential tones within a 3-fret span.
+  for (let bassString = 0; bassString <= 3; bassString++) {
     // Try to build voicings starting from this bass string
     generateVoicingsFromBass(
       bassString,
@@ -315,7 +340,8 @@ function generateVoicings(
       rootPitchClass,
       chordNotes,
       requireRoot,
-      voicings
+      voicings,
+      requiredPitchClasses
     );
   }
 
@@ -338,7 +364,8 @@ function generateVoicingsFromBass(
   rootPitchClass: number,
   chordNotes: Note[],
   requireRoot: boolean,
-  results: Voicing[]
+  results: Voicing[],
+  requiredPitchClasses: Set<number> = new Set()
 ): void {
   // Recursive function to build voicings
   function recurse(
@@ -362,6 +389,16 @@ function generateVoicingsFromBass(
         const bassPos = currentPositions.find((p) => p !== null);
         if (bassPos && bassPos.pitchClass !== rootPitchClass) {
           // Allow non-root bass but penalize in scoring
+        }
+      }
+
+      // Essential-tone requirement: every required pitch class must sound. This
+      // keeps the defining tones of dense altered chords (b9, #9, b5, #5, #11,
+      // b13, b7, 3rd) in the voicing instead of being dropped for compactness.
+      if (requiredPitchClasses.size > 0) {
+        const sounding = new Set(nonNullPositions.map((p) => p!.pitchClass));
+        for (const pc of requiredPitchClasses) {
+          if (!sounding.has(pc)) return;
         }
       }
 
@@ -466,7 +503,15 @@ function voicingToChordShape(
     if (pos === null) {
       strings[stringIndex] = { fret: null, finger: 0 };
     } else if (pos.fret === 0) {
-      strings[stringIndex] = { fret: 0, finger: 0 };
+      // A genuinely OPEN string (absolute fret 0). The renderer resolves a
+      // string's absolute fret as `baseFret + storedFret`, so when baseFret > 0
+      // we must store a NEGATIVE offset (0 - baseFret) for the open string to
+      // resolve back to fret 0. Storing a literal 0 here (the old behaviour)
+      // made the renderer sound the open string at the barre fret instead —
+      // injecting a non-chord tone on every voicing that mixed an open string
+      // with fretted notes above the nut. When baseFret === 0 this is 0 (a true
+      // open in an open-position shape), unchanged.
+      strings[stringIndex] = { fret: -baseFret, finger: 0 };
     } else {
       const relativeFret = pos.fret - baseFret;
       strings[stringIndex] = {
@@ -636,11 +681,17 @@ function determineCagedShape(voicing: Voicing, _baseFret: number): 'C' | 'A' | '
  *
  * @param chord  The chord whose notes will be mapped to the fretboard.
  * @param tuning Guitar tuning (defaults to standard EADGBE).
+ * @param requiredPitchClasses When non-empty, ONLY voicings that sound every
+ *   pitch class in this set are produced. Callers pass the chord's essential /
+ *   defining tones so dense altered chords (7b9, 7b13, 9#11, …) keep their
+ *   identity tone instead of dropping it for a compacter grip. When empty (the
+ *   default) the search is unconstrained.
  * @returns Array of `{ shape, baseFret }` objects, at most 8 entries.
  */
 export function generateChordShapes(
   chord: Chord,
-  tuning: GuitarTuning = TUNING_STANDARD
+  tuning: GuitarTuning = TUNING_STANDARD,
+  requiredPitchClasses: Set<number> = new Set()
 ): { shape: ChordShape; baseFret: number }[] {
   const rootPitchClass = getPitchClass(chord.root);
   const openStringPitchClasses = getTuningPitchClasses(tuning);
@@ -670,11 +721,14 @@ export function generateChordShapes(
       range.min,
       range.max,
       true,
-      openStringPitchClasses
+      openStringPitchClasses,
+      requiredPitchClasses
     );
 
-    // Take top voicings from each range
-    const topVoicings = voicings.slice(0, 3);
+    // Take top voicings from each range. Take more when essentials are required
+    // (the essential-complete voicing is sometimes ranked below compacter but
+    // incomplete grips that the requirement has already filtered out anyway).
+    const topVoicings = voicings.slice(0, requiredPitchClasses.size > 0 ? 5 : 3);
 
     topVoicings.forEach((voicing) => {
       // Create a unique key for this shape to avoid duplicates
