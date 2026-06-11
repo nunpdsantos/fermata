@@ -69,7 +69,7 @@ export function AppShell({ children }: AppShellProps) {
           data-tour="play-note"
           role="region"
           aria-label={t('instrument.label', { name: t(`instrument.${instrument}`) })}
-          className={`h-[260px] max-md:h-[226px] ${instrument === 'guitar' ? 'max-sm:h-[266px]' : 'max-sm:h-[221px]'} overflow-y-auto`}
+          className={`h-[260px] ${instrument === 'guitar' ? 'max-md:h-[306px] max-sm:h-[306px]' : 'max-md:h-[226px] max-sm:h-[221px]'} overflow-y-auto`}
           style={{ backgroundColor: 'var(--bg)', overscrollBehavior: 'contain' }}
         >
           {instrument === 'piano' ? <Piano /> : <Fretboard />}
