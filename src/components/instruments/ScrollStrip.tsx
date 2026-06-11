@@ -17,9 +17,13 @@ interface ScrollStripProps {
  * scroll to other octaves/positions. It complements (does not replace) the
  * octave buttons (piano) and position chips (fretboard).
  *
- * It owns its touch via `touch-action: pan-x` and drives `container.scrollLeft`
+ * It owns its touch via `touch-action: none` and drives `container.scrollLeft`
  * manually through useDragScroll (pointer-captured on the strip so the drag
- * follows the finger off the handle). Decorative grip dots signal "grab here".
+ * follows the finger off the handle). It MUST be `none`, not `pan-x`: pan-x
+ * invites the browser to claim the horizontal gesture natively, which fires
+ * pointercancel and starves our manual pointermove scrolling on real iOS —
+ * while synthetic-event tests pass. Learned the hard way (WS12 hotfix).
+ * Decorative grip dots signal "grab here".
  * The strip is aria-hidden — keyboard and scrollbar users reach octaves via the
  * focusable container + on-screen controls, so nothing is lost for a11y.
  */
@@ -34,7 +38,7 @@ export function ScrollStrip({ containerRef, label }: ScrollStripProps) {
       className="w-full flex items-center justify-center select-none cursor-grab active:cursor-grabbing"
       style={{
         height: 26,
-        touchAction: 'pan-x',
+        touchAction: 'none',
         backgroundColor: 'var(--card)',
         borderTop: '1px solid var(--border-subtle)',
       }}

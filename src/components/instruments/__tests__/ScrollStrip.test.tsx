@@ -77,7 +77,9 @@ describe('Piano scroll strip (mobile)', () => {
     const strip = screen.getByTestId('scroll-strip');
     expect(strip).toBeDefined();
     expect(strip.getAttribute('aria-hidden')).toBe('true');
-    expect(strip.style.touchAction).toBe('pan-x');
+    // MUST be 'none': pan-x lets iOS claim the gesture natively → pointercancel
+    // → manual scroll starves (WS12 hotfix; synthetic tests can't catch it).
+    expect(strip.style.touchAction).toBe('none');
   });
 
   it('dragging the strip changes container.scrollLeft', async () => {
@@ -132,7 +134,9 @@ describe('Fretboard scroll strip (mobile)', () => {
     await renderFretboard();
     const strip = screen.getByTestId('scroll-strip');
     expect(strip.getAttribute('aria-hidden')).toBe('true');
-    expect(strip.style.touchAction).toBe('pan-x');
+    // MUST be 'none': pan-x lets iOS claim the gesture natively → pointercancel
+    // → manual scroll starves (WS12 hotfix; synthetic tests can't catch it).
+    expect(strip.style.touchAction).toBe('none');
   });
 
   it('the scroll container has touch-action:none on mobile', async () => {
