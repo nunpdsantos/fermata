@@ -4,6 +4,7 @@
 import { memo, useCallback, useEffect, useRef } from 'react';
 import type { PianoKey as PianoKeyData } from '../../core/utils/pianoLayout.ts';
 import { noteToString } from '../../core/types/music.ts';
+import type { Note } from '../../core/types/music.ts';
 import { useAppStore } from '../../state/store.ts';
 
 type SizeMode = 'mobile' | 'tablet' | 'desktop';
@@ -16,6 +17,14 @@ const DIMS: Record<SizeMode, { white: [number, number]; black: [number, number];
 
 interface PianoKeyProps {
   keyData: PianoKeyData;
+  /**
+   * Context-aware spelling for the NAME printed on this key (chord/scale/key
+   * aware). DISPLAY ONLY: the key's identity, black/white, position, octave
+   * number and `isC` octave-anchor all stay on the physical `keyData.note`.
+   * A pc-11 key spelled "C♭" is still the physical B (white) key in B's slot;
+   * only the printed letters change. Defaults to `keyData.note` when omitted.
+   */
+  displayNote?: Note;
   isHighlighted: boolean;
   highlightColor?: string;
   isActive: boolean;
@@ -34,6 +43,7 @@ interface PianoKeyProps {
 
 export const PianoKeyComponent = memo(function PianoKeyComponent({
   keyData,
+  displayNote,
   isHighlighted,
   highlightColor,
   isActive,
@@ -185,8 +195,17 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
     [keyData, onNoteOff, isMobile]
   );
 
-  const label = noteToString(keyData.note);
-  const isC = keyData.note.natural === 'C' && keyData.note.accidental === '';
+  // The printed name follows the context spelling; everything physical (octave,
+  // black/white, position) stays on keyData.note.
+  const spelled = displayNote ?? keyData.note;
+  const label = noteToString(spelled);
+  // The always-on "C{octave}" anchor shows only when the key is DISPLAYED as a
+  // natural C. Basing this on the spelling (not the physical C) means a C♯-major
+  // context, which respells pitch class 0 as B♯, correctly prints "B♯" on the
+  // physical C key instead of a misleading "C". The octave NUMBER stays physical
+  // (keyData.octave) per the octave-boundary decision — labels are letter +
+  // accidental, never octave-shifted for B♯/C♭.
+  const isC = spelled.natural === 'C' && spelled.accidental === '';
   const color = highlightColor ?? 'var(--accent)';
 
   if (keyData.isBlack) {

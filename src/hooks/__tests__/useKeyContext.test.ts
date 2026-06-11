@@ -3,7 +3,14 @@ import { renderHook } from '@testing-library/react';
 import { useKeyContext } from '../useKeyContext';
 import { useAppStore } from '../../state/store';
 import type { Note, ScaleType } from '../../core/types/music';
+import { noteToString } from '../../core/types/music';
+import { buildChord } from '../../core/constants/chords';
 import { DEGREE_COLORS } from '../../design/tokens/colors';
+
+const N = (natural: Note['natural'], accidental: Note['accidental'] = ''): Note => ({
+  natural,
+  accidental,
+});
 
 function setStoreState(overrides: {
   key?: Note;
@@ -246,6 +253,90 @@ describe('key/scale changes', () => {
     // F#=6 is the tonic
     expect(result.current.scalePitchClasses.has(6)).toBe(true);
     expect(result.current.getNoteDegree({ natural: 'F', accidental: '#' })).toBe(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// spellPitchClass — context-aware enharmonic labels (chord > scale > key bias >
+// sharp default). Display-label correctness only; positions/colours unaffected.
+// ---------------------------------------------------------------------------
+describe('spellPitchClass', () => {
+  const label = (
+    result: { current: ReturnType<typeof useKeyContext> },
+    pc: number,
+  ) => noteToString(result.current.spellPitchClass(pc));
+
+  it('no selection (C major default) → sharp default', () => {
+    setStoreState({});
+    const { result } = renderHook(() => useKeyContext());
+    expect(label(result, 1)).toBe('C#');
+    expect(label(result, 6)).toBe('F#');
+    expect(label(result, 10)).toBe('A#');
+  });
+
+  it('Cdim7 chord → pc 9 reads B𝄫 (Bbb), pc 6 reads G♭', () => {
+    setStoreState({ chord: buildChord(N('C'), 'diminished7') });
+    const { result } = renderHook(() => useKeyContext());
+    expect(label(result, 0)).toBe('C');
+    expect(label(result, 3)).toBe('Eb');
+    expect(label(result, 6)).toBe('Gb');
+    expect(label(result, 9)).toBe('Bbb');
+  });
+
+  it('C♭ major chord → pc 11 reads C♭ (not B)', () => {
+    setStoreState({ chord: buildChord(N('C', 'b'), 'major') });
+    const { result } = renderHook(() => useKeyContext());
+    expect(label(result, 11)).toBe('Cb');
+  });
+
+  it('C♯ major scale (key only) → pc 5 reads E♯, pc 0 reads B♯', () => {
+    setStoreState({ key: N('C', '#'), scale: 'major' });
+    const { result } = renderHook(() => useKeyContext());
+    expect(label(result, 5)).toBe('E#');
+    expect(label(result, 0)).toBe('B#');
+  });
+
+  it('D♭ major key (no chord) → black pcs all flats', () => {
+    setStoreState({ key: N('D', 'b'), scale: 'major' });
+    const { result } = renderHook(() => useKeyContext());
+    expect(label(result, 1)).toBe('Db');
+    expect(label(result, 3)).toBe('Eb');
+    expect(label(result, 6)).toBe('Gb');
+    expect(label(result, 8)).toBe('Ab');
+    expect(label(result, 10)).toBe('Bb');
+  });
+
+  it('A major key → C♯ F♯ G♯; chromatic D♯/A♯ stay sharp', () => {
+    setStoreState({ key: N('A'), scale: 'major' });
+    const { result } = renderHook(() => useKeyContext());
+    expect(label(result, 1)).toBe('C#');
+    expect(label(result, 6)).toBe('F#');
+    expect(label(result, 8)).toBe('G#');
+    expect(label(result, 3)).toBe('D#');
+    expect(label(result, 10)).toBe('A#');
+  });
+
+  it('chord beats scale/key: G♭ chord in A-major key → pc 6 reads G♭', () => {
+    setStoreState({ key: N('A'), scale: 'major', chord: buildChord(N('G', 'b'), 'major') });
+    const { result } = renderHook(() => useKeyContext());
+    expect(label(result, 6)).toBe('Gb'); // chord wins over scale's F#
+  });
+
+  it('exercise-input mode falls back to sharp default (no key leak)', () => {
+    setStoreState({ key: N('D', 'b'), scale: 'major' });
+    useAppStore.setState({ exerciseInputActive: true, highlightedNotes: [] });
+    const { result } = renderHook(() => useKeyContext());
+    // Even though the key is D♭ major, exercise input shows the sharp default.
+    expect(label(result, 6)).toBe('F#');
+    expect(label(result, 1)).toBe('C#');
+    useAppStore.setState({ exerciseInputActive: false });
+  });
+
+  it('normalises out-of-range pitch-class inputs', () => {
+    setStoreState({});
+    const { result } = renderHook(() => useKeyContext());
+    expect(label(result, 18)).toBe('F#'); // 18 % 12 = 6
+    expect(label(result, -6)).toBe('F#');
   });
 });
 

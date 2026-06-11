@@ -22,7 +22,7 @@ import { FretboardString } from './FretboardString.tsx';
 
 export function Fretboard() {
   const { t } = useTranslation();
-  const { getNoteColor } = useKeyContext();
+  const { getNoteColor, spellPitchClass } = useKeyContext();
   const { noteOn, noteOff } = useAudio();
   const activeNotes = useAppStore((s) => s.activeNotes);
   const selectedChord = useAppStore((s) => s.selectedChord);
@@ -352,8 +352,8 @@ export function Fretboard() {
       return;
     }
     const fn = getFretNote(focusedCell.stringIdx, focusedCell.fret);
-    const pitched = midiToNote(fn.midiNumber);
-    const name = noteToString(pitched);
+    // Announce the context-aware spelling, matching the visible cell label.
+    const name = noteToString(spellPitchClass(fn.pitchClass));
     setAnnouncedNote(`String ${6 - focusedCell.stringIdx}, fret ${focusedCell.fret}, ${name}`);
 
     // Auto-scroll focused cell into view
@@ -365,7 +365,7 @@ export function Fretboard() {
     if (cell) {
       cell.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
     }
-  }, [focusedCell, getFretNote]);
+  }, [focusedCell, getFretNote, spellPitchClass]);
    
 
   // Open the board at the NUT end on first paint. The board renders nut-RIGHT
@@ -573,11 +573,11 @@ export function Fretboard() {
               mobile={mobile}
               isChordView={isChordView}
               isOpenPosition={isOpenPosition}
-              tuning={tuning}
               tuningPitchClasses={tuningPitchClasses}
               activeNotes={activeNotes}
               rootPitchClass={rootPitchClass}
               getNoteColor={getNoteColor}
+              spellPitchClass={spellPitchClass}
               getFretNote={getFretNote}
               handleFretClick={handleFretClick}
               currentShape={currentShape}

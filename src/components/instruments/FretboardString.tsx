@@ -2,9 +2,8 @@
    shading, muted/active markers). Migration deferred alongside PianoKey. */
 import { memo, useCallback, useRef } from 'react';
 import { noteToString } from '../../core/types/music.ts';
-import type { PitchedNote } from '../../core/types/music.ts';
+import type { Note, PitchedNote } from '../../core/types/music.ts';
 import type { ChordShape, FingerNumber } from '../../core/constants/guitarChordShapes.ts';
-import type { GuitarTuning } from '../../core/constants/guitarTunings.ts';
 import { midiToNote } from '../../core/utils/pianoLayout.ts';
 import { FretCell } from './FretCell.tsx';
 import type { FretNote } from './fretboardConstants.ts';
@@ -17,12 +16,13 @@ interface FretboardStringProps {
   isChordView: boolean;
   isOpenPosition: boolean;
   // Data
-  tuning: GuitarTuning;
   tuningPitchClasses: number[];
   activeNotes: Set<number>;
   rootPitchClass: number | null;
   // Lookups
   getNoteColor: (note: PitchedNote) => string | undefined;
+  /** Context-aware enharmonic spelling for a pitch class — display label only. */
+  spellPitchClass: (pc: number) => Note;
   getFretNote: (stringIndex: number, fret: number) => FretNote;
   handleFretClick: (fn: FretNote) => void;
   // Chord
@@ -42,11 +42,11 @@ export const FretboardString = memo(function FretboardString({
   mobile,
   isChordView,
   isOpenPosition,
-  tuning,
   tuningPitchClasses,
   activeNotes,
   rootPitchClass,
   getNoteColor,
+  spellPitchClass,
   getFretNote,
   handleFretClick,
   currentShape,
@@ -55,12 +55,14 @@ export const FretboardString = memo(function FretboardString({
   scalePositionLookup,
   focusedFret,
 }: FretboardStringProps) {
-  const openLabel = noteToString(tuning.strings[stringIdx]);
   const openFretNote = getFretNote(stringIdx, 0);
   const openPitched = midiToNote(openFretNote.midiNumber);
   const openColor = getNoteColor(openPitched);
   const isOpenActive = activeNotes.has(openFretNote.midiNumber);
   const openPc = tuningPitchClasses[stringIdx] % 12;
+  // Open-string label follows the same context spelling as the fretted cells,
+  // so a G♭-context open G reads "G♭" not "G". The string's PITCH is unchanged.
+  const openLabel = noteToString(spellPitchClass(openPc));
   const isOpenRoot = rootPitchClass !== null && openPc === rootPitchClass;
 
   // Chord voicing info
@@ -110,8 +112,12 @@ export const FretboardString = memo(function FretboardString({
       <div className="flex flex-1 self-stretch items-stretch">
         {visibleFrets.map((fret) => {
           const fn = getFretNote(stringIdx, fret);
+          // Colour stays driven by the physical (sharp-default) note — degree
+          // lookup is pitch-class based, so the spelling is irrelevant to it.
           const pitched = midiToNote(fn.midiNumber);
           const color = getNoteColor(pitched);
+          // Label uses the context-aware spelling for this pitch class.
+          const displayNote = spellPitchClass(fn.pitchClass);
           const isActive = activeNotes.has(fn.midiNumber);
           const isInScale = color !== undefined;
 
@@ -137,7 +143,7 @@ export const FretboardString = memo(function FretboardString({
               key={fret}
               fret={fret}
               stringIdx={stringIdx}
-              pitched={pitched}
+              displayNote={displayNote}
               color={color}
               dotColor={dotColor}
               isActive={isActive}

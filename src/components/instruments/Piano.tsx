@@ -64,7 +64,7 @@ export function Piano() {
   const activeNotes = useAppStore((s) => s.activeNotes);
   const baseOctave = useAppStore((s) => s.baseOctave);
   const setBaseOctave = useAppStore((s) => s.setBaseOctave);
-  const { scaleMidiNumbers, getNoteColor, chordVoicingMidi, hasSelectedChord } = useKeyContext();
+  const { scaleMidiNumbers, getNoteColor, spellPitchClass, chordVoicingMidi, hasSelectedChord } = useKeyContext();
   const containerRef = useRef<HTMLDivElement>(null);
   const activeMidiMap = useRef<Map<number, number>>(new Map());
 
@@ -147,6 +147,15 @@ export function Piano() {
   const getKeyColor = useCallback(
     (key: PianoKey) => getNoteColor(key.note),
     [getNoteColor]
+  );
+
+  // Context-aware spelling for the key's printed name. Pitch class is the key's
+  // physical identity (midiNumber % 12); the label may differ from key.note
+  // (e.g. the physical B key reads "C♭" in a C♭-chord context) but the key's
+  // position/black-white/octave stay on key.note. Label only.
+  const getKeyLabelNote = useCallback(
+    (key: PianoKey) => spellPitchClass(key.midiNumber % 12),
+    [spellPitchClass]
   );
 
   const handleNoteOn = useCallback(
@@ -396,6 +405,7 @@ export function Piano() {
             <PianoKeyComponent
               key={wk.midiNumber}
               keyData={wk}
+              displayNote={getKeyLabelNote(wk)}
               isHighlighted={isInScale(wk)}
               highlightColor={getKeyColor(wk)}
               isActive={activeNotes.has(wk.midiNumber)}
@@ -420,6 +430,7 @@ export function Piano() {
             >
               <PianoKeyComponent
                 keyData={bk}
+                displayNote={getKeyLabelNote(bk)}
                 isHighlighted={isInScale(bk)}
                 highlightColor={getKeyColor(bk)}
                 isActive={activeNotes.has(bk.midiNumber)}

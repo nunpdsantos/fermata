@@ -3,14 +3,20 @@
    PianoKey — needs instrument-specific SURFACE tokens. */
 import { memo, useCallback, useRef } from 'react';
 import { noteToString } from '../../core/types/music.ts';
-import type { PitchedNote } from '../../core/types/music.ts';
+import type { Note } from '../../core/types/music.ts';
 import type { FingerNumber } from '../../core/constants/guitarChordShapes.ts';
 import { fingerLabel } from './fretboardConstants.ts';
 
 interface FretCellProps {
   fret: number;
   stringIdx: number;
-  pitched: PitchedNote;
+  /**
+   * Context-aware spelling for the note name shown in this cell (chord/scale/key
+   * aware). Letter + accidental only — the fretboard prints no octave number, so
+   * a C♭/B♯ relabel never shifts anything. Positions, colours and pitch are
+   * driven by `fret`/`stringIdx`/`color`, never by this label.
+   */
+  displayNote: Note;
   color: string | undefined;
   dotColor: string;
   isActive: boolean;
@@ -36,7 +42,7 @@ interface FretCellProps {
 export const FretCell = memo(function FretCell({
   fret,
   stringIdx,
-  pitched,
+  displayNote,
   color,
   dotColor,
   isActive,
@@ -54,7 +60,7 @@ export const FretCell = memo(function FretCell({
   isFocused,
   onClick,
 }: FretCellProps) {
-  const noteLabel = noteToString(pitched);
+  const noteLabel = noteToString(displayNote);
 
   // Mobile fires on pointerdown for instant, scroll-arbitration-free triggering
   // (the cell carries touch-action:none, so a finger here never scrolls — the
@@ -134,7 +140,7 @@ export const FretCell = memo(function FretCell({
               : `2px solid ${dotColor}`,
           }}
         >
-          {fingerLabel(finger) || noteToString(pitched)}
+          {fingerLabel(finger) || noteLabel}
         </div>
       )}
       {/* Scale position dot */}
@@ -155,7 +161,7 @@ export const FretCell = memo(function FretCell({
               : `2px solid ${dotColor}`,
           }}
         >
-          {scalePosDegree ?? noteToString(pitched)}
+          {scalePosDegree ?? noteLabel}
         </div>
       )}
       {/* Scale dot (no chord, no position selected) */}
@@ -173,7 +179,7 @@ export const FretCell = memo(function FretCell({
             boxShadow: isActive ? `0 0 12px ${color}, 0 0 4px ${color}88` : 'none',
           }}
         >
-          {noteToString(pitched)}
+          {noteLabel}
         </div>
       )}
     </div>

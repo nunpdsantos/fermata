@@ -1,11 +1,11 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, cleanup, fireEvent, within } from '@testing-library/react';
 import { FretCell } from '../FretCell';
-import type { PitchedNote } from '../../../core/types/music';
+import type { Note } from '../../../core/types/music';
 
 afterEach(cleanup);
 
-const pitched: PitchedNote = { natural: 'C', accidental: '', octave: 4 };
+const displayNote: Note = { natural: 'C', accidental: '' };
 
 function pointer(type: string, pointerType = 'touch'): PointerEvent {
   return new PointerEvent(type, {
@@ -22,7 +22,7 @@ function renderCell(opts: { mobile: boolean; onClick: () => void }) {
     <FretCell
       fret={3}
       stringIdx={0}
-      pitched={pitched}
+      displayNote={displayNote}
       color={undefined}
       dotColor="#fff"
       isActive={false}

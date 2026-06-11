@@ -4,6 +4,7 @@ import { buildScale } from '../core/constants/scales.ts';
 import { getDiatonicChordsForScale } from '../core/constants/chords.ts';
 import { getScaleNotesWithOctaves, getVoicedChordNotes, getMidiNumber } from '../core/utils/pianoLayout.ts';
 import { getPitchClass } from '../core/constants/notes.ts';
+import { buildSpellingMap, spellFromMap, spellSharpDefault } from '../core/utils/spelling.ts';
 import type { Note, Scale, Chord, PitchedNote } from '../core/types/music.ts';
 import { DEGREE_COLORS } from '../design/tokens/colors.ts';
 import { useDegreeColorsEnabled } from './useDegreeColors.ts';
@@ -20,6 +21,12 @@ export interface KeyContextValue {
   diatonicChords: DiatonicChord[];
   getNoteColor: (note: Note) => string | undefined;
   getNoteDegree: (note: Note) => number | undefined; // 1-7 or undefined
+  /**
+   * Context-aware enharmonic spelling for a pitch class (0–11). Used by the
+   * piano/fretboard for DISPLAY LABELS ONLY — never for position/colour/pitch.
+   * Honours selected chord → scale → key-signature bias → sharp default.
+   */
+  spellPitchClass: (pc: number) => Note;
   scalePitchClasses: Set<number>; // for guitar/circle of fifths (all octaves)
   scaleMidiNumbers: Set<number>; // for piano (limited octave range)
   chordPitchClasses: Set<number>; // pitch classes of selected chord (empty if none)
@@ -105,6 +112,15 @@ export function useKeyContext(): KeyContextValue {
     };
   }, [pitchClassToDegree]);
 
+  // Context spelling map: pitch class → engine-correct Note, prioritised
+  // chord > scale > key-signature bias > sharp default. Rebuilt only when the
+  // chord or scale changes. Display labels only — positions/colours/pitch are
+  // unaffected (those still key off the physical MIDI/note).
+  const spellPitchClass = useMemo(() => {
+    const m = buildSpellingMap(selectedChord, scale);
+    return (pc: number): Note => spellFromMap(m, pc);
+  }, [selectedChord, scale]);
+
   // Pitch class set — used by guitar and circle of fifths (highlights all octaves)
   const scalePitchClasses = useMemo(() => {
     const s = new Set<number>();
@@ -182,6 +198,10 @@ export function useKeyContext(): KeyContextValue {
       diatonicChords,
       getNoteColor: () => undefined,
       getNoteDegree: () => undefined,
+      // Exercise input is pitch-class graded with no canonical spelling, and
+      // Explore's key context is intentionally suppressed here — labels fall
+      // back to the sharp default rather than leaking the active key's spelling.
+      spellPitchClass: spellSharpDefault,
       scalePitchClasses: EMPTY_SET,
       scaleMidiNumbers: EMPTY_SET,
       chordPitchClasses: exerciseHighlight.pcs,
@@ -197,6 +217,7 @@ export function useKeyContext(): KeyContextValue {
     diatonicChords,
     getNoteColor,
     getNoteDegree,
+    spellPitchClass,
     scalePitchClasses,
     scaleMidiNumbers,
     chordPitchClasses,
