@@ -148,7 +148,9 @@ describe('createAmbience — graph shape', () => {
     createAmbience(ctx as unknown as AudioContext, dest as unknown as AudioNode, PIANO_AMBIENCE);
     const wetGain = ctx._gains[2];
     expect(wetGain.gain!.value).toBeCloseTo(PIANO_AMBIENCE.wet, 6);
-    expect(PIANO_AMBIENCE.wet).toBe(0.16);
+    // Calibration history: 0.16 shipped → 0.12 (Nuno, 2026-06-11: "a bit less").
+    // Update this pin together with PIANO_AMBIENCE when Nuno recalibrates.
+    expect(PIANO_AMBIENCE.wet).toBe(0.12);
   });
 
   it('PIANO_AMBIENCE preDelayMs matches shipped constant', () => {
