@@ -71,6 +71,64 @@ function normalizeAccidental(acc: string): Accidental {
 }
 
 /**
+ * Well-formed-quality gate for the algorithmic fallback.
+ *
+ * The explicit `parseQualityString` is an exact-match allowlist, so it can never
+ * accept garbage. The algorithmic builder, by contrast, is deliberately lenient:
+ * it extracts whatever tokens it recognizes and silently DISCARDS the rest, so
+ * "Cblah" → Cb major, "Cx" → C major, "C0" → C major, "Cmaj77" → Cmaj7. For a
+ * professional chord-search engine that is wrong — junk must not become a chord.
+ *
+ * This validator runs on the (already word-normalized, symbol-form) quality
+ * string before the algorithmic fallback is trusted. It is a POSITIVE grammar:
+ * the quality must be a sequence of recognized chord tokens with nothing left
+ * over. Tested to accept every legitimately-complex chord the algorithmic path
+ * handles (Cmaj7#11, G7b9#11, Dm9b5, C7#9b13, …) while rejecting letter-garbage,
+ * stray/duplicated bad digits (0, 123, 55, 25) and dangling accidentals (7b).
+ */
+const WELL_FORMED_QUALITY = new RegExp(
+  '^(?:' +
+    // quality head: maj/min/dim/aug/dom (+ word forms already symbolized), or o/+/-
+    String.raw`(?:maj|major|min|minor|m|dim|diminished|aug|augmented|dom|dominant|ma|mi|delta|[+\-o])?` +
+    // seventh / extension head (optionally preceded by maj/m for minor-major etc.)
+    String.raw`(?:(?:maj|major|m|delta)?(?:13|11|9|7|6))?` +
+    // suspensions
+    String.raw`(?:sus(?:2sus4|24|2\/4|2|4)?)?` +
+    // alterations (any order, repeatable): #5 b5 #9 b9 #11 b11 #13 b13, +/- forms
+    String.raw`(?:(?:#|b|\+|-)(?:5|9|11|13))*` +
+    // added tones: add9, add#11, addb9, …
+    String.raw`(?:add(?:#|b)?(?:2|4|6|9|11|13))*` +
+    // omitted tones: no3, omit5, …
+    String.raw`(?:(?:no|omit)(?:3|5|7|9|11|13))*` +
+    // 6/9 family
+    String.raw`(?:6\/9|69)?` +
+    // altered dominant word
+    String.raw`(?:alt|altered)?` +
+    // power chord words
+    String.raw`(?:power|powerchord)?` +
+    // lone power (5) / add9-alias (2)
+    String.raw`(?:[25])?` +
+    // trailing +/- (augmented / minor shorthand at the end, e.g. C7+)
+    String.raw`[+\-]?` +
+    ')$',
+  'i',
+);
+
+function isWellFormedQuality(qualityPart: string): boolean {
+  // Normalize the same way the algorithmic builder will: unicode → ascii, Δ/ø
+  // expanded, parens and spaces removed, lowercased. The root has already been
+  // stripped by the caller, so this is the quality portion only.
+  const q = qualityPart
+    .replace(/♯/g, '#')
+    .replace(/♭/g, 'b')
+    .replace(/Δ/g, 'maj7')
+    .replace(/ø/g, 'm7b5')
+    .replace(/[()\s]/g, '')
+    .toLowerCase();
+  return WELL_FORMED_QUALITY.test(q);
+}
+
+/**
  * Parse the quality string portion of a chord symbol
  * Returns the ChordQuality or null if unrecognized
  */
@@ -82,22 +140,34 @@ function parseQualityString(q: string): ChordQuality | null {
   // === Case-sensitive checks (M = major, Δ = major) ===
   // These MUST run before lowercasing, because M → m would match minor.
   if (raw === 'M') return 'major';
+  if (raw === 'M6') return 'major6'; // capital M = major; lowercased it would collide with m6 (minor6)
   if (raw === 'M7' || raw === 'Δ7' || raw === 'Δ') return 'major7';
   if (raw === 'M9' || raw === 'Δ9') return 'major9';
   if (raw === 'M11' || raw === 'Δ11') return 'major11';
   if (raw === 'M13' || raw === 'Δ13') return 'major13';
-  if (raw === 'M7#11' || raw === 'M7(#11)' || raw === 'Δ7#11') return 'major7sharp11';
-  if (raw === 'M7b5') return 'major7flat5';
-  if (raw === 'M7#5' || raw === '+M7') return 'augmented_major7';
-  // Minor-major hybrids that use uppercase M
-  if (raw === 'mM7' || raw === '-M7') return 'minor_major7';
-  if (raw === 'dimM7' || raw === 'dim(M7)') return 'diminished_major7';
+  if (raw === 'M7#11' || raw === 'M7(#11)' || raw === 'Δ7#11' || raw === 'Δ7(#11)')
+    return 'major7sharp11';
+  if (raw === 'M7b5' || raw === 'Δ7b5') return 'major7flat5';
+  if (raw === 'M7#5' || raw === '+M7' || raw === '+Δ7' || raw === 'augΔ7' || raw === 'augM7')
+    return 'augmented_major7';
+  // Minor-major hybrids that use uppercase M or the Δ glyph (- and m both mean minor).
+  if (raw === 'mM7' || raw === '-M7' || raw === 'mΔ7' || raw === '-Δ7' || raw === 'minΔ7')
+    return 'minor_major7';
+  if (raw === 'dimM7' || raw === 'dim(M7)' || raw === 'dimΔ7' || raw === '°M7' || raw === 'oM7')
+    return 'diminished_major7';
 
   // Now lowercase for case-insensitive matching
   const s = raw.toLowerCase();
 
   // Empty = major triad
   if (s === '' || s === 'maj' || s === 'major') return 'major';
+
+  // === JAZZ "j" SHORTHAND for major 7th family (iReal Pro / some fonts) ===
+  // j = △ = major 7th. Unambiguous: no chord quality starts a token with bare "j".
+  if (s === 'j7' || s === 'j') return 'major7';
+  if (s === 'j9') return 'major9';
+  if (s === 'j11') return 'major11';
+  if (s === 'j13') return 'major13';
 
   // Order matters - check longer/more specific patterns first!
 
@@ -484,7 +554,16 @@ export function parseChordSymbol(input: string): ParsedChord | null {
     return result;
   }
 
-  // If no explicit quality match, try algorithmic chord builder
+  // If no explicit quality match, try the algorithmic chord builder — but ONLY
+  // if the quality portion is well-formed. The builder is lenient and would turn
+  // "Cblah" / "Cx" / "C0" / "Cmaj77" into a chord by discarding the junk; the gate
+  // keeps garbage out while still admitting every legitimately-complex chord
+  // (Cmaj7#11, G7b9#11, Dm9b5, …). An empty quality already resolved to 'major'
+  // above, so reaching here with non-empty junk means reject.
+  if (!isWellFormedQuality(qualityPart)) {
+    return null;
+  }
+
   // This handles complex chords like Cmaj7#11, G7b9#11, Dm9b5, etc.
   const algorithmicResult = buildAlgorithmicChord(normalized);
   if (algorithmicResult) {
