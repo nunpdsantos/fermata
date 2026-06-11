@@ -587,18 +587,35 @@ sections. Negatives must return `NULL`.
 
 ## Phase 3 — QuickSearch hint layer (commit 2)
 
-See `src/components/navigation/QuickSearch.tsx`. Behaviors (with RTL tests in
-`src/components/navigation/__tests__/QuickSearch.test.tsx`):
+The hint logic is two framework-agnostic helpers in `src/core/utils/chordHints.ts`
+(`getChordCompletions`, `parseVerbalChord`), wired into the result ranker
+`src/components/navigation/quickSearchResults.ts` (`getResults` was extracted out of
+`QuickSearch.tsx` so the component file exports only the component — react-refresh rule).
+Tests: `src/core/utils/__tests__/chordHints.test.ts` (helpers) +
+`src/components/navigation/__tests__/QuickSearch.test.tsx` (ranking/cap/render).
 
-- **Partial-symbol completions** — typing a prefix surfaces the family: `Cmaj` →
-  `Cmaj7` + maj-family (`Cmaj9/11/13`); `Cm` → `Cm` + `Cm7/Cm9/Cm6/…`; `C7#` →
-  `C7#9/C7#11/C7#5`. Exact parse ranks first, then completions ordered by commonality
-  (triads/7ths before extensions), capped at 8.
-- **Verbal forms** — multi-word text resolves: `c sharp minor` → C♯ Minor,
-  `d flat major seven` → D♭ Major 7, `g dominant` → G Dominant 7,
-  `b half diminished` → B Half-Diminished 7, `f sharp diminished seventh` →
-  F♯ Diminished 7. Root words (sharp/flat) + quality words (via `CHORD_QUALITY_NAMES`
-  + a small word-alias map), deterministic substring/startsWith tiers.
+- **Partial-symbol completions** (`getChordCompletions`) — the typed quality fragment is
+  a prefix filter over a commonality-ordered quality list (triads/6ths/7ths before dense
+  extensions). `Cmaj` → Cmaj7, Cmaj9, Cmaj11, Cmaj13, Cmaj7#11; `C7#` → C7#9, C7#11, C7#5;
+  `Cm` → Cm, Cm6, Cm7, Cm7b5, CmMaj7, Cm9, … (never leaks the major `maj*` family);
+  `F#` → F#, F#m, F#dim, … Each candidate is parsed by the real parser, so only real
+  chords are offered; deduped by quality, capped at 8.
+- **Verbal forms** (`parseVerbalChord`) — free text → chord: a root note word + optional
+  `sharp`/`flat` accidental word + spelled-out degree numbers (`seven`→7) + multi-word
+  qualities. `c sharp minor` → C♯ Minor, `d flat major seven` → D♭ Major 7,
+  `g dominant` → G Dominant 7 (jazz convention), `b half diminished` → B Half-Diminished 7,
+  `f sharp diminished seventh` → F♯ Diminished 7, `c minor major seven` → C Minor-Major 7.
+  Deterministic phrase→suffix table (longest phrase wins); unknown words → null.
+- **Ranking**: exact symbol parse first, then verbal, then completions; **capped at 8**
+  chord results; the full quality NAME path ("Dominant 7th", "Half-Diminished") still
+  resolves via the existing quality-name fuzzy fallback.
+- **Performance**: all alias/quality tables are module-scope constants (the search runs
+  per keystroke); no per-call allocation of the tables.
 
-Alias/completion tables are precomputed once at module scope (the search runs per
-keystroke); suggestions are capped and deterministically ordered.
+**Known nuance:** the bare words `Major` / `Minor` (no root) prioritize SCALE results (C
+Major scale, etc.) and fill the result list before the chord-name fuzzy fallback — this is
+pre-existing and sensible (a lone "minor" reads as a scale/key). The major/minor *chords*
+remain reachable via `C`/`Cm` or `C Major`/`C Minor` (both yield a Chord result).
+
+i18n: result labels reuse existing display names (`formatParsedChordName`,
+`CHORD_QUALITY_NAMES`); no new translatable UI strings were added.
