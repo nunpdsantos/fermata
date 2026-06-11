@@ -318,7 +318,6 @@ describe('Fretboard: shape exists, no wrong note, essential tones present (50×1
         if (soundingShapes.length === 0) {
           failures.push({ chord: label, kind: 'blank-board', detail: 'no non-empty shape produced' });
           expect.fail(`BLANK BOARD: ${label} produced no sounding shape`);
-          return;
         }
 
         // Evaluate EVERY returned shape for wrong notes (any wrong note is a bug,
@@ -341,7 +340,6 @@ describe('Fretboard: shape exists, no wrong note, essential tones present (50×1
                 detail: `shape baseFret ${s.baseFret} sounds pc ${pc} ∉ chord {${[...chordPcs].sort((a, b) => a - b).join(',')}}`,
               });
               expect.fail(`WRONG NOTE: ${label} shape@${s.baseFret} sounds pc ${pc} not in chord`);
-              return;
             }
           }
 
@@ -370,7 +368,6 @@ describe('Fretboard: shape exists, no wrong note, essential tones present (50×1
             detail: `no shape carries all essentials; closest missing: ${(bestMissing ?? []).join(', ')}`,
           });
           expect.fail(`MISSING ESSENTIAL: ${label} — ${(bestMissing ?? []).join(', ')}`);
-          return;
         }
 
         // Sanity: any tone absent from the BEST (essentials-satisfying) shape that
