@@ -95,22 +95,39 @@ All in `src/core/utils/chordParser.ts`:
 
 ---
 
-## Engine limitations (correct **notes**, approximate **quality label**)
+## Engine limitations — CLOSED in WS14
 
-These parse and play the right notes via the algorithmic path, but the engine has no
-dedicated `ChordQuality` enum value for them, so the mapped label is the nearest fit. This
-is an **engine taxonomy gap, not a parser gap** — and per the task, no new qualities were
-bolted onto the engine.
+The three taxonomy gaps below were closed in **WS14** (commit `feat(core): name the last
+unnamed chord qualities — major9#11, 7b13, 7#11`). Each now has a dedicated `ChordQuality`
+with a first-principles-verified interval set, a canonical symbol, a human name, and direct
+parser routing (no algorithmic fallback). The engine grew **47 → 50 qualities**.
 
-| Input | Notes built | Mapped quality | Note |
-|---|---|---|---|
-| `Cmaj9#11` | C E G B D F♯ | `major11` | No `major9sharp11` quality; `major7sharp11` lacks the 9th, `major11` has a natural 11. Notes are correct; label is approximate. |
-| `C7b13` | C E G B♭ A♭ | (algorithmic) | No `dominant7flat13` quality; built algorithmically with correct notes. |
-| `C7#11` (no 9) | C E G B♭ F♯ | (algorithmic) | No plain `dominant7sharp11`; the named quality is `dominant9sharp11`. Notes correct. |
+| Input | Notes (canonical) | Quality (now) | Interval set | Note |
+|---|---|---|---|---|
+| `Cmaj9#11` | C E G B D F♯ | `major9sharp11` | `[0,4,7,11,14,18]` | R M3 P5 M7 M9 #11. Distinct from `major7sharp11` (no 9) and `major11` (3rd omitted, natural 11). |
+| `C7b13` | C E G B♭ A♭ | `dominant7flat13` | `[0,4,7,10,20]` | R M3 P5 m7 b13. **No 9** implied; the natural 5th is **retained** (unlike `7alt`). |
+| `C7#11` (no 9) | C E G B♭ F♯ | `dominant7sharp11` | `[0,4,7,10,18]` | R M3 P5 m7 #11, **no 9th** — the no-9 sibling of `dominant9sharp11`. |
 
-`dominant7sharp5` is reachable but only via the trailing-`+` path (`C7+`); bare `C7#5`
-resolves to `augmented7` — **identical notes** (`[0,4,8,10]`), so this is a labeling
-choice, not a gap.
+Verified by `src/core/utils/__tests__/newChordQualities.test.ts` (buildChord notes, parser
+routing, symbol/name round-trip), the WS14 fuzz wall, and the WS14 round-trip property
+suite. The audit harness (`scripts/audit/verify-engine.ts` §5) now asserts all three.
+
+### Still-standing labeling choices (not gaps)
+
+- `dominant7sharp5` is reachable only via the trailing-`+` path (`C7+`); bare `C7#5`
+  resolves to `augmented7` — **identical notes** (`[0,4,8,10]`), a labeling choice.
+- The reverse identifier (`identifyChordFromNotes`) is a pitch-class matcher, so two
+  pitch-class-identical qualities are indistinguishable to it. Across all roots exactly
+  **two** such same-root collisions exist and are documented in the round-trip test:
+  `dominant7sharp5 ≡ augmented7` and `dominant9sus4 ≡ dominant11`. (`C7#11` also ties at
+  the tritone with `F♯7b5b9`, but on a different root — the C-rooted source still ranks #1.)
+
+### Not investigated for this workstream (left for a separate decision)
+
+- `F#º7` and `Bbmø7` still fail to parse in the engine audit (§5): the `º` glyph is
+  U+00BA (masculine ordinal), not the `°` U+00B0 degree sign the parser handles; and the
+  `Bbm` prefix in `Bbmø7` is parsed greedily. These are pre-existing audit findings
+  outside the three WS14 gaps — flagged here, not changed.
 
 ---
 
