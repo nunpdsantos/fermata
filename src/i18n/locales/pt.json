@@ -277,6 +277,13 @@
     "pianoKeyboard": "Teclado de piano",
     "baseOctave": "Oitava base"
   },
+  "audio": {
+    "guitarBank": {
+      "label": "Som da guitarra",
+      "a": "A",
+      "b": "B"
+    }
+  },
   "review": {
     "title": "Fila de Revis\u00e3o",
     "badge": "Revis\u00e3o",

@@ -277,6 +277,13 @@
     "pianoKeyboard": "Piano keyboard",
     "baseOctave": "Base octave"
   },
+  "audio": {
+    "guitarBank": {
+      "label": "Guitar sound",
+      "a": "A",
+      "b": "B"
+    }
+  },
   "review": {
     "title": "Review Queue",
     "badge": "Review",

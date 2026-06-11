@@ -277,6 +277,13 @@
     "pianoKeyboard": "Teclado de piano",
     "baseOctave": "Octava base"
   },
+  "audio": {
+    "guitarBank": {
+      "label": "Sonido de la guitarra",
+      "a": "A",
+      "b": "B"
+    }
+  },
   "review": {
     "title": "Cola de Repaso",
     "badge": "Repaso",

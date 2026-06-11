@@ -4,6 +4,7 @@ import { TopBar } from './TopBar.tsx';
 import { Piano } from '../instruments/Piano.tsx';
 import { Fretboard } from '../instruments/Fretboard.tsx';
 import { InstrumentSelector } from '../instruments/InstrumentSelector.tsx';
+import { GuitarBankToggle } from '../instruments/GuitarBankToggle.tsx'; // WS11 (temporary A/B bake-off)
 import { useAppStore } from '../../state/store.ts';
 
 interface AppShellProps {
@@ -37,7 +38,11 @@ export function AppShell({ children }: AppShellProps) {
         className="flex items-center justify-between px-3 max-sm:px-2 py-1 max-sm:py-1.5"
         style={{ backgroundColor: 'var(--bg)', borderTop: '1px solid var(--border-subtle)' }}
       >
-        <InstrumentSelector />
+        <div className="flex items-center gap-2 max-sm:gap-1.5">
+          <InstrumentSelector />
+          {/* WS11 (temporary A/B bake-off): guitar-only sample-bank switch. */}
+          {instrument === 'guitar' && <GuitarBankToggle />}
+        </div>
         <div className="flex items-center gap-2">
           <span className="text-2xs max-sm:hidden" style={{ color: 'var(--text-dim)' }} aria-hidden="true">
             {t('nav.clickKeysToPlay')}

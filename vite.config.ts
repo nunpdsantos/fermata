@@ -90,6 +90,20 @@ export default defineConfig({
               expiration: { maxEntries: 45, maxAgeSeconds: 365 * 24 * 60 * 60 },
             },
           },
+          // WS11 (temporary A/B bake-off): Iowa classical-guitar bank B
+          // (~2.4 MB, 39 notes) under /samples/guitar-b/. Same CacheFirst policy
+          // as bank A so whichever bank the owner selects works offline. The
+          // bank-A pattern above requires the literal "guitar/" segment and does
+          // NOT match "guitar-b/", so the two caches stay disjoint. Remove with
+          // the rest of the bake-off once a bank is chosen.
+          {
+            urlPattern: /\/samples\/guitar-b\/.*\.mp3$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'guitar-b-samples',
+              expiration: { maxEntries: 45, maxAgeSeconds: 365 * 24 * 60 * 60 },
+            },
+          },
           // Curriculum levels + exercises + templates + view chunks + the
           // notation/celebration satellites those views lazy-import:
           // StaleWhileRevalidate so users get offline support after first
