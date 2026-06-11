@@ -14,6 +14,8 @@
  * gain, _resetForTesting.
  */
 
+import { createAmbience, PIANO_AMBIENCE } from './ambience.ts';
+
 const SAMPLE_BASE_URL = '/samples/piano';
 
 // The minor-third ladder: A0 (MIDI 21) up to C8 (MIDI 108), every 3 semitones.
@@ -36,6 +38,7 @@ interface Voice {
 
 let audioContext: AudioContext | null = null;
 let masterGain: GainNode | null = null;
+let ambienceInput: AudioNode | null = null; // ambience bus (masterGain → ambienceInput → destination)
 const buffers = new Map<string, AudioBuffer>();
 let loadPromise: Promise<void> | null = null;
 const voices = new Map<number, Voice>();
@@ -48,7 +51,10 @@ function getContext(): AudioContext {
     audioContext = new AudioContext();
     masterGain = audioContext.createGain();
     masterGain.gain.value = 0.9;
-    masterGain.connect(audioContext.destination);
+    // Owner-requested room: "piano a bit too dry" (2026-06-11).
+    // wet level (PIANO_AMBIENCE.wet) is the calibration knob — see ambience.ts.
+    ambienceInput = createAmbience(audioContext, audioContext.destination, PIANO_AMBIENCE);
+    masterGain.connect(ambienceInput);
   }
   return audioContext;
 }
@@ -184,4 +190,5 @@ export function _resetForTesting(): void {
   loadPromise = null;
   audioContext = null;
   masterGain = null;
+  ambienceInput = null;
 }

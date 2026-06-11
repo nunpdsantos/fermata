@@ -52,7 +52,8 @@ const gains: ReturnType<typeof makeGainMock>[] = [];
 class MockAudioContext {
   state = 'running';
   currentTime = 10;
-  destination = {};
+  sampleRate = 44100;
+  destination = { _type: 'destination' };
   resume = vi.fn(async () => {});
   createGain() {
     const g = makeGainMock();
@@ -66,6 +67,24 @@ class MockAudioContext {
   }
   createDynamicsCompressor() {
     return { threshold: { value: 0 }, knee: { value: 0 }, ratio: { value: 0 }, attack: { value: 0 }, release: { value: 0 }, connect: vi.fn() };
+  }
+  // Required by createAmbience for the pre-delay node
+  createDelay(_maxDelay?: number) {
+    return { delayTime: { value: 0 }, connect: vi.fn(), disconnect: vi.fn() };
+  }
+  // Required by createAmbience for the convolver
+  createConvolver() {
+    return { buffer: null as AudioBuffer | null, connect: vi.fn(), disconnect: vi.fn() };
+  }
+  // Required by createAmbience to build the synthetic IR buffer
+  createBuffer(channels: number, length: number, sampleRate: number): AudioBuffer {
+    const chData = Array.from({ length: channels }, () => new Float32Array(length));
+    return {
+      numberOfChannels: channels,
+      length,
+      sampleRate,
+      getChannelData: (ch: number) => chData[ch],
+    } as unknown as AudioBuffer;
   }
   decodeAudioData = vi.fn(async (_buf: ArrayBuffer) => ({ duration: 8 }) as AudioBuffer);
 }
@@ -179,5 +198,25 @@ describe('setVolume', () => {
     await preload();
     setVolume(0.3);
     expect(gains[0].gain.value).toBe(0.3);
+  });
+});
+
+describe('ambience wiring', () => {
+  it('masterGain connects into the ambience input node, not directly to destination', async () => {
+    // Trigger context creation
+    await preload();
+    const masterGain = gains[0];
+    // masterGain.connect must have been called at least once (to the ambience input bus)
+    expect(masterGain.connect).toHaveBeenCalled();
+    // The call target must NOT be the raw destination object
+    const callArgs = (masterGain.connect as ReturnType<typeof vi.fn>).mock.calls.map(
+      (c: unknown[]) => c[0],
+    );
+    // destination is MockAudioContext.destination ({ _type: 'destination' })
+    // The ambience input is a GainNode mock — it has a `gain` property
+    const connectedToDestination = callArgs.some(
+      (arg: unknown) => arg === (gains[0] as unknown as { connect: ReturnType<typeof vi.fn> }) || (arg as Record<string, unknown>)['_type'] === 'destination',
+    );
+    expect(connectedToDestination).toBe(false);
   });
 });
