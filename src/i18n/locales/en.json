@@ -58,7 +58,7 @@
     "printScaleDiagram": "Print scale diagram",
     "compareScales": "Compare Scales",
     "scaleComparison": "Scale Comparison",
-    "chooseScale": "Choose a scale\u2026",
+    "chooseScale": "Choose a scale…",
     "selectScaleToCompare": "Select scale to compare",
     "changeComparisonScale": "Change comparison scale",
     "closeComparison": "Close comparison",
@@ -154,8 +154,8 @@
   "keySelector": {
     "root": "Root",
     "scale": "Scale",
-    "moreScales": "More scales\u2026 \u25be",
-    "less": "Less \u25b4",
+    "moreScales": "More scales… ▾",
+    "less": "Less ▴",
     "label": "Key and scale selector"
   },
   "scaleGroup": {
@@ -181,7 +181,7 @@
     "practiceTasks": "Practice Tasks",
     "tryThis": "Try This",
     "markModuleComplete": "Mark Module Complete",
-    "unitsModules": "{{units}} {{unitLabel}} \u00b7 {{modules}} modules",
+    "unitsModules": "{{units}} {{unitLabel}} · {{modules}} modules",
     "unitSingular": "unit",
     "unitPlural": "units",
     "emptyTitle": "Start Your Journey",
@@ -196,7 +196,7 @@
     "title": "Exercises",
     "score": "Score: {{score}}/{{total}}",
     "correct": "Correct!",
-    "correctPartial": "Correct \u2014 partial credit",
+    "correctPartial": "Correct — partial credit",
     "notQuite": "Not quite",
     "incorrect": "Incorrect",
     "hint": "Hint: {{hint}}",
@@ -357,24 +357,6 @@
       "reviewMasterTitle": "Review Master",
       "reviewMasterDesc": "Complete 50 SRS reviews"
     }
-  },
-  "auth": {
-    "signIn": "Sign In",
-    "signInTitle": "Sign In",
-    "signInSubtitle": "Enter your email to receive a magic link. No password needed.",
-    "emailLabel": "Email address",
-    "emailPlaceholder": "you@example.com",
-    "sendLink": "Send Magic Link",
-    "sending": "Sending\u2026",
-    "cancel": "Cancel",
-    "checkEmail": "Check your email",
-    "magicLinkSent": "We sent a sign-in link to {{email}}",
-    "signOut": "Sign Out",
-    "accountLabel": "Account menu",
-    "syncing": "Syncing\u2026",
-    "synced": "Synced",
-    "syncError": "Sync error",
-    "offline": "Offline"
   },
   "concepts": {
     "radarTitle": "Concept Mastery",
