@@ -1,77 +1,37 @@
-# PT Diacritic Restoration — TODO
+# PT Diacritic Restoration — DONE (2026-07-24)
 
-**Source:** Content audit 2026-04-17 §S3 (`docs/content-audit-2026-04-17.md`).
+**Status: restored.** All Portuguese content files now carry full European
+Portuguese orthography. The restoration was performed on 2026-07-24 (branch
+`pt-diacritics`) across the ~24 files this document previously listed as
+stripped, ~5,900 word-level corrections, verified by forced tsc, the full
+Vitest suite (incl. overlay/template parity), and the content audits. The
+diff was symmetric (3,438 insertions / 3,438 deletions) — orthography only,
+no rewording, no structural change.
 
-About half of the Portuguese content files have been stripped of diacritics, producing unaccented European-Portuguese prose (e.g. `tonica` instead of `tónica`, `setima` instead of `sétima`). The restoration cannot be done algorithmically — it requires a native European-Portuguese reviewer with music-theory background, because:
+**Conventions applied** (for future content edits — all PT files now share
+one style):
 
-- Some words look like valid unaccented forms but are wrong in context (`progressao` vs `progressão`).
-- European vs Brazilian PT make different accent choices for several music-theory terms (`harmónica` vs `harmônica`).
-- A naive search-and-replace across the files risks double-accenting already-correct stretches and breaking TypeScript string escaping.
+- European Portuguese forms: `tónica`, `harmónica`, `carácter`, `dórico`,
+  `frígio`, `lídio`, `mixolídio`, `pentatónica`, `secção`, `enarmónica`.
+- Solfège note names accented in prose (`Dó central`, `Fá#`, `Láb`);
+  international letter names (C, D, Eb), chord symbols (Cmaj7, ii7, Gr+6)
+  and template tokens (`{note}`, `{scaleType}`, …) untouched.
+- Loanwords stay English/Italian: blues, jazz, swing, voicing, tremolo.
+- Ordinal style: files keep their original `3.o`/`5.a` markers (none used
+  `º`/`ª`; do not mix styles when editing).
+- Movable-do solfège tokens in l9u32m4 (`Do-Re-Mi…Ti`, "Do = C")
+  deliberately kept unaccented — they are system tokens, not prose.
 
-This TODO exists so the gap is visible; it is deferred from the 2026-04-17 audit pass.
+## Remaining (optional) follow-ups
 
-## Affected files (~16)
-
-Verified via `rg '[ãõáéíóúâêôàç]' src/i18n/content/pt/*.ts` returning zero hits in these files:
-
-- `src/i18n/content/pt/curriculumL2.ts`
-- `src/i18n/content/pt/curriculumL6.ts`
-- `src/i18n/content/pt/curriculumL7.ts`
-- `src/i18n/content/pt/curriculumL8.ts`
-- `src/i18n/content/pt/curriculumL9.ts`
-- `src/i18n/content/pt/exercisesL1.ts`
-- `src/i18n/content/pt/exercisesL2.ts`
-- `src/i18n/content/pt/exercisesL3.ts`
-- `src/i18n/content/pt/exercisesL5.ts`
-- `src/i18n/content/pt/exercisesL6.ts`
-- `src/i18n/content/pt/exercisesL7.ts`
-- `src/i18n/content/pt/exercisesL8.ts`
-- `src/i18n/content/pt/exercisesL9.ts`
-- `src/i18n/content/pt/templatesL1.ts`
-- `src/i18n/content/pt/templatesL2.ts`
-- `src/i18n/content/pt/templatesL3.ts`
-- `src/i18n/content/pt/templatesL5.ts`
-- `src/i18n/content/pt/templatesL6.ts`
-- `src/i18n/content/pt/templatesL7.ts`
-- `src/i18n/content/pt/songs.ts`
-
-## Files confirmed correct (for reference — matching voice target)
-
-- `src/i18n/content/pt/curriculumL1.ts` (130 diacritic hits)
-- `src/i18n/content/pt/curriculumL3.ts` (205)
-- `src/i18n/content/pt/curriculumL4.ts` (222)
-- `src/i18n/content/pt/curriculumL5.ts` (219)
-- `src/i18n/content/pt/exercisesL4.ts` (205)
-- `src/i18n/content/pt/templatesL4.ts` (198)
-- `src/i18n/content/pt/levelMeta.ts` (22)
-
-## Recurring terms that need restoration
-
-Non-exhaustive — derived from scan of the files above:
-
-- `tonica` → `tónica`
-- `setima` → `sétima`
-- `sensivel` → `sensível`
-- `progressao` → `progressão`
-- `mao` → `mão`
-- `terca` / `tercas` → `terça` / `terças`
-- `decima` → `décima`
-- `harmonica` → `harmónica`
-- `diatonico` / `diatonica` → `diatónico` / `diatónica`
-- `pre-dominante` → `pré-dominante`
-- `cadencia` → `cadência`
-- `acidente` / `acidentes` — check context: `acidente` is fine but `aprendizagem de acidentes` is usually written with accented surrounding words
-- `tonalidade` — already correct; included here because it appears near affected terms
-
-## Suggested process
-
-1. Native PT reviewer opens one affected file at a time in the IDE.
-2. Runs a search for each recurring term and accepts/rejects per-occurrence.
-3. After each file, run `npx tsc -b` to catch string-escaping regressions.
-4. Commit per file so bad edits are easy to revert.
-
-## Why not scripted
-
-- `tonica` is a valid PT word in `diatónica` — naive global substitution would produce `diatónica` already correct, or `diatótóninica` on a second pass. Any script would need word-boundary awareness plus context rules.
-- Some passages may already quote English/Latin terms where the unaccented form is correct.
-- TypeScript string literals with escape sequences (e.g. `\u00F8` for `ø`) must not be re-encoded.
+- **Native-speaker skim** — the restoration was done by Claude with
+  music-theory context; the rerun audit's recommendation of a native PT-PT
+  editorial pass still stands for publication-grade certainty.
+- Deliberately left as found (rewording was out of scope):
+  - `percepção` (pre-AO90; post-AO90 PT-PT would be `perceção`)
+  - `cadência deceptiva` (PT-PT convention is `cadência interrompida`)
+  - `homorítmica` (fully standard form is `homorrítmica`)
+  - `reduz-los a metade` (ungrammatical clitic in source), `porcento`,
+    `ambra`, `mediante cromáticas` (likely missing plural `s`)
+  - Foreign proper nouns without their native diacritics: Bartok,
+    Lutoslawski, Klavierstuck.
