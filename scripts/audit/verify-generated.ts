@@ -54,7 +54,9 @@ function deriveCorrect(cfg: ExerciseConfig): string | Set<number> | null {
     case 'ear_training': {
       if (cfg.mode === 'note' && cfg.note) return cfg.note + (cfg.accidental ?? '');
       if (cfg.mode === 'interval' && cfg.targetSemitones !== undefined) return String(cfg.targetSemitones);
-      if (cfg.mode === 'chord' && cfg.choices) return cfg.choices.find(c => c.correct)?.label ?? null;
+      if ((cfg.mode === 'chord' || cfg.mode === 'scale' || cfg.mode === 'progression') && cfg.choices) {
+        return cfg.choices.find(c => c.correct)?.label ?? null;
+      }
       return null;
     }
     case 'scale_degree_id':

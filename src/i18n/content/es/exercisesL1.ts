@@ -81,11 +81,11 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l1u1m3: Semitonos y Tonos ----
 
   l1u1m3e1: {
-    prompt: '¿Cuál es el intervalo de C a C#? Escucha e identifica.',
+    prompt: '¿Cuál es el intervalo de C a C#?',
     hint: 'De C a C# es la menor distancia posible en la música occidental: un semitono, equivalente a 1 semitono.',
   },
   l1u1m3e2: {
-    prompt: '¿Cuál es el intervalo de C a D? Escucha e identifica.',
+    prompt: '¿Cuál es el intervalo de C a D?',
     hint: 'De C a D es un tono: dos semitonos, equivalente a 2 semitonos. Hay una tecla (C#/Db) entre ellos.',
   },
   l1u1m3e3: {

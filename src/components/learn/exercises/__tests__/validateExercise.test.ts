@@ -251,6 +251,41 @@ describe('validateAnswer', () => {
       expect(validateAnswer(config, 'Minor').correct).toBe(true);
       expect(validateAnswer(config, 'Major').correct).toBe(false);
     });
+
+    it('validates scale mode (delegates to multiple_choice)', () => {
+      const config: EarTrainingConfig = {
+        type: 'ear_training',
+        mode: 'scale',
+        root: 'D',
+        rootAccidental: '',
+        rootOctave: 4,
+        scaleType: 'natural_minor',
+        choices: [
+          { label: 'Major', correct: false },
+          { label: 'Natural minor', correct: true },
+          { label: 'Harmonic minor', correct: false },
+        ],
+      };
+      expect(validateAnswer(config, 'Natural minor').correct).toBe(true);
+      expect(validateAnswer(config, 'Major').correct).toBe(false);
+    });
+
+    it('validates progression mode (delegates to multiple_choice)', () => {
+      const config: EarTrainingConfig = {
+        type: 'ear_training',
+        mode: 'progression',
+        root: 'C',
+        rootAccidental: '',
+        progression: ['I', 'IV', 'V', 'I'],
+        choices: [
+          { label: 'I - IV - V - I', correct: true },
+          { label: 'I - V - vi - IV', correct: false },
+          { label: 'ii - V - I', correct: false },
+        ],
+      };
+      expect(validateAnswer(config, 'I - IV - V - I').correct).toBe(true);
+      expect(validateAnswer(config, 'ii - V - I').correct).toBe(false);
+    });
   });
 
   describe('scale_degree_id', () => {

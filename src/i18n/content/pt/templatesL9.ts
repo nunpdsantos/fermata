@@ -2,7 +2,8 @@ import type { TemplateLevelOverlay } from '../types';
 
 // ---------------------------------------------------------------------------
 // European Portuguese (PT-PT) overlay for Level 9 exercise templates
-// 15 modules, ~80 generated exercises
+// 14 modules with templates (l9u32m5 relies on hand-authored exercises).
+// All "listen" templates are real ear_training exercises (F-03).
 // ---------------------------------------------------------------------------
 
 const overlay: TemplateLevelOverlay = {
@@ -13,16 +14,16 @@ const overlay: TemplateLevelOverlay = {
   // ---- l9u30m1: Correspondencia de Altura/Direcao ----
   l9u30m1: [
     {
-      // note_id
+      // ear_training (note)
       promptTemplate:
-        'Identifica a altura mostrada na pauta.',
+        'Ouve a altura e identifica-a.',
       hintTemplate:
         'Usa alturas de referencia que conhecas (A4 = 440 Hz, Do central = C4) para te orientares.',
     },
     {
-      // note_id
+      // ear_training (note, com acidente)
       promptTemplate:
-        'Identifica esta altura. Inclui um acidente.',
+        'Ouve esta altura e identifica-a. Inclui um acidente.',
       hintTemplate:
         'Esta nota tem um sustenido ou bemol. Ouve se soa mais aguda ou mais grave do que a nota natural mais proxima.',
     },
@@ -31,65 +32,51 @@ const overlay: TemplateLevelOverlay = {
   // ---- l9u30m2: Reconhecimento Maior vs Menor ----
   l9u30m2: [
     {
-      // interval_id
+      // ear_training (interval)
       promptTemplate:
-        'Ouve e identifica este intervalo a partir de {root}. E maior ou menor?',
+        'Ouve este intervalo e identifica-o. A terceira e maior ou menor?',
       hintTemplate:
         '3.a maior = 4 semitons (brilhante, alegre). 3.a menor = 3 semitons (sombria, triste). A diferenca e apenas meio-tom, mas o caracter muda dramaticamente.',
     },
     {
-      // multiple_choice
+      // ear_training (chord)
       promptTemplate:
-        'Distingue a qualidade maior da menor de ouvido.',
+        'Ouve este acorde e identifica a sua qualidade.',
       hintTemplate:
-        'Maior soa brilhante e aberto. Menor soa sombrio e pensativo. Foca-te na 3.a: 3.a maior = 4 semitons, 3.a menor = 3 semitons.',
-      choiceSets: [
-        [
-          'Um acorde maior soa brilhante porque tem uma 3.a maior (4 semitons)',
-          'Um acorde maior soa brilhante por causa da 5.a perfeita',
-          'Acordes maiores e menores soam identicos',
-          'A fundamental determina se um acorde soa brilhante',
-        ],
-        [
-          'Um acorde menor soa mais sombrio porque tem uma 3.a menor (3 semitons)',
-          'Acordes menores tem uma fundamental mais grave',
-          'Acordes menores nao tem 5.a',
-          'A 5.a faz um acorde soar menor',
-        ],
-      ],
+        'O maior soa brilhante e aberto. O menor soa sombrio e pensativo. Concentra-te na 3.a: 3.a maior = 4 semitons, 3.a menor = 3 semitons.',
     },
   ],
 
   // ---- l9u30m3: Reconhecimento de Intervalos P1-P5 ----
   l9u30m3: [
     {
-      // interval_id
+      // ear_training (interval)
       promptTemplate:
-        'Ouve e identifica este intervalo a partir de {root} no sentido {direction}. Foca-te em intervalos ate a 5.a perfeita.',
+        'Ouve este intervalo, tocado em movimento {direction}, e identifica-o. Concentra-te em intervalos ate a 5.a perfeita.',
       hintTemplate:
-        'Treino auditivo de intervalos: 2.a m=1 (tensa), 2.a M=2 (passo), 3.a m=3 (triste), 3.a M=4 (brilhante), 4.a P=5 (aberta), 5.a P=7 (poderosa). A partir de {root}, conta os semitons.',
+        'Treino auditivo de intervalos: 2m=1 (tenso), 2M=2 (passo), 3m=3 (triste), 3M=4 (brilhante), 4P=5 (aberto), 5P=7 (forte). Conta os semitons que ouves.',
     },
   ],
 
   // ---- l9u30m4: Reconhecimento de Intervalos 6.a m-P8 ----
   l9u30m4: [
     {
-      // interval_id
+      // ear_training (interval)
       promptTemplate:
-        'Ouve e identifica este intervalo mais amplo a partir de {root} no sentido {direction}.',
+        'Ouve este intervalo mais largo, tocado em movimento {direction}, e identifica-o.',
       hintTemplate:
-        'Intervalos amplos: tritono=6 (tenso), 6.a m=8 (agridoce), 6.a M=9 (quente), 7.a m=10 (jazz), 7.a M=11 (anelante), 8.a P=12 (oitava). A partir de {root}.',
+        'Intervalos largos: tritono=6 (tenso), 6m=8 (agridoce), 6M=9 (quente), 7m=10 (jazz), 7M=11 (anelante), 8P=12 (oitava).',
     },
   ],
 
   // ---- l9u30m5: Intervalos Harmonicos ----
   l9u30m5: [
     {
-      // interval_id
+      // ear_training (interval, harmonico)
       promptTemplate:
-        'Ouve estas duas notas tocadas simultaneamente a partir de {root} e identifica o intervalo harmonico.',
+        'Ouve estas duas notas tocadas em simultaneo e identifica o intervalo harmonico.',
       hintTemplate:
-        'Intervalos harmonicos soam ambas as notas de uma vez. Consonancias (3, 4, 5, 7, 8, 9, 12) fundem-se suavemente. Dissonancias (1, 2, 6, 10, 11) criam tensao. A partir de {root}.',
+        'Os intervalos harmonicos soam ambas as notas ao mesmo tempo. As consonancias (3, 4, 5, 7, 8, 9, 12 semitons) fundem-se suavemente. As dissonancias (1, 2, 6, 10, 11) criam tensao.',
     },
   ],
 
@@ -100,81 +87,55 @@ const overlay: TemplateLevelOverlay = {
   // ---- l9u31m1: Reconhecimento de Escalas Maior/Menor ----
   l9u31m1: [
     {
-      // scale_build
+      // ear_training (scale)
       promptTemplate:
-        'Apos ouvir, constroi a escala de {root} {scaleType} que ouviste. Seleciona todas as notas.',
+        'Ouve esta escala e identifica o seu tipo.',
       hintTemplate:
-        'Escala maior: T-T-mT-T-T-T-mT (brilhante, resolvida). Menor natural: T-mT-T-T-mT-T-T (sombria, aberta). Menor harmonica: eleva o 7.o. Constroi a partir de {root}.',
+        'Escala maior: T-T-mT-T-T-T-mT (brilhante, resolvida). Menor natural: T-mT-T-T-mT-T-T (sombria, aberta). Menor harmonica: eleva o 7.o, criando um salto distintivo de tom e meio.',
     },
   ],
 
   // ---- l9u31m2: Reconhecimento de Escalas Modais ----
   l9u31m2: [
     {
-      // scale_build
+      // ear_training (scale)
       promptTemplate:
-        'Constroi a escala de {root} {scaleType}. Ouve a nota caracteristica que define este modo.',
+        'Ouve esta escala e identifica o modo. Ouve com atencao a nota caracteristica.',
       hintTemplate:
-        'Identificadores modais: Dorico = 6.a natural em contexto menor, Frigio = b2, Lidio = #4, Mixolidio = b7 em contexto maior. Constroi a partir de {root}.',
+        'Identificadores dos modos: Dorico = 6 natural em contexto menor, Frigio = b2, Lidio = #4, Mixolidio = b7 em contexto maior.',
     },
   ],
 
-  // ---- l9u31m3: Qualidade de Triades de Ouvido ----
+  // ---- l9u31m3: Reconhecimento de Escalas Pentatonicas, Blues e Simetricas ----
   l9u31m3: [
     {
-      // chord_build
+      // ear_training (scale)
       promptTemplate:
-        'Ouve e constroi a triade de {root} {quality}. Identifica a qualidade do acorde de ouvido.',
+        'Ouve esta escala e identifica o seu tipo.',
       hintTemplate:
-        'Maior = brilhante/estavel. Menor = sombrio/estavel. Diminuto = tenso/instavel. Aumentado = brilhante/nao resolvido. Constroi a triade sobre {root}.',
+        'As escalas pentatonicas tem cinco notas e nenhuma tensao de meio-tom. A escala de blues acrescenta a "blue note" (b5). A escala de tons inteiros e toda em tons -- onirica e sem centro.',
     },
   ],
 
-  // ---- l9u31m4: Qualidade de Acordes de Setima de Ouvido ----
+  // ---- l9u31m4: Reconhecimento de Qualidade de Triades ----
   l9u31m4: [
     {
-      // chord_build
+      // ear_training (chord)
       promptTemplate:
-        'Ouve e constroi o acorde de {root} {quality}. Identifica a qualidade do acorde de setima de ouvido.',
+        'Ouve esta triade e identifica a sua qualidade.',
       hintTemplate:
-        '7.a M = sonhador/exuberante. 7.a m = suave/quente. 7.a dom = brilhante/precisa resolucao. meio-dim7 = sombrio/nao resolvido. dim7 = muito tenso. Constroi sobre {root}.',
+        'Maior = brilhante/estavel. Menor = sombria/estavel. Diminuta = tensa/instavel. Aumentada = brilhante/nao resolvida.',
     },
   ],
 
-  // ---- l9u31m5: Progressao de Acordes de Ouvido ----
+  // ---- l9u31m5: Reconhecimento de Qualidade de Acordes de Setima ----
   l9u31m5: [
     {
-      // multiple_choice
+      // ear_training (chord)
       promptTemplate:
-        'Ouve esta progressao de acordes e identifica a analise em numeracao romana.',
+        'Ouve este acorde de setima e identifica a sua qualidade.',
       hintTemplate:
-        'Foca-te no movimento do baixo e na qualidade de cada acorde. Progressoes comuns: I-IV-V-I, I-V-vi-IV, ii-V-I. Ouve padroes de resolucao e tensao.',
-      choiceSets: [
-        [
-          'I - IV - V - I: a progressao harmonica mais basica na musica tonal',
-          'I - ii - iii - IV',
-          'I - V - IV - I',
-          'I - vi - ii - V',
-        ],
-        [
-          'I - V - vi - IV: a progressao pop mais comum',
-          'I - IV - V - vi',
-          'I - vi - V - IV',
-          'I - ii - V - I',
-        ],
-        [
-          'ii - V - I: a progressao fundamental do jazz',
-          'I - V - ii: o padrao jazz',
-          'V - ii - I: a resolucao jazz tipica',
-          'I - ii - V: a abordagem jazz',
-        ],
-        [
-          'I - vi - IV - V: a "progressao dos anos 50"',
-          'I - V - IV - vi',
-          'vi - I - IV - V',
-          'I - IV - vi - V',
-        ],
-      ],
+        'maj7 = sonhador/exuberante. m7 = suave/quente. 7 da dominante = brilhante/pede resolucao. meio-diminuto = sombrio/nao resolvido. dim7 = muito tenso.',
     },
   ],
 
@@ -182,73 +143,77 @@ const overlay: TemplateLevelOverlay = {
   // Unidade 32: Ditado Melodico e Leitura a Primeira Vista
   // =========================================================================
 
-  // ---- l9u32m1: Ditado Melodico por Graus ----
+  // ---- l9u32m1: Ditado Melodico Diatonico ----
   l9u32m1: [
     {
-      // note_id
+      // ear_training (note)
       promptTemplate:
-        'Identifica a nota mostrada na pauta.',
+        'Ouve esta altura de uma melodia por graus e identifica-a.',
       hintTemplate:
         'Em melodias por graus, cada nota esta a meio-tom ou um tom da anterior. Canta a escala para te orientares.',
     },
     {
-      // interval_id
+      // ear_training (interval)
       promptTemplate:
-        'Identifica o passo a partir de {root}: e um meio-tom ou um tom?',
+        'Ouve este intervalo melodico, tocado em movimento {direction}, e identifica-o.',
       hintTemplate:
-        'Meios-tons (1 semitom) soam mais proximos/tensos. Tons (2 semitons) soam mais abertos. A partir de {root}, ouve com atencao.',
+        'As melodias diatonicas misturam passos (1-2 semitons) e saltos (3M=4, 4P=5, 5P=7, 8P=12). Canta o que ouviste antes de responder.',
     },
   ],
 
-  // ---- l9u32m2: Ditado Melodico com Saltos ----
+  // ---- l9u32m2: Ditado Melodico Cromatico ----
   l9u32m2: [
     {
-      // interval_id
+      // ear_training (note)
       promptTemplate:
-        'Ouve este salto a partir de {root} e identifica o intervalo.',
-      hintTemplate:
-        'Saltos melodicos comuns: 3.a M (4, brilhante), 4.a P (5, aberta), 5.a P (7, forte), 6.a m (8, expressiva), 8.a P (12, oitava). A partir de {root}, identifica o intervalo.',
-    },
-  ],
-
-  // ---- l9u32m3: Ditado Melodico Cromatico ----
-  l9u32m3: [
-    {
-      // note_id
-      promptTemplate:
-        'Identifica esta nota cromatica.',
+        'Ouve esta nota cromatica e identifica-a.',
       hintTemplate:
         'Notas cromaticas sao acidentes que nao pertencem a tonalidade atual. Criam tensao que resolve para notas diatonicas proximas.',
     },
     {
-      // interval_id
+      // ear_training (interval)
       promptTemplate:
-        'Identifica este intervalo cromatico a partir de {root}.',
+        'Ouve este intervalo cromatico, tocado em movimento {direction}, e identifica-o.',
       hintTemplate:
-        'Intervalos cromaticos incluem qualidades aumentadas e diminutas. A partir de {root}, este intervalo usa uma nota fora da escala diatonica.',
+        'Os intervalos cromaticos incluem qualidades aumentadas e diminutas. Este intervalo usa uma nota fora da escala diatonica.',
     },
   ],
 
-  // ---- l9u32m4: Leitura a Primeira Vista — Diatonica ----
+  // ---- l9u32m3: Ditado Harmonico -- Cadencias e Progressoes ----
+  l9u32m3: [
+    {
+      // ear_training (progression, cadencias)
+      promptTemplate:
+        'Ouve esta cadencia em C maior e identifica-a.',
+      hintTemplate:
+        'Autentica (V-I) = chegada conclusiva. Plagal (IV-I) = a cadencia do "Amen". Deceptiva (V-vi) = chegada esperada desviada. Meia (I-V) = pausa na tensao.',
+    },
+    {
+      // ear_training (progression)
+      promptTemplate:
+        'Ouve esta progressao de acordes em C maior e identifica o padrao de numerais romanos.',
+      hintTemplate:
+        'Concentra-te no movimento do baixo e na qualidade de cada acorde. Progressoes comuns: I-IV-V-I (basica), I-V-vi-IV (pop), ii-V-I (jazz), I-vi-IV-V (anos 50).',
+    },
+  ],
+
+  // ---- l9u32m4: Leitura a Primeira Vista -- Diatonica ----
   l9u32m4: [
     {
       // scale_degree_id
       promptTemplate:
-        'Na escala de {root} {scaleType}, identifica o grau {degree}. Canta desde a tonica para o encontrar.',
+        'Na escala de {root} {scaleType}, que grau e {note}? Canta a partir da tonica para o encontrar.',
       hintTemplate:
-        'A leitura a primeira vista usa solfejo (do-re-mi-fa-sol-la-ti) ou numeros de graus. Em {root} {scaleType}, conta a partir de {root} para encontrar o grau {degree}.',
+        'A leitura a primeira vista usa solfejo (do-re-mi-fa-sol-la-si) ou numeros de graus. Em {root} {scaleType}, conta a partir de {root} para encontrar o grau {degree}.',
     },
     {
       // scale_build
       promptTemplate:
-        'Canta e depois constroi a escala de {root} {scaleType}. Seleciona todas as 7 notas.',
+        'Canta e depois constroi a escala de {root} {scaleType}. Seleciona as 7 notas.',
       hintTemplate:
-        'Canta mentalmente a escala comecando em {root} usando solfejo ou numeros antes de selecionar notas. A escala {scaleType} tem um padrao sonoro distintivo.',
+        'Canta mentalmente a escala a partir de {root} usando solfejo ou numeros antes de selecionar as notas. A escala {scaleType} tem um padrao sonoro distintivo.',
     },
   ],
-
-  // l9u32m5 (Audicao Contextual) nao tem templates gerados — usa os
-  // exercicios multiple_choice escritos a mao em exercisesL9.ts.
 };
 
 export default overlay;

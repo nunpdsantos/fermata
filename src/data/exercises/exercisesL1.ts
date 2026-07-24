@@ -175,7 +175,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l1u1m3e1',
       type: 'interval_id',
-      prompt: 'What is the interval from C to C#? Listen and identify.',
+      prompt: 'What is the interval from C to C#?',
       config: {
         type: 'interval_id',
         root: 'C',
@@ -190,7 +190,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l1u1m3e2',
       type: 'interval_id',
-      prompt: 'What is the interval from C to D? Listen and identify.',
+      prompt: 'What is the interval from C to D?',
       config: {
         type: 'interval_id',
         root: 'C',

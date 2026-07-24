@@ -72,7 +72,8 @@ describe('note_id prompt leakage (corpus)', () => {
   const corpus = resolvedNoteIdExercises();
 
   it('covers the full resolved note_id corpus', () => {
-    expect(corpus.length).toBeGreaterThan(30);
+    // L1 note-reading exercises at minimum (L9's became ear_training in F-03).
+    expect(corpus.length).toBeGreaterThan(10);
   });
 
   it('no prompt names its own answer', () => {
