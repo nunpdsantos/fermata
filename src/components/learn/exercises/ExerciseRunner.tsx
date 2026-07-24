@@ -10,10 +10,11 @@ import { ExercisePrompt } from './ExercisePrompt';
 import { ExerciseFeedback } from './ExerciseFeedback';
 import { ChoiceInput } from './inputs/ChoiceInput';
 import { InstrumentInput } from './inputs/InstrumentInput';
-import { playNote, playChord, resumeAudio } from '../../../core/services/audio';
+import { playNote, playChord, playScale, resumeAudio } from '../../../core/services/audio';
 import { getSynthConfig } from '../../../services/synthConfig';
-import type { NaturalNote, Accidental, Note, ChordQuality } from '../../../core/types/music';
-import { buildChord } from '../../../core/constants/chords';
+import type { NaturalNote, Accidental, Note, ChordQuality, ScaleType } from '../../../core/types/music';
+import { buildChord, getDiatonicTriads } from '../../../core/constants/chords';
+import { buildScale } from '../../../core/constants/scales';
 import { palette } from '../../../design/tokens/palette';
 import { selectWeightedExercises } from '../../../services/exerciseSelector';
 
@@ -61,7 +62,7 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
       case 'ear_training': {
         if (cfg.mode === 'note') return generateNoteChoices(cfg.note ?? 'C', cfg.accidental ?? '');
         if (cfg.mode === 'interval') return generateIntervalChoices(cfg.targetSemitones ?? 7);
-        if (cfg.mode === 'chord' && cfg.choices) return generateEarChoices(cfg.choices);
+        if ((cfg.mode === 'chord' || cfg.mode === 'scale' || cfg.mode === 'progression') && cfg.choices) return generateEarChoices(cfg.choices);
         return [];
       }
       case 'scale_degree_id':
@@ -86,27 +87,41 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
       } else if (cfg.mode === 'interval' && cfg.root && cfg.targetSemitones !== undefined) {
         const rootNote: Note = { natural: cfg.root as NaturalNote, accidental: (cfg.rootAccidental ?? '') as Accidental };
         const oct = cfg.rootOctave ?? 4;
-        playNote(rootNote, oct, 0.6, pianoConfig);
-        // Play second note after a short delay via AudioContext scheduling
-        setTimeout(() => {
-          // Compute the interval note pitch class
-          const semitones = cfg.direction === 'descending' ? -cfg.targetSemitones! : cfg.targetSemitones!;
-          // Play raw MIDI-based note using the root as reference
-          const NATURALS: NaturalNote[] = ['C', 'C', 'D', 'D', 'E', 'F', 'F', 'G', 'G', 'A', 'A', 'B'];
-          const ACCIDENTALS: Accidental[] = ['', '#', '', '#', '', '', '#', '', '#', '', '#', ''];
-          const rootPCs: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-          let rootPC = rootPCs[cfg.root!] ?? 0;
-          if (cfg.rootAccidental === '#') rootPC += 1;
-          if (cfg.rootAccidental === 'b') rootPC -= 1;
-          const targetPC = ((rootPC + semitones) % 12 + 12) % 12;
-          const targetNote: Note = { natural: NATURALS[targetPC], accidental: ACCIDENTALS[targetPC] };
-          const targetOct = oct + (rootPC + semitones >= 12 ? 1 : rootPC + semitones < 0 ? -1 : 0);
-          playNote(targetNote, targetOct, 0.6, pianoConfig);
-        }, 700);
+        // Compute the interval note pitch class
+        const semitones = cfg.direction === 'descending' ? -cfg.targetSemitones : cfg.targetSemitones;
+        const NATURALS: NaturalNote[] = ['C', 'C', 'D', 'D', 'E', 'F', 'F', 'G', 'G', 'A', 'A', 'B'];
+        const ACCIDENTALS: Accidental[] = ['', '#', '', '#', '', '', '#', '', '#', '', '#', ''];
+        const rootPCs: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+        let rootPC = rootPCs[cfg.root] ?? 0;
+        if (cfg.rootAccidental === '#') rootPC += 1;
+        if (cfg.rootAccidental === 'b') rootPC -= 1;
+        const targetPC = ((rootPC + semitones) % 12 + 12) % 12;
+        const targetNote: Note = { natural: NATURALS[targetPC], accidental: ACCIDENTALS[targetPC] };
+        const targetOct = oct + (rootPC + semitones >= 12 ? 1 : rootPC + semitones < 0 ? -1 : 0);
+        if (cfg.harmonic) {
+          // Harmonic interval: both notes sound together.
+          playNote(rootNote, oct, 1.2, pianoConfig);
+          playNote(targetNote, targetOct, 1.2, pianoConfig);
+        } else {
+          playNote(rootNote, oct, 0.6, pianoConfig);
+          setTimeout(() => playNote(targetNote, targetOct, 0.6, pianoConfig), 700);
+        }
       } else if (cfg.mode === 'chord' && cfg.chordRoot && cfg.quality) {
         const root: Note = { natural: cfg.chordRoot as NaturalNote, accidental: (cfg.chordRootAccidental ?? '') as Accidental };
         const chord = buildChord(root, cfg.quality as ChordQuality);
         playChord(chord.notes, 4, 1.2, pianoConfig);
+      } else if (cfg.mode === 'scale' && cfg.root && cfg.scaleType) {
+        const root: Note = { natural: cfg.root as NaturalNote, accidental: (cfg.rootAccidental ?? '') as Accidental };
+        const scale = buildScale(root, cfg.scaleType as ScaleType);
+        playScale(scale.notes, cfg.rootOctave ?? 4, true, false, 0.35, undefined, undefined, pianoConfig);
+      } else if (cfg.mode === 'progression' && cfg.progression) {
+        const key: Note = { natural: (cfg.root ?? 'C') as NaturalNote, accidental: (cfg.rootAccidental ?? '') as Accidental };
+        const triads = getDiatonicTriads(key);
+        cfg.progression.forEach((numeral, i) => {
+          const entry = triads.find((t2) => t2.numeral.replace('°', '') === numeral.replace('°', ''));
+          if (!entry) return;
+          setTimeout(() => playChord(entry.chord.notes, 4, 0.85, pianoConfig), i * 950);
+        });
       }
     } finally {
       setTimeout(() => { playingRef.current = false; }, 800);

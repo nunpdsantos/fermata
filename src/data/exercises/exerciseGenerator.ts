@@ -27,7 +27,7 @@ function pick<T>(arr: readonly T[], rand: () => number): T {
 
 // ─── Config Builders ────────────────────────────────────────────────────────
 
-function buildConfig(template: ExerciseTemplate, rand: () => number): ExerciseConfig | null {
+function buildConfig(template: ExerciseTemplate, rand: () => number, lang: ContentLanguage = 'en'): ExerciseConfig | null {
   const p = template.params;
 
   switch (template.type) {
@@ -104,6 +104,92 @@ function buildConfig(template: ExerciseTemplate, rand: () => number): ExerciseCo
       };
     }
 
+    case 'ear_training': {
+      // 'major7' → 'Major 7' (dictionary translations already read naturally)
+      const cap = (s: string) =>
+        (s.charAt(0).toUpperCase() + s.slice(1)).replace(/([A-Za-z])(\d)/, '$1 $2');
+      const roots = p.roots ?? ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+      const accidentals = p.accidentals ?? roots.map(() => '');
+      const octaves = p.octaves ?? [4];
+      const idx = Math.floor(rand() * roots.length);
+
+      switch (p.earMode) {
+        case 'note':
+          return {
+            type: 'ear_training',
+            mode: 'note',
+            note: roots[idx],
+            accidental: accidentals[idx] ?? '',
+            octave: pick(octaves, rand),
+          };
+        case 'interval': {
+          const intervals = p.intervals ?? [3, 4, 5, 7];
+          const directions = p.directions ?? ['ascending'];
+          return {
+            type: 'ear_training',
+            mode: 'interval',
+            root: roots[idx],
+            rootAccidental: accidentals[idx] ?? '',
+            rootOctave: pick(octaves, rand),
+            targetSemitones: pick(intervals, rand),
+            direction: pick(directions, rand),
+            ...(p.harmonic ? { harmonic: true } : {}),
+          };
+        }
+        case 'chord': {
+          const qualities = p.chordQualities ?? [];
+          if (qualities.length < 2) return null;
+          const quality = pick(qualities, rand);
+          return {
+            type: 'ear_training',
+            mode: 'chord',
+            chordRoot: roots[idx],
+            chordRootAccidental: accidentals[idx] ?? '',
+            quality,
+            choices: qualities.map((q) => ({
+              label: cap(translateChordQuality(q, lang)),
+              correct: q === quality,
+            })),
+          };
+        }
+        case 'scale': {
+          const scaleTypes = p.scaleTypes ?? [];
+          if (scaleTypes.length < 2) return null;
+          const scaleType = pick(scaleTypes, rand);
+          return {
+            type: 'ear_training',
+            mode: 'scale',
+            root: roots[idx],
+            rootAccidental: accidentals[idx] ?? '',
+            rootOctave: pick(octaves, rand),
+            scaleType,
+            choices: scaleTypes.map((s) => ({
+              label: cap(translateScaleType(s, lang)),
+              correct: s === scaleType,
+            })),
+          };
+        }
+        case 'progression': {
+          const sets = p.progressionSets ?? [];
+          if (sets.length < 2) return null;
+          const progression = pick(sets, rand);
+          return {
+            type: 'ear_training',
+            mode: 'progression',
+            root: roots[idx],
+            rootAccidental: accidentals[idx] ?? '',
+            progression,
+            choices: sets.map((s) => ({
+              label: s.join(' - '),
+              correct: s === progression,
+            })),
+          };
+        }
+        default:
+          return null;
+      }
+    }
+
     case 'scale_degree_id': {
       const roots = p.roots ?? ['C', 'G', 'D'];
       const accidentals = p.accidentals ?? roots.map(() => '');
@@ -176,6 +262,17 @@ function fillTemplate(template: string, config: ExerciseConfig, lang: ContentLan
       });
       replacements['degree'] = String(config.correctDegree);
       break;
+    case 'ear_training':
+      // Post-attempt hints may reference the played material; prompts must
+      // not (enforced by generator tests + the L9 alignment corpus test).
+      if (config.note) replacements['note'] = config.note + (config.accidental ?? '');
+      if (config.octave !== undefined) replacements['octave'] = String(config.octave);
+      if (config.root) replacements['root'] = config.root + (config.rootAccidental ?? '');
+      if (config.targetSemitones !== undefined) replacements['semitones'] = String(config.targetSemitones);
+      if (config.direction) replacements['direction'] = translateDirection(config.direction, lang);
+      if (config.quality) replacements['quality'] = translateChordQuality(config.quality, lang);
+      if (config.scaleType) replacements['scaleType'] = translateScaleType(config.scaleType, lang);
+      break;
   }
 
   for (const [key, value] of Object.entries(replacements)) {
@@ -222,7 +319,7 @@ export function generateExercises(
   while (exercises.length < config.targetCount && attempts < maxAttempts) {
     attempts++;
     const template = pick(config.templates, rand);
-    const exerciseConfig = buildConfig(template, rand);
+    const exerciseConfig = buildConfig(template, rand, lang);
     if (!exerciseConfig) continue;
 
     // Deduplication: create a key from the config to avoid identical exercises

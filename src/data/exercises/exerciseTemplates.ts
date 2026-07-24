@@ -35,6 +35,15 @@ export interface ExerciseTemplateParams {
   noteCounts?: number[];
   /** Choices for multiple choice (array of {label, correct} arrays) */
   choiceSets?: { label: string; correct: boolean }[][];
+  /** Ear-training mode; required for type 'ear_training'. Chord/scale modes
+   * build their choices from chordQualities/scaleTypes (labels translated
+   * per language at generation time); progression mode from progressionSets. */
+  earMode?: 'note' | 'interval' | 'chord' | 'scale' | 'progression';
+  /** Interval ear mode: play both notes simultaneously */
+  harmonic?: boolean;
+  /** Progression ear mode: pool of Roman-numeral progressions; one is played,
+   * all become the choices */
+  progressionSets?: string[][];
 }
 
 export interface ModuleTemplateConfig {

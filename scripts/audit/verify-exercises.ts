@@ -68,7 +68,7 @@ function deriveCorrect(cfg: ExerciseConfig): string | Set<number> | null {
     case 'ear_training': {
       if (cfg.mode === 'note' && cfg.note) return cfg.note + (cfg.accidental ?? '');
       if (cfg.mode === 'interval' && cfg.targetSemitones !== undefined) return String(cfg.targetSemitones);
-      if (cfg.mode === 'chord' && cfg.choices) {
+      if ((cfg.mode === 'chord' || cfg.mode === 'scale' || cfg.mode === 'progression') && cfg.choices) {
         const correct = cfg.choices.find(c => c.correct);
         return correct?.label ?? null;
       }
@@ -158,14 +158,35 @@ function deriveCorrect(cfg: ExerciseConfig): string | Set<number> | null {
           }
         }
 
-        // ear_training chord-mode sanity
-        if (ex.config.type === 'ear_training' && ex.config.mode === 'chord') {
-          if (!ex.config.choices) {
+        // ear_training choice-mode sanity: choices exist, exactly one correct,
+        // and the correct label semantically matches the played material.
+        if (ex.config.type === 'ear_training' && ['chord', 'scale', 'progression'].includes(ex.config.mode)) {
+          const cfg = ex.config;
+          if (!cfg.choices) {
             findings.push({
               level: lvl, moduleId, exerciseId: ex.id, type: ex.type,
-              problem: `ear_training chord mode missing 'choices'`,
+              problem: `ear_training ${cfg.mode} mode missing 'choices'`,
               prompt: ex.prompt.slice(0, 80),
             });
+          } else {
+            const correct = cfg.choices.filter(c => c.correct);
+            const norm = (s: string) => s.toLowerCase().replace(/[\s_-]/g, '');
+            let problem: string | null = null;
+            if (correct.length !== 1) {
+              problem = `expected exactly one correct choice, got ${correct.length}`;
+            } else if (cfg.mode === 'chord' && cfg.quality && norm(correct[0].label) !== norm(cfg.quality)) {
+              problem = `correct label '${correct[0].label}' does not match quality '${cfg.quality}'`;
+            } else if (cfg.mode === 'scale' && cfg.scaleType && norm(correct[0].label) !== norm(cfg.scaleType)) {
+              problem = `correct label '${correct[0].label}' does not match scaleType '${cfg.scaleType}'`;
+            } else if (cfg.mode === 'progression' && cfg.progression && correct[0].label !== cfg.progression.join(' - ')) {
+              problem = `correct label '${correct[0].label}' does not match progression '${cfg.progression.join(' - ')}'`;
+            }
+            if (problem) {
+              findings.push({
+                level: lvl, moduleId, exerciseId: ex.id, type: ex.type,
+                problem, prompt: ex.prompt.slice(0, 80),
+              });
+            }
           }
         }
 

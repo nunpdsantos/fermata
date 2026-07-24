@@ -58,7 +58,7 @@ export interface MultipleChoiceConfig {
 export interface EarTrainingConfig {
   type: 'ear_training';
   /** What to play and identify */
-  mode: 'note' | 'interval' | 'chord';
+  mode: 'note' | 'interval' | 'chord' | 'scale' | 'progression';
   /** For note mode: note to play, user identifies by name */
   note?: string;
   accidental?: string;
@@ -70,10 +70,17 @@ export interface EarTrainingConfig {
   rootOctave?: number;
   targetSemitones?: number;
   direction?: 'ascending' | 'descending';
+  /** For interval mode: play both notes simultaneously (harmonic interval) */
+  harmonic?: boolean;
   /** For chord mode: play chord, user identifies quality via choices */
   chordRoot?: string;
   chordRootAccidental?: string;
   quality?: string;
+  /** For scale mode: play scale over root/rootAccidental/rootOctave, user identifies type via choices */
+  scaleType?: string;
+  /** For progression mode: diatonic Roman numerals played in the key of root (default C major) */
+  progression?: string[];
+  /** Choices for chord, scale and progression modes */
   choices?: { label: string; correct: boolean }[];
 }
 
