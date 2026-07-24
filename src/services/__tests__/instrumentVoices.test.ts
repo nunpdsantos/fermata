@@ -128,12 +128,24 @@ describe('registerInstrumentVoices', () => {
     expect(mockedSetVoice).toHaveBeenCalledTimes(1);
   });
 
-  it('kicks off BOTH sample preloads regardless of the boot instrument', () => {
+  it('preloads only the boot instrument sample bank on the idle slot', () => {
     useAppStore.setState({ instrument: 'guitar' });
     unsubscribe = registerInstrumentVoices();
 
     vi.advanceTimersByTime(1100); // jsdom has no requestIdleCallback → setTimeout(1000) branch
+    expect(guitarSampler.preload).toHaveBeenCalled();
+    expect(pianoSampler.preload).not.toHaveBeenCalled();
+  });
+
+  it('preloads the other bank when the instrument is switched', () => {
+    useAppStore.setState({ instrument: 'piano' });
+    unsubscribe = registerInstrumentVoices();
+
+    vi.advanceTimersByTime(1100);
     expect(pianoSampler.preload).toHaveBeenCalled();
+    expect(guitarSampler.preload).not.toHaveBeenCalled();
+
+    useAppStore.setState({ instrument: 'guitar' });
     expect(guitarSampler.preload).toHaveBeenCalled();
   });
 

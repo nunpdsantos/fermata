@@ -1,6 +1,6 @@
 # Fermata
 
-Interactive music theory, from the instrument out. A virtual piano or guitar fretboard is always in reach; theory — scales, chords, intervals, keys, the circle of fifths — is explored on it directly. Alongside the explorer sits a structured 9-level curriculum (118 modules, 1,000+ exercises) with spaced-repetition review.
+Interactive music theory, from the instrument out. A virtual piano or guitar fretboard is always in reach; theory — scales, chords, intervals, keys, the circle of fifths — is explored on it directly. Alongside the explorer sits a structured 9-level curriculum (118 modules, 869 exercises) with spaced-repetition review.
 
 **Live:** https://fermata-music.vercel.app/
 

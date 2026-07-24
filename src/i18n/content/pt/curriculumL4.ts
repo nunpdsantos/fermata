@@ -263,7 +263,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'O Acorde ii7',
           explanation:
-            'O ii7 é o acorde pré-dominante mais importante. Em tonalidades maiores é um acorde de sétima menor; em tonalidades menores torna-se um acorde de sétima meio-diminuto (iiø7). A progressão ii7-V7-I é a sequência funcional mais forte na harmonia tonal porque a 7.ª de ii7 é uma nota comum com a fundamental de V, criando uma ligação suave na condução de vozes. O baixo move-se por 5.ª descendente (ou 4.ª ascendente) em cada passo, reforçando a atração gravitacional em direção à tónica.',
+            'O ii7 é o acorde pré-dominante mais importante. Em tonalidades maiores é um acorde de sétima menor; em tonalidades menores torna-se um acorde de sétima meio-diminuto (iiø7). A progressão ii7-V7-I é a sequência funcional mais forte na harmonia tonal porque a fundamental de ii7 (D) é uma nota comum com a 5.ª de V (D em G-B-D-F), criando uma ligação suave na condução de vozes. O baixo move-se por 5.ª descendente (ou 4.ª ascendente) em cada passo, reforçando a atração gravitacional em direção à tónica.',
           tryThisLabel: 'Ouve ii7 na tonalidade de Dó',
         },
         {

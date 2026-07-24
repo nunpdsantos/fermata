@@ -263,7 +263,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'El Acorde ii7',
           explanation:
-            'El ii7 es el acorde predominante más importante. En tonalidades mayores es un acorde de séptima menor; en tonalidades menores se convierte en un acorde de séptima semidisminuido (iiø7). La progresión ii7-V7-I es la secuencia funcional más fuerte en la armonía tonal porque la 7.ª de ii7 es una nota común con la fundamental de V, creando un enlace suave en la conducción de voces. El bajo se mueve por 5.ª descendente (o 4.ª ascendente) en cada paso, reforzando la atracción gravitacional hacia la tónica.',
+            'El ii7 es el acorde predominante más importante. En tonalidades mayores es un acorde de séptima menor; en tonalidades menores se convierte en un acorde de séptima semidisminuido (iiø7). La progresión ii7-V7-I es la secuencia funcional más fuerte en la armonía tonal porque la fundamental de ii7 (D) es una nota común con la 5.ª de V (D en G-B-D-F), creando un enlace suave en la conducción de voces. El bajo se mueve por 5.ª descendente (o 4.ª ascendente) en cada paso, reforzando la atracción gravitacional hacia la tónica.',
           tryThisLabel: 'Escucha ii7 en la tonalidad de Do',
         },
         {

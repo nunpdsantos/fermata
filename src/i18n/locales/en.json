@@ -19,6 +19,14 @@
     "fermata": "Fermata",
     "fermataNight": "Fermata Night"
   },
+  "backup": {
+    "menuLabel": "Backup",
+    "export": "Export backup",
+    "import": "Import backup",
+    "exported": "Backup downloaded",
+    "invalidFile": "Not a valid Fermata backup file",
+    "confirmImport": "Replace current data with this backup ({{sections}})? The app will reload."
+  },
   "common": {
     "play": "Play",
     "stop": "Stop",
@@ -181,6 +189,7 @@
     "practiceTasks": "Practice Tasks",
     "tryThis": "Try This",
     "markModuleComplete": "Mark Module Complete",
+    "exercisesLoadError": "The exercises for this module couldn't be loaded. Completion stays locked until they load.",
     "unitsModules": "{{units}} {{unitLabel}} \u00b7 {{modules}} modules",
     "unitSingular": "unit",
     "unitPlural": "units",

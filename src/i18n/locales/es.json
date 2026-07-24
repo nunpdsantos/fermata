@@ -19,6 +19,14 @@
     "fermata": "Fermata",
     "fermataNight": "Fermata Noche"
   },
+  "backup": {
+    "menuLabel": "Backup",
+    "export": "Exportar datos",
+    "import": "Importar datos",
+    "exported": "Backup descargado",
+    "invalidFile": "Archivo de backup no v\u00e1lido",
+    "confirmImport": "\u00bfReemplazar los datos actuales con este backup ({{sections}})? La aplicaci\u00f3n se recargar\u00e1."
+  },
   "common": {
     "play": "Tocar",
     "stop": "Parar",
@@ -181,6 +189,7 @@
     "practiceTasks": "Tareas Pr\u00e1cticas",
     "tryThis": "Prueba Esto",
     "markModuleComplete": "Marcar M\u00f3dulo como Completado",
+    "exercisesLoadError": "No se pudieron cargar los ejercicios de este m\u00f3dulo. La finalizaci\u00f3n queda bloqueada hasta que se carguen.",
     "unitsModules": "{{units}} {{unitLabel}} \u00b7 {{modules}} m\u00f3dulos",
     "unitSingular": "unidad",
     "unitPlural": "unidades",

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppStore, type ViewMode, type ThemeMode } from '../../state/store.ts';
 import { SUPPORTED_LANGUAGES } from '../../i18n/index.ts';
 import { toast } from '../../state/toastStore.ts';
+import { buildBackup, validateBackup, applyBackup, backupSections } from '../../utils/backupHelpers.ts';
 
 const VIEWS: ViewMode[] = ['explore', 'learn', 'drill'];
 const VIEW_KEYS: Record<ViewMode, string> = {
@@ -150,6 +151,9 @@ export function TopBar() {
         />
 
 
+        {/* Progress backup */}
+        <BackupMenu />
+
         {/* Quick search */}
         <button
           onClick={() => useAppStore.getState().setQuickSearchOpen(true)}
@@ -271,6 +275,131 @@ function ThemeMenu({ mode, onChange, ariaLabel, label }: ThemeMenuProps) {
           })}
         </div>
       )}
+    </div>
+  );
+}
+
+function BackupMenu() {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Close on outside click or Escape.
+  useEffect(() => {
+    if (!open) return;
+    const onClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', onClick);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onClick);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  const handleExport = () => {
+    setOpen(false);
+    const backup = buildBackup(localStorage);
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `fermata-backup-${backup.exportedAt.slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast(t('backup.exported'), 'success');
+  };
+
+  const handleImportFile = async (file: File) => {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(await file.text());
+    } catch {
+      toast(t('backup.invalidFile'), 'error');
+      return;
+    }
+    const result = validateBackup(parsed);
+    if (!result.ok) {
+      toast(t('backup.invalidFile'), 'error');
+      return;
+    }
+    const sections = backupSections(result.backup).join(', ');
+    if (!window.confirm(t('backup.confirmImport', { sections }))) return;
+    applyBackup(result.backup, localStorage);
+    // Reload so every store rehydrates through its shape guards + migrations.
+    window.location.reload();
+  };
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition-colors"
+        style={{
+          color: 'var(--text-dim)',
+          border: '1px solid color-mix(in srgb, var(--border) 50%, transparent)',
+          backgroundColor: open ? 'var(--card-hover)' : 'transparent',
+        }}
+        aria-label={t('backup.menuLabel')}
+        aria-haspopup="menu"
+        aria-expanded={open}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+      </button>
+      {open && (
+        <div
+          role="menu"
+          className="absolute right-0 mt-1.5 z-50 rounded-lg overflow-hidden min-w-[170px]"
+          style={{
+            backgroundColor: 'var(--bg-raised)',
+            border: '1px solid var(--border)',
+            boxShadow: 'var(--shadow-md)',
+          }}
+        >
+          <button
+            type="button"
+            role="menuitem"
+            onClick={handleExport}
+            className="flex items-center gap-2 w-full px-3 py-2 text-xs text-left transition-colors"
+            style={{ color: 'var(--text)' }}
+          >
+            {t('backup.export')}
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+              fileInputRef.current?.click();
+            }}
+            className="flex items-center gap-2 w-full px-3 py-2 text-xs text-left transition-colors"
+            style={{ color: 'var(--text)' }}
+          >
+            {t('backup.import')}
+          </button>
+        </div>
+      )}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/json,.json"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          e.target.value = '';
+          if (file) void handleImportFile(file);
+        }}
+      />
     </div>
   );
 }

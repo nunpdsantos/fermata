@@ -15,9 +15,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Identifica la nota {note} en el pentagrama en clave de sol o justo alrededor de él.',
+        'Identifica la nota mostrada en el pentagrama en clave de sol o justo alrededor de él.',
       hintTemplate:
-        'Esta nota es {note} en la octava {octave}. Usa las posiciones en la clave de sol: líneas Mi-Sol-Si-Re-Fa, espacios Fa-La-Do-Mi.',
+        'Usa las posiciones en la clave de sol: líneas Mi-Sol-Si-Re-Fa, espacios Fa-La-Do-Mi.',
     },
     {
       // multiple_choice
@@ -47,9 +47,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Identifica esta nota que necesita líneas adicionales: {note}{octave}.',
+        'Identifica esta nota que necesita líneas adicionales.',
       hintTemplate:
-        'Las notas por encima o por debajo del pentagrama utilizan líneas adicionales. Cuenta paso a paso desde la línea del pentagrama más cercana para encontrar {note}.',
+        'Las notas por encima o por debajo del pentagrama utilizan líneas adicionales. Cuenta paso a paso desde la línea del pentagrama más cercana.',
     },
     {
       // note_id
@@ -87,16 +87,16 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Identifica esta nota: la tecla negra que puede llamarse {note}.',
+        'Identifica esta nota de tecla negra. Usa su nombre con sostenido.',
       hintTemplate:
-        'Las teclas negras tienen dos nombres (equivalentes enarmónicos). Esta puede llamarse {note}.',
+        'Las teclas negras tienen dos nombres (equivalentes enarmónicos). Usa aquí la grafía con sostenido.',
     },
     {
       // note_id
       promptTemplate:
-        'Identifica esta nota: la tecla negra que puede llamarse {note}.',
+        'Identifica esta nota de tecla negra. Usa su nombre con bemol.',
       hintTemplate:
-        'Esta tecla negra se sitúa entre dos teclas blancas. Puede llamarse {note}.',
+        'Esta tecla negra se sitúa entre dos teclas blancas. Usa aquí la grafía con bemol.',
     },
   ],
 

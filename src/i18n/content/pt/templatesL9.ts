@@ -15,9 +15,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Ouve a altura e identifica-a. Esta e {note} na oitava {octave}.',
+        'Identifica a altura mostrada na pauta.',
       hintTemplate:
-        'Usa alturas de referencia que conhecas (A4 = 440 Hz, Do central = C4) para te orientares. A nota e {note}{octave}.',
+        'Usa alturas de referencia que conhecas (A4 = 440 Hz, Do central = C4) para te orientares.',
     },
     {
       // note_id
@@ -187,9 +187,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Ouve esta nota numa melodia por graus e identifica-a. A nota e {note}.',
+        'Identifica a nota mostrada na pauta.',
       hintTemplate:
-        'Em melodias por graus, cada nota esta a meio-tom ou um tom da anterior. Canta a escala para te orientares. Esta nota e {note}.',
+        'Em melodias por graus, cada nota esta a meio-tom ou um tom da anterior. Canta a escala para te orientares.',
     },
     {
       // interval_id
@@ -216,9 +216,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Identifica esta nota cromatica: {note}.',
+        'Identifica esta nota cromatica.',
       hintTemplate:
-        'Notas cromaticas sao acidentes que nao pertencem a tonalidade atual. Criam tensao que resolve para notas diatonicas proximas. Esta nota e {note}.',
+        'Notas cromaticas sao acidentes que nao pertencem a tonalidade atual. Criam tensao que resolve para notas diatonicas proximas.',
     },
     {
       // interval_id

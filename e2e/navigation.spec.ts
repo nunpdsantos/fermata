@@ -19,12 +19,13 @@ test.describe('Navigation — first load', () => {
     expect(realErrors).toHaveLength(0);
   });
 
-  test('two view tabs are visible (Explore, Learn)', async ({ page }) => {
+  test('three view tabs are visible (Explore, Learn, Drill)', async ({ page }) => {
     const tablist = page.getByRole('tablist', { name: 'App views' });
     await expect(tablist).toBeVisible();
 
     await expect(page.getByRole('tab', { name: 'Explore' })).toBeVisible();
     await expect(page.getByRole('tab', { name: 'Learn' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Drill' })).toBeVisible();
   });
 
   test('Explore tab is selected by default', async ({ page }) => {

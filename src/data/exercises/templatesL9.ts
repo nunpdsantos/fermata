@@ -17,8 +17,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'note_id',
-        promptTemplate: 'Listen to the pitch and identify it. This is {note} in octave {octave}.',
-        hintTemplate: 'Use reference pitches you know (A4 = 440 Hz, middle C = C4) to orient yourself. The note is {note}{octave}.',
+        promptTemplate: 'Identify the pitch shown on the staff.',
+        hintTemplate: 'Use reference pitches you know (A4 = 440 Hz, middle C = C4) to orient yourself.',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
           accidentals: ['', '', '', '', '', '', ''],
@@ -275,8 +275,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'note_id',
-        promptTemplate: 'Listen to this note in a stepwise melody and identify it. The note is {note}.',
-        hintTemplate: 'In stepwise melodies, each note is a half step or whole step from the previous one. Sing the scale to orient yourself. This note is {note}.',
+        promptTemplate: 'Identify the note shown on the staff.',
+        hintTemplate: 'In stepwise melodies, each note is a half step or whole step from the previous one. Sing the scale to orient yourself.',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
           accidentals: ['', '', '', '', '', '', ''],
@@ -325,8 +325,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'note_id',
-        promptTemplate: 'Identify this chromatic note: {note}.',
-        hintTemplate: 'Chromatic notes are accidentals that do not belong to the current key. They create tension that resolves to nearby diatonic notes. This note is {note}.',
+        promptTemplate: 'Identify this chromatic note.',
+        hintTemplate: 'Chromatic notes are accidentals that do not belong to the current key. They create tension that resolves to nearby diatonic notes.',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
           accidentals: ['#', '#', '', '#', '#', '#', ''],

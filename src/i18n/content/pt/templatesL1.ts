@@ -15,9 +15,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Identifica a nota {note} na pauta em clave de sol ou logo junto dela.',
+        'Identifica a nota mostrada na pauta em clave de sol ou logo junto dela.',
       hintTemplate:
-        'Esta nota e {note} na oitava {octave}. Usa as posicoes na clave de sol: linhas Mi-Sol-Si-Re-Fa, espacos Fa-La-Do-Mi.',
+        'Usa as posicoes na clave de sol: linhas Mi-Sol-Si-Re-Fa, espacos Fa-La-Do-Mi.',
     },
     {
       // multiple_choice
@@ -47,9 +47,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Identifica esta nota que necessita de linhas suplementares: {note}{octave}.',
+        'Identifica esta nota que necessita de linhas suplementares.',
       hintTemplate:
-        'As notas acima ou abaixo da pauta utilizam linhas suplementares. Conta passo a passo a partir da linha da pauta mais proxima para encontrar {note}.',
+        'As notas acima ou abaixo da pauta utilizam linhas suplementares. Conta passo a passo a partir da linha da pauta mais proxima.',
     },
     {
       // note_id
@@ -87,16 +87,16 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Identifica esta nota: a tecla preta que pode ser chamada {note}.',
+        'Identifica esta nota de tecla preta. Usa o nome com sustenido.',
       hintTemplate:
-        'As teclas pretas tem dois nomes (equivalentes enarmonicos). Esta pode ser chamada {note}.',
+        'As teclas pretas tem dois nomes (equivalentes enarmonicos). Usa aqui a grafia com sustenido.',
     },
     {
       // note_id
       promptTemplate:
-        'Identifica esta nota: a tecla preta que pode ser chamada {note}.',
+        'Identifica esta nota de tecla preta. Usa o nome com bemol.',
       hintTemplate:
-        'Esta tecla preta situa-se entre duas teclas brancas. Pode ser chamada {note}.',
+        'Esta tecla preta situa-se entre duas teclas brancas. Usa aqui a grafia com bemol.',
     },
   ],
 

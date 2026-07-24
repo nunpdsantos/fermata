@@ -85,7 +85,13 @@ export function LearnView() {
 
   // ─── Async level + exercise loading ─────────────────────────────────────────
   const [loadedLevel, setLoadedLevel] = useState<CurriculumLevel | null>(null);
+  const [levelLoadFailed, setLevelLoadFailed] = useState(false);
   const [exercisesByModule, setExercisesByModule] = useState<Record<string, ExerciseDefinition[]>>({});
+  // Failed and "not yet loaded" must stay distinct states: a failed exercise
+  // chunk must block module completion instead of reading as "no exercises".
+  const [exercisesState, setExercisesState] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [reloadNonce, setReloadNonce] = useState(0);
+  const retryLoads = useCallback(() => setReloadNonce((n) => n + 1), []);
   const levelCacheRef = useRef<Map<string, CurriculumLevel>>(new Map());
   const exerciseCacheRef = useRef<Map<string, Record<string, ExerciseDefinition[]>>>(new Map());
 
@@ -96,12 +102,15 @@ export function LearnView() {
     if (!activeLevelId) {
       queueMicrotask(() => {
         setLoadedLevel(null);
+        setLevelLoadFailed(false);
         setExercisesByModule({});
+        setExercisesState('loading');
       });
       return;
     }
 
     const cacheKey = `${language}:${activeLevelId}`;
+    queueMicrotask(() => setLevelLoadFailed(false));
 
     const cached = levelCacheRef.current.get(cacheKey);
     if (cached) {
@@ -114,38 +123,60 @@ export function LearnView() {
     const cachedEx = exerciseCacheRef.current.get(cacheKey);
     if (cachedEx) {
       setExercisesByModule(cachedEx);
+      setExercisesState('ready');
     } else {
       setExercisesByModule({});
+      setExercisesState('loading');
     }
 
     let cancelled = false;
 
     // Load level data
     if (!cached) {
-      loadLevel(activeLevelId, language).then((level) => {
-        if (!cancelled && level) {
-          levelCacheRef.current.set(cacheKey, level);
-          setLoadedLevel(level);
-        }
-      });
+      loadLevel(activeLevelId, language)
+        .then((level) => {
+          if (!cancelled && level) {
+            levelCacheRef.current.set(cacheKey, level);
+            setLoadedLevel(level);
+          }
+        })
+        .catch(() => {
+          if (!cancelled) setLevelLoadFailed(true);
+        });
     }
 
     // Load exercise data
     if (!cachedEx) {
-      loadExercises(activeLevelId, language).then((exercises) => {
-        if (!cancelled) {
-          exerciseCacheRef.current.set(cacheKey, exercises);
-          setExercisesByModule(exercises);
-        }
-      });
+      loadExercises(activeLevelId, language)
+        .then((exercises) => {
+          if (!cancelled) {
+            exerciseCacheRef.current.set(cacheKey, exercises);
+            setExercisesByModule(exercises);
+            setExercisesState('ready');
+          }
+        })
+        .catch(() => {
+          if (!cancelled) setExercisesState('error');
+        });
     }
 
     return () => { cancelled = true; };
-  }, [activeLevelId, language]);
+  }, [activeLevelId, language, reloadNonce]);
 
   const xOffset = direction === 'forward' ? 40 : -40;
 
-  const loadingSpinner = (
+  const loadingSpinner = levelLoadFailed ? (
+    <div className="flex flex-col items-center justify-center py-24 gap-3">
+      <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{t('error.viewError')}</p>
+      <button
+        onClick={retryLoads}
+        className="px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer border"
+        style={{ borderColor: 'var(--border)', color: 'var(--text)' }}
+      >
+        {t('common.tryAgain')}
+      </button>
+    </div>
+  ) : (
     <div className="flex items-center justify-center py-24">
       <div className="w-5 h-5 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--border)', borderTopColor: 'var(--text-muted)' }} />
     </div>
@@ -256,6 +287,8 @@ export function LearnView() {
                   isTaskCompleted={isTaskCompleted}
                   completedTaskCount={getModuleCompletedTaskCount(mod.id)}
                   exercises={modExercises}
+                  exercisesState={exercisesState}
+                  onRetryExercises={retryLoads}
                   exercisesPassed={isModuleExercisesPassed(mod.id, modExercises.length)}
                   levelCompletedModuleCount={getLevelCompletedModuleCount(loadedLevel)}
                   onToggleTask={toggleTask}
@@ -306,6 +339,8 @@ export function LearnView() {
                   isTaskCompleted={isTaskCompleted}
                   completedTaskCount={getModuleCompletedTaskCount(mod.id)}
                   exercises={modExercises}
+                  exercisesState={exercisesState}
+                  onRetryExercises={retryLoads}
                   exercisesPassed={false}
                   isReviewMode
                   levelCompletedModuleCount={getLevelCompletedModuleCount(loadedLevel)}

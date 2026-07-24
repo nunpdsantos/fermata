@@ -14,7 +14,7 @@ const overlay: ExerciseLevelOverlay = {
 
   l9u30m1e1: {
     prompt:
-      'Escucha la altura e identifícala. Es la altura de referencia utilizada para la afinación.',
+      'Identifica esta altura mostrada en el pentagrama.',
     hint: 'El Do central (C4) es el punto de referencia central en el piano, situado en la línea adicional por debajo del pentagrama en clave de sol.',
   },
   l9u30m1e2: {

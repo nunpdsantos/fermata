@@ -15,7 +15,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l9u30m1e1',
       type: 'note_id',
-      prompt: 'Listen carefully and identify this pitch. This is middle C — the central reference point on the piano keyboard.',
+      prompt: 'Identify this pitch shown on the staff.',
       config: {
         type: 'note_id',
         note: 'C',

@@ -15,9 +15,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Escucha la altura e identifícala. Es {note} en la octava {octave}.',
+        'Identifica la altura mostrada en el pentagrama.',
       hintTemplate:
-        'Utiliza alturas de referencia conocidas (A4 = 440 Hz, Do central = C4) para orientarte. La nota es {note}{octave}.',
+        'Utiliza alturas de referencia conocidas (A4 = 440 Hz, Do central = C4) para orientarte.',
     },
     {
       // note_id
@@ -187,9 +187,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Escucha esta nota en una melodía por grados conjuntos e identifícala. La nota es {note}.',
+        'Identifica la nota mostrada en el pentagrama.',
       hintTemplate:
-        'En melodías por grados conjuntos, cada nota está a un semitono o un tono de la anterior. Canta la escala para orientarte. Esta nota es {note}.',
+        'En melodías por grados conjuntos, cada nota está a un semitono o un tono de la anterior. Canta la escala para orientarte.',
     },
     {
       // interval_id
@@ -216,9 +216,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Identifica esta nota cromática: {note}.',
+        'Identifica esta nota cromática.',
       hintTemplate:
-        'Las notas cromáticas son alteraciones que no pertenecen a la tonalidad actual. Crean tensión que resuelve hacia notas diatónicas cercanas. Esta nota es {note}.',
+        'Las notas cromáticas son alteraciones que no pertenecen a la tonalidad actual. Crean tensión que resuelve hacia notas diatónicas cercanas.',
     },
     {
       // interval_id

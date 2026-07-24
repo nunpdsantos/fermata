@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { m, AnimatePresence } from 'framer-motion';
 import type { ExerciseDefinition, ValidationResult, EarTrainingConfig } from '../../../core/types/exercise';
 import { validateAnswer } from './validateExercise';
-import { generateNoteChoices, generateIntervalChoices, generateEarChoices, generateDegreeChoices } from './exerciseHelpers';
+import { generateNoteChoices, generateIntervalChoices, generateEarChoices, generateDegreeChoices, generateMultipleChoiceOptions } from './exerciseHelpers';
 import type { ChoiceOption } from './exerciseHelpers';
 import { ExerciseProgress } from './ExerciseProgress';
 import { ExercisePrompt } from './ExercisePrompt';
@@ -57,7 +57,7 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
       case 'interval_id':
         return generateIntervalChoices(cfg.targetSemitones);
       case 'multiple_choice':
-        return cfg.choices.map((c) => ({ label: c.label, value: c.label, correct: c.correct }));
+        return generateMultipleChoiceOptions(cfg.choices, exercise.id);
       case 'ear_training': {
         if (cfg.mode === 'note') return generateNoteChoices(cfg.note ?? 'C', cfg.accidental ?? '');
         if (cfg.mode === 'interval') return generateIntervalChoices(cfg.targetSemitones ?? 7);
