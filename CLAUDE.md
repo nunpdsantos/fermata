@@ -68,7 +68,7 @@ Scale degree function is encoded in color throughout the app:
 - VexFlow loads its music fonts as base64 `data:` FontFaces at runtime — the CSP in `vercel.json` must keep `font-src 'self' data:` or production notation renders missing-glyph boxes (dev has no CSP, so local checks won't catch it).
 - Header-only deploys never reach installed PWAs: the service worker precaches `index.html` WITH its response headers, and identical content means no SW update. Any `vercel.json` header change must be paired with a content change (e.g. the build comment atop `index.html`).
 - **Fretboard orientation is SETTLED — do not "fix" it.** It renders nut-RIGHT, low E on top (mirrored from printed chord charts). A flip to textbook orientation was shipped and **reverted on Nuno's feedback** (2026-06-09): he reads the original natively. Position legibility is handled instead by the anchor-fret badge ("3fr") + nut-closest default voicing (see Audio & instruments below).
-- PT overlay files vary in diacritic usage (older files are diacritic-free) — match each file's existing style when editing; full restoration is tracked in `docs/pt-diacritic-todo.md`.
+- PT overlay files carry full PT-PT diacritics (restored 2026-07-24) — write proper European Portuguese orthography in every edit; conventions in `docs/pt-diacritic-todo.md`.
 - The i18n content overlays REPLACE English text wholesale (keyed by module id + array index). Every English curriculum/template edit needs hand-mirrored PT + ES edits; `templateParity.test.ts` enforces token parity and will fail the suite if overlays drift.
 
 ### Architecture
@@ -272,7 +272,6 @@ v6 (`lastView` restore + `?view=` boot param + PWA "Start Drill" shortcut).
   inside translated sentences (works, reads mixed) — proposed v2: keyed short tokens
   translated per-language; needs an EN-side generator refactor. Nuno to judge on
   the preview whether it bothers him.
-- PT diacritics restoration across the older overlay files (`docs/pt-diacritic-todo.md`).
 - Chord-quality names / interval labels render in English inside PT/ES feedback
   sentences (deliberate "nomenclature untranslated" convention — revisit only as a
   product decision).
