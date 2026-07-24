@@ -217,6 +217,186 @@ describe('exerciseGenerator', () => {
   // a note in the prompt and computed a RANDOM correctDegree unrelated to any
   // note. The fix resolves the chosen degree to the real note in the built scale,
   // names it in the prompt, and makes correctDegree match that note's position.
+  describe('ear_training template generation (F-03)', () => {
+    const EAR_INTERVAL: ModuleTemplateConfig = {
+      moduleId: 'l9test1',
+      targetCount: 4,
+      templates: [
+        {
+          type: 'ear_training',
+          promptTemplate: 'Listen to the interval and identify it.',
+          hintTemplate: 'Count the semitones.',
+          params: {
+            earMode: 'interval',
+            roots: ['C', 'D'],
+            accidentals: ['', ''],
+            octaves: [4],
+            intervals: [3, 4, 7],
+            directions: ['ascending'],
+          },
+        },
+      ],
+    };
+
+    const EAR_CHORD: ModuleTemplateConfig = {
+      moduleId: 'l9test2',
+      targetCount: 4,
+      templates: [
+        {
+          type: 'ear_training',
+          promptTemplate: 'Listen to the chord and identify its quality.',
+          hintTemplate: 'Focus on the third.',
+          params: {
+            earMode: 'chord',
+            roots: ['C', 'G'],
+            accidentals: ['', ''],
+            chordQualities: ['major', 'minor', 'diminished'],
+          },
+        },
+      ],
+    };
+
+    const EAR_SCALE: ModuleTemplateConfig = {
+      moduleId: 'l9test3',
+      targetCount: 3,
+      templates: [
+        {
+          type: 'ear_training',
+          promptTemplate: 'Listen to the scale and identify its type.',
+          hintTemplate: 'Listen for the third and sixth degrees.',
+          params: {
+            earMode: 'scale',
+            roots: ['C', 'A'],
+            accidentals: ['', ''],
+            octaves: [4],
+            scaleTypes: ['major', 'natural_minor'],
+          },
+        },
+      ],
+    };
+
+    it('generates interval-mode ear configs from template params', () => {
+      const exercises = generateExercises(EAR_INTERVAL);
+      expect(exercises.length).toBeGreaterThan(0);
+      for (const ex of exercises) {
+        expect(ex.config.type).toBe('ear_training');
+        if (ex.config.type !== 'ear_training') continue;
+        expect(ex.config.mode).toBe('interval');
+        expect(['C', 'D']).toContain(ex.config.root);
+        expect([3, 4, 7]).toContain(ex.config.targetSemitones);
+      }
+    });
+
+    it('generates chord-mode ear configs with one correct quality choice', () => {
+      const exercises = generateExercises(EAR_CHORD);
+      expect(exercises.length).toBeGreaterThan(0);
+      for (const ex of exercises) {
+        if (ex.config.type !== 'ear_training') continue;
+        expect(ex.config.mode).toBe('chord');
+        expect(ex.config.choices).toBeDefined();
+        const correct = ex.config.choices!.filter((c) => c.correct);
+        expect(correct).toHaveLength(1);
+        expect(ex.config.choices!.length).toBeGreaterThanOrEqual(3);
+        // The correct answer must validate through the real validator.
+        expect(validateAnswer(ex.config, correct[0].label).correct).toBe(true);
+      }
+    });
+
+    it('generates scale-mode ear configs with one correct scale-type choice', () => {
+      const exercises = generateExercises(EAR_SCALE);
+      expect(exercises.length).toBeGreaterThan(0);
+      for (const ex of exercises) {
+        if (ex.config.type !== 'ear_training') continue;
+        expect(ex.config.mode).toBe('scale');
+        expect(ex.config.scaleType).toBeDefined();
+        const correct = ex.config.choices!.filter((c) => c.correct);
+        expect(correct).toHaveLength(1);
+        expect(validateAnswer(ex.config, correct[0].label).correct).toBe(true);
+      }
+    });
+
+    it('translates chord-quality choice labels for PT', () => {
+      const exercises = generateExercises(EAR_CHORD, undefined, 'pt');
+      const labels = exercises.flatMap((ex) =>
+        ex.config.type === 'ear_training' ? (ex.config.choices ?? []).map((c) => c.label) : [],
+      );
+      expect(labels.length).toBeGreaterThan(0);
+      // PT chord qualities: maior/menor/diminuto (from the musicTerms dictionary)
+      expect(labels.some((l) => /maior|menor|diminut/i.test(l))).toBe(true);
+    });
+
+    it('generates progression-mode ear configs from progressionSets', () => {
+      const EAR_PROG: ModuleTemplateConfig = {
+        moduleId: 'l9test4',
+        targetCount: 3,
+        templates: [
+          {
+            type: 'ear_training',
+            promptTemplate: 'Listen to the chord progression and identify it.',
+            hintTemplate: 'Focus on the bass motion.',
+            params: {
+              earMode: 'progression',
+              roots: ['C'],
+              accidentals: [''],
+              progressionSets: [
+                ['I', 'IV', 'V', 'I'],
+                ['I', 'V', 'vi', 'IV'],
+                ['ii', 'V', 'I'],
+              ],
+            },
+          },
+        ],
+      };
+      const exercises = generateExercises(EAR_PROG);
+      expect(exercises.length).toBeGreaterThan(0);
+      for (const ex of exercises) {
+        if (ex.config.type !== 'ear_training') continue;
+        expect(ex.config.mode).toBe('progression');
+        expect(ex.config.progression).toBeDefined();
+        const correct = ex.config.choices!.filter((c) => c.correct);
+        expect(correct).toHaveLength(1);
+        expect(correct[0].label).toBe(ex.config.progression!.join(' - '));
+        expect(validateAnswer(ex.config, correct[0].label).correct).toBe(true);
+      }
+    });
+
+    it('passes the harmonic flag through for simultaneous intervals', () => {
+      const HARMONIC: ModuleTemplateConfig = {
+        moduleId: 'l9test5',
+        targetCount: 2,
+        templates: [
+          {
+            type: 'ear_training',
+            promptTemplate: 'Listen to the two notes played together and identify the interval.',
+            hintTemplate: 'Consonances blend; dissonances clash.',
+            params: {
+              earMode: 'interval',
+              harmonic: true,
+              roots: ['C', 'D'],
+              accidentals: ['', ''],
+              octaves: [4],
+              intervals: [7, 12],
+            },
+          },
+        ],
+      };
+      for (const ex of generateExercises(HARMONIC)) {
+        if (ex.config.type !== 'ear_training') continue;
+        expect(ex.config.harmonic).toBe(true);
+      }
+    });
+
+    it('ear prompts never contain the answer label', () => {
+      for (const cfg of [EAR_CHORD, EAR_SCALE]) {
+        for (const ex of generateExercises(cfg)) {
+          if (ex.config.type !== 'ear_training') continue;
+          const correct = ex.config.choices!.find((c) => c.correct)!;
+          expect(ex.prompt.toLowerCase()).not.toContain(correct.label.toLowerCase());
+        }
+      }
+    });
+  });
+
   describe('L1 generated scale_degree_id answerability (WS5 A6)', () => {
     const l1u3m1 = templatesL1.find((c) => c.moduleId === 'l1u3m1');
 

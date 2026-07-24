@@ -230,7 +230,7 @@ function validateEarTraining(config: EarTrainingConfig, answer: string, t: Trans
       t,
     );
   }
-  if (config.mode === 'chord' && config.choices) {
+  if ((config.mode === 'chord' || config.mode === 'scale' || config.mode === 'progression') && config.choices) {
     return validateMultipleChoice(
       { type: 'multiple_choice', choices: config.choices },
       answer,

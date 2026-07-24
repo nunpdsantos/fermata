@@ -14,13 +14,13 @@ const overlay: ExerciseLevelOverlay = {
 
   l9u30m1e1: {
     prompt:
-      'Identifica esta altura mostrada na pauta.',
-    hint: 'O Do central (C4) e o ponto de referencia central no piano, situado na linha suplementar abaixo da pauta em clave de sol.',
+      'Ouve esta altura e identifica-a.',
+    hint: 'O Do central (C4) e o ponto de referencia central no piano -- ancora-o no teu ouvido.',
   },
   l9u30m1e2: {
     prompt:
-      'Ouve esta altura e identifica-a. Esta uma 5.a perfeita acima do Do central.',
-    hint: 'G4 esta uma 5.a perfeita acima de C4 -- 7 semitons acima. Situa-se na segunda linha da pauta em clave de sol.',
+      'Ouve esta altura e identifica-a.',
+    hint: 'G4 esta uma 5.a perfeita acima do Do central -- 7 semitons acima. Compara-o com C4 no teu ouvido.',
   },
   l9u30m1e3: {
     prompt:
@@ -48,13 +48,15 @@ const overlay: ExerciseLevelOverlay = {
 
   l9u30m2e1: {
     prompt:
-      'Constroi uma triade de C maior. Ouve a sua qualidade brilhante e estavel a medida que selecionas as notas.',
-    hint: 'C maior = C, E, G. A 3.a maior (4 semitons a partir da fundamental) da-lhe um caracter brilhante.',
+      'Ouve este acorde. E maior ou menor?',
+    choices: ['Maior', 'Menor'],
+    hint: 'A 3.a maior (4 semitons a partir da fundamental) da aos acordes maiores um caracter brilhante e estavel.',
   },
   l9u30m2e2: {
     prompt:
-      'Constroi uma triade de C menor. Ouve como a 3.a baixada muda a atmosfera comparada com o maior.',
-    hint: 'C menor = C, Eb, G. A 3.a menor (3 semitons a partir da fundamental) da-lhe uma qualidade mais sombria e melancolica.',
+      'Ouve este acorde. E maior ou menor?',
+    choices: ['Maior', 'Menor'],
+    hint: 'A 3.a menor (3 semitons a partir da fundamental) da aos acordes menores uma qualidade mais sombria e melancolica.',
   },
   l9u30m2e3: {
     prompt:
@@ -72,59 +74,59 @@ const overlay: ExerciseLevelOverlay = {
 
   l9u30m3e1: {
     prompt:
-      'Ouve este intervalo ascendente a partir de C. E o menor intervalo na musica ocidental. Identifica-o.',
-    hint: '1 semitom = 2.a menor (meio-tom). C a Db. Pensa no tema de Tubarao.',
+      'Ouve este intervalo ascendente e identifica-o.',
+    hint: '1 semitom = 2.a menor (meio-tom) -- o menor intervalo na musica ocidental. Pensa no tema de Tubarao.',
   },
   l9u30m3e2: {
     prompt:
-      'Ouve este intervalo ascendente a partir de C. Abrange um tom. Identifica-o.',
-    hint: '2 semitons = 2.a maior (tom). C a D.',
+      'Ouve este intervalo ascendente e identifica-o.',
+    hint: '2 semitons = 2.a maior (tom). O passo melodico do dia a dia.',
   },
   l9u30m3e3: {
     prompt:
-      'Ouve este intervalo ascendente a partir de C. Tem uma qualidade sombria e melancolica. Identifica-o.',
-    hint: '3 semitons = 3.a menor. C a Eb. Este intervalo define a base de uma triade menor.',
+      'Ouve este intervalo ascendente e identifica-o.',
+    hint: '3 semitons = 3.a menor -- sombria e melancolica. Este intervalo define a base de uma triade menor.',
   },
   l9u30m3e4: {
     prompt:
-      'Ouve este intervalo ascendente a partir de C. Soa forte e aberto. Identifica-o.',
-    hint: '7 semitons = 5.a perfeita. C a G. O intervalo mais consonante depois da oitava e do unissono.',
+      'Ouve este intervalo ascendente e identifica-o.',
+    hint: '7 semitons = 5.a perfeita -- forte e aberta. O intervalo mais consonante depois da oitava e do unissono.',
   },
 
   // ---- l9u30m4: Reconhecimento de Intervalos 6.a m-P8 ----
 
   l9u30m4e1: {
     prompt:
-      'Ouve este intervalo ascendente a partir de C. Tem uma qualidade agridoce e anelante. Identifica-o.',
-    hint: '8 semitons = 6.a menor. C a Ab. Tem uma qualidade pungente, algo tensa.',
+      'Ouve este intervalo ascendente e identifica-o.',
+    hint: '8 semitons = 6.a menor -- agridoce e anelante, com uma qualidade pungente e algo tensa.',
   },
   l9u30m4e2: {
     prompt:
-      'Ouve este intervalo ascendente a partir de C. Tem uma qualidade quente e romantica. Identifica-o.',
-    hint: '9 semitons = 6.a maior. C a A. Um intervalo quente e consonante.',
+      'Ouve este intervalo ascendente e identifica-o.',
+    hint: '9 semitons = 6.a maior -- quente, romantica e consonante.',
   },
   l9u30m4e3: {
     prompt:
-      'Ouve este intervalo ascendente a partir de C. Cria forte tensao querendo resolver. Identifica-o.',
-    hint: '10 semitons = 7.a menor. C a Bb. Tem uma tensao dominante e bluesy.',
+      'Ouve este intervalo ascendente e identifica-o.',
+    hint: '10 semitons = 7.a menor -- uma tensao dominante e bluesy que quer resolver.',
   },
   l9u30m4e4: {
     prompt:
-      'Ouve este intervalo ascendente a partir de C. As duas notas soam como a mesma altura em alturas diferentes. Identifica-o.',
-    hint: '12 semitons = oitava perfeita. C4 a C5. As duas alturas partilham o mesmo nome de nota.',
+      'Ouve este intervalo ascendente e identifica-o.',
+    hint: '12 semitons = oitava perfeita -- as duas notas soam como a mesma altura em registos diferentes.',
   },
 
   // ---- l9u30m5: Intervalos Harmonicos ----
 
   l9u30m5e1: {
     prompt:
-      'Estas duas notas soam simultaneamente a partir de D. O intervalo e aberto e estavel. Identifica-o.',
-    hint: '5 semitons = 4.a perfeita. D a G. Quando tocados em simultaneo, tem uma qualidade aberta e oca.',
+      'Ouve estas duas notas tocadas em simultaneo e identifica o intervalo harmonico.',
+    hint: '5 semitons = 4.a perfeita. Em simultaneo tem uma qualidade aberta e oca.',
   },
   l9u30m5e2: {
     prompt:
-      'Estas duas notas soam simultaneamente a partir de E. O intervalo e brilhante e doce. Identifica-o.',
-    hint: '4 semitons = 3.a maior. E a G#. A 3.a maior da um som harmonico quente e consonante.',
+      'Ouve estas duas notas tocadas em simultaneo e identifica o intervalo harmonico.',
+    hint: '4 semitons = 3.a maior -- um som harmonico quente e consonante.',
   },
   l9u30m5e3: {
     prompt:
@@ -146,13 +148,15 @@ const overlay: ExerciseLevelOverlay = {
 
   l9u31m1e1: {
     prompt:
-      'Constroi a escala de C maior. Ouve o caracter brilhante e resolvido de cada passo.',
-    hint: 'C maior: C, D, E, F, G, A, B. Todas teclas brancas. Padrao: T-T-mT-T-T-T-mT.',
+      'Ouve esta escala e identifica o seu tipo.',
+    choices: ['Maior', 'Menor natural', 'Menor harmonica'],
+    hint: 'A escala maior (T-T-mT-T-T-T-mT) tem um caracter brilhante e resolvido em cada passo.',
   },
   l9u31m1e2: {
     prompt:
-      'Constroi a escala de A menor natural. Compara a sua atmosfera mais sombria com a escala maior.',
-    hint: 'A menor natural: A, B, C, D, E, F, G. Todas teclas brancas. Padrao: T-mT-T-T-mT-T-T.',
+      'Ouve esta escala e identifica o seu tipo.',
+    choices: ['Maior', 'Menor natural', 'Menor harmonica'],
+    hint: 'A menor natural (T-mT-T-T-mT-T-T) tem uma atmosfera mais sombria do que a maior -- a 3.a, 6.a e 7.a baixadas moldam a sua cor.',
   },
   l9u31m1e3: {
     prompt:
@@ -170,13 +174,15 @@ const overlay: ExerciseLevelOverlay = {
 
   l9u31m2e1: {
     prompt:
-      'Constroi a escala de D Dorico. E como o menor natural mas com o 6.o grau elevado.',
-    hint: 'D Dorico: D, E, F, G, A, B, C. Todas teclas brancas comecando em D. O B natural (6.o elevado) e a nota caracteristica.',
+      'Ouve esta escala e identifica o modo.',
+    choices: ['Dorico', 'Frigio', 'Lidio', 'Mixolidio'],
+    hint: 'O Dorico e como o menor natural com o 6.o grau elevado -- esse 6 natural em contexto menor e a nota caracteristica.',
   },
   l9u31m2e2: {
     prompt:
-      'Constroi a escala de F Lidio. E como o maior mas com o 4.o grau elevado.',
-    hint: 'F Lidio: F, G, A, B, C, D, E. Todas teclas brancas comecando em F. O B natural (4.o elevado) e a nota caracteristica.',
+      'Ouve esta escala e identifica o modo.',
+    choices: ['Dorico', 'Frigio', 'Lidio', 'Mixolidio'],
+    hint: 'O Lidio e como o maior com o 4.o grau elevado -- ouve o #4 brilhante a puxar para cima.',
   },
   l9u31m2e3: {
     prompt:
@@ -194,13 +200,15 @@ const overlay: ExerciseLevelOverlay = {
 
   l9u31m3e1: {
     prompt:
-      'Constroi a escala pentatonica de C maior. Remove os meios-tons da escala maior.',
-    hint: 'C pentatonica maior: C, D, E, G, A. Cinco notas -- a escala maior sem o 4.o e 7.o graus.',
+      'Ouve esta escala e identifica o seu tipo.',
+    choices: ['Pentatonica maior', 'Pentatonica menor', 'Blues', 'Tons inteiros'],
+    hint: 'A pentatonica maior tem cinco notas e nenhum meio-tom -- a escala maior sem o 4.o e o 7.o graus.',
   },
   l9u31m3e2: {
     prompt:
-      'Constroi a escala de C blues. Acrescenta a "blue note" a pentatonica menor.',
-    hint: 'C blues: C, Eb, F, Gb, G, Bb. Seis notas -- a pentatonica menor mais a 5.a bemolizada (Gb), que e a blue note.',
+      'Ouve esta escala e identifica o seu tipo.',
+    choices: ['Pentatonica maior', 'Pentatonica menor', 'Blues', 'Tons inteiros'],
+    hint: 'A escala de blues e a pentatonica menor mais a "blue note" (b5) -- ouve essa mordida cromatica extra.',
   },
   l9u31m3e3: {
     prompt: 'O que e a "blue note" numa escala de blues?',
@@ -217,13 +225,15 @@ const overlay: ExerciseLevelOverlay = {
 
   l9u31m4e1: {
     prompt:
-      'Constroi uma triade de E diminuto. Tem uma qualidade tensa e instavel.',
-    hint: 'E diminuto = E, G, Bb. Duas 3.as menores empilhadas: E a G (3 semitons) e G a Bb (3 semitons). O tritono entre fundamental e 5.a cria tensao.',
+      'Ouve esta triade e identifica a sua qualidade.',
+    choices: ['Maior', 'Menor', 'Diminuta', 'Aumentada'],
+    hint: 'Diminuta = duas 3.as menores empilhadas. O tritono entre fundamental e 5.a cria a sua qualidade tensa e instavel.',
   },
   l9u31m4e2: {
     prompt:
-      'Constroi uma triade de C aumentado. Tem uma qualidade sonhadora e nao resolvida.',
-    hint: 'C aumentado = C, E, G#. Duas 3.as maiores empilhadas: C a E (4 semitons) e E a G# (4 semitons). Estrutura simetrica.',
+      'Ouve esta triade e identifica a sua qualidade.',
+    choices: ['Maior', 'Menor', 'Diminuta', 'Aumentada'],
+    hint: 'Aumentada = duas 3.as maiores empilhadas. A estrutura simetrica da-lhe uma qualidade sonhadora e nao resolvida.',
   },
   l9u31m4e3: {
     prompt: 'Que intervalos compoem uma triade diminuta?',
@@ -250,13 +260,15 @@ const overlay: ExerciseLevelOverlay = {
 
   l9u31m5e1: {
     prompt:
-      'Constroi um acorde Cmaj7. Tem uma qualidade exuberante e sofisticada.',
-    hint: 'Cmaj7 = C, E, G, B. Uma triade de C maior mais a 7.a maior (B, 11 semitons da fundamental). Comum no jazz e bossa nova.',
+      'Ouve este acorde de setima e identifica a sua qualidade.',
+    choices: ['Maior com 7.a', 'Menor com 7.a', 'Setima da dominante', 'Meio-diminuto'],
+    hint: 'O acorde maior com 7.a sobrepoe uma 7.a maior a uma triade maior -- exuberante e sonhador, comum no jazz e na bossa nova.',
   },
   l9u31m5e2: {
     prompt:
-      'Constroi um acorde Dm7. Tem uma qualidade suave e descontraida.',
-    hint: 'Dm7 = D, F, A, C. Uma triade de D menor mais a 7.a menor (C, 10 semitons da fundamental).',
+      'Ouve este acorde de setima e identifica a sua qualidade.',
+    choices: ['Maior com 7.a', 'Menor com 7.a', 'Setima da dominante', 'Meio-diminuto'],
+    hint: 'O acorde menor com 7.a sobrepoe uma 7.a menor a uma triade menor -- suave, quente e descontraido.',
   },
   l9u31m5e3: {
     prompt:
@@ -289,13 +301,13 @@ const overlay: ExerciseLevelOverlay = {
 
   l9u32m1e1: {
     prompt:
-      'Ouve esta nota num contexto de C maior e identifica-a. E o 3.o grau da escala.',
-    hint: 'E4 e o 3.o grau de C maior. Situa-se na primeira linha da pauta em clave de sol.',
+      'Ouve esta nota e identifica-a.',
+    hint: 'Esta altura e o 3.o grau de C maior. Canta a partir de C para a localizar.',
   },
   l9u32m1e2: {
     prompt:
-      'Ouve esta nota num contexto de C maior e identifica-a. E o 6.o grau da escala.',
-    hint: 'A4 e o 6.o grau de C maior. Situa-se no segundo espaco da pauta em clave de sol.',
+      'Ouve esta nota e identifica-a.',
+    hint: 'Esta altura e o 6.o grau de C maior. Canta a partir de C para a localizar.',
   },
   l9u32m1e3: {
     prompt: 'O que significa "melodia diatonica"?',
@@ -309,7 +321,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l9u32m1e4: {
     prompt:
-      'Qual estrategia e mais eficaz para ouvir graus individuais da escala numa melodia?',
+      'Qual estrategia e mais eficaz para identificar graus individuais da escala numa melodia?',
     choices: [
       'Relacionar cada nota com a tonica cantando a escala ate esse grau',
       'Memorizar a frequencia em hertz de cada nota',
@@ -323,13 +335,13 @@ const overlay: ExerciseLevelOverlay = {
 
   l9u32m2e1: {
     prompt:
-      'Ouve este meio-tom cromatico ascendente a partir de E. Identifica o intervalo.',
-    hint: '1 semitom ascendente a partir de E = E a F. Um meio-tom cromatico num contexto melodico funciona frequentemente como nota de passagem.',
+      'Ouve este intervalo ascendente e identifica-o.',
+    hint: 'Um meio-tom cromatico (1 semitom) num contexto melodico funciona frequentemente como nota de passagem.',
   },
   l9u32m2e2: {
     prompt:
-      'Ouve este intervalo altamente dissonante ascendente a partir de F. Divide a oitava exatamente ao meio. Identifica-o.',
-    hint: '6 semitons = tritono (4.a aumentada / 5.a diminuta). F a B. E o intervalo mais dissonante e divide a oitava simetricamente.',
+      'Ouve este intervalo ascendente e identifica-o.',
+    hint: 'O tritono (6 semitons, 4.a aumentada / 5.a diminuta) e o intervalo mais dissonante e divide a oitava exatamente ao meio.',
   },
   l9u32m2e3: {
     prompt: 'O que e uma nota cromatica de passagem?',
@@ -408,7 +420,7 @@ const overlay: ExerciseLevelOverlay = {
 
   l9u32m5e1: {
     prompt:
-      'Ouves uma linha vocal unica sem acompanhamento nem harmonia. Que textura musical e esta?',
+      'Uma linha vocal unica sem acompanhamento nem harmonia e exemplo de que textura musical?',
     choices: [
       'Monofonica',
       'Homofonica',
