@@ -1,11 +1,13 @@
 /**
  * Helper functions for generating exercise choices.
  */
-import type { NaturalNote, Accidental } from '../../../core/types/music';
+import type { NaturalNote, Accidental, Note, ScaleType } from '../../../core/types/music';
 import { noteToString } from '../../../core/types/music';
 import { PITCH_CLASS_SPELLINGS, getPitchClass } from '../../../core/constants/notes';
 import { INTERVAL_LABELS } from '../../../core/constants/chords';
+import { buildScale } from '../../../core/constants/scales';
 import { mulberry32, seededShuffle } from '../../../core/utils/prng';
+import type { EarTrainingConfig } from '../../../core/types/exercise';
 
 export interface ChoiceOption {
   label: string;
@@ -134,6 +136,40 @@ export function generateDegreeChoices(correctDegree: number, t: TFunc): ChoiceOp
   ];
 
   return shuffle(options);
+}
+
+/**
+ * How long the replay lock must hold for an ear-training config, in ms —
+ * the full scheduled playback of the mode plus a small margin, so pressing
+ * Replay can never overlap the stimulus it repeats (audit R-01). Timings
+ * mirror ExerciseRunner's playEarAudio and core playScale (0.35 s notes +
+ * 15% gap, ascending run appends the octave).
+ */
+export function earPlaybackLockMs(cfg: EarTrainingConfig): number {
+  const MARGIN = 100;
+  switch (cfg.mode) {
+    case 'note':
+      return 1000 + MARGIN;
+    case 'interval':
+      return (cfg.harmonic ? 1200 : 700 + 600) + MARGIN;
+    case 'chord':
+      return 1200 + MARGIN;
+    case 'scale': {
+      let noteCount = 8; // heptatonic + octave fallback
+      if (cfg.root && cfg.scaleType) {
+        const root: Note = {
+          natural: cfg.root as NaturalNote,
+          accidental: (cfg.rootAccidental ?? '') as Accidental,
+        };
+        noteCount = buildScale(root, cfg.scaleType as ScaleType).notes.length + 1;
+      }
+      return Math.ceil(noteCount * 0.35 * 1.15 * 1000) + MARGIN;
+    }
+    case 'progression': {
+      const chords = cfg.progression?.length ?? 4;
+      return (chords - 1) * 950 + 1200 + MARGIN;
+    }
+  }
 }
 
 function djb2(s: string): number {

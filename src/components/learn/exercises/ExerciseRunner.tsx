@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { m, AnimatePresence } from 'framer-motion';
 import type { ExerciseDefinition, ValidationResult, EarTrainingConfig } from '../../../core/types/exercise';
 import { validateAnswer } from './validateExercise';
-import { generateNoteChoices, generateIntervalChoices, generateEarChoices, generateDegreeChoices, generateMultipleChoiceOptions } from './exerciseHelpers';
+import { generateNoteChoices, generateIntervalChoices, generateEarChoices, generateDegreeChoices, generateMultipleChoiceOptions, earPlaybackLockMs } from './exerciseHelpers';
 import type { ChoiceOption } from './exerciseHelpers';
 import { ExerciseProgress } from './ExerciseProgress';
 import { ExercisePrompt } from './ExercisePrompt';
@@ -124,7 +124,10 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
         });
       }
     } finally {
-      setTimeout(() => { playingRef.current = false; }, 800);
+      // Hold the lock for the FULL scheduled playback (mode-dependent) so a
+      // rapid Replay cannot overlap the stimulus (audit R-01).
+      const cfg = exercise.config as EarTrainingConfig;
+      setTimeout(() => { playingRef.current = false; }, earPlaybackLockMs(cfg));
     }
   }, [exercise]);
 
