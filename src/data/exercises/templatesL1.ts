@@ -17,8 +17,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'note_id',
-        promptTemplate: 'Identify the note {note} on or just around the treble staff.',
-        hintTemplate: 'This note is {note} in octave {octave}. Use the treble clef line/space positions: lines are E-G-B-D-F, spaces are F-A-C-E.',
+        promptTemplate: 'Identify the note shown on or just around the treble staff.',
+        hintTemplate: 'Use the treble clef line/space positions: lines are E-G-B-D-F, spaces are F-A-C-E.',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
           accidentals: ['', '', '', '', '', '', ''],
@@ -56,8 +56,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'note_id',
-        promptTemplate: 'Identify this note that requires ledger lines: {note}{octave}.',
-        hintTemplate: 'Notes above or below the staff use ledger lines. Count step by step from the nearest staff line to find {note}.',
+        promptTemplate: 'Identify this note that requires ledger lines.',
+        hintTemplate: 'Notes above or below the staff use ledger lines. Count step by step from the nearest staff line.',
         params: {
           roots: ['C', 'D', 'A', 'B', 'G'],
           accidentals: ['', '', '', '', ''],
@@ -125,8 +125,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'note_id',
-        promptTemplate: 'Identify this note: the black key that can be called {note}.',
-        hintTemplate: 'Black keys have two names (enharmonic equivalents). This one can be called {note}.',
+        promptTemplate: 'Identify this black key note. Use its sharp name.',
+        hintTemplate: 'Black keys have two names (enharmonic equivalents). Use the sharp spelling here.',
         params: {
           roots: ['C', 'D', 'F', 'G', 'A'],
           accidentals: ['#', '#', '#', '#', '#'],
@@ -135,8 +135,8 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'note_id',
-        promptTemplate: 'Identify this note: the black key that can be called {note}.',
-        hintTemplate: 'This black key sits between two white keys. It can be called {note}.',
+        promptTemplate: 'Identify this black key note. Use its flat name.',
+        hintTemplate: 'This black key sits between two white keys. Use the flat spelling here.',
         params: {
           roots: ['D', 'E', 'G', 'A', 'B'],
           accidentals: ['b', 'b', 'b', 'b', 'b'],

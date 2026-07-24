@@ -5,6 +5,7 @@ import type { NaturalNote, Accidental } from '../../../core/types/music';
 import { noteToString } from '../../../core/types/music';
 import { PITCH_CLASS_SPELLINGS, getPitchClass } from '../../../core/constants/notes';
 import { INTERVAL_LABELS } from '../../../core/constants/chords';
+import { mulberry32, seededShuffle } from '../../../core/utils/prng';
 
 export interface ChoiceOption {
   label: string;
@@ -133,6 +134,29 @@ export function generateDegreeChoices(correctDegree: number, t: TFunc): ChoiceOp
   ];
 
   return shuffle(options);
+}
+
+function djb2(s: string): number {
+  let h = 5381;
+  for (const c of s) {
+    h = ((h * 33) ^ c.charCodeAt(0)) >>> 0;
+  }
+  return h;
+}
+
+/**
+ * Order multiple-choice options with a shuffle seeded by the exercise id:
+ * stable across retries and sessions, but the correct answer's position
+ * varies per exercise instead of always being authored first.
+ */
+export function generateMultipleChoiceOptions(
+  choices: { label: string; correct: boolean }[],
+  exerciseId: string,
+): ChoiceOption[] {
+  return seededShuffle(
+    choices.map((c) => ({ label: c.label, value: c.label, correct: c.correct })),
+    mulberry32(djb2(exerciseId)),
+  );
 }
 
 /**

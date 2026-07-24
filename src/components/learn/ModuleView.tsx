@@ -66,6 +66,9 @@ interface ModuleViewProps {
   isTaskCompleted: (moduleId: string, taskId: string) => boolean;
   completedTaskCount: number;
   exercises: ExerciseDefinition[];
+  /** Delivery state of the exercise payload — completion stays blocked until 'ready' */
+  exercisesState: 'loading' | 'ready' | 'error';
+  onRetryExercises?: () => void;
   exercisesPassed: boolean;
   /** When true, shows only exercises in review mode (hides concepts/tasks) */
   isReviewMode?: boolean;
@@ -91,6 +94,8 @@ export function ModuleView({
   isTaskCompleted,
   completedTaskCount,
   exercises,
+  exercisesState,
+  onRetryExercises,
   exercisesPassed,
   isReviewMode = false,
   levelCompletedModuleCount,
@@ -110,7 +115,8 @@ export function ModuleView({
   const nextModule = getNextModuleInLevel(module.id, level);
   const allTasksDone = completedTaskCount >= module.tasks.length;
   const hasExercises = exercises.length > 0;
-  const canComplete = allTasksDone && (!hasExercises || exercisesPassed);
+  const canComplete =
+    allTasksDone && exercisesState === 'ready' && (!hasExercises || exercisesPassed);
 
   const songRefs = getSongReferences(module.id);
 
@@ -350,6 +356,31 @@ export function ModuleView({
         )}
 
         {/* ─── Exercises ───────────────────────────────────────────── */}
+        {exercisesState === 'loading' && (
+          <div className="flex items-center justify-center py-10 mb-10">
+            <div
+              className="w-5 h-5 border-2 rounded-full animate-spin"
+              style={{ borderColor: 'var(--border)', borderTopColor: 'var(--text-muted)' }}
+            />
+          </div>
+        )}
+        {exercisesState === 'error' && (
+          <div
+            className="mb-10 p-4 rounded-xl border text-center"
+            style={{ borderColor: 'var(--border)', backgroundColor: 'color-mix(in srgb, var(--card) 60%, transparent)' }}
+          >
+            <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>
+              {t('learn.exercisesLoadError')}
+            </p>
+            <button
+              onClick={onRetryExercises}
+              className="px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
+              style={{ backgroundColor: `${accent}20`, color: accent, border: `1px solid ${accent}30` }}
+            >
+              {t('common.tryAgain')}
+            </button>
+          </div>
+        )}
         {hasExercises && (
           <m.div
             initial={{ opacity: 0, y: 20 }}

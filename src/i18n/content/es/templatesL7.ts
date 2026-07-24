@@ -504,7 +504,7 @@ const overlay: TemplateLevelOverlay = {
           'El frigio dominante es una escala de tonos enteros',
         ],
         [
-          'La escala húngara menor tiene dos segundas aumentadas, creando un sabor "gitano" distintivo',
+          'La escala húngara menor tiene dos segundas aumentadas, creando su distintivo sonido dramático',
           'La húngara menor es idéntica al menor natural',
           'La húngara menor no tiene intervalos aumentados',
           'La húngara menor es igual a la menor melódica',

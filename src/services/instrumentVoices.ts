@@ -69,6 +69,9 @@ export function registerInstrumentVoices(): () => void {
   let current = useAppStore.getState().instrument;
   setInstrumentVoice(voiceFor(current));
 
+  const preloadFor = (instrument: InstrumentType) =>
+    instrument === 'guitar' ? guitarSampler.preload() : pianoSampler.preload();
+
   const unsubscribe = useAppStore.subscribe((state) => {
     if (state.instrument === current) return;
     current = state.instrument;
@@ -78,14 +81,16 @@ export function registerInstrumentVoices(): () => void {
     // arrives via useAudio's mount sync instead (pushing here at boot would
     // create the sampler's AudioContext during initial script eval).
     voice.setVolume(state.volume);
+    // Warm the newly selected bank at flip time; the synth/KS fallback covers
+    // the gap until samples decode, so switching is never silent.
+    void preloadFor(current);
   });
 
-  // Warm BOTH sample sets on the first idle slot regardless of the boot
-  // instrument, so flipping piano↔guitar later never starts a download at flip
-  // time. ~3.7 MB combined; each preload is independently offline-safe.
+  // Warm only the selected instrument's sample set on the first idle slot —
+  // a single-instrument user shouldn't pay for the other ~2 MB bank on first
+  // load. The other bank downloads if and when the instrument is switched.
   const kick = () => {
-    void pianoSampler.preload();
-    void guitarSampler.preload();
+    void preloadFor(current);
   };
   if ('requestIdleCallback' in window) {
     requestIdleCallback(kick, { timeout: 3000 });

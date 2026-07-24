@@ -32,22 +32,56 @@ test.describe('PWA basics', () => {
     // Wait for app to load
     await expect(page.locator('#root')).not.toBeEmpty();
 
-    // The dev service worker is disabled (vite.config.ts devOptions.enabled:
-    // false), so against the dev server we only validate the API surface;
-    // registration count is asserted loosely so the test also passes against
-    // a production build, where the SW does register.
     const swSupported = await page.evaluate(() => 'serviceWorker' in navigator);
     expect(swSupported).toBe(true);
 
-    // Give any SW time to register
-    await page.waitForTimeout(2000);
+    // The dev service worker is disabled (vite.config.ts devOptions.enabled:
+    // false), so this test only asserts registration against a production
+    // build (`vite preview`), detected by the manifest being served.
+    const manifestResponse = await page.request.get('/manifest.webmanifest');
+    const contentType = manifestResponse.headers()['content-type'] ?? '';
+    test.skip(
+      !contentType.includes('json'),
+      'SW does not register on the dev server (devOptions disabled)',
+    );
 
+    await page.waitForFunction(
+      async () => (await navigator.serviceWorker.getRegistrations()).length > 0,
+      undefined,
+      { timeout: 10_000 },
+    );
     const registrations = await page.evaluate(async () => {
       const regs = await navigator.serviceWorker.getRegistrations();
       return regs.length;
     });
+    expect(registrations).toBeGreaterThanOrEqual(1);
+  });
 
-    expect(registrations).toBeGreaterThanOrEqual(0);
+  test('Drill opens offline on a fresh profile (manifest shortcut path)', async ({ page, context }) => {
+    await page.goto('/');
+    // Skip against the dev server (no SW there) — same detection as above.
+    const manifestResponse = await page.request.get('/manifest.webmanifest');
+    const contentType = manifestResponse.headers()['content-type'] ?? '';
+    test.skip(
+      !contentType.includes('json'),
+      'SW does not register on the dev server (devOptions disabled)',
+    );
+
+    // Wait for the service worker to activate and finish precaching.
+    await page.waitForFunction(
+      async () => !!(await navigator.serviceWorker.getRegistration())?.active,
+      undefined,
+      { timeout: 15_000 },
+    );
+    await page.waitForTimeout(1500);
+
+    await context.setOffline(true);
+    await page.goto('/?view=drill');
+
+    // The advertised shortcut must land in Drill, not the error boundary.
+    await expect(page.locator('#drill-panel')).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText('This view encountered an error.')).toHaveCount(0);
+    await context.setOffline(false);
   });
 
   test('app shell renders with correct structure', async ({ page }) => {

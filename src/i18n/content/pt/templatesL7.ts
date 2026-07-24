@@ -504,7 +504,7 @@ const overlay: TemplateLevelOverlay = {
           'O frigio dominante e uma escala de tons inteiros',
         ],
         [
-          'A escala hungara menor tem duas segundas aumentadas, criando um sabor "cigano" distintivo',
+          'A escala hungara menor tem duas segundas aumentadas, criando a sua sonoridade dramatica distintiva',
           'A hungara menor e identica ao menor natural',
           'A hungara menor nao tem intervalos aumentados',
           'A hungara menor e igual a menor melodica',

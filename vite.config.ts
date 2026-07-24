@@ -48,7 +48,11 @@ export default defineConfig({
         // Precache only the app shell + small core deps. Curriculum data,
         // exercises, and VexFlow stream in via runtimeCaching on demand —
         // a Level-1 user shouldn't pay for Level-9 content on first visit.
-        globPatterns: ['**/*.{css,html,ico,png,svg,woff2}', 'assets/index-*.js', 'assets/i18next-*.js', 'assets/framer-motion-*.js', 'assets/zustand-*.js'],
+        // Drill chunks ARE precached: the manifest advertises a "Start Drill"
+        // shortcut, which must work from a fresh offline install.
+        // prng is shared by Drill and the Learn exercise shuffle → its own
+        // chunk; it must ride along or the DrillView import fails offline.
+        globPatterns: ['**/*.{css,html,ico,png,svg,woff2}', 'assets/index-*.js', 'assets/i18next-*.js', 'assets/framer-motion-*.js', 'assets/zustand-*.js', 'assets/DrillView-*.js', 'assets/drillStore-*.js', 'assets/prng-*.js', 'assets/workbox-window*.js'],
         globIgnores: [
           '**/vexflow*',
           '**/curriculum[lL]*',

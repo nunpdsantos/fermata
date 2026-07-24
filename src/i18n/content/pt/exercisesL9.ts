@@ -14,7 +14,7 @@ const overlay: ExerciseLevelOverlay = {
 
   l9u30m1e1: {
     prompt:
-      'Ouve a altura e identifica-a. Esta e a altura de referencia usada para afinacao.',
+      'Identifica esta altura mostrada na pauta.',
     hint: 'O Do central (C4) e o ponto de referencia central no piano, situado na linha suplementar abaixo da pauta em clave de sol.',
   },
   l9u30m1e2: {

@@ -5,7 +5,7 @@
 Interactive music theory education platform that teaches through instrument-first pedagogy — theory emerges from playing, not the other way around. Users interact with a virtual piano or guitar fretboard that's always visible at the bottom of the screen (hidden in Drill, which owns its vertical space), with three main views above it:
 
 - **Explore** — browse scales, chords, intervals, and keys. The Circle of Fifths, scale degree bar, and chord grid let users visualize relationships. Selecting any entity highlights it on the instrument below. Detail panels show staff notation, constituent notes, and related structures.
-- **Learn** — structured 9-level curriculum (beginner → advanced) with 118 modules, 1,000+ exercises, spaced repetition review. Progress is tracked per-module.
+- **Learn** — structured 9-level curriculum (beginner → advanced) with 118 modules, 869 exercises (385 authored + 484 generated), spaced repetition review. Progress is tracked per-module. Drill's ~1,315-item bank is a separate product surface — never add it to the curriculum exercise count.
 - **Drill** (WS9) — phone-first spaced-retrieval micro-sessions over ~1,315 fundamentals facts (key signatures, circle of fifths, scales, degrees, intervals, triad/seventh spelling both directions, Roman numerals, cadences/function). Per-fact FSRS scheduling (`ts-fsrs`), "by heart" mastery = correct + <3s median across 3 distinct sessions, enharmonic near-miss feedback, mastery map, optional 60s sprint. The item bank is GENERATED from `src/core/` at runtime (`src/core/utils/drillBank/`) — no authored drill content. State lives in its own persisted store `fermata-drill-v1` (`src/state/drillStore.ts`); deliberately NO coupling to curriculum/module progress, no XP/streaks/badges (spec: docs/superpowers/specs/2026-06-10-fermata-drill-mode-design.md). ts-fsrs must stay out of the entry chunk (ErrorBoundary uses a dynamic import + inlined key literal for its reset path).
 
 ### Curriculum (9 Levels, 118 Modules)
@@ -35,7 +35,7 @@ Scale degree function is encoded in color throughout the app:
 **Name:** Music Theory App
 **Domain:** Music theory education / interactive instrument
 **Stack:** React 19 + TypeScript 5.9 + Vite 7 + Tailwind CSS v4 + Zustand 5 + Framer Motion 12
-**Tests:** ~2,286 passing (Vitest + React Testing Library, 48 test files)
+**Tests:** 5,635 passing (Vitest + React Testing Library, 92 test files)
 **Languages:** English + Portuguese + Spanish (react-i18next + content overlay system)
 **PWA:** Offline-capable with Workbox precaching
 
@@ -119,7 +119,7 @@ src/
     exercises/
       exercisesL1-L9.ts      Hand-authored exercises (~385 total)
       templatesL1-L9.ts      Exercise generation templates (118 modules, 156 templates)
-      exerciseGenerator.ts   Seeded PRNG generator (~627 generated, accepts lang for music term translation)
+      exerciseGenerator.ts   Seeded PRNG generator (484 generated, accepts lang for music term translation)
 ```
 
 **Interaction model:** Instrument-first. Piano/fretboard always visible at bottom. Two views: Explore (theory), Learn (curriculum). Cmd+K for power-user search. Color encodes scale degree function (tonic=blue, dominant=amber, leading=red).
@@ -194,7 +194,7 @@ src/
 
 ### Advanced (Phase 7)
 - **Spaced repetition:** 6-level intervals (1d→90d), review queue, backfill for pre-SRS modules
-- **Exercise generation:** Seeded PRNG templates for 118 modules (~627 generated, ~1,000+ total)
+- **Exercise generation:** Seeded PRNG templates for 118 modules (484 generated, 869 total)
 - **Staff notation:** VexFlow 5.0 lazy-loaded (~1,128 KB separate chunk), theme-reactive, integrated in Explore/panels/exercises
 
 ### Polish & Reach (Phase 8) — COMPLETE
@@ -257,7 +257,7 @@ src/
 The app is a lean, single-user personal tool — no accounts, no cloud sync, no
 gamification. Curriculum, exercises, spaced repetition, trilingual content, offline
 PWA, sampled piano, instrument-aware playback, and (WS9, branch `ws9-drill-mode`)
-the phone-first Drill view: all functional, all gates green (≈2,642 tests / 71 files,
+the phone-first Drill view: all functional, all gates green (5,635 tests / 92 files,
 eslint 0/0, content audits clean).
 
 WS9 details worth knowing: drill bank generated from core (`drillBank/` directory

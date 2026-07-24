@@ -611,7 +611,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Phrygian dominant is a whole-tone scale', correct: false },
             ],
             [
-              { label: 'The Hungarian minor scale has two augmented 2nds, creating a distinctive "gypsy" flavor', correct: true },
+              { label: 'The Hungarian minor scale has two augmented 2nds, creating its distinctive dramatic sound', correct: true },
               { label: 'Hungarian minor is identical to natural minor', correct: false },
               { label: 'Hungarian minor has no augmented intervals', correct: false },
               { label: 'Hungarian minor is the same as melodic minor', correct: false },
