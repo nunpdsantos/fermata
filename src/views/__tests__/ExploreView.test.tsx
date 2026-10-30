@@ -14,6 +14,11 @@ vi.mock('../../core/services/audio', async (importOriginal) => {
     playScale: vi.fn(() => {
       audioLog.push('playScale');
     }),
+    cancelScheduledAudio: vi.fn(() => {
+      audioLog.push('cancelScheduledAudio');
+    }),
+    // Must NOT be used by the re-trigger: it would also clear other
+    // components' visual timeouts (round-2 review B2).
     stopPlayback: vi.fn(() => {
       audioLog.push('stopPlayback');
     }),
@@ -131,6 +136,6 @@ describe('ExploreView — Play restarts cleanly', () => {
     await act(async () => {
       fireEvent.click(play);
     });
-    expect(audioLog).toEqual(['stopPlayback', 'playScale', 'stopPlayback', 'playScale']);
+    expect(audioLog).toEqual(['cancelScheduledAudio', 'playScale', 'cancelScheduledAudio', 'playScale']);
   });
 });
