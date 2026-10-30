@@ -16,6 +16,11 @@ function productionHeaders(): Record<string, string> {
   return Object.fromEntries(all.map((h) => [h.key, h.value]))
 }
 
+/** Entry module of a translated-content chunk (see chunkFileNames). */
+function isTranslatedContent(modulePath: string): boolean {
+  return modulePath.includes('/src/i18n/content/') || /\/src\/.+\.[a-z]{2}\.(ts|json)$/.test(modulePath)
+}
+
 export default defineConfig({
   preview: {
     headers: productionHeaders(),
@@ -136,8 +141,13 @@ export default defineConfig({
           // touch without blowing up the first-visit precache. StaffNotation
           // is the entry point for the cached vexflow chunk — without it,
           // notation exercises broke offline even with vexflow cached.
+          // `i18n-` = EVERY translated-content chunk, whatever its file is
+          // called (PT/ES curriculum / exercise / template / song overlays,
+          // per-language module titles …) — see chunkFileNames below. One
+          // generic pattern, so a new overlay file can't silently fall
+          // outside the cache and drop to English offline.
           {
-            urlPattern: /\/assets\/(curriculum[Ll]|exercisesL|templatesL|ExploreView-|LearnView-|StaffNotation|notationHelpers|celebrationSound).*\.js$/,
+            urlPattern: /\/assets\/(i18n-|curriculum[Ll]|exercisesL|templatesL|ExploreView-|LearnView-|StaffNotation|notationHelpers|celebrationSound).*\.js$/,
             handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'content-cache',
@@ -170,6 +180,16 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
+        // Translated content gets an `i18n-` file-name prefix so the service
+        // worker's content-cache route covers all of it generically: any chunk
+        // whose entry module lives under src/i18n/content/ (the PT/ES
+        // overlays, loaded per language and level) or is a language-suffixed
+        // data file (e.g. moduleTitles.pt.ts). `npm run check:sw` fails if a
+        // content-overlay chunk is not covered by that route.
+        chunkFileNames(chunk) {
+          const entry = chunk.facadeModuleId?.replace(/\\/g, '/') ?? '';
+          return isTranslatedContent(entry) ? 'assets/i18n-[name]-[hash].js' : 'assets/[name]-[hash].js';
+        },
         manualChunks(id) {
           if (id.includes('node_modules/vexflow')) return 'vexflow';
           if (id.includes('node_modules/framer-motion')) return 'framer-motion';

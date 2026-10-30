@@ -8,6 +8,9 @@
  * Fretboard, Quick Search, stores pulled apart by a dynamic import …) is
  * exactly how a file silently falls through both lists.
  *
+ * It also checks that every translated-content chunk (PT/ES overlays, per-
+ * language module titles ...) is covered by the content-cache route.
+ *
  * Usage: node scripts/check-sw-coverage.mjs [distDir=dist]
  * Exit 0 = every file covered; 1 = uncovered files (listed); 2 = no build.
  */
@@ -25,10 +28,11 @@ const sw = fs.readFileSync(swPath, 'utf8');
 const precached = new Set([...sw.matchAll(/url:"([^"]+)"/g)].map((m) => m[1]));
 // Runtime routes as emitted by workbox: e.registerRoute(/regex/flags,new e.Strategy(…
 // (lazy up to "/flags,new " so a "/" inside a character class is no problem)
-const routes = [...sw.matchAll(/registerRoute\((\/.+?\/[a-z]*),new /g)].map((m) => {
+const routeList = [...sw.matchAll(/registerRoute\((\/.+?\/[a-z]*),new e\.\w+\(\{cacheName:"([^"]+)"/g)].map((m) => {
   const [, body, flags] = m[1].match(/^\/(.*)\/([a-z]*)$/);
-  return new RegExp(body, flags);
+  return { re: new RegExp(body, flags), cacheName: m[2] };
 });
+const routes = routeList.map((r) => r.re);
 
 if (precached.size === 0) {
   console.error('check-sw-coverage: found no precache entries in sw.js — parser out of date?');
@@ -63,4 +67,30 @@ for (const entry of precached) {
 console.log(`check-sw-coverage: precache closure — ${missingDeps.length} precached file(s) import a chunk that is not precached`);
 for (const d of missingDeps) console.log(`  NOT PRECACHED ${d}`);
 
-process.exit(uncovered.length || missingDeps.length ? 1 : 0);
+// Translated content (PT/ES overlays, per-language module titles ...): every
+// such chunk must hit the content-cache route — not just the catch-all — so
+// it stays readable offline after first use instead of dropping to English.
+// Found two ways: the `i18n-` file-name prefix vite.config.ts gives
+// translated content, and the import.meta.glob map the overlay loader is
+// built into ("./pt/curriculumL1.ts":()=>...import("./<chunk>.js")).
+const contentRoute = routeList.find((r) => r.cacheName === 'content-cache');
+const allJs = files.filter((f) => f.endsWith('.js'));
+const globMapped = new Set();
+for (const f of allJs) {
+  const source = fs.readFileSync(path.join(assetsDir, f), 'utf8');
+  for (const m of source.matchAll(/"\.\/[a-z]{2}\/[\w.-]+\.(?:ts|json)":\(\)=>\w+\(\(\)=>import\("\.\/([^"]+\.js)"\)/g)) {
+    globMapped.add(m[1]);
+  }
+}
+const overlays = new Set([...globMapped, ...allJs.filter((f) => f.startsWith('i18n-'))]);
+const overlayProblems = [];
+if (!contentRoute) overlayProblems.push('no runtime route with cacheName "content-cache"');
+if (globMapped.size === 0) overlayProblems.push("found no overlay chunks in the overlay loader's glob map — parser out of date?");
+for (const f of overlays) {
+  if (!f.startsWith('i18n-')) overlayProblems.push(`assets/${f}: content overlay without the i18n- prefix (vite.config.ts chunkFileNames)`);
+  if (contentRoute && !contentRoute.re.test(`https://host/assets/${f}`)) overlayProblems.push(`assets/${f}: not matched by the content-cache route`);
+}
+console.log(`check-sw-coverage: content overlays — ${overlays.size} chunk(s) (${globMapped.size} from the loader's glob map), ${overlayProblems.length} problem(s)`);
+for (const p of overlayProblems) console.log(`  OVERLAY ${p}`);
+
+process.exit(uncovered.length || missingDeps.length || overlayProblems.length ? 1 : 0);
