@@ -11,7 +11,8 @@
 
 import { SHARP_ORDER, FLAT_ORDER } from './shared';
 import { displayNote, shuffleStable, FAMILY_BASE } from './shared';
-import { noteToString } from '../../types/music';
+import { noteToString, stringToNote } from '../../types/music';
+import { spellIntervalAbove, spellIntervalBelow } from '../degreeSpelling';
 import type { DrillItem } from '../../types/drill';
 
 /**
@@ -81,10 +82,12 @@ export function genCircle(): DrillItem[] {
     const asciiKey = CIRCLE_ASCII[i];
     const currDisplay = CIRCLE_DISPLAY[i];
 
-    const upIdx = (i + 1) % 12;
-    const downIdx = (i + 11) % 12;
-    const upDisplay = CIRCLE_DISPLAY[upIdx];
-    const downDisplay = CIRCLE_DISPLAY[downIdx];
+    // The answer is SPELLED as a perfect fifth from the prompt note (letter 5
+    // up / 5 down), not read off the next circle slot: a fifth above F♯ is C♯
+    // (the slot says D♭, a diminished 6th), a fifth below D♭ is G♭ (audit W1-04).
+    const promptNote = stringToNote(asciiKey);
+    const upDisplay = displayNote(spellIntervalAbove(promptNote, 5, 7));
+    const downDisplay = displayNote(spellIntervalBelow(promptNote, 5, 7));
 
     // Lures for fifth-up: fourth-up (= fifth-down, common confusion), two steps up/down
     const luresUpRaw = [
