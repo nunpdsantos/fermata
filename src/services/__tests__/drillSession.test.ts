@@ -707,3 +707,119 @@ describe('composeSession: all families disabled', () => {
     expect(queue).toHaveLength(0);
   });
 });
+
+// ─── W7-02: new facts interleave round-robin across enabled families ─────────
+// Ported from the auditors' coverage-gaps probe: with defaults (all families,
+// 4 new per session) fresh items used to be taken in GLOBAL rank order, so the
+// first triad arrived around session 81 and Roman numerals around session 203.
+// Spec §3.2: "interleaved across families once ≥ 2 families are active".
+
+describe('composeSession: fresh items round-robin across families (W7-02)', () => {
+  /** Simulate n sessions where every introduced fresh item is answered. */
+  function introduce(
+    bank: DrillItem[],
+    config: SessionConfig,
+    sessions: number,
+  ): { firstSession: Partial<Record<DrillFamily, number>>; perSession: string[][] } {
+    const byId = new Map(bank.map((i) => [i.id, i]));
+    const states: Record<string, ItemSrsState> = {};
+    const firstSession: Partial<Record<DrillFamily, number>> = {};
+    const perSession: string[][] = [];
+    for (let s = 1; s <= sessions; s++) {
+      const queue = composeSession(bank, states, config, NOW + s * DAY, s);
+      const fresh = queue.filter((id) => !states[id]);
+      perSession.push(fresh);
+      for (const id of fresh) {
+        const fam = byId.get(id)!.family;
+        firstSession[fam] ??= s;
+        states[id] = learningState(NOW + 1000 * DAY); // introduced, not due again
+      }
+    }
+    return { firstSession, perSession };
+  }
+
+  it('defaults: every family gets its first new fact within 3 sessions', () => {
+    const bank = generateDrillBank();
+    const { firstSession } = introduce(
+      bank,
+      { length: 24, newPerSession: 4, families: allFamilies() },
+      3,
+    );
+    expect(Object.keys(firstSession).sort()).toEqual([...DRILL_FAMILIES].sort());
+    expect(firstSession.triad).toBeLessThanOrEqual(3);
+    expect(firstSession.roman).toBeLessThanOrEqual(3);
+    expect(firstSession.function).toBeLessThanOrEqual(3);
+  });
+
+  it('a session\'s new facts come from different families while enough families have fresh items', () => {
+    const bank = generateDrillBank();
+    const byId = new Map(bank.map((i) => [i.id, i]));
+    const { perSession } = introduce(
+      bank,
+      { length: 24, newPerSession: 4, families: allFamilies() },
+      6,
+    );
+    for (const fresh of perSession) {
+      expect(fresh).toHaveLength(4);
+      const fams = new Set(fresh.map((id) => byId.get(id)!.family));
+      expect(fams.size).toBe(4);
+    }
+  });
+
+  it('families take turns: over 9 sessions of 4, each family gets 4 new facts', () => {
+    const bank = generateDrillBank();
+    const byId = new Map(bank.map((i) => [i.id, i]));
+    const { perSession } = introduce(
+      bank,
+      { length: 24, newPerSession: 4, families: allFamilies() },
+      9,
+    );
+    const counts: Partial<Record<DrillFamily, number>> = {};
+    for (const id of perSession.flat()) {
+      const f = byId.get(id)!.family;
+      counts[f] = (counts[f] ?? 0) + 1;
+    }
+    for (const f of DRILL_FAMILIES) expect(counts[f], f).toBe(4);
+  });
+
+  it('within a family, new facts still arrive in rank order (spec introduction order)', () => {
+    const bank = generateDrillBank();
+    const byId = new Map(bank.map((i) => [i.id, i]));
+    const { perSession } = introduce(
+      bank,
+      { length: 24, newPerSession: 4, families: allFamilies() },
+      12,
+    );
+    const lastRank: Partial<Record<DrillFamily, number>> = {};
+    for (const id of perSession.flat()) {
+      const it = byId.get(id)!;
+      expect(it.rank, id).toBeGreaterThan(lastRank[it.family] ?? -Infinity);
+      lastRank[it.family] = it.rank;
+    }
+  });
+
+  it('one family enabled: plain rank order, as before', () => {
+    const bank = generateDrillBank();
+    const families = { ...noFamilies(), triad: true };
+    const queue = composeSession(bank, {}, { length: 24, newPerSession: 4, families }, NOW, 1);
+    const expected = bank
+      .filter((i) => i.family === 'triad')
+      .sort((a, b) => a.rank - b.rank)
+      .slice(0, 4)
+      .map((i) => i.id);
+    expect([...queue].sort()).toEqual([...expected].sort());
+  });
+
+  it('an exhausted family drops out of the rotation (no wasted new slots)', () => {
+    const bank = [
+      item('d1', 'degree', 0),
+      item('c1', 'circle', 100),
+      item('c2', 'circle', 101),
+      item('c3', 'circle', 102),
+      item('c4', 'circle', 103),
+    ];
+    const queue = composeSession(bank, {}, defaultConfig({ newPerSession: 4 }), NOW, 3);
+    expect(queue).toHaveLength(4);
+    expect(queue).toContain('d1');
+  });
+});

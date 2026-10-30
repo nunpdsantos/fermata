@@ -82,6 +82,55 @@ function insertNotAdjacent(queue: string[], index: number, id: string, target: n
   return queue.slice();
 }
 
+// ─── Fresh-item selection ─────────────────────────────────────────────────────
+
+/**
+ * Pick up to `n` never-seen items, round-robin across families (spec §3.2:
+ * "interleaved across families once ≥ 2 families are active"; audit W7-02 —
+ * taking them in global rank order meant the first triad around session 81).
+ *
+ * Families take turns in introduction order (the order of their lowest rank,
+ * i.e. FAMILY_BASE: degree → circle → keysig → interval → triad → scale →
+ * seventh → roman → function); within a family the lowest rank goes first.
+ * The rotation starts where the previous sessions left off: its offset is the
+ * number of pool items already introduced, so consecutive sessions keep
+ * cycling through the families instead of restarting at the first one. A
+ * family with nothing fresh left drops out of the rotation.
+ */
+function pickFresh(
+  pool: DrillItem[],
+  states: Record<string, ItemSrsState>,
+  n: number,
+): DrillItem[] {
+  if (n <= 0) return [];
+  const byFamily = new Map<DrillFamily, DrillItem[]>();
+  let introduced = 0;
+  for (const item of pool) {
+    if (states[item.id]) {
+      introduced++;
+      continue;
+    }
+    const list = byFamily.get(item.family);
+    if (list) list.push(item);
+    else byFamily.set(item.family, [item]);
+  }
+  for (const list of byFamily.values()) list.sort((a, b) => a.rank - b.rank);
+  const order = [...byFamily.keys()].sort(
+    (a, b) => byFamily.get(a)![0].rank - byFamily.get(b)![0].rank,
+  );
+
+  const picked: DrillItem[] = [];
+  let turn = introduced;
+  while (picked.length < n) {
+    const open = order.filter((f) => byFamily.get(f)!.length > 0);
+    if (open.length === 0) break;
+    const family = open[turn % open.length];
+    picked.push(byFamily.get(family)!.shift()!);
+    turn++;
+  }
+  return picked;
+}
+
 // ─── composeSession ───────────────────────────────────────────────────────────
 
 /**
@@ -92,7 +141,8 @@ function insertNotAdjacent(queue: string[], index: number, id: string, target: n
  *  1. pool   = bank filtered by config.families
  *  2. due    = pool items where isDue(state, now), sorted ascending by card.due
  *  3. learning = pool items with tier 'learning' NOT in due (carry-over)
- *  4. fresh  = pool items with NO state entry, sorted by rank, sliced to newPerSession
+ *  4. fresh  = pool items with NO state entry, up to newPerSession, taken
+ *              round-robin across families (pickFresh)
  *  5. confidence = remaining pool items with state and tier review|byHeart,
  *                  sorted ascending by card.due, then seeded-shuffled
  *  6. review = seededShuffle([...due, ...learning], rand)
@@ -126,15 +176,11 @@ export function composeSession(
     (item) => !dueIds.has(item.id) && states[item.id]?.tier === 'learning',
   );
 
-  // 4. Fresh items (no state entry), sorted by rank, capped at newPerSession.
-  //    Items WITH states but tier 'new' are deliberately excluded from every
-  //    bucket here — state must reach tier 'learning' via an answer before the
-  //    item re-enters any bucket (store task: ensure the answer handler upgrades
-  //    tier before the next session compose).
-  const freshItems = pool
-    .filter((item) => !states[item.id])
-    .sort((a, b) => a.rank - b.rank)
-    .slice(0, config.newPerSession);
+  // 4. Fresh items (no state entry), capped at newPerSession, round-robin
+  //    across families (W7-02). Items WITH states but tier 'new' are
+  //    deliberately excluded from every bucket here — state must reach tier
+  //    'learning' via an answer before the item re-enters any bucket.
+  const freshItems = pickFresh(pool, states, config.newPerSession);
 
   // 5. Confidence: remaining pool items with state and tier review|byHeart
   const confidenceItems = pool
