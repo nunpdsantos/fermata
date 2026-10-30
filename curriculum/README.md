@@ -42,14 +42,24 @@ Synthesized from:
 
 3. **Implementation order:** Levels 1-3 can be built immediately (engine has full coverage). Levels 4-6 need some engine additions (sequences, NCT detection). Level 7+ needs significant new features (ear training audio, quiz system).
 
-## Current State vs. Target
+## Status (2026-10-30)
 
-| | Current | Target |
-|---|---------|--------|
-| Units | 5 | ~25-30 |
-| Modules | 23 | ~120-150 |
-| Concepts | ~70 | ~450+ |
-| Levels | Beginner only | Beginner through Advanced |
-| Ear Training | None | Full parallel track |
-| Quizzes | None | Per-module assessments |
-| Interactive Exercises | "Try This" buttons | Quizzes, dictation, composition tasks |
+These files are the PRE-IMPLEMENTATION plan. The curriculum that ships is the
+code: `src/core/constants/curriculumL1.ts` … `curriculumL9.ts` (English) plus
+the PT/ES overlays in `src/i18n/content/`; exercises live in
+`src/data/exercises/`. Where a plan file and the code disagree, the code wins.
+
+| | Planned here | Shipped (counted from the code, 2026-10-30) |
+|---|---|---|
+| Levels | Beginner through Advanced | 9 (L9 = parallel ear-training track) |
+| Units | ~25-30 | 28 |
+| Modules | ~120-150 | 118 |
+| Concepts | ~450+ | 346 |
+| Tasks | — | 347 |
+| Hand-authored exercises | — | 385 (plus generated ones from `templatesL*.ts`) |
+
+`06-chromatic-harmony.md`, `07-jazz-pop-modal.md` and `08-advanced-analysis.md`
+are marked **SUPERSEDED**: they contain theory errors the shipped lessons get
+right (audit C-74 / C-78, decision D-24). The other plan files were not
+re-checked line by line (the L1–L5 plans carry the audit's B-17 / B-34
+submediant errors) — treat every file here as historical.

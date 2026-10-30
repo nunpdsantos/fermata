@@ -1,5 +1,14 @@
 # Level 6: Chromatic Harmony (Advanced)
 
+> **SUPERSEDED planning document — do not teach or build from it.**
+> This was the pre-implementation spec for Level 6. It is not shipped and is
+> not maintained. The app's Level 6 content lives in
+> `src/core/constants/curriculumL6.ts` (EN) and the PT/ES overlays under
+> `src/i18n/content/`; where the two disagree, the shipped `.ts` is right.
+> The 2026-10-30 audit found theory errors and dead references here that the
+> shipped lessons get right (C-74: e.g. §6.3 viio7 of A spelled Ab-Cb-Ebb-Gbb, CTo7 "the other three voices resolve by half step"); they are deliberately left
+> uncorrected (decision D-24, ledger W9-26).
+
 **Difficulty:** Advanced Intermediate
 **Prerequisites:** Level 5 complete
 **Equivalence:** ABRSM Grade 6-7, RCM Level 8-9, Kostka Ch. 21-25, Laitz Ch. 21-27, Berklee Harmony 3

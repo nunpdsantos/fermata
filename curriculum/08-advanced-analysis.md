@@ -1,5 +1,14 @@
 # Level 8: Analysis, Counterpoint & Post-Tonal
 
+> **SUPERSEDED planning document — do not teach or build from it.**
+> This was the pre-implementation spec for Level 8. It is not shipped and is
+> not maintained. The app's Level 8 content lives in
+> `src/core/constants/curriculumL8.ts` (EN) and the PT/ES overlays under
+> `src/i18n/content/`; where the two disagree, the shipped `.ts` is right.
+> The 2026-10-30 audit found theory errors and dead references here that the
+> shipped lessons get right (C-74: e.g. "C Lydian + C Mixolydian = all notes of C major" — the union is nine pitch classes); they are deliberately left
+> uncorrected (decision D-24, ledger W9-26).
+
 **Difficulty:** Advanced+
 **Prerequisites:** Level 7 complete
 **Equivalence:** ABRSM Grade 8/Diploma, RCM Level 10/ARCT, Juilliard Theory V
