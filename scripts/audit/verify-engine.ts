@@ -47,8 +47,8 @@ import { validateAnswer } from '../../src/components/learn/exercises/validateExe
 import {
   CIRCLE_MAJOR,
   CIRCLE_MINOR,
-  KEY_SIGNATURES,
 } from '../../src/components/theory/circleOfFifthsConstants';
+import { majorKeySignature, formatKeySignature } from '../../src/core/utils/degreeSpelling';
 
 type Finding = { severity: 'critical' | 'serious' | 'minor' | 'info'; tag: string; detail: string };
 const findings: Finding[] = [];
@@ -523,15 +523,18 @@ for (let i = 0; i < 12; i++) {
   }
 }
 
-// Verify KEY_SIGNATURES array lines up with CIRCLE_MAJOR positions
-// Position 0 (C) = 0#, 1 (G) = 1#, …, 6 (Gb/F#) = 6♯/6♭, 7 (Db) = 5♭, …, 11 (F) = 1♭
-const EXPECTED_KS = ['', '1\u266F', '2\u266F', '3\u266F', '4\u266F', '5\u266F', '6\u266F/6\u266D', '5\u266D', '4\u266D', '3\u266D', '2\u266D', '1\u266D'];
+// Verify the outer signature ring the circle draws for its default segments.
+// Since the W2 review the circle computes each label from the segment's
+// displayed key (spelling engine) instead of a static array, so check that:
+// position 0 (C) = none, 1 (G) = 1♯, …, 6 (G♭) = 6♭, 7 (D♭) = 5♭, …, 11 (F) = 1♭.
+const EXPECTED_KS = ['', '1\u266F', '2\u266F', '3\u266F', '4\u266F', '5\u266F', '6\u266D', '5\u266D', '4\u266D', '3\u266D', '2\u266D', '1\u266D'];
+const gotKS = CIRCLE_MAJOR.map((n) => formatKeySignature(majorKeySignature(n), ''));
 totalChecks++;
-if (JSON.stringify(KEY_SIGNATURES) !== JSON.stringify(EXPECTED_KS)) {
+if (JSON.stringify(gotKS) !== JSON.stringify(EXPECTED_KS)) {
   record({
     severity: 'serious',
     tag: 'key-sig-array',
-    detail: `KEY_SIGNATURES mismatch`,
+    detail: `circle signature ring: got [${gotKS.join(',')}], want [${EXPECTED_KS.join(',')}]`,
   });
 }
 
