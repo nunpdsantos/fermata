@@ -413,12 +413,22 @@ export function playNote(
   };
 }
 
+/** Release every held note and cancel every scheduled one-shot. */
 export function stopAll(): void {
   for (const midi of [...voices.keys()]) {
     stopNote(midi);
   }
-  const ctx = getContext();
-  const now = ctx.currentTime;
+  cancelScheduled();
+}
+
+/**
+ * Fade out and stop every scheduled/sounding one-shot pluck; held (sustained)
+ * frets are untouched. Called via the guitar voice by core stopPlayback()
+ * (audit W0-04 review B1 / W8-01). No-op before any audio exists.
+ */
+export function cancelScheduled(): void {
+  if (!audioContext || oneShots.size === 0) return;
+  const now = audioContext.currentTime;
   for (const voice of oneShots) {
     voice.gain.gain.cancelScheduledValues(now);
     voice.gain.gain.setValueAtTime(voice.gain.gain.value, now);

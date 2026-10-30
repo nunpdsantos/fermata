@@ -1,6 +1,7 @@
 import { m } from 'framer-motion';
 import type { ChoiceOption } from '../exerciseHelpers';
 import { SPRING_MICRO } from '../../../../design/tokens/motion';
+import { accentText } from '../../../../design/tokens/learnColors';
 
 interface ChoiceInputProps {
   options: ChoiceOption[];
@@ -53,7 +54,7 @@ export function ChoiceInput({ options, selected, submitted, onSelect, accentColo
                 ? {
                     backgroundColor: `${accentColor}20`,
                     border: `1px solid ${accentColor}50`,
-                    color: accentColor,
+                    color: accentText(accentColor),
                   }
                 : showCorrect || showIncorrect
                   ? undefined

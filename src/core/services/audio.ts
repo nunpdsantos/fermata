@@ -171,6 +171,15 @@ export interface InstrumentVoice {
   stopNote(midi: number): void;
   setVolume(volume: number): void;
   resume(): Promise<void>;
+  /**
+   * Cancel every one-shot this voice has scheduled or is still sounding
+   * (playNote), with a short fade — never a click. Sustained notes
+   * (startNote, i.e. keys/frets the user is holding) are left alone.
+   * Called by stopPlayback(): one-shots are handed to the voice up front on
+   * the audio clock, so without this a scale or progression could not be
+   * stopped once the samples had decoded (audit W0-04 review B1 / W8-01).
+   */
+  cancelScheduled(): void;
 }
 
 let instrumentVoice: InstrumentVoice | null = null;
@@ -234,30 +243,68 @@ export function getReverbMix(): number {
   return wetGainNode?.gain.value ?? 0.15;
 }
 
-// Stop all current playback with click-free fade-out
+const STOP_FADE_S = 0.03; // 30ms fade-out to avoid click artifacts
+
+/** Ramp an FM voice's gain to near-zero, then stop the oscillator (no click). */
+function fadeOutAndStop(entry: { oscillator: OscillatorNode; gainNode: GainNode }, now: number): void {
+  const { oscillator, gainNode } = entry;
+  try {
+    gainNode.gain.cancelScheduledValues(now);
+    gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, now + STOP_FADE_S);
+    oscillator.stop(now + STOP_FADE_S + 0.02);
+  } catch {
+    // Oscillator may have already stopped
+    try {
+      oscillator.disconnect();
+    } catch {
+      // Already disconnected
+    }
+  }
+}
+
+/**
+ * Cancel every scheduled or still-sounding ONE-SHOT note — the registered
+ * voice's (sampled piano / guitar / KS) and the FM fallback's — with a short
+ * fade. Unlike stopPlayback() it leaves held (sustained) notes alone and does
+ * NOT clear the tracked visual timeouts, so other components' highlight /
+ * onComplete callbacks (e.g. the chord panel's arpeggio un-lighting its keys)
+ * still run. Use it to restart a playback (audit W0 round-2 review B2).
+ */
+export function cancelScheduledAudio(): void {
+  instrumentVoice?.cancelScheduled();
+  const ctx = audioContext;
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const held = new Set<OscillatorNode>();
+  for (const e of sustainedNotes.values()) {
+    held.add(e.oscillator);
+    if (e.modOsc) held.add(e.modOsc);
+    if (e.detuneOsc) held.add(e.detuneOsc);
+  }
+  for (const entry of [...activeOscillators]) {
+    if (held.has(entry.oscillator)) continue;
+    fadeOutAndStop(entry, now);
+    activeOscillators.delete(entry);
+  }
+}
+
+// Stop all current playback with click-free fade-out — sound, held FM notes
+// AND every tracked visual timeout. To merely restart a playback without
+// breaking other components' visual callbacks, use cancelScheduledAudio().
 export function stopPlayback(): void {
+  // The registered voice (sampled piano / guitar / KS) owns almost every
+  // scheduled note once samples decode — cancel those first. Its held notes
+  // stay; the FM fallback's own sustained notes are still cleared below, as
+  // before.
+  instrumentVoice?.cancelScheduled();
+
   const ctx = audioContext;
   const now = ctx?.currentTime ?? 0;
-  const fadeTime = 0.03; // 30ms fade-out to avoid click artifacts
+  const fadeTime = STOP_FADE_S;
 
   // Fade out and stop all active oscillators
-  activeOscillators.forEach(({ oscillator, gainNode }) => {
-    try {
-      // Ramp gain to near-zero before stopping — prevents click from abrupt waveform cut
-      gainNode.gain.cancelScheduledValues(now);
-      gainNode.gain.setValueAtTime(gainNode.gain.value, now);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, now + fadeTime);
-      // Schedule stop after fade completes
-      oscillator.stop(now + fadeTime + 0.02);
-    } catch {
-      // Oscillator may have already stopped
-      try {
-        oscillator.disconnect();
-      } catch {
-        // Already disconnected
-      }
-    }
-  });
+  activeOscillators.forEach((entry) => fadeOutAndStop(entry, now));
   activeOscillators.clear();
 
   // Stop auxiliary oscillators from sustained notes (modulation, detune)

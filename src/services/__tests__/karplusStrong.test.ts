@@ -4,6 +4,7 @@ import {
   startNote,
   stopNote,
   stopAll,
+  cancelScheduled,
   setVolume,
   playNote,
   resumeContext,
@@ -328,6 +329,46 @@ describe('playNote (scheduled one-shot)', () => {
     for (const s of sources.slice(-2)) {
       expect(s.stop).toHaveBeenCalled();
     }
+  });
+});
+
+// Audit W0-04 review B1: core stopPlayback() must be able to cancel the
+// guitar fallback's scheduled plucks WITHOUT cutting a fret the user holds.
+describe('cancelScheduled (one-shots only)', () => {
+  it('fades and stops scheduled one-shots, leaving sustained (held) notes ringing', () => {
+    const { sources, gains, mockCtx } = setupMockAudioContext();
+    startNote(52); // held fret
+    const held = sources[sources.length - 1];
+    mockCtx.currentTime = 3;
+    playNote(60, 0, 2, 0.5);
+    playNote(64, 1.5, 2, 0.5); // not started yet
+    const shots = sources.slice(-2);
+    const shotGains = gains.slice(-2);
+
+    cancelScheduled();
+
+    expect(held.stop).not.toHaveBeenCalled();
+    for (const s of shots) {
+      const stopAt = s.stop.mock.calls[s.stop.mock.calls.length - 1][0] as number;
+      expect(stopAt).toBeGreaterThan(3);
+      expect(stopAt).toBeLessThanOrEqual(3.1);
+    }
+    for (const g of shotGains) {
+      expect(g.gain.cancelScheduledValues).toHaveBeenCalledWith(3);
+      const ramp = g.gain.linearRampToValueAtTime.mock.calls[g.gain.linearRampToValueAtTime.mock.calls.length - 1];
+      expect(ramp[0]).toBe(0);
+      expect(ramp[1]).toBeGreaterThan(3);
+    }
+  });
+
+  it('forgets one-shots that ended', () => {
+    const { sources } = setupMockAudioContext();
+    playNote(60, 0, 0.2, 0.5);
+    const s = sources[sources.length - 1];
+    const before = s.stop.mock.calls.length;
+    s.onended?.();
+    cancelScheduled();
+    expect(s.stop.mock.calls.length).toBe(before);
   });
 });
 

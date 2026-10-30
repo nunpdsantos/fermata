@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { accentText } from '../../design/tokens/learnColors';
 
 interface BreadcrumbSegment {
   label: string;
@@ -20,7 +21,7 @@ export function LearnBreadcrumb({ segments, accentColor }: LearnBreadcrumbProps)
           <span key={i} className="flex items-center gap-1.5">
             {i > 0 && <span style={{ color: 'var(--border)' }}>/</span>}
             {isLast ? (
-              <span style={{ color: accentColor }}>{seg.label}</span>
+              <span style={{ color: accentText(accentColor) }}>{seg.label}</span>
             ) : seg.onClick ? (
               <button
                 onClick={seg.onClick}

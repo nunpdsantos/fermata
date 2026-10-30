@@ -15,6 +15,7 @@ import { useDegreeColorsEnabled } from '../hooks/useDegreeColors.ts';
 import {
   playScale,
   resumeAudio,
+  cancelScheduledAudio,
 } from '../core/services/audio.ts';
 import { getSynthConfig } from '../services/synthConfig.ts';
 import { generateScaleSummary, copyToClipboard } from '../utils/exportHelpers.ts';
@@ -43,6 +44,10 @@ export function ExploreView() {
 
   const handleQuickPlay = useCallback(async () => {
     await resumeAudio();
+    // Play again restarts cleanly instead of layering a second scale (W8-01).
+    // Audio only: stopPlayback() would also clear other components' visual
+    // timeouts (e.g. the chord panel's arpeggio un-lighting its keys — B2).
+    cancelScheduledAudio();
     const config = getSynthConfig(synthPreset);
     playScale(scale.notes, baseOctave, true, false, 0.25, () => {}, () => {}, config);
   }, [scale, synthPreset, baseOctave]);

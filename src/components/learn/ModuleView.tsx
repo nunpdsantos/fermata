@@ -13,6 +13,7 @@ import { toast } from '../../state/toastStore';
 import { getSongReferences } from '../../data/songReferences';
 import { SPRING_BOUNCY } from '../../design/tokens/motion';
 import { palette } from '../../design/tokens/palette';
+import { accentText } from '../../design/tokens/learnColors';
 
 // Matches a quoted token that follows a "Type "/"Open "/"Search for " verb,
 // e.g. "Type 'C major scale'". Quotes can be straight or curly.
@@ -43,7 +44,7 @@ function renderTaskInstruction(
           onTryQuery(query);
         }}
         className="inline-flex items-baseline font-medium rounded px-1 py-0.5 -my-0.5 transition-colors cursor-pointer underline decoration-dotted underline-offset-2"
-        style={{ color: accent, backgroundColor: `${accent}0d` }}
+        style={{ color: accentText(accent), backgroundColor: `${accent}0d` }}
       >
         {verb} &lsquo;{query}&rsquo;
       </button>,
@@ -166,7 +167,7 @@ export function ModuleView({
             <span
               className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
               style={{
-                color: accent,
+                color: accentText(accent),
                 backgroundColor: `${accent}18`,
               }}
             >
@@ -204,7 +205,7 @@ export function ModuleView({
         >
           <h2
             className="text-[10px] font-bold uppercase tracking-widest mb-3"
-            style={{ color: accent }}
+            style={{ color: accentText(accent) }}
           >
             {t('learn.learningObjectives')}
           </h2>
@@ -235,7 +236,7 @@ export function ModuleView({
                 <span
                   className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0"
                   style={{
-                    color: accent,
+                    color: accentText(accent),
                     backgroundColor: `${accent}15`,
                   }}
                 >
@@ -275,7 +276,7 @@ export function ModuleView({
                         className="w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0"
                         style={{
                           backgroundColor: `${accent}20`,
-                          color: accent,
+                          color: accentText(accent),
                         }}
                       >
                         <svg
@@ -286,7 +287,7 @@ export function ModuleView({
                         </svg>
                       </span>
                       <div>
-                        <span className="text-[10px] font-bold uppercase tracking-widest block mb-0.5" style={{ color: accent }}>
+                        <span className="text-[10px] font-bold uppercase tracking-widest block mb-0.5" style={{ color: accentText(accent) }}>
                           {t('learn.tryThis')}
                         </span>
                         <span className="text-sm transition-colors" style={{ color: 'var(--text-muted)' }}>
@@ -334,7 +335,7 @@ export function ModuleView({
               </svg>
               <h2
                 className="text-[10px] font-bold uppercase tracking-widest"
-                style={{ color: accent }}
+                style={{ color: accentText(accent) }}
               >
                 {t('songRef.title')}
               </h2>
@@ -375,7 +376,7 @@ export function ModuleView({
             <button
               onClick={onRetryExercises}
               className="px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
-              style={{ backgroundColor: `${accent}20`, color: accent, border: `1px solid ${accent}30` }}
+              style={{ backgroundColor: `${accent}20`, color: accentText(accent), border: `1px solid ${accent}30` }}
             >
               {t('common.tryAgain')}
             </button>
@@ -500,7 +501,7 @@ export function ModuleView({
               className="w-full py-3 rounded-xl text-sm font-semibold transition-all duration-200 hover:scale-[1.01]"
               style={{
                 backgroundColor: `${accent}20`,
-                color: accent,
+                color: accentText(accent),
                 border: `1px solid ${accent}30`,
               }}
               onMouseEnter={(e) => {

@@ -16,6 +16,7 @@ import {
   stopNote,
   playNote,
   stopAll,
+  cancelScheduled,
   setVolume,
   _resetForTesting,
 } from '../guitarSampler';
@@ -200,5 +201,75 @@ describe('setVolume', () => {
     await preload();
     setVolume(0.3);
     expect(gains[0].gain.value).toBe(0.3);
+  });
+});
+
+// ─── cancelScheduled (audit W0-04 review B1 / W8-01) ───────────────────────
+// Scheduled one-shots (scale / progression / ear-training notes) used to be
+// fire-and-forget: started with source.start(when) and never tracked, so
+// nothing could stop an abandoned stimulus. They are now tracked until they
+// end and cancelled with a short gain fade (no click).
+
+describe('cancelScheduled', () => {
+  it('stops sounding AND not-yet-started one-shots at ~now + a short fade', async () => {
+    await preload();
+    playNote(60, 0, 1); // sounding now
+    playNote(64, 2, 1); // scheduled 2 s ahead
+    const oneShots = sources.slice(-2);
+    const oneShotGains = gains.slice(-2);
+
+    cancelScheduled();
+
+    for (const s of oneShots) {
+      const stopAt = s.stop.mock.calls[s.stop.mock.calls.length - 1][0] as number;
+      expect(stopAt).toBeGreaterThanOrEqual(10.02); // currentTime 10 + fade
+      expect(stopAt).toBeLessThanOrEqual(10.1);
+    }
+    for (const g of oneShotGains) {
+      // Fade, not a click: pending automation cleared, then a ramp to 0.
+      expect(g.gain.cancelScheduledValues).toHaveBeenCalledWith(10);
+      const ramp = g.gain.linearRampToValueAtTime.mock.calls[g.gain.linearRampToValueAtTime.mock.calls.length - 1];
+      expect(ramp[0]).toBe(0);
+      expect(ramp[1]).toBeGreaterThanOrEqual(10.02);
+      expect(ramp[1]).toBeLessThanOrEqual(10.08);
+    }
+  });
+
+  it('leaves a held (sustained) note alone', async () => {
+    await preload();
+    startNote(60);
+    const held = sources[sources.length - 1];
+    playNote(64, 0, 1);
+    cancelScheduled();
+    expect(held.stop).not.toHaveBeenCalled();
+  });
+
+  it('forgets one-shots that already ended, and a second cancel is a no-op', async () => {
+    await preload();
+    playNote(60, 0, 0.2);
+    const ended = sources[sources.length - 1];
+    const stopsBefore = ended.stop.mock.calls.length;
+    ended.onended?.();
+    playNote(62, 0, 1);
+    const live = sources[sources.length - 1];
+    cancelScheduled();
+    expect(ended.stop.mock.calls.length).toBe(stopsBefore);
+    const liveStops = live.stop.mock.calls.length;
+    cancelScheduled();
+    expect(live.stop.mock.calls.length).toBe(liveStops);
+  });
+
+  it('is a no-op before any audio exists (does not create an AudioContext)', () => {
+    cancelScheduled();
+    expect(gains.length).toBe(0);
+  });
+
+  it('stopAll also cancels scheduled one-shots', async () => {
+    await preload();
+    playNote(64, 1, 1);
+    const s = sources[sources.length - 1];
+    const before = s.stop.mock.calls.length;
+    stopAll();
+    expect(s.stop.mock.calls.length).toBe(before + 1);
   });
 });

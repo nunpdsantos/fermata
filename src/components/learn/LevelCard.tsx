@@ -7,6 +7,7 @@ import { DifficultyBadge } from './DifficultyBadge';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { DEGREE_COLORS } from '../../design/tokens/colors';
+import { accentText } from '../../design/tokens/learnColors';
 
 interface LevelCardProps {
   level: LevelMeta;
@@ -50,7 +51,7 @@ export function LevelCard({ level, state, completedModuleCount, index, onClick }
         <div className="flex items-center justify-between mb-3">
           <div
             className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
-            style={{ backgroundColor: `${accent}20`, color: accent }}
+            style={{ backgroundColor: `${accent}20`, color: accentText(accent) }}
           >
             {level.number}
           </div>
@@ -67,7 +68,7 @@ export function LevelCard({ level, state, completedModuleCount, index, onClick }
               </Badge>
             )}
             {state === 'completed' && (
-              <Badge shape="pill" size="xs" accentColor={DEGREE_COLORS[4]}>
+              <Badge shape="pill" size="xs" accentColor={DEGREE_COLORS[4]} style={{ color: 'var(--success-text)' }}>
                 {t('status.complete')}
               </Badge>
             )}

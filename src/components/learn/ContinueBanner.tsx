@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import type { CurriculumModule, CurriculumUnit, CurriculumLevel } from '../../core/types/curriculum';
 import { Card } from '../ui/Card';
+import { accentText } from '../../design/tokens/learnColors';
 
 interface ContinueBannerProps {
   module: CurriculumModule;
@@ -34,7 +35,7 @@ export function ContinueBanner({ module, unit, level, onClick }: ContinueBannerP
         <div>
           <span
             className="text-[10px] font-bold uppercase tracking-widest"
-            style={{ color: accent }}
+            style={{ color: accentText(accent) }}
           >
             {t('common.continue')}
           </span>

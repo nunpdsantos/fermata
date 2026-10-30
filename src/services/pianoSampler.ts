@@ -42,9 +42,13 @@ let ambienceInput: AudioNode | null = null; // ambience bus (masterGain → ambi
 const buffers = new Map<string, AudioBuffer>();
 let loadPromise: Promise<void> | null = null;
 const voices = new Map<number, Voice>();
+// Scheduled one-shots (playNote), tracked until they end so cancelScheduled()
+// can stop an abandoned scale/progression (audit W0-04 review B1 / W8-01).
+const oneShots = new Set<Voice>();
 
 const RELEASE_S = 0.25; // gain time-constant on key release
 const STOP_AFTER_S = 1.2; // hard-stop the source once the release has faded
+const CANCEL_FADE_S = 0.04; // cancel fade — short, but long enough not to click
 
 function getContext(): AudioContext {
   if (!audioContext) {
@@ -148,10 +152,34 @@ export function stopNote(midi: number): void {
   releaseVoice(voice, getContext().currentTime);
 }
 
+/** Release every held note and cancel every scheduled one-shot. */
 export function stopAll(): void {
   for (const midi of [...voices.keys()]) {
     stopNote(midi);
   }
+  cancelScheduled();
+}
+
+/**
+ * Stop every scheduled or still-sounding one-shot (playNote) with a short
+ * gain fade — not a click. Held notes (startNote) are untouched. Sources not
+ * yet started simply never sound. No-op before any audio exists.
+ */
+export function cancelScheduled(): void {
+  if (!audioContext || oneShots.size === 0) return;
+  const now = audioContext.currentTime;
+  for (const voice of oneShots) {
+    const g = voice.gain.gain;
+    g.cancelScheduledValues(now);
+    g.setValueAtTime(g.value, now);
+    g.linearRampToValueAtTime(0, now + CANCEL_FADE_S);
+    try {
+      voice.source.stop(now + CANCEL_FADE_S + 0.01);
+    } catch {
+      // already stopped
+    }
+  }
+  oneShots.clear();
 }
 
 /**
@@ -165,6 +193,10 @@ export function playNote(midi: number, when: number, duration: number, velocity 
   const voice = spawnVoice(midi, startAt, velocity);
   if (!voice) return false;
   releaseVoice(voice, startAt + duration);
+  oneShots.add(voice);
+  voice.source.onended = () => {
+    oneShots.delete(voice);
+  };
   return true;
 }
 
@@ -186,6 +218,7 @@ export async function resumeContext(): Promise<void> {
 
 export function _resetForTesting(): void {
   voices.clear();
+  oneShots.clear();
   buffers.clear();
   loadPromise = null;
   audioContext = null;

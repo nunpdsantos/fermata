@@ -8,6 +8,7 @@ import { ContinueBanner } from './ContinueBanner';
 import { DifficultyBadge } from './DifficultyBadge';
 import { ProgressBar } from './ProgressBar';
 import { UnitCard } from './UnitCard';
+import { accentText } from '../../design/tokens/learnColors';
 
 interface LevelDetailProps {
   level: CurriculumLevel;
@@ -79,7 +80,7 @@ export function LevelDetail({
         <div className="flex items-center gap-3 mb-3">
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
-            style={{ backgroundColor: `${accent}20`, color: accent }}
+            style={{ backgroundColor: `${accent}20`, color: accentText(accent) }}
           >
             {level.number}
           </div>

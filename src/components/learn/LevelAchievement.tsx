@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import { SPRING_SNAPPY } from '../../design/tokens/motion';
 import { Confetti } from './Confetti';
+import { accentText } from '../../design/tokens/learnColors';
 
 interface LevelAchievementProps {
   levelNumber: number;
@@ -73,7 +74,7 @@ export function LevelAchievement({ levelNumber, accentColor, moduleCount, onDism
           className="px-6 py-2.5 rounded-xl text-sm font-semibold transition-colors"
           style={{
             backgroundColor: `${accentColor}20`,
-            color: accentColor,
+            color: accentText(accentColor),
             border: `1px solid ${accentColor}30`,
           }}
           onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = `${accentColor}30`; }}

@@ -2,6 +2,7 @@ import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import type { ValidationResult } from '../../../core/types/exercise';
 import { SPRING_SNAPPY, SPRING_MICRO } from '../../../design/tokens/motion';
+import { accentText } from '../../../design/tokens/learnColors';
 
 interface ExerciseFeedbackProps {
   result: ValidationResult;
@@ -107,7 +108,7 @@ export function ExerciseFeedback({
             className="text-xs font-medium px-4 py-1.5 max-sm:py-2 max-sm:px-5 rounded-lg transition-colors"
             style={{
               backgroundColor: `${accentColor}20`,
-              color: accentColor,
+              color: accentText(accentColor),
             }}
           >
             {t('common.tryAgain')}
@@ -120,7 +121,7 @@ export function ExerciseFeedback({
             className="text-xs font-medium px-4 py-1.5 max-sm:py-2 max-sm:px-5 rounded-lg transition-colors"
             style={{
               backgroundColor: `${accentColor}20`,
-              color: accentColor,
+              color: accentText(accentColor),
             }}
           >
             {isCorrect ? t('common.continue') : t('common.next')}

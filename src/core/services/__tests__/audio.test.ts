@@ -91,6 +91,7 @@ function makeVoice(handles: boolean) {
     stopNote: vi.fn((_midi: number) => {}),
     setVolume: vi.fn((_volume: number) => {}),
     resume: vi.fn(() => Promise.resolve()),
+    cancelScheduled: vi.fn(() => {}),
   };
 }
 
@@ -197,5 +198,97 @@ describe('instrument voice seam — sustained + controls', () => {
 
     await audio.resumeAudio();
     expect(voice.resume).toHaveBeenCalled();
+  });
+});
+
+// Audit W0-04 review B1 / ledger W8-01 (F-02): stopPlayback only silenced the
+// FM fallback. Once samples decode, every scale/progression note is handed to
+// the registered voice up front (on the audio clock), so "stop" stopped nothing
+// and an abandoned ear-training scale rang on under the next item.
+describe('stopPlayback — cancels what the voice has scheduled', () => {
+  it('a pre-scheduled scale on the voice is cancelled by stopPlayback', async () => {
+    setupMockAudioContext();
+    const audio = await freshAudio();
+    const voice = makeVoice(true);
+    audio.setInstrumentVoice(voice);
+
+    audio.playScale([N('C'), N('D'), N('E'), N('F'), N('G'), N('A'), N('B')], 4, true, false, 0.35);
+    // All 8 notes are handed over immediately, the last ~2.8 s in the future.
+    expect(voice.playNote).toHaveBeenCalledTimes(8);
+    expect(voice.playNote.mock.calls[7][1]).toBeGreaterThan(2.5);
+
+    audio.stopPlayback();
+    expect(voice.cancelScheduled).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not release sustained notes the user is holding on the voice', async () => {
+    setupMockAudioContext();
+    const audio = await freshAudio();
+    const voice = makeVoice(true);
+    audio.setInstrumentVoice(voice);
+
+    audio.startSustainedNote(N('E'), 4);
+    audio.stopPlayback();
+    expect(voice.stopNote).not.toHaveBeenCalled();
+  });
+
+  it('is safe with no voice registered', async () => {
+    setupMockAudioContext();
+    const audio = await freshAudio();
+    audio.setInstrumentVoice(null);
+    expect(() => audio.stopPlayback()).not.toThrow();
+  });
+});
+
+// Round-2 review B2: a playback RESTART must cancel sound only. stopPlayback()
+// also clears every tracked visual timeout, which killed another component's
+// onComplete (the chord panel's arpeggio never un-lit its keys).
+describe('cancelScheduledAudio — sound only, visuals and held notes untouched', () => {
+  it("cancels the voice's scheduled one-shots", async () => {
+    setupMockAudioContext();
+    const audio = await freshAudio();
+    const voice = makeVoice(true);
+    audio.setInstrumentVoice(voice);
+    audio.playScale([N('C'), N('D'), N('E')], 4, true, false, 0.35);
+    audio.cancelScheduledAudio();
+    expect(voice.cancelScheduled).toHaveBeenCalledTimes(1);
+  });
+
+  it('fades and stops FM one-shots but leaves a held FM note sounding', async () => {
+    const { oscillators } = setupMockAudioContext();
+    const audio = await freshAudio();
+    audio.setInstrumentVoice(makeVoice(false)); // FM fallback path
+    audio.startSustainedNote(N('E'), 4);
+    const heldCount = oscillators.length;
+    audio.playNote(N('C'), 4, 2);
+    const oneShots = oscillators.slice(heldCount);
+    expect(oneShots.length).toBeGreaterThan(0);
+
+    audio.cancelScheduledAudio();
+
+    for (const o of oneShots) {
+      const lastStop = o.stop.mock.calls[o.stop.mock.calls.length - 1][0] as number;
+      expect(lastStop).toBeLessThanOrEqual(0.1); // currentTime 0 + fade
+    }
+    for (const o of oscillators.slice(0, heldCount)) {
+      expect(o.stop).not.toHaveBeenCalled();
+    }
+  });
+
+  it("does not clear tracked visual timeouts: a playback's onComplete still fires", async () => {
+    vi.useFakeTimers();
+    try {
+      setupMockAudioContext();
+      const audio = await freshAudio();
+      audio.setInstrumentVoice(makeVoice(true));
+      const onComplete = vi.fn();
+      audio.playArpeggioAscending([N('C'), N('E'), N('G')], 4, 0.35, () => {}, onComplete);
+      vi.advanceTimersByTime(200);
+      audio.cancelScheduledAudio();
+      vi.advanceTimersByTime(5000);
+      expect(onComplete).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

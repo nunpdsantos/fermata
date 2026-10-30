@@ -1,8 +1,29 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, cleanup } from '@testing-library/react';
+import { render, screen, cleanup, fireEvent, act } from '@testing-library/react';
 import { ExploreView } from '../ExploreView';
 import { useAppStore } from '../../state/store';
 import { buildChord } from '../../core/constants/chords';
+
+// Record playback calls in order (Play re-trigger test, W8-01).
+const audioLog: string[] = [];
+vi.mock('../../core/services/audio', async (importOriginal) => {
+  const original = await importOriginal<typeof import('../../core/services/audio')>();
+  return {
+    ...original,
+    resumeAudio: vi.fn(async () => {}),
+    playScale: vi.fn(() => {
+      audioLog.push('playScale');
+    }),
+    cancelScheduledAudio: vi.fn(() => {
+      audioLog.push('cancelScheduledAudio');
+    }),
+    // Must NOT be used by the re-trigger: it would also clear other
+    // components' visual timeouts (round-2 review B2).
+    stopPlayback: vi.fn(() => {
+      audioLog.push('stopPlayback');
+    }),
+  };
+});
 
 afterEach(cleanup);
 
@@ -98,5 +119,23 @@ describe('ExploreView — unified ChordWorkspace (no auto-pop sidebar)', () => {
     // The hero's Details button (which opened the sidebar) was removed; Play /
     // Copy / Print remain.
     expect(screen.queryByRole('button', { name: 'Details' })).toBeNull();
+  });
+});
+
+// Ledger W8-01 (F-02): pressing Play again layered a second copy of the scale
+// over the first. Each Play now stops what is still scheduled first.
+describe('ExploreView — Play restarts cleanly', () => {
+  it('stops the previous playback before scheduling the scale again', async () => {
+    audioLog.length = 0;
+    render(<ExploreView />);
+    await screen.findAllByTestId('staff-mock');
+    const play = screen.getByRole('button', { name: 'Play scale ascending' });
+    await act(async () => {
+      fireEvent.click(play);
+    });
+    await act(async () => {
+      fireEvent.click(play);
+    });
+    expect(audioLog).toEqual(['cancelScheduledAudio', 'playScale', 'cancelScheduledAudio', 'playScale']);
   });
 });
