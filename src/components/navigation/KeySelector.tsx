@@ -8,7 +8,7 @@ import { getPitchClass } from '../../core/constants/notes.ts';
 import {
   preferredRootSpelling,
   enharmonicRootAlternative,
-  scaleAccidentalMarks,
+  rootSpellingSize,
 } from '../../core/utils/degreeSpelling.ts';
 
 // One button per pitch class. Each black key is offered under the name that
@@ -144,9 +144,14 @@ export function KeySelector() {
   // spells the new scale with strictly fewer accidentals (D♭ major → Minor
   // gives C♯ minor, not D♭ minor with F♭ and B𝄫).
   const chooseScale = (type: ScaleType) => {
+    // Re-clicking the active scale never touches the root.
+    if (type === selectedScale) return;
     setScale(type);
+    // Respell only when the other name has a strictly smaller key signature
+    // for the new scale (D♭ major → Minor gives C♯ minor; G♯ minor → Melodic
+    // stays G♯).
     const preferred = preferredRootSpelling(selectedPc, type);
-    if (!sameNote(preferred, selectedKey) && scaleAccidentalMarks(preferred, type) < scaleAccidentalMarks(selectedKey, type)) {
+    if (!sameNote(preferred, selectedKey) && rootSpellingSize(preferred, type) < rootSpellingSize(selectedKey, type)) {
       setKey(preferred);
     }
   };
@@ -186,7 +191,9 @@ export function KeySelector() {
     <div className="space-y-3" role="group" aria-label={t('keySelector.label')} data-tour="key-scale">
       {/* ─── Root note chromatic strip ──────────────────────── */}
       <div>
-        <div className="flex items-center gap-2 mb-1.5">
+        {/* Fixed-height row: the respell button appearing or disappearing
+            never moves the strip below it. */}
+        <div className="flex items-center gap-2 mb-1.5 h-[22px]" data-testid="root-label-row">
           <span className="type-section block">
             {t('keySelector.root')}
           </span>

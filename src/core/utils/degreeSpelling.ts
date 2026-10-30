@@ -404,11 +404,6 @@ export function scaleDegreeLabels(root: Note, notes: readonly Note[]): string[] 
   return scaleDegrees(root, notes).map((d) => formatDegree(d));
 }
 
-/** Total accidental marks of a scale spelled on `root` (𝄪/𝄫 count 2). */
-export function scaleAccidentalMarks(root: Note, type: ScaleType): number {
-  return spellScale(root, type).reduce((sum, n) => sum + accidentalMarks(n), 0);
-}
-
 // ─── Root spelling (key picker) ─────────────────────────────────────────────
 
 /** The two everyday names of each black key, in the app's historical order. */
@@ -425,17 +420,29 @@ const NATURAL_BY_PC: Record<number, NaturalNote> = {
 };
 
 /**
+ * How "big" a root spelling is for a scale, the way musicians choose a key's
+ * name: the size of the scale's own key signature (A♭ minor 7♭ vs G♯ minor
+ * 5♯), or — for scales without a standard signature (blues aside: bebop,
+ * symmetric, world scales) — the size of the root's MAJOR key signature
+ * (E♭ 3♭ over D♯ 9♯). Double flats/sharps count twice.
+ */
+export function rootSpellingSize(root: Note, type: ScaleType): number {
+  return (keySignatureForScale(root, type) ?? majorKeySignature(root)).count;
+}
+
+/**
  * The root spelling the key picker offers for a pitch class and scale type:
  * white keys keep their natural name; a black key takes whichever of its two
- * names spells the scale with fewer accidentals (D♭ major, C♯ minor, G♯ minor),
- * ties keeping the historical label (C♯, E♭, F♯, A♭, B♭).
+ * names has the smaller key signature for that scale (D♭ major, C♯ minor,
+ * G♯ minor and melodic minor, E♭ blues), ties keeping the historical label
+ * (C♯, E♭, F♯, A♭, B♭).
  */
 export function preferredRootSpelling(pitchClass: number, type: ScaleType): Note {
   const pc = mod12(pitchClass);
   const natural = NATURAL_BY_PC[pc];
   if (natural) return { natural, accidental: '' };
   const [first, second] = BLACK_KEY_NAMES[pc];
-  return scaleAccidentalMarks(second, type) < scaleAccidentalMarks(first, type) ? second : first;
+  return rootSpellingSize(second, type) < rootSpellingSize(first, type) ? second : first;
 }
 
 /** The other everyday name of a black-key root (C♯ ↔ D♭), or null for white keys and other spellings. */

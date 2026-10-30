@@ -1,8 +1,10 @@
 /**
- * Audit W1-09 (+ W2-06's key-picker part) — the key picker offers each black
- * key under the name that spells the selected scale with fewer accidentals
- * (D♭ major, C♯ minor, G♯ minor), always highlights the selected root whatever
- * its spelling, and lets the learner switch to the other name.
+ * Audit W1-09 (+ W2-06's key-picker part, review items 3/4/5) — the key picker
+ * offers each black key under the name with the smaller key signature for the
+ * selected scale (D♭ major, C♯ minor, G♯ minor/melodic minor; for scales with
+ * no standard signature, the smaller MAJOR signature: E♭ blues-less scales,
+ * A♭ bebop…), always highlights the selected root whatever its spelling, lets
+ * the learner switch to the other name, and never respells on re-click.
  */
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, cleanup, fireEvent, screen } from '@testing-library/react';
@@ -10,8 +12,7 @@ import type { Note, ScaleType } from '../../../core/types/music';
 import { KeySelector } from '../KeySelector';
 import { useAppStore } from '../../../state/store';
 import { SCALE_FORMULAS } from '../../../core/constants/scales';
-import { SCALE_DEGREE_FORMULAS } from '../../../core/utils/degreeSpelling';
-import { spellDegree, accMarks, pcOf, ORACLE_SYMMETRIC } from '../../../core/utils/__tests__/theoryOracle';
+import { spellDegree, pcOf, majorKeySignature, PARENT_RULE } from '../../../core/utils/__tests__/theoryOracle';
 import en from '../../../i18n/locales/en.json';
 import pt from '../../../i18n/locales/pt.json';
 import es from '../../../i18n/locales/es.json';
@@ -31,17 +32,13 @@ const select = (root: string, type: ScaleType) =>
 const rootButtons = (c: HTMLElement) => [...c.querySelectorAll('[data-root]')] as HTMLElement[];
 
 /**
- * Oracle: accidental marks of a scale on a root — its degree formula, or for
- * the symmetric scales the cheapest combination of their conventional names.
+ * Oracle: the key-signature size of a root spelling for a scale — the scale's
+ * own (parent-major) signature, or the root's major signature when the scale
+ * has none. Counted from the oracle's spelled major scale.
  */
 function marks(root: string, type: ScaleType): number {
-  const mark = (d: string) => {
-    const n = spellDegree(root, d);
-    return n === null ? 3 : accMarks(n);
-  };
-  const sym = ORACLE_SYMMETRIC[type];
-  if (sym) return sym.options.reduce((sum, names) => sum + Math.min(...names.map(mark)), 0);
-  return SCALE_DEGREE_FORMULAS[type].reduce((sum, d) => sum + mark(d), 0);
+  const rule = PARENT_RULE[type];
+  return majorKeySignature(rule ? spellDegree(root, rule)! : root).count;
 }
 
 describe('W1-09 — root spelling chosen by mode', () => {
@@ -55,7 +52,7 @@ describe('W1-09 — root spelling chosen by mode', () => {
     expect(rootButtons(r2.container).map((b) => b.textContent)).toEqual(['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B']);
   });
 
-  it('for every scale type, each offered black-key name needs no more accidentals than its twin', () => {
+  it('for every scale type, each offered black-key name has no larger key signature than its twin', () => {
     const TWIN: Record<string, string> = { 'C#': 'Db', Db: 'C#', 'D#': 'Eb', Eb: 'D#', 'F#': 'Gb', Gb: 'F#', 'G#': 'Ab', Ab: 'G#', 'A#': 'Bb', Bb: 'A#' };
     const bad: string[] = [];
     for (const type of Object.keys(SCALE_FORMULAS) as ScaleType[]) {
@@ -106,6 +103,36 @@ describe('W1-09 — root spelling chosen by mode', () => {
     expect(str(useAppStore.getState().selectedKey)).toBe('C#'); // Db minor would need Fb and Bbb
     fireEvent.click(screen.getByText('Dorian'));
     expect(str(useAppStore.getState().selectedKey)).toBe('C#'); // C# dorian (5) beats Db dorian (7)
+  });
+
+  it('G# minor switched to melodic minor stays G# (5♯ beats A♭ melodic minor 7♭)', () => {
+    select('G#', 'natural_minor');
+    render(<KeySelector />);
+    fireEvent.click(screen.getByText('Mel. Minor'));
+    expect(useAppStore.getState().selectedScale).toBe('melodic_minor');
+    expect(str(useAppStore.getState().selectedKey)).toBe('G#');
+  });
+
+  it('scales without a signature take the smaller MAJOR signature (E♭ over D♯, A♭ over G♯)', () => {
+    select('C', 'whole_tone');
+    const { container } = render(<KeySelector />);
+    expect(rootButtons(container).map((b) => b.textContent)).toEqual(['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']);
+  });
+
+  it('re-clicking the active scale never respells the root', () => {
+    select('C#', 'major');
+    render(<KeySelector />);
+    fireEvent.click(screen.getByText('Major'));
+    expect(str(useAppStore.getState().selectedKey)).toBe('C#');
+  });
+
+  it('the root label row has a fixed height whether or not the respell button shows', () => {
+    for (const root of ['C', 'C#']) {
+      select(root, 'major');
+      const { getByTestId } = render(<KeySelector />);
+      expect(getByTestId('root-label-row').className, root).toContain('h-[22px]');
+      cleanup();
+    }
   });
 
   it('the respell label exists in EN, PT and ES', () => {
