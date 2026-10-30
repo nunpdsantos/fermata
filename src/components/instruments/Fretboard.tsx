@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { getTuningById, getTuningPitchClasses, getTuningStringLabels, GUITAR_TUNINGS } from '../../core/constants/guitarTunings.ts';
 import type { GuitarTuning } from '../../core/constants/guitarTunings.ts';
 import { midiToNote } from '../../core/utils/pianoLayout.ts';
-import { getChordShapesWithFallback } from '../../core/constants/guitarChordShapes.ts';
+import { getChordShapesWithFallback, arrangeShapesForBass } from '../../core/constants/guitarChordShapes.ts';
 import type { FingerNumber } from '../../core/constants/guitarChordShapes.ts';
 import {
   getGuitarPosition,
@@ -62,9 +62,20 @@ export function Fretboard() {
   const tuningPitchClasses = useMemo(() => getTuningPitchClasses(tuning), [tuning]);
   const stringNames = useMemo(() => getTuningStringLabels(tuning), [tuning]);
 
+  // The bass the learner asked for: a slash-chord bass, else the chosen
+  // inversion's lowest chord tone (audit W3-11). Root position asks nothing.
+  const requestedBass = useMemo(() => {
+    if (!selectedChord) return null;
+    if (selectedChord.bassNote) return selectedChord.bassNote;
+    if (chordInversion > 0 && selectedChord.notes.length > 0) {
+      return selectedChord.notes[chordInversion % selectedChord.notes.length];
+    }
+    return null;
+  }, [selectedChord, chordInversion]);
+
   // ─── Chord shapes (standard tuning only) ─────────────
-  const chordShapes = useMemo(() => {
-    if (exerciseInputActive || !selectedChord || !isStandardTuning) return [];
+  const { chordShapes, bassMatched } = useMemo(() => {
+    if (exerciseInputActive || !selectedChord || !isStandardTuning) return { chordShapes: [], bassMatched: true };
     // Sort nut-closest first so the DEFAULT voicing is the familiar one
     // (Cm defaults to the A-shape barre at fret 3, not a barre at fret 8).
     const shapes = getChordShapesWithFallback(selectedChord);
@@ -81,8 +92,16 @@ export function Fretboard() {
       }
       return min === Infinity ? 0 : min;
     };
-    return [...shapes].sort((a, b) => positionOf(a) - positionOf(b));
-  }, [selectedChord, isStandardTuning, exerciseInputActive]);
+    const sorted = [...shapes].sort((a, b) => positionOf(a) - positionOf(b));
+    // Put a shape with the requested bass first (or say it can't be done).
+    const arranged = arrangeShapesForBass(
+      sorted,
+      selectedChord,
+      requestedBass ? getPitchClass(requestedBass) : null,
+      requestedBass ? noteToString(requestedBass) : '',
+    );
+    return { chordShapes: arranged.shapes, bassMatched: arranged.bassMatched };
+  }, [selectedChord, isStandardTuning, exerciseInputActive, requestedBass]);
 
   // The selected shape index belongs to ONE chord. Deriving the reset from
   // the chord (instead of an effect + microtask) means the first render after
@@ -523,10 +542,13 @@ export function Fretboard() {
     lineHeight: '18px',
   };
 
-  // Notice when a chord has no shape to draw (alternate tunings, W3-05).
+  // Notice when a chord has no shape to draw (alternate tunings, W3-05), or
+  // when no shape can put the requested bass lowest (W3-11).
   const chordNotice = mode === 'highlight' && selectedChord && !exerciseInputActive
     ? (isStandardTuning ? t('fretboard.noChordShape') : t('fretboard.chordShapesStandardOnly'))
-    : null;
+    : mode === 'chord' && !bassMatched && requestedBass
+      ? t('fretboard.bassNotice', { bass: noteToString(requestedBass) })
+      : null;
   // Positions in tunings with strings a 5th apart skip the note the hand cannot reach.
   const tuningGapNotice = mode === 'position' && position !== null && position.skippedMidi.length > 0
     ? t('fretboard.tuningGapNotice')

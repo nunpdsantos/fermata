@@ -3117,3 +3117,147 @@ export function getChordShapesWithFallback(
   if (handClean.length > 0) return handClean;
   return genClean;
 }
+
+// ── Requested bass: inversions and slash chords (audit W3-11) ────────────────
+
+/** Pitch class of the lowest sounding string of a placed shape (standard tuning). */
+export function lowestSoundingPitchClass(entry: { shape: ChordShape; baseFret: number }): number | null {
+  for (let i = 0; i < 6; i++) {
+    const p = entry.shape.strings[i];
+    if (p.fret !== null) return (OPEN_STRING_PITCH_CLASSES[i] + entry.baseFret + p.fret + 120) % 12;
+  }
+  return null;
+}
+
+/**
+ * Add the bass on a free (muted) string below the shape's lowest sounding
+ * string: open if that string's open note is the bass, otherwise fretted
+ * within a 4-fret hand span with a free finger that keeps finger order
+ * (lower fret → lower finger). Returns null when no string can take it.
+ */
+function withBassAdded(
+  entry: { shape: ChordShape; baseFret: number },
+  bassPc: number,
+  bassLabel: string
+): { shape: ChordShape; baseFret: number } | null {
+  const { shape, baseFret } = entry;
+  const lowest = shape.strings.findIndex((p) => p.fret !== null);
+  if (lowest <= 0) return null;
+  const fretted: { abs: number; finger: number }[] = [];
+  for (const p of shape.strings) {
+    if (p.fret === null) continue;
+    const abs = baseFret + p.fret;
+    if (abs > 0) fretted.push({ abs, finger: p.finger === 'bar' ? 1 : Number(p.finger ?? 0) });
+  }
+  for (let s = lowest - 1; s >= 0; s--) {
+    const first = (bassPc - OPEN_STRING_PITCH_CLASSES[s] + 12) % 12;
+    for (const fret of [first, first + 12]) {
+      if (fret > GUITAR_MAX_FRET) continue;
+      let finger: FingerNumber = 0;
+      if (fret > 0) {
+        const all = [...fretted.map((n) => n.abs), fret];
+        if (Math.max(...all) - Math.min(...all) > 3) continue;
+        const used = new Set(fretted.map((n) => n.finger));
+        const candidate = ([1, 2, 3, 4] as const).find(
+          (f) =>
+            !used.has(f) &&
+            fretted.every((n) => (n.abs < fret ? n.finger < f : n.abs > fret ? n.finger > f : true))
+        );
+        if (candidate === undefined) continue;
+        finger = candidate;
+      }
+      const strings = shape.strings.map((p) => ({ ...p })) as ChordShape['strings'];
+      strings[s] = { fret: fret - baseFret, finger };
+      const extended: ChordShape = {
+        ...shape,
+        name: `${shape.name} / ${bassLabel}`,
+        shortName: `${shape.shortName}/${bassLabel}`,
+        strings,
+      };
+      const placed = { shape: extended, baseFret };
+      if (isPlayableChordShape(placed)) return placed;
+    }
+  }
+  return null;
+}
+
+/**
+ * Mute every string below the lowest string that already sounds the bass —
+ * the usual way a guitarist plays an inversion from a known grip (G open
+ * 320003 → x20003 for G/B). Kept only if at least three strings still sound
+ * and every essential chord tone survives.
+ */
+function withLowerStringsMuted(
+  entry: { shape: ChordShape; baseFret: number },
+  bassPc: number,
+  required: Set<number>,
+  bassLabel: string
+): { shape: ChordShape; baseFret: number } | null {
+  const { shape, baseFret } = entry;
+  const idx = shape.strings.findIndex(
+    (p, i) => p.fret !== null && (OPEN_STRING_PITCH_CLASSES[i] + baseFret + p.fret + 120) % 12 === bassPc
+  );
+  if (idx <= 0) return null;
+  const strings = shape.strings.map((p, i) => (i < idx ? { fret: null, finger: 0 as FingerNumber } : { ...p })) as ChordShape['strings'];
+  const sounding = new Set<number>();
+  let count = 0;
+  strings.forEach((p, i) => {
+    if (p.fret === null) return;
+    count++;
+    sounding.add((OPEN_STRING_PITCH_CLASSES[i] + baseFret + p.fret + 120) % 12);
+  });
+  if (count < 3) return null;
+  for (const pc of required) if (!sounding.has(pc)) return null;
+  // Re-derive the barre from the index-finger strings that remain.
+  let barreInfo = shape.barreInfo;
+  if (barreInfo) {
+    const bars = strings.map((p, i) => (p.fret !== null && p.finger === 'bar' ? i : -1)).filter((i) => i >= 0);
+    if (bars.length >= 2) {
+      barreInfo = { fret: barreInfo.fret, fromString: 6 - Math.min(...bars), toString: 6 - Math.max(...bars) };
+    } else {
+      barreInfo = undefined;
+      for (const i of bars) strings[i] = { ...strings[i], finger: 1 };
+    }
+  }
+  const trimmed: ChordShape = {
+    ...shape,
+    name: `${shape.name} / ${bassLabel}`,
+    shortName: `${shape.shortName}/${bassLabel}`,
+    strings,
+    barreInfo,
+  };
+  if (!barreInfo) delete trimmed.barreInfo;
+  const placed = { shape: trimmed, baseFret };
+  return isPlayableChordShape(placed) ? placed : null;
+}
+
+/**
+ * Order chord shapes so the first one has `bassPc` as its lowest note:
+ * existing shapes with that bass first (in their given order); else shapes
+ * with the strings below a bass-note string muted; else shapes extended with
+ * the bass on a free lower string (slash chords). `bassMatched` is false when
+ * none of these exists — the shapes are then returned unchanged, so the
+ * caller can say so instead of silently ignoring the request.
+ */
+export function arrangeShapesForBass(
+  shapes: { shape: ChordShape; baseFret: number }[],
+  chord: Chord,
+  bassPc: number | null,
+  bassLabel: string
+): { shapes: { shape: ChordShape; baseFret: number }[]; bassMatched: boolean } {
+  if (bassPc === null) return { shapes, bassMatched: true };
+  const matching = shapes.filter((e) => lowestSoundingPitchClass(e) === bassPc);
+  if (matching.length > 0) {
+    return { shapes: [...matching, ...shapes.filter((e) => !matching.includes(e))], bassMatched: true };
+  }
+  const required = essentialPitchClasses(chord);
+  const trimmed = shapes
+    .map((e) => withLowerStringsMuted(e, bassPc, required, bassLabel))
+    .filter((e): e is { shape: ChordShape; baseFret: number } => e !== null);
+  if (trimmed.length > 0) return { shapes: [...trimmed, ...shapes], bassMatched: true };
+  const extended = shapes
+    .map((e) => withBassAdded(e, bassPc, bassLabel))
+    .filter((e): e is { shape: ChordShape; baseFret: number } => e !== null);
+  if (extended.length > 0) return { shapes: [...extended, ...shapes], bassMatched: true };
+  return { shapes, bassMatched: false };
+}

@@ -114,6 +114,33 @@ describe('alternate tunings with a chord selected (W3-05, W10-11)', () => {
   });
 });
 
+describe('inversions and slash chords set the bass (W3-11)', () => {
+  const lowestVoicedPc = (container: HTMLElement) => {
+    const voiced = dotsOf(container, 'voicing').sort((a, b) => a.string - b.string);
+    expect(voiced.length).toBeGreaterThan(0);
+    return (STANDARD[voiced[0].string] + voiced[0].fret) % 12;
+  };
+
+  it('C major, 1st inversion: the default shape has E as its lowest note', async () => {
+    useAppStore.setState({ selectedChord: buildChord(N('C'), 'major'), chordInversion: 1 });
+    const { container } = await renderFretboard();
+    expect(lowestVoicedPc(container)).toBe(4);
+    expect(screen.queryByRole('status')).toBeNull();
+  });
+
+  it('Dm7/G: G is the lowest note', async () => {
+    useAppStore.setState({ selectedChord: { ...buildChord(N('D'), 'minor7'), bassNote: N('G') } });
+    const { container } = await renderFretboard();
+    expect(lowestVoicedPc(container)).toBe(7);
+  });
+
+  it('when no shape can carry the bass, the board says so instead of ignoring it', async () => {
+    useAppStore.setState({ selectedChord: buildChord(N('C'), 'minor7'), chordInversion: 1 });
+    await renderFretboard();
+    expect(screen.getByRole('status').textContent).toContain('fretboard.bassNotice');
+  });
+});
+
 describe('chord-shape index follows the chord in the same render (W3-15)', () => {
   it('switching chords selects the new chord\'s first shape immediately', async () => {
     useAppStore.setState({ selectedChord: buildChord(N('C'), 'major') });
