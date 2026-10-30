@@ -34,16 +34,16 @@ const overlay: TemplateLevelOverlay = {
     {
       // ear_training (interval)
       promptTemplate:
-        'Ouve este intervalo e identifica-o. É sempre uma terça -- decide se é maior ou menor.',
+        'Ouve este intervalo e identifica-o. É sempre uma terça — decide se é maior ou menor.',
       hintTemplate:
-        '3.a maior = 4 meios-tons (brilhante, alegre). 3.a menor = 3 meios-tons (sombria, triste). A diferença é apenas meio-tom, mas o carácter muda dramaticamente.',
+        '3.ª maior = 4 meios-tons (brilhante, alegre). 3.ª menor = 3 meios-tons (sombria, triste). A diferença é apenas meio-tom, mas o carácter muda dramaticamente.',
     },
     {
       // ear_training (chord)
       promptTemplate:
         'Ouve este acorde e identifica a sua qualidade.',
       hintTemplate:
-        'O maior soa brilhante e aberto. O menor soa sombrio e pensativo. Concentra-te na 3.a: 3.a maior = 4 meios-tons, 3.a menor = 3 meios-tons.',
+        'O maior soa brilhante e aberto. O menor soa sombrio e pensativo. Concentra-te na 3.ª: 3.ª maior = 4 meios-tons, 3.ª menor = 3 meios-tons.',
     },
   ],
 
@@ -52,7 +52,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // ear_training (interval)
       promptTemplate:
-        'Ouve este intervalo, tocado em movimento {direction}, e identifica-o. Concentra-te em intervalos até à 5.a perfeita.',
+        'Ouve este intervalo, tocado em movimento {direction}, e identifica-o. Concentra-te em intervalos até à 5.ª perfeita.',
       hintTemplate:
         'Treino auditivo de intervalos: 2m=1 (tenso), 2M=2 (passo), 3m=3 (triste), 3M=4 (brilhante), 4P=5 (aberto), 5P=7 (forte). Conta os meios-tons que ouves.',
     },
@@ -91,7 +91,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve esta escala e identifica o seu tipo.',
       hintTemplate:
-        'Escala maior: T-T-mT-T-T-T-mT (brilhante, resolvida). Menor natural: T-mT-T-T-mT-T-T (sombria, aberta). Menor harmónica: eleva o 7.o, criando um salto distintivo de tom e meio.',
+        'Escala maior: T-T-mT-T-T-T-mT (brilhante, resolvida). Menor natural: T-mT-T-T-mT-T-T (sombria, aberta). Menor harmónica: eleva o 7.º, criando um salto distintivo de tom e meio.',
     },
   ],
 
@@ -113,7 +113,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve esta escala e identifica o seu tipo.',
       hintTemplate:
-        'As escalas pentatónicas têm cinco notas e nenhuma tensão de meio-tom. A escala de blues acrescenta a "blue note" (b5). A escala de tons inteiros é toda em tons -- onírica e sem centro.',
+        'As escalas pentatónicas têm cinco notas e nenhuma tensão de meio-tom. A escala de blues acrescenta a "blue note" (b5). A escala de tons inteiros é toda em tons — onírica e sem centro.',
     },
   ],
 
@@ -175,7 +175,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve este intervalo, tocado em movimento {direction}, e identifica-o.',
       hintTemplate:
-        'Conta os meios-tons: 2.a menor = 1, 3.a menor = 3, trítono = 6, 6.a menor = 8, 7.a menor = 10, 7.a maior = 11. Medidos a partir da tónica de uma tonalidade maior, os cinco primeiros são exatamente as notas fora da escala (b2, b3, #4, b6, b7).',
+        'Conta os meios-tons: 2.ª menor = 1, 3.ª menor = 3, trítono = 6, 6.ª menor = 8, 7.ª menor = 10, 7.ª maior = 11. Medidos a partir da tónica de uma tonalidade maior, os cinco primeiros são exatamente as notas fora da escala (b2, b3, #4, b6, b7).',
     },
   ],
 

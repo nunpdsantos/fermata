@@ -147,7 +147,7 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'V6/5 significa que la 3.ª de V7 es la nota del bajo. En C mayor, eso significa que B es la nota más grave de G7. Los números 6 y 5 describen los intervalos por encima del bajo (B a G = 6.ª, B a F = 5.ª).',
   },
   l4u12m5e2: {
-    prompt: 'V4/3 (V7 en segunda inversión) resuelve típicamente a qué acorde?',
+    prompt: '¿A qué acorde resuelve típicamente V4/3 (V7 en segunda inversión)?',
     choices: [
       'I (o I6) — el bajo (5.ª de V7) desciende por grado conjunto hasta la fundamental o 3.ª de I',
       'IV — el bajo salta a la subdominante',
@@ -232,8 +232,8 @@ const overlay: ExerciseLevelOverlay = {
 
   l4u13m3e1: {
     prompt:
-      'Construye un acorde de séptima disminuida sobre B (viiº7 en C menor): B-D-F-Ab. Selecciona las 4 notas.',
-    hint: 'Bº7 = B, D, F, Ab. Fundamental (B) + 3.ª menor (D) + 5.ª disminuida (F) + 7.ª disminuida (Ab). Los tres intervalos superiores son 3.as menores apiladas (3+3+3 semitonos).',
+      'Construye un acorde de séptima disminuida sobre B (vii°7 en C menor): B-D-F-Ab. Selecciona las 4 notas.',
+    hint: 'B°7 = B, D, F, Ab. Fundamental (B) + 3.ª menor (D) + 5.ª disminuida (F) + 7.ª disminuida (Ab). Los tres intervalos superiores son 3.as menores apiladas (3+3+3 semitonos).',
   },
   l4u13m3e2: {
     prompt:
@@ -282,7 +282,7 @@ const overlay: ExerciseLevelOverlay = {
       'ii — ambos comparten dos notas comunes y desempeñan la misma función predominante',
       'V — porque está próximo a IV en el ciclo de quintas',
       'iii — porque es adyacente a IV por grado conjunto',
-      'viiº — porque contiene la sensible',
+      'vii° — porque contiene la sensible',
     ],
     hint: 'En C mayor, IV = F-A-C y ii = D-F-A. Comparten F y A (dos notas comunes) y ambos crean impulso predominante hacia V. El acorde ii se prefiere con frecuencia en la escritura a cuatro voces porque ii-V presenta un movimiento de bajo suave por 5.ª.',
   },
@@ -292,19 +292,19 @@ const overlay: ExerciseLevelOverlay = {
   l4u13m5e1: {
     prompt: '¿Cuál es la secuencia armónica diatónica más común?',
     choices: [
-      'Quintas descendentes — cada fundamental desciende una 5.ª (o asciende una 4.ª): ej. I-IV-viiº-iii-vi-ii-V-I',
+      'Quintas descendentes — cada fundamental desciende una 5.ª (o asciende una 4.ª): ej. I-IV-vii°-iii-vi-ii-V-I',
       'Quintas ascendentes — cada fundamental asciende una 5.ª',
       'Terceras descendentes — cada fundamental desciende una 3.ª',
       'Descenso cromático — cada fundamental desciende un semitono',
     ],
-    hint: 'La secuencia de quintas descendentes (o ciclo de quintas) mueve cada fundamental una 5.ª abajo diatónicamente. En C mayor: C-F-B-E-A-D-G-C (I-IV-viiº-iii-vi-ii-V-I). Esta es la columna vertebral de innumerables progresiones en la música occidental.',
+    hint: 'La secuencia de quintas descendentes (o ciclo de quintas) mueve cada fundamental una 5.ª abajo diatónicamente. En C mayor: C-F-B-E-A-D-G-C (I-IV-vii°-iii-vi-ii-V-I). Esta es la columna vertebral de innumerables progresiones en la música occidental.',
   },
   l4u13m5e2: {
     prompt:
       'En una secuencia basada en segundas ascendentes, ¿cuál es el patrón de movimiento de las fundamentales?',
     choices: [
       'Cada fundamental asciende una 2.ª diatónica: ej. I-ii-iii-IV',
-      'Cada fundamental desciende una 2.ª: ej. I-viiº-vi-V',
+      'Cada fundamental desciende una 2.ª: ej. I-vii°-vi-V',
       'Las fundamentales alternan entre 2.as ascendentes y descendentes',
       'Las fundamentales se mueven por 3.as pero suenan como 2.as',
     ],
@@ -451,7 +451,7 @@ const overlay: ExerciseLevelOverlay = {
       'Mayúscula = acorde diatónico; minúscula = acorde cromático',
       'Mayúscula = función fuerte; minúscula = función débil',
     ],
-    hint: 'El análisis con números romanos codifica tanto el grado de la escala como la cualidad del acorde. Mayúscula (I, IV, V) = tríadas mayores. Minúscula (ii, iii, vi) = tríadas menores. Un º en superíndice marca disminuido (viiº), y + marca aumentado.',
+    hint: 'El análisis con números romanos codifica tanto el grado de la escala como la cualidad del acorde. Mayúscula (I, IV, V) = tríadas mayores. Minúscula (ii, iii, vi) = tríadas menores. Un º en superíndice marca disminuido (vii°), y + marca aumentado.',
   },
   l4u14m4e3: {
     prompt:
@@ -475,18 +475,18 @@ const overlay: ExerciseLevelOverlay = {
   l4u14m5e2: {
     prompt:
       'Construye el acorde VII en A menor (menor natural). Es G mayor: G-B-D. Selecciona las 3 notas.',
-    hint: 'En A menor natural, la tríada sobre el 7.º grado es G-B-D, una tríada mayor. VII (acorde subtónico) está a un tono por debajo de la tónica, a diferencia de viiº (acorde de la sensible) de la menor armónica.',
+    hint: 'En A menor natural, la tríada sobre el 7.º grado es G-B-D, una tríada mayor. VII (acorde subtónico) está a un tono por debajo de la tónica, a diferencia de vii° (acorde de la sensible) de la menor armónica.',
   },
   l4u14m5e3: {
     prompt:
-      '¿Qué es el acorde subtónico VII en la menor natural, y cómo difiere de viiº en la menor armónica?',
+      '¿Qué es el acorde subtónico VII en la menor natural, y cómo difiere de vii° en la menor armónica?',
     choices: [
-      'VII es una tríada mayor a un tono por debajo de la tónica; viiº es una tríada disminuida a medio tono por debajo — solo viiº tiene función dominante',
-      'VII y viiº son el mismo acorde con nombres diferentes',
-      'VII es disminuido y viiº es mayor',
+      'VII es una tríada mayor a un tono por debajo de la tónica; vii° es una tríada disminuida a medio tono por debajo — solo vii° tiene función dominante',
+      'VII y vii° son el mismo acorde con nombres diferentes',
+      'VII es disminuido y vii° es mayor',
       'Ambos tienen función dominante pero VII es más fuerte',
     ],
-    hint: 'En A menor natural, VII = G mayor (G-B-D), a un tono por debajo de A. En A menor armónica, viiº = G#-B-D (disminuido), a medio tono por debajo de A. El 7.º grado elevado (G#) crea la sensible que confiere a viiº su fuerte atracción hacia la tónica.',
+    hint: 'En A menor natural, VII = G mayor (G-B-D), a un tono por debajo de A. En A menor armónica, vii° = G#-B-D (disminuido), a medio tono por debajo de A. El 7.º grado elevado (G#) crea la sensible que confiere a vii° su fuerte atracción hacia la tónica.',
   },
 };
 

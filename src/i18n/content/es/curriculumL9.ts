@@ -123,7 +123,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       subtitle:
         'Identificar intervalos perfectos y pequeños de oído usando asociaciones con canciones y reconocimiento directo',
       objectives: [
-        'Identificar unísono, 2.a menor, 2.a mayor, 3.a menor, 3.a mayor, 4.a justa, tritono y 5.a justa de oído',
+        'Identificar unísono, 2.ª menor, 2.ª mayor, 3.ª menor, 3.ª mayor, 4.ª justa, tritono y 5.ª justa de oído',
         'Usar asociaciones con canciones como auxiliares mnemónicos para cada intervalo',
         'Reconocer estos intervalos tanto ascendentes como descendentes',
       ],
@@ -131,47 +131,47 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Asociaciones con Canciones: Intervalos Pequeños',
           explanation:
-            'Una técnica mnemónica comprobada: asociar cada intervalo con el comienzo de una melodía familiar. 2.a menor ascendente = tema de Tiburón. 2.a mayor = Cumpleaños Feliz. 3.a menor = Greensleeves. 3.a mayor = When the Saints (oh-when). 4.a justa = Marcha Nupcial. Tritono = The Simpsons (The-Simp). 5.a justa = Brilla Brilla Estrellita. Estas son ruedas de entrenamiento — el objetivo es interiorizar el sonido de cada intervalo directamente y después abandonar la muleta. Comienza solo con intervalos ascendentes y después añade descendentes cuando los ascendentes estén sólidos.',
+            'Una técnica mnemónica comprobada: asociar cada intervalo con el comienzo de una melodía familiar. 2.ª menor ascendente = tema de Tiburón. 2.ª mayor = Cumpleaños Feliz. 3.ª menor = Greensleeves. 3.ª mayor = When the Saints (oh-when). 4.ª justa = Marcha Nupcial. Tritono = The Simpsons (The-Simp). 5.ª justa = Brilla Brilla Estrellita. Estas son ruedas de entrenamiento — el objetivo es interiorizar el sonido de cada intervalo directamente y después abandonar la muleta. Comienza solo con intervalos ascendentes y después añade descendentes cuando los ascendentes estén sólidos.',
           tryThisLabel:
             'Toca C mayor — escucha cada intervalo a partir de la fundamental',
         },
         {
           title: 'Consonancia Perfecta frente a Imperfecta',
           explanation:
-            'Los intervalos de este módulo se dividen en dos familias. Las consonancias perfectas (P1, P4, P5) suenan «abiertas» y «huecas» — como una campana o una cuerda al aire. Tienen una cualidad austera y despojada. Las consonancias imperfectas (3.a m, 3.a M) suenan «cálidas» y «fundidas» — las notas se combinan suavemente pero con más color. Las segundas (2.a m, 2.a M) son disonancias — suenan «ásperas» o «crujientes» cuando se tocan simultáneamente. El tritono es una de las disonancias más ásperas (con la 2.a m y la 7.a M) — tenso, inestable y exigiendo resolución. Aprender a categorizar por consonancia/disonancia es más rápido que memorizar cada intervalo individualmente. (En el contrapunto de especies, estudiado en los niveles 4 y 6, la P4 por encima del bajo se trata como disonancia; la clasificación acústica de «justa» que se usa aquí está orientada al entrenamiento auditivo.)',
+            'Los intervalos de este módulo se dividen en dos familias. Las consonancias perfectas (P1, P4, P5) suenan «abiertas» y «huecas» — como una campana o una cuerda al aire. Tienen una cualidad austera y despojada. Las consonancias imperfectas (3.ª m, 3.ª M) suenan «cálidas» y «fundidas» — las notas se combinan suavemente pero con más color. Las segundas (2.ª m, 2.ª M) son disonancias — suenan «ásperas» o «crujientes» cuando se tocan simultáneamente. El tritono es una de las disonancias más ásperas (con la 2.ª m y la 7.ª M) — tenso, inestable y exigiendo resolución. Aprender a categorizar por consonancia/disonancia es más rápido que memorizar cada intervalo individualmente. (En el contrapunto de especies, estudiado en los niveles 4 y 6, la P4 por encima del bajo se trata como disonancia; la clasificación acústica de «justa» que se usa aquí está orientada al entrenamiento auditivo.)',
           tryThisLabel:
-            'Escucha la 3.a mayor (C a E) y la 5.a justa (C a G)',
+            'Escucha la 3.ª mayor (C a E) y la 5.ª justa (C a G)',
         },
         {
           title: 'Ascendente frente a Descendente',
           explanation:
-            'Cada intervalo tiene un carácter diferente ascendente frente a descendente. La 2.a menor ascendente suena tensa y reptante. La 2.a menor descendente suena suspirante y resolutiva. La 4.a justa ascendente suena como una fanfarria. La 4.a justa descendente suena asentada y cadencial. Es necesario entrenar ambas direcciones independientemente — saber identificar una 5.a justa ascendente no significa automáticamente que puedas identificarla descendente. Usa también asociaciones con canciones descendentes: 2.a M descendente = Mary Had a Little Lamb (primeras dos notas), 3.a m descendente = Hey Jude (hey-Jude). Construye el conjunto descendente como una competencia separada.',
+            'Cada intervalo tiene un carácter diferente ascendente frente a descendente. La 2.ª menor ascendente suena tensa y reptante. La 2.ª menor descendente suena suspirante y resolutiva. La 4.ª justa ascendente suena como una fanfarria. La 4.ª justa descendente suena asentada y cadencial. Es necesario entrenar ambas direcciones independientemente — saber identificar una 5.ª justa ascendente no significa automáticamente que puedas identificarla descendente. Usa también asociaciones con canciones descendentes: 2.ª M descendente = Mary Had a Little Lamb (primeras dos notas), 3.ª m descendente = Hey Jude (hey-Jude). Construye el conjunto descendente como una competencia separada.',
           tryThisLabel: 'Escucha el tritono dentro de C7 (E a Bb)',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escribe "C major chord" — el intervalo de C a E es una 3.a mayor, y de C a G es una 5.a justa. Canta los dos intervalos por separado. Memoriza cada sonido',
+            'Escribe "C major chord" — el intervalo de C a E es una 3.ª mayor, y de C a G es una 5.ª justa. Canta los dos intervalos por separado. Memoriza cada sonido',
         },
         {
           instruction:
-            'Toca pares de notas en el piano a partir de C: C-Db (2.a m), C-D (2.a M), C-Eb (3.a m), C-E (3.a M), C-F (4.a J), C-Gb (tritono), C-G (5.a J). Nombra cada uno antes de verificar',
+            'Toca pares de notas en el piano a partir de C: C-Db (2.ª m), C-D (2.ª M), C-Eb (3.ª m), C-E (3.ª M), C-F (4.ª J), C-Gb (tritono), C-G (5.ª J). Nombra cada uno antes de verificar',
         },
         {
           instruction:
-            'Escribe "C7" — encuentra el tritono (E a Bb). Es el intervalo más inestable. Contrástalo con la 5.a justa (C a G) en "C major chord". Estable frente a tenso — escucha la diferencia',
+            'Escribe "C7" — encuentra el tritono (E a Bb). Es el intervalo más inestable. Contrástalo con la 5.ª justa (C a G) en "C major chord". Estable frente a tenso — escucha la diferencia',
         },
       ],
     },
 
     // ── U30 M4: Interval Recognition m6-P8 ──────────────────────────────
     l9u30m4: {
-      title: 'Reconocimiento de Intervalos: 6.a m-P8',
+      title: 'Reconocimiento de Intervalos: 6.ª m-P8',
       subtitle:
         'Identificar intervalos amplios de oído — sextas, séptimas y la octava',
       objectives: [
-        'Identificar 6.a menor, 6.a mayor, 7.a menor, 7.a mayor y octava justa de oído',
+        'Identificar 6.ª menor, 6.ª mayor, 7.ª menor, 7.ª mayor y octava justa de oído',
         'Usar asociaciones con canciones para intervalos amplios, ascendentes y descendentes',
         'Combinar con el conocimiento de intervalos pequeños para reconocimiento completo de intervalos simples',
       ],
@@ -179,36 +179,36 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Asociaciones con Canciones: Intervalos Amplios',
           explanation:
-            'Continuando el enfoque mnemónico para la mitad superior de la octava. 6.a menor = The Entertainer (ascendente: el salto de E a C que sigue a las notas iniciales D-D#-E; el tema «Where Do I Begin» de Love Story es el ejemplo descendente clásico). 6.a mayor = My Bonnie (my-bon). 7.a menor = Somewhere (West Side Story). 7.a mayor = Take On Me (take-on). Octava = Somewhere Over the Rainbow. Los intervalos amplios son más difíciles de identificar porque parecen «grandes saltos» y las diferencias de tamaño entre ellos son proporcionalmente menores. Las sextas y séptimas son particularmente difíciles — son inversiones de terceras y segundas, por lo que su carácter está relacionado pero es más amplio. Practica contrastando pares: 6.a m frente a 6.a M, 7.a m frente a 7.a M.',
-          tryThisLabel: 'Escucha el intervalo de 7.a mayor (C a B)',
+            'Continuando el enfoque mnemónico para la mitad superior de la octava. 6.ª menor = The Entertainer (ascendente: el salto de E a C que sigue a las notas iniciales D-D#-E; el tema «Where Do I Begin» de Love Story es el ejemplo descendente clásico). 6.ª mayor = My Bonnie (my-bon). 7.ª menor = Somewhere (West Side Story). 7.ª mayor = Take On Me (take-on). Octava = Somewhere Over the Rainbow. Los intervalos amplios son más difíciles de identificar porque parecen «grandes saltos» y las diferencias de tamaño entre ellos son proporcionalmente menores. Las sextas y séptimas son particularmente difíciles — son inversiones de terceras y segundas, por lo que su carácter está relacionado pero es más amplio. Practica contrastando pares: 6.ª m frente a 6.ª M, 7.ª m frente a 7.ª M.',
+          tryThisLabel: 'Escucha el intervalo de 7.ª mayor (C a B)',
         },
         {
           title: 'Intervalos Amplios Descendentes',
           explanation:
-            'Los intervalos descendentes suenan diferentes de los ascendentes aunque la distancia sea igual. Una 5.a justa descendente (G descendiendo a C) suena como resolución o aterrizaje. Una 6.a mayor descendente suena cálida y nostálgica. Las séptimas descendentes suenan dramáticas y amplias. Practica intervalos descendentes por separado — muchos estudiantes que dominan intervalos ascendentes se debaten con los descendentes. Usa asociaciones con canciones descendentes: 5.a J descendente = las dos primeras notas de «Feelings» (Feel-ings) o del tema de Los Picapiedra (Flint-stones), 3.a m descendente = Hey Jude (hey-Jude). Construye el conjunto descendente como competencia propia.',
+            'Los intervalos descendentes suenan diferentes de los ascendentes aunque la distancia sea igual. Una 5.ª justa descendente (G descendiendo a C) suena como resolución o aterrizaje. Una 6.ª mayor descendente suena cálida y nostálgica. Las séptimas descendentes suenan dramáticas y amplias. Practica intervalos descendentes por separado — muchos estudiantes que dominan intervalos ascendentes se debaten con los descendentes. Usa asociaciones con canciones descendentes: 5.ª J descendente = las dos primeras notas de «Feelings» (Feel-ings) o del tema de Los Picapiedra (Flint-stones), 3.ª m descendente = Hey Jude (hey-Jude). Construye el conjunto descendente como competencia propia.',
           tryThisLabel:
             'Toca C mayor descendente — escucha los intervalos al revés',
         },
         {
           title: 'Relaciones de Inversión de Intervalos',
           explanation:
-            'Los intervalos amplios son inversiones de intervalos pequeños: una 6.a mayor es una 3.a menor invertida, una 7.a menor es una 2.a mayor invertida, una 7.a mayor es una 2.a menor invertida. Esto significa que su «sabor» está relacionado — una 3.a menor y una 6.a mayor comparten calidez, una 2.a mayor y una 7.a menor comparten una cualidad bluesy. Si oyes un intervalo amplio y no puedes identificarlo directamente, intenta invertirlo mentalmente: ¿suena como una 3.a menor invertida? Entonces es una 6.a mayor. Esta técnica de referencia cruzada acelera el aprendizaje de intervalos amplios.',
+            'Los intervalos amplios son inversiones de intervalos pequeños: una 6.ª mayor es una 3.ª menor invertida, una 7.ª menor es una 2.ª mayor invertida, una 7.ª mayor es una 2.ª menor invertida. Esto significa que su «sabor» está relacionado — una 3.ª menor y una 6.ª mayor comparten calidez, una 2.ª mayor y una 7.ª menor comparten una cualidad bluesy. Si oyes un intervalo amplio y no puedes identificarlo directamente, intenta invertirlo mentalmente: ¿suena como una 3.ª menor invertida? Entonces es una 6.ª mayor. Esta técnica de referencia cruzada acelera el aprendizaje de intervalos amplios.',
           tryThisLabel:
-            'Escucha la 7.a menor (C a Bb) — inversión de una 2.a mayor',
+            'Escucha la 7.ª menor (C a Bb) — inversión de una 2.ª mayor',
         },
       ],
       tasks: [
         {
           instruction:
-            'Toca "Cmaj7" — el intervalo exterior de C a B es una 7.a mayor. Ahora toca C a Bb (7.a menor). La diferencia es un semitono, pero el carácter cambia de tensión brillante a atracción bluesy',
+            'Toca "Cmaj7" — el intervalo exterior de C a B es una 7.ª mayor. Ahora toca C a Bb (7.ª menor). La diferencia es un semitono, pero el carácter cambia de tensión brillante a atracción bluesy',
         },
         {
           instruction:
-            'Toca C a Ab (6.a m) y después C a A (6.a M) en el piano. La 6.a menor suena más sombría y punzante. La 6.a mayor suena más cálida y abierta. Repite a partir de diferentes fundamentales hasta poder distinguirlas con fiabilidad',
+            'Toca C a Ab (6.ª m) y después C a A (6.ª M) en el piano. La 6.ª menor suena más sombría y punzante. La 6.ª mayor suena más cálida y abierta. Repite a partir de diferentes fundamentales hasta poder distinguirlas con fiabilidad',
         },
         {
           instruction:
-            'Toca C hasta el C agudo (octava). La octava suena como «la misma nota, altura diferente». Ahora contrasta con C a B (7.a M) — casi una octava, pero con tensión. Esa cualidad de casi-llegar es la firma de la 7.a mayor',
+            'Toca C hasta el C agudo (octava). La octava suena como «la misma nota, altura diferente». Ahora contrasta con C a B (7.ª M) — casi una octava, pero con tensión. Esa cualidad de casi-llegar es la firma de la 7.ª mayor',
         },
       ],
     },
@@ -227,13 +227,13 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Intervalos Armónicos',
           explanation:
-            'Escuchar intervalos cuando ambas notas suenan simultáneamente es más difícil que los intervalos melódicos (secuenciales) porque los sonidos se funden. Las consonancias perfectas (5.a J, 8.a J) suenan «abiertas» y «huecas». Las consonancias imperfectas (3.as, 6.as) suenan «cálidas» y «fundidas». Las disonancias (2.as, 7.as, tritono) suenan «ásperas» o «tensas». Aprende primero los intervalos melódicos y después transita a los armónicos. La distinción de cualidad — consonante frente a disonante — es tu pista principal cuando las notas suenan simultáneamente.',
-          tryThisLabel: 'Escucha B contra C — un intervalo de 7.a mayor',
+            'Escuchar intervalos cuando ambas notas suenan simultáneamente es más difícil que los intervalos melódicos (secuenciales) porque los sonidos se funden. Las consonancias perfectas (5.ª J, 8.ª J) suenan «abiertas» y «huecas». Las consonancias imperfectas (3.as, 6.as) suenan «cálidas» y «fundidas». Las disonancias (2.as, 7.as, tritono) suenan «ásperas» o «tensas». Aprende primero los intervalos melódicos y después transita a los armónicos. La distinción de cualidad — consonante frente a disonante — es tu pista principal cuando las notas suenan simultáneamente.',
+          tryThisLabel: 'Escucha B contra C — un intervalo de 7.ª mayor',
         },
         {
           title: 'Intervalos Compuestos',
           explanation:
-            'Tras dominar los intervalos simples (dentro de una octava), se expande a intervalos compuestos que sobrepasan la octava. Una 9.a = octava + 2.a. Una 10.a = octava + 3.a. Una 11.a = octava + 4.a. Una 13.a = octava + 6.a. Los intervalos compuestos suenan como sus equivalentes simples pero «más amplios» y más espaciosos. Las reglas de cualidad se transfieren: una 9.a mayor tiene la misma cualidad que una 2.a mayor. Se oyen constantemente en acordes de jazz extendidos — la 9.a en un Cmaj9 es D, una octava más una 2.a mayor por encima de la fundamental (C).',
+            'Tras dominar los intervalos simples (dentro de una octava), se expande a intervalos compuestos que sobrepasan la octava. Una 9.ª = octava + 2.ª. Una 10.ª = octava + 3.ª. Una 11.ª = octava + 4.ª. Una 13.ª = octava + 6.ª. Los intervalos compuestos suenan como sus equivalentes simples pero «más amplios» y más espaciosos. Las reglas de cualidad se transfieren: una 9.ª mayor tiene la misma cualidad que una 2.ª mayor. Se oyen constantemente en acordes de jazz extendidos — la 9.ª en un Cmaj9 es D, una octava más una 2.ª mayor por encima de la fundamental (C).',
           tryThisLabel: 'Escucha el tritono dentro de C7 (E a Bb)',
         },
         {
@@ -241,21 +241,21 @@ const curriculumL9: CurriculumLevelOverlay = {
           explanation:
             'El reconocimiento de intervalos solo es útil si es rápido. En la música real, las notas pasan deprisa — no hay tiempo para deliberar. El objetivo es pasar de «analizar, después nombrar» a «oír y saber instantáneamente». Practica con ejercicios cronometrados: toca dos notas aleatorias e identifica el intervalo en tres segundos. Registra la precisión a lo largo de las sesiones. Comienza con un conjunto restringido (solo intervalos perfectos, o solo consonancias) y amplía cuando la precisión supere el 80 por ciento. Mezclar presentaciones melódicas, armónicas, ascendentes y descendentes en el mismo ejercicio construye reconocimiento robusto e independiente del contexto.',
           tryThisLabel:
-            'Escucha tres intervalos a la vez — 5.a J, 3.a M y 3.a m',
+            'Escucha tres intervalos a la vez — 5.ª J, 3.ª M y 3.ª m',
         },
       ],
       tasks: [
         {
           instruction:
-            'Toca dos notas simultáneamente en el piano: C y E (3.a M), C y G (5.a J), C y B (7.a M). Escucha cómo se funden de forma diferente. Las consonancias se mezclan; las disonancias crean batimientos y aspereza',
+            'Toca dos notas simultáneamente en el piano: C y E (3.ª M), C y G (5.ª J), C y B (7.ª M). Escucha cómo se funden de forma diferente. Las consonancias se mezclan; las disonancias crean batimientos y aspereza',
         },
         {
           instruction:
-            'Escribe "Cmaj7" y escucha todos los intervalos armónicos dentro de él: C-E (3.a M), C-G (5.a J), C-B (7.a M), E-G (3.a m), E-B (5.a J), G-B (3.a M). Un único acorde contiene muchos intervalos simultáneos',
+            'Escribe "Cmaj7" y escucha todos los intervalos armónicos dentro de él: C-E (3.ª M), C-G (5.ª J), C-B (7.ª M), E-G (3.ª m), E-B (5.ª J), G-B (3.ª M). Un único acorde contiene muchos intervalos simultáneos',
         },
         {
           instruction:
-            'Toca C3 y D4 en el piano (una 9.a). Compara con C4 y D4 (una 2.a). La 9.a suena como una versión más amplia y espaciosa de la 2.a. Este es el principio de los intervalos compuestos en acción',
+            'Toca C3 y D4 en el piano (una 9.ª). Compara con C4 y D4 (una 2.ª). La 9.ª suena como una versión más amplia y espaciosa de la 2.ª. Este es el principio de los intervalos compuestos en acción',
         },
       ],
     },
@@ -267,16 +267,16 @@ const curriculumL9: CurriculumLevelOverlay = {
         'Distinguir mayor, menor natural, menor armónica y menor melódica de oído',
       objectives: [
         'Distinguir mayor de menor natural por el color general y la atmósfera',
-        'Identificar menor armónica por la 2.a aumentada exótica entre los grados 6 y 7',
-        'Identificar menor melódica por el 6.o y 7.o grados elevados ascendentes, creando una cualidad suave y jazzística',
+        'Identificar menor armónica por la 2.ª aumentada exótica entre los grados 6 y 7',
+        'Identificar menor melódica por el 6.º y 7.º grados elevados ascendentes, creando una cualidad suave y jazzística',
       ],
       concepts: [
         {
           title: 'Formas Mayores frente a Menores',
           explanation:
-            'Construyendo sobre el reconocimiento básico mayor/menor: ahora se identifican formas menores específicas. La menor natural suena sombría y folclórica — sin atracción fuerte al final porque el 7.o grado está un tono por debajo de la tónica (subtónica, no sensible). La menor armónica eleva el 7.o grado, creando una sensible y una 2.a aumentada exótica entre los grados 6 y 7 — un sonido inconfundible. La menor melódica eleva tanto el 6.o como el 7.o grados ascendentes, suavizando la 2.a aumentada — suena jazzística y sofisticada. Practica tocando las tres a partir de la misma fundamental (p. ej., A) y aislando las diferencias.',
+            'Construyendo sobre el reconocimiento básico mayor/menor: ahora se identifican formas menores específicas. La menor natural suena sombría y folclórica — sin atracción fuerte al final porque el 7.º grado está un tono por debajo de la tónica (subtónica, no sensible). La menor armónica eleva el 7.º grado, creando una sensible y una 2.ª aumentada exótica entre los grados 6 y 7 — un sonido inconfundible. La menor melódica eleva tanto el 6.º como el 7.º grados ascendentes, suavizando la 2.ª aumentada — suena jazzística y sofisticada. Practica tocando las tres a partir de la misma fundamental (p. ej., A) y aislando las diferencias.',
           tryThisLabel:
-            'Escucha el 7.o grado elevado exótico en la menor armónica',
+            'Escucha el 7.º grado elevado exótico en la menor armónica',
         },
         {
           title: 'Método de Entrenamiento: Aislamiento',
@@ -295,7 +295,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Toca "A natural minor scale", después "A harmonic minor scale", después "A melodic minor scale" seguidas. Escucha qué cambia entre cada una — el 7.o elevado, después el 6.o elevado',
+            'Toca "A natural minor scale", después "A harmonic minor scale", después "A melodic minor scale" seguidas. Escucha qué cambia entre cada una — el 7.º elevado, después el 6.º elevado',
         },
         {
           instruction:
@@ -303,7 +303,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Toca "E harmonic minor scale" — escucha la 2.a aumentada entre el 6.o y el 7.o grados (C a D#). Ese salto exótico es la huella dactilar de la menor armónica',
+            'Toca "E harmonic minor scale" — escucha la 2.ª aumentada entre el 6.º y el 7.º grados (C a D#). Ese salto exótico es la huella dactilar de la menor armónica',
         },
       ],
     },
@@ -322,29 +322,29 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Carácter Modal',
           explanation:
-            'Cada modo tiene un color característico definido por una o dos notas que difieren del mayor o menor natural. El Dórico es menor con 6.o elevado — cálido y jazzístico. El Frigio tiene 2.a bemolizada — sombrío y con sonoridad española. El Lidio tiene 4.a sostenida — soñador y flotante. El Mixolidio tiene 7.a bemolizada — bluesy y rock. El Locrio tiene 2.a y 5.a bemolizadas — inestable y rara vez usado como tónica. Concéntrate en estas «notas características» al identificar modos de oído.',
+            'Cada modo tiene un color característico definido por una o dos notas que difieren del mayor o menor natural. El Dórico es menor con 6.º elevado — cálido y jazzístico. El Frigio tiene 2.ª bemolizada — sombrío y con sonoridad española. El Lidio tiene 4.ª sostenida — soñador y flotante. El Mixolidio tiene 7.ª bemolizada — bluesy y rock. El Locrio tiene 2.ª y 5.ª bemolizadas — inestable y rara vez usado como tónica. Concéntrate en estas «notas características» al identificar modos de oído.',
           tryThisLabel:
-            'Escucha Dórico — menor pero más cálido (6.o elevado)',
+            'Escucha Dórico — menor pero más cálido (6.º elevado)',
         },
         {
           title: 'Método de Entrenamiento: Similar al Mayor frente a Similar al Menor',
           explanation:
-            'Comienza separando modos en dos grupos. Modos similares al mayor tienen 3.a mayor: Jónico (mayor puro), Lidio (#4 — soñador), Mixolidio (b7 — bluesy). Modos similares al menor tienen 3.a menor: Eólico (menor puro), Dórico (6.a natural — cálido), Frigio (b2 — sombrío), Locrio (b2 y b5 — inestable). Primero identifica el grupo, después afina hasta el modo específico. Esta primera pasada binaria reduce las opciones a la mitad inmediatamente y es mucho más fiable que adivinar entre siete opciones.',
+            'Comienza separando modos en dos grupos. Modos similares al mayor tienen 3.ª mayor: Jónico (mayor puro), Lidio (#4 — soñador), Mixolidio (b7 — bluesy). Modos similares al menor tienen 3.ª menor: Eólico (menor puro), Dórico (6.ª natural — cálido), Frigio (b2 — sombrío), Locrio (b2 y b5 — inestable). Primero identifica el grupo, después afina hasta el modo específico. Esta primera pasada binaria reduce las opciones a la mitad inmediatamente y es mucho más fiable que adivinar entre siete opciones.',
           tryThisLabel:
             'Escucha Lidio — el #4 soñador eleva el sonido',
         },
         {
           title: 'Anclas Auditivas de Nota Característica',
           explanation:
-            'Para cada modo, entrena el oído en la una o dos notas que lo hacen único. Dórico: toca menor natural y después eleva la 6.a — escucha la calidez entrar. Frigio: toca menor natural y después desciende la 2.a — escucha oscurecerse dramáticamente. Lidio: toca mayor y después eleva la 4.a — escucha flotar. Mixolidio: toca mayor y después desciende la 7.a — escucha relajarse hacia blues. Cada nota característica crea un cambio emocional específico. Memoriza ese cambio y podrás identificar cualquier modo al encontrar su momento característico.',
+            'Para cada modo, entrena el oído en la una o dos notas que lo hacen único. Dórico: toca menor natural y después eleva la 6.ª — escucha la calidez entrar. Frigio: toca menor natural y después desciende la 2.ª — escucha oscurecerse dramáticamente. Lidio: toca mayor y después eleva la 4.ª — escucha flotar. Mixolidio: toca mayor y después desciende la 7.ª — escucha relajarse hacia blues. Cada nota característica crea un cambio emocional específico. Memoriza ese cambio y podrás identificar cualquier modo al encontrar su momento característico.',
           tryThisLabel:
-            'Escucha Frigio — la 2.a bemolizada oscurece todo',
+            'Escucha Frigio — la 2.ª bemolizada oscurece todo',
         },
       ],
       tasks: [
         {
           instruction:
-            'Toca "C phrygian" y después "C dorian" — Frigio es sombrío y español (2.a bemolizada). Dórico es más cálido (6.a natural). Ambos son modos menores pero la diferencia de carácter es dramática',
+            'Toca "C phrygian" y después "C dorian" — Frigio es sombrío y español (2.ª bemolizada). Dórico es más cálido (6.ª natural). Ambos son modos menores pero la diferencia de carácter es dramática',
         },
         {
           instruction:
@@ -364,21 +364,21 @@ const curriculumL9: CurriculumLevelOverlay = {
         'Reconocer escalas especiales de oído — pentatónica, blues, tonos enteros y disminuida',
       objectives: [
         'Identificar escalas pentatónicas mayor y menor por su carácter abierto y con huecos',
-        'Reconocer la escala de blues por su blue note añadida (5.a bemolizada)',
+        'Reconocer la escala de blues por su blue note añadida (5.ª bemolizada)',
         'Identificar escalas de tonos enteros y disminuidas por su cualidad simétrica y sin dirección',
       ],
       concepts: [
         {
           title: 'Escalas Pentatónicas',
           explanation:
-            'La pentatónica mayor suena abierta y folclórica — cinco notas, sin semitonos, sin tensión. Es el sonido de canciones alrededor de la hoguera y melodías celtas. La pentatónica menor suena bluesy y cruda — la columna vertebral del rock y la guitarra blues. Ambas escalas pentatónicas son instantáneamente reconocibles porque carecen de las tensiones de semitono de las escalas diatónicas. Los huecos en la escala (4.o y 7.o grados ausentes en la pentatónica mayor, por ejemplo) crean una cualidad abierta distintiva que ninguna escala de siete notas tiene.',
+            'La pentatónica mayor suena abierta y folclórica — cinco notas, sin semitonos, sin tensión. Es el sonido de canciones alrededor de la hoguera y melodías celtas. La pentatónica menor suena bluesy y cruda — la columna vertebral del rock y la guitarra blues. Ambas escalas pentatónicas son instantáneamente reconocibles porque carecen de las tensiones de semitono de las escalas diatónicas. Los huecos en la escala (4.º y 7.º grados ausentes en la pentatónica mayor, por ejemplo) crean una cualidad abierta distintiva que ninguna escala de siete notas tiene.',
           tryThisLabel:
             'Escucha la pentatónica — abierta, folclórica, sin tensión',
         },
         {
           title: 'La Escala de Blues',
           explanation:
-            'La escala de blues añade la 5.a bemolizada («blue note») a la pentatónica menor, creando aspereza y expresividad. Esa única nota añadida transforma una pentatónica limpia en algo con alma y fluidez. La blue note se sitúa entre la 4.a justa y la 5.a justa — una intrusión cromática que crea tensión máxima con ambas vecinas. La escala de blues es la columna vertebral del blues, el rock y la improvisación jazz, y su sonido es instantáneamente identificable tras exposición incluso breve.',
+            'La escala de blues añade la 5.ª bemolizada («blue note») a la pentatónica menor, creando aspereza y expresividad. Esa única nota añadida transforma una pentatónica limpia en algo con alma y fluidez. La blue note se sitúa entre la 4.ª justa y la 5.ª justa — una intrusión cromática que crea tensión máxima con ambas vecinas. La escala de blues es la columna vertebral del blues, el rock y la improvisación jazz, y su sonido es instantáneamente identificable tras exposición incluso breve.',
           tryThisLabel: 'Escucha la escala de blues — áspera y expresiva',
         },
         {
@@ -400,7 +400,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Compara "C minor pentatonic" con "C natural minor scale". La pentatónica elimina dos notas (la 2.a y la 6.a), creando huecos. Esos huecos le dan a la pentatónica su sonido abierto característico',
+            'Compara "C minor pentatonic" con "C natural minor scale". La pentatónica elimina dos notas (la 2.ª y la 6.ª), creando huecos. Esos huecos le dan a la pentatónica su sonido abierto característico',
         },
       ],
     },
@@ -412,27 +412,27 @@ const curriculumL9: CurriculumLevelOverlay = {
         'Identificar tríadas mayores, menores, disminuidas y aumentadas de oído',
       objectives: [
         'Identificar tríadas mayores, menores, disminuidas y aumentadas de oído',
-        'Comprender la distinción de estabilidad: 5.a justa (estable) frente a 5.a alterada (inestable)',
+        'Comprender la distinción de estabilidad: 5.ª justa (estable) frente a 5.ª alterada (inestable)',
         'Reconocer inversiones de tríadas por el carácter de la nota del bajo',
       ],
       concepts: [
         {
           title: 'Cualidades de Tríadas de Oído',
           explanation:
-            'Mayor suena brillante y asentado — el acorde predeterminado, estable. Menor suena sombrío pero apoyado — misma estabilidad, color diferente. Disminuido suena tenso, pequeño y ansioso — quiere moverse hacia algún lugar. Aumentado suena extraño, suspendido y sin dirección — sin resolución clara. La distinción clave: mayor y menor tienen ambos una 5.a justa (estabilidad). Disminuido y aumentado tienen 5.as alteradas (inestabilidad). Practica tocando las cuatro cualidades a partir de la misma fundamental y cerrando los ojos antes de cada una.',
+            'Mayor suena brillante y asentado — el acorde predeterminado, estable. Menor suena sombrío pero apoyado — misma estabilidad, color diferente. Disminuido suena tenso, pequeño y ansioso — quiere moverse hacia algún lugar. Aumentado suena extraño, suspendido y sin dirección — sin resolución clara. La distinción clave: mayor y menor tienen ambos una 5.ª justa (estabilidad). Disminuido y aumentado tienen 5.as alteradas (inestabilidad). Practica tocando las cuatro cualidades a partir de la misma fundamental y cerrando los ojos antes de cada una.',
           tryThisLabel: 'Escucha disminuido — tenso, pequeño, ansioso',
         },
         {
           title: 'Tríadas Estables frente a Inestables',
           explanation:
-            'La 5.a justa es el intervalo que proporciona estabilidad a un acorde. Las tríadas mayores (3.a mayor + 5.a justa) y las tríadas menores (3.a menor + 5.a justa) la contienen — por eso suenan apoyadas incluso con colores diferentes. Las tríadas disminuidas sustituyen la 5.a justa por una 5.a disminuida (un semitono más pequeña), creando una cualidad comprimida y ansiosa. Las tríadas aumentadas la sustituyen por una 5.a aumentada (un semitono más amplia), creando una cualidad expandida y no resuelta. Escuchar estable frente a inestable es el primer filtro — después se afina hasta la cualidad específica.',
+            'La 5.ª justa es el intervalo que proporciona estabilidad a un acorde. Las tríadas mayores (3.ª mayor + 5.ª justa) y las tríadas menores (3.ª menor + 5.ª justa) la contienen — por eso suenan apoyadas incluso con colores diferentes. Las tríadas disminuidas sustituyen la 5.ª justa por una 5.ª disminuida (un semitono más pequeña), creando una cualidad comprimida y ansiosa. Las tríadas aumentadas la sustituyen por una 5.ª aumentada (un semitono más amplia), creando una cualidad expandida y no resuelta. Escuchar estable frente a inestable es el primer filtro — después se afina hasta la cualidad específica.',
           tryThisLabel:
             'Escucha aumentado — extraño, expandido, no resuelto',
         },
         {
           title: 'Reconocer Inversiones',
           explanation:
-            'Cuando una tríada está invertida, la nota del bajo cambia el peso y la estabilidad percibidos. La posición fundamental suena apoyada y definitiva — la fundamental ancla todo. La primera inversión suena más ligera y más melódica — la 3.a en el bajo crea una sensación menos estable pero fluida. La segunda inversión suena inestable — la 4.a sobre el bajo crea tensión que históricamente requiere resolución. Practica escuchando el mismo acorde en todas las posiciones y observando cómo el carácter cambia mientras la cualidad (mayor/menor) permanece igual.',
+            'Cuando una tríada está invertida, la nota del bajo cambia el peso y la estabilidad percibidos. La posición fundamental suena apoyada y definitiva — la fundamental ancla todo. La primera inversión suena más ligera y más melódica — la 3.ª en el bajo crea una sensación menos estable pero fluida. La segunda inversión suena inestable — la 4.ª sobre el bajo crea tensión que históricamente requiere resolución. Practica escuchando el mismo acorde en todas las posiciones y observando cómo el carácter cambia mientras la cualidad (mayor/menor) permanece igual.',
           tryThisLabel:
             'Escucha posición fundamental — apoyada y definitiva',
         },
@@ -457,30 +457,30 @@ const curriculumL9: CurriculumLevelOverlay = {
     l9u31m5: {
       title: 'Reconocimiento de Cualidad de Acordes de Séptima',
       subtitle:
-        'Identificar todas las cualidades de acordes de séptima de oído — del cálido mayor con 7.a al tenso disminuido con 7.a',
+        'Identificar todas las cualidades de acordes de séptima de oído — del cálido mayor con 7.ª al tenso disminuido con 7.ª',
       objectives: [
-        'Identificar acordes de 7.a mayor, 7.a dominante, 7.a menor, semidisminuido y disminuido de oído',
-        'Escuchar el acorde menor-mayor con 7.a como una cualidad distinta e inquietante',
+        'Identificar acordes de 7.ª mayor, 7.ª dominante, 7.ª menor, semidisminuido y disminuido de oído',
+        'Escuchar el acorde menor-mayor con 7.ª como una cualidad distinta e inquietante',
         'Distinguir cualidades de acordes de séptima por su carácter emocional y nivel de tensión',
       ],
       concepts: [
         {
           title: 'Cualidades de Acordes de Séptima de Oído',
           explanation:
-            'Seis cualidades distintas de acordes de séptima, cada una con un carácter emocional único. 7.a mayor (Cmaj7): cálido, exuberante, balada de jazz. 7.a dominante (C7): tenso, bluesy, exige resolución. 7.a menor (Cm7): suave, blando, relajado. Semidisminuido (Cm7b5): sombrío, anhelante, film noir. Disminuido (Cdim7): máximamente tenso, cada nota quiere moverse. Menor-mayor con 7.a (CmMaj7): misterioso, inquietante — el choque entre tríada menor y 7.a mayor. Practica tocando los seis a partir de la misma fundamental en secuencia.',
-          tryThisLabel: 'Escucha 7.a mayor — cálido y exuberante',
+            'Seis cualidades distintas de acordes de séptima, cada una con un carácter emocional único. 7.ª mayor (Cmaj7): cálido, exuberante, balada de jazz. 7.ª dominante (C7): tenso, bluesy, exige resolución. 7.ª menor (Cm7): suave, blando, relajado. Semidisminuido (Cm7b5): sombrío, anhelante, film noir. Disminuido (Cdim7): máximamente tenso, cada nota quiere moverse. Menor-mayor con 7.ª (CmMaj7): misterioso, inquietante — el choque entre tríada menor y 7.ª mayor. Practica tocando los seis a partir de la misma fundamental en secuencia.',
+          tryThisLabel: 'Escucha 7.ª mayor — cálido y exuberante',
         },
         {
-          title: 'La Distinción 7.a Dominante frente a 7.a Mayor',
+          title: 'La Distinción 7.ª Dominante frente a 7.ª Mayor',
           explanation:
-            'La distinción de acordes de séptima más importante. 7.a mayor (Cmaj7) y 7.a dominante (C7) comparten una tríada mayor pero difieren en una nota: B (7.a mayor) frente a Bb (7.a menor). Esa diferencia de un semitono transforma el acorde de reposo cálido a tensión bluesy. La 7.a dominante exige resolución — atrae hacia un acorde una 5.a por debajo (C7 quiere ir a F). La 7.a mayor se queda contenta donde está. Esta distinción es la puerta de entrada a escuchar armonía funcional, porque la 7.a dominante es el motor del movimiento armónico.',
+            'La distinción de acordes de séptima más importante. 7.ª mayor (Cmaj7) y 7.ª dominante (C7) comparten una tríada mayor pero difieren en una nota: B (7.ª mayor) frente a Bb (7.ª menor). Esa diferencia de un semitono transforma el acorde de reposo cálido a tensión bluesy. La 7.ª dominante exige resolución — atrae hacia un acorde una 5.ª por debajo (C7 quiere ir a F). La 7.ª mayor se queda contenta donde está. Esta distinción es la puerta de entrada a escuchar armonía funcional, porque la 7.ª dominante es el motor del movimiento armónico.',
           tryThisLabel:
-            'Escucha 7.a dominante — tensa, bluesy, necesita moverse',
+            'Escucha 7.ª dominante — tensa, bluesy, necesita moverse',
         },
         {
           title: 'El Lado Sombrío: Semidisminuido y Disminuido',
           explanation:
-            'Semidisminuido (Cm7b5) y disminuido (Cdim7) son las cualidades de acordes de séptima más sombrías. El semidisminuido combina una tríada disminuida con una 7.a menor — suena anhelante, inestable y cinematográfico. El disminuido apila 3.as menores simétricamente — es máximamente tenso, con cada nota equidistante y cada nota queriendo resolver. La distinción: el semidisminuido tiene un intervalo «normal» (la 7.a menor desde la fundamental) que le da un toque de calidez. El disminuido está uniformemente comprimido y tenso a lo largo de toda la estructura. En jazz, el semidisminuido es el acorde ii en tonalidades menores; el disminuido es un acorde de paso o sustituto del dominante.',
+            'Semidisminuido (Cm7b5) y disminuido (Cdim7) son las cualidades de acordes de séptima más sombrías. El semidisminuido combina una tríada disminuida con una 7.ª menor — suena anhelante, inestable y cinematográfico. El disminuido apila 3.as menores simétricamente — es máximamente tenso, con cada nota equidistante y cada nota queriendo resolver. La distinción: el semidisminuido tiene un intervalo «normal» (la 7.ª menor desde la fundamental) que le da un toque de calidez. El disminuido está uniformemente comprimido y tenso a lo largo de toda la estructura. En jazz, el semidisminuido es el acorde ii en tonalidades menores; el disminuido es un acorde de paso o sustituto del dominante.',
           tryThisLabel:
             'Escucha semidisminuido — sombrío y anhelante',
         },
@@ -496,7 +496,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Toca "Cm7" y después "Cm7b5". La 7.a menor es suave y blanda. El semidisminuido es más sombrío y anhelante — la 5.a descendida añade inestabilidad. Esta distinción importa en el jazz y en la conducción de voces clásica',
+            'Toca "Cm7" y después "Cm7b5". La 7.ª menor es suave y blanda. El semidisminuido es más sombrío y anhelante — la 5.ª descendida añade inestabilidad. Esta distinción importa en el jazz y en la conducción de voces clásica',
         },
       ],
     },
@@ -580,7 +580,7 @@ const curriculumL9: CurriculumLevelOverlay = {
           explanation:
             'El dictado cromático escala en niveles claros. Nivel 1: notas cromáticas de paso entre notas diatónicas (C-C#-D). Nivel 2: notas cromáticas vecinas (D-D#-D). Nivel 3: sensibles secundarias resolviendo por semitono ascendente (F#-G en C mayor). Nivel 4: secuencias cromáticas donde un patrón diatónico se transpone cromáticamente. Nivel 5: dictado a dos voces con elementos cromáticos en ambas. No saltes nunca de nivel — cada uno construye sobre el anterior. En cada etapa, mantén al menos un 80 por ciento de precisión antes de avanzar.',
           tryThisLabel:
-            'Escucha menor — el dictado se vuelve más difícil con 6.o y 7.o grados variables',
+            'Escucha menor — el dictado se vuelve más difícil con 6.º y 7.º grados variables',
         },
       ],
       tasks: [
@@ -667,7 +667,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Solfeo Cromático para Tonalidades Menores',
           explanation:
-            'Las tonalidades menores requieren sílabas modificadas para los grados descendidos. En el menor basado en do: 3.a b = «me», 6.a b = «le», 7.a b = «te». Menor natural se convierte en: do-re-me-fa-sol-le-te-do. Menor armónica eleva el 7.o de vuelta a «ti»: do-re-me-fa-sol-le-ti-do. Menor melódica ascendente eleva ambos: do-re-me-fa-sol-la-ti-do. Para alteraciones cromáticas: sostenidos ascendentes usan -i (di, ri, fi, si, li); bemoles descendentes usan vocales modificadas (ra, me, se, le, te). Estas sílabas hacen explícitos los grados alterados al cantar.',
+            'Las tonalidades menores requieren sílabas modificadas para los grados descendidos. En el menor basado en do: 3.ª b = «me», 6.ª b = «le», 7.ª b = «te». Menor natural se convierte en: do-re-me-fa-sol-le-te-do. Menor armónica eleva el 7.º de vuelta a «ti»: do-re-me-fa-sol-le-ti-do. Menor melódica ascendente eleva ambos: do-re-me-fa-sol-la-ti-do. Para alteraciones cromáticas: sostenidos ascendentes usan -i (di, ri, fi, si, li); bemoles descendentes usan vocales modificadas (ra, me, se, le, te). Estas sílabas hacen explícitos los grados alterados al cantar.',
           tryThisLabel:
             'Canta: do-re-me-fa-sol-le-te-do (menor basado en la, un sistema alternativo común en la práctica Kodály: la-ti-do-re-mi-fa-sol)',
         },

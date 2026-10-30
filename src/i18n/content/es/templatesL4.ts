@@ -218,7 +218,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Clasifica este acorde por su función armónica: tónica, predominante o dominante.',
       hintTemplate:
-        'Función tónica: I, vi, iii. Predominante: IV, ii. Dominante: V, viiº. Estas categorías describen cómo funcionan los acordes en las progresiones, no solo su cualidad.',
+        'Función tónica: I, vi, iii. Predominante: IV, ii. Dominante: V, vii°. Estas categorías describen cómo funcionan los acordes en las progresiones, no solo su cualidad.',
       choiceSets: [
         [
           'vi puede sustituir a I como acorde de función tónica',
@@ -227,10 +227,10 @@ const overlay: TemplateLevelOverlay = {
           'vi no tiene función estándar',
         ],
         [
-          'viiº funciona como dominante porque comparte 3 notas con V7',
-          'viiº funciona como acorde de tónica',
-          'viiº funciona como acorde predominante',
-          'viiº no tiene función armónica',
+          'vii° funciona como dominante porque comparte 3 notas con V7',
+          'vii° funciona como acorde de tónica',
+          'vii° funciona como acorde predominante',
+          'vii° no tiene función armónica',
         ],
         [
           'iii puede funcionar como tónica (compartiendo 2 notas con I) o como preparación de la dominante',
@@ -289,7 +289,7 @@ const overlay: TemplateLevelOverlay = {
         'Una secuencia repite un patrón melódico/armónico en niveles de altura sucesivamente más altos o más bajos. Tipos comunes: quintas descendentes, 5-6 ascendente, terceras descendentes.',
       choiceSets: [
         [
-          'Una secuencia de quintas descendentes se mueve por el ciclo de quintas: I-IV-viiº-iii-vi-ii-V-I',
+          'Una secuencia de quintas descendentes se mueve por el ciclo de quintas: I-IV-vii°-iii-vi-ii-V-I',
           'Una secuencia de quintas descendentes se mueve hacia arriba por 5.as',
           'Una secuencia de quintas descendentes usa solo acordes mayores',
           'Una secuencia de quintas descendentes modula siempre',

@@ -63,7 +63,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u1m2e_ear1: {
     prompt: 'Ouve esta nota e identifica-a.',
-    hint: 'Este é o C central -- a nota mais central do teclado do piano.',
+    hint: 'Este é o C central — a nota mais central do teclado do piano.',
   },
   l1u1m2e_ear2: {
     prompt: 'Ouve esta nota e identifica-a.',
@@ -71,7 +71,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u1m2e_ear3: {
     prompt: 'Ouve esta nota e identifica-a.',
-    hint: 'Esta nota situa-se na segunda linha da pauta de clave de sol -- a linha em torno da qual a clave de sol se enrola.',
+    hint: 'Esta nota situa-se na segunda linha da pauta de clave de sol — a linha em torno da qual a clave de sol se enrola.',
   },
   l1u1m2e_ear4: {
     prompt: 'Ouve esta nota e identifica-a.',
@@ -82,7 +82,7 @@ const overlay: ExerciseLevelOverlay = {
 
   l1u1m3e1: {
     prompt: 'Qual é o intervalo de Db, a descer, até C?',
-    hint: 'De Db a descer até C é a menor distância possível na música ocidental: um meio-tom (1 meio-tom), da tecla preta para a tecla branca logo abaixo. Duas letras diferentes (D, C) fazem dele uma 2.a — uma 2.a menor.',
+    hint: 'De Db a descer até C é a menor distância possível na música ocidental: um meio-tom (1 meio-tom), da tecla preta para a tecla branca logo abaixo. Duas letras diferentes (D, C) fazem dele uma 2.ª — uma 2.ª menor.',
   },
   l1u1m3e2: {
     prompt: 'Qual é o intervalo de C a D?',
@@ -190,11 +190,11 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u3m1e_deg2: {
     prompt: 'Na escala de C maior, qual é o grau da nota G?',
-    hint: 'G é a 5.a nota de C maior -- a dominante.',
+    hint: 'G é a 5.ª nota de C maior — a dominante.',
   },
   l1u3m1e_deg3: {
     prompt: 'Na escala de C maior, qual é o grau da nota F?',
-    hint: 'F é a 4.a nota de C maior -- a subdominante.',
+    hint: 'F é a 4.ª nota de C maior — a subdominante.',
   },
   l1u3m1e_deg4: {
     prompt: 'Na escala de G maior, qual é o grau da nota B?',
@@ -234,40 +234,40 @@ const overlay: ExerciseLevelOverlay = {
   l1u3m3e1: {
     prompt:
       'Identifica o intervalo: C até G (ascendente). Conta os nomes das notas.',
-    hint: 'C-D-E-F-G = 5 nomes de notas = uma 5.a. De C a G são 7 meios-tons, o que corresponde a uma 5.a perfeita.',
+    hint: 'C-D-E-F-G = 5 nomes de notas = uma 5.ª. De C a G são 7 meios-tons, o que corresponde a uma 5.ª perfeita.',
   },
   l1u3m3e2: {
     prompt:
       'Identifica o intervalo: C até F (ascendente). Conta os nomes das notas.',
-    hint: 'C-D-E-F = 4 nomes de notas = uma 4.a. De C a F são 5 meios-tons, o que corresponde a uma 4.a perfeita.',
+    hint: 'C-D-E-F = 4 nomes de notas = uma 4.ª. De C a F são 5 meios-tons, o que corresponde a uma 4.ª perfeita.',
   },
   l1u3m3e3: {
     prompt:
       'Identifica o intervalo: C até E (ascendente). Conta os nomes das notas.',
-    hint: 'C-D-E = 3 nomes de notas = uma 3.a. De C a E são 4 meios-tons, o que corresponde a uma 3.a maior.',
+    hint: 'C-D-E = 3 nomes de notas = uma 3.ª. De C a E são 4 meios-tons, o que corresponde a uma 3.ª maior.',
   },
 
   // ---- l1u3m4: Tríades Maiores ----
 
   l1u3m4e1: {
     prompt:
-      'Constrói uma tríade de C maior. Seleciona as 3 notas: fundamental, 3.a maior e 5.a perfeita.',
-    hint: 'C maior = C, E, G. Fundamental (C) + 3.a maior (E, 4 meios-tons acima) + 5.a perfeita (G, 7 meios-tons acima).',
+      'Constrói uma tríade de C maior. Seleciona as 3 notas: fundamental, 3.ª maior e 5.ª perfeita.',
+    hint: 'C maior = C, E, G. Fundamental (C) + 3.ª maior (E, 4 meios-tons acima) + 5.ª perfeita (G, 7 meios-tons acima).',
   },
   l1u3m4e2: {
     prompt:
       'Constrói uma tríade de G maior. Seleciona as 3 notas que formam este acorde.',
-    hint: 'G maior = G, B, D. Fundamental (G) + 3.a maior (B, 4 meios-tons acima) + 5.a perfeita (D, 7 meios-tons acima).',
+    hint: 'G maior = G, B, D. Fundamental (G) + 3.ª maior (B, 4 meios-tons acima) + 5.ª perfeita (D, 7 meios-tons acima).',
   },
   l1u3m4e3: {
     prompt: 'Quais intervalos compõem uma tríade maior?',
     choices: [
-      'Fundamental, 3.a maior (4 meios-tons), 5.a perfeita (7 meios-tons)',
-      'Fundamental, 3.a menor (3 meios-tons), 5.a perfeita (7 meios-tons)',
-      'Fundamental, 3.a maior (4 meios-tons), 5.a diminuta (6 meios-tons)',
-      'Fundamental, 4.a perfeita (5 meios-tons), 5.a perfeita (7 meios-tons)',
+      'Fundamental, 3.ª maior (4 meios-tons), 5.ª perfeita (7 meios-tons)',
+      'Fundamental, 3.ª menor (3 meios-tons), 5.ª perfeita (7 meios-tons)',
+      'Fundamental, 3.ª maior (4 meios-tons), 5.ª diminuta (6 meios-tons)',
+      'Fundamental, 4.ª perfeita (5 meios-tons), 5.ª perfeita (7 meios-tons)',
     ],
-    hint: 'Uma tríade maior empilha uma 3.a maior (4 meios-tons a partir da fundamental) e depois uma 3.a menor por cima (mais 3), resultando em fundamental + 3.aM + 5.aP.',
+    hint: 'Uma tríade maior empilha uma 3.ª maior (4 meios-tons a partir da fundamental) e depois uma 3.ª menor por cima (mais 3), resultando em fundamental + 3.aM + 5.aP.',
   },
 };
 

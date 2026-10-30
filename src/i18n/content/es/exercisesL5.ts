@@ -70,14 +70,14 @@ const overlay: ExerciseLevelOverlay = {
 
   l5u15m3e1: {
     prompt:
-      '¿Cuál es la función de un acorde de sensible secundaria (p. ej., viiº/V)?',
+      '¿Cuál es la función de un acorde de sensible secundaria (p. ej., vii°/V)?',
     choices: [
-      'Funciona como un acorde disminuido que resuelve medio tono arriba hacia el acorde tonicizado, tal como viiº resuelve hacia I',
+      'Funciona como un acorde disminuido que resuelve medio tono arriba hacia el acorde tonicizado, tal como vii° resuelve hacia I',
       'Sustituye completamente al acorde dominante en las cadencias',
       'Funciona como un acorde de paso sin atracción armónica',
       'Es la sensible de la tonalidad tocada como nota aislada',
     ],
-    hint: 'viiº/V funciona del mismo modo que viiº en una tonalidad: la fundamental está medio tono por debajo del acorde objetivo, y la cualidad disminuida crea un fuerte impulso de resolución ascendente hacia el objetivo.',
+    hint: 'vii°/V funciona del mismo modo que vii° en una tonalidad: la fundamental está medio tono por debajo del acorde objetivo, y la cualidad disminuida crea un fuerte impulso de resolución ascendente hacia el objetivo.',
   },
   l5u15m3e2: {
     prompt:
@@ -92,14 +92,14 @@ const overlay: ExerciseLevelOverlay = {
   },
   l5u15m3e3: {
     prompt:
-      'En C mayor, ¿cuál es el acorde objetivo hacia el que resuelve viiº/V?',
+      'En C mayor, ¿cuál es el acorde objetivo hacia el que resuelve vii°/V?',
     choices: [
-      'G mayor (V) — viiº/V resuelve medio tono arriba hacia la dominante',
+      'G mayor (V) — vii°/V resuelve medio tono arriba hacia la dominante',
       'C mayor (I) — resuelve hacia la tónica',
       'F mayor (IV) — resuelve hacia la subdominante',
       'D menor (ii) — resuelve hacia la supertónica',
     ],
-    hint: 'El «/V» indica el objetivo: V. En C mayor, V es G. viiº/V es F# disminuido (F#, A, C), y el F# resuelve medio tono arriba hacia G, la fundamental del acorde objetivo.',
+    hint: 'El «/V» indica el objetivo: V. En C mayor, V es G. vii°/V es F# disminuido (F#, A, C), y el F# resuelve medio tono arriba hacia G, la fundamental del acorde objetivo.',
   },
 
   // ---- l5u15m4: Tonicización vs. Modulación ----

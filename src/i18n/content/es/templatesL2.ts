@@ -316,7 +316,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica el número romano y la cualidad de esta tríada diatónica.',
       hintTemplate:
-        'En las tonalidades mayores: I(M) ii(m) iii(m) IV(M) V(M) vi(m) viiº(dim). Mayúscula = mayor, minúscula = menor, º = disminuida.',
+        'En las tonalidades mayores: I(M) ii(m) iii(m) IV(M) V(M) vi(m) vii°(dim). Mayúscula = mayor, minúscula = menor, º = disminuida.',
       choiceSets: [
         [
           'El acorde ii en una tonalidad mayor es menor',

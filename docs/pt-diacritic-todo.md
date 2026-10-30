@@ -17,8 +17,19 @@ one style):
   international letter names (C, D, Eb), chord symbols (Cmaj7, ii7, Gr+6)
   and template tokens (`{note}`, `{scaleType}`, …) untouched.
 - Loanwords stay English/Italian: blues, jazz, swing, voicing, tremolo.
-- Ordinal style: files keep their original `3.o`/`5.a` markers (none used
-  `º`/`ª`; do not mix styles when editing).
+- Ordinal style (2026-10-30, W6-11 — supersedes "keep `3.o`/`5.a`"): the
+  ordinal indicators, `1.º`, `3.ª`, `7.ª M`; plurals in plain letters
+  (`3.as`, `2.os`). Spanish uses the same style (plus `1.er` / `3.er`).
+  `orthography.test.ts` forbids `3.a` / `5.o` / `7ª` in PT and ES.
+- Dashes: `—` (em dash), never ` -- `.
+- Register: European Portuguese `tu` everywhere, including the interface
+  (`Clica`, `Escolhe`, `Toca`, `Passaste!`).
+- Note names (D-18): letters (C, D, E…), as on the instruments; solfège only
+  where a sentence is about solfège syllables, and in clef names (`clave de
+  sol`, `clave de fá`).
+- Terminology (D-19): chord root = `fundamental`; `meio-tom` / `meios-tons`;
+  cadences = `perfeita (CAP)`, `imperfeita (CAI)`, `suspensiva`, `plagal`,
+  `interrompida`.
 - Movable-do solfège tokens in l9u32m4 (`Do-Re-Mi…Ti`, "Do = C")
   deliberately kept unaccented — they are system tokens, not prose.
 

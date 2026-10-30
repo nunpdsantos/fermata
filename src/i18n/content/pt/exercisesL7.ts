@@ -200,12 +200,12 @@ const overlay: ExerciseLevelOverlay = {
   l7u22m1e1: {
     prompt:
       'Constrói D dórico — a escala de acorde para Dm7 numa ii-V-I em C. Seleciona as 7 notas.',
-    hint: 'D dórico: D, E, F, G, A, B, C. É o 2.o modo de C maior. A sexta natural (B) distingue-o do menor natural (que tem Bb). Pitch classes: 2, 4, 5, 7, 9, 11, 0.',
+    hint: 'D dórico: D, E, F, G, A, B, C. É o 2.º modo de C maior. A sexta natural (B) distingue-o do menor natural (que tem Bb). Pitch classes: 2, 4, 5, 7, 9, 11, 0.',
   },
   l7u22m1e2: {
     prompt:
       'Constrói G mixolídio — a escala de acorde para G7 numa ii-V-I em C. Seleciona as 7 notas.',
-    hint: 'G mixolídio: G, A, B, C, D, E, F. É o 5.o modo de C maior. A b7 (F em vez de F#) define o som dominante. Pitch classes: 7, 9, 11, 0, 2, 4, 5.',
+    hint: 'G mixolídio: G, A, B, C, D, E, F. É o 5.º modo de C maior. A b7 (F em vez de F#) define o som dominante. Pitch classes: 7, 9, 11, 0, 2, 4, 5.',
   },
   l7u22m1e3: {
     prompt: 'Qual é o princípio fundamental da teoria acorde-escala?',
@@ -291,11 +291,11 @@ const overlay: ExerciseLevelOverlay = {
   l7u22m4e1: {
     prompt:
       'Constrói o modo D dórico. Este modo cria um som menor com uma sexta natural característica.',
-    hint: 'D dórico: D, E, F, G, A, B, C. Comparado com D menor natural, o 6.o grau é elevado (B natural em vez de Bb). Pitch classes: 2, 4, 5, 7, 9, 11, 0.',
+    hint: 'D dórico: D, E, F, G, A, B, C. Comparado com D menor natural, o 6.º grau é elevado (B natural em vez de Bb). Pitch classes: 2, 4, 5, 7, 9, 11, 0.',
   },
   l7u22m4e2: {
     prompt:
-      'Constrói o modo E frígio. Este modo tem um meio-tom distinto da fundamental até ao 2.o grau.',
+      'Constrói o modo E frígio. Este modo tem um meio-tom distinto da fundamental até ao 2.º grau.',
     hint: 'O modo E frígio: E, F, G, A, B, C, D. A b2 (F natural, um meio-tom acima de E) dá ao frígio o seu carácter escuro e com sabor espanhol. Pitch classes: 4, 5, 7, 9, 11, 0, 2.',
   },
   l7u22m4e3: {
@@ -427,12 +427,12 @@ const overlay: ExerciseLevelOverlay = {
   },
   l7u23m3e2: {
     prompt:
-      'Constrói a escala alterada de G (7.o modo de Ab menor melódica). Seleciona as 7 notas.',
+      'Constrói a escala alterada de G (7.º modo de Ab menor melódica). Seleciona as 7 notas.',
     hint: 'G alterada (superlócria): G, Ab, Bb, Cb, Db, Eb, F. Todas as notas não essenciais estão alteradas: b9, #9 (=b3), b5 (#11), b13 (#5). Pitch classes: 7, 8, 10, 11, 1, 3, 5.',
   },
   l7u23m3e3: {
     prompt:
-      'A escala lídia dominante (4.o modo da menor melódica) é comummente usada sobre que tipo de acorde?',
+      'A escala lídia dominante (4.º modo da menor melódica) é comummente usada sobre que tipo de acorde?',
     choices: [
       'Acordes de sétima dominante com #11, especialmente substituições tritónicas e dominantes não resolutivos',
       'Acordes m7 numa ii-V-I',

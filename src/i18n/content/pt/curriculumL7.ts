@@ -706,7 +706,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Modos da Menor Harmónica',
           explanation:
-            'A menor harmónica gera sete modos, cada um marcado por um intervalo distinto de segunda aumentada que lhes dá uma cor exótica. O 5.o modo, frígio dominante, é usado extensivamente no flamenco, klezmer e música do Médio Oriente — tem uma terça maior sobre uma base frígia, criando um som simultaneamente brilhante e escuro. O 4.o modo, dórico #4 (dórico ucraniano), aparece nas tradições folclóricas da Europa de Leste. O 6.o modo, lídio #2, começa com uma segunda aumentada que soa imediatamente distintiva. Cada modo tem um emparelhamento acorde-escala definido e um contexto cultural característico. (A aplicação mostra e toca a menor harmónica e o frígio dominante; os outros cinco modos ficam aqui descritos para referência.)',
+            'A menor harmónica gera sete modos, cada um marcado por um intervalo distinto de segunda aumentada que lhes dá uma cor exótica. O 5.º modo, frígio dominante, é usado extensivamente no flamenco, klezmer e música do Médio Oriente — tem uma terça maior sobre uma base frígia, criando um som simultaneamente brilhante e escuro. O 4.º modo, dórico #4 (dórico ucraniano), aparece nas tradições folclóricas da Europa de Leste. O 6.º modo, lídio #2, começa com uma segunda aumentada que soa imediatamente distintiva. Cada modo tem um emparelhamento acorde-escala definido e um contexto cultural característico. (A aplicação mostra e toca a menor harmónica e o frígio dominante; os outros cinco modos ficam aqui descritos para referência.)',
           tryThisLabel: 'Ouve frígio dominante — flamenco e klezmer',
         },
         {

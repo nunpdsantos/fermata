@@ -497,26 +497,26 @@ const curriculumL2: CurriculumLevelOverlay = {
       subtitle: 'Los siete acordes que pertenecen a cada tonalidad mayor — y cómo nombrarlos',
       objectives: [
         'Construir una tríada en cada grado de la escala mayor usando solo notas de esa escala',
-        'Conocer el patrón de cualidades: I-ii-iii-IV-V-vi-viiº',
+        'Conocer el patrón de cualidades: I-ii-iii-IV-V-vi-vii°',
         'Leer números romanos: mayúscula = mayor, minúscula = menor, º = disminuida',
       ],
       concepts: [
         {
           title: 'Construir Tríadas Diatónicas',
           explanation:
-            'Construye una tríada en cada grado de la escala mayor usando solo notas de esa escala. En C mayor: C-E-G (mayor), D-F-A (menor), E-G-B (menor), F-A-C (mayor), G-B-D (mayor), A-C-E (menor), B-D-F (disminuida). El patrón de cualidades es siempre I-ii-iii-IV-V-vi-viiº — en todas las tonalidades mayores. Solo los nombres de las notas cambian.',
+            'Construye una tríada en cada grado de la escala mayor usando solo notas de esa escala. En C mayor: C-E-G (mayor), D-F-A (menor), E-G-B (menor), F-A-C (mayor), G-B-D (mayor), A-C-E (menor), B-D-F (disminuida). El patrón de cualidades es siempre I-ii-iii-IV-V-vi-vii° — en todas las tonalidades mayores. Solo los nombres de las notas cambian.',
           tryThisLabel: 'Observa todas las tríadas diatónicas en C',
         },
         {
           title: 'Convenciones de Números Romanos',
           explanation:
-            'Los números romanos en mayúscula indican tríadas mayores (I, IV, V). En minúscula indican tríadas menores (ii, iii, vi). El símbolo de grado (º) indica disminuida (viiº). Esta notación es universal — funciona en cualquier tonalidad. Cuando ves I-IV-V, conoces las funciones de los acordes independientemente de las notas específicas usadas.',
+            'Los números romanos en mayúscula indican tríadas mayores (I, IV, V). En minúscula indican tríadas menores (ii, iii, vi). El símbolo de grado (º) indica disminuida (vii°). Esta notación es universal — funciona en cualquier tonalidad. Cuando ves I-IV-V, conoces las funciones de los acordes independientemente de las notas específicas usadas.',
           tryThisLabel: 'Observa el mismo patrón en G mayor',
         },
         {
           title: 'Por Qué el Patrón Es Fijo',
           explanation:
-            'El patrón de intervalos T-T-S-T-T-T-S de la escala mayor fuerza combinaciones específicas de intervalos en cada grado. Los semitonos entre los grados 3-4 y 7-1 crean la tríada disminuida en el viiº y determinan qué tríadas son mayores o menores. Cambia la escala y cambiarás el patrón — que es exactamente lo que ocurre en las tonalidades menores.',
+            'El patrón de intervalos T-T-S-T-T-T-S de la escala mayor fuerza combinaciones específicas de intervalos en cada grado. Los semitonos entre los grados 3-4 y 7-1 crean la tríada disminuida en el vii° y determinan qué tríadas son mayores o menores. Cambia la escala y cambiarás el patrón — que es exactamente lo que ocurre en las tonalidades menores.',
           tryThisLabel: 'Verifica el patrón en D mayor',
         },
       ],
@@ -527,7 +527,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Abre "key of G" — verifica el mismo patrón I-ii-iii-IV-V-vi-viiº con nombres de notas diferentes',
+            'Abre "key of G" — verifica el mismo patrón I-ii-iii-IV-V-vi-vii° con nombres de notas diferentes',
         },
         {
           instruction:

@@ -37,7 +37,7 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l7u21m2: Voicings de Shell ----
 
   l7u21m2e1: {
-    prompt: 'Un voicing de shell contiene típicamente qué notas del acorde?',
+    prompt: '¿Qué notas del acorde contiene típicamente un voicing de shell?',
     choices: [
       'Solo fundamental, tercera y séptima — omitiendo la quinta y las extensiones',
       'Fundamental, quinta y octava — omitiendo la tercera y la séptima',
@@ -432,7 +432,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l7u23m3e3: {
     prompt:
-      'La escala lidia dominante (4.º modo de la menor melódica) se usa comúnmente sobre qué tipo de acorde?',
+      '¿Sobre qué tipo de acorde se usa comúnmente la escala lidia dominante (4.º modo de la menor melódica)?',
     choices: [
       'Acordes de séptima dominante con #11, especialmente sustituciones tritonales y dominantes no resolutivos',
       'Acordes m7 en una ii-V-I',

@@ -545,7 +545,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Compassos Aditivos',
           explanation:
-            'Compassos aditivos são construídos combinando grupos de 2 e 3 tempos. 5 = 2+3 ou 3+2. 7 = 2+2+3 ou 2+3+2 ou 3+2+2. 8 = 3+3+2, comum na música balcânica e algum rock. 11 = 2+2+3+2+2, usado por Dave Brubeck e outros. O padrão de agrupamento interno é o que dá a cada compasso o seu carácter distintivo — o mesmo número total de tempos com agrupamentos diferentes cria caráteres rítmicos inteiramente distintos.',
+            'Compassos aditivos são construídos combinando grupos de 2 e 3 tempos. 5 = 2+3 ou 3+2. 7 = 2+2+3 ou 2+3+2 ou 3+2+2. 8 = 3+3+2, comum na música balcânica e algum rock. 11 = 2+2+3+2+2, usado por Dave Brubeck e outros. O padrão de agrupamento interno é o que dá a cada compasso o seu carácter distintivo — o mesmo número total de tempos com agrupamentos diferentes cria caracteres rítmicos inteiramente distintos.',
           tryThisLabel: 'Conta 5 notas em grupos de 3+2',
         },
         {

@@ -15,12 +15,12 @@ const overlay: ExerciseLevelOverlay = {
   l9u30m1e1: {
     prompt:
       'Ouve esta altura e identifica-a.',
-    hint: 'O C central (C4) é o ponto de referência central no piano -- ancora-o no teu ouvido.',
+    hint: 'O C central (C4) é o ponto de referência central no piano — ancora-o no teu ouvido.',
   },
   l9u30m1e2: {
     prompt:
       'Ouve esta altura e identifica-a.',
-    hint: 'G4 está uma 5.a perfeita acima do C central -- 7 meios-tons acima. Compara-o com C4 no teu ouvido.',
+    hint: 'G4 está uma 5.ª perfeita acima do C central — 7 meios-tons acima. Compara-o com C4 no teu ouvido.',
   },
   l9u30m1e3: {
     prompt:
@@ -41,7 +41,7 @@ const overlay: ExerciseLevelOverlay = {
       'A velocidade a que as notas são tocadas',
       'O número de instrumentos a tocar simultaneamente',
     ],
-    hint: 'Registo descreve uma porção do espetro de alturas -- registo grave, registo médio ou registo agudo.',
+    hint: 'Registo descreve uma porção do espetro de alturas — registo grave, registo médio ou registo agudo.',
   },
 
   // ---- l9u30m2: Reconhecimento Maior vs Menor ----
@@ -50,13 +50,13 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Ouve este acorde. É maior ou menor?',
     choices: ['Maior', 'Menor'],
-    hint: 'A 3.a maior (4 meios-tons a partir da fundamental) dá aos acordes maiores um carácter brilhante e estável.',
+    hint: 'A 3.ª maior (4 meios-tons a partir da fundamental) dá aos acordes maiores um carácter brilhante e estável.',
   },
   l9u30m2e2: {
     prompt:
       'Ouve este acorde. É maior ou menor?',
     choices: ['Maior', 'Menor'],
-    hint: 'A 3.a menor (3 meios-tons a partir da fundamental) dá aos acordes menores uma qualidade mais sombria e melancólica.',
+    hint: 'A 3.ª menor (3 meios-tons a partir da fundamental) dá aos acordes menores uma qualidade mais sombria e melancólica.',
   },
   l9u30m2e3: {
     prompt:
@@ -67,7 +67,7 @@ const overlay: ExerciseLevelOverlay = {
       'A fundamental é elevada meio-tom no menor',
       'Tríades menores têm quatro notas em vez de três',
     ],
-    hint: 'Tríade maior: fundamental + 3.a maior (4 meios-tons) + 5.a P. Tríade menor: fundamental + 3.a menor (3 meios-tons) + 5.a P. Só a 3.a muda.',
+    hint: 'Tríade maior: fundamental + 3.ª maior (4 meios-tons) + 5.ª P. Tríade menor: fundamental + 3.ª menor (3 meios-tons) + 5.ª P. Só a 3.ª muda.',
   },
 
   // ---- l9u30m3: Reconhecimento de Intervalos P1-P5 ----
@@ -75,22 +75,22 @@ const overlay: ExerciseLevelOverlay = {
   l9u30m3e1: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '1 meio-tom = 2.a menor (meio-tom) -- o menor intervalo na música ocidental. Pensa no tema de Tubarão.',
+    hint: '1 meio-tom = 2.ª menor (meio-tom) — o menor intervalo na música ocidental. Pensa no tema de Tubarão.',
   },
   l9u30m3e2: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '2 meios-tons = 2.a maior (tom). O passo melódico do dia a dia.',
+    hint: '2 meios-tons = 2.ª maior (tom). O passo melódico do dia a dia.',
   },
   l9u30m3e3: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '3 meios-tons = 3.a menor -- sombria e melancólica. Este intervalo define a base de uma tríade menor.',
+    hint: '3 meios-tons = 3.ª menor — sombria e melancólica. Este intervalo define a base de uma tríade menor.',
   },
   l9u30m3e4: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '7 meios-tons = 5.a perfeita -- forte e aberta. O intervalo mais consonante depois da oitava e do uníssono.',
+    hint: '7 meios-tons = 5.ª perfeita — forte e aberta. O intervalo mais consonante depois da oitava e do uníssono.',
   },
 
   // ---- l9u30m4: Reconhecimento de Intervalos 6.a m-P8 ----
@@ -98,22 +98,22 @@ const overlay: ExerciseLevelOverlay = {
   l9u30m4e1: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '8 meios-tons = 6.a menor -- agridoce e anelante, com uma qualidade pungente e algo tensa.',
+    hint: '8 meios-tons = 6.ª menor — agridoce e anelante, com uma qualidade pungente e algo tensa.',
   },
   l9u30m4e2: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '9 meios-tons = 6.a maior -- quente, romântica e consonante.',
+    hint: '9 meios-tons = 6.ª maior — quente, romântica e consonante.',
   },
   l9u30m4e3: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '10 meios-tons = 7.a menor -- uma tensão dominante e bluesy que quer resolver.',
+    hint: '10 meios-tons = 7.ª menor — uma tensão dominante e bluesy que quer resolver.',
   },
   l9u30m4e4: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '12 meios-tons = oitava perfeita -- as duas notas soam como a mesma altura em registos diferentes.',
+    hint: '12 meios-tons = oitava perfeita — as duas notas soam como a mesma altura em registos diferentes.',
   },
 
   // ---- l9u30m5: Intervalos Harmónicos ----
@@ -121,12 +121,12 @@ const overlay: ExerciseLevelOverlay = {
   l9u30m5e1: {
     prompt:
       'Ouve estas duas notas tocadas em simultâneo e identifica o intervalo harmónico.',
-    hint: '5 meios-tons = 4.a perfeita. Em simultâneo tem uma qualidade aberta e oca.',
+    hint: '5 meios-tons = 4.ª perfeita. Em simultâneo tem uma qualidade aberta e oca.',
   },
   l9u30m5e2: {
     prompt:
       'Ouve estas duas notas tocadas em simultâneo e identifica o intervalo harmónico.',
-    hint: '4 meios-tons = 3.a maior -- um som harmónico quente e consonante.',
+    hint: '4 meios-tons = 3.ª maior — um som harmónico quente e consonante.',
   },
   l9u30m5e3: {
     prompt:
@@ -156,7 +156,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Ouve esta escala e identifica o seu tipo.',
     choices: ['Maior', 'Menor natural', 'Menor harmónica'],
-    hint: 'A menor natural (T-mT-T-T-mT-T-T) tem uma atmosfera mais sombria do que a maior -- a 3.a, 6.a e 7.a baixadas moldam a sua cor.',
+    hint: 'A menor natural (T-mT-T-T-mT-T-T) tem uma atmosfera mais sombria do que a maior — a 3.ª, 6.ª e 7.ª baixadas moldam a sua cor.',
   },
   l9u31m1e3: {
     prompt:
@@ -167,7 +167,7 @@ const overlay: ExerciseLevelOverlay = {
       'Misterioso e ambíguo',
       'Dissonante e instável',
     ],
-    hint: 'As escalas maiores são percebidas como brilhantes e estáveis. A 3.a maior e a 7.a maior contribuem para este carácter positivo.',
+    hint: 'As escalas maiores são percebidas como brilhantes e estáveis. A 3.ª maior e a 7.ª maior contribuem para este carácter positivo.',
   },
 
   // ---- l9u31m2: Reconhecimento de Modos ----
@@ -176,24 +176,24 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Ouve esta escala e identifica o modo.',
     choices: ['Dórico', 'Frígio', 'Lídio', 'Mixolídio'],
-    hint: 'O Dórico é como o menor natural com o 6.o grau elevado -- esse 6 natural em contexto menor é a nota característica.',
+    hint: 'O Dórico é como o menor natural com o 6.º grau elevado — esse 6 natural em contexto menor é a nota característica.',
   },
   l9u31m2e2: {
     prompt:
       'Ouve esta escala e identifica o modo.',
     choices: ['Dórico', 'Frígio', 'Lídio', 'Mixolídio'],
-    hint: 'O Lídio é como o maior com o 4.o grau elevado -- ouve o #4 brilhante a puxar para cima.',
+    hint: 'O Lídio é como o maior com o 4.º grau elevado — ouve o #4 brilhante a puxar para cima.',
   },
   l9u31m2e3: {
     prompt:
       'Qual é a nota característica que distingue o Dórico do menor natural?',
     choices: [
-      'Um 6.o grau elevado',
-      'Um 2.o grau baixado',
-      'Um 7.o grau elevado',
-      'Um 5.o grau baixado',
+      'Um 6.º grau elevado',
+      'Um 2.º grau baixado',
+      'Um 7.º grau elevado',
+      'Um 5.º grau baixado',
     ],
-    hint: 'O Dórico difere do menor natural por uma nota: o 6.o grau é elevado meio-tom. Em D Dórico, é B natural em vez de Bb.',
+    hint: 'O Dórico difere do menor natural por uma nota: o 6.º grau é elevado meio-tom. Em D Dórico, é B natural em vez de Bb.',
   },
 
   // ---- l9u31m3: Pentatónica/Blues/Simétrica ----
@@ -202,19 +202,19 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Ouve esta escala e identifica o seu tipo.',
     choices: ['Pentatónica maior', 'Pentatónica menor', 'Blues', 'Tons inteiros'],
-    hint: 'A pentatónica maior tem cinco notas e nenhum meio-tom -- a escala maior sem o 4.o e o 7.o graus.',
+    hint: 'A pentatónica maior tem cinco notas e nenhum meio-tom — a escala maior sem o 4.º e o 7.º graus.',
   },
   l9u31m3e2: {
     prompt:
       'Ouve esta escala e identifica o seu tipo.',
     choices: ['Pentatónica maior', 'Pentatónica menor', 'Blues', 'Tons inteiros'],
-    hint: 'A escala de blues é a pentatónica menor mais a "blue note" (b5) -- ouve essa mordida cromática extra.',
+    hint: 'A escala de blues é a pentatónica menor mais a "blue note" (b5) — ouve essa mordida cromática extra.',
   },
   l9u31m3e3: {
     prompt: 'O que é a "blue note" numa escala de blues?',
     choices: [
-      'A nota cromática entre o 4.o e o 5.o graus (5.a bemolizada / 4.a sustenida)',
-      'A 3.a menor de qualquer acorde',
+      'A nota cromática entre o 4.º e o 5.º graus (5.ª bemolizada / 4.ª sustenida)',
+      'A 3.ª menor de qualquer acorde',
       'Qualquer nota tocada com vibrato',
       'A sensível da tonalidade',
     ],
@@ -227,7 +227,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Ouve esta tríade e identifica a sua qualidade.',
     choices: ['Maior', 'Menor', 'Diminuta', 'Aumentada'],
-    hint: 'Diminuta = duas 3.as menores empilhadas. O trítono entre fundamental e 5.a cria a sua qualidade tensa e instável.',
+    hint: 'Diminuta = duas 3.as menores empilhadas. O trítono entre fundamental e 5.ª cria a sua qualidade tensa e instável.',
   },
   l9u31m4e2: {
     prompt:
@@ -238,12 +238,12 @@ const overlay: ExerciseLevelOverlay = {
   l9u31m4e3: {
     prompt: 'Que intervalos compõem uma tríade diminuta?',
     choices: [
-      'Fundamental, 3.a menor e 5.a diminuta (trítono)',
-      'Fundamental, 3.a maior e 5.a perfeita',
-      'Fundamental, 3.a menor e 5.a perfeita',
-      'Fundamental, 3.a maior e 5.a aumentada',
+      'Fundamental, 3.ª menor e 5.ª diminuta (trítono)',
+      'Fundamental, 3.ª maior e 5.ª perfeita',
+      'Fundamental, 3.ª menor e 5.ª perfeita',
+      'Fundamental, 3.ª maior e 5.ª aumentada',
     ],
-    hint: 'Diminuta = 3.a menor (3 meios-tons) + 5.a diminuta (6 meios-tons). Duas 3.as menores empilhadas produzem o trítono entre fundamental e 5.a.',
+    hint: 'Diminuta = 3.ª menor (3 meios-tons) + 5.ª diminuta (6 meios-tons). Duas 3.as menores empilhadas produzem o trítono entre fundamental e 5.ª.',
   },
   l9u31m4e4: {
     prompt: 'Como descreverias o som de uma tríade aumentada?',
@@ -253,7 +253,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sombria e pesada como um acorde menor',
       'Oca e medieval como um power chord',
     ],
-    hint: 'Tríades aumentadas dividem a oitava em três partes iguais (3.a M + 3.a M). Esta simetria cria uma sensação ambígua e suspensa.',
+    hint: 'Tríades aumentadas dividem a oitava em três partes iguais (3.ª M + 3.ª M). Esta simetria cria uma sensação ambígua e suspensa.',
   },
 
   // ---- l9u31m5: Qualidade de Acordes de Sétima ----
@@ -261,22 +261,22 @@ const overlay: ExerciseLevelOverlay = {
   l9u31m5e1: {
     prompt:
       'Ouve este acorde de sétima e identifica a sua qualidade.',
-    choices: ['Maior com 7.a M', 'Menor com 7.a', 'Sétima da dominante', 'Meio-diminuto'],
-    hint: 'O acorde maior com 7.a sobrepõe uma 7.a maior a uma tríade maior -- exuberante e sonhador, comum no jazz e na bossa nova.',
+    choices: ['Maior com 7.ª M', 'Menor com 7.ª', 'Sétima da dominante', 'Meio-diminuto'],
+    hint: 'O acorde maior com 7.ª sobrepõe uma 7.ª maior a uma tríade maior — exuberante e sonhador, comum no jazz e na bossa nova.',
   },
   l9u31m5e2: {
     prompt:
       'Ouve este acorde de sétima e identifica a sua qualidade.',
-    choices: ['Maior com 7.a M', 'Menor com 7.a', 'Sétima da dominante', 'Meio-diminuto'],
-    hint: 'O acorde menor com 7.a sobrepõe uma 7.a menor a uma tríade menor -- suave, quente e descontraído.',
+    choices: ['Maior com 7.ª M', 'Menor com 7.ª', 'Sétima da dominante', 'Meio-diminuto'],
+    hint: 'O acorde menor com 7.ª sobrepõe uma 7.ª menor a uma tríade menor — suave, quente e descontraído.',
   },
   l9u31m5e3: {
     prompt:
-      'O que dá a um acorde de 7.a dominante a sua sensação característica de tensão e desejo de resolver?',
+      'O que dá a um acorde de 7.ª dominante a sua sensação característica de tensão e desejo de resolver?',
     choices: [
-      'O trítono formado entre a 3.a maior e a 7.a menor',
-      'A 5.a perfeita entre fundamental e 5.a',
-      'A 3.a maior entre fundamental e 3.a',
+      'O trítono formado entre a 3.ª maior e a 7.ª menor',
+      'A 5.ª perfeita entre fundamental e 5.ª',
+      'A 3.ª maior entre fundamental e 3.ª',
       'A duplicação à oitava da fundamental',
     ],
     hint: 'Em G7 (G-B-D-F), B e F formam um trítono (6 meios-tons). Esta dissonância cria a atração para resolução a C maior.',
@@ -290,7 +290,7 @@ const overlay: ExerciseLevelOverlay = {
       'Como acorde V em tonalidades maiores',
       'Como acorde IV em progressões de blues',
     ],
-    hint: 'O acorde de sétima meio-diminuto (m7b5) ocorre naturalmente no 2.o grau da menor harmónica. Serve como acorde predominante conduzindo ao V em progressões ii-V-i menores.',
+    hint: 'O acorde de sétima meio-diminuto (m7b5) ocorre naturalmente no 2.º grau da menor harmónica. Serve como acorde predominante conduzindo ao V em progressões ii-V-i menores.',
   },
 
   // =========================================================================
@@ -302,12 +302,12 @@ const overlay: ExerciseLevelOverlay = {
   l9u32m1e1: {
     prompt:
       'Ouve esta nota e identifica-a.',
-    hint: 'Esta altura é o 3.o grau de C maior. Canta a partir de C para a localizar.',
+    hint: 'Esta altura é o 3.º grau de C maior. Canta a partir de C para a localizar.',
   },
   l9u32m1e2: {
     prompt:
       'Ouve esta nota e identifica-a.',
-    hint: 'Esta altura é o 6.o grau de C maior. Canta a partir de C para a localizar.',
+    hint: 'Esta altura é o 6.º grau de C maior. Canta a partir de C para a localizar.',
   },
   l9u32m1e3: {
     prompt: 'O que significa "melodia diatónica"?',
@@ -317,7 +317,7 @@ const overlay: ExerciseLevelOverlay = {
       'Uma melodia tocada apenas numa corda da guitarra',
       'Uma melodia que se move exclusivamente por graus',
     ],
-    hint: 'Diatónico significa "pertencente à tonalidade." Uma melodia diatónica em C maior usa apenas C, D, E, F, G, A e B -- sem acidentes.',
+    hint: 'Diatónico significa "pertencente à tonalidade." Uma melodia diatónica em C maior usa apenas C, D, E, F, G, A e B — sem acidentes.',
   },
   l9u32m1e4: {
     prompt:
@@ -336,12 +336,12 @@ const overlay: ExerciseLevelOverlay = {
   l9u32m2e1: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: 'E para F é um meio-tom (1 meio-tom) entre duas letras diferentes -- um meio-tom diatónico, que já está dentro de C maior. Um meio-tom cromático mantém a letra (F para F#). Numa melodia, qualquer um deles funciona muitas vezes como nota de passagem ou bordadura.',
+    hint: 'E para F é um meio-tom (1 meio-tom) entre duas letras diferentes — um meio-tom diatónico, que já está dentro de C maior. Um meio-tom cromático mantém a letra (F para F#). Numa melodia, qualquer um deles funciona muitas vezes como nota de passagem ou bordadura.',
   },
   l9u32m2e2: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: 'O trítono (6 meios-tons, 4.a aumentada / 5.a diminuta) é uma das dissonâncias mais ásperas (com a 2.a menor e a 7.a maior) e divide a oitava exatamente ao meio.',
+    hint: 'O trítono (6 meios-tons, 4.ª aumentada / 5.ª diminuta) é uma das dissonâncias mais ásperas (com a 2.ª menor e a 7.ª maior) e divide a oitava exatamente ao meio.',
   },
   l9u32m2e3: {
     prompt: 'O que é uma nota cromática de passagem?',
@@ -376,7 +376,7 @@ const overlay: ExerciseLevelOverlay = {
       'Cadência plagal',
       'Cadência interrompida',
     ],
-    hint: 'Uma cadência suspensiva termina em V, criando uma sensação de suspensão ou incompletude -- como uma vírgula em vez de um ponto final.',
+    hint: 'Uma cadência suspensiva termina em V, criando uma sensação de suspensão ou incompletude — como uma vírgula em vez de um ponto final.',
   },
   l9u32m3e3: {
     prompt:

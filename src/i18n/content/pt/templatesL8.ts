@@ -91,7 +91,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica este tipo de cânone.',
       hintTemplate:
-        'Tipos de cânone: estrito (imitação exata), à oitava, à 5.a, em inversão (movimento contrário), em retrogradação (cânone de caranguejo), cânone duplo (2 cânones independentes).',
+        'Tipos de cânone: estrito (imitação exata), à oitava, à 5.ª, em inversão (movimento contrário), em retrogradação (cânone de caranguejo), cânone duplo (2 cânones independentes).',
       choiceSets: [
         [
           'Um cânone em inversão (cânone espelhado) imita a melodia em movimento contrário',
@@ -209,8 +209,8 @@ const overlay: TemplateLevelOverlay = {
           'Apenas os instrumentos de percussão transpõem',
         ],
         [
-          'A trompa em F soa uma 5.a perfeita abaixo do escrito',
-          'A trompa em F soa uma 5.a perfeita acima do escrito',
+          'A trompa em F soa uma 5.ª perfeita abaixo do escrito',
+          'A trompa em F soa uma 5.ª perfeita acima do escrito',
           'A trompa em F é não transpositora',
           'A trompa em F soa uma oitava abaixo',
         ],

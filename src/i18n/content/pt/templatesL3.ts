@@ -24,25 +24,25 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica a qualidade deste acorde de sétima com base na sua estrutura intervalar.',
       hintTemplate:
-        'Ouve a qualidade da tríade (maior/menor/dim) e a qualidade da 7.a (maior/menor/diminuta) empilhada por cima.',
+        'Ouve a qualidade da tríade (maior/menor/dim) e a qualidade da 7.ª (maior/menor/diminuta) empilhada por cima.',
       choiceSets: [
         [
-          'Tríade maior + 7.a maior = acorde de sétima maior',
-          'Tríade maior + 7.a maior = acorde de sétima da dominante',
-          'Tríade maior + 7.a maior = acorde de sétima menor',
-          'Tríade maior + 7.a maior = acorde de sétima meio-diminuta',
+          'Tríade maior + 7.ª maior = acorde de sétima maior',
+          'Tríade maior + 7.ª maior = acorde de sétima da dominante',
+          'Tríade maior + 7.ª maior = acorde de sétima menor',
+          'Tríade maior + 7.ª maior = acorde de sétima meio-diminuta',
         ],
         [
-          'Tríade maior + 7.a menor = acorde de sétima da dominante',
-          'Tríade maior + 7.a menor = acorde de sétima maior',
-          'Tríade maior + 7.a menor = acorde de sétima menor',
-          'Tríade maior + 7.a menor = acorde de sétima diminuta',
+          'Tríade maior + 7.ª menor = acorde de sétima da dominante',
+          'Tríade maior + 7.ª menor = acorde de sétima maior',
+          'Tríade maior + 7.ª menor = acorde de sétima menor',
+          'Tríade maior + 7.ª menor = acorde de sétima diminuta',
         ],
         [
-          'Tríade diminuta + 7.a menor = acorde de sétima meio-diminuta',
-          'Tríade diminuta + 7.a menor = acorde de sétima diminuta',
-          'Tríade diminuta + 7.a menor = acorde de sétima menor',
-          'Tríade diminuta + 7.a menor = acorde de sétima da dominante',
+          'Tríade diminuta + 7.ª menor = acorde de sétima meio-diminuta',
+          'Tríade diminuta + 7.ª menor = acorde de sétima diminuta',
+          'Tríade diminuta + 7.ª menor = acorde de sétima menor',
+          'Tríade diminuta + 7.ª menor = acorde de sétima da dominante',
         ],
       ],
     },
@@ -55,12 +55,12 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica a inversão e o baixo cifrado deste acorde de sétima.',
       hintTemplate:
-        'Inversões de acordes de sétima: estado fundamental = 7, 1.a inv = 6/5, 2.a inv = 4/3, 3.a inv = 4/2 (ou 2).',
+        'Inversões de acordes de sétima: estado fundamental = 7, 1.ª inv = 6/5, 2.ª inv = 4/3, 3.ª inv = 4/2 (ou 2).',
       choiceSets: [
         [
-          'A terceira inversão de um acorde de sétima tem a 7.a no baixo (baixo cifrado: 4/2)',
-          'A terceira inversão tem a 5.a no baixo',
-          'A terceira inversão tem a 3.a no baixo',
+          'A terceira inversão de um acorde de sétima tem a 7.ª no baixo (baixo cifrado: 4/2)',
+          'A terceira inversão tem a 5.ª no baixo',
+          'A terceira inversão tem a 3.ª no baixo',
           'A terceira inversão tem a fundamental no baixo',
         ],
         [
@@ -76,9 +76,9 @@ const overlay: TemplateLevelOverlay = {
           'A segunda inversão usa o baixo cifrado 6/4',
         ],
         [
-          'Na segunda inversão, a 5.a do acorde de sétima está no baixo',
-          'Na segunda inversão, a 3.a está no baixo',
-          'Na segunda inversão, a 7.a está no baixo',
+          'Na segunda inversão, a 5.ª do acorde de sétima está no baixo',
+          'Na segunda inversão, a 3.ª está no baixo',
+          'Na segunda inversão, a 7.ª está no baixo',
           'Na segunda inversão, a fundamental está no baixo',
         ],
       ],
@@ -92,7 +92,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói o acorde de sétima diatónico sobre {root} em C maior. Usa apenas teclas brancas.',
       hintTemplate:
-        'Acordes de 7.a diatónicos em C maior: Cmaj7, Dm7, Em7, Fmaj7, G7, Am7, Bm7b5. Constrói sobre {root} usando apenas notas da escala de C maior.',
+        'Acordes de 7.ª diatónicos em C maior: Cmaj7, Dm7, Em7, Fmaj7, G7, Am7, Bm7b5. Constrói sobre {root} usando apenas notas da escala de C maior.',
     },
   ],
 
@@ -103,14 +103,14 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói o acorde de sétima diatónico sobre {root} em A menor (menor harmónica).',
       hintTemplate:
-        'Na menor harmónica, o 7.o grau elevado cria qualidades de acordes diferentes da menor natural. O V torna-se sétima da dominante e o vii torna-se sétima diminuta. O 7.o grau elevado cria qualidades de acorde invulgares — não estranhes sonoridades pouco familiares.',
+        'Na menor harmónica, o 7.º grau elevado cria qualidades de acordes diferentes da menor natural. O V torna-se sétima da dominante e o vii torna-se sétima diminuta. O 7.º grau elevado cria qualidades de acorde invulgares — não estranhes sonoridades pouco familiares.',
     },
     {
       // multiple_choice
       promptTemplate:
         'Identifica a qualidade deste acorde de sétima diatónico em menor.',
       hintTemplate:
-        'Na menor harmónica, o 7.o grau elevado altera a qualidade dos acordes construídos sobre os graus III, V e VII.',
+        'Na menor harmónica, o 7.º grau elevado altera a qualidade dos acordes construídos sobre os graus III, V e VII.',
       choiceSets: [
         [
           'Na menor harmónica, V7 é um acorde de sétima da dominante',
@@ -145,7 +145,7 @@ const overlay: TemplateLevelOverlay = {
           'As vozes superiores adjacentes (S-C, C-T) devem manter-se geralmente a menos de uma oitava entre si',
           'As quatro vozes devem estar sempre dentro de uma oitava no total',
           'Não há restrições de espaçamento entre vozes',
-          'Soprano e contralto devem estar sempre a uma 3.a de distância',
+          'Soprano e contralto devem estar sempre a uma 3.ª de distância',
         ],
         [
           'O cruzamento de vozes ocorre quando uma voz mais grave ultrapassa a voz mais aguda adjacente',
@@ -155,8 +155,8 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Dobrar a fundamental do acorde é geralmente a escolha mais segura em estado fundamental',
-          'Dobrar a 3.a é sempre preferido',
-          'Dobrar a 7.a cria o melhor som',
+          'Dobrar a 3.ª é sempre preferido',
+          'Dobrar a 7.ª cria o melhor som',
           'Todas as notas do acorde devem aparecer exatamente uma vez',
         ],
       ],
@@ -170,13 +170,13 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica o erro ou regra de condução de vozes ilustrado aqui.',
       hintTemplate:
-        'Evita 5.as e 8.as paralelas, resolve a sensível para cima, resolve a 7.a do acorde para baixo, e mantém notas comuns quando possível.',
+        'Evita 5.as e 8.as paralelas, resolve a sensível para cima, resolve a 7.ª do acorde para baixo, e mantém notas comuns quando possível.',
       choiceSets: [
         [
           'Quintas paralelas ocorrem quando duas vozes passam de uma 5.aP para outra 5.aP na mesma direção',
           'Quintas paralelas são sempre aceitáveis na escrita SATB',
           'Quintas paralelas só ocorrem entre soprano e baixo',
-          'Quintas paralelas significam que duas vozes estão sempre a uma 5.a de distância',
+          'Quintas paralelas significam que duas vozes estão sempre a uma 5.ª de distância',
         ],
         [
           'A sensível deve resolver por grau ascendente para a tónica',
@@ -185,10 +185,10 @@ const overlay: TemplateLevelOverlay = {
           'A sensível deve sempre saltar para a mediante',
         ],
         [
-          'A 7.a do acorde deve resolver por grau descendente',
-          'A 7.a do acorde deve resolver por grau ascendente',
-          'A 7.a do acorde não precisa de resolver',
-          'A 7.a do acorde deve saltar uma 5.a abaixo',
+          'A 7.ª do acorde deve resolver por grau descendente',
+          'A 7.ª do acorde deve resolver por grau ascendente',
+          'A 7.ª do acorde não precisa de resolver',
+          'A 7.ª do acorde deve saltar uma 5.ª abaixo',
         ],
         [
           'Movimento contrário entre as vozes extremas é geralmente preferido',
@@ -234,10 +234,10 @@ const overlay: TemplateLevelOverlay = {
           'IV para I é uma Cadência Interrompida',
         ],
         [
-          'V para I com o soprano na 3.a é uma Cadência Imperfeita (CAI)',
-          'V para I com o soprano na 3.a é uma CAP',
-          'V para I com o soprano na 3.a é uma Cadência Suspensiva',
-          'V para I com o soprano na 3.a é uma Cadência Interrompida',
+          'V para I com o soprano na 3.ª é uma Cadência Imperfeita (CAI)',
+          'V para I com o soprano na 3.ª é uma CAP',
+          'V para I com o soprano na 3.ª é uma Cadência Suspensiva',
+          'V para I com o soprano na 3.ª é uma Cadência Interrompida',
         ],
       ],
     },
@@ -291,7 +291,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica esta nota estranha ao acorde com base na sua abordagem e resolução.',
       hintTemplate:
-        'Uma nota de passagem move-se por grau entre duas notas do acorde na mesma direção. Preenche a lacuna entre uma 3.a.',
+        'Uma nota de passagem move-se por grau entre duas notas do acorde na mesma direção. Preenche a lacuna entre uma 3.ª.',
       choiceSets: [
         [
           'Uma nota abordada por grau e resolvida por grau na mesma direção é uma nota de passagem',
@@ -356,8 +356,8 @@ const overlay: TemplateLevelOverlay = {
         'Uma suspensão tem 3 partes: preparação (consonância), suspensão (mantida em dissonância), resolução (grau descendente para consonância). Nomeadas pelos intervalos: 4-3, 7-6, 9-8, 2-3.',
       choiceSets: [
         [
-          'Uma suspensão 4-3 mantém a 4.a acima do baixo e resolve descendo para uma 3.a',
-          'Uma suspensão 4-3 mantém a 3.a e sobe para a 4.a',
+          'Uma suspensão 4-3 mantém a 4.ª acima do baixo e resolve descendo para uma 3.ª',
+          'Uma suspensão 4-3 mantém a 3.ª e sobe para a 4.ª',
           'Uma suspensão 4-3 é uma resolução ascendente',
           'Uma suspensão 4-3 não requer preparação',
         ],
@@ -368,13 +368,13 @@ const overlay: TemplateLevelOverlay = {
           'Uma suspensão é o mesmo que uma apogiatura',
         ],
         [
-          'Uma suspensão 7-6 mantém a 7.a acima do baixo e resolve descendo para uma 6.a',
+          'Uma suspensão 7-6 mantém a 7.ª acima do baixo e resolve descendo para uma 6.ª',
           'Uma suspensão 7-6 resolve para cima, para uma oitava',
           'Uma suspensão 7-6 é uma suspensão do baixo',
           'Uma suspensão 7-6 não resolve',
         ],
         [
-          'Uma suspensão 9-8 mantém a 9.a acima do baixo e resolve descendo para uma oitava',
+          'Uma suspensão 9-8 mantém a 9.ª acima do baixo e resolve descendo para uma oitava',
           'Uma suspensão 9-8 resolve por grau ascendente',
           'Uma suspensão 9-8 é na verdade uma suspensão 2-1',
           'Uma suspensão 9-8 ocorre apenas na voz do baixo',
@@ -405,7 +405,7 @@ const overlay: TemplateLevelOverlay = {
           'Um pedal de tónica é o mesmo que um ostinato',
         ],
         [
-          'Um pedal de dominante cria tensão ao manter o 5.o grau da escala através de harmonias não dominantes',
+          'Um pedal de dominante cria tensão ao manter o 5.º grau da escala através de harmonias não dominantes',
           'Um pedal de dominante só aparece no início de uma peça',
           'Um pedal de dominante usa sempre a sensível',
           'Um pedal de dominante está sempre na voz do soprano',

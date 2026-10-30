@@ -18,18 +18,18 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói uma tríade maior de {root}.',
       hintTemplate:
-        'Uma tríade maior: fundamental + 3.a maior + 5.a perfeita. Esta qualidade de acorde é usada para dominantes secundárias como V/V.',
+        'Uma tríade maior: fundamental + 3.ª maior + 5.ª perfeita. Esta qualidade de acorde é usada para dominantes secundárias como V/V.',
     },
     {
       // multiple_choice
       promptTemplate:
         'Identifica a função e resolução de V/V.',
       hintTemplate:
-        'V/V toniciza o acorde dominante. Contém uma alteração cromática (4.o grau elevado) e resolve para V.',
+        'V/V toniciza o acorde dominante. Contém uma alteração cromática (4.º grau elevado) e resolve para V.',
       choiceSets: [
         [
-          'V/V contém o 4.o grau elevado e resolve para V',
-          'V/V contém o 7.o grau rebaixado e resolve para IV',
+          'V/V contém o 4.º grau elevado e resolve para V',
+          'V/V contém o 7.º grau rebaixado e resolve para IV',
           'V/V é o mesmo que o acorde IV',
           'V/V resolve para I',
         ],
@@ -50,7 +50,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói um acorde de dominante de sétima em {root} (uma forma muito comum de dominante secundária).',
       hintTemplate:
-        'Uma dominante secundária é uma tríade maior ou uma sétima de dominante construída uma 5.aP acima do acorde que toniciza. Aqui constrói apenas {root}7: fundamental + 3.a maior + 5.aP + 7.a menor. Por exemplo, A7 (A-C#-E-G) é V7/ii em C maior, tonicizando D menor.',
+        'Uma dominante secundária é uma tríade maior ou uma sétima de dominante construída uma 5.aP acima do acorde que toniciza. Aqui constrói apenas {root}7: fundamental + 3.ª maior + 5.aP + 7.ª menor. Por exemplo, A7 (A-C#-E-G) é V7/ii em C maior, tonicizando D menor.',
     },
     {
       // multiple_choice
@@ -98,8 +98,8 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Acordes de sensível secundária têm a fundamental meio-tom abaixo do acorde alvo',
-          'Têm a fundamental uma 5.a acima do alvo',
-          'Têm a fundamental uma 4.a abaixo do alvo',
+          'Têm a fundamental uma 5.ª acima do alvo',
+          'Têm a fundamental uma 4.ª abaixo do alvo',
           'A posição da fundamental é aleatória',
         ],
         [

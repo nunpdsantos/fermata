@@ -393,17 +393,17 @@ const overlay: ExerciseLevelOverlay = {
       'Disminuida',
       'Aumentada',
     ],
-    hint: 'Las tríadas diatónicas en la escala mayor son: I(M) ii(m) iii(m) IV(M) V(M) vi(m) viiº(dim). Los números romanos en minúscula indican cualidad menor. El acorde iii es menor.',
+    hint: 'Las tríadas diatónicas en la escala mayor son: I(M) ii(m) iii(m) IV(M) V(M) vi(m) vii°(dim). Los números romanos en minúscula indican cualidad menor. El acorde iii es menor.',
   },
   l2u7m5e2: {
-    prompt: 'En una tonalidad mayor, ¿cuál es la cualidad del acorde viiº (construido sobre el 7.º grado)?',
+    prompt: 'En una tonalidad mayor, ¿cuál es la cualidad del acorde vii° (construido sobre el 7.º grado)?',
     choices: [
       'Disminuida',
       'Menor',
       'Mayor',
       'Aumentada',
     ],
-    hint: 'El acorde construido sobre el 7.º grado de la escala mayor (ej: B-D-F en C mayor) contiene un tritono entre la fundamental y la 5.ª, haciéndolo disminuido. Se nota viiº.',
+    hint: 'El acorde construido sobre el 7.º grado de la escala mayor (ej: B-D-F en C mayor) contiene un tritono entre la fundamental y la 5.ª, haciéndolo disminuido. Se nota vii°.',
   },
   l2u7m5e3: {
     prompt: 'Construye una tríada de F mayor. Este es el acorde IV en la tonalidad de C mayor.',

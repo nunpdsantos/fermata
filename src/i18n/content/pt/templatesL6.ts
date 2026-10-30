@@ -18,7 +18,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói uma tríade maior de {root}{accidental} (acorde napolitano).',
       hintTemplate:
-        'O acorde napolitano é uma tríade maior construída sobre o 2.o grau rebaixado. Constrói uma tríade maior sobre {root}{accidental}.',
+        'O acorde napolitano é uma tríade maior construída sobre o 2.º grau rebaixado. Constrói uma tríade maior sobre {root}{accidental}.',
     },
     {
       // multiple_choice
@@ -50,17 +50,17 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica o tipo e a estrutura deste acorde de sexta aumentada.',
       hintTemplate:
-        'Sexta italiana: b6, 1, #4 (3 notas). Sexta francesa: b6, 1, 2, #4 (4 notas, inclui o 2.o grau). Ambas resolvem para V com as vozes extremas a expandirem-se para uma oitava.',
+        'Sexta italiana: b6, 1, #4 (3 notas). Sexta francesa: b6, 1, 2, #4 (4 notas, inclui o 2.º grau). Ambas resolvem para V com as vozes extremas a expandirem-se para uma oitava.',
       choiceSets: [
         [
           'A sexta italiana tem 3 notas: b6, 1 e #4',
           'A sexta italiana tem 4 notas',
-          'A sexta italiana contém o 2.o grau',
-          'A sexta italiana contém o 3.o grau',
+          'A sexta italiana contém o 2.º grau',
+          'A sexta italiana contém o 3.º grau',
         ],
         [
-          'A sexta francesa acrescenta o 2.o grau à sexta italiana',
-          'A sexta francesa acrescenta o 3.o grau',
+          'A sexta francesa acrescenta o 2.º grau à sexta italiana',
+          'A sexta francesa acrescenta o 3.º grau',
           'A sexta francesa tem apenas 2 notas',
           'A francesa é idêntica à italiana',
         ],
@@ -87,13 +87,13 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Analisa o acorde de sexta alemã e a sua resolução.',
       hintTemplate:
-        'Sexta alemã: b6, 1, b3, #4 (4 notas, inclui a 3.a menor). Resolve para um 6/4 cadencial para evitar quintas paralelas, depois para V.',
+        'Sexta alemã: b6, 1, b3, #4 (4 notas, inclui a 3.ª menor). Resolve para um 6/4 cadencial para evitar quintas paralelas, depois para V.',
       choiceSets: [
         [
           'A sexta alemã contém b6, 1, b3 e #4',
           'A sexta alemã contém b6, 1, 2 e #4',
           'A sexta alemã tem apenas 3 notas',
-          'A sexta alemã contém o 5.o grau',
+          'A sexta alemã contém o 5.º grau',
         ],
         [
           'A sexta alemã resolve para um 6/4 cadencial para evitar quintas paralelas com V',
@@ -115,7 +115,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói um acorde de sétima da dominante de {root}{accidental} (sexta alemã enarmónica).',
       hintTemplate:
-        'A sexta alemã é enarmonicamente equivalente a um acorde de sétima da dominante. Constrói uma sétima da dominante sobre {root}{accidental}: fundamental + 3.a maior + 5.a perfeita + 7.a menor.',
+        'A sexta alemã é enarmonicamente equivalente a um acorde de sétima da dominante. Constrói uma sétima da dominante sobre {root}{accidental}: fundamental + 3.ª maior + 5.ª perfeita + 7.ª menor.',
     },
   ],
 
@@ -242,7 +242,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica a relação de mediante cromática descrita.',
       hintTemplate:
-        'As mediantes cromáticas são acordes relacionados por uma 3.a maior ou menor com fundamentais que diferem cromaticamente (ex. C maior para E maior ou Ab maior). Partilham uma nota comum.',
+        'As mediantes cromáticas são acordes relacionados por uma 3.ª maior ou menor com fundamentais que diferem cromaticamente (ex. C maior para E maior ou Ab maior). Partilham uma nota comum.',
       choiceSets: [
         [
           'C maior para E maior é uma mediante cromática: fundamentais a uma 3.aM de distância, partilhando uma nota comum (E)',
@@ -251,7 +251,7 @@ const overlay: TemplateLevelOverlay = {
           'As mediantes cromáticas não partilham notas comuns',
         ],
         [
-          'As mediantes cromáticas produzem uma mudança de cor impressionante porque alteram o modo ao mover-se por 3.a',
+          'As mediantes cromáticas produzem uma mudança de cor impressionante porque alteram o modo ao mover-se por 3.ª',
           'As mediantes cromáticas soam sempre subtis e suaves',
           'As mediantes cromáticas são o mesmo que mediantes diatónicas',
           'As mediantes cromáticas limitam-se a peças em modo maior',

@@ -215,12 +215,12 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Quando um clarinete em Bb toca um C escrito, que altura de concerto soa?',
     choices: [
-      'Bb (uma 2.a maior abaixo do escrito)',
-      'D (uma 2.a maior acima do escrito)',
+      'Bb (uma 2.ª maior abaixo do escrito)',
+      'D (uma 2.ª maior acima do escrito)',
       'C (igual ao escrito)',
-      'Eb (uma 3.a menor acima do escrito)',
+      'Eb (uma 3.ª menor acima do escrito)',
     ],
-    hint: 'Um instrumento em Bb soa uma 2.a maior abaixo do escrito. Quando o intérprete lê C, o ouvinte ouve Bb. Para soar um C de concerto, o intérprete tem de ler D.',
+    hint: 'Um instrumento em Bb soa uma 2.ª maior abaixo do escrito. Quando o intérprete lê C, o ouvinte ouve Bb. Para soar um C de concerto, o intérprete tem de ler D.',
   },
 
   // =========================================================================

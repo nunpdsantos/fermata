@@ -42,7 +42,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'As Cinco Qualidades Padrão',
           explanation:
-            'Sétima maior (Cmaj7): 3.aM+3.am+3.aM — caloroso e luxuriante. Sétima da dominante (C7): 3.aM+3.am+3.am — tenso e exigindo resolução. Sétima menor (Cm7): 3.am+3.aM+3.am — suave e macio. Meio-diminuto (Cm7b5): 3.am+3.am+3.aM — sombrio e ansiante. Totalmente diminuto (Cdim7): 3.am+3.am+3.am — extremamente tenso, com estrutura simétrica em que cada nota está a uma 3.a menor de distância. Uma sexta qualidade, a sétima menor-maior (CmMaj7: 3.am+3.aM+3.aM), combina uma tríade menor com uma sétima maior — rara mas inquietantemente perturbadora, usada no cinema e no jazz.',
+            'Sétima maior (Cmaj7): 3.aM+3.am+3.aM — caloroso e luxuriante. Sétima da dominante (C7): 3.aM+3.am+3.am — tenso e exigindo resolução. Sétima menor (Cm7): 3.am+3.aM+3.am — suave e macio. Meio-diminuto (Cm7b5): 3.am+3.am+3.aM — sombrio e ansiante. Totalmente diminuto (Cdim7): 3.am+3.am+3.am — extremamente tenso, com estrutura simétrica em que cada nota está a uma 3.ª menor de distância. Uma sexta qualidade, a sétima menor-maior (CmMaj7: 3.am+3.aM+3.aM), combina uma tríade menor com uma sétima maior — rara mas inquietantemente perturbadora, usada no cinema e no jazz.',
           tryThisLabel: 'Ouve C7 — a sétima da dominante exige resolução',
         },
         {
@@ -88,7 +88,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'Baixo Cifrado para Acordes de Sétima',
           explanation:
-            'As cifras de baixo cifrado descrevem os intervalos acima da nota do baixo. Estado fundamental 7: intervalos de 7.a, 5.a e 3.a acima do baixo. Primeira inversão 6/5: intervalos de 6.a, 5.a e 3.a acima do baixo. Segunda inversão 4/3: intervalos de 6.a, 4.a e 3.a acima do baixo. Terceira inversão 4/2: intervalos de 6.a, 4.a e 2.a acima do baixo. Estas cifras abreviadas indicam ao intérprete, de imediato, que nota do acorde está no baixo (a inversão); o espaçamento das vozes superiores fica ao critério de quem toca.',
+            'As cifras de baixo cifrado descrevem os intervalos acima da nota do baixo. Estado fundamental 7: intervalos de 7.ª, 5.ª e 3.ª acima do baixo. Primeira inversão 6/5: intervalos de 6.ª, 5.ª e 3.ª acima do baixo. Segunda inversão 4/3: intervalos de 6.ª, 4.ª e 3.ª acima do baixo. Terceira inversão 4/2: intervalos de 6.ª, 4.ª e 2.ª acima do baixo. Estas cifras abreviadas indicam ao intérprete, de imediato, que nota do acorde está no baixo (a inversão); o espaçamento das vozes superiores fica ao critério de quem toca.',
           tryThisLabel: 'Ouve Cmaj7 na primeira inversão (6/5) — com E no baixo',
         },
         {
@@ -135,7 +135,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'A Sétima da Dominante e o Seu Trítono',
           explanation:
-            'O V7 é o acorde de sétima estruturalmente mais importante na música tonal. Em C maior, G7 contém as notas G-B-D-F. O trítono entre B e F é a fonte da sua tensão: B (a sensível) puxa para cima, para C, enquanto F (a sétima do acorde) puxa para baixo, para E. Esta dupla resolução em movimento contrário — a 5.a diminuta de B até F (a subir) a contrair-se para dentro, até à 3.a maior C–E (com F abaixo de B — a 4.a aumentada de F até B — expande-se para fora, até à 6.a menor E–C) — é o motor fundamental que impulsiona a harmonia tonal em direção à tónica.',
+            'O V7 é o acorde de sétima estruturalmente mais importante na música tonal. Em C maior, G7 contém as notas G-B-D-F. O trítono entre B e F é a fonte da sua tensão: B (a sensível) puxa para cima, para C, enquanto F (a sétima do acorde) puxa para baixo, para E. Esta dupla resolução em movimento contrário — a 5.ª diminuta de B até F (a subir) a contrair-se para dentro, até à 3.ª maior C–E (com F abaixo de B — a 4.ª aumentada de F até B — expande-se para fora, até à 6.ª menor E–C) — é o motor fundamental que impulsiona a harmonia tonal em direção à tónica.',
           tryThisLabel:
             'Ouve o trítono dentro de G7 — B e F exigem resolução',
         },
@@ -153,7 +153,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            "Toca 'G7' e depois 'Cmaj7' — ouve como a sétima da dominante resolve para a tónica. O trítono B-F (uma 5.a diminuta) fecha-se para dentro, até à 3.a maior C-E. Esta é a resolução V-I que define a harmonia ocidental",
+            "Toca 'G7' e depois 'Cmaj7' — ouve como a sétima da dominante resolve para a tónica. O trítono B-F (uma 5.ª diminuta) fecha-se para dentro, até à 3.ª maior C-E. Esta é a resolução V-I que define a harmonia ocidental",
         },
         {
           instruction:
@@ -176,7 +176,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'A Menor Harmónica Muda Tudo',
           explanation:
-            'A escala menor harmónica eleva o sétimo grau, criando qualidades de acordes de sétima dramaticamente diferentes em comparação com o modo maior. No 1.o grau, a tríade menor ganha uma sétima maior, produzindo o raro acorde menor com sétima maior: i(m\u03947). No 3.o grau, o sétimo grau elevado transforma a tríade maior numa tríade aumentada com sétima maior: III+maj7. Estas qualidades exóticas dão às tonalidades menores a sua tensão e escuridão características. (O meio-diminuto escreve-se m7b5 ou com o símbolo ⌀ — por isso iiø7 e Bm7b5 designam o mesmo acorde.)',
+            'A escala menor harmónica eleva o sétimo grau, criando qualidades de acordes de sétima dramaticamente diferentes em comparação com o modo maior. No 1.º grau, a tríade menor ganha uma sétima maior, produzindo o raro acorde menor com sétima maior: i(m\u03947). No 3.º grau, o sétimo grau elevado transforma a tríade maior numa tríade aumentada com sétima maior: III+maj7. Estas qualidades exóticas dão às tonalidades menores a sua tensão e escuridão características. (O meio-diminuto escreve-se m7b5 ou com o símbolo ⌀ — por isso iiø7 e Bm7b5 designam o mesmo acorde.)',
           tryThisLabel:
             'Vê A menor harmónica — a escala-fonte dos acordes de sétima em menor',
         },
@@ -205,7 +205,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            "Toca 'G#dim7' — o viio7 em A menor harmónica. Tal como Cdim7, é totalmente diminuto com intervalos de 3.a menor entre todas as notas. Funciona como uma dominante intensificada que pode substituir o V7 em tonalidades menores",
+            "Toca 'G#dim7' — o viio7 em A menor harmónica. Tal como Cdim7, é totalmente diminuto com intervalos de 3.ª menor entre todas as notas. Funciona como uma dominante intensificada que pode substituir o V7 em tonalidades menores",
         },
       ],
     },
@@ -242,7 +242,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'No papel, escreve uma tríade de C maior em SATB: Baixo C3, Tenor G3, Contralto E4, Soprano C5. Confirma que cada nota cabe na sua tessitura (as quatro cabem) e depois verifica as regras de espaçamento: intervalo soprano-contralto (6.a menor — inferior a uma oitava), contralto-tenor (6.a maior — inferior a uma oitava), tenor-baixo (5.a perfeita — o único par que pode exceder a oitava). Tudo válido.',
+            'No papel, escreve uma tríade de C maior em SATB: Baixo C3, Tenor G3, Contralto E4, Soprano C5. Confirma que cada nota cabe na sua tessitura (as quatro cabem) e depois verifica as regras de espaçamento: intervalo soprano-contralto (6.ª menor — inferior a uma oitava), contralto-tenor (6.ª maior — inferior a uma oitava), tenor-baixo (5.ª perfeita — o único par que pode exceder a oitava). Tudo válido.',
         },
         {
           instruction:
@@ -373,7 +373,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'O 6/4 Cadencial',
           explanation:
-            'O padrão mais importante de segunda inversão: I6/4 a resolver para V numa cadência. A 6.a e a 4.a acima do baixo funcionam como duplas apogiaturas que resolvem por grau descendente para a 5.a e a 3.a do V. Muitos teóricos analisam este acorde não como um acorde de tónica mas como uma dominante decorada — V com suspensões. Esta distinção importa: o 6/4 cadencial funciona como dominante, não como tónica, apesar da sua escrita.',
+            'O padrão mais importante de segunda inversão: I6/4 a resolver para V numa cadência. A 6.ª e a 4.ª acima do baixo funcionam como duplas apogiaturas que resolvem por grau descendente para a 5.ª e a 3.ª do V. Muitos teóricos analisam este acorde não como um acorde de tónica mas como uma dominante decorada — V com suspensões. Esta distinção importa: o 6/4 cadencial funciona como dominante, não como tónica, apesar da sua escrita.',
           tryThisLabel:
             'Ouve I6/4 em C maior (C/G) — numa cadência, o seu E e o seu C descem para D e B sobre o mesmo baixo G',
         },
@@ -408,21 +408,21 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'Cadências Autênticas — Perfeita e Imperfeita',
           explanation:
-            'A cadência perfeita (CAP) é V(7) para I, ambos em estado fundamental, com o soprano a terminar no 1.o grau da escala. É a chegada harmónica mais forte — um ponto final. A cadência imperfeita (CAI) também faz V para I mas enfraquece o fecho: um dos acordes pode estar invertido, ou o soprano termina na 3.a ou 5.a do I em vez da fundamental, ou o viio6 substitui o V (CAI de sensível). Uma CAI funciona como uma vírgula em vez de um ponto final.',
+            'A cadência perfeita (CAP) é V(7) para I, ambos em estado fundamental, com o soprano a terminar no 1.º grau da escala. É a chegada harmónica mais forte — um ponto final. A cadência imperfeita (CAI) também faz V para I mas enfraquece o fecho: um dos acordes pode estar invertido, ou o soprano termina na 3.ª ou 5.ª do I em vez da fundamental, ou o viio6 substitui o V (CAI de sensível). Uma CAI funciona como uma vírgula em vez de um ponto final.',
           tryThisLabel:
             'Ouve V7 em C maior — o ponto de partida das cadências autênticas',
         },
         {
           title: 'Cadências Suspensiva, Plagal e Interrompida',
           explanation:
-            'A cadência suspensiva termina no V — qualquer acorde que se move para a dominante. Soa como uma pergunta sem resposta, criando suspense nos limites das frases. A cadência plagal (IV para I) é a suave cadência do "Ámen", mais leve do que a autêntica. A cadência interrompida (V para vi) subverte a resolução esperada: vi partilha duas notas com I (em C maior, Am partilha C e E com o acorde de C), produzindo um quase-acerto que surpreende o ouvinte e prolonga a frase. Nas tonalidades menores, a cadência interrompida é V para VI — um acorde maior (p. ex., E7 para F em A menor). O VI continua a partilhar duas notas com o i (F-A-C e A-C-E partilham A e C), mas agora o baixo sobe apenas meio-tom (de E para F, do 5.o grau para o ♭6.o) e o acorde de chegada é maior, o que dá à cadência interrompida em menor uma surpresa mais calorosa e dramática do que a sua congénere em maior.',
+            'A cadência suspensiva termina no V — qualquer acorde que se move para a dominante. Soa como uma pergunta sem resposta, criando suspense nos limites das frases. A cadência plagal (IV para I) é a suave cadência do "Ámen", mais leve do que a autêntica. A cadência interrompida (V para vi) subverte a resolução esperada: vi partilha duas notas com I (em C maior, Am partilha C e E com o acorde de C), produzindo um quase-acerto que surpreende o ouvinte e prolonga a frase. Nas tonalidades menores, a cadência interrompida é V para VI — um acorde maior (p. ex., E7 para F em A menor). O VI continua a partilhar duas notas com o i (F-A-C e A-C-E partilham A e C), mas agora o baixo sobe apenas meio-tom (de E para F, do 5.º grau para o ♭6.º) e o acorde de chegada é maior, o que dá à cadência interrompida em menor uma surpresa mais calorosa e dramática do que a sua congénere em maior.',
           tryThisLabel:
             'Ouve a tónica — o destino das cadências autênticas e plagais',
         },
         {
           title: 'A Cadência Suspensiva Frígia',
           explanation:
-            'Característica das tonalidades menores: iv6 a resolver para V, com o baixo a descer por meio-tom do b6.o grau para o 5.o. Esta descida de meio-tom no baixo dá à cadência o seu nome — assemelha-se ao meio-tom descendente característico do modo frígio. Comum na música barroca, a cadência suspensiva frígia tem uma qualidade sombria e arcaica que nenhuma outra cadência replica.',
+            'Característica das tonalidades menores: iv6 a resolver para V, com o baixo a descer por meio-tom do b6.o grau para o 5.º. Esta descida de meio-tom no baixo dá à cadência o seu nome — assemelha-se ao meio-tom descendente característico do modo frígio. Comum na música barroca, a cadência suspensiva frígia tem uma qualidade sombria e arcaica que nenhuma outra cadência replica.',
           tryThisLabel:
             'Ouve iv6 — a aproximação à cadência suspensiva frígia em A menor',
         },
@@ -601,13 +601,13 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'Dois Métodos de Transposição',
           explanation:
-            'O método do intervalo: determina o intervalo entre a tonalidade original e a tonalidade de destino, depois desloca cada nota por esse mesmo intervalo. De C maior para Eb maior é uma 3.a menor ascendente, portanto cada nota sobe uma 3.a menor. O método da armação de clave: muda a armação de clave para a tonalidade de destino e ajusta quaisquer acidentes. Ambos produzem o mesmo resultado; o método do intervalo é mais fiável para passagens curtas.',
-          tryThisLabel: 'Vê Eb maior — C maior transposto uma 3.a menor acima',
+            'O método do intervalo: determina o intervalo entre a tonalidade original e a tonalidade de destino, depois desloca cada nota por esse mesmo intervalo. De C maior para Eb maior é uma 3.ª menor ascendente, portanto cada nota sobe uma 3.ª menor. O método da armação de clave: muda a armação de clave para a tonalidade de destino e ajusta quaisquer acidentes. Ambos produzem o mesmo resultado; o método do intervalo é mais fiável para passagens curtas.',
+          tryThisLabel: 'Vê Eb maior — C maior transposto uma 3.ª menor acima',
         },
         {
           title: 'Instrumentos Transpositores e Altura de Concerto',
           explanation:
-            'Alguns instrumentos soam uma altura diferente da que leem. O trompete em Bb e o clarinete em Bb soam uma 2.a maior abaixo do que está escrito — para soar C de concerto, leem D. O saxofone tenor, também em Bb, soa uma oitava e uma 2.a maior abaixo. Instrumentos em Eb, como o saxofone alto, soam uma 6.a maior abaixo (o mesmo nome de nota que uma 3.a menor acima, mas o som fica abaixo da nota escrita). Instrumentos em F (trompa) soam uma 5.a perfeita abaixo. A altura de concerto é a altura real que soa; todos os instrumentos alinham-se com ela quando a orquestra afina pelo A440.',
+            'Alguns instrumentos soam uma altura diferente da que leem. O trompete em Bb e o clarinete em Bb soam uma 2.ª maior abaixo do que está escrito — para soar C de concerto, leem D. O saxofone tenor, também em Bb, soa uma oitava e uma 2.ª maior abaixo. Instrumentos em Eb, como o saxofone alto, soam uma 6.ª maior abaixo (o mesmo nome de nota que uma 3.ª menor acima, mas o som fica abaixo da nota escrita). Instrumentos em F (trompa) soam uma 5.ª perfeita abaixo. A altura de concerto é a altura real que soa; todos os instrumentos alinham-se com ela quando a orquestra afina pelo A440.',
           tryThisLabel:
             'Vê Bb maior — o que um trompete em Bb soa quando lê C maior',
         },
@@ -623,7 +623,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            "Um trompete em Bb lê 'C major scale' mas produz o som de 'Bb major scale'. Abre ambas e verifica: cada nota que soa é uma 2.a maior abaixo da nota escrita. É por isto que as partes de trompete são escritas um tom acima da altura de concerto",
+            "Um trompete em Bb lê 'C major scale' mas produz o som de 'Bb major scale'. Abre ambas e verifica: cada nota que soa é uma 2.ª maior abaixo da nota escrita. É por isto que as partes de trompete são escritas um tom acima da altura de concerto",
         },
       ],
     },

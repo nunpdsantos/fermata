@@ -253,16 +253,16 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Constrói a tríade de {root} maior. Seleciona a fundamental, a 3.a maior (4 meios-tons) e a 5.a perfeita (7 meios-tons).',
+        'Constrói a tríade de {root} maior. Seleciona a fundamental, a 3.ª maior (4 meios-tons) e a 5.ª perfeita (7 meios-tons).',
       hintTemplate:
-        'Uma tríade maior = fundamental + 3.a maior (4 meios-tons acima) + 5.a perfeita (7 meios-tons acima). Começa em {root} e conta.',
+        'Uma tríade maior = fundamental + 3.ª maior (4 meios-tons acima) + 5.ª perfeita (7 meios-tons acima). Começa em {root} e conta.',
     },
     {
       // chord_build
       promptTemplate:
         'Constrói a tríade de {root} maior utilizando as notas da armação de clave.',
       hintTemplate:
-        'Tríade de {root} maior: fundamental ({root}), 3.a maior, 5.a perfeita. Lembra-te da armação de clave para encontrar as notas corretas.',
+        'Tríade de {root} maior: fundamental ({root}), 3.ª maior, 5.ª perfeita. Lembra-te da armação de clave para encontrar as notas corretas.',
     },
   ],
 };

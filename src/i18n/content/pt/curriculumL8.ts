@@ -43,7 +43,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         {
           title: 'Sujeito, Resposta e Contra-Sujeito',
           explanation:
-            'O sujeito é o tema principal da fuga, apresentado primeiro na tónica. Uma resposta real transpõe o sujeito exatamente para a dominante. Uma resposta tonal modifica o intervalo inicial para preservar a coerência tonal — tipicamente convertendo um salto inicial de tónica para dominante numa resposta de dominante para tónica (uma 5.a torna-se uma 4.a). As respostas tonais são usadas quando o sujeito apresenta de forma proeminente os graus 1 e 5. O contra-sujeito é uma linha melódica secundária escrita em contraponto invertível, de modo a funcionar corretamente quer seja colocada acima quer abaixo do sujeito. Um contra-sujeito bem elaborado complementa o sujeito em ritmo, contorno e conteúdo interválico.',
+            'O sujeito é o tema principal da fuga, apresentado primeiro na tónica. Uma resposta real transpõe o sujeito exatamente para a dominante. Uma resposta tonal modifica o intervalo inicial para preservar a coerência tonal — tipicamente convertendo um salto inicial de tónica para dominante numa resposta de dominante para tónica (uma 5.ª torna-se uma 4.ª). As respostas tonais são usadas quando o sujeito apresenta de forma proeminente os graus 1 e 5. O contra-sujeito é uma linha melódica secundária escrita em contraponto invertível, de modo a funcionar corretamente quer seja colocada acima quer abaixo do sujeito. Um contra-sujeito bem elaborado complementa o sujeito em ritmo, contorno e conteúdo interválico.',
           tryThisLabel: 'Vê a tonalidade da dominante onde a resposta entra',
         },
         {
@@ -121,7 +121,7 @@ const curriculumL8: CurriculumLevelOverlay = {
       title: 'Cânone e Outras Formas Imitativas',
       subtitle: 'Cânones a vários intervalos e tipos especiais',
       objectives: [
-        'Compreender o cânone a vários intervalos (uníssono, oitava, 5.a, 4.a, etc.)',
+        'Compreender o cânone a vários intervalos (uníssono, oitava, 5.ª, 4.ª, etc.)',
         'Reconhecer tipos especiais de cânone (inversão, retrogradação, aumentação/diminuição)',
         'Distinguir entre cânone estrito e imitação livre',
       ],
@@ -152,7 +152,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Ouve o cânone das Variações Goldberg de Bach (uma em cada três variações é um cânone). Compara o Cânone ao Uníssono (Var. 3), o Cânone à 2.a (Var. 6) e o Cânone à 3.a (Var. 9). Como é que o intervalo canónico afeta o carácter?',
+            'Ouve o cânone das Variações Goldberg de Bach (uma em cada três variações é um cânone). Compara o Cânone ao Uníssono (Var. 3), o Cânone à 2.ª (Var. 6) e o Cânone à 3.ª (Var. 9). Como é que o intervalo canónico afeta o carácter?',
         },
         {
           instruction:
@@ -292,7 +292,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Um clarinete em Bb toca um D escrito. Que altura soa a altura de concerto? (Resposta: C — uma 2.a maior abaixo.) Agora: uma trompa em F toca um G escrito. Que altura de concerto soa? (Resposta: C — uma 5.a perfeita abaixo.)',
+            'Um clarinete em Bb toca um D escrito. Que altura soa a altura de concerto? (Resposta: C — uma 2.ª maior abaixo.) Agora: uma trompa em F toca um G escrito. Que altura de concerto soa? (Resposta: C — uma 5.ª perfeita abaixo.)',
         },
         {
           instruction:
@@ -515,7 +515,7 @@ const curriculumL8: CurriculumLevelOverlay = {
           title: 'Modulação Métrica e Ritmo Aditivo',
           explanation:
             'A modulação métrica (técnica assinatura de Elliott Carter) usa um valor rítmico partilhado como pivot entre tempos com precisão matemática. Se as colcheias em tercina no tempo antigo se tornam colcheias regulares no novo tempo, o novo tempo é exatamente 3/2 do antigo. Modulações baseadas em quintinas produzem razões 5:4; a técnica encadeia-se para percorrer múltiplos tempos. Os ritmos aditivos constroem padrões a partir de agrupamentos desiguais — 2+2+3, 3+2+2+3 — produzindo metros assimétricos centrais na música balcânica (aksak), em Bartok, Stravinsky e rock progressivo. As fórmulas de compasso irracionais (p. ex., 4/3, 5/6) estendem esta lógica ainda mais, especificando relações de tempo em vez de divisões tradicionais de pulso.',
-          tryThisLabel: 'Toca o modo Dórico — experimenta acentuar cada 5.a nota',
+          tryThisLabel: 'Toca o modo Dórico — experimenta acentuar cada 5.ª nota',
         },
       ],
       tasks: [

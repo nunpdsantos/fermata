@@ -88,13 +88,13 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica el acorde de sensible secundaria y su resolución.',
       hintTemplate:
-        'Los acordes de sensible secundaria (viiº/x) funcionan como dominantes secundarias pero son disminuidos. Resuelven medio tono arriba hacia el acorde objetivo.',
+        'Los acordes de sensible secundaria (vii°/x) funcionan como dominantes secundarias pero son disminuidos. Resuelven medio tono arriba hacia el acorde objetivo.',
       choiceSets: [
         [
-          'viiº7/V en C mayor es F#dim7, que resuelve hacia G',
-          'viiº7/V en C mayor es Bdim7',
-          'viiº7/V resuelve descendiendo hacia F',
-          'viiº7/V es lo mismo que V/V',
+          'vii°7/V en C mayor es F#dim7, que resuelve hacia G',
+          'vii°7/V en C mayor es Bdim7',
+          'vii°7/V resuelve descendiendo hacia F',
+          'vii°7/V es lo mismo que V/V',
         ],
         [
           'Los acordes de sensible secundaria tienen la fundamental medio tono por debajo del acorde objetivo',
@@ -103,10 +103,10 @@ const overlay: TemplateLevelOverlay = {
           'La posición de la fundamental es aleatoria',
         ],
         [
-          'viiº/x puede ser tanto una tríada disminuida como un acorde de séptima totalmente disminuida',
-          'viiº/x es siempre un acorde mayor',
-          'viiº/x es siempre un acorde de séptima menor',
-          'viiº/x tiene que ser un acorde semidisminuido',
+          'vii°/x puede ser tanto una tríada disminuida como un acorde de séptima totalmente disminuida',
+          'vii°/x es siempre un acorde mayor',
+          'vii°/x es siempre un acorde de séptima menor',
+          'vii°/x tiene que ser un acorde semidisminuido',
         ],
       ],
     },

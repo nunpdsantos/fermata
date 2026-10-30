@@ -15,7 +15,7 @@ const overlay: ExerciseLevelOverlay = {
   l5u15m1e1: {
     prompt:
       'Constrói V/V em C maior. A dominante secundária de V é uma tríade de D maior. Seleciona as 3 notas: D, F#, A.',
-    hint: 'V/V em C significa "o acorde V de G maior". A dominante de G é D maior: D (2), F# (6), A (9). O F# é cromático -- não pertence a C maior.',
+    hint: 'V/V em C significa "o acorde V de G maior". A dominante de G é D maior: D (2), F# (6), A (9). O F# é cromático — não pertence a C maior.',
   },
   l5u15m1e2: {
     prompt:
@@ -38,22 +38,22 @@ const overlay: ExerciseLevelOverlay = {
   l5u15m2e1: {
     prompt: 'Em C maior, que acorde funciona como V/ii?',
     choices: [
-      'A maior (A, C#, E) -- a dominante de D menor',
-      'G maior (G, B, D) -- a dominante de C',
-      'E maior (E, G#, B) -- a dominante de A menor',
-      'F maior (F, A, C) -- a subdominante',
+      'A maior (A, C#, E) — a dominante de D menor',
+      'G maior (G, B, D) — a dominante de C',
+      'E maior (E, G#, B) — a dominante de A menor',
+      'F maior (F, A, C) — a subdominante',
     ],
     hint: 'Em C maior, ii é D menor. A dominante de D menor é A maior (A, C#, E). O C# é a nota cromática que cria a sensível de D.',
   },
   l5u15m2e2: {
     prompt: 'Em C maior, que acorde funciona como V/IV?',
     choices: [
-      'C maior (C, E, G) -- a dominante de F',
-      'G maior (G, B, D) -- a dominante de C',
-      'Bb maior (Bb, D, F) -- emprestado de C menor',
-      'D maior (D, F#, A) -- a dominante de G',
+      'C maior (C, E, G) — a dominante de F',
+      'G maior (G, B, D) — a dominante de C',
+      'Bb maior (Bb, D, F) — emprestado de C menor',
+      'D maior (D, F#, A) — a dominante de G',
     ],
-    hint: 'V/IV significa a dominante de IV. Em C maior, IV é F. A dominante de F é C maior. Isto é invulgar porque C maior já é a tónica -- o contexto determina se funciona como I ou V/IV.',
+    hint: 'V/IV significa a dominante de IV. Em C maior, IV é F. A dominante de F é C maior. Isto é invulgar porque C maior já é a tónica — o contexto determina se funciona como I ou V/IV.',
   },
   l5u15m2e3: {
     prompt: 'O que define uma dominante aplicada (secundária)?',
@@ -88,16 +88,16 @@ const overlay: ExerciseLevelOverlay = {
       'O meio-diminuto é usado apenas em tonalidades maiores; o totalmente diminuto apenas em menores',
       'Não há diferença; são o mesmo acorde',
     ],
-    hint: 'Ambos têm uma tríade diminuta (fundamental, 3.a menor, 5.a diminuta). A sétima difere: meio-dim tem sétima menor (10 meios-tons), totalmente dim tem sétima diminuta (9 meios-tons). O totalmente diminuto é mais comum como acorde de sensível secundária.',
+    hint: 'Ambos têm uma tríade diminuta (fundamental, 3.ª menor, 5.ª diminuta). A sétima difere: meio-dim tem sétima menor (10 meios-tons), totalmente dim tem sétima diminuta (9 meios-tons). O totalmente diminuto é mais comum como acorde de sensível secundária.',
   },
   l5u15m3e3: {
     prompt:
       'Em C maior, qual é o acorde alvo para o qual viio/V resolve?',
     choices: [
-      'G maior (V) -- o viio/V resolve meio-tom acima para a dominante',
-      'C maior (I) -- resolve para a tónica',
-      'F maior (IV) -- resolve para a subdominante',
-      'D menor (ii) -- resolve para a sobretónica',
+      'G maior (V) — o viio/V resolve meio-tom acima para a dominante',
+      'C maior (I) — resolve para a tónica',
+      'F maior (IV) — resolve para a subdominante',
+      'D menor (ii) — resolve para a sobretónica',
     ],
     hint: 'O "/V" indica-te o alvo: V. Em C maior, V é G. viio/V é F# diminuto (F#, A, C), e o F# resolve meio-tom acima para G, a fundamental do acorde alvo.',
   },
@@ -128,7 +128,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Quando uma tonicização se prolonga por vários compassos mas não estabelece totalmente a nova tonalidade, como se chama?',
     choices: [
-      'Uma tonicização prolongada -- mais longa do que um único acorde mas sem confirmação cadencial completa na nova tonalidade',
+      'Uma tonicização prolongada — mais longa do que um único acorde mas sem confirmação cadencial completa na nova tonalidade',
       'Uma modulação por acorde pivot',
       'Uma cadência interrompida',
       'Uma sequência cromática',
@@ -190,10 +190,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Ao modular de C maior para G maior, que acorde poderia servir como pivot?',
     choices: [
-      'E menor -- é iii em C maior e vi em G maior',
-      'F maior -- é IV em C maior e não é diatónico em G maior',
-      'Bb maior -- é emprestado de C menor',
-      'F# diminuto -- sinaliza a nova tonalidade',
+      'E menor — é iii em C maior e vi em G maior',
+      'F maior — é IV em C maior e não é diatónico em G maior',
+      'Bb maior — é emprestado de C menor',
+      'F# diminuto — sinaliza a nova tonalidade',
     ],
     hint: 'Encontra acordes comuns a ambas as tonalidades. C maior: C Dm Em F G Am Bdim. G maior: G Am Bm C D Em F#dim. Acordes partilhados incluem C, Em, Am, G. Em, como iii/vi, é uma escolha forte de pivot.',
   },
@@ -213,10 +213,10 @@ const overlay: ExerciseLevelOverlay = {
   l5u16m2e1: {
     prompt: 'Quantas tonalidades próximas tem uma tonalidade maior?',
     choices: [
-      '5 -- as tonalidades cujas armações diferem no máximo em um sustenido ou bemol',
-      '2 -- apenas a dominante e a subdominante',
-      '12 -- todas as tonalidades são próximas',
-      '3 -- a relativa menor, a dominante e a subdominante',
+      '5 — as tonalidades cujas armações diferem no máximo em um sustenido ou bemol',
+      '2 — apenas a dominante e a subdominante',
+      '12 — todas as tonalidades são próximas',
+      '3 — a relativa menor, a dominante e a subdominante',
     ],
     hint: 'Tonalidades próximas diferem no máximo em um acidente nas suas armações de clave. Para C maior: G maior (+1#), F maior (+1b), A menor (relativa), E menor (rel. de G), D menor (rel. de F). Isso dá 5 tonalidades próximas.',
   },
@@ -327,7 +327,7 @@ const overlay: ExerciseLevelOverlay = {
       'Qual dos seguintes é um exemplo de mistura modal numa tonalidade menor?',
     choices: [
       'Usar um acorde IV maior numa tonalidade menor, emprestado do maior paralelo',
-      'Usar o acorde V numa tonalidade menor (que requer o 7.o grau elevado da menor harmónica)',
+      'Usar o acorde V numa tonalidade menor (que requer o 7.º grau elevado da menor harmónica)',
       'Modular para a relativa maior',
       'Usar uma dominante secundária para tonicizar a dominante',
     ],
@@ -410,7 +410,7 @@ const overlay: ExerciseLevelOverlay = {
   l5u17m3e1: {
     prompt: 'O que é textura monofónica?',
     choices: [
-      'Uma única linha melódica sem acompanhamento nem harmonia -- uma voz, uma altura de cada vez',
+      'Uma única linha melódica sem acompanhamento nem harmonia — uma voz, uma altura de cada vez',
       'Uma melodia com acompanhamento de acordes por baixo',
       'Múltiplas melodias independentes a soar em simultâneo',
       'Um instrumento solo a tocar acordes',
@@ -443,12 +443,12 @@ const overlay: ExerciseLevelOverlay = {
   l5u17m4e1: {
     prompt: 'O que são notas-guia?',
     choices: [
-      'A 3.a e a 7.a de cada acorde, que definem a sua qualidade e criam condução de vozes suave entre acordes',
-      'A fundamental e a 5.a de cada acorde',
+      'A 3.ª e a 7.ª de cada acorde, que definem a sua qualidade e criam condução de vozes suave entre acordes',
+      'A fundamental e a 5.ª de cada acorde',
       'As notas da melodia que caem nos tempos fortes',
       'Notas cromáticas de passagem entre notas do acorde',
     ],
-    hint: 'As notas-guia (3.as e 7.as) são as notas harmonicamente mais definidoras de um acorde. A fundamental e a 5.a são estruturalmente importantes mas genéricas; a 3.a determina maior/menor e a 7.a determina o tipo de acorde.',
+    hint: 'As notas-guia (3.as e 7.as) são as notas harmonicamente mais definidoras de um acorde. A fundamental e a 5.ª são estruturalmente importantes mas genéricas; a 3.ª determina maior/menor e a 7.ª determina o tipo de acorde.',
   },
   l5u17m4e2: {
     prompt:
@@ -459,7 +459,7 @@ const overlay: ExerciseLevelOverlay = {
       'As notas-guia mantêm-se nas mesmas notas ao longo dos três acordes',
       'As notas-guia seguem exatamente a linha do baixo',
     ],
-    hint: 'Notas-guia de Dm7: F (3.a), C (7.a). Para G7: F mantém-se como nota comum e torna-se a 7.a, enquanto C desce meio-tom para B, a 3.a. Para Cmaj7: B mantém-se e torna-se a 7.a, enquanto F desce meio-tom para E, a 3.a. Movimento mínimo = condução de vozes suave.',
+    hint: 'Notas-guia de Dm7: F (3.ª), C (7.ª). Para G7: F mantém-se como nota comum e torna-se a 7.ª, enquanto C desce meio-tom para B, a 3.ª. Para Cmaj7: B mantém-se e torna-se a 7.ª, enquanto F desce meio-tom para E, a 3.ª. Movimento mínimo = condução de vozes suave.',
   },
   l5u17m4e3: {
     prompt:

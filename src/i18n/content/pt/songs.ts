@@ -73,7 +73,7 @@ const overlay: SongOverlay = {
   ],
   'l2u4m2': [
     'A melodia segue o movimento 1–1–5–5–6–6–5, delineando claramente os graus de tónica, dominante e submediante.',
-    'Contém movimentos proeminentes do 5.o grau (dominante) e do 1.o grau (tónica) — um exemplo natural de graus funcionais.',
+    'Contém movimentos proeminentes do 5.º grau (dominante) e do 1.º grau (tónica) — um exemplo natural de graus funcionais.',
   ],
 
   // ---- L2U5: Escalas Menores e Relações entre Tonalidades ----
@@ -84,7 +84,7 @@ const overlay: SongOverlay = {
   ],
   'l2u5m2': [
     'Utiliza a escala menor harmónica — a segunda aumentada entre o b6 e o #7 confere-lhe a sua sonoridade distintiva.',
-    'O uso de E maior (V) sobre uma tonalidade de A menor implica a menor harmónica, com o 7.o grau elevado (G#) a criar uma forte atração de volta à tónica.',
+    'O uso de E maior (V) sobre uma tonalidade de A menor implica a menor harmónica, com o 7.º grau elevado (G#) a criar uma forte atração de volta à tónica.',
   ],
   'l2u5m3': [
     'Começa em A menor (relativa menor de C maior), modulando depois — uma relação clássica entre tonalidades relativas.',
@@ -107,7 +107,7 @@ const overlay: SongOverlay = {
 
   'l2u7m1': [
     'Abre com um salto de quarta perfeita, e a melodia delineia intervalos maiores e menores ao longo da peça.',
-    'A figura inicial de quatro notas (C–E–F–G) começa com um salto brilhante de terça maior — uma das referências clássicas de treino auditivo para identificar o intervalo de 3.a maior.',
+    'A figura inicial de quatro notas (C–E–F–G) começa com um salto brilhante de terça maior — uma das referências clássicas de treino auditivo para identificar o intervalo de 3.ª maior.',
   ],
   'l2u7m2': [
     'Abre com uma quarta aumentada (trítono) — o "intervalo do diabo" utilizado para efeito dramático.',

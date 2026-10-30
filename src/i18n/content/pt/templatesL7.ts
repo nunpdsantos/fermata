@@ -131,7 +131,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói um acorde de sétima menor sobre {root} — o som ii7 de uma progressão ii-V-I.',
       hintTemplate:
-        'Um ii7 é um acorde de sétima menor sobre {root}: fundamental + 3.a menor + 5.a perfeita + 7.a menor. No jazz, a ii-V-I é a progressão mais fundamental.',
+        'Um ii7 é um acorde de sétima menor sobre {root}: fundamental + 3.ª menor + 5.ª perfeita + 7.ª menor. No jazz, a ii-V-I é a progressão mais fundamental.',
     },
     {
       // multiple_choice
@@ -292,7 +292,7 @@ const overlay: TemplateLevelOverlay = {
           'Um vamp em D dórico (Dm7 - G7) enfatiza a sexta natural (B natural sobre D)',
           'D dórico usa Bb',
           'Os vamps em D dórico usam apenas um acorde',
-          'Os vamps dóricos evitam o 6.o grau',
+          'Os vamps dóricos evitam o 6.º grau',
         ],
         [
           'O frígio caracteriza-se pelo intervalo de b2, dando-lhe um sabor espanhol/flamenco',
@@ -479,7 +479,7 @@ const overlay: TemplateLevelOverlay = {
           'Não existem notas a evitar em nenhuma escala',
         ],
         [
-          'O lócrio, ou o lócrio com 2.a natural (modo 6 da menor melódica), é a escala para acordes semidiminutos (m7b5)',
+          'O lócrio, ou o lócrio com 2.ª natural (modo 6 da menor melódica), é a escala para acordes semidiminutos (m7b5)',
           'O dórico é usado para acordes semidiminutos',
           'O mixolídio é usado para acordes semidiminutos',
           'Os acordes semidiminutos não têm escala associada',
@@ -495,10 +495,10 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica esta escala ou o seu contexto cultural.',
       hintTemplate:
-        'A menor harmónica tem um som "exótico" devido à segunda aumentada. O frígio dominante (5.o modo da menor harmónica) é usado no flamenco e na música do Médio Oriente.',
+        'A menor harmónica tem um som "exótico" devido à segunda aumentada. O frígio dominante (5.º modo da menor harmónica) é usado no flamenco e na música do Médio Oriente.',
       choiceSets: [
         [
-          'A escala frígio dominante (1-b2-3-4-5-b6-b7) é o 5.o modo da menor harmónica',
+          'A escala frígio dominante (1-b2-3-4-5-b6-b7) é o 5.º modo da menor harmónica',
           'O frígio dominante é igual ao frígio normal',
           'O frígio dominante tem uma terça menor',
           'O frígio dominante é uma escala de tons inteiros',

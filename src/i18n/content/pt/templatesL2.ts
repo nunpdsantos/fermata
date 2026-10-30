@@ -106,16 +106,16 @@ const overlay: TemplateLevelOverlay = {
     {
       // scale_build (harmonic)
       promptTemplate:
-        'Constrói a escala de {root} menor harmónica. O 7.o grau é elevado em relação à menor natural.',
+        'Constrói a escala de {root} menor harmónica. O 7.º grau é elevado em relação à menor natural.',
       hintTemplate:
-        'Menor harmónica = menor natural com o 7.o grau elevado. Isso cria uma sensível a meio-tom abaixo da tónica {root}.',
+        'Menor harmónica = menor natural com o 7.º grau elevado. Isso cria uma sensível a meio-tom abaixo da tónica {root}.',
     },
     {
       // scale_build (melodic)
       promptTemplate:
-        'Constrói a escala de {root} menor melódica (forma ascendente). Tanto o 6.o como o 7.o grau são elevados.',
+        'Constrói a escala de {root} menor melódica (forma ascendente). Tanto o 6.º como o 7.º grau são elevados.',
       hintTemplate:
-        'Menor melódica ascendente = menor natural com o 6.o e 7.o graus elevados. Isso elimina a 2.a aumentada presente na menor harmónica.',
+        'Menor melódica ascendente = menor natural com o 6.º e 7.º graus elevados. Isso elimina a 2.ª aumentada presente na menor harmónica.',
     },
   ],
 
@@ -155,7 +155,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Tonalidades paralelas partilham a mesma tónica mas diferem na qualidade',
           'Tonalidades paralelas partilham a mesma armação de clave',
-          'Tonalidades paralelas estão sempre a uma 5.a de distância',
+          'Tonalidades paralelas estão sempre a uma 5.ª de distância',
           'Tonalidades paralelas usam as mesmas notas',
         ],
       ],
@@ -272,25 +272,25 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Responde a esta pergunta sobre inversões de acordes e notação de baixo cifrado.',
       hintTemplate:
-        'Estado fundamental = 5/3. 1.a inversão = 6/3 (6). 2.a inversão = 6/4. A nota do baixo determina a inversão.',
+        'Estado fundamental = 5/3. 1.ª inversão = 6/3 (6). 2.ª inversão = 6/4. A nota do baixo determina a inversão.',
       choiceSets: [
         [
-          'Na 2.a inversão, a 5.a do acorde está no baixo',
-          'Na 2.a inversão, a 3.a do acorde está no baixo',
-          'Na 2.a inversão, a fundamental está no baixo',
-          'Na 2.a inversão, a 7.a está no baixo',
+          'Na 2.ª inversão, a 5.ª do acorde está no baixo',
+          'Na 2.ª inversão, a 3.ª do acorde está no baixo',
+          'Na 2.ª inversão, a fundamental está no baixo',
+          'Na 2.ª inversão, a 7.ª está no baixo',
         ],
         [
-          'Um acorde C/E é C maior em 1.a inversão',
+          'Um acorde C/E é C maior em 1.ª inversão',
           'Um acorde C/E é E maior em estado fundamental',
-          'Um acorde C/E é C maior em 2.a inversão',
+          'Um acorde C/E é C maior em 2.ª inversão',
           'Um acorde C/E é um acorde de E menor',
         ],
         [
-          'Baixo cifrado 6/4 indica 2.a inversão',
+          'Baixo cifrado 6/4 indica 2.ª inversão',
           'Baixo cifrado 6/4 indica estado fundamental',
-          'Baixo cifrado 6/4 indica 1.a inversão',
-          'Baixo cifrado 6/4 indica um acorde de 7.a',
+          'Baixo cifrado 6/4 indica 1.ª inversão',
+          'Baixo cifrado 6/4 indica um acorde de 7.ª',
         ],
         [
           'O 6/4 cadencial funciona como ornamentação da dominante',
