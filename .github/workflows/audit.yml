@@ -8,7 +8,7 @@ on:
 
 jobs:
   audit:
-    name: Lint, type-check, tests, content audit
+    name: Lint, types, tests + coverage, audits, build, browser tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,12 +20,30 @@ jobs:
       - name: Lint
         run: npm run lint
       - name: Type-check
-        run: npx tsc -b --noEmit
-      - name: Unit tests
-        run: npm run test
+        # --force: the incremental cache can report a false "clean" (CLAUDE.md).
+        run: npx tsc -b --force
+      - name: Unit tests with coverage thresholds
+        # Thresholds in vitest.config.ts are enforced only under --coverage.
+        run: npx vitest run --coverage
+      # The three content audits exit non-zero on any finding (engine: any
+      # non-INFO finding) — they used to exit 0 whatever they found.
       - name: Engine audit
         run: npm run audit:engine
       - name: Hand-authored exercise audit
         run: npm run audit:exercises
       - name: Generated exercise audit
         run: npm run audit:generated
+      - name: Production build
+        run: npm run build
+      - name: Bundle budget (entry < 500 kB, ts-fsrs out of entry, CSP hash of inline scripts)
+        run: npm run check:bundle
+      - name: Offline coverage (every chunk precached or runtime-cached; precache closure)
+        run: npm run check:sw
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Browser tests (dev server)
+        run: npx playwright test
+      - name: Browser tests (production build via vite preview, production CSP)
+        # pwa.spec.ts and theme-prepaint.spec.ts only run here: the dev server
+        # has no service worker, no manifest and no CSP.
+        run: npx playwright test -c playwright.preview.config.ts

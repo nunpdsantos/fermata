@@ -729,4 +729,11 @@ for (const sev of ['critical', 'serious', 'minor', 'info'] as const) {
 void NATURAL_TO_PITCH_CLASS; void PITCH_CLASS_SPELLINGS;
 void getDiatonicTriads; void getDiatonicTriadsMinor;
 
-process.exit(0);
+// Exit non-zero on any non-INFO finding (audit W9-07: this exited 0 whatever
+// it found, so CI could never fail on it). INFO notes (the four accepted
+// enharmonic respellings) are the expected steady state.
+const blocking = findings.filter((f) => f.severity !== 'info').length;
+if (blocking > 0) {
+  console.error(`ENGINE AUDIT FAILED: ${blocking} non-info finding(s).`);
+}
+process.exit(blocking > 0 ? 1 : 0);

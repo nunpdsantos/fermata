@@ -27,13 +27,15 @@ export default defineConfig({
         'src/main.tsx',
         'src/test/**',
       ],
-      // Ratcheted from the 2026-07-24 baseline (69.2/60.2/66.8/70.9) — raise
-      // these as coverage grows; never lower them (audit R-02).
+      // Ratcheted from the 2026-07-24 baseline (69.2/60.2/66.8/70.9) and again
+      // on 2026-10-30 (W9: 80.4/73.4/78.3/82.5, ~2 points of headroom) — raise
+      // these as coverage grows; never lower them (audit R-02). CI enforces
+      // them (`npx vitest run --coverage`, audit W9-07).
       thresholds: {
-        statements: 68,
-        branches: 59,
-        functions: 65,
-        lines: 69,
+        statements: 78,
+        branches: 71,
+        functions: 76,
+        lines: 80,
       },
     },
   },
