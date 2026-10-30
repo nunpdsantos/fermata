@@ -3118,6 +3118,39 @@ export function getChordShapesWithFallback(
   return genClean;
 }
 
+// ── Default order (what the fretboard shows first) ────────────────────────────
+
+/** Absolute fret of the lowest FRETTED note (0 for an all-open shape). */
+function lowestFrettedFret({ shape, baseFret }: { shape: ChordShape; baseFret: number }): number {
+  // Transposed open shapes encode the barre as open strings + baseFret, so
+  // filter on the absolute fret, not the shape-relative one.
+  let min = Infinity;
+  for (const pos of shape.strings) {
+    if (pos.fret !== null) {
+      const abs = baseFret + pos.fret;
+      if (abs > 0) min = Math.min(min, abs);
+    }
+  }
+  return min === Infinity ? 0 : min;
+}
+
+/**
+ * The C-shape and G-shape major barres are real but harder grips; they are
+ * offered, never the default (review #1, W3: restoring them must not change
+ * the default for Db or Ab major from the A-/E-shape barre).
+ */
+const OFFERED_NOT_DEFAULT = new Set(['C-shape Barre', 'G-shape Barre']);
+
+/**
+ * Order shapes for display: nut-closest first, so the default is the
+ * familiar voicing (Cm → the A-shape barre at fret 3, not one at fret 8),
+ * with the C-/G-shape barres after every other shape. Stable otherwise.
+ */
+export function sortShapesForDefault<T extends { shape: ChordShape; baseFret: number }>(shapes: T[]): T[] {
+  const rank = (e: T) => (OFFERED_NOT_DEFAULT.has(e.shape.name) ? 1 : 0);
+  return [...shapes].sort((a, b) => rank(a) - rank(b) || lowestFrettedFret(a) - lowestFrettedFret(b));
+}
+
 // ── Requested bass: inversions and slash chords (audit W3-11) ────────────────
 
 /** Pitch class of the lowest sounding string of a placed shape (standard tuning). */

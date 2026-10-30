@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { getTuningById, getTuningPitchClasses, getTuningStringLabels, GUITAR_TUNINGS } from '../../core/constants/guitarTunings.ts';
 import type { GuitarTuning } from '../../core/constants/guitarTunings.ts';
 import { midiToNote } from '../../core/utils/pianoLayout.ts';
-import { getChordShapesWithFallback, arrangeShapesForBass } from '../../core/constants/guitarChordShapes.ts';
+import { getChordShapesWithFallback, arrangeShapesForBass, sortShapesForDefault } from '../../core/constants/guitarChordShapes.ts';
 import type { FingerNumber } from '../../core/constants/guitarChordShapes.ts';
 import {
   getGuitarPosition,
@@ -76,23 +76,9 @@ export function Fretboard() {
   // ─── Chord shapes (standard tuning only) ─────────────
   const { chordShapes, bassMatched } = useMemo(() => {
     if (exerciseInputActive || !selectedChord || !isStandardTuning) return { chordShapes: [], bassMatched: true };
-    // Sort nut-closest first so the DEFAULT voicing is the familiar one
-    // (Cm defaults to the A-shape barre at fret 3, not a barre at fret 8).
-    const shapes = getChordShapesWithFallback(selectedChord);
-    const positionOf = ({ shape, baseFret }: (typeof shapes)[number]) => {
-      // Absolute fret of the lowest FRETTED note. Transposed open shapes
-      // encode the barre as open strings + baseFret, so filter on the
-      // absolute fret, not the shape-relative one.
-      let min = Infinity;
-      for (const pos of shape.strings) {
-        if (pos.fret !== null) {
-          const abs = baseFret + pos.fret;
-          if (abs > 0) min = Math.min(min, abs);
-        }
-      }
-      return min === Infinity ? 0 : min;
-    };
-    const sorted = [...shapes].sort((a, b) => positionOf(a) - positionOf(b));
+    // Nut-closest first so the DEFAULT voicing is the familiar one (Cm → the
+    // A-shape barre at fret 3), C-/G-shape barres offered after the rest.
+    const sorted = sortShapesForDefault(getChordShapesWithFallback(selectedChord));
     // Put a shape with the requested bass first (or say it can't be done).
     const arranged = arrangeShapesForBass(
       sorted,
