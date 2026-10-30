@@ -147,6 +147,13 @@ function parseQualityString(q: string): ChordQuality | null {
 
   // === Case-sensitive checks (M = major, Δ = major) ===
   // These MUST run before lowercasing, because M → m would match minor.
+  // Classical seventh-chord labels (triad quality + seventh quality, audit
+  // W9-27): MM7 major-major = major 7th, Mm7 major-minor = dominant 7th,
+  // mm7 minor-minor = minor 7th. Lowercased, all three collapsed to the
+  // minor-major 7th; mM7 (minor triad + major 7th) stays minor-major below.
+  if (raw === 'MM7') return 'major7';
+  if (raw === 'Mm7') return 'dominant7';
+  if (raw === 'mm7') return 'minor7';
   if (raw === 'M') return 'major';
   if (raw === 'M6') return 'major6'; // capital M = major; lowercased it would collide with m6 (minor6)
   if (raw === 'M7' || raw === 'Δ7' || raw === 'Δ') return 'major7';
@@ -183,9 +190,10 @@ function parseQualityString(q: string): ChordQuality | null {
 
   // === MINOR-MAJOR 7 (must check before minor 7) ===
   // Patterns: mMaj7, m(maj7), minmaj7, mmaj7, -maj7, -M7, m/maj7
+  // (Every case of "mm7" is decided above: MM7, Mm7, mm7 are classical labels
+  // and mM7 is the minor-major 7th, so no lowercase 'mm7' rule is needed.)
   if (
     /^m(in)?(or)?\(?maj7?\)?$/.test(s) ||
-    s === 'mm7' ||
     s === 'mmaj7' ||
     s === '-maj7' ||
     s === '-m7' ||
@@ -294,12 +302,14 @@ function parseQualityString(q: string): ChordQuality | null {
   }
 
   // === MINOR VARIATIONS ===
-  if (s === 'm' || s === 'min' || s === 'minor' || s === '-') return 'minor';
+  // "mi" (a common lead-sheet abbreviation) is explicit so it never depends on
+  // the lenient algorithmic path (audit W9-28: "C𝄪mi" parsed as C major).
+  if (s === 'm' || s === 'min' || s === 'minor' || s === '-' || s === 'mi') return 'minor';
   if (s === 'm7' || s === 'min7' || s === 'minor7' || s === '-7' || s === 'mi7') return 'minor7';
-  if (s === 'm9' || s === 'min9' || s === 'minor9' || s === '-9') return 'minor9';
-  if (s === 'm11' || s === 'min11' || s === 'minor11' || s === '-11') return 'minor11';
-  if (s === 'm13' || s === 'min13' || s === 'minor13' || s === '-13') return 'minor13';
-  if (s === 'm6' || s === 'min6' || s === 'minor6' || s === '-6') return 'minor6';
+  if (s === 'm9' || s === 'min9' || s === 'minor9' || s === '-9' || s === 'mi9') return 'minor9';
+  if (s === 'm11' || s === 'min11' || s === 'minor11' || s === '-11' || s === 'mi11') return 'minor11';
+  if (s === 'm13' || s === 'min13' || s === 'minor13' || s === '-13' || s === 'mi13') return 'minor13';
+  if (s === 'm6' || s === 'min6' || s === 'minor6' || s === '-6' || s === 'mi6') return 'minor6';
   if (s === 'm6/9' || s === 'm69' || s === 'min69' || s === 'minor69') return 'minor_six_nine';
 
   // === DOMINANT 7 AND EXTENSIONS ===
@@ -480,6 +490,22 @@ function parseQualityString(q: string): ChordQuality | null {
 }
 
 /**
+ * Fold glyph variants to the forms the rest of the parser understands.
+ *  - 𝄪 (U+1D12A) / 𝄫 (U+1D12B) → ## / bb. The downstream root regexes take
+ *    ASCII double accidentals, but the algorithmic builder read one unicode
+ *    double accidental as junk (audit W9-28: "C𝄪mi" → C major + C).
+ *  - ∆ (U+2206 INCREMENT, what a Mac keyboard types) and △ (U+25B3 WHITE
+ *    UP-POINTING TRIANGLE) → Δ (U+0394), the major-7th triangle already
+ *    supported (audit W9-29).
+ */
+function normalizeGlyphs(input: string): string {
+  return input
+    .replace(/\u{1D12A}/gu, '##')
+    .replace(/\u{1D12B}/gu, 'bb')
+    .replace(/[\u2206\u25B3]/g, '\u0394');
+}
+
+/**
  * Normalize written words to symbols
  * "G7sharp5flat9" -> "G7#5b9"
  * "Cdiminished7" -> "Cdim7"
@@ -533,7 +559,7 @@ export function parseChordSymbol(input: string): ParsedChord | null {
   if (input.length === 0 || input.length > 50) return null;
 
   // First, normalize the input (convert words like "sharp", "flat" to symbols)
-  const normalized = normalizeChordInput(input);
+  const normalized = normalizeChordInput(normalizeGlyphs(input));
   if (!normalized) return null;
 
   // Handle slash chords first - split on last /
