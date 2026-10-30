@@ -1,19 +1,26 @@
 <!doctype html>
-<!-- build 2026-06-09b: content change required so the service worker refetches
-     this document — its precached copy carries the response HEADERS from fetch
-     time, so header-only deploys (like a CSP fix) never reach installed PWAs. -->
-<html lang="en" class="dark">
+<!-- build 2026-10-30 (W9): content change required so the service worker
+     refetches this document — its precached copy carries the response HEADERS
+     from fetch time, so header-only deploys (this one adds long-term caching
+     for /assets/* and the CSP hash of the theme script below) never reach
+     installed PWAs otherwise. -->
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0a0a12" />
+    <meta name="theme-color" content="#f5efe2" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/source-serif-4-latin.woff2" as="font" type="font/woff2" crossorigin />
     <meta name="description" content="Fermata — interactive music theory through your instrument. Explore scales, chords, and keys with a piano or guitar always in reach." />
     <title>Fermata — Music theory, from the instrument out</title>
+    <!-- Saved night theme before first paint (no light flash). The CSP allows
+         exactly this script by its sha256 hash (vercel.json): ANY edit here,
+         even whitespace, needs the new hash — documentShell.test.ts and
+         `npm run check:bundle` fail until it matches. -->
+    <script>try{var s=JSON.parse(localStorage.getItem('music-theory-app')||'null'),t=s&&s.state&&s.state.themeMode;if(t==='fermata-night'||t==='dark'){document.documentElement.classList.add('fermata-night');var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#181208')}}catch(e){}</script>
   </head>
   <body class="antialiased">
     <div id="root"></div>

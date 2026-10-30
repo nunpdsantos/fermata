@@ -2,8 +2,24 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { readFileSync } from 'node:fs'
+
+// `vite preview` serves the PRODUCTION security headers from vercel.json (the
+// catch-all rule), so the preview-build browser tests run under the real CSP
+// — the dev server has none, which is how the data:-font and inline-script
+// gotchas in CLAUDE.md used to slip through to production.
+function productionHeaders(): Record<string, string> {
+  const vercel = JSON.parse(readFileSync(new URL('./vercel.json', import.meta.url), 'utf8')) as {
+    headers: Array<{ source: string; headers: Array<{ key: string; value: string }> }>
+  }
+  const all = vercel.headers.find((r) => r.source === '/(.*)')?.headers ?? []
+  return Object.fromEntries(all.map((h) => [h.key, h.value]))
+}
 
 export default defineConfig({
+  preview: {
+    headers: productionHeaders(),
+  },
   plugins: [
     react(),
     tailwindcss(),
