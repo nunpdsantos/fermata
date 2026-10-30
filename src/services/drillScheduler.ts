@@ -254,15 +254,30 @@ export function applyAnswer(
   now: number,
   sessionId: string,
 ): ItemSrsState {
-  // Restore or create the FSRS card
-  const card: Card = state ? toCard(state.card) : createEmptyCard(new Date(now));
+  // A device clock set earlier than this item's last review would make
+  // ts-fsrs throw ("Invalid delta_t") and crash the answer. Time never runs
+  // backwards for an item: clamp to its last review / last recorded answer.
+  const at = Math.max(
+    now,
+    state?.card.last_review ?? -Infinity,
+    state?.history.length ? state.history[state.history.length - 1].ts : -Infinity,
+  );
 
-  // Schedule via FSRS
+  // Restore or create the FSRS card
+  const card: Card = state ? toCard(state.card) : createEmptyCard(new Date(at));
+
+  // Schedule via FSRS. Belt and braces: should ts-fsrs still reject the card,
+  // keep the old schedule rather than lose the answer or crash the Drill.
   const grade = gradeFor(correct, ms);
-  const { card: nextCard } = F.next(card, new Date(now), RATING[grade]);
+  let nextCard: Card = card;
+  try {
+    nextCard = F.next(card, new Date(at), RATING[grade]).card;
+  } catch (err) {
+    console.warn('[drillScheduler] FSRS update skipped:', err);
+  }
 
   // Build the new answer record
-  const record: AnswerRecord = { ts: now, correct, ms, sessionId };
+  const record: AnswerRecord = { ts: at, correct, ms, sessionId };
 
   // Append and cap history (session first answers outlive in-session retries)
   const newHistory = capHistory([...(state?.history ?? []), record]);

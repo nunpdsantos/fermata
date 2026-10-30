@@ -687,3 +687,28 @@ describe('recordAnswer — stale queue head after an app update (W7-09)', () => 
     expect(useDrillStore.getState().activeSession!.index).toBe(1);
   });
 });
+
+// ─── Device clock earlier than an item's last review (review of W7) ─────────
+
+describe('recordAnswer — clock moved backwards', () => {
+  it('does not throw and still counts the answer', () => {
+    const DAY = 86_400_000;
+    const later = NOW + 30 * DAY;
+    useDrillStore.setState({
+      items: {
+        A: {
+          card: { due: later + DAY, stability: 3, difficulty: 5, elapsed_days: 0, scheduled_days: 1, reps: 2, lapses: 0, state: 2, learning_steps: 0, last_review: later },
+          history: [{ ts: later, correct: true, ms: 1500, sessionId: 'old' }],
+          tier: 'review',
+          introCorrectCount: 2,
+        },
+      },
+      activeSession: { id: 's1', queue: ['A', 'B'], index: 0, asked: 0, correct: 0, startedAt: NOW, seed: 1, missRequeues: {} },
+    });
+    expect(() => useDrillStore.getState().recordAnswer(makeItem('A'), true, 1500, NOW)).not.toThrow();
+    const s = useDrillStore.getState();
+    expect(s.activeSession!.asked).toBe(1);
+    expect(s.items.A.history).toHaveLength(2);
+    expect(s.lifetime.answered).toBe(1);
+  });
+});

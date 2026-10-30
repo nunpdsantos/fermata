@@ -274,3 +274,36 @@ describe('sessionFirstAnswers', () => {
     expect(sessionFirstAnswers(h)).toEqual([h[0], h[2]]);
   });
 });
+
+// ─── Clock moved backwards (review of W7) ───────────────────────────────────
+// A phone clock set earlier than an item's last review made ts-fsrs throw
+// "Invalid delta_t" inside recordAnswer, so the Drill crashed on that answer.
+
+describe('applyAnswer — device clock earlier than the last review', () => {
+  it('does not throw, records the answer, and keeps the schedule moving forward', () => {
+    const reviewed = run([
+      ['s1', at(10), true, 2000],
+      ['s1', at(10) + 2 * MIN, true, 2000],
+      ['s2', at(12), true, 2000],
+    ]);
+    const lastReview = reviewed.card.last_review!;
+    expect(lastReview).toBe(at(12));
+    const back = at(5); // a week earlier than the last review
+    let after: ItemSrsState | undefined;
+    expect(() => {
+      after = applyAnswer(reviewed, true, 1500, back, 's3');
+    }).not.toThrow();
+    expect(after!.history).toHaveLength(reviewed.history.length + 1);
+    expect(after!.card.last_review!).toBeGreaterThanOrEqual(lastReview);
+    expect(after!.card.due).toBeGreaterThanOrEqual(lastReview);
+    expect(Number.isFinite(after!.card.stability)).toBe(true);
+  });
+
+  it('a wrong answer with a backwards clock also does not throw', () => {
+    const reviewed = run([
+      ['s1', at(10), true, 2000],
+      ['s1', at(10) + 2 * MIN, true, 2000],
+    ]);
+    expect(() => applyAnswer(reviewed, false, 4000, at(1), 's2')).not.toThrow();
+  });
+});
