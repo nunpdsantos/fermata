@@ -731,60 +731,6 @@ export function getDiatonicSeventhChordsHarmonicMinor(
   });
 }
 
-// Diatonic seventh chord qualities for each scale type/mode
-// Each array represents the 7th chord quality built on each scale degree (1-7)
-export const DIATONIC_SEVENTH_CHORD_QUALITIES: Partial<Record<ScaleType, ChordQuality[]>> = {
-  // Major (Ionian): Imaj7, ii7, iii7, IVmaj7, V7, vi7, viiø7
-  major: ['major7', 'minor7', 'minor7', 'major7', 'dominant7', 'minor7', 'half_diminished7'],
-
-  // Natural Minor (Aeolian): i7, iiø7, IIImaj7, iv7, v7, VImaj7, VII7
-  natural_minor: [
-    'minor7',
-    'half_diminished7',
-    'major7',
-    'minor7',
-    'minor7',
-    'major7',
-    'dominant7',
-  ],
-
-  // Harmonic Minor: imMaj7, iiø7, III+maj7, iv7, V7, VImaj7, vii°7
-  harmonic_minor: [
-    'minor_major7',
-    'half_diminished7',
-    'augmented_major7',
-    'minor7',
-    'dominant7',
-    'major7',
-    'diminished7',
-  ],
-
-  // Melodic Minor: imMaj7, ii7, III+maj7, IV7, V7, viø7, viiø7
-  melodic_minor: [
-    'minor_major7',
-    'minor7',
-    'augmented_major7',
-    'dominant7',
-    'dominant7',
-    'half_diminished7',
-    'half_diminished7',
-  ],
-
-  // Dorian: i7, ii7, IIImaj7, IV7, v7, viø7, VIImaj7
-  dorian: ['minor7', 'minor7', 'major7', 'dominant7', 'minor7', 'half_diminished7', 'major7'],
-
-  // Phrygian: i7, IImaj7, III7, iv7, vø7, VImaj7, vii7
-  phrygian: ['minor7', 'major7', 'dominant7', 'minor7', 'half_diminished7', 'major7', 'minor7'],
-
-  // Lydian: Imaj7, II7, iii7, #ivø7, Vmaj7, vi7, vii7
-  lydian: ['major7', 'dominant7', 'minor7', 'half_diminished7', 'major7', 'minor7', 'minor7'],
-
-  // Mixolydian: I7, ii7, iiiø7, IVmaj7, v7, vi7, VIImaj7
-  mixolydian: ['dominant7', 'minor7', 'half_diminished7', 'major7', 'minor7', 'minor7', 'major7'],
-
-  // Locrian: iø7, IImaj7, iii7, iv7, Vmaj7, VI7, vii7
-  locrian: ['half_diminished7', 'major7', 'minor7', 'minor7', 'major7', 'dominant7', 'minor7'],
-};
 
 // Build a slash chord (chord with alternate bass note)
 export function buildSlashChord(

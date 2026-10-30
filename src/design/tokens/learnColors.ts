@@ -42,10 +42,6 @@ export const DIFFICULTY_CONFIG: Record<
   },
 };
 
-export function getLevelAccent(levelId: string): string {
-  return LEVEL_ACCENTS[levelId] ?? palette.accent;
-}
-
 const LEVEL_KEY_BY_ACCENT = new Map(
   Object.entries(LEVEL_ACCENTS).map(([key, hex]) => [hex.toLowerCase(), key]),
 );

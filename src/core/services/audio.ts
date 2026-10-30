@@ -1087,23 +1087,6 @@ export function playChordVoiced(
   playPitchedNotes(chordVoicingPitches(notes, startOctave, bassNote), duration, config);
 }
 
-// Stop all audio and reset audio context
-export function stopAllAudio(): void {
-  // First stop playback
-  stopPlayback();
-
-  // Then close and reset audio context
-  if (audioContext) {
-    audioContext.close();
-    audioContext = null;
-    reverbNode = null;
-    dryGainNode = null;
-    wetGainNode = null;
-    masterGainNode = null;
-    compressorNode = null;
-  }
-}
-
 // Check if audio is available
 export function isAudioAvailable(): boolean {
   return (
