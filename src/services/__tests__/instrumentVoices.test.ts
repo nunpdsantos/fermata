@@ -131,20 +131,47 @@ describe('registerInstrumentVoices', () => {
     expect(mockedSetVoice).toHaveBeenCalledTimes(1);
   });
 
-  it('preloads only the boot instrument sample bank on the idle slot', () => {
+  // Audit W8-03 / D-22: all 30 piano samples (~2 MB) used to download on the
+  // first idle slot of EVERY visit, before any tap. Samples now load on first
+  // use: the first tap / key press, or the first note the voice is asked for.
+  it('downloads no samples before the learner interacts, however long the page sits idle', () => {
     useAppStore.setState({ instrument: 'guitar' });
     unsubscribe = registerInstrumentVoices();
-
-    vi.advanceTimersByTime(1100); // jsdom has no requestIdleCallback → setTimeout(1000) branch
-    expect(guitarSampler.preload).toHaveBeenCalled();
+    vi.advanceTimersByTime(60_000);
+    expect(guitarSampler.preload).not.toHaveBeenCalled();
     expect(pianoSampler.preload).not.toHaveBeenCalled();
+  });
+
+  it('the first tap preloads only the selected instrument\'s bank, once', () => {
+    useAppStore.setState({ instrument: 'guitar' });
+    unsubscribe = registerInstrumentVoices();
+    window.dispatchEvent(new Event('pointerdown'));
+    expect(guitarSampler.preload).toHaveBeenCalledTimes(1);
+    expect(pianoSampler.preload).not.toHaveBeenCalled();
+    window.dispatchEvent(new Event('pointerdown'));
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'a' }));
+    expect(guitarSampler.preload).toHaveBeenCalledTimes(1);
+  });
+
+  it('a first key press also counts as first use', () => {
+    unsubscribe = registerInstrumentVoices();
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'a' }));
+    expect(pianoSampler.preload).toHaveBeenCalledTimes(1);
+  });
+
+  it('the first note asked of the voice starts the download too (synth covers that note)', () => {
+    vi.mocked(pianoSampler.playNote).mockReturnValue(false);
+    unsubscribe = registerInstrumentVoices();
+    const voice = mockedSetVoice.mock.calls[0][0]!;
+    voice.playNote(60, 0, 0.5, 0.5);
+    expect(pianoSampler.preload).toHaveBeenCalledTimes(1);
   });
 
   it('preloads the other bank when the instrument is switched', () => {
     useAppStore.setState({ instrument: 'piano' });
     unsubscribe = registerInstrumentVoices();
 
-    vi.advanceTimersByTime(1100);
+    window.dispatchEvent(new Event('pointerdown'));
     expect(pianoSampler.preload).toHaveBeenCalled();
     expect(guitarSampler.preload).not.toHaveBeenCalled();
 

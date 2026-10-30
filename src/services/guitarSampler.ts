@@ -10,8 +10,9 @@
  * neighbour and pitch-shift via playbackRate, an artifact-free shift on nylon.
  * The ladder is therefore an explicit literal, not a generated loop.
  *
- * Loading is lazy (kicked off on the first user gesture via preload(), the same
- * trigger that warms the piano samples); until a note's sample is decoded,
+ * Loading is lazy (instrumentVoices.ts calls preload() on first use while the
+ * guitar is selected — first tap / key press or first note, audit W8-03 — or
+ * when the learner switches to the guitar); until a note's sample is decoded,
  * startNote/playNote return false and the caller falls back to the
  * Karplus-Strong engine, so the fretboard always sounds — including a first
  * visit offline.

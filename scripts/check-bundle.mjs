@@ -5,6 +5,9 @@
  *  - The entry JS (the script index.html loads) stays under 500 kB.
  *  - ts-fsrs (Drill's scheduler) stays OUT of the entry (CLAUDE.md gotcha).
  *  - The fretboard and Quick Search stay in their own lazy chunks.
+ *  - Notation ships VexFlow's Bravura-only entry: its chunk embeds at most
+ *    the three fonts that entry registers (Bravura, Academico, Academico
+ *    Bold) — the full entry embeds six (audit W9-10).
  *
  * Usage: node scripts/check-bundle.mjs [distDir=dist]
  * Exit 0 = all good; 1 = a budget broken (listed); 2 = no build.
@@ -49,6 +52,14 @@ for (const lazyChunk of ['Fretboard', 'QuickSearch']) {
   if (!assets.some((f) => f.startsWith(`${lazyChunk}-`) && f.endsWith('.js'))) {
     problems.push(`no separate ${lazyChunk}-*.js chunk — it was pulled back into the entry`);
   }
+}
+
+const vexflowChunk = assets.find((f) => /^vexflow-.*\.js$/.test(f));
+if (!vexflowChunk) {
+  problems.push('no vexflow-*.js chunk found');
+} else {
+  const embeddedFonts = (fs.readFileSync(path.join(dist, 'assets', vexflowChunk), 'utf8').match(/data:font\/woff2/g) ?? []).length;
+  if (embeddedFonts > 3) problems.push(`${vexflowChunk} embeds ${embeddedFonts} fonts (Bravura-only entry embeds 3)`);
 }
 
 console.log(`check-bundle: entry ${entryMatch[1]} = ${entryBytes} B (budget ${ENTRY_BUDGET_BYTES} B), ${problems.length} problem(s)`);

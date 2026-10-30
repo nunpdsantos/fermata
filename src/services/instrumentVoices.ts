@@ -11,9 +11,9 @@
  * to the Karplus-Strong engine. Crucially, the guitar voice ALWAYS returns true
  * (sampler hit OR KS fallback fired), so core's FM synth never leaks into guitar
  * mode — exactly as before WS10, only now a real guitar sample plays once
- * decoded. Both sample sets warm on the same first-gesture preload, so flipping
- * instruments never starts a download at flip time, and a first visit offline
- * still sounds (FM synth / KS pluck respectively).
+ * decoded. Only the SELECTED instrument's bank downloads, on first use (first
+ * tap / key press, or first note); the other bank downloads when the learner
+ * switches to it. A first visit offline still sounds (FM synth / KS pluck).
  */
 import { setInstrumentVoice, type InstrumentVoice } from '../core/services/audio.ts';
 import * as pianoSampler from './pianoSampler.ts';
@@ -74,36 +74,63 @@ function voiceFor(instrument: InstrumentType): InstrumentVoice {
 /** Returns the store unsubscribe (ignored in prod, used by tests). */
 export function registerInstrumentVoices(): () => void {
   let current = useAppStore.getState().instrument;
-  setInstrumentVoice(voiceFor(current));
 
-  const preloadFor = (instrument: InstrumentType) =>
-    instrument === 'guitar' ? guitarSampler.preload() : pianoSampler.preload();
+  // Sample banks download on FIRST USE (audit W8-03 / D-22): the first tap or
+  // key press anywhere, or the first note a voice is asked for — whichever
+  // comes first — and only the selected instrument's bank (~2 MB each). They
+  // used to download on the first idle slot of every visit, before any tap.
+  // The synth / KS fallback covers notes until samples decode.
+  const warmedBanks = new Set<InstrumentType>();
+  const warm = (instrument: InstrumentType) => {
+    if (warmedBanks.has(instrument)) return;
+    warmedBanks.add(instrument);
+    void (instrument === 'guitar' ? guitarSampler.preload() : pianoSampler.preload());
+  };
+  const warmingVoice = (instrument: InstrumentType): InstrumentVoice => {
+    const voice = voiceFor(instrument);
+    return {
+      ...voice,
+      playNote: (midi, when, duration, velocity) => {
+        warm(instrument);
+        return voice.playNote(midi, when, duration, velocity);
+      },
+      startNote: (midi, velocity) => {
+        warm(instrument);
+        return voice.startNote(midi, velocity);
+      },
+    };
+  };
+
+  const onFirstGesture = () => {
+    removeGestureListeners();
+    warm(current);
+  };
+  const removeGestureListeners = () => {
+    window.removeEventListener('pointerdown', onFirstGesture, true);
+    window.removeEventListener('keydown', onFirstGesture, true);
+  };
+  window.addEventListener('pointerdown', onFirstGesture, true);
+  window.addEventListener('keydown', onFirstGesture, true);
+
+  setInstrumentVoice(warmingVoice(current));
 
   const unsubscribe = useAppStore.subscribe((state) => {
     if (state.instrument === current) return;
     current = state.instrument;
-    const voice = voiceFor(current);
+    const voice = warmingVoice(current);
     setInstrumentVoice(voice);
     // The swapped-in voice picks up the session volume; boot-time volume
     // arrives via useAudio's mount sync instead (pushing here at boot would
     // create the sampler's AudioContext during initial script eval).
     voice.setVolume(state.volume);
-    // Warm the newly selected bank at flip time; the synth/KS fallback covers
-    // the gap until samples decode, so switching is never silent.
-    void preloadFor(current);
+    // A flip is a learner action: warm the newly selected bank now; the
+    // synth/KS fallback covers the gap until samples decode, so switching is
+    // never silent.
+    warm(current);
   });
 
-  // Warm only the selected instrument's sample set on the first idle slot —
-  // a single-instrument user shouldn't pay for the other ~2 MB bank on first
-  // load. The other bank downloads if and when the instrument is switched.
-  const kick = () => {
-    void preloadFor(current);
+  return () => {
+    unsubscribe();
+    removeGestureListeners();
   };
-  if ('requestIdleCallback' in window) {
-    requestIdleCallback(kick, { timeout: 3000 });
-  } else {
-    setTimeout(kick, 1000);
-  }
-
-  return unsubscribe;
 }
