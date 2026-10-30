@@ -9,12 +9,13 @@ import {
   dedupeAdjacent,
   requeueAfterMiss,
   requeueSecondExposure,
+  separateSiblings,
   type SessionConfig,
 } from '../drillSession';
 import type { DrillItem, DrillFamily, ItemSrsState } from '../../core/types/drill';
 import { DRILL_FAMILIES } from '../../core/types/drill';
 import { mulberry32 } from '../../core/utils/prng';
-import { generateDrillBank } from '../../core/utils/drillBank';
+import { drillSiblingGroup, generateDrillBank } from '../../core/utils/drillBank';
 
 // ─── Constants & helpers ─────────────────────────────────────────────────────
 
@@ -821,5 +822,85 @@ describe('composeSession: fresh items round-robin across families (W7-02)', () =
     const queue = composeSession(bank, {}, defaultConfig({ newPerSession: 4 }), NOW, 3);
     expect(queue).toHaveLength(4);
     expect(queue).toContain('d1');
+  });
+});
+
+// ─── W7-04: an item and its reverse/sibling are never back to back ───────────
+// Seen live (audit U-6): "Scale degree 1 is called…?" then "The Tonic is which
+// scale degree?" — the first answers the second. Sibling groups come from the
+// bank (drillSiblingGroup); the W0 rule (same item never twice in a row) is the
+// special case of an item being its own sibling.
+
+describe('composeSession / requeue: siblings never adjacent (W7-04)', () => {
+  const groupOf = (id: string) => drillSiblingGroup(id);
+  function siblingPairs(queue: string[]): string[] {
+    const out: string[] = [];
+    for (let i = 0; i < queue.length - 1; i++) {
+      if (groupOf(queue[i]) === groupOf(queue[i + 1])) out.push(`${queue[i]} | ${queue[i + 1]} @${i}`);
+    }
+    return out;
+  }
+
+  it('known positive: the unfixed rank order puts triad spell/name siblings side by side', () => {
+    const bank = generateDrillBank();
+    const triads = bank.filter((i) => i.family === 'triad').sort((a, b) => a.rank - b.rank).slice(0, 4);
+    expect(siblingPairs(triads.map((i) => i.id)).length).toBeGreaterThan(0);
+  });
+
+  it('triads only, fresh learner: no sibling pair in the composed queue', () => {
+    const bank = generateDrillBank();
+    const families = { ...noFamilies(), triad: true };
+    for (let seed = 1; seed <= 20; seed++) {
+      const q = composeSession(bank, {}, { length: 24, newPerSession: 4, families }, NOW, seed);
+      expect(siblingPairs(q), `seed ${seed}`).toEqual([]);
+    }
+  });
+
+  it('degree only, everything due: number→name and name→number never adjacent', () => {
+    const bank = generateDrillBank().filter((i) => i.family === 'degree');
+    const states: Record<string, ItemSrsState> = {};
+    bank.forEach((it, i) => (states[it.id] = makeState('review', NOW - (i + 1) * 1000)));
+    for (let seed = 1; seed <= 200; seed++) {
+      const q = composeSession(bank, states, defaultConfig({ length: 24, newPerSession: 0 }), NOW, seed);
+      expect(q).toHaveLength(14);
+      expect(siblingPairs(q), `seed ${seed}`).toEqual([]);
+    }
+  });
+
+  it('when only siblings are left, the later one waits for another session', () => {
+    const bank = [item('degree:num-to-name:1', 'degree', 0), item('degree:name-to-num:Tonic', 'degree', 1)];
+    const q = composeSession(bank, {}, defaultConfig({ newPerSession: 4 }), NOW, 1);
+    expect(q).toEqual(['degree:num-to-name:1']);
+  });
+
+  it('a sibling can move earlier to avoid the clash', () => {
+    expect(separateSiblings(['x', 'a1', 'a2'], (id) => id[0])).toEqual(['a2', 'x', 'a1']);
+  });
+
+  it('requeueAfterMiss skips a slot next to a sibling', () => {
+    // index 0 = x1 missed; target slot 2 would sit next to its sibling x2.
+    const q = ['x1', 'b', 'x2', 'c', 'd'];
+    const out = requeueAfterMiss(q, 0, 'x1', () => 0, (id) => id[0]);
+    for (let i = 0; i < out.length - 1; i++) expect(out[i][0] === out[i + 1][0], out.join(',')).toBe(false);
+    expect(out.filter((id) => id === 'x1')).toHaveLength(2);
+  });
+
+  it('property: requeues never create a sibling pair', () => {
+    const rand = mulberry32(7);
+    const g = (id: string) => id[0];
+    for (let trial = 0; trial < 2000; trial++) {
+      const len = 2 + Math.floor(rand() * 8);
+      const raw = Array.from({ length: len }, () => `${'abc'[Math.floor(rand() * 3)]}${Math.floor(rand() * 3)}`);
+      const queue = separateSiblings(raw, g);
+      if (queue.length === 0) continue;
+      const index = Math.floor(rand() * queue.length);
+      const id = queue[index];
+      for (const fn of [requeueAfterMiss, requeueSecondExposure]) {
+        const out = fn(queue, index, id, rand, g);
+        for (let i = index; i < out.length - 1; i++) {
+          expect(g(out[i]) === g(out[i + 1]), `${fn.name} ${JSON.stringify(queue)} @${index} → ${JSON.stringify(out)}`).toBe(false);
+        }
+      }
+    }
   });
 });

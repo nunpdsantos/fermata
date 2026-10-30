@@ -553,13 +553,13 @@ describe('DrillView — same item twice in a row stays answerable (W0-02 / D-4)'
 });
 
 describe('DrillView — progress counter (W0-02 / D-11)', () => {
-  function startShortSession() {
+  function startShortSession(newPerSession = 3) {
     useDrillStore.getState().resetDrillData();
     // Degree facts only, 3 new per session, target 24 → the real queue is 3.
     useDrillStore.getState().updateSettings({
       families: { ...CHOICE_FAMILIES, keysig: false, circle: false },
       length: 24,
-      newPerSession: 3,
+      newPerSession,
     });
   }
 
@@ -572,17 +572,20 @@ describe('DrillView — progress counter (W0-02 / D-11)', () => {
 
   it('keeps the answered question number during feedback and advances on Continue', () => {
     vi.useFakeTimers();
-    startShortSession();
+    // 4 new degree facts: degree 1 → name, degree 2 → name, Tonic → number,
+    // Supertonic → number (siblings kept apart, W7-04), so a miss on the
+    // first one has a non-adjacent slot to be requeued into.
+    startShortSession(4);
     render(<DrillView />);
     act(() => {
       fireEvent.click(screen.getByRole('button', { name: currentWrongChoice() }));
     });
     // Feedback for question 1: still "1 of …" (was "2 of 24" before the fix).
-    // The miss is requeued, so the session grew to 4.
+    // The miss is requeued, so the session grew to 5.
     expect(screen.getByText('Not quite')).toBeDefined();
-    expect(screen.getByText('1 of 4')).toBeDefined();
+    expect(screen.getByText('1 of 5')).toBeDefined();
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Continue' })));
-    expect(screen.getByText('2 of 4')).toBeDefined();
+    expect(screen.getByText('2 of 5')).toBeDefined();
   });
 
   it('a correct answer also holds its number until the auto-advance', () => {

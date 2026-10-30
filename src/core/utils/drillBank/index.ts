@@ -41,6 +41,7 @@ export function getItemsByFamily(bank: DrillItem[], family: DrillFamily): DrillI
 
 // Public helpers re-exported so existing `import ... from '../drillBank'` keeps working
 export { displayNote, keySignatureOf, MAJOR_KEYS, SHARP_ORDER, FLAT_ORDER } from './shared';
+export { drillSiblingGroup } from './siblings';
 
 // ---------------------------------------------------------------------------
 // i18n key registries — source of truth for translation parity

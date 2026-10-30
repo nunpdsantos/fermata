@@ -7,6 +7,10 @@
 import type { DrillFamily, DrillItem, ItemSrsState } from '../core/types/drill';
 import { isDue } from './drillScheduler';
 import { mulberry32, seededShuffle } from '../core/utils/prng';
+import { drillSiblingGroup } from '../core/utils/drillBank/siblings';
+
+/** Maps an item id to its sibling group (see drillSiblingGroup). */
+export type GroupOf = (id: string) => string;
 
 // ─── Public Types ─────────────────────────────────────────────────────────────
 
@@ -19,34 +23,63 @@ export interface SessionConfig {
 // ─── Internal Helpers ─────────────────────────────────────────────────────────
 
 /**
- * Deduplicate adjacent identical ids.
- * Swap the offender forward to the next non-colliding slot.
- * If no such slot exists, drop the duplicate.
- *
- * Exported for tests. Used by composeSession on the initial queue. Requeue
- * insertions keep the same invariant themselves (insertNotAdjacent — the old
- * clamp-to-end could put a missed last item straight back, audit W0-02), so
- * the store does not re-run this per answer.
+ * Deduplicate adjacent identical ids: the W0-02 rule alone, i.e.
+ * separateSiblings with every id its own group (a copy with nowhere else to
+ * go is dropped). composeSession uses the full sibling rule; requeue
+ * insertions keep the invariant themselves (insertNotAdjacent), so the store
+ * does not re-run this per answer. Exported for tests.
  */
 export function dedupeAdjacent(ids: string[]): string[] {
+  return separateSiblings(ids, (id) => id);
+}
+
+/**
+ * Spec §3.6 + audit W7-04: no two neighbours from one sibling group (an item
+ * and its reverse, or two facts about the same key/chord/interval — see
+ * drillSiblingGroup). The same id is its own sibling, so this also keeps the
+ * W0 rule.
+ *
+ * Left to right: a clash at i/i+1 is fixed by swapping in the next later item
+ * that does not clash with i; failing that, the item at i+1 moves EARLIER to
+ * the first slot whose neighbours are both outside its group; failing that it
+ * is left out of this session (a copy of the same id is always just dropped,
+ * as dedupeAdjacent does). Positions before i are never disturbed, so the
+ * pass terminates.
+ */
+export function separateSiblings(ids: string[], groupOf: GroupOf = drillSiblingGroup): string[] {
   const out = ids.slice();
   let i = 0;
   while (i < out.length - 1) {
-    if (out[i] === out[i + 1]) {
-      // Find the next position j > i+1 where out[j] !== out[i]
-      let j = i + 2;
-      while (j < out.length && out[j] === out[i]) j++;
-      if (j < out.length) {
-        // Swap out[i+1] with out[j]
-        [out[i + 1], out[j]] = [out[j], out[i + 1]];
-      } else {
-        // No valid slot found — drop the duplicate at i+1
-        out.splice(i + 1, 1);
-      }
-      // Do NOT advance i: need to re-check position i+1 after the swap
-    } else {
+    const g = groupOf(out[i]);
+    if (groupOf(out[i + 1]) !== g) {
       i++;
+      continue;
     }
+    // 1. swap in a later non-sibling
+    let j = i + 2;
+    while (j < out.length && groupOf(out[j]) === g) j++;
+    if (j < out.length) {
+      [out[i + 1], out[j]] = [out[j], out[i + 1]];
+      continue;
+    }
+    // 2. move the clashing item earlier (never a second copy of one id)
+    const x = out[i + 1];
+    let placed = false;
+    if (x !== out[i] && !out.slice(0, i + 1).includes(x)) {
+      for (let k = 0; k <= i; k++) {
+        const before = k > 0 ? groupOf(out[k - 1]) : null;
+        if (before !== g && groupOf(out[k]) !== g) {
+          out.splice(i + 1, 1);
+          out.splice(k, 0, x);
+          placed = true;
+          break;
+        }
+      }
+    }
+    // 3. nowhere to put it this session
+    if (!placed) out.splice(i + 1, 1);
+    // Everything up to i+1 is now clash-free; continue from there.
+    i = placed ? i + 1 : i;
   }
   return out;
 }
@@ -61,19 +94,27 @@ function insertAt(queue: string[], pos: number, id: string): string[] {
 /**
  * Insert `id` as close as possible to `target` (searching outward: target,
  * target+1, target−1, …) at a position after `index` where it does NOT sit
- * next to another copy of itself — the item at `index` is normally `id`, so
- * index+1 is never chosen. Spec §3.6: "the same item never appears twice in a
- * row" (audit W0-02 / D-4: a miss on the LAST item of a short queue used to be
- * clamped to index+1 and came straight back).
+ * next to another copy of itself or a sibling (W7-04) — the item at `index`
+ * is normally `id`, so index+1 is never chosen. Spec §3.6: "the same item
+ * never appears twice in a row" (audit W0-02 / D-4: a miss on the LAST item of
+ * a short queue used to be clamped to index+1 and came straight back).
  *
  * When no such position exists (nothing else is left to put between), the
  * queue is returned unchanged: the item is not requeued this session. Its
  * FSRS state still records the answer, so it returns in a later session.
  */
-function insertNotAdjacent(queue: string[], index: number, id: string, target: number): string[] {
+function insertNotAdjacent(
+  queue: string[],
+  index: number,
+  id: string,
+  target: number,
+  groupOf: GroupOf,
+): string[] {
   const lo = index + 1;
   const hi = queue.length;
-  const fits = (p: number) => queue[p - 1] !== id && (p >= queue.length || queue[p] !== id);
+  const g = groupOf(id);
+  const clash = (other: string) => other === id || groupOf(other) === g;
+  const fits = (p: number) => !clash(queue[p - 1]) && (p >= queue.length || !clash(queue[p]));
   const start = Math.min(Math.max(target, lo), hi);
   for (let d = 0; start + d <= hi || start - d >= lo; d++) {
     if (start + d <= hi && fits(start + d)) return insertAt(queue, start + d, id);
@@ -147,7 +188,8 @@ function pickFresh(
  *                  sorted ascending by card.due, then seeded-shuffled
  *  6. review = seededShuffle([...due, ...learning], rand)
  *     assemble: [...head(2), ...fresh, ...tail(rest), ...confidence]
- *     slice to config.length, then dedupeAdjacent
+ *     slice to config.length, then separateSiblings (no item next to
+ *     itself or a sibling)
  *
  * A single rand = mulberry32(seed) drives both shuffles in fixed order:
  *   first review, then confidence.
@@ -158,6 +200,7 @@ export function composeSession(
   config: SessionConfig,
   now: number,
   seed: number,
+  groupOf: GroupOf = drillSiblingGroup,
 ): string[] {
   const rand = mulberry32(seed);
 
@@ -213,7 +256,8 @@ export function composeSession(
     config.length,
   );
 
-  return dedupeAdjacent(assembled);
+  // No item next to itself or a sibling (W0-02, W7-04).
+  return separateSiblings(assembled, groupOf);
 }
 
 // ─── requeue helpers ──────────────────────────────────────────────────────────
@@ -228,16 +272,18 @@ export function composeSession(
  * @param index   Index of the item that was missed (current position in queue).
  * @param id      Id to reinsert.
  * @param rand    Seeded PRNG function (advances caller's shared state).
+ * @param groupOf Sibling groups — never lands next to a sibling either.
  */
 export function requeueAfterMiss(
   queue: string[],
   index: number,
   id: string,
   rand: () => number,
+  groupOf: GroupOf = drillSiblingGroup,
 ): string[] {
   const offset = 4 + Math.floor(rand() * 3); // 4..6
   const pos = Math.min(index + offset, queue.length);
-  return insertNotAdjacent(queue, index, id, pos);
+  return insertNotAdjacent(queue, index, id, pos, groupOf);
 }
 
 /**
@@ -249,14 +295,16 @@ export function requeueAfterMiss(
  * @param index   Index of the newly introduced item.
  * @param id      Id to reinsert.
  * @param rand    Seeded PRNG function (advances caller's shared state).
+ * @param groupOf Sibling groups — never lands next to a sibling either.
  */
 export function requeueSecondExposure(
   queue: string[],
   index: number,
   id: string,
   rand: () => number,
+  groupOf: GroupOf = drillSiblingGroup,
 ): string[] {
   const offset = 6 + Math.floor(rand() * 5); // 6..10
   const pos = Math.min(index + offset, queue.length);
-  return insertNotAdjacent(queue, index, id, pos);
+  return insertNotAdjacent(queue, index, id, pos, groupOf);
 }

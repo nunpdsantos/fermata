@@ -52,8 +52,9 @@ const ABBR_DISPLAY: Record<string, string> = {
   M7: 'major 7th',
 };
 
-// Abbreviation to interval number (which scale degree letter to land on)
-const ABBR_TO_NUMBER: Record<string, number> = {
+// Abbreviation to interval number (which scale degree letter to land on).
+// Exported for the sibling groups (siblings.ts).
+export const ABBR_TO_NUMBER: Record<string, number> = {
   m3: 3,
   M3: 3,
   P4: 4,
