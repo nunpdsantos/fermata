@@ -1,16 +1,17 @@
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
-import type { CurriculumLevel, CurriculumProgress } from '../../core/types/curriculum';
+import type { CurriculumLevel, CurriculumModule, CurriculumProgress, CurriculumUnit } from '../../core/types/curriculum';
 import type { ContentLanguage } from '../../i18n/content/types';
 import {
   LEVEL_METADATA,
   computeLevelStateMeta,
   getLevelCompletedCountMeta,
-  loadAllLevels,
-  findNextIncompleteModule,
+  loadLevel,
 } from '../../data/curriculumLoader';
 import type { LevelMeta } from '../../data/curriculumLoader';
+import { findNextModuleEntry } from '../../data/nextModule';
+import type { ModuleIndexEntry } from '../../data/moduleIndex';
 import { translateLevelMetadata } from '../../i18n/content/levelMetaResolver';
 import { ContinueBanner } from './ContinueBanner';
 import { ReviewQueue } from './ReviewQueue';
@@ -18,6 +19,23 @@ import { LevelCard } from './LevelCard';
 import { ProgressBar } from './ProgressBar';
 import { DEGREE_COLORS } from '../../design/tokens/colors';
 import { useAppStore } from '../../state/store.ts';
+
+type ResolvedNext =
+  | { key: string; level: CurriculumLevel; unit: CurriculumUnit; module: CurriculumModule }
+  | { key: string; failed: true };
+
+/** Continue-banner content from the static index when the level can't load. */
+function fallbackNextUp(entry: ModuleIndexEntry, meta: LevelMeta) {
+  const module: CurriculumModule = {
+    id: entry.id, unitId: entry.unitId, levelId: entry.level, title: entry.title, subtitle: entry.subtitle,
+    objectives: [], concepts: [], tasks: [], prerequisites: [],
+  };
+  const unit: CurriculumUnit = {
+    id: entry.unitId, levelId: entry.level, title: '', description: '', icon: '', modules: [module],
+  };
+  const level: CurriculumLevel = { ...meta, units: [unit] };
+  return { module, unit, level };
+}
 
 interface LevelsOverviewProps {
   progress: CurriculumProgress;
@@ -34,21 +52,45 @@ export function LevelsOverview({
 }: LevelsOverviewProps) {
   const { t } = useTranslation();
   const language = useAppStore((s) => s.language) as ContentLanguage;
-  // Async-load full levels for continue banner
-  const [allLevels, setAllLevels] = useState<CurriculumLevel[] | null>(null);
-  useEffect(() => {
-    loadAllLevels(language).then(setAllLevels);
-  }, [language]);
-
-  const nextUp = useMemo(() => {
-    if (!allLevels) return undefined;
-    return findNextIncompleteModule(progress, allLevels);
-  }, [progress, allLevels]);
 
   const translatedMeta = useMemo(
     () => translateLevelMetadata(LEVEL_METADATA, language),
     [language],
   );
+
+  // Continue banner (audit W9-10 / W9-19). WHICH module comes next is decided
+  // from the static index — no download. Only that module's own level is
+  // loaded, for its translated titles (was: all nine levels, and one failed
+  // download made the banner vanish, unhandled). If the load fails (offline),
+  // the banner is built from the static index instead.
+  const nextEntry = useMemo(() => findNextModuleEntry(progress), [progress]);
+  const nextKey = nextEntry ? `${language}:${nextEntry.id}` : null;
+  const [resolved, setResolved] = useState<ResolvedNext | null>(null);
+  useEffect(() => {
+    if (!nextEntry || !nextKey) return;
+    let cancelled = false;
+    loadLevel(nextEntry.level, language)
+      .then((level) => {
+        if (cancelled) return;
+        const unit = level?.units.find((u) => u.id === nextEntry.unitId);
+        const module = unit?.modules.find((md) => md.id === nextEntry.id);
+        setResolved(level && unit && module ? { key: nextKey, level, unit, module } : { key: nextKey, failed: true });
+      })
+      .catch(() => {
+        if (!cancelled) setResolved({ key: nextKey, failed: true });
+      });
+    // A load for a previous language / module must never land on top.
+    return () => { cancelled = true; };
+  }, [nextEntry, nextKey, language]);
+
+  const nextUp = useMemo(() => {
+    if (!nextEntry || !resolved || resolved.key !== nextKey) return undefined;
+    if ('failed' in resolved) {
+      const meta = translatedMeta.find((l) => l.id === nextEntry.level);
+      return meta ? fallbackNextUp(nextEntry, meta) : undefined;
+    }
+    return resolved;
+  }, [nextEntry, nextKey, resolved, translatedMeta]);
 
   const totalModules = translatedMeta.reduce((s, l) => s + l.moduleCount, 0);
   const totalCompleted = progress.completedModules.length;
