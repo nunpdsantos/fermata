@@ -21,6 +21,7 @@ import {
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import { useAppStore } from '../../state/store.ts';
 import { buildAscendingMidi } from '../../utils/midiHelpers.ts';
+import { chordVoicingPitches, getMidiNumber } from '../../core/utils/pianoLayout.ts';
 import {
   CHORD_QUALITY_NAMES,
   getChordShortIntervalLabels,
@@ -101,14 +102,16 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
     clearVisualTimeouts();
     const config = getSynthConfig(synthPreset);
     const duration = 1.5;
-    const midiNumbers = computeVoicedMidi(notesForPlayback, baseOctave);
+    // Sound and lit keys share one voicing (bass lowest; slash bass below).
+    const midiNumbers = chordVoicingPitches(notesForPlayback, baseOctave, chord.bassNote)
+      .map((p) => getMidiNumber(p, p.octave));
     for (const m of midiNumbers) addActiveNote(m);
-    playChordVoiced(notesForPlayback, baseOctave, duration, config);
+    playChordVoiced(notesForPlayback, baseOctave, duration, config, chord.bassNote);
     const t = setTimeout(() => {
       for (const m of midiNumbers) removeActiveNote(m);
     }, duration * 1000);
     timeoutsRef.current.push(t);
-  }, [notesForPlayback, synthPreset, baseOctave, addActiveNote, removeActiveNote, clearVisualTimeouts]);
+  }, [notesForPlayback, synthPreset, baseOctave, addActiveNote, removeActiveNote, clearVisualTimeouts, chord.bassNote]);
 
   const handlePlayArpeggio = useCallback(async () => {
     await resumeAudio();

@@ -18,6 +18,7 @@
 
 import { Note, PitchedNote } from '../types/music';
 import { getNoteFrequency, getPitchClass } from '../constants/notes';
+import { chordVoicingPitches } from '../utils/pianoLayout';
 
 // Audio context (lazy initialization)
 let audioContext: AudioContext | null = null;
@@ -1023,83 +1024,19 @@ export function playPitchedNotes(
   });
 }
 
-// Play chord with proper voicing - notes played simultaneously but with correct octave spacing
-// For low register (below middle C), uses open voicing to avoid muddiness
+// Play a chord voiced EXACTLY as the piano lights it (pianoLayout's
+// getVoicedChordNotes: close voicing from octave 4, open voicing below it with
+// the bass note lowest). The audio used to run its own open-voicing rules, so
+// F major at octave 1 sounded C1 F1 A2 while F1 C2 A2 lit up (audit W2-07
+// review B1). Optional slash bass sounds an octave below the voicing.
 export function playChordVoiced(
   notes: Note[],
   startOctave: number = 4,
   duration: number = 1,
-  config: Partial<SynthConfig> = {}
+  config: Partial<SynthConfig> = {},
+  bassNote?: Note,
 ): void {
-  // Reduce volume per note to prevent clipping
-  const adjustedConfig = {
-    ...config,
-    volume: (config.volume ?? DEFAULT_SYNTH_CONFIG.volume) * getChordVolumeScale(notes.length),
-  };
-
-  // For low register (below middle C), use open voicing
-  if (startOctave < 4 && notes.length >= 3) {
-    playChordOpenVoicing(notes, startOctave, duration, adjustedConfig);
-    return;
-  }
-
-  // Standard close voicing for higher registers
-  let currentOctave = startOctave;
-  let lastPitchClass = -1;
-
-  notes.forEach((note, i) => {
-    const pitchClass = getPitchClass(note);
-
-    // If this pitch class is lower or equal to the last one, bump up the octave
-    if (i > 0 && pitchClass <= lastPitchClass) {
-      currentOctave++;
-    }
-
-    playNote(note, currentOctave, duration, adjustedConfig);
-    lastPitchClass = pitchClass;
-  });
-}
-
-// Open voicing for low register chords - spreads notes to avoid muddiness
-// Analyzes intervals and moves close notes up an octave
-function playChordOpenVoicing(
-  notes: Note[],
-  startOctave: number,
-  duration: number,
-  config: Partial<SynthConfig>
-): void {
-  if (notes.length < 2) {
-    notes.forEach((note) => playNote(note, startOctave, duration, config));
-    return;
-  }
-
-  // Convert notes to pitch classes for interval analysis
-  const pitchClasses = notes.map((n) => getPitchClass(n));
-
-  // Root always stays in bass
-  playNote(notes[0], startOctave, duration, config);
-
-  // For remaining notes: keep wide intervals low, move close intervals up
-  // "Close" = less than 5 semitones from previous bass note
-  const MIN_BASS_INTERVAL = 5; // Perfect 4th minimum for clarity in bass
-  let lastBassPitchClass = pitchClasses[0];
-
-  for (let i = 1; i < notes.length; i++) {
-    const pc = pitchClasses[i];
-    // Calculate interval from last bass note (handle wrapping)
-    let interval = pc - lastBassPitchClass;
-    if (interval < 0) interval += 12;
-    if (interval > 6) interval = 12 - interval; // Use smaller of up/down interval
-
-    if (interval >= MIN_BASS_INTERVAL && i < 3) {
-      // Wide interval — keep in bass register
-      playNote(notes[i], startOctave, duration, config);
-      lastBassPitchClass = pc;
-    } else {
-      // Close interval or upper chord tones — move up an octave
-      playNote(notes[i], startOctave + 1, duration, config);
-    }
-  }
+  playPitchedNotes(chordVoicingPitches(notes, startOctave, bassNote), duration, config);
 }
 
 // Stop all audio and reset audio context

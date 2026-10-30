@@ -151,8 +151,11 @@ export function ChordBuilderPanel() {
   const handlePlay = useCallback(async () => {
     if (active.size === 0 || inputNotes.length === 0) return;
     await resumeAudio();
-    playChordVoiced(inputNotes, baseOctave, 1.2, getSynthConfig(synthPreset));
-  }, [active.size, inputNotes, baseOctave, synthPreset]);
+    // A recognised chord plays exactly as the instruments light it (the
+    // selected chord's voicing); an unrecognised set plays as built.
+    const recognised = top && top.confidence === 'exact' ? top.chord : null;
+    playChordVoiced(recognised ? recognised.notes : inputNotes, baseOctave, 1.2, getSynthConfig(synthPreset), recognised?.bassNote);
+  }, [active.size, inputNotes, baseOctave, synthPreset, top]);
 
   const stepsSorted = useMemo(() => [...active].sort((a, b) => a - b), [active]);
   const intervalsLabel = stepsSorted.map(intervalAtStep).join(', ');

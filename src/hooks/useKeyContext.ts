@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useAppStore } from '../state/store.ts';
 import { buildScale } from '../core/constants/scales.ts';
 import { getDiatonicChordsForScale } from '../core/constants/chords.ts';
-import { getScaleNotesWithOctaves, getVoicedChordNotes, getMidiNumber } from '../core/utils/pianoLayout.ts';
+import { getScaleNotesWithOctaves, chordVoicingPitches, getMidiNumber } from '../core/utils/pianoLayout.ts';
 import { getPitchClass } from '../core/constants/notes.ts';
 import { buildSpellingMap, spellFromMap, spellSharpDefault } from '../core/utils/spelling.ts';
 import { degreeOf, degreeColorSlot } from '../core/utils/degreeSpelling.ts';
@@ -168,14 +168,10 @@ export function useKeyContext(): KeyContextValue {
     const s = new Set<number>();
     if (!selectedChord || invertedNotes.length === 0) return s;
 
-    const pitched = getVoicedChordNotes(invertedNotes, baseOctave);
-    for (const p of pitched) {
+    // The same pitches the chord plays (slash bass an octave below) — one
+    // voicing function for keys and sound (audit W2-07 review).
+    for (const p of chordVoicingPitches(invertedNotes, baseOctave, selectedChord.bassNote)) {
       s.add(getMidiNumber(p, p.octave));
-    }
-    // Add slash chord bass note one octave below the chord voicing
-    if (selectedChord.bassNote) {
-      const bassMidi = getMidiNumber(selectedChord.bassNote, baseOctave - 1);
-      s.add(bassMidi);
     }
     return s;
   }, [selectedChord, invertedNotes, baseOctave]);

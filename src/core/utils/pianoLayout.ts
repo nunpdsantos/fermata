@@ -340,3 +340,14 @@ export function chordFitsKeyboard(chordNotes: Note[], octave: number, bassNote?:
   if (bassNote) midis.push(getMidiNumber(bassNote, octave - 1));
   return midis.every((m) => m >= PIANO_MIDI_RANGE.low && m <= PIANO_MIDI_RANGE.high);
 }
+
+/**
+ * The exact pitches of a chord as the app both LIGHTS and PLAYS it: the
+ * voicing above from `octave`, plus a slash-chord bass an octave below
+ * (always under the voicing). One function for keys and sound, so what you
+ * see is what you hear (audit W2-07 review).
+ */
+export function chordVoicingPitches(notes: Note[], octave: number, bassNote?: Note): PitchedNote[] {
+  const voiced = notes.length > 0 ? getVoicedChordNotes(notes, octave) : [];
+  return bassNote ? [{ ...bassNote, octave: octave - 1 }, ...voiced] : voiced;
+}
