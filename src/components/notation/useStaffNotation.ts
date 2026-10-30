@@ -6,9 +6,9 @@
  * Hook managing VexFlow loading + rendering lifecycle.
  * Handles dynamic import, ResizeObserver, theme reactivity.
  */
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { loadVexFlow } from '../../utils/vexflowLoader';
-import { pitchedNoteToVexKey, vexAccidentals } from '../../utils/notationHelpers';
+import { pitchedNoteToVexKey, vexAccidentals, staffLayout } from '../../utils/notationHelpers';
 import { useAppStore } from '../../state/store';
 import type { PitchedNote } from '../../core/types/music';
 
@@ -48,6 +48,14 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
   const themeMode = useAppStore((s) => s.themeMode);
   const instrument = useAppStore((s) => s.instrument);
 
+  // Height and stave position that fit every note, ledger lines included (the
+  // exercise staff used to clip middle C at a fixed 100 px). Pure from props,
+  // so the container and the SVG always agree.
+  const layout = useMemo(
+    () => staffLayout(options.notes, resolveStaffClef(instrument, options.clef).clef, options.height ?? 150),
+    [options.notes, options.clef, options.height, instrument],
+  );
+
   // Load VexFlow
   useEffect(() => {
     let cancelled = false;
@@ -84,7 +92,7 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
     const w = options.width ?? containerWidth;
     if (w < 50) return; // too small
 
-    const h = options.height ?? 150;
+    const h = layout.height;
     const { clef, annotation } = resolveStaffClef(instrument, options.clef);
     const duration = options.duration ?? 'q';
 
@@ -109,7 +117,7 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
 
     // Build stave
     const staveX = 10;
-    const staveY = Math.max(0, (h - 80) / 2);
+    const staveY = layout.staveY;
     const staveWidth = w - 20;
     const stave = new Stave(staveX, staveY, staveWidth);
     if (annotation) stave.addClef(clef, 'default', annotation);
@@ -194,12 +202,12 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- themeMode triggers re-render so CSS custom properties are re-read
-  }, [loading, containerWidth, options.notes, options.clef, options.keySignature, options.width, options.height, options.noteColors, options.duration, options.chord, themeMode, instrument]);
+  }, [loading, containerWidth, options.notes, options.clef, options.keySignature, options.width, options.height, options.noteColors, options.duration, options.chord, themeMode, instrument, layout]);
 
   // Trigger render when dependencies change
   useEffect(() => {
     render();
   }, [render]);
 
-  return { containerRef, loading };
+  return { containerRef, loading, height: layout.height };
 }

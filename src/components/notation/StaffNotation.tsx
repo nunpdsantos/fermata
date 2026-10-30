@@ -33,7 +33,7 @@ export function StaffNotation({
   chord,
   className,
 }: StaffNotationProps) {
-  const { containerRef, loading } = useStaffNotation({
+  const { containerRef, loading, height: fittedHeight } = useStaffNotation({
     notes,
     clef,
     keySignature,
@@ -52,7 +52,7 @@ export function StaffNotation({
     <div
       ref={containerRef}
       className={className}
-      style={{ width: width ?? '100%', height, minHeight: height }}
+      style={{ width: width ?? '100%', height: fittedHeight, minHeight: fittedHeight }}
     />
   );
 }

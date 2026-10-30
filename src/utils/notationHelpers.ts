@@ -111,3 +111,44 @@ export function keySignatureAlterations(sig: string | undefined | null): Partial
 export function vexAccidentals(notes: readonly PitchedNote[], sig?: string | null): StaffAccidental[] {
   return staffAccidentals(notes, keySignatureAlterations(sig));
 }
+
+// ─── Staff layout ───────────────────────────────────────────────────────────
+
+const LETTER_INDEX: Record<NaturalNote, number> = { C: 0, D: 1, E: 2, F: 3, G: 4, A: 5, B: 6 };
+const CLEF_LINE_SHIFT: Record<'treble' | 'bass', number> = { treble: 0, bass: 6 };
+
+/**
+ * The VexFlow staff line of a note (keyProperties): 1 = bottom staff line,
+ * 5 = top line, 0 = middle C in treble, half-lines for spaces.
+ */
+export function staffLine(note: PitchedNote, clef: 'treble' | 'bass'): number {
+  const octave = writtenOctave(note, note.octave);
+  return (octave * 7 - 28 + LETTER_INDEX[note.natural]) / 2 + CLEF_LINE_SHIFT[clef];
+}
+
+/**
+ * Where to put the stave and how tall to draw it so every note fits: the
+ * requested height for notes on the staff, grown (and the stave moved down)
+ * for ledger-line notes above or below it. VexFlow places a note's centre at
+ * staveY + 90 − 10·line (10 px per line, 4 lines of headroom); a notehead and
+ * its ledger line need about 8 px either side of that centre.
+ */
+export function staffLayout(
+  notes: readonly PitchedNote[],
+  clef: 'treble' | 'bass',
+  requestedHeight: number,
+): { height: number; staveY: number } {
+  let staveY = Math.max(0, (requestedHeight - 80) / 2);
+  let height = requestedHeight;
+  if (notes.length === 0) return { height, staveY };
+  const lines = notes.map((n) => staffLine(n, clef));
+  const MARGIN = 8;
+  const top = staveY + 90 - 10 * Math.max(...lines) - MARGIN;
+  if (top < 0) {
+    staveY -= top;
+    height -= top;
+  }
+  const bottom = staveY + 90 - 10 * Math.min(...lines) + MARGIN;
+  if (bottom > height) height = bottom;
+  return { height: Math.ceil(height), staveY };
+}
