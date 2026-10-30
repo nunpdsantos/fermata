@@ -708,6 +708,8 @@
       "triadStack": "{{chord}} stacks {{stack}} from the root: {{notes}}.",
       "scaleKeySig": "The {{scale}} scale uses its key signature: {{accs}}.",
       "scaleNoAccidentals": "The {{scale}} scale has no sharps or flats.",
+      "scaleDegree": "The {{scale}} scale is {{notes}}, so degree {{num}} is {{answer}}. Key signature: {{accs}}.",
+      "scaleDegreeNoAccidentals": "The {{scale}} scale is {{notes}}, so degree {{num}} is {{answer}}. No sharps or flats.",
       "harmonicRaise": "The {{scale}} scale raises {{raised}} relative to the natural minor.",
       "seventhLadder": "Build from the major 7th, then {{step}}. That gives {{chord}}.",
       "diatonicMember": "{{chord}} is the diatonic chord built on that degree of {{key}}.",

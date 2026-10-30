@@ -708,6 +708,8 @@
       "triadStack": "{{chord}} apila {{stack}} desde la fundamental: {{notes}}.",
       "scaleKeySig": "La escala de {{scale}} usa su armadura de clave: {{accs}}.",
       "scaleNoAccidentals": "La escala de {{scale}} no tiene sostenidos ni bemoles.",
+      "scaleDegree": "La escala de {{scale}} es {{notes}}, así que el grado {{num}} es {{answer}}. Armadura de clave: {{accs}}.",
+      "scaleDegreeNoAccidentals": "La escala de {{scale}} es {{notes}}, así que el grado {{num}} es {{answer}}. Sin sostenidos ni bemoles.",
       "harmonicRaise": "La escala de {{scale}} eleva {{raised}} respecto a la menor natural.",
       "seventhLadder": "Parte de la séptima mayor y luego {{step}}. Eso da {{chord}}.",
       "diatonicMember": "{{chord}} es el acorde diatónico construido sobre ese grado de {{key}}.",

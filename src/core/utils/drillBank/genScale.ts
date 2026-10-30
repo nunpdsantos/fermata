@@ -54,6 +54,31 @@ function keySigWhy(
   };
 }
 
+/**
+ * Explanation for a degree-of item (review of W7): the scale spelled out in
+ * ♯/♭ glyphs, the degree asked for, and the key signature (or "no sharps or
+ * flats") — so the explanation shows where the answer comes from.
+ */
+function degreeWhy(
+  signatureKey: Note,
+  scaleDisplay: string,
+  scaleNotes: Note[],
+  num: number,
+): { whyKey: string; whyParams: Record<string, string | number> } {
+  const sig = keySignatureOf(signatureKey);
+  const base = {
+    scale: scaleDisplay,
+    notes: scaleNotes.map(displayNote).join(' '),
+    num,
+    answer: displayNote(scaleNotes[num - 1]),
+  };
+  if (sig.count === 0) return { whyKey: 'drill.why.scaleDegreeNoAccidentals', whyParams: base };
+  return {
+    whyKey: 'drill.why.scaleDegree',
+    whyParams: { ...base, accs: sig.accidentals.map(displayNote).join(' ') },
+  };
+}
+
 // Rank base for a major tonic key string
 function keyRankBase(keyAscii: string): number {
   const idx = KEY_PRIORITY.indexOf(keyAscii);
@@ -101,7 +126,7 @@ export function genScale(): DrillItem[] {
         promptParams: { num: n, key: scaleDisplay },
         input: { format: 'choice', choices },
         answer: { kind: 'choice', correct },
-        ...majorWhy,
+        ...degreeWhy(majorTonic, scaleDisplay, scale.notes, n),
         rank: baseRank + n - 1,
       });
     }
@@ -169,7 +194,7 @@ export function genScale(): DrillItem[] {
             promptParams: { num: n, key: scaleDisplay },
             input: { format: 'choice', choices },
             answer: { kind: 'choice', correct },
-            ...naturalWhy,
+            ...degreeWhy(majorTonic, scaleDisplay, scale.notes, n),
             rank: minorKeyRankBase + n,
           });
         }

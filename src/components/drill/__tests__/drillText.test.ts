@@ -201,13 +201,50 @@ describe('text polish (W7-12)', () => {
   });
 
   it('scale explanations name the key signature in ♯/♭, not the whole scale in ASCII', () => {
-    expect(why('scale:degree-of:A:major:3', 'en')).toBe('The A major scale uses its key signature: F♯ C♯ G♯.');
-    expect(why('scale:degree-of:e:natural_minor:2', 'en')).toBe('The E natural minor scale uses its key signature: F♯.');
+    expect(why('scale:spell:A:major', 'en')).toBe('The A major scale uses its key signature: F♯ C♯ G♯.');
+    expect(why('scale:spell:e:natural_minor', 'en')).toBe('The E natural minor scale uses its key signature: F♯.');
     expect(why('scale:spell:C:major', 'en')).toBe('The C major scale has no sharps or flats.');
     expect(why('scale:spell:a:natural_minor', 'pt')).toBe('A escala de A menor natural não tem sustenidos nem bemóis.');
     expect(why('scale:spell:Eb:major', 'es')).toBe('La escala de E♭ mayor usa su armadura de clave: B♭ E♭ A♭.');
     for (const it of BANK.filter((i) => i.family === 'scale')) {
       expect(itemWhy(it, T('en'), 'en'), it.id).not.toMatch(/[A-G](#|b)\b/);
+    }
+  });
+
+  // Review of W7: a degree-of explanation that only gave the key signature
+  // left the learner to rebuild the scale; it now spells the scale (♯/♭
+  // glyphs) and names the degree, keeping the signature.
+  it('degree-of explanations spell the scale and name the degree (all 180 items)', () => {
+    expect(why('scale:degree-of:A:major:3', 'en')).toBe(
+      'The A major scale is A B C♯ D E F♯ G♯, so degree 3 is C♯. Key signature: F♯ C♯ G♯.',
+    );
+    expect(why('scale:degree-of:C:major:5', 'en')).toBe(
+      'The C major scale is C D E F G A B, so degree 5 is G. No sharps or flats.',
+    );
+    expect(why('scale:degree-of:e:natural_minor:2', 'en')).toBe(
+      'The E natural minor scale is E F♯ G A B C D, so degree 2 is F♯. Key signature: F♯.',
+    );
+    expect(why('scale:degree-of:A:major:3', 'pt')).toBe(
+      'A escala de A maior é A B C♯ D E F♯ G♯, por isso o grau 3 é C♯. Armação de clave: F♯ C♯ G♯.',
+    );
+    expect(why('scale:degree-of:a:natural_minor:4', 'pt')).toBe(
+      'A escala de A menor natural é A B C D E F G, por isso o grau 4 é D. Sem sustenidos nem bemóis.',
+    );
+    expect(why('scale:degree-of:Eb:major:7', 'es')).toBe(
+      'La escala de E♭ mayor es E♭ F G A♭ B♭ C D, así que el grado 7 es D. Armadura de clave: B♭ E♭ A♭.',
+    );
+    expect(why('scale:degree-of:C:major:2', 'es')).toBe(
+      'La escala de C mayor es C D E F G A B, así que el grado 2 es D. Sin sostenidos ni bemoles.',
+    );
+    const degreeItems = BANK.filter((i) => i.id.startsWith('scale:degree-of:'));
+    expect(degreeItems).toHaveLength(180);
+    for (const it of degreeItems) {
+      const answerText = it.answer.kind === 'choice' ? it.answer.correct : '';
+      for (const lang of ['en', 'pt', 'es'] as const) {
+        const w = itemWhy(it, T(lang), lang);
+        expect(w, `${lang} ${it.id}`).toContain(answerText);
+        expect(w, `${lang} ${it.id}`).not.toMatch(/[A-G](#|b)\b|\{\{/);
+      }
     }
   });
 });
