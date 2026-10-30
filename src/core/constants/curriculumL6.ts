@@ -83,14 +83,14 @@ const l6u18m2: CurriculumModule = {
     {
       title: 'The Italian Sixth (It+6)',
       explanation:
-        'The Italian sixth has three notes: b6, 1, #4. In C: Ab-C-F#. It is the simplest augmented sixth chord \u2014 just the augmented sixth interval plus scale degree 1 to fill out the sonority. It resolves directly to V with scale degree 1 doubled. Because it contains only three notes, it is the lightest and most transparent member of the family.',
+        'The Italian sixth has three notes: b6, 1, #4. In C: Ab-C-F#. It is the simplest augmented sixth chord \u2014 just the augmented sixth interval plus scale degree 1 to fill out the sonority. In four voices, scale degree 1 is the doubled note, and the chord resolves directly to V. Because it contains only three notes, it is the lightest and most transparent member of the family.',
       tryThisQuery: 'Ab major chord',
       tryThisLabel: 'Hear Ab \u2014 the bass note of augmented sixths in C',
     },
     {
       title: 'The French Sixth (Fr+6)',
       explanation:
-        'The French sixth has four notes: b6, 1, 2, #4. In C: Ab-C-D-F#. It adds scale degree 2 to the Italian sixth. The result contains two tritones (Ab-D and C-F#), giving it a distinctive whole-tone quality \u2014 all four notes belong to the same whole-tone collection. This exotic, unresolved color makes the French sixth a favorite of composers seeking maximum pre-dominant tension.',
+        'The French sixth has four notes: b6, 1, 2, #4. In C: Ab-C-D-F#. It adds scale degree 2 to the Italian sixth. The result contains two tritones (Ab-D and C-F#), giving it a distinctive whole-tone quality \u2014 all four notes belong to the same whole-tone collection (a six-note scale built entirely of whole steps, explored later in this level). This exotic, unresolved color makes the French sixth a favorite of composers seeking maximum pre-dominant tension.',
       tryThisQuery: 'G major chord',
       tryThisLabel: 'Hear G major \u2014 the V chord these resolve to in C',
     },
@@ -132,7 +132,7 @@ const l6u18m3: CurriculumModule = {
     {
       title: 'The German Sixth (Gr+6)',
       explanation:
-        'The German sixth has four notes: b6, 1, b3, #4. In C: Ab-C-Eb-F#. It adds the lowered 3rd degree (from minor mode) to the Italian sixth. Unlike the French sixth\u2019s whole-tone color, the German sixth sounds rich and full \u2014 it is a complete four-note sonority with a minor quality in its lower three notes.',
+        'The German sixth has four notes: b6, 1, b3, #4. In C: Ab-C-Eb-F#. It adds the lowered 3rd degree (from minor mode) to the Italian sixth. Unlike the French sixth\u2019s whole-tone color, the German sixth sounds rich and full \u2014 a complete four-note sonority whose lower three notes (Ab-C-Eb) form a major triad, which is why it sounds exactly like a dominant seventh.',
       tryThisQuery: 'Ab7',
       tryThisLabel: 'Hear Ab7 \u2014 the enharmonic twin of Gr+6 in C',
     },
@@ -375,7 +375,7 @@ const l6u19m3: CurriculumModule = {
     {
       title: 'The Omnibus Progression',
       explanation:
-        'The omnibus is a chromatic voice-exchange pattern where one voice ascends chromatically while another descends, with the remaining voices holding steady. This creates a slowly evolving harmonic landscape moving through dominant seventh and augmented sixth sonorities. Common in 19th-century music, it produces a sense of harmonic wandering without clear functional direction.',
+        'The omnibus is a chromatic voice-exchange pattern (a voice exchange is two voices trading pitches with each other): one voice ascends chromatically while another descends, with the remaining voices holding steady. This creates a slowly evolving harmonic landscape moving through dominant seventh and augmented sixth sonorities. Common in 19th-century music, it produces a sense of harmonic wandering without clear functional direction.',
       tryThisQuery: 'C7#5',
       tryThisLabel: 'Hear C7#5 \u2014 an altered dominant sonority',
     },
@@ -417,9 +417,9 @@ const l6u19m4: CurriculumModule = {
     {
       title: 'Equal Division of the Octave',
       explanation:
-        'Symmetric patterns that divide the 12 half steps equally create tonal ambiguity because no single note feels like home. Division by 2 yields the whole-tone scale (6 notes, only 2 transpositions possible). Division by 3 yields the diminished seventh chord (4 notes). Division by 4 yields the augmented triad (3 notes). These structures were exploited by Debussy, Ravel, Liszt, and Wagner to blur or dissolve key centers.',
+        'Symmetric patterns that divide the octave\u2019s 12 half steps into equal parts create tonal ambiguity because no single note feels like home. Steps of 2 half steps cut the octave into 6 equal parts: the whole-tone scale (6 notes, only 2 transpositions possible). Steps of 3 half steps (minor thirds) cut it into 4 equal parts: the diminished seventh chord (4 notes). Steps of 4 half steps (major thirds) cut it into 3 equal parts: the augmented triad (3 notes). These structures were exploited by Debussy, Ravel, Liszt, and Wagner to blur or dissolve key centers.',
       tryThisQuery: 'whole tone scale',
-      tryThisLabel: 'Hear the whole-tone scale \u2014 division by 2',
+      tryThisLabel: 'Hear the whole-tone scale \u2014 the octave in 6 equal whole steps',
     },
     {
       title: 'Nonfunctional Chord Successions',
@@ -431,7 +431,7 @@ const l6u19m4: CurriculumModule = {
     {
       title: 'Chromatic Planing and Extended Tonality',
       explanation:
-        'Planing moves a chord shape in parallel by step or half step, ignoring key constraints. Chromatic planing (all half steps) produces a wash of pure color with no functional direction. Diatonic planing adjusts interval quality to stay in the key. Extended tonality stretches tonal boundaries: remote modulations become frequent, chromatic saturation makes key identification difficult, and traditional cadences are avoided. This is the twilight of common-practice tonality.',
+        'Planing moves a chord shape in parallel motion, ignoring key constraints. Chromatic (real) planing keeps every chord\u2019s exact quality as it moves, whatever the interval, producing a wash of pure color with no functional direction. Diatonic planing adjusts interval quality to stay in the key. Extended tonality stretches tonal boundaries: remote modulations become frequent, chromatic saturation makes key identification difficult, and traditional cadences are avoided. This is the twilight of common-practice tonality.',
       tryThisQuery: 'whole tone scale',
       tryThisLabel: 'Explore the whole-tone world \u2014 Debussy\u2019s palette',
     },
@@ -446,7 +446,7 @@ const l6u19m4: CurriculumModule = {
     {
       id: 'l6u19m4t2',
       instruction:
-        "Type 'C diminished scale' \u2014 this alternating whole-half pattern creates a symmetric eight-note scale containing four tritones and four minor thirds, dividing the octave into equal parts",
+        "Type 'C diminished scale' \u2014 this alternating whole-half pattern creates a symmetric eight-note scale made of two complete diminished seventh chords interlocked, so it contains eight minor thirds and four tritones, and its pattern repeats every minor third, dividing the octave into four equal parts",
       query: 'C diminished scale',
     },
     {
@@ -485,7 +485,7 @@ const l6u20m1: CurriculumModule = {
     {
       title: 'Second Species (2:1)',
       explanation:
-        'Two notes against each CF note. Strong beats must be consonant with the CF. Weak beats may also be consonant \u2014 a leap to a consonant interval is permitted. Weak beats may be dissonant if approached and left by step (passing tone) or if they step away and return (neighbor tone). No unisons on strong beats except at the beginning and end. Second species introduces the fundamental principle of dissonance treatment: dissonance is permitted only when controlled by stepwise motion.',
+        'Two notes against each CF note. Strong beats must be consonant with the CF. Weak beats may also be consonant \u2014 a leap to a consonant interval is permitted. Weak beats may be dissonant only as passing tones \u2014 approached and left by step in the same direction (neighbor tones wait until third species). No unisons on strong beats except at the beginning and end. Second species introduces the fundamental principle of dissonance treatment: dissonance is permitted only when controlled by stepwise motion.',
       tryThisQuery: 'G major scale',
       tryThisLabel: 'See G major \u2014 another common CF key',
     },
@@ -511,7 +511,7 @@ const l6u20m1: CurriculumModule = {
     {
       id: 'l6u20m1t3',
       instruction:
-        'In third species, the cambiata is a specific ornamental figure: consonance, step to dissonance, leap of a third in the same direction, then step back. It allows a dissonant note to be left by leap \u2014 the only exception to the rule that dissonance must resolve by step',
+        'In third species, the cambiata is a specific ornamental figure: consonance, step to dissonance, leap of a third in the same direction, then step back. It allows a dissonant note to be left by leap \u2014 one of the few exceptions to the rule that dissonance must resolve by step (the double neighbor, also allowed in third species, is another)',
     },
   ],
   prerequisites: ['l6u19m4'],
@@ -588,7 +588,7 @@ const l6u20m3: CurriculumModule = {
     {
       title: 'Adding Voices: Three- and Four-Part Writing',
       explanation:
-        'When a third voice enters, it must form valid intervals with both existing voices simultaneously, multiplying the constraints. Three-part writing produces complete triads, adding harmonic richness. Four-part writing further constrains movement but opens the full SATB texture. Each additional voice exponentially increases the number of interval pairs that must be checked for parallel fifths and octaves.',
+        'When a third voice enters, it must form valid intervals with both existing voices simultaneously, multiplying the constraints. Three-part writing produces complete triads, adding harmonic richness. Four-part writing further constrains movement but opens the full SATB texture. Each additional voice quickly increases the number of interval pairs that must be checked for parallel fifths and octaves: 2 voices make 1 pair, 3 voices make 3, and 4 voices make 6.',
       tryThisQuery: 'C major chord',
       tryThisLabel: 'Hear a three-note triad \u2014 the simplest 3-voice sonority',
     },
@@ -597,7 +597,7 @@ const l6u20m3: CurriculumModule = {
       explanation:
         'Invertible counterpoint at the octave means two melodies work correctly with either voice on top. When inverted, 3rds become 6ths (acceptable), but 5ths become 4ths (dissonant above the bass in common-practice style). So invertible counterpoint at the octave avoids 5ths. Inversion at the tenth transforms 3rds into octaves and 6ths into 5ths. Inversion at the twelfth transforms 5ths into octaves \u2014 J.S. Bach used this extensively in his fugues.',
       tryThisQuery: 'C/E',
-      tryThisLabel: 'Hear C/E \u2014 inverting the bass changes the texture',
+      tryThisLabel: 'Hear C/E \u2014 the 3rd C-E turned upside down becomes the 6th E-C',
     },
     {
       title: 'Triple Counterpoint',
@@ -659,7 +659,7 @@ const l6u20m4: CurriculumModule = {
       explanation:
         'A full orchestral score arranges instruments top to bottom: woodwinds, brass, percussion, strings. Transposing instruments (clarinet in Bb, horn in F) are written at a different pitch than they sound. Reading a score requires mentally transposing these parts to concert pitch, reading C clefs (alto for viola, tenor for cello), and reducing multiple voices to their essential harmonic content.',
       tryThisQuery: 'Bb major scale',
-      tryThisLabel: 'See Bb major \u2014 the key a Bb clarinet reads in',
+      tryThisLabel: 'See Bb major \u2014 what a Bb clarinet sounds when it reads C major',
     },
   ],
   tasks: [

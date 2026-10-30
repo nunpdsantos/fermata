@@ -119,12 +119,12 @@ const overlay: ExerciseLevelOverlay = {
   l6u18m4e2: {
     prompt: 'A modulação enarmónica via Gr+6/V7 permite modulação direta para tonalidades a que distância?',
     choices: [
-      'Tonalidades distantes -- até um trítono ou mais, muito além do alcance de pivot diatónico',
+      'Tonalidades distantes -- por exemplo, tónicas a meio-tom de distância (C para Db), cinco passos no círculo de quintas, muito além do alcance de pivot diatónico',
       'Apenas tonalidades próximas com uma diferença de um acidente',
       'Apenas entre tonalidades paralelas maior e menor',
-      'Exatamente meio-tom de distância e não mais',
+      'Apenas entre tonalidades relativas maior e menor',
     ],
-    hint: 'Os acordes pivot diatónicos ligam apenas tonalidades próximas. A reinterpretação enarmónica de Gr+6 como V7 (ou vice-versa) pode ligar tonalidades a um trítono ou mais de distância -- a técnica-assinatura dos compositores do período romântico.',
+    hint: 'Os acordes pivot diatónicos ligam apenas tonalidades próximas. Reinterpretar a Gr+6 da tonalidade como V7 (ou vice-versa) move a tónica meio-tom -- de C para Db são cinco passos no círculo de quintas, uma tonalidade distante alcançada através de um único acorde. É uma técnica-assinatura dos compositores do período romântico.',
   },
   l6u18m4e3: {
     prompt: 'Se uma Gr+6 em Dó menor (Ab, C, Eb, F#) for reinterpretada como V7, que tonalidade toniciza agora?',
@@ -232,7 +232,7 @@ const overlay: ExerciseLevelOverlay = {
       'Duas notas comuns com uma voz a mover-se por tom',
       'Movimento da fundamental por quinta com notas do acorde alteradas',
     ],
-    hint: 'As mediantes cromáticas partilham frequentemente uma nota comum enquanto as outras vozes se deslocam por meio-tom. Em alguns casos (mediantes duplamente cromáticas como Dó maior para Réb menor) não há notas comuns, com deslocações cromáticas dramáticas em todas as vozes.',
+    hint: 'As mediantes cromáticas partilham frequentemente uma nota comum enquanto as outras vozes se deslocam por meio-tom. Em alguns casos (mediantes duplamente cromáticas como C maior para Ab menor, Ab-Cb-Eb) não há notas comuns, e todas as vozes se deslocam meio-tom: C para Cb, E para Eb, G para Ab.',
   },
 
   // ---- l6u19m4: Técnicas Tardo-Românticas ----
@@ -302,7 +302,7 @@ const overlay: ExerciseLevelOverlay = {
       'Duas notas contra cada nota do cantus firmus',
       'Ritmo livre sem proporção fixa',
     ],
-    hint: 'A terceira espécie coloca quatro semínimas contra cada semibreve do cantus firmus. Isto introduz bordaduras e notas de passagem duplas além das notas de passagem da segunda espécie.',
+    hint: 'A terceira espécie coloca quatro semínimas contra cada semibreve do cantus firmus. Isto introduz bordaduras e notas de passagem duplas (duas notas de passagem seguidas, movendo-se por grau conjunto numa só direção para preencher uma quarta) além das notas de passagem da segunda espécie.',
   },
 
   // ---- l6u20m2: Contraponto de Espécies 4-5 ----

@@ -135,7 +135,7 @@ const overlay: TemplateLevelOverlay = {
           'O acorde reescrito resolve para a mesma tonalidade',
         ],
         [
-          'Este pivot enarmónico permite modulação para tonalidades a meio-tom de distância da dominante',
+          'Este pivot enarmónico permite modulação para tonalidades meio-tom acima ou abaixo da tónica',
           'Esta técnica só modula entre tonalidades paralelas',
           'Esta técnica limita-se a tonalidades próximas',
           'Este tipo de modulação nunca foi usado historicamente',
@@ -257,7 +257,7 @@ const overlay: TemplateLevelOverlay = {
           'As mediantes cromáticas limitam-se a peças em modo maior',
         ],
         [
-          'Dó maior para Láb maior é uma mediante cromática: fundamentais a uma 3.aM de distância, partilhando uma nota comum (Dó/Mib)',
+          'C maior para Ab maior é uma mediante cromática: fundamentais a uma 3.aM de distância, partilhando uma nota comum (C)',
           'Dó para Láb é uma relação de dominante',
           'Esta relação não tem notas comuns',
           'Dó para Láb é uma relação de subdominante',
@@ -309,7 +309,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica a divisão simétrica da oitava descrita.',
       hintTemplate:
-        'Divisões iguais: trítono (2 notas, div por 6), tríade aumentada (3 notas, div por 4), dim7 (4 notas, div por 3), tons inteiros (6 notas, div por 2).',
+        'Divisões iguais: trítono (2 partes iguais, passos de 6 meios-tons), tríade aumentada (3 partes iguais, passos de 4), sétima diminuta (4 partes iguais, passos de 3), escala de tons inteiros (6 partes iguais, passos de 2).',
       choiceSets: [
         [
           'Uma tríade aumentada divide a oitava em 3 terças maiores iguais',

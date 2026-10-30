@@ -86,13 +86,13 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'A Sexta Italiana (It+6)',
           explanation:
-            'A sexta italiana tem três notas: b6, 1, #4. Em Dó: Láb-Dó-Fá#. É o acorde de sexta aumentada mais simples -- apenas o intervalo de sexta aumentada mais o 1.o grau para preencher a sonoridade. Resolve diretamente para V com a fundamental duplicada. Por conter apenas três notas, é o membro mais leve e transparente da família.',
+            'A sexta italiana tem três notas: b6, 1, #4. Em Dó: Láb-Dó-Fá#. É o acorde de sexta aumentada mais simples -- apenas o intervalo de sexta aumentada mais o 1.o grau para preencher a sonoridade. Em quatro vozes, o 1.o grau é a nota duplicada, e o acorde resolve diretamente para V. Por conter apenas três notas, é o membro mais leve e transparente da família.',
           tryThisLabel: 'Ouve Láb -- a nota do baixo das sextas aumentadas em Dó',
         },
         {
           title: 'A Sexta Francesa (Fr+6)',
           explanation:
-            'A sexta francesa tem quatro notas: b6, 1, 2, #4. Em Dó: Láb-Dó-Ré-Fá#. Acrescenta o 2.o grau à sexta italiana. O resultado contém dois trítonos (Láb-Ré e Dó-Fá#), conferindo-lhe uma qualidade característica de tons inteiros -- as quatro notas pertencem à mesma coleção de tons inteiros. Esta cor exótica e suspensa torna a sexta francesa favorita dos compositores que procuram a máxima tensão pré-dominante.',
+            'A sexta francesa tem quatro notas: b6, 1, 2, #4. Em Dó: Láb-Dó-Ré-Fá#. Acrescenta o 2.o grau à sexta italiana. O resultado contém dois trítonos (Láb-Ré e Dó-Fá#), conferindo-lhe uma qualidade característica de tons inteiros -- as quatro notas pertencem à mesma coleção de tons inteiros (uma escala de seis notas feita só de tons inteiros, explorada mais adiante neste nível). Esta cor exótica e suspensa torna a sexta francesa favorita dos compositores que procuram a máxima tensão pré-dominante.',
           tryThisLabel: 'Ouve Sol maior -- o acorde V para o qual estas sextas resolvem em Dó',
         },
       ],
@@ -125,7 +125,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'A Sexta Alemã (Gr+6)',
           explanation:
-            'A sexta alemã tem quatro notas: b6, 1, b3, #4. Em Dó: Láb-Dó-Mib-Fá#. Acrescenta o 3.o grau rebaixado (do modo menor) à sexta italiana. Ao contrário da cor de tons inteiros da sexta francesa, a sexta alemã soa rica e cheia -- é uma sonoridade completa de quatro notas com uma qualidade menor nas três notas inferiores.',
+            'A sexta alemã tem quatro notas: b6, 1, b3, #4. Em C: Ab-C-Eb-F#. Acrescenta o 3.o grau rebaixado (do modo menor) à sexta italiana. Ao contrário da cor de tons inteiros da sexta francesa, a sexta alemã soa rica e cheia -- uma sonoridade completa de quatro notas cujas três notas inferiores (Ab-C-Eb) formam uma tríade maior, e é por isso que soa exatamente como um acorde de sétima da dominante.',
           tryThisLabel: 'Ouve Láb7 -- o gémeo enarmónico da Gr+6 em Dó',
         },
         {
@@ -170,7 +170,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'O Pivot Gr+6/V7 em Ação',
           explanation:
-            'Para modular de Dó para Réb usando esta técnica: estabelece Dó como tonalidade, aborda o acorde Láb-Dó-Mib-Fá# como Gr+6 em Dó, depois resolve-o como Láb7 (V7 de Réb) para Réb maior. O ouvido do ouvinte aceita ambas as interpretações porque o acorde é acusticamente idêntico. A resolução determina a tonalidade percebida. Um único acorde pivota entre tonalidades que distam meio-tom -- uma das relações mais distantes no círculo de quintas.',
+            'Para modular de C para Db usando esta técnica: estabelece C como tonalidade, aborda o acorde Ab-C-Eb-F# como Gr+6 em C, depois resolve-o como Ab7 (V7 de Db) para Db maior. O ouvido do ouvinte aceita ambas as interpretações porque o acorde é acusticamente idêntico. A resolução determina a tonalidade percebida. A mesma nota (F♯/G♭) move-se em direções opostas consoante a interpretação: como ♯4 na sexta aumentada, resolve para cima; como ♭7 do acorde de sétima da dominante, resolve para baixo. Um único acorde pivota entre tonalidades que distam meio-tom -- uma das relações mais distantes no círculo de quintas.',
           tryThisLabel: 'Vê como Dó e Réb estão distantes no círculo',
         },
         {
@@ -197,7 +197,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escreve "Db major chord" e ouve a tonalidade de chegada. Uma única reinterpretação enarmónica moveu-nos de Dó para Réb -- seis posições ao redor do círculo de quintas num só passo',
+            'Escreve "Db major chord" e ouve a tonalidade de chegada. Uma única reinterpretação enarmónica moveu-nos de C para Db -- cinco posições ao redor do círculo de quintas num só passo',
         },
       ],
     },
@@ -208,7 +208,7 @@ const curriculumL6: CurriculumLevelOverlay = {
       subtitle: 'A flexibilidade enarmónica quádrupla do acorde de sétima diminuta',
       objectives: [
         'Compreender que um acorde de sétima diminuta divide a oitava em quatro terças menores iguais',
-        'Reinterpretar qualquer nota de um acorde dim7 como sensível para resolver em quatro tonalidades diferentes',
+        'Reinterpretar qualquer nota de um acorde dim7 como sensível para resolver em quatro tónicas diferentes (cada uma acessível em maior ou menor)',
         'Aplicar a modulação enarmónica por dim7 para alcançar tonalidades a uma terça menor, um trítono ou uma sexta maior de distância',
       ],
       concepts: [
@@ -253,20 +253,20 @@ const curriculumL6: CurriculumLevelOverlay = {
       subtitle: 'O acorde CTo7 como embelezamento cromático que partilha uma nota com o acorde-alvo',
       objectives: [
         'Construir um acorde CTo7 que partilha a fundamental do acorde-alvo',
-        'Resolver o CTo7 corretamente mantendo a nota comum e movendo as outras três vozes por meio-tom',
+        'Resolver o CTo7 corretamente mantendo a nota comum e movendo as outras três vozes por grau conjunto (duas por meio-tom, uma por tom)',
         'Distinguir o CTo7 de um viio7 funcional -- o CTo7 embeleza em vez de modular',
       ],
       concepts: [
         {
           title: 'O Que É o CTo7?',
           explanation:
-            'Um acorde de sétima diminuta com nota comum partilha uma nota (a nota comum) com o acorde que embeleza. A nota comum é geralmente a fundamental do acorde-alvo. As outras três notas do acorde dim7 resolvem cada uma por meio-tom para as restantes notas do acorde. Ao contrário de um viio7 funcional, o CTo7 não muda a tonalidade -- cria uma abordagem cromática dramática a um acorde que o ouvinte já espera.',
+            'Um acorde de sétima diminuta com nota comum partilha uma nota (a nota comum) com o acorde que embeleza. A nota comum é geralmente a fundamental do acorde-alvo. As outras três notas do acorde dim7 resolvem cada uma por grau conjunto (duas por meio-tom, uma por tom) para as restantes notas do acorde. Ao contrário de um viio7 funcional, o CTo7 não muda a tonalidade -- cria uma abordagem cromática dramática a um acorde que o ouvinte já espera.',
           tryThisLabel: 'Ouve Dó maior -- o acorde-alvo que um CTo7 embeleza',
         },
         {
           title: 'Construir o CTo7',
           explanation:
-            'Para construir o CTo7 de Dó maior: mantém Dó como nota comum, depois preenche um acorde de sétima diminuta que inclua Dó. Uma opção: Dó-Ré#-Fá#-Lá (= Dó com Ré#dim7 a rodeá-lo). Ré# resolve subindo para Mi, Fá# resolve subindo para Sol, Lá resolve descendo para Sol (ou sobe para a oitava). As três vozes em movimento deslocam-se cada uma por meio-tom para dentro do acorde-alvo enquanto Dó se mantém firme. O resultado é uma abordagem cromática cintilante.',
+            'Para construir o CTo7 de C maior: mantém C como nota comum, depois preenche um acorde de sétima diminuta que inclua C. Uma opção: C-D#-F#-A (= C com D#dim7 a rodeá-lo). D# sobe meio-tom para E, F# sobe meio-tom para G, A desce um tom para G. Duas vozes movem-se por meio-tom e uma por tom, enquanto C se mantém firme. O resultado é uma abordagem cromática cintilante.',
           tryThisLabel: 'Toca Dó maior -- ouve o alvo da resolução',
         },
         {
@@ -279,15 +279,15 @@ const curriculumL6: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Constrói o CTo7 de Dó maior: mantém Dó, acrescenta um acorde dim7 contendo Dó. Um resultado: Dó-Ré#-Fá#-Lá. Verifica que Ré#, Fá# e Lá resolvem cada um por meio-tom para notas do acorde de Dó maior (Mi, Sol e Sol ou Dó)',
+            'Constrói o CTo7 de C maior: mantém C, acrescenta um acorde dim7 contendo C. Um resultado: C-D#-F#-A. Verifica que D# e F# resolvem cada um por meio-tom (para E e G), enquanto A desce um tom para G',
         },
         {
           instruction:
-            'Constrói o CTo7 de Sol maior: mantém Sol, acrescenta um acorde dim7 contendo Sol. Resultado: Sol-Lá#-Dó#-Mi. Lá# resolve para Si, Dó# resolve para Ré, Mi mantém-se ou resolve para Ré. O alvo é Sol-Si-Ré',
+            'Constrói o CTo7 de G maior: mantém G, acrescenta um acorde dim7 contendo G. Resultado: G-A#-C#-E. A# resolve para B, C# resolve para D, E resolve para D (um tom abaixo). O alvo é G-B-D',
         },
         {
           instruction:
-            'Escreve "C major chord" e ouve o alvo da resolução. Agora imagina o acorde CTo7 (Dó-Ré#-Fá#-Lá) a aproximar-se -- três vozes deslocam-se por meio-tom enquanto Dó se sustenta. Isto é puro embelezamento cromático, não modulação',
+            'Escreve "C major chord" e ouve o alvo da resolução. Agora imagina o acorde CTo7 (C-D#-F#-A) a aproximar-se -- três vozes deslocam-se por grau conjunto (duas por meio-tom, uma por tom) enquanto C se sustenta. Isto é puro embelezamento cromático, não modulação',
         },
       ],
     },
@@ -305,7 +305,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'Mediantes Cromáticas',
           explanation:
-            'Uma mediante cromática é um acorde cuja fundamental dista uma terça maior ou menor do acorde atual, com pelo menos uma alteração cromática entre eles. A partir de Dó maior, Láb maior e Mi maior são mediantes cromáticas -- cada uma partilha uma nota comum com Dó, mas altera cromaticamente as restantes. Mediantes duplamente cromáticas não partilham qualquer nota comum. Estas mudanças dramáticas são uma marca das bandas sonoras e da música tardo-romântica.',
+            'Uma mediante cromática é um acorde cuja fundamental dista uma terça maior ou menor do acorde atual, com pelo menos uma alteração cromática entre eles. A partir de Dó maior, Láb maior e Mi maior são mediantes cromáticas -- cada uma partilha uma nota comum com Dó, mas altera cromaticamente as restantes. Mediantes duplamente cromáticas não partilham qualquer nota comum. Estas mudanças dramáticas são uma marca das bandas sonoras e da música tardo-romântica. Algumas mediantes cromáticas (como ♭VI) também podem ser analisadas como mistura modal -- a distinção depende do contexto e da função.',
           tryThisLabel: 'Ouve Láb maior -- mediante cromática de Dó',
         },
         {
@@ -317,7 +317,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'A Progressão Omnibus',
           explanation:
-            'O omnibus é um padrão cromático de troca de vozes onde uma voz sobe cromaticamente enquanto outra desce, com as restantes vozes a sustentar-se. Isto cria uma paisagem harmónica lentamente evolutiva, movendo-se através de sonoridades de sétima da dominante e de sexta aumentada. Comum na música do século XIX, produz uma sensação de errância harmónica sem direção funcional clara.',
+            'O omnibus é um padrão cromático de troca de vozes (numa troca de vozes, duas vozes trocam as notas entre si): uma voz sobe cromaticamente enquanto outra desce, com as restantes vozes a sustentar-se. Isto cria uma paisagem harmónica lentamente evolutiva, movendo-se através de sonoridades de sétima da dominante e de sexta aumentada. Comum na música do século XIX, produz uma sensação de errância harmónica sem direção funcional clara.',
           tryThisLabel: 'Ouve Dó7#5 -- uma sonoridade de dominante alterada',
         },
       ],
@@ -350,19 +350,19 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'Divisão Igual da Oitava',
           explanation:
-            'Padrões simétricos que dividem os 12 semitons igualmente criam ambiguidade tonal porque nenhuma nota se sente como "casa". A divisão por 2 produz a escala de tons inteiros (6 notas, apenas 2 transposições possíveis). A divisão por 3 produz o acorde de sétima diminuta (4 notas). A divisão por 4 produz a tríade aumentada (3 notas). Estas estruturas foram exploradas por Debussy, Ravel, Liszt e Wagner para esbater ou dissolver centros tonais.',
-          tryThisLabel: 'Ouve a escala de tons inteiros -- divisão por 2',
+            'Padrões simétricos que dividem os 12 meios-tons da oitava em partes iguais criam ambiguidade tonal porque nenhuma nota se sente como "casa". Passos de 2 meios-tons cortam a oitava em 6 partes iguais: a escala de tons inteiros (6 notas, apenas 2 transposições possíveis). Passos de 3 meios-tons (terças menores) cortam-na em 4 partes iguais: o acorde de sétima diminuta (4 notas). Passos de 4 meios-tons (terças maiores) cortam-na em 3 partes iguais: a tríade aumentada (3 notas). Estas estruturas foram exploradas por Debussy, Ravel, Liszt e Wagner para esbater ou dissolver centros tonais.',
+          tryThisLabel: 'Ouve a escala de tons inteiros -- a oitava em 6 tons iguais',
         },
         {
           title: 'Sucessões de Acordes Não Funcionais',
           explanation:
             'Na música tardo-romântica, as progressões de acordes abandonam cada vez mais a lógica funcional (T-PD-D-T). Em vez disso, os acordes ligam-se por proximidade de condução de vozes (cada voz move-se minimamente), persistência de nota comum (uma altura sustenta-se ao longo das mudanças de acorde) ou lógica de pura sonoridade (acordes escolhidos pela cor, não pela função). Isto marca o início da dissolução da tonalidade e o caminho rumo à atonalidade.',
-          tryThisLabel: 'Ouve a escala diminuta -- divisão simétrica por 3',
+          tryThisLabel: 'Ouve a escala diminuta -- 8 notas alternando tons e meios-tons',
         },
         {
           title: 'Planing Cromático e Tonalidade Alargada',
           explanation:
-            'O planing move uma forma de acorde em movimento paralelo por tom ou meio-tom, ignorando as restrições de tonalidade. O planing cromático (tudo por meios-tons) produz um banho de pura cor sem direção funcional. O planing diatónico ajusta a qualidade dos intervalos para permanecer na tonalidade. A tonalidade alargada estende os limites tonais: modulações remotas tornam-se frequentes, a saturação cromática torna a identificação da tonalidade difícil e as cadências tradicionais são evitadas. Este é o crepúsculo da tonalidade da prática comum.',
+            'O planing move uma forma de acorde em movimento paralelo, ignorando as restrições de tonalidade. O planing cromático (real) mantém a qualidade exata de cada acorde enquanto se move, seja qual for o intervalo, produzindo um banho de pura cor sem direção funcional. O planing diatónico ajusta a qualidade dos intervalos para permanecer na tonalidade. A tonalidade alargada estende os limites tonais: modulações remotas tornam-se frequentes, a saturação cromática torna a identificação da tonalidade difícil e as cadências tradicionais são evitadas. Este é o crepúsculo da tonalidade da prática comum.',
           tryThisLabel: 'Explora o mundo dos tons inteiros -- a paleta de Debussy',
         },
       ],
@@ -373,7 +373,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escreve "C diminished scale" -- este padrão alternado tom-meio-tom cria uma escala simétrica de oito notas contendo quatro trítonos e quatro terças menores, dividindo a oitava em partes iguais',
+            'Escreve "C diminished scale" -- este padrão alternado tom-meio-tom cria uma escala simétrica de oito notas formada por dois acordes de sétima diminuta completos entrelaçados, por isso contém oito terças menores e quatro trítonos, e o seu padrão repete-se a cada terça menor, dividindo a oitava em quatro partes iguais',
         },
         {
           instruction:
@@ -401,7 +401,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'Segunda Espécie (2:1)',
           explanation:
-            'Duas notas contra cada nota do CF. Os tempos fortes devem ser consonantes com o CF. Os tempos fracos podem ser dissonantes se abordados e deixados por grau conjunto (nota de passagem) ou se se afastam e regressam por grau conjunto (bordadura). Sem uníssonos em tempos fortes, exceto no início e no fim. A segunda espécie introduz o princípio fundamental do tratamento da dissonância: a dissonância é permitida apenas quando controlada por movimento por grau conjunto.',
+            'Duas notas contra cada nota do CF. Os tempos fortes devem ser consonantes com o CF. Os tempos fracos também podem ser consonantes -- é permitido um salto para um intervalo consonante. Os tempos fracos só podem ser dissonantes como notas de passagem -- abordadas e deixadas por grau conjunto na mesma direção (as bordaduras ficam para a terceira espécie). Sem uníssonos em tempos fortes, exceto no início e no fim. A segunda espécie introduz o princípio fundamental do tratamento da dissonância: a dissonância é permitida apenas quando controlada por movimento por grau conjunto.',
           tryThisLabel: 'Vê Sol maior -- outra tonalidade comum para CF',
         },
         {
@@ -422,7 +422,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Na terceira espécie, a cambiata é uma figura ornamental específica: consonância, grau conjunto para dissonância, salto de terça na mesma direção, depois grau conjunto de volta. Permite que uma nota dissonante seja deixada por salto -- a única exceção à regra de que a dissonância deve resolver por grau conjunto',
+            'Na terceira espécie, a cambiata é uma figura ornamental específica: consonância, grau conjunto para dissonância, salto de terça na mesma direção, depois grau conjunto de volta. Permite que uma nota dissonante seja deixada por salto -- uma das poucas exceções à regra de que a dissonância deve resolver por grau conjunto (a bordadura dupla, também permitida na terceira espécie, é outra)',
         },
       ],
     },
@@ -485,14 +485,14 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'Adicionar Vozes: Escrita a Três e Quatro Partes',
           explanation:
-            'Quando uma terceira voz entra, deve formar intervalos válidos com ambas as vozes existentes simultaneamente, multiplicando as restrições. A escrita a três partes produz tríades completas, acrescentando riqueza harmónica. A escrita a quatro partes restringe ainda mais o movimento mas abre a textura completa SATB. Cada voz adicional aumenta exponencialmente o número de pares de intervalos que devem ser verificados quanto a quintas e oitavas paralelas.',
+            'Quando uma terceira voz entra, deve formar intervalos válidos com ambas as vozes existentes simultaneamente, multiplicando as restrições. A escrita a três partes produz tríades completas, acrescentando riqueza harmónica. A escrita a quatro partes restringe ainda mais o movimento mas abre a textura completa SATB. Cada voz adicional aumenta rapidamente o número de pares de intervalos que devem ser verificados quanto a quintas e oitavas paralelas: 2 vozes formam 1 par, 3 vozes formam 3 e 4 vozes formam 6.',
           tryThisLabel: 'Ouve uma tríade de três notas -- a sonoridade a 3 vozes mais simples',
         },
         {
           title: 'Contraponto Invertível à Oitava',
           explanation:
             'Contraponto invertível à oitava significa que duas melodias funcionam corretamente com qualquer uma das vozes por cima. Quando invertidas, as terças tornam-se sextas (aceitável), mas as quintas tornam-se quartas (dissonantes acima do baixo no estilo da prática comum). Portanto, o contraponto invertível à oitava evita quintas. A inversão à décima transforma terças em oitavas e sextas em quintas. A inversão à duodécima transforma quintas em oitavas -- J.S. Bach usou-a extensamente nas suas fugas.',
-          tryThisLabel: 'Ouve Dó/Mi -- inverter o baixo muda a textura',
+          tryThisLabel: 'Ouve C/E -- a terça C-E virada ao contrário torna-se a sexta E-C',
         },
         {
           title: 'Contraponto Triplo',
@@ -543,7 +543,7 @@ const curriculumL6: CurriculumLevelOverlay = {
           title: 'Leitura de Partitura Orquestral',
           explanation:
             'Uma partitura orquestral completa organiza os instrumentos de cima para baixo: madeiras, metais, percussão, cordas. Os instrumentos transpositores (clarinete em Sib, trompa em Fá) são escritos a uma altura diferente da que soam. Ler uma partitura exige transpor mentalmente estas partes para a altura de concerto, ler claves de Dó (clave de contralto para a viola, clave de tenor para o violoncelo) e reduzir múltiplas vozes ao seu conteúdo harmónico essencial.',
-          tryThisLabel: 'Vê Sib maior -- a tonalidade em que um clarinete em Sib lê',
+          tryThisLabel: 'Vê Bb maior -- o que um clarinete em Bb faz soar quando lê C maior',
         },
       ],
       tasks: [
