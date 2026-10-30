@@ -7,8 +7,15 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { DRILL_FAMILIES } from '../core/types/drill';
-import type { DrillFamily, DrillItem, ItemSrsState } from '../core/types/drill';
-import { applyAnswer } from '../services/drillScheduler';
+import type {
+  AnswerRecord,
+  DrillFamily,
+  DrillItem,
+  ItemSrsState,
+  MasteryTier,
+  SerializedCard,
+} from '../core/types/drill';
+import { applyAnswer, migrateTierV1 } from '../services/drillScheduler';
 import {
   composeSession,
   requeueAfterMiss,
@@ -76,17 +83,78 @@ function isPlainObject(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);
 }
 
-function isValidItemSrsState(v: unknown): v is ItemSrsState {
-  if (!isPlainObject(v)) return false;
-  if (!isPlainObject(v.card)) return false;
-  if (!Array.isArray(v.history)) return false;
-  if (typeof v.tier !== 'string') return false;
-  return true;
+const TIERS: readonly MasteryTier[] = ['new', 'learning', 'review', 'byHeart'];
+
+function isFiniteNumber(v: unknown): v is number {
+  return typeof v === 'number' && Number.isFinite(v);
 }
 
-function isValidItemsRecord(v: unknown): v is Record<string, ItemSrsState> {
-  if (!isPlainObject(v)) return false;
-  return Object.values(v).every(isValidItemSrsState);
+/**
+ * A stored FSRS card, or null when it cannot be scheduled. The fields FSRS
+ * reasons with (due, stability, difficulty, reps, lapses, state) are required;
+ * the bookkeeping counters default to 0 rather than costing the item.
+ */
+function sanitizeCard(v: unknown): SerializedCard | null {
+  if (!isPlainObject(v)) return null;
+  const required = ['due', 'stability', 'difficulty', 'reps', 'lapses', 'state'] as const;
+  if (!required.every((k) => isFiniteNumber(v[k]))) return null;
+  const n = (k: string) => (isFiniteNumber(v[k]) ? v[k] : 0);
+  return {
+    due: v.due as number,
+    stability: v.stability as number,
+    difficulty: v.difficulty as number,
+    elapsed_days: n('elapsed_days'),
+    scheduled_days: n('scheduled_days'),
+    reps: v.reps as number,
+    lapses: v.lapses as number,
+    state: v.state as number,
+    learning_steps: n('learning_steps'),
+    ...(isFiniteNumber(v.last_review) ? { last_review: v.last_review } : {}),
+  };
+}
+
+function isValidAnswerRecord(v: unknown): v is AnswerRecord {
+  return (
+    isPlainObject(v) &&
+    isFiniteNumber(v.ts) &&
+    typeof v.correct === 'boolean' &&
+    isFiniteNumber(v.ms) &&
+    typeof v.sessionId === 'string'
+  );
+}
+
+/**
+ * One stored item, cleaned, or null when it is unusable (no schedulable card,
+ * no history array, unknown tier). Malformed history records are dropped one
+ * by one; the item survives with the rest (audit W7-10).
+ */
+function sanitizeItemSrsState(v: unknown): ItemSrsState | null {
+  if (!isPlainObject(v)) return null;
+  const card = sanitizeCard(v.card);
+  if (card === null) return null;
+  if (!Array.isArray(v.history)) return null;
+  if (!(TIERS as readonly unknown[]).includes(v.tier)) return null;
+  return {
+    card,
+    history: v.history.filter(isValidAnswerRecord),
+    tier: v.tier as MasteryTier,
+    ...(typeof v.introSessionId === 'string' ? { introSessionId: v.introSessionId } : {}),
+    introCorrectCount: isFiniteNumber(v.introCorrectCount) ? v.introCorrectCount : 0,
+  };
+}
+
+/**
+ * Keep every valid item; drop only the broken ones (audit W7-10 — one bad
+ * record used to discard ALL Drill progress). A non-object `items` → {}.
+ */
+function sanitizeItems(v: unknown): Record<string, ItemSrsState> {
+  if (!isPlainObject(v)) return {};
+  const out: Record<string, ItemSrsState> = {};
+  for (const [id, raw] of Object.entries(v)) {
+    const item = sanitizeItemSrsState(raw);
+    if (item !== null) out[id] = item;
+  }
+  return out;
 }
 
 function isValidSettings(v: unknown): v is DrillSettings {
@@ -122,9 +190,8 @@ function validatePersistedShape(value: unknown): {
 } | null {
   if (!isPlainObject(value)) return null;
 
-  // items
-  const items = isValidItemsRecord(value.items) ? value.items : null;
-  if (items === null) return null;
+  // items — per-entry: a broken item is dropped, never the whole record
+  const items = sanitizeItems(value.items);
 
   // settings — fill missing fields with defaults rather than rejecting
   let settings: DrillSettings;
@@ -150,10 +217,13 @@ function validatePersistedShape(value: unknown): {
     settings = DEFAULT_SETTINGS;
   }
 
-  // sprintBests
-  const sprintBests = isPlainObject(value.sprintBests)
-    ? (value.sprintBests as Record<string, number>)
-    : {};
+  // sprintBests — keep the numeric entries
+  const sprintBests: Record<string, number> = {};
+  if (isPlainObject(value.sprintBests)) {
+    for (const [k, best] of Object.entries(value.sprintBests)) {
+      if (isFiniteNumber(best)) sprintBests[k] = best;
+    }
+  }
 
   // lifetime
   const lt = value.lifetime;
@@ -173,6 +243,20 @@ function validatePersistedShape(value: unknown): {
         : null;
 
   return { items, settings, sprintBests, lifetime, activeSession };
+}
+
+/**
+ * Persist v1 → v2 (decision D-15, audit W7-01/W7-05): "by heart" now counts
+ * only the FIRST answer of each session and needs ≥ 2 calendar days. Stored
+ * v1 tiers are re-judged from each item's own history (never promoted; see
+ * migrateTierV1). Cards, histories, settings and counters are kept as they are.
+ */
+function migrateItemsFromV1(items: Record<string, ItemSrsState>): Record<string, ItemSrsState> {
+  const out: Record<string, ItemSrsState> = {};
+  for (const [id, state] of Object.entries(items)) {
+    out[id] = { ...state, tier: migrateTierV1(state) };
+  }
+  return out;
 }
 
 // ─── Derived helpers ──────────────────────────────────────────────────────────
@@ -234,6 +318,13 @@ export const useDrillStore = create<DrillStoreState>()(
           const prevItemState = prev.items[item.id];
           const newItemState = applyAnswer(prevItemState, correct, ms, now, s.id);
 
+          // Where the answered item really sits. Normally the pointer; after an
+          // app update the persisted queue can hold ids the bank no longer has,
+          // and the runner then shows the first KNOWN id after the pointer —
+          // advancing from the stale head would show that item again (W7-09).
+          const found = s.queue.indexOf(item.id, s.index);
+          const at = found === -1 ? s.index : found;
+
           // Deterministic rand for requeue positions — uses seed + asked (answers so far)
           const rand = mulberry32(s.seed + s.asked);
 
@@ -245,14 +336,14 @@ export const useDrillStore = create<DrillStoreState>()(
             // Miss: requeue up to 2 times per item per session
             const requeues = s.missRequeues[item.id] ?? 0;
             if (requeues < 2) {
-              newQueue = requeueAfterMiss(s.queue, s.index, item.id, rand);
+              newQueue = requeueAfterMiss(s.queue, at, item.id, rand);
               // Count only a real requeue: with no non-adjacent slot left the
               // queue comes back unchanged (never re-asked twice in a row).
               if (newQueue.length > s.queue.length) newMissRequeues[item.id] = requeues + 1;
             }
           } else if (prevItemState === undefined) {
             // First correct on a brand-new (tier 'new') item → second exposure
-            newQueue = requeueSecondExposure(s.queue, s.index, item.id, rand);
+            newQueue = requeueSecondExposure(s.queue, at, item.id, rand);
           }
 
           // (c) Advance counters + lifetime
@@ -268,7 +359,7 @@ export const useDrillStore = create<DrillStoreState>()(
             activeSession: {
               ...s,
               queue: newQueue,
-              index: s.index + 1,
+              index: at + 1,
               asked: newAsked,
               correct: newCorrect,
               missRequeues: newMissRequeues,
@@ -313,7 +404,8 @@ export const useDrillStore = create<DrillStoreState>()(
     }),
     {
       name: DRILL_STORE_KEY,
-      version: 1,
+      // v2 (W7): first-answer "by heart" rule — v1 tiers are re-judged in migrate.
+      version: 2,
       storage: createJSONStorage(() => localStorage),
       // Persist everything — mid-session app kill must resume losslessly
       partialize: (state) => ({
@@ -323,7 +415,7 @@ export const useDrillStore = create<DrillStoreState>()(
         lifetime: state.lifetime,
         activeSession: state.activeSession,
       }),
-      migrate: (persisted: unknown, _version: number) => {
+      migrate: (persisted: unknown, version: number) => {
         // Any version mismatch or corrupt data → attempt shape rescue or fall back
         const validated = validatePersistedShape(persisted);
         if (!validated) {
@@ -335,6 +427,7 @@ export const useDrillStore = create<DrillStoreState>()(
             activeSession: null,
           };
         }
+        if (version < 2) return { ...validated, items: migrateItemsFromV1(validated.items) };
         return validated;
       },
       // zustand skips migrate() when the stored version matches — corrupt same-version

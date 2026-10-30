@@ -80,10 +80,8 @@ describe('tier promotion', () => {
 
     // S3: fast correct
     const s3 = applyAnswer(s2, true, 2100, t0 + 3 * DAY, 'S3');
-    // last 3 sessions: S1 (2000 or 2500 — last answer 2500), S2 (5000), S3 (2100)
-    // median of [2500, 5000, 2100] sorted = [2100, 2500, 5000] → median 2500 < BY_HEART_MS=3000 → byHeart
-    // BUT wait: sessions are S1, S2, S3. Last answer per session: S1→2500ms, S2→5000ms, S3→2100ms
-    // sorted ms: 2100, 2500, 5000 → median 2500 < 3000 → byHeart IS reached
+    // FIRST answer per session (D-15): S1→2000ms, S2→5000ms, S3→2100ms over 3 days
+    // sorted ms: 2000, 2100, 5000 → median 2100 < 3000 → byHeart IS reached
     expect(s3.tier).toBe('byHeart');
   });
 
@@ -95,8 +93,8 @@ describe('tier promotion', () => {
     // S2: fast correct to move to byHeart candidate territory
     const s2 = applyAnswer(base, true, 5000, t0 + 1 * DAY, 'S2');
     const s3 = applyAnswer(s2, true, 5500, t0 + 3 * DAY, 'S3');
-    // last answer per session: S1→2500ms, S2→5000ms, S3→5500ms
-    // sorted: [2500, 5000, 5500] → median 5000 ≥ BY_HEART_MS=3000 → NOT byHeart
+    // first answer per session: S1→2000ms, S2→5000ms, S3→5500ms
+    // sorted: [2000, 5000, 5500] → median 5000 ≥ BY_HEART_MS=3000 → NOT byHeart
     expect(s3.tier).toBe('review');
   });
 
@@ -108,8 +106,8 @@ describe('tier promotion', () => {
     // S2: slow but still correct
     const s2 = applyAnswer(base, true, 5000, t0 + 1 * DAY, 'S2');
     const s3 = applyAnswer(s2, true, 2100, t0 + 3 * DAY, 'S3');
-    // last answer per session: S1→2500ms, S2→5000ms, S3→2100ms
-    // sorted: [2100, 2500, 5000] → median 2500 < 3000 → byHeart
+    // first answer per session: S1→2000ms, S2→5000ms, S3→2100ms
+    // sorted: [2000, 2100, 5000] → median 2100 < 3000 → byHeart
     expect(s3.tier).toBe('byHeart');
   });
 });

@@ -1,0 +1,354 @@
+{
+  "state": {
+    "items": {
+      "degree:num-to-name:1": {
+        "card": {
+          "due": 1789905600000,
+          "stability": 16.13773209,
+          "difficulty": 2.09745544,
+          "elapsed_days": 2,
+          "scheduled_days": 16,
+          "reps": 4,
+          "lapses": 0,
+          "state": 2,
+          "learning_steps": 0,
+          "last_review": 1788523200000
+        },
+        "history": [
+          {
+            "ts": 1788264000000,
+            "correct": true,
+            "ms": 2000,
+            "sessionId": "sA1"
+          },
+          {
+            "ts": 1788264120000,
+            "correct": true,
+            "ms": 2400,
+            "sessionId": "sA1"
+          },
+          {
+            "ts": 1788350400000,
+            "correct": true,
+            "ms": 2100,
+            "sessionId": "sA2"
+          },
+          {
+            "ts": 1788523200000,
+            "correct": true,
+            "ms": 1900,
+            "sessionId": "sA3"
+          }
+        ],
+        "tier": "byHeart",
+        "introSessionId": "sA1",
+        "introCorrectCount": 2
+      },
+      "degree:name-to-num:Tonic": {
+        "card": {
+          "due": 1788696780000,
+          "stability": 0.1119974,
+          "difficulty": 9.57283976,
+          "elapsed_days": 0,
+          "scheduled_days": 0,
+          "reps": 6,
+          "lapses": 0,
+          "state": 1,
+          "learning_steps": 1,
+          "last_review": 1788696180000
+        },
+        "history": [
+          {
+            "ts": 1788264000000,
+            "correct": false,
+            "ms": 4000,
+            "sessionId": "sB1"
+          },
+          {
+            "ts": 1788264180000,
+            "correct": true,
+            "ms": 1200,
+            "sessionId": "sB1"
+          },
+          {
+            "ts": 1788436800000,
+            "correct": false,
+            "ms": 4000,
+            "sessionId": "sB2"
+          },
+          {
+            "ts": 1788436980000,
+            "correct": true,
+            "ms": 1200,
+            "sessionId": "sB2"
+          },
+          {
+            "ts": 1788696000000,
+            "correct": false,
+            "ms": 4000,
+            "sessionId": "sB3"
+          },
+          {
+            "ts": 1788696180000,
+            "correct": true,
+            "ms": 1200,
+            "sessionId": "sB3"
+          }
+        ],
+        "tier": "byHeart",
+        "introSessionId": "sB1",
+        "introCorrectCount": 1
+      },
+      "circle:next-sharp:F#": {
+        "card": {
+          "due": 1788523800000,
+          "stability": 2.3065,
+          "difficulty": 2.09745544,
+          "elapsed_days": 0,
+          "scheduled_days": 3,
+          "reps": 4,
+          "lapses": 0,
+          "state": 2,
+          "learning_steps": 0,
+          "last_review": 1788264600000
+        },
+        "history": [
+          {
+            "ts": 1788264000000,
+            "correct": true,
+            "ms": 2000,
+            "sessionId": "sC1"
+          },
+          {
+            "ts": 1788264120000,
+            "correct": true,
+            "ms": 1500,
+            "sessionId": "sC1"
+          },
+          {
+            "ts": 1788264360000,
+            "correct": true,
+            "ms": 1400,
+            "sessionId": "sC2"
+          },
+          {
+            "ts": 1788264600000,
+            "correct": true,
+            "ms": 1300,
+            "sessionId": "sC3"
+          }
+        ],
+        "tier": "byHeart",
+        "introSessionId": "sC1",
+        "introCorrectCount": 2
+      },
+      "keysig:key-to-count:C:major": {
+        "card": {
+          "due": 1788436980000,
+          "stability": 2.3065,
+          "difficulty": 2.11121424,
+          "elapsed_days": 0,
+          "scheduled_days": 2,
+          "reps": 2,
+          "lapses": 0,
+          "state": 2,
+          "learning_steps": 0,
+          "last_review": 1788264180000
+        },
+        "history": [
+          {
+            "ts": 1788264000000,
+            "correct": true,
+            "ms": 2500,
+            "sessionId": "sD1"
+          },
+          {
+            "ts": 1788264180000,
+            "correct": true,
+            "ms": 2600,
+            "sessionId": "sD1"
+          }
+        ],
+        "tier": "review",
+        "introSessionId": "sD1",
+        "introCorrectCount": 2
+      },
+      "triad:name-to-notes:C:major": {
+        "card": {
+          "due": 1788264060000,
+          "stability": 0.212,
+          "difficulty": 6.4133,
+          "elapsed_days": 0,
+          "scheduled_days": 0,
+          "reps": 1,
+          "lapses": 0,
+          "state": 1,
+          "learning_steps": 0,
+          "last_review": 1788264000000
+        },
+        "history": [
+          {
+            "ts": 1788264000000,
+            "correct": false,
+            "ms": 7000,
+            "sessionId": "sE1"
+          }
+        ],
+        "tier": "learning",
+        "introSessionId": "sE1",
+        "introCorrectCount": 0
+      },
+      "scale:spell:C:major": {
+        "card": {
+          "due": 1788783005000,
+          "stability": 2.4329485,
+          "difficulty": 6.40211507,
+          "elapsed_days": 2,
+          "scheduled_days": 0,
+          "reps": 2,
+          "lapses": 0,
+          "state": 1,
+          "learning_steps": 1,
+          "last_review": 1788782405000
+        },
+        "history": [
+          {
+            "ts": 1788609600000,
+            "correct": false,
+            "ms": 9000,
+            "sessionId": "sG1"
+          },
+          {
+            "ts": 1788782405000,
+            "correct": true,
+            "ms": 1800,
+            "sessionId": "s1788782400000"
+          }
+        ],
+        "tier": "review",
+        "introSessionId": "sG1",
+        "introCorrectCount": 0
+      },
+      "interval:letter-third:C": {
+        "card": {
+          "due": 1788526200000,
+          "stability": 1.11054641,
+          "difficulty": 8.67113451,
+          "elapsed_days": 0,
+          "scheduled_days": 2,
+          "reps": 12,
+          "lapses": 0,
+          "state": 2,
+          "learning_steps": 0,
+          "last_review": 1788353400000
+        },
+        "history": [
+          {
+            "ts": 1788264240000,
+            "correct": true,
+            "ms": 2000,
+            "sessionId": "sF01"
+          },
+          {
+            "ts": 1788351000000,
+            "correct": true,
+            "ms": 1520,
+            "sessionId": "sF02"
+          },
+          {
+            "ts": 1788351300000,
+            "correct": true,
+            "ms": 1530,
+            "sessionId": "sF03"
+          },
+          {
+            "ts": 1788351600000,
+            "correct": true,
+            "ms": 1540,
+            "sessionId": "sF04"
+          },
+          {
+            "ts": 1788351900000,
+            "correct": true,
+            "ms": 1550,
+            "sessionId": "sF05"
+          },
+          {
+            "ts": 1788352200000,
+            "correct": true,
+            "ms": 1560,
+            "sessionId": "sF06"
+          },
+          {
+            "ts": 1788352500000,
+            "correct": true,
+            "ms": 1570,
+            "sessionId": "sF07"
+          },
+          {
+            "ts": 1788352800000,
+            "correct": true,
+            "ms": 1580,
+            "sessionId": "sF08"
+          },
+          {
+            "ts": 1788353100000,
+            "correct": true,
+            "ms": 1590,
+            "sessionId": "sF09"
+          },
+          {
+            "ts": 1788353400000,
+            "correct": true,
+            "ms": 1600,
+            "sessionId": "sF10"
+          }
+        ],
+        "tier": "byHeart",
+        "introSessionId": "sF01",
+        "introCorrectCount": 1
+      }
+    },
+    "settings": {
+      "length": 12,
+      "newPerSession": 3,
+      "families": {
+        "keysig": false,
+        "circle": false,
+        "scale": true,
+        "degree": false,
+        "interval": false,
+        "triad": true,
+        "seventh": false,
+        "roman": true,
+        "function": true
+      },
+      "sound": true,
+      "showTimer": false
+    },
+    "sprintBests": {
+      "degree": 9
+    },
+    "lifetime": {
+      "answered": 31,
+      "correct": 24
+    },
+    "activeSession": {
+      "id": "s1788782400000",
+      "queue": [
+        "scale:spell:C:major",
+        "triad:name-to-notes:C:major",
+        "triad:notes-to-name:C:major",
+        "triad:name-to-notes:C:minor",
+        "triad:notes-to-name:C:minor"
+      ],
+      "index": 1,
+      "asked": 1,
+      "correct": 1,
+      "startedAt": 1788782400000,
+      "seed": 2076004864,
+      "missRequeues": {}
+    }
+  },
+  "version": 1
+}

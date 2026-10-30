@@ -41,6 +41,7 @@ export function getItemsByFamily(bank: DrillItem[], family: DrillFamily): DrillI
 
 // Public helpers re-exported so existing `import ... from '../drillBank'` keeps working
 export { displayNote, keySignatureOf, MAJOR_KEYS, SHARP_ORDER, FLAT_ORDER } from './shared';
+export { drillSiblingGroup } from './siblings';
 
 // ---------------------------------------------------------------------------
 // i18n key registries — source of truth for translation parity
@@ -119,6 +120,9 @@ export const DRILL_WHY_KEYS: readonly string[] = [
   'drill.why.triadStack',
   // F6 scales
   'drill.why.scaleKeySig',
+  'drill.why.scaleNoAccidentals',
+  'drill.why.scaleDegree',
+  'drill.why.scaleDegreeNoAccidentals',
   'drill.why.harmonicRaise',
   // F7 sevenths
   'drill.why.seventhLadder',

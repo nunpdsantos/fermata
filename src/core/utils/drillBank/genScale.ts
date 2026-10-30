@@ -7,7 +7,8 @@
  *
  * Rank layout: FAMILY_BASE.scale = 1700, stride 10 per key.
  * Minor key tonic ASCII uses LOWERCASE (same as genKeysig).
- * Scales containing ## or bb are FILTERED out.
+ * Double accidentals are kept (W7-11): G♯/D♯/A♯ harmonic and melodic minor
+ * need F𝄪/C𝄪/G𝄪, which the accidental slots can now enter.
  */
 
 import type { Note } from '../../types/music';
@@ -21,6 +22,7 @@ import {
   FAMILY_BASE,
   KEY_PRIORITY,
   MAJOR_KEYS,
+  keySignatureOf,
 } from './shared';
 import { buildScale, getRelativeMinor } from '../../constants/scales';
 
@@ -35,16 +37,53 @@ const SCALE_TYPE_DISPLAY: Record<string, string> = {
   melodic_minor: 'melodic minor',
 };
 
+/**
+ * Explanation for a major / natural-minor scale item: its key signature in
+ * ♯/♭ ("F♯ C♯ G♯"), taken from the major key that owns the signature — not
+ * the whole scale in ASCII (W7-12). No accidentals → its own sentence.
+ */
+function keySigWhy(
+  signatureKey: Note,
+  scaleDisplay: string,
+): { whyKey: string; whyParams: Record<string, string | number> } {
+  const sig = keySignatureOf(signatureKey);
+  if (sig.count === 0) return { whyKey: 'drill.why.scaleNoAccidentals', whyParams: { scale: scaleDisplay } };
+  return {
+    whyKey: 'drill.why.scaleKeySig',
+    whyParams: { scale: scaleDisplay, accs: sig.accidentals.map(displayNote).join(' ') },
+  };
+}
+
+/**
+ * Explanation for a degree-of item (review of W7): the scale spelled out in
+ * ♯/♭ glyphs, the degree asked for, and the key signature (or "no sharps or
+ * flats") — so the explanation shows where the answer comes from.
+ */
+function degreeWhy(
+  signatureKey: Note,
+  scaleDisplay: string,
+  scaleNotes: Note[],
+  num: number,
+): { whyKey: string; whyParams: Record<string, string | number> } {
+  const sig = keySignatureOf(signatureKey);
+  const base = {
+    scale: scaleDisplay,
+    notes: scaleNotes.map(displayNote).join(' '),
+    num,
+    answer: displayNote(scaleNotes[num - 1]),
+  };
+  if (sig.count === 0) return { whyKey: 'drill.why.scaleDegreeNoAccidentals', whyParams: base };
+  return {
+    whyKey: 'drill.why.scaleDegree',
+    whyParams: { ...base, accs: sig.accidentals.map(displayNote).join(' ') },
+  };
+}
+
 // Rank base for a major tonic key string
 function keyRankBase(keyAscii: string): number {
   const idx = KEY_PRIORITY.indexOf(keyAscii);
   if (idx === -1) return FAMILY_BASE.scale + KEY_PRIORITY.length * 10;
   return FAMILY_BASE.scale + idx * 10;
-}
-
-/** Check if a scale's notes contain double accidentals (## or bb) */
-function hasDoubleAccidental(notes: Note[]): boolean {
-  return notes.some((n) => n.accidental === '##' || n.accidental === 'bb');
 }
 
 export function genScale(): DrillItem[] {
@@ -55,14 +94,13 @@ export function genScale(): DrillItem[] {
     const tonicAscii = noteToString(majorTonic);
     const scale = buildScale(majorTonic, 'major');
 
-    if (hasDoubleAccidental(scale.notes)) continue;
-
     const baseRank = keyRankBase(tonicAscii);
     const scaleDisplay = `${displayNote(majorTonic)} major`;
 
     // --- spell item ---
     const letters = scale.notes.map((n) => n.natural) as NaturalNote[];
     const spelledAscii = scale.notes.map(noteToString);
+    const majorWhy = keySigWhy(majorTonic, scaleDisplay);
 
     items.push({
       id: `scale:spell:${tonicAscii}:major`,
@@ -71,8 +109,7 @@ export function genScale(): DrillItem[] {
       promptParams: { scale: scaleDisplay },
       input: { format: 'accidentalSlots', letters },
       answer: { kind: 'accidentals', spelled: spelledAscii },
-      whyKey: 'drill.why.scaleKeySig',
-      whyParams: { scale: scaleDisplay, accs: spelledAscii.join(' ') },
+      ...majorWhy,
       rank: baseRank,
     });
 
@@ -89,8 +126,7 @@ export function genScale(): DrillItem[] {
         promptParams: { num: n, key: scaleDisplay },
         input: { format: 'choice', choices },
         answer: { kind: 'choice', correct },
-        whyKey: 'drill.why.scaleKeySig',
-        whyParams: { scale: scaleDisplay, accs: spelledAscii.join(' ') },
+        ...degreeWhy(majorTonic, scaleDisplay, scale.notes, n),
         rank: baseRank + n - 1,
       });
     }
@@ -103,8 +139,6 @@ export function genScale(): DrillItem[] {
     const majorKeyAscii = noteToString(majorTonic);
     for (const type of MINOR_TYPES) {
       const scale = buildScale(minorTonic, type);
-
-      if (hasDoubleAccidental(scale.notes)) continue;
 
       const typeName = SCALE_TYPE_DISPLAY[type];
       const scaleDisplay = `${displayNote(minorTonic)} ${typeName}`;
@@ -128,10 +162,11 @@ export function genScale(): DrillItem[] {
         : [];
       const raisedDisplay = raisedNotes.map(displayNote).join(', ');
 
-      const whyKey = isHarmonicOrMelodic ? 'drill.why.harmonicRaise' : 'drill.why.scaleKeySig';
-      const whyParams: Record<string, string | number> = isHarmonicOrMelodic
-        ? { scale: scaleDisplay, raised: raisedDisplay }
-        : { scale: scaleDisplay, accs: spelledAscii.join(' ') };
+      // Natural minor shares its relative major's signature (majorTonic).
+      const naturalWhy = keySigWhy(majorTonic, scaleDisplay);
+      const { whyKey, whyParams } = isHarmonicOrMelodic
+        ? { whyKey: 'drill.why.harmonicRaise', whyParams: { scale: scaleDisplay, raised: raisedDisplay } }
+        : naturalWhy;
 
       items.push({
         id: `scale:spell:${minorTonicAscii}:${type}`,
@@ -159,8 +194,7 @@ export function genScale(): DrillItem[] {
             promptParams: { num: n, key: scaleDisplay },
             input: { format: 'choice', choices },
             answer: { kind: 'choice', correct },
-            whyKey: 'drill.why.scaleKeySig',
-            whyParams: { scale: scaleDisplay, accs: spelledAscii.join(' ') },
+            ...degreeWhy(majorTonic, scaleDisplay, scale.notes, n),
             rank: minorKeyRankBase + n,
           });
         }

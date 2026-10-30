@@ -19,6 +19,7 @@ import {
   FAMILY_BASE,
   KEY_PRIORITY,
   PRACTICAL_ROOTS,
+  qualityNearMisses,
 } from './shared';
 import { buildChord, CHORD_QUALITY_NAMES } from '../../constants/chords';
 import { getPitchClass, PITCH_CLASS_SPELLINGS } from '../../constants/notes';
@@ -128,7 +129,12 @@ export function genTriad(): DrillItem[] {
  * altered 5th alternates, enharmonic traps). All unique.
  */
 function buildNoteChips(chordNotes: Note[], correctDisplays: string[]): string[] {
+  // Quality-defining near misses first (3rd/5th/7th ±1 on the same letter),
+  // so they always make the cut before any letter variant of the root (W7-03).
   const all: string[] = [...correctDisplays];
+  for (const d of qualityNearMisses(chordNotes)) {
+    if (!all.includes(d)) all.push(d);
+  }
 
   for (const note of chordNotes) {
     const pc = getPitchClass(note);

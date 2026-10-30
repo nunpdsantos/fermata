@@ -100,6 +100,41 @@ const DRILL_T11_PLURAL_KEYS: readonly string[] = [
 
 const LANGS = ['en', 'pt', 'es'] as const;
 
+// Bank keys that exist only as plural forms (key_one / key_other, selected by
+// the item's `count` param): "1 semitone" vs "7 semitones" (audit W7-12).
+const PLURAL_BANK_KEYS: ReadonlySet<string> = new Set([
+  'drill.prompts.semitonesToName',
+  'drill.why.semitoneFact',
+]);
+
+// Render-time term keys (audit W6-07): degree / function / cadence names and
+// Yes/No, translated in PT/ES by components/drill/drillText.ts.
+const DRILL_TERM_KEYS: readonly string[] = [
+  ...['1', '2', '3', '4', '5', '6', '7'].map((n) => `drill.terms.degree.${n}`),
+  'drill.terms.function.tonic',
+  'drill.terms.function.subdominant',
+  'drill.terms.function.dominant',
+  'drill.terms.cadence.perfectAuthentic',
+  'drill.terms.cadence.plagal',
+  'drill.terms.cadence.half',
+  'drill.terms.cadence.deceptive',
+  'drill.terms.yes',
+  'drill.terms.no',
+];
+
+// Tokens only English renders: the UK cadence gloss "(UK: interrupted)" means
+// nothing to a Portuguese or Spanish reader (audit W6-07), so PT/ES drop it.
+const EN_ONLY_TOKENS: Readonly<Record<string, readonly string[]>> = {
+  'drill.why.cadenceDef': ['{{uk}}'],
+  'drill.why.cadencePerfect': ['{{uk}}'],
+};
+
+/** Resolution check that understands the plural-only bank keys. */
+function bankKeyResolvesIn(lng: string, key: string): boolean {
+  if (!PLURAL_BANK_KEYS.has(key)) return resolvesIn(lng, key);
+  return resolvesIn(lng, key, { count: 1 }) && resolvesIn(lng, key, { count: 2 });
+}
+
 function resolvesInEnglish(key: string): boolean {
   return resolvesIn('en', key);
 }
@@ -121,13 +156,13 @@ describe('drill i18n — EN parity gate', () => {
 
   it('every drill prompt key resolves in English', () => {
     for (const key of DRILL_PROMPT_KEYS) {
-      expect(resolvesInEnglish(key), `missing EN prompt: ${key}`).toBe(true);
+      expect(bankKeyResolvesIn('en', key), `missing EN prompt: ${key}`).toBe(true);
     }
   });
 
   it('every drill why key resolves in English', () => {
     for (const key of DRILL_WHY_KEYS) {
-      expect(resolvesInEnglish(key), `missing EN why: ${key}`).toBe(true);
+      expect(bankKeyResolvesIn('en', key), `missing EN why: ${key}`).toBe(true);
     }
   });
 
@@ -185,13 +220,13 @@ describe('drill i18n — prompts + why resolve in all three languages (no fallba
   for (const lng of LANGS) {
     it(`every drill prompt key resolves in ${lng.toUpperCase()}`, () => {
       for (const key of DRILL_PROMPT_KEYS) {
-        expect(resolvesIn(lng, key), `missing ${lng.toUpperCase()} prompt: ${key}`).toBe(true);
+        expect(bankKeyResolvesIn(lng, key), `missing ${lng.toUpperCase()} prompt: ${key}`).toBe(true);
       }
     });
 
     it(`every drill why key resolves in ${lng.toUpperCase()}`, () => {
       for (const key of DRILL_WHY_KEYS) {
-        expect(resolvesIn(lng, key), `missing ${lng.toUpperCase()} why: ${key}`).toBe(true);
+        expect(bankKeyResolvesIn(lng, key), `missing ${lng.toUpperCase()} why: ${key}`).toBe(true);
       }
     });
 
@@ -200,13 +235,25 @@ describe('drill i18n — prompts + why resolve in all three languages (no fallba
         expect(resolvesIn(lng, key), `missing ${lng.toUpperCase()} UI key: ${key}`).toBe(true);
       }
     });
+
+    it(`every drill term key resolves in ${lng.toUpperCase()}`, () => {
+      for (const key of DRILL_TERM_KEYS) {
+        expect(resolvesIn(lng, key), `missing ${lng.toUpperCase()} term: ${key}`).toBe(true);
+      }
+    });
   }
 });
 
 describe('drill i18n — {{token}} set parity (PT/ES vs EN) for every dynamic key', () => {
-  for (const key of DRILL_TOKEN_KEYS) {
+  // Plural-only keys are compared form by form (_one, _other).
+  const templateKeys = DRILL_TOKEN_KEYS.flatMap((key) =>
+    PLURAL_BANK_KEYS.has(key) ? [`${key}_one`, `${key}_other`] : [key],
+  );
+  for (const key of templateKeys) {
+    const baseKey = key.replace(/_(one|other)$/, '');
     it(`${key}: PT and ES use the same {{tokens}} as EN`, () => {
-      const enTokens = tokenSet(rawTemplate('en', key));
+      const enOnly = EN_ONLY_TOKENS[baseKey] ?? [];
+      const enTokens = tokenSet(rawTemplate('en', key)).filter((tok) => !enOnly.includes(tok));
       // Guard: the EN side really exists as a raw template (catches a typo'd key
       // here, or a key that only exists via fallback rather than as a real string).
       expect(rawTemplate('en', key).length, `EN raw template missing for ${key}`).toBeGreaterThan(0);
@@ -220,15 +267,27 @@ describe('drill i18n — {{token}} set parity (PT/ES vs EN) for every dynamic ke
       }
     });
   }
+
+  it('EN-only tokens really are EN-only (no "(RU: …)" gloss in PT/ES)', () => {
+    for (const [key, tokens] of Object.entries(EN_ONLY_TOKENS)) {
+      for (const tok of tokens) expect(rawTemplate('en', key), key).toContain(tok);
+      for (const lng of ['pt', 'es'] as const) {
+        const raw = rawTemplate(lng, key);
+        for (const tok of tokens) expect(raw, `${lng} ${key}`).not.toContain(tok);
+        expect(raw, `${lng} ${key}`).not.toMatch(/\b(RU|UK):/);
+      }
+    }
+  });
 });
 
 // ─── Task 13: PT sanity render with realistic promptParams ────────────────────
 //
-// promptParams carry music nomenclature in ENGLISH/symbol form by repo
-// convention (e.g. key: 'A major', note: 'F♯', sig: '3♯'). The translated PT
-// template must read naturally AROUND those English tokens. This renders three
-// representative PT prompts end-to-end through t(key, params) and asserts the
-// PT prose surrounds the (untranslated) nomenclature with no leftover {{token}}.
+// promptParams carry music nomenclature in ENGLISH/symbol form (e.g. key:
+// 'A major', note: 'F♯', sig: '3♯'). The view translates key names, degree,
+// function and cadence names at render time (components/drill/drillText.ts —
+// see its tests, audit W6-07); these checks feed the RAW template English
+// params to prove the PT prose interpolates cleanly around whatever it gets,
+// with no leftover {{token}}.
 
 describe('drill i18n — PT prompts render naturally around English nomenclature', () => {
   const pt = i18n.getFixedT('pt');
@@ -249,5 +308,29 @@ describe('drill i18n — PT prompts render naturally around English nomenclature
     const out = pt('drill.prompts.spellChord', { chord: 'C♯ minor' });
     expect(out).toBe('Soletra C♯ minor');
     expect(out).not.toMatch(/\{\{|\}\}/);
+  });
+});
+
+// ─── Spanish punctuation (review of W7) ──────────────────────────────────────
+// "El grado 1 de la escala se llama…?" lacked its opening "¿". Every Spanish
+// Drill string must open each question with ¿ and each exclamation with ¡.
+
+describe('drill i18n — ES opening ¿ / ¡', () => {
+  function strings(node: unknown, path: string, out: Array<[string, string]>): Array<[string, string]> {
+    if (typeof node === 'string') out.push([path, node]);
+    else if (node && typeof node === 'object') {
+      for (const [k, v] of Object.entries(node)) strings(v, `${path}.${k}`, out);
+    }
+    return out;
+  }
+
+  it('every ? has its ¿ and every ! its ¡', () => {
+    const all = strings(i18n.getResource('es', 'translation', 'drill'), 'drill', []);
+    expect(all.length).toBeGreaterThan(50);
+    const bad = all.filter(([, s]) => {
+      const count = (re: RegExp) => (s.match(re) ?? []).length;
+      return count(/\?/g) !== count(/¿/g) || count(/!/g) !== count(/¡/g);
+    });
+    expect(bad.map(([p, s]) => `${p}: ${s}`)).toEqual([]);
   });
 });

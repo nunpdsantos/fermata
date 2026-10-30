@@ -8,14 +8,27 @@ import type { AnswerRecord, ItemSrsState, MasteryTier, SerializedCard } from '..
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-/** Number of history entries retained per item (ring buffer). */
-const HISTORY_CAP = 10;
+/** Number of history entries retained per item (see capHistory for what is dropped first). */
+export const HISTORY_CAP = 10;
 
 /** Answer latency threshold above which a correct answer grades as 'hard'. */
 export const SLOW_MS = 6000;
 
-/** Latency threshold below which a session's answer counts toward byHeart median. */
+/** Median first-answer latency must be below this for 'byHeart'. */
 export const BY_HEART_MS = 3000;
+
+/** 'byHeart' needs this many sessions in a row answered right on the first try… */
+export const BY_HEART_SESSIONS = 3;
+
+/** …spread over at least this many calendar days (decision D-15, audit W7-05)… */
+export const BY_HEART_DAYS = 2;
+
+/**
+ * …and at least this long from the run's first to its last first-answer.
+ * Calendar days alone let a run straddling midnight (23:30, 23:50, 23:59,
+ * 00:08) count as "two days" inside 40 minutes (review of W7).
+ */
+export const BY_HEART_MIN_SPAN_MS = 18 * 60 * 60 * 1000;
 
 // ─── FSRS Instance ───────────────────────────────────────────────────────────
 
@@ -85,6 +98,87 @@ export function fromCard(c: Card): SerializedCard {
   };
 }
 
+// ─── History helpers ─────────────────────────────────────────────────────────
+
+/**
+ * The first answer of each distinct session, in chronological order.
+ * "By heart" is judged on these alone: a right answer on the in-session retry
+ * after a miss proves nothing about recall (audit W7-01).
+ */
+export function sessionFirstAnswers(history: AnswerRecord[]): AnswerRecord[] {
+  const seen = new Set<string>();
+  const firsts: AnswerRecord[] = [];
+  for (const record of history) {
+    if (seen.has(record.sessionId)) continue;
+    seen.add(record.sessionId);
+    firsts.push(record);
+  }
+  return firsts;
+}
+
+/**
+ * Trim a history to HISTORY_CAP records. In-session repeats (any answer that is
+ * not the first of its session) go first, oldest first, and the newest record
+ * is always kept; only when every remaining record is its session's first
+ * answer are whole old sessions dropped. A naive "drop the oldest" trim could
+ * erase a session's wrong first answer and leave its right retry looking like
+ * a first-try success.
+ */
+export function capHistory(history: AnswerRecord[]): AnswerRecord[] {
+  if (history.length <= HISTORY_CAP) return history;
+  const out = history.slice();
+  while (out.length > HISTORY_CAP) {
+    const seen = new Set<string>();
+    let repeatAt = -1;
+    for (let i = 0; i < out.length - 1; i++) {
+      if (seen.has(out[i].sessionId)) {
+        repeatAt = i;
+        break;
+      }
+      seen.add(out[i].sessionId);
+    }
+    if (repeatAt === -1) break;
+    out.splice(repeatAt, 1);
+  }
+  return out.length > HISTORY_CAP ? out.slice(out.length - HISTORY_CAP) : out;
+}
+
+/** Local calendar day of a timestamp ("Tuesday on the learner's phone"). */
+function calendarDay(ts: number): string {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+/**
+ * Decision D-15 / audit W7-01, W7-05. True when the item's most recent
+ * sessions show automatic recall:
+ *  - the first answer was right in each of at least BY_HEART_SESSIONS sessions
+ *    in a row, counting back from the latest session (a wrong first answer —
+ *    a lapse — ends the run);
+ *  - those sessions fall on at least BY_HEART_DAYS different calendar days
+ *    AND the run's first and last first-answers are at least
+ *    BY_HEART_MIN_SPAN_MS apart (no "two days" across one midnight);
+ *  - the median time of the last BY_HEART_SESSIONS first answers is under
+ *    BY_HEART_MS.
+ */
+export function meetsByHeart(history: AnswerRecord[]): boolean {
+  const firsts = sessionFirstAnswers(history);
+  const run: AnswerRecord[] = [];
+  for (let i = firsts.length - 1; i >= 0 && firsts[i].correct; i--) run.unshift(firsts[i]);
+  if (run.length < BY_HEART_SESSIONS) return false;
+
+  const days = new Set(run.map((r) => calendarDay(r.ts)));
+  if (days.size < BY_HEART_DAYS) return false;
+  if (run[run.length - 1].ts - run[0].ts < BY_HEART_MIN_SPAN_MS) return false;
+
+  const recentMs = run
+    .slice(-BY_HEART_SESSIONS)
+    .map((r) => r.ms)
+    .sort((a, b) => a - b);
+  const median = recentMs[Math.floor(recentMs.length / 2)];
+  return median < BY_HEART_MS;
+}
+
 // ─── Tier Computation ────────────────────────────────────────────────────────
 
 /**
@@ -94,11 +188,11 @@ export function fromCard(c: Card): SerializedCard {
  * 1. Empty history → 'new'.
  * 2. prev.tier 'new' | 'learning': promote to 'review' if introCorrectCount >= 2 OR
  *    (latest answer correct AND latest.sessionId !== prev.introSessionId); else 'learning'.
- * 3. review | byHeart: take the last answer per distinct session (chronological, last-write-wins),
- *    considering up to the 3 most recent distinct sessions.
- *    - Exactly 3 sessions, all correct, and median ms < BY_HEART_MS → 'byHeart'.
- *    - Latest answer wrong → 'review'.
- *    - Otherwise: preserve 'byHeart' if prev was byHeart and 3-session rule still holds; else 'review'.
+ * 3. review | byHeart: 'byHeart' when meetsByHeart(history) (first answer per
+ *    session, ≥ 3 sessions in a row over ≥ 2 calendar days and ≥ 18 h,
+ *    median < 3 s);
+ *    otherwise 'review'. A wrong first answer in the latest session therefore
+ *    demotes, and the in-session retry cannot undo it.
  */
 export function computeTier(
   history: AnswerRecord[],
@@ -119,39 +213,26 @@ export function computeTier(
     return 'learning';
   }
 
-  // Rule 3: review or byHeart — evaluate last 3 distinct sessions
-  // Build a map of sessionId → last answer (chronological, last-write-wins)
-  const sessionMap = new Map<string, AnswerRecord>();
-  for (const record of history) {
-    sessionMap.set(record.sessionId, record);
+  // Rule 3: review or byHeart
+  return meetsByHeart(history) ? 'byHeart' : 'review';
+}
+
+/**
+ * Persist v1 → v2 (decision D-15): re-judge a stored tier under the
+ * first-answer rule without ever promoting. 'new' / 'learning' are untouched;
+ * 'review' stays 'review'; 'byHeart' survives only if its history still meets
+ * the new rule. A v1 history at the cap may have lost the oldest session's
+ * first answer to the old oldest-first trim, so that session is left out of
+ * the judgement (conservative: it can only shorten the run).
+ */
+export function migrateTierV1(state: ItemSrsState): MasteryTier {
+  if (state.tier !== 'byHeart') return state.tier;
+  let history = state.history;
+  if (history.length >= HISTORY_CAP && history.length > 0) {
+    const oldest = history[0].sessionId;
+    history = history.filter((r) => r.sessionId !== oldest);
   }
-
-  // Collect distinct sessions in chronological order of their last answer
-  // (Map insertion order + last-write-wins gives the right order)
-  const sessionList = Array.from(sessionMap.values());
-
-  // Latest answer is wrong → demote
-  if (!latest.correct) return 'review';
-
-  // Take the 3 most recent distinct sessions. NOTE: "recent" = Map first-seen
-  // order, which equals answer order because session ids (`s${startedAt}`) are
-  // unique and in-session repeats are contiguous — sessions never interleave.
-  const last3 = sessionList.slice(-3);
-
-  if (last3.length === 3) {
-    const allCorrect = last3.every((r) => r.correct);
-    if (allCorrect) {
-      const msSorted = [...last3.map((r) => r.ms)].sort((a, b) => a - b);
-      const median = msSorted[1]; // middle value of 3
-      if (median < BY_HEART_MS) return 'byHeart';
-    }
-  }
-
-  // If prev was byHeart and we didn't re-qualify, drop to review
-  // (latest is correct here — wrong case handled above)
-  if (prev.tier === 'byHeart') return 'review';
-
-  return 'review';
+  return meetsByHeart(history) ? 'byHeart' : 'review';
 }
 
 // ─── Apply Answer ─────────────────────────────────────────────────────────────
@@ -173,21 +254,33 @@ export function applyAnswer(
   now: number,
   sessionId: string,
 ): ItemSrsState {
-  // Restore or create the FSRS card
-  const card: Card = state ? toCard(state.card) : createEmptyCard(new Date(now));
+  // A device clock set earlier than this item's last review would make
+  // ts-fsrs throw ("Invalid delta_t") and crash the answer. Time never runs
+  // backwards for an item: clamp to its last review / last recorded answer.
+  const at = Math.max(
+    now,
+    state?.card.last_review ?? -Infinity,
+    state?.history.length ? state.history[state.history.length - 1].ts : -Infinity,
+  );
 
-  // Schedule via FSRS
+  // Restore or create the FSRS card
+  const card: Card = state ? toCard(state.card) : createEmptyCard(new Date(at));
+
+  // Schedule via FSRS. Belt and braces: should ts-fsrs still reject the card,
+  // keep the old schedule rather than lose the answer or crash the Drill.
   const grade = gradeFor(correct, ms);
-  const { card: nextCard } = F.next(card, new Date(now), RATING[grade]);
+  let nextCard: Card = card;
+  try {
+    nextCard = F.next(card, new Date(at), RATING[grade]).card;
+  } catch (err) {
+    console.warn('[drillScheduler] FSRS update skipped:', err);
+  }
 
   // Build the new answer record
-  const record: AnswerRecord = { ts: now, correct, ms, sessionId };
+  const record: AnswerRecord = { ts: at, correct, ms, sessionId };
 
-  // Append and cap history
-  const rawHistory: AnswerRecord[] = [...(state?.history ?? []), record];
-  const newHistory = rawHistory.length > HISTORY_CAP
-    ? rawHistory.slice(rawHistory.length - HISTORY_CAP)
-    : rawHistory;
+  // Append and cap history (session first answers outlive in-session retries)
+  const newHistory = capHistory([...(state?.history ?? []), record]);
 
   // Track intro session and correct count within it
   const introSessionId = state?.introSessionId ?? sessionId;

@@ -8,8 +8,15 @@ interface ChoiceChipsProps {
   disabled: boolean;
   /** The choice the user tapped (drives wrong-answer styling during feedback). */
   selected: string | null;
+  /** The tapped choice is the right sound, wrong spelling — amber, not red. */
+  selectedNearMiss?: boolean;
   /** The canonical correct choice — only shown (success-styled) during feedback. */
   correctChoice: string | null;
+  /**
+   * How a choice reads on its chip (translated degree/function/cadence/key
+   * names). Defaults to the choice itself; onSelect always gets the raw value.
+   */
+  labelFor?: (choice: string) => string;
   onSelect: (choice: string) => void;
 }
 
@@ -20,7 +27,9 @@ export function ChoiceChips({
   choices,
   disabled,
   selected,
+  selectedNearMiss = false,
   correctChoice,
+  labelFor = (choice) => choice,
   onSelect,
 }: ChoiceChipsProps) {
   const { t } = useTranslation();
@@ -35,7 +44,7 @@ export function ChoiceChips({
     if (!disabled) locked.current = false;
   }, [disabled]);
 
-  const oneColumn = choices.some((c) => c.length > LONG_LABEL);
+  const oneColumn = choices.some((c) => labelFor(c).length > LONG_LABEL);
 
   const handleSelect = (choice: string) => {
     if (disabled || locked.current) return;
@@ -53,10 +62,13 @@ export function ChoiceChips({
         const isSelected = selected === choice;
         const showCorrect = disabled && correctChoice === choice;
         const showWrong = disabled && isSelected && correctChoice !== choice;
+        const showAmber = showWrong && selectedNearMiss;
 
         let stateClass = '';
         if (showCorrect) {
           stateClass = 'bg-emerald-500/15 border-emerald-500/40 text-success';
+        } else if (showAmber) {
+          stateClass = 'bg-amber-500/15 border-amber-500/40 text-warning';
         } else if (showWrong) {
           stateClass = 'bg-red-500/15 border-red-500/40 text-danger';
         }
@@ -84,7 +96,7 @@ export function ChoiceChips({
                 : undefined
             }
           >
-            {choice}
+            {labelFor(choice)}
           </m.button>
         );
       })}

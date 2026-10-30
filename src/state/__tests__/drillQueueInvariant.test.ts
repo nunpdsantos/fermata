@@ -14,7 +14,7 @@
  */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useDrillStore, DEFAULT_SETTINGS, isSessionComplete, type ActiveSession } from '../drillStore';
-import { generateDrillBank } from '../../core/utils/drillBank';
+import { drillSiblingGroup, generateDrillBank } from '../../core/utils/drillBank';
 import { mulberry32 } from '../../core/utils/prng';
 import { DRILL_FAMILIES, type DrillFamily, type DrillItem } from '../../core/types/drill';
 
@@ -129,4 +129,58 @@ describe('drill queue invariant after every recordAnswer (W0-02)', () => {
     expect(s1.queue).toEqual(s0.queue);
     expect(isSessionComplete(s1, useDrillStore.getState().settings)).toBe(true);
   });
+});
+
+// ─── W7-04: siblings (an item and its reverse) never back to back ────────────
+
+function siblingAdjacent(s: ActiveSession): string | null {
+  const from = Math.max(0, s.index - 1);
+  for (let i = from; i < s.queue.length - 1; i++) {
+    const a = s.queue[i];
+    const b = s.queue[i + 1];
+    if (drillSiblingGroup(a) !== drillSiblingGroup(b)) continue;
+    const unavoidable = s.queue.every((id) => drillSiblingGroup(id) === drillSiblingGroup(a));
+    if (!unavoidable) return `${a} / ${b} at ${i} (index ${s.index}, queue ${s.queue.length})`;
+  }
+  return null;
+}
+
+function runSiblings(sc: Scenario, seed: number): string[] {
+  const violations: string[] = [];
+  useDrillStore.getState().resetDrillData();
+  useDrillStore.getState().updateSettings({
+    families: sc.families,
+    length: sc.length,
+    newPerSession: sc.newPerSession,
+    sound: false,
+  });
+  const rand = mulberry32(seed);
+  let now = Date.UTC(2026, 9, 30, 9) + seed * 1000;
+  for (let n = 0; n < sc.sessions; n++) {
+    now += 26 * 3600 * 1000;
+    useDrillStore.getState().startSession(BANK, now);
+    const start = siblingAdjacent(useDrillStore.getState().activeSession!);
+    if (start) violations.push(`${sc.name} seed ${seed} session ${n} (composed): ${start}`);
+    for (let guard = 0; guard < 200; guard++) {
+      const st = useDrillStore.getState();
+      const s = st.activeSession!;
+      if (isSessionComplete(s, st.settings)) break;
+      now += 2500;
+      st.recordAnswer(BY_ID.get(s.queue[s.index])!, rand() < sc.accuracy, 2000, now);
+      const v = siblingAdjacent(useDrillStore.getState().activeSession!);
+      if (v) violations.push(`${sc.name} seed ${seed} session ${n}: ${v}`);
+    }
+    useDrillStore.getState().endSession();
+  }
+  return violations;
+}
+
+describe('drill queue: no sibling pair after any recordAnswer (W7-04)', () => {
+  for (const sc of SCENARIOS) {
+    it(`no avoidable sibling pair — ${sc.name}`, () => {
+      const violations: string[] = [];
+      for (let seed = 1; seed <= 6; seed++) violations.push(...runSiblings(sc, seed));
+      expect(violations.slice(0, 5)).toEqual([]);
+    });
+  }
 });

@@ -5,8 +5,8 @@
 Interactive music theory education platform that teaches through instrument-first pedagogy — theory emerges from playing, not the other way around. Users interact with a virtual piano or guitar fretboard that's always visible at the bottom of the screen (hidden in Drill, which owns its vertical space), with three main views above it:
 
 - **Explore** — browse scales, chords, intervals, and keys. The Circle of Fifths, scale degree bar, and chord grid let users visualize relationships. Selecting any entity highlights it on the instrument below. Detail panels show staff notation, constituent notes, and related structures.
-- **Learn** — structured 9-level curriculum (beginner → advanced) with 118 modules, 870 exercises (385 authored + 485 generated), spaced repetition review. Progress is tracked per-module. Drill's ~1,315-item bank is a separate product surface — never add it to the curriculum exercise count.
-- **Drill** (WS9) — phone-first spaced-retrieval micro-sessions over ~1,315 fundamentals facts (key signatures, circle of fifths, scales, degrees, intervals, triad/seventh spelling both directions, Roman numerals, cadences/function). Per-fact FSRS scheduling (`ts-fsrs`), "by heart" mastery = correct + <3s median across 3 distinct sessions, enharmonic near-miss feedback, mastery map, optional 60s sprint. The item bank is GENERATED from `src/core/` at runtime (`src/core/utils/drillBank/`) — no authored drill content. State lives in its own persisted store `fermata-drill-v1` (`src/state/drillStore.ts`); deliberately NO coupling to curriculum/module progress, no XP/streaks/badges (spec: docs/superpowers/specs/2026-06-10-fermata-drill-mode-design.md). ts-fsrs must stay out of the entry chunk (ErrorBoundary uses a dynamic import + inlined key literal for its reset path).
+- **Learn** — structured 9-level curriculum (beginner → advanced) with 118 modules, 870 exercises (385 authored + 485 generated), spaced repetition review. Progress is tracked per-module. Drill's ~1,321-item bank is a separate product surface — never add it to the curriculum exercise count.
+- **Drill** (WS9) — phone-first spaced-retrieval micro-sessions over ~1,321 fundamentals facts (key signatures, circle of fifths, scales, degrees, intervals, triad/seventh spelling both directions, Roman numerals, cadences/function). Per-fact FSRS scheduling (`ts-fsrs`), "by heart" mastery = right on the FIRST answer of each session for 3+ sessions in a row over 2+ calendar days and 18 h+ from first to last, median <3s (decision D-15; one first-answer miss demotes), new facts introduced round-robin across topics, an item and its reverse never back to back (sibling groups, `drillBank/siblings.ts`), enharmonic near-miss feedback, mastery map, optional 60s sprint. The item bank is GENERATED from `src/core/` at runtime (`src/core/utils/drillBank/`) — no authored drill content. State lives in its own persisted store `fermata-drill-v1` (`src/state/drillStore.ts`); deliberately NO coupling to curriculum/module progress, no XP/streaks/badges (spec: docs/superpowers/specs/2026-06-10-fermata-drill-mode-design.md). ts-fsrs must stay out of the entry chunk (ErrorBoundary uses a dynamic import + inlined key literal for its reset path).
 
 ### Curriculum (9 Levels, 118 Modules)
 
@@ -282,10 +282,13 @@ the phone-first Drill view: all functional, all gates green (5,656 tests / 93 fi
 eslint 0/0, content audits clean).
 
 WS9 details worth knowing: drill bank generated from core (`drillBank/` directory
-module, ~1,315 items, token/params contract-tested against the i18n templates);
+module, ~1,321 items, token/params contract-tested against the i18n templates);
 `drillScheduler` wraps ts-fsrs (request_retention 0.9, Easy never granted);
 `drillSession` composes due→learning→new→confidence with seeded shuffles; persist
-key `fermata-drill-v1` v1 with WS6-style shape guards; main store persist bumped
+key `fermata-drill-v1` v2 (W7: v1 "by heart" tiers re-judged on load, never
+promoted) with per-entry shape guards (one bad record drops only itself); PT/ES
+Drill text is translated at render time by `components/drill/drillText.ts` (the
+bank keeps English strings as grading values); main store persist bumped
 v6 (`lastView` restore + `?view=` boot param + PWA "Start Drill" shortcut).
 
 **Open items, in rough priority:**
@@ -293,9 +296,10 @@ v6 (`lastView` restore + `?view=` boot param + PWA "Start Drill" shortcut).
   inside translated sentences (works, reads mixed) — proposed v2: keyed short tokens
   translated per-language; needs an EN-side generator refactor. Nuno to judge on
   the preview whether it bothers him.
-- Chord-quality names / interval labels render in English inside PT/ES feedback
-  sentences (deliberate "nomenclature untranslated" convention — revisit only as a
-  product decision).
+- Interval labels and seventh-chord quality names render in English inside PT/ES
+  Drill/feedback sentences (nomenclature convention). Since W7 (decision D-17) key,
+  scale and triad names, degree / function / cadence names and Yes/No ARE
+  translated in the Drill.
 - The L6/L7 "Learn about this" gap: scales/modes/intervals have no deep link (only
   chords do, via qualityToModule).
 - Welcome banner in LevelsOverview is unreachable (fresh users always get the Continue

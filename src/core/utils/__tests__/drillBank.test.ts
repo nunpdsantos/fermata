@@ -274,12 +274,27 @@ describe('scale spelling — goldens', () => {
   it('3rd degree of A major is C♯', () => {
     expect(byId.get('scale:degree-of:A:major:3')?.answer).toEqual({ kind: 'choice', correct: 'C♯' });
   });
-  it('no scale answer contains double accidentals', () => {
+  // W7-11 (audit D-23): the slots now cycle ♮ ♯ ♭ 𝄪 𝄫, so the six minor
+  // scales that need a double sharp are in the bank instead of filtered out.
+  it('every scale answer can be entered with the accidental slots (♮ ♯ ♭ 𝄪 𝄫)', () => {
     for (const item of getItemsByFamily(bank, 'scale')) {
       if (item.answer.kind === 'accidentals') {
-        for (const s of item.answer.spelled) expect(s).not.toMatch(/##|bb/);
+        for (const s of item.answer.spelled) expect(s, item.id).toMatch(/^[A-G](|#|b|##|bb)$/);
       }
     }
+  });
+  it('G♯, D♯ and A♯ harmonic and melodic minor are spelled with their double sharps', () => {
+    const spelled = (id: string) => (byId.get(id)?.answer as { spelled: string[] } | undefined)?.spelled;
+    expect(spelled('scale:spell:g#:harmonic_minor')).toEqual(['G#', 'A#', 'B', 'C#', 'D#', 'E', 'F##']);
+    expect(spelled('scale:spell:g#:melodic_minor')).toEqual(['G#', 'A#', 'B', 'C#', 'D#', 'E#', 'F##']);
+    expect(spelled('scale:spell:d#:harmonic_minor')).toEqual(['D#', 'E#', 'F#', 'G#', 'A#', 'B', 'C##']);
+    expect(spelled('scale:spell:d#:melodic_minor')).toEqual(['D#', 'E#', 'F#', 'G#', 'A#', 'B#', 'C##']);
+    expect(spelled('scale:spell:a#:harmonic_minor')).toEqual(['A#', 'B#', 'C#', 'D#', 'E#', 'F#', 'G##']);
+    expect(spelled('scale:spell:a#:melodic_minor')).toEqual(['A#', 'B#', 'C#', 'D#', 'E#', 'F##', 'G##']);
+  });
+  it('all 15 major and 45 minor scale spellings exist', () => {
+    const spells = getItemsByFamily(bank, 'scale').filter((i) => i.id.startsWith('scale:spell:'));
+    expect(spells).toHaveLength(60);
   });
   it('every spelled scale uses each letter exactly once', () => {
     for (const item of getItemsByFamily(bank, 'scale')) {
@@ -303,8 +318,9 @@ describe('per-family count pins', () => {
     expect(getItemsByFamily(bank, 'triad').length).toBe(112);
   });
   it('scale item count is pinned', () => {
-    // Actual count after ## / bb filter: 234
-    expect(getItemsByFamily(bank, 'scale').length).toBe(234);
+    // 60 spellings (15 major + 15 × 3 minor) + 180 degree-of items. Was 234
+    // while the six double-sharp minor spellings were filtered out (W7-11).
+    expect(getItemsByFamily(bank, 'scale').length).toBe(240);
   });
   it('altered pairs: every non-duplicate pair resolves to an item with the correct answer label', () => {
     // Natural-note pair ids that are already covered by sub-group 2
@@ -528,6 +544,16 @@ function getNestedValue(obj: Record<string, unknown>, path: string): string | un
   return typeof current === 'string' ? current : undefined;
 }
 
+/**
+ * The EN template(s) for a key: the plain string, or — for count-driven keys
+ * such as drill.prompts.semitonesToName — every plural form (_one, _other).
+ */
+function templatesFor(obj: Record<string, unknown>, key: string): string[] {
+  return [key, `${key}_one`, `${key}_other`]
+    .map((k) => getNestedValue(obj, k))
+    .filter((t): t is string => t !== undefined);
+}
+
 /** Extract {{token}} names from a template string. */
 function extractTokens(template: string): string[] {
   const matches = template.matchAll(/\{\{([a-zA-Z]+)\}\}/g);
@@ -537,12 +563,23 @@ function extractTokens(template: string): string[] {
 describe('token/params contract — EN template tokens ⊆ item params', () => {
   const en = enLocale as Record<string, unknown>;
 
+  it('plural-only keys have both forms and their items pass a numeric count', () => {
+    for (const key of ['drill.prompts.semitonesToName', 'drill.why.semitoneFact']) {
+      expect(getNestedValue(en, `${key}_one`), key).toBeDefined();
+      expect(getNestedValue(en, `${key}_other`), key).toBeDefined();
+    }
+    for (const item of bank.filter((i) => i.id.startsWith('interval:semitones-to-name:'))) {
+      expect(typeof item.promptParams.count, item.id).toBe('number');
+      expect(typeof item.whyParams.count, item.id).toBe('number');
+    }
+  });
+
   it('every whyKey EN template token is present in whyParams for every bank item', () => {
     const leaks: string[] = [];
     for (const item of bank) {
-      const template = getNestedValue(en, item.whyKey);
-      if (!template) continue; // registry tests already catch missing keys
-      const tokens = extractTokens(template);
+      const templates = templatesFor(en, item.whyKey);
+      if (templates.length === 0) continue; // registry tests already catch missing keys
+      const tokens = [...new Set(templates.flatMap(extractTokens))];
       const params = item.whyParams as Record<string, unknown> | undefined;
       for (const token of tokens) {
         if (!params || !(token in params)) {
@@ -556,9 +593,9 @@ describe('token/params contract — EN template tokens ⊆ item params', () => {
   it('every promptKey EN template token is present in promptParams for every bank item', () => {
     const leaks: string[] = [];
     for (const item of bank) {
-      const template = getNestedValue(en, item.promptKey);
-      if (!template) continue;
-      const tokens = extractTokens(template);
+      const templates = templatesFor(en, item.promptKey);
+      if (templates.length === 0) continue;
+      const tokens = [...new Set(templates.flatMap(extractTokens))];
       const params = item.promptParams as Record<string, unknown> | undefined;
       for (const token of tokens) {
         if (!params || !(token in params)) {

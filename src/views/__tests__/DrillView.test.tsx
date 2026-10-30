@@ -5,6 +5,7 @@ import { useDrillStore, type ActiveSession, DEFAULT_SETTINGS } from '../../state
 import { useAppStore } from '../../state/store';
 import { generateDrillBank } from '../../core/utils/drillBank';
 import { DRILL_FAMILY_TO_MODULE } from '../../data/drillFamilyToModule';
+import i18n from '../../i18n';
 import type { DrillFamily, DrillItem } from '../../core/types/drill';
 
 // Spy on the reveal-audio player so we can assert it's invoked (Task 10)
@@ -553,13 +554,13 @@ describe('DrillView — same item twice in a row stays answerable (W0-02 / D-4)'
 });
 
 describe('DrillView — progress counter (W0-02 / D-11)', () => {
-  function startShortSession() {
+  function startShortSession(newPerSession = 3) {
     useDrillStore.getState().resetDrillData();
     // Degree facts only, 3 new per session, target 24 → the real queue is 3.
     useDrillStore.getState().updateSettings({
       families: { ...CHOICE_FAMILIES, keysig: false, circle: false },
       length: 24,
-      newPerSession: 3,
+      newPerSession,
     });
   }
 
@@ -572,17 +573,20 @@ describe('DrillView — progress counter (W0-02 / D-11)', () => {
 
   it('keeps the answered question number during feedback and advances on Continue', () => {
     vi.useFakeTimers();
-    startShortSession();
+    // 4 new degree facts: degree 1 → name, degree 2 → name, Tonic → number,
+    // Supertonic → number (siblings kept apart, W7-04), so a miss on the
+    // first one has a non-adjacent slot to be requeued into.
+    startShortSession(4);
     render(<DrillView />);
     act(() => {
       fireEvent.click(screen.getByRole('button', { name: currentWrongChoice() }));
     });
     // Feedback for question 1: still "1 of …" (was "2 of 24" before the fix).
-    // The miss is requeued, so the session grew to 4.
+    // The miss is requeued, so the session grew to 5.
     expect(screen.getByText('Not quite')).toBeDefined();
-    expect(screen.getByText('1 of 4')).toBeDefined();
+    expect(screen.getByText('1 of 5')).toBeDefined();
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Continue' })));
-    expect(screen.getByText('2 of 4')).toBeDefined();
+    expect(screen.getByText('2 of 5')).toBeDefined();
   });
 
   it('a correct answer also holds its number until the auto-advance', () => {
@@ -596,5 +600,112 @@ describe('DrillView — progress counter (W0-02 / D-11)', () => {
       vi.advanceTimersByTime(600);
     });
     expect(screen.getByText(/^2 of \d+$/)).toBeDefined();
+  });
+});
+
+// ─── W7-09: resuming a session saved by an older release ────────────────────
+
+describe('DrillView — resume with a stale queue head (W7-09)', () => {
+  it('after answering the first known question, the NEXT question is a different one', () => {
+    vi.useFakeTimers();
+    const first = BY_ID.get('degree:num-to-name:1')!;
+    const second = BY_ID.get('circle:next-sharp:F#')!;
+    const session: ActiveSession = {
+      id: 's-old',
+      queue: ['degree:removed-in-new-release', first.id, second.id],
+      index: 0,
+      asked: 0,
+      correct: 0,
+      startedAt: 1,
+      seed: 1,
+      missRequeues: {},
+    };
+    useDrillStore.setState({ activeSession: session });
+    render(<DrillView />);
+    expect(screen.getByText('Scale degree 1 is called…?')).toBeDefined();
+    const correct = first.answer.kind === 'choice' ? first.answer.correct : '';
+    act(() => fireEvent.click(screen.getByRole('button', { name: correct })));
+    act(() => {
+      vi.advanceTimersByTime(600);
+    });
+    expect(screen.queryByText('Scale degree 1 is called…?')).toBeNull();
+    expect(screen.getByText(/which sharp is added after F♯/)).toBeDefined();
+  });
+});
+
+// ─── W7-06: the counter over a whole default first session ──────────────────
+// Ported from the auditors' sched-probe Scenario C: a new learner on default
+// settings gets a session that ends after 8 questions while the header read
+// "x of 24". Fixed in W0-02; this pins the whole run, not just question 1.
+
+describe('DrillView — counter across a full default first session (W7-06)', () => {
+  it('never shows the 24 target, never runs past its total, and ends on "N of N"', () => {
+    vi.useFakeTimers();
+    useDrillStore.getState().resetDrillData(); // defaults: all topics, 4 new, length 24
+    render(<DrillView />);
+    const seen: string[] = [];
+    for (let guard = 0; guard < 40; guard++) {
+      const counter = screen.queryByText(/^\d+ of \d+$/);
+      if (!counter) break; // summary reached
+      const text = counter.textContent!;
+      seen.push(text);
+      const [x, n] = text.split(' of ').map(Number);
+      expect(x, text).toBeLessThanOrEqual(n);
+      act(() => answerCurrentCorrectly());
+      act(() => {
+        vi.advanceTimersByTime(600);
+      });
+    }
+    expect(screen.getByText('Session complete')).toBeDefined();
+    const asked = useDrillStore.getState().lifetime.answered;
+    expect(seen.length).toBe(asked);
+    expect(seen.some((t) => t.endsWith(' of 24'))).toBe(false);
+    expect(seen[seen.length - 1]).toBe(`${asked} of ${asked}`);
+  });
+});
+
+// ─── W6-07: the running Drill speaks Portuguese / Spanish ───────────────────
+
+describe('DrillView — degree names, answer and explanation in PT (W6-07)', () => {
+  afterEach(async () => {
+    await i18n.changeLanguage('en');
+  });
+
+  it('chips, the revealed answer and the why line are Portuguese', async () => {
+    await i18n.changeLanguage('pt');
+    const it_ = BY_ID.get('degree:num-to-name:7')!;
+    useDrillStore.setState({
+      activeSession: {
+        id: 's-pt',
+        queue: [it_.id, 'circle:next-sharp:F#'],
+        index: 0,
+        asked: 0,
+        correct: 0,
+        startedAt: 1,
+        seed: 1,
+        missRequeues: {},
+      },
+    });
+    render(<DrillView />);
+    expect(screen.getByText('O grau 7 da escala chama-se…?')).toBeDefined();
+    // Every chip is a Portuguese degree name; tapping one still grades the
+    // English value underneath.
+    expect(screen.getByRole('button', { name: 'Sensível' })).toBeDefined();
+    expect(screen.queryByRole('button', { name: 'Leading Tone' })).toBeNull();
+    const wrong = it_.input.format === 'choice' ? it_.input.choices.find((c) => c !== 'Leading Tone')! : '';
+    const wrongPt = (
+      {
+        Tonic: 'Tónica',
+        Supertonic: 'Supertónica',
+        Mediant: 'Mediante',
+        Subdominant: 'Subdominante',
+        Dominant: 'Dominante',
+        Submediant: 'Submediante',
+      } as Record<string, string>
+    )[wrong];
+    act(() => fireEvent.click(screen.getByRole('button', { name: wrongPt })));
+    expect(useDrillStore.getState().items[it_.id].history[0].correct).toBe(false);
+    expect(screen.getByText(/— Sensível/)).toBeDefined();
+    expect(screen.getByText('O grau 7 da escala é a Sensível.')).toBeDefined();
   });
 });
