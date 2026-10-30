@@ -82,7 +82,7 @@ describe('function and cadence names in PT/ES, no "(RU: …)" gloss (W6-07, D-19
       ['Dominante', 'Subdominante (predominante)', 'Tónica'].sort(),
     );
     expect(prompt('function:chord-function:C:ii', 'pt')).toBe('Em C maior, D menor (ii) funciona como…?');
-    expect(prompt('function:chord-function:C:ii', 'es')).toBe('En C mayor, D menor (ii) funciona como…?');
+    expect(prompt('function:chord-function:C:ii', 'es')).toBe('En C mayor, ¿qué función tiene D menor (ii)?');
   });
 
   it('cadence names follow each language\'s own lesson (l3u11m1)', () => {

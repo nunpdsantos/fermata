@@ -310,3 +310,27 @@ describe('drill i18n — PT prompts render naturally around English nomenclature
     expect(out).not.toMatch(/\{\{|\}\}/);
   });
 });
+
+// ─── Spanish punctuation (review of W7) ──────────────────────────────────────
+// "El grado 1 de la escala se llama…?" lacked its opening "¿". Every Spanish
+// Drill string must open each question with ¿ and each exclamation with ¡.
+
+describe('drill i18n — ES opening ¿ / ¡', () => {
+  function strings(node: unknown, path: string, out: Array<[string, string]>): Array<[string, string]> {
+    if (typeof node === 'string') out.push([path, node]);
+    else if (node && typeof node === 'object') {
+      for (const [k, v] of Object.entries(node)) strings(v, `${path}.${k}`, out);
+    }
+    return out;
+  }
+
+  it('every ? has its ¿ and every ! its ¡', () => {
+    const all = strings(i18n.getResource('es', 'translation', 'drill'), 'drill', []);
+    expect(all.length).toBeGreaterThan(50);
+    const bad = all.filter(([, s]) => {
+      const count = (re: RegExp) => (s.match(re) ?? []).length;
+      return count(/\?/g) !== count(/¿/g) || count(/!/g) !== count(/¡/g);
+    });
+    expect(bad.map(([p, s]) => `${p}: ${s}`)).toEqual([]);
+  });
+});
