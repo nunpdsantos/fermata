@@ -99,10 +99,19 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
   // "in scale".
   const isFermata = useAppStore((s) => s.themeMode === 'fermata' || s.themeMode === 'fermata-night');
 
+  // Roving tabindex: when this key becomes the tab stop, take focus ONLY if the
+  // user is already navigating the keyboard (focus is on another key of the
+  // same piano). Focusing on mount stole focus and scrolled Explore ~300 px
+  // down on load (design review / audit W2-03). The page never scrolls for it;
+  // the key is brought into view within the keyboard's own scroller.
   useEffect(() => {
-    if (isFocused && elementRef.current && document.activeElement !== elementRef.current) {
-      elementRef.current.focus({ preventScroll: false });
-    }
+    const el = elementRef.current;
+    if (!isFocused || !el || document.activeElement === el) return;
+    const keyboard = el.closest('[role="group"]');
+    const active = document.activeElement;
+    if (!keyboard || !active || active === el || !keyboard.contains(active)) return;
+    el.focus({ preventScroll: true });
+    el.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
   }, [isFocused]);
 
   const handleKeyDown = useCallback(

@@ -40,10 +40,6 @@ export const MINOR_SCALE_LABELS: Record<string, string> = {
   melodic_minor: 'Melodic',
 };
 
-export const ROMAN_NUMERALS: Record<number, string> = {
-  1: 'I', 2: 'ii', 3: 'iii', 4: 'IV', 5: 'V', 6: 'vi', 7: 'vii\u00B0',
-};
-
 export const SIZE = 300;
 export const CENTER = SIZE / 2;
 export const MAJOR_INNER = 84;
