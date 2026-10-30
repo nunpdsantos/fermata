@@ -206,7 +206,9 @@ describe('--text-dim', () => {
   const day = THEMES['fermata (day)'];
   const night = THEMES['fermata-night'];
 
-  it.each(['--bg', '--card', '--card-hover', '--card-active'])('day: ≥ 4.5:1 on %s', (surface) => {
+  // --card-active is deliberately not a requirement: no component puts dim
+  // text on it, and meeting it would make dim as strong as --text-muted.
+  it.each(['--bg', '--card', '--card-hover'])('day: ≥ 4.5:1 on %s', (surface) => {
     expect(contrast(hexVar(day, '--text-dim'), hexVar(day, surface))).toBeGreaterThanOrEqual(MIN_TEXT);
   });
 
@@ -214,12 +216,10 @@ describe('--text-dim', () => {
     expect(contrast(hexVar(night, '--text-dim'), hexVar(night, surface))).toBeGreaterThanOrEqual(MIN_TEXT);
   });
 
-  it('day: still secondary — far lighter than --text, and greyer than --text-muted', () => {
-    // ≥ 4.5:1 on --card-active pins day --text-dim to about the lightness of
-    // --text-muted (itself 4.48:1 there), so the step down is carried by
-    // chroma: dim is the greyer walnut.
+  it('day: still secondary — lighter and greyer than --text-muted, far lighter than --text', () => {
     const bg = hexVar(day, '--bg');
     const dim = hexVar(day, '--text-dim');
+    expect(contrast(dim, bg)).toBeLessThan(contrast(hexVar(day, '--text-muted'), bg));
     expect(contrast(dim, bg)).toBeLessThan(contrast(hexVar(day, '--text'), bg) / 2);
     expect(oklchChroma(dim)).toBeLessThan(oklchChroma(hexVar(day, '--text-muted')) * 0.8);
   });

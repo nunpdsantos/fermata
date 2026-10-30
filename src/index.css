@@ -132,10 +132,12 @@
   --border-subtle: #e0d4ba;
   --text: #2a1f14;
   --text-muted: #6b5436;
-  /* ≥ 4.5:1 on --bg / --card / --card-hover / --card-active (was #8b7551,
-     2.8–3.85:1 — audit W0-03). Meeting --card-active puts it at about the
-     lightness of --text-muted; it stays secondary by being a greyer walnut. */
-  --text-dim: #655540;
+  /* ≥ 4.5:1 on --bg / --card / --card-hover (was #8b7551, 3.15–3.85:1 —
+     audit W0-03); a lighter, greyer walnut than --text-muted, so it still
+     reads as secondary. No component puts dim text on --card-active (only
+     the print stylesheet / token map mention it), so that surface is not a
+     requirement — meeting it would make dim as strong as --text-muted. */
+  --text-dim: #6d5c44;
   /* Semantic TEXT colours (right / wrong / hint / status) — text and icons
      only; fills keep the Tailwind 500/400 tints. Tailwind emerald/red/amber
      800: ≥ 4.5:1 on cream, cards and those tints (src/design/__tests__/
