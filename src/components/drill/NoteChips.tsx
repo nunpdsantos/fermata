@@ -25,8 +25,9 @@ interface NoteChipsProps {
  * onAnswer exactly once. A "Clear" text button recovers from a fat-finger tap
  * while still answering.
  *
- * The parent keys this component by item id, so a new question remounts it
- * fresh — no transition effect is needed to reset selection or the commit guard.
+ * The parent keys this component per presentation (item id + a counter), so
+ * every question — even the same item again — remounts it fresh; no
+ * transition effect is needed to reset selection or the commit guard.
  */
 export function NoteChips({
   chips,
@@ -38,7 +39,7 @@ export function NoteChips({
   const { t } = useTranslation();
   const [selected, setSelected] = useState<string[]>([]);
   // Commit guard: once we fire onAnswer we lock so extra taps can't re-submit
-  // before React re-renders with `disabled`. Reset by remount on the next item.
+  // before React re-renders with `disabled`. Reset by remount on the next presentation.
   const locked = useRef(false);
 
   // Normalized set of correct spellings (ASCII) for feedback highlighting.

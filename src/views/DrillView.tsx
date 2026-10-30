@@ -42,7 +42,7 @@ export function DrillView() {
   const resetDrillProgress = useDrillStore((s) => s.resetDrillProgress);
   const activeSession = useDrillStore((s) => s.activeSession);
 
-  const { item, phase, result, asked, total, sessionComplete } = runner;
+  const { item, presentationKey, phase, result, position, total, sessionComplete } = runner;
 
   const bank = viewBank();
 
@@ -102,9 +102,10 @@ export function DrillView() {
         ) : item ? (
           <RunningQuestion
             item={item}
+            presentationKey={presentationKey}
             phase={phase}
             result={result}
-            asked={asked}
+            position={position}
             total={total}
             startedAt={activeSession?.startedAt ?? null}
             showTimer={settings.showTimer}
@@ -126,9 +127,11 @@ export function DrillView() {
 
 interface RunningQuestionProps {
   item: DrillItem;
+  presentationKey: string;
   phase: 'answering' | 'feedback';
   result: ReturnType<typeof useDrillRunner>['result'];
-  asked: number;
+  /** Zero-based number of the question on screen. */
+  position: number;
   total: number;
   startedAt: number | null;
   showTimer: boolean;
@@ -140,9 +143,10 @@ interface RunningQuestionProps {
 
 function RunningQuestion({
   item,
+  presentationKey,
   phase,
   result,
-  asked,
+  position,
   total,
   startedAt,
   showTimer,
@@ -157,16 +161,18 @@ function RunningQuestion({
   return (
     <>
       <QuestionCard
-        asked={asked}
+        asked={position}
         total={total}
         prompt={t(item.promptKey, item.promptParams)}
         onEndSession={onEndSession}
         onOpenSettings={onOpenSettings}
         elapsedSeconds={showTimer && startedAt !== null ? elapsed : undefined}
       >
-        {/* Key by item id so each question gets a fresh input instance —
-            resets selection/commit-guard state without a transition effect. */}
-        <DrillInput key={item.id} item={item} phase={phase} onAnswer={onAnswer} />
+        {/* Key per PRESENTATION (not just item id) so each question — even the
+            same item shown again right away — gets a fresh input instance:
+            resets selection/commit-guard state without a transition effect
+            (audit W0-02 / D-4: an id-only key left the spelling inputs locked). */}
+        <DrillInput key={presentationKey} item={item} phase={phase} onAnswer={onAnswer} />
       </QuestionCard>
 
       {phase === 'feedback' && result && (

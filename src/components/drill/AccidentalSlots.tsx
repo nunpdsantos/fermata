@@ -44,8 +44,9 @@ function slotSpelling(letter: NaturalNote, step: number): string {
  * one deliberate exception to the zero-submit rule, since a scale has no
  * natural "last tap" to auto-fire on.
  *
- * The parent keys this component by item id, so a new question remounts it
- * fresh (all-natural slots, guard re-armed) without a transition effect.
+ * The parent keys this component per presentation (item id + a counter), so
+ * every question — even the same item again — remounts it fresh (all-natural
+ * slots, guard re-armed) without a transition effect.
  */
 export function AccidentalSlots({
   letters,

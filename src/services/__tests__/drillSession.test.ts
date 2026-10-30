@@ -596,6 +596,57 @@ describe('requeueSecondExposure', () => {
   });
 });
 
+// ─── Requeue never places an item next to itself (audit W0-02 / D-4) ─────────
+// Spec §3.6: "the same item never appears twice in a row". A miss on the LAST
+// item of a short queue used to clamp the requeue to index+1, so the same
+// question came straight back (and the non-choice inputs stayed locked).
+
+describe('requeue: no adjacent duplicate (W0-02)', () => {
+  const r0 = () => 0;
+
+  it('miss on the last queue item: no slot exists → queue unchanged (not re-asked immediately)', () => {
+    const q = ['a', 'b', 'x'];
+    expect(requeueAfterMiss(q, 2, 'x', r0)).toEqual(['a', 'b', 'x']);
+  });
+
+  it('second exposure of the last queue item: no slot → queue unchanged', () => {
+    const q = ['a', 'b', 'x'];
+    expect(requeueSecondExposure(q, 2, 'x', r0)).toEqual(['a', 'b', 'x']);
+  });
+
+  it('miss with one other item left: goes after it, never right after itself', () => {
+    // x at 0, only 'a' remains → x must land after 'a'.
+    expect(requeueAfterMiss(['x', 'a'], 0, 'x', r0)).toEqual(['x', 'a', 'x']);
+  });
+
+  it('skips a slot next to an existing copy of the same item', () => {
+    // Target (clamped) slot 4 would sit next to the copy of x at the end.
+    const out = requeueAfterMiss(['x', 'a', 'b', 'c', 'x'], 0, 'x', r0);
+    expect(out).toEqual(['x', 'a', 'b', 'x', 'c', 'x']);
+  });
+
+  it('only copies of the item remain → no requeue', () => {
+    expect(requeueAfterMiss(['a', 'x', 'b', 'x'], 1, 'x', r0)).toEqual(['a', 'x', 'b', 'x']);
+  });
+
+  it('property: over many random queues, a requeue never creates an adjacent pair', () => {
+    const rand = mulberry32(42);
+    for (let trial = 0; trial < 2000; trial++) {
+      const len = 1 + Math.floor(rand() * 8);
+      const ids = Array.from({ length: len }, () => `i${Math.floor(rand() * 4)}`);
+      const queue = ids.filter((id, i) => i === 0 || id !== ids[i - 1]); // valid starting queue
+      const index = Math.floor(rand() * queue.length);
+      const id = queue[index];
+      for (const fn of [requeueAfterMiss, requeueSecondExposure]) {
+        const out = fn(queue, index, id, rand);
+        for (let i = index; i < out.length - 1; i++) {
+          expect(out[i] === out[i + 1], `${fn.name} ${JSON.stringify(queue)} @${index} → ${JSON.stringify(out)}`).toBe(false);
+        }
+      }
+    }
+  });
+});
+
 // ─── Integration: real bank ───────────────────────────────────────────────────
 
 describe('composeSession: integration with real bank', () => {

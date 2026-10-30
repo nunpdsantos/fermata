@@ -25,8 +25,9 @@ interface RootQualityChipsProps {
  * re-selects the root. The answer fires on the quality tap (the natural last
  * action), keeping the zero-submit idiom.
  *
- * The parent keys this component by item id, so a new question remounts it
- * fresh (root cleared, guard re-armed) without a transition effect.
+ * The parent keys this component per presentation (item id + a counter), so
+ * every question — even the same item again — remounts it fresh (root
+ * cleared, guard re-armed) without a transition effect.
  */
 export function RootQualityChips({
   roots,

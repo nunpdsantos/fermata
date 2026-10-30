@@ -511,3 +511,90 @@ describe('DrillView — showTimer setting', () => {
     expect(screen.getByText(/^\d+:\d{2}$/)).toBeDefined();
   });
 });
+
+// ── Audit W0-02: input lock on a back-to-back repeat + honest "x of N" ───────
+
+describe('DrillView — same item twice in a row stays answerable (W0-02 / D-4)', () => {
+  // A stale persisted queue (or any adjacent repeat) puts the same rootQuality
+  // item twice in a row. Before the fix the input was keyed by item id only,
+  // so RootQualityChips kept its "already committed" lock and ignored taps.
+  const X = 'triad:notes-to-name:C:minor'; // rootQuality, answer C minor
+  const FILLER = 'triad:notes-to-name:C:major';
+
+  it('known ids are rootQuality items (test precondition)', () => {
+    expect(BY_ID.get(X)!.input.format).toBe('rootQuality');
+    expect(BY_ID.get(FILLER)!.input.format).toBe('rootQuality');
+  });
+
+  it('a missed item shown again immediately accepts a new answer', () => {
+    useDrillStore.setState({
+      settings: { ...DEFAULT_SETTINGS, families: TRIAD_FAMILIES, sound: false },
+      activeSession: {
+        id: 's-lock', queue: [FILLER, X, X], index: 1, asked: 1, correct: 1,
+        startedAt: 1, seed: 1, missRequeues: {},
+      },
+    });
+    render(<DrillView />);
+
+    // Miss: right root, wrong quality.
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'C' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Major' })));
+    const s1 = useDrillStore.getState().activeSession!;
+    expect(s1.asked).toBe(2);
+    expect(s1.queue[s1.index]).toBe(X); // the repeat is next
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Continue' })));
+
+    // Same question again — the taps must register.
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'C' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Minor' })));
+    expect(useDrillStore.getState().activeSession!.asked).toBe(3);
+    expect(screen.getByText('Correct')).toBeDefined();
+  });
+});
+
+describe('DrillView — progress counter (W0-02 / D-11)', () => {
+  function startShortSession() {
+    useDrillStore.getState().resetDrillData();
+    // Degree facts only, 3 new per session, target 24 → the real queue is 3.
+    useDrillStore.getState().updateSettings({
+      families: { ...CHOICE_FAMILIES, keysig: false, circle: false },
+      length: 24,
+      newPerSession: 3,
+    });
+  }
+
+  it('shows the real session length, not the 24-question target', () => {
+    startShortSession();
+    render(<DrillView />);
+    expect(useDrillStore.getState().activeSession!.queue).toHaveLength(3);
+    expect(screen.getByText('1 of 3')).toBeDefined();
+  });
+
+  it('keeps the answered question number during feedback and advances on Continue', () => {
+    vi.useFakeTimers();
+    startShortSession();
+    render(<DrillView />);
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: currentWrongChoice() }));
+    });
+    // Feedback for question 1: still "1 of …" (was "2 of 24" before the fix).
+    // The miss is requeued, so the session grew to 4.
+    expect(screen.getByText('Not quite')).toBeDefined();
+    expect(screen.getByText('1 of 4')).toBeDefined();
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Continue' })));
+    expect(screen.getByText('2 of 4')).toBeDefined();
+  });
+
+  it('a correct answer also holds its number until the auto-advance', () => {
+    vi.useFakeTimers();
+    startShortSession();
+    render(<DrillView />);
+    act(() => answerCurrentCorrectly());
+    expect(screen.getByText('Correct')).toBeDefined();
+    expect(screen.getByText(/^1 of \d+$/)).toBeDefined();
+    act(() => {
+      vi.advanceTimersByTime(600);
+    });
+    expect(screen.getByText(/^2 of \d+$/)).toBeDefined();
+  });
+});
