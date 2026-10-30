@@ -67,7 +67,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which set of three notes is the correct shell voicing?',
-        hintTemplate: 'A shell voicing uses only root, 3rd, and 7th — the 5th is omitted. The 3rd defines the chord quality (major/minor); the 7th defines the 7th-chord type (major7 / minor7 / dominant7).',
+        hintTemplate: 'A shell voicing uses only root, 3rd, and 7th — the 5th is omitted. The 3rd defines the chord quality (major/minor); the 7th defines the 7th-chord type (maj7 / m7 / dom7).',
         params: {
           choiceSets: [
             [
