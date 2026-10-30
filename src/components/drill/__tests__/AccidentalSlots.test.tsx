@@ -1,6 +1,7 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, screen, cleanup, fireEvent, act } from '@testing-library/react';
 import { AccidentalSlots } from '../AccidentalSlots';
+import { normalizeDisplay } from '../grading';
 import type { NaturalNote } from '../../../core/types/music';
 
 afterEach(cleanup);
@@ -50,19 +51,41 @@ describe('AccidentalSlots', () => {
     expect(screen.getByRole('button', { name: 'Done' })).toBeDefined();
   });
 
-  it('cycles a slot ♮ → ♯ → ♭ → ♮ on successive taps', () => {
+  it('cycles a slot ♮ → ♯ → ♭ → 𝄪 → 𝄫 → ♮ on successive taps (W7-11)', () => {
     render(
       <AccidentalSlots letters={A_MAJOR_LETTERS} disabled={false} onAnswer={() => {}} />,
     );
-    // Slot C: natural → sharp.
+    // Slot C: natural → sharp → flat (unchanged first three steps).
     act(() => fireEvent.click(screen.getByRole('button', { name: 'C♮' })));
     expect(screen.getByRole('button', { name: 'C♯' })).toBeDefined();
-    // sharp → flat.
     act(() => fireEvent.click(screen.getByRole('button', { name: 'C♯' })));
     expect(screen.getByRole('button', { name: 'C♭' })).toBeDefined();
-    // flat → natural.
+    // flat → double sharp → double flat → natural.
     act(() => fireEvent.click(screen.getByRole('button', { name: 'C♭' })));
+    expect(screen.getByRole('button', { name: 'C𝄪' })).toBeDefined();
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'C𝄪' })));
+    expect(screen.getByRole('button', { name: 'C𝄫' })).toBeDefined();
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'C𝄫' })));
     expect(screen.getByRole('button', { name: 'C♮' })).toBeDefined();
+  });
+
+  it('a double sharp is submitted as F𝄪 and grades as F## (G♯ harmonic minor)', () => {
+    const onAnswer = vi.fn();
+    render(
+      <AccidentalSlots letters={['G', 'A', 'B', 'C', 'D', 'E', 'F']} disabled={false} onAnswer={onAnswer} />,
+    );
+    const tap = (name: string, times: number) => {
+      for (let i = 0; i < times; i++) {
+        const current = screen.getAllByRole('button').find((b) => b.getAttribute('aria-label')?.startsWith(name))!;
+        act(() => fireEvent.click(current));
+      }
+    };
+    for (const l of ['G', 'A', 'C', 'D']) tap(l, 1); // sharps
+    tap('F', 3); // ♮ → ♯ → ♭ → 𝄪
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Done' })));
+    const spelled = onAnswer.mock.calls[0][0] as string[];
+    expect(spelled).toEqual(['G♯', 'A♯', 'B', 'C♯', 'D♯', 'E', 'F𝄪']);
+    expect(spelled.map(normalizeDisplay)).toEqual(['G#', 'A#', 'B', 'C#', 'D#', 'E', 'F##']);
   });
 
   it('Done grades the current spelling (display strings, natural drops the glyph)', () => {

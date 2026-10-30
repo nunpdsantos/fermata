@@ -7,7 +7,8 @@
  *
  * Rank layout: FAMILY_BASE.scale = 1700, stride 10 per key.
  * Minor key tonic ASCII uses LOWERCASE (same as genKeysig).
- * Scales containing ## or bb are FILTERED out.
+ * Double accidentals are kept (W7-11): G♯/D♯/A♯ harmonic and melodic minor
+ * need F𝄪/C𝄪/G𝄪, which the accidental slots can now enter.
  */
 
 import type { Note } from '../../types/music';
@@ -42,11 +43,6 @@ function keyRankBase(keyAscii: string): number {
   return FAMILY_BASE.scale + idx * 10;
 }
 
-/** Check if a scale's notes contain double accidentals (## or bb) */
-function hasDoubleAccidental(notes: Note[]): boolean {
-  return notes.some((n) => n.accidental === '##' || n.accidental === 'bb');
-}
-
 export function genScale(): DrillItem[] {
   const items: DrillItem[] = [];
 
@@ -54,8 +50,6 @@ export function genScale(): DrillItem[] {
   for (const majorTonic of MAJOR_KEYS) {
     const tonicAscii = noteToString(majorTonic);
     const scale = buildScale(majorTonic, 'major');
-
-    if (hasDoubleAccidental(scale.notes)) continue;
 
     const baseRank = keyRankBase(tonicAscii);
     const scaleDisplay = `${displayNote(majorTonic)} major`;
@@ -103,8 +97,6 @@ export function genScale(): DrillItem[] {
     const majorKeyAscii = noteToString(majorTonic);
     for (const type of MINOR_TYPES) {
       const scale = buildScale(minorTonic, type);
-
-      if (hasDoubleAccidental(scale.notes)) continue;
 
       const typeName = SCALE_TYPE_DISPLAY[type];
       const scaleDisplay = `${displayNote(minorTonic)} ${typeName}`;

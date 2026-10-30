@@ -15,12 +15,19 @@ interface AccidentalSlotsProps {
   feedback?: { correctSpelled: string[] };
 }
 
-/** Cycle order for a slot: natural → sharp → flat → natural. */
-const ACCIDENTAL_CYCLE = ['', '#', 'b'] as const;
+/**
+ * Cycle order for a slot: natural → sharp → flat → double sharp → double flat
+ * → natural. The doubles come last so the common taps are unchanged; they are
+ * on every slot (not only where a scale needs one) so their presence never
+ * gives the answer away (W7-11: G♯/D♯/A♯ harmonic and melodic minor).
+ */
+const ACCIDENTAL_CYCLE = ['', '#', 'b', '##', 'bb'] as const;
 const GLYPH: Record<(typeof ACCIDENTAL_CYCLE)[number], string> = {
   '': '♮',
   '#': '♯',
   b: '♭',
+  '##': '𝄪',
+  bb: '𝄫',
 };
 
 /** Display name for a slot, e.g. C♯ / D♭ / E♮. */
@@ -30,7 +37,7 @@ function slotDisplay(letter: NaturalNote, step: number): string {
 }
 
 /** Unicode display spelling submitted to grading; natural drops the glyph
- * (C / C♯ / D♭) so normalizeDisplay() maps it straight to the ASCII answer. */
+ * (C / C♯ / D♭ / F𝄪) so normalizeDisplay() maps it straight to the ASCII answer. */
 function slotSpelling(letter: NaturalNote, step: number): string {
   const acc = ACCIDENTAL_CYCLE[step];
   return acc === '' ? letter : `${letter}${GLYPH[acc]}`;
@@ -39,7 +46,7 @@ function slotSpelling(letter: NaturalNote, step: number): string {
 /**
  * Seven tap-to-cycle slots for spelling a scale.
  *
- * Each slot is pre-filled natural and cycles ♮→♯→♭ on tap, rendering the
+ * Each slot is pre-filled natural and cycles ♮→♯→♭→𝄪→𝄫 on tap, rendering the
  * resulting note name (C♯, not a bare ♯). A single "Done" button grades — the
  * one deliberate exception to the zero-submit rule, since a scale has no
  * natural "last tap" to auto-fire on.
@@ -83,9 +90,8 @@ export function AccidentalSlots({
           const correctAscii = feedback?.correctSpelled[i];
           const showCorrect = disabled && correctAscii !== undefined && normalizeDisplay(spelling) === correctAscii;
           // Amber (enharmonic near-miss) does NOT apply here: each slot is fixed to one
-          // letter and cycles only through '', '#', 'b'. For any given natural note X,
-          // X♮ / X♯ / X♭ always differ by at least 1 semitone, so same-letter
-          // different-accidental is always a pitch-class mismatch — amber can never fire.
+          // letter, and two spellings of one letter (X𝄫 … X𝄪) always differ by at
+          // least a semitone, so a wrong slot is always a pitch-class mismatch.
           const showWrong = disabled && correctAscii !== undefined && normalizeDisplay(spelling) !== correctAscii;
 
           let stateClass = '';

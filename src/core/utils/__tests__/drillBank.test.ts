@@ -274,12 +274,27 @@ describe('scale spelling — goldens', () => {
   it('3rd degree of A major is C♯', () => {
     expect(byId.get('scale:degree-of:A:major:3')?.answer).toEqual({ kind: 'choice', correct: 'C♯' });
   });
-  it('no scale answer contains double accidentals', () => {
+  // W7-11 (audit D-23): the slots now cycle ♮ ♯ ♭ 𝄪 𝄫, so the six minor
+  // scales that need a double sharp are in the bank instead of filtered out.
+  it('every scale answer can be entered with the accidental slots (♮ ♯ ♭ 𝄪 𝄫)', () => {
     for (const item of getItemsByFamily(bank, 'scale')) {
       if (item.answer.kind === 'accidentals') {
-        for (const s of item.answer.spelled) expect(s).not.toMatch(/##|bb/);
+        for (const s of item.answer.spelled) expect(s, item.id).toMatch(/^[A-G](|#|b|##|bb)$/);
       }
     }
+  });
+  it('G♯, D♯ and A♯ harmonic and melodic minor are spelled with their double sharps', () => {
+    const spelled = (id: string) => (byId.get(id)?.answer as { spelled: string[] } | undefined)?.spelled;
+    expect(spelled('scale:spell:g#:harmonic_minor')).toEqual(['G#', 'A#', 'B', 'C#', 'D#', 'E', 'F##']);
+    expect(spelled('scale:spell:g#:melodic_minor')).toEqual(['G#', 'A#', 'B', 'C#', 'D#', 'E#', 'F##']);
+    expect(spelled('scale:spell:d#:harmonic_minor')).toEqual(['D#', 'E#', 'F#', 'G#', 'A#', 'B', 'C##']);
+    expect(spelled('scale:spell:d#:melodic_minor')).toEqual(['D#', 'E#', 'F#', 'G#', 'A#', 'B#', 'C##']);
+    expect(spelled('scale:spell:a#:harmonic_minor')).toEqual(['A#', 'B#', 'C#', 'D#', 'E#', 'F#', 'G##']);
+    expect(spelled('scale:spell:a#:melodic_minor')).toEqual(['A#', 'B#', 'C#', 'D#', 'E#', 'F##', 'G##']);
+  });
+  it('all 15 major and 45 minor scale spellings exist', () => {
+    const spells = getItemsByFamily(bank, 'scale').filter((i) => i.id.startsWith('scale:spell:'));
+    expect(spells).toHaveLength(60);
   });
   it('every spelled scale uses each letter exactly once', () => {
     for (const item of getItemsByFamily(bank, 'scale')) {
@@ -303,8 +318,9 @@ describe('per-family count pins', () => {
     expect(getItemsByFamily(bank, 'triad').length).toBe(112);
   });
   it('scale item count is pinned', () => {
-    // Actual count after ## / bb filter: 234
-    expect(getItemsByFamily(bank, 'scale').length).toBe(234);
+    // 60 spellings (15 major + 15 × 3 minor) + 180 degree-of items. Was 234
+    // while the six double-sharp minor spellings were filtered out (W7-11).
+    expect(getItemsByFamily(bank, 'scale').length).toBe(240);
   });
   it('altered pairs: every non-duplicate pair resolves to an item with the correct answer label', () => {
     // Natural-note pair ids that are already covered by sub-group 2
