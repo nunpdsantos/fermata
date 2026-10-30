@@ -415,7 +415,7 @@ const overlay: ExerciseLevelOverlay = {
       'Um som emprestado da tonalidade paralela',
       'Qualquer bordadura numa passagem de escala cromática',
     ],
-    hint: 'Uma bordadura cromática é um ornamento que se move por semitom a partir de uma nota do acorde e regressa: ex. E-Eb-E ou G-G#-G. Acrescenta cor sem alterar a direção harmónica, funcionando como decoração de superfície.',
+    hint: 'Uma bordadura cromática é um ornamento que se move por semitom a partir de uma nota do acorde e regressa: ex. E-E#-E ou G-Gb-G. Acrescenta cor sem alterar a direção harmónica, funcionando como decoração de superfície.',
   },
   l4u14m3e3: {
     prompt:
