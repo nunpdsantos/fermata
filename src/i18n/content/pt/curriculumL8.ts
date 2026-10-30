@@ -91,7 +91,7 @@ const curriculumL8: CurriculumLevelOverlay = {
           title: 'Stretto: Entradas Sobrepostas do Sujeito',
           explanation:
             'O stretto ocorre quando uma nova entrada do sujeito começa antes de a anterior ter terminado, criando apresentações sobrepostas que geram densidade contrapontística e intensidade climática. Quanto mais apertado o intervalo de stretto (mais curto o espaço entre entradas), mais tecnicamente impressionante e dramaticamente poderosa é a passagem. O stretto é frequentemente reservado para a secção final da fuga, intensificando o regresso à tónica. Nem todos os sujeitos de fuga se prestam ao stretto — a possibilidade de sobreposição depende das propriedades interválicas e rítmicas do sujeito.',
-          tryThisLabel: 'Ouve o acorde diminuto — a tensão para que as fugas constroem',
+          tryThisLabel: 'Vê C maior — o stretto chega muitas vezes com o regresso final à tónica',
         },
         {
           title: 'Procedimentos Composicionais: Aumentação, Diminuição, Inversão, Retrogradação',
@@ -129,7 +129,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         {
           title: 'Cânone Estrito e Intervalos Canónicos',
           explanation:
-            'Num cânone estrito, uma voz líder (dux) apresenta uma melodia e uma voz seguidora (comes) replica-a exatamente após um atraso temporal fixo, transposta por algum intervalo. O cânone ao uníssono repete na mesma altura; o cânone à oitava desloca uma oitava; o cânone à quinta transpõe uma quinta perfeita acima. O desafio composicional é profundo: o líder deve gerar uma melodia que produza contraponto válido contra uma cópia de si mesma com atraso temporal. Quanto mais distante o intervalo canónico do uníssono, mais restritas se tornam as possibilidades melódicas.',
+            'Num cânone estrito, uma voz líder (dux) apresenta uma melodia e uma voz seguidora (comes) replica-a exatamente após um atraso temporal fixo, transposta por algum intervalo. O cânone ao uníssono repete na mesma altura; o cânone à oitava desloca uma oitava; o cânone à quinta transpõe uma quinta perfeita acima. O desafio composicional é profundo: o líder deve gerar uma melodia que produza contraponto válido contra uma cópia de si mesma com atraso temporal. Os cânones ao uníssono e à oitava são geralmente os mais simples de escrever; noutros intervalos, as notas do seguidor assumem outros papéis na tonalidade e algumas qualidades de intervalo mudam, o que acrescenta restrições.',
           tryThisLabel: 'Vê a escala — a matéria-prima melódica de um cânone',
         },
         {
@@ -224,7 +224,7 @@ const curriculumL8: CurriculumLevelOverlay = {
           title: 'Tema e Variações, Chacona e Passacaglia',
           explanation:
             'As formas de variação incluem o tema e variações seccional (cada variação é autónoma, separada por cadências claras), a chacona (variações contínuas sobre um padrão harmónico repetido, tipicamente de 4 ou 8 compassos) e a passacaglia (variações contínuas sobre uma linha de baixo repetida — o baixo ostinato). A distinção entre chacona e passacaglia é historicamente ambígua, mas o baixo ostinato é a característica definidora da passacaglia. Em todas as formas de variação, a arte composicional reside em transformar melodia, ritmo, textura e registo mantendo uma ligação audível ao tema ou padrão.',
-          tryThisLabel: 'Ouve Lá menor — tonalidade comum para chaconas e passacaglias',
+          tryThisLabel: 'Ouve A menor — imagina-o como o primeiro acorde de um padrão repetido de chacona',
         },
         {
           title: 'Formas de Rondó: Cinco Partes, Sete Partes e Sonata-Rondó',
@@ -259,10 +259,10 @@ const curriculumL8: CurriculumLevelOverlay = {
     l8u26m3: {
       title: 'Orquestração e Consciência de Instrumentação',
       subtitle:
-        'Famílias orquestrais, extensões, timbres e transposição',
+        'Famílias orquestrais, timbres, dobragens e transposição',
       objectives: [
         'Conhecer as quatro famílias orquestrais e as suas características',
-        'Identificar extensões e timbres dos instrumentos',
+        'Identificar os timbres dos instrumentos e a forma como as famílias se combinam',
         'Compreender os instrumentos transpositores em contexto orquestral',
       ],
       concepts: [
@@ -322,7 +322,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         {
           title: 'Conjuntos de Classes de Altura: Forma Normal e Forma Primária',
           explanation:
-            'Um conjunto de classes de altura é uma coleção não ordenada de classes de altura distintas — o equivalente pós-tonal de um acorde. A forma normal é o arranjo ascendente mais compacto: roda-se o conjunto até que a extensão do primeiro ao último elemento seja a menor (usando compactação à esquerda para desempatar). A forma primária transpõe a forma normal para começar em 0, depois compara com a inversão para selecionar a que estiver mais compactada à esquerda. A forma primária é a etiqueta canónica: {C, E, G} e {D, F, A} ambos se reduzem à forma primária [0, 3, 7]. O catálogo de Allen Forte atribui a cada forma primária um número — 3-11 para [0, 3, 7] — criando um sistema universal de classificação para sonoridades pós-tonais. Existem duas convenções de compactação — a de Forte, "compactado à esquerda" (usada aqui), e a de Rahn, "compactado a partir da direita" — e discordam num punhado de classes de conjuntos (nenhuma usada neste nível).',
+            'Um conjunto de classes de altura é uma coleção não ordenada de classes de altura distintas — o equivalente pós-tonal de um acorde. A forma normal é o arranjo ascendente mais compacto: roda-se o conjunto até que a extensão do primeiro ao último elemento seja a menor (usando compactação à esquerda para desempatar). A forma primária transpõe a forma normal para começar em 0, depois compara com a inversão para selecionar a que estiver mais compactada à esquerda. {C, E, G} tem forma normal [0,4,7]; a sua inversão dá [0,3,7], que está mais compactada à esquerda, por isso a forma primária é [0,3,7]. {D, F, A} reduz-se diretamente a [0,3,7]. O catálogo de Allen Forte atribui a cada forma primária um número — 3-11 para [0, 3, 7] — criando um sistema universal de classificação para sonoridades pós-tonais. Existem duas convenções de compactação — a de Forte, "compactado à esquerda" (usada aqui), e a de Rahn, "compactado a partir da direita" — e discordam num punhado de classes de conjuntos (nenhuma usada neste nível).',
           tryThisLabel: 'Vê Dó menor — conjunto de Forte 3-11, forma primária [0,3,7]',
         },
         {
@@ -382,7 +382,7 @@ const curriculumL8: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Cria a tua própria série dodecafónica ordenando todos os inteiros de 0 a 11 sem repetição. Escreve o teu P0. Agora deriva R0 (inverte a ordem), I0 (subtrai cada elemento a 12, mod 12) e RI0 (inverte a inversão).',
+            'Cria a tua própria série dodecafónica ordenando todos os inteiros de 0 a 11 sem repetição. Neste exercício, faz o P0 começar na classe de altura 0. Escreve o teu P0. Agora deriva R0 (inverte a ordem), I0 (subtrai cada elemento a 12, mod 12) e RI0 (inverte a inversão).',
         },
         {
           instruction:
@@ -415,13 +415,13 @@ const curriculumL8: CurriculumLevelOverlay = {
         {
           title: 'Politonalidade, Polimodalidade e Pandiatonicismo',
           explanation:
-            'A politonalidade sobrepõe duas ou mais tonalidades simultaneamente — a bitonalidade de Milhaud pode colocar Dó maior na mão direita contra Fá# maior na esquerda, criando uma sonoridade densa e cintilante que não é tonal nem atonal. A polimodalidade sobrepõe modos diferentes sobre a mesma tónica: Dó Lídio na melodia com Dó Mixolídio no acompanhamento produz as sete alturas diatónicas mas com inflexões modais conflituantes entre as vozes. O pandiatonicismo usa todas as notas de uma escala diatónica livremente, descartando regras de harmonia funcional — qualquer combinação é válida, produzindo música que soa tonal mas resiste à resolução. As obras neoclássicas de Stravinsky epitomizam esta técnica.',
+            'A politonalidade sobrepõe duas ou mais tonalidades simultaneamente — a bitonalidade de Milhaud pode colocar C maior na mão direita contra F# maior na esquerda, criando uma sonoridade densa e cintilante que não é tonal nem atonal. A polimodalidade sobrepõe modos diferentes sobre a mesma tónica: C lídio na melodia com C mixolídio no acompanhamento produz nove classes de altura distintas — as sete habituais mais F# (do lídio) e Bb (do mixolídio) — com inflexões modais conflituantes entre as vozes. O pandiatonicismo usa todas as notas de uma escala diatónica livremente, descartando regras de harmonia funcional — qualquer combinação é válida, produzindo música que soa tonal mas resiste à resolução. As obras neoclássicas de Stravinsky epitomizam esta técnica.',
           tryThisLabel: 'Ouve Dó aumentado — a tríade de tons inteiros, sem centro tonal',
         },
         {
           title: 'Microtonalidade e Consciência Espectral',
           explanation:
-            'A microtonalidade estende o contínuo de alturas para além das 12 divisões iguais: quartos de tom dividem cada semitom ao meio (24 notas por oitava), a afinação justa afina os intervalos segundo razões de frequência puras, e a afinação espectral deriva intervalos da série de harmónicos. Temperamentos iguais alternativos — 19-TET, 31-TET, 53-TET — oferecem diferentes compromissos entre consonância e flexibilidade. Embora o motor desta aplicação opere em 12-TET padrão, a consciência dos sistemas microtonais revela que a escala cromática de 12 notas é uma convenção histórica, não uma inevitabilidade acústica.',
+            'A microtonalidade estende o contínuo de alturas para além das 12 divisões iguais: quartos de tom dividem cada semitom ao meio (24 notas por oitava), a afinação justa afina os intervalos segundo razões de frequência puras, e a afinação espectral, iniciada por Gérard Grisey e Tristan Murail, deriva intervalos da série de harmónicos. Temperamentos iguais alternativos — 19-TET, 31-TET, 53-TET — oferecem diferentes compromissos entre consonância e flexibilidade. Embora o motor desta aplicação opere em 12-TET padrão, a consciência dos sistemas microtonais revela que a escala cromática de 12 notas é uma convenção histórica, não uma inevitabilidade acústica.',
           tryThisLabel: 'Ouve a escala cromática 12-TET — uma de muitas divisões possíveis',
         },
       ],
@@ -432,11 +432,11 @@ const curriculumL8: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Toca uma escala de tons inteiros de C, depois uma escala diminuta (octatónica) de C. Ambas são simétricas — a escala de tons inteiros divide a oitava em 6 passos iguais, a octatónica alterna tons e meios-tons. Nenhuma tem dominante nem sensível. Como é que isto afeta a sensação de gravidade tonal?',
+            'Toca uma escala de tons inteiros de C, depois uma escala diminuta (octatónica) de C. Ambas são simétricas — a escala de tons inteiros divide a oitava em 6 passos iguais, a octatónica alterna tons e meios-tons. Nenhuma contém G, a dominante de C, por isso nenhuma consegue produzir a atração V-I (a octatónica contém B, mas sem dominante por baixo). Como é que isto afeta a sensação de gravidade tonal?',
         },
         {
           instruction:
-            'Imagina tocar uma tríade de C maior na mão direita e uma tríade de F# maior na esquerda simultaneamente. Lista as seis classes de altura que soariam. Há alguma sobreposição? Qual é o número total de classes de altura distintas? (Este é o famoso acorde bitonal de Petruchka.)',
+            'Imagina tocar uma tríade de C maior na mão direita e uma tríade de F# maior na esquerda simultaneamente. Lista as classes de altura das duas tríades; quantas são distintas? (Este é o famoso acorde bitonal de Petruchka.)',
         },
       ],
     },
@@ -456,7 +456,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         {
           title: 'Minimalismo: Desfasamento e Processo Aditivo',
           explanation:
-            'O minimalismo emprega estruturas repetitivas que evoluem gradualmente. O desfasamento (phase shifting) de Steve Reich começa dois padrões idênticos em sincronia perfeita, depois empurra um ligeiramente à frente — os padrões de interferência resultantes criam relações rítmicas e melódicas em constante mudança até as duas partes eventualmente se realinharem. O processo aditivo de Philip Glass expande padrões adicionando notas incrementalmente: uma célula de 4 notas torna-se 5, depois 6, depois 8, construindo complexidade a partir do material inicial mais simples possível. O minimalismo baseado em pulsação (La Monte Young, Terry Riley) sustenta uma pulsação rítmica constante enquanto a harmonia evolui lentamente ao longo de grandes períodos de tempo, transformando a percepção do tempo pelo ouvinte.',
+            'O minimalismo emprega estruturas repetitivas que evoluem gradualmente. O desfasamento (phase shifting) de Steve Reich começa dois padrões idênticos em sincronia perfeita, depois empurra um ligeiramente à frente — os padrões de interferência resultantes criam relações rítmicas e melódicas em constante mudança até as duas partes eventualmente se realinharem. O processo aditivo de Philip Glass expande padrões adicionando notas incrementalmente: uma célula de 4 notas torna-se 5, depois 6, depois 8, construindo complexidade a partir do material inicial mais simples possível. O minimalismo de drone (La Monte Young) sustenta sons durante períodos muito longos, enquanto o minimalismo baseado em pulsação (In C, de Terry Riley) mantém uma pulsação rítmica constante enquanto os padrões e a harmonia evoluem lentamente; ambos transformam a percepção do tempo pelo ouvinte.',
           tryThisLabel: 'Toca um padrão repetitivo com estas notas — a matéria-prima do minimalismo',
         },
         {
@@ -468,7 +468,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         {
           title: 'Técnicas Expandidas',
           explanation:
-            'As técnicas expandidas transformam os instrumentos para além da sua paleta sonora convencional. O piano preparado (John Cage) coloca parafusos, porcas, borracha e feltro entre as cordas, convertendo o piano num conjunto de percussão para um só intérprete com timbres imprevisíveis. Os multifónicos extraem várias alturas simultâneas de um único instrumento de sopro através de dedilhações e embocaduras especializadas. O sul ponticello (arco perto do cavalete) e o col legno (golpear com a madeira do arco) alteram radicalmente o timbre das cordas. O sprechstimme (emissão vocal meio cantada, meio falada, desenvolvida por Schoenberg) habita o território entre a fala e o canto. Estas técnicas redefiniram o que constitui material musical em si.',
+            'As técnicas expandidas transformam os instrumentos para além da sua paleta sonora convencional. O piano preparado (John Cage) coloca parafusos, porcas, borracha e feltro entre as cordas, convertendo o piano num conjunto de percussão para um só intérprete com timbres imprevisíveis. Os multifónicos extraem várias alturas simultâneas de um único instrumento de sopro através de dedilhações e embocaduras especializadas. O sul ponticello (arco perto do cavalete) e o col legno (golpear com a madeira do arco) alteram radicalmente o timbre das cordas. O sprechstimme (emissão vocal meio cantada, meio falada, usada pela primeira vez por Humperdinck em 1897 e tornada famosa pelo Pierrot lunaire de Schoenberg) habita o território entre a fala e o canto. Estas técnicas redefiniram o que constitui material musical em si.',
           tryThisLabel: 'Ouve a escala octatónica — recurso de Bartok e Stravinsky',
         },
       ],
@@ -521,7 +521,7 @@ const curriculumL8: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Bate palmas numa pulsação constante de 4 tempos. Agora tenta encaixar 3 palmas uniformemente espaçadas no mesmo intervalo com a outra mão. Onde coincidem as mãos? (Apenas no tempo 1.) Este é o ritmo cruzado fundamental de 3 contra 2 — a base de toda a complexidade polirrítmica.',
+            'Bate palmas numa pulsação constante de 2 tempos. Agora tenta encaixar 3 palmas uniformemente espaçadas no mesmo intervalo com a outra mão. Onde coincidem as mãos? (Apenas no tempo 1.) Este é o ritmo cruzado de 3 contra 2 — o mais simples, e o ponto de partida para polirritmos mais complexos.',
         },
         {
           instruction:

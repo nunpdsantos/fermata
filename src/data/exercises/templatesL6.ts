@@ -17,7 +17,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root}{accidental} major triad (Neapolitan chord).',
+        promptTemplate: 'Build a major triad on {root}{accidental} (Neapolitan chord).',
         hintTemplate: 'The Neapolitan is a major triad built on the lowered 2nd scale degree. Build a major triad on {root}{accidental}.',
         params: {
           roots: ['D', 'E', 'A', 'G', 'C', 'F'],
@@ -126,7 +126,7 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root}{accidental} dominant seventh chord (enharmonic German augmented sixth).',
+        promptTemplate: 'Build a dominant seventh chord on {root}{accidental} (enharmonic German augmented sixth).',
         hintTemplate: 'The German Aug6 is enharmonically equivalent to a dominant seventh chord. Build a dominant 7th on {root}{accidental}: root + major 3rd + perfect 5th + minor 7th.',
         params: {
           roots: ['A', 'C', 'D', 'E', 'G'],
@@ -157,7 +157,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'The respelled chord resolves to the same key', correct: false },
             ],
             [
-              { label: 'This enharmonic pivot enables modulation to keys a half step away from the dominant', correct: true },
+              { label: 'This enharmonic pivot enables modulation to keys a half step above or below the tonic', correct: true },
               { label: 'This technique only modulates between parallel keys', correct: false },
               { label: 'This technique is limited to closely related keys', correct: false },
               { label: 'This type of modulation was never used historically', correct: false },
@@ -359,7 +359,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Identify the symmetrical division of the octave described.',
-        hintTemplate: 'Equal divisions: tritone (2 notes, div by 6), aug triad (3 notes, div by 4), dim7 (4 notes, div by 3), whole-tone (6 notes, div by 2).',
+        hintTemplate: 'Equal divisions: tritone (2 equal parts, steps of 6 semitones), augmented triad (3 equal parts, steps of 4), diminished 7th (4 equal parts, steps of 3), whole-tone scale (6 equal parts, steps of 2).',
         params: {
           choiceSets: [
             [

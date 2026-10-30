@@ -44,7 +44,7 @@ const overlay: ExerciseLevelOverlay = {
       'Todas las siete notas de la escala madre',
       'Solo fundamental y quinta — un voicing de power chord',
     ],
-    hint: 'Los voicings de shell reducen el acorde a lo esencial: la fundamental define el bajo, la tercera determina la cualidad mayor/menor y la séptima determina el tipo de acorde (maj7, dom7, m7). La quinta es redundante.',
+    hint: 'Los voicings de shell reducen el acorde a lo esencial: la fundamental define el bajo, la tercera determina la cualidad mayor/menor y la séptima determina el tipo de acorde (maj7, dom7, m7). En esos acordes la quinta justa es redundante; en los acordes m7b5 y dim7 es la quinta disminuida la que define el acorde, así que se queda.',
   },
   l7u21m2e2: {
     prompt:
@@ -183,7 +183,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Qué recurso armónico se emplea comúnmente en el puente de los rhythm changes?',
     choices: [
-      'Un ciclo de acordes de séptima dominante descendiendo por tonos o moviéndose por el ciclo de quintas',
+      'Un ciclo de acordes de séptima dominante que se mueve por el ciclo de quintas (cada uno resuelve una quinta abajo hacia el siguiente)',
       'Una nota pedal sostenida sin cambios de acordes',
       'Una repetición exacta de la sección A en otra tonalidad',
       'Una serie dodecafónica',
@@ -404,7 +404,7 @@ const overlay: ExerciseLevelOverlay = {
       'Ningún efecto notable ya que los acordes están estrechamente relacionados',
       'Un choque disonante que suena como un error',
     ],
-    hint: 'Las mediantes cromáticas comparten una nota común (Do mayor y Lab mayor comparten Do y están en la frontera Mib/Mi). La fundamental se mueve una tercera pero el cambio de cualidad crea una alteración de color rica e inesperada, frecuentemente oída en bandas sonoras y momentos pop dramáticos.',
+    hint: 'C mayor (C, E, G) y Ab mayor (Ab, C, Eb) comparten una nota común (C). El E y el Eb están a un semitono de distancia, creando el cambio de color suave característico de las mediantes cromáticas.',
   },
   l7u23m2e3: {
     prompt:

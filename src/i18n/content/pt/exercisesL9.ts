@@ -261,13 +261,13 @@ const overlay: ExerciseLevelOverlay = {
   l9u31m5e1: {
     prompt:
       'Ouve este acorde de sétima e identifica a sua qualidade.',
-    choices: ['Maior com 7.a', 'Menor com 7.a', 'Sétima da dominante', 'Meio-diminuto'],
+    choices: ['Maior com 7.a M', 'Menor com 7.a', 'Sétima da dominante', 'Meio-diminuto'],
     hint: 'O acorde maior com 7.a sobrepõe uma 7.a maior a uma tríade maior -- exuberante e sonhador, comum no jazz e na bossa nova.',
   },
   l9u31m5e2: {
     prompt:
       'Ouve este acorde de sétima e identifica a sua qualidade.',
-    choices: ['Maior com 7.a', 'Menor com 7.a', 'Sétima da dominante', 'Meio-diminuto'],
+    choices: ['Maior com 7.a M', 'Menor com 7.a', 'Sétima da dominante', 'Meio-diminuto'],
     hint: 'O acorde menor com 7.a sobrepõe uma 7.a menor a uma tríade menor -- suave, quente e descontraído.',
   },
   l9u31m5e3: {
@@ -336,12 +336,12 @@ const overlay: ExerciseLevelOverlay = {
   l9u32m2e1: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: 'Um meio-tom cromático (1 semitom) num contexto melódico funciona frequentemente como nota de passagem.',
+    hint: 'E para F é um meio-tom (1 semitom) entre duas letras diferentes -- um meio-tom diatónico, que já está dentro de C maior. Um meio-tom cromático mantém a letra (F para F#). Numa melodia, qualquer um deles funciona muitas vezes como nota de passagem ou bordadura.',
   },
   l9u32m2e2: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: 'O trítono (6 semitons, 4.a aumentada / 5.a diminuta) é o intervalo mais dissonante e divide a oitava exatamente ao meio.',
+    hint: 'O trítono (6 semitons, 4.a aumentada / 5.a diminuta) é uma das dissonâncias mais ásperas (com a 2.a menor e a 7.a maior) e divide a oitava exatamente ao meio.',
   },
   l9u32m2e3: {
     prompt: 'O que é uma nota cromática de passagem?',

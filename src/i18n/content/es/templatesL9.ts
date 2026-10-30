@@ -34,7 +34,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // ear_training (interval)
       promptTemplate:
-        'Escucha este intervalo e identifícalo. ¿La tercera es mayor o menor?',
+        'Escucha este intervalo e identifícalo. Siempre es una tercera — decide si es mayor o menor.',
       hintTemplate:
         '3.ª mayor = 4 semitonos (brillante, alegre). 3.ª menor = 3 semitonos (sombría, triste). La diferencia es solo un semitono, pero el carácter cambia drásticamente.',
     },
@@ -166,16 +166,16 @@ const overlay: TemplateLevelOverlay = {
     {
       // ear_training (note)
       promptTemplate:
-        'Escucha esta nota cromática e identifícala.',
+        'Escucha esta nota e identifícala. La mayoría de las notas de este conjunto son sostenidos.',
       hintTemplate:
-        'Las notas cromáticas son alteraciones que no pertenecen a la tonalidad actual. Crean tensión que resuelve hacia notas diatónicas cercanas.',
+        'Sostenidos como C#, F# y G# están fuera de C mayor; en una melodía en C mayor serían notas cromáticas, atraídas hacia una nota vecina de la escala.',
     },
     {
       // ear_training (interval)
       promptTemplate:
-        'Escucha este intervalo cromático, tocado en movimiento {direction}, e identifícalo.',
+        'Escucha este intervalo, tocado en movimiento {direction}, e identifícalo.',
       hintTemplate:
-        'Los intervalos cromáticos incluyen cualidades aumentadas y disminuidas. Este intervalo utiliza una nota fuera de la escala diatónica.',
+        'Cuenta los semitonos: 2.ª menor = 1, 3.ª menor = 3, tritono = 6, 6.ª menor = 8, 7.ª menor = 10, 7.ª mayor = 11. Medidos desde la tónica de una tonalidad mayor, los cinco primeros son exactamente las notas fuera de la escala (b2, b3, #4, b6, b7).',
     },
   ],
 
@@ -211,7 +211,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Canta y luego construye la escala de {root} {scaleType}. Selecciona las 7 notas.',
       hintTemplate:
-        'Canta mentalmente la escala desde {root} usando solfeo o números antes de seleccionar las notas. La escala {scaleType} tiene un patrón sonoro distintivo.',
+        'Canta mentalmente la escala desde {root} usando solfeo o números antes de seleccionar las notas. Escucha el patrón de tonos y semitonos que da a la escala {scaleType} su sonido.',
     },
   ],
 };

@@ -115,4 +115,20 @@ describe('KeySelector scale types', () => {
     // Persian is in the World group — should auto-expand
     expect(screen.getByText('Persian')).toBeDefined();
   });
+
+  it('does not group Phrygian Dominant (harmonic-minor mode 5) with the melodic-minor modes (audit W5-45)', () => {
+    render(<KeySelector />);
+    fireEvent.click(screen.getByText(/More scales/));
+    const groupOf = (scale: string) =>
+      document.querySelector(`[data-scale="${scale}"]`)?.parentElement ?? null;
+    const melodicMinorGroup = groupOf('altered');
+    expect(melodicMinorGroup).not.toBeNull();
+    // Every melodic-minor mode shares one group…
+    for (const s of ['lydian_dominant', 'locrian_natural2', 'dorian_b2', 'lydian_augmented', 'mixolydian_b6']) {
+      expect(groupOf(s)).toBe(melodicMinorGroup);
+    }
+    // …and Phrygian Dominant is not in it.
+    expect(groupOf('phrygian_dominant')).not.toBeNull();
+    expect(groupOf('phrygian_dominant')).not.toBe(melodicMinorGroup);
+  });
 });

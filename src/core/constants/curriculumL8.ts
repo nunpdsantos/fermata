@@ -84,8 +84,8 @@ const l8u25m2: CurriculumModule = {
       title: 'Stretto: Overlapping Subject Entries',
       explanation:
         'Stretto occurs when a new entry of the subject begins before the previous one has finished, creating overlapping statements that generate contrapuntal density and climactic intensity. The tighter the stretto interval (the shorter the gap between entries), the more technically impressive and dramatically forceful the passage. Stretto is often reserved for the final section of a fugue, intensifying the return to the tonic. Not all fugue subjects are amenable to stretto — the ability to overlap depends on the subject\'s intervallic and rhythmic properties.',
-      tryThisQuery: 'Bdim',
-      tryThisLabel: 'Hear the diminished chord — tension fugues build toward',
+      tryThisQuery: 'key of C',
+      tryThisLabel: 'See C major — stretto often arrives with the final return to the tonic',
     },
     {
       title: 'Compositional Devices: Augmentation, Diminution, Inversion, Retrograde',
@@ -131,7 +131,7 @@ const l8u25m3: CurriculumModule = {
     {
       title: 'Strict Canon and Canonic Intervals',
       explanation:
-        'In a strict canon, a leader voice (dux) presents a melody and a follower (comes) replicates it exactly after a fixed time delay, transposed by some interval. Canon at the unison repeats at the same pitch; canon at the octave shifts by an octave; canon at the fifth transposes up a perfect fifth. The compositional challenge is profound: the leader must generate a melody that produces valid counterpoint against a time-delayed copy of itself. The further the canonic interval from the unison, the more constrained the melodic possibilities become.',
+        'In a strict canon, a leader voice (dux) presents a melody and a follower (comes) replicates it exactly after a fixed time delay, transposed by some interval. Canon at the unison repeats at the same pitch; canon at the octave shifts by an octave; canon at the fifth transposes up a perfect fifth. The compositional challenge is profound: the leader must generate a melody that produces valid counterpoint against a time-delayed copy of itself. Canons at the unison and the octave are generally the most straightforward to write; at other intervals the follower\'s notes take on different roles in the key, and some interval qualities change, which adds constraints.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'See the scale — the melodic raw material of a canon',
     },
@@ -249,7 +249,7 @@ const l8u26m2: CurriculumModule = {
       explanation:
         'Variation forms include the sectional theme and variations (each variation is self-contained, separated by clear cadences), the chaconne (continuous variations over a repeating harmonic pattern, typically 4 or 8 bars), and the passacaglia (continuous variations over a repeating bass line — the ground bass). The distinction between chaconne and passacaglia is historically blurred, but the ground bass is the passacaglia\'s defining feature. In all variation forms, the compositional art lies in transforming melody, rhythm, texture, and register while maintaining an audible connection to the theme or pattern.',
       tryThisQuery: 'Am',
-      tryThisLabel: 'Hear A minor — common key for chaconnes and passacaglias',
+      tryThisLabel: 'Hear A minor — imagine it as the first chord of a repeating chaconne pattern',
     },
     {
       title: 'Rondo Forms: Five-Part, Seven-Part, and Sonata-Rondo',
@@ -292,10 +292,10 @@ const l8u26m3: CurriculumModule = {
   unitId: 'u26',
   levelId: 'l8',
   title: 'Orchestration and Instrumentation Awareness',
-  subtitle: 'Orchestral families, ranges, timbres, and transposition',
+  subtitle: 'Orchestral families, timbres, doublings, and transposition',
   objectives: [
     'Know the four orchestral families and their characteristics',
-    'Identify instrument ranges and timbres',
+    'Identify instrument timbres and how the families combine',
     'Understand transposing instruments in orchestral context',
   ],
   concepts: [
@@ -501,7 +501,7 @@ const l8u27m3: CurriculumModule = {
     {
       id: 'l8u27m3t2',
       instruction:
-        'Play a C whole tone scale, then a C diminished (octatonic) scale. Both are symmetric — the whole tone divides the octave into 6 equal steps, the octatonic alternates whole and half steps. Neither has a dominant or leading tone. How does this affect the sense of tonal gravity?',
+        'Play a C whole tone scale, then a C diminished (octatonic) scale. Both are symmetric — the whole tone divides the octave into 6 equal steps, the octatonic alternates whole and half steps. Neither contains G, the dominant of C, so neither can produce a V-I pull (the octatonic does contain B, but with no dominant beneath it). How does this affect the sense of tonal gravity?',
     },
     {
       id: 'l8u27m3t3',
@@ -528,7 +528,7 @@ const l8u27m4: CurriculumModule = {
     {
       title: 'Minimalism: Phase Shifting and Additive Process',
       explanation:
-        'Minimalism employs repetitive structures that evolve gradually. Steve Reich\'s phase shifting starts two identical patterns in perfect sync, then nudges one slightly ahead — the resulting interference patterns create constantly shifting rhythmic and melodic relationships until the two parts eventually realign. Philip Glass\'s additive process expands patterns by adding notes incrementally: a 4-note cell becomes 5, then 6, then 8, building complexity from the simplest possible starting material. Pulse-based minimalism (La Monte Young, Terry Riley) sustains a steady rhythmic pulse while harmony evolves slowly over long time spans, transforming the listener\'s perception of time itself.',
+        'Minimalism employs repetitive structures that evolve gradually. Steve Reich\'s phase shifting starts two identical patterns in perfect sync, then nudges one slightly ahead — the resulting interference patterns create constantly shifting rhythmic and melodic relationships until the two parts eventually realign. Philip Glass\'s additive process expands patterns by adding notes incrementally: a 4-note cell becomes 5, then 6, then 8, building complexity from the simplest possible starting material. Drone minimalism (La Monte Young) sustains tones for very long spans, while pulse-based minimalism (Terry Riley\'s In C) keeps a steady rhythmic pulse as patterns and harmony evolve slowly; both transform the listener\'s perception of time itself.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Play a repeating pattern from these notes — minimalism\'s raw material',
     },
@@ -542,7 +542,7 @@ const l8u27m4: CurriculumModule = {
     {
       title: 'Extended Techniques',
       explanation:
-        'Extended techniques transform instruments beyond their conventional sound palette. Prepared piano (John Cage) places bolts, screws, rubber, and felt between strings, converting the piano into a one-person percussion ensemble with unpredictable timbres. Multiphonics coax multiple simultaneous pitches from a single wind instrument through specialized fingering and embouchure. Sul ponticello (bowing near the bridge) and col legno (striking with the wood of the bow) radically alter string timbre. Sprechstimme (half-sung, half-spoken vocal delivery, developed by Schoenberg) inhabits the territory between speech and song. These techniques redefined what constitutes musical material itself.',
+        'Extended techniques transform instruments beyond their conventional sound palette. Prepared piano (John Cage) places bolts, screws, rubber, and felt between strings, converting the piano into a one-person percussion ensemble with unpredictable timbres. Multiphonics coax multiple simultaneous pitches from a single wind instrument through specialized fingering and embouchure. Sul ponticello (bowing near the bridge) and col legno (striking with the wood of the bow) radically alter string timbre. Sprechstimme (half-sung, half-spoken vocal delivery, first used by Humperdinck in 1897 and made famous by Schoenberg\'s Pierrot lunaire) inhabits the territory between speech and song. These techniques redefined what constitutes musical material itself.',
       tryThisQuery: 'C diminished scale',
       tryThisLabel: 'Hear the octatonic scale — Bartok and Stravinsky\'s resource',
     },
@@ -605,7 +605,7 @@ const l8u27m5: CurriculumModule = {
     {
       id: 'l8u27m5t1',
       instruction:
-        'Clap a steady pulse of 4 beats. Now try fitting 3 evenly-spaced claps into the same span with your other hand. Where do the hands coincide? (Only on beat 1.) This is the fundamental 3-against-2 cross-rhythm — the basis of all polyrhythmic complexity.',
+        'Clap a steady pulse of 2 beats. Now try fitting 3 evenly-spaced claps into the same span with your other hand. Where do the hands coincide? (Only on beat 1.) This is the 3-against-2 cross-rhythm — the simplest one, and the starting point for more complex polyrhythms.',
     },
     {
       id: 'l8u27m5t2',
@@ -658,7 +658,7 @@ export const L8_UNITS: CurriculumUnit[] = [
       skillsSummary: [
         'Analyze sonata form in full detail: FTG, TR, STG, CT, development, and recapitulation',
         'Distinguish variation structures: theme-and-variations, chaconne, passacaglia, rondo, and ritornello',
-        'Identify orchestral families, instrument ranges, and transposing instruments',
+        'Identify orchestral families, timbres, and transposing instruments',
       ],
       bridgeText:
         'You now command the analytical vocabulary for the largest forms and the full orchestra. The final unit crosses the boundary from tonal to post-tonal music.',

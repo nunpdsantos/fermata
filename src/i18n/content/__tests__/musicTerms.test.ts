@@ -36,8 +36,17 @@ describe('translateScaleType', () => {
 });
 
 describe('translateChordQuality', () => {
-  it('returns space-separated English for en', () => {
-    expect(translateChordQuality('half_diminished7', 'en')).toBe('half diminished7');
+  it('returns readable English for en (no raw identifiers like "minor7")', () => {
+    expect(translateChordQuality('half_diminished7', 'en')).toBe('half-diminished 7th');
+    expect(translateChordQuality('dominant7', 'en')).toBe('dominant 7th');
+    expect(translateChordQuality('major9', 'en')).toBe('major 9th');
+    // Pin every readable English name: the exercise audit accepts these as
+    // labels, so a wrong entry here would let a wrong authored label through.
+    expect(translateChordQuality('major7', 'en')).toBe('major 7th');
+    expect(translateChordQuality('minor7', 'en')).toBe('minor 7th');
+    expect(translateChordQuality('diminished7', 'en')).toBe('diminished 7th');
+    expect(translateChordQuality('minor9', 'en')).toBe('minor 9th');
+    expect(translateChordQuality('dominant9', 'en')).toBe('dominant 9th');
     expect(translateChordQuality('major', 'en')).toBe('major');
   });
 

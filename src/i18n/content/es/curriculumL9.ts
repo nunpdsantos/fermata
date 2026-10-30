@@ -138,7 +138,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Consonancia Perfecta frente a Imperfecta',
           explanation:
-            'Los intervalos de este módulo se dividen en dos familias. Las consonancias perfectas (P1, P4, P5) suenan «abiertas» y «huecas» — como una campana o una cuerda al aire. Tienen una cualidad austera y despojada. Las consonancias imperfectas (3.a m, 3.a M) suenan «cálidas» y «fundidas» — las notas se combinan suavemente pero con más color. Las segundas (2.a m, 2.a M) son disonancias — suenan «ásperas» o «crujientes» cuando se tocan simultáneamente. El tritono es el intervalo más disonante de todos — tenso, inestable y exigiendo resolución. Aprender a categorizar por consonancia/disonancia es más rápido que memorizar cada intervalo individualmente.',
+            'Los intervalos de este módulo se dividen en dos familias. Las consonancias perfectas (P1, P4, P5) suenan «abiertas» y «huecas» — como una campana o una cuerda al aire. Tienen una cualidad austera y despojada. Las consonancias imperfectas (3.a m, 3.a M) suenan «cálidas» y «fundidas» — las notas se combinan suavemente pero con más color. Las segundas (2.a m, 2.a M) son disonancias — suenan «ásperas» o «crujientes» cuando se tocan simultáneamente. El tritono es una de las disonancias más ásperas (con la 2.a m y la 7.a M) — tenso, inestable y exigiendo resolución. Aprender a categorizar por consonancia/disonancia es más rápido que memorizar cada intervalo individualmente. (En el contrapunto de especies, estudiado en los niveles 4 y 6, la P4 por encima del bajo se trata como disonancia; la clasificación acústica de «justa» que se usa aquí está orientada al entrenamiento auditivo.)',
           tryThisLabel:
             'Escucha la 3.a mayor (C a E) y la 5.a justa (C a G)',
         },
@@ -179,13 +179,13 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Asociaciones con Canciones: Intervalos Amplios',
           explanation:
-            'Continuando el enfoque mnemónico para la mitad superior de la octava. 6.a menor = The Entertainer. 6.a mayor = My Bonnie (my-bon). 7.a menor = Somewhere (West Side Story). 7.a mayor = Take On Me (take-on). Octava = Somewhere Over the Rainbow. Los intervalos amplios son más difíciles de identificar porque parecen «grandes saltos» y las diferencias de tamaño entre ellos son proporcionalmente menores. Las sextas y séptimas son particularmente difíciles — son inversiones de terceras y segundas, por lo que su carácter está relacionado pero es más amplio. Practica contrastando pares: 6.a m frente a 6.a M, 7.a m frente a 7.a M.',
+            'Continuando el enfoque mnemónico para la mitad superior de la octava. 6.a menor = The Entertainer (ascendente: el salto de E a C que sigue a las notas iniciales D-D#-E; el tema «Where Do I Begin» de Love Story es el ejemplo descendente clásico). 6.a mayor = My Bonnie (my-bon). 7.a menor = Somewhere (West Side Story). 7.a mayor = Take On Me (take-on). Octava = Somewhere Over the Rainbow. Los intervalos amplios son más difíciles de identificar porque parecen «grandes saltos» y las diferencias de tamaño entre ellos son proporcionalmente menores. Las sextas y séptimas son particularmente difíciles — son inversiones de terceras y segundas, por lo que su carácter está relacionado pero es más amplio. Practica contrastando pares: 6.a m frente a 6.a M, 7.a m frente a 7.a M.',
           tryThisLabel: 'Escucha el intervalo de 7.a mayor (C a B)',
         },
         {
           title: 'Intervalos Amplios Descendentes',
           explanation:
-            'Los intervalos descendentes suenan diferentes de los ascendentes aunque la distancia sea igual. Una 5.a justa descendente (G descendiendo a C) suena como resolución o aterrizaje. Una 6.a mayor descendente suena cálida y nostálgica. Las séptimas descendentes suenan dramáticas y amplias. Practica intervalos descendentes por separado — muchos estudiantes que dominan intervalos ascendentes se debaten con los descendentes. Usa asociaciones con canciones descendentes: 5.a J descendente = Flintstones (Flint-stones), 3.a m descendente = Hey Jude (hey-Jude). Construye el conjunto descendente como competencia propia.',
+            'Los intervalos descendentes suenan diferentes de los ascendentes aunque la distancia sea igual. Una 5.a justa descendente (G descendiendo a C) suena como resolución o aterrizaje. Una 6.a mayor descendente suena cálida y nostálgica. Las séptimas descendentes suenan dramáticas y amplias. Practica intervalos descendentes por separado — muchos estudiantes que dominan intervalos ascendentes se debaten con los descendentes. Usa asociaciones con canciones descendentes: 5.a J descendente = las dos primeras notas de «Feelings» (Feel-ings) o del tema de Los Picapiedra (Flint-stones), 3.a m descendente = Hey Jude (hey-Jude). Construye el conjunto descendente como competencia propia.',
           tryThisLabel:
             'Toca C mayor descendente — escucha los intervalos al revés',
         },
@@ -233,7 +233,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Intervalos Compuestos',
           explanation:
-            'Tras dominar los intervalos simples (dentro de una octava), se expande a intervalos compuestos que sobrepasan la octava. Una 9.a = octava + 2.a. Una 10.a = octava + 3.a. Una 11.a = octava + 4.a. Una 13.a = octava + 6.a. Los intervalos compuestos suenan como sus equivalentes simples pero «más amplios» y más espaciosos. Las reglas de cualidad se transfieren: una 9.a mayor tiene la misma cualidad que una 2.a mayor. Se oyen constantemente en acordes de jazz extendidos — la 9.a en un Cmaj9 es la nota D una octava por encima de la fundamental.',
+            'Tras dominar los intervalos simples (dentro de una octava), se expande a intervalos compuestos que sobrepasan la octava. Una 9.a = octava + 2.a. Una 10.a = octava + 3.a. Una 11.a = octava + 4.a. Una 13.a = octava + 6.a. Los intervalos compuestos suenan como sus equivalentes simples pero «más amplios» y más espaciosos. Las reglas de cualidad se transfieren: una 9.a mayor tiene la misma cualidad que una 2.a mayor. Se oyen constantemente en acordes de jazz extendidos — la 9.a en un Cmaj9 es D, una octava más una 2.a mayor por encima de la fundamental (C).',
           tryThisLabel: 'Escucha el tritono dentro de C7 (E a Bb)',
         },
         {
@@ -392,7 +392,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Toca "C pentatonic scale" y después "C blues scale" — la escala de blues añade una nota (Gb, la blue note). ¿Puedes oír la aspereza y tensión añadidas?',
+            'Toca "C minor pentatonic" y después "C blues scale" — la escala de blues añade una nota (Gb, la blue note, un b5). ¿Puedes oír la aspereza y tensión añadidas?',
         },
         {
           instruction:

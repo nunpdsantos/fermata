@@ -57,7 +57,7 @@ The most basic quality recognition. Major sounds bright/happy. Minor sounds dark
 - Audio engine can play single notes and chords
 - Piano provides the input interface (student clicks notes)
 - Simple UI: play button + answer buttons (up/down/same, major/minor)
-- `earTrainingGenerator.ts` already exists in core — extend for these exercises
+- Ear-training items come from the `ear_training` branch of `src/data/exercises/exerciseGenerator.ts` (there is no separate `earTrainingGenerator.ts`) — extend it for these exercises
 
 ---
 
@@ -82,7 +82,7 @@ A mnemonic technique: associate each interval with the opening of a well-known m
 | M3 | "When the Saints" (oh-when) | "Swing Low" (swing-low) |
 | P4 | "Here Comes the Bride" | "Born Free" |
 | A4/d5 | "The Simpsons" (The-Simp) | "Blue Seven" (Sonny Rollins) |
-| P5 | "Twinkle Twinkle" | "Flintstones" (Flint-stones) |
+| P5 | "Twinkle Twinkle" | first two notes of "Feelings" (Feel-ings) or the Flintstones theme (Flint-stones) |
 | m6 | "The Entertainer" | "Love Story" theme |
 | M6 | "My Bonnie" (my-bon) | "Nobody Knows" (no-body) |
 | m7 | "Somewhere" (West Side Story) | "An American in Paris" |
@@ -106,7 +106,7 @@ After mastering simple intervals, extend to 9ths (octave + 2nd), 10ths (octave +
 ### App Mapping
 - Audio engine plays any interval
 - All intervals defined in `core/constants/intervals.ts` with semitone values
-- `earTrainingGenerator.ts` can generate random interval pairs
+- `exerciseGenerator.ts` (`ear_training`, interval mode) can generate random interval pairs
 - UI: play button + multiple-choice buttons for interval names
 - Consider adding difficulty levels (diatonic only → all intervals)
 
@@ -160,7 +160,7 @@ Each mode has a characteristic "color":
 - All scales exist in the engine (46 types)
 - Audio engine can play any scale ascending/descending
 - Piano and fretboard show scale patterns
-- `earTrainingGenerator.ts` can generate random scale presentations
+- `exerciseGenerator.ts` (`ear_training`, scale mode) can generate random scale presentations
 - This is where the app's existing scale infrastructure meets ear training directly
 
 ---
@@ -213,7 +213,7 @@ Advanced students learn to hear the bass note independently and relate it to the
 ### App Mapping
 - All chord types in the engine
 - Audio engine plays chords
-- `earTrainingGenerator.ts` can generate random chord presentations
+- `exerciseGenerator.ts` (`ear_training`, chord mode) can generate random chord presentations
 - `reverseChordParser.ts` can validate chord identification
 - UI: play button + quality selection buttons
 
@@ -309,7 +309,7 @@ Often the most accessible entry point for harmonic dictation. The bass line outl
 - Progression parser can play sequences of chords
 - Audio engine provides playback
 - Student input: selection from Roman numeral options (multiple choice) or piano input
-- `earTrainingGenerator.ts` could generate random diatonic progressions
+- `exerciseGenerator.ts` (`ear_training`, progression mode) can generate diatonic progressions from authored progression sets
 
 ---
 

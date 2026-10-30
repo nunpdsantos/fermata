@@ -15,7 +15,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Constrói um acorde de {root} {quality}. Seleciona todas as notas necessárias para este acorde com extensões.',
+        'Constrói um acorde de {root} {quality}. Seleciona todas as notas, incluindo a nona acima da sétima.',
       hintTemplate:
         'As extensões de jazz empilham terças acima da sétima: nona = segunda uma oitava acima, décima primeira = quarta acima, décima terceira = sexta acima. Constrói a partir de {root}.',
     },
@@ -106,7 +106,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Como se ligam os voicings de shell num contexto jazz?',
       hintTemplate:
-        'Num ii-V-I, a terça de um acorde torna-se a sétima do seguinte e vice-versa. Esta eficiência na condução de vozes chama-se linhas de guide tones.',
+        'Num ii-V-I, a terça do ii mantém-se como sétima do V, enquanto a sétima do ii desce meio-tom para a terça do V (e o mesmo volta a acontecer do V para o I). Esta eficiência na condução de vozes chama-se linhas de guide tones.',
       choiceSets: [
         [
           'Os guide tones (terças e sétimas) ligam-se suavemente por grau conjunto entre acordes num ii-V-I',
@@ -115,7 +115,7 @@ const overlay: TemplateLevelOverlay = {
           'A condução de vozes não importa no jazz',
         ],
         [
-          'A terça do ii torna-se a sétima do V, e a sétima do ii torna-se a terça do V',
+          'A terça do ii mantém-se como sétima do V, e a sétima do ii desce meio-tom para a terça do V',
           'Todas as notas se mantêm iguais entre ii e V',
           'A fundamental do ii torna-se a fundamental do V',
           'Não existe ligação na condução de vozes entre ii e V',
@@ -168,7 +168,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Explica por que funciona a substituição tritónica.',
+        'Substituição tritónica: porque funciona e o que muda?',
       hintTemplate:
         'Dois dom7 a um trítono de distância partilham o mesmo intervalo de trítono (a terça e a sétima trocam). Isto cria movimento cromático do baixo: bII7 -> I em vez de V7 -> I.',
       choiceSets: [
@@ -479,7 +479,7 @@ const overlay: TemplateLevelOverlay = {
           'Não existem notas a evitar em nenhuma escala',
         ],
         [
-          'O lócrio é a escala primária para acordes semidiminutos (m7b5)',
+          'O lócrio, ou o lócrio com 2.a natural (modo 6 da menor melódica), é a escala para acordes semidiminutos (m7b5)',
           'O dórico é usado para acordes semidiminutos',
           'O mixolídio é usado para acordes semidiminutos',
           'Os acordes semidiminutos não têm escala associada',

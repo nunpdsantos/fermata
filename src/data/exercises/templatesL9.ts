@@ -48,7 +48,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'ear_training',
-        promptTemplate: 'Listen to this interval and identify it. Is the third major or minor?',
+        promptTemplate: 'Listen to this interval and identify it. It is always a third — decide whether it is major or minor.',
         hintTemplate: 'Major 3rd = 4 semitones (bright, happy). Minor 3rd = 3 semitones (dark, sad). The difference is just one half step, but the character changes dramatically.',
         params: {
           earMode: 'interval',
@@ -287,8 +287,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'ear_training',
-        promptTemplate: 'Listen to this chromatic note and identify it.',
-        hintTemplate: 'Chromatic notes are accidentals that do not belong to the current key. They create tension that resolves to nearby diatonic notes.',
+        promptTemplate: 'Listen to this note and identify it. Most notes in this set are sharps.',
+        hintTemplate: 'Sharps such as C#, F# and G# lie outside C major; in a C major melody they would be chromatic notes, pulling toward a neighbouring scale note.',
         params: {
           earMode: 'note',
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
@@ -298,8 +298,8 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'ear_training',
-        promptTemplate: 'Listen to this chromatic interval, played {direction}, and identify it.',
-        hintTemplate: 'Chromatic intervals include augmented and diminished qualities. This interval uses a note outside the diatonic scale.',
+        promptTemplate: 'Listen to this interval, played {direction}, and identify it.',
+        hintTemplate: 'Count the half steps: minor 2nd = 1, minor 3rd = 3, tritone = 6, minor 6th = 8, minor 7th = 10, major 7th = 11. Measured up from a major-key tonic, the first five are exactly the notes outside the scale (b2, b3, #4, b6, b7).',
         params: {
           earMode: 'interval',
           roots: ['C', 'D', 'E', 'F', 'G', 'A'],
@@ -375,7 +375,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'scale_build',
         promptTemplate: 'Sing and then build the {root} {scaleType} scale. Select all 7 notes.',
-        hintTemplate: 'Mentally sing the scale starting from {root} using solfege or numbers before selecting notes. {scaleType} scale has a distinctive sound pattern.',
+        hintTemplate: 'Mentally sing the scale starting from {root} using solfege or numbers before selecting notes. Listen for the pattern of whole and half steps that gives the {scaleType} scale its sound.',
         params: {
           roots: ['C', 'G', 'F', 'D', 'A'],
           accidentals: ['', '', '', '', ''],

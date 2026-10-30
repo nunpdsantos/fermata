@@ -44,7 +44,7 @@ const overlay: ExerciseLevelOverlay = {
       'Todas as sete notas da escala-mãe',
       'Apenas fundamental e quinta — um voicing de power chord',
     ],
-    hint: 'Os voicings de shell reduzem o acorde ao essencial: a fundamental define o baixo, a terça determina a qualidade maior/menor e a sétima determina o tipo de acorde (maj7, dom7, m7). A quinta é redundante.',
+    hint: 'Os voicings de shell reduzem o acorde ao essencial: a fundamental define o baixo, a terça determina a qualidade maior/menor e a sétima determina o tipo de acorde (maj7, dom7, m7). Nesses acordes a quinta perfeita é redundante; nos acordes m7b5 e dim7 é a quinta diminuta que define o acorde, por isso fica.',
   },
   l7u21m2e2: {
     prompt:
@@ -183,7 +183,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Que dispositivo harmónico é comummente usado na ponte dos rhythm changes?',
     choices: [
-      'Um ciclo de acordes de sétima dominante a descer por tons ou a mover-se pelo ciclo de quintas',
+      'Um ciclo de acordes de sétima dominante a mover-se pelo ciclo de quintas (cada um resolve uma quinta abaixo para o seguinte)',
       'Uma nota pedal sustida sem mudanças de acordes',
       'Uma repetição exata da secção A noutra tonalidade',
       'Uma série dodecafónica',
@@ -404,7 +404,7 @@ const overlay: ExerciseLevelOverlay = {
       'Nenhum efeito notável já que os acordes são proximamente relacionados',
       'Um choque dissonante que soa como um erro',
     ],
-    hint: 'As mediantes cromáticas partilham uma nota comum (Dó maior e Láb maior partilham Dó e estão na fronteira Mib/Mi). A fundamental move-se uma terça mas a mudança de qualidade cria uma alteração de cor rica e inesperada, frequentemente ouvida em bandas sonoras e momentos pop dramáticos.',
+    hint: 'C maior (C, E, G) e Ab maior (Ab, C, Eb) partilham uma nota comum (C). O E e o Eb estão a meio-tom de distância, criando a mudança de cor suave característica das mediantes cromáticas.',
   },
   l7u23m2e3: {
     prompt:

@@ -15,7 +15,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Construye un acorde de {root} {quality}. Selecciona todas las notas necesarias para este acorde con extensiones.',
+        'Construye un acorde de {root} {quality}. Selecciona todas las notas, incluida la novena por encima de la séptima.',
       hintTemplate:
         'Las extensiones de jazz apilan terceras por encima de la séptima: novena = segunda una octava arriba, undécima = cuarta arriba, decimotercera = sexta arriba. Construye a partir de {root}.',
     },
@@ -106,7 +106,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         '¿Cómo se enlazan los voicings de shell en un contexto jazz?',
       hintTemplate:
-        'En una ii-V-I, la tercera de un acorde se convierte en la séptima del siguiente y viceversa. Esta eficiencia en la conducción de voces se denomina líneas de notas guía.',
+        'En una ii-V-I, la tercera del ii se mantiene como séptima del V, mientras la séptima del ii baja un semitono a la tercera del V (y lo mismo vuelve a ocurrir del V al I). Esta eficiencia en la conducción de voces se denomina líneas de notas guía.',
       choiceSets: [
         [
           'Las notas guía (terceras y séptimas) se enlazan suavemente por grado conjunto entre acordes en una ii-V-I',
@@ -115,7 +115,7 @@ const overlay: TemplateLevelOverlay = {
           'La conducción de voces no importa en el jazz',
         ],
         [
-          'La tercera del ii se convierte en la séptima del V, y la séptima del ii se convierte en la tercera del V',
+          'La tercera del ii se mantiene como séptima del V, y la séptima del ii baja un semitono a la tercera del V',
           'Todas las notas se mantienen iguales entre ii y V',
           'La fundamental del ii se convierte en la fundamental del V',
           'No existe enlace en la conducción de voces entre ii y V',
@@ -168,7 +168,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Explica por qué funciona la sustitución tritonal.',
+        'Sustitución tritonal: ¿por qué funciona y qué cambia?',
       hintTemplate:
         'Dos dom7 a un tritono de distancia comparten el mismo intervalo de tritono (la tercera y la séptima se intercambian). Esto crea movimiento cromático del bajo: bII7 → I en lugar de V7 → I.',
       choiceSets: [
@@ -479,7 +479,7 @@ const overlay: TemplateLevelOverlay = {
           'No existen notas a evitar en ninguna escala',
         ],
         [
-          'El locrio es la escala primaria para acordes semidisminuidos (m7b5)',
+          'El locrio, o el locrio con 2.ª natural (modo 6 de la menor melódica), es la escala para acordes semidisminuidos (m7b5)',
           'El dórico se usa para acordes semidisminuidos',
           'El mixolidio se usa para acordes semidisminuidos',
           'Los acordes semidisminuidos no tienen escala asociada',

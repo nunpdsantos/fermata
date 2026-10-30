@@ -2,7 +2,10 @@
  * Music term dictionary — translates domain-specific strings used in exercise
  * templates (scaleType, chord quality, direction) to target languages.
  *
- * English falls through to the raw key with underscores replaced by spaces.
+ * English scale types and directions fall through to the raw key with
+ * underscores replaced by spaces; English chord qualities with digits in
+ * their keys ('dominant7') get a readable name ('dominant 7th') so generated
+ * prompts never show program identifiers (audit W5-37).
  * PT/ES provide proper musical terminology.
  */
 import type { ContentLanguage, MusicTermDictionary } from './types';
@@ -38,8 +41,9 @@ const pt: MusicTermDictionary = {
     dominant7: 'de sétima da dominante',
     half_diminished7: 'meio-diminuto',
     diminished7: 'de sétima diminuta',
-    major9: 'maior com 9.ª',
-    minor9: 'menor com 9.ª',
+    major9: 'maior com 7.ª M e 9.ª',
+    minor9: 'menor com 7.ª e 9.ª',
+    dominant9: 'de nona da dominante',
   },
   directions: {
     ascending: 'ascendente',
@@ -78,8 +82,9 @@ const es: MusicTermDictionary = {
     dominant7: 'de séptima de dominante',
     half_diminished7: 'semidisminuido',
     diminished7: 'de séptima disminuida',
-    major9: 'mayor con 9.ª',
-    minor9: 'menor con 9.ª',
+    major9: 'mayor con 7.ª M y 9.ª',
+    minor9: 'menor con 7.ª y 9.ª',
+    dominant9: 'de novena de dominante',
   },
   directions: {
     ascending: 'ascendente',
@@ -89,15 +94,27 @@ const es: MusicTermDictionary = {
 
 const DICTIONARIES: Record<string, MusicTermDictionary> = { pt, es };
 
+/** Readable English names for chord-quality keys that contain digits. */
+const EN_CHORD_QUALITIES: Record<string, string> = {
+  major7: 'major 7th',
+  minor7: 'minor 7th',
+  dominant7: 'dominant 7th',
+  half_diminished7: 'half-diminished 7th',
+  diminished7: 'diminished 7th',
+  major9: 'major 9th',
+  minor9: 'minor 9th',
+  dominant9: 'dominant 9th',
+};
+
 /** Translate a scale type key to the target language. EN falls through. */
 export function translateScaleType(key: string, lang: ContentLanguage): string {
   if (lang === 'en') return key.replace(/_/g, ' ');
   return DICTIONARIES[lang]?.scaleTypes[key] ?? key.replace(/_/g, ' ');
 }
 
-/** Translate a chord quality key to the target language. EN falls through. */
+/** Translate a chord quality key to the target language (EN: readable name or raw key). */
 export function translateChordQuality(key: string, lang: ContentLanguage): string {
-  if (lang === 'en') return key.replace(/_/g, ' ');
+  if (lang === 'en') return EN_CHORD_QUALITIES[key] ?? key.replace(/_/g, ' ');
   return DICTIONARIES[lang]?.chordQualities[key] ?? key.replace(/_/g, ' ');
 }
 

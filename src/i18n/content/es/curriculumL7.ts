@@ -16,7 +16,7 @@ const curriculumL7: CurriculumLevelOverlay = {
     u23: {
       title: 'Armonía Pop y Taxonomía Completa',
       description:
-        'Progresiones pop, números de Nashville, mezcla modal, mediantes cromáticas, las 46 escalas (modos de menor melódica, modos de menor armónica, simétricas, del mundo) y los 42 tipos de acordes',
+        'Progresiones pop, números de Nashville, mezcla modal, mediantes cromáticas, las familias de escalas del motor (modos de menor melódica, modos de menor armónica, simétricas, del mundo) y su conjunto completo de tipos de acordes',
     },
   },
 
@@ -88,7 +88,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Voicings de Shell: Fundamental, Tercera, Séptima',
           explanation:
-            'Los voicings de shell reducen el acorde a lo esencial: fundamental, tercera y séptima. Estas tres notas definen la cualidad — tercera mayor + séptima mayor = maj7, tercera menor + séptima menor = m7, tercera mayor + séptima menor = dominante 7. La quinta se omite porque no aporta información de cualidad (es justa en todos los tipos estándar). Las extensiones se superponen al shell. Los voicings de shell son el punto de partida para el acompañamiento de piano jazz y el chord-melody en guitarra: aprende los shells, luego vístelos con extensiones.',
+            'Los voicings de shell reducen el acorde a lo esencial: fundamental, tercera y séptima. Estas tres notas definen la cualidad — tercera mayor + séptima mayor = maj7, tercera menor + séptima menor = m7, tercera mayor + séptima menor = dominante 7. En los acordes maj7, m7 y de séptima dominante la quinta es justa, así que no aporta información de cualidad y se omite. En los acordes m7b5 y dim7 la quinta disminuida es la nota que los define y se queda en el voicing: Cm7 y Cm7b5 comparten la misma fundamental, tercera y séptima (C, Eb, Bb). Las extensiones se superponen al shell. Los voicings de shell son el punto de partida para el acompañamiento de piano jazz y el chord-melody en guitarra: aprende los shells, luego vístelos con extensiones.',
           tryThisLabel: 'Construye Dm7 — escucha el shell menor (D, F, C)',
         },
         {
@@ -100,14 +100,14 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Dominantes Suspendidas: 7sus4',
           explanation:
-            'El acorde 7sus4 sustituye la tercera por una cuarta en un acorde de séptima dominante, creando un sonido abierto y no resuelto. C7sus4 contiene C-F-G-Bb — sin Mi, por lo tanto sin identidad mayor/menor. En el jazz, el 7sus4 funciona como voicing previo a la resolución: la cuarta suspendida resuelve a la tercera, y luego el acorde entero resuelve al I. El 7sus4 también sirve como sonoridad modal de tendencia dórica: un acorde 9sus construido una quinta justa por encima de la fundamental de un acorde menor (la posición V-de-ii, por ejemplo G9sus sobre Dm o en su lugar) sustituye al acorde ii — Dm11/G es una grafía común del mismo sonido. El sus2 funciona de forma similar, sustituyendo la tercera por una segunda para una cualidad brillante y abierta.',
+            'El acorde 7sus4 sustituye la tercera por una cuarta en un acorde de séptima dominante, creando un sonido abierto y no resuelto. C7sus4 contiene C-F-G-Bb — sin E, por lo tanto sin identidad mayor/menor. En el jazz, el 7sus4 funciona como voicing previo a la resolución: la cuarta suspendida resuelve a la tercera, y luego el acorde entero resuelve al I. El 7sus4 también sirve como sonoridad modal de tendencia dórica: un acorde 9sus construido una cuarta justa por encima (una quinta por debajo) de la fundamental del acorde ii — es decir, sobre el V — funde ii y V en un solo sonido: G9sus4 (G-C-D-F-A) es Dm7 sobre un bajo de G (Dm7/G), a menudo escrito F/G, y puede sustituir a Dm7-G7. El sus2 funciona de forma similar, sustituyendo la tercera por una segunda para una cualidad brillante y abierta.',
           tryThisLabel: 'Escucha G7sus4 — dominante suspendida, sin tercera',
         },
       ],
       tasks: [
         {
           instruction:
-            'Construye shells en varias cualidades: escribe «Cmaj7», «Cm7», «C7», «Cm7b5». En cada uno, identifica la fundamental, tercera y séptima. La tercera y la séptima cambian — eso es lo que hace distinta cada cualidad.',
+            'Construye shells en varias cualidades: escribe «Cmaj7», «Cm7», «C7», «Cm7b5». En cada uno, identifica la fundamental, tercera y séptima. La tercera y la séptima distinguen Cmaj7, Cm7 y C7, pero Cm7 y Cm7b5 comparten la misma tercera y séptima (Eb y Bb) — solo la quinta disminuida (Gb) los separa, así que mantenla en el shell del m7b5.',
         },
         {
           instruction:
@@ -182,19 +182,19 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'La Sustitución Tritonal',
           explanation:
-            'Se sustituye cualquier acorde de séptima dominante por el acorde de séptima dominante a un trítono de distancia. G7 que resuelve a C se convierte en Db7 que resuelve a C. Funciona porque G7 y Db7 comparten el mismo intervalo de trítono (B-F enarmónico de Cb-F) — el par de notas que impulsa la resolución. La fundamental y la quinta cambian, pero el motor del trítono permanece intacto. El movimiento cromático del bajo resultante (Db descendiendo a C) es más suave que el movimiento por ciclo de quintas (G a C), creando un descenso sofisticado por semitono.',
+            'Se sustituye cualquier acorde de séptima dominante por el acorde de séptima dominante a un trítono de distancia. G7 que resuelve a C se convierte en Db7 que resuelve a C. Funciona porque G7 y Db7 comparten el mismo intervalo de trítono (B-F enarmónico de Cb-F) — la tercera de G7 (B) se convierte en la séptima de Db7, y viceversa. Este intercambio de notas guía mantiene intacto el par de notas que impulsa la resolución. La fundamental y la quinta cambian, pero el motor del trítono permanece intacto. El movimiento cromático del bajo resultante (Db descendiendo a C) es más suave que el movimiento por ciclo de quintas (G a C), creando un descenso sofisticado por semitono.',
           tryThisLabel: 'Escucha Db7 — la sustitución tritonal de G7',
         },
         {
           title: 'Sustitución Tritonal con ii Relacionado',
           explanation:
-            'Añadir el ii relacionado del dominante sustituto crea una línea cromática aún más rica. El ii de Db7 es Abm7, por lo que la ii-V-I completa con sustitución tritonal es: Abm7-Db7-Cmaj7. La línea del bajo desciende cromáticamente: Lab-Reb-Do. Compara con la original: Dm7-G7-Cmaj7 (bajo: Re-Sol-Do). Ambas llegan a Do, pero el camino de la sustitución tritonal es enteramente cromático. Los arreglistas de jazz mezclan frecuentemente ambos enfoques en la misma pieza.',
+            'Añadir el ii relacionado del dominante sustituto crea una línea cromática aún más rica. El ii de Db7 es Abm7, por lo que la ii-V-I completa con sustitución tritonal es: Abm7-Db7-Cmaj7. El bajo se mueve Ab-Db-C: de Abm7 a Db7 mantiene el movimiento de fundamental del ii-V (sube una cuarta), y solo el último paso, de Db a C, es un semitono cromático. Compara con la original: Dm7-G7-Cmaj7 (bajo: D-G-C). Para un bajo enteramente cromático, mantén el ii original y sustituye solo el V: Dm7-Db7-Cmaj7 (bajo: D-Db-C). Los arreglistas de jazz mezclan frecuentemente ambos enfoques en la misma pieza.',
           tryThisLabel: 'Construye Abm7 — el ii relacionado de la sustitución tritonal',
         },
         {
           title: 'El Dominante de la Puerta de Atrás',
           explanation:
-            'El dominante de la puerta de atrás (bVII7-I) aborda la tónica desde un tono por debajo en lugar de una quinta por encima. En Do: Bb7-Cmaj7. La tercera de Bb7 (Re) resuelve hacia arriba a la tercera de Cmaj7 (Mi), y la séptima de Bb7 (Lab) resuelve hacia abajo a la quinta de Cmaj7 (Sol). Esto crea una resolución sorprendente y cálida que evita la cadencia V7-I esperada. Habitual en estándares de jazz y bossa nova, el dominante de la puerta de atrás se entiende mejor como un préstamo del menor paralelo — es el dominante de bIII (Mib) que llega, en cambio, al I. Sus notas guía (Re y Lab) también existen en el dominante alterado de la tonalidad (G7b9), y por eso Bb7 tira tan convincentemente hacia Do: Re sube a Mi y Lab baja a Sol, ambas sensibles superiores hacia Cmaj7.',
+            'El dominante de la puerta de atrás (bVII7-I) aborda la tónica desde un tono por debajo en lugar de una quinta por encima. En C: Bb7-Cmaj7. La tercera de Bb7 (D) resuelve hacia arriba a la tercera de Cmaj7 (E), y la séptima de Bb7 (Ab) resuelve hacia abajo a la quinta de Cmaj7 (G). Esto crea una resolución sorprendente y cálida que evita la cadencia V7-I esperada. Habitual en estándares de jazz y bossa nova, el dominante de la puerta de atrás se entiende mejor como un préstamo del menor paralelo — es el dominante de bIII (Eb) que llega, en cambio, al I. Sus notas guía (D y Ab) también existen en el dominante alterado de la tonalidad (G7b9), y por eso Bb7 tira tan convincentemente hacia C: D sube un tono a E, y Ab baja un semitono a G, como sensible superior.',
           tryThisLabel: 'Escucha Bb7 — el dominante de la puerta de atrás en Do',
         },
       ],
@@ -205,7 +205,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Construye la ii-V completa con sustitución tritonal: toca «Abm7», luego «Db7», luego «Cmaj7». La línea del bajo desciende Lab-Reb-Do — movimiento puramente cromático. Compara con la original Dm7-G7-Cmaj7.',
+            'Construye la ii-V completa con sustitución tritonal: toca «Abm7», luego «Db7», luego «Cmaj7». El bajo se mueve Ab-Db-C — movimiento de fundamental de ii-V, y luego un semitono cromático hasta C. Compara con la original Dm7-G7-Cmaj7, y con Dm7-Db7-Cmaj7, cuyo bajo (D-Db-C) es enteramente cromático.',
         },
         {
           instruction:
@@ -234,7 +234,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Jazz Blues',
           explanation:
-            'El jazz blues enriquece la forma básica de 12 compases con inserciones ii-V, sustituciones tritonales y acordes disminuidos de paso. Un jazz blues habitual en Do: C7 / F7 / C7 / C7 / F7 / F#dim7 / C7 / Am7 / Dm7 / G7 / C7-Am7 / Dm7-G7. El #IVdim7 (F#dim7) funciona como acorde de paso cromático entre IV7 e I7. Los últimos cuatro compases se convierten en un turnaround con un ii-V (Dm7-G7) que recicla al inicio. El bird blues (Charlie Parker) añade aún más sustituciones y cadenas ii-V.',
+            'El jazz blues enriquece la forma básica de 12 compases con inserciones ii-V, sustituciones tritonales y acordes disminuidos de paso. Un jazz blues habitual en Do: C7 / F7 / C7 / C7 / F7 / F#dim7 / C7 / A7 / Dm7 / G7 / C7-A7 / Dm7-G7. El #IVdim7 (F#dim7) funciona como acorde de paso cromático entre IV7 e I7. El A7 (V7/ii) tira hacia Dm7, aportando la lógica ii-V de los compases 8–9 y del turnaround. Los últimos cuatro compases se convierten en un turnaround con un ii-V (Dm7-G7) que recicla al inicio. El bird blues (Charlie Parker) añade aún más sustituciones y cadenas ii-V.',
           tryThisLabel: 'Construye F7 — el IV7 del blues en Do',
         },
         {
@@ -315,7 +315,7 @@ const curriculumL7: CurriculumLevelOverlay = {
     l7u22m1: {
       title: 'Teoría Acorde-Escala',
       subtitle:
-        'Emparejar escalas con cifrado — el núcleo de la improvisación jazz',
+        'Emparejar escalas con cifrado — un enfoque fundamental de la improvisación jazz',
       objectives: [
         'Asignar a cada cualidad estándar de acorde sus escalas primarias y alternativas',
         'Comprender por qué ciertas escalas «funcionan» sobre ciertos acordes — notas comunes del acorde como base',
@@ -338,7 +338,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Alineación Acorde-Escala en ii-V-I',
           explanation:
-            'En una ii-V-I mayor en Do, la alineación acorde-escala es: Dm7 = Re dórico, G7 = Sol mixolidio, Cmaj7 = Do jónico (o Do lidio). Las tres escalas comparten las mismas notas — son modos de Do mayor. Esto significa que el improvisador puede pensar en una sola tonalidad a lo largo de toda la progresión. En modo menor, la alineación cambia: Dm7b5 = Re locrio nat.2, G7alt = Sol alterada (Lab menor melódica), Cm(maj7) = Do menor melódica. Ahora tres conjuntos de notas diferentes están en juego, exigiendo un pensamiento más rápido.',
+            'En una ii-V-I mayor en C, la alineación acorde-escala es: Dm7 = D dórico, G7 = G mixolidio, Cmaj7 = C jónico. Las tres escalas comparten las mismas notas — son modos de C mayor. (El C lidio es un color muy usado sobre Cmaj7, pero su F# se sale de ese conjunto común.) Esto significa que el improvisador puede pensar en una sola tonalidad a lo largo de toda la progresión. En modo menor, la alineación cambia: Dm7b5 = D locrio nat.2, G7alt = G alterada (Ab menor melódica), Cm(maj7) = C menor melódica. Ahora tres conjuntos de notas diferentes están en juego, exigiendo un pensamiento más rápido.',
           tryThisLabel: 'Observa Re dórico — la escala de acorde para Dm7 en Do mayor',
         },
       ],
@@ -373,8 +373,8 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Tríadas de Estructura Superior',
           explanation:
-            'El voicing de estructura superior coloca una tríada simple en el registro agudo sobre una nota de bajo y guide tones en el registro grave. La tríada crea extensiones específicas sin deletrear cada nota individualmente. Una tríada de Re mayor sobre un bajo de C7 resulta en C13#11 — las notas Re, Fa# y La se convierten en la novena, la #11 y la trecena. Una tríada de Mib mayor sobre C7 produce C7#9b13. Una tríada de Lab mayor sobre C7 crea C7b9b13. La tríada superior se elige por las extensiones que genera, no por su propia identidad. Esta técnica permite a pianistas y arreglistas de jazz voicings complejos con formas simples.',
-          tryThisLabel: 'Construye C13 — escucha las extensiones que crea una estructura superior',
+            'El voicing de estructura superior coloca una tríada simple en el registro agudo sobre una nota de bajo y guide tones en el registro grave. La tríada crea extensiones específicas sin deletrear cada nota individualmente. Una tríada de D mayor sobre un bajo de C7 resulta en C13#11 — las notas D, F# y A se convierten en la novena, la #11 y la trecena. Una tríada de Eb mayor sobre C7 produce C7(#9). Una tríada de Ab mayor sobre C7 produce C7(#9,b13). Una tríada de Gb (F#) mayor sobre C7 produce C7(b9,#11) — el sonido de la sustitución tritonal, ya que Gb7 es el sustituto tritonal de C7. La tríada superior se elige por las extensiones que genera, no por su propia identidad. Esta técnica permite a pianistas y arreglistas de jazz voicings complejos con formas simples. (Véase Mark Levine, The Jazz Piano Book, 1989, cap. 14, «Upper Structures».)',
+          tryThisLabel: 'Construye C13#11 — el sonido de una tríada de D mayor sobre C7',
         },
         {
           title: 'Principios de Rearmonización',
@@ -385,14 +385,14 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Líneas Cromáticas de Bajo y Acordes de Paso',
           explanation:
-            'Una de las herramientas de rearmonización más poderosas es crear una línea cromática de bajo insertando acordes de paso. Entre Do y Rem, se inserta C#dim7 — el bajo camina Do-Do#-Re. Entre Fa y Mim, se inserta F#dim7 (o Fmaj7-F#dim7-Em7). Los acordes de séptima disminuida son los acordes de paso más versátiles porque cada acorde disminuido es enarmónicamente equivalente a otros tres (debido a la construcción simétrica), enlazándose con múltiples destinos. Combinado con sustituciones tritonales y dominantes secundarios, el movimiento cromático del bajo transforma progresiones diatónicas simples en armonía jazz rica.',
+            'Una de las herramientas de rearmonización más poderosas es crear una línea cromática de bajo insertando acordes de paso. Entre C y Dm, se inserta C#dim7 — el bajo camina C-C#-D. Entre F y C/G, se inserta F#dim7 — el bajo camina F-F#-G. Los acordes de séptima disminuida son los acordes de paso más versátiles porque cada acorde disminuido es enarmónicamente equivalente a otros tres (debido a la construcción simétrica), enlazándose con múltiples destinos. Combinado con sustituciones tritonales y dominantes secundarios, el movimiento cromático del bajo transforma progresiones diatónicas simples en armonía jazz rica.',
           tryThisLabel: 'Escucha C#dim7 — un acorde de paso cromático',
         },
       ],
       tasks: [
         {
           instruction:
-            'Explora estructuras superiores: escribe «C13» — este es el sonido de una tríada de Re mayor (D-F#-A = 9-#11-13) sobre un shell de C7 (C-E-Bb). El cifrado complejo se realiza con una tríada simple por encima.',
+            'Explora estructuras superiores: escribe «C13#11» — este es el sonido de una tríada de D mayor (D-F#-A = 9-#11-13) sobre un shell de C7 (C-E-Bb). El cifrado complejo se realiza con una tríada simple por encima.',
         },
         {
           instruction:
@@ -400,7 +400,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Construye una línea de acordes de paso cromática: toca «Cmaj7», luego «C#dim7», luego «Dm7». El acorde disminuido crea una subida cromática del bajo (C-C#-D) y cada voz se mueve por semitono o se mantiene igual.',
+            'Construye una línea de acordes de paso cromática: toca «Cmaj7», luego «C#dim7», luego «Dm7». El acorde disminuido crea una subida cromática del bajo (C-C#-D). De Cmaj7 a C#dim7 cada voz se mueve por semitono o se mantiene igual; hacia Dm7, C# y E suben un semitono (a D y F) mientras G y Bb suben un tono (a A y C).',
         },
       ],
     },
@@ -420,7 +420,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'La Matriz de Giant Steps',
           explanation:
-            'John Coltrane concibió progresiones que recorren tres centros tonales mayores separados por terceras mayores, dividiendo la octava en tres partes iguales. La progresión de Giant Steps: Bmaj7-D7-Gmaj7-Bb7-Ebmaj7-F#7-Bmaj7, tocando en las tonalidades de Si, Sol y Mib. Cada centro tonal es abordado por su acorde V7. El resultado es un ritmo armónico extremadamente rápido que exige pensar en tres tonalidades simultáneamente — uno de los grandes retos de la improvisación jazz y la cima del dominio acorde-escala.',
+            'John Coltrane concibió progresiones que recorren tres centros tonales mayores separados por terceras mayores, dividiendo la octava en tres partes iguales. La progresión de Giant Steps: Bmaj7-D7-Gmaj7-Bb7-Ebmaj7-F#7-Bmaj7, tocando en las tonalidades de B, G y Eb (versión abreviada — el tema completo intercala acordes ii7 como Am7-D7). Cada centro tonal es abordado por su acorde V7. El resultado es un ritmo armónico extremadamente rápido que exige pensar en tres tonalidades simultáneamente — uno de los grandes retos de la improvisación jazz y la cima del dominio acorde-escala.',
           tryThisLabel: 'Empieza en Bmaj7 — el primer centro tonal',
         },
         {
@@ -458,7 +458,7 @@ const curriculumL7: CurriculumLevelOverlay = {
       subtitle:
         'Componer fuera de la gravedad tonal — modos como sistemas armónicos',
       objectives: [
-        'Distinguir armonía modal de armonía tonal y comprender por qué se evita el V-I',
+        'Distinguir armonía modal de armonía tonal y comprender por qué se evita generalmente el V-I',
         'Identificar la nota característica de cada modo y usarla para seleccionar acordes',
         'Construir progresiones de acordes modales que preserven el color modal',
         'Usar pedales, notas tenidas y patrones de ostinato para anclar la tónica modal',
@@ -467,13 +467,13 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Pensamiento Modal vs. Tonal',
           explanation:
-            'En la música tonal, la relación V-I define la tonalidad y crea la atracción gravitacional que organiza toda la armonía. En la música modal, el V-I se evita deliberadamente porque colapsa el color modal de vuelta a la tonalidad mayor o menor. La armonía modal establece la tónica mediante repetición, pedales, notas tenidas y relaciones de acordes no dominantes. Miles Davis, McCoy Tyner y Herbie Hancock construyeron composiciones enteras sobre este principio — «So What» usa solo dos acordes sobre un pedal dórico. El modo en sí ES la armonía.',
+            'En la música tonal, la relación V-I define la tonalidad y crea la atracción gravitacional que organiza toda la armonía. En la música modal, el V-I se evita generalmente porque tiende a colapsar el color modal de vuelta a la tonalidad mayor o menor. La armonía modal establece la tónica mediante repetición, pedales, notas tenidas y relaciones de acordes no dominantes. Miles Davis, McCoy Tyner y Herbie Hancock construyeron composiciones enteras sobre este principio — «So What» pasa 16 compases en D dórico, 8 en Eb dórico y otros 8 en D dórico: dos centros modales para un tema entero. El modo en sí ES la armonía.',
           tryThisLabel: 'Observa Re dórico — el pilar modal del jazz',
         },
         {
           title: 'Notas Características',
           explanation:
-            'Cada modo tiene una nota que lo distingue del mayor simple o del menor natural — la nota característica. El dórico tiene una sexta elevada en comparación con el menor natural (la nota que lo hace más brillante). El frigio tiene una segunda rebajada (oscuro, sabor español). El lidio tiene una cuarta elevada (brillante, flotante, onírico). El mixolidio tiene una séptima rebajada (blues, rock). En la teoría tonal estas son «notas a evitar», pero en la escritura modal son las notas esenciales que deben enfatizarse tanto en la melodía como en las elecciones de acordes para establecer el modo.',
+            'Cada modo tiene una nota que lo distingue del mayor simple o del menor natural — la nota característica. El dórico tiene una sexta elevada en comparación con el menor natural (la nota que lo hace más brillante). El frigio tiene una segunda rebajada (oscuro, sabor español). El lidio tiene una cuarta elevada (brillante, flotante, onírico). El mixolidio tiene una séptima rebajada (blues, rock). Oídas frente al mayor o al menor simple suenan como alteraciones, pero en la escritura modal son las notas esenciales que deben enfatizarse tanto en la melodía como en las elecciones de acordes para establecer el modo.',
           tryThisLabel: 'Escucha Fa lidio — la cuarta elevada lo define',
         },
         {
@@ -520,7 +520,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Voicings Quintales y Espaciado Abierto',
           explanation:
-            'Los voicings quintales apilan quintas justas: Re-La-Mi-Si. Esta es la inversión de un voicing cuartal (Re-Sol-Do-Fa invertido en quintas abiertas). El sonido es espacioso, abierto y orquestal. Los voicings quintales aparecen en la música clásica del siglo XX (Bartók, Hindemith) y en el jazz modal. Los intervalos amplios crean transparencia — cada nota tiene espacio para resonar. Combinados con un pedal de bajo, los voicings quintales sugieren modalidad sin comprometerse con ninguna cualidad de acorde específica.',
+            'Los voicings quintales apilan quintas justas: D-A-E-B. Invertida, una cuarta se convierte en una quinta, así que los voicings quintales son voicings cuartales puestos del revés: las cuartas de D-G-C-F se convierten en las quintas de F-C-G-D. El sonido es espacioso, abierto y orquestal. Los voicings quintales aparecen en la música clásica del siglo XX (Bartók, Hindemith) y en el jazz modal. Los intervalos amplios crean transparencia — cada nota tiene espacio para resonar. Combinados con un pedal de bajo, los voicings quintales sugieren modalidad sin comprometerse con ninguna cualidad de acorde específica.',
           tryThisLabel: 'Escucha un power chord de Re — el apilamiento de quintas más simple',
         },
         {
@@ -577,7 +577,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Rotaciones de Bucle y Cambios Emocionales',
           explanation:
-            'Los mismos cuatro acordes producen efectos emocionales diferentes según cuál acorde inicia el bucle. I-V-vi-IV empezando en el I suena triunfante y resuelto. vi-IV-I-V empezando en el vi suena vulnerable y anhelante. IV-V-vi-IV (empezando en el IV) crea una sensación de aspiración. El acorde inicial define dónde se sitúa el «hogar» emocional dentro del bucle. En la producción pop, el acorde inicial se alinea frecuentemente con el gancho de la melodía vocal, reforzando la forma emocional de la letra.',
+            'Los mismos cuatro acordes producen efectos emocionales diferentes según cuál acorde inicia el bucle. I-V-vi-IV empezando en el I suena triunfante y resuelto. vi-IV-I-V empezando en el vi suena vulnerable y anhelante. IV-I-V-vi (empezando en el IV) crea una sensación de aspiración. El acorde inicial define dónde se sitúa el «hogar» emocional dentro del bucle. En la producción pop, el acorde inicial se alinea frecuentemente con el gancho de la melodía vocal, reforzando la forma emocional de la letra.',
           tryThisLabel: 'Construye Fa — el acorde IV que impulsa la resolución pop',
         },
       ],
@@ -697,7 +697,7 @@ const curriculumL7: CurriculumLevelOverlay = {
       subtitle:
         'Modos de la menor armónica, tonos enteros, disminuida y escalas del mundo',
       objectives: [
-        'Recorrer los siete modos de la menor armónica y reconocer la firma de la segunda aumentada',
+        'Reconocer los siete modos de la menor armónica por su firma de segunda aumentada, y tocar los dos que incluye la aplicación: la propia menor armónica y el frigio dominante (modo 5)',
         'Comprender escalas simétricas (tonos enteros, disminuida) y sus transposiciones limitadas',
         'Explorar escalas del mundo y étnicas: doble armónica mayor, húngara menor, persa y más',
         'Usar el frigio dominante (modo 5 de la menor armónica) para sonidos de flamenco, klezmer y Oriente Medio',
@@ -706,7 +706,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Modos de la Menor Armónica',
           explanation:
-            'La menor armónica genera siete modos, cada uno marcado por un intervalo distintivo de segunda aumentada que les da un color exótico. El 5.o modo, frigio dominante, se usa ampliamente en el flamenco, klezmer y música de Oriente Medio — tiene una tercera mayor sobre una base frigia, creando un sonido simultáneamente brillante y oscuro. El 4.o modo, dórico #4 (dórico ucraniano), aparece en las tradiciones folclóricas de Europa del Este. El 6.o modo, lidio #2, comienza con una segunda aumentada que suena inmediatamente distintiva. Cada modo tiene un emparejamiento acorde-escala definido y un contexto cultural característico.',
+            'La menor armónica genera siete modos, cada uno marcado por un intervalo distintivo de segunda aumentada que les da un color exótico. El 5.o modo, frigio dominante, se usa ampliamente en el flamenco, klezmer y música de Oriente Medio — tiene una tercera mayor sobre una base frigia, creando un sonido simultáneamente brillante y oscuro. El 4.o modo, dórico #4 (dórico ucraniano), aparece en las tradiciones folclóricas de Europa del Este. El 6.o modo, lidio #2, comienza con una segunda aumentada que suena inmediatamente distintiva. Cada modo tiene un emparejamiento acorde-escala definido y un contexto cultural característico. (La aplicación muestra y toca la menor armónica y el frigio dominante; los otros cinco modos se describen aquí como referencia.)',
           tryThisLabel: 'Escucha frigio dominante — flamenco y klezmer',
         },
         {
@@ -733,7 +733,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Compara escalas del mundo: escribe «C double harmonic major», luego «C hungarian minor». Ambas presentan segundas aumentadas pero en posiciones diferentes, creando caracteres melódicos muy distintos. El motor tiene 46 escalas — explora libremente.',
+            'Compara escalas del mundo: escribe «C double harmonic major», luego «C hungarian minor». Ambas presentan segundas aumentadas pero en posiciones diferentes, creando caracteres melódicos muy distintos. El motor tiene muchas más escalas — explora libremente.',
         },
       ],
     },
@@ -742,7 +742,7 @@ const curriculumL7: CurriculumLevelOverlay = {
     l7u23m5: {
       title: 'Taxonomía Completa de Acordes',
       subtitle:
-        'Los 42 tipos de acordes — extensiones, suspensiones, notas añadidas y estructuras especiales',
+        'Todos los tipos de acordes del motor — extensiones, suspensiones, notas añadidas y estructuras especiales',
       objectives: [
         'Construir cualquier acorde con extensiones (novena, oncena, trecena) en cualquier cualidad a partir de una fundamental',
         'Comprender acordes suspendidos y de nota añadida y cómo difieren de las extensiones',
@@ -765,7 +765,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Estructuras Especiales: Cuartales, Power Chords y Más',
           explanation:
-            'No todos los acordes se construyen a partir de terceras apiladas. Los acordes cuartales apilan cuartas justas (Re-Sol-Do-Fa), produciendo una cualidad ambigua y abierta central al jazz modal — McCoy Tyner construyó su sonoridad de firma sobre estos voicings. Los power chords (solo fundamental y quinta, sin tercera) son la columna vertebral de la guitarra rock, ni mayores ni menores. Los poliacordes apilan dos tríadas independientes para crear sonoridades complejas usadas en la escritura orquestal y jazz. El motor cubre 42 tipos de acordes abarcando tríadas, séptimas, extensiones, alteraciones, suspensiones, notas añadidas y power chords.',
+            'No todos los acordes se construyen a partir de terceras apiladas. Los acordes cuartales apilan cuartas justas (Re-Sol-Do-Fa), produciendo una cualidad ambigua y abierta central al jazz modal — McCoy Tyner construyó su sonoridad de firma sobre estos voicings. Los power chords (solo fundamental y quinta, sin tercera) son la columna vertebral de la guitarra rock, ni mayores ni menores. Los poliacordes apilan dos tríadas independientes para crear sonoridades complejas usadas en la escritura orquestal y jazz. El motor cubre decenas de tipos de acordes abarcando tríadas, séptimas, extensiones, alteraciones, suspensiones, notas añadidas y power chords.',
           tryThisLabel: 'Escucha C6/9 — un voicing jazz clásico sin séptima',
         },
       ],

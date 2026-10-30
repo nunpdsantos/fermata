@@ -35,7 +35,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A real answer transposes the subject exactly; a tonal answer adjusts intervals to stay in the dominant key', correct: true },
+          { label: 'A real answer transposes the subject exactly; a tonal answer adjusts intervals (typically answering 5 with 1) so the answer does not undermine the tonic key', correct: true },
           { label: 'A real answer is louder; a tonal answer is softer', correct: false },
           { label: 'A real answer uses the same rhythm; a tonal answer changes the rhythm', correct: false },
           { label: 'A real answer is in the same octave; a tonal answer is an octave higher', correct: false },
@@ -443,7 +443,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Moving chords or intervals in parallel motion, maintaining the same intervallic structure', correct: true },
+          { label: 'Moving chords or intervals in parallel motion, either keeping the exact intervallic structure (chromatic planing) or adjusting it to the scale (diatonic planing)', correct: true },
           { label: 'Gradually increasing the tempo throughout a passage', correct: false },
           { label: 'Alternating between two different keys every measure', correct: false },
           { label: 'Writing only in stepwise (conjunct) motion', correct: false },

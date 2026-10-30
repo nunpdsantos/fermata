@@ -73,7 +73,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Root and 5th only — a power chord voicing', correct: false },
         ],
       },
-      hint: 'Shell voicings strip a chord to its essentials: root defines the bass, 3rd determines major/minor quality, and 7th determines the chord type (maj7, dom7, m7). The 5th is redundant.',
+      hint: 'Shell voicings strip a chord to its essentials: root defines the bass, 3rd determines major/minor quality, and 7th determines the chord type (maj7, dom7, m7). In those chords the perfect 5th is redundant; in m7b5 and dim7 chords the flatted 5th is what defines the chord, so it stays.',
       points: 1,
     },
     {

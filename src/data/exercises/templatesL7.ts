@@ -19,13 +19,13 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root} {quality} chord. Select all the required notes for this extended chord.',
+        promptTemplate: 'Build the {root} {quality} chord. Select every note, including the 9th above the 7th.',
         hintTemplate: 'Jazz extensions stack 3rds above the 7th: 9th = 2nd up an octave, 11th = 4th up, 13th = 6th up. Build from {root}.',
         params: {
           roots: ALL_ROOTS,
           accidentals: ['', '', '', '', '', '', ''],
-          chordQualities: ['major7', 'minor7', 'dominant7'],
-          noteCounts: [4],
+          chordQualities: ['major9', 'minor9', 'dominant9'],
+          noteCounts: [5],
         },
         points: 2,
       },
@@ -67,7 +67,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which set of three notes is the correct shell voicing?',
-        hintTemplate: 'A shell voicing uses only root, 3rd, and 7th — the 5th is omitted. The 3rd defines the chord quality (major/minor); the 7th defines the 7th-chord type (major7 / minor7 / dominant7).',
+        hintTemplate: 'A shell voicing uses only root, 3rd, and 7th — the 5th is omitted. The 3rd defines the chord quality (major/minor); the 7th defines the 7th-chord type (maj7 / m7 / dom7).',
         params: {
           choiceSets: [
             [
@@ -118,7 +118,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'How do shell voicings connect in a jazz context?',
-        hintTemplate: 'In ii-V-I, the 3rd of one chord becomes the 7th of the next and vice versa. This voice-leading efficiency is called guide-tone lines.',
+        hintTemplate: 'In ii-V-I, the 3rd of ii is held as the 7th of V, while the 7th of ii falls a half step to the 3rd of V (and the same happens again from V to I). This voice-leading efficiency is called guide-tone lines.',
         params: {
           choiceSets: [
             [
@@ -128,7 +128,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Voice leading does not matter in jazz', correct: false },
             ],
             [
-              { label: 'The 3rd of ii becomes the 7th of V, and the 7th of ii becomes the 3rd of V', correct: true },
+              { label: 'The 3rd of ii is held as the 7th of V, and the 7th of ii falls a half step to the 3rd of V', correct: true },
               { label: 'All notes stay the same between ii and V', correct: false },
               { label: 'The root of ii becomes the root of V', correct: false },
               { label: 'No voice-leading connection exists between ii and V', correct: false },
@@ -199,7 +199,7 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Explain why tritone substitution works.',
+        promptTemplate: 'Tritone substitution: why does it work, and what does it change?',
         hintTemplate: 'Two dom7 chords a tritone apart share the same tritone interval (3rd and 7th swap). This creates chromatic bass motion: bII7 -> I instead of V7 -> I.',
         params: {
           choiceSets: [
@@ -582,7 +582,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'There are no avoid notes in any scale', correct: false },
             ],
             [
-              { label: 'Locrian is the primary scale for half-diminished (min7b5) chords', correct: true },
+              { label: 'Locrian, or Locrian natural 2 (mode 6 of melodic minor), is the scale for half-diminished (min7b5) chords', correct: true },
               { label: 'Dorian is used for half-diminished chords', correct: false },
               { label: 'Mixolydian is used for half-diminished chords', correct: false },
               { label: 'Half-diminished chords have no associated scale', correct: false },

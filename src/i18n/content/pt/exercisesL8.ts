@@ -27,7 +27,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'O que distingue uma "resposta real" de uma "resposta tonal" numa fuga?',
     choices: [
-      'Uma resposta real transpõe o sujeito exatamente; uma resposta tonal ajusta intervalos para se manter na tonalidade da dominante',
+      'Uma resposta real transpõe o sujeito exatamente; uma resposta tonal ajusta intervalos (normalmente responde ao 5 com o 1) para que a resposta não enfraqueça a tonalidade da tónica',
       'Uma resposta real é mais forte; uma resposta tonal é mais suave',
       'Uma resposta real usa o mesmo ritmo; uma resposta tonal altera o ritmo',
       'Uma resposta real está na mesma oitava; uma resposta tonal está uma oitava acima',
@@ -298,7 +298,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'O que é o "planing" (também chamado paralelismo) na música do início do século XX?',
     choices: [
-      'Mover acordes ou intervalos em movimento paralelo, mantendo a mesma estrutura interválica',
+      'Mover acordes ou intervalos em movimento paralelo, mantendo exatamente a estrutura interválica (planing cromático) ou ajustando-a à escala (planing diatónico)',
       'Aumentar gradualmente o andamento ao longo de uma passagem',
       'Alternar entre duas tonalidades diferentes a cada compasso',
       'Escrever apenas em movimento por grau conjunto (movimento conjunto)',
