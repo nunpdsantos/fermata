@@ -6,8 +6,11 @@
  *
  * This suite drives every ScaleType × the 12 KeySelector roots through:
  *   1. the pure paths (diatonic chords + numerals, Copy-summary text), and
- *   2. the rendered Explore surface (ExploreView with all three chord-picker
- *      modes, plus the Piano and the Fretboard that sit in the AppShell).
+ *   2. the rendered Explore surface (ExploreView in the Diatonic and Build
+ *      chord-picker modes, plus the Piano and the Fretboard that sit in the
+ *      AppShell). The third mode, All chords (ChordBrowser), reads only the
+ *      selected root — never the scale or useKeyContext — so it adds no
+ *      scale-dependent path and is not looped here.
  * Nothing may throw, and every numeral that is shown must be a real string.
  */
 import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest';

@@ -17,6 +17,7 @@ import { buildChord, getDiatonicTriads } from '../../../core/constants/chords';
 import { buildScale } from '../../../core/constants/scales';
 import { palette } from '../../../design/tokens/palette';
 import { selectWeightedExercises } from '../../../services/exerciseSelector';
+import { accentText } from '../../../design/tokens/learnColors';
 
 type Phase = 'active' | 'submitted';
 
@@ -315,7 +316,7 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
                   className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-[1.03]"
                   style={{
                     backgroundColor: `${accentColor}15`,
-                    color: accentColor,
+                    color: accentText(accentColor),
                     border: `1px solid ${accentColor}30`,
                   }}
                   aria-label={t('exercise.replayAudio')}
@@ -349,7 +350,7 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
                       className="px-4 py-1.5 max-sm:py-2 max-sm:px-5 rounded-lg text-xs font-medium transition-colors"
                       style={{
                         backgroundColor: `${accentColor}20`,
-                        color: accentColor,
+                        color: accentText(accentColor),
                       }}
                     >
                       {t('common.submit')}

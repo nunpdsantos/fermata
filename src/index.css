@@ -132,9 +132,10 @@
   --border-subtle: #e0d4ba;
   --text: #2a1f14;
   --text-muted: #6b5436;
-  /* ≥ 4.5:1 on --bg / --card / --card-hover (was #8b7551, 3.15–3.85:1 —
-     audit W0-03). A greyer walnut than --text-muted keeps it secondary. */
-  --text-dim: #6d5c44;
+  /* ≥ 4.5:1 on --bg / --card / --card-hover / --card-active (was #8b7551,
+     2.8–3.85:1 — audit W0-03). Meeting --card-active puts it at about the
+     lightness of --text-muted; it stays secondary by being a greyer walnut. */
+  --text-dim: #655540;
   /* Semantic TEXT colours (right / wrong / hint / status) — text and icons
      only; fills keep the Tailwind 500/400 tints. Tailwind emerald/red/amber
      800: ≥ 4.5:1 on cream, cards and those tints (src/design/__tests__/
@@ -142,6 +143,19 @@
   --success-text: #006045;
   --danger-text: #9f0712;
   --warning-text: #973c00;
+  /* Level accents used as TEXT (read via accentText() in
+     src/design/tokens/learnColors.ts). Same OKLCH hue as each LEVEL_ACCENTS
+     fill, lightness lowered until ≥ 4.5:1 (target 4.7) on cream, cards and
+     the accent's own 20% tint. The pastel accents read 1.1–1.7:1 as text. */
+  --level-text-l1: #235591;
+  --level-text-l2: #005c82;
+  --level-text-l3: #006440;
+  --level-text-l4: #006356;
+  --level-text-l5: #785200;
+  --level-text-l6: #8a4200;
+  --level-text-l7: #8d3063;
+  --level-text-l8: #5d4697;
+  --level-text-l9: #943135;
   --input-bg: rgba(237, 228, 207, 0.8);
   --scrollbar: #c9b895;
   --scrollbar-hover: #b8a57e;
@@ -178,12 +192,26 @@
   --border-subtle: #2e2516;
   --text: #f1e9d8;
   --text-muted: #c3ad86;
-  --text-dim: #8f7c5a;
+  /* ≥ 4.5:1 on --bg / --card / --card-hover (was #8f7c5a, 3.58–4.61:1);
+     still well below --text-muted. */
+  --text-dim: #a8916a;
   /* Semantic TEXT colours — the Tailwind 300 shades the night theme already
      used (emerald / red / amber-300), now as tokens. */
   --success-text: #5ee9b5;
   --danger-text: #ffa2a2;
   --warning-text: #ffd230;
+  /* Level accents as TEXT: the accent itself where it already reaches 4.5:1
+     on the night surfaces + its tint (l2–l5); otherwise the same hue a little
+     lighter (l1, l6–l9 were 3.8–4.4:1). */
+  --level-text-l1: #73b4ff;
+  --level-text-l2: #38bdf8;
+  --level-text-l3: #34d399;
+  --level-text-l4: #2dd4bf;
+  --level-text-l5: #fbbf24;
+  --level-text-l6: #ff9a49;
+  --level-text-l7: #ff89c6;
+  --level-text-l8: #b9a1ff;
+  --level-text-l9: #ff8e8c;
   --input-bg: rgba(39, 31, 18, 0.6);
   --scrollbar: #4a3c28;
   --scrollbar-hover: #5f4e34;

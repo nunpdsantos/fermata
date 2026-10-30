@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../../../state/store';
 import type { PitchedNote } from '../../../../core/types/music';
 import { PITCH_CLASS_SPELLINGS } from '../../../../core/constants/notes';
+import { accentText } from '../../../../design/tokens/learnColors';
 
 interface InstrumentInputProps {
   expectedCount: number;
@@ -99,7 +100,7 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
                 className="px-2 py-0.5 rounded-md text-xs font-medium"
                 style={{
                   backgroundColor: `${accentColor}20`,
-                  color: accentColor,
+                  color: accentText(accentColor),
                 }}
               >
                 {label}
@@ -126,7 +127,7 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
             className="px-4 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-40"
             style={{
               backgroundColor: `${accentColor}20`,
-              color: accentColor,
+              color: accentText(accentColor),
             }}
           >
             {t('exercise.checkAnswer')}

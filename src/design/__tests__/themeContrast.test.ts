@@ -12,6 +12,7 @@
  */
 import { describe, it, expect } from 'vitest';
 import { palette } from '../tokens/palette';
+import { LEVEL_ACCENTS, DIFFICULTY_CONFIG, accentText } from '../tokens/learnColors';
 
 // Read the CSS from disk: under Vitest a `?raw` CSS import comes back as ''
 // (CSS processing is off), so the files are read with Node's fs. The module
@@ -53,6 +54,21 @@ function oklchToRgb(L: number, C: number, H: number): RGB {
     const v = c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055;
     return Math.round(v * 255);
   }) as RGB;
+}
+
+/** OKLCH chroma of an sRGB colour (how saturated it reads). */
+function oklchChroma([r, g, b]: RGB): number {
+  const lin = (v: number) => {
+    const s = v / 255;
+    return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  };
+  const [R, G, B] = [lin(r), lin(g), lin(b)];
+  const l = Math.cbrt(0.4122214708 * R + 0.5363325363 * G + 0.0514459929 * B);
+  const m = Math.cbrt(0.2119034982 * R + 0.6806995451 * G + 0.1073969566 * B);
+  const s = Math.cbrt(0.0883024619 * R + 0.2817188376 * G + 0.6299787005 * B);
+  const A = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s;
+  const Bb = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s;
+  return Math.hypot(A, Bb);
 }
 
 function luminance([r, g, b]: RGB): number {
@@ -186,17 +202,94 @@ describe('feedback/status components use the semantic tokens, not fixed dark-the
   });
 });
 
-describe('--text-dim on the default light theme', () => {
+describe('--text-dim', () => {
   const day = THEMES['fermata (day)'];
-  const dim = hexVar(day, '--text-dim');
+  const night = THEMES['fermata-night'];
 
-  it.each(['--bg', '--card', '--card-hover'])('≥ 4.5:1 on %s', (surface) => {
-    expect(contrast(dim, hexVar(day, surface))).toBeGreaterThanOrEqual(MIN_TEXT);
+  it.each(['--bg', '--card', '--card-hover', '--card-active'])('day: ≥ 4.5:1 on %s', (surface) => {
+    expect(contrast(hexVar(day, '--text-dim'), hexVar(day, surface))).toBeGreaterThanOrEqual(MIN_TEXT);
   });
 
-  it('still reads as secondary: lighter than --text-muted, far lighter than --text', () => {
+  it.each(['--bg', '--card', '--card-hover'])('night: ≥ 4.5:1 on %s', (surface) => {
+    expect(contrast(hexVar(night, '--text-dim'), hexVar(night, surface))).toBeGreaterThanOrEqual(MIN_TEXT);
+  });
+
+  it('day: still secondary — far lighter than --text, and greyer than --text-muted', () => {
+    // ≥ 4.5:1 on --card-active pins day --text-dim to about the lightness of
+    // --text-muted (itself 4.48:1 there), so the step down is carried by
+    // chroma: dim is the greyer walnut.
     const bg = hexVar(day, '--bg');
-    expect(contrast(dim, bg)).toBeLessThan(contrast(hexVar(day, '--text-muted'), bg));
+    const dim = hexVar(day, '--text-dim');
     expect(contrast(dim, bg)).toBeLessThan(contrast(hexVar(day, '--text'), bg) / 2);
+    expect(oklchChroma(dim)).toBeLessThan(oklchChroma(hexVar(day, '--text-muted')) * 0.8);
+  });
+
+  it('night: visibly dimmer than --text-muted', () => {
+    const bg = hexVar(night, '--bg');
+    expect(contrast(hexVar(night, '--text-dim'), bg)).toBeLessThan(contrast(hexVar(night, '--text-muted'), bg) * 0.8);
+  });
+});
+
+// ─── Level / difficulty accents used as TEXT ──────────────────────────────────
+// The per-level hues (LEVEL_ACCENTS) are pastel 400 shades: fine as fills,
+// 1.1–1.7:1 as text on cream. Text now reads --level-text-<level> (darker
+// same-hue variant on day; the accent itself on night unless it fails there).
+
+const ACCENT_ALPHAS = [0, 0x20 / 255, 0.2]; // plain, `${accent}20`, 20% tint
+
+describe.each(Object.entries(THEMES))('level accents as text — %s', (_theme, vars) => {
+  const surfaces = ['--bg', '--card', '--card-hover'].map((n) => ({ label: n, rgb: hexVar(vars, n) }));
+
+  it.each(Object.entries(LEVEL_ACCENTS))('%s (%s) ≥ 4.5:1 on its tint over every surface', (key, accent) => {
+    const fg = hexVar(vars, `--level-text-${key}`);
+    const failures: string[] = [];
+    for (const s of surfaces) {
+      for (const a of ACCENT_ALPHAS) {
+        const r = contrast(fg, over(hexToRgb(accent), a, s.rgb));
+        if (r < MIN_TEXT) failures.push(`${Math.round(a * 100)}% tint over ${s.label}: ${r.toFixed(2)}`);
+      }
+    }
+    expect(failures).toEqual([]);
+  });
+});
+
+describe('accentText()', () => {
+  const defined = (key: string) =>
+    Object.values(THEMES).every((vars) => /^#[0-9a-fA-F]{6}$/.test(vars[`--level-text-${key}`] ?? ''));
+
+  it('maps every level and difficulty accent to a --level-text token defined in both themes', () => {
+    const accents = [...Object.values(LEVEL_ACCENTS), ...Object.values(DIFFICULTY_CONFIG).map((d) => d.color)];
+    for (const accent of accents) {
+      const m = accentText(accent).match(/^var\(--level-text-(l\d)\)$/);
+      expect(m, accent).not.toBeNull();
+      expect(defined(m![1]), accent).toBe(true);
+    }
+  });
+
+  it('is case-insensitive and falls back to --text-muted for an unknown hue', () => {
+    expect(accentText(LEVEL_ACCENTS.l1.toLowerCase())).toBe('var(--level-text-l1)');
+    expect(accentText('#123456')).toBe('var(--text-muted)');
+  });
+});
+
+describe('learn components colour accent TEXT through accentText()', () => {
+  const FILES = [
+    'components/learn/exercises/ExerciseFeedback.tsx',
+    'components/learn/exercises/ExerciseRunner.tsx',
+    'components/learn/exercises/inputs/ChoiceInput.tsx',
+    'components/learn/exercises/inputs/InstrumentInput.tsx',
+    'components/learn/LearnBreadcrumb.tsx',
+    'components/learn/ModuleView.tsx',
+    'components/learn/LevelCard.tsx',
+    'components/learn/LevelDetail.tsx',
+    'components/learn/ContinueBanner.tsx',
+    'components/learn/LevelAchievement.tsx',
+    'components/learn/DifficultyBadge.tsx',
+  ];
+  it.each(FILES)('%s', (rel) => {
+    const src = fs.readFileSync(fromHere(`../../${rel}`), 'utf8');
+    // `color: accent` / `color: accentColor` as a text colour is the old pattern.
+    expect(src).not.toMatch(/\bcolor:\s*(accent|accentColor)\s*[,}\n]/);
+    expect(src).toMatch(/accentText\(/);
   });
 });

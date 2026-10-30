@@ -45,3 +45,21 @@ export const DIFFICULTY_CONFIG: Record<
 export function getLevelAccent(levelId: string): string {
   return LEVEL_ACCENTS[levelId] ?? palette.accent;
 }
+
+const LEVEL_KEY_BY_ACCENT = new Map(
+  Object.entries(LEVEL_ACCENTS).map(([key, hex]) => [hex.toLowerCase(), key]),
+);
+
+/**
+ * CSS colour for TEXT drawn in a level / difficulty accent. The accents are
+ * pastel 400 shades — right for fills, tints and borders, but 1.1–1.7:1 as
+ * text on the cream day theme. This returns the theme-aware text variant
+ * (`--level-text-lN` in src/index.css: a darker same-hue shade on day, the
+ * accent or a slightly lighter one on night), ≥ 4.5:1 on its own tint.
+ * Keep using the raw accent for backgrounds/borders/progress fills.
+ * Unknown hues fall back to --text-muted (always readable).
+ */
+export function accentText(accent: string): string {
+  const key = LEVEL_KEY_BY_ACCENT.get(accent.toLowerCase());
+  return key ? `var(--level-text-${key})` : 'var(--text-muted)';
+}
