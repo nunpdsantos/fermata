@@ -31,7 +31,9 @@ interface ExerciseRunnerProps {
 }
 
 export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onRecordResult, onComplete }: ExerciseRunnerProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  // Scale/chord names inside feedback follow the UI language (audit W1-10).
+  const feedbackLang = (['pt', 'es'].includes(i18n.language?.slice(0, 2)) ? i18n.language.slice(0, 2) : 'en') as 'en' | 'pt' | 'es';
 
   // Plain shuffle — no concept weighting after gamification removal
   const orderedExercises = useMemo(
@@ -48,6 +50,19 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
   const [finished, setFinished] = useState(false);
 
   const exercise = orderedExercises[currentIndex];
+
+  // The notes a build exercise asks for — handed to the instrument input only
+  // so it can name picks in the key's sharp/flat direction (audit W1-08).
+  const buildTargetNotes = useMemo((): Note[] | undefined => {
+    const cfg = exercise?.config;
+    if (cfg?.type === 'scale_build') {
+      return buildScale({ natural: cfg.root as NaturalNote, accidental: (cfg.rootAccidental || '') as Accidental }, cfg.scaleType as ScaleType).notes;
+    }
+    if (cfg?.type === 'chord_build') {
+      return buildChord({ natural: cfg.root as NaturalNote, accidental: (cfg.rootAccidental || '') as Accidental }, cfg.quality as ChordQuality).notes;
+    }
+    return undefined;
+  }, [exercise]);
 
   // Generate choices for current exercise (memoized per exercise)
   const choices: ChoiceOption[] = useMemo(() => {
@@ -188,7 +203,7 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
 
   const handleSubmitChoice = useCallback(() => {
     if (!exercise || selected === null) return;
-    const result = validateAnswer(exercise.config, selected, t);
+    const result = validateAnswer(exercise.config, selected, t, feedbackLang);
     setValidationResult(result);
     setPhase('submitted');
 
@@ -199,11 +214,11 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
     } else if (attempt >= 2) {
       onRecordResult(exercise.id, 0);
     }
-  }, [exercise, selected, attempt, onRecordResult, t]);
+  }, [exercise, selected, attempt, onRecordResult, t, feedbackLang]);
 
   const handleSubmitInstrument = useCallback((pitchClasses: Set<number>) => {
     if (!exercise) return;
-    const result = validateAnswer(exercise.config, pitchClasses, t);
+    const result = validateAnswer(exercise.config, pitchClasses, t, feedbackLang);
     setValidationResult(result);
     setPhase('submitted');
 
@@ -214,7 +229,7 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
     } else if (attempt >= 2) {
       onRecordResult(exercise.id, 0);
     }
-  }, [exercise, attempt, onRecordResult, t]);
+  }, [exercise, attempt, onRecordResult, t, feedbackLang]);
 
   const handleTryAgain = useCallback(() => {
     setAttempt(2);
@@ -372,6 +387,7 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
                 submitted={phase === 'submitted'}
                 onSubmit={handleSubmitInstrument}
                 accentColor={accentColor}
+                spellingContext={buildTargetNotes}
               />
             )}
 

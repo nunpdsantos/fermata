@@ -199,6 +199,15 @@ export function useKeyContext(): KeyContextValue {
     return { pcs, midi };
   }, [exerciseInputActive, highlightedNotes]);
 
+  // Exercise mode: a lit key is named as its chip is (the input spells picks
+  // by the target's sharp/flat direction — audit W1-08); every other key keeps
+  // the neutral sharp default, so labels never leak the target key.
+  const exerciseSpell = useMemo(() => {
+    const byPc = new Map<number, Note>();
+    for (const n of highlightedNotes) byPc.set(getPitchClass(n), { natural: n.natural, accidental: n.accidental });
+    return (pc: number): Note => byPc.get(((pc % 12) + 12) % 12) ?? spellSharpDefault(pc);
+  }, [highlightedNotes]);
+
   if (exerciseInputActive) {
     return {
       scale,
@@ -208,8 +217,9 @@ export function useKeyContext(): KeyContextValue {
       getNoteDegree: () => undefined,
       // Exercise input is pitch-class graded with no canonical spelling, and
       // Explore's key context is intentionally suppressed here — labels fall
-      // back to the sharp default rather than leaking the active key's spelling.
-      spellPitchClass: spellSharpDefault,
+      // back to the sharp default rather than leaking the active key's spelling;
+      // the learner's own picks wear their chip names (exerciseSpell).
+      spellPitchClass: exerciseSpell,
       scalePitchClasses: EMPTY_SET,
       scaleMidiNumbers: EMPTY_SET,
       chordPitchClasses: exerciseHighlight.pcs,

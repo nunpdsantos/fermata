@@ -117,7 +117,7 @@ describe('ChordGrid accessibility', () => {
     const buttons = screen.getAllByRole('button');
     // C major is degree 1
     const cButton = buttons.find(
-      (b) => b.getAttribute('aria-label')?.includes('C major chord'),
+      (b) => /C major chord/i.test(b.getAttribute('aria-label') ?? ''),
     );
     expect(cButton).toBeDefined();
     expect(cButton!.getAttribute('aria-label')).toContain('degree 1');

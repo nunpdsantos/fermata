@@ -16,6 +16,9 @@ import { useAppStore } from '../state/store';
 import { MODULE_INDEX } from '../data/moduleIndex';
 import { DRILL_FAMILY_TO_MODULE } from '../data/drillFamilyToModule';
 import type { DrillItem } from '../core/types/drill';
+import { stringToNote } from '../core/types/music';
+import { CHORD_QUALITY_NAMES } from '../core/constants/chords';
+import { displayNote } from '../core/utils/drillBank/shared';
 
 // Memoize the bank once for the view (the runner memoizes its own; this is the
 // copy fed to the Mastery map + Sprint, which read tier counts off it).
@@ -226,16 +229,22 @@ function useElapsedSeconds(startedAt: number | null): number {
   return Math.max(0, Math.floor((reference - startedAt) / 1000));
 }
 
+/**
+ * The answer as the chips show it (audit W1-10): note names with ♯/♭/𝄪 and
+ * chord-quality names — never ASCII spellings or the internal quality id
+ * ("C# half_diminished7" now reads "C♯ Half-Diminished 7th").
+ */
 function canonicalAnswer(item: DrillItem): string {
+  const note = (ascii: string) => displayNote(stringToNote(ascii));
   switch (item.answer.kind) {
     case 'choice':
       return item.answer.correct;
     case 'notes':
-      return item.answer.notes.join(' ');
+      return item.answer.notes.map(note).join(' ');
     case 'accidentals':
-      return item.answer.spelled.join(' ');
+      return item.answer.spelled.map(note).join(' ');
     case 'rootQuality':
-      return `${item.answer.root} ${item.answer.quality}`;
+      return `${note(item.answer.root)} ${CHORD_QUALITY_NAMES[item.answer.quality] ?? item.answer.quality}`;
   }
 }
 

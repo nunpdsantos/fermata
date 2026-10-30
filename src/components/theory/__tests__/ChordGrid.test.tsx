@@ -158,6 +158,14 @@ describe('ChordGrid with different keys', () => {
     expect(buttons[0].getAttribute('aria-label')).toContain('G');
   });
 
+  it('names chords by display name, never the internal id (audit W1-10)', () => {
+    useAppStore.setState({ selectedKey: { natural: 'C', accidental: '' }, selectedScale: 'major' });
+    render(<ChordGrid />);
+    const labels = screen.getAllByRole('button').map((b) => b.getAttribute('aria-label') ?? '');
+    expect(labels[6]).toBe('B Diminished chord, degree 7');
+    expect(labels.join(' ')).not.toMatch(/\b[a-z]+_[a-z0-9_]+\b/);
+  });
+
   it('pentatonic scale shows "no diatonic chords" message', () => {
     useAppStore.setState({ selectedScale: 'pentatonic_major' });
     render(<ChordGrid />);

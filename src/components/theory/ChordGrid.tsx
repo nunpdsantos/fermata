@@ -69,7 +69,7 @@ export function ChordGrid() {
             whileHover={{ scale: 1.04, y: -2, boxShadow: 'var(--shadow-md)' }}
             whileTap={{ scale: 0.96 }}
             aria-pressed={isSelected}
-            aria-label={`${rootLabel} ${chord.quality} chord, degree ${degree}`}
+            aria-label={`${rootLabel} ${qualityFull} chord, degree ${degree}`}
           >
             {/* Subtle top accent line */}
             <div

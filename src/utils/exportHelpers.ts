@@ -1,6 +1,7 @@
 import type { Scale, Chord } from '../core/types/music.ts';
 import { noteToString } from '../core/types/music.ts';
 import { SCALE_TYPE_NAMES } from '../core/constants/scales.ts';
+import { CHORD_QUALITY_NAMES } from '../core/constants/chords.ts';
 import type { DiatonicChord } from '../hooks/useKeyContext.ts';
 
 /**
@@ -27,7 +28,8 @@ export function generateScaleSummary(
   if (diatonicChords.length > 0) {
     lines.push('Diatonic Chords:');
     for (const dc of diatonicChords) {
-      const name = `${noteToString(dc.chord.root)} ${dc.chord.quality}`;
+      // Display names, never internal ids (audit W1-10: was "B half_diminished7").
+      const name = `${noteToString(dc.chord.root)} ${CHORD_QUALITY_NAMES[dc.chord.quality] ?? dc.chord.quality}`;
       // Defensive: a missing numeral must never break Copy (audit W0-01).
       lines.push(`  ${(dc.numeral ?? '').padEnd(6)} ${name}`);
     }
@@ -36,7 +38,7 @@ export function generateScaleSummary(
 
   // Selected chord detail
   if (selectedChord) {
-    lines.push(`Selected Chord: ${noteToString(selectedChord.root)} ${selectedChord.quality}`);
+    lines.push(`Selected Chord: ${noteToString(selectedChord.root)} ${CHORD_QUALITY_NAMES[selectedChord.quality] ?? selectedChord.quality}`);
     lines.push(`  Notes: ${selectedChord.notes.map((n) => noteToString(n)).join('  ')}`);
   }
 
