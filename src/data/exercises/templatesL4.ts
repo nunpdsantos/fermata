@@ -55,7 +55,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Distinguish between these non-chord tone types based on approach and departure.',
-        hintTemplate: 'Appoggiatura: leap to dissonance, step to resolution. Escape tone: step to dissonance, leap away. Both are typically accented.',
+        hintTemplate: 'Appoggiatura: leap to the dissonance, step to the resolution — usually accented (on a strong beat). Escape tone: step to the dissonance, leap away — usually unaccented (on a weak beat).',
         params: {
           choiceSets: [
             [
@@ -124,7 +124,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root} dominant seventh chord.',
+        promptTemplate: 'Build the {root} dominant seventh chord.',
         hintTemplate: 'A dominant seventh chord: major triad + minor 7th. The 7th resolves down, the leading tone resolves up.',
         params: {
           roots: ['C', 'G', 'D', 'F', 'A', 'E', 'B'],
@@ -216,8 +216,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root} minor seventh chord.',
-        hintTemplate: 'A minor seventh chord: minor triad + minor 7th. It functions as a pre-dominant, leading to V or V7.',
+        promptTemplate: 'Build the {root} minor seventh chord.',
+        hintTemplate: 'A minor seventh chord: minor triad + minor 7th. Built on scale degree 2 (ii7), it is the classic pre-dominant, leading to V or V7.',
         params: {
           roots: ['C', 'G', 'D', 'F', 'A', 'E'],
           accidentals: ['', '', '', '', '', ''],
@@ -395,7 +395,7 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root} major triad.',
+        promptTemplate: 'Build the {root} major triad.',
         hintTemplate: 'A major triad: root + major 3rd + perfect 5th. The IV chord has a warm, subdominant character.',
         params: {
           roots: ['C', 'G', 'D', 'F', 'A'],

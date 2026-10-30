@@ -291,7 +291,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'interval_id',
-        promptTemplate: 'Identify the interval from {root} going {direction}. Determine both the number and quality.',
+        promptTemplate: 'Identify the {direction} interval from {root}. Determine both the number and quality.',
         hintTemplate: 'Count letter names from {root} for the interval number, then count semitones for the quality (major, minor, perfect, augmented, diminished).',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
@@ -331,7 +331,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root} {quality} triad. Select the 3 notes that form this chord.',
+        promptTemplate: 'Build the {root} {quality} triad. Select the 3 notes that form this chord.',
         hintTemplate: 'Major = root + M3(4) + P5(7). Minor = root + m3(3) + P5(7). Diminished = root + m3(3) + dim5(6). Augmented = root + M3(4) + aug5(8). Build from {root}.',
         params: {
           // roots.length === chordQualities.length → the generator pairs each

@@ -88,7 +88,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'Bajo Cifrado para Acordes de Séptima',
           explanation:
-            'Las cifras de bajo cifrado describen los intervalos por encima de la nota del bajo. Estado fundamental 7: intervalos de 7.ª, 5.ª y 3.ª sobre el bajo. Primera inversión 6/5: intervalos de 6.ª, 5.ª y 3.ª sobre el bajo. Segunda inversión 4/3: intervalos de 6.ª, 4.ª y 3.ª sobre el bajo. Tercera inversión 4/2: intervalos de 6.ª, 4.ª y 2.ª sobre el bajo. Estas cifras abreviadas indican al intérprete tanto el acorde como su disposición de inmediato.',
+            'Las cifras de bajo cifrado describen los intervalos por encima de la nota del bajo. Estado fundamental 7: intervalos de 7.ª, 5.ª y 3.ª sobre el bajo. Primera inversión 6/5: intervalos de 6.ª, 5.ª y 3.ª sobre el bajo. Segunda inversión 4/3: intervalos de 6.ª, 4.ª y 3.ª sobre el bajo. Tercera inversión 4/2: intervalos de 6.ª, 4.ª y 2.ª sobre el bajo. Estas cifras abreviadas indican al intérprete, de un vistazo, qué nota del acorde está en el bajo (la inversión); el espaciado de las voces superiores queda a criterio de quien toca.',
           tryThisLabel: 'Escucha Cmaj7 en primera inversión (6/5) — Mi en el bajo',
         },
         {
@@ -110,7 +110,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            "Construye 'Dm7/C' — Dm7 en tercera inversión. La séptima del acorde (Do) está en el bajo. En la tonalidad de Do mayor, este es el ii4/2, frecuentemente usado antes de V6/5 en un descenso suave del bajo: Do-Si (ii4/2 a V6/5)",
+            "Construye 'Dm7/C' — Dm7 en tercera inversión. La séptima del acorde (C) está en el bajo. En la tonalidad de C mayor, este es el ii4/2; resuelve con el bajo descendiendo C → B. En los corales de Bach, la resolución más frecuente es ii4/2 → V6; ii4/2 → V6/5 también aparece",
         },
       ],
     },
@@ -123,7 +123,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       objectives: [
         'Construir acordes de séptima en cada grado de la escala mayor e identificar cada cualidad',
         'Comprender la séptima de dominante (V7) y su trítono como motor de la resolución tonal',
-        'Reconocer la progresión ii-V-I como el movimiento de acordes más común en la música occidental',
+        'Reconocer la progresión ii-V-I como un movimiento armónico fundamental en toda la música occidental',
       ],
       concepts: [
         {
@@ -135,14 +135,14 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'La Séptima de Dominante y Su Trítono',
           explanation:
-            'El V7 es el acorde de séptima estructuralmente más importante en la música tonal. En Do mayor, G7 contiene las notas Sol-Si-Re-Fa. El trítono entre Si y Fa es la fuente de su tensión: Si (la sensible) tira hacia arriba, hacia Do, mientras Fa (la séptima del acorde) tira hacia abajo, hacia Mi. Esta doble resolución — hacia fuera, en movimiento contrario — es el motor fundamental que impulsa la armonía tonal hacia la tónica.',
+            'El V7 es el acorde de séptima estructuralmente más importante en la música tonal. En C mayor, G7 contiene las notas G-B-D-F. El trítono entre B y F es la fuente de su tensión: B (la sensible) tira hacia arriba, hacia C, mientras F (la séptima del acorde) tira hacia abajo, hacia E. Esta doble resolución en movimiento contrario — la 5.ª disminuida de B hasta F (ascendente) contrayéndose hacia dentro, hasta la 3.ª mayor C–E (con F por debajo de B — la 4.ª aumentada de F hasta B — se expande hacia fuera, hasta la 6.ª menor E–C) — es el motor fundamental que impulsa la armonía tonal hacia la tónica.',
           tryThisLabel:
             'Escucha el trítono dentro de G7 — Si y Fa exigen resolución',
         },
         {
           title: 'La Progresión ii-V-I',
           explanation:
-            'La progresión de acordes más común en la música occidental encadena el ii7 predominante con el V7 dominante y el Imaj7 tónica. En Do mayor: Dm7-G7-Cmaj7. Cada acorde comparte notas comunes con el siguiente, produciendo una conducción de voces suave. El ii7 establece tensión subdominante, el V7 la intensifica con el trítono, y el Imaj7 resuelve todo. Este esqueleto de tres acordes sostiene todo, desde corales de Bach hasta estándares de jazz.',
+            'La progresión de acordes más importante del jazz — y un movimiento armónico fundamental en toda la música occidental — encadena el ii7 predominante con el V7 dominante y el Imaj7 tónica. En C mayor: Dm7-G7-Cmaj7. Cada acorde comparte notas comunes con el siguiente, produciendo una conducción de voces suave. El ii7 establece tensión subdominante, el V7 la intensifica con el trítono, y el Imaj7 resuelve todo. Este esqueleto de tres acordes sostiene todo, desde corales de Bach hasta estándares de jazz.',
           tryThisLabel: 'Escucha Dm7 — el sonido del ii7 en Do mayor',
         },
       ],
@@ -153,7 +153,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            "Toca 'G7' y después 'Cmaj7' — escucha cómo la séptima de dominante resuelve a la tónica. El trítono Si-Fa se abre hacia Do-Mi. Esta es la resolución V-I que define la armonía occidental",
+            "Toca 'G7' y después 'Cmaj7' — escucha cómo la séptima de dominante resuelve a la tónica. El trítono B-F (una 5.ª disminuida) se cierra hacia dentro, hasta la 3.ª mayor C-E. Esta es la resolución V-I que define la armonía occidental",
         },
         {
           instruction:
@@ -176,7 +176,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'La Menor Armónica Lo Cambia Todo',
           explanation:
-            'La escala menor armónica eleva el séptimo grado, creando cualidades de acordes de séptima dramáticamente diferentes en comparación con el modo mayor. En el 1.er grado, la tríada menor gana una séptima mayor, produciendo el raro acorde menor con séptima mayor: i(mΔ7). En el 3.er grado, el séptimo grado elevado transforma la tríada mayor en una tríada aumentada con séptima mayor: III+maj7. Estas cualidades exóticas confieren a las tonalidades menores su tensión y oscuridad características.',
+            'La escala menor armónica eleva el séptimo grado, creando cualidades de acordes de séptima dramáticamente diferentes en comparación con el modo mayor. En el 1.er grado, la tríada menor gana una séptima mayor, produciendo el raro acorde menor con séptima mayor: i(mΔ7). En el 3.er grado, el séptimo grado elevado transforma la tríada mayor en una tríada aumentada con séptima mayor: III+maj7. Estas cualidades exóticas confieren a las tonalidades menores su tensión y oscuridad características. (El semidisminuido se escribe m7b5 o con el símbolo ⌀ — así que iiø7 y Bm7b5 nombran el mismo acorde.)',
           tryThisLabel:
             'Observa La menor armónica — la escala fuente de los acordes de séptima en menor',
         },
@@ -197,7 +197,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            "Abre 'A harmonic minor scale' y construye un acorde de séptima en cada grado. Compara el patrón con La mayor — observa cómo el Sol# elevado altera la cualidad de los acordes en los grados i, III, V y vii",
+            "Abre 'A harmonic minor scale' y construye un acorde de séptima en cada grado. Compara el patrón con A menor natural — observa cómo el G# elevado altera la cualidad de los acordes en los grados i, III, V y vii",
         },
         {
           instruction:
@@ -229,7 +229,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'Reglas de Duplicación y Espaciado',
           explanation:
-            'Cuando cuatro voces tocan una tríada de tres notas, una nota debe duplicarse. En estado fundamental, duplica la fundamental — es la elección más fuerte y estable. En primera inversión, duplica la nota de la soprano para mayor flexibilidad. Nunca dupliques la sensible: esta tiene una resolución obligatoria hacia la tónica, y duplicarla crea octavas paralelas inevitables. En tríadas disminuidas, duplica la tercera (la nota más estable en un acorde inestable).',
+            'Cuando cuatro voces tocan una tríada de tres notas, una nota debe duplicarse. En estado fundamental, duplica la fundamental — es la elección más fuerte y estable. En primera inversión, duplica la nota de la soprano — salvo que la soprano sea una nota de tendencia (la sensible o una nota alterada cromáticamente). Nunca dupliques la sensible: esta tiene una resolución obligatoria hacia la tónica, y duplicarla crea octavas paralelas inevitables. En tríadas disminuidas, duplica la tercera (la nota más estable en un acorde inestable).',
           tryThisLabel: 'Observa Bdim — en SATB, duplica la tercera (Re), nunca la fundamental',
         },
         {
@@ -242,7 +242,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'En papel, escribe una tríada de Do mayor en SATB: Bajo Do2, Tenor Sol3, Contralto Mi4, Soprano Do5. Verifica todas las reglas de espaciado: intervalo soprano-contralto (6.ª menor — inferior a una octava), contralto-tenor (6.ª mayor — inferior a una octava), tenor-bajo (12.ª justa — entre tenor y bajo puede exceder la octava). Todo válido.',
+            'En papel, escribe una tríada de C mayor en SATB: Bajo C3, Tenor G3, Contralto E4, Soprano C5. Comprueba que cada nota cabe en su tesitura (las cuatro caben) y luego verifica las reglas de espaciado: intervalo soprano-contralto (6.ª menor — inferior a una octava), contralto-tenor (6.ª mayor — inferior a una octava), tenor-bajo (5.ª justa — el único par que puede exceder la octava). Todo válido.',
         },
         {
           instruction:
@@ -257,7 +257,7 @@ const curriculumL3: CurriculumLevelOverlay = {
 
     // ── U10 M2: Forbidden Parallels and Voice Motion ────────────────────────
     l3u10m2: {
-      title: 'Quintas y Octavas Paralelas Prohibidas y Movimiento de Voces',
+      title: 'Quintas y Octavas Paralelas Prohibidas y Movimiento de Voces (en el Estilo de la Práctica Común)',
       subtitle:
         'Los cuatro tipos de movimiento y las reglas de quintas/octavas paralelas que gobiernan la escritura a partes',
       objectives: [
@@ -375,7 +375,7 @@ const curriculumL3: CurriculumLevelOverlay = {
           explanation:
             'El patrón más importante de segunda inversión: I6/4 resolviendo a V en una cadencia. La 6.ª y la 4.ª por encima del bajo funcionan como dobles apoyaturas que resuelven por grado descendente hacia la 5.ª y la 3.ª del V. Muchos teóricos analizan este acorde no como un acorde de tónica sino como una dominante decorada — V con retardos. Esta distinción importa: el 6/4 cadencial funciona como dominante, no como tónica, a pesar de su escritura.',
           tryThisLabel:
-            'Escucha Fa en primera inversión — bloque de construcción de líneas de bajo suaves',
+            'Escucha I6/4 en C mayor (C/G) — en una cadencia, su E y su C bajan a D y B sobre el mismo bajo G',
         },
       ],
       tasks: [
@@ -408,23 +408,23 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'Cadencias Auténticas — Perfecta e Imperfecta',
           explanation:
-            'La cadencia auténtica perfecta (CAP) es V(7) a I, ambos en estado fundamental, con la soprano terminando en el 1.er grado de la escala. Es la llegada armónica más fuerte — un punto final. La cadencia auténtica imperfecta (CAI) también hace V a I pero debilita el cierre: uno de los acordes puede estar invertido, o la soprano termina en la 3.ª o 5.ª del I en lugar de la fundamental. Una CAI funciona como una coma en vez de un punto final.',
+            'La cadencia auténtica perfecta (CAP) es V(7) a I, ambos en estado fundamental, con la soprano terminando en el 1.er grado de la escala. Es la llegada armónica más fuerte — un punto final. La cadencia auténtica imperfecta (CAI) también hace V a I pero debilita el cierre: uno de los acordes puede estar invertido, o la soprano termina en la 3.ª o 5.ª del I en lugar de la fundamental, o el viio6 sustituye a V (CAI de sensible). Una CAI funciona como una coma en vez de un punto final.',
           tryThisLabel:
             'Escucha V7 en Do mayor — el punto de partida de las cadencias auténticas',
         },
         {
           title: 'Semicadencia, Cadencia Plagal e Interrumpida',
           explanation:
-            'La semicadencia termina en V — cualquier acorde que se mueve hacia la dominante. Suena como una pregunta sin respuesta, creando suspense en los límites de las frases. La cadencia plagal (IV a I) es la suave cadencia del «Amén», más ligera que la auténtica. La cadencia interrumpida (V a vi) subvierte la resolución esperada: vi comparte dos notas con I (en Do mayor, La menor comparte Do y Mi con el acorde de Do), produciendo un casi-acierto que sorprende al oyente y prolonga la frase.',
+            'La semicadencia termina en V — cualquier acorde que se mueve hacia la dominante. Suena como una pregunta sin respuesta, creando suspense en los límites de las frases. La cadencia plagal (IV a I) es la suave cadencia del «Amén», más ligera que la auténtica. La cadencia interrumpida (V a vi) subvierte la resolución esperada: vi comparte dos notas con I (en C mayor, Am comparte C y E con el acorde de C), produciendo un casi-acierto que sorprende al oyente y prolonga la frase. En las tonalidades menores, la cadencia interrumpida es V a VI — un acorde mayor (p. ej., E7 a F en A menor). El VI sigue compartiendo dos notas con el i (F-A-C y A-C-E comparten A y C), pero ahora el bajo sube solo un semitono (de E a F, del 5.º grado al ♭6.º) y el acorde de llegada es mayor, lo que da a la cadencia interrumpida en menor una sorpresa más cálida y dramática que su equivalente en mayor.',
           tryThisLabel:
             'Escucha la tónica — el destino de las cadencias auténticas y plagales',
         },
         {
           title: 'La Semicadencia Frigia',
           explanation:
-            'Exclusiva de las tonalidades menores: iv6 resolviendo a V, con el bajo descendiendo por semitono del b6.º grado al 5.º. Este descenso de semitono en el bajo da a la cadencia su nombre — se asemeja al semitono descendente característico del modo frigio. Común en la música barroca, la semicadencia frigia tiene una cualidad sombría y arcaica que ninguna otra cadencia replica.',
+            'Característica de las tonalidades menores: iv6 resolviendo a V, con el bajo descendiendo por semitono del b6.º grado al 5.º. Este descenso de semitono en el bajo da a la cadencia su nombre — se asemeja al semitono descendente característico del modo frigio. Común en la música barroca, la semicadencia frigia tiene una cualidad sombría y arcaica que ninguna otra cadencia replica.',
           tryThisLabel:
-            'Escucha vi — el objetivo de resolución sorpresa de una cadencia interrumpida',
+            'Escucha iv6 — la aproximación a la semicadencia frigia en A menor',
         },
       ],
       tasks: [
@@ -503,7 +503,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: '¿Qué Es el Ritmo Armónico?',
           explanation:
-            'El ritmo armónico es el patrón de cambios de acordes a lo largo del tiempo. Un acorde por compás es ritmo armónico lento. Un acorde por tiempo es moderado. Dos acordes por tiempo es rápido. Crucialmente, el ritmo armónico es independiente del ritmo melódico — la melodía puede correr sobre cambios lentos de acordes o sostener notas largas sobre una armonía en rápida mutación. Es una de las herramientas primarias que los compositores usan para controlar tensión y ritmo.',
+            'El ritmo armónico es el patrón de cambios de acordes a lo largo del tiempo. Un acorde por compás (o durante más tiempo) es ritmo armónico lento. Dos acordes por compás es moderado. Un acorde nuevo en cada tiempo es rápido. Crucialmente, el ritmo armónico es independiente del ritmo melódico — la melodía puede correr sobre cambios lentos de acordes o sostener notas largas sobre una armonía en rápida mutación. Es una de las herramientas primarias que los compositores usan para controlar tensión y ritmo.',
           tryThisLabel: 'Escucha Do mayor — imagina mantener este acorde durante cuatro compases enteros',
         },
         {
@@ -526,7 +526,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Compara un himno (ritmo armónico lento — un acorde por tiempo o por compás) con un estándar de jazz bebop (ritmo armónico rápido — dos o más acordes por compás). La velocidad del cambio armónico moldea directamente el carácter y la energía de la música',
+            'Compara un himno (a menudo un acorde nuevo en cada tiempo — ritmo armónico rápido, incluso a un tempo tranquilo) con un estándar de jazz bebop (a menudo dos acordes por compás, a un tempo vivo). El ritmo armónico se mide respecto al pulso, no al reloj — y, junto con el tempo, moldea el carácter y la energía de la música',
         },
         {
           instruction:
@@ -607,7 +607,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'Instrumentos Transpositores y Altura de Concierto',
           explanation:
-            'Algunos instrumentos suenan a una altura diferente de la que leen. Instrumentos en Sib (trompeta, clarinete, saxofón tenor) suenan una 2.ª mayor por debajo de lo escrito — para sonar Do de concierto, leen Re. Instrumentos en Mib (saxofón alto) suenan una 6.ª mayor por debajo. Instrumentos en Fa (trompa) suenan una 5.ª justa por debajo. La altura de concierto es la altura real que suena; todos los instrumentos se alinean con ella cuando la orquesta afina con el La 440.',
+            'Algunos instrumentos suenan a una altura diferente de la que leen. La trompeta en Bb y el clarinete en Bb suenan una 2.ª mayor por debajo de lo escrito — para sonar C de concierto, leen D. El saxofón tenor, también en Bb, suena una octava y una 2.ª mayor por debajo. Los instrumentos en Eb, como el saxofón alto, suenan una 6.ª mayor por debajo (el mismo nombre de nota que una 3.ª menor por encima, pero el sonido queda por debajo de la nota escrita). Los instrumentos en F (trompa) suenan una 5.ª justa por debajo. La altura de concierto es la altura real que suena; todos los instrumentos se alinean con ella cuando la orquesta afina con el A440.',
           tryThisLabel:
             'Observa Sib mayor — lo que una trompeta en Sib suena cuando lee Do mayor',
         },

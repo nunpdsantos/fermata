@@ -41,13 +41,13 @@ const curriculumL5: CurriculumLevelOverlay = {
         {
           title: 'V7/V — Acrescentar a Sétima',
           explanation:
-            'A forma com sétima, V7/V, é ainda mais comum do que a tríade. V7/V em Dó maior = D7 (Ré–Fá#–Lá–Dó). O trítono Fá#–Dó resolve para fora, para Sol–Si. A sétima acrescenta a força de atração que torna as dominantes secundárias tão eficazes. Em D7 a resolver para Sol: Fá# sobe a Sol (resolução da sensível), Dó desce a Si (a sétima resolve por grau descendente). Estas são as mesmas regras de condução de vozes de V7 para I, apenas aplicadas a V como alvo temporário.',
+            'A forma com sétima, V7/V, é ainda mais comum do que a tríade. V7/V em C maior = D7 (D–F#–A–C). O trítono F#–C (uma 5.ª diminuta) contrai-se para dentro, até à 3.ª maior G–B. A sétima acrescenta a força de atração que torna as dominantes secundárias tão eficazes. Em D7 a resolver para G: F# sobe a G (resolução da sensível), C desce a B (a sétima resolve por grau descendente). Estas são as mesmas regras de condução de vozes de V7 para I, apenas aplicadas a V como alvo temporário.',
           tryThisLabel: 'Ouve D7 — o V7/V em Dó maior',
         },
         {
           title: 'Resolução e Condução de Vozes',
           explanation:
-            'As dominantes secundárias seguem as mesmas regras de resolução que V7 para I. A "sensível" cromática resolve meio-tom acima para a fundamental do alvo. A sétima (se presente) resolve por grau descendente. Em D7 a resolver para Sol: Fá# sobe a Sol, Dó desce a Si. O trítono Fá#–Dó resolve para fora, para Sol–Si. As notas cromáticas quase sempre resolvem na direção em que foram alteradas — sustenidos sobem, bemóis descem.',
+            'As dominantes secundárias seguem as mesmas regras de resolução que V7 para I. A "sensível" cromática resolve meio-tom acima para a fundamental do alvo. A sétima (se presente) resolve por grau descendente. Em D7 a resolver para G: F# sobe a G, C desce a B. O trítono F#–C (uma 5.ª diminuta) contrai-se para dentro, até à 3.ª maior G–B. As notas cromáticas quase sempre resolvem na direção em que foram alteradas — sustenidos sobem, bemóis descem.',
           tryThisLabel: 'Ouve o alvo Sol depois de D7',
         },
       ],
@@ -58,7 +58,7 @@ const curriculumL5: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escreve "D7" e depois "G major chord" — ouve como D7 cria uma forte atração para Sol. O trítono Fá#–Dó dentro de D7 resolve para fora, para Sol–Si.',
+            'Escreve "D7" e depois "G major chord" — ouve como D7 cria uma forte atração para G. O trítono F#–C dentro de D7 (uma 5.ª diminuta) contrai-se para dentro, até à 3.ª maior G–B.',
         },
         {
           instruction:
@@ -440,7 +440,7 @@ const curriculumL5: CurriculumLevelOverlay = {
         {
           title: 'A Terça Picardia',
           explanation:
-            'A terça picardia é mistura modal na direção oposta: emprestar do modo maior paralelo para uma tonalidade menor. Uma peça em tonalidade menor termina a sua cadência final com uma tónica maior (I em vez de i). Em Dó menor, o acorde final torna-se Dó maior — a terça elevada (Mi natural em vez de Mib) cria um brilho inesperado, um raio de luz no final. Comum na música barroca e renascentista, onde peças em tonalidade menor quase sempre terminam com terça picardia.',
+            'A terça picardia é mistura modal na direção oposta: emprestar do modo maior paralelo para uma tonalidade menor. Uma peça em tonalidade menor termina a sua cadência final com uma tónica maior (I em vez de i). Em C menor, o acorde final torna-se C maior — a terça elevada (E natural em vez de Eb) cria um brilho inesperado, um raio de luz no final. Comum na música barroca e renascentista, onde peças em tonalidade menor terminam muitas vezes com terça picardia, sobretudo nas cadências do final do Renascimento e do início do Barroco.',
           tryThisLabel: 'Ouve Dó maior — a terça picardia num contexto de Dó menor',
         },
         {
@@ -620,13 +620,13 @@ const curriculumL5: CurriculumLevelOverlay = {
         {
           title: 'O Que São Notas-Guia?',
           explanation:
-            'A 3.ª e a 7.ª de cada acorde são as notas que definem a sua qualidade. A fundamental diz-te o nome do acorde; a 3.ª diz-te se é maior ou menor; a 7.ª diz-te o tipo de acorde (7.ª maior, 7.ª dominante, 7.ª menor). Juntas, a 3.ª e a 7.ª SÃO a identidade do acorde. Um baixista a cobrir a fundamental mais um pianista a tocar apenas a 3.ª e a 7.ª dá-te o quadro harmónico completo. Tudo o resto é cor.',
+            'A 3.ª e a 7.ª de cada acorde são as notas que mais contribuem para definir a sua qualidade. A fundamental diz-te o nome do acorde; a 3.ª diz-te se é maior ou menor; a 7.ª, lida em conjunto com a 3.ª, diz-te o tipo de acorde de sétima (por exemplo, 3.ª maior + 7.ª maior = sétima maior; 3.ª maior + 7.ª menor = sétima da dominante; 3.ª menor + 7.ª menor = sétima menor). É por isso que os músicos de jazz chamam à 3.ª e à 7.ª a identidade do acorde — com uma ressalva: Cm7 e Cm7b5 partilham a mesma 3.ª e a mesma 7.ª (Eb e Bb), por isso nos acordes meio-diminutos a 5.ª também conta. Um baixista a cobrir a fundamental mais um pianista a tocar apenas a 3.ª e a 7.ª dá-te um quadro harmónico claro. Quase tudo o resto é cor.',
           tryThisLabel: 'Vê Dm7 — a 3.ª é Fá, a 7.ª é Dó',
         },
         {
           title: 'Traçar Linhas de Notas-Guia Através de ii–V–I',
           explanation:
-            'Quando traças as 3.as e 7.as ao longo de uma progressão ii–V–I em Dó maior, formam linhas de condução de vozes suaves. Dm7: 3.ª = Fá, 7.ª = Dó. G7: 3.ª = Si, 7.ª = Fá. Cmaj7: 3.ª = Mi, 7.ª = Si. A 7.ª de cada acorde torna-se a 3.ª do seguinte (Dó mantém-se como nota comum ou move-se para Si; Fá desce para Mi). Para improvisadores, visar as notas-guia garante que acertas nas notas essenciais do acorde. Para arranjadores, as linhas de notas-guia são o esqueleto das partes de vozes internas.',
+            'Quando traças as 3.as e 7.as ao longo de uma progressão ii–V–I em C maior, formam linhas de condução de vozes suaves. Dm7: 3.ª = F, 7.ª = C. G7: 3.ª = B, 7.ª = F. Cmaj7: 3.ª = E, 7.ª = B. A 7.ª de cada acorde torna-se a 3.ª do seguinte (C, 7.ª de Dm7, desce para B, 3.ª de G7; F, 7.ª de G7, desce para E, 3.ª de Cmaj7). Para improvisadores, visar as notas-guia garante que acertas nas notas essenciais do acorde. Para arranjadores, as linhas de notas-guia são o esqueleto das partes de vozes internas.',
           tryThisLabel: 'Vê G7 — a 3.ª é Si, a 7.ª é Fá',
         },
         {

@@ -48,9 +48,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Constrói um acorde de dominante de sétima em {root} (a qualidade de acorde usada em todas as dominantes secundárias).',
+        'Constrói um acorde de dominante de sétima em {root} (uma forma muito comum de dominante secundária).',
       hintTemplate:
-        'Uma dominante secundária é uma sétima de dominante construída uma 5.aP acima do acorde que toniciza. Aqui constrói apenas {root}7: fundamental + 3.a maior + 5.aP + 7.a menor. Por exemplo, A7 (A-C#-E-G) é V7/ii em Dó maior, tonicizando Ré menor.',
+        'Uma dominante secundária é uma tríade maior ou uma sétima de dominante construída uma 5.aP acima do acorde que toniciza. Aqui constrói apenas {root}7: fundamental + 3.a maior + 5.aP + 7.a menor. Por exemplo, A7 (A-C#-E-G) é V7/ii em C maior, tonicizando D menor.',
     },
     {
       // multiple_choice
@@ -401,7 +401,7 @@ const overlay: TemplateLevelOverlay = {
           'ABACABA é forma sonata',
         ],
         [
-          'No tema com variações, cada variação preserva a estrutura harmónica enquanto altera outros elementos',
+          'No tema com variações, cada variação mantém o tema reconhecível (muitas vezes através do seu esqueleto harmónico) enquanto altera outros elementos',
           'As variações devem manter a melodia exata',
           'As variações mudam sempre de tonalidade',
           'As variações nunca alteram o ritmo',

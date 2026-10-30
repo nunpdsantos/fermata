@@ -87,7 +87,7 @@ const l3u9m2: CurriculumModule = {
     {
       title: 'Figured Bass for Seventh Chords',
       explanation:
-        'Figured bass labels describe the intervals above the bass note. Root position 7: intervals of a 7th, 5th, and 3rd above bass. First inversion 6/5: intervals of a 6th, 5th, and 3rd above bass. Second inversion 4/3: intervals of a 6th, 4th, and 3rd above bass. Third inversion 4/2: intervals of a 6th, 4th, and 2nd above bass. These shorthand labels tell performers both the chord and its voicing at a glance.',
+        'Figured bass labels describe the intervals above the bass note. Root position 7: intervals of a 7th, 5th, and 3rd above bass. First inversion 6/5: intervals of a 6th, 5th, and 3rd above bass. Second inversion 4/3: intervals of a 6th, 4th, and 3rd above bass. Third inversion 4/2: intervals of a 6th, 4th, and 2nd above bass. These shorthand labels tell performers at a glance which chord member is in the bass (the inversion); the spacing of the upper voices is left to the player.',
       tryThisQuery: 'Cmaj7/E',
       tryThisLabel: 'Hear Cmaj7 in first inversion (6/5) — E in the bass',
     },
@@ -145,7 +145,7 @@ const l3u9m3: CurriculumModule = {
     {
       title: 'The Dominant Seventh and Its Tritone',
       explanation:
-        'V7 is the most structurally important seventh chord in tonal music. In C major, G7 contains the notes G-B-D-F. The tritone between B and F is the source of its tension: B (the leading tone) pulls up to C, while F (the chordal seventh) pulls down to E. This double resolution — outward in contrary motion — is the fundamental engine driving tonal harmony toward the tonic.',
+        'V7 is the most structurally important seventh chord in tonal music. In C major, G7 contains the notes G-B-D-F. The tritone between B and F is the source of its tension: B (the leading tone) pulls up to C, while F (the chordal seventh) pulls down to E. This double resolution in contrary motion — the diminished 5th B up to F contracting inward to the major 3rd C–E (with F below B instead — the augmented 4th F up to B — it expands outward to the minor 6th E–C) — is the fundamental engine driving tonal harmony toward the tonic.',
       tryThisQuery: 'G7',
       tryThisLabel:
         'Hear the tritone inside G7 — B and F demand resolution',
@@ -168,7 +168,7 @@ const l3u9m3: CurriculumModule = {
     {
       id: 'l3u9m3t2',
       instruction:
-        "Play 'G7' then 'Cmaj7' — hear how the dominant seventh resolves to the tonic. The tritone B-F opens outward to C-E. This is the V-I resolution that defines Western harmony",
+        "Play 'G7' then 'Cmaj7' — hear how the dominant seventh resolves to the tonic. The tritone B-F (a diminished 5th) closes inward to the major 3rd C-E. This is the V-I resolution that defines Western harmony",
     },
     {
       id: 'l3u9m3t3',
@@ -220,7 +220,7 @@ const l3u9m4: CurriculumModule = {
     {
       id: 'l3u9m4t1',
       instruction:
-        "Open 'A harmonic minor scale' and build a seventh chord on each degree. Compare the pattern to A major — notice how the raised G\u266F changes the quality of chords on degrees i, III, V, and vii",
+        "Open 'A harmonic minor scale' and build a seventh chord on each degree. Compare the pattern to A natural minor — notice how the raised G\u266F changes the quality of chords on degrees i, III, V, and vii",
       query: 'A harmonic minor scale',
     },
     {
@@ -283,7 +283,7 @@ const l3u10m1: CurriculumModule = {
     {
       id: 'l3u10m1t1',
       instruction:
-        'On paper, write a C major triad in SATB: Bass C2, Tenor G3, Alto E4, Soprano C5. Verify all spacing rules: soprano-alto gap (a minor 6th — under an octave), alto-tenor gap (a major 6th — under an octave), tenor-bass gap (a perfect 12th — tenor-bass may exceed an octave). All valid.',
+        'On paper, write a C major triad in SATB: Bass C3, Tenor G3, Alto E4, Soprano C5. Check each note against its range (all four fit), then verify the spacing rules: soprano-alto gap (a minor 6th — under an octave), alto-tenor gap (a major 6th — under an octave), tenor-bass gap (a perfect 5th — the one pair that may exceed an octave). All valid.',
     },
     {
       id: 'l3u10m1t2',
@@ -443,9 +443,9 @@ const l3u10m4: CurriculumModule = {
       title: 'The Cadential 6/4',
       explanation:
         'The most important second-inversion pattern: I6/4 resolving to V at a cadence. The 6th and 4th above the bass act as double appoggiaturas that resolve stepwise down to the 5th and 3rd of V. Many theorists analyze this not as a tonic chord but as a decorated dominant — V with suspensions. This distinction matters: the cadential 6/4 functions as dominant, not tonic, despite its spelling.',
-      tryThisQuery: 'F/A',
+      tryThisQuery: 'C/G',
       tryThisLabel:
-        'Hear F in first inversion — smooth bass line building block',
+        'Hear I6/4 in C major (C/G) — at a cadence its E and C fall to D and B over the same G bass',
     },
   ],
   tasks: [
@@ -502,7 +502,7 @@ const l3u11m1: CurriculumModule = {
     {
       title: 'Half, Plagal, and Deceptive Cadences',
       explanation:
-        'A half cadence ends on V — any chord moving to the dominant. It sounds like an unanswered question, creating suspense at phrase boundaries. The plagal cadence (IV to I) is the gentle "Amen" cadence, softer than authentic. The deceptive cadence (V to vi) subverts the expected resolution: vi shares two tones with I (in C major, Am shares C and E with the C chord), producing a near-miss that surprises the listener and extends the phrase. In minor keys, the deceptive cadence is V to VI — a major chord (e.g., E7 to F in A minor). Because VI is major rather than minor, the shared-tone logic differs: VI shares only one tone with i (the tonic note itself), giving the minor deceptive cadence a warmer, more dramatic surprise than its major-key counterpart.',
+        'A half cadence ends on V — any chord moving to the dominant. It sounds like an unanswered question, creating suspense at phrase boundaries. The plagal cadence (IV to I) is the gentle "Amen" cadence, softer than authentic. The deceptive cadence (V to vi) subverts the expected resolution: vi shares two tones with I (in C major, Am shares C and E with the C chord), producing a near-miss that surprises the listener and extends the phrase. In minor keys, the deceptive cadence is V to VI — a major chord (e.g., E7 to F in A minor). VI still shares two tones with i (F-A-C and A-C-E share A and C), but the bass now rises only a half step (E to F, scale degree 5 to \u266D6) and the target chord is major, giving the minor deceptive cadence a warmer, more dramatic surprise than its major-key counterpart.',
       tryThisQuery: 'C major chord',
       tryThisLabel:
         'Hear the tonic — the destination of authentic and plagal cadences',
@@ -608,7 +608,7 @@ const l3u11m3: CurriculumModule = {
     {
       title: 'What Is Harmonic Rhythm?',
       explanation:
-        'Harmonic rhythm is the pattern of chord changes over time. One chord per measure is slow harmonic rhythm. One chord per beat is moderate. Two chords per beat is fast. Crucially, harmonic rhythm is independent of melodic rhythm — the melody can race over slow chord changes or sustain long notes over rapidly shifting harmony. It is one of the primary tools composers use to control tension and pacing.',
+        'Harmonic rhythm is the pattern of chord changes over time. One chord per bar (or longer) is slow harmonic rhythm. Two chords per bar is moderate. A new chord on every beat is fast. Crucially, harmonic rhythm is independent of melodic rhythm — the melody can race over slow chord changes or sustain long notes over rapidly shifting harmony. It is one of the primary tools composers use to control tension and pacing.',
       tryThisQuery: 'C major chord',
       tryThisLabel: 'Hear C major — imagine holding this chord for four full bars',
     },
@@ -636,7 +636,7 @@ const l3u11m3: CurriculumModule = {
     {
       id: 'l3u11m3t2',
       instruction:
-        "Compare a hymn (slow harmonic rhythm — one chord per beat or per bar) to a bebop jazz standard (fast harmonic rhythm — two or more chords per bar). The rate of harmonic change directly shapes the music's character and energy",
+        "Compare a hymn (often a new chord on every beat — fast harmonic rhythm, even at a calm tempo) to a bebop jazz standard (often two chords per bar, at a brisk tempo). Harmonic rhythm is measured against the beat, not the clock — and together with tempo it shapes the music's character and energy",
     },
     {
       id: 'l3u11m3t3',
@@ -734,7 +734,7 @@ const l3u11m5: CurriculumModule = {
     {
       title: 'Transposing Instruments and Concert Pitch',
       explanation:
-        'Some instruments sound a different pitch than they read. Bb instruments (trumpet, clarinet, tenor sax) sound a major second lower than written — to hear concert C, they read D. Eb instruments like the alto saxophone sound a major sixth lower (or equivalently, a minor third higher). F instruments (French horn) sound a perfect fifth lower. Concert pitch is the actual sounding pitch; all instruments align to it when the orchestra tunes to A440.',
+        'Some instruments sound a different pitch than they read. Bb trumpet and Bb clarinet sound a major second lower than written — to hear concert C, they read D. The tenor sax, also in Bb, sounds an octave and a major second lower. Eb instruments like the alto saxophone sound a major sixth lower (the same note name as a minor third higher, but the sound is below the written note). F instruments (French horn) sound a perfect fifth lower. Concert pitch is the actual sounding pitch; all instruments align to it when the orchestra tunes to A440.',
       tryThisQuery: 'Bb major scale',
       tryThisLabel:
         'See Bb major — what a Bb trumpet sounds when reading C major',

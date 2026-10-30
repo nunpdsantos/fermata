@@ -17,7 +17,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root} major triad.',
+        promptTemplate: 'Build the {root} major triad.',
         hintTemplate: 'A major triad: root + major 3rd + perfect 5th. This chord quality is used for secondary dominants like V/V.',
         params: {
           roots: ['C', 'G', 'D', 'F', 'A', 'E'],
@@ -58,8 +58,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root} dominant 7th chord (the chord quality used for every secondary dominant).',
-        hintTemplate: 'A secondary dominant is a dominant 7th built a perfect 5th above the chord it tonicizes. Here just build {root}7: root + major 3rd + perfect 5th + minor 7th. For example, A7 (A-C#-E-G) is V7/ii in C major, tonicizing D minor.',
+        promptTemplate: 'Build the {root} dominant 7th chord (a very common form of a secondary dominant).',
+        hintTemplate: 'A secondary dominant is a major triad or dominant 7th built a perfect 5th above the chord it tonicizes. Here just build {root}7: root + major 3rd + perfect 5th + minor 7th. For example, A7 (A-C#-E-G) is V7/ii in C major, tonicizing D minor.',
         params: {
           roots: ['C', 'G', 'D', 'F', 'A'],
           accidentals: ['', '', '', '', ''],
@@ -470,7 +470,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'ABACABA is sonata form', correct: false },
             ],
             [
-              { label: 'In theme and variations, each variation preserves the harmonic structure while changing other elements', correct: true },
+              { label: 'In theme and variations, each variation keeps the theme recognizable (often through its harmonic outline) while changing other elements', correct: true },
               { label: 'Variations must keep the exact melody', correct: false },
               { label: 'Variations always change the key', correct: false },
               { label: 'Variations never change the rhythm', correct: false },

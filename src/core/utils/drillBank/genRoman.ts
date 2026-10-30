@@ -249,15 +249,18 @@ export function genRoman(): DrillItem[] {
       `roman:pattern:minor:${n}`,
     );
 
+    // Natural-minor facts: harmonic minor's raised 7th changes degrees 3, 5
+    // and 7 (III+, V, vii°), so the prompt names the scale form and the why
+    // line points at the raised-7th items instead of "the pattern never changes".
     items.push({
       id: `roman:pattern:minor:${n}`,
       family: 'roman',
-      promptKey: 'drill.prompts.pattern',
-      promptParams: { mode: 'minor', num: n },
+      promptKey: 'drill.prompts.patternNaturalMinor',
+      promptParams: { num: n },
       input: { format: 'choice', choices },
       answer: { kind: 'choice', correct },
-      whyKey: 'drill.why.romanPattern',
-      whyParams: { mode: 'minor', num: n, chord: correct },
+      whyKey: 'drill.why.romanPatternNaturalMinor',
+      whyParams: { num: n, chord: correct },
       rank: rank++,
     });
   }
@@ -303,8 +306,8 @@ export function genRoman(): DrillItem[] {
       promptParams: { chord: noChord, key: keyDisplay },
       input: { format: 'choice', choices: ['Yes', 'No'] },
       answer: { kind: 'choice', correct: 'No' },
-      whyKey: 'drill.why.diatonicMember',
-      whyParams: { numeral: entry.numeral, key: keyDisplay, chord: noChord },
+      whyKey: 'drill.why.notDiatonic',
+      whyParams: { numeral: entry.numeral, key: keyDisplay, chord: noChord, diatonic: yesChord },
       rank: rank++,
     });
   }

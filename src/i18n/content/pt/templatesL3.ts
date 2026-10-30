@@ -17,7 +17,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói um acorde de {root} {quality}. Seleciona as 4 notas.',
       hintTemplate:
-        'Construção de acordes de sétima a partir de {root}: maj7 = 3.aM+5.aP+7.aM, min7 = 3.am+5.aP+7.am, dom7 = 3.aM+5.aP+7.am, meio-dim7 = 3.am+5.adim+7.am, dim7 = 3.am+5.adim+7.addim.',
+        'Construção de acordes de sétima a partir de {root}: maj7 = 3.aM+5.aP+7.aM, min7 = 3.am+5.aP+7.am, dom7 = 3.aM+5.aP+7.am, meio-dim7 = 3.am+5.adim+7.am, dim7 = 3.am+5.adim+7.adim.',
     },
     {
       // multiple_choice
@@ -103,7 +103,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói o acorde de sétima diatónico sobre {root} em Lá menor (menor harmónica).',
       hintTemplate:
-        'Na menor harmónica, o 7.o grau elevado cria qualidades de acordes diferentes da menor natural. O V torna-se sétima da dominante e o vii torna-se sétima diminuta.',
+        'Na menor harmónica, o 7.o grau elevado cria qualidades de acordes diferentes da menor natural. O V torna-se sétima da dominante e o vii torna-se sétima diminuta. O 7.o grau elevado cria qualidades de acorde invulgares — não estranhes sonoridades pouco familiares.',
     },
     {
       // multiple_choice

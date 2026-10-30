@@ -86,7 +86,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'Os Sete Nomes dos Graus da Escala',
           explanation:
-            'Cada grau da escala tem um nome funcional: 1=Tónica (repouso), 2=Supertónica (acima da tónica), 3=Mediante (ponto médio entre tónica e dominante), 4=Subdominante (abaixo da dominante), 5=Dominante (cria tensão em direção à tónica), 6=Submediante (abaixo da mediante, contando para baixo), 7=Sensível (meio-tom abaixo da tónica, a atração mais forte para casa).',
+            'Cada grau da escala tem um nome funcional: 1=Tónica (repouso), 2=Supertónica (acima da tónica), 3=Mediante (ponto médio entre tónica e dominante), 4=Subdominante (a "dominante inferior" — uma 5.a abaixo da tónica, tal como a dominante está uma 5.a acima), 5=Dominante (cria tensão em direção à tónica), 6=Submediante (a "mediante inferior" — a meio caminho entre a tónica e a subdominante abaixo dela), 7=Sensível (meio-tom abaixo da tónica, a atração mais forte para casa).',
           tryThisLabel: 'Vê os sete graus de C maior',
         },
         {
@@ -324,7 +324,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'O Sistema de Qualidades',
           explanation:
-            'No Nível 1, mediste intervalos por número: uma 3.a, uma 5.a. Agora acrescenta a qualidade -- que refina o número com um carácter preciso. Os intervalos perfeitos (uníssono, 4.a, 5.a, oitava) ocorrem naturalmente entre a tónica e os 4.o/5.o graus. Os intervalos maiores (2.a, 3.a, 6.a, 7.a) ocorrem entre a tónica e os graus superiores numa escala maior. Os intervalos menores são meio-tom mais pequenos que os maiores.',
+            'No Nível 1, mediste intervalos por número: uma 3.a, uma 5.a. Agora acrescenta a qualidade -- que refina o número com um carácter preciso. Os intervalos perfeitos (uníssono, 4.a, 5.a, oitava) ocorrem naturalmente entre a tónica e os graus 1, 4, 5 e 8 da escala. Os intervalos maiores (2.a, 3.a, 6.a, 7.a) ocorrem entre a tónica e os graus superiores numa escala maior. Os intervalos menores são meio-tom mais pequenos que os maiores.',
           tryThisLabel: 'Vê todos os intervalos da escala maior a partir de C',
         },
         {

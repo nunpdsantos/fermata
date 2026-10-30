@@ -43,8 +43,8 @@ const overlay: ExerciseLevelOverlay = {
 
   l1u1m2e1: {
     prompt:
-      'Identifica esta nota abaixo da pauta de clave de sol: encontra-se no espaço logo abaixo do C central.',
-    hint: 'A3 situa-se duas linhas suplementares abaixo da pauta de clave de sol. A descer a partir do C central: B3 está no espaço abaixo da linha suplementar, A3 está na linha suplementar seguinte.',
+      'Identifica esta nota abaixo da pauta de clave de sol: encontra-se na segunda linha suplementar inferior.',
+    hint: 'Abaixo da pauta de clave de sol: B3 está no espaço abaixo da primeira linha suplementar (C4), e A3 está na segunda linha suplementar.',
   },
   l1u1m2e2: {
     prompt:
@@ -81,8 +81,8 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l1u1m3: Meios-tons e Tons ----
 
   l1u1m3e1: {
-    prompt: 'Qual é o intervalo de C a C#?',
-    hint: 'De C a C# é a menor distância possível na música ocidental: um meio-tom, equivalente a 1 semitom.',
+    prompt: 'Qual é o intervalo de Db, a descer, até C?',
+    hint: 'De Db a descer até C é a menor distância possível na música ocidental: um meio-tom (1 semitom), da tecla preta para a tecla branca logo abaixo. Duas letras diferentes (D, C) fazem dele uma 2.a — uma 2.a menor.',
   },
   l1u1m3e2: {
     prompt: 'Qual é o intervalo de C a D?',
@@ -264,7 +264,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Fundamental, 3.a maior (4 semitons), 5.a perfeita (7 semitons)',
       'Fundamental, 3.a menor (3 semitons), 5.a perfeita (7 semitons)',
-      'Fundamental, 3.a maior (4 semitons), 5.a menor (6 semitons)',
+      'Fundamental, 3.a maior (4 semitons), 5.a diminuta (6 semitons)',
       'Fundamental, 4.a perfeita (5 semitons), 5.a perfeita (7 semitons)',
     ],
     hint: 'Uma tríade maior empilha uma 3.a maior (4 meios-tons a partir da fundamental) e depois uma 3.a menor por cima (mais 3), resultando em fundamental + 3.aM + 5.aP.',

@@ -87,16 +87,16 @@ const overlay: TemplateLevelOverlay = {
     {
       // note_id
       promptTemplate:
-        'Identifica esta nota de tecla preta. Usa o nome com sustenido.',
+        'Identifica esta nota de tecla preta, aqui escrita com sustenido.',
       hintTemplate:
-        'As teclas pretas têm dois nomes (equivalentes enarmónicos). Usa aqui a grafia com sustenido.',
+        'Cada tecla preta tem dois nomes (equivalentes enarmónicos): um escrito com sustenido, outro com bemol. Lê a alteração na pauta: esta está escrita com sustenido.',
     },
     {
       // note_id
       promptTemplate:
-        'Identifica esta nota de tecla preta. Usa o nome com bemol.',
+        'Identifica esta nota de tecla preta, aqui escrita com bemol.',
       hintTemplate:
-        'Esta tecla preta situa-se entre duas teclas brancas. Usa aqui a grafia com bemol.',
+        'Cada tecla preta tem dois nomes (equivalentes enarmónicos): um escrito com sustenido, outro com bemol. Lê a alteração na pauta: esta está escrita com bemol.',
     },
   ],
 

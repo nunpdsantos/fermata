@@ -26,14 +26,14 @@ const l5u15m1: CurriculumModule = {
     {
       title: 'V7/V — Adding the Seventh',
       explanation:
-        'The seventh chord form V7/V is even more common than the triad. V7/V in C major = D7 (D–F#–A–C). The tritone F#–C resolves outward to G–B. The seventh adds the pulling power that makes secondary dominants so effective. In D7 resolving to G: F# rises to G (leading tone resolution), C falls to B (seventh resolves down by step). These are the same voice-leading rules as V7 to I, just applied to V as the temporary target.',
+        'The seventh chord form V7/V is even more common than the triad. V7/V in C major = D7 (D–F#–A–C). The tritone F#–C (a diminished 5th) contracts inward to the major 3rd G–B. The seventh adds the pulling power that makes secondary dominants so effective. In D7 resolving to G: F# rises to G (leading tone resolution), C falls to B (seventh resolves down by step). These are the same voice-leading rules as V7 to I, just applied to V as the temporary target.',
       tryThisQuery: 'D7',
       tryThisLabel: 'Hear D7 — the V7/V in C major',
     },
     {
       title: 'Resolution and Voice Leading',
       explanation:
-        'Secondary dominants follow the same resolution rules as V7 to I. The chromatic "leading tone" resolves up by half step to the root of the target. The seventh (if present) resolves down by step. In D7 resolving to G: F# rises to G, C falls to B. The tritone F#–C resolves outward to G–B. Chromatic notes almost always resolve in the direction they were altered — sharps up, flats down.',
+        'Secondary dominants follow the same resolution rules as V7 to I. The chromatic "leading tone" resolves up by half step to the root of the target. The seventh (if present) resolves down by step. In D7 resolving to G: F# rises to G, C falls to B. The tritone F#–C (a diminished 5th) contracts inward to the major 3rd G–B. Chromatic notes almost always resolve in the direction they were altered — sharps up, flats down.',
       tryThisQuery: 'G major chord',
       tryThisLabel: 'Hear the G target after D7',
     },
@@ -48,7 +48,7 @@ const l5u15m1: CurriculumModule = {
     {
       id: 'l5u15m1t2',
       instruction:
-        "Type 'D7' then 'G major chord' — hear how D7 creates a strong pull to G. The tritone F#–C inside D7 resolves outward to G–B.",
+        "Type 'D7' then 'G major chord' — hear how D7 creates a strong pull to G. The tritone F#–C inside D7 (a diminished 5th) contracts inward to the major 3rd G–B.",
       query: 'D7',
     },
     {
@@ -752,7 +752,7 @@ const l5u17m4: CurriculumModule = {
     {
       title: 'What Are Guide Tones?',
       explanation:
-        'The 3rd and 7th of each chord are the notes that define its quality. The root tells you the chord name; the 3rd tells you major or minor; the 7th tells you the chord type (major 7th, dominant 7th, minor 7th). Together, the 3rd and 7th ARE the chord\u2019s identity. A bass player covering the root plus a pianist playing only the 3rd and 7th gives you a complete harmonic picture. Everything else is color.',
+        'The 3rd and 7th of each chord are the notes that do most to define its quality. The root tells you the chord name; the 3rd tells you major or minor; the 7th, read together with the 3rd, tells you the seventh-chord type (for example, major 3rd + major 7th = major 7th; major 3rd + minor 7th = dominant 7th; minor 3rd + minor 7th = minor 7th). That is why jazz musicians call the 3rd and 7th the chord\u2019s identity \u2014 with one caveat: Cm7 and Cm7b5 share the same 3rd and 7th (Eb and Bb), so for half-diminished chords the 5th matters too. A bass player covering the root plus a pianist playing only the 3rd and 7th gives you a clear harmonic picture. Most of the rest is color.',
       tryThisQuery: 'Dm7',
       tryThisLabel: 'See Dm7 — 3rd is F, 7th is C',
     },

@@ -200,7 +200,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'Pontos de Aumentação e Ligaduras',
           explanation:
-            'Um ponto depois de uma nota aumenta a sua duração em metade — uma mínima com ponto dura três tempos em vez de dois. Uma ligadura de prolongamento une duas notas da mesma altura num som contínuo — uma mínima ligada a uma semínima dura três tempos no total. Pontos e ligaduras permitem criar durações que não encaixam na hierarquia básica.',
+            'Um ponto depois de uma nota aumenta a sua duração em metade — uma mínima com ponto dura três tempos em vez de dois (quando a semínima é a unidade de tempo). Uma ligadura de prolongamento une duas notas da mesma altura num som contínuo — uma mínima ligada a uma semínima dura três tempos no total. Pontos e ligaduras permitem criar durações que não encaixam na hierarquia básica.',
           tryThisLabel: 'Ouve a escala a um tempo regular',
         },
       ],

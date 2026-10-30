@@ -46,7 +46,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l4u12m1e3',
       type: 'multiple_choice',
-      prompt: 'In the key of C major, a V chord is sounding and the note F is held over from the previous IV chord before resolving to E. What type of non-chord tone is the F?',
+      prompt: 'In the key of C major, a V chord is sounding and the note C is held over from the previous IV chord before resolving down to B. What type of non-chord tone is the C?',
       config: {
         type: 'multiple_choice',
         choices: [
@@ -56,7 +56,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Escape tone', correct: false },
         ],
       },
-      hint: 'The F was consonant in the IV chord (F-A-C), then held over into the V chord (G-B-D) where it is dissonant (a 4th above the bass G), and resolves down by step to E (the 3rd). This is a textbook 4-3 suspension.',
+      hint: 'The C was consonant in the IV chord (F-A-C), then held over into the V chord (G-B-D) where it is dissonant (a perfect 4th above the bass G), and resolves down by step to B (the 3rd of V, a major 3rd above G). This is a textbook 4-3 suspension.',
       points: 1,
     },
   ],

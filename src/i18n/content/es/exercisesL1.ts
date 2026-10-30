@@ -43,8 +43,8 @@ const overlay: ExerciseLevelOverlay = {
 
   l1u1m2e1: {
     prompt:
-      'Identifica esta nota por debajo del pentagrama de clave de sol: se encuentra en el espacio justo por debajo del C central.',
-    hint: 'A3 se sitúa dos líneas adicionales por debajo del pentagrama de clave de sol. Descendiendo desde el C central: B3 está en el espacio por debajo de la línea adicional, A3 está en la siguiente línea adicional.',
+      'Identifica esta nota por debajo del pentagrama de clave de sol: se encuentra en la segunda línea adicional inferior.',
+    hint: 'Por debajo del pentagrama de clave de sol: B3 está en el espacio por debajo de la primera línea adicional (C4), y A3 está en la segunda línea adicional.',
   },
   l1u1m2e2: {
     prompt:
@@ -81,8 +81,8 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l1u1m3: Semitonos y Tonos ----
 
   l1u1m3e1: {
-    prompt: '¿Cuál es el intervalo de C a C#?',
-    hint: 'De C a C# es la menor distancia posible en la música occidental: un semitono, equivalente a 1 semitono.',
+    prompt: '¿Cuál es el intervalo de Db, descendiendo, hasta C?',
+    hint: 'De Db descendiendo hasta C es la menor distancia posible en la música occidental: un semitono (medio tono), de la tecla negra a la tecla blanca justo por debajo. Dos letras distintas (D, C) lo convierten en una 2.ª — una 2.ª menor.',
   },
   l1u1m3e2: {
     prompt: '¿Cuál es el intervalo de C a D?',
@@ -264,7 +264,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Fundamental, 3.ª mayor (4 semitonos), 5.ª justa (7 semitonos)',
       'Fundamental, 3.ª menor (3 semitonos), 5.ª justa (7 semitonos)',
-      'Fundamental, 3.ª mayor (4 semitonos), 5.ª menor (6 semitonos)',
+      'Fundamental, 3.ª mayor (4 semitonos), 5.ª disminuida (6 semitonos)',
       'Fundamental, 4.ª justa (5 semitonos), 5.ª justa (7 semitonos)',
     ],
     hint: 'Una tríada mayor apila una 3.ª mayor (4 semitonos desde la fundamental) y después una 3.ª menor encima (3 más), resultando en fundamental + 3.ªM + 5.ªJ.',

@@ -34,14 +34,14 @@ const overlay: ExerciseLevelOverlay = {
   },
   l4u12m1e3: {
     prompt:
-      'En la tonalidad de Do mayor, suena un acorde V y la nota F se mantiene del acorde IV anterior antes de resolver a E. ¿Qué tipo de nota extraña al acorde es el F?',
+      'En la tonalidad de C mayor, suena un acorde V y la nota C se mantiene del acorde IV anterior antes de resolver, descendiendo, a B. ¿Qué tipo de nota extraña al acorde es el C?',
     choices: [
       'Retardo (4-3 sobre el acorde V)',
       'Nota de paso',
       'Apoyatura',
       'Escapatoria',
     ],
-    hint: 'El F era consonante en el acorde IV (F-A-C), luego se mantuvo sobre el acorde V (G-B-D) donde es disonante (una 4.ª por encima del bajo G), y resuelve bajando por grado conjunto a E (la 3.ª). Este es un retardo 4-3 ejemplar.',
+    hint: 'El C era consonante en el acorde IV (F-A-C), luego se mantuvo sobre el acorde V (G-B-D) donde es disonante (una 4.ª justa por encima del bajo G), y resuelve bajando por grado conjunto a B (la 3.ª de V, una 3.ª mayor por encima de G). Este es un retardo 4-3 ejemplar.',
   },
 
   // ---- l4u12m2: Apoyatura / Escapatoria ----

@@ -63,9 +63,9 @@ Arrange all 12 keys in a circle. Moving clockwise: each key is a perfect fifth h
 | 1 | Tonic | Home base, center of gravity, resolution point |
 | 2 | Supertonic | Above the tonic, often moves to tonic or dominant |
 | 3 | Mediant | Midpoint between tonic and dominant — defines major/minor quality |
-| 4 | Subdominant | Below the dominant, the "other pillar" |
+| 4 | Subdominant | The "lower dominant": a 5th below the tonic, as the dominant is a 5th above — the "other pillar" |
 | 5 | Dominant | Second most important note, creates tension toward tonic |
-| 6 | Submediant | Below the mediant (counting down from tonic) |
+| 6 | Submediant | The "lower mediant": midway between the tonic and the subdominant below it |
 | 7 | Leading Tone | Half step below tonic — creates the strongest pull "home" |
 
 **Leading Tone vs. Subtonic**

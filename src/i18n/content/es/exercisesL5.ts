@@ -331,7 +331,7 @@ const overlay: ExerciseLevelOverlay = {
       'Modular a la relativa mayor',
       'Usar una dominante secundaria para tonicizar la dominante',
     ],
-    hint: 'El acorde V en el modo menor proviene de la menor armónica, no de la mezcla modal. La mezcla modal toma prestados específicamente acordes de la tonalidad paralela. Un IV mayor en el modo menor (p. ej., Re mayor en La menor en vez de Re menor) es mezcla modal genuina.',
+    hint: 'El acorde V en el modo menor proviene de la menor armónica — pertenece a la propia tonalidad menor, no a la mezcla modal. La mezcla modal toma prestados acordes de la tonalidad paralela. Un IV mayor en el modo menor (p. ej., D mayor en A menor en vez de D menor) es un ejemplo habitual; el Nivel 4 relacionó el mismo acorde con la menor melódica ascendente, y ambas lecturas son habituales.',
   },
 
   // =========================================================================
@@ -459,7 +459,7 @@ const overlay: ExerciseLevelOverlay = {
       'Las notas guía se mantienen en las mismas notas a lo largo de los tres acordes',
       'Las notas guía siguen exactamente la línea del bajo',
     ],
-    hint: 'Notas guía de Dm7: F (3.ª), C (7.ª). G7: el C se mantiene como nota común convirtiéndose en la 7.ª del acorde, mientras F desciende a B (3.ª). Cmaj7: B se mantiene o resuelve a B (7.ª), F resuelve descendiendo a E (3.ª). Movimiento mínimo = conducción de voces suave.',
+    hint: 'Notas guía de Dm7: F (3.ª), C (7.ª). Hacia G7: F se mantiene como nota común y se convierte en la 7.ª, mientras C baja un semitono a B, la 3.ª. Hacia Cmaj7: B se mantiene y se convierte en la 7.ª, mientras F baja un semitono a E, la 3.ª. Movimiento mínimo = conducción de voces suave.',
   },
   l5u17m4e3: {
     prompt:

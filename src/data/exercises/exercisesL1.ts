@@ -175,16 +175,16 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l1u1m3e1',
       type: 'interval_id',
-      prompt: 'What is the interval from C to C#?',
+      prompt: 'What is the interval from Db down to C?',
       config: {
         type: 'interval_id',
-        root: 'C',
-        rootAccidental: '',
+        root: 'D',
+        rootAccidental: 'b',
         rootOctave: 4,
         targetSemitones: 1,
-        direction: 'ascending',
+        direction: 'descending',
       },
-      hint: 'C to C# is the smallest possible distance in Western music: one half step, which equals 1 semitone.',
+      hint: 'Db down to C is the smallest possible distance in Western music: one half step (1 semitone), from the black key to the white key just below it. Two different letter names (D, C) make it a 2nd — a minor 2nd.',
       points: 1,
     },
     {
@@ -615,7 +615,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Root, major 3rd (4 semitones), perfect 5th (7 semitones)', correct: true },
           { label: 'Root, minor 3rd (3 semitones), perfect 5th (7 semitones)', correct: false },
-          { label: 'Root, major 3rd (4 semitones), minor 5th (6 semitones)', correct: false },
+          { label: 'Root, major 3rd (4 semitones), diminished 5th (6 semitones)', correct: false },
           { label: 'Root, perfect 4th (5 semitones), perfect 5th (7 semitones)', correct: false },
         ],
       },

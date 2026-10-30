@@ -520,7 +520,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Using a secondary dominant to tonicize the dominant', correct: false },
         ],
       },
-      hint: 'The V chord in minor comes from harmonic minor, not mode mixture. Mode mixture specifically borrows chords from the parallel key. A major IV in minor (e.g., D major in A minor instead of D minor) is genuine mode mixture.',
+      hint: 'The V chord in minor comes from harmonic minor \u2014 it belongs to the minor key itself, not to mode mixture. Mode mixture borrows chords from the parallel key. A major IV in minor (e.g., D major in A minor instead of D minor) is a common example; Level 4 traced the same chord to ascending melodic minor, and both readings are common.',
       points: 1,
     },
   ],
@@ -716,7 +716,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'The guide tones follow the bass line exactly', correct: false },
         ],
       },
-      hint: 'Dm7 guide tones: F (3rd), C (7th). G7: the C holds as common tone becoming the 7th of the chord, while F drops to B (3rd). Cmaj7: B holds or resolves to B (7th), F resolves down to E (3rd). Minimal motion = smooth voice leading.',
+      hint: 'Dm7 guide tones: F (3rd), C (7th). Into G7: F holds as a common tone and becomes the 7th, while C steps down a half step to B, the 3rd. Into Cmaj7: B holds and becomes the 7th, while F steps down a half step to E, the 3rd. Minimal motion = smooth voice leading.',
       points: 1,
     },
     {
