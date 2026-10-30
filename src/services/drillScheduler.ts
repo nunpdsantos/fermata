@@ -20,8 +20,15 @@ export const BY_HEART_MS = 3000;
 /** 'byHeart' needs this many sessions in a row answered right on the first try… */
 export const BY_HEART_SESSIONS = 3;
 
-/** …spread over at least this many calendar days (decision D-15, audit W7-05). */
+/** …spread over at least this many calendar days (decision D-15, audit W7-05)… */
 export const BY_HEART_DAYS = 2;
+
+/**
+ * …and at least this long from the run's first to its last first-answer.
+ * Calendar days alone let a run straddling midnight (23:30, 23:50, 23:59,
+ * 00:08) count as "two days" inside 40 minutes (review of W7).
+ */
+export const BY_HEART_MIN_SPAN_MS = 18 * 60 * 60 * 1000;
 
 // ─── FSRS Instance ───────────────────────────────────────────────────────────
 
@@ -148,7 +155,9 @@ function calendarDay(ts: number): string {
  *  - the first answer was right in each of at least BY_HEART_SESSIONS sessions
  *    in a row, counting back from the latest session (a wrong first answer —
  *    a lapse — ends the run);
- *  - those sessions fall on at least BY_HEART_DAYS different calendar days;
+ *  - those sessions fall on at least BY_HEART_DAYS different calendar days
+ *    AND the run's first and last first-answers are at least
+ *    BY_HEART_MIN_SPAN_MS apart (no "two days" across one midnight);
  *  - the median time of the last BY_HEART_SESSIONS first answers is under
  *    BY_HEART_MS.
  */
@@ -160,6 +169,7 @@ export function meetsByHeart(history: AnswerRecord[]): boolean {
 
   const days = new Set(run.map((r) => calendarDay(r.ts)));
   if (days.size < BY_HEART_DAYS) return false;
+  if (run[run.length - 1].ts - run[0].ts < BY_HEART_MIN_SPAN_MS) return false;
 
   const recentMs = run
     .slice(-BY_HEART_SESSIONS)
@@ -179,7 +189,8 @@ export function meetsByHeart(history: AnswerRecord[]): boolean {
  * 2. prev.tier 'new' | 'learning': promote to 'review' if introCorrectCount >= 2 OR
  *    (latest answer correct AND latest.sessionId !== prev.introSessionId); else 'learning'.
  * 3. review | byHeart: 'byHeart' when meetsByHeart(history) (first answer per
- *    session, ≥ 3 sessions in a row over ≥ 2 calendar days, median < 3 s);
+ *    session, ≥ 3 sessions in a row over ≥ 2 calendar days and ≥ 18 h,
+ *    median < 3 s);
  *    otherwise 'review'. A wrong first answer in the latest session therefore
  *    demotes, and the in-session retry cannot undo it.
  */

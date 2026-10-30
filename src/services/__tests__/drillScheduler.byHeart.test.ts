@@ -3,8 +3,8 @@
  *
  * An item is by heart when it was answered correctly on the FIRST try in each
  * of at least 3 sessions in a row (since its last lapse), those sessions span
- * at least 2 calendar days, and the median time of the last 3 first answers is
- * under 3 s. One lapse — a wrong FIRST answer in a session — demotes it, and a
+ * at least 2 calendar days AND at least 18 hours from first to last, and the
+ * median time of the last 3 first answers is under 3 s. One lapse — a wrong FIRST answer in a session — demotes it, and a
  * right answer on the in-session retry does not undo that.
  *
  * Ported from the auditors' probe `sched-probe.mts` (Scenarios A and B) and
@@ -12,10 +12,11 @@
  * the LOCAL Date constructor so "calendar day" means the same thing here as on
  * the learner's phone, whatever time zone the suite runs in.
  */
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   applyAnswer,
   BY_HEART_DAYS,
+  BY_HEART_MIN_SPAN_MS,
   BY_HEART_SESSIONS,
   HISTORY_CAP,
   sessionFirstAnswers,
@@ -35,9 +36,10 @@ function run(steps: Step[], start?: ItemSrsState): ItemSrsState {
 }
 
 describe('by heart — constants match decision D-15', () => {
-  it('needs 3 sessions over 2 calendar days', () => {
+  it('needs 3 sessions over 2 calendar days, at least 18 h apart end to end', () => {
     expect(BY_HEART_SESSIONS).toBe(3);
     expect(BY_HEART_DAYS).toBe(2);
+    expect(BY_HEART_MIN_SPAN_MS).toBe(18 * 60 * 60 * 1000);
   });
 });
 
@@ -124,15 +126,97 @@ describe('by heart — spacing over calendar days (W7-05)', () => {
     expect(s.tier).toBe('byHeart');
   });
 
-  it('calendar days, not 24-hour gaps: late evening then early next morning counts as 2 days', () => {
+  // Review finding: 2 calendar days alone let a run straddling midnight
+  // (23:30, 23:50, 23:59, 00:08) reach by heart in under 40 minutes. The run
+  // must ALSO span ≥ 18 h between its first and last first-answers.
+  it('midnight loophole: 23:30 / 23:50 / 23:59 / 00:08 is two dates but not by heart', () => {
+    const s = run([
+      ['s1', at(1, 23, 30), true, 2000],
+      ['s1', at(1, 23, 32), true, 2000],
+      ['s2', at(1, 23, 50), true, 2000],
+      ['s3', at(1, 23, 59), true, 2000],
+      ['s4', at(2, 0, 8), true, 2000],
+    ]);
+    expect(s.tier).toBe('review');
+  });
+
+  it('late evening, then the next evening: two dates and ≥ 18 h → by heart', () => {
     const s = run([
       ['s1', at(1, 22, 0), true, 2000],
       ['s1', at(1, 22, 5), true, 2000],
       ['s2', at(1, 23, 30), true, 2000],
-      ['s3', at(2, 0, 30), true, 2000],
+      ['s3', at(2, 18, 0), true, 2000], // 20 h after the first
     ]);
     expect(s.tier).toBe('byHeart');
   });
+
+  it('just under 18 h is not enough; just over is', () => {
+    const base: Step[] = [
+      ['s1', at(1, 6, 0), true, 2000],
+      ['s1', at(1, 6, 3), true, 2000],
+      ['s2', at(1, 12, 0), true, 2000],
+    ];
+    expect(run([...base, ['s3', at(1, 23, 59) + 0, true, 2000]]).tier).toBe('review'); // same date
+    expect(run([...base, ['s3', at(1, 6, 0) + BY_HEART_MIN_SPAN_MS - MIN, true, 2000]]).tier).toBe('review');
+    expect(run([...base, ['s3', at(1, 6, 0) + BY_HEART_MIN_SPAN_MS, true, 2000]]).tier).toBe('byHeart');
+  });
+
+  it('18 h within ONE calendar day is still not enough (both rules apply)', () => {
+    const s = run([
+      ['s1', at(1, 0, 30), true, 2000],
+      ['s1', at(1, 0, 33), true, 2000],
+      ['s2', at(1, 12, 0), true, 2000],
+      ['s3', at(1, 23, 30), true, 2000], // 23 h later, same date
+    ]);
+    expect(s.tier).toBe('review');
+  });
+});
+
+describe('by heart — the same rules in every time zone', () => {
+  const ZONES = [
+    'UTC',
+    'Europe/London',
+    'Atlantic/Madeira',
+    'Europe/Lisbon',
+    'America/Los_Angeles',
+    'Asia/Tokyo',
+    'Pacific/Kiritimati', // UTC+14
+    'Pacific/Pago_Pago', // UTC−11
+  ];
+  // vi.stubEnv writes process.env.TZ, which Node's Date honours immediately.
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  for (const zone of ZONES) {
+    it(`${zone}: the midnight run is never by heart; an 18 h+ two-day run is`, () => {
+      vi.stubEnv('TZ', zone);
+      // Proof the zone took effect: Date's local hour matches Intl's for `zone`.
+      const probe = Date.UTC(2026, 9, 1, 12, 0);
+      const zoneHour = Number(
+        new Intl.DateTimeFormat('en-GB', { timeZone: zone, hour: 'numeric', hourCycle: 'h23' }).format(probe),
+      );
+      expect(new Date(probe).getHours()).toBe(zoneHour);
+      // Local wall-clock times in `zone` (Date reads TZ on every call in Node).
+      const midnight = run([
+        ['m1', at(1, 23, 30), true, 2000],
+        ['m1', at(1, 23, 32), true, 2000],
+        ['m2', at(1, 23, 50), true, 2000],
+        ['m3', at(1, 23, 59), true, 2000],
+        ['m4', at(2, 0, 8), true, 2000],
+      ]);
+      expect(new Date(at(2, 0, 8)).getDate()).toBe(2); // really the next local date
+      expect(midnight.tier).toBe('review');
+
+      const spaced = run([
+        ['p1', at(1, 21, 0), true, 2000],
+        ['p1', at(1, 21, 3), true, 2000],
+        ['p2', at(1, 22, 0), true, 2000],
+        ['p3', at(2, 19, 0), true, 2000], // 22 h later, next local date
+      ]);
+      expect(spaced.tier).toBe('byHeart');
+    });
+  }
 });
 
 describe('history cap keeps every session\'s first answer', () => {
