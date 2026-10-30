@@ -10,7 +10,7 @@ import { ExerciseRunner } from './exercises/ExerciseRunner';
 import { ReportMistakeLink } from './ReportMistakeLink';
 import { Confetti } from './Confetti';
 import { toast } from '../../state/toastStore';
-import { getSongReferences } from '../../data/songReferences';
+import { useSongReferences } from '../../hooks/useSongReferences';
 import { SPRING_BOUNCY } from '../../design/tokens/motion';
 import { palette } from '../../design/tokens/palette';
 import { accentText } from '../../design/tokens/learnColors';
@@ -119,7 +119,7 @@ export function ModuleView({
   const canComplete =
     allTasksDone && exercisesState === 'ready' && (!hasExercises || exercisesPassed);
 
-  const songRefs = getSongReferences(module.id);
+  const songRefs = useSongReferences(module.id);
 
   const handleTryThis = useCallback((query: string) => {
     executeTheoryQuery(query);

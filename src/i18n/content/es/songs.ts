@@ -1,7 +1,7 @@
 import type { SongOverlay } from '../types';
 
 // ---------------------------------------------------------------------------
-// Castilian Spanish translations for song reference context strings (L1–L3)
+// Castilian Spanish translations for song reference context strings (L1–L3 + l4u14m2)
 // Only the `context` field is translated — song titles and artist names are
 // kept in their original language.
 // ---------------------------------------------------------------------------
@@ -37,8 +37,8 @@ const overlay: SongOverlay = {
     'La línea de bajo demuestra un pulso constante de negras con subdivisiones en corcheas.',
   ],
   'l1u2m2': [
-    'Alterna entre compás 6/8 y 3/4, evidenciando cómo las indicaciones de compás moldean la sensación rítmica.',
-    'Escrita en compás 5/4, demostrando cómo los compases irregulares crean un carácter rítmico distintivo.',
+    'El vals por excelencia — cuenta UN-dos-tres de principio a fin y el compás de 3/4 se revela al instante.',
+    'Una marcha enérgica en 2/4 — dos tiempos por compás, con el patrón fuerte-débil que define el compás binario.',
   ],
 
   // ---- L1U3: Escalas, Intervalos y Primeros Acordes ----
@@ -80,7 +80,7 @@ const overlay: SongOverlay = {
 
   'l2u5m1': [
     'Construida sobre la escala menor natural (eólico) en La menor, con la característica séptima rebajada.',
-    'Escrita íntegramente en Mi menor usando solo los acordes de Em y C — un sonido menor natural (eólico) puro, sin sexta ni séptima elevadas, lo que la convierte en un ejemplo de manual del modo eólico.',
+    'Se basa en los acordes Em y C, con un sabor modal que mezcla el eólico y el dórico — en algunos momentos la melodía eleva la 6.ª (C♯), lo que le da una cualidad modal y no la de un menor puramente diatónico.',
   ],
   'l2u5m2': [
     'Utiliza la escala menor armónica — la segunda aumentada entre el b6 y el #7 le confiere su sonoridad distintiva.',
@@ -94,8 +94,9 @@ const overlay: SongOverlay = {
   // ---- L2U6: Compás Compuesto y Síncopa ----
 
   'l2u6m1': [
-    'El acompañamiento arpegiado en compás 6/8 demuestra el compás compuesto binario, donde cada uno de los dos tiempos principales se subdivide en grupos de tres corcheas.',
+    'El acompañamiento arpegiado en compás 6/8 demuestra el compás compuesto binario, donde cada uno de los dos tiempos principales se subdivide en grupos de tres corcheas (algunas ediciones lo escriben en 12/8; la sensación de compás compuesto binario es la misma).',
     'El verso está en 6/8 antes de que el estribillo cambie de sensación — un contraste entre compás compuesto y simple.',
+    'Alterna entre 6/8 y 3/4 — las mismas seis corcheas reagrupadas, la hemiolia clásica entre compás compuesto y simple.',
   ],
   'l2u6m2': [
     'Un ejemplo definitorio de síncopa en el ragtime — los acentos caen consistentemente entre los tiempos.',
@@ -145,7 +146,7 @@ const overlay: SongOverlay = {
   ],
   'l3u9m4': [
     'Abre en Do menor con una progresión i7–iv7–iiø7–V7, demostrando cómo los acordes de séptima diatónicos y el movimiento cadencial ii–V funcionan en una tonalidad menor.',
-    'La progresión de acordes de séptima en tonalidad menor (i–iv7–V7) crea la sensación lánguida de la canción.',
+    'La progresión de acordes de séptima en tonalidad menor (i–iiø7–V7–i) crea la sensación lánguida de la canción.',
   ],
 
   // ---- L3U10: Conducción de Voces y Escritura a Partes ----
@@ -167,8 +168,8 @@ const overlay: SongOverlay = {
   // ---- L3U11: Cadencias, Frases y Ornamentación ----
 
   'l3u11m1': [
-    'Cada verso termina con una cadencia perfecta clara (V–I) en la palabra «Hallelujah».',
-    'Contiene tanto semicadencias (reposo en el V) como cadencias perfectas dentro de su estructura fraseológica.',
+    'Cada verso termina con una cadencia auténtica clara (V–I) en la palabra «Hallelujah». La letra narra su propia armonía: «the fourth, the fifth» (IV–V), «the minor fall» (vi), «the major lift» (IV) — y ese movimiento V–vi es un gesto ejemplar de cadencia interrumpida.',
+    'Contiene tanto semicadencias (reposo en el V) como cadencias auténticas dentro de su estructura fraseológica.',
   ],
   'l3u11m2': [
     'La melodía está estructurada como un período paralelo — dos frases, la primera terminando en una semicadencia, la segunda en una cadencia perfecta.',
@@ -185,6 +186,17 @@ const overlay: SongOverlay = {
   'l3u11m5': [
     'La línea melódica ornamentada está construida sobre cadenas de suspensiones y notas de paso sobre un bajo simple.',
     'La melodía ornamentada entrelaza notas de paso cromáticas y notas auxiliares en torno a las notas estructurales del acorde.',
+  ],
+
+  // =========================================================================
+  // Nivel 4
+  // =========================================================================
+
+  // ---- L4U14: Compases Asimétricos y Mixtos ----
+
+  'l4u14m2': [
+    'Escrita en 5/4 (3+2), demuestra cómo los compases asimétricos crean un carácter rítmico propio.',
+    'El famoso riff de bajo está en 7/4 — cuenta el ciclo y siente el tiempo de más que un compás simple no permitiría.',
   ],
 };
 
