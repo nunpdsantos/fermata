@@ -192,12 +192,13 @@ export function LearnView() {
               onOpenLevel={goToLevel}
               onOpenModule={(moduleId, unitId, levelId) => goToModule(levelId, unitId, moduleId)}
               onStartReview={(moduleId) => {
-                // Resolve levelId/unitId from module ID prefix
-                const levelId = moduleId.slice(0, 2);
-                // Extract unit number from pattern l{n}u{n}m{n}
-                const unitMatch = moduleId.match(/^(l\d+)(u\d+)/);
-                const unitId = unitMatch ? unitMatch[1] + unitMatch[2] : '';
-                goToReview(levelId, unitId, moduleId);
+                // Module ids are l{n}u{n}m{n}; level ids are "l{n}" and unit
+                // ids "u{n}". (This used to build the unit id "l1u1", which no
+                // unit has, so starting a review showed a blank screen —
+                // found by the W9-20 navigation tests.)
+                const ids = moduleId.match(/^(l\d+)(u\d+)m\d+$/);
+                if (!ids) return;
+                goToReview(ids[1], ids[2], moduleId);
               }}
             />
           </ScreenFrame>
