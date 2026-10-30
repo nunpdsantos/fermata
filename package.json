@@ -15,7 +15,8 @@
     "audit:exercises": "npx tsx scripts/audit/verify-exercises.ts",
     "audit:generated": "npx tsx scripts/audit/verify-generated.ts",
     "audit:all": "npm run audit:engine && npm run audit:exercises && npm run audit:generated",
-    "i18n:module-titles": "npx tsx scripts/i18n/extract-module-titles.ts"
+    "i18n:module-titles": "npx tsx scripts/i18n/extract-module-titles.ts",
+    "i18n:rehash": "npx tsx scripts/i18n/rehash-sources.ts"
   },
   "dependencies": {
     "framer-motion": "^12.33.0",
