@@ -130,14 +130,18 @@ export function genFunction(): DrillItem[] {
   for (const cadence of CADENCES) {
     const choices = shuffleStable(CADENCE_CHOICES, `function:cadence:${cadence.pair}:choices`);
 
+    // A perfect authentic cadence also needs both chords in root position
+    // and the tonic in the top voice — the V → I item states those
+    // conditions in its prompt, and its why line names the imperfect case.
+    const isPerfect = cadence.answer === 'Perfect authentic cadence';
     items.push({
       id: `function:cadence:${cadence.pair}`,
       family: 'function',
-      promptKey: 'drill.prompts.cadence',
+      promptKey: isPerfect ? 'drill.prompts.cadenceRootPosition' : 'drill.prompts.cadence',
       promptParams: { pair: cadence.pairDisplay },
       input: { format: 'choice', choices },
       answer: { kind: 'choice', correct: cadence.answer },
-      whyKey: 'drill.why.cadenceDef',
+      whyKey: isPerfect ? 'drill.why.cadencePerfect' : 'drill.why.cadenceDef',
       whyParams: { answer: cadence.answer, uk: cadence.uk },
       rank: rank++,
     });

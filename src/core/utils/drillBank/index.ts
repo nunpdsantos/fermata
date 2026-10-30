@@ -85,11 +85,13 @@ export const DRILL_PROMPT_KEYS: readonly string[] = [
   'drill.prompts.degreeToChord',
   'drill.prompts.chordToDegree',
   'drill.prompts.pattern',
+  'drill.prompts.patternNaturalMinor',
   'drill.prompts.isDiatonic',
   'drill.prompts.harmonicFact',
   // F9 — function & cadences
   'drill.prompts.chordFunction',
   'drill.prompts.cadence',
+  'drill.prompts.cadenceRootPosition',
   'drill.prompts.v7Of',
 ];
 
@@ -103,6 +105,7 @@ export const DRILL_WHY_KEYS: readonly string[] = [
   'drill.why.keyToCount',
   'drill.why.lastSharp',
   'drill.why.penultimateFlat',
+  'drill.why.singleFlat',
   'drill.why.sigToKey',
   'drill.why.relative',
   // F2 circle
@@ -121,10 +124,13 @@ export const DRILL_WHY_KEYS: readonly string[] = [
   'drill.why.seventhLadder',
   // F8 roman numerals
   'drill.why.diatonicMember',
+  'drill.why.notDiatonic',
   'drill.why.romanPattern',
+  'drill.why.romanPatternNaturalMinor',
   'drill.why.harmonicFact',
   // F9 function & cadences
   'drill.why.functionPull',
   'drill.why.cadenceDef',
+  'drill.why.cadencePerfect',
   'drill.why.v7Derivation',
 ];

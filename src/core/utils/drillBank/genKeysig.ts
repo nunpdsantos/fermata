@@ -160,7 +160,14 @@ export function genKeysig(): DrillItem[] {
         promptParams: { key: keyDisplayMajor(majorKey) },
         input: { format: 'choice', choices },
         answer: { kind: 'choice', correct },
-        whyKey: sig.type === '#' ? 'drill.why.lastSharp' : 'drill.why.penultimateFlat',
+        // The second-to-last-flat rule needs two or more flats; F major
+        // (one flat) gets its own explanation.
+        whyKey:
+          sig.type === '#'
+            ? 'drill.why.lastSharp'
+            : sig.count === 1
+              ? 'drill.why.singleFlat'
+              : 'drill.why.penultimateFlat',
         whyParams: { key: keyDisplayMajor(majorKey), answer: correct },
         rank: keyRank + 1,
       });
