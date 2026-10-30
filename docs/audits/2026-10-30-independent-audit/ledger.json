@@ -1,0 +1,3078 @@
+[
+ {
+  "id": "W0-01",
+  "ws": "W0",
+  "sev": "S1",
+  "title": "Four scale types crash the whole app, and the crash survives reload",
+  "plain": "Choosing Diminished (W-H or H-W), Bebop Dominant or Bebop Major crashes the whole app; the crash returns after reload, and the only way out the app offers deletes all saved progress.",
+  "sources": [
+   "A-2",
+   "C-12",
+   "U-15",
+   "A-IMP-4"
+  ],
+  "verified": "live",
+  "where": "chords.ts:686-699 getRomanNumeral reads baseNumerals[7]; useKeyContext.ts:70-77; persisted selectedScale passes store.ts:36-38; ErrorBoundary.tsx:58-63 reset clears all music-theory* keys incl. progress. Reached via KeySelector, 11 Compatible-Scales chips, Cmd+K, Try-This 'C diminished scale' (curriculumL6.ts:428,450; curriculumL8.ts:546). Scope: 48 of 444 root x scale combos.",
+  "fix": "Make getRomanNumeral safe past 7 degrees (or return [] for 8-note scales); test that mounts every ScaleType; add 'reset view settings, keep progress' to the error screen. Also clears the bebop_dorian blank numeral and Copy-summary throw (exportHelpers.ts:31).",
+  "verify_note": "Seen in the running app: Bebop Dom on the live site (Track A auditor, A-2) and Dim H-W on a local production build (main session, U-15); jsdom crash for all 4 types (A-2, C-12); verify-A2 re-ran: 4 scales throw. Progress-loss path inferred from code (C-12)."
+ },
+ {
+  "id": "W0-02",
+  "ws": "W0",
+  "sev": "S2",
+  "title": "Drill answer input locks when a just-missed item is asked again immediately",
+  "plain": "If you miss the last question of a short Drill queue (for example with only one topic switched on), the same question comes straight back and ignores every tap until you end the session with the X button.",
+  "sources": [
+   "D-4"
+  ],
+  "verified": "partial",
+  "where": "drillSession.ts:166 requeues at index+1; DrillView.tsx:169 key={item.id} so no remount; NoteChips / AccidentalSlots / RootQualityChips lock refs never re-arm (ChoiceChips unaffected).",
+  "fix": "Never requeue at index+1; also key the input by id+attempt; add a queue-invariant test after every recordAnswer.",
+  "verify_note": "verify-D reproduced the lock but found it rare under default settings (0 of 200 simulated learners; ~54% with Triads-only topics). Auditor S1, verifier S2."
+ },
+ {
+  "id": "W0-03",
+  "ws": "W0",
+  "sev": "S2",
+  "title": "Right/wrong feedback, hints and answer chips are nearly unreadable on the default light theme",
+  "plain": "On the default cream theme, the green, red and amber text that tells you whether you were right, the hint text and the answered chips have contrast of roughly 1.2 to 1.8 to 1, far below the 4.5 to 1 minimum for readable text.",
+  "sources": [
+   "U-2",
+   "F-05",
+   "verify-F extra 1"
+  ],
+  "verified": "live",
+  "where": "FeedbackStrip.tsx:30-39; ExerciseFeedback.tsx:76,93; ChoiceInput.tsx:34,39; ChoiceChips.tsx:59-61; NoteChips.tsx:92-96; AccidentalSlots.tsx:92-94; RootQualityChips.tsx:66-67,111; ReviewQueue.tsx:83,109; UnitCard.tsx:61; ModuleView.tsx:176,181; ModuleRow.tsx:33. Also --text-dim 3.15-3.85:1 on cream.",
+  "fix": "Add light-theme text tokens (700/800 shades) for success, warning and danger text; keep 300/400 shades for the dark theme and fills.",
+  "verify_note": "Measured live in-page 1.16-1.76:1 (U-2); F-05 confirmed by verify-F (recomputed 1.22-1.67:1), which found the answered-state chips also affected."
+ },
+ {
+  "id": "W0-04",
+  "ws": "W0",
+  "sev": "S2",
+  "title": "Next ear-training question can start silent if you move on while the previous sound is playing",
+  "plain": "If you answer and continue while a scale or chord progression is still playing, the next ear-training question does not play its sound; Replay works only after a few seconds.",
+  "sources": [
+   "F-01",
+   "C-48"
+  ],
+  "verified": "confirmed",
+  "where": "ExerciseRunner.tsx:76-141 (one playingRef for the whole runner; autoplay 300 ms after mount returns early while the previous lock holds); exerciseHelpers.ts earPlaybackLockMs.",
+  "fix": "Reset playingRef, clear pending timeouts and stop playback when the exercise changes; key the lock to the exercise id.",
+  "verify_note": "Both confirmed. verify-F and verify-C2 narrowed scope: realistic only for scale (~3.3 s lock) and progression (~4.2 s) items; note/interval/chord locks ~1.1-1.3 s. Auditor F rated S1; verifiers S2/S3."
+ },
+ {
+  "id": "W1-01",
+  "ws": "W1",
+  "sev": "S1",
+  "title": "Interval staff spells the upper note with a sharp, contradicting prompt and answer key",
+  "plain": "In 12 of the 43 interval exercises the staff draws a different interval from the one being asked about; for example 'C up to E-flat' is drawn as C to D-sharp, and only 'Minor 3rd' is accepted.",
+  "sources": [
+   "A-8",
+   "B-1",
+   "C-11",
+   "D-3"
+  ],
+  "verified": "confirmed",
+  "where": "ExercisePrompt.tsx:47-63 (sharps-only table); grading is semitone-only (validateExercise.ts:159-174; INTERVAL_LABELS chords.ts:428-444). Scope: 3 authored + 9 generated of 43; 67 of 302 template configs.",
+  "fix": "Spell the upper note by interval number (letter = root + number - 1); store intervalNumber in the config; reuse drillBank/intervalEngine.ts.",
+  "verify_note": "All four confirmed. verify-A1 suggested S2; verify-B, verify-C1 and verify-D kept S1. 3 of the 12 are C to C-sharp half-step items whose status is disputed (see conflicts)."
+ },
+ {
+  "id": "W1-02",
+  "ws": "W1",
+  "sev": "S1",
+  "title": "B-sharp and C-flat are drawn an octave off on the staff",
+  "plain": "In scales and chords that contain B-sharp or C-flat (e.g. C-sharp major, A-flat minor, the A-flat minor and E augmented chords) that note jumps an octave up or down on the staff.",
+  "sources": [
+   "A-4"
+  ],
+  "verified": "confirmed",
+  "where": "pianoLayout.ts:44-47, 217-252, 265-289 give the octave by pitch class; notationHelpers.ts:21-25 passes it through; VexFlow places by letter. Scope: 74 selectable scale combos, 137 chords.",
+  "fix": "Assign octave numbers by letter (scientific pitch) when building pitched notes.",
+  "verify_note": "Confirmed with a real VexFlow render (verify-A1: 'S2 is defensible')."
+ },
+ {
+  "id": "W1-03",
+  "ws": "W1",
+  "sev": "S1",
+  "title": "Staff omits natural signs in flat-key minor scales and repeats key-signature accidentals",
+  "plain": "C harmonic minor is drawn with no natural sign on B, so it reads as C natural minor (12 key/scale cases); separately, sharps and flats already in the key signature are printed again on the notes.",
+  "sources": [
+   "A-3",
+   "A-18"
+  ],
+  "verified": "confirmed",
+  "where": "useStaffNotation.ts:127-134 draws an accidental only when the note has one and never applies the key signature; notationHelpers.ts:60-74.",
+  "fix": "Use Accidental.applyAccidentals(voices, keySig), or emit 'n' for naturals the signature alters.",
+  "verify_note": "A-3 confirmed by VexFlow render. A-18 confirmed but verify-A2 calls it redundant notation (S3); same root cause and fix, so merged."
+ },
+ {
+  "id": "W1-04",
+  "ws": "W1",
+  "sev": "S1",
+  "title": "Drill accepts D-flat as a fifth above F-sharp (and F-sharp as a fifth below D-flat)",
+  "plain": "Two Drill questions mark a wrong spelling as right: a perfect fifth above F-sharp is C-sharp, but the app accepts D-flat and doesn't offer C-sharp; a fifth below D-flat is G-flat, but it accepts F-sharp.",
+  "sources": [
+   "D-1"
+  ],
+  "verified": "confirmed",
+  "where": "drillBank/genCircle.ts:21 CIRCLE_DISPLAY, used at :86-87. Scope: 2 items x 3 languages.",
+  "fix": "Spell the answer with noteAtIntervalAbove(note, 5, 7).",
+  "verify_note": "Confirmed; verify-D leaned S2 (pitch right, spelling wrong, 2 items). Ledger S1 per rubric (a wrong answer graded right)."
+ },
+ {
+  "id": "W1-05",
+  "ws": "W1",
+  "sev": "S2",
+  "title": "Blues, whole-tone, diminished and chromatic scales: labels contradict note names, and spellings use needless double accidentals",
+  "plain": "On these scales the Scale Degrees bar prints labels that disagree with the note under them (e.g. 'b5' over D-sharp in A blues, 'b6' over G-sharp in whole tone), and diminished/chromatic scales use odd double flats and sharps (C half-whole shows A-double-flat where G is expected).",
+  "sources": [
+   "U-4",
+   "A-12",
+   "A-17",
+   "C-54",
+   "C-55"
+  ],
+  "verified": "live",
+  "where": "scales.ts:108-124 (semitone-based labels for non-7-note scales); scales.ts:212-240 degree maps (blues [0,2,3,3,4,6] spells #4); ScaleDegreeBar.tsx; ExploreView.tsx:99-100. Scope: 36 label contradictions for selectable roots (A-12; C-55 counts 156 across 5 types); dim H-W 84 mis-spelled notes over 21 roots. Dim scales currently crash on selection, so those spellings show only in other panels.",
+  "fix": "Spell blues with b5; explicit spelled formulas for symmetric scales; label non-7-note degrees from letter distance; chromatic 'sharps ascending, naturals preferred'.",
+  "decision": "D-13: Notation conventions in Explore",
+  "verify_note": "U-4 seen live; A-12 and C-54 confirmed; A-17 and C-55 partial (verifiers: S3, enharmonic labels; only dim, whole-tone and C-sharp blues spellings are needless)."
+ },
+ {
+  "id": "W1-06",
+  "ws": "W1",
+  "sev": "S2",
+  "title": "Degree colours follow note order, not function, on non-7-note scales",
+  "plain": "On pentatonic and other non-7-note scales the colour for each scale degree is wrong; in C major pentatonic, G gets the 4th-degree colour and A the 5th-degree colour.",
+  "sources": [
+   "A-15"
+  ],
+  "verified": "confirmed",
+  "where": "useKeyContext.ts:80-106; ScaleDegreeBar.tsx:44-46; ScaleComparison.tsx; ChordWorkspace.tsx:107.",
+  "fix": "Take the degree number from the spelled letter.",
+  "verify_note": "Confirmed; 0 mismatches on 7-note scales (detector sound)."
+ },
+ {
+  "id": "W1-07",
+  "ws": "W1",
+  "sev": "S2",
+  "title": "Chord Builder spells chord tones by the key, not by the chord",
+  "plain": "In the Chord Builder, C minor is shown as C, D-sharp, G instead of C, E-flat, G, a chosen D-flat root can appear as C-sharp, and the interval strip mislabels some steps (an augmented 5th shown as 'm6').",
+  "sources": [
+   "A-14",
+   "C-57"
+  ],
+  "verified": "confirmed",
+  "where": "ChordBuilderPanel.tsx:51,56-67,76-86; ChromaticStrip.tsx:5-7. Scope: 791 of 1,296 key x root x quality combos (664 plain-accidental errors); strip 64 of 720 blocks.",
+  "fix": "Spell the Notes row from the matched chord's notes; otherwise spell letter-by-interval from the chosen root.",
+  "verify_note": "Both confirmed; chord identification itself is correct (600/600)."
+ },
+ {
+  "id": "W1-08",
+  "ws": "W1",
+  "sev": "S2",
+  "title": "Learn note chips use sharp names only, and build answers can't express spelling",
+  "plain": "When building scales or chords in Learn, the note buttons always use sharp names, so F major's B-flat appears as 'A#' and C minor shows 'D#, G#, A#', although one prompt asks for 'the correct sharps or flats'.",
+  "sources": [
+   "B-14",
+   "D-13 (part)"
+  ],
+  "verified": "confirmed",
+  "where": "InstrumentInput.tsx:59,94-95; useKeyContext.ts:204-206 (spellSharpDefault in exercise mode); templatesL2.ts:20 (l2u4m1). Scope: 26 of 97 build items show a correct note under another name.",
+  "fix": "Spell chips by the target key/chord; decide whether spelling lessons grade spelling.",
+  "verify_note": "B-14 confirmed (deliberate, comment-documented choice). Grading answers match the oracle for all 263 build items."
+ },
+ {
+  "id": "W1-09",
+  "ws": "W1",
+  "sev": "S2",
+  "title": "Key picker offers only one spelling per black key",
+  "plain": "The key picker offers C-sharp, E-flat, F-sharp, A-flat and B-flat only, so you can choose C-sharp major (7 sharps) but not D-flat major (5 flats), or F-sharp but not G-flat.",
+  "sources": [
+   "U-10",
+   "A-IMP-3"
+  ],
+  "verified": "live",
+  "where": "KeySelector.tsx:8-21 ROOTS.",
+  "fix": "Choose the root spelling by mode (D-flat major, C-sharp minor) or offer both spellings.",
+  "verify_note": "Seen in the live UI; not re-checked by a verifier. A's improvement 3: choosing the root spelling by mode removes 30 of 52 double-accidental spellings."
+ },
+ {
+  "id": "W1-10",
+  "ws": "W1",
+  "sev": "S3",
+  "title": "Feedback and summaries print internal names",
+  "plain": "Some messages show program names instead of musical ones, e.g. 'Not quite - C# half_diminished7', 'The C major9 chord has 5 notes', and in Portuguese 'A escala de C natural minor tem 7 notas'.",
+  "sources": [
+   "D-7",
+   "C-84",
+   "C-91",
+   "E-21"
+  ],
+  "verified": "confirmed",
+  "where": "DrillView.tsx:214-225 canonicalAnswer; validateExercise.ts:180,201; exportHelpers.ts:30,38; ChordBuilderPanel.tsx:150.",
+  "fix": "One answer formatter using displayNote, CHORD_QUALITY_NAMES, SCALE_TYPE_NAMES / translateScaleType.",
+  "verify_note": "D-7 confirmed (verify-D: S3, cosmetic); C-84, C-91, E-21 not re-checked."
+ },
+ {
+  "id": "W1-11",
+  "ws": "W1",
+  "sev": "S3",
+  "title": "Interval labels mix two notations",
+  "plain": "Interval labels mix styles, e.g. A minor pentatonic reads 'R m3 4 5 b7', and the same minor 3rd shows as 'm3' or 'b3' depending on how a chord was entered.",
+  "sources": [
+   "A-29",
+   "C-92"
+  ],
+  "verified": "not re-checked",
+  "where": "chords.ts:455-479 INTERVAL_SHORT_LABELS; algorithmicChordBuilder.ts:766; CurrentChordPanel.tsx:89.",
+  "fix": "Pick one notation (C-92 suggests chord-formula style 1 b3 5 b7) and use it everywhere.",
+  "decision": "D-13: Notation conventions in Explore"
+ },
+ {
+  "id": "W1-12",
+  "ws": "W1",
+  "sev": "S3",
+  "title": "Diminished-seventh formula shown as 'R m3 b5 6'",
+  "plain": "The fourth note of a diminished seventh chord (a diminished 7th, B-double-flat in C) is labelled '6' in the chord formula.",
+  "sources": [
+   "C-50"
+  ],
+  "verified": "confirmed",
+  "where": "chords.ts:465, 484-491 (no context override for 9 semitones in diminished7); CurrentChordPanel.tsx:89, 246-254.",
+  "fix": "Add a diminished7 context label 'bb7'.",
+  "verify_note": "Confirmed; verify-C2: S3 (same pitch, one label). Only label error among 50 qualities."
+ },
+ {
+  "id": "W1-13",
+  "ws": "W1",
+  "sev": "S3",
+  "title": "Lydian Augmented's raised 5th labelled 'Dominant'",
+  "plain": "In Lydian Augmented the raised 5th is given the function name 'Dominant', while an unused 'Aug. 5th' label already exists.",
+  "sources": [
+   "C-87"
+  ],
+  "verified": "not re-checked",
+  "where": "scales.ts:131; en.json degreeShort.augFifth unused.",
+  "fix": "Return augFifth for 8 semitones at index 4."
+ },
+ {
+  "id": "W1-14",
+  "ws": "W1",
+  "sev": "S3",
+  "title": "16 semitones named 'Minor 10th' (latent)",
+  "plain": "The interval table calls 16 semitones a 'Minor 10th' (it is a major 10th); nothing in the app shows it today.",
+  "sources": [
+   "C-88"
+  ],
+  "verified": "not re-checked",
+  "where": "chords.ts:445 INTERVAL_LABELS[16]; :472 INTERVAL_SHORT_LABELS[16].",
+  "fix": "Correct both entries."
+ },
+ {
+  "id": "W1-15",
+  "ws": "W1",
+  "sev": "S3",
+  "title": "Scale Comparison column headers are fixed chromatic labels",
+  "plain": "In Scale Comparison the column headers are fixed (e.g. 'b5' sits over Lydian's F-sharp); each cell still shows the scale's own correct note name.",
+  "sources": [
+   "A-13"
+  ],
+  "verified": "partial",
+  "where": "ScaleComparison.tsx:13 CHROMATIC_LABELS.",
+  "fix": "Label each row from its own spelling.",
+  "verify_note": "verify-A1: design limitation more than error, S3; 1,288 count not re-run."
+ },
+ {
+  "id": "W1-16",
+  "ws": "W1",
+  "sev": "S3",
+  "title": "Fretboard string-name column is re-spelled by key",
+  "plain": "The open-string names at the left of the fretboard change with the key (e.g. the B string shown as 'Cb' in G-flat major) instead of always showing the tuning's names.",
+  "sources": [
+   "A-16"
+  ],
+  "verified": "partial",
+  "where": "FretboardString.tsx:62-68, 105-110, 170-176.",
+  "fix": "Always print the tuning name in that column.",
+  "verify_note": "verify-A2: deliberate per code comment; 2,888 counts distinct tuples, not screen occurrences; S3."
+ },
+ {
+  "id": "W1-17",
+  "ws": "W1",
+  "sev": "S3",
+  "title": "Piano screen-reader labels give the wrong octave for B-sharp/C-flat",
+  "plain": "A screen reader announces the C5 key as 'B#5', which is a different, higher note.",
+  "sources": [
+   "A-31"
+  ],
+  "verified": "not re-checked",
+  "where": "PianoKey.tsx:200-207, 257, 349.",
+  "fix": "Use letter-based octave numbers (same helper as the staff-octave fix)."
+ },
+ {
+  "id": "W1-18",
+  "ws": "W1",
+  "sev": "S3",
+  "title": "Top tonic on the Explore scale staff has no degree colour",
+  "plain": "On the Explore staff the repeated tonic at the top of the scale is drawn in plain text colour instead of the tonic's colour.",
+  "sources": [
+   "verify-A1 extra 1"
+  ],
+  "verified": "not re-checked",
+  "where": "ChordWorkspace.tsx:107-109 builds noteColors from 7 scale notes while the staff draws 8.",
+  "fix": "Colour the octave note like degree 1.",
+  "verify_note": "Found by verify-A1 in a jsdom render of C major; not checked by anyone else."
+ },
+ {
+  "id": "W1-19",
+  "ws": "W1",
+  "sev": "S3",
+  "title": "Notes-to-name ignores spelling for symmetric chords",
+  "plain": "When naming a chord from typed notes, symmetric chords can be renamed with a different spelling (written E G# C is named E augmented [E G# B#]); pitches are never wrong.",
+  "sources": [
+   "D-21"
+  ],
+  "verified": "not re-checked",
+  "where": "reverseChordParser.ts:162-176. 94 of 745 names respelled.",
+  "fix": "Break ties in favour of a spelling match."
+ },
+ {
+  "id": "W2-01",
+  "ws": "W2",
+  "sev": "S1",
+  "title": "Circle of fifths shows the wrong key signature for modes, minor pentatonic, blues, C-sharp major and A-flat minor",
+  "plain": "The circle of fifths shows the root's major key signature for modes, minor pentatonic and blues (A Dorian shows 3 sharps instead of 1; A minor pentatonic shows 3 sharps), and shows '5 flats' for C-sharp major and '5 sharps' for A-flat minor.",
+  "sources": [
+   "A-6",
+   "C-51",
+   "U-3 (part)",
+   "A-IMP-6"
+  ],
+  "verified": "live",
+  "where": "CircleOfFifths.tsx:18-20, 63-70, 362-372. Scope: 90 root x scale combos with a standard signature (selectable roots; C-51's 62 counts the 5 modes plus C# major and Ab minor); 280 non-diatonic cases show the root's major signature with no note that none applies.",
+  "fix": "Take the signature from the spelled parent key of the built scale; hide it for non-diatonic scales; show both enharmonic names at the bottom of the circle (A's improvement 6).",
+  "verify_note": "Seen live (U-3); A-6 and C-51 confirmed. verify-A1 suggested S2 for the modal cases; ledger S1 per rubric (core display shows the wrong key). Natural minor on A is correct."
+ },
+ {
+  "id": "W2-02",
+  "ws": "W2",
+  "sev": "S2",
+  "title": "Circle of fifths Roman numerals are major-key numerals by note order for every scale",
+  "plain": "The Roman numerals on the circle are always major-key numerals assigned by note order, so they are wrong for every scale except major (A Dorian shows I ... vii-dim instead of i, ii, III, IV, v, vi-dim, VII; blues gets numerals by note order).",
+  "sources": [
+   "A-7",
+   "C-52",
+   "U-3 (part)"
+  ],
+  "verified": "live",
+  "where": "CircleOfFifths.tsx:125-131, 259-271; circleOfFifthsConstants.ts:43-45. Scope: 252 root x scale combos plus every non-7-note scale.",
+  "fix": "Use diatonicChords[i].numeral on the matching ring; show nothing when that list is empty.",
+  "verify_note": "Seen live (U-3); A-7 and C-52 confirmed; verify-A1 suggested S2 for A-7 (auditor S1)."
+ },
+ {
+  "id": "W2-03",
+  "ws": "W2",
+  "sev": "S2",
+  "title": "On load the circle grabs keyboard focus and shows C's information",
+  "plain": "When Explore loads, the circle of fifths takes keyboard focus on the C segment, so its centre describes C instead of the selected key (for C or A minor it reads 'Current key').",
+  "sources": [
+   "A-21"
+  ],
+  "verified": "partial",
+  "where": "CircleOfFifths.tsx:115-120 (focus effect), :238 onFocus.",
+  "fix": "Don't move focus on mount; show the selected key in the centre until the user hovers or focuses.",
+  "verify_note": "verify-A2: focus lands on C for every key, but 'Current key' appears only for C/Am (summary overgeneralised); S2 borderline S3. Page scroll on load not checked."
+ },
+ {
+  "id": "W2-04",
+  "ws": "W2",
+  "sev": "S2",
+  "title": "'Diatonic chord' buttons contain notes outside the scale for 12 less common scales",
+  "plain": "For 12 less common scale types (e.g. Hungarian minor, Persian, Hirajoshi, major blues, bebop Dorian) the 'diatonic chord' buttons contain notes that are not in the scale.",
+  "sources": [
+   "A-10",
+   "C-13"
+  ],
+  "verified": "confirmed",
+  "where": "chords.ts:558-723 DIATONIC_QUALITIES and getDiatonicChordsForScale. Scope: 41 chips at root C hold out-of-scale notes (verify-C1; C-13's 47 adds 6 in-scale but non-stacked-thirds chips); 492 of 2,256 buttons across roots (A-10).",
+  "fix": "Build triads by stacking thirds within the scale; return nothing for non-7-note scales.",
+  "verify_note": "Both confirmed; verifiers: 12 scale types (not 13), exotic scales so S2 (auditors S1)."
+ },
+ {
+  "id": "W2-05",
+  "ws": "W2",
+  "sev": "S2",
+  "title": "Some 'Compatible Scales' suggestions contradict their own chord",
+  "plain": "Some scale suggestions for a chord don't contain the chord's own notes: maj11 and add11 list Lydian (which lacks the chord's 11th) first, and sus4 to major pentatonic is described as 'no clash with 3rd' although that scale contains the 3rd and lacks the 4th.",
+  "sources": [
+   "C-14",
+   "C-53"
+  ],
+  "verified": "confirmed",
+  "where": "chordScaleRelationships.ts:51-54, 67-70, 156-166, 181, 210, 213-218, 234, 246, 250, 311, 324.",
+  "fix": "Swap ranks for maj11/add11; reword or drop clashing entries; add a unit test that every primary/secondary suggestion contains all chord tones, with a whitelist for idiomatic exceptions.",
+  "decision": "D-14: Theory conventions to choose",
+  "verify_note": "C-14 confirmed (fix direction a judgement call); C-53 partial: solid for sus4, sus2sus4, 13b9, maj7b5, 7#11; weaker for maj7#11/maj9#11 colour entries, 7#5 wording and the 7#9 ranking. 9 suggestions across 9 qualities (not 8)."
+ },
+ {
+  "id": "W2-06",
+  "ws": "W2",
+  "sev": "S3",
+  "title": "Circle clicks bypass the store's reset logic",
+  "plain": "Choosing a key or scale on the circle can leave a stale position chip, a stale comparison scale, or no root highlighted in the key picker (for D-flat and G-flat).",
+  "sources": [
+   "A-22",
+   "verify-A2 extra 1"
+  ],
+  "verified": "confirmed",
+  "where": "CircleOfFifths.tsx:72-91 raw setState; musicSlice.ts:12,14 resets bypassed; KeySelector.tsx:8-21 has no Db/Gb.",
+  "fix": "Route circle clicks through the store setters.",
+  "verify_note": "Confirmed; verify-A2 rated S3 and added the comparisonScale case (code reading only)."
+ },
+ {
+  "id": "W2-07",
+  "ws": "W2",
+  "sev": "S3",
+  "title": "Low-octave piano chords put a non-root in the bass; extreme octave buttons leave the keyboard",
+  "plain": "If you choose a low octave on the piano, many root-position chords light a non-root note at the bottom (F major at octave 1 lights C1 F1 A2), and the highest/lowest octave buttons can push the scale off the keyboard.",
+  "sources": [
+   "A-27"
+  ],
+  "verified": "confirmed",
+  "where": "pianoLayout.ts:265-330 getOpenVoicedChordNotes; Piano.tsx:359.",
+  "fix": "Keep the root lowest; limit octave buttons to ranges that fit.",
+  "verify_note": "Confirmed; verify-A2: S3 (default octave 4 is unaffected)."
+ },
+ {
+  "id": "W2-08",
+  "ws": "W2",
+  "sev": "S3",
+  "title": "Explore writes modal Roman numerals without flats, while the lessons write bII and bVII",
+  "plain": "Explore labels Mixolydian's B-flat chord 'VII' while the L7 lessons call it 'bVII'; both conventions exist, but the app uses both.",
+  "sources": [
+   "C-58"
+  ],
+  "verified": "partial",
+  "where": "chords.ts:686-699 getRomanNumeral never adds b/#; curriculumL7.ts:184, 541, 644.",
+  "fix": "Pick one convention for church modes and use it on every surface.",
+  "decision": "D-13: Notation conventions in Explore",
+  "verify_note": "verify-C2: a recognised convention, so inconsistency rather than error; 13 church-mode numerals."
+ },
+ {
+  "id": "W2-09",
+  "ws": "W2",
+  "sev": "S3",
+  "title": "Extra inversion buttons on 5+ note chords are labelled 'Root'",
+  "plain": "For chords with five or more notes, the extra inversion buttons are all labelled 'Root' even though they put another note in the bass.",
+  "sources": [
+   "C-59"
+  ],
+  "verified": "confirmed",
+  "where": "CurrentChordPanel.tsx:38, 218-233.",
+  "fix": "Use the existing 'Inv {{n}}' label for i >= 4, or cap at 3 inversions.",
+  "verify_note": "Confirmed; verify-C2: S3. 25 qualities."
+ },
+ {
+  "id": "W2-10",
+  "ws": "W2",
+  "sev": "S3",
+  "title": "Chord browser omits three qualities and lists two identical chords twice",
+  "plain": "Three chord types (7#11, maj9#11, 7b13) can't be browsed, and two pairs of identical chords appear as separate entries.",
+  "sources": [
+   "C-89"
+  ],
+  "verified": "not re-checked",
+  "where": "ChordBrowser.tsx:7-56.",
+  "fix": "Add the three; mark equivalents."
+ },
+ {
+  "id": "W3-01",
+  "ws": "W3",
+  "sev": "S1",
+  "title": "Most hand-made guitar scale positions are wrong, and the position system doesn't match classical usage",
+  "plain": "74 of the 85 hand-made guitar scale positions (the 'Scale Pos' chips) have wrong degree labels and 70 include notes outside the scale; separately, the boxes use rock/CAGED naming ('Pos 1 (E)' for C major sits at fret 8), which clashes with classical position names.",
+  "sources": [
+   "A-1",
+   "U-1",
+   "G-1",
+   "A-IMP-5",
+   "G-IMP-1"
+  ],
+  "verified": "live",
+  "where": "guitarScalePositions.ts:36-2909 (data), 2988-3012 (base fret); Fretboard.tsx:91-109; FretCell.tsx; FretboardString.tsx:118-120.",
+  "fix": "Stop using hand data: generate positions from the scale formula and tuning, with a CI oracle test; choose the position system first.",
+  "decision": "D-02: Guitar position system and default fretboard view",
+  "verify_note": "Seen live (U-1, A minor pentatonic Box 2); A-1 confirmed by verify-A1 with an independent check (same 11 clean positions in every key). G-1 is code-read plus cited sources."
+ },
+ {
+  "id": "W3-02",
+  "ws": "W3",
+  "sev": "S2",
+  "title": "Position boxes overlap and leave gaps instead of walking up the neck",
+  "plain": "The position boxes overlap and leave parts of the neck uncovered instead of running up the neck in order (A minor pentatonic boxes start at frets 5, 7, 0, 0, 5; frets 11-15 are never covered).",
+  "sources": [
+   "A-24"
+  ],
+  "verified": "confirmed",
+  "where": "guitarScalePositions.ts:2988-3012.",
+  "fix": "Solved by generated positions (see the scale-positions row).",
+  "decision": "D-02: Guitar position system and default fretboard view",
+  "verify_note": "Confirmed; verify-A2: largely a symptom of the bad data plus base fret never shifted past 11."
+ },
+ {
+  "id": "W3-03",
+  "ws": "W3",
+  "sev": "S2",
+  "title": "Chromatic and Bebop Dorian scales lose notes on the full-neck fretboard",
+  "plain": "On the full-neck fretboard, Chromatic shows only 7 of its 12 notes and Bebop Dorian 7 of its 8, while the piano shows them all.",
+  "sources": [
+   "A-5"
+  ],
+  "verified": "confirmed",
+  "where": "useKeyContext.ts:105 colours only degrees 1-7; FretboardString.tsx:122,136 treats 'no colour' as 'not in scale'; colors.ts:2-10.",
+  "fix": "Decide scale membership by pitch class; colour separately.",
+  "verify_note": "Confirmed; verify-A1: niche scales, S2 (auditor S1). The other 8-note scales crash instead."
+ },
+ {
+  "id": "W3-04",
+  "ws": "W3",
+  "sev": "S2",
+  "title": "Notes tapped on the guitar during Learn exercises are not lit",
+  "plain": "In Learn exercises answered on the guitar, the notes you tap are not lit on the fretboard (the piano lights them); only text chips and an 'n of m selected' counter show what you picked.",
+  "sources": [
+   "A-9"
+  ],
+  "verified": "confirmed",
+  "where": "useKeyContext.ts:194-210 sends taps through a chord-highlight channel; Fretboard.tsx:25 never reads it.",
+  "fix": "Light the tapped pitch classes on the fretboard.",
+  "verify_note": "Confirmed and refined by verify-A1 (text chips and counter exist), S2 (auditor S1)."
+ },
+ {
+  "id": "W3-05",
+  "ws": "W3",
+  "sev": "S2",
+  "title": "Under alternate tunings a selected chord silently shows the scale instead",
+  "plain": "With a non-standard tuning (e.g. Drop D) and a chord selected, the fretboard silently shows the scale instead of the chord, with no message.",
+  "sources": [
+   "A-20"
+  ],
+  "verified": "confirmed",
+  "where": "Fretboard.tsx:45 returns no shapes for non-standard tunings; FretboardString.tsx:136.",
+  "fix": "Show chord tones (or a notice) under alternate tunings.",
+  "verify_note": "Confirmed; pitches for all 6 tunings are correct."
+ },
+ {
+  "id": "W3-06",
+  "ws": "W3",
+  "sev": "S3",
+  "title": "Position view shows open strings inconsistently",
+  "plain": "In a position view, open-string notes that belong to the position show only as plain unlabelled dots, and positions high on the neck still show unrelated open-string dots (A major Pos 2 at frets 7-12 shows open E A D B E).",
+  "sources": [
+   "A-23"
+  ],
+  "verified": "partial",
+  "where": "Fretboard.tsx:133 (position dots start at fret 1); FretboardString.tsx:209.",
+  "fix": "Draw open-string position notes with labels; hide unrelated open dots in position view.",
+  "decision": "D-02: Guitar position system and default fretboard view",
+  "verify_note": "verify-A2: second half true; first half misleading (open notes are lit, just unlabelled); '431 hidden' counts omitted position dots. S3."
+ },
+ {
+  "id": "W3-07",
+  "ws": "W3",
+  "sev": "S3",
+  "title": "Double-sharp/flat roots place positions as if the key were C",
+  "plain": "If a key with a double sharp or flat is reached via 'Compatible scales' (8 such roots, from exotic chord grids), the positions are drawn as if the key were C.",
+  "sources": [
+   "A-25"
+  ],
+  "verified": "partial",
+  "where": "guitarScalePositions.ts:2961-2994 (NOTE_TO_PITCH_CLASS[...] ?? 0); CurrentChordPanel.tsx:269-272.",
+  "fix": "Use getPitchClass.",
+  "verify_note": "verify-A2: mechanism real; 8 distinct roots, not 37; S3."
+ },
+ {
+  "id": "W3-08",
+  "ws": "W3",
+  "sev": "S3",
+  "title": "Chosen position resets to 'All' on every key change",
+  "plain": "The chosen position chip snaps back to 'All' (the whole neck) on every key change, although each position is the same shape in every key.",
+  "sources": [
+   "A-30",
+   "F-14",
+   "G-2"
+  ],
+  "verified": "not re-checked",
+  "where": "musicSlice.ts:11-14 (setKey/setScale reset guitarScalePosition).",
+  "fix": "Keep the chip when the new scale has that many positions.",
+  "decision": "D-02: Guitar position system and default fretboard view",
+  "verify_note": "Code-verified by A and F; G rated S2."
+ },
+ {
+  "id": "W3-09",
+  "ws": "W3",
+  "sev": "S3",
+  "title": "Some chord diagrams show impossible finger numbers or barres",
+  "plain": "Some chord diagrams show impossible finger labels or barres: the default A6-shape used for D-flat6, D6, E-flat6, E6, B-flat6 and B6 shows finger 1 on two frets, and some computer-generated shapes draw a barre across open strings. No wrong notes were found.",
+  "sources": [
+   "A-19",
+   "verify-A2 extra 2"
+  ],
+  "verified": "partial",
+  "where": "guitarChordShapes.ts:1280-1297; guitarVoicingGenerator.ts:541-573, 632-650; Fretboard.tsx:253-274.",
+  "fix": "Fix finger/barre labelling; don't draw barres over open strings.",
+  "verify_note": "verify-A2: counts include false positives (e.g. G maj7 open flagged); A6 is playable but mislabelled; most flagged shapes are not defaults; S3."
+ },
+ {
+  "id": "W3-10",
+  "ws": "W3",
+  "sev": "S3",
+  "title": "Many hand-made chord shapes are silently hidden; two position entries unreachable",
+  "plain": "In a sample of 3 roots, 87 of 335 hand-made chord shapes contain a wrong note and are silently filtered out (including the C-shape and G-shape major barres), and two scale-position entries can never be shown.",
+  "sources": [
+   "A-32"
+  ],
+  "verified": "not re-checked",
+  "where": "guitarChordShapes.ts; guitarScalePositions.ts (ionian, aeolian aliases).",
+  "fix": "Fix or delete the bad shapes; remove dead entries."
+ },
+ {
+  "id": "W3-11",
+  "ws": "W3",
+  "sev": "S3",
+  "title": "Fretboard ignores chord inversions and slash-chord bass",
+  "plain": "Choosing a chord inversion or a slash chord (e.g. Dm7/G) doesn't change the fretboard, which never shows the requested bass note.",
+  "sources": [
+   "A-26"
+  ],
+  "verified": "confirmed",
+  "where": "Fretboard.tsx:43-60 never reads chordInversion or bassNote; guitarChordShapes.ts:3503.",
+  "fix": "Prefer shapes with the requested bass.",
+  "verify_note": "Confirmed; verify-A2: feature gap, S3."
+ },
+ {
+  "id": "W3-12",
+  "ws": "W3",
+  "sev": "S3",
+  "title": "Staff and lessons never connect to the guitar (written an octave above sounding pitch)",
+  "plain": "With the guitar selected, the staff stays in plain concert-pitch treble clef with no 'treble clef with 8 below' sign or note that guitar sounds an octave lower than written, and the L1 clef lesson never mentions the guitar.",
+  "sources": [
+   "A-28",
+   "G-7",
+   "U-8",
+   "B-28"
+  ],
+  "verified": "live",
+  "where": "useStaffNotation.ts:72-99; ChordWorkspace.tsx:102-111; curriculumL1.ts (clef module); InstrumentInput.tsx:10.",
+  "fix": "Decide the staff convention; add one guitar sentence to the clef lesson (EN/PT/ES).",
+  "decision": "D-05: Staff convention when the guitar is selected",
+  "verify_note": "Lesson text checked live (U-8). verify-A2 and verify-B: design/feature gap, S3. U-8 and G-7 rated S2. VexFlow 5 supports the 8vb treble clef (G R30)."
+ },
+ {
+  "id": "W3-13",
+  "ws": "W3",
+  "sev": "S3",
+  "title": "No first-position (open-string) scale fingerings",
+  "plain": "Positions are placed by the root's fret, so there are no first-position (open-string) scale fingerings, which beginner classical exams and Portuguese programmes start with.",
+  "sources": [
+   "G-4"
+  ],
+  "verified": "not re-checked",
+  "where": "getScalePositionBaseFret in guitarScalePositions.ts.",
+  "fix": "Part of the position-system rebuild.",
+  "decision": "D-02: Guitar position system and default fretboard view",
+  "verify_note": "Code-read plus cited syllabi (G R4, R16). Track G rated S2; ledger S3 (feature gap)."
+ },
+ {
+  "id": "W3-14",
+  "ws": "W3",
+  "sev": "S3",
+  "title": "Small, pale labels on the fretboard 'All' view",
+  "plain": "On the whole-neck view, letters on non-root dots are pale on pale circles, and the position chips use 10px text.",
+  "sources": [
+   "U-14"
+  ],
+  "verified": "live",
+  "where": "FretCell.tsx; FretboardPositionSelector.tsx:22-23.",
+  "fix": "Darker label colour and larger chip text.",
+  "verify_note": "Seen visually, not measured."
+ },
+ {
+  "id": "W3-15",
+  "ws": "W3",
+  "sev": "S3",
+  "title": "Chord-shape selection lags one render after a chord change",
+  "plain": "After changing chord, the first redraw briefly uses the previous chord's shape index.",
+  "sources": [
+   "F-IMP-5"
+  ],
+  "verified": "not re-checked",
+  "where": "Fretboard.tsx:65-67 (queueMicrotask reset).",
+  "fix": "Derive the reset from the chord.",
+  "verify_note": "Filed by Track F as an improvement."
+ },
+ {
+  "id": "W4-01",
+  "ws": "W4",
+  "sev": "S1",
+  "title": "Generated practice questions in about 25 modules belong to a different module",
+  "plain": "In about 25 Learn modules (in L3, L4, L6, L7 and L8) the computer-generated questions were written for a different module, so learners are quizzed on topics that module doesn't teach - some taught later, a few never taught at all.",
+  "sources": [
+   "B-5",
+   "C-19",
+   "C-28",
+   "C-49"
+  ],
+  "verified": "confirmed",
+  "where": "templatesL3.ts:245-520; templatesL4.ts:256-398; templatesL6.ts:275-451; templatesL7.ts:305-597; templatesL8.ts:285-416. Scope: ~95-100 generated items - L3/L4 ~38-40 after verify-B corrections, L6/L8 23 in 7 modules, L7 34 in 8 modules. Never-taught topics include parsimonious voice leading, quadruple counterpoint, Hirajoshi.",
+  "fix": "Re-key template blocks to the modules they match; write templates where none fit (species 4-5, part writing, rhythm, Coltrane, upper structures, melodic-minor modes, chord taxonomy); test that each block's topic matches its module; mirror in PT/ES.",
+  "verify_note": "C-19, C-28, C-49 confirmed (S2); B-5 partial: verify-B kept S1 for 7 forward-referencing L3/L4 modules and removed l4u13m2 (mostly on-topic). Ledger S1 for the forward-referencing modules."
+ },
+ {
+  "id": "W4-02",
+  "ws": "W4",
+  "sev": "S1",
+  "title": "Scale-degree questions never show the note to identify",
+  "plain": "Three generated questions ask 'what degree number is the given note?' but never show the note, so they cannot be answered.",
+  "sources": [
+   "B-4"
+  ],
+  "verified": "confirmed",
+  "where": "templatesL2.ts:67 never uses {note}; ExercisePrompt.tsx:33-66 draws nothing for scale_degree_id. Items l2u4m2g1/g4/g6.",
+  "fix": "Put the note in the prompt ('...the note {note}?') in EN, PT and ES.",
+  "verify_note": "Confirmed; all 35 template configs affected; answer keys themselves correct."
+ },
+ {
+  "id": "W4-03",
+  "ws": "W4",
+  "sev": "S1",
+  "title": "Tritone-substitution build questions accept only the original chord",
+  "plain": "Three generated questions ask you to build the tritone substitute of a dominant 7th but accept only the original chord, so the right answer is marked wrong and the wrong one right.",
+  "sources": [
+   "C-6"
+  ],
+  "verified": "confirmed",
+  "where": "templatesL7.ts:188-198; exerciseGenerator.ts:82-95; validateExercise.ts:197-203. Items l7u21m4g2, g3, g5 (g5 duplicates authored l7u21m4e1).",
+  "fix": "Name the original dominant in the prompt and keep the config root on the substitute (needs fixed choice sets or per-root prompts).",
+  "verify_note": "Confirmed by verify-C1 (S1). PT/ES share the config (not checked)."
+ },
+ {
+  "id": "W4-04",
+  "ws": "W4",
+  "sev": "S2",
+  "title": "After a first wrong answer the app reveals the answer, then pays half a point to re-enter it",
+  "plain": "After a first wrong answer the app highlights and spells out the correct answer and then offers 'Try again' for half a point, so a module can be passed with about 60% first-try accuracy and scores can't tell guessing from knowing.",
+  "sources": [
+   "B-10",
+   "C-10",
+   "U-7"
+  ],
+  "verified": "live",
+  "where": "ChoiceInput.tsx:18,31; validateExercise.ts:152-155, 168-172, 251-256, 270-274; ExerciseFeedback.tsx:25, 87-102; ExerciseRunner.tsx:147-160. Scope: 369 choice items in L1-L5, 325 in L6-L9.",
+  "fix": "While a retry remains, show only 'Not quite' plus the hint; reveal and highlight once the exercise is final.",
+  "decision": "D-09: Learn answer reveal policy",
+  "verify_note": "Seen live (U-7). B-10 confirmed (S2); C-10 confirmed with verify-C1 keeping S1. Ledger S2 (scoring-integrity flaw, not an inverted grade). Documented 2-attempt design (CLAUDE.md:183); whether the reveal is deliberate is unknown."
+ },
+ {
+  "id": "W4-05",
+  "ws": "W4",
+  "sev": "S2",
+  "title": "Ledger-line exercises draw notes in bass clef or with no ledger line",
+  "plain": "In the ledger-line module, several notes described as sitting on ledger lines below the treble staff are drawn in bass clef or need no ledger line, because any note below the middle-C octave is automatically drawn in bass clef.",
+  "sources": [
+   "B-3",
+   "verify-E extra 1",
+   "verify-B extra 3"
+  ],
+  "verified": "confirmed",
+  "where": "ExercisePrompt.tsx:68 (octave < 4 means bass clef); exercisesL1.ts:74; templatesL1.ts:55-69. Scope: 1 of 7 authored, 3 of 14 generated, 17 of 26 configs.",
+  "fix": "Add an explicit clef field; restrict the template to real ledger-line notes.",
+  "verify_note": "Confirmed; verify-B: S2 (letter and key still right, so answerable). verify-E traced the same clef rule to l1u1m2e1 in all three languages."
+ },
+ {
+  "id": "W4-06",
+  "ws": "W4",
+  "sev": "S2",
+  "title": "Questions refer to 'this chord' or 'the indicated line' but show nothing",
+  "plain": "Many generated multiple-choice questions refer to 'this chord', 'this cadence' or 'the indicated line', but no chord, staff or sound is shown; the options are self-contained statements, so most can still be answered.",
+  "sources": [
+   "B-12",
+   "C-20",
+   "C-76"
+  ],
+  "verified": "confirmed",
+  "where": "templatesL1-L8 promptTemplates (e.g. templatesL6.ts:61; templatesL8.ts:20, 61, 102, 141, 361, 390); MultipleChoiceConfig has only choices. Scope: ~91 of 293 in L1-L5, 26 in L6/L8, 18 in L7.",
+  "fix": "Reword to 'Which statement about X is true?', or render the stimulus.",
+  "verify_note": "B-12 confirmed (S2; count regex-based); C-20 confirmed with verify-C1 suggesting S3; C-76 not re-checked."
+ },
+ {
+  "id": "W4-07",
+  "ws": "W4",
+  "sev": "S2",
+  "title": "Some authored questions contain their own answer",
+  "plain": "Some authored questions give the answer away, e.g. a chord-build prompt that lists the notes to select ('Select all 4 notes: D, F, A, C') or a transposition prompt that states the result.",
+  "sources": [
+   "B-13",
+   "C-35"
+  ],
+  "verified": "confirmed",
+  "where": "exercisesL2.ts:755; exercisesL3.ts:749, 764; exercisesL4/L5 build prompts; exercisesL7.ts:118, 132, 166. Scope: 15 (L2-L5) + 3 (L7).",
+  "fix": "Drop note lists from prompts (keep them in hints).",
+  "verify_note": "C-35 confirmed S2; B-13 partial (verify-B: S3 because build items still need notes selected; l3u11m5e1/e2 are real giveaways). Ledger S2."
+ },
+ {
+  "id": "W4-08",
+  "ws": "W4",
+  "sev": "S2",
+  "title": "In note-naming questions the answer is often the only option with a sharp or flat",
+  "plain": "When a question says the note has an accidental, or asks for its flat name, the correct answer is often the only option with a sharp or flat (e.g. choices C, D, D-flat, D-sharp for 'use its flat name').",
+  "sources": [
+   "C-42",
+   "D-24"
+  ],
+  "verified": "confirmed",
+  "where": "exerciseHelpers.ts:27-55 generateNoteChoices; templatesL9.ts:30-40. Scope: L9 2 of 5 roots fully leaked (live item l9u30m1g6); L1 5 flat items (l1u1m4).",
+  "fix": "Choose distractors of the same kind (all accidentals), or drop the clue.",
+  "verify_note": "C-42 confirmed; D-24 not re-checked (sharp variants inferred)."
+ },
+ {
+  "id": "W4-09",
+  "ws": "W4",
+  "sev": "S2",
+  "title": "The correct option is usually the longest one",
+  "plain": "In about 3 of 4 multiple-choice sets the correct option is the longest, so a learner can often guess right without knowing the material.",
+  "sources": [
+   "B-11"
+  ],
+  "verified": "confirmed",
+  "where": "Authored and template choice sets, L1-L5 (other levels not measured).",
+  "fix": "Balance option lengths; add a check to the content audit.",
+  "verify_note": "Confirmed; verify-B recount ~75% (226 of 303 unique sets), not 76%."
+ },
+ {
+  "id": "W4-10",
+  "ws": "W4",
+  "sev": "S2",
+  "title": "Ear-training chords and progressions are played inverted",
+  "plain": "Ear-training chords and progressions play every note in the same octave, so most chords sound inverted (four seventh chords sound exactly like root-position sixth chords), and the lesson's 'follow the bass note' method gives wrong Roman numerals.",
+  "sources": [
+   "A-11",
+   "C-38",
+   "C-39"
+  ],
+  "verified": "confirmed",
+  "where": "ExerciseRunner.tsx:112, 117-124; audio.ts:716-731. Scope: 52 of 81 chord stimuli (51/75 template + 1/6 authored), 9 of 20 live chord items; all 8 progression sets in l9u32m3; 28 of 48 basic triads.",
+  "fix": "Use playChordVoiced (root in the bass) for chords and progressions.",
+  "verify_note": "All three confirmed. Same root cause (playChord at one octave) for chords and progressions; merged. Inversions never make another offered option correct (C coverage)."
+ },
+ {
+  "id": "W4-11",
+  "ws": "W4",
+  "sev": "S2",
+  "title": "Cadence questions play no key reference",
+  "plain": "Cadence questions play just two chords with nothing to establish the key, so 'IV-I' and 'I-V' sound like the same event (a major chord, then a major chord a fifth higher).",
+  "sources": [
+   "C-40"
+  ],
+  "verified": "confirmed",
+  "where": "templatesL9.ts l9u32m3 template 0; ExerciseRunner.tsx:117-124. Live items l9u32m3g1, g4.",
+  "fix": "Play a short tonic/key pre-roll first, or replace I-V with an unambiguous pair.",
+  "decision": "D-11: Ear-training scope (L9)",
+  "verify_note": "Confirmed (structural identity); learner impact inferred."
+ },
+ {
+  "id": "W4-12",
+  "ws": "W4",
+  "sev": "S2",
+  "title": "Single-note ear questions give no reference pitch",
+  "plain": "Single-note ear questions play one note with no reference and offer neighbouring notes as choices, which needs perfect pitch or matching each option on the on-screen piano; the L9 lesson itself says relative pitch is the goal.",
+  "sources": [
+   "B-15",
+   "C-41"
+  ],
+  "verified": "confirmed",
+  "where": "exercisesL1.ts:116; templatesL9.ts l9u30m1, l9u32m1, l9u32m2; ExerciseRunner.tsx:84-86. Scope: 4 in l1u1m2 + 16 in L9 (8 of 10 in l9u30m1).",
+  "fix": "Play a reference (C4 or the tonic) before the target and say so in the prompt.",
+  "decision": "D-11: Ear-training scope (L9)",
+  "verify_note": "C-41 confirmed S2 (hints concede remembered references); B-15 partial (verify-B: S3, playable piano always on screen)."
+ },
+ {
+  "id": "W4-13",
+  "ws": "W4",
+  "sev": "S2",
+  "title": "'Melodic dictation' modules never play a melody",
+  "plain": "The two melodic-dictation modules only play single notes or single intervals; no melody is ever played.",
+  "sources": [
+   "C-44"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL9.ts l9u32m1, l9u32m2; exercise.ts:61 (no melody mode); ExerciseRunner.tsx:84-125.",
+  "fix": "Add a melody ear mode, or retitle the modules.",
+  "decision": "D-11: Ear-training scope (L9)",
+  "verify_note": "Confirmed; scope corrected to 14 ear items + 3 MCQs. Stale curriculumL9.ts header says u32 'comingSoon' but nothing is flagged."
+ },
+ {
+  "id": "W4-14",
+  "ws": "W4",
+  "sev": "S2",
+  "title": "'Augmented, diminished or compound' interval questions can only produce other answers",
+  "plain": "A module about augmented, diminished and compound intervals generates questions whose answers can only be minor, major or tritone.",
+  "sources": [
+   "B-27",
+   "D-13 (part)"
+  ],
+  "verified": "confirmed",
+  "where": "templatesL2.ts:310-327 (intervals [1,3,4,6,8,10,11]); INTERVAL_LABELS chords.ts:428.",
+  "fix": "Spelled intervals in the engine, or reword the prompt.",
+  "verify_note": "B-27 confirmed; D-13 partial (S2 for l2u7m2)."
+ },
+ {
+  "id": "W4-15",
+  "ws": "W4",
+  "sev": "S2",
+  "title": "Early questions use ideas not yet taught",
+  "plain": "Some L1-L2 questions use things not yet taught: L1 interval items offer only quality names though L1 says the number is enough, 6/8 and cut time appear in L1, 'First Four Keys' tests E, B-flat and A-flat, one L2 answer relies on hemiola (taught in L8), and the common-time 'C' symbol is never taught.",
+  "sources": [
+   "B-16",
+   "verify-B extra 1"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL1.ts:353; l1u2m2g2-g4; l1u3m2g2-g4; l2u6m2g3; l2u7m4g1.",
+  "fix": "Move or replace the out-of-order items; add check_order to the content audit.",
+  "verify_note": "Confirmed; verify-B added l1u2m2g2 (common time 'C' never taught)."
+ },
+ {
+  "id": "W4-16",
+  "ws": "W4",
+  "sev": "S2",
+  "title": "The modes are never taught as a system before L7 relies on them",
+  "plain": "L7 uses all seven modes from its 6th module on, but no lesson explains what a mode is (only the optional L9 ear track covers all seven by characteristic tone).",
+  "sources": [
+   "C-31"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL7.ts:326-328, 361; spec curriculum/07 md:359 says 'covered in Level 2'.",
+  "fix": "Add a 'Modes of the major scale' concept before l7u22m1, or move l7u22m4 earlier and cover all 7.",
+  "verify_note": "Confirmed; verify-C2 noted the L9 coverage."
+ },
+ {
+  "id": "W4-17",
+  "ws": "W4",
+  "sev": "S3",
+  "title": "L9 ear training is open from day one but drills L5-L7 material",
+  "plain": "The L9 ear-training level is open from the start but drills modes, pentatonic and whole-tone scales and V/V, which the theory levels teach in L5-L7; a learner reaches the mode drills after about 6 L9 modules.",
+  "sources": [
+   "C-47"
+  ],
+  "verified": "confirmed",
+  "where": "levels.ts:105-113 (prerequisites []); curriculumLoader.ts:51; design note curriculum/09-ear-training.md:12-27.",
+  "fix": "Soft prerequisites or 'pairs with Lx' badges.",
+  "decision": "D-10: Level gating",
+  "verify_note": "Confirmed; verify-C2: overstated, S3 (each L9 lesson explains its material)."
+ },
+ {
+  "id": "W4-18",
+  "ws": "W4",
+  "sev": "S3",
+  "title": "Several L9 objectives have no exercise behind them",
+  "plain": "Eight L9 objectives (e.g. compound intervals, melodic minor, all seven church modes, triad inversions, bass-line dictation) are never tested by any exercise.",
+  "sources": [
+   "C-80"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL9.ts objectives; templatesL9.ts.",
+  "fix": "Add the missing choices or trim the objectives.",
+  "decision": "D-11: Ear-training scope (L9)"
+ },
+ {
+  "id": "W4-19",
+  "ws": "W4",
+  "sev": "S3",
+  "title": "The same exercise can appear twice in one session",
+  "plain": "Some exercises appear twice in one session because generated items aren't checked against authored ones (21 pairs in L1-L5; one in L7).",
+  "sources": [
+   "B-30"
+  ],
+  "verified": "not re-checked",
+  "where": "exerciseGenerator.ts:326-328.",
+  "fix": "De-duplicate against authored items."
+ },
+ {
+  "id": "W4-20",
+  "ws": "W4",
+  "sev": "S3",
+  "title": "The 'points: 2' weighting is ignored by scoring",
+  "plain": "Some harder questions are marked as worth 2 points, but every question counts the same.",
+  "sources": [
+   "B-32",
+   "C-83"
+  ],
+  "verified": "not re-checked",
+  "where": "exercise.ts:120,130; ExerciseRunner.tsx:153-188; useLearnProgress.ts:77,89. 99 items in L6-L9 plus L1-L5 build items.",
+  "fix": "Weight by points, or delete the field.",
+  "decision": "D-16: The 'points' field"
+ },
+ {
+  "id": "W4-21",
+  "ws": "W4",
+  "sev": "S3",
+  "title": "Dead note-ID highlight code would leak answers if switched on",
+  "plain": "Unused code for highlighting the note in note-naming questions would reveal the answer on the instrument if someone 'fixed' it.",
+  "sources": [
+   "B-33"
+  ],
+  "verified": "not re-checked",
+  "where": "ExercisePrompt.tsx:22; useKeyContext.ts:181-192.",
+  "fix": "Delete it."
+ },
+ {
+  "id": "W4-22",
+  "ws": "W4",
+  "sev": "S3",
+  "title": "Ambiguous 'most unstable and dissonant triad' question",
+  "plain": "A question asks for the 'most unstable and dissonant' triad when both the diminished and augmented triads are called unstable in the lesson.",
+  "sources": [
+   "B-29"
+  ],
+  "verified": "partial",
+  "where": "exercisesL2.ts:667.",
+  "fix": "Reword the stem.",
+  "verify_note": "verify-B: debatable, diminished is the standard answer and the hint explains; S3."
+ },
+ {
+  "id": "W4-23",
+  "ws": "W4",
+  "sev": "S3",
+  "title": "Verse-chorus question echoes the definition of rondo",
+  "plain": "A form question describes 'a recurring section alternating with contrasting sections', which is also the lesson's definition of rondo; the 'A-B-A-B' and 'song' cues point to verse-chorus.",
+  "sources": [
+   "C-46"
+  ],
+  "verified": "partial",
+  "where": "exercisesL9.ts l9u32m5e2.",
+  "fix": "Describe verses and a repeated chorus explicitly.",
+  "verify_note": "verify-C2: ambiguous rather than defensible either way; S3."
+ },
+ {
+  "id": "W4-24",
+  "ws": "W4",
+  "sev": "S3",
+  "title": "A sus-chord distractor matches what the module teaches",
+  "plain": "One distractor ('acts as a substitute for the ii chord') echoes the module's own concept text about 9sus chords.",
+  "sources": [
+   "C-25"
+  ],
+  "verified": "partial",
+  "where": "exercisesL7.ts:96-104 vs curriculumL7.ts:94.",
+  "fix": "Replace with a clearly false option.",
+  "verify_note": "verify-C2: the question is about plain 7sus4, so the distractor is defensible as wrong; S3."
+ },
+ {
+  "id": "W4-25",
+  "ws": "W4",
+  "sev": "S3",
+  "title": "A distractor in the C7(#9) question is literally true",
+  "plain": "The distractor 'the #9 means the 9th is sharpened above a major 9th' is a correct description of a #9.",
+  "sources": [
+   "C-37"
+  ],
+  "verified": "confirmed",
+  "where": "templatesL7.ts:53 (l7u21m1g1).",
+  "fix": "Rewrite as a clearly false option.",
+  "verify_note": "Confirmed; verify-C2: S3 (keyed option is the fuller answer)."
+ },
+ {
+  "id": "W4-26",
+  "ws": "W4",
+  "sev": "S3",
+  "title": "Two generated prompts don't match their keyed answer",
+  "plain": "Two generated questions ask 'how does it work?' but the keyed answer is an identity or history fact.",
+  "sources": [
+   "C-60"
+  ],
+  "verified": "not re-checked",
+  "where": "templatesL6.ts:32+43, 149+166.",
+  "fix": "Give each choice set its own prompt."
+ },
+ {
+  "id": "W4-27",
+  "ws": "W4",
+  "sev": "S3",
+  "title": "Neapolitan / German-sixth build prompts name no key",
+  "plain": "Chord-build prompts say '(Neapolitan chord)' or '(enharmonic German sixth)' without naming the key, so they reduce to 'build a major triad / dominant 7th'.",
+  "sources": [
+   "C-61"
+  ],
+  "verified": "not re-checked",
+  "where": "templatesL6.ts:20, 129.",
+  "fix": "Template on the tonic ('Build the Neapolitan of {key} minor')."
+ },
+ {
+  "id": "W5-01",
+  "ws": "W5",
+  "sev": "S1",
+  "title": "Answer key: German-sixth pivot reaches keys 'a half step from the dominant'",
+  "plain": "A generated question marks as correct that this modulation reaches keys a half step from the dominant; it actually reaches keys a half step from the tonic, and that wrong statement is the only option marked right.",
+  "sources": [
+   "C-2"
+  ],
+  "verified": "confirmed",
+  "where": "templatesL6.ts:160 (l6u18m4g3).",
+  "fix": "Change the label to '...keys a half step above or below the tonic'.",
+  "verify_note": "Confirmed; verify-C1 suggested S2 in its table but listed C-2 among items that mark a wrong answer right. Ledger S1 per rubric."
+ },
+ {
+  "id": "W5-02",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "Answer key: German-sixth modulation reaches keys 'a tritone or more apart'",
+  "plain": "A question marks as correct that this modulation reaches keys 'up to a tritone or more apart', which is impossible; the lesson describes a half-step relationship.",
+  "sources": [
+   "C-3"
+  ],
+  "verified": "partial",
+  "where": "exercisesL6.ts:191 (keyed option), :197 (hint), l6u18m4e2.",
+  "fix": "Keep 'distant', fix the 'tritone or more' clause and the hint.",
+  "verify_note": "verify-C1: 'Distant keys' framing is lesson-consistent; only 'tritone or more' and the hint are wrong; S2. The half-step distractor is also not airtight (parent note)."
+ },
+ {
+  "id": "W5-03",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "'VI shares only one tone with i' (it shares two)",
+  "plain": "A lesson says the VI chord in minor shares only one note with i; in A minor, F-A-C and A-C-E share two.",
+  "sources": [
+   "B-6"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL3.ts:505 (l3u11m1).",
+  "fix": "Rewrite around the 5 to flat-6 bass motion.",
+  "verify_note": "Confirmed (auditor and verifier S1); ledger S2 per rubric (wrong fact in text)."
+ },
+ {
+  "id": "W5-04",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "A 7-6 suspension is labelled '4-3'",
+  "plain": "An exercise about a suspension over V calls a 7-6 suspension '4-3' and its hint names the wrong intervals; the answer 'suspension' itself is right.",
+  "sources": [
+   "B-7"
+  ],
+  "verified": "confirmed",
+  "where": "exercisesL4.ts:47-59 (l4u12m1e3).",
+  "fix": "Use C held over V resolving to B.",
+  "verify_note": "Confirmed; verify-B S1 borderline S2; ledger S2 (label and hint, not the graded answer)."
+ },
+ {
+  "id": "W5-05",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "Guide-tone hint swaps the notes",
+  "plain": "A hint says C holds and becomes the 7th of G7, but G7 contains no C; F holds and C moves down to B.",
+  "sources": [
+   "B-8"
+  ],
+  "verified": "confirmed",
+  "where": "exercisesL5.ts:707/719 (l5u17m4e2).",
+  "fix": "Correct the hint.",
+  "verify_note": "Confirmed (S1 both); ledger S2 per rubric. Hint is at line 719."
+ },
+ {
+  "id": "W5-06",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "Tritone said to resolve 'outward' in 5 places",
+  "plain": "Five lesson passages say the tritone in V7 resolves outward; as spelled (B up to F) it resolves inward to a 3rd. L4 states it correctly.",
+  "sources": [
+   "B-9"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL3.ts:148, 171; curriculumL5.ts:29, 36, 51.",
+  "fix": "Say 'contracts inward' (or use the augmented-4th spelling).",
+  "verify_note": "Confirmed; verify-B noted severity inconsistency with B-6."
+ },
+ {
+  "id": "W5-07",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "'V6/5' and 'V4/3' demo buttons play plain triads",
+  "plain": "Two Try-This buttons labelled V4/3 and V6/5 play plain G-B-D triads with no 7th.",
+  "sources": [
+   "B-20"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL4.ts:239, 258-259.",
+  "fix": "Use G7/D and G7/B.",
+  "verify_note": "Confirmed."
+ },
+ {
+  "id": "W5-08",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "Hint says appoggiatura and escape tone are both 'typically accented'",
+  "plain": "A hint says both are typically accented, contradicting the module, which places the escape tone on a weak beat.",
+  "sources": [
+   "B-23"
+  ],
+  "verified": "confirmed",
+  "where": "templatesL4.ts:58.",
+  "fix": "Fix the hint.",
+  "verify_note": "Confirmed; shown on 3 generated items."
+ },
+ {
+  "id": "W5-09",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "'C to C-sharp' keyed as a minor 2nd",
+  "plain": "An L1 question calls C to C-sharp a 'Minor 2nd'; strictly it is an augmented unison (a minor 2nd is C to D-flat).",
+  "sources": [
+   "B-2"
+  ],
+  "verified": "confirmed",
+  "where": "exercisesL1.ts:176 (l1u1m3e1).",
+  "fix": "Change the prompt to 'C to D-flat'.",
+  "verify_note": "Confirmed; verify-B S2. A-8 treats such half-step items as legitimate (see conflicts)."
+ },
+ {
+  "id": "W5-10",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "German sixth said to have 'a minor quality in its lower three notes'",
+  "plain": "The German-sixth lesson says its lower three notes (A-flat, C, E-flat) sound minor; they form a major triad.",
+  "sources": [
+   "C-1"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL6.ts:135.",
+  "fix": "Say 'major triad; the E-flat is borrowed from minor'.",
+  "verify_note": "Confirmed; S1 to S2 (verify-C1 and rubric)."
+ },
+ {
+  "id": "W5-11",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "Hint gives 'C major to D-flat minor' as a doubly chromatic mediant",
+  "plain": "A hint's only example of a doubly chromatic mediant (C major to D-flat minor) is wrong: the roots are a half step apart and they share a note.",
+  "sources": [
+   "C-4"
+  ],
+  "verified": "confirmed",
+  "where": "exercisesL6.ts:371 (l6u19m3e3).",
+  "fix": "Use C major to A-flat minor.",
+  "verify_note": "Confirmed; verify-C1 added that D-flat minor shares E (F-flat) with C major."
+ },
+ {
+  "id": "W5-12",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "3 claps over 4 beats called '3-against-2'",
+  "plain": "A task has you clap 3 even notes across 4 beats and calls it the 3-against-2 cross-rhythm; that set-up is 3 against 4.",
+  "sources": [
+   "C-5"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL8.ts:608 (l8u27m5t1).",
+  "fix": "Use a 2-beat pulse, or relabel.",
+  "verify_note": "Confirmed; S1 to S2."
+ },
+ {
+  "id": "W5-13",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "Bass A-flat, D-flat, C called 'chromatic'",
+  "plain": "The lesson twice calls the bass line A-flat, D-flat, C 'entirely chromatic'; only D-flat to C is a half step.",
+  "sources": [
+   "C-7"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL7.ts:197, 218.",
+  "fix": "Point to D, D-flat, C for the chromatic line.",
+  "verify_note": "Confirmed; S1 to S2."
+ },
+ {
+  "id": "W5-14",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "'D-flat triad over C7 = C7(b9,#11,b13), the tritone-sub voicing' is wrong",
+  "plain": "An upper-structure sentence says a D-flat triad over C7 gives a #11 tritone-sub sound; it gives a natural 11, and the tritone-sub sound comes from a G-flat triad.",
+  "sources": [
+   "C-8"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL7.ts:416.",
+  "fix": "Use 'G-flat (F-sharp) triad over C7 = C7(b9,#11)'.",
+  "verify_note": "Confirmed; S1 to S2."
+ },
+ {
+  "id": "W5-15",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "Shell voicings: '3rd and 7th make each quality distinct' (fails for Cm7 vs Cm7b5)",
+  "plain": "The shell-voicing lesson says the 5th is perfect in all standard chords and that the 3rd and 7th tell each quality apart, but Cm7 and Cm7b5 have the same 3rd and 7th.",
+  "sources": [
+   "C-9"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL7.ts:80, 103; exercisesL7.ts:76.",
+  "fix": "Keep the b5 in m7b5 and dim7 and say so.",
+  "verify_note": "Confirmed; S1 to S2. Same idea appears in L5 (B-25), which verify-B called standard shorthand (see conflicts)."
+ },
+ {
+  "id": "W5-16",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "'Equal division of the octave' counts by step size; hint points at the wrong option",
+  "plain": "The lesson calls whole-tone 'division by 2' (step size) where L8 uses number of parts, and a hint ('aug triad, div by 4') points the learner to the option marked wrong.",
+  "sources": [
+   "C-15"
+  ],
+  "verified": "partial",
+  "where": "curriculumL6.ts:420, 422; templatesL6.ts:362, 367 (l6u20m2g2, g4).",
+  "fix": "Say '6 / 4 / 3 equal parts (steps of 2 / 3 / 4 semitones)'.",
+  "verify_note": "verify-C1: the step-size wording is nonstandard but consistent; the real defect is the hint vs the distractor and the clash with L8."
+ },
+ {
+  "id": "W5-17",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "Octatonic scale said to have 'four minor thirds' (it has eight)",
+  "plain": "A task says the octatonic scale contains four minor thirds; it contains eight (and four tritones).",
+  "sources": [
+   "C-16"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL6.ts:449 (l6u19m4t2).",
+  "fix": "Say 'two diminished-seventh chords (8 minor thirds) and 4 tritones'.",
+  "verify_note": "Confirmed; verify-C1 suggested S3; ledger S2 per rubric (wrong fact). The task's 'C diminished scale' also hits the crash."
+ },
+ {
+  "id": "W5-18",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "Try-This label: B-flat major is 'the key a B-flat clarinet reads in'",
+  "plain": "A button label says a B-flat clarinet reads in B-flat major; it reads in C major to sound B-flat major (the same module's task gets it right).",
+  "sources": [
+   "C-17"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL6.ts:662.",
+  "fix": "Reuse the L8 wording.",
+  "verify_note": "Confirmed; verify-C1 suggested S3; ledger S2 per rubric."
+ },
+ {
+  "id": "W5-19",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "La Monte Young listed as a 'pulse-based' minimalist",
+  "plain": "A lesson lists La Monte Young as pulse-based; he is known for drones and sustained tones (Terry Riley fits 'pulse-based').",
+  "sources": [
+   "C-22"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL8.ts:531.",
+  "fix": "Split drone and pulse minimalism.",
+  "verify_note": "Confirmed (Wikipedia); verify-C1 suggested S3; ledger S2 per rubric."
+ },
+ {
+  "id": "W5-20",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "9sus explanation places the chord a 5th above the ii root",
+  "plain": "The 9sus explanation says it sits a perfect 5th above the ii root and equals Dm11/G; it sits a 4th above (G9sus = Dm7/G), and Dm11/G adds an extra note.",
+  "sources": [
+   "C-24"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL7.ts:94.",
+  "fix": "Reword as in C-24.",
+  "verify_note": "Confirmed."
+ },
+ {
+  "id": "W5-21",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "Characteristic modal tones called 'avoid notes in tonal theory'",
+  "plain": "A lesson calls Dorian's 6th, Phrygian's b2, Lydian's #4 and Mixolydian's b7 'avoid notes'; only the Phrygian b2 is, and the app's own exercises say Lydian has none.",
+  "sources": [
+   "C-26"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL7.ts:534 vs templatesL7.ts:573.",
+  "fix": "Drop or reword the avoid-note sentence.",
+  "verify_note": "Confirmed."
+ },
+ {
+  "id": "W5-22",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "Objective 'all seven modes of harmonic minor' - the app has 2",
+  "plain": "An L7 objective promises all seven harmonic-minor modes, but the app can only show, play or search two of them.",
+  "sources": [
+   "C-30"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL7.ts:800, 809; scales.ts; scaleParser.",
+  "fix": "Add the 5 scale types, or reword the objective.",
+  "decision": "D-12: Harmonic-minor modes",
+  "verify_note": "Confirmed."
+ },
+ {
+  "id": "W5-23",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "'IV-V-vi-IV' presented as a rotation of the four-chord loop",
+  "plain": "A lesson lists IV-V-vi-IV as the four-chord loop starting on IV; that rotation is IV-I-V-vi.",
+  "sources": [
+   "C-32"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL7.ts:658.",
+  "fix": "Use IV-I-V-vi.",
+  "verify_note": "Confirmed."
+ },
+ {
+  "id": "W5-24",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "'Between F and Em, insert F#dim7' called a chromatic bass walk",
+  "plain": "A lesson offers F, F-sharp, E as a chromatic passing bass; it changes direction and the second move is a whole step.",
+  "sources": [
+   "C-34"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL7.ts:430.",
+  "fix": "Use F, F-sharp-dim7, G.",
+  "verify_note": "Confirmed."
+ },
+ {
+  "id": "W5-25",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "7th chords called 'extended' in build prompts",
+  "plain": "Four generated prompts call plain 7th chords 'extended chords', which contradicts the module's definition (extensions are beyond the 7th).",
+  "sources": [
+   "C-36"
+  ],
+  "verified": "confirmed",
+  "where": "templatesL7.ts:22, 27 (l7u21m1g2-g5).",
+  "fix": "Use 9th/13th qualities or drop 'extended'.",
+  "verify_note": "Confirmed."
+ },
+ {
+  "id": "W5-26",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "Task compares C blues with the 'C pentatonic scale', which opens C major pentatonic",
+  "plain": "An L9 task says the blues scale is 'C pentatonic plus one note', but its button opens C major pentatonic, for which the claim is false (it holds for C minor pentatonic).",
+  "sources": [
+   "C-45"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL9.ts l9u31m3 t1, t2; queryExecutor.ts:101-110.",
+  "fix": "Use 'C minor pentatonic'; give t2 'C whole tone scale'.",
+  "verify_note": "Confirmed; a related task's query is rootless."
+ },
+ {
+  "id": "W5-27",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "Drill 'Is X diatonic? - No' explanation says X is the diatonic chord",
+  "plain": "For all 10 Drill questions answered 'No, not diatonic', the explanation says the chord IS the diatonic chord on that degree (in English, Portuguese and Spanish).",
+  "sources": [
+   "D-2"
+  ],
+  "verified": "confirmed",
+  "where": "drillBank/genRoman.ts:306-307; shown always (FeedbackStrip.tsx:95).",
+  "fix": "Add a 'not diatonic; degree n is Y' explanation.",
+  "verify_note": "Confirmed (auditor S1, verifier S1 borderline S2); ledger S2 per rubric (explanation wrong, grading right)."
+ },
+ {
+  "id": "W5-28",
+  "ws": "W5",
+  "sev": "S2",
+  "title": "Drill F-major explanation: 'second-to-last flat names the key. F major: B-flat'",
+  "plain": "The Drill explains F major's key signature with the 'second-to-last flat' rule, which doesn't apply to a key with one flat.",
+  "sources": [
+   "D-14"
+  ],
+  "verified": "confirmed",
+  "where": "drillBank/genKeysig.ts:163.",
+  "fix": "Dedicated explanation for one-flat keys.",
+  "verify_note": "Confirmed; verify-D suggested S3; ledger S2 per rubric (wrong explanation). 1 item x 3 languages."
+ },
+ {
+  "id": "W5-29",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Tenor sax said to sound 'a major 2nd lower' (omits the octave)",
+  "plain": "A lesson says the tenor saxophone sounds a major 2nd lower than written; it sounds an octave and a major 2nd lower (right only as a pitch name).",
+  "sources": [
+   "B-17"
+  ],
+  "verified": "partial",
+  "where": "curriculumL3.ts:737.",
+  "fix": "Add 'an octave and'.",
+  "verify_note": "verify-B: right for pitch class, the lesson's point; S3. Also in curriculum/03 md:447."
+ },
+ {
+  "id": "W5-30",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "SATB example puts the bass below its stated range",
+  "plain": "An SATB example uses C2 for the bass while the stated bass range starts at E2.",
+  "sources": [
+   "B-18"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL3.ts:286 vs :262.",
+  "fix": "Raise the bass note.",
+  "verify_note": "Confirmed; verify-B S3 ('All valid' refers to spacing)."
+ },
+ {
+  "id": "W5-31",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "'The major 7th interval (B to C)'",
+  "plain": "A sentence calls 'B to C' a major 7th; read upward B to C is a minor 2nd (C up to B is the major 7th).",
+  "sources": [
+   "B-19"
+  ],
+  "verified": "partial",
+  "where": "curriculumL4.ts:362.",
+  "fix": "Say 'C up to B'.",
+  "verify_note": "verify-B: ambiguous wording; S3."
+ },
+ {
+  "id": "W5-32",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Harmonic-minor task compares against A major",
+  "plain": "A task compares A harmonic minor with A major, which already has G-sharp; it should compare with A natural minor.",
+  "sources": [
+   "B-21"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL3.ts:223.",
+  "fix": "Compare with natural minor.",
+  "verify_note": "Confirmed; verify-B S3 (wording slip)."
+ },
+ {
+  "id": "W5-33",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "L4 and L5 explain major IV in minor differently",
+  "plain": "L4 says major IV in minor comes from melodic minor; an L5 answer calls it mode mixture.",
+  "sources": [
+   "B-22"
+  ],
+  "verified": "partial",
+  "where": "curriculumL4.ts:765 vs exercisesL5.ts:511.",
+  "fix": "Reconcile the framing.",
+  "verify_note": "verify-B: both framings mainstream; reconcile; S3."
+ },
+ {
+  "id": "W5-34",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Theme-and-variations answer says every variation keeps the harmony",
+  "plain": "An answer says each variation preserves the harmonic structure, while the lesson lists harmonic and modal variations.",
+  "sources": [
+   "B-24"
+  ],
+  "verified": "partial",
+  "where": "templatesL5.ts:473.",
+  "fix": "Qualify the answer.",
+  "verify_note": "verify-B: defensible generalisation; S3."
+ },
+ {
+  "id": "W5-35",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "'The 3rd and 7th ARE the chord's identity'",
+  "plain": "An L5 lesson says the 3rd and 7th fully define a chord's quality; Cm7 and Cm7b5 share them.",
+  "sources": [
+   "B-25"
+  ],
+  "verified": "partial",
+  "where": "curriculumL5.ts:755.",
+  "fix": "Qualify the sentence.",
+  "verify_note": "verify-B: standard jazz shorthand, overstated; S3. Compare C-9 (S2)."
+ },
+ {
+  "id": "W5-36",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Hint calls a period a 'sentence'",
+  "plain": "A hint calls a period a 'sentence' in the module that teaches the sentence as a different form.",
+  "sources": [
+   "B-26"
+  ],
+  "verified": "partial",
+  "where": "exercisesL3.ts:605.",
+  "fix": "Use another word.",
+  "verify_note": "verify-B: scare-quoted metaphor; S3."
+ },
+ {
+  "id": "W5-37",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Generated prompts: 'a E', raw names ('minor7') and 'going ascending'",
+  "plain": "Generated prompts contain grammar slips and program names, e.g. 'Build a E major triad', 'Build a F minor7 chord', 'going ascending'.",
+  "sources": [
+   "B-31",
+   "C-36 (part)",
+   "C-61 (part)"
+  ],
+  "verified": "confirmed",
+  "where": "Prompt templates L1-L7 (e.g. templatesL6.ts:20, 129; templatesL7.ts:22, 27).",
+  "fix": "Use display names and 'an' before vowel-sound letters.",
+  "verify_note": "Raw-name part confirmed under C-36 by verify-C2; B-31 not re-checked."
+ },
+ {
+  "id": "W5-38",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "About 10 small prose errors in L1-L5",
+  "plain": "A bundle of small wording errors in L1-L5, e.g. a 'minor 5th' distractor (no such interval), figured bass said to give 'the voicing', and Try-This buttons that don't match their concept.",
+  "sources": [
+   "B-34"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL2.ts:76; exercisesL1.ts:610; curriculumL3.ts:90, 448, 611, 634; curriculumL4.ts:356, 772; exercisesL3.ts:513; templatesL4.ts:219-221; templatesL1.ts:128, 138; l3u9m1 ear items.",
+  "fix": "Fix each line as listed in B-34.",
+  "verify_note": "Each sub-item checked by the auditor against the cited line."
+ },
+ {
+  "id": "W5-39",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "L6 gives two rules for second-species dissonance",
+  "plain": "The lesson allows neighbour tones in second species; the exercise key allows passing tones only.",
+  "sources": [
+   "C-18"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL6.ts:488 vs exercisesL6.ts:457, 479.",
+  "fix": "Pick one convention.",
+  "decision": "D-14: Theory conventions to choose",
+  "verify_note": "Confirmed; verify-C1 S3 (both conventions exist; low harm)."
+ },
+ {
+  "id": "W5-40",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Tonal answer said to adjust intervals 'to stay in the dominant key'",
+  "plain": "A fugue answer says a tonal answer stays in the dominant key; it exists to protect the tonic (a generated item in the same module says so).",
+  "sources": [
+   "C-21"
+  ],
+  "verified": "partial",
+  "where": "exercisesL8.ts:38.",
+  "fix": "Reword.",
+  "verify_note": "verify-C1: loose rationale, S3."
+ },
+ {
+  "id": "W5-41",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Two definitions of 'chromatic planing'",
+  "plain": "L6 defines chromatic planing as 'all half steps'; L8 defines it as exact transposition at any interval.",
+  "sources": [
+   "C-23"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL6.ts:434 vs curriculumL8.ts l8u27m3.",
+  "fix": "Use the L8 definition.",
+  "verify_note": "Confirmed; verify-C1 S3 (special case, low impact)."
+ },
+ {
+  "id": "W5-42",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "'The 7th of ii becomes the 3rd of V'",
+  "plain": "An answer says the 7th of ii becomes the 3rd of V; it actually moves down a half step to it.",
+  "sources": [
+   "C-27"
+  ],
+  "verified": "partial",
+  "where": "templatesL7.ts:121, 131.",
+  "fix": "Say 'falls a half step to'.",
+  "verify_note": "verify-C1: imprecise, common jazz wording; S3."
+ },
+ {
+  "id": "W5-43",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "'C#dim7 to Dm7: every voice moves by a half step or stays'",
+  "plain": "A task says every voice moves by half step from C-sharp-dim7 to Dm7; one must move a whole step.",
+  "sources": [
+   "C-33"
+  ],
+  "verified": "confirmed",
+  "where": "curriculumL7.ts:449.",
+  "fix": "Note the whole step.",
+  "verify_note": "Confirmed; verify-C2 S3 (sentence may refer only to the first move)."
+ },
+ {
+  "id": "W5-44",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "'Chromatic' dictation module uses only diatonic intervals",
+  "plain": "The 'Chromatic' dictation module calls ordinary minor/major intervals 'chromatic' and E to F a 'chromatic half step'.",
+  "sources": [
+   "C-43"
+  ],
+  "verified": "partial",
+  "where": "templatesL9.ts l9u32m2 tpl1; exercisesL9.ts l9u32m2e1.",
+  "fix": "Retitle or play a chromatic note in context.",
+  "verify_note": "verify-C2: term is context-dependent; keyed answers unaffected; S3."
+ },
+ {
+  "id": "W5-45",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Phrygian Dominant listed under 'Mel. Minor Modes'",
+  "plain": "The scale menu lists Phrygian Dominant as a melodic-minor mode; it is a mode of harmonic minor.",
+  "sources": [
+   "C-56"
+  ],
+  "verified": "confirmed",
+  "where": "KeySelector.tsx:66-77.",
+  "fix": "Move it or rename the group.",
+  "verify_note": "Confirmed; verify-C2 S3."
+ },
+ {
+  "id": "W5-46",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Cambiata called 'the only exception' to step resolution",
+  "plain": "A task calls the cambiata the only exception, though the double neighbour the module allows also leaves a dissonance by leap.",
+  "sources": [
+   "C-62"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL6.ts:514.",
+  "fix": "Say 'one of the few exceptions'.",
+  "verify_note": "Auditor status: inferred."
+ },
+ {
+  "id": "W5-47",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "'Each voice exponentially increases interval pairs'",
+  "plain": "A lesson says interval pairs grow exponentially with voices; they grow quadratically (1, 3, 6).",
+  "sources": [
+   "C-63"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL6.ts:591.",
+  "fix": "Say 'quickly (1, 3, 6)'."
+ },
+ {
+  "id": "W5-48",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Italian-sixth doubling sentence reads as if V doubles degree 1",
+  "plain": "A sentence attaches the doubled tonic to V, which doesn't contain it.",
+  "sources": [
+   "C-64"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL6.ts:86.",
+  "fix": "Reword."
+ },
+ {
+  "id": "W5-49",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Canon: 'further from the unison, more constrained'",
+  "plain": "A lesson says canons get harder the further the interval from the unison; the octave is among the easiest.",
+  "sources": [
+   "C-65"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL8.ts:134.",
+  "fix": "Reword.",
+  "verify_note": "Auditor status: inferred."
+ },
+ {
+  "id": "W5-50",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Sprechstimme 'developed by Schoenberg'",
+  "plain": "A lesson credits Schoenberg with developing Sprechstimme; Humperdinck used it first (1897), Schoenberg made it famous.",
+  "sources": [
+   "C-66"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL8.ts:545.",
+  "fix": "Say 'made famous by'."
+ },
+ {
+  "id": "W5-51",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Octatonic said to have no leading tone",
+  "plain": "A task says neither whole-tone nor octatonic has a leading tone; the C diminished scale the app plays contains B.",
+  "sources": [
+   "C-67"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL8.ts:504.",
+  "fix": "Drop 'or leading tone'."
+ },
+ {
+  "id": "W5-52",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Two L8 answer keys worded wrongly",
+  "plain": "Two L8 answers misstate pitch-class equivalence and exclude diatonic planing.",
+  "sources": [
+   "C-68"
+  ],
+  "verified": "not re-checked",
+  "where": "templatesL8.ts:261; exercisesL8.ts:446.",
+  "fix": "Reword."
+ },
+ {
+  "id": "W5-53",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Sonata hint uses labels the module never teaches",
+  "plain": "A sonata-form hint uses 'P-T-S-C' labels; the module teaches FTG/TR/STG/CT.",
+  "sources": [
+   "C-69"
+  ],
+  "verified": "not re-checked",
+  "where": "templatesL8.ts:142.",
+  "fix": "Use the module's labels."
+ },
+ {
+  "id": "W5-54",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Orchestration module promises ranges it never gives",
+  "plain": "The orchestration module's objective promises instrument ranges, but no ranges are given.",
+  "sources": [
+   "C-70"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL8.ts:298; moduleIndex.ts:161.",
+  "fix": "Port the md range table or drop 'ranges'."
+ },
+ {
+  "id": "W5-55",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Terms used before they are defined",
+  "plain": "'Whole-tone', 'voice exchange' and 'double passing tones' are used in L6 before (or without) being defined.",
+  "sources": [
+   "C-71"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL6.ts:73, 93, 107, 358, 378; exercisesL6.ts:479.",
+  "fix": "Add one-line glosses."
+ },
+ {
+  "id": "W5-56",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Lessons state wrong engine counts (46 scales, 42 chords)",
+  "plain": "Lessons say the app has 46 scales and 42 chord types; it has 37 and 50.",
+  "sources": [
+   "C-75"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL7.ts:842, 853, 878, 957, 963, 964.",
+  "fix": "Drop the numbers."
+ },
+ {
+  "id": "W5-57",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Six small L7 prose errors",
+  "plain": "Six small L7 errors, e.g. D to E called an 'upper' leading tone and 'So What' described as over a Dorian pedal.",
+  "sources": [
+   "C-77"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL7.ts:204, 375, 527, 590; templatesL7.ts:213, 585.",
+  "fix": "One-line rewordings."
+ },
+ {
+  "id": "W5-58",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "'The tritone is the most dissonant interval of all'",
+  "plain": "An L9 lesson states the tritone is the most dissonant interval as fact; sources group it with the minor 2nd and major 7th.",
+  "sources": [
+   "C-81"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL9.ts l9u30m3; exercisesL9.ts l9u32m2e2.",
+  "fix": "Say 'one of the sharpest dissonances'."
+ },
+ {
+  "id": "W5-59",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Minor-6th song cue is a descending example in an ascending list",
+  "plain": "The minor-6th cue 'Love Story' is conventionally a descending example but sits in a list of ascending cues.",
+  "sources": [
+   "C-82"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL9.ts l9u30m4.",
+  "fix": "Give ascending and descending cues.",
+  "verify_note": "Auditor status: inferred. Bears on E-15 (see conflicts)."
+ },
+ {
+  "id": "W5-60",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Four small L9 text errors",
+  "plain": "Four small L9 errors, e.g. 'the 9th is D an octave above the root' and an 'Is the third major or minor?' question offering non-thirds.",
+  "sources": [
+   "C-85"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL9.ts l9u30m5; templatesL9.ts l9u32m4, l9u30m2; curriculum/09 md.",
+  "fix": "As listed in C-85."
+ },
+ {
+  "id": "W5-61",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Drill minor-key 'pattern' items omit 'natural'",
+  "plain": "Two Drill items say 'in any minor key' the 5th-degree triad is minor and 'the pattern never changes', though harmonic minor makes it major.",
+  "sources": [
+   "D-6"
+  ],
+  "verified": "partial",
+  "where": "drillBank/genRoman.ts:41.",
+  "fix": "Say 'natural minor'.",
+  "verify_note": "verify-D: answers right for natural minor; missing qualifier; S3."
+ },
+ {
+  "id": "W5-62",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Drill: 'V to I' keyed as a Perfect authentic cadence",
+  "plain": "A Drill item teaches V-I as a perfect authentic cadence without the root-position and tonic-on-top conditions.",
+  "sources": [
+   "D-15"
+  ],
+  "verified": "partial",
+  "where": "drillBank/genFunction.ts:57.",
+  "fix": "Add the qualifier.",
+  "verify_note": "verify-D: standard simplification; no IAC option offered; S3."
+ },
+ {
+  "id": "W5-63",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Drill prompt reads 'relative major of A' with no 'minor'",
+  "plain": "A Drill prompt asks for the 'relative major of A' without saying A minor.",
+  "sources": [
+   "E-IMP-6"
+  ],
+  "verified": "not re-checked",
+  "where": "drill.prompts.relMajor (locale strings).",
+  "fix": "Include the key's mode in the prompt.",
+  "verify_note": "Reported by Track E for the English-content track; not a numbered finding anywhere."
+ },
+ {
+  "id": "W5-64",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Rhythm modules have no rhythm notation or audio",
+  "plain": "The rhythm modules show no rhythm notation and play no rhythms (every Try-This plays a scale or chord), and one module asks you to identify textures by ear with no audio.",
+  "sources": [
+   "B-IMP-5"
+  ],
+  "verified": "not re-checked",
+  "where": "l1u2m1, l1u2m2, l2u6m1, l2u6m2, l4u14m2; l5u17m3.",
+  "fix": "Add rhythm notation/audio, or reword the tasks.",
+  "verify_note": "Filed by Track B as an improvement."
+ },
+ {
+  "id": "W5-65",
+  "ws": "W5",
+  "sev": "S3",
+  "title": "Some Try-This buttons are unrelated to their concept",
+  "plain": "Several Try-This buttons play something unrelated to the concept they sit under (stretto plays 'Bdim', a C13#11 passage opens plain C13).",
+  "sources": [
+   "C-IMP (L6/L8 Try-This)",
+   "C-IMP (L7 C13#11)"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL6.ts / curriculumL8.ts tryThis entries; curriculumL7.ts l7u22m2 C1.",
+  "fix": "Remove filler buttons; use 'C13#11'.",
+  "verify_note": "Filed by Track C as improvements."
+ },
+ {
+  "id": "W6-01",
+  "ws": "W6",
+  "sev": "S1",
+  "title": "Portuguese/Spanish prompt describes a different note than the one graded",
+  "plain": "In Portuguese and Spanish, exercise l1u1m2e1 describes the space just below middle C (B3) while the exercise grades A3, so a learner who follows the words is marked wrong.",
+  "sources": [
+   "E-1"
+  ],
+  "verified": "confirmed",
+  "where": "i18n/content/pt/exercisesL1.ts:46, es/exercisesL1.ts:46 (stale since b355d71).",
+  "fix": "Re-translate the prompt and hint from the current English.",
+  "verify_note": "Confirmed; verify-E S1 borderline S2 (staff is also drawn - in bass clef, see the ledger-line row)."
+ },
+ {
+  "id": "W6-02",
+  "ws": "W6",
+  "sev": "S2",
+  "title": "Stale Portuguese/Spanish lesson text still states theory the English fixed",
+  "plain": "About 20 Portuguese and Spanish strings were never updated after English corrections and teach wrong facts, e.g. the 2-3 bass suspension resolving upward, all three voices of a common-tone diminished seventh moving by half step, and C to D-flat as 'six' steps round the circle of fifths.",
+  "sources": [
+   "E-2",
+   "E-3",
+   "E-4",
+   "E-5",
+   "E-6"
+  ],
+  "verified": "confirmed",
+  "where": "pt/curriculumL4.ts:32, 50, 51; pt/curriculumL6.ts:200, 256-290, 360; pt/curriculumL8.ts:418; pt/curriculumL7.ts:376, 395; pt/exercisesL7.ts:186; pt/templatesL6.ts:260; pt/curriculumL3.ts:232, 427; pt/curriculumL4.ts:233, 598-600, 680; pt/curriculumL5.ts:629; pt/curriculumL9.ts:188. Spanish at the same lines.",
+  "fix": "One re-translation pass from current English; add a staleness gate (see the parity-test row).",
+  "verify_note": "E-2 to E-5 confirmed (auditor/verifier S1 for E-2 to E-4; ledger S2 per rubric: translation states a wrong fact). E-6 partial: item 3 weak, item 8's cited reason wrong (see conflicts)."
+ },
+ {
+  "id": "W6-03",
+  "ws": "W6",
+  "sev": "S2",
+  "title": "Portuguese/Spanish song descriptions never appear",
+  "plain": "The 'Songs That Use This' descriptions are translated but never loaded, so Portuguese and Spanish users always see English; the translation files are not even in the shipped app.",
+  "sources": [
+   "F-04",
+   "E-7"
+  ],
+  "verified": "confirmed",
+  "where": "ModuleView.tsx:121, 343-351; overlayLoader.ts:102 loadSongOverlay and contentResolver.ts:172 applySongOverlay have no callers. Scope: 36 modules / 71 contexts; l2u6m1 and l4u14m2 overlays incomplete.",
+  "fix": "Load and apply the song overlay in ModuleView; add the missing contexts; test a module rendered in PT.",
+  "verify_note": "Both confirmed (verify-F grepped the built app; verify-E reproduced counts)."
+ },
+ {
+  "id": "W6-04",
+  "ws": "W6",
+  "sev": "S2",
+  "title": "Plural feedback never pluralises ('missing 2 note', 'falta 2 nota')",
+  "plain": "Feedback for missing or extra notes never uses the plural, in any language ('missing 2 note', 'falta 2 nota').",
+  "sources": [
+   "E-8",
+   "verify-E extra 2"
+  ],
+  "verified": "confirmed",
+  "where": "pt/en/es.json scaleMissing/_plural, scaleExtra, chordMissing, chordExtra; validateExercise.ts buildMissingExtraParts, :62-73.",
+  "fix": "Rename keys to _one/_other; test through a real i18next instance.",
+  "verify_note": "Confirmed with a real i18next instance; tests pass only through a hand-written fallback. verify-E: octaveCount pair is unused."
+ },
+ {
+  "id": "W6-05",
+  "ws": "W6",
+  "sev": "S2",
+  "title": "Hard-coded English in the Portuguese/Spanish interface",
+  "plain": "In Portuguese and Spanish, the scale chips ('Major', 'Harm. Minor', 'Dorian'...), the 'Tuning:' label, the language-change toast, circle-of-fifths hover text, the error message and several screen-reader labels stay in English.",
+  "sources": [
+   "E-11",
+   "F-13",
+   "U-9",
+   "verify-E extra 3"
+  ],
+  "verified": "live",
+  "where": "KeySelector.tsx:23-102; Fretboard.tsx:493; Toast.tsx:79; ScaleDegreeBar.tsx:34, 76; ChordGrid.tsx:40, 72; QuickSearch.tsx:124; RootQualityChips.tsx:59, 107; circleOfFifthsConstants.ts:111-119; backupHelpers.ts:89-95; ErrorBoundary.tsx:75; ChromaticStrip.tsx:77; FretCell.tsx:98; App.tsx:106.",
+  "fix": "Route through t() / translateScaleType; add a PT render test that fails on listed English words.",
+  "decision": "D-17: Translate scale names in Portuguese/Spanish?",
+  "verify_note": "Seen live in PT (U-9); E-11 confirmed (37 chips, several identical in PT); F-13 not re-checked and excludes scale names under the 'nomenclature untranslated' convention (see conflicts)."
+ },
+ {
+  "id": "W6-06",
+  "ws": "W6",
+  "sev": "S2",
+  "title": "Portuguese/Spanish mix Dó-Ré-Mi and letter note names, often in one sentence",
+  "plain": "Portuguese and Spanish text mixes solfège (Dó, Ré) and letters (C, D), sometimes in one sentence ('sobre D em Lá menor'); the instruments and answers use letters.",
+  "sources": [
+   "E-9",
+   "G-IMP-9 (part)"
+  ],
+  "verified": "confirmed",
+  "where": "All PT/ES overlays; PianoKey.tsx:201; answer chips; pt/exercisesL1.ts:5 declares letters.",
+  "fix": "Pick one convention or add a display setting.",
+  "decision": "D-18: Note names in Portuguese/Spanish",
+  "verify_note": "Counts confirmed; ~94 PT / 85 ES mixed strings after removing quoted app queries. verify-E: a convention choice, borderline S3."
+ },
+ {
+  "id": "W6-07",
+  "ws": "W6",
+  "sev": "S2",
+  "title": "Drill shows English degree, function and cadence names in Portuguese/Spanish",
+  "plain": "In Portuguese and Spanish the Drill shows English degree names ('O grau 1 da escala é Tonic'), English function and cadence names, and a UK gloss '(RU: perfect)', although translations exist.",
+  "sources": [
+   "E-10"
+  ],
+  "verified": "partial",
+  "where": "drillBank/* display strings; genFunction.ts:56-68; pt.json:659.",
+  "fix": "Pass keys, translate at render time.",
+  "decision": "D-17: Translate scale names in Portuguese/Spanish?",
+  "verify_note": "verify-E: S2 for degree/function/cadence items (71 + 35); the 677 'C major' key names largely fall under the documented nomenclature convention; 160 clause items already an open item."
+ },
+ {
+  "id": "W6-08",
+  "ws": "W6",
+  "sev": "S3",
+  "title": "About 20 more stale Portuguese/Spanish strings miss later English precision",
+  "plain": "About 20 more translated strings lag behind later English edits (e.g. 'Nível 5' where English says Level 6, Am7 for A7).",
+  "sources": [
+   "E-15"
+  ],
+  "verified": "not re-checked",
+  "where": "pt/curriculumL4.ts:370, 443, 89; pt/curriculumL7.ts:237; pt/curriculumL9.ts:182; list in E-translations/staleness.out.txt.",
+  "fix": "Re-translation pass.",
+  "verify_note": "One item (The Entertainer vs Love Story) may be more correct than the English (see conflicts)."
+ },
+ {
+  "id": "W6-09",
+  "ws": "W6",
+  "sev": "S3",
+  "title": "Search and typed queries work only in English",
+  "plain": "Searching 'cadência', 'suspensão' or 'napolitano' finds nothing, lesson hits show English titles, and 'Dó maior' doesn't parse.",
+  "sources": [
+   "E-12"
+  ],
+  "verified": "confirmed",
+  "where": "moduleIndex.ts; scale/chord parsers.",
+  "fix": "Per-language index and parser aliases.",
+  "verify_note": "Facts confirmed; verify-E S3 (feature gap); '~160 strings' not reproduced (97)."
+ },
+ {
+  "id": "W6-10",
+  "ws": "W6",
+  "sev": "S3",
+  "title": "Portuguese/Spanish terminology inconsistent (root/tonic, cadence names, semitone)",
+  "plain": "Terms vary within each language: 'tónica' used for a chord's root in the Chord Builder (elsewhere 'fundamental'), several names for the same cadence, and both 'meio-tom' and 'semitom'.",
+  "sources": [
+   "E-13",
+   "E-14",
+   "E-20"
+  ],
+  "verified": "partial",
+  "where": "pt.json:502, 505, 514; pt/curriculumL3.ts:411; pt/exercisesL3.ts:317; pt/templatesL3.ts:213-237; es/curriculumL3.ts:418-437.",
+  "fix": "Pick one term per concept per language; normalise.",
+  "decision": "D-19: Portuguese/Spanish terminology",
+  "verify_note": "E-13 partial, E-14 confirmed (counts corrected), both S3 per verify-E; E-20 not re-checked. Preferred terms unconfirmed."
+ },
+ {
+  "id": "W6-11",
+  "ws": "W6",
+  "sev": "S3",
+  "title": "Portuguese/Spanish orthography and register inconsistencies",
+  "plain": "Small style inconsistencies: Spanish questions missing the opening question mark, Portuguese mixing 'você' and 'tu' forms, and mixed ordinal and dash typography.",
+  "sources": [
+   "E-16",
+   "E-18",
+   "E-19"
+  ],
+  "verified": "not re-checked",
+  "where": "es.json:622-637; pt.json:11, 69, 214; overlays.",
+  "fix": "Scripted normalisation plus a test."
+ },
+ {
+  "id": "W6-12",
+  "ws": "W6",
+  "sev": "S3",
+  "title": "Misleading wording and anglicisms",
+  "plain": "'Quase' / 'Casi' ('almost') is shown for any wrong answer, plus anglicisms such as 'Voicing' and 'Confirmar reset'.",
+  "sources": [
+   "E-24"
+  ],
+  "verified": "not re-checked",
+  "where": "pt.json / es.json.",
+  "fix": "Reword."
+ },
+ {
+  "id": "W6-13",
+  "ws": "W6",
+  "sev": "S3",
+  "title": "Music-terms dictionary gaps",
+  "plain": "Two chord types have no Portuguese/Spanish name (latent) and ear-training buttons start with a preposition ('De sétima da dominante').",
+  "sources": [
+   "E-22"
+  ],
+  "verified": "not re-checked",
+  "where": "music-terms dictionary.",
+  "fix": "Add entries; fix labels."
+ },
+ {
+  "id": "W6-14",
+  "ws": "W6",
+  "sev": "S3",
+  "title": "No parity or staleness test for translations; silent English fallback",
+  "plain": "Nothing tests that translations exist and match the current English, and a failed load silently shows a whole level in English for the session.",
+  "sources": [
+   "E-23"
+  ],
+  "verified": "not re-checked",
+  "where": "overlayLoader.ts:62-70.",
+  "fix": "Promote E's structural/staleness scripts into the test suite; store an English-source hash per entry."
+ },
+ {
+  "id": "W6-15",
+  "ws": "W6",
+  "sev": "S3",
+  "title": "Page language always 'en'",
+  "plain": "The page always declares English, so screen readers and spellcheck treat Portuguese text as English.",
+  "sources": [
+   "E-17"
+  ],
+  "verified": "not re-checked",
+  "where": "index.html:5; useLanguage.ts.",
+  "fix": "Update <html lang> on language change."
+ },
+ {
+  "id": "W6-16",
+  "ws": "W6",
+  "sev": "S3",
+  "title": "First run always starts in English",
+  "plain": "The app ignores the browser language on first launch.",
+  "sources": [
+   "E-25"
+  ],
+  "verified": "not re-checked",
+  "where": "preferencesSlice.ts:9.",
+  "fix": "Detect the browser language."
+ },
+ {
+  "id": "W6-17",
+  "ws": "W6",
+  "sev": "S3",
+  "title": "Review queue shows English times and generic module labels",
+  "plain": "In Portuguese and Spanish the review queue shows English times ('In 4 days', '1 week'), and every row says 'Level 1 - Unit 1 - Module 1' instead of the module name.",
+  "sources": [
+   "F-12"
+  ],
+  "verified": "not re-checked",
+  "where": "spacedRepetition.ts:126-147; ReviewQueue.tsx:62, 87, 125-126, 159.",
+  "fix": "Translate; show module titles."
+ },
+ {
+  "id": "W7-01",
+  "ws": "W7",
+  "sev": "S2",
+  "title": "'By heart' is based on the last answer of each session",
+  "plain": "A Drill item can reach 'by heart' even if you got it wrong first time in every session (because the quick retry counts), and one slip no longer demotes it.",
+  "sources": [
+   "D-5",
+   "verify-D extra 2"
+  ],
+  "verified": "confirmed",
+  "where": "drillScheduler.ts:126, 139-145.",
+  "fix": "Use the first answer per session.",
+  "decision": "D-15: Drill 'by heart' rule",
+  "verify_note": "Confirmed; existing tests encode last-answer-per-session (deliberate); verify-D: breaks spec acceptance criterion 5. Affects labels/summary only (scheduling identical)."
+ },
+ {
+  "id": "W7-02",
+  "ws": "W7",
+  "sev": "S2",
+  "title": "New Drill facts are introduced one topic at a time",
+  "plain": "With default settings the Drill introduces topics one after another, so the first triad appears around session 81 and Roman numerals around session 203; the spec says topics should be interleaved.",
+  "sources": [
+   "D-10"
+  ],
+  "verified": "confirmed",
+  "where": "drillSession.ts:109-111; FAMILY_BASE.",
+  "fix": "Pick new items round-robin across enabled topics.",
+  "verify_note": "Confirmed; deviates from spec section 3.2."
+ },
+ {
+  "id": "W7-03",
+  "ws": "W7",
+  "sev": "S2",
+  "title": "Chord-spelling chips rarely include the tempting wrong note",
+  "plain": "When spelling a chord, the wrong-note chips seldom include the 3rd or 7th one half step off, so most items reduce to picking letters rather than choosing the right sharp or flat.",
+  "sources": [
+   "D-8"
+  ],
+  "verified": "confirmed",
+  "where": "drillBank/genTriad.ts:139-166; genSeventh.ts:146-177.",
+  "fix": "Seed 3rd and 7th +/-1 distractors first.",
+  "verify_note": "Data confirmed; learning effect inferred; design weakness."
+ },
+ {
+  "id": "W7-04",
+  "ws": "W7",
+  "sev": "S2",
+  "title": "Drill asks an item and its reverse back to back, or repeats a just-missed item",
+  "plain": "A Drill session can ask 'Scale degree 1 is called...?' and then 'The Tonic is which degree?', so the first answers the second, and a missed question can come straight back next.",
+  "sources": [
+   "U-6 (part)",
+   "verify-D extra 1"
+  ],
+  "verified": "live",
+  "where": "drillSession.ts:30-32, 166.",
+  "fix": "Never place siblings/reverses or a just-missed item adjacently.",
+  "verify_note": "Seen live in one session (U-6); verify-D: 108 of 200 simulated default learners got an immediate repeat (breaks spec 3.6)."
+ },
+ {
+  "id": "W7-05",
+  "ws": "W7",
+  "sev": "S3",
+  "title": "'By heart' reachable within 10 minutes",
+  "plain": "An item can reach 'by heart' in three sessions within ten minutes; nothing requires spacing.",
+  "sources": [
+   "D-17"
+  ],
+  "verified": "not re-checked",
+  "where": "computeTier; confidence bucket.",
+  "fix": "Require at least 2 calendar days across the 3 sessions.",
+  "decision": "D-15: Drill 'by heart' rule"
+ },
+ {
+  "id": "W7-06",
+  "ws": "W7",
+  "sev": "S3",
+  "title": "Drill progress counter is off",
+  "plain": "The counter can read 'x of 24' in a session that ends after 8, and it advanced to the next number while feedback for the previous item was still shown.",
+  "sources": [
+   "D-11",
+   "U-6 (part)"
+  ],
+  "verified": "live",
+  "where": "useDrillRunner.ts:276.",
+  "fix": "Use min(length, queue length); advance on Continue.",
+  "verify_note": "U-6 seen live; D-11 not re-checked."
+ },
+ {
+  "id": "W7-07",
+  "ws": "W7",
+  "sev": "S3",
+  "title": "A wrong tap on a choice item is never marked red",
+  "plain": "On choice questions the chip you tapped wrongly isn't marked red.",
+  "sources": [
+   "D-12"
+  ],
+  "verified": "not re-checked",
+  "where": "DrillInput.tsx:33 (selected={null}).",
+  "fix": "Track and pass the tapped choice."
+ },
+ {
+  "id": "W7-08",
+  "ws": "W7",
+  "sev": "S3",
+  "title": "Near-miss feedback fires only on chord-spelling chips",
+  "plain": "'Almost' feedback for enharmonic slips works only on chord-spelling items; other branches are unreachable.",
+  "sources": [
+   "D-16"
+  ],
+  "verified": "not re-checked",
+  "where": "grading.ts:74-118.",
+  "fix": "Compare pitch classes for note-valued choices."
+ },
+ {
+  "id": "W7-09",
+  "ws": "W7",
+  "sev": "S3",
+  "title": "Resuming after an update can repeat the next item",
+  "plain": "After a release changes item ids mid-session, resuming can show the same item twice.",
+  "sources": [
+   "D-18"
+  ],
+  "verified": "not re-checked",
+  "where": "useDrillRunner.ts:87.",
+  "fix": "Reconcile the queue head with the store index."
+ },
+ {
+  "id": "W7-10",
+  "ws": "W7",
+  "sev": "S3",
+  "title": "One malformed saved item wipes all Drill progress",
+  "plain": "If one saved Drill record is malformed, all Drill progress is discarded on load.",
+  "sources": [
+   "D-19"
+  ],
+  "verified": "not re-checked",
+  "where": "drillStore.ts:96-99, 126.",
+  "fix": "Drop only the invalid entries.",
+  "verify_note": "Rubric tension: data loss (S1) vs rare edge case (S3); how a malformed record arises not established (see conflicts)."
+ },
+ {
+  "id": "W7-11",
+  "ws": "W7",
+  "sev": "S3",
+  "title": "G-sharp, D-sharp, A-sharp harmonic/melodic minor missing from scale spelling",
+  "plain": "Six scale-spelling items can't exist because the accidental slots cycle only natural/sharp/flat.",
+  "sources": [
+   "D-23"
+  ],
+  "verified": "not re-checked",
+  "where": "drillBank/genScale.ts:58, 107.",
+  "fix": "Add double sharp/flat to the slot cycle."
+ },
+ {
+  "id": "W7-12",
+  "ws": "W7",
+  "sev": "S3",
+  "title": "Drill text polish",
+  "plain": "Small Drill text issues: '1 semitones', 'a Octave', English 'Yes/No' in PT/ES, Spanish 'Casi' for any wrong answer, and 66 items with only 3 options.",
+  "sources": [
+   "D-22"
+  ],
+  "verified": "not re-checked",
+  "where": "drillBank/*; es.json drill.feedback.wrong.",
+  "fix": "Fix strings.",
+  "verify_note": "Overlaps the Drill-translation and anglicism rows for PT/ES."
+ },
+ {
+  "id": "W8-01",
+  "ws": "W8",
+  "sev": "S3",
+  "title": "Scale, arpeggio and progression playback can't be stopped and overlaps if replayed",
+  "plain": "Once a scale, arpeggio or progression starts playing it can't be stopped, and pressing Play again layers a second copy over the first.",
+  "sources": [
+   "F-02"
+  ],
+  "verified": "confirmed",
+  "where": "audio.ts:238-279, 166-174, 332-345, 737-776; pianoSampler.ts:162-169; guitarSampler.ts; ExploreView.tsx:43-47; ExerciseRunner.tsx:107, 123.",
+  "fix": "Add stopAll() to the instrument voice, track one-shot sources, and call it on Play, view change and exercise advance.",
+  "verify_note": "Confirmed statically (no callers of the stop functions); verify-F: S3 (short overlaps, not a stuck sound); audible overlap inferred."
+ },
+ {
+  "id": "W8-02",
+  "ws": "W8",
+  "sev": "S3",
+  "title": "A very quick piano tap while audio wakes up can leave a note stuck",
+  "plain": "If a piano key is released before the audio system has finished waking up, the note can keep sounding (synth fallback) and the key stays shown as pressed.",
+  "sources": [
+   "F-03"
+  ],
+  "verified": "partial",
+  "where": "Piano.tsx:161-181; useAudio.ts:34-52.",
+  "fix": "Record a pending note-on synchronously and cancel it on release.",
+  "verify_note": "verify-F: code defect real, but could not trigger it in Chromium (resume took ~10 ms); iOS untested; S3."
+ },
+ {
+  "id": "W8-03",
+  "ws": "W8",
+  "sev": "S3",
+  "title": "All 30 piano samples download at startup, contrary to the code's own comments",
+  "plain": "On first visit the app downloads all 30 piano samples (about 2 MB) before any tap, although the code comments say loading waits for the first tap.",
+  "sources": [
+   "F-16 (part)"
+  ],
+  "verified": "not re-checked",
+  "where": "instrumentVoices.ts:13-16, 89-99; pianoSampler.ts:9-11.",
+  "fix": "Preload on first tap or Play.",
+  "decision": "D-22: First-visit downloads",
+  "verify_note": "Measured by F in a Playwright probe."
+ },
+ {
+  "id": "W9-01",
+  "ws": "W9",
+  "sev": "S2",
+  "title": "Search returns nothing for queries the lessons tell you to type (e.g. 'C major scale')",
+  "plain": "Many lesson tasks say 'type X' or quote a query, but only the first query after 'Type' is a button and the search box returns nothing for forms like 'C major scale' or 'C major chord'; one button ('C double harmonic major') does nothing.",
+  "sources": [
+   "C-29",
+   "U-12"
+  ],
+  "verified": "confirmed",
+  "where": "ModuleView.tsx:19 QUERY_VERB_PATTERN; quickSearchResults.ts getResults (no ' scale'/' chord' normalisation); scaleParser.ts:277.",
+  "fix": "Route search through the same normalisation as the Try-This executor; make every quoted query clickable; add 'double harmonic major' alias.",
+  "verify_note": "C-29 confirmed; verify-C1 found it app-wide (L1-L9), real count 23 dead typed tokens + 1 dead button in L7. U-12 (seen live) is the instruction's ambiguity."
+ },
+ {
+  "id": "W9-02",
+  "ws": "W9",
+  "sev": "S2",
+  "title": "Instrument dock takes ~35-40% of the screen in Learn and shows unrelated Explore state",
+  "plain": "In Learn the instrument panel takes about a third of the screen, pushes answer buttons below the fold, and shows whatever was last open in Explore (e.g. A minor pentatonic Box 2 during a clef lesson).",
+  "sources": [
+   "U-5"
+  ],
+  "verified": "live",
+  "where": "AppShell.tsx (dock); Learn views.",
+  "fix": "Collapse by default in Learn, or drive it from the lesson.",
+  "decision": "D-20: Instrument dock in Learn",
+  "verify_note": "Seen live (desktop window; phone width not tested)."
+ },
+ {
+  "id": "W9-03",
+  "ws": "W9",
+  "sev": "S2",
+  "title": "'Try again' after a screen fails to load can never recover",
+  "plain": "If a screen fails to download (offline, flaky connection, or just after an update), its 'Try again' button does nothing; only a full reload helps.",
+  "sources": [
+   "F-07"
+  ],
+  "verified": "confirmed",
+  "where": "App.tsx:22-37, 49-51, 108-112.",
+  "fix": "Recreate the lazy loader on reset, or reload when the error is a failed download.",
+  "verify_note": "Confirmed (React caches the rejected import); not reproduced in a browser."
+ },
+ {
+  "id": "W9-04",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Tap targets on a phone are small, including the main tabs",
+  "plain": "On a phone the Explore/Learn/Drill tabs are about 19 px tall and the unit page's back button is 14 x 14 px, well below the usual 44 px comfortable size.",
+  "sources": [
+   "F-06"
+  ],
+  "verified": "partial",
+  "where": "TopBar.tsx:112; Piano.tsx octave tabs; FretboardPositionSelector.tsx:22-23; FretboardString.tsx; UnitDetail.tsx:40-62.",
+  "fix": "Add min-height/padding on touch layouts.",
+  "verify_note": "Sizes reproduced; verify-F: WCAG spacing exception likely covers tabs; the back button and breadcrumb are the real failures; S3."
+ },
+ {
+  "id": "W9-05",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Unlabelled back button; position chips misuse tab roles",
+  "plain": "The unit page's back button has no accessible name, and the position chips announce themselves as tabs without behaving like tabs.",
+  "sources": [
+   "F-15"
+  ],
+  "verified": "not re-checked",
+  "where": "UnitDetail.tsx:40-54; FretboardPositionSelector.tsx:51-95.",
+  "fix": "Add aria-label; use pressed buttons or a radiogroup."
+ },
+ {
+  "id": "W9-06",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "App updates reload the page without asking; the 'new version' prompt can never appear",
+  "plain": "After an update is published, the app reloads itself a few seconds after launch without asking, which could interrupt a Learn exercise set; the built-in 'new version' message never shows.",
+  "sources": [
+   "F-08",
+   "verify-F extra 2"
+  ],
+  "verified": "confirmed",
+  "where": "vite.config.ts:10 registerType 'autoUpdate'; usePWA.ts:15-22, 34; PWAPrompts.tsx:12-18.",
+  "fix": "Switch to prompt mode or delay the reload; check for updates on return to foreground.",
+  "decision": "D-21: App update behaviour",
+  "verify_note": "Mechanism confirmed; verify-F: rare in practice, S3. CLAUDE.md lists an update notification that can't appear."
+ },
+ {
+  "id": "W9-07",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "CI doesn't build, run browser tests, check coverage, or run the audit checks",
+  "plain": "The automatic checks on GitHub don't build the app, run the browser tests or check coverage, the offline tests always skip, and none of this audit's checks exist as tests.",
+  "sources": [
+   "F-09",
+   "A-IMP-2",
+   "B-IMP-2"
+  ],
+  "verified": "confirmed",
+  "where": ".github/workflows/audit.yml; vitest.config.ts:33-41; playwright.config.ts:17-22; e2e/pwa.spec.ts.",
+  "fix": "Add build, coverage and a preview-server Playwright run; turn the auditors' oracle scripts into tests.",
+  "verify_note": "Confirmed; verify-F: Vercel does build on every push, so 'never builds' applies to GitHub Actions only; S3."
+ },
+ {
+  "id": "W9-08",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "The Learn browser test is flaky (fails 2 in 6)",
+  "plain": "One browser test fails about a third of the time because a fading screen is still clickable.",
+  "sources": [
+   "F-10"
+  ],
+  "verified": "not re-checked",
+  "where": "e2e/learn-exercise.spec.ts:9-28; LearnView.tsx:187; LevelDetail.tsx:110-117.",
+  "fix": "Narrow the locator; disable clicks on exiting screens."
+ },
+ {
+  "id": "W9-09",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Level page 'Continue' banner names a module but opens the unit",
+  "plain": "The Level page's Continue banner names a module but opens the unit list, needing another tap.",
+  "sources": [
+   "F-11"
+  ],
+  "verified": "not re-checked",
+  "where": "LevelDetail.tsx:115 vs LevelsOverview.tsx:149.",
+  "fix": "Open the module."
+ },
+ {
+  "id": "W9-10",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "First visit loads every notation font and all nine levels",
+  "plain": "The music-notation library loads with five fonts, and opening Learn downloads all nine levels just to show the Continue banner.",
+  "sources": [
+   "F-16 (part)"
+  ],
+  "verified": "not re-checked",
+  "where": "vexflowLoader.ts:10; LevelsOverview.tsx:38-41.",
+  "fix": "Try vexflow/bravura; use the static module index.",
+  "decision": "D-22: First-visit downloads",
+  "verify_note": "Measured: Bravura-only entry would save ~294 KiB gzipped."
+ },
+ {
+  "id": "W9-11",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Main bundle over the 500 kB warning (guitar data ~20%)",
+  "plain": "The main app file is over the size warning, about a fifth of it guitar data piano users don't need.",
+  "sources": [
+   "F-17"
+  ],
+  "verified": "not re-checked",
+  "where": "AppShell.tsx:4-5, 75.",
+  "fix": "Load Fretboard and Quick Search on demand."
+ },
+ {
+  "id": "W9-12",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Unused 'Inter' font still preloaded and cached",
+  "plain": "A font the app doesn't use is still downloaded and stored for offline use.",
+  "sources": [
+   "F-18"
+  ],
+  "verified": "not re-checked",
+  "where": "index.html preload; index.css:5-20.",
+  "fix": "Remove it or preload the font actually used."
+ },
+ {
+  "id": "W9-13",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Versioned files aren't cached long-term",
+  "plain": "App files with versioned names are served with 'no long-term caching', so the browser re-checks them on every launch.",
+  "sources": [
+   "F-19"
+  ],
+  "verified": "not re-checked",
+  "where": "vercel.json.",
+  "fix": "Cache /assets/ for a year (immutable)."
+ },
+ {
+  "id": "W9-14",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Night theme flashes the light theme on launch",
+  "plain": "The night theme briefly shows the light theme on launch, and the browser bar colour matches neither theme.",
+  "sources": [
+   "F-20"
+  ],
+  "verified": "not re-checked",
+  "where": "useTheme.ts:22-31; index.html.",
+  "fix": "Apply the saved theme before first paint (needs a CSP hash)."
+ },
+ {
+  "id": "W9-15",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Security advisories in development tools; unused 'sharp' package",
+  "plain": "22 security advisories affect only development tools; an unused image package carries 'high' ones. Nothing shipped is affected.",
+  "sources": [
+   "F-21"
+  ],
+  "verified": "not re-checked",
+  "where": "package.json devDependencies.",
+  "fix": "Remove sharp (and @vitest/ui if unused); npm audit fix."
+ },
+ {
+  "id": "W9-16",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Project docs and code comments have drifted from the code",
+  "plain": "CLAUDE.md, the curriculum README, the L9 file header and several code comments describe things that are no longer true (e.g. guitar sound source, test counts, 5 units vs 118 modules, L9 'unlocks after Level 1').",
+  "sources": [
+   "F-22",
+   "B-35",
+   "verify-C2 extra 1"
+  ],
+  "verified": "not re-checked",
+  "where": "CLAUDE.md; curriculum/README.md; curriculumL9.ts:4, 8-13, 589; storeTypes.ts:53-54; instrumentVoices.ts:13-16; pianoSampler.ts:9-10.",
+  "fix": "Update docs and comments."
+ },
+ {
+  "id": "W9-17",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Dead code, including unused reference tables with wrong theory",
+  "plain": "About 200 exported names are never used, including the audio stop functions, the song-translation loader and reference tables whose text is musically wrong.",
+  "sources": [
+   "F-23",
+   "C-90"
+  ],
+  "verified": "not re-checked",
+  "where": "dead-exports.tsv (F); chordScaleRelationships.ts:378, 428; intervals.ts:97-125.",
+  "fix": "Delete, or wire up where intended (audio stop, song overlays)."
+ },
+ {
+  "id": "W9-18",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Saved settings only partly checked; a bad backup import can wipe progress",
+  "plain": "Saved settings are only partly validated, and importing a backup whose progress section fails a check can replace your progress with an empty one.",
+  "sources": [
+   "F-24"
+  ],
+  "verified": "not re-checked",
+  "where": "store.ts:22-54; backupHelpers.ts:56-86; TopBar.tsx:318-335; progressStore.ts:38-55.",
+  "fix": "Validate every store before the confirm dialog; check ranges.",
+  "verify_note": "Auditor status: inferred from code; backups the app exports itself should pass. Rubric tension (data loss vs rare edge case)."
+ },
+ {
+  "id": "W9-19",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Learn's Continue banner has no error handling when offline",
+  "plain": "If one of the nine levels fails to download, the Continue banner silently disappears and a new user sees the Welcome banner.",
+  "sources": [
+   "F-25"
+  ],
+  "verified": "not re-checked",
+  "where": "LevelsOverview.tsx:38-41; curriculumLoader.ts:121-126.",
+  "fix": "Catch, cancel stale loads, or use the static index.",
+  "verify_note": "Auditor status: inferred."
+ },
+ {
+  "id": "W9-20",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Important behaviour has no unit tests; coverage margins thin",
+  "plain": "Learn navigation, the review queue, instrument input and staff drawing have no unit tests, and coverage passes its thresholds by 1-2 points.",
+  "sources": [
+   "F-26"
+  ],
+  "verified": "not re-checked",
+  "where": "coverage-summary.json (F).",
+  "fix": "Add behaviour tests (F's probes can be adapted)."
+ },
+ {
+  "id": "W9-21",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Learn levels are hard-locked in sequence; no placement",
+  "plain": "Every level must be finished in order before the next unlocks, so an adult at Grade-5 repertoire must complete all of Level 1 first.",
+  "sources": [
+   "U-11"
+  ],
+  "verified": "live",
+  "where": "levels.ts prerequisites.",
+  "fix": "Decide gating.",
+  "decision": "D-10: Level gating",
+  "verify_note": "Seen live; owner decision."
+ },
+ {
+  "id": "W9-22",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "First-visit toasts cover the instrument",
+  "plain": "On first visit the install and 'ready for offline use' messages cover the instrument.",
+  "sources": [
+   "U-13"
+  ],
+  "verified": "live",
+  "where": "PWAPrompts / Toast.",
+  "fix": "Position toasts away from the instrument."
+ },
+ {
+  "id": "W9-23",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Search index data errors",
+  "plain": "The search keyword 'florid' points to the wrong counterpoint module, and one subtitle has a stray space.",
+  "sources": [
+   "C-72",
+   "C-93"
+  ],
+  "verified": "not re-checked",
+  "where": "moduleIndex.ts:57, 89.",
+  "fix": "Fix or regenerate the index."
+ },
+ {
+  "id": "W9-24",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "'Learn about this' sends 12 chord types to lessons that never mention them",
+  "plain": "For 12 chord types (sus, 6, 6/9, add, augmented-seventh types) the 'Learn about this' link opens a lesson that doesn't mention them.",
+  "sources": [
+   "C-86"
+  ],
+  "verified": "not re-checked",
+  "where": "qualityToModule.ts:20-42.",
+  "fix": "Point to l7u23m5 and l6u19m3."
+ },
+ {
+  "id": "W9-25",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Unit milestone content is written and translated but never shown",
+  "plain": "Each unit has a written (and translated) milestone summary that no screen ever displays.",
+  "sources": [
+   "C-73"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculumL6.ts / curriculumL8.ts milestones (likely every level).",
+  "fix": "Show at unit completion, or delete with overlays.",
+  "decision": "D-23: Unit milestone summaries"
+ },
+ {
+  "id": "W9-26",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Curriculum spec files (not shipped) contain theory errors the app gets right",
+  "plain": "The planning documents for L6, L7 and L8 contain about 20 theory errors and dead references; the shipped lessons are correct, but the documents read as authoritative.",
+  "sources": [
+   "C-74",
+   "C-78"
+  ],
+  "verified": "not re-checked",
+  "where": "curriculum/06-chromatic-harmony.md; 07-jazz-pop-modal.md; 08-advanced-analysis.md.",
+  "fix": "Fix or mark as superseded.",
+  "decision": "D-24: Curriculum planning documents"
+ },
+ {
+  "id": "W9-27",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Classical labels MM7, Mm7 and mm7 all parse as minor-major 7th",
+  "plain": "Typing the classical labels MM7, Mm7 or mm7 always gives a minor-major 7th chord.",
+  "sources": [
+   "D-9",
+   "verify-D extra 4"
+  ],
+  "verified": "partial",
+  "where": "chordParser.ts:188.",
+  "fix": "Handle the three labels case-sensitively.",
+  "verify_note": "verify-D: the cited source doesn't use these letter labels (others do); rare input; S3."
+ },
+ {
+  "id": "W9-28",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "Unicode double-accidental roots break the chord parser",
+  "plain": "Some typed chords with a double sharp/flat root, or 'mi' for minor, are misread.",
+  "sources": [
+   "D-20"
+  ],
+  "verified": "not re-checked",
+  "where": "chordParser.ts:297, 493.",
+  "fix": "Accept two accidentals; add 'mi'."
+ },
+ {
+  "id": "W9-29",
+  "ws": "W9",
+  "sev": "S3",
+  "title": "The Mac triangle symbol for maj7 doesn't parse",
+  "plain": "Typing a maj7 triangle with the Mac keyboard's symbol isn't recognised (the Greek triangle works).",
+  "sources": [
+   "C-79"
+  ],
+  "verified": "not re-checked",
+  "where": "chordParser.ts quality table.",
+  "fix": "Alias U+2206 to the Greek delta.",
+  "verify_note": "Mac keystroke producing U+2206 is inferred."
+ },
+ {
+  "id": "W10-01",
+  "ws": "W10",
+  "sev": "S3",
+  "title": "Key-of-the-piece practice workspace",
+  "plain": "There's no way to practise everything for the key of a piece in one place (scale, arpeggio, V7-I, cadences on staff and fretboard), which is how classical exams build early scales.",
+  "sources": [
+   "G-8",
+   "G-IMP-2"
+  ],
+  "verified": "not re-checked",
+  "where": "Parts exist (ChordGrid, cadence modules).",
+  "fix": "Build after the position mode.",
+  "decision": "D-07: Repertoire data in the app",
+  "verify_note": "Feature gap; Track G rated it S2; the unified rubric grades defects, so listed S3. G ranks this second, after the position mode."
+ },
+ {
+  "id": "W10-02",
+  "ws": "W10",
+  "sev": "S3",
+  "title": "Staff-to-fretboard reading drill",
+  "plain": "There's no Drill for reading notes on the staff and finding them on the guitar (or the reverse), staged by position like the exam ladder.",
+  "sources": [
+   "G-IMP-3",
+   "G-7 (part)"
+  ],
+  "verified": "not re-checked",
+  "where": "Drill bank; InstrumentInput.tsx:10 grades pitch classes only.",
+  "fix": "New Drill family with exact-pitch grading.",
+  "decision": "D-06: Show an instrument in Drill?",
+  "verify_note": "Feature gap; Track G rated it S2; the unified rubric grades defects, so listed S3. G ranks it third."
+ },
+ {
+  "id": "W10-03",
+  "ws": "W10",
+  "sev": "S3",
+  "title": "Fingered 2-3 octave scale routes and a Grade-5 technical set",
+  "plain": "There are no 2-3 octave scale fingerings with shifts, interval scales, broken chords or fingered dom7/dim7 arpeggios; the staff shows one octave and playback goes up only.",
+  "sources": [
+   "G-5",
+   "G-6",
+   "G-IMP-4"
+  ],
+  "verified": "not re-checked",
+  "where": "ChordWorkspace.tsx:104; ExploreView.tsx:47.",
+  "fix": "Generate fingerings (never copy exam books).",
+  "decision": "D-04: Exam intent",
+  "verify_note": "Feature gap; Track G rated it S2; the unified rubric grades defects, so listed S3."
+ },
+ {
+  "id": "W10-04",
+  "ws": "W10",
+  "sev": "S3",
+  "title": "Left-hand finger numbers for scales; right-hand p-i-m-a layer",
+  "plain": "Finger numbers exist in the scale data but are never drawn, and there's no right-hand (p-i-m-a) layer.",
+  "sources": [
+   "G-3"
+  ],
+  "verified": "not re-checked",
+  "where": "FretboardString.tsx:127; FretCell.tsx:164.",
+  "fix": "Draw after the position data is replaced.",
+  "decision": "D-02: Guitar position system and default fretboard view",
+  "verify_note": "Feature gap; Track G rated it S2; the unified rubric grades defects, so listed S3."
+ },
+ {
+  "id": "W10-05",
+  "ws": "W10",
+  "sev": "S3",
+  "title": "Teacher-fingering override",
+  "plain": "There's no way to enter and save your teacher's fingering as the default.",
+  "sources": [
+   "G-IMP-5"
+  ],
+  "verified": "not re-checked",
+  "where": "-",
+  "fix": "Local edit-and-save of fingerings.",
+  "decision": "D-03: Who supplies the fingerings",
+  "verify_note": "Feature gap; Track G rated it S2; the unified rubric grades defects, so listed S3. Improvement only (no gap ID)."
+ },
+ {
+  "id": "W10-06",
+  "ws": "W10",
+  "sev": "S3",
+  "title": "Right-hand pattern and stroke trainer",
+  "plain": "There's no technique scaffolding: no stroke tags, right-hand patterns, tempo targets or practice log.",
+  "sources": [
+   "G-9",
+   "G-IMP-6"
+  ],
+  "verified": "not re-checked",
+  "where": "-",
+  "fix": "Progression + pattern trainer with metronome.",
+  "verify_note": "Feature gap; Track G rated it S2; the unified rubric grades defects, so listed S3."
+ },
+ {
+  "id": "W10-07",
+  "ws": "W10",
+  "sev": "S3",
+  "title": "Position walk through one key",
+  "plain": "There's no exercise that walks one key through several positions with guide-finger shifts.",
+  "sources": [
+   "G-IMP-7"
+  ],
+  "verified": "not re-checked",
+  "where": "-",
+  "fix": "Build after the position mode.",
+  "decision": "D-02: Guitar position system and default fretboard view",
+  "verify_note": "Feature gap; Track G rated it S2; the unified rubric grades defects, so listed S3. Improvement only; after the position mode."
+ },
+ {
+  "id": "W10-08",
+  "ws": "W10",
+  "sev": "S3",
+  "title": "Guitar notation literacy mini-unit",
+  "plain": "The lessons never teach guitar notation: string numbers, Roman-numeral positions, left/right-hand fingering, or the octave-down treble clef.",
+  "sources": [
+   "G-11",
+   "G-IMP-8"
+  ],
+  "verified": "not re-checked",
+  "where": "Curriculum grep (G).",
+  "fix": "Short unit in EN/PT/ES.",
+  "decision": "D-05: Staff convention when the guitar is selected",
+  "verify_note": "Feature gap; Track G rated it S2; the unified rubric grades defects, so listed S3."
+ },
+ {
+  "id": "W10-09",
+  "ws": "W10",
+  "sev": "S3",
+  "title": "Melodic minor shown ascending only",
+  "plain": "Melodic minor can't be shown the classical way (raised going up, natural coming down).",
+  "sources": [
+   "G-10",
+   "G-IMP-9 (part)"
+  ],
+  "verified": "not re-checked",
+  "where": "scales.ts:13.",
+  "fix": "Add a descending form.",
+  "verify_note": "Feature gap; Track G rated it S2; the unified rubric grades defects, so listed S3."
+ },
+ {
+  "id": "W10-10",
+  "ws": "W10",
+  "sev": "S3",
+  "title": "No classical-guitar repertoire in song references",
+  "plain": "The 72 song references include no classical-guitar composers.",
+  "sources": [
+   "G-12"
+  ],
+  "verified": "not re-checked",
+  "where": "songReferences.ts.",
+  "fix": "Add classical examples (EN/PT/ES).",
+  "decision": "D-07: Repertoire data in the app",
+  "verify_note": "Feature gap; Track G rated it S2; the unified rubric grades defects, so listed S3."
+ },
+ {
+  "id": "W10-11",
+  "ws": "W10",
+  "sev": "S3",
+  "title": "Tunings are steel/rock-oriented; no positions in other tunings",
+  "plain": "The tuning list leans to steel-string/rock, and positions and shapes are switched off in non-standard tunings (no Drop-D positions).",
+  "sources": [
+   "G-13"
+  ],
+  "verified": "not re-checked",
+  "where": "guitarTunings.ts:134-141; Fretboard.tsx:45, 79.",
+  "fix": "Generated positions would work in any tuning.",
+  "verify_note": "Feature gap; Track G rated it S2; the unified rubric grades defects, so listed S3."
+ },
+ {
+  "id": "W10-12",
+  "ws": "W10",
+  "sev": "S3",
+  "title": "Jazz and exotic scale library is off a classical path (keep, optional)",
+  "plain": "L7 jazz and the exotic scale library sit off a classical student's path; Track G suggests keeping them as optional, not removing them.",
+  "sources": [
+   "G-14"
+  ],
+  "verified": "not re-checked",
+  "where": "levels.ts; scales.ts.",
+  "fix": "None.",
+  "verify_note": "Feature gap; Track G rated it S2; the unified rubric grades defects, so listed S3. No action proposed."
+ },
+ {
+  "id": "W10-13",
+  "ws": "W10",
+  "sev": "S3",
+  "title": "Experimental microphone feedback",
+  "plain": "Track G lists listening to your playing through the microphone as an experiment of unknown value.",
+  "sources": [
+   "G-IMP-10"
+  ],
+  "verified": "not re-checked",
+  "where": "-",
+  "fix": "Experiment only if wanted.",
+  "decision": "D-08: Microphone experiment",
+  "verify_note": "Feature gap; Track G rated it S2; the unified rubric grades defects, so listed S3. Improvement only."
+ }
+]
