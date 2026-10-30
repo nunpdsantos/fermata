@@ -90,9 +90,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Constrói o acorde de sétima diatónico sobre {root} em Dó maior. Usa apenas teclas brancas.',
+        'Constrói o acorde de sétima diatónico sobre {root} em C maior. Usa apenas teclas brancas.',
       hintTemplate:
-        'Acordes de 7.a diatónicos em Dó maior: Cmaj7, Dm7, Em7, Fmaj7, G7, Am7, Bm7b5. Constrói sobre {root} usando apenas notas da escala de Dó maior.',
+        'Acordes de 7.a diatónicos em C maior: Cmaj7, Dm7, Em7, Fmaj7, G7, Am7, Bm7b5. Constrói sobre {root} usando apenas notas da escala de C maior.',
     },
   ],
 
@@ -101,7 +101,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Constrói o acorde de sétima diatónico sobre {root} em Lá menor (menor harmónica).',
+        'Constrói o acorde de sétima diatónico sobre {root} em A menor (menor harmónica).',
       hintTemplate:
         'Na menor harmónica, o 7.o grau elevado cria qualidades de acordes diferentes da menor natural. O V torna-se sétima da dominante e o vii torna-se sétima diminuta. O 7.o grau elevado cria qualidades de acorde invulgares — não estranhes sonoridades pouco familiares.',
     },

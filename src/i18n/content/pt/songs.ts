@@ -48,8 +48,8 @@ const overlay: SongOverlay = {
     'A melodia inicial é uma escala maior descendente da tónica à tónica.',
   ],
   'l1u3m2': [
-    'Escrita em Sol maior (um sustenido — Fá#), demonstrando como uma armação de clave simples molda o som de uma canção clássica.',
-    'Na tonalidade de Fá maior (um bemol), um bom ponto de partida para ler armações de clave além de Dó maior.',
+    'Escrita em G maior (um sustenido — F#), demonstrando como uma armação de clave simples molda o som de uma canção clássica.',
+    'Na tonalidade de F maior (um bemol), um bom ponto de partida para ler armações de clave além de C maior.',
   ],
   'l1u3m3': [
     'Abre com uma quarta perfeita — um dos intervalos mais reconhecíveis na música ocidental.',
@@ -57,8 +57,8 @@ const overlay: SongOverlay = {
     'Abre com uma quinta perfeita, um intervalo fundamental para o treino auditivo.',
   ],
   'l1u3m4': [
-    'Construída sobre uma progressão de quatro acordes (Dó–Sol–Lám–Fá) em que todos os acordes maiores são tríades em posição fundamental.',
-    'Utiliza tríades maiores simples (Lá, Ré, Mi) num padrão repetitivo — a essência da harmonia básica de acordes.',
+    'Construída sobre uma progressão de quatro acordes (C–G–Am–F) em que todos os acordes maiores são tríades em posição fundamental.',
+    'Utiliza tríades maiores simples (A, D, E) num padrão repetitivo — a essência da harmonia básica de acordes.',
   ],
 
   // =========================================================================
@@ -68,8 +68,8 @@ const overlay: SongOverlay = {
   // ---- L2U4: Todas as Tonalidades Maiores e Graus da Escala ----
 
   'l2u4m1': [
-    'Em Dó maior — demonstra como o ciclo de quintas coloca a tonalidade mais simples na posição das 12 horas.',
-    'Escrita em Lá maior (três sustenidos), mostrando como os compositores trabalham confortavelmente em tonalidades com sustenidos.',
+    'Em C maior — demonstra como o ciclo de quintas coloca a tonalidade mais simples na posição das 12 horas.',
+    'Escrita em A maior (três sustenidos), mostrando como os compositores trabalham confortavelmente em tonalidades com sustenidos.',
   ],
   'l2u4m2': [
     'A melodia segue o movimento 1–1–5–5–6–6–5, delineando claramente os graus de tónica, dominante e submediante.',
@@ -79,16 +79,16 @@ const overlay: SongOverlay = {
   // ---- L2U5: Escalas Menores e Relações entre Tonalidades ----
 
   'l2u5m1': [
-    'Construída sobre a escala menor natural (eólio) em Lá menor, com a característica sétima bemol.',
+    'Construída sobre a escala menor natural (eólio) em A menor, com a característica sétima bemol.',
     'Assenta nos acordes Em e C, com um sabor modal que mistura o eólio e o dórico — em certos pontos a melodia eleva a 6.ª (C♯), o que lhe dá uma qualidade modal e não a de um menor puramente diatónico.',
   ],
   'l2u5m2': [
     'Utiliza a escala menor harmónica — a segunda aumentada entre o b6 e o #7 confere-lhe a sua sonoridade distintiva.',
-    'O uso de Mi maior (V) sobre uma tonalidade de Lá menor implica a menor harmónica, com o 7.o grau elevado (Sol#) a criar uma forte atração de volta à tónica.',
+    'O uso de E maior (V) sobre uma tonalidade de A menor implica a menor harmónica, com o 7.o grau elevado (G#) a criar uma forte atração de volta à tónica.',
   ],
   'l2u5m3': [
-    'Começa em Lá menor (relativa menor de Dó maior), modulando depois — uma relação clássica entre tonalidades relativas.',
-    'Alterna entre os versos em Lá menor e o contexto da sua relativa maior (Dó maior), demonstrando a relação próxima entre tonalidades relativas que partilham a mesma armação de clave.',
+    'Começa em A menor (relativa menor de C maior), modulando depois — uma relação clássica entre tonalidades relativas.',
+    'Alterna entre os versos em A menor e o contexto da sua relativa maior (C maior), demonstrando a relação próxima entre tonalidades relativas que partilham a mesma armação de clave.',
   ],
 
   // ---- L2U6: Compasso Composto e Síncopa ----
@@ -107,15 +107,15 @@ const overlay: SongOverlay = {
 
   'l2u7m1': [
     'Abre com um salto de quarta perfeita, e a melodia delineia intervalos maiores e menores ao longo da peça.',
-    'A figura inicial de quatro notas (Dó–Mi–Fá–Sol) começa com um salto brilhante de terça maior — uma das referências clássicas de treino auditivo para identificar o intervalo de 3.a maior.',
+    'A figura inicial de quatro notas (C–E–F–G) começa com um salto brilhante de terça maior — uma das referências clássicas de treino auditivo para identificar o intervalo de 3.a maior.',
   ],
   'l2u7m2': [
     'Abre com uma quarta aumentada (trítono) — o "intervalo do diabo" utilizado para efeito dramático.',
     'Contém intervalos compostos (nonas, décimas) na melodia, estendendo-se para além da oitava.',
   ],
   'l2u7m3': [
-    'Apresenta tríades maiores, menores e aumentadas — o acorde de Mi aumentado cria tensão antes de resolver, demonstrando como diferentes qualidades de tríades servem diferentes funções harmónicas.',
-    'A progressão I–III–IV–iv (Sol–Si–Dó–Dóm) apresenta um acorde maior cromático (III) emprestado de fora da tonalidade e um subdominante menor emprestado (iv), mostrando como a qualidade das tríades cria cor emocional.',
+    'Apresenta tríades maiores, menores e aumentadas — o acorde de E aumentado cria tensão antes de resolver, demonstrando como diferentes qualidades de tríades servem diferentes funções harmónicas.',
+    'A progressão I–III–IV–iv (G–B–C–Cm) apresenta um acorde maior cromático (III) emprestado de fora da tonalidade e um subdominante menor emprestado (iv), mostrando como a qualidade das tríades cria cor emocional.',
   ],
   'l2u7m4': [
     'A linha de baixo move-se por tríades em posição fundamental e primeira inversão — um exemplo clássico de condução de vozes no baixo cifrado.',
@@ -145,7 +145,7 @@ const overlay: SongOverlay = {
     'A progressão de "rhythm changes" (Imaj7–vi7–ii7–V7) tornou-se um modelo para centenas de composições de jazz.',
   ],
   'l3u9m4': [
-    'Abre em Dó menor com uma progressão i7–iv7–iiø7–V7, demonstrando como os acordes de sétima diatónicos e o movimento cadencial ii–V funcionam numa tonalidade menor.',
+    'Abre em C menor com uma progressão i7–iv7–iiø7–V7, demonstrando como os acordes de sétima diatónicos e o movimento cadencial ii–V funcionam numa tonalidade menor.',
     'A progressão de acordes de sétima em tonalidade menor (i–iiø7–V7–i) cria a sensação lânguida da canção.',
   ],
 

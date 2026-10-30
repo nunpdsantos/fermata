@@ -131,8 +131,8 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'El Patrón de la Menor Natural',
           explanation:
-            'La escala menor natural sigue T-S-T-T-S-T-T — compara con el patrón de la mayor: T-T-S-T-T-T-S. Los semitonos caen en posiciones diferentes, y eso lo cambia todo. La menor natural más fácil de ver es La menor natural: usa solo teclas blancas, de A a G y de vuelta a A.',
-          tryThisLabel: 'Escucha La menor natural — solo teclas blancas',
+            'La escala menor natural sigue T-S-T-T-S-T-T — compara con el patrón de la mayor: T-T-S-T-T-T-S. Los semitonos caen en posiciones diferentes, y eso lo cambia todo. La menor natural más fácil de ver es A menor natural: usa solo teclas blancas, de A a G y de vuelta a A.',
+          tryThisLabel: 'Escucha A menor natural — solo teclas blancas',
         },
         {
           title: 'Carácter Mayor vs. Menor',
@@ -170,7 +170,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'Menor Armónica',
           explanation:
-            'La menor armónica eleva el 7.º grado un semitono, creando una sensible. La menor armónica: A-B-C-D-E-F-G#. Ahora el acorde V es mayor, dando a la tonalidad una fuerte atracción dominante-tónica. La contrapartida: surge una 2.ª aumentada (3 semitonos) entre el 6.º y 7.º grados, dando a la menor armónica su sonido exótico distintivo.',
+            'La menor armónica eleva el 7.º grado un semitono, creando una sensible. La escala de A menor armónica: A-B-C-D-E-F-G#. Ahora el acorde V es mayor, dando a la tonalidad una fuerte atracción dominante-tónica. La contrapartida: surge una 2.ª aumentada (3 semitonos) entre el 6.º y 7.º grados, dando a la menor armónica su sonido exótico distintivo.',
           tryThisLabel: 'Escucha el 7.º grado elevado',
         },
         {
@@ -486,7 +486,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "Am/C" — La menor con C en el bajo. C es la 3.ª de Am, por lo tanto es 1.ª inversión. Escucha cómo suena más ligero que Am en estado fundamental',
+            'Escribe "Am/C" — el acorde de A menor con C en el bajo. C es la 3.ª de Am, por lo tanto es 1.ª inversión. Escucha cómo suena más ligero que Am en estado fundamental',
         },
       ],
     },

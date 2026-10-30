@@ -115,13 +115,13 @@ const overlay: ExerciseLevelOverlay = {
 
   l4u12m4e1: {
     prompt:
-      'Construye un acorde V7 en la tonalidad de Do mayor. Es G séptima de dominante: G-B-D-F. Selecciona las 4 notas.',
-    hint: 'G7 = G, B, D, F. Fundamental (G) + 3.ª mayor (B) + 5.ª justa (D) + 7.ª menor (F). El tritono entre B y F impulsa la resolución hacia Do mayor.',
+      'Construye un acorde V7 en la tonalidad de C mayor. Es G séptima de dominante: G-B-D-F. Selecciona las 4 notas.',
+    hint: 'G7 = G, B, D, F. Fundamental (G) + 3.ª mayor (B) + 5.ª justa (D) + 7.ª menor (F). El tritono entre B y F impulsa la resolución hacia C mayor.',
   },
   l4u12m4e2: {
     prompt:
-      'Construye un acorde V7 en la tonalidad de Sol mayor. Es D séptima de dominante: D-F#-A-C. Selecciona las 4 notas.',
-    hint: 'D7 = D, F#, A, C. Fundamental (D) + 3.ª mayor (F#) + 5.ª justa (A) + 7.ª menor (C). El tritono entre F# y C resuelve hacia Sol mayor.',
+      'Construye un acorde V7 en la tonalidad de G mayor. Es D séptima de dominante: D-F#-A-C. Selecciona las 4 notas.',
+    hint: 'D7 = D, F#, A, C. Fundamental (D) + 3.ª mayor (F#) + 5.ª justa (A) + 7.ª menor (C). El tritono entre F# y C resuelve hacia G mayor.',
   },
   l4u12m4e3: {
     prompt: '¿Cómo resuelve el tritono dentro de V7 al moverse hacia I?',
@@ -131,7 +131,7 @@ const overlay: ExerciseLevelOverlay = {
       'El tritono se expande hasta una octava',
       'Ambas notas del tritono descienden por tono',
     ],
-    hint: 'En G7 resolviendo a Do: B (sensible, 3.ª de V7) resuelve hacia arriba a C; F (7.ª de V7) resuelve hacia abajo a E. El tritono B-F se contrae hacia dentro a C-E. Este movimiento contrario es el motor de la resolución tonal.',
+    hint: 'En G7 resolviendo a C: B (sensible, 3.ª de V7) resuelve hacia arriba a C; F (7.ª de V7) resuelve hacia abajo a E. El tritono B-F se contrae hacia dentro a C-E. Este movimiento contrario es el motor de la resolución tonal.',
   },
 
   // ---- l4u12m5: Inversiones de V7 ----
@@ -144,7 +144,7 @@ const overlay: ExerciseLevelOverlay = {
       '4/2 — la 7.ª del acorde está en el bajo',
       '7 — la fundamental está en el bajo',
     ],
-    hint: 'V6/5 significa que la 3.ª de V7 es la nota del bajo. En Do mayor, eso significa que B es la nota más grave de G7. Los números 6 y 5 describen los intervalos por encima del bajo (B a G = 6.ª, B a F = 5.ª).',
+    hint: 'V6/5 significa que la 3.ª de V7 es la nota del bajo. En C mayor, eso significa que B es la nota más grave de G7. Los números 6 y 5 describen los intervalos por encima del bajo (B a G = 6.ª, B a F = 5.ª).',
   },
   l4u12m5e2: {
     prompt: 'V4/3 (V7 en segunda inversión) resuelve típicamente a qué acorde?',
@@ -154,7 +154,7 @@ const overlay: ExerciseLevelOverlay = {
       'vi — el bajo se mueve a la submediante',
       'No resuelve; es un acorde estable',
     ],
-    hint: 'V4/3 tiene la 5.ª de V7 en el bajo (D en G7/D en Do mayor). El D resuelve típicamente por grado conjunto — desciende a C (fundamental de I) o asciende a E (dando I6). El tritono B-F sigue resolviendo como de costumbre.',
+    hint: 'V4/3 tiene la 5.ª de V7 en el bajo (D en G7/D en C mayor). El D resuelve típicamente por grado conjunto — desciende a C (fundamental de I) o asciende a E (dando I6). El tritono B-F sigue resolviendo como de costumbre.',
   },
   l4u12m5e3: {
     prompt: 'En V4/2 (V7 en tercera inversión), ¿qué nota del acorde está en el bajo?',
@@ -164,7 +164,7 @@ const overlay: ExerciseLevelOverlay = {
       'La 3.ª del acorde',
       'La 5.ª del acorde',
     ],
-    hint: 'V4/2 (también escrito V2) coloca la 7.ª de V7 en el bajo. En Do mayor, eso significa que F es la nota del bajo de G7. El F resuelve por grado conjunto descendente a E, produciendo I6 (Do mayor en primera inversión).',
+    hint: 'V4/2 (también escrito V2) coloca la 7.ª de V7 en el bajo. En C mayor, eso significa que F es la nota del bajo de G7. El F resuelve por grado conjunto descendente a E, produciendo I6 (C mayor en primera inversión).',
   },
 
   // =========================================================================
@@ -175,12 +175,12 @@ const overlay: ExerciseLevelOverlay = {
 
   l4u13m1e1: {
     prompt:
-      'Construye un acorde ii7 en Do mayor. Es D séptima menor: D-F-A-C. Selecciona las 4 notas.',
+      'Construye un acorde ii7 en C mayor. Es D séptima menor: D-F-A-C. Selecciona las 4 notas.',
     hint: 'Dm7 = D, F, A, C. Fundamental (D) + 3.ª menor (F) + 5.ª justa (A) + 7.ª menor (C). Este es el acorde de séptima predominante más habitual en tonalidades mayores.',
   },
   l4u13m1e2: {
     prompt:
-      'Construye un acorde iiø7 en Do menor. Es D séptima semidisminuida: D-F-Ab-C. Selecciona las 4 notas.',
+      'Construye un acorde iiø7 en C menor. Es D séptima semidisminuida: D-F-Ab-C. Selecciona las 4 notas.',
     hint: 'Dø7 = D, F, Ab, C. Fundamental (D) + 3.ª menor (F) + 5.ª disminuida (Ab) + 7.ª menor (C). En tonalidades menores, el acorde ii es semidisminuido porque la 5.ª (Ab) es descendida.',
   },
   l4u13m1e3: {
@@ -204,7 +204,7 @@ const overlay: ExerciseLevelOverlay = {
       'Séptima de dominante — una tríada mayor con 7.ª menor',
       'Séptima semidisminuida — una tríada disminuida con 7.ª menor',
     ],
-    hint: 'En Do mayor, iii7 = E-G-B-D. La tríada E-G-B es menor, y E a D es una 7.ª menor (10 semitonos). Por tanto, iii7 es un acorde de séptima menor, al igual que ii7 y vi7.',
+    hint: 'En C mayor, iii7 = E-G-B-D. La tríada E-G-B es menor, y E a D es una 7.ª menor (10 semitonos). Por tanto, iii7 es un acorde de séptima menor, al igual que ii7 y vi7.',
   },
   l4u13m2e2: {
     prompt: 'En una tonalidad mayor, ¿cuál es la cualidad del acorde vi7?',
@@ -214,7 +214,7 @@ const overlay: ExerciseLevelOverlay = {
       'Séptima de dominante — una tríada mayor más una 7.ª menor por encima de la fundamental',
       'Séptima disminuida — una tríada disminuida más una 7.ª disminuida',
     ],
-    hint: 'En Do mayor, vi7 = A-C-E-G. La tríada A-C-E es menor, y A a G es una 7.ª menor (10 semitonos). Al igual que ii7 y iii7, vi7 es un acorde de séptima menor.',
+    hint: 'En C mayor, vi7 = A-C-E-G. La tríada A-C-E es menor, y A a G es una 7.ª menor (10 semitonos). Al igual que ii7 y iii7, vi7 es un acorde de séptima menor.',
   },
   l4u13m2e3: {
     prompt:
@@ -225,19 +225,19 @@ const overlay: ExerciseLevelOverlay = {
       'Séptima menor — usado solo en tonalidades menores',
       'Séptima semidisminuida — crea fuerte disonancia en reposo',
     ],
-    hint: 'En Do mayor, Imaj7 = C-E-G-B. La 7.ª mayor (B) añade calidez y color a la tríada de tónica sin comprometer su estabilidad. Es una sonoridad básica en el jazz, la bossa nova y muchos estilos pop.',
+    hint: 'En C mayor, Imaj7 = C-E-G-B. La 7.ª mayor (B) añade calidez y color a la tríada de tónica sin comprometer su estabilidad. Es una sonoridad básica en el jazz, la bossa nova y muchos estilos pop.',
   },
 
   // ---- l4u13m3: Séptimas de la Sensible ----
 
   l4u13m3e1: {
     prompt:
-      'Construye un acorde de séptima disminuida sobre B (viiº7 en Do menor): B-D-F-Ab. Selecciona las 4 notas.',
+      'Construye un acorde de séptima disminuida sobre B (viiº7 en C menor): B-D-F-Ab. Selecciona las 4 notas.',
     hint: 'Bº7 = B, D, F, Ab. Fundamental (B) + 3.ª menor (D) + 5.ª disminuida (F) + 7.ª disminuida (Ab). Los tres intervalos superiores son 3.as menores apiladas (3+3+3 semitonos).',
   },
   l4u13m3e2: {
     prompt:
-      'Construye un acorde de séptima semidisminuida sobre B (viiø7 en Do mayor): B-D-F-A. Selecciona las 4 notas.',
+      'Construye un acorde de séptima semidisminuida sobre B (viiø7 en C mayor): B-D-F-A. Selecciona las 4 notas.',
     hint: 'Bø7 = B, D, F, A. Fundamental (B) + 3.ª menor (D) + 5.ª disminuida (F) + 7.ª menor (A). A diferencia del séptima disminuida, el intervalo superior es una 3.ª mayor (F a A), haciendo que la 7.ª sea menor en lugar de disminuida.',
   },
   l4u13m3e3: {
@@ -284,7 +284,7 @@ const overlay: ExerciseLevelOverlay = {
       'iii — porque es adyacente a IV por grado conjunto',
       'viiº — porque contiene la sensible',
     ],
-    hint: 'En Do mayor, IV = F-A-C y ii = D-F-A. Comparten F y A (dos notas comunes) y ambos crean impulso predominante hacia V. El acorde ii se prefiere con frecuencia en la escritura a cuatro voces porque ii-V presenta un movimiento de bajo suave por 5.ª.',
+    hint: 'En C mayor, IV = F-A-C y ii = D-F-A. Comparten F y A (dos notas comunes) y ambos crean impulso predominante hacia V. El acorde ii se prefiere con frecuencia en la escritura a cuatro voces porque ii-V presenta un movimiento de bajo suave por 5.ª.',
   },
 
   // ---- l4u13m5: Secuencias Armónicas ----
@@ -297,7 +297,7 @@ const overlay: ExerciseLevelOverlay = {
       'Terceras descendentes — cada fundamental desciende una 3.ª',
       'Descenso cromático — cada fundamental desciende un semitono',
     ],
-    hint: 'La secuencia de quintas descendentes (o ciclo de quintas) mueve cada fundamental una 5.ª abajo diatónicamente. En Do mayor: C-F-B-E-A-D-G-C (I-IV-viiº-iii-vi-ii-V-I). Esta es la columna vertebral de innumerables progresiones en la música occidental.',
+    hint: 'La secuencia de quintas descendentes (o ciclo de quintas) mueve cada fundamental una 5.ª abajo diatónicamente. En C mayor: C-F-B-E-A-D-G-C (I-IV-viiº-iii-vi-ii-V-I). Esta es la columna vertebral de innumerables progresiones en la música occidental.',
   },
   l4u13m5e2: {
     prompt:
@@ -433,14 +433,14 @@ const overlay: ExerciseLevelOverlay = {
 
   l4u14m4e1: {
     prompt:
-      'En la tonalidad de Do mayor, un acorde contiene las notas F, A y C. ¿Cuál es su análisis con números romanos?',
+      'En la tonalidad de C mayor, un acorde contiene las notas F, A y C. ¿Cuál es su análisis con números romanos?',
     choices: [
-      'IV — tríada de Fa mayor construida sobre el 4.º grado de la escala',
-      'ii — tríada de Re menor en primera inversión',
-      'vi — tríada de La menor en primera inversión',
-      'I6/4 — Do mayor en segunda inversión',
+      'IV — tríada de F mayor construida sobre el 4.º grado de la escala',
+      'ii — tríada de D menor en primera inversión',
+      'vi — tríada de A menor en primera inversión',
+      'I6/4 — C mayor en segunda inversión',
     ],
-    hint: 'F-A-C en estado fundamental es una tríada de Fa mayor. En Do mayor, Fa es el 4.º grado de la escala. Una tríada mayor en el 4.º grado se nota con número romano mayúsculo: IV.',
+    hint: 'F-A-C en estado fundamental es una tríada de F mayor. En C mayor, F es el 4.º grado de la escala. Una tríada mayor en el 4.º grado se nota con número romano mayúsculo: IV.',
   },
   l4u14m4e2: {
     prompt:
@@ -469,13 +469,13 @@ const overlay: ExerciseLevelOverlay = {
 
   l4u14m5e1: {
     prompt:
-      'Construye el acorde III en La menor (menor natural). Es Do mayor: C-E-G. Selecciona las 3 notas.',
-    hint: 'En La menor natural (A-B-C-D-E-F-G), la tríada sobre el 3.er grado es C-E-G, una tríada mayor. Este es III — la relativa mayor. Es uno de los acordes característicos de la armonía en modo menor.',
+      'Construye el acorde III en A menor (menor natural). Es C mayor: C-E-G. Selecciona las 3 notas.',
+    hint: 'En A menor natural (A-B-C-D-E-F-G), la tríada sobre el 3.er grado es C-E-G, una tríada mayor. Este es III — la relativa mayor. Es uno de los acordes característicos de la armonía en modo menor.',
   },
   l4u14m5e2: {
     prompt:
-      'Construye el acorde VII en La menor (menor natural). Es Sol mayor: G-B-D. Selecciona las 3 notas.',
-    hint: 'En La menor natural, la tríada sobre el 7.º grado es G-B-D, una tríada mayor. VII (acorde subtónico) está a un tono por debajo de la tónica, a diferencia de viiº (acorde de la sensible) de la menor armónica.',
+      'Construye el acorde VII en A menor (menor natural). Es G mayor: G-B-D. Selecciona las 3 notas.',
+    hint: 'En A menor natural, la tríada sobre el 7.º grado es G-B-D, una tríada mayor. VII (acorde subtónico) está a un tono por debajo de la tónica, a diferencia de viiº (acorde de la sensible) de la menor armónica.',
   },
   l4u14m5e3: {
     prompt:
@@ -486,7 +486,7 @@ const overlay: ExerciseLevelOverlay = {
       'VII es disminuido y viiº es mayor',
       'Ambos tienen función dominante pero VII es más fuerte',
     ],
-    hint: 'En La menor natural, VII = Sol mayor (G-B-D), a un tono por debajo de A. En La menor armónica, viiº = G#-B-D (disminuido), a medio tono por debajo de A. El 7.º grado elevado (G#) crea la sensible que confiere a viiº su fuerte atracción hacia la tónica.',
+    hint: 'En A menor natural, VII = G mayor (G-B-D), a un tono por debajo de A. En A menor armónica, viiº = G#-B-D (disminuido), a medio tono por debajo de A. El 7.º grado elevado (G#) crea la sensible que confiere a viiº su fuerte atracción hacia la tónica.',
   },
 };
 

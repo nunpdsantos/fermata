@@ -18,7 +18,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve a altura e identifica-a.',
       hintTemplate:
-        'Usa alturas de referência que conheças (A4 = 440 Hz, Dó central = C4) para te orientares.',
+        'Usa alturas de referência que conheças (A4 = 440 Hz, C central = C4) para te orientares.',
     },
     {
       // ear_training (note, com acidente)

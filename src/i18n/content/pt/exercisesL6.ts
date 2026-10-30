@@ -14,8 +14,8 @@ const overlay: ExerciseLevelOverlay = {
 
   l6u18m1e1: {
     prompt:
-      'Constrói o acorde napolitano (bII) em Dó menor. É uma tríade de Db maior: seleciona Db, F e Ab.',
-    hint: 'O acorde napolitano é uma tríade maior construída sobre o 2.o grau rebaixado. Em Dó menor, bII = Db maior = Db, F, Ab (classes de altura 1, 5, 8).',
+      'Constrói o acorde napolitano (bII) em C menor. É uma tríade de Db maior: seleciona Db, F e Ab.',
+    hint: 'O acorde napolitano é uma tríade maior construída sobre o 2.o grau rebaixado. Em C menor, bII = Db maior = Db, F, Ab (classes de altura 1, 5, 8).',
   },
   l6u18m1e2: {
     prompt: 'Qual é a função harmónica do acorde napolitano (bII)?',
@@ -81,17 +81,17 @@ const overlay: ExerciseLevelOverlay = {
       'Um acorde de sétima semi-diminuta -- mesmo som, contexto diferente',
       'Um acorde de sétima maior -- idêntico em posição cerrada',
     ],
-    hint: 'A Gr+6 tem as mesmas classes de altura que um acorde de sétima da dominante. Por exemplo, em Dó menor a Gr+6 (Ab, C, Eb, F#) soa idêntica a Ab7 (Ab, C, Eb, Gb). A grafia diferente reflete destinos de condução de vozes diferentes.',
+    hint: 'A Gr+6 tem as mesmas classes de altura que um acorde de sétima da dominante. Por exemplo, em C menor a Gr+6 (Ab, C, Eb, F#) soa idêntica a Ab7 (Ab, C, Eb, Gb). A grafia diferente reflete destinos de condução de vozes diferentes.',
   },
   l6u18m3e2: {
-    prompt: 'Como se cifra o acorde de sexta alemã numa tonalidade menor (por ex. Dó menor)?',
+    prompt: 'Como se cifra o acorde de sexta alemã numa tonalidade menor (por ex. C menor)?',
     choices: [
       'Ab, C, Eb, F# -- b6, 1, b3, #4',
       'Ab, C, E, F# -- b6, 1, 3, #4',
       'Ab, Cb, Eb, F# -- b6, b1, b3, #4',
       'Ab, C, Eb, Gb -- b6, 1, b3, b5',
     ],
-    hint: 'Em Dó menor, a Gr+6 contém b6 (Ab), 1 (C), b3 (Eb) e #4 (F#). O intervalo crucial de sexta aumentada está entre Ab e F#, que resolve divergentemente para Sol-Sol (oitava sobre a dominante).',
+    hint: 'Em C menor, a Gr+6 contém b6 (Ab), 1 (C), b3 (Eb) e #4 (F#). O intervalo crucial de sexta aumentada está entre Ab e F#, que resolve divergentemente para G-G (oitava sobre a dominante).',
   },
   l6u18m3e3: {
     prompt: 'O acorde de sexta alemã resolve tipicamente para que acorde?',
@@ -127,14 +127,14 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Os acordes pivot diatónicos ligam apenas tonalidades próximas. Reinterpretar a Gr+6 da tonalidade como V7 (ou vice-versa) move a tónica meio-tom -- de C para Db são cinco passos no círculo de quintas, uma tonalidade distante alcançada através de um único acorde. É uma técnica-assinatura dos compositores do período romântico.',
   },
   l6u18m4e3: {
-    prompt: 'Se uma Gr+6 em Dó menor (Ab, C, Eb, F#) for reinterpretada como V7, que tonalidade toniciza agora?',
+    prompt: 'Se uma Gr+6 em C menor (Ab, C, Eb, F#) for reinterpretada como V7, que tonalidade toniciza agora?',
     choices: [
       'Db maior/menor -- reescrita como Ab, C, Eb, Gb = Ab7 = V7/Db',
-      'Sol maior -- porque F# resolve subindo para Sol',
-      'Fá maior -- o acorde torna-se V7/Fá',
-      'Mib maior -- porque Eb é a nota do meio',
+      'G maior -- porque F# resolve subindo para G',
+      'F maior -- o acorde torna-se V7/F',
+      'Eb maior -- porque Eb é a nota do meio',
     ],
-    hint: 'Reescrever F# como Gb transforma o acorde em Ab, C, Eb, Gb = Láb sétima da dominante. Ab7 é V7 de Db, portanto a música pode pivotar suavemente de Dó menor para Réb maior -- uma deslocação de meio-tom, ligando território tonal muito distante.',
+    hint: 'Reescrever F# como Gb transforma o acorde em Ab, C, Eb, Gb = Ab sétima da dominante. Ab7 é V7 de Db, portanto a música pode pivotar suavemente de C menor para Db maior -- uma deslocação de meio-tom, ligando território tonal muito distante.',
   },
 
   // =========================================================================
@@ -182,14 +182,14 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'A sétima diminuta com nota comum mantém uma nota (a nota comum) do acorde que decora. As outras três vozes movem-se por grau conjunto, criando um embelezamento cromático por notas vizinhas.',
   },
   l6u19m2e2: {
-    prompt: 'Num CTo7 que embeleza um acorde de Dó maior, qual é tipicamente a nota comum?',
+    prompt: 'Num CTo7 que embeleza um acorde de C maior, qual é tipicamente a nota comum?',
     choices: [
       'A fundamental do acorde embelezado (C)',
       'A 3.a do acorde embelezado (E)',
       'A 5.a do acorde embelezado (G)',
       'A 7.a do acorde embelezado (B)',
     ],
-    hint: 'A forma mais comum mantém a fundamental do acorde-alvo. Para um CTo7 que embeleza Dó maior, C é mantido enquanto as outras vozes (D#, F#, A) se movem por grau conjunto de volta para as notas do acorde de Dó maior.',
+    hint: 'A forma mais comum mantém a fundamental do acorde-alvo. Para um CTo7 que embeleza C maior, C é mantido enquanto as outras vozes (D#, F#, A) se movem por grau conjunto de volta para as notas do acorde de C maior.',
   },
   l6u19m2e3: {
     prompt: 'Qual é a função principal de um acorde de sétima diminuta com nota comum?',
@@ -212,7 +212,7 @@ const overlay: ExerciseLevelOverlay = {
       'Qualquer progressão de acordes que usa condução cromática de vozes',
       'Dois acordes que partilham as três notas mas em inversões diferentes',
     ],
-    hint: 'As mediantes diatónicas (I-iii, I-vi) partilham duas notas comuns. As mediantes cromáticas (ex. Dó maior para Mi maior, ou Dó maior para Láb maior) têm fundamentais a uma 3.a de distância mas com qualidade alterada, partilhando apenas uma ou zero notas comuns.',
+    hint: 'As mediantes diatónicas (I-iii, I-vi) partilham duas notas comuns. As mediantes cromáticas (ex. C maior para E maior, ou C maior para Ab maior) têm fundamentais a uma 3.a de distância mas com qualidade alterada, partilhando apenas uma ou zero notas comuns.',
   },
   l6u19m3e2: {
     prompt: 'Quantos tipos de relações de terça cromática existem entre tríades maiores?',

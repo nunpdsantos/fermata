@@ -41,8 +41,8 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'Clave de Sol e Clave de Fá',
           explanation:
-            'Uma clave aparece no início de uma pauta e indica quais alturas as linhas e espaços representam. A clave de sol (𝄞) centra-se no Sol acima do Dó central — é usada para instrumentos mais agudos e a mão direita no piano. A clave de fá (𝄢) centra-se no Fá abaixo do Dó central — é usada para instrumentos mais graves e a mão esquerda no piano. Sem uma clave, a pauta é apenas linhas — a clave dá-lhes significado.',
-          tryThisLabel: 'Explora a tonalidade de Dó',
+            'Uma clave aparece no início de uma pauta e indica quais alturas as linhas e espaços representam. A clave de sol (𝄞) centra-se no G acima do C central — é usada para instrumentos mais agudos e a mão direita no piano. A clave de fá (𝄢) centra-se no F abaixo do C central — é usada para instrumentos mais graves e a mão esquerda no piano. Sem uma clave, a pauta é apenas linhas — a clave dá-lhes significado.',
+          tryThisLabel: 'Explora a tonalidade de C',
         },
       ],
       tasks: [
@@ -64,30 +64,30 @@ const curriculumL1: CurriculumLevelOverlay = {
       objectives: [
         'Compreender as linhas suplementares como extensões acima ou abaixo da pauta',
         'Saber que a pauta dupla combina as claves de sol e de fá unidas por uma chaveta',
-        'Localizar o Dó central como a linha suplementar entre as duas pautas',
+        'Localizar o C central como a linha suplementar entre as duas pautas',
       ],
       concepts: [
         {
           title: 'Linhas Suplementares',
           explanation:
-            'Quando as notas ultrapassam a pauta de cinco linhas, acrescentam-se pequenas linhas horizontais chamadas linhas suplementares. O Dó central, por exemplo, está numa linha suplementar abaixo da pauta de clave de sol ou numa linha suplementar acima da pauta de clave de fá. As linhas suplementares estendem a pauta temporariamente — aparecem apenas onde são necessárias.',
-          tryThisLabel: 'Vê o Dó central no piano',
+            'Quando as notas ultrapassam a pauta de cinco linhas, acrescentam-se pequenas linhas horizontais chamadas linhas suplementares. O C central, por exemplo, está numa linha suplementar abaixo da pauta de clave de sol ou numa linha suplementar acima da pauta de clave de fá. As linhas suplementares estendem a pauta temporariamente — aparecem apenas onde são necessárias.',
+          tryThisLabel: 'Vê o C central no piano',
         },
         {
           title: 'A Pauta Dupla',
           explanation:
-            'A música para piano usa a pauta dupla — uma pauta de clave de sol em cima e uma pauta de clave de fá em baixo, unidas por uma chaveta e ligadas por uma linha suplementar partilhada de Dó central. A mão direita lê tipicamente a clave de sol; a esquerda lê a clave de fá. Juntas, cobrem a maior parte da extensão do piano. É por isso que os pianistas aprendem ambas as claves desde o início.',
-          tryThisLabel: 'Explora o Dó em todo o teclado',
+            'A música para piano usa a pauta dupla — uma pauta de clave de sol em cima e uma pauta de clave de fá em baixo, unidas por uma chaveta e ligadas por uma linha suplementar partilhada de C central. A mão direita lê tipicamente a clave de sol; a esquerda lê a clave de fá. Juntas, cobrem a maior parte da extensão do piano. É por isso que os pianistas aprendem ambas as claves desde o início.',
+          tryThisLabel: 'Explora o C em todo o teclado',
         },
       ],
       tasks: [
         {
           instruction:
-            'Encontra o Dó central no piano — está entre as duas metades da pauta dupla',
+            'Encontra o C central no piano — está entre as duas metades da pauta dupla',
         },
         {
           instruction:
-            'Toca notas abaixo e acima do Dó central para ouvir como a pauta dupla abrange ambos os registos',
+            'Toca notas abaixo e acima do C central para ouvir como a pauta dupla abrange ambos os registos',
         },
       ],
     },
@@ -106,19 +106,19 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'Meios-Tons e Tons',
           explanation:
-            'Um meio-tom é a menor distância entre duas notas — como Dó para Dó# ou Mi para Fá. No piano, é a tecla imediatamente seguinte (branca ou preta). Um tom equivale a dois meios-tons — como Dó para Ré. Estas duas distâncias são os átomos a partir dos quais se constroem todas as escalas, acordes e melodias.',
+            'Um meio-tom é a menor distância entre duas notas — como C para C# ou E para F. No piano, é a tecla imediatamente seguinte (branca ou preta). Um tom equivale a dois meios-tons — como C para D. Estas duas distâncias são os átomos a partir dos quais se constroem todas as escalas, acordes e melodias.',
           tryThisLabel: 'Vê todos os meios-tons em ordem',
         },
         {
           title: 'Sustenidos, Bemóis e Bequadros',
           explanation:
-            'Um sustenido (#) sobe uma nota meio-tom. Um bemol (b) desce uma nota meio-tom. Um bequadro (♮) anula um sustenido ou bemol anterior. Estes símbolos chamam-se acidentes. Entre a maioria das notas naturais há uma nota intermédia — Dó# está entre Dó e Ré. Mas Mi–Fá e Si–Dó já distam meio-tom, por isso não há tecla entre elas.',
-          tryThisLabel: 'Vê Fá# — o sustenido em Sol maior',
+            'Um sustenido (#) sobe uma nota meio-tom. Um bemol (b) desce uma nota meio-tom. Um bequadro (♮) anula um sustenido ou bemol anterior. Estes símbolos chamam-se acidentes. Entre a maioria das notas naturais há uma nota intermédia — C# está entre C e D. Mas E–F e B–C já distam meio-tom, por isso não há tecla entre elas.',
+          tryThisLabel: 'Vê F# — o sustenido em G maior',
         },
         {
           title: 'Equivalentes Enarmónicos',
           explanation:
-            'Dó# e Réb são a mesma tecla no piano — a mesma altura, nome diferente. Chamam-se equivalentes enarmónicos. O nome que se usa depende do contexto: na tonalidade de Ré maior, a nota chama-se Dó# (porque é um Dó elevado); na tonalidade de Láb maior, a mesma altura chama-se Réb (porque é um Ré baixado).',
+            'C# e Db são a mesma tecla no piano — a mesma altura, nome diferente. Chamam-se equivalentes enarmónicos. O nome que se usa depende do contexto: na tonalidade de D maior, a nota chama-se C# (porque é um C elevado); na tonalidade de Ab maior, a mesma altura chama-se Db (porque é um D baixado).',
           tryThisLabel: 'Vê todas as 12 notas',
         },
       ],
@@ -129,11 +129,11 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Encontra Mi e Fá no piano — repara que não há tecla preta entre elas. Este par é um meio-tom natural',
+            'Encontra E e F no piano — repara que não há tecla preta entre elas. Este par é um meio-tom natural',
         },
         {
           instruction:
-            'Escreve "key of G" — que nota precisa de sustenido? O Fá torna-se Fá# para manter o padrão da escala maior',
+            'Escreve "key of G" — que nota precisa de sustenido? O F torna-se F# para manter o padrão da escala maior',
         },
       ],
     },
@@ -152,13 +152,13 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'As 12 Notas',
           explanation:
-            'A música ocidental usa 12 alturas distintas, que se repetem em oitavas mais agudas e mais graves. A escala cromática toca as 12 em ordem, cada uma a meio-tom da seguinte: Dó, Dó#, Ré, Ré#, Mi, Fá, Fá#, Sol, Sol#, Lá, Lá#, Si — e depois volta a Dó uma oitava acima. Estas 12 notas são o vocabulário completo de alturas. Todas as escalas, acordes e melodias provêm deste conjunto.',
+            'A música ocidental usa 12 alturas distintas, que se repetem em oitavas mais agudas e mais graves. A escala cromática toca as 12 em ordem, cada uma a meio-tom da seguinte: C, C#, D, D#, E, F, F#, G, G#, A, A#, B — e depois volta a C uma oitava acima. Estas 12 notas são o vocabulário completo de alturas. Todas as escalas, acordes e melodias provêm deste conjunto.',
           tryThisLabel: 'Ouve todas as 12 notas',
         },
         {
           title: 'O Teclado do Piano',
           explanation:
-            'O piano torna as 12 notas visíveis: 7 teclas brancas (as naturais Dó–Si) e 5 teclas pretas (os sustenidos/bemóis). O padrão de 2 teclas pretas seguido de 3 teclas pretas repete-se ao longo do teclado. Esta disposição não é arbitrária — reflete os meios-tons naturais entre Mi–Fá e Si–Dó. Quando reconheceres este padrão, consegues encontrar qualquer nota instantaneamente.',
+            'O piano torna as 12 notas visíveis: 7 teclas brancas (as naturais C–B) e 5 teclas pretas (os sustenidos/bemóis). O padrão de 2 teclas pretas seguido de 3 teclas pretas repete-se ao longo do teclado. Esta disposição não é arbitrária — reflete os meios-tons naturais entre E–F e B–C. Quando reconheceres este padrão, consegues encontrar qualquer nota instantaneamente.',
           tryThisLabel: 'Vê as notas naturais no teclado',
         },
       ],
@@ -169,7 +169,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'No piano, encontra o grupo de 2 teclas pretas — a tecla branca logo abaixo do grupo é sempre Dó',
+            'No piano, encontra o grupo de 2 teclas pretas — a tecla branca logo abaixo do grupo é sempre C',
         },
       ],
     },
@@ -258,27 +258,27 @@ const curriculumL1: CurriculumLevelOverlay = {
         'O padrão T-T-mT-T-T-T-mT que define a tonalidade maior',
       objectives: [
         'Construir uma escala maior a partir de qualquer nota usando o padrão T-T-mT-T-T-T-mT',
-        'Compreender que Dó maior usa apenas teclas brancas porque o padrão cai naturalmente',
+        'Compreender que C maior usa apenas teclas brancas porque o padrão cai naturalmente',
         'Ver que o mesmo padrão noutra tonalidade requer sustenidos ou bemóis',
       ],
       concepts: [
         {
           title: 'O Padrão da Escala Maior',
           explanation:
-            'A escala maior segue uma sequência específica de tons e meios-tons: T-T-mT-T-T-T-mT. Começando em Dó, obténs apenas teclas brancas — é por isso que Dó maior não tem sustenidos nem bemóis. Cada nota da escala tem um número chamado grau da escala, de 1 (a fundamental) até 7.',
-          tryThisLabel: 'Vê a escala de Dó maior',
+            'A escala maior segue uma sequência específica de tons e meios-tons: T-T-mT-T-T-T-mT. Começando em C, obténs apenas teclas brancas — é por isso que C maior não tem sustenidos nem bemóis. Cada nota da escala tem um número chamado grau da escala, de 1 (a fundamental) até 7.',
+          tryThisLabel: 'Vê a escala de C maior',
         },
         {
           title: 'O Padrão Funciona em Qualquer Nota',
           explanation:
-            'O padrão T-T-mT funciona a partir de qualquer nota inicial. Começa em Sol e segue o padrão — precisarás de Fá# em vez de Fá para manter os intervalos corretos. Começa em Fá e precisarás de Sib. O padrão diz-te exatamente que notas precisam de sustenidos ou bemóis — não os escolhes tu.',
-          tryThisLabel: 'Constrói Sol maior — um sustenido',
+            'O padrão T-T-mT funciona a partir de qualquer nota inicial. Começa em G e segue o padrão — precisarás de F# em vez de F para manter os intervalos corretos. Começa em F e precisarás de Bb. O padrão diz-te exatamente que notas precisam de sustenidos ou bemóis — não os escolhes tu.',
+          tryThisLabel: 'Constrói G maior — um sustenido',
         },
         {
           title: 'Mesmo Padrão, Mesmo Som',
           explanation:
             'Como todas as escalas maiores usam exatamente o mesmo padrão de intervalos, partilham a mesma qualidade brilhante e resolvida — apenas em alturas diferentes. É por isso que os músicos tocam em tonalidades diferentes: para se adaptarem à extensão vocal de um cantor, ao registo de um instrumento, ou para mudar a cor de uma peça.',
-          tryThisLabel: 'Constrói Ré maior — dois sustenidos',
+          tryThisLabel: 'Constrói D maior — dois sustenidos',
         },
       ],
       tasks: [
@@ -300,30 +300,30 @@ const curriculumL1: CurriculumLevelOverlay = {
     // ── U3 M2: Key Signatures — First Four Keys ───────────────────────────
     l1u3m2: {
       title: 'Armações de Clave — Primeiras Quatro Tonalidades',
-      subtitle: 'Dó, Sol, Ré e Fá — as tonalidades que mais vais usar',
+      subtitle: 'C, G, D e F — as tonalidades que mais vais usar',
       objectives: [
         'Compreender o que é uma armação de clave e por que existe',
-        'Conhecer as armações de clave de Dó maior (0), Sol maior (1#), Ré maior (2#) e Fá maior (1b)',
+        'Conhecer as armações de clave de C maior (0), G maior (1#), D maior (2#) e F maior (1b)',
         'Distinguir entre uma escala (um padrão) e uma tonalidade (um contexto musical)',
       ],
       concepts: [
         {
           title: 'O Que É uma Armação de Clave?',
           explanation:
-            'Uma armação de clave é uma abreviatura — em vez de escrever um sustenido ou bemol junto de cada nota afetada, listam-se uma vez no início. A armação de clave de Sol maior tem um sustenido (Fá#), o que significa que todos os Fá na peça são tocados como Fá#. Isto poupa espaço e indica a tonalidade de relance.',
-          tryThisLabel: 'Vê a armação de Sol — um sustenido',
+            'Uma armação de clave é uma abreviatura — em vez de escrever um sustenido ou bemol junto de cada nota afetada, listam-se uma vez no início. A armação de clave de G maior tem um sustenido (F#), o que significa que todos os F na peça são tocados como F#. Isto poupa espaço e indica a tonalidade de relance.',
+          tryThisLabel: 'Vê a armação de G — um sustenido',
         },
         {
           title: 'As Tuas Primeiras Quatro Tonalidades',
           explanation:
-            'Começa pelas tonalidades mais comuns: Dó maior não tem sustenidos nem bemóis. Sol maior tem um sustenido (Fá#). Ré maior tem dois sustenidos (Fá#, Dó#). Fá maior tem um bemol (Sib). Os sustenidos aparecem sempre por ordem: Fá-Dó-Sol-Ré-Lá-Mi-Si. Os bemóis aparecem na ordem inversa: Si-Mi-Lá-Ré-Sol-Dó-Fá. Cada nova tonalidade acrescenta o próximo acidente na sequência.',
-          tryThisLabel: 'Vê a armação de Ré — dois sustenidos',
+            'Começa pelas tonalidades mais comuns: C maior não tem sustenidos nem bemóis. G maior tem um sustenido (F#). D maior tem dois sustenidos (F#, C#). F maior tem um bemol (Bb). Os sustenidos aparecem sempre por ordem: F-C-G-D-A-E-B. Os bemóis aparecem na ordem inversa: B-E-A-D-G-C-F. Cada nova tonalidade acrescenta o próximo acidente na sequência.',
+          tryThisLabel: 'Vê a armação de D — dois sustenidos',
         },
         {
           title: 'Escala vs. Tonalidade',
           explanation:
-            'Uma escala é um padrão de notas em ordem. Uma tonalidade é o contexto musical que usa essas notas, com uma nota como "casa". Quando estás "na tonalidade de Sol maior", a escala de Sol maior fornece as tuas notas, Sol é a casa, e a armação de clave indica que Fá é sempre sustenido.',
-          tryThisLabel: 'Vê a armação de Fá — um bemol',
+            'Uma escala é um padrão de notas em ordem. Uma tonalidade é o contexto musical que usa essas notas, com uma nota como "casa". Quando estás "na tonalidade de G maior", a escala de G maior fornece as tuas notas, G é a casa, e a armação de clave indica que F é sempre sustenido.',
+          tryThisLabel: 'Vê a armação de F — um bemol',
         },
       ],
       tasks: [
@@ -333,7 +333,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escreve "key of D" — que novo sustenido foi acrescentado além do Fá# de Sol maior?',
+            'Escreve "key of D" — que novo sustenido foi acrescentado além do F# de G maior?',
         },
         {
           instruction:
@@ -356,8 +356,8 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'O Que É um Intervalo?',
           explanation:
-            'Um intervalo mede a distância entre duas notas. Para o nomear, conta os nomes das notas da nota inferior à superior, inclusive. Dó a Mi: Dó-Ré-Mi = 3 letras, portanto é uma 3.ª. Dó a Sol: Dó-Ré-Mi-Fá-Sol = 5 letras, portanto é uma 5.ª. Da mesma nota para a mesma nota é um uníssono (1.ª). Uma oitava (8.ª) vai de uma nota até à próxima ocorrência do mesmo nome.',
-          tryThisLabel: 'Vê Dó-Mi-Sol — uma 3.ª e uma 5.ª',
+            'Um intervalo mede a distância entre duas notas. Para o nomear, conta os nomes das notas da nota inferior à superior, inclusive. C a E: C-D-E = 3 letras, portanto é uma 3.ª. C a G: C-D-E-F-G = 5 letras, portanto é uma 5.ª. Da mesma nota para a mesma nota é um uníssono (1.ª). Uma oitava (8.ª) vai de uma nota até à próxima ocorrência do mesmo nome.',
+          tryThisLabel: 'Vê C-E-G — uma 3.ª e uma 5.ª',
         },
         {
           title: 'Intervalos Melódicos e Harmónicos',
@@ -368,14 +368,14 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'Intervalos na Escala Maior',
           explanation:
-            'Cada nota da escala maior forma um intervalo específico com a fundamental. A partir de Dó: Dó-Ré é uma 2.ª, Dó-Mi é uma 3.ª, Dó-Fá é uma 4.ª, Dó-Sol é uma 5.ª, Dó-Lá é uma 6.ª, Dó-Si é uma 7.ª, Dó-Dó é uma oitava. Estes são os números básicos dos intervalos. Mais tarde aprenderás que cada número tem também uma qualidade (maior, menor, perfeito) — por agora, o número é suficiente.',
+            'Cada nota da escala maior forma um intervalo específico com a fundamental. A partir de C: C-D é uma 2.ª, C-E é uma 3.ª, C-F é uma 4.ª, C-G é uma 5.ª, C-A é uma 6.ª, C-B é uma 7.ª, C-C é uma oitava. Estes são os números básicos dos intervalos. Mais tarde aprenderás que cada número tem também uma qualidade (maior, menor, perfeito) — por agora, o número é suficiente.',
           tryThisLabel: 'Vê o Círculo de Quintas — construído sobre intervalos de 5.ª',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escreve "C major chord" — o intervalo de Dó a Mi é uma 3.ª, e de Dó a Sol é uma 5.ª. Conta as letras para confirmar',
+            'Escreve "C major chord" — o intervalo de C a E é uma 3.ª, e de C a G é uma 5.ª. Conta as letras para confirmar',
         },
         {
           instruction:
@@ -402,26 +402,26 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'O Que É um Acorde?',
           explanation:
-            'Um acorde é três ou mais notas a soar em simultâneo. O acorde mais simples é a tríade — três notas empilhadas em intervalos de 3.ª. Uma tríade maior combina uma fundamental, a nota uma 3.ª maior acima dela (4 meios-tons) e a nota uma 5.ª perfeita acima da fundamental (7 meios-tons). Dó maior = Dó-Mi-Sol. A cifra é apenas a letra da fundamental: C significa Dó maior.',
-          tryThisLabel: 'Ouve Dó maior — fundamental, terceira, quinta',
+            'Um acorde é três ou mais notas a soar em simultâneo. O acorde mais simples é a tríade — três notas empilhadas em intervalos de 3.ª. Uma tríade maior combina uma fundamental, a nota uma 3.ª maior acima dela (4 meios-tons) e a nota uma 5.ª perfeita acima da fundamental (7 meios-tons). C maior = C-E-G. A cifra é apenas a letra da fundamental: C significa C maior.',
+          tryThisLabel: 'Ouve C maior — fundamental, terceira, quinta',
         },
         {
           title: 'Construir Tríades a Partir de Qualquer Fundamental',
           explanation:
-            'A fórmula funciona a partir de qualquer nota inicial. Sol maior = Sol-Si-Ré. Ré maior = Ré-Fá#-Lá. Fá maior = Fá-Lá-Dó. Conta 4 meios-tons acima da fundamental para a 3.ª, depois mais 3 meios-tons para a 5.ª (ou 7 no total da fundamental à 5.ª). O carácter brilhante e estável de uma tríade maior provém desta combinação específica de intervalos.',
-          tryThisLabel: 'Constrói Sol maior',
+            'A fórmula funciona a partir de qualquer nota inicial. G maior = G-B-D. D maior = D-F#-A. F maior = F-A-C. Conta 4 meios-tons acima da fundamental para a 3.ª, depois mais 3 meios-tons para a 5.ª (ou 7 no total da fundamental à 5.ª). O carácter brilhante e estável de uma tríade maior provém desta combinação específica de intervalos.',
+          tryThisLabel: 'Constrói G maior',
         },
         {
           title: 'O Som da Tríade Maior',
           explanation:
-            'Toca várias tríades maiores — Dó, Sol, Ré, Fá. Todas partilham a mesma qualidade brilhante, aberta e resolvida, apesar de começarem em notas diferentes. Isto acontece porque todas usam a mesma estrutura intervalar: 3.ª maior + 3.ª menor (fundamental à 3.ª = 4 meios-tons, 3.ª à 5.ª = 3 meios-tons). Essa estrutura consistente é o que as faz soar todas "maiores".',
-          tryThisLabel: 'Constrói Fá maior',
+            'Toca várias tríades maiores — C, G, D, F. Todas partilham a mesma qualidade brilhante, aberta e resolvida, apesar de começarem em notas diferentes. Isto acontece porque todas usam a mesma estrutura intervalar: 3.ª maior + 3.ª menor (fundamental à 3.ª = 4 meios-tons, 3.ª à 5.ª = 3 meios-tons). Essa estrutura consistente é o que as faz soar todas "maiores".',
+          tryThisLabel: 'Constrói F maior',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escreve "C major chord" e conta os meios-tons: Dó a Mi = 4 (3.ª maior), Mi a Sol = 3 (3.ª menor), Dó a Sol = 7 (5.ª perfeita)',
+            'Escreve "C major chord" e conta os meios-tons: C a E = 4 (3.ª maior), E a G = 3 (3.ª menor), C a G = 7 (5.ª perfeita)',
         },
         {
           instruction:

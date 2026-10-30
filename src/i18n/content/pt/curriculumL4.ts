@@ -94,7 +94,7 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'O Retardo',
           explanation:
             'Um retardo usa o mesmo mecanismo de nota retida que uma suspensão, mas resolve por grau conjunto ascendente em vez de descendente. O retardo mais típico é 7-8: a sensível é retida do acorde da dominante e resolve para cima até à tónica. Soa como uma suspensão que vai na direção "errada". Os retardos são menos comuns do que as suspensões porque a resolução ascendente é menos natural na condução de vozes tonal, mas o retardo 7-8 é idiomático em pontos cadenciais.',
-          tryThisLabel: 'O B em Sol maior pode retardar para cima até C',
+          tryThisLabel: 'O B em G maior pode retardar para cima até C',
         },
       ],
       tasks: [
@@ -104,7 +104,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escreve "G major chord" — imagina a nota B retida enquanto o acorde muda para Dó maior. B resolve para cima até C: isto é um retardo 7-8, o tipo de retardo mais comum',
+            'Escreve "G major chord" — imagina a nota B retida enquanto o acorde muda para C maior. B resolve para cima até C: isto é um retardo 7-8, o tipo de retardo mais comum',
         },
         {
           instruction:
@@ -133,7 +133,7 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'Tipos de Pedal',
           explanation:
             'O pedal de baixo é o tipo mais comum, com a nota sustentada na voz mais grave. Um pedal invertido sustenta uma nota na voz do soprano enquanto as harmonias se movem abaixo. Um pedal interno mantém uma nota numa voz interior (contralto ou tenor), criando um efeito mais subtil. Um pedal duplo sustenta duas notas em simultâneo, geralmente tónica e dominante (como C e G mantidos juntos), criando um poderoso efeito de ancoragem.',
-          tryThisLabel: 'G é a nota de pedal de dominante em Dó maior',
+          tryThisLabel: 'G é a nota de pedal de dominante em C maior',
         },
         {
           title: 'Notas Cambiadas (Dupla Bordadura)',
@@ -145,15 +145,15 @@ const curriculumL4: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Imagina uma nota de baixo C sustentada enquanto os acordes mudam acima: Dó maior, Fá maior, G7, Dó maior. Os acordes de Fá e G7 criam dissonância contra o baixo C — isto é um pedal de tónica em ação',
+            'Imagina uma nota de baixo C sustentada enquanto os acordes mudam acima: C maior, F maior, G7, C maior. Os acordes de F e G7 criam dissonância contra o baixo C — isto é um pedal de tónica em ação',
         },
         {
           instruction:
-            'Agora imagina um pedal de dominante: o baixo mantém G enquanto os acordes mudam acima (Sol, Dó/Sol, Ré/Sol, Sol). O G sustentado cria tensão crescente que resolve quando a harmonia finalmente se alinha com o baixo',
+            'Agora imagina um pedal de dominante: o baixo mantém G enquanto os acordes mudam acima (G, C/G, D/G, G). O G sustentado cria tensão crescente que resolve quando a harmonia finalmente se alinha com o baixo',
         },
         {
           instruction:
-            'Uma figura de notas cambiadas em torno de E em Dó maior: E-F-D-E. O F é a bordadura superior, o D é a bordadura inferior, e a figura regressa a E. Este ornamento de dupla bordadura decora uma única nota do acorde de ambos os lados',
+            'Uma figura de notas cambiadas em torno de E em C maior: E-F-D-E. O F é a bordadura superior, o D é a bordadura inferior, e a figura regressa a E. Este ornamento de dupla bordadura decora uma única nota do acorde de ambos os lados',
         },
       ],
     },
@@ -184,7 +184,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'A Resolução do Trítono',
           explanation:
-            'O trítono entre a sensível e a 7.ª do acorde é o que torna o V7 singularmente poderoso. Em G7, o trítono é B-F. Quando G7 resolve para Dó, B sobe para C e F desce para E — o trítono contrai para a 3.ª consonante C-E. Esta contração da dissonância máxima para a consonância é o motor da resolução tonal. Cada movimento V7-I em qualquer tonalidade segue este mesmo padrão de trítono-para-consonância.',
+            'O trítono entre a sensível e a 7.ª do acorde é o que torna o V7 singularmente poderoso. Em G7, o trítono é B-F. Quando G7 resolve para C, B sobe para C e F desce para E — o trítono contrai para a 3.ª consonante C-E. Esta contração da dissonância máxima para a consonância é o motor da resolução tonal. Cada movimento V7-I em qualquer tonalidade segue este mesmo padrão de trítono-para-consonância.',
           tryThisLabel: 'B e F formam o trítono dentro de G7',
         },
       ],
@@ -218,7 +218,7 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'V7 em Estado Fundamental e Primeira Inversão (V6/5)',
           explanation:
             'O V7 em estado fundamental resolve para I com o efeito mais enfático — o baixo desce uma 5.ª (ou sobe uma 4.ª) até à fundamental da tónica. A primeira inversão V6/5 coloca a sensível no baixo, que deve subir por meio-tom até à tónica. Isto cria o movimento de baixo mais suave possível para o acorde de tónica e é especialmente útil quando se deseja uma linha de baixo por grau conjunto.',
-          tryThisLabel: 'V7 em estado fundamental em Dó maior',
+          tryThisLabel: 'V7 em estado fundamental em C maior',
         },
         {
           title: 'Segunda Inversão (V4/3)',
@@ -264,19 +264,19 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'O Acorde ii7',
           explanation:
             'O ii7 é o acorde pré-dominante mais importante. Em tonalidades maiores é um acorde de sétima menor; em tonalidades menores torna-se um acorde de sétima meio-diminuto (iiø7). A progressão ii7-V7-I é a sequência funcional mais forte na harmonia tonal porque a fundamental de ii7 (D) é uma nota comum com a 5.ª de V (D em G-B-D-F), criando uma ligação suave na condução de vozes. O baixo move-se por 5.ª descendente (ou 4.ª ascendente) em cada passo, reforçando a atração gravitacional em direção à tónica.',
-          tryThisLabel: 'Ouve ii7 na tonalidade de Dó',
+          tryThisLabel: 'Ouve ii7 na tonalidade de C',
         },
         {
           title: 'O Acorde IV7 / IVmaj7',
           explanation:
             'IVmaj7 desempenha uma função subdominante (pré-dominante) com calor e cor acrescidos. O intervalo de 7.ª maior confere-lhe uma qualidade rica, distinta da tríade IV mais simples. A sétima intensifica a atração para a dominante ao acrescentar mais uma voz que quer resolver. Embora menos comum do que ii7 na prática clássica, IVmaj7 aparece frequentemente na harmonia jazz e pop como uma sonoridade pré-dominante alternativa.',
-          tryThisLabel: 'Ouve IVmaj7 na tonalidade de Dó',
+          tryThisLabel: 'Ouve IVmaj7 na tonalidade de C',
         },
         {
           title: 'A Progressão ii7-V7-I',
           explanation:
             'Esta sequência de três acordes é a progressão harmónica mais fundamental no jazz e uma das mais fortes em toda a música tonal. Cada acorde flui para o seguinte por 5.ª descendente: D(m7) para G(7) para C. A condução de vozes é excecionalmente suave: a 7.ª de cada acorde resolve por grau conjunto para o acorde seguinte, e notas comuns ligam harmonias adjacentes. No jazz, esta progressão é frequentemente estendida: iii7-vi7-ii7-V7-Imaj7, uma descida completa pelo ciclo de quintas.',
-          tryThisLabel: 'Começa o ii7-V7-I em Dó maior',
+          tryThisLabel: 'Começa o ii7-V7-I em C maior',
         },
       ],
       tasks: [
@@ -286,7 +286,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Compara "Dm7" com "Fmaj7" — ambos têm função pré-dominante em Dó maior. Dm7 (ii7) tem uma qualidade mais escura e propulsiva; Fmaj7 (IVmaj7) é mais quente e expansivo. Ambos conduzem naturalmente a G7 (V7)',
+            'Compara "Dm7" com "Fmaj7" — ambos têm função pré-dominante em C maior. Dm7 (ii7) tem uma qualidade mais escura e propulsiva; Fmaj7 (IVmaj7) é mais quente e expansivo. Ambos conduzem naturalmente a G7 (V7)',
         },
         {
           instruction:
@@ -310,7 +310,7 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'Os Acordes iii7 e vi7',
           explanation:
             'O iii7 funciona como substituto de tónica (partilhando duas notas com I) ou como elo no movimento por ciclo de quintas: iii7-vi7-ii7-V7-I. Raramente aparece isolado, mas é essencial em sequências prolongadas. O vi7 é o principal substituto de função tónica; vi7-ii7-V7-I é extremamente comum tanto na harmonia clássica como no jazz. A resolução de engano V7-vi7 é mais suave do que V7-vi porque o acorde de sétima partilha mais notas com V7, atenuando a surpresa.',
-          tryThisLabel: 'Ouve iii7 na tonalidade de Dó',
+          tryThisLabel: 'Ouve iii7 na tonalidade de C',
         },
         {
           title: 'A Sétima de Tónica: Imaj7',
@@ -355,13 +355,13 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'O viiø7 Meio-Diminuto',
           explanation:
-            'O viiø7 em tonalidades maiores funciona como um V7 sem fundamental — as suas notas são a 3.ª, 5.ª, 7.ª e 9.ª de V. Em Dó maior, Bø7 contém B-D-F-A, que são as quatro notas superiores de G9 (G-B-D-F-A com a fundamental G removida). Resolve para I com a mesma lógica de notas de tendência: B sobe para C, F desce para E. A qualidade meio-diminuta é menos tensa do que a totalmente diminuta, conferindo-lhe uma atração dominante mais suave.',
-          tryThisLabel: 'Ouve viiø7 na tonalidade de Dó',
+            'O viiø7 em tonalidades maiores funciona como um V7 sem fundamental — as suas notas são a 3.ª, 5.ª, 7.ª e 9.ª de V. Em C maior, Bø7 contém B-D-F-A, que são as quatro notas superiores de G9 (G-B-D-F-A com a fundamental G removida). Resolve para I com a mesma lógica de notas de tendência: B sobe para C, F desce para E. A qualidade meio-diminuta é menos tensa do que a totalmente diminuta, conferindo-lhe uma atração dominante mais suave.',
+          tryThisLabel: 'Ouve viiø7 na tonalidade de C',
         },
         {
           title: 'O viio7 Totalmente Diminuto',
           explanation:
-            'O viio7 em tonalidades menores é construído a partir do 7.º grau elevado da escala menor harmónica. As quatro notas são todas notas de tendência que puxam para a resolução, tornando-o o mais tenso de todos os acordes de sétima diatónicos. Em Lá menor, G#dim7 contém G#-B-D-F — cada nota quer mover-se por grau conjunto. O acorde de sétima diminuto divide a oitava em 3.as menores iguais, conferindo-lhe uma qualidade simétrica e inquieta.',
+            'O viio7 em tonalidades menores é construído a partir do 7.º grau elevado da escala menor harmónica. As quatro notas são todas notas de tendência que puxam para a resolução, tornando-o o mais tenso de todos os acordes de sétima diatónicos. Em A menor, G#dim7 contém G#-B-D-F — cada nota quer mover-se por grau conjunto. O acorde de sétima diminuto divide a oitava em 3.as menores iguais, conferindo-lhe uma qualidade simétrica e inquieta.',
           tryThisLabel: 'Ouve o viio7 totalmente diminuto',
         },
         {
@@ -374,11 +374,11 @@ const curriculumL4: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "Bm7b5" (B sétima meio-diminuto) — isto é viiø7 em Dó maior. As suas notas B-D-F-A são as mesmas de G9 sem a fundamental G. Resolve para Dó maior com B a subir para C e F a descer para E',
+            'Escreve "Bm7b5" (B sétima meio-diminuto) — isto é viiø7 em C maior. As suas notas B-D-F-A são as mesmas de G9 sem a fundamental G. Resolve para C maior com B a subir para C e F a descer para E',
         },
         {
           instruction:
-            'Escreve "Bdim7" (B sétima diminuto) — isto é viio7 em Dó menor. Compara o som com "Bm7b5": a versão totalmente diminuta é mais tensa porque cada nota é uma nota de tendência',
+            'Escreve "Bdim7" (B sétima diminuto) — isto é viio7 em C menor. Compara o som com "Bm7b5": a versão totalmente diminuta é mais tensa porque cada nota é uma nota de tendência',
         },
         {
           instruction:
@@ -466,7 +466,7 @@ const curriculumL4: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Mapeia as quintas descendentes em Dó maior: C-F-Bdim-Em-Am-Dm-G-C (I-IV-vii°-iii-vi-ii-V-I). Abre "key of C" e toca cada acorde — ouve como cada fundamental desce uma 5.ª para a seguinte',
+            'Mapeia as quintas descendentes em C maior: C-F-Bdim-Em-Am-Dm-G-C (I-IV-vii°-iii-vi-ii-V-I). Abre "key of C" e toca cada acorde — ouve como cada fundamental desce uma 5.ª para a seguinte',
         },
         {
           instruction:
@@ -608,7 +608,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Imagina a linha de baixo C-C#-D sob uma mudança de acorde de I para ii em Dó maior. O C# é uma nota de passagem cromática — não muda de tonalidade, simplesmente suaviza o movimento de um tom de C para D',
+            'Imagina a linha de baixo C-C#-D sob uma mudança de acorde de I para ii em C maior. O C# é uma nota de passagem cromática — não muda de tonalidade, simplesmente suaviza o movimento de um tom de C para D',
         },
         {
           instruction:
@@ -632,7 +632,7 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'O Método de Análise',
           explanation:
             'A análise com numerais romanos segue um processo sistemático: (1) determinar a tonalidade a partir da armação de clave e dos padrões cadenciais, (2) em cada ponto de ritmo harmónico, identificar o acorde — que notas estão a soar, (3) determinar a fundamental e a qualidade, (4) rotular com numeral romano, símbolo de qualidade e cifra de inversão, (5) identificar notas estranhas ao acorde como notas que não pertencem ao acorde, (6) marcar cadências nos finais de frases. Este método transforma a escuta intuitiva em compreensão estruturada.',
-          tryThisLabel: 'Vê todos os acordes disponíveis para análise em Dó',
+          tryThisLabel: 'Vê todos os acordes disponíveis para análise em C',
         },
         {
           title: 'Leitura de Texturas de Coral',
@@ -643,18 +643,18 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Armadilhas Comuns na Análise',
           explanation:
-            'O erro mais comum é identificar incorretamente acordes em inversão olhando apenas para a nota do baixo. Um acorde com E no baixo, G acima e C acima não é Mi menor — é Dó maior em primeira inversão (I6). Outra armadilha: as suspensões fazem o acorde parecer "errado" no momento da dissonância. Analisa sempre até à resolução para determinar a harmonia real. O contexto determina a melhor leitura quando uma nota pode servir tanto como nota do acorde como nota estranha.',
+            'O erro mais comum é identificar incorretamente acordes em inversão olhando apenas para a nota do baixo. Um acorde com E no baixo, G acima e C acima não é E menor — é C maior em primeira inversão (I6). Outra armadilha: as suspensões fazem o acorde parecer "errado" no momento da dissonância. Analisa sempre até à resolução para determinar a harmonia real. O contexto determina a melhor leitura quando uma nota pode servir tanto como nota do acorde como nota estranha.',
           tryThisLabel: 'C/E é I6, não um acorde de E',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escreve "C/E" — isto é Dó maior em primeira inversão (I6 em Dó maior). A nota do baixo é E, mas o acorde continua a ser Dó maior. Pratica a identificação da fundamental, não apenas da nota mais grave',
+            'Escreve "C/E" — isto é C maior em primeira inversão (I6 em C maior). A nota do baixo é E, mas o acorde continua a ser C maior. Pratica a identificação da fundamental, não apenas da nota mais grave',
         },
         {
           instruction:
-            'Analisa esta progressão em Dó maior: C-Dm-G-C. Em numerais romanos: I-ii-V-I. Etiquetas de função: T-PD-D-T. Esta é a frase harmónica fundamental na sua forma mais simples',
+            'Analisa esta progressão em C maior: C-Dm-G-C. Em numerais romanos: I-ii-V-I. Etiquetas de função: T-PD-D-T. Esta é a frase harmónica fundamental na sua forma mais simples',
         },
         {
           instruction:
@@ -704,7 +704,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Em Lá menor, o acorde subtónico VII é Sol maior (G-B-D). Toca "G major chord" depois "C major chord" (VII-III em Lá menor). Esta progressão da menor natural ouve-se constantemente no rock e pop como bVII-bIII',
+            'Em A menor, o acorde subtónico VII é G maior (G-B-D). Toca "G major chord" depois "C major chord" (VII-III em A menor). Esta progressão da menor natural ouve-se constantemente no rock e pop como bVII-bIII',
         },
       ],
     },

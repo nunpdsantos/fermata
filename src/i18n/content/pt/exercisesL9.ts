@@ -15,12 +15,12 @@ const overlay: ExerciseLevelOverlay = {
   l9u30m1e1: {
     prompt:
       'Ouve esta altura e identifica-a.',
-    hint: 'O Dó central (C4) é o ponto de referência central no piano -- ancora-o no teu ouvido.',
+    hint: 'O C central (C4) é o ponto de referência central no piano -- ancora-o no teu ouvido.',
   },
   l9u30m1e2: {
     prompt:
       'Ouve esta altura e identifica-a.',
-    hint: 'G4 está uma 5.a perfeita acima do Dó central -- 7 semitons acima. Compara-o com C4 no teu ouvido.',
+    hint: 'G4 está uma 5.a perfeita acima do C central -- 7 semitons acima. Compara-o com C4 no teu ouvido.',
   },
   l9u30m1e3: {
     prompt:

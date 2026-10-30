@@ -36,7 +36,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Correspondência de Altura',
           explanation:
-            'A competência aural mais fundamental é ouvir uma nota e reproduzi-la -- cantando ou encontrando-a num instrumento. Começa com notas isoladas no registo médio (perto do Dó central), depois expande para fora. Treina tocando uma nota no piano e tentando encontrá-la de novo com os olhos fechados. Isto constrói a ligação interna ouvido-mão que sustenta todo o treino auditivo posterior. O objetivo não é ouvido absoluto (que é em grande parte inato) mas ouvido relativo fiável -- ouvir uma nota em relação a uma referência.',
+            'A competência aural mais fundamental é ouvir uma nota e reproduzi-la -- cantando ou encontrando-a num instrumento. Começa com notas isoladas no registo médio (perto do C central), depois expande para fora. Treina tocando uma nota no piano e tentando encontrá-la de novo com os olhos fechados. Isto constrói a ligação interna ouvido-mão que sustenta todo o treino auditivo posterior. O objetivo não é ouvido absoluto (que é em grande parte inato) mas ouvido relativo fiável -- ouvir uma nota em relação a uma referência.',
           tryThisLabel: 'Toca a escala de C maior como referência de altura',
         },
         {

@@ -33,7 +33,7 @@ const overlay: TemplateLevelOverlay = {
           'C13 implica un acorde menor',
         ],
         [
-          'Cmin7(b5) es lo mismo que Cø (Do semidisminuido)',
+          'Cmin7(b5) es lo mismo que Cø (C semidisminuido)',
           'Cmin7(b5) es un acorde totalmente disminuido',
           'Cmin7(b5) es un acorde de séptima menor',
           'La b5 lo convierte en un acorde aumentado',
@@ -230,9 +230,9 @@ const overlay: TemplateLevelOverlay = {
         'Rhythm changes (de Gershwin): forma AABA, 32 compases. Secciones A: turnarounds I-vi-ii-V. Puente: III7-VI7-II7-V7 (ciclo de dominantes).',
       choiceSets: [
         [
-          'La sección A de los rhythm changes se construye sobre turnarounds I-vi-ii-V en Sib mayor',
+          'La sección A de los rhythm changes se construye sobre turnarounds I-vi-ii-V en Bb mayor',
           'Los rhythm changes usan la forma de blues de 12 compases',
-          'La sección A está en Do mayor',
+          'La sección A está en C mayor',
           'Los rhythm changes no tienen tonalidad estándar',
         ],
         [
@@ -289,9 +289,9 @@ const overlay: TemplateLevelOverlay = {
           'El lidio es idéntico al mayor',
         ],
         [
-          'Un vamp en Re dórico (Dm7 - G7) enfatiza la sexta natural (Si natural sobre Re)',
-          'Re dórico usa Sib',
-          'Los vamps en Re dórico usan solo un acorde',
+          'Un vamp en D dórico (Dm7 - G7) enfatiza la sexta natural (B natural sobre D)',
+          'D dórico usa Bb',
+          'Los vamps en D dórico usan solo un acorde',
           'Los vamps dóricos evitan el 6.º grado',
         ],
         [

@@ -10,7 +10,7 @@ const titles: Record<string, readonly [title: string, subtitle: string]> = {
   l1u2m1: ["Figuras Rítmicas e Pausas", "Quanto tempo duram as notas — da semibreve à semicolcheia"],
   l1u2m2: ["Compasso e Indicação de Compasso", "Como os tempos se agrupam em compassos — 2/4, 3/4 e 4/4"],
   l1u3m1: ["A Escala Maior", "O padrão T-T-mT-T-T-T-mT que define a tonalidade maior"],
-  l1u3m2: ["Armações de Clave — Primeiras Quatro Tonalidades", "Dó, Sol, Ré e Fá — as tonalidades que mais vais usar"],
+  l1u3m2: ["Armações de Clave — Primeiras Quatro Tonalidades", "C, G, D e F — as tonalidades que mais vais usar"],
   l1u3m3: ["Intervalos por Número", "Medir a distância entre notas — do uníssono à oitava"],
   l1u3m4: ["Os Teus Primeiros Acordes — Tríades Maiores", "Três notas que soam completas — fundamental, 3.ª maior, 5.ª perfeita"],
   l2u4m1: ["Todas as Tonalidades Maiores e o Círculo de Quintas", "O conjunto completo de 15 armações de clave maiores e como se ligam entre si"],

@@ -120,16 +120,16 @@ const overlay: ExerciseLevelOverlay = {
 
   l3u9m3e1: {
     prompt:
-      'Constrói um acorde de G7 (sétima da dominante). Este é o V7 em Dó maior. Seleciona as 4 notas.',
+      'Constrói um acorde de G7 (sétima da dominante). Este é o V7 em C maior. Seleciona as 4 notas.',
     hint: 'G7 = G, B, D, F. Uma tríade maior (G-B-D) mais uma 7.a menor (F, 10 semitons acima de G). O trítono B-F impulsiona a resolução para C.',
   },
   l3u9m3e2: {
     prompt:
-      'Constrói um acorde de Am7. Este é o vi7 em Dó maior. Seleciona as 4 notas.',
+      'Constrói um acorde de Am7. Este é o vi7 em C maior. Seleciona as 4 notas.',
     hint: 'Am7 = A, C, E, G. Uma tríade menor (A-C-E) mais uma 7.a menor (G, 10 semitons acima de A).',
   },
   l3u9m3e3: {
-    prompt: 'O acorde V7 contém um trítono. Quais duas notas o formam na tonalidade de Dó maior?',
+    prompt: 'O acorde V7 contém um trítono. Quais duas notas o formam na tonalidade de C maior?',
     choices: [
       'B e F -- a sensível e o 4.o grau da escala',
       'G e D -- a fundamental e a 5.a do acorde V',
@@ -143,30 +143,30 @@ const overlay: ExerciseLevelOverlay = {
 
   l3u9m4e1: {
     prompt:
-      'Constrói um acorde de E7 (V7 em Lá menor, usando a menor harmónica). Seleciona as 4 notas.',
-    hint: 'E7 = E, G#, B, D. O G# provém do 7.o grau elevado de Lá menor harmónica. Este acorde de sétima da dominante fornece a sensível (G#) que resolve para A.',
+      'Constrói um acorde de E7 (V7 em A menor, usando a menor harmónica). Seleciona as 4 notas.',
+    hint: 'E7 = E, G#, B, D. O G# provém do 7.o grau elevado de A menor harmónica. Este acorde de sétima da dominante fornece a sensível (G#) que resolve para A.',
   },
   l3u9m4e2: {
     prompt:
-      'Em Lá menor natural, o acorde construído sobre o 7.o grau (G) é uma tríade maior. Porque muda isto na menor harmónica?',
+      'Em A menor natural, o acorde construído sobre o 7.o grau (G) é uma tríade maior. Porque muda isto na menor harmónica?',
     choices: [
       'Elevar o 7.o grau (G para G#) transforma VII em viio, uma tríade diminuta',
       'O acorde do 7.o grau é sempre diminuto independentemente da forma da escala menor',
       'A menor harmónica baixa o 7.o grau, criando um acorde diminuto',
       'A qualidade do acorde não muda entre menor natural e menor harmónica',
     ],
-    hint: 'Em Lá menor natural, VII é G-B-D (maior). Elevar G para G# na menor harmónica dá G#-B-D, que é diminuto (fundamental à 3.a = 3.am, fundamental à 5.a = 5.adim).',
+    hint: 'Em A menor natural, VII é G-B-D (maior). Elevar G para G# na menor harmónica dá G#-B-D, que é diminuto (fundamental à 3.a = 3.am, fundamental à 5.a = 5.adim).',
   },
   l3u9m4e3: {
     prompt:
-      'Qual é a qualidade do acorde de sétima construído sobre o 2.o grau da menor harmónica (ii em Lá menor = B)?',
+      'Qual é a qualidade do acorde de sétima construído sobre o 2.o grau da menor harmónica (ii em A menor = B)?',
     choices: [
       'Sétima meio-diminuta (m7b5)',
       'Sétima menor',
       'Sétima totalmente diminuta',
       'Sétima da dominante',
     ],
-    hint: 'Em Lá menor harmónica, o ii7 é B-D-F-A: uma tríade diminuta (B-D-F) mais uma 7.a menor (A). Esta combinação chama-se meio-diminuta, escrita Bm7b5 ou B\u00f8.',
+    hint: 'Em A menor harmónica, o ii7 é B-D-F-A: uma tríade diminuta (B-D-F) mais uma 7.a menor (A). Esta combinação chama-se meio-diminuta, escrita Bm7b5 ou B\u00f8.',
   },
 
   // =========================================================================
@@ -178,12 +178,12 @@ const overlay: ExerciseLevelOverlay = {
   l3u10m1e1: {
     prompt: 'Qual é a tessitura padrão para a voz de soprano na escrita SATB?',
     choices: [
-      'C4 a G5 (Dó central até ao Sol uma oitava e uma quinta acima)',
+      'C4 a G5 (C central até ao G uma oitava e uma quinta acima)',
       'C3 a G4',
       'G3 a D5',
       'C5 a C7',
     ],
-    hint: 'O soprano é a voz mais aguda em SATB. A sua tessitura prática vai aproximadamente de C4 (Dó central) a G5. Ultrapassar esta tessitura torna a parte difícil de cantar.',
+    hint: 'O soprano é a voz mais aguda em SATB. A sua tessitura prática vai aproximadamente de C4 (C central) a G5. Ultrapassar esta tessitura torna a parte difícil de cantar.',
   },
   l3u10m1e2: {
     prompt: 'Na escrita SATB, qual tipo de movimento entre duas vozes é geralmente proibido?',
@@ -461,17 +461,17 @@ const overlay: ExerciseLevelOverlay = {
   },
   l3u11m5e2: {
     prompt: 'Transpõe C4 uma 5.a perfeita acima. Identifica o intervalo de 7 semitons ascendente a partir de C.',
-    hint: 'Uma 5.a perfeita são 7 semitons. C mais 7 semitons = G. Transpor uma 5.aP acima é uma das transposições mais comuns, passando de Dó maior para Sol maior.',
+    hint: 'Uma 5.a perfeita são 7 semitons. C mais 7 semitons = G. Transpor uma 5.aP acima é uma das transposições mais comuns, passando de C maior para G maior.',
   },
   l3u11m5e3: {
     prompt: 'Ao transpor uma melodia uma 3.a menor acima, o que acontece à armação de clave?',
     choices: [
-      'Muda para refletir a nova tonalidade (ex.: Dó maior torna-se Mib maior, ganhando 3 bemóis)',
+      'Muda para refletir a nova tonalidade (ex.: C maior torna-se Eb maior, ganhando 3 bemóis)',
       'Mantém-se igual; só as notas se movem',
       'Os sustenidos e bemóis são removidos',
       'Cada nota recebe um acidente',
     ],
-    hint: 'A transposição desloca tudo para uma nova tonalidade. Subir uma 3.a menor (3 semitons) a partir de Dó maior chega a Mib maior. A nova armação de clave (3 bemóis) preserva todas as relações intervalares.',
+    hint: 'A transposição desloca tudo para uma nova tonalidade. Subir uma 3.a menor (3 semitons) a partir de C maior chega a Eb maior. A nova armação de clave (3 bemóis) preserva todas as relações intervalares.',
   },
 };
 

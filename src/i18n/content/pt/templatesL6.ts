@@ -34,10 +34,10 @@ const overlay: TemplateLevelOverlay = {
           'O napolitano está sempre em posição fundamental',
         ],
         [
-          'O acorde napolitano em Dó menor é Réb maior (Réb-Fá-Láb)',
-          'O napolitano em Dó menor é Ré maior',
-          'O napolitano em Dó menor é Mib maior',
-          'O napolitano em Dó menor é Si maior',
+          'O acorde napolitano em C menor é Db maior (Db-F-Ab)',
+          'O napolitano em C menor é D maior',
+          'O napolitano em C menor é Eb maior',
+          'O napolitano em C menor é B maior',
         ],
       ],
     },
@@ -129,7 +129,7 @@ const overlay: TemplateLevelOverlay = {
         'A sexta alemã é enarmonicamente idêntica a um acorde de sétima da dominante. Reescrevê-la permite uma modulação súbita para uma tonalidade remota: Gr+6 numa tonalidade = V7 noutra.',
       choiceSets: [
         [
-          'A sexta alemã em Dó menor (Láb-Dó-Mib-Fá#) pode ser reescrita como Láb7 (Láb-Dó-Mib-Solb), resolvendo para Réb',
+          'A sexta alemã em C menor (Ab-C-Eb-F#) pode ser reescrita como Ab7 (Ab-C-Eb-Gb), resolvendo para Db',
           'A sexta alemã não pode ser reinterpretada como sétima da dominante',
           'A reinterpretação enarmónica só funciona com a sexta italiana',
           'O acorde reescrito resolve para a mesma tonalidade',
@@ -176,10 +176,10 @@ const overlay: TemplateLevelOverlay = {
           'Cada tonalidade tem a sua sétima diminuta única',
         ],
         [
-          'Sio7 (Si-Ré-Fá-Láb) pode resolver para Dó, Mib, Solb ou Lá dependendo da grafia enarmónica',
-          'Sio7 só pode resolver para Dó',
-          'Sio7 tem 2 resoluções possíveis',
-          'Sio7 resolve apenas para Si maior',
+          'Bo7 (B-D-F-Ab) pode resolver para C, Eb, Gb ou A dependendo da grafia enarmónica',
+          'Bo7 só pode resolver para C',
+          'Bo7 tem 2 resoluções possíveis',
+          'Bo7 resolve apenas para B maior',
         ],
       ],
     },
@@ -242,12 +242,12 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica a relação de mediante cromática descrita.',
       hintTemplate:
-        'As mediantes cromáticas são acordes relacionados por uma 3.a maior ou menor com fundamentais que diferem cromaticamente (ex. Dó maior para Mi maior ou Láb maior). Partilham uma nota comum.',
+        'As mediantes cromáticas são acordes relacionados por uma 3.a maior ou menor com fundamentais que diferem cromaticamente (ex. C maior para E maior ou Ab maior). Partilham uma nota comum.',
       choiceSets: [
         [
-          'Dó maior para Mi maior é uma mediante cromática: fundamentais a uma 3.aM de distância, partilhando uma nota comum (Mi)',
-          'Dó maior para Sol maior é uma mediante cromática',
-          'Dó maior para Fá maior é uma mediante cromática',
+          'C maior para E maior é uma mediante cromática: fundamentais a uma 3.aM de distância, partilhando uma nota comum (E)',
+          'C maior para G maior é uma mediante cromática',
+          'C maior para F maior é uma mediante cromática',
           'As mediantes cromáticas não partilham notas comuns',
         ],
         [
@@ -258,9 +258,9 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'C maior para Ab maior é uma mediante cromática: fundamentais a uma 3.aM de distância, partilhando uma nota comum (C)',
-          'Dó para Láb é uma relação de dominante',
+          'C para Ab é uma relação de dominante',
           'Esta relação não tem notas comuns',
-          'Dó para Láb é uma relação de subdominante',
+          'C para Ab é uma relação de subdominante',
         ],
       ],
     },

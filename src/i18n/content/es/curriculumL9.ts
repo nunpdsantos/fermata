@@ -36,7 +36,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Correspondencia de Altura',
           explanation:
-            'La competencia auditiva más fundamental es escuchar una nota y reproducirla — cantando o encontrándola en un instrumento. Se comienza con notas aisladas en el registro medio (cerca del Do central) y después se expande hacia fuera. Practica tocando una nota en el piano e intentando encontrarla de nuevo con los ojos cerrados. Esto construye la conexión interna oído-mano que sustenta todo el entrenamiento auditivo posterior. El objetivo no es el oído absoluto (que es en gran parte innato), sino un oído relativo fiable — escuchar una nota en relación con una referencia.',
+            'La competencia auditiva más fundamental es escuchar una nota y reproducirla — cantando o encontrándola en un instrumento. Se comienza con notas aisladas en el registro medio (cerca del C central) y después se expande hacia fuera. Practica tocando una nota en el piano e intentando encontrarla de nuevo con los ojos cerrados. Esto construye la conexión interna oído-mano que sustenta todo el entrenamiento auditivo posterior. El objetivo no es el oído absoluto (que es en gran parte innato), sino un oído relativo fiable — escuchar una nota en relación con una referencia.',
           tryThisLabel: 'Toca la escala de C mayor como referencia de altura',
         },
         {
@@ -50,7 +50,7 @@ const curriculumL9: CurriculumLevelOverlay = {
           explanation:
             'Agudo frente a grave es siempre relativo: el «agudo» de un clarinete bajo es el «grave» de una flauta. Percepción de registro significa identificar si una nota se sitúa en la zona superior, media o inferior de la extensión del instrumento. En el piano, la octava más grave tiene una cualidad profunda y retumbante; las octavas medias suenan claras y equilibradas; la octava más aguda es brillante y fina. Practica tocando notas a lo largo de toda la extensión e identificando en qué región de octava se encuentran sin mirar. Esta escucha espacial es esencial para comprender voicings orquestales y arreglos.',
           tryThisLabel:
-            'Toca La mayor — después pruébala en otra octava',
+            'Toca A mayor — después pruébala en otra octava',
         },
       ],
       tasks: [

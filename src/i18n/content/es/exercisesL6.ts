@@ -14,8 +14,8 @@ const overlay: ExerciseLevelOverlay = {
 
   l6u18m1e1: {
     prompt:
-      'Construye el acorde napolitano (bII) en Do menor. Es una tríada de Db mayor: selecciona Db, F y Ab.',
-    hint: 'El acorde napolitano es una tríada mayor construida sobre el 2.º grado rebajado. En Do menor, bII = Db mayor = Db, F, Ab (clases de altura 1, 5, 8).',
+      'Construye el acorde napolitano (bII) en C menor. Es una tríada de Db mayor: selecciona Db, F y Ab.',
+    hint: 'El acorde napolitano es una tríada mayor construida sobre el 2.º grado rebajado. En C menor, bII = Db mayor = Db, F, Ab (clases de altura 1, 5, 8).',
   },
   l6u18m1e2: {
     prompt: '¿Cuál es la función armónica del acorde napolitano (bII)?',
@@ -81,17 +81,17 @@ const overlay: ExerciseLevelOverlay = {
       'Un acorde de séptima semidisminuida — mismo sonido, contexto diferente',
       'Un acorde de séptima mayor — idéntico en posición cerrada',
     ],
-    hint: 'La Gr+6 tiene las mismas clases de altura que un acorde de séptima de dominante. Por ejemplo, en Do menor la Gr+6 (Ab, C, Eb, F#) suena idéntica a Ab7 (Ab, C, Eb, Gb). La escritura diferente refleja destinos de conducción de voces diferentes.',
+    hint: 'La Gr+6 tiene las mismas clases de altura que un acorde de séptima de dominante. Por ejemplo, en C menor la Gr+6 (Ab, C, Eb, F#) suena idéntica a Ab7 (Ab, C, Eb, Gb). La escritura diferente refleja destinos de conducción de voces diferentes.',
   },
   l6u18m3e2: {
-    prompt: '¿Cómo se cifra el acorde de sexta alemana en una tonalidad menor (p. ej., Do menor)?',
+    prompt: '¿Cómo se cifra el acorde de sexta alemana en una tonalidad menor (p. ej., C menor)?',
     choices: [
       'Ab, C, Eb, F# — b6, 1, b3, #4',
       'Ab, C, E, F# — b6, 1, 3, #4',
       'Ab, Cb, Eb, F# — b6, b1, b3, #4',
       'Ab, C, Eb, Gb — b6, 1, b3, b5',
     ],
-    hint: 'En Do menor, la Gr+6 contiene b6 (Ab), 1 (C), b3 (Eb) y #4 (F#). El intervalo crucial de sexta aumentada está entre Ab y F#, que resuelve divergentemente hacia Sol–Sol (octava sobre la dominante).',
+    hint: 'En C menor, la Gr+6 contiene b6 (Ab), 1 (C), b3 (Eb) y #4 (F#). El intervalo crucial de sexta aumentada está entre Ab y F#, que resuelve divergentemente hacia G–G (octava sobre la dominante).',
   },
   l6u18m3e3: {
     prompt: 'El acorde de sexta alemana resuelve típicamente hacia qué acorde?',
@@ -127,14 +127,14 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Los acordes pivote diatónicos enlazan solo tonalidades cercanas. Reinterpretar la Gr+6 de la tonalidad como V7 (o viceversa) mueve la tónica medio tono — de C a Db hay cinco pasos en el círculo de quintas, una tonalidad distante alcanzada a través de un solo acorde. Es una técnica emblemática de los compositores del periodo romántico.',
   },
   l6u18m4e3: {
-    prompt: 'Si una Gr+6 en Do menor (Ab, C, Eb, F#) se reinterpreta como V7, ¿qué tonalidad toniciza ahora?',
+    prompt: 'Si una Gr+6 en C menor (Ab, C, Eb, F#) se reinterpreta como V7, ¿qué tonalidad toniciza ahora?',
     choices: [
-      'Reb mayor/menor — reescrita como Ab, C, Eb, Gb = Ab7 = V7/Db',
-      'Sol mayor — porque F# resuelve ascendiendo hacia Sol',
-      'Fa mayor — el acorde se convierte en V7/Fa',
-      'Mib mayor — porque Eb es la nota del medio',
+      'Db mayor/menor — reescrita como Ab, C, Eb, Gb = Ab7 = V7/Db',
+      'G mayor — porque F# resuelve ascendiendo hacia G',
+      'F mayor — el acorde se convierte en V7/F',
+      'Eb mayor — porque Eb es la nota del medio',
     ],
-    hint: 'Reescribir F# como Gb transforma el acorde en Ab, C, Eb, Gb = Lab séptima de dominante. Ab7 es V7 de Db, por tanto la música puede pivotar suavemente de Do menor a Reb mayor — un desplazamiento de medio tono, enlazando territorio tonal muy distante.',
+    hint: 'Reescribir F# como Gb transforma el acorde en Ab, C, Eb, Gb = Ab séptima de dominante. Ab7 es V7 de Db, por tanto la música puede pivotar suavemente de C menor a Db mayor — un desplazamiento de medio tono, enlazando territorio tonal muy distante.',
   },
 
   // =========================================================================
@@ -182,14 +182,14 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'La séptima disminuida con nota común mantiene una nota (la nota común) del acorde que decora. Las otras tres voces se mueven por grado conjunto, creando un embellecimiento cromático por notas vecinas.',
   },
   l6u19m2e2: {
-    prompt: 'En un CTo7 que embellece un acorde de Do mayor, ¿cuál es típicamente la nota común?',
+    prompt: 'En un CTo7 que embellece un acorde de C mayor, ¿cuál es típicamente la nota común?',
     choices: [
       'La fundamental del acorde embellecido (C)',
       'La 3.ª del acorde embellecido (E)',
       'La 5.ª del acorde embellecido (G)',
       'La 7.ª del acorde embellecido (B)',
     ],
-    hint: 'La forma más habitual mantiene la fundamental del acorde objetivo. Para un CTo7 que embellece Do mayor, C se mantiene mientras las otras voces (D#, F#, A) se mueven por grado conjunto de vuelta a las notas del acorde de Do mayor.',
+    hint: 'La forma más habitual mantiene la fundamental del acorde objetivo. Para un CTo7 que embellece C mayor, C se mantiene mientras las otras voces (D#, F#, A) se mueven por grado conjunto de vuelta a las notas del acorde de C mayor.',
   },
   l6u19m2e3: {
     prompt: '¿Cuál es la función principal de un acorde de séptima disminuida con nota común?',
@@ -212,7 +212,7 @@ const overlay: ExerciseLevelOverlay = {
       'Cualquier progresión de acordes que usa conducción cromática de voces',
       'Dos acordes que comparten las tres notas pero en inversiones diferentes',
     ],
-    hint: 'Las mediantes diatónicas (I–iii, I–vi) comparten dos notas comunes. Las mediantes cromáticas (p. ej., Do mayor a Mi mayor, o Do mayor a Lab mayor) tienen fundamentales a una 3.ª de distancia pero con cualidad alterada, compartiendo solo una o cero notas comunes.',
+    hint: 'Las mediantes diatónicas (I–iii, I–vi) comparten dos notas comunes. Las mediantes cromáticas (p. ej., C mayor a E mayor, o C mayor a Ab mayor) tienen fundamentales a una 3.ª de distancia pero con cualidad alterada, compartiendo solo una o cero notas comunes.',
   },
   l6u19m3e2: {
     prompt: '¿Cuántos tipos de relaciones de tercera cromática existen entre tríadas mayores?',

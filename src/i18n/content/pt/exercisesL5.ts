@@ -14,13 +14,13 @@ const overlay: ExerciseLevelOverlay = {
 
   l5u15m1e1: {
     prompt:
-      'Constrói V/V em Dó maior. A dominante secundária de V é uma tríade de D maior. Seleciona as 3 notas: D, F#, A.',
-    hint: 'V/V em Dó significa "o acorde V de Sol maior". A dominante de Sol é Ré maior: D (2), F# (6), A (9). O F# é cromático -- não pertence a Dó maior.',
+      'Constrói V/V em C maior. A dominante secundária de V é uma tríade de D maior. Seleciona as 3 notas: D, F#, A.',
+    hint: 'V/V em C significa "o acorde V de G maior". A dominante de G é D maior: D (2), F# (6), A (9). O F# é cromático -- não pertence a C maior.',
   },
   l5u15m1e2: {
     prompt:
-      'Constrói V7/V em Dó maior. Este é um acorde de D dominante com sétima: D, F#, A, C. Seleciona as 4 notas.',
-    hint: 'V7/V em Dó = D7: D (2), F# (6), A (9), C (0). A sétima menor acrescentada (C) reforça a atração para Sol. O F# é a alteração cromática.',
+      'Constrói V7/V em C maior. Este é um acorde de D dominante com sétima: D, F#, A, C. Seleciona as 4 notas.',
+    hint: 'V7/V em C = D7: D (2), F# (6), A (9), C (0). A sétima menor acrescentada (C) reforça a atração para G. O F# é a alteração cromática.',
   },
   l5u15m1e3: {
     prompt: 'O que é V/V?',
@@ -30,30 +30,30 @@ const overlay: ExerciseLevelOverlay = {
       'Um acorde diminuto construído sobre o segundo grau da escala',
       'O acorde dominante em segunda inversão',
     ],
-    hint: 'V/V significa "a dominante da dominante". Em Dó maior, V é Sol. A dominante de Sol é Ré maior. Portanto V/V em Dó = Ré maior, um acorde cromático que toniciza temporariamente Sol.',
+    hint: 'V/V significa "a dominante da dominante". Em C maior, V é G. A dominante de G é D maior. Portanto V/V em C = D maior, um acorde cromático que toniciza temporariamente G.',
   },
 
   // ---- l5u15m2: Dominantes Secundárias de ii, iii, IV, vi ----
 
   l5u15m2e1: {
-    prompt: 'Em Dó maior, que acorde funciona como V/ii?',
+    prompt: 'Em C maior, que acorde funciona como V/ii?',
     choices: [
-      'Lá maior (A, C#, E) -- a dominante de Ré menor',
-      'Sol maior (G, B, D) -- a dominante de Dó',
-      'Mi maior (E, G#, B) -- a dominante de Lá menor',
-      'Fá maior (F, A, C) -- a subdominante',
+      'A maior (A, C#, E) -- a dominante de D menor',
+      'G maior (G, B, D) -- a dominante de C',
+      'E maior (E, G#, B) -- a dominante de A menor',
+      'F maior (F, A, C) -- a subdominante',
     ],
-    hint: 'Em Dó maior, ii é Ré menor. A dominante de Ré menor é Lá maior (A, C#, E). O C# é a nota cromática que cria a sensível de Ré.',
+    hint: 'Em C maior, ii é D menor. A dominante de D menor é A maior (A, C#, E). O C# é a nota cromática que cria a sensível de D.',
   },
   l5u15m2e2: {
-    prompt: 'Em Dó maior, que acorde funciona como V/IV?',
+    prompt: 'Em C maior, que acorde funciona como V/IV?',
     choices: [
-      'Dó maior (C, E, G) -- a dominante de Fá',
-      'Sol maior (G, B, D) -- a dominante de Dó',
-      'Sib maior (Bb, D, F) -- emprestado de Dó menor',
-      'Ré maior (D, F#, A) -- a dominante de Sol',
+      'C maior (C, E, G) -- a dominante de F',
+      'G maior (G, B, D) -- a dominante de C',
+      'Bb maior (Bb, D, F) -- emprestado de C menor',
+      'D maior (D, F#, A) -- a dominante de G',
     ],
-    hint: 'V/IV significa a dominante de IV. Em Dó maior, IV é Fá. A dominante de Fá é Dó maior. Isto é invulgar porque Dó maior já é a tónica -- o contexto determina se funciona como I ou V/IV.',
+    hint: 'V/IV significa a dominante de IV. Em C maior, IV é F. A dominante de F é C maior. Isto é invulgar porque C maior já é a tónica -- o contexto determina se funciona como I ou V/IV.',
   },
   l5u15m2e3: {
     prompt: 'O que define uma dominante aplicada (secundária)?',
@@ -92,14 +92,14 @@ const overlay: ExerciseLevelOverlay = {
   },
   l5u15m3e3: {
     prompt:
-      'Em Dó maior, qual é o acorde alvo para o qual viio/V resolve?',
+      'Em C maior, qual é o acorde alvo para o qual viio/V resolve?',
     choices: [
-      'Sol maior (V) -- o viio/V resolve meio-tom acima para a dominante',
-      'Dó maior (I) -- resolve para a tónica',
-      'Fá maior (IV) -- resolve para a subdominante',
-      'Ré menor (ii) -- resolve para a sobretónica',
+      'G maior (V) -- o viio/V resolve meio-tom acima para a dominante',
+      'C maior (I) -- resolve para a tónica',
+      'F maior (IV) -- resolve para a subdominante',
+      'D menor (ii) -- resolve para a sobretónica',
     ],
-    hint: 'O "/V" indica-te o alvo: V. Em Dó maior, V é Sol. viio/V é Fá# diminuto (F#, A, C), e o F# resolve meio-tom acima para Sol, a fundamental do acorde alvo.',
+    hint: 'O "/V" indica-te o alvo: V. Em C maior, V é G. viio/V é F# diminuto (F#, A, C), e o F# resolve meio-tom acima para G, a fundamental do acorde alvo.',
   },
 
   // ---- l5u15m4: Tonicização vs. Modulação ----
@@ -150,7 +150,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l5u15m5e2: {
     prompt:
-      'Numa cadeia de dominantes secundárias descendente por quintas (p. ex., V7/vi - V7/ii - V7/V - V - I em Dó maior), que movimento de fundamentais liga cada acorde?',
+      'Numa cadeia de dominantes secundárias descendente por quintas (p. ex., V7/vi - V7/ii - V7/V - V - I em C maior), que movimento de fundamentais liga cada acorde?',
     choices: [
       'Cada fundamental desce uma quinta perfeita (ou sobe uma quarta perfeita) para a seguinte',
       'Cada fundamental sobe um meio-tom cromaticamente',
@@ -184,18 +184,18 @@ const overlay: ExerciseLevelOverlay = {
       'Um acorde diminuto que resolve a modulação',
       'O acorde dominante da tonalidade original',
     ],
-    hint: 'Um acorde pivot é diatónico em ambas as tonalidades. Por exemplo, ao modular de Dó maior para Sol maior, o acorde Mi menor é tanto iii em Dó como vi em Sol, criando uma ponte harmónica suave entre as duas tonalidades.',
+    hint: 'Um acorde pivot é diatónico em ambas as tonalidades. Por exemplo, ao modular de C maior para G maior, o acorde E menor é tanto iii em C como vi em G, criando uma ponte harmónica suave entre as duas tonalidades.',
   },
   l5u16m1e2: {
     prompt:
-      'Ao modular de Dó maior para Sol maior, que acorde poderia servir como pivot?',
+      'Ao modular de C maior para G maior, que acorde poderia servir como pivot?',
     choices: [
-      'Mi menor -- é iii em Dó maior e vi em Sol maior',
-      'Fá maior -- é IV em Dó maior e não é diatónico em Sol maior',
-      'Sib maior -- é emprestado de Dó menor',
-      'Fá# diminuto -- sinaliza a nova tonalidade',
+      'E menor -- é iii em C maior e vi em G maior',
+      'F maior -- é IV em C maior e não é diatónico em G maior',
+      'Bb maior -- é emprestado de C menor',
+      'F# diminuto -- sinaliza a nova tonalidade',
     ],
-    hint: 'Encontra acordes comuns a ambas as tonalidades. Dó maior: C Dm Em F G Am Bdim. Sol maior: G Am Bm C D Em F#dim. Acordes partilhados incluem C, Em, Am, G. Mi menor como iii/vi é uma escolha forte de pivot.',
+    hint: 'Encontra acordes comuns a ambas as tonalidades. C maior: C Dm Em F G Am Bdim. G maior: G Am Bm C D Em F#dim. Acordes partilhados incluem C, Em, Am, G. Em, como iii/vi, é uma escolha forte de pivot.',
   },
   l5u16m1e3: {
     prompt: 'Qual é o processo típico de uma modulação por acorde pivot?',
@@ -218,7 +218,7 @@ const overlay: ExerciseLevelOverlay = {
       '12 -- todas as tonalidades são próximas',
       '3 -- a relativa menor, a dominante e a subdominante',
     ],
-    hint: 'Tonalidades próximas diferem no máximo em um acidente nas suas armações de clave. Para Dó maior: Sol maior (+1#), Fá maior (+1b), Lá menor (relativa), Mi menor (rel. de Sol), Ré menor (rel. de Fá). Isso dá 5 tonalidades próximas.',
+    hint: 'Tonalidades próximas diferem no máximo em um acidente nas suas armações de clave. Para C maior: G maior (+1#), F maior (+1b), A menor (relativa), E menor (rel. de G), D menor (rel. de F). Isso dá 5 tonalidades próximas.',
   },
   l5u16m2e2: {
     prompt:
@@ -229,17 +229,17 @@ const overlay: ExerciseLevelOverlay = {
       'A tonalidade da dominante não usa sustenidos nem bemóis',
       'A dominante é sempre a tonalidade com som mais brilhante',
     ],
-    hint: 'Dó maior e Sol maior partilham 6 de 7 notas (só F vs F#). Esta sobreposição significa que muitos acordes são comuns a ambas as tonalidades, proporcionando abundantes opções de acorde pivot e uma transição fluida.',
+    hint: 'C maior e G maior partilham 6 de 7 notas (só F vs F#). Esta sobreposição significa que muitos acordes são comuns a ambas as tonalidades, proporcionando abundantes opções de acorde pivot e uma transição fluida.',
   },
   l5u16m2e3: {
-    prompt: 'Quais das seguintes são tonalidades próximas de Dó maior?',
+    prompt: 'Quais das seguintes são tonalidades próximas de C maior?',
     choices: [
-      'Sol maior, Fá maior, Lá menor, Mi menor, Ré menor',
-      'Réb maior, Láb maior, Mib maior, Sib maior, Fá menor',
-      'Sol maior, Ré maior, Lá maior, Mi maior, Si maior',
-      'Dó menor, Mib maior, Láb maior, Sib maior, Fá menor',
+      'G maior, F maior, A menor, E menor, D menor',
+      'Db maior, Ab maior, Eb maior, Bb maior, F menor',
+      'G maior, D maior, A maior, E maior, B maior',
+      'C menor, Eb maior, Ab maior, Bb maior, F menor',
     ],
-    hint: 'Tonalidades próximas partilham todos os acidentes menos um com Dó maior (0 sustenidos/bemóis). Sol maior tem 1#, Fá maior tem 1b, e as suas relativas menores (Mi menor, Ré menor) mais a relativa menor de Dó (Lá menor) completam o conjunto.',
+    hint: 'Tonalidades próximas partilham todos os acidentes menos um com C maior (0 sustenidos/bemóis). G maior tem 1#, F maior tem 1b, e as suas relativas menores (E menor, D menor) mais a relativa menor de C (A menor) completam o conjunto.',
   },
 
   // ---- l5u16m3: Modulação Direta/Por Nota Comum/Cromática ----
@@ -279,13 +279,13 @@ const overlay: ExerciseLevelOverlay = {
 
   l5u16m4e1: {
     prompt:
-      'Constrói bVI em Dó maior. Este acorde é emprestado de Dó menor: Láb maior (Ab, C, Eb). Seleciona as 3 notas.',
-    hint: 'bVI em Dó maior = Láb maior: Ab (8), C (0), Eb (3). Este acorde é emprestado de Dó menor natural, onde VI é Láb maior. O Ab e o Eb são notas cromáticas em Dó maior.',
+      'Constrói bVI em C maior. Este acorde é emprestado de C menor: Ab maior (Ab, C, Eb). Seleciona as 3 notas.',
+    hint: 'bVI em C maior = Ab maior: Ab (8), C (0), Eb (3). Este acorde é emprestado de C menor natural, onde VI é Ab maior. O Ab e o Eb são notas cromáticas em C maior.',
   },
   l5u16m4e2: {
     prompt:
-      'Constrói iv em Dó maior. Este acorde é emprestado de Dó menor: Fá menor (F, Ab, C). Seleciona as 3 notas.',
-    hint: 'iv em Dó maior = Fá menor: F (5), Ab (8), C (0). Em Dó maior, IV é Fá maior (F, A, C). Emprestar de Dó menor rebaixa o A para Ab, criando a subdominante menor mais escura.',
+      'Constrói iv em C maior. Este acorde é emprestado de C menor: F menor (F, Ab, C). Seleciona as 3 notas.',
+    hint: 'iv em C maior = F menor: F (5), Ab (8), C (0). Em C maior, IV é F maior (F, A, C). Emprestar de C menor rebaixa o A para Ab, criando a subdominante menor mais escura.',
   },
   l5u16m4e3: {
     prompt:
@@ -296,7 +296,7 @@ const overlay: ExerciseLevelOverlay = {
       'Tocar um acorde maior e um menor ao mesmo tempo',
       'Alternar entre relativa maior e relativa menor',
     ],
-    hint: 'Mistura modal empresta acordes da tonalidade paralela (mesma tónica, modo oposto). Em Dó maior, emprestas de Dó menor: bIII (Mib), iv (Fm), bVI (Láb), bVII (Sib). Acrescentam escuridão e riqueza cromática.',
+    hint: 'Mistura modal empresta acordes da tonalidade paralela (mesma tónica, modo oposto). Em C maior, emprestas de C menor: bIII (Eb), iv (Fm), bVI (Ab), bVII (Bb). Acrescentam escuridão e riqueza cromática.',
   },
 
   // ---- l5u16m5: Terça Picardia ----
@@ -309,7 +309,7 @@ const overlay: ExerciseLevelOverlay = {
       'Um intervalo de terça menor usado numa tonalidade maior',
       'Um ornamento francês em trilo sobre o terceiro grau',
     ],
-    hint: 'A terça picardia é uma técnica secular: uma peça em tonalidade menor termina com um acorde I maior (p. ex., peça em Dó menor a terminar em Dó maior). A terça elevada cria um final brilhante e resolvido após a escuridão do modo menor.',
+    hint: 'A terça picardia é uma técnica secular: uma peça em tonalidade menor termina com um acorde I maior (p. ex., peça em C menor a terminar em C maior). A terça elevada cria um final brilhante e resolvido após a escuridão do modo menor.',
   },
   l5u16m5e2: {
     prompt:
@@ -320,7 +320,7 @@ const overlay: ExerciseLevelOverlay = {
       'Tocar a escala maior sobre acordes menores',
       'Usar os acordes da relativa maior',
     ],
-    hint: 'A mistura modal funciona em ambas as direções. Uma tonalidade menor pode emprestar do seu maior paralelo: p. ex., em Lá menor, podes emprestar IV de Lá maior (Ré maior em vez de Ré menor) para iluminar temporariamente a harmonia.',
+    hint: 'A mistura modal funciona em ambas as direções. Uma tonalidade menor pode emprestar do seu maior paralelo: p. ex., em A menor, podes emprestar IV de A maior (D maior em vez de D menor) para iluminar temporariamente a harmonia.',
   },
   l5u16m5e3: {
     prompt:
@@ -452,7 +452,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l5u17m4e2: {
     prompt:
-      'Numa progressão ii7-V7-I em Dó maior (Dm7-G7-Cmaj7), como se movem as notas-guia?',
+      'Numa progressão ii7-V7-I em C maior (Dm7-G7-Cmaj7), como se movem as notas-guia?',
     choices: [
       'As notas-guia movem-se por grau ou mantêm-se como notas comuns: F-C em Dm7, F-B em G7, E-B em Cmaj7',
       'As notas-guia saltam por intervalos largos entre cada acorde',

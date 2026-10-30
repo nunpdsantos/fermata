@@ -35,34 +35,34 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: '¿Qué Es el Napolitano?',
           explanation:
-            'El napolitano es una tríada mayor construida sobre el segundo grado rebajado. En Do mayor o Do menor, ese acorde es Reb mayor (Reb-Fa-Lab). Bautizado con el nombre de la escuela napolitana de ópera, funciona como una sustitución cromática dramática del predominante típico (ii o IV). Se utiliza casi siempre en primera inversión (bII6), colocando el 4.º grado en el bajo para una conexión suave con la dominante.',
-          tryThisLabel: 'Toca Reb mayor — el napolitano en Do menor',
+            'El napolitano es una tríada mayor construida sobre el segundo grado rebajado. En C mayor o C menor, ese acorde es Db mayor (Db-F-Ab). Bautizado con el nombre de la escuela napolitana de ópera, funciona como una sustitución cromática dramática del predominante típico (ii o IV). Se utiliza casi siempre en primera inversión (bII6), colocando el 4.º grado en el bajo para una conexión suave con la dominante.',
+          tryThisLabel: 'Toca Db mayor — el napolitano en C menor',
         },
         {
           title: '¿Por Qué la Primera Inversión (bII6)?',
           explanation:
-            'En primera inversión, la nota del bajo es el 4.º grado (Fa en Do menor), que se enlaza suavemente con la dominante mediante el movimiento del bajo 4 -> 5 — el mismo movimiento de IV -> V. El drama cromático reside en las voces superiores, donde el 2.º grado rebajado (Reb) resuelve descendentemente hacia la sensible o la tónica. El napolitano en posición fundamental es más raro, pero aparece en la música romántica para un efecto más enfático y sorprendente.',
-          tryThisLabel: 'Escucha Reb/Fa — napolitano en primera inversión',
+            'En primera inversión, la nota del bajo es el 4.º grado (F en C menor), que se enlaza suavemente con la dominante mediante el movimiento del bajo 4 -> 5 — el mismo movimiento de IV -> V. El drama cromático reside en las voces superiores, donde el 2.º grado rebajado (Db) resuelve descendentemente hacia la sensible o la tónica. El napolitano en posición fundamental es más raro, pero aparece en la música romántica para un efecto más enfático y sorprendente.',
+          tryThisLabel: 'Escucha Db/F — napolitano en primera inversión',
         },
         {
           title: 'Conducción de Voces y Efecto Emocional',
           explanation:
             'El 2.º grado rebajado es una nota de tendencia fuerte que debe resolver descendentemente — hacia la sensible al moverse a V, o directamente hacia la tónica. Nunca se duplica. El b6 (quinta del bII) también resuelve descendentemente hacia el 5.º grado. El napolitano suena sombrío, majestuoso y solemne, importando un color de modo frigio a la armonía. Es un sonido característico de Beethoven, Schubert y de bandas sonoras modernas.',
-          tryThisLabel: 'Observa Do menor — el contexto natural del napolitano',
+          tryThisLabel: 'Observa C menor — el contexto natural del napolitano',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escribe "Db major chord" para escuchar el acorde napolitano de Do menor. Observa cómo Reb-Fa-Lab suena sombrío y dramático en comparación con un acorde de Rem o Fa en este contexto',
+            'Escribe "Db major chord" para escuchar el acorde napolitano de C menor. Observa cómo Db-F-Ab suena sombrío y dramático en comparación con un acorde de Dm o F en este contexto',
         },
         {
           instruction:
-            'Escribe "Db/F" para escuchar el napolitano en primera inversión. La nota del bajo Fa se enlaza suavemente con Sol (dominante). Esta es la disposición estándar bII6 usada en la música clásica',
+            'Escribe "Db/F" para escuchar el napolitano en primera inversión. La nota del bajo F se enlaza suavemente con G (dominante). Esta es la disposición estándar bII6 usada en la música clásica',
         },
         {
           instruction:
-            'Piensa en el napolitano en otras tonalidades menores: en La menor, bII es Sib mayor. En Mi menor, bII es Fa mayor. En Re menor, bII es Mib mayor. En cada caso, es una tríada mayor medio tono por encima de la tónica',
+            'Piensa en el napolitano en otras tonalidades menores: en A menor, bII es Bb mayor. En E menor, bII es F mayor. En D menor, bII es Eb mayor. En cada caso, es una tríada mayor medio tono por encima de la tónica',
         },
       ],
     },
@@ -80,34 +80,34 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'El Intervalo de Sexta Aumentada',
           explanation:
-            'Todos los acordes de sexta aumentada contienen un intervalo de sexta aumentada entre el 6.º grado rebajado en el bajo y el 4.º grado elevado en una voz superior. En Do: Lab (b6) hasta Fa# (#4). Este intervalo resuelve divergentemente por movimiento contrario — Lab desciende a Sol, Fa# asciende a Sol — produciendo una octava sobre el 5.º grado, la fundamental de la dominante. Esta resolución divergente es el gesto definitorio de toda la familia de sextas aumentadas.',
-          tryThisLabel: 'Observa Do mayor — el contexto para sextas aumentadas',
+            'Todos los acordes de sexta aumentada contienen un intervalo de sexta aumentada entre el 6.º grado rebajado en el bajo y el 4.º grado elevado en una voz superior. En C: Ab (b6) hasta F# (#4). Este intervalo resuelve divergentemente por movimiento contrario — Ab desciende a G, F# asciende a G — produciendo una octava sobre el 5.º grado, la fundamental de la dominante. Esta resolución divergente es el gesto definitorio de toda la familia de sextas aumentadas.',
+          tryThisLabel: 'Observa C mayor — el contexto para sextas aumentadas',
         },
         {
           title: 'La Sexta Italiana (It+6)',
           explanation:
-            'La sexta italiana tiene tres notas: b6, 1, #4. En Do: Lab-Do-Fa#. Es el acorde de sexta aumentada más simple — solo el intervalo de sexta aumentada más el 1.er grado para completar la sonoridad. A cuatro voces, el 1.er grado es la nota duplicada, y el acorde resuelve directamente a V. Al contener solo tres notas, es el miembro más ligero y transparente de la familia.',
-          tryThisLabel: 'Escucha Lab — la nota del bajo de las sextas aumentadas en Do',
+            'La sexta italiana tiene tres notas: b6, 1, #4. En C: Ab-C-F#. Es el acorde de sexta aumentada más simple — solo el intervalo de sexta aumentada más el 1.er grado para completar la sonoridad. A cuatro voces, el 1.er grado es la nota duplicada, y el acorde resuelve directamente a V. Al contener solo tres notas, es el miembro más ligero y transparente de la familia.',
+          tryThisLabel: 'Escucha Ab — la nota del bajo de las sextas aumentadas en C',
         },
         {
           title: 'La Sexta Francesa (Fr+6)',
           explanation:
-            'La sexta francesa tiene cuatro notas: b6, 1, 2, #4. En Do: Lab-Do-Re-Fa#. Añade el 2.º grado a la sexta italiana. El resultado contiene dos tritonos (Lab-Re y Do-Fa#), confiriéndole una cualidad característica de tonos enteros — las cuatro notas pertenecen a la misma colección de tonos enteros (una escala de seis notas formada solo por tonos enteros, que se estudia más adelante en este nivel). Este color exótico y suspendido convierte a la sexta francesa en favorita de los compositores que buscan la máxima tensión predominante.',
-          tryThisLabel: 'Escucha Sol mayor — el acorde V al que estas sextas resuelven en Do',
+            'La sexta francesa tiene cuatro notas: b6, 1, 2, #4. En C: Ab-C-D-F#. Añade el 2.º grado a la sexta italiana. El resultado contiene dos tritonos (Ab-D y C-F#), confiriéndole una cualidad característica de tonos enteros — las cuatro notas pertenecen a la misma colección de tonos enteros (una escala de seis notas formada solo por tonos enteros, que se estudia más adelante en este nivel). Este color exótico y suspendido convierte a la sexta francesa en favorita de los compositores que buscan la máxima tensión predominante.',
+          tryThisLabel: 'Escucha G mayor — el acorde V al que estas sextas resuelven en C',
         },
       ],
       tasks: [
         {
           instruction:
-            'Cifra la sexta italiana en Do: Lab-Do-Fa#. Ahora cífrala en Sol: Mib-Sol-Do#. El patrón es siempre b6, 1, #4 de la tonalidad objetivo. Practica la construcción de la It+6 en Re, La y Mib',
+            'Cifra la sexta italiana en C: Ab-C-F#. Ahora cífrala en G: Eb-G-C#. El patrón es siempre b6, 1, #4 de la tonalidad objetivo. Practica la construcción de la It+6 en D, A y Eb',
         },
         {
           instruction:
-            'Cifra la sexta francesa en Do: Lab-Do-Re-Fa#. Observa los dos tritonos: Lab hasta Re y Do hasta Fa#. Las cuatro notas pertenecen a la escala de tonos enteros sobre Do. Cifra la Fr+6 en Sol y en Re',
+            'Cifra la sexta francesa en C: Ab-C-D-F#. Observa los dos tritonos: Ab hasta D y C hasta F#. Las cuatro notas pertenecen a la escala de tonos enteros sobre C. Cifra la Fr+6 en G y en D',
         },
         {
           instruction:
-            'Escribe "Ab major chord" y escucha. Ahora imagina añadir Fa# en una voz superior. El intervalo Lab hasta Fa# es la sexta aumentada que define toda esta familia de acordes',
+            'Escribe "Ab major chord" y escucha. Ahora imagina añadir F# en una voz superior. El intervalo Ab hasta F# es la sexta aumentada que define toda esta familia de acordes',
         },
       ],
     },
@@ -126,33 +126,33 @@ const curriculumL6: CurriculumLevelOverlay = {
           title: 'La Sexta Alemana (Gr+6)',
           explanation:
             'La sexta alemana tiene cuatro notas: b6, 1, b3, #4. En C: Ab-C-Eb-F#. Añade el 3.er grado rebajado (del modo menor) a la sexta italiana. A diferencia del color de tonos enteros de la sexta francesa, la sexta alemana suena rica y plena — una sonoridad completa de cuatro notas cuyas tres notas inferiores (Ab-C-Eb) forman una tríada mayor, y por eso suena exactamente como un acorde de séptima de dominante.',
-          tryThisLabel: 'Escucha Lab7 — el gemelo enarmónico de la Gr+6 en Do',
+          tryThisLabel: 'Escucha Ab7 — el gemelo enarmónico de la Gr+6 en C',
         },
         {
           title: 'Equivalencia Enarmónica: Gr+6 = V7',
           explanation:
-            'Reescribamos la sexta alemana en Do: Lab-Do-Mib-Fa# se convierte en Lab-Do-Mib-Solb cuando Fa# se reescribe como Solb. Lab-Do-Mib-Solb es Lab séptima de dominante (Lab7). El mismo sonido cumple dos funciones completamente diferentes — Gr+6 resolviendo a V en Do, o V7 resolviendo a I en Reb. Esta doble identidad es el fundamento de la modulación enarmónica entre tonalidades distantes.',
-          tryThisLabel: 'Escucha Reb mayor — hacia donde Lab7 resuelve como V7',
+            'Reescribamos la sexta alemana en C: Ab-C-Eb-F# se convierte en Ab-C-Eb-Gb cuando F# se reescribe como Gb. Ab-C-Eb-Gb es Ab séptima de dominante (Ab7). El mismo sonido cumple dos funciones completamente diferentes — Gr+6 resolviendo a V en C, o V7 resolviendo a I en Db. Esta doble identidad es el fundamento de la modulación enarmónica entre tonalidades distantes.',
+          tryThisLabel: 'Escucha Db mayor — hacia donde Ab7 resuelve como V7',
         },
         {
           title: 'El Problema de las Quintas Paralelas',
           explanation:
-            'Cuando la Gr+6 resuelve directamente a V, el movimiento de las voces b3 -> 2 (Mib -> Re en Do) y b6 -> 5 (Lab -> Sol) crea quintas paralelas — prohibidas en la escritura rigurosa a partes. La solución estándar es insertar un acorde de 6/4 cadencial: Gr+6 -> I6/4 -> V. El acorde 6/4 rompe el movimiento paralelo. Las sextas italiana y francesa no tienen este problema porque carecen del b3.',
-          tryThisLabel: 'Escucha Do/Sol — el 6/4 cadencial que rompe las paralelas',
+            'Cuando la Gr+6 resuelve directamente a V, el movimiento de las voces b3 -> 2 (Eb -> D en C) y b6 -> 5 (Ab -> G) crea quintas paralelas — prohibidas en la escritura rigurosa a partes. La solución estándar es insertar un acorde de 6/4 cadencial: Gr+6 -> I6/4 -> V. El acorde 6/4 rompe el movimiento paralelo. Las sextas italiana y francesa no tienen este problema porque carecen del b3.',
+          tryThisLabel: 'Escucha C/G — el 6/4 cadencial que rompe las paralelas',
         },
       ],
       tasks: [
         {
           instruction:
-            'Cifra la sexta alemana en Do: Lab-Do-Mib-Fa#. Ahora reescribe Fa# como Solb: Lab-Do-Mib-Solb = Lab7. Mismo sonido, función completamente diferente. Esta equivalencia enarmónica se explota en la modulación enarmónica',
+            'Cifra la sexta alemana en C: Ab-C-Eb-F#. Ahora reescribe F# como Gb: Ab-C-Eb-Gb = Ab7. Mismo sonido, función completamente diferente. Esta equivalencia enarmónica se explota en la modulación enarmónica',
         },
         {
           instruction:
-            'Cifra la sexta alemana en Re: Sib-Re-Fa-Sol#. Reescribe Sol# como Lab: Sib-Re-Fa-Lab = Sib7 = V7 de Mib. Cifra la Gr+6 en La y encuentra su gemelo de séptima de dominante',
+            'Cifra la sexta alemana en D: Bb-D-F-G#. Reescribe G# como Ab: Bb-D-F-Ab = Bb7 = V7 de Eb. Cifra la Gr+6 en A y encuentra su gemelo de séptima de dominante',
         },
         {
           instruction:
-            'Escribe "Ab7" para escuchar el acorde. Este es simultáneamente V7 de Reb y Gr+6 en Do. La resolución que elijas determina la tonalidad que el oyente percibe',
+            'Escribe "Ab7" para escuchar el acorde. Este es simultáneamente V7 de Db y Gr+6 en C. La resolución que elijas determina la tonalidad que el oyente percibe',
         },
       ],
     },
@@ -171,29 +171,29 @@ const curriculumL6: CurriculumLevelOverlay = {
           title: 'El Pivote Gr+6/V7 en Acción',
           explanation:
             'Para modular de C a Db usando esta técnica: establece C como tonalidad, aborda el acorde Ab-C-Eb-F# como Gr+6 en C, y después resuélvelo como Ab7 (V7 de Db) hacia Db mayor. El oído del oyente acepta ambas interpretaciones porque el acorde es acústicamente idéntico. La resolución determina la tonalidad percibida. La misma nota (F♯/G♭) se mueve en direcciones opuestas según la interpretación: como ♯4 en la sexta aumentada, resuelve hacia arriba; como ♭7 del acorde de séptima de dominante, resuelve hacia abajo. Un solo acorde pivota entre tonalidades que distan medio tono — una de las relaciones más distantes en el círculo de quintas.',
-          tryThisLabel: 'Observa cómo Do y Reb están distantes en el círculo',
+          tryThisLabel: 'Observa cómo C y Db están distantes en el círculo',
         },
         {
           title: 'Funciona en Ambas Direcciones',
           explanation:
-            'El pivote funciona a la inversa también. Para modular de Reb a Do: establece Reb, aborda Lab7 como V7 de Reb, y después resuélvelo como Gr+6 en Do tratándolo como Lab-Do-Mib-Fa# resolviendo a Sol (V de Do). El mismo acorde que te lleva de Do a Reb puede también traerte de vuelta. Cualquier par de tonalidades a medio tono de distancia es accesible a través de esta técnica.',
-          tryThisLabel: 'Escucha Sol mayor — V de Do, la llegada tras resolver la Gr+6',
+            'El pivote funciona a la inversa también. Para modular de Db a C: establece Db, aborda Ab7 como V7 de Db, y después resuélvelo como Gr+6 en C tratándolo como Ab-C-Eb-F# resolviendo a G (V de C). El mismo acorde que te lleva de C a Db puede también traerte de vuelta. Cualquier par de tonalidades a medio tono de distancia es accesible a través de esta técnica.',
+          tryThisLabel: 'Escucha G mayor — V de C, la llegada tras resolver la Gr+6',
         },
         {
           title: 'Mapear Todos los Pivotes Gr+6/V7 Posibles',
           explanation:
-            'Puesto que cualquier acorde de séptima de dominante puede reinterpretarse como sexta alemana, cada tonalidad tiene acceso a un objetivo de modulación medio tono por encima o por debajo. Desde Do, la Gr+6 alcanza Reb. Desde Re, la Gr+6 alcanza Mib. Desde Fa#, la Gr+6 alcanza Sol. La técnica abre caminos modulatorios directos entre tonalidades que de otro modo requerirían muchos pasos intermedios por el círculo de quintas.',
-          tryThisLabel: 'Escucha Reb mayor — la tonalidad distante de llegada desde Do',
+            'Puesto que cualquier acorde de séptima de dominante puede reinterpretarse como sexta alemana, cada tonalidad tiene acceso a un objetivo de modulación medio tono por encima o por debajo. Desde C, la Gr+6 alcanza Db. Desde D, la Gr+6 alcanza Eb. Desde F#, la Gr+6 alcanza G. La técnica abre caminos modulatorios directos entre tonalidades que de otro modo requerirían muchos pasos intermedios por el círculo de quintas.',
+          tryThisLabel: 'Escucha Db mayor — la tonalidad distante de llegada desde C',
         },
       ],
       tasks: [
         {
           instruction:
-            'Cifra la sexta alemana en Re: Sib-Re-Fa-Sol#. Reescribe Sol# como Lab: Sib-Re-Fa-Lab = Sib7 = V7 de Mib. Puedes pivotar de Re mayor a Mib mayor a través de un solo acorde',
+            'Cifra la sexta alemana en D: Bb-D-F-G#. Reescribe G# como Ab: Bb-D-F-Ab = Bb7 = V7 de Eb. Puedes pivotar de D mayor a Eb mayor a través de un solo acorde',
         },
         {
           instruction:
-            'Planifica una modulación de La mayor a Sib mayor usando Gr+6/V7. Primero: ¿cuál es la Gr+6 en La? (Fa-La-Do-Re#.) Reescribe Re# como Mib: Fa-La-Do-Mib = Fa7 = V7 de Sib. Resuelve a Sib',
+            'Planifica una modulación de A mayor a Bb mayor usando Gr+6/V7. Primero: ¿cuál es la Gr+6 en A? (F-A-C-D#.) Reescribe D# como Eb: F-A-C-Eb = F7 = V7 de Bb. Resuelve a Bb',
         },
         {
           instruction:
@@ -215,34 +215,34 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'La Simetría de la Séptima Disminuida',
           explanation:
-            'Un acorde de séptima disminuida divide la octava en cuatro terceras menores iguales. Si-Re-Fa-Lab: cada par adyacente dista una tercera menor. Debido a esta simetría perfecta, el acorde suena igual independientemente de qué nota se considere la fundamental. Existen solo tres acordes de séptima disminuida distintos en el sistema de doce notas — cada acorde dim7 es una reescritura enarmónica de uno de estos tres.',
-          tryThisLabel: 'Escucha Sidim7 — cuatro terceras menores iguales',
+            'Un acorde de séptima disminuida divide la octava en cuatro terceras menores iguales. B-D-F-Ab: cada par adyacente dista una tercera menor. Debido a esta simetría perfecta, el acorde suena igual independientemente de qué nota se considere la fundamental. Existen solo tres acordes de séptima disminuida distintos en el sistema de doce notas — cada acorde dim7 es una reescritura enarmónica de uno de estos tres.',
+          tryThisLabel: 'Escucha Bdim7 — cuatro terceras menores iguales',
         },
         {
           title: 'Cuatro Resoluciones Posibles',
           explanation:
-            'Como cualquiera de las cuatro notas puede servir de sensible, un solo acorde de séptima disminuida puede funcionar como viio7 en cuatro tonalidades diferentes. Si-Re-Fa-Lab resuelve a Do menor (Si es sensible). Reescrito como Re-Fa-Lab-Dob: resuelve a Mib menor (Re es sensible). Reescrito como Fa-Lab-Dob-Mibb: resuelve a Solb menor. Reescrito como Sol#-Si-Re-Fa (Sol# como sensible): resuelve a La menor. Las cuatro tonalidades objetivo — Do, Mib, Solb, La — distan una tercera menor entre sí.',
-          tryThisLabel: 'Observa Do menor — una de las cuatro resoluciones posibles',
+            'Como cualquiera de las cuatro notas puede servir de sensible, un solo acorde de séptima disminuida puede funcionar como viio7 en cuatro tonalidades diferentes. B-D-F-Ab resuelve a C menor (B es sensible). Reescrito como D-F-Ab-Cb: resuelve a Eb menor (D es sensible). Reescrito como F-Ab-Cb-Ebb: resuelve a Gb menor. Reescrito como G#-B-D-F (G# como sensible): resuelve a A menor. Las cuatro tonalidades objetivo — C, Eb, Gb, A — distan una tercera menor entre sí.',
+          tryThisLabel: 'Observa C menor — una de las cuatro resoluciones posibles',
         },
         {
           title: 'Aplicar la Modulación Enarmónica por Dim7',
           explanation:
-            'Para modular de Do menor a La menor vía dim7: usa viio7 de Do menor (Si-Re-Fa-Lab), después reescribe Lab como Sol# para obtener viio7 de La menor (Sol#-Si-Re-Fa), y resuelve a La menor. El acorde no cambia sonoramente — solo la grafía y la resolución cambian. Esta técnica alcanza tonalidades a una tercera menor, un tritono o una sexta mayor de distancia en un solo paso, convirtiéndola en el pivote enarmónico más versátil de la música tonal.',
-          tryThisLabel: 'Observa La menor — una tonalidad objetivo distante desde Do',
+            'Para modular de C menor a A menor vía dim7: usa viio7 de C menor (B-D-F-Ab), después reescribe Ab como G# para obtener viio7 de A menor (G#-B-D-F), y resuelve a A menor. El acorde no cambia sonoramente — solo la grafía y la resolución cambian. Esta técnica alcanza tonalidades a una tercera menor, un tritono o una sexta mayor de distancia en un solo paso, convirtiéndola en el pivote enarmónico más versátil de la música tonal.',
+          tryThisLabel: 'Observa A menor — una tonalidad objetivo distante desde C',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escribe "Bdim7" — este acorde puede resolver a Do menor, Mib menor, Solb menor o La menor. Las cuatro resoluciones son igualmente válidas. La grafía enarmónica determina la tonalidad de destino',
+            'Escribe "Bdim7" — este acorde puede resolver a C menor, Eb menor, Gb menor o A menor. Las cuatro resoluciones son igualmente válidas. La grafía enarmónica determina la tonalidad de destino',
         },
         {
           instruction:
-            'Localiza las cuatro resoluciones de Sidim7 en el círculo de quintas: Do, Mib, Solb, La. Distan una tercera menor entre sí — dividiendo la octava en cuatro partes iguales, tal como el propio acorde',
+            'Localiza las cuatro resoluciones de Bdim7 en el círculo de quintas: C, Eb, Gb, A. Distan una tercera menor entre sí — dividiendo la octava en cuatro partes iguales, tal como el propio acorde',
         },
         {
           instruction:
-            'Parte de Fa#dim7 (Fa#-La-Do-Mib). Encuentra las cuatro tonalidades objetivo: Sol menor (Fa# como sensible), Sib menor (La como sensible), Reb menor (Do como sensible), Mi menor (Mib reescrito como Re# como sensible)',
+            'Parte de F#dim7 (F#-A-C-Eb). Encuentra las cuatro tonalidades objetivo: G menor (F# como sensible), Bb menor (A como sensible), Db menor (C como sensible), E menor (Eb reescrito como D# como sensible)',
         },
       ],
     },
@@ -261,19 +261,19 @@ const curriculumL6: CurriculumLevelOverlay = {
           title: '¿Qué Es el CTo7?',
           explanation:
             'Un acorde de séptima disminuida con nota común comparte una nota (la nota común) con el acorde que embellece. La nota común es generalmente la fundamental del acorde objetivo. Las otras tres notas del acorde dim7 resuelven cada una por grado conjunto (dos por semitono, una por tono) hacia las restantes notas del acorde. A diferencia de un viio7 funcional, el CTo7 no cambia la tonalidad — crea una aproximación cromática dramática a un acorde que el oyente ya espera.',
-          tryThisLabel: 'Escucha Do mayor — el acorde objetivo que un CTo7 embellece',
+          tryThisLabel: 'Escucha C mayor — el acorde objetivo que un CTo7 embellece',
         },
         {
           title: 'Construir el CTo7',
           explanation:
             'Para construir el CTo7 de C mayor: mantén C como nota común, y después completa un acorde de séptima disminuida que incluya C. Una opción: C-D#-F#-A (= C con D#dim7 rodeándolo). D# sube un semitono a E, F# sube un semitono a G, A baja un tono a G. Dos voces se mueven por semitono y una por tono, mientras C se mantiene firme. El resultado es una aproximación cromática centelleante.',
-          tryThisLabel: 'Toca Do mayor — escucha el objetivo de la resolución',
+          tryThisLabel: 'Toca C mayor — escucha el objetivo de la resolución',
         },
         {
           title: 'El CTo7 en Contexto Musical',
           explanation:
             'El CTo7 es habitual en la música romántica y en bandas sonoras. Embellece frecuentemente la tónica (CTo7 -> I) o la dominante (CTo7 -> V). Como no cambia la tonalidad, funciona más como un acorde vecino cromático que como una verdadera modulación. La notación CTo7 lo distingue de un análisis viio7, que implicaría una tonicización. El CTo7 es puro color y embellecimiento.',
-          tryThisLabel: 'Escucha Sol mayor — el CTo7 también puede embellecer V',
+          tryThisLabel: 'Escucha G mayor — el CTo7 también puede embellecer V',
         },
       ],
       tasks: [
@@ -305,34 +305,34 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'Mediantes Cromáticas',
           explanation:
-            'Una mediante cromática es un acorde cuya fundamental dista una tercera mayor o menor del acorde actual, con al menos una alteración cromática entre ellos. Desde Do mayor, Lab mayor y Mi mayor son mediantes cromáticas — cada una comparte una nota común con Do, pero altera cromáticamente las restantes. Mediantes doblemente cromáticas no comparten ninguna nota común. Estos cambios dramáticos son un sello distintivo de las bandas sonoras y de la música tardorromántica. Algunas mediantes cromáticas (como ♭VI) también pueden analizarse como mezcla modal — la distinción depende del contexto y de la función.',
-          tryThisLabel: 'Escucha Lab mayor — mediante cromática de Do',
+            'Una mediante cromática es un acorde cuya fundamental dista una tercera mayor o menor del acorde actual, con al menos una alteración cromática entre ellos. Desde C mayor, Ab mayor y E mayor son mediantes cromáticas — cada una comparte una nota común con C, pero altera cromáticamente las restantes. Mediantes doblemente cromáticas no comparten ninguna nota común. Estos cambios dramáticos son un sello distintivo de las bandas sonoras y de la música tardorromántica. Algunas mediantes cromáticas (como ♭VI) también pueden analizarse como mezcla modal — la distinción depende del contexto y de la función.',
+          tryThisLabel: 'Escucha Ab mayor — mediante cromática de C',
         },
         {
           title: 'Dominantes Alteradas',
           explanation:
-            'Las dominantes alteradas añaden tensión cromática al acorde de dominante. V+ (dominante aumentada) eleva la quinta, que resuelve ascendentemente hacia la 3.ª de I. V7b5 rebaja la quinta, habitual en el jazz. V7#5 combina la quinta aumentada con una séptima. Dominantes doblemente aplicadas (V/V/V) extienden la cadena un nivel más: en Do, La7 -> Re7 -> Sol7 -> Do crea un impulso en cascada a través de resoluciones de dominante secuenciales.',
-          tryThisLabel: 'Escucha Mi mayor — otra mediante cromática de Do',
+            'Las dominantes alteradas añaden tensión cromática al acorde de dominante. V+ (dominante aumentada) eleva la quinta, que resuelve ascendentemente hacia la 3.ª de I. V7b5 rebaja la quinta, habitual en el jazz. V7#5 combina la quinta aumentada con una séptima. Dominantes doblemente aplicadas (V/V/V) extienden la cadena un nivel más: en C, A7 -> D7 -> G7 -> C crea un impulso en cascada a través de resoluciones de dominante secuenciales.',
+          tryThisLabel: 'Escucha E mayor — otra mediante cromática de C',
         },
         {
           title: 'La Progresión Omnibus',
           explanation:
             'El omnibus es un patrón cromático de intercambio de voces (en un intercambio de voces, dos voces se intercambian las notas): una voz asciende cromáticamente mientras otra desciende, con las restantes voces sostenidas. Esto crea un paisaje armónico lentamente evolutivo, moviéndose a través de sonoridades de séptima de dominante y de sexta aumentada. Habitual en la música del siglo XIX, produce una sensación de errancia armónica sin dirección funcional clara.',
-          tryThisLabel: 'Escucha Do7#5 — una sonoridad de dominante alterada',
+          tryThisLabel: 'Escucha C7#5 — una sonoridad de dominante alterada',
         },
       ],
       tasks: [
         {
           instruction:
-            'Toca "Ab major chord", después "C major chord", después "E major chord" — escucha cómo cada mediante cromática comparte una nota con Do mayor pero altera cromáticamente las otras dos. El efecto es vívido y dramático',
+            'Toca "Ab major chord", después "C major chord", después "E major chord" — escucha cómo cada mediante cromática comparte una nota con C mayor pero altera cromáticamente las otras dos. El efecto es vívido y dramático',
         },
         {
           instruction:
-            'Piensa en la cadena V/V/V en Do: La7 resuelve a Re7, Re7 resuelve a Sol7, Sol7 resuelve a Do. Cada eslabón es una resolución dominante-tónica creando un impulso en cascada',
+            'Piensa en la cadena V/V/V en C: A7 resuelve a D7, D7 resuelve a G7, G7 resuelve a C. Cada eslabón es una resolución dominante-tónica creando un impulso en cascada',
         },
         {
           instruction:
-            'Escribe "C7#5" para escuchar una dominante alterada. La quinta elevada crea tensión cromática adicional que intensifica la resolución hacia la tónica. Compara con un Do7 simple',
+            'Escribe "C7#5" para escuchar una dominante alterada. La quinta elevada crea tensión cromática adicional que intensifica la resolución hacia la tónica. Compara con un C7 simple',
         },
       ],
     },
@@ -377,7 +377,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Imagina mover una tríada de Do mayor ascendiendo por semitono repetidamente: Do-Reb-Re-Mib... Cada acorde es una transposición paralela. Ninguna voz conduce funcionalmente — cada nota se desplaza en la misma cantidad. Esto es planing cromático en su forma más pura',
+            'Imagina mover una tríada de C mayor ascendiendo por semitono repetidamente: C-Db-D-Eb... Cada acorde es una transposición paralela. Ninguna voz conduce funcionalmente — cada nota se desplaza en la misma cantidad. Esto es planing cromático en su forma más pura',
         },
       ],
     },
@@ -396,25 +396,25 @@ const curriculumL6: CurriculumLevelOverlay = {
           title: 'Cantus Firmus y Primera Especie (1:1)',
           explanation:
             'El cantus firmus (CF) es una melodía simple de 8 a 12 redondas, que comienza y termina en la tónica, mayoritariamente por grado conjunto con un punto culminante. La primera especie coloca una nota contra cada nota del CF usando solo consonancias — comienza con P1, P5 o P8, termina con P1 o P8 abordada por grado conjunto, favorece consonancias imperfectas (terceras y sextas) y prohíbe intervalos perfectos paralelos. Sin cruce de voces, sin más de tres terceras o sextas consecutivas.',
-          tryThisLabel: 'Observa las notas disponibles para un CF en Do mayor',
+          tryThisLabel: 'Observa las notas disponibles para un CF en C mayor',
         },
         {
           title: 'Segunda Especie (2:1)',
           explanation:
             'Dos notas contra cada nota del CF. Los tiempos fuertes deben ser consonantes con el CF. Los tiempos débiles también pueden ser consonantes — se permite un salto a un intervalo consonante. Los tiempos débiles solo pueden ser disonantes como notas de paso — abordadas y abandonadas por grado conjunto en la misma dirección (las bordaduras quedan para la tercera especie). Sin unísonos en tiempos fuertes, excepto al inicio y al final. La segunda especie introduce el principio fundamental del tratamiento de la disonancia: la disonancia solo se permite cuando está controlada por movimiento por grado conjunto.',
-          tryThisLabel: 'Observa Sol mayor — otra tonalidad habitual para CF',
+          tryThisLabel: 'Observa G mayor — otra tonalidad habitual para CF',
         },
         {
           title: 'Tercera Especie (4:1)',
           explanation:
             'Cuatro notas contra cada nota del CF. La primera nota de cada grupo debe ser consonante; las tres restantes pueden ser disonantes como notas de paso, bordaduras o la figura de cambiata (grado conjunto hacia disonancia, salto de tercera, grado conjunto de vuelta). Bordaduras dobles (bordadura superior e inferior en secuencia) también están permitidas. La tercera especie produce el contrapunto más melódicamente activo y ornamentado antes de que la síncopa entre en la cuarta especie.',
-          tryThisLabel: 'Observa Re mayor — experimenta trazar un cantus firmus',
+          tryThisLabel: 'Observa D mayor — experimenta trazar un cantus firmus',
         },
       ],
       tasks: [
         {
           instruction:
-            'Reglas para un cantus firmus: comienza y termina en la tónica, mayoritariamente por grado conjunto, un clímax abordado y abandonado por grado conjunto, sin notas repetidas, ámbito dentro de una octava. Intenta componer mentalmente uno en Do mayor usando solo Do-Re-Mi-Fa-Sol-La-Si-Do',
+            'Reglas para un cantus firmus: comienza y termina en la tónica, mayoritariamente por grado conjunto, un clímax abordado y abandonado por grado conjunto, sin notas repetidas, ámbito dentro de una octava. Intenta componer mentalmente uno en C mayor usando solo C-D-E-F-G-A-B-C',
         },
         {
           instruction:
@@ -441,19 +441,19 @@ const curriculumL6: CurriculumLevelOverlay = {
           title: 'Cuarta Especie: Síncopa y Suspensiones',
           explanation:
             'La cuarta especie introduce la síncopa — notas ligadas desde un tiempo débil a través de la barra de compás hasta el tiempo fuerte siguiente. Cuando la nota ligada es disonante contra el CF en el tiempo fuerte, crea una suspensión. La suspensión tiene tres fases: preparación (consonancia en el tiempo débil), disonancia (la nota ligada en el tiempo fuerte) y resolución (grado conjunto descendente hacia consonancia). Suspensiones disonantes estándar son 7-6, 4-3 y 9-8 por encima del CF, y 2-3 cuando el contrapunto está por debajo.',
-          tryThisLabel: 'Observa Do mayor — traza patrones de suspensión',
+          tryThisLabel: 'Observa C mayor — traza patrones de suspensión',
         },
         {
           title: 'Cadenas de Suspensiones',
           explanation:
             'Las suspensiones pueden encadenarse: cada resolución se convierte en la preparación de la suspensión siguiente. Una cadena de suspensiones 7-6 o 4-3 crea una línea descendente por grado conjunto de disonancias ligadas, produciendo una de las texturas más expresivas de la música tonal. Las cadenas de suspensiones son un sello distintivo de la música barroca y renacentista y siguen siendo fundamentales en toda la escritura a partes.',
-          tryThisLabel: 'Observa Sol mayor — imagina una cadena de suspensiones 7-6',
+          tryThisLabel: 'Observa G mayor — imagina una cadena de suspensiones 7-6',
         },
         {
           title: 'Quinta Especie: Contrapunto Florido',
           explanation:
             'La quinta especie combina libremente todas las especies anteriores: redondas, blancas, negras y síncopa coexisten en una sola línea. Todas las reglas de las especies anteriores se aplican a sus respectivos valores de notas. El contrapunto florido es lo más cerca que los ejercicios de especies llegan de la composición musical real, demostrando cómo reglas estrictas producen resultados genuinamente musicales y formando el puente del contrapunto académico a la composición libre.',
-          tryThisLabel: 'Observa Re mayor — el lienzo para contrapunto florido',
+          tryThisLabel: 'Observa D mayor — el lienzo para contrapunto florido',
         },
       ],
       tasks: [
@@ -498,7 +498,7 @@ const curriculumL6: CurriculumLevelOverlay = {
           title: 'Contrapunto Triple',
           explanation:
             'El contrapunto triple exige tres melodías que funcionen en las seis permutaciones verticales (ABC, ACB, BAC, BCA, CAB, CBA) — extraordinariamente exigente de escribir. Las seis disposiciones deben producir contrapunto válido con tratamiento correcto de consonancias. Este es el punto culminante del arte contrapuntístico, demostrado más completamente en las fugas de Bach y en El Arte de la Fuga.',
-          tryThisLabel: 'Escucha Sol mayor — otra sonoridad a tres voces para invertir',
+          tryThisLabel: 'Escucha G mayor — otra sonoridad a tres voces para invertir',
         },
       ],
       tasks: [
@@ -531,18 +531,18 @@ const curriculumL6: CurriculumLevelOverlay = {
           title: 'Armonización de Soprano',
           explanation:
             'Dada una melodía de soprano, la tarea consiste en elegir acordes y completar contralto, tenor y bajo. El proceso: determinar la tonalidad y localizar puntos de cadencia, elegir una línea de bajo y progresión de acordes que soporte funcionalmente la melodía, completar las voces interiores siguiendo reglas de conducción de voces, y después verificar errores (quintas/octavas paralelas, violaciones de espaciado, errores de duplicación, cruce de voces).',
-          tryThisLabel: 'Observa los acordes diatónicos de Do mayor — la paleta de armonización',
+          tryThisLabel: 'Observa los acordes diatónicos de C mayor — la paleta de armonización',
         },
         {
           title: 'Realización de Bajo Cifrado',
           explanation:
             'La notación de bajo cifrado proporciona una línea de bajo con números que indican los intervalos por encima de cada nota. Sin cifras significa posición fundamental (5/3), 6 significa primera inversión, 6/4 significa segunda inversión, 7 significa acorde de séptima en posición fundamental. Las alteraciones modifican intervalos específicos. Realizar bajo cifrado — completar las tres voces superiores en tiempo real — era la competencia cotidiana de todo teclista barroco.',
-          tryThisLabel: 'Observa Sol mayor — practica mentalmente el bajo cifrado',
+          tryThisLabel: 'Observa G mayor — practica mentalmente el bajo cifrado',
         },
         {
           title: 'Lectura de Partitura Orquestal',
           explanation:
-            'Una partitura orquestal completa organiza los instrumentos de arriba abajo: maderas, metales, percusión, cuerdas. Los instrumentos transpositores (clarinete en Sib, trompa en Fa) están escritos a una altura diferente de la que suenan. Leer una partitura exige transponer mentalmente estas partes a la altura de concierto, leer claves de Do (clave de contralto para la viola, clave de tenor para el violonchelo) y reducir múltiples voces a su contenido armónico esencial.',
+            'Una partitura orquestal completa organiza los instrumentos de arriba abajo: maderas, metales, percusión, cuerdas. Los instrumentos transpositores (clarinete en Bb, trompa en F) están escritos a una altura diferente de la que suenan. Leer una partitura exige transponer mentalmente estas partes a la altura de concierto, leer claves de Do (clave de contralto para la viola, clave de tenor para el violonchelo) y reducir múltiples voces a su contenido armónico esencial.',
           tryThisLabel: 'Observa Bb mayor — lo que suena cuando un clarinete en Bb lee C mayor',
         },
       ],
@@ -557,7 +557,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Instrumentos transpositores: un clarinete en Sib suena un tono por debajo de lo que está escrito (lee Do, el público oye Sib). Una trompa en Fa suena una quinta perfecta por debajo de lo que está escrito. Los lectores de partitura deben transponer mentalmente para oír las alturas reales',
+            'Instrumentos transpositores: un clarinete en Bb suena un tono por debajo de lo que está escrito (lee C, el público oye Bb). Una trompa en F suena una quinta perfecta por debajo de lo que está escrito. Los lectores de partitura deben transponer mentalmente para oír las alturas reales',
         },
       ],
     },
