@@ -68,11 +68,18 @@ const SCALE_GROUPS: { label: string; options: { value: ScaleType; label: string 
     options: [
       { value: 'altered', label: 'Altered' },
       { value: 'lydian_dominant', label: 'Lydian Dom' },
-      { value: 'phrygian_dominant', label: 'Phryg. Dom' },
       { value: 'locrian_natural2', label: 'Locr. ♮2' },
       { value: 'dorian_b2', label: 'Dorian ♭2' },
       { value: 'lydian_augmented', label: 'Lydian Aug' },
       { value: 'mixolydian_b6', label: 'Mixo. ♭6' },
+    ],
+  },
+  {
+    // Phrygian dominant is mode 5 of HARMONIC minor (audit W5-45), so it gets
+    // its own group rather than sitting among the melodic-minor modes.
+    label: 'Harm. Minor Modes',
+    options: [
+      { value: 'phrygian_dominant', label: 'Phryg. Dom' },
     ],
   },
   {
