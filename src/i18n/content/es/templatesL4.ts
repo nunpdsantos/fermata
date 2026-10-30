@@ -49,7 +49,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Distingue entre estos tipos de notas extrañas al acorde según la aproximación y la salida.',
       hintTemplate:
-        'Apoyatura: salto hacia la disonancia, grado conjunto hacia la resolución. Escapatoria: grado conjunto hacia la disonancia, salto hacia fuera. Ambas son típicamente acentuadas.',
+        'Apoyatura: salto hacia la disonancia, grado conjunto hacia la resolución — normalmente acentuada (en un tiempo fuerte). Escapatoria: grado conjunto hacia la disonancia, salto hacia fuera — normalmente no acentuada (en un tiempo débil).',
       choiceSets: [
         [
           'Una disonancia acentuada abordada por salto y resuelta por grado conjunto = apoyatura',
@@ -186,7 +186,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Construye un acorde de séptima menor de {root}.',
       hintTemplate:
-        'Un acorde de séptima menor: tríada menor + 7.ª menor. Funciona como predominante, conduciendo a V o V7.',
+        'Un acorde de séptima menor: tríada menor + 7.ª menor. Construido sobre el 2.º grado (ii7), es el predominante clásico, conduciendo a V o V7.',
     },
     {
       // multiple_choice

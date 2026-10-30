@@ -236,8 +236,8 @@ const l4u12m5: CurriculumModule = {
       title: 'Second Inversion (V4/3)',
       explanation:
         'V4/3 places the 5th of the dominant chord in the bass. It can resolve to either I (root position tonic) or I6 (first-inversion tonic), giving the composer flexibility in shaping the bass line. The bass note (the 5th of V) typically steps down to the tonic root or moves to the 3rd of I. V4/3 often appears in the middle of phrases as a passing dominant between tonic positions.',
-      tryThisQuery: 'G/D',
-      tryThisLabel: 'V4/3 has D (the 5th) in the bass',
+      tryThisQuery: 'G7/D',
+      tryThisLabel: 'V4/3 (G7/D) has D (the 5th) in the bass',
     },
     {
       title: 'Third Inversion (V4/2)',
@@ -255,8 +255,8 @@ const l4u12m5: CurriculumModule = {
     },
     {
       id: 'l4u12m5t2',
-      instruction: "Type 'G/B' \u2014 this is V6/5 with the leading tone B in the bass. B must step up to C, giving smooth stepwise bass motion into the tonic. Compare the effect with root-position G7",
-      query: 'G/B',
+      instruction: "Type 'G7/B' \u2014 this is V6/5 with the leading tone B in the bass. B must step up to C, giving smooth stepwise bass motion into the tonic. Compare the effect with root-position G7",
+      query: 'G7/B',
     },
     {
       id: 'l4u12m5t3',
@@ -352,14 +352,14 @@ const l4u13m2: CurriculumModule = {
       title: 'The Blues Tonic: I7',
       explanation:
         'In blues, the I chord is a dominant seventh (I7), giving every chord the characteristic tension that defines the style. C7 as a tonic chord is "wrong" by classical standards (dominant sevenths should resolve, not rest) but exactly right in blues. In a 12-bar blues, all three primary chords (I7, IV7, V7) are dominant sevenths. This transforms the dominant seventh from a chord of tension into the basic sonic building block.',
-      tryThisQuery: 'Am7',
-      tryThisLabel: 'Hear vi7 in the key of C',
+      tryThisQuery: 'C7',
+      tryThisLabel: 'Hear C7 as a blues tonic — a dominant seventh that rests instead of resolving',
     },
   ],
   tasks: [
     {
       id: 'l4u13m2t1',
-      instruction: "Type 'Cmaj7' \u2014 notice the major 7th interval (B to C). Now type 'C7' \u2014 the minor 7th (Bb) gives it a completely different character. Cmaj7 is tonic function; C7 is dominant quality (or blues tonic)",
+      instruction: "Type 'Cmaj7' \u2014 notice the major 7th interval (C up to B). Now type 'C7' \u2014 the minor 7th (Bb) gives it a completely different character. Cmaj7 is tonic function; C7 is dominant quality (or blues tonic)",
     },
     {
       id: 'l4u13m2t2',
@@ -762,14 +762,14 @@ const l4u14m5: CurriculumModule = {
     {
       title: 'The Minor Key Chord Palette',
       explanation:
-        'In practice, minor keys draw chords from all three minor forms: V and vii\u00B0 from harmonic minor (because the leading tone is needed for strong cadences), i, iv, VI, and III from natural minor (using the unaltered 6th and 7th), and ii and IV from melodic minor ascending (which raises the 6th, in addition to the 7th). This gives minor keys more chord options than major keys, not fewer. The composer chooses which form to use based on voice leading needs and the desired harmonic color.',
+        'In practice, minor keys draw chords from all three minor forms: V and vii\u00B0 from harmonic minor (because the leading tone is needed for strong cadences), i, iv, VI, and III from natural minor (using the unaltered 6th and 7th), and ii and IV from melodic minor ascending (which raises the 6th, in addition to the 7th) \u2014 typically where the raised 6th climbs by step to the raised 7th. A major IV used for its brighter color is also often described as borrowed from the parallel major (mode mixture, Level 5); both descriptions are common. This gives minor keys more chord options than major keys, not fewer. The composer chooses which form to use based on voice leading needs and the desired harmonic color.',
       tryThisQuery: 'A natural minor scale',
       tryThisLabel: 'See the natural minor foundation',
     },
     {
       title: 'The Subtonic VII and the Augmented III+',
       explanation:
-        'In natural minor, the 7th degree is a whole step below the tonic, producing a major triad VII instead of the diminished vii\u00B0 found in harmonic minor. The VII often moves to III or creates a Mixolydian-flavored cadence common in rock and pop. Building a triad on the 3rd degree of harmonic minor produces an augmented triad (III+) because the raised 7th becomes the 5th of that triad. III+ is harsh and rarely used; composers almost always use the natural-minor III (a plain major triad) instead.',
+        'In natural minor, the 7th degree is a whole step below the tonic, producing a major triad VII instead of the diminished vii\u00B0 found in harmonic minor. The VII often moves to III, or straight to i in the Aeolian VII\u2013i cadence (G to Am in A minor) common in rock and pop. Building a triad on the 3rd degree of harmonic minor produces an augmented triad (III+) because the raised 7th becomes the 5th of that triad. III+ is harsh and rarely used; composers almost always use the natural-minor III (a plain major triad) instead.',
       tryThisQuery: 'A harmonic minor scale',
       tryThisLabel: 'See the raised 7th that creates V and vii\u00B0',
     },

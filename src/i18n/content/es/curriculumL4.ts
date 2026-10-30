@@ -29,13 +29,13 @@ const curriculumL4: CurriculumLevelOverlay = {
       objectives: [
         'Comprender el patrón de retardo en tres fases: preparación, disonancia, resolución',
         'Identificar los cuatro tipos de retardo por sus intervalos sobre el bajo',
-        'Reconocer el retardo de bajo 2-3 como el único retardo que resuelve hacia arriba',
+        'Reconocer el retardo de bajo 2-3: el bajo resuelve por grado conjunto descendente y el intervalo por encima de él crece de una 2.ª a una 3.ª',
       ],
       concepts: [
         {
           title: 'El Mecanismo del Retardo',
           explanation:
-            'Un retardo es una nota retenida (ligada) del acorde anterior al nuevo acorde, creando una disonancia que resuelve por grado conjunto descendente. Tiene tres fases: preparación (nota consonante en el acorde anterior), retardo (la misma nota mantenida sobre el nuevo acorde, ahora disonante, en un tiempo fuerte) y resolución (la nota retenida desciende por grado conjunto hasta una nota consonante del acorde). La disonancia en el tiempo fuerte es lo que confiere a los retardos su poder expresivo — el oyente espera consonancia y recibe tensión.',
+            'Un retardo es una nota retenida (ligada) del acorde anterior al nuevo acorde, creando una disonancia que resuelve por grado conjunto (normalmente descendente). Tiene tres fases: preparación (nota consonante en el acorde anterior), retardo (la misma nota mantenida sobre el nuevo acorde, ahora disonante, en un tiempo fuerte) y resolución (la nota retenida se mueve por grado conjunto hasta una nota consonante del acorde). La disonancia en el tiempo fuerte es lo que confiere a los retardos su poder expresivo — el oyente espera consonancia y recibe tensión.',
           tryThisLabel: 'Escucha la nota consonante de resolución',
         },
         {
@@ -47,8 +47,8 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'El Retardo de Bajo 2-3',
           explanation:
-            'El retardo 2-3 es único: se produce en la voz del bajo en lugar de en una voz superior, y resuelve hacia arriba. La nota del bajo es retenida del acorde anterior, formando una 2.ª contra una voz superior, y luego resuelve por grado conjunto ascendente a una 3.ª. Es el único retardo estándar que resuelve hacia arriba. Algunos teóricos lo describen como un «retardo de bajo» para distinguirlo de los tipos en voces superiores.',
-          tryThisLabel: 'El C en el bajo puede suspenderse hacia un acorde de D',
+            'El retardo 2-3 es único: se produce en la voz del bajo en lugar de en una voz superior. La nota del bajo es retenida del acorde anterior, formando una 2.ª contra una voz superior que permanece inmóvil, y luego resuelve por grado conjunto descendente. La etiqueta «2-3» describe el intervalo por encima del bajo: al descender el bajo, ese intervalo crece de una 2.ª a una 3.ª — la voz superior no se mueve. El bajo, como en todos los retardos estándar, resuelve por grado conjunto descendente. (Kostka/Payne, Tonal Harmony, cap. 12.)',
+          tryThisLabel: 'Mantén E en una voz superior mientras el bajo desciende D → C — el intervalo por encima del bajo crece de una 2.ª a una 3.ª',
         },
       ],
       tasks: [
@@ -224,13 +224,13 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'Segunda Inversión (V4/3)',
           explanation:
             'V4/3 coloca la 5.ª del acorde de dominante en el bajo. Puede resolver tanto a I (tónica en estado fundamental) como a I6 (tónica en primera inversión), dando al compositor flexibilidad en la conducción de la línea de bajo. La nota del bajo (la 5.ª de V) típicamente desciende por grado conjunto hasta la fundamental de la tónica o se mueve hacia la 3.ª de I. V4/3 aparece frecuentemente en el centro de frases como una dominante de paso entre posiciones de tónica.',
-          tryThisLabel: 'V4/3 tiene D (la 5.ª) en el bajo',
+          tryThisLabel: 'V4/3 (G7/D) tiene D (la 5.ª) en el bajo',
         },
         {
           title: 'Tercera Inversión (V4/2)',
           explanation:
             'V4/2 coloca la 7.ª del acorde en el bajo. Como la 7.ª es una nota de tendencia que debe resolver por grado conjunto descendente, V4/2 resuelve casi siempre a I6 (tónica en primera inversión). En G7, la 7.ª es F; F debe descender por grado conjunto a E, dando C/E (I6) como resolución. Esta restricción es absoluta en la conducción de voces rigurosa — V4/2 a I en estado fundamental dejaría la 7.ª del bajo sin resolver.',
-          tryThisLabel: 'Toca G/B para escuchar el movimiento del bajo de V6/5',
+          tryThisLabel: 'Toca G7/F para escuchar el movimiento del bajo de V4/2 (F → E cuando la 7.ª resuelve)',
         },
       ],
       tasks: [
@@ -240,7 +240,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "G/B" — esto es V6/5 con la sensible B en el bajo. B debe subir por grado conjunto hasta C, dando un movimiento de bajo suave por grado conjunto hacia la tónica. Compara el efecto con G7 en estado fundamental',
+            'Escribe "G7/B" — esto es V6/5 con la sensible B en el bajo. B debe subir por grado conjunto hasta C, dando un movimiento de bajo suave por grado conjunto hacia la tónica. Compara el efecto con G7 en estado fundamental',
         },
         {
           instruction:
@@ -322,13 +322,13 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'La Tónica Blues: I7',
           explanation:
             'En el blues, el acorde I es una séptima de dominante (I7), confiriendo a cada acorde la tensión característica que define el estilo. C7 como acorde de tónica es «incorrecto» según los estándares clásicos (las séptimas de dominante deben resolver, no reposar), pero exactamente correcto en el blues. En un blues de 12 compases, los tres acordes principales (I7, IV7, V7) son todos séptimas de dominante. Esto transforma la séptima de dominante de un acorde de tensión en el bloque sonoro básico de construcción.',
-          tryThisLabel: 'Escucha vi7 en la tonalidad de Do',
+          tryThisLabel: 'Escucha C7 como tónica de blues — una séptima de dominante que reposa en lugar de resolver',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escribe "Cmaj7" — observa el intervalo de 7.ª mayor (B a C). Ahora escribe "C7" — la 7.ª menor (Bb) le da un carácter completamente diferente. Cmaj7 es función tónica; C7 es cualidad dominante (o tónica blues)',
+            'Escribe "Cmaj7" — observa el intervalo de 7.ª mayor (de C subiendo hasta B). Ahora escribe "C7" — la 7.ª menor (Bb) le da un carácter completamente diferente. Cmaj7 es función tónica; C7 es cualidad dominante (o tónica blues)',
         },
         {
           instruction:
@@ -367,7 +367,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Flexibilidad Enarmónica',
           explanation:
-            'Como el acorde de séptima disminuida divide la octava en cuatro 3.as menores iguales, cualquiera de sus cuatro notas puede ser renombrada como fundamental. G#dim7, Bdim7, Ddim7 y Fdim7 contienen todos las mismas alturas (enarmónicamente). Esto convierte al acorde de séptima disminuida en un poderoso acorde pivote para la modulación — un solo acorde puede resolver a cuatro tonalidades diferentes. Esta flexibilidad enarmónica se vuelve central en la modulación cromática del Nivel 5.',
+            'Como el acorde de séptima disminuida divide la octava en cuatro 3.as menores iguales, cualquiera de sus cuatro notas puede ser renombrada como fundamental. G#dim7, Bdim7, Ddim7 y Fdim7 contienen todos las mismas alturas (enarmónicamente). Esto convierte al acorde de séptima disminuida en un poderoso acorde pivote para la modulación — un solo acorde puede resolver a cuatro tonalidades diferentes. Esta flexibilidad enarmónica se vuelve central en la modulación cromática del Nivel 6.',
           tryThisLabel: 'Mismas alturas que G#dim7, Ddim7, Fdim7',
         },
       ],
@@ -595,9 +595,9 @@ const curriculumL4: CurriculumLevelOverlay = {
           tryThisLabel: 'El marco diatónico que el cromatismo decora',
         },
         {
-          title: 'Intercambio de Voces Cromático',
+          title: 'Movimiento Contrario Cromático',
           explanation:
-            'Un intercambio de voces cromático es una técnica especial en la que una voz se mueve cromáticamente hacia arriba mientras otra se mueve cromáticamente hacia abajo, involucrando frecuentemente un intervalo de sexta aumentada que se expande a una octava. Por ejemplo, el bajo puede subir C-C# mientras una voz superior baja E-Eb, ambas convergiendo en D. Esto crea un efecto llamativo de movimiento cruzado que añade intensidad y sofisticación a la conducción de voces sin abandonar la tonalidad.',
+            'En el movimiento contrario cromático, dos voces se mueven cromáticamente en direcciones opuestas, convergiendo o divergiendo por semitono. Por ejemplo, el bajo sube C-C# mientras una voz superior baja E-Eb, ambas convergiendo en D. Esto crea un efecto llamativo de movimiento cruzado que añade intensidad y sofisticación a la conducción de voces sin abandonar la tonalidad — y es una pieza básica de los acordes cromáticos estudiados en el Nivel 6.',
           tryThisLabel: 'Los pasos cromáticos son la materia prima',
         },
       ],
@@ -677,13 +677,13 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'La Paleta de Acordes en Modo Menor',
           explanation:
-            'En la práctica, las tonalidades menores extraen acordes de las tres formas de la escala menor: V y vii° de la menor armónica (porque la sensible es necesaria para cadencias fuertes), i, iv, VI y III de la menor natural (usando el 6.º y 7.º grados inalterados), y II y IV de la menor melódica ascendente (que eleva el 6.º grado). Esto da a las tonalidades menores más opciones de acordes que a las mayores, no menos. El compositor elige qué forma usar en función de las necesidades de conducción de voces y el color armónico deseado.',
+            'En la práctica, las tonalidades menores extraen acordes de las tres formas de la escala menor: V y vii° de la menor armónica (porque la sensible es necesaria para cadencias fuertes), i, iv, VI y III de la menor natural (usando el 6.º y 7.º grados inalterados), y ii y IV de la menor melódica ascendente (que eleva el 6.º grado, además del 7.º) — normalmente cuando el 6.º grado elevado sube por grado conjunto hasta el 7.º elevado. Un IV mayor usado por su color más luminoso también se describe a menudo como préstamo del modo mayor paralelo (mezcla modal, Nivel 5); ambas descripciones son habituales. Esto da a las tonalidades menores más opciones de acordes que a las mayores, no menos. El compositor elige qué forma usar en función de las necesidades de conducción de voces y el color armónico deseado.',
           tryThisLabel: 'Observa la base de la menor natural',
         },
         {
           title: 'El Subtónico VII y el III+ Aumentado',
           explanation:
-            'En la menor natural, el 7.º grado está a un tono por debajo de la tónica, produciendo una tríada mayor VII en vez del vii° disminuido de la menor armónica. El VII frecuentemente se mueve a III o crea una cadencia con sabor Mixolidio habitual en el rock y pop. Construir una tríada sobre el 3.er grado de la menor armónica produce una tríada aumentada (III+) porque el 7.º grado elevado se convierte en la 5.ª de esa tríada. El III+ es áspero y rara vez se usa; los compositores emplean casi siempre el III de la menor natural (una tríada mayor sencilla).',
+            'En la menor natural, el 7.º grado está a un tono por debajo de la tónica, produciendo una tríada mayor VII en vez del vii° disminuido de la menor armónica. El VII frecuentemente se mueve a III, o directamente a i en la cadencia eólica VII–i (G a Am en A menor), habitual en el rock y el pop. Construir una tríada sobre el 3.er grado de la menor armónica produce una tríada aumentada (III+) porque el 7.º grado elevado se convierte en la 5.ª de esa tríada. El III+ es áspero y rara vez se usa; los compositores emplean casi siempre el III de la menor natural (una tríada mayor sencilla).',
           tryThisLabel: 'Observa el 7.º grado elevado que crea V y vii°',
         },
         {

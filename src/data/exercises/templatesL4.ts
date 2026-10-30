@@ -55,7 +55,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Distinguish between these non-chord tone types based on approach and departure.',
-        hintTemplate: 'Appoggiatura: leap to dissonance, step to resolution. Escape tone: step to dissonance, leap away. Both are typically accented.',
+        hintTemplate: 'Appoggiatura: leap to the dissonance, step to the resolution — usually accented (on a strong beat). Escape tone: step to the dissonance, leap away — usually unaccented (on a weak beat).',
         params: {
           choiceSets: [
             [
@@ -217,7 +217,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'chord_build',
         promptTemplate: 'Build a {root} minor seventh chord.',
-        hintTemplate: 'A minor seventh chord: minor triad + minor 7th. It functions as a pre-dominant, leading to V or V7.',
+        hintTemplate: 'A minor seventh chord: minor triad + minor 7th. Built on scale degree 2 (ii7), it is the classic pre-dominant, leading to V or V7.',
         params: {
           roots: ['C', 'G', 'D', 'F', 'A', 'E'],
           accidentals: ['', '', '', '', '', ''],

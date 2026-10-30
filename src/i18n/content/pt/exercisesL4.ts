@@ -34,14 +34,14 @@ const overlay: ExerciseLevelOverlay = {
   },
   l4u12m1e3: {
     prompt:
-      'Na tonalidade de Dó maior, um acorde V está a soar e a nota F é retida do acorde IV anterior antes de resolver para E. Que tipo de nota estranha ao acorde é o F?',
+      'Na tonalidade de C maior, um acorde V está a soar e a nota C é retida do acorde IV anterior antes de resolver, a descer, para B. Que tipo de nota estranha ao acorde é o C?',
     choices: [
       'Suspensão (4-3 sobre o acorde V)',
       'Nota de passagem',
       'Apogiatura',
       'Escapatória',
     ],
-    hint: 'O F era consonante no acorde IV (F-A-C), depois foi retido para o acorde V (G-B-D) onde é dissonante (uma 4.ª acima do baixo G), e resolve descendo por grau conjunto para E (a 3.ª). Esta é uma suspensão 4-3 exemplar.',
+    hint: 'O C era consonante no acorde IV (F-A-C), depois foi retido para o acorde V (G-B-D) onde é dissonante (uma 4.ª perfeita acima do baixo G), e resolve descendo por grau conjunto para B (a 3.ª de V, uma 3.ª maior acima de G). Esta é uma suspensão 4-3 exemplar.',
   },
 
   // ---- l4u12m2: Apogiatura / Escapatória ----
