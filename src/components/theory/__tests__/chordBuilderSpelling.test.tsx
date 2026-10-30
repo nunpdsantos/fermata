@@ -92,3 +92,17 @@ describe('W1-07 — Chord Builder spells by the chord', () => {
     expect(pcOf('Eb')).toBe(mod12(3));
   });
 });
+
+describe('review item 1 — the root dropdown always shows the strip root', () => {
+  it('for every root the key picker can select (and odd ones like Cb, B#)', () => {
+    for (const key of ['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B', 'Cb', 'B#']) {
+      useAppStore.setState({ selectedKey: toNote(key), selectedScale: 'major', selectedChord: null });
+      const { container } = render(<ChordBuilderPanel />);
+      const select = container.querySelector('select') as HTMLSelectElement;
+      const stripLabel = container.querySelector('[aria-label^="Chromatic strip"]')!.getAttribute('aria-label');
+      expect(select.value, key).toBe(key);
+      expect(stripLabel, key).toBe(`Chromatic strip from ${key}`);
+      cleanup();
+    }
+  });
+});

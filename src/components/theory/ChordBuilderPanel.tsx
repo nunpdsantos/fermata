@@ -18,20 +18,17 @@ import { resumeAudio, playChordVoiced } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import { ChromaticStrip } from './ChromaticStrip.tsx';
 
+// Both everyday names of every black key, so the dropdown can always show the
+// strip's root as spelled (C♯ and D♭ are different roots to spell from).
 const CHORD_ROOT_OPTIONS: Note[] = [
-  { natural: 'C',  accidental: '' },
-  { natural: 'D',  accidental: 'b' },
-  { natural: 'D',  accidental: '' },
-  { natural: 'E',  accidental: 'b' },
-  { natural: 'E',  accidental: '' },
-  { natural: 'F',  accidental: '' },
-  { natural: 'F',  accidental: '#' },
-  { natural: 'G',  accidental: '' },
-  { natural: 'A',  accidental: 'b' },
-  { natural: 'A',  accidental: '' },
-  { natural: 'B',  accidental: 'b' },
-  { natural: 'B',  accidental: '' },
-];
+  'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B',
+].map((s) => ({ natural: s[0] as NaturalNote, accidental: s.slice(1) as Accidental }));
+
+/** The options, plus the current root when it is a rarer name (C♭, B♯, F𝄪…). */
+function rootOptionsFor(current: Note): Note[] {
+  const has = CHORD_ROOT_OPTIONS.some((n) => n.natural === current.natural && n.accidental === current.accidental);
+  return has ? CHORD_ROOT_OPTIONS : [...CHORD_ROOT_OPTIONS, current];
+}
 
 function noteFromValue(value: string): Note {
   const m = value.match(/^([A-G])(.*)$/);
@@ -203,7 +200,7 @@ export function ChordBuilderPanel() {
               border: '1px solid var(--border)',
             }}
           >
-            {CHORD_ROOT_OPTIONS.map((n) => {
+            {rootOptionsFor(chordRoot).map((n) => {
               const v = `${n.natural}${n.accidental}`;
               return (
                 <option key={v} value={v}>
