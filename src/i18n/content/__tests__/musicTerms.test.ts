@@ -36,8 +36,10 @@ describe('translateScaleType', () => {
 });
 
 describe('translateChordQuality', () => {
-  it('returns space-separated English for en', () => {
-    expect(translateChordQuality('half_diminished7', 'en')).toBe('half diminished7');
+  it('returns readable English for en (no raw identifiers like "minor7")', () => {
+    expect(translateChordQuality('half_diminished7', 'en')).toBe('half-diminished 7th');
+    expect(translateChordQuality('dominant7', 'en')).toBe('dominant 7th');
+    expect(translateChordQuality('major9', 'en')).toBe('major 9th');
     expect(translateChordQuality('major', 'en')).toBe('major');
   });
 

@@ -152,7 +152,7 @@ const RAW: Array<[string, string, string]> = [
   ['l7u23m2', 'Modal Mixture and Chromatic Mediants in Pop', 'Borrowed chords in pop and rock, chromatic mediants in film scores'],
   ['l7u23m3', 'Scales: Melodic Minor Modes', 'Seven modes of melodic minor and their jazz applications'],
   ['l7u23m4', 'Scales: Harmonic Minor Modes, Symmetric, and World', 'Harmonic minor modes, whole-tone, diminished, and world scales'],
-  ['l7u23m5', 'Complete Chord Taxonomy', 'All 42 chord types — extended, suspended, added-tone, and special structures'],
+  ['l7u23m5', 'Complete Chord Taxonomy', 'Every chord type in the engine — extended, suspended, added-tone, and special structures'],
   ['l8u25m1', 'Fugue: Exposition and Subject/Answer', 'Fugue exposition structure, subject vs. answer, and the countersubject'],
   ['l8u25m2', 'Fugue: Episodes, Stretto, and Devices', 'Transitional episodes, stretto technique, and subject transformations'],
   ['l8u25m3', 'Canon and Other Imitative Forms', 'Canons at various intervals and special types'],
