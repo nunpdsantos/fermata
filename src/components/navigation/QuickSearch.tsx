@@ -5,6 +5,7 @@ import { useAppStore } from '../../state/store.ts';
 import { getResults, type SearchResultType } from './quickSearchResults.ts';
 import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
+import { useLocalizedModuleIndex } from '../../hooks/useLocalizedModuleIndex.ts';
 
 const TYPE_KEYS: Record<SearchResultType, string> = {
   Scale: 'search.typeScale',
@@ -24,7 +25,11 @@ export function QuickSearch() {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
-  const results = useMemo(() => getResults(query), [query]);
+  // Portuguese/Spanish lesson titles and keywords (lazy; English until loaded).
+  const language = useAppStore((s) => s.language);
+  const localizedIndex = useLocalizedModuleIndex(language);
+
+  const results = useMemo(() => getResults(query, localizedIndex), [query, localizedIndex]);
 
   // Reset selection when results change
   useEffect(() => {

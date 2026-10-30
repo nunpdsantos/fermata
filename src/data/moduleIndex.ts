@@ -1,12 +1,15 @@
 /**
  * Lightweight static index of all 118 curriculum modules for search.
  *
- * Extracted from src/core/constants/curriculumL1-9.ts at build time
- * (see README.md / scripts/extractModuleIndex.ts for regeneration).
+ * Titles and subtitles are copied from src/core/constants/curriculumL1-9.ts;
+ * src/data/__tests__/moduleIndex.test.ts fails if an entry drifts from the
+ * curriculum. Portuguese/Spanish titles and keywords: moduleIndexI18n.ts.
  *
  * The index is eager (~20 KB) so Cmd+K search returns Learn-module hits
  * instantly without triggering the lazy-loaded curriculum chunks.
  */
+
+import type { LocalizedModuleIndex } from './moduleIndexI18n';
 
 export interface ModuleIndexEntry {
   /** Module id, e.g. "l1u3m4" */
@@ -54,7 +57,9 @@ const EXTRA_KEYWORDS: Record<string, string[]> = {
   'l8u25m1': ['fugue', 'subject', 'answer', 'countersubject'],
   // Counterpoint
   'l4u14m1': ['counterpoint', 'species', 'first species', 'second species'],
-  'l6u20m1': ['counterpoint', 'cantus firmus', 'species', 'florid'],
+  'l6u20m1': ['counterpoint', 'cantus firmus', 'species', 'first species', 'second species', 'third species'],
+  // Florid counterpoint is fifth species, taught in l6u20m2 (W9-23).
+  'l6u20m2': ['fourth species', 'fifth species', 'florid', 'suspension'],
   // 20th century
   'l8u27m1': ['set theory', 'pitch class', 'forte'],
   'l8u27m2': ['twelve-tone', 'serialism', 'tone row', 'schoenberg'],
@@ -86,7 +91,7 @@ const RAW: Array<[string, string, string]> = [
   ['l3u9m1', 'Seventh Chords: The Five Qualities', 'Build and identify all five standard seventh chord types and hear their distinct characters'],
   ['l3u9m2', 'Seventh Chord Inversions', 'Four positions for every seventh chord — root position through third inversion'],
   ['l3u9m3', 'Diatonic Seventh Chords in Major', 'Seventh chords on every degree of the major scale and the dominant seventh as harmonic engine'],
-  ['l3u9m4', 'Diatonic Seventh Chords in Minor', 'Harmonic minor\u2019s seventh chord landscape — from the haunting i(m\u0394 7) to the explosive viio7'],
+  ['l3u9m4', 'Diatonic Seventh Chords in Minor', 'Harmonic minor\u2019s seventh chord landscape — from the haunting i(m\u03947) to the explosive viio7'],
   ['l3u10m1', 'Voice Leading — SATB Basics', 'SATB voicing, ranges, spacing rules, and doubling conventions'],
   ['l3u10m2', 'Forbidden Parallels and Voice Motion (in Common-Practice Style)', 'The four motion types and the parallel fifths/octaves rules that govern part writing'],
   ['l3u10m3', 'Root Position Part Writing', 'Connecting root-position triads with smooth voice leading by root motion type'],
@@ -203,26 +208,51 @@ export const MODULE_INDEX: ModuleIndexEntry[] = (() => {
   });
 })();
 
-export function findModulesByQuery(query: string, limit = 5): ModuleIndexEntry[] {
-  const q = query.trim().toLowerCase();
+/** Lowercase and strip diacritics, so "cadencia" finds "Cadência". */
+function fold(s: string): string {
+  return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+}
+
+function scoreFields(q: string, title: string, subtitle: string, keywords: readonly string[]): number {
+  const t = fold(title);
+  const s = fold(subtitle);
+  if (t === q) return 100;
+  if (t.startsWith(q)) return 50;
+  if (t.includes(q)) return 25;
+  if (s.includes(q)) return 12;
+  let score = 0;
+  for (const raw of keywords) {
+    const kw = fold(raw);
+    if (kw === q) return 40;
+    if (kw.startsWith(q)) score = Math.max(score, 20);
+    else if (kw.includes(q)) score = Math.max(score, 8);
+  }
+  return score;
+}
+
+/**
+ * Lesson search. With a localized index (Portuguese/Spanish), a module
+ * matches on its localized title, subtitle and keywords as well as the
+ * English ones (lessons quote English queries), and hits carry the localized
+ * title and subtitle. Matching ignores case and accents.
+ */
+export function findModulesByQuery(
+  query: string,
+  limit = 5,
+  localized?: Pick<LocalizedModuleIndex, 'titles' | 'keywords'> | null,
+): ModuleIndexEntry[] {
+  const q = fold(query.trim());
   if (q.length < 2) return [];
   const matches: Array<{ entry: ModuleIndexEntry; score: number }> = [];
   for (const entry of MODULE_INDEX) {
-    const t = entry.title.toLowerCase();
-    const s = entry.subtitle.toLowerCase();
-    let score = 0;
-    if (t === q) score = 100;
-    else if (t.startsWith(q)) score = 50;
-    else if (t.includes(q)) score = 25;
-    else if (s.includes(q)) score = 12;
-    else {
-      for (const kw of entry.keywords) {
-        if (kw === q) { score = Math.max(score, 40); break; }
-        if (kw.startsWith(q)) { score = Math.max(score, 20); }
-        else if (kw.includes(q)) { score = Math.max(score, 8); }
-      }
+    let score = scoreFields(q, entry.title, entry.subtitle, entry.keywords);
+    const loc = localized?.titles[entry.id];
+    if (loc) {
+      score = Math.max(score, scoreFields(q, loc[0], loc[1], localized?.keywords[entry.id] ?? []));
     }
-    if (score > 0) matches.push({ entry, score });
+    if (score > 0) {
+      matches.push({ entry: loc ? { ...entry, title: loc[0], subtitle: loc[1] } : entry, score });
+    }
   }
   matches.sort((a, b) => b.score - a.score);
   return matches.slice(0, limit).map((m) => m.entry);

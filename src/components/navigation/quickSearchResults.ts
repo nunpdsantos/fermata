@@ -18,6 +18,9 @@ import {
 import { getChordCompletions, parseVerbalChord } from '../../core/utils/chordHints.ts';
 import { parseScaleSymbol, formatParsedScaleName } from '../../core/utils/scaleParser.ts';
 import { findModulesByQuery } from '../../data/moduleIndex.ts';
+import type { LocalizedModuleIndex } from '../../data/moduleIndexI18n.ts';
+import { resolveTheoryQuery } from '../../utils/theoryQuery.ts';
+import { applyResolvedTheoryQuery } from '../../utils/queryExecutor.ts';
 
 export type SearchResultType = 'Scale' | 'Chord' | 'Key' | 'Lesson';
 
@@ -33,12 +36,44 @@ const MODE_TO_SCALE: Record<string, ScaleType> = {
   aeolian: 'natural_minor',
 };
 
-export function getResults(query: string): SearchResult[] {
+/**
+ * Ranked Cmd+K results. `localized` is the Portuguese/Spanish module index
+ * (when loaded) so lesson hits match and display in the app language.
+ */
+export function getResults(query: string, localized?: LocalizedModuleIndex | null): SearchResult[] {
   const q = query.trim();
   if (!q) return [];
 
   const results: SearchResult[] = [];
   const seen = new Set<string>();
+
+  // 0. The shared Try-This resolver (W9-01): the exact forms lessons tell the
+  //    learner to type — "C major scale", "C major chord", "C whole tone
+  //    scale", "key of G", "D natural minor scale" — and their Portuguese and
+  //    Spanish phrasings ("escala de C maior", "acorde de Ré menor").
+  const resolved = resolveTheoryQuery(q);
+  if (resolved?.kind === 'scale') {
+    const label = formatParsedScaleName(resolved.parsed);
+    const key = `scale:${noteToString(resolved.root)}:${resolved.scaleType}`;
+    seen.add(key);
+    results.push({ type: 'Scale', label, action: () => { applyResolvedTheoryQuery(resolved); } });
+  } else if (resolved?.kind === 'rootlessScale') {
+    const key = `scale:fuzzy:${resolved.scaleType}`;
+    seen.add(key);
+    results.push({
+      type: 'Scale',
+      label: SCALE_TYPE_NAMES[resolved.scaleType] ?? resolved.scaleType,
+      action: () => { applyResolvedTheoryQuery(resolved); },
+    });
+  } else if (resolved?.kind === 'key') {
+    results.push({
+      type: 'Key',
+      label: `${noteToString(resolved.root)}${resolved.minor ? ' minor' : ''}`,
+      action: () => { applyResolvedTheoryQuery(resolved); },
+    });
+  }
+  // (Resolved chords are pushed by the chord block below, so they share its
+  //  dedupe and cap.)
 
   // Try scale parser first (handles all 46 types + modes + aliases)
   const parsedScale = parseScaleSymbol(q);
@@ -84,6 +119,10 @@ export function getResults(query: string): SearchResult[] {
     chordCount++;
     return true;
   };
+
+  // 0'. Chord resolved by the shared resolver ("C major chord", "acorde de
+  //     Ré menor", "C diminished 7th").
+  if (resolved?.kind === 'chord') pushChord(resolved.parsed);
 
   // 1. Exact symbol parse (all 47 qualities + slash chords + algorithmic).
   const parsedChord = parseChordSymbol(q);
@@ -164,7 +203,7 @@ export function getResults(query: string): SearchResult[] {
 
   // Learn module lookup — independent of scale/chord parsing so users can
   // search for concepts like "dorian", "tritone", "suspension", "fugue".
-  const moduleHits = findModulesByQuery(q, 4);
+  const moduleHits = findModulesByQuery(q, 4, localized);
   for (const mod of moduleHits) {
     if (results.length >= 10) break;
     const key = `lesson:${mod.id}`;

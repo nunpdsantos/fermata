@@ -5,6 +5,7 @@ import type { CurriculumModule, CurriculumUnit, CurriculumLevel } from '../../co
 import type { ExerciseDefinition } from '../../core/types/exercise';
 import { getNextModuleInLevel, getPreviousModuleInLevel, getLevelModuleCount } from '../../data/curriculumLoader';
 import { executeTheoryQuery } from '../../utils/queryExecutor';
+import { findQuotedQueries } from '../../utils/theoryQuery';
 import { LearnBreadcrumb } from './LearnBreadcrumb';
 import { ExerciseRunner } from './exercises/ExerciseRunner';
 import { ReportMistakeLink } from './ReportMistakeLink';
@@ -15,10 +16,6 @@ import { SPRING_BOUNCY } from '../../design/tokens/motion';
 import { palette } from '../../design/tokens/palette';
 import { accentText } from '../../design/tokens/learnColors';
 
-// Matches a quoted token that follows a "Type "/"Open "/"Search for " verb,
-// e.g. "Type 'C major scale'". Quotes can be straight or curly.
-const QUERY_VERB_PATTERN = /(Type|Open|Search for)\s+['"\u2018\u201C]([^'"\u2019\u201D]+)['"\u2019\u201D]/gi;
-
 function renderTaskInstruction(
   instruction: string,
   onTryQuery: (query: string) => void,
@@ -26,18 +23,15 @@ function renderTaskInstruction(
 ): ReactNode[] {
   const parts: ReactNode[] = [];
   let lastIndex = 0;
-  let match: RegExpExecArray | null;
-  // Reset lastIndex — the regex is a stateful /g object defined at module scope.
-  QUERY_VERB_PATTERN.lastIndex = 0;
-  while ((match = QUERY_VERB_PATTERN.exec(instruction)) !== null) {
-    if (match.index > lastIndex) {
-      parts.push(instruction.slice(lastIndex, match.index));
+  // Every quoted token that names something the app can show becomes a
+  // button, in any language and anywhere in the sentence (W9-01).
+  for (const { index, length, query } of findQuotedQueries(instruction)) {
+    if (index > lastIndex) {
+      parts.push(instruction.slice(lastIndex, index));
     }
-    const verb = match[1];
-    const query = match[2];
     parts.push(
       <button
-        key={`${match.index}-${query}`}
+        key={`${index}-${query}`}
         type="button"
         onClick={(e) => {
           e.stopPropagation();
@@ -46,10 +40,10 @@ function renderTaskInstruction(
         className="inline-flex items-baseline font-medium rounded px-1 py-0.5 -my-0.5 transition-colors cursor-pointer underline decoration-dotted underline-offset-2"
         style={{ color: accentText(accent), backgroundColor: `${accent}0d` }}
       >
-        {verb} &lsquo;{query}&rsquo;
+        &lsquo;{query}&rsquo;
       </button>,
     );
-    lastIndex = match.index + match[0].length;
+    lastIndex = index + length;
   }
   if (lastIndex < instruction.length) {
     parts.push(instruction.slice(lastIndex));

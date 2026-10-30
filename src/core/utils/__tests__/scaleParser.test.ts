@@ -128,6 +128,13 @@ describe('parseScaleSymbol', () => {
       expect(parseScaleSymbol('D hungarian minor')!.scaleType).toBe('hungarian_minor');
     });
 
+    it('C double harmonic major (the L7 lesson spelling) is the double harmonic', () => {
+      expect(parseScaleSymbol('C double harmonic major')!.scaleType).toBe('double_harmonic');
+      expect(parseScaleSymbol('double harmonic major')!.scaleType).toBe('double_harmonic');
+      // The minor variant is a different scale (Hungarian minor), unchanged.
+      expect(parseScaleSymbol('C double harmonic minor')!.scaleType).toBe('hungarian_minor');
+    });
+
     it('E double harmonic', () => {
       expect(parseScaleSymbol('E double harmonic')!.scaleType).toBe('double_harmonic');
     });
