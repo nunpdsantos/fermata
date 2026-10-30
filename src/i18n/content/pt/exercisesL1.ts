@@ -82,16 +82,16 @@ const overlay: ExerciseLevelOverlay = {
 
   l1u1m3e1: {
     prompt: 'Qual é o intervalo de Db, a descer, até C?',
-    hint: 'De Db a descer até C é a menor distância possível na música ocidental: um meio-tom (1 semitom), da tecla preta para a tecla branca logo abaixo. Duas letras diferentes (D, C) fazem dele uma 2.a — uma 2.a menor.',
+    hint: 'De Db a descer até C é a menor distância possível na música ocidental: um meio-tom (1 meio-tom), da tecla preta para a tecla branca logo abaixo. Duas letras diferentes (D, C) fazem dele uma 2.a — uma 2.a menor.',
   },
   l1u1m3e2: {
     prompt: 'Qual é o intervalo de C a D?',
-    hint: 'De C a D é um tom: dois meios-tons, equivalente a 2 semitons. Existe uma tecla (C#/Db) entre eles.',
+    hint: 'De C a D é um tom: dois meios-tons, equivalente a 2 meios-tons. Existe uma tecla (C#/Db) entre eles.',
   },
   l1u1m3e3: {
     prompt:
       'Qual é o intervalo de E a F? Este é um par especial de notas naturais.',
-    hint: 'De E a F é um meio-tom natural: não existe tecla preta entre elas no piano. É apenas 1 semitom.',
+    hint: 'De E a F é um meio-tom natural: não existe tecla preta entre elas no piano. É apenas 1 meio-tom.',
   },
 
   // ---- l1u1m4: Escala Cromática ----
@@ -234,17 +234,17 @@ const overlay: ExerciseLevelOverlay = {
   l1u3m3e1: {
     prompt:
       'Identifica o intervalo: C até G (ascendente). Conta os nomes das notas.',
-    hint: 'C-D-E-F-G = 5 nomes de notas = uma 5.a. De C a G são 7 semitons, o que corresponde a uma 5.a perfeita.',
+    hint: 'C-D-E-F-G = 5 nomes de notas = uma 5.a. De C a G são 7 meios-tons, o que corresponde a uma 5.a perfeita.',
   },
   l1u3m3e2: {
     prompt:
       'Identifica o intervalo: C até F (ascendente). Conta os nomes das notas.',
-    hint: 'C-D-E-F = 4 nomes de notas = uma 4.a. De C a F são 5 semitons, o que corresponde a uma 4.a perfeita.',
+    hint: 'C-D-E-F = 4 nomes de notas = uma 4.a. De C a F são 5 meios-tons, o que corresponde a uma 4.a perfeita.',
   },
   l1u3m3e3: {
     prompt:
       'Identifica o intervalo: C até E (ascendente). Conta os nomes das notas.',
-    hint: 'C-D-E = 3 nomes de notas = uma 3.a. De C a E são 4 semitons, o que corresponde a uma 3.a maior.',
+    hint: 'C-D-E = 3 nomes de notas = uma 3.a. De C a E são 4 meios-tons, o que corresponde a uma 3.a maior.',
   },
 
   // ---- l1u3m4: Tríades Maiores ----
@@ -252,20 +252,20 @@ const overlay: ExerciseLevelOverlay = {
   l1u3m4e1: {
     prompt:
       'Constrói uma tríade de C maior. Seleciona as 3 notas: fundamental, 3.a maior e 5.a perfeita.',
-    hint: 'C maior = C, E, G. Fundamental (C) + 3.a maior (E, 4 semitons acima) + 5.a perfeita (G, 7 semitons acima).',
+    hint: 'C maior = C, E, G. Fundamental (C) + 3.a maior (E, 4 meios-tons acima) + 5.a perfeita (G, 7 meios-tons acima).',
   },
   l1u3m4e2: {
     prompt:
       'Constrói uma tríade de G maior. Seleciona as 3 notas que formam este acorde.',
-    hint: 'G maior = G, B, D. Fundamental (G) + 3.a maior (B, 4 semitons acima) + 5.a perfeita (D, 7 semitons acima).',
+    hint: 'G maior = G, B, D. Fundamental (G) + 3.a maior (B, 4 meios-tons acima) + 5.a perfeita (D, 7 meios-tons acima).',
   },
   l1u3m4e3: {
     prompt: 'Quais intervalos compõem uma tríade maior?',
     choices: [
-      'Fundamental, 3.a maior (4 semitons), 5.a perfeita (7 semitons)',
-      'Fundamental, 3.a menor (3 semitons), 5.a perfeita (7 semitons)',
-      'Fundamental, 3.a maior (4 semitons), 5.a diminuta (6 semitons)',
-      'Fundamental, 4.a perfeita (5 semitons), 5.a perfeita (7 semitons)',
+      'Fundamental, 3.a maior (4 meios-tons), 5.a perfeita (7 meios-tons)',
+      'Fundamental, 3.a menor (3 meios-tons), 5.a perfeita (7 meios-tons)',
+      'Fundamental, 3.a maior (4 meios-tons), 5.a diminuta (6 meios-tons)',
+      'Fundamental, 4.a perfeita (5 meios-tons), 5.a perfeita (7 meios-tons)',
     ],
     hint: 'Uma tríade maior empilha uma 3.a maior (4 meios-tons a partir da fundamental) e depois uma 3.a menor por cima (mais 3), resultando em fundamental + 3.aM + 5.aP.',
   },

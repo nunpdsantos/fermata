@@ -316,7 +316,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         {
           title: 'Classe de Altura, Notação por Inteiros e Classe de Intervalo',
           explanation:
-            'A teoria pós-tonal colapsa todas as alturas equivalentes por oitava em 12 classes de altura numeradas de 0 a 11 (C=0, C#/Db=1, D=2, ... B=11). As grafias enarmónicas tornam-se irrelevantes — F# e Gb são ambos a classe de altura 6. A classe de intervalo (CI) mede a menor distância entre duas classes de altura no relógio mod-12: o intervalo entre CA 0 e CA 4 é CI 4 (não 8, porque tomamos o complemento menor). Os valores de CI vão de 1 a 6, já que qualquer intervalo maior que 6 semitons tem um complemento menor. Esta eliminação de oitava, grafia e distinções direcionais revela o esqueleto interválico abstrato de qualquer sonoridade.',
+            'A teoria pós-tonal colapsa todas as alturas equivalentes por oitava em 12 classes de altura numeradas de 0 a 11 (C=0, C#/Db=1, D=2, ... B=11). As grafias enarmónicas tornam-se irrelevantes — F# e Gb são ambos a classe de altura 6. A classe de intervalo (CI) mede a menor distância entre duas classes de altura no relógio mod-12: o intervalo entre CA 0 e CA 4 é CI 4 (não 8, porque tomamos o complemento menor). Os valores de CI vão de 1 a 6, já que qualquer intervalo maior que 6 meios-tons tem um complemento menor. Esta eliminação de oitava, grafia e distinções direcionais revela o esqueleto interválico abstrato de qualquer sonoridade.',
           tryThisLabel: 'Vê todas as 12 classes de altura dispostas cromaticamente',
         },
         {
@@ -409,7 +409,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         {
           title: 'Harmonia Quartal/Quintal e Planing',
           explanation:
-            'A harmonia quartal constrói acordes a partir de quartas perfeitas empilhadas em vez de terças, produzindo sonoridades que não são maiores nem menores — abertas, ambíguas e características de Hindemith, Bartok e Copland. A harmonia quintal usa quintas empilhadas (inversamente equivalentes a quartas). O planing move uma estrutura de acorde inteira em paralelo: o planing cromático transpõe cada nota pelo mesmo número de semitons (preservando a qualidade exata do acorde), enquanto o planing diatónico move dentro de uma escala (alterando a qualidade para se ajustar à tonalidade). Os acordes de nona paralelos de Debussy e as tríades paralelas de Ravel exemplificam o planing como técnica harmónica estrutural, não meramente um recurso colorístico.',
+            'A harmonia quartal constrói acordes a partir de quartas perfeitas empilhadas em vez de terças, produzindo sonoridades que não são maiores nem menores — abertas, ambíguas e características de Hindemith, Bartok e Copland. A harmonia quintal usa quintas empilhadas (inversamente equivalentes a quartas). O planing move uma estrutura de acorde inteira em paralelo: o planing cromático transpõe cada nota pelo mesmo número de meios-tons (preservando a qualidade exata do acorde), enquanto o planing diatónico move dentro de uma escala (alterando a qualidade para se ajustar à tonalidade). Os acordes de nona paralelos de Debussy e as tríades paralelas de Ravel exemplificam o planing como técnica harmónica estrutural, não meramente um recurso colorístico.',
           tryThisLabel: 'Ouve a escala de tons inteiros — território simétrico puro para planing',
         },
         {
@@ -421,7 +421,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         {
           title: 'Microtonalidade e Consciência Espectral',
           explanation:
-            'A microtonalidade estende o contínuo de alturas para além das 12 divisões iguais: quartos de tom dividem cada semitom ao meio (24 notas por oitava), a afinação justa afina os intervalos segundo razões de frequência puras, e a afinação espectral, iniciada por Gérard Grisey e Tristan Murail, deriva intervalos da série de harmónicos. Temperamentos iguais alternativos — 19-TET, 31-TET, 53-TET — oferecem diferentes compromissos entre consonância e flexibilidade. Embora o motor desta aplicação opere em 12-TET padrão, a consciência dos sistemas microtonais revela que a escala cromática de 12 notas é uma convenção histórica, não uma inevitabilidade acústica.',
+            'A microtonalidade estende o contínuo de alturas para além das 12 divisões iguais: quartos de tom dividem cada meio-tom ao meio (24 notas por oitava), a afinação justa afina os intervalos segundo razões de frequência puras, e a afinação espectral, iniciada por Gérard Grisey e Tristan Murail, deriva intervalos da série de harmónicos. Temperamentos iguais alternativos — 19-TET, 31-TET, 53-TET — oferecem diferentes compromissos entre consonância e flexibilidade. Embora o motor desta aplicação opere em 12-TET padrão, a consciência dos sistemas microtonais revela que a escala cromática de 12 notas é uma convenção histórica, não uma inevitabilidade acústica.',
           tryThisLabel: 'Ouve a escala cromática 12-TET — uma de muitas divisões possíveis',
         },
       ],

@@ -302,7 +302,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Aplica o turnaround cromático: toca "Cmaj7", "Eb7", "Ab7", "Db7". Cada acorde após o I é uma substituição tritónica — Eb7 substitui A7, Ab7 substitui D7, Db7 substitui G7. As fundamentais C-Eb-Ab-Db sobem uma terça menor e depois duas quartas perfeitas — e o Db7 final resolve meio tom abaixo para C, a recompensa cromática das substituições.',
+            'Aplica o turnaround cromático: toca "Cmaj7", "Eb7", "Ab7", "Db7". Cada acorde após o I é uma substituição tritónica — Eb7 substitui A7, Ab7 substitui D7, Db7 substitui G7. As fundamentais C-Eb-Ab-Db sobem uma terça menor e depois duas quartas perfeitas — e o Db7 final resolve meio-tom abaixo para C, a recompensa cromática das substituições.',
         },
       ],
     },

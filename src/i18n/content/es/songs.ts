@@ -172,7 +172,7 @@ const overlay: SongOverlay = {
     'Contiene tanto semicadencias (reposo en el V) como cadencias auténticas dentro de su estructura fraseológica.',
   ],
   'l3u11m2': [
-    'La melodía está estructurada como un período paralelo — dos frases, la primera terminando en una semicadencia, la segunda en una cadencia perfecta.',
+    'La melodía está estructurada como un período paralelo — dos frases, la primera terminando en una semicadencia, la segunda en una cadencia auténtica perfecta.',
     'Un ejemplo clásico de estructura antecedente-consecuente formando un período musical.',
   ],
   'l3u11m3': [

@@ -61,7 +61,7 @@ const overlay: ExerciseLevelOverlay = {
       'Uma tríade maior ou acorde de sétima dominante que resolve para um acorde diatónico diferente de I, funcionando como V desse acorde',
       'Qualquer acorde de sétima dominante usado numa progressão',
       'Um acorde que modula permanentemente para uma nova tonalidade',
-      'O acorde V a resolver de forma enganosa para vi',
+      'O acorde V a resolver para vi numa cadência interrompida',
     ],
     hint: 'Uma dominante aplicada funciona temporariamente como V (ou V7) de um acorde diatónico. Introduz notas cromáticas para criar uma resolução de sensível para o seu alvo, sem estabelecer uma nova tonalidade.',
   },
@@ -83,12 +83,12 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Qual é a diferença entre um acorde de sétima meio-diminuta e um de sétima totalmente diminuta no contexto de acordes de sensível secundária?',
     choices: [
-      'O meio-diminuto tem uma sétima menor acima da fundamental; o totalmente diminuto tem uma sétima diminuta (um semitom mais baixo)',
+      'O meio-diminuto tem uma sétima menor acima da fundamental; o totalmente diminuto tem uma sétima diminuta (um meio-tom mais baixo)',
       'O meio-diminuto resolve para cima; o totalmente diminuto resolve para baixo',
       'O meio-diminuto é usado apenas em tonalidades maiores; o totalmente diminuto apenas em menores',
       'Não há diferença; são o mesmo acorde',
     ],
-    hint: 'Ambos têm uma tríade diminuta (fundamental, 3.a menor, 5.a diminuta). A sétima difere: meio-dim tem sétima menor (10 semitons), totalmente dim tem sétima diminuta (9 semitons). O totalmente diminuto é mais comum como acorde de sensível secundária.',
+    hint: 'Ambos têm uma tríade diminuta (fundamental, 3.a menor, 5.a diminuta). A sétima difere: meio-dim tem sétima menor (10 meios-tons), totalmente dim tem sétima diminuta (9 meios-tons). O totalmente diminuto é mais comum como acorde de sensível secundária.',
   },
   l5u15m3e3: {
     prompt:
@@ -130,7 +130,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Uma tonicização prolongada -- mais longa do que um único acorde mas sem confirmação cadencial completa na nova tonalidade',
       'Uma modulação por acorde pivot',
-      'Uma cadência enganosa',
+      'Uma cadência interrompida',
       'Uma sequência cromática',
     ],
     hint: 'Tonicizações prolongadas ocupam uma zona cinzenta: duram mais do que um rápido V/x - x, mas a nova tonalidade nunca é confirmada com uma cadência forte. A fronteira entre tonicização prolongada e modulação é subjetiva.',
@@ -165,7 +165,7 @@ const overlay: ExerciseLevelOverlay = {
       'Um padrão harmónico em que o mesmo gesto de tonicização (p. ex., V7 - alvo) é repetido em diferentes níveis de altura em sequência',
       'Uma modulação que passa por todas as tonalidades no círculo de quintas',
       'Tocar escalas em sequência ascendente cromaticamente',
-      'Uma série de cadências enganosas em diferentes tonalidades',
+      'Uma série de cadências interrompidas em diferentes tonalidades',
     ],
     hint: 'A tonicização sequencial aplica o mesmo padrão harmónico (frequentemente V7 - acorde) a graus da escala sucessivos, criando um movimento cromático previsível mas colorido. É comum na música barroca e no jazz.',
   },
@@ -272,7 +272,7 @@ const overlay: ExerciseLevelOverlay = {
       'Uma modulação para uma tonalidade com mais sustenidos ou bemóis',
       'Uma modulação que evita todos os acordes diatónicos',
     ],
-    hint: 'A modulação cromática usa condução de vozes por meio-tom para transformar um acorde da tonalidade antiga num acorde que pertence à nova. Uma ou mais notas movem-se por semitom, redirecionando suavemente a harmonia.',
+    hint: 'A modulação cromática usa condução de vozes por meio-tom para transformar um acorde da tonalidade antiga num acorde que pertence à nova. Uma ou mais notas movem-se por meio-tom, redirecionando suavemente a harmonia.',
   },
 
   // ---- l5u16m4: Mistura Modal — Acordes de Empréstimo ----

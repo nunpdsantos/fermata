@@ -210,31 +210,31 @@ const overlay: TemplateLevelOverlay = {
         'CAP: V-I com soprano na tónica. CAI: V-I com soprano NÃO na tónica, ou acordes invertidos. CS: termina em V. Plagal: IV-I. Interrompida: V-vi.',
       choiceSets: [
         [
-          'V para I com o soprano a terminar na tónica é uma Cadência Autêntica Perfeita (CAP)',
-          'Esta é uma Cadência Autêntica Imperfeita (CAI)',
+          'V para I com o soprano a terminar na tónica é uma Cadência Perfeita (CAP)',
+          'Esta é uma Cadência Imperfeita (CAI)',
           'Esta é uma Cadência Suspensiva (CS)',
           'Esta é uma Cadência Interrompida',
         ],
         [
           'Uma frase que termina no acorde V é uma Cadência Suspensiva',
-          'Uma frase que termina no acorde V é uma Cadência Autêntica Perfeita',
+          'Uma frase que termina no acorde V é uma Cadência Perfeita',
           'Uma frase que termina no acorde V é uma Cadência Plagal',
           'Uma frase que termina no acorde V é uma Cadência Interrompida',
         ],
         [
           'V a resolver para vi em vez de I é uma Cadência Interrompida',
-          'V a resolver para vi é uma Cadência Autêntica Perfeita',
+          'V a resolver para vi é uma Cadência Perfeita',
           'V a resolver para vi é uma Cadência Suspensiva',
           'V a resolver para vi é uma Cadência Plagal',
         ],
         [
           'IV para I é uma Cadência Plagal (cadência do Amen)',
-          'IV para I é uma Cadência Autêntica Perfeita',
+          'IV para I é uma Cadência Perfeita',
           'IV para I é uma Cadência Suspensiva',
           'IV para I é uma Cadência Interrompida',
         ],
         [
-          'V para I com o soprano na 3.a é uma Cadência Autêntica Imperfeita (CAI)',
+          'V para I com o soprano na 3.a é uma Cadência Imperfeita (CAI)',
           'V para I com o soprano na 3.a é uma CAP',
           'V para I com o soprano na 3.a é uma Cadência Suspensiva',
           'V para I com o soprano na 3.a é uma Cadência Interrompida',
@@ -454,7 +454,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica o intervalo criado entre a nota estranha ao acorde e o baixo, a partir de {root}.',
       hintTemplate:
-        'Conta os semitons a partir de {root} para determinar o intervalo. As notas estranhas criam frequentemente 2.as, 7.as ou intervalos aumentados/diminutos contra o baixo.',
+        'Conta os meios-tons a partir de {root} para determinar o intervalo. As notas estranhas criam frequentemente 2.as, 7.as ou intervalos aumentados/diminutos contra o baixo.',
     },
   ],
 };

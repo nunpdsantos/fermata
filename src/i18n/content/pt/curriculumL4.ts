@@ -413,7 +413,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Substituição de Acordes Dentro de Funções',
           explanation:
-            'Acordes dentro do mesmo grupo funcional podem substituir-se mutuamente porque partilham graus da escala. O vi pode substituir I (é por isso que a cadência de engano V-vi funciona — vi é função tónica). O ii pode substituir IV (ambos são pré-dominantes). O vii° pode substituir V (ambos são função dominante). A substituição explica por que tantas progressões diferentes funcionam: seguem o mesmo padrão funcional T-PD-D-T com acordes específicos diferentes a preencher cada papel.',
+            'Acordes dentro do mesmo grupo funcional podem substituir-se mutuamente porque partilham graus da escala. O vi pode substituir I (é por isso que a cadência interrompida V-vi funciona — vi é função tónica). O ii pode substituir IV (ambos são pré-dominantes). O vii° pode substituir V (ambos são função dominante). A substituição explica por que tantas progressões diferentes funcionam: seguem o mesmo padrão funcional T-PD-D-T com acordes específicos diferentes a preencher cada papel.',
           tryThisLabel: 'Vê quais acordes partilham função',
         },
       ],

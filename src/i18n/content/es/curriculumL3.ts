@@ -430,7 +430,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            "Toca 'G7' y después 'C major chord' — esta es una cadencia perfecta (V7-I) en C mayor. La conclusión armónica más fuerte posible. Escucha la sensación completa de resolución",
+            "Toca 'G7' y después 'C major chord' — esta es una cadencia auténtica perfecta (V7-I) en C mayor. La conclusión armónica más fuerte posible. Escucha la sensación completa de resolución",
         },
         {
           instruction:

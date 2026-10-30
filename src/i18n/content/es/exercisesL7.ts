@@ -271,7 +271,7 @@ const overlay: ExerciseLevelOverlay = {
       'Cada centro tonal es precedido por su propio acorde V7, creando movimiento rápido ii-V o V-I',
       'Los centros tonales se enlazan solo mediante acordes disminuidos de paso',
       'Modulación directa sin ninguna preparación',
-      'Cada tonalidad se aborda mediante una cadencia rota desde la tonalidad anterior',
+      'Cada tonalidad se aborda mediante una cadencia interrumpida desde la tonalidad anterior',
     ],
     hint: 'Coltrane prepara cada tónica con su dominante: p. ej., Bmaj7 - D7 - Gmaj7 - Bb7 - Ebmaj7. El D7 es el V7 de G, Bb7 es el V7 de Eb. Esto crea movimiento constante dominante-tónica.',
   },

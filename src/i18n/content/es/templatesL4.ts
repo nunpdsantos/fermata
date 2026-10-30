@@ -239,7 +239,7 @@ const overlay: TemplateLevelOverlay = {
           'iii nunca se usa en la armonía de práctica común',
         ],
         [
-          'En la cadencia rota V-vi, vi sustituye a I como acorde de función tónica',
+          'En la cadencia interrumpida V-vi, vi sustituye a I como acorde de función tónica',
           'En V-vi, vi actúa como acorde dominante',
           'V-vi no es una cadencia real',
           'vi rechaza siempre la función tónica',

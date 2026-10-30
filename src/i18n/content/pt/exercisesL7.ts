@@ -262,7 +262,7 @@ const overlay: ExerciseLevelOverlay = {
       'Centros tonais a moverem-se por quintas perfeitas ao longo do ciclo',
       'Centros tonais a alternarem entre duas tonalidades a um trítono de distância',
     ],
-    hint: 'As mudanças de Coltrane percorrem três centros tonais a uma terça maior de distância (ex: B, G, Eb). Estas três tonalidades dividem a oitava simetricamente em três segmentos iguais de 4 semitons cada.',
+    hint: 'As mudanças de Coltrane percorrem três centros tonais a uma terça maior de distância (ex: B, G, Eb). Estas três tonalidades dividem a oitava simetricamente em três segmentos iguais de 4 meios-tons cada.',
   },
   l7u22m3e2: {
     prompt:
@@ -271,7 +271,7 @@ const overlay: ExerciseLevelOverlay = {
       'Cada centro tonal é precedido pelo seu próprio acorde V7, criando movimento rápido ii-V ou V-I',
       'Os centros tonais são ligados apenas por acordes diminutos de passagem',
       'Modulação direta sem qualquer preparação',
-      'Cada tonalidade é abordada por uma cadência de engano a partir da tonalidade anterior',
+      'Cada tonalidade é abordada por uma cadência interrompida a partir da tonalidade anterior',
     ],
     hint: 'Coltrane prepara cada tónica com o seu dominante: ex: Bmaj7 - D7 - Gmaj7 - Bb7 - Ebmaj7. O D7 é o V7 de G, Bb7 é o V7 de Eb. Isto cria movimento constante dominante-tónica.',
   },
@@ -447,7 +447,7 @@ const overlay: ExerciseLevelOverlay = {
   l7u23m4e1: {
     prompt:
       'Constrói a escala de C tons inteiros. Esta escala simétrica de 6 notas tem intervalos de tom iguais ao longo de toda a escala.',
-    hint: 'C tons inteiros: C, D, E, F#, G#, A#. Cada intervalo é um tom (2 semitons). Existem apenas duas escalas de tons inteiros únicas (a outra começa em Db). Pitch classes: 0, 2, 4, 6, 8, 10.',
+    hint: 'C tons inteiros: C, D, E, F#, G#, A#. Cada intervalo é um tom (2 meios-tons). Existem apenas duas escalas de tons inteiros únicas (a outra começa em Db). Pitch classes: 0, 2, 4, 6, 8, 10.',
   },
   l7u23m4e2: {
     prompt:

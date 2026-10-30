@@ -565,10 +565,10 @@
     "finish": "Entendido"
   },
   "chordBuilder": {
-    "chordRoot": "Tónica del acorde",
+    "chordRoot": "Fundamental del acorde",
     "clear": "Limpiar",
     "syncRoot": "Igualar a la tónica",
-    "syncRootTitle": "Establecer tónica del acorde a {{tonic}} (tónica actual)",
+    "syncRootTitle": "Establecer la fundamental del acorde en {{tonic}} (la tónica actual)",
     "detected": "Detectado",
     "notes": "Notas",
     "intervals": "Intervalos",
@@ -577,7 +577,7 @@
     "noMatch": "sin coincidencia exacta — añade o quita una nota",
     "otherInterpretations": "Otras interpretaciones",
     "ofKey": "de {{key}}",
-    "nonDiatonicAt": "no diatónico (la tónica es el {{numeral}} de {{key}})",
+    "nonDiatonicAt": "no diatónico (la fundamental es el {{numeral}} de {{key}})",
     "outOfKey": "fuera de tonalidad ({{key}})",
     "staff": "Pentagrama",
     "staffChord": "Acorde",

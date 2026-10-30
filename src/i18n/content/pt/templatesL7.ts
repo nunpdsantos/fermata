@@ -163,7 +163,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói a substituição tritónica para o acorde dominante 7 sobre {root}. Substitui-o por um dom7 a um trítono de distância.',
       hintTemplate:
-        'A substituição tritónica substitui um dom7 por outro dom7 cuja fundamental está a um trítono (6 semitons) de distância. Ambos partilham os mesmos guide tones (a terça e a sétima trocam).',
+        'A substituição tritónica substitui um dom7 por outro dom7 cuja fundamental está a um trítono (6 meios-tons) de distância. Ambos partilham os mesmos guide tones (a terça e a sétima trocam).',
     },
     {
       // multiple_choice

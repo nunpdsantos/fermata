@@ -334,21 +334,21 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Una semicadencia termina en V, creando una sensación abierta y no resuelta — como una coma en una frase. El acorde que precede a V puede ser I, ii, IV o vi. Exige continuación.',
   },
   l3u11m1e3: {
-    prompt: 'En una cadencia rota, ¿qué sucede?',
+    prompt: 'En una cadencia interrumpida, ¿qué sucede?',
     choices: [
       'V resuelve a vi en lugar del esperado I',
       'I resuelve a V en lugar del esperado IV',
       'IV resuelve a ii en lugar de V',
       'La cadencia se toca más piano de lo esperado',
     ],
-    hint: 'La cadencia rota (V a vi) crea la expectativa de resolución a I pero «engaña» al oyente yendo a vi. El acorde vi comparte dos notas con I, lo que la convierte en una sustitución suave pero sorprendente.',
+    hint: 'La cadencia interrumpida (V a vi) crea la expectativa de resolución a I pero «engaña» al oyente yendo a vi. El acorde vi comparte dos notas con I, lo que la convierte en una sustitución suave pero sorprendente.',
   },
   l3u11m1e4: {
     prompt: '¿Qué es una cadencia plagal?',
     choices: [
       'IV a I — la cadencia del «Amén»',
       'V a I — la cadencia más fuerte',
-      'V a vi — la cadencia rota',
+      'V a vi — la cadencia interrumpida',
       'ii a V — una progresión predominante común',
     ],
     hint: 'La cadencia plagal se mueve de IV a I. Se la llama con frecuencia la cadencia del «Amén» porque tradicionalmente se usa al final de los himnos. Tiene una cualidad más suave y menos impulsiva que V-I.',

@@ -204,7 +204,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sétima da dominante — uma tríade maior com 7.ª menor',
       'Sétima meio-diminuto — uma tríade diminuta com 7.ª menor',
     ],
-    hint: 'Em C maior, iii7 = E-G-B-D. A tríade E-G-B é menor, e E a D é uma 7.ª menor (10 semitons). Portanto iii7 é um acorde de sétima menor, tal como ii7 e vi7.',
+    hint: 'Em C maior, iii7 = E-G-B-D. A tríade E-G-B é menor, e E a D é uma 7.ª menor (10 meios-tons). Portanto iii7 é um acorde de sétima menor, tal como ii7 e vi7.',
   },
   l4u13m2e2: {
     prompt: 'Numa tonalidade maior, qual é a qualidade do acorde vi7?',
@@ -214,7 +214,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sétima da dominante — uma tríade maior mais uma 7.ª menor acima da fundamental',
       'Sétima diminuto — uma tríade diminuta mais uma 7.ª diminuta',
     ],
-    hint: 'Em C maior, vi7 = A-C-E-G. A tríade A-C-E é menor, e A a G é uma 7.ª menor (10 semitons). Tal como ii7 e iii7, vi7 é um acorde de sétima menor.',
+    hint: 'Em C maior, vi7 = A-C-E-G. A tríade A-C-E é menor, e A a G é uma 7.ª menor (10 meios-tons). Tal como ii7 e iii7, vi7 é um acorde de sétima menor.',
   },
   l4u13m2e3: {
     prompt:
@@ -233,7 +233,7 @@ const overlay: ExerciseLevelOverlay = {
   l4u13m3e1: {
     prompt:
       'Constrói um acorde de sétima diminuto sobre B (viio7 em C menor): B-D-F-Ab. Seleciona as 4 notas.',
-    hint: 'Bo7 = B, D, F, Ab. Fundamental (B) + 3.ª menor (D) + 5.ª diminuta (F) + 7.ª diminuta (Ab). Todos os três intervalos superiores são 3.as menores empilhadas (3+3+3 semitons).',
+    hint: 'Bo7 = B, D, F, Ab. Fundamental (B) + 3.ª menor (D) + 5.ª diminuta (F) + 7.ª diminuta (Ab). Todos os três intervalos superiores são 3.as menores empilhadas (3+3+3 meios-tons).',
   },
   l4u13m3e2: {
     prompt:
@@ -244,12 +244,12 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Qual é a diferença fundamental entre um acorde de sétima diminuto e um meio-diminuto?',
     choices: [
-      'O diminuto tem uma 7.ª diminuta (9 semitons); o meio-diminuto tem uma 7.ª menor (10 semitons)',
+      'O diminuto tem uma 7.ª diminuta (9 meios-tons); o meio-diminuto tem uma 7.ª menor (10 meios-tons)',
       'O diminuto usa uma tríade menor; o meio-diminuto usa uma tríade maior',
       'O diminuto tem uma 5.ª perfeita; o meio-diminuto tem uma 5.ª diminuta',
       'São o mesmo acorde com nomes diferentes',
     ],
-    hint: 'Ambos os acordes partilham uma tríade diminuta (3.ª menor + 5.ª diminuta). A diferença está na 7.ª: totalmente diminuto = 7.ª diminuta (enarmonicamente 6.ª maior, 9 semitons); meio-diminuto = 7.ª menor (10 semitons).',
+    hint: 'Ambos os acordes partilham uma tríade diminuta (3.ª menor + 5.ª diminuta). A diferença está na 7.ª: totalmente diminuto = 7.ª diminuta (enarmonicamente 6.ª maior, 9 meios-tons); meio-diminuto = 7.ª menor (10 meios-tons).',
   },
 
   // ---- l4u13m4: Função Harmónica T-PD-D-T ----
@@ -400,12 +400,12 @@ const overlay: ExerciseLevelOverlay = {
   l4u14m3e1: {
     prompt: 'O que é uma nota de passagem cromática?',
     choices: [
-      'Uma nota estranha ao acorde que preenche um tom com um meio-tom cromático, movendo-se por semitom entre duas notas do acorde',
+      'Uma nota estranha ao acorde que preenche um tom com um meio-tom cromático, movendo-se por meio-tom entre duas notas do acorde',
       'Qualquer acidente que aparece na melodia',
       'Uma nota que salta cromaticamente de uma nota do acorde para outra',
       'Uma nota de passagem que muda a tonalidade da passagem',
     ],
-    hint: 'Uma nota de passagem cromática preenche o intervalo entre duas notas do acorde que estão a um tom de distância. Por exemplo, entre C e D, um C# como nota de passagem cromática cria movimento suave por semitom: C-C#-D.',
+    hint: 'Uma nota de passagem cromática preenche o intervalo entre duas notas do acorde que estão a um tom de distância. Por exemplo, entre C e D, um C# como nota de passagem cromática cria movimento suave por meio-tom: C-C#-D.',
   },
   l4u14m3e2: {
     prompt: 'O que é uma bordadura cromática?',
@@ -415,7 +415,7 @@ const overlay: ExerciseLevelOverlay = {
       'Um som emprestado da tonalidade paralela',
       'Qualquer bordadura numa passagem de escala cromática',
     ],
-    hint: 'Uma bordadura cromática é um ornamento que se move por semitom a partir de uma nota do acorde e regressa: ex. E-E#-E ou G-Gb-G. Acrescenta cor sem alterar a direção harmónica, funcionando como decoração de superfície.',
+    hint: 'Uma bordadura cromática é um ornamento que se move por meio-tom a partir de uma nota do acorde e regressa: ex. E-E#-E ou G-Gb-G. Acrescenta cor sem alterar a direção harmónica, funcionando como decoração de superfície.',
   },
   l4u14m3e3: {
     prompt:

@@ -172,7 +172,7 @@ const overlay: SongOverlay = {
     'Contém tanto cadências suspensivas (repouso no V) como cadências autênticas dentro da sua estrutura fraseológica.',
   ],
   'l3u11m2': [
-    'A melodia está estruturada como um período paralelo — duas frases, a primeira terminando numa meia-cadência, a segunda numa cadência perfeita.',
+    'A melodia está estruturada como um período paralelo — duas frases, a primeira terminando numa cadência suspensiva, a segunda numa cadência perfeita.',
     'Um exemplo clássico de estrutura antecedente-consequente formando um período musical.',
   ],
   'l3u11m3': [

@@ -239,7 +239,7 @@ const overlay: TemplateLevelOverlay = {
           'iii nunca é usado na harmonia da prática comum',
         ],
         [
-          'Na cadência de engano V-vi, vi substitui I como acorde de função tónica',
+          'Na cadência interrompida V-vi, vi substitui I como acorde de função tónica',
           'Em V-vi, vi atua como acorde dominante',
           'V-vi não é uma cadência real',
           'vi rejeita sempre a função tónica',

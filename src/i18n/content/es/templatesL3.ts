@@ -207,22 +207,22 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Clasifica este tipo de cadencia según los acordes y la conducción de voces descritos.',
       hintTemplate:
-        'CAP: V-I con soprano en la tónica. CAI: V-I con soprano NO en la tónica, o acordes invertidos. SC: termina en V. Plagal: IV-I. Rota: V-vi.',
+        'CAP: V-I con soprano en la tónica. CAI: V-I con soprano NO en la tónica, o acordes invertidos. SC: termina en V. Plagal: IV-I. Interrumpida: V-vi.',
       choiceSets: [
         [
           'V a I con el soprano terminando en la tónica es una Cadencia Auténtica Perfecta (CAP)',
           'Es una Cadencia Auténtica Imperfecta (CAI)',
           'Es una Semicadencia (SC)',
-          'Es una Cadencia Rota',
+          'Es una Cadencia Interrumpida',
         ],
         [
           'Una frase que termina en el acorde V es una Semicadencia',
           'Una frase que termina en el acorde V es una Cadencia Auténtica Perfecta',
           'Una frase que termina en el acorde V es una Cadencia Plagal',
-          'Una frase que termina en el acorde V es una Cadencia Rota',
+          'Una frase que termina en el acorde V es una Cadencia Interrumpida',
         ],
         [
-          'V resolviendo a vi en lugar de I es una Cadencia Rota',
+          'V resolviendo a vi en lugar de I es una Cadencia Interrumpida',
           'V resolviendo a vi es una Cadencia Auténtica Perfecta',
           'V resolviendo a vi es una Semicadencia',
           'V resolviendo a vi es una Cadencia Plagal',
@@ -231,13 +231,13 @@ const overlay: TemplateLevelOverlay = {
           'IV a I es una Cadencia Plagal (cadencia del Amén)',
           'IV a I es una Cadencia Auténtica Perfecta',
           'IV a I es una Semicadencia',
-          'IV a I es una Cadencia Rota',
+          'IV a I es una Cadencia Interrumpida',
         ],
         [
           'V a I con el soprano en la 3.ª es una Cadencia Auténtica Imperfecta (CAI)',
           'V a I con el soprano en la 3.ª es una CAP',
           'V a I con el soprano en la 3.ª es una Semicadencia',
-          'V a I con el soprano en la 3.ª es una Cadencia Rota',
+          'V a I con el soprano en la 3.ª es una Cadencia Interrumpida',
         ],
       ],
     },

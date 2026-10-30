@@ -71,10 +71,10 @@ const overlay: TemplateLevelOverlay = {
           'Os acordes de sexta aumentada não resolvem',
         ],
         [
-          'O intervalo entre b6 e #4 é uma sexta aumentada (10 semitons), que resolve para P8',
-          'O intervalo de sexta aumentada é de 8 semitons',
+          'O intervalo entre b6 e #4 é uma sexta aumentada (10 meios-tons), que resolve para P8',
+          'O intervalo de sexta aumentada é de 8 meios-tons',
           'A sexta aumentada resolve para P5',
-          'O intervalo de sexta aumentada é de 6 semitons',
+          'O intervalo de sexta aumentada é de 6 meios-tons',
         ],
       ],
     },

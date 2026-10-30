@@ -15,12 +15,12 @@ const overlay: ExerciseLevelOverlay = {
   l3u9m1e1: {
     prompt:
       'Constrói um acorde de Cmaj7. Seleciona as 4 notas: fundamental, 3.a maior, 5.a perfeita e 7.a maior.',
-    hint: 'Cmaj7 = C, E, G, B. Uma tríade maior (C-E-G) mais uma 7.a maior (B, 11 semitons acima da fundamental).',
+    hint: 'Cmaj7 = C, E, G, B. Uma tríade maior (C-E-G) mais uma 7.a maior (B, 11 meios-tons acima da fundamental).',
   },
   l3u9m1e2: {
     prompt:
       'Constrói um acorde de Dm7. Seleciona as 4 notas: fundamental, 3.a menor, 5.a perfeita e 7.a menor.',
-    hint: 'Dm7 = D, F, A, C. Uma tríade menor (D-F-A) mais uma 7.a menor (C, 10 semitons acima da fundamental).',
+    hint: 'Dm7 = D, F, A, C. Uma tríade menor (D-F-A) mais uma 7.a menor (C, 10 meios-tons acima da fundamental).',
   },
   l3u9m1e3: {
     prompt: 'Qual qualidade de acorde de sétima tem uma tríade maior com uma 7.a menor?',
@@ -40,7 +40,7 @@ const overlay: ExerciseLevelOverlay = {
       'Usam tríades diferentes: o meio-diminuto é menor, o totalmente diminuto é diminuto',
       'Não há diferença; são o mesmo acorde',
     ],
-    hint: 'Ambos partilham uma tríade diminuta (fundamental, 3.am, 5.adim). O meio-diminuto acrescenta uma 7.a menor (10 semitons), enquanto o totalmente diminuto acrescenta uma 7.a diminuta (9 semitons).',
+    hint: 'Ambos partilham uma tríade diminuta (fundamental, 3.am, 5.adim). O meio-diminuto acrescenta uma 7.a menor (10 meios-tons), enquanto o totalmente diminuto acrescenta uma 7.a diminuta (9 meios-tons).',
   },
   l3u9m1e_ear1: {
     prompt: 'Ouve este acorde de sétima e identifica a sua qualidade.',
@@ -121,12 +121,12 @@ const overlay: ExerciseLevelOverlay = {
   l3u9m3e1: {
     prompt:
       'Constrói um acorde de G7 (sétima da dominante). Este é o V7 em C maior. Seleciona as 4 notas.',
-    hint: 'G7 = G, B, D, F. Uma tríade maior (G-B-D) mais uma 7.a menor (F, 10 semitons acima de G). O trítono B-F impulsiona a resolução para C.',
+    hint: 'G7 = G, B, D, F. Uma tríade maior (G-B-D) mais uma 7.a menor (F, 10 meios-tons acima de G). O trítono B-F impulsiona a resolução para C.',
   },
   l3u9m3e2: {
     prompt:
       'Constrói um acorde de Am7. Este é o vi7 em C maior. Seleciona as 4 notas.',
-    hint: 'Am7 = A, C, E, G. Uma tríade menor (A-C-E) mais uma 7.a menor (G, 10 semitons acima de A).',
+    hint: 'Am7 = A, C, E, G. Uma tríade menor (A-C-E) mais uma 7.a menor (G, 10 meios-tons acima de A).',
   },
   l3u9m3e3: {
     prompt: 'O acorde V7 contém um trítono. Quais duas notas o formam na tonalidade de C maior?',
@@ -136,7 +136,7 @@ const overlay: ExerciseLevelOverlay = {
       'C e F# -- a tónica e uma nota cromática',
       'E e Bb -- a 3.a e um bemol emprestado',
     ],
-    hint: 'Em G7 (G-B-D-F), o trítono está entre B (a 3.a) e F (a 7.a), abrangendo 6 semitons. B resolve para cima, para C, enquanto F resolve para baixo, para E, criando a resolução V7-I.',
+    hint: 'Em G7 (G-B-D-F), o trítono está entre B (a 3.a) e F (a 7.a), abrangendo 6 meios-tons. B resolve para cima, para C, enquanto F resolve para baixo, para E, criando a resolução V7-I.',
   },
 
   // ---- l3u9m4: Acordes de Sétima Diatónicos em Menor ----
@@ -314,7 +314,7 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l3u11m1: Cadências ----
 
   l3u11m1e1: {
-    prompt: 'O que define uma Cadência Autêntica Perfeita (CAP)?',
+    prompt: 'O que define uma Cadência Perfeita (CAP)?',
     choices: [
       'V para I com ambos os acordes em estado fundamental e a tónica no soprano sobre o acorde I',
       'Qualquer progressão que termine no acorde I',
@@ -456,12 +456,12 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l3u11m5: Transposição ----
 
   l3u11m5e1: {
-    prompt: 'Transpõe C4 uma 2.a maior acima. Identifica o intervalo de 2 semitons ascendente a partir de C.',
-    hint: 'Uma 2.a maior são 2 semitons. C mais 2 semitons = D. Transpor uma 2.a maior acima move cada nota um tom acima.',
+    prompt: 'Transpõe C4 uma 2.a maior acima. Identifica o intervalo de 2 meios-tons ascendente a partir de C.',
+    hint: 'Uma 2.a maior são 2 meios-tons. C mais 2 meios-tons = D. Transpor uma 2.a maior acima move cada nota um tom acima.',
   },
   l3u11m5e2: {
-    prompt: 'Transpõe C4 uma 5.a perfeita acima. Identifica o intervalo de 7 semitons ascendente a partir de C.',
-    hint: 'Uma 5.a perfeita são 7 semitons. C mais 7 semitons = G. Transpor uma 5.aP acima é uma das transposições mais comuns, passando de C maior para G maior.',
+    prompt: 'Transpõe C4 uma 5.a perfeita acima. Identifica o intervalo de 7 meios-tons ascendente a partir de C.',
+    hint: 'Uma 5.a perfeita são 7 meios-tons. C mais 7 meios-tons = G. Transpor uma 5.aP acima é uma das transposições mais comuns, passando de C maior para G maior.',
   },
   l3u11m5e3: {
     prompt: 'Ao transpor uma melodia uma 3.a menor acima, o que acontece à armação de clave?',
@@ -471,7 +471,7 @@ const overlay: ExerciseLevelOverlay = {
       'Os sustenidos e bemóis são removidos',
       'Cada nota recebe um acidente',
     ],
-    hint: 'A transposição desloca tudo para uma nova tonalidade. Subir uma 3.a menor (3 semitons) a partir de C maior chega a Eb maior. A nova armação de clave (3 bemóis) preserva todas as relações intervalares.',
+    hint: 'A transposição desloca tudo para uma nova tonalidade. Subir uma 3.a menor (3 meios-tons) a partir de C maior chega a Eb maior. A nova armação de clave (3 bemóis) preserva todas as relações intervalares.',
   },
 };
 

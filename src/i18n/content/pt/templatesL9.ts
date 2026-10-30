@@ -36,14 +36,14 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve este intervalo e identifica-o. É sempre uma terça -- decide se é maior ou menor.',
       hintTemplate:
-        '3.a maior = 4 semitons (brilhante, alegre). 3.a menor = 3 semitons (sombria, triste). A diferença é apenas meio-tom, mas o carácter muda dramaticamente.',
+        '3.a maior = 4 meios-tons (brilhante, alegre). 3.a menor = 3 meios-tons (sombria, triste). A diferença é apenas meio-tom, mas o carácter muda dramaticamente.',
     },
     {
       // ear_training (chord)
       promptTemplate:
         'Ouve este acorde e identifica a sua qualidade.',
       hintTemplate:
-        'O maior soa brilhante e aberto. O menor soa sombrio e pensativo. Concentra-te na 3.a: 3.a maior = 4 semitons, 3.a menor = 3 semitons.',
+        'O maior soa brilhante e aberto. O menor soa sombrio e pensativo. Concentra-te na 3.a: 3.a maior = 4 meios-tons, 3.a menor = 3 meios-tons.',
     },
   ],
 
@@ -54,7 +54,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve este intervalo, tocado em movimento {direction}, e identifica-o. Concentra-te em intervalos até à 5.a perfeita.',
       hintTemplate:
-        'Treino auditivo de intervalos: 2m=1 (tenso), 2M=2 (passo), 3m=3 (triste), 3M=4 (brilhante), 4P=5 (aberto), 5P=7 (forte). Conta os semitons que ouves.',
+        'Treino auditivo de intervalos: 2m=1 (tenso), 2M=2 (passo), 3m=3 (triste), 3M=4 (brilhante), 4P=5 (aberto), 5P=7 (forte). Conta os meios-tons que ouves.',
     },
   ],
 
@@ -76,7 +76,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve estas duas notas tocadas em simultâneo e identifica o intervalo harmónico.',
       hintTemplate:
-        'Os intervalos harmónicos soam ambas as notas ao mesmo tempo. As consonâncias (3, 4, 5, 7, 8, 9, 12 semitons) fundem-se suavemente. As dissonâncias (1, 2, 6, 10, 11) criam tensão.',
+        'Os intervalos harmónicos soam ambas as notas ao mesmo tempo. As consonâncias (3, 4, 5, 7, 8, 9, 12 meios-tons) fundem-se suavemente. As dissonâncias (1, 2, 6, 10, 11) criam tensão.',
     },
   ],
 
@@ -157,7 +157,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve este intervalo melódico, tocado em movimento {direction}, e identifica-o.',
       hintTemplate:
-        'As melodias diatónicas misturam passos (1-2 semitons) e saltos (3M=4, 4P=5, 5P=7, 8P=12). Canta o que ouviste antes de responder.',
+        'As melodias diatónicas misturam passos (1-2 meios-tons) e saltos (3M=4, 4P=5, 5P=7, 8P=12). Canta o que ouviste antes de responder.',
     },
   ],
 
@@ -186,7 +186,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve esta cadência em C maior e identifica-a.',
       hintTemplate:
-        'Autêntica (V-I) = chegada conclusiva. Plagal (IV-I) = a cadência do "Amen". Deceptiva (V-vi) = chegada esperada desviada. Meia (I-V) = pausa na tensão.',
+        'Autêntica (V-I) = chegada conclusiva. Plagal (IV-I) = a cadência do "Amen". Interrompida (V-vi) = chegada esperada desviada. Suspensiva (I-V) = pausa na tensão.',
     },
     {
       // ear_training (progression)

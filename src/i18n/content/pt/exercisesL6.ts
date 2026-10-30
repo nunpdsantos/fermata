@@ -41,14 +41,14 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l6u18m2: Sexta Italiana/Francesa ----
 
   l6u18m2e1: {
-    prompt: 'Quantos semitons abrange o intervalo de sexta aumentada?',
+    prompt: 'Quantos meios-tons abrange o intervalo de sexta aumentada?',
     choices: [
-      '10 semitons -- enarmonicamente equivalente a uma sétima menor',
-      '9 semitons -- o mesmo que uma sexta maior',
-      '8 semitons -- o mesmo que uma sexta menor',
-      '11 semitons -- o mesmo que uma sétima maior',
+      '10 meios-tons -- enarmonicamente equivalente a uma sétima menor',
+      '9 meios-tons -- o mesmo que uma sexta maior',
+      '8 meios-tons -- o mesmo que uma sexta menor',
+      '11 meios-tons -- o mesmo que uma sétima maior',
     ],
-    hint: 'Uma sexta aumentada é meio-tom maior que uma sexta maior (9 semitons). Abrange 10 semitons e é enarmonicamente do mesmo tamanho que uma sétima menor, mas as duas notas resolvem divergentemente para uma oitava.',
+    hint: 'Uma sexta aumentada é meio-tom maior que uma sexta maior (9 meios-tons). Abrange 10 meios-tons e é enarmonicamente do mesmo tamanho que uma sétima menor, mas as duas notas resolvem divergentemente para uma oitava.',
   },
   l6u18m2e2: {
     prompt: 'O que distingue a sexta italiana (It+6) da sexta francesa (Fr+6)?',
@@ -151,19 +151,19 @@ const overlay: ExerciseLevelOverlay = {
   l6u19m1e2: {
     prompt: 'Porque é que o acorde de sétima diminuta é simétrico?',
     choices: [
-      'Divide a oitava de 12 semitons em quatro terças menores iguais (0, 3, 6, 9)',
+      'Divide a oitava de 12 meios-tons em quatro terças menores iguais (0, 3, 6, 9)',
       'Contém apenas notas naturais sem sustenidos ou bemóis',
       'As suas inversões produzem conteúdo intervalar diferente de cada vez',
       'Tem o mesmo número de intervalos maiores e menores',
     ],
-    hint: 'O acorde dim7 é construído inteiramente com terças menores (3 semitons cada). Como 3 x 4 = 12, as quatro notas dividem a oitava uniformemente. Isto significa que cada inversão do acorde soa idêntica na sua estrutura intervalar.',
+    hint: 'O acorde dim7 é construído inteiramente com terças menores (3 meios-tons cada). Como 3 x 4 = 12, as quatro notas dividem a oitava uniformemente. Isto significa que cada inversão do acorde soa idêntica na sua estrutura intervalar.',
   },
   l6u19m1e3: {
     prompt: 'Para quantas tonalidades diferentes pode resolver um único acorde de sétima diminuta como acorde de sensível (viio7)?',
     choices: [
       'Quatro tonalidades -- qualquer das suas quatro notas pode ser tratada como sensível',
       'Duas tonalidades -- uma maior e uma menor',
-      'Doze tonalidades -- uma para cada semitom',
+      'Doze tonalidades -- uma para cada meio-tom',
       'Uma tonalidade -- determinada pela sua fundamental',
     ],
     hint: 'Devido à sua simetria, cada nota do acorde dim7 pode ser reescrita como sensível resolvendo ascendentemente por meio-tom para uma tónica diferente. C-Eb-Gb-Bbb pode ser viio7 de Db, E, G ou Bb.',
@@ -265,7 +265,7 @@ const overlay: ExerciseLevelOverlay = {
       'A eliminação do ritmo e metro da estrutura musical',
       'A substituição de toda a harmonia por melodias em uníssono',
     ],
-    hint: 'Compositores como Wagner (Tristan und Isolde) usaram cromatismo contínuo, resoluções deceptivas e ambiguidade enarmónica tão extensamente que a sensação de uma tonalidade "casa" tornou-se elusiva -- abrindo caminho para a atonalidade no século XX.',
+    hint: 'Compositores como Wagner (Tristan und Isolde) usaram cromatismo contínuo, resoluções interrompidas e ambiguidade enarmónica tão extensamente que a sensação de uma tonalidade "casa" tornou-se elusiva -- abrindo caminho para a atonalidade no século XX.',
   },
 
   // =========================================================================

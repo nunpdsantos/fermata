@@ -20,7 +20,7 @@ const overlay: ExerciseLevelOverlay = {
   l9u30m1e2: {
     prompt:
       'Ouve esta altura e identifica-a.',
-    hint: 'G4 está uma 5.a perfeita acima do C central -- 7 semitons acima. Compara-o com C4 no teu ouvido.',
+    hint: 'G4 está uma 5.a perfeita acima do C central -- 7 meios-tons acima. Compara-o com C4 no teu ouvido.',
   },
   l9u30m1e3: {
     prompt:
@@ -50,13 +50,13 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Ouve este acorde. É maior ou menor?',
     choices: ['Maior', 'Menor'],
-    hint: 'A 3.a maior (4 semitons a partir da fundamental) dá aos acordes maiores um carácter brilhante e estável.',
+    hint: 'A 3.a maior (4 meios-tons a partir da fundamental) dá aos acordes maiores um carácter brilhante e estável.',
   },
   l9u30m2e2: {
     prompt:
       'Ouve este acorde. É maior ou menor?',
     choices: ['Maior', 'Menor'],
-    hint: 'A 3.a menor (3 semitons a partir da fundamental) dá aos acordes menores uma qualidade mais sombria e melancólica.',
+    hint: 'A 3.a menor (3 meios-tons a partir da fundamental) dá aos acordes menores uma qualidade mais sombria e melancólica.',
   },
   l9u30m2e3: {
     prompt:
@@ -67,7 +67,7 @@ const overlay: ExerciseLevelOverlay = {
       'A fundamental é elevada meio-tom no menor',
       'Tríades menores têm quatro notas em vez de três',
     ],
-    hint: 'Tríade maior: fundamental + 3.a maior (4 semitons) + 5.a P. Tríade menor: fundamental + 3.a menor (3 semitons) + 5.a P. Só a 3.a muda.',
+    hint: 'Tríade maior: fundamental + 3.a maior (4 meios-tons) + 5.a P. Tríade menor: fundamental + 3.a menor (3 meios-tons) + 5.a P. Só a 3.a muda.',
   },
 
   // ---- l9u30m3: Reconhecimento de Intervalos P1-P5 ----
@@ -75,22 +75,22 @@ const overlay: ExerciseLevelOverlay = {
   l9u30m3e1: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '1 semitom = 2.a menor (meio-tom) -- o menor intervalo na música ocidental. Pensa no tema de Tubarão.',
+    hint: '1 meio-tom = 2.a menor (meio-tom) -- o menor intervalo na música ocidental. Pensa no tema de Tubarão.',
   },
   l9u30m3e2: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '2 semitons = 2.a maior (tom). O passo melódico do dia a dia.',
+    hint: '2 meios-tons = 2.a maior (tom). O passo melódico do dia a dia.',
   },
   l9u30m3e3: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '3 semitons = 3.a menor -- sombria e melancólica. Este intervalo define a base de uma tríade menor.',
+    hint: '3 meios-tons = 3.a menor -- sombria e melancólica. Este intervalo define a base de uma tríade menor.',
   },
   l9u30m3e4: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '7 semitons = 5.a perfeita -- forte e aberta. O intervalo mais consonante depois da oitava e do uníssono.',
+    hint: '7 meios-tons = 5.a perfeita -- forte e aberta. O intervalo mais consonante depois da oitava e do uníssono.',
   },
 
   // ---- l9u30m4: Reconhecimento de Intervalos 6.a m-P8 ----
@@ -98,22 +98,22 @@ const overlay: ExerciseLevelOverlay = {
   l9u30m4e1: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '8 semitons = 6.a menor -- agridoce e anelante, com uma qualidade pungente e algo tensa.',
+    hint: '8 meios-tons = 6.a menor -- agridoce e anelante, com uma qualidade pungente e algo tensa.',
   },
   l9u30m4e2: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '9 semitons = 6.a maior -- quente, romântica e consonante.',
+    hint: '9 meios-tons = 6.a maior -- quente, romântica e consonante.',
   },
   l9u30m4e3: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '10 semitons = 7.a menor -- uma tensão dominante e bluesy que quer resolver.',
+    hint: '10 meios-tons = 7.a menor -- uma tensão dominante e bluesy que quer resolver.',
   },
   l9u30m4e4: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '12 semitons = oitava perfeita -- as duas notas soam como a mesma altura em registos diferentes.',
+    hint: '12 meios-tons = oitava perfeita -- as duas notas soam como a mesma altura em registos diferentes.',
   },
 
   // ---- l9u30m5: Intervalos Harmónicos ----
@@ -121,12 +121,12 @@ const overlay: ExerciseLevelOverlay = {
   l9u30m5e1: {
     prompt:
       'Ouve estas duas notas tocadas em simultâneo e identifica o intervalo harmónico.',
-    hint: '5 semitons = 4.a perfeita. Em simultâneo tem uma qualidade aberta e oca.',
+    hint: '5 meios-tons = 4.a perfeita. Em simultâneo tem uma qualidade aberta e oca.',
   },
   l9u30m5e2: {
     prompt:
       'Ouve estas duas notas tocadas em simultâneo e identifica o intervalo harmónico.',
-    hint: '4 semitons = 3.a maior -- um som harmónico quente e consonante.',
+    hint: '4 meios-tons = 3.a maior -- um som harmónico quente e consonante.',
   },
   l9u30m5e3: {
     prompt:
@@ -243,7 +243,7 @@ const overlay: ExerciseLevelOverlay = {
       'Fundamental, 3.a menor e 5.a perfeita',
       'Fundamental, 3.a maior e 5.a aumentada',
     ],
-    hint: 'Diminuta = 3.a menor (3 semitons) + 5.a diminuta (6 semitons). Duas 3.as menores empilhadas produzem o trítono entre fundamental e 5.a.',
+    hint: 'Diminuta = 3.a menor (3 meios-tons) + 5.a diminuta (6 meios-tons). Duas 3.as menores empilhadas produzem o trítono entre fundamental e 5.a.',
   },
   l9u31m4e4: {
     prompt: 'Como descreverias o som de uma tríade aumentada?',
@@ -279,7 +279,7 @@ const overlay: ExerciseLevelOverlay = {
       'A 3.a maior entre fundamental e 3.a',
       'A duplicação à oitava da fundamental',
     ],
-    hint: 'Em G7 (G-B-D-F), B e F formam um trítono (6 semitons). Esta dissonância cria a atração para resolução a C maior.',
+    hint: 'Em G7 (G-B-D-F), B e F formam um trítono (6 meios-tons). Esta dissonância cria a atração para resolução a C maior.',
   },
   l9u31m5e4: {
     prompt:
@@ -336,12 +336,12 @@ const overlay: ExerciseLevelOverlay = {
   l9u32m2e1: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: 'E para F é um meio-tom (1 semitom) entre duas letras diferentes -- um meio-tom diatónico, que já está dentro de C maior. Um meio-tom cromático mantém a letra (F para F#). Numa melodia, qualquer um deles funciona muitas vezes como nota de passagem ou bordadura.',
+    hint: 'E para F é um meio-tom (1 meio-tom) entre duas letras diferentes -- um meio-tom diatónico, que já está dentro de C maior. Um meio-tom cromático mantém a letra (F para F#). Numa melodia, qualquer um deles funciona muitas vezes como nota de passagem ou bordadura.',
   },
   l9u32m2e2: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: 'O trítono (6 semitons, 4.a aumentada / 5.a diminuta) é uma das dissonâncias mais ásperas (com a 2.a menor e a 7.a maior) e divide a oitava exatamente ao meio.',
+    hint: 'O trítono (6 meios-tons, 4.a aumentada / 5.a diminuta) é uma das dissonâncias mais ásperas (com a 2.a menor e a 7.a maior) e divide a oitava exatamente ao meio.',
   },
   l9u32m2e3: {
     prompt: 'O que é uma nota cromática de passagem?',
@@ -360,34 +360,34 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Uma frase termina com V movendo para I, ambos em posição fundamental, com a melodia chegando à tónica. Que tipo de cadência é esta?',
     choices: [
-      'Cadência autêntica perfeita (CAP)',
-      'Meia cadência',
+      'Cadência perfeita (CAP)',
+      'Cadência suspensiva',
       'Cadência plagal',
-      'Cadência deceptiva',
+      'Cadência interrompida',
     ],
-    hint: 'Uma cadência autêntica perfeita (CAP) requer V para I em posição fundamental com a tónica no soprano. Proporciona a sensação mais forte de finalidade.',
+    hint: 'Uma cadência perfeita (CAP) requer V para I em posição fundamental com a tónica no soprano. Proporciona a sensação mais forte de finalidade.',
   },
   l9u32m3e2: {
     prompt:
       'Uma frase musical faz pausa no acorde de V sem resolver. Que tipo de cadência é esta?',
     choices: [
-      'Meia cadência',
-      'Cadência autêntica perfeita',
+      'Cadência suspensiva',
+      'Cadência perfeita',
       'Cadência plagal',
-      'Cadência deceptiva',
+      'Cadência interrompida',
     ],
-    hint: 'Uma meia cadência termina em V, criando uma sensação de suspensão ou incompletude -- como uma vírgula em vez de um ponto final.',
+    hint: 'Uma cadência suspensiva termina em V, criando uma sensação de suspensão ou incompletude -- como uma vírgula em vez de um ponto final.',
   },
   l9u32m3e3: {
     prompt:
       'Esperas que V resolva para I, mas em vez disso move-se para vi. Que tipo de cadência produz esta surpresa?',
     choices: [
-      'Cadência deceptiva',
-      'Meia cadência',
-      'Cadência autêntica perfeita',
+      'Cadência interrompida',
+      'Cadência suspensiva',
+      'Cadência perfeita',
       'Cadência plagal',
     ],
-    hint: 'Uma cadência deceptiva substitui vi pelo I esperado após V. O ouvido espera resolução mas recebe um desvio surpresa.',
+    hint: 'Uma cadência interrompida substitui vi pelo I esperado após V. O ouvido espera resolução mas recebe um desvio surpresa.',
   },
 
   // ---- l9u32m4: Leitura à Primeira Vista ----

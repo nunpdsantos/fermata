@@ -67,7 +67,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual é o intervalo a partir de {root} no sentido {direction}? É um meio-tom ou um tom?',
       hintTemplate:
-        'Um meio-tom é 1 semitom (teclas adjacentes no piano). Um tom é 2 semitons (uma tecla entre elas). A partir de {root}, conta com cuidado.',
+        'Um meio-tom é 1 meio-tom (teclas adjacentes no piano). Um tom é 2 meios-tons (uma tecla entre elas). A partir de {root}, conta com cuidado.',
     },
     {
       // multiple_choice
@@ -189,7 +189,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói a escala de {root} maior. Seleciona as 7 notas seguindo o padrão T-T-S-T-T-T-S.',
       hintTemplate:
-        'A escala de {root} maior segue Tom-Tom-Semitom-Tom-Tom-Tom-Semitom a partir de {root}. Conta os semitons: T=2, S=1.',
+        'A escala de {root} maior segue Tom-Tom-Meio-tom-Tom-Tom-Tom-Meio-tom a partir de {root}. Conta os meios-tons: T=2, S=1.',
     },
     {
       // scale_degree_id
@@ -242,9 +242,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // interval_id
       promptTemplate:
-        'Identifica o intervalo a partir de {root} no sentido {direction}. Conta os nomes das notas e os semitons.',
+        'Identifica o intervalo a partir de {root} no sentido {direction}. Conta os nomes das notas e os meios-tons.',
       hintTemplate:
-        'A partir de {root}, conta os nomes das notas para o número do intervalo e os semitons para a qualidade. {semitones} semitons {direction}.',
+        'A partir de {root}, conta os nomes das notas para o número do intervalo e os meios-tons para a qualidade. {semitones} meios-tons {direction}.',
     },
   ],
 
@@ -253,9 +253,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Constrói a tríade de {root} maior. Seleciona a fundamental, a 3.a maior (4 semitons) e a 5.a perfeita (7 semitons).',
+        'Constrói a tríade de {root} maior. Seleciona a fundamental, a 3.a maior (4 meios-tons) e a 5.a perfeita (7 meios-tons).',
       hintTemplate:
-        'Uma tríade maior = fundamental + 3.a maior (4 semitons acima) + 5.a perfeita (7 semitons acima). Começa em {root} e conta.',
+        'Uma tríade maior = fundamental + 3.a maior (4 meios-tons acima) + 5.a perfeita (7 meios-tons acima). Começa em {root} e conta.',
     },
     {
       // chord_build

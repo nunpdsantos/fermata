@@ -362,7 +362,7 @@ const overlay: TemplateLevelOverlay = {
           'As técnicas expandidas foram inventadas no período barroco',
         ],
         [
-          'A microtonalidade divide a oitava em intervalos menores que um semitom',
+          'A microtonalidade divide a oitava em intervalos menores que um meio-tom',
           'A microtonalidade usa apenas as 12 alturas padrão',
           'Microtonalidade significa tocar muito suavemente',
           'A microtonalidade é o mesmo que a atonalidade',

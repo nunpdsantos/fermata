@@ -363,7 +363,7 @@ const overlay: ExerciseLevelOverlay = {
       'Cadencia auténtica perfecta (CAP)',
       'Semicadencia',
       'Cadencia plagal',
-      'Cadencia rota',
+      'Cadencia interrumpida',
     ],
     hint: 'Una cadencia auténtica perfecta (CAP) requiere V a I en posición fundamental con la tónica en el soprano. Proporciona la sensación más fuerte de conclusión.',
   },
@@ -374,7 +374,7 @@ const overlay: ExerciseLevelOverlay = {
       'Semicadencia',
       'Cadencia auténtica perfecta',
       'Cadencia plagal',
-      'Cadencia rota',
+      'Cadencia interrumpida',
     ],
     hint: 'Una semicadencia termina en V, creando una sensación de suspensión o incompletitud — como una coma en lugar de un punto final.',
   },
@@ -382,12 +382,12 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Esperas que V resuelva a I, pero en su lugar se mueve a vi. ¿Qué tipo de cadencia produce esta sorpresa?',
     choices: [
-      'Cadencia rota',
+      'Cadencia interrumpida',
       'Semicadencia',
       'Cadencia auténtica perfecta',
       'Cadencia plagal',
     ],
-    hint: 'Una cadencia rota sustituye vi por el I esperado tras V. El oído espera resolución pero recibe un desvío sorpresa.',
+    hint: 'Una cadencia interrumpida sustituye vi por el I esperado tras V. El oído espera resolución pero recibe un desvío sorpresa.',
   },
 
   // ---- l9u32m4: Lectura a Primera Vista ----
