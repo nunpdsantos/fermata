@@ -1,7 +1,8 @@
 // Scale formulas and definitions
 
 import { ScaleType, Note, NaturalNote, Scale } from '../types/music';
-import { getPitchClass, getNaturalAtInterval, NATURAL_TO_PITCH_CLASS, getSimplestSpelling } from './notes';
+import { getPitchClass, getNaturalAtInterval, getSimplestSpelling } from './notes';
+import { spellScale, spellOnLetter } from '../utils/degreeSpelling';
 import { INTERVAL_SHORT_LABELS } from './chords';
 
 // Scale formulas as semitone intervals from root
@@ -128,7 +129,9 @@ export function getScaleDegreeFunctionKey(
     case 1: return 'degreeShort.supertonic';
     case 2: return 'degreeShort.mediant';
     case 3: return 'degreeShort.subdominant';
-    case 4: return semitones === 6 ? 'degreeShort.tritone' : 'degreeShort.dominant';
+    // The 5th position is a dominant only when it is a perfect 5th: ♭5 reads
+    // as the tritone, ♯5 (Lydian augmented, audit W1-13) as the augmented 5th.
+    case 4: return semitones === 6 ? 'degreeShort.tritone' : semitones === 8 ? 'degreeShort.augFifth' : 'degreeShort.dominant';
     case 5: return 'degreeShort.submediant';
     case 6: return semitones === 11 ? 'degreeShort.leading' : 'degreeShort.subtonic';
     default: return null;
@@ -181,74 +184,20 @@ export const SCALE_TYPE_NAMES: Record<ScaleType, string> = {
   egyptian: 'Egyptian',
 };
 
-// Calculate the correct accidental for a scale degree
-function getAccidentalForPitchClass(targetPitchClass: number, natural: NaturalNote): Note {
-  const basePitchClass = NATURAL_TO_PITCH_CLASS[natural];
-  const diff = (targetPitchClass - basePitchClass + 12) % 12;
-
-  // Handle cases where the difference could be negative (flats) or positive (sharps)
-  if (diff === 0) {
-    return { natural, accidental: '' };
-  } else if (diff === 1) {
-    return { natural, accidental: '#' };
-  } else if (diff === 11) {
-    return { natural, accidental: 'b' };
-  } else if (diff === 2) {
-    return { natural, accidental: '##' };
-  } else if (diff === 10) {
-    return { natural, accidental: 'bb' };
-  }
-
-  // Out of double-accidental range (e.g. F### in B#-rooted scales): the
-  // one-letter-per-degree rule yields and the pitch is respelled
-  // enharmonically — a right-sounding note beats a pure letter name.
-  return getSimplestSpelling(targetPitchClass as Parameters<typeof getSimplestSpelling>[0]);
+// Spelled-degree helpers live in the one spelling engine (audit W1). The
+// relative-key helpers below spell on the right letter the same way.
+function spellOnLetterOrSimplest(targetPitchClass: number, natural: NaturalNote): Note {
+  return spellOnLetter(targetPitchClass, natural) ??
+    getSimplestSpelling(targetPitchClass as Parameters<typeof getSimplestSpelling>[0]);
 }
 
-// Build a scale with correct enharmonic spelling
-// This ensures each letter name appears once (for 7-note scales)
+// Build a scale with correct enharmonic spelling. Every scale type is spelled
+// from its degree formula (SCALE_DEGREE_FORMULAS in utils/degreeSpelling): one
+// letter per degree for 7-note scales, the conventional degree names for the
+// rest (blues b5, bebop #5 passing tone), and the least-accidental
+// conventional spelling for the symmetric scales (audit W1-05).
 export function buildScale(root: Note, type: ScaleType): Scale {
-  const formula = SCALE_FORMULAS[type];
-  const rootPitchClass = getPitchClass(root);
-  const notes: Note[] = [];
-
-  for (let i = 0; i < formula.length; i++) {
-    const targetPitchClass = (rootPitchClass + formula[i]) % 12;
-
-    // For non-7-note scales, use scale degree mapping
-    const degreeMap: Record<string, number[]> = {
-      pentatonic_major: [0, 1, 2, 4, 5], // 1, 2, 3, 5, 6
-      pentatonic_minor: [0, 2, 3, 4, 6], // 1, b3, 4, 5, b7
-      blues: [0, 2, 3, 3, 4, 6], // 1, b3, 4, b5, 5, b7
-      major_blues: [0, 1, 2, 2, 4, 5], // 1, 2, b3, 3, 5, 6 (Major pentatonic + blue note)
-      whole_tone: [0, 1, 2, 3, 4, 5], // 6 notes, each a whole step
-      diminished_whole_half: [0, 1, 2, 3, 4, 5, 6, 6], // 8 notes
-      diminished_half_whole: [0, 1, 2, 3, 4, 5, 6, 6], // 8 notes
-      chromatic: [0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6], // 12 notes - sharps ascending
-      // Phase 2 - Bebop scales (8 notes)
-      bebop_dominant: [0, 1, 2, 3, 4, 5, 6, 6], // 1, 2, 3, 4, 5, 6, b7, 7
-      bebop_major: [0, 1, 2, 3, 4, 5, 5, 6], // 1, 2, 3, 4, 5, b6, 6, 7
-      bebop_dorian: [0, 1, 2, 2, 3, 4, 5, 6], // 1, 2, b3, 3, 4, 5, 6, b7
-      // Phase 3 - Japanese pentatonic (5 notes)
-      hirajoshi: [0, 1, 2, 4, 5], // 1, 2, b3, 5, b6
-      in_sen: [0, 1, 3, 4, 6], // 1, b2, 4, 5, b7
-      iwato: [0, 1, 3, 4, 6], // 1, b2, 4, b5, b7
-      // Phase 3 - Egyptian pentatonic (5 notes)
-      egyptian: [0, 1, 3, 4, 6], // 1, 2, 4, 5, b7 (suspended pentatonic)
-    };
-
-    if (degreeMap[type]) {
-      const degrees = degreeMap[type];
-      const natural = getNaturalAtInterval(root.natural, degrees[i]);
-      notes.push(getAccidentalForPitchClass(targetPitchClass, natural));
-    } else {
-      // For 7-note scales, each letter name appears once
-      const natural = getNaturalAtInterval(root.natural, i);
-      notes.push(getAccidentalForPitchClass(targetPitchClass, natural));
-    }
-  }
-
-  return { root, type, notes };
+  return { root, type, notes: spellScale(root, type) };
 }
 
 // Get relative minor of a major key
@@ -256,7 +205,7 @@ export function getRelativeMinor(majorRoot: Note): Note {
   const majorPitchClass = getPitchClass(majorRoot);
   const minorPitchClass = (majorPitchClass + 9) % 12; // Down 3 semitones = up 9
   const minorNatural = getNaturalAtInterval(majorRoot.natural, 5); // 6th degree
-  return getAccidentalForPitchClass(minorPitchClass, minorNatural);
+  return spellOnLetterOrSimplest(minorPitchClass, minorNatural);
 }
 
 // Get relative major of a minor key
@@ -264,7 +213,7 @@ export function getRelativeMajor(minorRoot: Note): Note {
   const minorPitchClass = getPitchClass(minorRoot);
   const majorPitchClass = (minorPitchClass + 3) % 12; // Up 3 semitones
   const majorNatural = getNaturalAtInterval(minorRoot.natural, 2); // 3rd degree
-  return getAccidentalForPitchClass(majorPitchClass, majorNatural);
+  return spellOnLetterOrSimplest(majorPitchClass, majorNatural);
 }
 
 // Get parallel minor (same root, different mode)
