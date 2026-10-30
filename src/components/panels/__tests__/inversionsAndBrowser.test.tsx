@@ -58,7 +58,7 @@ describe('W2-09 — inversion buttons', () => {
   it('C major 9th reads Root | 1st Inv | 2nd Inv | 3rd Inv | Inv 4 (and PT/ES too)', async () => {
     const chord = buildChord(C, 'major9');
     useAppStore.setState({ selectedChord: chord, chordInversion: 0 });
-    for (const [lang, last] of [['en', 'Inv 4'], ['pt', 'Inv 4'], ['es', 'Inv 4']] as const) {
+    for (const [lang, last] of [['en', 'Inv 4'], ['pt', '4ª Inv'], ['es', '4ª Inv']] as const) {
       await i18n.changeLanguage(lang);
       render(<CurrentChordPanel chord={chord} />);
       const labels = within(screen.getByRole('radiogroup')).getAllByRole('radio').map((r) => r.textContent);

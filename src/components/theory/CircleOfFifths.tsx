@@ -1,20 +1,25 @@
 import { memo, useMemo, useState, useCallback, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { noteToString, type Note, type ScaleType } from '../../core/types/music.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { SCALE_TYPE_NAMES } from '../../core/constants/scales.ts';
-import { keySignatureForScale, formatKeySignature } from '../../core/utils/degreeSpelling.ts';
+import {
+  keySignatureForScale,
+  majorKeySignature,
+  formatKeySignature,
+  spellIntervalAbove,
+} from '../../core/utils/degreeSpelling.ts';
 import { useAppStore } from '../../state/store.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { resumeAudio, playChordVoiced } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import {
-  CIRCLE_MAJOR, CIRCLE_MINOR, KEY_SIGNATURES,
+  CIRCLE_MAJOR, CIRCLE_MINOR,
   MINOR_SCALES, MINOR_SCALE_LABELS,
   SIZE, CENTER, MAJOR_INNER, MAJOR_OUTER, MINOR_INNER, MINOR_OUTER,
   KEYSIG_R, SEG_GAP, TONIC_HUE, accentAlpha,
   DIST_FILL_MAJOR, DIST_STROKE_MAJOR, DIST_TEXT_MAJOR,
   DIST_FILL_MINOR, DIST_STROKE_MINOR, DIST_TEXT_MINOR,
-  DISTANCE_LABELS,
 } from './circleOfFifthsConstants.ts';
 
 type Ring = 'major' | 'minor';
@@ -32,6 +37,22 @@ function isMinorScale(scale: ScaleType): boolean {
 const MINOR_RING_SCALES: ReadonlySet<ScaleType> = new Set<ScaleType>([
   'natural_minor', 'harmonic_minor', 'melodic_minor', 'pentatonic_minor', 'blues',
 ]);
+
+// Neutral look for scales with no standard key signature: no accent, no
+// distance gradient, no halo (review item 3).
+const NEUTRAL_FILL_MAJOR = 'var(--bg-raised)';
+const NEUTRAL_FILL_MINOR = 'var(--bg)';
+const NEUTRAL_STROKE = 'var(--border-subtle)';
+const NEUTRAL_TEXT = 'var(--text-muted)';
+const NEUTRAL_HOVER = 'var(--card-hover)';
+
+// Key-name and numeral sizes in SVG units. The circle renders about 254 px
+// wide at 1440×900 (0.85 px per unit), so 10 units ≈ 8.5 px. Numerals sit
+// UNDER the key name in the same segment, far enough apart that their boxes
+// never touch, so they cannot collide at 3 and 9 o'clock (review item 2).
+const MAJOR_NAME_SIZE = 11;
+const MINOR_NAME_SIZE = 8.5;
+const NUMERAL_SIZE = 10;
 
 function fifthsDistance(a: number, b: number): number {
   const d = Math.abs(a - b);
@@ -67,7 +88,13 @@ const circleIndexOf = (pc: number): number => {
   return idx >= 0 ? idx : 0;
 };
 
+/** The relative minor of a major key, spelled (C♯ → A♯, C♭ → A♭). */
+const relativeMinorOf = (major: Note): Note => spellIntervalAbove(major, 6, 9);
+/** The relative major of a minor key, spelled (A♯ → C♯, A♭ → C♭). */
+const relativeMajorOf = (minor: Note): Note => spellIntervalAbove(minor, 3, 3);
+
 export const CircleOfFifths = memo(function CircleOfFifths() {
+  const { t } = useTranslation();
   const selectedKey = useAppStore((s) => s.selectedKey);
   const selectedScale = useAppStore((s) => s.selectedScale);
   const synthPreset = useAppStore((s) => s.synthPreset);
@@ -91,6 +118,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
     () => keySignatureForScale(selectedKey, selectedScale),
     [selectedKey, selectedScale],
   );
+  const neutral = signature === null;
 
   // Circle position the colouring is measured from, and the highlighted
   // segment: the parent major (outer ring) or its relative minor (inner ring).
@@ -113,16 +141,18 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
     return m;
   }, [diatonicChords]);
 
-  // A segment that IS the selection shows the selection's spelling (C♯ major
-  // selected reads "C♯" where the circle otherwise prints D♭).
+  // The selected position wears the selection's spelling on both rings (C♯
+  // major reads "C♯ / A♯m" where the circle otherwise prints D♭ / B♭m; E♭
+  // phrygian's parent reads "C♭ / A♭m"). Everything a segment shows — its
+  // name, its signature, its relative key — is spelled from this label.
   const labelFor = useCallback(
     (ring: Ring, i: number): Note => {
-      if (selectedSeg && selectedSeg.ring === ring && selectedSeg.idx === i && signature) {
-        return ring === 'major' ? signature.parent : selectedKey;
+      if (signature && i === refIdx) {
+        return ring === 'major' ? signature.parent : relativeMinorOf(signature.parent);
       }
       return ring === 'major' ? CIRCLE_MAJOR[i] : CIRCLE_MINOR[i];
     },
-    [selectedSeg, signature, selectedKey],
+    [signature, refIdx],
   );
 
   const handleKeyClick = useCallback(
@@ -183,19 +213,18 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
       const selected = selectedSeg?.ring === 'major' && selectedSeg.idx === i;
       const dist = fifthsDistance(i, refIdx);
       const numeral = numerals.get(`major-${pc}`);
-      const namePos = polarToCartesian(CENTER, CENTER, 95, i * 30);
-      const degreePos = polarToCartesian(CENTER, CENTER, 113, i * 30);
+      const mid = polarToCartesian(CENTER, CENTER, (MAJOR_INNER + MAJOR_OUTER) / 2, i * 30);
+      const fill = neutral ? NEUTRAL_FILL_MAJOR : DIST_FILL_MAJOR[dist];
 
       return {
-        note, i, pc, selected, dist, numeral, namePos, degreePos,
+        note, i, pc, selected, dist, numeral, mid, fill,
         path: arcPath(CENTER, CENTER, MAJOR_INNER, MAJOR_OUTER, start, end),
-        fill: DIST_FILL_MAJOR[dist],
-        stroke: DIST_STROKE_MAJOR[dist],
-        textFill: DIST_TEXT_MAJOR[dist],
-        hoverFill: dist === 0 ? TONIC_HUE : accentAlpha(dist <= 2 ? 31 : 15),
+        stroke: neutral ? NEUTRAL_STROKE : DIST_STROKE_MAJOR[dist],
+        textFill: neutral ? NEUTRAL_TEXT : DIST_TEXT_MAJOR[dist],
+        hoverFill: neutral ? NEUTRAL_HOVER : dist === 0 ? TONIC_HUE : accentAlpha(dist <= 2 ? 31 : 15),
       };
     });
-  }, [labelFor, selectedSeg, refIdx, numerals]);
+  }, [labelFor, selectedSeg, refIdx, numerals, neutral]);
 
   const minorSegs = useMemo(() => {
     return CIRCLE_MINOR.map((_, i) => {
@@ -206,19 +235,24 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
       const selected = selectedSeg?.ring === 'minor' && selectedSeg.idx === i;
       const dist = fifthsDistance(i, refIdx);
       const numeral = numerals.get(`minor-${pc}`);
-      const mid = polarToCartesian(CENTER, CENTER, (MINOR_INNER + MINOR_OUTER) / 2 + 3, i * 30);
-      const degreePos = polarToCartesian(CENTER, CENTER, MINOR_INNER + 6, i * 30);
+      const mid = polarToCartesian(CENTER, CENTER, (MINOR_INNER + MINOR_OUTER) / 2, i * 30);
+      const fill = neutral ? NEUTRAL_FILL_MINOR : DIST_FILL_MINOR[dist];
 
       return {
-        note, i, pc, selected, dist, numeral, mid, degreePos,
+        note, i, pc, selected, dist, numeral, mid, fill,
         path: arcPath(CENTER, CENTER, MINOR_INNER, MINOR_OUTER, start, end),
-        fill: DIST_FILL_MINOR[dist],
-        stroke: DIST_STROKE_MINOR[dist],
-        textFill: DIST_TEXT_MINOR[dist],
-        hoverFill: dist === 0 ? TONIC_HUE : accentAlpha(dist <= 2 ? 25 : 10),
+        stroke: neutral ? NEUTRAL_STROKE : DIST_STROKE_MINOR[dist],
+        textFill: neutral ? NEUTRAL_TEXT : DIST_TEXT_MINOR[dist],
+        hoverFill: neutral ? NEUTRAL_HOVER : dist === 0 ? TONIC_HUE : accentAlpha(dist <= 2 ? 25 : 10),
       };
     });
-  }, [labelFor, selectedSeg, refIdx, numerals]);
+  }, [labelFor, selectedSeg, refIdx, numerals, neutral]);
+
+  // Outer ring: each position's signature, spelled from its displayed major key.
+  const outerSignatures = useMemo(
+    () => majorSegs.map((s) => formatKeySignature(majorKeySignature(s.note), '')),
+    [majorSegs],
+  );
 
   // Relative key connection line on hover
   const connLine = useMemo(() => {
@@ -228,21 +262,80 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
     return { x1: mj.x, y1: mj.y, x2: mn.x, y2: mn.y };
   }, [hoveredIdx]);
 
-  // Hover tooltip data
+  // Hover / focus panel: everything spelled from the segment AS DISPLAYED
+  // (review B2: C♯ major hovering C♯ said "5♭ · rel: B♭m").
   const hoverInfo = useMemo(() => {
-    if (hoveredIdx === null) return null;
+    if (hoveredIdx === null || hoveredRing === null) return null;
     const dist = fifthsDistance(hoveredIdx, refIdx);
+    const shown = hoveredRing === 'major' ? majorSegs[hoveredIdx].note : minorSegs[hoveredIdx].note;
+    const major = hoveredRing === 'major' ? shown : relativeMajorOf(shown);
+    const relative = hoveredRing === 'major' ? `${noteToString(relativeMinorOf(shown))}m` : noteToString(major);
+    const isSelection = selectedSeg !== null && selectedSeg.ring === hoveredRing && selectedSeg.idx === hoveredIdx;
+    // The highlighted segment is the selected key — or, for a mode, its
+    // parent key (A dorian highlights G major).
+    const isParent = isSelection && getPitchClass(shown) !== getPitchClass(selectedKey);
+    const distLabel = neutral
+      ? null
+      : dist === 0
+        ? t(isParent ? 'circle.parentKey' : 'circle.currentKey')
+        : t(`circle.distance${dist}`);
     return {
-      major: noteToString(majorSegs[hoveredIdx].note),
-      minor: noteToString(minorSegs[hoveredIdx].note) + 'm',
-      keySig: KEY_SIGNATURES[hoveredIdx],
+      name: `${noteToString(shown)}${hoveredRing === 'minor' ? 'm' : ''}`,
+      sig: formatKeySignature(majorKeySignature(major), t('circle.noAccidentals')),
+      relative: t('circle.relative', { key: relative }),
       dist,
-      distLabel: DISTANCE_LABELS[dist],
+      distLabel,
     };
-  }, [hoveredIdx, refIdx, majorSegs, minorSegs]);
+  }, [hoveredIdx, hoveredRing, refIdx, majorSegs, minorSegs, selectedSeg, selectedKey, neutral, t]);
 
   // The scale's own name under the key when it is not plain major / minor.
   const scaleLine = selectedScale === 'major' || isMinorSel ? null : SCALE_TYPE_NAMES[selectedScale];
+
+  /** Name + numeral stacked in a segment (numeral below, never overlapping). */
+  const segmentText = (
+    s: { mid: { x: number; y: number }; note: Note; numeral?: string; textFill: string; fill: string },
+    ring: Ring,
+  ) => {
+    const nameSize = ring === 'major' ? MAJOR_NAME_SIZE : MINOR_NAME_SIZE;
+    // Glyph boxes run ~1.4× the font size tall at small sizes; half of each plus
+    // 1 unit of air keeps name and numeral apart at every render size.
+    const gap = (nameSize * 0.7 + NUMERAL_SIZE * 0.7 + 1) / 2;
+    const nameY = s.numeral ? s.mid.y - gap : s.mid.y;
+    const numeralY = s.mid.y + gap;
+    // Full-contrast numerals: page text, or page background on the solid
+    // accent of the key's own segment.
+    const numeralFill = s.fill === TONIC_HUE ? 'var(--on-accent)' : 'var(--text)';
+    return (
+      <>
+        <text
+          data-name
+          x={s.mid.x}
+          y={nameY}
+          textAnchor="middle"
+          dominantBaseline="central"
+          fontSize={nameSize}
+          className={`${ring === 'major' ? 'font-semibold' : 'font-medium'} select-none pointer-events-none`}
+          fill={s.textFill}
+        >
+          {noteToString(s.note)}{ring === 'minor' ? 'm' : ''}
+        </text>
+        {s.numeral && (
+          <text
+            data-numeral
+            x={s.mid.x}
+            y={numeralY}
+            textAnchor="middle"
+            dominantBaseline="central"
+            fontSize={NUMERAL_SIZE}
+            className="font-semibold select-none pointer-events-none"
+            fill={numeralFill}
+          >
+            {s.numeral}
+          </text>
+        )}
+      </>
+    );
+  };
 
   const svgContent = (
     <svg ref={svgRef} viewBox={`0 0 ${SIZE} ${SIZE}`} className="w-full max-w-[300px] mx-auto">
@@ -256,13 +349,15 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
         </filter>
       </defs>
 
-      {/* Key signature labels — outermost ring */}
-      {KEY_SIGNATURES.map((sig, i) => {
+      {/* Key signature labels — outermost ring, spelled from each position's
+          displayed major key (C♯ selected: 7♯ there, not 5♭). */}
+      {outerSignatures.map((sig, i) => {
         if (!sig) return null;
         const pos = polarToCartesian(CENTER, CENTER, KEYSIG_R, i * 30);
         return (
           <text
             key={`sig-${i}`}
+            data-testid={`cof-sig-${i}`}
             x={pos.x}
             y={pos.y}
             textAnchor="middle"
@@ -304,30 +399,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
               strokeWidth={s.selected ? 2 : 1}
               style={{ transition: 'fill 0.15s, stroke 0.15s' }}
             />
-            <text
-              x={s.namePos.x}
-              y={s.namePos.y}
-              textAnchor="middle"
-              dominantBaseline="central"
-              className="text-[11px] font-semibold select-none pointer-events-none"
-              fill={s.textFill}
-            >
-              {noteToString(s.note)}
-            </text>
-            {s.numeral && (
-              <text
-                data-numeral
-                x={s.degreePos.x}
-                y={s.degreePos.y}
-                textAnchor="middle"
-                dominantBaseline="central"
-                className="text-[6px] select-none pointer-events-none"
-                fill={DIST_TEXT_MAJOR[Math.min(s.dist, 3)]}
-                fillOpacity={0.53}
-              >
-                {s.numeral}
-              </text>
-            )}
+            {segmentText(s, 'major')}
           </g>
         );
       })}
@@ -361,30 +433,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
               strokeWidth={s.selected ? 2 : 1}
               style={{ transition: 'fill 0.15s, stroke 0.15s' }}
             />
-            <text
-              x={s.mid.x}
-              y={s.mid.y}
-              textAnchor="middle"
-              dominantBaseline="central"
-              className="text-[8px] font-medium select-none pointer-events-none"
-              fill={s.textFill}
-            >
-              {noteToString(s.note)}m
-            </text>
-            {s.numeral && (
-              <text
-                data-numeral
-                x={s.degreePos.x}
-                y={s.degreePos.y}
-                textAnchor="middle"
-                dominantBaseline="central"
-                className="text-[5.5px] select-none pointer-events-none"
-                fill={DIST_TEXT_MINOR[Math.min(s.dist, 3)]}
-                fillOpacity={0.6}
-              >
-                {s.numeral}
-              </text>
-            )}
+            {segmentText(s, 'minor')}
           </g>
         );
       })}
@@ -406,28 +455,33 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
       {hoveredIdx !== null && hoverInfo ? (
         <>
           <text
+            data-testid="cof-hover-name"
             x={CENTER} y={CENTER - 18}
             textAnchor="middle" dominantBaseline="central"
             className="text-[13px] font-bold select-none pointer-events-none"
             fill="var(--text)"
           >
-            {hoveredRing === 'minor' ? hoverInfo.minor : hoverInfo.major}
+            {hoverInfo.name}
           </text>
+          {hoverInfo.distLabel && (
+            <text
+              data-testid="cof-hover-dist"
+              x={CENTER} y={CENTER - 2}
+              textAnchor="middle" dominantBaseline="central"
+              className="text-[7px] select-none pointer-events-none"
+              fill={hoverInfo.dist <= 2 ? 'var(--text-muted)' : 'var(--text-dim)'}
+            >
+              {hoverInfo.distLabel}
+            </text>
+          )}
           <text
-            x={CENTER} y={CENTER - 2}
-            textAnchor="middle" dominantBaseline="central"
-            className="text-[7px] select-none pointer-events-none"
-            fill={hoverInfo.dist <= 2 ? 'var(--text-muted)' : 'var(--text-dim)'}
-          >
-            {hoverInfo.distLabel}
-          </text>
-          <text
+            data-testid="cof-hover-sig"
             x={CENTER} y={CENTER + 12}
             textAnchor="middle" dominantBaseline="central"
             className="text-[7px] select-none pointer-events-none"
-            fill="var(--border-light)"
+            fill="var(--text-muted)"
           >
-            {hoverInfo.keySig || 'no ♯/♭'} · {hoveredRing === 'minor' ? `rel: ${hoverInfo.major}` : `rel: ${hoverInfo.minor}`}
+            {hoverInfo.sig} · {hoverInfo.relative}
           </text>
         </>
       ) : (
@@ -452,15 +506,25 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
               {scaleLine}
             </text>
           )}
-          {signature && (
+          {signature ? (
             <text
               data-testid="cof-centre-sig"
               x={CENTER} y={CENTER + (scaleLine ? 14 : 10)}
               textAnchor="middle" dominantBaseline="central"
               className="text-[8px] select-none"
-              fill="var(--text-dim)"
+              fill="var(--text-muted)"
             >
-              {formatKeySignature(signature)}
+              {formatKeySignature(signature, t('circle.noAccidentals'))}
+            </text>
+          ) : (
+            <text
+              data-testid="cof-centre-nosig"
+              x={CENTER} y={CENTER + 14}
+              textAnchor="middle" dominantBaseline="central"
+              className="text-[6.5px] select-none"
+              fill="var(--text-muted)"
+            >
+              {t('circle.noStandardSignature')}
             </text>
           )}
         </>

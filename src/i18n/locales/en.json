@@ -159,6 +159,19 @@
     "submediant": "Submediant",
     "leading": "Leading"
   },
+  "circle": {
+    "currentKey": "Current key",
+    "parentKey": "Parent key",
+    "noAccidentals": "no \u266f/\u266d",
+    "noStandardSignature": "No standard key signature",
+    "relative": "rel: {{key}}",
+    "distance1": "Closely related \u00b7 6 shared notes",
+    "distance2": "Related \u00b7 5 shared notes",
+    "distance3": "4 shared notes",
+    "distance4": "3 shared notes",
+    "distance5": "2 shared notes",
+    "distance6": "Tritone \u00b7 2 shared notes"
+  },
   "keySelector": {
     "root": "Root",
     "scale": "Scale",

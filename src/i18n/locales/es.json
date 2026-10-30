@@ -159,6 +159,19 @@
     "submediant": "Submediante",
     "leading": "Sensible"
   },
+  "circle": {
+    "currentKey": "Tonalidad actual",
+    "parentKey": "Tonalidad madre",
+    "noAccidentals": "sin \u266f/\u266d",
+    "noStandardSignature": "Sin armadura est\u00e1ndar",
+    "relative": "rel.: {{key}}",
+    "distance1": "Muy cercana \u00b7 6 notas en com\u00fan",
+    "distance2": "Cercana \u00b7 5 notas en com\u00fan",
+    "distance3": "4 notas en com\u00fan",
+    "distance4": "3 notas en com\u00fan",
+    "distance5": "2 notas en com\u00fan",
+    "distance6": "Tritono \u00b7 2 notas en com\u00fan"
+  },
   "keySelector": {
     "root": "Fundamental",
     "scale": "Escala",
@@ -552,7 +565,7 @@
     },
     "inversion": {
       "root": "Fund.",
-      "nth": "Inv {{n}}"
+      "nth": "{{n}}\u00aa Inv"
     },
     "play": "Tocar"
   },

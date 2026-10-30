@@ -31,8 +31,6 @@ export const CIRCLE_MINOR: Note[] = [
   { natural: 'D', accidental: '' },
 ];
 
-export const KEY_SIGNATURES = ['', '1\u266F', '2\u266F', '3\u266F', '4\u266F', '5\u266F', '6\u266F/6\u266D', '5\u266D', '4\u266D', '3\u266D', '2\u266D', '1\u266D'];
-
 export const MINOR_SCALES: ScaleType[] = ['natural_minor', 'harmonic_minor', 'melodic_minor'];
 export const MINOR_SCALE_LABELS: Record<string, string> = {
   natural_minor: 'Natural',
@@ -77,8 +75,9 @@ export const DIST_STROKE_MAJOR = [
   'var(--border-subtle)',
   'var(--border-subtle)',
 ];
+// Index 0 sits on the solid accent: --on-accent keeps it ≥ 4.5:1 in both themes.
 export const DIST_TEXT_MAJOR = [
-  'var(--bg)', 'var(--text)', 'var(--text-muted)', 'var(--text-muted)', 'var(--text-dim)', 'var(--border-light)', 'var(--border)',
+  'var(--on-accent)', 'var(--text)', 'var(--text-muted)', 'var(--text-muted)', 'var(--text-dim)', 'var(--border-light)', 'var(--border)',
 ];
 
 // Minor ring — slightly subtler
@@ -101,15 +100,5 @@ export const DIST_STROKE_MINOR = [
   'var(--card)',
 ];
 export const DIST_TEXT_MINOR = [
-  'var(--bg)', 'var(--text-muted)', 'var(--text-muted)', 'var(--text-dim)', 'var(--border-light)', 'var(--border)', 'var(--border)',
-];
-
-export const DISTANCE_LABELS = [
-  'Current key',
-  'Closely related · 6 shared notes',
-  'Related · 5 shared notes',
-  '4 shared notes',
-  '3 shared notes',
-  '2 shared notes',
-  'Tritone · 2 shared notes',
+  'var(--on-accent)', 'var(--text-muted)', 'var(--text-muted)', 'var(--text-dim)', 'var(--border-light)', 'var(--border)', 'var(--border)',
 ];
