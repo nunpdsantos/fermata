@@ -100,7 +100,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Dominantes Suspensas: 7sus4',
           explanation:
-            'O acorde 7sus4 substitui a terça por uma quarta num acorde de sétima dominante, criando um som aberto e não resolvido. C7sus4 contém C-F-G-Bb — sem Mi, portanto sem identidade maior/menor. No jazz, o 7sus4 funciona como voicing pré-resolução: a quarta suspensa resolve para a terça, e depois o acorde inteiro resolve para I. O 7sus4 também serve como sonoridade modal de pendor dórico: um acorde 9sus construído uma quarta perfeita acima (uma quinta abaixo) da fundamental do acorde ii — ou seja, sobre o V — funde ii e V num só som: G9sus4 (G-C-D-F-A) é Dm7 sobre um baixo de G (Dm7/G), muitas vezes escrito F/G, e pode substituir Dm7-G7. O sus2 funciona de forma semelhante, substituindo a terça por uma segunda para uma qualidade brilhante e aberta.',
+            'O acorde 7sus4 substitui a terça por uma quarta num acorde de sétima dominante, criando um som aberto e não resolvido. C7sus4 contém C-F-G-Bb — sem E, portanto sem identidade maior/menor. No jazz, o 7sus4 funciona como voicing pré-resolução: a quarta suspensa resolve para a terça, e depois o acorde inteiro resolve para I. O 7sus4 também serve como sonoridade modal de pendor dórico: um acorde 9sus construído uma quarta perfeita acima (uma quinta abaixo) da fundamental do acorde ii — ou seja, sobre o V — funde ii e V num só som: G9sus4 (G-C-D-F-A) é Dm7 sobre um baixo de G (Dm7/G), muitas vezes escrito F/G, e pode substituir Dm7-G7. O sus2 funciona de forma semelhante, substituindo a terça por uma segunda para uma qualidade brilhante e aberta.',
           tryThisLabel: 'Ouve G7sus4 — dominante suspensa, sem terça',
         },
       ],
@@ -194,7 +194,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'O Dominante da Porta de Trás',
           explanation:
-            'O dominante da porta de trás (bVII7-I) aborda a tónica a partir de um tom abaixo em vez de uma quinta acima. Em Dó: Bb7-Cmaj7. A terça de Bb7 (Ré) resolve para cima para a terça de Cmaj7 (Mi), e a sétima de Bb7 (Láb) resolve para baixo para a quinta de Cmaj7 (Sol). Isto cria uma resolução surpreendente e quente que evita a cadência V7-I esperada. Comum em standards de jazz e bossa nova, o dominante da porta de trás entende-se melhor como um empréstimo do menor paralelo — é o dominante de bIII (Mib) que chega, em vez disso, a I. As suas notas-guia (Ré e Láb) também existem no dominante alterado da tonalidade (G7b9), e é por isso que Bb7 puxa tão convincentemente para C: D sobe um tom para E, e Ab desce meio-tom para G, como sensível superior.',
+            'O dominante da porta de trás (bVII7-I) aborda a tónica a partir de um tom abaixo em vez de uma quinta acima. Em C: Bb7-Cmaj7. A terça de Bb7 (D) resolve para cima para a terça de Cmaj7 (E), e a sétima de Bb7 (Ab) resolve para baixo para a quinta de Cmaj7 (G). Isto cria uma resolução surpreendente e quente que evita a cadência V7-I esperada. Comum em standards de jazz e bossa nova, o dominante da porta de trás entende-se melhor como um empréstimo do menor paralelo — é o dominante de bIII (Eb) que chega, em vez disso, a I. As suas notas-guia (D e Ab) também existem no dominante alterado da tonalidade (G7b9), e é por isso que Bb7 puxa tão convincentemente para C: D sobe um tom para E, e Ab desce meio-tom para G, como sensível superior.',
           tryThisLabel: 'Ouve Bb7 — o dominante da porta de trás em Dó',
         },
       ],
