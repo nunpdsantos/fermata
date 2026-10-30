@@ -206,8 +206,43 @@ export function LabelToolbar({
               </span>
             </>
           )}
+          <PositionLegend />
         </>
       )}
     </div>
+  );
+}
+
+/** What the two dot marks mean (review #3): same marks as FretCell draws. */
+function PositionLegend() {
+  const { t } = useTranslation();
+  const swatch: React.CSSProperties = {
+    display: 'inline-block',
+    width: 12,
+    height: 12,
+    borderRadius: '50%',
+    verticalAlign: 'middle',
+    position: 'relative',
+    backgroundColor: 'var(--border)',
+  };
+  return (
+    <span
+      data-testid="position-legend"
+      className="inline-flex items-center gap-3 flex-wrap"
+      style={{ fontSize: CHIP_TEXT_PX - 1, color: 'var(--text-muted)' }}
+    >
+      <span className="inline-flex items-center gap-1">
+        <span data-legend="stretch" aria-hidden="true" style={{ ...swatch, outline: '2px dashed var(--text)', outlineOffset: 1 }} />
+        {t('fretboard.legendStretch')}
+      </span>
+      <span className="inline-flex items-center gap-1">
+        <span data-legend="edited" aria-hidden="true" style={swatch}>
+          <span
+            style={{ position: 'absolute', width: 6, height: 6, top: -1, right: -1, borderRadius: '50%', backgroundColor: 'var(--text)', border: '1px solid var(--bg)' }}
+          />
+        </span>
+        {t('fretboard.legendEdited')}
+      </span>
+    </span>
   );
 }

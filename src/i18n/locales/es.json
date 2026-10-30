@@ -500,6 +500,8 @@
     "openString": "cuerda al aire",
     "stretch": "extensi\u00f3n",
     "yourFingering": "tu digitaci\u00f3n",
+    "legendStretch": "anillo discontinuo: extensi\u00f3n fuera de la ventana de 4 trastes",
+    "legendEdited": "punto en la esquina: tu digitaci\u00f3n",
     "chordOpen": "Abierto",
     "chordFret": "Traste {{fret}}",
     "chordShapesStandardOnly": "Las formas de acordes solo existen para la afinaci\u00f3n est\u00e1ndar. Se muestran las notas del acorde en todo el m\u00e1stil.",

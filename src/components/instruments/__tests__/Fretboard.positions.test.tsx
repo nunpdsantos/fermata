@@ -247,6 +247,21 @@ describe('dot labels: finger / degree / note (W10-04)', () => {
   });
 });
 
+describe('legend (review #3)', () => {
+  it('position view explains the dashed ring and the corner mark; the whole neck does not show it', async () => {
+    await renderFretboard();
+    fireEvent.click(chip('V'));
+    const legend = screen.getByTestId('position-legend');
+    expect(legend.textContent).toContain('fretboard.legendStretch');
+    expect(legend.textContent).toContain('fretboard.legendEdited');
+    // The swatches use the same marks as the dots.
+    expect(legend.querySelector('[data-legend="stretch"]')).not.toBeNull();
+    expect(legend.querySelector('[data-legend="edited"]')).not.toBeNull();
+    fireEvent.click(chip('fretboard.all'));
+    expect(screen.queryByTestId('position-legend')).toBeNull();
+  });
+});
+
 describe('fingering override (W10-05)', () => {
   it('edit mode: tapping a dot cycles its finger, stores it, and Reset restores the suggestion', async () => {
     const { container } = await renderFretboard();

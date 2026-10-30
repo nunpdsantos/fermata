@@ -500,6 +500,8 @@
     "openString": "corda solta",
     "stretch": "extensão",
     "yourFingering": "a tua dedilhação",
+    "legendStretch": "anel tracejado: extensão fora da janela de 4 trastes",
+    "legendEdited": "ponto no canto: a tua dedilhação",
     "chordOpen": "Aberto",
     "chordFret": "Traste {{fret}}",
     "chordShapesStandardOnly": "As formas de acordes só existem para a afinação padrão. Mostram-se as notas do acorde em todo o braço.",
