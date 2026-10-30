@@ -26,7 +26,7 @@ import type { OverrideFinger } from '../../state/fingeringStore.ts';
 import { useIsMobile } from '../../hooks/useMediaQuery.ts';
 import { useDragScroll } from '../../hooks/useDragScroll.ts';
 import { ScrollStrip } from './ScrollStrip.tsx';
-import { FULL_FRETS, CHORD_FRET_WINDOW, FRET_MARKERS, DOUBLE_MARKERS, CHIP_CLASS, chipStyle, CHIP_TEXT_PX, ACCENT_FILL, ON_ACCENT_FILL } from './fretboardConstants.ts';
+import { FULL_FRETS, CHORD_FRET_WINDOW, FRET_MARKERS, DOUBLE_MARKERS, chipStyle, CHIP_TEXT_PX, ACCENT_FILL, ON_ACCENT_FILL } from './fretboardConstants.ts';
 import type { FretNote, PositionDot } from './fretboardConstants.ts';
 import { ChordShapeSelector, ScalePositionSelector, LabelToolbar } from './FretboardPositionSelector.tsx';
 import { FretboardString } from './FretboardString.tsx';
@@ -587,44 +587,24 @@ export function Fretboard() {
             />
           )}
 
-          {/* Tuning selector — native <select> on mobile, chip row on desktop */}
-          {mobile ? (
-            !isStandardTuning ? (
-              <div className="flex items-center gap-1.5">
-                <span style={{ fontSize: CHIP_TEXT_PX, color: 'var(--text-muted)' }}>{t('fretboard.tuning')}</span>
-                <select
-                  value={guitarTuningId}
-                  onChange={(e) => setGuitarTuningId(e.target.value)}
-                  className="rounded appearance-none cursor-pointer bg-transparent"
-                  style={chipStyle(false)}
-                  aria-label={t('fretboard.tuningLabel')}
-                >
-                  {GUITAR_TUNINGS.map((tn) => (
-                    <option key={tn.id} value={tn.id}>{tn.shortName}</option>
-                  ))}
-                </select>
-              </div>
-            ) : null
-          ) : (
-            <div role="radiogroup" aria-label={t('fretboard.tuningLabel')} className="flex items-center gap-1 flex-wrap">
-              <span className="mr-0.5" style={{ fontSize: CHIP_TEXT_PX, color: 'var(--text-muted)' }}>{t('fretboard.tuning')}</span>
-              {GUITAR_TUNINGS.map((tn) => {
-                const isActive = tuning.id === tn.id;
-                return (
-                  <button
-                    key={tn.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={isActive}
-                    onClick={() => setGuitarTuningId(tn.id)}
-                    className={CHIP_CLASS}
-                    style={chipStyle(isActive)}
-                  >
-                    {tn.shortName}
-                  </button>
-                );
-              })}
-            </div>
+          {/* Tuning selector — a compact native <select> (one control, so the
+              toolbar stays short; review B1). On phones it only appears once a
+              non-standard tuning is in use, as before. */}
+          {!(mobile && isStandardTuning) && (
+            <label className="flex items-center gap-1.5">
+              <span style={{ fontSize: CHIP_TEXT_PX, color: 'var(--text-muted)' }}>{t('fretboard.tuning')}</span>
+              <select
+                value={guitarTuningId}
+                onChange={(e) => setGuitarTuningId(e.target.value)}
+                className="rounded cursor-pointer bg-transparent"
+                style={{ ...chipStyle(false), paddingRight: 4 }}
+                aria-label={t('fretboard.tuningLabel')}
+              >
+                {GUITAR_TUNINGS.map((tn) => (
+                  <option key={tn.id} value={tn.id}>{tn.shortName}</option>
+                ))}
+              </select>
+            </label>
           )}
 
           {(chordNotice || tuningGapNotice) && (

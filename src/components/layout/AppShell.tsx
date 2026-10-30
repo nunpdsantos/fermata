@@ -69,7 +69,14 @@ export function AppShell({ children }: AppShellProps) {
           data-tour="play-note"
           role="region"
           aria-label={t('instrument.label', { name: t(`instrument.${instrument}`) })}
-          className="md:h-[260px] md:overflow-y-auto max-md:h-auto max-md:overflow-visible"
+          // The guitar sizes to its content on every width: its position
+          // controls can wrap to several rows, and a fixed 260 px dock hid the
+          // high-E string below the fold (review blocker B1, W3).
+          className={
+            instrument === 'guitar'
+              ? 'h-auto overflow-visible'
+              : 'md:h-[260px] md:overflow-y-auto max-md:h-auto max-md:overflow-visible'
+          }
           style={{ backgroundColor: 'var(--bg)', overscrollBehavior: 'contain' }}
         >
           {instrument === 'piano' ? <Piano /> : <Fretboard />}

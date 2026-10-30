@@ -280,21 +280,12 @@ describe('Fretboard accessibility', () => {
     expect(liveRegion.textContent).toBe('');
   });
 
-  it('tuning radio group has proper ARIA roles', async () => {
+  it('tuning selector is a labelled native select with every tuning (compact on desktop, review B1)', async () => {
     await renderFretboard();
-    const radiogroup = screen.getByRole('radiogroup', {
-      name: 'fretboard.tuningLabel',
-    });
-    expect(radiogroup).toBeDefined();
-
-    const radios = within(radiogroup).getAllByRole('radio');
-    expect(radios.length).toBeGreaterThan(0);
-
-    // Standard tuning should be checked
-    const checkedRadio = radios.find(
-      (r) => r.getAttribute('aria-checked') === 'true',
-    );
-    expect(checkedRadio).toBeDefined();
+    const select = screen.getByRole('combobox', { name: 'fretboard.tuningLabel' }) as HTMLSelectElement;
+    expect(select.value).toBe('standard');
+    const options = within(select).getAllByRole('option');
+    expect(options.length).toBe(6);
   });
 });
 
