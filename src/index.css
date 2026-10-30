@@ -59,6 +59,16 @@
   --font-size-2xs--line-height: 1.4;
 }
 
+/* Theme-aware semantic text colours as utilities: text-success, text-danger,
+   text-warning. `inline` keeps the var() reference so the value follows the
+   active theme. These are TEXT strengths (dark on day, light on night) — for
+   tinted fills keep using bg-emerald-500/15 etc. */
+@theme inline {
+  --color-success: var(--success-text);
+  --color-danger: var(--danger-text);
+  --color-warning: var(--warning-text);
+}
+
 /* ─── Spacing + typography tokens ──────────────────────────────── */
 :root {
   /* Spacing (4px base) */
@@ -122,7 +132,16 @@
   --border-subtle: #e0d4ba;
   --text: #2a1f14;
   --text-muted: #6b5436;
-  --text-dim: #8b7551;
+  /* ≥ 4.5:1 on --bg / --card / --card-hover (was #8b7551, 3.15–3.85:1 —
+     audit W0-03). A greyer walnut than --text-muted keeps it secondary. */
+  --text-dim: #6d5c44;
+  /* Semantic TEXT colours (right / wrong / hint / status) — text and icons
+     only; fills keep the Tailwind 500/400 tints. Tailwind emerald/red/amber
+     800: ≥ 4.5:1 on cream, cards and those tints (src/design/__tests__/
+     themeContrast.test.ts). The 300 shades used before read at ~1.2–1.8:1. */
+  --success-text: #006045;
+  --danger-text: #9f0712;
+  --warning-text: #973c00;
   --input-bg: rgba(237, 228, 207, 0.8);
   --scrollbar: #c9b895;
   --scrollbar-hover: #b8a57e;
@@ -160,6 +179,11 @@
   --text: #f1e9d8;
   --text-muted: #c3ad86;
   --text-dim: #8f7c5a;
+  /* Semantic TEXT colours — the Tailwind 300 shades the night theme already
+     used (emerald / red / amber-300), now as tokens. */
+  --success-text: #5ee9b5;
+  --danger-text: #ffa2a2;
+  --warning-text: #ffd230;
   --input-bg: rgba(39, 31, 18, 0.6);
   --scrollbar: #4a3c28;
   --scrollbar-hover: #5f4e34;

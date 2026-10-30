@@ -58,7 +58,7 @@ export function UnitCard({ unit, index, completedCount, accentColor, isComplete,
                   {t('learn.unit', { n: index + 1 })}
                 </span>
                 {isComplete && (
-                  <span className="text-[10px] font-medium text-emerald-400 bg-emerald-400/10 px-1.5 py-0.5 rounded-full">
+                  <span className="text-[10px] font-medium text-success bg-emerald-400/10 px-1.5 py-0.5 rounded-full">
                     {t('status.complete')}
                   </span>
                 )}

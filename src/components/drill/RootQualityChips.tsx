@@ -64,8 +64,8 @@ export function RootQualityChips({
             const showWrong = disabled && isChosen && correctRootAscii !== undefined && normalizeDisplay(r) !== correctRootAscii;
 
             let stateClass = '';
-            if (showCorrect) stateClass = 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300';
-            else if (showWrong) stateClass = 'bg-red-500/15 border-red-500/40 text-red-300';
+            if (showCorrect) stateClass = 'bg-emerald-500/15 border-emerald-500/40 text-success';
+            else if (showWrong) stateClass = 'bg-red-500/15 border-red-500/40 text-danger';
             const neutral = !showCorrect && !showWrong;
             const activeSelect = !disabled && isChosen;
 
@@ -109,7 +109,7 @@ export function RootQualityChips({
             {qualities.map((q) => {
               const showCorrect = disabled && feedback?.correctQuality === q;
               let stateClass = '';
-              if (showCorrect) stateClass = 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300';
+              if (showCorrect) stateClass = 'bg-emerald-500/15 border-emerald-500/40 text-success';
               const neutral = !showCorrect;
 
               return (

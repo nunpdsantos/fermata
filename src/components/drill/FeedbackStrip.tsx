@@ -27,15 +27,18 @@ const TONE_CONTAINER: Record<Tone, string> = {
   wrong: 'bg-red-500/10 border-red-500/25',
   nearMiss: 'bg-amber-500/10 border-amber-500/25',
 };
+// Theme-aware semantic text colours (src/index.css --success/danger/warning-
+// text): dark on the cream day theme, light on night. The fixed Tailwind
+// 300/400 shades read at ~1.2–1.8:1 on cream (audit W0-03).
 const TONE_ICON: Record<Tone, string> = {
-  correct: 'text-emerald-400',
-  wrong: 'text-red-400',
-  nearMiss: 'text-amber-400',
+  correct: 'text-success',
+  wrong: 'text-danger',
+  nearMiss: 'text-warning',
 };
 const TONE_TITLE: Record<Tone, string> = {
-  correct: 'text-emerald-300',
-  wrong: 'text-red-300',
-  nearMiss: 'text-amber-300',
+  correct: 'text-success',
+  wrong: 'text-danger',
+  nearMiss: 'text-warning',
 };
 
 export function FeedbackStrip({

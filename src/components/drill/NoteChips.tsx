@@ -90,11 +90,11 @@ export function NoteChips({
 
           let stateClass = '';
           if (showCorrect) {
-            stateClass = 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300';
+            stateClass = 'bg-emerald-500/15 border-emerald-500/40 text-success';
           } else if (showAmber) {
-            stateClass = 'bg-amber-500/15 border-amber-500/40 text-amber-300';
+            stateClass = 'bg-amber-500/15 border-amber-500/40 text-warning';
           } else if (showWrong) {
-            stateClass = 'bg-red-500/15 border-red-500/40 text-red-300';
+            stateClass = 'bg-red-500/15 border-red-500/40 text-danger';
           }
 
           const neutral = !showCorrect && !showAmber && !showWrong;

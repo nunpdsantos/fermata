@@ -169,7 +169,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 {i18n.t('common.reload')}
               </Button>
               {/* Destructive: erases Learn progress and Drill memory. */}
-              <Button variant="ghost" onClick={this.handleResetAppData}>
+              <Button variant="ghost" onClick={this.handleResetAppData} style={{ color: 'var(--danger-text)' }}>
                 {i18n.t('error.resetAppData')}
               </Button>
             </div>

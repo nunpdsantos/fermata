@@ -173,12 +173,12 @@ export function ModuleView({
               {unit.title}
             </span>
             {isReviewMode && (
-              <span className="text-[10px] font-medium text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-medium text-warning bg-amber-400/10 px-2 py-0.5 rounded-full">
                 {t('review.badge')}
               </span>
             )}
             {!isReviewMode && isModuleCompleted && (
-              <span className="text-[10px] font-medium text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-medium text-success bg-emerald-400/10 px-2 py-0.5 rounded-full">
                 {t('status.completed')}
               </span>
             )}
