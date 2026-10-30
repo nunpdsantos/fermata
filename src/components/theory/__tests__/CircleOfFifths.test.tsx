@@ -165,15 +165,24 @@ describe('W2-03 — no focus steal on mount; keyboard navigation still works', (
 });
 
 describe('W2-06 — circle clicks go through the store actions', () => {
-  it('choosing a key resets the stale position chip and comparison', () => {
-    select('C', 'lydian', { comparisonScale: 'dorian', guitarScalePosition: 3 });
+  it('choosing a key applies exactly what setKey + setScale do', () => {
+    // The store's own rules apply (since W3/D-02 the guitar position persists
+    // across key changes; the comparison scale and chord are cleared). The
+    // circle used to write state directly and skip them.
+    const before = { comparisonScale: 'dorian' as const, guitarScalePosition: 3 as const, selectedChord: null };
+    select('C', 'lydian', before);
+    useAppStore.getState().setKey(toNote('Db'));
+    useAppStore.getState().setScale('major');
+    const viaActions = useAppStore.getState();
+    select('C', 'lydian', before);
     const { container } = render(<CircleOfFifths />);
     fireEvent.click(container.querySelector('g[aria-label="Db major"]')!);
     const s = useAppStore.getState();
     expect(s.selectedKey).toEqual(toNote('Db'));
     expect(s.selectedScale).toBe('major');
-    expect(s.guitarScalePosition).toBeNull();
+    expect(s.guitarScalePosition).toEqual(viaActions.guitarScalePosition);
     expect(s.comparisonScale).toBeNull();
+    expect(s.selectedChord).toBeNull();
   });
 
   it('a minor variant button resets the comparison too', () => {
