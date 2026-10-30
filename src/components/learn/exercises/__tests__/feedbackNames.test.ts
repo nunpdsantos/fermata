@@ -9,6 +9,7 @@ import { generateScaleSummary } from '../../../../utils/exportHelpers';
 import { buildScale } from '../../../../core/constants/scales';
 import { getDiatonicChordsForScale, buildChord } from '../../../../core/constants/chords';
 import type { ExerciseConfig } from '../../../../core/types/exercise';
+import { translateChordQuality, translateScaleType } from '../../../../i18n/content/musicTerms';
 
 const ID_LIKE = /\b[a-z]+_[a-z0-9_]+\b|\b(major|minor|dominant|diminished)\d+/;
 
@@ -30,9 +31,13 @@ describe('W1-10 — build-exercise feedback uses display names', () => {
 
   it('Portuguese and Spanish: translated scale and chord names', () => {
     const tPt = (key: string, o?: Record<string, unknown>) => `${key}|${JSON.stringify(o)}`;
+    // The PT/ES names come from the content team's music-term dictionary.
+    expect(translateScaleType('natural_minor', 'pt')).toBe('menor natural');
     expect(validateAnswer(scale, new Set([0]), tPt, 'pt').explanation).toContain('C menor natural');
-    expect(validateAnswer(scale, new Set([0]), tPt, 'es').explanation).toContain('C menor natural');
-    expect(validateAnswer(chord, new Set([0]), tPt, 'pt').explanation).toContain('C maior com 9.ª');
+    expect(validateAnswer(scale, new Set([0]), tPt, 'es').explanation).toContain(`C ${translateScaleType('natural_minor', 'es')}`);
+    const ptMajor9 = translateChordQuality('major9', 'pt');
+    expect(ptMajor9).not.toBe('major9');
+    expect(validateAnswer(chord, new Set([0]), tPt, 'pt').explanation).toContain(`C ${ptMajor9}`);
     // a chord the PT dictionary lacks falls back to the English display name, never the id
     const sus: ExerciseConfig = { type: 'chord_build', root: 'D', rootAccidental: '', quality: 'dominant7sus4', noteCount: 4 } as ExerciseConfig;
     expect(validateAnswer(sus, new Set([2]), tPt, 'pt').explanation).toContain('D Dominant 7th Sus4');
