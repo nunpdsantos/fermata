@@ -62,7 +62,17 @@ export default defineConfig({
         // shortcut, which must work from a fresh offline install.
         // prng is shared by Drill and the Learn exercise shuffle → its own
         // chunk; it must ride along or the DrillView import fails offline.
-        globPatterns: ['**/*.{css,html,ico,png,svg,woff2}', 'assets/index-*.js', 'assets/i18next-*.js', 'assets/framer-motion-*.js', 'assets/zustand-*.js', 'assets/DrillView-*.js', 'assets/drillStore-*.js', 'assets/prng-*.js', 'assets/workbox-window*.js'],
+        // The lazy Fretboard (+ fingeringStore) and Quick Search (+ its index
+        // and parsers) chunks are part of the shell, so they are precached
+        // too (audit W9-11). `npm run check:sw` fails if a precached file
+        // imports a chunk that is not precached.
+        globPatterns: [
+          '**/*.{css,html,ico,png,svg,woff2}',
+          'assets/index-*.js', 'assets/i18next-*.js', 'assets/framer-motion-*.js', 'assets/zustand-*.js',
+          'assets/DrillView-*.js', 'assets/drillStore-*.js', 'assets/prng-*.js', 'assets/workbox-window*.js',
+          'assets/Fretboard-*.js', 'assets/fingeringStore-*.js',
+          'assets/QuickSearch-*.js', 'assets/moduleIndex-*.js', 'assets/scaleParser-*.js',
+        ],
         globIgnores: [
           '**/vexflow*',
           '**/curriculum[lL]*',

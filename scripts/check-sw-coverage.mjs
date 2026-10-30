@@ -47,4 +47,20 @@ console.log(
 for (const u of uncovered) {
   console.log(`  UNCOVERED ${u} (${fs.statSync(path.join(dist, u)).size} B)`);
 }
-process.exit(uncovered.length ? 1 : 0);
+
+// Precache closure: a precached file's STATIC imports must be precached too,
+// or that file fails offline on a fresh install (the prng chunk had to ride
+// along with Drill for exactly this reason).
+const missingDeps = [];
+for (const entry of precached) {
+  if (!entry.startsWith('assets/') || !entry.endsWith('.js')) continue;
+  const source = fs.readFileSync(path.join(dist, entry), 'utf8');
+  const deps = new Set([...source.matchAll(/(?:from|import)\s*"\.\/([^"]+\.js)"/g)].map((m) => `assets/${m[1]}`));
+  for (const dep of deps) {
+    if (!precached.has(dep)) missingDeps.push(`${entry} → ${dep}`);
+  }
+}
+console.log(`check-sw-coverage: precache closure — ${missingDeps.length} precached file(s) import a chunk that is not precached`);
+for (const d of missingDeps) console.log(`  NOT PRECACHED ${d}`);
+
+process.exit(uncovered.length || missingDeps.length ? 1 : 0);

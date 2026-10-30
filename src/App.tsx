@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import { LazyMotion, MotionConfig, domAnimation, AnimatePresence, m } from 'framer-motion';
 import { AppShell } from './components/layout/AppShell.tsx';
 import { ViewSlot, type ViewLoader } from './components/ViewSlot.tsx';
-import { QuickSearch } from './components/navigation/QuickSearch.tsx';
+import { QuickSearchHost } from './components/navigation/QuickSearchHost.tsx';
 import { PWAPrompts } from './components/layout/PWAPrompts.tsx';
 import { ToastContainer } from './components/layout/Toast.tsx';
 import { useTheme } from './hooks/useTheme.ts';
@@ -74,7 +74,7 @@ function App() {
           </m.div>
         </AnimatePresence>
       </AppShell>
-      <QuickSearch />
+      <QuickSearchHost />
       <PWAPrompts />
       <ToastContainer />
       </MotionConfig>
