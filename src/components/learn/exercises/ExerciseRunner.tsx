@@ -10,7 +10,7 @@ import { ExercisePrompt } from './ExercisePrompt';
 import { ExerciseFeedback } from './ExerciseFeedback';
 import { ChoiceInput } from './inputs/ChoiceInput';
 import { InstrumentInput } from './inputs/InstrumentInput';
-import { playNote, playChord, playScale, resumeAudio } from '../../../core/services/audio';
+import { playNote, playChord, playScale, resumeAudio, stopPlayback } from '../../../core/services/audio';
 import { getSynthConfig } from '../../../services/synthConfig';
 import type { NaturalNote, Accidental, Note, ChordQuality, ScaleType } from '../../../core/types/music';
 import { buildChord, getDiatonicTriads } from '../../../core/constants/chords';
@@ -72,13 +72,50 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
     }
   }, [exercise, t]);
 
-  // Ear training: play audio on mount and provide replay
+  // Ear training: play audio on mount and provide replay.
+  //
+  // The replay lock belongs to ONE exercise (audit W0-04 / F-01 / C-48). It is
+  // held for the stimulus' full scheduled length so a rapid Replay cannot
+  // overlap it (R-01), but it must never outlive its exercise: the previous
+  // item's lock used to make the next item's autoplay return early (silent).
+  // Everything per-exercise — the lock, its release timer, the interval /
+  // progression note timers — is torn down when the exercise changes.
   const playingRef = useRef(false);
+  // Bumped on every exercise change; an in-flight playEarAudio that started
+  // under an older generation must not play or touch the lock.
+  const earGenRef = useRef(0);
+  const earTimersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+  const scheduleEar = useCallback((fn: () => void, ms: number) => {
+    const id = setTimeout(() => {
+      earTimersRef.current.delete(id);
+      fn();
+    }, ms);
+    earTimersRef.current.add(id);
+  }, []);
+
+  useEffect(() => {
+    const timers = earTimersRef.current;
+    return () => {
+      // Exercise changed (or the runner unmounted): cancel this exercise's
+      // pending notes and lock release, and stop anything still scheduled.
+      earGenRef.current += 1;
+      for (const id of timers) clearTimeout(id);
+      timers.clear();
+      if (playingRef.current) {
+        playingRef.current = false;
+        stopPlayback();
+      }
+    };
+  }, [exercise]);
+
   const playEarAudio = useCallback(async () => {
     if (!exercise || exercise.config.type !== 'ear_training' || playingRef.current) return;
+    const gen = earGenRef.current;
     playingRef.current = true;
     try {
       await resumeAudio();
+      // The exercise changed while audio was resuming — don't play its stale stimulus.
+      if (gen !== earGenRef.current) return;
       const cfg = exercise.config as EarTrainingConfig;
       const pianoConfig = getSynthConfig('piano');
       if (cfg.mode === 'note' && cfg.note) {
@@ -104,7 +141,7 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
           playNote(targetNote, targetOct, 1.2, pianoConfig);
         } else {
           playNote(rootNote, oct, 0.6, pianoConfig);
-          setTimeout(() => playNote(targetNote, targetOct, 0.6, pianoConfig), 700);
+          scheduleEar(() => playNote(targetNote, targetOct, 0.6, pianoConfig), 700);
         }
       } else if (cfg.mode === 'chord' && cfg.chordRoot && cfg.quality) {
         const root: Note = { natural: cfg.chordRoot as NaturalNote, accidental: (cfg.chordRootAccidental ?? '') as Accidental };
@@ -120,16 +157,20 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
         cfg.progression.forEach((numeral, i) => {
           const entry = triads.find((t2) => t2.numeral.replace('°', '') === numeral.replace('°', ''));
           if (!entry) return;
-          setTimeout(() => playChord(entry.chord.notes, 4, 0.85, pianoConfig), i * 950);
+          scheduleEar(() => playChord(entry.chord.notes, 4, 0.85, pianoConfig), i * 950);
         });
       }
     } finally {
       // Hold the lock for the FULL scheduled playback (mode-dependent) so a
-      // rapid Replay cannot overlap the stimulus (audit R-01).
-      const cfg = exercise.config as EarTrainingConfig;
-      setTimeout(() => { playingRef.current = false; }, earPlaybackLockMs(cfg));
+      // rapid Replay cannot overlap the stimulus (audit R-01). The release
+      // timer is this exercise's: an exercise change clears it and resets the
+      // lock itself, so a stale call leaves the lock alone.
+      if (gen === earGenRef.current) {
+        const cfg = exercise.config as EarTrainingConfig;
+        scheduleEar(() => { playingRef.current = false; }, earPlaybackLockMs(cfg));
+      }
     }
-  }, [exercise]);
+  }, [exercise, scheduleEar]);
 
   // Auto-play ear training audio when exercise changes
   useEffect(() => {

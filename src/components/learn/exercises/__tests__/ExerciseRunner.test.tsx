@@ -16,10 +16,11 @@ vi.mock('../../../../core/services/audio', async (importOriginal) => {
     playNote: vi.fn(),
     playChord: vi.fn(),
     playScale: vi.fn(),
+    stopPlayback: vi.fn(),
   };
 });
 
-import { playNote, playScale } from '../../../../core/services/audio';
+import { playNote, playScale, playChord, stopPlayback } from '../../../../core/services/audio';
 
 afterEach(() => {
   cleanup();
@@ -217,5 +218,127 @@ describe('ExerciseRunner ear-training replay lock (R-01)', () => {
       await Promise.resolve();
     });
     expect(playScale).toHaveBeenCalledTimes(2);
+  });
+});
+
+// ─── Audit W0-04 (F-01 / C-48) ────────────────────────────────────────────────
+// One replay lock for the whole runner, held ~3.3 s (scale) / ~4.2 s
+// (progression), outlived the exercise: answering + continuing while the
+// stimulus still sounded made the NEXT ear item start silent (its autoplay
+// returned early on the stale lock). The old progression's chord timeouts
+// also kept firing over the new item.
+
+const scaleEx = (id: string, root: 'C' | 'D'): ExerciseDefinition => ({
+  ...earScaleExercise,
+  id,
+  config: { ...earScaleExercise.config, root } as ExerciseDefinition['config'],
+});
+
+const progEx = (id: string, root: 'C' | 'G'): ExerciseDefinition => ({
+  id,
+  type: 'ear_training',
+  prompt: 'Identify the progression',
+  points: 1,
+  config: {
+    type: 'ear_training',
+    mode: 'progression',
+    root,
+    rootAccidental: '',
+    progression: ['I', 'IV', 'V', 'I'],
+    choices: [
+      { label: 'I - IV - V - I', correct: true },
+      { label: 'ii - V - I', correct: false },
+    ],
+  },
+});
+
+type NoteArg = { natural: string; accidental: string };
+const firstNoteOf = (call: unknown[]) => (call[0] as NoteArg[])[0];
+
+describe('ExerciseRunner ear-training: the next item always autoplays (W0-04)', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  const tick = (ms: number) =>
+    act(async () => {
+      await vi.advanceTimersByTimeAsync(ms);
+    });
+
+  function answerAndContinue(label: string) {
+    fireEvent.click(screen.getByText(label));
+    fireEvent.click(screen.getByText('Submit'));
+    fireEvent.click(screen.getByText('Continue'));
+  }
+
+  for (const at of [500, 1500, 3000]) {
+    it(`scale: continuing ${at} ms into the stimulus still autoplays the next scale`, async () => {
+      renderRunner([scaleEx('s1', 'C'), scaleEx('s2', 'D')]);
+      await tick(300); // first autoplay
+      expect(playScale).toHaveBeenCalledTimes(1);
+      const firstRoot = firstNoteOf(vi.mocked(playScale).mock.calls[0]);
+
+      await tick(at);
+      answerAndContinue('Major');
+      await tick(400); // next item's autoplay fires 300 ms after it appears
+
+      expect(playScale).toHaveBeenCalledTimes(2);
+      expect(firstNoteOf(vi.mocked(playScale).mock.calls[1])).not.toEqual(firstRoot);
+    });
+
+    it(`progression: continuing ${at} ms in autoplays the next one and cancels the old chords`, async () => {
+      renderRunner([progEx('p1', 'C'), progEx('p2', 'G')]);
+      await tick(300 + at);
+      const firstRoot = firstNoteOf(vi.mocked(playChord).mock.calls[0]);
+      // Chords of p1 already sounded (all 4 by 3.3 s; its last one still rings
+      // and the lock would hold to ~4.45 s).
+      const before = vi.mocked(playChord).mock.calls.length;
+
+      answerAndContinue('I - IV - V - I');
+      await tick(6000);
+
+      const after = vi.mocked(playChord).mock.calls.slice(before);
+      // Exactly the next progression's four chords — none of the old ones.
+      expect(after).toHaveLength(4);
+      expect(firstNoteOf(after[0])).not.toEqual(firstRoot);
+      // Scheduled playback of the abandoned stimulus is stopped.
+      expect(stopPlayback).toHaveBeenCalled();
+    });
+  }
+
+  it('control: continuing after the stimulus has finished autoplays as before', async () => {
+    renderRunner([scaleEx('s1', 'C'), scaleEx('s2', 'D')]);
+    await tick(300 + 5000);
+    answerAndContinue('Major');
+    await tick(400);
+    expect(playScale).toHaveBeenCalledTimes(2);
+    // Nothing was in flight, so nothing needed stopping.
+    expect(stopPlayback).not.toHaveBeenCalled();
+  });
+
+  it('Replay during the NEW item\'s stimulus still cannot overlap it (R-01 intent kept)', async () => {
+    renderRunner([scaleEx('s1', 'C'), scaleEx('s2', 'D')]);
+    await tick(300 + 500);
+    answerAndContinue('Major');
+    await tick(400);
+    expect(playScale).toHaveBeenCalledTimes(2);
+
+    const replay = screen.getByRole('button', { name: 'Replay audio' });
+    await tick(1000);
+    await act(async () => {
+      fireEvent.click(replay);
+      await Promise.resolve();
+    });
+    expect(playScale).toHaveBeenCalledTimes(2); // still sounding → blocked
+
+    await tick(3000); // the new scale's own window has ended
+    await act(async () => {
+      fireEvent.click(replay);
+      await Promise.resolve();
+    });
+    expect(playScale).toHaveBeenCalledTimes(3);
   });
 });
