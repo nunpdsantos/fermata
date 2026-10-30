@@ -177,7 +177,14 @@ function checkPosition(
     const inWindow = note.fret >= Math.max(lo, 1) && note.fret <= hi;
     if (inWindow) {
       const expected = n === 0 ? note.fret : note.fret - n + 1;
-      if (note.finger !== expected) bad(`fret ${note.fret} finger ${note.finger}, expected ${expected}`);
+      // Documented spread (review #5): on a string that carries a stretch the
+      // hand spreads so no finger plays two frets — notes below an upward
+      // stretch may take a LOWER finger than their home one, notes above a
+      // downward stretch a HIGHER one (order is checked in its own test).
+      const stretchHere = pos.notes.find((x) => x.stringIndex === note.stringIndex && x.isStretch);
+      const spreadUp = stretchHere?.fret === up && note.finger >= 1 && note.finger < expected;
+      const spreadDown = stretchHere !== undefined && down !== null && stretchHere.fret === down && note.finger > expected && note.finger <= 4;
+      if (note.finger !== expected && !spreadUp && !spreadDown) bad(`fret ${note.fret} finger ${note.finger}, expected ${expected}`);
       if (note.isStretch) bad(`in-window fret ${note.fret} marked as stretch`);
     } else if (note.fret === up) {
       if (!note.isStretch) bad(`fret ${note.fret} outside window not marked as stretch`);
@@ -343,25 +350,45 @@ describe('specific positions (hand-checked)', () => {
     // frets of one string. The upward one is clean.
     const c5 = getGuitarPosition(toNote('C'), 'major', 5, std);
     expect(c5.stretch).toBe('up');
-    // Count same-finger-twice-on-a-string across all diatonic modes in
-    // standard tuning. Diatonic scales never have two semitones in a row, so
-    // wherever BOTH stretch sides exist a clean one is chosen. Documented
-    // exception: positions I and XII have only one side (fret 0 is an open
-    // string, fret 16 is off the board), e.g. D major in I needs C# and the
-    // 4th finger at frets 4 and 5 of the 4th string.
-    const conflictsAt = new Map<number, number>();
-    for (const scaleType of ['major', 'natural_minor', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'locrian'] as ScaleType[]) {
-      for (const r of ROOTS) {
-        for (const n of POSITION_NUMBERS) {
-          const pos = getGuitarPosition(toNote(r), scaleType, n, std);
-          for (let s = 0; s < 6; s++) {
-            const fingers = pos.notes.filter((x) => x.stringIndex === s && x.finger > 0).map((x) => x.finger);
-            if (new Set(fingers).size !== fingers.length) conflictsAt.set(n, (conflictsAt.get(n) ?? 0) + 1);
+    expect(c5.notes.filter((x) => x.stringIndex === 2).map((x) => [x.fret, x.finger])).toEqual([[5, 1], [7, 3], [9, 4]]);
+  });
+
+  it('one finger never plays two frets of a string, and fingers rise with the fret (review #5)', () => {
+    // Before (standard tuning): same finger on two frets, or out of order, in
+    // 56/156 harmonic-minor and 34/156 melodic-minor positions, 10/156 major
+    // (I and XII), and 512/5772 positions over all scales — e.g. the 4th
+    // finger at frets 8 and 9 of one string. Now none, for every scale but
+    // the chromatic, in every tuning. Documented exception: the chromatic
+    // scale puts five notes on a string, which four fingers cannot cover
+    // without one of them playing two frets.
+    const SCALES = SCALE_TYPES.filter((t) => t !== 'chromatic');
+    const bad: string[] = [];
+    let positions = 0;
+    for (const tuning of GUITAR_TUNINGS) {
+      for (const scaleType of SCALES) {
+        for (const r of ROOTS) {
+          for (const n of POSITION_NUMBERS) {
+            positions++;
+            const pos = getGuitarPosition(toNote(r), scaleType, n, tuning);
+            for (let s = 0; s < 6; s++) {
+              const row = pos.notes.filter((x) => x.stringIndex === s && x.finger > 0).sort((a, b) => a.fret - b.fret);
+              for (let i = 1; i < row.length; i++) {
+                if (row[i].finger <= row[i - 1].finger) bad.push(`${tuning.id} ${r} ${scaleType} ${n}: s${6 - s} ${row[i - 1].fret}/${row[i - 1].finger} ${row[i].fret}/${row[i].finger}`);
+                // No reach wider than one extra fret between neighbouring fingers.
+                if ((row[i].fret - row[i - 1].fret) - (row[i].finger - row[i - 1].finger) > 1) bad.push(`${tuning.id} ${r} ${scaleType} ${n}: wide reach on s${6 - s}`);
+              }
+            }
           }
         }
       }
     }
-    expect([...conflictsAt.keys()].sort((a, b) => a - b)).toEqual([1, 12]);
+    expect(positions).toBe(6 * SCALES.length * 12 * 13);
+    expect(bad.slice(0, 10)).toEqual([]);
+  });
+
+  it('A harmonic minor in V: the G# is a 4th-finger stretch on the B string, F under the 2nd finger, nothing doubled', () => {
+    const pos = getGuitarPosition(toNote('A'), 'harmonic_minor', 5, std);
+    expect(pos.notes.filter((x) => x.stringIndex === 4).map((x) => [x.fret, x.finger])).toEqual([[5, 1], [6, 2], [9, 4]]);
   });
 
   it('position XII cannot stretch past the 15th fret, so it stretches down', () => {

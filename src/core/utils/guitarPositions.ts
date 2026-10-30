@@ -185,19 +185,62 @@ export function getGuitarPosition(
   };
   const up = fillsFor(upFret);
   const down = fillsFor(downFret);
-  // A stretch whose string already plays the neighbouring window fret makes
-  // one finger play two frets on that string (4th finger at N+3 and N+4, or
-  // 1st at N and N−1). Prefer the side with fewer of those.
-  const conflicts = (fills: Candidate[], neighbourFret: number) =>
-    fills.filter((c) => degrees.has((openMidi[c.stringIndex] + neighbourFret) % 12)).length;
+  // A stretch next to a window-edge note on the SAME string would make one
+  // finger play two frets (4th finger at N+3 and N+4, or 1st at N and N−1).
+  // The hand spreads instead: the edge note takes the free middle finger (3,
+  // or 2) — possible when the fret between is not played on that string
+  // (review #5). Choose the side with more holes filled, then fewer
+  // unresolvable doublings, then fewer spreads, then upward.
+  const plays = (s: number, f: number) => {
+    const c = byMidi.get(openMidi[s] + f);
+    return c !== undefined && c.stringIndex === s && c.fret === f;
+  };
+  const assess = (fills: Candidate[], edgeFret: number, middleFret: number) => {
+    let unresolved = 0;
+    let spreads = 0;
+    for (const c of fills) {
+      if (!plays(c.stringIndex, edgeFret)) continue;
+      if (plays(c.stringIndex, middleFret)) unresolved++;
+      else spreads++;
+    }
+    return { unresolved, spreads };
+  };
   let stretch: GuitarPosition['stretch'] = 'none';
   let chosen: Candidate[] = [];
   if (up.length > 0 || down.length > 0) {
-    const upScore = [up.length, -conflicts(up, upFret - 1)];
-    const downScore = [down.length, -conflicts(down, (downFret ?? 0) + 1)];
-    const upWins = upScore[0] !== downScore[0] ? upScore[0] > downScore[0] : upScore[1] >= downScore[1];
+    const u = assess(up, upFret - 1, upFret - 2);
+    const d = downFret === null ? { unresolved: 0, spreads: 0 } : assess(down, downFret + 1, downFret + 2);
+    const upWins =
+      up.length !== down.length ? up.length > down.length
+      : u.unresolved !== d.unresolved ? u.unresolved < d.unresolved
+      : u.spreads <= d.spreads;
     if (upWins) { stretch = 'up'; chosen = up; }
     else { stretch = 'down'; chosen = down; }
+  }
+  // Spread the hand on a stretched string so fingers rise with the fret and
+  // none plays two frets: walking away from the stretch, each note takes the
+  // lower of its home finger and one below its neighbour (upward stretch), or
+  // the higher of its home finger and one above (downward). Usually this just
+  // moves the window-edge note to the middle finger; with three semitones in
+  // a row (bebop, blues) it shifts more. Skipped when a string would need a
+  // fifth finger (the chromatic scale's five notes on one string).
+  const homeFinger = (f: number) => (n === OPEN_POSITION ? f : f - n + 1);
+  const spread = new Map<number, LeftHandFinger>(); // midi → finger
+  for (const c of chosen) {
+    const frets: number[] = [];
+    for (let f = Math.max(lo, 1); f <= hi; f++) if (plays(c.stringIndex, f)) frets.push(f);
+    frets.push(c.fret);
+    frets.sort((a, b) => a - b);
+    const fingers = frets.map((f) => (f === c.fret ? (stretch === 'up' ? 4 : 1) : homeFinger(f)));
+    if (stretch === 'up') {
+      for (let i = fingers.length - 2; i >= 0; i--) fingers[i] = Math.min(fingers[i], fingers[i + 1] - 1);
+    } else {
+      for (let i = 1; i < fingers.length; i++) fingers[i] = Math.max(fingers[i], fingers[i - 1] + 1);
+    }
+    if (fingers.some((f) => f < 1 || f > 4)) continue;
+    frets.forEach((f, i) => {
+      if (f !== c.fret && fingers[i] !== homeFinger(f)) spread.set(openMidi[c.stringIndex] + f, fingers[i] as LeftHandFinger);
+    });
   }
   for (const c of chosen) byMidi.set(openMidi[c.stringIndex] + c.fret, c);
   const skippedMidi = holes.filter((m) => !byMidi.has(m));
@@ -210,7 +253,7 @@ export function getGuitarPosition(
     let finger: LeftHandFinger;
     if (c.fret === 0) finger = 0;
     else if (c.isStretch) finger = c.fret === downFret ? 1 : 4;
-    else finger = (n === OPEN_POSITION ? c.fret : c.fret - n + 1) as LeftHandFinger;
+    else finger = spread.get(midi) ?? ((n === OPEN_POSITION ? c.fret : c.fret - n + 1) as LeftHandFinger);
     notes.push({
       stringIndex: c.stringIndex,
       fret: c.fret,
