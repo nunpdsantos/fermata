@@ -112,7 +112,8 @@ describe('W1-05 — buildScale spells every scale type on every selectable root 
     expect(s('C#', 'whole_tone')).toBe('C# D# E# G A B');
     expect(s('C', 'chromatic')).toBe('C C# D D# E F F# G G# A A# B');
     expect(s('F#', 'chromatic')).toBe('F# G G# A A# B C C# D D# E E#');
-    expect(s('C', 'bebop_major')).toBe('C D E F G G# A B');
+    expect(s('C', 'bebop_major')).toBe('C D E F G Ab A B');
+    expect(s('B', 'bebop_major')).toBe('B C# D# E F# G G# A#'); // no F𝄪
     // A-17: "Eb dim H-W has four double flats" — now none.
     expect(s('Eb', 'diminished_half_whole')).toBe('Eb Fb Gb G A Bb C Db');
   });

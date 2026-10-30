@@ -85,10 +85,10 @@ export const ORACLE_SCALES: Record<string, OracleScale> = {
   in_sen: fromDegrees(['1', 'b2', '4', '5', 'b7']),
   iwato: fromDegrees(['1', 'b2', '4', 'b5', 'b7']),
   egyptian: fromDegrees(['1', '2', '4', '5', 'b7']),
-  // Bebop (parent mode + one chromatic passing tone; bebop major's is #5 —
-  // Wikipedia "Bebop scale", accessed 2026-10-30).
+  // Bebop (parent mode + one chromatic passing tone; bebop major's is written
+  // b6 here per the review decision — #5 is also in use, e.g. Wikipedia).
   bebop_dominant: fromDegrees(['1', '2', '3', '4', '5', '6', 'b7', '7']),
-  bebop_major: fromDegrees(['1', '2', '3', '4', '5', '#5', '6', '7']),
+  bebop_major: fromDegrees(['1', '2', '3', '4', '5', 'b6', '6', '7']),
   bebop_dorian: fromDegrees(['1', '2', 'b3', '3', '4', '5', '6', 'b7']),
 };
 

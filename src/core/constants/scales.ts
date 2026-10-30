@@ -194,7 +194,7 @@ function spellOnLetterOrSimplest(targetPitchClass: number, natural: NaturalNote)
 // Build a scale with correct enharmonic spelling. Every scale type is spelled
 // from its degree formula (SCALE_DEGREE_FORMULAS in utils/degreeSpelling): one
 // letter per degree for 7-note scales, the conventional degree names for the
-// rest (blues b5, bebop #5 passing tone), and the least-accidental
+// rest (blues b5, bebop major b6 passing tone), and the least-accidental
 // conventional spelling for the symmetric scales (audit W1-05).
 export function buildScale(root: Note, type: ScaleType): Scale {
   return { root, type, notes: spellScale(root, type) };

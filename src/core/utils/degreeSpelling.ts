@@ -276,11 +276,13 @@ const F = (s: string): readonly string[] => s.split(' ');
 /**
  * The conventional spelled-degree formula of every scale type. Heptatonic
  * scales use one letter per degree; the others name each note by its degree
- * (pentatonic ♭3, blues ♭5, bebop ♯5 passing tone).
+ * (pentatonic ♭3, blues ♭5, bebop major's ♭6 passing tone).
  *
  * Sources for the non-obvious conventions: blues ♭5 (decision D-13); bebop
- * major "a chromatic passing note added (a ♯5) between the 5th and 6th
- * degrees" (Wikipedia, "Bebop scale", accessed 2026-10-30); diminished
+ * major's passing tone between the 5th and 6th is written ♭6 (A♭ in C), as
+ * the app's own formula comment has it ("Major with added b6") — both ♭6 and
+ * ♯5 are in use (Wikipedia "Bebop scale", accessed 2026-10-30, writes ♯5);
+ * ♭6 avoids F𝄪 in B bebop major (review decision, 2026-10-30); diminished
  * half-whole 1 ♭2 ♯2 3 ♯4 5 6 ♭7 and whole-half 1 2 ♭3 4 ♭5 ♭6 6 7 (the
  * dominant / diminished-chord readings).
  */
@@ -307,7 +309,7 @@ export const SCALE_DEGREE_FORMULAS: Readonly<Record<ScaleType, readonly string[]
   major_blues: F('1 2 b3 3 5 6'),
   locrian_natural2: F('1 2 b3 4 b5 b6 b7'),
   bebop_dominant: F('1 2 3 4 5 6 b7 7'),
-  bebop_major: F('1 2 3 4 5 #5 6 7'),
+  bebop_major: F('1 2 3 4 5 b6 6 7'),
   bebop_dorian: F('1 2 b3 3 4 5 6 b7'),
   dorian_b2: F('1 b2 b3 4 5 6 b7'),
   lydian_augmented: F('1 2 3 #4 #5 6 7'),
