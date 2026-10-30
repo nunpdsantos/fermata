@@ -267,13 +267,15 @@ function fadeOutAndStop(entry: { oscillator: OscillatorNode; gainNode: GainNode 
 /**
  * Cancel every scheduled or still-sounding ONE-SHOT note — the registered
  * voice's (sampled piano / guitar / KS) and the FM fallback's — with a short
- * fade. Unlike stopPlayback() it leaves held (sustained) notes alone and does
- * NOT clear the tracked visual timeouts, so other components' highlight /
- * onComplete callbacks (e.g. the chord panel's arpeggio un-lighting its keys)
- * still run. Use it to restart a playback (audit W0 round-2 review B2).
+ * fade. Unlike stopPlayback() it leaves held (sustained) notes alone. The
+ * cancelled phrases' visuals are settled, not dropped: pending highlights are
+ * cancelled and each phrase's onComplete (e.g. the chord panel's arpeggio
+ * un-lighting its keys) runs immediately (audit W0 round-2 review B2, W8-01).
+ * Use it to restart a playback, or when another playback starts.
  */
 export function cancelScheduledAudio(): void {
   instrumentVoice?.cancelScheduled();
+  settleVisualPhrases();
   const ctx = audioContext;
   if (!ctx) return;
   const now = ctx.currentTime;
@@ -320,7 +322,9 @@ export function stopPlayback(): void {
   });
   sustainedNotes.clear();
 
-  // Clear all scheduled timeouts
+  // Settle the phrases' visuals (their clean-up runs — no key left lit), then
+  // clear every other scheduled timeout.
+  settleVisualPhrases();
   activeTimeouts.forEach((timeout) => clearTimeout(timeout));
   activeTimeouts.clear();
 }
@@ -330,14 +334,73 @@ export function isPlaying(): boolean {
   return activeOscillators.size > 0;
 }
 
-// Helper to create a tracked timeout
-function createTrackedTimeout(callback: () => void, delay: number): ReturnType<typeof setTimeout> {
-  const timeout = setTimeout(() => {
-    activeTimeouts.delete(timeout);
-    callback();
-  }, delay);
-  activeTimeouts.add(timeout);
-  return timeout;
+/**
+ * The visual half of one scheduled phrase (scale / arpeggio / sequence): its
+ * pending step callbacks and its clean-up. Tracked so that cancelling the
+ * phrase's SOUND also settles its VISUALS (audit W8-01): pending highlights
+ * are dropped (no key lights for a note that will never sound) and the
+ * clean-up runs at once, exactly once — stopPlayback used to drop it (keys
+ * stayed lit), cancelScheduledAudio used to let it fire seconds later over
+ * silence.
+ */
+interface VisualPhrase {
+  timeouts: Set<ReturnType<typeof setTimeout>>;
+  onComplete?: () => void;
+}
+const activePhrases: Set<VisualPhrase> = new Set();
+
+/** Step i fires at delaysMs[i]; onComplete fires tailMs after the last step. */
+function scheduleVisualPhrase(
+  delaysMs: number[],
+  onStep: (index: number) => void,
+  tailMs: number,
+  onComplete?: () => void,
+): void {
+  if (delaysMs.length === 0) return;
+  const phrase: VisualPhrase = { timeouts: new Set(), onComplete };
+  activePhrases.add(phrase);
+  const track = (callback: () => void, delay: number) => {
+    const timeout = setTimeout(() => {
+      phrase.timeouts.delete(timeout);
+      activeTimeouts.delete(timeout);
+      callback();
+    }, delay);
+    phrase.timeouts.add(timeout);
+    activeTimeouts.add(timeout);
+  };
+  delaysMs.forEach((delay, index) => {
+    track(() => {
+      onStep(index);
+      if (index !== delaysMs.length - 1) return;
+      if (onComplete) {
+        track(() => {
+          activePhrases.delete(phrase);
+          onComplete();
+        }, tailMs);
+      } else {
+        activePhrases.delete(phrase);
+      }
+    }, delay);
+  });
+}
+
+/** Drop every unfinished phrase's pending steps and run its clean-up now. */
+function settleVisualPhrases(): void {
+  const phrases = [...activePhrases];
+  activePhrases.clear();
+  for (const phrase of phrases) {
+    for (const timeout of phrase.timeouts) {
+      clearTimeout(timeout);
+      activeTimeouts.delete(timeout);
+    }
+    phrase.timeouts.clear();
+    try {
+      phrase.onComplete?.();
+    } catch (err) {
+      // One component's clean-up must not stop the others'.
+      console.error('[audio] phrase clean-up failed', err);
+    }
+  }
 }
 
 // Sound synthesis configuration
@@ -808,17 +871,12 @@ export function playSequence(
   // Fire callbacks slightly early (~20ms) to account for JS/rendering latency
   const visualLookahead = 20; // ms
   if (onNotePlay || onComplete) {
-    notes.forEach((note, index) => {
-      const callbackDelay = Math.max(0, index * noteInterval * 1000 - visualLookahead);
-      createTrackedTimeout(() => {
-        onNotePlay?.(index, note);
-
-        // Call onComplete after the last note finishes
-        if (index === notes.length - 1 && onComplete) {
-          createTrackedTimeout(() => onComplete(), scaledNoteDuration * 1000);
-        }
-      }, callbackDelay);
-    });
+    scheduleVisualPhrase(
+      notes.map((_, index) => Math.max(0, index * noteInterval * 1000 - visualLookahead)),
+      (index) => onNotePlay?.(index, notes[index]),
+      scaledNoteDuration * 1000,
+      onComplete,
+    );
   }
 }
 
@@ -909,17 +967,12 @@ export function playScale(
   // Use setTimeout for visual callbacks with lookahead compensation
   const visualLookahead = 20; // ms - fire slightly early for better perceived sync
   if (onNotePlay || onComplete) {
-    sequence.forEach(({ noteIndex }, seqIndex) => {
-      const callbackDelay = Math.max(0, seqIndex * noteInterval * 1000 - visualLookahead);
-      createTrackedTimeout(() => {
-        onNotePlay?.(seqIndex, noteIndex);
-
-        // Call onComplete after the last note finishes
-        if (seqIndex === sequence.length - 1 && onComplete) {
-          createTrackedTimeout(() => onComplete(), scaledNoteDuration * 1000);
-        }
-      }, callbackDelay);
-    });
+    scheduleVisualPhrase(
+      sequence.map((_, seqIndex) => Math.max(0, seqIndex * noteInterval * 1000 - visualLookahead)),
+      (seqIndex) => onNotePlay?.(seqIndex, sequence[seqIndex].noteIndex),
+      scaledNoteDuration * 1000,
+      onComplete,
+    );
   }
 }
 
@@ -992,17 +1045,12 @@ export function playArpeggioAscending(
   // Use setTimeout for visual callbacks with lookahead compensation
   const visualLookahead = 20; // ms - fire slightly early for better perceived sync
   if (onNotePlay || onComplete) {
-    notesWithOctaves.forEach(({ note, octave }, index) => {
-      const callbackDelay = Math.max(0, index * noteInterval * 1000 - visualLookahead);
-      createTrackedTimeout(() => {
-        onNotePlay?.(index, note, octave);
-
-        // Call onComplete after the last note finishes
-        if (index === notesWithOctaves.length - 1 && onComplete) {
-          createTrackedTimeout(() => onComplete(), scaledNoteDuration * 1000);
-        }
-      }, callbackDelay);
-    });
+    scheduleVisualPhrase(
+      notesWithOctaves.map((_, index) => Math.max(0, index * noteInterval * 1000 - visualLookahead)),
+      (index) => onNotePlay?.(index, notesWithOctaves[index].note, notesWithOctaves[index].octave),
+      scaledNoteDuration * 1000,
+      onComplete,
+    );
   }
 }
 

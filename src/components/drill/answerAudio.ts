@@ -19,7 +19,7 @@ import type { DrillItem } from '../../core/types/drill';
 import type { Note } from '../../core/types/music';
 import { stringToNote } from '../../core/types/music';
 import { buildChord } from '../../core/constants/chords';
-import { playArpeggioAscending, resumeAudio } from '../../core/services/audio';
+import { cancelScheduledAudio, playArpeggioAscending, resumeAudio } from '../../core/services/audio';
 import { normalizeDisplay } from './grading';
 
 /** How many leading notes of a spelled scale to play on reveal. */
@@ -85,6 +85,9 @@ export function playAnswerAudio(item: DrillItem): void {
   if (!notes || notes.length === 0) return;
   try {
     resumeAudio().catch(() => {});
+    // A fast learner's next reveal replaces the previous one instead of
+    // layering over it (audit W8-01).
+    cancelScheduledAudio();
     playArpeggioAscending(notes, 4, REVEAL_NOTE_DURATION);
   } catch {
     // Swallow — a missing/locked AudioContext must not affect the drill.

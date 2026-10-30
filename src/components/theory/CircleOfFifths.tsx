@@ -11,7 +11,7 @@ import {
 } from '../../core/utils/degreeSpelling.ts';
 import { useAppStore } from '../../state/store.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
-import { resumeAudio, playChordVoiced } from '../../core/services/audio.ts';
+import { resumeAudio, playChordVoiced, cancelScheduledAudio } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import {
   CIRCLE_MAJOR, CIRCLE_MINOR,
@@ -171,6 +171,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
       setScale(isMajor ? 'major' : 'natural_minor');
       await resumeAudio();
       const config = getSynthConfig(synthPreset);
+      cancelScheduledAudio(); // a new key replaces the previous one's sound (W8-01)
       playChordVoiced([note], 4, 0.5, config);
     },
     [synthPreset, setKey, setScale],

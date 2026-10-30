@@ -8,6 +8,7 @@ import { noteToString } from '../../../core/types/music';
 // AudioContext (and so the player's side effects are observable).
 vi.mock('../../../core/services/audio', () => ({
   playArpeggioAscending: vi.fn(),
+  cancelScheduledAudio: vi.fn(),
   resumeAudio: vi.fn(() => Promise.resolve()),
 }));
 

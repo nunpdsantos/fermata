@@ -12,9 +12,11 @@ import { useAppStore } from '../../../state/store';
 afterEach(cleanup);
 
 // Silence audio in tests.
+const audioLog: string[] = [];
 vi.mock('../../../core/services/audio.ts', () => ({
   resumeAudio: vi.fn(() => Promise.resolve()),
-  playChordVoiced: vi.fn(),
+  playChordVoiced: vi.fn(() => { audioLog.push('play'); }),
+  cancelScheduledAudio: vi.fn(() => { audioLog.push('cancel'); }),
 }));
 
 vi.mock('../../../services/synthConfig.ts', () => ({
@@ -135,6 +137,17 @@ describe('ChordBuilderPanel — live selectedChord', () => {
     await act(async () => { fireEvent.click(playBtn); });
 
     expect(useAppStore.getState().selectedChord).toBeNull();
+  });
+
+  it('Play replaces whatever was sounding: cancel, then play (audit W8-01)', async () => {
+    audioLog.length = 0;
+    render(<ChordBuilderPanel />);
+    await act(async () => { fireEvent.click(getStripButton(4)); });
+    await act(async () => { fireEvent.click(getStripButton(7)); });
+    const playBtn = screen.getByRole('button', { name: /play/i });
+    await act(async () => { fireEvent.click(playBtn); });
+    await act(async () => { fireEvent.click(playBtn); });
+    expect(audioLog).toEqual(['cancel', 'play', 'cancel', 'play']);
   });
 });
 

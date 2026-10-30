@@ -7,6 +7,7 @@ import { PWAPrompts } from './components/layout/PWAPrompts.tsx';
 import { ToastContainer } from './components/layout/Toast.tsx';
 import { useTheme } from './hooks/useTheme.ts';
 import { useLanguage } from './hooks/useLanguage.ts';
+import { useStopPlaybackOnViewChange } from './hooks/useStopPlaybackOnViewChange.ts';
 import { useAppStore } from './state/store.ts';
 import { pickBootView } from './state/bootView.ts';
 import type { ViewMode } from './state/storeTypes.ts';
@@ -26,6 +27,8 @@ function App() {
   useTheme();
   // Sync language preference to i18next
   useLanguage();
+  // Leaving a view stops its playback (W8-01)
+  useStopPlaybackOnViewChange();
 
   // Boot view resolution (runs ONCE, before first paint of the view):
   //  - a valid ?view= param wins (PWA shortcut / deep link), else restore
