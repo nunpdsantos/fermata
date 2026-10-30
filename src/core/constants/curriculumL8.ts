@@ -658,7 +658,7 @@ export const L8_UNITS: CurriculumUnit[] = [
       skillsSummary: [
         'Analyze sonata form in full detail: FTG, TR, STG, CT, development, and recapitulation',
         'Distinguish variation structures: theme-and-variations, chaconne, passacaglia, rondo, and ritornello',
-        'Identify orchestral families, instrument ranges, and transposing instruments',
+        'Identify orchestral families, timbres, and transposing instruments',
       ],
       bridgeText:
         'You now command the analytical vocabulary for the largest forms and the full orchestra. The final unit crosses the boundary from tonal to post-tonal music.',

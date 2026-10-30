@@ -82,7 +82,7 @@ A mnemonic technique: associate each interval with the opening of a well-known m
 | M3 | "When the Saints" (oh-when) | "Swing Low" (swing-low) |
 | P4 | "Here Comes the Bride" | "Born Free" |
 | A4/d5 | "The Simpsons" (The-Simp) | "Blue Seven" (Sonny Rollins) |
-| P5 | "Twinkle Twinkle" | "Flintstones" (Flint-stones) |
+| P5 | "Twinkle Twinkle" | first two notes of "Feelings" (Feel-ings) or the Flintstones theme (Flint-stones) |
 | m6 | "The Entertainer" | "Love Story" theme |
 | M6 | "My Bonnie" (my-bon) | "Nobody Knows" (no-body) |
 | m7 | "Somewhere" (West Side Story) | "An American in Paris" |

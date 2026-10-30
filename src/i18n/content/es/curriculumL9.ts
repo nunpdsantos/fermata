@@ -179,13 +179,13 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Asociaciones con Canciones: Intervalos Amplios',
           explanation:
-            'Continuando el enfoque mnemónico para la mitad superior de la octava. 6.a menor = The Entertainer (ascendente; el tema «Where Do I Begin» de Love Story es el ejemplo descendente clásico). 6.a mayor = My Bonnie (my-bon). 7.a menor = Somewhere (West Side Story). 7.a mayor = Take On Me (take-on). Octava = Somewhere Over the Rainbow. Los intervalos amplios son más difíciles de identificar porque parecen «grandes saltos» y las diferencias de tamaño entre ellos son proporcionalmente menores. Las sextas y séptimas son particularmente difíciles — son inversiones de terceras y segundas, por lo que su carácter está relacionado pero es más amplio. Practica contrastando pares: 6.a m frente a 6.a M, 7.a m frente a 7.a M.',
+            'Continuando el enfoque mnemónico para la mitad superior de la octava. 6.a menor = The Entertainer (ascendente: el salto de E a C que sigue a las notas iniciales D-D#-E; el tema «Where Do I Begin» de Love Story es el ejemplo descendente clásico). 6.a mayor = My Bonnie (my-bon). 7.a menor = Somewhere (West Side Story). 7.a mayor = Take On Me (take-on). Octava = Somewhere Over the Rainbow. Los intervalos amplios son más difíciles de identificar porque parecen «grandes saltos» y las diferencias de tamaño entre ellos son proporcionalmente menores. Las sextas y séptimas son particularmente difíciles — son inversiones de terceras y segundas, por lo que su carácter está relacionado pero es más amplio. Practica contrastando pares: 6.a m frente a 6.a M, 7.a m frente a 7.a M.',
           tryThisLabel: 'Escucha el intervalo de 7.a mayor (C a B)',
         },
         {
           title: 'Intervalos Amplios Descendentes',
           explanation:
-            'Los intervalos descendentes suenan diferentes de los ascendentes aunque la distancia sea igual. Una 5.a justa descendente (G descendiendo a C) suena como resolución o aterrizaje. Una 6.a mayor descendente suena cálida y nostálgica. Las séptimas descendentes suenan dramáticas y amplias. Practica intervalos descendentes por separado — muchos estudiantes que dominan intervalos ascendentes se debaten con los descendentes. Usa asociaciones con canciones descendentes: 5.a J descendente = Feelings (inicio «Feelings, oh feelings...»), 3.a m descendente = Hey Jude (hey-Jude). Construye el conjunto descendente como competencia propia.',
+            'Los intervalos descendentes suenan diferentes de los ascendentes aunque la distancia sea igual. Una 5.a justa descendente (G descendiendo a C) suena como resolución o aterrizaje. Una 6.a mayor descendente suena cálida y nostálgica. Las séptimas descendentes suenan dramáticas y amplias. Practica intervalos descendentes por separado — muchos estudiantes que dominan intervalos ascendentes se debaten con los descendentes. Usa asociaciones con canciones descendentes: 5.a J descendente = las dos primeras notas de «Feelings» (Feel-ings) o del tema de Los Picapiedra (Flint-stones), 3.a m descendente = Hey Jude (hey-Jude). Construye el conjunto descendente como competencia propia.',
           tryThisLabel:
             'Toca C mayor descendente — escucha los intervalos al revés',
         },
@@ -392,7 +392,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Toca "C minor pentatonic" y después "C blues scale" — la escala de blues añade una nota (Gb, la blue note, un ♭5). ¿Puedes oír la aspereza y tensión añadidas?',
+            'Toca "C minor pentatonic" y después "C blues scale" — la escala de blues añade una nota (Gb, la blue note, un b5). ¿Puedes oír la aspereza y tensión añadidas?',
         },
         {
           instruction:

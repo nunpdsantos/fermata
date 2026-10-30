@@ -200,14 +200,14 @@ const l9u30m4: CurriculumModule = {
     {
       title: 'Song Associations: Large Intervals',
       explanation:
-        'Continuing the mnemonic approach for the upper half of the octave. Minor 6th = The Entertainer (ascending; the "Where Do I Begin" theme from Love Story is the classic descending example). Major 6th = My Bonnie (my-bon). Minor 7th = Somewhere (West Side Story). Major 7th = Take On Me (take-on). Octave = Somewhere Over the Rainbow. Large intervals are harder to identify because they feel like "big leaps" and the size differences between them are proportionally smaller. The 6ths and 7ths are particularly tricky — they are inversions of 3rds and 2nds, so their character is related but wider. Train by contrasting pairs: m6 vs. M6, m7 vs. M7.',
+        'Continuing the mnemonic approach for the upper half of the octave. Minor 6th = The Entertainer (ascending: the upward leap from E to C that follows the opening D-D#-E pick-up notes; the "Where Do I Begin" theme from Love Story is the classic descending example). Major 6th = My Bonnie (my-bon). Minor 7th = Somewhere (West Side Story). Major 7th = Take On Me (take-on). Octave = Somewhere Over the Rainbow. Large intervals are harder to identify because they feel like "big leaps" and the size differences between them are proportionally smaller. The 6ths and 7ths are particularly tricky — they are inversions of 3rds and 2nds, so their character is related but wider. Train by contrasting pairs: m6 vs. M6, m7 vs. M7.',
       tryThisQuery: 'Cmaj7',
       tryThisLabel: 'Hear the major 7th interval (C to B)',
     },
     {
       title: 'Descending Large Intervals',
       explanation:
-        'Descending intervals sound different from ascending even though the distance is the same. A descending perfect 5th (G down to C) sounds like a resolution or grounding motion. A descending major 6th sounds warm and nostalgic. Descending 7ths sound dramatic and wide. Train descending intervals separately — many students who master ascending intervals struggle with descending ones. Use descending song associations: descending P5 = Feelings (opening "Feelings, oh feelings..."), descending m3 = Hey Jude (hey-Jude). Build the descending set as its own skill.',
+        'Descending intervals sound different from ascending even though the distance is the same. A descending perfect 5th (G down to C) sounds like a resolution or grounding motion. A descending major 6th sounds warm and nostalgic. Descending 7ths sound dramatic and wide. Train descending intervals separately — many students who master ascending intervals struggle with descending ones. Use descending song associations: descending P5 = the first two notes of "Feelings" (Feel-ings) or of the Flintstones theme (Flint-stones), descending m3 = Hey Jude (hey-Jude). Build the descending set as its own skill.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Play C major descending — hear intervals in reverse',
     },
@@ -451,7 +451,7 @@ const l9u31m3: CurriculumModule = {
     {
       id: 'l9u31m3t1',
       instruction:
-        "Play 'C minor pentatonic' then 'C blues scale' — the blues scale adds one note (Gb, the blue note, a ♭5). Can you hear the added grit and tension?",
+        "Play 'C minor pentatonic' then 'C blues scale' — the blues scale adds one note (Gb, the blue note, a b5). Can you hear the added grit and tension?",
       query: 'C minor pentatonic',
     },
     {
