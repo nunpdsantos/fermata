@@ -8,7 +8,11 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // 'prompt' (audit W9-06 / D-21): a new version installs in the background
+      // and WAITS; the "new version — reload" toast asks, and only the
+      // learner's tap activates it (usePWA.ts). 'autoUpdate' reloaded the page
+      // a few seconds after launch without asking.
+      registerType: 'prompt',
       manifest: {
         name: 'Fermata — Music Theory',
         short_name: 'Fermata',
@@ -45,6 +49,12 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // The FIRST install takes control of the open page at once, so runtime
+        // caching (samples, notation, lesson data) works from the first
+        // session — as it did under autoUpdate. Updates still wait for the
+        // learner: prompt mode adds no skipWaiting (only a SKIP_WAITING message
+        // handler the toast's Reload sends).
+        clientsClaim: true,
         // Precache only the app shell + small core deps. Curriculum data,
         // exercises, and VexFlow stream in via runtimeCaching on demand —
         // a Level-1 user shouldn't pay for Level-9 content on first visit.

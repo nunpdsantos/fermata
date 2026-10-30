@@ -57,6 +57,22 @@ test.describe('PWA basics', () => {
     expect(registrations).toBeGreaterThanOrEqual(1);
   });
 
+  test('updates wait for the learner: the built worker only skips waiting when asked (W9-06)', async ({ page }) => {
+    const res = await page.request.get('/sw.js');
+    const text = await res.text();
+    test.skip(
+      !res.ok() || !text.includes('precacheAndRoute'),
+      'No built service worker on the dev server (devOptions disabled)',
+    );
+    // Prompt mode: the ONLY skipWaiting is inside the SKIP_WAITING message
+    // handler that the "new version — reload" toast triggers. autoUpdate
+    // emitted an unconditional self.skipWaiting() and reloaded on its own.
+    expect(text).toContain('SKIP_WAITING');
+    expect(text.match(/skipWaiting/g) ?? []).toHaveLength(1);
+    // First install still controls the open page (runtime caching from visit one).
+    expect(text).toContain('clientsClaim()');
+  });
+
   test('Drill opens offline on a fresh profile (manifest shortcut path)', async ({ page, context }) => {
     await page.goto('/');
     // Skip against the dev server (no SW there) — same detection as above.
