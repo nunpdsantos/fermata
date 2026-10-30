@@ -103,7 +103,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Construye el acorde de séptima diatónico sobre {root} en La menor (menor armónica).',
       hintTemplate:
-        'En la menor armónica, el 7.º grado elevado crea cualidades de acordes diferentes de la menor natural. El V se convierte en séptima de dominante y el vii en séptima disminuida.',
+        'En la menor armónica, el 7.º grado elevado crea cualidades de acordes diferentes de la menor natural. El V se convierte en séptima de dominante y el vii en séptima disminuida. El 7.º grado elevado crea cualidades de acorde inusuales — no te sorprendan las sonoridades poco familiares.',
     },
     {
       // multiple_choice

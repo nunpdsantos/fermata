@@ -444,7 +444,7 @@ Moving an entire piece or passage to a different key while preserving all interv
 
 **Transposing Instruments**
 Some instruments sound different from what they read:
-- Bb instruments (trumpet, clarinet, tenor sax): written C sounds as Bb. Write a major second higher than concert pitch.
+- Bb instruments (trumpet, clarinet): written C sounds as the Bb a major second below. Write a major second higher than concert pitch. The tenor sax, also in Bb, sounds an octave and a major second lower: write a major ninth higher.
 - Eb instruments (alto sax, baritone sax): written C sounds as Eb. Write a major sixth higher than concert pitch.
 - F instruments (French horn, English horn): written C sounds as F. Write a perfect fifth higher.
 
