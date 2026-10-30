@@ -6,6 +6,7 @@ import { createAudioSlice } from './slices/audioSlice.ts';
 import { createNavigationSlice } from './slices/navigationSlice.ts';
 import { createPreferencesSlice } from './slices/preferencesSlice.ts';
 import { SCALE_FORMULAS } from '../core/constants/scales.ts';
+import { isAppLanguage } from '../i18n/language.ts';
 import type { AppState } from './storeTypes.ts';
 
 // Re-export types so consumers don't need to change imports
@@ -50,6 +51,12 @@ function sanitizePersistedAppState(persisted: unknown): Record<string, unknown> 
     const p = state.guitarScalePosition;
     const valid = p === null || p === 'all' || (typeof p === 'number' && Number.isInteger(p) && p >= 0 && p <= 12);
     if (!valid) state.guitarScalePosition = null;
+  }
+
+  // language: must be a shipped language; anything else falls back to the
+  // slice default (the browser language).
+  if (!isAppLanguage(state.language)) {
+    delete state.language;
   }
 
   // Numeric fields: anything non-finite falls back to the slice default
