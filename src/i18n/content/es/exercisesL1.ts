@@ -43,8 +43,8 @@ const overlay: ExerciseLevelOverlay = {
 
   l1u1m2e1: {
     prompt:
-      'Identifica esta nota por debajo del pentagrama de clave de sol: se encuentra en el espacio justo por debajo del C central.',
-    hint: 'A3 se sitúa dos líneas adicionales por debajo del pentagrama de clave de sol. Descendiendo desde el C central: B3 está en el espacio por debajo de la línea adicional, A3 está en la siguiente línea adicional.',
+      'Identifica esta nota por debajo del pentagrama de clave de sol: se encuentra en la segunda línea adicional inferior.',
+    hint: 'Por debajo del pentagrama de clave de sol: B3 está en el espacio por debajo de la primera línea adicional (C4), y A3 está en la segunda línea adicional.',
   },
   l1u1m2e2: {
     prompt:
@@ -81,8 +81,8 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l1u1m3: Semitonos y Tonos ----
 
   l1u1m3e1: {
-    prompt: '¿Cuál es el intervalo de C a Db?',
-    hint: 'De C a Db es la menor distancia posible en la música occidental: un semitono (medio tono). Dos letras distintas (C, D) lo convierten en una 2.ª — una 2.ª menor.',
+    prompt: '¿Cuál es el intervalo de Db, descendiendo, hasta C?',
+    hint: 'De Db descendiendo hasta C es la menor distancia posible en la música occidental: un semitono (medio tono), de la tecla negra a la tecla blanca justo por debajo. Dos letras distintas (D, C) lo convierten en una 2.ª — una 2.ª menor.',
   },
   l1u1m3e2: {
     prompt: '¿Cuál es el intervalo de C a D?',

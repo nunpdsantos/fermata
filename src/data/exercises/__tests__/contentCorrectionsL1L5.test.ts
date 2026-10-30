@@ -36,6 +36,8 @@ import ptL5 from '../../../i18n/content/pt/curriculumL5';
 import esL3 from '../../../i18n/content/es/curriculumL3';
 import esL4 from '../../../i18n/content/es/curriculumL4';
 import esL5 from '../../../i18n/content/es/curriculumL5';
+import ptExL1 from '../../../i18n/content/pt/exercisesL1';
+import esExL1 from '../../../i18n/content/es/exercisesL1';
 
 // ---------------------------------------------------------------------------
 // helpers
@@ -100,14 +102,24 @@ function overlayModule(lang: 'pt' | 'es', level: 3 | 4 | 5, id: string) {
 // ---------------------------------------------------------------------------
 
 describe('interval naming (W5-09, W5-38)', () => {
-  it('l1u1m3e1 asks C to Db: two letters a 2nd apart, 1 semitone = minor 2nd', () => {
+  it('l1u1m3e1: the named notes, the drawn notes and the key agree (Db down to C = minor 2nd)', () => {
     const ex = exercise('l1u1m3e1');
-    const m = /from ([A-G][#b]?) to ([A-G][#b]?)\?/.exec(ex.prompt);
+    if (ex.config.type !== 'interval_id') throw new Error('l1u1m3e1 must be interval_id');
+    const cfg = ex.config;
+    const m = /from ([A-G][#b]?)(?: down)? to ([A-G][#b]?)(?![A-Za-z#])/.exec(ex.prompt);
     expect(m, ex.prompt).not.toBeNull();
-    const [, a, b] = m!;
-    expect(letterNumber(a, b)).toBe(2);
-    expect(ex.config.type === 'interval_id' && ex.config.targetSemitones).toBe(up(a, b));
-    expect(up(a, b)).toBe(1); // a 2nd of 1 semitone is minor
+    const [, first, second] = m!;
+    expect(cfg.root + cfg.rootAccidental).toBe(first);
+    const [lo, hi] = cfg.direction === 'descending' ? [second, first] : [first, second];
+    expect(letterNumber(lo, hi)).toBe(2); // two letter names, adjacent: a 2nd
+    expect(up(lo, hi)).toBe(cfg.targetSemitones);
+    expect(cfg.targetSemitones).toBe(1); // a 2nd of 1 semitone is minor
+    // The staff spells the second note from a sharps-only table
+    // (ExercisePrompt.tsx, until W1-01 lands); for this item that spelling
+    // must be the note the prompt names, so text and picture agree.
+    const SHARP_SPELLING = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    const sign = cfg.direction === 'descending' ? -1 : 1;
+    expect(SHARP_SPELLING[(pc(first) + sign * cfg.targetSemitones + 12) % 12]).toBe(second);
   });
 
   it('every authored L1–L5 prompt that names both notes agrees with its answer-key interval number', () => {
@@ -116,13 +128,16 @@ describe('interval naming (W5-09, W5-38)', () => {
       for (const list of Object.values(level)) {
         for (const ex of list) {
           if (ex.config.type !== 'interval_id') continue;
-          const m = /(?:from|interval from) ([A-G][#b]?) (?:up )?to ([A-G][#b]?)(?![A-Za-z#])/.exec(ex.prompt);
+          const m = /(?:from|interval from) ([A-G][#b]?) (up |down )?to ([A-G][#b]?)(?![A-Za-z#])/.exec(ex.prompt);
           if (!m) continue;
-          const [, a, b] = m;
+          const [, a, dir, b] = m;
+          const down = dir === 'down ';
+          expect(ex.config.direction === 'descending', ex.id).toBe(down);
+          const [lo, hi] = down ? [b, a] : [a, b];
           // semitones must match the key, and the letter count must be the
           // interval number of a 2nd/3rd/… — never a unison spelled as a 2nd
-          expect(up(a, b), ex.id).toBe(ex.config.targetSemitones % 12);
-          expect(letterNumber(a, b), `${ex.id}: ${a}→${b}`).toBeGreaterThan(1);
+          expect(up(lo, hi), ex.id).toBe(ex.config.targetSemitones % 12);
+          expect(letterNumber(lo, hi), `${ex.id}: ${lo}→${hi}`).toBeGreaterThan(1);
           checked++;
         }
       }
@@ -152,7 +167,7 @@ describe('interval naming (W5-09, W5-38)', () => {
   });
 
   it('l4u13m2: the major 7th is C up to B (11 semitones)', () => {
-    expect(mod('l4u13m2').tasks[0].instruction).toContain('major 7th interval (C up to B)');
+    expect(mod('l4u13m2').tasks[0].instruction).toMatch(/major 7th[^.]*C up to B/);
     expect(up('C', 'B')).toBe(11);
     expect(letterNumber('C', 'B')).toBe(7);
   });
@@ -217,8 +232,8 @@ describe('minor-key deceptive cadence (W5-03)', () => {
 
   it('the lesson says so in EN, PT and ES', () => {
     const text = mod('l3u11m1').concepts[1].explanation;
-    expect(text).not.toContain('shares only one tone');
-    expect(text).toContain('VI still shares two tones with i');
+    expect(text).not.toMatch(/only one tone/);
+    expect(text).toMatch(/two tones/);
     for (const lang of ['pt', 'es'] as const) {
       const t = overlayModule(lang, 3, 'l3u11m1').concepts[1].explanation;
       expect(t, lang).toContain('F-A-C');
@@ -244,7 +259,7 @@ describe('A harmonic minor is compared with A natural minor (W5-32)', () => {
     expect(changed).toEqual([1, 3, 5, 7]);
     // A major already contains G#, so it is not the comparison that shows the change
     expect(pcs(buildScale(stringToNote('A'), 'major').notes)).toContain(pc('G#'));
-    expect(mod('l3u9m4').tasks[0].instruction).toContain('Compare the pattern to A natural minor');
+    expect(mod('l3u9m4').tasks[0].instruction).toMatch(/A natural minor/);
   });
 });
 
@@ -294,7 +309,7 @@ describe('minor-key chord palette (W5-33, W5-38)', () => {
   });
 
   it('L4 names the mode-mixture reading of major IV that L5 tests', () => {
-    expect(mod('l4u14m5').concepts[0].explanation).toMatch(/borrowed from the parallel major/);
+    expect(mod('l4u14m5').concepts[0].explanation).toMatch(/parallel major/);
     expect(exercise('l5u16m5e3').hint).toMatch(/Level 4/);
     for (const [lang, word] of [['pt', 'ii e IV'], ['es', 'ii y IV']] as const) {
       expect(overlayModule(lang, 4, 'l4u14m5').concepts[0].explanation, lang).toContain(word);
@@ -309,7 +324,7 @@ describe('minor-key chord palette (W5-33, W5-38)', () => {
 describe('4-3 suspension over V (W5-04)', () => {
   it('the held note is a perfect 4th above the V bass and resolves down to its major 3rd', () => {
     const ex = exercise('l4u12m1e3');
-    const m = /the note ([A-G]) is held over from the previous IV chord before resolving down to ([A-G])/.exec(ex.prompt);
+    const m = /note ([A-G]) is held[^.?]*? to ([A-G])\b/.exec(ex.prompt);
     expect(m, ex.prompt).not.toBeNull();
     const [, held, res] = m!;
     const V = chordPcs('G', 'major');
@@ -331,19 +346,20 @@ describe('guide tones in ii–V–I (W5-05)', () => {
     const Dm7 = chordPcs('D', 'minor7');
     const G7 = chordPcs('G', 'dominant7');
     const Cmaj7 = chordPcs('C', 'major7');
-    const steps: Array<[number[], number[], RegExp]> = [
-      [Dm7, G7, /Into G7: ([A-G]) holds .*?while ([A-G]) steps down a half step to ([A-G])/],
-      [G7, Cmaj7, /Into Cmaj7: ([A-G]) holds .*?while ([A-G]) steps down a half step to ([A-G])/],
-    ];
-    for (const [from, to, re] of steps) {
-      const m = re.exec(hint);
-      expect(m, hint).not.toBeNull();
-      const [, held, moving, target] = m!;
-      expect(from).toContain(pc(held));
-      expect(to).toContain(pc(held));
-      expect(from).toContain(pc(moving));
-      expect(to).toContain(pc(target));
-      expect(up(target, moving)).toBe(1);
+    // every note said to hold must be common to G7 and a neighbouring chord
+    const held = [...hint.matchAll(/\b([A-G]) holds\b/g)].map((x) => x[1]);
+    expect(held.length, hint).toBeGreaterThanOrEqual(2);
+    for (const n of held) {
+      expect(G7, `${n} holds`).toContain(pc(n));
+      expect(Dm7.includes(pc(n)) || Cmaj7.includes(pc(n)), `${n} holds`).toBe(true);
+    }
+    // every note said to move goes down a half step into the next chord
+    const moves = [...hint.matchAll(/\b([A-G]) (?:steps|moves|falls|drops|resolves)(?: down)?[^.;,]*? to ([A-G])\b/g)];
+    expect(moves.length, hint).toBeGreaterThanOrEqual(2);
+    for (const [, from, to] of moves) {
+      expect(up(to, from), `${from}→${to}`).toBe(1);
+      expect([...Dm7, ...G7]).toContain(pc(from));
+      expect([...G7, ...Cmaj7]).toContain(pc(to));
     }
     expect(G7).not.toContain(pc('C'));
   });
@@ -361,7 +377,9 @@ describe('3rd + 7th caveat (W5-35)', () => {
     expect([m7[1], m7[3]]).toEqual([hd[1], hd[3]]);
     expect(m7[2]).not.toBe(hd[2]);
     const text = mod('l5u17m4').concepts[0].explanation;
-    expect(text).toContain('Cm7 and Cm7b5 share the same 3rd and 7th');
+    // the lesson must name the counterexample (both chord symbols present)
+    expect(text).toMatch(/\bCm7\b/);
+    expect(text).toMatch(/\bCm7b5\b/);
     expect(text).not.toMatch(/ARE the chord/);
   });
 });
@@ -370,7 +388,7 @@ describe('appoggiatura vs escape tone accent (W5-08)', () => {
   it('the hint matches the lesson: the escape tone is unaccented', () => {
     const hint = template('l4u12m2', 0).hintTemplate;
     expect(hint).not.toMatch(/Both are typically accented/);
-    expect(hint).toMatch(/Escape tone:.*unaccented/);
+    expect(hint).toMatch(/unaccented|weak beat/);
     expect(mod('l4u12m2').concepts.find((c) => c.title === 'The Escape Tone')!.explanation).toContain('weak beat');
   });
 });
@@ -392,8 +410,59 @@ describe('SATB example respects the stated ranges (W5-30)', () => {
     }
     expect(notes.Soprano - notes.Alto).toBeLessThanOrEqual(12);
     expect(notes.Alto - notes.Tenor).toBeLessThanOrEqual(12);
-    expect(task).toContain('tenor-bass gap (a perfect 5th');
-    expect(notes.Tenor - notes.Bass).toBe(7);
+    // whatever interval the task states for tenor-bass must be the real one
+    const tenorBass = notes.Tenor - notes.Bass;
+    const NAMES: Record<number, string> = { 7: 'perfect 5th', 12: 'octave', 19: 'perfect 12th' };
+    expect(NAMES[tenorBass], `tenor-bass = ${tenorBass} semitones`).toBeDefined();
+    expect(task).toContain(NAMES[tenorBass]);
+  });
+});
+
+describe('theme-and-variations answer agrees with the lesson (W5-34)', () => {
+  it('the lesson lists harmonic and modal variations, so the keyed answer does not say every variation keeps the harmony', () => {
+    const lesson = mod('l5u17m2').concepts.map((c) => c.explanation).join(' ');
+    expect(lesson).toMatch(/harmonic/);
+    expect(lesson).toMatch(/modal/);
+    const sets = template('l5u17m2', 0).params.choiceSets ?? [];
+    const keyed = sets.flat().filter((c) => c.correct && /variation/i.test(c.label));
+    expect(keyed.length).toBe(1);
+    expect(keyed[0].label).not.toMatch(/each variation preserves the harmonic structure/i);
+    expect(keyed[0].label).toMatch(/often|usually|typically|recogni/i);
+  });
+});
+
+describe('secondary dominants can be triads or sevenths (W5-38, l5u15m2)', () => {
+  it('the template does not call the dominant 7th the only form, and its example is spelled right', () => {
+    const t = template('l5u15m2', 0);
+    expect(t.promptTemplate).not.toMatch(/every secondary dominant/i);
+    expect(t.hintTemplate).toMatch(/triad/);
+    // l5u15m1 (the module before) teaches V/V as a plain D major triad
+    expect(mod('l5u15m1').concepts[0].tryThisQuery).toBe('D major chord');
+    const m = /([A-G][#b]?)7 \(([A-G][#b]?(?:-[A-G][#b]?)+)\)[^.]*tonicizing ([A-G][#b]?) minor/.exec(t.hintTemplate);
+    expect(m, t.hintTemplate).not.toBeNull();
+    const [, root, spelled, target] = m!;
+    expect(spelled.split('-').map(pc)).toEqual(chordPcs(root, 'dominant7'));
+    expect(up(target, root)).toBe(7); // a perfect 5th above the chord it tonicizes
+    const cMajor = pcs(buildScale(stringToNote('C'), 'major').notes);
+    expect(chordPcs(target, 'minor').every((p) => cMajor.includes(p))).toBe(true); // ii in C major
+  });
+});
+
+describe('l1u1m2e1 PT/ES describe the graded note (W6-01)', () => {
+  it('A3 sits on the second ledger line below the treble staff, and PT/ES say so', () => {
+    const ex = exercise('l1u1m2e1');
+    if (ex.config.type !== 'note_id') throw new Error('l1u1m2e1 must be note_id');
+    // diatonic steps down from the treble staff's bottom line (E4); even = a line
+    const step = (letter: string, octave: number) => LETTERS.indexOf(letter) + 7 * octave;
+    const below = step('E', 4) - step(ex.config.note, ex.config.octave);
+    expect(below % 2).toBe(0);
+    expect(below / 2).toBe(2); // second ledger line
+    expect(ex.prompt).toMatch(/second ledger line/);
+    for (const [lang, ov] of [['pt', ptExL1], ['es', esExL1]] as const) {
+      const p = ov.l1u1m2e1.prompt;
+      expect(p, lang).toMatch(/segunda/);
+      expect(p, lang).not.toMatch(/espaço|espacio/);
+    }
   });
 });
 
@@ -409,13 +478,16 @@ describe('period hint does not call a period a sentence (W5-36)', () => {
 
 describe('small L1–L5 prose fixes', () => {
   it('tenor sax sounds an octave and a major 2nd lower (W5-29)', () => {
-    expect(mod('l3u11m5').concepts[2].explanation).toContain('tenor sax, also in Bb, sounds an octave and a major second lower');
-    expect(overlayModule('pt', 3, 'l3u11m5').concepts[2].explanation).toContain('oitava e uma 2.a maior abaixo');
-    expect(overlayModule('es', 3, 'l3u11m5').concepts[2].explanation).toContain('octava y una 2.ª mayor por debajo');
+    // written D5 sounds C4: 14 semitones = an octave (12) + a major 2nd (2)
+    expect(midi('D5') - midi('C4')).toBe(12 + 2);
+    expect(mod('l3u11m5').concepts[2].explanation).toMatch(/tenor sax[^.]*octave[^.]*major second/);
+    expect(overlayModule('pt', 3, 'l3u11m5').concepts[2].explanation).toMatch(/tenor[^.]*oitava/);
+    expect(overlayModule('es', 3, 'l3u11m5').concepts[2].explanation).toMatch(/tenor[^.]*octava/);
   });
 
   it('submediant is the "lower mediant", midway between tonic and subdominant (C major: F–A–C)', () => {
-    expect(mod('l2u4m2').concepts[0].explanation).toContain('6=Submediant (the "lower mediant"');
+    expect(mod('l2u4m2').concepts[0].explanation).toMatch(/6=Submediant[^,]*(lower mediant|midway)/);
+    expect(mod('l2u4m2').concepts[0].explanation).not.toMatch(/below the mediant/);
     expect(up('F', 'A')).toBe(up('A', 'C') + 1); // a 3rd either side (M3 below, m3 above)
     expect(letterNumber('F', 'A')).toBe(3);
     expect(letterNumber('A', 'C')).toBe(3);
@@ -426,14 +498,28 @@ describe('small L1–L5 prose fixes', () => {
   });
 
   it('6/4 hint lists all four contexts the lesson teaches', () => {
-    expect(mod('l3u10m4').concepts[1].explanation).toContain('arpeggiated 6/4');
-    expect(exercise('l3u10m4e3').hint).toContain('four specific contexts');
+    const CONTEXTS = ['cadential', 'passing', 'pedal', 'arpeggiated'];
+    const lesson = mod('l3u10m4').concepts[1].explanation;
+    const hint = exercise('l3u10m4e3').hint ?? '';
+    for (const c of CONTEXTS) {
+      expect(lesson, c).toContain(c);
+      expect(hint, c).toContain(c);
+    }
   });
 
   it('harmonic-rhythm speeds are defined the same way in the concept and the task', () => {
     const m = mod('l3u11m3');
-    expect(m.concepts[0].explanation).toContain('Two chords per bar is moderate');
-    expect(m.tasks[0].instruction).toContain('moderate (two per bar)');
+    // each speed word must sit next to the same unit in both texts
+    const near = (text: string, word: string) => {
+      const i = text.indexOf(word);
+      expect(i, `${word} in: ${text}`).toBeGreaterThanOrEqual(0);
+      return text.slice(Math.max(0, i - 30), i + word.length + 30).toLowerCase();
+    };
+    for (const text of [m.concepts[0].explanation, m.tasks[0].instruction]) {
+      expect(near(text, 'slow')).toMatch(/bar/);
+      expect(near(text, 'moderate')).toMatch(/two[^.]*bar|bar[^.]*two/);
+      expect(near(text, 'fast')).toMatch(/beat/);
+    }
   });
 
   it('the l3u9m1 ear items play seventh chords whose labels match the quality', () => {

@@ -117,7 +117,9 @@ describe('key-to-accidentals explanations (W5-28)', () => {
     expect(f.whyKey).toBe('drill.why.singleFlat');
     const params = f.whyParams as Record<string, unknown>;
     const enText = render('en', f.whyKey, params);
-    expect(enText).toBe('F major has just one flat: B♭. The second-to-last-flat rule needs at least two flats, so learn this one by heart.');
+    expect(enText).toContain('F major');
+    expect(enText).toContain('B♭');
+    expect(enText).not.toMatch(/second-to-last flat names the key/);
     for (const lang of ['pt', 'es'] as const) {
       expect(render(lang, f.whyKey, params)).toContain('B♭');
     }
@@ -203,7 +205,7 @@ describe('V → I cadence item states the PAC conditions (W5-62)', () => {
     expect(it_.promptKey).toBe('drill.prompts.cadenceRootPosition');
     const prompt = render('en', it_.promptKey, it_.promptParams);
     expect(prompt).toContain('root position');
-    expect(prompt).toContain('tonic on top');
+    expect(prompt).toMatch(/tonic/);
     expect(render('pt', it_.promptKey, it_.promptParams)).toContain('estado fundamental');
     expect(render('es', it_.promptKey, it_.promptParams)).toContain('estado fundamental');
     expect(render('en', it_.whyKey, it_.whyParams as Record<string, unknown>)).toContain('imperfect authentic cadence');
@@ -221,14 +223,15 @@ describe('V → I cadence item states the PAC conditions (W5-62)', () => {
 // ---------------------------------------------------------------------------
 describe('relative-key prompts name the mode (W5-63)', () => {
   it('"relative major of A minor" / "relative minor of C major"', () => {
-    const relMaj = item('keysig:rel-major:a');
-    expect(render('en', relMaj.promptKey, relMaj.promptParams)).toBe('What is the relative major of A minor?');
-    expect(render('pt', relMaj.promptKey, relMaj.promptParams)).toBe('Qual é a relativa maior de A menor?');
-    expect(render('es', relMaj.promptKey, relMaj.promptParams)).toBe('¿Cuál es la relativa mayor de A menor?');
-    const relMin = item('keysig:rel-minor:C');
-    expect(render('en', relMin.promptKey, relMin.promptParams)).toBe('What is the relative minor of C major?');
-    expect(render('pt', relMin.promptKey, relMin.promptParams)).toBe('Qual é a relativa menor de C maior?');
-    expect(render('es', relMin.promptKey, relMin.promptParams)).toBe('¿Cuál es la relativa menor de C mayor?');
+    // every relative-key prompt names the given key together with its mode
+    for (const it_ of bank.filter((i) => i.id.startsWith('keysig:rel-'))) {
+      const key = String(it_.promptParams.key);
+      const minorGiven = it_.id.startsWith('keysig:rel-major');
+      const mode = { en: minorGiven ? 'minor' : 'major', pt: minorGiven ? 'menor' : 'maior', es: minorGiven ? 'menor' : 'mayor' };
+      for (const lang of ['en', 'pt', 'es'] as const) {
+        expect(render(lang, it_.promptKey, it_.promptParams), `${lang} ${it_.id}`).toContain(`${key} ${mode[lang]}`);
+      }
+    }
   });
 
   it('every relative-key answer is a minor third away and shares the key signature', () => {

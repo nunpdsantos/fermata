@@ -43,8 +43,8 @@ const overlay: ExerciseLevelOverlay = {
 
   l1u1m2e1: {
     prompt:
-      'Identifica esta nota abaixo da pauta de clave de sol: encontra-se no espaço logo abaixo do C central.',
-    hint: 'A3 situa-se duas linhas suplementares abaixo da pauta de clave de sol. A descer a partir do C central: B3 está no espaço abaixo da linha suplementar, A3 está na linha suplementar seguinte.',
+      'Identifica esta nota abaixo da pauta de clave de sol: encontra-se na segunda linha suplementar inferior.',
+    hint: 'Abaixo da pauta de clave de sol: B3 está no espaço abaixo da primeira linha suplementar (C4), e A3 está na segunda linha suplementar.',
   },
   l1u1m2e2: {
     prompt:
@@ -81,8 +81,8 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l1u1m3: Meios-tons e Tons ----
 
   l1u1m3e1: {
-    prompt: 'Qual é o intervalo de C a Db?',
-    hint: 'De C a Db é a menor distância possível na música ocidental: um meio-tom (1 semitom). Duas letras diferentes (C, D) fazem dele uma 2.a — uma 2.a menor.',
+    prompt: 'Qual é o intervalo de Db, a descer, até C?',
+    hint: 'De Db a descer até C é a menor distância possível na música ocidental: um meio-tom (1 semitom), da tecla preta para a tecla branca logo abaixo. Duas letras diferentes (D, C) fazem dele uma 2.a — uma 2.a menor.',
   },
   l1u1m3e2: {
     prompt: 'Qual é o intervalo de C a D?',
