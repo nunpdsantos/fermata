@@ -18,6 +18,7 @@ import { buildChord, CHORD_FORMULAS } from '../../src/core/constants/chords';
 import { SCALE_FORMULAS } from '../../src/core/constants/scales';
 import { getPitchClass } from '../../src/core/constants/notes';
 import { validateAnswer } from '../../src/components/learn/exercises/validateExercise';
+import { translateChordQuality } from '../../src/i18n/content/musicTerms';
 
 // Dynamic import so script doesn't need to compile the entire module graph
 async function loadAll(): Promise<Record<string, ExerciseDefinition[]>[]> {
@@ -174,7 +175,12 @@ function deriveCorrect(cfg: ExerciseConfig): string | Set<number> | null {
             let problem: string | null = null;
             if (correct.length !== 1) {
               problem = `expected exactly one correct choice, got ${correct.length}`;
-            } else if (cfg.mode === 'chord' && cfg.quality && norm(correct[0].label) !== norm(cfg.quality)) {
+            } else if (
+              cfg.mode === 'chord' && cfg.quality &&
+              // Accept the raw key ('major7') or its readable English name
+              // ('Major 7th'), the form generated ear items use.
+              ![norm(cfg.quality), norm(translateChordQuality(cfg.quality, 'en'))].includes(norm(correct[0].label))
+            ) {
               problem = `correct label '${correct[0].label}' does not match quality '${cfg.quality}'`;
             } else if (cfg.mode === 'scale' && cfg.scaleType && norm(correct[0].label) !== norm(cfg.scaleType)) {
               problem = `correct label '${correct[0].label}' does not match scaleType '${cfg.scaleType}'`;

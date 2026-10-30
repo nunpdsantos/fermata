@@ -261,13 +261,13 @@ const overlay: ExerciseLevelOverlay = {
   l9u31m5e1: {
     prompt:
       'Escucha este acorde de séptima e identifica su cualidad.',
-    choices: ['Mayor con 7.ª', 'Menor con 7.ª', 'Séptima de dominante', 'Semidisminuido'],
+    choices: ['Mayor con 7.ª M', 'Menor con 7.ª', 'Séptima de dominante', 'Semidisminuido'],
     hint: 'El acorde mayor con 7.ª superpone una 7.ª mayor a una tríada mayor — exuberante y etéreo, común en el jazz y la bossa nova.',
   },
   l9u31m5e2: {
     prompt:
       'Escucha este acorde de séptima e identifica su cualidad.',
-    choices: ['Mayor con 7.ª', 'Menor con 7.ª', 'Séptima de dominante', 'Semidisminuido'],
+    choices: ['Mayor con 7.ª M', 'Menor con 7.ª', 'Séptima de dominante', 'Semidisminuido'],
     hint: 'El acorde menor con 7.ª superpone una 7.ª menor a una tríada menor — suave, cálido y relajado.',
   },
   l9u31m5e3: {
