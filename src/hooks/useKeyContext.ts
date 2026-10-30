@@ -5,6 +5,7 @@ import { getDiatonicChordsForScale } from '../core/constants/chords.ts';
 import { getScaleNotesWithOctaves, getVoicedChordNotes, getMidiNumber } from '../core/utils/pianoLayout.ts';
 import { getPitchClass } from '../core/constants/notes.ts';
 import { buildSpellingMap, spellFromMap, spellSharpDefault } from '../core/utils/spelling.ts';
+import { degreeOf, degreeColorSlot } from '../core/utils/degreeSpelling.ts';
 import type { Note, Scale, Chord, PitchedNote } from '../core/types/music.ts';
 import { DEGREE_COLORS } from '../design/tokens/colors.ts';
 import { useDegreeColorsEnabled } from './useDegreeColors.ts';
@@ -77,12 +78,18 @@ export function useKeyContext(): KeyContextValue {
     }));
   }, [scale]);
 
-  // Map pitch class → degree (1-based)
+  // Map pitch class → degree function (1–7), for EVERY scale note. The degree
+  // is read from the note's spelled letter, not its position in the list:
+  // C major pentatonic's G is degree 5 (dominant), not "note 4" (audit
+  // W1-06). Every note of 8- and 12-note scales is present too — the fretboard
+  // treats "no colour" as "not in the scale", so a missing entry used to hide
+  // chromatic and bebop notes (audit W3-03).
   const pitchClassToDegree = useMemo(() => {
     const m = new Map<number, number>();
-    scale.notes.forEach((note, i) => {
-      m.set(getPitchClass(note), i + 1);
-    });
+    for (const note of scale.notes) {
+      const pc = getPitchClass(note);
+      if (!m.has(pc)) m.set(pc, degreeColorSlot(degreeOf(scale.root, note)));
+    }
     return m;
   }, [scale]);
 

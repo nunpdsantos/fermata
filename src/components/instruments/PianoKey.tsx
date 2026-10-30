@@ -5,6 +5,7 @@ import { memo, useCallback, useEffect, useRef } from 'react';
 import type { PianoKey as PianoKeyData } from '../../core/utils/pianoLayout.ts';
 import { noteToString } from '../../core/types/music.ts';
 import type { Note } from '../../core/types/music.ts';
+import { writtenOctave } from '../../core/utils/degreeSpelling.ts';
 import { useAppStore } from '../../state/store.ts';
 
 type SizeMode = 'mobile' | 'tablet' | 'desktop';
@@ -206,6 +207,10 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
   // (keyData.octave) per the octave-boundary decision — labels are letter +
   // accidental, never octave-shifted for B♯/C♭.
   const isC = spelled.natural === 'C' && spelled.accidental === '';
+  // What a screen reader announces is a full pitch name, so its octave follows
+  // the LETTER (scientific pitch): the physical C5 key spelled B♯ is "B♯4" —
+  // "B♯5" would be a different, higher note (audit W1-17).
+  const spokenName = `${label}${writtenOctave(spelled, keyData.octave)}`;
   const color = highlightColor ?? 'var(--accent)';
 
   if (keyData.isBlack) {
@@ -254,7 +259,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
       <div
         ref={elementRef}
         role="button"
-        aria-label={`${label}${keyData.octave}`}
+        aria-label={spokenName}
         aria-pressed={isActive}
         tabIndex={isFocused ? 0 : -1}
         data-focus-ring="custom"
@@ -346,7 +351,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
     <div
       ref={elementRef}
       role="button"
-      aria-label={`${label}${keyData.octave}`}
+      aria-label={spokenName}
       aria-pressed={isActive}
       tabIndex={isFocused ? 0 : -1}
       data-focus-ring="custom"
