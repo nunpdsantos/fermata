@@ -14,6 +14,8 @@ export type ViewMode = 'explore' | 'learn' | 'drill';
 export type InstrumentType = 'piano' | 'guitar';
 export type ColorMode = 'functional' | 'absolute';
 export type ThemeMode = 'fermata' | 'fermata-night';
+/** 0 = Open position, 1–12 = I–XII, 'all' = whole neck, null = automatic. */
+export type GuitarPositionChoice = number | 'all' | null;
 
 // ─── Slice interfaces ───────────────────────────────────────────────────────
 
@@ -37,7 +39,10 @@ export interface InstrumentSlice {
   /** True while an instrument-input exercise is mounted — instruments then
    *  suppress Explore key/chord visuals and render highlightedNotes instead. */
   exerciseInputActive: boolean;
-  guitarScalePosition: number | null;
+  /** Classical position on the fretboard: 0 = Open, 1–12 = I–XII, 'all' =
+   *  whole neck, null = automatic (the suggested position for the scale).
+   *  Kept across key, scale and tuning changes (audit W3-08). */
+  guitarScalePosition: GuitarPositionChoice;
   guitarTuningId: string;
   setInstrument: (instrument: InstrumentType) => void;
   addActiveNote: (midi: number) => void;
@@ -45,7 +50,7 @@ export interface InstrumentSlice {
   clearActiveNotes: () => void;
   setHighlightedNotes: (notes: PitchedNote[]) => void;
   setExerciseInputActive: (active: boolean) => void;
-  setGuitarScalePosition: (position: number | null) => void;
+  setGuitarScalePosition: (position: GuitarPositionChoice) => void;
   setGuitarTuningId: (id: string) => void;
 }
 

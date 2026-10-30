@@ -474,7 +474,7 @@ function voicingToChordShape(
   chord: Chord,
   shapeName: string,
   shortName: string
-): ChordShape {
+): ChordShape | null {
   const strings: [
     ChordStringPosition,
     ChordStringPosition,
@@ -496,8 +496,11 @@ function voicingToChordShape(
   const baseFret =
     frettedPositions.length > 0 ? Math.min(...frettedPositions.map((p) => p!.fret)) : 0;
 
-  // Assign fingers based on fret positions
+  // Assign fingers based on fret positions. A voicing that needs a fifth
+  // finger cannot be played as written — drop it (audit W3-09: fingers used
+  // to be clamped to 4, printing the little finger on two frets).
   const fingerAssignments = assignFingers(voicing, baseFret);
+  if (fingerAssignments === null) return null;
 
   voicing.positions.forEach((pos, stringIndex) => {
     if (pos === null) {
@@ -558,8 +561,10 @@ function voicingToChordShape(
       }
     });
 
-    // Check for barre on fret 0 (relative)
-    if (fretCounts[0] && fretCounts[0].length >= 2) {
+    // Check for barre on fret 0 (relative) — only a real one: every string
+    // between its ends must be fretted (audit W3-09: barres used to be drawn
+    // across strings that ring open).
+    if (fretCounts[0] && fretCounts[0].length >= 2 && isRealBarre(voicing, fretCounts[0])) {
       const barreStrings = fretCounts[0].sort((a, b) => a - b);
       shape.barreInfo = {
         fret: 0,
@@ -587,7 +592,23 @@ function voicingToChordShape(
  * from 2. Adjacent strings on the same higher fret may share a finger
  * (mini-barre). Returns a map of string index → finger number.
  */
-function assignFingers(voicing: Voicing, baseFret: number): Record<number, number> {
+/**
+ * A run of notes on the same (lowest) fret can be barred with the index
+ * finger only when every string between the outer two is fretted — an open
+ * or muted string inside would be pressed down by the barre.
+ */
+function isRealBarre(voicing: Voicing, stringIndices: number[]): boolean {
+  const lo = Math.min(...stringIndices);
+  const hi = Math.max(...stringIndices);
+  for (let s = lo; s <= hi; s++) {
+    const pos = voicing.positions[s];
+    if (pos === null || pos.fret === 0) return false;
+  }
+  return true;
+}
+
+/** Returns null when the voicing needs more than four fingers. */
+function assignFingers(voicing: Voicing, baseFret: number): Record<number, number> | null {
   const assignments: Record<number, number> = {};
 
   // Group positions by relative fret
@@ -604,9 +625,10 @@ function assignFingers(voicing: Voicing, baseFret: number): Record<number, numbe
     .map(Number)
     .sort((a, b) => a - b);
 
-  // Check if this is a barre chord (multiple notes on lowest fret)
+  // Check if this is a barre chord (multiple notes on lowest fret, with no
+  // open or muted string between them)
   const lowestFret = frets[0];
-  const isBarreChord = lowestFret === 0 && byFret[0] && byFret[0].length >= 2;
+  const isBarreChord = lowestFret === 0 && byFret[0] && byFret[0].length >= 2 && isRealBarre(voicing, byFret[0]);
 
   // For barre chords, index finger (1) is used for the barre
   // Other fingers start from 2
@@ -634,25 +656,27 @@ function assignFingers(voicing: Voicing, baseFret: number): Record<number, numbe
 
         if (isAdjacent && sortedStrings.length <= 3) {
           // Mini-barre with one finger
-          sortedStrings.forEach((s) => (assignments[s] = Math.min(nextFinger, 4)));
+          sortedStrings.forEach((s) => (assignments[s] = nextFinger));
           nextFinger++;
         } else {
           // Each string gets its own finger
           sortedStrings.forEach((s) => {
-            assignments[s] = Math.min(nextFinger, 4);
+            assignments[s] = nextFinger;
             nextFinger++;
           });
         }
       } else {
         // Single note on this fret
         sortedStrings.forEach((s) => {
-          assignments[s] = Math.min(nextFinger, 4);
+          assignments[s] = nextFinger;
           nextFinger++;
         });
       }
     }
   });
 
+  // More than four fingers needed → not playable as written.
+  if (Object.values(assignments).some((f) => f > 4)) return null;
   return assignments;
 }
 
@@ -748,6 +772,7 @@ export function generateChordShapes(
       const shortName = baseFret === 0 ? 'Open' : `Pos ${baseFret}`;
 
       const shape = voicingToChordShape(voicing, chord, shapeName, shortName);
+      if (shape === null) return;
 
       results.push({ shape, baseFret });
     });

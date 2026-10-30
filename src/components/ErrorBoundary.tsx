@@ -42,6 +42,14 @@ const VIEW_SETTINGS_DEFAULTS: Partial<AppState> = {
  */
 const DRILL_STORE_KEY_LITERAL = 'fermata-drill-v1';
 
+/**
+ * Guitar fingering-override store key (FINGERING_STORE_KEY in
+ * src/state/fingeringStore.ts), inlined for the same reason as the drill key:
+ * this eager, app-level boundary should not pull stores into its imports.
+ * src/state/__tests__/fingeringStore.test.ts asserts the two stay equal.
+ */
+const FINGERING_STORE_KEY_LITERAL = 'fermata-fingering-v1';
+
 interface Props {
   children: ReactNode;
   /** When this value changes, the boundary resets (clears the error). */
@@ -119,6 +127,8 @@ export class ErrorBoundary extends Component<Props, State> {
     // entry chunk). Then lazily load the store for a best-effort in-memory
     // reset; the reload ALWAYS happens, even if that import fails.
     localStorage.removeItem(DRILL_STORE_KEY_LITERAL);
+    // Guitar fingering overrides (a small store with no heavy dependencies).
+    localStorage.removeItem(FINGERING_STORE_KEY_LITERAL);
     import('../state/drillStore')
       .then((m) => m.useDrillStore.getState().resetDrillData())
       .catch(() => {})

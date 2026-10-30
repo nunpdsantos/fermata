@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest';
-import { render, cleanup, fireEvent, screen } from '@testing-library/react';
+import { render, cleanup, fireEvent, screen, act } from '@testing-library/react';
 import { useAppStore } from '../../../state/store';
 
 beforeAll(() => {
@@ -107,13 +107,23 @@ describe('Fretboard — opens at the nut end', () => {
     cleanup();
   });
 
-  it('scrolls to the far right (nut-RIGHT layout) on mount when nothing is selected', () => {
-    useAppStore.setState({ selectedChord: null });
+  it('scrolls to the far right (nut-RIGHT layout) on mount when the whole neck is shown', () => {
+    useAppStore.setState({ selectedChord: null, guitarScalePosition: 'all' });
     const { container } = render(<FretboardForNut />);
     const scrollers = [...container.querySelectorAll('div')].filter(
       (d) => getComputedStyle(d).overflowX === 'auto' || d.className.includes('overflow-x-auto'),
     );
     // The board's horizontal scroller should start at the nut end: scrollWidth - clientWidth.
     expect(scrollers.some((d) => d.scrollLeft === 360)).toBe(true);
+  });
+
+  it('switching from a position to the whole neck ("All") also opens at the nut end', () => {
+    useAppStore.setState({ selectedChord: null, guitarScalePosition: 5 });
+    const { container } = render(<FretboardForNut />);
+    const grid = screen.getByRole('grid', { name: 'fretboard.label' }) as HTMLElement;
+    expect(grid.scrollLeft).toBe(0);
+    act(() => useAppStore.getState().setGuitarScalePosition('all'));
+    expect(grid.scrollLeft).toBe(360);
+    expect(container).toBeTruthy();
   });
 });

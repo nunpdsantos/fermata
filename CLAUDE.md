@@ -67,7 +67,7 @@ Scale degree function is encoded in color throughout the app:
 - VexFlow 5.0 uses camelCase API: `numBeats`/`beatValue` (not `num_beats`/`beat_value`).
 - VexFlow loads its music fonts as base64 `data:` FontFaces at runtime — the CSP in `vercel.json` must keep `font-src 'self' data:` or production notation renders missing-glyph boxes (dev has no CSP, so local checks won't catch it).
 - Header-only deploys never reach installed PWAs: the service worker precaches `index.html` WITH its response headers, and identical content means no SW update. Any `vercel.json` header change must be paired with a content change (e.g. the build comment atop `index.html`).
-- **Fretboard orientation is SETTLED — do not "fix" it.** It renders nut-RIGHT, low E on top (mirrored from printed chord charts). A flip to textbook orientation was shipped and **reverted on Nuno's feedback** (2026-06-09): he reads the original natively. Position legibility is handled instead by the anchor-fret badge ("3fr") + nut-closest default voicing (see Audio & instruments below).
+- **Fretboard orientation is SETTLED — do not "fix" it.** It renders nut-RIGHT, low E on top (mirrored from printed chord charts). A flip to textbook orientation was shipped and **reverted on Nuno's feedback** (2026-06-09): he reads the original natively. Position legibility is handled instead by the anchor-fret badge ("3fr") + nut-closest default voicing for chords, and the Roman-numeral badge for scale positions (see Audio & instruments below).
 - PT overlay files carry full PT-PT diacritics (restored 2026-07-24) — write proper European Portuguese orthography in every edit; conventions in `docs/pt-diacritic-todo.md`.
 - The i18n content overlays REPLACE English text wholesale (keyed by module id + array index). Every English curriculum/template edit needs hand-mirrored PT + ES edits; `templateParity.test.ts` enforces token parity and will fail the suite if overlays drift.
 
@@ -143,6 +143,27 @@ src/
   "every barre shape looks identical"; orientation itself is nut-right by Nuno's explicit
   preference (see Gotchas). Anchor math must use ABSOLUTE frets (baseFret + pos.fret>0
   filter is wrong: transposed open shapes encode the barre as open strings + baseFret).
+  Every displayed shape passes `isPlayableChordShape` (one finger per fret, no barre over
+  open strings, ≤ fret 15); inversions / slash chords put the requested bass lowest when a
+  grip allows it, else the board says so (`arrangeShapesForBass`). Default order is
+  `sortShapesForDefault` (nut-closest; the C-/G-shape major barres are offered, never the
+  default — a test pins main's default grip for all 24 major/minor triads).
+- **Fretboard scale positions (W3, 2026-10-30, decision D-02):** classical positions
+  Open + I–XII GENERATED from the scale engine for any tuning
+  (`src/core/utils/guitarPositions.ts` — 4-fret window, one finger per fret, one-sided
+  stretch only to keep the scale continuous, exhaustive oracle test). On a stretched
+  string the hand spreads (e.g. frets 5-6-8-9 = fingers 1-2-3-4) so no finger plays two
+  frets — true for every scale except the chromatic (five notes on one string). Strings a
+  5th apart (Drop D, DADGAD, open tunings) leave one note out of reach; the UI says so.
+  The default view is
+  a position (lowest holding the root on string 6/5), "All" = whole neck; the choice
+  persists across key/scale/tuning changes and reloads (`guitarScalePosition`: 0–12 |
+  'all' | null = automatic). Dots show fingers / degrees / notes; fingering overrides
+  (teacher's fingerings) live in `src/state/fingeringStore.ts` (`fermata-fingering-v1`,
+  in the backup file; ErrorBoundary carries the key as a literal, like the drill key). The
+  hand-typed CAGED/3NPS library was deleted, not repaired. The guitar dock is content-sized
+  on desktop (`AppShell`; the piano keeps 260 px) — a fixed height hid the high-E string
+  under the wrapped controls; `e2e/fretboard-fit.spec.ts` measures it in a real browser.
 - **Exercise instrument input:** `useKeyContext` has an exercise-input mode
   (`exerciseInputActive` in the instrument slice) that suppresses Explore's scale/chord
   visuals during exercises and surfaces the learner's toggled notes through the
@@ -184,7 +205,7 @@ src/
 - ~380 hand-authored exercises across 118 modules in 9 levels
 
 ### Features (Phase 6)
-- Custom guitar tunings (6 presets, chord shapes gated for non-standard)
+- Custom guitar tunings (6 presets, chord shapes gated for non-standard — the board shows the chord's notes + a notice; scale positions work in every tuning)
 - Theme system (fermata day + fermata-night, CSS custom properties, full migration)
 - PWA (offline, install prompt, update notification, font caching)
 - Scale comparison (chromatic diff grid, shared/unique visualization)

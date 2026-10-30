@@ -44,6 +44,14 @@ function sanitizePersistedAppState(persisted: unknown): Record<string, unknown> 
     delete state.lastView;
   }
 
+  // guitarScalePosition: 0–12 (Open, I–XII), 'all', or null (automatic).
+  // Anything else becomes automatic.
+  if ('guitarScalePosition' in state) {
+    const p = state.guitarScalePosition;
+    const valid = p === null || p === 'all' || (typeof p === 'number' && Number.isInteger(p) && p >= 0 && p <= 12);
+    if (!valid) state.guitarScalePosition = null;
+  }
+
   // Numeric fields: anything non-finite falls back to the slice default
   for (const k of NUMERIC_KEYS) {
     if (typeof state[k] !== 'number' || !Number.isFinite(state[k])) {
@@ -72,6 +80,7 @@ export const useAppStore = create<AppState>()(
         selectedScale: state.selectedScale,
         instrument: state.instrument,
         guitarTuningId: state.guitarTuningId,
+        guitarScalePosition: state.guitarScalePosition,
         baseOctave: state.baseOctave,
         colorMode: state.colorMode,
         scaleOctaves: state.scaleOctaves,

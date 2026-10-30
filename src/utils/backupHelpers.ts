@@ -3,7 +3,7 @@
  *
  * Long-term progress lives only in browser localStorage; these helpers give
  * it a file-based escape hatch. A backup is a JSON envelope around the raw
- * zustand persist payloads of the three stores. Import writes the payloads
+ * zustand persist payloads of the persisted stores. Import writes the payloads
  * back to localStorage and the app is reloaded — each store's own shape
  * guards and migrations then validate the content, so no store-internal
  * validation is duplicated here.
@@ -13,6 +13,9 @@ export const BACKUP_KEYS = [
   'music-theory-app',
   'music-theory-progress',
   'fermata-drill-v1',
+  // Guitar fingering overrides (W10-05) — FINGERING_STORE_KEY in
+  // state/fingeringStore.ts; inlined so this module stays dependency-free.
+  'fermata-fingering-v1',
 ] as const;
 
 export type BackupKey = (typeof BACKUP_KEYS)[number];
@@ -91,6 +94,7 @@ export function backupSections(backup: FermataBackup): string[] {
     'music-theory-app': 'preferences',
     'music-theory-progress': 'learn progress',
     'fermata-drill-v1': 'drill progress',
+    'fermata-fingering-v1': 'guitar fingerings',
   };
   return (Object.keys(backup.data) as BackupKey[]).map((k) => names[k]);
 }
