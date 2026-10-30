@@ -31,7 +31,11 @@ export function solfegeNotes(lang: 'pt' | 'es', text: string): string[] {
   if (lang === 'pt') {
     // Accented forms are unambiguous; Mi/Sol/Si are not PT words when capitalised.
     const re = new RegExp(`(?<![\\wÀ-ÿ])(?:Dó|Ré|Fá|Lá|Mi|Sol|Si)${ACC}${SUFFIX}${END}`, 'g');
-    for (const m of t.matchAll(re)) found.push(m[0]);
+    for (const m of t.matchAll(re)) {
+      // A bare "Sim" is the word "yes" ("Sim, repor"); "Sim7" would still be a chord.
+      if (m[0] === 'Sim' && !/^\d/.test(t.slice((m.index ?? 0) + 3))) continue;
+      found.push(m[0]);
+    }
   } else {
     const sure = new RegExp(`(?<![\\wÀ-ÿ])(?:Do|Re|Fa|Mi|Sol)${ACC}${SUFFIX}${END}`, 'g');
     for (const m of t.matchAll(sure)) found.push(m[0]);
@@ -81,6 +85,7 @@ describe('detector proven on planted strings (audit examples)', () => {
     ['pt', 'Clave de Sol e Clave de Fá'],
     ['pt', 'No solfejo móvel, "Do" representa sempre a tónica. Em C maior, Do = C.'],
     ['es', 'El minimalismo de drone (La Monte Young) sostiene sonidos'],
+    ['pt', 'Sim, repor'],
   ] as const)('%s "%s" is not flagged', (lang, text) => {
     expect(solfegeNotes(lang, text)).toEqual([]);
   });
