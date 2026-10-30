@@ -158,7 +158,7 @@ const RAW: Array<[string, string, string]> = [
   ['l8u25m3', 'Canon and Other Imitative Forms', 'Canons at various intervals and special types'],
   ['l8u26m1', 'Sonata Form in Depth', 'Exposition, development, and recapitulation in full sectional detail'],
   ['l8u26m2', 'Variation, Rondo, and Ritornello Forms', 'Theme and variations, chaconne, passacaglia, rondo, and ritornello'],
-  ['l8u26m3', 'Orchestration and Instrumentation Awareness', 'Orchestral families, ranges, timbres, and transposition'],
+  ['l8u26m3', 'Orchestration and Instrumentation Awareness', 'Orchestral families, timbres, doublings, and transposition'],
   ['l8u27m1', 'Pitch-Class Sets and Set Theory', 'Pitch class, interval class, normal order, prime form, ICV, and Forte numbers'],
   ['l8u27m2', 'Twelve-Tone Technique', 'Tone rows, P/R/I/RI forms, the twelve-tone matrix, and combinatoriality'],
   ['l8u27m3', '20th-Century Techniques: Planing, Polytonality, Pandiatonicism', 'Quartal harmony, parallel motion, bitonality, and free diatonicism'],

@@ -126,7 +126,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Analiza este aspecto de la forma sonata en detalle.',
       hintTemplate:
-        'Secciones de la forma sonata: Exposición (P-T-S-C), Desarrollo (fragmentación, secuencias, tonalidades remotas), Reexposición (todo en la tónica), Coda opcional.',
+        'Secciones de la forma sonata: Exposición (FTG-TR-STG-CT), Desarrollo (fragmentación, secuencias, tonalidades remotas), Reexposición (todo en la tónica), Coda opcional.',
       choiceSets: [
         [
           'La transición en la exposición modula de la tónica al área tonal secundaria',
@@ -232,7 +232,7 @@ const overlay: TemplateLevelOverlay = {
         'Clases de altura: C=0 hasta B=11. Un conjunto de clases de altura lista CAs únicas en orden ascendente. La forma normal las coloca en la disposición más compacta.',
       choiceSets: [
         [
-          'Un conjunto de clases de altura elimina equivalencia de octava y enarmónica, usando enteros de 0 a 11',
+          'Un conjunto de clases de altura trata las notas equivalentes a la octava y enarmónicas como una sola clase, usando enteros de 0 a 11',
           'Los conjuntos de clases de altura usan nombres de notas y números de octava',
           'Los conjuntos de clases de altura solo funcionan para música tonal',
           'Los enteros de conjuntos de clases de altura van de 0 a 7',

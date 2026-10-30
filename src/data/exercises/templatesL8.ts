@@ -139,7 +139,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Analyze this aspect of sonata form in detail.',
-        hintTemplate: 'Sonata form sections: Exposition (P-T-S-C), Development (fragmentation, sequences, remote keys), Recapitulation (all in tonic), optional Coda.',
+        hintTemplate: 'Sonata form sections: Exposition (FTG-TR-STG-CT), Development (fragmentation, sequences, remote keys), Recapitulation (all in tonic), optional Coda.',
         params: {
           choiceSets: [
             [
@@ -258,7 +258,7 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'A pitch-class set removes octave and enharmonic equivalence, using integers 0-11', correct: true },
+              { label: 'A pitch-class set treats octave and enharmonic equivalents as one class, using integers 0-11', correct: true },
               { label: 'Pitch-class sets use letter names and octave numbers', correct: false },
               { label: 'Pitch-class sets only work for tonal music', correct: false },
               { label: 'Pitch-class set integers range from 0 to 7', correct: false },
