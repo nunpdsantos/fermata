@@ -171,23 +171,43 @@ const MAJOR_SHAPES: ChordShape[] = [
     ],
     barreInfo: { fret: 0, fromString: 5, toString: 1 },
   },
-  // C-shape Barre Major (moveable) - root on 5th string
+  // C-shape Barre Major (moveable) - root on 5th string, 3 frets above the
+  // index barre (D major: x 5 4 2 3 2).
   {
     name: 'C-shape Barre',
     shortName: 'C barre',
     type: 'barre',
     cagedShape: 'C',
     rootString: 5,
-    rootFretOffset: 0,
+    rootFretOffset: 3,
     strings: [
       { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 'bar' }, // 5th - root (index barre)
-      { fret: 2, finger: 3 }, // 4th - 5th (ring)
-      { fret: 1, finger: 2 }, // 3rd - root (middle)
-      { fret: 2, finger: 4 }, // 2nd - 3rd (pinky)
-      { fret: 0, finger: 'bar' }, // 1st - 5th (index barre)
+      { fret: 3, finger: 4 }, // 5th - root (little finger)
+      { fret: 2, finger: 3 }, // 4th - 3rd (ring)
+      { fret: 0, finger: 'bar' }, // 3rd - 5th (index barre)
+      { fret: 1, finger: 2 }, // 2nd - root (middle)
+      { fret: 0, finger: 'bar' }, // 1st - 3rd (index barre)
     ],
-    barreInfo: { fret: 0, fromString: 5, toString: 1 },
+    barreInfo: { fret: 0, fromString: 3, toString: 1 },
+  },
+  // G-shape Barre Major (moveable) - root on 6th string, 3 frets above the
+  // index barre (A major: 5 4 2 2 2 5).
+  {
+    name: 'G-shape Barre',
+    shortName: 'G barre',
+    type: 'barre',
+    cagedShape: 'G',
+    rootString: 6,
+    rootFretOffset: 3,
+    strings: [
+      { fret: 3, finger: 3 }, // 6th - root (ring)
+      { fret: 2, finger: 2 }, // 5th - 3rd (middle)
+      { fret: 0, finger: 'bar' }, // 4th - 5th (index barre)
+      { fret: 0, finger: 'bar' }, // 3rd - root (index barre)
+      { fret: 0, finger: 'bar' }, // 2nd - 3rd (index barre)
+      { fret: 3, finger: 4 }, // 1st - root (little finger)
+    ],
+    barreInfo: { fret: 0, fromString: 4, toString: 2 },
   },
   // D-shape Barre Major (moveable) - root on 4th string
   {
@@ -204,23 +224,6 @@ const MAJOR_SHAPES: ChordShape[] = [
       { fret: 2, finger: 2 }, // 3rd - 5th
       { fret: 3, finger: 4 }, // 2nd - root
       { fret: 2, finger: 3 }, // 1st - 3rd
-    ],
-  },
-  // G-shape Barre Major (moveable) - root on 6th string
-  {
-    name: 'G-shape Barre',
-    shortName: 'G barre',
-    type: 'barre',
-    cagedShape: 'G',
-    rootString: 6,
-    rootFretOffset: 0,
-    strings: [
-      { fret: 0, finger: 1 }, // 6th - root
-      { fret: 2, finger: 2 }, // 5th - 3rd
-      { fret: 0, finger: 1 }, // 4th - 5th
-      { fret: 0, finger: 1 }, // 3rd - root
-      { fret: 0, finger: 1 }, // 2nd - 3rd
-      { fret: 3, finger: 4 }, // 1st - root
     ],
   },
 ];
@@ -316,23 +319,6 @@ const MINOR_SHAPES: ChordShape[] = [
       { fret: 0, finger: 'bar' }, // 1st
     ],
     barreInfo: { fret: 0, fromString: 5, toString: 1 },
-  },
-  // C-shape Barre Minor (moveable) - root on 5th string
-  {
-    name: 'Cm-shape Barre',
-    shortName: 'C shape',
-    type: 'barre',
-    cagedShape: 'C',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root
-      { fret: 2, finger: 3 }, // 4th - 5th
-      { fret: 1, finger: 2 }, // 3rd - root
-      { fret: 1, finger: 2 }, // 2nd - b3
-      { fret: 0, finger: 1 }, // 1st - 5th
-    ],
   },
   // D-shape Barre Minor (moveable) - root on 4th string
   {
@@ -496,23 +482,6 @@ const DOMINANT7_SHAPES: ChordShape[] = [
       { fret: 2, finger: 3 }, // 1st - 3rd (ring barring with 3rd string)
     ],
   },
-  // C7-shape Barre (moveable) - root on 5th string
-  {
-    name: 'C7-shape Barre',
-    shortName: 'C shape',
-    type: 'barre',
-    cagedShape: 'C',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root
-      { fret: 2, finger: 3 }, // 4th - 5th
-      { fret: 3, finger: 4 }, // 3rd - b7
-      { fret: 2, finger: 2 }, // 2nd - 3rd
-      { fret: 0, finger: 1 }, // 1st - 5th
-    ],
-  },
 ];
 
 // ============================================
@@ -622,23 +591,6 @@ const MINOR7_SHAPES: ChordShape[] = [
       { fret: 2, finger: 3 }, // 3rd - 5th
       { fret: 1, finger: 2 }, // 2nd - b7
       { fret: 1, finger: 2 }, // 1st - b3
-    ],
-  },
-  // C-shape Barre (moveable) - root on 5th string
-  {
-    name: 'Minor 7 - C shape Barre',
-    shortName: 'C shape',
-    type: 'barre',
-    cagedShape: 'C',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root
-      { fret: 2, finger: 3 }, // 4th - 5th
-      { fret: 3, finger: 4 }, // 3rd - b7
-      { fret: 1, finger: 2 }, // 2nd - b3
-      { fret: 0, finger: 1 }, // 1st - 5th
     ],
   },
 ];
@@ -1010,23 +962,6 @@ const DIMINISHED_SHAPES: ChordShape[] = [
       { fret: null, finger: 0 }, // 1st - muted
     ],
   },
-  // Dim D-shape (root on 4th string) - higher voicing
-  {
-    name: 'Dim D-shape',
-    shortName: 'D shape',
-    type: 'barre',
-    cagedShape: 'D',
-    rootString: 4,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: null, finger: 0 }, // 5th - muted
-      { fret: 0, finger: 1 }, // 4th - root
-      { fret: 2, finger: 3 }, // 3rd - b5
-      { fret: 2, finger: 3 }, // 2nd - root octave
-      { fret: 1, finger: 2 }, // 1st - b3
-    ],
-  },
 ];
 
 // ============================================
@@ -1124,23 +1059,6 @@ const HALF_DIMINISHED_SHAPES: ChordShape[] = [
       { fret: 0, finger: 1 }, // 3rd - b7
       { fret: 1, finger: 3 }, // 2nd - b3
       { fret: null, finger: 0 }, // 1st - muted
-    ],
-  },
-  // m7b5 D-shape (root on 4th string) - jazz voicing
-  {
-    name: 'm7b5 D-shape',
-    shortName: 'D shape',
-    type: 'barre',
-    cagedShape: 'D',
-    rootString: 4,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: null, finger: 0 }, // 5th - muted
-      { fret: 0, finger: 1 }, // 4th - root
-      { fret: 3, finger: 4 }, // 3rd - b5
-      { fret: 2, finger: 3 }, // 2nd - b7
-      { fret: 1, finger: 2 }, // 1st - b3
     ],
   },
 ];
@@ -1285,31 +1203,15 @@ const SIXTH_SHAPES: ChordShape[] = [
     cagedShape: 'A',
     rootString: 5,
     rootFretOffset: 0,
+    // Index on the root; the ring finger lies across strings 4-1 two frets
+    // up (finger 1 used to be printed on both frets, audit W3-09).
     strings: [
       { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 'bar' }, // 5th - root
-      { fret: 2, finger: 1 }, // 4th - 5th
-      { fret: 2, finger: 1 }, // 3rd - root
-      { fret: 2, finger: 1 }, // 2nd - 3rd
-      { fret: 2, finger: 2 }, // 1st - 6th
-    ],
-    barreInfo: { fret: 0, fromString: 5, toString: 1 },
-  },
-  // D6-shape Barre (moveable) - root on 4th string
-  {
-    name: 'D6-shape Barre',
-    shortName: 'D shape',
-    type: 'barre',
-    cagedShape: 'D',
-    rootString: 4,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: null, finger: 0 }, // 5th - muted
-      { fret: 0, finger: 1 }, // 4th - root
-      { fret: 2, finger: 2 }, // 3rd - 5th
-      { fret: 2, finger: 3 }, // 2nd - root
-      { fret: 2, finger: 4 }, // 1st - 3rd (or 6th variation)
+      { fret: 0, finger: 1 }, // 5th - root (index)
+      { fret: 2, finger: 3 }, // 4th - 5th (ring, partial barre)
+      { fret: 2, finger: 3 }, // 3rd - root
+      { fret: 2, finger: 3 }, // 2nd - 3rd
+      { fret: 2, finger: 3 }, // 1st - 6th
     ],
   },
 ];
@@ -1386,23 +1288,6 @@ const MINOR6_SHAPES: ChordShape[] = [
       { fret: 2, finger: 3 }, // 3rd - root (ring barre)
       { fret: 1, finger: 2 }, // 2nd - b3 (middle)
       { fret: 2, finger: 4 }, // 1st - 6th (pinky)
-    ],
-  },
-  // Dm6-shape Barre (moveable) - root on 4th string
-  {
-    name: 'Dm6-shape Barre',
-    shortName: 'D shape',
-    type: 'barre',
-    cagedShape: 'D',
-    rootString: 4,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: null, finger: 0 }, // 5th - muted
-      { fret: 0, finger: 1 }, // 4th - root
-      { fret: 2, finger: 3 }, // 3rd - 5th
-      { fret: 1, finger: 2 }, // 2nd - b3
-      { fret: 2, finger: 4 }, // 1st - 6th
     ],
   },
 ];
@@ -1705,48 +1590,6 @@ const POWER_SHAPES: ChordShape[] = [
 ];
 
 // ============================================
-// AUGMENTED 7 SHAPES (7#5)
-// ============================================
-
-const AUGMENTED7_SHAPES: ChordShape[] = [
-  // E7#5-shape Barre - root on 6th string
-  {
-    name: 'E7#5-shape Barre',
-    shortName: 'E shape',
-    type: 'barre',
-    cagedShape: 'E',
-    rootString: 6,
-    rootFretOffset: 0,
-    strings: [
-      { fret: 0, finger: 'bar' }, // 6th - root (index barre)
-      { fret: 2, finger: 3 }, // 5th - 5th (ring)
-      { fret: 1, finger: 2 }, // 4th - b7 (middle barre across 4th-2nd)
-      { fret: 1, finger: 2 }, // 3rd - 3rd (middle barre)
-      { fret: 1, finger: 2 }, // 2nd - #5 (middle barre)
-      { fret: null, finger: 0 }, // 1st - muted
-    ],
-    barreInfo: { fret: 0, fromString: 6, toString: 6 },
-  },
-  // A7#5-shape Barre - root on 5th string
-  {
-    name: 'A7#5-shape Barre',
-    shortName: 'A shape',
-    type: 'barre',
-    cagedShape: 'A',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root
-      { fret: 3, finger: 4 }, // 4th - #5
-      { fret: 1, finger: 2 }, // 3rd - 3rd
-      { fret: 2, finger: 3 }, // 2nd - b7
-      { fret: null, finger: 0 }, // 1st - muted
-    ],
-  },
-];
-
-// ============================================
 // MINOR MAJOR 7 SHAPES (mMaj7)
 // ============================================
 
@@ -2038,65 +1881,6 @@ const MINOR9_SHAPES: ChordShape[] = [
 ];
 
 // ============================================
-// DOMINANT 7 FLAT 9 SHAPES (7b9)
-// ============================================
-
-const DOMINANT7FLAT9_SHAPES: ChordShape[] = [
-  // E7b9-shape Barre - root on 6th string
-  {
-    name: 'E7b9-shape Barre',
-    shortName: 'E shape',
-    type: 'barre',
-    cagedShape: 'E',
-    rootString: 6,
-    rootFretOffset: 0,
-    strings: [
-      { fret: 0, finger: 'bar' }, // 6th - root (index barre)
-      { fret: 2, finger: 3 }, // 5th - 5th (ring)
-      { fret: 0, finger: 'bar' }, // 4th - b7 (index barre)
-      { fret: 1, finger: 2 }, // 3rd - 3rd (middle barre)
-      { fret: 1, finger: 2 }, // 2nd - b9 (middle barre)
-      { fret: null, finger: 0 }, // 1st - muted
-    ],
-    barreInfo: { fret: 0, fromString: 6, toString: 4 },
-  },
-  // A7b9-shape Barre - root on 5th string
-  {
-    name: 'A7b9-shape Barre',
-    shortName: 'A shape',
-    type: 'barre',
-    cagedShape: 'A',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root (index)
-      { fret: 2, finger: 3 }, // 4th - 5th (ring)
-      { fret: 1, finger: 2 }, // 3rd - 3rd (middle)
-      { fret: 2, finger: 4 }, // 2nd - b7 (pinky)
-      { fret: 1, finger: 2 }, // 1st - b9 (middle stretches)
-    ],
-  },
-  // Compact 7b9 voicing - root on 4th string
-  {
-    name: 'D7b9-shape Barre',
-    shortName: 'D shape',
-    type: 'barre',
-    cagedShape: 'D',
-    rootString: 4,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: null, finger: 0 }, // 5th - muted
-      { fret: 0, finger: 1 }, // 4th - root
-      { fret: 1, finger: 2 }, // 3rd - 3rd
-      { fret: 1, finger: 2 }, // 2nd - b7
-      { fret: 1, finger: 2 }, // 1st - b9
-    ],
-  },
-];
-
-// ============================================
 // DOMINANT 7 SHARP 9 SHAPES (7#9) - "Hendrix chord"
 // ============================================
 
@@ -2119,23 +1903,6 @@ const DOMINANT7SHARP9_SHAPES: ChordShape[] = [
     ],
     barreInfo: { fret: 0, fromString: 6, toString: 4 },
   },
-  // A7#9-shape Barre - root on 5th string
-  {
-    name: 'A7#9-shape Barre',
-    shortName: 'A shape',
-    type: 'barre',
-    cagedShape: 'A',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root (index)
-      { fret: 2, finger: 3 }, // 4th - 5th (ring)
-      { fret: 1, finger: 2 }, // 3rd - 3rd (middle)
-      { fret: 2, finger: 3 }, // 2nd - b7 (ring barring 4th & 2nd)
-      { fret: 3, finger: 4 }, // 1st - #9 (pinky)
-    ],
-  },
 ];
 
 // ============================================
@@ -2143,23 +1910,6 @@ const DOMINANT7SHARP9_SHAPES: ChordShape[] = [
 // ============================================
 
 const DOMINANT7FLAT5_SHAPES: ChordShape[] = [
-  // A7b5-shape Barre - root on 5th string
-  {
-    name: 'A7b5-shape Barre',
-    shortName: 'A shape',
-    type: 'barre',
-    cagedShape: 'A',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root
-      { fret: 1, finger: 2 }, // 4th - b5
-      { fret: 1, finger: 2 }, // 3rd - 3rd
-      { fret: 2, finger: 3 }, // 2nd - b7
-      { fret: null, finger: 0 }, // 1st - muted
-    ],
-  },
   // E7b5-shape Barre - root on 6th string
   {
     name: 'E7b5-shape Barre',
@@ -2202,23 +1952,6 @@ const DOMINANT7SHARP5_SHAPES: ChordShape[] = [
     ],
     barreInfo: { fret: 0, fromString: 6, toString: 4 },
   },
-  // A7#5-shape Barre - root on 5th string
-  {
-    name: 'A7#5-shape Barre',
-    shortName: 'A shape',
-    type: 'barre',
-    cagedShape: 'A',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root
-      { fret: 3, finger: 4 }, // 4th - #5
-      { fret: 1, finger: 2 }, // 3rd - 3rd
-      { fret: 2, finger: 3 }, // 2nd - b7
-      { fret: null, finger: 0 }, // 1st - muted
-    ],
-  },
 ];
 
 // ============================================
@@ -2241,23 +1974,6 @@ const DOMINANT7ALT_SHAPES: ChordShape[] = [
       { fret: 1, finger: 3 }, // 3rd - 3rd
       { fret: 1, finger: 4 }, // 2nd - b9
       { fret: null, finger: 0 }, // 1st - muted
-    ],
-  },
-  // A7alt-shape Barre - root on 5th string (#5, #9 voicing)
-  {
-    name: 'A7alt-shape Barre',
-    shortName: 'A shape',
-    type: 'barre',
-    cagedShape: 'A',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root
-      { fret: 1, finger: 2 }, // 4th - b5
-      { fret: 1, finger: 2 }, // 3rd - 3rd
-      { fret: 2, finger: 3 }, // 2nd - b7
-      { fret: 3, finger: 4 }, // 1st - #9
     ],
   },
 ];
@@ -2409,48 +2125,6 @@ const MINOR11_SHAPES: ChordShape[] = [
 ];
 
 // ============================================
-// DOMINANT 9 SHARP 11 SHAPES (9#11)
-// ============================================
-
-const DOMINANT9SHARP11_SHAPES: ChordShape[] = [
-  // A9#11-shape Barre - root on 5th string
-  {
-    name: 'A9#11-shape Barre',
-    shortName: 'A shape',
-    type: 'barre',
-    cagedShape: 'A',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root
-      { fret: 1, finger: 2 }, // 4th - #11
-      { fret: 0, finger: 1 }, // 3rd - b7
-      { fret: 0, finger: 1 }, // 2nd - 9th
-      { fret: 1, finger: 3 }, // 1st - 3rd
-    ],
-  },
-  // E9#11-shape Barre - root on 6th string
-  {
-    name: 'E9#11-shape Barre',
-    shortName: 'E shape',
-    type: 'barre',
-    cagedShape: 'E',
-    rootString: 6,
-    rootFretOffset: 0,
-    strings: [
-      { fret: 0, finger: 'bar' }, // 6th - root (index barre)
-      { fret: 2, finger: 3 }, // 5th - 5th (ring)
-      { fret: 0, finger: 'bar' }, // 4th - b7 (index barre)
-      { fret: 1, finger: 2 }, // 3rd - 3rd (middle barre)
-      { fret: 1, finger: 2 }, // 2nd - #11 (middle barre)
-      { fret: 2, finger: 4 }, // 1st - 9th (pinky)
-    ],
-    barreInfo: { fret: 0, fromString: 6, toString: 4 },
-  },
-];
-
-// ============================================
 // DOMINANT 13 SHAPES (13)
 // ============================================
 
@@ -2539,23 +2213,6 @@ const MAJOR13_SHAPES: ChordShape[] = [
 // ============================================
 
 const MINOR13_SHAPES: ChordShape[] = [
-  // Am13-shape Barre - root on 5th string
-  {
-    name: 'A-shape m13 Barre',
-    shortName: 'A shape',
-    type: 'barre',
-    cagedShape: 'A',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root
-      { fret: 2, finger: 2 }, // 4th - 5th
-      { fret: 0, finger: 1 }, // 3rd - b7
-      { fret: 2, finger: 3 }, // 2nd - 9th
-      { fret: 2, finger: 4 }, // 1st - 13th (6th)
-    ],
-  },
   // Em13-shape Barre - root on 6th string
   {
     name: 'E-shape m13 Barre',
@@ -2581,24 +2238,6 @@ const MINOR13_SHAPES: ChordShape[] = [
 // ============================================
 
 const DOMINANT13FLAT9_SHAPES: ChordShape[] = [
-  // A13b9-shape Barre - root on 5th string
-  {
-    name: 'A13b9-shape Barre',
-    shortName: 'A shape',
-    type: 'barre',
-    cagedShape: 'A',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 'bar' }, // 5th - root (index barre)
-      { fret: 2, finger: 3 }, // 4th - 5th (ring)
-      { fret: 0, finger: 'bar' }, // 3rd - b7 (index barre)
-      { fret: 1, finger: 2 }, // 2nd - b9 (middle)
-      { fret: 2, finger: 4 }, // 1st - 13th (6th) (pinky)
-    ],
-    barreInfo: { fret: 0, fromString: 5, toString: 3 },
-  },
   // E13b9-shape Barre - root on 6th string
   {
     name: 'E13b9-shape Barre',
@@ -2640,24 +2279,6 @@ const ADD11_SHAPES: ChordShape[] = [
       { fret: 1, finger: 1 }, // 2nd - C
       { fret: 3, finger: 4 }, // 1st - F (11th)
     ],
-  },
-  // A-shape add11 Barre - root on 5th string
-  {
-    name: 'A-shape add11 Barre',
-    shortName: 'A shape',
-    type: 'barre',
-    cagedShape: 'A',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 'bar' }, // 5th - root
-      { fret: 2, finger: 2 }, // 4th - 5th
-      { fret: 2, finger: 3 }, // 3rd - 3rd
-      { fret: 0, finger: 'bar' }, // 2nd - 11th (4th)
-      { fret: 0, finger: 'bar' }, // 1st - 5th
-    ],
-    barreInfo: { fret: 0, fromString: 5, toString: 1 },
   },
   // E-shape add11 Barre - root on 6th string
   {
@@ -2701,41 +2322,6 @@ const SIXNINE_SHAPES: ChordShape[] = [
       { fret: 0, finger: 0 }, // 1st - E (3rd)
     ],
   },
-  // A-shape 6/9 Barre - root on 5th string
-  {
-    name: 'A-shape 6/9 Barre',
-    shortName: 'A6/9 barre',
-    type: 'barre',
-    cagedShape: 'A',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root (index)
-      { fret: 2, finger: 3 }, // 4th - 5th (ring)
-      { fret: 1, finger: 2 }, // 3rd - 3rd (middle)
-      { fret: 2, finger: 3 }, // 2nd - 6th (ring barre)
-      { fret: 2, finger: 4 }, // 1st - 9th (pinky)
-    ],
-  },
-  // E-shape 6/9 Barre - root on 6th string
-  {
-    name: 'E-shape 6/9 Barre',
-    shortName: 'E6/9 barre',
-    type: 'barre',
-    cagedShape: 'E',
-    rootString: 6,
-    rootFretOffset: 0,
-    strings: [
-      { fret: 0, finger: 'bar' }, // 6th - root (index barre)
-      { fret: 2, finger: 3 }, // 5th - 5th (ring)
-      { fret: 1, finger: 2 }, // 4th - 3rd (middle barre)
-      { fret: 1, finger: 2 }, // 3rd - 6th (middle barre)
-      { fret: 2, finger: 4 }, // 2nd - 9th (pinky)
-      { fret: 0, finger: 'bar' }, // 1st - root (index barre)
-    ],
-    barreInfo: { fret: 0, fromString: 6, toString: 1 },
-  },
 ];
 
 // ============================================
@@ -2777,24 +2363,6 @@ const MINORSIXNINE_SHAPES: ChordShape[] = [
       { fret: 0, finger: 'bar' }, // 1st - 5th
     ],
     barreInfo: { fret: 0, fromString: 5, toString: 1 },
-  },
-  // E-shape m6/9 Barre - root on 6th string
-  {
-    name: 'E-shape m6/9 Barre',
-    shortName: 'Em6/9 barre',
-    type: 'barre',
-    cagedShape: 'E',
-    rootString: 6,
-    rootFretOffset: 0,
-    strings: [
-      { fret: 0, finger: 'bar' }, // 6th - root (index barre)
-      { fret: 2, finger: 3 }, // 5th - 5th (ring)
-      { fret: 1, finger: 2 }, // 4th - 6th (middle)
-      { fret: 0, finger: 'bar' }, // 3rd - b3 (index barre)
-      { fret: 2, finger: 4 }, // 2nd - 9th (pinky)
-      { fret: 0, finger: 'bar' }, // 1st - root (index barre)
-    ],
-    barreInfo: { fret: 0, fromString: 6, toString: 1 },
   },
 ];
 
@@ -2906,23 +2474,6 @@ const SUS2SUS4_SHAPES: ChordShape[] = [
 // ============================================
 
 const AUGMENTED_MAJOR7_SHAPES: ChordShape[] = [
-  // AMaj7#5-shape Barre - root on 5th string
-  {
-    name: 'A-shape Maj7#5 Barre',
-    shortName: 'AMaj7#5 barre',
-    type: 'barre',
-    cagedShape: 'A',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root
-      { fret: 3, finger: 4 }, // 4th - #5
-      { fret: 1, finger: 2 }, // 3rd - M7
-      { fret: 1, finger: 2 }, // 2nd - 3rd
-      { fret: null, finger: 0 }, // 1st - muted
-    ],
-  },
   // EMaj7#5-shape Barre - root on 6th string
   {
     name: 'E-shape Maj7#5 Barre',
@@ -2947,23 +2498,6 @@ const AUGMENTED_MAJOR7_SHAPES: ChordShape[] = [
 // ============================================
 
 const MAJOR7FLAT5_SHAPES: ChordShape[] = [
-  // AMaj7b5-shape Barre - root on 5th string
-  {
-    name: 'A-shape Maj7b5 Barre',
-    shortName: 'AMaj7b5 barre',
-    type: 'barre',
-    cagedShape: 'A',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root
-      { fret: 1, finger: 2 }, // 4th - b5
-      { fret: 1, finger: 2 }, // 3rd - M7
-      { fret: 1, finger: 2 }, // 2nd - 3rd
-      { fret: null, finger: 0 }, // 1st - muted
-    ],
-  },
   // EMaj7b5-shape Barre - root on 6th string
   {
     name: 'E-shape Maj7b5 Barre',
@@ -2988,23 +2522,6 @@ const MAJOR7FLAT5_SHAPES: ChordShape[] = [
 // ============================================
 
 const DIMINISHED_MAJOR7_SHAPES: ChordShape[] = [
-  // AdimMaj7-shape Barre - root on 5th string
-  {
-    name: 'A-shape dimMaj7 Barre',
-    shortName: 'AdimMaj7 barre',
-    type: 'barre',
-    cagedShape: 'A',
-    rootString: 5,
-    rootFretOffset: 0,
-    strings: [
-      { fret: null, finger: 0 }, // 6th - muted
-      { fret: 0, finger: 1 }, // 5th - root
-      { fret: 1, finger: 2 }, // 4th - b5
-      { fret: 1, finger: 2 }, // 3rd - M7
-      { fret: 0, finger: 1 }, // 2nd - b3
-      { fret: null, finger: 0 }, // 1st - muted
-    ],
-  },
   // EdimMaj7-shape Barre - root on 6th string
   {
     name: 'E-shape dimMaj7 Barre',
@@ -3046,12 +2563,10 @@ export const CHORD_SHAPE_LIBRARY: ChordShapeLibrary = {
   dominant9: NINTH_SHAPES,
   // New chord types
   power: POWER_SHAPES,
-  augmented7: AUGMENTED7_SHAPES,
   minor_major7: MINOR_MAJOR7_SHAPES,
   dominant7sus4: DOMINANT7SUS4_SHAPES,
   major9: MAJOR9_SHAPES,
   minor9: MINOR9_SHAPES,
-  dominant7flat9: DOMINANT7FLAT9_SHAPES,
   dominant7sharp9: DOMINANT7SHARP9_SHAPES,
   dominant7flat5: DOMINANT7FLAT5_SHAPES,
   dominant7sharp5: DOMINANT7SHARP5_SHAPES,
@@ -3059,7 +2574,6 @@ export const CHORD_SHAPE_LIBRARY: ChordShapeLibrary = {
   dominant11: DOMINANT11_SHAPES,
   major11: MAJOR11_SHAPES,
   minor11: MINOR11_SHAPES,
-  dominant9sharp11: DOMINANT9SHARP11_SHAPES,
   dominant13: DOMINANT13_SHAPES,
   major13: MAJOR13_SHAPES,
   minor13: MINOR13_SHAPES,
@@ -3330,11 +2844,17 @@ export function getChordShapes(
       const rootStringIndex = 6 - shape.rootString;
       const openStringPitchClass = OPEN_STRING_PITCH_CLASSES[rootStringIndex];
 
-      // How many semitones up from the open string to the root?
-      let baseFret = (rootPitchClass - openStringPitchClass + 12) % 12;
+      // Fret of the root on its string, minus where the root sits inside the
+      // shape (rootFretOffset — 0 when the root is under the barre).
+      let baseFret = (rootPitchClass - openStringPitchClass - shape.rootFretOffset + 24) % 12;
 
       // For some shapes, we want to avoid fret 0 (use 12 instead)
       if (baseFret === 0) baseFret = 12;
+
+      // Never place a shape past the frets the board draws (audit W3-09:
+      // the E-shape sus2 for E reached fret 16).
+      const top = Math.max(...shape.strings.map((p) => (p.fret === null ? 0 : p.fret)));
+      if (baseFret + top > GUITAR_MAX_FRET) continue;
 
       results.push({ shape, baseFret });
     }
@@ -3354,6 +2874,51 @@ export function getDefaultChordShape(
 
 // Import the algorithmic generator for fallback
 import { generateChordShapes as generateAlgorithmicShapes } from '../utils/guitarVoicingGenerator';
+import { GUITAR_MAX_FRET } from '../utils/guitarPositions';
+
+/**
+ * Can a placed shape be played as drawn (audit W3-09)?
+ *  - every fretted string has a finger, and each finger presses ONE fret
+ *    (several strings on that fret is a partial barre; 'bar' is the index);
+ *  - a barre never lies across a string that rings open or is fretted below
+ *    it, and both of its ends sit on the barre fret;
+ *  - nothing is past the frets the board draws.
+ */
+export function isPlayableChordShape(
+  entry: { shape: ChordShape; baseFret: number },
+  maxFret: number = GUITAR_MAX_FRET
+): boolean {
+  const { shape, baseFret } = entry;
+  const fingerFret = new Map<number, number>();
+  for (const p of shape.strings) {
+    if (p.fret === null) continue;
+    const abs = baseFret + p.fret;
+    if (abs < 0 || abs > maxFret) return false;
+    if (abs === 0) continue;
+    if (p.finger === undefined || p.finger === 0) return false;
+    const f = p.finger === 'bar' ? 1 : p.finger;
+    const prev = fingerFret.get(f);
+    if (prev !== undefined && prev !== abs) return false;
+    fingerFret.set(f, abs);
+  }
+  if (shape.barreInfo) {
+    const bf = baseFret + shape.barreInfo.fret;
+    if (bf < 1) return false;
+    const a = 6 - shape.barreInfo.fromString;
+    const b = 6 - shape.barreInfo.toString;
+    for (let s = Math.min(a, b); s <= Math.max(a, b); s++) {
+      const p = shape.strings[s];
+      if (p.fret === null) continue;
+      const abs = baseFret + p.fret;
+      if (abs === 0 || abs < bf) return false;
+    }
+    for (const end of [a, b]) {
+      const p = shape.strings[end];
+      if (p.fret === null || baseFret + p.fret !== bf) return false;
+    }
+  }
+  return true;
+}
 import { Chord, ChordQuality } from '../types/music';
 import { CHORD_FORMULAS } from './chords';
 
@@ -3509,8 +3074,8 @@ export function getChordShapesWithFallback(
 
   const handClean = isAlgorithmicChord
     ? []
-    : getChordShapes(chord.root, chord.quality).filter((e) =>
-        shapeHasOnlyChordTones(e, chordPitchClasses)
+    : getChordShapes(chord.root, chord.quality).filter(
+        (e) => shapeHasOnlyChordTones(e, chordPitchClasses) && isPlayableChordShape(e)
       );
 
   // 1. Hand shapes that are also essentials-complete.
@@ -3521,8 +3086,8 @@ export function getChordShapesWithFallback(
   //    every essential tone (it searches harder for these dense chords), then
   //    enforce no-wrong-note on the result.
   try {
-    const genEssential = generateAlgorithmicShapes(chord, undefined, essentials).filter((e) =>
-      shapeHasOnlyChordTones(e, chordPitchClasses)
+    const genEssential = generateAlgorithmicShapes(chord, undefined, essentials).filter(
+      (e) => shapeHasOnlyChordTones(e, chordPitchClasses) && isPlayableChordShape(e)
     );
     if (genEssential.length > 0) return genEssential;
   } catch (e) {
@@ -3532,8 +3097,8 @@ export function getChordShapesWithFallback(
   // Unconstrained generated candidates (the safety net), held to no-wrong-note.
   let genClean: { shape: ChordShape; baseFret: number }[] = [];
   try {
-    genClean = generateAlgorithmicShapes(chord).filter((e) =>
-      shapeHasOnlyChordTones(e, chordPitchClasses)
+    genClean = generateAlgorithmicShapes(chord).filter(
+      (e) => shapeHasOnlyChordTones(e, chordPitchClasses) && isPlayableChordShape(e)
     );
   } catch (e) {
     console.warn('Failed to generate algorithmic chord shapes:', e);
