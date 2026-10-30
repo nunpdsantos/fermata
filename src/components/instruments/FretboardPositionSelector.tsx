@@ -50,8 +50,14 @@ interface ScalePositionSelectorProps {
 export function ScalePositionSelector({ position, onSelect, onStep, mobile = false }: ScalePositionSelectorProps) {
   const { t } = useTranslation();
   const name = (n: number) => (n === OPEN_POSITION ? t('fretboard.open') : toRomanNumeral(n));
+  // The numeral names the position; the fret is a plain number (review B2).
+  // Position I gets its own line so it reads differently from Open (#4).
   const title = (n: number) =>
-    n === OPEN_POSITION ? t('fretboard.openPositionTitle') : t('fretboard.positionTitle', { numeral: toRomanNumeral(n) });
+    n === OPEN_POSITION
+      ? t('fretboard.openPositionTitle')
+      : n === 1
+        ? t('fretboard.positionOneTitle')
+        : t('fretboard.positionTitle', { numeral: toRomanNumeral(n), fret: n });
   const prevDisabled = position === OPEN_POSITION;
   const nextDisabled = position === MAX_POSITION;
 

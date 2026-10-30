@@ -660,7 +660,7 @@ export function Fretboard() {
                   ) : (
                     <span
                       data-testid="position-badge"
-                      title={t('fretboard.positionTitle', { numeral: toRomanNumeral(f) })}
+                      title={f === 1 ? t('fretboard.positionOneTitle') : t('fretboard.positionTitle', { numeral: toRomanNumeral(f), fret: f })}
                       className="inline-block px-1.5 rounded font-bold"
                       style={badgeStyle}
                     >
