@@ -230,7 +230,8 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
                   border: isActive ? `1px solid ${alpha(color, '50')}` : '1px solid var(--border)',
                 }}
               >
-                {t(INVERSION_LABEL_KEYS[i] ?? 'panel.rootPos')}
+                {/* 4th inversion and up (5+ note chords) use "Inv n" — never a second "Root" (audit W2-09) */}
+                {i < INVERSION_LABEL_KEYS.length ? t(INVERSION_LABEL_KEYS[i]) : t('chordBuilder.inversion.nth', { n: i })}
               </button>
             );
           })}

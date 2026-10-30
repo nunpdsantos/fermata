@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { noteToString, type ChordQuality } from '../../core/types/music.ts';
-import { buildChord, CHORD_QUALITY_NAMES, CHORD_SYMBOLS } from '../../core/constants/chords.ts';
+import { buildChord, CHORD_QUALITY_NAMES, CHORD_SYMBOLS, CHORD_FORMULAS } from '../../core/constants/chords.ts';
 import { useAppStore } from '../../state/store.ts';
 
 const CHORD_QUALITY_GROUPS: { labelKey: string; qualities: ChordQuality[] }[] = [
@@ -38,18 +38,32 @@ const CHORD_QUALITY_GROUPS: { labelKey: string; qualities: ChordQuality[] }[] = 
     qualities: [
       'dominant7flat9', 'dominant7sharp9', 'dominant7flat5', 'dominant7sharp5',
       'dominant7alt', 'dominant7sharp5flat9', 'dominant7flat5flat9',
-      'dominant7sharp5sharp9', 'dominant7flat5sharp9',
+      'dominant7sharp5sharp9', 'dominant7flat5sharp9', 'dominant7flat13',
     ],
   },
   {
     labelKey: 'chordCategory.elevenths',
-    qualities: ['dominant11', 'major11', 'minor11', 'dominant9sharp11', 'add11', 'major7sharp11'],
+    qualities: ['dominant11', 'major11', 'minor11', 'dominant9sharp11', 'dominant7sharp11', 'add11', 'major7sharp11', 'major9sharp11'],
   },
   {
     labelKey: 'chordCategory.thirteenths',
     qualities: ['dominant13', 'major13', 'minor13', 'dominant13flat9'],
   },
 ];
+
+// Qualities that are the same notes under another name (C aug7 = C7#5,
+// C9sus4 = C11): each is still offered, marked "= <other symbol>" (audit W2-10).
+const pitchSet = (q: ChordQuality) =>
+  [...new Set(CHORD_FORMULAS[q].map((s) => s % 12))].sort((a, b) => a - b).join(',');
+const SAME_NOTES: Partial<Record<ChordQuality, ChordQuality[]>> = (() => {
+  const all = Object.keys(CHORD_FORMULAS) as ChordQuality[];
+  const out: Partial<Record<ChordQuality, ChordQuality[]>> = {};
+  for (const q of all) {
+    const twins = all.filter((o) => o !== q && pitchSet(o) === pitchSet(q));
+    if (twins.length > 0) out[q] = twins;
+  }
+  return out;
+})();
 
 export function ChordBrowser() {
   const { t } = useTranslation();
@@ -97,6 +111,7 @@ export function ChordBrowser() {
           return (
             <button
               key={quality}
+              data-quality={quality}
               onClick={() => {
                 const chord = buildChord(selectedKey, quality);
                 setSelectedChord(chord);
@@ -123,6 +138,11 @@ export function ChordBrowser() {
               <span className="text-[9px] leading-tight mt-0.5" style={{ color: 'var(--text-dim)' }}>
                 {name}
               </span>
+              {SAME_NOTES[quality] && (
+                <span className="text-[9px] leading-tight" style={{ color: 'var(--text-dim)' }}>
+                  {SAME_NOTES[quality]!.map((o) => `= ${rootLabel}${CHORD_SYMBOLS[o]}`).join(' ')}
+                </span>
+              )}
             </button>
           );
         })}
