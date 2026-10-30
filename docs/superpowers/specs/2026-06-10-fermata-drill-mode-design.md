@@ -254,7 +254,8 @@ A shared `DrillAnswerSurface` wrapper gives all four identical feedback behavior
   response time < 3 s. Lapses demote to `review`.
   *Amended 2026-10-30 (audit W7-01/W7-05, decision D-15):* only the FIRST answer of
   each session counts — right first time in ≥ 3 sessions in a row, spread over ≥ 2
-  calendar days, median of the last 3 first answers < 3 s; a wrong first answer is
+  calendar days and ≥ 18 h from first to last (so one midnight is not "two days"),
+  median of the last 3 first answers < 3 s; a wrong first answer is
   the lapse that demotes, and the in-session retry cannot undo it.
 - Response times are recorded per answer (capped log, last 10 per item + lifetime
   counts). Time is measured from prompt render to grading tap; the timer is **never
