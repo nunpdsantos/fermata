@@ -164,7 +164,8 @@
     "scale": "Escala",
     "moreScales": "M\u00e1s escalas\u2026 \u25be",
     "less": "Menos \u25b4",
-    "label": "Selector de tonalidad y escala"
+    "label": "Selector de tonalidad y escala",
+    "respellAs": "Escribir como {{note}}"
   },
   "scaleGroup": {
     "core": "Principales",
