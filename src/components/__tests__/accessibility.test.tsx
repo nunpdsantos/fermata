@@ -339,7 +339,9 @@ describe('Piano accessibility', () => {
     expect(tablist).toBeDefined();
 
     const tabs = within(tablist).getAllByRole('tab');
-    expect(tabs.length).toBe(9); // Octaves 0-8 (full 88-key range)
+    // Only octaves that keep the selected scale on the 88 keys (review item 6):
+    // C major offers C1–C7 (C0 would start below A0, C8 runs past the top).
+    expect(tabs.map((t) => t.textContent)).toEqual(['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7']);
 
     // Current octave (4) should be aria-selected=true
     const selected = tabs.find(

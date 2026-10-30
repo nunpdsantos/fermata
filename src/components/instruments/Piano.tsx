@@ -377,16 +377,17 @@ export function Piano() {
       {/* Octave selector strip */}
       <div role="tablist" aria-label={t('instrument.baseOctave')} className="flex items-center gap-1 max-sm:gap-0.5 px-3 max-sm:px-2 py-1.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
         <span className="text-[10px] uppercase tracking-wider mr-1" style={{ color: 'var(--text-dim)' }}>{t('play.octave')}</span>
-        {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((oct) => {
+        {/* Only octaves that keep the scale (and chord) on the 88 keys — C8 never
+            does, C0 only for A/B♭/B roots — so no dead tabs (review item 6). */}
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8].filter((oct) => octaveFits[oct]).map((oct) => {
           const isActive = baseOctave === oct;
           return (
             <button
               key={oct}
               role="tab"
               aria-selected={isActive}
-              disabled={!octaveFits[oct]}
               onClick={() => setBaseOctave(oct)}
-              className="px-2 py-0.5 rounded text-[10px] font-medium transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="px-2 py-0.5 rounded text-[10px] font-medium transition-colors"
               style={{
                 backgroundColor: isActive ? 'var(--accent)' : 'transparent',
                 color: isActive ? '#000' : 'var(--text-dim)',

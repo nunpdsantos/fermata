@@ -1,9 +1,9 @@
 /**
  * Audit W2-07 (A-27) — the piano's octave buttons never take the scale off
  * the keyboard. Pre-fix, "C8" with G major lit 0 of 8 keys and "C0" with C
- * major 3 of 8. Buttons whose octave would push the scale (or the selected
- * chord) past A0–C8 are disabled, and a stored octave that no longer fits is
- * moved to the nearest one that does.
+ * major 3 of 8. Only octaves where the scale (and the selected chord) stay on
+ * A0–C8 are offered (review item 6: unreachable tabs are hidden, not shown
+ * disabled), and a stored octave that no longer fits moves to the nearest one.
  */
 import { describe, it, expect, vi, afterEach, beforeAll } from 'vitest';
 import { render, cleanup, screen } from '@testing-library/react';
@@ -32,31 +32,27 @@ const toNote = (s: string): Note => ({ natural: s[0], accidental: s.slice(1) }) 
 const select = (root: string, type: ScaleType, baseOctave = 4) =>
   useAppStore.setState({ selectedKey: toNote(root), selectedScale: type, selectedChord: null, exerciseInputActive: false, baseOctave, scaleOctaves: 1 });
 
-const octaveButton = (n: number) => screen.getByRole('tab', { name: `C${n}` });
+const octaveTabs = () => screen.getAllByRole('tab').map((t) => t.textContent);
 
 describe('W2-07 — octave buttons stay on the keyboard', () => {
-  it('G major: C8 is disabled, C1–C7 are enabled; C major: C0 disabled', () => {
+  it('G major offers C1–C6 (no C0, no C8); A major also offers C0', () => {
     select('G', 'major');
     render(<Piano />);
-    expect(octaveButton(8).hasAttribute('disabled')).toBe(true);
-    for (let o = 1; o <= 6; o++) expect(octaveButton(o).hasAttribute('disabled'), `C${o}`).toBe(false);
+    expect(octaveTabs()).toEqual(['C1', 'C2', 'C3', 'C4', 'C5', 'C6']);
     cleanup();
-    select('C', 'major');
+    select('A', 'major');
     render(<Piano />);
-    expect(octaveButton(0).hasAttribute('disabled')).toBe(true);
+    expect(octaveTabs()).toEqual(['C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6']);
   });
 
-  it('every lit scale key exists on the keyboard for every enabled octave', () => {
-    for (const root of ['C', 'G', 'B', 'A', 'F#']) {
-      for (let o = 0; o <= 8; o++) {
-        select(root, 'major', o);
-        render(<Piano />);
-        const enabled = !octaveButton(o).hasAttribute('disabled');
-        const base = useAppStore.getState().baseOctave;
-        // either the octave is enabled and kept, or it was moved to one that fits
-        if (!enabled) expect(base, `${root} @${o}`).not.toBe(o);
-        cleanup();
-      }
+  it('C8 is never offered, and every offered octave keeps the scale on the keys', () => {
+    for (const root of ['C', 'G', 'B', 'A', 'F#', 'Bb', 'Db']) {
+      select(root, 'major');
+      render(<Piano />);
+      const offered = octaveTabs();
+      expect(offered, root).not.toContain('C8');
+      expect(offered.length, root).toBeGreaterThanOrEqual(6);
+      cleanup();
     }
   });
 
