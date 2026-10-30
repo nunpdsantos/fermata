@@ -119,3 +119,18 @@ describe('CurrentChordPanel inversion interaction', () => {
     expect(radios[1].getAttribute('aria-checked')).toBe('false');
   });
 });
+
+describe('CurrentChordPanel "Learn about this" (audit W9-24)', () => {
+  it('links a taught chord to the lesson that teaches it (Csus4 → Complete Chord Taxonomy)', () => {
+    const csus4 = buildChord({ natural: 'C', accidental: '' }, 'sus4');
+    render(<CurrentChordPanel chord={csus4} />);
+    fireEvent.click(screen.getByRole('button', { name: /learn about this/i }));
+    expect(useAppStore.getState().pendingLearnTarget).toMatchObject({ moduleId: 'l7u23m5' });
+  });
+
+  it('shows no link for a chord no lesson teaches (dim(maj7))', () => {
+    const dimMaj7 = buildChord({ natural: 'C', accidental: '' }, 'diminished_major7');
+    render(<CurrentChordPanel chord={dimMaj7} />);
+    expect(screen.queryByRole('button', { name: /learn about this/i })).toBeNull();
+  });
+});

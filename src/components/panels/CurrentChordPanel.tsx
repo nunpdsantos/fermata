@@ -170,10 +170,14 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
             {t('panel.degree', { n: degree })}
           </Badge>
         )}
-        <LearnMoreButton
-          query={CHORD_QUALITY_NAMES[chord.quality]}
-          moduleId={QUALITY_TO_MODULE[chord.quality]}
-        />
+        {/* Only chords a lesson actually teaches get a link (null = none; the
+            fuzzy title fallback would land on an unrelated lesson). */}
+        {QUALITY_TO_MODULE[chord.quality] && (
+          <LearnMoreButton
+            query={CHORD_QUALITY_NAMES[chord.quality]}
+            moduleId={QUALITY_TO_MODULE[chord.quality] ?? undefined}
+          />
+        )}
       </div>
 
       {/* Notes */}
