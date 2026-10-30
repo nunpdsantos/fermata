@@ -268,6 +268,7 @@
     "somethingWentWrong": "Something went wrong",
     "unexpectedError": "An unexpected error occurred.",
     "viewError": "This view encountered an error.",
+    "resetViewSettings": "Reset view settings (keeps your progress)",
     "resetAppData": "Reset app data — clears saved progress"
   },
   "toast": {

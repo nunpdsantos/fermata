@@ -28,7 +28,8 @@ export function generateScaleSummary(
     lines.push('Diatonic Chords:');
     for (const dc of diatonicChords) {
       const name = `${noteToString(dc.chord.root)} ${dc.chord.quality}`;
-      lines.push(`  ${dc.numeral.padEnd(6)} ${name}`);
+      // Defensive: a missing numeral must never break Copy (audit W0-01).
+      lines.push(`  ${(dc.numeral ?? '').padEnd(6)} ${name}`);
     }
     lines.push('');
   }

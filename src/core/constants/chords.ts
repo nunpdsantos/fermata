@@ -623,6 +623,9 @@ const DIATONIC_QUALITIES: Record<ScaleType, ChordQuality[]> = {
   locrian_natural2: ['diminished', 'diminished', 'minor', 'minor', 'augmented', 'major', 'major'],
 
   // Phase 2 - Bebop scales (8 notes)
+  // NOTE: the 8-entry tables (these and the two diminished scales above) are
+  // currently NOT rendered — getDiatonicChordsForScale returns [] for 8-note
+  // scales pending a proper redesign (audit W0-01).
   // Bebop Dominant - Mixolydian with passing tone, chords on main scale degrees
   bebop_dominant: [
     'major',
@@ -682,10 +685,15 @@ const DIATONIC_QUALITIES: Record<ScaleType, ChordQuality[]> = {
   egyptian: ['major', 'minor', 'major', 'minor', 'major'],
 };
 
-// Get roman numeral based on chord quality and degree
-function getRomanNumeral(quality: ChordQuality, degree: number): string {
-  const baseNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
-  const base = baseNumerals[degree];
+// Roman-numeral harmony names at most seven degrees.
+const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'] as const;
+
+// Get roman numeral based on chord quality and degree (0-based). Returns null
+// when no numeral exists for that degree (there are only seven) — callers must
+// not invent one. Reading past VII used to crash the whole app (audit W0-01).
+function getRomanNumeral(quality: ChordQuality, degree: number): string | null {
+  const base: string | undefined = ROMAN_NUMERALS[degree];
+  if (base === undefined) return null;
 
   // Lowercase for minor/diminished
   const isMinorType = ['minor', 'diminished', 'minor7', 'diminished7', 'half_diminished7'].includes(
@@ -710,15 +718,24 @@ export function getDiatonicChordsForScale(scale: Scale): { chord: Chord; numeral
     // Scale has no diatonic harmony (pentatonic, blues, whole tone, etc.)
     return [];
   }
+  if (qualities.length > ROMAN_NUMERALS.length || scale.notes.length > ROMAN_NUMERALS.length) {
+    // 8-note scales (diminished W-H / H-W, bebop dominant / major / dorian):
+    // there is no eighth Roman numeral, and the 8-entry tables above map the
+    // passing tone to a chord as if it were a degree. Until diatonic harmony
+    // for these scales is redesigned, show NO diatonic chords — never a crash,
+    // a blank numeral, or an invented one (audit W0-01 / C-12).
+    return [];
+  }
 
-  return scale.notes.slice(0, qualities.length).map((note, i) => {
+  return scale.notes.slice(0, qualities.length).flatMap((note, i) => {
     const quality = qualities[i];
     const numeral = getRomanNumeral(quality, i);
+    if (numeral === null) return [];
 
-    return {
+    return [{
       chord: buildChord(note, quality),
       numeral,
-    };
+    }];
   });
 }
 
