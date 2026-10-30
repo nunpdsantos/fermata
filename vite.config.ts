@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync, statSync } from 'node:fs'
 
 // `vite preview` serves the PRODUCTION security headers from vercel.json (the
 // catch-all rule), so the preview-build browser tests run under the real CSP
@@ -14,6 +14,38 @@ function productionHeaders(): Record<string, string> {
   }
   const all = vercel.headers.find((r) => r.source === '/(.*)')?.headers ?? []
   return Object.fromEntries(all.map((h) => [h.key, h.value]))
+}
+
+/**
+ * Precache CLOSURE (workbox manifestTransform): any chunk a precached file
+ * imports statically is precached too, followed transitively. Otherwise a
+ * precached shell file (Quick Search, the fretboard, Drill …) fails offline
+ * on a fresh install the moment a refactor splits one of its imports into a
+ * new chunk — the old fix was to list each such chunk by name (prng,
+ * fingeringStore, moduleIndex, scaleParser), which breaks on every split.
+ * `npm run check:sw` verifies the result.
+ */
+const DIST_DIR = new URL('./dist/', import.meta.url)
+type PrecacheEntry = { url: string; revision: string | null; size: number }
+function addStaticImportClosure(entries: PrecacheEntry[]): { manifest: PrecacheEntry[]; warnings: string[] } {
+  const manifest = [...entries]
+  const seen = new Set(manifest.map((e) => e.url))
+  const queue = manifest.map((e) => e.url).filter((u) => u.startsWith('assets/') && u.endsWith('.js'))
+  while (queue.length) {
+    const url = queue.shift()!
+    const file = new URL(url, DIST_DIR)
+    if (!existsSync(file)) continue
+    const source = readFileSync(file, 'utf8')
+    for (const m of source.matchAll(/(?:from|import)\s*"\.\/([^"]+\.js)"/g)) {
+      const dep = `assets/${m[1]}`
+      if (seen.has(dep)) continue
+      seen.add(dep)
+      // Hashed file names: the name is the revision.
+      manifest.push({ url: dep, revision: null, size: statSync(new URL(dep, DIST_DIR)).size })
+      queue.push(dep)
+    }
+  }
+  return { manifest, warnings: [] }
 }
 
 /** Entry module of a translated-content chunk (see chunkFileNames). */
@@ -83,17 +115,19 @@ export default defineConfig({
         // shortcut, which must work from a fresh offline install.
         // prng is shared by Drill and the Learn exercise shuffle → its own
         // chunk; it must ride along or the DrillView import fails offline.
-        // The lazy Fretboard (+ fingeringStore) and Quick Search (+ its index
-        // and parsers) chunks are part of the shell, so they are precached
-        // too (audit W9-11). `npm run check:sw` fails if a precached file
-        // imports a chunk that is not precached.
+        // The lazy Fretboard and Quick Search chunks are part of the shell, so
+        // they are precached too (audit W9-11); their own imports ride along
+        // via manifestTransforms below. `npm run check:sw` fails if a
+        // precached file imports a chunk that is not precached.
         globPatterns: [
           '**/*.{css,html,ico,png,svg,woff2}',
           'assets/index-*.js', 'assets/i18next-*.js', 'assets/framer-motion-*.js', 'assets/zustand-*.js',
           'assets/DrillView-*.js', 'assets/drillStore-*.js', 'assets/prng-*.js', 'assets/workbox-window*.js',
-          'assets/Fretboard-*.js', 'assets/fingeringStore-*.js',
-          'assets/QuickSearch-*.js', 'assets/moduleIndex-*.js', 'assets/scaleParser-*.js',
+          'assets/Fretboard-*.js', 'assets/QuickSearch-*.js',
         ],
+        // …plus every chunk those import statically, transitively (their
+        // split-out dependencies: fingeringStore, moduleIndex, parsers, …).
+        manifestTransforms: [addStaticImportClosure],
         globIgnores: [
           '**/vexflow*',
           '**/curriculum[lL]*',
