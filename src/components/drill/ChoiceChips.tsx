@@ -8,6 +8,8 @@ interface ChoiceChipsProps {
   disabled: boolean;
   /** The choice the user tapped (drives wrong-answer styling during feedback). */
   selected: string | null;
+  /** The tapped choice is the right sound, wrong spelling — amber, not red. */
+  selectedNearMiss?: boolean;
   /** The canonical correct choice — only shown (success-styled) during feedback. */
   correctChoice: string | null;
   onSelect: (choice: string) => void;
@@ -20,6 +22,7 @@ export function ChoiceChips({
   choices,
   disabled,
   selected,
+  selectedNearMiss = false,
   correctChoice,
   onSelect,
 }: ChoiceChipsProps) {
@@ -53,10 +56,13 @@ export function ChoiceChips({
         const isSelected = selected === choice;
         const showCorrect = disabled && correctChoice === choice;
         const showWrong = disabled && isSelected && correctChoice !== choice;
+        const showAmber = showWrong && selectedNearMiss;
 
         let stateClass = '';
         if (showCorrect) {
           stateClass = 'bg-emerald-500/15 border-emerald-500/40 text-success';
+        } else if (showAmber) {
+          stateClass = 'bg-amber-500/15 border-amber-500/40 text-warning';
         } else if (showWrong) {
           stateClass = 'bg-red-500/15 border-red-500/40 text-danger';
         }

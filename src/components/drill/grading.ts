@@ -69,11 +69,27 @@ function stringMultisetsEqual(a: string[], b: string[]): boolean {
   return true;
 }
 
+/** A single note as a choice chip shows it: letter + at most one glyph. */
+const NOTE_CHOICE_RE = /^[A-G](?:𝄪|𝄫|♯|♭)?$/u;
+
+/**
+ * True when a tapped note choice sounds the same as the correct note but is
+ * spelled differently (G♭ for F♯) — the near-miss case for note-valued choice
+ * items (audit W7-08; before, only chord-spelling chips could near-miss).
+ * Non-note choices (names, keys, numerals, Yes/No) never qualify.
+ */
+export function isEnharmonicNoteChoice(choice: string, correct: string | null): boolean {
+  if (correct === null || choice === correct) return false;
+  if (!NOTE_CHOICE_RE.test(choice) || !NOTE_CHOICE_RE.test(correct)) return false;
+  return pcOf(normalizeDisplay(choice)) === pcOf(normalizeDisplay(correct));
+}
+
 export function gradeAnswer(item: DrillItem, payload: AnswerPayload): GradeResult {
   switch (payload.format) {
     case 'choice': {
       const correctAnswer = item.answer.kind === 'choice' ? item.answer.correct : null;
-      return { correct: payload.choice === correctAnswer, nearMiss: false };
+      if (payload.choice === correctAnswer) return { correct: true, nearMiss: false };
+      return { correct: false, nearMiss: isEnharmonicNoteChoice(payload.choice, correctAnswer) };
     }
 
     case 'noteChips': {

@@ -7,8 +7,9 @@
  * The input is disabled during feedback; answer payloads carry display strings
  * (grading normalizes display → ASCII).
  */
+import { useState } from 'react';
 import type { DrillItem } from '../../core/types/drill';
-import type { AnswerPayload } from './grading';
+import { isEnharmonicNoteChoice, type AnswerPayload } from './grading';
 import { ChoiceChips } from './ChoiceChips';
 import { NoteChips } from './NoteChips';
 import { AccidentalSlots } from './AccidentalSlots';
@@ -22,6 +23,10 @@ interface DrillInputProps {
 
 export function DrillInput({ item, phase, onAnswer }: DrillInputProps) {
   const disabled = phase === 'feedback';
+  // The choice the learner tapped, so feedback can mark it (audit W7-07).
+  // The parent keys this component per presentation, so it starts empty for
+  // every question.
+  const [picked, setPicked] = useState<string | null>(null);
 
   switch (item.input.format) {
     case 'choice': {
@@ -30,9 +35,13 @@ export function DrillInput({ item, phase, onAnswer }: DrillInputProps) {
         <ChoiceChips
           choices={item.input.choices}
           disabled={disabled}
-          selected={null}
+          selected={disabled ? picked : null}
+          selectedNearMiss={disabled && picked !== null && isEnharmonicNoteChoice(picked, correct)}
           correctChoice={disabled ? correct : null}
-          onSelect={(choice) => onAnswer({ format: 'choice', choice })}
+          onSelect={(choice) => {
+            setPicked(choice);
+            onAnswer({ format: 'choice', choice });
+          }}
         />
       );
     }
