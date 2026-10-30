@@ -336,12 +336,12 @@ const overlay: ExerciseLevelOverlay = {
   l9u32m2e1: {
     prompt:
       'Escucha este intervalo ascendente e identifícalo.',
-    hint: 'Un semitono cromático (1 semitono) en contexto melódico funciona a menudo como nota de paso.',
+    hint: 'E a F es un semitono (1 semitono) entre dos letras distintas — un semitono diatónico, que ya está dentro de C mayor. Un semitono cromático mantiene la letra (F a F#). En una melodía, cualquiera de los dos funciona a menudo como nota de paso o bordadura.',
   },
   l9u32m2e2: {
     prompt:
       'Escucha este intervalo ascendente e identifícalo.',
-    hint: 'El tritono (6 semitonos, 4.ª aumentada / 5.ª disminuida) es el intervalo más disonante y divide la octava exactamente por la mitad.',
+    hint: 'El tritono (6 semitonos, 4.ª aumentada / 5.ª disminuida) es una de las disonancias más ásperas (con la 2.ª menor y la 7.ª mayor) y divide la octava exactamente por la mitad.',
   },
   l9u32m2e3: {
     prompt: '¿Qué es una nota cromática de paso?',

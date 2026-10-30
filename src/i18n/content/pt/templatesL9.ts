@@ -34,7 +34,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // ear_training (interval)
       promptTemplate:
-        'Ouve este intervalo e identifica-o. A terceira é maior ou menor?',
+        'Ouve este intervalo e identifica-o. É sempre uma terça -- decide se é maior ou menor.',
       hintTemplate:
         '3.a maior = 4 semitons (brilhante, alegre). 3.a menor = 3 semitons (sombria, triste). A diferença é apenas meio-tom, mas o carácter muda dramaticamente.',
     },
@@ -166,16 +166,16 @@ const overlay: TemplateLevelOverlay = {
     {
       // ear_training (note)
       promptTemplate:
-        'Ouve esta nota cromática e identifica-a.',
+        'Ouve esta nota e identifica-a. A maioria das notas deste conjunto são sustenidos.',
       hintTemplate:
-        'Notas cromáticas são acidentes que não pertencem à tonalidade atual. Criam tensão que resolve para notas diatónicas próximas.',
+        'Sustenidos como C#, F# e G# estão fora de C maior; numa melodia em C maior seriam notas cromáticas, atraídas para uma nota vizinha da escala.',
     },
     {
       // ear_training (interval)
       promptTemplate:
-        'Ouve este intervalo cromático, tocado em movimento {direction}, e identifica-o.',
+        'Ouve este intervalo, tocado em movimento {direction}, e identifica-o.',
       hintTemplate:
-        'Os intervalos cromáticos incluem qualidades aumentadas e diminutas. Este intervalo usa uma nota fora da escala diatónica.',
+        'Conta os meios-tons: 2.a menor = 1, 3.a menor = 3, trítono = 6, 6.a menor = 8, 7.a menor = 10, 7.a maior = 11. Medidos a partir da tónica de uma tonalidade maior, os cinco primeiros são exatamente as notas fora da escala (b2, b3, #4, b6, b7).',
     },
   ],
 
@@ -211,7 +211,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Canta e depois constrói a escala de {root} {scaleType}. Seleciona as 7 notas.',
       hintTemplate:
-        'Canta mentalmente a escala a partir de {root} usando solfejo ou números antes de selecionar as notas. A escala {scaleType} tem um padrão sonoro distintivo.',
+        'Canta mentalmente a escala a partir de {root} usando solfejo ou números antes de selecionar as notas. Ouve o padrão de tons e meios-tons que dá à escala {scaleType} o seu som.',
     },
   ],
 };

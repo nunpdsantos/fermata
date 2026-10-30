@@ -336,12 +336,12 @@ const overlay: ExerciseLevelOverlay = {
   l9u32m2e1: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: 'Um meio-tom cromático (1 semitom) num contexto melódico funciona frequentemente como nota de passagem.',
+    hint: 'E para F é um meio-tom (1 semitom) entre duas letras diferentes -- um meio-tom diatónico, que já está dentro de C maior. Um meio-tom cromático mantém a letra (F para F#). Numa melodia, qualquer um deles funciona muitas vezes como nota de passagem ou bordadura.',
   },
   l9u32m2e2: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: 'O trítono (6 semitons, 4.a aumentada / 5.a diminuta) é o intervalo mais dissonante e divide a oitava exatamente ao meio.',
+    hint: 'O trítono (6 semitons, 4.a aumentada / 5.a diminuta) é uma das dissonâncias mais ásperas (com a 2.a menor e a 7.a maior) e divide a oitava exatamente ao meio.',
   },
   l9u32m2e3: {
     prompt: 'O que é uma nota cromática de passagem?',

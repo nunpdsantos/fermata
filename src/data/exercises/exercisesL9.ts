@@ -743,7 +743,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         targetSemitones: 1,
         direction: 'ascending',
       },
-      hint: 'A chromatic half step (1 semitone) in a melodic context often functions as a passing tone.',
+      hint: 'E to F is a half step (1 semitone) between two different letter names — a diatonic half step, already inside C major. A chromatic half step keeps the letter name (F to F#). Either kind often works as a passing or neighbor motion in a melody.',
       points: 1,
     },
     {
@@ -759,7 +759,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         targetSemitones: 6,
         direction: 'ascending',
       },
-      hint: 'The tritone (6 semitones, augmented 4th / diminished 5th) is the most dissonant interval and divides the octave exactly in half.',
+      hint: 'The tritone (6 semitones, augmented 4th / diminished 5th) is one of the sharpest dissonances (with the minor 2nd and major 7th) and divides the octave exactly in half.',
       points: 1,
     },
     {

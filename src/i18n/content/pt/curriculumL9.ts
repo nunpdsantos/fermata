@@ -138,7 +138,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Consonância Perfeita vs. Imperfeita',
           explanation:
-            'Os intervalos deste módulo dividem-se em duas famílias. Consonâncias perfeitas (P1, P4, P5) soam "abertas" e "ocas" -- como um sino ou uma corda solta. Têm uma qualidade austera e despojada. Consonâncias imperfeitas (3.a m, 3.a M) soam "quentes" e "fundidas" -- as notas combinam-se suavemente mas com mais cor. Segundas (2.a m, 2.a M) são dissonâncias -- soam "ásperas" ou "crocantes" quando tocadas em simultâneo. O trítono é o intervalo mais dissonante de todos -- tenso, instável e exigindo resolução. Aprender a categorizar por consonância/dissonância é mais rápido do que memorizar cada intervalo individualmente.',
+            'Os intervalos deste módulo dividem-se em duas famílias. Consonâncias perfeitas (P1, P4, P5) soam "abertas" e "ocas" -- como um sino ou uma corda solta. Têm uma qualidade austera e despojada. Consonâncias imperfeitas (3.a m, 3.a M) soam "quentes" e "fundidas" -- as notas combinam-se suavemente mas com mais cor. Segundas (2.a m, 2.a M) são dissonâncias -- soam "ásperas" ou "crocantes" quando tocadas em simultâneo. O trítono é uma das dissonâncias mais ásperas (com a 2.a m e a 7.a M) -- tenso, instável e exigindo resolução. Aprender a categorizar por consonância/dissonância é mais rápido do que memorizar cada intervalo individualmente. (No contraponto de espécies, estudado nos Níveis 4 e 6, a P4 acima do baixo é tratada como dissonância; a classificação acústica de "perfeita" usada aqui está orientada para o treino auditivo.)',
           tryThisLabel:
             'Ouve a 3.a maior (C a E) e a 5.a perfeita (C a G)',
         },
@@ -179,13 +179,13 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Associações com Canções: Intervalos Amplos',
           explanation:
-            'Continuando a abordagem mnemónica para a metade superior da oitava. 6.a menor = The Entertainer. 6.a maior = My Bonnie (my-bon). 7.a menor = Somewhere (West Side Story). 7.a maior = Take On Me (take-on). Oitava = Somewhere Over the Rainbow. Intervalos amplos são mais difíceis de identificar porque parecem "grandes saltos" e as diferenças de tamanho entre eles são proporcionalmente menores. As sextas e sétimas são particularmente árduas -- são inversões de terças e segundas, portanto o seu carácter está relacionado mas é mais largo. Treina contrastando pares: 6.a m vs. 6.a M, 7.a m vs. 7.a M.',
+            'Continuando a abordagem mnemónica para a metade superior da oitava. 6.a menor = The Entertainer (ascendente; o tema "Where Do I Begin" de Love Story é o exemplo descendente clássico). 6.a maior = My Bonnie (my-bon). 7.a menor = Somewhere (West Side Story). 7.a maior = Take On Me (take-on). Oitava = Somewhere Over the Rainbow. Intervalos amplos são mais difíceis de identificar porque parecem "grandes saltos" e as diferenças de tamanho entre eles são proporcionalmente menores. As sextas e sétimas são particularmente árduas -- são inversões de terças e segundas, portanto o seu carácter está relacionado mas é mais largo. Treina contrastando pares: 6.a m vs. 6.a M, 7.a m vs. 7.a M.',
           tryThisLabel: 'Ouve o intervalo de 7.a maior (C a B)',
         },
         {
           title: 'Intervalos Amplos Descendentes',
           explanation:
-            'Os intervalos descendentes soam diferentes dos ascendentes mesmo que a distância seja igual. Uma 5.a perfeita descendente (G descendo para C) soa como resolução ou aterragem. Uma 6.a maior descendente soa quente e nostálgica. Sétimas descendentes soam dramáticas e amplas. Treina intervalos descendentes separadamente -- muitos estudantes que dominam intervalos ascendentes debatem-se com os descendentes. Usa associações com canções descendentes: 5.a P descendente = Flintstones (Flint-stones), 3.a m descendente = Hey Jude (hey-Jude). Constrói o conjunto descendente como competência própria.',
+            'Os intervalos descendentes soam diferentes dos ascendentes mesmo que a distância seja igual. Uma 5.a perfeita descendente (G descendo para C) soa como resolução ou aterragem. Uma 6.a maior descendente soa quente e nostálgica. Sétimas descendentes soam dramáticas e amplas. Treina intervalos descendentes separadamente -- muitos estudantes que dominam intervalos ascendentes debatem-se com os descendentes. Usa associações com canções descendentes: 5.a P descendente = Feelings (início "Feelings, oh feelings..."), 3.a m descendente = Hey Jude (hey-Jude). Constrói o conjunto descendente como competência própria.',
           tryThisLabel:
             'Toca C maior descendente -- ouve os intervalos ao contrário',
         },
@@ -233,7 +233,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Intervalos Compostos',
           explanation:
-            'Após dominar intervalos simples (dentro de uma oitava), expande para intervalos compostos que ultrapassam a oitava. Uma 9.a = oitava + 2.a. Uma 10.a = oitava + 3.a. Uma 11.a = oitava + 4.a. Uma 13.a = oitava + 6.a. Os intervalos compostos soam como os seus equivalentes simples mas "mais largos" e mais espaçosos. As regras de qualidade transferem-se: uma 9.a maior tem a mesma qualidade que uma 2.a maior. Ouves estes constantemente em acordes de jazz estendidos -- a 9.a num Cmaj9 é a nota D uma oitava acima da fundamental.',
+            'Após dominar intervalos simples (dentro de uma oitava), expande para intervalos compostos que ultrapassam a oitava. Uma 9.a = oitava + 2.a. Uma 10.a = oitava + 3.a. Uma 11.a = oitava + 4.a. Uma 13.a = oitava + 6.a. Os intervalos compostos soam como os seus equivalentes simples mas "mais largos" e mais espaçosos. As regras de qualidade transferem-se: uma 9.a maior tem a mesma qualidade que uma 2.a maior. Ouves estes constantemente em acordes de jazz estendidos -- a 9.a num Cmaj9 é D, uma oitava mais uma 2.a maior acima da fundamental (C).',
           tryThisLabel: 'Ouve o trítono dentro de C7 (E a Bb)',
         },
         {
@@ -392,7 +392,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Toca "C pentatonic scale" e depois "C blues scale" -- a escala de blues acrescenta uma nota (Gb, a blue note). Consegues ouvir a aspereza e tensão adicionadas?',
+            'Toca "C minor pentatonic" e depois "C blues scale" -- a escala de blues acrescenta uma nota (Gb, a blue note, um ♭5). Consegues ouvir a aspereza e tensão adicionadas?',
         },
         {
           instruction:
