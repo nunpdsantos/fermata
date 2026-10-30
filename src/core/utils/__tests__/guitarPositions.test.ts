@@ -223,11 +223,16 @@ function checkPosition(
   for (let f = lo; f <= hi; f++) allowedFrets.add(f);
   if (stretchSide === 'up' || stretchSide === null) { if (up <= GUITAR_MAX_FRET) allowedFrets.add(up); }
   if ((stretchSide === 'down' || stretchSide === null) && down !== null) allowedFrets.add(down);
+  const oracleSkipped: number[] = [];
   for (let m = winLo; m <= winHi; m++) {
     if (!scalePcs.has(mod12(m)) || seenMidi.has(m)) continue;
     const reachable = openMidi.some((o) => allowedFrets.has(m - o));
     if (reachable) bad(`scale pitch midi ${m} reachable but missing`);
-    else exceptions.gaps.push(`${where}: midi ${m}`);
+    else { exceptions.gaps.push(`${where}: midi ${m}`); oracleSkipped.push(m); }
+  }
+  // The engine reports the same skipped pitches (the UI's tuning notice uses it).
+  if (JSON.stringify(pos.skippedMidi) !== JSON.stringify(oracleSkipped)) {
+    bad(`skippedMidi ${JSON.stringify(pos.skippedMidi)} != oracle ${JSON.stringify(oracleSkipped)}`);
   }
 
   // 9. Every scale degree at least once where physically possible.

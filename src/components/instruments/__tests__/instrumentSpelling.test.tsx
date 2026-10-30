@@ -37,9 +37,6 @@ function renderFretCell(displayNote: Note, extra?: Partial<React.ComponentProps<
       mobile={false}
       showVoicing={false}
       finger={undefined}
-      showScalePos={false}
-      scalePosIsRoot={undefined}
-      scalePosDegree={undefined}
       showScaleDot
       isFocused={false}
       onClick={vi.fn()}

@@ -62,7 +62,7 @@ describe('store defaults', () => {
 });
 
 describe('music actions', () => {
-  it('setKey updates key and resets chord/degree/guitarScalePosition', () => {
+  it('setKey updates key and resets chord/degree but KEEPS the chosen guitar position (W3-08)', () => {
     const { setSelectedChord, setSelectedDegree, setGuitarScalePosition, setKey } = useAppStore.getState();
 
     // Set up transient state
@@ -82,10 +82,11 @@ describe('music actions', () => {
     expect(s.selectedKey).toEqual({ natural: 'D', accidental: '' });
     expect(s.selectedChord).toBeNull();
     expect(s.selectedDegree).toBeNull();
-    expect(s.guitarScalePosition).toBeNull();
+    // Classical positions exist in every key: "V position" stays V.
+    expect(s.guitarScalePosition).toBe(2);
   });
 
-  it('setScale updates scale and resets chord/degree/guitarScalePosition', () => {
+  it('setScale updates scale and resets chord/degree but KEEPS the chosen guitar position (W3-08)', () => {
     const { setSelectedChord, setSelectedDegree, setGuitarScalePosition, setScale } = useAppStore.getState();
 
     setSelectedChord(C_MAJOR);
@@ -98,7 +99,7 @@ describe('music actions', () => {
     expect(s.selectedScale).toBe('natural_minor');
     expect(s.selectedChord).toBeNull();
     expect(s.selectedDegree).toBeNull();
-    expect(s.guitarScalePosition).toBeNull();
+    expect(s.guitarScalePosition).toBe(1);
   });
 
   it('setSelectedChord resets inversion and does NOT auto-open the detail panel', () => {
@@ -185,21 +186,24 @@ describe('instrument actions', () => {
     expect(useAppStore.getState().activeNotes.size).toBe(0);
   });
 
-  it('setGuitarScalePosition sets position index', () => {
+  it('setGuitarScalePosition takes a position (0 = Open … 12), "all", or null (automatic)', () => {
     useAppStore.getState().setGuitarScalePosition(3);
     expect(useAppStore.getState().guitarScalePosition).toBe(3);
+
+    useAppStore.getState().setGuitarScalePosition('all');
+    expect(useAppStore.getState().guitarScalePosition).toBe('all');
 
     useAppStore.getState().setGuitarScalePosition(null);
     expect(useAppStore.getState().guitarScalePosition).toBeNull();
   });
 
-  it('setGuitarTuningId changes tuning and resets scale position', () => {
+  it('setGuitarTuningId changes tuning and KEEPS the position (positions work in every tuning, W10-11)', () => {
     useAppStore.getState().setGuitarScalePosition(2);
     expect(useAppStore.getState().guitarScalePosition).toBe(2);
 
     useAppStore.getState().setGuitarTuningId('drop-d');
     expect(useAppStore.getState().guitarTuningId).toBe('drop-d');
-    expect(useAppStore.getState().guitarScalePosition).toBeNull();
+    expect(useAppStore.getState().guitarScalePosition).toBe(2);
   });
 
   it('has standard tuning as default', () => {
@@ -407,6 +411,31 @@ describe('appStore persistence shape guard', () => {
     expect(s.preferencesUpdatedAt).toBe(123);
     expect(s.lastView).toBe('drill');
   });
+
+  it('persists the chosen guitar position across reloads (W3-08)', async () => {
+    for (const ok of [0, 5, 12, 'all', null]) {
+      // setState persists, so set the sentinel BEFORE seeding the blob.
+      useAppStore.setState({ guitarScalePosition: 7 });
+      seed({ guitarScalePosition: ok, selectedScale: 'dorian' }, 6);
+      await useAppStore.persist.rehydrate();
+      expect(useAppStore.getState().guitarScalePosition).toBe(ok);
+    }
+    useAppStore.getState().setGuitarScalePosition(9);
+    const blob = JSON.parse(localStorage.getItem(KEY) ?? '{}');
+    expect(blob.state.guitarScalePosition).toBe(9);
+  });
+
+  it.each([13, -1, 2.5, 'V', {}, [], true])(
+    'drops an invalid persisted guitar position (%s) to automatic',
+    async (bad) => {
+      useAppStore.setState({ guitarScalePosition: 7 });
+      seed({ guitarScalePosition: bad, selectedScale: 'dorian' }, 6);
+      await useAppStore.persist.rehydrate();
+      const s = useAppStore.getState();
+      expect(s.guitarScalePosition).toBeNull();
+      expect(s.selectedScale).toBe('dorian');
+    },
+  );
 
   it('migrates a v5 blob to v6 by injecting lastView=explore', async () => {
     // A v5 persisted shape has no lastView. The migrate step must add it.

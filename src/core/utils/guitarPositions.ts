@@ -74,6 +74,12 @@ export interface GuitarPosition {
   notes: PositionNote[];
   /** Scale pitch classes that no note in this position plays (documented exceptions). */
   missingPitchClasses: number[];
+  /**
+   * Scale pitches inside the position's range that the hand cannot reach
+   * (MIDI, ascending): the middle of the gap between strings a 5th apart in
+   * Drop D / DADGAD / open tunings. Always empty in standard tuning.
+   */
+  skippedMidi: number[];
 }
 
 const LETTERS = ['C', 'D', 'E', 'F', 'G', 'A', 'B'] as const;
@@ -194,6 +200,7 @@ export function getGuitarPosition(
     else { stretch = 'down'; chosen = down; }
   }
   for (const c of chosen) byMidi.set(openMidi[c.stringIndex] + c.fret, c);
+  const skippedMidi = holes.filter((m) => !byMidi.has(m));
 
   // 4. Fingers, labels.
   const notes: PositionNote[] = [];
@@ -229,6 +236,7 @@ export function getGuitarPosition(
     stretch,
     notes,
     missingPitchClasses,
+    skippedMidi,
   };
 }
 

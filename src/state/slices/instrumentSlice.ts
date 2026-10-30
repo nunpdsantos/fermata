@@ -27,6 +27,7 @@ export const createInstrumentSlice: StateCreator<AppState, [], [], InstrumentSli
   setHighlightedNotes: (notes) => set({ highlightedNotes: notes }),
   setExerciseInputActive: (active) => set({ exerciseInputActive: active }),
   setGuitarScalePosition: (position) => set({ guitarScalePosition: position }),
+  // Positions are generated for any tuning, so the chosen one is kept.
   setGuitarTuningId: (id) =>
-    set({ guitarTuningId: id, guitarScalePosition: null, preferencesUpdatedAt: Date.now() }),
+    set({ guitarTuningId: id, preferencesUpdatedAt: Date.now() }),
 });
