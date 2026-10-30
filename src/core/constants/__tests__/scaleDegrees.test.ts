@@ -1,59 +1,49 @@
 import { describe, it, expect } from 'vitest';
-import {
-  getScaleDegreeIntervalLabel,
-  getScaleDegreeFunctionKey,
-  SCALE_FORMULAS,
-} from '../scales';
+import { getScaleDegreeFunctionKey, buildScale } from '../scales';
+import type { ScaleType } from '../../types/music';
+import { scaleDegreeLabels } from '../../utils/degreeSpelling';
 
-describe('getScaleDegreeIntervalLabel', () => {
+// Degree labels now come from the one spelling engine (read from each spelled
+// note); these expectations are unchanged from the old semitone table.
+const labelsOf = (type: ScaleType) => {
+  const scale = buildScale({ natural: 'C', accidental: '' }, type);
+  return scaleDegreeLabels(scale.root, scale.notes);
+};
+
+describe('scale degree labels (scaleDegreeLabels)', () => {
   it('major scale labels every degree with natural interval names', () => {
-    const labels = SCALE_FORMULAS.major.map((st, i) =>
-      getScaleDegreeIntervalLabel(i, st, 7),
-    );
+    const labels = labelsOf('major');
     expect(labels).toEqual(['R', '2', '3', '4', '5', '6', '7']);
   });
 
   it('natural minor labels the 6th as b6 and the 7th as b7 (not #5, not m7)', () => {
-    const labels = SCALE_FORMULAS.natural_minor.map((st, i) =>
-      getScaleDegreeIntervalLabel(i, st, 7),
-    );
+    const labels = labelsOf('natural_minor');
     expect(labels).toEqual(['R', '2', 'b3', '4', '5', 'b6', 'b7']);
   });
 
   it('harmonic minor labels the 6th as b6 and keeps the 7 as 7', () => {
-    const labels = SCALE_FORMULAS.harmonic_minor.map((st, i) =>
-      getScaleDegreeIntervalLabel(i, st, 7),
-    );
+    const labels = labelsOf('harmonic_minor');
     expect(labels).toEqual(['R', '2', 'b3', '4', '5', 'b6', '7']);
   });
 
   it('phrygian correctly labels degree 2 as b2 and degree 6 as b6', () => {
-    const labels = SCALE_FORMULAS.phrygian.map((st, i) =>
-      getScaleDegreeIntervalLabel(i, st, 7),
-    );
+    const labels = labelsOf('phrygian');
     expect(labels).toEqual(['R', 'b2', 'b3', '4', '5', 'b6', 'b7']);
   });
 
   it('locrian labels degree 5 as b5 (not dim5)', () => {
-    const labels = SCALE_FORMULAS.locrian.map((st, i) =>
-      getScaleDegreeIntervalLabel(i, st, 7),
-    );
+    const labels = labelsOf('locrian');
     expect(labels).toEqual(['R', 'b2', 'b3', '4', 'b5', 'b6', 'b7']);
   });
 
   it('lydian labels the 4th as #4 (tritone at degree 4)', () => {
-    const labels = SCALE_FORMULAS.lydian.map((st, i) =>
-      getScaleDegreeIntervalLabel(i, st, 7),
-    );
+    const labels = labelsOf('lydian');
     expect(labels).toEqual(['R', '2', '3', '#4', '5', '6', '7']);
   });
 
-  it('falls back to semitone label for non-7-note scales', () => {
+  it('labels non-7-note scales by their spelled degrees', () => {
     // pentatonic major = [0, 2, 4, 7, 9] (5 notes)
-    const labels = SCALE_FORMULAS.pentatonic_major.map((st, i) =>
-      getScaleDegreeIntervalLabel(i, st, 5),
-    );
-    // Uses semitone-based labels; degree-position logic doesn't apply
+    const labels = labelsOf('pentatonic_major');
     expect(labels).toEqual(['R', '2', '3', '5', '6']);
   });
 });

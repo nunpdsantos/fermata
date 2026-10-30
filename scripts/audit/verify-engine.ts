@@ -12,9 +12,14 @@
 import {
   SCALE_FORMULAS,
   buildScale,
-  getScaleDegreeIntervalLabel,
   getSeventhDegreeName,
 } from '../../src/core/constants/scales';
+import { formatDegree, MAJOR_DEGREE_SEMITONES } from '../../src/core/utils/degreeSpelling';
+
+// Scale-degree label for (0-based degree, semitones above the root), read by the
+// one spelling engine the app displays with (audit W1 review item 5).
+const degreeLabel = (degreeIndex: number, semitones: number): string =>
+  formatDegree({ number: degreeIndex + 1, alteration: semitones - MAJOR_DEGREE_SEMITONES[degreeIndex] });
 import {
   CHORD_FORMULAS,
   CHORD_LETTER_DISTANCES,
@@ -309,7 +314,7 @@ const LABEL_EXPECTATIONS: Array<[number, number, string, string]> = [
 ];
 for (const [deg, st, expected, label] of LABEL_EXPECTATIONS) {
   totalChecks++;
-  const got = getScaleDegreeIntervalLabel(deg, st, 7);
+  const got = degreeLabel(deg, st);
   if (got !== expected) {
     record({
       severity: 'serious',
@@ -322,7 +327,7 @@ for (const [deg, st, expected, label] of LABEL_EXPECTATIONS) {
 // Specifically verify the fix note: degree 6 at 8 semitones should be b6, not #5
 {
   totalChecks++;
-  const got = getScaleDegreeIntervalLabel(5, 8, 7); // 5 is index for submediant
+  const got = degreeLabel(5, 8); // 5 is index for submediant
   if (got !== 'b6') {
     record({ severity: 'critical', tag: 'interval-label-submediant', detail: `degree 6 @ 8st: got '${got}', want 'b6'` });
   }
