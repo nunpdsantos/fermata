@@ -459,3 +459,12 @@ describe('labels and keys', () => {
     expect(fingeringKey('dorian', 'standard', 5, 0, 2, 9)).not.toBe(c);
   });
 });
+
+describe('the hand-typed CAGED/3NPS library is gone (W3-10, decision D-02)', () => {
+  it('no guitarScalePositions module remains in core', () => {
+    const modules = Object.keys(import.meta.glob('../../constants/*.ts'));
+    expect(modules.some((m) => m.includes('guitarScalePositions'))).toBe(false);
+    // Known positive: the glob does see the sibling chord-shape library.
+    expect(modules.some((m) => m.includes('guitarChordShapes'))).toBe(true);
+  });
+});
