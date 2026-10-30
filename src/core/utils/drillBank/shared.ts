@@ -43,6 +43,32 @@ export function displayNote(n: Note): string {
 }
 
 // ---------------------------------------------------------------------------
+// Chord-spelling chips
+// ---------------------------------------------------------------------------
+
+const ACCIDENTAL_LADDER: Note['accidental'][] = ['bb', 'b', '', '#', '##'];
+
+/**
+ * The quality-defining wrong notes of a chord (audit W7-03): every tone above
+ * the root, respelled a half step lower and higher ON THE SAME LETTER (E♭ and
+ * E♯ around the E of C major; B♭ and B♯ around the B of C maj7). Picking the
+ * right letter is not enough to spell a chord — these force the accidental
+ * choice. Spellings past 𝄫 / 𝄪 do not exist and are skipped. Display strings,
+ * in tone order (3rd, 5th, 7th).
+ */
+export function qualityNearMisses(chordNotes: Note[]): string[] {
+  const out: string[] = [];
+  for (const tone of chordNotes.slice(1)) {
+    const i = ACCIDENTAL_LADDER.indexOf(tone.accidental);
+    for (const j of [i - 1, i + 1]) {
+      const acc = ACCIDENTAL_LADDER[j];
+      if (acc !== undefined) out.push(displayNote(N(tone.natural, acc)));
+    }
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
 // Static key tables
 // ---------------------------------------------------------------------------
 
