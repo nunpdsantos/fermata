@@ -117,7 +117,7 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Dado que Gr+6 y V7 son enarmónicamente idénticos, una única sonoridad puede pivotar entre dos tonalidades distantes. La reescritura cambia qué voz conduce hacia dónde, redirigiendo la trayectoria armónica.',
   },
   l6u18m4e2: {
-    prompt: '¿A qué distancia entre sí están las tonalidades entre las que la modulación enarmónica vía Gr+6/V7 permite modular directamente?',
+    prompt: '¿A qué distancia están las tonalidades a las que se puede modular directamente mediante la modulación enarmónica vía Gr+6/V7?',
     choices: [
       'Tonalidades distantes — por ejemplo, tónicas a medio tono de distancia (C a Db), cinco pasos en el círculo de quintas, mucho más allá del alcance de pivote diatónico',
       'Solo tonalidades cercanas con una diferencia de una alteración',
