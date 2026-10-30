@@ -27,6 +27,11 @@ export interface ChromaticStripProps {
   pitchClassToDegree?: (pc: number) => number | undefined;
   /** Pitch class for each step — for in-key check. */
   pitchClassAtStep?: (step: number) => number;
+  /**
+   * Interval label for each block, read from the note the block shows (A5 over
+   * G♯, m6 over A♭). Without it the strip falls back to fixed semitone names.
+   */
+  intervalAtStep?: (step: number) => string;
 
   /** Enable keyboard shortcuts (1-9, 0, -, = → blocks 1-12). Default true. */
   keyboard?: boolean;
@@ -51,6 +56,7 @@ export function ChromaticStrip({
   inKeyPitchClasses,
   pitchClassToDegree,
   pitchClassAtStep,
+  intervalAtStep,
   keyboard = true,
   className = '',
 }: ChromaticStripProps) {
@@ -79,7 +85,7 @@ export function ChromaticStrip({
       {Array.from({ length: 13 }, (_, step) => {
         const note = noteAtStep(step);
         const noteLabel = noteToString(note);
-        const intervalLabel = INTERVAL_SHORT[step];
+        const intervalLabel = intervalAtStep ? intervalAtStep(step) : INTERVAL_SHORT[step];
         const isRoot = step === 0;
         const isActive = activeSteps.has(step);
         const pc = pitchClassAtStep ? pitchClassAtStep(step) : undefined;
