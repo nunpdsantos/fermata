@@ -63,7 +63,9 @@ describe('W1-05 — buildScale spells every scale type on every selectable root 
       const or = ORACLE_SCALES[type];
       for (const root of SELECTABLE_ROOTS) {
         const got = buildScale(toNote(root), type as ScaleType).notes.map(str);
-        const want = or.degrees.map((d) => oracleSpell(root, d) ?? '?');
+        let want = or.degrees.map((d) => oracleSpell(root, d) ?? '?');
+        // Blues blue note: ♭5 (D-13) unless that needs a double flat, then ♯4.
+        if (type === 'blues' && want[3].endsWith('bb')) want = want.map((n, i) => (i === 3 ? oracleSpell(root, '#4')! : n));
         // A triple accidental (never needed by these roots) would show as '?'.
         expect(want).not.toContain('?');
         expect(got, `${root} ${type}`).toEqual(want);
@@ -106,6 +108,12 @@ describe('W1-05 — buildScale spells every scale type on every selectable root 
     const s = (r: string, t: ScaleType) => buildScale(toNote(r), t).notes.map(str).join(' ');
     expect(s('A', 'blues')).toBe('A C D Eb E G');
     expect(s('C#', 'blues')).toBe('C# E F# G G# B');
+    // ♭5 would be B𝄫 / E𝄫: the blue note becomes ♯4 instead (review 2026-10-30)
+    expect(s('Eb', 'blues')).toBe('Eb Gb Ab A Bb Db');
+    expect(s('Ab', 'blues')).toBe('Ab Cb Db D Eb Gb');
+    expect(s('Bb', 'blues')).toBe('Bb Db Eb Fb F Ab'); // F♭ is a single flat: ♭5 kept
+    const ebBlues = buildScale(toNote('Eb'), 'blues');
+    expect(scaleDegreeLabels(ebBlues.root, ebBlues.notes)).toEqual(['R', 'b3', '4', '#4', '5', 'b7']);
     expect(s('C', 'diminished_half_whole')).toBe('C Db D# E F# G A Bb');
     expect(s('C', 'diminished_whole_half')).toBe('C D Eb F Gb Ab A B');
     expect(s('C', 'whole_tone')).toBe('C D E F# G# Bb');

@@ -12,7 +12,8 @@ import type { Note, ScaleType } from '../../../core/types/music';
 import { KeySelector } from '../KeySelector';
 import { useAppStore } from '../../../state/store';
 import { SCALE_FORMULAS } from '../../../core/constants/scales';
-import { spellDegree, pcOf, majorKeySignature, PARENT_RULE } from '../../../core/utils/__tests__/theoryOracle';
+import { spellDegree, pcOf, majorKeySignature, PARENT_RULE, ORACLE_SCALES, accMarks } from '../../../core/utils/__tests__/theoryOracle';
+import { buildScale } from '../../../core/constants/scales';
 import en from '../../../i18n/locales/en.json';
 import pt from '../../../i18n/locales/pt.json';
 import es from '../../../i18n/locales/es.json';
@@ -32,14 +33,25 @@ const select = (root: string, type: ScaleType) =>
 const rootButtons = (c: HTMLElement) => [...c.querySelectorAll('[data-root]')] as HTMLElement[];
 
 /**
- * Oracle: the key-signature size of a root spelling for a scale — the scale's
- * own (parent-major) signature, or the root's major signature when the scale
- * has none. Counted from the oracle's spelled major scale.
+ * Oracle cost of a root spelling (review rule, 2026-10-30), compared element
+ * by element: scales with a standard signature → that signature's size;
+ * scales without one → [double accidentals in the spelled scale, the root's
+ * major-signature size, accidental marks]. Scales are spelled by the oracle's
+ * own formulas; the symmetric ones are left to the doubles budget below.
  */
-function marks(root: string, type: ScaleType): number {
+function cost(root: string, type: ScaleType): number[] | null {
   const rule = PARENT_RULE[type];
-  return majorKeySignature(rule ? spellDegree(root, rule)! : root).count;
+  if (rule) return [majorKeySignature(spellDegree(root, rule)!).count];
+  const or = ORACLE_SCALES[type];
+  if (!or) return null;
+  const notes = or.degrees.map((d) => spellDegree(root, d) ?? 'X###');
+  const doubles = notes.filter((n) => n.length >= 3).length;
+  return [doubles, majorKeySignature(root).count, notes.reduce((sum, n) => sum + accMarks(n), 0)];
 }
+const costlier = (a: number[], b: number[]) => {
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i] > b[i];
+  return false;
+};
 
 describe('W1-09 — root spelling chosen by mode', () => {
   it('major offers Db, Eb, F#, Ab, Bb; natural minor offers C#, Eb, F#, G#, Bb', () => {
@@ -52,7 +64,7 @@ describe('W1-09 — root spelling chosen by mode', () => {
     expect(rootButtons(r2.container).map((b) => b.textContent)).toEqual(['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B']);
   });
 
-  it('for every scale type, each offered black-key name has no larger key signature than its twin', () => {
+  it('for every scale type, each offered black-key name is no costlier than its twin', () => {
     const TWIN: Record<string, string> = { 'C#': 'Db', Db: 'C#', 'D#': 'Eb', Eb: 'D#', 'F#': 'Gb', Gb: 'F#', 'G#': 'Ab', Ab: 'G#', 'A#': 'Bb', Bb: 'A#' };
     const bad: string[] = [];
     for (const type of Object.keys(SCALE_FORMULAS) as ScaleType[]) {
@@ -60,7 +72,9 @@ describe('W1-09 — root spelling chosen by mode', () => {
       const { container } = render(<KeySelector />);
       for (const label of rootButtons(container).map((b) => b.textContent!)) {
         const twin = TWIN[label];
-        if (twin && marks(label, type) > marks(twin, type)) bad.push(`${type}: offers ${label} (${marks(label, type)}) over ${twin} (${marks(twin, type)})`);
+        if (!twin) continue;
+        const [a, b] = [cost(label, type), cost(twin, type)];
+        if (a && b && costlier(a, b)) bad.push(`${type}: offers ${label} [${a}] over ${twin} [${b}]`);
       }
       cleanup();
     }
@@ -133,6 +147,32 @@ describe('W1-09 — root spelling chosen by mode', () => {
       expect(getByTestId('root-label-row').className, root).toContain('h-[22px]');
       cleanup();
     }
+  });
+
+  it('double accidentals across every offered black-key root x all 37 scale types stay within budget (≤ 9)', () => {
+    let doubles = 0;
+    for (const type of Object.keys(SCALE_FORMULAS) as ScaleType[]) {
+      select('C', type);
+      const { container } = render(<KeySelector />);
+      for (const label of rootButtons(container).map((b) => b.textContent!).filter((l) => l.length === 2)) {
+        doubles += buildScale(toNote(label), type).notes.filter((n) => n.accidental.length === 2).length;
+      }
+      cleanup();
+    }
+    expect(doubles).toBeLessThanOrEqual(9);
+  });
+
+  it('C# altered is offered (not Db altered with four double flats)', () => {
+    select('C', 'altered');
+    const { container } = render(<KeySelector />);
+    expect(rootButtons(container)[1].textContent).toBe('C#');
+  });
+
+  it('Eb blues is offered (not D#), spelled Eb Gb Ab A Bb Db with no double flat', () => {
+    select('C', 'blues');
+    const { container } = render(<KeySelector />);
+    expect(rootButtons(container)[3].textContent).toBe('Eb');
+    expect(buildScale(toNote('Eb'), 'blues').notes.map(str).join(' ')).toBe('Eb Gb Ab A Bb Db');
   });
 
   it('the respell label exists in EN, PT and ES', () => {

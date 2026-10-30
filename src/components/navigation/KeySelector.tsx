@@ -8,7 +8,8 @@ import { getPitchClass } from '../../core/constants/notes.ts';
 import {
   preferredRootSpelling,
   enharmonicRootAlternative,
-  rootSpellingSize,
+  rootSpellingCost,
+  cheaperSpelling,
 } from '../../core/utils/degreeSpelling.ts';
 
 // One button per pitch class. Each black key is offered under the name that
@@ -147,11 +148,11 @@ export function KeySelector() {
     // Re-clicking the active scale never touches the root.
     if (type === selectedScale) return;
     setScale(type);
-    // Respell only when the other name has a strictly smaller key signature
-    // for the new scale (D♭ major → Minor gives C♯ minor; G♯ minor → Melodic
-    // stays G♯).
+    // Respell only when the other name is strictly cheaper for the new scale
+    // (smaller signature; or, without one, fewer double accidentals first):
+    // D♭ major → Minor gives C♯ minor; G♯ minor → Melodic stays G♯.
     const preferred = preferredRootSpelling(selectedPc, type);
-    if (!sameNote(preferred, selectedKey) && rootSpellingSize(preferred, type) < rootSpellingSize(selectedKey, type)) {
+    if (!sameNote(preferred, selectedKey) && cheaperSpelling(rootSpellingCost(preferred, type), rootSpellingCost(selectedKey, type))) {
       setKey(preferred);
     }
   };

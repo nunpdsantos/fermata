@@ -391,7 +391,15 @@ function spellSymmetric(root: Note, options: readonly (readonly string[])[]): No
 export function spellScale(root: Note, type: ScaleType): Note[] {
   const options = SYMMETRIC_OPTIONS[type];
   if (options) return spellSymmetric(root, options);
-  return SCALE_DEGREE_FORMULAS[type].map((label) => spellDegree(root, parseDegree(label)));
+  const notes = SCALE_DEGREE_FORMULAS[type].map((label) => spellDegree(root, parseDegree(label)));
+  // The blues blue note is ♭5 (decision D-13) — except where ♭5 would need a
+  // double flat; then it is the same pitch as ♯4, which needs none (E♭ blues:
+  // E♭ G♭ A♭ A B♭ D♭, the A read as ♯4). Only the blue note may change
+  // degree; every other degree keeps its letter (review, 2026-10-30).
+  if (type === 'blues' && notes[3].accidental === 'bb') {
+    notes[3] = spellDegree(root, parseDegree('#4'));
+  }
+  return notes;
 }
 
 /** The degree each note of a spelled scale stands for, read back from its spelling. */
@@ -420,21 +428,41 @@ const NATURAL_BY_PC: Record<number, NaturalNote> = {
 };
 
 /**
- * How "big" a root spelling is for a scale, the way musicians choose a key's
- * name: the size of the scale's own key signature (A♭ minor 7♭ vs G♯ minor
- * 5♯), or — for scales without a standard signature (blues aside: bebop,
- * symmetric, world scales) — the size of the root's MAJOR key signature
- * (E♭ 3♭ over D♯ 9♯). Double flats/sharps count twice.
+ * How costly a root spelling is for a scale — smaller is better, compared
+ * element by element (review, 2026-10-30):
+ *   - scales WITH a standard key signature: the size of that signature
+ *     (A♭ minor 7♭ vs G♯ minor 5♯; G♯ melodic minor stays G♯);
+ *   - scales WITHOUT one (symmetric, bebop, melodic-minor modes, world
+ *     scales): fewest double accidentals in the spelled scale first (C♯
+ *     altered, not D♭ altered with four 𝄫), then the smaller MAJOR key
+ *     signature of the root (E♭ over D♯, A♭ over G♯), then the fewest
+ *     accidentals.
+ * Double flats/sharps count twice in a signature.
  */
-export function rootSpellingSize(root: Note, type: ScaleType): number {
-  return (keySignatureForScale(root, type) ?? majorKeySignature(root)).count;
+export function rootSpellingCost(root: Note, type: ScaleType): number[] {
+  const signature = keySignatureForScale(root, type);
+  if (signature) return [signature.count];
+  const notes = spellScale(root, type);
+  const doubles = notes.filter((n) => accidentalMarks(n) >= 2).length;
+  const marks = notes.reduce((sum, n) => sum + accidentalMarks(n), 0);
+  return [doubles, majorKeySignature(root).count, marks];
+}
+
+/** Whether cost `a` is strictly smaller than cost `b` (lexicographic). */
+export function cheaperSpelling(a: readonly number[], b: readonly number[]): boolean {
+  for (let i = 0; i < Math.max(a.length, b.length); i++) {
+    const x = a[i] ?? 0;
+    const y = b[i] ?? 0;
+    if (x !== y) return x < y;
+  }
+  return false;
 }
 
 /**
  * The root spelling the key picker offers for a pitch class and scale type:
  * white keys keep their natural name; a black key takes whichever of its two
- * names has the smaller key signature for that scale (D♭ major, C♯ minor,
- * G♯ minor and melodic minor, E♭ blues), ties keeping the historical label
+ * names is cheaper by {@link rootSpellingCost} (D♭ major, C♯ minor, G♯ minor
+ * and melodic minor, E♭ blues, C♯ altered), ties keeping the historical label
  * (C♯, E♭, F♯, A♭, B♭).
  */
 export function preferredRootSpelling(pitchClass: number, type: ScaleType): Note {
@@ -442,7 +470,7 @@ export function preferredRootSpelling(pitchClass: number, type: ScaleType): Note
   const natural = NATURAL_BY_PC[pc];
   if (natural) return { natural, accidental: '' };
   const [first, second] = BLACK_KEY_NAMES[pc];
-  return rootSpellingSize(second, type) < rootSpellingSize(first, type) ? second : first;
+  return cheaperSpelling(rootSpellingCost(second, type), rootSpellingCost(first, type)) ? second : first;
 }
 
 /** The other everyday name of a black-key root (C♯ ↔ D♭), or null for white keys and other spellings. */
