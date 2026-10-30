@@ -172,9 +172,19 @@ export function identifyChordFromNotes(inputNotes: Note[]): {
     }
   }
 
-  // Sort by score (highest first), then by chord complexity (simpler first)
+  // How many of a candidate's chord tones are spelled exactly as written. Ties
+  // between equally good names (symmetric chords: E G# C is both C+ and E+)
+  // go to the name that keeps the written spelling (audit W1-19).
+  const written = new Set(inputNotes.map(noteToString));
+  const spellingMatches = (r: ChordIdentification) =>
+    r.chord.notes.reduce((n, note) => n + (written.has(noteToString(note)) ? 1 : 0), 0);
+
+  // Sort by score (highest first), then spelling match, then by chord
+  // complexity (simpler first)
   results.sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score;
+    const spelled = spellingMatches(b) - spellingMatches(a);
+    if (spelled !== 0) return spelled;
     // Prefer simpler chords (triads over 7ths over extended)
     const complexityA = CHORD_FORMULAS[a.chord.quality]?.length || 0;
     const complexityB = CHORD_FORMULAS[b.chord.quality]?.length || 0;

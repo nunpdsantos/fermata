@@ -9,6 +9,16 @@ import {
   PitchedNote,
 } from '../types/music';
 import { getPitchClass, NATURAL_TO_PITCH_CLASS, getSimplestSpelling } from './notes';
+import type { ScaleType, Scale } from '../types/music';
+import {
+  type Degree,
+  degreeSemitones,
+  degreeOf,
+  formatDegree,
+  intervalNameOfDegree,
+  spellScale,
+  CHURCH_MODES,
+} from '../utils/degreeSpelling';
 
 // Natural notes in order for letter distance calculations
 const NATURALS: NaturalNote[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
@@ -442,7 +452,7 @@ export const INTERVAL_LABELS: Record<number, string> = {
   13: 'Minor 9th',
   14: 'Major 9th',
   15: 'Augmented 9th',
-  16: 'Minor 10th',
+  16: 'Major 10th', // 12 + major 3rd (the minor 10th is 15) — audit W1-14
   17: 'Perfect 11th',
   18: 'Augmented 11th',
   19: 'Perfect 12th',
@@ -451,12 +461,14 @@ export const INTERVAL_LABELS: Record<number, string> = {
   22: 'Augmented 13th',
 };
 
-// Short interval labels for compact display (including compound intervals - BUG-016 fix)
+// Short labels for a semitone count, in the degree style the whole app uses
+// (b3, not m3 — audit W1-11). Displays that know the spelling read labels from
+// the spelled note instead (utils/degreeSpelling); this table is the fallback.
 export const INTERVAL_SHORT_LABELS: Record<number, string> = {
   0: 'R',
-  1: 'm2',
+  1: 'b2',
   2: '2',
-  3: 'm3',
+  3: 'b3',
   4: '3',
   5: '4',
   6: 'b5',
@@ -469,43 +481,39 @@ export const INTERVAL_SHORT_LABELS: Record<number, string> = {
   13: 'b9',
   14: '9',
   15: '#9',
-  16: 'm10',
+  16: '10',
   17: '11',
   18: '#11',
-  19: 'P12',
+  19: '12',
   20: 'b13',
   21: '13',
   22: '#13',
 };
 
-// Chord-context interval-label overrides. The generic tables name 8 semitones
-// "Minor 6th"/"b6" (correct for interval ID and scale degrees), but inside the
-// augmented chord family that tone is spelled as a raised 5th.
-const CHORD_CONTEXT_LABELS: Partial<Record<ChordQuality, Record<number, { label: string; short: string }>>> = {
-  augmented: { 8: { label: 'Augmented 5th', short: '#5' } },
-  augmented7: { 8: { label: 'Augmented 5th', short: '#5' } },
-  augmented_major7: { 8: { label: 'Augmented 5th', short: '#5' } },
-  dominant7sharp5: { 8: { label: 'Augmented 5th', short: '#5' } },
-  dominant7sharp5flat9: { 8: { label: 'Augmented 5th', short: '#5' } },
-  dominant7sharp5sharp9: { 8: { label: 'Augmented 5th', short: '#5' } },
-};
-
-// Get interval labels for a chord quality
-export function getChordIntervalLabels(quality: ChordQuality): string[] {
-  const formula = CHORD_FORMULAS[quality];
-  return formula.map(
-    (semitones) =>
-      CHORD_CONTEXT_LABELS[quality]?.[semitones]?.label ?? INTERVAL_LABELS[semitones] ?? `${semitones} st`,
-  );
+// Chord-formula labels are READ FROM THE SPELLED CHORD (audit W1-11/W1-12): the
+// degree number comes from the chord tone's letter distance (compound above
+// the octave: 9, 11, 13) and the alteration from its semitones, in b3 style
+// with the root shown as "R". So a minor 3rd is "b3" (never "m3"), the 4th
+// tone of a diminished 7th is "bb7" (B-double-flat in C, never "6") and an
+// augmented chord's 5th is "#5".
+function chordToneDegree(quality: ChordQuality, index: number): Degree {
+  const semitones = CHORD_FORMULAS[quality][index];
+  const letter = CHORD_LETTER_DISTANCES[quality][index];
+  const number = letter + 1 + (semitones >= 12 ? 7 : 0);
+  return { number, alteration: semitones - degreeSemitones({ number, alteration: 0 }) };
 }
 
-// Get short interval labels for a chord quality
+// Get interval labels for a chord quality ("Root", "Minor 3rd", "Diminished 7th")
+export function getChordIntervalLabels(quality: ChordQuality): string[] {
+  return CHORD_FORMULAS[quality].map((_, i) => {
+    const d = chordToneDegree(quality, i);
+    return d.number === 1 && d.alteration === 0 ? 'Root' : intervalNameOfDegree(d).long;
+  });
+}
+
+// Get short interval labels for a chord quality ("R", "b3", "5", "bb7")
 export function getChordShortIntervalLabels(quality: ChordQuality): string[] {
-  const formula = CHORD_FORMULAS[quality];
-  return formula.map(
-    (semitones) =>
-      CHORD_CONTEXT_LABELS[quality]?.[semitones]?.short ?? INTERVAL_SHORT_LABELS[semitones] ?? `${semitones}`,
-  );
+  return CHORD_FORMULAS[quality].map((_, i) => formatDegree(chordToneDegree(quality, i), 'R'));
 }
 
 // Get interval labels for a chord with current inversion
@@ -551,192 +559,87 @@ export function getMaxInversions(quality: ChordQuality): number {
   return CHORD_FORMULAS[quality].length - 1;
 }
 
-// Diatonic chord qualities for each scale type
-// Each array represents the chord quality built on each scale degree (1-7)
-import { ScaleType, Scale } from '../types/music';
+// ─── Diatonic harmony (audit W2-04 / W2-08) ─────────────────────────────────
+//
+// A scale's "diatonic" triads are built by STACKING THIRDS WITHIN THE SCALE —
+// degree i takes the scale's own notes i, i+2, i+4 — and kept only when that
+// stack is a major, minor, diminished or augmented triad. Hand-written quality
+// tables used to put notes outside the scale on the buttons (Persian "I" was a
+// C major chord although G is not in C Persian).
+//
+// Which scales get chords:
+//   - 7-note scales: every degree whose stack is a triad (exotic scales can have
+//     gaps, e.g. a diminished third between letter-thirds).
+//   - 8-note BEBOP scales: the parent mode plus one chromatic passing tone, so
+//     the chords are the parent mode's (mixolydian / major / dorian) on the
+//     parent degrees; the passing tone gets none.
+//   - Diminished (octatonic) scales: none — every alternate-note stack is the
+//     same diminished chord, so there are no seven degrees to number.
+//   - 5-, 6- and 12-note scales: none (thirds do not stack within them).
+//
+// Numerals: case and °/+ by quality; the five church modes are written against
+// the parallel major (decision D-13 / audit W2-08: Mixolydian ♭VII, Phrygian
+// ♭II, Lydian ♯iv°), matching the L7 lessons. Major, the minor scales and the
+// other heptatonic scales keep the classical plain numerals (minor's III VI VII).
 
-const DIATONIC_QUALITIES: Record<ScaleType, ChordQuality[]> = {
-  // Major (Ionian): I, ii, iii, IV, V, vi, vii°
-  major: ['major', 'minor', 'minor', 'major', 'major', 'minor', 'diminished'],
-
-  // Natural Minor (Aeolian): i, ii°, III, iv, v, VI, VII
-  natural_minor: ['minor', 'diminished', 'major', 'minor', 'minor', 'major', 'major'],
-
-  // Harmonic Minor: i, ii°, III+, iv, V, VI, vii°
-  harmonic_minor: ['minor', 'diminished', 'augmented', 'minor', 'major', 'major', 'diminished'],
-
-  // Melodic Minor: i, ii, III+, IV, V, vi°, vii°
-  melodic_minor: ['minor', 'minor', 'augmented', 'major', 'major', 'diminished', 'diminished'],
-
-  // Dorian: i, ii, III, IV, v, vi°, VII
-  dorian: ['minor', 'minor', 'major', 'major', 'minor', 'diminished', 'major'],
-
-  // Phrygian: i, II, III, iv, v°, VI, vii
-  phrygian: ['minor', 'major', 'major', 'minor', 'diminished', 'major', 'minor'],
-
-  // Lydian: I, II, iii, #iv°, V, vi, vii
-  lydian: ['major', 'major', 'minor', 'diminished', 'major', 'minor', 'minor'],
-
-  // Mixolydian: I, ii, iii°, IV, v, vi, VII
-  mixolydian: ['major', 'minor', 'diminished', 'major', 'minor', 'minor', 'major'],
-
-  // Locrian: i°, II, iii, iv, V, VI, vii
-  locrian: ['diminished', 'major', 'minor', 'minor', 'major', 'major', 'minor'],
-
-  // Non-7-note scales: no valid diatonic triads (thirds don't stack in these structures)
-  pentatonic_major: [],
-  pentatonic_minor: [],
-  blues: [],
-  whole_tone: [],
-  diminished_whole_half: [
-    'diminished',
-    'diminished',
-    'diminished',
-    'diminished',
-    'diminished',
-    'diminished',
-    'diminished',
-    'diminished',
-  ],
-  diminished_half_whole: [
-    'diminished',
-    'diminished',
-    'diminished',
-    'diminished',
-    'diminished',
-    'diminished',
-    'diminished',
-    'diminished',
-  ],
-  chromatic: [], // No diatonic chords for chromatic scale
-
-  // Advanced scales (Phase 1)
-  // Altered (Super Locrian) - Mode 7 of melodic minor: i°, ii, iii, IV+, V, VI, vii°
-  altered: ['diminished', 'minor', 'minor', 'augmented', 'major', 'major', 'diminished'],
-  // Lydian Dominant - Mode 4 of melodic minor: I, II, iii°, iv°, v, vi, VII+
-  lydian_dominant: ['major', 'major', 'diminished', 'diminished', 'minor', 'minor', 'augmented'],
-  // Phrygian Dominant - Mode 5 of harmonic minor: I, II, iii°, iv, v°, VI+, vii
-  phrygian_dominant: ['major', 'major', 'diminished', 'minor', 'diminished', 'augmented', 'minor'],
-  // Major Blues (6 notes) - major tonality with blue note
-  major_blues: ['major', 'minor', 'minor', 'major', 'major', 'minor'],
-  // Locrian Natural 2 - Mode 6 of melodic minor: i°, ii°, iii, iv, V+, VI, VII
-  locrian_natural2: ['diminished', 'diminished', 'minor', 'minor', 'augmented', 'major', 'major'],
-
-  // Phase 2 - Bebop scales (8 notes)
-  // NOTE: the 8-entry tables (these and the two diminished scales above) are
-  // currently NOT rendered — getDiatonicChordsForScale returns [] for 8-note
-  // scales pending a proper redesign (audit W0-01).
-  // Bebop Dominant - Mixolydian with passing tone, chords on main scale degrees
-  bebop_dominant: [
-    'major',
-    'minor',
-    'diminished',
-    'major',
-    'minor',
-    'minor',
-    'major',
-    'diminished',
-  ],
-  // Bebop Major - Major with passing tone
-  bebop_major: ['major', 'minor', 'minor', 'major', 'major', 'minor', 'minor', 'diminished'],
-  // Bebop Dorian - Dorian with passing tone
-  bebop_dorian: ['minor', 'minor', 'major', 'major', 'major', 'minor', 'diminished', 'major'],
-
-  // Phase 2 - Remaining melodic minor modes
-  // Dorian b2 (Mode 2 of melodic minor): i, II+, III, IV, v°, vi°, vii
-  dorian_b2: ['minor', 'augmented', 'major', 'major', 'diminished', 'diminished', 'minor'],
-  // Lydian Augmented (Mode 3 of melodic minor): I+, II, III, iv°, v°, vi, vii
-  lydian_augmented: ['augmented', 'major', 'major', 'diminished', 'diminished', 'minor', 'minor'],
-  // Mixolydian b6 (Mode 5 of melodic minor): I, ii°, iii°, iv, v, VI+, VII
-  mixolydian_b6: ['major', 'diminished', 'diminished', 'minor', 'minor', 'augmented', 'major'],
-
-  // Phase 3 - World/Ethnic scales
-  // Hungarian Minor (Gypsy Minor): i, II+, III, #iv°, V, VI, vii°
-  hungarian_minor: ['minor', 'augmented', 'major', 'diminished', 'major', 'major', 'diminished'],
-  // Hungarian Major: I, ii°, III, #iv°, V, vi°, vii
-  hungarian_major: ['major', 'diminished', 'major', 'diminished', 'major', 'diminished', 'minor'],
-  // Double Harmonic (Byzantine/Arabic): I, ii°, III+, iv, V, VI+, vii°
-  double_harmonic: [
-    'major',
-    'diminished',
-    'augmented',
-    'minor',
-    'major',
-    'augmented',
-    'diminished',
-  ],
-  // Persian: I, ii°, III+, iv°, V, VI, vii°
-  persian: ['major', 'diminished', 'augmented', 'diminished', 'major', 'major', 'diminished'],
-  // Neapolitan Minor: i, II, III+, iv, V, VI, vii°
-  neapolitan_minor: ['minor', 'major', 'augmented', 'minor', 'major', 'major', 'diminished'],
-  // Neapolitan Major: I, ii, III, IV, V+, vi, vii°
-  neapolitan_major: ['major', 'minor', 'major', 'major', 'augmented', 'minor', 'diminished'],
-
-  // Japanese pentatonic scales (5 notes)
-  // Hirajoshi: i, II, iii, V, vi
-  hirajoshi: ['minor', 'major', 'minor', 'major', 'minor'],
-  // In Sen: i, II, iv, V, vii
-  in_sen: ['minor', 'major', 'minor', 'major', 'minor'],
-  // Iwato: i°, II, iv, V°, vii
-  iwato: ['diminished', 'major', 'minor', 'diminished', 'minor'],
-
-  // Egyptian pentatonic (5 notes)
-  // Egyptian (suspended pentatonic): no 3rd, ambiguous tonality
-  egyptian: ['major', 'minor', 'major', 'minor', 'major'],
+/** Bebop scales harmonised as their parent mode. */
+const BEBOP_PARENT: Partial<Record<ScaleType, ScaleType>> = {
+  bebop_dominant: 'mixolydian',
+  bebop_major: 'major',
+  bebop_dorian: 'dorian',
 };
 
-// Roman-numeral harmony names at most seven degrees.
 const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'] as const;
 
-// Get roman numeral based on chord quality and degree (0-based). Returns null
-// when no numeral exists for that degree (there are only seven) — callers must
-// not invent one. Reading past VII used to crash the whole app (audit W0-01).
-function getRomanNumeral(quality: ChordQuality, degree: number): string | null {
-  const base: string | undefined = ROMAN_NUMERALS[degree];
-  if (base === undefined) return null;
+type TriadQuality = 'major' | 'minor' | 'diminished' | 'augmented';
 
-  // Lowercase for minor/diminished
-  const isMinorType = ['minor', 'diminished', 'minor7', 'diminished7', 'half_diminished7'].includes(
-    quality
-  );
-  const numeral = isMinorType ? base.toLowerCase() : base;
+function classifyStack(third: number, fifth: number): TriadQuality | null {
+  if (third === 4 && fifth === 7) return 'major';
+  if (third === 3 && fifth === 7) return 'minor';
+  if (third === 3 && fifth === 6) return 'diminished';
+  if (third === 4 && fifth === 8) return 'augmented';
+  return null;
+}
 
-  // Add quality suffix
-  if (quality === 'diminished') return numeral + '°';
-  if (quality === 'augmented') return numeral + '+';
-  return numeral;
+/** Roman numeral for a triad on a 0-based degree, prefixed ♭/♯ by `alteration`. */
+function romanNumeral(degreeIndex: number, quality: TriadQuality, alteration: number): string {
+  const base = ROMAN_NUMERALS[degreeIndex];
+  const prefix = alteration < 0 ? '♭'.repeat(-alteration) : '♯'.repeat(alteration);
+  const cased = quality === 'minor' || quality === 'diminished' ? base.toLowerCase() : base;
+  const suffix = quality === 'diminished' ? '°' : quality === 'augmented' ? '+' : '';
+  return `${prefix}${cased}${suffix}`;
+}
+
+export interface DiatonicTriad {
+  chord: Chord;
+  numeral: string;
+  /** Scale degree number of the chord root (1–7). */
+  degree: number;
 }
 
 // Get diatonic chords for any scale
-export function getDiatonicChordsForScale(scale: Scale): { chord: Chord; numeral: string }[] {
-  const qualities = DIATONIC_QUALITIES[scale.type];
-  if (!qualities) {
-    // Unknown scale type — fallback to major diatonic triads
-    return getDiatonicTriads(scale.root);
-  }
-  if (qualities.length === 0) {
-    // Scale has no diatonic harmony (pentatonic, blues, whole tone, etc.)
-    return [];
-  }
-  if (qualities.length > ROMAN_NUMERALS.length || scale.notes.length > ROMAN_NUMERALS.length) {
-    // 8-note scales (diminished W-H / H-W, bebop dominant / major / dorian):
-    // there is no eighth Roman numeral, and the 8-entry tables above map the
-    // passing tone to a chord as if it were a degree. Until diatonic harmony
-    // for these scales is redesigned, show NO diatonic chords — never a crash,
-    // a blank numeral, or an invented one (audit W0-01 / C-12).
-    return [];
-  }
+export function getDiatonicChordsForScale(scale: Scale): DiatonicTriad[] {
+  const modeType = BEBOP_PARENT[scale.type] ?? scale.type;
+  const notes = modeType === scale.type ? scale.notes : spellScale(scale.root, modeType);
+  if (notes.length !== 7) return [];
+  const flatPrefixes = CHURCH_MODES.has(modeType);
 
-  return scale.notes.slice(0, qualities.length).flatMap((note, i) => {
-    const quality = qualities[i];
-    const numeral = getRomanNumeral(quality, i);
-    if (numeral === null) return [];
-
-    return [{
-      chord: buildChord(note, quality),
-      numeral,
-    }];
-  });
+  const out: DiatonicTriad[] = [];
+  for (let i = 0; i < 7; i++) {
+    const root = notes[i];
+    const rootPc = getPitchClass(root);
+    const third = (getPitchClass(notes[(i + 2) % 7]) - rootPc + 12) % 12;
+    const fifth = (getPitchClass(notes[(i + 4) % 7]) - rootPc + 12) % 12;
+    const quality = classifyStack(third, fifth);
+    if (!quality) continue;
+    const alteration = flatPrefixes ? degreeOf(scale.root, root).alteration : 0;
+    out.push({
+      chord: buildChord(root, quality),
+      numeral: romanNumeral(i, quality, alteration),
+      degree: i + 1,
+    });
+  }
+  return out;
 }
 
 // Get diatonic triads for a natural minor key

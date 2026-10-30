@@ -146,18 +146,24 @@ describe('W0-01 diatonic chords + Copy summary — every ScaleType × 12 roots (
     expect(failures).toEqual([]);
   });
 
-  it('8-note scales get NO diatonic numerals (no invented numerals beyond VII)', () => {
+  it('8-note scales never get a numeral beyond VII (bebop: parent mode only; diminished: none)', () => {
+    // W2-04 superseded the W0-01 stopgap ("no chords for 8-note scales"): a
+    // bebop scale is harmonised as its parent mode (7 chords at most, none on
+    // the passing tone); the octatonic diminished scales get none.
     for (const type of SCALE_TYPES) {
       const scale = buildScale({ natural: 'C', accidental: '' }, type);
       if (scale.notes.length > 7) {
-        expect(getDiatonicChordsForScale(scale), type).toEqual([]);
+        const dcs = getDiatonicChordsForScale(scale);
+        expect(dcs.length, type).toBeLessThanOrEqual(7);
+        for (const dc of dcs) expect(dc.numeral, type).toMatch(/^[♭♯]?(i{1,3}|iv|v|vi{1,2}|I{1,3}|IV|V|VI{1,2})[°+]?$/);
+        if (type.startsWith('diminished')) expect(dcs, type).toEqual([]);
       }
     }
   });
 
-  it('control: heptatonic scales keep their seven numerals (C dorian = i ii III IV v vi° VII)', () => {
+  it('control: heptatonic scales keep their seven numerals (C dorian = i ii ♭III IV v vi° ♭VII, D-13)', () => {
     const dorian = getDiatonicChordsForScale(buildScale({ natural: 'C', accidental: '' }, 'dorian'));
-    expect(dorian.map((d) => d.numeral)).toEqual(['i', 'ii', 'III', 'IV', 'v', 'vi°', 'VII']);
+    expect(dorian.map((d) => d.numeral)).toEqual(['i', 'ii', '♭III', 'IV', 'v', 'vi°', '♭VII']);
   });
 
   it('Copy-summary text builds for every combo (no padEnd on undefined)', () => {

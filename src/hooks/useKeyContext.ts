@@ -68,11 +68,12 @@ export function useKeyContext(): KeyContextValue {
   );
 
   const diatonicChords = useMemo(() => {
-    const raw = getDiatonicChordsForScale(scale);
-    return raw.map((dc, i) => ({
+    // Stacked-thirds triads; `degree` is the chord root's scale degree (a scale
+    // can skip degrees whose thirds don't stack, so never the list index).
+    return getDiatonicChordsForScale(scale).map((dc) => ({
       chord: dc.chord,
       numeral: dc.numeral,
-      degree: i + 1,
+      degree: dc.degree,
     }));
   }, [scale]);
 
