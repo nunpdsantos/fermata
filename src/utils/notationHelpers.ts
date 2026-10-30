@@ -152,3 +152,11 @@ export function staffLayout(
   if (bottom > height) height = bottom;
   return { height: Math.ceil(height), staveY };
 }
+
+/**
+ * The notes as WRITTEN on a staff: under a treble-8vb clef (the guitar) every
+ * note is written an octave above where it sounds; otherwise unchanged.
+ */
+export function writtenStaffNotes(notes: readonly PitchedNote[], annotation?: '8vb'): PitchedNote[] {
+  return annotation === '8vb' ? notes.map((n) => ({ ...n, octave: n.octave + 1 })) : [...notes];
+}

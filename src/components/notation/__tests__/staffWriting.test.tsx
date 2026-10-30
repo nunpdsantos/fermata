@@ -16,7 +16,7 @@ import type { ChordQuality, Note, PitchedNote, ScaleType } from '../../../core/t
 import { buildScale, SCALE_FORMULAS } from '../../../core/constants/scales';
 import { buildChord, CHORD_FORMULAS } from '../../../core/constants/chords';
 import { getScaleNotesWithOctaves, getVoicedChordNotes } from '../../../core/utils/pianoLayout';
-import { pitchedNoteToVexKey, getKeySignatureForScale, vexAccidentals } from '../../../utils/notationHelpers';
+import { pitchedNoteToVexKey, getKeySignatureForScale, vexAccidentals, writtenStaffNotes } from '../../../utils/notationHelpers';
 import { StaffNotation } from '../StaffNotation';
 import { useAppStore } from '../../../state/store';
 import {
@@ -137,7 +137,9 @@ async function renderStaff(notes: PitchedNote[], props: { keySignature?: string;
     const head = [...g.querySelectorAll('text')].find((t) => !GLYPH[(t.textContent ?? '').codePointAt(0) ?? 0]);
     return Number(head?.getAttribute('y'));
   });
-  return { clefGlyphs: glyphsIn('vf-clef'), noteAccidentals, noteheadYs };
+  // The clef glyph is anchored to the G line, so it marks where the stave sits.
+  const clefY = Number(texts.find((t) => t.parentElement?.getAttribute('class') === 'vf-clef')?.getAttribute('y'));
+  return { clefGlyphs: glyphsIn('vf-clef'), noteAccidentals, noteheadYs, clefY };
 }
 
 const scaleStaff = (root: string, type: ScaleType) => {
@@ -207,5 +209,32 @@ describe('real VexFlow staff', () => {
     cleanup();
     const low = await renderStaff([{ natural: 'A', accidental: '', octave: 3 }], { clef: 'bass' });
     expect(low.clefGlyphs).toContain(0xe062);
+  });
+});
+
+describe('W3-12 review B3 — the guitar staff is written an octave above sounding', () => {
+  beforeEach(() => {
+    cleanup();
+    useAppStore.setState({ instrument: 'piano' });
+  });
+
+  it('sounding C4 is written c/5 under the treble-8vb clef; unchanged for the piano', () => {
+    const c4: PitchedNote = { natural: 'C', accidental: '', octave: 4 };
+    expect(writtenStaffNotes([c4], '8vb').map(pitchedNoteToVexKey)).toEqual(['c/5']);
+    expect(writtenStaffNotes([c4]).map(pitchedNoteToVexKey)).toEqual(['c/4']);
+  });
+
+  it('the same notes sit exactly one octave (35 px) higher on the guitar staff', async () => {
+    const { notes } = scaleStaff('C', 'major');
+    const piano = await renderStaff(notes);
+    cleanup();
+    useAppStore.setState({ instrument: 'guitar' });
+    const guitar = await renderStaff(notes);
+    expect(guitar.noteheadYs).toHaveLength(piano.noteheadYs.length);
+    // The guitar staff may grow taller for ledger lines, moving the stave down;
+    // measure every note from the clef (anchored to the stave) to cancel that.
+    guitar.noteheadYs.forEach((y, i) => {
+      expect(y - guitar.clefY, `note ${i}`).toBe(piano.noteheadYs[i] - piano.clefY - 35);
+    });
   });
 });

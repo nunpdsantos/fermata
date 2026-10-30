@@ -3,7 +3,7 @@ import type { ExerciseDefinition } from '../../../core/types/exercise';
 import type { NaturalNote, Accidental, PitchedNote } from '../../../core/types/music';
 import { useAppStore } from '../../../state/store';
 import { StaffNotationSkeleton } from '../../notation/StaffNotationSkeleton';
-import { intervalTargetNote } from '../../../core/utils/degreeSpelling';
+import { intervalTargetNote, writtenOctave } from '../../../core/utils/degreeSpelling';
 
 const StaffNotation = lazy(() =>
   import('../../notation/StaffNotation').then((m) => ({ default: m.StaffNotation }))
@@ -51,7 +51,9 @@ export function ExercisePrompt({ exercise }: ExercisePromptProps) {
     return null;
   })();
 
-  const clef = staffNotes && staffNotes.some((n) => n.octave < 4) ? 'bass' as const : 'treble' as const;
+  // Bass clef when a note is WRITTEN below middle C (the letter octave: C♭4
+  // sounds as B3 but is written in octave 4). The guitar always uses treble-8vb.
+  const clef = staffNotes && staffNotes.some((n) => writtenOctave(n, n.octave) < 4) ? 'bass' as const : 'treble' as const;
 
   return (
     <div className="mb-4">

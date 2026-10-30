@@ -58,6 +58,21 @@ describe('exercise staff fits its notes', () => {
     expect(r.y + 6).toBeLessThanOrEqual(r.svgHeight);
   });
 
+  it('B6 on the guitar (written B7, far above the staff) still fits', async () => {
+    useAppStore.setState({ instrument: 'guitar' });
+    const r = await measure(noteId('B', 6));
+    expect(r.y - 6).toBeGreaterThanOrEqual(0);
+    expect(r.y + 6).toBeLessThanOrEqual(r.svgHeight);
+  });
+
+  it('review item 4: the clef follows the WRITTEN octave (B♯ sounding as C4 is written B♯3 → bass clef)', async () => {
+    const ex = { ...noteId('B', 4), config: { type: 'note_id', note: 'B', accidental: '#', octave: 4 } } as ExerciseDefinition;
+    const { container } = render(<ExercisePrompt exercise={ex} />);
+    await waitFor(() => expect(container.querySelector('svg g.vf-stavenote')).not.toBeNull(), { timeout: 15000 });
+    const clef = container.querySelector('g.vf-clef text')!.textContent!.codePointAt(0);
+    expect(clef).toBe(0xe062); // bass clef glyph
+  });
+
   it('a note on the staff keeps the compact 100 px height', async () => {
     const r = await measure(noteId('G', 4));
     expect(r.svgHeight).toBe(100);

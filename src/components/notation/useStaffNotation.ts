@@ -8,7 +8,7 @@
  */
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { loadVexFlow } from '../../utils/vexflowLoader';
-import { pitchedNoteToVexKey, vexAccidentals, staffLayout } from '../../utils/notationHelpers';
+import { pitchedNoteToVexKey, vexAccidentals, staffLayout, writtenStaffNotes } from '../../utils/notationHelpers';
 import { useAppStore } from '../../state/store';
 import type { PitchedNote } from '../../core/types/music';
 
@@ -51,10 +51,17 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
   // Height and stave position that fit every note, ledger lines included (the
   // exercise staff used to clip middle C at a fixed 100 px). Pure from props,
   // so the container and the SVG always agree.
-  const layout = useMemo(
-    () => staffLayout(options.notes, resolveStaffClef(instrument, options.clef).clef, options.height ?? 150),
-    [options.notes, options.clef, options.height, instrument],
-  );
+  // What is WRITTEN: guitar music is written an octave above where it sounds
+  // (treble-8vb, decision D-05), so the guitar staff shows every note one
+  // octave higher than the piano staff — VexFlow's 8vb annotation only swaps
+  // the clef glyph (audit W3-12 review B3). Layout, keys and accidentals all
+  // use these written notes.
+  const staff = useMemo(() => {
+    const { clef, annotation } = resolveStaffClef(instrument, options.clef);
+    const written = writtenStaffNotes(options.notes, annotation);
+    return { clef, annotation, written, layout: staffLayout(written, clef, options.height ?? 150) };
+  }, [options.notes, options.clef, options.height, instrument]);
+  const layout = staff.layout;
 
   // Load VexFlow
   useEffect(() => {
@@ -93,7 +100,7 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
     if (w < 50) return; // too small
 
     const h = layout.height;
-    const { clef, annotation } = resolveStaffClef(instrument, options.clef);
+    const { clef, annotation, written } = staff;
     const duration = options.duration ?? 'q';
 
     // Clear previous render
@@ -130,17 +137,17 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
     stave.setContext(context).draw();
 
     // Build notes
-    if (options.notes.length === 0) return;
+    if (written.length === 0) return;
 
     // Accidentals as a correctly written measure needs them under the key
     // signature: none where the signature supplies it, a natural where the
     // signature would otherwise alter the note (audit W1-03).
-    const accidentals = vexAccidentals(options.notes, options.keySignature);
+    const accidentals = vexAccidentals(written, options.keySignature);
 
     let staveNotes: InstanceType<typeof StaveNote>[];
     if (options.chord) {
       // Stacked-chord mode: one StaveNote with all keys.
-      const keys = options.notes.map(pitchedNoteToVexKey);
+      const keys = written.map(pitchedNoteToVexKey);
       const sn = new StaveNote({ keys, duration, clef });
       options.notes.forEach((_, i) => {
         const acc = accidentals[i];
@@ -154,7 +161,7 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
       staveNotes = [sn];
     } else {
       // Sequential mode: one StaveNote per pitched note.
-      staveNotes = options.notes.map((note, i) => {
+      staveNotes = written.map((note, i) => {
         const key = pitchedNoteToVexKey(note);
         const sn = new StaveNote({ keys: [key], duration, clef });
 
@@ -179,7 +186,10 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
       .setMode(Voice.Mode.SOFT);
     voice.addTickables(staveNotes);
 
-    new Formatter().joinVoices([voice]).format([voice], staveWidth - 80);
+    // Format into the space left after the clef and key signature (a 7-sharp
+    // signature used to push the last notes past the right edge).
+    const formatWidth = Math.max(40, stave.getNoteEndX() - stave.getNoteStartX() - 10);
+    new Formatter().joinVoices([voice]).format([voice], formatWidth);
     voice.draw(context, stave);
 
     // Apply theme colors to SVG elements
@@ -202,7 +212,7 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- themeMode triggers re-render so CSS custom properties are re-read
-  }, [loading, containerWidth, options.notes, options.clef, options.keySignature, options.width, options.height, options.noteColors, options.duration, options.chord, themeMode, instrument, layout]);
+  }, [loading, containerWidth, options.notes, options.clef, options.keySignature, options.width, options.height, options.noteColors, options.duration, options.chord, themeMode, staff]);
 
   // Trigger render when dependencies change
   useEffect(() => {
