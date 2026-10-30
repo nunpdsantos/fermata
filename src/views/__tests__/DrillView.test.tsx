@@ -631,3 +631,34 @@ describe('DrillView — resume with a stale queue head (W7-09)', () => {
     expect(screen.getByText(/which sharp is added after F♯/)).toBeDefined();
   });
 });
+
+// ─── W7-06: the counter over a whole default first session ──────────────────
+// Ported from the auditors' sched-probe Scenario C: a new learner on default
+// settings gets a session that ends after 8 questions while the header read
+// "x of 24". Fixed in W0-02; this pins the whole run, not just question 1.
+
+describe('DrillView — counter across a full default first session (W7-06)', () => {
+  it('never shows the 24 target, never runs past its total, and ends on "N of N"', () => {
+    vi.useFakeTimers();
+    useDrillStore.getState().resetDrillData(); // defaults: all topics, 4 new, length 24
+    render(<DrillView />);
+    const seen: string[] = [];
+    for (let guard = 0; guard < 40; guard++) {
+      const counter = screen.queryByText(/^\d+ of \d+$/);
+      if (!counter) break; // summary reached
+      const text = counter.textContent!;
+      seen.push(text);
+      const [x, n] = text.split(' of ').map(Number);
+      expect(x, text).toBeLessThanOrEqual(n);
+      act(() => answerCurrentCorrectly());
+      act(() => {
+        vi.advanceTimersByTime(600);
+      });
+    }
+    expect(screen.getByText('Session complete')).toBeDefined();
+    const asked = useDrillStore.getState().lifetime.answered;
+    expect(seen.length).toBe(asked);
+    expect(seen.some((t) => t.endsWith(' of 24'))).toBe(false);
+    expect(seen[seen.length - 1]).toBe(`${asked} of ${asked}`);
+  });
+});
