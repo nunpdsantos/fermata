@@ -73,7 +73,7 @@ const l2u4m2: CurriculumModule = {
     {
       title: 'The Seven Scale Degree Names',
       explanation:
-        'Each scale degree has a functional name: 1=Tonic (home), 2=Supertonic (above tonic), 3=Mediant (midpoint between tonic and dominant), 4=Subdominant (below dominant), 5=Dominant (creates tension toward tonic), 6=Submediant (below the mediant, counting down), 7=Leading Tone (half step below tonic, strongest pull home).',
+        'Each scale degree has a functional name: 1=Tonic (home), 2=Supertonic (above tonic), 3=Mediant (midpoint between tonic and dominant), 4=Subdominant (the "lower dominant" — a 5th below the tonic, as the dominant is a 5th above), 5=Dominant (creates tension toward tonic), 6=Submediant (the "lower mediant" — midway between the tonic and the subdominant below it), 7=Leading Tone (half step below tonic, strongest pull home).',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'See all seven degrees of C major',
     },

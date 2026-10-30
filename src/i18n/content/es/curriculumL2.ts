@@ -86,7 +86,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'Los Siete Nombres de los Grados de la Escala',
           explanation:
-            'Cada grado de la escala tiene un nombre funcional: 1=Tónica (reposo), 2=Supertónica (por encima de la tónica), 3=Mediante (punto medio entre tónica y dominante), 4=Subdominante (por debajo de la dominante), 5=Dominante (crea tensión hacia la tónica), 6=Submediante (por debajo de la mediante, contando hacia abajo), 7=Sensible (un semitono por debajo de la tónica, la atracción más fuerte hacia casa).',
+            'Cada grado de la escala tiene un nombre funcional: 1=Tónica (reposo), 2=Supertónica (por encima de la tónica), 3=Mediante (punto medio entre tónica y dominante), 4=Subdominante (la «dominante inferior» — una 5.ª por debajo de la tónica, igual que la dominante está una 5.ª por encima), 5=Dominante (crea tensión hacia la tónica), 6=Submediante (la «mediante inferior» — a medio camino entre la tónica y la subdominante que está por debajo), 7=Sensible (un semitono por debajo de la tónica, la atracción más fuerte hacia casa).',
           tryThisLabel: 'Observa los siete grados de C mayor',
         },
         {
@@ -324,7 +324,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'El Sistema de Cualidades',
           explanation:
-            'En el Nivel 1, mediste intervalos por número: una 3.ª, una 5.ª. Ahora añade la cualidad — que refina el número con un carácter preciso. Los intervalos justos (unísono, 4.ª, 5.ª, octava) ocurren naturalmente entre la tónica y los grados 4.º/5.º. Los intervalos mayores (2.ª, 3.ª, 6.ª, 7.ª) ocurren entre la tónica y los grados superiores en una escala mayor. Los intervalos menores son un semitono más pequeños que los mayores.',
+            'En el Nivel 1, mediste intervalos por número: una 3.ª, una 5.ª. Ahora añade la cualidad — que refina el número con un carácter preciso. Los intervalos justos (unísono, 4.ª, 5.ª, octava) ocurren naturalmente entre la tónica y los grados 1, 4, 5 y 8 de la escala. Los intervalos mayores (2.ª, 3.ª, 6.ª, 7.ª) ocurren entre la tónica y los grados superiores en una escala mayor. Los intervalos menores son un semitono más pequeños que los mayores.',
           tryThisLabel: 'Observa todos los intervalos de la escala mayor desde C',
         },
         {

@@ -81,8 +81,8 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l1u1m3: Meios-tons e Tons ----
 
   l1u1m3e1: {
-    prompt: 'Qual é o intervalo de C a C#?',
-    hint: 'De C a C# é a menor distância possível na música ocidental: um meio-tom, equivalente a 1 semitom.',
+    prompt: 'Qual é o intervalo de C a Db?',
+    hint: 'De C a Db é a menor distância possível na música ocidental: um meio-tom (1 semitom). Duas letras diferentes (C, D) fazem dele uma 2.a — uma 2.a menor.',
   },
   l1u1m3e2: {
     prompt: 'Qual é o intervalo de C a D?',
@@ -264,7 +264,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Fundamental, 3.a maior (4 semitons), 5.a perfeita (7 semitons)',
       'Fundamental, 3.a menor (3 semitons), 5.a perfeita (7 semitons)',
-      'Fundamental, 3.a maior (4 semitons), 5.a menor (6 semitons)',
+      'Fundamental, 3.a maior (4 semitons), 5.a diminuta (6 semitons)',
       'Fundamental, 4.a perfeita (5 semitons), 5.a perfeita (7 semitons)',
     ],
     hint: 'Uma tríade maior empilha uma 3.a maior (4 meios-tons a partir da fundamental) e depois uma 3.a menor por cima (mais 3), resultando em fundamental + 3.aM + 5.aP.',

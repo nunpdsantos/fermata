@@ -200,7 +200,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'Puntillos y Ligaduras',
           explanation:
-            'Un puntillo después de una nota aumenta su duración en la mitad — una blanca con puntillo dura tres tiempos en lugar de dos. Una ligadura de prolongación une dos notas de la misma altura en un sonido continuo — una blanca ligada a una negra dura tres tiempos en total. Los puntillos y las ligaduras permiten crear duraciones que no encajan en la jerarquía básica.',
+            'Un puntillo después de una nota aumenta su duración en la mitad — una blanca con puntillo dura tres tiempos en lugar de dos (cuando la negra es la unidad de tiempo). Una ligadura de prolongación une dos notas de la misma altura en un sonido continuo — una blanca ligada a una negra dura tres tiempos en total. Los puntillos y las ligaduras permiten crear duraciones que no encajan en la jerarquía básica.',
           tryThisLabel: 'Escucha la escala a un tempo regular',
         },
       ],

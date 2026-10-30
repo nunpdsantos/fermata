@@ -125,8 +125,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'note_id',
-        promptTemplate: 'Identify this black key note. Use its sharp name.',
-        hintTemplate: 'Black keys have two names (enharmonic equivalents). Use the sharp spelling here.',
+        promptTemplate: 'Identify this black-key note, written here with a sharp.',
+        hintTemplate: 'Every black key has two names (enharmonic equivalents): one spelled with a sharp, one with a flat. Read the accidental on the staff: this one is written as a sharp.',
         params: {
           roots: ['C', 'D', 'F', 'G', 'A'],
           accidentals: ['#', '#', '#', '#', '#'],
@@ -135,8 +135,8 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'note_id',
-        promptTemplate: 'Identify this black key note. Use its flat name.',
-        hintTemplate: 'This black key sits between two white keys. Use the flat spelling here.',
+        promptTemplate: 'Identify this black-key note, written here with a flat.',
+        hintTemplate: 'Every black key has two names (enharmonic equivalents): one spelled with a sharp, one with a flat. Read the accidental on the staff: this one is written as a flat.',
         params: {
           roots: ['D', 'E', 'G', 'A', 'B'],
           accidentals: ['b', 'b', 'b', 'b', 'b'],

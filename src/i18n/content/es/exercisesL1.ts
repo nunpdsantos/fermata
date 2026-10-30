@@ -81,8 +81,8 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l1u1m3: Semitonos y Tonos ----
 
   l1u1m3e1: {
-    prompt: '¿Cuál es el intervalo de C a C#?',
-    hint: 'De C a C# es la menor distancia posible en la música occidental: un semitono, equivalente a 1 semitono.',
+    prompt: '¿Cuál es el intervalo de C a Db?',
+    hint: 'De C a Db es la menor distancia posible en la música occidental: un semitono (medio tono). Dos letras distintas (C, D) lo convierten en una 2.ª — una 2.ª menor.',
   },
   l1u1m3e2: {
     prompt: '¿Cuál es el intervalo de C a D?',
@@ -264,7 +264,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Fundamental, 3.ª mayor (4 semitonos), 5.ª justa (7 semitonos)',
       'Fundamental, 3.ª menor (3 semitonos), 5.ª justa (7 semitonos)',
-      'Fundamental, 3.ª mayor (4 semitonos), 5.ª menor (6 semitonos)',
+      'Fundamental, 3.ª mayor (4 semitonos), 5.ª disminuida (6 semitonos)',
       'Fundamental, 4.ª justa (5 semitonos), 5.ª justa (7 semitonos)',
     ],
     hint: 'Una tríada mayor apila una 3.ª mayor (4 semitonos desde la fundamental) y después una 3.ª menor encima (3 más), resultando en fundamental + 3.ªM + 5.ªJ.',
