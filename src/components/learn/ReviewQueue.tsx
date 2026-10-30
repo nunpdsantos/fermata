@@ -4,11 +4,21 @@
  */
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { m } from 'framer-motion';
 import type { CurriculumProgress } from '../../core/types/curriculum';
 import { LEVEL_METADATA } from '../../data/curriculumLoader';
-import { getDueReviewModuleIds } from '../../services/spacedRepetition';
-import { formatNextReview, getIntervalLabel } from '../../services/spacedRepetition';
+import {
+  getDueReviewModuleIds,
+  describeNextReview,
+  getIntervalSpan,
+  type NextReviewTime,
+} from '../../services/spacedRepetition';
+import { translateLevelMetadata } from '../../i18n/content/levelMetaResolver';
+import type { ContentLanguage } from '../../i18n/content/types';
+import { getModuleTitle } from '../../data/moduleIndexI18n';
+import { useLocalizedModuleIndex } from '../../hooks/useLocalizedModuleIndex';
+import { useAppStore } from '../../state/store';
 import { Card } from '../ui/Card';
 import { palette } from '../../design/tokens/palette';
 
@@ -24,12 +34,11 @@ interface ReviewQueueProps {
   onStartReview: (moduleId: string) => void;
 }
 
-/** Resolve a module ID like 'l1u2m3' to level metadata for display */
-function getModuleInfo(moduleId: string) {
-  // Extract level ID from module ID prefix (e.g., 'l1u2m3' → 'l1')
-  const levelId = moduleId.slice(0, 2);
-  const meta = LEVEL_METADATA.find((m) => m.id === levelId);
-  return meta;
+/** "in 4 days" / "daqui a 4 dias" / "dentro de 4 días", etc. (W6-17) */
+function wordNextReview(time: NextReviewTime, t: TFunction): string {
+  if (time.kind === 'dueNow') return t('review.when.dueNow');
+  if (time.kind === 'dueSoon') return t('review.when.dueSoon');
+  return t(`review.when.${time.unit}`, { count: time.count });
 }
 
 /** Parse a module ID like 'l1u2m3' into numeric parts for display */
@@ -41,6 +50,14 @@ function parseModuleId(moduleId: string): { level: number; unit: number; module:
 
 export function ReviewQueue({ progress, onStartReview }: ReviewQueueProps) {
   const { t } = useTranslation();
+  const language = useAppStore((s) => s.language) as ContentLanguage;
+  // Module titles in the app language (the PT/ES index is a lazy chunk; the
+  // English title shows until it arrives).
+  const localizedIndex = useLocalizedModuleIndex(language);
+  const levelTitles = useMemo(
+    () => new Map(translateLevelMetadata(LEVEL_METADATA, language).map((meta) => [meta.id, meta.title])),
+    [language],
+  );
   // Refresh every minute so reviews that come due while the app sits open
   // (e.g. across midnight) surface without a remount.
   const [now, setNow] = useState(() => Date.now());
@@ -63,7 +80,7 @@ export function ReviewQueue({ progress, onStartReview }: ReviewQueueProps) {
 
     // All caught up — show next review date
     const earliest = Math.min(...Object.values(schedules).map((s) => s.nextReviewAt));
-    const relativeTime = formatNextReview({ nextReviewAt: earliest } as Parameters<typeof formatNextReview>[0], now);
+    const relativeTime = wordNextReview(describeNextReview({ nextReviewAt: earliest }, now), t);
 
     return (
       <m.div
@@ -124,13 +141,19 @@ export function ReviewQueue({ progress, onStartReview }: ReviewQueueProps) {
       <div className="space-y-2">
         {shown.map((moduleId) => {
           const schedule = (progress.reviewSchedules ?? {})[moduleId];
-          const levelMeta = getModuleInfo(moduleId);
+          const levelTitle = levelTitles.get(moduleId.slice(0, 2)) ?? '';
           const parsed = parseModuleId(moduleId);
-          const reviewStatus = schedule ? formatNextReview(schedule, now) : '';
-          const interval = schedule ? getIntervalLabel(schedule.intervalLevel) : '';
-          const moduleLabel = parsed
+          const next = schedule ? describeNextReview(schedule, now) : null;
+          // Due rows are (by definition) due now; the chip says so.
+          const reviewStatus = !next ? '' : next.kind === 'dueNow' ? t('review.dueNow') : wordNextReview(next, t);
+          const span = schedule ? getIntervalSpan(schedule.intervalLevel) : null;
+          const interval = span ? t(`review.span.${span.unit}`, { count: span.count }) : '';
+          const position = parsed
             ? `${t('learn.level', { n: parsed.level })} · ${t('learn.unit', { n: parsed.unit })} · ${t('learn.module', { n: parsed.module })}`
             : moduleId;
+          // The module's real name (W6-17); the level/unit/module position is
+          // the fallback for an id the index does not know.
+          const moduleTitle = (localizedIndex ? getModuleTitle(moduleId, language) : getModuleTitle(moduleId, 'en')) ?? position;
 
           return (
             <Card
@@ -156,11 +179,11 @@ export function ReviewQueue({ progress, onStartReview }: ReviewQueueProps) {
                     </svg>
                   </span>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium truncate" style={{ color: 'var(--text)' }}>
-                      {moduleLabel}
+                    <p className="text-sm font-medium truncate" style={{ color: 'var(--text)' }} title={position}>
+                      {moduleTitle}
                     </p>
                     <p className="text-[10px]" style={{ color: 'var(--text-dim)' }}>
-                      {levelMeta?.title ?? ''} &middot; {t('review.interval', { interval })}
+                      {levelTitle} &middot; {t('review.interval', { interval })}
                     </p>
                   </div>
                 </div>

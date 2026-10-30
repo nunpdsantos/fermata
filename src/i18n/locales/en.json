@@ -317,7 +317,27 @@
     "dueNow": "Due now",
     "startReview": "Start Review",
     "allCaughtUp": "All caught up!",
-    "nextReview": "Next review {{time}}"
+    "nextReview": "Next review {{time}}",
+    "when": {
+      "dueNow": "now",
+      "dueSoon": "soon",
+      "hours_one": "in {{count}} hour",
+      "hours_other": "in {{count}} hours",
+      "days_one": "in {{count}} day",
+      "days_other": "in {{count}} days",
+      "weeks_one": "in {{count}} week",
+      "weeks_other": "in {{count}} weeks",
+      "months_one": "in {{count}} month",
+      "months_other": "in {{count}} months"
+    },
+    "span": {
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
+      "weeks_one": "{{count}} week",
+      "weeks_other": "{{count}} weeks",
+      "months_one": "{{count}} month",
+      "months_other": "{{count}} months"
+    }
   },
   "celebration": {
     "levelComplete": "Level {{n}} Complete!",

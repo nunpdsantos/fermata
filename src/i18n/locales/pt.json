@@ -317,7 +317,27 @@
     "dueNow": "Agora",
     "startReview": "Iniciar Revis\u00e3o",
     "allCaughtUp": "Tudo em dia!",
-    "nextReview": "Pr\u00f3xima revis\u00e3o {{time}}"
+    "nextReview": "Pr\u00f3xima revis\u00e3o {{time}}",
+    "when": {
+      "dueNow": "agora",
+      "dueSoon": "em breve",
+      "hours_one": "daqui a {{count}} hora",
+      "hours_other": "daqui a {{count}} horas",
+      "days_one": "daqui a {{count}} dia",
+      "days_other": "daqui a {{count}} dias",
+      "weeks_one": "daqui a {{count}} semana",
+      "weeks_other": "daqui a {{count}} semanas",
+      "months_one": "daqui a {{count}} mês",
+      "months_other": "daqui a {{count}} meses"
+    },
+    "span": {
+      "days_one": "{{count}} dia",
+      "days_other": "{{count}} dias",
+      "weeks_one": "{{count}} semana",
+      "weeks_other": "{{count}} semanas",
+      "months_one": "{{count}} mês",
+      "months_other": "{{count}} meses"
+    }
   },
   "celebration": {
     "levelComplete": "N\u00edvel {{n}} Completo!",
