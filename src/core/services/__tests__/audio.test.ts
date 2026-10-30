@@ -91,6 +91,7 @@ function makeVoice(handles: boolean) {
     stopNote: vi.fn((_midi: number) => {}),
     setVolume: vi.fn((_volume: number) => {}),
     resume: vi.fn(() => Promise.resolve()),
+    cancelScheduled: vi.fn(() => {}),
   };
 }
 
@@ -197,5 +198,44 @@ describe('instrument voice seam — sustained + controls', () => {
 
     await audio.resumeAudio();
     expect(voice.resume).toHaveBeenCalled();
+  });
+});
+
+// Audit W0-04 review B1 / ledger W8-01 (F-02): stopPlayback only silenced the
+// FM fallback. Once samples decode, every scale/progression note is handed to
+// the registered voice up front (on the audio clock), so "stop" stopped nothing
+// and an abandoned ear-training scale rang on under the next item.
+describe('stopPlayback — cancels what the voice has scheduled', () => {
+  it('a pre-scheduled scale on the voice is cancelled by stopPlayback', async () => {
+    setupMockAudioContext();
+    const audio = await freshAudio();
+    const voice = makeVoice(true);
+    audio.setInstrumentVoice(voice);
+
+    audio.playScale([N('C'), N('D'), N('E'), N('F'), N('G'), N('A'), N('B')], 4, true, false, 0.35);
+    // All 8 notes are handed over immediately, the last ~2.8 s in the future.
+    expect(voice.playNote).toHaveBeenCalledTimes(8);
+    expect(voice.playNote.mock.calls[7][1]).toBeGreaterThan(2.5);
+
+    audio.stopPlayback();
+    expect(voice.cancelScheduled).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not release sustained notes the user is holding on the voice', async () => {
+    setupMockAudioContext();
+    const audio = await freshAudio();
+    const voice = makeVoice(true);
+    audio.setInstrumentVoice(voice);
+
+    audio.startSustainedNote(N('E'), 4);
+    audio.stopPlayback();
+    expect(voice.stopNote).not.toHaveBeenCalled();
+  });
+
+  it('is safe with no voice registered', async () => {
+    setupMockAudioContext();
+    const audio = await freshAudio();
+    audio.setInstrumentVoice(null);
+    expect(() => audio.stopPlayback()).not.toThrow();
   });
 });

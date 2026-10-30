@@ -28,6 +28,7 @@ const pianoVoice: InstrumentVoice = {
   stopNote: (midi) => pianoSampler.stopNote(midi),
   setVolume: (volume) => pianoSampler.setVolume(volume),
   resume: () => pianoSampler.resumeContext(),
+  cancelScheduled: () => pianoSampler.cancelScheduled(),
 };
 
 // Sampler-first guitar with a Karplus-Strong fallback. The sampler returns
@@ -57,6 +58,12 @@ const guitarVoice: InstrumentVoice = {
   },
   resume: async () => {
     await Promise.all([guitarSampler.resumeContext(), ks.resumeContext()]);
+  },
+  // A scheduled sequence may straddle both engines (KS plucks the notes whose
+  // samples had not decoded yet), so cancel fans out too.
+  cancelScheduled: () => {
+    guitarSampler.cancelScheduled();
+    ks.cancelScheduled();
   },
 };
 

@@ -14,6 +14,7 @@ vi.mock('../pianoSampler', () => ({
   playNote: vi.fn(() => true),
   startNote: vi.fn(() => true),
   stopNote: vi.fn(),
+  cancelScheduled: vi.fn(),
   setVolume: vi.fn(),
   resumeContext: vi.fn().mockResolvedValue(undefined),
   preload: vi.fn().mockResolvedValue(undefined),
@@ -25,6 +26,7 @@ vi.mock('../guitarSampler', () => ({
   playNote: vi.fn(() => true),
   startNote: vi.fn(() => true),
   stopNote: vi.fn(),
+  cancelScheduled: vi.fn(),
   setVolume: vi.fn(),
   resumeContext: vi.fn().mockResolvedValue(undefined),
   preload: vi.fn().mockResolvedValue(undefined),
@@ -34,6 +36,7 @@ vi.mock('../karplusStrong', () => ({
   playNote: vi.fn(),
   startNote: vi.fn(),
   stopNote: vi.fn(),
+  cancelScheduled: vi.fn(),
   setVolume: vi.fn(),
   resumeContext: vi.fn().mockResolvedValue(undefined),
 }));
@@ -165,5 +168,24 @@ describe('registerInstrumentVoices', () => {
     await voice.resume();
     expect(guitarSampler.resumeContext).toHaveBeenCalled();
     expect(ks.resumeContext).toHaveBeenCalled();
+  });
+
+  // Audit W0-04 review B1: core stopPlayback() reaches the engines through
+  // the voice. The guitar voice may have scheduled on either engine.
+  it('cancelScheduled on the piano voice reaches the piano sampler', () => {
+    unsubscribe = registerInstrumentVoices();
+    const voice = mockedSetVoice.mock.calls[0][0]!;
+    voice.cancelScheduled();
+    expect(pianoSampler.cancelScheduled).toHaveBeenCalledTimes(1);
+    expect(ks.cancelScheduled).not.toHaveBeenCalled();
+  });
+
+  it('cancelScheduled on the guitar voice fans out to the sampler AND Karplus-Strong', () => {
+    useAppStore.setState({ instrument: 'guitar' });
+    unsubscribe = registerInstrumentVoices();
+    const voice = mockedSetVoice.mock.calls[0][0]!;
+    voice.cancelScheduled();
+    expect(guitarSampler.cancelScheduled).toHaveBeenCalledTimes(1);
+    expect(ks.cancelScheduled).toHaveBeenCalledTimes(1);
   });
 });

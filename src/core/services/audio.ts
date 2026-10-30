@@ -171,6 +171,15 @@ export interface InstrumentVoice {
   stopNote(midi: number): void;
   setVolume(volume: number): void;
   resume(): Promise<void>;
+  /**
+   * Cancel every one-shot this voice has scheduled or is still sounding
+   * (playNote), with a short fade — never a click. Sustained notes
+   * (startNote, i.e. keys/frets the user is holding) are left alone.
+   * Called by stopPlayback(): one-shots are handed to the voice up front on
+   * the audio clock, so without this a scale or progression could not be
+   * stopped once the samples had decoded (audit W0-04 review B1 / W8-01).
+   */
+  cancelScheduled(): void;
 }
 
 let instrumentVoice: InstrumentVoice | null = null;
@@ -236,6 +245,12 @@ export function getReverbMix(): number {
 
 // Stop all current playback with click-free fade-out
 export function stopPlayback(): void {
+  // The registered voice (sampled piano / guitar / KS) owns almost every
+  // scheduled note once samples decode — cancel those first. Its held notes
+  // stay; the FM fallback's own sustained notes are still cleared below, as
+  // before.
+  instrumentVoice?.cancelScheduled();
+
   const ctx = audioContext;
   const now = ctx?.currentTime ?? 0;
   const fadeTime = 0.03; // 30ms fade-out to avoid click artifacts
