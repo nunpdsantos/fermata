@@ -249,6 +249,26 @@ export function canonicalIntervalNumber(semitones: number): number {
   return BY_SEMITONES[s] + 7 * octaves;
 }
 
+/**
+ * The second note of an interval exercise, spelled as the interval the answer
+ * key names (audit W1-01): 3 semitones is graded "Minor 3rd", so C up 3 is
+ * E♭ (a 3rd), never D♯ (an augmented 2nd). The interval number picks the
+ * letter, the semitones the accidental; the octave (app convention: octave of
+ * the sounding pitch class) follows the pitch.
+ */
+export function intervalTargetNote(
+  root: PitchedNote,
+  semitones: number,
+  direction: 'ascending' | 'descending',
+): PitchedNote {
+  const number = canonicalIntervalNumber(semitones);
+  const note = direction === 'descending'
+    ? spellIntervalBelow(root, number, semitones)
+    : spellIntervalAbove(root, number, semitones);
+  const midi = 12 + 12 * root.octave + getPitchClass(root) + (direction === 'descending' ? -semitones : semitones);
+  return { ...note, octave: Math.floor((midi - 12) / 12) };
+}
+
 // ─── Scale formulas ─────────────────────────────────────────────────────────
 
 const F = (s: string): readonly string[] => s.split(' ');

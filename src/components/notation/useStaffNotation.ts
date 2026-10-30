@@ -8,9 +8,24 @@
  */
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { loadVexFlow } from '../../utils/vexflowLoader';
-import { pitchedNoteToVexKey, getVexAccidental } from '../../utils/notationHelpers';
+import { pitchedNoteToVexKey, vexAccidentals } from '../../utils/notationHelpers';
 import { useAppStore } from '../../state/store';
 import type { PitchedNote } from '../../core/types/music';
+
+/**
+ * The clef a staff is drawn in. With the guitar selected every staff is the
+ * guitar's: treble clef with the small 8 below (decision D-05 / audit W3-12) —
+ * guitar music is written an octave above where it sounds, so the written
+ * notes keep their staff positions and the clef says they sound an octave
+ * lower. The piano keeps the caller's clef (treble, or bass for low notes).
+ */
+export function resolveStaffClef(
+  instrument: string,
+  requested: 'treble' | 'bass' | undefined,
+): { clef: 'treble' | 'bass'; annotation?: '8vb' } {
+  if (instrument === 'guitar') return { clef: 'treble', annotation: '8vb' };
+  return { clef: requested ?? 'treble' };
+}
 
 interface UseStaffNotationOptions {
   notes: PitchedNote[];
@@ -31,6 +46,7 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
   const vfRef = useRef<typeof import('vexflow') | null>(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const themeMode = useAppStore((s) => s.themeMode);
+  const instrument = useAppStore((s) => s.instrument);
 
   // Load VexFlow
   useEffect(() => {
@@ -69,7 +85,7 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
     if (w < 50) return; // too small
 
     const h = options.height ?? 150;
-    const clef = options.clef ?? 'treble';
+    const { clef, annotation } = resolveStaffClef(instrument, options.clef);
     const duration = options.duration ?? 'q';
 
     // Clear previous render
@@ -96,7 +112,8 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
     const staveY = Math.max(0, (h - 80) / 2);
     const staveWidth = w - 20;
     const stave = new Stave(staveX, staveY, staveWidth);
-    stave.addClef(clef);
+    if (annotation) stave.addClef(clef, 'default', annotation);
+    else stave.addClef(clef);
 
     if (options.keySignature) {
       stave.addKeySignature(options.keySignature);
@@ -107,13 +124,18 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
     // Build notes
     if (options.notes.length === 0) return;
 
+    // Accidentals as a correctly written measure needs them under the key
+    // signature: none where the signature supplies it, a natural where the
+    // signature would otherwise alter the note (audit W1-03).
+    const accidentals = vexAccidentals(options.notes, options.keySignature);
+
     let staveNotes: InstanceType<typeof StaveNote>[];
     if (options.chord) {
       // Stacked-chord mode: one StaveNote with all keys.
       const keys = options.notes.map(pitchedNoteToVexKey);
       const sn = new StaveNote({ keys, duration, clef });
-      options.notes.forEach((note, i) => {
-        const acc = getVexAccidental(note);
+      options.notes.forEach((_, i) => {
+        const acc = accidentals[i];
         if (acc) sn.addModifier(new Accidental(acc), i);
       });
       // Use the first provided color for the whole chord (StaveNote-level styling).
@@ -128,7 +150,7 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
         const key = pitchedNoteToVexKey(note);
         const sn = new StaveNote({ keys: [key], duration, clef });
 
-        const acc = getVexAccidental(note);
+        const acc = accidentals[i];
         if (acc) {
           sn.addModifier(new Accidental(acc), 0);
         }
@@ -172,7 +194,7 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- themeMode triggers re-render so CSS custom properties are re-read
-  }, [loading, containerWidth, options.notes, options.clef, options.keySignature, options.width, options.height, options.noteColors, options.duration, themeMode]);
+  }, [loading, containerWidth, options.notes, options.clef, options.keySignature, options.width, options.height, options.noteColors, options.duration, options.chord, themeMode, instrument]);
 
   // Trigger render when dependencies change
   useEffect(() => {
