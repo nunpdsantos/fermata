@@ -141,6 +141,24 @@ describe('inversions and slash chords set the bass (W3-11)', () => {
   });
 });
 
+describe('barre overlay is visible on the light theme (review #6)', () => {
+  it('draws the barre in theme colours, not translucent white', async () => {
+    useAppStore.setState({ selectedChord: buildChord(N('F'), 'major') });
+    const { container } = await renderFretboard();
+    const tabs = within(screen.getByRole('tablist', { name: 'fretboard.chordPosition' })).getAllByRole('tab');
+    let overlay: HTMLElement | null = null;
+    for (const tab of tabs) {
+      fireEvent.click(tab);
+      overlay = container.querySelector<HTMLElement>('[data-testid="barre-overlay"]');
+      if (overlay) break;
+    }
+    expect(overlay).not.toBeNull();
+    const style = overlay!.getAttribute('style') ?? '';
+    expect(style).not.toMatch(/#fff|255,\s*255,\s*255/i);
+    expect(style).toMatch(/var\(--/);
+  });
+});
+
 describe('chord-shape index follows the chord in the same render (W3-15)', () => {
   it('switching chords selects the new chord\'s first shape immediately', async () => {
     useAppStore.setState({ selectedChord: buildChord(N('C'), 'major') });

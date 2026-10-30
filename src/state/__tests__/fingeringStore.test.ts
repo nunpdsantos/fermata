@@ -107,7 +107,11 @@ describe('backup and reset coverage', () => {
     if (validated.ok) expect(backupSections(validated.backup)).toContain('guitar fingerings');
   });
 
-  it('"Reset app data" clears the fingering store too', () => {
-    expect(errorBoundarySource).toContain('FINGERING_STORE_KEY');
+  it('"Reset app data" clears the fingering store too, via an inlined key literal (review #6)', () => {
+    // Same pattern as the drill key: ErrorBoundary is eager and app-level, so
+    // it carries the storage key as a literal instead of importing the store.
+    expect(errorBoundarySource).toContain(`'${FINGERING_STORE_KEY}'`);
+    expect(errorBoundarySource).toMatch(/localStorage\.removeItem\(FINGERING_STORE_KEY_LITERAL\)/);
+    expect(errorBoundarySource).not.toMatch(/import[^;]*from\s+['"][./]*state\/fingeringStore/);
   });
 });

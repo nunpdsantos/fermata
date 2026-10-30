@@ -435,8 +435,9 @@ export function Fretboard() {
       width: 24,
       height: bottomRect.top - topRect.top + 24,
       borderRadius: 12,
-      backgroundColor: '#ffffff30',
-      border: '3px solid #ffffffaa',
+      // Theme tokens: translucent white vanished on the light theme's cream.
+      backgroundColor: 'var(--accent-dim)',
+      border: '3px solid var(--text-muted)',
       pointerEvents: 'none',
       zIndex: 5,
     });
@@ -718,7 +719,7 @@ export function Fretboard() {
           </div>
 
           {/* Barre bar overlay */}
-          {barreStyle && <div style={barreStyle} />}
+          {barreStyle && <div data-testid="barre-overlay" style={barreStyle} />}
 
           {/* Strings: 6th (low E) at top → 1st (high E) at bottom */}
           {[0, 1, 2, 3, 4, 5].map((stringIdx) => (
