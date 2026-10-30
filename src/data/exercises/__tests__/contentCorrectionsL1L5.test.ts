@@ -438,7 +438,7 @@ describe('small L1–L5 prose fixes', () => {
 
   it('the l3u9m1 ear items play seventh chords whose labels match the quality', () => {
     const label: Record<string, string> = {
-      major7: 'Major 7th', dominant7: 'Dominant 7th', minor7: 'Minor 7th', half_diminished7: 'Half-diminished 7th',
+      major7: 'Major 7', dominant7: 'Dominant 7', minor7: 'Minor 7', half_diminished7: 'Half-diminished 7',
     };
     const ears = exercisesL3.l3u9m1.filter((e) => e.type === 'ear_training');
     expect(ears.length).toBe(4);
