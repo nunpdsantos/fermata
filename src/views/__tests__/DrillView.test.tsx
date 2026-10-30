@@ -601,3 +601,33 @@ describe('DrillView — progress counter (W0-02 / D-11)', () => {
     expect(screen.getByText(/^2 of \d+$/)).toBeDefined();
   });
 });
+
+// ─── W7-09: resuming a session saved by an older release ────────────────────
+
+describe('DrillView — resume with a stale queue head (W7-09)', () => {
+  it('after answering the first known question, the NEXT question is a different one', () => {
+    vi.useFakeTimers();
+    const first = BY_ID.get('degree:num-to-name:1')!;
+    const second = BY_ID.get('circle:next-sharp:F#')!;
+    const session: ActiveSession = {
+      id: 's-old',
+      queue: ['degree:removed-in-new-release', first.id, second.id],
+      index: 0,
+      asked: 0,
+      correct: 0,
+      startedAt: 1,
+      seed: 1,
+      missRequeues: {},
+    };
+    useDrillStore.setState({ activeSession: session });
+    render(<DrillView />);
+    expect(screen.getByText('Scale degree 1 is called…?')).toBeDefined();
+    const correct = first.answer.kind === 'choice' ? first.answer.correct : '';
+    act(() => fireEvent.click(screen.getByRole('button', { name: correct })));
+    act(() => {
+      vi.advanceTimersByTime(600);
+    });
+    expect(screen.queryByText('Scale degree 1 is called…?')).toBeNull();
+    expect(screen.getByText(/which sharp is added after F♯/)).toBeDefined();
+  });
+});

@@ -318,6 +318,13 @@ export const useDrillStore = create<DrillStoreState>()(
           const prevItemState = prev.items[item.id];
           const newItemState = applyAnswer(prevItemState, correct, ms, now, s.id);
 
+          // Where the answered item really sits. Normally the pointer; after an
+          // app update the persisted queue can hold ids the bank no longer has,
+          // and the runner then shows the first KNOWN id after the pointer —
+          // advancing from the stale head would show that item again (W7-09).
+          const found = s.queue.indexOf(item.id, s.index);
+          const at = found === -1 ? s.index : found;
+
           // Deterministic rand for requeue positions — uses seed + asked (answers so far)
           const rand = mulberry32(s.seed + s.asked);
 
@@ -329,14 +336,14 @@ export const useDrillStore = create<DrillStoreState>()(
             // Miss: requeue up to 2 times per item per session
             const requeues = s.missRequeues[item.id] ?? 0;
             if (requeues < 2) {
-              newQueue = requeueAfterMiss(s.queue, s.index, item.id, rand);
+              newQueue = requeueAfterMiss(s.queue, at, item.id, rand);
               // Count only a real requeue: with no non-adjacent slot left the
               // queue comes back unchanged (never re-asked twice in a row).
               if (newQueue.length > s.queue.length) newMissRequeues[item.id] = requeues + 1;
             }
           } else if (prevItemState === undefined) {
             // First correct on a brand-new (tier 'new') item → second exposure
-            newQueue = requeueSecondExposure(s.queue, s.index, item.id, rand);
+            newQueue = requeueSecondExposure(s.queue, at, item.id, rand);
           }
 
           // (c) Advance counters + lifetime
@@ -352,7 +359,7 @@ export const useDrillStore = create<DrillStoreState>()(
             activeSession: {
               ...s,
               queue: newQueue,
-              index: s.index + 1,
+              index: at + 1,
               asked: newAsked,
               correct: newCorrect,
               missRequeues: newMissRequeues,

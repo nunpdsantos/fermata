@@ -631,3 +631,59 @@ describe('DrillSettings type conformance', () => {
     expect(settings.showTimer).toBe(true);
   });
 });
+
+// ─── W7-09: resume after an update must not repeat the next item ─────────────
+// Ported from the auditors' store-sim (b): a persisted queue whose head id no
+// longer exists in the bank. The runner shows the first KNOWN id, but the
+// store used to advance from the stale head, so the same item came back.
+
+describe('recordAnswer — stale queue head after an app update (W7-09)', () => {
+  function seedStaleSession() {
+    useDrillStore.setState({
+      activeSession: {
+        id: 's1',
+        queue: ['degree:removed-in-new-release', 'A', 'B'],
+        index: 0,
+        asked: 0,
+        correct: 0,
+        startedAt: 1,
+        seed: 1,
+        missRequeues: {},
+      },
+    });
+  }
+
+  it('answering the first known item moves the pointer past IT, not past the stale head', () => {
+    seedStaleSession();
+    useDrillStore.getState().recordAnswer(makeItem('A'), true, 1500, NOW);
+    const s = useDrillStore.getState().activeSession!;
+    expect(s.queue[s.index]).toBe('B');
+    expect(s.queue[s.index - 1]).toBe('A');
+  });
+
+  it('a miss is requeued from where the item really was', () => {
+    seedStaleSession();
+    // Make A a known (non-new) item so only the miss requeue applies.
+    useDrillStore.setState({
+      items: {
+        A: {
+          card: { due: 0, stability: 1, difficulty: 5, elapsed_days: 0, scheduled_days: 1, reps: 1, lapses: 0, state: 2, learning_steps: 0 },
+          history: [],
+          tier: 'review',
+          introCorrectCount: 2,
+        },
+      },
+    });
+    useDrillStore.getState().recordAnswer(makeItem('A'), false, 1500, NOW);
+    const s = useDrillStore.getState().activeSession!;
+    expect(s.queue.slice(s.index)).toEqual(['B', 'A']);
+  });
+
+  it('the normal path (answered item at the pointer) is unchanged', () => {
+    useDrillStore.setState({
+      activeSession: { id: 's1', queue: ['A', 'B', 'C'], index: 0, asked: 0, correct: 0, startedAt: 1, seed: 1, missRequeues: {} },
+    });
+    useDrillStore.getState().recordAnswer(makeItem('A'), true, 1500, NOW);
+    expect(useDrillStore.getState().activeSession!.index).toBe(1);
+  });
+});
