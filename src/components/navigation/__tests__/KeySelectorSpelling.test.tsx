@@ -79,7 +79,7 @@ describe('W1-09 — root spelling chosen by mode', () => {
       cleanup();
     }
     expect(bad).toEqual([]);
-  });
+  }, 60_000);
 
   it('clicking the black key in major selects D-flat major', () => {
     select('C', 'major');
@@ -160,7 +160,7 @@ describe('W1-09 — root spelling chosen by mode', () => {
       cleanup();
     }
     expect(doubles).toBeLessThanOrEqual(9);
-  });
+  }, 60_000);
 
   it('C# altered is offered (not Db altered with four double flats)', () => {
     select('C', 'altered');

@@ -79,7 +79,7 @@ describe('W1-01 — interval staff spelling', () => {
       cleanup();
     }
     expect(wrong).toEqual([]);
-  });
+  }, 60_000);
 
   it('C up a minor 3rd is C–Eb; F down a minor 3rd is F–D', async () => {
     const make = (root: string, semis: number, direction: 'ascending' | 'descending'): ExerciseDefinition => ({

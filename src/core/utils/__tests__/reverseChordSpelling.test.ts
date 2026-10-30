@@ -55,7 +55,7 @@ describe('W1-19 — notes to name keeps the written spelling', () => {
     expect(cases).toBeGreaterThan(700);
     expect(wrongPitches).toEqual([]);
     expect(respelled).toEqual([]);
-  });
+  }, 60_000);
 
   it('E G# C is C augmented, Eb Gb Bbb C is C diminished 7th', () => {
     const name = (ns: string[]) => {

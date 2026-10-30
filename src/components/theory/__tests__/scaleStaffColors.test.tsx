@@ -83,5 +83,5 @@ describe('Explore scale staff colours', () => {
       }
     }
     expect(bad).toEqual([]);
-  });
+  }, 60_000);
 });

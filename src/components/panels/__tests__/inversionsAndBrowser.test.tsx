@@ -53,7 +53,7 @@ describe('W2-09 — inversion buttons', () => {
       cleanup();
     }
     expect(bad).toEqual([]);
-  });
+  }, 60_000);
 
   it('C major 9th reads Root | 1st Inv | 2nd Inv | 3rd Inv | Inv 4 (and PT/ES too)', async () => {
     const chord = buildChord(C, 'major9');

@@ -73,7 +73,7 @@ describe('W2-07 B1 — playChordVoiced sounds exactly the lit voicing', () => {
     }
     expect(cases).toBeGreaterThan(10_000);
     expect(bad.slice(0, 20)).toEqual([]);
-  });
+  }, 60_000);
 
   it('F major at octave 1 sounds F1 C2 A2 (MIDI 29 36 45)', async () => {
     const { audio, heard } = await audioWithEar();

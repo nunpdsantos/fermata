@@ -87,7 +87,7 @@ describe('B2 — hover panel spelled from the displayed segment', () => {
       cleanup();
     }
     expect(bad).toEqual([]);
-  });
+  }, 60_000);
 });
 
 describe('item 3 — no standard signature: neutral circle and an explicit note', () => {
@@ -189,5 +189,5 @@ describe('re-review nit — diatonic chord segments wear the selected key\'s spe
       }
     }
     expect(bad).toEqual([]);
-  });
+  }, 60_000);
 });

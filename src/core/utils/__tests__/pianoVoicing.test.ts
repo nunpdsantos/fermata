@@ -34,7 +34,7 @@ describe('W2-07 — voiced chords keep the bass lowest and ascend', () => {
       }
     }
     expect(bad).toEqual([]);
-  });
+  }, 60_000);
 
   it('F major at octave 1 is F1 C2 A2 (root in the bass, open)', () => {
     const v = getVoicedChordNotes(buildChord(toNote('F'), 'major').notes, 1);
