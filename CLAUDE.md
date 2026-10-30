@@ -145,16 +145,25 @@ src/
   filter is wrong: transposed open shapes encode the barre as open strings + baseFret).
   Every displayed shape passes `isPlayableChordShape` (one finger per fret, no barre over
   open strings, ≤ fret 15); inversions / slash chords put the requested bass lowest when a
-  grip allows it, else the board says so (`arrangeShapesForBass`).
+  grip allows it, else the board says so (`arrangeShapesForBass`). Default order is
+  `sortShapesForDefault` (nut-closest; the C-/G-shape major barres are offered, never the
+  default — a test pins main's default grip for all 24 major/minor triads).
 - **Fretboard scale positions (W3, 2026-10-30, decision D-02):** classical positions
   Open + I–XII GENERATED from the scale engine for any tuning
   (`src/core/utils/guitarPositions.ts` — 4-fret window, one finger per fret, one-sided
-  stretch only to keep the scale continuous, exhaustive oracle test). The default view is
+  stretch only to keep the scale continuous, exhaustive oracle test). On a stretched
+  string the hand spreads (e.g. frets 5-6-8-9 = fingers 1-2-3-4) so no finger plays two
+  frets — true for every scale except the chromatic (five notes on one string). Strings a
+  5th apart (Drop D, DADGAD, open tunings) leave one note out of reach; the UI says so.
+  The default view is
   a position (lowest holding the root on string 6/5), "All" = whole neck; the choice
   persists across key/scale/tuning changes and reloads (`guitarScalePosition`: 0–12 |
   'all' | null = automatic). Dots show fingers / degrees / notes; fingering overrides
   (teacher's fingerings) live in `src/state/fingeringStore.ts` (`fermata-fingering-v1`,
-  in the backup file). The hand-typed CAGED/3NPS library was deleted, not repaired.
+  in the backup file; ErrorBoundary carries the key as a literal, like the drill key). The
+  hand-typed CAGED/3NPS library was deleted, not repaired. The guitar dock is content-sized
+  on desktop (`AppShell`; the piano keeps 260 px) — a fixed height hid the high-E string
+  under the wrapped controls; `e2e/fretboard-fit.spec.ts` measures it in a real browser.
 - **Exercise instrument input:** `useKeyContext` has an exercise-input mode
   (`exerciseInputActive` in the instrument slice) that suppresses Explore's scale/chord
   visuals during exercises and surfaces the learner's toggled notes through the
