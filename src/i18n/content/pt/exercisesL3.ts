@@ -50,7 +50,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sétima menor',
       'Sétima meio-diminuta',
     ],
-    hint: 'Um acorde de sétima maior: uma tríade maior mais uma 7.a maior (C-E-G-B). Caloroso e luxuriante — a 7.a fica apenas meio-tom abaixo da oitava.',
+    hint: 'Um acorde de sétima maior: uma tríade maior mais uma 7.a maior (C-E-G-B). Caloroso e rico — a 7.a fica apenas meio-tom abaixo da oitava.',
   },
   l3u9m1e_ear2: {
     prompt: 'Ouve este acorde de sétima e identifica a sua qualidade.',

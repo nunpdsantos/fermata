@@ -520,7 +520,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Using a secondary dominant to tonicize the dominant', correct: false },
         ],
       },
-      hint: 'The V chord in minor comes from harmonic minor \u2014 it belongs to the minor key itself, not to mode mixture. Mode mixture borrows chords from the parallel key. A major IV in minor (e.g., D major in A minor instead of D minor) is the classic example; Level 4 traced the same chord to ascending melodic minor, and both readings are common.',
+      hint: 'The V chord in minor comes from harmonic minor \u2014 it belongs to the minor key itself, not to mode mixture. Mode mixture borrows chords from the parallel key. A major IV in minor (e.g., D major in A minor instead of D minor) is a common example; Level 4 traced the same chord to ascending melodic minor, and both readings are common.',
       points: 1,
     },
   ],

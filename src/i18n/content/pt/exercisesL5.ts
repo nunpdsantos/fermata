@@ -331,7 +331,7 @@ const overlay: ExerciseLevelOverlay = {
       'Modular para a relativa maior',
       'Usar uma dominante secundária para tonicizar a dominante',
     ],
-    hint: 'O acorde V no modo menor vem da menor harmónica — pertence à própria tonalidade menor, não à mistura modal. A mistura modal empresta acordes da tonalidade paralela. Um IV maior no modo menor (p. ex., D maior em A menor em vez de D menor) é o exemplo clássico; o Nível 4 ligou o mesmo acorde à menor melódica ascendente, e ambas as leituras são comuns.',
+    hint: 'O acorde V no modo menor vem da menor harmónica — pertence à própria tonalidade menor, não à mistura modal. A mistura modal empresta acordes da tonalidade paralela. Um IV maior no modo menor (p. ex., D maior em A menor em vez de D menor) é um exemplo comum; o Nível 4 ligou o mesmo acorde à menor melódica ascendente, e ambas as leituras são comuns.',
   },
 
   // =========================================================================
