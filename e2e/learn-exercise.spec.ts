@@ -52,8 +52,8 @@ test.describe('Learn — exercise journey', () => {
       const tryAgain = page.getByRole('button', { name: 'Try Again' });
       if (await tryAgain.count()) {
         sawRetryFlow = true;
-        // Feedback reveals the correct option (emerald styling); remember it.
-        const revealed = await page.locator('#learn-panel button.text-emerald-300').first().textContent();
+        // Feedback reveals the correct option (semantic success text); remember it.
+        const revealed = await page.locator('#learn-panel button.text-success').first().textContent();
         expect(revealed).toBeTruthy();
         await tryAgain.click();
 

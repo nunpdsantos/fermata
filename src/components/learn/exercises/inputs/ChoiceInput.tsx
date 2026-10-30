@@ -31,12 +31,12 @@ export function ChoiceInput({ options, selected, submitted, onSelect, accentColo
         if (showCorrect) {
           bg = 'bg-emerald-500/15';
           border = 'border-emerald-500/40';
-          textColor = 'text-emerald-300';
+          textColor = 'text-success';
         }
         if (showIncorrect) {
           bg = 'bg-red-500/15';
           border = 'border-red-500/40';
-          textColor = 'text-red-300';
+          textColor = 'text-danger';
         }
 
         return (

@@ -346,6 +346,28 @@ describe('appStore persistence shape guard', () => {
     expect(s.selectedKey).toEqual({ natural: 'G', accidental: '#' });
   });
 
+  // Audit W0-01: `name in SCALE_FORMULAS` also accepted inherited Object
+  // members, so a persisted 'constructor' / 'toString' passed the guard and
+  // reached buildScale on every boot.
+  it.each(['constructor', 'toString', 'hasOwnProperty', '__proto__', 'valueOf'])(
+    'rejects a selectedScale that is an Object prototype member (%s)',
+    async (bad) => {
+      seed({ selectedScale: bad, selectedKey: { natural: 'D', accidental: '' } });
+      await useAppStore.persist.rehydrate();
+      const s = useAppStore.getState();
+      expect(s.selectedScale).toBe('major');
+      expect(s.selectedKey).toEqual({ natural: 'D', accidental: '' });
+    },
+  );
+
+  it('keeps every real ScaleType through the guard (incl. the four 8-note scales)', async () => {
+    for (const ok of ['diminished_whole_half', 'diminished_half_whole', 'bebop_dominant', 'bebop_major', 'egyptian']) {
+      seed({ selectedScale: ok });
+      await useAppStore.persist.rehydrate();
+      expect(useAppStore.getState().selectedScale).toBe(ok);
+    }
+  });
+
   it('falls back per-field on non-numeric numeric fields without nuking valid ones', async () => {
     seed({ volume: 'loud', baseOctave: null, scaleOctaves: 2, selectedScale: 'dorian' });
     await useAppStore.persist.rehydrate();

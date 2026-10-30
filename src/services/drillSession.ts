@@ -23,9 +23,10 @@ export interface SessionConfig {
  * Swap the offender forward to the next non-colliding slot.
  * If no such slot exists, drop the duplicate.
  *
- * Exported for tests. Used by composeSession on the initial queue; requeue
- * insertions (offsets +4..6 / +6..10 with a 2-requeue cap) cannot create an
- * adjacent duplicate in practice, so the store does not re-run it per answer.
+ * Exported for tests. Used by composeSession on the initial queue. Requeue
+ * insertions keep the same invariant themselves (insertNotAdjacent — the old
+ * clamp-to-end could put a missed last item straight back, audit W0-02), so
+ * the store does not re-run this per answer.
  */
 export function dedupeAdjacent(ids: string[]): string[] {
   const out = ids.slice();
@@ -55,6 +56,30 @@ function insertAt(queue: string[], pos: number, id: string): string[] {
   const out = queue.slice();
   out.splice(pos, 0, id);
   return out;
+}
+
+/**
+ * Insert `id` as close as possible to `target` (searching outward: target,
+ * target+1, target−1, …) at a position after `index` where it does NOT sit
+ * next to another copy of itself — the item at `index` is normally `id`, so
+ * index+1 is never chosen. Spec §3.6: "the same item never appears twice in a
+ * row" (audit W0-02 / D-4: a miss on the LAST item of a short queue used to be
+ * clamped to index+1 and came straight back).
+ *
+ * When no such position exists (nothing else is left to put between), the
+ * queue is returned unchanged: the item is not requeued this session. Its
+ * FSRS state still records the answer, so it returns in a later session.
+ */
+function insertNotAdjacent(queue: string[], index: number, id: string, target: number): string[] {
+  const lo = index + 1;
+  const hi = queue.length;
+  const fits = (p: number) => queue[p - 1] !== id && (p >= queue.length || queue[p] !== id);
+  const start = Math.min(Math.max(target, lo), hi);
+  for (let d = 0; start + d <= hi || start - d >= lo; d++) {
+    if (start + d <= hi && fits(start + d)) return insertAt(queue, start + d, id);
+    if (d > 0 && start - d >= lo && fits(start - d)) return insertAt(queue, start - d, id);
+  }
+  return queue.slice();
 }
 
 // ─── composeSession ───────────────────────────────────────────────────────────
@@ -149,6 +174,8 @@ export function composeSession(
 
 /**
  * Re-queue a missed item ~4–6 positions ahead (within-session relearning).
+ * Never directly after itself (or any copy of itself); when the queue offers
+ * no such slot, the queue comes back unchanged (see insertNotAdjacent).
  * Pure — input queue is not mutated.
  *
  * @param queue   Current full queue (ids already answered + remaining).
@@ -164,11 +191,12 @@ export function requeueAfterMiss(
 ): string[] {
   const offset = 4 + Math.floor(rand() * 3); // 4..6
   const pos = Math.min(index + offset, queue.length);
-  return insertAt(queue, pos, id);
+  return insertNotAdjacent(queue, index, id, pos);
 }
 
 /**
  * Queue a new item's second exposure ~6–10 positions ahead.
+ * Same no-adjacent rule as requeueAfterMiss.
  * Pure — input queue is not mutated.
  *
  * @param queue   Current full queue.
@@ -184,5 +212,5 @@ export function requeueSecondExposure(
 ): string[] {
   const offset = 6 + Math.floor(rand() * 5); // 6..10
   const pos = Math.min(index + offset, queue.length);
-  return insertAt(queue, pos, id);
+  return insertNotAdjacent(queue, index, id, pos);
 }

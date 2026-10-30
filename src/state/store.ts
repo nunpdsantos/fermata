@@ -33,8 +33,9 @@ function sanitizePersistedAppState(persisted: unknown): Record<string, unknown> 
     delete state.selectedKey;
   }
 
-  // selectedScale: must be a known scale type
-  if (typeof state.selectedScale !== 'string' || !(state.selectedScale in SCALE_FORMULAS)) {
+  // selectedScale: must be a known scale type. Own keys only — the `in`
+  // operator also accepted inherited members like 'constructor' (audit W0-01).
+  if (typeof state.selectedScale !== 'string' || !Object.hasOwn(SCALE_FORMULAS, state.selectedScale)) {
     delete state.selectedScale;
   }
 

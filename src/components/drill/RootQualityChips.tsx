@@ -25,8 +25,9 @@ interface RootQualityChipsProps {
  * re-selects the root. The answer fires on the quality tap (the natural last
  * action), keeping the zero-submit idiom.
  *
- * The parent keys this component by item id, so a new question remounts it
- * fresh (root cleared, guard re-armed) without a transition effect.
+ * The parent keys this component per presentation (item id + a counter), so
+ * every question — even the same item again — remounts it fresh (root
+ * cleared, guard re-armed) without a transition effect.
  */
 export function RootQualityChips({
   roots,
@@ -63,8 +64,8 @@ export function RootQualityChips({
             const showWrong = disabled && isChosen && correctRootAscii !== undefined && normalizeDisplay(r) !== correctRootAscii;
 
             let stateClass = '';
-            if (showCorrect) stateClass = 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300';
-            else if (showWrong) stateClass = 'bg-red-500/15 border-red-500/40 text-red-300';
+            if (showCorrect) stateClass = 'bg-emerald-500/15 border-emerald-500/40 text-success';
+            else if (showWrong) stateClass = 'bg-red-500/15 border-red-500/40 text-danger';
             const neutral = !showCorrect && !showWrong;
             const activeSelect = !disabled && isChosen;
 
@@ -108,7 +109,7 @@ export function RootQualityChips({
             {qualities.map((q) => {
               const showCorrect = disabled && feedback?.correctQuality === q;
               let stateClass = '';
-              if (showCorrect) stateClass = 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300';
+              if (showCorrect) stateClass = 'bg-emerald-500/15 border-emerald-500/40 text-success';
               const neutral = !showCorrect;
 
               return (

@@ -96,8 +96,20 @@ function currentKnownId(
 export interface DrillRunner {
   phase: 'answering' | 'feedback';
   item: DrillItem | null; // current question (null → session finished/empty)
+  /**
+   * Changes every time a question is put on screen — including the SAME item
+   * shown again. Key the answer input by it so each presentation mounts fresh
+   * (the spelling inputs hold a one-shot commit lock; audit W0-02 / D-4).
+   */
+  presentationKey: string;
   result: GradeResult | null; // set during feedback
   asked: number;
+  /** Zero-based number of the question ON SCREEN (stays put during feedback). */
+  position: number;
+  /**
+   * Real session length: answered + still queued, capped at the session
+   * target. A short queue no longer reads "x of 24" (audit D-11).
+   */
   total: number;
   correctCount: number;
   sessionComplete: boolean;
@@ -125,6 +137,9 @@ export function useDrillRunner(): DrillRunner {
   // The question currently ON SCREEN. Decoupled from the store pointer so a
   // just-answered question (and its feedback) survives the pointer advancing.
   const [displayId, setDisplayId] = useState<string | null>(null);
+  // Bumped on every deliberate move to a question (advance, restart), so an
+  // item shown twice in a row still gets a fresh input instance.
+  const [presentation, setPresentation] = useState(0);
   // Snapshot captured when the user ENDS a session early (✕). The store nulls
   // the session, so the summary reads its score from here. null = not ended this
   // way (either running or completed naturally — which keeps its live session).
@@ -190,6 +205,7 @@ export function useDrillRunner(): DrillRunner {
     const session = useDrillStore.getState().activeSession;
     const id = session ? currentKnownId(session, byId) : null;
     setDisplayId(id);
+    setPresentation((p) => p + 1);
     promptShownAt.current = performance.now();
   }, [byId]);
 
@@ -262,18 +278,34 @@ export function useDrillRunner(): DrillRunner {
     // Read the freshly-composed queue's first id immediately.
     const session = useDrillStore.getState().activeSession;
     setDisplayId(session ? currentKnownId(session, byId) : null);
+    setPresentation((p) => p + 1);
     promptShownAt.current = performance.now();
   }, [clearAdvanceTimer, startSession, bank, byId]);
 
   const asked = endedSummary?.asked ?? activeSession?.asked ?? 0;
   const correctCount = endedSummary?.correct ?? activeSession?.correct ?? 0;
 
+  // During feedback the store has already counted the answer, so the question
+  // on screen is number `asked`, not `asked + 1` (audit U-6 / D-11).
+  const position = phase === 'feedback' ? Math.max(0, asked - 1) : asked;
+  // Answered so far + answerable ids still queued, capped at the target.
+  let total: number = settings.length;
+  if (activeSession) {
+    let remaining = 0;
+    for (let i = activeSession.index; i < activeSession.queue.length; i++) {
+      if (byId.has(activeSession.queue[i])) remaining++;
+    }
+    total = Math.min(settings.length, activeSession.asked + remaining);
+  }
+
   return {
     phase,
     item: complete ? null : item,
+    presentationKey: `${displayId ?? ''}:${presentation}`,
     result,
     asked,
-    total: settings.length,
+    position,
+    total,
     correctCount,
     sessionComplete: complete,
     // Headline numbers track the store/snapshot (authoritative even on resume);

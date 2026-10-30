@@ -40,7 +40,7 @@ export function ExerciseFeedback({
     >
       <div className="flex items-start gap-3">
         {/* Icon */}
-        <span className={`mt-0.5 shrink-0 ${isCorrect ? 'text-emerald-400 pulse-ring-correct' : 'text-red-400'}`}>
+        <span className={`mt-0.5 shrink-0 ${isCorrect ? 'text-success pulse-ring-correct' : 'text-danger'}`}>
           {isCorrect ? (
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <m.polyline
@@ -73,7 +73,7 @@ export function ExerciseFeedback({
 
         <div className="flex-1 min-w-0">
           {/* Status line */}
-          <p className={`text-sm font-medium mb-1 ${isCorrect ? 'text-emerald-300' : 'text-red-300'}`}>
+          <p className={`text-sm font-medium mb-1 ${isCorrect ? 'text-success' : 'text-danger'}`}>
             {isCorrect
               ? attempt === 1
                 ? t('exercise.correct')
@@ -90,7 +90,7 @@ export function ExerciseFeedback({
 
           {/* Hint on first wrong attempt */}
           {canRetry && hint && (
-            <p className="text-xs text-amber-400/80 mt-2 leading-relaxed">
+            <p className="text-xs text-warning mt-2 leading-relaxed">
               {t('exercise.hint', { hint })}
             </p>
           )}

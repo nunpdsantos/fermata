@@ -2,6 +2,34 @@ import { Component } from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
 import i18n from '../i18n';
 import { Button } from './ui/Button';
+import { useAppStore, type AppState } from '../state/store';
+import { reloadPage } from '../utils/pageReload';
+
+/**
+ * The view/selection part of the main store — what the learner is LOOKING AT,
+ * not what they have learned or chosen as a preference. "Reset view settings"
+ * restores exactly these to their defaults. Learn progress
+ * ('music-theory-progress'), Drill memory ('fermata-drill-v1') and preferences
+ * (instrument, tuning, colours, volume, theme, language, octave range) are
+ * untouched. A persisted selection that crashes the render (audit W0-01: the
+ * 8-note scales) is recoverable from here without losing anything.
+ */
+const VIEW_SETTINGS_DEFAULTS: Partial<AppState> = {
+  selectedKey: { natural: 'C', accidental: '' },
+  selectedScale: 'major',
+  selectedChord: null,
+  selectedDegree: null,
+  chordInversion: 0,
+  guitarScalePosition: null,
+  comparisonScale: null,
+  highlightedNotes: [],
+  exerciseInputActive: false,
+  view: 'explore',
+  lastView: 'explore',
+  detailPanelOpen: false,
+  quickSearchOpen: false,
+  pendingLearnTarget: null,
+};
 
 /**
  * Drill store localStorage key, inlined as a literal.
@@ -49,6 +77,33 @@ export class ErrorBoundary extends Component<Props, State> {
   };
 
   /**
+   * First-line recovery: reset only the view/selection state (see
+   * VIEW_SETTINGS_DEFAULTS) and reload. Going through the store updates memory
+   * AND the persisted 'music-theory-app' blob in one synchronous step, so
+   * nothing can re-persist the crashing selection before the reload. If the
+   * store itself is unusable, strip those fields from the persisted blob
+   * directly instead; every other key is left alone.
+   */
+  private handleResetViewSettings = () => {
+    try {
+      useAppStore.setState(VIEW_SETTINGS_DEFAULTS);
+    } catch {
+      try {
+        const raw = localStorage.getItem('music-theory-app');
+        const blob: unknown = raw ? JSON.parse(raw) : null;
+        if (blob && typeof blob === 'object' && 'state' in blob && blob.state && typeof blob.state === 'object') {
+          const state = blob.state as Record<string, unknown>;
+          for (const k of Object.keys(VIEW_SETTINGS_DEFAULTS)) delete state[k];
+          localStorage.setItem('music-theory-app', JSON.stringify(blob));
+        }
+      } catch {
+        // Unreadable blob: the store's own shape guard drops bad fields on boot.
+      }
+    }
+    reloadPage();
+  };
+
+  /**
    * Last-resort recovery: corrupted persisted state can crash the app on
    * every reload. Clears all app localStorage (keys prefixed 'music-theory'
    * or matching known fermata-* store keys) and reloads fresh.
@@ -67,7 +122,7 @@ export class ErrorBoundary extends Component<Props, State> {
     import('../state/drillStore')
       .then((m) => m.useDrillStore.getState().resetDrillData())
       .catch(() => {})
-      .finally(() => window.location.reload());
+      .finally(() => reloadPage());
   };
 
   render() {
@@ -107,10 +162,14 @@ export class ErrorBoundary extends Component<Props, State> {
               {error.message}
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-              <Button variant="accent" onClick={() => window.location.reload()}>
+              <Button variant="accent" onClick={this.handleResetViewSettings}>
+                {i18n.t('error.resetViewSettings')}
+              </Button>
+              <Button variant="secondary" onClick={() => reloadPage()}>
                 {i18n.t('common.reload')}
               </Button>
-              <Button variant="ghost" onClick={this.handleResetAppData}>
+              {/* Destructive: erases Learn progress and Drill memory. */}
+              <Button variant="ghost" onClick={this.handleResetAppData} style={{ color: 'var(--danger-text)' }}>
                 {i18n.t('error.resetAppData')}
               </Button>
             </div>

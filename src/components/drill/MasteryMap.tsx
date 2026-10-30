@@ -101,7 +101,8 @@ export function MasteryMap({
       </div>
 
       <div className="flex items-center gap-4 px-1">
-        <span className="text-sm font-medium" style={{ color: palette.success }}>
+        {/* Text, not a bar fill: theme-aware success text (W0-03). */}
+        <span className="text-sm font-medium text-success">
           {t('drill.mastery.byHeartTotal', { count: byHeart })}
         </span>
         <span className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>

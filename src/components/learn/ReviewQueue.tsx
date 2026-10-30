@@ -12,7 +12,11 @@ import { formatNextReview, getIntervalLabel } from '../../services/spacedRepetit
 import { Card } from '../ui/Card';
 import { palette } from '../../design/tokens/palette';
 
+// AMBER stays the tint for fills and card accents; text and icons use the
+// theme-aware --warning-text (amber #FBBF24 as text read 1.3:1 on the cream
+// day theme — audit W0-03).
 const AMBER = palette.warning;
+const AMBER_TEXT = 'var(--warning-text)';
 const MAX_SHOWN = 5;
 
 interface ReviewQueueProps {
@@ -76,11 +80,11 @@ export function ReviewQueue({ progress, onStartReview }: ReviewQueueProps) {
           padding="none"
           className="px-5 py-4 text-center"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={AMBER} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-1.5">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-1.5" style={{ color: AMBER_TEXT }}>
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
             <polyline points="22 4 12 14.01 9 11.01" />
           </svg>
-          <h3 className="text-sm font-bold mb-0.5" style={{ color: AMBER }}>
+          <h3 className="text-sm font-bold mb-0.5" style={{ color: AMBER_TEXT }}>
             {t('review.allCaughtUp')}
           </h3>
           <p className="text-xs" style={{ color: 'var(--text-dim)' }}>
@@ -102,16 +106,16 @@ export function ReviewQueue({ progress, onStartReview }: ReviewQueueProps) {
       className="mb-6"
     >
       <div className="flex items-center gap-2 mb-3">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={AMBER} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: AMBER_TEXT }}>
           <circle cx="12" cy="12" r="10" />
           <polyline points="12 6 12 12 16 14" />
         </svg>
-        <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: AMBER }}>
+        <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: AMBER_TEXT }}>
           {t('review.title')}
         </h3>
         <span
           className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-          style={{ backgroundColor: `${AMBER}20`, color: AMBER }}
+          style={{ backgroundColor: `${AMBER}20`, color: AMBER_TEXT }}
         >
           {dueModuleIds.length}
         </span>
@@ -144,7 +148,7 @@ export function ReviewQueue({ progress, onStartReview }: ReviewQueueProps) {
                 <div className="flex items-center gap-3 min-w-0">
                   <span
                     className="w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0"
-                    style={{ backgroundColor: `${AMBER}18`, color: AMBER }}
+                    style={{ backgroundColor: `${AMBER}18`, color: AMBER_TEXT }}
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -163,7 +167,7 @@ export function ReviewQueue({ progress, onStartReview }: ReviewQueueProps) {
                 <div className="flex items-center gap-2 shrink-0">
                   <span
                     className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: `${AMBER}20`, color: AMBER }}
+                    style={{ backgroundColor: `${AMBER}20`, color: AMBER_TEXT }}
                   >
                     {reviewStatus}
                   </span>

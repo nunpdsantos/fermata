@@ -246,7 +246,9 @@ export const useDrillStore = create<DrillStoreState>()(
             const requeues = s.missRequeues[item.id] ?? 0;
             if (requeues < 2) {
               newQueue = requeueAfterMiss(s.queue, s.index, item.id, rand);
-              newMissRequeues[item.id] = requeues + 1;
+              // Count only a real requeue: with no non-adjacent slot left the
+              // queue comes back unchanged (never re-asked twice in a row).
+              if (newQueue.length > s.queue.length) newMissRequeues[item.id] = requeues + 1;
             }
           } else if (prevItemState === undefined) {
             // First correct on a brand-new (tier 'new') item → second exposure
