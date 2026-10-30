@@ -26,7 +26,7 @@ import type { OverrideFinger } from '../../state/fingeringStore.ts';
 import { useIsMobile } from '../../hooks/useMediaQuery.ts';
 import { useDragScroll } from '../../hooks/useDragScroll.ts';
 import { ScrollStrip } from './ScrollStrip.tsx';
-import { FULL_FRETS, CHORD_FRET_WINDOW, FRET_MARKERS, DOUBLE_MARKERS, CHIP_CLASS, chipStyle, CHIP_TEXT_PX } from './fretboardConstants.ts';
+import { FULL_FRETS, CHORD_FRET_WINDOW, FRET_MARKERS, DOUBLE_MARKERS, CHIP_CLASS, chipStyle, CHIP_TEXT_PX, ACCENT_FILL, ON_ACCENT_FILL } from './fretboardConstants.ts';
 import type { FretNote, PositionDot } from './fretboardConstants.ts';
 import { ChordShapeSelector, ScalePositionSelector, LabelToolbar } from './FretboardPositionSelector.tsx';
 import { FretboardString } from './FretboardString.tsx';
@@ -537,8 +537,8 @@ export function Fretboard() {
 
   const badgeStyle: React.CSSProperties = {
     fontSize: 12,
-    color: 'var(--bg)',
-    backgroundColor: 'var(--accent)',
+    color: ON_ACCENT_FILL,
+    backgroundColor: ACCENT_FILL,
     lineHeight: '18px',
   };
 
@@ -763,7 +763,7 @@ export function Fretboard() {
                 key={f}
                 className="flex-1 text-center"
                 style={{
-                  color: anchorFret === f ? 'var(--accent)' : 'var(--text-dim)',
+                  color: anchorFret === f ? ACCENT_FILL : 'var(--text-dim)',
                   fontWeight: anchorFret === f ? 700 : 400,
                   minWidth: fretMinWidth,
                   fontSize: isZoomed ? 12 : (mobile ? 11 : 10),

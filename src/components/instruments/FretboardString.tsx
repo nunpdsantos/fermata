@@ -6,7 +6,7 @@ import type { Note, PitchedNote } from '../../core/types/music.ts';
 import type { ChordShape, FingerNumber } from '../../core/constants/guitarChordShapes.ts';
 import { midiToNote } from '../../core/utils/pianoLayout.ts';
 import { FretCell } from './FretCell.tsx';
-import { readableTextOn } from './fretboardConstants.ts';
+import { readableTextOn, ACCENT_FILL } from './fretboardConstants.ts';
 import type { FretNote, PositionDot } from './fretboardConstants.ts';
 
 /**
@@ -140,15 +140,15 @@ export const FretboardString = memo(function FretboardString({
     if (isMuted) {
       openContent = <span className="font-bold" style={{ fontSize: 14, color: '#ef4444aa' }}>✕</span>;
     } else if (isOpenVoicing) {
-      openContent = openDot('voicing', openColor ?? 'var(--accent)', openLabel, isOpenRoot);
+      openContent = openDot('voicing', openColor ?? ACCENT_FILL, openLabel, isOpenRoot);
     }
   } else if (mode === 'position') {
     const dot = positionDots?.get(0);
-    if (dot) openContent = openDot('position', openColor ?? 'var(--accent)', dot.label, dot.isRoot, dot.description);
+    if (dot) openContent = openDot('position', openColor ?? ACCENT_FILL, dot.label, dot.isRoot, dot.description);
   } else if (mode === 'scale') {
     if (openColor) openContent = openDot('scale', openColor, scaleLabelFor(openPc), false, undefined, isOpenRoot || isOpenActive);
   } else if (highlightPcs?.has(openPc)) {
-    openContent = openDot('highlight', openColor ?? 'var(--accent)', openLabel, isOpenRoot);
+    openContent = openDot('highlight', openColor ?? ACCENT_FILL, openLabel, isOpenRoot);
   }
 
   return (
@@ -182,7 +182,7 @@ export const FretboardString = memo(function FretboardString({
           const showScaleDot = mode === 'scale' && isInScale;
           const showHighlight = mode === 'highlight' && (highlightPcs?.has(fn.pitchClass) ?? false);
 
-          const dotColor = color ?? 'var(--accent)';
+          const dotColor = color ?? ACCENT_FILL;
           const isRoot = rootPitchClass !== null && fn.pitchClass === rootPitchClass;
 
           return (

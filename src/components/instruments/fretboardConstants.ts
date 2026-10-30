@@ -53,11 +53,21 @@ function relativeLuminance(hex: string): number | null {
  */
 export function readableTextOn(bg: string): string {
   const l = relativeLuminance(bg);
-  if (l === null) return 'var(--bg)';
+  if (l === null) return ON_ACCENT_FILL;
   const onBlack = (l + 0.05) / 0.05;
   const onWhite = 1.05 / (l + 0.05);
   return onBlack >= onWhite ? '#000' : '#fff';
 }
+
+/**
+ * Fill for active chips, position badges and dots with no degree colour, and
+ * the label colour on it. Theme tokens; ≥ 4.5:1 in both themes
+ * (__tests__/fretboardContrast.test.ts).
+ */
+// --accent itself is 4.45:1 against --bg in the light theme; its darker
+// hover shade clears 4.5 in light and is brighter still in the night theme.
+export const ACCENT_FILL = 'var(--accent-hover)';
+export const ON_ACCENT_FILL = 'var(--bg)';
 
 // Shared chip look (audit W3-14): ≥ 24 px tap targets, 12 px text, theme
 // tokens only — inactive text is --text-muted on --bg, active is --bg on
@@ -72,9 +82,9 @@ export function chipStyle(isActive: boolean, disabled = false): React.CSSPropert
     minWidth: CHIP_MIN_PX,
     padding: '0 8px',
     fontSize: CHIP_TEXT_PX,
-    backgroundColor: isActive ? 'var(--accent)' : 'transparent',
-    color: isActive ? 'var(--bg)' : 'var(--text-muted)',
-    border: `1px solid ${isActive ? 'var(--accent)' : 'var(--border)'}`,
+    backgroundColor: isActive ? ACCENT_FILL : 'transparent',
+    color: isActive ? ON_ACCENT_FILL : 'var(--text-muted)',
+    border: `1px solid ${isActive ? ACCENT_FILL : 'var(--border)'}`,
     opacity: disabled ? 0.4 : 1,
     cursor: disabled ? 'default' : 'pointer',
   };
