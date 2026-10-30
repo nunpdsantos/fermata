@@ -12,6 +12,11 @@ interface ChoiceChipsProps {
   selectedNearMiss?: boolean;
   /** The canonical correct choice — only shown (success-styled) during feedback. */
   correctChoice: string | null;
+  /**
+   * How a choice reads on its chip (translated degree/function/cadence/key
+   * names). Defaults to the choice itself; onSelect always gets the raw value.
+   */
+  labelFor?: (choice: string) => string;
   onSelect: (choice: string) => void;
 }
 
@@ -24,6 +29,7 @@ export function ChoiceChips({
   selected,
   selectedNearMiss = false,
   correctChoice,
+  labelFor = (choice) => choice,
   onSelect,
 }: ChoiceChipsProps) {
   const { t } = useTranslation();
@@ -38,7 +44,7 @@ export function ChoiceChips({
     if (!disabled) locked.current = false;
   }, [disabled]);
 
-  const oneColumn = choices.some((c) => c.length > LONG_LABEL);
+  const oneColumn = choices.some((c) => labelFor(c).length > LONG_LABEL);
 
   const handleSelect = (choice: string) => {
     if (disabled || locked.current) return;
@@ -90,7 +96,7 @@ export function ChoiceChips({
                 : undefined
             }
           >
-            {choice}
+            {labelFor(choice)}
           </m.button>
         );
       })}

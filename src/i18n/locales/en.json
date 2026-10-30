@@ -636,6 +636,30 @@
       "continue": "Continue",
       "learnMore": "Learn about this"
     },
+    "terms": {
+      "degree": {
+        "1": "Tonic",
+        "2": "Supertonic",
+        "3": "Mediant",
+        "4": "Subdominant",
+        "5": "Dominant",
+        "6": "Submediant",
+        "7": "Leading Tone"
+      },
+      "function": {
+        "tonic": "Tonic",
+        "subdominant": "Subdominant (pre-dominant)",
+        "dominant": "Dominant"
+      },
+      "cadence": {
+        "perfectAuthentic": "Perfect authentic cadence",
+        "plagal": "Plagal cadence",
+        "half": "Half cadence",
+        "deceptive": "Deceptive cadence"
+      },
+      "yes": "Yes",
+      "no": "No"
+    },
     "prompts": {
       "keyToCount": "How many sharps or flats does {{key}} have?",
       "keyToAcc": "Which accidentals does {{key}} have?",
@@ -652,7 +676,8 @@
       "pairToName": "{{lower}} up to {{upper}} is which interval?",
       "noteAbove": "A {{interval}} above {{root}}?",
       "letterThird": "A third above {{letter}} (letter only)?",
-      "semitonesToName": "{{n}} semitones is which interval?",
+      "semitonesToName_one": "{{n}} semitone is which interval?",
+      "semitonesToName_other": "{{n}} semitones is which interval?",
       "spellChord": "Spell {{chord}}",
       "nameChord": "{{notes}} — which chord is this?",
       "spellScale": "Spell the {{scale}} scale",
@@ -678,9 +703,11 @@
       "circleOrder": "Sharps are added F C G D A E B; flats reverse it B E A D G C F. Each step is a perfect fifth.",
       "degreeName": "Scale degree {{num}} is the {{name}}.",
       "intervalLetterFirst": "Count letters first, then set the quality by half steps. The answer is {{answer}}.",
-      "semitoneFact": "A recognition fact: {{n}} semitones is a {{answer}}. Never spell by counting semitones — letters first.",
+      "semitoneFact_one": "A recognition fact: the {{answer}} spans {{n}} semitone. Never spell by counting semitones — letters first.",
+      "semitoneFact_other": "A recognition fact: the {{answer}} spans {{n}} semitones. Never spell by counting semitones — letters first.",
       "triadStack": "{{chord}} stacks {{stack}} from the root: {{notes}}.",
       "scaleKeySig": "The {{scale}} scale uses its key signature: {{accs}}.",
+      "scaleNoAccidentals": "The {{scale}} scale has no sharps or flats.",
       "harmonicRaise": "The {{scale}} scale raises {{raised}} relative to the natural minor.",
       "seventhLadder": "Build from the major 7th, then {{step}}. That gives {{chord}}.",
       "diatonicMember": "{{chord}} is the diatonic chord built on that degree of {{key}}.",

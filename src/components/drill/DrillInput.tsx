@@ -8,8 +8,10 @@
  * (grading normalizes display → ASCII).
  */
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { DrillItem } from '../../core/types/drill';
 import { isEnharmonicNoteChoice, type AnswerPayload } from './grading';
+import { choiceLabel, toContentLanguage } from './drillText';
 import { ChoiceChips } from './ChoiceChips';
 import { NoteChips } from './NoteChips';
 import { AccidentalSlots } from './AccidentalSlots';
@@ -27,6 +29,8 @@ export function DrillInput({ item, phase, onAnswer }: DrillInputProps) {
   // The parent keys this component per presentation, so it starts empty for
   // every question.
   const [picked, setPicked] = useState<string | null>(null);
+  const { t, i18n } = useTranslation();
+  const lang = toContentLanguage(i18n.language);
 
   switch (item.input.format) {
     case 'choice': {
@@ -38,6 +42,7 @@ export function DrillInput({ item, phase, onAnswer }: DrillInputProps) {
           selected={disabled ? picked : null}
           selectedNearMiss={disabled && picked !== null && isEnharmonicNoteChoice(picked, correct)}
           correctChoice={disabled ? correct : null}
+          labelFor={(choice) => choiceLabel(item, choice, t, lang)}
           onSelect={(choice) => {
             setPicked(choice);
             onAnswer({ format: 'choice', choice });

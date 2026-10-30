@@ -10,6 +10,7 @@ import { DrillSettings } from '../components/drill/DrillSettings';
 import { SprintRunner } from '../components/drill/SprintRunner';
 import { sprintFamiliesKey } from '../components/drill/sprintSelectors';
 import { generateDrillBank } from '../core/utils/drillBank';
+import { choiceLabel, itemPrompt, itemWhy, toContentLanguage } from '../components/drill/drillText';
 import { useDrillStore } from '../state/drillStore';
 import { useAppStore } from '../state/store';
 import { MODULE_INDEX } from '../data/moduleIndex';
@@ -155,7 +156,11 @@ function RunningQuestion({
   onEndSession,
   onOpenSettings,
 }: RunningQuestionProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  // Degree/function/cadence names, Yes/No and key names render in the
+  // learner's language; the bank's English strings stay the grading values
+  // (audit W6-07, D-17).
+  const lang = toContentLanguage(i18n.language);
   const elapsed = useElapsedSeconds(showTimer ? startedAt : null);
 
   return (
@@ -163,7 +168,7 @@ function RunningQuestion({
       <QuestionCard
         asked={position}
         total={total}
-        prompt={t(item.promptKey, item.promptParams)}
+        prompt={itemPrompt(item, t, lang)}
         onEndSession={onEndSession}
         onOpenSettings={onOpenSettings}
         elapsedSeconds={showTimer && startedAt !== null ? elapsed : undefined}
@@ -178,8 +183,12 @@ function RunningQuestion({
       {phase === 'feedback' && result && (
         <FeedbackStrip
           result={result}
-          answerText={canonicalAnswer(item)}
-          whyText={t(item.whyKey, item.whyParams)}
+          answerText={
+            item.answer.kind === 'choice'
+              ? choiceLabel(item, item.answer.correct, t, lang)
+              : canonicalAnswer(item)
+          }
+          whyText={itemWhy(item, t, lang)}
           onContinue={onAdvance}
           showContinue={!result.correct}
           // Deep link on wrong / near-miss only (correct answers

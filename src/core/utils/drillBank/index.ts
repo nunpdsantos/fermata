@@ -120,6 +120,7 @@ export const DRILL_WHY_KEYS: readonly string[] = [
   'drill.why.triadStack',
   // F6 scales
   'drill.why.scaleKeySig',
+  'drill.why.scaleNoAccidentals',
   'drill.why.harmonicRaise',
   // F7 sevenths
   'drill.why.seventhLadder',

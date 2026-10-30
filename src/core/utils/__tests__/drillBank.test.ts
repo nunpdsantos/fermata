@@ -544,6 +544,16 @@ function getNestedValue(obj: Record<string, unknown>, path: string): string | un
   return typeof current === 'string' ? current : undefined;
 }
 
+/**
+ * The EN template(s) for a key: the plain string, or — for count-driven keys
+ * such as drill.prompts.semitonesToName — every plural form (_one, _other).
+ */
+function templatesFor(obj: Record<string, unknown>, key: string): string[] {
+  return [key, `${key}_one`, `${key}_other`]
+    .map((k) => getNestedValue(obj, k))
+    .filter((t): t is string => t !== undefined);
+}
+
 /** Extract {{token}} names from a template string. */
 function extractTokens(template: string): string[] {
   const matches = template.matchAll(/\{\{([a-zA-Z]+)\}\}/g);
@@ -553,12 +563,23 @@ function extractTokens(template: string): string[] {
 describe('token/params contract — EN template tokens ⊆ item params', () => {
   const en = enLocale as Record<string, unknown>;
 
+  it('plural-only keys have both forms and their items pass a numeric count', () => {
+    for (const key of ['drill.prompts.semitonesToName', 'drill.why.semitoneFact']) {
+      expect(getNestedValue(en, `${key}_one`), key).toBeDefined();
+      expect(getNestedValue(en, `${key}_other`), key).toBeDefined();
+    }
+    for (const item of bank.filter((i) => i.id.startsWith('interval:semitones-to-name:'))) {
+      expect(typeof item.promptParams.count, item.id).toBe('number');
+      expect(typeof item.whyParams.count, item.id).toBe('number');
+    }
+  });
+
   it('every whyKey EN template token is present in whyParams for every bank item', () => {
     const leaks: string[] = [];
     for (const item of bank) {
-      const template = getNestedValue(en, item.whyKey);
-      if (!template) continue; // registry tests already catch missing keys
-      const tokens = extractTokens(template);
+      const templates = templatesFor(en, item.whyKey);
+      if (templates.length === 0) continue; // registry tests already catch missing keys
+      const tokens = [...new Set(templates.flatMap(extractTokens))];
       const params = item.whyParams as Record<string, unknown> | undefined;
       for (const token of tokens) {
         if (!params || !(token in params)) {
@@ -572,9 +593,9 @@ describe('token/params contract — EN template tokens ⊆ item params', () => {
   it('every promptKey EN template token is present in promptParams for every bank item', () => {
     const leaks: string[] = [];
     for (const item of bank) {
-      const template = getNestedValue(en, item.promptKey);
-      if (!template) continue;
-      const tokens = extractTokens(template);
+      const templates = templatesFor(en, item.promptKey);
+      if (templates.length === 0) continue;
+      const tokens = [...new Set(templates.flatMap(extractTokens))];
       const params = item.promptParams as Record<string, unknown> | undefined;
       for (const token of tokens) {
         if (!params || !(token in params)) {

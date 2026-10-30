@@ -5,6 +5,7 @@ import { useDrillStore, type ActiveSession, DEFAULT_SETTINGS } from '../../state
 import { useAppStore } from '../../state/store';
 import { generateDrillBank } from '../../core/utils/drillBank';
 import { DRILL_FAMILY_TO_MODULE } from '../../data/drillFamilyToModule';
+import i18n from '../../i18n';
 import type { DrillFamily, DrillItem } from '../../core/types/drill';
 
 // Spy on the reveal-audio player so we can assert it's invoked (Task 10)
@@ -660,5 +661,51 @@ describe('DrillView — counter across a full default first session (W7-06)', ()
     expect(seen.length).toBe(asked);
     expect(seen.some((t) => t.endsWith(' of 24'))).toBe(false);
     expect(seen[seen.length - 1]).toBe(`${asked} of ${asked}`);
+  });
+});
+
+// ─── W6-07: the running Drill speaks Portuguese / Spanish ───────────────────
+
+describe('DrillView — degree names, answer and explanation in PT (W6-07)', () => {
+  afterEach(async () => {
+    await i18n.changeLanguage('en');
+  });
+
+  it('chips, the revealed answer and the why line are Portuguese', async () => {
+    await i18n.changeLanguage('pt');
+    const it_ = BY_ID.get('degree:num-to-name:7')!;
+    useDrillStore.setState({
+      activeSession: {
+        id: 's-pt',
+        queue: [it_.id, 'circle:next-sharp:F#'],
+        index: 0,
+        asked: 0,
+        correct: 0,
+        startedAt: 1,
+        seed: 1,
+        missRequeues: {},
+      },
+    });
+    render(<DrillView />);
+    expect(screen.getByText('O grau 7 da escala chama-se…?')).toBeDefined();
+    // Every chip is a Portuguese degree name; tapping one still grades the
+    // English value underneath.
+    expect(screen.getByRole('button', { name: 'Sensível' })).toBeDefined();
+    expect(screen.queryByRole('button', { name: 'Leading Tone' })).toBeNull();
+    const wrong = it_.input.format === 'choice' ? it_.input.choices.find((c) => c !== 'Leading Tone')! : '';
+    const wrongPt = (
+      {
+        Tonic: 'Tónica',
+        Supertonic: 'Supertónica',
+        Mediant: 'Mediante',
+        Subdominant: 'Subdominante',
+        Dominant: 'Dominante',
+        Submediant: 'Submediante',
+      } as Record<string, string>
+    )[wrong];
+    act(() => fireEvent.click(screen.getByRole('button', { name: wrongPt })));
+    expect(useDrillStore.getState().items[it_.id].history[0].correct).toBe(false);
+    expect(screen.getByText(/— Sensível/)).toBeDefined();
+    expect(screen.getByText('O grau 7 da escala é a Sensível.')).toBeDefined();
   });
 });

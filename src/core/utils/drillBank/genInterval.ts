@@ -197,11 +197,12 @@ export function genInterval(): DrillItem[] {
       id: `interval:semitones-to-name:${n}`,
       family: 'interval',
       promptKey: 'drill.prompts.semitonesToName',
-      promptParams: { n },
+      // `count` selects the singular/plural template ("1 semitone", W7-12).
+      promptParams: { n, count: n },
       input: { format: 'choice', choices },
       answer: { kind: 'choice', correct },
       whyKey: 'drill.why.semitoneFact',
-      whyParams: { n, answer: correct },
+      whyParams: { n, answer: correct, count: n },
       rank: nextRank(),
     });
   }

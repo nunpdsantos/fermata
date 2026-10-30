@@ -636,6 +636,30 @@
       "continue": "Continuar",
       "learnMore": "Aprender sobre isto"
     },
+    "terms": {
+      "degree": {
+        "1": "Tónica",
+        "2": "Supertónica",
+        "3": "Mediante",
+        "4": "Subdominante",
+        "5": "Dominante",
+        "6": "Submediante",
+        "7": "Sensível"
+      },
+      "function": {
+        "tonic": "Tónica",
+        "subdominant": "Subdominante (pré-dominante)",
+        "dominant": "Dominante"
+      },
+      "cadence": {
+        "perfectAuthentic": "Cadência perfeita",
+        "plagal": "Cadência plagal",
+        "half": "Cadência suspensiva",
+        "deceptive": "Cadência interrompida"
+      },
+      "yes": "Sim",
+      "no": "Não"
+    },
     "prompts": {
       "keyToCount": "Quantos sustenidos ou bemóis tem {{key}}?",
       "keyToAcc": "Que alterações tem {{key}}?",
@@ -648,11 +672,12 @@
       "fifthUp": "Uma quinta perfeita ACIMA de {{note}}?",
       "fifthDown": "Uma quinta perfeita ABAIXO de {{note}}?",
       "numToName": "O grau {{num}} da escala chama-se…?",
-      "nameToNum": "{{name}} é que grau da escala?",
+      "nameToNum": "A {{name}} é que grau da escala?",
       "pairToName": "De {{lower}} até {{upper}} é que intervalo?",
       "noteAbove": "Uma {{interval}} acima de {{root}}?",
       "letterThird": "Uma terceira acima de {{letter}} (só a letra)?",
-      "semitonesToName": "{{n}} meios-tons é que intervalo?",
+      "semitonesToName_one": "Que intervalo tem {{n}} meio-tom?",
+      "semitonesToName_other": "Que intervalo tem {{n}} meios-tons?",
       "spellChord": "Soletra {{chord}}",
       "nameChord": "{{notes}} — que acorde é este?",
       "spellScale": "Soletra a escala de {{scale}}",
@@ -676,11 +701,13 @@
       "sigToKey": "{{sig}} pertence a {{answer}} — lê a armação no círculo das quintas.",
       "relative": "As tonalidades relativas partilham a mesma armação de clave, à distância de uma terceira menor. {{key}}: {{answer}}.",
       "circleOrder": "Os sustenidos acrescentam-se por F C G D A E B; os bemóis seguem a ordem inversa B E A D G C F. Cada passo é uma quinta perfeita.",
-      "degreeName": "O grau {{num}} da escala é {{name}}.",
+      "degreeName": "O grau {{num}} da escala é a {{name}}.",
       "intervalLetterFirst": "Conta primeiro as letras, depois define a qualidade pelos meios-tons. A resposta é {{answer}}.",
-      "semitoneFact": "Um facto de reconhecimento: {{n}} meios-tons é {{answer}}. Nunca soletres a contar meios-tons — primeiro as letras.",
+      "semitoneFact_one": "Um facto de reconhecimento: {{n}} meio-tom forma {{answer}}. Nunca soletres a contar meios-tons — primeiro as letras.",
+      "semitoneFact_other": "Um facto de reconhecimento: {{n}} meios-tons formam {{answer}}. Nunca soletres a contar meios-tons — primeiro as letras.",
       "triadStack": "{{chord}} empilha {{stack}} a partir da fundamental: {{notes}}.",
       "scaleKeySig": "A escala de {{scale}} usa a sua armação de clave: {{accs}}.",
+      "scaleNoAccidentals": "A escala de {{scale}} não tem sustenidos nem bemóis.",
       "harmonicRaise": "A escala de {{scale}} eleva {{raised}} em relação à menor natural.",
       "seventhLadder": "Parte da sétima maior e depois {{step}}. Isso dá {{chord}}.",
       "diatonicMember": "{{chord}} é o acorde diatónico construído sobre esse grau de {{key}}.",
@@ -689,8 +716,8 @@
       "romanPatternNaturalMinor": "Na menor natural, a tríade do grau {{num}} é {{chord}}. Elevar o 7.º grau (menor harmónica) altera as tríades dos graus 3, 5 e 7.",
       "harmonicFact": "Com o 7.º grau elevado, o grau {{num}} dá {{correct}}.",
       "functionPull": "{{chord}} puxa {{direction}} — é essa a sua função harmónica.",
-      "cadenceDef": "{{answer}} (RU: {{uk}}).",
-      "cadencePerfect": "{{answer}} (RU: {{uk}}): V → I com ambos os acordes no estado fundamental e a tónica na voz superior. Se inverteres um dos acordes, ou se a voz superior terminar noutra nota, passa a ser uma cadência autêntica imperfeita.",
+      "cadenceDef": "{{answer}}.",
+      "cadencePerfect": "{{answer}}: V → I com ambos os acordes no estado fundamental e a tónica na voz superior. Se inverteres um dos acordes, ou se a voz superior terminar noutra nota, passa a ser uma cadência imperfeita.",
       "v7Derivation": "O grau 5 de {{key}} é {{five}}; a sua sétima da dominante é {{answer}}."
     }
   }

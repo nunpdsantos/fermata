@@ -19,6 +19,7 @@ import type { DrillFamily, DrillItem, ItemSrsState } from '../../core/types/dril
 import { mulberry32, seededShuffle } from '../../core/utils/prng';
 import { gradeAnswer, type AnswerPayload } from './grading';
 import { DrillInput } from './DrillInput';
+import { itemPrompt, toContentLanguage } from './drillText';
 import {
   eligibleSprintItems,
   sprintFamiliesKey,
@@ -118,6 +119,8 @@ interface SprintActiveProps {
 }
 
 function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t }: SprintActiveProps) {
+  const { i18n } = useTranslation();
+  const lang = toContentLanguage(i18n.language);
   const [secondsLeft, setSecondsLeft] = useState(SPRINT_SECONDS);
   // 'finished' is DERIVED from the clock, never stored — so the finish effect
   // below performs side effects only (no setState-in-effect cascade).
@@ -264,7 +267,7 @@ function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t 
 
       {/* Prompt */}
       <p className="text-xl max-sm:text-lg font-medium leading-snug mb-6" style={{ color: 'var(--text)' }}>
-        {t(currentItem.promptKey, currentItem.promptParams)}
+        {itemPrompt(currentItem, t, lang)}
       </p>
 
       {/* Fresh input per question (key by step). Always 'answering' phase. */}
