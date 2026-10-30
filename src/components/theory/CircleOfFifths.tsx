@@ -129,14 +129,16 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
   );
   const focusKey = navKey ?? selectedSeg ?? { ring: 'major' as Ring, idx: refIdx };
 
-  // Roman numerals of the scale's real diatonic triads, on the ring matching
-  // their quality: major/augmented outer, minor/diminished inner (W2-02).
-  const numerals = useMemo(() => {
-    const m = new Map<string, string>();
+  // The scale's real diatonic triads, on the ring matching their quality:
+  // major/augmented outer, minor/diminished inner (W2-02). Each carries its
+  // numeral and its root AS SPELLED in the selected key (C♯ major: F♯ IV,
+  // D♯m ii, B♯° vii° — not G♭, E♭m, Cm).
+  const chordAt = useMemo(() => {
+    const m = new Map<string, { numeral: string; root: Note; quality: string }>();
     for (const dc of diatonicChords) {
       const q = dc.chord.quality;
       const ring: Ring = q === 'minor' || q === 'diminished' ? 'minor' : 'major';
-      m.set(`${ring}-${getPitchClass(dc.chord.root)}`, dc.numeral);
+      m.set(`${ring}-${getPitchClass(dc.chord.root)}`, { numeral: dc.numeral, root: dc.chord.root, quality: q });
     }
     return m;
   }, [diatonicChords]);
@@ -147,12 +149,15 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
   // name, its signature, its relative key — is spelled from this label.
   const labelFor = useCallback(
     (ring: Ring, i: number): Note => {
+      const fallback = ring === 'major' ? CIRCLE_MAJOR[i] : CIRCLE_MINOR[i];
+      const chord = chordAt.get(`${ring}-${getPitchClass(fallback)}`);
+      if (chord) return chord.root;
       if (signature && i === refIdx) {
         return ring === 'major' ? signature.parent : relativeMinorOf(signature.parent);
       }
-      return ring === 'major' ? CIRCLE_MAJOR[i] : CIRCLE_MINOR[i];
+      return fallback;
     },
-    [signature, refIdx],
+    [signature, refIdx, chordAt],
   );
 
   const handleKeyClick = useCallback(
@@ -212,19 +217,21 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
       const pc = getPitchClass(note);
       const selected = selectedSeg?.ring === 'major' && selectedSeg.idx === i;
       const dist = fifthsDistance(i, refIdx);
-      const numeral = numerals.get(`major-${pc}`);
+      const chord = chordAt.get(`major-${pc}`);
+      const numeral = chord?.numeral;
+      const suffix = chord?.quality === 'augmented' ? '+' : '';
       const mid = polarToCartesian(CENTER, CENTER, (MAJOR_INNER + MAJOR_OUTER) / 2, i * 30);
       const fill = neutral ? NEUTRAL_FILL_MAJOR : DIST_FILL_MAJOR[dist];
 
       return {
-        note, i, pc, selected, dist, numeral, mid, fill,
+        note, i, pc, selected, dist, numeral, suffix, mid, fill,
         path: arcPath(CENTER, CENTER, MAJOR_INNER, MAJOR_OUTER, start, end),
         stroke: neutral ? NEUTRAL_STROKE : DIST_STROKE_MAJOR[dist],
         textFill: neutral ? NEUTRAL_TEXT : DIST_TEXT_MAJOR[dist],
         hoverFill: neutral ? NEUTRAL_HOVER : dist === 0 ? TONIC_HUE : accentAlpha(dist <= 2 ? 31 : 15),
       };
     });
-  }, [labelFor, selectedSeg, refIdx, numerals, neutral]);
+  }, [labelFor, selectedSeg, refIdx, chordAt, neutral]);
 
   const minorSegs = useMemo(() => {
     return CIRCLE_MINOR.map((_, i) => {
@@ -234,19 +241,21 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
       const pc = getPitchClass(note);
       const selected = selectedSeg?.ring === 'minor' && selectedSeg.idx === i;
       const dist = fifthsDistance(i, refIdx);
-      const numeral = numerals.get(`minor-${pc}`);
+      const chord = chordAt.get(`minor-${pc}`);
+      const numeral = chord?.numeral;
+      const suffix = chord?.quality === 'diminished' ? '°' : 'm';
       const mid = polarToCartesian(CENTER, CENTER, (MINOR_INNER + MINOR_OUTER) / 2, i * 30);
       const fill = neutral ? NEUTRAL_FILL_MINOR : DIST_FILL_MINOR[dist];
 
       return {
-        note, i, pc, selected, dist, numeral, mid, fill,
+        note, i, pc, selected, dist, numeral, suffix, mid, fill,
         path: arcPath(CENTER, CENTER, MINOR_INNER, MINOR_OUTER, start, end),
         stroke: neutral ? NEUTRAL_STROKE : DIST_STROKE_MINOR[dist],
         textFill: neutral ? NEUTRAL_TEXT : DIST_TEXT_MINOR[dist],
         hoverFill: neutral ? NEUTRAL_HOVER : dist === 0 ? TONIC_HUE : accentAlpha(dist <= 2 ? 25 : 10),
       };
     });
-  }, [labelFor, selectedSeg, refIdx, numerals, neutral]);
+  }, [labelFor, selectedSeg, refIdx, chordAt, neutral]);
 
   // Outer ring: each position's signature, spelled from its displayed major key.
   const outerSignatures = useMemo(
@@ -293,7 +302,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
 
   /** Name + numeral stacked in a segment (numeral below, never overlapping). */
   const segmentText = (
-    s: { mid: { x: number; y: number }; note: Note; numeral?: string; textFill: string; fill: string },
+    s: { mid: { x: number; y: number }; note: Note; numeral?: string; suffix: string; textFill: string; fill: string },
     ring: Ring,
   ) => {
     const nameSize = ring === 'major' ? MAJOR_NAME_SIZE : MINOR_NAME_SIZE;
@@ -317,7 +326,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
           className={`${ring === 'major' ? 'font-semibold' : 'font-medium'} select-none pointer-events-none`}
           fill={s.textFill}
         >
-          {noteToString(s.note)}{ring === 'minor' ? 'm' : ''}
+          {noteToString(s.note)}{s.suffix}
         </text>
         {s.numeral && (
           <text

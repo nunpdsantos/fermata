@@ -14,7 +14,7 @@ import { render, cleanup, fireEvent } from '@testing-library/react';
 import type { Note, ScaleType } from '../../../core/types/music';
 import { useAppStore } from '../../../state/store';
 import i18n from '../../../i18n';
-import { spellDegree, majorKeySignature, pcOf } from '../../../core/utils/__tests__/theoryOracle';
+import { spellDegree, majorKeySignature, pcOf, ORACLE_SCALES } from '../../../core/utils/__tests__/theoryOracle';
 
 vi.mock('../../../core/services/audio.ts', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
@@ -144,5 +144,50 @@ describe('item 2 — numerals are large enough and stacked under the name', () =
       expect(Number(n.getAttribute('x'))).toBeCloseTo(Number(name.getAttribute('x')), 5);
       expect(Number(n.getAttribute('y'))).toBeGreaterThan(Number(name.getAttribute('y')));
     }
+  });
+});
+
+describe('re-review nit — diatonic chord segments wear the selected key\'s spelling', () => {
+  const names = (c: HTMLElement) => new Map(
+    [...c.querySelectorAll('g[role="button"]')].map((g) => [
+      g.querySelector('[data-name]')!.textContent!,
+      g.querySelector('[data-numeral]')?.textContent ?? null,
+    ]),
+  );
+
+  it('C# major: F# IV, G# V, D#m ii, E#m iii, A#m vi, B#° vii°', () => {
+    select('C#', 'major');
+    const { container } = render(<CircleOfFifths />);
+    const n = names(container);
+    expect(Object.fromEntries(['C#', 'F#', 'G#', 'D#m', 'E#m', 'A#m', 'B#°'].map((k) => [k, n.get(k)]))).toEqual({
+      'C#': 'I', 'F#': 'IV', 'G#': 'V', 'D#m': 'ii', 'E#m': 'iii', 'A#m': 'vi', 'B#°': 'vii°',
+    });
+    for (const flat of ['Gb', 'Ab', 'Ebm', 'Fm', 'Bbm', 'Cm']) expect(n.has(flat), flat).toBe(false);
+  });
+
+  it('Db major keeps its flats: Gb IV, Ab V, Ebm ii, Fm iii, Bbm vi, C° vii°', () => {
+    select('Db', 'major');
+    const { container } = render(<CircleOfFifths />);
+    const n = names(container);
+    expect(Object.fromEntries(['Db', 'Gb', 'Ab', 'Ebm', 'Fm', 'Bbm', 'C°'].map((k) => [k, n.get(k)]))).toEqual({
+      Db: 'I', Gb: 'IV', Ab: 'V', Ebm: 'ii', Fm: 'iii', Bbm: 'vi', 'C°': 'vii°',
+    });
+  });
+
+  it('every diatonic chord of every heptatonic scale on 17 roots is named as spelled', () => {
+    const bad: string[] = [];
+    for (const type of ['major', 'natural_minor', 'harmonic_minor', 'melodic_minor', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'locrian'] as ScaleType[]) {
+      for (const root of ['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B']) {
+        select(root, type);
+        const { container } = render(<CircleOfFifths />);
+        const shown = [...container.querySelectorAll('[data-numeral]')].map((x) => x.parentElement!.querySelector('[data-name]')!.textContent!.replace(/[m°+]$/, ''));
+        // oracle: the scale degrees spelled from the root
+        const or = ORACLE_SCALES[type];
+        const want = or.degrees.map((d) => spellDegree(root, d)!);
+        for (const name of shown) if (!want.includes(name)) bad.push(`${root} ${type}: chord segment "${name}" is not a scale degree as spelled (${want.join(' ')})`);
+        cleanup();
+      }
+    }
+    expect(bad).toEqual([]);
   });
 });
