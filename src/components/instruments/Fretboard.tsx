@@ -333,14 +333,28 @@ export function Fretboard() {
 
   useEffect(() => {
     if (!scaleView) return;
+    // Which way a key steps, or 0. Two routes so PT/ES keyboards work too
+    // (review #2): the PHYSICAL keys right of P (event.code BracketLeft/Right,
+    // printing "+" / "´" on a PT layout) with no modifier, or "[" / "]" however
+    // they are typed — PT/ES need Option (macOS) or AltGr (= Ctrl+Alt on
+    // Windows) for them. Cmd is never ours: Cmd+[ is the browser's Back.
+    const direction = (e: KeyboardEvent): 1 | -1 | 0 => {
+      if (e.metaKey) return 0;
+      if (!e.ctrlKey && !e.altKey && (e.code === 'BracketLeft' || e.code === 'BracketRight')) {
+        return e.code === 'BracketRight' ? 1 : -1;
+      }
+      const altGr = e.altKey; // Option alone, or Ctrl+Alt (AltGr)
+      if ((e.key === '[' || e.key === ']') && (altGr || !e.ctrlKey)) return e.key === ']' ? 1 : -1;
+      return 0;
+    };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== '[' && e.key !== ']') return;
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const dir = direction(e);
+      if (dir === 0) return;
       if (useAppStore.getState().quickSearchOpen) return;
       const target = e.target as HTMLElement | null;
       if (target && (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))) return;
       e.preventDefault();
-      stepPosition(e.key === ']' ? 1 : -1);
+      stepPosition(dir);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);

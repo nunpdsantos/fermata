@@ -172,6 +172,28 @@ describe('walking through positions (W10-07)', () => {
     expect(useAppStore.getState().guitarScalePosition).toBe(1);
   });
 
+  it('works on PT/ES keyboards: the physical bracket keys (event.code) and [ ] typed with Option/AltGr (review #2)', async () => {
+    await renderFretboard();
+    fireEvent.click(chip('V'));
+    // PT-PT layout: the keys right of P print "+" and "´" but are BracketLeft/Right.
+    fireEvent.keyDown(window, { key: '´', code: 'BracketRight' });
+    expect(useAppStore.getState().guitarScalePosition).toBe(6);
+    fireEvent.keyDown(window, { key: '+', code: 'BracketLeft' });
+    expect(useAppStore.getState().guitarScalePosition).toBe(5);
+    // macOS PT: Option+8 / Option+9 type [ and ].
+    fireEvent.keyDown(window, { key: ']', code: 'Digit9', altKey: true });
+    expect(useAppStore.getState().guitarScalePosition).toBe(6);
+    // Windows ES/PT: AltGr reports Ctrl+Alt.
+    fireEvent.keyDown(window, { key: '[', code: 'Quote', altKey: true, ctrlKey: true });
+    expect(useAppStore.getState().guitarScalePosition).toBe(5);
+    // Cmd+[ is the browser's Back on macOS — never hijacked.
+    fireEvent.keyDown(window, { key: '[', code: 'BracketLeft', metaKey: true });
+    expect(useAppStore.getState().guitarScalePosition).toBe(5);
+    // A bracket-position key with Ctrl alone is not ours either.
+    fireEvent.keyDown(window, { key: '+', code: 'BracketLeft', ctrlKey: true });
+    expect(useAppStore.getState().guitarScalePosition).toBe(5);
+  });
+
   it('keys are ignored while typing in a field or with a modifier', async () => {
     await renderFretboard();
     fireEvent.click(chip('V'));
