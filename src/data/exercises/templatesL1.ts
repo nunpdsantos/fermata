@@ -84,7 +84,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'interval_id',
-        promptTemplate: 'What is the interval from {root} going {direction}? Is it a half step or whole step?',
+        promptTemplate: 'What is the {direction} interval from {root}? Is it a half step or whole step?',
         hintTemplate: 'A half step is 1 semitone (adjacent keys on the piano). A whole step is 2 semitones (one key between them). From {root}, count carefully.',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
@@ -314,7 +314,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'interval_id',
-        promptTemplate: 'Identify the interval from {root} going {direction}. Count both letter names and semitones.',
+        promptTemplate: 'Identify the {direction} interval from {root}. Count both letter names and semitones.',
         hintTemplate: 'From {root}, count letter names for the interval number and semitones for the quality. {semitones} semitones {direction}.',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A'],
@@ -334,7 +334,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root} major triad. Select the root, major 3rd (4 semitones), and perfect 5th (7 semitones).',
+        promptTemplate: 'Build the {root} major triad. Select the root, major 3rd (4 semitones), and perfect 5th (7 semitones).',
         hintTemplate: 'A major triad = root + major 3rd (4 semitones up) + perfect 5th (7 semitones up). Start on {root} and count.',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
@@ -346,7 +346,7 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root} major triad using the notes from the key signature.',
+        promptTemplate: 'Build the {root} major triad using the notes from the key signature.',
         hintTemplate: '{root} major triad: root ({root}), major 3rd, perfect 5th. Remember the key signature to find the correct notes.',
         params: {
           roots: ['F', 'G', 'D'],

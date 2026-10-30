@@ -17,7 +17,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root} major triad.',
+        promptTemplate: 'Build the {root} major triad.',
         hintTemplate: 'A major triad: root + major 3rd + perfect 5th. This chord quality is used for secondary dominants like V/V.',
         params: {
           roots: ['C', 'G', 'D', 'F', 'A', 'E'],
@@ -58,7 +58,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root} dominant 7th chord (the most common form of a secondary dominant).',
+        promptTemplate: 'Build the {root} dominant 7th chord (a very common form of a secondary dominant).',
         hintTemplate: 'A secondary dominant is a major triad or dominant 7th built a perfect 5th above the chord it tonicizes. Here just build {root}7: root + major 3rd + perfect 5th + minor 7th. For example, A7 (A-C#-E-G) is V7/ii in C major, tonicizing D minor.',
         params: {
           roots: ['C', 'G', 'D', 'F', 'A'],

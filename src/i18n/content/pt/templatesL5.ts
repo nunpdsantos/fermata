@@ -48,7 +48,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Constrói um acorde de dominante de sétima em {root} (a forma mais comum de uma dominante secundária).',
+        'Constrói um acorde de dominante de sétima em {root} (uma forma muito comum de dominante secundária).',
       hintTemplate:
         'Uma dominante secundária é uma tríade maior ou uma sétima de dominante construída uma 5.aP acima do acorde que toniciza. Aqui constrói apenas {root}7: fundamental + 3.a maior + 5.aP + 7.a menor. Por exemplo, A7 (A-C#-E-G) é V7/ii em C maior, tonicizando D menor.',
     },

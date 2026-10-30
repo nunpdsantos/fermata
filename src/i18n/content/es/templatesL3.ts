@@ -17,7 +17,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Construye un acorde de {root} {quality}. Selecciona las 4 notas.',
       hintTemplate:
-        'Construcción de acordes de séptima a partir de {root}: maj7 = 3.ªM+5.ªJ+7.ªM, min7 = 3.ªm+5.ªJ+7.ªm, dom7 = 3.ªM+5.ªJ+7.ªm, semidism7 = 3.ªm+5.ªdim+7.ªm, dim7 = 3.ªm+5.ªdim+7.ªddim.',
+        'Construcción de acordes de séptima a partir de {root}: maj7 = 3.ªM+5.ªJ+7.ªM, min7 = 3.ªm+5.ªJ+7.ªm, dom7 = 3.ªM+5.ªJ+7.ªm, semidism7 = 3.ªm+5.ªdim+7.ªm, dim7 = 3.ªm+5.ªdim+7.ªdim.',
     },
     {
       // multiple_choice

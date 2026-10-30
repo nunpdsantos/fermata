@@ -17,8 +17,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'Build a {root} {quality} chord. Select all 4 notes.',
-        hintTemplate: 'Seventh chord construction from {root}: major7 = M3+P5+M7, minor7 = m3+P5+m7, dominant7 = M3+P5+m7, half-dim7 = m3+d5+m7, dim7 = m3+d5+dd7.',
+        promptTemplate: 'Build the {root} {quality} chord. Select all 4 notes.',
+        hintTemplate: 'Seventh chord construction from {root}: major 7th = M3+P5+M7, minor 7th = m3+P5+m7, dominant 7th = M3+P5+m7, half-diminished 7th = m3+d5+m7, diminished 7th = m3+d5+d7.',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
           accidentals: ['', '', '', '', '', '', ''],
@@ -126,7 +126,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'chord_build',
         promptTemplate: 'Build the diatonic seventh chord on {root} in A minor (harmonic minor).',
-        hintTemplate: 'In harmonic minor, the raised 7th creates different chord qualities than natural minor. The V chord becomes dominant7 and vii becomes diminished7. The raised 7th degree creates unusual chord qualities — don\'t be surprised by unfamiliar sonorities.',
+        hintTemplate: 'In harmonic minor, the raised 7th creates different chord qualities than natural minor. The V chord becomes a dominant 7th and vii becomes a diminished 7th. The raised 7th degree creates unusual chord qualities — don\'t be surprised by unfamiliar sonorities.',
         params: {
           roots: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
           accidentals: ['', '', '', '', '', '', '#'],
