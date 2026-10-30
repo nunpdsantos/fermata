@@ -102,10 +102,25 @@ async function sectionProblem(key: BackupKey, payload: Record<string, unknown>):
     return null;
   }
 
-  // 'fermata-drill-v1' — the drill store rescues partial settings itself but
-  // drops ALL memory when its item records fail the guard.
+  // 'fermata-drill-v1' — the drill store rescues what it can on its own
+  // (since W7-10 it drops broken memory records one by one, and their broken
+  // answer-history entries); a backup that would LOSE any of them is not
+  // offered.
   const { validatePersistedShape } = await import('../state/drillStore.ts');
-  return validatePersistedShape(state) ? null : 'drill memory does not match the saved format';
+  const clean = validatePersistedShape(state);
+  if (!clean) return 'drill memory does not match the saved format';
+  const items = state.items ?? {};
+  if (!isPlainObject(items)) return 'drill memory is not an object';
+  const lostItems = Object.keys(items).length - Object.keys(clean.items).length;
+  if (lostItems > 0) return `${lostItems} drill memory record(s) do not match the saved format`;
+  const historyOf = (record: Record<string, unknown>) =>
+    Object.values(record).reduce<number>((n, item) => {
+      const history = isPlainObject(item) ? item.history : undefined;
+      return n + (Array.isArray(history) ? history.length : 0);
+    }, 0);
+  const lostAnswers = historyOf(items) - historyOf(clean.items as unknown as Record<string, unknown>);
+  if (lostAnswers > 0) return `${lostAnswers} drill answer record(s) do not match the saved format`;
+  return null;
 }
 
 export async function validateBackup(raw: unknown): Promise<BackupValidation> {

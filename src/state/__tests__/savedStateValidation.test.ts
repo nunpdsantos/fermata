@@ -12,6 +12,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useAppStore } from '../store';
 import { validateBackup, type FermataBackup } from '../../utils/backupHelpers';
+import drillV1Fixture from './fixtures/drill-v1-store.json';
 
 const KEY = 'music-theory-app';
 const seed = (state: unknown, version = 6) => localStorage.setItem(KEY, JSON.stringify({ state, version }));
@@ -103,7 +104,13 @@ const GOOD_PROGRESS = {
 };
 const GOOD_DRILL = {
   state: {
-    items: { 'keysig:major:G': { card: { due: 0 }, history: [], tier: 'new' } },
+    items: {
+      'keysig:major:G': {
+        card: { due: 1730000000000, stability: 2.3, difficulty: 5.1, reps: 2, lapses: 0, state: 2, elapsed_days: 1, scheduled_days: 2, learning_steps: 0 },
+        history: [{ correct: true, ms: 1800, sessionId: 's1', ts: 1730000000000 }],
+        tier: 'learning',
+      },
+    },
     settings: { length: 24, newPerSession: 4, families: {}, sound: true, showTimer: false },
     sprintBests: {},
     lifetime: { answered: 3, correct: 2 },
@@ -123,6 +130,11 @@ describe('backup import: every section passes its store\'s own check before the 
       'music-theory-progress': GOOD_PROGRESS,
       'fermata-drill-v1': GOOD_DRILL,
     }));
+    expect(r).toMatchObject({ ok: true });
+  });
+
+  it('accepts a REAL Drill payload the app wrote (the W7 migration fixture)', async () => {
+    const r = await validateBackup(backupWith({ 'fermata-drill-v1': drillV1Fixture as unknown as Record<string, unknown> }));
     expect(r).toMatchObject({ ok: true });
   });
 
@@ -146,10 +158,26 @@ describe('backup import: every section passes its store\'s own check before the 
 
   it('rejects a Drill section whose memory records the drill store would drop', async () => {
     const r = await validateBackup(backupWith({
-      'fermata-drill-v1': { state: { ...GOOD_DRILL.state, items: { x: { card: null } } }, version: 1 },
+      'fermata-drill-v1': { state: { ...GOOD_DRILL.state, items: { ...GOOD_DRILL.state.items, x: { card: null } } }, version: 1 },
     }));
     expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.reason).toMatch(/fermata-drill-v1/);
+    if (!r.ok) expect(r.reason).toMatch(/fermata-drill-v1.*1 drill memory record/);
+  });
+
+  it('rejects a Drill section whose answer history the drill store would partly drop', async () => {
+    const item = GOOD_DRILL.state.items['keysig:major:G'];
+    const r = await validateBackup(backupWith({
+      'fermata-drill-v1': { state: { ...GOOD_DRILL.state, items: { 'keysig:major:G': { ...item, history: [...item.history, { correct: 'yes' }] } } }, version: 1 },
+    }));
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toMatch(/drill answer record/);
+  });
+
+  it('rejects a Drill section whose memory is not an object (the store would start empty)', async () => {
+    const r = await validateBackup(backupWith({
+      'fermata-drill-v1': { state: { ...GOOD_DRILL.state, items: 'lots' }, version: 1 },
+    }));
+    expect(r.ok).toBe(false);
   });
 
   it('rejects a preferences section with values the settings guard would discard', async () => {
