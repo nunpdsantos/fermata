@@ -52,7 +52,8 @@ export function ExercisePrompt({ exercise }: ExercisePromptProps) {
   })();
 
   // Bass clef when a note is WRITTEN below middle C (the letter octave: C♭4
-  // sounds as B3 but is written in octave 4). The guitar always uses treble-8vb.
+  // sounds as B3 but is written in octave 4). Exercises are AUTHORED notation:
+  // the same notes and clef on every instrument, never transposed for the guitar.
   const clef = staffNotes && staffNotes.some((n) => writtenOctave(n, n.octave) < 4) ? 'bass' as const : 'treble' as const;
 
   return (

@@ -36,7 +36,8 @@ async function measure(ex: ExerciseDefinition) {
   const head = container.querySelector('g.vf-notehead text')!;
   const y = Number(head.getAttribute('y'));
   const box = svg.parentElement as HTMLElement;
-  return { svgHeight, y, boxHeight: parseFloat(box.style.height) };
+  const clef = container.querySelector('g.vf-clef text')!.textContent!.codePointAt(0);
+  return { svgHeight, y, boxHeight: parseFloat(box.style.height), clef };
 }
 
 describe('exercise staff fits its notes', () => {
@@ -52,17 +53,20 @@ describe('exercise staff fits its notes', () => {
     expect(r.y + 6).toBeLessThanOrEqual(r.svgHeight);
   });
 
-  it('A3 on the guitar (treble-8vb, two ledger lines below) is fully inside', async () => {
-    useAppStore.setState({ instrument: 'guitar' });
-    const r = await measure(noteId('A', 3));
-    expect(r.y + 6).toBeLessThanOrEqual(r.svgHeight);
-  });
-
-  it('B6 on the guitar (written B7, far above the staff) still fits', async () => {
-    useAppStore.setState({ instrument: 'guitar' });
-    const r = await measure(noteId('B', 6));
-    expect(r.y - 6).toBeGreaterThanOrEqual(0);
-    expect(r.y + 6).toBeLessThanOrEqual(r.svgHeight);
+  it('authored notation: with the guitar selected the staff is exactly the piano\'s (E4 first line, A3 ledger, B6 above)', async () => {
+    // Prompts describe written positions, so the picture must not move with
+    // the instrument (review follow-up to W3-12): same clef glyph, same
+    // notehead height, same staff size — no treble-8vb, no octave shift.
+    for (const [note, octave] of [['E', 4], ['A', 3], ['B', 6], ['C', 4]] as const) {
+      useAppStore.setState({ instrument: 'piano' });
+      const piano = await measure(noteId(note, octave));
+      cleanup();
+      useAppStore.setState({ instrument: 'guitar' });
+      const guitar = await measure(noteId(note, octave));
+      cleanup();
+      expect(guitar, `${note}${octave}`).toEqual(piano);
+      expect(guitar.clef, `${note}${octave}`).not.toBe(0xe052); // never the treble-8vb glyph
+    }
   });
 
   it('review item 4: the clef follows the WRITTEN octave (B♯ sounding as C4 is written B♯3 → bass clef)', async () => {

@@ -19,6 +19,9 @@ export interface StaffNotationProps {
   /** When true, render all notes stacked as a single chord (one head, multiple
    *  pitches). When false (default), render notes sequentially as a melody. */
   chord?: boolean;
+  /** Show what the selected instrument plays (Explore). Off for authored
+   *  notation such as Learn exercises, which is never transposed. */
+  followInstrument?: boolean;
   className?: string;
 }
 
@@ -31,6 +34,7 @@ export function StaffNotation({
   noteColors,
   duration,
   chord,
+  followInstrument,
   className,
 }: StaffNotationProps) {
   const { containerRef, loading, height: fittedHeight } = useStaffNotation({
@@ -42,6 +46,7 @@ export function StaffNotation({
     noteColors,
     duration,
     chord,
+    followInstrument,
   });
 
   if (loading) {

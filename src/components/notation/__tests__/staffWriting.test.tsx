@@ -123,8 +123,10 @@ describe('W1-03 — a reader reads the right notes, with no redundant accidental
 
 const GLYPH: Record<number, string> = { 0xe260: 'b', 0xe261: 'n', 0xe262: '#', 0xe263: '##', 0xe264: 'bb' };
 
+// These staves model Explore's (they show what the instrument plays), so they
+// follow the instrument; Learn's authored staves are covered in learn/exercises.
 async function renderStaff(notes: PitchedNote[], props: { keySignature?: string; clef?: 'treble' | 'bass' } = {}) {
-  const { container } = render(<StaffNotation notes={notes} width={700} height={130} {...props} />);
+  const { container } = render(<StaffNotation notes={notes} width={700} height={130} followInstrument {...props} />);
   await waitFor(() => expect(container.querySelectorAll('svg g.vf-stavenote').length).toBeGreaterThan(0), { timeout: 15000 });
   const svg = container.querySelector('svg')!;
   const texts = [...svg.querySelectorAll('text')];

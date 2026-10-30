@@ -160,3 +160,33 @@ export function staffLayout(
 export function writtenStaffNotes(notes: readonly PitchedNote[], annotation?: '8vb'): PitchedNote[] {
   return annotation === '8vb' ? notes.map((n) => ({ ...n, octave: n.octave + 1 })) : [...notes];
 }
+
+/**
+ * The clef a staff is drawn in. A staff that shows what the INSTRUMENT PLAYS
+ * (Explore's scale and chord staves) follows the instrument: with the guitar
+ * it is treble with the small 8 below (decision D-05 / audit W3-12) and its
+ * notes are written an octave above where they sound. AUTHORED notation (Learn
+ * exercises: "the note on the first line", "two ledger lines below") is never
+ * transposed for the instrument — it keeps its own notes and clef, so the
+ * picture always matches the prompt. Off unless asked for.
+ */
+export function resolveStaffClef(
+  instrument: string,
+  requested: 'treble' | 'bass' | undefined,
+  followInstrument: boolean = false,
+): { clef: 'treble' | 'bass'; annotation?: '8vb' } {
+  if (followInstrument && instrument === 'guitar') return { clef: 'treble', annotation: '8vb' };
+  return { clef: requested ?? 'treble' };
+}
+
+/** Everything the staff draws: clef, clef annotation, written notes and VexFlow keys. */
+export function staffPlan(
+  notes: readonly PitchedNote[],
+  requested: 'treble' | 'bass' | undefined,
+  instrument: string,
+  followInstrument: boolean = false,
+): { clef: 'treble' | 'bass'; annotation?: '8vb'; written: PitchedNote[]; keys: string[] } {
+  const { clef, annotation } = resolveStaffClef(instrument, requested, followInstrument);
+  const written = writtenStaffNotes(notes, annotation);
+  return { clef, annotation, written, keys: written.map(pitchedNoteToVexKey) };
+}

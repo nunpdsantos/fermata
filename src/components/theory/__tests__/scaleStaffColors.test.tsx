@@ -11,6 +11,7 @@ import { ChordWorkspace } from '../ChordWorkspace';
 import { useAppStore } from '../../../state/store';
 import { DEGREE_COLORS } from '../../../design/tokens/colors';
 import { SCALE_FORMULAS } from '../../../core/constants/scales';
+import { buildChord } from '../../../core/constants/chords';
 import { SELECTABLE_ROOTS, letterDegree } from '../../../core/utils/__tests__/theoryOracle';
 
 vi.mock('framer-motion', async () => {
@@ -28,8 +29,8 @@ vi.mock('framer-motion', async () => {
 vi.mock('../../notation/StaffNotation.tsx', async () => {
   const React = await import('react');
   return {
-    StaffNotation: (p: { notes: unknown; noteColors?: Record<number, string> }) =>
-      React.createElement('div', { 'data-testid': 'staff', 'data-notes': JSON.stringify(p.notes), 'data-colors': JSON.stringify(p.noteColors ?? null) }),
+    StaffNotation: (p: { notes: unknown; noteColors?: Record<number, string>; followInstrument?: boolean }) =>
+      React.createElement('div', { 'data-testid': 'staff', 'data-notes': JSON.stringify(p.notes), 'data-colors': JSON.stringify(p.noteColors ?? null), 'data-follow': String(!!p.followInstrument) }),
   };
 });
 
@@ -43,10 +44,19 @@ async function staffFor(root: string, type: ScaleType) {
   const el = await screen.findByTestId('staff');
   const notes = JSON.parse(el.getAttribute('data-notes')!) as { natural: string; accidental: string }[];
   const colors = JSON.parse(el.getAttribute('data-colors')!) as Record<string, string>;
-  return { notes, colors };
+  return { notes, colors, follow: el.getAttribute('data-follow') === 'true' };
 }
 
 describe('Explore scale staff colours', () => {
+  it('Explore staves show what the instrument plays (they follow the instrument; Learn staves do not)', async () => {
+    const scaleStaff = await staffFor('C', 'major');
+    expect(scaleStaff.follow).toBe(true);
+    cleanup();
+    useAppStore.setState({ selectedChord: buildChord({ natural: 'C', accidental: '' }, 'major') });
+    render(<ChordWorkspace />);
+    expect((await screen.findByTestId('staff')).getAttribute('data-follow')).toBe('true');
+  });
+
   it('W1-18: the octave tonic on top is coloured like the tonic', async () => {
     const { notes, colors } = await staffFor('C', 'major');
     expect(notes).toHaveLength(8);

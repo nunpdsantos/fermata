@@ -111,6 +111,7 @@ export function ChordWorkspace() {
                 height={120}
                 duration="w"
                 chord
+                followInstrument
               />
             ) : (
               <StaffNotation
@@ -119,6 +120,7 @@ export function ChordWorkspace() {
                 noteColors={degreeColorsOn ? scaleStaffColors : undefined}
                 height={130}
                 duration="q"
+                followInstrument
               />
             )}
           </Suspense>

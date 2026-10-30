@@ -8,24 +8,9 @@
  */
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { loadVexFlow } from '../../utils/vexflowLoader';
-import { pitchedNoteToVexKey, vexAccidentals, staffLayout, writtenStaffNotes } from '../../utils/notationHelpers';
+import { pitchedNoteToVexKey, vexAccidentals, staffLayout, staffPlan } from '../../utils/notationHelpers';
 import { useAppStore } from '../../state/store';
 import type { PitchedNote } from '../../core/types/music';
-
-/**
- * The clef a staff is drawn in. With the guitar selected every staff is the
- * guitar's: treble clef with the small 8 below (decision D-05 / audit W3-12) —
- * guitar music is written an octave above where it sounds, so the written
- * notes keep their staff positions and the clef says they sound an octave
- * lower. The piano keeps the caller's clef (treble, or bass for low notes).
- */
-export function resolveStaffClef(
-  instrument: string,
-  requested: 'treble' | 'bass' | undefined,
-): { clef: 'treble' | 'bass'; annotation?: '8vb' } {
-  if (instrument === 'guitar') return { clef: 'treble', annotation: '8vb' };
-  return { clef: requested ?? 'treble' };
-}
 
 interface UseStaffNotationOptions {
   notes: PitchedNote[];
@@ -38,6 +23,9 @@ interface UseStaffNotationOptions {
   /** When true, render all notes stacked as a single chord (one StaveNote with
    *  multiple keys). When false (default), render each note sequentially. */
   chord?: boolean;
+  /** Draw what the selected instrument plays (guitar: treble-8vb, written an
+   *  octave up). Only for Explore's staves — authored notation never follows. */
+  followInstrument?: boolean;
 }
 
 export function useStaffNotation(options: UseStaffNotationOptions) {
@@ -51,16 +39,15 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
   // Height and stave position that fit every note, ledger lines included (the
   // exercise staff used to clip middle C at a fixed 100 px). Pure from props,
   // so the container and the SVG always agree.
-  // What is WRITTEN: guitar music is written an octave above where it sounds
-  // (treble-8vb, decision D-05), so the guitar staff shows every note one
-  // octave higher than the piano staff — VexFlow's 8vb annotation only swaps
-  // the clef glyph (audit W3-12 review B3). Layout, keys and accidentals all
-  // use these written notes.
+  // What is WRITTEN. On a staff that follows the instrument, guitar music is
+  // written an octave above where it sounds (treble-8vb, decision D-05) —
+  // VexFlow's 8vb annotation only swaps the clef glyph (audit W3-12 review B3).
+  // Authored notation (Learn) never follows the instrument. Layout, keys and
+  // accidentals all use these written notes.
   const staff = useMemo(() => {
-    const { clef, annotation } = resolveStaffClef(instrument, options.clef);
-    const written = writtenStaffNotes(options.notes, annotation);
-    return { clef, annotation, written, layout: staffLayout(written, clef, options.height ?? 150) };
-  }, [options.notes, options.clef, options.height, instrument]);
+    const plan = staffPlan(options.notes, options.clef, instrument, options.followInstrument);
+    return { ...plan, layout: staffLayout(plan.written, plan.clef, options.height ?? 150) };
+  }, [options.notes, options.clef, options.height, options.followInstrument, instrument]);
   const layout = staff.layout;
 
   // Load VexFlow
