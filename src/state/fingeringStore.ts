@@ -59,8 +59,9 @@ function isOverrideFinger(v: unknown): v is OverrideFinger {
   return v === 1 || v === 2 || v === 3 || v === 4;
 }
 
-/** Per-entry guard: bad entries are dropped, good ones kept. Never throws. */
-function sanitize(persisted: unknown): FingeringPersisted {
+/** Per-entry guard: bad entries are dropped, good ones kept. Never throws.
+ *  Exported for the backup import check (backupHelpers.ts, audit W9-18). */
+export function sanitize(persisted: unknown): FingeringPersisted {
   const out: FingeringPersisted = { overrides: {}, labelMode: DEFAULT_LABEL_MODE };
   if (typeof persisted !== 'object' || persisted === null || Array.isArray(persisted)) return out;
   const p = persisted as Record<string, unknown>;

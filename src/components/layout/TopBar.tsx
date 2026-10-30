@@ -323,7 +323,8 @@ function BackupMenu() {
       toast(t('backup.invalidFile'), 'error');
       return;
     }
-    const result = validateBackup(parsed);
+    // Every section is vetted by its own store before anything is offered.
+    const result = await validateBackup(parsed);
     if (!result.ok) {
       toast(t('backup.invalidFile'), 'error');
       return;

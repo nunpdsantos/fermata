@@ -118,6 +118,19 @@ export default defineConfig({
               expiration: { maxEntries: 80, maxAgeSeconds: 30 * 24 * 60 * 60 },
             },
           },
+          // Every OTHER code-split file (a store split out by a dynamic
+          // import, the lazy Fretboard / Quick Search chunks, …). Hashed names
+          // never change content, so CacheFirst. Must stay LAST: workbox uses
+          // the first matching route. `npm run check:sw` fails if any emitted
+          // JS/CSS file is neither precached nor matched by a route.
+          {
+            urlPattern: /\/assets\/[^/]+\.(js|css)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'app-chunks',
+              expiration: { maxEntries: 120, maxAgeSeconds: 30 * 24 * 60 * 60 },
+            },
+          },
         ],
       },
       // Dev service worker disabled: a registered SW during development

@@ -11,10 +11,15 @@ test.describe('Progress backup', () => {
   test('export → wipe → import restores Learn progress', async ({ page }) => {
     await page.goto('/');
 
-    // Seed a distinctive, valid progress envelope.
+    // Seed a distinctive progress envelope in the exact shape the progress
+    // store persists (W9-18: import vets each section with its store's guard,
+    // and the old fixture — raw progress at version 0 — is one the store
+    // would have replaced with EMPTY progress after the reload).
     const seeded = {
-      state: { completedModules: ['l1u1m1'], completedTasks: {}, exerciseResults: {} },
-      version: 0,
+      state: {
+        progress: { completedModules: ['l1u1m1'], moduleProgress: {}, exerciseResults: {}, reviewSchedules: {} },
+      },
+      version: 1,
     };
     await page.evaluate(
       ([key, value]) => localStorage.setItem(key as string, JSON.stringify(value)),
@@ -43,12 +48,42 @@ test.describe('Progress backup', () => {
     await expect
       .poll(
         () => page.evaluate(
-          (key) => JSON.parse(localStorage.getItem(key) ?? 'null')?.state?.completedModules ?? null,
+          (key) => JSON.parse(localStorage.getItem(key) ?? 'null')?.state?.progress?.completedModules ?? null,
           PROGRESS_KEY,
         ),
         { timeout: 10_000 },
       )
       .toEqual(['l1u1m1']);
     await expect(page.locator('#root')).not.toBeEmpty();
+  });
+
+  test('a backup whose progress section is malformed is refused before the confirm step (W9-18)', async ({ page }) => {
+    await page.goto('/');
+    const real = {
+      state: { progress: { completedModules: ['l1u1m1', 'l1u1m2'], moduleProgress: {}, exerciseResults: {}, reviewSchedules: {} } },
+      version: 1,
+    };
+    await page.evaluate(([key, value]) => localStorage.setItem(key as string, JSON.stringify(value)), [PROGRESS_KEY, real] as const);
+
+    const bad = {
+      format: 'fermata-backup',
+      version: 1,
+      exportedAt: '2026-10-30T12:00:00.000Z',
+      data: { [PROGRESS_KEY]: { state: { completedModules: ['l1u1m1'] }, version: 0 } },
+    };
+    let dialogs = 0;
+    page.on('dialog', (dialog) => { dialogs++; void dialog.dismiss(); });
+    await page.getByRole('button', { name: 'Backup' }).click();
+    await page.getByRole('menuitem', { name: 'Import backup' }).click();
+    await page.locator('input[type="file"]').setInputFiles({
+      name: 'bad-backup.json',
+      mimeType: 'application/json',
+      buffer: Buffer.from(JSON.stringify(bad)),
+    });
+
+    await expect(page.getByText(/not a valid Fermata backup|invalid/i).first()).toBeVisible({ timeout: 10_000 });
+    expect(dialogs).toBe(0);
+    const stored = await page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? 'null'), PROGRESS_KEY);
+    expect(stored?.state?.progress?.completedModules).toEqual(['l1u1m1', 'l1u1m2']);
   });
 });

@@ -19,9 +19,17 @@ function fakeStorage(initial: Record<string, string> = {}) {
   };
 }
 
+// Payloads in the exact shape each store persists (W9-18: validateBackup now
+// runs every section through its store's own guard).
 const APP = JSON.stringify({ state: { volume: 0.5 }, version: 6 });
-const PROGRESS = JSON.stringify({ state: { completedModules: ['l1u1m1'] }, version: 2 });
-const DRILL = JSON.stringify({ state: { facts: {} }, version: 1 });
+const PROGRESS = JSON.stringify({
+  state: { progress: { completedModules: ['l1u1m1'], moduleProgress: {}, exerciseResults: {}, reviewSchedules: {} } },
+  version: 1,
+});
+const DRILL = JSON.stringify({
+  state: { items: {}, settings: { length: 24, newPerSession: 4, families: {}, sound: true, showTimer: false }, sprintBests: {}, lifetime: { answered: 0, correct: 0 }, activeSession: null },
+  version: 1,
+});
 const FINGERING = JSON.stringify({ state: { overrides: {}, labelMode: 'finger' }, version: 1 });
 
 describe('backupHelpers', () => {
@@ -45,14 +53,14 @@ describe('backupHelpers', () => {
     expect(Object.keys(backup.data)).toEqual(['music-theory-app']);
   });
 
-  it('round-trips: applying an exported backup restores identical storage', () => {
+  it('round-trips: applying an exported backup restores identical storage', async () => {
     const source = fakeStorage({
       'music-theory-app': APP,
       'music-theory-progress': PROGRESS,
       'fermata-drill-v1': DRILL,
     });
     const backup = buildBackup(source);
-    const validated = validateBackup(JSON.parse(JSON.stringify(backup)));
+    const validated = await validateBackup(JSON.parse(JSON.stringify(backup)));
     expect(validated.ok).toBe(true);
     if (!validated.ok) return;
 
@@ -61,16 +69,16 @@ describe('backupHelpers', () => {
     expect(target.dump()).toEqual(source.dump());
   });
 
-  it('rejects files that are not fermata backups', () => {
-    expect(validateBackup(null).ok).toBe(false);
-    expect(validateBackup('nonsense').ok).toBe(false);
-    expect(validateBackup({ format: 'other', version: 1, data: {} }).ok).toBe(false);
-    expect(validateBackup({ format: 'fermata-backup', version: 99, data: {} }).ok).toBe(false);
-    expect(validateBackup({ format: 'fermata-backup', version: 1 }).ok).toBe(false);
+  it('rejects files that are not fermata backups', async () => {
+    expect((await validateBackup(null)).ok).toBe(false);
+    expect((await validateBackup('nonsense')).ok).toBe(false);
+    expect((await validateBackup({ format: 'other', version: 1, data: {} })).ok).toBe(false);
+    expect((await validateBackup({ format: 'fermata-backup', version: 99, data: {} })).ok).toBe(false);
+    expect((await validateBackup({ format: 'fermata-backup', version: 1 })).ok).toBe(false);
   });
 
-  it('rejects backups containing unknown storage keys', () => {
-    const result = validateBackup({
+  it('rejects backups containing unknown storage keys', async () => {
+    const result = await validateBackup({
       format: 'fermata-backup',
       version: 1,
       exportedAt: 'x',
@@ -79,8 +87,8 @@ describe('backupHelpers', () => {
     expect(result.ok).toBe(false);
   });
 
-  it('rejects backups whose entries are not persist envelopes', () => {
-    const result = validateBackup({
+  it('rejects backups whose entries are not persist envelopes', async () => {
+    const result = await validateBackup({
       format: 'fermata-backup',
       version: 1,
       exportedAt: 'x',

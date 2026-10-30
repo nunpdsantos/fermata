@@ -11,6 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "npx playwright test",
+    "test:e2e:preview": "npm run build && npx playwright test -c playwright.preview.config.ts",
+    "check:sw": "node scripts/check-sw-coverage.mjs",
     "audit:engine": "npx tsx scripts/audit/verify-engine.ts",
     "audit:exercises": "npx tsx scripts/audit/verify-exercises.ts",
     "audit:generated": "npx tsx scripts/audit/verify-generated.ts",
