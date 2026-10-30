@@ -22,6 +22,7 @@ function fakeStorage(initial: Record<string, string> = {}) {
 const APP = JSON.stringify({ state: { volume: 0.5 }, version: 6 });
 const PROGRESS = JSON.stringify({ state: { completedModules: ['l1u1m1'] }, version: 2 });
 const DRILL = JSON.stringify({ state: { facts: {} }, version: 1 });
+const FINGERING = JSON.stringify({ state: { overrides: {}, labelMode: 'finger' }, version: 1 });
 
 describe('backupHelpers', () => {
   it('exports every persisted store that exists', () => {
@@ -29,6 +30,7 @@ describe('backupHelpers', () => {
       'music-theory-app': APP,
       'music-theory-progress': PROGRESS,
       'fermata-drill-v1': DRILL,
+      'fermata-fingering-v1': FINGERING,
     });
     const backup = buildBackup(storage);
     expect(backup.format).toBe('fermata-backup');

@@ -4,6 +4,7 @@ import i18n from '../i18n';
 import { Button } from './ui/Button';
 import { useAppStore, type AppState } from '../state/store';
 import { reloadPage } from '../utils/pageReload';
+import { FINGERING_STORE_KEY } from '../state/fingeringStore';
 
 /**
  * The view/selection part of the main store — what the learner is LOOKING AT,
@@ -119,6 +120,8 @@ export class ErrorBoundary extends Component<Props, State> {
     // entry chunk). Then lazily load the store for a best-effort in-memory
     // reset; the reload ALWAYS happens, even if that import fails.
     localStorage.removeItem(DRILL_STORE_KEY_LITERAL);
+    // Guitar fingering overrides (a small store with no heavy dependencies).
+    localStorage.removeItem(FINGERING_STORE_KEY);
     import('../state/drillStore')
       .then((m) => m.useDrillStore.getState().resetDrillData())
       .catch(() => {})
