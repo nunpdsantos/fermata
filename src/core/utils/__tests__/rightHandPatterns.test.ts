@@ -60,6 +60,13 @@ function checkStudy(study: RightHandStudy, key: Note, progression: readonly stri
     const thumb = stringsOf('p');
     expect(thumb.length, where).toBeGreaterThanOrEqual(1);
     expect(thumb.length, where).toBeLessThanOrEqual(2);
+    // The alternate bass (a second thumb stroke) is the chord's fifth, or the root again — never the third.
+    const thumbNotes = bar.notes.filter((n) => n.rh === 'p');
+    const fifth = spellDegree(root, '5')!;
+    for (const n of thumbNotes.slice(1)) {
+      expect([root, fifth], `${where}: alternate bass`).toContain(nameOf(n.note));
+      expect(nameOf(n.note), where).toBe(bar.alternateBass === 'fifth' && thumbNotes.indexOf(n) % 2 === 1 ? fifth : root);
+    }
     for (const f of ['i', 'm', 'a']) expect(stringsOf(f).length, `${where}: ${f} on one string`).toBeLessThanOrEqual(1);
     const [i, m, a] = ['i', 'm', 'a'].map((f) => stringsOf(f)[0]);
     const used = [i, m, a].filter((s) => s !== undefined);
@@ -98,10 +105,17 @@ describe('right-hand pattern library', () => {
       expect(getRightHandPattern(p.id)).toBe(p);
     }
   });
-  it('includes the Trinity Grade-5 letter strings as plain finger sequences', () => {
-    expect(getRightHandPattern('p-p-p-p-i-m-a')?.name).toBe('p p p p i m a');
-    expect(getRightHandPattern('p-p-i-m-i-m')?.name).toBe('p p i m i m');
+  it('keeps the Trinity arpeggio fingerings out (they finger the technical-set arpeggios, not accompaniments)', () => {
+    expect(getRightHandPattern('p-p-p-p-i-m-a')).toBeUndefined();
+    expect(getRightHandPattern('p-p-i-m-i-m')).toBeUndefined();
     expect(getRightHandPattern('p+a-i-m-i')?.name).toBe('(p+a) i m i');
+  });
+  it('tags the grouping honestly: ternary patterns have 3 or 6 strokes, binary ones 2, 4 or 8 (or a single block chord)', () => {
+    for (const p of RIGHT_HAND_PATTERNS) {
+      const n = p.strokes.length;
+      if (p.subdivision === 'ternary') expect([3, 6], p.id).toContain(n);
+      else expect([1, 2, 4, 8], p.id).toContain(n);
+    }
   });
 });
 
@@ -130,9 +144,15 @@ describe('right-hand studies — every pattern × 24 keys (oracle)', () => {
     const bar = (b: number) => study.bars[b].notes.map((n) => `${n.rh}:${6 - n.stringIndex}-${n.fret}`).join(' ');
     expect(bar(0)).toBe('p:5-3 i:3-0 m:2-1 a:1-0');
     expect(bar(1)).toBe('p:6-3 i:3-0 m:2-0 a:1-1');
-    // A second thumb stroke takes the alternate bass (the next string up).
-    const alt = rightHandStudy({ natural: 'C', accidental: '' }, 'major', 'p-p-i-m-i-m')!;
-    expect(alt.bars[0].notes.filter((n) => n.rh === 'p').map((n) => 6 - n.stringIndex)).toEqual([5, 4]);
+    // A second thumb stroke takes the fifth: G's grip has it on the open 4th string (D);
+    // C's open grip (x32010) has only its third (E) in the bass, so the thumb repeats the root.
+    const g = rightHandStudy({ natural: 'G', accidental: '' }, 'major', 'p-i-m-i-p-i-m-i')!;
+    expect(g.bars[0].alternateBass).toBe('fifth');
+    expect(g.bars[0].notes.filter((n) => n.rh === 'p').map((n) => `${6 - n.stringIndex}:${nameOf(n.note)}`)).toEqual(['6:G', '4:D']);
+    const c = rightHandStudy({ natural: 'C', accidental: '' }, 'major', 'p-i-m-i-p-i-m-i')!;
+    expect(c.bars[0].alternateBass).toBe('root');
+    expect(c.bars[0].notes.filter((n) => n.rh === 'p').map((n) => `${6 - n.stringIndex}:${nameOf(n.note)}`)).toEqual(['5:C', '5:C']);
+    expect(c.bars[1].alternateBass).toBe('fifth'); // G7 (320001): D on the open 4th string
   });
   it('rejects unknown patterns and numerals; is deterministic', () => {
     const C: Note = { natural: 'C', accidental: '' };
@@ -140,9 +160,10 @@ describe('right-hand studies — every pattern × 24 keys (oracle)', () => {
     expect(rightHandStudy(C, 'major', 'p-i-m-a', ['I', 'bVII'])).toBeNull();
     expect(rightHandStudy(C, 'major', 'p-i-m-a')).toEqual(rightHandStudy(C, 'major', 'p-i-m-a'));
   });
-  it('string assignment: classical 3-2-1 for i-m-a, else the three highest strings', () => {
-    expect(assignStrings([1, 2, 3, 4, 5])).toEqual({ bass: [1, 2], i: 3, m: 4, a: 5 });
-    expect(assignStrings([0, 1, 2, 3, 4])).toEqual({ bass: [0, 1], i: 2, m: 3, a: 4 });
+  it('string assignment: classical 3-2-1 for i-m-a, else the three highest strings; the fifth as alternate bass', () => {
+    expect(assignStrings([1, 2, 3, 4, 5])).toEqual({ bass: [1, 1], alternateBass: 'root', i: 3, m: 4, a: 5 });
+    expect(assignStrings([1, 2, 3, 4, 5], (s) => s === 2)).toEqual({ bass: [1, 2], alternateBass: 'fifth', i: 3, m: 4, a: 5 });
+    expect(assignStrings([0, 1, 2, 3, 4], (s) => s === 1)).toEqual({ bass: [0, 1], alternateBass: 'fifth', i: 2, m: 3, a: 4 });
     expect(assignStrings([2, 3, 4])).toBeNull();
   });
 });

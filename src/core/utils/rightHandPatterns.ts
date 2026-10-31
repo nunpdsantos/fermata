@@ -6,18 +6,21 @@
 // (p+a is a pinch, p+i+m+a a block chord). The names are the letters
 // themselves plus a plain description of the shape — never a study or method
 // number: the research could not confirm which pattern belongs to which
-// collection (Giuliani Op. 1, R23, is marked [verify]). Two of the patterns,
-// p-p-i-m-i-m and p-p-p-p-i-m-a, are the letter strings the Trinity Grade-5
-// syllabus lists (R9), reproduced as finger sequences only.
+// collection (Giuliani Op. 1, R23, is marked [verify]). (Trinity's ppppima and
+// ppimim… are not accompaniment patterns: its Grade-5 syllabus gives them as
+// the right-hand fingering of the arpeggios, so they live with the technical
+// set in guitarTechnique.ts.)
 //
 // A pattern is expanded over a chord progression (default I–V7–I) on the
 // chord shapes the fretboard already shows (guitarChordShapes.ts, the
 // nut-closest default grip). Classical string assignment: the thumb plays the
-// bass (the lowest string the grip sounds; further thumb strokes in the same
-// bar alternate with the next string up — the alternate bass; how the Trinity
-// strings use the thumb is not specified in the research [verify]), i the 3rd
-// string, m the 2nd, a the 1st. When a grip leaves one of those strings silent, i/m/a take
-// the three highest sounding strings above the bass instead.
+// bass — the lowest string the grip sounds, the chord's root in every default
+// grip — and, on a second thumb stroke in the bar, the alternate bass: the
+// chord's FIFTH on another bass string of the grip, never the third (when the
+// grip has no fifth below the treble strings, the thumb repeats the root); i
+// the 3rd string, m the 2nd, a the 1st. When a grip leaves one of those
+// strings silent, i/m/a take the three highest sounding strings above the bass
+// instead.
 //
 // Standard tuning only (the chord-shape library is standard-tuning only).
 // Pure and framework-agnostic.
@@ -63,8 +66,7 @@ export const RIGHT_HAND_PATTERNS: readonly RightHandPattern[] = [
   P('p-i-m-i', 'alternating', 'binary'),
   P('p-m-i-m', 'alternating', 'binary'),
   P('p-i-m-a-m-i', 'rising-falling', 'ternary'),
-  P('p-p-i-m-i-m', 'alternating', 'ternary'),
-  P('p-p-p-p-i-m-a', 'rising', 'binary'),
+  P('p-i-m-i-p-i-m-i', 'alternating', 'binary'),
   P('p+a-i-m-i', 'pinch', 'binary'),
   P('p-i+m+a', 'block', 'binary'),
   P('p+i+m+a', 'block', 'binary'),
@@ -129,6 +131,8 @@ export interface RightHandBar {
   numeral: string;
   chord: { root: Note; quality: ChordQuality };
   shape: { name: string; baseFret: number };
+  /** What a second thumb stroke plays: the chord's fifth, or the root again when the grip has no fifth in the bass. */
+  alternateBass: 'fifth' | 'root';
   /** In playing order. */
   notes: RightHandNote[];
 }
@@ -141,21 +145,34 @@ export interface RightHandStudy {
 }
 
 interface StringAssignment {
-  bass: number[];
+  /** Thumb strings in turn: the bass, then the alternate bass (the same string when there is none). */
+  bass: [number, number];
+  alternateBass: 'fifth' | 'root';
   i: number;
   m: number;
   a: number;
 }
 
-/** Which string each finger plays on a placed grip, or null when the grip has too few strings. */
-export function assignStrings(sounding: readonly number[]): StringAssignment | null {
+/**
+ * Which string each finger plays on a placed grip, or null when the grip has
+ * too few strings. `isFifth(s)` says whether string s sounds the chord's 5th:
+ * the alternate bass is the fifth on another string below the treble ones
+ * (the nearest to the bass), else the root again.
+ */
+export function assignStrings(sounding: readonly number[], isFifth: (s: number) => boolean = () => false): StringAssignment | null {
   if (sounding.length < 4) return null;
   const bass = sounding[0];
   const classical = [3, 4, 5];
   const treble = classical.every((s) => sounding.includes(s) && s > bass) ? classical : sounding.slice(-3);
   if (treble.length < 3 || treble[0] <= bass) return null;
-  const alternate = sounding.filter((s) => s > bass && s < treble[0]);
-  return { bass: [bass, ...alternate.slice(0, 1)], i: treble[0], m: treble[1], a: treble[2] };
+  const fifth = sounding.find((s) => s !== bass && s < treble[0] && isFifth(s));
+  return {
+    bass: [bass, fifth ?? bass],
+    alternateBass: fifth === undefined ? 'root' : 'fifth',
+    i: treble[0],
+    m: treble[1],
+    a: treble[2],
+  };
 }
 
 function placeChord(root: Note, quality: ChordQuality): { shape: ChordShape; baseFret: number } | null {
@@ -175,14 +192,15 @@ export function expandPattern(pattern: RightHandPattern, root: Note, quality: Ch
     return p.fret === null ? null : placed.baseFret + p.fret;
   };
   const sounding = [0, 1, 2, 3, 4, 5].filter((s) => fretOf(s) !== null);
-  const strings = assignStrings(sounding);
+  const fifthPc = getPitchClass(chordNotes[2]);
+  const strings = assignStrings(sounding, (s) => (open[s] + fretOf(s)!) % 12 === fifthPc);
   if (strings === null) return null;
 
   const notes: RightHandNote[] = [];
   let thumb = 0;
   for (let k = 0; k < pattern.strokes.length; k++) {
     for (const rh of pattern.strokes[k]) {
-      const s = rh === 'p' ? strings.bass[thumb++ % strings.bass.length] : strings[rh];
+      const s = rh === 'p' ? strings.bass[thumb++ % 2] : strings[rh];
       const fret = fretOf(s)!;
       const midi = open[s] + fret;
       // Grips never sound a non-chord tone (guitarChordShapes guards it); if
@@ -198,6 +216,7 @@ export function expandPattern(pattern: RightHandPattern, root: Note, quality: Ch
     numeral,
     chord: { root, quality },
     shape: { name: placed.shape.name, baseFret: placed.baseFret },
+    alternateBass: strings.alternateBass,
     notes,
   };
 }
