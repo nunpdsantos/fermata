@@ -48,6 +48,21 @@ function addStaticImportClosure(entries: PrecacheEntry[]): { manifest: PrecacheE
   return { manifest, warnings: [] }
 }
 
+/**
+ * ONE-OFF FOR THE W9 RELEASE ONLY (2026-10-31, coordinator decision, review
+ * B2). Installed clients still run the previous autoUpdate build: their page
+ * code never sends SKIP_WAITING, so a prompt-mode worker would wait until
+ * every window is closed — with no toast. This release therefore ships
+ * workbox `skipWaiting: true` so those clients take it and reload themselves
+ * as before; from the NEXT release on, prompt mode applies (set
+ * ONE_OFF_SKIP_WAITING to false and delete this block).
+ * src/__tests__/oneOffSkipWaiting.test.ts FAILS after the expiry date while it
+ * is still on; CLAUDE.md carries the same note.
+ */
+const ONE_OFF_SKIP_WAITING = true
+const ONE_OFF_SKIP_WAITING_EXPIRES = '2026-11-14'
+void ONE_OFF_SKIP_WAITING_EXPIRES // read by the test (source text), not at build time
+
 /** Entry module of a translated-content chunk (see chunkFileNames). */
 function isTranslatedContent(modulePath: string): boolean {
   return modulePath.includes('/src/i18n/content/') || /\/src\/.+\.[a-z]{2}\.(ts|json)$/.test(modulePath)
@@ -104,10 +119,12 @@ export default defineConfig({
       workbox: {
         // The FIRST install takes control of the open page at once, so runtime
         // caching (samples, notation, lesson data) works from the first
-        // session — as it did under autoUpdate. Updates still wait for the
-        // learner: prompt mode adds no skipWaiting (only a SKIP_WAITING message
-        // handler the toast's Reload sends).
+        // session — as it did under autoUpdate. Updates wait for the learner:
+        // prompt mode adds no skipWaiting (only a SKIP_WAITING message handler
+        // the toast's Reload sends) — EXCEPT the one-off below.
         clientsClaim: true,
+        // ONE-OFF, this release only — see ONE_OFF_SKIP_WAITING above.
+        skipWaiting: ONE_OFF_SKIP_WAITING,
         // Precache only the app shell + small core deps. Curriculum data,
         // exercises, and VexFlow stream in via runtimeCaching on demand —
         // a Level-1 user shouldn't pay for Level-9 content on first visit.
