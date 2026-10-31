@@ -97,12 +97,12 @@ describe('persistence shape guard', () => {
 });
 
 describe('backup and reset coverage', () => {
-  it('the backup file includes the fingering store', () => {
+  it('the backup file includes the fingering store', async () => {
     expect(BACKUP_KEYS as readonly string[]).toContain(FINGERING_STORE_KEY);
     useFingeringStore.getState().setOverride(K1, 3);
     const backup = buildBackup(localStorage);
     expect(backup.data[FINGERING_STORE_KEY as keyof typeof backup.data]).toMatchObject({ state: { overrides: { [K1]: 3 } } });
-    const validated = validateBackup(JSON.parse(JSON.stringify(backup)));
+    const validated = await validateBackup(JSON.parse(JSON.stringify(backup)));
     expect(validated.ok).toBe(true);
     if (validated.ok) expect(backupSections(validated.backup)).toContain('guitar fingerings');
   });

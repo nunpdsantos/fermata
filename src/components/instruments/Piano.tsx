@@ -88,6 +88,11 @@ export function Piano() {
   }, [octaveFits, baseOctave, setBaseOctave]);
   const containerRef = useRef<HTMLDivElement>(null);
   const activeMidiMap = useRef<Map<number, number>>(new Map());
+  // Note-ons still waiting for the audio system to wake up (resumeAudio), per
+  // key. Recorded SYNCHRONOUSLY so a release that lands first can cancel it
+  // (audit W8-02: the release found nothing to stop, so the note droned on
+  // and the key stayed shown as pressed).
+  const pendingNoteOns = useRef<Map<number, { released: boolean }>>(new Map());
 
   const mobile = useIsMobile();
   const compact = useIsCompact();
@@ -182,16 +187,38 @@ export function Piano() {
   const handleNoteOn = useCallback(
     (key: PianoKey) => {
       lastPointerNoteKey.current = key;
+      const pending = { released: false };
+      pendingNoteOns.current.set(key.midiNumber, pending);
       noteOn(key.note, key.octave).then(
-        (midi) => { activeMidiMap.current.set(key.midiNumber, midi); },
-        (e) => { console.warn('[Piano] noteOn failed:', e); }
+        (midi) => {
+          if (pendingNoteOns.current.get(key.midiNumber) === pending) {
+            pendingNoteOns.current.delete(key.midiNumber);
+          }
+          if (pending.released) {
+            // Released while audio was waking: the tap sounds, then stops.
+            noteOff(midi);
+            return;
+          }
+          activeMidiMap.current.set(key.midiNumber, midi);
+        },
+        (e) => {
+          if (pendingNoteOns.current.get(key.midiNumber) === pending) {
+            pendingNoteOns.current.delete(key.midiNumber);
+          }
+          console.warn('[Piano] noteOn failed:', e);
+        }
       );
     },
-    [noteOn]
+    [noteOn, noteOff]
   );
 
   const handleNoteOff = useCallback(
     (key: PianoKey) => {
+      const pending = pendingNoteOns.current.get(key.midiNumber);
+      if (pending) {
+        pending.released = true;
+        pendingNoteOns.current.delete(key.midiNumber);
+      }
       const midi = activeMidiMap.current.get(key.midiNumber);
       if (midi !== undefined) {
         noteOff(midi);

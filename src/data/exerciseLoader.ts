@@ -74,10 +74,3 @@ export async function loadExercises(
   if (lang === 'en' || (exerciseOv && (!templateMod || templateOv))) exerciseCache.set(cacheKey, exercises);
   return exercises;
 }
-
-export function getExercisesForModule(
-  exerciseMap: ExerciseMap,
-  moduleId: string,
-): ExerciseDefinition[] {
-  return exerciseMap[moduleId] ?? [];
-}

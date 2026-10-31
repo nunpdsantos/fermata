@@ -27,25 +27,3 @@ export function buildAscendingMidi(
 
   return { midi, finalOctave: currentOctave, finalPitchClass: lastPitchClass };
 }
-
-/**
- * Build descending MIDI numbers from a note array, tracking octave wraps.
- * Used for scale descent after an ascending run.
- */
-export function buildDescendingMidi(
-  notes: Note[],
-  startOctave: number,
-): number[] {
-  const midi: number[] = [];
-  let currentOctave = startOctave;
-  let lastPitchClass = getPitchClass(notes[0]); // root pitch class
-
-  for (let i = notes.length - 1; i >= 0; i--) {
-    const pc = getPitchClass(notes[i]);
-    if (pc >= lastPitchClass) currentOctave--;
-    midi.push(getMidiNumber(notes[i], currentOctave));
-    lastPitchClass = pc;
-  }
-
-  return midi;
-}

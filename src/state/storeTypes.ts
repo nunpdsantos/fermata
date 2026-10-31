@@ -56,7 +56,10 @@ export interface InstrumentSlice {
 
 export interface AudioSlice {
   /** Fixed at the 'piano' default — its setter was removed with the Play view's
-   *  preset chooser (guitar forces Karplus-Strong regardless of this value). */
+   *  preset chooser. It only picks the FM-synth fallback's settings; which
+   *  instrument actually sounds is decided by the registered voice
+   *  (instrumentVoices.ts: sampled piano, or sampled guitar with
+   *  Karplus-Strong while samples load / offline). */
   synthPreset: SynthPresetName;
   volume: number;
   setVolume: (volume: number) => void;

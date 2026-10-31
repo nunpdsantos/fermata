@@ -1,4 +1,16 @@
 import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+
+// ONE-OFF-SKIPWAITING:BEGIN (policy block — oneOffSkipWaiting.test.ts reads it)
+// 2026-10-31 (W9, review B2): every release until 2026-11-14 ships workbox
+// skipWaiting (ONE_OFF_SKIP_WAITING in vite.config.ts) so installed clients
+// still on the old autoUpdate code — which only reloads on `activated` — keep
+// updating. While it is on the built worker skips waiting on its own. It is
+// removed in the first release after 2026-11-14 (the dated
+// src/__tests__/oneOffSkipWaiting.test.ts fails until it is); delete this
+// branch then.
+// ONE-OFF-SKIPWAITING:END
+const ONE_OFF_SKIP_WAITING = /const ONE_OFF_SKIP_WAITING = true\b/.test(readFileSync('vite.config.ts', 'utf8'));
 
 test.describe('PWA basics', () => {
   test('page has correct title', async ({ page }) => {
@@ -55,6 +67,58 @@ test.describe('PWA basics', () => {
       return regs.length;
     });
     expect(registrations).toBeGreaterThanOrEqual(1);
+  });
+
+  test('updates wait for the learner: the built worker only skips waiting when asked (W9-06)', async ({ page }) => {
+    const res = await page.request.get('/sw.js');
+    const text = await res.text();
+    test.skip(
+      !res.ok() || !text.includes('precacheAndRoute'),
+      'No built service worker on the dev server (devOptions disabled)',
+    );
+    // First install still controls the open page (runtime caching from visit one).
+    expect(text).toContain('clientsClaim()');
+    if (ONE_OFF_SKIP_WAITING) {
+      // Transition window (see the note at the top): skips waiting by itself.
+      expect(text).toContain('skipWaiting()');
+      return;
+    }
+    // Prompt mode: the ONLY skipWaiting is inside the SKIP_WAITING message
+    // handler that the "new version — reload" toast triggers. autoUpdate
+    // emitted an unconditional self.skipWaiting() and reloaded on its own.
+    expect(text).toContain('SKIP_WAITING');
+    expect(text.match(/skipWaiting/g) ?? []).toHaveLength(1);
+  });
+
+  test('PWA toasts stack instead of covering each other (review B1)', async ({ page }) => {
+    await page.goto('/');
+    const manifest = await page.request.get('/manifest.webmanifest');
+    test.skip(!(manifest.headers()['content-type'] ?? '').includes('json'), 'No SW / manifest on the dev server');
+
+    // First install → "ready to work offline"; then a (synthetic) install offer.
+    await expect(page.getByRole('alert').filter({ hasText: /offline/i })).toBeVisible({ timeout: 15_000 });
+    await page.evaluate(() => {
+      const e = new Event('beforeinstallprompt') as Event & { prompt: () => Promise<void>; userChoice: Promise<unknown> };
+      e.prompt = async () => {};
+      e.userChoice = Promise.resolve({ outcome: 'dismissed' });
+      window.dispatchEvent(e);
+    });
+    await expect(page.getByRole('alert')).toHaveCount(2);
+
+    const boxes = await page.getByRole('alert').evaluateAll((els) => els.map((el) => {
+      const r = el.getBoundingClientRect();
+      return { top: r.top, bottom: r.bottom, left: r.left, right: r.right };
+    }));
+    const overlap = (a: typeof boxes[0], b: typeof boxes[0]) =>
+      a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+    expect(overlap(boxes[0], boxes[1])).toBe(false);
+    // Both toasts' own buttons are the hit target at their centre (nothing on top).
+    for (const name of [/dismiss/i, /install/i]) {
+      const btn = page.getByRole('alert').getByRole('button', { name }).first();
+      const box = (await btn.boundingBox())!;
+      const hit = await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest('button')?.getAttribute('aria-label') ?? document.elementFromPoint(x, y)?.closest('button')?.textContent, [box.x + box.width / 2, box.y + box.height / 2]);
+      expect(String(hit)).toMatch(name);
+    }
   });
 
   test('Drill opens offline on a fresh profile (manifest shortcut path)', async ({ page, context }) => {

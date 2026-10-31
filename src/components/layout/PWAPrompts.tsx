@@ -6,8 +6,16 @@ export function PWAPrompts() {
   const { t } = useTranslation();
   const { needRefresh, offlineReady, canInstall, install, dismissInstall, reload, dismissOffline } = usePWA();
 
+  if (!needRefresh && !offlineReady && !canInstall) return null;
+
+  // ONE fixed stack, highest priority first (update > offline-ready >
+  // install). Each toast used to fix itself at the same spot, so later ones
+  // covered the update toast and its Reload (review B1).
   return (
-    <>
+    <div
+      className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 w-max max-w-[calc(100vw-2rem)]"
+      data-testid="pwa-toast-stack"
+    >
       {/* Update available toast */}
       {needRefresh && (
         <Toast
@@ -34,7 +42,7 @@ export function PWAPrompts() {
           onDismiss={dismissInstall}
         />
       )}
-    </>
+    </div>
   );
 }
 
@@ -52,7 +60,7 @@ function Toast({
   const { t } = useTranslation();
   return (
     <div
-      className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm shadow-lg"
+      className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm shadow-lg"
       style={{
         backgroundColor: 'var(--card)',
         color: 'var(--text)',

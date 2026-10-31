@@ -1,4 +1,4 @@
-import { useCallback, useRef, useMemo } from 'react';
+import { useCallback, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import { noteToString, type Chord, type Note } from '../../core/types/music.ts';
@@ -16,6 +16,7 @@ function alpha(color: string, hex: string): string {
 import {
   playChordVoiced,
   playArpeggioAscending,
+  cancelScheduledAudio,
   resumeAudio,
 } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
@@ -75,12 +76,38 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
       ? 'var(--accent)'
       : 'var(--text-muted)';
 
+  // Keys this panel lit for a playback, and the timers that will un-light
+  // them. Stopping the visuals un-lights NOW instead of dropping the timers
+  // (dropping them left the previous chord's keys lit for good when Chord was
+  // pressed again before it ended — audit W8-01 "keep visual timeouts
+  // consistent").
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const litRef = useRef<Set<number>>(new Set());
 
-  const clearVisualTimeouts = useCallback(() => {
+  const lightKey = useCallback((midi: number) => {
+    litRef.current.add(midi);
+    addActiveNote(midi);
+  }, [addActiveNote]);
+
+  const unlightKeys = useCallback((midis: Iterable<number>) => {
+    for (const midi of [...midis]) {
+      litRef.current.delete(midi);
+      removeActiveNote(midi);
+    }
+  }, [removeActiveNote]);
+
+  const stopVisuals = useCallback(() => {
     for (const t of timeoutsRef.current) clearTimeout(t);
     timeoutsRef.current = [];
-  }, []);
+    unlightKeys(litRef.current);
+  }, [unlightKeys]);
+
+  // Leaving the panel (chord cleared, view change) stops its sound and
+  // un-lights its keys.
+  useEffect(() => () => {
+    cancelScheduledAudio();
+    stopVisuals();
+  }, [stopVisuals]);
 
   const maxInversion = chord.notes.length - 1;
   const notesForPlayback = invertedNotes.length > 0 ? invertedNotes : chord.notes;
@@ -99,23 +126,24 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
 
   const handlePlayChord = useCallback(async () => {
     await resumeAudio();
-    clearVisualTimeouts();
+    // A new playback replaces whatever was sounding (W8-01).
+    cancelScheduledAudio();
+    stopVisuals();
     const config = getSynthConfig(synthPreset);
     const duration = 1.5;
     // Sound and lit keys share one voicing (bass lowest; slash bass below).
     const midiNumbers = chordVoicingPitches(notesForPlayback, baseOctave, chord.bassNote)
       .map((p) => getMidiNumber(p, p.octave));
-    for (const m of midiNumbers) addActiveNote(m);
+    for (const m of midiNumbers) lightKey(m);
     playChordVoiced(notesForPlayback, baseOctave, duration, config, chord.bassNote);
-    const t = setTimeout(() => {
-      for (const m of midiNumbers) removeActiveNote(m);
-    }, duration * 1000);
+    const t = setTimeout(() => unlightKeys(midiNumbers), duration * 1000);
     timeoutsRef.current.push(t);
-  }, [notesForPlayback, synthPreset, baseOctave, addActiveNote, removeActiveNote, clearVisualTimeouts, chord.bassNote]);
+  }, [notesForPlayback, synthPreset, baseOctave, lightKey, unlightKeys, stopVisuals, chord.bassNote]);
 
   const handlePlayArpeggio = useCallback(async () => {
     await resumeAudio();
-    clearVisualTimeouts();
+    cancelScheduledAudio();
+    stopVisuals();
     const config = getSynthConfig(synthPreset);
     const noteDuration = 0.35;
     const midiNumbers = computeVoicedMidi(notesForPlayback, baseOctave);
@@ -127,19 +155,19 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
       (noteIndex) => {
         const midi = midiNumbers[noteIndex];
         if (midi !== undefined) {
-          addActiveNote(midi);
+          lightKey(midi);
           litNotes.push(midi);
         }
       },
+      // Runs when the arpeggio ends — or at once if it is cancelled (core
+      // settles a cancelled phrase's visuals).
       () => {
-        const t = setTimeout(() => {
-          for (const m of litNotes) removeActiveNote(m);
-        }, noteDuration * 1000);
+        const t = setTimeout(() => unlightKeys(litNotes), noteDuration * 1000);
         timeoutsRef.current.push(t);
       },
       config,
     );
-  }, [notesForPlayback, synthPreset, baseOctave, addActiveNote, removeActiveNote, clearVisualTimeouts]);
+  }, [notesForPlayback, synthPreset, baseOctave, lightKey, unlightKeys, stopVisuals]);
 
   return (
     <m.div
@@ -170,10 +198,14 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
             {t('panel.degree', { n: degree })}
           </Badge>
         )}
-        <LearnMoreButton
-          query={CHORD_QUALITY_NAMES[chord.quality]}
-          moduleId={QUALITY_TO_MODULE[chord.quality]}
-        />
+        {/* Only chords a lesson actually teaches get a link (null = none; the
+            fuzzy title fallback would land on an unrelated lesson). */}
+        {QUALITY_TO_MODULE[chord.quality] && (
+          <LearnMoreButton
+            query={CHORD_QUALITY_NAMES[chord.quality]}
+            moduleId={QUALITY_TO_MODULE[chord.quality] ?? undefined}
+          />
+        )}
       </div>
 
       {/* Notes */}

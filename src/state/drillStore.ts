@@ -181,7 +181,7 @@ function isValidActiveSession(v: unknown): v is ActiveSession {
 }
 
 /** Full persisted shape guard — returns null on any mismatch (caller falls back). */
-function validatePersistedShape(value: unknown): {
+export function validatePersistedShape(value: unknown): {
   items: Record<string, ItemSrsState>;
   settings: DrillSettings;
   sprintBests: Record<string, number>;

@@ -10,15 +10,18 @@ import { CHORD_FORMULAS } from '../../core/constants/chords';
 import type { ChordQuality } from '../../core/types/music';
 
 describe('QUALITY_TO_MODULE', () => {
-  it('covers every chord quality the engine knows', () => {
+  it('covers every chord quality the engine knows (a lesson id, or null = no lesson teaches it)', () => {
     for (const quality of Object.keys(CHORD_FORMULAS) as ChordQuality[]) {
-      expect(QUALITY_TO_MODULE[quality], `missing mapping for ${quality}`).toBeTruthy();
+      expect(quality in QUALITY_TO_MODULE, `missing decision for ${quality}`).toBe(true);
+      const target = QUALITY_TO_MODULE[quality];
+      expect(target === null || (typeof target === 'string' && target.length > 0), quality).toBe(true);
     }
   });
 
   it('points every mapping at a real module', () => {
     const ids = new Set(MODULE_INDEX.map((m) => m.id));
     for (const [quality, moduleId] of Object.entries(QUALITY_TO_MODULE)) {
+      if (moduleId === null) continue;
       expect(ids.has(moduleId), `${quality} → ${moduleId} does not exist`).toBe(true);
     }
   });
@@ -33,7 +36,7 @@ describe('QUALITY_TO_MODULE', () => {
     expect(QUALITY_TO_MODULE.dominant7alt).toBe('l7u21m2'); // Shell Voicings and Altered Chords
     // No mapping may land in L9 (the ear-training track)
     for (const [quality, moduleId] of Object.entries(QUALITY_TO_MODULE)) {
-      expect(moduleId.startsWith('l9'), `${quality} routed to ear training`).toBe(false);
+      expect(moduleId?.startsWith('l9') ?? false, `${quality} routed to ear training`).toBe(false);
     }
   });
 });

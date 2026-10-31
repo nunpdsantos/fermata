@@ -2,15 +2,16 @@ import type { CurriculumUnit, CurriculumModule } from '../types/curriculum';
 
 // ---------------------------------------------------------------------------
 // Level 9: Ear Training & Aural Skills (Parallel Track)
-// Runs alongside all theory levels. Unlocks after Level 1 completion.
-// Engine support: PARTIAL for pitch/interval/scale/chord modules (audio
-// playback works, but dedicated quiz UI not yet built). NONE for dictation,
-// sight singing, and contextual listening modules.
+// Runs alongside all theory levels and is open from the start: the level has
+// no prerequisite (LEVEL_METADATA: prerequisites [], parallel); inside it,
+// each module requires the previous one. Practised through the Learn
+// exercise runner's ear-training items (played notes, intervals, chords,
+// scales, progressions). There is no microphone or dictation-input UI.
 //
-// 15 modules across 3 units:
-//   u30 (5 modules) — Pitch and Interval Training       [engine: PARTIAL]
-//   u31 (5 modules) — Scale, Chord, and Dictation Skills [engine: PARTIAL]
-//   u32 (5 modules) — Dictation, Sight Singing, and Contextual Listening [comingSoon]
+// 15 modules across 3 units (none is comingSoon):
+//   u30 (5 modules) — Pitch and Interval Training
+//   u31 (5 modules) — Scale, Chord, and Dictation Skills
+//   u32 (5 modules) — Dictation, Sight Singing, and Contextual Listening
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
@@ -586,7 +587,8 @@ const l9u31m5: CurriculumModule = {
 
 // ---------------------------------------------------------------------------
 // Unit 32: Dictation, Sight Singing, and Contextual Listening (5 modules)
-// All comingSoon — need dictation input UI, microphone, and audio library
+// Taught through concepts, tasks and played examples (no module here is
+// comingSoon; there is no dictation-input or microphone UI).
 // ---------------------------------------------------------------------------
 
 const l9u32m1: CurriculumModule = {

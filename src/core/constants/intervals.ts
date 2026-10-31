@@ -1,46 +1,14 @@
-// Interval constants and utilities
+// Interval constants
+//
+// (Audit W9-17 / C-90: the unused buildInterval — which spelled by pitch
+// class, so C + 3 semitones came out D# instead of Eb — and its unused name
+// table were deleted.)
 
-import { Note, Interval } from '../types/music';
-import { getPitchClass, PITCH_CLASS_SPELLINGS } from './notes';
+import type { Interval } from '../types/music';
 
 // ============================================================================
 // Interval Name Lookups
 // ============================================================================
-
-/** Maps full interval name strings (lowercase) to semitone counts */
-export const INTERVAL_NAME_TO_SEMITONES: Record<string, number> = {
-  // Full names
-  'perfect unison': 0,
-  unison: 0,
-  'minor second': 1,
-  'major second': 2,
-  'minor third': 3,
-  'major third': 4,
-  'perfect fourth': 5,
-  'augmented fourth': 6,
-  'diminished fifth': 6,
-  tritone: 6,
-  'perfect fifth': 7,
-  'minor sixth': 8,
-  'major sixth': 9,
-  'minor seventh': 10,
-  'major seventh': 11,
-  'perfect octave': 12,
-  octave: 12,
-  // With ordinals
-  'minor 2nd': 1,
-  'major 2nd': 2,
-  'minor 3rd': 3,
-  'major 3rd': 4,
-  'perfect 4th': 5,
-  'augmented 4th': 6,
-  'diminished 5th': 6,
-  'perfect 5th': 7,
-  'minor 6th': 8,
-  'major 6th': 9,
-  'minor 7th': 10,
-  'major 7th': 11,
-};
 
 /** Maps interval abbreviations to semitone counts (case-sensitive: M = major, m = minor) */
 export const ABBREVIATION_TO_SEMITONES: Record<string, number> = {
@@ -81,45 +49,3 @@ export const SEMITONES_TO_INTERVAL: Record<number, Interval> = {
   11: { quality: 'major', number: 7, semitones: 11 },
   12: { quality: 'perfect', number: 8, semitones: 12 },
 };
-
-// ============================================================================
-// Interval Builder
-// ============================================================================
-
-/**
- * Given a root note and semitone count, compute the lower and upper notes.
- *
- * Spelling logic:
- * - If the root uses flats (Bb, Eb, Ab, Db, Gb), prefer flat spelling for the upper note
- * - Otherwise prefer sharp spelling
- * - Always prefer natural (no accidental) spellings when available
- */
-export function buildInterval(
-  rootNote: Note,
-  semitones: number
-): { lowerNote: Note; upperNote: Note } {
-  const rootPc = getPitchClass(rootNote);
-  const upperPc = ((rootPc + semitones) % 12) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
-
-  const spellings = PITCH_CLASS_SPELLINGS[upperPc];
-  const prefersFlats = rootNote.accidental === 'b' || rootNote.accidental === 'bb';
-
-  // Find the best spelling
-  let upperNote: Note = spellings[0];
-
-  // First pass: prefer no accidental
-  const natural = spellings.find((s) => s.accidental === '');
-  if (natural) {
-    upperNote = natural;
-  } else if (prefersFlats) {
-    // Prefer flat spelling
-    const flat = spellings.find((s) => s.accidental === 'b');
-    if (flat) upperNote = flat;
-  } else {
-    // Prefer sharp spelling
-    const sharp = spellings.find((s) => s.accidental === '#');
-    if (sharp) upperNote = sharp;
-  }
-
-  return { lowerNote: rootNote, upperNote };
-}

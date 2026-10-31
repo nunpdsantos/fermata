@@ -25,6 +25,7 @@ import { useAppStore } from '../../../state/store';
 // Sampler/KS engines mocked. The samplers report "ready" so the guitar path
 // resolves to the guitar sampler (not the KS fallback) for the routing check.
 vi.mock('../../../services/pianoSampler', () => ({
+  cancelScheduled: vi.fn(),
   playNote: vi.fn(() => true),
   startNote: vi.fn(() => true),
   stopNote: vi.fn(),
@@ -33,6 +34,7 @@ vi.mock('../../../services/pianoSampler', () => ({
   preload: vi.fn().mockResolvedValue(undefined),
 }));
 vi.mock('../../../services/guitarSampler', () => ({
+  cancelScheduled: vi.fn(),
   playNote: vi.fn(() => true),
   startNote: vi.fn(() => true),
   stopNote: vi.fn(),
@@ -41,6 +43,7 @@ vi.mock('../../../services/guitarSampler', () => ({
   preload: vi.fn().mockResolvedValue(undefined),
 }));
 vi.mock('../../../services/karplusStrong', () => ({
+  cancelScheduled: vi.fn(),
   playNote: vi.fn(),
   startNote: vi.fn(),
   stopNote: vi.fn(),

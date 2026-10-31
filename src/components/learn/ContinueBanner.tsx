@@ -43,7 +43,9 @@ export function ContinueBanner({ module, unit, level, onClick }: ContinueBannerP
             {module.title}
           </h3>
           <p className="text-xs mt-0.5" style={{ color: 'var(--text-dim)' }}>
-            {t('learn.level', { n: level.number })} &middot; {unit.title} &middot; {module.subtitle}
+            {/* unit.title is empty when the banner was built from the static
+                index because the level could not load (offline, W9-19). */}
+            {[t('learn.level', { n: level.number }), unit.title, module.subtitle].filter(Boolean).join(' \u00b7 ')}
           </p>
         </div>
         <svg

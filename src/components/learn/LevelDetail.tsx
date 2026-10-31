@@ -16,6 +16,8 @@ interface LevelDetailProps {
   isModuleCompleted: (moduleId: string) => boolean;
   getUnitCompletedModuleCount: (moduleIds: string[]) => number;
   onOpenUnit: (unitId: string) => void;
+  /** Opens a module of this level (the Continue banner — audit W9-09). */
+  onOpenModule: (moduleId: string, unitId: string) => void;
   onBack: () => void;
 }
 
@@ -25,6 +27,7 @@ export function LevelDetail({
   isModuleCompleted: _isModuleCompleted,
   getUnitCompletedModuleCount,
   onOpenUnit,
+  onOpenModule,
   onBack,
 }: LevelDetailProps) {
   const { t } = useTranslation();
@@ -113,7 +116,7 @@ export function LevelDetail({
           module={nextUp.module}
           unit={nextUp.unit}
           level={nextUp.level}
-          onClick={() => onOpenUnit(nextUp.unit.id)}
+          onClick={() => onOpenModule(nextUp.module.id, nextUp.unit.id)}
         />
       )}
 

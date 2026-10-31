@@ -1,5 +1,14 @@
 # Level 7: Jazz, Pop, Modal & Extended Systems
 
+> **SUPERSEDED planning document — do not teach or build from it.**
+> This was the pre-implementation spec for Level 7. It is not shipped and is
+> not maintained. The app's Level 7 content lives in
+> `src/core/constants/curriculumL7.ts` (EN) and the PT/ES overlays under
+> `src/i18n/content/`; where the two disagree, the shipped `.ts` is right.
+> The 2026-10-30 audit found theory errors and dead references here that the
+> shipped lessons get right (C-78: e.g. "Eb triad over C7 = C7#9b13", Andalusian cadence as i-bVI-bIII-bVII, references to non-existent progressionPatterns.ts / modes.ts); they are deliberately left
+> uncorrected (decision D-24, ledger W9-26).
+
 **Difficulty:** Advanced
 **Prerequisites:** Level 6 complete
 **Equivalence:** ABRSM Grade 7-8, RCM Level 9-10, Berklee Harmony 3-4

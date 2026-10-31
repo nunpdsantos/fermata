@@ -1,7 +1,8 @@
 // Algorithmic Chord Builder - Dynamically constructs ANY valid chord symbol
 // This system parses chord symbols into components and builds notes using interval math
 
-import { Note, NaturalNote, Accidental } from '../types/music';
+import { Note, NaturalNote, Accidental, PitchClass } from '../types/music';
+import { getSimplestSpelling } from '../constants/notes';
 
 // Interval values in semitones from the root
 const INTERVALS: Record<string, number> = {
@@ -138,21 +139,25 @@ function getNaturalAtDistance(root: NaturalNote, distance: number): NaturalNote 
 }
 
 /**
- * Calculate the accidental needed to reach a target pitch class from a natural note
+ * Spell a target pitch class on the structural letter. When that letter would
+ * need a triple accidental (e.g. the third of a C-double-flat minor chord is
+ * E-triple-flat), the letter rule yields and the pitch is respelled
+ * enharmonically — same policy as the core chord builder (chords.ts). Before
+ * audit W9-28 the fallback returned a single #/b on the structural letter,
+ * which changed the PITCH (Cbb minor → Cbb Eb Gbb).
  */
-function getAccidentalForPitchClass(targetPC: number, natural: NaturalNote): Accidental {
+function spellPitchClassOnLetter(targetPC: number, natural: NaturalNote): Note {
   // Defensive: default to C (pitch class 0) if natural is invalid (BUG-013 fix)
   const naturalPC = NATURAL_TO_PITCH[natural] ?? 0;
   const diff = (targetPC - naturalPC + 12) % 12;
 
-  if (diff === 0) return '';
-  if (diff === 1) return '#';
-  if (diff === 11) return 'b';
-  if (diff === 2) return '##';
-  if (diff === 10) return 'bb';
+  if (diff === 0) return { natural, accidental: '' };
+  if (diff === 1) return { natural, accidental: '#' };
+  if (diff === 11) return { natural, accidental: 'b' };
+  if (diff === 2) return { natural, accidental: '##' };
+  if (diff === 10) return { natural, accidental: 'bb' };
 
-  // Fallback for unusual cases
-  return diff > 6 ? 'b' : '#';
+  return getSimplestSpelling(targetPC as PitchClass);
 }
 
 /**
@@ -612,13 +617,8 @@ function buildNotesFromIntervals(root: Note, intervalNames: string[]): Note[] {
     // Calculate target pitch class
     const targetPitchClass = (rootPitchClass + semitones) % 12;
 
-    // Get accidental needed to reach target pitch from natural
-    const accidental = getAccidentalForPitchClass(targetPitchClass, targetNatural);
-
-    notes.push({
-      natural: targetNatural,
-      accidental: accidental,
-    });
+    // Spell on the structural letter (respelled if out of accidental range)
+    notes.push(spellPitchClassOnLetter(targetPitchClass, targetNatural));
   }
 
   return notes;

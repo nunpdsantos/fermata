@@ -6,8 +6,9 @@
  * /samples/piano/. Every MIDI note is at most one semitone from a sample, so
  * playback pitch-shifts via playbackRate with imperceptible artifacts.
  *
- * Loading is lazy (kicked off on the first user gesture via preload()); until
- * a note's sample is decoded, startNote/playNote return false and the caller
+ * Loading is lazy: instrumentVoices.ts calls preload() on first use (the
+ * first tap / key press, or the first note asked for — audit W8-03); until a
+ * note's sample is decoded, startNote/playNote return false and the caller
  * falls back to the FM synth, so the keyboard always sounds.
  *
  * Mirrors the karplusStrong engine's module shape: lazy AudioContext, master

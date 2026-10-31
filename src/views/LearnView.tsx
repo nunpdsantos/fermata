@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AnimatePresence, m } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import type { CurriculumLevel } from '../core/types/curriculum';
 import type { ExerciseDefinition } from '../core/types/exercise';
 import type { ContentLanguage } from '../i18n/content/types';
@@ -14,7 +14,7 @@ import { LevelDetail } from '../components/learn/LevelDetail';
 import { UnitDetail } from '../components/learn/UnitDetail';
 import { ModuleView } from '../components/learn/ModuleView';
 import { LevelAchievement } from '../components/learn/LevelAchievement';
-import { SPRING_NAV } from '../design/tokens/motion';
+import { ScreenFrame } from '../components/learn/ScreenFrame';
 
 // ─── Screen state machine ───────────────────────────────────────────────────
 
@@ -186,37 +186,26 @@ export function LearnView() {
     <div ref={scrollRef} className="h-full overflow-y-auto" role="region" aria-label={t('learn.region')}>
       <AnimatePresence mode="wait" initial={false}>
         {screen.type === 'levels' && (
-          <m.div
-            key="levels"
-            initial={{ opacity: 0, x: -xOffset }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: xOffset }}
-            transition={SPRING_NAV}
-          >
+          <ScreenFrame key="levels" xOffset={xOffset} enterFrom="left">
             <LevelsOverview
               progress={progress}
               onOpenLevel={goToLevel}
               onOpenModule={(moduleId, unitId, levelId) => goToModule(levelId, unitId, moduleId)}
               onStartReview={(moduleId) => {
-                // Resolve levelId/unitId from module ID prefix
-                const levelId = moduleId.slice(0, 2);
-                // Extract unit number from pattern l{n}u{n}m{n}
-                const unitMatch = moduleId.match(/^(l\d+)(u\d+)/);
-                const unitId = unitMatch ? unitMatch[1] + unitMatch[2] : '';
-                goToReview(levelId, unitId, moduleId);
+                // Module ids are l{n}u{n}m{n}; level ids are "l{n}" and unit
+                // ids "u{n}". (This used to build the unit id "l1u1", which no
+                // unit has, so starting a review showed a blank screen —
+                // found by the W9-20 navigation tests.)
+                const ids = moduleId.match(/^(l\d+)(u\d+)m\d+$/);
+                if (!ids) return;
+                goToReview(ids[1], ids[2], moduleId);
               }}
             />
-          </m.div>
+          </ScreenFrame>
         )}
 
         {screen.type === 'level' && (
-          <m.div
-            key={`level-${screen.levelId}`}
-            initial={{ opacity: 0, x: xOffset }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -xOffset }}
-            transition={SPRING_NAV}
-          >
+          <ScreenFrame key={`level-${screen.levelId}`} xOffset={xOffset} enterFrom="right">
             {!loadedLevel ? loadingSpinner : (
               <LevelDetail
                 level={loadedLevel}
@@ -224,20 +213,15 @@ export function LearnView() {
                 isModuleCompleted={isModuleCompleted}
                 getUnitCompletedModuleCount={getUnitCompletedModuleCount}
                 onOpenUnit={(unitId) => goToUnit(screen.levelId, unitId)}
+                onOpenModule={(moduleId, unitId) => goToModule(screen.levelId, unitId, moduleId)}
                 onBack={goToLevels}
               />
             )}
-          </m.div>
+          </ScreenFrame>
         )}
 
         {screen.type === 'unit' && (
-          <m.div
-            key={`unit-${screen.unitId}`}
-            initial={{ opacity: 0, x: xOffset }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -xOffset }}
-            transition={SPRING_NAV}
-          >
+          <ScreenFrame key={`unit-${screen.unitId}`} xOffset={xOffset} enterFrom="right">
             {!loadedLevel ? loadingSpinner : (() => {
               const unitIndex = loadedLevel.units.findIndex((u) => u.id === screen.unitId);
               const unit = loadedLevel.units[unitIndex];
@@ -255,17 +239,11 @@ export function LearnView() {
                 />
               );
             })()}
-          </m.div>
+          </ScreenFrame>
         )}
 
         {screen.type === 'module' && (
-          <m.div
-            key={`module-${screen.moduleId}`}
-            initial={{ opacity: 0, x: xOffset }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -xOffset }}
-            transition={SPRING_NAV}
-          >
+          <ScreenFrame key={`module-${screen.moduleId}`} xOffset={xOffset} enterFrom="right">
             {!loadedLevel ? loadingSpinner : (() => {
               const unit = loadedLevel.units.find((u) => u.id === screen.unitId);
               if (!unit) return null;
@@ -308,16 +286,10 @@ export function LearnView() {
                 />
               );
             })()}
-          </m.div>
+          </ScreenFrame>
         )}
         {screen.type === 'review' && (
-          <m.div
-            key={`review-${screen.moduleId}`}
-            initial={{ opacity: 0, x: xOffset }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -xOffset }}
-            transition={SPRING_NAV}
-          >
+          <ScreenFrame key={`review-${screen.moduleId}`} xOffset={xOffset} enterFrom="right">
             {!loadedLevel ? loadingSpinner : (() => {
               const unit = loadedLevel.units.find((u) => u.id === screen.unitId);
               if (!unit) return null;
@@ -362,7 +334,7 @@ export function LearnView() {
                 />
               );
             })()}
-          </m.div>
+          </ScreenFrame>
         )}
       </AnimatePresence>
 

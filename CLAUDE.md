@@ -35,7 +35,7 @@ Scale degree function is encoded in color throughout the app:
 **Name:** Music Theory App
 **Domain:** Music theory education / interactive instrument
 **Stack:** React 19 + TypeScript 5.9 + Vite 7 + Tailwind CSS v4 + Zustand 5 + Framer Motion 12
-**Tests:** 6,507 passing (Vitest + React Testing Library, 150 test files)
+**Tests:** 6,951 passing (Vitest + React Testing Library, 189 test files; counted 2026-10-31) + Playwright e2e on the dev server and on the production build
 **Languages:** English + Portuguese + Spanish (react-i18next + content overlay system)
 **PWA:** Offline-capable with Workbox precaching
 
@@ -46,8 +46,13 @@ Scale degree function is encoded in color throughout the app:
 - `npx tsc -b --force` — type-check (ALWAYS `--force`: the incremental cache gives false "clean" results after file deletions/renames; IDE/LSP diagnostics also lag behind edits — trust forced tsc, not stale diagnostics)
 - `npx vitest run` — run all tests
 - `npm run lint` — eslint (covers src/core too)
-- `npm run audit:all` — music-theory content audits (engine + exercises + generated templates); expected steady state: engine 0 serious (4 INFO enharmonic-respell notes), exercises 0, generated 0
-- `npm run test:e2e` — Playwright (manifest test self-skips against the dev server)
+- `npm run audit:all` — music-theory content audits (engine + exercises + generated templates); expected steady state: engine 0 serious (4 INFO enharmonic-respell notes), exercises 0, generated 0. Each audit EXITS 1 on a finding (engine: any non-INFO) — they used to exit 0 whatever they found
+- `npx vitest run --coverage` — tests + coverage thresholds (vitest.config.ts; enforced only with --coverage; raise, never lower)
+- `npm run test:e2e` — Playwright against the dev server (no SW, manifest or CSP there: the PWA and theme-prepaint specs skip). `PW_PORT=5391 …` runs its own server instead of reusing another checkout's on 5173
+- `npm run test:e2e:preview` — build, then the same specs against `vite preview` (`playwright.preview.config.ts`, `PW_PREVIEW_PORT`); preview serves vercel.json's security headers, so these run under the production CSP
+- `npm run check:bundle` (after a build) — entry JS < 500 kB, ts-fsrs out of the entry, Fretboard / Quick Search in their own chunks, Bravura-only VexFlow, every inline `<script>` in the built index.html allowed by a CSP hash
+- `npm run check:sw` (after a build) — every JS/CSS chunk precached or runtime-cached, precache closure (a precached file's static imports are precached), every translated-content chunk on the content-cache route
+- CI (`.github/workflows/audit.yml`) runs all of the above on every push / PR to main
 
 ### Deploy & conventions
 
@@ -65,8 +70,15 @@ Scale degree function is encoded in color throughout the app:
 - Tailwind v4 uses CSS-first config (`@import "tailwindcss"` in index.css) + `@tailwindcss/vite` plugin.
 - Framer Motion uses `<LazyMotion features={domAnimation}>` + `m` component (not `motion`).
 - VexFlow 5.0 uses camelCase API: `numBeats`/`beatValue` (not `num_beats`/`beat_value`).
-- VexFlow loads its music fonts as base64 `data:` FontFaces at runtime — the CSP in `vercel.json` must keep `font-src 'self' data:` or production notation renders missing-glyph boxes (dev has no CSP, so local checks won't catch it).
+- VexFlow loads its music fonts as base64 `data:` FontFaces at runtime — the CSP in `vercel.json` must keep `font-src 'self' data:` or production notation renders missing-glyph boxes (the dev server has no CSP; `vite preview` and the preview e2e run do). Notation imports `vexflow/bravura` (Bravura + Academico only — the same fonts the full entry selects; `vexflowBravuraParity.test` proves identical SVG).
+- `index.html` has ONE inline script (applies the saved night theme before first paint). The CSP allows it by its exact sha256 hash in `vercel.json` — any edit to that script, even whitespace, needs the new hash (`documentShell.test.ts` and `check:bundle` fail until it matches; production would silently block it).
 - Header-only deploys never reach installed PWAs: the service worker precaches `index.html` WITH its response headers, and identical content means no SW update. Any `vercel.json` header change must be paired with a content change (e.g. the build comment atop `index.html`).
+<!-- ONE-OFF-SKIPWAITING:BEGIN (policy block — oneOffSkipWaiting.test.ts reads it) -->
+- **KEEP the transition skipWaiting ON until 2026-11-14, then remove it in the first release after that date** (review B2; policy corrected 2026-10-31). Every release in that window ships workbox `skipWaiting: true` (`ONE_OFF_SKIP_WAITING` + `ONE_OFF_SKIP_WAITING_EXPIRES` in `vite.config.ts`). Why: installed clients still on the old autoUpdate page code only listen for the worker's `activated` event (then reload) and never send SKIP_WAITING, so a prompt-mode worker would wait unseen until every window closed. With skipWaiting on, such a client takes whichever release it meets next and reloads as before; turning it off in the release right after W9 would strand any client that had not yet loaded a skipWaiting release. Effect while on: a hotfix activates at once under pages already on a newer build — they don't reload, may hit files the deploy removed until the next reload, and "Try again" recovers. Removal (first release after 2026-11-14): set `ONE_OFF_SKIP_WAITING = false`, drop the transition branch in `e2e/pwa.spec.ts`, delete this note. **`src/__tests__/oneOffSkipWaiting.test.ts` turns RED at 2026-11-15 00:00 UTC while the switch is still on — intentionally, for every PR — so the removal must ship by then.** After the 2026-11-14 removal, a client never launched during the window still runs old autoUpdate code and sits behind a waiting worker with no toast; it needs one full quit.
+<!-- ONE-OFF-SKIPWAITING:END -->
+- App updates are `registerType: 'prompt'` (W9-06; fully in force from the first release after 2026-11-14 — see the note above): a new service worker waits; the "new version — reload" toast asks; its Reload activates the waiting worker and the page reloads when it takes control (`usePWA.applyUpdateOrReload`; a plain `location.reload()` would be served the OLD precached index.html). The app itself never reloads unasked, BUT accepting the update in one tab also reloads the app's other open tabs (vite-plugin-pwa reloads every tab when the new worker takes control — plugin design), and until 2026-11-14 the transition skipWaiting lets old autoUpdate clients reload themselves. Updates are re-checked when the app returns to the foreground; "Try again" on a view whose file 404s asks the server for the new version first, so one tap is enough.
+- Precache: the shell's entry chunks — including the Explore and Learn views, StaffNotation, the Fretboard and Quick Search — are listed in `vite.config.ts` globPatterns; their static imports are added automatically (manifestTransforms closure). Translated-content chunks are named `i18n-*` (chunkFileNames) and runtime-cached by the content-cache route. On a first visit, whatever the page loaded before the worker took control (VexFlow, an early level, samples) is re-fetched through it (`usePWA.warmRuntimeCaches`) so it is cached for offline. Run `npm run check:sw` after changing chunking; `e2e/offline-after-visit.spec.ts` (preview) proves the app opens with every request blocked.
+- PWA toasts (update / offline-ready / install) render in ONE stack (`PWAPrompts`), update first — never give a toast its own fixed position.
 - **Fretboard orientation is SETTLED — do not "fix" it.** It renders nut-RIGHT, low E on top (mirrored from printed chord charts). A flip to textbook orientation was shipped and **reverted on Nuno's feedback** (2026-06-09): he reads the original natively. Position legibility is handled instead by the anchor-fret badge ("3fr") + nut-closest default voicing for chords, and the Roman-numeral badge for scale positions (see Audio & instruments below).
 - **Spelling is one engine** (`src/core/utils/degreeSpelling.ts`, W1/W2 2026-10-30): note names, degree labels and colours (read from the spelled letter), interval names, key signatures, staff octaves/accidentals and the key picker's root names all go through it — never derive a label from a semitone count or a note's position in a list. Staves that show what the instrument plays (Explore, `followInstrument`) write the guitar an octave above sounding (treble-8vb, D-05); Learn exercise staves are AUTHORED notation and are never transposed for the instrument; chords sound exactly the voicing the piano lights (`chordVoicingPitches` in `pianoLayout.ts`).
 - PT overlay files carry full PT-PT diacritics (restored 2026-07-24) — write proper European Portuguese orthography in every edit; conventions in `docs/pt-diacritic-todo.md`.
@@ -95,20 +107,22 @@ src/
     es/              29 files: levelMeta + curriculumL1-L9 + exercisesL1-L9 + templatesL1-L9 + songs (100% complete)
   components/
     ErrorBoundary    App-level error boundary with auto-recovery
+    ViewSlot         Code-split view behind its own boundary; "Try again" really retries a failed download (fresh lazy(), or reload/apply-update when online)
     instruments/     Piano, PianoKey, Fretboard, FretCell, FretboardString, FretboardPositionSelector, InstrumentSelector
     theory/          ScaleDegreeBar, ChordGrid, ChordBrowser, ChordWorkspace, ChordBuilderPanel, ChromaticStrip, CircleOfFifths (+ circleOfFifthsConstants.ts), ScaleComparison
     panels/          CurrentChordPanel, LearnMoreButton
-    navigation/      KeySelector, QuickSearch (Cmd+K)
+    navigation/      KeySelector, QuickSearch (Cmd+K; lazy chunk), QuickSearchHost (owns Cmd/Ctrl+K until search first opens; a failed download is retried on the next open)
     layout/          AppShell, TopBar, Toast, PWAPrompts
     notation/        StaffNotation, StaffNotationSkeleton, useStaffNotation (VexFlow 5.0)
-    learn/           LevelsOverview, LevelCard, LevelDetail, LevelAchievement, UnitCard, UnitDetail, ModuleView, ModuleRow, ReviewQueue, ContinueBanner, LearnBreadcrumb, ProgressBar, DifficultyBadge, Confetti
+    learn/           LevelsOverview, LevelCard, LevelDetail, LevelAchievement, UnitCard, UnitDetail, ModuleView, ModuleRow, ReviewQueue, ContinueBanner, LearnBreadcrumb, ProgressBar, DifficultyBadge, Confetti, ScreenFrame (a Learn screen; inert while it animates out)
       exercises/     ExerciseRunner, ExercisePrompt, ExerciseFeedback, ExerciseProgress
         inputs/      ChoiceInput, InstrumentInput
   views/             ExploreView, LearnView
-  hooks/             useAudio, useKeyContext (incl. exercise-input mode), useTheme, usePWA, useLanguage, useLearnProgress, useMediaQuery, useDegreeColors
+  hooks/             useAudio, useKeyContext (incl. exercise-input mode), useTheme, usePWA (prompt-mode updates), useLanguage, useLearnProgress, useMediaQuery, useDegreeColors, useStopPlaybackOnViewChange
   services/          spacedRepetition, exerciseSelector, synthConfig (FM fallback voice),
-                     karplusStrong (guitar engine), pianoSampler (sampled piano engine),
-                     pianoVoiceRegistration (wires sampler into core audio at boot)
+                     pianoSampler (sampled piano), guitarSampler (sampled guitar),
+                     karplusStrong (guitar fallback engine), instrumentVoices (registers the
+                     selected instrument's voice into core audio; samples load on first use)
   utils/             exportHelpers, notationHelpers, vexflowLoader, midiHelpers, celebrationSound,
                      queryExecutor (Try-This executor — routes through the core parsers; contract-tested
                      against every curriculum tryThisQuery)
@@ -116,6 +130,7 @@ src/
     curriculumLoader.ts      Dynamic import + LEVEL_METADATA (accepts lang param for overlay loading)
     exerciseLoader.ts        Merges hand-authored + generated, lazy-loads per level (accepts lang param)
     moduleIndex.ts           Static 118-module search index (Cmd+K lesson hits)
+    nextModule.ts            Continue-banner module from the static index (no level download; equivalence-tested)
     qualityToModule.ts       Static ChordQuality→moduleId map for "Learn about this" deep links
     songReferences.ts        Module→song reference map (L1–L3 + l4u14m2, ~70 entries)
     exercises/
@@ -126,19 +141,30 @@ src/
 
 **Interaction model:** Instrument-first. Piano/fretboard always visible at bottom. Two views: Explore (theory), Learn (curriculum). Cmd+K for power-user search. Color encodes scale degree function (tonic=blue, dominant=amber, leading=red).
 
-### Audio & instruments (state as of 2026-06-09)
+### Audio & instruments (state as of 2026-10-30)
 
 - **Piano sound = sampled Salamander Grand** (30 mp3s, minor-third ladder A0–C8, ~2 MB,
   CC-BY-3.0 — `public/samples/piano/` + LICENSE.txt; credited in README).
-  `src/services/pianoSampler.ts` is the engine; `pianoVoiceRegistration.ts` (called in
-  `main.tsx`) registers it into core audio via the `setPianoVoice()` seam in
-  `src/core/services/audio.ts`. EVERY piano path (keyboard sustain, chord/arpeggio/scale
-  playback, ear training) goes through core `playNote`/`startSustainedNote`, which try the
-  sampler first and fall back to the FM synth (`synthConfig.ts` WARMTH_OVERRIDES) until
-  samples decode — so sound is never silent, including a first visit offline. Samples are
-  runtime-cached CacheFirst (`piano-samples` cache) for offline reuse.
-- **Guitar sound = Karplus-Strong** (`src/services/karplusStrong.ts`) — separate engine,
-  separate AudioContext, untouched by the sampler work.
+  `src/services/pianoSampler.ts` is the engine; `instrumentVoices.ts`
+  (`registerInstrumentVoices()`, called in `main.tsx`) registers it into core audio via
+  the `setInstrumentVoice()` seam in `src/core/services/audio.ts`. EVERY piano path
+  (keyboard sustain, chord/arpeggio/scale playback, ear training) goes through core
+  `playNote`/`startSustainedNote`, which try the sampler first and fall back to the FM
+  synth (`synthConfig.ts` WARMTH_OVERRIDES) until samples decode — so sound is never
+  silent, including a first visit offline. Samples are runtime-cached CacheFirst
+  (`piano-samples` cache) for offline reuse.
+- **Guitar sound = sampled FreePats Spanish classical guitar** (`public/samples/guitar/`,
+  39 mp3s, ~1.7 MB, licence in LICENSE.txt; `src/services/guitarSampler.ts`), with
+  **Karplus-Strong** (`src/services/karplusStrong.ts`) as the fallback while samples decode
+  or when offline-uncached — the guitar voice never declines, so the FM synth never sounds
+  in guitar mode. Runtime-cached in `guitar-samples`.
+- **Samples download on first use (W8-03):** only the selected instrument's bank, on the
+  first tap / key press or the first note asked for (the other bank when the learner
+  switches) — not on page load.
+- **Stopping playback (W8-01):** a new playback (Explore Play, chord panel, Circle of
+  Fifths, chord builder, Drill reveal) calls core `cancelScheduledAudio()` first, and a
+  view change cancels too. Core settles a cancelled scale/arpeggio/sequence's visuals:
+  pending key highlights are dropped and its onComplete clean-up runs at once.
 - **Fretboard chord display:** shapes default to the NUT-CLOSEST voicing (position chips
   sorted the same way), and the anchor fret (lowest fretted note = the barre) wears a bold
   accent badge ("3fr") above the board plus an accented number below. This is the fix for
@@ -209,7 +235,7 @@ src/
 ### Features (Phase 6)
 - Custom guitar tunings (6 presets, chord shapes gated for non-standard — the board shows the chord's notes + a notice; scale positions work in every tuning)
 - Theme system (fermata day + fermata-night, CSS custom properties, full migration)
-- PWA (offline, install prompt, update notification, font caching)
+- PWA (offline, install prompt, update notification — reachable since W9-06's prompt mode, font caching)
 - Scale comparison (chromatic diff grid, shared/unique visualization)
 - Ear training + scale degree ID exercises
 - Print/export (print stylesheet, clipboard copy)
@@ -218,7 +244,7 @@ src/
 ### Advanced (Phase 7)
 - **Spaced repetition:** 6-level intervals (1d→90d), review queue, backfill for pre-SRS modules
 - **Exercise generation:** Seeded PRNG templates for 118 modules (485 generated, 870 total)
-- **Staff notation:** VexFlow 5.0 lazy-loaded (~1,128 KB separate chunk), theme-reactive, integrated in Explore/panels/exercises
+- **Staff notation:** VexFlow 5.0 Bravura-only entry lazy-loaded (~728 kB separate chunk, was ~1,128 kB with five fonts), theme-reactive, integrated in Explore/panels/exercises
 
 ### Polish & Reach (Phase 8) — COMPLETE
 - **8A:** Self-hosted fonts, toast system, typography tokens
@@ -280,8 +306,8 @@ src/
 The app is a lean, single-user personal tool — no accounts, no cloud sync, no
 gamification. Curriculum, exercises, spaced repetition, trilingual content, offline
 PWA, sampled piano, instrument-aware playback, and (WS9, branch `ws9-drill-mode`)
-the phone-first Drill view: all functional, all gates green (6,507 tests / 150 files,
-eslint 0/0, content audits clean).
+the phone-first Drill view: all functional, all gates green (6,951 tests / 189 files on
+2026-10-31, eslint 0/0, content audits clean).
 
 WS9 details worth knowing: drill bank generated from core (`drillBank/` directory
 module, ~1,321 items, token/params contract-tested against the i18n templates);
@@ -305,4 +331,5 @@ v6 (`lastView` restore + `?view=` boot param + PWA "Start Drill" shortcut).
 - The L6/L7 "Learn about this" gap: scales/modes/intervals have no deep link (only
   chords do, via qualityToModule).
 - Welcome banner in LevelsOverview is unreachable (fresh users always get the Continue
-  card) — harmless; remove or repurpose someday.
+  card — since W9-19 even offline, built from the static module index) — harmless;
+  remove or repurpose someday.

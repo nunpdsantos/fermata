@@ -244,4 +244,13 @@ function deriveCorrect(cfg: ExerciseConfig): string | Set<number> | null {
     }
     console.log();
   }
-})();
+  // Exit non-zero when anything was found (audit W9-07: this exited 0 with
+  // findings, so CI could never fail on it).
+  if (findings.length > 0) {
+    console.error(`AUDIT FAILED: ${findings.length} finding(s).`);
+    process.exitCode = 1;
+  }
+})().catch((err) => {
+  console.error(err);
+  process.exitCode = 1;
+});

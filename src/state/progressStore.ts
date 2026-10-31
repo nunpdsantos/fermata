@@ -35,7 +35,7 @@ const SCHEDULE_NUMERIC_FIELDS = [
  * user-editable and can be corrupted by anything sharing the origin —
  * never blind-cast them. On any mismatch the caller falls back to defaults.
  */
-function isValidPersistedProgress(value: unknown): value is { progress: CurriculumProgress } {
+export function isValidPersistedProgress(value: unknown): value is { progress: CurriculumProgress } {
   if (!isPlainObject(value)) return false;
   const progress = value.progress;
   if (!isPlainObject(progress)) return false;
