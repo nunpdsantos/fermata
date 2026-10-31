@@ -170,7 +170,10 @@
     "distance3": "4 shared notes",
     "distance4": "3 shared notes",
     "distance5": "2 shared notes",
-    "distance6": "Tritone \u00b7 2 shared notes"
+    "distance6": "Tritone \u00b7 2 shared notes",
+    "segmentLabel": "{{name}} \u2014 select {{key}}",
+    "keyMajor": "{{note}} major",
+    "keyMinor": "{{note}} minor"
   },
   "keySelector": {
     "root": "Root",

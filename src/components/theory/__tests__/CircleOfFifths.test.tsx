@@ -53,7 +53,7 @@ const sigText = (count: number, type: string) => (count === 0 ? 'no ♯/♭' : `
 function readCircle(c: HTMLElement) {
   const text = (id: string) => c.querySelector(`[data-testid="${id}"]`)?.textContent ?? null;
   const segs = [...c.querySelectorAll('g[role="button"]')].map((g) => {
-    const label = g.getAttribute('aria-label')!;
+    const label = g.getAttribute('data-key')!;
     const [name, ring] = label.split(' ');
     return { pc: pcOf(name), ring, pressed: g.getAttribute('aria-pressed') === 'true', numeral: g.querySelector('[data-numeral]')?.textContent ?? null };
   });
@@ -157,10 +157,10 @@ describe('W2-03 — no focus steal on mount; keyboard navigation still works', (
   it('the tab stop is the selected key, and arrow keys move focus once the user is in the circle', () => {
     const { container } = render(<CircleOfFifths />);
     const tabStop = container.querySelector('g[tabindex="0"]')!;
-    expect(tabStop.getAttribute('aria-label')).toBe('A minor');
+    expect(tabStop.getAttribute('data-key')).toBe('A minor');
     act(() => (tabStop as SVGGElement).focus());
     fireEvent.keyDown(tabStop, { key: 'ArrowRight' });
-    expect(document.activeElement?.getAttribute('aria-label')).toBe('E minor');
+    expect(document.activeElement?.getAttribute('data-key')).toBe('E minor');
   });
 });
 
@@ -176,7 +176,7 @@ describe('W2-06 — circle clicks go through the store actions', () => {
     const viaActions = useAppStore.getState();
     select('C', 'lydian', before);
     const { container } = render(<CircleOfFifths />);
-    fireEvent.click(container.querySelector('g[aria-label="Db major"]')!);
+    fireEvent.click(container.querySelector('g[data-key="Db major"]')!);
     const s = useAppStore.getState();
     expect(s.selectedKey).toEqual(toNote('Db'));
     expect(s.selectedScale).toBe('major');

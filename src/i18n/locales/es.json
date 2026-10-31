@@ -170,7 +170,10 @@
     "distance3": "4 notas en com\u00fan",
     "distance4": "3 notas en com\u00fan",
     "distance5": "2 notas en com\u00fan",
-    "distance6": "Tritono \u00b7 2 notas en com\u00fan"
+    "distance6": "Tritono \u00b7 2 notas en com\u00fan",
+    "segmentLabel": "{{name}} \u2014 elegir {{key}}",
+    "keyMajor": "{{note}} mayor",
+    "keyMinor": "{{note}} menor"
   },
   "keySelector": {
     "root": "Fundamental",

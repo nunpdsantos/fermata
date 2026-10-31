@@ -36,7 +36,7 @@ const sigText = (count: number, type: string) => (count === 0 ? 'no ♯/♭' : `
 const text = (c: HTMLElement, id: string) => c.querySelector(`[data-testid="${id}"]`)?.textContent ?? null;
 
 function hover(c: HTMLElement, label: string) {
-  const seg = c.querySelector(`g[aria-label="${label}"]`)!;
+  const seg = c.querySelector(`g[data-key="${label}"]`)!;
   fireEvent.mouseEnter(seg);
   return { name: text(c, 'cof-hover-name'), sig: text(c, 'cof-hover-sig'), dist: text(c, 'cof-hover-dist') };
 }
@@ -68,16 +68,16 @@ describe('B2 — hover panel spelled from the displayed segment', () => {
       select(root, type);
       const { container } = render(<CircleOfFifths />);
       for (const g of [...container.querySelectorAll('g[role="button"]')]) {
-        const [name, ring] = g.getAttribute('aria-label')!.split(' ');
+        const [name, ring] = g.getAttribute('data-key')!.split(' ');
         const major = ring === 'major' ? name : spellDegree(name, 'b3')!;
         const ks = majorKeySignature(major);
         const rel = ring === 'major' ? `${spellDegree(name, '6')}m` : major;
-        const h = hover(container, g.getAttribute('aria-label')!);
+        const h = hover(container, g.getAttribute('data-key')!);
         const want = `${sigText(ks.count, ks.type)} · rel: ${rel}`;
         if (h.sig !== want) bad.push(`${root} ${type}: hover ${name} ${ring} "${h.sig}" want "${want}"`);
         fireEvent.mouseLeave(g);
         if (ring === 'major') {
-          const idx = [...container.querySelectorAll('g[aria-label$=" major"]')].indexOf(g);
+          const idx = [...container.querySelectorAll('g[data-key$=" major"]')].indexOf(g);
           // C's position keeps no outer label (as before): no accidentals.
           const wantOuter = ks.count === 0 ? null : sigText(ks.count, ks.type);
           if (text(container, `cof-sig-${idx}`) !== wantOuter) bad.push(`${root} ${type}: outer label ${idx} "${text(container, `cof-sig-${idx}`)}" for ${name}`);

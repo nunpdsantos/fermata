@@ -92,6 +92,9 @@ const circleIndexOf = (pc: number): number => {
 const relativeMinorOf = (major: Note): Note => spellIntervalAbove(major, 6, 9);
 /** The relative major of a minor key, spelled (A♯ → C♯, A♭ → C♭). */
 const relativeMajorOf = (minor: Note): Note => spellIntervalAbove(minor, 3, 3);
+/** Accidentals in a key's signature (a minor key counts its relative major's). */
+const keySignatureSize = (key: Note, ring: 'major' | 'minor'): number =>
+  majorKeySignature(ring === 'major' ? key : relativeMajorOf(key)).count;
 
 export const CircleOfFifths = memo(function CircleOfFifths() {
   const { t } = useTranslation();
@@ -143,21 +146,21 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
     return m;
   }, [diatonicChords]);
 
-  // The selected position wears the selection's spelling on both rings (C♯
-  // major reads "C♯ / A♯m" where the circle otherwise prints D♭ / B♭m; E♭
-  // phrygian's parent reads "C♭ / A♭m"). Everything a segment shows — its
-  // name, its signature, its relative key — is spelled from this label.
-  const labelFor = useCallback(
+  // The KEY a segment selects and describes on hover. The selected position
+  // keeps the selection's spelling (C♯ major reads "C♯ / A♯m", E♭ phrygian's
+  // parent "C♭ / A♭m") as long as that key has at most 7 accidentals; every
+  // other segment is the circle's own name, which always has the smaller
+  // signature — so no click lands on G♯ major (8♯) or B♯ minor (9♯).
+  // A segment hosting a diatonic chord may SHOW the chord's spelling (B♯°
+  // in C♯ major), but clicking it still selects this key (C minor).
+  const keyFor = useCallback(
     (ring: Ring, i: number): Note => {
-      const fallback = ring === 'major' ? CIRCLE_MAJOR[i] : CIRCLE_MINOR[i];
-      const chord = chordAt.get(`${ring}-${getPitchClass(fallback)}`);
-      if (chord) return chord.root;
-      if (signature && i === refIdx) {
-        return ring === 'major' ? signature.parent : relativeMinorOf(signature.parent);
-      }
-      return fallback;
+      const circleName = ring === 'major' ? CIRCLE_MAJOR[i] : CIRCLE_MINOR[i];
+      if (!signature || i !== refIdx) return circleName;
+      const selection = ring === 'major' ? signature.parent : relativeMinorOf(signature.parent);
+      return keySignatureSize(selection, ring) <= 7 ? selection : circleName;
     },
-    [signature, refIdx, chordAt],
+    [signature, refIdx],
   );
 
   const handleKeyClick = useCallback(
@@ -211,7 +214,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
   // Build segment data — coloring based on harmonic distance from the key
   const majorSegs = useMemo(() => {
     return CIRCLE_MAJOR.map((_, i) => {
-      const note = labelFor('major', i);
+      const note = keyFor('major', i);
       const start = i * 30 - 15 + SEG_GAP;
       const end = i * 30 + 15 - SEG_GAP;
       const pc = getPitchClass(note);
@@ -219,23 +222,25 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
       const dist = fifthsDistance(i, refIdx);
       const chord = chordAt.get(`major-${pc}`);
       const numeral = chord?.numeral;
-      const suffix = chord?.quality === 'augmented' ? '+' : '';
+      const display = chord
+        ? `${noteToString(chord.root)}${chord.quality === 'augmented' ? '+' : ''}`
+        : noteToString(note);
       const mid = polarToCartesian(CENTER, CENTER, (MAJOR_INNER + MAJOR_OUTER) / 2, i * 30);
       const fill = neutral ? NEUTRAL_FILL_MAJOR : DIST_FILL_MAJOR[dist];
 
       return {
-        note, i, pc, selected, dist, numeral, suffix, mid, fill,
+        note, i, pc, selected, dist, numeral, display, mid, fill,
         path: arcPath(CENTER, CENTER, MAJOR_INNER, MAJOR_OUTER, start, end),
         stroke: neutral ? NEUTRAL_STROKE : DIST_STROKE_MAJOR[dist],
         textFill: neutral ? NEUTRAL_TEXT : DIST_TEXT_MAJOR[dist],
         hoverFill: neutral ? NEUTRAL_HOVER : dist === 0 ? TONIC_HUE : accentAlpha(dist <= 2 ? 31 : 15),
       };
     });
-  }, [labelFor, selectedSeg, refIdx, chordAt, neutral]);
+  }, [keyFor, selectedSeg, refIdx, chordAt, neutral]);
 
   const minorSegs = useMemo(() => {
     return CIRCLE_MINOR.map((_, i) => {
-      const note = labelFor('minor', i);
+      const note = keyFor('minor', i);
       const start = i * 30 - 15 + SEG_GAP;
       const end = i * 30 + 15 - SEG_GAP;
       const pc = getPitchClass(note);
@@ -243,19 +248,21 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
       const dist = fifthsDistance(i, refIdx);
       const chord = chordAt.get(`minor-${pc}`);
       const numeral = chord?.numeral;
-      const suffix = chord?.quality === 'diminished' ? '°' : 'm';
+      const display = chord
+        ? `${noteToString(chord.root)}${chord.quality === 'diminished' ? '°' : 'm'}`
+        : `${noteToString(note)}m`;
       const mid = polarToCartesian(CENTER, CENTER, (MINOR_INNER + MINOR_OUTER) / 2, i * 30);
       const fill = neutral ? NEUTRAL_FILL_MINOR : DIST_FILL_MINOR[dist];
 
       return {
-        note, i, pc, selected, dist, numeral, suffix, mid, fill,
+        note, i, pc, selected, dist, numeral, display, mid, fill,
         path: arcPath(CENTER, CENTER, MINOR_INNER, MINOR_OUTER, start, end),
         stroke: neutral ? NEUTRAL_STROKE : DIST_STROKE_MINOR[dist],
         textFill: neutral ? NEUTRAL_TEXT : DIST_TEXT_MINOR[dist],
         hoverFill: neutral ? NEUTRAL_HOVER : dist === 0 ? TONIC_HUE : accentAlpha(dist <= 2 ? 25 : 10),
       };
     });
-  }, [labelFor, selectedSeg, refIdx, chordAt, neutral]);
+  }, [keyFor, selectedSeg, refIdx, chordAt, neutral]);
 
   // Outer ring: each position's signature, spelled from its displayed major key.
   const outerSignatures = useMemo(
@@ -300,9 +307,17 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
   // The scale's own name under the key when it is not plain major / minor.
   const scaleLine = selectedScale === 'major' || isMinorSel ? null : SCALE_TYPE_NAMES[selectedScale];
 
+  // Accessible name = the visible text (name and numeral) plus what a click
+  // does — "B♯° (vii°) — select C minor" (WCAG 2.5.3 label in name).
+  const segmentLabel = (s: { display: string; numeral?: string; note: Note }, ring: Ring) =>
+    t('circle.segmentLabel', {
+      name: s.numeral ? `${s.display} (${s.numeral})` : s.display,
+      key: t(ring === 'major' ? 'circle.keyMajor' : 'circle.keyMinor', { note: noteToString(s.note) }),
+    });
+
   /** Name + numeral stacked in a segment (numeral below, never overlapping). */
   const segmentText = (
-    s: { mid: { x: number; y: number }; note: Note; numeral?: string; suffix: string; textFill: string; fill: string },
+    s: { mid: { x: number; y: number }; display: string; numeral?: string; textFill: string; fill: string },
     ring: Ring,
   ) => {
     const nameSize = ring === 'major' ? MAJOR_NAME_SIZE : MINOR_NAME_SIZE;
@@ -326,7 +341,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
           className={`${ring === 'major' ? 'font-semibold' : 'font-medium'} select-none pointer-events-none`}
           fill={s.textFill}
         >
-          {noteToString(s.note)}{s.suffix}
+          {s.display}
         </text>
         {s.numeral && (
           <text
@@ -389,7 +404,8 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
             ref={(el) => { segmentRefs.current.set(segKey, el); }}
             role="button"
             tabIndex={isStop ? 0 : -1}
-            aria-label={`${noteToString(s.note)} major`}
+            aria-label={segmentLabel(s, 'major')}
+            data-key={`${noteToString(s.note)} major`}
             aria-pressed={s.selected}
             data-focus-ring="custom"
             style={{ filter: s.selected ? 'url(#cof-glow)' : 'none', outline: focusedSeg === segKey ? '2px solid var(--focus-ring)' : 'none' }}
@@ -423,7 +439,8 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
             ref={(el) => { segmentRefs.current.set(segKey, el); }}
             role="button"
             tabIndex={isStop ? 0 : -1}
-            aria-label={`${noteToString(s.note)} minor`}
+            aria-label={segmentLabel(s, 'minor')}
+            data-key={`${noteToString(s.note)} minor`}
             aria-pressed={s.selected}
             data-focus-ring="custom"
             style={{ filter: s.selected ? 'url(#cof-glow)' : 'none', outline: focusedSeg === segKey ? '2px solid var(--focus-ring)' : 'none' }}
