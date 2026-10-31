@@ -297,6 +297,41 @@ async function toastsClear(page: Page, where: string, avoid: string[]) {
   }
 }
 
+/** Where each element is now (first match per selector; null if absent). */
+const rectsOf = (page: Page, selectors: string[]) =>
+  page.evaluate((sels) => sels.map((sel) => {
+    const el = document.querySelector(sel);
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    return { sel, top: r.top, left: r.left, width: r.width, height: r.height };
+  }), selectors);
+
+type Rects = Awaited<ReturnType<typeof rectsOf>>;
+function expectSteady(before: Rects, now: Rects, where: string) {
+  before.forEach((b, i) => {
+    const n = now[i];
+    if (!b || !n) return;
+    const moved = Math.max(Math.abs(n.top - b.top), Math.abs(n.left - b.left), Math.abs(n.height - b.height), Math.abs(n.width - b.width));
+    expect.soft(moved, `${where}: ${b.sel} moved`).toBeLessThan(2);
+  });
+}
+
+/**
+ * Round 4 (no layout shift): raise the whole stack and dismiss it again; the
+ * instrument / the answers must not move (< 2 px) either way, and the toasts
+ * must be clear of what they avoid. Returns false on a build without the dev
+ * modules (skipped there, with a note).
+ */
+async function toastsInAndOut(page: Page, where: string, steady: string[], avoid: string[]) {
+  const before = await rectsOf(page, steady);
+  if (!(await raiseToastStack(page))) return false;
+  await toastsClear(page, `${where} (toasts in)`, avoid);
+  expectSteady(before, await rectsOf(page, steady), `${where} (toasts in)`);
+  await lowerToastStack(page);
+  expectSteady(before, await rectsOf(page, steady), `${where} (toasts out)`);
+  return true;
+}
+
 /** The update toast's Reload reloads the page (dev: no worker, plain reload). */
 async function reloadFromToast(page: Page, where: string) {
   const reload = page.locator('.toast-card').filter({ hasText: /new version/i }).getByRole('button', { name: 'Reload' });
@@ -471,6 +506,8 @@ async function drillWrong(page: Page, notQuite: RegExp, continueName: string) {
 const isSheet = (v: Viewport) => v.viewport.width < 640 || v.viewport.height <= 500;
 const DOCK = '[data-testid="instrument-dock"]';
 const TOPBAR = '.app-topbar';
+const INSTRUMENT = '[data-tour="play-note"], [role="grid"]';
+const ANSWERS = '[data-testid="drill-answers"]';
 
 for (const v of VIEWPORTS) {
   for (const th of THEMES) {
@@ -527,8 +564,9 @@ for (const v of VIEWPORTS) {
         await page.keyboard.press('Escape');
         await page.waitForTimeout(300);
         // The whole stack over Explore at the default detent.
-        if (await raiseToastStack(page)) {
-          await toastsClear(page, where('explore toasts'), [DOCK, isSheet(v) ? '.detent-head' : '.dock-panel-bar', TOPBAR]);
+        const avoidDock = [DOCK, isSheet(v) ? '.detent-head' : '.dock-panel-bar', TOPBAR];
+        if (await toastsInAndOut(page, where('explore'), [DOCK, INSTRUMENT, '#main-content'], avoidDock)) {
+          await raiseToastStack(page);
           await check(page, v, combo, 'toasts');
           await reloadFromToast(page, where('explore'));
         }
@@ -558,14 +596,19 @@ for (const v of VIEWPORTS) {
             }
           }
           await focusWalk(page, where('dock-full'));
-          // The toast stack at every detent: never over the dock bar or sheet.
-          if (await raiseToastStack(page)) {
-            for (const [key, detent] of detents) {
-              await setDetent(key, detent);
-              await toastsClear(page, where(`toasts at ${detent}`), [DOCK, '.detent-head', TOPBAR]);
+          // The toast stack at every detent: never over the dock bar or sheet,
+          // and nothing moves when it comes or goes (review round 4).
+          for (const [key, detent] of detents) {
+            await setDetent(key, detent);
+            const ran = await toastsInAndOut(page, where(`dock ${detent}`), [DOCK, '.detent-head', INSTRUMENT, '#main-content'], [DOCK, '.detent-head', TOPBAR]);
+            if (ran && v.name === 'phone-landscape' && detent !== 'full') {
+              await raiseToastStack(page);
+              const mainH = (await page.locator('#main-content').boundingBox())!.height;
+              expect.soft(mainH, where(`landscape ${detent}: room left for the view with toasts up`)).toBeGreaterThanOrEqual(120);
+              await lowerToastStack(page);
             }
-            await reloadFromToast(page, where('dock-full'));
           }
+          if (await raiseToastStack(page)) await reloadFromToast(page, where('dock-full'));
         } else {
           await expect(handle).toHaveCount(0); // a docked panel, not a sheet
           await check(page, v, combo, 'dock-docked');
@@ -577,10 +620,7 @@ for (const v of VIEWPORTS) {
           }
           const dockH = (await page.locator(DOCK).boundingBox())!.height;
           expect.soft(dockH, where('guitar dock height')).toBeLessThanOrEqual(v.viewport.height * 0.5);
-          if (await raiseToastStack(page)) {
-            await toastsClear(page, where('toasts over docked guitar'), [DOCK, TOPBAR]);
-            await lowerToastStack(page);
-          }
+          await toastsInAndOut(page, where('docked guitar'), [DOCK, INSTRUMENT, '#main-content'], [DOCK, TOPBAR]);
         }
         await context.close();
       }
@@ -660,10 +700,7 @@ for (const v of VIEWPORTS) {
         const answers = await boxOf(page, '[data-testid="drill-answers"]');
         const toast = await exportToast(page);
         expect(overlaps(toast, answers), where('toast vs drill answers')).toBe(false);
-        if (await raiseToastStack(page)) {
-          await toastsClear(page, where('toasts over drill'), ['[data-testid="drill-answers"]', TOPBAR]);
-          await lowerToastStack(page);
-        }
+        await toastsInAndOut(page, where('drill'), [ANSWERS, `${ANSWERS} button`, '#main-content'], [ANSWERS, TOPBAR]);
         await panel.getByRole('button', { name: 'Drill settings' }).click();
         await expect(panel.getByRole('heading', { name: 'Drill settings' })).toBeVisible();
         await check(page, v, combo, 'drill-settings');
