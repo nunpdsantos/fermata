@@ -26,7 +26,7 @@ const l4u12m1: CurriculumModule = {
     {
       title: 'Suspension Types: 4-3, 7-6, 9-8',
       explanation:
-        'Suspensions are named by the intervals they form above the bass at the moment of dissonance and resolution. The 4-3 suspension is the most common: a 4th above the bass resolves to a 3rd. The 7-6 suspension holds a 7th that resolves to a 6th \u2014 common in sequences and chains of suspensions. The 9-8 suspension holds a 9th (or 2nd an octave up) that resolves to an octave. All three resolve downward by step.',
+        'Suspensions are named by the intervals they form above the bass at the moment of dissonance and resolution. The 4-3 suspension is the most common: a 4th above the bass resolves to a 3rd. The 7-6 suspension holds a 7th that resolves to a 6th \u2014 common in sequences and chains of suspensions. The 9-8 suspension holds a 9th (or 2nd an octave up) that resolves to an octave. All three resolve downward by step. A decorated (ornamented) suspension adds one or more notes between the suspension and its resolution, such as a brief lower neighbor, before the line arrives on its resolution a step below.',
       tryThisQuery: 'G major chord',
       tryThisLabel: 'Imagine holding C over this chord (4-3 sus)',
     },

@@ -316,7 +316,7 @@ const overlay: ExerciseLevelOverlay = {
       'Um padrão de acordes repetido em níveis de altura sucessivos na tonalidade',
       'Um único acorde repetido várias vezes enquanto a melodia por cima sobe grau a grau',
       'Uma melodia tocada em oitavas diferentes',
-      'Uma série de modulações que leva a música para tonalidades cada vez mais distantes',
+      'Uma fórmula cadencial repetida sem qualquer alteração no fim de cada uma das frases',
     ],
     hint: 'Uma sequência harmónica pega num padrão curto de acordes (o modelo) e repete-o em diferentes níveis de altura diatónicos. Os intervalos entre fundamentais mantêm-se consistentes, embora a sua qualidade exata possa mudar para permanecer dentro da tonalidade.',
   },

@@ -484,7 +484,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'A chord pattern repeated at successive pitch levels in the key', correct: true },
           { label: 'A single chord repeated multiple times while the melody above it moves up step by step', correct: false },
           { label: 'A melody played in different octaves', correct: false },
-          { label: 'A series of modulations that moves the music to ever more distant keys', correct: false },
+          { label: 'A cadence formula repeated unchanged at the end of each phrase', correct: false },
         ],
       },
       hint: 'A harmonic sequence takes a short chord pattern (the model) and repeats it at different diatonic pitch levels. The intervals between roots stay consistent, though their exact quality may change to stay within the key.',

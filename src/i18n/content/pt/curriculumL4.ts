@@ -41,7 +41,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Tipos de Suspensão: 4-3, 7-6, 9-8',
           explanation:
-            'As suspensões são nomeadas pelos intervalos que formam acima do baixo no momento da dissonância e da resolução. A suspensão 4-3 é a mais comum: uma 4.ª acima do baixo resolve para uma 3.ª. A suspensão 7-6 retém uma 7.ª que resolve para uma 6.ª — comum em sequências e cadeias de suspensões. A suspensão 9-8 retém uma 9.ª (ou 2.ª uma oitava acima) que resolve para uma oitava. Todas as três resolvem por grau conjunto descendente.',
+            'As suspensões são nomeadas pelos intervalos que formam acima do baixo no momento da dissonância e da resolução. A suspensão 4-3 é a mais comum: uma 4.ª acima do baixo resolve para uma 3.ª. A suspensão 7-6 retém uma 7.ª que resolve para uma 6.ª — comum em sequências e cadeias de suspensões. A suspensão 9-8 retém uma 9.ª (ou 2.ª uma oitava acima) que resolve para uma oitava. Todas as três resolvem por grau conjunto descendente. Uma suspensão ornamentada acrescenta uma ou mais notas entre a suspensão e a sua resolução, como uma breve bordadura inferior, antes de a linha chegar à sua resolução um grau abaixo.',
           tryThisLabel: 'Imagina manter C sobre este acorde (sus 4-3)',
         },
         {

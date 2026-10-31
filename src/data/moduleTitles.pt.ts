@@ -62,7 +62,7 @@ const titles: Record<string, readonly [title: string, subtitle: string]> = {
   l5u16m2: ["Modulação para Tonalidades Próximas", "Modulações práticas para V, IV, vi e relativa maior/menor"],
   l5u16m3: ["Modulação Direta, por Nota Comum e Cromática", "Modulação sem acordes pivot diatónicos"],
   l5u16m4: ["Mistura Modal — Acordes de Empréstimo", "Emprestar acordes do modo menor paralelo para cor expressiva"],
-  l5u16m5: ["Terça Picardia e Mistura Modal no Modo Menor", "Emprestar do modo maior paralelo num contexto de tonalidade menor"],
+  l5u16m5: ["Terça de Picardia e Mistura Modal no Modo Menor", "Emprestar do modo maior paralelo num contexto de tonalidade menor"],
   l5u17m1: ["Forma Binária e Ternária", "Estruturas musicais em duas e três partes"],
   l5u17m2: ["Formas de Canção e Introdução às Grandes Formas", "Estrofe-refrão, AABA, forma sonata, rondó e tema com variações"],
   l5u17m3: ["Textura", "Monofónica, homofónica, polifónica e outros tipos de textura"],

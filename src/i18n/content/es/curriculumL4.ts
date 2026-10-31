@@ -41,7 +41,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Tipos de Retardo: 4-3, 7-6, 9-8',
           explanation:
-            'Los retardos se nombran según los intervalos que forman sobre el bajo en el momento de la disonancia y la resolución. El retardo 4-3 es el más frecuente: una 4.ª sobre el bajo resuelve a una 3.ª. El retardo 7-6 retiene una 7.ª que resuelve a una 6.ª — habitual en secuencias y cadenas de retardos. El retardo 9-8 retiene una 9.ª (o 2.ª una octava más arriba) que resuelve a una octava. Los tres resuelven por grado conjunto descendente.',
+            'Los retardos se nombran según los intervalos que forman sobre el bajo en el momento de la disonancia y la resolución. El retardo 4-3 es el más frecuente: una 4.ª sobre el bajo resuelve a una 3.ª. El retardo 7-6 retiene una 7.ª que resuelve a una 6.ª — habitual en secuencias y cadenas de retardos. El retardo 9-8 retiene una 9.ª (o 2.ª una octava más arriba) que resuelve a una octava. Los tres resuelven por grado conjunto descendente. Un retardo ornamentado añade una o más notas entre el retardo y su resolución, como una breve bordadura inferior, antes de que la línea llegue a su resolución un grado más abajo.',
           tryThisLabel: 'Imagina mantener C sobre este acorde (ret. 4-3)',
         },
         {

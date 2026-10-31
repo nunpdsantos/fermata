@@ -316,7 +316,7 @@ const overlay: ExerciseLevelOverlay = {
       'Un patrón de acordes repetido a alturas sucesivas dentro de la tonalidad',
       'Un único acorde repetido varias veces mientras la melodía por encima sube grado a grado',
       'Una melodía tocada en octavas diferentes',
-      'Una serie de modulaciones que lleva la música a tonalidades cada vez más lejanas',
+      'Una fórmula cadencial repetida sin ningún cambio al final de cada una de las frases',
     ],
     hint: 'Una secuencia armónica toma un patrón corto de acordes (el modelo) y lo repite en diferentes niveles de altura diatónicos. Los intervalos entre fundamentales se mantienen consistentes, aunque su cualidad exacta puede cambiar para permanecer dentro de la tonalidad.',
   },

@@ -511,7 +511,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre o contraponto invertível (duplo) é verdadeira?',
       hintTemplate:
-        'O contraponto invertível permite que duas vozes troquem de lugar. À oitava, um intervalo n torna-se 9 − n (3.ª → 6.ª, 5.ª → 4.ª); à décima, 11 − n (3.ª → oitava, 6.ª → 5.ª); à décima segunda, 13 − n (5.ª → oitava).',
+        'O contraponto invertível permite que duas vozes troquem de lugar. À oitava, um intervalo n torna-se 9 − n (3.ª → 6.ª, 5.ª → 4.ª); à décima, 11 − n (3.ª → oitava, 6.ª → 5.ª); à duodécima, 13 − n (5.ª → oitava).',
       choiceSets: [
         [
           'À oitava, uma 3.ª torna-se uma 6.ª quando as vozes trocam',
@@ -532,10 +532,10 @@ const overlay: TemplateLevelOverlay = {
           'À décima, todos os intervalos mantêm exatamente o mesmo tamanho',
         ],
         [
-          'À décima segunda, uma 5.ª torna-se uma oitava quando as vozes trocam',
-          'À décima segunda, uma 5.ª torna-se uma 4.ª quando as duas vozes trocam de lugar',
-          'À décima segunda, uma 5.ª torna-se uma 6.ª quando as vozes trocam',
-          'À décima segunda, uma 3.ª torna-se uma 6.ª sempre que as duas vozes trocam',
+          'À duodécima, uma 5.ª torna-se uma oitava quando as vozes trocam',
+          'À duodécima, uma 5.ª torna-se uma 4.ª quando as duas vozes trocam de lugar',
+          'À duodécima, uma 5.ª torna-se uma 6.ª quando as vozes trocam',
+          'À duodécima, uma 3.ª torna-se uma 6.ª sempre que as duas vozes trocam',
         ],
       ],
     },

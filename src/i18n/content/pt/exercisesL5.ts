@@ -299,17 +299,17 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Mistura modal empresta acordes da tonalidade paralela (mesma tónica, modo oposto). Em C maior, emprestas de C menor: bIII (Eb), iv (Fm), bVI (Ab), bVII (Bb). Acrescentam escuridão e riqueza cromática.',
   },
 
-  // ---- l5u16m5: Terça Picardia ----
+  // ---- l5u16m5: Terça de Picardia ----
 
   l5u16m5e1: {
-    prompt: 'O que é uma terça picardia (tierce de Picardie)?',
+    prompt: 'O que é uma terça de Picardia (tierce de Picardie)?',
     choices: [
       'Terminar uma peça em tonalidade menor com um acorde de tónica maior, elevando apenas a terça do acorde final',
       'Uma progressão de acordes que usa apenas terças',
       'Um intervalo de terça menor usado numa tonalidade maior',
       'Um ornamento francês em trilo sobre o terceiro grau do acorde final, tocado mesmo antes de a peça terminar',
     ],
-    hint: 'A terça picardia é uma técnica secular: uma peça em tonalidade menor termina com um acorde I maior (p. ex., peça em C menor a terminar em C maior). A terça elevada cria um final brilhante e resolvido após a escuridão do modo menor.',
+    hint: 'A terça de Picardia é uma técnica secular: uma peça em tonalidade menor termina com um acorde I maior (p. ex., peça em C menor a terminar em C maior). A terça elevada cria um final brilhante e resolvido após a escuridão do modo menor.',
   },
   l5u16m5e2: {
     prompt:
