@@ -238,9 +238,21 @@ export function toEnglishTheoryQuery(query: string): string | null {
  * Resolve a typed query (English, Portuguese or Spanish) to a theory object,
  * or null when nothing matches.
  */
+/**
+ * A bare solfège syllable ("do", "Ré", "sol"). Read as the note (do = C), not
+ * through the chord parser, which would take "do" as D diminished.
+ */
+export function isBareSolfege(query: string): boolean {
+  return /^(?:d[oó]|r[eé]|mi|f[aá]|sol|l[aá]|si)$/i.test(query.trim());
+}
+
 export function resolveTheoryQuery(query: string): ResolvedTheoryQuery | null {
   const q = query.trim();
   if (!q) return null;
+  if (isBareSolfege(q)) {
+    const note = toEnglishTheoryQuery(q);
+    return note ? resolveEnglish(note) : null;
+  }
   const direct = resolveEnglish(q);
   if (direct) return direct;
   const translated = toEnglishTheoryQuery(q);
@@ -279,6 +291,8 @@ export function findQuotedQueries(text: string): QuotedQuery[] {
     // "a" is a word — the rhythm syllable in 'one-e-and-a', PT "o "e" entre
     // tempos" — not a chord.
     if (/^[a-z]$/.test(query)) continue;
+    // A quoted syllable ("do", «Mi») is about solfège, not a query.
+    if (isBareSolfege(query)) continue;
     if (resolveTheoryQuery(query) !== null) {
       out.push({ index: m.index ?? 0, length: m[0].length, query });
     }

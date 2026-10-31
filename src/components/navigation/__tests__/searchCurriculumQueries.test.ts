@@ -212,6 +212,21 @@ describe('lesson search in Portuguese and Spanish', () => {
     expect(findModulesByQuery('dorico', 5, es).map((m) => m.id)).toContain('l7u22m4');
   });
 
+  it('the singular "dominante secundária/secundaria" finds the secondary-dominant lessons', () => {
+    expect(findModulesByQuery('dominante secundária', 5, pt).map((m) => m.id)).toEqual(expect.arrayContaining(['l5u15m1', 'l5u15m2']));
+    expect(findModulesByQuery('dominante secundaria', 5, es).map((m) => m.id)).toEqual(expect.arrayContaining(['l5u15m1', 'l5u15m2']));
+  });
+
+  it('a bare solfège syllable is the note, never "D diminished" for "do"', () => {
+    for (const idx of [null, pt, es]) {
+      const chords = getResults('do', idx).filter((r) => r.type === 'Chord').map((r) => r.label);
+      expect(chords[0]).toBe('C Major');
+      expect(chords.join(' ')).not.toMatch(/D Diminished/);
+    }
+    expect(getResults('sol', es).find((r) => r.type === 'Chord')?.label).toBe('G Major');
+    expect(findQuotedQueries('En el solfeo móvil, «do» representa la tónica')).toEqual([]);
+  });
+
   it('English terms still work in PT mode, and the hit shows the PT title', () => {
     const [hit] = findModulesByQuery('neapolitan', 5, pt);
     expect(hit.id).toBe('l6u18m1');

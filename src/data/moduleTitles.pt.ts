@@ -109,7 +109,7 @@ const titles: Record<string, readonly [title: string, subtitle: string]> = {
   l9u30m1: ["Correspondência de Altura e Direção", "Corresponder alturas de ouvido, identificar direção melódica e perceber diferenças de registo"],
   l9u30m2: ["Reconhecimento Maior vs. Menor", "Distinguir tonalidade maior e menor de ouvido — acordes, escalas e cor geral"],
   l9u30m3: ["Reconhecimento de Intervalos: P1-P5", "Identificar intervalos perfeitos e pequenos de ouvido usando associações com canções e reconhecimento direto"],
-  l9u30m4: ["Reconhecimento de Intervalos: 6.ª m-P8", "Identificar intervalos amplos de ouvido — sextas, sétimas e a oitava"],
+  l9u30m4: ["Reconhecimento de Intervalos: 6.ª m – 8.ª P", "Identificar intervalos amplos de ouvido — sextas, sétimas e a oitava"],
   l9u30m5: ["Intervalos Harmónicos e Compostos", "Reconhecimento de intervalos simultâneos e intervalos compostos além da oitava"],
   l9u31m1: ["Reconhecimento de Escalas: Formas Maiores e Menores", "Distinguir maior, menor natural, menor harmónica e menor melódica de ouvido"],
   l9u31m2: ["Reconhecimento de Escalas: Modos", "Identificar os sete modos eclesiásticos pelas suas notas características"],

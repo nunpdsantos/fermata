@@ -19,7 +19,7 @@ import { getChordCompletions, parseVerbalChord } from '../../core/utils/chordHin
 import { parseScaleSymbol, formatParsedScaleName } from '../../core/utils/scaleParser.ts';
 import { findModulesByQuery } from '../../data/moduleIndex.ts';
 import type { LocalizedModuleIndex } from '../../data/moduleIndexI18n.ts';
-import { resolveTheoryQuery } from '../../utils/theoryQuery.ts';
+import { resolveTheoryQuery, isBareSolfege } from '../../utils/theoryQuery.ts';
 import { applyResolvedTheoryQuery } from '../../utils/queryExecutor.ts';
 
 export type SearchResultType = 'Scale' | 'Chord' | 'Key' | 'Lesson';
@@ -124,20 +124,25 @@ export function getResults(query: string, localized?: LocalizedModuleIndex | nul
   //     Ré menor", "C diminished 7th").
   if (resolved?.kind === 'chord') pushChord(resolved.parsed);
 
+  // A bare solfège syllable ("do", "sol") is a note name: the resolver above
+  // already read it (do = C). The raw symbol parsers below would read "do"
+  // as D diminished, so they are skipped.
+  const bareSolfege = isBareSolfege(q);
+
   // 1. Exact symbol parse (all 47 qualities + slash chords + algorithmic).
-  const parsedChord = parseChordSymbol(q);
+  const parsedChord = bareSolfege ? null : parseChordSymbol(q);
   if (parsedChord) pushChord(parsedChord);
 
   // 2. Verbal resolution ("c sharp minor seven", "g dominant", "f sharp
   //    diminished seventh") — catches spelled-out numbers / multi-word qualities
   //    the symbol parser deliberately leaves alone.
-  const verbalChord = parseVerbalChord(q);
+  const verbalChord = bareSolfege ? null : parseVerbalChord(q);
   if (verbalChord) pushChord(verbalChord);
 
   // 3. Partial-symbol completions ("Cmaj" → Cmaj7/9/11/13; "C7#" → C7#9/#11/#5;
   //    "Cm" → Cm/Cm7/Cm9/…). Deterministic, commonality-ordered, deduped against
   //    the exact/verbal results above.
-  for (const completion of getChordCompletions(q, CHORD_CAP)) {
+  for (const completion of bareSolfege ? [] : getChordCompletions(q, CHORD_CAP)) {
     if (chordCount >= CHORD_CAP) break;
     pushChord(completion.parsed);
   }

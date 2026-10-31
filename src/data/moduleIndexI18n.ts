@@ -30,6 +30,9 @@ export const LOCALIZED_KEYWORDS: Record<'pt' | 'es', Record<string, readonly str
     l9u31m2: [...MODES_PT, 'modos gregos'],
     l2u7m3: ['tríade', 'tríades', 'tríade maior', 'tríade menor', 'tríade diminuta', 'tríade aumentada'],
     l3u9m1: ['maj7', 'm7', 'acorde de sétima', 'sétima da dominante', 'meio-diminuto', 'sétima diminuta'],
+    // The titles are plural ('Dominantes Secundárias'); the singular must match too.
+    l5u15m1: ['dominante secundária', 'dominante aplicada', 'v/v'],
+    l5u15m2: ['dominante secundária', 'dominante aplicada'],
     // 'meia cadência' is the term the lessons use; 'cadência suspensiva' is
     // its alternative name and still finds the lesson.
     l3u11m1: ['cadência perfeita', 'cadência imperfeita', 'cadência plagal', 'cadência interrompida', 'meia cadência', 'cadência suspensiva'],
@@ -57,6 +60,8 @@ export const LOCALIZED_KEYWORDS: Record<'pt' | 'es', Record<string, readonly str
     l9u31m2: [...MODES_ES, 'modos griegos'],
     l2u7m3: ['tríada', 'tríadas', 'tríada mayor', 'tríada menor', 'tríada disminuida', 'tríada aumentada'],
     l3u9m1: ['maj7', 'm7', 'acorde de séptima', 'séptima de dominante', 'semidisminuido', 'séptima disminuida'],
+    l5u15m1: ['dominante secundaria', 'dominante aplicada', 'v/v'],
+    l5u15m2: ['dominante secundaria', 'dominante aplicada'],
     // The lessons say "cadencia rota" (D-19 amendment); "interrumpida" is
     // its alternative name and still finds the lesson.
     l3u11m1: ['cadencia auténtica', 'cadencia plagal', 'cadencia rota', 'cadencia interrumpida', 'semicadencia'],

@@ -167,7 +167,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U30 M4: Interval Recognition m6-P8 ────────────────────────────────────
     l9u30m4: {
-      title: 'Reconhecimento de Intervalos: 6.ª m-P8',
+      title: 'Reconhecimento de Intervalos: 6.ª m – 8.ª P',
       subtitle:
         'Identificar intervalos amplos de ouvido — sextas, sétimas e a oitava',
       objectives: [
