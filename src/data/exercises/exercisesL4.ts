@@ -18,7 +18,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The 4th above the bass is held over from the previous chord and resolves down to the 3rd', correct: true },
+          { label: 'The 4th above the bass is held over and resolves down to the 3rd', correct: true },
           { label: 'The 3rd is raised to the 4th and stays there', correct: false },
           { label: 'A chord that alternates between the 4th and 3rd degrees', correct: false },
           { label: 'The bass moves from the 4th degree to the 3rd degree of the scale', correct: false },
@@ -67,7 +67,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'By leap — it arrives on the dissonance without stepwise preparation', correct: true },
+          { label: 'By leap, with no stepwise preparation', correct: true },
           { label: 'By step from above only', correct: false },
           { label: 'By being held over from the previous chord', correct: false },
           { label: 'By chromatic half step', correct: false },
@@ -97,8 +97,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Upward by step — it is a suspension that resolves up instead of down', correct: true },
-          { label: 'Downward by step, like a standard suspension', correct: false },
+          { label: 'Upward by step, like a suspension resolving the other way', correct: true },
+          { label: 'Downward by step, exactly as an ordinary suspension resolves', correct: false },
           { label: 'Downward by leap', correct: false },
           { label: 'It does not resolve; it remains dissonant', correct: false },
         ],
@@ -131,10 +131,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Two non-chord tones that approach a chord tone from both above and below in succession', correct: true },
+          { label: 'Upper and lower neighbors in a row around one chord tone', correct: true },
           { label: 'A chord tone that changes to a different chord tone', correct: false },
           { label: 'A modulation from one key to another', correct: false },
-          { label: 'An accidental that changes the quality of a chord', correct: false },
+          { label: 'An accidental that changes the quality of a chord from major to minor', correct: false },
         ],
       },
       hint: 'A changing tone (neighbor group) decorates a chord tone by moving to its upper neighbor, then its lower neighbor (or vice versa) before returning. For example: C-D-B-C ornaments the note C.',
@@ -161,7 +161,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l4u12m4e1',
       type: 'chord_build',
-      prompt: 'Build a V7 chord in the key of C major. This is G dominant 7th: G-B-D-F. Select all 4 notes.',
+      prompt: 'Build a V7 chord in the key of C major. Select all 4 notes.',
       config: {
         type: 'chord_build',
         root: 'G',
@@ -174,7 +174,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l4u12m4e2',
       type: 'chord_build',
-      prompt: 'Build a V7 chord in the key of G major. This is D dominant 7th: D-F#-A-C. Select all 4 notes.',
+      prompt: 'Build a V7 chord in the key of G major. Select all 4 notes.',
       config: {
         type: 'chord_build',
         root: 'D',
@@ -191,10 +191,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The leading tone (3rd of V7) resolves up by half step to the tonic; the 7th of V7 resolves down by half step', correct: true },
+          { label: 'The 3rd rises a half step to the tonic; the 7th falls a half step', correct: true },
           { label: 'Both notes of the tritone resolve upward by step', correct: false },
           { label: 'The tritone expands outward to an octave', correct: false },
-          { label: 'Both notes of the tritone move down by whole step', correct: false },
+          { label: 'Both notes of the tritone move down by a whole step into the I chord', correct: false },
         ],
       },
       hint: 'In G7 resolving to C: B (leading tone, 3rd of V7) resolves up to C; F (7th of V7) resolves down to E. The tritone B-F contracts inward to C-E. This contrary motion is the engine of tonal resolution.',
@@ -225,9 +225,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'I (or I6) — the bass (5th of V7) steps down to the root or 3rd of I', correct: true },
+          { label: 'I or I6 — the bass steps down to the root or up to the 3rd', correct: true },
           { label: 'IV — the bass leaps up to the subdominant', correct: false },
-          { label: 'vi — the bass moves to the submediant', correct: false },
+          { label: 'vi — the bass leaps up a 5th, from the 5th of V7 to the submediant', correct: false },
           { label: 'It does not resolve; it is a stable chord', correct: false },
         ],
       },
@@ -259,7 +259,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l4u13m1e1',
       type: 'chord_build',
-      prompt: 'Build a ii7 chord in C major. This is D minor 7th: D-F-A-C. Select all 4 notes.',
+      prompt: 'Build a ii7 chord in C major. Select all 4 notes.',
       config: {
         type: 'chord_build',
         root: 'D',
@@ -272,7 +272,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l4u13m1e2',
       type: 'chord_build',
-      prompt: 'Build a iiø7 chord in C minor. This is D half-diminished 7th: D-F-Ab-C. Select all 4 notes.',
+      prompt: 'Build a iiø7 chord in C minor. Select all 4 notes.',
       config: {
         type: 'chord_build',
         root: 'D',
@@ -289,8 +289,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'It most commonly progresses to V or V7, preparing the dominant harmony', correct: true },
-          { label: 'It resolves directly to the tonic I chord', correct: false },
+          { label: 'It usually moves to V or V7, preparing the dominant', correct: true },
+          { label: 'It resolves directly to the tonic I chord, skipping the dominant', correct: false },
           { label: 'It replaces the dominant function entirely', correct: false },
           { label: 'It only appears before the IV chord', correct: false },
         ],
@@ -308,7 +308,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Minor 7th — built on the mediant with a minor triad and minor 7th', correct: true },
+          { label: 'Minor 7th — a minor triad with a minor 7th', correct: true },
           { label: 'Major 7th — built with a major triad and major 7th', correct: false },
           { label: 'Dominant 7th — a major triad with a minor 7th', correct: false },
           { label: 'Half-diminished 7th — a diminished triad with a minor 7th', correct: false },
@@ -353,7 +353,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l4u13m3e1',
       type: 'chord_build',
-      prompt: 'Build a fully diminished 7th chord on B (viio7 in C minor): B-D-F-Ab. Select all 4 notes.',
+      prompt: 'Build viio7 in C minor (harmonic minor): the fully diminished seventh chord on the leading tone. Select all 4 notes.',
       config: {
         type: 'chord_build',
         root: 'B',
@@ -366,7 +366,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l4u13m3e2',
       type: 'chord_build',
-      prompt: 'Build a half-diminished 7th chord on B (viiø7 in C major): B-D-F-A. Select all 4 notes.',
+      prompt: 'Build viiø7 in C major: the half-diminished seventh chord on the leading tone. Select all 4 notes.',
       config: {
         type: 'chord_build',
         root: 'B',
@@ -383,7 +383,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The fully diminished has a diminished 7th (9 semitones); the half-diminished has a minor 7th (10 semitones)', correct: true },
+          { label: 'Fully diminished has a diminished 7th; half-diminished has a minor 7th', correct: true },
           { label: 'The fully diminished uses a minor triad; the half-diminished uses a major triad', correct: false },
           { label: 'The fully diminished has a perfect 5th; the half-diminished has a diminished 5th', correct: false },
           { label: 'They are the same chord with different names', correct: false },
@@ -432,7 +432,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'ii — both share two common tones and serve the same pre-dominant function', correct: true },
+          { label: 'ii — both are pre-dominants and share two notes', correct: true },
           { label: 'V — because it is close to IV on the circle of fifths', correct: false },
           { label: 'iii — because it is adjacent to IV by step', correct: false },
           { label: 'viio — because it contains the leading tone', correct: false },
@@ -451,7 +451,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Descending fifths — each chord root falls a 5th (or rises a 4th): e.g. I-IV-viio-iii-vi-ii-V-I', correct: true },
+          { label: 'Descending fifths — each root falls a 5th', correct: true },
           { label: 'Ascending fifths — each root rises a 5th', correct: false },
           { label: 'Descending thirds — each root falls a 3rd', correct: false },
           { label: 'Chromatic descent — each root falls a half step', correct: false },
@@ -481,10 +481,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A pattern of chord progressions repeated at successive pitch levels within the key', correct: true },
+          { label: 'A chord pattern repeated at successive pitch levels in the key', correct: true },
           { label: 'A single chord repeated multiple times', correct: false },
           { label: 'A melody played in different octaves', correct: false },
-          { label: 'A series of modulations to distant keys', correct: false },
+          { label: 'A series of modulations that moves the music to ever more distant keys', correct: false },
         ],
       },
       hint: 'A harmonic sequence takes a short chord pattern (the model) and repeats it at different diatonic pitch levels. The intervals between roots stay consistent, though their exact quality may change to stay within the key.',
@@ -504,7 +504,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Note against note — each note in the counterpoint aligns with one note in the cantus firmus, using only consonances', correct: true },
+          { label: 'Note against note, using only consonances', correct: true },
           { label: 'Two notes against one — the counterpoint moves twice as fast as the cantus firmus', correct: false },
           { label: 'Free rhythm — any rhythm can be used against the cantus firmus', correct: false },
           { label: 'Only unisons and octaves are allowed between the voices', correct: false },
@@ -571,7 +571,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'It combines unequal groups of eighth notes (e.g. 2+2+3, 3+2+2, or 2+3+2)', correct: true },
           { label: 'It has 7 equal beats like a standard simple meter', correct: false },
           { label: 'It is a compound meter with dotted-quarter-note beats', correct: false },
-          { label: 'It alternates between 3/8 and 4/8 every other measure', correct: false },
+          { label: 'It alternates between 3/8 and 4/8 every other measure, like a mixed meter', correct: false },
         ],
       },
       hint: '7/8 is an additive meter: 7 eighth notes are grouped into unequal sub-beats. Common groupings are 2+2+3 (short-short-long), 3+2+2 (long-short-short), or 2+3+2. The long group feels like a slightly stretched beat.',
@@ -602,9 +602,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A non-chord tone that fills a whole step with a chromatic half step, moving by semitone between two chord tones', correct: true },
+          { label: 'A note that fills a whole step between two chord tones, moving by half steps', correct: true },
           { label: 'Any accidental that appears in the melody', correct: false },
-          { label: 'A note that leaps chromatically from one chord tone to another', correct: false },
+          { label: 'A note that leaps chromatically from one chord tone to a different chord tone', correct: false },
           { label: 'A passing tone that changes the key of the passage', correct: false },
         ],
       },
@@ -617,10 +617,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A non-chord tone a half step above or below a chord tone, returning to the same chord tone', correct: true },
+          { label: 'A half-step neighbor that returns to the same chord tone', correct: true },
           { label: 'A neighbor tone that modulates to a new key', correct: false },
           { label: 'A tone borrowed from the parallel key', correct: false },
-          { label: 'Any neighbor tone in a chromatic scale passage', correct: false },
+          { label: 'Any neighbor tone that appears inside a chromatic scale passage', correct: false },
         ],
       },
       hint: 'A chromatic neighbor is an embellishment that moves by semitone from a chord tone and returns: e.g. E-E#-E or G-Gb-G. It adds color without altering the harmonic direction, functioning as a surface decoration.',
@@ -632,7 +632,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Embellishments are non-chord tones that decorate; structural chromatic notes change the harmony or tonicize a new chord', correct: true },
+          { label: 'Embellishments decorate; structural chromatic notes change the harmony', correct: true },
           { label: 'There is no difference; all chromatic notes are embellishments', correct: false },
           { label: 'Embellishments last longer than structural notes', correct: false },
           { label: 'Structural notes are always in the bass while embellishments are in upper voices', correct: false },
@@ -696,7 +696,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l4u14m5e1',
       type: 'chord_build',
-      prompt: 'Build the III chord in A minor (natural minor). This is C major: C-E-G. Select all 3 notes.',
+      prompt: 'Build the III chord in A minor (natural minor). Select all 3 notes.',
       config: {
         type: 'chord_build',
         root: 'C',
@@ -709,7 +709,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l4u14m5e2',
       type: 'chord_build',
-      prompt: 'Build the VII chord in A minor (natural minor). This is G major: G-B-D. Select all 3 notes.',
+      prompt: 'Build the VII chord in A minor (natural minor). Select all 3 notes.',
       config: {
         type: 'chord_build',
         root: 'G',
@@ -726,10 +726,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'VII is a major triad a whole step below tonic; viio is a diminished triad a half step below — only viio has dominant function', correct: true },
+          { label: 'VII is major, a whole step below; viio is diminished, a half step below', correct: true },
           { label: 'VII and viio are the same chord with different names', correct: false },
           { label: 'VII is diminished and viio is major', correct: false },
-          { label: 'Both have dominant function but VII is stronger', correct: false },
+          { label: 'Both have dominant function, but VII is stronger because it is a major triad', correct: false },
         ],
       },
       hint: 'In A natural minor, VII = G major (G-B-D), a whole step below A. In A harmonic minor, viio = G#-B-D (diminished), a half step below A. The raised 7th (G#) creates the leading tone that gives viio its strong pull toward the tonic.',

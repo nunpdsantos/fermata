@@ -59,7 +59,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Half-diminished has a minor 7th; fully diminished has a diminished 7th (double-flatted)', correct: true },
+          { label: 'Half-diminished has a minor 7th; fully diminished has a diminished 7th', correct: true },
           { label: 'Half-diminished has a major 7th; fully diminished has a minor 7th', correct: false },
           { label: 'They use different triads: half-diminished is minor, fully diminished is diminished', correct: false },
           { label: 'There is no difference; they are the same chord', correct: false },
@@ -155,9 +155,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: '7 (shorthand for 7/5/3)', correct: true },
-          { label: '6/5', correct: false },
-          { label: '4/3', correct: false },
-          { label: '4/2', correct: false },
+          { label: '6/5 (shorthand for 6/5/3)', correct: false },
+          { label: '4/3 (shorthand for 6/4/3)', correct: false },
+          { label: '4/2 (shorthand for 6/4/2)', correct: false },
         ],
       },
       hint: 'In root position, the intervals above the bass are 3rd, 5th, and 7th. The full figuring 7/5/3 is shortened to just 7.',
@@ -170,9 +170,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: '6/5 (shorthand for 6/5/3)', correct: true },
-          { label: '7', correct: false },
-          { label: '4/3', correct: false },
-          { label: '4/2', correct: false },
+          { label: '7 (shorthand for 7/5/3)', correct: false },
+          { label: '4/3 (shorthand for 6/4/3)', correct: false },
+          { label: '4/2 (shorthand for 6/4/2)', correct: false },
         ],
       },
       hint: 'First inversion places the 3rd of the chord in the bass. The characteristic intervals above the bass are a 6th and a 5th, giving the symbol 6/5.',
@@ -185,9 +185,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: '4/2 (shorthand for 6/4/2)', correct: true },
-          { label: '6/5', correct: false },
-          { label: '4/3', correct: false },
-          { label: '7', correct: false },
+          { label: '6/5 (shorthand for 6/5/3)', correct: false },
+          { label: '4/3 (shorthand for 6/4/3)', correct: false },
+          { label: '7 (shorthand for 7/5/3)', correct: false },
         ],
       },
       hint: 'Third inversion places the 7th of the chord in the bass. The intervals above the bass are a 2nd and a 4th, giving the symbol 4/2 (or 2).',
@@ -299,7 +299,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'C4 to G5 (middle C to the G an octave and a fifth above)', correct: true },
+          { label: 'C4 to G5', correct: true },
           { label: 'C3 to G4', correct: false },
           { label: 'G3 to D5', correct: false },
           { label: 'C5 to C7', correct: false },
@@ -427,7 +427,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Each voice should move to the nearest available chord tone, preferring stepwise motion', correct: true },
+          { label: 'Each voice moves to the nearest available chord tone', correct: true },
           { label: 'The bass should always move the shortest distance', correct: false },
           { label: 'Chords should be spaced as close together as possible', correct: false },
           { label: 'The piece should use the fewest possible chords', correct: false },
@@ -447,9 +447,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: '6 (shorthand for 6/3)', correct: true },
-          { label: '5/3', correct: false },
-          { label: '6/4', correct: false },
-          { label: '7', correct: false },
+          { label: '5/3 (often omitted)', correct: false },
+          { label: '6/4 (always written in full)', correct: false },
+          { label: '7 (shorthand for 7/5/3)', correct: false },
         ],
       },
       hint: 'First inversion places the 3rd of the chord in the bass. The intervals above the bass are a 3rd and a 6th. The full 6/3 is abbreviated to just 6.',
@@ -499,10 +499,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'V to I with both chords in root position and the tonic in the soprano on the I chord', correct: true },
+          { label: 'V to I, both in root position, with the tonic in the soprano', correct: true },
           { label: 'Any progression that ends on the I chord', correct: false },
           { label: 'IV to I in root position', correct: false },
-          { label: 'V to I with the 3rd of I in the soprano', correct: false },
+          { label: 'V to I, both in root position, with the 3rd of I in the soprano', correct: false },
         ],
       },
       hint: 'A PAC has three requirements: (1) V goes to I, (2) both chords are in root position, and (3) the soprano lands on the tonic note (scale degree 1). It is the strongest cadence type.',
@@ -563,10 +563,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Two phrases where the first ends with a half cadence and the second with an authentic cadence', correct: true },
+          { label: 'Two phrases: the first ends on a half cadence, the second on an authentic cadence', correct: true },
           { label: 'A single phrase repeated exactly twice', correct: false },
           { label: 'Two phrases that are completely unrelated', correct: false },
-          { label: 'A phrase that modulates to the dominant and back', correct: false },
+          { label: 'Two phrases where the first modulates to the dominant and the second returns home to the tonic', correct: false },
         ],
       },
       hint: 'A period is a pair of phrases: the antecedent (question) ends inconclusively with a half cadence, and the consequent (answer) ends conclusively with a PAC. Together they make one complete musical statement, like a question and its answer.',
@@ -627,7 +627,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'It accelerates -- chords change more frequently approaching the cadence', correct: true },
+          { label: 'It speeds up -- chords change more often near the cadence', correct: true },
           { label: 'It decelerates -- chords change less frequently at cadences', correct: false },
           { label: 'It stays the same throughout the phrase', correct: false },
           { label: 'It stops completely before the cadence chord', correct: false },
@@ -663,7 +663,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'A non-chord tone that moves by step between two chord tones in the same direction', correct: true },
           { label: 'A note that is held over from the previous chord', correct: false },
-          { label: 'A non-chord tone approached by leap and resolved by step', correct: false },
+          { label: 'A non-chord tone approached by leap and resolved by step in the opposite direction', correct: false },
           { label: 'A decorative trill on a chord tone', correct: false },
         ],
       },
@@ -677,7 +677,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'A non-chord tone that steps away from a chord tone and then steps back to it', correct: true },
-          { label: 'A non-chord tone that moves by step between two different chord tones', correct: false },
+          { label: 'A non-chord tone that moves by step from one chord tone to a different chord tone', correct: false },
           { label: 'A chord tone that repeats on the next beat', correct: false },
           { label: 'A tone borrowed from a neighboring key', correct: false },
         ],
@@ -691,8 +691,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A non-chord tone that arrives early -- sounding a note of the next chord before the chord changes', correct: true },
-          { label: 'A chord tone that is delayed until after the beat', correct: false },
+          { label: 'A non-chord tone that sounds a note of the next chord early', correct: true },
+          { label: 'A chord tone that is delayed until after the beat, then resolves', correct: false },
           { label: 'A note that is held over from the previous chord', correct: false },
           { label: 'A rest that replaces an expected note', correct: false },
         ],
@@ -706,7 +706,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l3u11m5e1',
       type: 'interval_id',
-      prompt: 'Transpose C4 up by a major 2nd. Identify the interval of 2 semitones ascending from C.',
+      prompt: 'A melody that starts on C4 is transposed so that it starts on the second note shown. By what interval was it transposed?',
       config: {
         type: 'interval_id',
         root: 'C',
@@ -720,7 +720,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l3u11m5e2',
       type: 'interval_id',
-      prompt: 'Transpose C4 up by a perfect 5th. Identify the interval of 7 semitones ascending from C.',
+      prompt: 'C4 is transposed to the second note shown. Name the interval of this transposition.',
       config: {
         type: 'interval_id',
         root: 'C',
@@ -738,8 +738,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'It changes to reflect the new key (e.g., C major becomes Eb major, gaining 3 flats)', correct: true },
-          { label: 'It stays the same; only the notes move', correct: false },
+          { label: 'It changes to the new key (C major → Eb major: 3 flats)', correct: true },
+          { label: 'It stays the same, and every moved note gets its own accidental', correct: false },
           { label: 'Sharps and flats are removed', correct: false },
           { label: 'Every note gets an accidental', correct: false },
         ],

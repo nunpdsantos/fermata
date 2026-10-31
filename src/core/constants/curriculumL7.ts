@@ -36,7 +36,7 @@ const l7u21m1: CurriculumModule = {
     {
       title: 'Alterations: b9, #9, #11, b13',
       explanation:
-        'Alterations chromatically modify extensions on dominant chords. b9 darkens the sound, common on V7 resolving to minor. #9 is the "Hendrix chord" with its bluesy bite — actually a minor third above the root, notated as an augmented 9th. #11 replaces the natural 11 for a Lydian color, avoiding the 3rd/11 clash. b13 creates a tense altered dominant sound, enharmonic with #5. These alterations give jazz musicians precise control over color and tension on any dominant chord.',
+        'Alterations chromatically modify extensions on dominant chords. b9 darkens the sound, common on V7 resolving to minor. #9 is the "Hendrix chord" with its bluesy bite — actually a minor third above the root, notated as an augmented 9th. #11 replaces the natural 11 for a brighter color, avoiding the 3rd/11 clash. b13 creates a tense altered dominant sound, enharmonic with #5. These alterations give jazz musicians precise control over color and tension on any dominant chord.',
       tryThisQuery: 'C7b9',
       tryThisLabel: 'Build C7b9 — darkened dominant resolving to minor',
     },
@@ -84,14 +84,14 @@ const l7u21m2: CurriculumModule = {
     {
       title: 'The Alt Chord: Maximum Chromatic Tension',
       explanation:
-        'C7alt is a dominant 7th with every extension altered: b9, #9, #11 (enharmonic with b5), and b13 (enharmonic with #5). It packs the maximum chromatic tension possible before resolution — every non-shell tone is chromatically displaced. The alt chord pairs exclusively with the altered (Super Locrian) scale, which is mode 7 of melodic minor a half step above the root (C altered = Db melodic minor). This is the go-to dominant sound for resolving to minor chords in jazz.',
+        'C7alt is a dominant 7th with every extension altered: b9, #9, #11 (enharmonic with b5), and b13 (enharmonic with #5). It packs the maximum chromatic tension possible before resolution — every non-shell tone is chromatically displaced. The alt chord pairs with the altered scale, which is mode 7 of melodic minor a half step above the root (C altered = Db melodic minor). This is the go-to dominant sound for resolving to minor chords in jazz.',
       tryThisQuery: 'C7alt',
       tryThisLabel: 'Build C7alt — every extension altered',
     },
     {
       title: 'Suspended Dominants: 7sus4',
       explanation:
-        'The 7sus4 chord replaces the 3rd with a 4th in a dominant 7th, creating an open, unresolved sound. C7sus4 contains C-F-G-Bb — no E, so no major/minor identity. In jazz, 7sus4 functions as a pre-resolution voicing: the sus4 resolves to the 3rd, then the entire chord resolves to I. The 7sus4 also serves as a modal, Dorian-leaning sound: a 9sus chord built a perfect 4th above (a 5th below) the root of the ii chord — that is, on V — fuses ii and V into one sound: G9sus4 (G-C-D-F-A) is Dm7 over a G bass (Dm7/G), often written F/G, and can stand in for Dm7-G7. Sus2 works similarly, replacing the 3rd with a 2nd for a bright, open quality.',
+        'The 7sus4 chord replaces the 3rd with a 4th in a dominant 7th, creating an open, unresolved sound. C7sus4 contains C-F-G-Bb — no E, so no major/minor identity. In jazz, 7sus4 functions as a pre-resolution voicing: the sus4 resolves to the 3rd, then the entire chord resolves to I. The 7sus4 also serves as an open, modal-sounding chord: a 9sus chord built a perfect 4th above (a 5th below) the root of the ii chord — that is, on V — fuses ii and V into one sound: G9sus4 (G-C-D-F-A) is Dm7 over a G bass (Dm7/G), often written F/G, and can stand in for Dm7-G7. Sus2 works similarly, replacing the 3rd with a 2nd for a bright, open quality.',
       tryThisQuery: 'G7sus4',
       tryThisLabel: 'Hear G7sus4 — suspended dominant, no 3rd',
     },
@@ -242,7 +242,7 @@ const l7u21m5: CurriculumModule = {
     {
       title: 'The 12-Bar Blues',
       explanation:
-        'The 12-bar blues is the most played form in jazz and popular music. It is built on three dominant 7th chords: I7 for four bars, IV7 for two, I7 for two, then V7-IV7-I7-V7 for the final four. In C: C7-C7-C7-C7 / F7-F7-C7-C7 / G7-F7-C7-G7. In classical theory, only V should be dominant, but in blues EVERY chord is dominant. That pervasive dominant tension — tritones everywhere, nothing fully resolved — IS the blues sound. Every jazz musician must navigate this form in all 12 keys.',
+        'The 12-bar blues is the most played form in jazz and popular music. It is built on three dominant 7th chords: I7 for four bars, IV7 for two, I7 for two, then V7-IV7-I7-V7 for the final four. In C: C7-C7-C7-C7 / F7-F7-C7-C7 / G7-F7-C7-G7. In classical theory, only V should be dominant, but in blues EVERY chord is dominant. That pervasive dominant tension — tritones everywhere, nothing fully resolved — IS the blues sound. Over these changes players improvise with the minor pentatonic scale (1 ♭3 4 5 ♭7: C Eb F G Bb in C) and the blues scale, which adds the ♭5 blue note between the 4th and the 5th (C Eb F Gb G Bb). Every jazz musician must navigate this form in all 12 keys.',
       tryThisQuery: 'C7',
       tryThisLabel: 'Hear C7 — the tonic chord of C blues',
     },
@@ -325,7 +325,7 @@ const l7u21m6: CurriculumModule = {
     {
       id: 'l7u21m6t2',
       instruction:
-        "Build the rhythm changes bridge cycle: play 'D7', 'G7', 'C7', 'F7'. Each dominant resolves to the next by a fourth — perpetual motion. Try matching each chord to its Mixolydian scale for improvisation ideas.",
+        "Build the rhythm changes bridge cycle: play 'D7', 'G7', 'C7', 'F7'. Each dominant resolves to the next by a fourth — perpetual motion. Follow the guide tones as you go: the 3rd and 7th of each chord slide down a half step into the next (D7's F# and C become G7's F and B).",
     },
     {
       id: 'l7u21m6t3',
@@ -355,6 +355,13 @@ const l7u22m1: CurriculumModule = {
     'Use the altered scale for 7alt chords and Lydian dominant for 7#11 chords',
   ],
   concepts: [
+    {
+      title: 'The Seven Modes of the Major Scale',
+      explanation:
+        'A mode is a major scale played from a different starting note. Keep the notes of one parent major scale and start on each of its seven degrees in turn: C Ionian, D Dorian, E Phrygian, F Lydian, G Mixolydian, A Aeolian, B Locrian — seven modes, all with C major as their parent. The notes stay the same, but each mode has its own tonic, so its pattern of whole and half steps changes. Compare each with the scale it most resembles: Ionian is the major scale itself; Lydian is major with a ♯4; Mixolydian is major with a ♭7; Aeolian is the natural minor; Dorian is natural minor with a ♮6; Phrygian is natural minor with a ♭2; Locrian is natural minor with a ♭2 and a ♭5. That altered note is the characteristic note that gives each mode its colour. To find a mode\'s parent, count down to degree 1: D Dorian starts on degree 2 of its parent, so its parent is C major.',
+      tryThisQuery: 'D dorian',
+      tryThisLabel: 'See D Dorian — the notes of C major, starting on D',
+    },
     {
       title: 'The Chord-Scale Map',
       explanation:

@@ -54,7 +54,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Escucha este intervalo, tocado en movimiento {direction}, e identifícalo. Céntrate en intervalos hasta la 5.ª justa.',
       hintTemplate:
-        'Entrenamiento auditivo de intervalos: 2m=1 (tenso), 2M=2 (paso), 3m=3 (triste), 3M=4 (brillante), 4J=5 (abierto), 5J=7 (fuerte). Cuenta los semitonos que oyes.',
+        'Entrenamiento auditivo de intervalos: 2m=1 (tenso), 2M=2 (paso), 3m=3 (triste), 3M=4 (brillante), 4J=5 (abierto), tritono=6 (inestable), 5J=7 (fuerte). Cuenta los semitonos que oyes.',
     },
   ],
 
@@ -65,7 +65,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Escucha este intervalo más amplio, tocado en movimiento {direction}, e identifícalo.',
       hintTemplate:
-        'Intervalos amplios: tritono=6 (tenso), 6m=8 (agridulce), 6M=9 (cálido), 7m=10 (jazz), 7M=11 (anhelante), 8J=12 (octava).',
+        'Intervalos amplios: 6m=8 (agridulce), 6M=9 (cálido), 7m=10 (jazz), 7M=11 (anhelante), 8J=12 (octava).',
     },
   ],
 
@@ -77,6 +77,13 @@ const overlay: TemplateLevelOverlay = {
         'Escucha estas dos notas tocadas simultáneamente e identifica el intervalo armónico.',
       hintTemplate:
         'Los intervalos armónicos hacen sonar ambas notas a la vez. Las consonancias (3, 4, 5, 7, 8, 9, 12 semitonos) se funden suavemente. Las disonancias (1, 2, 6, 10, 11) crean tensión.',
+    },
+    {
+      // ear_training (interval, armónico, compuesto)
+      promptTemplate:
+        'Escucha estas dos notas tocadas simultáneamente e identifica el intervalo compuesto (más amplio que una octava).',
+      hintTemplate:
+        'Un intervalo compuesto es un intervalo simple más una octava: una 9.ª = octava + 2.ª (9m = 13, 9M = 14 semitonos), una 10.ª = octava + 3.ª (10M = 16), una 11.ª = octava + 4.ª (11J = 17). Escucha el intervalo simple por encima de la octava.',
     },
   ],
 
@@ -91,7 +98,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Escucha esta escala e identifica su tipo.',
       hintTemplate:
-        'Escala mayor: T-T-S-T-T-T-S (brillante, resuelta). Menor natural: T-S-T-T-S-T-T (sombría, abierta). Menor armónica: eleva el 7.º, creando un salto distintivo de tono y medio.',
+        'Escala mayor: T-T-S-T-T-T-S (brillante, resuelta). Menor natural: T-S-T-T-S-T-T (sombría, abierta). Menor armónica: eleva el 7.º, creando un salto distintivo de tono y medio. Menor melódica (ascendente): eleva el 6.º y el 7.º — menor abajo, mayor arriba.',
     },
   ],
 
@@ -102,7 +109,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Escucha esta escala e identifica el modo. Presta atención a la nota característica.',
       hintTemplate:
-        'Identificadores de los modos: dórico = 6 natural en contexto menor, frigio = b2, lidio = #4, mixolidio = b7 en contexto mayor.',
+        'Identificadores de los modos: dórico = 6 natural en contexto menor, frigio = b2, lidio = #4, mixolidio = b7 en contexto mayor, locrio = b2 y b5 (el más oscuro).',
     },
   ],
 
@@ -113,7 +120,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Escucha esta escala e identifica su tipo.',
       hintTemplate:
-        'Las escalas pentatónicas tienen cinco notas y ninguna tensión de semitono. La escala de blues añade la «blue note» (b5). La escala de tonos enteros es toda de tonos — onírica y sin centro.',
+        'Las escalas pentatónicas tienen cinco notas y ninguna tensión de semitono. La escala de blues añade la «blue note» (b5). La escala de tonos enteros es toda de tonos — onírica y sin centro. La escala disminuida (semitono/tono) alterna semitonos y tonos — ocho notas, simétrica y tensa.',
     },
   ],
 
@@ -135,7 +142,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Escucha este acorde de séptima e identifica su cualidad.',
       hintTemplate:
-        'maj7 = etéreo/exuberante. m7 = suave/cálido. 7 de dominante = brillante/pide resolución. semidisminuido = sombrío/sin resolución. dim7 = muy tenso.',
+        'maj7 = etéreo/exuberante. m7 = suave/cálido. 7 de dominante = brillante/pide resolución. semidisminuido = sombrío/sin resolución. dim7 = muy tenso. menor con 7.ª M = una tríada menor sombría bajo una 7.ª mayor brillante, inquietante.',
     },
   ],
 

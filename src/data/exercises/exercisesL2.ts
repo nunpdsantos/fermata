@@ -235,7 +235,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'To eliminate the augmented 2nd between the 6th and raised 7th in harmonic minor', correct: true },
-          { label: 'To match the major scale exactly', correct: false },
+          { label: 'To turn it into the major scale exactly, so the minor sound disappears completely', correct: false },
           { label: 'To make it easier to play on the piano', correct: false },
           { label: 'To remove all half steps from the scale', correct: false },
         ],
@@ -321,7 +321,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: '2 main beats, each divided into 3 eighth notes', correct: true },
+          { label: '2 dotted-quarter beats, each divided into 3 eighth notes', correct: true },
           { label: '6 equal beats of eighth notes', correct: false },
           { label: '3 main beats, each divided into 2 eighth notes', correct: false },
           { label: '8 beats grouped in sixes', correct: false },
@@ -351,10 +351,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: '3 main beats (each divided into 3 eighth notes)', correct: true },
-          { label: '9 beats', correct: false },
-          { label: '4 main beats', correct: false },
-          { label: '2 main beats', correct: false },
+          { label: '3 dotted-quarter beats (each divided into 3 eighth notes)', correct: true },
+          { label: '9 beats (each one eighth note long)', correct: false },
+          { label: '4 main beats (each divided into 3 eighth notes)', correct: false },
+          { label: '2 main beats (each divided into 3 eighth notes)', correct: false },
         ],
       },
       hint: '9/8 is compound triple meter: 9 eighth notes form 3 groups of 3. Each group of 3 is one main beat (a dotted quarter note).',
@@ -371,7 +371,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Placing accents on normally weak beats or off-beats', correct: true },
-          { label: 'Playing all notes at the same volume', correct: false },
+          { label: 'Playing every note at exactly the same volume and length', correct: false },
           { label: 'Gradually speeding up the tempo', correct: false },
           { label: 'Playing notes in a different octave', correct: false },
         ],
@@ -385,8 +385,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: '3 notes played in the time normally occupied by 2 notes of the same value', correct: true },
-          { label: '3 notes played one after another', correct: false },
+          { label: '3 equal notes in the time normally taken by 2 of the same value', correct: true },
+          { label: '3 equal notes in the time of 4 of the same value', correct: false },
           { label: 'A chord with 3 notes', correct: false },
           { label: '3 measures grouped together', correct: false },
         ],
@@ -450,8 +450,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'It does not come in major/minor variants -- only perfect, augmented, or diminished', correct: true },
-          { label: 'It sounds perfectly in tune', correct: false },
+          { label: 'It has no major/minor forms: only perfect, augmented or diminished', correct: true },
+          { label: 'It sounds perfectly in tune on every instrument, with no beating at all', correct: false },
           { label: 'It only uses white keys on the piano', correct: false },
           { label: 'It is always consonant', correct: false },
         ],
@@ -572,7 +572,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'An interval of 6 semitones that divides the octave in half', correct: true },
-          { label: 'A chord built from 3 whole tones', correct: false },
+          { label: 'A chord built by stacking three whole tones on top of each other', correct: false },
           { label: 'An interval of 3 semitones', correct: false },
           { label: 'A scale with 3 notes', correct: false },
         ],
@@ -627,17 +627,17 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l2u7m3e4',
       type: 'multiple_choice',
-      prompt: 'Which triad type is considered the most unstable and dissonant?',
+      prompt: 'Which triad type has a tritone between its root and its 5th?',
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Diminished -- two minor 3rds with a tritone between root and 5th', correct: true },
-          { label: 'Minor -- because it sounds sad', correct: false },
-          { label: 'Major -- because it is the most common', correct: false },
-          { label: 'Augmented -- because it has a raised 5th', correct: false },
+          { label: 'Diminished -- two stacked minor 3rds', correct: true },
+          { label: 'Minor -- a minor 3rd under a major 3rd', correct: false },
+          { label: 'Major -- a major 3rd under a minor 3rd', correct: false },
+          { label: 'Augmented -- two stacked major 3rds', correct: false },
         ],
       },
-      hint: 'The diminished triad contains a tritone (6 semitones) between its root and 5th. This makes it the most dissonant and unstable of the four triad types, strongly wanting to resolve.',
+      hint: 'A tritone is 6 semitones. Two minor 3rds (3 + 3) span exactly 6, so only the diminished triad has a tritone from root to 5th. Major and minor span 7 (a perfect 5th); augmented spans 8 (an augmented 5th).',
     },
   ],
 
@@ -650,10 +650,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: '5/3 (often abbreviated by writing nothing)', correct: true },
-          { label: '6/3', correct: false },
-          { label: '6/4', correct: false },
-          { label: '7/5/3', correct: false },
+          { label: '5/3 (usually left unwritten)', correct: true },
+          { label: '6/3 (usually shortened to 6)', correct: false },
+          { label: '6/4 (always written in full)', correct: false },
+          { label: '7/5/3 (a seventh chord)', correct: false },
         ],
       },
       hint: 'In root position, the intervals above the bass are a 3rd and a 5th. Figured bass writes these as 5/3. Since root position is the default, the numbers are usually omitted.',
@@ -665,10 +665,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: '6/3 (often abbreviated to just 6)', correct: true },
-          { label: '5/3', correct: false },
-          { label: '6/4', correct: false },
-          { label: '4/2', correct: false },
+          { label: '6/3 (usually shortened to 6)', correct: true },
+          { label: '5/3 (usually left unwritten)', correct: false },
+          { label: '6/4 (always written in full)', correct: false },
+          { label: '4/2 (a seventh-chord figure)', correct: false },
         ],
       },
       hint: 'In first inversion, the 3rd of the chord is in the bass. The intervals above the bass are a 3rd and a 6th. Figured bass abbreviates 6/3 to just 6.',
@@ -682,7 +682,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Rearranging the chord so a note other than the root is the lowest note', correct: true },
           { label: 'Flipping the chord upside down so the top note becomes the bottom', correct: false },
-          { label: 'Changing the chord from major to minor', correct: false },
+          { label: 'Changing the quality of the chord, for example from major to minor or the reverse', correct: false },
           { label: 'Playing the chord in a different key', correct: false },
         ],
       },

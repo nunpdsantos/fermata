@@ -20,7 +20,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'The subject is the main theme stated first; the answer is its imitation in the dominant key', correct: true },
-          { label: 'The subject is played by strings; the answer is played by winds', correct: false },
+          { label: 'The subject is always given to the strings, while the answer is always given to the wind section', correct: false },
           { label: 'The subject is in major; the answer is in minor', correct: false },
           { label: 'The subject is fast; the answer is slow', correct: false },
         ],
@@ -34,10 +34,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A real answer transposes the subject exactly; a tonal answer adjusts intervals (typically answering 5 with 1) so the answer does not undermine the tonic key', correct: true },
+          { label: 'A real answer copies the subject\'s intervals exactly; a tonal answer alters a few (often 5 answered by 1) so as not to undermine the tonic key', correct: true },
           { label: 'A real answer is louder; a tonal answer is softer', correct: false },
           { label: 'A real answer uses the same rhythm; a tonal answer changes the rhythm', correct: false },
-          { label: 'A real answer is in the same octave; a tonal answer is an octave higher', correct: false },
+          { label: 'A real answer always stays in the subject\'s own octave, while a tonal answer is written one whole octave higher than the subject itself', correct: false },
         ],
       },
       hint: 'A real answer is an exact transposition to the dominant. A tonal answer modifies certain intervals (typically scale degrees 1 and 5) to maintain tonal coherence.',
@@ -51,7 +51,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Each voice enters successively with the subject or answer until all voices have stated the theme', correct: true },
           { label: 'All voices play the subject simultaneously in unison', correct: false },
-          { label: 'The subject is developed through fragmentation and sequence', correct: false },
+          { label: 'The subject is immediately broken into small fragments and developed through sequences in remote keys', correct: false },
           { label: 'The subject is presented in augmentation and diminution', correct: false },
         ],
       },
@@ -69,7 +69,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'To modulate between keys and provide contrast using fragments of the subject', correct: true },
-          { label: 'To introduce a completely new theme unrelated to the subject', correct: false },
+          { label: 'To introduce a completely new theme, unrelated to the subject, that is never heard again', correct: false },
           { label: 'To restate the subject in all voices simultaneously', correct: false },
           { label: 'To conclude the fugue with a final cadence', correct: false },
         ],
@@ -84,7 +84,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Overlapping entries of the subject where a new voice begins before the previous one finishes', correct: true },
-          { label: 'A gradual increase in tempo toward the end of the fugue', correct: false },
+          { label: 'A gradual increase in tempo toward the end of the fugue, until every voice is playing twice as fast', correct: false },
           { label: 'The final cadence where all voices resolve together', correct: false },
           { label: 'A section where the subject is played backward', correct: false },
         ],
@@ -100,7 +100,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'The subject is presented with note values doubled (proportionally longer)', correct: true },
           { label: 'The subject is presented with additional chromatic notes', correct: false },
-          { label: 'The subject is played by more instruments than originally', correct: false },
+          { label: 'The subject is played by more instruments than at first, with the note values left unchanged', correct: false },
           { label: 'The subject is transposed to a higher octave', correct: false },
         ],
       },
@@ -118,7 +118,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'A composition where one voice is imitated exactly by another voice entering after a delay', correct: true },
-          { label: 'A composition where all voices play different melodies simultaneously', correct: false },
+          { label: 'A composition in which every voice plays its own different melody, and nothing is ever imitated', correct: false },
           { label: 'A composition with a repeating bass line', correct: false },
           { label: 'A composition that modulates through all twelve keys', correct: false },
         ],
@@ -133,7 +133,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'The follower imitates the leader transposed up (or down) by a perfect fifth', correct: true },
-          { label: 'The follower enters five beats after the leader', correct: false },
+          { label: 'The follower enters exactly five beats after the leader, at the same pitch as the leader', correct: false },
           { label: 'The follower plays only the fifth note of each phrase', correct: false },
           { label: 'The follower plays the leader melody five times', correct: false },
         ],
@@ -150,7 +150,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Strict imitation copies intervals exactly; free imitation allows modifications for harmonic or melodic reasons', correct: true },
           { label: 'Strict imitation is faster; free imitation is slower', correct: false },
           { label: 'Strict imitation uses only consonances; free imitation uses only dissonances', correct: false },
-          { label: 'Strict imitation is for vocal music; free imitation is for instrumental music', correct: false },
+          { label: 'Strict imitation is reserved for vocal music, while free imitation is only ever used in instrumental music', correct: false },
         ],
       },
       hint: 'Strict imitation preserves every interval precisely. Free imitation allows alterations to intervals while maintaining the general shape and rhythm of the model.',
@@ -172,7 +172,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'A first theme in the tonic and a second theme in a contrasting key (usually the dominant)', correct: true },
           { label: 'A fast theme and a slow theme both in the tonic', correct: false },
-          { label: 'A theme for strings and a theme for winds in the same key', correct: false },
+          { label: 'A theme for the strings and a second theme for the winds, both kept in the same key throughout', correct: false },
           { label: 'A major theme and its minor-mode variant', correct: false },
         ],
       },
@@ -186,7 +186,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'To explore, fragment, and transform thematic material through modulation and motivic development', correct: true },
-          { label: 'To introduce entirely new themes not heard in the exposition', correct: false },
+          { label: 'To introduce entirely new themes that were never heard in the exposition and never come back later on', correct: false },
           { label: 'To repeat the exposition exactly in a different key', correct: false },
           { label: 'To provide a slow, lyrical contrast to the exposition', correct: false },
         ],
@@ -201,7 +201,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'The tonic key, resolving the tonal conflict of the exposition', correct: true },
-          { label: 'The dominant key, exactly as in the exposition', correct: false },
+          { label: 'The dominant key, exactly where it stood in the exposition the first time', correct: false },
           { label: 'The subdominant key as a compromise', correct: false },
           { label: 'A remote key chosen freely by the composer', correct: false },
         ],
@@ -222,7 +222,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'The underlying harmonic structure and/or melodic outline of the theme', correct: true },
           { label: 'The exact melody and rhythm without any changes', correct: false },
           { label: 'Only the tempo and dynamics', correct: false },
-          { label: 'Nothing; each variation is completely independent', correct: false },
+          { label: 'Nothing at all; every variation is a completely independent piece with its own theme', correct: false },
         ],
       },
       hint: 'Variations typically preserve the harmonic framework and phrase structure of the theme while altering melody, rhythm, texture, or mode.',
@@ -236,7 +236,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'ABACA (or ABACABA) — a recurring refrain alternates with contrasting episodes', correct: true },
           { label: 'AABB — two sections each repeated', correct: false },
-          { label: 'ABA — a ternary structure with a contrasting middle', correct: false },
+          { label: 'ABA — a ternary structure with a single contrasting middle section and no refrain', correct: false },
           { label: 'ABCD — four different sections played once each', correct: false },
         ],
       },
@@ -249,9 +249,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A set of continuous variations over a repeating bass line or harmonic progression', correct: true },
+          { label: 'A set of continuous variations over a repeating bass line or a repeating harmonic progression', correct: true },
           { label: 'A fast dance in triple meter with no repeats', correct: false },
-          { label: 'A vocal form with alternating verses and refrains', correct: false },
+          { label: 'A vocal form that alternates verses and refrains, with no repeating bass line at all', correct: false },
           { label: 'A fugue with a chromatic subject', correct: false },
         ],
       },
@@ -286,7 +286,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Its written pitch differs from the pitch that actually sounds (concert pitch)', correct: true },
           { label: 'It can play in any key without difficulty', correct: false },
           { label: 'It can change its tuning during a performance', correct: false },
-          { label: 'It transposes music automatically for the player', correct: false },
+          { label: 'It transposes the music automatically for the player, so nothing ever needs to be rewritten', correct: false },
         ],
       },
       hint: 'A transposing instrument produces a different pitch than what is notated. This simplifies fingerings across instrument families of different sizes.',
@@ -336,9 +336,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The arrangement of pitch classes in ascending order within the smallest possible interval span', correct: true },
+          { label: 'The arrangement of all its pitch classes in ascending order within the smallest possible interval span', correct: true },
           { label: 'The order in which the notes appear in the musical score', correct: false },
-          { label: 'The arrangement sorted by frequency from lowest to highest', correct: false },
+          { label: 'The arrangement sorted by actual frequency, from the lowest sounding pitch up to the highest one', correct: false },
           { label: 'An alphabetical arrangement of note names', correct: false },
         ],
       },
@@ -351,10 +351,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'To create a standard label so that transpositionally and inversionally related sets share the same identity', correct: true },
+          { label: 'To give one standard label to sets related by transposition or inversion, so that they share one identity', correct: true },
           { label: 'To determine which key the music is in', correct: false },
           { label: 'To find the root of a chord', correct: false },
-          { label: 'To convert the set into standard music notation', correct: false },
+          { label: 'To convert the set back into ordinary music notation, with every pitch given its exact octave again', correct: false },
         ],
       },
       hint: 'Prime form is the most reduced version of a set, starting on 0 and packed as tightly as possible to the left. It lets analysts compare sets regardless of transposition or inversion.',
@@ -370,10 +370,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'An ordered arrangement of all 12 pitch classes, each appearing exactly once, used as the basis for a composition', correct: true },
+          { label: 'An ordered arrangement of all 12 pitch classes, each used exactly once, that a piece is built on', correct: true },
           { label: 'A chromatic scale played from bottom to top', correct: false },
           { label: 'A series of 12 chords used as a harmonic progression', correct: false },
-          { label: 'Twelve measures of music that repeat throughout a piece', correct: false },
+          { label: 'Twelve measures of music that are repeated, unchanged, from the very beginning to the end of a piece', correct: false },
         ],
       },
       hint: 'A tone row (or series) is a fixed ordering of all 12 chromatic pitch classes. No pitch class repeats until all 12 have been sounded.',
@@ -388,7 +388,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Prime (P), Retrograde (R), Inversion (I), Retrograde-Inversion (RI)', correct: true },
           { label: 'Major, Minor, Augmented, Diminished', correct: false },
           { label: 'Tonic, Dominant, Subdominant, Leading Tone', correct: false },
-          { label: 'Original, Transposed, Modulated, Developed', correct: false },
+          { label: 'Original, Transposed, Modulated, Developed — the four stages of a sonata', correct: false },
         ],
       },
       hint: 'P is the original row. R reverses it. I inverts all intervals. RI applies both retrograde and inversion. Each can also be transposed to any of the 12 pitch levels.',
@@ -403,7 +403,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'To display all 48 row forms (12 transpositions each of P, R, I, RI) in a single 12x12 grid', correct: true },
           { label: 'To show which instruments play each note of the row', correct: false },
           { label: 'To convert pitch-class numbers into standard notation', correct: false },
-          { label: 'To calculate the harmonic rhythm of a serial composition', correct: false },
+          { label: 'To calculate the harmonic rhythm of a serial composition, bar by bar, starting from its very first chord', correct: false },
         ],
       },
       hint: 'The matrix (or magic square) is a 12x12 grid. Rows read left-to-right give P forms, right-to-left give R, columns top-to-bottom give I, and bottom-to-top give RI.',
@@ -419,9 +419,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Moving chords or intervals in parallel motion, either keeping the exact intervallic structure (chromatic planing) or adjusting it to the scale (diatonic planing)', correct: true },
+          { label: 'Moving chords in parallel: chromatic planing keeps their exact intervals, diatonic planing fits them to the scale', correct: true },
           { label: 'Gradually increasing the tempo throughout a passage', correct: false },
-          { label: 'Alternating between two different keys every measure', correct: false },
+          { label: 'Alternating between two different keys in every single measure, so that the music never settles on any one tonic', correct: false },
           { label: 'Writing only in stepwise (conjunct) motion', correct: false },
         ],
       },
@@ -449,9 +449,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The free use of all diatonic scale tones without traditional functional harmony or voice-leading rules', correct: true },
+          { label: 'Free use of all the notes of the scale, without functional harmony or voice-leading rules', correct: true },
           { label: 'Music that uses only pentatonic scales', correct: false },
-          { label: 'The use of all twelve chromatic tones simultaneously', correct: false },
+          { label: 'The use of all twelve chromatic tones at the same time, so that no key or scale remains audible', correct: false },
           { label: 'A diatonic melody harmonized exclusively with triads', correct: false },
         ],
       },
@@ -468,10 +468,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Music built on extensive repetition of short patterns with gradual, subtle changes over time', correct: true },
+          { label: 'Music built on the extensive repetition of short patterns, with gradual and subtle changes over time', correct: true },
           { label: 'Music that uses the fewest possible instruments', correct: false },
           { label: 'Music that lasts less than one minute', correct: false },
-          { label: 'Music that avoids all repetition in favor of constant variation', correct: false },
+          { label: 'Music that avoids all repetition, changing its material constantly so that nothing ever returns', correct: false },
         ],
       },
       hint: 'Minimalism (Riley, Reich, Glass, Adams) features repetitive patterns, steady pulse, consonant harmony, and slow processes of gradual transformation.',
@@ -485,7 +485,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Music in which some element of the composition or performance is left to chance or performer choice', correct: true },
           { label: 'Music composed entirely by a computer algorithm', correct: false },
-          { label: 'Music that is always performed at a very fast tempo', correct: false },
+          { label: 'Music that is always performed at a very fast tempo, exactly as the composer marked it, with no choices', correct: false },
           { label: 'Music that uses only electronic instruments', correct: false },
         ],
       },
@@ -499,7 +499,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Playing inside the piano by plucking or muting the strings directly', correct: true },
-          { label: 'Playing a standard scale at a very fast tempo', correct: false },
+          { label: 'Playing an ordinary scale at a very fast tempo, using the instrument in the usual way', correct: false },
           { label: 'Using a metronome during performance', correct: false },
           { label: 'Sight-reading a new piece of music', correct: false },
         ],
@@ -518,7 +518,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Two or more conflicting rhythmic patterns performed simultaneously', correct: true },
-          { label: 'A single rhythm played by multiple instruments in unison', correct: false },
+          { label: 'A single rhythm played in unison by several instruments, all dividing the beat alike', correct: false },
           { label: 'A rhythm that gradually speeds up', correct: false },
           { label: 'A rhythm notated in a compound time signature', correct: false },
         ],
@@ -532,9 +532,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A rhythmic device that creates the effect of 3 beats against 2 (or 2 against 3) within the same span of time', correct: true },
+          { label: 'A device that creates the effect of 3 beats against 2 (or 2 against 3) in the same span of time', correct: true },
           { label: 'A rest that lasts exactly half a beat', correct: false },
-          { label: 'A technique where the tempo doubles suddenly', correct: false },
+          { label: 'A technique in which the tempo suddenly doubles for one bar and then goes back to normal again', correct: false },
           { label: 'A syncopated rhythm used only in jazz', correct: false },
         ],
       },
@@ -547,10 +547,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A change in tempo achieved by reinterpreting a note value from the old meter as the beat unit of the new meter', correct: true },
+          { label: 'A tempo change made by treating a note value of the old meter as the beat unit of the new one', correct: true },
           { label: 'Changing from a major to a minor key', correct: false },
           { label: 'Playing the same rhythm in a different octave', correct: false },
-          { label: 'Gradually slowing down at the end of a piece', correct: false },
+          { label: 'Gradually slowing down towards the end of a piece, just as in an ordinary written-out ritardando', correct: false },
         ],
       },
       hint: 'Metric modulation (a term associated with Elliott Carter) uses a common rhythmic value as a pivot between two tempos. For example, an eighth-note triplet in the old tempo becomes the new eighth note.',

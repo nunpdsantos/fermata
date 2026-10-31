@@ -54,7 +54,9 @@ async function allIntervalExercises(): Promise<ExerciseDefinition[]> {
     const authored = (await import(`../../../../data/exercises/exercisesL${l}.ts`)).default as Record<string, ExerciseDefinition[]>;
     const templates = (await import(`../../../../data/exercises/templatesL${l}.ts`)).default;
     const merged = mergeExerciseMaps(authored, generateAllForLevel(templates, 'en', authored));
-    for (const list of Object.values(merged)) for (const e of list) if (e.config.type === 'interval_id') out.push(e);
+    // Spelled intervals (intervalNumber, W4-14) are drawn on their own letter
+    // and named by it; learnMachinery.test.ts checks those against an oracle.
+    for (const list of Object.values(merged)) for (const e of list) if (e.config.type === 'interval_id' && e.config.intervalNumber === undefined) out.push(e);
   }
   return out;
 }
@@ -64,7 +66,9 @@ afterEach(() => cleanup());
 describe('W1-01 — interval staff spelling', () => {
   it('draws the interval the answer key names, for every interval exercise', async () => {
     const exercises = await allIntervalExercises();
-    expect(exercises.length).toBeGreaterThanOrEqual(43);
+    // 43 before W4: l2u7m2's six items became spelled intervals (checked in
+    // learnMachinery.test.ts) and the W4 template re-keying moved a few more.
+    expect(exercises.length).toBeGreaterThanOrEqual(30);
     const wrong: string[] = [];
     for (const ex of exercises) {
       if (ex.config.type !== 'interval_id') continue;

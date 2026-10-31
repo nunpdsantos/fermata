@@ -27,7 +27,7 @@ const overlay: ExerciseLevelOverlay = {
       'En el cifrado jazz, ¿qué indica "alt" (como en G7alt)?',
     choices: [
       'Un acorde dominante con quintas y novenas alteradas (b5/#5, b9/#9)',
-      'Un voicing alternativo de un acorde dominante estándar',
+      'Un voicing alternativo de un acorde dominante simple, con todas las notas exactamente como están escritas',
       'Un acorde que alterna entre cualidad mayor y menor',
       'Un acorde que puede sustituirse por cualquier otro',
     ],
@@ -40,7 +40,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué notas del acorde contiene típicamente un voicing de shell?',
     choices: [
       'Solo fundamental, tercera y séptima — omitiendo la quinta y las extensiones',
-      'Fundamental, quinta y octava — omitiendo la tercera y la séptima',
+      'Solo fundamental, quinta y octava — dejando fuera la tercera y la séptima del acorde',
       'Todas las siete notas de la escala madre',
       'Solo fundamental y quinta — un voicing de power chord',
     ],
@@ -52,7 +52,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Tiene una séptima dominante con una o más quintas o novenas cromáticamente alteradas',
       'Sustituye la tercera por una cuarta suspendida',
-      'Usa solo notas de la escala de tonos enteros',
+      'Se construye solo con la escala de tonos enteros, así que todas sus notas están a un tono de distancia',
       'Omite la fundamental por completo',
     ],
     hint: 'Un acorde dominante alterado mantiene la fundamental, tercera y b7, pero altera cromáticamente la quinta (b5 o #5) y la novena (b9 o #9), creando tensión máxima antes de la resolución.',
@@ -63,7 +63,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Retrasa la resolución sustituyendo la tercera por una cuarta, creando anticipación antes del V7',
       'Funciona siempre como acorde de tónica',
-      'Actúa como sustituto del acorde ii',
+      'Convierte la dominante en un acorde menor, porque la cuarta sustituye la tercera mayor por una tercera menor',
       'Se usa exclusivamente en el jazz modal',
     ],
     hint: 'Un acorde sus4 sustituye la tercera por una cuarta, eliminando la cualidad mayor/menor. En el jazz, G7sus4 precede frecuentemente a G7 en una resolución V7sus4 → V7 → I, retrasando la sensible.',
@@ -73,19 +73,19 @@ const overlay: ExerciseLevelOverlay = {
 
   l7u21m3e1: {
     prompt:
-      'Construye el acorde ii7 en C mayor (Dm7). Selecciona las 4 notas: D, F, A, C.',
+      'Construye el acorde ii7 en C mayor. Selecciona las 4 notas.',
     hint: 'Dm7 = D, F, A, C. Fundamental (D), tercera menor (F), quinta justa (A), séptima menor (C). Clases de altura: 2, 5, 9, 0.',
   },
   l7u21m3e2: {
     prompt:
-      'Construye el acorde V7 en C mayor (G7). Selecciona las 4 notas: G, B, D, F.',
+      'Construye el acorde V7 en C mayor. Selecciona las 4 notas.',
     hint: 'G7 = G, B, D, F. Fundamental (G), tercera mayor (B), quinta justa (D), séptima menor (F). Clases de altura: 7, 11, 2, 5.',
   },
   l7u21m3e3: {
     prompt: '¿Por qué la ii-V-I es la progresión más importante del jazz?',
     choices: [
-      'Combina las funciones de subdominante, dominante y tónica en el movimiento cadencial más fuerte posible',
-      'Fue inventada por Duke Ellington y se convirtió en un estándar del jazz',
+      'Encadena las funciones de subdominante, dominante y tónica en el movimiento cadencial más fuerte',
+      'Fue inventada por Duke Ellington en los años 1940 y desde entonces se convirtió en un estándar de jazz',
       'Usa solo tres notas en total entre los tres acordes',
       'Evita cualquier disonancia, facilitando la improvisación',
     ],
@@ -96,14 +96,14 @@ const overlay: ExerciseLevelOverlay = {
 
   l7u21m4e1: {
     prompt:
-      'Construye la sustitución tritonal de G7: Db7. Selecciona las 4 notas: Db, F, Ab, Cb.',
+      'Construye la sustitución tritonal de G7. Selecciona las 4 notas.',
     hint: 'Db7 = Db, F, Ab, Cb. La sustitución tritonal comparte el mismo intervalo de tritono (F-Cb enarmónico de F-B) del acorde G7 original. Clases de altura: 1, 5, 8, 11.',
   },
   l7u21m4e2: {
     prompt: '¿Cuál es el principio detrás de la sustitución tritonal?',
     choices: [
-      'Dos acordes de séptima dominante a un tritono de distancia comparten la misma tercera y séptima (enarmónicamente), por lo que uno puede sustituir al otro',
-      'Cualquier acorde puede sustituirse por el acorde a un tritono de distancia independientemente de la cualidad',
+      'Los acordes de séptima de dominante a un tritono de distancia comparten la misma tercera y séptima (enarmónicamente), así que cualquiera de los dos puede sustituir al otro',
+      'Cualquier acorde puede sustituirse por el acorde a un tritono de distancia, sea cual sea su cualidad, siempre con exactamente el mismo efecto',
       'La sustitución tritonal mueve siempre la fundamental un tono arriba',
       'Sustituye el acorde V por el acorde IV',
     ],
@@ -115,7 +115,7 @@ const overlay: ExerciseLevelOverlay = {
       'Una sustitución tritonal de G7, creando una línea cromática de bajo (D - Db - C)',
       'Un acorde prestado de Db mayor',
       'El acorde napolitano en primera inversión',
-      'Un acorde disminuido de paso reescrito enarmónicamente',
+      'Un acorde de séptima disminuida de paso entre Dm7 y Cmaj7, reescrito enarmónicamente como Db7',
     ],
     hint: 'Db7 sustituye a G7 (el V7). El bajo desciende cromáticamente: D (ii) - Db (sustitución tritonal del V) - C (I). Esta conducción de voces suave es una de las principales ventajas de las sustituciones tritonales.',
   },
@@ -137,10 +137,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Por qué el acorde I en el blues usa cualidad de séptima dominante (p. ej., C7) en lugar de séptima mayor?',
     choices: [
-      'La tonalidad blues usa la b7 como blue note; la séptima dominante en todos los acordes es una característica definitoria del estilo',
+      'La tonalidad blues usa la b7 como blue note; las séptimas de dominante en todos los acordes definen el estilo',
       'Porque los músicos de blues no conocían los acordes de séptima mayor',
       'La séptima dominante es más fácil de tocar en la guitarra',
-      'Es una convención notacional que no afecta al sonido',
+      'Es solo una convención de notación: en un blues, un C7 y un Cmaj7 suenan exactamente de la misma manera',
     ],
     hint: 'En el blues, la b7 forma parte de la escala blues y del sonido general del blues. Todos los acordes — I, IV y V — usan cualidad de séptima dominante. Esto desafía la teoría clásica, donde I7 implicaría un dominante secundario.',
   },
@@ -149,7 +149,7 @@ const overlay: ExerciseLevelOverlay = {
       '¿Qué se añade normalmente al blues básico de 12 compases para crear un "jazz blues"?',
     choices: [
       'Turnarounds ii-V, sustituciones tritonales y acordes disminuidos de paso',
-      'Solo acordes de séptima mayor sustituyen a todas las séptimas dominantes',
+      'Los acordes de séptima mayor sustituyen todas las séptimas de dominante, y el blues pierde por completo la b7',
       'Un cambio de tonalidad cada 4 compases',
       'Exclusivamente acordes menores a lo largo de toda la forma',
     ],
@@ -163,7 +163,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'AABA — 32 compases con un puente de 8 compases',
       'ABAB — secciones alternadas de 8 compases',
-      'Blues de 12 compases repetido con variaciones',
+      'Blues de 12 compases repetido varias veces con variaciones',
       'Forma continua sin secciones repetidas',
     ],
     hint: 'Los rhythm changes siguen una forma AABA de 32 compases: las secciones A usan progresiones basadas en I-vi-ii-V, y la sección B (puente) usa típicamente un ciclo de dominantes. Basado en los cambios armónicos de una famosa pieza de Gershwin.',
@@ -175,7 +175,7 @@ const overlay: ExerciseLevelOverlay = {
       'I - vi - ii - V (o I - VI7 - ii - V7)',
       'IV - V - I - I',
       'I - IV - I - V',
-      'vi - IV - I - V',
+      'IV - V - I - I (o IV - V7 - Imaj7 - I)',
     ],
     hint: 'El turnaround (I-vi-ii-V) recicla hacia el inicio de la forma. En el jazz, el vi se sustituye frecuentemente por VI7 (un dominante secundario), y se enriquece aún más con sustituciones tritonales y acordes de paso.',
   },
@@ -183,9 +183,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Qué recurso armónico se emplea comúnmente en el puente de los rhythm changes?',
     choices: [
-      'Un ciclo de acordes de séptima dominante que se mueve por el ciclo de quintas (cada uno resuelve una quinta abajo hacia el siguiente)',
+      'Un ciclo de séptimas de dominante, cada una resolviendo una quinta abajo en la siguiente (D7-G7-C7-F7)',
       'Una nota pedal sostenida sin cambios de acordes',
-      'Una repetición exacta de la sección A en otra tonalidad',
+      'Una repetición exacta de la sección A transportada un tono arriba, sin ningún acorde nuevo en todo el puente',
       'Una serie dodecafónica',
     ],
     hint: 'El puente presenta típicamente una cadena de séptimas dominantes: III7-VI7-II7-V7 (en Bb: D7-G7-C7-F7). Cada dominante resuelve una quinta abajo hacia el siguiente, creando un fuerte impulso hacia adelante.',
@@ -210,8 +210,8 @@ const overlay: ExerciseLevelOverlay = {
   l7u22m1e3: {
     prompt: '¿Cuál es el principio fundamental de la teoría acorde-escala?',
     choices: [
-      'Cada acorde en una progresión tiene una escala correspondiente cuyas notas están todas disponibles para melodía e improvisación',
-      'Cada acorde solo puede usar notas de una escala fija a lo largo de toda la pieza',
+      'Cada acorde de una progresión tiene una escala correspondiente cuyas notas están todas disponibles para melodía e improvisación',
+      'Todos los acordes de una pieza deben usar las notas de una única escala fija, elegida al principio de la pieza',
       'Las escalas se construyen apilando acordes unos sobre otros',
       'La teoría acorde-escala se aplica solo a tonalidades mayores',
     ],
@@ -223,9 +223,9 @@ const overlay: ExerciseLevelOverlay = {
   l7u22m2e1: {
     prompt: '¿Qué es una tríada de estructura superior en los voicings de jazz?',
     choices: [
-      'Una tríada tocada en el registro agudo sobre una fundamental y séptima diferentes en el bajo, produciendo extensiones y alteraciones',
+      'Una tríada tocada sobre otra fundamental y otra séptima, de modo que sus notas se convierten en extensiones o alteraciones',
       'Las tres notas superiores de cualquier acorde de séptima',
-      'Una tríada tocada una octava por encima de lo escrito',
+      'Cualquier tríada tocada simplemente una octava por encima de lo escrito, para que el acorde suene más brillante y más claro',
       'Una técnica de análisis estructural para identificar formas',
     ],
     hint: 'Las estructuras superiores superponen una tríada simple (p. ej., D mayor) sobre una nota de bajo y séptima (p. ej., C y Bb), creando extensiones complejas. D/C7 resulta en C7 con novena, #11 y decimotercera.',
@@ -233,18 +233,18 @@ const overlay: ExerciseLevelOverlay = {
   l7u22m2e2: {
     prompt: '¿Qué es la rearmonización en el jazz?',
     choices: [
-      'Sustituir los acordes originales de una melodía por acordes diferentes que continúan soportando las notas melódicas',
+      'Sustituir los acordes originales de una melodía por otros que sigan sosteniendo sus notas',
       'Tocar los mismos acordes pero en otra tonalidad',
       'Añadir voces armónicas a una melodía a solo',
-      'Eliminar todos los acordes y tocar la melodía sin acompañamiento',
+      'Quitar todos los acordes y tocar la melodía completamente sola, sin ninguna armonía',
     ],
     hint: 'La rearmonización altera el contexto armónico bajo una melodía. Las técnicas incluyen sustitución tritonal, cambios de cualidad de acordes, aproximaciones cromáticas y movimiento de estructura constante.',
   },
   l7u22m2e3: {
     prompt: '¿Qué es una línea cromática de bajo en la armonía jazz?',
     choices: [
-      'Una línea de bajo que se mueve por semitonos, frecuentemente lograda mediante inversiones, acordes de paso y sustituciones tritonales',
-      'Una línea de bajo que usa solo la escala cromática de 12 notas sin repetición',
+      'Una línea de bajo que se mueve por semitonos, a menudo con inversiones, acordes de paso y sustituciones tritonales',
+      'Una línea de bajo que debe tocar las doce notas cromáticas una vez cada una antes de poder repetir cualquiera de ellas',
       'Una línea de bajo que toca solo las notas cromáticas (teclas negras)',
       'Una línea de bajo que se mueve en movimiento contrario a la melodía',
     ],
@@ -260,7 +260,7 @@ const overlay: ExerciseLevelOverlay = {
       'Centros tonales moviéndose por terceras mayores, dividiendo la octava en tres partes iguales',
       'Centros tonales moviéndose por segundas menores cromáticamente',
       'Centros tonales moviéndose por quintas justas a lo largo del ciclo',
-      'Centros tonales alternando entre dos tonalidades a un tritono de distancia',
+      'Centros tonales alternando entre solo dos tonalidades a un tritono de distancia, durante todo el tema',
     ],
     hint: 'Los cambios de Coltrane recorren tres centros tonales a una tercera mayor de distancia (p. ej., B, G, Eb). Estas tres tonalidades dividen la octava simétricamente en tres segmentos iguales de 4 semitonos cada uno.',
   },
@@ -271,15 +271,15 @@ const overlay: ExerciseLevelOverlay = {
       'Cada centro tonal es precedido por su propio acorde V7, creando movimiento rápido ii-V o V-I',
       'Los centros tonales se enlazan solo mediante acordes disminuidos de paso',
       'Modulación directa sin ninguna preparación',
-      'Cada tonalidad se aborda mediante una cadencia rota desde la tonalidad anterior',
+      'Cada nueva tonalidad se alcanza con una cadencia rota desde la anterior, nunca a través de su V7',
     ],
     hint: 'Coltrane prepara cada tónica con su dominante: p. ej., Bmaj7 - D7 - Gmaj7 - Bb7 - Ebmaj7. El D7 es el V7 de G, Bb7 es el V7 de Eb. Esto crea movimiento constante dominante-tónica.',
   },
   l7u22m3e3: {
     prompt: '¿Qué es la "estructura constante" en la armonía jazz?',
     choices: [
-      'Mover la misma cualidad de acorde en paralelo a través de un patrón de fundamentales no diatónico, manteniendo la forma del voicing',
-      'Usar el mismo acorde durante toda una pieza',
+      'Mover una misma cualidad de acorde en paralelo por fundamentales no diatónicas, manteniendo la forma del voicing',
+      'Usar un único acorde durante todo un tema, mientras que solo la melodía y la línea de bajo van cambiando',
       'Un método de análisis estructural para identificar motivos melódicos',
       'Construir todos los acordes a partir de las mismas cuatro notas',
     ],
@@ -302,10 +302,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Cómo difiere la armonía modal de la armonía tonal (funcional)?',
     choices: [
-      'La armonía modal enfatiza un centro tonal estático y evita la resolución dominante-tónica, dejando que el color del modo defina el sonido',
+      'La armonía modal mantiene un centro estático y evita la resolución V-I, dejando que el color del modo defina el sonido',
       'La armonía modal usa más acordes que la armonía tonal',
       'La armonía modal usa siempre escalas menores exclusivamente',
-      'No hay diferencia funcional; son términos intercambiables',
+      'No hay ninguna diferencia funcional: armonía modal y armonía tonal son nombres intercambiables para una sola cosa',
     ],
     hint: 'En la armonía tonal, los acordes tienen funciones (tónica, dominante, subdominante) que impulsan la resolución. En la armonía modal, un modo colorea un vamp o pedal estático, y las progresiones evitan cadencias V-I que establecerían una tonalidad.',
   },
@@ -317,7 +317,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Notas apiladas en intervalos de cuartas justas en lugar de terceras',
       'Un voicing que usa cuatro notas de un acorde de séptima',
-      'Un acorde tocado en cuatro octavas simultáneamente',
+      'Un acorde cuyas notas se doblan en cuatro octavas diferentes al mismo tiempo',
       'Una técnica de voicing exclusiva de cuartetos de cuerda',
     ],
     hint: 'La armonía cuartal apila cuartas (p. ej., C-F-Bb-Eb). Esto crea un sonido ambiguo y abierto que evita una cualidad mayor/menor clara. McCoy Tyner popularizó los voicings cuartales en el jazz modal.',
@@ -325,9 +325,9 @@ const overlay: ExerciseLevelOverlay = {
   l7u22m5e2: {
     prompt: '¿Cómo difiere la armonía quintal de la armonía cuartal?',
     choices: [
-      'La armonía quintal apila quintas justas en lugar de cuartas, produciendo un sonido igualmente abierto pero ligeramente diferente',
+      'La armonía quintal apila quintas justas en lugar de cuartas: igual de abierta, pero con un sonido ligeramente diferente',
       'Quintal usa cinco notas mientras que cuartal usa cuatro',
-      'Quintal se usa en el pop mientras que cuartal se usa en el jazz',
+      'La armonía quintal pertenece solo a la música pop, mientras que la cuartal solo se encuentra en grabaciones de jazz',
       'Son idénticas ya que una cuarta invertida es una quinta',
     ],
     hint: 'Aunque una cuarta invertida es una quinta, el sonido del voicing difiere según el registro y el espaciamiento. Los voicings quintales (p. ej., C-G-D-A) crean sonoridades amplias y brillantes. Ambos evitan la armonía tradicional tercial (basada en terceras).',
@@ -336,10 +336,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Qué papel desempeñan los pedales en la armonía modal y cuartal?',
     choices: [
-      'Anclan el centro tonal, permitiendo que los colores modales se desarrollen sin progresiones de acordes funcionales',
+      'Anclan el centro tonal, dejando que los colores modales se desplieguen sin progresiones funcionales',
       'Proporcionan subdivisión rítmica para el ensemble',
       'Se usan solo en la música clásica india, no en el jazz',
-      'Crean función dominante al sostener la quinta de la tonalidad',
+      'Crean función de dominante al sostener la quinta de la tonalidad, así que la música siempre quiere resolver',
     ],
     hint: 'Un pedal (nota de bajo sostenida o quinta abierta) establece un centro modal. Sobre un pedal de D, puedes explorar libremente D dórico, D mixolidio u otros modos sin que la armonía empuje hacia la resolución.',
   },
@@ -364,9 +364,9 @@ const overlay: ExerciseLevelOverlay = {
   l7u23m1e2: {
     prompt: '¿Qué es el sistema de números de Nashville?',
     choices: [
-      'Una notación abreviada que usa números arábigos (1-7) para grados de la escala, permitiendo transposición instantánea a cualquier tonalidad',
+      'Una notación abreviada que usa los números 1-7 para los grados de la escala, para transportar al instante a cualquier tonalidad',
       'Un método de contar compases en grabaciones de música country',
-      'Un sistema de afinación desarrollado en estudios de grabación de Nashville',
+      'Un sistema de afinación creado en los estudios de grabación de Nashville para afinar todas las guitarras un semitono más bajo',
       'Un sistema de notación rítmica para bateristas de sesión',
     ],
     hint: 'El sistema de números de Nashville escribe acordes como números de grados de la escala (1=I, 4=IV, 5=V). Una cifra que lee "1-5-6m-4" puede tocarse en cualquier tonalidad instantáneamente. Se usa extensivamente en sesiones de estudio de Nashville.',
@@ -374,9 +374,9 @@ const overlay: ExerciseLevelOverlay = {
   l7u23m1e3: {
     prompt: '¿Qué es un "bucle pop" y por qué es eficaz?',
     choices: [
-      'Una progresión corta de acordes que se repite (normalmente 4 compases) proporcionando continuidad armónica mientras la melodía y la letra evolucionan',
+      'Una progresión corta que se repite (a menudo 4 compases) y mantiene la armonía estable mientras la melodía y la letra cambian',
       'Un bucle de audio digital muestreado de un éxito existente',
-      'Una técnica de producción específica que repite la melodía del estribillo',
+      'Una técnica de producción de estudio que copia la melodía del estribillo y la pega debajo de cada una de las estrofas de la canción',
       'Un riff de bajo que recorre las 12 notas',
     ],
     hint: 'Los bucles pop (como I-V-vi-IV o vi-IV-I-V) repiten un pequeño patrón armónico a lo largo de la canción. La armonía estática permite que la melodía, el ritmo y la producción lleven el interés musical, lo que se adapta a las formas estrofa/estribillo.',
@@ -391,7 +391,7 @@ const overlay: ExerciseLevelOverlay = {
       'Mezcla modal (préstamo del paralelo menor/modo mixolidio)',
       'Una modulación a la tonalidad de Bb mayor',
       'Un dominante secundario apuntando al acorde IV',
-      'Una reescritura enarmónica del acorde vii disminuido',
+      'Una reescritura enarmónica del acorde vii° de C mayor, B disminuido, escrito como Bb',
     ],
     hint: 'bVII se toma prestado del mixolidio de C o del C menor natural. En C mayor, Bb no es diatónico, pero tomarlo prestado crea un sonido rock/pop. Esto es mezcla modal (también llamada acordes prestados).',
   },
@@ -399,9 +399,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Qué efecto emocional crea típicamente una relación de mediante cromática (p. ej., C mayor a Ab mayor) en la música pop?',
     choices: [
-      'Un cambio dramático y cinematográfico de color — inesperado pero suave debido a notas compartidas o estrechamente relacionadas',
+      'Un cambio de color dramático y cinematográfico — inesperado, pero suave gracias a las notas comunes',
       'Una sensación de regreso a casa, a la tónica',
-      'Ningún efecto notable ya que los acordes están estrechamente relacionados',
+      'Ningún efecto perceptible, porque los dos acordes pertenecen a la misma tonalidad y suenan parecidos',
       'Un choque disonante que suena como un error',
     ],
     hint: 'C mayor (C, E, G) y Ab mayor (Ab, C, Eb) comparten una nota común (C). El E y el Eb están a un semitono de distancia, creando el cambio de color suave característico de las mediantes cromáticas.',
@@ -411,7 +411,7 @@ const overlay: ExerciseLevelOverlay = {
       '¿Qué es una modulación directa (o abrupta) en la composición pop?',
     choices: [
       'Cambiar de tonalidad sin acorde pivote ni preparación — la nueva tonalidad simplemente comienza',
-      'Un cambio gradual de tonalidad que tarda varios compases en completarse',
+      'Un cambio de tonalidad gradual a lo largo de varios compases, preparado por un acorde pivote común a ambas tonalidades',
       'Una modulación que sube siempre un semitono',
       'Usar una ii-V-I para hacer la transición suave entre tonalidades',
     ],
@@ -434,8 +434,8 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Sobre qué tipo de acorde se usa comúnmente la escala lidia dominante (4.º modo de la menor melódica)?',
     choices: [
-      'Acordes de séptima dominante con #11, especialmente sustituciones tritonales y dominantes no resolutivos',
-      'Acordes m7 en una ii-V-I',
+      'Acordes de séptima de dominante con #11, como sustituciones tritonales y dominantes que no resuelven',
+      'Acordes m7 en una ii-V-I, porque la escala lidio dominante contiene una tercera menor sobre la fundamental',
       'Acordes maj7 con función de tónica',
       'Acordes disminuidos de paso',
     ],
@@ -457,9 +457,9 @@ const overlay: ExerciseLevelOverlay = {
   l7u23m4e3: {
     prompt: '¿Cuál es la propiedad definitoria de una escala simétrica?',
     choices: [
-      'Divide la octava en segmentos iguales usando un patrón de intervalos repetitivo, produciendo transposiciones limitadas',
+      'Divide la octava en partes iguales con un solo patrón interválico repetido, así que tiene pocas transposiciones',
       'Tiene la misma forma ascendente y descendente',
-      'Contiene exactamente 7 notas como las escalas diatónicas',
+      'Contiene siempre exactamente siete notas, una en cada nombre de nota, igual que las escalas mayor y menor',
       'Suena igual tocada de adelante hacia atrás o de atrás hacia adelante',
     ],
     hint: 'Las escalas simétricas repiten un patrón fijo de intervalos (p. ej., tonos enteros = T-T-T-T-T-T; disminuida = sT-T-sT-T-sT-T-sT-T). Esta simetría significa que tienen menos transposiciones únicas que las escalas asimétricas.',
@@ -474,17 +474,17 @@ const overlay: ExerciseLevelOverlay = {
       '4 — mayor, menor, disminuida y aumentada',
       '2 — solo mayor y menor',
       '3 — mayor, menor y disminuida',
-      '7 — una para cada grado de la escala',
+      '7 — un tipo de tríada para cada grado de la escala',
     ],
     hint: 'Existen exactamente 4 tipos de tríada, definidos por la tercera y la quinta: mayor (3.ªM+5.ªJ), menor (3.ªm+5.ªJ), disminuida (3.ªm+5.ªdism) y aumentada (3.ªM+5.ªaum). Todas las demás designaciones triádicas son variantes de estas cuatro.',
   },
   l7u23m5e2: {
     prompt: '¿Qué hace de un acorde un acorde "con extensiones"?',
     choices: [
-      'Incluye notas más allá de la séptima — la novena, undécima o decimotercera — construidas continuando el apilamiento de terceras',
+      'Tiene notas más allá de la séptima (novena, undécima o decimotercera), apilando más terceras',
       'Usa más de 4 notas de cualquier fuente',
       'Abarca más de una octava en el instrumento',
-      'Añade notas cromáticas no encontradas en la escala madre',
+      'Añade notas cromáticas que no se encuentran en ninguna parte de la escala madre de la tonalidad',
     ],
     hint: 'Los acordes con extensiones continúan el principio tercial (apilamiento de terceras) más allá de la séptima: novena = octava + segunda, undécima = octava + cuarta, decimotercera = octava + sexta. Un acorde de decimotercera contiene teóricamente los 7 grados de la escala.',
   },
@@ -492,8 +492,8 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Qué agrupación organiza correctamente las principales familias de cualidad de acordes?',
     choices: [
-      'Familia mayor (maj, maj7, maj9), familia menor (m, m7, m9), familia dominante (7, 9, 13), familia disminuida (dim, dim7), familia aumentada (aug, aug7)',
-      'Acordes consonantes (mayor, menor) y acordes disonantes (todos los acordes de séptima y más allá)',
+      'Mayor (maj, maj7, maj9), menor (m, m7, m9), dominante (7, 9, 13), disminuida (dim, dim7), aumentada (aug, aug7)',
+      'Acordes consonantes (tríadas mayores y menores) frente a acordes disonantes (todos los acordes de séptima y todo lo que va más allá)',
       'Familia diatónica (I, ii, iii, IV, V, vi) y familia cromática (todo lo demás)',
       'Acordes simples (tríadas) y acordes complejos (todo con más de 3 notas)',
     ],

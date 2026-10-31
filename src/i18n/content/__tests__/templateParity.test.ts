@@ -62,6 +62,8 @@ const FILLABLE_TOKENS = new Set([
   'quality',
   'degree',
   'accidental',
+  // template params.keys, aligned with roots (W4-03/W4-27): "the V7 of {key} major"
+  'key',
 ]);
 
 // Known, deliberate exceptions to exact token parity, keyed as

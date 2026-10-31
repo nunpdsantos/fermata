@@ -14,7 +14,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l5u15m1e1',
       type: 'chord_build',
-      prompt: 'Build V/V in C major. The secondary dominant of V is a D major triad. Select the 3 notes: D, F#, A.',
+      prompt: 'Build V/V in C major. Select all 3 notes.',
       config: {
         type: 'chord_build',
         root: 'D',
@@ -27,7 +27,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l5u15m1e2',
       type: 'chord_build',
-      prompt: 'Build V7/V in C major. This is a D dominant 7th chord: D, F#, A, C. Select all 4 notes.',
+      prompt: 'Build V7/V in C major. Select all 4 notes.',
       config: {
         type: 'chord_build',
         root: 'D',
@@ -46,7 +46,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'A secondary dominant that tonicizes the dominant chord of the key', correct: true },
           { label: 'The fifth chord played twice in a row', correct: false },
-          { label: 'A diminished chord built on the second scale degree', correct: false },
+          { label: 'A diminished chord built on the second scale degree of the major key', correct: false },
           { label: 'The dominant chord in second inversion', correct: false },
         ],
       },
@@ -129,7 +129,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Half-diminished has a minor 7th above the root; fully-diminished has a diminished 7th (one semitone lower)', correct: true },
           { label: 'Half-diminished resolves up; fully-diminished resolves down', correct: false },
-          { label: 'Half-diminished is used in major keys only; fully-diminished in minor keys only', correct: false },
+          { label: 'Half-diminished is used only in major keys and fully-diminished only in minor keys, never the other way round', correct: false },
           { label: 'There is no difference; they are the same chord', correct: false },
         ],
       },
@@ -145,7 +145,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'G major (V) -- the viio/V resolves up by half step to the dominant', correct: true },
           { label: 'C major (I) -- it resolves to the tonic', correct: false },
           { label: 'F major (IV) -- it resolves to the subdominant', correct: false },
-          { label: 'D minor (ii) -- it resolves to the supertonic', correct: false },
+          { label: 'D minor (ii) -- the vii°/V resolves down by half step to the supertonic', correct: false },
         ],
       },
       hint: 'The "/V" tells you the target: V. In C major, V is G. viio/V is F# diminished (F#, A, C), and the F# resolves up by half step to G, the root of the target chord.',
@@ -163,7 +163,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'A brief, temporary emphasis on a non-tonic chord using its own dominant, without leaving the original key', correct: true },
           { label: 'A permanent change of key center to a new tonic', correct: false },
-          { label: 'Playing the tonic chord repeatedly to establish the key', correct: false },
+          { label: 'Playing the tonic chord over and over, in every voice and register, until the home key is firmly established', correct: false },
           { label: 'Transposing a melody to a new key', correct: false },
         ],
       },
@@ -176,9 +176,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Modulation establishes a new key through cadences and extended passages; tonicization is brief and returns to the original key', correct: true },
+          { label: 'Modulation sets up a new key with cadences and longer passages; tonicization is brief and returns home', correct: true },
           { label: 'Modulation uses sharps; tonicization uses flats', correct: false },
-          { label: 'Modulation only occurs at the end of a piece; tonicization occurs in the middle', correct: false },
+          { label: 'Modulation only occurs at the very end of a piece; tonicization only ever occurs somewhere in the middle of it', correct: false },
           { label: 'There is no real difference; the terms are interchangeable', correct: false },
         ],
       },
@@ -228,7 +228,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Each root falls by a perfect 5th (or rises by a perfect 4th) to the next', correct: true },
           { label: 'Each root rises by a half step chromatically', correct: false },
           { label: 'Each root falls by a whole step', correct: false },
-          { label: 'The roots alternate between ascending and descending 3rds', correct: false },
+          { label: 'The roots alternate between ascending 3rds and descending 3rds, never moving by 5th', correct: false },
         ],
       },
       hint: 'Dominant chains exploit the strongest root motion in tonal music: down a 5th. Each V7 resolves down a 5th to its target, and that target is reinterpreted as the next V7.',
@@ -240,8 +240,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A harmonic pattern where the same tonicization gesture (e.g., V7 - target) is repeated at different pitch levels in sequence', correct: true },
-          { label: 'A modulation that passes through every key in the circle of fifths', correct: false },
+          { label: 'A pattern in which the same tonicizing gesture (e.g., V7 - target) is repeated at different pitch levels', correct: true },
+          { label: 'A modulation that passes through every one of the twelve keys around the circle of fifths, one after another', correct: false },
           { label: 'Playing scales in sequence ascending chromatically', correct: false },
           { label: 'A series of deceptive cadences in different keys', correct: false },
         ],
@@ -264,7 +264,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'A chord that belongs to both the old key and the new key, serving as the hinge between them', correct: true },
-          { label: 'The first chord of the new key that contains a chromatic note', correct: false },
+          { label: 'The first chord heard in the new key that contains a chromatic note that is foreign to the old key', correct: false },
           { label: 'A diminished chord that resolves the modulation', correct: false },
           { label: 'The dominant chord of the original key', correct: false },
         ],
@@ -296,7 +296,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Establish the old key, introduce the pivot chord, then confirm the new key with a cadence', correct: true },
           { label: 'Play a chromatic scale between the two keys', correct: false },
           { label: 'Stop playing, change key signature, then resume', correct: false },
-          { label: 'Repeat the tonic of the new key until the listener adjusts', correct: false },
+          { label: 'Repeat the tonic of the new key again and again, without any cadence, until the listener adjusts', correct: false },
         ],
       },
       hint: 'Pivot chord modulation unfolds in three stages: (1) the old key is clearly established, (2) a diatonic chord is reinterpreted as belonging to the new key, (3) the new key is confirmed with a cadence (typically V-I).',
@@ -315,7 +315,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: '5 -- the keys whose signatures differ by at most one sharp or flat', correct: true },
           { label: '2 -- only the dominant and subdominant', correct: false },
           { label: '12 -- every key is closely related', correct: false },
-          { label: '3 -- the relative minor, dominant, and subdominant', correct: false },
+          { label: '3 -- the relative minor, the dominant and the subdominant, and no others', correct: false },
         ],
       },
       hint: 'Closely related keys differ by at most one accidental in their key signatures. For C major: G major (+1#), F major (+1b), A minor (relative), E minor (rel. of G), D minor (rel. of F). That gives 5 closely related keys.',
@@ -363,7 +363,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'A modulation that moves to the new key abruptly at a phrase boundary, without a pivot chord', correct: true },
           { label: 'A modulation that uses a pivot chord shared between the two keys', correct: false },
-          { label: 'A modulation that moves by half step using chromatic voice leading', correct: false },
+          { label: 'A modulation that slides gradually up or down a half step using chromatic voice leading', correct: false },
           { label: 'A modulation that happens gradually over many measures', correct: false },
         ],
       },
@@ -376,8 +376,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A modulation where a single sustained pitch serves as a bridge between two keys, reinterpreted in the new key context', correct: true },
-          { label: 'A modulation where the bass note stays on the tonic throughout', correct: false },
+          { label: 'A modulation in which one sustained pitch bridges two keys and is reheard in the new key', correct: true },
+          { label: 'A modulation where the bass note stays on the old tonic throughout, while every upper voice changes key', correct: false },
           { label: 'A modulation that uses only notes common to both scales', correct: false },
           { label: 'A modulation that resolves to the common chord of two keys', correct: false },
         ],
@@ -406,7 +406,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l5u16m4e1',
       type: 'chord_build',
-      prompt: 'Build bVI in C major. This chord is borrowed from C minor: Ab major (Ab, C, Eb). Select all 3 notes.',
+      prompt: 'Build bVI in C major, a chord borrowed from C minor. Select all 3 notes.',
       config: {
         type: 'chord_build',
         root: 'A',
@@ -419,7 +419,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l5u16m4e2',
       type: 'chord_build',
-      prompt: 'Build iv in C major. This chord is borrowed from C minor: F minor (F, Ab, C). Select all 3 notes.',
+      prompt: 'Build iv in C major, a chord borrowed from C minor. Select all 3 notes.',
       config: {
         type: 'chord_build',
         root: 'F',
@@ -436,8 +436,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Borrowing chords from the parallel minor (or major) key to add chromatic color without leaving the home key', correct: true },
-          { label: 'Mixing two different modes like Dorian and Mixolydian in the same passage', correct: false },
+          { label: 'Borrowing chords from the parallel minor (or major) for color, without leaving the home key', correct: true },
+          { label: 'Mixing two different church modes, such as Dorian and Mixolydian, freely within the same passage', correct: false },
           { label: 'Playing a major and minor chord at the same time', correct: false },
           { label: 'Switching between relative major and minor keys', correct: false },
         ],
@@ -523,8 +523,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'In rounded binary, the A material returns at the end of the B section, creating an ABA-like structure within the binary framework', correct: true },
-          { label: 'Rounded binary has curved phrase endings instead of straight cadences', correct: false },
+          { label: 'In rounded binary, the A material returns at the end of B, giving an ABA-like shape inside the binary form', correct: true },
+          { label: 'Rounded binary has curved, gently rounded phrase endings in place of the usual straight, decisive cadences', correct: false },
           { label: 'Rounded binary repeats each section three times instead of two', correct: false },
           { label: 'Rounded binary is always in a minor key', correct: false },
         ],
@@ -589,7 +589,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Exposition, development, and recapitulation', correct: true },
           { label: 'Verse, chorus, and bridge', correct: false },
-          { label: 'Introduction, theme, and coda', correct: false },
+          { label: 'Introduction, development, and recapitulation', correct: false },
           { label: 'Prelude, fugue, and postlude', correct: false },
         ],
       },
@@ -608,7 +608,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'A single melodic line with no accompaniment or harmony -- one voice, one pitch at a time', correct: true },
           { label: 'A melody with chordal accompaniment underneath', correct: false },
-          { label: 'Multiple independent melodies sounding simultaneously', correct: false },
+          { label: 'Multiple independent melodies sounding simultaneously, each with its own rhythm and contour', correct: false },
           { label: 'A solo instrument playing chords', correct: false },
         ],
       },
@@ -672,7 +672,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'The guide tones move by step or remain as common tones: F-C in Dm7, F-B in G7, E-B in Cmaj7', correct: true },
           { label: 'The guide tones jump by large intervals between each chord', correct: false },
-          { label: 'The guide tones remain the same notes throughout all three chords', correct: false },
+          { label: 'The guide tones remain the same two notes throughout all three chords: F-C in Dm7, G7 and Cmaj7', correct: false },
           { label: 'The guide tones follow the bass line exactly', correct: false },
         ],
       },
@@ -687,7 +687,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Move each voice to the nearest available chord tone, preferring stepwise motion and common tones over leaps', correct: true },
           { label: 'All voices should move in parallel motion at all times', correct: false },
-          { label: 'Each voice should leap to the most distant chord tone for variety', correct: false },
+          { label: 'Each voice should leap to the most distant available chord tone, preferring wide leaps over stepwise motion and common tones for variety', correct: false },
           { label: 'The top voice must always ascend while the bottom voice descends', correct: false },
         ],
       },

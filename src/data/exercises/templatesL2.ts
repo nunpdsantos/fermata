@@ -27,29 +27,70 @@ const templates: ModuleTemplateConfig[] = [
         },
       },
       {
+        // The staff shows a key signature; the learner reads it (W4-06).
         type: 'multiple_choice',
-        promptTemplate: 'How many sharps or flats does this major key have?',
-        hintTemplate: 'Follow the circle of fifths. Sharps: G(1), D(2), A(3), E(4), B(5). Flats: F(1), Bb(2), Eb(3), Ab(4), Db(5).',
+        promptTemplate: 'Which major key has this key signature?',
+        hintTemplate: 'Count the sharps or flats. Sharps: G(1), D(2), A(3), E(4), B(5), F#(6). Flats: F(1), Bb(2), Eb(3), Ab(4), Db(5), Gb(6). The last sharp is a half step below the tonic; with two or more flats, the next-to-last flat names the key.',
         params: {
           choiceSets: [
             [
-              { label: 'B major has 5 sharps', correct: true },
-              { label: 'B major has 4 sharps', correct: false },
-              { label: 'B major has 6 sharps', correct: false },
-              { label: 'B major has 3 sharps', correct: false },
+              { label: 'A major', correct: true },
+              { label: 'D major', correct: false },
+              { label: 'E major', correct: false },
+              { label: 'Eb major', correct: false },
             ],
             [
-              { label: 'Eb major has 3 flats', correct: true },
-              { label: 'Eb major has 2 flats', correct: false },
-              { label: 'Eb major has 4 flats', correct: false },
-              { label: 'Eb major has 1 flat', correct: false },
+              { label: 'E major', correct: true },
+              { label: 'A major', correct: false },
+              { label: 'B major', correct: false },
+              { label: 'Ab major', correct: false },
             ],
             [
-              { label: 'Db major has 5 flats', correct: true },
-              { label: 'Db major has 4 flats', correct: false },
-              { label: 'Db major has 6 flats', correct: false },
-              { label: 'Db major has 3 flats', correct: false },
+              { label: 'B major', correct: true },
+              { label: 'E major', correct: false },
+              { label: 'F# major', correct: false },
+              { label: 'Db major', correct: false },
             ],
+            [
+              { label: 'F# major', correct: true },
+              { label: 'B major', correct: false },
+              { label: 'C# major', correct: false },
+              { label: 'Gb major', correct: false },
+            ],
+            [
+              { label: 'Bb major', correct: true },
+              { label: 'F major', correct: false },
+              { label: 'Eb major', correct: false },
+              { label: 'D major', correct: false },
+            ],
+            [
+              { label: 'Eb major', correct: true },
+              { label: 'Bb major', correct: false },
+              { label: 'Ab major', correct: false },
+              { label: 'A major', correct: false },
+            ],
+            [
+              { label: 'Ab major', correct: true },
+              { label: 'Eb major', correct: false },
+              { label: 'Db major', correct: false },
+              { label: 'E major', correct: false },
+            ],
+            [
+              { label: 'Db major', correct: true },
+              { label: 'Ab major', correct: false },
+              { label: 'Gb major', correct: false },
+              { label: 'B major', correct: false },
+            ],
+          ],
+          stimuli: [
+            { notes: [], keySignature: 'A', clef: 'treble' },
+            { notes: [], keySignature: 'E', clef: 'treble' },
+            { notes: [], keySignature: 'B', clef: 'treble' },
+            { notes: [], keySignature: 'F#', clef: 'treble' },
+            { notes: [], keySignature: 'Bb', clef: 'treble' },
+            { notes: [], keySignature: 'Eb', clef: 'treble' },
+            { notes: [], keySignature: 'Ab', clef: 'treble' },
+            { notes: [], keySignature: 'Db', clef: 'treble' },
           ],
         },
       },
@@ -63,7 +104,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'scale_degree_id',
-        promptTemplate: 'In the {root} {scaleType} scale, what degree number is the given note?',
+        promptTemplate: 'In the {root} {scaleType} scale, what degree number is the note {note}?',
         hintTemplate: 'Count up from {root} as degree 1 through the {scaleType} scale. The degree names are: tonic, supertonic, mediant, subdominant, dominant, submediant, leading tone.',
         params: {
           roots: ['C', 'G', 'D', 'F', 'A'],
@@ -162,7 +203,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify the relationship between these keys.',
+        promptTemplate: 'Which statement about relative and parallel keys is true?',
         hintTemplate: 'Relative keys share the same key signature (e.g., C major / A minor). Parallel keys share the same tonic (e.g., C major / C minor).',
         params: {
           choiceSets: [
@@ -193,7 +234,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'Parallel keys share the same tonic but differ in quality', correct: true },
               { label: 'Parallel keys share the same key signature', correct: false },
-              { label: 'Parallel keys are always a 5th apart', correct: false },
+              { label: 'Parallel keys always have their tonics a perfect 5th apart', correct: false },
               { label: 'Parallel keys use the same notes', correct: false },
             ],
           ],
@@ -213,26 +254,26 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Classify this time signature as simple or compound.',
+        promptTemplate: 'Which statement about simple and compound meter is true?',
         hintTemplate: 'In compound meter the top number is 6, 9, or 12 and the beat divides into 3. In simple meter the beat divides into 2.',
         params: {
           choiceSets: [
             [
               { label: '12/8 is compound quadruple: 4 beats each dividing into 3', correct: true },
-              { label: '12/8 is simple: 12 beats per measure', correct: false },
+              { label: '12/8 is simple: twelve eighth-note beats, each divided into two', correct: false },
               { label: '12/8 is compound triple: 3 beats each dividing into 4', correct: false },
               { label: '12/8 is simple quadruple: 4 beats of 3 eighth notes', correct: false },
             ],
             [
-              { label: '3/8 is simple triple: 3 eighth-note beats per measure', correct: true },
-              { label: '3/8 is compound: 1 beat dividing into 3', correct: false },
-              { label: '3/8 is the same as 6/8', correct: false },
-              { label: '3/8 is compound triple', correct: false },
+              { label: '6/8 is compound duple: 2 beats, each dividing into 3', correct: true },
+              { label: '6/8 is simple triple: 3 beats, each dividing into 2', correct: false },
+              { label: '6/8 is compound triple: 3 beats, each dividing into 3', correct: false },
+              { label: '6/8 is simple: six quarter-note beats per measure', correct: false },
             ],
             [
               { label: '9/8 is compound triple: 3 main beats, each dividing into 3', correct: true },
               { label: '9/8 is simple: 9 eighth-note beats per measure', correct: false },
-              { label: '9/8 is compound duple', correct: false },
+              { label: '9/8 is compound quadruple: 4 main beats, each dividing into 3', correct: false },
               { label: '9/8 is the same as 3/4', correct: false },
             ],
           ],
@@ -248,27 +289,27 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Answer this question about syncopation and rhythmic techniques.',
+        promptTemplate: 'Which statement about syncopation and triplets is true?',
         hintTemplate: 'Syncopation places emphasis on normally weak beats or subdivisions. It creates rhythmic surprise and forward momentum.',
         params: {
           choiceSets: [
             [
               { label: 'Syncopation creates rhythmic interest by accenting off-beats', correct: true },
-              { label: 'Syncopation means playing everything on the beat', correct: false },
+              { label: 'Syncopation means playing every note squarely on the strong beats', correct: false },
               { label: 'Syncopation removes all accents from the music', correct: false },
               { label: 'Syncopation always involves triplets', correct: false },
             ],
             [
               { label: 'A tie across the barline creates syncopation by sustaining into the strong beat', correct: true },
               { label: 'A tie across the barline has no rhythmic effect', correct: false },
-              { label: 'A tie across the barline always doubles the tempo', correct: false },
+              { label: 'A tie across the barline always doubles the tempo of the whole measure that follows it', correct: false },
               { label: 'Ties can only occur within a single measure', correct: false },
             ],
             [
-              { label: 'Hemiola creates the illusion of shifting between duple and triple groupings', correct: true },
-              { label: 'Hemiola is the same as a ritardando', correct: false },
-              { label: 'Hemiola means playing notes an octave higher', correct: false },
-              { label: 'Hemiola only occurs in 4/4 time', correct: false },
+              { label: 'Three triplet eighths take the time of two ordinary eighths', correct: true },
+              { label: 'Three triplet eighths take the time of four ordinary eighths', correct: false },
+              { label: 'A triplet makes each of its three notes last a full beat', correct: false },
+              { label: 'A triplet adds a third note on top of a two-note chord', correct: false },
             ],
           ],
         },
@@ -310,9 +351,12 @@ const templates: ModuleTemplateConfig[] = [
         promptTemplate: 'Identify this interval from {root}. It may be augmented, diminished, or compound.',
         hintTemplate: 'Augmented intervals are one semitone larger than perfect/major. Diminished are one semitone smaller than perfect/minor. Compound intervals exceed an octave.',
         params: {
-          roots: ['C', 'D', 'F', 'G', 'A', 'E'],
-          accidentals: ['', '', '', '', '', ''],
-          intervals: [1, 3, 4, 6, 8, 10, 11],
+          // Spelled by number AND size (W4-14): A4, d5, A5, d7, M9, m10, P11,
+          // M13 — on roots where each needs at most one accidental.
+          roots: ['D', 'E', 'G', 'A'],
+          accidentals: ['', '', '', ''],
+          intervals: [6, 6, 8, 9, 14, 15, 17, 21],
+          intervalNumbers: [4, 5, 5, 7, 9, 10, 11, 13],
           directions: ['ascending'],
           octaves: [4],
         },
@@ -365,7 +409,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Answer this question about chord inversions and figured bass notation.',
+        promptTemplate: 'Which statement about inversions and figured bass is true?',
         hintTemplate: 'Root position = 5/3. First inversion = 6/3 (6). Second inversion = 6/4. The bass note determines the inversion.',
         params: {
           choiceSets: [
@@ -383,15 +427,15 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'Figured bass 6/4 indicates second inversion', correct: true },
-              { label: 'Figured bass 6/4 indicates root position', correct: false },
+              { label: 'Figured bass 6/4 indicates a chord in root position', correct: false },
               { label: 'Figured bass 6/4 indicates first inversion', correct: false },
               { label: 'Figured bass 6/4 indicates a seventh chord', correct: false },
             ],
             [
-              { label: 'The cadential 6/4 functions as a dominant embellishment', correct: true },
-              { label: 'The cadential 6/4 functions as a tonic chord', correct: false },
-              { label: 'The cadential 6/4 functions as a subdominant', correct: false },
-              { label: 'The cadential 6/4 is never used in classical music', correct: false },
+              { label: 'In first inversion, the 3rd of the chord is in the bass', correct: true },
+              { label: 'In first inversion, the 5th of the chord is in the bass', correct: false },
+              { label: 'In first inversion, the root stays in the bass', correct: false },
+              { label: 'In first inversion, the 7th of the chord is in the bass', correct: false },
             ],
           ],
         },
@@ -417,7 +461,7 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify the Roman numeral and quality for this diatonic triad.',
+        promptTemplate: 'Which statement about the diatonic triads of a major key is true?',
         hintTemplate: 'In major keys: I(M) ii(m) iii(m) IV(M) V(M) vi(m) vii°(dim). Uppercase = major, lowercase = minor, ° = diminished.',
         params: {
           choiceSets: [

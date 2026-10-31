@@ -1,9 +1,20 @@
 import type { ModuleTemplateConfig } from './exerciseTemplates';
 
 // ---------------------------------------------------------------------------
-// Level 3 Templates — 13 modules, ~70 generated exercises
+// Level 3 Templates — 13 modules
 // Focus: Seventh chords, voice leading, cadences, phrase structure,
-//        non-chord tones
+//        harmonic rhythm, non-chord tones, transposition
+//
+// Audit W4-01 (2026-10-31): the unit 10–11 blocks had drifted one or two
+// modules from the lessons they were written for (Root Position Part Writing
+// was quizzed on cadences, Cadences on passing tones …). Each block now sits
+// in the module that teaches it: cadences → l3u11m1, phrases → l3u11m2,
+// passing/neighbor/anticipation → l3u11m4, harmonic rhythm (from L4) →
+// l3u11m3; suspensions, pedal points, appoggiatura/escape/retardation and
+// changing tones moved to their L4 modules. New templates were written for
+// root-position part writing, triads in inversion and transposition.
+// Statement questions are worded as such (W4-06) and their options balanced
+// so length is no cue (W4-09).
 // ---------------------------------------------------------------------------
 
 const templates: ModuleTemplateConfig[] = [
@@ -28,7 +39,7 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify the quality of this seventh chord based on its interval structure.',
+        promptTemplate: 'Which seventh-chord definition is correct?',
         hintTemplate: 'Listen for the triad quality (major/minor/dim) and the 7th quality (major/minor/diminished) stacked on top.',
         params: {
           choiceSets: [
@@ -63,33 +74,33 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify the inversion and figured bass for this seventh chord.',
+        promptTemplate: 'Which statement about seventh-chord inversions and their figured bass is true?',
         hintTemplate: 'Seventh chord inversions: root pos = 7, 1st inv = 6/5, 2nd inv = 4/3, 3rd inv = 4/2 (or 2).',
         params: {
           choiceSets: [
             [
-              { label: 'Third inversion of a seventh chord has the 7th in the bass (figured bass: 4/2)', correct: true },
-              { label: 'Third inversion has the 5th in the bass', correct: false },
-              { label: 'Third inversion has the 3rd in the bass', correct: false },
-              { label: 'Third inversion has the root in the bass', correct: false },
+              { label: 'Third inversion puts the 7th in the bass (figured 4/2)', correct: true },
+              { label: 'Third inversion puts the 5th in the bass (figured 4/3)', correct: false },
+              { label: 'Third inversion puts the 3rd in the bass (figured 6/5)', correct: false },
+              { label: 'Third inversion keeps the root in the bass (figured 7)', correct: false },
             ],
             [
-              { label: 'First inversion of a seventh chord uses figured bass 6/5', correct: true },
-              { label: 'First inversion uses figured bass 4/3', correct: false },
-              { label: 'First inversion uses figured bass 4/2', correct: false },
-              { label: 'First inversion uses figured bass 7', correct: false },
+              { label: 'First inversion is figured 6/5', correct: true },
+              { label: 'First inversion is figured 4/3', correct: false },
+              { label: 'First inversion is figured 4/2', correct: false },
+              { label: 'First inversion is figured 7/5/3', correct: false },
             ],
             [
-              { label: 'Second inversion of a seventh chord uses figured bass 4/3', correct: true },
-              { label: 'Second inversion uses figured bass 6/5', correct: false },
-              { label: 'Second inversion uses figured bass 4/2', correct: false },
-              { label: 'Second inversion uses figured bass 6/4', correct: false },
+              { label: 'Second inversion is figured 4/3', correct: true },
+              { label: 'Second inversion is figured 6/5', correct: false },
+              { label: 'Second inversion is figured 4/2', correct: false },
+              { label: 'Second inversion is figured 6/4', correct: false },
             ],
             [
-              { label: 'In second inversion, the 5th of the seventh chord is in the bass', correct: true },
+              { label: 'In second inversion, the 5th is in the bass', correct: true },
               { label: 'In second inversion, the 3rd is in the bass', correct: false },
               { label: 'In second inversion, the 7th is in the bass', correct: false },
-              { label: 'In second inversion, the root is in the bass', correct: false },
+              { label: 'In second inversion, the root stays in the bass', correct: false },
             ],
           ],
         },
@@ -134,7 +145,7 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify the quality of this diatonic seventh chord in minor.',
+        promptTemplate: 'Which statement about seventh chords in harmonic minor is true?',
         hintTemplate: 'In harmonic minor, the raised 7th degree changes the quality of chords built on degrees III, V, and VII.',
         params: {
           choiceSets: [
@@ -146,7 +157,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'In harmonic minor, vii°7 is a fully diminished seventh chord', correct: true },
-              { label: 'In harmonic minor, vii°7 is a half-diminished seventh chord', correct: false },
+              { label: 'In harmonic minor, vii°7 is a half-diminished seventh chord (m7b5)', correct: false },
               { label: 'In harmonic minor, vii°7 is a minor seventh chord', correct: false },
               { label: 'In harmonic minor, vii°7 is a dominant seventh chord', correct: false },
             ],
@@ -158,7 +169,7 @@ const templates: ModuleTemplateConfig[] = [
   },
 
   // =========================================================================
-  // Unit 10: Voice Leading and Cadences
+  // Unit 10: Voice Leading
   // =========================================================================
 
   // ---- l3u10m1: SATB Basics ----
@@ -167,27 +178,27 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Answer this question about SATB voice leading fundamentals.',
+        promptTemplate: 'Which statement about SATB voicing is true?',
         hintTemplate: 'SATB ranges: Soprano C4-G5, Alto F3-C5, Tenor C3-G4, Bass E2-C4. Adjacent voices should stay within an octave (except bass-tenor).',
         params: {
           choiceSets: [
             [
-              { label: 'Adjacent upper voices (S-A, A-T) should generally stay within an octave of each other', correct: true },
-              { label: 'All four voices must always be within one octave total', correct: false },
-              { label: 'There are no spacing restrictions between voices', correct: false },
-              { label: 'Soprano and alto must always be a 3rd apart', correct: false },
+              { label: 'Soprano–alto and alto–tenor stay within an octave; tenor–bass may be wider', correct: true },
+              { label: 'All four voices must fit inside a single octave, from the bass up to the soprano', correct: false },
+              { label: 'Any spacing is allowed, as long as each voice stays in its own range', correct: false },
+              { label: 'Tenor–bass must stay within an octave, while the upper voices may spread out', correct: false },
             ],
             [
-              { label: 'Voice crossing occurs when a lower voice goes above an adjacent higher voice', correct: true },
-              { label: 'Voice crossing is when two voices sing the same note', correct: false },
-              { label: 'Voice crossing is always encouraged for melodic interest', correct: false },
-              { label: 'Voice crossing only applies to soprano and bass', correct: false },
+              { label: 'Voice crossing: a lower voice moves above the voice next to it', correct: true },
+              { label: 'Voice crossing: two voices sing the same note at the same time', correct: false },
+              { label: 'Voice crossing: the soprano and the bass move in contrary motion', correct: false },
+              { label: 'Voice crossing: a habit encouraged in chorales for extra melodic interest', correct: false },
             ],
             [
-              { label: 'Doubling the root of a chord is generally the safest choice in root position', correct: true },
-              { label: 'Doubling the 3rd is always preferred', correct: false },
-              { label: 'Doubling the 7th creates the best sound', correct: false },
-              { label: 'All chord tones must appear exactly once', correct: false },
+              { label: 'In root position, doubling the root is generally the safest choice', correct: true },
+              { label: 'In root position, the leading tone is the best note to double', correct: false },
+              { label: 'In root position, doubling the 3rd is always preferred', correct: false },
+              { label: 'In root position, no note should ever be doubled', correct: false },
             ],
           ],
         },
@@ -202,33 +213,33 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify the voice-leading error or rule illustrated here.',
+        promptTemplate: 'Which voice-leading statement is true?',
         hintTemplate: 'Avoid parallel 5ths and 8ves, resolve the leading tone up, resolve the 7th of a chord down, and keep common tones when possible.',
         params: {
           choiceSets: [
             [
-              { label: 'Parallel fifths occur when two voices move from one P5 to another P5 in the same direction', correct: true },
-              { label: 'Parallel fifths are always acceptable in SATB writing', correct: false },
-              { label: 'Parallel fifths only occur between soprano and bass', correct: false },
-              { label: 'Parallel fifths mean two voices are always a 5th apart', correct: false },
+              { label: 'Parallel fifths: two voices a P5 apart move in the same direction to another P5', correct: true },
+              { label: 'Parallel fifths: any two voices that are a 5th apart anywhere in a chord', correct: false },
+              { label: 'Parallel fifths: an error only when they occur between soprano and bass', correct: false },
+              { label: 'Parallel fifths: acceptable in SATB as long as both voices move by step rather than leap', correct: false },
             ],
             [
-              { label: 'The leading tone should resolve up by step to the tonic', correct: true },
-              { label: 'The leading tone should resolve down to the dominant', correct: false },
-              { label: 'The leading tone can move freely in any direction', correct: false },
-              { label: 'The leading tone should always leap to the mediant', correct: false },
+              { label: 'The leading tone resolves up by step to the tonic', correct: true },
+              { label: 'The leading tone resolves down by step to the submediant', correct: false },
+              { label: 'The leading tone may move freely in any direction', correct: false },
+              { label: 'The leading tone leaps up to the mediant', correct: false },
             ],
             [
-              { label: 'The chordal 7th should resolve down by step', correct: true },
-              { label: 'The chordal 7th should resolve up by step', correct: false },
-              { label: 'The chordal 7th does not need to resolve', correct: false },
-              { label: 'The chordal 7th should leap down a 5th', correct: false },
+              { label: 'The chordal 7th resolves down by step', correct: true },
+              { label: 'The chordal 7th resolves up by step', correct: false },
+              { label: 'The chordal 7th needs no resolution', correct: false },
+              { label: 'The chordal 7th leaps down a 5th', correct: false },
             ],
             [
-              { label: 'Contrary motion between outer voices is generally preferred', correct: true },
-              { label: 'Parallel motion between all voices is ideal', correct: false },
-              { label: 'The bass should always move in the same direction as the soprano', correct: false },
-              { label: 'Oblique motion is never used in SATB writing', correct: false },
+              { label: 'Contrary motion between the outer voices is generally preferred', correct: true },
+              { label: 'Parallel motion between all four voices is generally preferred', correct: false },
+              { label: 'The bass should usually move in the same direction as the soprano', correct: false },
+              { label: 'Oblique motion is never used in four-part writing', correct: false },
             ],
           ],
         },
@@ -237,86 +248,92 @@ const templates: ModuleTemplateConfig[] = [
     targetCount: 5,
   },
 
-  // ---- l3u10m3: Cadences — PAC, IAC, HC ----
+  // ---- l3u10m3: Root Position Part Writing ----
   {
     moduleId: 'l3u10m3',
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Classify this cadence type based on the chords and voice leading described.',
-        hintTemplate: 'PAC: V-I with soprano on tonic. IAC: V-I with soprano NOT on tonic, or inverted chords. HC: ends on V. Plagal: IV-I. Deceptive: V-vi.',
+        promptTemplate: 'Which statement about part writing with root-position triads is true?',
+        hintTemplate: 'Roots a 5th apart share one common tone, roots a 3rd apart share two, roots a 2nd apart share none. Keep common tones in the same voice; when there are none, move the upper voices against the bass.',
         params: {
           choiceSets: [
             [
-              { label: 'V to I with the soprano ending on the tonic is a Perfect Authentic Cadence (PAC)', correct: true },
-              { label: 'This is an Imperfect Authentic Cadence (IAC)', correct: false },
-              { label: 'This is a Half Cadence (HC)', correct: false },
-              { label: 'This is a Deceptive Cadence', correct: false },
+              { label: 'Roots a 5th apart share one common tone: keep it in the same voice', correct: true },
+              { label: 'Roots a 5th apart share no common tones: move every upper voice', correct: false },
+              { label: 'Roots a 5th apart share two common tones: move only one voice', correct: false },
+              { label: 'Roots a 5th apart share one common tone, which should move to a different voice', correct: false },
             ],
             [
-              { label: 'A phrase ending on the V chord is a Half Cadence', correct: true },
-              { label: 'A phrase ending on the V chord is a Perfect Authentic Cadence', correct: false },
-              { label: 'A phrase ending on the V chord is a Plagal Cadence', correct: false },
-              { label: 'A phrase ending on the V chord is a Deceptive Cadence', correct: false },
+              { label: 'Roots a 3rd apart share two common tones: keep both and move one voice', correct: true },
+              { label: 'Roots a 3rd apart share one common tone: keep it and move two voices', correct: false },
+              { label: 'Roots a 3rd apart share no common tones: move all three upper voices', correct: false },
+              { label: 'Roots a 3rd apart share all three tones, so the upper voices never need to move', correct: false },
             ],
             [
-              { label: 'V resolving to vi instead of I is a Deceptive Cadence', correct: true },
-              { label: 'V resolving to vi is a Perfect Authentic Cadence', correct: false },
-              { label: 'V resolving to vi is a Half Cadence', correct: false },
-              { label: 'V resolving to vi is a Plagal Cadence', correct: false },
+              { label: 'Roots a 2nd apart share no common tones: move the upper voices against the bass', correct: true },
+              { label: 'Roots a 2nd apart share two common tones: hold both and move one voice', correct: false },
+              { label: 'Roots a 2nd apart: move all four voices in the same direction as the bass', correct: false },
+              { label: 'Roots a 2nd apart share one common tone, which is held in the soprano while the others move', correct: false },
             ],
             [
-              { label: 'IV to I is a Plagal Cadence (Amen cadence)', correct: true },
-              { label: 'IV to I is a Perfect Authentic Cadence', correct: false },
-              { label: 'IV to I is a Half Cadence', correct: false },
-              { label: 'IV to I is a Deceptive Cadence', correct: false },
+              { label: 'Each upper voice moves to the nearest available chord tone', correct: true },
+              { label: 'Each upper voice leaps to a new chord tone to add melodic interest', correct: false },
+              { label: 'The bass must always move to its nearest chord tone, by step if possible', correct: false },
+              { label: 'All four voices should move together in the same direction', correct: false },
             ],
             [
-              { label: 'V to I with the soprano on the 3rd is an Imperfect Authentic Cadence (IAC)', correct: true },
-              { label: 'V to I with the soprano on the 3rd is a PAC', correct: false },
-              { label: 'V to I with the soprano on the 3rd is a Half Cadence', correct: false },
-              { label: 'V to I with the soprano on the 3rd is a Deceptive Cadence', correct: false },
+              { label: 'In root-position triads, double the root by default', correct: true },
+              { label: 'In root-position triads, double the leading tone', correct: false },
+              { label: 'In root-position triads, double the 3rd by default', correct: false },
+              { label: 'In root-position triads, never double any note', correct: false },
             ],
           ],
         },
       },
     ],
-    targetCount: 6,
+    targetCount: 5,
   },
 
-  // ---- l3u10m4: Phrase Structure ----
+  // ---- l3u10m4: Triads in Inversion ----
   {
     moduleId: 'l3u10m4',
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Answer this question about musical phrase structure.',
-        hintTemplate: 'A period has two phrases: antecedent (ending with HC or IAC) and consequent (ending with PAC). A sentence has a presentation (basic idea + repetition) and continuation.',
+        promptTemplate: 'Which statement about triads in inversion is true?',
+        hintTemplate: 'First inversion (6/3): 3rd in the bass, used for smooth bass lines. Second inversion (6/4): 5th in the bass, used only as a cadential, passing, pedal or arpeggiated 6/4.',
         params: {
           choiceSets: [
             [
-              { label: 'A parallel period has antecedent and consequent phrases that begin with similar material', correct: true },
-              { label: 'A parallel period has two unrelated phrases', correct: false },
-              { label: 'A parallel period must be exactly 8 measures', correct: false },
-              { label: 'A parallel period always ends with a half cadence', correct: false },
+              { label: 'First inversion (6/3) puts the 3rd in the bass and smooths the bass line', correct: true },
+              { label: 'First inversion (6/3) puts the 5th in the bass and is kept for cadences', correct: false },
+              { label: 'First inversion (6/3) keeps the root in the bass but moves the 3rd up an octave', correct: false },
+              { label: 'First inversion (6/3) is used only at the end of a piece', correct: false },
             ],
             [
-              { label: 'The antecedent phrase typically ends with a weak cadence (HC or IAC)', correct: true },
-              { label: 'The antecedent phrase always ends with a PAC', correct: false },
-              { label: 'The antecedent phrase has no cadence', correct: false },
-              { label: 'The antecedent is always the second phrase', correct: false },
+              { label: 'The four common 6/4 chords: cadential, passing, pedal and arpeggiated', correct: true },
+              { label: 'The four common 6/4 chords: root, first, second and third inversion', correct: false },
+              { label: 'A 6/4 chord may be used freely anywhere in a phrase, just like a first-inversion triad', correct: false },
+              { label: 'The only acceptable 6/4 chord is the one that ends a piece on the tonic', correct: false },
             ],
             [
-              { label: 'A sentence structure consists of a presentation phase followed by a continuation phase', correct: true },
-              { label: 'A sentence is the same as a period', correct: false },
-              { label: 'A sentence always has 3 phrases', correct: false },
-              { label: 'A sentence must be 16 measures long', correct: false },
+              { label: 'The cadential 6/4 decorates V: its 6th and 4th fall by step to the 5th and 3rd', correct: true },
+              { label: 'The cadential 6/4 is a tonic chord that ends the phrase in place of I', correct: false },
+              { label: 'The cadential 6/4 resolves its 6th and 4th upward by step into the following tonic chord', correct: false },
+              { label: 'The cadential 6/4 falls on a weak beat, after the dominant chord', correct: false },
             ],
             [
-              { label: 'A contrasting period has an antecedent and consequent that begin with different material', correct: true },
-              { label: 'A contrasting period has identical phrases', correct: false },
-              { label: 'A contrasting period always modulates', correct: false },
-              { label: 'A contrasting period has three phrases', correct: false },
+              { label: 'Second inversion (6/4) puts the 5th in the bass, with the root a 4th above it', correct: true },
+              { label: 'Second inversion (6/4) puts the 3rd in the bass, with the root a 6th above it', correct: false },
+              { label: 'Second inversion (6/4) puts the root in the bass, with the 5th a perfect 4th above it', correct: false },
+              { label: 'Second inversion (6/4) puts the 7th in the bass', correct: false },
+            ],
+            [
+              { label: 'In a first-inversion triad, avoid doubling the bass when it is the leading tone', correct: true },
+              { label: 'In a first-inversion triad, always double the bass note, whatever it is', correct: false },
+              { label: 'In a first-inversion triad, double the leading tone in the bass', correct: false },
+              { label: 'In a first-inversion triad, no note may be doubled', correct: false },
             ],
           ],
         },
@@ -326,36 +343,48 @@ const templates: ModuleTemplateConfig[] = [
   },
 
   // =========================================================================
-  // Unit 11: Non-Chord Tones
+  // Unit 11: Cadences, Phrases, and Embellishment
   // =========================================================================
 
-  // ---- l3u11m1: Passing Tones ----
+  // ---- l3u11m1: Cadences — The Complete Set ----
   {
     moduleId: 'l3u11m1',
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify this non-chord tone based on its approach and resolution.',
-        hintTemplate: 'A passing tone moves by step between two chord tones in the same direction. It fills in the gap between a 3rd.',
+        promptTemplate: 'Which cadence label is correct?',
+        hintTemplate: 'PAC: V-I with soprano on tonic. IAC: V-I with soprano NOT on tonic, or inverted chords. HC: ends on V. Plagal: IV-I. Deceptive: V-vi.',
         params: {
           choiceSets: [
             [
-              { label: 'A note approached by step and left by step in the same direction is a passing tone', correct: true },
-              { label: 'It is a neighbor tone', correct: false },
-              { label: 'It is a suspension', correct: false },
-              { label: 'It is an appoggiatura', correct: false },
+              { label: 'V–I, both in root position, soprano on the tonic: perfect authentic cadence (PAC)', correct: true },
+              { label: 'V–I, both in root position, soprano on the tonic: imperfect authentic cadence (IAC)', correct: false },
+              { label: 'V–I, both in root position, soprano on the tonic: half cadence', correct: false },
+              { label: 'V–I, both in root position, soprano on the tonic: deceptive cadence', correct: false },
             ],
             [
-              { label: 'Passing tones can be accented (on the beat) or unaccented (off the beat)', correct: true },
-              { label: 'Passing tones are always on the beat', correct: false },
-              { label: 'Passing tones are always off the beat', correct: false },
-              { label: 'Passing tones are always chromatic', correct: false },
+              { label: 'A phrase ending on V: half cadence', correct: true },
+              { label: 'A phrase ending on V: perfect authentic cadence', correct: false },
+              { label: 'A phrase ending on V: plagal cadence', correct: false },
+              { label: 'A phrase ending on V: deceptive cadence', correct: false },
             ],
             [
-              { label: 'A chromatic passing tone uses a pitch outside the current key', correct: true },
-              { label: 'A chromatic passing tone is always diatonic', correct: false },
-              { label: 'A chromatic passing tone must leap', correct: false },
-              { label: 'Chromatic passing tones are forbidden in classical harmony', correct: false },
+              { label: 'V resolving to vi: deceptive cadence', correct: true },
+              { label: 'V resolving to vi: perfect authentic cadence (PAC)', correct: false },
+              { label: 'V resolving to vi: half cadence', correct: false },
+              { label: 'V resolving to vi: plagal cadence', correct: false },
+            ],
+            [
+              { label: 'IV to I: plagal cadence', correct: true },
+              { label: 'IV to I: perfect authentic cadence (PAC)', correct: false },
+              { label: 'IV to I: half cadence', correct: false },
+              { label: 'IV to I: deceptive cadence', correct: false },
+            ],
+            [
+              { label: 'V–I with the soprano on the 3rd: imperfect authentic cadence', correct: true },
+              { label: 'V–I with the soprano on the 3rd: perfect authentic cadence (PAC)', correct: false },
+              { label: 'V–I with the soprano on the 3rd: half cadence', correct: false },
+              { label: 'V–I with the soprano on the 3rd: deceptive cadence', correct: false },
             ],
           ],
         },
@@ -364,33 +393,39 @@ const templates: ModuleTemplateConfig[] = [
     targetCount: 5,
   },
 
-  // ---- l3u11m2: Neighbor Tones ----
+  // ---- l3u11m2: Phrases and Periods ----
   {
     moduleId: 'l3u11m2',
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify this non-chord tone type and its characteristics.',
-        hintTemplate: 'A neighbor tone steps away from a chord tone and returns to the same chord tone. Upper neighbors go up then back down; lower neighbors go down then back up.',
+        promptTemplate: 'Which statement about phrases and periods is true?',
+        hintTemplate: 'A period has two phrases: antecedent (ending with HC or IAC) and consequent (ending with PAC). A sentence has a presentation (basic idea + repetition) and continuation.',
         params: {
           choiceSets: [
             [
-              { label: 'A note that steps away from a chord tone and returns to it is a neighbor tone', correct: true },
-              { label: 'It is a passing tone', correct: false },
-              { label: 'It is a suspension', correct: false },
-              { label: 'It is an escape tone', correct: false },
+              { label: 'A parallel period: both phrases begin with similar material', correct: true },
+              { label: 'A parallel period: two phrases with unrelated material and the same cadence', correct: false },
+              { label: 'A parallel period: always exactly eight bars long', correct: false },
+              { label: 'A parallel period: both phrases end with a half cadence', correct: false },
             ],
             [
-              { label: 'A double neighbor (changing tone) decorates a note by going both above and below it', correct: true },
-              { label: 'A double neighbor uses two consecutive passing tones', correct: false },
-              { label: 'A double neighbor means two voices have neighbor tones simultaneously', correct: false },
-              { label: 'A double neighbor is the same as a trill', correct: false },
+              { label: 'The antecedent usually ends with a weak cadence (HC or IAC)', correct: true },
+              { label: 'The antecedent usually ends with a PAC', correct: false },
+              { label: 'The antecedent has no cadence at all', correct: false },
+              { label: 'The antecedent is always the second phrase of the period', correct: false },
             ],
             [
-              { label: 'An incomplete neighbor is approached or left by leap instead of step', correct: true },
-              { label: 'An incomplete neighbor never resolves', correct: false },
-              { label: 'An incomplete neighbor uses a whole step only', correct: false },
-              { label: 'An incomplete neighbor is the same as a suspension', correct: false },
+              { label: 'A sentence: a presentation (idea + repeat), then a continuation', correct: true },
+              { label: 'A sentence: another name for a period of two phrases', correct: false },
+              { label: 'A sentence: always three phrases, each with its own cadence', correct: false },
+              { label: 'A sentence: a continuation first, then the basic idea and its repetition', correct: false },
+            ],
+            [
+              { label: 'A contrasting period: the two phrases begin with different material', correct: true },
+              { label: 'A contrasting period: the two phrases are identical from start to finish', correct: false },
+              { label: 'A contrasting period: it always modulates', correct: false },
+              { label: 'A contrasting period: it has three phrases', correct: false },
             ],
           ],
         },
@@ -399,74 +434,92 @@ const templates: ModuleTemplateConfig[] = [
     targetCount: 5,
   },
 
-  // ---- l3u11m3: Suspensions ----
+  // ---- l3u11m3: Harmonic Rhythm ----
   {
     moduleId: 'l3u11m3',
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Answer this question about suspensions in voice leading.',
-        hintTemplate: 'A suspension has 3 parts: preparation (consonance), suspension (held over into dissonance), resolution (step down to consonance). Named by the intervals: 4-3, 7-6, 9-8, 2-3.',
+        promptTemplate: 'Which statement about harmonic rhythm is true?',
+        hintTemplate: 'Harmonic rhythm is the rate at which chords change. It can accelerate toward cadences, creating a sense of forward motion and arrival.',
         params: {
           choiceSets: [
             [
-              { label: 'A 4-3 suspension holds the 4th above the bass then resolves down to a 3rd', correct: true },
-              { label: 'A 4-3 suspension holds the 3rd then moves up to the 4th', correct: false },
-              { label: 'A 4-3 suspension is an ascending resolution', correct: false },
-              { label: 'A 4-3 suspension does not require preparation', correct: false },
+              { label: 'Harmonic rhythm usually speeds up as a cadence approaches', correct: true },
+              { label: 'Harmonic rhythm stays constant from the start of a piece to the end', correct: false },
+              { label: 'Harmonic rhythm usually slows down at cadences', correct: false },
+              { label: 'Harmonic rhythm changes only between sections', correct: false },
             ],
             [
-              { label: 'A suspension must be prepared as a consonance on a weak beat before being held into the strong beat', correct: true },
-              { label: 'A suspension can appear without preparation', correct: false },
-              { label: 'A suspension always resolves upward', correct: false },
-              { label: 'A suspension is the same as an appoggiatura', correct: false },
+              { label: 'Faster harmonic rhythm creates a greater sense of momentum', correct: true },
+              { label: 'Faster harmonic rhythm creates a calmer, more static mood', correct: false },
+              { label: 'Harmonic rhythm has no effect on the energy of a passage', correct: false },
+              { label: 'Slower harmonic rhythm is the usual way to build toward a climax', correct: false },
             ],
             [
-              { label: 'A 7-6 suspension holds the 7th above the bass then resolves down to a 6th', correct: true },
-              { label: 'A 7-6 suspension resolves up to an octave', correct: false },
-              { label: 'A 7-6 suspension is a bass suspension', correct: false },
-              { label: 'A 7-6 suspension does not resolve', correct: false },
+              { label: 'In common-practice music, chords usually change on strong beats', correct: true },
+              { label: 'Chords may change only on beat 1 of a bar', correct: false },
+              { label: 'Chords can never change in the middle of a bar', correct: false },
+              { label: 'Changing chords on beats 2 and 4 is the most stable, normal choice in 4/4', correct: false },
             ],
             [
-              { label: 'A 9-8 suspension holds the 9th above the bass then resolves down to an octave', correct: true },
-              { label: 'A 9-8 suspension resolves up by step', correct: false },
-              { label: 'A 9-8 suspension is actually a 2-1 suspension', correct: false },
-              { label: 'A 9-8 suspension occurs only in the bass voice', correct: false },
+              { label: 'Harmonic rhythm is independent of the melody\'s rhythm', correct: true },
+              { label: 'Harmonic rhythm is simply the rhythm the melody plays', correct: false },
+              { label: 'Harmonic rhythm is the speed of the bass line', correct: false },
+              { label: 'Harmonic rhythm means the number of beats in each bar', correct: false },
             ],
           ],
         },
       },
     ],
-    targetCount: 6,
+    targetCount: 4,
   },
 
-  // ---- l3u11m4: Anticipations and Pedal Points ----
+  // ---- l3u11m4: Non-Chord Tones (Part 1) ----
   {
     moduleId: 'l3u11m4',
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Classify this non-chord tone based on how it behaves.',
-        hintTemplate: 'An anticipation arrives early (before the chord changes). A pedal point is a sustained or repeated note (usually tonic or dominant) held through changing harmonies above it.',
+        promptTemplate: 'Which statement about passing tones, neighbor tones and anticipations is true?',
+        hintTemplate: 'Passing tone: step–step in the same direction between two chord tones. Neighbor: step away and back to the same chord tone (incomplete: one side by leap). Anticipation: a note of the next chord sounding early.',
         params: {
           choiceSets: [
             [
-              { label: 'An anticipation sounds a chord tone before the chord actually arrives', correct: true },
-              { label: 'An anticipation is the same as a suspension', correct: false },
-              { label: 'An anticipation requires preparation on a strong beat', correct: false },
-              { label: 'An anticipation always resolves downward', correct: false },
+              { label: 'Approached and left by step in the same direction: a passing tone', correct: true },
+              { label: 'Approached and left by step in the same direction: a neighbor tone', correct: false },
+              { label: 'Approached and left by step in the same direction: an anticipation', correct: false },
+              { label: 'Approached and left by step in the same direction: an incomplete neighbor', correct: false },
             ],
             [
-              { label: 'A tonic pedal point sustains the tonic note while harmonies change above it', correct: true },
-              { label: 'A tonic pedal only occurs in the soprano', correct: false },
-              { label: 'A tonic pedal must resolve after one measure', correct: false },
-              { label: 'A tonic pedal is the same as an ostinato', correct: false },
+              { label: 'Passing tones may be accented (on the beat) or unaccented', correct: true },
+              { label: 'Passing tones always fall on the beat, never between beats', correct: false },
+              { label: 'Passing tones always fall between beats and can never be accented', correct: false },
+              { label: 'Passing tones must always be notes from outside the key', correct: false },
             ],
             [
-              { label: 'A dominant pedal point creates tension by holding the 5th scale degree through non-dominant harmonies', correct: true },
-              { label: 'A dominant pedal only appears at the beginning of a piece', correct: false },
-              { label: 'A dominant pedal always uses the leading tone', correct: false },
-              { label: 'A dominant pedal is always in the soprano voice', correct: false },
+              { label: 'C–D–E over a C major chord: D is a passing tone', correct: true },
+              { label: 'C–D–E over a C major chord: D is a chord tone', correct: false },
+              { label: 'C–D–E over a C major chord: D is an anticipation', correct: false },
+              { label: 'C–D–E over a C major chord: E is the passing tone', correct: false },
+            ],
+            [
+              { label: 'A note that steps away from a chord tone and back to it: a neighbor tone', correct: true },
+              { label: 'A note that steps away from a chord tone and back to it: a passing tone', correct: false },
+              { label: 'A note that steps away from a chord tone and back to it: an anticipation', correct: false },
+              { label: 'A note that steps away from a chord tone and back to it: an incomplete neighbor', correct: false },
+            ],
+            [
+              { label: 'An incomplete neighbor is approached or left by leap instead of step', correct: true },
+              { label: 'An incomplete neighbor never resolves at all', correct: false },
+              { label: 'An incomplete neighbor moves by a whole step only', correct: false },
+              { label: 'An incomplete neighbor is approached and left by step, like a full neighbor tone', correct: false },
+            ],
+            [
+              { label: 'An anticipation sounds a note of the next chord before that chord arrives', correct: true },
+              { label: 'An anticipation holds over a note of the previous chord', correct: false },
+              { label: 'An anticipation always resolves downward by step', correct: false },
+              { label: 'An anticipation is a note that belongs to neither chord', correct: false },
             ],
           ],
         },
@@ -475,53 +528,64 @@ const templates: ModuleTemplateConfig[] = [
     targetCount: 5,
   },
 
-  // ---- l3u11m5: Non-Chord Tone Review ----
+  // ---- l3u11m5: Transposition ----
   {
     moduleId: 'l3u11m5',
     templates: [
       {
-        type: 'multiple_choice',
-        promptTemplate: 'Classify the non-chord tone described: approached and left in this manner.',
-        hintTemplate: 'Passing tone: step-step same direction. Neighbor: step-step returning. Suspension: held-step down. Appoggiatura: leap-step. Escape: step-leap. Anticipation: arrives early.',
+        type: 'scale_build',
+        promptTemplate: 'Transpose the C major scale so that it starts on {root}. Select all 7 notes.',
+        hintTemplate: 'Every note moves by the same interval as C moves to {root}, so the W-W-H-W-W-W-H pattern is kept: the result is the {root} major scale.',
         params: {
-          choiceSets: [
-            [
-              { label: 'Approached by leap, resolved by step in the opposite direction = appoggiatura', correct: true },
-              { label: 'This describes a passing tone', correct: false },
-              { label: 'This describes a suspension', correct: false },
-              { label: 'This describes an anticipation', correct: false },
-            ],
-            [
-              { label: 'Approached by step, left by leap in the opposite direction = escape tone', correct: true },
-              { label: 'This describes a passing tone', correct: false },
-              { label: 'This describes a neighbor tone', correct: false },
-              { label: 'This describes an anticipation', correct: false },
-            ],
-            [
-              { label: 'A retardation is like a suspension but resolves upward', correct: true },
-              { label: 'A retardation resolves downward by leap', correct: false },
-              { label: 'A retardation has no preparation', correct: false },
-              { label: 'A retardation is the same as an anticipation', correct: false },
-            ],
-            [
-              { label: 'All non-chord tones create dissonance that resolves to consonance', correct: true },
-              { label: 'Non-chord tones are always consonant', correct: false },
-              { label: 'Non-chord tones never resolve', correct: false },
-              { label: 'Non-chord tones only occur in the bass voice', correct: false },
-            ],
-          ],
+          roots: ['G', 'D', 'A', 'F', 'B', 'E'],
+          accidentals: ['', '', '', '', 'b', 'b'],
+          scaleTypes: ['major'],
+          noteCounts: [7],
         },
       },
       {
         type: 'interval_id',
-        promptTemplate: 'Identify the interval created between the non-chord tone and the bass, starting from {root}.',
-        hintTemplate: 'Count semitones from {root} to determine the interval. Non-chord tones often create seconds, sevenths, or augmented/diminished intervals against the bass.',
+        promptTemplate: 'A melody that starts on {root} is transposed so that it starts on the second note shown. By what interval was it transposed?',
+        hintTemplate: 'Count letter names from {root} to the new starting note for the interval number, and semitones ({semitones}) for its quality.',
         params: {
-          roots: ['C', 'G', 'F', 'D'],
+          roots: ['C', 'D', 'F', 'G'],
           accidentals: ['', '', '', ''],
-          intervals: [1, 2, 6, 10, 11],
+          intervals: [2, 3, 4, 5, 7, 9],
           directions: ['ascending'],
           octaves: [4],
+        },
+      },
+      {
+        type: 'multiple_choice',
+        promptTemplate: 'Which statement about transposition is true?',
+        hintTemplate: 'Transposing moves every note by the same interval. Transposing instruments: Bb instruments sound a major 2nd lower than written, horn in F a perfect 5th lower.',
+        params: {
+          choiceSets: [
+            [
+              { label: 'Transposing moves every note by the same interval', correct: true },
+              { label: 'Transposing moves only the melody, never the chords underneath', correct: false },
+              { label: 'Transposing changes the intervals between the notes', correct: false },
+              { label: 'Transposing keeps the letter names but changes the key signature', correct: false },
+            ],
+            [
+              { label: 'A Bb trumpet sounds a major 2nd lower than written', correct: true },
+              { label: 'A Bb trumpet sounds exactly the pitch that is written', correct: false },
+              { label: 'A Bb trumpet sounds a major 2nd higher than written', correct: false },
+              { label: 'A Bb trumpet sounds a perfect 5th lower than written', correct: false },
+            ],
+            [
+              { label: 'C major transposed up a perfect 5th becomes G major, with one sharp', correct: true },
+              { label: 'C major transposed up a perfect 5th becomes F major, with one flat', correct: false },
+              { label: 'C major transposed up a perfect 5th keeps its key signature of no sharps or flats', correct: false },
+              { label: 'C major transposed up a perfect 5th becomes D major, with two sharps', correct: false },
+            ],
+            [
+              { label: 'A horn in F sounds a perfect 5th lower than written', correct: true },
+              { label: 'A horn in F sounds a perfect 5th higher than written', correct: false },
+              { label: 'A horn in F sounds a major 2nd lower than written', correct: false },
+              { label: 'A horn in F sounds exactly the pitch that is written', correct: false },
+            ],
+          ],
         },
       },
     ],

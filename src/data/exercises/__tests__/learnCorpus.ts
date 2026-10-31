@@ -59,7 +59,8 @@ export function levelCorpus(level: number, lang: ContentLanguage): CorpusItem[] 
         level,
         moduleId,
         lang,
-        source: /g\d+$/.test(exercise.id) ? 'generated' : 'authored',
+        // Generated ids are `${moduleId}g${n}` (authored ids like "l1u3m1e_deg1" also end in g+digit).
+        source: exercise.id.startsWith(`${moduleId}g`) && /^\d+$/.test(exercise.id.slice(moduleId.length + 1)) ? 'generated' : 'authored',
         exercise,
       });
     }

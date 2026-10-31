@@ -14,7 +14,7 @@ const overlay: ExerciseLevelOverlay = {
 
   l6u18m1e1: {
     prompt:
-      'Constrói o acorde napolitano (bII) em C menor. É uma tríade de Db maior: seleciona Db, F e Ab.',
+      'Constrói o acorde napolitano (bII) em C menor. Seleciona as 3 notas.',
     hint: 'O acorde napolitano é uma tríade maior construída sobre o 2.º grau rebaixado. Em C menor, bII = Db maior = Db, F, Ab (classes de altura 1, 5, 8).',
   },
   l6u18m1e2: {
@@ -46,7 +46,7 @@ const overlay: ExerciseLevelOverlay = {
       '10 meios-tons — enarmonicamente equivalente a uma sétima menor',
       '9 meios-tons — o mesmo que uma sexta maior',
       '8 meios-tons — o mesmo que uma sexta menor',
-      '11 meios-tons — o mesmo que uma sétima maior',
+      '11 meios-tons — enarmonicamente equivalente a uma sétima maior',
     ],
     hint: 'Uma sexta aumentada é meio-tom maior que uma sexta maior (9 meios-tons). Abrange 10 meios-tons e é enarmonicamente do mesmo tamanho que uma sétima menor, mas as duas notas resolvem divergentemente para uma oitava.',
   },
@@ -99,7 +99,7 @@ const overlay: ExerciseLevelOverlay = {
       'A dominante (V) ou 6/4 cadencial, com b6 e #4 a resolverem divergentemente para o 5.º grau',
       'A tónica (I) diretamente em posição fundamental',
       'A subdominante (IV) como parte de uma cadência plagal',
-      'A sobretónica (ii) para iniciar uma cadeia pré-dominante',
+      'A sobretónica (ii), com b6 e #4 a moverem-se convergentemente para um uníssono no 1.º grau',
     ],
     hint: 'Como todos os acordes de sexta aumentada, a Gr+6 resolve para V. As vozes extremas (b6 e #4) convergem na nota da dominante por meio-tom. Um 6/4 cadencial intervém frequentemente para evitar quintas paralelas.',
   },
@@ -119,8 +119,8 @@ const overlay: ExerciseLevelOverlay = {
   l6u18m4e2: {
     prompt: 'A modulação enarmónica via Gr+6/V7 permite modulação direta para tonalidades a que distância?',
     choices: [
-      'Tonalidades distantes — por exemplo, tónicas a meio-tom de distância (C para Db), cinco passos no círculo de quintas, muito além do alcance de pivot diatónico',
-      'Apenas tonalidades próximas com uma diferença de um acidente',
+      'Tonalidades distantes: tónicas a meio-tom (C para Db), cinco passos no círculo de quintas',
+      'Apenas tonalidades próximas: tónicas a uma 5.ª (C para G), um passo no círculo de quintas',
       'Apenas entre tonalidades paralelas maior e menor',
       'Apenas entre tonalidades relativas maior e menor',
     ],
@@ -145,7 +145,7 @@ const overlay: ExerciseLevelOverlay = {
 
   l6u19m1e1: {
     prompt:
-      'Constrói um acorde de sétima diminuta sobre C. Seleciona 4 notas: C, Eb, Gb e Bbb (enarmónico de A).',
+      'Constrói um acorde de sétima diminuta sobre C. Seleciona as 4 notas.',
     hint: 'Um acorde de sétima diminuta empilha três terças menores: C (0), Eb (3), Gb (6), Bbb (9). Estas quatro classes de altura dividem a oitava em partes iguais. Bbb é enarmonicamente A.',
   },
   l6u19m1e2: {
@@ -164,7 +164,7 @@ const overlay: ExerciseLevelOverlay = {
       'Quatro tonalidades — qualquer das suas quatro notas pode ser tratada como sensível',
       'Duas tonalidades — uma maior e uma menor',
       'Doze tonalidades — uma para cada meio-tom',
-      'Uma tonalidade — determinada pela sua fundamental',
+      'Uma só tonalidade — aquela cuja sensível é a fundamental escrita do próprio acorde',
     ],
     hint: 'Devido à sua simetria, cada nota do acorde dim7 pode ser reescrita como sensível resolvendo ascendentemente por meio-tom para uma tónica diferente. C-Eb-Gb-Bbb pode ser vii°7 de Db, E, G ou Bb.',
   },
@@ -220,7 +220,7 @@ const overlay: ExerciseLevelOverlay = {
       'Quatro — 3.ª maior/menor ascendente e 3.ª maior/menor descendente (ex. C-E, C-Ab, C-Eb, C-A)',
       'Dois — uma ascendente e uma descendente',
       'Seis — uma para cada classe de intervalo',
-      'Três — relações de terça maior, menor e diminuta',
+      'Três — 3.ª maior ascendente, 3.ª maior descendente e uma única 3.ª menor (ex. C-E, C-Ab, C-A)',
     ],
     hint: 'A partir de qualquer tríade maior, podes mover-te para outra tríade maior a uma 3.ª maior ou menor acima ou abaixo: C para E, C para Eb, C para A, C para Ab. Cada uma produz uma cor diferente, e as quatro são mediantes cromáticas.',
   },
@@ -229,8 +229,8 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Uma ou zero notas comuns com movimento cromático (meio-tom) nas vozes que se movem',
       'Todas as vozes movem-se por grau conjunto na mesma direção',
-      'Duas notas comuns com uma voz a mover-se por tom',
-      'Movimento da fundamental por quinta com notas do acorde alteradas',
+      'Duas notas comuns, enquanto a única voz restante se move por um tom diatónico',
+      'Movimento da fundamental por quinta perfeita, com todas as notas do acorde alteradas cromaticamente',
     ],
     hint: 'As mediantes cromáticas partilham frequentemente uma nota comum enquanto as outras vozes se deslocam por meio-tom. Em alguns casos (mediantes duplamente cromáticas como C maior para Ab menor, Ab-Cb-Eb) não há notas comuns, e todas as vozes se deslocam meio-tom: C para Cb, E para Eb, G para Ab.',
   },
@@ -298,7 +298,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Que relação rítmica define o contraponto de terceira espécie?',
     choices: [
       'Quatro notas no contraponto contra cada nota do cantus firmus',
-      'Três notas contra cada nota do cantus firmus',
+      'Três notas no contraponto contra cada uma das notas do cantus firmus',
       'Duas notas contra cada nota do cantus firmus',
       'Ritmo livre sem proporção fixa',
     ],
@@ -320,10 +320,10 @@ const overlay: ExerciseLevelOverlay = {
   l6u20m2e2: {
     prompt: 'O que define o contraponto de quinta espécie (contraponto florido)?',
     choices: [
-      'Uma combinação livre de todas as espécies anteriores — valores de notas misturados, notas de passagem e suspensões',
+      'Uma mistura livre de todas as espécies anteriores: valores mistos, notas de passagem e suspensões',
       'Cinco notas contra cada nota do cantus firmus',
       'Contraponto escrito para cinco vozes simultaneamente',
-      'Imitação estrita ao intervalo de quinta ao longo de toda a peça',
+      'Imitação estrita à quinta do princípio ao fim, com todas as vozes a entrar na nota da dominante',
     ],
     hint: 'A quinta espécie (florida) combina técnicas de todas as quatro espécies anteriores numa linha melódica fluente. Usa semibreves, mínimas, semínimas, suspensões e notas de passagem de forma musicalmente satisfatória.',
   },
@@ -331,7 +331,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Quais são as três fases de uma suspensão corretamente executada?',
     choices: [
       'Preparação (consonância), suspensão (dissonância no tempo forte), resolução (grau conjunto descendente)',
-      'Ataque (dissonância), sustentação (nota mantida), libertação (salto)',
+      'Ataque (dissonância no tempo forte), sustentação (nota mantida por cima da barra), libertação (por salto)',
       'Abordagem por salto, manutenção, resolução por salto',
       'Consonância, consonância, dissonância',
     ],
@@ -353,9 +353,9 @@ const overlay: ExerciseLevelOverlay = {
   l6u20m3e2: {
     prompt: 'O que é contraponto triplo?',
     choices: [
-      'Três vozes escritas de modo a que qualquer das seis ordenações verticais possíveis produza contraponto válido',
+      'Três vozes escritas para que qualquer das seis ordenações verticais produza contraponto válido',
       'Contraponto em metro ternário (3/4 ou 3/8)',
-      'Três repetições do mesmo contraponto em níveis de altura diferentes',
+      'Três repetições do mesmo contraponto a duas vozes, cada uma delas a começar num nível de altura diferente',
       'Uma fuga com exatamente três sujeitos',
     ],
     hint: 'Contraponto triplo significa que três vozes (A, B, C) podem ser reorganizadas em qualquer ordem — ABC, ACB, BAC, BCA, CAB, CBA — e todas as seis permutações produzem contraponto correto. Bach dominou esta técnica.',
@@ -365,7 +365,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Uma quinta inverte-se numa quarta, que é tratada como dissonância acima do baixo no contraponto estrito',
       'As quintas perfeitas são sempre proibidas em todos os tipos de contraponto',
-      'Uma quinta inverte-se num trítono, criando um intervalo inutilizável',
+      'Uma quinta inverte-se num trítono, que é tratado como dissonância inutilizável acima do baixo no contraponto estrito',
       'As quintas perfeitas não podem ser invertidas de todo',
     ],
     hint: 'Quando as vozes se invertem à oitava, uma P5 torna-se uma P4. No contraponto a duas vozes, quartas acima do baixo são dissonantes. Portanto, qualquer P5 no original torna-se um problema quando as vozes trocam de posição.',

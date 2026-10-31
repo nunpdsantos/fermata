@@ -1,8 +1,9 @@
 import type { TemplateLevelOverlay } from '../types';
 
 // ---------------------------------------------------------------------------
-// Castilian Spanish overlay for Level 3 exercise templates
-// 13 modules, ~70 generated exercises
+// Spanish (ES) overlay for Level 3 exercise templates
+// 13 modules. Mirrors templatesL3.ts entry by entry (module + template index,
+// choice set + choice index) — see the W4-01 note there.
 // ---------------------------------------------------------------------------
 
 const overlay: TemplateLevelOverlay = {
@@ -10,7 +11,7 @@ const overlay: TemplateLevelOverlay = {
   // Unidad 9: Acordes de Séptima y Armonía Diatónica
   // =========================================================================
 
-  // ---- l3u9m1: Acordes de Séptima — Cinco Cualidades ----
+  // ---- l3u9m1: Acordes de Séptima — Cinco Calidades ----
   l3u9m1: [
     {
       // chord_build
@@ -22,7 +23,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Identifica la cualidad de este acorde de séptima según su estructura interválica.',
+        '¿Qué definición de acorde de séptima es correcta?',
       hintTemplate:
         'Escucha la cualidad de la tríada (mayor/menor/dim) y la cualidad de la 7.ª (mayor/menor/disminuida) apilada encima.',
       choiceSets: [
@@ -36,7 +37,7 @@ const overlay: TemplateLevelOverlay = {
           'Tríada mayor + 7.ª menor = acorde de séptima de dominante',
           'Tríada mayor + 7.ª menor = acorde de séptima mayor',
           'Tríada mayor + 7.ª menor = acorde de séptima menor',
-          'Tríada mayor + 7.ª menor = acorde de séptima disminuida',
+          'Tríada mayor + 7.ª menor = acorde de séptima totalmente disminuida',
         ],
         [
           'Tríada disminuida + 7.ª menor = acorde de séptima semidisminuida',
@@ -53,33 +54,33 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Identifica la inversión y el bajo cifrado de este acorde de séptima.',
+        '¿Cuál de estas afirmaciones sobre las inversiones de los acordes de séptima y su cifrado es verdadera?',
       hintTemplate:
         'Inversiones de acordes de séptima: estado fundamental = 7, 1.ª inv = 6/5, 2.ª inv = 4/3, 3.ª inv = 4/2 (o 2).',
       choiceSets: [
         [
-          'La tercera inversión de un acorde de séptima tiene la 7.ª en el bajo (bajo cifrado: 4/2)',
-          'La tercera inversión tiene la 5.ª en el bajo',
-          'La tercera inversión tiene la 3.ª en el bajo',
-          'La tercera inversión tiene la fundamental en el bajo',
+          'La 3.ª inversión pone la 7.ª en el bajo (cifrado 4/2)',
+          'La 3.ª inversión pone la 5.ª en el bajo (cifrado 4/3)',
+          'La 3.ª inversión pone la 3.ª en el bajo (cifrado 6/5)',
+          'La 3.ª inversión mantiene la fundamental en el bajo (cifrado 7)',
         ],
         [
-          'La primera inversión de un acorde de séptima usa el bajo cifrado 6/5',
-          'La primera inversión usa el bajo cifrado 4/3',
-          'La primera inversión usa el bajo cifrado 4/2',
-          'La primera inversión usa el bajo cifrado 7',
+          'La 1.ª inversión se cifra 6/5',
+          'La 1.ª inversión se cifra 4/3',
+          'La 1.ª inversión se cifra 4/2',
+          'La 1.ª inversión se cifra 7/5/3',
         ],
         [
-          'La segunda inversión de un acorde de séptima usa el bajo cifrado 4/3',
-          'La segunda inversión usa el bajo cifrado 6/5',
-          'La segunda inversión usa el bajo cifrado 4/2',
-          'La segunda inversión usa el bajo cifrado 6/4',
+          'La 2.ª inversión se cifra 4/3',
+          'La 2.ª inversión se cifra 6/5',
+          'La 2.ª inversión se cifra 4/2',
+          'La 2.ª inversión se cifra 6/4',
         ],
         [
-          'En la segunda inversión, la 5.ª del acorde de séptima está en el bajo',
-          'En la segunda inversión, la 3.ª está en el bajo',
-          'En la segunda inversión, la 7.ª está en el bajo',
-          'En la segunda inversión, la fundamental está en el bajo',
+          'En la 2.ª inversión, la 5.ª está en el bajo',
+          'En la 2.ª inversión, la 3.ª está en el bajo',
+          'En la 2.ª inversión, la 7.ª está en el bajo',
+          'En la 2.ª inversión, la fundamental sigue en el bajo',
         ],
       ],
     },
@@ -108,7 +109,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Identifica la cualidad de este acorde de séptima diatónico en menor.',
+        '¿Cuál de estas afirmaciones sobre los acordes de séptima de la menor armónica es verdadera?',
       hintTemplate:
         'En la menor armónica, el 7.º grado elevado altera la cualidad de los acordes construidos sobre los grados III, V y VII.',
       choiceSets: [
@@ -120,7 +121,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'En la menor armónica, vii°7 es un acorde de séptima totalmente disminuida',
-          'En la menor armónica, vii°7 es un acorde de séptima semidisminuida',
+          'En la menor armónica, vii°7 es un acorde de séptima semidisminuida (m7b5)',
           'En la menor armónica, vii°7 es un acorde de séptima menor',
           'En la menor armónica, vii°7 es un acorde de séptima de dominante',
         ],
@@ -129,7 +130,7 @@ const overlay: TemplateLevelOverlay = {
   ],
 
   // =========================================================================
-  // Unidad 10: Conducción de Voces y Cadencias
+  // Unidad 10: Conducción de Voces
   // =========================================================================
 
   // ---- l3u10m1: Fundamentos de SATB ----
@@ -137,27 +138,27 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Responde a esta pregunta sobre los fundamentos de conducción de voces SATB.',
+        '¿Cuál de estas afirmaciones sobre la disposición de las voces SATB es verdadera?',
       hintTemplate:
         'Tesituras SATB: Soprano C4-G5, Contralto F3-C5, Tenor C3-G4, Bajo E2-C4. Las voces superiores adyacentes deben mantenerse a menos de una octava entre sí (excepto bajo-tenor).',
       choiceSets: [
         [
-          'Las voces superiores adyacentes (S-C, C-T) deben mantenerse generalmente a menos de una octava entre sí',
-          'Las cuatro voces deben estar siempre dentro de una octava en total',
-          'No hay restricciones de espaciado entre voces',
-          'Soprano y contralto deben estar siempre a una 3.ª de distancia',
+          'Soprano–contralto y contralto–tenor quedan a menos de una octava; tenor–bajo puede separarse más',
+          'Las cuatro voces deben caber en una sola octava, desde el bajo hasta el soprano',
+          'Cualquier separación es válida, siempre que cada voz quede en su tesitura',
+          'Tenor–bajo deben quedar a menos de una octava, mientras que las voces superiores pueden separarse más',
         ],
         [
-          'El cruce de voces ocurre cuando una voz más grave sobrepasa a la voz más aguda adyacente',
-          'El cruce de voces se produce cuando dos voces cantan la misma nota',
-          'El cruce de voces siempre se fomenta para crear interés melódico',
-          'El cruce de voces solo se aplica a soprano y bajo',
+          'Cruce de voces: una voz más grave pasa por encima de la voz vecina',
+          'Cruce de voces: dos voces cantan la misma nota al mismo tiempo',
+          'Cruce de voces: el soprano y el bajo se mueven en movimiento contrario',
+          'Cruce de voces: un hábito recomendado en los corales para dar más interés melódico',
         ],
         [
-          'Doblar la fundamental del acorde es generalmente la opción más segura en estado fundamental',
-          'Doblar la 3.ª siempre es preferible',
-          'Doblar la 7.ª crea el mejor sonido',
-          'Todas las notas del acorde deben aparecer exactamente una vez',
+          'En estado fundamental, doblar la fundamental suele ser la opción más segura',
+          'En estado fundamental, la sensible es la mejor nota para doblar',
+          'En estado fundamental, doblar la 3.ª es siempre preferible',
+          'En estado fundamental, no debe doblarse ninguna nota',
         ],
       ],
     },
@@ -168,293 +169,342 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Identifica el error o regla de conducción de voces ilustrado aquí.',
+        '¿Cuál de estas afirmaciones sobre la conducción de voces es verdadera?',
       hintTemplate:
         'Evita 5.as y 8.as paralelas, resuelve la sensible hacia arriba, resuelve la 7.ª del acorde hacia abajo, y mantén notas comunes cuando sea posible.',
       choiceSets: [
         [
-          'Las quintas paralelas ocurren cuando dos voces pasan de una 5.ªJ a otra 5.ªJ en la misma dirección',
-          'Las quintas paralelas son siempre aceptables en la escritura SATB',
-          'Las quintas paralelas solo ocurren entre soprano y bajo',
-          'Las quintas paralelas significan que dos voces están siempre a una 5.ª de distancia',
+          'Quintas paralelas: dos voces a una 5.ª J se mueven en la misma dirección hacia otra 5.ª J',
+          'Quintas paralelas: dos voces cualesquiera que estén a una 5.ª en cualquier acorde',
+          'Quintas paralelas: un error solo cuando aparecen entre el soprano y el bajo',
+          'Quintas paralelas: aceptables en SATB siempre que las dos voces se muevan por grado y no por salto',
         ],
         [
-          'La sensible debe resolver por grado ascendente hacia la tónica',
-          'La sensible debe resolver hacia abajo, hacia la dominante',
+          'La sensible resuelve por grado ascendente a la tónica',
+          'La sensible resuelve por grado descendente a la submediante',
           'La sensible puede moverse libremente en cualquier dirección',
-          'La sensible debe saltar siempre a la mediante',
+          'La sensible salta hacia arriba hasta la mediante',
         ],
         [
-          'La 7.ª del acorde debe resolver por grado descendente',
-          'La 7.ª del acorde debe resolver por grado ascendente',
+          'La 7.ª del acorde resuelve por grado descendente',
+          'La 7.ª del acorde resuelve por grado ascendente',
           'La 7.ª del acorde no necesita resolver',
-          'La 7.ª del acorde debe saltar una 5.ª hacia abajo',
+          'La 7.ª del acorde salta una 5.ª hacia abajo',
         ],
         [
-          'El movimiento contrario entre las voces extremas es generalmente preferible',
-          'El movimiento paralelo entre todas las voces es ideal',
-          'El bajo debe moverse siempre en la misma dirección que el soprano',
-          'El movimiento oblicuo nunca se usa en la escritura SATB',
+          'El movimiento contrario entre las voces extremas suele preferirse',
+          'El movimiento paralelo entre las cuatro voces suele preferirse',
+          'El bajo debe moverse en general en la misma dirección que el soprano',
+          'El movimiento oblicuo nunca se usa en la escritura a cuatro voces',
         ],
       ],
     },
   ],
 
-  // ---- l3u10m3: Cadencias — CAP, CAI, SC ----
+  // ---- l3u10m3: Escritura a Partes en Estado Fundamental ----
   l3u10m3: [
     {
       // multiple_choice
       promptTemplate:
-        'Clasifica este tipo de cadencia según los acordes y la conducción de voces descritos.',
+        '¿Cuál de estas afirmaciones sobre la escritura a partes con tríadas en estado fundamental es verdadera?',
       hintTemplate:
-        'CAP: V-I con soprano en la tónica. CAI: V-I con soprano NO en la tónica, o acordes invertidos. SC: termina en V. Plagal: IV-I. Rota: V-vi.',
+        'Fundamentales a una 5.ª comparten una nota común, a una 3.ª comparten dos, a una 2.ª ninguna. Mantén las notas comunes en la misma voz; si no hay ninguna, mueve las voces superiores en contra del bajo.',
       choiceSets: [
         [
-          'V a I con el soprano terminando en la tónica es una Cadencia Auténtica Perfecta (CAP)',
-          'Es una Cadencia Auténtica Imperfecta (CAI)',
-          'Es una Semicadencia (SC)',
-          'Es una Cadencia Rota',
+          'Fundamentales a una 5.ª comparten una nota común: mantenla en la misma voz',
+          'Fundamentales a una 5.ª no comparten notas: mueve todas las voces superiores',
+          'Fundamentales a una 5.ª comparten dos notas comunes: mueve solo una voz',
+          'Fundamentales a una 5.ª comparten una nota común, que debe pasar a otra voz',
         ],
         [
-          'Una frase que termina en el acorde V es una Semicadencia',
-          'Una frase que termina en el acorde V es una Cadencia Auténtica Perfecta',
-          'Una frase que termina en el acorde V es una Cadencia Plagal',
-          'Una frase que termina en el acorde V es una Cadencia Rota',
+          'Fundamentales a una 3.ª comparten dos notas comunes: mantén ambas y mueve una voz',
+          'Fundamentales a una 3.ª comparten una nota común: mantenla y mueve dos voces',
+          'Fundamentales a una 3.ª no comparten notas: mueve las tres voces superiores',
+          'Fundamentales a una 3.ª comparten las tres notas, así que las voces superiores nunca se mueven',
         ],
         [
-          'V resolviendo a vi en lugar de I es una Cadencia Rota',
-          'V resolviendo a vi es una Cadencia Auténtica Perfecta',
-          'V resolviendo a vi es una Semicadencia',
-          'V resolviendo a vi es una Cadencia Plagal',
+          'Fundamentales a una 2.ª no comparten notas: mueve las voces superiores en contra del bajo',
+          'Fundamentales a una 2.ª comparten dos notas comunes: mantén ambas y mueve una voz',
+          'Fundamentales a una 2.ª: mueve las cuatro voces en la misma dirección que el bajo',
+          'Fundamentales a una 2.ª comparten una nota común, que se mantiene en el soprano mientras las demás se mueven',
         ],
         [
-          'IV a I es una Cadencia Plagal (cadencia del Amén)',
-          'IV a I es una Cadencia Auténtica Perfecta',
-          'IV a I es una Semicadencia',
-          'IV a I es una Cadencia Rota',
+          'Cada voz superior se mueve a la nota del acorde disponible más cercana',
+          'Cada voz superior salta a una nueva nota del acorde para dar interés melódico',
+          'El bajo siempre debe ir a la nota del acorde más cercana, por grado si es posible',
+          'Las cuatro voces deben moverse juntas en la misma dirección',
         ],
         [
-          'V a I con el soprano en la 3.ª es una Cadencia Auténtica Imperfecta (CAI)',
-          'V a I con el soprano en la 3.ª es una CAP',
-          'V a I con el soprano en la 3.ª es una Semicadencia',
-          'V a I con el soprano en la 3.ª es una Cadencia Rota',
+          'En las tríadas en estado fundamental, dobla la fundamental por norma',
+          'En las tríadas en estado fundamental, dobla la sensible',
+          'En las tríadas en estado fundamental, dobla la 3.ª por norma',
+          'En las tríadas en estado fundamental, nunca dobles ninguna nota',
         ],
       ],
     },
   ],
 
-  // ---- l3u10m4: Estructura de Frase ----
+  // ---- l3u10m4: Tríadas Invertidas ----
   l3u10m4: [
     {
       // multiple_choice
       promptTemplate:
-        'Responde a esta pregunta sobre la estructura de frase musical.',
+        '¿Cuál de estas afirmaciones sobre las tríadas invertidas es verdadera?',
       hintTemplate:
-        'Un período tiene dos frases: antecedente (termina con SC o CAI) y consecuente (termina con CAP). Una frase (Satz) tiene presentación (idea básica + repetición) y continuación.',
+        '1.ª inversión (6/3): 3.ª en el bajo, usada para líneas de bajo suaves. 2.ª inversión (6/4): 5.ª en el bajo, usada solo como 6/4 cadencial, de paso, de pedal o arpegiado.',
       choiceSets: [
         [
-          'Un período paralelo tiene frases antecedente y consecuente que comienzan con material similar',
-          'Un período paralelo tiene dos frases sin relación',
-          'Un período paralelo debe tener exactamente 8 compases',
-          'Un período paralelo termina siempre con semicadencia',
+          'La 1.ª inversión (6/3) pone la 3.ª en el bajo y suaviza la línea del bajo',
+          'La 1.ª inversión (6/3) pone la 5.ª en el bajo y se reserva para las cadencias',
+          'La 1.ª inversión (6/3) mantiene la fundamental en el bajo, pero sube la 3.ª una octava',
+          'La 1.ª inversión (6/3) solo se usa al final de una pieza',
         ],
         [
-          'La frase antecedente termina típicamente con una cadencia débil (SC o CAI)',
-          'La frase antecedente termina siempre con una CAP',
-          'La frase antecedente no tiene cadencia',
-          'El antecedente es siempre la segunda frase',
+          'Los cuatro 6/4 habituales: cadencial, de paso, de pedal y arpegiado',
+          'Los cuatro 6/4 habituales: fundamental, 1.ª, 2.ª y 3.ª inversión',
+          'Un acorde 6/4 puede usarse libremente en cualquier punto de la frase, igual que una tríada en 1.ª inversión',
+          'El único 6/4 aceptable es el que termina una pieza en la tónica',
         ],
         [
-          'Una estructura de frase (Satz) consiste en una fase de presentación seguida de una fase de continuación',
-          'Una frase (Satz) es lo mismo que un período',
-          'Una frase (Satz) tiene siempre 3 frases',
-          'Una frase (Satz) debe tener 16 compases',
+          'El 6/4 cadencial decora el V: su 6.ª y su 4.ª bajan por grado a la 5.ª y la 3.ª',
+          'El 6/4 cadencial es un acorde de tónica que termina la frase en lugar del I',
+          'El 6/4 cadencial resuelve su 6.ª y su 4.ª por grado ascendente al acorde de tónica siguiente',
+          'El 6/4 cadencial cae en un tiempo débil, después del acorde de dominante',
         ],
         [
-          'Un período contrastante tiene antecedente y consecuente que comienzan con material diferente',
-          'Un período contrastante tiene frases idénticas',
-          'Un período contrastante modula siempre',
-          'Un período contrastante tiene tres frases',
+          'La 2.ª inversión (6/4) pone la 5.ª en el bajo, con la fundamental una 4.ª por encima',
+          'La 2.ª inversión (6/4) pone la 3.ª en el bajo, con la fundamental una 6.ª por encima',
+          'La 2.ª inversión (6/4) pone la fundamental en el bajo, con la 5.ª una 4.ª justa por encima',
+          'La 2.ª inversión (6/4) pone la 7.ª en el bajo',
+        ],
+        [
+          'En una tríada en 1.ª inversión, evita doblar el bajo cuando es la sensible',
+          'En una tríada en 1.ª inversión, dobla siempre la nota del bajo, sea cual sea',
+          'En una tríada en 1.ª inversión, dobla la sensible en el bajo',
+          'En una tríada en 1.ª inversión, no puede doblarse ninguna nota',
         ],
       ],
     },
   ],
 
   // =========================================================================
-  // Unidad 11: Notas Extrañas al Acorde
+  // Unidad 11: Cadencias, Frases y Ornamentación
   // =========================================================================
 
-  // ---- l3u11m1: Notas de Paso ----
+  // ---- l3u11m1: Cadencias — El Conjunto Completo ----
   l3u11m1: [
     {
       // multiple_choice
       promptTemplate:
-        'Identifica esta nota extraña al acorde según su aproximación y resolución.',
+        '¿Qué nombre de cadencia es correcto?',
       hintTemplate:
-        'Una nota de paso se mueve por grado entre dos notas del acorde en la misma dirección. Rellena el hueco entre una 3.ª.',
+        'CAP: V-I con soprano en la tónica. CAI: V-I con soprano NO en la tónica, o acordes invertidos. SC: termina en V. Plagal: IV-I. Rota: V-vi.',
       choiceSets: [
         [
-          'Una nota abordada por grado y resuelta por grado en la misma dirección es una nota de paso',
-          'Es una bordadura',
-          'Es un retardo',
-          'Es una apoyatura',
+          'V–I, ambos en estado fundamental, soprano en la tónica: cadencia auténtica perfecta (CAP)',
+          'V–I, ambos en estado fundamental, soprano en la tónica: cadencia auténtica imperfecta (CAI)',
+          'V–I, ambos en estado fundamental, soprano en la tónica: semicadencia',
+          'V–I, ambos en estado fundamental, soprano en la tónica: cadencia rota',
         ],
         [
-          'Las notas de paso pueden ser acentuadas (en el tiempo) o no acentuadas (fuera del tiempo)',
-          'Las notas de paso están siempre en el tiempo',
-          'Las notas de paso están siempre fuera del tiempo',
-          'Las notas de paso son siempre cromáticas',
+          'Una frase que termina en V: semicadencia',
+          'Una frase que termina en V: cadencia auténtica perfecta',
+          'Una frase que termina en V: cadencia plagal',
+          'Una frase que termina en V: cadencia rota',
         ],
         [
-          'Una nota de paso cromática usa una altura ajena a la tonalidad actual',
-          'Una nota de paso cromática es siempre diatónica',
-          'Una nota de paso cromática debe saltar',
-          'Las notas de paso cromáticas están prohibidas en la armonía clásica',
+          'V que resuelve a vi: cadencia rota',
+          'V que resuelve a vi: cadencia auténtica perfecta (CAP)',
+          'V que resuelve a vi: semicadencia',
+          'V que resuelve a vi: cadencia plagal',
+        ],
+        [
+          'IV a I: cadencia plagal',
+          'IV a I: cadencia auténtica perfecta (CAP)',
+          'IV a I: semicadencia',
+          'IV a I: cadencia rota',
+        ],
+        [
+          'V–I con el soprano en la 3.ª: cadencia auténtica imperfecta',
+          'V–I con el soprano en la 3.ª: cadencia auténtica perfecta (CAP)',
+          'V–I con el soprano en la 3.ª: semicadencia',
+          'V–I con el soprano en la 3.ª: cadencia rota',
         ],
       ],
     },
   ],
 
-  // ---- l3u11m2: Bordaduras ----
+  // ---- l3u11m2: Frases y Períodos ----
   l3u11m2: [
     {
       // multiple_choice
       promptTemplate:
-        'Identifica este tipo de nota extraña al acorde y sus características.',
+        '¿Cuál de estas afirmaciones sobre frases y períodos es verdadera?',
       hintTemplate:
-        'Una bordadura se aleja por grado de una nota del acorde y regresa a la misma nota. Las bordaduras superiores suben y bajan; las bordaduras inferiores bajan y suben.',
+        'Un período tiene dos frases: antecedente (termina con SC o CAI) y consecuente (termina con CAP). Una frase (Satz) tiene presentación (idea básica + repetición) y continuación.',
       choiceSets: [
         [
-          'Una nota que se aleja por grado de una nota del acorde y regresa a ella es una bordadura',
-          'Es una nota de paso',
-          'Es un retardo',
-          'Es una escapatoria',
+          'Período paralelo: las dos frases empiezan con material similar',
+          'Período paralelo: dos frases con material sin relación y la misma cadencia',
+          'Período paralelo: siempre dura exactamente ocho compases',
+          'Período paralelo: las dos frases terminan con semicadencia',
         ],
         [
-          'Una bordadura doble (nota cambiata) decora una nota yendo tanto por encima como por debajo de ella',
-          'Una bordadura doble usa dos notas de paso consecutivas',
-          'Una bordadura doble significa que dos voces tienen bordaduras simultáneamente',
-          'Una bordadura doble es lo mismo que un trino',
+          'El antecedente suele terminar con una cadencia débil (SC o CAI)',
+          'El antecedente suele terminar con una CAP',
+          'El antecedente no tiene ninguna cadencia',
+          'El antecedente es siempre la segunda frase del período',
         ],
         [
-          'Una bordadura incompleta se aborda o se resuelve por salto en lugar de por grado',
-          'Una bordadura incompleta nunca resuelve',
-          'Una bordadura incompleta usa solo un tono entero',
-          'Una bordadura incompleta es lo mismo que un retardo',
+          'Frase (Satz): una presentación (idea + repetición), luego una continuación',
+          'Frase (Satz): otro nombre para un período de dos frases',
+          'Frase (Satz): siempre tres frases, cada una con su cadencia',
+          'Frase (Satz): primero una continuación, luego la idea básica y su repetición',
+        ],
+        [
+          'Período contrastante: las dos frases empiezan con material diferente',
+          'Período contrastante: las dos frases son idénticas de principio a fin',
+          'Período contrastante: siempre modula',
+          'Período contrastante: tiene tres frases',
         ],
       ],
     },
   ],
 
-  // ---- l3u11m3: Retardos ----
+  // ---- l3u11m3: Ritmo Armónico ----
   l3u11m3: [
     {
       // multiple_choice
       promptTemplate:
-        'Responde a esta pregunta sobre retardos en la conducción de voces.',
+        '¿Cuál de estas afirmaciones sobre el ritmo armónico es verdadera?',
       hintTemplate:
-        'Un retardo tiene 3 partes: preparación (consonancia), retardo (mantenida en disonancia), resolución (grado descendente hacia consonancia). Se nombran por los intervalos: 4-3, 7-6, 9-8, 2-3.',
+        'El ritmo armónico es la velocidad a la que los acordes cambian. Puede acelerarse cerca de las cadencias, creando una sensación de movimiento hacia adelante y de llegada.',
       choiceSets: [
         [
-          'Un retardo 4-3 mantiene la 4.ª por encima del bajo y resuelve bajando a una 3.ª',
-          'Un retardo 4-3 mantiene la 3.ª y sube a la 4.ª',
-          'Un retardo 4-3 es una resolución ascendente',
-          'Un retardo 4-3 no requiere preparación',
+          'El ritmo armónico suele acelerarse a medida que se acerca una cadencia',
+          'El ritmo armónico se mantiene constante de principio a fin de una pieza',
+          'El ritmo armónico suele frenarse en las cadencias',
+          'El ritmo armónico solo cambia entre secciones',
         ],
         [
-          'Un retardo debe prepararse como consonancia en un tiempo débil antes de mantenerse en el tiempo fuerte',
-          'Un retardo puede aparecer sin preparación',
-          'Un retardo resuelve siempre hacia arriba',
-          'Un retardo es lo mismo que una apoyatura',
+          'Un ritmo armónico más rápido crea una mayor sensación de impulso',
+          'Un ritmo armónico más rápido crea un ambiente más tranquilo y estático',
+          'El ritmo armónico no influye en la energía de un pasaje',
+          'Un ritmo armónico más lento es la forma habitual de construir un clímax',
         ],
         [
-          'Un retardo 7-6 mantiene la 7.ª por encima del bajo y resuelve bajando a una 6.ª',
-          'Un retardo 7-6 resuelve hacia arriba, hasta una octava',
-          'Un retardo 7-6 es un retardo del bajo',
-          'Un retardo 7-6 no resuelve',
+          'En la práctica común, los acordes suelen cambiar en los tiempos fuertes',
+          'Los acordes solo pueden cambiar en el 1.er tiempo del compás',
+          'Los acordes nunca pueden cambiar a mitad de compás',
+          'Cambiar de acorde en los tiempos 2 y 4 es la opción más estable y normal en 4/4',
         ],
         [
-          'Un retardo 9-8 mantiene la 9.ª por encima del bajo y resuelve bajando a una octava',
-          'Un retardo 9-8 resuelve por grado ascendente',
-          'Un retardo 9-8 es en realidad un retardo 2-1',
-          'Un retardo 9-8 ocurre solo en la voz del bajo',
+          'El ritmo armónico es independiente del ritmo de la melodía',
+          'El ritmo armónico es simplemente el ritmo que toca la melodía',
+          'El ritmo armónico es la velocidad de la línea del bajo',
+          'El ritmo armónico es el número de tiempos de cada compás',
         ],
       ],
     },
   ],
 
-  // ---- l3u11m4: Anticipaciones y Pedales ----
+  // ---- l3u11m4: Notas Extrañas al Acorde (Parte 1) ----
   l3u11m4: [
     {
       // multiple_choice
       promptTemplate:
-        'Clasifica esta nota extraña al acorde según su comportamiento.',
+        '¿Cuál de estas afirmaciones sobre notas de paso, bordaduras y anticipaciones es verdadera?',
       hintTemplate:
-        'Una anticipación llega antes (antes de que el acorde cambie). Un pedal es una nota sostenida o repetida (generalmente tónica o dominante) que se mantiene mientras las armonías cambian por encima.',
+        'Nota de paso: grado–grado en la misma dirección entre dos notas del acorde. Bordadura: se aleja por grado y vuelve a la misma nota del acorde (incompleta: uno de los lados por salto). Anticipación: una nota del acorde siguiente que suena antes.',
       choiceSets: [
         [
-          'Una anticipación hace sonar una nota del acorde antes de que el acorde llegue realmente',
-          'Una anticipación es lo mismo que un retardo',
-          'Una anticipación requiere preparación en un tiempo fuerte',
-          'Una anticipación resuelve siempre hacia abajo',
+          'Abordada y abandonada por grado en la misma dirección: una nota de paso',
+          'Abordada y abandonada por grado en la misma dirección: una bordadura',
+          'Abordada y abandonada por grado en la misma dirección: una anticipación',
+          'Abordada y abandonada por grado en la misma dirección: una bordadura incompleta',
         ],
         [
-          'Un pedal de tónica sostiene la nota tónica mientras las armonías cambian por encima',
-          'Un pedal de tónica solo ocurre en el soprano',
-          'Un pedal de tónica debe resolver después de un compás',
-          'Un pedal de tónica es lo mismo que un ostinato',
+          'Las notas de paso pueden ser acentuadas (en el tiempo) o no acentuadas',
+          'Las notas de paso caen siempre en el tiempo, nunca entre tiempos',
+          'Las notas de paso caen siempre entre tiempos y nunca pueden ser acentuadas',
+          'Las notas de paso deben ser siempre notas ajenas a la tonalidad',
         ],
         [
-          'Un pedal de dominante crea tensión al mantener el 5.º grado de la escala a través de armonías no dominantes',
-          'Un pedal de dominante solo aparece al inicio de una pieza',
-          'Un pedal de dominante usa siempre la sensible',
-          'Un pedal de dominante está siempre en la voz del soprano',
+          'C–D–E sobre un acorde de C mayor: D es una nota de paso',
+          'C–D–E sobre un acorde de C mayor: D es una nota del acorde',
+          'C–D–E sobre un acorde de C mayor: D es una anticipación',
+          'C–D–E sobre un acorde de C mayor: E es la nota de paso',
+        ],
+        [
+          'Una nota que se aleja por grado de una nota del acorde y vuelve a ella: una bordadura',
+          'Una nota que se aleja por grado de una nota del acorde y vuelve a ella: una nota de paso',
+          'Una nota que se aleja por grado de una nota del acorde y vuelve a ella: una anticipación',
+          'Una nota que se aleja por grado de una nota del acorde y vuelve a ella: una bordadura incompleta',
+        ],
+        [
+          'Una bordadura incompleta se aborda o se abandona por salto en lugar de por grado',
+          'Una bordadura incompleta nunca llega a resolver',
+          'Una bordadura incompleta se mueve solo por tono',
+          'Una bordadura incompleta se aborda y se abandona por grado, como una bordadura completa',
+        ],
+        [
+          'Una anticipación hace sonar una nota del acorde siguiente antes de que llegue ese acorde',
+          'Una anticipación prolonga una nota del acorde anterior',
+          'Una anticipación resuelve siempre por grado descendente',
+          'Una anticipación es una nota que no pertenece a ninguno de los dos acordes',
         ],
       ],
     },
   ],
 
-  // ---- l3u11m5: Revisión de Notas Extrañas al Acorde ----
+  // ---- l3u11m5: Transposición ----
   l3u11m5: [
     {
-      // multiple_choice
+      // scale_build
       promptTemplate:
-        'Clasifica la nota extraña al acorde descrita: abordada y resuelta de esta forma.',
+        'Transporta la escala de C mayor para que empiece en {root}. Selecciona las 7 notas.',
       hintTemplate:
-        'Nota de paso: grado-grado misma dirección. Bordadura: grado-grado regresando. Retardo: mantenida-grado descendente. Apoyatura: salto-grado. Escapatoria: grado-salto. Anticipación: llega antes.',
-      choiceSets: [
-        [
-          'Abordada por salto, resuelta por grado en la dirección opuesta = apoyatura',
-          'Esto describe una nota de paso',
-          'Esto describe un retardo',
-          'Esto describe una anticipación',
-        ],
-        [
-          'Abordada por grado, resuelta por salto en la dirección opuesta = escapatoria',
-          'Esto describe una nota de paso',
-          'Esto describe una bordadura',
-          'Esto describe una anticipación',
-        ],
-        [
-          'Una suspensión ascendente es como un retardo pero resuelve hacia arriba',
-          'Una suspensión ascendente resuelve por salto descendente',
-          'Una suspensión ascendente no tiene preparación',
-          'Una suspensión ascendente es lo mismo que una anticipación',
-        ],
-        [
-          'Todas las notas extrañas al acorde crean disonancia que resuelve hacia consonancia',
-          'Las notas extrañas al acorde son siempre consonantes',
-          'Las notas extrañas al acorde nunca resuelven',
-          'Las notas extrañas al acorde solo ocurren en la voz del bajo',
-        ],
-      ],
+        'Cada nota se desplaza el mismo intervalo que va de C a {root}, así que el patrón T-T-S-T-T-T-S se mantiene: el resultado es la escala de {root} mayor.',
     },
     {
       // interval_id
       promptTemplate:
-        'Identifica el intervalo creado entre la nota extraña al acorde y el bajo, a partir de {root}.',
+        'Una melodía que empieza en {root} se transporta para que empiece en la segunda nota mostrada. ¿Por qué intervalo se transportó?',
       hintTemplate:
-        'Cuenta los semitonos a partir de {root} para determinar el intervalo. Las notas extrañas crean frecuentemente 2.as, 7.as o intervalos aumentados/disminuidos contra el bajo.',
+        'Cuenta los nombres de nota de {root} a la nueva nota inicial para el número del intervalo, y los semitonos ({semitones}) para su calidad.',
+    },
+    {
+      // multiple_choice
+      promptTemplate:
+        '¿Cuál de estas afirmaciones sobre la transposición es verdadera?',
+      hintTemplate:
+        'Transportar desplaza todas las notas el mismo intervalo. Instrumentos transpositores: los instrumentos en Bb suenan una 2.ª mayor por debajo de lo escrito, la trompa en F una 5.ª justa por debajo.',
+      choiceSets: [
+        [
+          'Transportar desplaza todas las notas el mismo intervalo',
+          'Transportar desplaza solo la melodía, nunca los acordes que la acompañan',
+          'Transportar cambia los intervalos entre las notas',
+          'Transportar mantiene los nombres de las notas pero cambia la armadura de clave',
+        ],
+        [
+          'Una trompeta en Bb suena una 2.ª mayor por debajo de lo escrito',
+          'Una trompeta en Bb suena exactamente la altura escrita',
+          'Una trompeta en Bb suena una 2.ª mayor por encima de lo escrito',
+          'Una trompeta en Bb suena una 5.ª justa por debajo de lo escrito',
+        ],
+        [
+          'C mayor transportado una 5.ª justa arriba pasa a G mayor, con un sostenido',
+          'C mayor transportado una 5.ª justa arriba pasa a F mayor, con un bemol',
+          'C mayor transportado una 5.ª justa arriba conserva la armadura sin sostenidos ni bemoles',
+          'C mayor transportado una 5.ª justa arriba pasa a D mayor, con dos sostenidos',
+        ],
+        [
+          'Una trompa en F suena una 5.ª justa por debajo de lo escrito',
+          'Una trompa en F suena una 5.ª justa por encima de lo escrito',
+          'Una trompa en F suena una 2.ª mayor por debajo de lo escrito',
+          'Una trompa en F suena exactamente la altura escrita',
+        ],
+      ],
     },
   ],
 };

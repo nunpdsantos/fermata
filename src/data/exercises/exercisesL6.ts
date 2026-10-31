@@ -14,7 +14,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l6u18m1e1',
       type: 'chord_build',
-      prompt: 'Build the Neapolitan chord (bII) in C minor. This is a Db major triad: select Db, F, and Ab.',
+      prompt: 'Build the Neapolitan chord (bII) in C minor. Select all 3 notes.',
       config: {
         type: 'chord_build',
         root: 'D',
@@ -68,7 +68,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: '10 semitones -- enharmonically equivalent to a minor 7th', correct: true },
           { label: '9 semitones -- the same as a major 6th', correct: false },
           { label: '8 semitones -- the same as a minor 6th', correct: false },
-          { label: '11 semitones -- the same as a major 7th', correct: false },
+          { label: '11 semitones -- enharmonically equivalent to a major 7th', correct: false },
         ],
       },
       hint: 'An augmented 6th is one half step larger than a major 6th (9 semitones). It spans 10 semitones and is enharmonically the same size as a minor 7th, but the two notes resolve outward to an octave.',
@@ -147,7 +147,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'The dominant (V) or cadential 6/4, with b6 and #4 resolving outward to 5', correct: true },
           { label: 'The tonic (I) directly in root position', correct: false },
           { label: 'The subdominant (IV) as part of a plagal cadence', correct: false },
-          { label: 'The supertonic (ii) to begin a pre-dominant chain', correct: false },
+          { label: 'The supertonic (ii), with b6 and #4 moving inward to a unison on scale degree 1', correct: false },
         ],
       },
       hint: 'Like all augmented 6th chords, the Gr+6 resolves to V. The outer voices (b6 and #4) converge on the dominant pitch by half step. A cadential 6/4 often intervenes to avoid parallel 5ths.',
@@ -178,8 +178,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Distant keys -- e.g. tonics a half step apart (C to Db), five steps around the circle of fifths, far beyond diatonic pivot range', correct: true },
-          { label: 'Only closely related keys within one accidental difference', correct: false },
+          { label: 'Distant keys: tonics a half step apart (C to Db), five steps around the circle of fifths', correct: true },
+          { label: 'Only closely related keys: tonics a 5th apart (C to G), one step around the circle of fifths', correct: false },
           { label: 'Only between parallel major and minor', correct: false },
           { label: 'Only between relative major and minor keys', correct: false },
         ],
@@ -212,7 +212,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l6u19m1e1',
       type: 'chord_build',
-      prompt: 'Build a fully diminished 7th chord on C. Select 4 notes: C, Eb, Gb, and Bbb (enharmonic A).',
+      prompt: 'Build a fully diminished 7th chord on C. Select all 4 notes.',
       config: {
         type: 'chord_build',
         root: 'C',
@@ -247,7 +247,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Four keys -- any of its four notes can be treated as a leading tone', correct: true },
           { label: 'Two keys -- one major and one minor', correct: false },
           { label: 'Twelve keys -- one for each semitone', correct: false },
-          { label: 'One key -- determined by its root', correct: false },
+          { label: 'One key only -- the one whose leading tone is the chord\'s written root', correct: false },
         ],
       },
       hint: 'Because of its symmetry, each note of the dim7 chord can be respelled as a leading tone resolving up by half step to a different tonic. C-Eb-Gb-Bbb can be viio7 of Db, E, G, or Bb.',
@@ -330,7 +330,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Four -- upper/lower major 3rd and upper/lower minor 3rd (e.g., C-E, C-Ab, C-Eb, C-A)', correct: true },
           { label: 'Two -- one ascending and one descending', correct: false },
           { label: 'Six -- one for each interval class', correct: false },
-          { label: 'Three -- major, minor, and diminished third relations', correct: false },
+          { label: 'Three -- upper major 3rd, lower major 3rd and the minor 3rd (e.g., C-E, C-Ab, C-A)', correct: false },
         ],
       },
       hint: 'From any major triad, you can move to another major triad a major or minor 3rd above or below: C to E, C to Eb, C to A, C to Ab. Each produces a different color, and all four are chromatic mediants.',
@@ -344,8 +344,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'One or zero common tones with chromatic (half-step) motion in the moving voices', correct: true },
           { label: 'All voices move by step in the same direction', correct: false },
-          { label: 'Two common tones with one voice moving by whole step', correct: false },
-          { label: 'Root motion by fifth with altered chord tones', correct: false },
+          { label: 'Two common tones, while the one remaining voice moves by a diatonic whole step', correct: false },
+          { label: 'Root motion by a perfect fifth, with every chord tone chromatically altered', correct: false },
         ],
       },
       hint: 'Chromatic mediants often share one common tone while the other voices shift by half step. In some cases (doubly chromatic mediants like C major to Ab minor, Ab-Cb-Eb) there are zero common tones, and every voice shifts by half step: C to Cb, E to Eb, G to Ab.',
@@ -445,7 +445,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Four notes in the counterpoint against each note of the cantus firmus', correct: true },
-          { label: 'Three notes against each cantus firmus note', correct: false },
+          { label: 'Three notes in the counterpoint against each note of the cantus firmus', correct: false },
           { label: 'Two notes against each cantus firmus note', correct: false },
           { label: 'Free rhythm with no fixed ratio', correct: false },
         ],
@@ -478,10 +478,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A free combination of all previous species -- mixed note values, passing tones, and suspensions', correct: true },
+          { label: 'A free mix of all earlier species: mixed note values, passing tones and suspensions', correct: true },
           { label: 'Five notes against each note of the cantus firmus', correct: false },
           { label: 'Counterpoint written for five voices simultaneously', correct: false },
-          { label: 'Strict imitation at the fifth interval throughout', correct: false },
+          { label: 'Strict imitation at the fifth throughout, with every voice entering on the dominant note', correct: false },
         ],
       },
       hint: 'Fifth (florid) species combines techniques from all four previous species into a flowing melodic line. It uses whole notes, half notes, quarter notes, suspensions, and passing tones in a musically satisfying way.',
@@ -494,7 +494,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Preparation (consonance), suspension (dissonance on strong beat), resolution (step down)', correct: true },
-          { label: 'Attack (dissonance), sustain (held note), release (leap away)', correct: false },
+          { label: 'Attack (dissonance on the strong beat), sustain (held over the barline), release (leap away)', correct: false },
           { label: 'Approach by leap, hold, resolve by leap', correct: false },
           { label: 'Consonance, consonance, dissonance', correct: false },
         ],
@@ -529,7 +529,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Three voices written so any of the six possible vertical orderings produce valid counterpoint', correct: true },
           { label: 'Counterpoint in triple meter (3/4 or 3/8)', correct: false },
-          { label: 'Three repetitions of the same counterpoint at different pitch levels', correct: false },
+          { label: 'Three repetitions of the same two-voice counterpoint, each one starting at a different pitch level', correct: false },
           { label: 'A fugue with exactly three subjects', correct: false },
         ],
       },
@@ -544,7 +544,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'A 5th inverts to a 4th, which is treated as a dissonance against the bass in strict counterpoint', correct: true },
           { label: 'Perfect 5ths are always forbidden in all types of counterpoint', correct: false },
-          { label: 'A 5th inverts to a tritone, creating an unusable interval', correct: false },
+          { label: 'A 5th inverts to a tritone, which is treated as an unusable dissonance against the bass in strict counterpoint', correct: false },
           { label: 'Perfect 5ths cannot be inverted at all', correct: false },
         ],
       },

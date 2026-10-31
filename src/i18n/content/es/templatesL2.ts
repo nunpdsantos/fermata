@@ -22,27 +22,57 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        '¿Cuántos sostenidos o bemoles tiene esta tonalidad mayor?',
+        '¿Qué tonalidad mayor tiene esta armadura de clave?',
       hintTemplate:
-        'Sigue el círculo de quintas. Sostenidos: G(1), D(2), A(3), E(4), B(5). Bemoles: F(1), Bb(2), Eb(3), Ab(4), Db(5).',
+        'Cuenta los sostenidos o bemoles. Sostenidos: G(1), D(2), A(3), E(4), B(5), F#(6). Bemoles: F(1), Bb(2), Eb(3), Ab(4), Db(5), Gb(6). El último sostenido está un semitono por debajo de la tónica; con dos o más bemoles, el penúltimo bemol da nombre a la tonalidad.',
       choiceSets: [
         [
-          'B mayor tiene 5 sostenidos',
-          'B mayor tiene 4 sostenidos',
-          'B mayor tiene 6 sostenidos',
-          'B mayor tiene 3 sostenidos',
+          'A mayor',
+          'D mayor',
+          'E mayor',
+          'Eb mayor',
         ],
         [
-          'Eb mayor tiene 3 bemoles',
-          'Eb mayor tiene 2 bemoles',
-          'Eb mayor tiene 4 bemoles',
-          'Eb mayor tiene 1 bemol',
+          'E mayor',
+          'A mayor',
+          'B mayor',
+          'Ab mayor',
         ],
         [
-          'Db mayor tiene 5 bemoles',
-          'Db mayor tiene 4 bemoles',
-          'Db mayor tiene 6 bemoles',
-          'Db mayor tiene 3 bemoles',
+          'B mayor',
+          'E mayor',
+          'F# mayor',
+          'Db mayor',
+        ],
+        [
+          'F# mayor',
+          'B mayor',
+          'C# mayor',
+          'Gb mayor',
+        ],
+        [
+          'Bb mayor',
+          'F mayor',
+          'Eb mayor',
+          'D mayor',
+        ],
+        [
+          'Eb mayor',
+          'Bb mayor',
+          'Ab mayor',
+          'A mayor',
+        ],
+        [
+          'Ab mayor',
+          'Eb mayor',
+          'Db mayor',
+          'E mayor',
+        ],
+        [
+          'Db mayor',
+          'Ab mayor',
+          'Gb mayor',
+          'B mayor',
         ],
       ],
     },
@@ -53,7 +83,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // scale_degree_id
       promptTemplate:
-        'En la escala de {root} {scaleType}, ¿cuál es el número del grado de la nota indicada?',
+        'En la escala de {root} {scaleType}, ¿cuál es el número del grado de la nota {note}?',
       hintTemplate:
         'Cuenta a partir de {root} como grado 1 a lo largo de la escala {scaleType}. Los nombres de los grados son: tónica, supertónica, mediante, subdominante, dominante, submediante, sensible.',
     },
@@ -124,7 +154,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Identifica la relación entre estas tonalidades.',
+        '¿Cuál de estas afirmaciones sobre tonalidades relativas y paralelas es verdadera?',
       hintTemplate:
         'Las tonalidades relativas comparten la misma armadura de clave (ej: C mayor / A menor). Las tonalidades paralelas comparten la misma tónica (ej: C mayor / C menor).',
       choiceSets: [
@@ -155,7 +185,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Las tonalidades paralelas comparten la misma tónica pero difieren en la cualidad',
           'Las tonalidades paralelas comparten la misma armadura de clave',
-          'Las tonalidades paralelas están siempre a una 5.ª de distancia',
+          'Las tónicas de las tonalidades paralelas están siempre a una 5.ª justa la una de la otra',
           'Las tonalidades paralelas usan las mismas notas',
         ],
       ],
@@ -171,26 +201,26 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Clasifica esta indicación de compás como simple o compuesto.',
+        '¿Cuál de estas afirmaciones sobre el compás simple y el compuesto es verdadera?',
       hintTemplate:
         'En el compás compuesto el número de arriba es 6, 9 o 12 y el tiempo se divide en 3. En el compás simple el tiempo se divide en 2.',
       choiceSets: [
         [
           '12/8 es compuesto cuaternario: 4 tiempos, cada uno dividido en 3',
-          '12/8 es simple: 12 tiempos por compás',
+          '12/8 es simple: doce tiempos de corchea, cada uno dividido en dos',
           '12/8 es compuesto ternario: 3 tiempos, cada uno dividido en 4',
           '12/8 es simple cuaternario: 4 tiempos de 3 corcheas',
         ],
         [
-          '3/8 es simple ternario: 3 tiempos de corchea por compás',
-          '3/8 es compuesto: 1 tiempo dividido en 3',
-          '3/8 es igual que 6/8',
-          '3/8 es compuesto ternario',
+          '6/8 es compuesto binario: 2 tiempos, cada uno dividido en 3',
+          '6/8 es simple ternario: 3 tiempos, cada uno dividido en 2',
+          '6/8 es compuesto ternario: 3 tiempos, cada uno dividido en 3',
+          '6/8 es simple: seis tiempos de negra por compás',
         ],
         [
           '9/8 es compuesto ternario: 3 tiempos principales, cada uno dividido en 3',
           '9/8 es simple: 9 tiempos de corchea por compás',
-          '9/8 es compuesto binario',
+          '9/8 es compuesto cuaternario: 4 tiempos principales, cada uno dividido en 3',
           '9/8 es igual que 3/4',
         ],
       ],
@@ -202,27 +232,27 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Responde a esta pregunta sobre síncopa y técnicas rítmicas.',
+        '¿Cuál de estas afirmaciones sobre la síncopa y los tresillos es verdadera?',
       hintTemplate:
         'La síncopa coloca énfasis en tiempos o subdivisiones normalmente débiles. Crea sorpresa rítmica e impulso hacia adelante.',
       choiceSets: [
         [
           'La síncopa crea interés rítmico al acentuar contratiempos',
-          'La síncopa significa tocar todo en el tiempo',
+          'La síncopa significa tocar todas las notas justo en los tiempos fuertes',
           'La síncopa elimina todos los acentos de la música',
           'La síncopa involucra siempre tresillos',
         ],
         [
           'Una ligadura sobre la barra de compás crea síncopa al prolongar el sonido hacia el tiempo fuerte',
           'Una ligadura sobre la barra de compás no tiene efecto rítmico',
-          'Una ligadura sobre la barra de compás siempre duplica el tempo',
+          'Una ligadura sobre la barra de compás siempre duplica el tempo de todo el compás que viene a continuación',
           'Las ligaduras solo pueden ocurrir dentro de un mismo compás',
         ],
         [
-          'La hemiola crea la ilusión de alternancia entre agrupamientos binarios y ternarios',
-          'La hemiola es lo mismo que un ritardando',
-          'La hemiola significa tocar notas una octava más aguda',
-          'La hemiola solo ocurre en compás 4/4',
+          'Tres corcheas de tresillo ocupan el tiempo de dos corcheas normales',
+          'Tres corcheas de tresillo ocupan el tiempo de cuatro corcheas normales',
+          'Un tresillo hace que cada una de sus tres notas dure un tiempo entero',
+          'Un tresillo añade una tercera nota encima de un acorde de dos notas',
         ],
       ],
     },
@@ -270,7 +300,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Responde a esta pregunta sobre inversiones de acordes y notación de bajo cifrado.',
+        '¿Cuál de estas afirmaciones sobre las inversiones y el bajo cifrado es verdadera?',
       hintTemplate:
         'Estado fundamental = 5/3. 1.ª inversión = 6/3 (6). 2.ª inversión = 6/4. La nota del bajo determina la inversión.',
       choiceSets: [
@@ -288,15 +318,15 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Bajo cifrado 6/4 indica 2.ª inversión',
-          'Bajo cifrado 6/4 indica estado fundamental',
+          'Bajo cifrado 6/4 indica un acorde en estado fundamental',
           'Bajo cifrado 6/4 indica 1.ª inversión',
           'Bajo cifrado 6/4 indica un acorde de séptima',
         ],
         [
-          'El 6/4 cadencial funciona como ornamentación de la dominante',
-          'El 6/4 cadencial funciona como acorde de tónica',
-          'El 6/4 cadencial funciona como subdominante',
-          'El 6/4 cadencial nunca se usa en la música clásica',
+          'En la 1.ª inversión, la 3.ª del acorde está en el bajo',
+          'En la 1.ª inversión, la 5.ª del acorde está en el bajo',
+          'En la 1.ª inversión, la fundamental sigue en el bajo',
+          'En la 1.ª inversión, la 7.ª del acorde está en el bajo',
         ],
       ],
     },
@@ -314,7 +344,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Identifica el número romano y la cualidad de esta tríada diatónica.',
+        '¿Cuál de estas afirmaciones sobre las tríadas diatónicas de una tonalidad mayor es verdadera?',
       hintTemplate:
         'En las tonalidades mayores: I(M) ii(m) iii(m) IV(M) V(M) vi(m) vii°(dim). Mayúscula = mayor, minúscula = menor, ° = disminuida.',
       choiceSets: [

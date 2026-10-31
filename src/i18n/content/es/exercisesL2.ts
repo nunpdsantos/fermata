@@ -139,7 +139,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Por qué la escala menor melódica eleva tanto el 6.º como el 7.º grado en la forma ascendente?',
     choices: [
       'Para eliminar la 2.ª aumentada entre el 6.º y el 7.º grado elevado de la menor armónica',
-      'Para igualar exactamente la escala mayor',
+      'Para convertirla exactamente en la escala mayor, haciendo desaparecer por completo el sonido menor',
       'Para facilitar la ejecución en el piano',
       'Para eliminar todos los semitonos de la escala',
     ],
@@ -198,7 +198,7 @@ const overlay: ExerciseLevelOverlay = {
   l2u6m1e1: {
     prompt: 'En el compás 6/8, ¿cómo se organizan los tiempos?',
     choices: [
-      '2 tiempos principales, cada uno dividido en 3 corcheas',
+      '2 tiempos de negra con puntillo, cada uno dividido en 3 corcheas',
       '6 tiempos iguales de corcheas',
       '3 tiempos principales, cada uno dividido en 2 corcheas',
       '8 tiempos agrupados en seis',
@@ -218,10 +218,10 @@ const overlay: ExerciseLevelOverlay = {
   l2u6m1e3: {
     prompt: '¿Cuántos tiempos principales tiene el compás 9/8?',
     choices: [
-      '3 tiempos principales (cada uno dividido en 3 corcheas)',
-      '9 tiempos',
-      '4 tiempos principales',
-      '2 tiempos principales',
+      '3 tiempos de negra con puntillo (cada uno dividido en 3 corcheas)',
+      '9 tiempos (cada uno de una corchea)',
+      '4 tiempos principales (cada uno dividido en 3 corcheas)',
+      '2 tiempos principales (cada uno dividido en 3 corcheas)',
     ],
     hint: '9/8 es compás compuesto ternario: 9 corcheas forman 3 grupos de 3. Cada grupo de 3 es un tiempo principal (una negra con puntillo).',
   },
@@ -232,7 +232,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué es la síncopa?',
     choices: [
       'Colocar acentos en tiempos normalmente débiles o contratiempos',
-      'Tocar todas las notas con el mismo volumen',
+      'Tocar todas las notas exactamente con el mismo volumen y la misma duración',
       'Acelerar gradualmente el tempo',
       'Tocar notas en una octava diferente',
     ],
@@ -241,8 +241,8 @@ const overlay: ExerciseLevelOverlay = {
   l2u6m2e2: {
     prompt: '¿Qué son los tresillos?',
     choices: [
-      '3 notas tocadas en el tiempo normalmente ocupado por 2 notas del mismo valor',
-      '3 notas tocadas una tras otra',
+      '3 notas iguales en el tiempo que normalmente ocupan 2 del mismo valor',
+      '3 notas iguales en el tiempo de 4 del mismo valor',
       'Un acorde con 3 notas',
       '3 compases agrupados',
     ],
@@ -270,8 +270,8 @@ const overlay: ExerciseLevelOverlay = {
   l2u7m1e4: {
     prompt: '¿Qué hace que un intervalo sea «justo»?',
     choices: [
-      'No tiene variantes mayor/menor — solo justo, aumentado o disminuido',
-      'Suena perfectamente afinado',
+      'No tiene formas mayor/menor: solo justo, aumentado o disminuido',
+      'Suena perfectamente afinado en cualquier instrumento, sin ningún batimiento',
       'Usa solo teclas blancas en el piano',
       'Es siempre consonante',
     ],
@@ -312,7 +312,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué es un tritono?',
     choices: [
       'Un intervalo de 6 semitonos que divide la octava por la mitad',
-      'Un acorde construido a partir de 3 tonos',
+      'Un acorde construido apilando tres tonos enteros uno encima de otro',
       'Un intervalo de 3 semitonos',
       'Una escala con 3 notas',
     ],
@@ -340,14 +340,14 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Una tríada aumentada apila dos 3.as mayores: C a E (4 semitonos) y E a G# (4 semitonos). La 5.ª es elevada (aumentada) con respecto a la tríada mayor.',
   },
   l2u7m3e4: {
-    prompt: '¿Qué tipo de tríada se considera la más inestable y disonante?',
+    prompt: '¿Qué tipo de tríada tiene un tritono entre la fundamental y la 5.ª?',
     choices: [
-      'Disminuida — dos 3.as menores con un tritono entre fundamental y 5.ª',
-      'Menor — porque suena triste',
-      'Mayor — porque es la más común',
-      'Aumentada — porque tiene la 5.ª elevada',
+      'Disminuida — dos 3.as menores superpuestas',
+      'Menor — una 3.ª menor bajo una 3.ª mayor',
+      'Mayor — una 3.ª mayor bajo una 3.ª menor',
+      'Aumentada — dos 3.as mayores superpuestas',
     ],
-    hint: 'La tríada disminuida contiene un tritono (6 semitonos) entre la fundamental y la 5.ª. Eso la convierte en el tipo de tríada más disonante e inestable, con fuerte necesidad de resolver.',
+    hint: 'Un tritono tiene 6 semitonos. Dos 3.as menores (3 + 3) suman exactamente 6, así que solo la tríada disminuida tiene un tritono de la fundamental a la 5.ª. Las tríadas mayor y menor suman 7 (una 5.ª justa); la aumentada suma 8 (una 5.ª aumentada).',
   },
 
   // ---- l2u7m4: Inversiones/Bajo Cifrado ----
@@ -355,20 +355,20 @@ const overlay: ExerciseLevelOverlay = {
   l2u7m4e1: {
     prompt: '¿Qué números de bajo cifrado representan una tríada en estado fundamental?',
     choices: [
-      '5/3 (frecuentemente abreviado no escribiendo nada)',
-      '6/3',
-      '6/4',
-      '7/5/3',
+      '5/3 (normalmente no se escribe)',
+      '6/3 (normalmente abreviado a 6)',
+      '6/4 (siempre escrito completo)',
+      '7/5/3 (un acorde de séptima)',
     ],
     hint: 'En el estado fundamental, los intervalos por encima del bajo son una 3.ª y una 5.ª. El bajo cifrado los escribe como 5/3. Como el estado fundamental es la posición por defecto, los números generalmente se omiten.',
   },
   l2u7m4e2: {
     prompt: '¿Qué números de bajo cifrado representan una tríada en 1.ª inversión?',
     choices: [
-      '6/3 (frecuentemente abreviado a simplemente 6)',
-      '5/3',
-      '6/4',
-      '4/2',
+      '6/3 (normalmente abreviado a 6)',
+      '5/3 (normalmente no se escribe)',
+      '6/4 (siempre escrito completo)',
+      '4/2 (cifrado de acorde de séptima)',
     ],
     hint: 'En la 1.ª inversión, la 3.ª del acorde está en el bajo. Los intervalos por encima del bajo son una 3.ª y una 6.ª. El bajo cifrado abrevia 6/3 a simplemente 6.',
   },
@@ -377,7 +377,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Reorganizar el acorde para que una nota diferente de la fundamental quede en el bajo',
       'Dar la vuelta al acorde para que la nota de arriba quede abajo',
-      'Cambiar el acorde de mayor a menor',
+      'Cambiar la cualidad del acorde, por ejemplo pasarlo de mayor a menor o de menor a mayor',
       'Tocar el acorde en una tonalidad diferente',
     ],
     hint: 'Las inversiones cambian qué nota del acorde está en el bajo. El estado fundamental tiene la fundamental en el bajo, la 1.ª inversión tiene la 3.ª, la 2.ª inversión tiene la 5.ª. La identidad del acorde se mantiene.',

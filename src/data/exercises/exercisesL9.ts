@@ -61,7 +61,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'The relative highness or lowness of a range of pitches', correct: true },
-          { label: 'The volume level of a performance', correct: false },
+          { label: 'The loudness or softness with which the notes are played', correct: false },
           { label: 'The speed at which notes are played', correct: false },
           { label: 'The number of instruments playing simultaneously', correct: false },
         ],
@@ -292,8 +292,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Harmonic intervals sound simultaneously; melodic intervals sound in sequence', correct: true },
-          { label: 'Harmonic intervals are consonant; melodic intervals are dissonant', correct: false },
+          { label: 'Harmonic intervals sound both notes at once; melodic intervals play them one after the other', correct: true },
+          { label: 'Harmonic intervals are always consonant; melodic intervals are always dissonant', correct: false },
           { label: 'Harmonic intervals use sharps; melodic intervals use flats', correct: false },
           { label: 'Harmonic intervals span more than an octave; melodic intervals do not', correct: false },
         ],
@@ -355,7 +355,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Bright, happy, and resolved', correct: true },
           { label: 'Dark, sad, and tense', correct: false },
-          { label: 'Mysterious and ambiguous', correct: false },
+          { label: 'Mysterious, ambiguous and unsettled', correct: false },
           { label: 'Dissonant and unstable', correct: false },
         ],
       },
@@ -412,13 +412,53 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A raised 6th degree', correct: true },
+          { label: 'A raised (natural) 6th degree', correct: true },
           { label: 'A lowered 2nd degree', correct: false },
           { label: 'A raised 7th degree', correct: false },
           { label: 'A lowered 5th degree', correct: false },
         ],
       },
       hint: 'Dorian differs from natural minor by one note: the 6th degree is raised a half step. In D Dorian, that is B natural instead of Bb.',
+    },
+    {
+      id: 'l9u31m2e4',
+      type: 'ear_training',
+      prompt: 'Listen to this scale and identify the mode.',
+      config: {
+        type: 'ear_training',
+        mode: 'scale',
+        root: 'G',
+        rootAccidental: '',
+        rootOctave: 4,
+        scaleType: 'major',
+        choices: [
+          { label: 'Ionian', correct: true },
+          { label: 'Lydian', correct: false },
+          { label: 'Mixolydian', correct: false },
+          { label: 'Dorian', correct: false },
+        ],
+      },
+      hint: 'Ionian is the major scale itself: mode 1, nothing altered. Lydian would raise its 4th (#4); Mixolydian would lower its 7th (b7).',
+    },
+    {
+      id: 'l9u31m2e5',
+      type: 'ear_training',
+      prompt: 'Listen to this scale and identify the mode.',
+      config: {
+        type: 'ear_training',
+        mode: 'scale',
+        root: 'E',
+        rootAccidental: '',
+        rootOctave: 4,
+        scaleType: 'natural_minor',
+        choices: [
+          { label: 'Aeolian', correct: true },
+          { label: 'Dorian', correct: false },
+          { label: 'Phrygian', correct: false },
+          { label: 'Locrian', correct: false },
+        ],
+      },
+      hint: 'Aeolian is the natural minor scale: mode 6 of the major scale. Dorian would raise its 6th (natural 6); Phrygian would lower its 2nd (b2); Locrian lowers both its 2nd and its 5th.',
     },
   ],
 
@@ -471,8 +511,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The chromatic note between the 4th and 5th degrees (flat 5th / sharp 4th)', correct: true },
-          { label: 'The minor 3rd of any chord', correct: false },
+          { label: 'The flat 5th (or sharp 4th), between the 4th and 5th degrees', correct: true },
+          { label: 'The tonic repeated an octave higher, at the very top of the scale', correct: false },
           { label: 'Any note played with vibrato', correct: false },
           { label: 'The leading tone of the key', correct: false },
         ],
@@ -528,10 +568,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Root, minor 3rd, and diminished 5th (tritone)', correct: true },
-          { label: 'Root, major 3rd, and perfect 5th', correct: false },
+          { label: 'Root, minor 3rd, and diminished 5th (a tritone)', correct: true },
+          { label: 'Root, major 3rd, and perfect 5th (a major triad)', correct: false },
           { label: 'Root, minor 3rd, and perfect 5th', correct: false },
-          { label: 'Root, major 3rd, and augmented 5th', correct: false },
+          { label: 'Root, major 3rd, and augmented 5th (two major 3rds)', correct: false },
         ],
       },
       hint: 'Diminished = minor 3rd (3 semitones) + diminished 5th (6 semitones). Two stacked minor 3rds produce the tritone between root and 5th.',
@@ -543,8 +583,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Tense and unresolved with a dreamy, floating quality', correct: true },
-          { label: 'Bright and stable like a major chord', correct: false },
+          { label: 'Tense and unresolved, with a dreamy, floating and ambiguous quality', correct: true },
+          { label: 'Bright, settled and stable, just like a plain major chord', correct: false },
           { label: 'Dark and heavy like a minor chord', correct: false },
           { label: 'Hollow and medieval like a power chord', correct: false },
         ],
@@ -601,7 +641,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'The tritone formed between the major 3rd and the minor 7th', correct: true },
-          { label: 'The perfect 5th between root and 5th', correct: false },
+          { label: 'The perfect 5th formed between the root and the 5th of the chord', correct: false },
           { label: 'The major 3rd between root and 3rd', correct: false },
           { label: 'The octave doubling of the root', correct: false },
         ],
@@ -618,7 +658,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'As the ii chord in minor keys (e.g. Bm7b5 in A minor)', correct: true },
           { label: 'As the I chord in major keys', correct: false },
           { label: 'As the V chord in major keys', correct: false },
-          { label: 'As the IV chord in blues progressions', correct: false },
+          { label: 'As the IV chord of a 12-bar blues, where every chord is a dominant 7th', correct: false },
         ],
       },
       hint: 'The half-diminished seventh (m7b5) naturally occurs on the 2nd degree of harmonic minor. It serves as the predominant chord leading to V in minor key ii-V-i progressions.',
@@ -667,7 +707,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'A melody that uses only the notes of the prevailing key or scale', correct: true },
           { label: 'A melody that uses sharps and flats outside the key', correct: false },
           { label: 'A melody played on only one string of a guitar', correct: false },
-          { label: 'A melody that moves exclusively by step', correct: false },
+          { label: 'A melody that moves exclusively by step, never by leap, from note to note', correct: false },
         ],
       },
       hint: 'Diatonic means "belonging to the key." A diatonic melody in C major uses only C, D, E, F, G, A, and B — no accidentals.',
@@ -680,7 +720,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Relating each note to the tonic by singing the scale up to that degree', correct: true },
-          { label: 'Memorizing the frequency in hertz of every note', correct: false },
+          { label: 'Memorizing the exact frequency, in hertz, of every single note on the keyboard', correct: false },
           { label: 'Counting the number of ledger lines on the staff', correct: false },
           { label: 'Playing the melody backwards to check your answer', correct: false },
         ],
@@ -731,7 +771,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'A note outside the key that fills in a whole step between two diatonic notes', correct: true },
           { label: 'Any note played with an accent', correct: false },
           { label: 'The first note of a chromatic scale', correct: false },
-          { label: 'A note that is sustained across a bar line', correct: false },
+          { label: 'A note held over from the previous chord into the next one, across the bar line', correct: false },
         ],
       },
       hint: 'A chromatic passing tone is a non-diatonic note that connects two diatonic notes a whole step apart, dividing that whole step into two half steps.',
@@ -749,7 +789,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Perfect authentic cadence (PAC)', correct: true },
           { label: 'Half cadence', correct: false },
-          { label: 'Plagal cadence', correct: false },
+          { label: 'Imperfect authentic cadence (IAC)', correct: false },
           { label: 'Deceptive cadence', correct: false },
         ],
       },
@@ -827,7 +867,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Establishing the tonic by singing the scale or arpeggio of the key', correct: true },
-          { label: 'Memorizing the entire melody before beginning', correct: false },
+          { label: 'Memorizing the entire melody by heart before you sing a single note of it', correct: false },
           { label: 'Reading the lyrics first', correct: false },
           { label: 'Counting the total number of notes', correct: false },
         ],
@@ -856,7 +896,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l9u32m5e2',
       type: 'multiple_choice',
-      prompt: 'A song alternates between a recurring section and contrasting sections (A-B-A-B). What form is this?',
+      prompt: 'A pop song alternates verses (new lyrics each time, same music) with a chorus that comes back with the same lyrics and the same music. What form is this?',
       config: {
         type: 'multiple_choice',
         choices: [
@@ -878,7 +918,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'The combination of instrumentation, harmonic language, and formal structure', correct: true },
           { label: 'The tempo marking alone', correct: false },
           { label: 'The key signature alone', correct: false },
-          { label: 'The number of measures in the piece', correct: false },
+          { label: 'The total number of measures in the piece, counted from the first bar to the last', correct: false },
         ],
       },
       hint: 'Style periods are identified by a combination of factors: instrumentation (harpsichord vs. piano), harmonic vocabulary (triadic vs. chromatic), and formal conventions (binary vs. sonata form).',

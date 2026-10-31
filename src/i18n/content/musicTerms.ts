@@ -115,8 +115,14 @@ const EN_CHORD_QUALITIES: Record<string, string> = {
 };
 
 /** Translate a scale type key to the target language. EN falls through. */
+/** English scale names that the id with spaces would garble ("diminished half whole"). */
+const EN_SCALE_TYPES: Record<string, string> = {
+  diminished_half_whole: 'diminished (half-whole)',
+  diminished_whole_half: 'diminished (whole-half)',
+};
+
 export function translateScaleType(key: string, lang: ContentLanguage): string {
-  if (lang === 'en') return key.replace(/_/g, ' ');
+  if (lang === 'en') return EN_SCALE_TYPES[key] ?? key.replace(/_/g, ' ');
   return DICTIONARIES[lang]?.scaleTypes[key] ?? key.replace(/_/g, ' ');
 }
 

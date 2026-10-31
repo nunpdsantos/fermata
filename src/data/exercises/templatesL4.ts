@@ -6,6 +6,16 @@ import type { ModuleTemplateConfig } from './exerciseTemplates';
 // hand-authored exercises in exercisesL4.ts.
 // Focus: Advanced non-chord tones, dominant seventh, harmonic function,
 //        sequences, counterpoint
+//
+// Audit W4-01 (2026-10-31): the u13 blocks had drifted one module from their
+// lessons. Harmonic function → l4u13m4, sequences → l4u13m5, harmonic rhythm
+// → L3 (l3u11m3); the "common progressions" block and plain-triad builds
+// were dropped. New templates teach l4u13m2 (iii7, vi7, Imaj7, I7) and
+// l4u13m3 (leading-tone sevenths), built on a named key with the {key} token.
+// Suspensions, pedal points, appoggiatura / escape tone / retardation and
+// changing tones that L3 had quizzed early now live here, merged with the
+// existing sets. Statement questions are worded as such (W4-06) and their
+// options balanced so length is no cue (W4-09).
 // ---------------------------------------------------------------------------
 
 const templates: ModuleTemplateConfig[] = [
@@ -19,27 +29,51 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Analyze this suspension figure and its resolution.',
+        promptTemplate: 'Which statement about suspensions is true?',
         hintTemplate: 'Suspensions: 4-3 resolves to a 3rd, 7-6 to a 6th, 9-8 to an octave. The bass suspension 2-3 resolves downward (the bass descends by step; the interval above the bass grows from a 2nd to a 3rd). Chain suspensions create sequences.',
         params: {
           choiceSets: [
             [
-              { label: 'A chain of 7-6 suspensions creates a descending stepwise motion in the upper voice', correct: true },
-              { label: 'A chain of suspensions always ascends', correct: false },
-              { label: 'Chain suspensions are prohibited in classical style', correct: false },
-              { label: 'A chain of suspensions requires no preparation', correct: false },
+              { label: 'In a 4-3 suspension, the 4th above the bass resolves down to the 3rd', correct: true },
+              { label: 'In a 4-3 suspension, the 3rd above the bass rises to the 4th', correct: false },
+              { label: 'In a 4-3 suspension, the 4th above the bass resolves up to the 5th', correct: false },
+              { label: 'In a 4-3 suspension, the bass moves from 4 down to 3', correct: false },
             ],
             [
-              { label: 'A decorated suspension adds a passing or neighbor tone between the suspension and resolution', correct: true },
-              { label: 'A decorated suspension skips the resolution entirely', correct: false },
-              { label: 'A decorated suspension is always chromatic', correct: false },
-              { label: 'A decorated suspension resolves upward', correct: false },
+              { label: 'In a 7-6 suspension, the 7th above the bass resolves down to the 6th', correct: true },
+              { label: 'In a 7-6 suspension, the 7th above the bass resolves up to the octave', correct: false },
+              { label: 'In a 7-6 suspension, the bass holds the dissonance while the upper voice moves', correct: false },
+              { label: 'In a 7-6 suspension, the dissonance is never resolved', correct: false },
             ],
             [
-              { label: 'The suspension must be prepared as a consonance and held as a dissonance', correct: true },
-              { label: 'Suspensions can appear without preparation in all styles', correct: false },
-              { label: 'The suspension is always consonant', correct: false },
-              { label: 'Suspensions can only occur in the soprano', correct: false },
+              { label: 'In a 9-8 suspension, the 9th above the bass resolves down to the octave', correct: true },
+              { label: 'In a 9-8 suspension, the 9th above the bass resolves up by step to the 10th', correct: false },
+              { label: 'A 9-8 suspension is simply a 2-1 suspension in the bass voice', correct: false },
+              { label: 'In a 9-8 suspension, the octave above the bass rises to the 9th', correct: false },
+            ],
+            [
+              { label: 'In a 2-3 bass suspension, the bass resolves down and the 2nd becomes a 3rd', correct: true },
+              { label: 'In a 2-3 bass suspension, the upper voice resolves down to a 3rd', correct: false },
+              { label: 'In a 2-3 bass suspension, the bass rises by step and the 2nd becomes a 3rd', correct: false },
+              { label: 'In a 2-3 bass suspension, the bass leaps away and the dissonance stays unresolved', correct: false },
+            ],
+            [
+              { label: 'A suspension is prepared as a consonance, then held over into a dissonance', correct: true },
+              { label: 'A suspension appears without preparation, on the strong beat', correct: false },
+              { label: 'A suspension is prepared as a dissonance and resolves up', correct: false },
+              { label: 'A suspension is the same thing as an anticipation', correct: false },
+            ],
+            [
+              { label: 'A chain of 7-6 suspensions makes the upper voice descend by step', correct: true },
+              { label: 'A chain of 7-6 suspensions makes the upper voice climb by step', correct: false },
+              { label: 'Chains of suspensions are not allowed in common-practice style', correct: false },
+              { label: 'A chain of 7-6 suspensions keeps the bass on one note', correct: false },
+            ],
+            [
+              { label: 'A decorated suspension adds a note between the suspension and its resolution', correct: true },
+              { label: 'A decorated suspension skips its resolution entirely', correct: false },
+              { label: 'A decorated suspension must always use chromatic notes', correct: false },
+              { label: 'A decorated suspension resolves upward by step instead of down to the note below', correct: false },
             ],
           ],
         },
@@ -48,33 +82,45 @@ const templates: ModuleTemplateConfig[] = [
     targetCount: 5,
   },
 
-  // ---- l4u12m2: Appoggiatura / Escape Tone ----
+  // ---- l4u12m2: Appoggiatura, Escape Tone, and Retardation ----
   {
     moduleId: 'l4u12m2',
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Distinguish between these non-chord tone types based on approach and departure.',
-        hintTemplate: 'Appoggiatura: leap to the dissonance, step to the resolution — usually accented (on a strong beat). Escape tone: step to the dissonance, leap away — usually unaccented (on a weak beat).',
+        promptTemplate: 'Which statement about appoggiaturas, escape tones and retardations is true?',
+        hintTemplate: 'Appoggiatura: leap to the dissonance, step to the resolution — usually accented (on a strong beat). Escape tone: step to the dissonance, leap away — usually unaccented (on a weak beat). Retardation: held over like a suspension, resolving up by step (7-8).',
         params: {
           choiceSets: [
             [
-              { label: 'An accented dissonance approached by leap and resolved by step = appoggiatura', correct: true },
-              { label: 'This is an escape tone', correct: false },
-              { label: 'This is a passing tone', correct: false },
-              { label: 'This is a suspension', correct: false },
+              { label: 'An appoggiatura is approached by leap and resolved by step, usually on a strong beat', correct: true },
+              { label: 'An appoggiatura is approached by step and left by leap, usually on a weak beat', correct: false },
+              { label: 'An appoggiatura is held over from the previous chord, then resolved by step', correct: false },
+              { label: 'An appoggiatura is approached and left by step in the same direction, on a weak beat', correct: false },
             ],
             [
               { label: 'An escape tone is approached by step and left by leap in the opposite direction', correct: true },
-              { label: 'An escape tone is approached by leap and left by step', correct: false },
-              { label: 'An escape tone is the same as an anticipation', correct: false },
-              { label: 'An escape tone must resolve to the same note it departed from', correct: false },
+              { label: 'An escape tone is approached by leap and left by step in the opposite direction', correct: false },
+              { label: 'An escape tone is the same thing as an anticipation of the next chord', correct: false },
+              { label: 'An escape tone must return to the note it left, just as a neighbor tone does', correct: false },
             ],
             [
-              { label: 'An unprepared appoggiatura is a hallmark of Romantic-era expression', correct: true },
+              { label: 'A retardation is held over like a suspension but resolves up by step', correct: true },
+              { label: 'A retardation is held over like a suspension and resolves down by step', correct: false },
+              { label: 'A retardation is approached by leap and has no preparation', correct: false },
+              { label: 'A retardation resolves by leap, never by step', correct: false },
+            ],
+            [
+              { label: 'B held over into a C major chord and rising to C: a 7-8 retardation', correct: true },
+              { label: 'B held over into a C major chord and rising to C: a 4-3 suspension', correct: false },
+              { label: 'B held over into a C major chord and rising to C: an escape tone', correct: false },
+              { label: 'B held over into a C major chord and rising to C: an appoggiatura approached by leap', correct: false },
+            ],
+            [
+              { label: 'Unprepared, accented appoggiaturas are a hallmark of Romantic expression', correct: true },
               { label: 'Appoggiaturas are forbidden in Romantic music', correct: false },
-              { label: 'Appoggiaturas must always be prepared like suspensions', correct: false },
-              { label: 'Appoggiaturas only occur in the bass voice', correct: false },
+              { label: 'Appoggiaturas must always be prepared, exactly like suspensions', correct: false },
+              { label: 'Appoggiaturas occur only in the bass voice, never in the melody that sits above it', correct: false },
             ],
           ],
         },
@@ -83,33 +129,51 @@ const templates: ModuleTemplateConfig[] = [
     targetCount: 5,
   },
 
-  // ---- l4u12m3: Pedal Point ----
+  // ---- l4u12m3: Pedal Point and Changing Tones ----
   {
     moduleId: 'l4u12m3',
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Answer this question about pedal points and their harmonic function.',
-        hintTemplate: 'Pedal points are sustained or repeated notes (typically tonic or dominant in the bass) that create dissonances with changing harmonies above.',
+        promptTemplate: 'Which statement about pedal points and changing tones is true?',
+        hintTemplate: 'Pedal points are sustained or repeated notes (typically tonic or dominant in the bass) that create dissonances with changing harmonies above. Changing tones decorate one note from above and below before returning to it.',
         params: {
           choiceSets: [
             [
-              { label: 'A double pedal sustains both tonic and dominant simultaneously', correct: true },
+              { label: 'A tonic pedal sustains the tonic while the harmonies above it change', correct: true },
+              { label: 'A tonic pedal sustains the tonic, but only in the soprano voice', correct: false },
+              { label: 'A tonic pedal must end after one bar so that the harmony can change', correct: false },
+              { label: 'A tonic pedal is a repeated melodic pattern, the same thing as an ostinato in the bass', correct: false },
+            ],
+            [
+              { label: 'A dominant pedal holds scale degree 5, building tension before the tonic returns', correct: true },
+              { label: 'A dominant pedal holds the leading tone, scale degree 7', correct: false },
+              { label: 'A dominant pedal is always in the soprano, while the bass moves freely below it', correct: false },
+              { label: 'A dominant pedal holds scale degree 5 and may appear only at the very beginning of a piece', correct: false },
+            ],
+            [
+              { label: 'A double pedal sustains the tonic and the dominant together', correct: true },
               { label: 'A double pedal uses two different keys', correct: false },
-              { label: 'A double pedal always resolves to a single note', correct: false },
-              { label: 'A double pedal is the same as a drone', correct: false },
+              { label: 'A double pedal must always resolve to a single note', correct: false },
+              { label: 'A double pedal is a pedal that is repeated twice in a row', correct: false },
             ],
             [
-              { label: 'An inverted pedal occurs in an upper voice rather than the bass', correct: true },
-              { label: 'An inverted pedal descends instead of sustaining', correct: false },
-              { label: 'An inverted pedal changes pitch every measure', correct: false },
-              { label: 'Inverted pedals are never found in classical music', correct: false },
+              { label: 'An inverted pedal is held in an upper voice instead of the bass', correct: true },
+              { label: 'An inverted pedal descends step by step instead of being held', correct: false },
+              { label: 'An inverted pedal changes pitch in every bar', correct: false },
+              { label: 'Inverted pedals never appear in classical music', correct: false },
             ],
             [
-              { label: 'A pedal point typically begins and ends as a consonance with dissonance in between', correct: true },
-              { label: 'A pedal point is always dissonant throughout', correct: false },
-              { label: 'A pedal point never creates dissonance', correct: false },
-              { label: 'A pedal point must last exactly 4 measures', correct: false },
+              { label: 'A pedal usually starts and ends consonant, with dissonance in between', correct: true },
+              { label: 'A pedal is dissonant against every chord from beginning to end', correct: false },
+              { label: 'A pedal never creates any dissonance with the harmonies above it', correct: false },
+              { label: 'A pedal must last exactly four bars and must start and end on a downbeat', correct: false },
+            ],
+            [
+              { label: 'Changing tones decorate one note from above and below, then return to it', correct: true },
+              { label: 'Changing tones are two passing tones in a row that fill a 4th', correct: false },
+              { label: 'Changing tones mean that two voices have neighbor tones at the same time', correct: false },
+              { label: 'Changing tones are the same as a trill, alternating rapidly between two notes', correct: false },
             ],
           ],
         },
@@ -140,16 +204,16 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'The tritone in V7 (between the 3rd and 7th) resolves by contrary motion: 3rd up, 7th down', correct: true },
-              { label: 'The tritone resolves by parallel motion', correct: false },
-              { label: 'The tritone does not resolve', correct: false },
-              { label: 'Both notes of the tritone resolve downward', correct: false },
+              { label: 'Its tritone resolves in contrary motion: the 3rd rises, the 7th falls', correct: true },
+              { label: 'Its tritone resolves in parallel motion: both notes rise by step', correct: false },
+              { label: 'Its tritone does not resolve: both notes are held into the I chord', correct: false },
+              { label: 'Its tritone resolves outward: the 3rd falls and the 7th rises to the root of I', correct: false },
             ],
             [
-              { label: 'In a V7-I resolution, the I chord often lacks the 5th to allow proper voice leading', correct: true },
-              { label: 'The I chord must always be complete after V7', correct: false },
-              { label: 'V7-I always produces parallel 5ths', correct: false },
-              { label: 'The root of V7 must resolve to the 3rd of I', correct: false },
+              { label: 'In V7–I, the I chord often omits its 5th so the voices can resolve properly', correct: true },
+              { label: 'In V7–I, the I chord must always be complete, with all three notes', correct: false },
+              { label: 'V7–I always produces parallel 5ths, which are allowed here', correct: false },
+              { label: 'In V7–I, the root of V7 must always move up by step to become the 3rd of the I chord', correct: false },
             ],
           ],
         },
@@ -164,27 +228,27 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify the inversion of this V7 chord based on which chord tone is in the bass.',
+        promptTemplate: 'Which statement about the inversions of V7 is true?',
         hintTemplate: 'V7 inversions: root pos (V7), 1st inv = V6/5 (3rd/leading tone in bass), 2nd inv = V4/3 (5th in bass), 3rd inv = V4/2 (7th in bass).',
         params: {
           choiceSets: [
             [
-              { label: 'V6/5 has the leading tone in the bass, creating strong resolution up to I', correct: true },
-              { label: 'V6/5 has the 5th in the bass', correct: false },
-              { label: 'V6/5 has the 7th in the bass', correct: false },
-              { label: 'V6/5 has the root in the bass', correct: false },
+              { label: 'V6/5 has the leading tone in the bass, which steps up to the tonic', correct: true },
+              { label: 'V6/5 has the 5th of the chord in the bass, which steps down', correct: false },
+              { label: 'V6/5 has the 7th of the chord in the bass, which falls to the 3rd of I', correct: false },
+              { label: 'V6/5 has the root in the bass, which falls a 5th to the tonic', correct: false },
             ],
             [
-              { label: 'V4/2 has the 7th in the bass and typically resolves to I6', correct: true },
-              { label: 'V4/2 has the root in the bass', correct: false },
-              { label: 'V4/2 has the 3rd in the bass', correct: false },
-              { label: 'V4/2 resolves to V in root position', correct: false },
+              { label: 'V4/2 has the 7th in the bass, so it resolves to I6', correct: true },
+              { label: 'V4/2 has the root in the bass, so it resolves to I', correct: false },
+              { label: 'V4/2 has the 3rd in the bass, so it resolves to I6/4', correct: false },
+              { label: 'V4/2 has the 5th in the bass, so it resolves to the V chord', correct: false },
             ],
             [
               { label: 'V4/3 has the 5th in the bass and can resolve to I or I6', correct: true },
-              { label: 'V4/3 has the leading tone in the bass', correct: false },
-              { label: 'V4/3 has the 7th in the bass', correct: false },
-              { label: 'V4/3 has the root in the bass', correct: false },
+              { label: 'V4/3 has the leading tone in the bass and can only resolve to IV', correct: false },
+              { label: 'V4/3 has the 7th in the bass and must resolve to I6/4', correct: false },
+              { label: 'V4/3 has the root in the bass and resolves to vi', correct: false },
             ],
           ],
         },
@@ -205,7 +269,7 @@ const templates: ModuleTemplateConfig[] = [
   },
 
   // =========================================================================
-  // Unit 13: Harmonic Function and Sequences
+  // Unit 13: Diatonic Seventh Chords and Harmonic Function
   // =========================================================================
 
   // ---- l4u13m1: Pre-Dominant Sevenths ----
@@ -230,16 +294,16 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'The standard harmonic progression is T -> PD -> D -> T', correct: true },
+              { label: 'The standard progression is T -> PD -> D -> T', correct: true },
               { label: 'Pre-dominants always come after the dominant', correct: false },
-              { label: 'Pre-dominants resolve directly to tonic', correct: false },
+              { label: 'Pre-dominants resolve directly to the tonic', correct: false },
               { label: 'Only major chords can function as pre-dominants', correct: false },
             ],
             [
-              { label: 'IV and ii (or their seventh chord forms) are the primary pre-dominant chords', correct: true },
-              { label: 'Only the V chord functions as pre-dominant', correct: false },
-              { label: 'iii is the primary pre-dominant chord', correct: false },
-              { label: 'vi is the only pre-dominant chord', correct: false },
+              { label: 'IV and ii (and IV7, ii7) are the main pre-dominant chords', correct: true },
+              { label: 'V and vii° are the main pre-dominant chords', correct: false },
+              { label: 'iii is the main pre-dominant chord, because it lies a step below IV', correct: false },
+              { label: 'vi is the only chord that can work as a pre-dominant', correct: false },
             ],
           ],
         },
@@ -248,39 +312,69 @@ const templates: ModuleTemplateConfig[] = [
     targetCount: 5,
   },
 
-  // ---- l4u13m2: Harmonic Function Categories ----
+  // ---- l4u13m2: Mediant, Submediant, and Tonic Sevenths ----
   {
     moduleId: 'l4u13m2',
     templates: [
       {
+        type: 'chord_build',
+        promptTemplate: 'Build the vi7 chord of {key} major.',
+        hintTemplate: 'vi7 is the minor seventh chord on scale degree 6 of {key} major: {root}, then a minor 3rd, a perfect 5th and a minor 7th above it.',
+        params: {
+          roots: ['A', 'E', 'B', 'D', 'G', 'F'],
+          accidentals: ['', '', '', '', '', '#'],
+          keys: ['C', 'G', 'D', 'F', 'Bb', 'A'],
+          chordQualities: ['minor7'],
+          noteCounts: [4],
+        },
+      },
+      {
+        type: 'chord_build',
+        promptTemplate: 'Build the iii7 chord of {key} major.',
+        hintTemplate: 'iii7 is the minor seventh chord on scale degree 3 of {key} major: {root}, then a minor 3rd, a perfect 5th and a minor 7th above it.',
+        params: {
+          roots: ['E', 'B', 'F', 'A', 'D'],
+          accidentals: ['', '', '#', '', ''],
+          keys: ['C', 'G', 'D', 'F', 'Bb'],
+          chordQualities: ['minor7'],
+          noteCounts: [4],
+        },
+      },
+      {
         type: 'multiple_choice',
-        promptTemplate: 'Classify this chord by its harmonic function: tonic, pre-dominant, or dominant.',
-        hintTemplate: 'Tonic function: I, vi, iii. Pre-dominant: IV, ii. Dominant: V, vii°. These categories describe how chords function in progressions, not just their quality.',
+        promptTemplate: 'Which statement about iii7, vi7 and the tonic sevenths is true?',
+        hintTemplate: 'vi7 (and sometimes iii7) share notes with I and can stand in for it. Imaj7 is the jazz and pop tonic; I7 is the blues tonic. iii7–vi7–ii7–V7–I is a chain of falling fifths.',
         params: {
           choiceSets: [
             [
-              { label: 'vi can substitute for I as a tonic-function chord', correct: true },
-              { label: 'vi is a dominant-function chord', correct: false },
-              { label: 'vi is always a pre-dominant chord', correct: false },
-              { label: 'vi has no standard function', correct: false },
+              { label: 'vi7 is the main tonic-function substitute for I', correct: true },
+              { label: 'vi7 is a dominant-function chord that resolves to I', correct: false },
+              { label: 'vi7 is a pre-dominant chord that only appears before V', correct: false },
+              { label: 'vi7 has no harmonic function of its own', correct: false },
             ],
             [
-              { label: 'vii° functions as a dominant because it shares 3 notes with V7', correct: true },
-              { label: 'vii° functions as a tonic chord', correct: false },
-              { label: 'vii° functions as a pre-dominant chord', correct: false },
-              { label: 'vii° has no harmonic function', correct: false },
+              { label: 'V7–vi7 is a smoother deceptive resolution than V7–vi', correct: true },
+              { label: 'V7–vi7 is a perfect authentic cadence in disguise', correct: false },
+              { label: 'V7–vi7 is impossible, because vi7 shares no notes with V7', correct: false },
+              { label: 'V7–vi7 is a half cadence, because it ends on a minor chord', correct: false },
             ],
             [
-              { label: 'iii can function as tonic (sharing 2 notes with I) or as dominant preparation', correct: true },
-              { label: 'iii is always a dominant chord', correct: false },
-              { label: 'iii is always a pre-dominant chord', correct: false },
-              { label: 'iii is never used in common-practice harmony', correct: false },
+              { label: 'In jazz and pop, Imaj7 is the usual tonic, a resting point', correct: true },
+              { label: 'In jazz and pop, Imaj7 is a tense chord that must resolve to IV', correct: false },
+              { label: 'In jazz and pop, Imaj7 is avoided at the end of a ii–V–I', correct: false },
+              { label: 'In jazz and pop, the tonic is always a plain triad, never a seventh', correct: false },
             ],
             [
-              { label: 'In the deceptive cadence V-vi, vi substitutes for I as a tonic-function chord', correct: true },
-              { label: 'In V-vi, vi acts as a dominant chord', correct: false },
-              { label: 'V-vi is not a real cadence', correct: false },
-              { label: 'vi always rejects tonic function', correct: false },
+              { label: 'In blues, I7 (a dominant seventh) is the stable tonic', correct: true },
+              { label: 'In blues, I7 is avoided because dominant sevenths must resolve', correct: false },
+              { label: 'In blues, only V is a dominant seventh, as in classical harmony', correct: false },
+              { label: 'In blues, the tonic chord is a major seventh, Imaj7', correct: false },
+            ],
+            [
+              { label: 'iii7 often starts a falling-fifths chain: iii7–vi7–ii7–V7–I', correct: true },
+              { label: 'iii7 is the dominant of the key and normally resolves straight to I', correct: false },
+              { label: 'iii7 is built on scale degree 6 of the major scale', correct: false },
+              { label: 'iii7 is a major seventh chord in a major key', correct: false },
             ],
           ],
         },
@@ -289,68 +383,116 @@ const templates: ModuleTemplateConfig[] = [
     targetCount: 6,
   },
 
-  // ---- l4u13m3: Harmonic Rhythm ----
+  // ---- l4u13m3: Leading-Tone Sevenths ----
   {
     moduleId: 'l4u13m3',
     templates: [
       {
+        type: 'chord_build',
+        promptTemplate: 'Build viiø7, the leading-tone seventh chord of {key} major.',
+        hintTemplate: 'viiø7 sits on the leading tone of {key} major ({root}): a half-diminished seventh — minor 3rd, diminished 5th and minor 7th above {root}.',
+        params: {
+          roots: ['B', 'F', 'C', 'E', 'A'],
+          accidentals: ['', '#', '#', '', ''],
+          keys: ['C', 'G', 'D', 'F', 'Bb'],
+          chordQualities: ['half_diminished7'],
+          noteCounts: [4],
+        },
+      },
+      {
+        type: 'chord_build',
+        promptTemplate: 'Build vii°7, the leading-tone seventh chord of {key} minor (harmonic minor).',
+        hintTemplate: 'vii°7 sits on the raised 7th of {key} harmonic minor ({root}): a fully diminished seventh — three stacked minor 3rds above {root}.',
+        params: {
+          roots: ['G', 'B', 'C', 'D', 'F'],
+          accidentals: ['#', '', '#', '#', '#'],
+          keys: ['A', 'C', 'D', 'E', 'G'],
+          chordQualities: ['diminished7'],
+          noteCounts: [4],
+        },
+      },
+      {
         type: 'multiple_choice',
-        promptTemplate: 'Answer this question about harmonic rhythm.',
-        hintTemplate: 'Harmonic rhythm is the rate at which chords change. It can accelerate toward cadences, creating a sense of forward motion and arrival.',
+        promptTemplate: 'Which statement about leading-tone seventh chords is true?',
+        hintTemplate: 'viiø7 (major keys) is half-diminished: G9 without its root, in C major. vii°7 (minor keys) is fully diminished, built on the raised 7th; its four notes divide the octave into minor 3rds.',
         params: {
           choiceSets: [
             [
-              { label: 'Harmonic rhythm typically accelerates approaching a cadence', correct: true },
-              { label: 'Harmonic rhythm always stays constant', correct: false },
-              { label: 'Harmonic rhythm always slows at cadences', correct: false },
-              { label: 'Harmonic rhythm only changes between sections', correct: false },
+              { label: 'viiø7 in C major (B–D–F–A) is G9 without its root', correct: true },
+              { label: 'viiø7 in C major (B–D–F–A) is G7 with an added 6th', correct: false },
+              { label: 'viiø7 in C major (B–D–F–A) is a minor seventh chord on B', correct: false },
+              { label: 'viiø7 in C major (B–D–F–A) is the tonic seventh, Imaj7', correct: false },
             ],
             [
-              { label: 'Faster harmonic rhythm creates a greater sense of momentum', correct: true },
-              { label: 'Faster harmonic rhythm creates a calmer mood', correct: false },
-              { label: 'Harmonic rhythm has no effect on musical energy', correct: false },
-              { label: 'Slower harmonic rhythm always indicates the climax', correct: false },
+              { label: 'vii°7 in A minor is G#–B–D–F, built on the raised 7th', correct: true },
+              { label: 'vii°7 in A minor is G–B–D–F, built on the natural 7th', correct: false },
+              { label: 'vii°7 in A minor is G#–B–D–F#, a half-diminished chord', correct: false },
+              { label: 'vii°7 in A minor is B–D–F–A, built on the 2nd degree', correct: false },
             ],
             [
-              { label: 'Chords typically change on strong beats in common-practice music', correct: true },
-              { label: 'Chord changes only happen on beat 1', correct: false },
-              { label: 'Chords can never change mid-measure', correct: false },
-              { label: 'Harmonic rhythm is always one chord per measure', correct: false },
+              { label: 'viiø7 has a minor 7th; vii°7 has a diminished 7th', correct: true },
+              { label: 'viiø7 has a diminished 7th; vii°7 has a minor 7th', correct: false },
+              { label: 'viiø7 and vii°7 are the same chord with two names', correct: false },
+              { label: 'viiø7 has a major 7th; vii°7 has a perfect 5th and a minor 7th', correct: false },
+            ],
+            [
+              { label: 'Bdim7, Ddim7, Fdim7 and G#dim7 contain the same four pitch classes', correct: true },
+              { label: 'Bdim7 and Ddim7 share no notes, since their roots are a 3rd apart', correct: false },
+              { label: 'Every diminished seventh chord has its own unique set of notes', correct: false },
+              { label: 'A diminished seventh chord can be respelled on only one of its notes, its root', correct: false },
+            ],
+            [
+              { label: 'Like V7, viiø7 resolves to I: the leading tone rises, the 7th falls', correct: true },
+              { label: 'Like IV, viiø7 is a pre-dominant chord that resolves to V', correct: false },
+              { label: 'viiø7 resolves to vi, its leading tone falling to the 6th degree', correct: false },
+              { label: 'viiø7 does not resolve at all, because it is the most stable seventh chord in the key', correct: false },
             ],
           ],
         },
       },
     ],
-    targetCount: 5,
+    targetCount: 6,
   },
 
-  // ---- l4u13m4: Sequences ----
+  // ---- l4u13m4: Harmonic Function ----
   {
     moduleId: 'l4u13m4',
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify this type of harmonic sequence.',
-        hintTemplate: 'A sequence repeats a melodic/harmonic pattern at successively higher or lower pitch levels. Common types: descending 5ths, ascending 5-6, descending 3rds.',
+        promptTemplate: 'Which statement about harmonic function is true?',
+        hintTemplate: 'Tonic function: I, vi, iii. Pre-dominant: IV, ii. Dominant: V, vii°. These categories describe how chords function in progressions, not just their quality.',
         params: {
           choiceSets: [
             [
-              { label: 'A descending fifths sequence moves through the circle of fifths: I-IV-vii°-iii-vi-ii-V-I', correct: true },
-              { label: 'A descending fifths sequence moves up by 5ths', correct: false },
-              { label: 'A descending fifths sequence only uses major chords', correct: false },
-              { label: 'A descending fifths sequence always modulates', correct: false },
+              { label: 'vi can stand in for I as a tonic-function chord', correct: true },
+              { label: 'vi is a dominant-function chord that resolves to I', correct: false },
+              { label: 'vi is a pre-dominant chord that always moves to V', correct: false },
+              { label: 'vi has no standard harmonic function', correct: false },
             ],
             [
-              { label: 'An ascending 5-6 sequence uses alternating 5/3 and 6/3 chords moving upward by step', correct: true },
-              { label: 'An ascending 5-6 sequence uses only root-position triads', correct: false },
-              { label: 'An ascending 5-6 always descends', correct: false },
-              { label: 'An ascending 5-6 sequence is not a real sequence type', correct: false },
+              { label: 'vii° works as a dominant: it shares three notes with V7', correct: true },
+              { label: 'vii° works as a tonic: it shares three notes with I', correct: false },
+              { label: 'vii° works as a pre-dominant: it always moves to IV', correct: false },
+              { label: 'vii° has no harmonic function', correct: false },
             ],
             [
-              { label: 'Sequences can temporarily override normal voice-leading rules (parallel 5ths may be acceptable)', correct: true },
-              { label: 'Sequences must always follow strict voice-leading rules', correct: false },
-              { label: 'Parallel 5ths are never acceptable in sequences', correct: false },
-              { label: 'Sequences have no relationship to voice leading', correct: false },
+              { label: 'iii can act as a weak tonic substitute: it shares two notes with I', correct: true },
+              { label: 'iii is always a dominant chord, because it contains the leading tone', correct: false },
+              { label: 'iii is the main pre-dominant chord of the key', correct: false },
+              { label: 'iii never appears in common-practice harmony', correct: false },
+            ],
+            [
+              { label: 'In the deceptive cadence V–vi, vi takes the place of I as tonic', correct: true },
+              { label: 'In V–vi, vi acts as a dominant and pulls back to V', correct: false },
+              { label: 'V–vi is not a real cadence', correct: false },
+              { label: 'In V–vi, vi is a pre-dominant chord heading to IV', correct: false },
+            ],
+            [
+              { label: 'D → PD (for example V–IV) is a retrogression: it reverses the usual flow', correct: true },
+              { label: 'D → PD (for example V–IV) is the standard order of functions', correct: false },
+              { label: 'D → PD (for example V–IV) is impossible in any style of music', correct: false },
+              { label: 'D → PD (for example V–IV) is the strongest way to end a phrase, stronger than V–I', correct: false },
             ],
           ],
         },
@@ -359,50 +501,51 @@ const templates: ModuleTemplateConfig[] = [
     targetCount: 5,
   },
 
-  // ---- l4u13m5: Common Progressions ----
+  // ---- l4u13m5: Harmonic Sequences ----
   {
     moduleId: 'l4u13m5',
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify the harmonic progression pattern described.',
-        hintTemplate: 'Common progressions: I-V-vi-IV, I-IV-V-I, ii-V-I, I-vi-IV-V. Each has a characteristic sound and functional logic.',
+        promptTemplate: 'Which statement about harmonic sequences is true?',
+        hintTemplate: 'A sequence repeats a melodic/harmonic pattern at successively higher or lower pitch levels. Common types: descending 5ths, ascending 5-6, descending 3rds.',
         params: {
           choiceSets: [
             [
-              { label: 'I-IV-V-I follows the standard T-PD-D-T functional pattern', correct: true },
-              { label: 'I-IV-V-I is not a standard progression', correct: false },
-              { label: 'I-IV-V-I violates functional harmony rules', correct: false },
-              { label: 'I-IV-V-I is only used in jazz', correct: false },
+              { label: 'A descending-fifths sequence: I–IV–vii°–iii–vi–ii–V–I', correct: true },
+              { label: 'A descending-fifths sequence: I–V–ii–vi–iii–vii°–IV–I', correct: false },
+              { label: 'A descending-fifths sequence: I–ii–iii–IV–V–vi–vii°–I', correct: false },
+              { label: 'A descending-fifths sequence uses only major chords, so it must leave the key', correct: false },
             ],
             [
-              { label: 'The "50s progression" I-vi-IV-V uses all three harmonic functions', correct: true },
-              { label: 'I-vi-IV-V is a modern invention', correct: false },
-              { label: 'I-vi-IV-V does not follow functional harmony', correct: false },
-              { label: 'I-vi-IV-V always sounds sad', correct: false },
+              { label: 'An ascending 5-6 sequence alternates 5/3 and 6/3 chords over a rising bass', correct: true },
+              { label: 'An ascending 5-6 sequence uses only root-position triads over a falling bass', correct: false },
+              { label: 'An ascending 5-6 sequence moves the bass down by step', correct: false },
+              { label: 'The 5-6 sequence is not a real type of sequence', correct: false },
             ],
             [
-              { label: 'Stepwise bass motion (like I-V6-vi or I6-ii6-V) creates smooth voice leading', correct: true },
-              { label: 'Stepwise bass motion is forbidden in classical harmony', correct: false },
-              { label: 'First inversions are never used to create stepwise bass lines', correct: false },
-              { label: 'Bass lines should always leap by 4ths and 5ths', correct: false },
+              { label: 'A sequence overrides normal functional order: the repeating pattern drives it', correct: true },
+              { label: 'A sequence must follow the T–PD–D–T order in every chord', correct: false },
+              { label: 'A sequence repeats one chord several times at the same pitch', correct: false },
+              { label: 'A sequence is a series of modulations', correct: false },
+            ],
+            [
+              { label: 'A descending-thirds sequence: I–vi–IV–ii, each root falling a 3rd', correct: true },
+              { label: 'A descending-thirds sequence: I–V–vi–IV, each root falling a 3rd', correct: false },
+              { label: 'A descending-thirds sequence: I–ii–iii–IV, each root falling a 3rd', correct: false },
+              { label: 'A descending-thirds sequence: I–iii–V–vii°, each root falling a 3rd', correct: false },
+            ],
+            [
+              { label: 'vi–ii–V–I is a fragment of the descending-fifths sequence', correct: true },
+              { label: 'vi–ii–V–I is a fragment of the ascending-seconds sequence', correct: false },
+              { label: 'vi–ii–V–I is a descending-thirds sequence', correct: false },
+              { label: 'vi–ii–V–I is not part of any sequence, since it ends on the tonic', correct: false },
             ],
           ],
         },
       },
-      {
-        type: 'chord_build',
-        promptTemplate: 'Build the {root} major triad.',
-        hintTemplate: 'A major triad: root + major 3rd + perfect 5th. The IV chord has a warm, subdominant character.',
-        params: {
-          roots: ['C', 'G', 'D', 'F', 'A'],
-          accidentals: ['', '', '', '', ''],
-          chordQualities: ['major'],
-          noteCounts: [3],
-        },
-      },
     ],
-    targetCount: 6,
+    targetCount: 5,
   },
 
   // =========================================================================
@@ -420,9 +563,9 @@ const templates: ModuleTemplateConfig[] = [
   // m2–m5 now have no generated templates and fall back to their (correct)
   // hand-authored exercises in exercisesL4.ts.
   //
-  // The former third/fourth/fifth-species template blocks were removed: this
-  // curriculum does not teach 3rd/4th/5th species, so that content has no
-  // matching module and was NOT invented onto an unrelated topic.
+  // The former third/fourth/fifth-species template blocks were removed: Level
+  // 4 teaches only first and second species (third to fifth species are L6,
+  // l6u20m1–m2), so that content was NOT invented onto an unrelated topic.
 
   // ---- l4u14m1: First and Second Species Counterpoint ----
   {
@@ -430,48 +573,48 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Answer this question about first species counterpoint.',
+        promptTemplate: 'Which statement about first species counterpoint is true?',
         hintTemplate: 'First species: note against note. Use consonances (3rds, 6ths, perfect intervals). Begin and end on perfect consonances. Avoid parallel 5ths/8ves. Prefer contrary motion.',
         params: {
           choiceSets: [
             [
-              { label: 'First species uses one note in the counterpoint for each note in the cantus firmus', correct: true },
-              { label: 'First species uses two notes against one', correct: false },
-              { label: 'First species uses four notes against one', correct: false },
-              { label: 'First species has no rhythmic restrictions', correct: false },
+              { label: 'First species: one counterpoint note against each cantus firmus note', correct: true },
+              { label: 'First species: two counterpoint notes against each cantus firmus note', correct: false },
+              { label: 'First species: four counterpoint notes against each cantus firmus note', correct: false },
+              { label: 'First species: any rhythm at all against the cantus firmus', correct: false },
             ],
             [
-              { label: 'In first species, all vertical intervals must be consonant', correct: true },
-              { label: 'Dissonances are freely allowed in first species', correct: false },
-              { label: 'Only perfect intervals are allowed', correct: false },
-              { label: 'Only imperfect intervals are allowed', correct: false },
+              { label: 'In first species, every vertical interval must be a consonance', correct: true },
+              { label: 'In first species, dissonances are allowed on any beat', correct: false },
+              { label: 'In first species, only perfect intervals are allowed', correct: false },
+              { label: 'In first species, only 3rds and 6ths are allowed', correct: false },
             ],
             [
-              { label: 'Approaching a perfect consonance by contrary motion is the safest approach', correct: true },
-              { label: 'Perfect consonances should be approached by parallel motion', correct: false },
-              { label: 'The approach to perfect consonances does not matter', correct: false },
-              { label: 'Perfect consonances can only be reached by oblique motion', correct: false },
+              { label: 'A perfect consonance is best approached by contrary motion', correct: true },
+              { label: 'A perfect consonance is best approached by parallel motion', correct: false },
+              { label: 'How a perfect consonance is approached makes no difference', correct: false },
+              { label: 'A perfect consonance may only be approached by oblique motion, never by step', correct: false },
             ],
           ],
         },
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Answer this question about second species counterpoint.',
+        promptTemplate: 'Which statement about second species counterpoint is true?',
         hintTemplate: 'Second species: two notes against one. The first note of each measure must be consonant. The second note can be a consonance or a passing tone (dissonance).',
         params: {
           choiceSets: [
             [
-              { label: 'In second species, dissonances are permitted as passing tones on weak beats', correct: true },
-              { label: 'All notes must be consonant in second species', correct: false },
-              { label: 'Dissonances can appear on strong beats in second species', correct: false },
-              { label: 'Second species has no rules about dissonance', correct: false },
+              { label: 'In second species, passing-tone dissonances may fall on weak beats', correct: true },
+              { label: 'In second species, every note must be consonant, as in first species', correct: false },
+              { label: 'In second species, dissonances may fall on the strong beats', correct: false },
+              { label: 'In second species, there are no rules about dissonance', correct: false },
             ],
             [
-              { label: 'Second species introduces the concept of dissonance treatment through passing tones', correct: true },
-              { label: 'Second species introduces suspensions', correct: false },
-              { label: 'Second species introduces appoggiaturas', correct: false },
-              { label: 'Second species has no new concepts compared to first', correct: false },
+              { label: 'Second species introduces dissonance, as passing tones on weak beats', correct: true },
+              { label: 'Second species introduces the suspension, tied over the barline', correct: false },
+              { label: 'Second species introduces the appoggiatura, approached by leap', correct: false },
+              { label: 'Second species adds nothing new: it follows exactly the same rules as first species', correct: false },
             ],
           ],
         },

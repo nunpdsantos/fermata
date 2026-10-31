@@ -34,7 +34,7 @@ const overlay: ExerciseLevelOverlay = {
       'Clave de sol',
       'Clave de fa',
       'Clave de do (alto)',
-      'Clave de do (tenor)',
+      'Clave de percusión',
     ],
     hint: 'La clave de sol también se llama clave de G porque se enrolla alrededor de la segunda línea, definiéndola como G.',
   },
@@ -54,9 +54,9 @@ const overlay: ExerciseLevelOverlay = {
   l1u1m2e3: {
     prompt: '¿Cuál es la función de las líneas adicionales?',
     choices: [
-      'Prolongar el pentagrama para notas por encima o por debajo de sus cinco líneas',
-      'Indicar el tempo de una pieza',
-      'Separar los compases entre sí',
+      'Escribir notas fuera de las cinco líneas del pentagrama',
+      'Indicar a qué velocidad, rápida o lenta, debe tocarse la pieza',
+      'Marcar dónde termina un compás y empieza el siguiente',
       'Mostrar dónde se producen los silencios',
     ],
     hint: 'El pentagrama tiene solo cinco líneas. Las notas que sobrepasan esas líneas necesitan pequeñas líneas adicionales para indicar su posición.',
@@ -141,7 +141,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       '4 tiempos de negra por compás',
       '4 tiempos de blanca por compás',
-      '4 tiempos de corchea por compás',
+      '4 tiempos de semicorchea por compás',
       '4 compases por línea',
     ],
     hint: 'El número superior (4) indica los tiempos por compás. El número inferior (4) indica que la negra vale un tiempo.',
@@ -151,7 +151,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       '3 tiempos de negra por compás',
       '3 tiempos de blanca por compás',
-      '4 tiempos agrupados en tres',
+      '3 tiempos de semicorchea por compás',
       '3 compases de 4 tiempos',
     ],
     hint: '3/4 significa tres tiempos de negra por compás. Esto crea la sensación de vals: UN-dos-tres.',
@@ -214,8 +214,8 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'G mayor necesita F# para mantener el patrón T-T-S-T-T-T-S. Ese único sostenido es su armadura de clave.',
   },
   l1u3m2e2: {
-    prompt: '¿Cuál es la tonalidad con la armadura de clave de un bemol (Bb)?',
-    choices: ['F mayor', 'Bb mayor', 'C mayor', 'G mayor'],
+    prompt: '¿Qué nota se bemoliza en la armadura de clave de F mayor?',
+    choices: ['B (pasa a Bb)', 'E (pasa a Eb)', 'A (pasa a Ab)', 'F (pasa a Fb)'],
     hint: 'F mayor necesita Bb para mantener el patrón de la escala mayor. La cuarta nota (B) debe descenderse a Bb.',
   },
   l1u3m2e3: {

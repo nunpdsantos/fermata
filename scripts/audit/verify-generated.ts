@@ -16,6 +16,7 @@ import { buildScale, SCALE_FORMULAS } from '../../src/core/constants/scales';
 import { buildChord, CHORD_FORMULAS } from '../../src/core/constants/chords';
 import { getPitchClass } from '../../src/core/constants/notes';
 import { validateAnswer } from '../../src/components/learn/exercises/validateExercise';
+import { canonicalIntervalNumber } from '../../src/core/utils/degreeSpelling';
 
 type Finding = {
   level: number;
@@ -38,6 +39,11 @@ function deriveCorrect(cfg: ExerciseConfig): string | Set<number> | null {
     case 'note_id':
       return cfg.note + (cfg.accidental ?? '');
     case 'interval_id':
+      // W4a answer styles: by interval number (L1), half/whole step, or a
+      // spelled name keyed "number:semitones" (A4 vs d5).
+      if (cfg.answer === 'number') return String(cfg.intervalNumber ?? canonicalIntervalNumber(cfg.targetSemitones));
+      if (cfg.answer === 'step') return String(cfg.targetSemitones);
+      if (cfg.intervalNumber !== undefined) return `${cfg.intervalNumber}:${cfg.targetSemitones}`;
       return String(cfg.targetSemitones);
     case 'scale_build': {
       const scale = buildScale(toNote(cfg.root, cfg.rootAccidental), cfg.scaleType as ScaleType);
@@ -101,17 +107,23 @@ function deriveCorrect(cfg: ExerciseConfig): string | Set<number> | null {
           }
         } else if (tpl.type === 'interval_id') {
           for (let i = 0; i < roots.length; i++) {
-            for (const st of intervals) {
+            intervals.forEach((st, ii) => {
               for (const d of dirs) {
                 for (const oc of octaves) {
                   totalCombos++;
-                  const cfg: ExerciseConfig = { type: 'interval_id', root: roots[i], rootAccidental: accs[i] ?? '', rootOctave: oc, targetSemitones: st, direction: d };
+                  // The template's interval number (spelled, W4-14) and answer style (W4-15) travel with it.
+                  const num = tpl.params.intervalNumbers?.[ii];
+                  const cfg: ExerciseConfig = {
+                    type: 'interval_id', root: roots[i], rootAccidental: accs[i] ?? '', rootOctave: oc, targetSemitones: st, direction: d,
+                    ...(num !== undefined ? { intervalNumber: num } : {}),
+                    ...(tpl.params.intervalAnswer ? { answer: tpl.params.intervalAnswer } : {}),
+                  };
                   const correct = deriveCorrect(cfg)!;
                   const r = validateAnswer(cfg, correct);
                   if (!r.correct) record(`validator rejected derived correct: ${r.explanation}`);
                 }
               }
-            }
+            });
           }
         } else if (tpl.type === 'scale_build') {
           // Generator pairs scaleType with noteCount by scale index when lengths match

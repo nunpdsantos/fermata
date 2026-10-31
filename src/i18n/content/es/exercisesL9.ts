@@ -37,7 +37,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué significa «registro» en música?',
     choices: [
       'La posición relativa de agudo o grave dentro de un rango de alturas',
-      'El nivel de volumen de una interpretación',
+      'La intensidad, fuerte o suave, con la que se tocan las notas en una interpretación',
       'La velocidad a la que se tocan las notas',
       'El número de instrumentos que suenan simultáneamente',
     ],
@@ -132,8 +132,8 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Cuál es la diferencia entre un intervalo armónico y un intervalo melódico?',
     choices: [
-      'Los intervalos armónicos suenan simultáneamente; los melódicos suenan en secuencia',
-      'Los intervalos armónicos son consonantes; los melódicos son disonantes',
+      'Los intervalos armónicos hacen sonar las dos notas a la vez; los melódicos las tocan una tras otra',
+      'Los intervalos armónicos son siempre consonantes; los melódicos son siempre disonantes',
       'Los intervalos armónicos usan sostenidos; los melódicos usan bemoles',
       'Los intervalos armónicos abarcan más de una octava; los melódicos no',
     ],
@@ -164,7 +164,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Brillante, alegre y resuelto',
       'Sombrío, triste y tenso',
-      'Misterioso y ambiguo',
+      'Misterioso, ambiguo e inquieto',
       'Disonante e inestable',
     ],
     hint: 'Las escalas mayores se perciben como brillantes y estables. La 3.ª mayor y la 7.ª mayor contribuyen a este carácter positivo.',
@@ -188,12 +188,24 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Cuál es la nota característica que distingue el dórico del menor natural?',
     choices: [
-      'Un 6.º grado elevado',
+      'Un 6.º grado elevado (natural)',
       'Un 2.º grado descendido',
       'Un 7.º grado elevado',
       'Un 5.º grado descendido',
     ],
     hint: 'El dórico difiere del menor natural en una nota: el 6.º grado está elevado un semitono. En D dórico, es B natural en vez de Bb.',
+  },
+  l9u31m2e4: {
+    prompt:
+      'Escucha esta escala e identifica el modo.',
+    choices: ['Jónico', 'Lidio', 'Mixolidio', 'Dórico'],
+    hint: 'El jónico es la propia escala mayor: el 1.er modo, sin ningún grado alterado. El lidio elevaría el 4.º grado (#4); el mixolidio bajaría el 7.º (b7).',
+  },
+  l9u31m2e5: {
+    prompt:
+      'Escucha esta escala e identifica el modo.',
+    choices: ['Eólico', 'Dórico', 'Frigio', 'Locrio'],
+    hint: 'El eólico es la escala menor natural: el 6.º modo de la escala mayor. El dórico elevaría el 6.º grado (6 natural); el frigio bajaría el 2.º (b2); el locrio baja el 2.º y el 5.º.',
   },
 
   // ---- l9u31m3: Pentatónica/Blues/Simétrica ----
@@ -213,8 +225,8 @@ const overlay: ExerciseLevelOverlay = {
   l9u31m3e3: {
     prompt: '¿Qué es la «blue note» en una escala de blues?',
     choices: [
-      'La nota cromática entre el 4.º y el 5.º grados (5.ª bemolizada / 4.ª sostenida)',
-      'La 3.ª menor de cualquier acorde',
+      'La 5.ª bemolizada (o 4.ª sostenida), entre el 4.º y el 5.º grados',
+      'La tónica repetida una octava más arriba, en el punto más agudo de la escala',
       'Cualquier nota tocada con vibrato',
       'La sensible de la tonalidad',
     ],
@@ -239,17 +251,17 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué intervalos componen una tríada disminuida?',
     choices: [
       'Fundamental, 3.ª menor y 5.ª disminuida (tritono)',
-      'Fundamental, 3.ª mayor y 5.ª justa',
+      'Fundamental, 3.ª mayor y 5.ª justa (una tríada mayor)',
       'Fundamental, 3.ª menor y 5.ª justa',
-      'Fundamental, 3.ª mayor y 5.ª aumentada',
+      'Fundamental, 3.ª mayor y 5.ª aumentada (dos 3.as mayores)',
     ],
     hint: 'Disminuida = 3.ª menor (3 semitonos) + 5.ª disminuida (6 semitonos). Dos 3.as menores apiladas producen el tritono entre fundamental y 5.ª.',
   },
   l9u31m4e4: {
     prompt: '¿Cómo describirías el sonido de una tríada aumentada?',
     choices: [
-      'Tensa y sin resolución, con una cualidad etérea y flotante',
-      'Brillante y estable como un acorde mayor',
+      'Tensa y sin resolución, con una cualidad etérea, flotante y ambigua',
+      'Brillante, asentado y estable, igual que un simple acorde mayor',
       'Sombría y pesada como un acorde menor',
       'Hueca y medieval como un power chord',
     ],
@@ -275,7 +287,7 @@ const overlay: ExerciseLevelOverlay = {
       '¿Qué confiere a un acorde de 7.ª dominante su sensación característica de tensión y deseo de resolver?',
     choices: [
       'El tritono formado entre la 3.ª mayor y la 7.ª menor',
-      'La 5.ª justa entre fundamental y 5.ª',
+      'La 5.ª justa formada entre la fundamental y la 5.ª del acorde',
       'La 3.ª mayor entre fundamental y 3.ª',
       'La duplicación a la octava de la fundamental',
     ],
@@ -288,7 +300,7 @@ const overlay: ExerciseLevelOverlay = {
       'Como acorde ii en tonalidades menores (p. ej. Bm7b5 en A menor)',
       'Como acorde I en tonalidades mayores',
       'Como acorde V en tonalidades mayores',
-      'Como acorde IV en progresiones de blues',
+      'Como acorde IV de un blues de 12 compases, donde todos los acordes son de 7.ª de dominante',
     ],
     hint: 'El acorde de séptima semidisminuido (m7b5) aparece naturalmente en el 2.º grado de la menor armónica. Funciona como acorde predominante conduciendo al V en progresiones ii-V-i menores.',
   },
@@ -315,7 +327,7 @@ const overlay: ExerciseLevelOverlay = {
       'Una melodía que utiliza solo las notas de la tonalidad o escala predominante',
       'Una melodía que utiliza sostenidos y bemoles ajenos a la tonalidad',
       'Una melodía tocada en una sola cuerda de la guitarra',
-      'Una melodía que se mueve exclusivamente por grados conjuntos',
+      'Una melodía que se mueve exclusivamente por grados conjuntos, nunca por saltos',
     ],
     hint: 'Diatónico significa «perteneciente a la tonalidad». Una melodía diatónica en C mayor utiliza solo C, D, E, F, G, A y B — sin alteraciones.',
   },
@@ -324,7 +336,7 @@ const overlay: ExerciseLevelOverlay = {
       '¿Qué estrategia es más eficaz para identificar grados individuales de la escala en una melodía?',
     choices: [
       'Relacionar cada nota con la tónica cantando la escala hasta ese grado',
-      'Memorizar la frecuencia en hercios de cada nota',
+      'Memorizar la frecuencia exacta, en hercios, de todas las notas del teclado',
       'Contar el número de líneas adicionales en el pentagrama',
       'Tocar la melodía al revés para verificar la respuesta',
     ],
@@ -349,7 +361,7 @@ const overlay: ExerciseLevelOverlay = {
       'Una nota ajena a la tonalidad que rellena un tono entre dos notas diatónicas',
       'Cualquier nota tocada con acento',
       'La primera nota de una escala cromática',
-      'Una nota sostenida más allá de la barra de compás',
+      'Una nota prolongada del acorde anterior al siguiente, a través de la barra de compás',
     ],
     hint: 'Una nota cromática de paso es una nota no diatónica que enlaza dos notas diatónicas separadas por un tono, dividiendo ese tono en dos semitonos.',
   },
@@ -362,7 +374,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Cadencia auténtica perfecta (CAP)',
       'Semicadencia',
-      'Cadencia plagal',
+      'Cadencia auténtica imperfecta (CAI)',
       'Cadencia rota',
     ],
     hint: 'Una cadencia auténtica perfecta (CAP) requiere V a I en posición fundamental con la tónica en el soprano. Proporciona la sensación más fuerte de conclusión.',
@@ -409,7 +421,7 @@ const overlay: ExerciseLevelOverlay = {
       '¿Cuál es el paso de preparación más importante antes de leer a primera vista una melodía?',
     choices: [
       'Establecer la tónica cantando la escala o arpegio de la tonalidad',
-      'Memorizar la melodía entera antes de comenzar',
+      'Memorizar la melodía entera de memoria antes de cantar una sola nota',
       'Leer la letra primero',
       'Contar el número total de notas',
     ],
@@ -431,7 +443,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l9u32m5e2: {
     prompt:
-      'Una canción alterna entre una sección recurrente y secciones contrastantes (A-B-A-B). ¿Qué forma es esta?',
+      'Una canción pop alterna estrofas (letra nueva cada vez, misma música) con un estribillo que vuelve siempre con la misma letra y la misma música. ¿Qué forma es esta?',
     choices: [
       'Forma estrofa-estribillo',
       'Forma durchkomponiert (through-composed)',
@@ -447,7 +459,7 @@ const overlay: ExerciseLevelOverlay = {
       'La combinación de instrumentación, lenguaje armónico y estructura formal',
       'La indicación de tempo por sí sola',
       'La armadura de clave por sí sola',
-      'El número de compases de la pieza',
+      'El número total de compases de la pieza, contados desde el primero hasta el último',
     ],
     hint: 'Los periodos estilísticos se identifican por una combinación de factores: instrumentación (clave vs. piano), vocabulario armónico (triádico vs. cromático) y convenciones formales (binaria vs. forma sonata).',
   },

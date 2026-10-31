@@ -17,7 +17,7 @@ const overlay: ExerciseLevelOverlay = {
       'En una exposición de fuga, ¿cuál es la diferencia entre el sujeto y la respuesta?',
     choices: [
       'El sujeto es el tema principal presentado primero; la respuesta es su imitación en la tonalidad de la dominante',
-      'El sujeto lo tocan las cuerdas; la respuesta la tocan los vientos',
+      'El sujeto se confía siempre a las cuerdas, mientras que la respuesta se confía siempre a los vientos',
       'El sujeto está en mayor; la respuesta está en menor',
       'El sujeto es rápido; la respuesta es lenta',
     ],
@@ -27,10 +27,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Qué distingue una "respuesta real" de una "respuesta tonal" en una fuga?',
     choices: [
-      'Una respuesta real transpone el sujeto exactamente; una respuesta tonal ajusta intervalos (normalmente responde al 5 con el 1) para que la respuesta no debilite la tonalidad de la tónica',
+      'Una respuesta real copia exactamente los intervalos del sujeto; una tonal altera algunos (a menudo responde al 5 con el 1) para no debilitar la tonalidad de la tónica',
       'Una respuesta real es más fuerte; una respuesta tonal es más suave',
       'Una respuesta real usa el mismo ritmo; una respuesta tonal altera el ritmo',
-      'Una respuesta real está en la misma octava; una respuesta tonal está una octava arriba',
+      'Una respuesta real se queda siempre en la misma octava del sujeto, mientras que una tonal se escribe siempre una octava entera por encima del propio sujeto',
     ],
     hint: 'Una respuesta real es una transposición exacta a la dominante. Una respuesta tonal modifica ciertos intervalos (típicamente los grados 1 y 5) para mantener la coherencia tonal.',
   },
@@ -39,7 +39,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Cada voz entra sucesivamente con el sujeto o la respuesta hasta que todas las voces han presentado el tema',
       'Todas las voces tocan el sujeto simultáneamente al unísono',
-      'El sujeto se desarrolla mediante fragmentación y secuencia',
+      'El sujeto se rompe enseguida en pequeños fragmentos y se desarrolla mediante secuencias en tonalidades lejanas',
       'El sujeto se presenta en aumentación y disminución',
     ],
     hint: 'La exposición es la sección de apertura donde las voces entran una por una, alternando entre sujeto (tónica) y respuesta (dominante).',
@@ -51,7 +51,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Cuál es la función principal de un episodio en una fuga?',
     choices: [
       'Modular entre tonalidades y proporcionar contraste usando fragmentos del sujeto',
-      'Introducir un tema completamente nuevo sin relación con el sujeto',
+      'Introducir un tema completamente nuevo, sin relación con el sujeto, que nunca vuelve a oírse',
       'Reexponer el sujeto en todas las voces simultáneamente',
       'Concluir la fuga con una cadencia final',
     ],
@@ -61,7 +61,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué es el "stretto" en una fuga?',
     choices: [
       'Entradas solapadas del sujeto donde una nueva voz comienza antes de que la anterior termine',
-      'Un aumento gradual del tempo hacia el final de la fuga',
+      'Un aumento gradual del tempo hacia el final de la fuga, hasta que todas las voces tocan el doble de rápido',
       'La cadencia final donde todas las voces resuelven juntas',
       'Una sección donde el sujeto se toca de atrás hacia adelante',
     ],
@@ -72,7 +72,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'El sujeto se presenta con valores de nota duplicados (proporcionalmente más largos)',
       'El sujeto se presenta con notas cromáticas adicionales',
-      'El sujeto lo tocan más instrumentos que originalmente',
+      'El sujeto lo tocan más instrumentos que al principio, con los valores de nota sin cambiar',
       'El sujeto se transpone a una octava más aguda',
     ],
     hint: 'La aumentación alarga el sujeto multiplicando sus duraciones (típicamente por dos). La disminución hace lo opuesto, reduciendo los valores a la mitad.',
@@ -84,7 +84,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué es un canon?',
     choices: [
       'Una composición donde una voz es imitada exactamente por otra voz que entra tras un retraso',
-      'Una composición donde todas las voces tocan melodías diferentes simultáneamente',
+      'Una composición en la que cada voz toca su propia melodía diferente y nunca se imita nada',
       'Una composición con una línea de bajo repetida',
       'Una composición que modula por las doce tonalidades',
     ],
@@ -95,7 +95,7 @@ const overlay: ExerciseLevelOverlay = {
       'En un "canon a la quinta", ¿cómo se relaciona el seguidor con el líder?',
     choices: [
       'El seguidor imita al líder transpuesto una quinta justa por encima (o por debajo)',
-      'El seguidor entra cinco tiempos después del líder',
+      'El seguidor entra exactamente cinco tiempos después del líder, a la misma altura que el líder',
       'El seguidor toca solo la quinta nota de cada frase',
       'El seguidor toca la melodía del líder cinco veces',
     ],
@@ -108,7 +108,7 @@ const overlay: ExerciseLevelOverlay = {
       'La imitación estricta copia los intervalos exactamente; la imitación libre permite modificaciones por razones armónicas o melódicas',
       'La imitación estricta es más rápida; la imitación libre es más lenta',
       'La imitación estricta usa solo consonancias; la imitación libre usa solo disonancias',
-      'La imitación estricta es para música vocal; la imitación libre es para música instrumental',
+      'La imitación estricta está reservada a la música vocal, mientras que la imitación libre solo se usa en la música instrumental',
     ],
     hint: 'La imitación estricta preserva cada intervalo con precisión. La imitación libre permite alteraciones a los intervalos manteniendo la forma general y el ritmo del modelo.',
   },
@@ -125,7 +125,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Un primer tema en la tónica y un segundo tema en una tonalidad contrastante (generalmente la dominante)',
       'Un tema rápido y un tema lento ambos en la tónica',
-      'Un tema para cuerdas y un tema para vientos en la misma tonalidad',
+      'Un tema para las cuerdas y un segundo tema para los vientos, ambos mantenidos en la misma tonalidad de principio a fin',
       'Un tema mayor y su variante en modo menor',
     ],
     hint: 'La exposición establece el conflicto tonal: el grupo temático principal está en la tónica, el grupo temático secundario se mueve a la dominante (o relativo mayor en tonalidades menores).',
@@ -135,7 +135,7 @@ const overlay: ExerciseLevelOverlay = {
       '¿Cuál es el propósito principal de la sección de desarrollo en la forma sonata?',
     choices: [
       'Explorar, fragmentar y transformar material temático a través de modulación y desarrollo motívico',
-      'Introducir temas enteramente nuevos no escuchados en la exposición',
+      'Introducir temas enteramente nuevos que nunca se oyeron en la exposición y que nunca vuelven después',
       'Repetir la exposición exactamente en una tonalidad diferente',
       'Proporcionar un contraste lento y lírico a la exposición',
     ],
@@ -146,7 +146,7 @@ const overlay: ExerciseLevelOverlay = {
       'En la reexposición de una forma sonata, ¿en qué tonalidad se presenta el segundo tema?',
     choices: [
       'En la tonalidad de la tónica, resolviendo el conflicto tonal de la exposición',
-      'En la tonalidad de la dominante, exactamente como en la exposición',
+      'La tonalidad de la dominante, exactamente donde estaba en la exposición la primera vez',
       'En la tonalidad de la subdominante como compromiso',
       'En una tonalidad remota elegida libremente por el compositor',
     ],
@@ -162,7 +162,7 @@ const overlay: ExerciseLevelOverlay = {
       'La estructura armónica subyacente y/o el contorno melódico del tema',
       'La melodía y el ritmo exactos sin ninguna alteración',
       'Solo el tempo y la dinámica',
-      'Nada; cada variación es completamente independiente',
+      'Nada; cada variación es una pieza completamente independiente, con su propio tema',
     ],
     hint: 'Las variaciones típicamente preservan la estructura armónica y fraseológica del tema mientras alteran melodía, ritmo, textura o modo.',
   },
@@ -171,7 +171,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'ABACA (o ABACABA) — un estribillo recurrente alterna con episodios contrastantes',
       'AABB — dos secciones cada una repetida',
-      'ABA — una estructura ternaria con un medio contrastante',
+      'ABA — una estructura ternaria con una única sección central contrastante y sin estribillo',
       'ABCD — cuatro secciones diferentes tocadas una vez cada una',
     ],
     hint: 'La forma de rondó presenta un tema principal (A) que regresa continuamente entre diferentes secciones contrastantes (B, C, etc.). El patrón mínimo es ABACA.',
@@ -179,9 +179,9 @@ const overlay: ExerciseLevelOverlay = {
   l8u26m2e3: {
     prompt: '¿Qué es una chacona (o passacaglia)?',
     choices: [
-      'Un conjunto de variaciones continuas sobre una línea de bajo repetida o progresión armónica',
+      'Un conjunto de variaciones continuas sobre una línea de bajo repetida o una progresión armónica repetida',
       'Una danza rápida en metro ternario sin repeticiones',
-      'Una forma vocal con estrofas y estribillos alternados',
+      'Una forma vocal que alterna estrofas y estribillos, sin ninguna línea de bajo que se repita',
       'Una fuga con un sujeto cromático',
     ],
     hint: 'Una chacona/passacaglia es una forma de variación construida sobre un patrón de bajo repetido (bajo ostinato). Las voces superiores cambian mientras el bajo cicla continuamente.',
@@ -207,7 +207,7 @@ const overlay: ExerciseLevelOverlay = {
       'Su altura escrita difiere de la altura que realmente suena (altura de concierto)',
       'Puede tocar en cualquier tonalidad sin dificultad',
       'Puede cambiar su afinación durante una interpretación',
-      'Transpone la música automáticamente para el intérprete',
+      'Transporta la música automáticamente para el instrumentista, así que nada necesita reescribirse',
     ],
     hint: 'Un instrumento transpositor produce una altura diferente de la que está escrita. Esto simplifica las digitaciones entre familias de instrumentos de tamaños diferentes.',
   },
@@ -239,9 +239,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Qué es la "forma normal" de un conjunto de clases de altura?',
     choices: [
-      'La disposición de las clases de altura en orden ascendente dentro de la menor extensión intervalar posible',
+      'La disposición de todas sus clases de altura en orden ascendente dentro de la menor extensión intervalar posible',
       'El orden en que las notas aparecen en la partitura',
-      'La disposición por frecuencia de la más grave a la más aguda',
+      'La disposición ordenada por la frecuencia real, desde la altura más grave que suena hasta la más aguda',
       'Una disposición alfabética de los nombres de las notas',
     ],
     hint: 'La forma normal es la disposición ascendente más compacta de un conjunto de clases de altura. Se rota por todas las ordenaciones y se elige la que tiene el menor intervalo exterior.',
@@ -250,10 +250,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Cuál es el propósito de reducir un conjunto de clases de altura a su "forma primaria"?',
     choices: [
-      'Crear una etiqueta estándar para que conjuntos relacionados por transposición e inversión compartan la misma identidad',
+      'Dar una sola etiqueta estándar a conjuntos relacionados por transposición o inversión, para que compartan una misma identidad',
       'Determinar en qué tonalidad está la música',
       'Encontrar la fundamental de un acorde',
-      'Convertir el conjunto en notación musical estándar',
+      'Convertir el conjunto de nuevo en notación musical común, volviendo a dar a cada altura su octava exacta',
     ],
     hint: 'La forma primaria es la versión más reducida de un conjunto, comenzando en 0 y compactada lo más posible a la izquierda. Permite comparar conjuntos independientemente de la transposición o inversión.',
   },
@@ -263,10 +263,10 @@ const overlay: ExerciseLevelOverlay = {
   l8u27m2e1: {
     prompt: '¿Qué es una serie dodecafónica?',
     choices: [
-      'Una ordenación de las 12 clases de altura, cada una apareciendo exactamente una vez, usada como base de una composición',
+      'Una ordenación de las 12 clases de altura, cada una usada exactamente una vez, sobre la que se construye una pieza',
       'Una escala cromática tocada de grave a agudo',
       'Una serie de 12 acordes usados como progresión armónica',
-      'Doce compases de música que se repiten a lo largo de la pieza',
+      'Doce compases de música que se repiten, sin cambios, desde el primer hasta el último momento de una pieza',
     ],
     hint: 'Una serie (o serie dodecafónica) es una ordenación fija de las 12 clases de altura cromáticas. Ninguna clase de altura se repite hasta que las 12 han sonado.',
   },
@@ -277,7 +277,7 @@ const overlay: ExerciseLevelOverlay = {
       'Original (P), Retrógrada (R), Inversión (I), Retrógrada-Inversión (RI)',
       'Mayor, Menor, Aumentada, Disminuida',
       'Tónica, Dominante, Subdominante, Sensible',
-      'Original, Transpuesta, Modulada, Desarrollada',
+      'Original, Transpuesta, Modulada, Desarrollada — las cuatro fases de una sonata',
     ],
     hint: 'P es la serie original. R la invierte. I invierte todos los intervalos. RI aplica retrogradación e inversión. Cada una puede también transponerse a cualquiera de los 12 niveles.',
   },
@@ -287,7 +287,7 @@ const overlay: ExerciseLevelOverlay = {
       'Presentar las 48 formas de la serie (12 transposiciones de P, R, I, RI) en una sola cuadrícula 12×12',
       'Mostrar qué instrumentos tocan cada nota de la serie',
       'Convertir números de clases de altura en notación estándar',
-      'Calcular el ritmo armónico de una composición serial',
+      'Calcular el ritmo armónico de una composición serial, compás a compás, a partir de su primer acorde',
     ],
     hint: 'La matriz (o cuadrado mágico) es una cuadrícula 12×12. Las filas de izquierda a derecha dan las formas P, de derecha a izquierda las R, las columnas de arriba abajo las I y de abajo arriba las RI.',
   },
@@ -298,9 +298,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Qué es el "planing" (también llamado paralelismo) en la música de principios del siglo XX?',
     choices: [
-      'Mover acordes o intervalos en movimiento paralelo, manteniendo exactamente la estructura interválica (planing cromático) o ajustándola a la escala (planing diatónico)',
+      'Mover acordes en paralelo: el planing cromático mantiene los intervalos exactos, el diatónico los ajusta a la escala',
       'Aumentar gradualmente el tempo a lo largo de un pasaje',
-      'Alternar entre dos tonalidades diferentes en cada compás',
+      'Alternar entre dos tonalidades diferentes en cada compás, de modo que la música nunca se asienta en una sola tónica',
       'Escribir solo en movimiento por grado conjunto (movimiento conjunto)',
     ],
     hint: 'El planing mueve una forma de acorde o intervalo fija hacia arriba o abajo en paralelo. Debussy usó famosamente tríadas y acordes de novena paralelos, abandonando las reglas tradicionales de conducción de voces.',
@@ -318,9 +318,9 @@ const overlay: ExerciseLevelOverlay = {
   l8u27m3e3: {
     prompt: '¿Qué es el pandiatonicismo?',
     choices: [
-      'El uso libre de todas las notas de una escala diatónica sin armonía funcional tradicional ni reglas de conducción de voces',
+      'El uso libre de todas las notas de la escala, sin armonía funcional ni reglas de conducción de voces',
       'Música que usa solo escalas pentatónicas',
-      'El uso de los doce tonos cromáticos simultáneamente',
+      'El uso de las doce notas cromáticas a la vez, de modo que ninguna tonalidad o escala sigue siendo audible',
       'Una melodía diatónica armonizada exclusivamente con tríadas',
     ],
     hint: 'El pandiatonicismo usa material diatónico (p. ej., todas las teclas blancas) pero sin jerarquía tonal ni progresiones funcionales. Stravinski y Copland lo emplearon libremente.',
@@ -332,10 +332,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Cuál de las siguientes opciones describe mejor el minimalismo musical?',
     choices: [
-      'Música construida sobre repetición extensiva de patrones cortos con cambios graduales y sutiles a lo largo del tiempo',
+      'Música construida sobre la repetición extensiva de patrones cortos, con cambios graduales y sutiles a lo largo del tiempo',
       'Música que utiliza el menor número posible de instrumentos',
       'Música que dura menos de un minuto',
-      'Música que evita toda repetición en favor de variación constante',
+      'Música que evita toda repetición, cambiando constantemente el material para que nada vuelva nunca',
     ],
     hint: 'El minimalismo (Riley, Reich, Glass, Adams) presenta patrones repetitivos, pulsación constante, armonía consonante y procesos lentos de transformación gradual.',
   },
@@ -344,7 +344,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Música en la que algún elemento de la composición o interpretación se deja al azar o a la elección del intérprete',
       'Música compuesta enteramente por un algoritmo de computadora',
-      'Música que se interpreta siempre a un tempo muy rápido',
+      'Música tocada siempre a un tempo muy rápido, exactamente como lo indicó el compositor, sin elecciones',
       'Música que usa solo instrumentos electrónicos',
     ],
     hint: 'Aleatorio viene del latín "alea" (dado). Cage, Lutosławski y otros incorporaron aleatoriedad o indeterminación del intérprete en sus composiciones.',
@@ -354,7 +354,7 @@ const overlay: ExerciseLevelOverlay = {
       '¿Cuál de las siguientes es un ejemplo de una "técnica extendida"?',
     choices: [
       'Tocar dentro del piano pulsando o amortiguando las cuerdas directamente',
-      'Tocar una escala estándar a un tempo muy rápido',
+      'Tocar una escala normal a un tempo muy rápido, usando el instrumento de la manera habitual',
       'Usar un metrónomo durante la interpretación',
       'Leer a primera vista una pieza nueva',
     ],
@@ -367,7 +367,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué es una polirritmia?',
     choices: [
       'Dos o más patrones rítmicos conflictivos ejecutados simultáneamente',
-      'Un único ritmo tocado por múltiples instrumentos al unísono',
+      'Un solo ritmo tocado al unísono por varios instrumentos, todos dividiendo el pulso de la misma forma',
       'Un ritmo que acelera gradualmente',
       'Un ritmo escrito en un compás compuesto',
     ],
@@ -376,9 +376,9 @@ const overlay: ExerciseLevelOverlay = {
   l8u27m5e2: {
     prompt: '¿Qué es una hemiola?',
     choices: [
-      'Un recurso rítmico que crea el efecto de 3 tiempos contra 2 (o 2 contra 3) dentro del mismo período de tiempo',
+      'Un recurso que crea el efecto de 3 pulsos contra 2 (o 2 contra 3) en el mismo lapso de tiempo',
       'Un silencio que dura exactamente la mitad de un tiempo',
-      'Una técnica en la que el tempo se duplica súbitamente',
+      'Una técnica en la que el tempo se duplica de repente durante un compás y luego vuelve a la normalidad',
       'Un ritmo sincopado usado solo en el jazz',
     ],
     hint: 'La hemiola reagrupa los tiempos de modo que lo que se sentía en tres se siente temporalmente en dos, o viceversa. Común en la música barroca y en los ritmos latinoamericanos.',
@@ -386,10 +386,10 @@ const overlay: ExerciseLevelOverlay = {
   l8u27m5e3: {
     prompt: '¿Qué es la modulación métrica?',
     choices: [
-      'Un cambio de tempo logrado reinterpretando un valor de nota del metro antiguo como la unidad de tiempo del nuevo metro',
+      'Un cambio de tempo hecho al tratar una figura del compás antiguo como unidad de pulso del nuevo',
       'Cambiar de una tonalidad mayor a una menor',
       'Tocar el mismo ritmo en una octava diferente',
-      'Desacelerar gradualmente al final de una pieza',
+      'Ralentizar gradualmente hacia el final de una pieza, igual que en un ritardando común escrito en la partitura',
     ],
     hint: 'La modulación métrica (término asociado a Elliott Carter) usa un valor rítmico común como pivote entre dos tempos. Por ejemplo, una corchea de tresillo en el tempo antiguo se convierte en la nueva corchea.',
   },

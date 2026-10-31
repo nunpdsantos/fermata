@@ -123,7 +123,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       subtitle:
         'Identificar intervalos perfectos y pequeños de oído usando asociaciones con canciones y reconocimiento directo',
       objectives: [
-        'Identificar unísono, 2.ª menor, 2.ª mayor, 3.ª menor, 3.ª mayor, 4.ª justa, tritono y 5.ª justa de oído',
+        'Identificar 2.ª menor, 2.ª mayor, 3.ª menor, 3.ª mayor, 4.ª justa, tritono y 5.ª justa de oído',
         'Usar asociaciones con canciones como auxiliares mnemónicos para cada intervalo',
         'Reconocer estos intervalos tanto ascendentes como descendentes',
       ],
@@ -413,7 +413,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       objectives: [
         'Identificar tríadas mayores, menores, disminuidas y aumentadas de oído',
         'Comprender la distinción de estabilidad: 5.ª justa (estable) frente a 5.ª alterada (inestable)',
-        'Reconocer inversiones de tríadas por el carácter de la nota del bajo',
+        'Oír cada cualidad de tríada en posición fundamental, con la fundamental en el bajo',
       ],
       concepts: [
         {
@@ -603,11 +603,11 @@ const curriculumL9: CurriculumLevelOverlay = {
     l9u32m3: {
       title: 'Dictado Armónico: Cadencias y Progresiones',
       subtitle:
-        'Identificar cadencias, transcribir progresiones y dictado de línea de bajo',
+        'Identificar cadencias y transcribir progresiones siguiendo el bajo',
       objectives: [
         'Identificar tipos de cadencia (auténtica, plagal, semicadencia, deceptiva) de oído',
         'Transcribir progresiones diatónicas de cuatro acordes usando numeración romana',
-        'Realizar dictado de línea de bajo como puerta de entrada a la transcripción armónica completa',
+        'Seguir la línea del bajo (la fundamental de cada acorde) para nombrar los números romanos de una progresión',
       ],
       concepts: [
         {

@@ -2,7 +2,7 @@ import type { TemplateLevelOverlay } from '../types';
 
 // ---------------------------------------------------------------------------
 // Castilian Spanish overlay for Level 6 exercise templates
-// 12 modules, ~12 templates total
+// 12 modules — mirrors templatesL6.ts entry by entry (W4a re-keying, 2026-10-31)
 // ---------------------------------------------------------------------------
 
 const overlay: TemplateLevelOverlay = {
@@ -13,31 +13,51 @@ const overlay: TemplateLevelOverlay = {
   // ---- l6u18m1: Acorde Napolitano bII ----
   l6u18m1: [
     {
-      // chord_build — {root} es la fundamental del acorde (el propio bII), no la
-      // tonalidad: la respuesta evaluada es una tríada mayor SOBRE {root}. Refleja el EN.
+      // chord_build — {key} es la tonalidad menor, {root} el propio napolitano (bII).
       promptTemplate:
-        'Construye una tríada mayor de {root}{accidental} (acorde napolitano).',
+        'Construye el acorde napolitano (bII) de {key} menor.',
       hintTemplate:
-        'El acorde napolitano es una tríada mayor construida sobre el 2.º grado rebajado. Construye una tríada mayor sobre {root}{accidental}.',
+        'El napolitano es la tríada mayor sobre el 2.º grado rebajado: en {key} menor es {root} mayor (fundamental, 3.ª mayor, 5.ª justa).',
     },
     {
       // multiple_choice
       promptTemplate:
-        '¿Cómo funciona y resuelve el acorde napolitano?',
+        '¿Cuál de estas afirmaciones sobre la función del acorde napolitano es verdadera?',
       hintTemplate:
         'El napolitano (bII o N6) es un acorde predominante que resuelve hacia V (frecuentemente vía 6/4 cadencial). Está casi siempre en primera inversión.',
       choiceSets: [
         [
-          'El napolitano es un acorde predominante que resuelve típicamente hacia V o hacia un 6/4 cadencial',
-          'El napolitano resuelve directamente hacia I',
-          'El napolitano funciona como acorde de dominante',
-          'El napolitano está siempre en posición fundamental',
+          'Es predominante: va hacia V, a menudo a través de un 6/4 cadencial',
+          'Es dominante: resuelve directamente hacia la tónica I',
+          'Es un sustituto de la tónica que cierra frases en lugar del acorde de tónica',
+          'Es un acorde de paso sin función armónica propia',
+        ],
+      ],
+    },
+    {
+      // multiple_choice
+      promptTemplate:
+        '¿Qué opción da el acorde napolitano (bII) correcto de la tonalidad menor que nombra?',
+      hintTemplate:
+        'El napolitano es la tríada mayor sobre el 2.º grado rebajado de la tonalidad menor: medio tono por encima de la tónica, escrito en la letra siguiente.',
+      choiceSets: [
+        [
+          'En C menor: Db mayor (Db-F-Ab)',
+          'En C menor: D mayor (D-F#-A)',
+          'En C menor: Eb mayor (Eb-G-Bb)',
+          'En C menor: B mayor (B-D#-F#)',
         ],
         [
-          'El acorde napolitano en C menor es Db mayor (Db–F–Ab)',
-          'El napolitano en C menor es D mayor',
-          'El napolitano en C menor es Eb mayor',
-          'El napolitano en C menor es B mayor',
+          'En A menor: Bb mayor (Bb-D-F)',
+          'En A menor: B mayor (B-D#-F#)',
+          'En A menor: Bb menor (Bb-Db-F)',
+          'En A menor: C mayor (C-E-G)',
+        ],
+        [
+          'En E menor: F mayor (F-A-C)',
+          'En E menor: F# mayor (F#-A#-C#)',
+          'En E menor: D mayor (D-F#-A)',
+          'En E menor: F menor (F-Ab-C)',
         ],
       ],
     },
@@ -48,33 +68,33 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Identifica el tipo y la estructura de este acorde de sexta aumentada.',
+        '¿Cuál de estas afirmaciones sobre las sextas aumentadas italiana y francesa es verdadera?',
       hintTemplate:
         'Sexta italiana: b6, 1, #4 (3 notas). Sexta francesa: b6, 1, 2, #4 (4 notas, incluye el 2.º grado). Ambas resuelven hacia V con las voces extremas expandiéndose hacia una octava.',
       choiceSets: [
         [
-          'La sexta italiana tiene 3 notas: b6, 1 y #4',
-          'La sexta italiana tiene 4 notas',
-          'La sexta italiana contiene el 2.º grado',
-          'La sexta italiana contiene el 3.er grado',
+          'La sexta italiana tiene tres notas: b6, 1 y #4',
+          'La sexta italiana tiene cuatro notas: b6, 1, 2 y #4',
+          'La sexta italiana tiene tres notas: 6, 1 y #4',
+          'La sexta italiana tiene tres notas: b6, 1 y 5',
         ],
         [
-          'La sexta francesa añade el 2.º grado a la sexta italiana',
-          'La sexta francesa añade el 3.er grado',
-          'La sexta francesa tiene solo 2 notas',
-          'La francesa es idéntica a la italiana',
+          'La sexta francesa añade el grado 2 a la sexta italiana',
+          'La sexta francesa añade el grado b3 a la sexta italiana',
+          'La sexta francesa añade el grado 5 a la sexta italiana',
+          'La sexta francesa quita el #4 de la sexta italiana',
         ],
         [
-          'Los acordes de sexta aumentada resuelven divergentemente hacia una octava sobre la dominante',
-          'Los acordes de sexta aumentada resuelven convergentemente hacia un unísono',
-          'Los acordes de sexta aumentada resuelven hacia la tónica',
-          'Los acordes de sexta aumentada no resuelven',
+          'Resuelven divergentemente hacia una octava sobre la dominante',
+          'Resuelven convergentemente hacia un unísono sobre la tónica',
+          'Resuelven divergentemente hacia una octava sobre la tónica',
+          'Resuelven convergentemente hacia una tercera sobre la subdominante',
         ],
         [
-          'El intervalo entre b6 y #4 es una sexta aumentada (10 semitonos), que resuelve hacia P8',
-          'El intervalo de sexta aumentada es de 8 semitonos',
-          'La sexta aumentada resuelve hacia P5',
-          'El intervalo de sexta aumentada es de 6 semitonos',
+          'De b6 a #4 hay una 6.ª aumentada (10 semitonos) que se expande hacia una octava',
+          'De b6 a #4 hay una 6.ª menor (8 semitonos) que se contrae hasta formar una 5.ª justa',
+          'De b6 a #4 hay una 6.ª mayor (9 semitonos) que se expande hacia una octava',
+          'De b6 a #4 hay un tritono (6 semitonos) que se contrae hacia una 3.ª mayor',
         ],
       ],
     },
@@ -85,37 +105,37 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Analiza el acorde de sexta alemana y su resolución.',
+        '¿Cuál de estas afirmaciones sobre el acorde de sexta aumentada alemana es verdadera?',
       hintTemplate:
         'Sexta alemana: b6, 1, b3, #4 (4 notas, incluye la 3.ª menor). Resuelve hacia un 6/4 cadencial para evitar quintas paralelas, y después hacia V.',
       choiceSets: [
         [
           'La sexta alemana contiene b6, 1, b3 y #4',
           'La sexta alemana contiene b6, 1, 2 y #4',
-          'La sexta alemana tiene solo 3 notas',
-          'La sexta alemana contiene el 5.º grado',
+          'La sexta alemana contiene b6, b2, b3 y #4',
+          'La sexta alemana contiene 6, 1, b3 y #4',
         ],
         [
-          'La sexta alemana resuelve hacia un 6/4 cadencial para evitar quintas paralelas con V',
-          'La sexta alemana resuelve directamente hacia V en posición fundamental',
-          'La sexta alemana resuelve hacia I',
-          'Las quintas paralelas son aceptables con la sexta alemana',
+          'Suele pasar primero por un 6/4 cadencial, evitando quintas paralelas con V',
+          'Suele ir directamente a V en posición fundamental, y así evita las quintas paralelas',
+          'Suele pasar primero por un 6/4 cadencial, evitando octavas paralelas con I',
+          'Suele resolver directamente hacia la tónica I, saltándose la dominante',
         ],
         [
-          'La sexta alemana es enarmónicamente equivalente a un acorde de séptima de dominante',
-          'La sexta alemana es enarmónicamente equivalente a una séptima menor',
-          'La sexta alemana no tiene equivalente enarmónico',
-          'La sexta alemana es equivalente a una séptima mayor',
+          'Es enarmónicamente equivalente a una séptima de dominante',
+          'Es enarmónicamente equivalente a un acorde de séptima menor',
+          'Es enarmónicamente equivalente a un acorde de séptima disminuida',
+          'Es enarmónicamente equivalente a un acorde de séptima mayor',
         ],
       ],
     },
     {
-      // chord_build — {root} es la fundamental del dom7 enarmónico, no la
-      // tonalidad: la respuesta evaluada es una séptima de dominante SOBRE {root}. Refleja el EN.
+      // chord_build — {key} es la tonalidad menor; {root} es b6, la fundamental
+      // de la séptima de dominante enarmónica (se evalúa por clase de altura).
       promptTemplate:
-        'Construye un acorde de séptima de dominante de {root}{accidental} (sexta alemana enarmónica).',
+        'Construye el acorde de sexta aumentada alemana de {key} menor.',
       hintTemplate:
-        'La sexta alemana es enarmónicamente equivalente a un acorde de séptima de dominante. Construye una séptima de dominante sobre {root}{accidental}: fundamental + 3.ª mayor + 5.ª justa + 7.ª menor.',
+        'En {key} menor, la sexta alemana es b6–1–b3–#4, construida sobre {root} (en C menor: Ab–C–Eb–F#). Suena exactamente como {root}7, pero su nota superior se escribe como 6.ª aumentada sobre {root}, no como 7.ª menor.',
     },
   ],
 
@@ -124,27 +144,36 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        '¿Cómo permite la reinterpretación enarmónica de la sexta alemana la modulación?',
+        '¿Cuál de estas afirmaciones sobre modular a través del pivote sexta alemana / V7 es verdadera?',
       hintTemplate:
         'La sexta alemana es enarmónicamente idéntica a un acorde de séptima de dominante. Reescribirla permite una modulación súbita a una tonalidad remota: Gr+6 en una tonalidad = V7 en otra.',
       choiceSets: [
         [
-          'La sexta alemana en C menor (Ab–C–Eb–F#) puede reescribirse como Ab7 (Ab–C–Eb–Gb), resolviendo hacia Db',
-          'La sexta alemana no puede reinterpretarse como séptima de dominante',
-          'La reinterpretación enarmónica solo funciona con la sexta italiana',
-          'El acorde reescrito resuelve hacia la misma tonalidad',
+          'La sexta alemana de C menor (Ab-C-Eb-F#), reescrita como Ab7 (Ab-C-Eb-Gb), lleva a Db',
+          'La sexta alemana de C menor (Ab-C-Eb-F#), reescrita como Ab7 (Ab-C-Eb-Gb), lleva a Eb',
+          'La sexta alemana de C menor (Ab-C-Eb-F#) nunca puede reescribirse como séptima de dominante',
+          'Solo la sexta italiana de C menor (Ab-C-F#) puede reescribirse como séptima de dominante',
         ],
         [
-          'Este pivote enarmónico permite modulación hacia tonalidades medio tono por encima o por debajo de la tónica',
-          'Esta técnica solo modula entre tonalidades paralelas',
-          'Esta técnica se limita a tonalidades cercanas',
-          'Este tipo de modulación nunca se usó históricamente',
+          'El pivote alcanza tonalidades medio tono por encima o por debajo de la tónica',
+          'El pivote alcanza solo tonalidades una 5.ª justa por encima o por debajo de la tónica',
+          'El pivote alcanza solo el modo mayor o menor paralelo de la tónica',
+          'El pivote alcanza solo tonalidades un tono por encima o por debajo de la tónica',
         ],
+      ],
+    },
+    {
+      // multiple_choice
+      promptTemplate:
+        '¿Cuál de estas afirmaciones sobre la historia de la modulación enarmónica con la sexta alemana es verdadera?',
+      hintTemplate:
+        'Desde Mozart y Schubert, los compositores usaron la doble identidad de la sexta alemana (y de la séptima de dominante) para saltar a tonalidades remotas; se convirtió en un sello de la armonía romántica.',
+      choiceSets: [
         [
-          'La ambigüedad enarmónica de la sexta alemana fue ampliamente explotada por los compositores románticos',
-          'Esta técnica se usó solo en la era barroca',
-          'Los compositores clásicos nunca usaron modulación enarmónica',
-          'Esta técnica fue inventada en el siglo XX',
+          'Los compositores románticos explotaron ampliamente la doble identidad de la sexta alemana',
+          'Solo los compositores barrocos usaron la doble identidad de la sexta alemana',
+          'La inventaron los compositores de música atonal del siglo XX',
+          'Los compositores clásicos y románticos evitaron por completo cualquier modulación enarmónica',
         ],
       ],
     },
@@ -159,27 +188,27 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        '¿Cómo permite el acorde de séptima disminuida la modulación enarmónica?',
+        '¿Cuál de estas afirmaciones sobre la modulación enarmónica con el acorde de séptima disminuida es verdadera?',
       hintTemplate:
         'Un acorde dim7 divide la octava en terceras menores iguales. Cualquiera de sus 4 notas puede reescribirse como fundamental, haciéndolo resolver hacia 4 tonalidades diferentes.',
       choiceSets: [
         [
-          'Cualquier nota de un acorde dim7 puede funcionar como sensible para una tonalidad diferente',
-          'Un acorde dim7 solo puede resolver hacia una tonalidad',
-          'Los acordes dim7 no pueden reescribirse',
-          'Solo la fundamental de un dim7 puede funcionar como sensible',
+          'Cualquier nota de un acorde dim7 puede actuar como sensible de una nueva tonalidad',
+          'Solo la fundamental escrita de un acorde dim7 puede actuar como sensible',
+          'Un acorde dim7 solo lleva a una tonalidad: medio tono por encima de su fundamental',
+          'Un acorde dim7 no puede reescribirse sin cambiar cómo suena',
         ],
         [
-          'Existen solo 3 acordes de séptima disminuida distintos (enarmónicamente), cubriendo las 12 tonalidades',
-          'Existen 12 acordes de séptima disminuida distintos',
-          'Existen 6 acordes de séptima disminuida distintos',
-          'Cada tonalidad tiene su séptima disminuida única',
+          'Solo hay 3 acordes dim7 distintos; juntos cubren las 12 tonalidades',
+          'Hay 12 acordes dim7 distintos, uno construido sobre cada una de las 12 notas',
+          'Hay 6 acordes dim7 distintos, uno sobre cada nota de una escala de tonos enteros',
+          'Hay 4 acordes dim7 distintos, uno por cada 3.ª menor de la octava',
         ],
         [
-          'B°7 (B–D–F–Ab) puede resolver hacia C, Eb, Gb o A dependiendo de la escritura enarmónica',
-          'B°7 solo puede resolver hacia C',
-          'B°7 tiene 2 resoluciones posibles',
-          'B°7 resuelve solo hacia B mayor',
+          'B°7 (B-D-F-Ab) puede resolver hacia C, Eb, Gb o A, según su escritura',
+          'B°7 (B-D-F-Ab) puede resolver hacia C, D, E o F, según su escritura',
+          'B°7 (B-D-F-Ab) solo puede resolver hacia C, porque B es su fundamental escrita',
+          'B°7 (B-D-F-Ab) solo puede resolver hacia las notas que ya contiene',
         ],
       ],
     },
@@ -190,77 +219,145 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Explica la función de un acorde de séptima disminuida con nota común.',
+        '¿Cuál de estas afirmaciones sobre el acorde de séptima disminuida con nota común es verdadera?',
       hintTemplate:
-        'Un CTo7 comparte una nota común con el acorde que embellece. Decora (en vez de dirigirse armónicamente hacia) un acorde mayor o de séptima de dominante.',
+        'Un CT°7 comparte una nota común con el acorde que embellece. Decora (en vez de dirigirse armónicamente hacia) un acorde mayor o de séptima de dominante.',
       choiceSets: [
         [
-          'El CTo7 comparte una nota común (generalmente la fundamental) con el acorde que embellece',
-          'El CTo7 no tiene notas en común con el acorde siguiente',
-          'El CTo7 funciona como acorde de dominante',
-          'El CTo7 es lo mismo que un acorde disminuido secundario',
+          'El CT°7 comparte una nota, normalmente la fundamental, con el acorde que embellece',
+          'El CT°7 no comparte ninguna nota con el acorde que embellece',
+          'El CT°7 comparte siempre dos notas, la 3.ª y la 5.ª, con el acorde que él embellece',
+          'El CT°7 es un acorde de dominante que resuelve hacia su propia tónica',
         ],
         [
-          'El CTo7 embellece un acorde a través de movimiento de notas vecinas en tres voces',
-          'El CTo7 crea una modulación',
-          'El CTo7 es siempre un acorde de paso',
-          'El CTo7 sustituye la función dominante',
+          'Embellece un acorde: una voz se mantiene mientras tres voces se mueven por grado conjunto',
+          'Embellece un acorde: las cuatro voces se mueven por grado conjunto y ninguna de ellas se mantiene',
+          'Modula: las cuatro voces saltan a un acorde de una nueva tonalidad',
+          'Sustituye a la dominante: su fundamental resuelve medio tono arriba hacia la tónica',
         ],
       ],
     },
   ],
 
-  // ---- l6u19m3: Mediantes Cromáticas / Progresión Omnibus ----
+  // ---- l6u19m3: Mediantes Cromáticas y Dominantes Alteradas (incluido el omnibus) ----
   l6u19m3: [
     {
       // multiple_choice
       promptTemplate:
-        'Describe la progresión omnibus y sus características de conducción de voces.',
+        '¿Cuál de estas afirmaciones sobre la progresión omnibus es verdadera?',
       hintTemplate:
         'El omnibus es un patrón cromático de intercambio de voces donde dos voces se mueven en movimiento contrario cromático mientras otras voces sostienen notas comunes.',
       choiceSets: [
         [
-          'El omnibus presenta movimiento cromático contrario en las voces extremas con notas comunes en las voces interiores',
-          'El omnibus usa solo movimiento paralelo',
-          'El omnibus no tiene movimiento cromático',
-          'El omnibus es una simple progresión I–IV–V–I',
+          'Dos voces se mueven cromáticamente por movimiento contrario mientras las otras se mantienen',
+          'Todas las voces se mueven por movimiento cromático paralelo, sin ninguna nota común entre los acordes',
+          'Dos voces se mueven por quintas paralelas mientras las otras saltan',
+          'Una voz se mueve cromáticamente mientras todas las demás saltan',
         ],
         [
-          'El omnibus puede prolongar una armonía de dominante a través de intercambio cromático de voces',
-          'El omnibus crea siempre una modulación',
-          'El omnibus solo prolonga la armonía de tónica',
-          'El omnibus nunca fue usado por ningún compositor importante',
+          'Puede prolongar una armonía de dominante mediante intercambio cromático de voces',
+          'Siempre modula a una tonalidad muy lejana mediante intercambio cromático de voces',
+          'Solo puede prolongar la armonía de tónica, nunca la armonía de dominante',
+          'Sustituye la cadencia final de una frase por una cadencia plagal',
         ],
       ],
     },
-  ],
-
-  // ---- l6u19m4: Mediantes Cromáticas / Técnicas Tardorrománticas ----
-  l6u19m4: [
     {
       // multiple_choice
       promptTemplate:
-        'Identifica la relación de mediante cromática descrita.',
+        '¿Cuál de estas afirmaciones sobre las mediantes cromáticas es verdadera?',
       hintTemplate:
         'Las mediantes cromáticas son acordes relacionados por una 3.ª mayor o menor con fundamentales que difieren cromáticamente (p. ej., C mayor a E mayor o Ab mayor). Comparten una nota común.',
       choiceSets: [
         [
-          'C mayor a E mayor es una mediante cromática: fundamentales a una 3.ªM de distancia, compartiendo una nota común (E)',
-          'C mayor a G mayor es una mediante cromática',
-          'C mayor a F mayor es una mediante cromática',
-          'Las mediantes cromáticas no comparten notas comunes',
+          'C mayor → E mayor es mediante cromática: fundamentales a una 3.ª mayor, una nota común (E)',
+          'C mayor → G mayor es mediante cromática: fundamentales a una 5.ª, una nota común (G)',
+          'C mayor → F mayor es mediante cromática: fundamentales a una 4.ª, una nota común (C)',
+          'C mayor → A menor es mediante cromática: fundamentales a una 3.ª menor, dos notas comunes (C, E)',
         ],
         [
-          'Las mediantes cromáticas producen un cambio de color impactante porque alteran el modo al moverse por 3.ª',
-          'Las mediantes cromáticas suenan siempre sutiles y suaves',
-          'Las mediantes cromáticas son lo mismo que las mediantes diatónicas',
-          'Las mediantes cromáticas se limitan a piezas en modo mayor',
+          'Las mediantes cromáticas se mueven por 3.ª y alteran cromáticamente al menos una nota',
+          'Las mediantes cromáticas se mueven por 3.ª y mantienen todas las notas dentro de la tonalidad',
+          'Las mediantes cromáticas se mueven por 5.ª y no alteran ninguna nota de la tonalidad',
+          'Las mediantes cromáticas se mueven por grado conjunto y comparten sus tres notas',
         ],
         [
-          'C mayor a Ab mayor es una mediante cromática: fundamentales a una 3.ªM de distancia, compartiendo una nota común (C)',
-          'C a Ab es una relación de dominante',
-          'Esta relación no tiene notas comunes',
-          'C a Ab es una relación de subdominante',
+          'Ab mayor es mediante cromática de C mayor: fundamentales a una 3.ª mayor, una nota común (C)',
+          'Ab mayor es mediante cromática de C mayor: fundamentales a una 3.ª menor, dos notas comunes (C, Eb)',
+          'Ab mayor es la dominante de C mayor: fundamentales a una 5.ª, dos notas comunes (C, G)',
+          'Ab mayor es la subdominante de C mayor: fundamentales a una 4.ª, una nota común (C)',
+        ],
+      ],
+    },
+    {
+      // chord_build
+      promptTemplate:
+        'Construye V+, la dominante alterada de {key} mayor (V con la 5.ª aumentada).',
+      hintTemplate:
+        'El V+ es la tríada de dominante con la 5.ª elevada medio tono: sobre {root} es fundamental, 3.ª mayor, 5.ª aumentada. La 5.ª elevada sube hacia la 3.ª de {key}.',
+    },
+  ],
+
+  // ---- l6u19m4: Técnicas Armónicas del Romanticismo Tardío ----
+  l6u19m4: [
+    {
+      // scale_build
+      promptTemplate:
+        'Construye la escala {scaleType} de {root}, que divide la octava en seis tonos iguales.',
+      hintTemplate:
+        'La escala de tonos enteros divide la octava en 6 tonos iguales: desde {root}, suma 2 semitonos cinco veces. Sin semitonos no hay sensible, así que ninguna nota suena como reposo.',
+    },
+    {
+      // multiple_choice
+      promptTemplate:
+        '¿Cuál de estas afirmaciones sobre las divisiones iguales de la octava es verdadera?',
+      hintTemplate:
+        'Divisiones iguales: tritono (2 partes iguales, pasos de 6 semitonos), tríada aumentada (3 partes iguales, pasos de 4), séptima disminuida (4 partes iguales, pasos de 3), escala de tonos enteros (6 partes iguales, pasos de 2).',
+      choiceSets: [
+        [
+          'Una tríada aumentada divide la octava en 3 terceras mayores iguales',
+          'Una tríada aumentada divide la octava en 4 terceras menores iguales',
+          'Un acorde de séptima disminuida divide la octava en 3 terceras mayores iguales',
+          'Una tríada aumentada divide la octava en 2 tritonos iguales',
+        ],
+        [
+          'Solo hay 2 escalas de tonos enteros, cada una con 6 de las 12 notas',
+          'Hay 12 escalas de tonos enteros, una que empieza en cada una de las 12 notas',
+          'Solo hay 1 escala de tonos enteros, y contiene las 12 notas',
+          'Hay 6 escalas de tonos enteros, una por cada una de sus 6 notas',
+        ],
+        [
+          'Un acorde de séptima disminuida divide la octava en 4 terceras menores iguales',
+          'Un acorde de séptima disminuida divide la octava en 6 tonos iguales',
+          'Un acorde de séptima disminuida divide la octava en 2 quintas justas exactamente iguales',
+          'Un acorde de séptima disminuida no divide la octava en partes iguales',
+        ],
+      ],
+    },
+    {
+      // multiple_choice
+      promptTemplate:
+        '¿Cuál de estas afirmaciones sobre la armonía no funcional del Romanticismo tardío es verdadera?',
+      hintTemplate:
+        'En el Romanticismo tardío, los acordes se enlazan a menudo por cercanía en la conducción de voces, notas comunes o color, en lugar de por la función tónica–dominante; el planing mueve la forma de un acorde en paralelo.',
+      choiceSets: [
+        [
+          'Los acordes pueden enlazarse por conducción de voces por semitono en lugar de por función',
+          'Los acordes solo pueden enlazarse por movimiento de fundamental de 5.ª, como en la armonía funcional',
+          'Los acordes se enlazan con grandes saltos en todas las voces para evitar notas comunes',
+          'Toda sucesión no funcional debe terminar en una cadencia V–I',
+        ],
+        [
+          'El planing cromático mueve la forma de un acorde en paralelo, manteniendo su cualidad exacta',
+          'El planing cromático mueve la forma de un acorde en paralelo, ajustándola en cada paso a la tonalidad',
+          'El planing cromático mueve todas las voces por movimiento contrario hacia la tónica',
+          'El planing cromático mantiene un acorde y solo cambia la nota del bajo',
+        ],
+        [
+          'La tonalidad ampliada debilita el centro tonal con tonalidades remotas y cromatismo',
+          'La tonalidad ampliada refuerza el centro tonal repitiendo cadencias V–I',
+          'La tonalidad ampliada usa solo las siete notas de una tonalidad de principio a fin',
+          'La tonalidad ampliada es otro nombre para las reglas estrictas del contrapunto de especies',
         ],
       ],
     },
@@ -270,120 +367,281 @@ const overlay: TemplateLevelOverlay = {
   // Unidad 20: Contrapunto y Escritura a Partes
   // =========================================================================
 
-  // ---- l6u20m1: Conducción Cromática de Voces ----
+  // ---- l6u20m1: Contrapunto de Especies — Primera a Tercera Especie ----
   l6u20m1: [
     {
       // multiple_choice
       promptTemplate:
-        'Analiza esta técnica de conducción cromática de voces.',
+        '¿Cuál de estas afirmaciones sobre el cantus firmus y la primera especie (1:1) es verdadera?',
       hintTemplate:
-        'La conducción cromática de voces enlaza acordes a través de movimiento por medio tono. Crea conexiones suaves entre armonías de otro modo distantes.',
+        'Cantus firmus: 8–12 redondas, de tónica a tónica, sobre todo por grado conjunto, un solo punto culminante. Primera especie: solo consonancias (P1, 3.as, P5, 6.as, P8); empieza en P1, P5 o P8; termina en P1 o P8 alcanzado por grado conjunto.',
       choiceSets: [
         [
-          'La conducción cromática de voces usa enlaces por medio tono para crear movimiento suave entre acordes distantes',
-          'La conducción cromática de voces usa siempre tonos enteros',
-          'La conducción cromática de voces es lo mismo que la conducción diatónica',
-          'La conducción cromática de voces ignora la cualidad de los acordes',
+          'Un cantus firmus empieza y termina en la tónica y se mueve sobre todo por grado conjunto',
+          'Un cantus firmus empieza en la dominante y se mueve sobre todo por salto',
+          'Un cantus firmus mezcla libremente redondas, blancas y negras',
+          'Un cantus firmus repite notas muy a menudo y tiene varios puntos culminantes diferentes entre sí',
         ],
         [
-          'La conducción parsimoniosa de voces mueve el mínimo de voces por los menores intervalos',
-          'La conducción parsimoniosa requiere que todas las voces se muevan',
-          'Parsimonioso significa moverse por saltos grandes',
-          'Este concepto nunca fue estudiado teóricamente',
+          'La primera especie usa solo consonancias: unísonos, 3.as, 5.as, 6.as y octavas',
+          'La primera especie usa solo consonancias perfectas: unísonos, 4.as, 5.as y octavas',
+          'La primera especie permite una disonancia de paso en cada segunda nota',
+          'La primera especie usa solo 3.as y 6.as, nunca un unísono, una 5.ª ni una octava',
+        ],
+        [
+          'Empieza en un unísono, 5.ª u octava y termina en un unísono u octava',
+          'Empieza en una 3.ª o 6.ª y termina en una 5.ª alcanzada por salto',
+          'Empieza y termina en una 3.ª, la más dulce de las consonancias',
+          'Puede terminar en cualquier consonancia, alcanzada por grado conjunto o por salto',
         ],
       ],
     },
-  ],
-
-  // ---- l6u20m2: División Igual de la Octava ----
-  l6u20m2: [
     {
-      // scale_build
+      // multiple_choice — Fux: solo notas de paso en la segunda especie (decisión D-14)
       promptTemplate:
-        'Construye la escala {scaleType} de {root}, que divide la octava en intervalos iguales.',
+        '¿Cuál de estas afirmaciones sobre el contrapunto de segunda especie (2:1) es verdadera?',
       hintTemplate:
-        'La escala de tonos enteros divide la octava en 6 tonos iguales. La escala cromática la divide en 12 medios tonos iguales. Estas divisiones simétricas crean tonalidad ambigua.',
+        'Segunda especie: dos notas contra cada nota del cantus. El tiempo fuerte es consonante; el tiempo débil puede ser consonante o una nota de paso disonante, alcanzada y abandonada por grado conjunto en la misma dirección.',
+      choiceSets: [
+        [
+          'Una disonancia en tiempo débil debe ser nota de paso, entrando y saliendo por grado conjunto',
+          'Una disonancia en tiempo débil puede ser nota de paso o bordadura',
+          'Una disonancia en tiempo fuerte se permite siempre que después resuelva bajando por grado conjunto',
+          'Una disonancia en tiempo débil puede alcanzarse o abandonarse por salto de 3.ª',
+        ],
+        [
+          'Cada tiempo fuerte debe ser consonante con el cantus firmus',
+          'Cada tiempo débil debe ser disonante con el cantus firmus',
+          'Los tiempos fuertes pueden ser disonantes si el tiempo débil siguiente es consonante',
+          'Cada tiempo fuerte debe formar un unísono con el cantus firmus',
+        ],
+      ],
     },
     {
       // multiple_choice
       promptTemplate:
-        'Identifica la división simétrica de la octava descrita.',
+        '¿Cuál de estas afirmaciones sobre el contrapunto de tercera especie (4:1) es verdadera?',
       hintTemplate:
-        'Divisiones iguales: tritono (2 partes iguales, pasos de 6 semitonos), tríada aumentada (3 partes iguales, pasos de 4), séptima disminuida (4 partes iguales, pasos de 3), escala de tonos enteros (6 partes iguales, pasos de 2).',
+        'Tercera especie: cuatro notas contra cada nota del cantus. La primera es consonante; las demás pueden ser notas de paso, bordaduras, una cambiata (grado conjunto a la disonancia, salto de 3.ª, grado conjunto de vuelta) o una bordadura doble.',
       choiceSets: [
         [
-          'Una tríada aumentada divide la octava en 3 terceras mayores iguales',
-          'Una tríada aumentada divide la octava en 4 partes iguales',
-          'Una tríada aumentada divide la octava en 2 partes iguales',
-          'Una tríada aumentada no divide la octava igualmente',
+          'La primera de cada cuatro notas es consonante; las demás pueden ser notas de paso o bordaduras',
+          'Las cuatro notas contra cada nota del cantus deben ser todas consonantes con ella',
+          'La primera de cada cuatro notas puede ser disonante siempre que las otras tres sean todas consonantes',
+          'Solo la última de cada cuatro notas tiene que ser consonante con la nota del cantus',
         ],
         [
-          'Existen solo 2 escalas de tonos enteros, cada una conteniendo 6 de las 12 alturas cromáticas',
-          'Existen 12 escalas de tonos enteros',
-          'Existe solo 1 escala de tonos enteros',
-          'Existen 6 escalas de tonos enteros',
+          'La cambiata va por grado conjunto a una disonancia, salta una 3.ª y vuelve por grado conjunto',
+          'La cambiata salta a una disonancia y después la resuelve bajando por grado conjunto',
+          'La cambiata liga una disonancia por encima de la barra de compás hasta el tiempo fuerte del compás siguiente',
+          'La cambiata va por grado conjunto a una disonancia y sigue en la misma dirección',
+        ],
+        [
+          'Una bordadura doble adorna una nota con la bordadura superior y la inferior, una tras otra',
+          'Una bordadura doble son dos notas de paso que se mueven en la misma dirección',
+          'Una bordadura doble hace sonar dos disonancias a la vez, en dos voces diferentes de la textura',
+          'Una bordadura doble repite la misma nota dos veces en los tiempos fuertes',
         ],
       ],
     },
   ],
 
-  // ---- l6u20m3: Contrapunto Invertible Avanzado ----
+  // ---- l6u20m2: Contrapunto de Especies — Cuarta y Quinta Especie ----
+  l6u20m2: [
+    {
+      // multiple_choice
+      promptTemplate:
+        '¿Cuál de estas afirmaciones sobre el contrapunto de cuarta especie (sincopado) es verdadera?',
+      hintTemplate:
+        'La cuarta especie liga una nota de un tiempo débil por encima de la barra de compás. Si la nota ligada es disonante en el tiempo fuerte, es una suspensión: preparada como consonancia, resuelta bajando por grado conjunto. Por encima del cantus: 7-6, 4-3, 9-8; por debajo: 2-3.',
+      choiceSets: [
+        [
+          'Una nota se liga desde un tiempo débil, a través de la barra, hasta el siguiente tiempo fuerte',
+          'Una nota se liga desde un tiempo fuerte hasta el tiempo débil del mismo compás',
+          'Cada nota se ataca en el tiempo fuerte y se deja en el tiempo débil',
+          'No se usa ninguna ligadura; la línea se sincopa con silencios colocados en cada tiempo fuerte del compás',
+        ],
+        [
+          'Una suspensión se prepara como consonancia y resuelve bajando por grado conjunto',
+          'Una suspensión se prepara como disonancia y resuelve subiendo por grado conjunto',
+          'Una suspensión se prepara como consonancia y resuelve subiendo por grado conjunto',
+          'Una suspensión no necesita preparación y resuelve bajando por salto',
+        ],
+        [
+          'Por encima del cantus, las suspensiones disonantes son 7-6, 4-3 y 9-8; por debajo, 2-3',
+          'Por encima del cantus, las suspensiones disonantes son 6-5, 3-2 y 8-7; por debajo, 4-5',
+          'Por encima del cantus, la única suspensión disonante es 2-3; por debajo, 7-6 y 4-3',
+          'Por encima o por debajo del cantus, la única suspensión disonante permitida es 4-3',
+        ],
+      ],
+    },
+    {
+      // multiple_choice
+      promptTemplate:
+        '¿Cuál de estas afirmaciones sobre las cadenas de suspensiones y la quinta especie (florida) es verdadera?',
+      hintTemplate:
+        'En una cadena, cada resolución queda ligada y se convierte en la suspensión siguiente. La quinta especie (contrapunto florido) mezcla en una sola línea los valores de las cuatro primeras especies, cada uno con sus reglas.',
+      choiceSets: [
+        [
+          'En una cadena, cada resolución queda ligada para preparar la suspensión siguiente',
+          'En una cadena, cada suspensión resuelve subiendo por grado conjunto para preparar la siguiente',
+          'En una cadena, cada suspensión va seguida de un salto consonante de 5.ª',
+          'En una cadena, las suspensiones tienen que alternar entre las dos voces',
+        ],
+        [
+          'La quinta especie combina libremente los valores de las cuatro primeras especies',
+          'La quinta especie usa cinco notas contra cada nota del cantus firmus',
+          'La quinta especie es contrapunto escrito para cinco voces independientes',
+          'La quinta especie abandona todas las reglas de disonancia de las especies anteriores',
+        ],
+        [
+          'El contrapunto florido mantiene las reglas de cada especie anterior para sus valores',
+          'El contrapunto florido ignora las reglas de disonancia para que la línea se mueva libremente',
+          'El contrapunto florido solo permite redondas contra el cantus firmus',
+          'El contrapunto florido prohíbe las ligaduras, así que las suspensiones desaparecen',
+        ],
+      ],
+    },
+  ],
+
+  // ---- l6u20m3: Contrapunto a Tres Partes y Contrapunto Invertible ----
   l6u20m3: [
     {
       // multiple_choice
       promptTemplate:
-        'Responde a esta pregunta sobre contrapunto invertible (doble).',
+        '¿Cuál de estas afirmaciones sobre el contrapunto invertible (doble) es verdadera?',
       hintTemplate:
-        'El contrapunto invertible permite que dos voces intercambien posición (la superior se convierte en inferior y viceversa). A la octava: terceras se convierten en sextas, quintas se convierten en cuartas, etc.',
+        'El contrapunto invertible permite que dos voces intercambien su lugar. A la octava, un intervalo n se convierte en 9 − n (3.ª → 6.ª, 5.ª → 4.ª); a la décima, 11 − n (3.ª → octava, 6.ª → 5.ª); a la duodécima, 13 − n (5.ª → octava).',
       choiceSets: [
         [
-          'En el contrapunto invertible a la octava, una tercera se convierte en una sexta cuando las voces se intercambian',
-          'Una tercera sigue siendo tercera cuando las voces se intercambian',
-          'Una tercera se convierte en una quinta cuando las voces se intercambian',
-          'Los intervalos no cambian cuando las voces se intercambian',
+          'A la octava, una 3.ª se convierte en 6.ª cuando las voces se intercambian',
+          'A la octava, una 3.ª sigue siendo 3.ª cuando las voces se intercambian',
+          'A la octava, una 3.ª se convierte en 5.ª cuando las voces se intercambian',
+          'A la octava, una 3.ª se convierte en 7.ª cuando las voces se intercambian',
         ],
         [
-          'Las quintas perfectas deben evitarse en el contrapunto invertible a la octava porque se convierten en cuartas',
-          'Las quintas perfectas son los mejores intervalos para el contrapunto invertible',
-          'Las quintas siguen siendo quintas cuando se invierten a la octava',
-          'No hay restricciones de intervalos en el contrapunto invertible',
+          'A la octava, se evitan las 5.as porque se convierten en 4.as disonantes',
+          'A la octava, se evitan las 3.as porque se convierten en 6.as disonantes',
+          'A la octava, se prefieren las 5.as porque siguen siendo 5.as justas',
+          'A la octava, se evitan las 6.as porque se convierten en 2.as disonantes',
         ],
         [
-          'Contrapunto invertible a la décima: una tercera se convierte en octava, una sexta se convierte en quinta',
-          'A la décima, todos los intervalos permanecen inalterados',
-          'El contrapunto invertible solo funciona a la octava',
-          'A la décima, una tercera se convierte en quinta',
+          'A la décima, una 3.ª se convierte en octava y una 6.ª se convierte en 5.ª',
+          'A la décima, una 3.ª se convierte en 6.ª y una 6.ª se convierte en 3.ª',
+          'A la décima, una 3.ª se convierte en 5.ª y una 6.ª se convierte en octava',
+          'A la décima, todos los intervalos mantienen exactamente el mismo tamaño',
+        ],
+        [
+          'A la duodécima, una 5.ª se convierte en octava cuando las voces se intercambian',
+          'A la duodécima, una 5.ª se convierte en 4.ª cuando las voces se intercambian',
+          'A la duodécima, una 5.ª se convierte en 6.ª cuando las voces se intercambian',
+          'A la duodécima, una 3.ª se convierte en 6.ª siempre que las dos voces se intercambian',
+        ],
+      ],
+    },
+    {
+      // multiple_choice
+      promptTemplate:
+        '¿Cuál de estas afirmaciones sobre el contrapunto triple es verdadera?',
+      hintTemplate:
+        'Contrapunto triple: tres voces que funcionan en las seis disposiciones verticales (ABC, ACB, BAC, BCA, CAB, CBA), así que cada par de voces debe ser invertible.',
+      choiceSets: [
+        [
+          'Sus tres voces funcionan en las 6 disposiciones verticales posibles',
+          'Sus tres voces funcionan en solo 3 disposiciones verticales posibles',
+          'Sus tres voces funcionan en las 9 disposiciones verticales posibles',
+          'Sus tres voces funcionan en las 12 disposiciones verticales posibles',
+        ],
+        [
+          'Cada par de sus voces debe funcionar como contrapunto invertible',
+          'Solo sus dos voces extremas tienen que funcionar como contrapunto invertible',
+          'Sus voces pueden moverse por 5.as paralelas, ya que se van a reordenar',
+          'Solo su voz superior puede moverse; las dos voces inferiores quedan fijas',
         ],
       ],
     },
   ],
 
-  // ---- l6u20m4: Contrapunto Triple y Cuádruple ----
+  // ---- l6u20m4: Escritura a Partes Avanzada y Lectura de Partitura ----
   l6u20m4: [
     {
       // multiple_choice
       promptTemplate:
-        'Responde a esta pregunta sobre contrapunto triple y cuádruple.',
+        '¿Cuál de estas afirmaciones sobre armonizar una melodía de soprano a cuatro voces (SATB) es verdadera?',
       hintTemplate:
-        'Contrapunto triple: 3 voces que pueden aparecer en cualquier permutación (6 disposiciones). Cuádruple: 4 voces, 24 disposiciones posibles. Bach fue el maestro supremo.',
+        'Para armonizar un soprano: encuentra la tonalidad y los puntos de cadencia, elige una línea de bajo y acordes que lleven a ellos, completa contralto y tenor por el camino más corto y revisa paralelas, espaciado y duplicaciones.',
       choiceSets: [
         [
-          'El contrapunto triple permite que 3 voces se reorganicen en cualquiera de las 6 permutaciones',
-          'El contrapunto triple tiene solo 3 disposiciones posibles',
-          'El contrapunto triple significa 3 fugas separadas',
-          'El contrapunto triple tiene 12 permutaciones',
+          'Primero encuentra los puntos de cadencia y después elige un bajo y acordes que lleven a ellos',
+          'Primero escribe el contralto y el tenor y después encaja el bajo y el soprano alrededor de ellos',
+          'Primero elige un acorde cualquiera para cada nota y corrige las cadencias al final',
+          'Armoniza desde la primera nota en adelante e ignora dónde caen las cadencias',
         ],
         [
-          'El contrapunto cuádruple con 4 voces produce 24 disposiciones posibles',
-          'El contrapunto cuádruple tiene 4 disposiciones',
-          'El contrapunto cuádruple tiene 12 disposiciones',
-          'El contrapunto cuádruple es imposible de escribir',
+          'Al final, revisa quintas y octavas paralelas, espaciado y errores de duplicación',
+          'Al final, añade quintas y octavas paralelas entre las voces extremas para dar fuerza',
+          'Al final, duplica la sensible en todos los acordes de dominante para un sonido más lleno',
+          'Al final, cruza el contralto y el tenor para que cada voz interior tenga más espacio',
+        ],
+      ],
+    },
+    {
+      // multiple_choice
+      promptTemplate:
+        '¿Cuál de estas afirmaciones sobre la realización del bajo cifrado es verdadera?',
+      hintTemplate:
+        'Bajo cifrado: sin cifra = posición fundamental (5/3), 6 = primera inversión, 6/4 = segunda inversión, 7 = séptima en posición fundamental, 6/5 = primera inversión, 4/3 = segunda inversión, 4/2 = tercera inversión (7.ª en el bajo).',
+      choiceSets: [
+        [
+          'Una nota del bajo sin cifra se realiza como acorde en posición fundamental (5/3)',
+          'Una nota del bajo sin cifra se realiza siempre como un acorde en primera inversión (6/3)',
+          'Una nota del bajo sin cifra se toca sola, sin ningún acorde encima',
+          'Una nota del bajo sin cifra se realiza como acorde de séptima (7)',
         ],
         [
-          'Escribir contrapunto triple/cuádruple requiere que cada par de voces funcione en contrapunto invertible',
-          'Solo las voces extremas necesitan ser invertibles',
-          'No se aplican restricciones especiales de conducción de voces',
-          'Las quintas paralelas son aceptables en el contrapunto triple',
+          'Un 6 bajo una nota del bajo indica una tríada en primera inversión',
+          'Un 6 bajo una nota del bajo indica una tríada en segunda inversión',
+          'Un 6 bajo una nota del bajo indica una tríada en posición fundamental',
+          'Un 6 bajo una nota del bajo indica un acorde de séptima en tercera inversión',
+        ],
+        [
+          '6/4 bajo una nota del bajo indica una tríada en segunda inversión',
+          '6/4 bajo una nota del bajo indica una tríada en primera inversión',
+          '6/4 bajo una nota del bajo indica un acorde de séptima en posición fundamental',
+          '6/4 bajo una nota del bajo indica una tríada en posición fundamental',
+        ],
+        [
+          '4/2 bajo una nota del bajo indica un acorde de séptima con la 7.ª en el bajo',
+          '4/2 bajo una nota del bajo indica un acorde de séptima con la fundamental en el bajo',
+          '4/2 bajo una nota del bajo indica un acorde de séptima con la 3.ª en el bajo',
+          '4/2 bajo una nota del bajo indica un acorde de séptima con la 5.ª en el bajo',
+        ],
+      ],
+    },
+    {
+      // multiple_choice
+      promptTemplate:
+        '¿Cuál de estas afirmaciones sobre los instrumentos transpositores en una partitura orquestal es verdadera?',
+      hintTemplate:
+        'Un instrumento transpositor hace sonar la nota de su nombre cuando lee C: el clarinete en Bb suena una 2.ª mayor por debajo de lo escrito, la trompa en F una 5.ª justa por debajo. Transporta cada parte a la altura de concierto para oír la armonía real.',
+      choiceSets: [
+        [
+          'El clarinete en Bb suena una 2.ª mayor por debajo de lo escrito: el C escrito suena Bb',
+          'El clarinete en Bb suena una 2.ª mayor por encima de lo que está escrito: el C escrito suena D',
+          'El clarinete en Bb suena una 3.ª menor por debajo de lo escrito: el C escrito suena A',
+          'El clarinete en Bb suena exactamente como está escrito: el C escrito suena C',
+        ],
+        [
+          'La trompa en F suena una 5.ª justa por debajo de lo escrito: el C escrito suena F',
+          'La trompa en F suena una 5.ª justa por encima de lo escrito: el C escrito suena G',
+          'La trompa en F suena una 2.ª mayor por debajo de lo escrito: el C escrito suena Bb',
+          'La trompa en F suena exactamente como está escrita: el C escrito suena C',
+        ],
+        [
+          'Para oír la armonía real, transporta cada parte según el intervalo de su instrumento',
+          'Las partes transpositoras ya suenan como están escritas, así que no hace falta transportar',
+          'Para oír la armonía real, sube cada parte una octava por encima de lo escrito',
+          'Para oír la armonía real, lee solo las partes de cuerda e ignora los vientos',
         ],
       ],
     },

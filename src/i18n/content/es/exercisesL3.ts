@@ -35,7 +35,7 @@ const overlay: ExerciseLevelOverlay = {
   l3u9m1e4: {
     prompt: '¿Cuál es la diferencia entre un acorde de séptima semidisminuido y uno totalmente disminuido?',
     choices: [
-      'El semidisminuido tiene 7.ª menor; el totalmente disminuido tiene 7.ª disminuida (doble bemol)',
+      'El semidisminuido tiene 7.ª menor; el totalmente disminuido tiene 7.ª disminuida',
       'El semidisminuido tiene 7.ª mayor; el totalmente disminuido tiene 7.ª menor',
       'Usan tríadas diferentes: el semidisminuido es menor, el totalmente disminuido es disminuido',
       'No hay diferencia; son el mismo acorde',
@@ -89,9 +89,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué símbolo de bajo cifrado representa un acorde de séptima en estado fundamental?',
     choices: [
       '7 (abreviatura de 7/5/3)',
-      '6/5',
-      '4/3',
-      '4/2',
+      '6/5 (abreviatura de 6/5/3)',
+      '4/3 (abreviatura de 6/4/3)',
+      '4/2 (abreviatura de 6/4/2)',
     ],
     hint: 'En estado fundamental, los intervalos por encima del bajo son 3.ª, 5.ª y 7.ª. El cifrado completo 7/5/3 se abrevia simplemente a 7.',
   },
@@ -99,9 +99,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué símbolo de bajo cifrado representa un acorde de séptima en primera inversión?',
     choices: [
       '6/5 (abreviatura de 6/5/3)',
-      '7',
-      '4/3',
-      '4/2',
+      '7 (abreviatura de 7/5/3)',
+      '4/3 (abreviatura de 6/4/3)',
+      '4/2 (abreviatura de 6/4/2)',
     ],
     hint: 'La primera inversión coloca la 3.ª del acorde en el bajo. Los intervalos característicos por encima del bajo son una 6.ª y una 5.ª, resultando en el símbolo 6/5.',
   },
@@ -109,9 +109,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué símbolo de bajo cifrado representa un acorde de séptima en tercera inversión?',
     choices: [
       '4/2 (abreviatura de 6/4/2)',
-      '6/5',
-      '4/3',
-      '7',
+      '6/5 (abreviatura de 6/5/3)',
+      '4/3 (abreviatura de 6/4/3)',
+      '7 (abreviatura de 7/5/3)',
     ],
     hint: 'La tercera inversión coloca la 7.ª del acorde en el bajo. Los intervalos por encima del bajo son una 2.ª y una 4.ª, resultando en el símbolo 4/2 (o 2).',
   },
@@ -178,7 +178,7 @@ const overlay: ExerciseLevelOverlay = {
   l3u10m1e1: {
     prompt: '¿Cuál es la tesitura estándar para la voz de soprano en la escritura SATB?',
     choices: [
-      'C4 a G5 (C central hasta el G una octava y una quinta por encima)',
+      'C4 a G5',
       'C3 a G4',
       'G3 a D5',
       'C5 a C7',
@@ -266,7 +266,7 @@ const overlay: ExerciseLevelOverlay = {
   l3u10m3e3: {
     prompt: '¿Qué es la «ley del camino más corto» en la conducción de voces?',
     choices: [
-      'Cada voz debe moverse hacia la nota del acorde más cercana, prefiriendo el movimiento por grado',
+      'Cada voz se mueve a la nota del acorde más cercana',
       'El bajo debe moverse siempre la menor distancia',
       'Los acordes deben espaciarse lo más cerca posible',
       'La pieza debe usar el menor número posible de acordes',
@@ -280,9 +280,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Cuál es el símbolo de bajo cifrado para una tríada en primera inversión?',
     choices: [
       '6 (abreviatura de 6/3)',
-      '5/3',
-      '6/4',
-      '7',
+      '5/3 (a menudo se omite)',
+      '6/4 (siempre se escribe completo)',
+      '7 (abreviatura de 7/5/3)',
     ],
     hint: 'La primera inversión coloca la 3.ª del acorde en el bajo. Los intervalos por encima del bajo son una 3.ª y una 6.ª. El 6/3 completo se abrevia simplemente a 6.',
   },
@@ -316,10 +316,10 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m1e1: {
     prompt: '¿Qué define una Cadencia Auténtica Perfecta (CAP)?',
     choices: [
-      'V a I con ambos acordes en estado fundamental y la tónica en el soprano sobre el acorde I',
+      'V a I, ambos en estado fundamental, con la tónica en el soprano',
       'Cualquier progresión que termine en el acorde I',
       'IV a I en estado fundamental',
-      'V a I con la 3.ª de I en el soprano',
+      'V a I, ambos en estado fundamental, con la 3.ª de I en el soprano',
     ],
     hint: 'Una CAP tiene tres requisitos: (1) V va a I, (2) ambos acordes están en estado fundamental, y (3) el soprano termina en la nota tónica (1.er grado). Es el tipo de cadencia más fuerte.',
   },
@@ -359,10 +359,10 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m2e1: {
     prompt: '¿Qué es un período antecedente-consecuente?',
     choices: [
-      'Dos frases en las que la primera termina con semicadencia y la segunda con cadencia auténtica',
+      'Dos frases: la primera termina en semicadencia y la segunda en cadencia auténtica',
       'Una sola frase repetida exactamente dos veces',
       'Dos frases completamente sin relación',
-      'Una frase que modula a la dominante y regresa',
+      'Dos frases en las que la primera modula a la dominante y la segunda vuelve a la tónica',
     ],
     hint: 'Un período es un par de frases: el antecedente (pregunta) termina de forma inconclusiva con una semicadencia, y el consecuente (respuesta) termina de forma conclusiva con una CAP. Juntos forman una afirmación musical completa, como una pregunta y su respuesta.',
   },
@@ -402,7 +402,7 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m3e2: {
     prompt: '¿Qué sucede típicamente con el ritmo armónico en los puntos cadenciales?',
     choices: [
-      'Acelera — los acordes cambian más frecuentemente al aproximarse la cadencia',
+      'Acelera — los acordes cambian más a menudo cerca de la cadencia',
       'Desacelera — los acordes cambian menos frecuentemente en las cadencias',
       'Se mantiene igual a lo largo de la frase',
       'Se detiene por completo antes del acorde cadencial',
@@ -425,9 +425,9 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m4e1: {
     prompt: '¿Qué es una nota de paso?',
     choices: [
-      'Una nota extraña que se mueve por grado entre dos notas del acorde en la misma dirección',
+      'Una nota extraña que va por grado entre dos notas del acorde en la misma dirección',
       'Una nota que se mantiene del acorde anterior',
-      'Una nota extraña abordada por salto y resuelta por grado',
+      'Una nota extraña abordada por salto y luego resuelta por grado en la dirección opuesta',
       'Un trino ornamental sobre una nota del acorde',
     ],
     hint: 'Una nota de paso rellena el hueco entre dos notas del acorde a una 3.ª de distancia. Se aborda por grado y se resuelve por grado en la misma dirección. Ejemplo: en un acorde de C, D pasa entre C y E.',
@@ -436,7 +436,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué es una bordadura?',
     choices: [
       'Una nota extraña que se aleja por grado de una nota del acorde y regresa a ella',
-      'Una nota extraña que se mueve por grado entre dos notas del acorde diferentes',
+      'Una nota extraña que se mueve por grado de una nota del acorde a otra nota diferente del acorde',
       'Una nota del acorde que se repite en el siguiente tiempo',
       'Una nota prestada de una tonalidad vecina',
     ],
@@ -445,8 +445,8 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m4e3: {
     prompt: '¿Qué es una anticipación?',
     choices: [
-      'Una nota extraña que llega antes — hace sonar una nota del acorde siguiente antes de que el acorde cambie',
-      'Una nota del acorde que se retrasa hasta después del tiempo',
+      'Una nota extraña que hace sonar antes una nota del acorde siguiente',
+      'Una nota del acorde que se retrasa hasta después del tiempo y luego resuelve',
       'Una nota que se mantiene del acorde anterior',
       'Una pausa que sustituye a una nota esperada',
     ],
@@ -456,18 +456,18 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l3u11m5: Transposición ----
 
   l3u11m5e1: {
-    prompt: 'Transpón C4 una 2.ª mayor hacia arriba. Identifica el intervalo de 2 semitonos ascendente a partir de C.',
+    prompt: 'Una melodía que empieza en C4 se transporta para que empiece en la segunda nota mostrada. ¿Por qué intervalo se transportó?',
     hint: 'Una 2.ª mayor son 2 semitonos. C más 2 semitonos = D. Transponer una 2.ª mayor hacia arriba mueve cada nota un tono arriba.',
   },
   l3u11m5e2: {
-    prompt: 'Transpón C4 una 5.ª justa hacia arriba. Identifica el intervalo de 7 semitonos ascendente a partir de C.',
+    prompt: 'C4 se transporta hasta la segunda nota mostrada. Indica el intervalo de esta transposición.',
     hint: 'Una 5.ª justa son 7 semitonos. C más 7 semitonos = G. Transponer una 5.ªJ hacia arriba es una de las transposiciones más comunes, pasando de C mayor a G mayor.',
   },
   l3u11m5e3: {
     prompt: 'Al transponer una melodía una 3.ª menor hacia arriba, ¿qué ocurre con la armadura de clave?',
     choices: [
-      'Cambia para reflejar la nueva tonalidad (ej.: C mayor se convierte en Eb mayor, ganando 3 bemoles)',
-      'Se mantiene igual; solo las notas se mueven',
+      'Cambia a la de la nueva tonalidad (C mayor → Eb mayor: 3 bemoles)',
+      'Se mantiene igual, y cada nota desplazada recibe su propia alteración',
       'Los sostenidos y bemoles se eliminan',
       'Cada nota recibe una alteración accidental',
     ],

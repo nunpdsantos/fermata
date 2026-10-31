@@ -53,7 +53,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Alteraciones: b9, #9, #11, b13',
           explanation:
-            'Las alteraciones modifican cromáticamente las extensiones en acordes dominantes. La b9 oscurece el sonido, común en V7 que resuelve a menor. La #9 es el «acorde de Hendrix» con su timbre blues — en realidad una tercera menor sobre la fundamental, notada como novena aumentada. La #11 sustituye la oncena natural por un color lidio, evitando el choque tercera/oncena. La b13 crea un sonido dominante alterado y tenso, enarmónico con #5. Estas alteraciones dan a los músicos de jazz un control preciso sobre color y tensión en cualquier acorde dominante.',
+            'Las alteraciones modifican cromáticamente las extensiones en acordes dominantes. La b9 oscurece el sonido, común en V7 que resuelve a menor. La #9 es el «acorde de Hendrix» con su timbre blues — en realidad una tercera menor sobre la fundamental, notada como novena aumentada. La #11 sustituye la oncena natural por un color más brillante, evitando el choque tercera/oncena. La b13 crea un sonido dominante alterado y tenso, enarmónico con #5. Estas alteraciones dan a los músicos de jazz un control preciso sobre color y tensión en cualquier acorde dominante.',
           tryThisLabel: 'Construye C7b9 — dominante oscurecida que resuelve a menor',
         },
       ],
@@ -94,13 +94,13 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'El Acorde Alt: Tensión Cromática Máxima',
           explanation:
-            'C7alt es un acorde de séptima dominante con todas las extensiones alteradas: b9, #9, #11 (enarmónico de b5) y b13 (enarmónico de #5). Concentra la tensión cromática máxima posible antes de la resolución — cada nota fuera del shell está cromáticamente desplazada. El acorde alt se empareja exclusivamente con la escala alterada (superlocria), que es el modo 7 de la menor melódica un semitono por encima de la fundamental (C alterada = Db menor melódica). Este es el sonido dominante de referencia para resolver a acordes menores en el jazz.',
+            'C7alt es un acorde de séptima dominante con todas las extensiones alteradas: b9, #9, #11 (enarmónico de b5) y b13 (enarmónico de #5). Concentra la tensión cromática máxima posible antes de la resolución — cada nota fuera del shell está cromáticamente desplazada. El acorde alt se empareja con la escala alterada, que es el modo 7 de la menor melódica un semitono por encima de la fundamental (C alterada = Db menor melódica). Este es el sonido dominante de referencia para resolver a acordes menores en el jazz.',
           tryThisLabel: 'Construye C7alt — todas las extensiones alteradas',
         },
         {
           title: 'Dominantes Suspendidas: 7sus4',
           explanation:
-            'El acorde 7sus4 sustituye la tercera por una cuarta en un acorde de séptima dominante, creando un sonido abierto y no resuelto. C7sus4 contiene C-F-G-Bb — sin E, por lo tanto sin identidad mayor/menor. En el jazz, el 7sus4 funciona como voicing previo a la resolución: la cuarta suspendida resuelve a la tercera, y luego el acorde entero resuelve al I. El 7sus4 también sirve como sonoridad modal de tendencia dórica: un acorde 9sus construido una cuarta justa por encima (una quinta por debajo) de la fundamental del acorde ii — es decir, sobre el V — funde ii y V en un solo sonido: G9sus4 (G-C-D-F-A) es Dm7 sobre un bajo de G (Dm7/G), a menudo escrito F/G, y puede sustituir a Dm7-G7. El sus2 funciona de forma similar, sustituyendo la tercera por una segunda para una cualidad brillante y abierta.',
+            'El acorde 7sus4 sustituye la tercera por una cuarta en un acorde de séptima dominante, creando un sonido abierto y no resuelto. C7sus4 contiene C-F-G-Bb — sin E, por lo tanto sin identidad mayor/menor. En el jazz, el 7sus4 funciona como voicing previo a la resolución: la cuarta suspendida resuelve a la tercera, y luego el acorde entero resuelve al I. El 7sus4 también sirve como acorde abierto, de sonoridad modal: un acorde 9sus construido una cuarta justa por encima (una quinta por debajo) de la fundamental del acorde ii — es decir, sobre el V — funde ii y V en un solo sonido: G9sus4 (G-C-D-F-A) es Dm7 sobre un bajo de G (Dm7/G), a menudo escrito F/G, y puede sustituir a Dm7-G7. El sus2 funciona de forma similar, sustituyendo la tercera por una segunda para una cualidad brillante y abierta.',
           tryThisLabel: 'Escucha G7sus4 — dominante suspendida, sin tercera',
         },
       ],
@@ -228,7 +228,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'El Blues de 12 Compases',
           explanation:
-            'El blues de 12 compases es la forma más tocada en el jazz y la música popular. Se construye sobre tres acordes de séptima dominante: I7 durante cuatro compases, IV7 durante dos, I7 durante dos, luego V7-IV7-I7-V7 en los últimos cuatro. En C: C7-C7-C7-C7 / F7-F7-C7-C7 / G7-F7-C7-G7. En la teoría clásica, solo el V debería ser dominante, pero en el blues TODOS los acordes son dominantes. Esa tensión dominante omnipresente — trítonos por todas partes, nada totalmente resuelto — ES el sonido del blues. Todo músico de jazz debe dominar esta forma en las 12 tonalidades.',
+            'El blues de 12 compases es la forma más tocada en el jazz y la música popular. Se construye sobre tres acordes de séptima dominante: I7 durante cuatro compases, IV7 durante dos, I7 durante dos, luego V7-IV7-I7-V7 en los últimos cuatro. En C: C7-C7-C7-C7 / F7-F7-C7-C7 / G7-F7-C7-G7. En la teoría clásica, solo el V debería ser dominante, pero en el blues TODOS los acordes son dominantes. Esa tensión dominante omnipresente — trítonos por todas partes, nada totalmente resuelto — ES el sonido del blues. Sobre estos acordes se improvisa con la escala pentatónica menor (1 ♭3 4 5 ♭7: C Eb F G Bb en C) y con la escala blues, que añade la blue note ♭5 entre la 4.ª y la 5.ª (C Eb F Gb G Bb). Todo músico de jazz debe dominar esta forma en las 12 tonalidades.',
           tryThisLabel: 'Escucha C7 — el acorde de tónica del blues en C',
         },
         {
@@ -298,7 +298,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Construye el ciclo del puente de los rhythm changes: toca «D7», «G7», «C7», «F7». Cada dominante resuelve al siguiente por una cuarta — movimiento perpetuo. Prueba emparejar cada acorde con su escala mixolidia para ideas de improvisación.',
+            'Construye el ciclo del puente de los rhythm changes: toca «D7», «G7», «C7», «F7». Cada dominante resuelve al siguiente por una cuarta — movimiento perpetuo. Sigue las notas guía por el camino: la tercera y la séptima de cada acorde bajan un semitono al siguiente (el F# y el C de D7 se convierten en el F y el B de G7).',
         },
         {
           instruction:
@@ -323,6 +323,12 @@ const curriculumL7: CurriculumLevelOverlay = {
         'Usar la escala alterada para acordes 7alt y la lidia dominante para acordes 7#11',
       ],
       concepts: [
+        {
+          title: 'Los Siete Modos de la Escala Mayor',
+          explanation:
+            'Un modo es una escala mayor tocada desde otra nota. Conserva las notas de una escala mayor, la escala madre, y empieza en cada uno de sus siete grados: C jónico, D dórico, E frigio, F lidio, G mixolidio, A eólico, B locrio — siete modos, todos con C mayor como escala madre. Las notas son las mismas, pero cada modo tiene su propia tónica, así que el patrón de tonos y semitonos cambia. Compara cada uno con la escala a la que más se parece: el jónico es la propia escala mayor; el lidio es la escala mayor con ♯4; el mixolidio es la escala mayor con ♭7; el eólico es la menor natural; el dórico es la menor natural con ♮6; el frigio es la menor natural con ♭2; el locrio es la menor natural con ♭2 y ♭5. Esa nota alterada es la nota característica que da su color a cada modo. Para encontrar la escala madre de un modo, cuenta hacia atrás hasta el grado 1: D dórico empieza en el 2.º grado de su escala madre, que por tanto es C mayor.',
+          tryThisLabel: 'Mira D dórico — las notas de C mayor, empezando en D',
+        },
         {
           title: 'El Mapa Acorde-Escala',
           explanation:

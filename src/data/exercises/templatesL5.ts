@@ -4,6 +4,10 @@ import type { ModuleTemplateConfig } from './exerciseTemplates';
 // Level 5 Templates — 14 modules, ~75 generated exercises
 // Focus: Secondary dominants, tonicization, modulation, mode mixture,
 //        musical form
+//
+// W4a (2026-10-31): questions are worded as statements about a named topic
+// (nothing on screen to point at), and options are balanced so the right one
+// is not simply the longest. PT/ES overlays mirror this file entry by entry.
 // ---------------------------------------------------------------------------
 
 const templates: ModuleTemplateConfig[] = [
@@ -28,21 +32,21 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify the function and resolution of V/V.',
+        promptTemplate: 'Which statement about V/V (the dominant of the dominant) is true?',
         hintTemplate: 'V/V tonicizes the dominant chord. It contains a chromatic alteration (raised 4th scale degree) and resolves to V.',
         params: {
           choiceSets: [
             [
               { label: 'V/V contains the raised 4th scale degree and resolves to V', correct: true },
-              { label: 'V/V contains the lowered 7th and resolves to IV', correct: false },
-              { label: 'V/V is the same as the IV chord', correct: false },
-              { label: 'V/V resolves to I', correct: false },
+              { label: 'V/V contains the lowered 7th scale degree and resolves to IV', correct: false },
+              { label: 'V/V contains the raised 4th scale degree and resolves to I', correct: false },
+              { label: 'V/V contains only diatonic notes, so it is the same chord as ii', correct: false },
             ],
             [
-              { label: 'In C major, V/V is D major (D-F#-A) resolving to G major', correct: true },
-              { label: 'In C major, V/V is F major resolving to G', correct: false },
-              { label: 'In C major, V/V is A major resolving to D', correct: false },
-              { label: 'In C major, V/V is B major resolving to C', correct: false },
+              { label: 'In C major, V/V is D major (D-F#-A), resolving to G major', correct: true },
+              { label: 'In C major, V/V is F major (F-A-C), resolving to G major', correct: false },
+              { label: 'In C major, V/V is A major (A-C#-E), resolving to D minor', correct: false },
+              { label: 'In C major, V/V is B major (B-D#-F#), resolving to C major', correct: false },
             ],
           ],
         },
@@ -68,27 +72,27 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify which chord is being tonicized by this secondary dominant.',
+        promptTemplate: 'Which statement about secondary dominants of ii, iii, IV and vi is true?',
         hintTemplate: 'Each secondary dominant targets a specific diatonic chord. V7/ii resolves to ii, V7/IV resolves to IV, V7/vi resolves to vi, etc.',
         params: {
           choiceSets: [
             [
               { label: 'V7/vi in C major is E7 (E-G#-B-D), resolving to A minor', correct: true },
-              { label: 'V7/vi in C major resolves to F major', correct: false },
-              { label: 'V7/vi in C major is D7', correct: false },
-              { label: 'V7/vi resolves to the dominant', correct: false },
+              { label: 'V7/vi in C major is D7 (D-F#-A-C), resolving to G major', correct: false },
+              { label: 'V7/vi in C major is E7 (E-G#-B-D), resolving to F major', correct: false },
+              { label: 'V7/vi in C major is A7 (A-C#-E-G), resolving to D minor', correct: false },
             ],
             [
               { label: 'V7/IV in C major is C7 (C-E-G-Bb), resolving to F major', correct: true },
-              { label: 'V7/IV in C major is F7', correct: false },
-              { label: 'V7/IV resolves to G major', correct: false },
-              { label: 'V7/IV contains no chromatic alterations', correct: false },
+              { label: 'V7/IV in C major is F7 (F-A-C-Eb), resolving to Bb major', correct: false },
+              { label: 'V7/IV in C major is C7 (C-E-G-Bb), resolving to G major', correct: false },
+              { label: 'V7/IV in C major is G7 (G-B-D-F), resolving to C major', correct: false },
             ],
             [
               { label: 'V7/ii in C major is A7 (A-C#-E-G), resolving to D minor', correct: true },
-              { label: 'V7/ii resolves to C major', correct: false },
-              { label: 'V7/ii in C major is B7', correct: false },
-              { label: 'V7/ii is the same as V/V', correct: false },
+              { label: 'V7/ii in C major is B7 (B-D#-F#-A), resolving to E minor', correct: false },
+              { label: 'V7/ii in C major is A7 (A-C#-E-G), resolving to C major', correct: false },
+              { label: 'V7/ii in C major is D7 (D-F#-A-C), resolving to G major', correct: false },
             ],
           ],
         },
@@ -103,27 +107,27 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify the secondary leading-tone chord and its resolution.',
+        promptTemplate: 'Which statement about secondary leading-tone chords is true?',
         hintTemplate: 'Secondary leading-tone chords (vii°/x) function like secondary dominants but are diminished. They resolve up by half step to their target chord.',
         params: {
           choiceSets: [
             [
               { label: 'vii°7/V in C major is F#dim7, resolving up to G', correct: true },
-              { label: 'vii°7/V in C major is Bdim7', correct: false },
-              { label: 'vii°7/V resolves down to F', correct: false },
-              { label: 'vii°7/V is the same as V/V', correct: false },
+              { label: 'vii°7/V in C major is Bdim7, resolving up to C', correct: false },
+              { label: 'vii°7/V in C major is F#dim7, resolving down to F', correct: false },
+              { label: 'vii°7/V in C major is C#dim7, resolving up to D', correct: false },
             ],
             [
-              { label: 'Secondary leading-tone chords have their root a half step below the target chord', correct: true },
-              { label: 'They have their root a 5th above the target', correct: false },
-              { label: 'They have their root a 4th below the target', correct: false },
-              { label: 'The root placement is random', correct: false },
+              { label: 'Their root lies a half step below the chord they resolve to', correct: true },
+              { label: 'Their root lies a perfect 5th above the chord they resolve to', correct: false },
+              { label: 'Their root lies a whole step below the chord they resolve to', correct: false },
+              { label: 'Their root lies a major 3rd below the chord they resolve to', correct: false },
             ],
             [
-              { label: 'vii°/x can be either a diminished triad or a fully diminished 7th chord', correct: true },
-              { label: 'vii°/x is always a major chord', correct: false },
-              { label: 'vii°/x is always a minor 7th chord', correct: false },
-              { label: 'vii°/x must be a half-diminished chord', correct: false },
+              { label: 'It can be a diminished triad, a half-diminished 7th or a fully diminished 7th', correct: true },
+              { label: 'It is always a major triad, exactly like the secondary dominant it replaces', correct: false },
+              { label: 'It is always a minor 7th chord built on the root of its target', correct: false },
+              { label: 'It can be a minor triad or a minor 7th, but never a diminished chord', correct: false },
             ],
           ],
         },
@@ -138,27 +142,27 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Distinguish between tonicization and modulation.',
+        promptTemplate: 'Which statement about tonicization and modulation is true?',
         hintTemplate: 'Tonicization is a brief, momentary emphasis on a non-tonic chord (lasting 1-2 chords). Modulation is a more permanent shift to a new key (confirmed by a cadence in the new key).',
         params: {
           choiceSets: [
             [
-              { label: 'Tonicization temporarily emphasizes a chord; modulation establishes a new key with a cadence', correct: true },
-              { label: 'Tonicization and modulation mean the same thing', correct: false },
-              { label: 'Tonicization requires a cadence in the new key', correct: false },
-              { label: 'Modulation never uses chromatic chords', correct: false },
+              { label: 'Tonicization briefly stresses a chord; modulation confirms a new key with a cadence', correct: true },
+              { label: 'Tonicization confirms a new key with a cadence; modulation only briefly stresses a chord', correct: false },
+              { label: 'Tonicization and modulation are two names for exactly the same process', correct: false },
+              { label: 'Modulation never uses chromatic chords; tonicization always does', correct: false },
             ],
             [
-              { label: 'A single secondary dominant followed by its target is tonicization, not modulation', correct: true },
-              { label: 'One secondary dominant always creates a modulation', correct: false },
-              { label: 'Tonicization requires at least 8 measures in the new key', correct: false },
-              { label: 'There is no practical difference between the two', correct: false },
+              { label: 'A single secondary dominant and its target is a tonicization', correct: true },
+              { label: 'A single secondary dominant and its target is always a modulation', correct: false },
+              { label: 'A tonicization must last at least eight bars in the new key', correct: false },
+              { label: 'A tonicization needs a perfect authentic cadence in the new key', correct: false },
             ],
             [
-              { label: 'Modulation is confirmed when the music cadences in the new key', correct: true },
-              { label: 'Modulation requires changing the time signature', correct: false },
-              { label: 'Modulation only happens at the end of a piece', correct: false },
-              { label: 'Modulation never involves chromatic notes', correct: false },
+              { label: 'A modulation is confirmed when the music cadences in the new key', correct: true },
+              { label: 'A modulation is confirmed as soon as the time signature changes', correct: false },
+              { label: 'A modulation is confirmed by any single chromatic note in the melody', correct: false },
+              { label: 'A modulation can only ever be confirmed at the very end of a piece', correct: false },
             ],
           ],
         },
@@ -173,27 +177,27 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Analyze this chain of secondary dominants.',
+        promptTemplate: 'Which statement about chains of secondary dominants is true?',
         hintTemplate: 'A dominant chain links secondary dominants: e.g., V7/vi -> V7/ii -> V7/V -> V7 -> I. Each dominant resolves to the next, creating chromatic motion toward the tonic.',
         params: {
           choiceSets: [
             [
-              { label: 'In a dominant chain, each chord acts as V7 of the next chord', correct: true },
-              { label: 'A dominant chain uses only diatonic chords', correct: false },
-              { label: 'A dominant chain always moves in ascending 5ths', correct: false },
-              { label: 'Dominant chains are limited to 2 chords', correct: false },
+              { label: 'In a dominant chain, each chord acts as V7 of the chord that follows', correct: true },
+              { label: 'In a dominant chain, each chord acts as IV of the chord that follows', correct: false },
+              { label: 'In a dominant chain, every chord stays diatonic to the home key', correct: false },
+              { label: 'In a dominant chain, each chord acts as V7 of the chord that came before it', correct: false },
             ],
             [
-              { label: 'The chain V7/vi -> V7/ii -> V7/V -> V -> I moves through descending 5ths', correct: true },
-              { label: 'This chain moves through ascending 3rds', correct: false },
-              { label: 'This chain has no pattern', correct: false },
-              { label: 'This chain moves through ascending 5ths', correct: false },
+              { label: 'The chain V7/vi -> V7/ii -> V7/V -> V -> I moves by descending 5ths', correct: true },
+              { label: 'The chain V7/vi -> V7/ii -> V7/V -> V -> I moves by ascending 5ths', correct: false },
+              { label: 'The chain V7/vi -> V7/ii -> V7/V -> V -> I moves by ascending 3rds', correct: false },
+              { label: 'The chain V7/vi -> V7/ii -> V7/V -> V -> I moves by descending steps', correct: false },
             ],
             [
-              { label: 'Extended tonicization using dominant chains creates chromatic bass motion', correct: true },
-              { label: 'Dominant chains never produce chromatic motion', correct: false },
-              { label: 'The bass always stays diatonic in dominant chains', correct: false },
-              { label: 'Dominant chains only use root-position chords', correct: false },
+              { label: 'Each applied dominant adds a chromatic note: the leading tone of its target', correct: true },
+              { label: 'Each applied dominant stays diatonic, so the chain adds no chromatic notes at all', correct: false },
+              { label: 'Each applied dominant keeps the bass on one note for the whole chain', correct: false },
+              { label: 'Each applied dominant must be played in second inversion', correct: false },
             ],
           ],
         },
@@ -212,27 +216,27 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Analyze this pivot chord modulation.',
+        promptTemplate: 'Which statement about pivot-chord modulation is true?',
         hintTemplate: 'A pivot chord belongs to both the old and new keys. It reinterprets a diatonic chord: e.g., IV in C = I in F. The pivot is the hinge between two key areas.',
         params: {
           choiceSets: [
             [
-              { label: 'A pivot chord functions diatonically in both the old key and the new key', correct: true },
-              { label: 'A pivot chord must be chromatic', correct: false },
-              { label: 'A pivot chord only exists in minor keys', correct: false },
-              { label: 'A pivot chord is always V7', correct: false },
+              { label: 'A pivot chord is diatonic in both the old key and the new key', correct: true },
+              { label: 'A pivot chord is diatonic in the old key but chromatic in the new key', correct: false },
+              { label: 'A pivot chord must always be the V7 of the new key', correct: false },
+              { label: 'A pivot chord can only link two minor keys', correct: false },
             ],
             [
-              { label: 'When modulating from C to G, the C major chord can pivot as IV in G', correct: true },
-              { label: 'C major cannot function as a pivot chord', correct: false },
-              { label: 'Pivots only work between relative keys', correct: false },
-              { label: 'The pivot must be a diminished chord', correct: false },
+              { label: 'From C to G, the C major chord can pivot as IV of G', correct: true },
+              { label: 'From C to G, the C major chord can pivot as V of G', correct: false },
+              { label: 'From C to G, the C major chord can pivot as vii° of G', correct: false },
+              { label: 'From C to G, the C major chord cannot pivot at all', correct: false },
             ],
             [
-              { label: 'Closely related keys (differing by 1 sharp/flat) share the most pivot chords', correct: true },
-              { label: 'Distant keys have more pivot chords', correct: false },
-              { label: 'All keys share the same number of pivot chords', correct: false },
-              { label: 'Pivot chords only work between parallel keys', correct: false },
+              { label: 'Closely related keys (one accidental apart) share the most pivot chords', correct: true },
+              { label: 'Distant keys, many accidentals apart, share the most pivot chords of all', correct: false },
+              { label: 'Every pair of keys shares exactly the same number of pivot chords', correct: false },
+              { label: 'Parallel keys (same tonic) always share the most pivot chords', correct: false },
             ],
           ],
         },
@@ -251,8 +255,6 @@ const templates: ModuleTemplateConfig[] = [
         promptTemplate: 'Build the {root} natural minor scale (the relative minor — a closely related key).',
         hintTemplate: 'A key and its relative minor share the same key signature (0 accidentals apart), so the relative minor is one of the closely related keys. Build {root} natural minor: the natural minor scale starting on {root}.',
         params: {
-          // Relative minors of common major keys: C->Am, G->Em, F->Dm, D->Bm, A->F#m, E->C#m.
-          // Each is a genuine closely related key of its relative major.
           roots: ['A', 'E', 'D', 'B', 'F', 'C'],
           accidentals: ['', '', '', '', '#', '#'],
           scaleTypes: ['natural_minor'],
@@ -261,21 +263,21 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify the closely related keys for this tonic key.',
+        promptTemplate: 'Which statement about closely related keys is true?',
         hintTemplate: 'Each major key has 5 closely related keys: the dominant, subdominant, and the relative minors of all three (tonic, dominant, subdominant).',
         params: {
           choiceSets: [
             [
-              { label: 'C major has closely related keys: G major, F major, A minor, E minor, D minor', correct: true },
-              { label: 'C major is closely related to Db major and B major', correct: false },
-              { label: 'C major has no closely related keys', correct: false },
-              { label: 'C major is closely related to Ab major and Eb major', correct: false },
+              { label: 'C major\'s closely related keys: G major, F major, A minor, E minor, D minor', correct: true },
+              { label: 'C major\'s closely related keys: D major, Bb major, B minor, G minor, F# minor', correct: false },
+              { label: 'C major\'s closely related keys: Db major, B major, C minor, Bb minor, Eb minor', correct: false },
+              { label: 'C major\'s closely related keys: G major, D major, A major, E major, B major', correct: false },
             ],
             [
-              { label: 'G major has closely related keys: D major, C major, E minor, B minor, A minor', correct: true },
-              { label: 'G major is closely related to Gb major', correct: false },
-              { label: 'G major is only related to C major', correct: false },
-              { label: 'G major is closely related to F major', correct: false },
+              { label: 'G major\'s closely related keys: D major, C major, E minor, B minor, A minor', correct: true },
+              { label: 'G major\'s closely related keys: Gb major, Ab major, G minor, Eb minor, F minor', correct: false },
+              { label: 'G major\'s closely related keys: F major, Bb major, D minor, G minor, C minor', correct: false },
+              { label: 'G major\'s closely related keys: D major, A major, E major, B major, F# major', correct: false },
             ],
           ],
         },
@@ -292,63 +294,63 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify the characteristics of this modulation technique.',
+        promptTemplate: 'Which statement about direct (phrase) modulation is true?',
         hintTemplate: 'Direct (phrase) modulation changes key abruptly at a phrase boundary without a pivot chord. Common in pop music and hymns.',
         params: {
           choiceSets: [
             [
-              { label: 'A direct modulation shifts to a new key at a phrase boundary without a pivot chord', correct: true },
-              { label: 'A direct modulation always uses a pivot chord', correct: false },
-              { label: 'A direct modulation is the same as tonicization', correct: false },
-              { label: 'A direct modulation only goes up by half step', correct: false },
+              { label: 'A direct modulation moves to a new key at a phrase boundary, with no pivot', correct: true },
+              { label: 'A direct modulation moves to a new key mid-phrase through a shared pivot chord', correct: false },
+              { label: 'A direct modulation is just another name for a brief tonicization', correct: false },
+              { label: 'A direct modulation can only move up by a half step', correct: false },
             ],
             [
-              { label: 'The "truck driver" modulation shifts up by half or whole step for dramatic effect', correct: true },
-              { label: 'The truck driver modulation always goes to the dominant', correct: false },
-              { label: 'This technique is unique to classical music', correct: false },
-              { label: 'This modulation always descends', correct: false },
+              { label: 'The "truck driver" modulation jumps up a half or whole step for a lift', correct: true },
+              { label: 'The "truck driver" modulation always moves down to the dominant key', correct: false },
+              { label: 'The "truck driver" modulation is found only in Baroque and Classical music', correct: false },
+              { label: 'The "truck driver" modulation always lowers the key by a semitone', correct: false },
             ],
           ],
         },
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'How does common-tone modulation work?',
+        promptTemplate: 'Which statement about common-tone modulation is true?',
         hintTemplate: 'Common-tone modulation sustains a single pitch that is reinterpreted in the new key. Often used for remote modulations where few pivot chords exist.',
         params: {
           choiceSets: [
             [
-              { label: 'Common-tone modulation sustains one note that becomes a different scale degree in the new key', correct: true },
-              { label: 'Common-tone modulation requires all notes to be in common', correct: false },
-              { label: 'Common-tone modulation never involves held notes', correct: false },
-              { label: 'Common-tone modulation is the same as pivot chord modulation', correct: false },
+              { label: 'One held note is reheard as a different scale degree in the new key', correct: true },
+              { label: 'One held note keeps exactly the same scale degree in the new key', correct: false },
+              { label: 'Every note of the chord must be common to both of the keys', correct: false },
+              { label: 'No note is held: the music stops, then restarts in the new key', correct: false },
             ],
             [
-              { label: 'Common-tone modulation is especially useful for distant keys that share few chords', correct: true },
-              { label: 'Common-tone modulation only works for closely related keys', correct: false },
-              { label: 'This technique requires chromatic sequences', correct: false },
-              { label: 'This technique is limited to relative major/minor', correct: false },
+              { label: 'It is especially useful between distant keys that share few chords', correct: true },
+              { label: 'It works only between closely related keys that share many chords', correct: false },
+              { label: 'It requires a chromatic sequence through every key that lies in between', correct: false },
+              { label: 'It works only between a key and its relative major or minor', correct: false },
             ],
           ],
         },
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Analyze this chromatic modulation technique.',
+        promptTemplate: 'Which statement about chromatic modulation is true?',
         hintTemplate: 'Chromatic modulation uses a chromatic alteration to smoothly lead into the new key. One voice moves by half step from a diatonic note to a chromatic one in the new key.',
         params: {
           choiceSets: [
             [
-              { label: 'Chromatic modulation features a voice moving by half step from a diatonic to a chromatic pitch', correct: true },
-              { label: 'Chromatic modulation avoids all half steps', correct: false },
-              { label: 'Chromatic modulation requires a pivot chord', correct: false },
-              { label: 'Chromatic modulation always moves between parallel keys', correct: false },
+              { label: 'One voice moves by half step from a diatonic note to a chromatic one', correct: true },
+              { label: 'One voice leaps by a tritone from a diatonic note to a chromatic one', correct: false },
+              { label: 'Every voice moves by whole step, so no half steps appear at all', correct: false },
+              { label: 'It needs a pivot chord that is diatonic in both keys', correct: false },
             ],
             [
-              { label: 'The chromatic alteration typically introduces the leading tone or a chord tone of the new key', correct: true },
-              { label: 'The chromatic note is always the tonic of the new key', correct: false },
-              { label: 'Chromatic modulation never involves leading tones', correct: false },
-              { label: 'The alteration must be in the bass voice', correct: false },
+              { label: 'The altered note often becomes the leading tone or a chord tone of the new key', correct: true },
+              { label: 'The altered note is always the tonic of the new key, never its leading tone', correct: false },
+              { label: 'The altered note must always be in the bass, never in an upper voice', correct: false },
+              { label: 'Chromatic modulation never involves the leading tone of the new key in any voice', correct: false },
             ],
           ],
         },
@@ -367,8 +369,6 @@ const templates: ModuleTemplateConfig[] = [
         promptTemplate: 'Build the {root} borrowed chord (a mode-mixture chord in C major).',
         hintTemplate: 'Mode mixture borrows chords from the parallel minor. In C major these borrowed chords are bVI (Ab major), bIII (Eb major), bVII (Bb major), and iv (F minor). Build {root} as written: lowered roots take major triads, the iv chord is F minor.',
         params: {
-          // Genuine parallel-minor borrowings IN A FIXED C major context:
-          // Ab=bVI, Eb=bIII, Bb=bVII (major triads); F minor=iv.
           roots: ['A', 'E', 'B', 'F'],
           accidentals: ['b', 'b', 'b', ''],
           chordQualities: ['major', 'major', 'major', 'minor'],
@@ -377,21 +377,21 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify this borrowed chord from the parallel minor.',
+        promptTemplate: 'Which statement about chords borrowed from the parallel minor is true?',
         hintTemplate: 'Common borrowed chords in major: iv (minor iv), bVI (flat-six major), bVII (flat-seven major), bIII. They add a darker color to a major key.',
         params: {
           choiceSets: [
             [
-              { label: 'The bVI chord in C major is Ab major (borrowed from C minor)', correct: true },
-              { label: 'The bVI chord in C major is F# major', correct: false },
-              { label: 'The bVI chord in C major is A major', correct: false },
-              { label: 'bVI does not exist in mode mixture', correct: false },
+              { label: 'In C major, bVI is Ab major (Ab-C-Eb), borrowed from C minor', correct: true },
+              { label: 'In C major, bVI is A major (A-C#-E), borrowed from A minor', correct: false },
+              { label: 'In C major, bVI is F# major (F#-A#-C#), borrowed from C minor', correct: false },
+              { label: 'In C major, bVI is Ab minor (Ab-Cb-Eb), borrowed from Ab minor', correct: false },
             ],
             [
-              { label: 'The iv chord in C major is F minor (borrowed from C minor)', correct: true },
-              { label: 'The iv chord in C major is F major unchanged', correct: false },
-              { label: 'The iv chord in C major is A minor', correct: false },
-              { label: 'Mode mixture cannot alter the subdominant', correct: false },
+              { label: 'In C major, iv is F minor (F-Ab-C), borrowed from C minor', correct: true },
+              { label: 'In C major, iv is F major (F-A-C), unchanged from the major key', correct: false },
+              { label: 'In C major, iv is A minor (A-C-E), borrowed from A minor', correct: false },
+              { label: 'In C major, iv is D minor (D-F-A), borrowed from C minor', correct: false },
             ],
           ],
         },
@@ -418,27 +418,27 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Classify this musical form based on its structure.',
+        promptTemplate: 'Which statement about binary and ternary form is true?',
         hintTemplate: 'Binary: two sections (AB). Ternary: three sections (ABA). Rounded binary: A modulates, B develops, A returns (||:A:||:BA:||).',
         params: {
           choiceSets: [
             [
-              { label: 'A piece with two contrasting sections (AB) with both repeated is simple binary form', correct: true },
-              { label: 'AB form is ternary', correct: false },
-              { label: 'AB form is through-composed', correct: false },
-              { label: 'AB form is rondo', correct: false },
+              { label: 'Two contrasting sections, each repeated (||:A:||:B:||), is simple binary form', correct: true },
+              { label: 'Two contrasting sections, each repeated (||:A:||:B:||), is ternary form', correct: false },
+              { label: 'Two contrasting sections, each repeated (||:A:||:B:||), is rondo form', correct: false },
+              { label: 'Two contrasting sections, each repeated (||:A:||:B:||), is through-composed form', correct: false },
             ],
             [
-              { label: 'ABA form where the first section returns is ternary form', correct: true },
-              { label: 'ABA form is binary', correct: false },
-              { label: 'ABA form is strophic', correct: false },
-              { label: 'ABA form is through-composed', correct: false },
+              { label: 'ABA, where the first section returns after a contrast, is ternary form', correct: true },
+              { label: 'ABA, where the first section returns after a contrast, is binary form', correct: false },
+              { label: 'ABA, where the first section returns after a contrast, is strophic form', correct: false },
+              { label: 'ABA, where the first section returns after a contrast, is through-composed form', correct: false },
             ],
             [
-              { label: 'Rounded binary features the return of A material at the end of the B section', correct: true },
-              { label: 'Rounded binary has three completely independent sections', correct: false },
-              { label: 'Rounded binary never modulates', correct: false },
-              { label: 'Rounded binary is the same as simple binary', correct: false },
+              { label: 'Rounded binary brings back A material at the end of the B section', correct: true },
+              { label: 'Rounded binary has three independent sections that never return', correct: false },
+              { label: 'Rounded binary never modulates away from the tonic key at any point', correct: false },
+              { label: 'Rounded binary is just another name for simple binary form', correct: false },
             ],
           ],
         },
@@ -455,60 +455,60 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Identify the characteristics of this musical form.',
+        promptTemplate: 'Which statement about rondo and theme-and-variations form is true?',
         hintTemplate: 'Rondo: recurring refrain alternating with episodes (ABACA or ABACABA). Theme and variations: a theme followed by varied repetitions.',
         params: {
           choiceSets: [
             [
-              { label: 'ABACABA is a seven-part rondo form', correct: true },
-              { label: 'ABACABA is a ternary form', correct: false },
-              { label: 'ABACABA is a binary form', correct: false },
-              { label: 'ABACABA is sonata form', correct: false },
+              { label: 'ABACABA is a rondo in seven parts', correct: true },
+              { label: 'ABACABA is a ternary form in three parts', correct: false },
+              { label: 'ABACABA is a binary form in two parts', correct: false },
+              { label: 'ABACABA is a sonata form in three parts', correct: false },
             ],
             [
-              { label: 'In theme and variations, each variation keeps the theme recognizable (often through its harmonic outline) while changing other elements', correct: true },
-              { label: 'Variations must keep the exact melody', correct: false },
-              { label: 'Variations always change the key', correct: false },
-              { label: 'Variations never change the rhythm', correct: false },
+              { label: 'Each variation keeps the theme recognizable while changing other elements', correct: true },
+              { label: 'Each variation must keep the melody and the rhythm exactly the same', correct: false },
+              { label: 'Each variation must move to a new key and never keep the original one', correct: false },
+              { label: 'Each variation replaces the theme with unrelated, completely new material', correct: false },
             ],
             [
-              { label: 'The rondo refrain (A) typically stays in the tonic key', correct: true },
-              { label: 'The refrain modulates to a new key each time', correct: false },
-              { label: 'Episodes must stay in the tonic key', correct: false },
-              { label: 'The refrain is always different each time', correct: false },
+              { label: 'The rondo refrain (A) usually returns in the tonic key', correct: true },
+              { label: 'The rondo refrain (A) moves to a new key every time it returns', correct: false },
+              { label: 'The rondo episodes must all stay in the tonic key', correct: false },
+              { label: 'The rondo refrain is completely rewritten every time', correct: false },
             ],
           ],
         },
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Answer this question about sonata form structure.',
+        promptTemplate: 'Which statement about sonata form is true?',
         hintTemplate: 'Sonata form: Exposition (theme 1 in tonic, theme 2 in dominant), Development (fragmentation, modulation), Recapitulation (both themes in tonic).',
         params: {
           choiceSets: [
             [
-              { label: 'The exposition presents two theme groups: the first in tonic, the second in a contrasting key', correct: true },
-              { label: 'The exposition only has one theme', correct: false },
-              { label: 'Both themes are in the tonic key', correct: false },
-              { label: 'The exposition is the middle section', correct: false },
+              { label: 'The exposition has two theme groups: the first in the tonic, the second in a contrasting key', correct: true },
+              { label: 'The exposition has two theme groups, and both of them stay in the tonic key from start to finish', correct: false },
+              { label: 'The exposition has only one theme, which is then varied in the tonic key', correct: false },
+              { label: 'The exposition is the middle section, between development and recapitulation', correct: false },
             ],
             [
-              { label: 'The development section fragments and develops themes through modulation and sequence', correct: true },
-              { label: 'The development simply repeats the exposition', correct: false },
-              { label: 'The development introduces entirely new themes', correct: false },
-              { label: 'The development stays in the tonic key', correct: false },
+              { label: 'The development fragments the themes and moves through several keys', correct: true },
+              { label: 'The development repeats the exposition exactly, note for note, in the tonic', correct: false },
+              { label: 'The development introduces only new themes, never earlier ones', correct: false },
+              { label: 'The development stays in the tonic key from start to finish', correct: false },
             ],
             [
-              { label: 'In the recapitulation, the second theme returns in the tonic key instead of the dominant', correct: true },
-              { label: 'The recapitulation repeats the exposition exactly', correct: false },
-              { label: 'The recapitulation is in the dominant key', correct: false },
-              { label: 'The second theme is omitted in the recapitulation', correct: false },
+              { label: 'In the recapitulation, the second theme returns in the tonic, not the dominant', correct: true },
+              { label: 'In the recapitulation, the second theme returns in the dominant, not the tonic', correct: false },
+              { label: 'In the recapitulation, the second theme is left out altogether', correct: false },
+              { label: 'The recapitulation repeats the exposition exactly, keys and all', correct: false },
             ],
             [
-              { label: 'In a major key sonata, the second theme is typically in the dominant (V)', correct: true },
-              { label: 'The second theme is always in the subdominant (IV)', correct: false },
-              { label: 'The second theme is always in the relative minor', correct: false },
-              { label: 'The second theme stays in the tonic', correct: false },
+              { label: 'In a major-key sonata, the second theme is usually in the dominant (V)', correct: true },
+              { label: 'In a major-key sonata, the second theme is usually in the subdominant (IV)', correct: false },
+              { label: 'In a major-key sonata, the second theme is usually in the relative minor (vi)', correct: false },
+              { label: 'In a major-key sonata, the second theme stays in the tonic (I)', correct: false },
             ],
           ],
         },

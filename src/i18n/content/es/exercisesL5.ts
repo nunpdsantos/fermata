@@ -14,12 +14,12 @@ const overlay: ExerciseLevelOverlay = {
 
   l5u15m1e1: {
     prompt:
-      'Construye V/V en C mayor. La dominante secundaria de V es una tríada de D mayor. Selecciona las 3 notas: D, F#, A.',
+      'Construye V/V en C mayor. Selecciona las 3 notas.',
     hint: 'V/V en C significa «el acorde V de G mayor». La dominante de G es D mayor: D (2), F# (6), A (9). El F# es cromático — no pertenece a C mayor.',
   },
   l5u15m1e2: {
     prompt:
-      'Construye V7/V en C mayor. Es un acorde de D dominante con séptima: D, F#, A, C. Selecciona las 4 notas.',
+      'Construye V7/V en C mayor. Selecciona las 4 notas.',
     hint: 'V7/V en C = D7: D (2), F# (6), A (9), C (0). La séptima menor añadida (C) refuerza la atracción hacia G. El F# es la alteración cromática.',
   },
   l5u15m1e3: {
@@ -27,7 +27,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Una dominante secundaria que toniciza el acorde dominante de la tonalidad',
       'El quinto acorde tocado dos veces seguidas',
-      'Un acorde disminuido construido sobre el segundo grado de la escala',
+      'Un acorde disminuido construido sobre el segundo grado de la escala mayor de la tonalidad',
       'El acorde dominante en segunda inversión',
     ],
     hint: 'V/V significa «la dominante de la dominante». En C mayor, V es G. La dominante de G es D mayor. Por tanto, V/V en C = D mayor, un acorde cromático que toniciza temporalmente G.',
@@ -83,9 +83,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Cuál es la diferencia entre un acorde de séptima semidisminuida y uno de séptima totalmente disminuida en el contexto de acordes de sensible secundaria?',
     choices: [
-      'El semidisminuido tiene una séptima menor sobre la fundamental; el totalmente disminuido tiene una séptima disminuida (un semitono más baja)',
+      'El semidisminuido tiene una 7.ª menor sobre la fundamental; el totalmente disminuido, una 7.ª disminuida (un semitono más baja)',
       'El semidisminuido resuelve hacia arriba; el totalmente disminuido resuelve hacia abajo',
-      'El semidisminuido solo se usa en tonalidades mayores; el totalmente disminuido solo en menores',
+      'El semidisminuido se usa solo en tonalidades mayores y el totalmente disminuido solo en tonalidades menores, nunca al revés en ningún caso',
       'No hay diferencia; son el mismo acorde',
     ],
     hint: 'Ambos tienen una tríada disminuida (fundamental, 3.ª menor, 5.ª disminuida). La séptima difiere: semidisminuido tiene séptima menor (10 semitonos), totalmente disminuido tiene séptima disminuida (9 semitonos). El totalmente disminuido es más habitual como acorde de sensible secundaria.',
@@ -97,7 +97,7 @@ const overlay: ExerciseLevelOverlay = {
       'G mayor (V) — vii°/V resuelve medio tono arriba hacia la dominante',
       'C mayor (I) — resuelve hacia la tónica',
       'F mayor (IV) — resuelve hacia la subdominante',
-      'D menor (ii) — resuelve hacia la supertónica',
+      'D menor (ii) — vii°/V resuelve medio tono abajo hacia la supertónica',
     ],
     hint: 'El «/V» indica el objetivo: V. En C mayor, V es G. vii°/V es F# disminuido (F#, A, C), y el F# resuelve medio tono arriba hacia G, la fundamental del acorde objetivo.',
   },
@@ -109,7 +109,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Un énfasis breve y temporal en un acorde no tónica utilizando su propia dominante, sin abandonar la tonalidad original',
       'Un cambio permanente de centro tonal hacia una nueva tónica',
-      'Tocar el acorde de tónica repetidamente para establecer la tonalidad',
+      'Tocar el acorde de tónica una y otra vez, en todas las voces y registros, hasta que la tonalidad principal quede bien establecida',
       'Transponer una melodía a una nueva tonalidad',
     ],
     hint: 'La tonicización es fugaz: una dominante secundaria o acorde de sensible trata brevemente un acorde diatónico como tónica local, pero la tonalidad original mantiene el control. Piensa en ello como un desvío momentáneo.',
@@ -117,9 +117,9 @@ const overlay: ExerciseLevelOverlay = {
   l5u15m4e2: {
     prompt: '¿Cómo se distingue la modulación de la tonicización?',
     choices: [
-      'La modulación establece una nueva tonalidad mediante cadencias y pasajes extensos; la tonicización es breve y regresa a la tonalidad original',
+      'La modulación establece una nueva tonalidad con cadencias y pasajes largos; la tonicización es breve y regresa',
       'La modulación usa sostenidos; la tonicización usa bemoles',
-      'La modulación solo ocurre al final de una pieza; la tonicización ocurre en el medio',
+      'La modulación solo ocurre justo al final de una pieza; la tonicización solo ocurre en algún punto de la mitad, nunca al final',
       'No hay diferencia real; los términos son intercambiables',
     ],
     hint: 'La prueba clave: ¿el nuevo centro tonal se mantiene con sus propias cadencias y pasajes estables? Si es así, es modulación. Si la tonalidad original se reafirma rápidamente, es solo tonicización.',
@@ -155,15 +155,15 @@ const overlay: ExerciseLevelOverlay = {
       'Cada fundamental desciende una quinta justa (o asciende una cuarta justa) hacia la siguiente',
       'Cada fundamental asciende un semitono cromáticamente',
       'Cada fundamental desciende un tono',
-      'Las fundamentales alternan entre terceras ascendentes y descendentes',
+      'Las fundamentales alternan entre terceras ascendentes y terceras descendentes, sin moverse nunca por quinta',
     ],
     hint: 'Las cadenas de dominantes explotan el movimiento de fundamentales más fuerte de la música tonal: quinta descendente. Cada V7 resuelve una quinta por debajo hacia su objetivo, y ese objetivo se reinterpreta como el siguiente V7.',
   },
   l5u15m5e3: {
     prompt: '¿Qué es la tonicización secuencial?',
     choices: [
-      'Un patrón armónico en el que el mismo gesto de tonicización (p. ej., V7 – objetivo) se repite en diferentes niveles de altura en secuencia',
-      'Una modulación que pasa por todas las tonalidades en el círculo de quintas',
+      'Un patrón en el que el mismo gesto de tonicización (p. ej., V7 – objetivo) se repite en diferentes niveles de altura',
+      'Una modulación que pasa por todas las doce tonalidades del círculo de quintas, una tras otra y sin detenerse nunca en ninguna',
       'Tocar escalas en secuencia ascendente cromáticamente',
       'Una serie de cadencias rotas en diferentes tonalidades',
     ],
@@ -180,7 +180,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué es un acorde pivote en la modulación?',
     choices: [
       'Un acorde que pertenece tanto a la tonalidad antigua como a la nueva, sirviendo de bisagra entre ellas',
-      'El primer acorde de la nueva tonalidad que contiene una nota cromática',
+      'El primer acorde que se oye en la nueva tonalidad y que contiene una nota cromática ajena a la tonalidad antigua',
       'Un acorde disminuido que resuelve la modulación',
       'El acorde dominante de la tonalidad original',
     ],
@@ -203,7 +203,7 @@ const overlay: ExerciseLevelOverlay = {
       'Establecer la tonalidad antigua, introducir el acorde pivote y después confirmar la nueva tonalidad con una cadencia',
       'Tocar una escala cromática entre las dos tonalidades',
       'Parar de tocar, cambiar la armadura de clave y reanudar',
-      'Repetir la tónica de la nueva tonalidad hasta que el oyente se ajuste',
+      'Repetir la tónica de la nueva tonalidad una y otra vez, sin ninguna cadencia, hasta que el oyente termine adaptándose',
     ],
     hint: 'La modulación por acorde pivote se desarrolla en tres fases: (1) la tonalidad antigua se establece claramente, (2) un acorde diatónico se reinterpreta como perteneciente a la nueva tonalidad, (3) la nueva tonalidad se confirma con una cadencia (típicamente V–I).',
   },
@@ -216,7 +216,7 @@ const overlay: ExerciseLevelOverlay = {
       '5 — las tonalidades cuyas armaduras difieren en como máximo un sostenido o bemol',
       '2 — solo la dominante y la subdominante',
       '12 — todas las tonalidades son cercanas',
-      '3 — la relativa menor, la dominante y la subdominante',
+      '3 — la relativa menor, la dominante y la subdominante, y ninguna otra tonalidad más',
     ],
     hint: 'Las tonalidades cercanas difieren en como máximo una alteración en sus armaduras de clave. Para C mayor: G mayor (+1#), F mayor (+1b), A menor (relativa), E menor (rel. de G), D menor (rel. de F). Eso da 5 tonalidades cercanas.',
   },
@@ -249,7 +249,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Una modulación que cambia a la nueva tonalidad abruptamente en un límite de frase, sin acorde pivote',
       'Una modulación que usa un acorde pivote compartido entre las dos tonalidades',
-      'Una modulación que se mueve por semitono mediante conducción cromática de voces',
+      'Una modulación que se desliza gradualmente medio tono arriba o abajo usando siempre conducción cromática de voces',
       'Una modulación que ocurre gradualmente a lo largo de muchos compases',
     ],
     hint: 'La modulación directa es el tipo más abrupto: una frase termina en la tonalidad antigua y la frase siguiente simplemente comienza en la nueva. Ningún acorde pivote ni preparación cromática tiende el puente. Es habitual en el pop y en los himnos.',
@@ -257,8 +257,8 @@ const overlay: ExerciseLevelOverlay = {
   l5u16m3e2: {
     prompt: '¿Qué es una modulación por nota común?',
     choices: [
-      'Una modulación en la que una única nota sostenida sirve de puente entre dos tonalidades, reinterpretada en el contexto de la nueva tonalidad',
-      'Una modulación en la que la nota del bajo se mantiene en la tónica durante todo el pasaje',
+      'Una modulación en la que una nota sostenida enlaza dos tonalidades y se vuelve a oír en la nueva',
+      'Una modulación en la que la nota del bajo se mantiene en la tónica antigua durante todo el pasaje, sin excepción',
       'Una modulación que usa solo notas comunes a ambas escalas',
       'Una modulación que resuelve hacia el acorde común de dos tonalidades',
     ],
@@ -279,20 +279,20 @@ const overlay: ExerciseLevelOverlay = {
 
   l5u16m4e1: {
     prompt:
-      'Construye bVI en C mayor. Este acorde está prestado de C menor: Ab mayor (Ab, C, Eb). Selecciona las 3 notas.',
+      'Construye bVI en C mayor, un acorde prestado de C menor. Selecciona las 3 notas.',
     hint: 'bVI en C mayor = Ab mayor: Ab (8), C (0), Eb (3). Este acorde está prestado de C menor natural, donde VI es Ab mayor. El Ab y el Eb son notas cromáticas en C mayor.',
   },
   l5u16m4e2: {
     prompt:
-      'Construye iv en C mayor. Este acorde está prestado de C menor: F menor (F, Ab, C). Selecciona las 3 notas.',
+      'Construye iv en C mayor, un acorde prestado de C menor. Selecciona las 3 notas.',
     hint: 'iv en C mayor = F menor: F (5), Ab (8), C (0). En C mayor, IV es F mayor (F, A, C). Prestar de C menor rebaja el A a Ab, creando la subdominante menor más oscura.',
   },
   l5u16m4e3: {
     prompt:
       '¿Qué es la mezcla modal?',
     choices: [
-      'Tomar prestados acordes de la tonalidad menor (o mayor) paralela para añadir color cromático sin abandonar la tonalidad de origen',
-      'Mezclar dos modos diferentes como dórico y mixolidio en el mismo pasaje',
+      'Tomar prestados acordes de la tonalidad paralela menor (o mayor) para dar color, sin abandonar la tonalidad de origen',
+      'Mezclar libremente dos modos eclesiásticos distintos, como el dórico y el mixolidio, en un mismo pasaje musical sin ningún plan',
       'Tocar un acorde mayor y uno menor al mismo tiempo',
       'Alternar entre relativa mayor y relativa menor',
     ],
@@ -354,8 +354,8 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Qué distingue la forma binaria con retorno de la forma binaria simple?',
     choices: [
-      'En la binaria con retorno, el material de A regresa al final de la sección B, creando una estructura semejante a ABA dentro del marco binario',
-      'La binaria con retorno tiene finales de frase curvos en vez de cadencias rectas',
+      'En la binaria con retorno, el material de A vuelve al final de B, dando una forma tipo ABA dentro de la binaria',
+      'La binaria con retorno tiene finales de frase curvos y redondeados en lugar de las habituales cadencias rectas y decididas',
       'La binaria con retorno repite cada sección tres veces en vez de dos',
       'La binaria con retorno está siempre en una tonalidad menor',
     ],
@@ -399,7 +399,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Exposición, desarrollo y recapitulación',
       'Estrofa, estribillo y puente',
-      'Introducción, tema y coda',
+      'Introducción, desarrollo y recapitulación',
       'Preludio, fuga y postludio',
     ],
     hint: 'Forma sonata: la exposición presenta dos temas contrastantes en tonalidades diferentes, el desarrollo los fragmenta y transforma por tonalidades distantes, y la recapitulación reexpone ambos temas en la tonalidad de origen.',
@@ -412,7 +412,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Una única línea melódica sin acompañamiento ni armonía — una voz, una altura cada vez',
       'Una melodía con acompañamiento de acordes por debajo',
-      'Múltiples melodías independientes sonando simultáneamente',
+      'Varias melodías independientes que suenan a la vez, cada una con su propio ritmo y contorno',
       'Un instrumento solo tocando acordes',
     ],
     hint: 'La monofonía es la textura más simple: una única melodía sin acompañamiento. Aunque muchas personas canten o toquen la misma melodía (al unísono o en octavas), sigue siendo monofónico porque hay solo una línea musical.',
@@ -456,7 +456,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Las notas guía se mueven por grado o se mantienen como notas comunes: F–C en Dm7, F–B en G7, E–B en Cmaj7',
       'Las notas guía saltan por intervalos amplios entre cada acorde',
-      'Las notas guía se mantienen en las mismas notas a lo largo de los tres acordes',
+      'Las notas guía se mantienen siempre en las mismas dos notas a lo largo de los tres acordes: F–C en Dm7, G7 y Cmaj7',
       'Las notas guía siguen exactamente la línea del bajo',
     ],
     hint: 'Notas guía de Dm7: F (3.ª), C (7.ª). Hacia G7: F se mantiene como nota común y se convierte en la 7.ª, mientras C baja un semitono a B, la 3.ª. Hacia Cmaj7: B se mantiene y se convierte en la 7.ª, mientras F baja un semitono a E, la 3.ª. Movimiento mínimo = conducción de voces suave.',
@@ -467,7 +467,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Mover cada voz a la nota del acorde más cercana disponible, prefiriendo movimiento por grado y notas comunes a saltos',
       'Todas las voces deben moverse en movimiento paralelo en todo momento',
-      'Cada voz debe saltar a la nota del acorde más distante para crear variedad',
+      'Cada voz debe saltar a la nota del acorde más distante disponible, prefiriendo saltos amplios a grados conjuntos y notas comunes',
       'La voz superior debe siempre subir mientras la inferior desciende',
     ],
     hint: 'Una buena conducción de voces minimiza el movimiento: mantener notas comunes, mover las otras voces por grado. Esto crea progresiones armónicas suaves y conectadas. Las líneas de notas guía demuestran este principio con solo las dos notas más esenciales por acorde.',

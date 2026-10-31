@@ -81,12 +81,12 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'ear_training',
         promptTemplate: 'Listen to this interval, played {direction}, and identify it. Focus on intervals up to a perfect 5th.',
-        hintTemplate: 'Interval ear training: m2=1 (tense), M2=2 (step), m3=3 (sad), M3=4 (bright), P4=5 (open), P5=7 (power). Count the semitones you hear.',
+        hintTemplate: 'Interval ear training: m2=1 (tense), M2=2 (step), m3=3 (sad), M3=4 (bright), P4=5 (open), tritone=6 (unstable), P5=7 (power). Count the semitones you hear.',
         params: {
           earMode: 'interval',
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
           accidentals: ['', '', '', '', '', '', ''],
-          intervals: [1, 2, 3, 4, 5, 7],
+          intervals: [1, 2, 3, 4, 5, 6, 7],
           directions: ['ascending', 'descending'],
           octaves: [4],
         },
@@ -102,12 +102,12 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'ear_training',
         promptTemplate: 'Listen to this wider interval, played {direction}, and identify it.',
-        hintTemplate: 'Wider intervals: tritone=6 (tense), m6=8 (bittersweet), M6=9 (warm), m7=10 (jazz), M7=11 (longing), P8=12 (octave).',
+        hintTemplate: 'Wider intervals: m6=8 (bittersweet), M6=9 (warm), m7=10 (jazz), M7=11 (longing), P8=12 (octave).',
         params: {
           earMode: 'interval',
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
           accidentals: ['', '', '', '', '', '', ''],
-          intervals: [6, 8, 9, 10, 11, 12],
+          intervals: [8, 9, 10, 11, 12],
           directions: ['ascending', 'descending'],
           octaves: [4],
         },
@@ -134,8 +134,25 @@ const templates: ModuleTemplateConfig[] = [
           octaves: [4],
         },
       },
+      {
+        // Compound intervals (objective + unit milestone, W4-18): m9, M9,
+        // M10, P11 — 15 (m10) is left out because its table name is the
+        // chord-symbol "Augmented 9th".
+        type: 'ear_training',
+        promptTemplate: 'Listen to these two notes played together and identify the compound interval (wider than an octave).',
+        hintTemplate: 'A compound interval is a simple interval plus an octave: a 9th = octave + 2nd (m9 = 13, M9 = 14 semitones), a 10th = octave + 3rd (M10 = 16), an 11th = octave + 4th (P11 = 17). Listen for the simple interval above the octave.',
+        params: {
+          earMode: 'interval',
+          harmonic: true,
+          roots: ['C', 'D', 'E', 'F'],
+          accidentals: ['', '', '', ''],
+          intervals: [13, 14, 16, 17],
+          directions: ['ascending'],
+          octaves: [3],
+        },
+      },
     ],
-    targetCount: 5,
+    targetCount: 7,
   },
 
   // =========================================================================
@@ -149,13 +166,13 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'ear_training',
         promptTemplate: 'Listen to this scale and identify its type.',
-        hintTemplate: 'Major scale: W-W-H-W-W-W-H (bright, resolved). Natural minor: W-H-W-W-H-W-W (dark, open). Harmonic minor: raises the 7th, creating a distinctive step-and-a-half gap.',
+        hintTemplate: 'Major scale: W-W-H-W-W-W-H (bright, resolved). Natural minor: W-H-W-W-H-W-W (dark, open). Harmonic minor: raises the 7th, creating a distinctive step-and-a-half gap. Melodic minor (ascending): raises both the 6th and the 7th — minor at the bottom, major at the top.',
         params: {
           earMode: 'scale',
           roots: ['C', 'G', 'D', 'F', 'A', 'E', 'B'],
           accidentals: ['', '', '', '', '', '', 'b'],
           octaves: [4],
-          scaleTypes: ['major', 'natural_minor', 'harmonic_minor'],
+          scaleTypes: ['major', 'natural_minor', 'harmonic_minor', 'melodic_minor'],
         },
       },
     ],
@@ -169,13 +186,13 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'ear_training',
         promptTemplate: 'Listen to this scale and identify the mode. Listen for the characteristic note.',
-        hintTemplate: 'Mode identifiers: Dorian = natural 6 in a minor context, Phrygian = b2, Lydian = #4, Mixolydian = b7 in a major context.',
+        hintTemplate: 'Mode identifiers: Dorian = natural 6 in a minor context, Phrygian = b2, Lydian = #4, Mixolydian = b7 in a major context, Locrian = b2 and b5 (the darkest).',
         params: {
           earMode: 'scale',
           roots: ['C', 'D', 'E', 'F', 'G', 'A'],
           accidentals: ['', '', '', '', '', ''],
           octaves: [4],
-          scaleTypes: ['dorian', 'phrygian', 'lydian', 'mixolydian'],
+          scaleTypes: ['dorian', 'phrygian', 'lydian', 'mixolydian', 'locrian'],
         },
       },
     ],
@@ -189,13 +206,13 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'ear_training',
         promptTemplate: 'Listen to this scale and identify its type.',
-        hintTemplate: 'Pentatonic scales have five notes and no half-step tension. The blues scale adds the "blue note" (b5). The whole-tone scale is all whole steps — dreamlike and rootless.',
+        hintTemplate: 'Pentatonic scales have five notes and no half-step tension. The blues scale adds the "blue note" (b5). The whole-tone scale is all whole steps — dreamlike and rootless. The diminished (half-whole) scale alternates half and whole steps — eight notes, symmetric and tense.',
         params: {
           earMode: 'scale',
           roots: ['C', 'D', 'F', 'G', 'A'],
           accidentals: ['', '', '', '', ''],
           octaves: [4],
-          scaleTypes: ['pentatonic_major', 'pentatonic_minor', 'blues', 'whole_tone'],
+          scaleTypes: ['pentatonic_major', 'pentatonic_minor', 'blues', 'whole_tone', 'diminished_half_whole'],
         },
       },
     ],
@@ -228,12 +245,12 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'ear_training',
         promptTemplate: 'Listen to this seventh chord and identify its quality.',
-        hintTemplate: 'maj7 = dreamy/lush. min7 = mellow/warm. dom7 = bright/needs resolution. half-dim7 = dark/unresolved. dim7 = very tense.',
+        hintTemplate: 'maj7 = dreamy/lush. min7 = mellow/warm. dom7 = bright/needs resolution. half-dim7 = dark/unresolved. dim7 = very tense. minor-major 7th = a dark minor triad under a bright major 7th, unsettling.',
         params: {
           earMode: 'chord',
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
           accidentals: ['', '', '', '', '', '', ''],
-          chordQualities: ['major7', 'minor7', 'dominant7', 'half_diminished7', 'diminished7'],
+          chordQualities: ['major7', 'minor7', 'dominant7', 'half_diminished7', 'diminished7', 'minor_major7'],
         },
       },
     ],

@@ -118,7 +118,7 @@ const titles: Record<string, readonly [title: string, subtitle: string]> = {
   l9u31m5: ["Reconhecimento de Qualidade de Acordes de Sétima", "Identificar todas as qualidades de acordes de sétima de ouvido — do caloroso maior com 7.ª ao tenso diminuto com 7.ª"],
   l9u32m1: ["Ditado Melódico: Diatónico", "Transcrever melodias diatónicas curtas de ouvido — movimento por graus e triádico"],
   l9u32m2: ["Ditado Melódico: Cromático", "Transcrever melodias com notas cromáticas de passagem, notas de vizinhança e dominantes secundárias"],
-  l9u32m3: ["Ditado Harmónico: Cadências e Progressões", "Identificar cadências, transcrever progressões e ditado de linha de baixo"],
+  l9u32m3: ["Ditado Harmónico: Cadências e Progressões", "Identificar cadências e transcrever progressões seguindo o baixo"],
   l9u32m4: ["Fundamentos de Leitura à Primeira Vista", "Solfejo móvel para leitura à primeira vista em tonalidades maiores e menores"],
   l9u32m5: ["Audição Contextual", "Identificar textura, forma, instrumentos e períodos estilísticos de ouvido"],
 };
