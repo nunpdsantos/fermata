@@ -86,11 +86,16 @@ export function generateNoteChoices(
 export function generateIntervalChoices(correctSemitones: number): ChoiceOption[] {
   const correctLabel = intervalLabelFor(correctSemitones);
 
+  // Compound targets (9ths–11ths, W4-18) draw neighbours from the compound
+  // range too; simple ones stay within the octave, as before.
+  const max = correctSemitones > 12 ? 24 : 12;
   const distractorPool: number[] = [];
   for (let offset = -3; offset <= 3; offset++) {
     if (offset === 0) continue;
     const candidate = correctSemitones + offset;
-    if (candidate >= 1 && candidate <= 12) {
+    // 15 semitones heard alone is a minor 10th; the table's "Augmented 9th"
+    // is the chord-symbol (#9) reading, so it is no aural distractor.
+    if (candidate >= 1 && candidate <= max && INTERVAL_LABELS[candidate] && candidate !== 15) {
       distractorPool.push(candidate);
     }
   }

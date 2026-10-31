@@ -16,6 +16,7 @@ import {
   spelledIntervalName,
   spelledIntervalValue,
   generateSpelledIntervalChoices,
+  generateIntervalChoices,
   generateIntervalNumberChoices,
   generateStepChoices,
   generateNoteChoices,
@@ -94,6 +95,23 @@ describe('spelled intervals (W4-14)', () => {
         expect(`${t.natural}${t.accidental}`, `${root}${acc} +${n}:${s}`).toBe(oracleSpell(root, acc, n, s));
       }
     }
+  });
+});
+
+describe('compound ear-interval choices (W4-18)', () => {
+  it('a 9th–11th target gets compound neighbours, never the chord-symbol "Augmented 9th"', () => {
+    for (const s of [13, 14, 16, 17]) {
+      const ch = generateIntervalChoices(s);
+      expect(ch).toHaveLength(4);
+      expect(ch.filter((c) => c.correct).map((c) => Number(c.value))).toEqual([s]);
+      for (const c of ch) {
+        expect(Number(c.value)).toBeGreaterThanOrEqual(10);
+        expect(c.value).not.toBe('15');
+      }
+    }
+  });
+  it('a simple target still stays within the octave', () => {
+    for (let s = 1; s <= 12; s++) for (const c of generateIntervalChoices(s)) expect(Number(c.value)).toBeLessThanOrEqual(12);
   });
 });
 
