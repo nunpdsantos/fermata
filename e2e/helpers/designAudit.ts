@@ -15,7 +15,9 @@ import type { Page } from '@playwright/test';
  *  - the instrument's playing surface (piano keys, fret cells): their size is
  *    the instrument's geometry, not a control size (WCAG 2.5.8 "essential");
  *  - links / buttons inside running text (WCAG 2.5.8 "inline");
- *  - disabled controls (WCAG 1.4.3 "inactive user interface components");
+ *  - disabled controls: not tap targets; their text is exempt from contrast
+ *    only when drawn faded (WCAG 1.4.3 "inactive user interface components")
+ *    — locked answer chips shown at full strength are still checked;
  *  - visually hidden text (sr-only) and fully transparent text.
  */
 export interface AuditOptions {
@@ -39,6 +41,26 @@ export interface AuditResult {
   minContrast: ContrastHit | null;
   contrastViolations: ContrastHit[];
   hScroll: { scrollWidth: number; clientWidth: number };
+  /** How many elements each exemption skipped on this screen (for review). */
+  exempt: Exemptions;
+}
+
+export interface Exemptions {
+  /** Tap size: piano keys, fret cells, open-string cells (the instrument itself). */
+  instrumentSurface: number;
+  /** Tap size: a link / button inside a sentence. */
+  inlineTarget: number;
+  /** Tap size: a disabled control. */
+  disabledTarget: number;
+  /** Contrast: text inside a disabled control that is drawn faded (WCAG 1.4.3 inactive). */
+  inactiveText: number;
+  /** Everything: fully transparent text (opacity / alpha < 5 %). */
+  transparentText: number;
+  /** Not on screen, so not audited: text in an inert subtree (the collapsed
+   *  dock's instrument at Peek, a Learn screen animating out). */
+  inertText: number;
+  /** Not on screen, so not audited: screen-reader-only text (clipped to 1 px). */
+  srOnlyText: number;
 }
 
 /** The tap-size exemption for the instrument's playing surface. */
@@ -148,6 +170,7 @@ function pageAudit(opts: AuditOptions): AuditResult {
   let minFont: FontHit | null = null;
   let minContrast: ContrastHit | null = null;
   let textNodes = 0;
+  const exempt: Exemptions = { instrumentSurface: 0, inlineTarget: 0, disabledTarget: 0, inactiveText: 0, transparentText: 0, inertText: 0, srOnlyText: 0 };
 
   const textEls = new Set<Element>();
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -159,8 +182,19 @@ function pageAudit(opts: AuditOptions): AuditResult {
   }
   document.querySelectorAll('select, input[type="text"], input[type="search"], input:not([type]), textarea').forEach((e) => textEls.add(e));
 
+  const clipped = (el: Element) => {
+    for (let e: Element | null = el; e; e = e.parentElement) {
+      const st = getComputedStyle(e);
+      if (st.clip === 'rect(0px, 0px, 0px, 0px)' || st.clipPath === 'inset(50%)') return true;
+    }
+    return false;
+  };
   for (const el of textEls) {
-    if (!visible(el)) continue;
+    if (!visible(el)) {
+      if (el.closest('[inert]')) exempt.inertText++;
+      else if (clipped(el)) exempt.srOnlyText++;
+      continue;
+    }
     const cs = getComputedStyle(el);
     const isSvg = el instanceof SVGElement;
     let px = parseFloat(cs.fontSize);
@@ -170,7 +204,10 @@ function pageAudit(opts: AuditOptions): AuditResult {
     }
     const fg = rgba(isSvg ? cs.fill : cs.color);
     const alpha = fg[3] * (isSvg ? Number(cs.fillOpacity || 1) : 1) * opacityChain(el);
-    if (alpha < 0.05) continue;
+    if (alpha < 0.05) {
+      exempt.transparentText++;
+      continue;
+    }
     textNodes++;
     const text = (el.textContent || (el as HTMLInputElement).value || '').trim().slice(0, 40);
     const where = describe(el);
@@ -179,7 +216,13 @@ function pageAudit(opts: AuditOptions): AuditResult {
     if (!minFont || px < minFont.px) minFont = fh;
     if (px < opts.minFontPx - 0.01) fontViolations.push(fh);
 
-    if (inactive(el)) continue;
+    // A disabled control that LOOKS inactive (faded) is exempt (WCAG 1.4.3);
+    // one shown at full strength — e.g. answered choices marked right / wrong
+    // while their buttons are locked — is still read, so it is checked.
+    if (inactive(el) && opacityChain(el) < 0.99) {
+      exempt.inactiveText++;
+      continue;
+    }
     let bg = backgroundOf(el);
     if (isSvg) {
       // The shape painted beneath the text (circle-of-fifths wedge, dot…):
@@ -241,11 +284,20 @@ function pageAudit(opts: AuditOptions): AuditResult {
     if (seen.has(el)) continue;
     seen.add(el);
     if (!visible(el)) continue;
-    if (inactive(raw)) continue;
-    if (opts.tapExempt && el.matches(opts.tapExempt)) continue;
+    if (inactive(raw)) {
+      exempt.disabledTarget++;
+      continue;
+    }
+    if (opts.tapExempt && el.matches(opts.tapExempt)) {
+      exempt.instrumentSurface++;
+      continue;
+    }
     // A link or button inside a sentence (WCAG 2.5.8 "inline": its size is
     // set by the line of text around it).
-    if ((el.tagName === 'A' || el.tagName === 'BUTTON') && el.parentElement && Array.from(el.parentElement.childNodes).some((c) => c !== el && c.nodeType === 3 && c.textContent!.trim())) continue;
+    if ((el.tagName === 'A' || el.tagName === 'BUTTON') && el.parentElement && Array.from(el.parentElement.childNodes).some((c) => c !== el && c.nodeType === 3 && c.textContent!.trim())) {
+      exempt.inlineTarget++;
+      continue;
+    }
     targets++;
     const r = el.getBoundingClientRect();
     const w = Math.round(r.width * 10) / 10;
@@ -267,5 +319,6 @@ function pageAudit(opts: AuditOptions): AuditResult {
     minContrast,
     contrastViolations,
     hScroll: { scrollWidth: se.scrollWidth, clientWidth: se.clientWidth },
+    exempt,
   };
 }

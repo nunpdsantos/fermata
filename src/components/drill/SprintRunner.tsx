@@ -225,7 +225,7 @@ function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t 
           type="button"
           onClick={onExit}
           className="min-h-[44px] px-6 rounded-lg text-sm font-medium transition-colors"
-          style={{ backgroundColor: 'var(--accent)', color: 'var(--bg)' }}
+          style={{ backgroundColor: 'var(--accent)', color: 'var(--on-accent)' }}
         >
           {t('drill.sprint.exit')}
         </button>

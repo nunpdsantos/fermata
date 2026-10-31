@@ -40,7 +40,8 @@ Tokens and component classes live in `src/index.css`; components in `src/compone
 - **Shell (`components/layout/`):** TopBar = Fermata · tabs (a tabs-mode Segment: the highlight is the selected tab itself — nothing is measured, so it cannot drift on font load / resize / rotation / language change) · search · "⋯" Menu → **SettingsSheet** (Language, Theme Day / Night / Auto, Your data Export / Import with the W9 per-store vetting, footer "Fermata · build <date> · works offline" — date from vite `define` `__BUILD_DATE__` via `src/buildInfo.ts`; "works offline" only while a service worker controls the page). **InstrumentDock**: phone (< 640 px) = DetentSheet; tablet / laptop = docked panel that collapses to its bar; bar = Piano/Guitar + context line ("Position II", "C4 · 1 octave"; the fretboard publishes its position in `state/dockContextStore.ts`) + Show / Hide. Detent per view is persisted (`dockDetents`, shape-guarded); Learn rests at Peek (D-20). **API: `useAppStore.getState().requestDock('half' | 'peek' | 'full')`** (no-op in Drill) — an instrument-input exercise already calls it. **ToastRegion**: the ONE place toasts render — under the top bar on phones, above the dock (`--dock-h`, published by AppShell) elsewhere; PWA stack first.
 - **Drill on phones:** question at the top; answers, the verdict and a big Continue in the lower half (thumb zone, `.drill-thumb`).
 - **Theme:** `themeMode` is `fermata` (Day) | `fermata-night` | `auto` (follows `prefers-color-scheme`, live; `useResolvedTheme()`); the index.html pre-paint script handles all three.
-- **Proof:** `e2e/design-system.spec.ts` sweeps the main screens at 390 / 768 / 1440 × day / night (computed font sizes incl. SVG on-screen size, tap boxes, text-vs-painted-background contrast, sideways scroll, toast overlap) with `e2e/helpers/designAudit.ts`; the instrument's keys/frets and links inside sentences are the only tap-size exemptions. `design/__tests__/themeContrast.test.ts` pins every token pair; `i18n/__tests__/ptInterface.test.tsx` fails on listed English words in the PT/ES shell.
+- **Proof:** `e2e/design-system.spec.ts` sweeps 390×844, 844×390 (landscape) and 768×1024 (touch) and 1440×900 (mouse) × day / night — Explore (+ a chord in Diatonic / All / Build), the "⋯" menu, Settings, the dock (phone: Peek / Half / Full), Learn (levels, review queue, a lesson, an exercise wrong and right), Drill (question, feedback, settings, mastery map, summary) — plus PT and ES at 390 px: computed font sizes (SVG at on-screen size), tap boxes, text-vs-painted-background contrast, sideways scroll, toast overlap, with `e2e/helpers/designAudit.ts`. Its only exemptions, COUNTED per screen (`AuditResult.exempt`): the instrument's keys / frets / open-string cells (tap size), a link inside a sentence (tap size), disabled controls (tap size; their text only when drawn faded), inert or screen-reader-only text (not on screen). `DESIGN_AUDIT_OUT=<dir>` writes each screen's audit + a screenshot. `design/__tests__/themeContrast.test.ts` pins every token pair; `i18n/__tests__/ptInterface.test.tsx` fails on listed English words in the PT/ES shell, pickers, dock, Drill settings and mastery map.
+- **Drill settings / mastery map:** session length = ChipGroup; topics and answer-sound / timer = toggle chips (aria-pressed, the chip "on" look); no switches. With no dock (Drill) toasts sit at the TOP at every size (`html[data-dock="none"]`) — on a short landscape screen the answers reach the bottom.
 
 ---
 
@@ -49,7 +50,7 @@ Tokens and component classes live in `src/index.css`; components in `src/compone
 **Name:** Music Theory App
 **Domain:** Music theory education / interactive instrument
 **Stack:** React 19 + TypeScript 5.9 + Vite 7 + Tailwind CSS v4 + Zustand 5 + Framer Motion 12
-**Tests:** 7,016 passing (Vitest + React Testing Library, 194 test files; counted 2026-10-31, W11-A) + Playwright e2e: 48 tests on the production build (41 + 7 skipped PWA-only on the dev server)
+**Tests:** 7,018 passing (Vitest + React Testing Library, 194 test files; counted 2026-10-31, W11-A) + Playwright e2e: 54 tests on the production build (47 + 7 skipped PWA-only on the dev server)
 **Languages:** English + Portuguese + Spanish (react-i18next + content overlay system)
 **PWA:** Offline-capable with Workbox precaching
 
@@ -322,7 +323,7 @@ src/
 The app is a lean, single-user personal tool — no accounts, no cloud sync, no
 gamification. Curriculum, exercises, spaced repetition, trilingual content, offline
 PWA, sampled piano, instrument-aware playback, and (WS9, branch `ws9-drill-mode`)
-the phone-first Drill view: all functional, all gates green (7,016 tests / 194 files on
+the phone-first Drill view: all functional, all gates green (7,018 tests / 194 files on
 2026-10-31 after W11-A, eslint 0/0, content audits clean).
 
 WS9 details worth knowing: drill bank generated from core (`drillBank/` directory

@@ -583,6 +583,13 @@
     "finish": "Got it"
   },
   "chordBuilder": {
+    "strip": {
+      "label": "Chromatic strip from {{note}}",
+      "root": "Root, {{note}}",
+      "step": "{{interval}}, {{note}}",
+      "selected": "selected",
+      "degree": "scale degree {{n}}"
+    },
     "chordRoot": "Chord root",
     "clear": "Clear",
     "syncRoot": "Sync root to tonic",
@@ -615,6 +622,8 @@
     "progress": "{{current}} of {{total}}",
     "endSession": "End session",
     "settings": {
+      "fewerNew": "Fewer new facts",
+      "moreNew": "More new facts",
       "title": "Drill settings",
       "length": "Session length",
       "newPerSession": "New facts per session",

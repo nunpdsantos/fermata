@@ -72,7 +72,8 @@ describe('W2-10 — chord browser', () => {
   function browsable(): { quality: string; text: string }[] {
     useAppStore.setState({ selectedKey: C, selectedChord: null });
     render(<ChordBrowser />);
-    const tabs = screen.getAllByRole('button').filter((b) => b.closest('.flex-wrap'));
+    // The categories are a radiogroup of choice chips (W11-A).
+    const tabs = screen.getAllByRole('radio');
     const out: { quality: string; text: string }[] = [];
     for (const tab of tabs) {
       fireEvent.click(tab);

@@ -19,6 +19,9 @@ import { KeySelector } from '../../components/navigation/KeySelector';
 import { ScaleDegreeBar } from '../../components/theory/ScaleDegreeBar';
 import { ChordGrid } from '../../components/theory/ChordGrid';
 import { Fretboard } from '../../components/instruments/Fretboard';
+import { DrillSettings } from '../../components/drill/DrillSettings';
+import { MasteryMap } from '../../components/drill/MasteryMap';
+import { DEFAULT_SETTINGS } from '../../state/drillStore';
 
 vi.mock('../../hooks/useAudio', () => ({
   useAudio: () => ({ noteOn: vi.fn().mockResolvedValue(60), noteOff: vi.fn() }),
@@ -66,6 +69,9 @@ const ENGLISH = [
   'Scale degrees', 'Diatonic chords', 'chord', 'degree', 'Degree', 'Tonic', 'Supertonic', 'Mediant',
   'Subdominant', 'Dominant', 'Submediant', 'Leading', 'Diminished', 'fret', 'string', 'open string', 'muted',
   'Fingers', 'Degrees', 'Notes', 'Edit fingering', 'Backup downloaded',
+  // Drill settings + mastery map (W11-A)
+  'Session length', 'Topics', 'Answer sound', 'Show timer', 'Mastery', 'Mastery map', 'Reset drill progress',
+  'Fewer new facts', 'More new facts', 'by heart', 'due today', 'Triads', 'Intervals',
 ];
 const ENGLISH_RE = new RegExp(`(?<![\\p{L}])(${ENGLISH.join('|')})(?![\\p{L}])`, 'u');
 
@@ -144,5 +150,16 @@ describe.each(['pt', 'es'] as const)('%s interface has no hard-coded English', (
     await screen.findAllByRole('grid');
     expect(guitar.container.querySelectorAll('[data-fret]').length).toBeGreaterThan(30);
     expect(englishIn(guitar.container)).toEqual([]);
+  });
+
+  it('Drill settings and the mastery map', () => {
+    const { container } = render(
+      <div>
+        <DrillSettings settings={DEFAULT_SETTINGS} onUpdate={() => {}} onBack={() => {}} onMasteryMap={() => {}} onResetProgress={() => {}} />
+        <MasteryMap bank={[]} items={{}} families={DEFAULT_SETTINGS.families} now={0} onToggleFamily={() => {}} onBack={() => {}} />
+      </div>,
+    );
+    expect(screen.getAllByRole('radio').length).toBe(3); // 12 / 24 / 40
+    expect(englishIn(container)).toEqual([]);
   });
 });

@@ -18,8 +18,9 @@ describe('DrillSettings', () => {
     render(
       <DrillSettings settings={settings({ length: 24 })} onUpdate={onUpdate} onBack={noop} onMasteryMap={noop} onResetProgress={noop} />,
     );
-    expect(screen.getByRole('button', { name: '24' }).getAttribute('aria-pressed')).toBe('true');
-    fireEvent.click(screen.getByRole('button', { name: '40' }));
+    // One of three values: a radiogroup of choice chips (W11-A).
+    expect(screen.getByRole('radio', { name: '24' }).getAttribute('aria-checked')).toBe('true');
+    fireEvent.click(screen.getByRole('radio', { name: '40' }));
     expect(onUpdate).toHaveBeenCalledWith({ length: 40 });
   });
 
@@ -29,15 +30,15 @@ describe('DrillSettings', () => {
       <DrillSettings settings={settings({ newPerSession: 0 })} onUpdate={onUpdate} onBack={noop} onMasteryMap={noop} onResetProgress={noop} />,
     );
     // At 0, decrement is disabled; increment works.
-    expect(screen.getByRole('button', { name: 'decrement' }).hasAttribute('disabled')).toBe(true);
-    fireEvent.click(screen.getByRole('button', { name: 'increment' }));
+    expect(screen.getByRole('button', { name: 'Fewer new facts' }).hasAttribute('disabled')).toBe(true);
+    fireEvent.click(screen.getByRole('button', { name: 'More new facts' }));
     expect(onUpdate).toHaveBeenCalledWith({ newPerSession: 1 });
 
     // At 8, increment is disabled.
     rerender(
       <DrillSettings settings={settings({ newPerSession: 8 })} onUpdate={onUpdate} onBack={noop} onMasteryMap={noop} onResetProgress={noop} />,
     );
-    expect(screen.getByRole('button', { name: 'increment' }).hasAttribute('disabled')).toBe(true);
+    expect(screen.getByRole('button', { name: 'More new facts' }).hasAttribute('disabled')).toBe(true);
   });
 
   it('toggles a family in settings.families', () => {
@@ -45,20 +46,24 @@ describe('DrillSettings', () => {
     render(
       <DrillSettings settings={settings()} onUpdate={onUpdate} onBack={noop} onMasteryMap={noop} onResetProgress={noop} />,
     );
-    fireEvent.click(screen.getByRole('switch', { name: 'Triads' }));
+    // Topics are toggle chips (aria-pressed), several can be on.
+    expect(screen.getByRole('button', { name: 'Triads' }).getAttribute('aria-pressed')).toBe('true');
+    fireEvent.click(screen.getByRole('button', { name: 'Triads' }));
     expect(onUpdate).toHaveBeenCalledWith({
       families: expect.objectContaining({ triad: false }),
     });
   });
 
-  it('toggles the sound and show-timer switches', () => {
+  it('toggles the sound and show-timer chips', () => {
     const onUpdate = vi.fn();
     render(
       <DrillSettings settings={settings({ sound: true, showTimer: false })} onUpdate={onUpdate} onBack={noop} onMasteryMap={noop} onResetProgress={noop} />,
     );
-    fireEvent.click(screen.getByRole('switch', { name: 'Answer sound' }));
+    expect(screen.getByRole('button', { name: 'Answer sound' }).getAttribute('aria-pressed')).toBe('true');
+    fireEvent.click(screen.getByRole('button', { name: 'Answer sound' }));
     expect(onUpdate).toHaveBeenCalledWith({ sound: false });
-    fireEvent.click(screen.getByRole('switch', { name: 'Show timer' }));
+    expect(screen.getByRole('button', { name: 'Show timer' }).getAttribute('aria-pressed')).toBe('false');
+    fireEvent.click(screen.getByRole('button', { name: 'Show timer' }));
     expect(onUpdate).toHaveBeenCalledWith({ showTimer: true });
   });
 

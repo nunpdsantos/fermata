@@ -94,7 +94,7 @@ export function SessionSummary({
           type="button"
           onClick={onNewSession}
           className="min-h-[44px] rounded-lg text-sm font-medium transition-colors"
-          style={{ backgroundColor: 'var(--accent)', color: 'var(--bg)' }}
+          style={{ backgroundColor: 'var(--accent)', color: 'var(--on-accent)' }}
         >
           {t('drill.summary.newSession')}
         </button>

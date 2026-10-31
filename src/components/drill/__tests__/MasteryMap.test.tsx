@@ -33,7 +33,7 @@ const NOW = 1_000_000;
 afterEach(cleanup);
 
 describe('MasteryMap', () => {
-  it('renders a switch per family with the correct on/off state', () => {
+  it('renders a toggle chip per family with the correct on/off state', () => {
     const families = { ...ALL_ON, interval: false };
     render(
       <MasteryMap
@@ -45,11 +45,11 @@ describe('MasteryMap', () => {
         onBack={() => {}}
       />,
     );
-    const switches = screen.getAllByRole('switch');
-    expect(switches).toHaveLength(DRILL_FAMILIES.length);
+    const toggles = screen.getAllByRole('button').filter((b) => b.hasAttribute('aria-pressed'));
+    expect(toggles).toHaveLength(DRILL_FAMILIES.length);
     // Triads enabled, Intervals disabled.
-    expect(screen.getByRole('switch', { name: 'Triads' }).getAttribute('aria-checked')).toBe('true');
-    expect(screen.getByRole('switch', { name: 'Intervals' }).getAttribute('aria-checked')).toBe('false');
+    expect(screen.getByRole('button', { name: 'Triads' }).getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByRole('button', { name: 'Intervals' }).getAttribute('aria-pressed')).toBe('false');
   });
 
   it('writes the flipped value for the tapped family', () => {
@@ -64,7 +64,7 @@ describe('MasteryMap', () => {
         onBack={() => {}}
       />,
     );
-    fireEvent.click(screen.getByRole('switch', { name: 'Triads' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Triads' }));
     expect(onToggle).toHaveBeenCalledWith('triad', false); // was on → off
   });
 

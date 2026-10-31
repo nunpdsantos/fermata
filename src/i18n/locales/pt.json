@@ -583,6 +583,13 @@
     "finish": "Entendido"
   },
   "chordBuilder": {
+    "strip": {
+      "label": "Faixa cromática a partir de {{note}}",
+      "root": "Fundamental, {{note}}",
+      "step": "{{interval}}, {{note}}",
+      "selected": "selecionada",
+      "degree": "grau {{n}} da escala"
+    },
     "chordRoot": "Fundamental do acorde",
     "clear": "Limpar",
     "syncRoot": "Igualar à tónica",
@@ -615,6 +622,8 @@
     "progress": "{{current}} de {{total}}",
     "endSession": "Terminar sessão",
     "settings": {
+      "fewerNew": "Menos factos novos",
+      "moreNew": "Mais factos novos",
       "title": "Definições de treino",
       "length": "Duração da sessão",
       "newPerSession": "Factos novos por sessão",

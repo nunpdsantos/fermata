@@ -105,7 +105,7 @@ export function ExerciseFeedback({
             whileTap={{ scale: 0.97 }}
             transition={SPRING_MICRO}
             onClick={onTryAgain}
-            className="text-xs font-medium px-4 py-1.5 max-sm:py-2 max-sm:px-5 rounded-lg transition-colors"
+            className="inline-flex items-center justify-center min-h-(--tap) text-ui font-medium px-4 max-sm:px-5 rounded-lg transition-colors"
             style={{
               backgroundColor: `${accentColor}20`,
               color: accentText(accentColor),
@@ -118,7 +118,7 @@ export function ExerciseFeedback({
             whileTap={{ scale: 0.97 }}
             transition={SPRING_MICRO}
             onClick={onNext}
-            className="text-xs font-medium px-4 py-1.5 max-sm:py-2 max-sm:px-5 rounded-lg transition-colors"
+            className="inline-flex items-center justify-center min-h-(--tap) text-ui font-medium px-4 max-sm:px-5 rounded-lg transition-colors"
             style={{
               backgroundColor: `${accentColor}20`,
               color: accentText(accentColor),
