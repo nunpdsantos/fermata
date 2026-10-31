@@ -41,6 +41,16 @@ function flatten(o: Json, p = ''): Record<string, string> {
 const placeholders = (s: string) => [...new Set([...s.matchAll(/\{\{\s*([\w.]+)\s*\}\}/g)].map((m) => m[1]))].sort().join(',');
 const PLURAL = /_(zero|one|two|few|many|other)$/;
 
+// Placeholders a translation may leave out on purpose: the UK cadence name
+// ("(UK: perfect)") glosses the American term for English readers only; the
+// PT/ES Drill drops it (W7).
+const OPTIONAL_PLACEHOLDERS: Record<string, string[]> = {
+  'drill.why.cadenceDef': ['uk'],
+  'drill.why.cadencePerfect': ['uk'],
+};
+const required = (key: string, s: string) =>
+  placeholders(s).split(',').filter((p) => p && !(OPTIONAL_PLACEHOLDERS[key] ?? []).includes(p)).join(',');
+
 const EN = flatten(en as Json);
 const LOCALES = { pt: flatten(ptLocale as Json), es: flatten(esLocale as Json) };
 
@@ -52,7 +62,7 @@ describe('locale files', () => {
       for (const k of Object.keys(EN)) {
         if (!(k in L)) problems.push(`missing ${k}`);
         else {
-          if (placeholders(EN[k]) !== placeholders(L[k])) problems.push(`placeholders ${k}: EN {${placeholders(EN[k])}} vs {${placeholders(L[k])}}`);
+          if (required(k, EN[k]) !== required(k, L[k])) problems.push(`placeholders ${k}: EN {${placeholders(EN[k])}} vs {${placeholders(L[k])}}`);
           if (!L[k].trim() && EN[k].trim()) problems.push(`empty ${k}`);
         }
       }
