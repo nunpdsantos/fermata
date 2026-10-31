@@ -20,6 +20,7 @@ import { noteToString, stringToNote } from '../../types/music';
 import { MAJOR_KEYS, getRelativeMinor, keySignatureOf } from './shared';
 import { noteAtIntervalAbove } from './intervalEngine';
 import { ABBR_TO_NUMBER } from './genInterval';
+import { soundingMidiOfReadId } from './genRead';
 
 /** Key (major tonic 'A', minor tonic lowercase 'f#') → its signature ('3#', '0'). */
 let keySigByKey: Map<string, string> | null = null;
@@ -107,6 +108,12 @@ function groupFor(id: string): string | null {
         return above ? `interval:${p[2]}:${noteToString(above)}` : null;
       }
       return null;
+    }
+    case 'read': {
+      // Every reading item about one sounding pitch — any position, either
+      // spelling (G♯4 / A♭4 are played in the same places).
+      const midi = soundingMidiOfReadId(id);
+      return midi === null ? null : `read:${midi}`;
     }
     case 'circle': {
       // "A fifth up from C?" (G) ↔ "A fifth down from G?" (C): same fifth.

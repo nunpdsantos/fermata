@@ -658,7 +658,8 @@
       "triad": "Tríades",
       "seventh": "Acordes de sétima",
       "roman": "Numerais romanos",
-      "function": "Função harmónica"
+      "function": "Função harmónica",
+      "read": "Leitura (guitarra)"
     },
     "clear": "Limpar",
     "done": "Concluído",
@@ -729,7 +730,10 @@
       "chordFunction": "Em {{key}}, {{chord}} funciona como…?",
       "cadence": "{{pair}} no fim de uma frase é que cadência?",
       "cadenceRootPosition": "{{pair}} no fim de uma frase, com ambos os acordes no estado fundamental e a tónica na voz superior, é que cadência?",
-      "v7Of": "Qual é o V7 de {{key}}?"
+      "v7Of": "Qual é o V7 de {{key}}?",
+      "readAnywhere": "Onde está esta nota na guitarra? Em qualquer corda.",
+      "readOpenPosition": "Onde está esta nota na posição aberta (cordas soltas e trastes 1–4)?",
+      "readInPosition": "Onde está esta nota na posição {{position}}?"
     },
     "why": {
       "keyToCount": "{{key}} tem {{answer}}. Conta ao longo do círculo das quintas a partir de C (sem alterações).",
@@ -758,7 +762,8 @@
       "functionPull": "{{chord}} puxa {{direction}} — é essa a sua função harmónica.",
       "cadenceDef": "{{answer}}.",
       "cadencePerfect": "{{answer}}: V → I com ambos os acordes no estado fundamental e a tónica na voz superior. Se inverteres um dos acordes, ou se a voz superior terminar noutra nota, passa a ser uma cadência imperfeita.",
-      "v7Derivation": "O grau 5 de {{key}} é {{five}}; a sua sétima da dominante é {{answer}}."
+      "v7Derivation": "O grau 5 de {{key}} é {{five}}; a sua sétima da dominante é {{answer}}.",
+      "readPlaces": "{{written}} escrito soa {{sounding}}: a guitarra soa uma oitava abaixo do que está escrito. {{places}} (número no círculo = corda; depois, o traste)."
     }
   }
 }
