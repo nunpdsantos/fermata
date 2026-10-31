@@ -123,7 +123,7 @@ describe('LearnView navigation (W9-20)', () => {
     await h1('Learn Music Theory');
     expect(screen.getByText('Review Queue')).toBeTruthy();
 
-    const row = screen.getAllByRole('button').find((b) => b.textContent?.includes('Level 1 · Unit 1 · Module 1'))!;
+    const row = screen.getByTitle('Level 1 · Unit 1 · Module 1').closest('button, [role="button"]') as HTMLElement;
     await act(async () => { fireEvent.click(row); });
     await h1(MOD1.title);
     expect(screen.getAllByText('Review').length).toBeGreaterThan(0); // the review badge

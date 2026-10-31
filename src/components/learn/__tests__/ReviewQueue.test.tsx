@@ -59,15 +59,16 @@ describe('ReviewQueue (W9-20)', () => {
     );
     expect(screen.getByText('Review Queue')).toBeTruthy();
     expect(screen.getByText('2')).toBeTruthy(); // the due count badge
-    fireEvent.click(screen.getByText('Level 1 · Unit 1 · Module 2').closest('button, [role="button"]')!);
+    // Rows show the module's name since W6-17; the position is the tooltip.
+    fireEvent.click(screen.getByTitle('Level 1 · Unit 1 · Module 2').closest('button, [role="button"]')!);
     expect(onStartReview).toHaveBeenCalledWith('l1u1m2');
-    expect(screen.queryByText(/Level 2 · Unit 4/)).toBeNull(); // not yet due
+    expect(screen.queryByTitle(/Level 2 · Unit 4/)).toBeNull(); // not yet due
   });
 
   it('shows at most five rows and says how many more are due', () => {
     const due = Object.fromEntries(['l1u1m1', 'l1u1m2', 'l1u1m3', 'l1u2m1', 'l1u2m2', 'l1u2m3', 'l1u3m1'].map((id) => [id, schedule(-1)]));
     render(<ReviewQueue progress={withSchedules(due)} onStartReview={() => {}} />);
-    expect(screen.getAllByText(/^Level 1 · Unit \d · Module \d$/)).toHaveLength(5);
+    expect(screen.getAllByTitle(/^Level 1 · Unit \d · Module \d$/)).toHaveLength(5);
     expect(screen.getByText('+2 more due for review')).toBeTruthy();
   });
 });
