@@ -1,11 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
-// 2026-10-31 (W9, review B2): the W9 release ships a ONE-OFF workbox
-// skipWaiting so clients still on the previous autoUpdate build take it. While
-// vite.config.ts has ONE_OFF_SKIP_WAITING = true the built worker skips waiting
-// on its own; the next release turns it off (src/__tests__/oneOffSkipWaiting
-// .test.ts fails after its expiry date until it is). Delete this branch then.
+// 2026-10-31 (W9, review B2): every release until 2026-11-14 ships workbox
+// skipWaiting (ONE_OFF_SKIP_WAITING in vite.config.ts) so installed clients
+// still on the old autoUpdate code — which only reloads on `activated` — keep
+// updating. While it is on the built worker skips waiting on its own. It is
+// removed in the first release after 2026-11-14 (the dated
+// src/__tests__/oneOffSkipWaiting.test.ts fails until it is); delete this
+// branch then.
 const ONE_OFF_SKIP_WAITING = /const ONE_OFF_SKIP_WAITING = true\b/.test(readFileSync('vite.config.ts', 'utf8'));
 
 test.describe('PWA basics', () => {
@@ -75,7 +77,7 @@ test.describe('PWA basics', () => {
     // First install still controls the open page (runtime caching from visit one).
     expect(text).toContain('clientsClaim()');
     if (ONE_OFF_SKIP_WAITING) {
-      // The W9 release only (see the note at the top): skips waiting by itself.
+      // Transition window (see the note at the top): skips waiting by itself.
       expect(text).toContain('skipWaiting()');
       return;
     }
