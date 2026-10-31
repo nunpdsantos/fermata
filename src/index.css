@@ -685,6 +685,15 @@ body {
       padding: 0 10px;
     }
   }
+  @media (max-width: 359px) {
+    .app-tabs .seg-btn {
+      padding: 0 6px;
+    }
+    /* No room for the dock's context line next to Piano/Guitar + Show. */
+    .dock-context {
+      visibility: hidden;
+    }
+  }
 
   /* "⋯" menu */
   .menu-popup {

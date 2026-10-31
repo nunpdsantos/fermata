@@ -5,6 +5,7 @@ import { Segment } from '../ui/Segment.tsx';
 import { Button } from '../ui/Button.tsx';
 import { Menu } from '../ui/Menu.tsx';
 import { SettingsSheet } from './SettingsSheet.tsx';
+import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 
 const VIEWS: ViewMode[] = ['explore', 'learn', 'drill'];
 const VIEW_KEYS: Record<ViewMode, string> = {
@@ -33,6 +34,9 @@ export function TopBar() {
   const view = useAppStore((s) => s.view);
   const setView = useAppStore((s) => s.setView);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  // Below 360 px the three tabs need the room: search moves into the menu.
+  const narrow = useMediaQuery('(max-width: 359px)');
+  const openSearch = () => useAppStore.getState().setQuickSearchOpen(true);
 
   return (
     <header className="app-topbar" data-testid="app-topbar">
@@ -61,22 +65,27 @@ export function TopBar() {
 
       <div className="flex items-center gap-1 justify-end">
         {/* One search button: icon only (a --tap square) on phones. */}
-        <Button
-          variant="quiet"
-          className="max-sm:w-(--tap) max-sm:px-0"
-          onClick={() => useAppStore.getState().setQuickSearchOpen(true)}
-          aria-label={t('nav.quickSearchLabel')}
-          startIcon={SEARCH_ICON}
-        >
-          <span className="max-sm:hidden">{t('nav.search')}</span>
-          <kbd className="text-caption px-1 rounded max-sm:hidden" style={{ color: 'var(--text-dim)', backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border-subtle)' }} aria-hidden="true">
-            ⌘K
-          </kbd>
-        </Button>
+        {!narrow && (
+          <Button
+            variant="quiet"
+            className="max-sm:w-(--tap) max-sm:px-0"
+            onClick={openSearch}
+            aria-label={t('nav.quickSearchLabel')}
+            startIcon={SEARCH_ICON}
+          >
+            <span className="max-sm:hidden">{t('nav.search')}</span>
+            <kbd className="text-caption px-1 rounded max-sm:hidden" style={{ color: 'var(--text-dim)', backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border-subtle)' }} aria-hidden="true">
+              ⌘K
+            </kbd>
+          </Button>
+        )}
         <Menu
           label={t('nav.more')}
           testId="app-menu"
-          items={[{ id: 'settings', label: t('settings.title'), onSelect: () => setSettingsOpen(true) }]}
+          items={[
+            ...(narrow ? [{ id: 'search', label: t('nav.search'), onSelect: openSearch }] : []),
+            { id: 'settings', label: t('settings.title'), onSelect: () => setSettingsOpen(true) },
+          ]}
         />
       </div>
       <SettingsSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} />

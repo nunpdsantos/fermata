@@ -235,3 +235,23 @@ test.describe('phone instrument sheet (D-26)', () => {
     expect(await dock.evaluate((el) => el.getAttribute('style') ?? '')).toMatch(/height/);
   });
 });
+
+test('below 360 px the tabs keep their room: Search moves into the "⋯" menu; nothing scrolls sideways (PT)', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 320, height: 640 }, hasTouch: true, isMobile: true });
+  const page = await context.newPage();
+  await seed(page, { language: 'pt', lastView: 'explore' });
+  await page.goto('/');
+  await expect(page.getByRole('tab', { name: 'Treino' })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Pesquisa rápida/ })).toHaveCount(0);
+  // The last tab ends before the menu button starts.
+  const lastTab = (await page.getByRole('tab', { name: 'Treino' }).boundingBox())!;
+  const menuButton = (await page.getByRole('button', { name: 'Mais', exact: true }).boundingBox())!;
+  expect(lastTab.x + lastTab.width).toBeLessThanOrEqual(menuButton.x + 0.5);
+  expect(await page.evaluate(() => document.scrollingElement!.scrollWidth)).toBeLessThanOrEqual(320);
+  await page.getByRole('button', { name: 'Mais', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Pesquisar' }).click();
+  // Quick Search (a lazy chunk) opens as a dialog.
+  await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 });
+  await context.close();
+});
+
