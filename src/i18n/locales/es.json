@@ -293,6 +293,8 @@
     "semitones_other": "{{count}} semitonos"
   },
   "pwa": {
+    "later": "Más tarde",
+    "updateReady": "Actualización lista: recargar",
     "newVersion": "Nueva versi\u00f3n disponible",
     "offlineReady": "App lista para uso sin conexi\u00f3n",
     "installPrompt": "\u00bfInstalar Fermata?"

@@ -4,9 +4,11 @@ import { Button, IconButton } from '../ui/Button';
 
 export function PWAPrompts() {
   const { t } = useTranslation();
-  const { needRefresh, offlineReady, canInstall, install, dismissInstall, reload, dismissOffline } = usePWA();
+  const { needRefresh, offlineReady, updateDeferred, deferUpdate, canInstall, install, dismissInstall, reload, dismissOffline } = usePWA();
+  // "Later" hides the update toast; the "⋯" menu keeps "Update ready" until the reload.
+  const showUpdate = needRefresh && !updateDeferred;
 
-  if (!needRefresh && !offlineReady && !canInstall) return null;
+  if (!showUpdate && !offlineReady && !canInstall) return null;
 
   // ONE stack, highest priority first (update > offline-ready > install).
   // Each toast used to fix itself at the same spot, so later ones covered the
@@ -14,16 +16,19 @@ export function PWAPrompts() {
   // ToastRegion, above the instrument dock (W9-22).
   return (
     <div className="flex flex-col gap-2 pointer-events-auto" data-testid="pwa-toast-stack">
-      {/* Update available toast */}
-      {needRefresh && (
+      {/* Update available toast: one tap reloads (W9-06); "Later" puts it
+          off — it stays in the "⋯" menu. */}
+      {showUpdate && (
         <Toast
           message={t('pwa.newVersion')}
           action={t('common.reload')}
           onAction={reload}
+          secondary={t('pwa.later')}
+          onSecondary={deferUpdate}
         />
       )}
 
-      {/* Offline ready toast (auto-dismiss) */}
+      {/* Offline ready toast (dismisses itself after OFFLINE_READY_MS — usePWA) */}
       {offlineReady && (
         <Toast
           message={t('pwa.offlineReady')}
@@ -48,11 +53,15 @@ function Toast({
   message,
   action,
   onAction,
+  secondary,
+  onSecondary,
   onDismiss,
 }: {
   message: string;
   action?: string;
   onAction?: () => void;
+  secondary?: string;
+  onSecondary?: () => void;
   onDismiss?: () => void;
 }) {
   const { t } = useTranslation();
@@ -62,6 +71,11 @@ function Toast({
       role="alert"
     >
       <span className="flex-1">{message}</span>
+      {secondary && onSecondary && (
+        <Button variant="quiet" onClick={onSecondary}>
+          {secondary}
+        </Button>
+      )}
       {action && onAction && (
         <Button variant="primary" onClick={onAction}>
           {action}

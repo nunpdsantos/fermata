@@ -123,3 +123,51 @@ describe('app update flow (W9-06)', () => {
     expect(stub.updateCalls).toEqual([]);
   });
 });
+
+describe('toasts that do not linger (W11-A review round 4)', () => {
+  it('"ready to work offline" dismisses itself after OFFLINE_READY_MS', async () => {
+    vi.useFakeTimers();
+    const { stub, PWAPrompts, pwa } = await freshApp();
+    render(<PWAPrompts />);
+    act(() => stub.lastOptions!.onOfflineReady!());
+    expect(screen.getByText(/offline/i)).toBeTruthy();
+    act(() => vi.advanceTimersByTime(pwa.OFFLINE_READY_MS - 100));
+    expect(screen.getByText(/offline/i)).toBeTruthy();
+    act(() => vi.advanceTimersByTime(200));
+    expect(screen.queryByText(/offline/i)).toBeNull();
+    expect(pwa.usePwaUpdateStore.getState().offlineReady).toBe(false);
+  });
+
+  it('"Later" puts the update off: the toast goes, the "⋯" menu keeps it until the reload', async () => {
+    const { stub, PWAPrompts } = await freshApp();
+    const { TopBar } = await import('../../components/layout/TopBar');
+    render(<><TopBar /><PWAPrompts /></>);
+    // No update yet: no menu item.
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    expect(screen.queryByRole('menuitem', { name: /update ready/i })).toBeNull();
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
+
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    fireEvent.click(screen.getByRole('button', { name: 'Later' }));
+    expect(screen.queryByText(/new version/i)).toBeNull();
+    expect(stub.updateCalls).toEqual([]);
+    expect(reloadPage).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('menuitem', { name: /update ready/i }));
+    });
+    expect(stub.updateCalls).toEqual([true]); // the same one-tap update as the toast's Reload
+  });
+
+  it('a newer waiting version asks again after "Later"', async () => {
+    const { stub, PWAPrompts } = await freshApp();
+    render(<PWAPrompts />);
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    fireEvent.click(screen.getByRole('button', { name: 'Later' }));
+    expect(screen.queryByText(/new version/i)).toBeNull();
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    expect(screen.getByText(/new version/i)).toBeTruthy();
+    expect(screen.getByRole('button', { name: /reload/i })).toBeTruthy();
+  });
+});

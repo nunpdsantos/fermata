@@ -6,6 +6,7 @@ import { Button } from '../ui/Button.tsx';
 import { Menu } from '../ui/Menu.tsx';
 import { SettingsSheet } from './SettingsSheet.tsx';
 import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
+import { usePwaUpdateStore, applyUpdateOrReload } from '../../hooks/usePWA.ts';
 
 const VIEWS: ViewMode[] = ['explore', 'learn', 'drill'];
 const VIEW_KEYS: Record<ViewMode, string> = {
@@ -36,6 +37,7 @@ export function TopBar() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   // Below 360 px the three tabs need the room: search moves into the menu.
   const narrow = useMediaQuery('(max-width: 359px)');
+  const updateReady = usePwaUpdateStore((s) => s.needRefresh);
   const openSearch = () => useAppStore.getState().setQuickSearchOpen(true);
 
   return (
@@ -85,6 +87,8 @@ export function TopBar() {
           items={[
             ...(narrow ? [{ id: 'search', label: t('nav.search'), onSelect: openSearch }] : []),
             { id: 'settings', label: t('settings.title'), onSelect: () => setSettingsOpen(true) },
+            // A waiting update stays one tap away after "Later" (until the reload).
+            ...(updateReady ? [{ id: 'update', label: t('pwa.updateReady'), onSelect: () => void applyUpdateOrReload() }] : []),
           ]}
         />
       </div>

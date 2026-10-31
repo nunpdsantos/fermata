@@ -293,6 +293,8 @@
     "semitones_other": "{{count}} meios-tons"
   },
   "pwa": {
+    "later": "Mais tarde",
+    "updateReady": "Atualização pronta: recarregar",
     "newVersion": "Nova vers\u00e3o dispon\u00edvel",
     "offlineReady": "App pronta para uso offline",
     "installPrompt": "Instalar Fermata?"

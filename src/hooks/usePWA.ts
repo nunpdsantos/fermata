@@ -26,12 +26,27 @@ interface BeforeInstallPromptEvent extends Event {
 interface PwaUpdateState {
   needRefresh: boolean;
   offlineReady: boolean;
+  /** The learner chose "Later" on the update toast: it hides, and the update
+   *  stays one tap away in the "⋯" menu until the page reloads. */
+  updateDeferred: boolean;
 }
 
 export const usePwaUpdateStore = create<PwaUpdateState>(() => ({
   needRefresh: false,
   offlineReady: false,
+  updateDeferred: false,
 }));
+
+/** "Ready to work offline" is news, not a task: it leaves by itself. */
+export const OFFLINE_READY_MS = 6_000;
+let offlineReadyTimer: ReturnType<typeof setTimeout> | undefined;
+
+/** Show the offline-ready toast; it dismisses itself after OFFLINE_READY_MS. */
+export function showOfflineReady(): void {
+  usePwaUpdateStore.setState({ offlineReady: true });
+  clearTimeout(offlineReadyTimer);
+  offlineReadyTimer = setTimeout(() => usePwaUpdateStore.setState({ offlineReady: false }), OFFLINE_READY_MS);
+}
 
 /** Foreground update checks are throttled to one per minute. */
 export const FOREGROUND_CHECK_MIN_GAP_MS = 60_000;
@@ -130,10 +145,11 @@ export function startPwaRegistration(): void {
 
   updateServiceWorker = registerSW({
     onNeedRefresh() {
-      usePwaUpdateStore.setState({ needRefresh: true });
+      // A (newer) waiting version: ask again even if an earlier one was put off.
+      usePwaUpdateStore.setState({ needRefresh: true, updateDeferred: false });
     },
     onOfflineReady() {
-      usePwaUpdateStore.setState({ offlineReady: true });
+      showOfflineReady();
     },
     onRegisteredSW(_swUrl, r) {
       registration = r;
@@ -188,6 +204,7 @@ export async function applyUpdateOrReload(): Promise<void> {
 export function usePWA() {
   const needRefresh = usePwaUpdateStore((s) => s.needRefresh);
   const offlineReady = usePwaUpdateStore((s) => s.offlineReady);
+  const updateDeferred = usePwaUpdateStore((s) => s.updateDeferred);
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
@@ -215,10 +232,13 @@ export function usePWA() {
     void applyUpdateOrReload();
   }, []);
   const dismissOffline = useCallback(() => usePwaUpdateStore.setState({ offlineReady: false }), []);
+  const deferUpdate = useCallback(() => usePwaUpdateStore.setState({ updateDeferred: true }), []);
 
   return {
     needRefresh,
     offlineReady,
+    updateDeferred,
+    deferUpdate,
     canInstall: installPrompt !== null,
     install,
     dismissInstall,

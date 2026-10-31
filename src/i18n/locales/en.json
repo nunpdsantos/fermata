@@ -293,6 +293,8 @@
     "semitones_other": "{{count}} semitones"
   },
   "pwa": {
+    "later": "Later",
+    "updateReady": "Update ready: reload",
     "newVersion": "New version available",
     "offlineReady": "App ready for offline use",
     "installPrompt": "Install Fermata?"
