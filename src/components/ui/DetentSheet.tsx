@@ -128,6 +128,7 @@ export function DetentSheet({ detent, onDetent, available, handleLabel, detentLa
           aria-valuetext={detentLabels[detent]}
           aria-controls={contentId}
           className="detent-handle"
+          data-focus-ring="custom"
           onKeyDown={onKeyDown}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}

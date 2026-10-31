@@ -3,11 +3,11 @@ import { Piano } from '../instruments/Piano.tsx';
 import { InstrumentSelector } from '../instruments/InstrumentSelector.tsx';
 import { ViewSlot, type ViewLoader } from '../ViewSlot.tsx';
 import { DetentSheet } from '../ui/DetentSheet.tsx';
-import { Button } from '../ui/Button.tsx';
+import { Button, IconButton } from '../ui/Button.tsx';
 import { useAppStore } from '../../state/store.ts';
 import { useDockContextStore } from '../../state/dockContextStore.ts';
 import type { Detent, DockView } from '../../state/dock.ts';
-import { useMediaQuery, PHONE_QUERY } from '../../hooks/useMediaQuery.ts';
+import { useMediaQuery, SHEET_QUERY } from '../../hooks/useMediaQuery.ts';
 
 // The fretboard (with its chord-shape and position data) is its own chunk —
 // piano users no longer download it with the entry file (audit W9-11). It is
@@ -54,7 +54,7 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
   const instrument = useAppStore((s) => s.instrument);
   const detent = useAppStore((s) => s.dockDetents[view]);
   const setDockDetent = useAppStore((s) => s.setDockDetent);
-  const isPhone = useMediaQuery(PHONE_QUERY);
+  const isPhone = useMediaQuery(SHEET_QUERY);
   const context = useContextLine();
   const open = detent !== 'peek';
   const setDetent = (d: Detent) => setDockDetent(view, d);
@@ -65,19 +65,33 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
       <span className="dock-context text-ui" aria-live="polite">
         {context}
       </span>
-      <Button
-        variant="secondary"
-        aria-expanded={open}
-        aria-controls="instrument-region"
-        onClick={() => setDetent(open ? 'peek' : 'half')}
-        endIcon={
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ transform: open ? 'rotate(180deg)' : undefined }}>
-            <path d="M6 15l6-6 6 6" />
-          </svg>
-        }
-      >
-        {open ? t('dock.hide') : t('dock.show')}
-      </Button>
+      {/* On the phone sheet the button is icon-only (the bar is narrow and
+          the context line needs the room — PT/ES "Esconder" ellipsized it);
+          elsewhere it says Show / Hide. */}
+      {isPhone ? (
+        <IconButton
+          variant="secondary"
+          aria-expanded={open}
+          aria-controls="instrument-region"
+          aria-label={open ? t('nav.hideInstrument') : t('nav.showInstrument')}
+          onClick={() => setDetent(open ? 'peek' : 'half')}
+          icon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ transform: open ? 'rotate(180deg)' : undefined }}>
+          <path d="M6 15l6-6 6 6" />
+        </svg>}
+        />
+      ) : (
+        <Button
+          variant="secondary"
+          aria-expanded={open}
+          aria-controls="instrument-region"
+          onClick={() => setDetent(open ? 'peek' : 'half')}
+          endIcon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ transform: open ? 'rotate(180deg)' : undefined }}>
+          <path d="M6 15l6-6 6 6" />
+        </svg>}
+        >
+          {open ? t('dock.hide') : t('dock.show')}
+        </Button>
+      )}
     </div>
   );
 

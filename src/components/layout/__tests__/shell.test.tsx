@@ -14,7 +14,7 @@ vi.mock('../../instruments/Piano.tsx', () => ({ Piano: () => <div data-testid="p
 vi.mock('../../instruments/Fretboard.tsx', () => ({ Fretboard: () => <div data-testid="fret-mock" /> }));
 vi.mock('../../../hooks/useMediaQuery.ts', async (orig) => ({
   ...(await orig<Record<string, unknown>>()),
-  useMediaQuery: (q: string) => (q === '(max-width: 639px)' ? phone.value : false),
+  useMediaQuery: (q: string) => (q.startsWith('(max-width: 639px)') ? phone.value : false),
 }));
 
 import { TopBar } from '../TopBar';
@@ -161,6 +161,19 @@ describe('InstrumentDock', () => {
     expect(handle.getAttribute('aria-valuetext')).toBe('Peek'); // Learn starts collapsed (D-20)
     fireEvent.keyDown(handle, { key: 'End' });
     expect(useAppStore.getState().dockDetents).toEqual({ explore: 'half', learn: 'full' });
+  });
+
+  it('phone / short screen: Show / Hide is an icon button with a name; the context line wraps (no ellipsis)', () => {
+    phone.value = true;
+    useAppStore.setState({ view: 'learn', dockDetents: { explore: 'half', learn: 'peek' } });
+    render(<InstrumentDock view="learn" available={700} />);
+    const show = screen.getByRole('button', { name: 'Show instrument' });
+    expect(show.textContent).toBe('');
+    fireEvent.click(show);
+    expect(useAppStore.getState().dockDetents.learn).toBe('half');
+    expect(screen.getByRole('button', { name: 'Hide instrument' })).toBeTruthy();
+    const context = document.querySelector('.dock-context')!;
+    expect(context.className).not.toMatch(/truncate|ellipsis/);
   });
 });
 

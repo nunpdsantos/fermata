@@ -70,6 +70,7 @@ vi.mock('../../hooks/useAudio', () => ({
 vi.mock('../../hooks/useMediaQuery', () => ({
   useMediaQuery: () => false,
   PHONE_QUERY: '(max-width: 639px)',
+  SHEET_QUERY: '(max-width: 639px), (max-height: 500px)',
   useIsMobile: () => false,
   useIsCompact: () => false,
   useIsTablet: () => false,

@@ -21,8 +21,16 @@ export function useMediaQuery(query: string): boolean {
   );
 }
 
-/** The phone layout (D-26): instrument as a pull-up sheet, Drill in the thumb zone. */
+/** The phone layout (D-26): Drill in the thumb zone. */
 export const PHONE_QUERY = '(max-width: 639px)';
+
+/**
+ * Where the instrument is a pull-up sheet (and toasts a band under the top
+ * bar): phones, AND any short screen — a phone in landscape (844×390) is
+ * wide, but a docked panel there left 0–6 px for the view (W11-A review).
+ * index.css uses the same media query.
+ */
+export const SHEET_QUERY = '(max-width: 639px), (max-height: 500px)';
 
 /** Below 640px (phone) */
 export function useIsMobile(): boolean {

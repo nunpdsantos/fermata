@@ -329,7 +329,8 @@ body {
 *:focus-visible {
   outline: 2px solid var(--focus-outline);
   outline-offset: 2px;
-  border-radius: 4px;
+  /* No border-radius here: the outline follows each element's own shape
+     (it used to square off the pill chips and segments). */
 }
 /* Opt-out for components that draw their own focus affordance. */
 [data-focus-ring="custom"]:focus-visible {
@@ -498,6 +499,19 @@ body {
     height: 18px;
     margin: 0 4px;
     background: var(--border);
+  }
+  /* One scrolling row at every width (guitar positions). */
+  .chip-group.chip-row-scroll {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 2px;
+  }
+  .chip-group.chip-row-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .chip-group.chip-row-scroll > .chip {
+    flex: none;
   }
   /* One scrolling row on phones (the root strip). */
   @media (max-width: 639px) {
@@ -692,10 +706,6 @@ body {
     .app-tabs .seg-btn {
       padding: 0 6px;
     }
-    /* No room for the dock's context line next to Piano/Guitar + Show. */
-    .dock-context {
-      visibility: hidden;
-    }
   }
 
   /* "⋯" menu */
@@ -803,7 +813,8 @@ body {
     background: var(--bg-raised);
     border-top: 1px solid var(--border-subtle);
     border-radius: 16px 16px 0 0;
-    box-shadow: 0 -6px 18px rgba(74, 48, 24, 0.08);
+    /* No upward shadow: it darkened the text just above the sheet (chord
+       labels measured 4.0–4.2:1 in the review). The border separates it. */
   }
   .detent-head {
     position: relative;
@@ -822,6 +833,16 @@ body {
     border-radius: 16px 16px 0 0;
     touch-action: none;
     cursor: grab;
+  }
+  /* The handle spans the whole head (a big drag / tap target), but its focus
+     ring is drawn on the grip only — not around the bar's own controls. */
+  .detent-handle:focus-visible {
+    outline: none;
+  }
+  .detent-handle:focus-visible .sheet-grip {
+    outline: 2px solid var(--focus-outline);
+    outline-offset: 3px;
+    width: 56px;
   }
   .detent-bar {
     position: relative;
@@ -857,13 +878,14 @@ body {
     gap: 10px;
     min-width: 0;
   }
+  /* Wraps (up to two short lines) rather than ellipsize: PT/ES "Posição
+     aberta" / "1 oitava" were cut off at 390 px (W11-A review). */
   .dock-context {
     flex: 1 1 auto;
     min-width: 0;
     color: var(--text-muted);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
   }
 
   /* Drill (D-26): the question at the top; answers, the verdict and
@@ -887,8 +909,13 @@ body {
     }
   }
 
-  /* Toasts: one region. Phones: under the top bar. Wider: bottom-right,
-     above the instrument dock (--dock-h is 0 in Drill). */
+  /* Toasts: ONE region (ToastRegion, rendered by AppShell right under the
+     top bar). Wide + tall screens: a fixed stack bottom-right, above the
+     instrument dock (--dock-h). Drill (no dock): top-right, clear of the
+     answers. Phones and short screens (the same query as the instrument
+     sheet): a band IN THE FLOW under the top bar — it pushes the view and the
+     dock down while it is up, so it can cover neither the dock bar nor the
+     answers at any detent, and it is always on screen (W11-A review B2). */
   .toast-region {
     position: fixed;
     z-index: 65;
@@ -899,6 +926,13 @@ body {
     right: 16px;
     bottom: calc(var(--dock-h, 0px) + 16px);
     width: min(380px, calc(100vw - 32px));
+    /* Never taller than the room between the top bar and the dock: a tall
+       dock (guitar on a tablet) must not push the stack off the top. */
+    max-height: calc(100dvh - var(--dock-h, 0px) - var(--tap) - 48px);
+    overflow-y: auto;
+  }
+  .toast-region > * {
+    flex: none;
   }
   .toast-card {
     border-radius: 12px;
@@ -907,19 +941,31 @@ body {
     color: var(--text);
     box-shadow: var(--shadow-lg);
   }
-  @media (max-width: 639px) {
-    .toast-region {
-      left: 12px;
-      right: 12px;
-      width: auto;
-      bottom: auto;
-      top: calc(var(--tap) + 24px + env(safe-area-inset-top));
-    }
-  }
-  /* Drill (no dock): its answers fill the lower screen — toasts go on top. */
   :root[data-dock="none"] .toast-region {
     bottom: auto;
     top: calc(var(--tap) + 24px + env(safe-area-inset-top));
+    max-height: calc(100dvh - var(--tap) - 48px);
+  }
+  @media (max-width: 639px), (max-height: 500px) {
+    .toast-region,
+    :root[data-dock="none"] .toast-region {
+      position: relative;
+      inset: auto;
+      flex: none;
+      width: auto;
+      /* A band: at most 40% of the screen, the rest stays the view. */
+      max-height: 40dvh;
+      padding: 0 max(12px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left));
+    }
+    .toast-region:has(.toast-card) {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg);
+    }
+    .toast-card {
+      box-shadow: var(--shadow-sm);
+    }
   }
 }
 

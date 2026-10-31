@@ -2,7 +2,9 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TopBar } from './TopBar.tsx';
 import { InstrumentDock } from './InstrumentDock.tsx';
+import { ToastRegion } from './ToastRegion.tsx';
 import { useAppStore } from '../../state/store.ts';
+import { useMediaQuery, SHEET_QUERY } from '../../hooks/useMediaQuery.ts';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -36,6 +38,11 @@ export function AppShell({ children }: AppShellProps) {
 
   // --dock-h follows the dock (0 in Drill).
   const hasDock = view !== 'drill';
+  // The sheet at Full covers the whole view: the view is then inert, so Tab
+  // never lands on a control hidden under the sheet (WCAG 2.4.11; the W11-A
+  // focus walk found the root / scale chips there).
+  const isSheet = useMediaQuery(SHEET_QUERY);
+  const sheetCoversView = useAppStore((s) => hasDock && isSheet && s.dockDetents[view as 'explore' | 'learn'] === 'full');
   useLayoutEffect(() => {
     const root = document.documentElement;
     const dock = dockRef.current;
@@ -57,14 +64,18 @@ export function AppShell({ children }: AppShellProps) {
     <div className="h-screen supports-[height:100dvh]:h-dvh flex flex-col" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:rounded-lg focus:outline-none focus:ring-2"
+        className="sr-only focus:not-sr-only focus:fixed focus:z-[90] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:rounded-lg focus:outline-none focus:ring-2"
         style={{ ['--tw-ring-color' as string]: 'var(--focus-ring)', backgroundColor: 'var(--card-hover)', color: 'var(--text)' }}
       >
         {t('nav.skipToContent')}
       </a>
       <TopBar />
+      {/* Toasts: on phones and short screens a band in the flow right here,
+          under the top bar (it pushes the view and the dock down, so it never
+          covers either); on wider, taller screens a fixed stack above the dock. */}
+      <ToastRegion />
       <div ref={bodyRef} className="flex-1 min-h-0 flex flex-col">
-        <main id="main-content" className="flex-1 overflow-hidden flex flex-col min-h-0">
+        <main id="main-content" className="flex-1 overflow-hidden flex flex-col min-h-0" inert={sheetCoversView || undefined}>
           {children}
         </main>
         {hasDock && (

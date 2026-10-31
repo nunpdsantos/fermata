@@ -3,7 +3,6 @@ import { LazyMotion, MotionConfig, domAnimation, AnimatePresence, m } from 'fram
 import { AppShell } from './components/layout/AppShell.tsx';
 import { ViewSlot, type ViewLoader } from './components/ViewSlot.tsx';
 import { QuickSearchHost } from './components/navigation/QuickSearchHost.tsx';
-import { ToastRegion } from './components/layout/ToastRegion.tsx';
 import { useTheme } from './hooks/useTheme.ts';
 import { useLanguage } from './hooks/useLanguage.ts';
 import { useStopPlaybackOnViewChange } from './hooks/useStopPlaybackOnViewChange.ts';
@@ -74,7 +73,6 @@ function App() {
         </AnimatePresence>
       </AppShell>
       <QuickSearchHost />
-      <ToastRegion />
       </MotionConfig>
     </LazyMotion>
   );

@@ -65,3 +65,22 @@ describe('no source asks for text below 12 px', () => {
     expect(bad).toEqual([]);
   });
 });
+
+describe('focus ring follows each control\'s shape (W11-A review)', () => {
+  const rule = (selector: string) => {
+    const at = indexCss.indexOf(`${selector} {`);
+    // The declarations only (comments may name what the rule no longer does).
+    return at < 0 ? '' : indexCss.slice(at, indexCss.indexOf('}', at)).replace(/\/\*[\s\S]*?\*\//g, '');
+  };
+
+  it('the global :focus-visible outline sets no border-radius (it squared off the pill chips)', () => {
+    const global = rule('*:focus-visible');
+    expect(global).toMatch(/outline:/);
+    expect(global).not.toMatch(/border-radius/);
+  });
+
+  it('the sheet handle draws its ring on the grip, not around the bar\'s buttons', () => {
+    expect(rule('.detent-handle:focus-visible')).toMatch(/outline:\s*none/);
+    expect(rule('.detent-handle:focus-visible .sheet-grip')).toMatch(/outline:\s*2px solid var\(--focus-outline\)/);
+  });
+});
