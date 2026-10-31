@@ -107,6 +107,10 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
   const setScale = useAppStore((s) => s.setScale);
   const { diatonicChords } = useKeyContext();
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  // The hover TINT follows a real mouse only: a tap is reported as a hover
+  // that never leaves, and the tint left the label at 4.1:1 on touch (W11-A
+  // review). The info panel still follows taps and focus.
+  const [tintIdx, setTintIdx] = useState<number | null>(null);
   const [hoveredRing, setHoveredRing] = useState<Ring | null>(null);
   const [focusedSeg, setFocusedSeg] = useState<string | null>(null);
   // The keyboard tab stop once the user has moved it with the arrow keys;
@@ -435,12 +439,14 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
             onMouseLeave={() => { setHoveredIdx(null); setHoveredRing(null); }}
             onFocus={() => { setHoveredIdx(s.i); setHoveredRing('major'); setFocusedSeg(segKey); }}
             onBlur={() => { setHoveredIdx(null); setHoveredRing(null); setFocusedSeg(null); }}
+            onPointerEnter={(e) => { if (e.pointerType === 'mouse') setTintIdx(s.i); }}
+            onPointerLeave={() => setTintIdx(null)}
             onKeyDown={(e) => handleSegmentKeyDown(e, 'major', s.i, s.note)}
             className="cursor-pointer"
           >
             <path
               d={s.path}
-              fill={hoveredIdx === s.i ? s.hoverFill : s.fill}
+              fill={tintIdx === s.i ? s.hoverFill : s.fill}
               stroke={s.stroke}
               strokeWidth={s.selected ? 2 : 1}
               style={{ transition: 'fill 0.15s, stroke 0.15s' }}
@@ -470,12 +476,14 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
             onMouseLeave={() => { setHoveredIdx(null); setHoveredRing(null); }}
             onFocus={() => { setHoveredIdx(s.i); setHoveredRing('minor'); setFocusedSeg(segKey); }}
             onBlur={() => { setHoveredIdx(null); setHoveredRing(null); setFocusedSeg(null); }}
+            onPointerEnter={(e) => { if (e.pointerType === 'mouse') setTintIdx(s.i); }}
+            onPointerLeave={() => setTintIdx(null)}
             onKeyDown={(e) => handleSegmentKeyDown(e, 'minor', s.i, s.note)}
             className="cursor-pointer"
           >
             <path
               d={s.path}
-              fill={hoveredIdx === s.i ? s.hoverFill : s.fill}
+              fill={tintIdx === s.i ? s.hoverFill : s.fill}
               stroke={s.stroke}
               strokeWidth={s.selected ? 2 : 1}
               style={{ transition: 'fill 0.15s, stroke 0.15s' }}

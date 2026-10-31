@@ -3,7 +3,7 @@ import { CHORD_QUALITY_NAMES } from '../../core/constants/chords';
 import { CHORD_SCALE_MAP } from '../../core/constants/chordScaleRelationships';
 import { CHORD_QUALITY_NAMES_ES, CHORD_QUALITY_NAMES_PT } from '../chordQualityNames';
 import { chordQualityLabel, translateChordQuality } from '../content/musicTerms';
-import { SCALE_CONTEXT_ES, SCALE_CONTEXT_PT, scaleContext } from '../scaleSuggestionContext';
+import { SCALE_CONTEXT_ES, SCALE_CONTEXT_PT, scaleContext, withAccidentalSymbols } from '../scaleSuggestionContext';
 import { qualityName } from '../../utils/qualityName';
 
 const QUALITIES = Object.keys(CHORD_QUALITY_NAMES) as (keyof typeof CHORD_QUALITY_NAMES)[];
@@ -54,10 +54,22 @@ describe('scale-suggestion notes (chord panel tooltips) in PT / ES', () => {
 
   it('English passes through; PT/ES never fall back to English', () => {
     const one = [...contexts][0];
-    expect(scaleContext(one, 'en')).toBe(one);
-    expect(scaleContext(one, 'pt')).toBe(SCALE_CONTEXT_PT[one]);
-    expect(scaleContext(one, 'es')).toBe(SCALE_CONTEXT_ES[one]);
+    expect(scaleContext(one, 'en')).toBe(withAccidentalSymbols(one));
+    expect(scaleContext(one, 'pt')).toBe(withAccidentalSymbols(SCALE_CONTEXT_PT[one]));
+    expect(scaleContext(one, 'es')).toBe(withAccidentalSymbols(SCALE_CONTEXT_ES[one]));
     expect(scaleContext('An unknown English note', 'pt')).toBeUndefined();
     expect(scaleContext(undefined, 'es')).toBeUndefined();
+  });
+
+  it('accidentals read as ♭ / ♯ in every language, never "b9" / "#11"', () => {
+    expect(withAccidentalSymbols('Contains every chord tone (1-3-#5-b7) plus b9/#9/#11 (=b5); maj7#11; bebop, b6')).toBe(
+      'Contains every chord tone (1-3-♯5-♭7) plus ♭9/♯9/♯11 (=♭5); maj7♯11; bebop, ♭6',
+    );
+    for (const lang of ['en', 'pt', 'es'] as const) {
+      for (const c of contexts) {
+        const shown = scaleContext(c, lang)!;
+        expect(shown, `${lang}: ${shown}`).not.toMatch(/(^|[\s(=/,:-])b\d|#\d/);
+      }
+    }
   });
 });

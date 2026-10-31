@@ -10,7 +10,7 @@
  *    key name so they cannot collide (rendered size is checked in a browser).
  */
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, cleanup, fireEvent } from '@testing-library/react';
+import { render, cleanup, fireEvent, act } from '@testing-library/react';
 import type { Note, ScaleType } from '../../../core/types/music';
 import { useAppStore } from '../../../state/store';
 import i18n from '../../../i18n';
@@ -190,4 +190,29 @@ describe('re-review nit — diatonic chord segments wear the selected key\'s spe
     }
     expect(bad).toEqual([]);
   }, 60_000);
+});
+
+describe('the hover tint follows a real mouse only (W11-A review round 4)', () => {
+  // A tap is reported as a hover that never leaves; the tint then sat under
+  // the label at 4.1:1. jsdom has no PointerEvent: build one with the type.
+  // React derives pointerenter / pointerleave from pointerover / pointerout.
+  const pointer = (el: Element, type: 'pointerover' | 'pointerout', pointerType: string) => {
+    const e = new MouseEvent(type, { bubbles: true, relatedTarget: document.body });
+    Object.defineProperty(e, 'pointerType', { value: pointerType });
+    el.dispatchEvent(e);
+  };
+  const fillOf = (c: HTMLElement, label: string) => c.querySelector(`g[data-key="${label}"] path`)!.getAttribute('fill');
+
+  it('a touch or pen "hover" leaves the fill alone; a mouse tints it, and leaving clears it', () => {
+    select('C', 'major');
+    const { container } = render(<CircleOfFifths />);
+    const seg = container.querySelector('g[data-key="Bb major"]')!;
+    const resting = fillOf(container, 'Bb major');
+    act(() => pointer(seg, 'pointerover', 'touch'));
+    expect(fillOf(container, 'Bb major')).toBe(resting);
+    act(() => pointer(seg, 'pointerover', 'mouse'));
+    expect(fillOf(container, 'Bb major')).not.toBe(resting);
+    act(() => pointer(seg, 'pointerout', 'mouse'));
+    expect(fillOf(container, 'Bb major')).toBe(resting);
+  });
 });

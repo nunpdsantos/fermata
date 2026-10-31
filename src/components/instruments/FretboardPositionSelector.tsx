@@ -199,11 +199,13 @@ export function PositionLegend() {
       className="inline-flex items-center gap-3 flex-wrap text-caption"
       style={{ color: 'var(--text-muted)' }}
     >
-      <span className="inline-flex items-center gap-1">
-        <span data-legend="stretch" aria-hidden="true" style={{ ...swatch, outline: '2px dashed var(--text)', outlineOffset: 1 }} />
+      {/* gap-2: the dashed ring is an OUTLINE (3 px outside the swatch), so
+          gap-1 left it touching its words (W11-A review). */}
+      <span className="inline-flex items-center gap-2">
+        <span data-legend="stretch" aria-hidden="true" style={{ ...swatch, outline: '2px dashed var(--text)', outlineOffset: 1, marginLeft: 3 }} />
         {t('fretboard.legendStretch')}
       </span>
-      <span className="inline-flex items-center gap-1">
+      <span className="inline-flex items-center gap-2">
         <span data-legend="edited" aria-hidden="true" style={swatch}>
           <span
             style={{ position: 'absolute', width: 6, height: 6, top: -1, right: -1, borderRadius: '50%', backgroundColor: 'var(--text)', border: '1px solid var(--bg)' }}

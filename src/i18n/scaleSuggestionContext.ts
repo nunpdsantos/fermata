@@ -419,8 +419,19 @@ export const SCALE_CONTEXT_ES: Record<string, string> = {
     "Opción de escala simétrica",
 };
 
+/**
+ * Accidentals as music symbols, as everywhere else in the interface: the
+ * source sentences write "b9", "#11", "1-3-#5-b7" (W11-A review round 4).
+ * A "b" only counts before a degree number and after a space, bracket,
+ * "=", "/", "-", or at the start — never inside a word.
+ */
+export function withAccidentalSymbols(text: string): string {
+  return text.replace(/(^|[\s(=/,:-])b(\d+)/g, '$1♭$2').replace(/#(\d+)/g, '♯$1');
+}
+
 /** The note in the learner's language; in PT/ES no English fallback (no tooltip). */
 export function scaleContext(context: string | undefined, lang: ContentLanguage): string | undefined {
-  if (!context || lang === 'en') return context;
-  return (lang === 'pt' ? SCALE_CONTEXT_PT : SCALE_CONTEXT_ES)[context];
+  if (!context) return undefined;
+  const text = lang === 'en' ? context : (lang === 'pt' ? SCALE_CONTEXT_PT : SCALE_CONTEXT_ES)[context];
+  return text === undefined ? undefined : withAccidentalSymbols(text);
 }
