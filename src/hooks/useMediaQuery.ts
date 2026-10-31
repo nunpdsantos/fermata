@@ -1,8 +1,12 @@
 import { useCallback, useSyncExternalStore } from 'react';
 
-function useMediaQuery(query: string): boolean {
+// Environments without matchMedia (jsdom in unit tests) read as "no match".
+const hasMatchMedia = () => typeof window !== 'undefined' && typeof window.matchMedia === 'function';
+
+export function useMediaQuery(query: string): boolean {
   const subscribe = useCallback(
     (callback: () => void) => {
+      if (!hasMatchMedia()) return () => {};
       const mql = window.matchMedia(query);
       mql.addEventListener('change', callback);
       return () => mql.removeEventListener('change', callback);
@@ -12,10 +16,13 @@ function useMediaQuery(query: string): boolean {
 
   return useSyncExternalStore(
     subscribe,
-    () => window.matchMedia(query).matches,
+    () => hasMatchMedia() && window.matchMedia(query).matches,
     () => false,
   );
 }
+
+/** The phone layout (D-26): instrument as a pull-up sheet, Drill in the thumb zone. */
+export const PHONE_QUERY = '(max-width: 639px)';
 
 /** Below 640px (phone) */
 export function useIsMobile(): boolean {

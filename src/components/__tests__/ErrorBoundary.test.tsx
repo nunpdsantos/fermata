@@ -64,11 +64,11 @@ describe('ErrorBoundary — error screen actions (W0-01)', () => {
     render(<ErrorBoundary><Bomb /></ErrorBoundary>);
     const buttons = screen.getAllByRole('button');
     expect(buttons[0].textContent).toBe('Reset view settings (keeps your progress)');
-    expect(buttons[0].className).toContain('btn-accent');
+    expect(buttons[0].className).toContain('btn-primary');
     // The full wipe is still offered, last, and says what it destroys.
     const last = buttons[buttons.length - 1];
     expect(last.textContent).toBe('Reset app data — clears saved progress');
-    expect(last.className).not.toContain('btn-accent');
+    expect(last.className).not.toContain('btn-primary');
   });
 
   it('reset view settings clears only view/selection state and keeps progress, Drill and preferences', () => {

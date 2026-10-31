@@ -137,7 +137,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      const error = this.state.error ?? new Error('An unexpected error occurred.');
+      const error = this.state.error ?? new Error(i18n.t('error.unexpectedError'));
 
       if (this.props.fallback) {
         return this.props.fallback(error, this.handleReset);
@@ -152,7 +152,7 @@ export class ErrorBoundary extends Component<Props, State> {
             height: '100vh',
             backgroundColor: 'var(--bg)',
             color: 'var(--text)',
-            fontFamily: 'system-ui, sans-serif',
+            fontFamily: 'var(--font-sans)',
           }}
         >
           <div
@@ -172,14 +172,14 @@ export class ErrorBoundary extends Component<Props, State> {
               {error.message}
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-              <Button variant="accent" onClick={this.handleResetViewSettings}>
+              <Button variant="primary" onClick={this.handleResetViewSettings}>
                 {i18n.t('error.resetViewSettings')}
               </Button>
               <Button variant="secondary" onClick={() => reloadPage()}>
                 {i18n.t('common.reload')}
               </Button>
               {/* Destructive: erases Learn progress and Drill memory. */}
-              <Button variant="ghost" onClick={this.handleResetAppData} style={{ color: 'var(--danger-text)' }}>
+              <Button variant="quiet" onClick={this.handleResetAppData} style={{ color: 'var(--danger-text)' }}>
                 {i18n.t('error.resetAppData')}
               </Button>
             </div>
