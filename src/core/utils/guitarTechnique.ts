@@ -115,7 +115,16 @@ export interface TechniqueOptions {
 const ABRSM = 'ABRSM guitar syllabus from 2019, pp. 10, 14–15, 24';
 const TRINITY = 'Trinity Digital Grades guitar technical work (2023), Grade 5';
 
-/** Left-hand rules for arpeggio-like lines (guitarFingering.ts). */
+/**
+ * Left-hand rules for arpeggio-like lines (guitarFingering.ts).
+ *
+ * Arpeggios are played "without over-ringing" (ABRSM), so a finger never
+ * rolls across two strings at one fret. That deliberately excludes the
+ * familiar G minor route that holds B♭3, D4 and G4 on fret 3 of the top three
+ * strings with a ring-finger mini-barré (three notes at one fret with the
+ * index already on fret 1 for B♭2): it lets them ring into each other. The G
+ * minor arpeggio therefore shifts to position V during the open G instead.
+ */
 const ARPEGGIO_RULES: FingeringOptions = {
   maxStringStep: 1,
   fingerChangeShifts: true,
@@ -616,24 +625,33 @@ export function diminishedSeventhArpeggio(root: Note, options: TechniqueOptions 
 
 // ─── Broken chords ──────────────────────────────────────────────────────────
 
-/**
- * A broken chord (ABRSM p. 14): groups of three chord tones, each from its
- * lowest note — going up from every chord tone between the tonic and the top
- * tonic, coming down from the chord tones below the top tonic down to the 3rd
- * — then the tonic alone. One octave by default; `startOctave: 1` starts an
- * octave above the lowest tonic (ABRSM Grade 5: "E minor starting an octave
- * above lowest tonic"). Played "with over-ringing", so the three notes of a
- * group always go on three different strings (none cuts the one before it
- * off); a group's first note and the closing tonic may leap three strings
- * (the thumb returning to the bass). Not offered in the closed
- * style (openStrings: 'avoid' returns null, as for the arpeggios).
- */
-export function brokenChord(
-  root: Note,
-  mode: 'major' | 'minor',
-  options: TechniqueOptions & { startOctave?: number } = {},
-): TechniqueExercise | null {
-  if (options.openStrings === 'avoid') return null;
+export type BrokenChordOptions = TechniqueOptions & { startOctave?: number };
+
+/** Why a broken chord has no fingering — for the UI to say. */
+export type BrokenChordUnavailable =
+  /** openStrings: 'avoid' — the closed style is not offered (see the arpeggios). */
+  | 'closed-style'
+  /** The lowest group cannot spread over three strings: its notes crowd the lowest strings (E, F, F♯ from the lowest tonic). */
+  | 'bass-notes-on-one-string'
+  /** The top group runs past the last fret, or onto the 1st string alone. */
+  | 'beyond-neck'
+  /** Every group fits on three strings, but no hand holds all of them in turn. */
+  | 'no-holdable-grip';
+
+export type BrokenChordAvailability =
+  | { available: true }
+  | { available: false; reason: BrokenChordUnavailable; /** The other start that works, if any (ABRSM: "E minor starting an octave above lowest tonic"). */ suggestStartOctave?: number };
+
+interface BrokenChordPlan {
+  line: Tone[];
+  start: number;
+  top: number;
+  octaves: number;
+  tuning: GuitarTuning;
+  maxFret: number;
+}
+
+function brokenChordPlan(root: Note, mode: 'major' | 'minor', options: BrokenChordOptions): BrokenChordPlan {
   const tuning = options.tuning ?? TUNING_STANDARD;
   const maxFret = options.maxFret ?? GUITAR_MAX_FRET;
   const octaves = options.octaves ?? 1;
@@ -650,7 +668,7 @@ export function brokenChord(
     // note (the thumb back to the bass: B3 on the 2nd string → B2 on the
     // 5th), and the hand may reposition there (a 'jump' shift: the group
     // before has rung its course); inside a group the notes climb at most two
-    // strings at a time and the hand stays put or shifts with a guide.
+    // strings at a time and form one grip held at once (guitarFingering.ts).
     ...groupStarts.flatMap((k, g) =>
       [0, 1, 2].map((j) => ({ ...chordToneAt(notes, semis, start, k + j), group: g, ...(j === 0 ? { leap: 3, jumpOk: true } : {}) })),
     ),
@@ -658,8 +676,74 @@ export function brokenChord(
     // three strings (G3 on the 3rd string → G2 on the 6th).
     { ...chordToneAt(notes, semis, start, 0), leap: 3, jumpOk: true },
   ];
+  return { line, start, top, octaves, tuning, maxFret };
+}
+
+/** Can three ascending notes take three strings, at most two strings apart each, on the neck? */
+function groupFitsThreeStrings(midis: readonly number[], tuning: GuitarTuning, maxFret: number): boolean {
+  const open = tuningOpenMidi(tuning);
+  const on = (m: number, s: number) => m - open[s] >= 0 && m - open[s] <= maxFret;
+  for (let a = 0; a < open.length; a++) {
+    for (let b = a + 1; b <= Math.min(open.length - 1, a + 2); b++) {
+      for (let c = b + 1; c <= Math.min(open.length - 1, b + 2); c++) {
+        if (on(midis[0], a) && on(midis[1], b) && on(midis[2], c)) return true;
+      }
+    }
+  }
+  return false;
+}
+
+function fingerBrokenChord(plan: BrokenChordPlan): FingeredNote[] | null {
+  return fingerLine(plan.line, { ...ARPEGGIO_RULES, maxStringStep: 2, tuning: plan.tuning, maxFret: plan.maxFret });
+}
+
+function brokenChordProblem(root: Note, mode: 'major' | 'minor', options: BrokenChordOptions): BrokenChordUnavailable | null {
+  if (options.openStrings === 'avoid') return 'closed-style';
+  const plan = brokenChordPlan(root, mode, options);
+  if (Math.max(...plan.line.map((t) => t.midi)) > highestMidi(plan.tuning, plan.maxFret)) return 'beyond-neck';
+  for (let g = 0; 3 * g + 2 < plan.line.length; g++) {
+    const midis = plan.line.slice(3 * g, 3 * g + 3).map((t) => t.midi);
+    if (groupFitsThreeStrings(midis, plan.tuning, plan.maxFret)) continue;
+    // A longer neck would fix a group that runs out at the top; nothing fixes
+    // one whose notes crowd the lowest strings.
+    return groupFitsThreeStrings(midis, plan.tuning, 36) ? 'beyond-neck' : 'bass-notes-on-one-string';
+  }
+  return fingerBrokenChord(plan) === null ? 'no-holdable-grip' : null;
+}
+
+/**
+ * Whether `brokenChord` can finger this broken chord, and if not why — and
+ * whether the other start (an octave up, or the lowest tonic) works instead.
+ */
+export function brokenChordAvailability(root: Note, mode: 'major' | 'minor', options: BrokenChordOptions = {}): BrokenChordAvailability {
+  const reason = brokenChordProblem(root, mode, options);
+  if (reason === null) return { available: true };
+  if (reason === 'closed-style') return { available: false, reason };
+  const other = (options.startOctave ?? 0) === 0 ? 1 : 0;
+  const works = brokenChordProblem(root, mode, { ...options, startOctave: other }) === null;
+  return works ? { available: false, reason, suggestStartOctave: other } : { available: false, reason };
+}
+
+/**
+ * A broken chord (ABRSM p. 14): groups of three chord tones, each from its
+ * lowest note — going up from every chord tone between the tonic and the top
+ * tonic, coming down from the chord tones below the top tonic down to the 3rd
+ * — then the tonic alone. One octave by default; `startOctave: 1` starts an
+ * octave above the lowest tonic (ABRSM Grade 5: "E minor starting an octave
+ * above lowest tonic"). Played "with over-ringing", so the three notes of a
+ * group always go on three different strings (none cuts the one before it
+ * off) and are held as one grip — no finger rolled across two of its strings,
+ * no barré over one of them played lower; a group's first note and the
+ * closing tonic may leap three strings (the thumb returning to the bass).
+ * Null where no hand can do that, or in the closed style; brokenChordAvailability
+ * says why and which other start works.
+ */
+export function brokenChord(root: Note, mode: 'major' | 'minor', options: BrokenChordOptions = {}): TechniqueExercise | null {
+  if (options.openStrings === 'avoid') return null;
+  const plan = brokenChordPlan(root, mode, options);
+  const { line, start, top, octaves, tuning, maxFret } = plan;
   if (Math.max(...line.map((t) => t.midi)) > highestMidi(tuning, maxFret)) return null;
-  const fingered = fingerLine(line, { ...ARPEGGIO_RULES, maxStringStep: 2, tuning, maxFret });
+  const fingered = fingerBrokenChord(plan);
   if (fingered === null) return null;
   return {
     kind: 'brokenChord',

@@ -70,8 +70,13 @@
 //   root        littleFingerRootCost when the 4th finger plays the first note
 //               and it is a chord root (the bass of an arpeggio)
 //   shared fret 3 per note on the shared fret of a shared shape
-//   group       notes of one ringing group (LinePitch.group) never share a
-//               string — a rule, not a cost
+//   group       a ringing group (LinePitch.group) is a grip held at once, so
+//               — rules, not costs — its notes go on different strings, the
+//               hand does not shift inside it, no 2nd–4th finger stops two of
+//               its strings at one fret, two fingers on one fret keep the
+//               lower finger on the lower string, and an index barré across
+//               it never passes over one of its strings played open or at a
+//               lower fret (the barré is flagged on both notes)
 //               (openStrings 'avoid': closed-position routes — an open
 //               string only where no fretted place reaches the pitch)
 //   height      1 per position, per fretted note (nut-closest wins ties)
@@ -95,9 +100,9 @@ export interface LinePitch {
   /** A chord root (arpeggios): the little finger on it costs littleFingerRootCost. */
   root?: boolean;
   /**
-   * Notes that must ring on together (a broken chord's group of three, played
-   * "with over-ringing"): consecutive notes with the same group id go on
-   * different strings, so none cuts the one before it off.
+   * Notes that ring on together (a broken chord's group of three, played
+   * "with over-ringing"): consecutive notes with the same group id form one
+   * grip held at once — see `group` in the header.
    */
   group?: number;
   /** Largest string change into this note, overriding maxStringStep (a broken chord's closing tonic). */
@@ -165,7 +170,11 @@ export interface FingeredNote {
   shift: Shift | null;
   /** A re-spread in the same position that brings the hand to this note, if any. */
   reach: Reach | null;
-  /** The index takes this note at the same fret as the note before, on another string (a partial barré). */
+  /**
+   * A partial barré: the index takes this note at the same fret as the note
+   * before on another string, or — in a ringing group — as another note of
+   * its group (then both notes are flagged).
+   */
   barre: boolean;
 }
 
@@ -321,6 +330,12 @@ function stretchCost(frame: HandFrame, finger: number): number {
 
 // ─── Search ─────────────────────────────────────────────────────────────────
 
+interface Held {
+  s: number;
+  f: number;
+  finger: LeftHandFinger;
+}
+
 interface State {
   s: number;
   f: number;
@@ -329,7 +344,34 @@ interface State {
   cost: number;
   prev: number; // index into the previous layer, −1 for the first note
   shift: Shift | null;
+  /** The notes of the current ringing group so far, this one included (empty outside groups). */
+  held: Held[];
 }
+
+/**
+ * Can `n` join the notes `held` of its ringing group (all held at once)?
+ * Returns the extra cost (a barré), or null when no hand can hold the grip.
+ */
+function joinGroup(held: readonly Held[], n: Held): number | null {
+  let cost = 0;
+  for (const m of held) {
+    if (m.s === n.s) return null;
+    if (m.f === 0 || n.f === 0 || m.f !== n.f) continue;
+    if (m.finger === n.finger) {
+      if (n.finger >= 2) return null; // the 2nd–4th finger cannot stop two strings
+      const lo = Math.min(m.s, n.s);
+      const hi = Math.max(m.s, n.s);
+      // An index barré lies across every string between its ends.
+      if (held.some((x) => x.s > lo && x.s < hi && x.f < n.f)) return null;
+      cost += COST.barre;
+    } else if (Math.sign(n.s - m.s) !== Math.sign(n.finger - m.finger)) {
+      return null; // two fingers on one fret: the lower string takes the lower finger
+    }
+  }
+  return cost;
+}
+
+const heldKey = (held: readonly Held[]) => held.map((h) => `${h.s}.${h.f}.${h.finger}`).join(',');
 
 /**
  * Classify the hand move from `p` to a fretted note `(s, f, finger)` in
@@ -429,7 +471,7 @@ export function fingerLineScored(
     const layer: State[] = [];
     const index = new Map<string, number>();
     const offer = (st: State) => {
-      const key = `${st.s}:${st.f}:${st.finger}:${frameId(st.frame)}`;
+      const key = `${st.s}:${st.f}:${st.finger}:${frameId(st.frame)}:${heldKey(st.held)}`;
       const at = index.get(key);
       if (at === undefined) {
         index.set(key, layer.length);
@@ -451,16 +493,19 @@ export function fingerLineScored(
         if (openPolicy === 'avoid' && open.some((o) => midi - o >= 1 && midi - o <= maxFret)) continue;
         // Open string: the hand keeps whatever frame it had.
         if (prevLayer === null) {
-          offer({ s, f, finger: 0, frame: pin?.frame ?? null, cost: refCost, prev: -1, shift: null });
+          offer({ s, f, finger: 0, frame: pin?.frame ?? null, cost: refCost, prev: -1, shift: null, held: line[i].group === undefined ? [] : [{ s, f, finger: 0 }] });
           continue;
         }
         prevLayer.forEach((p, pi) => {
           if (!stringStepOk(p.s, s, dir, line[i].leap ?? maxStep)) return;
-          if (sameGroup && p.s === s) return;
+          const me: Held = { s, f, finger: 0 };
+          const join = sameGroup ? joinGroup(p.held, me) : 0;
+          if (join === null) return;
           if (pin?.position !== undefined && (p.frame?.position ?? null) !== pin.position) return;
           if (pin?.frame !== undefined && frameId(pin.frame) !== frameId(p.frame)) return;
-          const cost = p.cost + refCost + crossingCost(p.s, s) + openStringCost(line[i].openFree === true, p.frame, freeUpTo);
-          offer({ s, f, finger: 0, frame: p.frame, cost, prev: pi, shift: null });
+          const cost = p.cost + join + refCost + crossingCost(p.s, s) + openStringCost(line[i].openFree === true, p.frame, freeUpTo);
+          const held = line[i].group === undefined ? [] : sameGroup ? [...p.held, me] : [me];
+          offer({ s, f, finger: 0, frame: p.frame, cost, prev: pi, shift: null, held });
         });
         continue;
       }
@@ -472,14 +517,18 @@ export function fingerLineScored(
         const rootCost = i === 0 && finger === 4 && line[i].root ? littleRoot : 0;
         const sharedCost = fingersInFrame(frame, f).length > 1 ? COST.shared : 0;
         const own = refCost + rootCost + sharedCost + stretchCost(frame, finger) + COST.height * frame.position;
+        const me: Held = { s, f, finger };
         if (prevLayer === null) {
-          offer({ s, f, finger, frame, cost: own, prev: -1, shift: null });
+          offer({ s, f, finger, frame, cost: own, prev: -1, shift: null, held: line[i].group === undefined ? [] : [me] });
           continue;
         }
         prevLayer.forEach((p, pi) => {
           if (!stringStepOk(p.s, s, dir, line[i].leap ?? maxStep)) return;
-          if (sameGroup && p.s === s) return;
-          let cost = p.cost + own + crossingCost(p.s, s);
+          const join = sameGroup ? joinGroup(p.held, me) : 0;
+          if (join === null) return;
+          // A ringing group is held in one hand shape: no shift inside it.
+          if (sameGroup && p.frame !== null && frameId(p.frame) !== frameId(frame)) return;
+          let cost = p.cost + own + join + crossingCost(p.s, s);
           // Same fret, next string, same finger: a roll (fingers 2–4, never)
           // or a partial barré (the index, costed). Two fingers on one fret
           // (a shared shape): the lower string takes the lower finger.
@@ -501,7 +550,8 @@ export function fingerLineScored(
             }
             shift = move.shift;
           }
-          offer({ s, f, finger, frame, cost, prev: pi, shift });
+          const held = line[i].group === undefined ? [] : sameGroup ? [...p.held, me] : [me];
+          offer({ s, f, finger, frame, cost, prev: pi, shift, held });
         });
        }
       }
@@ -524,7 +574,7 @@ export function fingerLineScored(
   path.reverse();
 
   let segment = 0;
-  const notes = annotateBarres(
+  const notes = annotateGroupBarres(annotateBarres(
     path.map((st, i) => {
       if (st.shift) segment++;
       return {
@@ -542,8 +592,18 @@ export function fingerLineScored(
         barre: false,
       };
     }),
-  );
+  ), line);
   return { notes, cost: last[best].cost };
+}
+
+/** Flag both notes of every index barré inside a ringing group. */
+function annotateGroupBarres(notes: FingeredNote[], line: readonly LinePitch[]): FingeredNote[] {
+  return notes.map((n, i) => {
+    const g = line[i].group;
+    if (g === undefined || n.barre || n.finger !== 1 || n.fret === 0) return n;
+    const partner = notes.some((m, j) => j !== i && line[j].group === g && m.finger === 1 && m.fret === n.fret && m.stringIndex !== n.stringIndex);
+    return partner ? { ...n, barre: true } : n;
+  });
 }
 
 /**

@@ -16,6 +16,7 @@ import {
   dominantSeventhArpeggio,
   diminishedSeventhArpeggio,
   brokenChord,
+  brokenChordAvailability,
   chromaticScale,
   techniqueNotes,
   scaleRightHand,
@@ -25,6 +26,7 @@ import { preferredRootSpelling } from '../degreeSpelling';
 import type { Note, ScaleType } from '../../types/music';
 import { ORACLE_SCALES, spellDegree, pcOf, letterDegree } from './theoryOracle';
 import { checkPlayableLine, checkDoubleStops, lineViolations, nameOf, OPEN, MAX_FRET } from './fingeringOracle';
+import type { OracleNote } from './fingeringOracle';
 
 const mod12 = (n: number) => ((n % 12) + 12) % 12;
 const MAJOR = [0, 2, 4, 5, 7, 9, 11];
@@ -370,6 +372,89 @@ describe('broken chords (ABRSM pattern, with over-ringing)', () => {
         .sort(),
     );
   });
+  it('every group is a grip a hand can hold — all spellings × major/minor × 1–2 octaves × both starts', () => {
+    const LETTERS = ['C', 'D', 'E', 'F', 'G', 'A', 'B'] as const;
+    let fingered = 0;
+    let groupsChecked = 0;
+    for (const l of LETTERS) {
+      for (const a of ['', 'b', '#'] as const) {
+        const r: Note = { natural: l, accidental: a };
+        for (const mode of ['major', 'minor'] as const) {
+          for (const octaves of [1, 2]) {
+            for (const startOctave of [0, 1]) {
+              const label = `${nameOf(r)} ${mode} ${octaves}oct +${startOctave}`;
+              const ex = brokenChord(r, mode, { octaves, startOctave });
+              const av = brokenChordAvailability(r, mode, { octaves, startOctave });
+              expect(av.available, `${label}: availability agrees with brokenChord`).toBe(ex !== null);
+              if (ex === null) {
+                expect(av.available ? null : av.reason, label).toMatch(/^(bass-notes-on-one-string|beyond-neck|no-holdable-grip)$/);
+                continue;
+              }
+              fingered++;
+              const notes = techniqueNotes(ex);
+              const groupOf = notes.map((_, i) => (i < notes.length - 1 ? Math.floor(i / 3) : undefined));
+              const groupStart = notes.map((_, i) => i === notes.length - 1 || i % 3 === 0);
+              checkPlayableLine(notes, label, { ...ARPEGGIO_RULES, maxStringStep: 2, groups: groupOf, leaps: groupStart.map((st) => (st ? 3 : undefined)), jumpOk: groupStart });
+              groupsChecked += (notes.length - 1) / 3;
+            }
+          }
+        }
+      }
+    }
+    expect(fingered).toBe(66);
+    expect(groupsChecked).toBe(468);
+  });
+
+  it('the oracle rejects grips no hand can hold (mutation check on the grips the review found)', () => {
+    const mk = (name: string, midi: number, stringIndex: number, fret: number, finger: number, barre = false, position = 2): OracleNote => ({
+      midi,
+      note: { natural: name[0] as Note['natural'], accidental: name.slice(1) as Note['accidental'] },
+      stringIndex,
+      fret,
+      finger,
+      position,
+      shift: null,
+      barre,
+    });
+    const rules = { ...ARPEGGIO_RULES, maxStringStep: 2, groups: [0, 0, 0] };
+    // D minor: the 2nd finger flat across fret 3 of the 4th and 2nd strings would stop the 3rd string's A as B♭.
+    expect(() => checkPlayableLine([mk('F', 53, 2, 3, 2), mk('A', 57, 3, 2, 1), mk('D', 62, 4, 3, 2)], 'D minor (old)', rules)).toThrow();
+    // C minor: an index barré on fret 1 across the open G string.
+    expect(() => checkPlayableLine([mk('Eb', 51, 2, 1, 1, true), mk('G', 55, 3, 0, 0), mk('C', 60, 4, 1, 1, true)], 'C minor (old)', rules)).toThrow();
+    // An index barré inside a group flagged on one note only.
+    expect(() => checkPlayableLine([mk('F', 53, 2, 3, 1, true), mk('A#', 58, 3, 3, 1, true), mk('D', 62, 4, 3, 1, false)], 'unflagged', rules)).toThrow();
+    // Two fingers on one fret with the higher finger on the lower string.
+    expect(() => checkPlayableLine([mk('F', 53, 2, 3, 3), mk('A', 57, 3, 2, 1), mk('D', 62, 4, 3, 2)], 'crossed', rules)).toThrow();
+    // Positive control: the D minor grip the engine now uses (ring + little on fret 3, middle on fret 2).
+    expect(() =>
+      checkPlayableLine([mk('F', 53, 2, 3, 3, false, 1), mk('A', 57, 3, 2, 2, false, 1), mk('D', 62, 4, 3, 4, false, 1)], 'D minor (new)', { ...rules, allowSharedFrets: true }),
+    ).not.toThrow();
+  });
+
+  it('every unavailable broken chord says why, and suggests the other start when it works', () => {
+    const N = (s: string): Note => ({ natural: s[0] as Note['natural'], accidental: s.slice(1) as Note['accidental'] });
+    // ABRSM Grade 5 asks for E minor "starting an octave above lowest tonic": from the lowest E it cannot ring.
+    expect(brokenChordAvailability(N('E'), 'minor')).toEqual({ available: false, reason: 'bass-notes-on-one-string', suggestStartOctave: 1 });
+    expect(brokenChordAvailability(N('E'), 'minor', { startOctave: 1 })).toEqual({ available: true });
+    expect(brokenChordAvailability(N('C'), 'major', { startOctave: 1 })).toEqual({ available: false, reason: 'beyond-neck', suggestStartOctave: 0 });
+    expect(brokenChordAvailability(N('C'), 'major', { openStrings: 'avoid' })).toEqual({ available: false, reason: 'closed-style' });
+    const reasons: Record<string, string[]> = {};
+    for (const mode of ['major', 'minor'] as const) {
+      for (const r of ROOTS(mode === 'major' ? 'major' : 'natural_minor')) {
+        for (const startOctave of [0, 1]) {
+          const av = brokenChordAvailability(r, mode, { startOctave });
+          if (av.available) continue;
+          // Every one of these keys works from the other start.
+          expect(av.suggestStartOctave, `${nameOf(r)} ${mode} +${startOctave}`).toBe(1 - startOctave);
+          (reasons[av.reason] ??= []).push(`${nameOf(r)} ${mode} +${startOctave}`);
+        }
+      }
+    }
+    expect(Object.keys(reasons).sort()).toEqual(['bass-notes-on-one-string', 'beyond-neck']);
+    expect(reasons['bass-notes-on-one-string'].sort()).toEqual(['E major +0', 'E minor +0', 'F major +0', 'F minor +0', 'F# major +0', 'F# minor +0']);
+    expect(reasons['beyond-neck']).toHaveLength(10);
+  });
+
   it('the open-position keys ring on three strings in every group: G and C major, A minor; E minor from an octave up (ABRSM Grade 5)', () => {
     const N = (s: string): Note => ({ natural: s[0] as Note['natural'], accidental: s.slice(1) as Note['accidental'] });
     for (const [k, mode, so] of [['G', 'major', 0], ['C', 'major', 0], ['A', 'minor', 0], ['E', 'minor', 1]] as const) {

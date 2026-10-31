@@ -56,15 +56,27 @@ export interface LineRules {
   jumpOk?: readonly boolean[];
 }
 
-/** Arpeggio-line violations, counted (not asserted) — used to report before/after numbers. */
-export function lineViolations(notes: readonly OracleNote[]): { rolls: number; unflaggedBarres: number; wrongFlags: number } {
+/**
+ * Arpeggio-line violations, counted (not asserted) — used to report
+ * before/after numbers. A barré flag is expected on a note the index takes at
+ * the fret of the note before (on another string), and — inside a ringing
+ * group — on both notes of an index pair at one fret.
+ */
+export function lineViolations(
+  notes: readonly OracleNote[],
+  groups?: readonly (number | undefined)[],
+): { rolls: number; unflaggedBarres: number; wrongFlags: number } {
   let rolls = 0;
   let unflaggedBarres = 0;
   let wrongFlags = 0;
   notes.forEach((n, i) => {
     const p = i > 0 ? notes[i - 1] : null;
     const sameFretAcross = p !== null && n.fret > 0 && p.fret === n.fret && p.stringIndex !== n.stringIndex;
-    const isBarre = sameFretAcross && p!.finger === 1 && n.finger === 1;
+    const g = groups?.[i];
+    const groupPartner =
+      g !== undefined && n.finger === 1 && n.fret > 0 &&
+      notes.some((m, j) => j !== i && groups![j] === g && m.finger === 1 && m.fret === n.fret && m.stringIndex !== n.stringIndex);
+    const isBarre = (sameFretAcross && p!.finger === 1 && n.finger === 1) || groupPartner;
     if (sameFretAcross && p!.finger === n.finger && n.finger >= 2) rolls++;
     if (isBarre && !n.barre) unflaggedBarres++;
     if (!isBarre && n.barre) wrongFlags++;
@@ -78,7 +90,7 @@ export function checkPlayableLine(notes: readonly OracleNote[], label: string, o
   const maxFret = opts.maxFret ?? MAX_FRET;
   let fingerToFret = new Map<number, number>();
   let fretToFinger = new Map<number, number>();
-  const v = lineViolations(notes);
+  const v = lineViolations(notes, opts.groups);
   expect(v, `${label}: rolls / unflagged barrés / wrong barré flags`).toEqual({ rolls: 0, unflaggedBarres: 0, wrongFlags: 0 });
   let segFrets: number[] = [];
   // One string per note within each ringing group.
@@ -91,6 +103,35 @@ export function checkPlayableLine(notes: readonly OracleNote[], label: string, o
     });
     for (const [g, strings] of byGroup) {
       expect(new Set(strings).size, `${label}: group ${g} shares a string (${strings.join(',')})`).toBe(strings.length);
+    }
+    // A ringing group is one grip held at once: every pair of its notes, not
+    // only neighbours, must be holdable together.
+    const members = new Map<number, number[]>();
+    notes.forEach((_, i) => {
+      const g = opts.groups![i];
+      if (g !== undefined) members.set(g, [...(members.get(g) ?? []), i]);
+    });
+    for (const [g, idx] of members) {
+      const grip = idx.map((i) => notes[i]);
+      idx.slice(1).forEach((i) => expect(notes[i].shift, `${label}: group ${g} shifts inside its grip`).toBeNull());
+      for (let x = 0; x < grip.length; x++) {
+        for (let y = x + 1; y < grip.length; y++) {
+          const P = grip[x];
+          const Q = grip[y];
+          if (P.fret === 0 || Q.fret === 0 || P.fret !== Q.fret) continue;
+          const where = `${label}: group ${g} ${nameOf(P.note)}+${nameOf(Q.note)} on fret ${P.fret}`;
+          if (P.finger === Q.finger) {
+            expect(P.finger, `${where}: the ${P.finger}th finger cannot stop two strings`).toBe(1);
+            const lo = Math.min(P.stringIndex, Q.stringIndex);
+            const hi = Math.max(P.stringIndex, Q.stringIndex);
+            const under = grip.filter((n) => n.stringIndex > lo && n.stringIndex < hi && n.fret < P.fret);
+            expect(under.map((n) => nameOf(n.note)), `${where}: the barré passes over a string played lower or open`).toEqual([]);
+            expect([P.barre, Q.barre], `${where}: barré not flagged on both notes`).toEqual([true, true]);
+          } else {
+            expect(Math.sign(Q.stringIndex - P.stringIndex), `${where}: lower string must take the lower finger`).toBe(Math.sign(Q.finger - P.finger));
+          }
+        }
+      }
     }
   }
   notes.forEach((n, i) => {
