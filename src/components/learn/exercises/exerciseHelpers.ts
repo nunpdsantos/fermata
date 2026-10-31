@@ -1,10 +1,11 @@
 /**
  * Helper functions for generating exercise choices.
  */
-import type { NaturalNote, Accidental, Note, ScaleType } from '../../../core/types/music';
+import type { NaturalNote, Accidental, Note, ScaleType, ChordQuality, PitchedNote } from '../../../core/types/music';
 import { noteToString } from '../../../core/types/music';
 import { PITCH_CLASS_SPELLINGS, getPitchClass } from '../../../core/constants/notes';
-import { INTERVAL_LABELS } from '../../../core/constants/chords';
+import { INTERVAL_LABELS, buildChord, getDiatonicTriads } from '../../../core/constants/chords';
+import { chordVoicingPitches } from '../../../core/utils/pianoLayout';
 import { buildScale } from '../../../core/constants/scales';
 import { mulberry32, seededShuffle } from '../../../core/utils/prng';
 import type { EarTrainingConfig } from '../../../core/types/exercise';
@@ -170,6 +171,36 @@ export function earPlaybackLockMs(cfg: EarTrainingConfig): number {
       return (chords - 1) * 950 + 1200 + MARGIN;
     }
   }
+}
+
+/**
+ * The pitches an ear-training chord sounds (audit W4-10): root position,
+ * voiced exactly as the piano lights the chord (`chordVoicingPitches`, close
+ * position from octave 4), so the bass is the root. Playing every note in
+ * octave 4 wrapped any chord whose root lies above C under it — A minor 7
+ * sounded C E G A, a root-position C6.
+ */
+export function earChordPitches(cfg: EarTrainingConfig): PitchedNote[] {
+  if (!cfg.chordRoot || !cfg.quality) return [];
+  const root: Note = { natural: cfg.chordRoot as NaturalNote, accidental: (cfg.chordRootAccidental ?? '') as Accidental };
+  return chordVoicingPitches(buildChord(root, cfg.quality as ChordQuality).notes, 4);
+}
+
+/**
+ * The chords an ear-training progression sounds, one pitch list per numeral
+ * (audit W4-10): each triad in root position with its root as the clear bass
+ * (open voicing from octave 3 — root, fifth, third — as the piano lights a
+ * low chord), so "follow the bass" names the right numeral. Same-octave
+ * triads made V a 6/4 and vi a 6/3.
+ */
+export function earProgressionPitches(cfg: EarTrainingConfig): PitchedNote[][] {
+  if (!cfg.progression) return [];
+  const key: Note = { natural: (cfg.root ?? 'C') as NaturalNote, accidental: (cfg.rootAccidental ?? '') as Accidental };
+  const triads = getDiatonicTriads(key);
+  return cfg.progression.map((numeral) => {
+    const entry = triads.find((t) => t.numeral.replace('°', '') === numeral.replace('°', ''));
+    return entry ? chordVoicingPitches(entry.chord.notes, 3) : [];
+  });
 }
 
 function djb2(s: string): number {
