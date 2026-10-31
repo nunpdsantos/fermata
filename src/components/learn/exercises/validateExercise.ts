@@ -21,6 +21,7 @@ import { getPitchClass, areEnharmonic } from '../../../core/constants/notes';
 import { buildScale, SCALE_TYPE_NAMES } from '../../../core/constants/scales';
 import { buildChord, INTERVAL_LABELS, CHORD_QUALITY_NAMES } from '../../../core/constants/chords';
 import { translateScaleType, translateChordQuality } from '../../../i18n/content/musicTerms';
+import { spelledIntervalName, spelledIntervalValue, intervalNumberOf } from './exerciseHelpers';
 import type { ContentLanguage } from '../../../i18n/content/types';
 
 /** Minimal translation function signature compatible with i18next's TFunction */
@@ -55,6 +56,16 @@ function fallbackT(key: string, options?: Record<string, unknown>): string {
     'exerciseFeedback.degreeName5': 'Dominant (5th)',
     'exerciseFeedback.degreeName6': 'Submediant (6th)',
     'exerciseFeedback.degreeName7': 'Leading tone (7th)',
+    'exercise.intervalNumber1': 'Unison',
+    'exercise.intervalNumber2': '2nd',
+    'exercise.intervalNumber3': '3rd',
+    'exercise.intervalNumber4': '4th',
+    'exercise.intervalNumber5': '5th',
+    'exercise.intervalNumber6': '6th',
+    'exercise.intervalNumber7': '7th',
+    'exercise.intervalNumber8': 'Octave',
+    'exercise.halfStep': 'Half step',
+    'exercise.wholeStep': 'Whole step',
   };
 
   // Plural keys use i18next's JSON v4 suffixes (`_one` / `_other`), exactly
@@ -170,6 +181,38 @@ function validateNoteId(config: NoteIdConfig, answer: string, t: TranslateFn): V
 }
 
 function validateIntervalId(config: IntervalIdConfig, answer: string, t: TranslateFn): ValidationResult {
+  // L1 names an interval by number only, or as a half/whole step (W4-15).
+  if (config.answer === 'number' || config.answer === 'step') {
+    const label = (v: number) =>
+      config.answer === 'step'
+        ? t(v === 1 ? 'exercise.halfStep' : 'exercise.wholeStep')
+        : t(`exercise.intervalNumber${v}`);
+    const expected = config.answer === 'step' ? config.targetSemitones : intervalNumberOf(config.intervalNumber, config.targetSemitones);
+    const user = parseInt(answer, 10);
+    const correctLabel = label(expected);
+    if (user === expected) {
+      return { correct: true, explanation: t('exerciseFeedback.intervalCorrect', { interval: correctLabel }), expected: correctLabel };
+    }
+    return {
+      correct: false,
+      explanation: t('exerciseFeedback.intervalIncorrect', { correctInterval: correctLabel, userInterval: label(user) }),
+      expected: correctLabel,
+    };
+  }
+  // A spelled interval (W4-14) is graded by number AND size: A4 is not d5.
+  if (config.intervalNumber !== undefined) {
+    const correctLabel = spelledIntervalName(config.intervalNumber, config.targetSemitones) ?? getIntervalLabel(config.targetSemitones, t);
+    if (answer === spelledIntervalValue(config.intervalNumber, config.targetSemitones)) {
+      return { correct: true, explanation: t('exerciseFeedback.intervalCorrect', { interval: correctLabel }), expected: correctLabel };
+    }
+    const [n, st] = answer.split(':').map((x) => parseInt(x, 10));
+    const userLabel = spelledIntervalName(n, st) ?? getIntervalLabel(st, t);
+    return {
+      correct: false,
+      explanation: t('exerciseFeedback.intervalIncorrect', { correctInterval: correctLabel, userInterval: userLabel }),
+      expected: correctLabel,
+    };
+  }
   const correctSemitones = config.targetSemitones;
   const userSemitones = parseInt(answer, 10);
   const correctLabel = getIntervalLabel(correctSemitones, t);

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { m, AnimatePresence } from 'framer-motion';
 import type { ExerciseDefinition, ValidationResult, EarTrainingConfig } from '../../../core/types/exercise';
 import { validateAnswer } from './validateExercise';
-import { generateNoteChoices, generateIntervalChoices, generateEarChoices, generateDegreeChoices, generateMultipleChoiceOptions, earPlaybackLockMs, earChordPitches, earProgressionPitches } from './exerciseHelpers';
+import { generateNoteChoices, generateIntervalChoices, generateSpelledIntervalChoices, generateIntervalNumberChoices, generateStepChoices, intervalNumberOf, generateEarChoices, generateDegreeChoices, generateMultipleChoiceOptions, earPlaybackLockMs, earChordPitches, earProgressionPitches } from './exerciseHelpers';
 import type { ChoiceOption } from './exerciseHelpers';
 import { ExerciseProgress } from './ExerciseProgress';
 import { ExercisePrompt } from './ExercisePrompt';
@@ -72,7 +72,11 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
       case 'note_id':
         return generateNoteChoices(cfg.note, cfg.accidental);
       case 'interval_id':
-        return generateIntervalChoices(cfg.targetSemitones);
+        if (cfg.answer === 'step') return generateStepChoices(cfg.targetSemitones, t);
+        if (cfg.answer === 'number') return generateIntervalNumberChoices(intervalNumberOf(cfg.intervalNumber, cfg.targetSemitones), t);
+        return cfg.intervalNumber !== undefined
+          ? generateSpelledIntervalChoices(cfg.intervalNumber, cfg.targetSemitones)
+          : generateIntervalChoices(cfg.targetSemitones);
       case 'multiple_choice':
         return generateMultipleChoiceOptions(cfg.choices, exercise.id);
       case 'ear_training': {

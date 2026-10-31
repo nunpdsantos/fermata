@@ -256,7 +256,17 @@
     "degree4": "4.º (Subdominante)",
     "degree5": "5.º (Dominante)",
     "degree6": "6.º (Submediante)",
-    "degree7": "7.º (Sensible)"
+    "degree7": "7.º (Sensible)",
+    "intervalNumber1": "Unísono",
+    "intervalNumber2": "2.ª",
+    "intervalNumber3": "3.ª",
+    "intervalNumber4": "4.ª",
+    "intervalNumber5": "5.ª",
+    "intervalNumber6": "6.ª",
+    "intervalNumber7": "7.ª",
+    "intervalNumber8": "Octava",
+    "halfStep": "Semitono",
+    "wholeStep": "Tono"
   },
   "exerciseFeedback": {
     "noteCorrectExact": "\u00a1Correcto! {{note}} es la nota correcta.",

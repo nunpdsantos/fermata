@@ -6,6 +6,7 @@ import { noteToString } from '../../../core/types/music';
 import { PITCH_CLASS_SPELLINGS, getPitchClass } from '../../../core/constants/notes';
 import { INTERVAL_LABELS, buildChord, getDiatonicTriads } from '../../../core/constants/chords';
 import { chordVoicingPitches } from '../../../core/utils/pianoLayout';
+import { MAJOR_DEGREE_SEMITONES, intervalNameOfDegree, canonicalIntervalNumber } from '../../../core/utils/degreeSpelling';
 import { buildScale } from '../../../core/constants/scales';
 import { mulberry32, seededShuffle } from '../../../core/utils/prng';
 import type { EarTrainingConfig } from '../../../core/types/exercise';
@@ -21,9 +22,20 @@ function intervalLabelFor(semitones: number): string {
   return INTERVAL_LABELS[semitones] ?? `${semitones} semitones`;
 }
 
+/** The five black keys spelled with sharps, and with flats (same-kind note distractors, W4-08). */
+const BLACK_KEYS: Record<'#' | 'b', Note[]> = {
+  '#': (['C', 'D', 'F', 'G', 'A'] as NaturalNote[]).map((natural) => ({ natural, accidental: '#' as Accidental })),
+  b: (['D', 'E', 'G', 'A', 'B'] as NaturalNote[]).map((natural) => ({ natural, accidental: 'b' as Accidental })),
+};
+
 /**
  * Generate 4 note-name choices: the correct note + 3 distractors.
  * Avoids enharmonic equivalents of the correct note as distractors.
+ *
+ * A sharp or flat answer gets distractors of the same kind — the nearest
+ * other black keys spelled with the same sign (audit W4-08): with natural
+ * neighbours the answer was the only option with an accidental, so "written
+ * here with a flat" (or "it includes an accidental") gave it away.
  */
 export function generateNoteChoices(
   correctNatural: string,
@@ -32,6 +44,16 @@ export function generateNoteChoices(
   const correctNote = { natural: correctNatural as NaturalNote, accidental: (correctAccidental || '') as Accidental };
   const correctPC = getPitchClass(correctNote);
   const correctLabel = noteToString(correctNote);
+
+  if (correctNote.accidental === '#' || correctNote.accidental === 'b') {
+    const distance = (pc: number) => Math.min((pc - correctPC + 12) % 12, (correctPC - pc + 12) % 12);
+    const sameKind = BLACK_KEYS[correctNote.accidental]
+      .filter((n) => getPitchClass(n) !== correctPC)
+      .sort((a, b) => distance(getPitchClass(a)) - distance(getPitchClass(b)) || getPitchClass(a) - getPitchClass(b))
+      .slice(0, 3)
+      .map((n) => ({ label: noteToString(n), value: noteToString(n), correct: false }));
+    return shuffle([{ label: correctLabel, value: correctLabel, correct: true }, ...sameKind]);
+  }
 
   // Collect distractor notes from different pitch classes
   const distractors: ChoiceOption[] = [];
@@ -95,7 +117,83 @@ export function generateIntervalChoices(correctSemitones: number): ChoiceOption[
   return shuffle(options);
 }
 
+/**
+ * The spelled name of an interval from its NUMBER and size (audit W4-14):
+ * 6 semitones as a 4th is an Augmented 4th, as a 5th a Diminished 5th;
+ * 14 semitones as a 9th is a Major 9th. Null when the pair has no plain
+ * single-alteration name (e.g. 7 semitones as a 4th).
+ */
+export function spelledIntervalName(number: number, semitones: number): string | null {
+  if (number < 1 || semitones < 0) return null;
+  const n = number - 1;
+  const reference = MAJOR_DEGREE_SEMITONES[n % 7] + 12 * Math.floor(n / 7);
+  const name = intervalNameOfDegree({ number, alteration: semitones - reference });
+  return name.quality === 'AA' || name.quality === 'dd' ? null : name.long;
+}
+
+/** Choice value of a spelled interval: "number:semitones". */
+export const spelledIntervalValue = (number: number, semitones: number) => `${number}:${semitones}`;
+
+/**
+ * Four spelled-interval choices (W4-14): the answer, then — for simple
+ * intervals — its enharmonic twin on the neighbouring number (A4 ↔ d5, the
+ * spelling the module teaches), then plain (perfect/major/minor) neighbours,
+ * so the distractors are what a learner who counts only semitones or only
+ * letters would pick.
+ */
+export function generateSpelledIntervalChoices(number: number, semitones: number): ChoiceOption[] {
+  const correct = spelledIntervalName(number, semitones);
+  if (!correct) return generateIntervalChoices(semitones);
+  const enharmonic: [number, number][] = number <= 8 ? [[number + 1, semitones], [number - 1, semitones]] : [];
+  const near: [number, number][] = [
+    [number, semitones - 1], [number, semitones + 1], [number - 7, semitones - 12],
+    [number + 1, semitones + 1], [number - 1, semitones - 1], [number + 1, semitones + 2], [number - 1, semitones - 2],
+  ];
+  const plain = (label: string) => /^(Perfect|Major|Minor) /.test(label);
+  const picked: ChoiceOption[] = [];
+  const take = (pairs: [number, number][], ok: (label: string) => boolean) => {
+    for (const [n, st] of pairs) {
+      if (picked.length >= 3) return;
+      const label = st >= 1 ? spelledIntervalName(n, st) : null;
+      if (!label || label === correct || !ok(label) || picked.some((c) => c.label === label)) continue;
+      picked.push({ label, value: spelledIntervalValue(n, st), correct: false });
+    }
+  };
+  take(enharmonic, () => true);
+  take(near, plain);
+  take(near, () => true);
+  return shuffle([{ label: correct, value: spelledIntervalValue(number, semitones), correct: true }, ...picked]);
+}
+
 type TFunc = (key: string) => string;
+
+/**
+ * Interval-number choices (W4-15, L1 "Intervals by Number"): the number the
+ * letters count (2nd, 3rd …) plus its nearest neighbours, labelled in the UI
+ * language. Value = the number.
+ */
+export function generateIntervalNumberChoices(number: number, t: TFunc): ChoiceOption[] {
+  const pool = [number - 1, number + 1, number - 2, number + 2, number + 3, number - 3].filter((n) => n >= 1 && n <= 8);
+  const options: ChoiceOption[] = [number, ...pool.slice(0, 3)].map((n) => ({
+    label: t(`exercise.intervalNumber${n}`),
+    value: String(n),
+    correct: n === number,
+  }));
+  return shuffle(options);
+}
+
+/** Half step / whole step (W4-15, L1 before interval qualities). Value = semitones. */
+export function generateStepChoices(semitones: number, t: TFunc): ChoiceOption[] {
+  return shuffle([
+    { label: t('exercise.halfStep'), value: '1', correct: semitones === 1 },
+    { label: t('exercise.wholeStep'), value: '2', correct: semitones === 2 },
+  ]);
+}
+
+/** The interval number an interval_id exercise names (its spelled number, else the usual one for its size). */
+export function intervalNumberOf(intervalNumber: number | undefined, semitones: number): number {
+  return intervalNumber ?? canonicalIntervalNumber(semitones);
+}
 
 function getDegreeLabels(t: TFunc): string[] {
   return [

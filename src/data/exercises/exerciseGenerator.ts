@@ -27,8 +27,29 @@ function pick<T>(arr: readonly T[], rand: () => number): T {
 
 // ─── Config Builders ────────────────────────────────────────────────────────
 
-function buildConfig(template: ExerciseTemplate, rand: () => number, lang: ContentLanguage = 'en'): ExerciseConfig | null {
+/** A built config plus the extra {tokens} its template params supply (e.g. {key}). */
+interface BuiltConfig {
+  config: ExerciseConfig;
+  tokens: Record<string, string>;
+}
+
+function buildConfig(template: ExerciseTemplate, rand: () => number, lang: ContentLanguage = 'en'): BuiltConfig | null {
+  const built = buildConfigWithIndex(template, rand, lang);
+  if (!built) return null;
+  const tokens: Record<string, string> = {};
+  const key = built.rootIndex !== undefined ? template.params.keys?.[built.rootIndex] : undefined;
+  if (key !== undefined) tokens['key'] = key;
+  return { config: built.config, tokens };
+}
+
+/** buildConfig's body: the config and which `roots` index it drew (for index-aligned params). */
+function buildConfigWithIndex(
+  template: ExerciseTemplate,
+  rand: () => number,
+  lang: ContentLanguage,
+): { config: ExerciseConfig; rootIndex?: number } | null {
   const p = template.params;
+  const at = (config: ExerciseConfig, rootIndex?: number) => ({ config, rootIndex });
 
   switch (template.type) {
     case 'note_id': {
@@ -36,12 +57,14 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
       const accidentals = p.accidentals ?? roots.map(() => '');
       const octaves = p.octaves ?? [4];
       const idx = Math.floor(rand() * roots.length);
-      return {
+      return at({
         type: 'note_id',
         note: roots[idx],
         accidental: accidentals[idx] ?? '',
-        octave: pick(octaves, rand),
-      };
+        // Index-aligned octaves pin each note's staff position (W4-05).
+        octave: p.noteOctaves ? p.noteOctaves[idx] : pick(octaves, rand),
+        ...(p.clef ? { clef: p.clef } : {}),
+      }, idx);
     }
 
     case 'interval_id': {
@@ -51,14 +74,20 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
       const directions = p.directions ?? ['ascending'];
       const octaves = p.octaves ?? [4];
       const idx = Math.floor(rand() * roots.length);
-      return {
+      const rootOctave = pick(octaves, rand);
+      // Same draw as pick(intervals); the index also selects the interval number.
+      const intervalIdx = Math.floor(rand() * intervals.length);
+      const intervalNumber = p.intervalNumbers?.[intervalIdx];
+      return at({
         type: 'interval_id',
         root: roots[idx],
         rootAccidental: accidentals[idx] ?? '',
-        rootOctave: pick(octaves, rand),
-        targetSemitones: pick(intervals, rand),
+        rootOctave,
+        targetSemitones: intervals[intervalIdx],
         direction: pick(directions, rand),
-      };
+        ...(intervalNumber !== undefined ? { intervalNumber } : {}),
+        ...(p.intervalAnswer ? { answer: p.intervalAnswer } : {}),
+      }, idx);
     }
 
     case 'scale_build': {
@@ -68,7 +97,7 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
       const noteCounts = p.noteCounts ?? [7];
       const idx = Math.floor(rand() * roots.length);
       const scaleIdx = Math.floor(rand() * scaleTypes.length);
-      return {
+      return at({
         type: 'scale_build',
         root: roots[idx],
         rootAccidental: accidentals[idx] ?? '',
@@ -76,7 +105,7 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
         noteCount: scaleTypes.length === noteCounts.length
           ? noteCounts[scaleIdx]
           : pick(noteCounts, rand),
-      };
+      }, idx);
     }
 
     case 'chord_build': {
@@ -85,7 +114,7 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
       const qualities = p.chordQualities ?? ['major'];
       const noteCounts = p.noteCounts ?? [3];
       const idx = Math.floor(rand() * roots.length);
-      return {
+      return at({
         type: 'chord_build',
         root: roots[idx],
         rootAccidental: accidentals[idx] ?? '',
@@ -93,15 +122,19 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
           ? qualities[idx]
           : pick(qualities, rand),
         noteCount: pick(noteCounts, rand),
-      };
+      }, idx);
     }
 
     case 'multiple_choice': {
       if (!p.choiceSets?.length) return null;
-      return {
+      // Same draw as pick(choiceSets); the index also selects the stimulus.
+      const setIdx = Math.floor(rand() * p.choiceSets.length);
+      const stimulus = p.stimuli?.[setIdx];
+      return at({
         type: 'multiple_choice',
-        choices: pick(p.choiceSets, rand),
-      };
+        choices: p.choiceSets[setIdx],
+        ...(stimulus ? { stimulus } : {}),
+      });
     }
 
     case 'ear_training': {
@@ -115,17 +148,17 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
 
       switch (p.earMode) {
         case 'note':
-          return {
+          return at({
             type: 'ear_training',
             mode: 'note',
             note: roots[idx],
             accidental: accidentals[idx] ?? '',
             octave: pick(octaves, rand),
-          };
+          }, idx);
         case 'interval': {
           const intervals = p.intervals ?? [3, 4, 5, 7];
           const directions = p.directions ?? ['ascending'];
-          return {
+          return at({
             type: 'ear_training',
             mode: 'interval',
             root: roots[idx],
@@ -134,13 +167,13 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
             targetSemitones: pick(intervals, rand),
             direction: pick(directions, rand),
             ...(p.harmonic ? { harmonic: true } : {}),
-          };
+          }, idx);
         }
         case 'chord': {
           const qualities = p.chordQualities ?? [];
           if (qualities.length < 2) return null;
           const quality = pick(qualities, rand);
-          return {
+          return at({
             type: 'ear_training',
             mode: 'chord',
             chordRoot: roots[idx],
@@ -150,13 +183,13 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
               label: chordQualityLabel(q, lang),
               correct: q === quality,
             })),
-          };
+          }, idx);
         }
         case 'scale': {
           const scaleTypes = p.scaleTypes ?? [];
           if (scaleTypes.length < 2) return null;
           const scaleType = pick(scaleTypes, rand);
-          return {
+          return at({
             type: 'ear_training',
             mode: 'scale',
             root: roots[idx],
@@ -167,13 +200,13 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
               label: cap(translateScaleType(s, lang)),
               correct: s === scaleType,
             })),
-          };
+          }, idx);
         }
         case 'progression': {
           const sets = p.progressionSets ?? [];
           if (sets.length < 2) return null;
           const progression = pick(sets, rand);
-          return {
+          return at({
             type: 'ear_training',
             mode: 'progression',
             root: roots[idx],
@@ -183,7 +216,7 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
               label: s.join(' - '),
               correct: s === progression,
             })),
-          };
+          }, idx);
         }
         default:
           return null;
@@ -210,7 +243,7 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
       const degreeIndex = Math.min(degree, scaleNotes.length) - 1;
       const correctDegree = degreeIndex + 1;
       const note = scaleNotes[degreeIndex];
-      return {
+      return at({
         type: 'scale_degree_id',
         root: roots[idx],
         rootAccidental: accidentals[idx] ?? '',
@@ -218,7 +251,7 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
         note: note.natural,
         noteAccidental: note.accidental,
         correctDegree,
-      };
+      }, idx);
     }
 
     default:
@@ -230,9 +263,15 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
 const warnedLeftoverTemplates = new Set<string>();
 
 /** Fill {param} placeholders in a template string with values from config */
-function fillTemplate(template: string, config: ExerciseConfig, lang: ContentLanguage = 'en', templateId = ''): string {
+function fillTemplate(
+  template: string,
+  config: ExerciseConfig,
+  lang: ContentLanguage = 'en',
+  templateId = '',
+  extra: Record<string, string> = {},
+): string {
   let result = template;
-  const replacements: Record<string, string> = {};
+  const replacements: Record<string, string> = { ...extra };
 
   switch (config.type) {
     case 'note_id':
@@ -351,8 +390,9 @@ export function generateExercises(
   while (exercises.length < config.targetCount && attempts < maxAttempts) {
     attempts++;
     const template = pick(config.templates, rand);
-    const exerciseConfig = buildConfig(template, rand, lang);
-    if (!exerciseConfig) continue;
+    const built = buildConfig(template, rand, lang);
+    if (!built) continue;
+    const exerciseConfig = built.config;
 
     // Deduplication: create a key from the config to avoid identical exercises
     const dedupeKey = JSON.stringify(exerciseConfig);
@@ -368,9 +408,9 @@ export function generateExercises(
     exercises.push({
       id,
       type: template.type,
-      prompt: fillTemplate(template.promptTemplate, exerciseConfig, lang, config.moduleId),
+      prompt: fillTemplate(template.promptTemplate, exerciseConfig, lang, config.moduleId, built.tokens),
       config: exerciseConfig,
-      hint: fillTemplate(template.hintTemplate, exerciseConfig, lang, config.moduleId),
+      hint: fillTemplate(template.hintTemplate, exerciseConfig, lang, config.moduleId, built.tokens),
     });
   }
 
