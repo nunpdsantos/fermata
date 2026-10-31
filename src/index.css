@@ -860,6 +860,16 @@ body {
     overscroll-behavior: contain;
   }
 
+  /* Short screens (a phone sideways): the piano's octave row and the
+     fretboard's controls go under the instrument, so the sheet at Half
+     shows the keys / strings first (as on a phone held upright). */
+  @media (max-height: 500px) {
+    .piano-octave-row,
+    .fretboard-controls {
+      order: 1;
+    }
+  }
+
   /* Instrument dock — tablet / laptop docked panel */
   .dock-panel {
     display: flex;
@@ -909,17 +919,13 @@ body {
     }
   }
 
-  /* Toasts: ONE region (ToastRegion, rendered by AppShell right under the
-     top bar). AppShell sets html[data-toast]:
-     - "band" (phones and short screens — the instrument-sheet query — and
-       any view with no dock, i.e. Drill): a band IN THE FLOW under the top
-       bar. It pushes the view and the sheet down while it is up, so it can
-       cover neither the dock bar nor Drill's answers at any detent or size,
-       and it is always on screen (W11-A review B2; a fixed stack at the top
-       of a tablet's Drill reached down over the answers).
-     - "stack" (wide + tall, with the docked panel): a fixed stack
-       bottom-right, above the dock (--dock-h), capped to the room between
-       the top bar and the dock. */
+  /* Toasts: ONE region (ToastRegion), a fixed OVERLAY under the top bar —
+     never in the page flow, so a toast appearing or leaving moves nothing
+     (W11-A review round 4: the in-flow band shifted the instrument and
+     Drill's answers by up to 269 px). It grows down at most to the first
+     element that must stay uncovered (the instrument dock / sheet, Drill's
+     answers): --toast-top / --toast-room come from toastLayout.ts. Taller
+     stacks scroll inside it; it always has room for one whole toast. */
   .toast-region {
     position: fixed;
     z-index: 65;
@@ -927,13 +933,13 @@ body {
     flex-direction: column;
     gap: 8px;
     pointer-events: none;
+    top: var(--toast-top, calc(var(--tap) + 24px));
     right: 16px;
-    bottom: calc(var(--dock-h, 0px) + 16px);
     width: min(380px, calc(100vw - 32px));
-    /* Never taller than the room between the top bar and the dock: a tall
-       dock (guitar on a tablet) must not push the stack off the top. */
-    max-height: calc(100dvh - var(--dock-h, 0px) - var(--tap) - 48px);
+    max-height: max(var(--toast-room, 40vh), calc(var(--tap) + 16px));
     overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
   }
   .toast-region > * {
     flex: none;
@@ -945,32 +951,11 @@ body {
     color: var(--text);
     box-shadow: var(--shadow-lg);
   }
-  :root[data-toast="band"] .toast-region {
-    position: relative;
-    inset: auto;
-    flex: none;
-    width: auto;
-    /* Wide screens: the cards keep their width, at the right. */
-    align-items: flex-end;
-    /* A band: at most 40% of the screen, the rest stays the view. */
-    max-height: 40dvh;
-    padding: 0 max(12px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left));
-  }
-  :root[data-toast="band"] .toast-region > * {
-    width: min(380px, 100%);
-  }
-  :root[data-toast="band"] .toast-region:has(.toast-card) {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border-subtle);
-    background: var(--bg);
-  }
-  :root[data-toast="band"] .toast-card {
-    box-shadow: var(--shadow-sm);
-  }
   @media (max-width: 639px) {
-    :root[data-toast="band"] .toast-region > * {
-      width: 100%;
+    .toast-region {
+      left: max(12px, env(safe-area-inset-left));
+      right: max(12px, env(safe-area-inset-right));
+      width: auto;
     }
   }
 }

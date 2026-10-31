@@ -26,6 +26,7 @@ vi.mock('../../../hooks/useAudio', () => ({
 }));
 
 vi.mock('../../../hooks/useMediaQuery', () => ({
+  useMediaQuery: () => false,
   useIsMobile: () => true,
   useIsCompact: () => true,
   useIsTablet: () => true,

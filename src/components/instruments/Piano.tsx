@@ -10,7 +10,7 @@ import { PianoKeyComponent } from './PianoKey.tsx';
 import { useAudio } from '../../hooks/useAudio.ts';
 import { useAppStore } from '../../state/store.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
-import { useIsMobile, useIsCompact } from '../../hooks/useMediaQuery.ts';
+import { useIsMobile, useIsCompact, useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { ScrollStrip } from './ScrollStrip.tsx';
 import { ChipGroup } from '../ui/ChoiceChip.tsx';
 
@@ -93,7 +93,11 @@ export function Piano() {
   // and the key stayed shown as pressed).
   const pendingNoteOns = useRef<Map<number, { released: boolean }>>(new Map());
 
-  const mobile = useIsMobile();
+  const phoneWidth = useIsMobile();
+  // A phone held sideways (short + touch) gets the phone keyboard: the
+  // tablet keys (160 px) left only a sliver at the sheet's Half (W11-A review).
+  const shortTouch = useMediaQuery('(max-height: 500px) and (pointer: coarse)');
+  const mobile = phoneWidth || shortTouch;
   const compact = useIsCompact();
 
   const keyWidth = mobile ? KEY_WIDTH_MOBILE : compact ? KEY_WIDTH_TABLET : KEY_WIDTH_DESKTOP;
@@ -399,11 +403,13 @@ export function Piano() {
   }, [blackKeys, whiteKeys, keys, keyWidth, blackKeyOffset]);
 
   return (
-    <div role="group" aria-label={t('instrument.pianoKeyboard')} className="w-full" style={{ backgroundColor: 'var(--bg)', borderTop: '1px solid var(--border-subtle)' }}>
+    <div role="group" aria-label={t('instrument.pianoKeyboard')} className="w-full flex flex-col" style={{ backgroundColor: 'var(--bg)', borderTop: '1px solid var(--border-subtle)' }}>
       {/* Octave chooser: a ChipGroup (D-28 choice chip). Only octaves that
           keep the scale (and chord) on the 88 keys — C8 never does, C0 only
           for A/B♭/B roots — so no dead chips (review item 6). */}
-      <div className="flex items-center gap-2 px-3 max-sm:px-2 py-1.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+      {/* On a short screen it comes AFTER the keys (piano-octave-row in
+          index.css), so the keys are what the sheet shows first. */}
+      <div className="piano-octave-row flex items-center gap-2 px-3 max-sm:px-2 py-1.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
         <span className="type-label shrink-0" aria-hidden="true">{t('play.octave')}</span>
         <ChipGroup
           label={t('instrument.baseOctave')}

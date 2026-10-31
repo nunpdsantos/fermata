@@ -55,6 +55,10 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
   const detent = useAppStore((s) => s.dockDetents[view]);
   const setDockDetent = useAppStore((s) => s.setDockDetent);
   const isPhone = useMediaQuery(SHEET_QUERY);
+  // Full leaves one toast's height (+ margins) above the sheet: a toast then
+  // has room without covering the bar and without anything moving.
+  const coarse = useMediaQuery('(pointer: coarse)');
+  const fullGap = (coarse ? 44 : 36) + 32;
   const context = useContextLine();
   const open = detent !== 'peek';
   const setDetent = (d: Detent) => setDockDetent(view, d);
@@ -125,6 +129,7 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
         detent={detent}
         onDetent={setDetent}
         available={available}
+        fullGap={fullGap}
         handleLabel={t('dock.handle')}
         detentLabels={{ peek: t('dock.peek'), half: t('dock.half'), full: t('dock.full') }}
         bar={bar}

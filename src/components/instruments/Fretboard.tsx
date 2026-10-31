@@ -569,7 +569,7 @@ export function Fretboard() {
           On a phone they come AFTER the board, so the strings are what the
           sheet shows first at Half (W11-A review). */}
       {!exerciseInputActive && (
-        <div className="px-4 max-sm:px-2 pt-2 max-sm:pb-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 max-sm:order-last">
+        <div className="fretboard-controls px-4 max-sm:px-2 pt-2 max-sm:pb-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 max-sm:order-last">
           {mode === 'chord' && (
             <ChordShapeSelector
               shapeCount={chordShapes.length}

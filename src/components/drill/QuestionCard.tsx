@@ -1,6 +1,7 @@
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconButton } from '../ui/Button';
+import { useToastAvoid } from '../layout/toastLayout';
 
 interface QuestionCardProps {
   /** Zero-based index of the current question. */
@@ -27,6 +28,8 @@ export function QuestionCard({
   children,
 }: QuestionCardProps) {
   const { t } = useTranslation();
+  const answersRef = useRef<HTMLDivElement>(null);
+  useToastAvoid(answersRef);
   const current = Math.min(asked + 1, total);
 
   return (
@@ -73,7 +76,8 @@ export function QuestionCard({
         {prompt}
       </p>
 
-      <div className="drill-thumb" data-testid="drill-answers">
+      {/* Toasts never cover the answers (useToastAvoid). */}
+      <div ref={answersRef} className="drill-thumb" data-testid="drill-answers">
         {children}
       </div>
     </div>

@@ -20,6 +20,12 @@ export interface DetentSheetProps {
   /** Accessible name of the handle, e.g. "Instrument panel". */
   handleLabel: string;
   detentLabels: Record<Detent, string>;
+  /**
+   * Space left above the sheet at Full. The instrument dock leaves room for
+   * one toast there, so a toast never covers its bar and nothing has to move
+   * to make room (W11-A review round 4).
+   */
+  fullGap?: number;
   /** Controls shown on the bar at every detent. */
   bar: ReactNode;
   children: ReactNode;
@@ -28,10 +34,21 @@ export interface DetentSheetProps {
 
 const TAP_SLOP_PX = 6;
 const HALF_SHARE = 0.5;
+/** Half never leaves the view less than this… */
+const VIEW_MIN_PX = 120;
+/** …and, room allowing, gives the content at least this (a whole keyboard
+ *  on a phone held sideways, where 50 % was a sliver of the keys). */
+const HALF_CONTENT_MIN_PX = 160;
 
-export function DetentSheet({ detent, onDetent, available, handleLabel, detentLabels, bar, children, testId }: DetentSheetProps) {
+const coarsePointer = () => typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
+const estimatePeek = () => (coarsePointer() ? 44 : 36) + 28;
+
+export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLabel, detentLabels, bar, children, testId }: DetentSheetProps) {
   const headRef = useRef<HTMLDivElement>(null);
-  const [peekHeight, setPeekHeight] = useState(0);
+  // First render: a close estimate (tap + 28 px: grip strip + bar), corrected
+  // by measurement before it matters — starting at 0 drew the sheet 1 px tall
+  // for a frame, then grew it (a load-time layout shift of 0.2–0.7).
+  const [peekHeight, setPeekHeight] = useState(estimatePeek);
   const [dragHeight, setDragHeight] = useState<number | null>(null);
   const drag = useRef<{ pointer: number; startY: number; startH: number; moved: boolean } | null>(null);
   const contentId = useId();
@@ -52,10 +69,11 @@ export function DetentSheet({ detent, onDetent, available, handleLabel, detentLa
     return () => ro.disconnect();
   }, []);
 
-  const full = Math.max(peekHeight, available);
+  const full = Math.max(peekHeight, available - fullGap);
+  const halfFloor = Math.min(peekHeight + HALF_CONTENT_MIN_PX, available - VIEW_MIN_PX);
   const heights: Record<Detent, number> = {
     peek: peekHeight,
-    half: Math.max(peekHeight, Math.round(available * HALF_SHARE)),
+    half: Math.min(full, Math.max(peekHeight, Math.round(available * HALF_SHARE), halfFloor)),
     full,
   };
   const index = DETENTS.indexOf(detent);
