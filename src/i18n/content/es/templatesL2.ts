@@ -206,13 +206,13 @@ const overlay: TemplateLevelOverlay = {
         'En el compás compuesto el número de arriba es 6, 9 o 12 y el tiempo se divide en 3. En el compás simple el tiempo se divide en 2.',
       choiceSets: [
         [
-          '12/8 es compuesto cuaternario: 4 tiempos, cada uno dividido en 3',
+          '12/8 es compuesto cuaternario: 4 tiempos de 3',
           '12/8 es simple: doce tiempos de corchea, cada uno dividido en dos',
           '12/8 es compuesto ternario: 3 tiempos, cada uno dividido en 4',
           '12/8 es simple cuaternario: 4 tiempos de 3 corcheas',
         ],
         [
-          '6/8 es compuesto binario: 2 tiempos, cada uno dividido en 3',
+          '6/8 es compuesto binario: 2 tiempos de 3',
           '6/8 es simple ternario: 3 tiempos, cada uno dividido en 2',
           '6/8 es compuesto ternario: 3 tiempos, cada uno dividido en 3',
           '6/8 es simple: seis tiempos de negra por compás',
@@ -249,7 +249,7 @@ const overlay: TemplateLevelOverlay = {
           'Las ligaduras solo pueden ocurrir dentro de un mismo compás',
         ],
         [
-          'Tres corcheas de tresillo ocupan el tiempo de dos corcheas normales',
+          'Tres corcheas de tresillo ocupan el tiempo de dos',
           'Tres corcheas de tresillo ocupan el tiempo de cuatro corcheas normales',
           'Un tresillo hace que cada una de sus tres notas dure un tiempo entero',
           'Un tresillo añade una tercera nota encima de un acorde de dos notas',

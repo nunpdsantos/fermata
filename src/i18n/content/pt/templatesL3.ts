@@ -59,7 +59,7 @@ const overlay: TemplateLevelOverlay = {
         'Inversões de acordes de sétima: estado fundamental = 7, 1.ª inv = 6/5, 2.ª inv = 4/3, 3.ª inv = 4/2 (ou 2).',
       choiceSets: [
         [
-          'A 3.ª inversão põe a 7.ª no baixo (cifra 4/2)',
+          'A 3.ª inversão tem a 7.ª no baixo (4/2)',
           'A 3.ª inversão põe a 5.ª no baixo (cifra 4/3)',
           'A 3.ª inversão põe a 3.ª no baixo (cifra 6/5)',
           'A 3.ª inversão mantém a fundamental no baixo (cifra 7)',
@@ -120,7 +120,7 @@ const overlay: TemplateLevelOverlay = {
           'Na menor harmónica, V7 é um acorde de sétima meio-diminuta',
         ],
         [
-          'Na menor harmónica, vii°7 é um acorde de sétima totalmente diminuta',
+          'Na menor harmónica, vii°7 é totalmente diminuto',
           'Na menor harmónica, vii°7 é um acorde de sétima meio-diminuta (m7b5)',
           'Na menor harmónica, vii°7 é um acorde de sétima menor',
           'Na menor harmónica, vii°7 é um acorde de sétima da dominante',
@@ -149,7 +149,7 @@ const overlay: TemplateLevelOverlay = {
           'Tenor–baixo têm de ficar a menos de uma oitava, enquanto as vozes superiores se podem afastar muito mais',
         ],
         [
-          'Cruzamento de vozes: uma voz mais grave passa acima da voz vizinha',
+          'Cruzamento de vozes: uma voz grave passa acima da vizinha',
           'Cruzamento de vozes: duas vozes cantam a mesma nota ao mesmo tempo',
           'Cruzamento de vozes: o soprano e o baixo movem-se em movimento contrário',
           'Cruzamento de vozes: um hábito recomendado nos corais para dar mais interesse melódico',

@@ -77,7 +77,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Episodes must stay in the tonic key', correct: false },
             ],
             [
-              { label: 'Augmentation presents the subject in longer note values (doubled durations)', correct: true },
+              { label: 'Augmentation doubles the note values', correct: true },
               { label: 'Augmentation adds extra notes to the subject while keeping all of its note values the same', correct: false },
               { label: 'Augmentation is the same as inversion', correct: false },
               { label: 'Augmentation shortens the note values', correct: false },
@@ -118,7 +118,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'A crab canon has no relationship to the original melody', correct: false },
             ],
             [
-              { label: 'A perpetual (infinite) canon loops back to the beginning seamlessly', correct: true },
+              { label: 'A perpetual canon loops to its start', correct: true },
               { label: 'A perpetual canon keeps adding voices and speeding up until it reaches a final cadence', correct: false },
               { label: 'A perpetual canon gradually speeds up', correct: false },
               { label: 'A perpetual canon always has a clear ending', correct: false },

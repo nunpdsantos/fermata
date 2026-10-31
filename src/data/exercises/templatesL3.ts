@@ -79,7 +79,7 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Third inversion puts the 7th in the bass (figured 4/2)', correct: true },
+              { label: 'Third inversion has the 7th in the bass (4/2)', correct: true },
               { label: 'Third inversion puts the 5th in the bass (figured 4/3)', correct: false },
               { label: 'Third inversion puts the 3rd in the bass (figured 6/5)', correct: false },
               { label: 'Third inversion keeps the root in the bass (figured 7)', correct: false },
@@ -156,7 +156,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'In harmonic minor, V7 is a half-diminished seventh chord', correct: false },
             ],
             [
-              { label: 'In harmonic minor, vii°7 is a fully diminished seventh chord', correct: true },
+              { label: 'In harmonic minor, vii°7 is fully diminished', correct: true },
               { label: 'In harmonic minor, vii°7 is a half-diminished seventh chord (m7b5)', correct: false },
               { label: 'In harmonic minor, vii°7 is a minor seventh chord', correct: false },
               { label: 'In harmonic minor, vii°7 is a dominant seventh chord', correct: false },
@@ -189,7 +189,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Tenor–bass must stay within an octave, while the upper voices may spread out', correct: false },
             ],
             [
-              { label: 'Voice crossing: a lower voice moves above the voice next to it', correct: true },
+              { label: 'Voice crossing: a lower voice goes above the next voice up', correct: true },
               { label: 'Voice crossing: two voices sing the same note at the same time', correct: false },
               { label: 'Voice crossing: the soprano and the bass move in contrary motion', correct: false },
               { label: 'Voice crossing: a habit encouraged in chorales for extra melodic interest', correct: false },

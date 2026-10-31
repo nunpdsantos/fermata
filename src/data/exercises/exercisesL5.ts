@@ -263,7 +263,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A chord that belongs to both the old key and the new key, serving as the hinge between them', correct: true },
+          { label: 'A chord common to both keys', correct: true },
           { label: 'The first chord heard in the new key that contains a chromatic note that is foreign to the old key', correct: false },
           { label: 'A diminished chord that resolves the modulation', correct: false },
           { label: 'The dominant chord of the original key', correct: false },
@@ -436,7 +436,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Borrowing chords from the parallel minor (or major) for color, without leaving the home key', correct: true },
+          { label: 'Borrowing chords from the parallel key', correct: true },
           { label: 'Mixing two different church modes, such as Dorian and Mixolydian, freely within the same passage', correct: false },
           { label: 'Playing a major and minor chord at the same time', correct: false },
           { label: 'Switching between relative major and minor keys', correct: false },
@@ -685,7 +685,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Move each voice to the nearest available chord tone, preferring stepwise motion and common tones over leaps', correct: true },
+          { label: 'Move each voice to its nearest chord tone', correct: true },
           { label: 'All voices should move in parallel motion at all times', correct: false },
           { label: 'Each voice should leap to the most distant available chord tone, preferring wide leaps over stepwise motion and common tones for variety', correct: false },
           { label: 'The top voice must always ascend while the bottom voice descends', correct: false },

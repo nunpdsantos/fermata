@@ -44,7 +44,7 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'It is a pre-dominant: it moves to V, often through a cadential 6/4', correct: true },
+              { label: 'It is a pre-dominant that moves to V', correct: true },
               { label: 'It is a dominant: it resolves straight to the tonic I', correct: false },
               { label: 'It is a tonic substitute that ends phrases in place of the tonic chord', correct: false },
               { label: 'It is a passing chord with no harmonic function of its own', correct: false },
@@ -101,13 +101,13 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'The Italian sixth has three notes: b6, 1 and 5', correct: false },
             ],
             [
-              { label: 'The French sixth adds scale degree 2 to the Italian sixth', correct: true },
+              { label: 'The French sixth adds degree 2 to the Italian', correct: true },
               { label: 'The French sixth adds scale degree b3 to the Italian sixth', correct: false },
               { label: 'The French sixth adds scale degree 5 to the Italian sixth', correct: false },
               { label: 'The French sixth drops the #4 from the Italian sixth', correct: false },
             ],
             [
-              { label: 'They resolve outward to an octave on the dominant', correct: true },
+              { label: 'They expand to an octave on the dominant', correct: true },
               { label: 'They resolve inward to a unison on the tonic note', correct: false },
               { label: 'They resolve outward to an octave on the tonic', correct: false },
               { label: 'They resolve inward to a third on the subdominant', correct: false },
@@ -208,7 +208,7 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Romantic composers exploited the German sixth\'s double identity extensively', correct: true },
+              { label: 'Romantic composers exploited it extensively', correct: true },
               { label: 'Only Baroque composers used the German sixth\'s double identity', correct: false },
               { label: 'It was first invented by twentieth-century composers of atonal music', correct: false },
               { label: 'Classical and Romantic composers both avoided enharmonic modulation entirely', correct: false },
@@ -235,7 +235,7 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Any note of a dim7 chord can act as the leading tone of a new key', correct: true },
+              { label: 'Any note of a dim7 can serve as leading tone', correct: true },
               { label: 'Only the written root of a dim7 chord can act as a leading tone', correct: false },
               { label: 'A dim7 chord can lead to only one key: a half step above its root', correct: false },
               { label: 'A dim7 chord cannot be respelled without changing how it sounds', correct: false },

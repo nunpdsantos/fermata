@@ -463,7 +463,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: '1 sharp (F#)', correct: true },
           { label: '0 sharps or flats', correct: false },
           { label: '2 sharps (F#, C#)', correct: false },
-          { label: '1 flat (Bb)', correct: false },
+          { label: '2 flats (Bb, Eb)', correct: false },
         ],
       },
       hint: 'G major needs F# to keep the W-W-H-W-W-W-H pattern. That single sharp is its key signature.',

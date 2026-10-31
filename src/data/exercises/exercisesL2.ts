@@ -336,7 +336,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Each main beat divides naturally into 3 equal parts', correct: true },
+          { label: 'Each beat divides into 3 equal parts', correct: true },
           { label: 'Each main beat divides naturally into 2 equal parts', correct: false },
           { label: 'The time signature has a large top number', correct: false },
           { label: 'The tempo is faster than simple meter', correct: false },

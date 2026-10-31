@@ -24,7 +24,7 @@ const overlay: TemplateLevelOverlay = {
         'V/V toniciza el acorde dominante. Contiene una alteración cromática (4.º grado elevado) y resuelve hacia V.',
       choiceSets: [
         [
-          'V/V contiene el 4.º grado elevado y resuelve hacia V',
+          'V/V contiene el 4.º grado elevado y va hacia V',
           'V/V contiene el 7.º grado rebajado y resuelve hacia IV',
           'V/V contiene el 4.º grado elevado y resuelve hacia I',
           'V/V solo contiene notas diatónicas, así que es el mismo acorde que ii',
@@ -62,13 +62,13 @@ const overlay: TemplateLevelOverlay = {
           'V7/vi en C mayor es A7 (A-C#-E-G), que resuelve hacia D menor',
         ],
         [
-          'V7/IV en C mayor es C7 (C-E-G-Bb), que resuelve hacia F mayor',
+          'V7/IV en C mayor es C7 (C-E-G-Bb), que lleva a F mayor',
           'V7/IV en C mayor es F7 (F-A-C-Eb), que resuelve hacia Bb mayor',
           'V7/IV en C mayor es C7 (C-E-G-Bb), que resuelve hacia G mayor',
           'V7/IV en C mayor es G7 (G-B-D-F), que resuelve hacia C mayor',
         ],
         [
-          'V7/ii en C mayor es A7 (A-C#-E-G), que resuelve hacia D menor',
+          'V7/ii en C mayor es A7 (A-C#-E-G), que lleva a D menor',
           'V7/ii en C mayor es B7 (B-D#-F#-A), que resuelve hacia E menor',
           'V7/ii en C mayor es A7 (A-C#-E-G), que resuelve hacia C mayor',
           'V7/ii en C mayor es D7 (D-F#-A-C), que resuelve hacia G mayor',
@@ -87,7 +87,7 @@ const overlay: TemplateLevelOverlay = {
         'Los acordes de sensible secundaria (vii°/x) funcionan como dominantes secundarias pero son disminuidos. Resuelven medio tono arriba hacia el acorde objetivo.',
       choiceSets: [
         [
-          'vii°7/V en C mayor es F#dim7, que resuelve subiendo hacia G',
+          'vii°7/V en C mayor es F#dim7, que sube hacia G',
           'vii°7/V en C mayor es Bdim7, que resuelve subiendo hacia C',
           'vii°7/V en C mayor es F#dim7, que resuelve bajando hacia F',
           'vii°7/V en C mayor es C#dim7, que resuelve subiendo hacia D',

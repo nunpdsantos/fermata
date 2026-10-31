@@ -18,7 +18,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The 4th above the bass is held over and resolves down to the 3rd', correct: true },
+          { label: 'A held 4th resolves down to the 3rd', correct: true },
           { label: 'The 3rd is raised to the 4th and stays there', correct: false },
           { label: 'A chord that alternates between the 4th and 3rd degrees', correct: false },
           { label: 'The bass moves from the 4th degree to the 3rd degree of the scale', correct: false },
@@ -323,7 +323,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Minor 7th — a minor triad plus a minor 7th above the root', correct: true },
+          { label: 'Minor 7th — minor triad plus minor 7th', correct: true },
           { label: 'Major 7th — a major triad plus a major 7th above the root', correct: false },
           { label: 'Dominant 7th — a major triad plus a minor 7th above the root', correct: false },
           { label: 'Diminished 7th — a diminished triad plus a diminished 7th', correct: false },
@@ -383,7 +383,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Fully diminished has a diminished 7th; half-diminished has a minor 7th', correct: true },
+          { label: 'Their 7ths: diminished vs. minor', correct: true },
           { label: 'The fully diminished uses a minor triad; the half-diminished uses a major triad', correct: false },
           { label: 'The fully diminished has a perfect 5th; the half-diminished has a diminished 5th', correct: false },
           { label: 'They are the same chord with different names', correct: false },
@@ -451,7 +451,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Descending fifths — each root falls a 5th', correct: true },
+          { label: 'Descending fifths', correct: true },
           { label: 'Ascending fifths — each root rises a 5th', correct: false },
           { label: 'Descending thirds — each root falls a 3rd', correct: false },
           { label: 'Chromatic descent — each root falls a half step', correct: false },
@@ -568,7 +568,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'It combines unequal groups of eighth notes (e.g. 2+2+3, 3+2+2, or 2+3+2)', correct: true },
+          { label: 'Unequal groups of eighths, e.g. 2+2+3', correct: true },
           { label: 'It has 7 equal beats like a standard simple meter', correct: false },
           { label: 'It is a compound meter with dotted-quarter-note beats', correct: false },
           { label: 'It alternates between 3/8 and 4/8 every other measure, like a mixed meter', correct: false },
@@ -632,7 +632,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Embellishments decorate; structural chromatic notes change the harmony', correct: true },
+          { label: 'Only structural notes change the harmony', correct: true },
           { label: 'There is no difference; all chromatic notes are embellishments', correct: false },
           { label: 'Embellishments last longer than structural notes', correct: false },
           { label: 'Structural notes are always in the bass while embellishments are in upper voices', correct: false },

@@ -179,7 +179,7 @@ const overlay: ExerciseLevelOverlay = {
   l5u16m1e1: {
     prompt: 'O que é um acorde pivot na modulação?',
     choices: [
-      'Um acorde que pertence tanto à tonalidade antiga como à nova, servindo de dobradiça entre elas',
+      'Um acorde comum às duas tonalidades',
       'O primeiro acorde ouvido na nova tonalidade que contém uma nota cromática estranha à tonalidade antiga',
       'Um acorde diminuto que resolve a modulação',
       'O acorde dominante da tonalidade original',
@@ -291,7 +291,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'O que é mistura modal?',
     choices: [
-      'Emprestar acordes da tonalidade paralela menor (ou maior) para dar cor, sem sair da tonalidade de origem',
+      'Emprestar acordes da tonalidade paralela',
       'Misturar livremente dois modos eclesiásticos diferentes, como o dórico e o mixolídio, na mesma passagem musical',
       'Tocar um acorde maior e um menor ao mesmo tempo',
       'Alternar entre relativa maior e relativa menor',
@@ -465,7 +465,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Qual é o princípio fundamental de condução de vozes que as notas-guia ilustram?',
     choices: [
-      'Mover cada voz para a nota do acorde mais próxima disponível, preferindo movimento por grau e notas comuns a saltos',
+      'Mover cada voz para a nota do acorde mais próxima',
       'Todas as vozes devem mover-se em movimento paralelo em todos os momentos',
       'Cada voz deve saltar para a nota do acorde mais distante disponível, preferindo saltos largos a graus conjuntos e notas comuns',
       'A voz superior deve sempre subir enquanto a inferior desce',

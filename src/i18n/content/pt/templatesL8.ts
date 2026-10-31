@@ -69,7 +69,7 @@ const overlay: TemplateLevelOverlay = {
           'Os episódios devem permanecer na tonalidade da tónica',
         ],
         [
-          'A aumentação apresenta o sujeito em valores de nota mais longos (durações duplicadas)',
+          'A aumentação duplica as durações',
           'A aumentação acrescenta notas ao sujeito, mantendo todos os seus valores de nota iguais aos originais',
           'A aumentação é o mesmo que a inversão',
           'A aumentação encurta os valores de nota',
@@ -106,7 +106,7 @@ const overlay: TemplateLevelOverlay = {
           'Um cânone de caranguejo não tem relação com a melodia original',
         ],
         [
-          'Um cânone perpétuo (infinito) regressa ao início sem interrupção',
+          'Um cânone perpétuo volta ao início',
           'Um cânone perpétuo vai acrescentando vozes e acelerando até chegar a uma cadência final',
           'Um cânone perpétuo acelera gradualmente',
           'Um cânone perpétuo tem sempre um final claro',

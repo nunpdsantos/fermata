@@ -28,7 +28,7 @@ const overlay: TemplateLevelOverlay = {
           'Numa suspensão 4-3, o baixo desce do 4.º para o 3.º grau',
         ],
         [
-          'Numa suspensão 7-6, a 7.ª acima do baixo resolve descendo para a 6.ª',
+          'Numa suspensão 7-6, a 7.ª resolve descendo para a 6.ª',
           'Numa suspensão 7-6, a 7.ª acima do baixo resolve subindo para a oitava',
           'Numa suspensão 7-6, é o baixo que mantém a dissonância enquanto a voz superior se move',
           'Numa suspensão 7-6, a dissonância nunca chega a resolver',

@@ -59,7 +59,7 @@ const overlay: TemplateLevelOverlay = {
         'Inversiones de acordes de séptima: estado fundamental = 7, 1.ª inv = 6/5, 2.ª inv = 4/3, 3.ª inv = 4/2 (o 2).',
       choiceSets: [
         [
-          'La 3.ª inversión pone la 7.ª en el bajo (cifrado 4/2)',
+          'La 3.ª inversión tiene la 7.ª en el bajo (4/2)',
           'La 3.ª inversión pone la 5.ª en el bajo (cifrado 4/3)',
           'La 3.ª inversión pone la 3.ª en el bajo (cifrado 6/5)',
           'La 3.ª inversión mantiene la fundamental en el bajo (cifrado 7)',
@@ -120,7 +120,7 @@ const overlay: TemplateLevelOverlay = {
           'En la menor armónica, V7 es un acorde de séptima semidisminuida',
         ],
         [
-          'En la menor armónica, vii°7 es un acorde de séptima totalmente disminuida',
+          'En la menor armónica, vii°7 es totalmente disminuido',
           'En la menor armónica, vii°7 es un acorde de séptima semidisminuida (m7b5)',
           'En la menor armónica, vii°7 es un acorde de séptima menor',
           'En la menor armónica, vii°7 es un acorde de séptima de dominante',
@@ -149,7 +149,7 @@ const overlay: TemplateLevelOverlay = {
           'Tenor–bajo deben quedar a menos de una octava, mientras que las voces superiores pueden separarse más',
         ],
         [
-          'Cruce de voces: una voz más grave pasa por encima de la voz vecina',
+          'Cruce de voces: una voz grave pasa sobre la vecina',
           'Cruce de voces: dos voces cantan la misma nota al mismo tiempo',
           'Cruce de voces: el soprano y el bajo se mueven en movimiento contrario',
           'Cruce de voces: un hábito recomendado en los corales para dar más interés melódico',

@@ -209,7 +209,7 @@ const overlay: ExerciseLevelOverlay = {
       '1 sustenido (F#)',
       '0 sustenidos ou bemóis',
       '2 sustenidos (F#, C#)',
-      '1 bemol (Bb)',
+      '2 bemóis (Bb, Eb)',
     ],
     hint: 'G maior necessita de F# para manter o padrão T-T-mT-T-T-T-mT. Esse único sustenido é a sua armação de clave.',
   },

@@ -30,7 +30,7 @@ const overlay: TemplateLevelOverlay = {
           'En un retardo 4-3, el bajo baja del 4.º al 3.er grado',
         ],
         [
-          'En un retardo 7-6, la 7.ª sobre el bajo resuelve bajando a la 6.ª',
+          'En un retardo 7-6, la 7.ª resuelve bajando a la 6.ª',
           'En un retardo 7-6, la 7.ª sobre el bajo resuelve subiendo a la octava',
           'En un retardo 7-6, es el bajo el que mantiene la disonancia mientras la voz superior se mueve',
           'En un retardo 7-6, la disonancia nunca llega a resolver',

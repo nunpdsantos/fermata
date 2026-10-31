@@ -640,7 +640,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The tritone formed between the major 3rd and the minor 7th', correct: true },
+          { label: 'The 3rd-to-7th tritone', correct: true },
           { label: 'The perfect 5th formed between the root and the 5th of the chord', correct: false },
           { label: 'The major 3rd between root and 3rd', correct: false },
           { label: 'The octave doubling of the root', correct: false },
@@ -704,7 +704,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A melody that uses only the notes of the prevailing key or scale', correct: true },
+          { label: 'A melody using only notes of the key', correct: true },
           { label: 'A melody that uses sharps and flats outside the key', correct: false },
           { label: 'A melody played on only one string of a guitar', correct: false },
           { label: 'A melody that moves exclusively by step, never by leap, from note to note', correct: false },

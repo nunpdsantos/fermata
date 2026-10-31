@@ -26,7 +26,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'En el cifrado jazz, ¿qué indica "alt" (como en G7alt)?',
     choices: [
-      'Un acorde dominante con quintas y/o novenas alteradas (b5, #5, b9, #9)',
+      'Un dominante con quintas y/o novenas alteradas',
       'Un voicing alternativo de un acorde dominante simple, con todas las notas exactamente como están escritas',
       'Un acorde que alterna entre cualidad mayor y menor',
       'Un acorde que puede sustituirse por cualquier otro',
@@ -84,7 +84,7 @@ const overlay: ExerciseLevelOverlay = {
   l7u21m3e3: {
     prompt: '¿Por qué la ii-V-I es la progresión más importante del jazz?',
     choices: [
-      'Encadena las funciones de subdominante, dominante y tónica en el movimiento cadencial más fuerte',
+      'Encadena subdominante, dominante y tónica',
       'Fue inventada por Duke Ellington en los años 1940 y desde entonces se convirtió en un estándar de jazz',
       'Usa solo tres notas en total entre los tres acordes',
       'Evita cualquier disonancia, facilitando la improvisación',
@@ -129,7 +129,7 @@ const overlay: ExerciseLevelOverlay = {
       'I7-I7-I7-I7 | IV7-IV7-I7-I7 | V7-IV7-I7-V7 (forma C7-F7-G7)',
       'I-IV-V-I | I-IV-V-I | I-IV-V-I (tres acordes simples repetidos)',
       'ii-V-I-vi | ii-V-I-vi | ii-V-I-vi (turnaround jazz repetido)',
-      'I-V-vi-IV | I-V-vi-IV | I-V-vi-IV (bucle pop repetido)',
+      'I-V-vi-IV | I-V-vi-IV | I-V-vi-IV (bucle pop de cuatro acordes repetido)',
     ],
     hint: 'El blues de 12 compases sigue un patrón específico a lo largo de 12 compases: 4 compases de I7, 2 de IV7, 2 de I7, después V7-IV7-I7-V7 (turnaround). Todos los acordes son de séptima dominante.',
   },

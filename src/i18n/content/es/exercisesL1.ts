@@ -209,7 +209,7 @@ const overlay: ExerciseLevelOverlay = {
       '1 sostenido (F#)',
       '0 sostenidos o bemoles',
       '2 sostenidos (F#, C#)',
-      '1 bemol (Bb)',
+      '2 bemoles (Bb, Eb)',
     ],
     hint: 'G mayor necesita F# para mantener el patrón T-T-S-T-T-T-S. Ese único sostenido es su armadura de clave.',
   },

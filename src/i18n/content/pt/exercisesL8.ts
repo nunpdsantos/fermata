@@ -37,7 +37,7 @@ const overlay: ExerciseLevelOverlay = {
   l8u25m1e3: {
     prompt: 'O que acontece durante a exposição de uma fuga?',
     choices: [
-      'Cada voz entra sucessivamente com o sujeito ou a resposta até todas as vozes terem apresentado o tema',
+      'Cada voz entra à vez com o sujeito ou a resposta',
       'Todas as vozes tocam o sujeito simultaneamente em uníssono',
       'O sujeito é logo partido em pequenos fragmentos e desenvolvido através de sequências em tonalidades remotas',
       'O sujeito é apresentado em aumentação e diminuição',
@@ -50,7 +50,7 @@ const overlay: ExerciseLevelOverlay = {
   l8u25m2e1: {
     prompt: 'Qual é a função principal de um episódio numa fuga?',
     choices: [
-      'Modular entre tonalidades e proporcionar contraste usando fragmentos do sujeito',
+      'Modular usando fragmentos do sujeito',
       'Introduzir um tema completamente novo, sem relação com o sujeito, que nunca mais volta a ouvir-se',
       'Reapresentar o sujeito em todas as vozes simultaneamente',
       'Concluir a fuga com uma cadência final',
@@ -60,7 +60,7 @@ const overlay: ExerciseLevelOverlay = {
   l8u25m2e2: {
     prompt: 'O que é o "stretto" numa fuga?',
     choices: [
-      'Entradas sobrepostas do sujeito onde uma nova voz começa antes de a anterior terminar',
+      'Entradas sobrepostas do sujeito',
       'Um aumento gradual do andamento perto do fim da fuga, até todas as vozes tocarem duas vezes mais depressa',
       'A cadência final onde todas as vozes resolvem juntas',
       'Uma secção onde o sujeito é tocado de trás para a frente',
@@ -70,7 +70,7 @@ const overlay: ExerciseLevelOverlay = {
   l8u25m2e3: {
     prompt: 'Na técnica de fuga, o que significa "aumentação"?',
     choices: [
-      'O sujeito é apresentado com valores de nota duplicados (proporcionalmente mais longos)',
+      'O sujeito em valores de nota duplicados',
       'O sujeito é apresentado com notas cromáticas adicionais',
       'O sujeito é tocado por mais instrumentos do que no início, com os valores de nota inalterados',
       'O sujeito é transposto para uma oitava mais aguda',
@@ -94,7 +94,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Num "cânone à quinta", como se relaciona o seguidor com o líder?',
     choices: [
-      'O seguidor imita o líder transposto uma quinta perfeita acima (ou abaixo)',
+      'Imita o líder à distância de uma quinta',
       'O seguidor entra exatamente cinco tempos depois do líder, à mesma altura que o líder',
       'O seguidor toca apenas a quinta nota de cada frase',
       'O seguidor toca a melodia do líder cinco vezes',
@@ -134,7 +134,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Qual é o propósito principal da secção de desenvolvimento na forma-sonata?',
     choices: [
-      'Explorar, fragmentar e transformar material temático através de modulação e desenvolvimento motívico',
+      'Fragmentar e desenvolver os temas',
       'Introduzir temas inteiramente novos que nunca se ouviram na exposição e que nunca mais regressam depois',
       'Repetir a exposição exatamente numa tonalidade diferente',
       'Proporcionar um contraste lento e lírico à exposição',
@@ -145,7 +145,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Na reexposição de uma forma-sonata, em que tonalidade é apresentado o segundo tema?',
     choices: [
-      'Na tonalidade da tónica, resolvendo o conflito tonal da exposição',
+      'Na tonalidade da tónica',
       'A tonalidade da dominante, exatamente onde estava na exposição da primeira vez',
       'Na tonalidade da subdominante como compromisso',
       'Numa tonalidade remota escolhida livremente pelo compositor',
@@ -204,7 +204,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'O que significa um instrumento ser um "instrumento transpositor"?',
     choices: [
-      'A sua altura escrita difere da altura que realmente soa (altura de concerto)',
+      'A altura escrita e a que soa são diferentes',
       'Consegue tocar em qualquer tonalidade sem dificuldade',
       'Consegue mudar a sua afinação durante uma interpretação',
       'Transpõe a música automaticamente para o instrumentista, por isso nada precisa de ser reescrito',
@@ -353,7 +353,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Qual das seguintes é um exemplo de uma "técnica expandida"?',
     choices: [
-      'Tocar dentro do piano beliscando ou abafando as cordas diretamente',
+      'Abafar as cordas do piano à mão',
       'Tocar uma escala normal num andamento muito rápido, usando o instrumento da maneira habitual',
       'Usar um metrónomo durante a interpretação',
       'Ler à primeira vista uma peça nova',

@@ -150,7 +150,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'En A menor natural, el acorde construido sobre el 7.º grado (G) es una tríada mayor. ¿Por qué cambia esto en la menor armónica?',
     choices: [
-      'Elevar el 7.º grado (G a G#) transforma VII en vii°, una tríada disminuida',
+      'Elevar G a G# convierte VII en vii° disminuido',
       'El acorde del 7.º grado es siempre disminuido independientemente de la forma de la escala menor',
       'La escala menor armónica desciende el 7.º grado, creando un acorde disminuido',
       'La cualidad del acorde no cambia entre menor natural y menor armónica',

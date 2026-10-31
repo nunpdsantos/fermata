@@ -69,7 +69,7 @@ const overlay: TemplateLevelOverlay = {
           'Los episodios deben permanecer en la tonalidad de la tónica',
         ],
         [
-          'La aumentación presenta el sujeto en valores de nota más largos (duraciones duplicadas)',
+          'La aumentación duplica las duraciones',
           'La aumentación añade notas al sujeto, manteniendo todos sus valores de nota iguales a los originales',
           'La aumentación es lo mismo que la inversión',
           'La aumentación acorta los valores de nota',
@@ -106,7 +106,7 @@ const overlay: TemplateLevelOverlay = {
           'Un canon cangrejo no tiene relación con la melodía original',
         ],
         [
-          'Un canon perpetuo (infinito) regresa al inicio sin interrupción',
+          'Un canon perpetuo vuelve al inicio',
           'Un canon perpetuo va añadiendo voces y acelerando hasta llegar a una cadencia final',
           'Un canon perpetuo acelera gradualmente',
           'Un canon perpetuo tiene siempre un final claro',

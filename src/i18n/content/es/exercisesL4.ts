@@ -15,7 +15,7 @@ const overlay: ExerciseLevelOverlay = {
   l4u12m1e1: {
     prompt: '¿Qué es un retardo 4-3?',
     choices: [
-      'La 4.ª por encima del bajo se mantiene y resuelve bajando a la 3.ª',
+      'Una 4.ª retenida baja a la 3.ª',
       'La 3.ª se eleva a la 4.ª y permanece ahí',
       'Un acorde que alterna entre el 4.º y el 3.er grado',
       'El bajo se mueve del 4.º grado de la escala al 3.er grado de la escala',
@@ -209,7 +209,7 @@ const overlay: ExerciseLevelOverlay = {
   l4u13m2e2: {
     prompt: 'En una tonalidad mayor, ¿cuál es la cualidad del acorde vi7?',
     choices: [
-      'Séptima menor — una tríada menor más una 7.ª menor por encima de la fundamental',
+      'Séptima menor — tríada menor más 7.ª menor',
       'Séptima mayor — una tríada mayor más una 7.ª mayor por encima de la fundamental',
       'Séptima de dominante — una tríada mayor más una 7.ª menor por encima de la fundamental',
       'Séptima disminuida — una tríada disminuida más una 7.ª disminuida',
@@ -244,7 +244,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Cuál es la diferencia fundamental entre un acorde de séptima disminuida y uno semidisminuido?',
     choices: [
-      'El disminuido tiene 7.ª disminuida; el semidisminuido, 7.ª menor',
+      'La 7.ª: disminuida frente a menor',
       'El disminuido usa una tríada menor; el semidisminuido usa una tríada mayor',
       'El disminuido tiene una 5.ª justa; el semidisminuido tiene una 5.ª disminuida',
       'Son el mismo acorde con nombres diferentes',
@@ -292,7 +292,7 @@ const overlay: ExerciseLevelOverlay = {
   l4u13m5e1: {
     prompt: '¿Cuál es la secuencia armónica diatónica más común?',
     choices: [
-      'Quintas descendentes — cada fundamental desciende una 5.ª',
+      'Quintas descendentes',
       'Quintas ascendentes — cada fundamental asciende una 5.ª',
       'Terceras descendentes — cada fundamental desciende una 3.ª',
       'Descenso cromático — cada fundamental desciende un semitono',
@@ -376,7 +376,7 @@ const overlay: ExerciseLevelOverlay = {
   l4u14m2e2: {
     prompt: '¿Cómo funciona el compás 7/8 como compás aditivo?',
     choices: [
-      'Combina grupos desiguales de corcheas (ej. 2+2+3, 3+2+2 o 2+3+2)',
+      'Grupos desiguales de corcheas, ej. 2+2+3',
       'Tiene 7 tiempos iguales como un compás simple estándar',
       'Es un compás compuesto con tiempos de negra con puntillo',
       'Alterna entre 3/8 y 4/8 de compás en compás, como un compás mixto',
@@ -421,7 +421,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Cómo se distingue una ornamentación cromática de una nota cromática estructural (como una sensible secundaria)?',
     choices: [
-      'Las ornamentaciones decoran; las notas cromáticas estructurales cambian la armonía',
+      'Solo las notas estructurales cambian la armonía',
       'No hay diferencia; todas las notas cromáticas son ornamentaciones',
       'Las ornamentaciones duran más que las notas estructurales',
       'Las notas estructurales están siempre en el bajo mientras que las ornamentaciones están en las voces superiores',

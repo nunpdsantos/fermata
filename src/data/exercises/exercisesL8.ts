@@ -49,7 +49,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Each voice enters successively with the subject or answer until all voices have stated the theme', correct: true },
+          { label: 'Each voice enters in turn with subject or answer', correct: true },
           { label: 'All voices play the subject simultaneously in unison', correct: false },
           { label: 'The subject is immediately broken into small fragments and developed through sequences in remote keys', correct: false },
           { label: 'The subject is presented in augmentation and diminution', correct: false },
@@ -68,7 +68,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'To modulate between keys and provide contrast using fragments of the subject', correct: true },
+          { label: 'To modulate using subject fragments', correct: true },
           { label: 'To introduce a completely new theme, unrelated to the subject, that is never heard again', correct: false },
           { label: 'To restate the subject in all voices simultaneously', correct: false },
           { label: 'To conclude the fugue with a final cadence', correct: false },
@@ -83,7 +83,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Overlapping entries of the subject where a new voice begins before the previous one finishes', correct: true },
+          { label: 'Overlapping entries of the subject', correct: true },
           { label: 'A gradual increase in tempo toward the end of the fugue, until every voice is playing twice as fast', correct: false },
           { label: 'The final cadence where all voices resolve together', correct: false },
           { label: 'A section where the subject is played backward', correct: false },
@@ -98,7 +98,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The subject is presented with note values doubled (proportionally longer)', correct: true },
+          { label: 'The subject in doubled note values', correct: true },
           { label: 'The subject is presented with additional chromatic notes', correct: false },
           { label: 'The subject is played by more instruments than at first, with the note values left unchanged', correct: false },
           { label: 'The subject is transposed to a higher octave', correct: false },
@@ -132,7 +132,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The follower imitates the leader transposed up (or down) by a perfect fifth', correct: true },
+          { label: 'It imitates the leader a perfect fifth away', correct: true },
           { label: 'The follower enters exactly five beats after the leader, at the same pitch as the leader', correct: false },
           { label: 'The follower plays only the fifth note of each phrase', correct: false },
           { label: 'The follower plays the leader melody five times', correct: false },
@@ -185,7 +185,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'To explore, fragment, and transform thematic material through modulation and motivic development', correct: true },
+          { label: 'To fragment and develop the themes', correct: true },
           { label: 'To introduce entirely new themes that were never heard in the exposition and never come back later on', correct: false },
           { label: 'To repeat the exposition exactly in a different key', correct: false },
           { label: 'To provide a slow, lyrical contrast to the exposition', correct: false },
@@ -200,7 +200,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The tonic key, resolving the tonal conflict of the exposition', correct: true },
+          { label: 'In the tonic key', correct: true },
           { label: 'The dominant key, exactly where it stood in the exposition the first time', correct: false },
           { label: 'The subdominant key as a compromise', correct: false },
           { label: 'A remote key chosen freely by the composer', correct: false },
@@ -283,7 +283,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Its written pitch differs from the pitch that actually sounds (concert pitch)', correct: true },
+          { label: 'Written and sounding pitch differ', correct: true },
           { label: 'It can play in any key without difficulty', correct: false },
           { label: 'It can change its tuning during a performance', correct: false },
           { label: 'It transposes the music automatically for the player, so nothing ever needs to be rewritten', correct: false },
@@ -498,7 +498,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Playing inside the piano by plucking or muting the strings directly', correct: true },
+          { label: 'Muting piano strings by hand', correct: true },
           { label: 'Playing an ordinary scale at a very fast tempo, using the instrument in the usual way', correct: false },
           { label: 'Using a metronome during performance', correct: false },
           { label: 'Sight-reading a new piece of music', correct: false },

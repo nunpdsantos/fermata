@@ -208,7 +208,7 @@ const overlay: ExerciseLevelOverlay = {
   l2u6m1e2: {
     prompt: 'O que define o compasso composto?',
     choices: [
-      'Cada tempo principal divide-se naturalmente em 3 partes iguais',
+      'Cada tempo divide-se em 3 partes iguais',
       'Cada tempo principal divide-se naturalmente em 2 partes iguais',
       'A indicação de compasso tem um número grande em cima',
       'O andamento é mais rápido que no compasso simples',

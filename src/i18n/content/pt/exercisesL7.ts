@@ -26,7 +26,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Nas cifras de jazz, o que indica "alt" (como em G7alt)?',
     choices: [
-      'Um acorde dominante com quintas e/ou nonas alteradas (b5, #5, b9, #9)',
+      'Um dominante com quintas e/ou nonas alteradas',
       'Um voicing alternativo de um acorde dominante simples, com todas as notas exatamente como escritas',
       'Um acorde que alterna entre qualidade maior e menor',
       'Um acorde que pode ser substituído por qualquer outro',
@@ -84,7 +84,7 @@ const overlay: ExerciseLevelOverlay = {
   l7u21m3e3: {
     prompt: 'Por que é a ii-V-I a progressão mais importante no jazz?',
     choices: [
-      'Encadeia as funções de subdominante, dominante e tónica no movimento cadencial mais forte',
+      'Encadeia subdominante, dominante e tónica',
       'Foi inventada por Duke Ellington nos anos 1940 e desde então tornou-se um standard de jazz',
       'Usa apenas três notas no total entre os três acordes',
       'Evita qualquer dissonância, facilitando a improvisação',
@@ -129,7 +129,7 @@ const overlay: ExerciseLevelOverlay = {
       'I7-I7-I7-I7 | IV7-IV7-I7-I7 | V7-IV7-I7-V7 (forma C7-F7-G7)',
       'I-IV-V-I | I-IV-V-I | I-IV-V-I (três acordes simples repetidos)',
       'ii-V-I-vi | ii-V-I-vi | ii-V-I-vi (turnaround jazz repetido)',
-      'I-V-vi-IV | I-V-vi-IV | I-V-vi-IV (loop pop repetido)',
+      'I-V-vi-IV | I-V-vi-IV | I-V-vi-IV (loop pop de quatro acordes repetido)',
     ],
     hint: 'O blues de 12 compassos segue um padrão específico ao longo de 12 compassos: 4 compassos de I7, 2 de IV7, 2 de I7, depois V7-IV7-I7-V7 (turnaround). Todos os acordes são de sétima dominante.',
   },

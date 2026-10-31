@@ -24,7 +24,7 @@ const overlay: TemplateLevelOverlay = {
         'V/V toniciza o acorde dominante. Contém uma alteração cromática (4.º grau elevado) e resolve para V.',
       choiceSets: [
         [
-          'V/V contém o 4.º grau elevado e resolve para V',
+          'V/V contém o 4.º grau elevado e vai para V',
           'V/V contém o 7.º grau rebaixado e resolve para IV',
           'V/V contém o 4.º grau elevado e resolve para I',
           'V/V só contém notas diatónicas, por isso é o mesmo acorde que ii',
@@ -62,13 +62,13 @@ const overlay: TemplateLevelOverlay = {
           'V7/vi em C maior é A7 (A-C#-E-G), que resolve para D menor',
         ],
         [
-          'V7/IV em C maior é C7 (C-E-G-Bb), que resolve para F maior',
+          'V7/IV em C maior é C7 (C-E-G-Bb), que leva a F maior',
           'V7/IV em C maior é F7 (F-A-C-Eb), que resolve para Bb maior',
           'V7/IV em C maior é C7 (C-E-G-Bb), que resolve para G maior',
           'V7/IV em C maior é G7 (G-B-D-F), que resolve para C maior',
         ],
         [
-          'V7/ii em C maior é A7 (A-C#-E-G), que resolve para D menor',
+          'V7/ii em C maior é A7 (A-C#-E-G), que leva a D menor',
           'V7/ii em C maior é B7 (B-D#-F#-A), que resolve para E menor',
           'V7/ii em C maior é A7 (A-C#-E-G), que resolve para C maior',
           'V7/ii em C maior é D7 (D-F#-A-C), que resolve para G maior',
@@ -87,7 +87,7 @@ const overlay: TemplateLevelOverlay = {
         'Acordes de sensível secundária (vii°/x) funcionam como dominantes secundárias mas são diminutos. Resolvem meio-tom acima para o acorde alvo.',
       choiceSets: [
         [
-          'vii°7/V em C maior é F#dim7, que resolve subindo para G',
+          'vii°7/V em C maior é F#dim7, que sobe para G',
           'vii°7/V em C maior é Bdim7, que resolve subindo para C',
           'vii°7/V em C maior é F#dim7, que resolve descendo para F',
           'vii°7/V em C maior é C#dim7, que resolve subindo para D',

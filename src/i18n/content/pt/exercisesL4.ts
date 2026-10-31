@@ -15,7 +15,7 @@ const overlay: ExerciseLevelOverlay = {
   l4u12m1e1: {
     prompt: 'O que é uma suspensão 4-3?',
     choices: [
-      'A 4.ª acima do baixo é retida e resolve descendo para a 3.ª',
+      'Uma 4.ª retida desce para a 3.ª',
       'A 3.ª é elevada para a 4.ª e permanece aí',
       'Um acorde que alterna entre o 4.º e o 3.º graus',
       'O baixo move-se do 4.º grau da escala para o 3.º grau da escala',
@@ -209,7 +209,7 @@ const overlay: ExerciseLevelOverlay = {
   l4u13m2e2: {
     prompt: 'Numa tonalidade maior, qual é a qualidade do acorde vi7?',
     choices: [
-      'Sétima menor — uma tríade menor mais uma 7.ª menor acima da fundamental',
+      'Sétima menor — tríade menor mais 7.ª menor',
       'Sétima maior — uma tríade maior mais uma 7.ª maior acima da fundamental',
       'Sétima da dominante — uma tríade maior mais uma 7.ª menor acima da fundamental',
       'Sétima diminuto — uma tríade diminuta mais uma 7.ª diminuta',
@@ -244,7 +244,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Qual é a diferença fundamental entre um acorde de sétima diminuto e um meio-diminuto?',
     choices: [
-      'O diminuto tem 7.ª diminuta; o meio-diminuto tem 7.ª menor',
+      'A 7.ª: diminuta num, menor no outro',
       'O diminuto usa uma tríade menor; o meio-diminuto usa uma tríade maior',
       'O diminuto tem uma 5.ª perfeita; o meio-diminuto tem uma 5.ª diminuta',
       'São o mesmo acorde com nomes diferentes',
@@ -292,7 +292,7 @@ const overlay: ExerciseLevelOverlay = {
   l4u13m5e1: {
     prompt: 'Qual é a sequência harmónica diatónica mais comum?',
     choices: [
-      'Quintas descendentes — cada fundamental desce uma 5.ª',
+      'Quintas descendentes',
       'Quintas ascendentes — cada fundamental sobe uma 5.ª',
       'Terças descendentes — cada fundamental desce uma 3.ª',
       'Descida cromática — cada fundamental desce um meio-tom',
@@ -376,7 +376,7 @@ const overlay: ExerciseLevelOverlay = {
   l4u14m2e2: {
     prompt: 'Como funciona o compasso 7/8 como compasso aditivo?',
     choices: [
-      'Combina grupos desiguais de colcheias (ex. 2+2+3, 3+2+2 ou 2+3+2)',
+      'Grupos desiguais de colcheias, ex. 2+2+3',
       'Tem 7 tempos iguais como um compasso simples padrão',
       'É um compasso composto com tempos de semínima com ponto',
       'Alterna entre 3/8 e 4/8 de compasso em compasso, como um compasso misto',
@@ -421,7 +421,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Como se distingue uma ornamentação cromática de uma nota cromática estrutural (como uma sensível secundária)?',
     choices: [
-      'As ornamentações decoram; as notas cromáticas estruturais mudam a harmonia',
+      'Só as notas estruturais mudam a harmonia',
       'Não há diferença; todas as notas cromáticas são ornamentações',
       'Ornamentações duram mais do que notas estruturais',
       'Notas estruturais estão sempre no baixo enquanto ornamentações estão nas vozes superiores',

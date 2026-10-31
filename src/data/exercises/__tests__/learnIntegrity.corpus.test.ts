@@ -245,6 +245,25 @@ describe('the correct option is not a length cue (W4-09)', () => {
     }
   }
 
+  // …and the same the other way: "rule out the shortest" must not work
+  // either. Among sets with a single shortest option, it is the correct one at
+  // least 10% of the time.
+  for (const lang of CONTENT_LANGS) {
+    for (const n of LEVELS) {
+      it(`${lang} L${n}: the shortest option is still sometimes right (≥ 10% of sets with a single shortest)`, () => {
+        const withShortest = choiceSets(n, lang).filter(({ set }) => {
+          const min = Math.min(...set.map((x) => len(x.label)));
+          return set.filter((x) => len(x.label) === min).length === 1;
+        });
+        const right = withShortest.filter(({ set }) => {
+          const c = set.find((x) => x.correct)!;
+          return set.every((x) => x === c || len(x.label) > len(c.label));
+        });
+        expect(right.length / withShortest.length, `${right.length}/${withShortest.length}`).toBeGreaterThanOrEqual(0.1);
+      });
+    }
+  }
+
   for (const lang of CONTENT_LANGS) {
     for (const n of LEVELS) {
       it(`${lang} L${n}: correct option strictly longest in ≤ 35% of choice sets`, () => {

@@ -261,7 +261,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Raising the 7th degree (G to G#) turns VII into vii°, a diminished triad', correct: true },
+          { label: 'Raising G to G# makes VII a diminished vii°', correct: true },
           { label: 'The 7th degree chord is always diminished regardless of the minor scale form', correct: false },
           { label: 'Harmonic minor lowers the 7th degree, creating a diminished chord', correct: false },
           { label: 'The chord quality does not change between natural and harmonic minor', correct: false },

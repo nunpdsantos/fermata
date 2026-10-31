@@ -37,7 +37,7 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'V/V contains the raised 4th scale degree and resolves to V', correct: true },
+              { label: 'V/V contains the raised 4th degree and resolves to V', correct: true },
               { label: 'V/V contains the lowered 7th scale degree and resolves to IV', correct: false },
               { label: 'V/V contains the raised 4th scale degree and resolves to I', correct: false },
               { label: 'V/V contains only diatonic notes, so it is the same chord as ii', correct: false },
@@ -83,13 +83,13 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'V7/vi in C major is A7 (A-C#-E-G), resolving to D minor', correct: false },
             ],
             [
-              { label: 'V7/IV in C major is C7 (C-E-G-Bb), resolving to F major', correct: true },
+              { label: 'V7/IV in C major is C7 (C-E-G-Bb), leading to F major', correct: true },
               { label: 'V7/IV in C major is F7 (F-A-C-Eb), resolving to Bb major', correct: false },
               { label: 'V7/IV in C major is C7 (C-E-G-Bb), resolving to G major', correct: false },
               { label: 'V7/IV in C major is G7 (G-B-D-F), resolving to C major', correct: false },
             ],
             [
-              { label: 'V7/ii in C major is A7 (A-C#-E-G), resolving to D minor', correct: true },
+              { label: 'V7/ii in C major is A7 (A-C#-E-G), leading to D minor', correct: true },
               { label: 'V7/ii in C major is B7 (B-D#-F#-A), resolving to E minor', correct: false },
               { label: 'V7/ii in C major is A7 (A-C#-E-G), resolving to C major', correct: false },
               { label: 'V7/ii in C major is D7 (D-F#-A-C), resolving to G major', correct: false },
@@ -112,7 +112,7 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'vii°7/V in C major is F#dim7, resolving up to G', correct: true },
+              { label: 'vii°7/V in C major is F#dim7, rising to G', correct: true },
               { label: 'vii°7/V in C major is Bdim7, resolving up to C', correct: false },
               { label: 'vii°7/V in C major is F#dim7, resolving down to F', correct: false },
               { label: 'vii°7/V in C major is C#dim7, resolving up to D', correct: false },

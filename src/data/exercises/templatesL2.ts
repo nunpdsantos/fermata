@@ -259,13 +259,13 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: '12/8 is compound quadruple: 4 beats each dividing into 3', correct: true },
+              { label: '12/8 is compound quadruple: 4 beats of 3', correct: true },
               { label: '12/8 is simple: twelve eighth-note beats, each divided into two', correct: false },
               { label: '12/8 is compound triple: 3 beats each dividing into 4', correct: false },
               { label: '12/8 is simple quadruple: 4 beats of 3 eighth notes', correct: false },
             ],
             [
-              { label: '6/8 is compound duple: 2 beats, each dividing into 3', correct: true },
+              { label: '6/8 is compound duple: 2 beats of 3', correct: true },
               { label: '6/8 is simple triple: 3 beats, each dividing into 2', correct: false },
               { label: '6/8 is compound triple: 3 beats, each dividing into 3', correct: false },
               { label: '6/8 is simple: six quarter-note beats per measure', correct: false },
@@ -306,7 +306,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Ties can only occur within a single measure', correct: false },
             ],
             [
-              { label: 'Three triplet eighths take the time of two ordinary eighths', correct: true },
+              { label: 'Three triplet eighths fill the time of two', correct: true },
               { label: 'Three triplet eighths take the time of four ordinary eighths', correct: false },
               { label: 'A triplet makes each of its three notes last a full beat', correct: false },
               { label: 'A triplet adds a third note on top of a two-note chord', correct: false },

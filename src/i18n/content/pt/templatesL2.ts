@@ -206,13 +206,13 @@ const overlay: TemplateLevelOverlay = {
         'No compasso composto o número de cima é 6, 9 ou 12 e o tempo divide-se em 3. No compasso simples o tempo divide-se em 2.',
       choiceSets: [
         [
-          '12/8 é composto quaternário: 4 tempos, cada um dividido em 3',
+          '12/8 é composto quaternário: 4 tempos de 3',
           '12/8 é simples: doze tempos de colcheia, cada um dividido em dois',
           '12/8 é composto ternário: 3 tempos, cada um dividido em 4',
           '12/8 é simples quaternário: 4 tempos de 3 colcheias',
         ],
         [
-          '6/8 é composto binário: 2 tempos, cada um dividido em 3',
+          '6/8 é composto binário: 2 tempos de 3',
           '6/8 é simples ternário: 3 tempos, cada um dividido em 2',
           '6/8 é composto ternário: 3 tempos, cada um dividido em 3',
           '6/8 é simples: seis tempos de semínima por compasso',
@@ -249,7 +249,7 @@ const overlay: TemplateLevelOverlay = {
           'As ligaduras só podem ocorrer dentro de um único compasso',
         ],
         [
-          'Três colcheias em tercina ocupam o tempo de duas colcheias normais',
+          'Três colcheias em tercina ocupam o tempo de duas',
           'Três colcheias em tercina ocupam o tempo de quatro colcheias normais',
           'Uma tercina faz cada uma das suas três notas durar um tempo inteiro',
           'Uma tercina acrescenta uma terceira nota a um acorde de duas notas',

@@ -27,7 +27,7 @@ const overlay: TemplateLevelOverlay = {
         'El napolitano (bII o N6) es un acorde predominante que resuelve hacia V (frecuentemente vía 6/4 cadencial). Está casi siempre en primera inversión.',
       choiceSets: [
         [
-          'Es predominante: va hacia V, a menudo a través de un 6/4 cadencial',
+          'Es predominante y va hacia V',
           'Es dominante: resuelve directamente hacia la tónica I',
           'Es un sustituto de la tónica que cierra frases en lugar del acorde de tónica',
           'Es un acorde de paso sin función armónica propia',
@@ -79,13 +79,13 @@ const overlay: TemplateLevelOverlay = {
           'La sexta italiana tiene tres notas: b6, 1 y 5',
         ],
         [
-          'La sexta francesa añade el grado 2 a la sexta italiana',
+          'La sexta francesa añade el grado 2 a la italiana',
           'La sexta francesa añade el grado b3 a la sexta italiana',
           'La sexta francesa añade el grado 5 a la sexta italiana',
           'La sexta francesa quita el #4 de la sexta italiana',
         ],
         [
-          'Resuelven divergentemente hacia una octava sobre la dominante',
+          'Se expanden hacia una octava sobre la dominante',
           'Resuelven convergentemente hacia un unísono sobre la tónica',
           'Resuelven divergentemente hacia una octava sobre la tónica',
           'Resuelven convergentemente hacia una tercera sobre la subdominante',
@@ -170,7 +170,7 @@ const overlay: TemplateLevelOverlay = {
         'Desde Mozart y Schubert, los compositores usaron la doble identidad de la sexta alemana (y de la séptima de dominante) para saltar a tonalidades remotas; se convirtió en un sello de la armonía romántica.',
       choiceSets: [
         [
-          'Los compositores románticos explotaron ampliamente la doble identidad de la sexta alemana',
+          'Los románticos la explotaron ampliamente',
           'Solo los compositores barrocos usaron la doble identidad de la sexta alemana',
           'La inventaron los compositores de música atonal del siglo XX',
           'Los compositores clásicos y románticos evitaron por completo cualquier modulación enarmónica',
@@ -193,7 +193,7 @@ const overlay: TemplateLevelOverlay = {
         'Un acorde dim7 divide la octava en terceras menores iguales. Cualquiera de sus 4 notas puede reescribirse como fundamental, haciéndolo resolver hacia 4 tonalidades diferentes.',
       choiceSets: [
         [
-          'Cualquier nota de un acorde dim7 puede actuar como sensible de una nueva tonalidad',
+          'Cualquier nota de un dim7 puede ser la sensible',
           'Solo la fundamental escrita de un acorde dim7 puede actuar como sensible',
           'Un acorde dim7 solo lleva a una tonalidad: medio tono por encima de su fundamental',
           'Un acorde dim7 no puede reescribirse sin cambiar cómo suena',

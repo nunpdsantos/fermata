@@ -40,7 +40,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'In a 4-3 suspension, the bass moves from 4 down to 3', correct: false },
             ],
             [
-              { label: 'In a 7-6 suspension, the 7th above the bass resolves down to the 6th', correct: true },
+              { label: 'In a 7-6 suspension, the 7th resolves down to the 6th', correct: true },
               { label: 'In a 7-6 suspension, the 7th above the bass resolves up to the octave', correct: false },
               { label: 'In a 7-6 suspension, the bass holds the dissonance while the upper voice moves', correct: false },
               { label: 'In a 7-6 suspension, the dissonance is never resolved', correct: false },

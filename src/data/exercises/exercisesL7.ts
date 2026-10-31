@@ -45,7 +45,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A dominant chord with altered 5ths and/or altered 9ths (b5, #5, b9, #9)', correct: true },
+          { label: 'A dominant with altered 5ths and/or 9ths', correct: true },
           { label: 'An alternate voicing of a plain dominant chord, with every note left exactly as written', correct: false },
           { label: 'A chord that alternates between major and minor quality', correct: false },
           { label: 'A chord that can be substituted by any other chord', correct: false },
@@ -139,7 +139,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'It chains subdominant, dominant and tonic functions in the strongest cadential motion', correct: true },
+          { label: 'It chains subdominant, dominant and tonic', correct: true },
           { label: 'It was invented by Duke Ellington in the 1940s and has been a jazz standard ever since', correct: false },
           { label: 'It uses only three notes total across all three chords', correct: false },
           { label: 'It avoids any dissonance, making it easy to improvise over', correct: false },
@@ -208,7 +208,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'I7-I7-I7-I7 | IV7-IV7-I7-I7 | V7-IV7-I7-V7 (C7-F7-G7 form)', correct: true },
           { label: 'I-IV-V-I | I-IV-V-I | I-IV-V-I (simple three-chord repeated)', correct: false },
           { label: 'ii-V-I-vi | ii-V-I-vi | ii-V-I-vi (jazz turnaround repeated)', correct: false },
-          { label: 'I-V-vi-IV | I-V-vi-IV | I-V-vi-IV (pop loop repeated)', correct: false },
+          { label: 'I-V-vi-IV | I-V-vi-IV | I-V-vi-IV (four-chord pop loop repeated)', correct: false },
         ],
       },
       hint: 'The 12-bar blues follows a specific pattern over 12 measures: 4 bars of I7, 2 bars of IV7, 2 bars of I7, then V7-IV7-I7-V7 (turnaround). All chords are dominant 7ths.',

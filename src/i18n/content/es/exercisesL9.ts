@@ -286,7 +286,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Qué confiere a un acorde de 7.ª dominante su sensación característica de tensión y deseo de resolver?',
     choices: [
-      'El tritono formado entre la 3.ª mayor y la 7.ª menor',
+      'El tritono entre la 3.ª y la 7.ª',
       'La 5.ª justa formada entre la fundamental y la 5.ª del acorde',
       'La 3.ª mayor entre fundamental y 3.ª',
       'La duplicación a la octava de la fundamental',
@@ -324,7 +324,7 @@ const overlay: ExerciseLevelOverlay = {
   l9u32m1e3: {
     prompt: '¿Qué significa «melodía diatónica»?',
     choices: [
-      'Una melodía que utiliza solo las notas de la tonalidad o escala predominante',
+      'Una melodía solo con notas de la tonalidad',
       'Una melodía que utiliza sostenidos y bemoles ajenos a la tonalidad',
       'Una melodía tocada en una sola cuerda de la guitarra',
       'Una melodía que se mueve exclusivamente por grados conjuntos, nunca por saltos',
