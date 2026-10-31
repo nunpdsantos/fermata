@@ -53,7 +53,7 @@ async function allIntervalExercises(): Promise<ExerciseDefinition[]> {
   for (let l = 1; l <= 9; l++) {
     const authored = (await import(`../../../../data/exercises/exercisesL${l}.ts`)).default as Record<string, ExerciseDefinition[]>;
     const templates = (await import(`../../../../data/exercises/templatesL${l}.ts`)).default;
-    const merged = mergeExerciseMaps(authored, generateAllForLevel(templates));
+    const merged = mergeExerciseMaps(authored, generateAllForLevel(templates, 'en', authored));
     for (const list of Object.values(merged)) for (const e of list) if (e.config.type === 'interval_id') out.push(e);
   }
   return out;

@@ -50,7 +50,7 @@ export function levelCorpus(level: number, lang: ContentLanguage): CorpusItem[] 
   const hit = cache.get(key);
   if (hit) return hit;
   const authored = authoredFor(level, lang);
-  const generated = generateAllForLevel(templatesFor(level, lang), lang);
+  const generated = generateAllForLevel(templatesFor(level, lang), lang, enExercisesFor(level));
   const merged = mergeExerciseMaps(authored, generated);
   const items: CorpusItem[] = [];
   for (const [moduleId, list] of Object.entries(merged)) {

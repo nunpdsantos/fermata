@@ -302,11 +302,43 @@ function fillTemplate(template: string, config: ExerciseConfig, lang: ContentLan
 
 // ─── Main Generator ─────────────────────────────────────────────────────────
 
-/** Generate exercises for a single module from its template config. */
+/** JSON with sorted keys, so two configs written in a different key order compare equal. */
+function stableStringify(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableStringify).join(',')}]`;
+  if (value && typeof value === 'object') {
+    const entries = Object.entries(value as Record<string, unknown>)
+      .filter(([, v]) => v !== undefined)
+      .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+    return `{${entries.map(([k, v]) => `${JSON.stringify(k)}:${stableStringify(v)}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+/**
+ * The language-neutral identity of an exercise (audit W4-19): its config
+ * without answer labels — PT/ES translate the labels, everything else is
+ * shared, so the same items are skipped in every language and generated ids
+ * stay aligned. Multiple-choice items ARE their labels, so they have no
+ * neutral identity here; authored/generated MC duplicates are kept out of
+ * the content itself (corpus test).
+ */
+export function exerciseIdentity(config: ExerciseConfig): string | null {
+  if (config.type === 'multiple_choice') return null;
+  const { choices: _labels, ...rest } = config as ExerciseConfig & { choices?: unknown };
+  return stableStringify(rest);
+}
+
+/**
+ * Generate exercises for a single module from its template config.
+ * `exclude` holds the identities of the module's authored exercises: a
+ * generated item that repeats one is skipped, so a session never serves the
+ * same exercise twice (audit W4-19).
+ */
 export function generateExercises(
   config: ModuleTemplateConfig,
   seed?: number,
   lang: ContentLanguage = 'en',
+  exclude: ReadonlySet<string> = new Set(),
 ): ExerciseDefinition[] {
   const actualSeed = seed ?? hashString(config.moduleId);
   const rand = mulberry32(actualSeed);
@@ -326,6 +358,9 @@ export function generateExercises(
     const dedupeKey = JSON.stringify(exerciseConfig);
     if (seenKeys.has(dedupeKey)) continue;
     seenKeys.add(dedupeKey);
+    // …and never repeat one of the module's authored exercises (W4-19).
+    const identity = exerciseIdentity(exerciseConfig);
+    if (identity !== null && exclude.has(identity)) continue;
 
     const index = exercises.length + 1;
     const id = `${config.moduleId}g${index}`;
@@ -342,14 +377,24 @@ export function generateExercises(
   return exercises;
 }
 
-/** Generate all exercises for a level's template configs. Returns moduleId → exercises. */
+/**
+ * Generate all exercises for a level's template configs. Returns moduleId →
+ * exercises. Pass the level's authored exercises so generated items never
+ * repeat them (W4-19).
+ */
 export function generateAllForLevel(
   configs: ModuleTemplateConfig[],
   lang: ContentLanguage = 'en',
+  authored: Record<string, ExerciseDefinition[]> = {},
 ): Record<string, ExerciseDefinition[]> {
   const result: Record<string, ExerciseDefinition[]> = {};
   for (const config of configs) {
-    const exercises = generateExercises(config, undefined, lang);
+    const exclude = new Set<string>();
+    for (const ex of authored[config.moduleId] ?? []) {
+      const identity = exerciseIdentity(ex.config);
+      if (identity !== null) exclude.add(identity);
+    }
+    const exercises = generateExercises(config, undefined, lang, exclude);
     if (exercises.length > 0) {
       result[config.moduleId] = exercises;
     }
