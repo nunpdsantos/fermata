@@ -30,6 +30,7 @@ export interface AuditOptions {
 export interface FontHit { px: number; where: string; text: string }
 export interface TapHit { w: number; h: number; where: string; name: string }
 export interface ContrastHit { ratio: number; required: number; fg: string; bg: string; where: string; text: string }
+export interface ClipHit { how: 'ellipsis' | 'line-clamp' | 'clipped'; where: string; text: string }
 
 export interface AuditResult {
   textNodes: number;
@@ -40,6 +41,9 @@ export interface AuditResult {
   tapViolations: TapHit[];
   minContrast: ContrastHit | null;
   contrastViolations: ContrastHit[];
+  /** Visible text cut off: an active ellipsis / line clamp, or text running
+   *  past an overflow:hidden|clip ancestor (scrolling boxes excluded). */
+  clipViolations: ClipHit[];
   hScroll: { scrollWidth: number; clientWidth: number };
   /** How many elements each exemption skipped on this screen (for review). */
   exempt: Exemptions;
@@ -167,6 +171,7 @@ function pageAudit(opts: AuditOptions): AuditResult {
   // ── Text: size + contrast ──────────────────────────────────────────────
   const fontViolations: FontHit[] = [];
   const contrastViolations: ContrastHit[] = [];
+  const clipViolations: ClipHit[] = [];
   let minFont: FontHit | null = null;
   let minContrast: ContrastHit | null = null;
   let textNodes = 0;
@@ -215,6 +220,40 @@ function pageAudit(opts: AuditOptions): AuditResult {
     const fh = { px, where, text };
     if (!minFont || px < minFont.px) minFont = fh;
     if (px < opts.minFontPx - 0.01) fontViolations.push(fh);
+
+    // Truncation / clipping (HTML text only).
+    if (el instanceof HTMLElement) {
+      if (cs.textOverflow === 'ellipsis' && el.scrollWidth > el.clientWidth + 1) clipViolations.push({ how: 'ellipsis', where, text });
+      else if ((cs as unknown as Record<string, string>).webkitLineClamp && (cs as unknown as Record<string, string>).webkitLineClamp !== 'none' && el.scrollHeight > el.clientHeight + 1) clipViolations.push({ how: 'line-clamp', where, text });
+      else {
+        const range = document.createRange();
+        let tr: DOMRect | null = null;
+        for (const n of Array.from(el.childNodes)) {
+          if (n.nodeType !== 3 || !n.textContent!.trim()) continue;
+          range.selectNodeContents(n);
+          const r = range.getBoundingClientRect();
+          tr = tr ? new DOMRect(Math.min(tr.left, r.left), Math.min(tr.top, r.top), Math.max(tr.right, r.right) - Math.min(tr.left, r.left), Math.max(tr.bottom, r.bottom) - Math.min(tr.top, r.top)) : r;
+        }
+        if (tr && tr.width > 0) {
+          for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) {
+            const as = getComputedStyle(a);
+            // A scrolling box: what lies past its edge is reached by
+            // scrolling, so nothing beyond it counts as cut off.
+            if (/auto|scroll/.test(as.overflowX + as.overflowY)) break;
+            const clipsX = as.overflowX === 'hidden' || as.overflowX === 'clip';
+            const clipsY = as.overflowY === 'hidden' || as.overflowY === 'clip';
+            if (!clipsX && !clipsY) continue;
+            const ar = a.getBoundingClientRect();
+            const outX = clipsX && (tr.left < ar.left - 1 || tr.right > ar.right + 1);
+            const outY = clipsY && (tr.top < ar.top - 1 || tr.bottom > ar.bottom + 1);
+            if (outX || outY) {
+              clipViolations.push({ how: 'clipped', where, text });
+              break;
+            }
+          }
+        }
+      }
+    }
 
     // A disabled control that LOOKS inactive (faded) is exempt (WCAG 1.4.3);
     // one shown at full strength — e.g. answered choices marked right / wrong
@@ -318,6 +357,7 @@ function pageAudit(opts: AuditOptions): AuditResult {
     tapViolations,
     minContrast,
     contrastViolations,
+    clipViolations,
     hScroll: { scrollWidth: se.scrollWidth, clientWidth: se.clientWidth },
     exempt,
   };

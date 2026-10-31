@@ -150,6 +150,25 @@ test.describe('top bar tabs', () => {
   });
 });
 
+for (const vp of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
+  test(`the skip link is visible ABOVE the top bar when focused (review B1) — ${vp.width} px`, async ({ browser }) => {
+    const context = await browser.newContext({ viewport: vp, hasTouch: vp.width < 640, isMobile: vp.width < 640 });
+    const page = await context.newPage();
+    await seed(page, { lastView: 'explore' });
+    await page.goto('/');
+    await expect(more(page)).toBeVisible();
+    await page.keyboard.press('Tab');
+    const skip = page.getByRole('link', { name: 'Skip to content' });
+    await expect(skip).toBeFocused();
+    const box = (await skip.boundingBox())!;
+    expect(box.width).toBeGreaterThan(20);
+    // What a pointer at its centre hits is the link itself — not the top bar.
+    const hit = await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest('a')?.getAttribute('href') ?? null, [box.x + box.width / 2, box.y + box.height / 2]);
+    expect(hit).toBe('#main-content');
+    await context.close();
+  });
+}
+
 test('choice chips: one Tab stop, arrow keys move and select', async ({ page }) => {
   await seed(page, { lastView: 'explore', selectedKey: { natural: 'C', accidental: '' }, selectedScale: 'major' });
   await page.goto('/');
