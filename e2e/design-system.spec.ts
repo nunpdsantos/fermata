@@ -93,6 +93,12 @@ for (const v of VIEWPORTS) {
         const { context, page } = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore' });
         expect(await page.evaluate(() => matchMedia('(pointer: coarse)').matches)).toBe(v.touch);
         expectClean(await auditPage(page, opts), where('explore'));
+        // A chord selected: the chord panel (voicing chips, formula, scales).
+        await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
+        await expect(page.getByRole('radiogroup', { name: 'Chord inversion' })).toBeVisible();
+        await page.waitForTimeout(500);
+        expectClean(await auditPage(page, opts), where('explore chord'));
+        await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
         const toast = await exportToast(page);
         const dock = await boxOf(page, '[data-testid="instrument-dock"]');
         expect(overlaps(toast, dock), where('toast vs dock')).toBe(false);

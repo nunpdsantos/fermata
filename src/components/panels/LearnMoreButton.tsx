@@ -2,8 +2,6 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { findModulesByQuery, MODULE_INDEX } from '../../data/moduleIndex.ts';
 import { useAppStore } from '../../state/store.ts';
-import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
-import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
 
 interface LearnMoreButtonProps {
   /** Text to search the module index with, e.g. "Dorian", "Major Seventh" */
@@ -25,16 +23,7 @@ export function LearnMoreButton({ query, moduleId }: LearnMoreButtonProps) {
       null,
     [query, moduleId],
   );
-  const degreeColorsOn = useDegreeColorsEnabled();
   if (!match) return null;
-
-  const color = degreeColorsOn ? DEGREE_COLORS[2] : 'var(--accent)';
-  const bg = degreeColorsOn
-    ? `${DEGREE_COLORS[2]}14`
-    : 'color-mix(in srgb, var(--accent) 8%, transparent)';
-  const borderColor = degreeColorsOn
-    ? `${DEGREE_COLORS[2]}33`
-    : 'color-mix(in srgb, var(--accent) 20%, transparent)';
 
   return (
     <button
@@ -49,8 +38,9 @@ export function LearnMoreButton({ query, moduleId }: LearnMoreButtonProps) {
           },
         });
       }}
-      className="mt-3 ml-2 inline-flex items-center gap-1.5 text-caption font-semibold px-2 py-1 rounded-full transition-colors"
-      style={{ color, backgroundColor: bg, border: `1px solid ${borderColor}` }}
+      // An accent-coloured quiet action (D-28 link button; was the
+      // supertonic hue as text, ~2.4:1).
+      className="btn btn-link mt-2 -ml-1.5"
       title={match.title}
     >
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

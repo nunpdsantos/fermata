@@ -5,7 +5,10 @@ import { noteToString, type Chord, type Note } from '../../core/types/music.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { QUALITY_TO_MODULE } from '../../data/qualityToModule.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
-import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
+import { DEGREE_COLORS, inkFor } from '../../design/tokens/colors.ts';
+import { Button } from '../ui/Button.tsx';
+import { chordQualityLabel } from '../../i18n/content/musicTerms.ts';
+import { toContentLanguage } from '../drill/drillText.ts';
 
 // Resolve alpha for a colour that may be a hex literal or CSS var.
 function alpha(color: string, hex: string): string {
@@ -28,6 +31,7 @@ import {
   getChordShortIntervalLabels,
 } from '../../core/constants/chords.ts';
 import { LearnMoreButton } from './LearnMoreButton.tsx';
+import { ChipGroup } from '../ui/ChoiceChip.tsx';
 import { Badge } from '../ui/Badge';
 
 import { getScaleSuggestions } from '../../core/constants/chordScaleRelationships.ts';
@@ -57,7 +61,8 @@ const FIT_COLORS_MUTED: Record<keyof typeof FIT_COLORS, string> = {
 };
 
 export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = toContentLanguage(i18n.language);
   const { getNoteDegree, invertedNotes } = useKeyContext();
   const synthPreset = useAppStore((s) => s.synthPreset);
   const chordInversion = useAppStore((s) => s.chordInversion);
@@ -69,11 +74,6 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
   const setKey = useAppStore((s) => s.setKey);
   const degreeColorsOn = useDegreeColorsEnabled();
   const degree = getNoteDegree(chord.root);
-  const color = degreeColorsOn && degree
-    ? DEGREE_COLORS[degree as keyof typeof DEGREE_COLORS]
-    : degree
-      ? 'var(--accent)'
-      : 'var(--text-muted)';
 
   // Keys this panel lit for a playback, and the timers that will un-light
   // them. Stopping the visuals un-lights NOW instead of dropping the timers
@@ -180,7 +180,7 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
         <h2 className="text-xl font-bold learn-serif" style={{ color: 'var(--text)' }}>
           {chord.algorithmicDisplayName
             ? <>{noteToString(chord.root)}<span className="font-normal ml-1.5" style={{ color: 'var(--text-muted)' }}>{chord.algorithmicDisplayName}</span></>
-            : <>{noteToString(chord.root)}<span className="font-normal ml-1.5" style={{ color: 'var(--text-muted)' }}>{CHORD_QUALITY_NAMES[chord.quality]}</span></>
+            : <>{noteToString(chord.root)}<span className="font-normal ml-1.5" style={{ color: 'var(--text-muted)' }}>{lang === 'en' ? CHORD_QUALITY_NAMES[chord.quality] : chordQualityLabel(chord.quality, lang)}</span></>
           }
           {chord.bassNote && (
             <span className="font-normal ml-0.5" style={{ color: 'var(--text-dim)' }}>/{noteToString(chord.bassNote)}</span>
@@ -226,10 +226,11 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
             return (
               <span
                 key={i}
-                className="px-2.5 py-1.5 rounded-lg text-xs font-semibold"
+                className="px-2.5 py-1.5 rounded-lg text-ui font-semibold"
                 style={{
                   backgroundColor: alpha(noteColor, '15'),
-                  color: noteColor,
+                  // The hue tints the chip; the letter is its ink (D-28).
+                  color: inkFor(noteColor),
                   border: isSlashBass
                     ? `1.5px dashed ${noteColor}`
                     : isBass ? `1.5px solid ${noteColor}` : `1px solid ${noteColor}30`,
@@ -248,28 +249,18 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
         <h3 className="type-section mb-2">
           {t('panel.voicing')}
         </h3>
-        <div className="flex gap-1.5" role="radiogroup" aria-label={t('panel.chordInversion')}>
-          {Array.from({ length: maxInversion + 1 }, (_, i) => {
-            const isActive = chordInversion === i;
-            return (
-              <button
-                key={i}
-                role="radio"
-                aria-checked={isActive}
-                onClick={() => setChordInversion(i)}
-                className="relative px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150"
-                style={{
-                  backgroundColor: isActive ? alpha(color, '20') : 'var(--card)',
-                  color: isActive ? color : 'var(--text-muted)',
-                  border: isActive ? `1px solid ${alpha(color, '50')}` : '1px solid var(--border)',
-                }}
-              >
-                {/* 4th inversion and up (5+ note chords) use "Inv n" — never a second "Root" (audit W2-09) */}
-                {i < INVERSION_LABEL_KEYS.length ? t(INVERSION_LABEL_KEYS[i]) : t('chordBuilder.inversion.nth', { n: i })}
-              </button>
-            );
-          })}
-        </div>
+        {/* Root / 1st / 2nd …: one of many — a ChipGroup (D-28 choice chip).
+            4th inversion and up (5+ note chords) use "Inv n" — never a second
+            "Root" (audit W2-09). */}
+        <ChipGroup
+          label={t('panel.chordInversion')}
+          value={chordInversion}
+          onChange={setChordInversion}
+          options={Array.from({ length: maxInversion + 1 }, (_, i) => ({
+            value: i,
+            label: i < INVERSION_LABEL_KEYS.length ? t(INVERSION_LABEL_KEYS[i]) : t('chordBuilder.inversion.nth', { n: i }),
+          }))}
+        />
       </div>
 
       {/* Formula — real interval labels */}
@@ -306,11 +297,11 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
                     setKey(chord.root);
                     setScale(s.scale);
                   }}
-                  className="px-2 py-1 rounded-lg text-caption font-medium transition-all hover:brightness-125"
+                  className="btn"
                   style={{
                     backgroundColor: alpha(fitColor, '12'),
-                    color: fitColor,
-                    border: `1px solid ${alpha(fitColor, '30')}`,
+                    color: inkFor(fitColor),
+                    borderColor: alpha(fitColor, '45'),
                   }}
                   title={s.context}
                 >
@@ -324,34 +315,21 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
 
       {/* Play controls */}
       <div className="flex gap-2 pt-1">
-        <button
+        {/* Chord is the main action here (primary); it used to be the
+            degree hue as text at ~2:1 (W11-A). */}
+        <Button
+          variant="primary"
           onClick={handlePlayChord}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-150 hover:scale-[1.02]"
-          style={{
-            backgroundColor: alpha(color, '15'),
-            color,
-            border: `1px solid ${alpha(color, '30')}`,
-          }}
+          startIcon={<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-            <polygon points="5 3 19 12 5 21 5 3" />
-          </svg>
           {t('panel.chord')}
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={handlePlayArpeggio}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-150 hover:scale-[1.02]"
-          style={{
-            color: 'var(--text)',
-            backgroundColor: 'color-mix(in srgb, var(--card) 60%, transparent)',
-            border: '1px solid color-mix(in srgb, var(--border) 50%, transparent)',
-          }}
+          startIcon={<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-            <polygon points="5 3 19 12 5 21 5 3" />
-          </svg>
           {t('panel.arpeggio')}
-        </button>
+        </Button>
       </div>
     </m.div>
   );
