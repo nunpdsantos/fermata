@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
+// ONE-OFF-SKIPWAITING:BEGIN (policy block — oneOffSkipWaiting.test.ts reads it)
 // 2026-10-31 (W9, review B2): every release until 2026-11-14 ships workbox
 // skipWaiting (ONE_OFF_SKIP_WAITING in vite.config.ts) so installed clients
 // still on the old autoUpdate code — which only reloads on `activated` — keep
@@ -8,6 +9,7 @@ import { readFileSync } from 'node:fs';
 // removed in the first release after 2026-11-14 (the dated
 // src/__tests__/oneOffSkipWaiting.test.ts fails until it is); delete this
 // branch then.
+// ONE-OFF-SKIPWAITING:END
 const ONE_OFF_SKIP_WAITING = /const ONE_OFF_SKIP_WAITING = true\b/.test(readFileSync('vite.config.ts', 'utf8'));
 
 test.describe('PWA basics', () => {

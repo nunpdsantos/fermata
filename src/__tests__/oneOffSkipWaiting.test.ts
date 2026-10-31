@@ -11,11 +11,15 @@
  * is removed in the FIRST release AFTER the expiry date (prompt mode, the
  * "new version — reload" toast, from then on).
  *
- * This test turns RED on the day after ONE_OFF_SKIP_WAITING_EXPIRES while the
- * switch is still on — intentionally, for every PR, until it is removed. To
- * clear it: set ONE_OFF_SKIP_WAITING to false (or delete the block and the
- * `skipWaiting:` line), drop the transition branch in e2e/pwa.spec.ts, and
- * delete the CLAUDE.md "KEEP the transition skipWaiting ON" note.
+ * This test turns RED at 00:00 UTC on the day after ONE_OFF_SKIP_WAITING_EXPIRES
+ * (2026-11-15) while the switch is still on — intentionally, for every PR,
+ * until it is removed. To clear it: set ONE_OFF_SKIP_WAITING to false (or
+ * delete the block and the `skipWaiting:` line), drop the transition branch in
+ * e2e/pwa.spec.ts, and delete the CLAUDE.md "KEEP the transition skipWaiting
+ * ON" note — each sits inside an `ONE-OFF-SKIPWAITING:BEGIN … END` block.
+ *
+ * The wording checks read ONLY those marked blocks, so unrelated edits
+ * elsewhere in the three files cannot trip them.
  */
 import { describe, it, expect } from 'vitest';
 import viteConfig from '../../vite.config.ts?raw';
@@ -46,6 +50,25 @@ function oneOffProblem(state: OneOffState, now: number): string | null {
   return null;
 }
 
+const BLOCK = /ONE-OFF-SKIPWAITING:BEGIN([\s\S]*?)ONE-OFF-SKIPWAITING:END/g;
+
+/** The marked policy block of a file (the only text the wording checks read). */
+function policyBlock(text: string): string {
+  return [...text.matchAll(BLOCK)].map((m) => m[1]).join('\n');
+}
+
+/** What is wrong with a file's policy block (empty = fine). */
+function policyBlockProblems(text: string, expires: string): string[] {
+  const blocks = [...text.matchAll(BLOCK)];
+  if (blocks.length !== 1) return [`expected exactly one ONE-OFF-SKIPWAITING block, found ${blocks.length}`];
+  const block = blocks[0][1];
+  const problems: string[] = [];
+  if (!block.includes(expires)) problems.push(`does not name the date ${expires}`);
+  if (!/first release after/i.test(block)) problems.push('does not say "first release after"');
+  if (/next release|release after W9/i.test(block)) problems.push('says "next release" / "release after W9"');
+  return problems;
+}
+
 describe('transition skipWaiting (review B2): on in every release until its date, then removed', () => {
   const state = readOneOff(viteConfig);
 
@@ -59,11 +82,26 @@ describe('transition skipWaiting (review B2): on in every release until its date
     expect(claudeMd).toMatch(/KEEP the transition skipWaiting ON until 2026-11-14/);
   });
 
-  it('nothing says to remove it in "the next release" (it must stay on until the date)', () => {
+  it('every policy block says "keep on until the date, remove in the first release after it" — never "the next release"', () => {
     for (const [name, text] of [['vite.config.ts', viteConfig], ['CLAUDE.md', claudeMd], ['e2e/pwa.spec.ts', pwaSpec]] as const) {
-      expect(text, name).not.toMatch(/next release/i);
-      expect(text, name).not.toMatch(/release after W9(?! would)/i);
+      const problems = policyBlockProblems(text, state.expires ?? '2026-11-14');
+      expect(problems, name).toEqual([]);
     }
+    expect(policyBlock(claudeMd)).toMatch(/KEEP the transition skipWaiting ON until 2026-11-14/);
+  });
+
+  it('known positives for the block check: missing / duplicated block and "next release" wording all fail; text OUTSIDE a block is ignored', () => {
+    const wrap = (body: string) => `x\nONE-OFF-SKIPWAITING:BEGIN\n${body}\nONE-OFF-SKIPWAITING:END\ny`;
+    const good = 'keep on until 2026-11-14, remove in the first release after 2026-11-14';
+    expect(policyBlockProblems(wrap(good), '2026-11-14')).toEqual([]);
+    expect(policyBlockProblems(`next release!\n${wrap(good)}\nnext release!`, '2026-11-14')).toEqual([]);
+    expect(policyBlockProblems('no block here', '2026-11-14')).toEqual(['expected exactly one ONE-OFF-SKIPWAITING block, found 0']);
+    expect(policyBlockProblems(wrap(good) + wrap(good), '2026-11-14')).toEqual(['expected exactly one ONE-OFF-SKIPWAITING block, found 2']);
+    expect(policyBlockProblems(wrap(`${good}. Remove it in the next release.`), '2026-11-14')).toContain('says "next release" / "release after W9"');
+    expect(policyBlockProblems(wrap('In the release after W9: set it false.'), '2026-11-14')).toContain('says "next release" / "release after W9"');
+    expect(policyBlockProblems(wrap('keep it on for a while'), '2026-11-14')).toEqual(
+      expect.arrayContaining(['does not name the date 2026-11-14', 'does not say "first release after"']),
+    );
   });
 
   it('known positive: the guard trips the day after expiry, and only while the switch is on', () => {

@@ -49,6 +49,7 @@ function addStaticImportClosure(entries: PrecacheEntry[]): { manifest: PrecacheE
 }
 
 /**
+ * ONE-OFF-SKIPWAITING:BEGIN (policy block — oneOffSkipWaiting.test.ts reads it)
  * TRANSITION WINDOW — keep ON in EVERY release until 2026-11-14 (coordinator
  * decision, review B2; policy corrected 2026-10-31). Then remove it in the
  * FIRST release AFTER that date; prompt mode applies from then on.
@@ -70,6 +71,7 @@ function addStaticImportClosure(entries: PrecacheEntry[]): { manifest: PrecacheE
  * src/__tests__/oneOffSkipWaiting.test.ts turns RED on 2026-11-15 while this
  * is still on — intentionally, for every PR, until it is removed. CLAUDE.md
  * carries the same note.
+ * ONE-OFF-SKIPWAITING:END
  */
 const ONE_OFF_SKIP_WAITING = true
 const ONE_OFF_SKIP_WAITING_EXPIRES = '2026-11-14'
