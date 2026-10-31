@@ -227,7 +227,7 @@ const overlay: ExerciseLevelOverlay = {
   l6u19m3e3: {
     prompt: '¿Cuál es la característica de conducción de voces de las progresiones por mediante cromática?',
     choices: [
-      'Una o cero notas comunes con movimiento cromático (medio tono) en las voces que se mueven',
+      'Una o cero notas comunes, con movimiento sobre todo por semitono en las voces que se mueven',
       'Todas las voces se mueven por grado conjunto en la misma dirección',
       'Dos notas comunes, mientras la única voz restante se mueve por un tono diatónico',
       'Movimiento de la fundamental por quinta justa, con todas las notas del acorde alteradas cromáticamente',

@@ -142,7 +142,7 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'En tonalidades menores, el acorde ii es semidisminuido (m7b5)',
-          'En tonalidades menores, el acorde ii es un m7',
+          'En tonalidades menores, el acorde ii es un acorde de séptima de dominante',
           'Las tonalidades menores no usan ii-V-I',
           'En tonalidades menores el acorde ii es un acorde maj7, construido sobre el 2.º grado elevado',
         ],
@@ -267,7 +267,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        '¿Qué asociación acorde-escala es correcta?',
+        '¿Cuál de estas afirmaciones sobre la teoría acorde-escala es verdadera?',
       hintTemplate:
         'm7 → dórico. dom7 → mixolidio. maj7 → jónico o lidio. m7b5 → locrio (o locrio con 2.ª natural). Una nota a evitar es una nota de la escala un semitono por encima de una nota del acorde.',
       choiceSets: [
@@ -469,7 +469,7 @@ const overlay: TemplateLevelOverlay = {
         'El sistema de números de Nashville usa grados de la escala: 1=I, 4=IV, 5=V, 6m=vi. Comunes: 1-5-6m-4, 1-4-5-1, 6m-4-1-5.',
       choiceSets: [
         [
-          'I-V-vi-IV es la progresión pop más común, usada en cientos de canciones',
+          'I-V-vi-IV es una de las progresiones pop más comunes, usada en cientos de canciones',
           'I-V-vi-IV pertenece a la escritura de corales clásicos y casi nunca se oye en canciones pop',
           'Esta progresión se usa raramente en el pop',
           'I-V-vi-IV suena siempre igual en todas las tonalidades',
@@ -478,7 +478,7 @@ const overlay: TemplateLevelOverlay = {
           'vi-IV-I-V es la rotación "sensible" de la misma progresión I-V-vi-IV',
           'vi-IV-I-V es una progresión completamente diferente que no comparte acordes con I-V-vi-IV',
           'vi-IV-I-V no funciona como progresión pop',
-          'Empezar en el vi la convierte en una progresión en tonalidad menor',
+          'Empezar en el vi cambia la cualidad de los cuatro acordes',
         ],
         [
           'El sistema de números de Nashville representa acordes por número de grado de la escala para transposición fácil',

@@ -681,7 +681,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Rearranging the chord so a note other than the root is the lowest note', correct: true },
-          { label: 'Flipping the chord upside down so the top note becomes the bottom', correct: false },
+          { label: 'Building the chord downward from the root instead of upward', correct: false },
           { label: 'Changing the quality of the chord, for example from major to minor or the reverse', correct: false },
           { label: 'Playing the chord in a different key', correct: false },
         ],

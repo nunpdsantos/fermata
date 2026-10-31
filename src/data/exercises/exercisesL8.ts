@@ -371,7 +371,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'An ordered arrangement of all 12 pitch classes, each used exactly once, that a piece is built on', correct: true },
-          { label: 'A chromatic scale played from bottom to top', correct: false },
+          { label: 'A 12-note scale whose notes may each repeat freely', correct: false },
           { label: 'A series of 12 chords used as a harmonic progression', correct: false },
           { label: 'Twelve measures of music that are repeated, unchanged, from the very beginning to the end of a piece', correct: false },
         ],

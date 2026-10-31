@@ -149,7 +149,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Numa sonata em tonalidade menor, o segundo tema está tipicamente no relativo maior (III)',
           'Numa sonata em tonalidade menor, o segundo tema permanece normalmente na tónica menor e nunca modula',
-          'As sonatas menores usam a dominante para o segundo tema',
+          'As sonatas menores põem o segundo tema na subdominante',
           'As sonatas menores não têm segundo tema',
         ],
       ],

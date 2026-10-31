@@ -266,7 +266,7 @@ const overlay: ExerciseLevelOverlay = {
   l3u10m3e3: {
     prompt: 'O que é a "lei do caminho mais curto" na condução de vozes?',
     choices: [
-      'Cada voz move-se para a nota do acorde mais próxima',
+      'Cada voz superior move-se para a nota mais próxima do acorde seguinte',
       'O baixo deve mover-se sempre a menor distância',
       'Os acordes devem ser espaçados o mais junto possível',
       'A peça deve usar o menor número possível de acordes',
@@ -400,10 +400,10 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'O ritmo harmónico refere-se à frequência com que a harmonia subjacente muda, independentemente da atividade rítmica de superfície. Uma passagem pode ter ritmo melódico rápido mas ritmo harmónico lento (um acorde por compasso).',
   },
   l3u11m3e2: {
-    prompt: 'O que acontece tipicamente ao ritmo harmónico nos pontos cadenciais?',
+    prompt: 'Como se comporta tipicamente o ritmo harmónico à medida que se aproxima uma cadência?',
     choices: [
       'Acelera — os acordes mudam mais vezes perto da cadência',
-      'Desacelera — os acordes mudam menos frequentemente nas cadências',
+      'Abranda — os acordes mudam menos vezes à medida que a cadência se aproxima',
       'Mantém-se igual ao longo da frase',
       'Para completamente antes do acorde cadencial',
     ],

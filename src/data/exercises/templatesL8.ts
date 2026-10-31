@@ -165,7 +165,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'In a minor-key sonata, the second theme is typically in the relative major (III)', correct: true },
               { label: 'In a minor-key sonata, the second theme normally stays in the tonic minor and never modulates', correct: false },
-              { label: 'Minor-key sonatas use the dominant for the second theme', correct: false },
+              { label: 'Minor-key sonatas put the second theme in the subdominant', correct: false },
               { label: 'Minor-key sonatas do not have a second theme', correct: false },
             ],
           ],

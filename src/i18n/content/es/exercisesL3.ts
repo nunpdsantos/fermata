@@ -266,7 +266,7 @@ const overlay: ExerciseLevelOverlay = {
   l3u10m3e3: {
     prompt: '¿Qué es la «ley del camino más corto» en la conducción de voces?',
     choices: [
-      'Cada voz se mueve a la nota del acorde más cercana',
+      'Cada voz superior se mueve a la nota más cercana del acorde siguiente',
       'El bajo debe moverse siempre la menor distancia',
       'Los acordes deben espaciarse lo más cerca posible',
       'La pieza debe usar el menor número posible de acordes',
@@ -400,10 +400,10 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'El ritmo armónico se refiere a la frecuencia con que la armonía subyacente cambia, independientemente de la actividad rítmica de superficie. Un pasaje puede tener ritmo melódico rápido pero ritmo armónico lento (un acorde por compás).',
   },
   l3u11m3e2: {
-    prompt: '¿Qué sucede típicamente con el ritmo armónico en los puntos cadenciales?',
+    prompt: '¿Cómo se comporta típicamente el ritmo armónico a medida que se acerca una cadencia?',
     choices: [
       'Acelera — los acordes cambian más a menudo cerca de la cadencia',
-      'Desacelera — los acordes cambian menos frecuentemente en las cadencias',
+      'Se frena — los acordes cambian menos a menudo a medida que se acerca la cadencia',
       'Se mantiene igual a lo largo de la frase',
       'Se detiene por completo antes del acorde cadencial',
     ],

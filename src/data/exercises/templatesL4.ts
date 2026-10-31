@@ -353,7 +353,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'vi7 has no harmonic function of its own', correct: false },
             ],
             [
-              { label: 'V7–vi7 is a smoother deceptive resolution than V7–vi', correct: true },
+              { label: 'V7–vi7 is a deceptive resolution in which the root of V7 is held as the 7th of vi7', correct: true },
               { label: 'V7–vi7 is a perfect authentic cadence in disguise', correct: false },
               { label: 'V7–vi7 is impossible, because vi7 shares no notes with V7', correct: false },
               { label: 'V7–vi7 is a half cadence, because it ends on a minor chord', correct: false },

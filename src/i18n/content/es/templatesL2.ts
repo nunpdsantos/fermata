@@ -243,7 +243,7 @@ const overlay: TemplateLevelOverlay = {
           'La síncopa involucra siempre tresillos',
         ],
         [
-          'Una ligadura sobre la barra de compás crea síncopa al prolongar el sonido hacia el tiempo fuerte',
+          'Una ligadura desde un tiempo débil sobre la barra de compás crea síncopa al prolongar el sonido a través del tiempo fuerte',
           'Una ligadura sobre la barra de compás no tiene efecto rítmico',
           'Una ligadura sobre la barra de compás siempre duplica el tempo de todo el compás que viene a continuación',
           'Las ligaduras solo pueden ocurrir dentro de un mismo compás',

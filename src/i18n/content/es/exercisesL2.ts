@@ -376,7 +376,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué es una inversión de tríada?',
     choices: [
       'Reorganizar el acorde para que una nota diferente de la fundamental quede en el bajo',
-      'Dar la vuelta al acorde para que la nota de arriba quede abajo',
+      'Construir el acorde hacia abajo desde la fundamental en lugar de hacia arriba',
       'Cambiar la cualidad del acorde, por ejemplo pasarlo de mayor a menor o de menor a mayor',
       'Tocar el acorde en una tonalidad diferente',
     ],

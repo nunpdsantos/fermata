@@ -342,7 +342,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'One or zero common tones with chromatic (half-step) motion in the moving voices', correct: true },
+          { label: 'One or zero common tones, with mostly half-step motion in the moving voices', correct: true },
           { label: 'All voices move by step in the same direction', correct: false },
           { label: 'Two common tones, while the one remaining voice moves by a diatonic whole step', correct: false },
           { label: 'Root motion by a perfect fifth, with every chord tone chromatically altered', correct: false },

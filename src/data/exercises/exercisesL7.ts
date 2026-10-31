@@ -45,7 +45,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A dominant chord with both altered 5ths and altered 9ths (b5/#5, b9/#9)', correct: true },
+          { label: 'A dominant chord with altered 5ths and/or altered 9ths (b5, #5, b9, #9)', correct: true },
           { label: 'An alternate voicing of a plain dominant chord, with every note left exactly as written', correct: false },
           { label: 'A chord that alternates between major and minor quality', correct: false },
           { label: 'A chord that can be substituted by any other chord', correct: false },
@@ -513,7 +513,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Quintal harmony stacks perfect 5ths instead of 4ths: just as open, but with a slightly different sound', correct: true },
           { label: 'Quintal uses five notes while quartal uses four', correct: false },
           { label: 'Quintal harmony belongs only to pop music, while quartal harmony is found only in jazz recordings', correct: false },
-          { label: 'They are identical since a 4th inverted is a 5th', correct: false },
+          { label: 'Quintal harmony stacks major 3rds; quartal harmony stacks minor 3rds', correct: false },
         ],
       },
       hint: 'While a 4th inverts to a 5th, the voicing sound differs based on register and spacing. Quintal voicings (e.g., C-G-D-A) create wide, bright sonorities. Both avoid traditional tertian (3rd-based) harmony.',
@@ -579,7 +579,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'A short repeating progression (often 4 bars) that keeps the harmony steady while melody and lyrics change', correct: true },
-          { label: 'A digital audio loop sampled from an existing hit song', correct: false },
+          { label: 'A chord change that happens only once, at the very end of a song', correct: false },
           { label: 'A studio production technique that copies the chorus melody and pastes it under every single verse of the song', correct: false },
           { label: 'A bass riff that cycles through all 12 notes', correct: false },
         ],
@@ -612,7 +612,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A dramatic, cinematic shift in color — unexpected, yet smooth thanks to shared tones', correct: true },
+          { label: 'A dramatic, cinematic shift in color — unexpected, yet smooth thanks to a shared tone', correct: true },
           { label: 'A sense of returning home to the tonic', correct: false },
           { label: 'No noticeable effect at all, since the two chords belong to the same key and sound alike', correct: false },
           { label: 'A dissonant clash that sounds like a mistake', correct: false },

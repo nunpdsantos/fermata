@@ -376,7 +376,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que é uma inversão de tríade?',
     choices: [
       'Reorganizar o acorde para que uma nota diferente da fundamental fique no baixo',
-      'Virar o acorde ao contrário para que a nota de cima fique em baixo',
+      'Construir o acorde para baixo a partir da fundamental, em vez de para cima',
       'Mudar a qualidade do acorde, por exemplo de maior para menor ou de menor para maior',
       'Tocar o acorde numa tonalidade diferente',
     ],

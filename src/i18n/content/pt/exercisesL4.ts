@@ -400,7 +400,7 @@ const overlay: ExerciseLevelOverlay = {
   l4u14m3e1: {
     prompt: 'O que é uma nota de passagem cromática?',
     choices: [
-      'Uma nota que preenche um tom entre duas notas do acorde, movendo-se por meios-tons',
+      'Uma nota que preenche um tom entre duas notas diatónicas, movendo-se por meios-tons',
       'Qualquer acidente que aparece na melodia',
       'Uma nota que salta cromaticamente de uma nota do acorde para outra nota diferente do acorde',
       'Uma nota de passagem que muda a tonalidade da passagem',

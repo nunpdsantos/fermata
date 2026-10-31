@@ -383,7 +383,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'El ritmo armónico suele acelerarse a medida que se acerca una cadencia',
           'El ritmo armónico se mantiene constante de principio a fin de una pieza',
-          'El ritmo armónico suele frenarse en las cadencias',
+          'El ritmo armónico suele frenarse a medida que se acerca la cadencia',
           'El ritmo armónico solo cambia entre secciones',
         ],
         [
@@ -399,7 +399,7 @@ const overlay: TemplateLevelOverlay = {
           'Cambiar de acorde en los tiempos 2 y 4 es la opción más estable y normal en 4/4',
         ],
         [
-          'El ritmo armónico es independiente del ritmo de la melodía',
+          'El ritmo armónico es el ritmo de los cambios de acorde, no el de la melodía',
           'El ritmo armónico es simplemente el ritmo que toca la melodía',
           'El ritmo armónico es la velocidad de la línea del bajo',
           'El ritmo armónico es el número de tiempos de cada compás',

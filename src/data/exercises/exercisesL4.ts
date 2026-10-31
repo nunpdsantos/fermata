@@ -602,7 +602,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A note that fills a whole step between two chord tones, moving by half steps', correct: true },
+          { label: 'A note that fills a whole step between two diatonic notes, moving by half steps', correct: true },
           { label: 'Any accidental that appears in the melody', correct: false },
           { label: 'A note that leaps chromatically from one chord tone to a different chord tone', correct: false },
           { label: 'A passing tone that changes the key of the passage', correct: false },

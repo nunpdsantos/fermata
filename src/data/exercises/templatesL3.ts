@@ -447,7 +447,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'Harmonic rhythm usually speeds up as a cadence approaches', correct: true },
               { label: 'Harmonic rhythm stays constant from the start of a piece to the end', correct: false },
-              { label: 'Harmonic rhythm usually slows down at cadences', correct: false },
+              { label: 'Harmonic rhythm usually slows down the closer a cadence gets', correct: false },
               { label: 'Harmonic rhythm changes only between sections', correct: false },
             ],
             [
@@ -463,7 +463,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Changing chords on beats 2 and 4 is the most stable, normal choice in 4/4', correct: false },
             ],
             [
-              { label: 'Harmonic rhythm is independent of the melody\'s rhythm', correct: true },
+              { label: 'Harmonic rhythm is the rate of chord change, not the melody\'s rhythm', correct: true },
               { label: 'Harmonic rhythm is simply the rhythm the melody plays', correct: false },
               { label: 'Harmonic rhythm is the speed of the bass line', correct: false },
               { label: 'Harmonic rhythm means the number of beats in each bar', correct: false },

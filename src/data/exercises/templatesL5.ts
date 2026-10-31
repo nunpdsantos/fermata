@@ -194,7 +194,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'The chain V7/vi -> V7/ii -> V7/V -> V -> I moves by descending steps', correct: false },
             ],
             [
-              { label: 'Each applied dominant adds a chromatic note: the leading tone of its target', correct: true },
+              { label: 'Each applied dominant usually adds a chromatic note: the leading tone of its target', correct: true },
               { label: 'Each applied dominant stays diatonic, so the chain adds no chromatic notes at all', correct: false },
               { label: 'Each applied dominant keeps the bass on one note for the whole chain', correct: false },
               { label: 'Each applied dominant must be played in second inversion', correct: false },
@@ -430,7 +430,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'ABA, where the first section returns after a contrast, is ternary form', correct: true },
-              { label: 'ABA, where the first section returns after a contrast, is binary form', correct: false },
+              { label: 'ABA, where the first section returns after a contrast, is rondo form', correct: false },
               { label: 'ABA, where the first section returns after a contrast, is strophic form', correct: false },
               { label: 'ABA, where the first section returns after a contrast, is through-composed form', correct: false },
             ],

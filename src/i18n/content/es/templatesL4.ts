@@ -298,7 +298,7 @@ const overlay: TemplateLevelOverlay = {
           'vi7 no tiene una función armónica propia',
         ],
         [
-          'V7–vi7 es una resolución rota más suave que V7–vi',
+          'V7–vi7 es una resolución rota en la que la fundamental de V7 se mantiene como 7.ª de vi7',
           'V7–vi7 es una cadencia auténtica perfecta disfrazada',
           'V7–vi7 es imposible, porque vi7 no comparte notas con V7',
           'V7–vi7 es una semicadencia, porque termina en un acorde menor',

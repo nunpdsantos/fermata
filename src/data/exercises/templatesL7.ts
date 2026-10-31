@@ -164,7 +164,7 @@ const templates: ModuleTemplateConfig[] = [
           choiceSets: [
             [
               { label: 'In minor keys, the ii chord is half-diminished (min7b5)', correct: true },
-              { label: 'In minor keys, the ii chord is a minor 7th', correct: false },
+              { label: 'In minor keys, the ii chord is a dominant 7th', correct: false },
               { label: 'Minor keys do not use ii-V-I', correct: false },
               { label: 'In minor keys the ii chord is a major 7th chord, built on the raised 2nd degree', correct: false },
             ],
@@ -319,7 +319,7 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Which chord-scale pairing is correct?',
+        promptTemplate: 'Which statement about chord-scale theory is true?',
         hintTemplate: 'min7 -> Dorian. dom7 -> Mixolydian. maj7 -> Ionian or Lydian. min7b5 -> Locrian (or Locrian natural 2). An avoid note is a scale note a half step above a chord tone.',
         params: {
           choiceSets: [
@@ -553,7 +553,7 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'I-V-vi-IV is the most common pop progression, used in hundreds of songs', correct: true },
+              { label: 'I-V-vi-IV is one of the most common pop progressions, used in hundreds of songs', correct: true },
               { label: 'I-V-vi-IV belongs to classical chorale writing and is almost never heard in pop songs', correct: false },
               { label: 'This progression is rarely used in pop', correct: false },
               { label: 'I-V-vi-IV always sounds the same in every key', correct: false },
@@ -562,7 +562,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'vi-IV-I-V is the "sensitive" rotation of the same I-V-vi-IV progression', correct: true },
               { label: 'vi-IV-I-V is a completely different progression that shares no chords with I-V-vi-IV', correct: false },
               { label: 'vi-IV-I-V does not work as a pop progression', correct: false },
-              { label: 'Starting on vi makes it a minor key progression', correct: false },
+              { label: 'Starting on vi changes the qualities of all four chords', correct: false },
             ],
             [
               { label: 'The Nashville Number System represents chords by scale degree number for easy transposition', correct: true },

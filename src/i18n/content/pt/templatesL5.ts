@@ -161,7 +161,7 @@ const overlay: TemplateLevelOverlay = {
           'A cadeia V7/vi -> V7/ii -> V7/V -> V -> I move-se por graus conjuntos descendentes',
         ],
         [
-          'Cada dominante aplicada acrescenta uma nota cromática: a sensível do seu alvo',
+          'Cada dominante aplicada acrescenta normalmente uma nota cromática: a sensível do seu alvo',
           'Cada dominante aplicada fica diatónica, por isso a cadeia não acrescenta nenhuma nota cromática',
           'Cada dominante aplicada mantém o baixo na mesma nota durante toda a cadeia',
           'Cada dominante aplicada tem de ser tocada na segunda inversão',
@@ -364,7 +364,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'ABA, em que a primeira secção regressa depois de um contraste, é a forma ternária',
-          'ABA, em que a primeira secção regressa depois de um contraste, é a forma binária',
+          'ABA, em que a primeira secção regressa depois de um contraste, é a forma rondó',
           'ABA, em que a primeira secção regressa depois de um contraste, é a forma estrófica',
           'ABA, em que a primeira secção regressa depois de um contraste, é uma forma de composição contínua',
         ],

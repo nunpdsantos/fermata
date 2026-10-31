@@ -300,7 +300,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Syncopation always involves triplets', correct: false },
             ],
             [
-              { label: 'A tie across the barline creates syncopation by sustaining into the strong beat', correct: true },
+              { label: 'A tie from a weak beat across the barline creates syncopation by sustaining through the strong beat', correct: true },
               { label: 'A tie across the barline has no rhythmic effect', correct: false },
               { label: 'A tie across the barline always doubles the tempo of the whole measure that follows it', correct: false },
               { label: 'Ties can only occur within a single measure', correct: false },

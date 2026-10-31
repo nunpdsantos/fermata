@@ -26,7 +26,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Nas cifras de jazz, o que indica "alt" (como em G7alt)?',
     choices: [
-      'Um acorde dominante com quintas e nonas alteradas (b5/#5, b9/#9)',
+      'Um acorde dominante com quintas e/ou nonas alteradas (b5, #5, b9, #9)',
       'Um voicing alternativo de um acorde dominante simples, com todas as notas exatamente como escritas',
       'Um acorde que alterna entre qualidade maior e menor',
       'Um acorde que pode ser substituído por qualquer outro',
@@ -328,7 +328,7 @@ const overlay: ExerciseLevelOverlay = {
       'A harmonia quintal empilha quintas perfeitas em vez de quartas: igualmente aberta, mas com um som ligeiramente diferente',
       'Quintal usa cinco notas enquanto quartal usa quatro',
       'A harmonia quintal pertence apenas à música pop, enquanto a harmonia quartal só se encontra em gravações de jazz',
-      'São idênticas já que uma quarta invertida é uma quinta',
+      'A harmonia quintal empilha terças maiores; a quartal empilha terças menores',
     ],
     hint: 'Embora uma quarta invertida seja uma quinta, o som do voicing difere consoante o registo e o espaçamento. Os voicings quintais (ex: C-G-D-A) criam sonoridades amplas e brilhantes. Ambos evitam a harmonia tradicional tercial (baseada em terças).',
   },
@@ -375,7 +375,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que é um "loop pop" e por que é eficaz?',
     choices: [
       'Uma progressão curta que se repete (muitas vezes 4 compassos) e mantém a harmonia estável enquanto a melodia e a letra mudam',
-      'Um loop de áudio digital amostrado de um êxito existente',
+      'Uma mudança de acorde que acontece só uma vez, no fim da canção',
       'Uma técnica de produção de estúdio que copia a melodia do refrão e a cola debaixo de cada uma das estrofes da canção',
       'Um riff de baixo que percorre todas as 12 notas',
     ],
@@ -399,7 +399,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Que efeito emocional cria tipicamente uma relação de mediante cromática (ex: C maior para Ab maior) na música pop?',
     choices: [
-      'Uma mudança de cor dramática e cinematográfica — inesperada, mas suave graças às notas comuns',
+      'Uma mudança de cor dramática e cinematográfica — inesperada, mas suave graças a uma nota comum',
       'Uma sensação de regresso a casa, à tónica',
       'Nenhum efeito percetível, porque os dois acordes pertencem à mesma tonalidade e soam parecidos',
       'Um choque dissonante que soa como um erro',

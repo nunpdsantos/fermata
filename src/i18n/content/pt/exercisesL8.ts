@@ -264,7 +264,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que é uma série dodecafónica?',
     choices: [
       'Uma ordenação de todas as 12 classes de altura, cada uma usada exatamente uma vez, sobre a qual se constrói uma peça',
-      'Uma escala cromática tocada do grave ao agudo',
+      'Uma escala de 12 notas em que cada nota se pode repetir livremente',
       'Uma série de 12 acordes usados como progressão harmónica',
       'Doze compassos de música que se repetem, sem mudanças, desde o primeiro até ao último momento de uma peça',
     ],

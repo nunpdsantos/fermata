@@ -427,7 +427,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Each voice moves to the nearest available chord tone', correct: true },
+          { label: 'Each upper voice moves to the closest tone of the next chord', correct: true },
           { label: 'The bass should always move the shortest distance', correct: false },
           { label: 'Chords should be spaced as close together as possible', correct: false },
           { label: 'The piece should use the fewest possible chords', correct: false },
@@ -623,12 +623,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l3u11m3e2',
       type: 'multiple_choice',
-      prompt: 'What typically happens to harmonic rhythm at cadence points?',
+      prompt: 'How does harmonic rhythm typically behave as a cadence approaches?',
       config: {
         type: 'multiple_choice',
         choices: [
           { label: 'It speeds up -- chords change more often near the cadence', correct: true },
-          { label: 'It decelerates -- chords change less frequently at cadences', correct: false },
+          { label: 'It slows down -- chords change less often as the cadence nears', correct: false },
           { label: 'It stays the same throughout the phrase', correct: false },
           { label: 'It stops completely before the cadence chord', correct: false },
         ],

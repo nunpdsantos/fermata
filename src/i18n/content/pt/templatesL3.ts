@@ -383,7 +383,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'O ritmo harmónico costuma acelerar quando se aproxima uma cadência',
           'O ritmo harmónico mantém-se constante do princípio ao fim de uma peça',
-          'O ritmo harmónico costuma abrandar nas cadências',
+          'O ritmo harmónico costuma abrandar à medida que a cadência se aproxima',
           'O ritmo harmónico só muda entre secções',
         ],
         [
@@ -399,7 +399,7 @@ const overlay: TemplateLevelOverlay = {
           'Mudar de acorde nos tempos 2 e 4 é a escolha mais estável e normal em 4/4',
         ],
         [
-          'O ritmo harmónico é independente do ritmo da melodia',
+          'O ritmo harmónico é o ritmo das mudanças de acorde, não o da melodia',
           'O ritmo harmónico é simplesmente o ritmo que a melodia toca',
           'O ritmo harmónico é a velocidade da linha do baixo',
           'O ritmo harmónico é o número de tempos de cada compasso',

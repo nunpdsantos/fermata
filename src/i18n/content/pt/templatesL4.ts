@@ -296,7 +296,7 @@ const overlay: TemplateLevelOverlay = {
           'vi7 não tem uma função harmónica própria',
         ],
         [
-          'V7–vi7 é uma resolução interrompida mais suave do que V7–vi',
+          'V7–vi7 é uma resolução interrompida em que a fundamental de V7 se mantém como 7.ª de vi7',
           'V7–vi7 é uma cadência perfeita disfarçada',
           'V7–vi7 é impossível, porque vi7 não partilha notas com V7',
           'V7–vi7 é uma meia cadência, porque termina num acorde menor',
