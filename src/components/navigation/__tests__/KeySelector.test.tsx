@@ -45,8 +45,9 @@ beforeEach(() => {
 describe('KeySelector root notes', () => {
   it('renders 12 root note buttons', () => {
     render(<KeySelector />);
-    // 12 root notes: C, C#, D, Eb, E, F, F#, G, Ab, A, Bb, B
-    const rootLabels = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
+    // 12 root notes; black keys named for the selected scale (C major here,
+    // so D-flat rather than C-sharp — audit W1-09).
+    const rootLabels = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
     for (const label of rootLabels) {
       expect(screen.getByText(label)).toBeDefined();
     }
@@ -59,7 +60,8 @@ describe('KeySelector root notes', () => {
     expect(state.selectedKey).toEqual({ natural: 'G', accidental: '' });
   });
 
-  it('clicking C# sets accidental correctly', () => {
+  it('clicking C# sets accidental correctly (offered as C# in a minor scale)', () => {
+    useAppStore.setState({ selectedScale: 'natural_minor' });
     render(<KeySelector />);
     fireEvent.click(screen.getByText('C#'));
     const state = useAppStore.getState();

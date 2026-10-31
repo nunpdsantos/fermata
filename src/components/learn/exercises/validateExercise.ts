@@ -18,8 +18,10 @@ import type {
 import type { Note, NaturalNote, Accidental, ScaleType, ChordQuality } from '../../../core/types/music';
 import { noteToString } from '../../../core/types/music';
 import { getPitchClass, areEnharmonic } from '../../../core/constants/notes';
-import { buildScale } from '../../../core/constants/scales';
-import { buildChord, INTERVAL_LABELS } from '../../../core/constants/chords';
+import { buildScale, SCALE_TYPE_NAMES } from '../../../core/constants/scales';
+import { buildChord, INTERVAL_LABELS, CHORD_QUALITY_NAMES } from '../../../core/constants/chords';
+import { translateScaleType, translateChordQuality } from '../../../i18n/content/musicTerms';
+import type { ContentLanguage } from '../../../i18n/content/types';
 
 /** Minimal translation function signature compatible with i18next's TFunction */
 type TranslateFn = (key: string, options?: Record<string, unknown>) => string;
@@ -92,6 +94,25 @@ function fallbackT(key: string, options?: Record<string, unknown>): string {
   }
 
   return template;
+}
+
+/**
+ * Display names for feedback (audit W1-10): the PT/ES music-term dictionary
+ * where it has the term, otherwise the English display name — never the
+ * internal id ("major9", "natural_minor").
+ */
+function scaleDisplayName(type: string, lang: ContentLanguage): string {
+  const english = SCALE_TYPE_NAMES[type as ScaleType] ?? type.replace(/_/g, ' ');
+  if (lang === 'en') return english;
+  const translated = translateScaleType(type, lang);
+  return translated === type.replace(/_/g, ' ') ? english : translated;
+}
+
+function chordDisplayName(quality: string, lang: ContentLanguage): string {
+  const english = CHORD_QUALITY_NAMES[quality as ChordQuality] ?? quality.replace(/_/g, ' ');
+  if (lang === 'en') return english;
+  const translated = translateChordQuality(quality, lang);
+  return translated === quality.replace(/_/g, ' ') ? english : translated;
 }
 
 function toNote(natural: string, accidental: string): Note {
@@ -173,11 +194,11 @@ function validateIntervalId(config: IntervalIdConfig, answer: string, t: Transla
   };
 }
 
-function validateScaleBuild(config: ScaleBuildConfig, answer: Set<number>, t: TranslateFn): ValidationResult {
+function validateScaleBuild(config: ScaleBuildConfig, answer: Set<number>, t: TranslateFn, lang: ContentLanguage): ValidationResult {
   const root = toNote(config.root, config.rootAccidental);
   const scale = buildScale(root, config.scaleType as ScaleType);
   const expectedPCs: Set<number> = new Set(scale.notes.map((n) => getPitchClass(n) as number));
-  const scaleName = `${noteToString(root)} ${config.scaleType.replace(/_/g, ' ')}`;
+  const scaleName = `${noteToString(root)} ${scaleDisplayName(config.scaleType, lang)}`;
 
   if (setsEqual(expectedPCs, answer)) {
     return { correct: true, explanation: t('exerciseFeedback.scaleCorrect', { scale: scaleName }), expected: scaleName };
@@ -194,11 +215,11 @@ function validateScaleBuild(config: ScaleBuildConfig, answer: Set<number>, t: Tr
   };
 }
 
-function validateChordBuild(config: ChordBuildConfig, answer: Set<number>, t: TranslateFn): ValidationResult {
+function validateChordBuild(config: ChordBuildConfig, answer: Set<number>, t: TranslateFn, lang: ContentLanguage): ValidationResult {
   const root = toNote(config.root, config.rootAccidental);
   const chord = buildChord(root, config.quality as ChordQuality);
   const expectedPCs: Set<number> = new Set(chord.notes.map((n) => getPitchClass(n) as number));
-  const chordName = `${noteToString(root)} ${config.quality.replace(/_/g, ' ')}`;
+  const chordName = `${noteToString(root)} ${chordDisplayName(config.quality, lang)}`;
 
   if (setsEqual(expectedPCs, answer)) {
     return { correct: true, explanation: t('exerciseFeedback.chordCorrect', { chord: chordName }), expected: chordName };
@@ -279,11 +300,13 @@ function validateMultipleChoice(config: MultipleChoiceConfig, answer: string, t:
  * @param config Exercise config (discriminated by `type`)
  * @param answer For choice-based: string value. For build exercises: Set<number> of pitch classes.
  * @param t Optional i18next translation function. When omitted, English fallback strings are used.
+ * @param lang Content language for scale/chord names inside feedback (default English).
  */
 export function validateAnswer(
   config: ExerciseConfig,
   answer: string | Set<number>,
   t?: TranslateFn,
+  lang: ContentLanguage = 'en',
 ): ValidationResult {
   const translate = t ?? fallbackT;
   switch (config.type) {
@@ -292,9 +315,9 @@ export function validateAnswer(
     case 'interval_id':
       return validateIntervalId(config, answer as string, translate);
     case 'scale_build':
-      return validateScaleBuild(config, answer as Set<number>, translate);
+      return validateScaleBuild(config, answer as Set<number>, translate, lang);
     case 'chord_build':
-      return validateChordBuild(config, answer as Set<number>, translate);
+      return validateChordBuild(config, answer as Set<number>, translate, lang);
     case 'multiple_choice':
       return validateMultipleChoice(config, answer as string, translate);
     case 'ear_training':

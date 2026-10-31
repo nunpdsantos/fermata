@@ -35,7 +35,7 @@ Scale degree function is encoded in color throughout the app:
 **Name:** Music Theory App
 **Domain:** Music theory education / interactive instrument
 **Stack:** React 19 + TypeScript 5.9 + Vite 7 + Tailwind CSS v4 + Zustand 5 + Framer Motion 12
-**Tests:** 5,656 passing (Vitest + React Testing Library, 93 test files)
+**Tests:** 6,507 passing (Vitest + React Testing Library, 150 test files)
 **Languages:** English + Portuguese + Spanish (react-i18next + content overlay system)
 **PWA:** Offline-capable with Workbox precaching
 
@@ -68,6 +68,7 @@ Scale degree function is encoded in color throughout the app:
 - VexFlow loads its music fonts as base64 `data:` FontFaces at runtime — the CSP in `vercel.json` must keep `font-src 'self' data:` or production notation renders missing-glyph boxes (dev has no CSP, so local checks won't catch it).
 - Header-only deploys never reach installed PWAs: the service worker precaches `index.html` WITH its response headers, and identical content means no SW update. Any `vercel.json` header change must be paired with a content change (e.g. the build comment atop `index.html`).
 - **Fretboard orientation is SETTLED — do not "fix" it.** It renders nut-RIGHT, low E on top (mirrored from printed chord charts). A flip to textbook orientation was shipped and **reverted on Nuno's feedback** (2026-06-09): he reads the original natively. Position legibility is handled instead by the anchor-fret badge ("3fr") + nut-closest default voicing for chords, and the Roman-numeral badge for scale positions (see Audio & instruments below).
+- **Spelling is one engine** (`src/core/utils/degreeSpelling.ts`, W1/W2 2026-10-30): note names, degree labels and colours (read from the spelled letter), interval names, key signatures, staff octaves/accidentals and the key picker's root names all go through it — never derive a label from a semitone count or a note's position in a list. Staves that show what the instrument plays (Explore, `followInstrument`) write the guitar an octave above sounding (treble-8vb, D-05); Learn exercise staves are AUTHORED notation and are never transposed for the instrument; chords sound exactly the voicing the piano lights (`chordVoicingPitches` in `pianoLayout.ts`).
 - PT overlay files carry full PT-PT diacritics (restored 2026-07-24) — write proper European Portuguese orthography in every edit; conventions in `docs/pt-diacritic-todo.md`.
 - The i18n content overlays REPLACE English text wholesale (keyed by module id + array index). Every English curriculum/template edit needs hand-mirrored PT + ES edits; `templateParity.test.ts` enforces token parity and will fail the suite if overlays drift.
 
@@ -278,7 +279,7 @@ src/
 The app is a lean, single-user personal tool — no accounts, no cloud sync, no
 gamification. Curriculum, exercises, spaced repetition, trilingual content, offline
 PWA, sampled piano, instrument-aware playback, and (WS9, branch `ws9-drill-mode`)
-the phone-first Drill view: all functional, all gates green (5,656 tests / 93 files,
+the phone-first Drill view: all functional, all gates green (6,507 tests / 150 files,
 eslint 0/0, content audits clean).
 
 WS9 details worth knowing: drill bank generated from core (`drillBank/` directory

@@ -4,52 +4,31 @@ import { Note, NaturalNote, Accidental, noteToString, ChordIdentification } from
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { identifyChordFromNotes } from '../../core/utils/reverseChordParser.ts';
 import { CHORD_QUALITY_NAMES } from '../../core/constants/chords.ts';
+import { SCALE_TYPE_NAMES } from '../../core/constants/scales.ts';
+import {
+  canonicalIntervalNumber,
+  spellIntervalAbove,
+  intervalBetween,
+  degreeOf,
+  degreeColorSlot,
+} from '../../core/utils/degreeSpelling.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAppStore } from '../../state/store.ts';
 import { resumeAudio, playChordVoiced } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import { ChromaticStrip } from './ChromaticStrip.tsx';
 
-// Default chromatic spelling fallback when a pitch isn't in the current scale.
-const PC_TO_NOTE_SHARP: Record<number, Note> = {
-  0:  { natural: 'C', accidental: '' },
-  1:  { natural: 'C', accidental: '#' },
-  2:  { natural: 'D', accidental: '' },
-  3:  { natural: 'D', accidental: '#' },
-  4:  { natural: 'E', accidental: '' },
-  5:  { natural: 'F', accidental: '' },
-  6:  { natural: 'F', accidental: '#' },
-  7:  { natural: 'G', accidental: '' },
-  8:  { natural: 'G', accidental: '#' },
-  9:  { natural: 'A', accidental: '' },
-  10: { natural: 'A', accidental: '#' },
-  11: { natural: 'B', accidental: '' },
-};
-const PC_TO_NOTE_FLAT: Record<number, Note> = {
-  ...PC_TO_NOTE_SHARP,
-  1:  { natural: 'D', accidental: 'b' },
-  3:  { natural: 'E', accidental: 'b' },
-  6:  { natural: 'G', accidental: 'b' },
-  8:  { natural: 'A', accidental: 'b' },
-  10: { natural: 'B', accidental: 'b' },
-};
-
+// Both everyday names of every black key, so the dropdown can always show the
+// strip's root as spelled (C♯ and D♭ are different roots to spell from).
 const CHORD_ROOT_OPTIONS: Note[] = [
-  { natural: 'C',  accidental: '' },
-  { natural: 'D',  accidental: 'b' },
-  { natural: 'D',  accidental: '' },
-  { natural: 'E',  accidental: 'b' },
-  { natural: 'E',  accidental: '' },
-  { natural: 'F',  accidental: '' },
-  { natural: 'F',  accidental: '#' },
-  { natural: 'G',  accidental: '' },
-  { natural: 'A',  accidental: 'b' },
-  { natural: 'A',  accidental: '' },
-  { natural: 'B',  accidental: 'b' },
-  { natural: 'B',  accidental: '' },
-];
+  'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B',
+].map((s) => ({ natural: s[0] as NaturalNote, accidental: s.slice(1) as Accidental }));
 
-const INTERVAL_SHORT = ['R','m2','M2','m3','M3','P4','TT','P5','m6','M6','m7','M7','8'] as const;
+/** The options, plus the current root when it is a rarer name (C♭, B♯, F𝄪…). */
+function rootOptionsFor(current: Note): Note[] {
+  const has = CHORD_ROOT_OPTIONS.some((n) => n.natural === current.natural && n.accidental === current.accidental);
+  return has ? CHORD_ROOT_OPTIONS : [...CHORD_ROOT_OPTIONS, current];
+}
 
 function noteFromValue(value: string): Note {
   const m = value.match(/^([A-G])(.*)$/);
@@ -57,11 +36,23 @@ function noteFromValue(value: string): Note {
   return { natural: m[1] as NaturalNote, accidental: (m[2] as Accidental) || '' };
 }
 
+/** "R", "m3", "A5", "8": the interval a block's note forms with the strip root. */
+function intervalLabelFor(root: Note, note: Note, step: number): string {
+  if (step === 0) return 'R';
+  if (step === 12) return '8';
+  return intervalBetween(root, note).short;
+}
+
 /**
  * Reverse-build mode for the chord panel. Toggle blocks on a 13-step chromatic
  * strip from a chord root; Fermata's reverseChordParser names whatever you build.
  * In-key blocks are tinted with the diatonic-degree colour and labelled with
  * their scale degree, so the strip teaches key-context as you click.
+ *
+ * Spelling (audit W1-07): every block is spelled by its INTERVAL from the
+ * chosen root (m3 = E♭ above C, never D♯; the root keeps the name you chose),
+ * and once the blocks form a chord, its tones show the chord's own spelling
+ * (C augmented's raised 5th is G♯, labelled A5). The key no longer decides.
  */
 export function ChordBuilderPanel() {
   const { t } = useTranslation();
@@ -74,16 +65,10 @@ export function ChordBuilderPanel() {
   const [chordRoot, setChordRoot] = useState<Note>(selectedKey);
   const [active, setActive] = useState<Set<number>>(new Set([0]));
 
-  const isFlatKey = useMemo(() => scale.notes.some((n) => n.accidental.includes('b')), [scale]);
-
-  const noteAtStep = useCallback(
-    (step: number): Note => {
-      const pc = (getPitchClass(chordRoot) + step) % 12;
-      const inScale = scale.notes.find((n) => getPitchClass(n) === pc);
-      if (inScale) return inScale;
-      return (isFlatKey ? PC_TO_NOTE_FLAT : PC_TO_NOTE_SHARP)[pc];
-    },
-    [chordRoot, scale, isFlatKey]
+  // The note each block stands for, spelled by its interval from the root.
+  const intervalNoteAtStep = useCallback(
+    (step: number): Note => spellIntervalAbove(chordRoot, canonicalIntervalNumber(step), step),
+    [chordRoot]
   );
 
   const pitchClassAtStep = useCallback(
@@ -91,10 +76,12 @@ export function ChordBuilderPanel() {
     [chordRoot]
   );
 
+  // Degree badge from the key: the scale note's FUNCTION, read from its
+  // spelled letter (audit W1-06), not its position in the scale.
   const pitchClassToDegree = useCallback(
     (pc: number): number | undefined => {
-      const idx = scale.notes.findIndex((n) => getPitchClass(n) === pc);
-      return idx >= 0 ? idx + 1 : undefined;
+      const n = scale.notes.find((s) => getPitchClass(s) === pc);
+      return n ? degreeColorSlot(degreeOf(scale.root, n)) : undefined;
     },
     [scale]
   );
@@ -115,11 +102,39 @@ export function ChordBuilderPanel() {
   };
 
   const inputNotes = useMemo<Note[]>(
-    () => [...active].sort((a, b) => a - b).map((s) => noteAtStep(s)),
-    [active, noteAtStep]
+    () => [...active].sort((a, b) => a - b).map((s) => intervalNoteAtStep(s)),
+    [active, intervalNoteAtStep]
   );
   const identification = useMemo(() => identifyChordFromNotes(inputNotes), [inputNotes]);
-  const top: ChordIdentification | undefined = identification.results[0];
+  // Among equally good names, prefer the one rooted on the strip's anchor when
+  // the anchor block is on (C E G# built from C is C augmented, not E or G♯
+  // augmented — symmetric chords have several names).
+  const top: ChordIdentification | undefined = useMemo(() => {
+    const best = identification.results[0];
+    if (!best || !active.has(0)) return best;
+    const anchorPc = getPitchClass(chordRoot);
+    return identification.results.find(
+      (r) => r.score === best.score && r.confidence === best.confidence && getPitchClass(r.chord.root) === anchorPc,
+    ) ?? best;
+  }, [identification, active, chordRoot]);
+
+  // Once a chord is recognised, its tones show the chord's own spelling.
+  const noteAtStep = useCallback(
+    (step: number): Note => {
+      if (top && top.confidence === 'exact') {
+        const pc = (getPitchClass(chordRoot) + step) % 12;
+        const tone = top.chord.notes.find((n) => getPitchClass(n) === pc);
+        if (tone) return tone;
+      }
+      return intervalNoteAtStep(step);
+    },
+    [top, chordRoot, intervalNoteAtStep]
+  );
+
+  const intervalAtStep = useCallback(
+    (step: number): string => intervalLabelFor(chordRoot, noteAtStep(step), step),
+    [chordRoot, noteAtStep]
+  );
 
   // Drive the shared selection live: as soon as the strip forms a recognised
   // chord, the workspace staff and instruments update immediately; when the
@@ -133,12 +148,15 @@ export function ChordBuilderPanel() {
   const handlePlay = useCallback(async () => {
     if (active.size === 0 || inputNotes.length === 0) return;
     await resumeAudio();
-    playChordVoiced(inputNotes, baseOctave, 1.2, getSynthConfig(synthPreset));
-  }, [active.size, inputNotes, baseOctave, synthPreset]);
+    // A recognised chord plays exactly as the instruments light it (the
+    // selected chord's voicing); an unrecognised set plays as built.
+    const recognised = top && top.confidence === 'exact' ? top.chord : null;
+    playChordVoiced(recognised ? recognised.notes : inputNotes, baseOctave, 1.2, getSynthConfig(synthPreset), recognised?.bassNote);
+  }, [active.size, inputNotes, baseOctave, synthPreset, top]);
 
   const stepsSorted = useMemo(() => [...active].sort((a, b) => a - b), [active]);
-  const intervalsLabel = stepsSorted.map((s) => INTERVAL_SHORT[s]).join(', ');
-  const notesLabel = inputNotes.map(noteToString).join(' – ');
+  const intervalsLabel = stepsSorted.map(intervalAtStep).join(', ');
+  const notesLabel = stepsSorted.map((s) => noteToString(noteAtStep(s))).join(' – ');
   const semitonesLabel = stepsSorted.join(', ');
 
   const role = useMemo(() => {
@@ -147,12 +165,17 @@ export function ChordBuilderPanel() {
     const match = diatonicChords.find(
       (dc) => getPitchClass(dc.chord.root) === rootPc && dc.chord.quality === top.chord.quality
     );
-    const keyLabel = `${noteToString(scale.root)} ${scale.type.replace('_', ' ')}`;
+    // Display names, never internal ids (audit W1-10: was "C diminished whole_half").
+    const keyLabel = `${noteToString(scale.root)} ${SCALE_TYPE_NAMES[scale.type]}`;
     if (match) return { label: `${match.numeral} ${t('chordBuilder.ofKey', { key: keyLabel })}`, inKey: true };
     const degIdx = scale.notes.findIndex((n) => getPitchClass(n) === rootPc);
     if (degIdx >= 0) {
       return {
-        label: t('chordBuilder.nonDiatonicAt', { numeral: diatonicChords[degIdx]?.numeral ?? `${degIdx + 1}`, key: keyLabel }),
+        label: t('chordBuilder.nonDiatonicAt', {
+          numeral: diatonicChords.find((dc) => getPitchClass(dc.chord.root) === rootPc)?.numeral
+            ?? `${degreeOf(scale.root, scale.notes[degIdx]).number}`,
+          key: keyLabel,
+        }),
         inKey: false,
       };
     }
@@ -177,7 +200,7 @@ export function ChordBuilderPanel() {
               border: '1px solid var(--border)',
             }}
           >
-            {CHORD_ROOT_OPTIONS.map((n) => {
+            {rootOptionsFor(chordRoot).map((n) => {
               const v = `${n.natural}${n.accidental}`;
               return (
                 <option key={v} value={v}>
@@ -237,6 +260,7 @@ export function ChordBuilderPanel() {
         inKeyPitchClasses={scalePitchClasses}
         pitchClassToDegree={pitchClassToDegree}
         pitchClassAtStep={pitchClassAtStep}
+        intervalAtStep={intervalAtStep}
       />
 
       <div

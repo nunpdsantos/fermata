@@ -2,11 +2,9 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import { noteToString } from '../../core/types/music.ts';
-import {
-  SCALE_FORMULAS,
-  getScaleDegreeIntervalLabel,
-  getScaleDegreeFunctionKey,
-} from '../../core/constants/scales.ts';
+import { getPitchClass } from '../../core/constants/notes.ts';
+import { SCALE_FORMULAS, getScaleDegreeFunctionKey } from '../../core/constants/scales.ts';
+import { scaleDegrees, formatDegree, degreeColorSlot } from '../../core/utils/degreeSpelling.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAppStore } from '../../state/store.ts';
 import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
@@ -25,28 +23,29 @@ export function ScaleDegreeBar() {
   const isCompact = noteCount > 8;
   const degreeColorsOn = useDegreeColorsEnabled();
 
-  const degreeLabels = useMemo(
-    () => formula.map((semitones, i) => getScaleDegreeIntervalLabel(i, semitones, noteCount)),
-    [formula, noteCount],
-  );
+  // Degree label and colour are read from each note's SPELLING (letter
+  // distance + semitones): the label always names the note printed under it
+  // ("b5 / Eb" in A blues, never "b5 / D#"), in one notation (b3 style), and
+  // the colour follows the degree's function, not the note's position
+  // (audit W1-05, W1-06, W1-11).
+  const degrees = useMemo(() => scaleDegrees(scale.root, scale.notes), [scale]);
 
   return (
     <div className="flex items-stretch gap-1.5 max-sm:gap-0.5 max-sm:overflow-x-auto max-sm:snap-x max-sm:snap-proximity" role="group" aria-label="Scale degrees" style={{ boxShadow: 'var(--shadow-sm)' }}>
       {scale.notes.map((note, i) => {
         const degree = i + 1;
-        const dc = diatonicChords[i];
+        // The diatonic chord built on this note, if any (a bebop passing tone
+        // or an exotic degree whose thirds don't stack has none).
+        const dc = diatonicChords.find((d) => getPitchClass(d.chord.root) === getPitchClass(note));
         const isSelected = !!selectedChord && !!dc &&
           noteToString(selectedChord.root) === noteToString(dc.chord.root) &&
           selectedChord.quality === dc.chord.quality;
         const isInteractive = !!dc;
-        // For 5-7 note scales, direct degree mapping; for >7 notes, cycle through colors
-        const colorKey = noteCount <= 7
-          ? (degree as keyof typeof DEGREE_COLORS)
-          : (((i % 7) + 1) as keyof typeof DEGREE_COLORS);
+        const colorKey = degreeColorSlot(degrees[i]);
         const color = degreeColorsOn
           ? (DEGREE_COLORS[colorKey] ?? 'var(--text-muted)')
           : 'var(--accent)';
-        const intervalLabel = degreeLabels[i] ?? `${i + 1}`;
+        const intervalLabel = formatDegree(degrees[i]);
         const funcKey = noteCount === 7
           ? getScaleDegreeFunctionKey(i, formula[i] ?? 0)
           : null;

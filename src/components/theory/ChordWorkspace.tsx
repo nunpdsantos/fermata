@@ -8,7 +8,7 @@
  * duplicate staves that previously lived inside ChordDetail and
  * ChordBuilderStaff.
  */
-import { Suspense, lazy, useState } from 'react';
+import { Suspense, lazy, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChordGrid } from './ChordGrid.tsx';
 import { ChordBrowser } from './ChordBrowser.tsx';
@@ -22,6 +22,7 @@ import { SCALE_TYPE_NAMES } from '../../core/constants/scales.ts';
 import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
 import { getVoicedChordNotes, getScaleNotesWithOctaves } from '../../core/utils/pianoLayout.ts';
 import { getKeySignatureForScale } from '../../utils/notationHelpers.ts';
+import { degreeOf, degreeColorSlot } from '../../core/utils/degreeSpelling.ts';
 import { StaffNotationSkeleton } from '../notation/StaffNotationSkeleton.tsx';
 
 const StaffNotation = lazy(() =>
@@ -35,6 +36,18 @@ export function ChordWorkspace() {
   const selectedScale = useAppStore((s) => s.selectedScale);
   const degreeColorsOn = useDegreeColorsEnabled();
   const [mode, setMode] = useState<'diatonic' | 'all' | 'build'>('diatonic');
+
+  // The scale staff draws every note plus the octave tonic on top. Each note is
+  // coloured by its FUNCTION, read from its spelled letter (a pentatonic's G is
+  // the dominant, not "the 4th note"), and the top tonic is coloured like the
+  // tonic (audit W1-06, W1-18).
+  const scaleStaffNotes = useMemo(() => getScaleNotesWithOctaves(scale.notes, 4), [scale]);
+  const scaleStaffColors = useMemo(
+    () => Object.fromEntries(
+      scaleStaffNotes.map((n, i) => [i, DEGREE_COLORS[degreeColorSlot(degreeOf(scale.root, n))]]),
+    ),
+    [scaleStaffNotes, scale.root],
+  );
 
   return (
     <div className="space-y-6">
@@ -98,16 +111,16 @@ export function ChordWorkspace() {
                 height={120}
                 duration="w"
                 chord
+                followInstrument
               />
             ) : (
               <StaffNotation
-                notes={getScaleNotesWithOctaves(scale.notes, 4)}
+                notes={scaleStaffNotes}
                 keySignature={getKeySignatureForScale(scale.root, selectedScale) ?? undefined}
-                noteColors={degreeColorsOn ? Object.fromEntries(
-                  scale.notes.map((_, i) => [i, DEGREE_COLORS[(i + 1) as keyof typeof DEGREE_COLORS] ?? 'var(--text-muted)'])
-                ) : undefined}
+                noteColors={degreeColorsOn ? scaleStaffColors : undefined}
                 height={130}
                 duration="q"
+                followInstrument
               />
             )}
           </Suspense>

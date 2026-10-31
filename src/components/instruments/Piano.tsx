@@ -4,6 +4,8 @@ import { useMemo, useCallback, useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   generateKeyboardKeys,
+  octaveFitsKeyboard,
+  chordFitsKeyboard,
   type PianoKey,
 } from '../../core/utils/pianoLayout.ts';
 import { PianoKeyComponent } from './PianoKey.tsx';
@@ -64,7 +66,26 @@ export function Piano() {
   const activeNotes = useAppStore((s) => s.activeNotes);
   const baseOctave = useAppStore((s) => s.baseOctave);
   const setBaseOctave = useAppStore((s) => s.setBaseOctave);
-  const { scaleMidiNumbers, getNoteColor, spellPitchClass, chordVoicingMidi, hasSelectedChord } = useKeyContext();
+  const { scale, invertedNotes, scaleMidiNumbers, getNoteColor, spellPitchClass, chordVoicingMidi, hasSelectedChord } = useKeyContext();
+  const scaleOctaves = useAppStore((s) => s.scaleOctaves);
+  const selectedChord = useAppStore((s) => s.selectedChord);
+
+  // Octaves whose scale (and selected chord) stay on the 88 keys; the others'
+  // buttons are disabled, and a stored octave that no longer fits (after a
+  // key change) moves to the nearest one that does (audit W2-07).
+  const octaveFits = useMemo(() => {
+    const chordNotes = selectedChord ? (invertedNotes.length > 0 ? invertedNotes : selectedChord.notes) : [];
+    return [0, 1, 2, 3, 4, 5, 6, 7, 8].map((oct) =>
+      octaveFitsKeyboard(scale.notes, oct, scaleOctaves) && chordFitsKeyboard(chordNotes, oct, selectedChord?.bassNote));
+  }, [scale, scaleOctaves, selectedChord, invertedNotes]);
+
+  useEffect(() => {
+    if (octaveFits[baseOctave]) return;
+    const candidates = [0, 1, 2, 3, 4, 5, 6, 7, 8].filter((o) => octaveFits[o]);
+    if (candidates.length === 0) return;
+    const nearest = candidates.reduce((best, o) => (Math.abs(o - baseOctave) < Math.abs(best - baseOctave) ? o : best));
+    setBaseOctave(nearest);
+  }, [octaveFits, baseOctave, setBaseOctave]);
   const containerRef = useRef<HTMLDivElement>(null);
   const activeMidiMap = useRef<Map<number, number>>(new Map());
 
@@ -356,7 +377,9 @@ export function Piano() {
       {/* Octave selector strip */}
       <div role="tablist" aria-label={t('instrument.baseOctave')} className="flex items-center gap-1 max-sm:gap-0.5 px-3 max-sm:px-2 py-1.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
         <span className="text-[10px] uppercase tracking-wider mr-1" style={{ color: 'var(--text-dim)' }}>{t('play.octave')}</span>
-        {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((oct) => {
+        {/* Only octaves that keep the scale (and chord) on the 88 keys — C8 never
+            does, C0 only for A/B♭/B roots — so no dead tabs (review item 6). */}
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8].filter((oct) => octaveFits[oct]).map((oct) => {
           const isActive = baseOctave === oct;
           return (
             <button

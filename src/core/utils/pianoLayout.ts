@@ -295,38 +295,59 @@ export function getVoicedChordNotes(notes: Note[], startOctave: number = 4): Pit
  * This creates a clearer, more separated sound in the bass register.
  */
 function getOpenVoicedChordNotes(notes: Note[], startOctave: number): PitchedNote[] {
-  if (notes.length < 3) {
-    // For 2 notes or less, just use standard voicing with some spread
-    return notes.map((note, i) => ({ ...note, octave: startOctave + (i > 0 ? 1 : 0) }));
-  }
-
+  // Spread order: bass, fifth, third, then the rest (7th, 9th, …). Each note
+  // is placed at the LOWEST pitch above the previous one, so the bass note
+  // (the root, or the inversion's bass) always stays at the bottom — the old
+  // version put the fifth in the root's octave even when that is below the
+  // root (F major at octave 1 lit C1 F1 A2; audit W2-07).
+  const order = notes.length >= 3
+    ? [notes[0], notes[2], notes[1], ...notes.slice(3)]
+    : notes;
   const result: PitchedNote[] = [];
+  let previousMidi = -Infinity;
+  for (const note of order) {
+    const pc = getPitchClass(note);
+    let octave = result.length === 0 ? startOctave : Math.floor((previousMidi - 12) / 12);
+    while (12 + octave * 12 + pc <= previousMidi) octave++;
+    result.push({ ...note, octave });
+    previousMidi = 12 + octave * 12 + pc;
+  }
+  return result;
+}
 
-  // Root (notes[0]) stays in bass
-  result.push({ ...notes[0], octave: startOctave });
+/** Lowest and highest MIDI numbers on the 88-key piano (A0, C8). */
+export const PIANO_MIDI_RANGE = { low: 21, high: 108 } as const;
 
-  if (notes.length === 3) {
-    // Triad: Root, Fifth, Third+octave
-    // e.g., C major: C3, G3, E4 (instead of C3, E3, G3)
-    result.push({ ...notes[2], octave: startOctave }); // Fifth stays low
-    result.push({ ...notes[1], octave: startOctave + 1 }); // Third up an octave
-  } else if (notes.length >= 4) {
-    // 7th chord: Root, Fifth, Third+octave, Seventh+octave
-    // e.g., Cmaj7: C3, G3, E4, B4
-    result.push({ ...notes[2], octave: startOctave }); // Fifth stays low
-    result.push({ ...notes[1], octave: startOctave + 1 }); // Third up an octave
-    result.push({ ...notes[3], octave: startOctave + 1 }); // Seventh up an octave
-
-    // Handle any additional notes (9th, 11th, etc.)
-    for (let i = 4; i < notes.length; i++) {
-      result.push({ ...notes[i], octave: startOctave + 1 });
+/**
+ * Whether a scale played from `octave` (for `octaves` octaves, plus the top
+ * tonic) stays on the 88 keys — the piano's octave buttons only offer octaves
+ * that do (audit W2-07).
+ */
+export function octaveFitsKeyboard(scaleNotes: Note[], octave: number, octaves: number = 1): boolean {
+  for (let k = 0; k < octaves; k++) {
+    for (const p of getScaleNotesWithOctaves(scaleNotes, octave + k)) {
+      const midi = getMidiNumber(p, p.octave);
+      if (midi < PIANO_MIDI_RANGE.low || midi > PIANO_MIDI_RANGE.high) return false;
     }
   }
+  return true;
+}
 
-  // Sort by pitch to maintain ascending order for display
-  return result.sort((a, b) => {
-    const pitchA = a.octave * 12 + getPitchClass(a);
-    const pitchB = b.octave * 12 + getPitchClass(b);
-    return pitchA - pitchB;
-  });
+/** Whether a chord voiced from `octave` (plus a slash bass an octave below) stays on the keys. */
+export function chordFitsKeyboard(chordNotes: Note[], octave: number, bassNote?: Note): boolean {
+  if (chordNotes.length === 0) return true;
+  const midis = getVoicedChordNotes(chordNotes, octave).map((p) => getMidiNumber(p, p.octave));
+  if (bassNote) midis.push(getMidiNumber(bassNote, octave - 1));
+  return midis.every((m) => m >= PIANO_MIDI_RANGE.low && m <= PIANO_MIDI_RANGE.high);
+}
+
+/**
+ * The exact pitches of a chord as the app both LIGHTS and PLAYS it: the
+ * voicing above from `octave`, plus a slash-chord bass an octave below
+ * (always under the voicing). One function for keys and sound, so what you
+ * see is what you hear (audit W2-07 review).
+ */
+export function chordVoicingPitches(notes: Note[], octave: number, bassNote?: Note): PitchedNote[] {
+  const voiced = notes.length > 0 ? getVoicedChordNotes(notes, octave) : [];
+  return bassNote ? [{ ...bassNote, octave: octave - 1 }, ...voiced] : voiced;
 }

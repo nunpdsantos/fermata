@@ -3,6 +3,7 @@ import type { ExerciseDefinition } from '../../../core/types/exercise';
 import type { NaturalNote, Accidental, PitchedNote } from '../../../core/types/music';
 import { useAppStore } from '../../../state/store';
 import { StaffNotationSkeleton } from '../../notation/StaffNotationSkeleton';
+import { intervalTargetNote, writtenOctave } from '../../../core/utils/degreeSpelling';
 
 const StaffNotation = lazy(() =>
   import('../../notation/StaffNotation').then((m) => ({ default: m.StaffNotation }))
@@ -45,27 +46,15 @@ export function ExercisePrompt({ exercise }: ExercisePromptProps) {
         accidental: (cfg.rootAccidental || '') as Accidental,
         octave: cfg.rootOctave,
       };
-      // Compute second note from semitones
-      const NATURALS: NaturalNote[] = ['C', 'C', 'D', 'D', 'E', 'F', 'F', 'G', 'G', 'A', 'A', 'B'];
-      const ACCIDENTALS: Accidental[] = ['', '#', '', '#', '', '', '#', '', '#', '', '#', ''];
-      const rootPCs: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-      let rootPC = rootPCs[cfg.root] ?? 0;
-      if (cfg.rootAccidental === '#') rootPC += 1;
-      if (cfg.rootAccidental === 'b') rootPC -= 1;
-      const semitones = cfg.direction === 'descending' ? -cfg.targetSemitones : cfg.targetSemitones;
-      const targetPC = ((rootPC + semitones) % 12 + 12) % 12;
-      const targetOct = cfg.rootOctave + (rootPC + semitones >= 12 ? 1 : rootPC + semitones < 0 ? -1 : 0);
-      const targetNote: PitchedNote = {
-        natural: NATURALS[targetPC],
-        accidental: ACCIDENTALS[targetPC],
-        octave: targetOct,
-      };
-      return [rootNote, targetNote];
+      return [rootNote, intervalTargetNote(rootNote, cfg.targetSemitones, cfg.direction)];
     }
     return null;
   })();
 
-  const clef = staffNotes && staffNotes.some((n) => n.octave < 4) ? 'bass' as const : 'treble' as const;
+  // Bass clef when a note is WRITTEN below middle C (the letter octave: C♭4
+  // sounds as B3 but is written in octave 4). Exercises are AUTHORED notation:
+  // the same notes and clef on every instrument, never transposed for the guitar.
+  const clef = staffNotes && staffNotes.some((n) => writtenOctave(n, n.octave) < 4) ? 'bass' as const : 'treble' as const;
 
   return (
     <div className="mb-4">

@@ -9,8 +9,8 @@ import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
 import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
 import { palette } from '../../design/tokens/palette';
+import { degreeOf, degreeColorSlot, formatDegree } from '../../core/utils/degreeSpelling.ts';
 
-const CHROMATIC_LABELS = ['1', 'b2', '2', 'b3', '3', '4', 'b5', '5', 'b6', '6', 'b7', '7'];
 
 const SCALE_OPTIONS = Object.entries(SCALE_TYPE_NAMES) as [ScaleType, string][];
 
@@ -59,15 +59,12 @@ export function ScaleComparison() {
   // theme accent / muted for scale A / B so the chromatic diff still reads.
   const degreeColorA = useMemo(() => {
     const m = new Map<number, string>();
-    scaleA.notes.forEach((n, i) => {
+    scaleA.notes.forEach((n) => {
       if (!degreeColorsOn) {
         m.set(getPitchClass(n), 'var(--accent)');
         return;
       }
-      const key = scaleA.notes.length <= 7
-        ? (i + 1) as keyof typeof DEGREE_COLORS
-        : (((i % 7) + 1) as keyof typeof DEGREE_COLORS);
-      m.set(getPitchClass(n), DEGREE_COLORS[key] ?? 'var(--text-muted)');
+      m.set(getPitchClass(n), DEGREE_COLORS[degreeColorSlot(degreeOf(scaleA.root, n))]);
     });
     return m;
   }, [scaleA, degreeColorsOn]);
@@ -75,15 +72,12 @@ export function ScaleComparison() {
   const degreeColorB = useMemo(() => {
     if (!scaleB) return new Map<number, string>();
     const m = new Map<number, string>();
-    scaleB.notes.forEach((n, i) => {
+    scaleB.notes.forEach((n) => {
       if (!degreeColorsOn) {
         m.set(getPitchClass(n), 'var(--text-muted)');
         return;
       }
-      const key = scaleB.notes.length <= 7
-        ? (i + 1) as keyof typeof DEGREE_COLORS
-        : (((i % 7) + 1) as keyof typeof DEGREE_COLORS);
-      m.set(getPitchClass(n), DEGREE_COLORS[key] ?? 'var(--text-muted)');
+      m.set(getPitchClass(n), DEGREE_COLORS[degreeColorSlot(degreeOf(scaleB.root, n))]);
     });
     return m;
   }, [scaleB, degreeColorsOn]);
@@ -94,6 +88,22 @@ export function ScaleComparison() {
     for (const n of scaleA.notes) m.set(getPitchClass(n), noteToString(n));
     return m;
   }, [scaleA]);
+
+  // Degree label per row, read from THAT row's spelling (audit W1-15): the
+  // Lydian row says #4 over F#, the major row 4 over F — never a fixed
+  // chromatic header like "b5" over F#.
+  const labelA = useMemo(() => {
+    const m = new Map<number, string>();
+    for (const n of scaleA.notes) m.set(getPitchClass(n), formatDegree(degreeOf(scaleA.root, n)));
+    return m;
+  }, [scaleA]);
+
+  const labelB = useMemo(() => {
+    const m = new Map<number, string>();
+    if (!scaleB) return m;
+    for (const n of scaleB.notes) m.set(getPitchClass(n), formatDegree(degreeOf(scaleB.root, n)));
+    return m;
+  }, [scaleB]);
 
   const noteNameB = useMemo(() => {
     if (!scaleB) return new Map<number, string>();
@@ -113,7 +123,8 @@ export function ScaleComparison() {
       return {
         pc,
         semitones: i,
-        label: CHROMATIC_LABELS[i],
+        labelA: labelA.get(pc),
+        labelB: labelB.get(pc),
         inA,
         inB,
         shared: inA && inB,
@@ -126,7 +137,7 @@ export function ScaleComparison() {
         colorB: degreeColorB.get(pc),
       };
     });
-  }, [rootPC, pcA, pcB, noteNameA, noteNameB, degreeColorA, degreeColorB]);
+  }, [rootPC, pcA, pcB, noteNameA, noteNameB, labelA, labelB, degreeColorA, degreeColorB]);
 
   if (!comparisonScale) {
     return (
@@ -227,7 +238,7 @@ export function ScaleComparison() {
               {slot.noteA ?? ''}
             </span>
             <span className="text-[8px] max-sm:hidden" style={{ color: slot.inA ? alpha(slot.colorA, '99') : 'transparent' }}>
-              {slot.label}
+              {slot.labelA ?? ''}
             </span>
           </div>
         ))}
@@ -268,7 +279,7 @@ export function ScaleComparison() {
               {slot.noteB ?? ''}
             </span>
             <span className="text-[8px] max-sm:hidden" style={{ color: slot.inB ? alpha(slot.colorB, '99') : 'transparent' }}>
-              {slot.label}
+              {slot.labelB ?? ''}
             </span>
           </div>
         ))}

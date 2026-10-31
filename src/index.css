@@ -164,6 +164,8 @@
   --accent: #a65a2a;
   --accent-hover: #8f4a1e;
   --accent-dim: rgba(166, 90, 42, 0.15);
+  /* Text on a solid --accent fill (≥ 4.5:1: white on walnut ≈ 5.1:1). */
+  --on-accent: #ffffff;
   --accent-bg: rgba(166, 90, 42, 0.08);
   --focus-ring: rgba(166, 90, 42, 0.5);
   --shadow-sm: 0 1px 3px rgba(74, 48, 24, 0.08), 0 1px 2px rgba(74, 48, 24, 0.04);
@@ -220,6 +222,8 @@
   --accent: #d2804a;
   --accent-hover: #e6915a;
   --accent-dim: rgba(210, 128, 74, 0.18);
+  /* Text on a solid --accent fill (≥ 4.5:1: night bg on amber ≈ 6:1). */
+  --on-accent: #181208;
   --accent-bg: rgba(210, 128, 74, 0.10);
   --focus-ring: rgba(210, 128, 74, 0.55);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);

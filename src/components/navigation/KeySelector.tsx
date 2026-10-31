@@ -4,21 +4,20 @@ import { useAppStore } from '../../state/store.ts';
 import { noteToString, type Note, type ScaleType } from '../../core/types/music.ts';
 import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
+import { getPitchClass } from '../../core/constants/notes.ts';
+import {
+  preferredRootSpelling,
+  enharmonicRootAlternative,
+  rootSpellingCost,
+  cheaperSpelling,
+} from '../../core/utils/degreeSpelling.ts';
 
-const ROOTS: Note[] = [
-  { natural: 'C', accidental: '' },
-  { natural: 'C', accidental: '#' },
-  { natural: 'D', accidental: '' },
-  { natural: 'E', accidental: 'b' },
-  { natural: 'E', accidental: '' },
-  { natural: 'F', accidental: '' },
-  { natural: 'F', accidental: '#' },
-  { natural: 'G', accidental: '' },
-  { natural: 'A', accidental: 'b' },
-  { natural: 'A', accidental: '' },
-  { natural: 'B', accidental: 'b' },
-  { natural: 'B', accidental: '' },
-];
+// One button per pitch class. Each black key is offered under the name that
+// spells the selected scale with fewer accidentals (D♭ major, C♯ minor, G♯
+// minor); the selected root always shows its own spelling (audit W1-09).
+const PITCH_CLASSES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as const;
+
+const sameNote = (a: Note, b: Note) => a.natural === b.natural && a.accidental === b.accidental;
 
 const SCALE_GROUPS: { label: string; options: { value: ScaleType; label: string }[] }[] = [
   {
@@ -134,6 +133,29 @@ export function KeySelector() {
   }, [selectedScale]);
 
   const showAll = expanded || isSelectedInHiddenGroup;
+
+  const selectedPc = getPitchClass(selectedKey);
+  const roots = useMemo(
+    () => PITCH_CLASSES.map((pc) => (pc === selectedPc ? selectedKey : preferredRootSpelling(pc, selectedScale))),
+    [selectedPc, selectedKey, selectedScale],
+  );
+  const alternative = enharmonicRootAlternative(selectedKey);
+
+  // Choosing a scale keeps the root's pitch, but takes its other name when that
+  // spells the new scale with strictly fewer accidentals (D♭ major → Minor
+  // gives C♯ minor, not D♭ minor with F♭ and B𝄫).
+  const chooseScale = (type: ScaleType) => {
+    // Re-clicking the active scale never touches the root.
+    if (type === selectedScale) return;
+    setScale(type);
+    // Respell only when the other name is strictly cheaper for the new scale
+    // (smaller signature; or, without one, fewer double accidentals first):
+    // D♭ major → Minor gives C♯ minor; G♯ minor → Melodic stays G♯.
+    const preferred = preferredRootSpelling(selectedPc, type);
+    if (!sameNote(preferred, selectedKey) && cheaperSpelling(rootSpellingCost(preferred, type), rootSpellingCost(selectedKey, type))) {
+      setKey(preferred);
+    }
+  };
   const visibleGroups = showAll ? SCALE_GROUPS : SCALE_GROUPS.slice(0, ALWAYS_VISIBLE_COUNT);
 
   // CSS indicator for root note
@@ -170,9 +192,25 @@ export function KeySelector() {
     <div className="space-y-3" role="group" aria-label={t('keySelector.label')} data-tour="key-scale">
       {/* ─── Root note chromatic strip ──────────────────────── */}
       <div>
-        <span className="type-section block mb-1.5">
-          {t('keySelector.root')}
-        </span>
+        {/* Fixed-height row: the respell button appearing or disappearing
+            never moves the strip below it. */}
+        <div className="flex items-center gap-2 mb-1.5 h-[22px]" data-testid="root-label-row">
+          <span className="type-section block">
+            {t('keySelector.root')}
+          </span>
+          {alternative && (
+            <button
+              type="button"
+              onClick={() => setKey(alternative)}
+              aria-label={t('keySelector.respellAs', { note: noteToString(alternative) })}
+              title={t('keySelector.respellAs', { note: noteToString(alternative) })}
+              className="px-1.5 py-0.5 text-2xs font-medium rounded-md transition-colors hover:bg-white/[0.04]"
+              style={{ color: 'var(--text-dim)', border: '1px solid var(--border)' }}
+            >
+              <span aria-hidden="true">⇄ </span>{noteToString(alternative)}
+            </button>
+          )}
+        </div>
         <div className="relative max-sm:max-w-full">
           <div ref={rootContainerRef} className="relative inline-flex items-center rounded-xl p-1 gap-0.5 max-sm:max-w-full max-sm:overflow-x-auto max-sm:snap-x max-sm:snap-mandatory" style={{ backgroundColor: 'color-mix(in srgb, var(--bg-raised) 80%, transparent)', border: '1px solid color-mix(in srgb, var(--border) 60%, transparent)' }}>
           <div
@@ -189,16 +227,14 @@ export function KeySelector() {
               transition: 'left 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
           />
-          {ROOTS.map((root) => {
+          {roots.map((root, pc) => {
             const label = noteToString(root);
-            const isSelected =
-              root.natural === selectedKey.natural &&
-              root.accidental === selectedKey.accidental;
+            const isSelected = pc === selectedPc;
             const hasAccidental = root.accidental !== '';
 
             return (
               <button
-                key={label}
+                key={pc}
                 data-root={label}
                 aria-label={label}
                 aria-pressed={isSelected}
@@ -250,7 +286,7 @@ export function KeySelector() {
                   <button
                     key={opt.value}
                     data-scale={opt.value}
-                    onClick={() => setScale(opt.value)}
+                    onClick={() => chooseScale(opt.value)}
                     className={`relative px-2.5 py-1 max-sm:py-1.5 text-[11px] font-medium rounded-lg transition-all duration-150 ${
                       isActive
                         ? ''

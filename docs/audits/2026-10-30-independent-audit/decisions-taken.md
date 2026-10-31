@@ -16,7 +16,7 @@ Nuno, 2026-10-30: "we need to do all the improvements … do it all the way unti
 | D-10 | Level gating | "Unlock anyway" on locked levels + soft "pairs with Level n" badges in Level 9. | Least restrictive change that still signals order. |
 | D-11 | Ear-training scope | Add a key/reference pre-roll; add a melody ear mode so the dictation modules do what they say. | "Do all the improvements". |
 | D-12 | Harmonic-minor modes | Reword the L7 objective to the two modes the app has. | Off a classical path; adding five scales adds translation and test surface for little use. |
-| D-13 | Notation conventions | Blues blue note as ♭5; flat-prefixed numerals for church modes (♭VII); scale-degree labels in ♭3 style, interval names in m3 style (two different concepts). | Matches the L7 lessons and common usage. |
+| D-13 | Notation conventions | Blues blue note as ♭5; flat-prefixed numerals for church modes (♭VII); scale-degree labels in ♭3 style, interval names in m3 style (two different concepts). **Amended 2026-10-30 (coordinator):** blues blue note is ♭5, except where ♭5 would need a double flat; then ♯4 (E♭ blues = E♭ G♭ A♭ A B♭ D♭). | Matches the L7 lessons and common usage. The amendment avoids a double flat where the blue note's degree identity allows the enharmonic ♯4; heptatonic spellings are unchanged. |
 | D-14 | Theory conventions | Second species: Fux (passing tones only). 7♯9: blues / half-whole first, altered for 7alt. maj11: Major first. | Track C's suggestions; textbook-standard. |
 | D-15 | Drill "by heart" | First answer per session, across ≥ 3 sessions spread over ≥ 2 calendar days; one lapse demotes. | Matches the Drill spec's acceptance criterion. |
 | D-16 | `points` field | Delete. | Weighting would change every pass mark. |
@@ -28,3 +28,7 @@ Nuno, 2026-10-30: "we need to do all the improvements … do it all the way unti
 | D-22 | First-visit downloads | Load samples on first use; Bravura-only notation fonts; static index for the Learn banner. | |
 | D-23 | Unit milestone summaries | Show at unit completion. | Data and translations already exist. |
 | D-24 | L6–L8 planning docs | Mark as superseded. | |
+
+## Amendments
+
+- **D-13 (2026-10-30, coordinator):** Blues blue note is ♭5, except where ♭5 would need a double flat; then ♯4. Implemented in `src/core/utils/degreeSpelling.ts` (`spellScale`), branch `fix/w1-w2-spelling-harmony`.

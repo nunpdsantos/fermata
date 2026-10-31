@@ -139,3 +139,17 @@ describe('ExploreView — Play restarts cleanly', () => {
     expect(audioLog).toEqual(['cancelScheduledAudio', 'playScale', 'cancelScheduledAudio', 'playScale']);
   });
 });
+
+describe('ExploreView — opens without moving focus (design review / audit W2-03)', () => {
+  it('mounting Explore (circle of fifths included) focuses nothing, so the page does not scroll', async () => {
+    const focusSpy = vi.spyOn(HTMLElement.prototype, 'focus').mockImplementation(() => {});
+    const svgFocusSpy = vi.spyOn(SVGElement.prototype, 'focus').mockImplementation(() => {});
+    render(<ExploreView />);
+    await screen.findAllByTestId('staff-mock');
+    expect(document.activeElement).toBe(document.body);
+    expect(focusSpy).not.toHaveBeenCalled();
+    expect(svgFocusSpy).not.toHaveBeenCalled();
+    focusSpy.mockRestore();
+    svgFocusSpy.mockRestore();
+  });
+});

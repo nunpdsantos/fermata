@@ -2,9 +2,10 @@ import { useMemo } from 'react';
 import { useAppStore } from '../state/store.ts';
 import { buildScale } from '../core/constants/scales.ts';
 import { getDiatonicChordsForScale } from '../core/constants/chords.ts';
-import { getScaleNotesWithOctaves, getVoicedChordNotes, getMidiNumber } from '../core/utils/pianoLayout.ts';
+import { getScaleNotesWithOctaves, chordVoicingPitches, getMidiNumber } from '../core/utils/pianoLayout.ts';
 import { getPitchClass } from '../core/constants/notes.ts';
 import { buildSpellingMap, spellFromMap, spellSharpDefault } from '../core/utils/spelling.ts';
+import { degreeOf, degreeColorSlot } from '../core/utils/degreeSpelling.ts';
 import type { Note, Scale, Chord, PitchedNote } from '../core/types/music.ts';
 import { DEGREE_COLORS } from '../design/tokens/colors.ts';
 import { useDegreeColorsEnabled } from './useDegreeColors.ts';
@@ -68,20 +69,27 @@ export function useKeyContext(): KeyContextValue {
   );
 
   const diatonicChords = useMemo(() => {
-    const raw = getDiatonicChordsForScale(scale);
-    return raw.map((dc, i) => ({
+    // Stacked-thirds triads; `degree` is the chord root's scale degree (a scale
+    // can skip degrees whose thirds don't stack, so never the list index).
+    return getDiatonicChordsForScale(scale).map((dc) => ({
       chord: dc.chord,
       numeral: dc.numeral,
-      degree: i + 1,
+      degree: dc.degree,
     }));
   }, [scale]);
 
-  // Map pitch class → degree (1-based)
+  // Map pitch class → degree function (1–7), for EVERY scale note. The degree
+  // is read from the note's spelled letter, not its position in the list:
+  // C major pentatonic's G is degree 5 (dominant), not "note 4" (audit
+  // W1-06). Every note of 8- and 12-note scales is present too — the fretboard
+  // treats "no colour" as "not in the scale", so a missing entry used to hide
+  // chromatic and bebop notes (audit W3-03).
   const pitchClassToDegree = useMemo(() => {
     const m = new Map<number, number>();
-    scale.notes.forEach((note, i) => {
-      m.set(getPitchClass(note), i + 1);
-    });
+    for (const note of scale.notes) {
+      const pc = getPitchClass(note);
+      if (!m.has(pc)) m.set(pc, degreeColorSlot(degreeOf(scale.root, note)));
+    }
     return m;
   }, [scale]);
 
@@ -160,14 +168,10 @@ export function useKeyContext(): KeyContextValue {
     const s = new Set<number>();
     if (!selectedChord || invertedNotes.length === 0) return s;
 
-    const pitched = getVoicedChordNotes(invertedNotes, baseOctave);
-    for (const p of pitched) {
+    // The same pitches the chord plays (slash bass an octave below) — one
+    // voicing function for keys and sound (audit W2-07 review).
+    for (const p of chordVoicingPitches(invertedNotes, baseOctave, selectedChord.bassNote)) {
       s.add(getMidiNumber(p, p.octave));
-    }
-    // Add slash chord bass note one octave below the chord voicing
-    if (selectedChord.bassNote) {
-      const bassMidi = getMidiNumber(selectedChord.bassNote, baseOctave - 1);
-      s.add(bassMidi);
     }
     return s;
   }, [selectedChord, invertedNotes, baseOctave]);
@@ -191,6 +195,15 @@ export function useKeyContext(): KeyContextValue {
     return { pcs, midi };
   }, [exerciseInputActive, highlightedNotes]);
 
+  // Exercise mode: a lit key is named as its chip is (the input spells picks
+  // by the target's sharp/flat direction — audit W1-08); every other key keeps
+  // the neutral sharp default, so labels never leak the target key.
+  const exerciseSpell = useMemo(() => {
+    const byPc = new Map<number, Note>();
+    for (const n of highlightedNotes) byPc.set(getPitchClass(n), { natural: n.natural, accidental: n.accidental });
+    return (pc: number): Note => byPc.get(((pc % 12) + 12) % 12) ?? spellSharpDefault(pc);
+  }, [highlightedNotes]);
+
   if (exerciseInputActive) {
     return {
       scale,
@@ -200,8 +213,9 @@ export function useKeyContext(): KeyContextValue {
       getNoteDegree: () => undefined,
       // Exercise input is pitch-class graded with no canonical spelling, and
       // Explore's key context is intentionally suppressed here — labels fall
-      // back to the sharp default rather than leaking the active key's spelling.
-      spellPitchClass: spellSharpDefault,
+      // back to the sharp default rather than leaking the active key's spelling;
+      // the learner's own picks wear their chip names (exerciseSpell).
+      spellPitchClass: exerciseSpell,
       scalePitchClasses: EMPTY_SET,
       scaleMidiNumbers: EMPTY_SET,
       chordPitchClasses: exerciseHighlight.pcs,

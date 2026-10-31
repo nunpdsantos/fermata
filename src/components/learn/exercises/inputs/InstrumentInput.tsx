@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../../../state/store';
-import type { PitchedNote } from '../../../../core/types/music';
-import { PITCH_CLASS_SPELLINGS } from '../../../../core/constants/notes';
+import type { Note, PitchedNote } from '../../../../core/types/music';
+import { noteToString } from '../../../../core/types/music';
+import { directionSpeller } from '../../../../core/utils/spelling';
 import { accentText } from '../../../../design/tokens/learnColors';
 
 interface InstrumentInputProps {
@@ -10,10 +11,17 @@ interface InstrumentInputProps {
   submitted: boolean;
   onSubmit: (pitchClasses: Set<number>) => void;
   accentColor: string;
+  /**
+   * The notes the exercise asks for. Only their sharp/flat DIRECTION is used to
+   * name the learner's picks (F major's B♭ reads "Bb", not "A#"); their exact
+   * spellings are never shown, so a chip can't reveal a right answer (W1-08).
+   */
+  spellingContext?: readonly Note[];
 }
 
-export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColor }: InstrumentInputProps) {
+export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColor, spellingContext }: InstrumentInputProps) {
   const { t } = useTranslation();
+  const spell = useMemo(() => directionSpeller(spellingContext ?? []), [spellingContext]);
   const [toggledPCs, setToggledPCs] = useState<Set<number>>(new Set());
   const activeNotes = useAppStore((s) => s.activeNotes);
   const setHighlightedNotes = useAppStore((s) => s.setHighlightedNotes);
@@ -57,17 +65,14 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
     if (submitted) return;
     const highlighted: PitchedNote[] = [];
     for (const pc of toggledPCs) {
-      const spelling = PITCH_CLASS_SPELLINGS[pc]?.[0];
-      if (spelling) {
-        highlighted.push({ ...spelling, octave: 4 });
-      }
+      highlighted.push({ ...spell(pc), octave: 4 });
     }
     setHighlightedNotes(highlighted);
 
     return () => {
       setHighlightedNotes([]);
     };
-  }, [toggledPCs, submitted, setHighlightedNotes]);
+  }, [toggledPCs, submitted, setHighlightedNotes, spell]);
 
   const handleClear = useCallback(() => {
     setToggledPCs(new Set());
@@ -92,8 +97,7 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
       {toggledPCs.size > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {[...toggledPCs].sort((a, b) => a - b).map((pc) => {
-            const spelling = PITCH_CLASS_SPELLINGS[pc]?.[0];
-            const label = spelling ? `${spelling.natural}${spelling.accidental}` : `${pc}`;
+            const label = noteToString(spell(pc));
             return (
               <span
                 key={pc}

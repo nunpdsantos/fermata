@@ -119,9 +119,11 @@ describe('PianoKey context spelling', () => {
     const keyData = makeKey(71, 'B', 4, false); // physical B4 (white)
     const { container } = renderPianoKey(keyData, N('C', 'b'));
     const key = within(container).getByRole('button');
-    // Label is C♭ but identity is unchanged: white key, octave 4 (physical).
+    // Label is C♭ but identity is unchanged: white key at physical octave 4.
+    // The SPOKEN name follows the letter (audit W1-17): the B4 key spelled C♭
+    // is C♭5 in scientific pitch ("C♭4" would name B3, an octave lower).
     expect(within(container).getByText('Cb')).toBeTruthy();
-    expect(key.getAttribute('aria-label')).toBe('Cb4');
+    expect(key.getAttribute('aria-label')).toBe('Cb5');
     // White-key marker: it is NOT the absolutely-positioned z-10 black element.
     expect(key.className).not.toContain('z-10');
   });

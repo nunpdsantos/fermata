@@ -148,3 +148,15 @@ export function spellFromMap(map: Map<number, Note>, pc: number): Note {
 export function spellSharpDefault(pc: number): Note {
   return SHARP_SPELLING[((pc % 12) + 12) % 12];
 }
+
+/**
+ * Spell any pitch class by a context's sharp/flat DIRECTION only (audit W1-08):
+ * flats when the context notes lean flat (F major, C minor), sharps otherwise.
+ * Never uses the context's exact spellings, so naming a note reveals nothing
+ * about whether it belongs to the context (F stays F in F♯ major, never E♯) —
+ * the right speller for answer chips in a build exercise.
+ */
+export function directionSpeller(context: readonly Note[]): (pc: number) => Note {
+  const table = scalePrefersFlats([...context]) ? FLAT_SPELLING : SHARP_SPELLING;
+  return (pc: number) => table[((pc % 12) + 12) % 12];
+}
