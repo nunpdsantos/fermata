@@ -121,7 +121,7 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
   }
 
   return (
-    <section className="dock-panel" data-testid="instrument-dock" data-detent={detent} aria-label={t('dock.handle')}>
+    <section className="dock-panel" data-testid="instrument-dock" data-detent={detent}>
       <div className="dock-panel-bar">{bar}</div>
       {open && region}
     </section>
