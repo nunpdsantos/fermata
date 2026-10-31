@@ -1,34 +1,54 @@
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TopBar } from './TopBar.tsx';
-import { Piano } from '../instruments/Piano.tsx';
-import { InstrumentSelector } from '../instruments/InstrumentSelector.tsx';
-import { ViewSlot, type ViewLoader } from '../ViewSlot.tsx';
+import { InstrumentDock } from './InstrumentDock.tsx';
 import { useAppStore } from '../../state/store.ts';
-
-// The fretboard (with its chord-shape and position data) is its own chunk —
-// piano users no longer download it with the entry file (audit W9-11). It is
-// precached, so guitar works offline from the first install; ViewSlot gives
-// it a spinner while it loads and a working "Try again" if a download fails.
-// While the fretboard chunk loads, the dock keeps roughly the fretboard's own
-// height (measured on the preview build: ~323 px at 1280×900, ~400 px at
-// 390×844) instead of jumping piano → 20 px spinner → fretboard (review item
-// 3; e2e/fretboard-fit.spec.ts checks the loading height in a real browser).
-const GUITAR_LOADING_SIZE = 'max-md:min-h-[400px] md:min-h-[320px]';
-
-const GUITAR_LOADER: Record<'guitar', ViewLoader> = {
-  guitar: () => import('../instruments/Fretboard.tsx').then((m) => ({ default: m.Fretboard })),
-};
 
 interface AppShellProps {
   children: React.ReactNode;
 }
 
+/**
+ * Top bar, the view, and the instrument dock (hidden in Drill, which owns its
+ * full vertical space). The dock's height is published as `--dock-h` on
+ * <html> so the toast region can sit above it (W9-22: toasts never cover the
+ * instrument).
+ */
 export function AppShell({ children }: AppShellProps) {
   const { t } = useTranslation();
-  const instrument = useAppStore((s) => s.instrument);
   const view = useAppStore((s) => s.view);
-  const [instrumentCollapsed, setInstrumentCollapsed] = useState(false);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const dockRef = useRef<HTMLDivElement>(null);
+  const [available, setAvailable] = useState(0);
+
+  // Room under the top bar: the phone sheet's Full detent.
+  useLayoutEffect(() => {
+    const body = bodyRef.current;
+    if (!body) return;
+    const measure = () => setAvailable(body.clientHeight);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(body);
+    return () => ro.disconnect();
+  }, []);
+
+  // --dock-h follows the dock (0 in Drill).
+  const hasDock = view !== 'drill';
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    const dock = dockRef.current;
+    if (!hasDock || !dock) {
+      root.style.setProperty('--dock-h', '0px');
+      return;
+    }
+    const publish = () => root.style.setProperty('--dock-h', `${Math.round(dock.getBoundingClientRect().height)}px`);
+    publish();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(publish);
+    ro.observe(dock);
+    return () => ro.disconnect();
+  }, [hasDock]);
 
   return (
     <div className="h-screen supports-[height:100dvh]:h-dvh flex flex-col" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
@@ -40,64 +60,16 @@ export function AppShell({ children }: AppShellProps) {
         {t('nav.skipToContent')}
       </a>
       <TopBar />
-      <main id="main-content" className="flex-1 overflow-hidden flex flex-col min-h-0">
-        {children}
-      </main>
-      {/* Instrument area — hidden entirely in Drill, which owns its full vertical space. */}
-      {view !== 'drill' && (
-        <>
-      {/* Instrument bar */}
-      <div
-        className="flex items-center justify-between px-3 max-sm:px-2 py-1 max-sm:py-1.5"
-        style={{ backgroundColor: 'var(--bg)', borderTop: '1px solid var(--border-subtle)' }}
-      >
-        <InstrumentSelector />
-        <div className="flex items-center gap-2">
-          <span className="text-2xs max-sm:hidden" style={{ color: 'var(--text-dim)' }} aria-hidden="true">
-            {t('nav.clickKeysToPlay')}
-          </span>
-          <button
-            onClick={() => setInstrumentCollapsed((c) => !c)}
-            className="hidden max-lg:flex items-center justify-center w-6 h-6 max-sm:w-8 max-sm:h-8 rounded-md transition-colors"
-            style={{ color: 'var(--text-dim)' }}
-            aria-label={instrumentCollapsed ? t('nav.showInstrument') : t('nav.hideInstrument')}
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className={`transition-transform ${instrumentCollapsed ? 'rotate-180' : ''}`}
-            >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </button>
-        </div>
+      <div ref={bodyRef} className="flex-1 min-h-0 flex flex-col">
+        <main id="main-content" className="flex-1 overflow-hidden flex flex-col min-h-0">
+          {children}
+        </main>
+        {hasDock && (
+          <div ref={dockRef} className="shrink-0 min-h-0 flex flex-col">
+            <InstrumentDock view={view} available={available} />
+          </div>
+        )}
       </div>
-      {!instrumentCollapsed && (
-        <div
-          data-tour="play-note"
-          role="region"
-          aria-label={t('instrument.label', { name: t(`instrument.${instrument}`) })}
-          // The guitar sizes to its content on every width: its position
-          // controls can wrap to several rows, and a fixed 260 px dock hid the
-          // high-E string below the fold (review blocker B1, W3).
-          className={
-            instrument === 'guitar'
-              ? 'h-auto overflow-visible'
-              : 'md:h-[260px] md:overflow-y-auto max-md:h-auto max-md:overflow-visible'
-          }
-          style={{ backgroundColor: 'var(--bg)', overscrollBehavior: 'contain' }}
-        >
-          {instrument === 'piano' ? <Piano /> : <ViewSlot viewKey="guitar" loaders={GUITAR_LOADER} fallbackClassName={GUITAR_LOADING_SIZE} />}
-        </div>
-      )}
-        </>
-      )}
     </div>
   );
 }

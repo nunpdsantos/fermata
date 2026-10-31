@@ -1,9 +1,9 @@
 <!doctype html>
-<!-- build 2026-10-30 (W9): content change required so the service worker
+<!-- build 2026-10-31 (W11-A): content change required so the service worker
      refetches this document — its precached copy carries the response HEADERS
-     from fetch time, so header-only deploys (this one adds long-term caching
-     for /assets/* and the CSP hash of the theme script below) never reach
-     installed PWAs otherwise. -->
+     from fetch time, so header-only deploys (this one changes the CSP hash of
+     the theme script below, which now also honours the Auto theme) never
+     reach installed PWAs otherwise. -->
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -16,11 +16,12 @@
     <link rel="preload" href="/fonts/source-serif-4-latin.woff2" as="font" type="font/woff2" crossorigin />
     <meta name="description" content="Fermata — interactive music theory through your instrument. Explore scales, chords, and keys with a piano or guitar always in reach." />
     <title>Fermata — Music theory, from the instrument out</title>
-    <!-- Saved night theme before first paint (no light flash). The CSP allows
-         exactly this script by its sha256 hash (vercel.json): ANY edit here,
-         even whitespace, needs the new hash — documentShell.test.ts and
-         `npm run check:bundle` fail until it matches. -->
-    <script>try{var s=JSON.parse(localStorage.getItem('music-theory-app')||'null'),t=s&&s.state&&s.state.themeMode;if(t==='fermata-night'||t==='dark'){document.documentElement.classList.add('fermata-night');var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#181208')}}catch(e){}</script>
+    <!-- Saved night theme before first paint (no light flash); "auto" follows
+         the system setting. The CSP allows exactly this script by its sha256
+         hash (vercel.json): ANY edit here, even whitespace, needs the new hash
+         — documentShell.test.ts and `npm run check:bundle` fail until it
+         matches. -->
+    <script>try{var s=JSON.parse(localStorage.getItem('music-theory-app')||'null'),t=s&&s.state&&s.state.themeMode;if(t==='auto')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'fermata-night':'';if(t==='fermata-night'||t==='dark'){document.documentElement.classList.add('fermata-night');var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#181208')}}catch(e){}</script>
   </head>
   <body class="antialiased">
     <div id="root"></div>

@@ -8,6 +8,7 @@ import { createPreferencesSlice } from './slices/preferencesSlice.ts';
 import { SCALE_FORMULAS } from '../core/constants/scales.ts';
 import { GUITAR_TUNINGS } from '../core/constants/guitarTunings.ts';
 import { isAppLanguage } from '../i18n/language.ts';
+import { sanitizeDockDetents } from './dock.ts';
 import type { AppState } from './storeTypes.ts';
 
 // Re-export types so consumers don't need to change imports
@@ -18,7 +19,7 @@ export type { AppState, ViewMode, InstrumentType, ColorMode, ThemeMode } from '.
 const ALLOWED_VALUES: Record<string, readonly unknown[]> = {
   instrument: ['piano', 'guitar'],
   guitarTuningId: GUITAR_TUNINGS.map((t) => t.id),
-  themeMode: ['fermata', 'fermata-night'],
+  themeMode: ['fermata', 'fermata-night', 'auto'],
   colorMode: ['functional', 'absolute'],
   lastView: ['explore', 'learn', 'drill'],
   scaleOctaves: [1, 2],
@@ -78,6 +79,16 @@ export function sanitizePersistedAppState(persisted: unknown): Record<string, un
     delete state.language;
   }
 
+  // dockDetents (W11-A): { explore, learn } each 'peek' | 'half' | 'full'.
+  // A valid value keeps its identity (the backup vetting compares with
+  // Object.is); a partial one is completed; anything else takes the default.
+  if ('dockDetents' in state) {
+    const d = sanitizeDockDetents(state.dockDetents);
+    const raw = state.dockDetents as Record<string, unknown> | null;
+    if (d === null) delete state.dockDetents;
+    else if (raw?.explore !== d.explore || raw?.learn !== d.learn) state.dockDetents = d;
+  }
+
   // Numeric fields: non-finite or out of range falls back to the default.
   for (const [k, { min, max, integer }] of Object.entries(NUMERIC_RANGES)) {
     const v = state[k];
@@ -135,6 +146,7 @@ export const useAppStore = create<AppState>()(
         language: state.language,
         preferencesUpdatedAt: state.preferencesUpdatedAt,
         lastView: state.lastView,
+        dockDetents: state.dockDetents,
       }),
       migrate: (persisted: unknown, version: number) => {
         const state = persisted && typeof persisted === 'object'

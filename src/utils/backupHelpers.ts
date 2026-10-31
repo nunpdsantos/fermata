@@ -159,13 +159,19 @@ export function applyBackup(backup: FermataBackup, storage: WritableStorage): vo
   }
 }
 
-/** Human-readable list of sections present in a backup, for the confirm step. */
-export function backupSections(backup: FermataBackup): string[] {
-  const names: Record<BackupKey, string> = {
+export type BackupSection = 'preferences' | 'learnProgress' | 'drillProgress' | 'guitarFingerings';
+
+/**
+ * The sections present in a backup, for the confirm step — as i18n keys
+ * (`backup.section.<key>`), so the question reads in the learner's language
+ * (audit W6-05: the names used to be English in PT/ES).
+ */
+export function backupSections(backup: FermataBackup): BackupSection[] {
+  const names: Record<BackupKey, BackupSection> = {
     'music-theory-app': 'preferences',
-    'music-theory-progress': 'learn progress',
-    'fermata-drill-v1': 'drill progress',
-    'fermata-fingering-v1': 'guitar fingerings',
+    'music-theory-progress': 'learnProgress',
+    'fermata-drill-v1': 'drillProgress',
+    'fermata-fingering-v1': 'guitarFingerings',
   };
   return (Object.keys(backup.data) as BackupKey[]).map((k) => names[k]);
 }

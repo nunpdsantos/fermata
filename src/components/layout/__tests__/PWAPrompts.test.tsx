@@ -33,7 +33,7 @@ beforeEach(() => reloadPage.mockClear());
 afterEach(cleanup);
 
 describe('PWA toasts never overlap (review B1)', () => {
-  it('all three at once: one fixed stack, update first, every action reachable', async () => {
+  it('all three at once: one stack, update first, every action reachable', async () => {
     const { stub, PWAPrompts } = await fresh();
     render(<PWAPrompts />);
     act(() => {
@@ -49,11 +49,14 @@ describe('PWA toasts never overlap (review B1)', () => {
     expect(toasts[1].textContent).toMatch(/offline/i);
     expect(toasts[2].textContent).toMatch(/install/i);
 
-    // One positioned container holds them all; no toast positions itself.
+    // One container holds them all; no toast positions itself. The stack is
+    // placed by ToastRegion (the one fixed region, above the instrument dock —
+    // W9-22 / W11-A; see ToastRegion.test.tsx).
     const stack = toasts[0].parentElement!;
     expect(toasts.every((t) => t.parentElement === stack)).toBe(true);
-    expect(stack.className).toMatch(/\bfixed\b/);
+    expect(stack.getAttribute('data-testid')).toBe('pwa-toast-stack');
     expect(stack.className).toMatch(/\bflex-col\b/);
+    expect(stack.className).not.toMatch(/\b(fixed|absolute)\b/);
     for (const t of toasts) expect(t.className).not.toMatch(/\b(fixed|absolute)\b/);
 
     // Each toast carries its own controls (Reload is not under another ✕).
