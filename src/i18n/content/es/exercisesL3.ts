@@ -152,7 +152,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Elevar el 7.º grado (G a G#) transforma VII en vii°, una tríada disminuida',
       'El acorde del 7.º grado es siempre disminuido independientemente de la forma de la escala menor',
-      'La menor armónica desciende el 7.º grado, creando un acorde disminuido',
+      'La escala menor armónica desciende el 7.º grado, creando un acorde disminuido',
       'La cualidad del acorde no cambia entre menor natural y menor armónica',
     ],
     hint: 'En A menor natural, VII es G-B-D (mayor). Elevar G a G# en la menor armónica da G#-B-D, que es disminuido (fundamental a 3.ª = 3.ªm, fundamental a 5.ª = 5.ªdim).',

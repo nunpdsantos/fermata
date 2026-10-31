@@ -44,7 +44,7 @@ const overlay: ExerciseLevelOverlay = {
       '4 sustenidos (F#, C#, G#, D#)',
       '1 sustenido (F#)',
     ],
-    hint: 'A maior está três passos no sentido dos ponteiros do relógio no círculo de quintas a partir de C: G (1#), D (2#), A (3#). Os sustenidos são F#, C#, G#.',
+    hint: 'A tonalidade de A maior está três passos no sentido dos ponteiros do relógio no círculo de quintas a partir de C: G (1#), D (2#), A (3#). Os sustenidos são F#, C#, G#.',
   },
 
   // ---- l2u4m2: Nomes dos Graus da Escala ----
@@ -88,11 +88,11 @@ const overlay: ExerciseLevelOverlay = {
 
   l2u5m1e1: {
     prompt: 'Constrói a escala de A menor natural. Seleciona as 7 notas. Esta escala usa apenas teclas brancas.',
-    hint: 'A menor natural: A, B, C, D, E, F, G. O padrão de intervalos é T-mT-T-T-mT-T-T. Sem sustenidos nem bemóis.',
+    hint: 'A escala de A menor natural: A, B, C, D, E, F, G. O padrão de intervalos é T-mT-T-T-mT-T-T. Sem sustenidos nem bemóis.',
   },
   l2u5m1e2: {
     prompt: 'Constrói a escala de E menor natural. Seleciona as 7 notas. Uma nota precisa de sustenido.',
-    hint: 'E menor natural: E, F#, G, A, B, C, D. O F# é necessário para manter o padrão T-mT-T-T-mT-T-T.',
+    hint: 'A escala de E menor natural: E, F#, G, A, B, C, D. O F# é necessário para manter o padrão T-mT-T-T-mT-T-T.',
   },
   l2u5m1e3: {
     prompt: 'Qual é o padrão de intervalos da escala menor natural?',
@@ -119,11 +119,11 @@ const overlay: ExerciseLevelOverlay = {
 
   l2u5m2e1: {
     prompt: 'Constrói a escala de A menor harmónica. Seleciona as 7 notas. Em relação à menor natural, uma nota é elevada.',
-    hint: 'A menor harmónica: A, B, C, D, E, F, G#. O 7.º grau (G) é elevado a G# para criar uma sensível de volta a A.',
+    hint: 'A escala de A menor harmónica: A, B, C, D, E, F, G#. O 7.º grau (G) é elevado a G# para criar uma sensível de volta a A.',
   },
   l2u5m2e2: {
     prompt: 'Constrói a escala de A menor melódica (forma ascendente). Duas notas são elevadas em relação à menor natural.',
-    hint: 'A menor melódica ascendente: A, B, C, D, E, F#, G#. Tanto o 6.º (F para F#) como o 7.º (G para G#) são elevados para suavizar a 2.ª aumentada.',
+    hint: 'A escala de A menor melódica ascendente: A, B, C, D, E, F#, G#. Tanto o 6.º (F para F#) como o 7.º (G para G#) são elevados para suavizar a 2.ª aumentada.',
   },
   l2u5m2e3: {
     prompt: 'O que distingue a menor harmónica da escala menor natural?',
@@ -133,7 +133,7 @@ const overlay: ExerciseLevelOverlay = {
       'O 3.º grau é elevado meio-tom',
       'O 2.º grau é baixado meio-tom',
     ],
-    hint: 'A menor harmónica eleva o 7.º grau para criar uma sensível (meio-tom abaixo da tónica). Isto é essencial para formar o acorde de dominante (V) em tonalidades menores.',
+    hint: 'A escala menor harmónica eleva o 7.º grau para criar uma sensível (meio-tom abaixo da tónica). Isto é essencial para formar o acorde de dominante (V) em tonalidades menores.',
   },
   l2u5m2e4: {
     prompt: 'Porque é que a escala menor melódica eleva tanto o 6.º como o 7.º grau na forma ascendente?',
@@ -143,7 +143,7 @@ const overlay: ExerciseLevelOverlay = {
       'Para facilitar a execução no piano',
       'Para remover todos os meios-tons da escala',
     ],
-    hint: 'A menor harmónica tem uma 2.ª aumentada incómoda (3 meios-tons) entre o 6.º e o 7.º grau elevado. Elevar também o 6.º suaviza esta distância para um tom.',
+    hint: 'A escala menor harmónica tem uma 2.ª aumentada incómoda (3 meios-tons) entre o 6.º e o 7.º grau elevado. Elevar também o 6.º suaviza esta distância para um tom.',
   },
 
   // ---- l2u5m3: Tonalidades Relativas/Paralelas ----
@@ -411,7 +411,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l2u7m5e4: {
     prompt: 'Constrói uma tríade de A menor. Este é o acorde vi na tonalidade de C maior.',
-    hint: 'A menor = A, C, E. Fundamental (A) + 3.ª menor (C, 3 meios-tons acima) + 5.ª perfeita (E, 7 meios-tons acima da fundamental).',
+    hint: 'A tríade de A menor = A, C, E. Fundamental (A) + 3.ª menor (C, 3 meios-tons acima) + 5.ª perfeita (E, 7 meios-tons acima da fundamental).',
   },
 };
 

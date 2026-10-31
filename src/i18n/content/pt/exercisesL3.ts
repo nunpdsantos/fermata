@@ -152,7 +152,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Elevar o 7.º grau (G para G#) transforma VII em viio, uma tríade diminuta',
       'O acorde do 7.º grau é sempre diminuto independentemente da forma da escala menor',
-      'A menor harmónica baixa o 7.º grau, criando um acorde diminuto',
+      'A escala menor harmónica baixa o 7.º grau, criando um acorde diminuto',
       'A qualidade do acorde não muda entre menor natural e menor harmónica',
     ],
     hint: 'Em A menor natural, VII é G-B-D (maior). Elevar G para G# na menor harmónica dá G#-B-D, que é diminuto (fundamental à 3.ª = 3.am, fundamental à 5.ª = 5.adim).',

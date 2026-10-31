@@ -131,13 +131,13 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'El Patrón de la Menor Natural',
           explanation:
-            'La escala menor natural sigue T-S-T-T-S-T-T — compara con el patrón de la mayor: T-T-S-T-T-T-S. Los semitonos caen en posiciones diferentes, y eso lo cambia todo. La menor natural más fácil de ver es A menor natural: usa solo teclas blancas, de A a G y de vuelta a A.',
+            'La escala menor natural sigue T-S-T-T-S-T-T — compara con el patrón de la mayor: T-T-S-T-T-T-S. Los semitonos caen en posiciones diferentes, y eso lo cambia todo. La escala de A menor natural es la más fácil de ver: usa solo teclas blancas, de A a G y de vuelta a A.',
           tryThisLabel: 'Escucha A menor natural — solo teclas blancas',
         },
         {
           title: 'Carácter Mayor vs. Menor',
           explanation:
-            'Toca la escala de C mayor y después la escala de C menor. La menor suena más sombría, más emocional — oyes la diferencia instantáneamente. La diferencia proviene de tres grados descendidos: el 3.º, 6.º y 7.º están cada uno un semitono más bajo que en la escala mayor. Estas tres alteraciones transforman brillante y resuelto en sombrío e introspectivo.',
+            'Toca la escala de C mayor y después la escala de C menor. La escala menor suena más sombría, más emocional — oyes la diferencia instantáneamente. La diferencia proviene de tres grados descendidos: el 3.º, 6.º y 7.º están cada uno un semitono más bajo que en la escala mayor. Estas tres alteraciones transforman brillante y resuelto en sombrío e introspectivo.',
           tryThisLabel: 'Compara C menor con C mayor',
         },
       ],
@@ -170,19 +170,19 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'Menor Armónica',
           explanation:
-            'La menor armónica eleva el 7.º grado un semitono, creando una sensible. La escala de A menor armónica: A-B-C-D-E-F-G#. Ahora el acorde V es mayor, dando a la tonalidad una fuerte atracción dominante-tónica. La contrapartida: surge una 2.ª aumentada (3 semitonos) entre el 6.º y 7.º grados, dando a la menor armónica su sonido exótico distintivo.',
+            'La escala menor armónica eleva el 7.º grado un semitono, creando una sensible. La escala de A menor armónica: A-B-C-D-E-F-G#. Ahora el acorde V es mayor, dando a la tonalidad una fuerte atracción dominante-tónica. La contrapartida: surge una 2.ª aumentada (3 semitonos) entre el 6.º y 7.º grados, dando a la menor armónica su sonido exótico distintivo.',
           tryThisLabel: 'Escucha el 7.º grado elevado',
         },
         {
           title: 'Menor Melódica',
           explanation:
-            'La menor melódica corrige la 2.ª aumentada elevando también el 6.º grado — pero tradicionalmente solo en la forma ascendente. Ascendente: T-S-T-T-T-T-S. Descendente: menor natural. La melódica ascendente de A: A-B-C-D-E-F#-G#. En el jazz, la forma ascendente se usa en ambas direcciones y se llama escala «menor jazz».',
+            'La escala menor melódica corrige la 2.ª aumentada elevando también el 6.º grado — pero tradicionalmente solo en la forma ascendente. Ascendente: T-S-T-T-T-T-S. Descendente: menor natural. La forma melódica ascendente de A: A-B-C-D-E-F#-G#. En el jazz, la forma ascendente se usa en ambas direcciones y se llama escala «menor jazz».',
           tryThisLabel: 'Escucha la menor melódica',
         },
         {
           title: 'Tres Formas, Tres Propósitos',
           explanation:
-            'La menor natural es pura y folclórica, pero su acorde v menor carece de poder de resolución. La menor armónica da un acorde V mayor con sensible — esencial para cadencias fuertes. La menor melódica suaviza la 2.ª aumentada incómoda para melodías vocales e instrumentales. Los compositores eligen entre las formas según lo que la música necesita en cada momento.',
+            'La escala menor natural es pura y folclórica, pero su acorde v menor carece de poder de resolución. La escala menor armónica da un acorde V mayor con sensible — esencial para cadencias fuertes. La escala menor melódica suaviza la 2.ª aumentada incómoda para melodías vocales e instrumentales. Los compositores eligen entre las formas según lo que la música necesita en cada momento.',
           tryThisLabel: 'Construye E menor natural',
         },
       ],
@@ -215,7 +215,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'Tonalidades Relativas',
           explanation:
-            'Las tonalidades relativas comparten la misma armadura de clave pero tienen tónicas diferentes. Para encontrar la relativa menor de una tonalidad mayor, ve al 6.º grado. C mayor → A menor. G mayor → E menor. Para encontrar la relativa mayor, ve al 3.er grado de la escala menor. A menor → C mayor. El Círculo de Quintas muestra ambas: tonalidades mayores en el anillo exterior, sus relativas menores en el anillo interior.',
+            'Las tonalidades relativas comparten la misma armadura de clave pero tienen tónicas diferentes. Para encontrar la relativa menor de una tonalidad mayor, ve al 6.º grado. C mayor → A menor. G mayor → E menor. Para encontrar la relativa mayor, ve al 3.er grado de la escala menor. Así, A menor → C mayor. El Círculo de Quintas muestra ambas: tonalidades mayores en el anillo exterior, sus relativas menores en el anillo interior.',
           tryThisLabel: 'Observa las tonalidades relativas en el Círculo',
         },
         {

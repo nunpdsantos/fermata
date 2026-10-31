@@ -156,7 +156,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Ouve esta escala e identifica o seu tipo.',
     choices: ['Maior', 'Menor natural', 'Menor harmónica'],
-    hint: 'A menor natural (T-mT-T-T-mT-T-T) tem uma atmosfera mais sombria do que a maior — a 3.ª, 6.ª e 7.ª baixadas moldam a sua cor.',
+    hint: 'A escala menor natural (T-mT-T-T-mT-T-T) tem uma atmosfera mais sombria do que a maior — a 3.ª, 6.ª e 7.ª baixadas moldam a sua cor.',
   },
   l9u31m1e3: {
     prompt:

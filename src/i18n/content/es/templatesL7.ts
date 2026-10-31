@@ -495,7 +495,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica esta escala o su contexto cultural.',
       hintTemplate:
-        'La menor armónica tiene un sonido "exótico" debido a la segunda aumentada. El frigio dominante (5.º modo de la menor armónica) se usa en el flamenco y la música de Oriente Medio.',
+        'La escala menor armónica tiene un sonido "exótico" debido a la segunda aumentada. El frigio dominante (5.º modo de la menor armónica) se usa en el flamenco y la música de Oriente Medio.',
       choiceSets: [
         [
           'La escala frigio dominante (1-b2-3-4-5-b6-b7) es el 5.º modo de la menor armónica',

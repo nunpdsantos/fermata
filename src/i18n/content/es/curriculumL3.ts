@@ -174,7 +174,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'La Menor Armónica Lo Cambia Todo',
+          title: 'La Escala Menor Armónica Lo Cambia Todo',
           explanation:
             'La escala menor armónica eleva el séptimo grado, creando cualidades de acordes de séptima dramáticamente diferentes en comparación con el modo mayor. En el 1.er grado, la tríada menor gana una séptima mayor, produciendo el raro acorde menor con séptima mayor: i(mΔ7). En el 3.er grado, el séptimo grado elevado transforma la tríada mayor en una tríada aumentada con séptima mayor: III+maj7. Estas cualidades exóticas confieren a las tonalidades menores su tensión y oscuridad características. (El semidisminuido se escribe m7b5 o con el símbolo ⌀ — así que iiø7 y Bm7b5 nombran el mismo acorde.)',
           tryThisLabel:

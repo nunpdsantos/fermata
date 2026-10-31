@@ -62,6 +62,66 @@ export function letterNotes(text: string): string[] {
   return [...text.matchAll(re)].map((m) => m[0]);
 }
 
+/**
+ * Sentence starts where a letter note name and a word collide (review B2):
+ * PT "A"/"E" and ES "La"/"A" directly before menor/maior/mayor/natural/
+ * harmónica/armónica/melódica read as the article ("A menor harmónica eleva…"
+ * = "the harmonic minor raises…") or as the note ("A minor…"), and PT
+ * "E está / E é" reads as "and (it) is". The fix is a noun: "A escala menor
+ * harmónica…", "A tonalidade de E maior…", "A nota E está…".
+ * A string that is only a key label ("A menor", "E maior") is an answer chip
+ * whose question gives the context, so it is allowed.
+ */
+export function ambiguousLetterStarts(lang: 'pt' | 'es', text: string): string[] {
+  const lead = lang === 'pt' ? '(?:A|E)' : '(?:La|A)';
+  if (new RegExp(`^${lead}(?:#|b)? (?:menor|maior|mayor)$`, 'u').test(text.trim())) return [];
+  const start = '(?:^|[.!?:;]\\s+|—\\s+)';
+  const qual = '(?:[Mm]enor|[Mm]aior|[Mm]ayor|[Nn]atural|[Hh]armónica|[Aa]rmónica|[Mm]elódica)';
+  // A letter carrying an accidental ("Ab maior") cannot be read as a word, and
+  // a chord spelled out right after its name ("A maior (A, C#, E) — …") is
+  // unambiguous.
+  const out = [...text.matchAll(new RegExp(`${start}(${lead}\\s+${qual})(?![\\p{L}])(?! \\([A-G])`, 'gu'))].map((m) => m[1]);
+  if (lang === 'pt') out.push(...[...text.matchAll(new RegExp(`${start}(E\\s+(?:está|é))(?![\\p{L}])`, 'gu'))].map((m) => m[1]));
+  return out;
+}
+
+describe('sentence-initial letter names that read as words (review B2)', () => {
+  it.each([
+    ['pt', 'A menor harmónica eleva o 7.º grau.'],
+    ['pt', 'Toca a escala de C menor. A menor soa mais sombria.'],
+    ['pt', 'E maior tem 4 sustenidos: F#, C#, G#, D#'],
+    ['pt', 'Escreve "Am/E". E está no baixo.'],
+    ['pt', 'A Menor Harmónica Muda Tudo'],
+    ['es', 'La menor armónica eleva el 7.º grado.'],
+    ['es', 'La Menor Armónica Lo Cambia Todo'],
+    ['es', 'A mayor está tres pasos en el sentido de las agujas del reloj.'],
+  ] as const)('%s "%s" is flagged', (lang, text) => {
+    expect(ambiguousLetterStarts(lang, text).length).toBeGreaterThan(0);
+  });
+
+  it.each([
+    ['pt', 'A escala menor harmónica eleva o 7.º grau.'],
+    ['pt', 'A tonalidade de E maior tem 4 sustenidos.'],
+    ['pt', 'A nota E está no baixo.'],
+    ['pt', 'E menor'],
+    ['pt', 'A 3.ª maior soa brilhante.'],
+    ['es', 'La escala menor armónica eleva el 7.º grado.'],
+    ['es', 'La mayoría de las canciones pop.'],
+    ['es', 'Toca la escala de A menor natural.'],
+    ['pt', 'A maior (A, C#, E) — a dominante de D menor'],
+    ['pt', 'Ab maior tem 4 bemóis: Bb, Eb, Ab, Db'],
+  ] as const)('%s "%s" is not flagged', (lang, text) => {
+    expect(ambiguousLetterStarts(lang, text)).toEqual([]);
+  });
+
+  it('no PT/ES string starts a sentence with a letter that reads as a word', () => {
+    const hits = overlayStrings()
+      .filter((s) => ambiguousLetterStarts(s.lang, s.text).length > 0)
+      .map((s) => `${s.file} ${s.path}: ${ambiguousLetterStarts(s.lang, s.text).join(', ')} | ${s.text.slice(0, 90)}`);
+    expect(hits, hits.join('\n')).toEqual([]);
+  });
+});
+
 describe('detector proven on planted strings (audit examples)', () => {
   it.each([
     ['pt', 'sobre D em Lá menor'],

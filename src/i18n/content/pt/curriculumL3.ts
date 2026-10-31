@@ -174,7 +174,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'A Menor Harmónica Muda Tudo',
+          title: 'A Escala Menor Harmónica Muda Tudo',
           explanation:
             'A escala menor harmónica eleva o sétimo grau, criando qualidades de acordes de sétima dramaticamente diferentes em comparação com o modo maior. No 1.º grau, a tríade menor ganha uma sétima maior, produzindo o raro acorde menor com sétima maior: i(m\u03947). No 3.º grau, o sétimo grau elevado transforma a tríade maior numa tríade aumentada com sétima maior: III+maj7. Estas qualidades exóticas dão às tonalidades menores a sua tensão e escuridão características. (O meio-diminuto escreve-se m7b5 ou com o símbolo ⌀ — por isso iiø7 e Bm7b5 designam o mesmo acorde.)',
           tryThisLabel:

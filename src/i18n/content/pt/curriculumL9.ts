@@ -274,7 +274,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Formas Maiores vs. Menores',
           explanation:
-            'Construindo sobre o reconhecimento básico maior/menor: agora identifica formas menores específicas. A menor natural soa sombria e folclórica — sem atração forte no final porque o 7.º grau está um tom abaixo da tónica (subtónica, não sensível). A menor harmónica eleva o 7.º grau, criando uma sensível e uma 2.ª aumentada exótica entre os graus 6 e 7 — um som inconfundível. A menor melódica eleva tanto o 6.º como o 7.º graus ascendentes, suavizando a 2.ª aumentada — soa jazzística e sofisticada. Treina tocando as três a partir da mesma fundamental (p. ex. A) e isolando as diferenças.',
+            'Construindo sobre o reconhecimento básico maior/menor: agora identifica formas menores específicas. A escala menor natural soa sombria e folclórica — sem atração forte no final porque o 7.º grau está um tom abaixo da tónica (subtónica, não sensível). A escala menor harmónica eleva o 7.º grau, criando uma sensível e uma 2.ª aumentada exótica entre os graus 6 e 7 — um som inconfundível. A escala menor melódica eleva tanto o 6.º como o 7.º graus ascendentes, suavizando a 2.ª aumentada — soa jazzística e sofisticada. Treina tocando as três a partir da mesma fundamental (p. ex. A) e isolando as diferenças.',
           tryThisLabel:
             'Ouve o 7.º grau elevado exótico na menor harmónica',
         },

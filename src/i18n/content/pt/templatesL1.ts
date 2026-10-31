@@ -210,10 +210,10 @@ const overlay: TemplateLevelOverlay = {
         'As tonalidades com sustenidos seguem o ciclo de quintas: G(1#), D(2#), A(3#), E(4#). Com bemóis: F(1b), Bb(2b), Eb(3b), Ab(4b).',
       choiceSets: [
         [
-          'E maior tem 4 sustenidos: F#, C#, G#, D#',
-          'E maior tem 3 sustenidos: F#, C#, G#',
-          'E maior tem 5 sustenidos',
-          'E maior tem 2 sustenidos',
+          'A tonalidade de E maior tem 4 sustenidos: F#, C#, G#, D#',
+          'A tonalidade de E maior tem 3 sustenidos: F#, C#, G#',
+          'A tonalidade de E maior tem 5 sustenidos',
+          'A tonalidade de E maior tem 2 sustenidos',
         ],
         [
           'Bb maior tem 2 bemóis: Bb, Eb',

@@ -190,10 +190,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Ao modular de C maior para G maior, que acorde poderia servir como pivot?',
     choices: [
-      'E menor — é iii em C maior e vi em G maior',
-      'F maior — é IV em C maior e não é diatónico em G maior',
-      'Bb maior — é emprestado de C menor',
-      'F# diminuto — sinaliza a nova tonalidade',
+      'Acorde de E menor — é iii em C maior e vi em G maior',
+      'Acorde de F maior — é IV em C maior e não é diatónico em G maior',
+      'Acorde de Bb maior — é emprestado de C menor',
+      'Acorde de F# diminuto — sinaliza a nova tonalidade',
     ],
     hint: 'Encontra acordes comuns a ambas as tonalidades. C maior: C Dm Em F G Am Bdim. G maior: G Am Bm C D Em F#dim. Acordes partilhados incluem C, Em, Am, G. Em, como iii/vi, é uma escolha forte de pivot.',
   },
