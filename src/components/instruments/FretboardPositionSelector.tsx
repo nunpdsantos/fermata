@@ -79,8 +79,10 @@ export function ScalePositionSelector({ position, onSelect, onStep, mobile = fal
     );
   };
 
+  // ‹ chips › stay on ONE line (the chips scroll inside it when the row is
+  // narrow) — at 768 px the steppers used to wrap onto lines of their own.
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div className="flex items-center gap-2 min-w-0 basis-full lg:basis-auto" data-testid="position-row">
       <span className={GROUP_LABEL_CLASS} style={GROUP_LABEL_STYLE} aria-hidden="true">{t('fretboard.position')}</span>
       {stepButton(-1)}
       {mobile ? (
@@ -97,6 +99,7 @@ export function ScalePositionSelector({ position, onSelect, onStep, mobile = fal
       ) : (
         <ChipGroup<number | 'all'>
           label={t('fretboard.scalePosition')}
+          className="chip-row-scroll min-w-0 flex-1 lg:flex-none"
           value={position}
           onChange={onSelect}
           options={[
@@ -167,15 +170,19 @@ export function LabelToolbar({
               </span>
             </>
           )}
-          <PositionLegend />
         </>
       )}
     </div>
   );
 }
 
-/** What the two dot marks mean (review #3): same marks as FretCell draws. */
-function PositionLegend() {
+/**
+ * What the two dot marks mean (review #3): same marks as FretCell draws.
+ * Rendered by the Fretboard's control row AFTER the tuning select, so on a
+ * tablet Show / Edit fingering / Tuning share one line and only the legend
+ * wraps (the guitar dock was 604 px tall at 768 px; W11-A review).
+ */
+export function PositionLegend() {
   const { t } = useTranslation();
   const swatch: React.CSSProperties = {
     display: 'inline-block',

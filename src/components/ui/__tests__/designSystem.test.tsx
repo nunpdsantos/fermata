@@ -56,7 +56,6 @@ function Chips({ onChange = () => {} }: { onChange?: (v: string) => void }) {
         { value: 'c', label: 'C', group: 'two', disabled: true },
         { value: 'd', label: 'D', group: 'two' },
       ]}
-      after={<button type="button">More</button>}
     />
   );
 }
@@ -88,12 +87,11 @@ describe('ChipGroup — choice chips (one of many)', () => {
     expect(onChange).toHaveBeenLastCalledWith('d');
   });
 
-  it('groups sit in their own wrapper; extra content after the chips is not a radio', () => {
+  it('groups sit in their own wrapper; only radios live inside the radiogroup', () => {
     const { container } = render(<Chips />);
     expect(container.querySelectorAll('[data-group]')).toHaveLength(2);
-    const more = screen.getByRole('button', { name: 'More' });
-    fireEvent.keyDown(more, { key: 'ArrowRight' }); // ignored: not a radio
-    expect(screen.getByRole('radio', { name: 'B' }).getAttribute('aria-checked')).toBe('true');
+    const group = screen.getByRole('radiogroup');
+    expect([...group.querySelectorAll('button')].every((b) => b.getAttribute('role') === 'radio')).toBe(true);
   });
 
   it('a standalone ChoiceChip toggles with aria-pressed', () => {

@@ -32,8 +32,6 @@ export interface ChipGroupProps<T extends string | number> {
   className?: string;
   style?: CSSProperties;
   chipClassName?: string;
-  /** Rendered after the chips (still inside the group's row), e.g. "More…". */
-  after?: ReactNode;
 }
 
 export function ChipGroup<T extends string | number>({
@@ -44,7 +42,6 @@ export function ChipGroup<T extends string | number>({
   className,
   style,
   chipClassName,
-  after,
 }: ChipGroupProps<T>) {
   const enabled = options.map((o) => !o.disabled);
   const selected = options.findIndex((o) => o.value === value);
@@ -85,7 +82,6 @@ export function ChipGroup<T extends string | number>({
       className={['chip-group', className].filter(Boolean).join(' ')}
       style={style}
       onKeyDown={(e) => {
-        if ((e.target as HTMLElement).getAttribute('role') !== 'radio') return;
         handleRovingKey(e, selected >= 0 ? selected : stop, enabled, (i) => onChange(options[i].value));
       }}
     >
@@ -99,7 +95,6 @@ export function ChipGroup<T extends string | number>({
           </span>
         ),
       )}
-      {after}
     </div>
   );
 }

@@ -130,14 +130,13 @@ export function KeySelector() {
           options={visibleGroups.flatMap((g) =>
             g.options.map((type) => ({ value: type, label: t(`scaleChip.${type}`), group: g.id, data: { 'data-scale': type } })),
           )}
-          after={
-            !isSelectedInHiddenGroup && (
-              <Button variant="quiet" onClick={() => setExpanded(!expanded)} aria-expanded={showAll}>
-                {showAll ? t('keySelector.less') : t('keySelector.moreScales')}
-              </Button>
-            )
-          }
         />
+        {/* Outside the radiogroup: it is not one of the choices. */}
+        {!isSelectedInHiddenGroup && (
+          <Button variant="quiet" className="mt-1.5 -ml-3" onClick={() => setExpanded(!expanded)} aria-expanded={showAll}>
+            {showAll ? t('keySelector.less') : t('keySelector.moreScales')}
+          </Button>
+        )}
       </div>
     </div>
   );

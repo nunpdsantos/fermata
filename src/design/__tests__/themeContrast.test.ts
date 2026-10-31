@@ -349,6 +349,13 @@ describe.each(Object.entries(THEMES))('v2 token pairs — %s', (_theme, vars) =>
   it('piano key labels on the ivory keys', () => {
     expect(contrast(rgb('--piano-label'), rgb('--piano-white'))).toBeGreaterThanOrEqual(MIN_TEXT);
   });
+
+  // A label on a black key is drawn in the ivory colour (W11-A review: the
+  // dark --piano-label read 2.4–2.5:1 there).
+  it('piano key labels on the black keys', () => {
+    expect(contrast(rgb('--piano-white'), rgb('--piano-black'))).toBeGreaterThanOrEqual(MIN_TEXT);
+    expect(contrast(rgb('--piano-label'), rgb('--piano-black'))).toBeLessThan(MIN_TEXT); // why not --piano-label
+  });
 });
 
 describe('degree fills are the same hues in both themes (one palette, D-28)', () => {

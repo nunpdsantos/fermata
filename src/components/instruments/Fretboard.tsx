@@ -28,7 +28,7 @@ import { ScrollStrip } from './ScrollStrip.tsx';
 import { FULL_FRETS, CHORD_FRET_WINDOW, FRET_MARKERS, DOUBLE_MARKERS, ACCENT_FILL, ON_ACCENT_FILL } from './fretboardConstants.ts';
 import { SelectTrigger } from '../ui/SelectTrigger.tsx';
 import type { FretNote, PositionDot } from './fretboardConstants.ts';
-import { ChordShapeSelector, ScalePositionSelector, LabelToolbar } from './FretboardPositionSelector.tsx';
+import { ChordShapeSelector, ScalePositionSelector, LabelToolbar, PositionLegend } from './FretboardPositionSelector.tsx';
 import { FretboardString } from './FretboardString.tsx';
 import type { FretboardMode } from './FretboardString.tsx';
 
@@ -564,10 +564,12 @@ export function Fretboard() {
     : null;
 
   return (
-    <div className="w-full" style={{ backgroundColor: 'var(--bg)', borderTop: '1px solid var(--border-subtle)' }}>
-      {/* Controls — outside the scrolling board so they never scroll away */}
+    <div className="w-full flex flex-col" style={{ backgroundColor: 'var(--bg)', borderTop: '1px solid var(--border-subtle)' }}>
+      {/* Controls — outside the scrolling board so they never scroll away.
+          On a phone they come AFTER the board, so the strings are what the
+          sheet shows first at Half (W11-A review). */}
       {!exerciseInputActive && (
-        <div className="px-4 max-sm:px-2 pt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5">
+        <div className="px-4 max-sm:px-2 pt-2 max-sm:pb-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 max-sm:order-last">
           {mode === 'chord' && (
             <ChordShapeSelector
               shapeCount={chordShapes.length}
@@ -613,6 +615,8 @@ export function Fretboard() {
               </SelectTrigger>
             </label>
           )}
+
+          {scaleView && mode === 'position' && <PositionLegend />}
 
           {(chordNotice || tuningGapNotice) && (
             <p role="status" className="w-full text-ui" style={{ color: 'var(--text-muted)' }}>

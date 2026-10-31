@@ -232,7 +232,9 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
     let border = '1px solid var(--piano-border)';
     let shadow = 'var(--piano-black-shadow)';
     let transform = 'none';
-    let labelColor = 'var(--piano-label)';
+    // A label on a BLACK key is light (the ivory colour): --piano-label is a
+    // dark ink for the ivory keys and read 2.4–2.5:1 on black (W11-A review).
+    let labelColor = 'var(--piano-white)';
 
     if (isActive) {
       bg = color;

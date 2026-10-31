@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import { noteToString } from '../../core/types/music.ts';
-import { CHORD_SYMBOLS, CHORD_QUALITY_NAMES } from '../../core/constants/chords.ts';
+import { CHORD_SYMBOLS } from '../../core/constants/chords.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAppStore } from '../../state/store.ts';
 import { DEGREE_COLORS, DEGREE_INKS } from '../../design/tokens/colors.ts';
-import { chordQualityLabel } from '../../i18n/content/musicTerms.ts';
+import { qualityName } from '../../utils/qualityName.ts';
 import { toContentLanguage } from '../drill/drillText.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
 
@@ -40,7 +40,7 @@ export function ChordGrid() {
   }
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2" role="group" aria-label={t('explore.diatonicChordsGroup')}>
+    <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))' }} role="group" aria-label={t('explore.diatonicChordsGroup')}>
       {diatonicChords.map(({ chord, numeral, degree }, i) => {
         const deg = degree as keyof typeof DEGREE_COLORS;
         // The degree hue is a FILL (the top line); the numeral is written in
@@ -49,9 +49,7 @@ export function ChordGrid() {
         const ink = degreeColorsOn ? DEGREE_INKS[deg] : 'var(--accent-text)';
         const rootLabel = noteToString(chord.root);
         const qualityLabel = CHORD_SYMBOLS[chord.quality] ?? chord.quality;
-        const qualityFull = lang === 'en'
-          ? (CHORD_QUALITY_NAMES[chord.quality] ?? chord.quality)
-          : chordQualityLabel(chord.quality, lang);
+        const qualityFull = qualityName(chord.quality, lang);
         const isSelected =
           selectedChord !== null &&
           noteToString(selectedChord.root) === rootLabel &&
@@ -61,7 +59,9 @@ export function ChordGrid() {
           <m.button
             key={degree}
             onClick={() => setSelectedChord(isSelected ? null : chord)}
-            className="relative flex flex-col items-center gap-1 p-3 max-sm:p-2 rounded-xl overflow-hidden group"
+            // Cards are never narrower than 96 px and their text wraps rather
+            // than clips ("Diminished" / "Disminuido" were cut off at 61 px).
+            className="relative flex flex-col items-center gap-1 p-2.5 rounded-xl group text-center [overflow-wrap:anywhere]"
             // Selected = the choice-chip state (accent fill, --on-accent text).
             style={{
               backgroundColor: isSelected ? 'var(--accent)' : 'var(--card)',
