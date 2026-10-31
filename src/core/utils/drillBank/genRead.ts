@@ -57,7 +57,6 @@ export const READ_PROMPT_KEYS: readonly string[] = [
 ];
 export const READ_WHY_KEYS: readonly string[] = ['drill.why.readPlaces'];
 
-const LETTER_PC: Record<NaturalNote, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
 const SHARP_OF: Record<number, NaturalNote> = { 1: 'C', 3: 'D', 6: 'F', 8: 'G', 10: 'A' };
 const FLAT_OF: Record<number, NaturalNote> = { 1: 'D', 3: 'E', 6: 'G', 8: 'A', 10: 'B' };
 const NATURAL_OF: Record<number, NaturalNote> = { 0: 'C', 2: 'D', 4: 'E', 5: 'F', 7: 'G', 9: 'A', 11: 'B' };
@@ -144,12 +143,4 @@ export function genRead(): ReadDrillItem[] {
     });
   });
   return items;
-}
-
-/** Sounding MIDI of a read item id's written note ('C#5' → 61), or null. */
-export function soundingMidiOfReadId(id: string): number | null {
-  const m = /^read:staff-to-fret:[^:]+:([A-G])(#|b)?(-?\d+)$/.exec(id);
-  if (!m) return null;
-  const acc = m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0;
-  return 12 * (Number(m[3]) + 1) + LETTER_PC[m[1] as NaturalNote] + acc - 12;
 }

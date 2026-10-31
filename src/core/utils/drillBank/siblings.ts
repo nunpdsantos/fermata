@@ -20,7 +20,6 @@ import { noteToString, stringToNote } from '../../types/music';
 import { MAJOR_KEYS, getRelativeMinor, keySignatureOf } from './shared';
 import { noteAtIntervalAbove } from './intervalEngine';
 import { ABBR_TO_NUMBER } from './genInterval';
-import { soundingMidiOfReadId } from './genRead';
 
 /** Key (major tonic 'A', minor tonic lowercase 'f#') → its signature ('3#', '0'). */
 let keySigByKey: Map<string, string> | null = null;
@@ -38,6 +37,19 @@ function signatureOfKey(key: string): string | null {
 }
 
 const NOTE_RE = /^[A-G](##|bb|#|b)?$/;
+
+/**
+ * Sounding MIDI of a reading item id's written note ('read:staff-to-fret:V:C#5'
+ * → 61: written C♯5 sounds C♯4), or null. Parsed here rather than imported
+ * from genRead.ts so the persisted store's sibling rule does not pull the
+ * generator into the entry chunk.
+ */
+const READ_ID_RE = /^read:staff-to-fret:[^:]+:([A-G](?:#|b)?)(-?\d+)$/;
+function soundingMidiOfReadId(id: string): number | null {
+  const m = READ_ID_RE.exec(id);
+  if (!m) return null;
+  return 12 * (Number(m[2]) + 1) + getPitchClass(stringToNote(m[1])) - 12;
+}
 
 function pitchClassOf(ascii: string): number | null {
   return NOTE_RE.test(ascii) ? getPitchClass(stringToNote(ascii)) : null;
