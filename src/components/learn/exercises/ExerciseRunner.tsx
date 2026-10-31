@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { m, AnimatePresence } from 'framer-motion';
 import type { ExerciseDefinition, ValidationResult, EarTrainingConfig } from '../../../core/types/exercise';
 import { validateAnswer } from './validateExercise';
-import { generateNoteChoices, generateIntervalChoices, generateSpelledIntervalChoices, generateIntervalNumberChoices, generateStepChoices, intervalNumberOf, generateEarChoices, generateDegreeChoices, generateMultipleChoiceOptions, earPlaybackLockMs, earChordPitches, earProgressionPitches } from './exerciseHelpers';
+import { generateNoteChoices, generateIntervalChoices, generateSpelledIntervalChoices, generateIntervalNumberChoices, generateStepChoices, intervalNumberOf, generateEarChoices, generateDegreeChoices, generateMultipleChoiceOptions, earPlaybackLockMs, earChordPitches, earProgressionPitches, earIntervalPitches } from './exerciseHelpers';
 import type { ChoiceOption } from './exerciseHelpers';
 import { ExerciseProgress } from './ExerciseProgress';
 import { ExercisePrompt } from './ExercisePrompt';
@@ -142,26 +142,15 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
         const note: Note = { natural: cfg.note as NaturalNote, accidental: (cfg.accidental ?? '') as Accidental };
         playNote(note, cfg.octave ?? 4, 1.0, pianoConfig);
       } else if (cfg.mode === 'interval' && cfg.root && cfg.targetSemitones !== undefined) {
-        const rootNote: Note = { natural: cfg.root as NaturalNote, accidental: (cfg.rootAccidental ?? '') as Accidental };
-        const oct = cfg.rootOctave ?? 4;
-        // Compute the interval note pitch class
-        const semitones = cfg.direction === 'descending' ? -cfg.targetSemitones : cfg.targetSemitones;
-        const NATURALS: NaturalNote[] = ['C', 'C', 'D', 'D', 'E', 'F', 'F', 'G', 'G', 'A', 'A', 'B'];
-        const ACCIDENTALS: Accidental[] = ['', '#', '', '#', '', '', '#', '', '#', '', '#', ''];
-        const rootPCs: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-        let rootPC = rootPCs[cfg.root] ?? 0;
-        if (cfg.rootAccidental === '#') rootPC += 1;
-        if (cfg.rootAccidental === 'b') rootPC -= 1;
-        const targetPC = ((rootPC + semitones) % 12 + 12) % 12;
-        const targetNote: Note = { natural: NATURALS[targetPC], accidental: ACCIDENTALS[targetPC] };
-        const targetOct = oct + (rootPC + semitones >= 12 ? 1 : rootPC + semitones < 0 ? -1 : 0);
+        // Both pitches by MIDI arithmetic: compound intervals sound right (W4-18).
+        const [root, target] = earIntervalPitches(cfg)!;
         if (cfg.harmonic) {
           // Harmonic interval: both notes sound together.
-          playNote(rootNote, oct, 1.2, pianoConfig);
-          playNote(targetNote, targetOct, 1.2, pianoConfig);
+          playNote(root, root.octave, 1.2, pianoConfig);
+          playNote(target, target.octave, 1.2, pianoConfig);
         } else {
-          playNote(rootNote, oct, 0.6, pianoConfig);
-          scheduleEar(() => playNote(targetNote, targetOct, 0.6, pianoConfig), 700);
+          playNote(root, root.octave, 0.6, pianoConfig);
+          scheduleEar(() => playNote(target, target.octave, 0.6, pianoConfig), 700);
         }
       } else if (cfg.mode === 'chord' && cfg.chordRoot && cfg.quality) {
         // Root position, as the piano lights it (audit W4-10).

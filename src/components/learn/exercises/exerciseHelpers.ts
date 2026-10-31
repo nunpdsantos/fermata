@@ -5,7 +5,7 @@ import type { NaturalNote, Accidental, Note, ScaleType, ChordQuality, PitchedNot
 import { noteToString } from '../../../core/types/music';
 import { PITCH_CLASS_SPELLINGS, getPitchClass } from '../../../core/constants/notes';
 import { INTERVAL_LABELS, buildChord, getDiatonicTriads } from '../../../core/constants/chords';
-import { chordVoicingPitches } from '../../../core/utils/pianoLayout';
+import { chordVoicingPitches, midiToNote } from '../../../core/utils/pianoLayout';
 import { MAJOR_DEGREE_SEMITONES, intervalNameOfDegree, canonicalIntervalNumber } from '../../../core/utils/degreeSpelling';
 import { buildScale } from '../../../core/constants/scales';
 import { mulberry32, seededShuffle } from '../../../core/utils/prng';
@@ -287,6 +287,20 @@ export function earChordPitches(cfg: EarTrainingConfig): PitchedNote[] {
   if (!cfg.chordRoot || !cfg.quality) return [];
   const root: Note = { natural: cfg.chordRoot as NaturalNote, accidental: (cfg.chordRootAccidental ?? '') as Accidental };
   return chordVoicingPitches(buildChord(root, cfg.quality as ChordQuality).notes, 4);
+}
+
+/**
+ * The two pitches an ear-training interval sounds (root, then target), from
+ * MIDI arithmetic in the app's octave convention (MIDI = 12 + 12·octave + pc):
+ * any size sounds right, compound 9ths–11ths included (W4-18). The inline
+ * version added at most one octave and read C♭/B♯ roots a semitone off.
+ */
+export function earIntervalPitches(cfg: EarTrainingConfig): [PitchedNote, PitchedNote] | null {
+  if (!cfg.root || cfg.targetSemitones === undefined) return null;
+  const root: PitchedNote = { natural: cfg.root as NaturalNote, accidental: (cfg.rootAccidental ?? '') as Accidental, octave: cfg.rootOctave ?? 4 };
+  const rootMidi = 12 + 12 * root.octave + getPitchClass(root);
+  const signed = cfg.direction === 'descending' ? -cfg.targetSemitones : cfg.targetSemitones;
+  return [root, midiToNote(rootMidi + signed)];
 }
 
 /**
