@@ -13,9 +13,11 @@ interface AppShellProps {
 /**
  * Top bar, the view, and the instrument dock (hidden in Drill, which owns its
  * full vertical space). The dock's height is published as `--dock-h` on
- * <html> so the toast region can sit above it (W9-22: toasts never cover the
- * instrument); with no dock (`data-dock="none"`, Drill) toasts sit at the top,
- * clear of the answers at every size.
+ * <html> so the toast stack can sit above it (W9-22: toasts never cover the
+ * instrument). `html[data-toast]` picks the toast layout (index.css): "band"
+ * — in the flow under the top bar — on phones / short screens (the sheet) and
+ * wherever there is no dock (Drill: a fixed stack there reached the answers on
+ * a tablet); "stack" — fixed above the docked panel — otherwise.
  */
 export function AppShell({ children }: AppShellProps) {
   const { t } = useTranslation();
@@ -46,8 +48,7 @@ export function AppShell({ children }: AppShellProps) {
   useLayoutEffect(() => {
     const root = document.documentElement;
     const dock = dockRef.current;
-    // No dock (Drill): the toast region moves to the top, clear of the answers.
-    root.dataset.dock = hasDock && dock ? 'on' : 'none';
+    root.dataset.toast = !hasDock || !dock || isSheet ? 'band' : 'stack';
     if (!hasDock || !dock) {
       root.style.setProperty('--dock-h', '0px');
       return;
@@ -58,7 +59,7 @@ export function AppShell({ children }: AppShellProps) {
     const ro = new ResizeObserver(publish);
     ro.observe(dock);
     return () => ro.disconnect();
-  }, [hasDock]);
+  }, [hasDock, isSheet]);
 
   return (
     <div className="h-screen supports-[height:100dvh]:h-dvh flex flex-col" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
