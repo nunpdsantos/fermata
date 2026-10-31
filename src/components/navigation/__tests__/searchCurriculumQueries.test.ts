@@ -92,11 +92,30 @@ describe('every query a lesson quotes gets a Cmd+K result', () => {
 
     it(`${lang}: every quoted query is rendered as a button (same count as resolvable tokens)`, () => {
       for (const [taskId, text] of instructions(lang)) {
-        const resolvable = [...text.matchAll(QUOTED)].filter((m) => resolveTheoryQuery(m[1].trim())).length;
+        const resolvable = [...text.matchAll(QUOTED)].filter((m) => {
+          const q = m[1].trim();
+          return !/^[a-z]$/.test(q) && resolveTheoryQuery(q);
+        }).length;
         expect(findQuotedQueries(text).length, taskId).toBe(resolvable);
       }
     });
   }
+
+  it('every task shows the same query buttons in EN, PT and ES', () => {
+    const buttons = (lang: 'en' | 'pt' | 'es') =>
+      new Map(instructions(lang).map(([id, text]) => [id, findQuotedQueries(text).map((q) => q.query).sort().join(' | ')]));
+    const en = buttons('en');
+    for (const lang of ['pt', 'es'] as const) {
+      const other = buttons(lang);
+      const diff = [...en].filter(([id, q]) => other.get(id) !== q).map(([id, q]) => `${lang} ${id}: EN [${q}] vs [${other.get(id)}]`);
+      expect(diff, diff.join('\n')).toEqual([]);
+    }
+  });
+
+  it('a quoted lowercase letter is a word, not a chord button (the rhythm syllable "e")', () => {
+    expect(findQuotedQueries('desloca a palma para o "e" entre tempos')).toEqual([]);
+    expect(findQuotedQueries("Type 'E' and then 'Em'").map((q) => q.query)).toEqual(['E', 'Em']);
+  });
 
   it('every Try-This query returns a Cmd+K result', () => {
     const dead = MODULES.flatMap((m) => m.concepts)

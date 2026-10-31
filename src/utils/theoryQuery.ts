@@ -275,6 +275,10 @@ export function findQuotedQueries(text: string): QuotedQuery[] {
   const out: QuotedQuery[] = [];
   for (const m of text.matchAll(QUOTED_TOKEN)) {
     const query = m[1].trim();
+    // Lessons never quote a note as a lone lowercase letter; a quoted "e" or
+    // "a" is a word — the rhythm syllable in 'one-e-and-a', PT "o "e" entre
+    // tempos" — not a chord.
+    if (/^[a-z]$/.test(query)) continue;
     if (resolveTheoryQuery(query) !== null) {
       out.push({ index: m.index ?? 0, length: m[0].length, query });
     }
