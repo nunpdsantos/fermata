@@ -2,14 +2,15 @@ import { useRef, useState } from 'react';
 import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import type { ChordQuality } from '../../core/types/music';
-import { CHORD_QUALITY_NAMES } from '../../core/constants/chords';
+import { qualityName } from '../../utils/qualityName';
+import { toContentLanguage } from './drillText';
 import { SPRING_MICRO } from '../../design/tokens/motion';
 import { normalizeDisplay } from './grading';
 
 interface RootQualityChipsProps {
   /** Candidate roots as display strings (the chord tones — root ID is the skill). */
   roots: string[];
-  /** Candidate qualities; labelled via CHORD_QUALITY_NAMES. */
+  /** Candidate qualities; labelled in the learner's language (qualityName). */
   qualities: ChordQuality[];
   disabled: boolean;
   /** Fires when a quality is tapped (root must already be chosen). */
@@ -37,7 +38,8 @@ export function RootQualityChips({
   onAnswer,
   feedback,
 }: RootQualityChipsProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = toContentLanguage(i18n.language);
   const [root, setRoot] = useState<string | null>(null);
   // Commit guard: prevents a double-tap on a quality from re-grading.
   const locked = useRef(false);
@@ -135,7 +137,7 @@ export function RootQualityChips({
                       : undefined
                   }
                 >
-                  {CHORD_QUALITY_NAMES[q]}
+                  {qualityName(q, lang)}
                 </m.button>
               );
             })}

@@ -7,7 +7,8 @@ import { QUALITY_TO_MODULE } from '../../data/qualityToModule.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
 import { DEGREE_COLORS, inkFor } from '../../design/tokens/colors.ts';
 import { Button } from '../ui/Button.tsx';
-import { chordQualityLabel } from '../../i18n/content/musicTerms.ts';
+import { qualityName } from '../../utils/qualityName.ts';
+import { scaleContext } from '../../i18n/scaleSuggestionContext.ts';
 import { toContentLanguage } from '../drill/drillText.ts';
 
 // Resolve alpha for a colour that may be a hex literal or CSS var.
@@ -180,7 +181,7 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
         <h2 className="text-xl font-bold learn-serif" style={{ color: 'var(--text)' }}>
           {chord.algorithmicDisplayName
             ? <>{noteToString(chord.root)}<span className="font-normal ml-1.5" style={{ color: 'var(--text-muted)' }}>{chord.algorithmicDisplayName}</span></>
-            : <>{noteToString(chord.root)}<span className="font-normal ml-1.5" style={{ color: 'var(--text-muted)' }}>{lang === 'en' ? CHORD_QUALITY_NAMES[chord.quality] : chordQualityLabel(chord.quality, lang)}</span></>
+            : <>{noteToString(chord.root)}<span className="font-normal ml-1.5" style={{ color: 'var(--text-muted)' }}>{qualityName(chord.quality, lang)}</span></>
           }
           {chord.bassNote && (
             <span className="font-normal ml-0.5" style={{ color: 'var(--text-dim)' }}>/{noteToString(chord.bassNote)}</span>
@@ -303,7 +304,7 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
                     color: inkFor(fitColor),
                     borderColor: alpha(fitColor, '45'),
                   }}
-                  title={s.context}
+                  title={scaleContext(s.context, lang)}
                 >
                   {t(`scaleName.${s.scale}`)}
                 </button>

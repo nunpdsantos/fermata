@@ -807,13 +807,13 @@
     "export": "Exportar",
     "import": "Importar",
     "build": "versão de {{date}}",
-    "worksOffline": "funciona sem ligação"
+    "worksOffline": "funciona offline"
   },
   "dock": {
     "handle": "Painel do instrumento",
     "peek": "Recolhido",
-    "half": "Meio",
-    "full": "Inteiro",
+    "half": "Metade",
+    "full": "Completo",
     "show": "Mostrar",
     "hide": "Esconder",
     "exerciseInput": "Responde no instrumento",

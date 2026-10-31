@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { findModulesByQuery, MODULE_INDEX } from '../../data/moduleIndex.ts';
 import { useAppStore } from '../../state/store.ts';
+import { useLocalizedModuleIndex } from '../../hooks/useLocalizedModuleIndex.ts';
 
 interface LearnMoreButtonProps {
   /** Text to search the module index with, e.g. "Dorian", "Major Seventh" */
@@ -16,6 +17,8 @@ interface LearnMoreButtonProps {
  */
 export function LearnMoreButton({ query, moduleId }: LearnMoreButtonProps) {
   const { t } = useTranslation();
+  const language = useAppStore((s) => s.language);
+  const localized = useLocalizedModuleIndex(language);
   const match = useMemo(
     () =>
       (moduleId ? MODULE_INDEX.find((m) => m.id === moduleId) : undefined) ??
@@ -41,7 +44,9 @@ export function LearnMoreButton({ query, moduleId }: LearnMoreButtonProps) {
       // An accent-coloured quiet action (D-28 link button; was the
       // supertonic hue as text, ~2.4:1).
       className="btn btn-link mt-2 -ml-1.5"
-      title={match.title}
+      // The lesson's title in the learner's language (no English tooltip in
+      // PT/ES while the localized index is still loading).
+      title={language === 'en' ? match.title : localized?.titles[match.id]?.[0]}
     >
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />

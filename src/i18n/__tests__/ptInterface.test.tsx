@@ -22,6 +22,10 @@ import { Fretboard } from '../../components/instruments/Fretboard';
 import { DrillSettings } from '../../components/drill/DrillSettings';
 import { MasteryMap } from '../../components/drill/MasteryMap';
 import { DEFAULT_SETTINGS } from '../../state/drillStore';
+import { ChordBrowser } from '../../components/theory/ChordBrowser';
+import { CurrentChordPanel } from '../../components/panels/CurrentChordPanel';
+import { buildChord, CHORD_QUALITY_NAMES } from '../../core/constants/chords';
+import type { ChordQuality } from '../../core/types/music';
 
 vi.mock('../../hooks/useAudio', () => ({
   useAudio: () => ({ noteOn: vi.fn().mockResolvedValue(60), noteOff: vi.fn() }),
@@ -72,6 +76,9 @@ const ENGLISH = [
   // Drill settings + mastery map (W11-A)
   'Session length', 'Topics', 'Answer sound', 'Show timer', 'Mastery', 'Mastery map', 'Reset drill progress',
   'Fewer new facts', 'More new facts', 'by heart', 'due today', 'Triads', 'Intervals',
+  // Chord-quality names and the chord panel's scale notes (D-17, W11-A review)
+  'Augmented', 'Suspended', 'Half-Diminished', 'Altered', 'Flat', 'Sharp', 'Add', 'Power Chord',
+  'Contains', 'avoid', 'Works', 'brightness', 'tension', 'symmetric', 'mode', 'melodic minor',
 ];
 const ENGLISH_RE = new RegExp(`(?<![\\p{L}])(${ENGLISH.join('|')})(?![\\p{L}])`, 'u');
 
@@ -79,7 +86,8 @@ function englishIn(container: HTMLElement): string[] {
   const found = new Set<string>();
   const check = (where: string, text: string | null) => {
     if (!text) return;
-    const m = ENGLISH_RE.exec(text);
+    // A loanword the PT/ES lessons themselves use ("Ouve um power chord de D").
+    const m = ENGLISH_RE.exec(text.replace(/Power chord/g, ''));
     if (m) found.add(`${where}: "${m[1]}" in "${text.trim().slice(0, 60)}"`);
   };
   const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
@@ -150,6 +158,25 @@ describe.each(['pt', 'es'] as const)('%s interface has no hard-coded English', (
     await screen.findAllByRole('grid');
     expect(guitar.container.querySelectorAll('[data-fret]').length).toBeGreaterThan(30);
     expect(englishIn(guitar.container)).toEqual([]);
+  });
+
+  it('every chord quality: the chord browser categories and the chord panel (names + scale-note tooltips)', () => {
+    useAppStore.setState({ language: lang, view: 'explore', instrument: 'piano', selectedKey: { natural: 'C', accidental: '' }, selectedChord: null });
+    const browser = render(<ChordBrowser />);
+    const categories = screen.getAllByRole('radio');
+    expect(categories.length).toBeGreaterThan(3);
+    for (const c of categories) {
+      fireEvent.click(c);
+      expect(englishIn(browser.container), c.textContent ?? '').toEqual([]);
+    }
+    cleanup();
+    for (const q of Object.keys(CHORD_QUALITY_NAMES) as ChordQuality[]) {
+      const chord = buildChord({ natural: 'C', accidental: '' }, q);
+      useAppStore.setState({ selectedChord: chord });
+      const panel = render(<CurrentChordPanel chord={chord} />);
+      expect(englishIn(panel.container), q).toEqual([]);
+      cleanup();
+    }
   });
 
   it('Drill settings and the mastery map', () => {
