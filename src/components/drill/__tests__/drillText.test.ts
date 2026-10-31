@@ -85,15 +85,15 @@ describe('function and cadence names in PT/ES, no "(RU: …)" gloss (W6-07, D-19
     expect(prompt('function:chord-function:C:ii', 'es')).toBe('En C mayor, ¿qué función tiene D menor (ii)?');
   });
 
-  it('cadence names follow each language\'s own lesson (l3u11m1)', () => {
+  it('cadence names follow the lessons (D-19 as amended: PT "meia cadência", ES "cadencia rota")', () => {
     expect(answer('function:cadence:V-I', 'pt')).toBe('Cadência perfeita');
     expect(answer('function:cadence:IV-I', 'pt')).toBe('Cadência plagal');
-    expect(answer('function:cadence:I-V', 'pt')).toBe('Cadência suspensiva');
+    expect(answer('function:cadence:I-V', 'pt')).toBe('Meia cadência');
     expect(answer('function:cadence:V-vi', 'pt')).toBe('Cadência interrompida');
     expect(answer('function:cadence:V-I', 'es')).toBe('Cadencia auténtica perfecta');
     expect(answer('function:cadence:IV-I', 'es')).toBe('Cadencia plagal');
     expect(answer('function:cadence:I-V', 'es')).toBe('Semicadencia');
-    expect(answer('function:cadence:V-vi', 'es')).toBe('Cadencia interrumpida');
+    expect(answer('function:cadence:V-vi', 'es')).toBe('Cadencia rota');
   });
 
   it('PT/ES cadence explanations carry no UK gloss', () => {
@@ -104,7 +104,7 @@ describe('function and cadence names in PT/ES, no "(RU: …)" gloss (W6-07, D-19
       }
     }
     expect(why('function:cadence:V-vi', 'pt')).toBe('Cadência interrompida.');
-    expect(why('function:cadence:V-vi', 'es')).toBe('Cadencia interrumpida.');
+    expect(why('function:cadence:V-vi', 'es')).toBe('Cadencia rota.');
     expect(why('function:cadence:V-I', 'pt')).toContain('cadência imperfeita');
   });
 });

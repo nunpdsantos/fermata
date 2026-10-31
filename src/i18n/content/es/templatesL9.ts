@@ -186,7 +186,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Escucha esta cadencia en C mayor e identifícala.',
       hintTemplate:
-        'Auténtica (V-I) = llegada conclusiva. Plagal (IV-I) = la cadencia del «Amén». Interrumpida (V-vi) = llegada esperada desviada. Semicadencia (I-V) = pausa en la tensión.',
+        'Auténtica (V-I) = llegada conclusiva. Plagal (IV-I) = la cadencia del «Amén». Rota (V-vi) = llegada esperada desviada. Semicadencia (I-V) = pausa en la tensión.',
     },
     {
       // ear_training (progression)

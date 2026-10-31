@@ -361,7 +361,7 @@ const overlay: ExerciseLevelOverlay = {
       'Uma frase termina com V movendo para I, ambos em posição fundamental, com a melodia chegando à tónica. Que tipo de cadência é esta?',
     choices: [
       'Cadência perfeita (CAP)',
-      'Cadência suspensiva',
+      'Meia cadência',
       'Cadência plagal',
       'Cadência interrompida',
     ],
@@ -371,19 +371,19 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Uma frase musical faz pausa no acorde de V sem resolver. Que tipo de cadência é esta?',
     choices: [
-      'Cadência suspensiva',
+      'Meia cadência',
       'Cadência perfeita',
       'Cadência plagal',
       'Cadência interrompida',
     ],
-    hint: 'Uma cadência suspensiva termina em V, criando uma sensação de suspensão ou incompletude — como uma vírgula em vez de um ponto final.',
+    hint: 'Uma meia cadência termina em V, criando uma sensação de suspensão ou incompletude — como uma vírgula em vez de um ponto final.',
   },
   l9u32m3e3: {
     prompt:
       'Esperas que V resolva para I, mas em vez disso move-se para vi. Que tipo de cadência produz esta surpresa?',
     choices: [
       'Cadência interrompida',
-      'Cadência suspensiva',
+      'Meia cadência',
       'Cadência perfeita',
       'Cadência plagal',
     ],

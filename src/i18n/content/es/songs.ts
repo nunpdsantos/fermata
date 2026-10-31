@@ -168,7 +168,7 @@ const overlay: SongOverlay = {
   // ---- L3U11: Cadencias, Frases y Ornamentación ----
 
   'l3u11m1': [
-    'Cada verso termina con una cadencia auténtica clara (V–I) en la palabra «Hallelujah». La letra narra su propia armonía: «the fourth, the fifth» (IV–V), «the minor fall» (vi), «the major lift» (IV) — y ese movimiento V–vi es un gesto ejemplar de cadencia interrumpida.',
+    'Cada verso termina con una cadencia auténtica clara (V–I) en la palabra «Hallelujah». La letra narra su propia armonía: «the fourth, the fifth» (IV–V), «the minor fall» (vi), «the major lift» (IV) — y ese movimiento V–vi es un gesto ejemplar de cadencia rota.',
     'Contiene tanto semicadencias (reposo en el V) como cadencias auténticas dentro de su estructura fraseológica.',
   ],
   'l3u11m2': [

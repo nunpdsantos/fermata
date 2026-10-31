@@ -402,7 +402,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       objectives: [
         'Identificar y escuchar los seis tipos de cadencia estándar',
         'Comprender las cadencias como puntuación armónica que define los límites de las frases',
-        'Distinguir cadencias fuertes (perfecta) de débiles (semicadencia, imperfecta) y resoluciones interrumpidas',
+        'Distinguir cadencias fuertes (perfecta) de débiles (semicadencia, imperfecta) y la cadencia rota',
       ],
       concepts: [
         {
@@ -413,9 +413,9 @@ const curriculumL3: CurriculumLevelOverlay = {
             'Escucha V7 en C mayor — el punto de partida de las cadencias auténticas',
         },
         {
-          title: 'Semicadencia, Cadencia Plagal e Interrumpida',
+          title: 'Semicadencia, Cadencia Plagal y Cadencia Rota',
           explanation:
-            'La semicadencia termina en V — cualquier acorde que se mueve hacia la dominante. Suena como una pregunta sin respuesta, creando suspense en los límites de las frases. La cadencia plagal (IV a I) es la suave cadencia del «Amén», más ligera que la auténtica. La cadencia interrumpida (V a vi) subvierte la resolución esperada: vi comparte dos notas con I (en C mayor, Am comparte C y E con el acorde de C), produciendo un casi-acierto que sorprende al oyente y prolonga la frase. En las tonalidades menores, la cadencia interrumpida es V a VI — un acorde mayor (p. ej., E7 a F en A menor). El VI sigue compartiendo dos notas con el i (F-A-C y A-C-E comparten A y C), pero ahora el bajo sube solo un semitono (de E a F, del 5.º grado al ♭6.º) y el acorde de llegada es mayor, lo que da a la cadencia interrumpida en menor una sorpresa más cálida y dramática que su equivalente en mayor.',
+            'La semicadencia termina en V — cualquier acorde que se mueve hacia la dominante. Suena como una pregunta sin respuesta, creando suspense en los límites de las frases. La cadencia plagal (IV a I) es la suave cadencia del «Amén», más ligera que la auténtica. La cadencia rota (V a vi), también llamada interrumpida, subvierte la resolución esperada: vi comparte dos notas con I (en C mayor, Am comparte C y E con el acorde de C), produciendo un casi-acierto que sorprende al oyente y prolonga la frase. En las tonalidades menores, la cadencia rota es V a VI — un acorde mayor (p. ej., E7 a F en A menor). El VI sigue compartiendo dos notas con el i (F-A-C y A-C-E comparten A y C), pero ahora el bajo sube solo un semitono (de E a F, del 5.º grado al ♭6.º) y el acorde de llegada es mayor, lo que da a la cadencia rota en menor una sorpresa más cálida y dramática que su equivalente en mayor.',
           tryThisLabel:
             'Escucha la tónica — el destino de las cadencias auténticas y plagales',
         },
@@ -434,7 +434,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            "Toca 'G7' y después 'Am' — esta es una cadencia interrumpida (V7-vi). Esperabas C mayor pero obtuviste A menor. Observa cómo prolonga la frase en vez de concluirla",
+            "Toca 'G7' y después 'Am' — esta es una cadencia rota (V7-vi). Esperabas C mayor pero obtuviste A menor. Observa cómo prolonga la frase en vez de concluirla",
         },
         {
           instruction:

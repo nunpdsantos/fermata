@@ -30,7 +30,9 @@ export const LOCALIZED_KEYWORDS: Record<'pt' | 'es', Record<string, readonly str
     l9u31m2: [...MODES_PT, 'modos gregos'],
     l2u7m3: ['tríade', 'tríades', 'tríade maior', 'tríade menor', 'tríade diminuta', 'tríade aumentada'],
     l3u9m1: ['maj7', 'm7', 'acorde de sétima', 'sétima da dominante', 'meio-diminuto', 'sétima diminuta'],
-    l3u11m1: ['cadência perfeita', 'cadência imperfeita', 'cadência plagal', 'cadência interrompida', 'cadência suspensiva'],
+    // 'meia cadência' is the term the lessons use; 'cadência suspensiva' is
+    // its alternative name and still finds the lesson.
+    l3u11m1: ['cadência perfeita', 'cadência imperfeita', 'cadência plagal', 'cadência interrompida', 'meia cadência', 'cadência suspensiva'],
     l4u12m4: ['trítono', 'sétima da dominante', 'resolução do v7'],
     l7u21m1: ['maj9', 'add9', 'm11', 'alt', 'sus2', 'sus4', 'extensões'],
     l7u21m3: ['ii-v-i', '2-5-1', 'standard de jazz', 'turnaround'],
@@ -55,9 +57,9 @@ export const LOCALIZED_KEYWORDS: Record<'pt' | 'es', Record<string, readonly str
     l9u31m2: [...MODES_ES, 'modos griegos'],
     l2u7m3: ['tríada', 'tríadas', 'tríada mayor', 'tríada menor', 'tríada disminuida', 'tríada aumentada'],
     l3u9m1: ['maj7', 'm7', 'acorde de séptima', 'séptima de dominante', 'semidisminuido', 'séptima disminuida'],
-    // "Cadencia rota" is the usual Spanish name a learner may type; the
-    // lessons say "interrumpida" (D-19), so it is a search word only.
-    l3u11m1: ['cadencia auténtica', 'cadencia plagal', 'cadencia interrumpida', 'cadencia rota', 'semicadencia'],
+    // The lessons say "cadencia rota" (D-19 amendment); "interrumpida" is
+    // its alternative name and still finds the lesson.
+    l3u11m1: ['cadencia auténtica', 'cadencia plagal', 'cadencia rota', 'cadencia interrumpida', 'semicadencia'],
     l4u12m1: ['suspensión'],
     l4u12m4: ['tritono', 'séptima de dominante', 'resolución del v7'],
     l7u21m1: ['maj9', 'add9', 'm11', 'alt', 'sus2', 'sus4', 'extensiones'],

@@ -522,7 +522,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Estratégia do Enquadramento Primeiro',
           explanation:
-            'Antes de escrever uma única nota, estabelece o enquadramento que restringe as tuas escolhas. Identifica a tonalidade ouvindo a tónica — a nota de repouso e resolução. Bate o tempo para encontrar o compasso (está em 2, 3 ou 4?). Ouve a cadência no final — resolve conclusivamente (cadência autêntica) ou deixa-te em suspenso (cadência suspensiva)? Depois preenche notas, começando pelo ritmo e direção geral. O enquadramento elimina respostas erradas antes de começares, tornando o trabalho de detalhe muito mais fácil.',
+            'Antes de escrever uma única nota, estabelece o enquadramento que restringe as tuas escolhas. Identifica a tonalidade ouvindo a tónica — a nota de repouso e resolução. Bate o tempo para encontrar o compasso (está em 2, 3 ou 4?). Ouve a cadência no final — resolve conclusivamente (cadência autêntica) ou deixa-te em suspenso (meia cadência)? Depois preenche notas, começando pelo ritmo e direção geral. O enquadramento elimina respostas erradas antes de começares, tornando o trabalho de detalhe muito mais fácil.',
           tryThisLabel:
             'Ouve o acorde de tónica — o teu ponto de ancoragem',
         },
@@ -605,7 +605,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       subtitle:
         'Identificar cadências, transcrever progressões e ditado de linha de baixo',
       objectives: [
-        'Identificar tipos de cadência (autêntica, plagal, suspensiva, interrompida) de ouvido',
+        'Identificar tipos de cadência (autêntica, plagal, meia cadência, interrompida) de ouvido',
         'Transcrever progressões diatónicas de quatro acordes usando numeração romana',
         'Realizar ditado de linha de baixo como porta de entrada para transcrição harmónica completa',
       ],
@@ -620,7 +620,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Reconhecimento de Cadências',
           explanation:
-            'Cadências são a pontuação da música — aprende a ouvi-las antes de abordar progressões completas. A cadência autêntica (V-I) soa final e conclusiva — um ponto final. A cadência plagal (IV-I) soa mais suave e quente — como "Amen." A cadência suspensiva (terminando em V) soa incompleta — um ponto de interrogação. A cadência interrompida (V-vi) surpreende: esperas resolução para I mas aterras em vi. Identificar a cadência no final de uma frase dá-te dois acordes imediatamente e ancora a tonalidade.',
+            'Cadências são a pontuação da música — aprende a ouvi-las antes de abordar progressões completas. A cadência autêntica (V-I) soa final e conclusiva — um ponto final. A cadência plagal (IV-I) soa mais suave e quente — como "Amen." A meia cadência (terminando em V) soa incompleta — um ponto de interrogação. A cadência interrompida (V-vi) surpreende: esperas resolução para I mas aterras em vi. Identificar a cadência no final de uma frase dá-te dois acordes imediatamente e ancora a tonalidade.',
           tryThisLabel: 'Ouve V (G) — puxa para C (I)?',
         },
         {
@@ -634,7 +634,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Ouve música que conheces bem e tenta identificar as cadências. Cada frase termina com um forte V-I (autêntica)? Um suave IV-I (plagal)? Ou uma cadência suspensiva não resolvida terminando em V?',
+            'Ouve música que conheces bem e tenta identificar as cadências. Cada frase termina com um forte V-I (autêntica)? Um suave IV-I (plagal)? Ou uma meia cadência não resolvida terminando em V?',
         },
         {
           instruction:

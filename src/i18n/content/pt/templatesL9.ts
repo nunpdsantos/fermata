@@ -186,7 +186,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve esta cadência em C maior e identifica-a.',
       hintTemplate:
-        'Autêntica (V-I) = chegada conclusiva. Plagal (IV-I) = a cadência do "Amen". Interrompida (V-vi) = chegada esperada desviada. Suspensiva (I-V) = pausa na tensão.',
+        'Autêntica (V-I) = chegada conclusiva. Plagal (IV-I) = a cadência do "Amen". Interrompida (V-vi) = chegada esperada desviada. Meia cadência (I-V) = pausa na tensão.',
     },
     {
       // ear_training (progression)

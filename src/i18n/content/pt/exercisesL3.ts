@@ -324,14 +324,14 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Uma CAP tem três requisitos: (1) V vai para I, (2) ambos os acordes estão em estado fundamental, e (3) o soprano termina na nota tónica (1.º grau). É o tipo de cadência mais forte.',
   },
   l3u11m1e2: {
-    prompt: 'O que é uma cadência suspensiva?',
+    prompt: 'O que é uma meia cadência?',
     choices: [
       'Qualquer cadência que termine no acorde de dominante (V)',
       'Uma cadência que termina no acorde de tónica (I)',
       'Uma cadência que usa apenas mínimas',
       'Uma cadência que modula para uma nova tonalidade',
     ],
-    hint: 'Uma cadência suspensiva termina em V, criando uma sensação aberta e não resolvida — como uma vírgula numa frase. O acorde que precede V pode ser I, ii, IV ou vi. Exige continuação.',
+    hint: 'Uma meia cadência termina em V, criando uma sensação aberta e não resolvida — como uma vírgula numa frase. O acorde que precede V pode ser I, ii, IV ou vi. Exige continuação.',
   },
   l3u11m1e3: {
     prompt: 'Numa cadência interrompida, o que acontece?',
@@ -359,12 +359,12 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m2e1: {
     prompt: 'O que é um período antecedente-consequente?',
     choices: [
-      'Duas frases em que a primeira termina com cadência suspensiva e a segunda com cadência autêntica',
+      'Duas frases em que a primeira termina com meia cadência e a segunda com cadência autêntica',
       'Uma única frase repetida exatamente duas vezes',
       'Duas frases completamente sem relação',
       'Uma frase que modula para a dominante e regressa',
     ],
-    hint: 'Um período é um par de frases: o antecedente (pergunta) termina inconclusivamente com uma cadência suspensiva, e o consequente (resposta) termina conclusivamente com uma CAP. Juntos formam uma afirmação musical completa, como uma pergunta e a sua resposta.',
+    hint: 'Um período é um par de frases: o antecedente (pergunta) termina inconclusivamente com uma meia cadência, e o consequente (resposta) termina conclusivamente com uma CAP. Juntos formam uma afirmação musical completa, como uma pergunta e a sua resposta.',
   },
   l3u11m2e2: {
     prompt: 'O que torna um período paralelo diferente de um período contrastante?',

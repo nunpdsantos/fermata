@@ -207,16 +207,16 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Classifica este tipo de cadência com base nos acordes e condução de vozes descritos.',
       hintTemplate:
-        'CAP: V-I com soprano na tónica. CAI: V-I com soprano NÃO na tónica, ou acordes invertidos. CS: termina em V. Plagal: IV-I. Interrompida: V-vi.',
+        'CAP: V-I com soprano na tónica. CAI: V-I com soprano NÃO na tónica, ou acordes invertidos. MC: termina em V. Plagal: IV-I. Interrompida: V-vi.',
       choiceSets: [
         [
           'V para I com o soprano a terminar na tónica é uma Cadência Perfeita (CAP)',
           'Esta é uma Cadência Imperfeita (CAI)',
-          'Esta é uma Cadência Suspensiva (CS)',
+          'Esta é uma Meia Cadência (MC)',
           'Esta é uma Cadência Interrompida',
         ],
         [
-          'Uma frase que termina no acorde V é uma Cadência Suspensiva',
+          'Uma frase que termina no acorde V é uma Meia Cadência',
           'Uma frase que termina no acorde V é uma Cadência Perfeita',
           'Uma frase que termina no acorde V é uma Cadência Plagal',
           'Uma frase que termina no acorde V é uma Cadência Interrompida',
@@ -224,19 +224,19 @@ const overlay: TemplateLevelOverlay = {
         [
           'V a resolver para vi em vez de I é uma Cadência Interrompida',
           'V a resolver para vi é uma Cadência Perfeita',
-          'V a resolver para vi é uma Cadência Suspensiva',
+          'V a resolver para vi é uma Meia Cadência',
           'V a resolver para vi é uma Cadência Plagal',
         ],
         [
           'IV para I é uma Cadência Plagal (cadência do Amen)',
           'IV para I é uma Cadência Perfeita',
-          'IV para I é uma Cadência Suspensiva',
+          'IV para I é uma Meia Cadência',
           'IV para I é uma Cadência Interrompida',
         ],
         [
           'V para I com o soprano na 3.ª é uma Cadência Imperfeita (CAI)',
           'V para I com o soprano na 3.ª é uma CAP',
-          'V para I com o soprano na 3.ª é uma Cadência Suspensiva',
+          'V para I com o soprano na 3.ª é uma Meia Cadência',
           'V para I com o soprano na 3.ª é uma Cadência Interrompida',
         ],
       ],
@@ -250,16 +250,16 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Responde a esta questão sobre a estrutura de frase musical.',
       hintTemplate:
-        'Um período tem duas frases: antecedente (termina com CS ou CAI) e consequente (termina com CAP). Uma frase (Satz) tem apresentação (ideia básica + repetição) e continuação.',
+        'Um período tem duas frases: antecedente (termina com MC ou CAI) e consequente (termina com CAP). Uma frase (Satz) tem apresentação (ideia básica + repetição) e continuação.',
       choiceSets: [
         [
           'Um período paralelo tem frases antecedente e consequente que começam com material semelhante',
           'Um período paralelo tem duas frases sem relação',
           'Um período paralelo deve ter exatamente 8 compassos',
-          'Um período paralelo termina sempre com cadência suspensiva',
+          'Um período paralelo termina sempre com meia cadência',
         ],
         [
-          'A frase antecedente termina tipicamente com uma cadência fraca (CS ou CAI)',
+          'A frase antecedente termina tipicamente com uma cadência fraca (MC ou CAI)',
           'A frase antecedente termina sempre com uma CAP',
           'A frase antecedente não tem cadência',
           'O antecedente é sempre a segunda frase',

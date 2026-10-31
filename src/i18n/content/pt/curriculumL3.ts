@@ -402,7 +402,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       objectives: [
         'Identificar e ouvir os seis tipos de cadência padrão',
         'Compreender as cadências como pontuação harmónica que define os limites das frases',
-        'Distinguir cadências fortes (perfeita) de fracas (suspensiva, imperfeita) e resoluções interrompidas',
+        'Distinguir cadências fortes (perfeita) de fracas (meia cadência, imperfeita) e resoluções interrompidas',
       ],
       concepts: [
         {
@@ -413,18 +413,18 @@ const curriculumL3: CurriculumLevelOverlay = {
             'Ouve V7 em C maior — o ponto de partida das cadências autênticas',
         },
         {
-          title: 'Cadências Suspensiva, Plagal e Interrompida',
+          title: 'Meia Cadência, Cadência Plagal e Cadência Interrompida',
           explanation:
-            'A cadência suspensiva termina no V — qualquer acorde que se move para a dominante. Soa como uma pergunta sem resposta, criando suspense nos limites das frases. A cadência plagal (IV para I) é a suave cadência do "Ámen", mais leve do que a autêntica. A cadência interrompida (V para vi) subverte a resolução esperada: vi partilha duas notas com I (em C maior, Am partilha C e E com o acorde de C), produzindo um quase-acerto que surpreende o ouvinte e prolonga a frase. Nas tonalidades menores, a cadência interrompida é V para VI — um acorde maior (p. ex., E7 para F em A menor). O VI continua a partilhar duas notas com o i (F-A-C e A-C-E partilham A e C), mas agora o baixo sobe apenas meio-tom (de E para F, do 5.º grau para o ♭6.º) e o acorde de chegada é maior, o que dá à cadência interrompida em menor uma surpresa mais calorosa e dramática do que a sua congénere em maior.',
+            'A meia cadência (também chamada cadência suspensiva) termina no V — qualquer acorde que se move para a dominante. Soa como uma pergunta sem resposta, criando suspense nos limites das frases. A cadência plagal (IV para I) é a suave cadência do "Ámen", mais leve do que a autêntica. A cadência interrompida (V para vi) subverte a resolução esperada: vi partilha duas notas com I (em C maior, Am partilha C e E com o acorde de C), produzindo um quase-acerto que surpreende o ouvinte e prolonga a frase. Nas tonalidades menores, a cadência interrompida é V para VI — um acorde maior (p. ex., E7 para F em A menor). O VI continua a partilhar duas notas com o i (F-A-C e A-C-E partilham A e C), mas agora o baixo sobe apenas meio-tom (de E para F, do 5.º grau para o ♭6.º) e o acorde de chegada é maior, o que dá à cadência interrompida em menor uma surpresa mais calorosa e dramática do que a sua congénere em maior.',
           tryThisLabel:
             'Ouve a tónica — o destino das cadências autênticas e plagais',
         },
         {
-          title: 'A Cadência Suspensiva Frígia',
+          title: 'A Meia Cadência Frígia',
           explanation:
-            'Característica das tonalidades menores: iv6 a resolver para V, com o baixo a descer por meio-tom do b6.o grau para o 5.º. Esta descida de meio-tom no baixo dá à cadência o seu nome — assemelha-se ao meio-tom descendente característico do modo frígio. Comum na música barroca, a cadência suspensiva frígia tem uma qualidade sombria e arcaica que nenhuma outra cadência replica.',
+            'Característica das tonalidades menores: iv6 a resolver para V, com o baixo a descer por meio-tom do b6.o grau para o 5.º. Esta descida de meio-tom no baixo dá à cadência o seu nome — assemelha-se ao meio-tom descendente característico do modo frígio. Comum na música barroca, a meia cadência frígia tem uma qualidade sombria e arcaica que nenhuma outra cadência replica.',
           tryThisLabel:
-            'Ouve iv6 — a aproximação à cadência suspensiva frígia em A menor',
+            'Ouve iv6 — a aproximação à meia cadência frígia em A menor',
         },
       ],
       tasks: [
@@ -463,8 +463,8 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'Períodos: Antecedente e Consequente',
           explanation:
-            'Um período emparelha duas frases numa estrutura de pergunta-e-resposta. O antecedente (primeira frase) termina com uma cadência fraca — normalmente suspensiva ou imperfeita — colocando uma pergunta musical. O consequente (segunda frase) termina com uma cadência forte — normalmente perfeita — fornecendo a resposta. Num período paralelo, ambas as frases partilham material de abertura semelhante. Num período contrastante, as aberturas diferem. Um período duplo agrupa quatro frases em dois pares antecedente-consequente maiores.',
-          tryThisLabel: 'Ouve V — o acorde que termina uma frase antecedente (cadência suspensiva)',
+            'Um período emparelha duas frases numa estrutura de pergunta-e-resposta. O antecedente (primeira frase) termina com uma cadência fraca — normalmente meia cadência ou imperfeita — colocando uma pergunta musical. O consequente (segunda frase) termina com uma cadência forte — normalmente perfeita — fornecendo a resposta. Num período paralelo, ambas as frases partilham material de abertura semelhante. Num período contrastante, as aberturas diferem. Um período duplo agrupa quatro frases em dois pares antecedente-consequente maiores.',
+          tryThisLabel: 'Ouve V — o acorde que termina uma frase antecedente (meia cadência)',
         },
         {
           title: 'A Frase (Satz)',
@@ -480,7 +480,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Pensa num período paralelo como uma pergunta e resposta que começam da mesma forma mas terminam de maneira diferente. O antecedente pergunta (terminando com cadência suspensiva) e o consequente responde (terminando com uma CAP)',
+            'Pensa num período paralelo como uma pergunta e resposta que começam da mesma forma mas terminam de maneira diferente. O antecedente pergunta (terminando com meia cadência) e o consequente responde (terminando com uma CAP)',
         },
         {
           instruction:
