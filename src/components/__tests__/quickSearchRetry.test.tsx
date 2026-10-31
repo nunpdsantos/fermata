@@ -66,3 +66,24 @@ describe('Quick Search retries a failed download on the next open (review item 4
     expect(load).toHaveBeenCalledTimes(4);
   });
 });
+
+describe('the search shortcut ignores letter case (review: uppercase "K")', () => {
+  it.each([
+    ['Ctrl+Shift+K', { key: 'K', ctrlKey: true, shiftKey: true }],
+    ['Cmd+K with Caps Lock', { key: 'K', metaKey: true }],
+    ['Ctrl+K', { key: 'k', ctrlKey: true }],
+  ])('%s opens search', async (_label, init) => {
+    const load = vi.fn(() => Promise.resolve({ default: SearchUI }));
+    render(<QuickSearchHost load={load} />);
+    fireEvent.keyDown(window, init);
+    expect(useAppStore.getState().quickSearchOpen).toBe(true);
+    await settle();
+    expect(screen.getByRole('dialog')).toBeTruthy();
+  });
+
+  it('a plain "K" without Ctrl/Cmd does nothing', () => {
+    render(<QuickSearchHost load={() => Promise.resolve({ default: SearchUI })} />);
+    fireEvent.keyDown(window, { key: 'K', shiftKey: true });
+    expect(useAppStore.getState().quickSearchOpen).toBe(false);
+  });
+});

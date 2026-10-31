@@ -10,16 +10,24 @@
  * proves the SVG output is identical.
  */
 
-let vexflowPromise: Promise<typeof import('vexflow/bravura')> | null = null;
+type VexFlowModule = typeof import('vexflow/bravura');
 
-export function loadVexFlow(): Promise<typeof import('vexflow/bravura')> {
-  if (!vexflowPromise) {
-    // A failed download (offline before VexFlow was cached) must not stick:
-    // forget it so the next staff tries again.
-    vexflowPromise = import('vexflow/bravura').catch((err) => {
-      vexflowPromise = null;
-      throw err;
-    });
-  }
-  return vexflowPromise;
+/**
+ * One shared download per page — but a FAILED download (offline before
+ * VexFlow was cached) must not stick: it is forgotten so the next staff tries
+ * again (review item 6). Exported for vexflowLoader.test.
+ */
+export function createVexFlowLoader(importer: () => Promise<VexFlowModule>): () => Promise<VexFlowModule> {
+  let pending: Promise<VexFlowModule> | null = null;
+  return () => {
+    if (!pending) {
+      pending = importer().catch((err) => {
+        pending = null;
+        throw err;
+      });
+    }
+    return pending;
+  };
 }
+
+export const loadVexFlow = createVexFlowLoader(() => import('vexflow/bravura'));
