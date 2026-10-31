@@ -349,7 +349,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'They destroy voice independence by making two voices sound as one', correct: true },
-          { label: 'They create dissonance that the ear cannot resolve', correct: false },
+          { label: 'They create a harsh dissonance that the ear cannot resolve', correct: false },
           { label: 'They are physically impossible to sing', correct: false },
           { label: 'They violate the rules of rhythm', correct: false },
         ],
@@ -398,7 +398,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Retain the common tone in the same voice and move the others by step', correct: true },
-          { label: 'Move all four voices in the same direction', correct: false },
+          { label: 'Move all four voices in the same direction, so the whole chord shifts as one block', correct: false },
           { label: 'Keep all voices as close together as possible regardless of common tones', correct: false },
           { label: 'Double the 3rd of the second chord', correct: false },
         ],
@@ -464,7 +464,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'On a strong beat, immediately before the dominant (V) chord', correct: true },
           { label: 'On a weak beat, after the tonic chord', correct: false },
           { label: 'At the very beginning of a phrase', correct: false },
-          { label: 'Only at the end of a piece, on the final chord', correct: false },
+          { label: 'Only at the end of a piece, as the last chord heard', correct: false },
         ],
       },
       hint: 'The cadential 6/4 (I6/4) functions as a decoration of the dominant. It appears on a strong beat with the bass on scale degree 5, and the upper voices resolve down by step to form V.',
@@ -501,7 +501,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'V to I, both in root position, with the tonic in the soprano', correct: true },
           { label: 'Any progression that ends on the I chord', correct: false },
-          { label: 'IV to I in root position', correct: false },
+          { label: 'IV to I, both in root position, with the tonic in the soprano at the end', correct: false },
           { label: 'V to I, both in root position, with the 3rd of I in the soprano', correct: false },
         ],
       },
@@ -564,7 +564,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Two phrases: the first ends on a half cadence, the second on an authentic cadence', correct: true },
-          { label: 'A single phrase repeated exactly twice', correct: false },
+          { label: 'A single phrase played twice in a row, with the same cadence at the end both times', correct: false },
           { label: 'Two phrases that are completely unrelated', correct: false },
           { label: 'Two phrases where the first modulates to the dominant and the second returns home to the tonic', correct: false },
         ],
@@ -589,13 +589,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l3u11m2e3',
       type: 'multiple_choice',
-      prompt: 'In the classical "sentence" structure, what happens after the initial idea (presentation)?',
+      prompt: 'In the classical "sentence" structure, what happens after the presentation (the basic idea and its repetition)?',
       config: {
         type: 'multiple_choice',
         choices: [
           { label: 'A continuation that fragments and accelerates toward a cadence', correct: true },
           { label: 'An exact repetition of the presentation', correct: false },
-          { label: 'A contrasting section in a new key', correct: false },
+          { label: 'A contrasting section, as in a contrasting period, that answers the presentation', correct: false },
           { label: 'A silence followed by a new theme', correct: false },
         ],
       },
@@ -630,7 +630,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'It speeds up -- chords change more often near the cadence', correct: true },
           { label: 'It slows down -- chords change less often as the cadence nears', correct: false },
           { label: 'It stays the same throughout the phrase', correct: false },
-          { label: 'It stops completely before the cadence chord', correct: false },
+          { label: 'It stops completely: one chord is held for the whole phrase until the cadence chord', correct: false },
         ],
       },
       hint: 'Cadential acceleration is a common technique: chord changes speed up near cadences, creating a sense of momentum and arrival. For example, chords might change every bar, then every two beats, then every beat at the cadence.',
@@ -740,7 +740,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'It changes to the new key (C major → Eb major: 3 flats)', correct: true },
           { label: 'It stays the same, and every moved note gets its own accidental', correct: false },
-          { label: 'Sharps and flats are removed', correct: false },
+          { label: 'Sharps and flats are removed and every note is written without accidentals', correct: false },
           { label: 'Every note gets an accidental', correct: false },
         ],
       },

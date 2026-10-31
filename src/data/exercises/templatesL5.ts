@@ -223,7 +223,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'A pivot chord is diatonic in both the old key and the new key', correct: true },
               { label: 'A pivot chord is diatonic in the old key but chromatic in the new key', correct: false },
-              { label: 'A pivot chord must always be the V7 of the new key', correct: false },
+              { label: 'A pivot chord must always be the V7 of the new key, so it can never be a minor chord', correct: false },
               { label: 'A pivot chord can only link two minor keys', correct: false },
             ],
             [
@@ -301,7 +301,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'A direct modulation moves to a new key at a phrase boundary, with no pivot', correct: true },
               { label: 'A direct modulation moves to a new key mid-phrase through a shared pivot chord', correct: false },
-              { label: 'A direct modulation is just another name for a brief tonicization', correct: false },
+              { label: 'A direct modulation is another name for a brief tonicization that soon returns home', correct: false },
               { label: 'A direct modulation can only move up by a half step', correct: false },
             ],
             [

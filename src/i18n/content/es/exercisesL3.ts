@@ -212,7 +212,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Por qué las quintas justas paralelas se consideran problemáticas en la conducción de voces?',
     choices: [
       'Destruyen la independencia de las voces al hacer que dos voces suenen como una sola',
-      'Crean disonancia que el oído no puede resolver',
+      'Crean una disonancia áspera que el oído no puede resolver',
       'Son físicamente imposibles de cantar',
       'Violan las reglas del ritmo',
     ],
@@ -246,7 +246,7 @@ const overlay: ExerciseLevelOverlay = {
       'Cuando dos acordes en estado fundamental tienen fundamentales a una 5.ª de distancia (ej.: I a V), ¿qué técnica de conducción de voces es más importante?',
     choices: [
       'Mantener la nota común en la misma voz y mover las demás por grado',
-      'Mover las cuatro voces en la misma dirección',
+      'Mover las cuatro voces en la misma dirección, para que el acorde entero se desplace como un solo bloque',
       'Mantener todas las voces lo más juntas posible independientemente de notas comunes',
       'Doblar la 3.ª del segundo acorde',
     ],
@@ -292,7 +292,7 @@ const overlay: ExerciseLevelOverlay = {
       'En un tiempo fuerte, inmediatamente antes del acorde de dominante (V)',
       'En un tiempo débil, después del acorde de tónica',
       'Justo al inicio de una frase',
-      'Solo al final de una pieza, en el acorde final',
+      'Solo al final de una pieza, como el último acorde que se oye',
     ],
     hint: 'El 6/4 cadencial (I6/4) funciona como ornamentación de la dominante. Aparece en un tiempo fuerte con el bajo en el 5.º grado, y las voces superiores resuelven por grado descendente para formar V.',
   },
@@ -318,7 +318,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'V a I, ambos en estado fundamental, con la tónica en el soprano',
       'Cualquier progresión que termine en el acorde I',
-      'IV a I en estado fundamental',
+      'IV a I, ambos en estado fundamental, con la tónica en el soprano al final',
       'V a I, ambos en estado fundamental, con la 3.ª de I en el soprano',
     ],
     hint: 'Una CAP tiene tres requisitos: (1) V va a I, (2) ambos acordes están en estado fundamental, y (3) el soprano termina en la nota tónica (1.er grado). Es el tipo de cadencia más fuerte.',
@@ -360,7 +360,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué es un período antecedente-consecuente?',
     choices: [
       'Dos frases: la primera termina en semicadencia y la segunda en cadencia auténtica',
-      'Una sola frase repetida exactamente dos veces',
+      'Una sola frase tocada dos veces seguidas, que termina las dos veces con la misma cadencia',
       'Dos frases completamente sin relación',
       'Dos frases en las que la primera modula a la dominante y la segunda vuelve a la tónica',
     ],
@@ -377,11 +377,11 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'En un período paralelo, la frase consecuente comienza como el antecedente pero diverge para alcanzar una cadencia más fuerte. En un período contrastante, las dos frases comienzan con ideas melódicas diferentes.',
   },
   l3u11m2e3: {
-    prompt: 'En la estructura clásica de «frase» (Satz), ¿qué ocurre tras la idea inicial (presentación)?',
+    prompt: 'En la estructura clásica de «frase» (Satz), ¿qué ocurre tras la presentación (la idea básica y su repetición)?',
     choices: [
       'Una continuación que fragmenta y acelera hacia una cadencia',
       'Una repetición exacta de la presentación',
-      'Una sección contrastante en una nueva tonalidad',
+      'Una sección contrastante, como en un período contrastante, que responde a la presentación',
       'Un silencio seguido de un nuevo tema',
     ],
     hint: 'La frase clásica tiene dos partes: una presentación (idea básica + repetición) y una continuación (fragmentación + aceleración hacia una cadencia). La continuación impulsa la frase hasta su conclusión.',
@@ -405,7 +405,7 @@ const overlay: ExerciseLevelOverlay = {
       'Acelera — los acordes cambian más a menudo cerca de la cadencia',
       'Se frena — los acordes cambian menos a menudo a medida que se acerca la cadencia',
       'Se mantiene igual a lo largo de la frase',
-      'Se detiene por completo antes del acorde cadencial',
+      'Se detiene por completo: un solo acorde se mantiene durante toda la frase hasta el acorde cadencial',
     ],
     hint: 'La aceleración cadencial es una técnica habitual: los cambios de acorde se aceleran cerca de las cadencias, creando una sensación de impulso y llegada. Por ejemplo, los acordes pueden cambiar cada compás, luego cada dos tiempos, luego cada tiempo en la cadencia.',
   },
@@ -468,7 +468,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Cambia a la de la nueva tonalidad (C mayor → Eb mayor: 3 bemoles)',
       'Se mantiene igual, y cada nota desplazada recibe su propia alteración',
-      'Los sostenidos y bemoles se eliminan',
+      'Los sostenidos y bemoles se eliminan y cada nota se escribe sin alteraciones',
       'Cada nota recibe una alteración accidental',
     ],
     hint: 'La transposición desplaza todo a una nueva tonalidad. Subir una 3.ª menor (3 semitonos) desde C mayor llega a Eb mayor. La nueva armadura de clave (3 bemoles) preserva todas las relaciones interválicas.',

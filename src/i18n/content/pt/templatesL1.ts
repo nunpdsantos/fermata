@@ -165,8 +165,8 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           '3/4 agrupa os tempos de três em três: forte-fraco-fraco',
-          '3/4 agrupa os tempos de dois em dois: forte-fraco',
-          '3/4 agrupa os tempos de quatro em quatro: forte-fraco-meio-forte-fraco',
+          '3/4 agrupa os tempos de dois em dois: forte-fraco, forte-fraco',
+          '3/4 agrupa os tempos de quatro em quatro: forte-fraco-médio-fraco',
           '3/4 não tem nenhum tempo forte',
         ],
         [

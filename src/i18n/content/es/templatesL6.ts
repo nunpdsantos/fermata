@@ -227,12 +227,12 @@ const overlay: TemplateLevelOverlay = {
           'El CT°7 comparte una nota, normalmente la fundamental, con el acorde que embellece',
           'El CT°7 no comparte ninguna nota con el acorde que embellece',
           'El CT°7 comparte siempre dos notas, la 3.ª y la 5.ª, con el acorde que él embellece',
-          'El CT°7 es un acorde de dominante que resuelve hacia su propia tónica',
+          'El CT°7 es un acorde de dominante que resuelve directamente hacia su propia tónica, igual que V7',
         ],
         [
           'Embellece un acorde: una voz se mantiene mientras tres voces se mueven por grado conjunto',
           'Embellece un acorde: las cuatro voces se mueven por grado conjunto y ninguna de ellas se mantiene',
-          'Modula: las cuatro voces saltan a un acorde de una nueva tonalidad',
+          'Modula: las cuatro voces saltan juntas a un acorde de una nueva tonalidad lejana',
           'Sustituye a la dominante: su fundamental resuelve medio tono arriba hacia la tónica',
         ],
       ],
@@ -258,7 +258,7 @@ const overlay: TemplateLevelOverlay = {
           'Puede prolongar una armonía de dominante mediante intercambio cromático de voces',
           'Siempre modula a una tonalidad muy lejana mediante intercambio cromático de voces',
           'Solo puede prolongar la armonía de tónica, nunca la armonía de dominante',
-          'Sustituye la cadencia final de una frase por una cadencia plagal',
+          'Sustituye la cadencia final de una frase por una cadencia plagal, de IV de vuelta a I',
         ],
       ],
     },
@@ -391,7 +391,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Empieza en un unísono, 5.ª u octava y termina en un unísono u octava',
           'Empieza en una 3.ª o 6.ª y termina en una 5.ª alcanzada por salto',
-          'Empieza y termina en una 3.ª, la más dulce de las consonancias',
+          'Empieza y termina en una 3.ª, la más dulce de las consonancias, para evitar un sonido hueco',
           'Puede terminar en cualquier consonancia, alcanzada por grado conjunto o por salto',
         ],
       ],
@@ -428,7 +428,7 @@ const overlay: TemplateLevelOverlay = {
           'La primera de cada cuatro notas es consonante; las demás pueden ser notas de paso o bordaduras',
           'Las cuatro notas contra cada nota del cantus deben ser todas consonantes con ella',
           'La primera de cada cuatro notas puede ser disonante siempre que las otras tres sean todas consonantes',
-          'Solo la última de cada cuatro notas tiene que ser consonante con la nota del cantus',
+          'Solo la última de cada cuatro notas tiene que ser consonante con el cantus, porque es la que conduce a la nota siguiente',
         ],
         [
           'La cambiata va por grado conjunto a una disonancia, salta una 3.ª y vuelve por grado conjunto',
@@ -438,7 +438,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Una bordadura doble adorna una nota con la bordadura superior y la inferior, una tras otra',
-          'Una bordadura doble son dos notas de paso que se mueven en la misma dirección',
+          'Una bordadura doble son dos notas de paso consecutivas en la misma dirección, sin volver a la nota inicial',
           'Una bordadura doble hace sonar dos disonancias a la vez, en dos voces diferentes de la textura',
           'Una bordadura doble repite la misma nota dos veces en los tiempos fuertes',
         ],
@@ -457,7 +457,7 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'Una nota se liga desde un tiempo débil, a través de la barra, hasta el siguiente tiempo fuerte',
-          'Una nota se liga desde un tiempo fuerte hasta el tiempo débil del mismo compás',
+          'Una nota se liga desde un tiempo fuerte hasta el tiempo débil que le sigue, dentro del mismo compás',
           'Cada nota se ataca en el tiempo fuerte y se deja en el tiempo débil',
           'No se usa ninguna ligadura; la línea se sincopa con silencios colocados en cada tiempo fuerte del compás',
         ],
@@ -491,14 +491,14 @@ const overlay: TemplateLevelOverlay = {
         [
           'La quinta especie combina libremente los valores de las cuatro primeras especies',
           'La quinta especie usa cinco notas contra cada nota del cantus firmus',
-          'La quinta especie es contrapunto escrito para cinco voces independientes',
+          'La quinta especie es contrapunto escrito para cinco voces independientes, una para cada especie',
           'La quinta especie abandona todas las reglas de disonancia de las especies anteriores',
         ],
         [
           'El contrapunto florido mantiene las reglas de cada especie anterior para sus valores',
           'El contrapunto florido ignora las reglas de disonancia para que la línea se mueva libremente',
           'El contrapunto florido solo permite redondas contra el cantus firmus',
-          'El contrapunto florido prohíbe las ligaduras, así que las suspensiones desaparecen',
+          'El contrapunto florido prohíbe las ligaduras sobre la barra, así que las suspensiones desaparecen de la línea',
         ],
       ],
     },
@@ -533,7 +533,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'A la duodécima, una 5.ª se convierte en octava cuando las voces se intercambian',
-          'A la duodécima, una 5.ª se convierte en 4.ª cuando las voces se intercambian',
+          'A la duodécima, una 5.ª se convierte en 4.ª cuando las dos voces se intercambian',
           'A la duodécima, una 5.ª se convierte en 6.ª cuando las voces se intercambian',
           'A la duodécima, una 3.ª se convierte en 6.ª siempre que las dos voces se intercambian',
         ],
@@ -575,7 +575,7 @@ const overlay: TemplateLevelOverlay = {
           'Primero encuentra los puntos de cadencia y después elige un bajo y acordes que lleven a ellos',
           'Primero escribe el contralto y el tenor y después encaja el bajo y el soprano alrededor de ellos',
           'Primero elige un acorde cualquiera para cada nota y corrige las cadencias al final',
-          'Armoniza desde la primera nota en adelante e ignora dónde caen las cadencias',
+          'Armoniza desde la primera nota y deja que los acordes decidan dónde termina cada frase',
         ],
         [
           'Al final, revisa quintas y octavas paralelas, espaciado y errores de duplicación',

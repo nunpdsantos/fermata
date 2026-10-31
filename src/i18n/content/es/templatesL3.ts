@@ -364,8 +364,8 @@ const overlay: TemplateLevelOverlay = {
         [
           'Período contrastante: las dos frases empiezan con material diferente',
           'Período contrastante: las dos frases son idénticas de principio a fin',
-          'Período contrastante: siempre modula',
-          'Período contrastante: tiene tres frases',
+          'Período contrastante: siempre modula, y termina la segunda frase en una nueva tonalidad',
+          'Período contrastante: tiene tres frases, y la última vuelve a la idea inicial',
         ],
       ],
     },

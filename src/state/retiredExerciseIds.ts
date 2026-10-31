@@ -49,7 +49,7 @@ export const RETIRED_EXERCISE_IDS: readonly RetiredExerciseIds[] = [
       l3u10m3: 'e3 g1 g2 g3 g4 g5',
       l3u10m4: 'g1 g2 g3 g4',
       l3u11m1: 'e1 g1 g2 g3',
-      l3u11m2: 'e1 g1 g2 g3',
+      l3u11m2: 'e1 e3 g1 g2 g3',
       l3u11m3: 'e2 g1 g2 g3 g4',
       l3u11m4: 'e3 g1 g2 g3',
       l3u11m5: 'e3 g1 g2 g3 g4 g5 g6',

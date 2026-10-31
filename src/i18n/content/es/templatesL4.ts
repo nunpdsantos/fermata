@@ -39,7 +39,7 @@ const overlay: TemplateLevelOverlay = {
           'En un retardo 9-8, la 9.ª sobre el bajo resuelve bajando a la octava',
           'En un retardo 9-8, la 9.ª sobre el bajo resuelve subiendo por grado a la 10.ª',
           'Un retardo 9-8 es simplemente un retardo 2-1 en la voz del bajo',
-          'En un retardo 9-8, la octava sobre el bajo sube a la 9.ª',
+          'En un retardo 9-8, la octava sobre el bajo es la nota disonante y sube a la 9.ª',
         ],
         [
           'En un retardo de bajo 2-3, el bajo baja por grado y la 2.ª pasa a ser una 3.ª',
@@ -61,7 +61,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Un retardo ornamentado añade una nota entre el retardo y su resolución',
-          'Un retardo ornamentado se salta la resolución por completo',
+          'Un retardo ornamentado elimina la resolución y pasa directamente al acorde siguiente',
           'Un retardo ornamentado debe usar siempre notas cromáticas',
           'Un retardo ornamentado resuelve subiendo por grado en lugar de bajar a la nota inferior',
         ],
@@ -93,7 +93,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Un retardo ascendente se mantiene como un retardo, pero resuelve subiendo por grado',
           'Un retardo ascendente se mantiene como un retardo y resuelve siempre bajando por grado',
-          'Un retardo ascendente se aborda por salto y no tiene preparación',
+          'Un retardo ascendente se aborda por salto y no tiene preparación, como una apoyatura',
           'Un retardo ascendente resuelve por salto, nunca por grado',
         ],
         [
@@ -104,7 +104,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Las apoyaturas acentuadas y sin preparación son una seña de la expresión romántica',
-          'Las apoyaturas están prohibidas en la música romántica',
+          'Las apoyaturas están prohibidas en la música romántica, que evita la disonancia acentuada',
           'Las apoyaturas deben prepararse siempre, exactamente como los retardos',
           'Las apoyaturas solo aparecen en la voz del bajo, nunca en la melodía que va por encima',
         ],
@@ -186,7 +186,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'En V7–I, el acorde de I omite a menudo su 5.ª para que las voces resuelvan bien',
           'En V7–I, el acorde de I debe estar siempre completo, con sus tres notas',
-          'V7–I produce siempre 5.as paralelas, que aquí están permitidas',
+          'V7–I produce siempre 5.as paralelas entre las voces extremas, que están permitidas en esta progresión',
           'En V7–I, la fundamental de V7 debe subir siempre por grado para convertirse en la 3.ª del acorde de I',
         ],
       ],
@@ -260,7 +260,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'IV y ii (y IV7, ii7) son los principales acordes predominantes',
-          'V y vii° son los principales acordes predominantes',
+          'V y vii° son los principales acordes predominantes, porque ambos llevan a I',
           'iii es el principal acorde predominante, por estar un grado por debajo de IV',
           'vi es el único acorde que puede funcionar como predominante',
         ],
@@ -301,7 +301,7 @@ const overlay: TemplateLevelOverlay = {
           'V7–vi7 es una resolución rota en la que la fundamental de V7 se mantiene como 7.ª de vi7',
           'V7–vi7 es una cadencia auténtica perfecta disfrazada',
           'V7–vi7 es imposible, porque vi7 no comparte notas con V7',
-          'V7–vi7 es una semicadencia, porque termina en un acorde menor',
+          'V7–vi7 es una semicadencia, porque termina la frase en un acorde menor en lugar de mayor',
         ],
         [
           'En el jazz y el pop, Imaj7 es la tónica habitual, un punto de reposo',
@@ -406,7 +406,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'iii puede sustituir débilmente a la tónica: comparte dos notas con I',
           'iii es siempre un acorde de dominante, simplemente porque contiene la sensible',
-          'iii es el principal acorde predominante de la tonalidad',
+          'iii es el principal acorde predominante de la tonalidad, el que con más frecuencia conduce a V',
           'iii nunca aparece en la armonía de la práctica común',
         ],
         [
@@ -417,7 +417,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'D → PD (por ejemplo V–IV) es una retrogresión: invierte el flujo habitual',
-          'D → PD (por ejemplo V–IV) es el orden estándar de las funciones',
+          'D → PD (por ejemplo V–IV) es el orden estándar de las funciones en una frase normal',
           'D → PD (por ejemplo V–IV) es imposible en cualquier estilo de música',
           'D → PD (por ejemplo V–IV) es la forma más fuerte de terminar una frase, más fuerte que V–I',
         ],
@@ -443,7 +443,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Una secuencia 5-6 ascendente alterna acordes 5/3 y 6/3 sobre un bajo que sube',
           'Una secuencia 5-6 ascendente usa solo tríadas en estado fundamental sobre un bajo que baja',
-          'Una secuencia 5-6 ascendente hace bajar el bajo por grado',
+          'Una secuencia 5-6 ascendente hace bajar el bajo por grado mientras las voces superiores suben',
           'La secuencia 5-6 no es un tipo real de secuencia',
         ],
         [
@@ -516,7 +516,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'La segunda especie introduce la disonancia, como notas de paso en los tiempos débiles',
-          'La segunda especie introduce el retardo, ligado sobre la barra de compás',
+          'La segunda especie introduce el retardo, con una nota que queda ligada sobre la barra de compás',
           'La segunda especie introduce la apoyatura, abordada por salto',
           'La segunda especie no aporta nada nuevo: sigue exactamente las mismas reglas que la primera',
         ],

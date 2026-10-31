@@ -38,7 +38,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'A posição relativa de agudo ou grave numa faixa de alturas',
       'A intensidade, forte ou suave, com que as notas são tocadas',
-      'A velocidade a que as notas são tocadas',
+      'A velocidade a que as notas são tocadas, de muito lenta a muito rápida',
       'O número de instrumentos a tocar simultaneamente',
     ],
     hint: 'Registo descreve uma porção do espetro de alturas — registo grave, registo médio ou registo agudo.',
@@ -228,7 +228,7 @@ const overlay: ExerciseLevelOverlay = {
       'A 5.ª bemolizada (ou 4.ª sustenida), entre o 4.º e o 5.º graus',
       'A tónica repetida uma oitava acima, no ponto mais agudo da escala',
       'Qualquer nota tocada com vibrato',
-      'A sensível da tonalidade',
+      'A sensível da tonalidade, a nota que fica meio-tom abaixo da tónica',
     ],
     hint: 'A blue note é a b5 (ou #4) acrescentada à pentatónica menor. Em C blues, é Gb/F#, entre F e G.',
   },
@@ -360,7 +360,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Uma nota fora da tonalidade que preenche um tom entre duas notas diatónicas',
       'Qualquer nota tocada com acento',
-      'A primeira nota de uma escala cromática',
+      'A primeira nota de uma escala cromática, que começa na tónica e sobe por meios-tons',
       'Uma nota prolongada do acorde anterior para o seguinte, através da barra de compasso',
     ],
     hint: 'Uma nota cromática de passagem é uma nota não diatónica que liga duas notas diatónicas a um tom de distância, dividindo esse tom em dois meios-tons.',
@@ -422,8 +422,8 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Estabelecer a tónica cantando a escala ou arpejo da tonalidade',
       'Memorizar a melodia inteira de cor antes de cantares uma única nota',
-      'Ler a letra primeiro',
-      'Contar o número total de notas',
+      'Ler a letra primeiro, para saberes bem que palavras vais ter de cantar',
+      'Contar o número total de notas da melodia antes de começares a cantar',
     ],
     hint: 'Estabelecer o centro tonal (tónica) no ouvido é essencial. Cantar uma escala ou arpejo de tónica rápidos ancora a tua perceção de altura antes de ler a melodia.',
   },
@@ -457,7 +457,7 @@ const overlay: ExerciseLevelOverlay = {
       'Que característica musical é mais útil para identificar o período estilístico histórico de uma peça?',
     choices: [
       'A combinação de instrumentação, linguagem harmónica e estrutura formal',
-      'A indicação de andamento sozinha',
+      'A indicação de andamento sozinha, tal como impressa por cima do primeiro compasso',
       'A armação de clave sozinha',
       'O número total de compassos da peça, contados desde o primeiro até ao último',
     ],

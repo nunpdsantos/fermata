@@ -275,12 +275,12 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'The CT°7 shares one note, usually the root, with the chord it embellishes', correct: true },
               { label: 'The CT°7 shares no notes at all with the chord it embellishes', correct: false },
               { label: 'The CT°7 shares two notes, the 3rd and 5th, with the chord it embellishes', correct: false },
-              { label: 'The CT°7 is a dominant chord that resolves to its own tonic', correct: false },
+              { label: 'The CT°7 is a dominant chord that resolves straight to its own tonic, just like V7', correct: false },
             ],
             [
               { label: 'It embellishes a chord: one voice holds while three voices move by step', correct: true },
               { label: 'It embellishes a chord: all four voices move by step and none holds', correct: false },
-              { label: 'It modulates: all four voices leap to a chord in a new key', correct: false },
+              { label: 'It modulates: all four voices leap together to a chord in a distant new key', correct: false },
               { label: 'It replaces the dominant: its root resolves up a half step to the tonic', correct: false },
             ],
           ],
@@ -310,7 +310,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'It can prolong a dominant harmony through chromatic voice exchange', correct: true },
               { label: 'It always modulates to a distant key through chromatic voice exchange', correct: false },
               { label: 'It can prolong only the tonic harmony, never the dominant harmony', correct: false },
-              { label: 'It replaces the final cadence of a phrase with a plagal cadence', correct: false },
+              { label: 'It replaces the final cadence of a phrase with a plagal cadence, from IV back to I', correct: false },
             ],
           ],
         },
@@ -464,7 +464,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'It begins on a unison, 5th or octave and ends on a unison or octave', correct: true },
               { label: 'It begins on a 3rd or a 6th and ends on a 5th that is approached by leap', correct: false },
-              { label: 'It begins and ends on a 3rd, the sweetest of the consonances', correct: false },
+              { label: 'It begins and ends on a 3rd, the sweetest of the consonances, to avoid a hollow sound', correct: false },
               { label: 'It may end on any consonance, approached by step or by leap', correct: false },
             ],
           ],
@@ -502,7 +502,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'The first of each four notes is consonant; the others may be passing or neighbor tones', correct: true },
               { label: 'All four notes against each cantus note must be consonant with it', correct: false },
               { label: 'The first of each four notes may be dissonant as long as the other three are all consonant', correct: false },
-              { label: 'Only the last of each four notes has to be consonant with the cantus note', correct: false },
+              { label: 'Only the last of each four notes must be consonant with the cantus, since it leads on to the next note', correct: false },
             ],
             [
               { label: 'The cambiata steps to a dissonance, leaps a 3rd, then steps back', correct: true },
@@ -512,7 +512,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'A double neighbor decorates one note with its upper and lower neighbors in turn', correct: true },
-              { label: 'A double neighbor is two passing tones moving in the same direction', correct: false },
+              { label: 'A double neighbor is two consecutive passing tones in the same direction, not returning to the first note', correct: false },
               { label: 'A double neighbor sounds two dissonances at the same time, in two different voices', correct: false },
               { label: 'A double neighbor repeats the same note twice on the strong beats', correct: false },
             ],
@@ -535,7 +535,7 @@ const templates: ModuleTemplateConfig[] = [
           choiceSets: [
             [
               { label: 'A note is tied from a weak beat across the barline to the next strong beat', correct: true },
-              { label: 'A note is tied from a strong beat to the weak beat in the same bar', correct: false },
+              { label: 'A note is tied from a strong beat to the weak beat that follows it in the same bar', correct: false },
               { label: 'Every note is struck on the strong beat and left on the weak beat', correct: false },
               { label: 'No ties are used at all; the line is syncopated by rests on each strong beat', correct: false },
             ],
@@ -569,14 +569,14 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'Fifth species freely combines the note values of the first four species', correct: true },
               { label: 'Fifth species uses five notes against each note of the cantus firmus', correct: false },
-              { label: 'Fifth species is counterpoint written for five independent voices', correct: false },
+              { label: 'Fifth species is counterpoint written for five independent voices, one for each species', correct: false },
               { label: 'Fifth species drops all of the dissonance rules of the four earlier species', correct: false },
             ],
             [
               { label: 'Florid counterpoint keeps each earlier species\' rules for its own note values', correct: true },
               { label: 'Florid counterpoint ignores the dissonance rules so that the line can move freely', correct: false },
               { label: 'Florid counterpoint allows only whole notes against the cantus firmus', correct: false },
-              { label: 'Florid counterpoint forbids ties, so suspensions can no longer appear', correct: false },
+              { label: 'Florid counterpoint forbids ties across the barline, so suspensions can no longer appear in it', correct: false },
             ],
           ],
         },
@@ -616,7 +616,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'At the 12th, a 5th becomes an octave when the voices swap', correct: true },
-              { label: 'At the 12th, a 5th becomes a 4th when the voices swap', correct: false },
+              { label: 'At the 12th, a 5th becomes a 4th when the two voices swap places', correct: false },
               { label: 'At the 12th, a 5th becomes a 6th when the voices swap', correct: false },
               { label: 'At the 12th, a 3rd becomes a 6th whenever the two voices swap', correct: false },
             ],
@@ -664,7 +664,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Find the cadence points first, then choose a bass line and chords that lead there', correct: true },
               { label: 'Write the alto and tenor first, then fit a bass and soprano around them', correct: false },
               { label: 'Choose any chord for each note first, then fix the cadences and voices at the very end', correct: false },
-              { label: 'Harmonize from the first note forward and ignore where the cadences fall', correct: false },
+              { label: 'Harmonize from the first note and let the chords decide where each phrase ends', correct: false },
             ],
             [
               { label: 'Last, check for parallel 5ths and octaves, spacing and doubling errors', correct: true },

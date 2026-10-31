@@ -349,8 +349,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Each beat divides naturally into two equal parts', correct: true },
           { label: 'Each beat divides naturally into three equal parts', correct: false },
-          { label: 'The music has no time signature', correct: false },
-          { label: 'The tempo is slow and steady', correct: false },
+          { label: 'The music has no time signature written at the start of the piece', correct: false },
+          { label: 'The tempo is slow and steady from the first bar to the last', correct: false },
         ],
       },
       hint: 'In simple meter, beats subdivide into two. In compound meter, beats subdivide into three. 4/4 and 3/4 are simple meters.',

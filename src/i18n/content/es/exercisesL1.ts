@@ -162,8 +162,8 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Cada tiempo se divide naturalmente en dos partes iguales',
       'Cada tiempo se divide naturalmente en tres partes iguales',
-      'La música no tiene indicación de compás',
-      'El tempo es lento y regular',
+      'La música no tiene indicación de compás escrita al principio de la pieza',
+      'El tempo es lento y regular desde el primer compás hasta el último',
     ],
     hint: 'En el compás simple, los tiempos se subdividen en dos. En el compás compuesto, se subdividen en tres. 4/4 y 3/4 son compases simples.',
   },

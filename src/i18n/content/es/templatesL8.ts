@@ -22,18 +22,18 @@ const overlay: TemplateLevelOverlay = {
         [
           'El sujeto entra primero en la tonalidad de la tónica y la respuesta entra en la dominante',
           'La respuesta entra primero, en la subdominante, y el sujeto la sigue después en la tonalidad de la tónica',
-          'Tanto el sujeto como la respuesta están en la tónica',
+          'Tanto el sujeto como la respuesta están en la tónica, así que la exposición se queda en la tonalidad principal desde la primera entrada',
           'El sujeto entra primero en la dominante',
         ],
         [
           'Una respuesta tonal ajusta intervalos para evitar tonicizar la dominante en el punto de entrada',
           'Una respuesta tonal transpone el sujeto exactamente a la dominante, sin cambiar ningún intervalo',
           'Una respuesta tonal está en un metro diferente',
-          'Respuestas tonales y reales son conceptos idénticos',
+          'Respuestas tonales y reales son el mismo concepto con dos nombres, usados en épocas distintas',
         ],
         [
           'Una respuesta real siempre transpone el sujeto exactamente a la dominante (una 5.ª J por encima o 4.ª J por debajo)',
-          'Una respuesta real cambia siempre algunos intervalos del sujeto para poder permanecer en la tonalidad de la tónica',
+          'Una respuesta real cambia algunos intervalos del sujeto para poder quedarse en la tonalidad de la tónica',
           'Una respuesta real usa inversión',
           'Una respuesta real está siempre en la tónica',
         ],
@@ -58,13 +58,13 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'En el stretto, cada nueva entrada comienza el sujeto antes de que la anterior lo haya terminado',
-          'En el stretto cada voz espera a que la entrada anterior termine y luego toca el sujeto más despacio',
+          'En el stretto cada voz espera a que la entrada anterior termine y solo entonces entra',
           'Stretto es lo mismo que un episodio',
           'Stretto solo ocurre en la exposición',
         ],
         [
           'Los episodios modulan entre áreas tonales, frecuentemente usando secuencias derivadas del sujeto',
-          'Los episodios presentan siempre el sujeto completo y en la tonalidad de la tónica, sin ninguna modulación',
+          'Los episodios presentan siempre el sujeto completo en la tónica, sin ninguna modulación',
           'Los episodios nunca usan material del sujeto',
           'Los episodios deben permanecer en la tonalidad de la tónica',
         ],
@@ -76,7 +76,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'La disminución siempre presenta el sujeto en valores de nota más cortos (generalmente reducidos a la mitad)',
-          'La disminución quita notas al sujeto, manteniendo todos sus valores de nota originales sin ningún cambio',
+          'La disminución quita notas al sujeto, pero mantiene sus valores de nota originales',
           'La disminución es lo mismo que la retrogradación',
           'La disminución hace el sujeto más fuerte',
         ],
@@ -97,7 +97,7 @@ const overlay: TemplateLevelOverlay = {
           'Un canon en inversión (canon espejo) imita la melodía en movimiento contrario',
           'Un canon en inversión toca la melodía al revés, de la última nota a la primera, a la misma altura',
           'Un canon en inversión invierte el ritmo',
-          'Canon en inversión es lo mismo que aumentación',
+          'Canon en inversión es lo mismo que aumentación: la voz que sigue repite la melodía en valores de nota más largos',
         ],
         [
           'Un canon cangrejo (canon cancrizans) presenta la melodía en retrogradación',
@@ -131,14 +131,14 @@ const overlay: TemplateLevelOverlay = {
         [
           'La transición en la exposición modula de la tónica al área tonal secundaria',
           'La transición en la exposición permanece en la tónica y se limita a introducir el segundo tema',
-          'La transición introduce el segundo tema',
+          'La transición es el material conclusivo, que confirma la nueva tonalidad después del segundo tema',
           'La transición se omite siempre',
         ],
         [
           'El desarrollo típicamente presenta fragmentación, secuencia y modulación por tonalidades remotas',
           'El desarrollo repite simplemente la exposición nota a nota, siempre en la tonalidad de la tónica de principio a fin',
           'El desarrollo permanece en la tónica',
-          'El desarrollo introduce temas enteramente nuevos',
+          'El desarrollo deja de lado los temas de la exposición e introduce melodías nuevas, cada una oída por primera vez',
         ],
         [
           'Una falsa reexposición comienza el regreso del tema en la tonalidad equivocada antes de la verdadera reexposición',
@@ -149,7 +149,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'En una sonata en tonalidad menor, el segundo tema está típicamente en el relativo mayor (III)',
           'En una sonata en tonalidad menor, el segundo tema permanece normalmente en la tónica menor y nunca modula',
-          'Las sonatas menores ponen el segundo tema en la subdominante',
+          'Las sonatas menores ponen normalmente el segundo tema en la subdominante (iv), una 4.ª por encima de la tónica',
           'Las sonatas menores no tienen segundo tema',
         ],
       ],
@@ -169,18 +169,18 @@ const overlay: TemplateLevelOverlay = {
           'La forma de ritornello alterna pasajes de tutti orquestal con episodios solistas',
           'La forma de ritornello es solo otro nombre del rondó, con solistas tocando todas las secciones',
           'El ritornello solo usa solistas',
-          'El ritornello no tiene material recurrente',
+          'La forma de ritornello no tiene material recurrente: cada pasaje orquestal trae un tema propio',
         ],
         [
           'El sonata-rondó combina el tema A recurrente del rondó con las relaciones tonales de la forma sonata',
           'El sonata-rondó es un rondó simple, sin ningún tema recurrente, y se usa únicamente en la música vocal',
-          'El sonata-rondó es simplemente un rondó',
+          'El sonata-rondó es simplemente un rondó corriente, ABACA, cuyos episodios se quedan en la tonalidad de la tónica de principio a fin',
           'El sonata-rondó no tiene tema recurrente',
         ],
         [
           'Una passacaglia es un conjunto de variaciones sobre una línea de bajo recurrente (bajo ostinato)',
           'Una passacaglia es una fuga en la que el sujeto ya nunca regresa una vez terminada la exposición',
-          'Una passacaglia es un tipo de rondó',
+          'Una passacaglia es un tipo de rondó (ABACA), en el que un estribillo regresa entre los distintos episodios contrastantes',
           'Una passacaglia no tiene elemento recurrente',
         ],
       ],
@@ -204,14 +204,14 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Un clarinete en Bb siempre suena una 2.ª mayor por debajo de lo escrito: lee C y se oye Bb',
-          'Un clarinete en Bb suena exactamente como está escrito, como todos los demás instrumentos de la orquesta',
+          'Un clarinete en Bb suena exactamente como está escrito: su C escrito se oye como C',
           'El clarinete en Bb suena más agudo que lo escrito',
           'Solo los instrumentos de percusión transponen',
         ],
         [
           'La trompa en F suena una 5.ª justa por debajo de lo escrito',
           'La trompa en F suena una 5.ª justa por encima de lo escrito, así que su C escrito suena como G',
-          'La trompa en F es no transpositora',
+          'La trompa en F es no transpositora, así que el C escrito es el C que se oye',
           'La trompa en F suena una octava por debajo',
         ],
       ],
@@ -239,7 +239,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'La forma normal siempre dispone el conjunto en el orden ascendente más compacto',
-          'La forma normal empieza siempre el conjunto en C y después lista sus clases de altura en orden descendente',
+          'La forma normal enumera siempre las clases de altura en orden numérico, de 0 a 11, sea cual sea la extensión',
           'La forma normal usa orden descendente',
           'No existe ordenación estándar para conjuntos',
         ],
@@ -262,7 +262,7 @@ const overlay: TemplateLevelOverlay = {
           'El vector interválico cuenta ocurrencias de cada clase de intervalo (1 a 6) en un conjunto de clases de altura',
           'El vector interválico cuenta solo los intervalos justos de un conjunto e ignora todas sus 2.as, 3.as, 6.as y 7.as',
           'El vector interválico usa nombres de notas',
-          'Los vectores interválicos son lo mismo que la forma normal',
+          'Los vectores interválicos son solo otro nombre de la forma normal, que lista las clases de altura de un conjunto en orden ascendente',
         ],
         [
           'La forma primaria transpone y/o invierte un conjunto a su forma más compacta, comenzando siempre en 0',
@@ -291,7 +291,7 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'Una serie dodecafónica usa cada una de las 12 clases de altura exactamente una vez antes de cualquier repetición',
-          'Una serie dodecafónica puede repetir cualquier altura libremente, siempre que las doce notas aparezcan en algún momento',
+          'Una serie dodecafónica puede repetir alturas libremente, con tal de que aparezcan las doce notas',
           'Una serie usa solo 7 alturas',
           'Una serie debe ser una escala',
         ],
@@ -299,7 +299,7 @@ const overlay: TemplateLevelOverlay = {
           'Las cuatro transformaciones básicas de la serie son Original, Inversión, Retrógrada y Retrógrada-Inversión',
           'Las cuatro transformaciones básicas de la serie son Original, Aumentación, Disminución y Modulación a la dominante',
           'Existen solo 2 transformaciones de la serie',
-          'Las series no pueden transformarse',
+          'Las series quedan fijas una vez escritas, así que el compositor usa la serie original sin cambios a lo largo de la pieza',
         ],
         [
           'La matriz 12x12 contiene las 48 formas posibles (12P + 12I + 12R + 12RI)',
@@ -322,7 +322,7 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'La politonalidad siempre hace sonar dos o más tonalidades a la vez, por ejemplo C mayor contra F# mayor',
-          'La politonalidad significa cambiar de tonalidad muchas veces en una melodía, pero siempre una tonalidad cada vez',
+          'La politonalidad significa cambiar de tonalidad muchas veces en una melodía, pero de una en una',
           'La politonalidad no usa ninguna tonalidad',
           'La politonalidad es una técnica rítmica',
         ],
@@ -334,21 +334,21 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'El planing cromático siempre mantiene los intervalos exactos; el planing diatónico los ajusta a la escala',
-          'El planing cromático mantiene todas las voces dentro de la tonalidad, mientras que el diatónico mantiene los intervalos exactos',
+          'El planing cromático mantiene las voces dentro de la tonalidad; el diatónico, los intervalos exactos',
           'El planing usa siempre movimiento contrario',
           'El planing cambia el acorde en cada paso',
         ],
         [
           'La música espectral deriva la armonía de la serie de armónicos y del análisis acústico del sonido',
           'La música espectral construye toda su armonía a partir de una serie dodecafónica y evita la serie de armónicos',
-          'La música espectral usa armonía tonal tradicional',
+          'La música espectral usa armonía tonal tradicional, con acordes apilados en terceras y cadencias V-I al final de las frases',
           'La música espectral evita todos los sonidos con altura definida',
         ],
         [
           'La microtonalidad usa intervalos menores que un semitono, no solo las 12 notas habituales',
           'La microtonalidad usa solo las 12 alturas estándar, pero toca cada una de ellas extremadamente bajito',
           'La microtonalidad usa solo las 12 alturas estándar',
-          'La microtonalidad es lo mismo que la atonalidad',
+          'La microtonalidad es lo mismo que la atonalidad: ambos términos designan música sin centro tonal',
         ],
       ],
     },
@@ -365,7 +365,7 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'El desfase siempre parte de dos patrones idénticos y los desplaza gradualmente fuera de sincronía',
-          'El desfase mantiene dos patrones idénticos perfectamente sincronizados durante toda la pieza, cambiando solo las alturas',
+          'El desfase mantiene dos patrones idénticos perfectamente sincronizados durante toda la pieza',
           'El desfase usa técnica dodecafónica',
           'El desfase implica alterar el contenido de alturas',
         ],
@@ -373,7 +373,7 @@ const overlay: TemplateLevelOverlay = {
           'El proceso aditivo añade gradualmente notas a un patrón repetido, creando una melodía que se expande lentamente',
           'El proceso aditivo quita una nota al patrón en cada repetición, hasta que al final de la pieza ya solo queda el silencio',
           'El proceso aditivo cambia de tonalidad en cada repetición',
-          'El proceso aditivo es lo mismo que tema y variaciones',
+          'El proceso aditivo es lo mismo que tema y variaciones: cada repetición presenta una nueva versión ornamentada del tema original',
         ],
         [
           'La música aleatoria deja algunos elementos al azar o a la elección del intérprete',
@@ -385,7 +385,7 @@ const overlay: TemplateLevelOverlay = {
           'Las técnicas expandidas incluyen multifónicos, piano preparado, col legno y armónicos',
           'Las técnicas expandidas son simplemente las formas habituales de tocar enseñadas en cualquier método de conservatorio',
           'Las técnicas expandidas se aplican solo a la percusión',
-          'Las técnicas expandidas se inventaron en el periodo barroco',
+          'Las técnicas expandidas son efectos que solo existen en la música electrónica, nunca en instrumentos acústicos',
         ],
       ],
     },
@@ -404,13 +404,13 @@ const overlay: TemplateLevelOverlay = {
           'Una polirritmia hace sonar dos divisiones en conflicto del mismo lapso a la vez, por ejemplo 3 contra 2',
           'Una polirritmia es un solo ritmo tocado al unísono por muchos instrumentos, con todas las partes dividiendo el pulso de la misma manera',
           'Una polirritmia es un accelerando gradual',
-          'Una polirritmia exige un compás compuesto',
+          'Una polirritmia exige siempre un compás compuesto, como 6/8, y nunca puede escribirse en un compás de 4/4',
         ],
         [
           'La polimetría opone dos compases, por ejemplo 3/4 en una parte contra 4/4 en otra',
           'La polimetría significa que la pieza pasa de 3/4 a 4/4 a la mitad, con todas las partes cambiando a la vez',
           'La polimetría usa solo un compás',
-          'La polimetría es lo mismo que la síncopa',
+          'La polimetría es lo mismo que la síncopa, en la que los acentos caen fuera del pulso dentro de un compás que las partes comparten',
         ],
         [
           'Una hemiola reagrupa seis pulsos de 2 × 3 en 3 × 2, por ejemplo dos compases de 3/4 sentidos como un compás de 3/2',
@@ -422,13 +422,13 @@ const overlay: TemplateLevelOverlay = {
           'Modulación métrica: si las corcheas de tresillo a ♩ = 120 pasan a ser las nuevas corcheas, la nueva ♩ = 180',
           'Modulación métrica: si las corcheas de tresillo a ♩ = 120 pasan a ser las nuevas corcheas, el tempo queda ♩ = 120, porque la modulación métrica nunca cambia la velocidad',
           'Modulación métrica significa cambiar de tonalidad',
-          'La modulación métrica es un ritardando gradual',
+          'La modulación métrica es un ritardando gradual, en el que la música se frena poco a poco hasta llegar a un tempo nuevo y más tranquilo',
         ],
         [
           'Un quintillo encaja cinco notas iguales en el tiempo que normalmente ocupan cuatro del mismo valor',
           'Un quintillo estira cuatro notas a lo largo de cinco pulsos, así que cada una dura más de lo que está escrito en la partitura',
           'Un quintillo solo puede escribirse en 5/4',
-          'Un quintillo dura cinco compases',
+          'Un quintillo es una frase de cinco compases, creada añadiendo un compás extra a una frase regular de cuatro',
         ],
       ],
     },

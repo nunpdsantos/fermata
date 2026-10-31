@@ -186,7 +186,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Un acorde pivote es diatónico tanto en la tonalidad antigua como en la nueva',
           'Un acorde pivote es diatónico en la tonalidad antigua pero cromático en la nueva',
-          'Un acorde pivote tiene que ser siempre el V7 de la nueva tonalidad',
+          'Un acorde pivote tiene que ser siempre el V7 de la nueva tonalidad, así que nunca puede ser un acorde menor',
           'Un acorde pivote solo puede enlazar dos tonalidades menores',
         ],
         [
@@ -249,7 +249,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Una modulación directa pasa a una nueva tonalidad en un límite de frase, sin pivote',
           'Una modulación directa pasa a una nueva tonalidad a mitad de frase mediante un acorde pivote común',
-          'Una modulación directa es solo otro nombre para una tonicización breve',
+          'Una modulación directa es solo otro nombre para una tonicización breve que regresa enseguida a la tonalidad principal',
           'Una modulación directa solo puede subir medio tono',
         ],
         [

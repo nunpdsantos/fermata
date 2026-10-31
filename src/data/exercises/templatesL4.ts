@@ -43,13 +43,13 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'In a 7-6 suspension, the 7th resolves down to the 6th', correct: true },
               { label: 'In a 7-6 suspension, the 7th above the bass resolves up to the octave', correct: false },
               { label: 'In a 7-6 suspension, the bass holds the dissonance while the upper voice moves', correct: false },
-              { label: 'In a 7-6 suspension, the dissonance is never resolved', correct: false },
+              { label: 'In a 7-6 suspension, the dissonance is never resolved at all', correct: false },
             ],
             [
               { label: 'In a 9-8 suspension, the 9th above the bass resolves down to the octave', correct: true },
               { label: 'In a 9-8 suspension, the 9th above the bass resolves up by step to the 10th', correct: false },
               { label: 'A 9-8 suspension is simply a 2-1 suspension in the bass voice', correct: false },
-              { label: 'In a 9-8 suspension, the octave above the bass rises to the 9th', correct: false },
+              { label: 'In a 9-8 suspension, the octave above the bass is the dissonance and rises to the 9th', correct: false },
             ],
             [
               { label: 'In a 2-3 bass suspension, the bass resolves down and the 2nd becomes a 3rd', correct: true },
@@ -71,7 +71,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'A decorated suspension adds a note between the suspension and its resolution', correct: true },
-              { label: 'A decorated suspension skips its resolution entirely', correct: false },
+              { label: 'A decorated suspension drops its resolution and goes straight to the next chord', correct: false },
               { label: 'A decorated suspension must always use chromatic notes', correct: false },
               { label: 'A decorated suspension resolves upward by step instead of down to the note below', correct: false },
             ],
@@ -107,7 +107,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'A retardation is held over like a suspension but resolves up by step', correct: true },
               { label: 'A retardation is held over like a suspension and resolves down by step', correct: false },
-              { label: 'A retardation is approached by leap and has no preparation', correct: false },
+              { label: 'A retardation is approached by leap and has no preparation, like an appoggiatura', correct: false },
               { label: 'A retardation resolves by leap, never by step', correct: false },
             ],
             [
@@ -118,7 +118,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'Unprepared, accented appoggiaturas are a hallmark of Romantic expression', correct: true },
-              { label: 'Appoggiaturas are forbidden in Romantic music', correct: false },
+              { label: 'Appoggiaturas are forbidden in Romantic music, which avoids accented dissonance', correct: false },
               { label: 'Appoggiaturas must always be prepared, exactly like suspensions', correct: false },
               { label: 'Appoggiaturas occur only in the bass voice, never in the melody that sits above it', correct: false },
             ],
@@ -212,7 +212,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'In V7–I, the I chord often omits its 5th so the voices can resolve properly', correct: true },
               { label: 'In V7–I, the I chord must always be complete, with all three notes', correct: false },
-              { label: 'V7–I always produces parallel 5ths, which are allowed here', correct: false },
+              { label: 'V7–I always produces parallel 5ths between the outer voices, which are allowed here', correct: false },
               { label: 'In V7–I, the root of V7 must always move up by step to become the 3rd of the I chord', correct: false },
             ],
           ],
@@ -301,7 +301,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'IV and ii (and IV7, ii7) are the main pre-dominant chords', correct: true },
-              { label: 'V and vii° are the main pre-dominant chords', correct: false },
+              { label: 'V and vii° are the main pre-dominant chords, because both lead straight to I', correct: false },
               { label: 'iii is the main pre-dominant chord, because it lies a step below IV', correct: false },
               { label: 'vi is the only chord that can work as a pre-dominant', correct: false },
             ],
@@ -356,7 +356,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'V7–vi7 is a deceptive resolution in which the root of V7 is held as the 7th of vi7', correct: true },
               { label: 'V7–vi7 is a perfect authentic cadence in disguise', correct: false },
               { label: 'V7–vi7 is impossible, because vi7 shares no notes with V7', correct: false },
-              { label: 'V7–vi7 is a half cadence, because it ends on a minor chord', correct: false },
+              { label: 'V7–vi7 is a half cadence, because it ends the phrase on a minor chord instead of a major one', correct: false },
             ],
             [
               { label: 'In jazz and pop, Imaj7 is the usual tonic, a resting point', correct: true },
@@ -479,7 +479,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'iii can act as a weak tonic substitute: it shares two notes with I', correct: true },
               { label: 'iii is always a dominant chord, because it contains the leading tone', correct: false },
-              { label: 'iii is the main pre-dominant chord of the key', correct: false },
+              { label: 'iii is the main pre-dominant chord of the key, the one that most often leads to V', correct: false },
               { label: 'iii never appears in common-practice harmony', correct: false },
             ],
             [
@@ -490,7 +490,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'D → PD (for example V–IV) is a retrogression: it reverses the usual flow', correct: true },
-              { label: 'D → PD (for example V–IV) is the standard order of functions', correct: false },
+              { label: 'D → PD (for example V–IV) is the standard order of functions in a normal phrase', correct: false },
               { label: 'D → PD (for example V–IV) is impossible in any style of music', correct: false },
               { label: 'D → PD (for example V–IV) is the strongest way to end a phrase, stronger than V–I', correct: false },
             ],
@@ -520,7 +520,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'An ascending 5-6 sequence alternates 5/3 and 6/3 chords over a rising bass', correct: true },
               { label: 'An ascending 5-6 sequence uses only root-position triads over a falling bass', correct: false },
-              { label: 'An ascending 5-6 sequence moves the bass down by step', correct: false },
+              { label: 'An ascending 5-6 sequence moves the bass down by step while the upper voices rise', correct: false },
               { label: 'The 5-6 sequence is not a real type of sequence', correct: false },
             ],
             [
@@ -612,7 +612,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'Second species introduces dissonance, as passing tones on weak beats', correct: true },
-              { label: 'Second species introduces the suspension, tied over the barline', correct: false },
+              { label: 'Second species introduces the suspension, with a note tied over the barline', correct: false },
               { label: 'Second species introduces the appoggiatura, approached by leap', correct: false },
               { label: 'Second species adds nothing new: it follows exactly the same rules as first species', correct: false },
             ],

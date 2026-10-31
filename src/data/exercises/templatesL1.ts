@@ -231,7 +231,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: '3/4 groups its beats in threes: strong-weak-weak', correct: true },
-              { label: '3/4 groups its beats in pairs: strong-weak', correct: false },
+              { label: '3/4 groups its beats in pairs: strong-weak, strong-weak', correct: false },
               { label: '3/4 groups its beats in fours: strong-weak-medium-weak', correct: false },
               { label: '3/4 has no strong beat at all', correct: false },
             ],

@@ -10,10 +10,19 @@
  *   shortest by characters and words, most / least like the others, prompt-
  *   word overlap, shared vocabulary, "no absolute words", longest without
  *   absolute words, most punctuation, most digits) hits ≤ 40% (chance 25%).
+ * - Rank family (round 4): for characters, words, punctuation, digits and
+ *   parentheses, the right answer is UNIQUELY the r-th largest — for every r —
+ *   in at most chance + 15 points of the sets (4 options: 40%; 3 options: 50%),
+ *   and is among the two longest (characters or words) in ≤ 65% of 4-option
+ *   sets (chance 50%). Moving the answer from "longest" to "second-longest"
+ *   is the same cue, so every rank is bounded.
+ * - Outlier: where one option is at least 1.25× longer than every other, it
+ *   is the answer at most chance + 15 points of the time (levels with ≥ 10
+ *   such sets).
  */
 import { describe, it, expect } from 'vitest';
 import { CONTENT_LANGS, LEVELS } from './learnCorpus';
-import { HEURISTICS, heuristicRates, uniqueExtremes, type ServedSet } from './answerCues';
+import { HEURISTICS, heuristicRates, uniqueExtremes, rankCells, uniqueRank, amongTopTwo, RANK_FEATURES, servedSets, longOutliers, rankBound, OUTLIER_MIN_SETS, type ServedSet } from './answerCues';
 
 describe('answer-cue heuristics', () => {
   it('each heuristic finds a planted cue and credits ties fairly', () => {
@@ -28,6 +37,26 @@ describe('answer-cue heuristics', () => {
     }
     const tie: ServedSet = { id: 't', prompt: '', choices: [{ label: 'aa', correct: true }, { label: 'bb', correct: false }, { label: 'c', correct: false }] };
     expect(HEURISTICS['longest (chars)'](tie, 'en')).toBe(0.5);
+  });
+
+  it('the rank family reads unique ranks, makes no pick on a tie, and splits a tie at the top-two cut', () => {
+    const second: ServedSet = { id: 's', prompt: '', choices: [
+      { label: 'a much longer wrong option', correct: false },
+      { label: 'the right one', correct: true },
+      { label: 'short', correct: false },
+      { label: 'tiny', correct: false },
+    ] };
+    expect(uniqueRank(second, RANK_FEATURES.characters)).toBe(2);
+    expect(amongTopTwo(second, RANK_FEATURES.characters)).toBe(1);
+    const cells = rankCells([second]).ranks.filter((c) => c.feature === 'characters');
+    expect(cells.find((c) => c.rank === 2)!.rate).toBe(1);
+    expect(cells.find((c) => c.rank === 1)!.rate).toBe(0);
+    const tied: ServedSet = { id: 'x', prompt: '', choices: [
+      { label: 'abcdefghij', correct: false }, { label: 'abcde', correct: true }, { label: 'vwxyz', correct: false }, { label: 'a', correct: false },
+    ] };
+    expect(uniqueRank(tied, RANK_FEATURES.characters)).toBe(0);
+    expect(amongTopTwo(tied, RANK_FEATURES.characters)).toBe(0.5);
+    expect(uniqueRank({ ...tied, choices: tied.choices.map((c, i) => ({ ...c, label: ['(a)', 'b', '(c)', 'd'][i] })) }, RANK_FEATURES.parentheses)).toBe(0);
   });
 });
 
@@ -44,6 +73,20 @@ for (const lang of CONTENT_LANGS) {
       it(`L${n}: every heuristic ≤ 40%`, () => {
         const over = Object.entries(heuristicRates(n, lang)).filter(([, r]) => r > 0.4).map(([k, r]) => `${k} ${(100 * r).toFixed(1)}%`);
         expect(over).toEqual([]);
+      });
+
+      it(`L${n}: no length / punctuation / digit rank gives the answer away`, () => {
+        const { ranks, topTwo } = rankCells(servedSets(n, lang));
+        const over = [...ranks, ...topTwo]
+          .filter((c) => c.rate > c.bound + 1e-12)
+          .map((c) => `${topTwo.includes(c) ? `among the two largest by ${c.feature}` : `${c.feature} rank ${c.rank}`} (${c.size} options) ${(100 * c.rate).toFixed(1)}% > ${(100 * c.bound).toFixed(0)}%`);
+        expect(over).toEqual([]);
+      });
+
+      it(`L${n}: a conspicuously longer option is not usually the answer`, () => {
+        const o = longOutliers(servedSets(n, lang));
+        if (o.sets < OUTLIER_MIN_SETS) return;
+        expect(o.right / o.sets, `outlier is the answer in ${o.right}/${o.sets}: ${o.ids.join(' ')}`).toBeLessThanOrEqual(rankBound(4));
       });
     }
   });

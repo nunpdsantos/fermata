@@ -62,7 +62,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'The relative highness or lowness of a range of pitches', correct: true },
           { label: 'The loudness or softness with which the notes are played', correct: false },
-          { label: 'The speed at which notes are played', correct: false },
+          { label: 'The speed at which the notes are played, from very slow to very fast', correct: false },
           { label: 'The number of instruments playing simultaneously', correct: false },
         ],
       },
@@ -514,7 +514,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'The flat 5th (or sharp 4th), between the 4th and 5th degrees', correct: true },
           { label: 'The tonic repeated an octave higher, at the very top of the scale', correct: false },
           { label: 'Any note played with vibrato', correct: false },
-          { label: 'The leading tone of the key', correct: false },
+          { label: 'The leading tone of the key, the note a half step below the tonic', correct: false },
         ],
       },
       hint: 'The blue note is the b5 (or #4) added to the minor pentatonic. In C blues, it is Gb/F#, sitting between F and G.',
@@ -770,7 +770,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'A note outside the key that fills in a whole step between two diatonic notes', correct: true },
           { label: 'Any note played with an accent', correct: false },
-          { label: 'The first note of a chromatic scale', correct: false },
+          { label: 'The first note of a chromatic scale, which starts on the tonic and rises by half steps', correct: false },
           { label: 'A note held over from the previous chord into the next one, across the bar line', correct: false },
         ],
       },
@@ -868,8 +868,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Establishing the tonic by singing the scale or arpeggio of the key', correct: true },
           { label: 'Memorizing the entire melody by heart before you sing a single note of it', correct: false },
-          { label: 'Reading the lyrics first', correct: false },
-          { label: 'Counting the total number of notes', correct: false },
+          { label: 'Reading the lyrics first, so you know exactly which words you will have to sing', correct: false },
+          { label: 'Counting the total number of notes in the melody before you start to sing', correct: false },
         ],
       },
       hint: 'Establishing the key center (tonic) in your ear is essential. Singing a quick scale or tonic arpeggio grounds your pitch perception before reading the melody.',
@@ -916,7 +916,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'The combination of instrumentation, harmonic language, and formal structure', correct: true },
-          { label: 'The tempo marking alone', correct: false },
+          { label: 'The tempo marking alone, exactly as it is printed above the first bar of the score', correct: false },
           { label: 'The key signature alone', correct: false },
           { label: 'The total number of measures in the piece, counted from the first bar to the last', correct: false },
         ],
