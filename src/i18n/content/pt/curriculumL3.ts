@@ -422,7 +422,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'A Meia Cadência Frígia',
           explanation:
-            'Característica das tonalidades menores: iv6 a resolver para V, com o baixo a descer por meio-tom do b6.o grau para o 5.º. Esta descida de meio-tom no baixo dá à cadência o seu nome — assemelha-se ao meio-tom descendente característico do modo frígio. Comum na música barroca, a meia cadência frígia tem uma qualidade sombria e arcaica que nenhuma outra cadência replica.',
+            'Característica das tonalidades menores: iv6 a resolver para V, com o baixo a descer por meio-tom do ♭6.º grau para o 5.º. Esta descida de meio-tom no baixo dá à cadência o seu nome — assemelha-se ao meio-tom descendente característico do modo frígio. Comum na música barroca, a meia cadência frígia tem uma qualidade sombria e arcaica que nenhuma outra cadência replica.',
           tryThisLabel:
             'Ouve iv6 — a aproximação à meia cadência frígia em A menor',
         },

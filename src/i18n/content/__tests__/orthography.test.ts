@@ -39,16 +39,16 @@ export const usesLetterForDiminished = (t: string) => DIM_AS_LETTER.test(t);
 
 const RULES: Record<'pt' | 'es', Array<[string, (t: string) => boolean]>> = {
   pt: [
-    ['typewriter ordinal (3.a / 5.o): use 3.ª / 5.º', (t) => /(?<![\w.])\d+\.[ao](?![\wÀ-ÿ])/.test(t)],
-    ['dotless ordinal (7ª): use 7.ª', (t) => /(?<![\w.])\d+[ªº](?![\wÀ-ÿ])/.test(t)],
+    ['typewriter ordinal (3.a / 5.o / b6.o): use 3.ª / 5.º / ♭6.º', (t) => /(?<![\p{L}\d.])[b#♭♯]?\d+\.[ao](?![\p{L}])/u.test(t)],
+    ['dotless ordinal (7ª, b6º): use 7.ª', (t) => /(?<![\p{L}\d.])[b#♭♯]?\d+[ªº](?![\p{L}])/u.test(t)],
     ['" -- " dash: use —', (t) => t.includes(' -- ')],
     ['"caráter": PT-PT is "carácter" / "caracteres"', (t) => /\bcaráter(?:es)?\b/i.test(t)],
     ['você-form imperative: use tu (Clica, Escolhe, Toca…)', (t) => /(?:^|[.!?:]\s+)(?:Clique|Escolha|Selecione|Toque|Digite|Pressione|Arraste|Experimente)\b|\bPassou!/.test(t)],
     ['diminished written with "o"/"º" (viio7, o = diminuta): use °', usesLetterForDiminished],
   ],
   es: [
-    ['typewriter ordinal (3.a / 5.o): use 3.ª / 5.º', (t) => /(?<![\w.])\d+\.[ao](?![\wÀ-ÿ])/.test(t)],
-    ['dotless ordinal (7ª): use 7.ª', (t) => /(?<![\w.])\d+[ªº](?![\wÀ-ÿ])/.test(t)],
+    ['typewriter ordinal (3.a / 5.o / b6.o): use 3.ª / 5.º / ♭6.º', (t) => /(?<![\p{L}\d.])[b#♭♯]?\d+\.[ao](?![\p{L}])/u.test(t)],
+    ['dotless ordinal (7ª, b6º): use 7.ª', (t) => /(?<![\p{L}\d.])[b#♭♯]?\d+[ªº](?![\p{L}])/u.test(t)],
     ['diminished written with "o"/"º" (viiº, º = disminuida): use °', usesLetterForDiminished],
     ['question/exclamation without the opening ¿ / ¡', (t) => missingOpeningMarks(t).length > 0],
   ],
@@ -57,6 +57,8 @@ const RULES: Record<'pt' | 'es', Array<[string, (t: string) => boolean]>> = {
 describe('rules fire on planted strings', () => {
   it.each([
     ['pt', 'uma 3.a maior e uma 5.o grau'],
+    ['pt', 'o baixo desce do b6.o grau para o 5.º'],
+    ['es', 'del b6º grado al 5.º'],
     ['pt', 'Menor com 6ª maior'],
     ['pt', 'resolve -- para o I'],
     ['pt', 'o seu caráter rítmico'],
@@ -86,6 +88,7 @@ describe('rules fire on planted strings', () => {
     ['es', 'Pulsa una tecla. ¡Pruébalo ahora!'],
     ['es', 'el vii° (p. ej., vii°/V)'],
     ['es', 'del 1.er grado al 5.º'],
+    ['pt', 'do ♭6.º grau para o 5.º; b6, #4 e b7'],
     ['pt', 'o vii°7 resolve; o 5.º grau; ao centro; Do-Re-Mi'],
     ['es', 'El símbolo de grado (°) indica disminuida (vii°); B°7'],
   ] as const)('%s "%s" passes', (lang, text) => {

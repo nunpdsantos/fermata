@@ -13,23 +13,44 @@ one style):
 
 - European Portuguese forms: `tónica`, `harmónica`, `carácter`, `dórico`,
   `frígio`, `lídio`, `mixolídio`, `pentatónica`, `secção`, `enarmónica`.
-- Solfège note names accented in prose (`Dó central`, `Fá#`, `Láb`);
-  international letter names (C, D, Eb), chord symbols (Cmaj7, ii7, Gr+6)
-  and template tokens (`{note}`, `{scaleType}`, …) untouched.
+- Note names are letters since D-18 (see below); where solfège remains
+  (clef names, sentences about the syllables) it keeps its accents (`clave
+  de fá`, `Dó`). Chord symbols (Cmaj7, ii7, Gr+6) and template tokens
+  (`{note}`, `{scaleType}`, …) are never translated.
 - Loanwords stay English/Italian: blues, jazz, swing, voicing, tremolo.
 - Ordinal style (2026-10-30, W6-11 — supersedes "keep `3.o`/`5.a`"): the
   ordinal indicators, `1.º`, `3.ª`, `7.ª M`; plurals in plain letters
   (`3.as`, `2.os`). Spanish uses the same style (plus `1.er` / `3.er`).
-  `orthography.test.ts` forbids `3.a` / `5.o` / `7ª` in PT and ES.
+  `orthography.test.ts` forbids `3.a` / `5.o` / `7ª` in PT and ES, also
+  after an accidental (`b6.o` → `♭6.º`).
 - Dashes: `—` (em dash), never ` -- `.
 - Register: European Portuguese `tu` everywhere, including the interface
   (`Clica`, `Escolhe`, `Toca`, `Passaste!`).
 - Note names (D-18): letters (C, D, E…), as on the instruments; solfège only
   where a sentence is about solfège syllables, and in clef names (`clave de
   sol`, `clave de fá`).
-- Terminology (D-19): chord root = `fundamental`; `meio-tom` / `meios-tons`;
-  cadences = `perfeita (CAP)`, `imperfeita (CAI)`, `suspensiva`, `plagal`,
-  `interrompida`.
+- Noun rule for letter names: never start a sentence with a bare `A`/`E`
+  (PT) or `La`/`A` (ES) before `menor`/`maior`/`mayor`/`natural`/
+  `harmónica`/`armónica`/`melódica`, nor PT `E está/é` — it reads as the
+  article or conjunction ("A menor harmónica eleva…" = "the harmonic
+  minor…"). Add the noun: `A escala menor harmónica…`, `A escala de A menor
+  natural: …`, `A tonalidade de E maior tem…`, `A nota E está no baixo`
+  (ES `La escala menor armónica…`, `La tonalidad de A mayor…`).
+  `noteNames.test.ts` enforces it.
+- Diminished sign: `°` (vii°7, B°7, `° = diminuta`), never the letter `o` or
+  the ordinal `º`; English source keeps its `viio`. `orthography.test.ts`
+  enforces it.
+- Interval short forms in titles: cardinal + quality, as in the L9 hints —
+  PT `1P–5P`, `6m–8P`; ES `1J–5J`, `6m–8J`.
+- Terminology (D-19, amended D-19a on 2026-10-31): chord root =
+  `fundamental`; `meio-tom` / `meios-tons`; cadences:
+  - PT: `perfeita (CAP)`, `imperfeita (CAI)`, `meia cadência` (no hyphen;
+    `cadência suspensiva` only as the one alternative mention in the L3
+    cadence lesson), `plagal`, `interrompida`;
+  - ES: `auténtica perfecta (CAP)`, `auténtica imperfecta (CAI)`,
+    `semicadencia`, `plagal`, `cadencia rota` (`interrumpida` only as the
+    one alternative mention in the L3 lesson).
+  `terminology.test.ts` enforces it.
 - Movable-do solfège tokens in l9u32m4 (`Do-Re-Mi…Ti`, "Do = C")
   deliberately kept unaccented — they are system tokens, not prose.
 

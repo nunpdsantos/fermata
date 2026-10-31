@@ -119,7 +119,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U30 M3: Interval Recognition P1-P5 ────────────────────────────────────
     l9u30m3: {
-      title: 'Reconhecimento de Intervalos: P1-P5',
+      title: 'Reconhecimento de Intervalos: 1P–5P',
       subtitle:
         'Identificar intervalos perfeitos e pequenos de ouvido usando associações com canções e reconhecimento direto',
       objectives: [
@@ -167,7 +167,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U30 M4: Interval Recognition m6-P8 ────────────────────────────────────
     l9u30m4: {
-      title: 'Reconhecimento de Intervalos: 6.ª m – 8.ª P',
+      title: 'Reconhecimento de Intervalos: 6m–8P',
       subtitle:
         'Identificar intervalos amplos de ouvido — sextas, sétimas e a oitava',
       objectives: [

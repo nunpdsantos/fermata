@@ -26,12 +26,29 @@ export function fingerprint(label: string): string {
   // English writes the diminished sign as "o" (viio7), PT/ES as "°".
   const t = label.replace(/(?<=[\p{L}])[ºo](?=\d|\/|\)|,|\.|-|–|—|\s|$)/gu, (m, off: number) => (/(?:^|[^\p{L}])[iIvV]+$/u.test(label.slice(0, off)) ? '°' : m));
   const romans = [...t.matchAll(ROMAN)].map((m) => m[1]).filter((r) => !NOT_ROMAN.has(r));
-  // A bare letter is a note only with an accidental, quality, figure or slash.
   // PT "Em" followed by a word is the preposition ("Em C maior, ...").
+  // A bare B/C/D/F/G is always a note (none is a PT/ES/EN word). A bare A/E
+  // is a note only beside a quality word ("A menor", "E major") or inside a
+  // list, brackets or a note sequence ("(A, C#, E)", "C-E-G"): elsewhere it is
+  // the article/preposition/conjunction.
   const chords = [...t.matchAll(CHORD)]
-    .filter((m) => !(m[1] === 'Em' && /^\s+\p{L}/u.test(t.slice((m.index ?? 0) + 2))))
+    .filter((m) => {
+      const c = m[1];
+      const at = m.index ?? 0;
+      const before = t.slice(0, at);
+      const after = t.slice(at + c.length);
+      if (c === 'Em' && /^\s+\p{L}/u.test(after)) return false;
+      // SATB voice labels ("S-A, A-T"; PT/ES "S-C, C-T" with C = contralto)
+      if (/[ST][-–]$/.test(before) || /^[-–][ST](?![\p{L}])/u.test(after)) return false;
+      if (c.length > 1 || /[BCDFG]/.test(c)) return true;
+      if (/[(,\-–]\s*$/.test(before) || /^\s*[,)\-–]/.test(after)) return true;
+      // Beside a quality word. English "A major triad…" / "A minor third…" is
+      // the article, so a bare A counts only when the key name ends there.
+      const quality = /^\s+(?:menor|maior|mayor|minor|major)(?![\p{L}])/iu.exec(after);
+      if (!quality) return false;
+      return c === 'E' || /^\s*(?:$|[,.;:)(—–-])/.test(after.slice(quality[0].length));
+    })
     .map((m) => m[1])
-    .filter((c) => c.length > 1)
     .map((c) => c.replace('♯', '#').replace('♭', 'b'));
   const fractions = [...t.matchAll(FRACTION)].map((m) => m[1]);
   return [...romans.map((r) => `R:${r}`), ...chords.map((c) => `C:${c}`), ...fractions.map((f) => `F:${f}`)].sort().join(' ');
@@ -49,11 +66,32 @@ describe('answer choices keep their English order', () => {
     expect(fingerprint('V7 resolves to I')).not.toBe(fingerprint('IV7 resolve para I'));
   });
 
+  it('bare note letters count, so swapped key labels are caught (re-review item 1)', () => {
+    // "A menor" swapped with "C menor": A counts beside a quality word.
+    expect(fingerprint('A minor')).toBe(fingerprint('A menor'));
+    expect(fingerprint('A minor')).not.toBe(fingerprint('C menor'));
+    // "G maior (G, B, D)" swapped with "F maior (F, A, C)": bare G/B/D/F/C always
+    // count, A inside the list counts.
+    expect(fingerprint('G major (G, B, D) -- the dominant of C')).toBe(fingerprint('G maior (G, B, D) — a dominante de C'));
+    expect(fingerprint('G major (G, B, D) -- the dominant of C')).not.toBe(fingerprint('F maior (F, A, C) — a subdominante'));
+    // The article / conjunction / preposition A, E are not notes.
+    expect(fingerprint('A deceptive cadence')).toBe('');
+    expect(fingerprint('E depois resolve')).toBe('');
+    expect(fingerprint('A escala menor harmónica')).toBe('');
+  });
+
+  it('a planted swap of two real choices fails the comparison', () => {
+    const real = choices.find((c) => c.key === 'ex:l5u15m2e1.choices[0]')!;
+    const other = choices.find((c) => c.key === 'ex:l5u15m2e1.choices[3]')!;
+    expect(fingerprint(real.en)).toBe(fingerprint(real.tr.pt ?? ''));
+    expect(fingerprint(real.en)).not.toBe(fingerprint(other.tr.pt ?? ''));
+  });
+
   it('covers every answer choice; a substantial share carry a fingerprint', () => {
     expect(choices.length).toBeGreaterThan(1000);
     const withFingerprint = choices.filter((c) => fingerprint(c.en) !== '').length;
-    // 453 on 2026-10-31; a sharp drop means the token patterns stopped matching.
-    expect(withFingerprint).toBeGreaterThan(400);
+    // 552 on 2026-10-31; a sharp drop means the token patterns stopped matching.
+    expect(withFingerprint).toBeGreaterThan(500);
   });
 
   for (const lang of LANGS) {
