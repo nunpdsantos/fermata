@@ -45,7 +45,7 @@ export function QuickSearchHost({ load = loadQuickSearch }: { load?: SearchLoade
   useEffect(() => {
     if (mounted) return;
     const onKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         useAppStore.getState().setQuickSearchOpen(true);
       }

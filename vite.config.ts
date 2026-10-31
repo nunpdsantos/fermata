@@ -141,6 +141,14 @@ export default defineConfig({
           'assets/index-*.js', 'assets/i18next-*.js', 'assets/framer-motion-*.js', 'assets/zustand-*.js',
           'assets/DrillView-*.js', 'assets/drillStore-*.js', 'assets/prng-*.js', 'assets/workbox-window*.js',
           'assets/Fretboard-*.js', 'assets/QuickSearch-*.js',
+          // The Explore and Learn views and the notation component they lazy-
+          // load are part of the shell too: offline after a single online
+          // visit, Explore and Learn must open even with no HTTP cache
+          // (review item 6 — they loaded before the new worker took control,
+          // so runtime caching never saw them). VexFlow stays runtime-cached;
+          // usePWA warms it (and anything else loaded before control).
+          'assets/ExploreView-*.js', 'assets/LearnView-*.js', 'assets/StaffNotation-*.js',
+          'assets/celebrationSound-*.js',
         ],
         // …plus every chunk those import statically, transitively (their
         // split-out dependencies: fingeringStore, moduleIndex, parsers, …).
@@ -150,11 +158,6 @@ export default defineConfig({
           '**/curriculum[lL]*',
           '**/exercisesL*',
           '**/templatesL*',
-          '**/ExploreView-*',
-          '**/LearnView-*',
-          '**/StaffNotation*',
-          '**/notationHelpers*',
-          '**/celebrationSound*',
         ],
         runtimeCaching: [
           {

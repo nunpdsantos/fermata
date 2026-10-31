@@ -14,7 +14,12 @@ let vexflowPromise: Promise<typeof import('vexflow/bravura')> | null = null;
 
 export function loadVexFlow(): Promise<typeof import('vexflow/bravura')> {
   if (!vexflowPromise) {
-    vexflowPromise = import('vexflow/bravura');
+    // A failed download (offline before VexFlow was cached) must not stick:
+    // forget it so the next staff tries again.
+    vexflowPromise = import('vexflow/bravura').catch((err) => {
+      vexflowPromise = null;
+      throw err;
+    });
   }
   return vexflowPromise;
 }

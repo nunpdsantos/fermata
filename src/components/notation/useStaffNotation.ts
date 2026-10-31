@@ -58,6 +58,9 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
         vfRef.current = vf;
         setLoading(false);
       }
+    }).catch(() => {
+      // Offline before VexFlow was ever cached: the staff skeleton stays;
+      // the loader forgets the failure, so the next staff retries.
     });
     return () => { cancelled = true; };
   }, []);

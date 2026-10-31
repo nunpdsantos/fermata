@@ -85,6 +85,32 @@ function settleInstalling(reg: ServiceWorkerRegistration, ms: number): Promise<v
 }
 
 /**
+ * Files this page fetched BEFORE a service worker controlled it (the first
+ * visit: the worker installs after the page loaded) never went through the
+ * worker's runtime caching — VexFlow, a lesson level opened early, samples —
+ * so offline they were missing even after an online visit (review item 6).
+ * Once the worker takes control, fetch them again through it; precached ones
+ * are answered from the precache, the rest land in their runtime caches.
+ * Same-origin /assets/ and /samples/ only; each URL once.
+ */
+export function warmRuntimeCaches(): void {
+  if (typeof performance === 'undefined' || typeof fetch === 'undefined') return;
+  const urls = new Set<string>();
+  for (const entry of performance.getEntriesByType('resource')) {
+    let url: URL;
+    try {
+      url = new URL(entry.name, location.href);
+    } catch {
+      continue;
+    }
+    if (url.origin !== location.origin) continue;
+    if (!/^\/(assets|samples)\//.test(url.pathname)) continue;
+    urls.add(url.href);
+  }
+  for (const href of urls) fetch(href).catch(() => {});
+}
+
+/**
  * Register the service worker once per page. Also re-checks for a new version
  * whenever the app returns to the foreground — an installed app left open for
  * days otherwise only looked for updates on a cold launch.
@@ -92,6 +118,13 @@ function settleInstalling(reg: ServiceWorkerRegistration, ms: number): Promise<v
 export function startPwaRegistration(): void {
   if (started) return;
   started = true;
+
+  // First visit: the page loads before any worker controls it. When the
+  // newly installed worker takes control, push what was already loaded
+  // through it so it is cached for offline use (review item 6).
+  if (typeof navigator !== 'undefined' && navigator.serviceWorker && !navigator.serviceWorker.controller) {
+    navigator.serviceWorker.addEventListener('controllerchange', warmRuntimeCaches, { once: true });
+  }
 
   let lastCheck = 0;
 
