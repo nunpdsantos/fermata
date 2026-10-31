@@ -4,11 +4,14 @@ import { noteToString } from '../../core/types/music.ts';
 import { CHORD_SYMBOLS, CHORD_QUALITY_NAMES } from '../../core/constants/chords.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAppStore } from '../../state/store.ts';
-import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
+import { DEGREE_COLORS, DEGREE_INKS } from '../../design/tokens/colors.ts';
+import { chordQualityLabel } from '../../i18n/content/musicTerms.ts';
+import { toContentLanguage } from '../drill/drillText.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
 
 export function ChordGrid() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = toContentLanguage(i18n.language);
   const { diatonicChords } = useKeyContext();
   const setSelectedChord = useAppStore((s) => s.setSelectedChord);
   const selectedChord = useAppStore((s) => s.selectedChord);
@@ -30,21 +33,25 @@ export function ChordGrid() {
           <circle cx="6" cy="18" r="3" />
           <circle cx="18" cy="16" r="3" />
         </svg>
-        <p className="text-xs font-medium mb-0.5">{t('explore.noDiatonicChords')}</p>
-        <p className="text-2xs">{t('explore.noDiatonicChordsHint')}</p>
+        <p className="text-ui font-medium mb-0.5">{t('explore.noDiatonicChords')}</p>
+        <p className="text-caption">{t('explore.noDiatonicChordsHint')}</p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2" role="group" aria-label="Diatonic chords">
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2" role="group" aria-label={t('explore.diatonicChordsGroup')}>
       {diatonicChords.map(({ chord, numeral, degree }, i) => {
-        const color = degreeColorsOn
-          ? DEGREE_COLORS[degree as keyof typeof DEGREE_COLORS]
-          : 'var(--accent)';
+        const deg = degree as keyof typeof DEGREE_COLORS;
+        // The degree hue is a FILL (the top line); the numeral is written in
+        // the same hue's ink shade (D-28: never a 400 hue as text on cream).
+        const color = degreeColorsOn ? DEGREE_COLORS[deg] : 'var(--accent)';
+        const ink = degreeColorsOn ? DEGREE_INKS[deg] : 'var(--accent-text)';
         const rootLabel = noteToString(chord.root);
         const qualityLabel = CHORD_SYMBOLS[chord.quality] ?? chord.quality;
-        const qualityFull = CHORD_QUALITY_NAMES[chord.quality] ?? chord.quality;
+        const qualityFull = lang === 'en'
+          ? (CHORD_QUALITY_NAMES[chord.quality] ?? chord.quality)
+          : chordQualityLabel(chord.quality, lang);
         const isSelected =
           selectedChord !== null &&
           noteToString(selectedChord.root) === rootLabel &&
@@ -54,11 +61,12 @@ export function ChordGrid() {
           <m.button
             key={degree}
             onClick={() => setSelectedChord(isSelected ? null : chord)}
-            className="relative flex flex-col items-center gap-1.5 p-3 max-sm:p-2 rounded-xl overflow-hidden group"
+            className="relative flex flex-col items-center gap-1 p-3 max-sm:p-2 rounded-xl overflow-hidden group"
+            // Selected = the choice-chip state (accent fill, --on-accent text).
             style={{
-              backgroundColor: isSelected ? `${color}18` : 'var(--card)',
-              border: isSelected ? `1.5px solid ${color}60` : '1.5px solid var(--card-hover)',
-              boxShadow: isSelected ? `0 0 20px ${color}10` : 'var(--shadow-sm)',
+              backgroundColor: isSelected ? 'var(--accent)' : 'var(--card)',
+              border: isSelected ? '1.5px solid var(--accent)' : '1.5px solid var(--border-subtle)',
+              boxShadow: 'var(--shadow-sm)',
             }}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -69,25 +77,22 @@ export function ChordGrid() {
             whileHover={{ scale: 1.04, y: -2, boxShadow: 'var(--shadow-md)' }}
             whileTap={{ scale: 0.96 }}
             aria-pressed={isSelected}
-            aria-label={`${rootLabel} ${qualityFull} chord, degree ${degree}`}
+            aria-label={t('explore.chordButton', { root: rootLabel, quality: qualityFull, degree })}
           >
-            {/* Subtle top accent line */}
+            {/* Degree hue as a fill line */}
             <div
-              className="absolute top-0 left-2 right-2 h-px opacity-50"
+              className="absolute top-0 left-2 right-2 h-[3px] rounded-b"
               style={{ backgroundColor: color }}
             />
 
-            <span
-              className="text-[11px] font-bold"
-              style={{ color }}
-            >
+            <span className="text-ui font-bold" style={{ color: isSelected ? 'var(--on-accent)' : ink }}>
               {numeral}
             </span>
-            <span className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+            <span className="text-body font-semibold" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text)' }}>
               {rootLabel}
-              <span className="font-normal" style={{ color: 'var(--text-dim)' }}>{qualityLabel}</span>
+              <span className="font-normal" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text-dim)' }}>{qualityLabel}</span>
             </span>
-            <span className="text-[9px] transition-colors" style={{ color: 'var(--text-dim)' }}>
+            <span className="text-caption" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text-dim)' }}>
               {qualityFull}
             </span>
           </m.button>

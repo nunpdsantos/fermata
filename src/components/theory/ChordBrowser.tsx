@@ -85,7 +85,7 @@ export function ChordBrowser() {
             <button
               key={g.labelKey}
               onClick={() => setActiveCategory(i)}
-              className="px-2 py-1 text-[10px] font-medium rounded-lg transition-colors"
+              className="px-2 py-1 text-caption font-medium rounded-lg transition-colors"
               style={{
                 backgroundColor: isActive ? 'var(--border)' : 'transparent',
                 color: isActive ? 'var(--text)' : 'var(--text-dim)',
@@ -135,11 +135,11 @@ export function ChordBrowser() {
               >
                 {rootLabel}{symbol}
               </span>
-              <span className="text-[9px] leading-tight mt-0.5" style={{ color: 'var(--text-dim)' }}>
+              <span className="text-caption leading-tight mt-0.5" style={{ color: 'var(--text-dim)' }}>
                 {name}
               </span>
               {SAME_NOTES[quality] && (
-                <span className="text-[9px] leading-tight" style={{ color: 'var(--text-dim)' }}>
+                <span className="text-caption leading-tight" style={{ color: 'var(--text-dim)' }}>
                   {SAME_NOTES[quality]!.map((o) => `= ${rootLabel}${CHORD_SYMBOLS[o]}`).join(' ')}
                 </span>
               )}

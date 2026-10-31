@@ -28,7 +28,7 @@ export function ModuleRow({ module, index, isCompleted, isLocked, isComingSoon, 
       }`}
     >
       <span
-        className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold shrink-0 transition-colors ${
+        className={`w-5 h-5 rounded-md flex items-center justify-center text-caption font-bold shrink-0 transition-colors ${
           isCompleted
             ? 'bg-emerald-500/20 text-success'
             : ''
@@ -56,13 +56,13 @@ export function ModuleRow({ module, index, isCompleted, isLocked, isComingSoon, 
         >
           {module.title}
         </span>
-        <span className="text-[11px] block truncate" style={{ color: 'var(--text-dim)' }}>
+        <span className="text-caption block truncate" style={{ color: 'var(--text-dim)' }}>
           {module.subtitle}
         </span>
       </div>
 
       {isComingSoon && (
-        <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-full shrink-0" style={{ color: 'var(--text-dim)', backgroundColor: 'var(--card-hover)' }}>
+        <span className="text-caption font-medium px-1.5 py-0.5 rounded-full shrink-0" style={{ color: 'var(--text-dim)', backgroundColor: 'var(--card-hover)' }}>
           {t('learn.soon')}
         </span>
       )}

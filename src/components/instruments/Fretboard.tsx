@@ -20,11 +20,13 @@ import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAudio } from '../../hooks/useAudio.ts';
 import { useAppStore } from '../../state/store.ts';
 import { useFingeringStore } from '../../state/fingeringStore.ts';
+import { useDockContextStore } from '../../state/dockContextStore.ts';
 import type { OverrideFinger } from '../../state/fingeringStore.ts';
 import { useIsMobile } from '../../hooks/useMediaQuery.ts';
 import { useDragScroll } from '../../hooks/useDragScroll.ts';
 import { ScrollStrip } from './ScrollStrip.tsx';
-import { FULL_FRETS, CHORD_FRET_WINDOW, FRET_MARKERS, DOUBLE_MARKERS, chipStyle, CHIP_TEXT_PX, ACCENT_FILL, ON_ACCENT_FILL } from './fretboardConstants.ts';
+import { FULL_FRETS, CHORD_FRET_WINDOW, FRET_MARKERS, DOUBLE_MARKERS, ACCENT_FILL, ON_ACCENT_FILL } from './fretboardConstants.ts';
+import { SelectTrigger } from '../ui/SelectTrigger.tsx';
 import type { FretNote, PositionDot } from './fretboardConstants.ts';
 import { ChordShapeSelector, ScalePositionSelector, LabelToolbar } from './FretboardPositionSelector.tsx';
 import { FretboardString } from './FretboardString.tsx';
@@ -111,6 +113,12 @@ export function Fretboard() {
   );
   const positionChoice: number | 'all' = guitarScalePosition ?? suggestedPosition;
   const positionNumber = scaleView && positionChoice !== 'all' ? positionChoice : null;
+  // Tell the dock bar which position is on the board ("Position II", W11-A).
+  const publishPosition = useDockContextStore((s) => s.setGuitarPosition);
+  useEffect(() => {
+    publishPosition(scaleView ? positionChoice : null);
+    return () => publishPosition(null);
+  }, [scaleView, positionChoice, publishPosition]);
   const position = useMemo(
     () => (positionNumber === null ? null : getGuitarPosition(selectedKey, selectedScale, positionNumber, tuning)),
     [positionNumber, selectedKey, selectedScale, tuning],
@@ -477,9 +485,11 @@ export function Fretboard() {
   // Announce the focused note for screen readers, with the context-aware
   // spelling that matches the visible cell label.
   const announcedNote = focusedCell
-    ? `String ${6 - focusedCell.stringIdx}, fret ${focusedCell.fret}, ${noteToString(
-        spellPitchClass(getFretNote(focusedCell.stringIdx, focusedCell.fret).pitchClass),
-      )}`
+    ? t('fretboard.announce', {
+        string: 6 - focusedCell.stringIdx,
+        fret: focusedCell.fret,
+        note: noteToString(spellPitchClass(getFretNote(focusedCell.stringIdx, focusedCell.fret).pitchClass)),
+      })
     : '';
 
   // Auto-scroll the focused cell into view.
@@ -590,24 +600,22 @@ export function Fretboard() {
               toolbar stays short; review B1). On phones it only appears once a
               non-standard tuning is in use, as before. */}
           {!(mobile && isStandardTuning) && (
-            <label className="flex items-center gap-1.5">
-              <span style={{ fontSize: CHIP_TEXT_PX, color: 'var(--text-muted)' }}>{t('fretboard.tuning')}</span>
-              <select
+            <label className="flex items-center gap-2">
+              <span className="text-ui" style={{ color: 'var(--text-muted)' }}>{t('fretboard.tuning')}</span>
+              <SelectTrigger
                 value={guitarTuningId}
                 onChange={(e) => setGuitarTuningId(e.target.value)}
-                className="rounded cursor-pointer bg-transparent"
-                style={{ ...chipStyle(false), paddingRight: 4 }}
                 aria-label={t('fretboard.tuningLabel')}
               >
                 {GUITAR_TUNINGS.map((tn) => (
                   <option key={tn.id} value={tn.id}>{tn.shortName}</option>
                 ))}
-              </select>
+              </SelectTrigger>
             </label>
           )}
 
           {(chordNotice || tuningGapNotice) && (
-            <p role="status" className="w-full" style={{ fontSize: CHIP_TEXT_PX, color: 'var(--text-muted)' }}>
+            <p role="status" className="w-full text-ui" style={{ color: 'var(--text-muted)' }}>
               {chordNotice ?? tuningGapNotice}
             </p>
           )}
@@ -649,7 +657,7 @@ export function Fretboard() {
               <div
                 key={f}
                 className="flex-1 text-center"
-                style={{ color: 'var(--text-dim)', minWidth: fretMinWidth, fontSize: mobile ? 11 : 10 }}
+                style={{ color: 'var(--text-dim)', minWidth: fretMinWidth, fontSize: 12 }}
               >
                 {anchorFret === f ? (
                   chordAnchorFret !== null ? (
@@ -681,7 +689,7 @@ export function Fretboard() {
                 data-testid="position-badge"
                 title={t('fretboard.openPositionTitle')}
                 className="inline-block px-1 rounded font-bold"
-                style={{ ...badgeStyle, fontSize: 10 }}
+                style={badgeStyle}
               >
                 {t('fretboard.open')}
               </span>
@@ -745,7 +753,7 @@ export function Fretboard() {
                   color: anchorFret === f ? ACCENT_FILL : 'var(--text-dim)',
                   fontWeight: anchorFret === f ? 700 : 400,
                   minWidth: fretMinWidth,
-                  fontSize: isZoomed ? 12 : (mobile ? 11 : 10),
+                  fontSize: 12,
                 }}
               >
                 {f}
@@ -755,9 +763,9 @@ export function Fretboard() {
           <div style={{ width: atNut ? 6 : 2 }} />
           <div style={{ width: 40 }} className="flex items-center justify-center">
             {mode === 'chord' && !isOpenChordShape ? (
-              <span className="font-mono" style={{ color: 'var(--text-dim)', fontSize: mobile ? 11 : 10 }}>{lowestVisibleFret}fr</span>
+              <span className="font-mono" style={{ color: 'var(--text-dim)', fontSize: 12 }}>{lowestVisibleFret}fr</span>
             ) : atNut ? (
-              <span style={{ color: 'var(--text-dim)', fontSize: mobile ? 11 : 10 }}>0</span>
+              <span style={{ color: 'var(--text-dim)', fontSize: 12 }}>0</span>
             ) : null}
           </div>
         </div>

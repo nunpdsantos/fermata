@@ -7,13 +7,13 @@ import { getNextModuleInLevel, getPreviousModuleInLevel, getLevelModuleCount } f
 import { executeTheoryQuery } from '../../utils/queryExecutor';
 import { findQuotedQueries } from '../../utils/theoryQuery';
 import { LearnBreadcrumb } from './LearnBreadcrumb';
+import { IconButton } from '../ui/Button';
 import { ExerciseRunner } from './exercises/ExerciseRunner';
 import { ReportMistakeLink } from './ReportMistakeLink';
 import { Confetti } from './Confetti';
 import { toast } from '../../state/toastStore';
 import { useSongReferences } from '../../hooks/useSongReferences';
 import { SPRING_BOUNCY } from '../../design/tokens/motion';
-import { palette } from '../../design/tokens/palette';
 import { accentText } from '../../design/tokens/learnColors';
 
 function renderTaskInstruction(
@@ -124,21 +124,15 @@ export function ModuleView({
       <div className="max-w-2xl mx-auto px-5 max-sm:px-3 py-6 max-sm:py-4 pb-32">
         {/* ─── Breadcrumb + Back ──────────────────────────────────── */}
         <div className="flex items-center gap-2 mb-8">
-          <button
+          <IconButton
             onClick={onBack}
-            className="flex items-center gap-1 text-xs transition-colors group"
-            style={{ color: 'var(--text-dim)' }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-dim)'; }}
-          >
-            <svg
-              width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-              className="group-hover:-translate-x-0.5 transition-transform"
-            >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-          </button>
+            aria-label={t('common.back')}
+            icon={
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+            }
+          />
           <LearnBreadcrumb
             accentColor={accent}
             segments={[
@@ -159,7 +153,7 @@ export function ModuleView({
         >
           <div className="flex items-center gap-3 mb-3">
             <span
-              className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
+              className="text-caption font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
               style={{
                 color: accentText(accent),
                 backgroundColor: `${accent}18`,
@@ -168,12 +162,12 @@ export function ModuleView({
               {unit.title}
             </span>
             {isReviewMode && (
-              <span className="text-[10px] font-medium text-warning bg-amber-400/10 px-2 py-0.5 rounded-full">
+              <span className="text-caption font-medium text-warning bg-amber-400/10 px-2 py-0.5 rounded-full">
                 {t('review.badge')}
               </span>
             )}
             {!isReviewMode && isModuleCompleted && (
-              <span className="text-[10px] font-medium text-success bg-emerald-400/10 px-2 py-0.5 rounded-full">
+              <span className="text-caption font-medium text-success bg-emerald-400/10 px-2 py-0.5 rounded-full">
                 {t('status.completed')}
               </span>
             )}
@@ -198,7 +192,7 @@ export function ModuleView({
           }}
         >
           <h2
-            className="text-[10px] font-bold uppercase tracking-widest mb-3"
+            className="text-caption font-bold uppercase tracking-widest mb-3"
             style={{ color: accentText(accent) }}
           >
             {t('learn.learningObjectives')}
@@ -281,7 +275,7 @@ export function ModuleView({
                         </svg>
                       </span>
                       <div>
-                        <span className="text-[10px] font-bold uppercase tracking-widest block mb-0.5" style={{ color: accentText(accent) }}>
+                        <span className="text-caption font-bold uppercase tracking-widest block mb-0.5" style={{ color: accentText(accent) }}>
                           {t('learn.tryThis')}
                         </span>
                         <span className="text-sm transition-colors" style={{ color: 'var(--text-muted)' }}>
@@ -328,7 +322,7 @@ export function ModuleView({
                 <circle cx="18" cy="16" r="3" />
               </svg>
               <h2
-                className="text-[10px] font-bold uppercase tracking-widest"
+                className="text-caption font-bold uppercase tracking-widest"
                 style={{ color: accentText(accent) }}
               >
                 {t('songRef.title')}
@@ -406,7 +400,7 @@ export function ModuleView({
               <h2 className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
                 {t('learn.practiceTasks')}
               </h2>
-              <span className="text-[10px]" style={{ color: 'var(--text-dim)' }}>
+              <span className="text-caption" style={{ color: 'var(--text-dim)' }}>
                 {completedTaskCount}/{module.tasks.length}
               </span>
             </div>
@@ -433,13 +427,16 @@ export function ModuleView({
                         e.stopPropagation();
                         onToggleTask(module.id, task.id);
                       }}
-                      className={`mt-0.5 w-4 h-4 rounded-md border flex items-center justify-center shrink-0 transition-all duration-200 ${
-                        done
-                          ? 'border-emerald-500 bg-emerald-500/20'
-                          : ''
-                      }`}
-                      style={!done ? { borderColor: 'var(--border)' } : undefined}
+                      // The box is 20 px; the button around it is a full --tap
+                      // target (W9-04: it was a 16 px box).
+                      className="-ml-3 -my-2.5 w-(--tap) h-(--tap) flex items-center justify-center shrink-0"
                     >
+                      <span
+                        className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-200 ${
+                          done ? 'bg-emerald-500/20' : ''
+                        }`}
+                        style={{ borderColor: done ? 'var(--success-text)' : 'var(--text-dim)' }}
+                      >
                       <AnimatePresence>
                         {done && (
                           <m.svg
@@ -448,12 +445,13 @@ export function ModuleView({
                             exit={{ scale: 0, opacity: 0 }}
                             transition={SPRING_BOUNCY}
                             width="10" height="10" viewBox="0 0 24 24" fill="none"
-                            stroke={palette.success} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+                            stroke="var(--success-text)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
                           >
                             <polyline points="20 6 9 17 4 12" />
                           </m.svg>
                         )}
                       </AnimatePresence>
+                      </span>
                     </button>
                     <span
                       className={`text-sm transition-colors ${done ? 'line-through' : ''}`}
@@ -534,7 +532,7 @@ export function ModuleView({
                 <path d="M19 12H5M12 19l-7-7 7-7" />
               </svg>
               <div className="text-left">
-                <span className="block text-[10px]" style={{ color: 'var(--text-dim)' }}>{t('common.previous')}</span>
+                <span className="block text-caption" style={{ color: 'var(--text-dim)' }}>{t('common.previous')}</span>
                 <span>{prevModule.title}</span>
               </div>
             </button>
@@ -550,7 +548,7 @@ export function ModuleView({
               onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-dim)'; }}
             >
               <div>
-                <span className="block text-[10px]" style={{ color: 'var(--text-dim)' }}>{t('common.next')}</span>
+                <span className="block text-caption" style={{ color: 'var(--text-dim)' }}>{t('common.next')}</span>
                 <span>{nextModule.title}</span>
               </div>
               <svg

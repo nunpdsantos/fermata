@@ -1,4 +1,5 @@
 import { m } from 'framer-motion';
+import { accentStrong } from '../../design/tokens/learnColors';
 
 interface ProgressBarProps {
   percent: number;
@@ -15,7 +16,7 @@ export function ProgressBar({ percent, color, height = 6, delay = 0 }: ProgressB
     >
       <m.div
         className="h-full rounded-full"
-        style={{ backgroundColor: color }}
+        style={{ backgroundColor: accentStrong(color) }}
         initial={{ width: 0 }}
         animate={{ width: `${Math.min(100, Math.max(0, percent))}%` }}
         transition={{ duration: 0.6, ease: 'easeOut', delay }}

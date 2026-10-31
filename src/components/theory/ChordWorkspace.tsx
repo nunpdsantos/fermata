@@ -18,12 +18,12 @@ import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAppStore } from '../../state/store.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
 import { noteToString } from '../../core/types/music.ts';
-import { SCALE_TYPE_NAMES } from '../../core/constants/scales.ts';
 import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
 import { getVoicedChordNotes, getScaleNotesWithOctaves } from '../../core/utils/pianoLayout.ts';
 import { getKeySignatureForScale } from '../../utils/notationHelpers.ts';
 import { degreeOf, degreeColorSlot } from '../../core/utils/degreeSpelling.ts';
 import { StaffNotationSkeleton } from '../notation/StaffNotationSkeleton.tsx';
+import { Segment } from '../ui/Segment.tsx';
 
 const StaffNotation = lazy(() =>
   import('../notation/StaffNotation.tsx').then((m) => ({ default: m.StaffNotation }))
@@ -53,49 +53,28 @@ export function ChordWorkspace() {
     <div className="space-y-6">
       {/* ─── Chord picker (mode tabs) ───────────────────────── */}
       <div>
-        <div className="flex items-center gap-3 mb-2.5">
+        <div className="flex items-center gap-3 mb-2.5 flex-wrap">
           <h3 className="type-section">
             {t('explore.chords')}
           </h3>
-          <div className="flex rounded-lg overflow-hidden" style={{ border: '1px solid var(--card)' }}>
-            <button
-              onClick={() => setMode('diatonic')}
-              aria-pressed={mode === 'diatonic'}
-              className="px-2 py-0.5 text-2xs font-medium transition-colors max-sm:px-3 max-sm:py-1.5 max-sm:text-xs"
-              style={{
-                backgroundColor: mode === 'diatonic' ? 'var(--card-hover)' : 'transparent',
-                color: mode === 'diatonic' ? 'var(--text)' : 'var(--text-dim)',
-              }}
-            >
-              {t('explore.diatonic')}
-            </button>
-            <button
-              onClick={() => setMode('all')}
-              aria-pressed={mode === 'all'}
-              className="px-2 py-0.5 text-2xs font-medium transition-colors max-sm:px-3 max-sm:py-1.5 max-sm:text-xs"
-              style={{
-                backgroundColor: mode === 'all' ? 'var(--card-hover)' : 'transparent',
-                color: mode === 'all' ? 'var(--text)' : 'var(--text-dim)',
-              }}
-            >
-              {t('explore.allChords')}
-            </button>
-            <button
-              onClick={() => setMode('build')}
-              aria-pressed={mode === 'build'}
-              className="px-2 py-0.5 text-2xs font-medium transition-colors max-sm:px-3 max-sm:py-1.5 max-sm:text-xs"
-              style={{
-                backgroundColor: mode === 'build' ? 'var(--card-hover)' : 'transparent',
-                color: mode === 'build' ? 'var(--text)' : 'var(--text-dim)',
-              }}
-            >
-              {t('explore.build')}
-            </button>
-          </div>
+          {/* A Segment in tabs mode: it switches the panel below (D-28). */}
+          <Segment
+            mode="tabs"
+            label={t('explore.chords')}
+            value={mode}
+            onChange={setMode}
+            options={[
+              { value: 'diatonic', label: t('explore.diatonic'), id: 'chords-tab-diatonic', controls: 'chords-panel' },
+              { value: 'all', label: t('explore.allChords'), id: 'chords-tab-all', controls: 'chords-panel' },
+              { value: 'build', label: t('explore.build'), id: 'chords-tab-build', controls: 'chords-panel' },
+            ]}
+          />
         </div>
-        {mode === 'diatonic' && <ChordGrid />}
-        {mode === 'all' && <ChordBrowser />}
-        {mode === 'build' && <ChordBuilderPanel />}
+        <div id="chords-panel" role="tabpanel" aria-labelledby={`chords-tab-${mode}`}>
+          {mode === 'diatonic' && <ChordGrid />}
+          {mode === 'all' && <ChordBrowser />}
+          {mode === 'build' && <ChordBuilderPanel />}
+        </div>
       </div>
 
       {/* ─── One staff: chord if selected, else scale ───────── */}
@@ -135,7 +114,7 @@ export function ChordWorkspace() {
           <p className="text-base font-bold learn-serif" style={{ color: 'var(--text)' }}>
             {noteToString(scale.root)}{' '}
             <span className="font-normal" style={{ color: 'var(--text-muted)' }}>
-              {SCALE_TYPE_NAMES[selectedScale]}
+              {t(`scaleName.${selectedScale}`)}
             </span>
           </p>
           <p className="text-xs explore-prose" style={{ color: 'var(--text-dim)' }}>

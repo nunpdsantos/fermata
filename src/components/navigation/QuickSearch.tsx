@@ -164,7 +164,7 @@ export function QuickSearch() {
                   className="flex-1 bg-transparent text-sm outline-none"
                   style={{ color: 'var(--text)' }}
                 />
-                <kbd className="text-[10px] px-1.5 py-0.5 rounded" style={{ color: 'var(--text-dim)', backgroundColor: 'var(--card)' }}>
+                <kbd className="text-caption px-1.5 py-0.5 rounded" style={{ color: 'var(--text-dim)', backgroundColor: 'var(--card)' }}>
                   ESC
                 </kbd>
               </div>
@@ -182,7 +182,7 @@ export function QuickSearch() {
                     >
                       <span className="text-sm" style={{ color: 'var(--text)' }}>{r.label}</span>
                       <span
-                        className="text-[10px] px-1.5 py-0.5 rounded font-medium"
+                        className="text-caption px-1.5 py-0.5 rounded font-medium"
                         style={{
                           backgroundColor: degreeColorsOn
                             ? (

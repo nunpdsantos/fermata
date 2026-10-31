@@ -182,7 +182,7 @@ describe.each(Object.entries(THEMES))('semantic text tokens — %s', (_theme, va
 
 describe('feedback/status components use the semantic tokens, not fixed dark-theme shades', () => {
   const FILES = [
-    'components/drill/FeedbackStrip.tsx',
+    'components/ui/Feedback.tsx', // the Drill verdict (FeedbackStrip) renders through it
     'components/drill/ChoiceChips.tsx',
     'components/drill/NoteChips.tsx',
     'components/drill/AccidentalSlots.tsx',

@@ -41,7 +41,8 @@ async function renderBoard() {
   const { Fretboard } = await import('../Fretboard');
   return render(<Fretboard />);
 }
-const tabs = () => within(screen.getByRole('tablist')).getAllByRole('tab');
+// The first radiogroup is the position chips (the dot-label Segment follows).
+const tabs = () => within(screen.getAllByRole('radiogroup')[0]).getAllByRole('radio');
 
 const CASES = [
   { lang: 'en', v: 'Position V: index finger at fret 5', one: /no open strings/i, open: /open strings/i },

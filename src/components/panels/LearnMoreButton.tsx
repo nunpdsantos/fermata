@@ -49,7 +49,7 @@ export function LearnMoreButton({ query, moduleId }: LearnMoreButtonProps) {
           },
         });
       }}
-      className="mt-3 ml-2 inline-flex items-center gap-1.5 text-[10px] font-semibold px-2 py-1 rounded-full transition-colors"
+      className="mt-3 ml-2 inline-flex items-center gap-1.5 text-caption font-semibold px-2 py-1 rounded-full transition-colors"
       style={{ color, backgroundColor: bg, border: `1px solid ${borderColor}` }}
       title={match.title}
     >

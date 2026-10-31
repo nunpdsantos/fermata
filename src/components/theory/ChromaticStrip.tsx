@@ -132,15 +132,15 @@ export function ChromaticStrip({
           >
             {degree && (
               <span
-                className="absolute right-1.5 top-0.5 text-[9px] font-semibold"
+                className="absolute right-1.5 top-0.5 text-caption font-semibold"
                 style={{ color: DEGREE_COLORS[degree as 1 | 2 | 3 | 4 | 5 | 6 | 7] }}
               >
                 {degree}
               </span>
             )}
-            <span className="block text-[10px] opacity-70">{step}</span>
+            <span className="block text-caption opacity-70">{step}</span>
             <span className="block text-base font-semibold mt-0.5">{noteLabel}</span>
-            <span className="block text-[11px] opacity-80">{intervalLabel}</span>
+            <span className="block text-caption opacity-80">{intervalLabel}</span>
           </button>
         );
       })}

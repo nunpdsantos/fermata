@@ -32,7 +32,7 @@ const toNote = (s: string): Note => ({ natural: s[0], accidental: s.slice(1) }) 
 const select = (root: string, type: ScaleType, baseOctave = 4) =>
   useAppStore.setState({ selectedKey: toNote(root), selectedScale: type, selectedChord: null, exerciseInputActive: false, baseOctave, scaleOctaves: 1 });
 
-const octaveTabs = () => screen.getAllByRole('tab').map((t) => t.textContent);
+const octaveTabs = () => screen.getAllByRole('radio').map((t) => t.textContent);
 
 describe('W2-07 — octave buttons stay on the keyboard', () => {
   it('G major offers C1–C6 (no C0, no C8); A major also offers C0', () => {

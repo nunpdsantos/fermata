@@ -43,7 +43,9 @@ export function LevelCard({ level, state, completedModuleCount, index, onClick }
         disabled={!isClickable}
         padding="none"
         className={`overflow-hidden transition-all duration-200 ${
-          isActive ? 'hover:scale-[1.01]' : 'hover:scale-[1.005] opacity-60'
+          // Locked / coming-soon levels are NOT faded (opacity put their text at
+          // 2.3–2.5:1); the lock badge says it (D-28).
+          isActive ? 'hover:scale-[1.01]' : 'hover:scale-[1.005]'
         }`}
       >
         <div className="px-4 py-4">
@@ -85,7 +87,7 @@ export function LevelCard({ level, state, completedModuleCount, index, onClick }
         </p>
 
         {/* Stats */}
-        <div className="text-2xs mb-3" style={{ color: 'var(--text-dim)' }}>
+        <div className="text-caption mb-3" style={{ color: 'var(--text-dim)' }}>
           {level.unitCount > 0 ? (
             <span>
               {t('learn.unitsModules', { units: level.unitCount, unitLabel: level.unitCount === 1 ? t('learn.unitSingular') : t('learn.unitPlural'), modules: totalModules })}
@@ -101,7 +103,7 @@ export function LevelCard({ level, state, completedModuleCount, index, onClick }
             <div className="flex-1">
               <ProgressBar percent={progressPercent} color={accent} height={4} delay={index * 0.06} />
             </div>
-            <span className="text-2xs tabular-nums" style={{ color: 'var(--text-dim)' }}>
+            <span className="text-caption tabular-nums" style={{ color: 'var(--text-dim)' }}>
               {completedModuleCount}/{totalModules}
             </span>
           </div>

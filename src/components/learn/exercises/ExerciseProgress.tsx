@@ -20,11 +20,11 @@ export function ExerciseProgress({ current, total, score, accentColor }: Exercis
             style={{ width: `${pct}%`, backgroundColor: accentColor }}
           />
         </div>
-        <span className="text-[11px] shrink-0 tabular-nums" style={{ color: 'var(--text-dim)' }}>
+        <span className="text-caption shrink-0 tabular-nums" style={{ color: 'var(--text-dim)' }}>
           {current}/{total}
         </span>
       </div>
-      <span className="text-[11px] ml-4 shrink-0 tabular-nums" style={{ color: 'var(--text-dim)' }}>
+      <span className="text-caption ml-4 shrink-0 tabular-nums" style={{ color: 'var(--text-dim)' }}>
         {t('exercise.score', { score: score % 1 === 0 ? score : score.toFixed(1), total })}
       </span>
     </div>

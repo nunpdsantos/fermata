@@ -83,7 +83,7 @@ export function ChoiceChips({
             onClick={() => handleSelect(choice)}
             disabled={disabled}
             aria-disabled={disabled}
-            className={`min-h-[44px] px-3 py-2.5 rounded-xl text-sm font-medium border transition-all duration-150 ${stateClass} ${
+            className={`min-h-[max(var(--tap),52px)] max-sm:min-h-[60px] px-3 py-2.5 rounded-xl text-body font-medium border transition-all duration-150 ${stateClass} ${
               disabled ? 'cursor-default' : 'cursor-pointer'
             }`}
             style={

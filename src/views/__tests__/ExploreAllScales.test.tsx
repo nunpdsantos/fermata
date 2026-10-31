@@ -221,7 +221,7 @@ describe('W0-01 Explore surface renders for every ScaleType × 12 roots', () => 
       expect(errors).toEqual([]);
       await screen.findAllByTestId('staff-mock');
       if (mode === 'Build') {
-        fireEvent.click(screen.getByRole('button', { name: 'Build' }));
+        fireEvent.click(screen.getByRole('tab', { name: 'Build' }));
       }
       for (const type of SCALE_TYPES) {
         for (const root of ROOTS) {

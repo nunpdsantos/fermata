@@ -4,6 +4,7 @@ import { useDrillRunner } from '../components/drill/useDrillRunner';
 import { QuestionCard } from '../components/drill/QuestionCard';
 import { DrillInput } from '../components/drill/DrillInput';
 import { FeedbackStrip } from '../components/drill/FeedbackStrip';
+import { Button } from '../components/ui/Button';
 import { SessionSummary } from '../components/drill/SessionSummary';
 import { MasteryMap } from '../components/drill/MasteryMap';
 import { DrillSettings } from '../components/drill/DrillSettings';
@@ -58,7 +59,9 @@ export function DrillView() {
 
   return (
     <div className="flex-1 overflow-y-auto" style={{ overscrollBehavior: 'contain' }}>
-      <div className="mx-auto w-full max-w-xl px-4 py-6 max-sm:py-5">
+      {/* min-h-full + flex: on a phone the running question fills the screen so
+          its answers can sit in the thumb zone (D-26). */}
+      <div className="mx-auto w-full max-w-xl px-4 py-6 max-sm:py-4 min-h-full flex flex-col" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
         {subScreen === 'settings' ? (
           <DrillSettings
             settings={settings}
@@ -181,25 +184,31 @@ function RunningQuestion({
             resets selection/commit-guard state without a transition effect
             (audit W0-02 / D-4: an id-only key left the spelling inputs locked). */}
         <DrillInput key={presentationKey} item={item} phase={phase} onAnswer={onAnswer} />
-      </QuestionCard>
 
-      {phase === 'feedback' && result && (
-        <FeedbackStrip
-          result={result}
-          answerText={
-            item.answer.kind === 'choice'
-              ? choiceLabel(item, item.answer.correct, t, lang)
-              : canonicalAnswer(item)
-          }
-          whyText={itemWhy(item, t, lang)}
-          onContinue={onAdvance}
-          showContinue={!result.correct}
-          // Deep link on wrong / near-miss only (correct answers
-          // auto-advance and need no remediation prompt).
-          learnMoreLabel={!result.correct ? t('drill.feedback.learnMore') : undefined}
-          onLearnMore={!result.correct ? () => openLearnModule(item) : undefined}
-        />
-      )}
+        {phase === 'feedback' && result && (
+          <FeedbackStrip
+            result={result}
+            answerText={
+              item.answer.kind === 'choice'
+                ? choiceLabel(item, item.answer.correct, t, lang)
+                : canonicalAnswer(item)
+            }
+            whyText={itemWhy(item, t, lang)}
+            // Deep link on wrong / near-miss only (correct answers
+            // auto-advance and need no remediation prompt).
+            learnMoreLabel={!result.correct ? t('drill.feedback.learnMore') : undefined}
+            onLearnMore={!result.correct ? () => openLearnModule(item) : undefined}
+          />
+        )}
+
+        {/* Continue: anything that isn't an auto-advancing correct answer
+            holds here. Under the answers, in the thumb zone on a phone. */}
+        {phase === 'feedback' && result && !result.correct && (
+          <Button variant="primary" size="lg" block onClick={onAdvance}>
+            {t('drill.feedback.continue')}
+          </Button>
+        )}
+      </QuestionCard>
     </>
   );
 }

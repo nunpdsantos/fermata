@@ -2,7 +2,6 @@ import { memo, useMemo, useState, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { noteToString, type Note, type ScaleType } from '../../core/types/music.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
-import { SCALE_TYPE_NAMES } from '../../core/constants/scales.ts';
 import {
   keySignatureForScale,
   majorKeySignature,
@@ -11,11 +10,12 @@ import {
 } from '../../core/utils/degreeSpelling.ts';
 import { useAppStore } from '../../state/store.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
+import { ChipGroup } from '../ui/ChoiceChip.tsx';
 import { resumeAudio, playChordVoiced, cancelScheduledAudio } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import {
   CIRCLE_MAJOR, CIRCLE_MINOR,
-  MINOR_SCALES, MINOR_SCALE_LABELS,
+  MINOR_SCALES,
   SIZE, CENTER, MAJOR_INNER, MAJOR_OUTER, MINOR_INNER, MINOR_OUTER,
   KEYSIG_R, SEG_GAP, TONIC_HUE, accentAlpha,
   DIST_FILL_MAJOR, DIST_STROKE_MAJOR, DIST_TEXT_MAJOR,
@@ -50,9 +50,11 @@ const NEUTRAL_HOVER = 'var(--card-hover)';
 // wide at 1440×900 (0.85 px per unit), so 10 units ≈ 8.5 px. Numerals sit
 // UNDER the key name in the same segment, far enough apart that their boxes
 // never touch, so they cannot collide at 3 and 9 o'clock (review item 2).
-const MAJOR_NAME_SIZE = 11;
-const MINOR_NAME_SIZE = 8.5;
-const NUMERAL_SIZE = 10;
+// viewBox units; at the 360 px drawing 1 unit = 1.2 px (and fs() raises any
+// of them so nothing renders below 12 px).
+const MAJOR_NAME_SIZE = 12;
+const MINOR_NAME_SIZE = 11;
+const NUMERAL_SIZE = 11;
 
 function fifthsDistance(a: number, b: number): number {
   const d = Math.abs(a - b);
@@ -111,6 +113,22 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
   // until then it is the selected key (roving tabindex).
   const [navKey, setNavKey] = useState<{ ring: Ring; idx: number } | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  // Text never renders below 12 px (D-28): sizes are in viewBox units, so
+  // each one is raised to at least 12.5 px ÷ the drawing's current scale.
+  const [unitFloor, setUnitFloor] = useState(0);
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || typeof ResizeObserver === 'undefined') return;
+    const measure = () => {
+      const w = svg.getBoundingClientRect().width;
+      if (w > 0) setUnitFloor((12.5 * SIZE) / w);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(svg);
+    return () => ro.disconnect();
+  }, []);
+  const fs = (base: number) => Math.max(base, unitFloor);
 
   const isMinorSel = isMinorScale(selectedScale);
 
@@ -306,7 +324,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
   }, [hoveredIdx, hoveredRing, refIdx, majorSegs, minorSegs, selectedSeg, selectedKey, neutral, t]);
 
   // The scale's own name under the key when it is not plain major / minor.
-  const scaleLine = selectedScale === 'major' || isMinorSel ? null : SCALE_TYPE_NAMES[selectedScale];
+  const scaleLine = selectedScale === 'major' || isMinorSel ? null : t(`scaleName.${selectedScale}`);
 
   // Accessible name = the visible text (name and numeral) plus what a click
   // does — "B♯° (vii°) — select C minor" (WCAG 2.5.3 label in name).
@@ -321,10 +339,11 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
     s: { mid: { x: number; y: number }; display: string; numeral?: string; textFill: string; fill: string },
     ring: Ring,
   ) => {
-    const nameSize = ring === 'major' ? MAJOR_NAME_SIZE : MINOR_NAME_SIZE;
+    const nameSize = fs(ring === 'major' ? MAJOR_NAME_SIZE : MINOR_NAME_SIZE);
+    const numeralSize = fs(NUMERAL_SIZE);
     // Glyph boxes run ~1.4× the font size tall at small sizes; half of each plus
     // 1 unit of air keeps name and numeral apart at every render size.
-    const gap = (nameSize * 0.7 + NUMERAL_SIZE * 0.7 + 1) / 2;
+    const gap = (nameSize * 0.7 + numeralSize * 0.7 + 1) / 2;
     const nameY = s.numeral ? s.mid.y - gap : s.mid.y;
     const numeralY = s.mid.y + gap;
     // Full-contrast numerals: page text, or page background on the solid
@@ -351,7 +370,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
             y={numeralY}
             textAnchor="middle"
             dominantBaseline="central"
-            fontSize={NUMERAL_SIZE}
+            fontSize={numeralSize}
             className="font-semibold select-none pointer-events-none"
             fill={numeralFill}
           >
@@ -363,7 +382,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
   };
 
   const svgContent = (
-    <svg ref={svgRef} viewBox={`0 0 ${SIZE} ${SIZE}`} className="w-full max-w-[300px] mx-auto">
+    <svg ref={svgRef} viewBox={`0 0 ${SIZE} ${SIZE}`} className="w-full max-w-[360px] mx-auto">
       <defs>
         <filter id="cof-glow" x="-30%" y="-30%" width="160%" height="160%">
           <feGaussianBlur stdDeviation="4" result="blur" />
@@ -387,8 +406,9 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
             y={pos.y}
             textAnchor="middle"
             dominantBaseline="central"
-            className="text-[7px] select-none pointer-events-none"
-            fill="var(--border-light)"
+            fontSize={fs(11)}
+            className="select-none pointer-events-none"
+            fill="var(--text-dim)"
           >
             {sig}
           </text>
@@ -478,109 +498,69 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
         />
       )}
 
-      {/* Center content — the selected key + its signature (hover overrides) */}
+      {/* Center: the key name (hover shows the hovered key). The details sit
+          in the caption under the circle, where they can be 12 px+ (D-28). */}
+      {hoveredIdx !== null && hoverInfo ? (
+        <text
+          data-testid="cof-hover-name"
+          x={CENTER} y={CENTER}
+          textAnchor="middle" dominantBaseline="central"
+          fontSize={fs(18)}
+          className="font-bold select-none pointer-events-none"
+          fill="var(--text)"
+        >
+          {hoverInfo.name}
+        </text>
+      ) : (
+        <text
+          data-testid="cof-centre-key"
+          x={CENTER} y={CENTER}
+          textAnchor="middle" dominantBaseline="central"
+          fontSize={fs(20)}
+          className="font-bold select-none"
+          fill="var(--text)"
+        >
+          {noteToString(selectedKey)}{isMinorSel ? 'm' : ''}
+        </text>
+      )}
+    </svg>
+  );
+
+  // Caption under the circle: the hovered key's relation, or the selected
+  // key's scale + signature. Two fixed lines, so hovering never shifts layout.
+  const caption = (
+    <div className="text-center text-ui mt-1 min-h-[2.9em]" style={{ color: 'var(--text-muted)' }} aria-live="polite">
       {hoveredIdx !== null && hoverInfo ? (
         <>
-          <text
-            data-testid="cof-hover-name"
-            x={CENTER} y={CENTER - 18}
-            textAnchor="middle" dominantBaseline="central"
-            className="text-[13px] font-bold select-none pointer-events-none"
-            fill="var(--text)"
-          >
-            {hoverInfo.name}
-          </text>
-          {hoverInfo.distLabel && (
-            <text
-              data-testid="cof-hover-dist"
-              x={CENTER} y={CENTER - 2}
-              textAnchor="middle" dominantBaseline="central"
-              className="text-[7px] select-none pointer-events-none"
-              fill={hoverInfo.dist <= 2 ? 'var(--text-muted)' : 'var(--text-dim)'}
-            >
-              {hoverInfo.distLabel}
-            </text>
-          )}
-          <text
-            data-testid="cof-hover-sig"
-            x={CENTER} y={CENTER + 12}
-            textAnchor="middle" dominantBaseline="central"
-            className="text-[7px] select-none pointer-events-none"
-            fill="var(--text-muted)"
-          >
-            {hoverInfo.sig} · {hoverInfo.relative}
-          </text>
+          <div data-testid={hoverInfo.distLabel ? 'cof-hover-dist' : undefined} style={{ color: 'var(--text-dim)' }}>{hoverInfo.distLabel || '\u00a0'}</div>
+          <div data-testid="cof-hover-sig">{hoverInfo.sig} · {hoverInfo.relative}</div>
         </>
       ) : (
         <>
-          <text
-            data-testid="cof-centre-key"
-            x={CENTER} y={CENTER - (scaleLine ? 12 : 8)}
-            textAnchor="middle" dominantBaseline="central"
-            className="text-[15px] font-bold select-none"
-            fill="var(--text)"
-          >
-            {noteToString(selectedKey)}{isMinorSel ? 'm' : ''}
-          </text>
-          {scaleLine && (
-            <text
-              data-testid="cof-centre-scale"
-              x={CENTER} y={CENTER + 3}
-              textAnchor="middle" dominantBaseline="central"
-              className="text-[7px] select-none"
-              fill="var(--text-muted)"
-            >
-              {scaleLine}
-            </text>
-          )}
+          <div data-testid={scaleLine ? 'cof-centre-scale' : undefined} style={{ color: 'var(--text-dim)' }}>{scaleLine ?? '\u00a0'}</div>
           {signature ? (
-            <text
-              data-testid="cof-centre-sig"
-              x={CENTER} y={CENTER + (scaleLine ? 14 : 10)}
-              textAnchor="middle" dominantBaseline="central"
-              className="text-[8px] select-none"
-              fill="var(--text-muted)"
-            >
-              {formatKeySignature(signature, t('circle.noAccidentals'))}
-            </text>
+            <div data-testid="cof-centre-sig">{formatKeySignature(signature, t('circle.noAccidentals'))}</div>
           ) : (
-            <text
-              data-testid="cof-centre-nosig"
-              x={CENTER} y={CENTER + 14}
-              textAnchor="middle" dominantBaseline="central"
-              className="text-[6.5px] select-none"
-              fill="var(--text-muted)"
-            >
-              {t('circle.noStandardSignature')}
-            </text>
+            <div data-testid="cof-centre-nosig">{t('circle.noStandardSignature')}</div>
           )}
         </>
       )}
-    </svg>
+    </div>
   );
 
   return (
     <div>
       {svgContent}
+      {caption}
       {isMinorSel && (
-        <div className="flex items-center justify-center gap-1 mt-2">
-          {MINOR_SCALES.map((st) => {
-            const active = selectedScale === st;
-            return (
-              <button
-                key={st}
-                onClick={() => handleMinorVariant(st)}
-                className="px-2.5 py-1 rounded-md text-[10px] font-medium transition-colors"
-                style={{
-                  backgroundColor: active ? TONIC_HUE : 'var(--card)',
-                  color: active ? 'var(--bg)' : 'var(--text-muted)',
-                  border: `1px solid ${active ? TONIC_HUE : 'var(--card-hover)'}`,
-                }}
-              >
-                {MINOR_SCALE_LABELS[st]}
-              </button>
-            );
-          })}
+        <div className="flex justify-center mt-2">
+          {/* Natural / harmonic / melodic: one of many (D-28 choice chip). */}
+          <ChipGroup
+            label={t('explore.minorVariant')}
+            value={selectedScale}
+            onChange={(st) => handleMinorVariant(st)}
+            options={MINOR_SCALES.map((st) => ({ value: st, label: t(`scaleChip.${st}`) }))}
+          />
         </div>
       )}
     </div>

@@ -92,10 +92,10 @@ describe('KeySelector scale types', () => {
     expect(useAppStore.getState().selectedScale).toBe('natural_minor');
   });
 
-  it('active scale has aria-pressed=true', () => {
+  it('active scale is the checked radio (D-28 choice chip)', () => {
     render(<KeySelector />);
     const majorButton = screen.getByText('Major').closest('button')!;
-    expect(majorButton.getAttribute('aria-pressed')).toBe('true');
+    expect(majorButton.getAttribute('aria-checked')).toBe('true');
   });
 
   it('renders "More scales" toggle button', () => {

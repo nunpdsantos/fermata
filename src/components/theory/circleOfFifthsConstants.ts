@@ -32,19 +32,17 @@ export const CIRCLE_MINOR: Note[] = [
 ];
 
 export const MINOR_SCALES: ScaleType[] = ['natural_minor', 'harmonic_minor', 'melodic_minor'];
-export const MINOR_SCALE_LABELS: Record<string, string> = {
-  natural_minor: 'Natural',
-  harmonic_minor: 'Harmonic',
-  melodic_minor: 'Melodic',
-};
 
 export const SIZE = 300;
 export const CENTER = SIZE / 2;
-export const MAJOR_INNER = 84;
-export const MAJOR_OUTER = 120;
-export const MINOR_INNER = 50;
-export const MINOR_OUTER = 80;
-export const KEYSIG_R = 132;
+// Ring thickness sized so every key wedge is a ≥ 44 px target on a phone and
+// ≥ 36 px on a laptop at the 340–360 px drawing (D-28; the minor ring was 30
+// units — a 35 px target).
+export const MAJOR_INNER = 86;
+export const MAJOR_OUTER = 126;
+export const MINOR_INNER = 40;
+export const MINOR_OUTER = 82;
+export const KEYSIG_R = 139;
 export const SEG_GAP = 1.2;
 
 // Tonic accent color — uses the theme's accent CSS var so the Circle of
@@ -77,7 +75,9 @@ export const DIST_STROKE_MAJOR = [
 ];
 // Index 0 sits on the solid accent: --on-accent keeps it ≥ 4.5:1 in both themes.
 export const DIST_TEXT_MAJOR = [
-  'var(--on-accent)', 'var(--text)', 'var(--text-muted)', 'var(--text-muted)', 'var(--text-dim)', 'var(--border-light)', 'var(--border)',
+  // Distance fades the FILL; the name never drops below --text-dim (≥ 4.5:1,
+  // D-28 — the old --border-light / --border names read 1.7–2.1:1).
+  'var(--on-accent)', 'var(--text)', 'var(--text-muted)', 'var(--text-muted)', 'var(--text-dim)', 'var(--text-dim)', 'var(--text-dim)',
 ];
 
 // Minor ring — slightly subtler
@@ -100,5 +100,5 @@ export const DIST_STROKE_MINOR = [
   'var(--card)',
 ];
 export const DIST_TEXT_MINOR = [
-  'var(--on-accent)', 'var(--text-muted)', 'var(--text-muted)', 'var(--text-dim)', 'var(--border-light)', 'var(--border)', 'var(--border)',
+  'var(--on-accent)', 'var(--text-muted)', 'var(--text-muted)', 'var(--text-dim)', 'var(--text-dim)', 'var(--text-dim)', 'var(--text-dim)',
 ];

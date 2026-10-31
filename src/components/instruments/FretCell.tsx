@@ -1,4 +1,5 @@
 import { memo, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { noteToString } from '../../core/types/music.ts';
 import type { Note } from '../../core/types/music.ts';
 import type { FingerNumber } from '../../core/constants/guitarChordShapes.ts';
@@ -60,6 +61,7 @@ export const FretCell = memo(function FretCell({
   isFocused,
   onClick,
 }: FretCellProps) {
+  const { t } = useTranslation();
   const noteLabel = noteToString(displayNote);
   const solidText = readableTextOn(dotColor);
   const dotData = (kind: string) => ({
@@ -104,7 +106,7 @@ export const FretCell = memo(function FretCell({
       data-fret={fret}
       data-string-row={stringIdx}
       role="button"
-      aria-label={`${noteLabel}, fret ${fret}, string ${6 - stringIdx}`}
+      aria-label={t('fretboard.cellLabel', { note: noteLabel, fret, string: 6 - stringIdx })}
       aria-pressed={isActive}
       className="flex-1 flex items-center justify-center relative cursor-pointer"
       style={{
@@ -139,7 +141,7 @@ export const FretCell = memo(function FretCell({
           style={{
             width: isChordView ? (mobile ? 30 : 26) : (mobile ? 26 : 22),
             height: isChordView ? (mobile ? 30 : 26) : (mobile ? 26 : 22),
-            fontSize: finger && fingerLabel(finger) ? (isChordView ? (mobile ? 13 : 12) : (mobile ? 11 : 10)) : (mobile ? 11 : 10),
+            fontSize: finger && fingerLabel(finger) && isChordView ? (mobile ? 13 : 12) : 12,
             backgroundColor: dotColor,
             color: solidText,
             boxShadow: isRoot
@@ -195,7 +197,7 @@ export const FretCell = memo(function FretCell({
           style={{
             width: mobile ? 26 : 24,
             height: mobile ? 26 : 24,
-            fontSize: mobile ? 11 : 10,
+            fontSize: 12,
             backgroundColor: dotColor,
             color: solidText,
             border: isRoot ? '3px solid #ffffff' : `2px solid ${dotColor}`,
@@ -212,7 +214,7 @@ export const FretCell = memo(function FretCell({
           style={{
             width: scaleSolid ? (mobile ? 26 : 24) : (mobile ? 24 : 22),
             height: scaleSolid ? (mobile ? 26 : 24) : (mobile ? 24 : 22),
-            fontSize: mobile ? 11 : 10,
+            fontSize: 12,
             backgroundColor: scaleSolid ? color : `${color}30`,
             // Non-root dots keep the pale tint but print their label in the
             // body text colour — ≥ 4.5:1 in both themes (audit W3-14; the old

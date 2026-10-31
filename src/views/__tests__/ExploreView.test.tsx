@@ -98,7 +98,7 @@ describe('ExploreView — unified ChordWorkspace (no auto-pop sidebar)', () => {
 
     // CurrentChordPanel rendered inside the workspace: its inversion radiogroup
     // + Voicing heading prove the chord detail is inline, not in a sidebar.
-    expect(screen.getByRole('radiogroup')).toBeDefined();
+    expect(screen.getByRole('radiogroup', { name: 'Chord inversion' })).toBeDefined();
     expect(screen.getByText('Voicing')).toBeDefined();
   });
 

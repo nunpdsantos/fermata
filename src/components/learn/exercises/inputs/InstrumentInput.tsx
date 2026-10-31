@@ -31,6 +31,9 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
   // toggled selection instead (see useKeyContext exercise-input mode).
   useEffect(() => {
     setExerciseInputActive(true);
+    // The answer is played on the instrument: make sure the dock is open (Learn
+    // keeps it at Peek by default, D-20). Full D-20 wiring is a later batch.
+    useAppStore.getState().requestDock('half');
     return () => setExerciseInputActive(false);
   }, [setExerciseInputActive]);
 
@@ -88,7 +91,7 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
         <span className="text-xs" style={{ color: 'var(--text-dim)' }}>
           {t('exercise.instrumentSelected', { selected: toggledPCs.size, expected: expectedCount })}
         </span>
-        <span className="text-[10px] flex items-center gap-1.5" style={{ color: 'var(--text-dim)' }}>
+        <span className="text-caption flex items-center gap-1.5" style={{ color: 'var(--text-dim)' }}>
           {t('exercise.instrumentToggle')}
         </span>
       </div>

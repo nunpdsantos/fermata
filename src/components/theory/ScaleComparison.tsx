@@ -7,12 +7,14 @@ import { buildScale, SCALE_TYPE_NAMES } from '../../core/constants/scales.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
-import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
+import { DEGREE_COLORS, inkFor } from '../../design/tokens/colors.ts';
+import { SelectTrigger } from '../ui/SelectTrigger.tsx';
+import { IconButton } from '../ui/Button.tsx';
 import { palette } from '../../design/tokens/palette';
 import { degreeOf, degreeColorSlot, formatDegree } from '../../core/utils/degreeSpelling.ts';
 
 
-const SCALE_OPTIONS = Object.entries(SCALE_TYPE_NAMES) as [ScaleType, string][];
+const SCALE_OPTIONS = Object.keys(SCALE_TYPE_NAMES) as ScaleType[];
 
 export function ScaleComparison() {
   const { t } = useTranslation();
@@ -145,22 +147,16 @@ export function ScaleComparison() {
         <h3 className="type-section">
           {t('explore.compareScales')}
         </h3>
-        <select
+        <SelectTrigger
           value=""
           onChange={(e) => setComparisonScale(e.target.value as ScaleType)}
-          className="px-2 py-1 rounded-lg text-xs"
-          style={{
-            backgroundColor: 'var(--card)',
-            color: 'var(--text-muted)',
-            border: '1px solid var(--border)',
-          }}
           aria-label={t('explore.selectScaleToCompare')}
         >
           <option value="" disabled>{t('explore.chooseScale')}</option>
-          {SCALE_OPTIONS.filter(([id]) => id !== selectedScale).map(([id, name]) => (
-            <option key={id} value={id}>{name}</option>
+          {SCALE_OPTIONS.filter((id) => id !== selectedScale).map((id) => (
+            <option key={id} value={id}>{t(`scaleName.${id}`)}</option>
           ))}
-        </select>
+        </SelectTrigger>
       </div>
     );
   }
@@ -175,43 +171,36 @@ export function ScaleComparison() {
         <h3 className="type-section">
           {t('explore.scaleComparison')}
         </h3>
-        <button
+        <IconButton
           onClick={() => setComparisonScale(null)}
-          className="p-1 rounded transition-colors"
-          style={{ color: 'var(--text-dim)' }}
           aria-label={t('explore.closeComparison')}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
+          icon={
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          }
+        />
       </div>
 
       {/* Scale labels + selector */}
       <div className="flex items-center justify-between mb-3 gap-3 flex-wrap">
-        <div className="flex items-center gap-4 text-xs">
-          <span style={{ color: tonicColor }} className="font-semibold">
-            {SCALE_TYPE_NAMES[selectedScale]}
+        <div className="flex items-center gap-3 text-ui flex-wrap">
+          <span style={{ color: inkFor(tonicColor) }} className="font-semibold">
+            {t(`scaleName.${selectedScale}`)}
           </span>
           <span style={{ color: 'var(--text-dim)' }}>{t('explore.vs')}</span>
-          <select
+          <SelectTrigger
             value={comparisonScale}
             onChange={(e) => setComparisonScale(e.target.value as ScaleType)}
-            className="px-2 py-1 rounded-lg text-xs"
-            style={{
-              backgroundColor: 'var(--card)',
-              color: compareColor,
-              border: `1px solid ${alpha(compareColor, '30')}`,
-            }}
             aria-label={t('explore.changeComparisonScale')}
           >
-            {SCALE_OPTIONS.filter(([id]) => id !== selectedScale).map(([id, name]) => (
-              <option key={id} value={id}>{name}</option>
+            {SCALE_OPTIONS.filter((id) => id !== selectedScale).map((id) => (
+              <option key={id} value={id}>{t(`scaleName.${id}`)}</option>
             ))}
-          </select>
+          </SelectTrigger>
         </div>
-        <div className="text-[10px] flex gap-3" style={{ color: 'var(--text-dim)' }}>
+        <div className="text-caption flex gap-3" style={{ color: "var(--text-dim)" }}>
           <span>{sharedCount} {t('explore.shared')}</span>
           <span>{onlyACount} {t('explore.uniqueToA')}</span>
           <span>{onlyBCount} {t('explore.uniqueToB')}</span>
@@ -234,10 +223,10 @@ export function ScaleComparison() {
                 : '1px solid transparent',
             }}
           >
-            <span className="text-[10px] font-bold" style={{ color: slot.inA ? slot.colorA : 'var(--text-dim)' }}>
+            <span className="text-caption font-bold" style={{ color: slot.inA && slot.colorA ? inkFor(slot.colorA) : 'var(--text-dim)' }}>
               {slot.noteA ?? ''}
             </span>
-            <span className="text-[8px] max-sm:hidden" style={{ color: slot.inA ? alpha(slot.colorA, '99') : 'transparent' }}>
+            <span className="text-caption max-sm:hidden" style={{ color: slot.inA && slot.colorA ? inkFor(slot.colorA) : 'transparent' }}>
               {slot.labelA ?? ''}
             </span>
           </div>
@@ -253,10 +242,10 @@ export function ScaleComparison() {
               <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: palette.success }} title={t('explore.sharedLegend')} />
             )}
             {slot.onlyA && (
-              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: tonicColor }} title={t('explore.onlyLegend', { name: SCALE_TYPE_NAMES[selectedScale] })} />
+              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: tonicColor }} title={t('explore.onlyLegend', { name: t(`scaleName.${selectedScale}`) })} />
             )}
             {slot.onlyB && (
-              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: compareColor }} title={t('explore.onlyLegend', { name: SCALE_TYPE_NAMES[comparisonScale] })} />
+              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: compareColor }} title={t('explore.onlyLegend', { name: t(`scaleName.${comparisonScale}`) })} />
             )}
           </div>
         ))}
@@ -275,10 +264,10 @@ export function ScaleComparison() {
                 : '1px solid transparent',
             }}
           >
-            <span className="text-[10px] font-bold" style={{ color: slot.inB ? slot.colorB : 'var(--text-dim)' }}>
+            <span className="text-caption font-bold" style={{ color: slot.inB && slot.colorB ? inkFor(slot.colorB) : 'var(--text-dim)' }}>
               {slot.noteB ?? ''}
             </span>
-            <span className="text-[8px] max-sm:hidden" style={{ color: slot.inB ? alpha(slot.colorB, '99') : 'transparent' }}>
+            <span className="text-caption max-sm:hidden" style={{ color: slot.inB && slot.colorB ? inkFor(slot.colorB) : 'transparent' }}>
               {slot.labelB ?? ''}
             </span>
           </div>
@@ -286,18 +275,18 @@ export function ScaleComparison() {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-4 mt-2 text-[9px]" style={{ color: 'var(--text-dim)' }}>
+      <div className="flex items-center gap-4 mt-2 text-caption flex-wrap" style={{ color: 'var(--text-dim)' }}>
         <span className="flex items-center gap-1">
           <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: palette.success }} />
           {t('explore.sharedLegend')}
         </span>
         <span className="flex items-center gap-1">
           <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: tonicColor }} />
-          {t('explore.onlyLegend', { name: SCALE_TYPE_NAMES[selectedScale] })}
+          {t('explore.onlyLegend', { name: t(`scaleName.${selectedScale}`) })}
         </span>
         <span className="flex items-center gap-1">
           <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: compareColor }} />
-          {t('explore.onlyLegend', { name: SCALE_TYPE_NAMES[comparisonScale] })}
+          {t('explore.onlyLegend', { name: t(`scaleName.${comparisonScale}`) })}
         </span>
       </div>
     </div>

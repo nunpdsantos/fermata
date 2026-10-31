@@ -31,7 +31,6 @@ import { LearnMoreButton } from './LearnMoreButton.tsx';
 import { Badge } from '../ui/Badge';
 
 import { getScaleSuggestions } from '../../core/constants/chordScaleRelationships.ts';
-import { SCALE_TYPE_NAMES } from '../../core/constants/scales.ts';
 
 interface CurrentChordPanelProps {
   chord: Chord;
@@ -307,7 +306,7 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
                     setKey(chord.root);
                     setScale(s.scale);
                   }}
-                  className="px-2 py-1 rounded-lg text-[11px] font-medium transition-all hover:brightness-125"
+                  className="px-2 py-1 rounded-lg text-caption font-medium transition-all hover:brightness-125"
                   style={{
                     backgroundColor: alpha(fitColor, '12'),
                     color: fitColor,
@@ -315,7 +314,7 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
                   }}
                   title={s.context}
                 >
-                  {SCALE_TYPE_NAMES[s.scale]}
+                  {t(`scaleName.${s.scale}`)}
                 </button>
               );
             })}

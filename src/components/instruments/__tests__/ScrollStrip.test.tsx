@@ -161,7 +161,7 @@ describe('Fretboard scroll strip (mobile)', () => {
     const { container } = await renderFretboard();
     const fretCell = within(container)
       .getAllByRole('button')
-      .find((b) => /fret \d+, string/.test(b.getAttribute('aria-label') ?? ''))!;
+      .find((b) => /fret \d+, string|fretboard\.cellLabel/.test(b.getAttribute('aria-label') ?? ''))!;
     expect(fretCell.style.touchAction).toBe('none');
   });
 });

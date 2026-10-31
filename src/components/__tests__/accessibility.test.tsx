@@ -16,13 +16,21 @@ beforeAll(() => {
 // Mocks
 // ---------------------------------------------------------------------------
 
-// Mock react-i18next
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-    i18n: { language: 'en', changeLanguage: vi.fn() },
-  }),
-}));
+// Mock react-i18next: a key with interpolation values renders the English
+// string (so composed labels — "C major chord, degree 1" — can be checked);
+// a plain key renders as the key.
+vi.mock('react-i18next', async () => {
+  const en = (await import('../../i18n/locales/en.json')).default as Record<string, unknown>;
+  const lookup = (key: string) => key.split('.').reduce<unknown>((o, k) => (o as Record<string, unknown> | undefined)?.[k], en);
+  const t = (key: string, opts?: Record<string, unknown>) => {
+    if (!opts) return key;
+    const v = lookup(key);
+    return typeof v === 'string' ? v.replace(/\{\{(\w+)\}\}/g, (_m, k: string) => String(opts[k] ?? '')) : key;
+  };
+  return {
+    useTranslation: () => ({ t, i18n: { language: 'en', changeLanguage: vi.fn() } }),
+  };
+});
 
 // Mock framer-motion — mirrors the pattern from existing tests
 vi.mock('framer-motion', async () => {
@@ -60,6 +68,8 @@ vi.mock('../../hooks/useAudio', () => ({
 
 // Mock useIsMobile / useIsCompact to return desktop defaults
 vi.mock('../../hooks/useMediaQuery', () => ({
+  useMediaQuery: () => false,
+  PHONE_QUERY: '(max-width: 639px)',
   useIsMobile: () => false,
   useIsCompact: () => false,
   useIsTablet: () => false,
@@ -108,7 +118,7 @@ describe('ChordGrid accessibility', () => {
 
   it('renders a container with role="group" and aria-label', async () => {
     await renderChordGrid();
-    const group = screen.getByRole('group', { name: 'Diatonic chords' });
+    const group = screen.getByRole('group', { name: 'explore.diatonicChordsGroup' });
     expect(group).toBeDefined();
   });
 
@@ -333,19 +343,19 @@ describe('Piano accessibility', () => {
     expect(sharpKey).toBeDefined();
   });
 
-  it('octave selector has role="tablist" with aria-label', async () => {
+  it('octave selector is a radiogroup (D-28 choice chips) with aria-label', async () => {
     await renderPiano();
-    const tablist = screen.getByRole('tablist', { name: 'instrument.baseOctave' });
+    const tablist = screen.getByRole('radiogroup', { name: 'instrument.baseOctave' });
     expect(tablist).toBeDefined();
 
-    const tabs = within(tablist).getAllByRole('tab');
+    const tabs = within(tablist).getAllByRole('radio');
     // Only octaves that keep the selected scale on the 88 keys (review item 6):
     // C major offers C1–C7 (C0 would start below A0, C8 runs past the top).
     expect(tabs.map((t) => t.textContent)).toEqual(['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7']);
 
-    // Current octave (4) should be aria-selected=true
+    // Current octave (4) is the checked radio
     const selected = tabs.find(
-      (t) => t.getAttribute('aria-selected') === 'true',
+      (t) => t.getAttribute('aria-checked') === 'true',
     );
     expect(selected).toBeDefined();
     expect(selected!.textContent).toBe('C4');

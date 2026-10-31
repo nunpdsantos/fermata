@@ -186,7 +186,7 @@ export function ChordBuilderPanel() {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap gap-3 items-end">
-        <label className="flex flex-col gap-1 text-2xs uppercase tracking-wide" style={{ color: 'var(--text-muted)' }}>
+        <label className="flex flex-col gap-1 text-caption uppercase tracking-wide" style={{ color: 'var(--text-muted)' }}>
           <span>{t('chordBuilder.chordRoot')}</span>
           <select
             value={`${chordRoot.natural}${chordRoot.accidental}`}
@@ -273,7 +273,7 @@ export function ChordBuilderPanel() {
         }}
       >
         <div className="flex items-baseline gap-3 flex-wrap">
-          <span className="text-2xs uppercase tracking-wide" style={{ color: 'var(--text-muted)' }}>
+          <span className="text-caption uppercase tracking-wide" style={{ color: 'var(--text-muted)' }}>
             {t('chordBuilder.detected')}
           </span>
           {top ? (

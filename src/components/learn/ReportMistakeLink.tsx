@@ -36,7 +36,7 @@ export function ReportMistakeLink({ moduleId, moduleTitle }: ReportMistakeLinkPr
     <div className="mt-8 pt-4 text-center">
       <a
         href={href}
-        className="text-2xs underline decoration-dotted underline-offset-2 transition-colors"
+        className="inline-flex items-center min-h-(--tap) px-2 text-caption underline decoration-dotted underline-offset-2 transition-colors"
         style={{ color: 'var(--text-dim)' }}
         onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}
         onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-dim)'; }}
