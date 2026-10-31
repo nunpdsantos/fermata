@@ -45,6 +45,15 @@ export interface LineRules {
   allowFingerChange?: boolean;
   /** Accept two neighbouring fingers on one fret (lower string, lower finger). */
   allowSharedFrets?: boolean;
+  /**
+   * Ringing groups ("with over-ringing"): notes with the same group id go on
+   * different strings — one string per note within each group.
+   */
+  groups?: readonly (number | undefined)[];
+  /** Per-note string step allowed INTO the note (overrides maxStringStep). */
+  leaps?: readonly (number | undefined)[];
+  /** Notes the hand may jump to without a guide (a broken chord's group start). */
+  jumpOk?: readonly boolean[];
 }
 
 /** Arpeggio-line violations, counted (not asserted) — used to report before/after numbers. */
@@ -72,6 +81,18 @@ export function checkPlayableLine(notes: readonly OracleNote[], label: string, o
   const v = lineViolations(notes);
   expect(v, `${label}: rolls / unflagged barrés / wrong barré flags`).toEqual({ rolls: 0, unflaggedBarres: 0, wrongFlags: 0 });
   let segFrets: number[] = [];
+  // One string per note within each ringing group.
+  if (opts.groups) {
+    const byGroup = new Map<number, number[]>();
+    notes.forEach((n, i) => {
+      const g = opts.groups![i];
+      if (g === undefined) return;
+      byGroup.set(g, [...(byGroup.get(g) ?? []), n.stringIndex]);
+    });
+    for (const [g, strings] of byGroup) {
+      expect(new Set(strings).size, `${label}: group ${g} shares a string (${strings.join(',')})`).toBe(strings.length);
+    }
+  }
   notes.forEach((n, i) => {
     const where = `${label} #${i} ${nameOf(n.note)}`;
     expect(OPEN[n.stringIndex] + n.fret, where).toBe(n.midi);
@@ -89,8 +110,10 @@ export function checkPlayableLine(notes: readonly OracleNote[], label: string, o
         p.stringIndex === n.stringIndex &&
         ((up && n.finger === 1 && p.finger >= 2) || (!up && p.finger === 1 && n.finger >= 2));
       const change = opts.allowFingerChange === true && p.stringIndex === n.stringIndex && p.fret > 0 && n.fret > 0;
+      const jump = opts.jumpOk?.[i] === true && n.shift.kind === 'jump';
+      expect(n.shift.kind !== 'jump' || jump, `${where}: jump where none is allowed`).toBe(true);
       expect(
-        openShift || guide || index || change,
+        openShift || guide || index || change || jump,
         `${where}: shift without a guide (${p.stringIndex}/${p.fret}/${p.finger} → ${n.stringIndex}/${n.fret}/${n.finger})`,
       ).toBe(true);
       fingerToFret = new Map();
@@ -132,7 +155,7 @@ export function checkPlayableLine(notes: readonly OracleNote[], label: string, o
     }
     if (prev) {
       const ds = n.stringIndex - prev.stringIndex;
-      expect(Math.abs(ds), `${where}: string step`).toBeLessThanOrEqual(maxStep);
+      expect(Math.abs(ds), `${where}: string step`).toBeLessThanOrEqual(opts.leaps?.[i] ?? maxStep);
       if (n.midi > prev.midi) expect(ds, `${where}: higher pitch on a lower string`).toBeGreaterThanOrEqual(0);
       if (n.midi < prev.midi) expect(ds, `${where}: lower pitch on a higher string`).toBeLessThanOrEqual(0);
     }

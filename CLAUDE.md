@@ -35,7 +35,7 @@ Scale degree function is encoded in color throughout the app:
 **Name:** Music Theory App
 **Domain:** Music theory education / interactive instrument
 **Stack:** React 19 + TypeScript 5.9 + Vite 7 + Tailwind CSS v4 + Zustand 5 + Framer Motion 12
-**Tests:** 7,052 passing (Vitest + React Testing Library, 194 test files; counted 2026-10-31) + Playwright e2e on the dev server and on the production build
+**Tests:** 7,054 passing (Vitest + React Testing Library, 194 test files; counted 2026-10-31) + Playwright e2e on the dev server and on the production build
 **Languages:** English + Portuguese + Spanish (react-i18next + content overlay system)
 **PWA:** Offline-capable with Workbox precaching
 
@@ -306,7 +306,7 @@ src/
 The app is a lean, single-user personal tool — no accounts, no cloud sync, no
 gamification. Curriculum, exercises, spaced repetition, trilingual content, offline
 PWA, sampled piano, instrument-aware playback, and (WS9, branch `ws9-drill-mode`)
-the phone-first Drill view: all functional, all gates green (7,052 tests / 194 files on
+the phone-first Drill view: all functional, all gates green (7,054 tests / 194 files on
 2026-10-31, eslint 0/0, content audits clean).
 
 WS9 details worth knowing: drill bank generated from core (`drillBank/` directory

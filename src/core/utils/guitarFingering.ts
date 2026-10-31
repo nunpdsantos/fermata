@@ -23,6 +23,8 @@
 //   share12      N   N   N+1 N+2
 //   share23      N   N+1 N+1 N+2
 //   share34      N   N+1 N+2 N+2
+//   share23Up    N   N+1 N+1 N+3   little finger one fret out (the first-
+//                                  position E grip: 1 on 1, 2 and 3 on 2, 4 on 4)
 //
 // A fretted note is played by the finger whose frame fret it is, so one finger
 // never plays two frets while the hand stays put, and — outside the shared
@@ -36,7 +38,10 @@
 //   open   the shift happens while an open string sounds (the hand is free);
 //   change (opt-in, arpeggios) on the same string, another finger lands on the
 //          next note after the hand slides (3 → 4 up the 1st string to the
-//          top of an open-position C arpeggio).
+//          top of an open-position C arpeggio);
+//   jump   (only into a note marked jumpOk: a broken chord's group start) the
+//          hand repositions while the thumb returns to the bass — the earlier
+//          group has rung its course ("with over-ringing").
 //
 // Everything else (jumping to another string and another position at once) is
 // not offered. Two consecutive notes on different strings at the same fret
@@ -51,7 +56,7 @@
 // Costs (integers, so sums are exact):
 //   shift       guide 30 + 4·frets slid; index and change 30 (index from the
 //               2nd finger: 40) + 3·frets between the two notes + 1·positions
-//               moved; open 12 + 2·positions moved; at
+//               moved; open 12 + 2·positions moved; jump 45 + 4·positions; at
 //               most 7 positions per shift; 25 more for a shift straight
 //               after another, 60 more when it is the same finger sliding
 //               again (a melodic-minor descent sliding 2-2-2 down a string)
@@ -64,7 +69,9 @@
 //               15 up to IV; 30 from V
 //   root        littleFingerRootCost when the 4th finger plays the first note
 //               and it is a chord root (the bass of an arpeggio)
-//   shared fret 3 per note on the shared fret of a share12/23/34 shape
+//   shared fret 3 per note on the shared fret of a shared shape
+//   group       notes of one ringing group (LinePitch.group) never share a
+//               string — a rule, not a cost
 //               (openStrings 'avoid': closed-position routes — an open
 //               string only where no fretted place reaches the pitch)
 //   height      1 per position, per fretted note (nut-closest wins ties)
@@ -87,9 +94,19 @@ export interface LinePitch {
   openFree?: boolean;
   /** A chord root (arpeggios): the little finger on it costs littleFingerRootCost. */
   root?: boolean;
+  /**
+   * Notes that must ring on together (a broken chord's group of three, played
+   * "with over-ringing"): consecutive notes with the same group id go on
+   * different strings, so none cuts the one before it off.
+   */
+  group?: number;
+  /** Largest string change into this note, overriding maxStringStep (a broken chord's closing tonic). */
+  leap?: number;
+  /** The hand may reposition into this note without a guide (kind 'jump'): a broken chord's group start. */
+  jumpOk?: boolean;
 }
 
-export type HandFrameKind = 'compact' | 'stretchUp' | 'spreadUp' | 'stretchDown' | 'share12' | 'share23' | 'share34';
+export type HandFrameKind = 'compact' | 'stretchUp' | 'spreadUp' | 'stretchDown' | 'share12' | 'share23' | 'share34' | 'share23Up';
 
 export interface HandFrame {
   kind: HandFrameKind;
@@ -100,11 +117,11 @@ export interface HandFrame {
 }
 
 /**
- * 'guide', 'index', 'open', 'change': see the header. 'shape' (double stops only): the
+ * 'guide', 'index', 'open', 'change', 'jump': see the header. 'shape' (double stops only): the
  * hand keeps the same two fingers in the same shape and moves it to the next
  * pair of strings (an octave shape crossing from strings 5–3 to 4–2).
  */
-export type ShiftKind = 'guide' | 'index' | 'open' | 'change' | 'shape';
+export type ShiftKind = 'guide' | 'index' | 'open' | 'change' | 'jump' | 'shape';
 
 export interface Shift {
   kind: ShiftKind;
@@ -206,9 +223,10 @@ const FRAME_OFFSETS: Record<HandFrameKind, readonly [number, number, number, num
   share12: [0, 0, 1, 2],
   share23: [0, 1, 1, 2],
   share34: [0, 1, 2, 2],
+  share23Up: [0, 1, 1, 3],
 };
 const FRAME_KINDS: readonly HandFrameKind[] = ['compact', 'stretchUp', 'spreadUp', 'stretchDown'];
-const SHARED_KINDS: readonly HandFrameKind[] = ['share12', 'share23', 'share34'];
+const SHARED_KINDS: readonly HandFrameKind[] = ['share12', 'share23', 'share34', 'share23Up'];
 /** Fingers that reach outside the compact window in each frame (1-based). */
 const REACHING: Record<HandFrameKind, ReadonlySet<number>> = {
   compact: new Set(),
@@ -218,6 +236,7 @@ const REACHING: Record<HandFrameKind, ReadonlySet<number>> = {
   share12: new Set(),
   share23: new Set(),
   share34: new Set(),
+  share23Up: new Set([4]),
 };
 
 export function makeFrame(kind: HandFrameKind, firstFret: number): HandFrame {
@@ -271,6 +290,7 @@ const COST = {
   shiftIndex: 30,
   shiftIndexFrom2: 40,
   shiftOpen: 12,
+  shiftJump: 45,
   perFretSlid: 4,
   perFretIndex: 3,
   perPositionIndex: 1,
@@ -323,6 +343,7 @@ function shiftBetween(
   frame: HandFrame,
   dir: number,
   fingerChange: boolean,
+  jumpOk: boolean,
 ): { shift: Shift; cost: number } | null {
   const from = p.frame!;
   if (from.position === frame.position) return null; // one frame per position
@@ -335,7 +356,11 @@ function shiftBetween(
       cost: COST.shiftOpen + COST.perPositionOpen * moved,
     };
   }
-  if (p.s !== s) return null;
+  if (p.s !== s) {
+    return jumpOk
+      ? { shift: { ...base, kind: 'jump', stringIndex: s, finger }, cost: COST.shiftJump + 4 * moved }
+      : null;
+  }
   if (p.finger === finger) {
     return {
       shift: { ...base, kind: 'guide', stringIndex: s, finger },
@@ -399,6 +424,8 @@ export function fingerLineScored(
     const prevLayer = i > 0 ? layers[i - 1] : null;
     const dir = i > 0 ? Math.sign(midi - line[i - 1].midi) : 0;
     const pin = i === 0 ? options.start : i === line.length - 1 ? options.end : undefined;
+    // Two notes of one ringing group never share a string.
+    const sameGroup = i > 0 && line[i].group !== undefined && line[i].group === line[i - 1].group;
     const layer: State[] = [];
     const index = new Map<string, number>();
     const offer = (st: State) => {
@@ -428,7 +455,8 @@ export function fingerLineScored(
           continue;
         }
         prevLayer.forEach((p, pi) => {
-          if (!stringStepOk(p.s, s, dir, maxStep)) return;
+          if (!stringStepOk(p.s, s, dir, line[i].leap ?? maxStep)) return;
+          if (sameGroup && p.s === s) return;
           if (pin?.position !== undefined && (p.frame?.position ?? null) !== pin.position) return;
           if (pin?.frame !== undefined && frameId(pin.frame) !== frameId(p.frame)) return;
           const cost = p.cost + refCost + crossingCost(p.s, s) + openStringCost(line[i].openFree === true, p.frame, freeUpTo);
@@ -449,7 +477,8 @@ export function fingerLineScored(
           continue;
         }
         prevLayer.forEach((p, pi) => {
-          if (!stringStepOk(p.s, s, dir, maxStep)) return;
+          if (!stringStepOk(p.s, s, dir, line[i].leap ?? maxStep)) return;
+          if (sameGroup && p.s === s) return;
           let cost = p.cost + own + crossingCost(p.s, s);
           // Same fret, next string, same finger: a roll (fingers 2–4, never)
           // or a partial barré (the index, costed). Two fingers on one fret
@@ -464,7 +493,7 @@ export function fingerLineScored(
           }
           let shift: Shift | null = null;
           if (p.frame !== null && frameId(p.frame) !== frameId(frame)) {
-            const move = shiftBetween(p, s, f, finger, frame, dir, fingerChange);
+            const move = shiftBetween(p, s, f, finger, frame, dir, fingerChange, line[i].jumpOk === true);
             if (move === null) return;
             cost += move.cost + (p.shift !== null ? COST.backToBack : 0);
             if (p.shift?.kind === 'guide' && move.shift.kind === 'guide' && p.shift.finger === move.shift.finger) {

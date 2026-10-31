@@ -234,32 +234,37 @@ function checkArpeggio(ex: TechniqueExercise, key: string, t: ArpType, label: st
   expect(ex.events.every((e) => e.rh.length === 1)).toBe(true);
 }
 
-describe('arpeggios — 5 types × 12 roots × both styles (oracle)', () => {
+describe('arpeggios — 5 types × 12 roots (oracle)', () => {
   for (const t of ARP_TYPES) {
     it(t.label, () => {
-      for (const os of STYLES) {
-        for (const r of ROOTS(t.spell)) {
-          const ex = t.make(r, { openStrings: os });
-          expect(ex, `${nameOf(r)} ${t.label} ${os}`).not.toBeNull();
-          checkArpeggio(ex!, nameOf(r), t, `${nameOf(r)} ${t.label} ${os}`);
-        }
+      for (const r of ROOTS(t.spell)) {
+        const ex = t.make(r, {});
+        expect(ex, `${nameOf(r)} ${t.label}`).not.toBeNull();
+        checkArpeggio(ex!, nameOf(r), t, `${nameOf(r)} ${t.label}`);
       }
     });
   }
 
-  it('every arpeggio is clean: 0 rolled fingers, 0 unflagged barrés (120 exercises)', () => {
+  it('every arpeggio is clean: 0 rolled fingers, 0 unflagged barrés (60 exercises)', () => {
     const report: Record<string, { exercises: number; clean: number }> = {};
     for (const t of ARP_TYPES) {
       report[t.label] = { exercises: 0, clean: 0 };
-      for (const os of STYLES) {
-        for (const r of ROOTS(t.spell)) {
-          const v = lineViolations(techniqueNotes(t.make(r, { openStrings: os })!));
-          report[t.label].exercises++;
-          if (v.rolls + v.unflaggedBarres + v.wrongFlags === 0) report[t.label].clean++;
-        }
+      for (const r of ROOTS(t.spell)) {
+        const v = lineViolations(techniqueNotes(t.make(r, {})!));
+        report[t.label].exercises++;
+        if (v.rolls + v.unflaggedBarres + v.wrongFlags === 0) report[t.label].clean++;
       }
     }
-    for (const t of ARP_TYPES) expect(report[t.label], t.label).toEqual({ exercises: 24, clean: 24 });
+    for (const t of ARP_TYPES) expect(report[t.label], t.label).toEqual({ exercises: 12, clean: 12 });
+  });
+
+  it('closed style is not offered for arpeggios or broken chords (null, like the chromatic scale)', () => {
+    for (const t of ARP_TYPES) for (const r of ROOTS(t.spell)) expect(t.make(r, { openStrings: 'avoid' }), `${nameOf(r)} ${t.label}`).toBeNull();
+    for (const mode of ['major', 'minor'] as const) {
+      for (const r of ROOTS(mode === 'major' ? 'major' : 'natural_minor')) {
+        for (const startOctave of [0, 1]) expect(brokenChord(r, mode, { startOctave, openStrings: 'avoid' })).toBeNull();
+      }
+    }
   });
 
   it('right hand: ppppima for 2-octave tonic arpeggios (Trinity G5), ppimim… for the 7ths', () => {
@@ -267,20 +272,26 @@ describe('arpeggios — 5 types × 12 roots × both styles (oracle)', () => {
     const t = tonicArpeggio(C, 'major')!;
     expect(t.rightHand.pattern).toBe('ppppima');
     expect(t.events.map((e) => e.rh[0]).join('')).toBe('ppppima' + 'mipppp');
+    expect(t.rightHand.basis).toBe('syllabus');
     const d = dominantSeventhArpeggio(C, 'major')!;
     expect(d.rightHand.pattern).toBe('ppimim…');
+    // The continuation past "ppimim" is our reading of the syllabus's ellipsis.
+    expect(d.rightHand.basis).toBe('inferred');
+    expect(diminishedSeventhArpeggio(C)!.rightHand.basis).toBe('inferred');
     expect(d.events).toHaveLength(17);
     expect(d.events.map((e) => e.rh[0]).join('')).toBe('pp' + 'im'.repeat(7) + 'i');
     expect(diminishedSeventhArpeggio(C)!.events.slice(0, 6).map((e) => e.rh[0]).join('')).toBe('ppimim');
   });
 
-  it('hand-checked: the open-position C major arpeggio, G major and A minor on their chord grips', () => {
+  it('hand-checked: open-position C, G, D, E majors and A minor on their chord grips', () => {
     const N = (s: string): Note => ({ natural: s[0] as Note['natural'], accidental: s.slice(1) as Note['accidental'] });
     const up = (ex: TechniqueExercise) => techniqueNotes(ex).slice(0, ex.ascendingCount).map((n) => `${6 - n.stringIndex}:${n.fret}/${n.finger}`).join(' ');
     expect(up(tonicArpeggio(N('C'), 'major')!)).toBe('5:3/3 4:2/2 3:0/0 2:1/1 1:0/0 1:3/3 1:8/4');
     expect(up(tonicArpeggio(N('G'), 'major')!)).toBe('6:3/3 5:2/2 4:0/0 3:0/0 2:0/0 2:3/3 1:3/4');
     expect(up(tonicArpeggio(N('A'), 'minor')!)).toBe('5:0/0 5:3/4 4:2/2 3:2/3 2:1/1 1:0/0 1:5/4');
     expect(up(tonicArpeggio(N('D'), 'major')!)).toBe('4:0/0 4:4/3 3:2/1 2:3/2 1:2/1 1:5/4 1:10/4');
+    // ABRSM Grade 5 E major: first position on the E grip (1 on fret 1, 2 and 3 on fret 2, 4 on fret 4).
+    expect(up(tonicArpeggio(N('E'), 'major')!)).toBe('6:0/0 6:4/4 5:2/2 4:2/3 3:1/1 2:0/0 1:0/0');
   });
 });
 
@@ -295,31 +306,83 @@ function oracleBrokenChord(root: string, quality: 'major' | 'minor', octaves: nu
   return [...starts.flatMap((k) => [t(k), t(k + 1), t(k + 2)]), t(0)];
 }
 
-describe('broken chords (ABRSM pattern)', () => {
-  it('one octave, every key, both styles, from the lowest tonic and an octave above it', () => {
+/**
+ * Can three ascending notes ring on three different strings, climbing at most
+ * two strings at a time, inside the 15-fret neck? (Independent of the engine.)
+ */
+function groupStoppable(a: number, b: number, c: number): boolean {
+  const on = (m: number, s: number) => m - OPEN[s] >= 0 && m - OPEN[s] <= MAX_FRET;
+  for (let s1 = 0; s1 < 6; s1++) for (let s2 = s1 + 1; s2 <= Math.min(5, s1 + 2); s2++) for (let s3 = s2 + 1; s3 <= Math.min(5, s2 + 2); s3++) {
+    if (on(a, s1) && on(b, s2) && on(c, s3)) return true;
+  }
+  return false;
+}
+
+describe('broken chords (ABRSM pattern, with over-ringing)', () => {
+  it('every key, from the lowest tonic and an octave above: one string per note in every group, or null where the guitar cannot', () => {
+    let built = 0;
+    let groups = 0;
+    const impossible: string[] = [];
     for (const mode of ['major', 'minor'] as const) {
       for (const r of ROOTS(mode === 'major' ? 'major' : 'natural_minor')) {
         for (const startOctave of [0, 1]) {
-          for (const os of STYLES) {
-            const label = `${nameOf(r)} ${mode} broken chord +${startOctave} ${os}`;
-            const ex = brokenChord(r, mode, { startOctave, openStrings: os });
-            const expected = oracleBrokenChord(nameOf(r), mode, 1, lowest(nameOf(r)) + 12 * startOctave);
-            if (Math.max(...expected.map((e) => e.midi)) > OPEN[5] + MAX_FRET) {
-              expect(ex, label).toBeNull();
-              continue;
-            }
-            expect(ex, label).not.toBeNull();
-            const notes = techniqueNotes(ex!);
-            expect(notes.map((n) => n.midi), label).toEqual(expected.map((e) => e.midi));
-            notes.forEach((n, i) => {
-              if (expected[i].name) expect(nameOf(n.note), `${label} #${i}`).toBe(expected[i].name);
-            });
-            checkPlayableLine(notes, label, { ...ARPEGGIO_RULES, maxStringStep: 2 });
-            expect(ex!.rightHand).toMatchObject({ strokes: ['tirando'], overRinging: true });
+          const label = `${nameOf(r)} ${mode} +${startOctave}`;
+          const ex = brokenChord(r, mode, { startOctave });
+          const expected = oracleBrokenChord(nameOf(r), mode, 1, lowest(nameOf(r)) + 12 * startOctave);
+          const groupsOk = Array.from({ length: (expected.length - 1) / 3 }, (_, g) => expected.slice(3 * g, 3 * g + 3)).every(([a, b, c]) =>
+            groupStoppable(a.midi, b.midi, c.midi),
+          );
+          if (!groupsOk || Math.max(...expected.map((e) => e.midi)) > OPEN[5] + MAX_FRET) {
+            impossible.push(label);
+            expect(ex, `${label}: cannot ring on three strings, yet fingered`).toBeNull();
+            continue;
           }
+          expect(ex, label).not.toBeNull();
+          built++;
+          const notes = techniqueNotes(ex!);
+          expect(notes.map((n) => n.midi), label).toEqual(expected.map((e) => e.midi));
+          notes.forEach((n, i) => {
+            if (expected[i].name) expect(nameOf(n.note), `${label} #${i}`).toBe(expected[i].name);
+          });
+          const groupOf = notes.map((_, i) => (i < notes.length - 1 ? Math.floor(i / 3) : undefined));
+          const groupStart = notes.map((_, i) => i === notes.length - 1 || i % 3 === 0);
+          checkPlayableLine(notes, label, {
+            ...ARPEGGIO_RULES,
+            maxStringStep: 2,
+            groups: groupOf,
+            leaps: groupStart.map((st) => (st ? 3 : undefined)),
+            jumpOk: groupStart,
+          });
+          groups += (notes.length - 1) / 3;
+          expect(ex!.rightHand).toMatchObject({ strokes: ['tirando'], overRinging: true });
         }
       }
     }
+    expect(built).toBe(32);
+    expect(groups).toBe(32 * 6);
+    // Impossible on a 15-fret guitar: from the lowest E, F, F♯ the chord's 3rd
+    // (or 5th) lies below the open A / D string, so the first group cannot
+    // take three strings; an octave up, C, C♯/D♭, D, E♭ and B run their top
+    // group past the 15th fret or onto the 1st string alone.
+    expect(impossible.sort()).toEqual(
+      ['E', 'F', 'F#'].flatMap((k) => [`${k} major +0`, `${k} minor +0`])
+        .concat(['C', 'D', 'Eb', 'B'].flatMap((k) => [`${k} major +1`, `${k} minor +1`]), ['Db major +1', 'C# minor +1'])
+        .sort(),
+    );
+  });
+  it('the open-position keys ring on three strings in every group: G and C major, A minor; E minor from an octave up (ABRSM Grade 5)', () => {
+    const N = (s: string): Note => ({ natural: s[0] as Note['natural'], accidental: s.slice(1) as Note['accidental'] });
+    for (const [k, mode, so] of [['G', 'major', 0], ['C', 'major', 0], ['A', 'minor', 0], ['E', 'minor', 1]] as const) {
+      const notes = techniqueNotes(brokenChord(N(k), mode, { startOctave: so })!);
+      for (let g = 0; g < 6; g++) {
+        expect(new Set(notes.slice(3 * g, 3 * g + 3).map((n) => n.stringIndex)).size, `${k} ${mode} group ${g}`).toBe(3);
+      }
+    }
+    // E minor from the lowest tonic is impossible: G2 is only on the 6th string, with E2.
+    expect(brokenChord(N('E'), 'minor')).toBeNull();
+    // G major: the open D, G and B strings carry the middle groups.
+    const g = techniqueNotes(brokenChord(N('G'), 'major')!).map((n) => `${6 - n.stringIndex}:${n.fret}`);
+    expect(g.slice(0, 9).join(' ')).toBe('6:3 5:2 4:0 5:2 4:0 3:0 4:0 3:0 2:0');
   });
   it('ABRSM Grade 5: E minor starting an octave above the lowest tonic — E3 G3 B3 · G3 B3 E4 · …', () => {
     const ex = brokenChord({ natural: 'E', accidental: '' }, 'minor', { startOctave: 1 })!;

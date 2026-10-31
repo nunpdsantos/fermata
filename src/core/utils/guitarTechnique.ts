@@ -513,8 +513,8 @@ function arpeggioRightHand(kind: TechniqueKind, octaves: number, upCount: number
         strokes: ['tirando'],
         overRinging: false,
         pattern: 'ppimim…',
-        basis: 'syllabus',
-        source: `${TRINITY} (ppimim…, read as p p then i m alternating); ${ABRSM} (tirando, without over-ringing)`,
+        basis: 'inferred',
+        source: `${TRINITY} gives "ppimim…": its first six strokes are the syllabus's, the continuation (i m alternating to the end) is our reading of the ellipsis; ${ABRSM} (tirando, without over-ringing)`,
       },
     };
   }
@@ -538,6 +538,11 @@ function arpeggioExercise(
   quality: ChordQuality,
   options: TechniqueOptions,
 ): TechniqueExercise | null {
+  // Closed position is not offered for arpeggios: a chord's tones a 3rd/4th
+  // apart cross strings on nearly every note, and without open strings the
+  // hand would have to shift onto other strings with no guide (see
+  // chromaticScale). The default style fingers them.
+  if (options.openStrings === 'avoid') return null;
   const tuning = options.tuning ?? TUNING_STANDARD;
   const maxFret = options.maxFret ?? GUITAR_MAX_FRET;
   const octaves = options.octaves ?? 2;
@@ -617,13 +622,18 @@ export function diminishedSeventhArpeggio(root: Note, options: TechniqueOptions 
  * tonic, coming down from the chord tones below the top tonic down to the 3rd
  * — then the tonic alone. One octave by default; `startOctave: 1` starts an
  * octave above the lowest tonic (ABRSM Grade 5: "E minor starting an octave
- * above lowest tonic"). Played "with over-ringing".
+ * above lowest tonic"). Played "with over-ringing", so the three notes of a
+ * group always go on three different strings (none cuts the one before it
+ * off); a group's first note and the closing tonic may leap three strings
+ * (the thumb returning to the bass). Not offered in the closed
+ * style (openStrings: 'avoid' returns null, as for the arpeggios).
  */
 export function brokenChord(
   root: Note,
   mode: 'major' | 'minor',
   options: TechniqueOptions & { startOctave?: number } = {},
 ): TechniqueExercise | null {
+  if (options.openStrings === 'avoid') return null;
   const tuning = options.tuning ?? TUNING_STANDARD;
   const maxFret = options.maxFret ?? GUITAR_MAX_FRET;
   const octaves = options.octaves ?? 1;
@@ -636,13 +646,20 @@ export function brokenChord(
     ...Array.from({ length: top - 1 }, (_, k) => top - 1 - k),
   ];
   const line: Tone[] = [
-    ...groupStarts.flatMap((k) => [0, 1, 2].map((j) => chordToneAt(notes, semis, start, k + j))),
-    chordToneAt(notes, semis, start, 0),
+    // Each group may start up to three strings below the last group's top
+    // note (the thumb back to the bass: B3 on the 2nd string → B2 on the
+    // 5th), and the hand may reposition there (a 'jump' shift: the group
+    // before has rung its course); inside a group the notes climb at most two
+    // strings at a time and the hand stays put or shifts with a guide.
+    ...groupStarts.flatMap((k, g) =>
+      [0, 1, 2].map((j) => ({ ...chordToneAt(notes, semis, start, k + j), group: g, ...(j === 0 ? { leap: 3, jumpOk: true } : {}) })),
+    ),
+    // The closing tonic drops an octave from the last group's top note: up to
+    // three strings (G3 on the 3rd string → G2 on the 6th).
+    { ...chordToneAt(notes, semis, start, 0), leap: 3, jumpOk: true },
   ];
   if (Math.max(...line.map((t) => t.midi)) > highestMidi(tuning, maxFret)) return null;
-  // The closing tonic drops an octave from the last group's top note, which
-  // takes a two-string step (E4 on the 2nd string → E3 on the 4th).
-  const fingered = fingerLine(line, { ...ARPEGGIO_RULES, maxStringStep: 2, tuning, maxFret, openStrings: options.openStrings });
+  const fingered = fingerLine(line, { ...ARPEGGIO_RULES, maxStringStep: 2, tuning, maxFret });
   if (fingered === null) return null;
   return {
     kind: 'brokenChord',
