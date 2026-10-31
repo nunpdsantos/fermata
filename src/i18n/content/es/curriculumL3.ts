@@ -166,11 +166,11 @@ const curriculumL3: CurriculumLevelOverlay = {
     l3u9m4: {
       title: 'Acordes de Séptima Diatónicos en Menor',
       subtitle:
-        'El panorama de acordes de séptima de la menor armónica — del inquietante i(mΔ7) al explosivo viio7',
+        'El panorama de acordes de séptima de la menor armónica — del inquietante i(mΔ7) al explosivo vii°7',
       objectives: [
         'Construir acordes de séptima en cada grado de la escala menor armónica',
         'Identificar las cualidades distintas creadas por el séptimo grado elevado',
-        'Comprender el papel de V7, viio7 y iiø7 como acordes de función dominante en menor',
+        'Comprender el papel de V7, vii°7 y iiø7 como acordes de función dominante en menor',
       ],
       concepts: [
         {
@@ -183,13 +183,13 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'El Patrón Completo de Acordes de Séptima Diatónicos en Menor',
           explanation:
-            'En A menor armónica, los acordes de séptima en cada grado son: i(mΔ7) en A (A-C-E-G#), iiø7 en B (B-D-F-A), III+maj7 en C (C-E-G#-B), iv7 en D (D-F-A-C), V7 en E (E-G#-B-D), VImaj7 en F (F-A-C-E), viio7 en G# (G#-B-D-F). Los acordes críticos son V7 (función dominante, igual que en mayor), viio7 (totalmente disminuido, dominante intensificada) y iiø7 (la sonoridad predominante característica en menor).',
+            'En A menor armónica, los acordes de séptima en cada grado son: i(mΔ7) en A (A-C-E-G#), iiø7 en B (B-D-F-A), III+maj7 en C (C-E-G#-B), iv7 en D (D-F-A-C), V7 en E (E-G#-B-D), VImaj7 en F (F-A-C-E), vii°7 en G# (G#-B-D-F). Los acordes críticos son V7 (función dominante, igual que en mayor), vii°7 (totalmente disminuido, dominante intensificada) y iiø7 (la sonoridad predominante característica en menor).',
           tryThisLabel: 'Escucha Bm7b5 — el acorde iiø7 en A menor',
         },
         {
           title: 'La Progresión iiø7-V7-i en Menor',
           explanation:
-            'La contrapartida en menor del ii-V-I mayor: iiø7-V7-i. En A menor: Bm7b5-E7-Am. El iiø7 semidisminuido tiene una cualidad más sombría e inquieta que el ii7 de séptima menor de las tonalidades mayores. Combinado con V7 (que contiene la sensible elevada G#), esta progresión se impulsa hacia la tónica menor con una intensidad que la versión en mayor no puede igualar. El viio7 puede sustituir al V7, añadiendo aún más tensión.',
+            'La contrapartida en menor del ii-V-I mayor: iiø7-V7-i. En A menor: Bm7b5-E7-Am. El iiø7 semidisminuido tiene una cualidad más sombría e inquieta que el ii7 de séptima menor de las tonalidades mayores. Combinado con V7 (que contiene la sensible elevada G#), esta progresión se impulsa hacia la tónica menor con una intensidad que la versión en mayor no puede igualar. El vii°7 puede sustituir al V7, añadiendo aún más tensión.',
           tryThisLabel:
             'Escucha E7 — el V7 en A menor con la sensible elevada G#',
         },
@@ -205,7 +205,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            "Toca 'G#dim7' — el viio7 en A menor armónica. Al igual que Cdim7, es totalmente disminuido con intervalos de 3.ª menor entre todas las notas. Funciona como una dominante intensificada que puede sustituir al V7 en tonalidades menores",
+            "Toca 'G#dim7' — el vii°7 en A menor armónica. Al igual que Cdim7, es totalmente disminuido con intervalos de 3.ª menor entre todas las notas. Funciona como una dominante intensificada que puede sustituir al V7 en tonalidades menores",
         },
       ],
     },
@@ -250,7 +250,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe una tríada de F mayor en SATB con duplicación correcta: duplica la fundamental F. Después escribe una tríada de viio (Bdim) — aquí duplica la tercera (D), no la fundamental, porque B es la sensible y la fundamental de un acorde disminuido es inestable',
+            'Escribe una tríada de F mayor en SATB con duplicación correcta: duplica la fundamental F. Después escribe una tríada de vii° (Bdim) — aquí duplica la tercera (D), no la fundamental, porque B es la sensible y la fundamental de un acorde disminuido es inestable',
         },
       ],
     },
@@ -408,7 +408,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'Cadencias Auténticas — Perfecta e Imperfecta',
           explanation:
-            'La cadencia auténtica perfecta (CAP) es V(7) a I, ambos en estado fundamental, con la soprano terminando en el 1.er grado de la escala. Es la llegada armónica más fuerte — un punto final. La cadencia auténtica imperfecta (CAI) también hace V a I pero debilita el cierre: uno de los acordes puede estar invertido, o la soprano termina en la 3.ª o 5.ª del I en lugar de la fundamental, o el viio6 sustituye a V (CAI de sensible). Una CAI funciona como una coma en vez de un punto final.',
+            'La cadencia auténtica perfecta (CAP) es V(7) a I, ambos en estado fundamental, con la soprano terminando en el 1.er grado de la escala. Es la llegada armónica más fuerte — un punto final. La cadencia auténtica imperfecta (CAI) también hace V a I pero debilita el cierre: uno de los acordes puede estar invertido, o la soprano termina en la 3.ª o 5.ª del I en lugar de la fundamental, o el vii°6 sustituye a V (CAI de sensible). Una CAI funciona como una coma en vez de un punto final.',
           tryThisLabel:
             'Escucha V7 en C mayor — el punto de partida de las cadencias auténticas',
         },

@@ -221,13 +221,13 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'Quatro Resoluções Possíveis',
           explanation:
-            'Como qualquer uma das quatro notas pode servir de sensível, um único acorde de sétima diminuta pode funcionar como viio7 em quatro tonalidades diferentes. B-D-F-Ab resolve para C menor (B é sensível). Reescrito como D-F-Ab-Cb: resolve para Eb menor (D é sensível). Reescrito como F-Ab-Cb-Ebb: resolve para Gb menor. Reescrito como G#-B-D-F (G# como sensível): resolve para A menor. As quatro tonalidades-alvo — C, Eb, Gb, A — distam uma terça menor entre si.',
+            'Como qualquer uma das quatro notas pode servir de sensível, um único acorde de sétima diminuta pode funcionar como vii°7 em quatro tonalidades diferentes. B-D-F-Ab resolve para C menor (B é sensível). Reescrito como D-F-Ab-Cb: resolve para Eb menor (D é sensível). Reescrito como F-Ab-Cb-Ebb: resolve para Gb menor. Reescrito como G#-B-D-F (G# como sensível): resolve para A menor. As quatro tonalidades-alvo — C, Eb, Gb, A — distam uma terça menor entre si.',
           tryThisLabel: 'Vê C menor — uma das quatro resoluções possíveis',
         },
         {
           title: 'Aplicar a Modulação Enarmónica por Dim7',
           explanation:
-            'Para modular de C menor para A menor via dim7: usa viio7 de C menor (B-D-F-Ab), depois reescreve Ab como G# para obter viio7 de A menor (G#-B-D-F), e resolve para A menor. O acorde não muda sonoramente — apenas a grafia e a resolução mudam. Esta técnica alcança tonalidades a uma terça menor, um trítono ou uma sexta maior de distância num único passo, tornando-a o pivot enarmónico mais versátil da música tonal.',
+            'Para modular de C menor para A menor via dim7: usa vii°7 de C menor (B-D-F-Ab), depois reescreve Ab como G# para obter vii°7 de A menor (G#-B-D-F), e resolve para A menor. O acorde não muda sonoramente — apenas a grafia e a resolução mudam. Esta técnica alcança tonalidades a uma terça menor, um trítono ou uma sexta maior de distância num único passo, tornando-a o pivot enarmónico mais versátil da música tonal.',
           tryThisLabel: 'Vê A menor — uma tonalidade-alvo distante a partir de C',
         },
       ],
@@ -254,13 +254,13 @@ const curriculumL6: CurriculumLevelOverlay = {
       objectives: [
         'Construir um acorde CTo7 que partilha a fundamental do acorde-alvo',
         'Resolver o CTo7 corretamente mantendo a nota comum e movendo as outras três vozes por grau conjunto (duas por meio-tom, uma por tom)',
-        'Distinguir o CTo7 de um viio7 funcional — o CTo7 embeleza em vez de modular',
+        'Distinguir o CTo7 de um vii°7 funcional — o CTo7 embeleza em vez de modular',
       ],
       concepts: [
         {
           title: 'O Que É o CTo7?',
           explanation:
-            'Um acorde de sétima diminuta com nota comum partilha uma nota (a nota comum) com o acorde que embeleza. A nota comum é geralmente a fundamental do acorde-alvo. As outras três notas do acorde dim7 resolvem cada uma por grau conjunto (duas por meio-tom, uma por tom) para as restantes notas do acorde. Ao contrário de um viio7 funcional, o CTo7 não muda a tonalidade — cria uma abordagem cromática dramática a um acorde que o ouvinte já espera.',
+            'Um acorde de sétima diminuta com nota comum partilha uma nota (a nota comum) com o acorde que embeleza. A nota comum é geralmente a fundamental do acorde-alvo. As outras três notas do acorde dim7 resolvem cada uma por grau conjunto (duas por meio-tom, uma por tom) para as restantes notas do acorde. Ao contrário de um vii°7 funcional, o CTo7 não muda a tonalidade — cria uma abordagem cromática dramática a um acorde que o ouvinte já espera.',
           tryThisLabel: 'Ouve C maior — o acorde-alvo que um CTo7 embeleza',
         },
         {
@@ -272,7 +272,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'O CTo7 em Contexto Musical',
           explanation:
-            'O CTo7 é comum na música romântica e em bandas sonoras. Embeleza frequentemente a tónica (CTo7 -> I) ou a dominante (CTo7 -> V). Como não muda a tonalidade, funciona mais como um acorde vizinho cromático do que como uma verdadeira modulação. A notação CTo7 distingue-o de uma análise viio7, que implicaria uma tonicização. O CTo7 é pura cor e embelezamento.',
+            'O CTo7 é comum na música romântica e em bandas sonoras. Embeleza frequentemente a tónica (CTo7 -> I) ou a dominante (CTo7 -> V). Como não muda a tonalidade, funciona mais como um acorde vizinho cromático do que como uma verdadeira modulação. A notação CTo7 distingue-o de uma análise vii°7, que implicaria uma tonicização. O CTo7 é pura cor e embelezamento.',
           tryThisLabel: 'Ouve G maior — o CTo7 também pode embelezar V',
         },
       ],

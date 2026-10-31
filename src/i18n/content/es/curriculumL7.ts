@@ -281,7 +281,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Patrones de Turnaround',
           explanation:
-            'Un turnaround es una progresión corta (generalmente dos compases) al final de una sección que recicla al inicio. El turnaround básico es I-vi-ii-V: en C, Cmaj7-Am7-Dm7-G7. Las variantes incluyen el turnaround cromático (I-bIII7-bVI7-bII7: Cmaj7-Eb7-Ab7-Db7) donde cada acorde es una sustitución tritonal, y el acercamiento disminuido (I-#Io7-ii-V: Cmaj7-C#dim7-Dm7-G7) donde el acorde disminuido proporciona un enlace cromático en el bajo. Cada turnaround crea una sensación satisfactoria de circularidad armónica.',
+            'Un turnaround es una progresión corta (generalmente dos compases) al final de una sección que recicla al inicio. El turnaround básico es I-vi-ii-V: en C, Cmaj7-Am7-Dm7-G7. Las variantes incluyen el turnaround cromático (I-bIII7-bVI7-bII7: Cmaj7-Eb7-Ab7-Db7) donde cada acorde es una sustitución tritonal, y el acercamiento disminuido (I-#I°7-ii-V: Cmaj7-C#dim7-Dm7-G7) donde el acorde disminuido proporciona un enlace cromático en el bajo. Cada turnaround crea una sensación satisfactoria de circularidad armónica.',
           tryThisLabel: 'Escucha Am7 — el vi en un turnaround en C',
         },
         {

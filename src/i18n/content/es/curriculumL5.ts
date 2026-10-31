@@ -80,7 +80,7 @@ const curriculumL5: CurriculumLevelOverlay = {
         {
           title: 'Dominantes Secundarias para Cada Objetivo',
           explanation:
-            'Cada acorde diatónico (excepto viio) tiene su propia dominante secundaria. V/ii = A(7) apuntando a Dm, con C# cromático. V/iii = B(7) apuntando a Em, con D# y F# cromáticos. V/IV = C(7) apuntando a F — mismas notas que I, distinguido solo por el contexto. V/vi = E(7) apuntando a Am, con G# cromático. La versión con séptima (V7/X) es más habitual porque el trítono que contiene crea una atracción más fuerte hacia el objetivo.',
+            'Cada acorde diatónico (excepto vii°) tiene su propia dominante secundaria. V/ii = A(7) apuntando a Dm, con C# cromático. V/iii = B(7) apuntando a Em, con D# y F# cromáticos. V/IV = C(7) apuntando a F — mismas notas que I, distinguido solo por el contexto. V/vi = E(7) apuntando a Am, con G# cromático. La versión con séptima (V7/X) es más habitual porque el trítono que contiene crea una atracción más fuerte hacia el objetivo.',
           tryThisLabel: 'Escucha A7 — el V7/ii en C mayor',
         },
         {
@@ -115,9 +115,9 @@ const curriculumL5: CurriculumLevelOverlay = {
     // ── U15 M3: Acordes de Sensible Secundaria ───────────────────────────
     l5u15m3: {
       title: 'Acordes de Sensible Secundaria',
-      subtitle: 'Construir y resolver acordes viio/X',
+      subtitle: 'Construir y resolver acordes vii°/X',
       objectives: [
-        'Construir viio/X y viio7/X para cada acorde diatónico objetivo',
+        'Construir vii°/X y vii°7/X para cada acorde diatónico objetivo',
         'Comprender la elección entre acordes de sensible secundaria semidisminuidos y totalmente disminuidos',
         'Resolver correctamente los acordes de sensible secundaria',
       ],
@@ -125,20 +125,20 @@ const curriculumL5: CurriculumLevelOverlay = {
         {
           title: '¿Qué Son los Acordes de Sensible Secundaria?',
           explanation:
-            'Igual que V puede «aplicarse» a cualquier acorde diatónico, lo mismo ocurre con viio. Se construye una tríada disminuida (o acorde de séptima) sobre la nota un semitono por debajo de la fundamental del objetivo. viio/V en C mayor = F#dim (F#–A–C), apuntando a G. viio/ii = C#dim (C#–E–G), apuntando a Dm. El acorde de sensible es un sustituto de la dominante — comparte el mismo trítono que el V7 correspondiente, pero carece de la fundamental.',
-          tryThisLabel: 'Escucha F#dim — viio/V en C mayor',
+            'Igual que V puede «aplicarse» a cualquier acorde diatónico, lo mismo ocurre con vii°. Se construye una tríada disminuida (o acorde de séptima) sobre la nota un semitono por debajo de la fundamental del objetivo. vii°/V en C mayor = F#dim (F#–A–C), apuntando a G. vii°/ii = C#dim (C#–E–G), apuntando a Dm. El acorde de sensible es un sustituto de la dominante — comparte el mismo trítono que el V7 correspondiente, pero carece de la fundamental.',
+          tryThisLabel: 'Escucha F#dim — vii°/V en C mayor',
         },
         {
           title: 'Totalmente Disminuido vs. Semidisminuido',
           explanation:
-            'viio7/X (totalmente disminuido) es el más intenso de los dos, y la elección entre ellos depende del acorde que se toniciza y no del modo de la tonalidad de partida: los objetivos menores reciben el viio7/X totalmente disminuido, mientras que los objetivos mayores pueden abordarse tanto con viio7/X como con el más suave viiø7/X — los acordes secundarios totalmente disminuidos también son habituales en tonalidades mayores. Todos los intervalos del viio7 son terceras menores, lo que hace al acorde simétrico — cualquier nota puede funcionar como fundamental. Esa simetría permite la reinterpretación enarmónica, lo que se vuelve importante para las modulaciones a tonalidades lejanas en el Nivel 6.',
+            'vii°7/X (totalmente disminuido) es el más intenso de los dos, y la elección entre ellos depende del acorde que se toniciza y no del modo de la tonalidad de partida: los objetivos menores reciben el vii°7/X totalmente disminuido, mientras que los objetivos mayores pueden abordarse tanto con vii°7/X como con el más suave viiø7/X — los acordes secundarios totalmente disminuidos también son habituales en tonalidades mayores. Todos los intervalos del vii°7 son terceras menores, lo que hace al acorde simétrico — cualquier nota puede funcionar como fundamental. Esa simetría permite la reinterpretación enarmónica, lo que se vuelve importante para las modulaciones a tonalidades lejanas en el Nivel 6.',
           tryThisLabel: 'Escucha Bdim7 — un acorde de séptima totalmente disminuida',
         },
         {
           title: 'Resolución y Comparación con V/X',
           explanation:
-            'La fundamental del acorde de sensible secundaria resuelve un semitono arriba hacia la fundamental del objetivo, igual que la sensible diatónica resuelve hacia la tónica. Todas las demás voces resuelven por grado o por nota común, siguiendo los patrones estándar de resolución de acordes disminuidos. Al comparar V7/X con viio7/X apuntando al mismo acorde, se revela un trítono compartido pero un movimiento diferente en el bajo: V7/X mueve el bajo una quinta descendente (fuerte), mientras que viio7/X mueve el bajo un semitono ascendente (suave y cromático). La elección depende del contexto — V/X es más enfático, viio/X es más sutil.',
-          tryThisLabel: 'Escucha C#dim — viio/ii en C mayor, apuntando a Dm',
+            'La fundamental del acorde de sensible secundaria resuelve un semitono arriba hacia la fundamental del objetivo, igual que la sensible diatónica resuelve hacia la tónica. Todas las demás voces resuelven por grado o por nota común, siguiendo los patrones estándar de resolución de acordes disminuidos. Al comparar V7/X con vii°7/X apuntando al mismo acorde, se revela un trítono compartido pero un movimiento diferente en el bajo: V7/X mueve el bajo una quinta descendente (fuerte), mientras que vii°7/X mueve el bajo un semitono ascendente (suave y cromático). La elección depende del contexto — V/X es más enfático, vii°/X es más sutil.',
+          tryThisLabel: 'Escucha C#dim — vii°/ii en C mayor, apuntando a Dm',
         },
       ],
       tasks: [
@@ -148,11 +148,11 @@ const curriculumL5: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "G#dim7" — este es viio7/vi en C mayor. El G# es la sensible de A. Ahora escribe "Am" para escuchar la resolución.',
+            'Escribe "G#dim7" — este es vii°7/vi en C mayor. El G# es la sensible de A. Ahora escribe "Am" para escuchar la resolución.',
         },
         {
           instruction:
-            'Compara "E7" (V7/vi) con "G#dim7" (viio7/vi) — ambos apuntan a Am, pero el acorde disminuido tiene un enfoque más suave y cromático.',
+            'Compara "E7" (V7/vi) con "G#dim7" (vii°7/vi) — ambos apuntan a Am, pero el acorde disminuido tiene un enfoque más suave y cromático.',
         },
       ],
     },
@@ -388,14 +388,14 @@ const curriculumL5: CurriculumLevelOverlay = {
       subtitle: 'Tomar prestados acordes del modo menor paralelo para obtener color expresivo',
       objectives: [
         'Tomar prestados acordes del modo menor paralelo en un contexto de tonalidad mayor',
-        'Identificar los acordes prestados más habituales: bVI, bIII, bVII, iv, iio',
+        'Identificar los acordes prestados más habituales: bVI, bIII, bVII, iv, ii°',
         'Comprender cómo los grados rebajados crean conducción cromática de voces',
       ],
       concepts: [
         {
           title: '¿Qué Es la Mezcla Modal?',
           explanation:
-            'La mezcla modal significa tomar prestados acordes de la tonalidad paralela. En C mayor, la tonalidad paralela es C menor. El préstamo trae acordes de la familia de C menor a un contexto de C mayor. El resultado: oscuridad inesperada, nostalgia o profundidad emocional que la armonía puramente mayor no puede alcanzar. Los acordes prestados más habituales son iv (Fm), bVI (Ab), bVII (Bb), bIII (Eb) e iio (Ddim). Cada uno aporta un color distinto.',
+            'La mezcla modal significa tomar prestados acordes de la tonalidad paralela. En C mayor, la tonalidad paralela es C menor. El préstamo trae acordes de la familia de C menor a un contexto de C mayor. El resultado: oscuridad inesperada, nostalgia o profundidad emocional que la armonía puramente mayor no puede alcanzar. Los acordes prestados más habituales son iv (Fm), bVI (Ab), bVII (Bb), bIII (Eb) e ii° (Ddim). Cada uno aporta un color distinto.',
           tryThisLabel: 'Escucha Ab — el acorde bVI prestado en C mayor',
         },
         {

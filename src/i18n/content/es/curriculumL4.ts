@@ -343,11 +343,11 @@ const curriculumL4: CurriculumLevelOverlay = {
 
     // ── U13 M3: Leading-Tone Sevenths ───────────────────────────────────────
     l4u13m3: {
-      title: 'Séptimas de Sensible: viiø7 y viio7',
+      title: 'Séptimas de Sensible: viiø7 y vii°7',
       subtitle:
         'Acordes de séptima semidisminuido y disminuido como sustitutos de la dominante',
       objectives: [
-        'Construir y resolver viiø7 (semidisminuido, en mayor) y viio7 (disminuido, en menor)',
+        'Construir y resolver viiø7 (semidisminuido, en mayor) y vii°7 (disminuido, en menor)',
         'Comprender las séptimas de sensible como dominantes de 9.ª sin fundamental',
         'Reconocer la flexibilidad enarmónica del acorde de séptima disminuida',
       ],
@@ -359,10 +359,10 @@ const curriculumL4: CurriculumLevelOverlay = {
           tryThisLabel: 'Escucha viiø7 en la tonalidad de C',
         },
         {
-          title: 'El viio7 Totalmente Disminuido',
+          title: 'El vii°7 Totalmente Disminuido',
           explanation:
-            'El viio7 en tonalidades menores se construye a partir del 7.º grado elevado de la escala menor armónica. Las cuatro notas son todas notas de tendencia que tiran hacia la resolución, convirtiéndolo en el más tenso de todos los acordes de séptima diatónicos. En A menor, G#dim7 contiene G#-B-D-F — cada nota quiere moverse por grado conjunto. El acorde de séptima disminuida divide la octava en 3.as menores iguales, confiriéndole una cualidad simétrica e inquieta.',
-          tryThisLabel: 'Escucha el viio7 totalmente disminuido',
+            'El vii°7 en tonalidades menores se construye a partir del 7.º grado elevado de la escala menor armónica. Las cuatro notas son todas notas de tendencia que tiran hacia la resolución, convirtiéndolo en el más tenso de todos los acordes de séptima diatónicos. En A menor, G#dim7 contiene G#-B-D-F — cada nota quiere moverse por grado conjunto. El acorde de séptima disminuida divide la octava en 3.as menores iguales, confiriéndole una cualidad simétrica e inquieta.',
+          tryThisLabel: 'Escucha el vii°7 totalmente disminuido',
         },
         {
           title: 'Flexibilidad Enarmónica',
@@ -378,7 +378,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "Bdim7" (B séptima disminuido) — esto es viio7 en C menor. Compara el sonido con "Bm7b5": la versión totalmente disminuida es más tensa porque cada nota es una nota de tendencia',
+            'Escribe "Bdim7" (B séptima disminuido) — esto es vii°7 en C menor. Compara el sonido con "Bm7b5": la versión totalmente disminuida es más tensa porque cada nota es una nota de tendencia',
         },
         {
           instruction:

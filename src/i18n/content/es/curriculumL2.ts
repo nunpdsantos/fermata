@@ -426,7 +426,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'Leer Cifrados de Acordes',
           explanation:
-            'Letra sola = mayor (C). Letra con «m» = menor (Cm). «dim» u «o» = disminuida (Cdim). «aug» o «+» = aumentada (Caug). Estos cifrados indican la fundamental y la cualidad de un vistazo.',
+            'Letra sola = mayor (C). Letra con «m» = menor (Cm). «dim» o «°» = disminuida (Cdim). «aug» o «+» = aumentada (Caug). Estos cifrados indican la fundamental y la cualidad de un vistazo.',
           tryThisLabel: 'Escucha aumentada — flotante y sin resolución',
         },
       ],
@@ -498,7 +498,7 @@ const curriculumL2: CurriculumLevelOverlay = {
       objectives: [
         'Construir una tríada en cada grado de la escala mayor usando solo notas de esa escala',
         'Conocer el patrón de cualidades: I-ii-iii-IV-V-vi-vii°',
-        'Leer números romanos: mayúscula = mayor, minúscula = menor, º = disminuida',
+        'Leer números romanos: mayúscula = mayor, minúscula = menor, ° = disminuida',
       ],
       concepts: [
         {
@@ -510,7 +510,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'Convenciones de Números Romanos',
           explanation:
-            'Los números romanos en mayúscula indican tríadas mayores (I, IV, V). En minúscula indican tríadas menores (ii, iii, vi). El símbolo de grado (º) indica disminuida (vii°). Esta notación es universal — funciona en cualquier tonalidad. Cuando ves I-IV-V, conoces las funciones de los acordes independientemente de las notas específicas usadas.',
+            'Los números romanos en mayúscula indican tríadas mayores (I, IV, V). En minúscula indican tríadas menores (ii, iii, vi). El símbolo de grado (°) indica disminuida (vii°). Esta notación es universal — funciona en cualquier tonalidad. Cuando ves I-IV-V, conoces las funciones de los acordes independientemente de las notas específicas usadas.',
           tryThisLabel: 'Observa el mismo patrón en G mayor',
         },
         {

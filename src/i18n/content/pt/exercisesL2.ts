@@ -403,7 +403,7 @@ const overlay: ExerciseLevelOverlay = {
       'Maior',
       'Aumentada',
     ],
-    hint: 'O acorde construído sobre o 7.º grau da escala maior (ex: B-D-F em C maior) contém um trítono entre a fundamental e a 5.ª, tornando-o diminuto. Nota-se viio.',
+    hint: 'O acorde construído sobre o 7.º grau da escala maior (ex: B-D-F em C maior) contém um trítono entre a fundamental e a 5.ª, tornando-o diminuto. Nota-se vii°.',
   },
   l2u7m5e3: {
     prompt: 'Constrói uma tríade de F maior. Este é o acorde IV na tonalidade de C maior.',

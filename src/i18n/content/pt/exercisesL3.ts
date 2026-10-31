@@ -150,7 +150,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Em A menor natural, o acorde construído sobre o 7.º grau (G) é uma tríade maior. Porque muda isto na menor harmónica?',
     choices: [
-      'Elevar o 7.º grau (G para G#) transforma VII em viio, uma tríade diminuta',
+      'Elevar o 7.º grau (G para G#) transforma VII em vii°, uma tríade diminuta',
       'O acorde do 7.º grau é sempre diminuto independentemente da forma da escala menor',
       'A escala menor harmónica baixa o 7.º grau, criando um acorde diminuto',
       'A qualidade do acorde não muda entre menor natural e menor harmónica',

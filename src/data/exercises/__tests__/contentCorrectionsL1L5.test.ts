@@ -569,7 +569,8 @@ describe('PT/ES no longer state theory the English corrected', () => {
     for (const lang of ['pt', 'es'] as const) {
       expect(overlayModule(lang, 3, 'l3u10m1').concepts[1].explanation, lang).toMatch(/sensible|sensível/);
       expect(overlayModule(lang, 3, 'l3u10m1').concepts[1].explanation, lang).toMatch(/a menos que|salvo que/);
-      expect(overlayModule(lang, 3, 'l3u11m1').concepts[0].explanation, lang).toContain('viio6');
+      // PT/ES write the diminished sign as ° (review B3); English keeps "viio".
+      expect(overlayModule(lang, 3, 'l3u11m1').concepts[0].explanation, lang).toMatch(/vii[o°]6/);
     }
   });
 });

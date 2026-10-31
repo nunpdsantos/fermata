@@ -88,13 +88,13 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica o acorde de sensível secundária e a sua resolução.',
       hintTemplate:
-        'Acordes de sensível secundária (viio/x) funcionam como dominantes secundárias mas são diminutos. Resolvem meio-tom acima para o acorde alvo.',
+        'Acordes de sensível secundária (vii°/x) funcionam como dominantes secundárias mas são diminutos. Resolvem meio-tom acima para o acorde alvo.',
       choiceSets: [
         [
-          'viio7/V em C maior é F#dim7, a resolver para G',
-          'viio7/V em C maior é Bdim7',
-          'viio7/V resolve para baixo para F',
-          'viio7/V é o mesmo que V/V',
+          'vii°7/V em C maior é F#dim7, a resolver para G',
+          'vii°7/V em C maior é Bdim7',
+          'vii°7/V resolve para baixo para F',
+          'vii°7/V é o mesmo que V/V',
         ],
         [
           'Acordes de sensível secundária têm a fundamental meio-tom abaixo do acorde alvo',
@@ -103,10 +103,10 @@ const overlay: TemplateLevelOverlay = {
           'A posição da fundamental é aleatória',
         ],
         [
-          'viio/x pode ser tanto uma tríade diminuta como um acorde de sétima totalmente diminuta',
-          'viio/x é sempre um acorde maior',
-          'viio/x é sempre um acorde de sétima menor',
-          'viio/x tem de ser um acorde meio-diminuto',
+          'vii°/x pode ser tanto uma tríade diminuta como um acorde de sétima totalmente diminuta',
+          'vii°/x é sempre um acorde maior',
+          'vii°/x é sempre um acorde de sétima menor',
+          'vii°/x tem de ser um acorde meio-diminuto',
         ],
       ],
     },

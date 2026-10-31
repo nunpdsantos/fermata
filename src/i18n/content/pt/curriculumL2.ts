@@ -426,7 +426,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'Ler Cifras de Acordes',
           explanation:
-            'Letra sozinha = maior (C). Letra minúscula "m" = menor (Cm). "dim" ou "o" = diminuta (Cdim). "aug" ou "+" = aumentada (Caug). Estas cifras indicam-te a fundamental e a qualidade de relance.',
+            'Letra sozinha = maior (C). Letra minúscula "m" = menor (Cm). "dim" ou "°" = diminuta (Cdim). "aug" ou "+" = aumentada (Caug). Estas cifras indicam-te a fundamental e a qualidade de relance.',
           tryThisLabel: 'Ouve aumentada — flutuante e sem resolução',
         },
       ],
@@ -497,26 +497,26 @@ const curriculumL2: CurriculumLevelOverlay = {
       subtitle: 'Os sete acordes que pertencem a cada tonalidade maior — e como os nomear',
       objectives: [
         'Construir uma tríade em cada grau da escala maior usando apenas notas dessa escala',
-        'Conhecer o padrão de qualidades: I-ii-iii-IV-V-vi-viio',
-        'Ler numeração romana: maiúscula = maior, minúscula = menor, o = diminuta',
+        'Conhecer o padrão de qualidades: I-ii-iii-IV-V-vi-vii°',
+        'Ler numeração romana: maiúscula = maior, minúscula = menor, ° = diminuta',
       ],
       concepts: [
         {
           title: 'Construir Tríades Diatónicas',
           explanation:
-            'Constrói uma tríade em cada grau da escala maior usando apenas notas dessa escala. Em C maior: C-E-G (maior), D-F-A (menor), E-G-B (menor), F-A-C (maior), G-B-D (maior), A-C-E (menor), B-D-F (diminuta). O padrão de qualidades é sempre I-ii-iii-IV-V-vi-viio — em todas as tonalidades maiores. Só os nomes das notas mudam.',
+            'Constrói uma tríade em cada grau da escala maior usando apenas notas dessa escala. Em C maior: C-E-G (maior), D-F-A (menor), E-G-B (menor), F-A-C (maior), G-B-D (maior), A-C-E (menor), B-D-F (diminuta). O padrão de qualidades é sempre I-ii-iii-IV-V-vi-vii° — em todas as tonalidades maiores. Só os nomes das notas mudam.',
           tryThisLabel: 'Vê todas as tríades diatónicas em C',
         },
         {
           title: 'Convenções de Numeração Romana',
           explanation:
-            'Algarismos romanos maiúsculos indicam tríades maiores (I, IV, V). Minúsculos indicam tríades menores (ii, iii, vi). O símbolo de grau (o) indica diminuta (viio). Esta notação é universal — funciona em qualquer tonalidade. Quando vês I-IV-V, sabes as funções dos acordes independentemente das notas específicas usadas.',
+            'Algarismos romanos maiúsculos indicam tríades maiores (I, IV, V). Minúsculos indicam tríades menores (ii, iii, vi). O símbolo de grau (°) indica diminuta (vii°). Esta notação é universal — funciona em qualquer tonalidade. Quando vês I-IV-V, sabes as funções dos acordes independentemente das notas específicas usadas.',
           tryThisLabel: 'Vê o mesmo padrão em G maior',
         },
         {
           title: 'Porque o Padrão é Fixo',
           explanation:
-            'O padrão de intervalos T-T-mT-T-T-T-mT da escala maior força combinações específicas de intervalos em cada grau. Os meios-tons entre os graus 3-4 e 7-1 criam a tríade diminuta no viio e determinam quais tríades são maiores ou menores. Muda a escala e mudas o padrão — que é exatamente o que acontece nas tonalidades menores.',
+            'O padrão de intervalos T-T-mT-T-T-T-mT da escala maior força combinações específicas de intervalos em cada grau. Os meios-tons entre os graus 3-4 e 7-1 criam a tríade diminuta no vii° e determinam quais tríades são maiores ou menores. Muda a escala e mudas o padrão — que é exatamente o que acontece nas tonalidades menores.',
           tryThisLabel: 'Verifica o padrão em D maior',
         },
       ],
@@ -527,7 +527,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Abre "key of G" — verifica o mesmo padrão I-ii-iii-IV-V-vi-viio com nomes de notas diferentes',
+            'Abre "key of G" — verifica o mesmo padrão I-ii-iii-IV-V-vi-vii° com nomes de notas diferentes',
         },
         {
           instruction:

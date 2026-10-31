@@ -80,7 +80,7 @@ const curriculumL5: CurriculumLevelOverlay = {
         {
           title: 'Dominantes Secundárias para Cada Alvo',
           explanation:
-            'Cada acorde diatónico (exceto viio) tem a sua própria dominante secundária. V/ii = A(7) a apontar para Dm, com C# cromático. V/iii = B(7) a apontar para Em, com D# e F# cromáticos. V/IV = C(7) a apontar para F — mesmas notas que I, distinguido apenas pelo contexto. V/vi = E(7) a apontar para Am, com G# cromático. A forma com sétima (V7/X) é mais comum porque o trítono no seu interior cria uma atração mais forte para o alvo.',
+            'Cada acorde diatónico (exceto vii°) tem a sua própria dominante secundária. V/ii = A(7) a apontar para Dm, com C# cromático. V/iii = B(7) a apontar para Em, com D# e F# cromáticos. V/IV = C(7) a apontar para F — mesmas notas que I, distinguido apenas pelo contexto. V/vi = E(7) a apontar para Am, com G# cromático. A forma com sétima (V7/X) é mais comum porque o trítono no seu interior cria uma atração mais forte para o alvo.',
           tryThisLabel: 'Ouve A7 — o V7/ii em C maior',
         },
         {
@@ -115,9 +115,9 @@ const curriculumL5: CurriculumLevelOverlay = {
     // ── U15 M3: Secondary Leading-Tone Chords ─────────────────────────────
     l5u15m3: {
       title: 'Acordes de Sensível Secundária',
-      subtitle: 'Construir e resolver acordes viio/X',
+      subtitle: 'Construir e resolver acordes vii°/X',
       objectives: [
-        'Construir viio/X e viio7/X para cada acorde diatónico alvo',
+        'Construir vii°/X e vii°7/X para cada acorde diatónico alvo',
         'Compreender a escolha entre acordes de sensível secundária meio-diminutos e totalmente diminutos',
         'Resolver corretamente os acordes de sensível secundária',
       ],
@@ -125,20 +125,20 @@ const curriculumL5: CurriculumLevelOverlay = {
         {
           title: 'O Que São Acordes de Sensível Secundária?',
           explanation:
-            'Tal como V pode ser "aplicado" a qualquer acorde diatónico, o mesmo se aplica a viio. Constrói uma tríade diminuta (ou acorde de sétima) sobre a nota meio-tom abaixo da fundamental do alvo. viio/V em C maior = F#dim (F#–A–C), a apontar para G. viio/ii = C#dim (C#–E–G), a apontar para Dm. O acorde de sensível é um substituto da dominante — partilha o mesmo trítono que o V7 correspondente, mas não tem a fundamental.',
-          tryThisLabel: 'Ouve F#dim — viio/V em C maior',
+            'Tal como V pode ser "aplicado" a qualquer acorde diatónico, o mesmo se aplica a vii°. Constrói uma tríade diminuta (ou acorde de sétima) sobre a nota meio-tom abaixo da fundamental do alvo. vii°/V em C maior = F#dim (F#–A–C), a apontar para G. vii°/ii = C#dim (C#–E–G), a apontar para Dm. O acorde de sensível é um substituto da dominante — partilha o mesmo trítono que o V7 correspondente, mas não tem a fundamental.',
+          tryThisLabel: 'Ouve F#dim — vii°/V em C maior',
         },
         {
           title: 'Totalmente Diminuto vs. Meio-Diminuto',
           explanation:
-            'viio7/X (sétima totalmente diminuta) é o mais intenso dos dois, e a escolha entre eles depende do acorde a ser tonicizado e não do modo da tonalidade de partida: alvos menores recebem o viio7/X totalmente diminuto, enquanto alvos maiores podem ser abordados tanto por viio7/X como pelo mais suave viiø7/X — acordes secundários totalmente diminutos também são comuns em tonalidades maiores. Todos os intervalos do viio7 são terceiras menores, tornando o acorde simétrico — qualquer nota pode funcionar como fundamental. Essa simetria permite a reinterpretação enarmónica, o que se torna importante para modulações distantes no Nível 6.',
+            'vii°7/X (sétima totalmente diminuta) é o mais intenso dos dois, e a escolha entre eles depende do acorde a ser tonicizado e não do modo da tonalidade de partida: alvos menores recebem o vii°7/X totalmente diminuto, enquanto alvos maiores podem ser abordados tanto por vii°7/X como pelo mais suave viiø7/X — acordes secundários totalmente diminutos também são comuns em tonalidades maiores. Todos os intervalos do vii°7 são terceiras menores, tornando o acorde simétrico — qualquer nota pode funcionar como fundamental. Essa simetria permite a reinterpretação enarmónica, o que se torna importante para modulações distantes no Nível 6.',
           tryThisLabel: 'Ouve Bdim7 — um acorde de sétima totalmente diminuta',
         },
         {
           title: 'Resolução e Comparação com V/X',
           explanation:
-            'A fundamental do acorde de sensível secundária resolve meio-tom acima para a fundamental do alvo, tal como a sensível diatónica resolve para a tónica. Todas as outras vozes resolvem por grau ou por nota comum, seguindo os padrões standard de resolução de acordes diminutos. Comparando V7/X com viio7/X a apontar para o mesmo acorde, revelam um trítono partilhado mas movimento diferente no baixo: V7/X move o baixo uma quinta abaixo (forte), enquanto viio7/X move o baixo um meio-tom acima (suave e cromático). A escolha depende do contexto — V/X é mais enfático, viio/X é mais subtil.',
-          tryThisLabel: 'Ouve C#dim — viio/ii em C maior, a apontar para Dm',
+            'A fundamental do acorde de sensível secundária resolve meio-tom acima para a fundamental do alvo, tal como a sensível diatónica resolve para a tónica. Todas as outras vozes resolvem por grau ou por nota comum, seguindo os padrões standard de resolução de acordes diminutos. Comparando V7/X com vii°7/X a apontar para o mesmo acorde, revelam um trítono partilhado mas movimento diferente no baixo: V7/X move o baixo uma quinta abaixo (forte), enquanto vii°7/X move o baixo um meio-tom acima (suave e cromático). A escolha depende do contexto — V/X é mais enfático, vii°/X é mais subtil.',
+          tryThisLabel: 'Ouve C#dim — vii°/ii em C maior, a apontar para Dm',
         },
       ],
       tasks: [
@@ -148,11 +148,11 @@ const curriculumL5: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escreve "G#dim7" — este é viio7/vi em C maior. O G# é sensível de A. Agora escreve "Am" para ouvires a resolução.',
+            'Escreve "G#dim7" — este é vii°7/vi em C maior. O G# é sensível de A. Agora escreve "Am" para ouvires a resolução.',
         },
         {
           instruction:
-            'Compara "E7" (V7/vi) com "G#dim7" (viio7/vi) — ambos apontam para Am, mas o acorde diminuto tem uma abordagem mais suave e cromática.',
+            'Compara "E7" (V7/vi) com "G#dim7" (vii°7/vi) — ambos apontam para Am, mas o acorde diminuto tem uma abordagem mais suave e cromática.',
         },
       ],
     },
@@ -388,14 +388,14 @@ const curriculumL5: CurriculumLevelOverlay = {
       subtitle: 'Emprestar acordes do modo menor paralelo para cor expressiva',
       objectives: [
         'Emprestar acordes do modo menor paralelo num contexto de tonalidade maior',
-        'Identificar os acordes de empréstimo mais comuns: bVI, bIII, bVII, iv, iio',
+        'Identificar os acordes de empréstimo mais comuns: bVI, bIII, bVII, iv, ii°',
         'Compreender como os graus da escala rebaixados criam condução cromática de vozes',
       ],
       concepts: [
         {
           title: 'O Que É Mistura Modal?',
           explanation:
-            'Mistura modal significa emprestar acordes da tonalidade paralela. Em C maior, a tonalidade paralela é C menor. O empréstimo traz acordes da família de C menor para um contexto de C maior. O resultado: escuridão inesperada, nostalgia ou profundidade emocional que a harmonia puramente maior não consegue alcançar. Os acordes de empréstimo mais comuns são iv (Fm), bVI (Ab), bVII (Bb), bIII (Eb) e iio (Ddim). Cada um acrescenta uma cor distinta.',
+            'Mistura modal significa emprestar acordes da tonalidade paralela. Em C maior, a tonalidade paralela é C menor. O empréstimo traz acordes da família de C menor para um contexto de C maior. O resultado: escuridão inesperada, nostalgia ou profundidade emocional que a harmonia puramente maior não consegue alcançar. Os acordes de empréstimo mais comuns são iv (Fm), bVI (Ab), bVII (Bb), bIII (Eb) e ii° (Ddim). Cada um acrescenta uma cor distinta.',
           tryThisLabel: 'Ouve Ab — o acorde bVI de empréstimo em C maior',
         },
         {

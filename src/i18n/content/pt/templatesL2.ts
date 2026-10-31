@@ -316,7 +316,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica o algarismo romano e a qualidade desta tríade diatónica.',
       hintTemplate:
-        'Nas tonalidades maiores: I(M) ii(m) iii(m) IV(M) V(M) vi(m) viio(dim). Maiúscula = maior, minúscula = menor, o = diminuta.',
+        'Nas tonalidades maiores: I(M) ii(m) iii(m) IV(M) V(M) vi(m) vii°(dim). Maiúscula = maior, minúscula = menor, ° = diminuta.',
       choiceSets: [
         [
           'O acorde ii numa tonalidade maior é menor',

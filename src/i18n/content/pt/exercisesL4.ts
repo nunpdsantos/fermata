@@ -232,8 +232,8 @@ const overlay: ExerciseLevelOverlay = {
 
   l4u13m3e1: {
     prompt:
-      'Constrói um acorde de sétima diminuto sobre B (viio7 em C menor): B-D-F-Ab. Seleciona as 4 notas.',
-    hint: 'Bo7 = B, D, F, Ab. Fundamental (B) + 3.ª menor (D) + 5.ª diminuta (F) + 7.ª diminuta (Ab). Todos os três intervalos superiores são 3.as menores empilhadas (3+3+3 meios-tons).',
+      'Constrói um acorde de sétima diminuto sobre B (vii°7 em C menor): B-D-F-Ab. Seleciona as 4 notas.',
+    hint: 'B°7 = B, D, F, Ab. Fundamental (B) + 3.ª menor (D) + 5.ª diminuta (F) + 7.ª diminuta (Ab). Todos os três intervalos superiores são 3.as menores empilhadas (3+3+3 meios-tons).',
   },
   l4u13m3e2: {
     prompt:
@@ -282,7 +282,7 @@ const overlay: ExerciseLevelOverlay = {
       'ii — ambos partilham duas notas comuns e desempenham a mesma função pré-dominante',
       'V — porque está próximo de IV no ciclo de quintas',
       'iii — porque é adjacente a IV por grau conjunto',
-      'viio — porque contém a sensível',
+      'vii° — porque contém a sensível',
     ],
     hint: 'Em C maior, IV = F-A-C e ii = D-F-A. Partilham F e A (duas notas comuns) e ambos criam impulso pré-dominante para V. O acorde ii é frequentemente preferido na escrita a quatro vozes porque ii-V apresenta movimento de baixo suave por 5.ª.',
   },
@@ -292,19 +292,19 @@ const overlay: ExerciseLevelOverlay = {
   l4u13m5e1: {
     prompt: 'Qual é a sequência harmónica diatónica mais comum?',
     choices: [
-      'Quintas descendentes — cada fundamental desce uma 5.ª (ou sobe uma 4.ª): ex. I-IV-viio-iii-vi-ii-V-I',
+      'Quintas descendentes — cada fundamental desce uma 5.ª (ou sobe uma 4.ª): ex. I-IV-vii°-iii-vi-ii-V-I',
       'Quintas ascendentes — cada fundamental sobe uma 5.ª',
       'Terças descendentes — cada fundamental desce uma 3.ª',
       'Descida cromática — cada fundamental desce um meio-tom',
     ],
-    hint: 'A sequência de quintas descendentes (ou ciclo de quintas) move cada fundamental uma 5.ª abaixo diatonicamente. Em C maior: C-F-B-E-A-D-G-C (I-IV-viio-iii-vi-ii-V-I). Esta é a espinha dorsal de inúmeras progressões na música ocidental.',
+    hint: 'A sequência de quintas descendentes (ou ciclo de quintas) move cada fundamental uma 5.ª abaixo diatonicamente. Em C maior: C-F-B-E-A-D-G-C (I-IV-vii°-iii-vi-ii-V-I). Esta é a espinha dorsal de inúmeras progressões na música ocidental.',
   },
   l4u13m5e2: {
     prompt:
       'Numa sequência baseada em segundas ascendentes, qual é o padrão de movimento das fundamentais?',
     choices: [
       'Cada fundamental sobe uma 2.ª diatónica: ex. I-ii-iii-IV',
-      'Cada fundamental desce uma 2.ª: ex. I-viio-vi-V',
+      'Cada fundamental desce uma 2.ª: ex. I-vii°-vi-V',
       'As fundamentais alternam entre 2.as ascendentes e descendentes',
       'As fundamentais movem-se por 3.as mas soam como 2.as',
     ],
@@ -451,7 +451,7 @@ const overlay: ExerciseLevelOverlay = {
       'Maiúsculo = acorde diatónico; minúsculo = acorde cromático',
       'Maiúsculo = função forte; minúsculo = função fraca',
     ],
-    hint: 'A análise com numerais romanos codifica tanto o grau da escala como a qualidade do acorde. Maiúsculo (I, IV, V) = tríades maiores. Minúsculo (ii, iii, vi) = tríades menores. Um ° sobrescrito marca diminuto (viio), e + marca aumentado.',
+    hint: 'A análise com numerais romanos codifica tanto o grau da escala como a qualidade do acorde. Maiúsculo (I, IV, V) = tríades maiores. Minúsculo (ii, iii, vi) = tríades menores. Um ° sobrescrito marca diminuto (vii°), e + marca aumentado.',
   },
   l4u14m4e3: {
     prompt:
@@ -475,18 +475,18 @@ const overlay: ExerciseLevelOverlay = {
   l4u14m5e2: {
     prompt:
       'Constrói o acorde VII em A menor (menor natural). É G maior: G-B-D. Seleciona as 3 notas.',
-    hint: 'Em A menor natural, a tríade sobre o 7.º grau é G-B-D, uma tríade maior. VII (acorde subtónico) está a um tom abaixo da tónica, ao contrário de viio (acorde da sensível) da menor harmónica.',
+    hint: 'Em A menor natural, a tríade sobre o 7.º grau é G-B-D, uma tríade maior. VII (acorde subtónico) está a um tom abaixo da tónica, ao contrário de vii° (acorde da sensível) da menor harmónica.',
   },
   l4u14m5e3: {
     prompt:
-      'O que é o acorde subtónico VII na menor natural, e como difere de viio na menor harmónica?',
+      'O que é o acorde subtónico VII na menor natural, e como difere de vii° na menor harmónica?',
     choices: [
-      'VII é uma tríade maior a um tom abaixo da tónica; viio é uma tríade diminuta a meio-tom abaixo — apenas viio tem função dominante',
-      'VII e viio são o mesmo acorde com nomes diferentes',
-      'VII é diminuto e viio é maior',
+      'VII é uma tríade maior a um tom abaixo da tónica; vii° é uma tríade diminuta a meio-tom abaixo — apenas vii° tem função dominante',
+      'VII e vii° são o mesmo acorde com nomes diferentes',
+      'VII é diminuto e vii° é maior',
       'Ambos têm função dominante mas VII é mais forte',
     ],
-    hint: 'Em A menor natural, VII = G maior (G-B-D), a um tom abaixo de A. Em A menor harmónica, viio = G#-B-D (diminuto), a meio-tom abaixo de A. O 7.º grau elevado (G#) cria a sensível que confere a viio a sua forte atração para a tónica.',
+    hint: 'Em A menor natural, VII = G maior (G-B-D), a um tom abaixo de A. Em A menor harmónica, vii° = G#-B-D (diminuto), a meio-tom abaixo de A. O 7.º grau elevado (G#) cria a sensível que confere a vii° a sua forte atração para a tónica.',
   },
 };
 

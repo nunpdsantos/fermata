@@ -70,14 +70,14 @@ const overlay: ExerciseLevelOverlay = {
 
   l5u15m3e1: {
     prompt:
-      'Qual é a função de um acorde de sensível secundária (p. ex., viio/V)?',
+      'Qual é a função de um acorde de sensível secundária (p. ex., vii°/V)?',
     choices: [
-      'Funciona como um acorde diminuto que resolve meio-tom acima para o acorde tonicizado, tal como viio resolve para I',
+      'Funciona como um acorde diminuto que resolve meio-tom acima para o acorde tonicizado, tal como vii° resolve para I',
       'Substitui inteiramente o acorde dominante nas cadências',
       'Funciona como um acorde de passagem sem atração harmónica',
       'É a sensível da tonalidade tocada como nota isolada',
     ],
-    hint: 'viio/V funciona da mesma forma que viio numa tonalidade: a fundamental está meio-tom abaixo do acorde alvo, e a qualidade diminuta cria forte impulso de resolução ascendente para o alvo.',
+    hint: 'vii°/V funciona da mesma forma que vii° numa tonalidade: a fundamental está meio-tom abaixo do acorde alvo, e a qualidade diminuta cria forte impulso de resolução ascendente para o alvo.',
   },
   l5u15m3e2: {
     prompt:
@@ -92,14 +92,14 @@ const overlay: ExerciseLevelOverlay = {
   },
   l5u15m3e3: {
     prompt:
-      'Em C maior, qual é o acorde alvo para o qual viio/V resolve?',
+      'Em C maior, qual é o acorde alvo para o qual vii°/V resolve?',
     choices: [
-      'G maior (V) — o viio/V resolve meio-tom acima para a dominante',
+      'G maior (V) — o vii°/V resolve meio-tom acima para a dominante',
       'C maior (I) — resolve para a tónica',
       'F maior (IV) — resolve para a subdominante',
       'D menor (ii) — resolve para a sobretónica',
     ],
-    hint: 'O "/V" indica-te o alvo: V. Em C maior, V é G. viio/V é F# diminuto (F#, A, C), e o F# resolve meio-tom acima para G, a fundamental do acorde alvo.',
+    hint: 'O "/V" indica-te o alvo: V. Em C maior, V é G. vii°/V é F# diminuto (F#, A, C), e o F# resolve meio-tom acima para G, a fundamental do acorde alvo.',
   },
 
   // ---- l5u15m4: Tonicização vs. Modulação ----

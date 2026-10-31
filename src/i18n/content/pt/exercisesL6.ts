@@ -159,14 +159,14 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'O acorde dim7 é construído inteiramente com terças menores (3 meios-tons cada). Como 3 x 4 = 12, as quatro notas dividem a oitava uniformemente. Isto significa que cada inversão do acorde soa idêntica na sua estrutura intervalar.',
   },
   l6u19m1e3: {
-    prompt: 'Para quantas tonalidades diferentes pode resolver um único acorde de sétima diminuta como acorde de sensível (viio7)?',
+    prompt: 'Para quantas tonalidades diferentes pode resolver um único acorde de sétima diminuta como acorde de sensível (vii°7)?',
     choices: [
       'Quatro tonalidades — qualquer das suas quatro notas pode ser tratada como sensível',
       'Duas tonalidades — uma maior e uma menor',
       'Doze tonalidades — uma para cada meio-tom',
       'Uma tonalidade — determinada pela sua fundamental',
     ],
-    hint: 'Devido à sua simetria, cada nota do acorde dim7 pode ser reescrita como sensível resolvendo ascendentemente por meio-tom para uma tónica diferente. C-Eb-Gb-Bbb pode ser viio7 de Db, E, G ou Bb.',
+    hint: 'Devido à sua simetria, cada nota do acorde dim7 pode ser reescrita como sensível resolvendo ascendentemente por meio-tom para uma tónica diferente. C-Eb-Gb-Bbb pode ser vii°7 de Db, E, G ou Bb.',
   },
 
   // ---- l6u19m2: Sétima Diminuta com Nota Comum ----
@@ -199,7 +199,7 @@ const overlay: ExerciseLevelOverlay = {
       'Dominante — resolve para a tónica com movimento de sensível',
       'Modulatória — inicia sempre uma mudança de tonalidade',
     ],
-    hint: 'Ao contrário do viio7 (que tem função dominante), o CTo7 é puramente decorativo. Embeleza um acorde através de movimento cromático por notas vizinhas, acrescentando cor sem mudar a direção harmónica.',
+    hint: 'Ao contrário do vii°7 (que tem função dominante), o CTo7 é puramente decorativo. Embeleza um acorde através de movimento cromático por notas vizinhas, acrescentando cor sem mudar a direção harmónica.',
   },
 
   // ---- l6u19m3: Mediantes Cromáticas ----

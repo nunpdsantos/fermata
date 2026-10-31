@@ -451,7 +451,7 @@ const overlay: ExerciseLevelOverlay = {
       'Mayúscula = acorde diatónico; minúscula = acorde cromático',
       'Mayúscula = función fuerte; minúscula = función débil',
     ],
-    hint: 'El análisis con números romanos codifica tanto el grado de la escala como la cualidad del acorde. Mayúscula (I, IV, V) = tríadas mayores. Minúscula (ii, iii, vi) = tríadas menores. Un º en superíndice marca disminuido (vii°), y + marca aumentado.',
+    hint: 'El análisis con números romanos codifica tanto el grado de la escala como la cualidad del acorde. Mayúscula (I, IV, V) = tríadas mayores. Minúscula (ii, iii, vi) = tríadas menores. Un ° en superíndice marca disminuido (vii°), y + marca aumentado.',
   },
   l4u14m4e3: {
     prompt:

@@ -343,11 +343,11 @@ const curriculumL4: CurriculumLevelOverlay = {
 
     // ── U13 M3: Leading-Tone Sevenths ───────────────────────────────────────
     l4u13m3: {
-      title: 'Sétimas da Sensível: viiø7 e viio7',
+      title: 'Sétimas da Sensível: viiø7 e vii°7',
       subtitle:
         'Acordes de sétima meio-diminuto e diminuto como substitutos da dominante',
       objectives: [
-        'Construir e resolver viiø7 (meio-diminuto, em maior) e viio7 (diminuto, em menor)',
+        'Construir e resolver viiø7 (meio-diminuto, em maior) e vii°7 (diminuto, em menor)',
         'Compreender as sétimas da sensível como dominantes de 9.ª sem fundamental',
         'Reconhecer a flexibilidade enarmónica do acorde de sétima diminuto',
       ],
@@ -359,10 +359,10 @@ const curriculumL4: CurriculumLevelOverlay = {
           tryThisLabel: 'Ouve viiø7 na tonalidade de C',
         },
         {
-          title: 'O viio7 Totalmente Diminuto',
+          title: 'O vii°7 Totalmente Diminuto',
           explanation:
-            'O viio7 em tonalidades menores é construído a partir do 7.º grau elevado da escala menor harmónica. As quatro notas são todas notas de tendência que puxam para a resolução, tornando-o o mais tenso de todos os acordes de sétima diatónicos. Em A menor, G#dim7 contém G#-B-D-F — cada nota quer mover-se por grau conjunto. O acorde de sétima diminuto divide a oitava em 3.as menores iguais, conferindo-lhe uma qualidade simétrica e inquieta.',
-          tryThisLabel: 'Ouve o viio7 totalmente diminuto',
+            'O vii°7 em tonalidades menores é construído a partir do 7.º grau elevado da escala menor harmónica. As quatro notas são todas notas de tendência que puxam para a resolução, tornando-o o mais tenso de todos os acordes de sétima diatónicos. Em A menor, G#dim7 contém G#-B-D-F — cada nota quer mover-se por grau conjunto. O acorde de sétima diminuto divide a oitava em 3.as menores iguais, conferindo-lhe uma qualidade simétrica e inquieta.',
+          tryThisLabel: 'Ouve o vii°7 totalmente diminuto',
         },
         {
           title: 'Flexibilidade Enarmónica',
@@ -378,7 +378,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escreve "Bdim7" (B sétima diminuto) — isto é viio7 em C menor. Compara o som com "Bm7b5": a versão totalmente diminuta é mais tensa porque cada nota é uma nota de tendência',
+            'Escreve "Bdim7" (B sétima diminuto) — isto é vii°7 em C menor. Compara o som com "Bm7b5": a versão totalmente diminuta é mais tensa porque cada nota é uma nota de tendência',
         },
         {
           instruction:
