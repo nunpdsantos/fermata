@@ -49,7 +49,7 @@ Tokens and component classes live in `src/index.css`; components in `src/compone
 **Name:** Music Theory App
 **Domain:** Music theory education / interactive instrument
 **Stack:** React 19 + TypeScript 5.9 + Vite 7 + Tailwind CSS v4 + Zustand 5 + Framer Motion 12
-**Tests:** 7,016 passing (Vitest + React Testing Library, 194 test files; counted 2026-10-31, W11-A) + Playwright e2e: 47 specs on the production build (40 + 7 skipped PWA-only on the dev server)
+**Tests:** 7,016 passing (Vitest + React Testing Library, 194 test files; counted 2026-10-31, W11-A) + Playwright e2e: 48 tests on the production build (41 + 7 skipped PWA-only on the dev server)
 **Languages:** English + Portuguese + Spanish (react-i18next + content overlay system)
 **PWA:** Offline-capable with Workbox precaching
 
