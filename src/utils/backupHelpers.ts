@@ -84,9 +84,17 @@ async function sectionProblem(key: BackupKey, payload: Record<string, unknown>):
 
   if (key === 'music-theory-progress') {
     const { useProgressStore, isValidPersistedProgress } = await import('../state/progressStore.ts');
-    const current = useProgressStore.persist.getOptions().version;
-    if (version !== current) return `unsupported version ${version} (expected ${current})`;
-    return isValidPersistedProgress(state) ? null : 'progress does not match the saved format';
+    const { version: current = 1, migrate } = useProgressStore.persist.getOptions();
+    // Older progress (e.g. version 1, before W4a retired changed exercises'
+    // scores) is still a good backup: the store migrates it on load. Check it
+    // as the store will see it after that migration.
+    if (version < 1 || version > current) return `unsupported version ${version} (expected 1–${current})`;
+    // The saved shape is the same in every version from 1 on: check it as
+    // saved (a broken section must be refused, not replaced by the defaults
+    // the migration would fall back to), then as the store will load it.
+    if (!isValidPersistedProgress(state)) return 'progress does not match the saved format';
+    const upgraded = version < current && migrate ? await migrate(state, version) : state;
+    return isValidPersistedProgress(upgraded) ? null : 'progress does not match the saved format';
   }
 
   if (key === 'fermata-fingering-v1') {
