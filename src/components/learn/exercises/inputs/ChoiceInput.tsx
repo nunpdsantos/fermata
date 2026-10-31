@@ -46,7 +46,7 @@ export function ChoiceInput({ options, selected, submitted, onSelect, accentColo
             whileTap={!submitted ? { scale: 0.97, transition: SPRING_MICRO } : undefined}
             onClick={() => !submitted && onSelect(opt.value)}
             disabled={submitted}
-            className={`px-3 py-2.5 max-sm:py-3 rounded-xl text-sm font-medium transition-all duration-150 ${bg} ${border} ${textColor} ${
+            className={`min-h-(--tap) px-3 py-2.5 max-sm:py-3 rounded-xl text-sm font-medium transition-all duration-150 ${bg} ${border} ${textColor} ${
               submitted ? 'cursor-default' : 'cursor-pointer'
             }`}
             style={

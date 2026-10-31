@@ -112,6 +112,10 @@ test.describe('PWA basics', () => {
     const overlap = (a: typeof boxes[0], b: typeof boxes[0]) =>
       a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
     expect(overlap(boxes[0], boxes[1])).toBe(false);
+    // W9-22 / W11-A: the stack sits ABOVE the instrument dock, never on it.
+    const dock = (await page.getByTestId('instrument-dock').boundingBox())!;
+    const dockBox = { top: dock.y, bottom: dock.y + dock.height, left: dock.x, right: dock.x + dock.width };
+    for (const b of boxes) expect(overlap(b, dockBox)).toBe(false);
     // Both toasts' own buttons are the hit target at their centre (nothing on top).
     for (const name of [/dismiss/i, /install/i]) {
       const btn = page.getByRole('alert').getByRole('button', { name }).first();

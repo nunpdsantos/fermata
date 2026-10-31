@@ -21,7 +21,7 @@ for (const vp of [{ w: 1280, h: 900 }, { w: 390, h: 844 }]) {
     await page.goto('/');
     const dock = page.locator('[data-tour="play-note"]');
     await expect(dock).toBeVisible();
-    await page.getByRole('tab', { name: 'Guitar' }).click();
+    await page.getByRole('radio', { name: 'Guitar' }).click();
     await expect(dock.getByTestId('view-loading')).toBeVisible();
     const loading = (await dock.boundingBox())!.height;
 

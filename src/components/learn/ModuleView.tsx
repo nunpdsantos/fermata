@@ -519,7 +519,7 @@ export function ModuleView({
           {prevModule ? (
             <button
               onClick={() => onNavigateModule(prevModule.id)}
-              className="flex items-center gap-2 text-xs transition-colors group"
+              className="flex items-center gap-2 min-h-(--tap) py-1 text-ui transition-colors group"
               style={{ color: 'var(--text-dim)' }}
               onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-dim)'; }}
@@ -542,7 +542,7 @@ export function ModuleView({
           {nextModule ? (
             <button
               onClick={() => onNavigateModule(nextModule.id)}
-              className="flex items-center gap-2 text-xs transition-colors group text-right"
+              className="flex items-center gap-2 min-h-(--tap) py-1 text-ui transition-colors group text-right"
               style={{ color: 'var(--text-dim)' }}
               onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-dim)'; }}

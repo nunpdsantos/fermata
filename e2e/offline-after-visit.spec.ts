@@ -32,7 +32,7 @@ test('Explore, Learn, guitar and search open offline after one online visit', as
   await expect(errorScreen).toHaveCount(0);
 
   await page.getByRole('tab', { name: 'Explore' }).click();
-  await page.getByRole('tab', { name: 'Guitar' }).click();
+  await page.getByRole('radio', { name: 'Guitar' }).click();
   await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 10_000 });
 
   await page.keyboard.press('Control+k');
