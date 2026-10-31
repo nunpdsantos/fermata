@@ -36,8 +36,53 @@ export const usePwaUpdateStore = create<PwaUpdateState>(() => ({
 /** Foreground update checks are throttled to one per minute. */
 export const FOREGROUND_CHECK_MIN_GAP_MS = 60_000;
 
+/** Bounds for the "Try again" / Reload path (review items 1 and 5). */
+export const UPDATE_CHECK_TIMEOUT_MS = 5_000;
+export const INSTALL_WAIT_MS = 8_000;
+export const TAKEOVER_FALLBACK_MS = 4_000;
+
 let updateServiceWorker: ((reloadPage?: boolean) => Promise<void>) | null = null;
+let registration: ServiceWorkerRegistration | undefined;
 let started = false;
+let reloading = false;
+
+function reloadOnce(): void {
+  if (reloading) return;
+  reloading = true;
+  reloadPage();
+}
+
+/**
+ * Reload as soon as a new worker takes control of this page. The plugin only
+ * listens for that in a tab that itself saw the update waiting, so on a
+ * first-install / uncontrolled page Reload did nothing (review item 1).
+ */
+function reloadWhenControllerChanges(): void {
+  if (typeof navigator === 'undefined' || !navigator.serviceWorker) return;
+  navigator.serviceWorker.addEventListener('controllerchange', reloadOnce, { once: true });
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | undefined> {
+  return Promise.race([promise, new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), ms))]);
+}
+
+/** Wait (bounded) until a worker that is still installing has finished. */
+function settleInstalling(reg: ServiceWorkerRegistration, ms: number): Promise<void> {
+  const worker = reg.installing;
+  if (!worker) return Promise.resolve();
+  return new Promise((resolve) => {
+    const done = () => {
+      clearTimeout(timer);
+      worker.removeEventListener('statechange', onChange);
+      resolve();
+    };
+    const onChange = () => {
+      if (worker.state !== 'installing') done();
+    };
+    const timer = setTimeout(done, ms);
+    worker.addEventListener('statechange', onChange);
+  });
+}
 
 /**
  * Register the service worker once per page. Also re-checks for a new version
@@ -48,7 +93,6 @@ export function startPwaRegistration(): void {
   if (started) return;
   started = true;
 
-  let registration: ServiceWorkerRegistration | undefined;
   let lastCheck = 0;
 
   updateServiceWorker = registerSW({
@@ -75,15 +119,37 @@ export function startPwaRegistration(): void {
 }
 
 /**
- * Activate a waiting update (the plugin reloads when the new worker takes
- * control), or — with none waiting — do a plain reload.
+ * The toast's Reload, and "Try again" on a view whose files are gone.
+ *  1. Reload once a new worker takes control of THIS page (works on a
+ *     first-install / uncontrolled page too).
+ *  2. With no update known yet but online, ask the server first
+ *     (registration.update(), bounded) — after a deploy the missing file means
+ *     a new version exists, and finding it now makes ONE tap enough (review
+ *     item 5); wait for it to finish installing.
+ *  3. If a new worker is waiting, activate it (the reload follows from 1);
+ *     otherwise — or if it never takes over — a plain reload.
+ * Note: activating the waiting worker also reloads the app's OTHER open tabs
+ * (the plugin reloads every tab it controls when the worker changes).
  */
 export async function applyUpdateOrReload(): Promise<void> {
-  if (usePwaUpdateStore.getState().needRefresh && updateServiceWorker) {
+  reloadWhenControllerChanges();
+
+  if (!usePwaUpdateStore.getState().needRefresh && registration && navigator.onLine !== false) {
+    try {
+      await withTimeout(registration.update(), UPDATE_CHECK_TIMEOUT_MS);
+    } catch {
+      // Offline / server down — fall through to a plain reload.
+    }
+    await settleInstalling(registration, INSTALL_WAIT_MS);
+  }
+
+  const waiting = usePwaUpdateStore.getState().needRefresh || !!registration?.waiting;
+  if (waiting && updateServiceWorker) {
     await updateServiceWorker(true);
+    setTimeout(reloadOnce, TAKEOVER_FALLBACK_MS); // never stuck if the takeover is lost
     return;
   }
-  reloadPage();
+  reloadOnce();
 }
 
 export function usePWA() {
