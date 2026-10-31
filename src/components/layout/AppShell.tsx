@@ -10,6 +10,12 @@ import { useAppStore } from '../../state/store.ts';
 // piano users no longer download it with the entry file (audit W9-11). It is
 // precached, so guitar works offline from the first install; ViewSlot gives
 // it a spinner while it loads and a working "Try again" if a download fails.
+// While the fretboard chunk loads, the dock keeps roughly the fretboard's own
+// height (measured on the preview build: ~323 px at 1280×900, ~400 px at
+// 390×844) instead of jumping piano → 20 px spinner → fretboard (review item
+// 3; e2e/fretboard-fit.spec.ts checks the loading height in a real browser).
+const GUITAR_LOADING_SIZE = 'max-md:min-h-[400px] md:min-h-[320px]';
+
 const GUITAR_LOADER: Record<'guitar', ViewLoader> = {
   guitar: () => import('../instruments/Fretboard.tsx').then((m) => ({ default: m.Fretboard })),
 };
@@ -87,7 +93,7 @@ export function AppShell({ children }: AppShellProps) {
           }
           style={{ backgroundColor: 'var(--bg)', overscrollBehavior: 'contain' }}
         >
-          {instrument === 'piano' ? <Piano /> : <ViewSlot viewKey="guitar" loaders={GUITAR_LOADER} />}
+          {instrument === 'piano' ? <Piano /> : <ViewSlot viewKey="guitar" loaders={GUITAR_LOADER} fallbackClassName={GUITAR_LOADING_SIZE} />}
         </div>
       )}
         </>

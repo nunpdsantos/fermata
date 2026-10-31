@@ -6,18 +6,18 @@ import { isChunkLoadError } from '../utils/chunkLoadError.ts';
 
 export type ViewLoader = () => Promise<{ default: ComponentType }>;
 
-function ViewLoadingFallback() {
+function ViewLoadingFallback({ sizeClassName }: { sizeClassName?: string }) {
   return (
-    <div className="flex-1 flex items-center justify-center">
+    <div className={`flex-1 flex items-center justify-center ${sizeClassName ?? ''}`} data-testid="view-loading">
       <div className="w-5 h-5 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--border)', borderTopColor: 'var(--text-muted)' }} />
     </div>
   );
 }
 
-function ViewErrorFallback({ onRetry }: { onRetry: () => void }) {
+function ViewErrorFallback({ onRetry, sizeClassName }: { onRetry: () => void; sizeClassName?: string }) {
   const { t } = useTranslation();
   return (
-    <div className="flex-1 flex items-center justify-center">
+    <div className={`flex-1 flex items-center justify-center ${sizeClassName ?? ''}`}>
       <div className="text-center p-8">
         <p className="text-zinc-400 text-sm mb-4">{t('error.viewError')}</p>
         <button
@@ -61,7 +61,17 @@ function lazyViews<K extends string>(loaders: Record<K, ViewLoader>): Record<K, 
  *    view only and re-renders, so the download is attempted again.
  * Nothing here reloads on its own: only the learner's tap does.
  */
-export function ViewSlot<K extends string>({ viewKey, loaders }: { viewKey: K; loaders: Record<K, ViewLoader> }) {
+export function ViewSlot<K extends string>({
+  viewKey,
+  loaders,
+  fallbackClassName,
+}: {
+  viewKey: K;
+  loaders: Record<K, ViewLoader>;
+  /** Size for the spinner / error screen, so the space doesn't jump while the
+   *  chunk loads (e.g. the guitar dock — review item 3). */
+  fallbackClassName?: string;
+}) {
   const [, setAttempt] = useState(0);
 
   const retry = useCallback(
@@ -81,9 +91,9 @@ export function ViewSlot<K extends string>({ viewKey, loaders }: { viewKey: K; l
   return (
     <ErrorBoundary
       resetKey={viewKey}
-      fallback={(error, reset) => <ViewErrorFallback onRetry={() => retry(error, reset)} />}
+      fallback={(error, reset) => <ViewErrorFallback onRetry={() => retry(error, reset)} sizeClassName={fallbackClassName} />}
     >
-      <Suspense fallback={<ViewLoadingFallback />}>
+      <Suspense fallback={<ViewLoadingFallback sizeClassName={fallbackClassName} />}>
         <View />
       </Suspense>
     </ErrorBoundary>
