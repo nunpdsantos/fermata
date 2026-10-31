@@ -28,6 +28,7 @@ const pt: MusicTermDictionary = {
     chromatic: 'cromática',
     altered: 'alterada',
     diminished_half_whole: 'diminuta (meio-tom/tom)',
+    phrygian_dominant: 'frígio dominante',
   },
   chordQualities: {
     major: 'maior',
@@ -72,6 +73,7 @@ const es: MusicTermDictionary = {
     chromatic: 'cromática',
     altered: 'alterada',
     diminished_half_whole: 'disminuida (semitono/tono)',
+    phrygian_dominant: 'frigio dominante',
   },
   chordQualities: {
     major: 'mayor',

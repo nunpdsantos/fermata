@@ -69,13 +69,13 @@ const curriculumL4: CurriculumLevelOverlay = {
 
     // ── U12 M2: Appoggiatura, Escape Tone, Retardation ─────────────────────
     l4u12m2: {
-      title: 'Apoyatura, Escapatoria y Anticipación Ascendente',
+      title: 'Apoyatura, Escapatoria y Retardo Ascendente',
       subtitle:
         'Notas extrañas acentuadas y no acentuadas, abordadas por salto o resueltas hacia arriba',
       objectives: [
         'Identificar la apoyatura por su aproximación por salto y resolución por grado conjunto en un tiempo fuerte',
         'Reconocer la escapatoria como la imagen inversa: aproximación por grado conjunto, salida por salto',
-        'Comprender la anticipación ascendente como un retardo que resuelve hacia arriba en vez de hacia abajo',
+        'Comprender el retardo ascendente como un retardo que resuelve hacia arriba en vez de hacia abajo',
       ],
       concepts: [
         {
@@ -91,24 +91,24 @@ const curriculumL4: CurriculumLevelOverlay = {
           tryThisLabel: 'El movimiento por grado conjunto es donde las escapatorias comienzan',
         },
         {
-          title: 'La Anticipación Ascendente (Retardation)',
+          title: 'El Retardo Ascendente (Retardation)',
           explanation:
-            'Una anticipación ascendente usa el mismo mecanismo de nota retenida que un retardo, pero resuelve por grado conjunto ascendente en vez de descendente. La más típica es 7-8: la sensible es retenida del acorde de dominante y resuelve hacia arriba hasta la tónica. Suena como un retardo que va en la dirección «equivocada». Son menos frecuentes que los retardos porque la resolución ascendente es menos natural en la conducción de voces tonal, pero la anticipación ascendente 7-8 es idiomática en puntos cadenciales.',
+            'Un retardo ascendente usa el mismo mecanismo de nota retenida que un retardo, pero resuelve por grado conjunto ascendente en vez de descendente. El más típico es 7-8: la sensible es retenida del acorde de dominante y resuelve hacia arriba hasta la tónica. Suena como un retardo que va en la dirección «equivocada». Son menos frecuentes que los retardos porque la resolución ascendente es menos natural en la conducción de voces tonal, pero el retardo ascendente 7-8 es idiomático en puntos cadenciales.',
           tryThisLabel: 'El B en G mayor puede ascender hasta C',
         },
       ],
       tasks: [
         {
           instruction:
-            'Clasifica estas notas extrañas por la aproximación y la salida: apoyatura (salto a tiempo fuerte, resolución por grado conjunto en dirección opuesta), escapatoria (aproximación por grado conjunto, salida por salto en dirección opuesta), anticipación ascendente (nota retenida, grado conjunto ascendente). La apoyatura y la escapatoria son imágenes especulares',
+            'Clasifica estas notas extrañas por la aproximación y la salida: apoyatura (salto a tiempo fuerte, resolución por grado conjunto en dirección opuesta), escapatoria (aproximación por grado conjunto, salida por salto en dirección opuesta), retardo ascendente (nota retenida, grado conjunto ascendente). La apoyatura y la escapatoria son imágenes especulares',
         },
         {
           instruction:
-            'Escribe "G major chord" — imagina la nota B retenida mientras el acorde cambia a C mayor. B resuelve hacia arriba hasta C: esto es una anticipación ascendente 7-8, el tipo más frecuente',
+            'Escribe "G major chord" — imagina la nota B retenida mientras el acorde cambia a C mayor. B resuelve hacia arriba hasta C: esto es un retardo ascendente 7-8, el tipo más frecuente',
         },
         {
           instruction:
-            'Compara: un retardo resuelve hacia ABAJO por grado conjunto (4-3: F desciende a E), mientras que una anticipación ascendente resuelve hacia ARRIBA por grado conjunto (7-8: B asciende a C). Mismo mecanismo, dirección opuesta. Los retardos son mucho más comunes porque la resolución descendente suena más natural',
+            'Compara: un retardo resuelve hacia ABAJO por grado conjunto (4-3: F desciende a E), mientras que un retardo ascendente resuelve hacia ARRIBA por grado conjunto (7-8: B asciende a C). Mismo mecanismo, dirección opuesta. Los retardos son mucho más comunes porque la resolución descendente suena más natural',
         },
       ],
     },
@@ -459,7 +459,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Segundas Ascendentes y Terceras Descendentes',
           explanation:
-            'En una secuencia de segundas ascendentes, las fundamentales suben por grado conjunto: I-ii-iii-IV-V, creando una sensación de escalada. Las primeras inversiones se emplean frecuentemente para mantener la línea de bajo suave (la técnica 5-6). En una secuencia de terceras descendentes, las fundamentales bajan por terceras: I-vi-IV-ii, produciendo un movimiento descendente suave común en la música Romántica. Cada par en una secuencia de terceras comparte una nota común, haciendo la conducción de voces excepcionalmente suave.',
+            'En una secuencia de segundas ascendentes, las fundamentales suben por grado conjunto: I-ii-iii-IV-V, creando una sensación de escalada. Las primeras inversiones se emplean frecuentemente para mantener la línea de bajo suave (la técnica 5-6): en la secuencia 5-6 ascendente, cada acorde en posición fundamental (5/3) va seguido de un acorde 6/3 sobre la misma nota del bajo, y después el bajo sube un grado. En una secuencia de terceras descendentes, las fundamentales bajan por terceras: I-vi-IV-ii, produciendo un movimiento descendente suave común en la música Romántica. Cada par en una secuencia de terceras comparte una nota común, haciendo la conducción de voces excepcionalmente suave.',
           tryThisLabel: 'ii7 se sitúa en el centro de muchas secuencias',
         },
       ],

@@ -119,7 +119,7 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'La tonicización realza brevemente un acorde; la modulación confirma una nueva tonalidad con una cadencia',
-          'La tonicización confirma una nueva tonalidad con una cadencia; la modulación solo realza brevemente un acorde',
+          'La tonicización confirma una nueva tonalidad con una cadencia; la modulación realza brevemente un acorde',
           'Tonicización y modulación son dos nombres para exactamente el mismo proceso',
           'La modulación nunca usa acordes cromáticos; la tonicización siempre los usa',
         ],
@@ -130,7 +130,7 @@ const overlay: TemplateLevelOverlay = {
           'Una tonicización necesita una cadencia auténtica perfecta en la nueva tonalidad',
         ],
         [
-          'Una modulación se confirma cuando la música hace una cadencia en la nueva tonalidad',
+          'Una modulación solo se confirma cuando la música hace una cadencia en la nueva tonalidad',
           'Una modulación se confirma en cuanto cambia el compás',
           'Una modulación se confirma con cualquier nota cromática aislada en la melodía',
           'Una modulación solo puede confirmarse justo al final de una pieza, y en ningún otro lugar',
@@ -197,7 +197,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Las tonalidades cercanas (a una alteración de distancia) comparten más acordes pivote',
-          'Las tonalidades lejanas, a muchas alteraciones de distancia, son las que comparten más acordes pivote',
+          'Las tonalidades lejanas, a muchas alteraciones de distancia, comparten más acordes pivote',
           'Todos los pares de tonalidades comparten exactamente el mismo número de acordes pivote',
           'Las tonalidades paralelas (misma tónica) comparten siempre más acordes pivote',
         ],
@@ -268,7 +268,7 @@ const overlay: TemplateLevelOverlay = {
         'La modulación por nota común sostiene una única nota que se reinterpreta en la nueva tonalidad. Se usa frecuentemente para modulaciones distantes donde existen pocos acordes pivote.',
       choiceSets: [
         [
-          'Una nota mantenida se vuelve a oír como un grado distinto en la nueva tonalidad',
+          'Una única nota mantenida siempre se vuelve a oír como un grado distinto en la nueva tonalidad',
           'Una nota mantenida conserva exactamente el mismo grado en la nueva tonalidad',
           'Todas las notas del acorde deben ser comunes a las dos tonalidades',
           'No se mantiene ninguna nota: la música se detiene y vuelve a empezar en la nueva tonalidad',
@@ -369,7 +369,7 @@ const overlay: TemplateLevelOverlay = {
           'ABA, en la que la primera sección vuelve tras un contraste, es una forma de composición continua',
         ],
         [
-          'La binaria con retorno trae de vuelta material de A al final de la sección B',
+          'La binaria con retorno siempre trae de vuelta material de A al final de la sección B',
           'La binaria con retorno tiene tres secciones independientes que nunca vuelven',
           'La binaria con retorno nunca modula fuera de la tonalidad principal en ningún momento',
           'La binaria con retorno es solo otro nombre para la binaria simple',

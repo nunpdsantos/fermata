@@ -317,7 +317,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'A Progressão Omnibus',
           explanation:
-            'O omnibus é um padrão cromático de troca de vozes (numa troca de vozes, duas vozes trocam as notas entre si): uma voz sobe cromaticamente enquanto outra desce, com as restantes vozes a sustentar-se. Isto cria uma paisagem harmónica lentamente evolutiva, movendo-se através de sonoridades de sétima da dominante e de sexta aumentada. Comum na música do século XIX, produz uma sensação de errância harmónica sem direção funcional clara.',
+            'O omnibus é um padrão cromático de troca de vozes (numa troca de vozes, duas vozes trocam as notas entre si): uma voz sobe cromaticamente enquanto outra desce, com as restantes vozes a sustentar-se. Isto cria uma paisagem harmónica lentamente evolutiva, movendo-se através de sonoridades de sétima da dominante e de sexta aumentada. Comum na música do século XIX, produz uma sensação de errância harmónica sem direção funcional clara. A sua função habitual é prolongar uma única harmonia de dominante: o padrão sai da sétima da dominante e regressa a ela.',
           tryThisLabel: 'Ouve C7#5 — uma sonoridade de dominante alterada',
         },
       ],

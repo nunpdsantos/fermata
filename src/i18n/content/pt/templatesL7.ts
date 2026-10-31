@@ -15,7 +15,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Constrói um acorde de {root} {quality}. Seleciona todas as notas, incluindo a nona acima da sétima.',
+        'Constrói o acorde {quality} sobre {root}. Seleciona todas as notas, incluindo a nona acima da sétima.',
       hintTemplate:
         'As extensões de jazz empilham terças acima da sétima: nona = segunda uma oitava acima, décima primeira = quarta acima, décima terceira = sexta acima. Constrói a partir de {root}.',
     },
@@ -39,7 +39,7 @@ const overlay: TemplateLevelOverlay = {
           'A b5 torna-o um acorde aumentado',
         ],
         [
-          'C7(#9) é um acorde dominante com nona aumentada, frequentemente chamado o "acorde de Hendrix"',
+          'C7(#9) é sempre um acorde dominante com nona aumentada, frequentemente chamado o "acorde de Hendrix"',
           'C7(#9) é um acorde de sétima maior',
           'Em C7(#9) a nona aumentada (D#) substitui a terça maior, por isso o acorde já não tem nenhum E',
           'C7(#9) não tem sétima',
@@ -109,9 +109,9 @@ const overlay: TemplateLevelOverlay = {
         'Num ii-V-I, a terça do ii mantém-se como sétima do V, enquanto a sétima do ii desce meio-tom para a terça do V (e o mesmo volta a acontecer do V para o I). Esta eficiência na condução de vozes chama-se linhas de guide tones.',
       choiceSets: [
         [
-          'Os guide tones (terças e sétimas) ligam-se suavemente por grau conjunto entre acordes num ii-V-I',
+          'Os guide tones (terças e sétimas) movem-se sempre por grau conjunto ou mantêm-se entre acordes num ii-V-I',
           'Os voicings de shell requerem grandes saltos entre acordes',
-          'Os voicings de shell movem todas as vozes por grandes saltos, porque a terça e a sétima nunca se mantêm de acorde para acorde',
+          'Os voicings de shell movem todas as vozes por grandes saltos, porque os guide tones (terça e sétima) nunca se mantêm de acorde para acorde',
           'A condução de vozes não importa no jazz',
         ],
         [
@@ -144,7 +144,7 @@ const overlay: TemplateLevelOverlay = {
           'Em tonalidades menores, o acorde ii é semidiminuto (m7b5)',
           'Em tonalidades menores, o acorde ii é um acorde de sétima da dominante',
           'As tonalidades menores não usam ii-V-I',
-          'Em tonalidades menores o acorde ii é um acorde maj7, construído sobre o 2.º grau elevado',
+          'Em tonalidades menores, o acorde ii é um acorde de sétima maior (maj7), construído sobre o 2.º grau elevado',
         ],
         [
           'A ii-V-I pode ser usada para tonicizar qualquer acorde, criando centros tonais transitórios',
@@ -173,13 +173,13 @@ const overlay: TemplateLevelOverlay = {
         'Dois dom7 a um trítono de distância partilham o mesmo intervalo de trítono (a terça e a sétima trocam). Isto cria movimento cromático do baixo: bII7 -> I em vez de V7 -> I.',
       choiceSets: [
         [
-          'A terça e a sétima do V7 original tornam-se a sétima e a terça da substituição tritónica',
+          'A terça e a sétima do V7 original tornam-se sempre a sétima e a terça da substituição tritónica',
           'As substituições tritónicas partilham a mesma fundamental',
           'Os dois acordes dominantes não partilham nenhuma nota, e é precisamente por isso que a substituição soa tão fresca',
           'As substituições tritónicas só funcionam em tonalidades menores',
         ],
         [
-          'A substituição tritónica cria uma linha cromática de baixo: bII -> I (resolução por meio-tom)',
+          'A substituição tritónica cria uma linha de baixo cromática que desce meio-tom de bII para I',
           'O baixo move-se por um tom',
           'O baixo do substituto continua a descer uma 5.ª perfeita para a tónica, exatamente como em V7-I',
           'O movimento do baixo é o mesmo que V-I',
@@ -205,14 +205,14 @@ const overlay: TemplateLevelOverlay = {
         'O blues de 12 compassos: I7 (4 compassos), IV7 (2 compassos), I7 (2 compassos), V7 (1), IV7 (1), I7 (2). O jazz blues acrescenta movimento ii-V e substituições tritónicas.',
       choiceSets: [
         [
-          'O blues básico de 12 compassos usa I7, IV7 e V7 como acordes primários',
+          'O blues básico de 12 compassos usa apenas I7, IV7 e V7',
           'O blues básico de 12 compassos usa apenas acordes de sétima maior: Imaj7, IVmaj7 e Vmaj7 do princípio ao fim',
           'O blues de 12 compassos tem 16 compassos',
           'A forma de blues usa apenas o acorde I',
         ],
         [
-          'O jazz blues acrescenta frequentemente um ii-V ao compasso 4 (a apontar para IV7) e aos compassos 9-10 (a apontar para I)',
-          'O jazz blues retira todos os acordes dominantes e substitui a forma inteira por um único vamp menor, do primeiro ao último compasso',
+          'O jazz blues acrescenta frequentemente um ii-V no compasso 4 que leva a IV7, e outro nos compassos 9-10 que leva a I',
+          'O jazz blues retira dos 12 compassos todos os acordes de sétima da dominante (I7, IV7 e V7) e toca só um vamp menor',
           'O jazz blues nunca modifica a forma básica',
           'O jazz blues usa os mesmos acordes do blues básico',
         ],
@@ -296,8 +296,8 @@ const overlay: TemplateLevelOverlay = {
           'Não existem notas a evitar em nenhuma escala',
         ],
         [
-          'O lócrio, ou o lócrio com 2.ª natural (modo 6 da menor melódica), serve acordes semidiminutos (m7b5)',
-          'O dórico é a escala dos acordes semidiminutos, porque a sua sexta natural coincide com a b5 do acorde, nota a nota',
+          'O lócrio ou o lócrio com 2.ª natural, modo 6 da menor melódica, serve acordes semidiminutos m7b5',
+          'O dórico é a escala dos acordes semidiminutos (m7b5), porque a sua sexta natural coincide com a b5 do acorde, nota a nota',
           'O mixolídio é usado para acordes semidiminutos',
           'Os acordes semidiminutos não têm escala associada',
         ],
@@ -397,7 +397,7 @@ const overlay: TemplateLevelOverlay = {
         'Cada modo tem uma nota característica que o distingue. Dórico: sexta natural. Frígio: b2. Lídio: #4. Mixolídio: b7. Os vamps modais enfatizam estas notas.',
       choiceSets: [
         [
-          'O dórico distingue-se do menor natural pela sua sexta elevada (natural)',
+          'O dórico distingue-se do menor natural pela sua sexta elevada',
           'O dórico tem uma sétima elevada',
           'O dórico distingue-se do menor natural por um 7.º grau elevado, que lhe dá uma sensível',
           'O dórico é idêntico ao menor natural',
@@ -440,7 +440,7 @@ const overlay: TemplateLevelOverlay = {
           'Os acordes quartais são sempre dissonantes',
         ],
         [
-          'O planing (paralelismo) move uma forma de acorde inteira para cima ou para baixo, com todas as vozes em paralelo',
+          'O planing move uma forma de acorde inteira para cima ou para baixo com todas as vozes em paralelo',
           'O planing move sempre as vozes em movimento contrário, de modo que a forma do acorde muda completamente a cada passo',
           'O planing é proibido em todos os estilos musicais',
           'O planing altera a qualidade do acorde em cada passo',
@@ -469,7 +469,7 @@ const overlay: TemplateLevelOverlay = {
         'O sistema de números de Nashville usa graus da escala: 1=I, 4=IV, 5=V, 6m=vi. Comuns: 1-5-6m-4, 1-4-5-1, 6m-4-1-5.',
       choiceSets: [
         [
-          'I-V-vi-IV é uma das progressões pop mais comuns, usada em centenas de músicas',
+          'I-V-vi-IV é uma das progressões pop mais comuns e é usada em centenas de músicas de sucesso',
           'I-V-vi-IV pertence à escrita de corais clássicos e quase nunca se ouve em canções pop',
           'Esta progressão é raramente usada no pop',
           'I-V-vi-IV soa sempre igual em todas as tonalidades',
@@ -579,7 +579,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'O lídio dominante é o modo 4 da menor melódica e serve um acorde de sétima da dominante com #11',
-          'O lídio dominante é o modo 4 da escala maior, por isso serve um acorde maj7 com a quarta natural',
+          'O lídio dominante é o modo 4 da escala maior, por isso serve um acorde maj7 com a quarta natural (sem #11)',
           'O lídio dominante tem uma sétima maior',
           'O lídio dominante serve acordes menores',
         ],
@@ -591,7 +591,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'O lócrio com 2.ª natural é o modo 6 da menor melódica e serve o acorde semidiminuto (m7b5)',
-          'O lócrio com 2.ª natural é o modo 2 da menor melódica e serve o acorde de sétima diminuta completo (dim7)',
+          'O lócrio com 2.ª natural é o modo 2 da menor melódica e serve o acorde de 7.ª diminuta completo (dim7)',
           'O lócrio com 2.ª natural tem uma quinta perfeita',
           'Serve um acorde maj7',
         ],
@@ -606,7 +606,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói a escala de {root} {scaleType}.',
       hintTemplate:
-        'Tons inteiros: só tons (6 notas). Cromática: só meios-tons (12). Menor harmónica: menor natural com a 7.ª elevada (7). Diminuta meio-tom/tom: meios-tons e tons alternados (8).',
+        'Tons inteiros: só tons (6 notas). Frígio dominante: modo 5 da menor harmónica, 1-b2-3-4-5-b6-b7 (7). Menor harmónica: menor natural com a 7.ª elevada (7). Diminuta meio-tom/tom: meios-tons e tons alternados (8).',
     },
     {
       // multiple_choice

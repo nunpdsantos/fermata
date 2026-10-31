@@ -32,7 +32,7 @@ const overlay: TemplateLevelOverlay = {
           'Respuestas tonales y reales son conceptos idénticos',
         ],
         [
-          'Una respuesta real transpone el sujeto exactamente a la dominante (una 5.ª J por encima o 4.ª J por debajo)',
+          'Una respuesta real siempre transpone el sujeto exactamente a la dominante (una 5.ª J por encima o 4.ª J por debajo)',
           'Una respuesta real cambia siempre algunos intervalos del sujeto para poder permanecer en la tonalidad de la tónica',
           'Una respuesta real usa inversión',
           'Una respuesta real está siempre en la tónica',
@@ -57,7 +57,7 @@ const overlay: TemplateLevelOverlay = {
         'Episodios: pasajes entre entradas del sujeto, frecuentemente usando secuencias basadas en fragmentos. Stretto: entradas solapadas del sujeto donde la respuesta comienza antes de que el sujeto termine.',
       choiceSets: [
         [
-          'En el stretto, una nueva voz comienza el sujeto antes de que la voz anterior lo haya terminado',
+          'En el stretto, cada nueva entrada comienza el sujeto antes de que la anterior lo haya terminado',
           'En el stretto cada voz espera a que la entrada anterior termine y luego toca el sujeto más despacio',
           'Stretto es lo mismo que un episodio',
           'Stretto solo ocurre en la exposición',
@@ -75,7 +75,7 @@ const overlay: TemplateLevelOverlay = {
           'La aumentación acorta los valores de nota',
         ],
         [
-          'La disminución presenta el sujeto en valores de nota más cortos (duraciones reducidas a la mitad)',
+          'La disminución siempre presenta el sujeto en valores de nota más cortos (generalmente reducidos a la mitad)',
           'La disminución quita notas al sujeto, manteniendo todos sus valores de nota originales sin ningún cambio',
           'La disminución es lo mismo que la retrogradación',
           'La disminución hace el sujeto más fuerte',
@@ -203,7 +203,7 @@ const overlay: TemplateLevelOverlay = {
           'El contrabajo es más agudo que el violonchelo',
         ],
         [
-          'Un clarinete en Bb suena una 2.ª mayor por debajo de lo escrito: lee C y se oye Bb',
+          'Un clarinete en Bb siempre suena una 2.ª mayor por debajo de lo escrito: lee C y se oye Bb',
           'Un clarinete en Bb suena exactamente como está escrito, como todos los demás instrumentos de la orquesta',
           'El clarinete en Bb suena más agudo que lo escrito',
           'Solo los instrumentos de percusión transponen',
@@ -238,7 +238,7 @@ const overlay: TemplateLevelOverlay = {
           'Los enteros de conjuntos de clases de altura van de 0 a 7',
         ],
         [
-          'La forma normal dispone el conjunto en el orden ascendente más compacto',
+          'La forma normal siempre dispone el conjunto en el orden ascendente más compacto',
           'La forma normal empieza siempre el conjunto en C y después lista sus clases de altura en orden descendente',
           'La forma normal usa orden descendente',
           'No existe ordenación estándar para conjuntos',
@@ -265,7 +265,7 @@ const overlay: TemplateLevelOverlay = {
           'Los vectores interválicos son lo mismo que la forma normal',
         ],
         [
-          'La forma primaria transpone y/o invierte un conjunto a su forma más compacta comenzando en 0',
+          'La forma primaria transpone y/o invierte un conjunto a su forma más compacta, comenzando siempre en 0',
           'La forma primaria es la forma normal dejada exactamente como está, nunca transpuesta a 0 y nunca invertida',
           'La forma primaria solo transpone',
           'La forma primaria comienza siempre en la nota más aguda',
@@ -321,19 +321,19 @@ const overlay: TemplateLevelOverlay = {
         'El planing mueve una forma de acorde en paralelo. La politonalidad hace sonar dos tonalidades a la vez; el pandiatonicismo usa libremente las notas de una tonalidad, sin armonía funcional. El espectralismo construye la armonía a partir de la serie de armónicos; la microtonalidad usa pasos menores que un semitono.',
       choiceSets: [
         [
-          'La politonalidad hace sonar dos o más tonalidades a la vez, por ejemplo C mayor contra F# mayor',
+          'La politonalidad siempre hace sonar dos o más tonalidades a la vez, por ejemplo C mayor contra F# mayor',
           'La politonalidad significa cambiar de tonalidad muchas veces en una melodía, pero siempre una tonalidad cada vez',
           'La politonalidad no usa ninguna tonalidad',
           'La politonalidad es una técnica rítmica',
         ],
         [
-          'El pandiatonicismo usa libremente las notas de una tonalidad, sin progresiones armónicas funcionales',
+          'El pandiatonicismo usa solo las notas de una tonalidad, libremente, sin progresiones armónicas funcionales',
           'El pandiatonicismo usa las doce notas cromáticas por igual, de modo que no llega a oírse ninguna tonalidad',
           'El pandiatonicismo usa solo escalas pentatónicas',
           'El pandiatonicismo exige cadencias V-I',
         ],
         [
-          'El planing cromático mantiene los intervalos exactos; el planing diatónico los ajusta a la escala',
+          'El planing cromático siempre mantiene los intervalos exactos; el planing diatónico los ajusta a la escala',
           'El planing cromático mantiene todas las voces dentro de la tonalidad, mientras que el diatónico mantiene los intervalos exactos',
           'El planing usa siempre movimiento contrario',
           'El planing cambia el acorde en cada paso',
@@ -345,7 +345,7 @@ const overlay: TemplateLevelOverlay = {
           'La música espectral evita todos los sonidos con altura definida',
         ],
         [
-          'La microtonalidad divide la octava en intervalos menores que un semitono',
+          'La microtonalidad usa intervalos menores que un semitono, no solo las 12 notas habituales',
           'La microtonalidad usa solo las 12 alturas estándar, pero toca cada una de ellas extremadamente bajito',
           'La microtonalidad usa solo las 12 alturas estándar',
           'La microtonalidad es lo mismo que la atonalidad',
@@ -364,7 +364,7 @@ const overlay: TemplateLevelOverlay = {
         'Minimalismo: patrones repetitivos, proceso gradual, material armónico limitado. Pioneros: Reich (desfase), Glass (proceso aditivo), Riley (bucles de cinta). La música aleatoria deja elementos al azar; las técnicas expandidas son formas no convencionales de tocar.',
       choiceSets: [
         [
-          'El desfase desplaza gradualmente dos patrones idénticos fuera de sincronía, creando texturas en evolución',
+          'El desfase siempre parte de dos patrones idénticos y los desplaza gradualmente fuera de sincronía',
           'El desfase mantiene dos patrones idénticos perfectamente sincronizados durante toda la pieza, cambiando solo las alturas',
           'El desfase usa técnica dodecafónica',
           'El desfase implica alterar el contenido de alturas',

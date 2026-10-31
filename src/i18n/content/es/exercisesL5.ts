@@ -58,7 +58,7 @@ const overlay: ExerciseLevelOverlay = {
   l5u15m2e3: {
     prompt: '¿Qué define una dominante aplicada (secundaria)?',
     choices: [
-      'Una tríada mayor o acorde de séptima dominante que resuelve hacia un acorde diatónico distinto de I, funcionando como V de ese acorde',
+      'Una tríada mayor o acorde de séptima dominante que resuelve hacia un acorde diatónico distinto de I, funcionando siempre como V de ese acorde',
       'Cualquier acorde de séptima dominante usado en una progresión',
       'Un acorde que modula permanentemente a una nueva tonalidad',
       'El acorde V que resuelve hacia vi en una cadencia rota',
@@ -72,10 +72,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Cuál es la función de un acorde de sensible secundaria (p. ej., vii°/V)?',
     choices: [
-      'Funciona como un acorde disminuido que resuelve medio tono arriba hacia el acorde tonicizado, tal como vii° resuelve hacia I',
+      'Funciona como un acorde disminuido que resuelve medio tono arriba hacia el acorde tonicizado',
       'Sustituye completamente al acorde dominante en las cadencias',
       'Funciona como un acorde de paso sin atracción armónica',
-      'Es la sensible de la tonalidad tocada como nota aislada',
+      'Es la sensible de la tonalidad principal, tocada sola como una única nota de la melodía por encima del bajo',
     ],
     hint: 'vii°/V funciona del mismo modo que vii° en una tonalidad: la fundamental está medio tono por debajo del acorde objetivo, y la cualidad disminuida crea un fuerte impulso de resolución ascendente hacia el objetivo.',
   },
@@ -141,9 +141,9 @@ const overlay: ExerciseLevelOverlay = {
   l5u15m5e1: {
     prompt: '¿Qué es una cadena de dominantes secundarias?',
     choices: [
-      'Una secuencia en la que cada acorde funciona como V7 del siguiente, pasando por múltiples tonicizaciones antes de resolver hacia la tónica',
+      'Una secuencia en la que cada acorde funciona como V7 del siguiente, pasando por múltiples tonicizaciones antes de resolver en la tónica',
       'Tocar el acorde V de cada tonalidad mayor en sucesión',
-      'Una serie de acordes disminuidos descendiendo cromáticamente',
+      'Una serie de acordes de 7.ª disminuida que descienden cromáticamente, semitono a semitono, hasta que la música llega finalmente a la tónica',
       'Alternar entre I y V repetidamente',
     ],
     hint: 'Una cadena de dominantes crea tensión en cascada: p. ej., V7/vi – V7/ii – V7/V – V7 – I. Cada acorde de séptima dominante resuelve hacia el eslabón siguiente, arrastrando la armonía de vuelta a la tónica a través de un ciclo.',
@@ -213,7 +213,7 @@ const overlay: ExerciseLevelOverlay = {
   l5u16m2e1: {
     prompt: '¿Cuántas tonalidades cercanas tiene una tonalidad mayor?',
     choices: [
-      '5 — las tonalidades cuyas armaduras difieren en como máximo un sostenido o bemol',
+      '5 — todas las tonalidades cuyas armaduras difieren en como máximo un sostenido o bemol',
       '2 — solo la dominante y la subdominante',
       '12 — todas las tonalidades son cercanas',
       '3 — la relativa menor, la dominante y la subdominante, y ninguna otra tonalidad más',
@@ -247,7 +247,7 @@ const overlay: ExerciseLevelOverlay = {
   l5u16m3e1: {
     prompt: '¿Qué es una modulación directa (o de frase)?',
     choices: [
-      'Una modulación que cambia a la nueva tonalidad abruptamente en un límite de frase, sin acorde pivote',
+      'Una modulación que cambia a la nueva tonalidad abruptamente en un límite de frase, sin ningún acorde pivote',
       'Una modulación que usa un acorde pivote compartido entre las dos tonalidades',
       'Una modulación que se desliza gradualmente medio tono arriba o abajo usando siempre conducción cromática de voces',
       'Una modulación que ocurre gradualmente a lo largo de muchos compases',
@@ -304,7 +304,7 @@ const overlay: ExerciseLevelOverlay = {
   l5u16m5e1: {
     prompt: '¿Qué es una tercera de Picardía (tierce de Picardie)?',
     choices: [
-      'Terminar una pieza en tonalidad menor con un acorde de tónica mayor, elevando la tercera del acorde final',
+      'Terminar una pieza en tonalidad menor con un acorde de tónica mayor, elevando solo la tercera del acorde final',
       'Una progresión de acordes que usa solo terceras',
       'Un intervalo de tercera menor usado en una tonalidad mayor',
       'Un ornamento francés en trino sobre el tercer grado',
@@ -315,8 +315,8 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'En la mezcla modal, ¿qué significa tomar prestado del mayor paralelo en una tonalidad menor?',
     choices: [
-      'Usar acordes de la tonalidad mayor con la misma tónica, como un IV mayor o un I mayor, en un contexto de tonalidad menor',
-      'Modular permanentemente a la tonalidad mayor',
+      'Usar acordes de la tonalidad mayor con la misma tónica en un contexto de tonalidad menor',
+      'Modular permanentemente a la relativa mayor, la tonalidad mayor que tiene la misma armadura de clave',
       'Tocar la escala mayor sobre acordes menores',
       'Usar los acordes de la relativa mayor',
     ],
@@ -364,9 +364,9 @@ const overlay: ExerciseLevelOverlay = {
   l5u17m1e3: {
     prompt: '¿Qué es la forma ternaria (ABA)?',
     choices: [
-      'Una estructura en tres partes en la que la primera sección regresa tras una sección central contrastante, siendo cada sección autosuficiente',
+      'Una estructura en tres partes en la que la primera sección regresa tras una sección central contrastante',
       'Una pieza con tres melodías diferentes que nunca se repiten',
-      'Una forma en la que el tempo cambia tres veces',
+      'Una forma definida por el tempo, con una sección inicial lenta, una sección central rápida y un final lento',
       'Una pieza escrita en compás 3/4',
     ],
     hint: 'La forma ternaria tiene tres secciones distintas: A (exposición), B (contraste), A (retorno). A diferencia de la binaria con retorno, cada sección en la forma ternaria es armónicamente autosuficiente, terminando generalmente con una cadencia en su propia tonalidad.',
@@ -377,8 +377,8 @@ const overlay: ExerciseLevelOverlay = {
   l5u17m2e1: {
     prompt: '¿Qué es la forma estrofa-estribillo?',
     choices: [
-      'Una forma en la que las estrofas tienen la misma música pero letras diferentes, alternando con un estribillo recurrente con letra y melodía fijas',
-      'Una forma en la que la estrofa y el estribillo son idénticos',
+      'Una forma en la que estrofas con letras nuevas alternan con un estribillo recurrente',
+      'Una forma en la que la estrofa y el estribillo usan música, letra y melodía idénticas de principio a fin',
       'Una forma con solo una sección de estrofa y sin estribillo',
       'Una forma clásica usada exclusivamente en la ópera',
     ],
@@ -387,8 +387,8 @@ const overlay: ExerciseLevelOverlay = {
   l5u17m2e2: {
     prompt: '¿Qué es la forma AABA (también llamada forma de canción de 32 compases)?',
     choices: [
-      'Una forma con una sección A repetida, una sección B contrastante (puente), y un retorno final de A, típicamente 32 compases en total',
-      'Una forma con cuatro secciones idénticas de 8 compases',
+      'Una forma con una sección A repetida y un puente contrastante antes de que A regrese, generalmente en 32 compases',
+      'Una forma con cuatro secciones idénticas de 8 compases, que copian la primera: 32 compases seguidos de la misma música',
       'Una forma con dos estrofas y dos estribillos',
       'Una estructura de improvisación jazz sin secciones fijas',
     ],
@@ -420,8 +420,8 @@ const overlay: ExerciseLevelOverlay = {
   l5u17m3e2: {
     prompt: '¿Qué es la textura polifónica?',
     choices: [
-      'Dos o más líneas melódicas independientes sonando simultáneamente, cada una con su propio ritmo y contorno',
-      'Una única melodía tocada por muchos instrumentos al unísono',
+      'Dos o más líneas melódicas independientes sonando simultáneamente con sus propios ritmos y contornos',
+      'Una única melodía tocada por muchos instrumentos al unísono, con las partes compartiendo el mismo ritmo y el mismo contorno',
       'Una melodía apoyada por bloques de acordes',
       'Música sin melodía discernible',
     ],
@@ -443,9 +443,9 @@ const overlay: ExerciseLevelOverlay = {
   l5u17m4e1: {
     prompt: '¿Qué son las notas guía?',
     choices: [
-      'La 3.ª y la 7.ª de cada acorde, que definen su cualidad y crean conducción de voces suave entre acordes',
+      'La 3.ª y la 7.ª que definen la cualidad de cada acorde y enlazan los acordes con suavidad',
       'La fundamental y la 5.ª de cada acorde',
-      'Las notas de la melodía que caen en los tiempos fuertes',
+      'Las notas de la melodía que caen en los tiempos fuertes de cada compás, por ser las notas que más se oyen en la pieza',
       'Notas cromáticas de paso entre notas del acorde',
     ],
     hint: 'Las notas guía (3.as y 7.as) son las notas armónicamente más definitorias de un acorde. La fundamental y la 5.ª son estructuralmente importantes pero genéricas; la 3.ª determina mayor/menor y la 7.ª determina el tipo de acorde.',

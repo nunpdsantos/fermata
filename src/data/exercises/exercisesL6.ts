@@ -95,7 +95,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Pre-dominant -- they intensify motion toward the dominant', correct: true },
+          { label: 'Pre-dominant -- they always intensify motion toward the dominant', correct: true },
           { label: 'Dominant -- they resolve directly to the tonic', correct: false },
           { label: 'Tonic prolongation -- they decorate the tonic harmony', correct: false },
           { label: 'Mediant function -- they substitute for iii or VI', correct: false },
@@ -229,7 +229,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'It divides the 12-semitone octave into four equal minor 3rds (0, 3, 6, 9)', correct: true },
+          { label: 'It always divides the 12-semitone octave into four equal minor 3rds (0, 3, 6, 9)', correct: true },
           { label: 'It contains only natural notes with no sharps or flats', correct: false },
           { label: 'Its inversions produce different interval content each time', correct: false },
           { label: 'It has the same number of major and minor intervals', correct: false },
@@ -263,7 +263,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A diminished 7th chord that shares one note with the chord it embellishes', correct: true },
+          { label: 'A diminished 7th chord that always shares one note with the chord it embellishes', correct: true },
           { label: 'A diminished 7th chord that resolves to the dominant', correct: false },
           { label: 'Any diminished 7th chord used in a minor key', correct: false },
           { label: 'A diminished 7th chord that shares all notes with the next chord', correct: false },
@@ -376,7 +376,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Moving a fixed chord shape in parallel motion by half steps or whole steps', correct: true },
+          { label: 'Moving a fixed chord shape in parallel motion, every voice by the same half or whole step', correct: true },
           { label: 'Alternating between two chords repeatedly', correct: false },
           { label: 'Resolving every chord chromatically to the next by half step in the bass', correct: false },
           { label: 'Playing all twelve chromatic pitches simultaneously', correct: false },

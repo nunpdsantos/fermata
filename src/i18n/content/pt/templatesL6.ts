@@ -135,7 +135,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói o acorde de sexta aumentada alemã de {key} menor.',
       hintTemplate:
-        'Em {key} menor, a sexta alemã é b6–1–b3–#4, construída sobre {root} (em C menor: Ab–C–Eb–F#). Soa exatamente como {root}7, mas a nota superior escreve-se como 6.ª aumentada acima de {root}, não como 7.ª menor.',
+        'Em {key} menor, a sexta alemã é b6–1–b3–#4, construída sobre {root}: {spelling}. Soa exatamente como {root}7, mas a nota superior escreve-se como 6.ª aumentada acima de {root}, não como 7.ª menor.',
     },
   ],
 
@@ -484,7 +484,7 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'Numa cadeia, cada resolução fica ligada para preparar a suspensão seguinte',
-          'Numa cadeia, cada suspensão resolve subindo por grau conjunto para preparar a seguinte',
+          'Numa cadeia, cada suspensão resolve um grau acima para preparar a seguinte',
           'Numa cadeia, cada suspensão é seguida de um salto consonante de 5.ª',
           'Numa cadeia, as suspensões têm de alternar entre as duas vozes',
         ],
@@ -640,7 +640,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Para ouvir a harmonia real, transpõe cada parte pelo intervalo do seu instrumento',
           'As partes transpositoras já soam como estão escritas, por isso não é preciso transpor',
-          'Para ouvir a harmonia real, sobe cada parte uma oitava acima do que está escrito',
+          'Para ouvir a harmonia real, sobe todas as partes uma oitava acima do que está escrito',
           'Para ouvir a harmonia real, lê só as partes de cordas e ignora os sopros',
         ],
       ],

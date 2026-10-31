@@ -50,7 +50,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Cuál es la característica definitoria de un acorde dominante alterado?',
     choices: [
-      'Tiene una séptima dominante con una o más quintas o novenas cromáticamente alteradas',
+      'Siempre tiene una séptima dominante con una o más quintas o novenas cromáticamente alteradas',
       'Sustituye la tercera por una cuarta suspendida',
       'Se construye solo con la escala de tonos enteros, así que todas sus notas están a un tono de distancia',
       'Omite la fundamental por completo',
@@ -102,7 +102,7 @@ const overlay: ExerciseLevelOverlay = {
   l7u21m4e2: {
     prompt: '¿Cuál es el principio detrás de la sustitución tritonal?',
     choices: [
-      'Los acordes de séptima de dominante a un tritono de distancia comparten la misma tercera y séptima (enarmónicamente), así que cualquiera de los dos puede sustituir al otro',
+      'Los acordes de séptima de dominante a un tritono de distancia comparten el tritono entre la tercera y la séptima, así que cualquiera puede sustituir al otro',
       'Cualquier acorde puede sustituirse por el acorde a un tritono de distancia, sea cual sea su cualidad, siempre con exactamente el mismo efecto',
       'La sustitución tritonal mueve siempre la fundamental un tono arriba',
       'Sustituye el acorde V por el acorde IV',
@@ -112,10 +112,10 @@ const overlay: ExerciseLevelOverlay = {
   l7u21m4e3: {
     prompt: 'En la progresión Dm7 - Db7 - Cmaj7, ¿qué es el acorde Db7?',
     choices: [
-      'Una sustitución tritonal de G7, creando una línea cromática de bajo (D - Db - C)',
+      'Una sustitución tritonal de G7, con el bajo descendiendo solo por semitonos de D por Db hasta C',
       'Un acorde prestado de Db mayor',
       'El acorde napolitano en primera inversión',
-      'Un acorde de séptima disminuida de paso entre Dm7 y Cmaj7, reescrito enarmónicamente como Db7',
+      'Un acorde de séptima disminuida de paso entre Dm7 y Cmaj7 (reescrito enarmónicamente como Db7)',
     ],
     hint: 'Db7 sustituye a G7 (el V7). El bajo desciende cromáticamente: D (ii) - Db (sustitución tritonal del V) - C (I). Esta conducción de voces suave es una de las principales ventajas de las sustituciones tritonales.',
   },
@@ -161,7 +161,7 @@ const overlay: ExerciseLevelOverlay = {
   l7u21m6e1: {
     prompt: '¿Cuál es la forma de los "rhythm changes" en el jazz?',
     choices: [
-      'AABA — 32 compases con un puente de 8 compases',
+      'AABA — 32 compases con puente de 8',
       'ABAB — secciones alternadas de 8 compases',
       'Blues de 12 compases repetido varias veces con variaciones',
       'Forma continua sin secciones repetidas',
@@ -315,8 +315,8 @@ const overlay: ExerciseLevelOverlay = {
   l7u22m5e1: {
     prompt: '¿Qué define un voicing cuartal?',
     choices: [
-      'Notas apiladas en intervalos de cuartas justas en lugar de terceras',
-      'Un voicing que usa cuatro notas de un acorde de séptima',
+      'Cuartas justas apiladas en lugar de terceras',
+      'Un voicing que usa las cuatro notas de un acorde de séptima',
       'Un acorde cuyas notas se doblan en cuatro octavas diferentes al mismo tiempo',
       'Una técnica de voicing exclusiva de cuartetos de cuerda',
     ],
@@ -325,7 +325,7 @@ const overlay: ExerciseLevelOverlay = {
   l7u22m5e2: {
     prompt: '¿Cómo difiere la armonía quintal de la armonía cuartal?',
     choices: [
-      'La armonía quintal apila quintas justas en lugar de cuartas: igual de abierta, pero con un sonido ligeramente diferente',
+      'La armonía quintal apila quintas justas en lugar de cuartas, con un sonido igual de abierto',
       'Quintal usa cinco notas mientras que cuartal usa cuatro',
       'La armonía quintal pertenece solo a la música pop, mientras que la cuartal solo se encuentra en grabaciones de jazz',
       'La armonía quintal apila terceras mayores; la cuartal apila terceras menores',
@@ -364,7 +364,7 @@ const overlay: ExerciseLevelOverlay = {
   l7u23m1e2: {
     prompt: '¿Qué es el sistema de números de Nashville?',
     choices: [
-      'Una notación abreviada que usa los números 1-7 para los grados de la escala, para transportar al instante a cualquier tonalidad',
+      'Una notación que escribe los acordes como números de grado para que la partitura sirva en cualquier tonalidad',
       'Un método de contar compases en grabaciones de música country',
       'Un sistema de afinación creado en los estudios de grabación de Nashville para afinar todas las guitarras un semitono más bajo',
       'Un sistema de notación rítmica para bateristas de sesión',
@@ -374,7 +374,7 @@ const overlay: ExerciseLevelOverlay = {
   l7u23m1e3: {
     prompt: '¿Qué es un "bucle pop" y por qué es eficaz?',
     choices: [
-      'Una progresión corta que se repite (a menudo 4 compases) y mantiene la armonía estable mientras la melodía y la letra cambian',
+      'Una progresión corta que se repite y mantiene la armonía estable mientras la melodía y la letra cambian',
       'Un cambio de acorde que ocurre una sola vez, al final de la canción',
       'Una técnica de producción de estudio que copia la melodía del estribillo y la pega debajo de cada una de las estrofas de la canción',
       'Un riff de bajo que recorre las 12 notas',
@@ -435,7 +435,7 @@ const overlay: ExerciseLevelOverlay = {
       '¿Sobre qué tipo de acorde se usa comúnmente la escala lidia dominante (4.º modo de la menor melódica)?',
     choices: [
       'Acordes de séptima de dominante con #11, como sustituciones tritonales y dominantes que no resuelven',
-      'Acordes m7 en una ii-V-I, porque la escala lidio dominante contiene una tercera menor sobre la fundamental',
+      'Acordes m7 en una ii-V-I, porque la escala lidio dominante contiene una tercera menor (b3) sobre la fundamental',
       'Acordes maj7 con función de tónica',
       'Acordes disminuidos de paso',
     ],
@@ -492,7 +492,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Qué agrupación organiza correctamente las principales familias de cualidad de acordes?',
     choices: [
-      'Mayor (maj, maj7, maj9), menor (m, m7, m9), dominante (7, 9, 13), disminuida (dim, dim7), aumentada (aug, aug7)',
+      'Mayor, menor, dominante, disminuida y aumentada, cada una con sus formas de séptima y extendidas',
       'Acordes consonantes (tríadas mayores y menores) frente a acordes disonantes (todos los acordes de séptima y todo lo que va más allá)',
       'Familia diatónica (I, ii, iii, IV, V, vi) y familia cromática (todo lo demás)',
       'Acordes simples (tríadas) y acordes complejos (todo con más de 3 notas)',

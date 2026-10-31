@@ -63,7 +63,7 @@ const overlay: ExerciseLevelOverlay = {
   l6u18m2e3: {
     prompt: '¿Cuál es la función armónica de los acordes de sexta aumentada?',
     choices: [
-      'Predominante — intensifican el movimiento hacia la dominante',
+      'Predominante — siempre intensifican el movimiento hacia la dominante',
       'Dominante — resuelven directamente a la tónica',
       'Prolongación de la tónica — decoran la armonía de tónica',
       'Función de mediante — sustituyen a iii o VI',
@@ -151,7 +151,7 @@ const overlay: ExerciseLevelOverlay = {
   l6u19m1e2: {
     prompt: '¿Por qué el acorde de séptima disminuida es simétrico?',
     choices: [
-      'Divide la octava de 12 semitonos en cuatro terceras menores iguales (0, 3, 6, 9)',
+      'Siempre divide la octava de 12 semitonos en cuatro terceras menores iguales (0, 3, 6, 9)',
       'Contiene solo notas naturales sin sostenidos ni bemoles',
       'Sus inversiones producen contenido interválico diferente cada vez',
       'Tiene el mismo número de intervalos mayores y menores',
@@ -174,7 +174,7 @@ const overlay: ExerciseLevelOverlay = {
   l6u19m2e1: {
     prompt: '¿Qué define un acorde de séptima disminuida con nota común (CTo7)?',
     choices: [
-      'Un acorde de séptima disminuida que comparte una nota con el acorde que embellece',
+      'Un acorde de séptima disminuida que siempre comparte una nota con el acorde que embellece',
       'Un acorde de séptima disminuida que resuelve hacia la dominante',
       'Cualquier acorde de séptima disminuida usado en una tonalidad menor',
       'Un acorde de séptima disminuida que comparte todas las notas con el acorde siguiente',
@@ -250,7 +250,7 @@ const overlay: ExerciseLevelOverlay = {
   l6u19m4e2: {
     prompt: '¿Qué es el planing cromático (armonía paralela)?',
     choices: [
-      'Mover una forma fija de acorde en movimiento paralelo por medios tonos o tonos',
+      'Mover una forma fija de acorde en movimiento paralelo, todas las voces por el mismo semitono o tono',
       'Alternar entre dos acordes repetidamente',
       'Resolver cada acorde cromáticamente hacia el siguiente por medio tono en el bajo',
       'Tocar las doce alturas cromáticas simultáneamente',

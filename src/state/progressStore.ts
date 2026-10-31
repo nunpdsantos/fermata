@@ -43,6 +43,17 @@ export function isValidPersistedProgress(value: unknown): value is { progress: C
   if (!isStringArray(progress.completedModules)) return false;
   if (!isPlainObject(progress.moduleProgress)) return false;
   if (!Object.values(progress.moduleProgress).every(isStringArray)) return false;
+  if (progress.exemptedModules !== undefined && !isStringArray(progress.exemptedModules)) return false;
+  if (progress.exerciseResults !== undefined) {
+    // module -> { scores: { exerciseId: 0 | 0.5 | 1 }, totalAttempts, lastAttemptAt, passed }
+    if (!isPlainObject(progress.exerciseResults)) return false;
+    for (const result of Object.values(progress.exerciseResults)) {
+      if (!isPlainObject(result) || !isPlainObject(result.scores)) return false;
+      if (!Object.values(result.scores).every((s) => s === 0 || s === 0.5 || s === 1)) return false;
+      if (typeof result.totalAttempts !== 'number' || typeof result.lastAttemptAt !== 'number') return false;
+      if (typeof result.passed !== 'boolean') return false;
+    }
+  }
   if (progress.reviewSchedules !== undefined) {
     if (!isPlainObject(progress.reviewSchedules)) return false;
     for (const schedule of Object.values(progress.reviewSchedules)) {

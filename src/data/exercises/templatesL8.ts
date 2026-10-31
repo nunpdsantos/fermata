@@ -36,7 +36,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Tonal and real answers are identical concepts', correct: false },
             ],
             [
-              { label: 'A real answer transposes the subject exactly to the dominant (up a P5 or down a P4)', correct: true },
+              { label: 'A real answer always transposes the subject exactly to the dominant (up a P5 or down a P4)', correct: true },
               { label: 'A real answer always changes some of the subject\'s intervals so that it can stay in the tonic', correct: false },
               { label: 'A real answer uses inversion', correct: false },
               { label: 'A real answer is always in the tonic', correct: false },
@@ -65,7 +65,7 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'In stretto, a new voice begins the subject before the previous voice has finished it', correct: true },
+              { label: 'In stretto, every new entry begins the subject before the previous one has finished it', correct: true },
               { label: 'In stretto every voice waits for the previous entry to end and then plays the subject more slowly', correct: false },
               { label: 'Stretto is the same as an episode', correct: false },
               { label: 'Stretto only occurs in the exposition', correct: false },
@@ -83,7 +83,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Augmentation shortens the note values', correct: false },
             ],
             [
-              { label: 'Diminution presents the subject in shorter note values (halved durations)', correct: true },
+              { label: 'Diminution always presents the subject in shorter note values (usually halved)', correct: true },
               { label: 'Diminution removes notes from the subject while keeping all of its original note values', correct: false },
               { label: 'Diminution is the same as retrograde', correct: false },
               { label: 'Diminution makes the subject louder', correct: false },
@@ -227,7 +227,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Double bass is higher than cello', correct: false },
             ],
             [
-              { label: 'A Bb clarinet sounds a major 2nd lower than written: it reads C and you hear Bb', correct: true },
+              { label: 'A Bb clarinet always sounds a major 2nd lower than written: it reads C and you hear Bb', correct: true },
               { label: 'A Bb clarinet sounds exactly as written, like every other instrument of the orchestra', correct: false },
               { label: 'Bb clarinet sounds higher than written', correct: false },
               { label: 'Only percussion instruments transpose', correct: false },
@@ -266,7 +266,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Pitch-class set integers range from 0 to 7', correct: false },
             ],
             [
-              { label: 'Normal form arranges the set in the most compact ascending order', correct: true },
+              { label: 'Normal form always arranges the set in its most compact ascending order', correct: true },
               { label: 'Normal form always begins the set on C and then lists its pitch classes in descending order', correct: false },
               { label: 'Normal form uses descending order', correct: false },
               { label: 'There is no standard ordering for sets', correct: false },
@@ -293,7 +293,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Interval vectors are the same as normal form', correct: false },
             ],
             [
-              { label: 'Prime form transposes and/or inverts a set to its most compact form starting on 0', correct: true },
+              { label: 'Prime form transposes and/or inverts a set to its most compact form, always starting on 0', correct: true },
               { label: 'Prime form is the normal form left exactly as it is, never transposed to 0 and never inverted', correct: false },
               { label: 'Prime form only transposes', correct: false },
               { label: 'Prime form always starts on the highest note', correct: false },
@@ -357,19 +357,19 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Polytonality sounds two or more keys at once, e.g. C major against F# major', correct: true },
+              { label: 'Polytonality always sounds two or more keys at once, e.g. C major against F# major', correct: true },
               { label: 'Polytonality means changing key many times within one melody, though only ever one key at a time', correct: false },
               { label: 'Polytonality uses no keys at all', correct: false },
               { label: 'Polytonality is a rhythmic technique', correct: false },
             ],
             [
-              { label: 'Pandiatonicism uses the notes of one key freely, without functional chord progressions', correct: true },
+              { label: 'Pandiatonicism uses only the notes of one key, freely, without functional chord progressions', correct: true },
               { label: 'Pandiatonicism uses all twelve chromatic notes equally, so that no key can be heard at all', correct: false },
               { label: 'Pandiatonicism uses only pentatonic scales', correct: false },
               { label: 'Pandiatonicism requires V-I cadences', correct: false },
             ],
             [
-              { label: 'Chromatic planing keeps the exact intervals; diatonic planing adjusts them to the scale', correct: true },
+              { label: 'Chromatic planing always keeps the exact intervals; diatonic planing adjusts them to the scale', correct: true },
               { label: 'Chromatic planing keeps every voice inside the key, while diatonic planing keeps the exact intervals', correct: false },
               { label: 'Planing always uses contrary motion', correct: false },
               { label: 'Planing changes the chord at every step', correct: false },
@@ -381,7 +381,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Spectral music avoids all pitched sounds', correct: false },
             ],
             [
-              { label: 'Microtonality divides the octave into intervals smaller than a semitone', correct: true },
+              { label: 'Microtonality uses intervals smaller than a semitone, not only the 12 standard pitches', correct: true },
               { label: 'Microtonality uses only the 12 standard pitches but plays each of them extremely quietly', correct: false },
               { label: 'Microtonality uses only the 12 standard pitches', correct: false },
               { label: 'Microtonality is the same as atonality', correct: false },
@@ -404,7 +404,7 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Phasing gradually shifts two identical patterns out of sync, creating evolving textures', correct: true },
+              { label: 'Phasing always starts from two identical patterns and shifts them gradually out of sync', correct: true },
               { label: 'Phasing keeps two identical patterns perfectly in sync for the whole piece, changing only their pitch', correct: false },
               { label: 'Phasing uses twelve-tone technique', correct: false },
               { label: 'Phasing involves changing the pitch content', correct: false },

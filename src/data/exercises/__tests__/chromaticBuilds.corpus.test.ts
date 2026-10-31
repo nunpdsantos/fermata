@@ -106,6 +106,19 @@ describe('Neapolitan and German-sixth builds name their key (W4-27)', () => {
     expect(bad).toEqual([]);
   });
 
+  it('German sixth hint spells the chord of ITS key: ♭6–1–♭3–♯4 (letters 6, 1, 3, 4; sizes 8, 0, 3, 6)', () => {
+    const t = templatesFor(6, 'en').find((c) => c.moduleId === 'l6u18m3')!.templates.find((x) => x.type === 'chord_build')!;
+    const bad: string[] = [];
+    t.params.keys!.forEach((k, i) => {
+      const want = [[5, 8], [0, 0], [2, 3], [3, 6]].map(([steps, semis]) => ({ letter: letterUp(k, steps), pc: (pcOf(k) + semis) % 12 }));
+      const got = t.params.spellings![i].split('–');
+      if (got.length !== 4 || got.some((n, j) => n[0] !== want[j].letter || pcOf(n) !== want[j].pc)) bad.push(`${k} minor: ${t.params.spellings![i]}`);
+    });
+    expect(t.hintTemplate).toContain('{spelling}');
+    expect(t.hintTemplate).not.toMatch(/C minor/);
+    expect(bad).toEqual([]);
+  });
+
   for (const lang of CONTENT_LANGS) {
     it(`${lang}: no chord-build prompt calls a chord Neapolitan or German sixth without a key`, () => {
       const bad: string[] = [];

@@ -93,7 +93,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A major triad or dominant 7th that resolves to a diatonic chord other than I, acting as V of that chord', correct: true },
+          { label: 'A major triad or dominant 7th that resolves to a diatonic chord other than I, always acting as V of that chord', correct: true },
           { label: 'Any dominant 7th chord used in a progression', correct: false },
           { label: 'A chord that modulates permanently to a new key', correct: false },
           { label: 'The V chord resolving deceptively to vi', correct: false },
@@ -112,10 +112,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'It acts as a diminished chord that resolves up by half step to the tonicized chord, like viio resolves to I', correct: true },
+          { label: 'It acts as a diminished chord that resolves up by half step to the tonicized chord', correct: true },
           { label: 'It replaces the dominant chord entirely in cadences', correct: false },
           { label: 'It functions as a passing chord with no harmonic pull', correct: false },
-          { label: 'It is the leading tone of the key played as a single note', correct: false },
+          { label: 'It is the leading tone of the home key, played on its own as a single melody note above the bass', correct: false },
         ],
       },
       hint: 'viio/V works the same way viio works in a key: the root is a half step below the target chord, and the diminished quality creates strong resolution drive upward to the target.',
@@ -212,7 +212,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'A sequence where each chord acts as V7 of the next, moving through multiple tonicizations before resolving to the tonic', correct: true },
           { label: 'Playing the V chord of every major key in succession', correct: false },
-          { label: 'A series of diminished chords descending chromatically', correct: false },
+          { label: 'A series of diminished 7th chords descending chromatically, one half step at a time, until the music finally reaches the tonic', correct: false },
           { label: 'Alternating between I and V repeatedly', correct: false },
         ],
       },
@@ -312,7 +312,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: '5 -- the keys whose signatures differ by at most one sharp or flat', correct: true },
+          { label: '5 -- every key whose signature differs by at most one sharp or flat', correct: true },
           { label: '2 -- only the dominant and subdominant', correct: false },
           { label: '12 -- every key is closely related', correct: false },
           { label: '3 -- the relative minor, the dominant and the subdominant, and no others', correct: false },
@@ -361,7 +361,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A modulation that moves to the new key abruptly at a phrase boundary, without a pivot chord', correct: true },
+          { label: 'A modulation that moves to the new key abruptly at a phrase boundary, with no pivot chord', correct: true },
           { label: 'A modulation that uses a pivot chord shared between the two keys', correct: false },
           { label: 'A modulation that slides gradually up or down a half step using chromatic voice leading', correct: false },
           { label: 'A modulation that happens gradually over many measures', correct: false },
@@ -455,7 +455,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Ending a piece in a minor key with a major tonic chord by raising the third of the final chord', correct: true },
+          { label: 'Ending a piece in a minor key with a major tonic chord by raising only the third of the final chord', correct: true },
           { label: 'A chord progression that uses only thirds', correct: false },
           { label: 'A minor third interval used in a major key', correct: false },
           { label: 'A French ornamental trill on the third degree', correct: false },
@@ -470,8 +470,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Using chords from the major key with the same tonic, such as a major IV or major I chord, in a minor-key context', correct: true },
-          { label: 'Modulating permanently to the major key', correct: false },
+          { label: 'Using chords from the major key with the same tonic in a minor-key context', correct: true },
+          { label: 'Modulating permanently to the relative major key, the major key that shares its key signature', correct: false },
           { label: 'Playing the major scale over minor chords', correct: false },
           { label: 'Using the relative major key chords', correct: false },
         ],
@@ -538,9 +538,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A three-part structure where the first section returns after a contrasting middle section, with each section being self-contained', correct: true },
+          { label: 'A three-part structure where the first section returns after a contrasting middle section', correct: true },
           { label: 'A piece with three different melodies that never repeat', correct: false },
-          { label: 'A form where the tempo changes three times', correct: false },
+          { label: 'A form defined by tempo, with a slow opening section, a fast middle section and a slow ending', correct: false },
           { label: 'A piece written in 3/4 time', correct: false },
         ],
       },
@@ -557,8 +557,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A form where verses have the same music but different lyrics, alternating with a recurring chorus that has fixed lyrics and melody', correct: true },
-          { label: 'A form where the verse and chorus are identical', correct: false },
+          { label: 'A form in which verses with new lyrics alternate with a recurring chorus', correct: true },
+          { label: 'A form where the verse and the chorus use identical music, lyrics and melody from start to finish', correct: false },
           { label: 'A form with only a verse section and no chorus', correct: false },
           { label: 'A classical form used exclusively in opera', correct: false },
         ],
@@ -572,8 +572,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A form with a repeated A section, a contrasting B section (bridge), and a final return of A, typically 32 bars total', correct: true },
-          { label: 'A form with four identical 8-bar sections', correct: false },
+          { label: 'A form with a repeated A section and a contrasting bridge before A returns, usually in 32 bars', correct: true },
+          { label: 'A form with four identical 8-bar sections, each a copy of the first: 32 bars of unbroken repetition', correct: false },
           { label: 'A form with two verses and two choruses', correct: false },
           { label: 'A jazz improvisation structure with no fixed sections', correct: false },
         ],
@@ -621,8 +621,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Two or more independent melodic lines sounding simultaneously, each with its own rhythm and contour', correct: true },
-          { label: 'A single melody played by many instruments in unison', correct: false },
+          { label: 'Two or more independent melodic lines sounding at once with their own rhythms and contours', correct: true },
+          { label: 'A single melody played by many instruments in unison, the parts sharing one rhythm and one contour', correct: false },
           { label: 'A melody supported by block chords', correct: false },
           { label: 'Music with no discernible melody', correct: false },
         ],
@@ -655,9 +655,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The 3rd and 7th of each chord, which define its quality and create smooth voice leading between chords', correct: true },
+          { label: "The 3rd and 7th that define each chord's quality and lead smoothly between chords", correct: true },
           { label: 'The root and 5th of each chord', correct: false },
-          { label: 'The melody notes that fall on strong beats', correct: false },
+          { label: 'The melody notes that fall on the strong beats of each bar, since those are the notes heard most clearly in the piece', correct: false },
           { label: 'Chromatic passing tones between chord tones', correct: false },
         ],
       },

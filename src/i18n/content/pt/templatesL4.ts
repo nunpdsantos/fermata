@@ -138,7 +138,7 @@ const overlay: TemplateLevelOverlay = {
           'Um pedal duplo é um pedal repetido duas vezes seguidas',
         ],
         [
-          'Um pedal invertido é mantido numa voz superior em vez do baixo',
+          'Um pedal invertido é sempre mantido numa voz superior e nunca no baixo',
           'Um pedal invertido desce grau a grau em vez de ser mantido',
           'Um pedal invertido muda de altura em cada compasso',
           'Os pedais invertidos nunca aparecem na música clássica',
@@ -213,7 +213,7 @@ const overlay: TemplateLevelOverlay = {
           'V4/2 tem a 5.ª no baixo, por isso resolve para o acorde de V',
         ],
         [
-          'V4/3 tem a 5.ª no baixo e pode resolver para I ou I6',
+          'V4/3 tem sempre a 5.ª no baixo e pode resolver para I ou I6',
           'V4/3 tem a sensível no baixo e só pode resolver para IV',
           'V4/3 tem a 7.ª no baixo e tem de resolver para I6/4',
           'V4/3 tem a fundamental no baixo e resolve para vi',
@@ -365,7 +365,7 @@ const overlay: TemplateLevelOverlay = {
           'viiø7 tem uma 7.ª maior; vii°7 tem uma 5.ª perfeita e uma 7.ª menor',
         ],
         [
-          'Bdim7, Ddim7, Fdim7 e G#dim7 contêm as mesmas quatro classes de altura',
+          'Bdim7, Ddim7, Fdim7 e G#dim7 soam todos as mesmas quatro notas, reescritas',
           'Bdim7 e Ddim7 não partilham notas, porque as fundamentais estão a uma 3.ª',
           'Cada acorde de sétima diminuta tem o seu próprio conjunto de notas, único',
           'Um acorde de sétima diminuta só pode ser reescrito sobre uma das suas notas, a fundamental',
@@ -396,7 +396,7 @@ const overlay: TemplateLevelOverlay = {
           'vi não tem uma função harmónica definida',
         ],
         [
-          'vii° funciona como dominante: partilha três notas com V7',
+          'vii° funciona como dominante: as suas três notas estão todas em V7',
           'vii° funciona como tónica: partilha três notas com I',
           'vii° funciona como pré-dominante: vai sempre para IV',
           'vii° não tem função harmónica',
@@ -507,7 +507,7 @@ const overlay: TemplateLevelOverlay = {
         'Segunda espécie: duas notas contra uma. A primeira nota de cada compasso deve ser consonante. A segunda nota pode ser uma consonância ou uma nota de passagem (dissonância).',
       choiceSets: [
         [
-          'Na segunda espécie, dissonâncias de passagem podem cair nos tempos fracos',
+          'Na segunda espécie, as dissonâncias de passagem só podem cair nos tempos fracos',
           'Na segunda espécie, todas as notas têm de ser consonantes, como na primeira',
           'Na segunda espécie, as dissonâncias podem cair nos tempos fortes',
           'Na segunda espécie, não há regras sobre a dissonância',

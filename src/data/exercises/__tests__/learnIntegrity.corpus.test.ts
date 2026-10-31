@@ -9,9 +9,8 @@
  *   indicated line" shows that notation (a staff stimulus) — otherwise it is
  *   worded as "which statement about X is true?";
  * - W4-07 an authored question does not contain its own answer;
- * - W4-09 the correct option is not a length cue: per level and language it
- *   is the strictly longest option in at most 35% of choice sets (chance,
- *   with four options, is ~25%).
+ * - W4-09 (length and other answer cues) lives in answerCues.corpus.test.ts,
+ *   measured on served items.
  */
 import { describe, it, expect } from 'vitest';
 import type { NaturalNote } from '../../../core/types/music';
@@ -22,7 +21,7 @@ import { exerciseStaff } from '../../../components/learn/exercises/exerciseStaff
 import { writtenOctave } from '../../../core/utils/degreeSpelling';
 import { INTERVAL_LABELS } from '../../../core/constants/chords';
 import { spelledIntervalName } from '../../../components/learn/exercises/exerciseHelpers';
-import { CONTENT_LANGS, LEVELS, levelCorpus, templatesFor, authoredFor } from './learnCorpus';
+import { CONTENT_LANGS, LEVELS, levelCorpus, authoredFor } from './learnCorpus';
 
 const LETTERS: NaturalNote[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
 
@@ -206,72 +205,5 @@ describe('authored questions do not contain their answer (W4-07)', () => {
 });
 
 // ── W4-09 ──────────────────────────────────────────────────────────────────
-type Choice = { label: string; correct: boolean };
-function choiceSets(level: number, lang: (typeof CONTENT_LANGS)[number]): { id: string; set: Choice[] }[] {
-  const out: { id: string; set: Choice[] }[] = [];
-  for (const ex of Object.values(authoredFor(level, lang)).flat()) {
-    if (ex.config.type === 'multiple_choice') out.push({ id: ex.id, set: ex.config.choices });
-  }
-  for (const cfg of templatesFor(level, lang)) {
-    cfg.templates.forEach((t, i) => (t.params.choiceSets ?? []).forEach((set, j) => out.push({ id: `${cfg.moduleId}[${i}].set${j}`, set })));
-  }
-  return out;
-}
-const len = (s: string) => [...s].length;
-const correctIsStrictlyLongest = (set: Choice[]) => {
-  const c = set.find((x) => x.correct)!;
-  return set.every((x) => x === c || len(x.label) < len(c.label));
-};
-
-describe('the correct option is not a length cue (W4-09)', () => {
-  it('the measure flags a planted cue and passes a balanced set', () => {
-    expect(correctIsStrictlyLongest([{ label: 'A long, careful and complete answer', correct: true }, { label: 'Short', correct: false }])).toBe(true);
-    expect(correctIsStrictlyLongest([{ label: 'Right', correct: true }, { label: 'Wrong!', correct: false }])).toBe(false);
-  });
-
-  // The fix must not invert the cue: if the longest option were never right,
-  // "rule out the longest" would be the new trick. Among sets with a single
-  // longest option, it is the correct one at least 10% of the time.
-  for (const lang of CONTENT_LANGS) {
-    for (const n of LEVELS) {
-      it(`${lang} L${n}: the longest option is still sometimes right (≥ 10% of sets with a single longest)`, () => {
-        const withLongest = choiceSets(n, lang).filter(({ set }) => {
-          const max = Math.max(...set.map((x) => len(x.label)));
-          return set.filter((x) => len(x.label) === max).length === 1;
-        });
-        const right = withLongest.filter(({ set }) => correctIsStrictlyLongest(set));
-        expect(right.length / withLongest.length, `${right.length}/${withLongest.length}`).toBeGreaterThanOrEqual(0.1);
-      });
-    }
-  }
-
-  // …and the same the other way: "rule out the shortest" must not work
-  // either. Among sets with a single shortest option, it is the correct one at
-  // least 10% of the time.
-  for (const lang of CONTENT_LANGS) {
-    for (const n of LEVELS) {
-      it(`${lang} L${n}: the shortest option is still sometimes right (≥ 10% of sets with a single shortest)`, () => {
-        const withShortest = choiceSets(n, lang).filter(({ set }) => {
-          const min = Math.min(...set.map((x) => len(x.label)));
-          return set.filter((x) => len(x.label) === min).length === 1;
-        });
-        const right = withShortest.filter(({ set }) => {
-          const c = set.find((x) => x.correct)!;
-          return set.every((x) => x === c || len(x.label) > len(c.label));
-        });
-        expect(right.length / withShortest.length, `${right.length}/${withShortest.length}`).toBeGreaterThanOrEqual(0.1);
-      });
-    }
-  }
-
-  for (const lang of CONTENT_LANGS) {
-    for (const n of LEVELS) {
-      it(`${lang} L${n}: correct option strictly longest in ≤ 35% of choice sets`, () => {
-        const sets = choiceSets(n, lang);
-        const cued = sets.filter((s) => correctIsStrictlyLongest(s.set));
-        const share = cued.length / sets.length;
-        expect(share, `${cued.length}/${sets.length} cued:\n${cued.map((s) => `  ${s.id}`).join('\n')}`).toBeLessThanOrEqual(0.35);
-      });
-    }
-  }
-});
+// Length cues and the other test-wiseness heuristics are measured on the
+// items the app SERVES, in answerCues.corpus.test.ts.

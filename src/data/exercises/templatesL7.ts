@@ -37,9 +37,9 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'C13 implies a dominant 7th chord with added 9th, 11th (usually omitted), and 13th', correct: true },
+              { label: 'C13 implies a dominant 7th chord with added 9th, 11th (usually omitted) and 13th', correct: true },
               { label: 'C13 has only root and 13th', correct: false },
-              { label: 'C13 is a C major triad with only the 13th (A) added on top and no 7th anywhere in the chord', correct: false },
+              { label: 'C13 is a C major triad with only the 13th (A) added on top, and no 7th anywhere in the chord', correct: false },
               { label: 'C13 implies a minor chord', correct: false },
             ],
             [
@@ -49,7 +49,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'The b5 makes it an augmented chord', correct: false },
             ],
             [
-              { label: 'C7(#9) is a dominant chord with an augmented 9th, often called the "Hendrix chord"', correct: true },
+              { label: 'C7(#9) is always a dominant chord with an augmented 9th, often called the "Hendrix chord"', correct: true },
               { label: 'C7(#9) is a major 7th chord', correct: false },
               { label: 'In C7(#9) the sharp 9th (D#) replaces the major 3rd, so the chord contains no E at all', correct: false },
               { label: 'C7(#9) has no 7th', correct: false },
@@ -123,9 +123,9 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Guide tones (3rds and 7ths) connect smoothly by step between chords in a ii-V-I', correct: true },
+              { label: 'Guide tones (3rds and 7ths) always move by step or hold between chords in a ii-V-I', correct: true },
               { label: 'Shell voicings require large leaps between chords', correct: false },
-              { label: 'Shell voicings move every voice by a large leap, because the 3rd and 7th never stay put from chord to chord', correct: false },
+              { label: 'Shell voicings move every voice by a large leap, because the guide tones (3rd and 7th) never stay put from chord to chord', correct: false },
               { label: 'Voice leading does not matter in jazz', correct: false },
             ],
             [
@@ -166,7 +166,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'In minor keys, the ii chord is half-diminished (min7b5)', correct: true },
               { label: 'In minor keys, the ii chord is a dominant 7th', correct: false },
               { label: 'Minor keys do not use ii-V-I', correct: false },
-              { label: 'In minor keys the ii chord is a major 7th chord, built on the raised 2nd degree', correct: false },
+              { label: 'In minor keys, the ii chord is a major 7th chord (maj7), built on the raised 2nd degree', correct: false },
             ],
             [
               { label: 'ii-V-I can be used to tonicize any chord, creating transient key centers', correct: true },
@@ -205,13 +205,13 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'The 3rd and 7th of the original V7 become the 7th and 3rd of the tritone sub', correct: true },
+              { label: 'The 3rd and 7th of the original V7 always become the 7th and 3rd of the tritone sub', correct: true },
               { label: 'Tritone subs share the same root', correct: false },
               { label: 'The two dominant chords share no notes at all, which is exactly why the substitution sounds so fresh', correct: false },
               { label: 'Tritone subs only work in minor keys', correct: false },
             ],
             [
-              { label: 'The tritone sub creates a chromatic bass line: bII -> I (half step resolution)', correct: true },
+              { label: 'The tritone sub gives a chromatic bass line that falls a half step from bII to I', correct: true },
               { label: 'The bass moves by a whole step', correct: false },
               { label: 'The bass of the substitute still falls a perfect 5th to the tonic, exactly as it does in V7-I', correct: false },
               { label: 'The bass motion is the same as V-I', correct: false },
@@ -245,14 +245,14 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'The basic 12-bar blues uses I7, IV7, and V7 as its primary chords', correct: true },
+              { label: 'The basic 12-bar blues uses only I7, IV7, and V7', correct: true },
               { label: 'The basic 12-bar blues uses only major 7th chords: Imaj7, IVmaj7 and Vmaj7 throughout', correct: false },
               { label: 'The 12-bar blues is 16 bars long', correct: false },
               { label: 'The blues form uses only the I chord', correct: false },
             ],
             [
-              { label: 'Jazz blues often adds a ii-V to bar 4 (targeting IV7) and bars 9-10 (targeting I)', correct: true },
-              { label: 'Jazz blues removes every dominant chord and replaces the whole form with a single minor vamp', correct: false },
+              { label: 'Jazz blues often adds a ii-V in bar 4 to target IV7, and in bars 9-10 to target I', correct: true },
+              { label: 'Jazz blues removes every dominant 7th from all 12 bars (I7, IV7 and V7) and plays one minor vamp instead', correct: false },
               { label: 'Jazz blues never modifies the basic form', correct: false },
               { label: 'Jazz blues uses the same chords as basic blues', correct: false },
             ],
@@ -282,7 +282,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'The bridge of rhythm changes uses a cycle of dominant 7th chords descending by 5ths', correct: true },
               { label: 'The bridge stays on one chord', correct: false },
-              { label: 'The bridge of rhythm changes stays on a single minor 7th chord for all eight of its bars', correct: false },
+              { label: 'The bridge of rhythm changes stays on a single minor 7th chord for all 8 of its bars', correct: false },
               { label: 'The bridge is identical to the A section', correct: false },
             ],
             [
@@ -348,8 +348,8 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'There are no avoid notes in any scale', correct: false },
             ],
             [
-              { label: 'Locrian, or Locrian ♮2 (melodic minor mode 6), fits half-diminished (m7b5) chords', correct: true },
-              { label: 'Dorian is the scale for half-diminished chords, because its natural 6th matches the chord\'s b5', correct: false },
+              { label: 'Locrian or Locrian ♮2, mode 6 of melodic minor, fits half-diminished m7b5 chords', correct: true },
+              { label: 'Dorian is the scale for half-diminished (m7b5) chords, because its natural 6th matches the chord\'s b5', correct: false },
               { label: 'Mixolydian is used for half-diminished chords', correct: false },
               { label: 'Half-diminished chords have no associated scale', correct: false },
             ],
@@ -473,7 +473,7 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Dorian is distinguished from natural minor by its raised (natural) 6th degree', correct: true },
+              { label: 'Dorian is distinguished from natural minor by its raised 6th degree', correct: true },
               { label: 'Dorian has a raised 7th', correct: false },
               { label: 'Dorian is distinguished from natural minor by a raised 7th degree, which gives it a leading tone', correct: false },
               { label: 'Dorian is identical to natural minor', correct: false },
@@ -514,13 +514,13 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Quartal harmony stacks perfect 4ths instead of 3rds, creating an open, ambiguous sound', correct: true },
+              { label: 'Quartal harmony stacks perfect 4ths instead of 3rds, creating an open and ambiguous sound', correct: true },
               { label: 'Quartal harmony stacks major 3rds only, which makes it sound exactly like traditional triads', correct: false },
               { label: 'Quartal harmony is the same as traditional triadic harmony', correct: false },
               { label: 'Quartal chords are always dissonant', correct: false },
             ],
             [
-              { label: 'Planing (parallelism) moves a whole chord shape up or down so that every voice moves in parallel', correct: true },
+              { label: 'Planing moves a whole chord shape up or down so that every voice moves in parallel', correct: true },
               { label: 'Planing always moves the voices in contrary motion, so that the chord shape changes at every step', correct: false },
               { label: 'Planing is prohibited in all musical styles', correct: false },
               { label: 'Planing changes the chord quality at each step', correct: false },
@@ -553,7 +553,7 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'I-V-vi-IV is one of the most common pop progressions, used in hundreds of songs', correct: true },
+              { label: 'I-V-vi-IV is one of the most common pop progressions and is used in hundreds of hit songs', correct: true },
               { label: 'I-V-vi-IV belongs to classical chorale writing and is almost never heard in pop songs', correct: false },
               { label: 'This progression is rarely used in pop', correct: false },
               { label: 'I-V-vi-IV always sounds the same in every key', correct: false },
@@ -699,7 +699,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'Lydian dominant is mode 4 of melodic minor and fits a dominant 7#11 chord', correct: true },
-              { label: 'Lydian dominant is mode 4 of the major scale, so it fits a major 7th chord with a natural 4th', correct: false },
+              { label: 'Lydian dominant is mode 4 of the major scale, so it fits a major 7th chord with a natural 4th (no #11)', correct: false },
               { label: 'Lydian dominant has a major 7th', correct: false },
               { label: 'Lydian dominant fits minor chords', correct: false },
             ],
@@ -711,7 +711,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'Locrian ♮2 is mode 6 of melodic minor and fits the half-diminished (m7b5) chord', correct: true },
-              { label: 'Locrian ♮2 is mode 2 of melodic minor and fits the fully diminished seventh chord (dim7)', correct: false },
+              { label: 'Locrian ♮2 is mode 2 of melodic minor and fits the fully diminished 7th chord (dim7)', correct: false },
               { label: 'Locrian ♮2 has a perfect 5th', correct: false },
               { label: 'It fits a major 7th chord', correct: false },
             ],
@@ -729,12 +729,12 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'scale_build',
         promptTemplate: 'Build the {root} {scaleType} scale.',
-        hintTemplate: 'Whole-tone: all whole steps (6 notes). Chromatic: all half steps (12). Harmonic minor: natural minor with a raised 7th (7). Diminished half-whole: half and whole steps alternating (8).',
+        hintTemplate: 'Whole-tone: all whole steps (6 notes). Phrygian dominant: mode 5 of harmonic minor, 1-b2-3-4-5-b6-b7 (7). Harmonic minor: natural minor with a raised 7th (7). Diminished half-whole: half and whole steps alternating (8).',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A'],
           accidentals: ['', '', '', '', '', ''],
-          scaleTypes: ['whole_tone', 'chromatic', 'harmonic_minor', 'diminished_half_whole'],
-          noteCounts: [6, 12, 7, 8],
+          scaleTypes: ['whole_tone', 'phrygian_dominant', 'harmonic_minor', 'diminished_half_whole'],
+          noteCounts: [6, 7, 7, 8],
         },
       },
       {

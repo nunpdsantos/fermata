@@ -21,7 +21,7 @@
  * every score that survives must sit on an id whose exercise is unchanged.
  */
 import { describe, it, expect, beforeEach } from 'vitest';
-import { useProgressStore, PROGRESS_STORE_VERSION, retireChangedExerciseScores } from '../progressStore';
+import { useProgressStore, PROGRESS_STORE_VERSION, retireChangedExerciseScores, isValidPersistedProgress } from '../progressStore';
 import { RETIRED_EXERCISE_IDS } from '../retiredExerciseIds';
 import { LEVEL_METADATA } from '../../data/levelMetadata';
 import { computeLevelStateMeta, areModulePrereqsMet } from '../../data/curriculumLoader';
@@ -33,14 +33,19 @@ import identities from '../../data/exercises/__tests__/exerciseIdentities.json';
 /** Current identities of every served exercise (snapshot pinned by exerciseIdentity.snapshot.test). */
 const NOW = identities as Record<string, Record<string, string>>;
 
-/** Main-era (v1 content) fingerprints of the blob's ids — frozen oracle. */
+/**
+ * Main-era (v1 content) fingerprints of the blob's ids — frozen oracle, taken
+ * from a git archive of main with the current fingerprint function (whose
+ * identity treats a field left at its default the same as the default spelled
+ * out, e.g. acceptEnharmonic).
+ */
 const MAIN_FINGERPRINTS: Record<string, string> = {
   l3u11m1e1: 'ad32315f', l3u11m1e2: '24f33a82', l3u11m1e3: '8d10a005', l3u11m1e4: '05b07501',
   l3u11m1g1: '2217c227', l3u11m1g2: 'a511ff5b', l3u11m1g3: '13f1958b',
   l1u3m4e1: '36f41596', l1u3m4e2: '75f3a812', l1u3m4e3: 'c3f53f64', l1u3m4g1: '4559fc31', l1u3m4g2: 'f93c2373',
   l1u3m4g3: '75f3a812', l1u3m4g4: '31cdb054', l1u3m4g5: '36f41596', l1u3m4g6: '70cd42d0',
   l2u7m2e1: '11674c23', l2u7m2g1: '3a202226', l2u7m2g2: '1c042ba4', l2u7m2g3: 'e55e93d5',
-  l9u30m1e1: '1aa9205d', l9u30m1g1: '808fe93a', l9u30m1g2: 'e4bfb8df',
+  l9u30m1e1: 'c9cf3fac', l9u30m1g1: 'bc407feb', l9u30m1g2: '6727126e',
 };
 
 const L1_TO_L3 = EN_UNITS[1].concat(EN_UNITS[2], EN_UNITS[3]).flatMap((u) => u.modules.map((m) => m.id));
@@ -169,5 +174,24 @@ describe('backups: an old (v1) progress section is still accepted and migrates o
   it('a progress section from a newer app version is refused', async () => {
     const r = await validateBackup(backup(PROGRESS_STORE_VERSION + 1));
     expect(r.ok).toBe(false);
+  });
+});
+
+describe('the saved-progress shape guard checks exercise results (review follow-up)', () => {
+  const good = () => mainSave().state;
+  it('accepts a well-formed save', () => {
+    expect(isValidPersistedProgress(good())).toBe(true);
+  });
+  it.each([
+    ['results not an object', (p: CurriculumProgress) => { (p as unknown as Record<string, unknown>).exerciseResults = []; }],
+    ['a module entry without scores', (p: CurriculumProgress) => { (p.exerciseResults as Record<string, unknown>).l3u11m1 = { totalAttempts: 1, lastAttemptAt: 0, passed: true }; }],
+    ['a score that is not 0, 0.5 or 1', (p: CurriculumProgress) => { (p.exerciseResults!.l3u11m1.scores as Record<string, unknown>).l3u11m1e2 = 'full'; }],
+    ['passed as text', (p: CurriculumProgress) => { (p.exerciseResults!.l3u11m1 as unknown as Record<string, unknown>).passed = 'yes'; }],
+    ['attempts missing', (p: CurriculumProgress) => { delete (p.exerciseResults!.l3u11m1 as unknown as Record<string, unknown>).totalAttempts; }],
+    ['exemptions not a list', (p: CurriculumProgress) => { (p as unknown as Record<string, unknown>).exemptedModules = 'l4u12m1'; }],
+  ])('rejects %s', (_label, mutate) => {
+    const save = good();
+    mutate(save.progress);
+    expect(isValidPersistedProgress(save)).toBe(false);
   });
 });

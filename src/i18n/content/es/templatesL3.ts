@@ -171,7 +171,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         '¿Cuál de estas afirmaciones sobre la conducción de voces es verdadera?',
       hintTemplate:
-        'Evita 5.as y 8.as paralelas, resuelve la sensible hacia arriba, resuelve la 7.ª del acorde hacia abajo, y mantén notas comunes cuando sea posible.',
+        'Evita 5.as y 8.as paralelas, resuelve la sensible hacia arriba, cuidado con las 5.as y 8.as directas entre las voces extremas, y mantén notas comunes cuando sea posible.',
       choiceSets: [
         [
           'Quintas paralelas: dos voces a una 5.ª J se mueven en la misma dirección hacia otra 5.ª J',
@@ -186,10 +186,10 @@ const overlay: TemplateLevelOverlay = {
           'La sensible salta hacia arriba hasta la mediante',
         ],
         [
-          'La 7.ª del acorde resuelve por grado descendente',
-          'La 7.ª del acorde resuelve por grado ascendente',
-          'La 7.ª del acorde no necesita resolver',
-          'La 7.ª del acorde salta una 5.ª hacia abajo',
+          'Las quintas directas entre las voces extremas se permiten si la soprano se mueve por grado',
+          'Las quintas directas entre las voces extremas se permiten si la soprano salta en vez de ir por grado',
+          'Las quintas directas surgen de movimiento contrario hacia una quinta justa',
+          'Las quintas directas no se permiten ni siquiera entre las voces interiores',
         ],
         [
           'El movimiento contrario entre las voces extremas suele preferirse',

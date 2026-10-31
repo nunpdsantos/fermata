@@ -63,7 +63,7 @@ const overlay: ExerciseLevelOverlay = {
   l6u18m2e3: {
     prompt: 'Qual é a função harmónica dos acordes de sexta aumentada?',
     choices: [
-      'Pré-dominante — intensificam o movimento para a dominante',
+      'Pré-dominante — intensificam sempre o movimento para a dominante',
       'Dominante — resolvem diretamente para a tónica',
       'Prolongamento da tónica — decoram a harmonia de tónica',
       'Função de mediante — substituem iii ou VI',
@@ -151,7 +151,7 @@ const overlay: ExerciseLevelOverlay = {
   l6u19m1e2: {
     prompt: 'Porque é que o acorde de sétima diminuta é simétrico?',
     choices: [
-      'Divide a oitava de 12 meios-tons em quatro terças menores iguais (0, 3, 6, 9)',
+      'Divide sempre a oitava de 12 meios-tons em quatro terças menores iguais (0, 3, 6, 9)',
       'Contém apenas notas naturais sem sustenidos ou bemóis',
       'As suas inversões produzem conteúdo intervalar diferente de cada vez',
       'Tem o mesmo número de intervalos maiores e menores',
@@ -174,7 +174,7 @@ const overlay: ExerciseLevelOverlay = {
   l6u19m2e1: {
     prompt: 'O que define um acorde de sétima diminuta com nota comum (CTo7)?',
     choices: [
-      'Um acorde de sétima diminuta que partilha uma nota com o acorde que embeleza',
+      'Um acorde de sétima diminuta que partilha sempre uma nota com o acorde que embeleza',
       'Um acorde de sétima diminuta que resolve para a dominante',
       'Qualquer acorde de sétima diminuta usado numa tonalidade menor',
       'Um acorde de sétima diminuta que partilha todas as notas com o acorde seguinte',
@@ -208,7 +208,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que define uma relação de mediante cromática entre dois acordes?',
     choices: [
       'Dois acordes cujas fundamentais distam uma 3.ª com uma alteração cromática que muda a qualidade esperada',
-      'Dois acordes cujas fundamentais distam uma 2.ª ligados por notas de passagem cromáticas',
+      'Dois acordes cujas fundamentais distam uma 2.ª, que se ligam por notas de passagem cromáticas',
       'Qualquer progressão de acordes que usa condução cromática de vozes',
       'Dois acordes que partilham as três notas mas em inversões diferentes',
     ],
@@ -250,7 +250,7 @@ const overlay: ExerciseLevelOverlay = {
   l6u19m4e2: {
     prompt: 'O que é planing cromático (harmonia paralela)?',
     choices: [
-      'Mover uma forma fixa de acorde em movimento paralelo por meios-tons ou tons',
+      'Mover uma forma fixa de acorde em movimento paralelo, todas as vozes pelo mesmo meio-tom ou tom',
       'Alternar entre dois acordes repetidamente',
       'Resolver cada acorde cromaticamente para o seguinte por meio-tom no baixo',
       'Tocar as doze alturas cromáticas simultaneamente',
@@ -262,7 +262,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'O enfraquecimento de um centro tonal claro através de cromatismo generalizado e modulações remotas',
       'O uso deliberado de apenas uma tonalidade ao longo de uma composição inteira',
-      'A eliminação do ritmo e metro da estrutura musical',
+      'A eliminação do ritmo e do metro de uma estrutura musical',
       'A substituição de toda a harmonia por melodias em uníssono',
     ],
     hint: 'Compositores como Wagner (Tristan und Isolde) usaram cromatismo contínuo, resoluções interrompidas e ambiguidade enarmónica tão extensamente que a sensação de uma tonalidade "casa" tornou-se elusiva — abrindo caminho para a atonalidade no século XX.',

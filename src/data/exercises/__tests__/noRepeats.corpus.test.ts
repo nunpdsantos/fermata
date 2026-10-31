@@ -13,10 +13,19 @@ import type { ExerciseConfig } from '../../../core/types/exercise';
 import { exerciseIdentity, generateExercises } from '../exerciseGenerator';
 import { CONTENT_LANGS, LEVELS, levelCorpus } from './learnCorpus';
 
-/** Independent identity: the config's own fields, labels dropped, keys sorted. */
+/**
+ * Independent identity: the config's own fields, labels dropped, defaulted
+ * fields spelled out (an authored acceptEnharmonic: true equals a generated
+ * item without it — review follow-up), keys sorted.
+ */
 function oracleIdentity(c: ExerciseConfig): string {
-  const o = { ...(c as unknown as Record<string, unknown>) };
+  const o: Record<string, unknown> = { ...(c as unknown as Record<string, unknown>) };
   delete o.choices;
+  if (c.type === 'note_id' || c.type === 'ear_training') o.acceptEnharmonic ??= true;
+  if (c.type === 'ear_training') {
+    o.accidental ??= ''; o.octave ??= 4; o.rootAccidental ??= ''; o.rootOctave ??= 4;
+    o.chordRootAccidental ??= ''; o.direction ??= 'ascending'; o.harmonic ??= false;
+  }
   return JSON.stringify(Object.keys(o).sort().reduce<Record<string, unknown>>((acc, k) => ({ ...acc, [k]: o[k] }), {}));
 }
 
@@ -64,6 +73,14 @@ describe('no exercise twice in a session (W4-19)', () => {
       }
     }
     expect(drift).toEqual([]);
+  });
+
+  it('an authored acceptEnharmonic: true is the same exercise as a generated item without it', () => {
+    const authored = { type: 'note_id' as const, note: 'B', accidental: 'b', octave: 4, acceptEnharmonic: true };
+    const generated = { type: 'note_id' as const, note: 'B', accidental: 'b', octave: 4 };
+    expect(exerciseIdentity(authored)).toBe(exerciseIdentity(generated));
+    expect(oracleIdentity(authored)).toBe(oracleIdentity(generated));
+    expect(exerciseIdentity({ ...authored, acceptEnharmonic: false })).not.toBe(exerciseIdentity(generated));
   });
 
   it('the generator skips an excluded identity and still fills the module', () => {

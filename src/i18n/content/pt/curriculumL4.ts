@@ -459,7 +459,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Segundas Ascendentes e Terças Descendentes',
           explanation:
-            'Numa sequência de segundas ascendentes, as fundamentais sobem por grau conjunto: I-ii-iii-IV-V, criando uma sensação de escalada. Primeiras inversões são frequentemente usadas para manter a linha de baixo suave (a técnica 5-6). Numa sequência de terças descendentes, as fundamentais descem por terças: I-vi-IV-ii, produzindo um movimento descendente suave comum na música Romântica. Cada par numa sequência de terças partilha uma nota comum, tornando a condução de vozes excecionalmente suave.',
+            'Numa sequência de segundas ascendentes, as fundamentais sobem por grau conjunto: I-ii-iii-IV-V, criando uma sensação de escalada. Primeiras inversões são frequentemente usadas para manter a linha de baixo suave (a técnica 5-6): na sequência 5-6 ascendente, cada acorde em posição fundamental (5/3) é seguido de um acorde 6/3 sobre a mesma nota do baixo, e depois o baixo sobe um grau. Numa sequência de terças descendentes, as fundamentais descem por terças: I-vi-IV-ii, produzindo um movimento descendente suave comum na música Romântica. Cada par numa sequência de terças partilha uma nota comum, tornando a condução de vozes excecionalmente suave.',
           tryThisLabel: 'ii7 situa-se no centro de muitas sequências',
         },
       ],

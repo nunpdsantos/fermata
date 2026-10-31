@@ -214,7 +214,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which voice-leading statement is true?',
-        hintTemplate: 'Avoid parallel 5ths and 8ves, resolve the leading tone up, resolve the 7th of a chord down, and keep common tones when possible.',
+        hintTemplate: 'Avoid parallel 5ths and 8ves, resolve the leading tone up, take care with direct 5ths and 8ves between the outer voices, and keep common tones when possible.',
         params: {
           choiceSets: [
             [
@@ -230,10 +230,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'The leading tone leaps up to the mediant', correct: false },
             ],
             [
-              { label: 'The chordal 7th resolves down by step', correct: true },
-              { label: 'The chordal 7th resolves up by step', correct: false },
-              { label: 'The chordal 7th needs no resolution', correct: false },
-              { label: 'The chordal 7th leaps down a 5th', correct: false },
+              { label: 'Direct fifths between outer voices are allowed if the soprano moves by step', correct: true },
+              { label: 'Direct fifths between outer voices are allowed if the soprano leaps instead of stepping', correct: false },
+              { label: 'Direct fifths come from contrary motion into a perfect fifth', correct: false },
+              { label: 'Direct fifths are not allowed even between the inner voices', correct: false },
             ],
             [
               { label: 'Contrary motion between the outer voices is generally preferred', correct: true },

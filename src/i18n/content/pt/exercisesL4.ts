@@ -410,7 +410,7 @@ const overlay: ExerciseLevelOverlay = {
   l4u14m3e2: {
     prompt: 'O que é uma bordadura cromática?',
     choices: [
-      'Uma bordadura a meio-tom que regressa à mesma nota do acorde',
+      'Uma bordadura a meio-tom que regressa sempre à mesma nota do acorde',
       'Uma bordadura que modula para uma nova tonalidade',
       'Um som emprestado da tonalidade paralela',
       'Qualquer bordadura que apareça dentro de uma passagem de escala cromática',
@@ -457,7 +457,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'O que indicam os números após um numeral romano (baixo cifrado)?',
     choices: [
-      'Os intervalos acima da nota do baixo, revelando a inversão do acorde',
+      'Os intervalos acima da nota do baixo, que revelam sempre a inversão do acorde',
       'Os graus da escala das notas do acorde',
       'O número de vozes a tocar o acorde',
       'A duração do acorde em tempos',

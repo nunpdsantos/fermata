@@ -509,7 +509,7 @@ const l4u13m5: CurriculumModule = {
     {
       title: 'Ascending Seconds and Descending Thirds',
       explanation:
-        'In an ascending-seconds sequence, roots move up by step: I-ii-iii-IV-V, creating a climbing sensation. First inversions are often used to keep the bass line smooth (the 5-6 technique). In a descending-thirds sequence, roots fall by thirds: I-vi-IV-ii, producing a gentle, falling motion common in Romantic music. Each pair in a thirds sequence shares a common tone, making the voice leading exceptionally smooth.',
+        'In an ascending-seconds sequence, roots move up by step: I-ii-iii-IV-V, creating a climbing sensation. First inversions are often used to keep the bass line smooth (the 5-6 technique): in the ascending 5-6 sequence each root-position (5/3) chord is followed by a 6/3 chord over the same bass note, and then the bass rises a step. In a descending-thirds sequence, roots fall by thirds: I-vi-IV-ii, producing a gentle, falling motion common in Romantic music. Each pair in a thirds sequence shares a common tone, making the voice leading exceptionally smooth.',
       tryThisQuery: 'Dm7',
       tryThisLabel: 'ii7 sits at the center of many sequences',
     },

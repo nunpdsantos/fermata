@@ -39,6 +39,8 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
   const tokens: Record<string, string> = {};
   const key = built.rootIndex !== undefined ? template.params.keys?.[built.rootIndex] : undefined;
   if (key !== undefined) tokens['key'] = key;
+  const spelling = built.rootIndex !== undefined ? template.params.spellings?.[built.rootIndex] : undefined;
+  if (spelling !== undefined) tokens['spelling'] = spelling;
   return { config: built.config, tokens };
 }
 
@@ -364,7 +366,21 @@ function stableStringify(value: unknown): string {
 export function exerciseIdentity(config: ExerciseConfig): string | null {
   if (config.type === 'multiple_choice') return null;
   const { choices: _labels, ...rest } = config as ExerciseConfig & { choices?: unknown };
-  return stableStringify(rest);
+  return stableStringify({ ...IDENTITY_DEFAULTS[config.type], ...withoutUndefined(rest) });
+}
+
+/**
+ * Fields a config may leave out because they have a default: an authored
+ * `acceptEnharmonic: true` and a generated item without it are the same
+ * exercise (review follow-up), so the identity spells every default out.
+ */
+const IDENTITY_DEFAULTS: Partial<Record<ExerciseConfig['type'], Record<string, unknown>>> = {
+  note_id: { acceptEnharmonic: true },
+  ear_training: { accidental: '', octave: 4, rootAccidental: '', rootOctave: 4, chordRootAccidental: '', direction: 'ascending', harmonic: false, acceptEnharmonic: true },
+};
+
+function withoutUndefined(o: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined));
 }
 
 /**

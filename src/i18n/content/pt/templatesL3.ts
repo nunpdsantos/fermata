@@ -171,7 +171,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre condução de vozes é verdadeira?',
       hintTemplate:
-        'Evita 5.as e 8.as paralelas, resolve a sensível para cima, resolve a 7.ª do acorde para baixo, e mantém notas comuns quando possível.',
+        'Evita 5.as e 8.as paralelas, resolve a sensível para cima, cuidado com 5.as e 8.as diretas entre as vozes extremas, e mantém notas comuns quando possível.',
       choiceSets: [
         [
           'Quintas paralelas: duas vozes a uma 5.ª P movem-se na mesma direção para outra 5.ª P',
@@ -186,10 +186,10 @@ const overlay: TemplateLevelOverlay = {
           'A sensível salta para cima até à mediante',
         ],
         [
-          'A 7.ª do acorde resolve por grau descendente',
-          'A 7.ª do acorde resolve por grau ascendente',
-          'A 7.ª do acorde não precisa de resolver',
-          'A 7.ª do acorde salta uma 5.ª para baixo',
+          'As quintas diretas entre as vozes extremas são permitidas se o soprano se mover por grau',
+          'As quintas diretas entre as vozes extremas são permitidas se o soprano saltar em vez de ir por grau',
+          'As quintas diretas resultam de movimento contrário para uma quinta perfeita',
+          'As quintas diretas não são permitidas nem entre as vozes interiores',
         ],
         [
           'Em geral prefere-se o movimento contrário entre as vozes extremas',

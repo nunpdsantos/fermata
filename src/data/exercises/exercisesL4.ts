@@ -617,7 +617,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A half-step neighbor that returns to the same chord tone', correct: true },
+          { label: 'A half-step neighbor that always returns to the same chord tone', correct: true },
           { label: 'A neighbor tone that modulates to a new key', correct: false },
           { label: 'A tone borrowed from the parallel key', correct: false },
           { label: 'Any neighbor tone that appears inside a chromatic scale passage', correct: false },
@@ -681,7 +681,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The intervals above the bass note, revealing the inversion of the chord', correct: true },
+          { label: 'The intervals above the bass note, which always reveal the inversion of the chord', correct: true },
           { label: 'The scale degrees of the chord tones', correct: false },
           { label: 'The number of voices sounding the chord', correct: false },
           { label: 'The duration of the chord in beats', correct: false },

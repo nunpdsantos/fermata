@@ -148,7 +148,7 @@ const templates: ModuleTemplateConfig[] = [
           choiceSets: [
             [
               { label: 'Tonicization briefly stresses a chord; modulation confirms a new key with a cadence', correct: true },
-              { label: 'Tonicization confirms a new key with a cadence; modulation only briefly stresses a chord', correct: false },
+              { label: 'Tonicization confirms a new key with a cadence; modulation briefly stresses a chord', correct: false },
               { label: 'Tonicization and modulation are two names for exactly the same process', correct: false },
               { label: 'Modulation never uses chromatic chords; tonicization always does', correct: false },
             ],
@@ -159,7 +159,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'A tonicization needs a perfect authentic cadence in the new key', correct: false },
             ],
             [
-              { label: 'A modulation is confirmed when the music cadences in the new key', correct: true },
+              { label: 'A modulation is only confirmed when the music cadences in the new key', correct: true },
               { label: 'A modulation is confirmed as soon as the time signature changes', correct: false },
               { label: 'A modulation is confirmed by any single chromatic note in the melody', correct: false },
               { label: 'A modulation can only ever be confirmed at the very end of a piece', correct: false },
@@ -320,7 +320,7 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'One held note is reheard as a different scale degree in the new key', correct: true },
+              { label: 'A single held note is always reheard as a different scale degree in the new key', correct: true },
               { label: 'One held note keeps exactly the same scale degree in the new key', correct: false },
               { label: 'Every note of the chord must be common to both of the keys', correct: false },
               { label: 'No note is held: the music stops, then restarts in the new key', correct: false },
@@ -435,7 +435,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'ABA, where the first section returns after a contrast, is through-composed form', correct: false },
             ],
             [
-              { label: 'Rounded binary brings back A material at the end of the B section', correct: true },
+              { label: 'Rounded binary always brings back A material at the end of the B section', correct: true },
               { label: 'Rounded binary has three independent sections that never return', correct: false },
               { label: 'Rounded binary never modulates away from the tonic key at any point', correct: false },
               { label: 'Rounded binary is just another name for simple binary form', correct: false },

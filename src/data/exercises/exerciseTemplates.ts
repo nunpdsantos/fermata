@@ -49,6 +49,11 @@ export interface ExerciseTemplateParams {
    * roots Db/Ab/Eb… and keys C/G/D…. The root stays the graded answer.
    */
   keys?: string[];
+  /**
+   * The chord as spelled for each root (index-aligned with `roots`), for
+   * hints: fills {spelling} ("Ab–C–Eb–F#" for the German sixth of C minor).
+   */
+  spellings?: string[];
   /** Scale degrees for degree ID exercises */
   degrees?: number[];
   /** Note counts for build exercises */

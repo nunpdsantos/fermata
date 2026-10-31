@@ -158,7 +158,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'A double pedal is a pedal that is repeated twice in a row', correct: false },
             ],
             [
-              { label: 'An inverted pedal is held in an upper voice instead of the bass', correct: true },
+              { label: 'An inverted pedal is always held in an upper voice and never in the bass', correct: true },
               { label: 'An inverted pedal descends step by step instead of being held', correct: false },
               { label: 'An inverted pedal changes pitch in every bar', correct: false },
               { label: 'Inverted pedals never appear in classical music', correct: false },
@@ -245,7 +245,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'V4/2 has the 5th in the bass, so it resolves to the V chord', correct: false },
             ],
             [
-              { label: 'V4/3 has the 5th in the bass and can resolve to I or I6', correct: true },
+              { label: 'V4/3 always has the 5th in the bass and can resolve to I or I6', correct: true },
               { label: 'V4/3 has the leading tone in the bass and can only resolve to IV', correct: false },
               { label: 'V4/3 has the 7th in the bass and must resolve to I6/4', correct: false },
               { label: 'V4/3 has the root in the bass and resolves to vi', correct: false },
@@ -436,7 +436,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'viiø7 has a major 7th; vii°7 has a perfect 5th and a minor 7th', correct: false },
             ],
             [
-              { label: 'Bdim7, Ddim7, Fdim7 and G#dim7 contain the same four pitch classes', correct: true },
+              { label: 'Bdim7, Ddim7, Fdim7 and G#dim7 all sound the same four notes, respelled', correct: true },
               { label: 'Bdim7 and Ddim7 share no notes, since their roots are a 3rd apart', correct: false },
               { label: 'Every diminished seventh chord has its own unique set of notes', correct: false },
               { label: 'A diminished seventh chord can be respelled on only one of its notes, its root', correct: false },
@@ -471,7 +471,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'vi has no standard harmonic function', correct: false },
             ],
             [
-              { label: 'vii° works as a dominant: it shares three notes with V7', correct: true },
+              { label: 'vii° works as a dominant: all three of its notes are in V7', correct: true },
               { label: 'vii° works as a tonic: it shares three notes with I', correct: false },
               { label: 'vii° works as a pre-dominant: it always moves to IV', correct: false },
               { label: 'vii° has no harmonic function', correct: false },
@@ -605,7 +605,7 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'In second species, passing-tone dissonances may fall on weak beats', correct: true },
+              { label: 'In second species, passing-tone dissonances may fall only on weak beats', correct: true },
               { label: 'In second species, every note must be consonant, as in first species', correct: false },
               { label: 'In second species, dissonances may fall on the strong beats', correct: false },
               { label: 'In second species, there are no rules about dissonance', correct: false },

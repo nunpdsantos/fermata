@@ -162,11 +162,13 @@ const templates: ModuleTemplateConfig[] = [
         // (Ab7), so it is graded by those pitch classes.
         type: 'chord_build',
         promptTemplate: 'Build the German augmented sixth chord of {key} minor.',
-        hintTemplate: 'In {key} minor the German sixth is b6–1–b3–#4, built on {root} (in C minor: Ab–C–Eb–F#). It sounds exactly like {root}7, but its top note is spelled as an augmented 6th above {root}, not a minor 7th.',
+        hintTemplate: 'In {key} minor the German sixth is b6–1–b3–#4, built on {root}: {spelling}. It sounds exactly like {root}7, but its top note is spelled as an augmented 6th above {root}, not a minor 7th.',
         params: {
           roots: ['A', 'E', 'B', 'F', 'C', 'D'],
           accidentals: ['b', 'b', 'b', '', '', 'b'],
           keys: ['C', 'G', 'D', 'A', 'E', 'F'],
+          // b6–1–b3–#4 of each key (F minor's #4 is B natural).
+          spellings: ['Ab–C–Eb–F#', 'Eb–G–Bb–C#', 'Bb–D–F–G#', 'F–A–C–D#', 'C–E–G–A#', 'Db–F–Ab–B'],
           chordQualities: ['dominant7'],
           noteCounts: [4],
         },

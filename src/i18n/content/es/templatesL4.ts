@@ -5,7 +5,7 @@ import type { TemplateLevelOverlay } from '../types';
 // 11 module configs (Unit 14 counterpoint pooled onto l4u14m1, mirroring
 // the EN source). Entry order per module must match templatesL4.ts — see the
 // W4-01 note there. Terms follow the L4 lessons: retardo (suspension),
-// anticipación ascendente (retardation), apoyatura, escapatoria, nota pedal,
+// retardo ascendente (retardation), apoyatura, escapatoria, nota pedal,
 // notas cambiadas.
 // ---------------------------------------------------------------------------
 
@@ -69,14 +69,14 @@ const overlay: TemplateLevelOverlay = {
     },
   ],
 
-  // ---- l4u12m2: Apoyatura, Escapatoria y Anticipación Ascendente ----
+  // ---- l4u12m2: Apoyatura, Escapatoria y Retardo Ascendente ----
   l4u12m2: [
     {
       // multiple_choice
       promptTemplate:
-        '¿Cuál de estas afirmaciones sobre apoyaturas, escapatorias y anticipaciones ascendentes es verdadera?',
+        '¿Cuál de estas afirmaciones sobre apoyaturas, escapatorias y retardos ascendentes es verdadera?',
       hintTemplate:
-        'Apoyatura: salto hacia la disonancia, grado conjunto hacia la resolución — normalmente acentuada (en un tiempo fuerte). Escapatoria: grado conjunto hacia la disonancia, salto hacia fuera — normalmente no acentuada (en un tiempo débil). Anticipación ascendente: retenida como un retardo, resuelve subiendo por grado (7-8).',
+        'Apoyatura: salto hacia la disonancia, grado conjunto hacia la resolución — normalmente acentuada (en un tiempo fuerte). Escapatoria: grado conjunto hacia la disonancia, salto hacia fuera — normalmente no acentuada (en un tiempo débil). Retardo ascendente: retenido como un retardo, resuelve subiendo por grado (7-8).',
       choiceSets: [
         [
           'Una apoyatura se aborda por salto y se resuelve por grado, normalmente en un tiempo fuerte',
@@ -91,13 +91,13 @@ const overlay: TemplateLevelOverlay = {
           'Una escapatoria debe volver a la nota de la que salió, igual que una bordadura',
         ],
         [
-          'Una anticipación ascendente se mantiene como un retardo, pero resuelve subiendo por grado',
-          'Una anticipación ascendente se mantiene como un retardo y resuelve siempre bajando por grado',
-          'Una anticipación ascendente se aborda por salto y no tiene preparación',
-          'Una anticipación ascendente resuelve por salto, nunca por grado',
+          'Un retardo ascendente se mantiene como un retardo, pero resuelve subiendo por grado',
+          'Un retardo ascendente se mantiene como un retardo y resuelve siempre bajando por grado',
+          'Un retardo ascendente se aborda por salto y no tiene preparación',
+          'Un retardo ascendente resuelve por salto, nunca por grado',
         ],
         [
-          'B retenido en un acorde de C mayor y que sube a C: una anticipación ascendente 7-8',
+          'B retenido en un acorde de C mayor y que sube a C: un retardo ascendente 7-8',
           'B retenido en un acorde de C mayor y que sube a C: un retardo 4-3',
           'B retenido en un acorde de C mayor y que sube a C: una escapatoria',
           'B retenido en un acorde de C mayor y que sube a C: una apoyatura abordada por salto',
@@ -140,7 +140,7 @@ const overlay: TemplateLevelOverlay = {
           'Un pedal doble es un pedal que se repite dos veces seguidas',
         ],
         [
-          'Un pedal invertido se mantiene en una voz superior en lugar del bajo',
+          'Un pedal invertido siempre se mantiene en una voz superior y nunca en el bajo',
           'Un pedal invertido desciende grado a grado en lugar de mantenerse',
           'Un pedal invertido cambia de altura en cada compás',
           'Los pedales invertidos nunca aparecen en la música clásica',
@@ -215,7 +215,7 @@ const overlay: TemplateLevelOverlay = {
           'V4/2 tiene la 5.ª en el bajo, así que resuelve al acorde de V',
         ],
         [
-          'V4/3 tiene la 5.ª en el bajo y puede resolver a I o I6',
+          'V4/3 siempre tiene la 5.ª en el bajo y puede resolver a I o I6',
           'V4/3 tiene la sensible en el bajo y solo puede resolver a IV',
           'V4/3 tiene la 7.ª en el bajo y debe resolver a I6/4',
           'V4/3 tiene la fundamental en el bajo y resuelve a vi',
@@ -367,7 +367,7 @@ const overlay: TemplateLevelOverlay = {
           'viiø7 tiene una 7.ª mayor; vii°7 tiene una 5.ª justa y una 7.ª menor',
         ],
         [
-          'Bdim7, Ddim7, Fdim7 y G#dim7 contienen las mismas cuatro clases de altura',
+          'Bdim7, Ddim7, Fdim7 y G#dim7 suenan todos con las mismas cuatro notas, reescritas',
           'Bdim7 y Ddim7 no comparten notas, porque sus fundamentales están a una 3.ª',
           'Cada acorde de séptima disminuida tiene su propio conjunto de notas, único',
           'Un acorde de séptima disminuida solo puede reescribirse sobre una de sus notas, la fundamental',
@@ -398,7 +398,7 @@ const overlay: TemplateLevelOverlay = {
           'vi no tiene una función armónica definida',
         ],
         [
-          'vii° funciona como dominante: comparte tres notas con V7',
+          'vii° funciona como dominante: sus tres notas están todas en V7',
           'vii° funciona como tónica: comparte tres notas con I',
           'vii° funciona como predominante: va siempre a IV',
           'vii° no tiene función armónica',
@@ -509,7 +509,7 @@ const overlay: TemplateLevelOverlay = {
         'Segunda especie: dos notas contra una. La primera nota de cada compás debe ser consonante. La segunda nota puede ser una consonancia o una nota de paso (disonancia).',
       choiceSets: [
         [
-          'En la segunda especie, las disonancias de paso pueden caer en los tiempos débiles',
+          'En la segunda especie, las disonancias de paso solo pueden caer en los tiempos débiles',
           'En la segunda especie, todas las notas deben ser consonantes, como en la primera especie',
           'En la segunda especie, las disonancias pueden caer en los tiempos fuertes',
           'En la segunda especie, no hay reglas sobre la disonancia',
