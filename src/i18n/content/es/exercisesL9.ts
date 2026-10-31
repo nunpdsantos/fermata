@@ -15,12 +15,12 @@ const overlay: ExerciseLevelOverlay = {
   l9u30m1e1: {
     prompt:
       'Escucha esta altura e identifícala.',
-    hint: 'El Do central (C4) es el punto de referencia central en el piano — áncoralo en tu oído.',
+    hint: 'El C central (C4) es el punto de referencia central en el piano — áncoralo en tu oído.',
   },
   l9u30m1e2: {
     prompt:
       'Escucha esta altura e identifícala.',
-    hint: 'G4 está una 5.ª justa por encima del Do central — 7 semitonos arriba. Compárala con C4 en tu oído.',
+    hint: 'G4 está una 5.ª justa por encima del C central — 7 semitonos arriba. Compárala con C4 en tu oído.',
   },
   l9u30m1e3: {
     prompt:
@@ -156,7 +156,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Escucha esta escala e identifica su tipo.',
     choices: ['Mayor', 'Menor natural', 'Menor armónica'],
-    hint: 'La menor natural (T-S-T-T-S-T-T) tiene una atmósfera más sombría que la mayor — la 3.ª, 6.ª y 7.ª descendidas moldean su color.',
+    hint: 'La escala menor natural (T-S-T-T-S-T-T) tiene una atmósfera más sombría que la mayor — la 3.ª, 6.ª y 7.ª descendidas moldean su color.',
   },
   l9u31m1e3: {
     prompt:

@@ -50,13 +50,13 @@ const curriculumL8: CurriculumLevelOverlay = {
           title: 'Fuga Doble y Fuga Triple',
           explanation:
             'Una fuga doble combina dos sujetos, ya sea presentándolos juntos desde el inicio o introduciendo cada uno en su propia exposición antes de combinarlos en una sección culminante. Una fuga triple usa tres sujetos — El Arte de la Fuga de Bach y su fuga final inacabada son los ejemplos supremos. En el tipo de presentación combinada, ambos sujetos aparecen simultáneamente en la exposición inicial; en el tipo de exposiciones separadas, el segundo sujeto recibe su propia exposición completa antes de que los dos se entrelacen contrapuntísticamente. La dificultad aumenta exponencialmente con cada sujeto adicional.',
-          tryThisLabel: 'Observa Do mayor — la tonalidad de la primera fuga del CBT de Bach',
+          tryThisLabel: 'Observa C mayor — la tonalidad de la primera fuga del CBT de Bach',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escucha una fuga de Bach (p. ej., CBT Libro I, Do menor). Traza la exposición: identifica la entrada de cada voz y si la respuesta es real o tonal. ¿Cuántas voces tiene la fuga?',
+            'Escucha una fuga de Bach (p. ej., CBT Libro I, C menor). Traza la exposición: identifica la entrada de cada voz y si la respuesta es real o tonal. ¿Cuántas voces tiene la fuga?',
         },
         {
           instruction:
@@ -85,7 +85,7 @@ const curriculumL8: CurriculumLevelOverlay = {
           title: 'Episodios y Entradas Intermedias',
           explanation:
             'Tras la exposición, los episodios — pasajes de transición construidos a partir de fragmentos motívicos del sujeto o del contrasujeto, frecuentemente dispuestos en secuencia — modulan a nuevas tonalidades para las entradas intermedias. Cada episodio típicamente toma un motivo corto (algunas notas de la cabeza o de la cola del sujeto) y lo secuencia a través de una cadena de tonalidades, creando impulso hacia adelante. Las entradas intermedias reintroducen el sujeto en tonalidades vecinas: el relativo mayor o menor, la subdominante o áreas tonales más remotas. La alternancia de episodios y entradas confiere a la fuga su sensación característica de partida y regreso.',
-          tryThisLabel: 'Observa La menor — una tonalidad habitual para entradas intermedias desde Do mayor',
+          tryThisLabel: 'Observa A menor — una tonalidad habitual para entradas intermedias desde C mayor',
         },
         {
           title: 'Stretto: Entradas Superpuestas del Sujeto',
@@ -136,7 +136,7 @@ const curriculumL8: CurriculumLevelOverlay = {
           title: 'Tipos Especiales de Canon y la Ronda',
           explanation:
             'El canon espejo (canon por inversión) invierte todos los intervalos en el seguidor — el movimiento ascendente en el dux se vuelve descendente en el comes. El canon cangrejo (retrógrado) reproduce la melodía del seguidor de atrás hacia adelante. El canon por aumentación duplica los valores de las notas en el seguidor; el canon por disminución los reduce a la mitad. Estos pueden combinarse — retrogradación invertida, por ejemplo. La ronda es el canon más simple: un canon perpetuo al unísono donde las voces entran a intervalos regulares y la melodía se repite indefinidamente. El ricercar, predecesor de la fuga, utiliza contrapunto imitativo de forma más libre, sin la estructura formal de exposición-episodio de la fuga.',
-          tryThisLabel: 'Observa Do mayor — la tonalidad más sencilla para escritura canónica',
+          tryThisLabel: 'Observa C mayor — la tonalidad más sencilla para escritura canónica',
         },
         {
           title: 'Imitación Libre vs. Canon Estricto',
@@ -230,7 +230,7 @@ const curriculumL8: CurriculumLevelOverlay = {
           title: 'Formas de Rondó: Cinco Partes, Siete Partes y Sonata-Rondó',
           explanation:
             'La forma de rondó presenta un estribillo recurrente (A) alternando con episodios contrastantes: rondó de cinco partes (A-B-A-C-A), de siete partes (A-B-A-C-A-B-A o A-B-A-C-A-D-A). El estribillo regresa típicamente en la tónica cada vez, proporcionando estabilidad estructural. El sonata-rondó hibrida ambas formas — A-B-A-desarrollo-A-B-A — combinando la claridad estructural del rondó con la ambición desarrollística de la sonata. La sección B regresa en la tónica durante la segunda mitad, reflejando la resolución tonal de la forma sonata. Este híbrido domina los finales del periodo clásico.',
-          tryThisLabel: 'Observa Do mayor — la tónica que cada estribillo de rondó reafirma',
+          tryThisLabel: 'Observa C mayor — la tónica que cada estribillo de rondó reafirma',
         },
         {
           title: 'Forma de Ritornello',
@@ -242,7 +242,7 @@ const curriculumL8: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Compara una chacona (p. ej., Chacona en Re menor de Bach para violín solo) con un tema y variaciones (p. ej., Variaciones «Diabelli» de Beethoven). ¿Cómo cambia la experiencia de escucha la estructura continua frente a la seccional?',
+            'Compara una chacona (p. ej., Chacona en D menor de Bach para violín solo) con un tema y variaciones (p. ej., Variaciones «Diabelli» de Beethoven). ¿Cómo cambia la experiencia de escucha la estructura continua frente a la seccional?',
         },
         {
           instruction:
@@ -275,14 +275,14 @@ const curriculumL8: CurriculumLevelOverlay = {
         {
           title: 'Instrumentos Transpositores y Lectura de Partitura',
           explanation:
-            'Un instrumento transpositor suena una altura diferente del Do escrito. El clarinete en Sib suena una segunda mayor por debajo de lo escrito; la trompa en Fa suena una quinta justa por debajo; la trompeta en Sib suena una segunda mayor por debajo. Para leer una partitura transpositora a la altura real (de concierto), se invierte la transposición: para un clarinete en Sib, se transpone la parte escrita una segunda mayor hacia abajo (o se lee una segunda abajo). Orden estándar de la partitura orquestal de arriba abajo: flautas, oboes, clarinetes, fagotes, trompas, trompetas, trombones, tuba, timbales, percusión, arpa, violines I y II, violas, violonchelos, contrabajos.',
-          tryThisLabel: 'Observa Sib — la altura de concierto cuando un clarinete en Sib lee Do',
+            'Un instrumento transpositor suena una altura diferente del C escrito. El clarinete en Bb suena una segunda mayor por debajo de lo escrito; la trompa en F suena una quinta justa por debajo; la trompeta en Bb suena una segunda mayor por debajo. Para leer una partitura transpositora a la altura real (de concierto), se invierte la transposición: para un clarinete en Bb, se transpone la parte escrita una segunda mayor hacia abajo (o se lee una segunda abajo). Orden estándar de la partitura orquestal de arriba abajo: flautas, oboes, clarinetes, fagotes, trompas, trompetas, trombones, tuba, timbales, percusión, arpa, violines I y II, violas, violonchelos, contrabajos.',
+          tryThisLabel: 'Observa Bb — la altura de concierto cuando un clarinete en Bb lee C',
         },
         {
           title: 'Textura Orquestal y Doblajes',
           explanation:
             'La orquestación es el arte de distribuir ideas musicales por el conjunto para lograr el máximo efecto. El doblaje a la octava (p. ej., flauta y violín a una octava de distancia) engrosa una melodía sin alterar su carácter. El doblaje al unísono (p. ej., oboe y violín en la misma altura) fusiona timbres para crear un color compuesto indisponible en cualquier instrumento aislado. La escritura por coros asigna un acorde completo a una familia (un coral de metales o un coro de maderas). La elección de qué instrumento conduce la melodía, cuál aporta relleno armónico y cuál proporciona energía rítmica define el carácter de cada pasaje orquestal.',
-          tryThisLabel: 'Observa Fa mayor — la tonalidad de concierto de una trompa leyendo en Do',
+          tryThisLabel: 'Observa F mayor — la tonalidad de concierto de una trompa leyendo en C',
         },
       ],
       tasks: [
@@ -292,7 +292,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Un clarinete en Sib toca un Re escrito. ¿Qué altura suena a altura de concierto? (Respuesta: Do — una 2.ª mayor por debajo.) Ahora: una trompa en Fa toca un Sol escrito. ¿Qué altura de concierto suena? (Respuesta: Do — una 5.ª justa por debajo.)',
+            'Un clarinete en Bb toca un D escrito. ¿Qué altura suena a altura de concierto? (Respuesta: C — una 2.ª mayor por debajo.) Ahora: una trompa en F toca un G escrito. ¿Qué altura de concierto suena? (Respuesta: C — una 5.ª justa por debajo.)',
         },
         {
           instruction:
@@ -323,7 +323,7 @@ const curriculumL8: CurriculumLevelOverlay = {
           title: 'Conjuntos de Clases de Altura: Forma Normal y Forma Prima',
           explanation:
             'Un conjunto de clases de altura es una colección no ordenada de clases de altura distintas — el equivalente postonal de un acorde. La forma normal es la disposición ascendente más compacta: se rota el conjunto hasta que la extensión del primer al último elemento sea la menor (usando compactación a la izquierda para desempatar). La forma prima transpone la forma normal para comenzar en 0, después compara con la inversión para seleccionar la más compactada a la izquierda. {C, E, G} tiene forma normal [0,4,7]; su inversión da [0,3,7], que está más compactada a la izquierda, así que la forma prima es [0,3,7]. {D, F, A} se reduce directamente a [0,3,7]. El catálogo de Allen Forte asigna a cada forma prima un número — 3-11 para [0, 3, 7] — creando un sistema universal de clasificación para sonoridades postonales. Existen dos convenciones de compactación — la de Forte, «compactado a la izquierda» (usada aquí), y la de Rahn, «compactado desde la derecha» — y discrepan en un puñado de clases de conjuntos (ninguna usada en este nivel).',
-          tryThisLabel: 'Observa Do menor — conjunto de Forte 3-11, forma prima [0,3,7]',
+          tryThisLabel: 'Observa C menor — conjunto de Forte 3-11, forma prima [0,3,7]',
         },
         {
           title: 'Vector Interválico y Relaciones-Z',
@@ -416,7 +416,7 @@ const curriculumL8: CurriculumLevelOverlay = {
           title: 'Politonalidad, Polimodalidad y Pandiatonicismo',
           explanation:
             'La politonalidad superpone dos o más tonalidades simultáneamente — la bitonalidad de Milhaud puede colocar C mayor en la mano derecha contra F# mayor en la izquierda, creando una sonoridad densa y centelleante que no es tonal ni atonal. La polimodalidad superpone modos diferentes sobre la misma tónica: C lidio en la melodía con C mixolidio en el acompañamiento produce nueve clases de altura distintas — las siete habituales más F# (del lidio) y Bb (del mixolidio) — con inflexiones modales conflictivas entre las voces. El pandiatonicismo usa todas las notas de una escala diatónica libremente, descartando las reglas de armonía funcional — cualquier combinación es válida, produciendo música que suena tonal pero resiste la resolución. Las obras neoclásicas de Stravinsky epitomizan esta técnica.',
-          tryThisLabel: 'Escucha Do aumentado — la tríada de tonos enteros, sin centro tonal',
+          tryThisLabel: 'Escucha C aumentado — la tríada de tonos enteros, sin centro tonal',
         },
         {
           title: 'Microtonalidad y Conciencia Espectral',

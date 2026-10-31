@@ -7,8 +7,8 @@ import {
   getDueReviewModuleIds,
   getDueReviewCount,
   backfillSchedules,
-  formatNextReview,
-  getIntervalLabel,
+  describeNextReview,
+  getIntervalSpan,
 } from '../spacedRepetition';
 import type { CurriculumProgress } from '../../core/types/curriculum';
 
@@ -159,55 +159,58 @@ describe('spacedRepetition', () => {
     });
   });
 
-  describe('formatNextReview', () => {
-    it('shows "Due now" when overdue', () => {
+  describe('describeNextReview (language-neutral; worded by review.when.*)', () => {
+    it('dueNow when overdue', () => {
       const schedule = createInitialSchedule(BASE - 2 * DAY);
-      expect(formatNextReview(schedule, BASE)).toBe('Due now');
+      expect(describeNextReview(schedule, BASE)).toEqual({ kind: 'dueNow' });
     });
 
-    it('shows "Due soon" for less than 1 hour', () => {
+    it('dueSoon for less than 1 hour', () => {
       const schedule = { ...createInitialSchedule(BASE), nextReviewAt: BASE + 30 * 60 * 1000 };
-      expect(formatNextReview(schedule, BASE)).toBe('Due soon');
+      expect(describeNextReview(schedule, BASE)).toEqual({ kind: 'dueSoon' });
     });
 
-    it('shows hours when less than a day', () => {
+    it('hours when less than a day', () => {
       const schedule = { ...createInitialSchedule(BASE), nextReviewAt: BASE + 5 * 60 * 60 * 1000 };
-      expect(formatNextReview(schedule, BASE)).toBe('In 5 hours');
+      expect(describeNextReview(schedule, BASE)).toEqual({ kind: 'in', unit: 'hours', count: 5 });
     });
 
-    it('shows "In 1 day"', () => {
-      const schedule = { ...createInitialSchedule(BASE), nextReviewAt: BASE + DAY };
-      expect(formatNextReview(schedule, BASE)).toBe('In 1 day');
+    it('1 day and 4 days', () => {
+      expect(describeNextReview({ nextReviewAt: BASE + DAY }, BASE)).toEqual({ kind: 'in', unit: 'days', count: 1 });
+      expect(describeNextReview({ nextReviewAt: BASE + 4 * DAY }, BASE)).toEqual({ kind: 'in', unit: 'days', count: 4 });
     });
 
-    it('shows days', () => {
-      const schedule = { ...createInitialSchedule(BASE), nextReviewAt: BASE + 4 * DAY };
-      expect(formatNextReview(schedule, BASE)).toBe('In 4 days');
+    it('weeks (7-13 days = 1 week, 14 = 2 weeks)', () => {
+      expect(describeNextReview({ nextReviewAt: BASE + 10 * DAY }, BASE)).toEqual({ kind: 'in', unit: 'weeks', count: 1 });
+      expect(describeNextReview({ nextReviewAt: BASE + 14 * DAY }, BASE)).toEqual({ kind: 'in', unit: 'weeks', count: 2 });
     });
 
-    it('shows weeks', () => {
-      const schedule = { ...createInitialSchedule(BASE), nextReviewAt: BASE + 14 * DAY };
-      expect(formatNextReview(schedule, BASE)).toBe('In 2 weeks');
-    });
-
-    it('shows months', () => {
-      const schedule = { ...createInitialSchedule(BASE), nextReviewAt: BASE + 60 * DAY };
-      expect(formatNextReview(schedule, BASE)).toBe('In 2 months');
+    it('months', () => {
+      expect(describeNextReview({ nextReviewAt: BASE + 45 * DAY }, BASE)).toEqual({ kind: 'in', unit: 'months', count: 1 });
+      expect(describeNextReview({ nextReviewAt: BASE + 60 * DAY }, BASE)).toEqual({ kind: 'in', unit: 'months', count: 2 });
     });
   });
 
-  describe('getIntervalLabel', () => {
-    it('returns correct labels', () => {
-      expect(getIntervalLabel(0)).toBe('1 day');
-      expect(getIntervalLabel(1)).toBe('3 days');
-      expect(getIntervalLabel(2)).toBe('1 week');
-      expect(getIntervalLabel(3)).toBe('2 weeks');
-      expect(getIntervalLabel(4)).toBe('1 month');
-      expect(getIntervalLabel(5)).toBe('3 months');
+  describe('getIntervalSpan', () => {
+    it('returns each level as a count of days/weeks/months', () => {
+      expect(getIntervalSpan(0)).toEqual({ unit: 'days', count: 1 });
+      expect(getIntervalSpan(1)).toEqual({ unit: 'days', count: 3 });
+      expect(getIntervalSpan(2)).toEqual({ unit: 'weeks', count: 1 });
+      expect(getIntervalSpan(3)).toEqual({ unit: 'weeks', count: 2 });
+      expect(getIntervalSpan(4)).toEqual({ unit: 'months', count: 1 });
+      expect(getIntervalSpan(5)).toEqual({ unit: 'months', count: 3 });
+    });
+
+    it('matches REVIEW_INTERVALS_MS', () => {
+      const DAYS = { days: 1, weeks: 7, months: 30 } as const;
+      REVIEW_INTERVALS_MS.forEach((ms, level) => {
+        const { unit, count } = getIntervalSpan(level);
+        expect(count * DAYS[unit] * DAY).toBe(ms);
+      });
     });
 
     it('clamps to max for out-of-range', () => {
-      expect(getIntervalLabel(99)).toBe('3 months');
+      expect(getIntervalSpan(99)).toEqual({ unit: 'months', count: 3 });
     });
   });
 });

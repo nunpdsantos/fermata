@@ -69,7 +69,9 @@ export async function loadExercises(
     exercises = mergeExerciseMaps(exercises, generated);
   }
 
-  exerciseCache.set(cacheKey, exercises);
+  // A PT/ES overlay that failed to load comes back null: serve the English
+  // fallback this time but don't cache it, so the next load retries.
+  if (lang === 'en' || (exerciseOv && (!templateMod || templateOv))) exerciseCache.set(cacheKey, exercises);
   return exercises;
 }
 

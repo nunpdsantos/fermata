@@ -131,13 +131,13 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'El Patrón de la Menor Natural',
           explanation:
-            'La escala menor natural sigue T-S-T-T-S-T-T — compara con el patrón de la mayor: T-T-S-T-T-T-S. Los semitonos caen en posiciones diferentes, y eso lo cambia todo. La menor natural más fácil de ver es La menor natural: usa solo teclas blancas, de A a G y de vuelta a A.',
-          tryThisLabel: 'Escucha La menor natural — solo teclas blancas',
+            'La escala menor natural sigue T-S-T-T-S-T-T — compara con el patrón de la mayor: T-T-S-T-T-T-S. Los semitonos caen en posiciones diferentes, y eso lo cambia todo. La escala de A menor natural es la más fácil de ver: usa solo teclas blancas, de A a G y de vuelta a A.',
+          tryThisLabel: 'Escucha A menor natural — solo teclas blancas',
         },
         {
           title: 'Carácter Mayor vs. Menor',
           explanation:
-            'Toca la escala de C mayor y después la escala de C menor. La menor suena más sombría, más emocional — oyes la diferencia instantáneamente. La diferencia proviene de tres grados descendidos: el 3.º, 6.º y 7.º están cada uno un semitono más bajo que en la escala mayor. Estas tres alteraciones transforman brillante y resuelto en sombrío e introspectivo.',
+            'Toca la escala de C mayor y después la escala de C menor. La escala menor suena más sombría, más emocional — oyes la diferencia instantáneamente. La diferencia proviene de tres grados descendidos: el 3.º, 6.º y 7.º están cada uno un semitono más bajo que en la escala mayor. Estas tres alteraciones transforman brillante y resuelto en sombrío e introspectivo.',
           tryThisLabel: 'Compara C menor con C mayor',
         },
       ],
@@ -170,19 +170,19 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'Menor Armónica',
           explanation:
-            'La menor armónica eleva el 7.º grado un semitono, creando una sensible. La menor armónica: A-B-C-D-E-F-G#. Ahora el acorde V es mayor, dando a la tonalidad una fuerte atracción dominante-tónica. La contrapartida: surge una 2.ª aumentada (3 semitonos) entre el 6.º y 7.º grados, dando a la menor armónica su sonido exótico distintivo.',
+            'La escala menor armónica eleva el 7.º grado un semitono, creando una sensible. La escala de A menor armónica: A-B-C-D-E-F-G#. Ahora el acorde V es mayor, dando a la tonalidad una fuerte atracción dominante-tónica. La contrapartida: surge una 2.ª aumentada (3 semitonos) entre el 6.º y 7.º grados, dando a la menor armónica su sonido exótico distintivo.',
           tryThisLabel: 'Escucha el 7.º grado elevado',
         },
         {
           title: 'Menor Melódica',
           explanation:
-            'La menor melódica corrige la 2.ª aumentada elevando también el 6.º grado — pero tradicionalmente solo en la forma ascendente. Ascendente: T-S-T-T-T-T-S. Descendente: menor natural. La melódica ascendente de A: A-B-C-D-E-F#-G#. En el jazz, la forma ascendente se usa en ambas direcciones y se llama escala «menor jazz».',
+            'La escala menor melódica corrige la 2.ª aumentada elevando también el 6.º grado — pero tradicionalmente solo en la forma ascendente. Ascendente: T-S-T-T-T-T-S. Descendente: menor natural. La forma melódica ascendente de A: A-B-C-D-E-F#-G#. En el jazz, la forma ascendente se usa en ambas direcciones y se llama escala «menor jazz».',
           tryThisLabel: 'Escucha la menor melódica',
         },
         {
           title: 'Tres Formas, Tres Propósitos',
           explanation:
-            'La menor natural es pura y folclórica, pero su acorde v menor carece de poder de resolución. La menor armónica da un acorde V mayor con sensible — esencial para cadencias fuertes. La menor melódica suaviza la 2.ª aumentada incómoda para melodías vocales e instrumentales. Los compositores eligen entre las formas según lo que la música necesita en cada momento.',
+            'La escala menor natural es pura y folclórica, pero su acorde v menor carece de poder de resolución. La escala menor armónica da un acorde V mayor con sensible — esencial para cadencias fuertes. La escala menor melódica suaviza la 2.ª aumentada incómoda para melodías vocales e instrumentales. Los compositores eligen entre las formas según lo que la música necesita en cada momento.',
           tryThisLabel: 'Construye E menor natural',
         },
       ],
@@ -215,7 +215,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'Tonalidades Relativas',
           explanation:
-            'Las tonalidades relativas comparten la misma armadura de clave pero tienen tónicas diferentes. Para encontrar la relativa menor de una tonalidad mayor, ve al 6.º grado. C mayor → A menor. G mayor → E menor. Para encontrar la relativa mayor, ve al 3.er grado de la escala menor. A menor → C mayor. El Círculo de Quintas muestra ambas: tonalidades mayores en el anillo exterior, sus relativas menores en el anillo interior.',
+            'Las tonalidades relativas comparten la misma armadura de clave pero tienen tónicas diferentes. Para encontrar la relativa menor de una tonalidad mayor, ve al 6.º grado. C mayor → A menor. G mayor → E menor. Para encontrar la relativa mayor, ve al 3.er grado de la escala menor. Así, A menor → C mayor. El Círculo de Quintas muestra ambas: tonalidades mayores en el anillo exterior, sus relativas menores en el anillo interior.',
           tryThisLabel: 'Observa las tonalidades relativas en el Círculo',
         },
         {
@@ -426,7 +426,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'Leer Cifrados de Acordes',
           explanation:
-            'Letra sola = mayor (C). Letra con «m» = menor (Cm). «dim» u «o» = disminuida (Cdim). «aug» o «+» = aumentada (Caug). Estos cifrados indican la fundamental y la cualidad de un vistazo.',
+            'Letra sola = mayor (C). Letra con «m» = menor (Cm). «dim» o «°» = disminuida (Cdim). «aug» o «+» = aumentada (Caug). Estos cifrados indican la fundamental y la cualidad de un vistazo.',
           tryThisLabel: 'Escucha aumentada — flotante y sin resolución',
         },
       ],
@@ -486,7 +486,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "Am/C" — La menor con C en el bajo. C es la 3.ª de Am, por lo tanto es 1.ª inversión. Escucha cómo suena más ligero que Am en estado fundamental',
+            'Escribe "Am/C" — el acorde de A menor con C en el bajo. C es la 3.ª de Am, por lo tanto es 1.ª inversión. Escucha cómo suena más ligero que Am en estado fundamental',
         },
       ],
     },
@@ -497,26 +497,26 @@ const curriculumL2: CurriculumLevelOverlay = {
       subtitle: 'Los siete acordes que pertenecen a cada tonalidad mayor — y cómo nombrarlos',
       objectives: [
         'Construir una tríada en cada grado de la escala mayor usando solo notas de esa escala',
-        'Conocer el patrón de cualidades: I-ii-iii-IV-V-vi-viiº',
-        'Leer números romanos: mayúscula = mayor, minúscula = menor, º = disminuida',
+        'Conocer el patrón de cualidades: I-ii-iii-IV-V-vi-vii°',
+        'Leer números romanos: mayúscula = mayor, minúscula = menor, ° = disminuida',
       ],
       concepts: [
         {
           title: 'Construir Tríadas Diatónicas',
           explanation:
-            'Construye una tríada en cada grado de la escala mayor usando solo notas de esa escala. En C mayor: C-E-G (mayor), D-F-A (menor), E-G-B (menor), F-A-C (mayor), G-B-D (mayor), A-C-E (menor), B-D-F (disminuida). El patrón de cualidades es siempre I-ii-iii-IV-V-vi-viiº — en todas las tonalidades mayores. Solo los nombres de las notas cambian.',
+            'Construye una tríada en cada grado de la escala mayor usando solo notas de esa escala. En C mayor: C-E-G (mayor), D-F-A (menor), E-G-B (menor), F-A-C (mayor), G-B-D (mayor), A-C-E (menor), B-D-F (disminuida). El patrón de cualidades es siempre I-ii-iii-IV-V-vi-vii° — en todas las tonalidades mayores. Solo los nombres de las notas cambian.',
           tryThisLabel: 'Observa todas las tríadas diatónicas en C',
         },
         {
           title: 'Convenciones de Números Romanos',
           explanation:
-            'Los números romanos en mayúscula indican tríadas mayores (I, IV, V). En minúscula indican tríadas menores (ii, iii, vi). El símbolo de grado (º) indica disminuida (viiº). Esta notación es universal — funciona en cualquier tonalidad. Cuando ves I-IV-V, conoces las funciones de los acordes independientemente de las notas específicas usadas.',
+            'Los números romanos en mayúscula indican tríadas mayores (I, IV, V). En minúscula indican tríadas menores (ii, iii, vi). El símbolo de grado (°) indica disminuida (vii°). Esta notación es universal — funciona en cualquier tonalidad. Cuando ves I-IV-V, conoces las funciones de los acordes independientemente de las notas específicas usadas.',
           tryThisLabel: 'Observa el mismo patrón en G mayor',
         },
         {
           title: 'Por Qué el Patrón Es Fijo',
           explanation:
-            'El patrón de intervalos T-T-S-T-T-T-S de la escala mayor fuerza combinaciones específicas de intervalos en cada grado. Los semitonos entre los grados 3-4 y 7-1 crean la tríada disminuida en el viiº y determinan qué tríadas son mayores o menores. Cambia la escala y cambiarás el patrón — que es exactamente lo que ocurre en las tonalidades menores.',
+            'El patrón de intervalos T-T-S-T-T-T-S de la escala mayor fuerza combinaciones específicas de intervalos en cada grado. Los semitonos entre los grados 3-4 y 7-1 crean la tríada disminuida en el vii° y determinan qué tríadas son mayores o menores. Cambia la escala y cambiarás el patrón — que es exactamente lo que ocurre en las tonalidades menores.',
           tryThisLabel: 'Verifica el patrón en D mayor',
         },
       ],
@@ -527,7 +527,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Abre "key of G" — verifica el mismo patrón I-ii-iii-IV-V-vi-viiº con nombres de notas diferentes',
+            'Abre "key of G" — verifica el mismo patrón I-ii-iii-IV-V-vi-vii° con nombres de notas diferentes',
         },
         {
           instruction:

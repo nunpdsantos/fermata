@@ -46,7 +46,13 @@ const songCache = new Map<string, SongOverlay | null>();
 
 // ─── Generic loader ─────────────────────────────────────────────────────────
 
-async function loadFromGlob<T>(
+/**
+ * Load one overlay chunk. A file that does not exist is cached as "no
+ * overlay"; a chunk that FAILED to load (offline, flaky network) is not
+ * cached, so the next request retries instead of showing the whole level in
+ * English for the rest of the session (W6-14).
+ */
+export async function loadFromGlob<T>(
   glob: Record<string, LazyModule<T>>,
   globKey: string,
   cache: Map<string, T | null>,
@@ -65,7 +71,6 @@ async function loadFromGlob<T>(
     cache.set(cacheKey, mod.default);
     return mod.default;
   } catch {
-    cache.set(cacheKey, null);
     return null;
   }
 }

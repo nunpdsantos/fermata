@@ -120,16 +120,16 @@ const overlay: ExerciseLevelOverlay = {
 
   l3u9m3e1: {
     prompt:
-      'Construye un acorde de G7 (séptima de dominante). Este es el V7 en Do mayor. Selecciona las 4 notas.',
+      'Construye un acorde de G7 (séptima de dominante). Este es el V7 en C mayor. Selecciona las 4 notas.',
     hint: 'G7 = G, B, D, F. Una tríada mayor (G-B-D) más una 7.ª menor (F, 10 semitonos por encima de G). El tritono B-F impulsa la resolución hacia C.',
   },
   l3u9m3e2: {
     prompt:
-      'Construye un acorde de Am7. Este es el vi7 en Do mayor. Selecciona las 4 notas.',
+      'Construye un acorde de Am7. Este es el vi7 en C mayor. Selecciona las 4 notas.',
     hint: 'Am7 = A, C, E, G. Una tríada menor (A-C-E) más una 7.ª menor (G, 10 semitonos por encima de A).',
   },
   l3u9m3e3: {
-    prompt: 'El acorde V7 contiene un tritono. ¿Qué dos notas lo forman en la tonalidad de Do mayor?',
+    prompt: 'El acorde V7 contiene un tritono. ¿Qué dos notas lo forman en la tonalidad de C mayor?',
     choices: [
       'B y F — la sensible y el 4.º grado de la escala',
       'G y D — la fundamental y la 5.ª del acorde V',
@@ -143,30 +143,30 @@ const overlay: ExerciseLevelOverlay = {
 
   l3u9m4e1: {
     prompt:
-      'Construye un acorde de E7 (V7 en La menor, usando la menor armónica). Selecciona las 4 notas.',
-    hint: 'E7 = E, G#, B, D. El G# procede del 7.º grado elevado de La menor armónica. Este acorde de séptima de dominante proporciona la sensible (G#) que resuelve a A.',
+      'Construye un acorde de E7 (V7 en A menor, usando la menor armónica). Selecciona las 4 notas.',
+    hint: 'E7 = E, G#, B, D. El G# procede del 7.º grado elevado de A menor armónica. Este acorde de séptima de dominante proporciona la sensible (G#) que resuelve a A.',
   },
   l3u9m4e2: {
     prompt:
-      'En La menor natural, el acorde construido sobre el 7.º grado (G) es una tríada mayor. ¿Por qué cambia esto en la menor armónica?',
+      'En A menor natural, el acorde construido sobre el 7.º grado (G) es una tríada mayor. ¿Por qué cambia esto en la menor armónica?',
     choices: [
-      'Elevar el 7.º grado (G a G#) transforma VII en viiº, una tríada disminuida',
+      'Elevar el 7.º grado (G a G#) transforma VII en vii°, una tríada disminuida',
       'El acorde del 7.º grado es siempre disminuido independientemente de la forma de la escala menor',
-      'La menor armónica desciende el 7.º grado, creando un acorde disminuido',
+      'La escala menor armónica desciende el 7.º grado, creando un acorde disminuido',
       'La cualidad del acorde no cambia entre menor natural y menor armónica',
     ],
-    hint: 'En La menor natural, VII es G-B-D (mayor). Elevar G a G# en la menor armónica da G#-B-D, que es disminuido (fundamental a 3.ª = 3.ªm, fundamental a 5.ª = 5.ªdim).',
+    hint: 'En A menor natural, VII es G-B-D (mayor). Elevar G a G# en la menor armónica da G#-B-D, que es disminuido (fundamental a 3.ª = 3.ªm, fundamental a 5.ª = 5.ªdim).',
   },
   l3u9m4e3: {
     prompt:
-      '¿Cuál es la cualidad del acorde de séptima construido sobre el 2.º grado de la menor armónica (ii en La menor = B)?',
+      '¿Cuál es la cualidad del acorde de séptima construido sobre el 2.º grado de la menor armónica (ii en A menor = B)?',
     choices: [
       'Séptima semidisminuida (m7b5)',
       'Séptima menor',
       'Séptima totalmente disminuida',
       'Séptima de dominante',
     ],
-    hint: 'En La menor armónica, el ii7 es B-D-F-A: una tríada disminuida (B-D-F) más una 7.ª menor (A). Esta combinación se llama semidisminuida, escrita Bm7b5 o B\u00f8.',
+    hint: 'En A menor armónica, el ii7 es B-D-F-A: una tríada disminuida (B-D-F) más una 7.ª menor (A). Esta combinación se llama semidisminuida, escrita Bm7b5 o B\u00f8.',
   },
 
   // =========================================================================
@@ -178,12 +178,12 @@ const overlay: ExerciseLevelOverlay = {
   l3u10m1e1: {
     prompt: '¿Cuál es la tesitura estándar para la voz de soprano en la escritura SATB?',
     choices: [
-      'C4 a G5 (Do central hasta el Sol una octava y una quinta por encima)',
+      'C4 a G5 (C central hasta el G una octava y una quinta por encima)',
       'C3 a G4',
       'G3 a D5',
       'C5 a C7',
     ],
-    hint: 'El soprano es la voz más aguda en SATB. Su tesitura práctica abarca aproximadamente de C4 (Do central) a G5. Sobrepasar esta tesitura hace que la parte sea difícil de cantar.',
+    hint: 'El soprano es la voz más aguda en SATB. Su tesitura práctica abarca aproximadamente de C4 (C central) a G5. Sobrepasar esta tesitura hace que la parte sea difícil de cantar.',
   },
   l3u10m1e2: {
     prompt: 'En la escritura SATB, ¿qué tipo de movimiento entre dos voces está generalmente prohibido?',
@@ -461,17 +461,17 @@ const overlay: ExerciseLevelOverlay = {
   },
   l3u11m5e2: {
     prompt: 'Transpón C4 una 5.ª justa hacia arriba. Identifica el intervalo de 7 semitonos ascendente a partir de C.',
-    hint: 'Una 5.ª justa son 7 semitonos. C más 7 semitonos = G. Transponer una 5.ªJ hacia arriba es una de las transposiciones más comunes, pasando de Do mayor a Sol mayor.',
+    hint: 'Una 5.ª justa son 7 semitonos. C más 7 semitonos = G. Transponer una 5.ªJ hacia arriba es una de las transposiciones más comunes, pasando de C mayor a G mayor.',
   },
   l3u11m5e3: {
     prompt: 'Al transponer una melodía una 3.ª menor hacia arriba, ¿qué ocurre con la armadura de clave?',
     choices: [
-      'Cambia para reflejar la nueva tonalidad (ej.: Do mayor se convierte en Mib mayor, ganando 3 bemoles)',
+      'Cambia para reflejar la nueva tonalidad (ej.: C mayor se convierte en Eb mayor, ganando 3 bemoles)',
       'Se mantiene igual; solo las notas se mueven',
       'Los sostenidos y bemoles se eliminan',
       'Cada nota recibe una alteración accidental',
     ],
-    hint: 'La transposición desplaza todo a una nueva tonalidad. Subir una 3.ª menor (3 semitonos) desde Do mayor llega a Mib mayor. La nueva armadura de clave (3 bemoles) preserva todas las relaciones interválicas.',
+    hint: 'La transposición desplaza todo a una nueva tonalidad. Subir una 3.ª menor (3 semitonos) desde C mayor llega a Eb mayor. La nueva armadura de clave (3 bemoles) preserva todas las relaciones interválicas.',
   },
 };
 

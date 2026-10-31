@@ -4,18 +4,23 @@ import en from './locales/en.json';
 import pt from './locales/pt.json';
 import es from './locales/es.json';
 
-// Read persisted language from localStorage (same storage key as Zustand store)
-function getPersistedLanguage(): string {
+import { detectBrowserLanguage, isAppLanguage, syncDocumentLanguage } from './language';
+
+// Read the persisted language from localStorage (same storage key as the
+// Zustand store). Nothing saved yet (first run) → follow the browser language,
+// exactly as the preferences slice's default does, so i18next and the store
+// agree from the first render.
+function getInitialLanguage(): string {
   try {
     const raw = localStorage.getItem('music-theory-app');
     if (raw) {
-      const parsed = JSON.parse(raw);
-      return parsed?.state?.language ?? 'en';
+      const saved = JSON.parse(raw)?.state?.language;
+      if (isAppLanguage(saved)) return saved;
     }
   } catch {
     // ignore
   }
-  return 'en';
+  return detectBrowserLanguage();
 }
 
 i18n.use(initReactI18next).init({
@@ -24,12 +29,16 @@ i18n.use(initReactI18next).init({
     pt: { translation: pt },
     es: { translation: es },
   },
-  lng: getPersistedLanguage(),
+  lng: getInitialLanguage(),
   fallbackLng: 'en',
   interpolation: {
     escapeValue: false, // React already escapes
   },
 });
+
+// <html lang> follows the app language (W6-15): set it now and on every change.
+syncDocumentLanguage(i18n.language);
+i18n.on('languageChanged', syncDocumentLanguage);
 
 if (import.meta.env.DEV) {
   i18n.on('missingKey', (_lngs, ns, key) => {

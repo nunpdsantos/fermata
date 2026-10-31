@@ -44,7 +44,7 @@ const overlay: ExerciseLevelOverlay = {
       '4 sostenidos (F#, C#, G#, D#)',
       '1 sostenido (F#)',
     ],
-    hint: 'A mayor está tres pasos en el sentido de las agujas del reloj en el círculo de quintas desde C: G (1#), D (2#), A (3#). Los sostenidos son F#, C#, G#.',
+    hint: 'La tonalidad de A mayor está tres pasos en el sentido de las agujas del reloj en el círculo de quintas desde C: G (1#), D (2#), A (3#). Los sostenidos son F#, C#, G#.',
   },
 
   // ---- l2u4m2: Nombres de los Grados de la Escala ----
@@ -88,7 +88,7 @@ const overlay: ExerciseLevelOverlay = {
 
   l2u5m1e1: {
     prompt: 'Construye la escala de A menor natural. Selecciona las 7 notas. Esta escala usa solo teclas blancas.',
-    hint: 'A menor natural: A, B, C, D, E, F, G. El patrón de intervalos es T-S-T-T-S-T-T. Sin sostenidos ni bemoles.',
+    hint: 'La escala de A menor natural: A, B, C, D, E, F, G. El patrón de intervalos es T-S-T-T-S-T-T. Sin sostenidos ni bemoles.',
   },
   l2u5m1e2: {
     prompt: 'Construye la escala de E menor natural. Selecciona las 7 notas. Una nota necesita sostenido.',
@@ -119,11 +119,11 @@ const overlay: ExerciseLevelOverlay = {
 
   l2u5m2e1: {
     prompt: 'Construye la escala de A menor armónica. Selecciona las 7 notas. Con respecto a la menor natural, una nota se eleva.',
-    hint: 'A menor armónica: A, B, C, D, E, F, G#. El 7.º grado (G) se eleva a G# para crear una sensible que conduce a A.',
+    hint: 'La escala de A menor armónica: A, B, C, D, E, F, G#. El 7.º grado (G) se eleva a G# para crear una sensible que conduce a A.',
   },
   l2u5m2e2: {
     prompt: 'Construye la escala de A menor melódica (forma ascendente). Dos notas se elevan con respecto a la menor natural.',
-    hint: 'A menor melódica ascendente: A, B, C, D, E, F#, G#. Tanto el 6.º (F a F#) como el 7.º (G a G#) se elevan para suavizar la 2.ª aumentada.',
+    hint: 'La escala de A menor melódica ascendente: A, B, C, D, E, F#, G#. Tanto el 6.º (F a F#) como el 7.º (G a G#) se elevan para suavizar la 2.ª aumentada.',
   },
   l2u5m2e3: {
     prompt: '¿Qué distingue la menor armónica de la escala menor natural?',
@@ -133,7 +133,7 @@ const overlay: ExerciseLevelOverlay = {
       'El 3.er grado se eleva un semitono',
       'El 2.º grado se desciende un semitono',
     ],
-    hint: 'La menor armónica eleva el 7.º grado para crear una sensible (un semitono por debajo de la tónica). Esto es esencial para formar el acorde de dominante (V) en tonalidades menores.',
+    hint: 'La escala menor armónica eleva el 7.º grado para crear una sensible (un semitono por debajo de la tónica). Esto es esencial para formar el acorde de dominante (V) en tonalidades menores.',
   },
   l2u5m2e4: {
     prompt: '¿Por qué la escala menor melódica eleva tanto el 6.º como el 7.º grado en la forma ascendente?',
@@ -143,7 +143,7 @@ const overlay: ExerciseLevelOverlay = {
       'Para facilitar la ejecución en el piano',
       'Para eliminar todos los semitonos de la escala',
     ],
-    hint: 'La menor armónica tiene una 2.ª aumentada incómoda (3 semitonos) entre el 6.º y el 7.º grado elevado. Elevar también el 6.º suaviza esta distancia a un tono.',
+    hint: 'La escala menor armónica tiene una 2.ª aumentada incómoda (3 semitonos) entre el 6.º y el 7.º grado elevado. Elevar también el 6.º suaviza esta distancia a un tono.',
   },
 
   // ---- l2u5m3: Tonalidades Relativas/Paralelas ----
@@ -393,17 +393,17 @@ const overlay: ExerciseLevelOverlay = {
       'Disminuida',
       'Aumentada',
     ],
-    hint: 'Las tríadas diatónicas en la escala mayor son: I(M) ii(m) iii(m) IV(M) V(M) vi(m) viiº(dim). Los números romanos en minúscula indican cualidad menor. El acorde iii es menor.',
+    hint: 'Las tríadas diatónicas en la escala mayor son: I(M) ii(m) iii(m) IV(M) V(M) vi(m) vii°(dim). Los números romanos en minúscula indican cualidad menor. El acorde iii es menor.',
   },
   l2u7m5e2: {
-    prompt: 'En una tonalidad mayor, ¿cuál es la cualidad del acorde viiº (construido sobre el 7.º grado)?',
+    prompt: 'En una tonalidad mayor, ¿cuál es la cualidad del acorde vii° (construido sobre el 7.º grado)?',
     choices: [
       'Disminuida',
       'Menor',
       'Mayor',
       'Aumentada',
     ],
-    hint: 'El acorde construido sobre el 7.º grado de la escala mayor (ej: B-D-F en C mayor) contiene un tritono entre la fundamental y la 5.ª, haciéndolo disminuido. Se nota viiº.',
+    hint: 'El acorde construido sobre el 7.º grado de la escala mayor (ej: B-D-F en C mayor) contiene un tritono entre la fundamental y la 5.ª, haciéndolo disminuido. Se nota vii°.',
   },
   l2u7m5e3: {
     prompt: 'Construye una tríada de F mayor. Este es el acorde IV en la tonalidad de C mayor.',
@@ -411,7 +411,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l2u7m5e4: {
     prompt: 'Construye una tríada de A menor. Este es el acorde vi en la tonalidad de C mayor.',
-    hint: 'A menor = A, C, E. Fundamental (A) + 3.ª menor (C, 3 semitonos por encima) + 5.ª justa (E, 7 semitonos por encima de la fundamental).',
+    hint: 'La tríada de A menor = A, C, E. Fundamental (A) + 3.ª menor (C, 3 semitonos por encima) + 5.ª justa (E, 7 semitonos por encima de la fundamental).',
   },
 };
 

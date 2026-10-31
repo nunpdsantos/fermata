@@ -44,6 +44,9 @@ const pt: MusicTermDictionary = {
     major9: 'maior com 7.ª M e 9.ª',
     minor9: 'menor com 7.ª e 9.ª',
     dominant9: 'de nona da dominante',
+    // Harmonic-minor sevenths (l3u9m4 chord_build templates, W6-13)
+    minor_major7: 'menor com 7.ª M',
+    augmented_major7: 'aumentado com 7.ª M',
   },
   directions: {
     ascending: 'ascendente',
@@ -85,6 +88,9 @@ const es: MusicTermDictionary = {
     major9: 'mayor con 7.ª M y 9.ª',
     minor9: 'menor con 7.ª y 9.ª',
     dominant9: 'de novena de dominante',
+    // Séptimas de la menor armónica (plantillas chord_build de l3u9m4, W6-13)
+    minor_major7: 'menor con 7.ª M',
+    augmented_major7: 'aumentado con 7.ª M',
   },
   directions: {
     ascending: 'ascendente',
@@ -104,6 +110,8 @@ const EN_CHORD_QUALITIES: Record<string, string> = {
   major9: 'major 9th',
   minor9: 'minor 9th',
   dominant9: 'dominant 9th',
+  minor_major7: 'minor-major 7th',
+  augmented_major7: 'augmented major 7th',
 };
 
 /** Translate a scale type key to the target language. EN falls through. */
@@ -116,6 +124,17 @@ export function translateScaleType(key: string, lang: ContentLanguage): string {
 export function translateChordQuality(key: string, lang: ContentLanguage): string {
   if (lang === 'en') return EN_CHORD_QUALITIES[key] ?? key.replace(/_/g, ' ');
   return DICTIONARIES[lang]?.chordQualities[key] ?? key.replace(/_/g, ' ');
+}
+
+/**
+ * A chord quality as a standalone answer label (ear-training buttons):
+ * capitalised, and without the leading preposition the PT/ES names carry for
+ * use after a root ('um acorde de C de sétima da dominante' → button
+ * 'Sétima da dominante', not 'De sétima da dominante'). W6-13.
+ */
+export function chordQualityLabel(key: string, lang: ContentLanguage): string {
+  const name = translateChordQuality(key, lang).replace(/^de\s+/i, '');
+  return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
 /** Translate a direction key to the target language. EN falls through. */

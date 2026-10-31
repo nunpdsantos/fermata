@@ -33,7 +33,7 @@ const overlay: TemplateLevelOverlay = {
           'C13 implica um acorde menor',
         ],
         [
-          'Cmin7(b5) é o mesmo que Cø (Dó semidiminuto)',
+          'Cmin7(b5) é o mesmo que Cø (C semidiminuto)',
           'Cmin7(b5) é um acorde totalmente diminuto',
           'Cmin7(b5) é um acorde de sétima menor',
           'A b5 torna-o um acorde aumentado',
@@ -131,7 +131,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói um acorde de sétima menor sobre {root} — o som ii7 de uma progressão ii-V-I.',
       hintTemplate:
-        'Um ii7 é um acorde de sétima menor sobre {root}: fundamental + 3.a menor + 5.a perfeita + 7.a menor. No jazz, a ii-V-I é a progressão mais fundamental.',
+        'Um ii7 é um acorde de sétima menor sobre {root}: fundamental + 3.ª menor + 5.ª perfeita + 7.ª menor. No jazz, a ii-V-I é a progressão mais fundamental.',
     },
     {
       // multiple_choice
@@ -163,7 +163,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói a substituição tritónica para o acorde dominante 7 sobre {root}. Substitui-o por um dom7 a um trítono de distância.',
       hintTemplate:
-        'A substituição tritónica substitui um dom7 por outro dom7 cuja fundamental está a um trítono (6 semitons) de distância. Ambos partilham os mesmos guide tones (a terça e a sétima trocam).',
+        'A substituição tritónica substitui um dom7 por outro dom7 cuja fundamental está a um trítono (6 meios-tons) de distância. Ambos partilham os mesmos guide tones (a terça e a sétima trocam).',
     },
     {
       // multiple_choice
@@ -230,9 +230,9 @@ const overlay: TemplateLevelOverlay = {
         'Rhythm changes (de Gershwin): forma AABA, 32 compassos. Secções A: turnarounds I-vi-ii-V. Ponte: III7-VI7-II7-V7 (ciclo de dominantes).',
       choiceSets: [
         [
-          'A secção A dos rhythm changes é construída sobre turnarounds I-vi-ii-V em Sib maior',
+          'A secção A dos rhythm changes é construída sobre turnarounds I-vi-ii-V em Bb maior',
           'Os rhythm changes usam a forma de blues de 12 compassos',
-          'A secção A é em Dó maior',
+          'A secção A é em C maior',
           'Os rhythm changes não têm tonalidade padrão',
         ],
         [
@@ -289,10 +289,10 @@ const overlay: TemplateLevelOverlay = {
           'O lídio é idêntico ao maior',
         ],
         [
-          'Um vamp em Ré dórico (Dm7 - G7) enfatiza a sexta natural (Si natural sobre Ré)',
-          'Ré dórico usa Sib',
-          'Os vamps em Ré dórico usam apenas um acorde',
-          'Os vamps dóricos evitam o 6.o grau',
+          'Um vamp em D dórico (Dm7 - G7) enfatiza a sexta natural (B natural sobre D)',
+          'D dórico usa Bb',
+          'Os vamps em D dórico usam apenas um acorde',
+          'Os vamps dóricos evitam o 6.º grau',
         ],
         [
           'O frígio caracteriza-se pelo intervalo de b2, dando-lhe um sabor espanhol/flamenco',
@@ -479,7 +479,7 @@ const overlay: TemplateLevelOverlay = {
           'Não existem notas a evitar em nenhuma escala',
         ],
         [
-          'O lócrio, ou o lócrio com 2.a natural (modo 6 da menor melódica), é a escala para acordes semidiminutos (m7b5)',
+          'O lócrio, ou o lócrio com 2.ª natural (modo 6 da menor melódica), é a escala para acordes semidiminutos (m7b5)',
           'O dórico é usado para acordes semidiminutos',
           'O mixolídio é usado para acordes semidiminutos',
           'Os acordes semidiminutos não têm escala associada',
@@ -495,10 +495,10 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica esta escala ou o seu contexto cultural.',
       hintTemplate:
-        'A menor harmónica tem um som "exótico" devido à segunda aumentada. O frígio dominante (5.o modo da menor harmónica) é usado no flamenco e na música do Médio Oriente.',
+        'A escala menor harmónica tem um som "exótico" devido à segunda aumentada. O frígio dominante (5.º modo da menor harmónica) é usado no flamenco e na música do Médio Oriente.',
       choiceSets: [
         [
-          'A escala frígio dominante (1-b2-3-4-5-b6-b7) é o 5.o modo da menor harmónica',
+          'A escala frígio dominante (1-b2-3-4-5-b6-b7) é o 5.º modo da menor harmónica',
           'O frígio dominante é igual ao frígio normal',
           'O frígio dominante tem uma terça menor',
           'O frígio dominante é uma escala de tons inteiros',

@@ -1,12 +1,15 @@
 import type { StateCreator } from 'zustand';
 import type { AppState, PreferencesSlice } from '../storeTypes.ts';
+import { detectBrowserLanguage } from '../../i18n/language.ts';
 
 export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesSlice> = (set) => ({
   colorMode: 'functional',
   themeMode: 'fermata',
   scaleOctaves: 1,
   baseOctave: 4,
-  language: 'en',
+  // First run follows the browser (pt/es/en); a persisted choice overrides
+  // this default in the persist merge.
+  language: detectBrowserLanguage(),
   preferencesUpdatedAt: 0,
   lastView: 'explore',
 

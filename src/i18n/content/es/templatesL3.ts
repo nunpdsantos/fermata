@@ -90,9 +90,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Construye el acorde de séptima diatónico sobre {root} en Do mayor. Usa solo teclas blancas.',
+        'Construye el acorde de séptima diatónico sobre {root} en C mayor. Usa solo teclas blancas.',
       hintTemplate:
-        'Acordes de 7.ª diatónicos en Do mayor: Cmaj7, Dm7, Em7, Fmaj7, G7, Am7, Bm7b5. Construye sobre {root} usando solo notas de la escala de Do mayor.',
+        'Acordes de 7.ª diatónicos en C mayor: Cmaj7, Dm7, Em7, Fmaj7, G7, Am7, Bm7b5. Construye sobre {root} usando solo notas de la escala de C mayor.',
     },
   ],
 
@@ -101,7 +101,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Construye el acorde de séptima diatónico sobre {root} en La menor (menor armónica).',
+        'Construye el acorde de séptima diatónico sobre {root} en A menor (menor armónica).',
       hintTemplate:
         'En la menor armónica, el 7.º grado elevado crea cualidades de acordes diferentes de la menor natural. El V se convierte en séptima de dominante y el vii en séptima disminuida. El 7.º grado elevado crea cualidades de acorde inusuales — no te sorprendan las sonoridades poco familiares.',
     },
@@ -119,10 +119,10 @@ const overlay: TemplateLevelOverlay = {
           'En la menor armónica, V7 es un acorde de séptima semidisminuida',
         ],
         [
-          'En la menor armónica, viiº7 es un acorde de séptima totalmente disminuida',
-          'En la menor armónica, viiº7 es un acorde de séptima semidisminuida',
-          'En la menor armónica, viiº7 es un acorde de séptima menor',
-          'En la menor armónica, viiº7 es un acorde de séptima de dominante',
+          'En la menor armónica, vii°7 es un acorde de séptima totalmente disminuida',
+          'En la menor armónica, vii°7 es un acorde de séptima semidisminuida',
+          'En la menor armónica, vii°7 es un acorde de séptima menor',
+          'En la menor armónica, vii°7 es un acorde de séptima de dominante',
         ],
       ],
     },

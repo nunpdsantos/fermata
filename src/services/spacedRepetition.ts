@@ -21,9 +21,14 @@ export const REVIEW_INTERVALS_MS: readonly number[] = [
 
 const MAX_INTERVAL_LEVEL = REVIEW_INTERVALS_MS.length - 1;
 
-/** Human-readable labels for each interval level */
-const INTERVAL_LABELS: readonly string[] = [
-  '1 day', '3 days', '1 week', '2 weeks', '1 month', '3 months',
+/** Each interval level as a count of days/weeks/months (worded by the UI). */
+const INTERVAL_SPANS: ReadonlyArray<{ unit: 'days' | 'weeks' | 'months'; count: number }> = [
+  { unit: 'days', count: 1 },
+  { unit: 'days', count: 3 },
+  { unit: 'weeks', count: 1 },
+  { unit: 'weeks', count: 2 },
+  { unit: 'months', count: 1 },
+  { unit: 'months', count: 3 },
 ];
 
 // ─── Schedule Lifecycle ─────────────────────────────────────────────────────
@@ -122,26 +127,33 @@ export function backfillSchedules(
 
 // ─── Display Helpers ────────────────────────────────────────────────────────
 
-/** Format the next review time as a human-readable relative string. */
-export function formatNextReview(schedule: ModuleReviewSchedule, now: number): string {
-  const diff = schedule.nextReviewAt - now;
+// These return language-neutral values; the UI words them through i18n
+// (`review.when.*`, `review.span.*`) so PT/ES never see English (W6-17).
 
-  if (diff <= 0) return 'Due now';
+export type ReviewTimeUnit = 'hours' | 'days' | 'weeks' | 'months';
+
+/** When the next review falls, relative to `now`. */
+export type NextReviewTime =
+  | { kind: 'dueNow' }
+  | { kind: 'dueSoon' }
+  | { kind: 'in'; unit: ReviewTimeUnit; count: number };
+
+/** Describe the next review time relative to now. */
+export function describeNextReview(schedule: Pick<ModuleReviewSchedule, 'nextReviewAt'>, now: number): NextReviewTime {
+  const diff = schedule.nextReviewAt - now;
+  if (diff <= 0) return { kind: 'dueNow' };
 
   const hours = Math.floor(diff / (1000 * 60 * 60));
-  if (hours < 1) return 'Due soon';
-  if (hours < 24) return `In ${hours} hour${hours === 1 ? '' : 's'}`;
+  if (hours < 1) return { kind: 'dueSoon' };
+  if (hours < 24) return { kind: 'in', unit: 'hours', count: hours };
 
   const days = Math.floor(diff / DAY_MS);
-  if (days === 1) return 'In 1 day';
-  if (days < 7) return `In ${days} days`;
-  if (days < 14) return 'In 1 week';
-  if (days < 30) return `In ${Math.floor(days / 7)} weeks`;
-  if (days < 60) return 'In 1 month';
-  return `In ${Math.floor(days / 30)} months`;
+  if (days < 7) return { kind: 'in', unit: 'days', count: days };
+  if (days < 30) return { kind: 'in', unit: 'weeks', count: Math.floor(days / 7) };
+  return { kind: 'in', unit: 'months', count: Math.max(1, Math.floor(days / 30)) };
 }
 
-/** Get the label for a given interval level. */
-export function getIntervalLabel(intervalLevel: number): string {
-  return INTERVAL_LABELS[intervalLevel] ?? INTERVAL_LABELS[MAX_INTERVAL_LEVEL];
+/** Length of a review interval level (0-5), as a count of days/weeks/months. */
+export function getIntervalSpan(intervalLevel: number): { unit: Exclude<ReviewTimeUnit, 'hours'>; count: number } {
+  return INTERVAL_SPANS[intervalLevel] ?? INTERVAL_SPANS[MAX_INTERVAL_LEVEL];
 }

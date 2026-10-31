@@ -41,8 +41,8 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'Clave de Sol y Clave de Fa',
           explanation:
-            'Una clave aparece al comienzo de un pentagrama e indica qué alturas representan las líneas y los espacios. La clave de sol (𝄞) se centra en el Sol por encima del Do central — se usa para instrumentos más agudos y la mano derecha en el piano. La clave de fa (𝄢) se centra en el Fa por debajo del Do central — se usa para instrumentos más graves y la mano izquierda en el piano. Sin una clave, el pentagrama es solo líneas — la clave les da significado.',
-          tryThisLabel: 'Explora la tonalidad de Do',
+            'Una clave aparece al comienzo de un pentagrama e indica qué alturas representan las líneas y los espacios. La clave de sol (𝄞) se centra en el G por encima del C central — se usa para instrumentos más agudos y la mano derecha en el piano. La clave de fa (𝄢) se centra en el F por debajo del C central — se usa para instrumentos más graves y la mano izquierda en el piano. Sin una clave, el pentagrama es solo líneas — la clave les da significado.',
+          tryThisLabel: 'Explora la tonalidad de C',
         },
       ],
       tasks: [
@@ -64,30 +64,30 @@ const curriculumL1: CurriculumLevelOverlay = {
       objectives: [
         'Comprender las líneas adicionales como extensiones por encima o por debajo del pentagrama',
         'Saber que el sistema de pentagramas combina las claves de sol y de fa unidas por una llave',
-        'Localizar el Do central como la línea adicional entre los dos pentagramas',
+        'Localizar el C central como la línea adicional entre los dos pentagramas',
       ],
       concepts: [
         {
           title: 'Líneas Adicionales',
           explanation:
-            'Cuando las notas sobrepasan el pentagrama de cinco líneas, se añaden pequeñas líneas horizontales llamadas líneas adicionales. El Do central, por ejemplo, está en una línea adicional por debajo del pentagrama de clave de sol o en una línea adicional por encima del pentagrama de clave de fa. Las líneas adicionales extienden el pentagrama temporalmente — aparecen solo donde son necesarias.',
-          tryThisLabel: 'Observa el Do central en el piano',
+            'Cuando las notas sobrepasan el pentagrama de cinco líneas, se añaden pequeñas líneas horizontales llamadas líneas adicionales. El C central, por ejemplo, está en una línea adicional por debajo del pentagrama de clave de sol o en una línea adicional por encima del pentagrama de clave de fa. Las líneas adicionales extienden el pentagrama temporalmente — aparecen solo donde son necesarias.',
+          tryThisLabel: 'Observa el C central en el piano',
         },
         {
           title: 'El Sistema de Pentagramas',
           explanation:
-            'La música para piano usa el sistema de pentagramas — un pentagrama de clave de sol arriba y un pentagrama de clave de fa abajo, unidos por una llave y conectados por una línea adicional compartida del Do central. La mano derecha lee típicamente la clave de sol; la izquierda lee la clave de fa. Juntos, cubren la mayor parte de la extensión del piano. Por eso los pianistas aprenden ambas claves desde el principio.',
-          tryThisLabel: 'Explora el Do en todo el teclado',
+            'La música para piano usa el sistema de pentagramas — un pentagrama de clave de sol arriba y un pentagrama de clave de fa abajo, unidos por una llave y conectados por una línea adicional compartida del C central. La mano derecha lee típicamente la clave de sol; la izquierda lee la clave de fa. Juntos, cubren la mayor parte de la extensión del piano. Por eso los pianistas aprenden ambas claves desde el principio.',
+          tryThisLabel: 'Explora el C en todo el teclado',
         },
       ],
       tasks: [
         {
           instruction:
-            'Encuentra el Do central en el piano — está entre las dos mitades del sistema de pentagramas',
+            'Encuentra el C central en el piano — está entre las dos mitades del sistema de pentagramas',
         },
         {
           instruction:
-            'Toca notas por debajo y por encima del Do central para escuchar cómo el sistema de pentagramas abarca ambos registros',
+            'Toca notas por debajo y por encima del C central para escuchar cómo el sistema de pentagramas abarca ambos registros',
         },
       ],
     },
@@ -106,19 +106,19 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'Semitonos y Tonos',
           explanation:
-            'Un semitono es la menor distancia entre dos notas — como Do a Do# o Mi a Fa. En el piano, es la tecla inmediatamente siguiente (blanca o negra). Un tono equivale a dos semitonos — como Do a Re. Estas dos distancias son los átomos a partir de los cuales se construyen todas las escalas, acordes y melodías.',
+            'Un semitono es la menor distancia entre dos notas — como C a C# o E a F. En el piano, es la tecla inmediatamente siguiente (blanca o negra). Un tono equivale a dos semitonos — como C a D. Estas dos distancias son los átomos a partir de los cuales se construyen todas las escalas, acordes y melodías.',
           tryThisLabel: 'Observa todos los semitonos en orden',
         },
         {
           title: 'Sostenidos, Bemoles y Becuadros',
           explanation:
-            'Un sostenido (#) sube una nota un semitono. Un bemol (b) baja una nota un semitono. Un becuadro (♮) anula un sostenido o bemol anterior. Estos símbolos se llaman alteraciones. Entre la mayoría de las notas naturales hay una nota intermedia — Do# está entre Do y Re. Pero Mi–Fa y Si–Do ya distan un semitono, por lo que no hay tecla entre ellas.',
-          tryThisLabel: 'Observa Fa# — el sostenido en Sol mayor',
+            'Un sostenido (#) sube una nota un semitono. Un bemol (b) baja una nota un semitono. Un becuadro (♮) anula un sostenido o bemol anterior. Estos símbolos se llaman alteraciones. Entre la mayoría de las notas naturales hay una nota intermedia — C# está entre C y D. Pero E–F y B–C ya distan un semitono, por lo que no hay tecla entre ellas.',
+          tryThisLabel: 'Observa F# — el sostenido en G mayor',
         },
         {
           title: 'Equivalentes Enarmónicos',
           explanation:
-            'Do# y Reb son la misma tecla en el piano — la misma altura, diferente nombre. Se llaman equivalentes enarmónicos. El nombre que se usa depende del contexto: en la tonalidad de Re mayor, la nota se llama Do# (porque es un Do elevado); en la tonalidad de Lab mayor, la misma altura se llama Reb (porque es un Re descendido).',
+            'C# y Db son la misma tecla en el piano — la misma altura, diferente nombre. Se llaman equivalentes enarmónicos. El nombre que se usa depende del contexto: en la tonalidad de D mayor, la nota se llama C# (porque es un C elevado); en la tonalidad de Ab mayor, la misma altura se llama Db (porque es un D descendido).',
           tryThisLabel: 'Observa las 12 notas',
         },
       ],
@@ -129,11 +129,11 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Encuentra Mi y Fa en el piano — observa que no hay tecla negra entre ellas. Este par es un semitono natural',
+            'Encuentra E y F en el piano — observa que no hay tecla negra entre ellas. Este par es un semitono natural',
         },
         {
           instruction:
-            'Escribe "key of G" — ¿qué nota necesita sostenido? El Fa se convierte en Fa# para mantener el patrón de la escala mayor',
+            'Escribe "key of G" — ¿qué nota necesita sostenido? El F se convierte en F# para mantener el patrón de la escala mayor',
         },
       ],
     },
@@ -152,13 +152,13 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'Las 12 Notas',
           explanation:
-            'La música occidental usa 12 alturas distintas, que se repiten en octavas más agudas y más graves. La escala cromática toca las 12 en orden, cada una a un semitono de la siguiente: Do, Do#, Re, Re#, Mi, Fa, Fa#, Sol, Sol#, La, La#, Si — y después vuelve a Do una octava más arriba. Estas 12 notas son el vocabulario completo de alturas. Todas las escalas, acordes y melodías provienen de este conjunto.',
+            'La música occidental usa 12 alturas distintas, que se repiten en octavas más agudas y más graves. La escala cromática toca las 12 en orden, cada una a un semitono de la siguiente: C, C#, D, D#, E, F, F#, G, G#, A, A#, B — y después vuelve a C una octava más arriba. Estas 12 notas son el vocabulario completo de alturas. Todas las escalas, acordes y melodías provienen de este conjunto.',
           tryThisLabel: 'Escucha las 12 notas',
         },
         {
           title: 'El Teclado del Piano',
           explanation:
-            'El piano hace visibles las 12 notas: 7 teclas blancas (las naturales Do–Si) y 5 teclas negras (los sostenidos/bemoles). El patrón de 2 teclas negras seguido de 3 teclas negras se repite a lo largo del teclado. Esta disposición no es arbitraria — refleja los semitonos naturales entre Mi–Fa y Si–Do. Cuando reconozcas este patrón, podrás encontrar cualquier nota instantáneamente.',
+            'El piano hace visibles las 12 notas: 7 teclas blancas (las naturales C–B) y 5 teclas negras (los sostenidos/bemoles). El patrón de 2 teclas negras seguido de 3 teclas negras se repite a lo largo del teclado. Esta disposición no es arbitraria — refleja los semitonos naturales entre E–F y B–C. Cuando reconozcas este patrón, podrás encontrar cualquier nota instantáneamente.',
           tryThisLabel: 'Observa las notas naturales en el teclado',
         },
       ],
@@ -169,7 +169,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'En el piano, encuentra el grupo de 2 teclas negras — la tecla blanca justo por debajo del grupo es siempre Do',
+            'En el piano, encuentra el grupo de 2 teclas negras — la tecla blanca justo por debajo del grupo es siempre C',
         },
       ],
     },
@@ -258,27 +258,27 @@ const curriculumL1: CurriculumLevelOverlay = {
         'El patrón T-T-S-T-T-T-S que define la tonalidad mayor',
       objectives: [
         'Construir una escala mayor a partir de cualquier nota usando el patrón T-T-S-T-T-T-S',
-        'Comprender que Do mayor usa solo teclas blancas porque el patrón cae naturalmente',
+        'Comprender que C mayor usa solo teclas blancas porque el patrón cae naturalmente',
         'Ver que el mismo patrón en otra tonalidad requiere sostenidos o bemoles',
       ],
       concepts: [
         {
           title: 'El Patrón de la Escala Mayor',
           explanation:
-            'La escala mayor sigue una secuencia específica de tonos y semitonos: T-T-S-T-T-T-S. Comenzando en Do, se obtienen solo teclas blancas — por eso Do mayor no tiene sostenidos ni bemoles. Cada nota de la escala tiene un número llamado grado de la escala, del 1 (la fundamental) al 7.',
-          tryThisLabel: 'Observa la escala de Do mayor',
+            'La escala mayor sigue una secuencia específica de tonos y semitonos: T-T-S-T-T-T-S. Comenzando en C, se obtienen solo teclas blancas — por eso C mayor no tiene sostenidos ni bemoles. Cada nota de la escala tiene un número llamado grado de la escala, del 1 (la fundamental) al 7.',
+          tryThisLabel: 'Observa la escala de C mayor',
         },
         {
           title: 'El Patrón Funciona en Cualquier Nota',
           explanation:
-            'El patrón T-T-S funciona a partir de cualquier nota inicial. Comienza en Sol y sigue el patrón — necesitarás Fa# en lugar de Fa para mantener los intervalos correctos. Comienza en Fa y necesitarás Sib. El patrón te dice exactamente qué notas necesitan sostenidos o bemoles — no los eliges tú.',
-          tryThisLabel: 'Construye Sol mayor — un sostenido',
+            'El patrón T-T-S funciona a partir de cualquier nota inicial. Comienza en G y sigue el patrón — necesitarás F# en lugar de F para mantener los intervalos correctos. Comienza en F y necesitarás Bb. El patrón te dice exactamente qué notas necesitan sostenidos o bemoles — no los eliges tú.',
+          tryThisLabel: 'Construye G mayor — un sostenido',
         },
         {
           title: 'Mismo Patrón, Mismo Sonido',
           explanation:
             'Como todas las escalas mayores usan exactamente el mismo patrón de intervalos, comparten la misma cualidad brillante y resuelta — solo en alturas diferentes. Por eso los músicos tocan en tonalidades diferentes: para adaptarse a la extensión vocal de un cantante, al registro de un instrumento, o para cambiar el color de una pieza.',
-          tryThisLabel: 'Construye Re mayor — dos sostenidos',
+          tryThisLabel: 'Construye D mayor — dos sostenidos',
         },
       ],
       tasks: [
@@ -300,30 +300,30 @@ const curriculumL1: CurriculumLevelOverlay = {
     // ── U3 M2: Armaduras de Clave — Primeras Cuatro Tonalidades ──────────
     l1u3m2: {
       title: 'Armaduras de Clave — Primeras Cuatro Tonalidades',
-      subtitle: 'Do, Sol, Re y Fa — las tonalidades que más vas a usar',
+      subtitle: 'C, G, D y F — las tonalidades que más vas a usar',
       objectives: [
         'Comprender qué es una armadura de clave y por qué existe',
-        'Conocer las armaduras de clave de Do mayor (0), Sol mayor (1#), Re mayor (2#) y Fa mayor (1b)',
+        'Conocer las armaduras de clave de C mayor (0), G mayor (1#), D mayor (2#) y F mayor (1b)',
         'Distinguir entre una escala (un patrón) y una tonalidad (un contexto musical)',
       ],
       concepts: [
         {
           title: '¿Qué Es una Armadura de Clave?',
           explanation:
-            'Una armadura de clave es una abreviatura — en lugar de escribir un sostenido o bemol junto a cada nota afectada, se listan una vez al comienzo. La armadura de clave de Sol mayor tiene un sostenido (Fa#), lo que significa que todos los Fa en la pieza se tocan como Fa#. Esto ahorra espacio e indica la tonalidad de un vistazo.',
-          tryThisLabel: 'Observa la armadura de Sol — un sostenido',
+            'Una armadura de clave es una abreviatura — en lugar de escribir un sostenido o bemol junto a cada nota afectada, se listan una vez al comienzo. La armadura de clave de G mayor tiene un sostenido (F#), lo que significa que todos los F en la pieza se tocan como F#. Esto ahorra espacio e indica la tonalidad de un vistazo.',
+          tryThisLabel: 'Observa la armadura de G — un sostenido',
         },
         {
           title: 'Tus Primeras Cuatro Tonalidades',
           explanation:
-            'Comienza por las tonalidades más comunes: Do mayor no tiene sostenidos ni bemoles. Sol mayor tiene un sostenido (Fa#). Re mayor tiene dos sostenidos (Fa#, Do#). Fa mayor tiene un bemol (Sib). Los sostenidos aparecen siempre en orden: Fa-Do-Sol-Re-La-Mi-Si. Los bemoles aparecen en orden inverso: Si-Mi-La-Re-Sol-Do-Fa. Cada nueva tonalidad añade la siguiente alteración en la secuencia.',
-          tryThisLabel: 'Observa la armadura de Re — dos sostenidos',
+            'Comienza por las tonalidades más comunes: C mayor no tiene sostenidos ni bemoles. G mayor tiene un sostenido (F#). D mayor tiene dos sostenidos (F#, C#). F mayor tiene un bemol (Bb). Los sostenidos aparecen siempre en orden: F-C-G-D-A-E-B. Los bemoles aparecen en orden inverso: B-E-A-D-G-C-F. Cada nueva tonalidad añade la siguiente alteración en la secuencia.',
+          tryThisLabel: 'Observa la armadura de D — dos sostenidos',
         },
         {
           title: 'Escala vs. Tonalidad',
           explanation:
-            'Una escala es un patrón de notas en orden. Una tonalidad es el contexto musical que usa esas notas, con una nota como «casa». Cuando estás «en la tonalidad de Sol mayor», la escala de Sol mayor proporciona tus notas, Sol es la casa, y la armadura de clave indica que Fa es siempre sostenido.',
-          tryThisLabel: 'Observa la armadura de Fa — un bemol',
+            'Una escala es un patrón de notas en orden. Una tonalidad es el contexto musical que usa esas notas, con una nota como «casa». Cuando estás «en la tonalidad de G mayor», la escala de G mayor proporciona tus notas, G es la casa, y la armadura de clave indica que F es siempre sostenido.',
+          tryThisLabel: 'Observa la armadura de F — un bemol',
         },
       ],
       tasks: [
@@ -333,7 +333,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "key of D" — ¿qué nuevo sostenido se añadió además del Fa# de Sol mayor?',
+            'Escribe "key of D" — ¿qué nuevo sostenido se añadió además del F# de G mayor?',
         },
         {
           instruction:
@@ -356,8 +356,8 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: '¿Qué Es un Intervalo?',
           explanation:
-            'Un intervalo mide la distancia entre dos notas. Para nombrarlo, cuenta los nombres de las notas de la nota inferior a la superior, inclusive. Do a Mi: Do-Re-Mi = 3 letras, por lo tanto es una 3.ª. Do a Sol: Do-Re-Mi-Fa-Sol = 5 letras, por lo tanto es una 5.ª. De la misma nota a la misma nota es un unísono (1.ª). Una octava (8.ª) va de una nota hasta la siguiente aparición del mismo nombre.',
-          tryThisLabel: 'Observa Do-Mi-Sol — una 3.ª y una 5.ª',
+            'Un intervalo mide la distancia entre dos notas. Para nombrarlo, cuenta los nombres de las notas de la nota inferior a la superior, inclusive. C a E: C-D-E = 3 letras, por lo tanto es una 3.ª. C a G: C-D-E-F-G = 5 letras, por lo tanto es una 5.ª. De la misma nota a la misma nota es un unísono (1.ª). Una octava (8.ª) va de una nota hasta la siguiente aparición del mismo nombre.',
+          tryThisLabel: 'Observa C-E-G — una 3.ª y una 5.ª',
         },
         {
           title: 'Intervalos Melódicos y Armónicos',
@@ -368,14 +368,14 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'Intervalos en la Escala Mayor',
           explanation:
-            'Cada nota de la escala mayor forma un intervalo específico con la fundamental. A partir de Do: Do-Re es una 2.ª, Do-Mi es una 3.ª, Do-Fa es una 4.ª, Do-Sol es una 5.ª, Do-La es una 6.ª, Do-Si es una 7.ª, Do-Do es una octava. Estos son los números básicos de los intervalos. Más adelante aprenderás que cada número tiene también una cualidad (mayor, menor, justo) — por ahora, el número es suficiente.',
+            'Cada nota de la escala mayor forma un intervalo específico con la fundamental. A partir de C: C-D es una 2.ª, C-E es una 3.ª, C-F es una 4.ª, C-G es una 5.ª, C-A es una 6.ª, C-B es una 7.ª, C-C es una octava. Estos son los números básicos de los intervalos. Más adelante aprenderás que cada número tiene también una cualidad (mayor, menor, justo) — por ahora, el número es suficiente.',
           tryThisLabel: 'Observa el Círculo de Quintas — construido sobre intervalos de 5.ª',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escribe "C major chord" — el intervalo de Do a Mi es una 3.ª, y de Do a Sol es una 5.ª. Cuenta las letras para confirmar',
+            'Escribe "C major chord" — el intervalo de C a E es una 3.ª, y de C a G es una 5.ª. Cuenta las letras para confirmar',
         },
         {
           instruction:
@@ -402,26 +402,26 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: '¿Qué Es un Acorde?',
           explanation:
-            'Un acorde son tres o más notas sonando simultáneamente. El acorde más sencillo es la tríada — tres notas apiladas en intervalos de 3.ª. Una tríada mayor combina una fundamental, la nota una 3.ª mayor por encima de ella (4 semitonos) y la nota una 5.ª justa por encima de la fundamental (7 semitonos). Do mayor = Do-Mi-Sol. El cifrado es solo la letra de la fundamental: C significa Do mayor.',
-          tryThisLabel: 'Escucha Do mayor — fundamental, tercera, quinta',
+            'Un acorde son tres o más notas sonando simultáneamente. El acorde más sencillo es la tríada — tres notas apiladas en intervalos de 3.ª. Una tríada mayor combina una fundamental, la nota una 3.ª mayor por encima de ella (4 semitonos) y la nota una 5.ª justa por encima de la fundamental (7 semitonos). C mayor = C-E-G. El cifrado es solo la letra de la fundamental: C significa C mayor.',
+          tryThisLabel: 'Escucha C mayor — fundamental, tercera, quinta',
         },
         {
           title: 'Construir Tríadas a Partir de Cualquier Fundamental',
           explanation:
-            'La fórmula funciona a partir de cualquier nota inicial. Sol mayor = Sol-Si-Re. Re mayor = Re-Fa#-La. Fa mayor = Fa-La-Do. Cuenta 4 semitonos por encima de la fundamental para la 3.ª, después 3 semitonos más para la 5.ª (o 7 en total de la fundamental a la 5.ª). El carácter brillante y estable de una tríada mayor proviene de esta combinación específica de intervalos.',
-          tryThisLabel: 'Construye Sol mayor',
+            'La fórmula funciona a partir de cualquier nota inicial. G mayor = G-B-D. D mayor = D-F#-A. F mayor = F-A-C. Cuenta 4 semitonos por encima de la fundamental para la 3.ª, después 3 semitonos más para la 5.ª (o 7 en total de la fundamental a la 5.ª). El carácter brillante y estable de una tríada mayor proviene de esta combinación específica de intervalos.',
+          tryThisLabel: 'Construye G mayor',
         },
         {
           title: 'El Sonido de la Tríada Mayor',
           explanation:
-            'Toca varias tríadas mayores — Do, Sol, Re, Fa. Todas comparten la misma cualidad brillante, abierta y resuelta, a pesar de comenzar en notas diferentes. Esto ocurre porque todas usan la misma estructura interválica: 3.ª mayor + 3.ª menor (fundamental a 3.ª = 4 semitonos, 3.ª a 5.ª = 3 semitonos). Esa estructura consistente es lo que las hace sonar a todas «mayores».',
-          tryThisLabel: 'Construye Fa mayor',
+            'Toca varias tríadas mayores — C, G, D, F. Todas comparten la misma cualidad brillante, abierta y resuelta, a pesar de comenzar en notas diferentes. Esto ocurre porque todas usan la misma estructura interválica: 3.ª mayor + 3.ª menor (fundamental a 3.ª = 4 semitonos, 3.ª a 5.ª = 3 semitonos). Esa estructura consistente es lo que las hace sonar a todas «mayores».',
+          tryThisLabel: 'Construye F mayor',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escribe "C major chord" y cuenta los semitonos: Do a Mi = 4 (3.ª mayor), Mi a Sol = 3 (3.ª menor), Do a Sol = 7 (5.ª justa)',
+            'Escribe "C major chord" y cuenta los semitonos: C a E = 4 (3.ª mayor), E a G = 3 (3.ª menor), C a G = 7 (5.ª justa)',
         },
         {
           instruction:

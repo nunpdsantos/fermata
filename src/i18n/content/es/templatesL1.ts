@@ -17,14 +17,14 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica la nota mostrada en el pentagrama en clave de sol o justo alrededor de él.',
       hintTemplate:
-        'Usa las posiciones en la clave de sol: líneas Mi-Sol-Si-Re-Fa, espacios Fa-La-Do-Mi.',
+        'Usa las posiciones en la clave de sol: líneas E-G-B-D-F, espacios F-A-C-E.',
     },
     {
       // multiple_choice
       promptTemplate:
         '¿Qué nota se encuentra en la línea o espacio indicado del pentagrama?',
       hintTemplate:
-        'Recuerda las líneas de la clave de sol (Mi-Sol-Si-Re-Fa) y los espacios (Fa-La-Do-Mi).',
+        'Recuerda las líneas de la clave de sol (E-G-B-D-F) y los espacios (F-A-C-E).',
       choiceSets: [
         [
           'La clave de sol también se conoce como clave de G',
@@ -56,7 +56,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica esta nota en una línea adicional por debajo del pentagrama en clave de sol.',
       hintTemplate:
-        'Por debajo del pentagrama en clave de sol: el Do central se sitúa en una línea adicional. Cuenta hacia abajo desde ahí para notas más graves.',
+        'Por debajo del pentagrama en clave de sol: el C central se sitúa en una línea adicional. Cuenta hacia abajo desde ahí para notas más graves.',
     },
   ],
 
@@ -76,8 +76,8 @@ const overlay: TemplateLevelOverlay = {
       hintTemplate:
         'En el piano, la mayoría de las notas naturales tiene una tecla negra entre ellas (tono). Solo dos pares son directamente adyacentes, sin tecla negra entre ellos.',
       choiceSets: [
-        ['Mi y Fa', 'Do y Re', 'Sol y La', 'Re y Mi'],
-        ['Si y Do', 'La y Si', 'Fa y Sol', 'Sol y La'],
+        ['E y F', 'C y D', 'G y A', 'D y E'],
+        ['B y C', 'A y B', 'F y G', 'G y A'],
       ],
     },
   ],
@@ -165,7 +165,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Tiempo común (C) equivale a 4/4',
           'Tiempo común (C) equivale a 2/2',
-          'Tiempo común (C) significa que la pieza está en Do mayor',
+          'Tiempo común (C) significa que la pieza está en C mayor',
           'Tiempo común (C) equivale a 3/4',
         ],
         [
@@ -207,31 +207,31 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         '¿Cuál es la armadura de clave para esta tonalidad mayor?',
       hintTemplate:
-        'Las tonalidades con sostenidos siguen el ciclo de quintas: Sol(1#), Re(2#), La(3#), Mi(4#). Con bemoles: Fa(1b), Sib(2b), Mib(3b), Lab(4b).',
+        'Las tonalidades con sostenidos siguen el ciclo de quintas: G(1#), D(2#), A(3#), E(4#). Con bemoles: F(1b), Bb(2b), Eb(3b), Ab(4b).',
       choiceSets: [
         [
-          'Mi mayor tiene 4 sostenidos: F#, C#, G#, D#',
-          'Mi mayor tiene 3 sostenidos: F#, C#, G#',
-          'Mi mayor tiene 5 sostenidos',
-          'Mi mayor tiene 2 sostenidos',
+          'E mayor tiene 4 sostenidos: F#, C#, G#, D#',
+          'E mayor tiene 3 sostenidos: F#, C#, G#',
+          'E mayor tiene 5 sostenidos',
+          'E mayor tiene 2 sostenidos',
         ],
         [
-          'Sib mayor tiene 2 bemoles: Bb, Eb',
-          'Sib mayor tiene 1 bemol: Bb',
-          'Sib mayor tiene 3 bemoles',
-          'Sib mayor no tiene bemoles',
+          'Bb mayor tiene 2 bemoles: Bb, Eb',
+          'Bb mayor tiene 1 bemol: Bb',
+          'Bb mayor tiene 3 bemoles',
+          'Bb mayor no tiene bemoles',
         ],
         [
-          'Lab mayor tiene 4 bemoles: Bb, Eb, Ab, Db',
-          'Lab mayor tiene 3 bemoles',
-          'Lab mayor tiene 5 bemoles',
-          'Lab mayor tiene 2 bemoles',
+          'Ab mayor tiene 4 bemoles: Bb, Eb, Ab, Db',
+          'Ab mayor tiene 3 bemoles',
+          'Ab mayor tiene 5 bemoles',
+          'Ab mayor tiene 2 bemoles',
         ],
         [
-          'Do mayor no tiene sostenidos ni bemoles',
-          'Do mayor tiene 1 sostenido',
-          'Do mayor tiene 1 bemol',
-          'Do mayor tiene 7 sostenidos',
+          'C mayor no tiene sostenidos ni bemoles',
+          'C mayor tiene 1 sostenido',
+          'C mayor tiene 1 bemol',
+          'C mayor tiene 7 sostenidos',
         ],
       ],
     },

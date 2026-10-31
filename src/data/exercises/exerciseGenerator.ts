@@ -8,7 +8,7 @@ import type { ContentLanguage } from '../../i18n/content/types';
 import type { Note, NaturalNote, Accidental, ScaleType } from '../../core/types/music';
 import { noteToString } from '../../core/types/music';
 import { buildScale } from '../../core/constants/scales';
-import { translateScaleType, translateChordQuality, translateDirection } from '../../i18n/content/musicTerms';
+import { translateScaleType, translateChordQuality, translateDirection, chordQualityLabel } from '../../i18n/content/musicTerms';
 import { mulberry32 } from '../../core/utils/prng';
 
 /** Simple string hash → 32-bit integer */
@@ -147,7 +147,7 @@ function buildConfig(template: ExerciseTemplate, rand: () => number, lang: Conte
             chordRootAccidental: accidentals[idx] ?? '',
             quality,
             choices: qualities.map((q) => ({
-              label: cap(translateChordQuality(q, lang)),
+              label: chordQualityLabel(q, lang),
               correct: q === quality,
             })),
           };

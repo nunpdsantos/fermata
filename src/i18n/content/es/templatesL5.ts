@@ -34,10 +34,10 @@ const overlay: TemplateLevelOverlay = {
           'V/V resuelve hacia I',
         ],
         [
-          'En Do mayor, V/V es Re mayor (D–F#–A) que resuelve hacia Sol mayor',
-          'En Do mayor, V/V es Fa mayor que resuelve hacia Sol',
-          'En Do mayor, V/V es La mayor que resuelve hacia Re',
-          'En Do mayor, V/V es Si mayor que resuelve hacia Do',
+          'En C mayor, V/V es D mayor (D–F#–A) que resuelve hacia G mayor',
+          'En C mayor, V/V es F mayor que resuelve hacia G',
+          'En C mayor, V/V es A mayor que resuelve hacia D',
+          'En C mayor, V/V es B mayor que resuelve hacia C',
         ],
       ],
     },
@@ -60,21 +60,21 @@ const overlay: TemplateLevelOverlay = {
         'Cada dominante secundaria apunta a un acorde diatónico específico. V7/ii resuelve hacia ii, V7/IV resuelve hacia IV, V7/vi resuelve hacia vi, etc.',
       choiceSets: [
         [
-          'V7/vi en Do mayor es E7 (E–G#–B–D), que resuelve hacia La menor',
-          'V7/vi en Do mayor resuelve hacia Fa mayor',
-          'V7/vi en Do mayor es D7',
+          'V7/vi en C mayor es E7 (E–G#–B–D), que resuelve hacia A menor',
+          'V7/vi en C mayor resuelve hacia F mayor',
+          'V7/vi en C mayor es D7',
           'V7/vi resuelve hacia la dominante',
         ],
         [
-          'V7/IV en Do mayor es C7 (C–E–G–Bb), que resuelve hacia Fa mayor',
-          'V7/IV en Do mayor es F7',
-          'V7/IV resuelve hacia Sol mayor',
+          'V7/IV en C mayor es C7 (C–E–G–Bb), que resuelve hacia F mayor',
+          'V7/IV en C mayor es F7',
+          'V7/IV resuelve hacia G mayor',
           'V7/IV no contiene alteraciones cromáticas',
         ],
         [
-          'V7/ii en Do mayor es A7 (A–C#–E–G), que resuelve hacia Re menor',
-          'V7/ii resuelve hacia Do mayor',
-          'V7/ii en Do mayor es B7',
+          'V7/ii en C mayor es A7 (A–C#–E–G), que resuelve hacia D menor',
+          'V7/ii resuelve hacia C mayor',
+          'V7/ii en C mayor es B7',
           'V7/ii es lo mismo que V/V',
         ],
       ],
@@ -88,13 +88,13 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica el acorde de sensible secundaria y su resolución.',
       hintTemplate:
-        'Los acordes de sensible secundaria (viiº/x) funcionan como dominantes secundarias pero son disminuidos. Resuelven medio tono arriba hacia el acorde objetivo.',
+        'Los acordes de sensible secundaria (vii°/x) funcionan como dominantes secundarias pero son disminuidos. Resuelven medio tono arriba hacia el acorde objetivo.',
       choiceSets: [
         [
-          'viiº7/V en Do mayor es F#dim7, que resuelve hacia Sol',
-          'viiº7/V en Do mayor es Bdim7',
-          'viiº7/V resuelve descendiendo hacia Fa',
-          'viiº7/V es lo mismo que V/V',
+          'vii°7/V en C mayor es F#dim7, que resuelve hacia G',
+          'vii°7/V en C mayor es Bdim7',
+          'vii°7/V resuelve descendiendo hacia F',
+          'vii°7/V es lo mismo que V/V',
         ],
         [
           'Los acordes de sensible secundaria tienen la fundamental medio tono por debajo del acorde objetivo',
@@ -103,10 +103,10 @@ const overlay: TemplateLevelOverlay = {
           'La posición de la fundamental es aleatoria',
         ],
         [
-          'viiº/x puede ser tanto una tríada disminuida como un acorde de séptima totalmente disminuida',
-          'viiº/x es siempre un acorde mayor',
-          'viiº/x es siempre un acorde de séptima menor',
-          'viiº/x tiene que ser un acorde semidisminuido',
+          'vii°/x puede ser tanto una tríada disminuida como un acorde de séptima totalmente disminuida',
+          'vii°/x es siempre un acorde mayor',
+          'vii°/x es siempre un acorde de séptima menor',
+          'vii°/x tiene que ser un acorde semidisminuido',
         ],
       ],
     },
@@ -185,7 +185,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Analiza esta modulación por acorde pivote.',
       hintTemplate:
-        'Un acorde pivote pertenece tanto a la tonalidad antigua como a la nueva. Reinterpreta un acorde diatónico: p. ej., IV en Do = I en Fa. El pivote es la bisagra entre dos regiones tonales.',
+        'Un acorde pivote pertenece tanto a la tonalidad antigua como a la nueva. Reinterpreta un acorde diatónico: p. ej., IV en C = I en F. El pivote es la bisagra entre dos regiones tonales.',
       choiceSets: [
         [
           'Un acorde pivote funciona diatónicamente tanto en la tonalidad antigua como en la nueva',
@@ -194,8 +194,8 @@ const overlay: TemplateLevelOverlay = {
           'Un acorde pivote es siempre V7',
         ],
         [
-          'Al modular de Do a Sol, el acorde de Do mayor puede pivotar como IV en Sol',
-          'Do mayor no puede funcionar como acorde pivote',
+          'Al modular de C a G, el acorde de C mayor puede pivotar como IV en G',
+          'C mayor no puede funcionar como acorde pivote',
           'Los pivotes solo funcionan entre tonalidades relativas',
           'El pivote tiene que ser un acorde disminuido',
         ],
@@ -227,16 +227,16 @@ const overlay: TemplateLevelOverlay = {
         'Cada tonalidad mayor tiene 5 tonalidades cercanas: la dominante, la subdominante y las relativas menores de las tres (tónica, dominante, subdominante).',
       choiceSets: [
         [
-          'Do mayor tiene tonalidades cercanas: Sol mayor, Fa mayor, La menor, Mi menor, Re menor',
-          'Do mayor es cercano a Reb mayor y Si mayor',
-          'Do mayor no tiene tonalidades cercanas',
-          'Do mayor es cercano a Lab mayor y Mib mayor',
+          'C mayor tiene tonalidades cercanas: G mayor, F mayor, A menor, E menor, D menor',
+          'C mayor es cercano a Db mayor y B mayor',
+          'C mayor no tiene tonalidades cercanas',
+          'C mayor es cercano a Ab mayor y Eb mayor',
         ],
         [
-          'Sol mayor tiene tonalidades cercanas: Re mayor, Do mayor, Mi menor, Si menor, La menor',
-          'Sol mayor es cercano a Solb mayor',
-          'Sol mayor solo está relacionado con Do mayor',
-          'Sol mayor es cercano a Fa mayor',
+          'G mayor tiene tonalidades cercanas: D mayor, C mayor, E menor, B menor, A menor',
+          'G mayor es cercano a Gb mayor',
+          'G mayor solo está relacionado con C mayor',
+          'G mayor es cercano a F mayor',
         ],
       ],
     },
@@ -317,9 +317,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Construye el acorde prestado {root} (un acorde de mezcla modal en Do mayor).',
+        'Construye el acorde prestado {root} (un acorde de mezcla modal en C mayor).',
       hintTemplate:
-        'La mezcla modal toma prestados acordes del modo menor paralelo. En Do mayor estos acordes prestados son bVI (Lab mayor), bIII (Mib mayor), bVII (Sib mayor) y iv (Fa menor). Construye {root} tal como está escrito: las fundamentales rebajadas forman tríadas mayores, el acorde iv es Fa menor.',
+        'La mezcla modal toma prestados acordes del modo menor paralelo. En C mayor estos acordes prestados son bVI (Ab mayor), bIII (Eb mayor), bVII (Bb mayor) y iv (F menor). Construye {root} tal como está escrito: las fundamentales rebajadas forman tríadas mayores, el acorde iv es F menor.',
     },
     {
       // multiple_choice
@@ -329,15 +329,15 @@ const overlay: TemplateLevelOverlay = {
         'Acordes prestados habituales en el modo mayor: iv (subdominante menor), bVI (sexto grado bemol mayor), bVII (séptimo grado bemol mayor), bIII. Añaden un color más oscuro a una tonalidad mayor.',
       choiceSets: [
         [
-          'El acorde bVI en Do mayor es Lab mayor (prestado de Do menor)',
-          'El acorde bVI en Do mayor es Fa# mayor',
-          'El acorde bVI en Do mayor es La mayor',
+          'El acorde bVI en C mayor es Ab mayor (prestado de C menor)',
+          'El acorde bVI en C mayor es F# mayor',
+          'El acorde bVI en C mayor es A mayor',
           'bVI no existe en la mezcla modal',
         ],
         [
-          'El acorde iv en Do mayor es Fa menor (prestado de Do menor)',
-          'El acorde iv en Do mayor es Fa mayor sin alterar',
-          'El acorde iv en Do mayor es La menor',
+          'El acorde iv en C mayor es F menor (prestado de C menor)',
+          'El acorde iv en C mayor es F mayor sin alterar',
+          'El acorde iv en C mayor es A menor',
           'La mezcla modal no puede alterar la subdominante',
         ],
       ],

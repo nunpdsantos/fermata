@@ -17,14 +17,14 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica a nota mostrada na pauta em clave de sol ou logo junto dela.',
       hintTemplate:
-        'Usa as posições na clave de sol: linhas Mi-Sol-Si-Ré-Fá, espaços Fá-Lá-Dó-Mi.',
+        'Usa as posições na clave de sol: linhas E-G-B-D-F, espaços F-A-C-E.',
     },
     {
       // multiple_choice
       promptTemplate:
         'Que nota se encontra na linha ou espaço indicado da pauta?',
       hintTemplate:
-        'Lembra-te das linhas da clave de sol (Mi-Sol-Si-Ré-Fá) e dos espaços (Fá-Lá-Dó-Mi).',
+        'Lembra-te das linhas da clave de sol (E-G-B-D-F) e dos espaços (F-A-C-E).',
       choiceSets: [
         [
           'A clave de sol é também conhecida como clave de G',
@@ -56,7 +56,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica esta nota numa linha suplementar abaixo da pauta em clave de sol.',
       hintTemplate:
-        'Abaixo da pauta em clave de sol: o Dó central situa-se numa linha suplementar. Conta para baixo a partir daí para notas mais graves.',
+        'Abaixo da pauta em clave de sol: o C central situa-se numa linha suplementar. Conta para baixo a partir daí para notas mais graves.',
     },
   ],
 
@@ -67,7 +67,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual é o intervalo a partir de {root} no sentido {direction}? É um meio-tom ou um tom?',
       hintTemplate:
-        'Um meio-tom é 1 semitom (teclas adjacentes no piano). Um tom é 2 semitons (uma tecla entre elas). A partir de {root}, conta com cuidado.',
+        'Um meio-tom é 1 meio-tom (teclas adjacentes no piano). Um tom é 2 meios-tons (uma tecla entre elas). A partir de {root}, conta com cuidado.',
     },
     {
       // multiple_choice
@@ -76,8 +76,8 @@ const overlay: TemplateLevelOverlay = {
       hintTemplate:
         'No piano, a maioria das notas naturais tem uma tecla preta entre elas (tom). Apenas dois pares são diretamente adjacentes, sem tecla preta entre eles.',
       choiceSets: [
-        ['Mi e Fá', 'Dó e Ré', 'Sol e Lá', 'Ré e Mi'],
-        ['Si e Dó', 'Lá e Si', 'Fá e Sol', 'Sol e Lá'],
+        ['E e F', 'C e D', 'G e A', 'D e E'],
+        ['B e C', 'A e B', 'F e G', 'G e A'],
       ],
     },
   ],
@@ -165,7 +165,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Tempo comum (C) equivale a 4/4',
           'Tempo comum (C) equivale a 2/2',
-          'Tempo comum (C) significa que a peça está em Dó maior',
+          'Tempo comum (C) significa que a peça está em C maior',
           'Tempo comum (C) equivale a 3/4',
         ],
         [
@@ -189,7 +189,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói a escala de {root} maior. Seleciona as 7 notas seguindo o padrão T-T-S-T-T-T-S.',
       hintTemplate:
-        'A escala de {root} maior segue Tom-Tom-Semitom-Tom-Tom-Tom-Semitom a partir de {root}. Conta os semitons: T=2, S=1.',
+        'A escala de {root} maior segue Tom-Tom-Meio-tom-Tom-Tom-Tom-Meio-tom a partir de {root}. Conta os meios-tons: T=2, S=1.',
     },
     {
       // scale_degree_id
@@ -207,31 +207,31 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual é a armação de clave para esta tonalidade maior?',
       hintTemplate:
-        'As tonalidades com sustenidos seguem o ciclo de quintas: Sol(1#), Ré(2#), Lá(3#), Mi(4#). Com bemóis: Fá(1b), Sib(2b), Mib(3b), Láb(4b).',
+        'As tonalidades com sustenidos seguem o ciclo de quintas: G(1#), D(2#), A(3#), E(4#). Com bemóis: F(1b), Bb(2b), Eb(3b), Ab(4b).',
       choiceSets: [
         [
-          'Mi maior tem 4 sustenidos: F#, C#, G#, D#',
-          'Mi maior tem 3 sustenidos: F#, C#, G#',
-          'Mi maior tem 5 sustenidos',
-          'Mi maior tem 2 sustenidos',
+          'A tonalidade de E maior tem 4 sustenidos: F#, C#, G#, D#',
+          'A tonalidade de E maior tem 3 sustenidos: F#, C#, G#',
+          'A tonalidade de E maior tem 5 sustenidos',
+          'A tonalidade de E maior tem 2 sustenidos',
         ],
         [
-          'Sib maior tem 2 bemóis: Bb, Eb',
-          'Sib maior tem 1 bemol: Bb',
-          'Sib maior tem 3 bemóis',
-          'Sib maior não tem bemóis',
+          'Bb maior tem 2 bemóis: Bb, Eb',
+          'Bb maior tem 1 bemol: Bb',
+          'Bb maior tem 3 bemóis',
+          'Bb maior não tem bemóis',
         ],
         [
-          'Láb maior tem 4 bemóis: Bb, Eb, Ab, Db',
-          'Láb maior tem 3 bemóis',
-          'Láb maior tem 5 bemóis',
-          'Láb maior tem 2 bemóis',
+          'Ab maior tem 4 bemóis: Bb, Eb, Ab, Db',
+          'Ab maior tem 3 bemóis',
+          'Ab maior tem 5 bemóis',
+          'Ab maior tem 2 bemóis',
         ],
         [
-          'Dó maior não tem sustenidos nem bemóis',
-          'Dó maior tem 1 sustenido',
-          'Dó maior tem 1 bemol',
-          'Dó maior tem 7 sustenidos',
+          'C maior não tem sustenidos nem bemóis',
+          'C maior tem 1 sustenido',
+          'C maior tem 1 bemol',
+          'C maior tem 7 sustenidos',
         ],
       ],
     },
@@ -242,9 +242,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // interval_id
       promptTemplate:
-        'Identifica o intervalo a partir de {root} no sentido {direction}. Conta os nomes das notas e os semitons.',
+        'Identifica o intervalo a partir de {root} no sentido {direction}. Conta os nomes das notas e os meios-tons.',
       hintTemplate:
-        'A partir de {root}, conta os nomes das notas para o número do intervalo e os semitons para a qualidade. {semitones} semitons {direction}.',
+        'A partir de {root}, conta os nomes das notas para o número do intervalo e os meios-tons para a qualidade. {semitones} meios-tons {direction}.',
     },
   ],
 
@@ -253,16 +253,16 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Constrói a tríade de {root} maior. Seleciona a fundamental, a 3.a maior (4 semitons) e a 5.a perfeita (7 semitons).',
+        'Constrói a tríade de {root} maior. Seleciona a fundamental, a 3.ª maior (4 meios-tons) e a 5.ª perfeita (7 meios-tons).',
       hintTemplate:
-        'Uma tríade maior = fundamental + 3.a maior (4 semitons acima) + 5.a perfeita (7 semitons acima). Começa em {root} e conta.',
+        'Uma tríade maior = fundamental + 3.ª maior (4 meios-tons acima) + 5.ª perfeita (7 meios-tons acima). Começa em {root} e conta.',
     },
     {
       // chord_build
       promptTemplate:
         'Constrói a tríade de {root} maior utilizando as notas da armação de clave.',
       hintTemplate:
-        'Tríade de {root} maior: fundamental ({root}), 3.a maior, 5.a perfeita. Lembra-te da armação de clave para encontrar as notas corretas.',
+        'Tríade de {root} maior: fundamental ({root}), 3.ª maior, 5.ª perfeita. Lembra-te da armação de clave para encontrar as notas corretas.',
     },
   ],
 };

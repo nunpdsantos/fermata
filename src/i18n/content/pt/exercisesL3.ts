@@ -14,33 +14,33 @@ const overlay: ExerciseLevelOverlay = {
 
   l3u9m1e1: {
     prompt:
-      'Constrói um acorde de Cmaj7. Seleciona as 4 notas: fundamental, 3.a maior, 5.a perfeita e 7.a maior.',
-    hint: 'Cmaj7 = C, E, G, B. Uma tríade maior (C-E-G) mais uma 7.a maior (B, 11 semitons acima da fundamental).',
+      'Constrói um acorde de Cmaj7. Seleciona as 4 notas: fundamental, 3.ª maior, 5.ª perfeita e 7.ª maior.',
+    hint: 'Cmaj7 = C, E, G, B. Uma tríade maior (C-E-G) mais uma 7.ª maior (B, 11 meios-tons acima da fundamental).',
   },
   l3u9m1e2: {
     prompt:
-      'Constrói um acorde de Dm7. Seleciona as 4 notas: fundamental, 3.a menor, 5.a perfeita e 7.a menor.',
-    hint: 'Dm7 = D, F, A, C. Uma tríade menor (D-F-A) mais uma 7.a menor (C, 10 semitons acima da fundamental).',
+      'Constrói um acorde de Dm7. Seleciona as 4 notas: fundamental, 3.ª menor, 5.ª perfeita e 7.ª menor.',
+    hint: 'Dm7 = D, F, A, C. Uma tríade menor (D-F-A) mais uma 7.ª menor (C, 10 meios-tons acima da fundamental).',
   },
   l3u9m1e3: {
-    prompt: 'Qual qualidade de acorde de sétima tem uma tríade maior com uma 7.a menor?',
+    prompt: 'Qual qualidade de acorde de sétima tem uma tríade maior com uma 7.ª menor?',
     choices: [
       'Sétima da dominante',
       'Sétima maior',
       'Sétima menor',
       'Sétima meio-diminuta',
     ],
-    hint: 'A sétima da dominante (ex.: G7) combina uma tríade maior com uma 7.a menor. É o único tipo de acorde de sétima com esta combinação, criando forte tensão que resolve para a tónica.',
+    hint: 'A sétima da dominante (ex.: G7) combina uma tríade maior com uma 7.ª menor. É o único tipo de acorde de sétima com esta combinação, criando forte tensão que resolve para a tónica.',
   },
   l3u9m1e4: {
     prompt: 'Qual é a diferença entre um acorde de sétima meio-diminuto e um totalmente diminuto?',
     choices: [
-      'O meio-diminuto tem 7.a menor; o totalmente diminuto tem 7.a diminuta (duplo bemol)',
-      'O meio-diminuto tem 7.a maior; o totalmente diminuto tem 7.a menor',
+      'O meio-diminuto tem 7.ª menor; o totalmente diminuto tem 7.ª diminuta (duplo bemol)',
+      'O meio-diminuto tem 7.ª maior; o totalmente diminuto tem 7.ª menor',
       'Usam tríades diferentes: o meio-diminuto é menor, o totalmente diminuto é diminuto',
       'Não há diferença; são o mesmo acorde',
     ],
-    hint: 'Ambos partilham uma tríade diminuta (fundamental, 3.am, 5.adim). O meio-diminuto acrescenta uma 7.a menor (10 semitons), enquanto o totalmente diminuto acrescenta uma 7.a diminuta (9 semitons).',
+    hint: 'Ambos partilham uma tríade diminuta (fundamental, 3.am, 5.adim). O meio-diminuto acrescenta uma 7.ª menor (10 meios-tons), enquanto o totalmente diminuto acrescenta uma 7.ª diminuta (9 meios-tons).',
   },
   l3u9m1e_ear1: {
     prompt: 'Ouve este acorde de sétima e identifica a sua qualidade.',
@@ -50,7 +50,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sétima menor',
       'Sétima meio-diminuta',
     ],
-    hint: 'Um acorde de sétima maior: uma tríade maior mais uma 7.a maior (C-E-G-B). Caloroso e rico — a 7.a fica apenas meio-tom abaixo da oitava.',
+    hint: 'Um acorde de sétima maior: uma tríade maior mais uma 7.ª maior (C-E-G-B). Caloroso e rico — a 7.ª fica apenas meio-tom abaixo da oitava.',
   },
   l3u9m1e_ear2: {
     prompt: 'Ouve este acorde de sétima e identifica a sua qualidade.',
@@ -60,7 +60,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sétima menor',
       'Sétima meio-diminuta',
     ],
-    hint: 'Um acorde de sétima menor: uma tríade menor mais uma 7.a menor (A-C-E-G). Suave e macio, sem a atração inquieta da sétima da dominante.',
+    hint: 'Um acorde de sétima menor: uma tríade menor mais uma 7.ª menor (A-C-E-G). Suave e macio, sem a atração inquieta da sétima da dominante.',
   },
   l3u9m1e_ear3: {
     prompt: 'Ouve este acorde de sétima e identifica a sua qualidade.',
@@ -70,7 +70,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sétima menor',
       'Sétima meio-diminuta',
     ],
-    hint: 'Um acorde de sétima da dominante: uma tríade maior mais uma 7.a menor (D-F#-A-C). O trítono F#-C dentro dele torna-o inquieto — quer resolver.',
+    hint: 'Um acorde de sétima da dominante: uma tríade maior mais uma 7.ª menor (D-F#-A-C). O trítono F#-C dentro dele torna-o inquieto — quer resolver.',
   },
   l3u9m1e_ear4: {
     prompt: 'Ouve este acorde de sétima e identifica a sua qualidade.',
@@ -80,7 +80,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sétima menor',
       'Sétima meio-diminuta',
     ],
-    hint: 'Um acorde de sétima meio-diminuta: uma tríade diminuta mais uma 7.a menor (E-G-Bb-D). Sombrio e instável — como um acorde de sétima menor com a 5.a baixada.',
+    hint: 'Um acorde de sétima meio-diminuta: uma tríade diminuta mais uma 7.ª menor (E-G-Bb-D). Sombrio e instável — como um acorde de sétima menor com a 5.ª baixada.',
   },
 
   // ---- l3u9m2: Inversões de Acordes de Sétima ----
@@ -93,7 +93,7 @@ const overlay: ExerciseLevelOverlay = {
       '4/3',
       '4/2',
     ],
-    hint: 'Em estado fundamental, os intervalos acima do baixo são 3.a, 5.a e 7.a. A cifragem completa 7/5/3 é abreviada para apenas 7.',
+    hint: 'Em estado fundamental, os intervalos acima do baixo são 3.ª, 5.ª e 7.ª. A cifragem completa 7/5/3 é abreviada para apenas 7.',
   },
   l3u9m2e2: {
     prompt: 'Qual símbolo de baixo cifrado representa um acorde de sétima na primeira inversão?',
@@ -103,7 +103,7 @@ const overlay: ExerciseLevelOverlay = {
       '4/3',
       '4/2',
     ],
-    hint: 'A primeira inversão coloca a 3.a do acorde no baixo. Os intervalos característicos acima do baixo são uma 6.a e uma 5.a, resultando no símbolo 6/5.',
+    hint: 'A primeira inversão coloca a 3.ª do acorde no baixo. Os intervalos característicos acima do baixo são uma 6.ª e uma 5.ª, resultando no símbolo 6/5.',
   },
   l3u9m2e3: {
     prompt: 'Qual símbolo de baixo cifrado representa um acorde de sétima na terceira inversão?',
@@ -113,60 +113,60 @@ const overlay: ExerciseLevelOverlay = {
       '4/3',
       '7',
     ],
-    hint: 'A terceira inversão coloca a 7.a do acorde no baixo. Os intervalos acima do baixo são uma 2.a e uma 4.a, resultando no símbolo 4/2 (ou 2).',
+    hint: 'A terceira inversão coloca a 7.ª do acorde no baixo. Os intervalos acima do baixo são uma 2.ª e uma 4.ª, resultando no símbolo 4/2 (ou 2).',
   },
 
   // ---- l3u9m3: Acordes de Sétima Diatónicos em Maior ----
 
   l3u9m3e1: {
     prompt:
-      'Constrói um acorde de G7 (sétima da dominante). Este é o V7 em Dó maior. Seleciona as 4 notas.',
-    hint: 'G7 = G, B, D, F. Uma tríade maior (G-B-D) mais uma 7.a menor (F, 10 semitons acima de G). O trítono B-F impulsiona a resolução para C.',
+      'Constrói um acorde de G7 (sétima da dominante). Este é o V7 em C maior. Seleciona as 4 notas.',
+    hint: 'G7 = G, B, D, F. Uma tríade maior (G-B-D) mais uma 7.ª menor (F, 10 meios-tons acima de G). O trítono B-F impulsiona a resolução para C.',
   },
   l3u9m3e2: {
     prompt:
-      'Constrói um acorde de Am7. Este é o vi7 em Dó maior. Seleciona as 4 notas.',
-    hint: 'Am7 = A, C, E, G. Uma tríade menor (A-C-E) mais uma 7.a menor (G, 10 semitons acima de A).',
+      'Constrói um acorde de Am7. Este é o vi7 em C maior. Seleciona as 4 notas.',
+    hint: 'Am7 = A, C, E, G. Uma tríade menor (A-C-E) mais uma 7.ª menor (G, 10 meios-tons acima de A).',
   },
   l3u9m3e3: {
-    prompt: 'O acorde V7 contém um trítono. Quais duas notas o formam na tonalidade de Dó maior?',
+    prompt: 'O acorde V7 contém um trítono. Quais duas notas o formam na tonalidade de C maior?',
     choices: [
-      'B e F -- a sensível e o 4.o grau da escala',
-      'G e D -- a fundamental e a 5.a do acorde V',
-      'C e F# -- a tónica e uma nota cromática',
-      'E e Bb -- a 3.a e um bemol emprestado',
+      'B e F — a sensível e o 4.º grau da escala',
+      'G e D — a fundamental e a 5.ª do acorde V',
+      'C e F# — a tónica e uma nota cromática',
+      'E e Bb — a 3.ª e um bemol emprestado',
     ],
-    hint: 'Em G7 (G-B-D-F), o trítono está entre B (a 3.a) e F (a 7.a), abrangendo 6 semitons. B resolve para cima, para C, enquanto F resolve para baixo, para E, criando a resolução V7-I.',
+    hint: 'Em G7 (G-B-D-F), o trítono está entre B (a 3.ª) e F (a 7.ª), abrangendo 6 meios-tons. B resolve para cima, para C, enquanto F resolve para baixo, para E, criando a resolução V7-I.',
   },
 
   // ---- l3u9m4: Acordes de Sétima Diatónicos em Menor ----
 
   l3u9m4e1: {
     prompt:
-      'Constrói um acorde de E7 (V7 em Lá menor, usando a menor harmónica). Seleciona as 4 notas.',
-    hint: 'E7 = E, G#, B, D. O G# provém do 7.o grau elevado de Lá menor harmónica. Este acorde de sétima da dominante fornece a sensível (G#) que resolve para A.',
+      'Constrói um acorde de E7 (V7 em A menor, usando a menor harmónica). Seleciona as 4 notas.',
+    hint: 'E7 = E, G#, B, D. O G# provém do 7.º grau elevado de A menor harmónica. Este acorde de sétima da dominante fornece a sensível (G#) que resolve para A.',
   },
   l3u9m4e2: {
     prompt:
-      'Em Lá menor natural, o acorde construído sobre o 7.o grau (G) é uma tríade maior. Porque muda isto na menor harmónica?',
+      'Em A menor natural, o acorde construído sobre o 7.º grau (G) é uma tríade maior. Porque muda isto na menor harmónica?',
     choices: [
-      'Elevar o 7.o grau (G para G#) transforma VII em viio, uma tríade diminuta',
-      'O acorde do 7.o grau é sempre diminuto independentemente da forma da escala menor',
-      'A menor harmónica baixa o 7.o grau, criando um acorde diminuto',
+      'Elevar o 7.º grau (G para G#) transforma VII em vii°, uma tríade diminuta',
+      'O acorde do 7.º grau é sempre diminuto independentemente da forma da escala menor',
+      'A escala menor harmónica baixa o 7.º grau, criando um acorde diminuto',
       'A qualidade do acorde não muda entre menor natural e menor harmónica',
     ],
-    hint: 'Em Lá menor natural, VII é G-B-D (maior). Elevar G para G# na menor harmónica dá G#-B-D, que é diminuto (fundamental à 3.a = 3.am, fundamental à 5.a = 5.adim).',
+    hint: 'Em A menor natural, VII é G-B-D (maior). Elevar G para G# na menor harmónica dá G#-B-D, que é diminuto (fundamental à 3.ª = 3.am, fundamental à 5.ª = 5.adim).',
   },
   l3u9m4e3: {
     prompt:
-      'Qual é a qualidade do acorde de sétima construído sobre o 2.o grau da menor harmónica (ii em Lá menor = B)?',
+      'Qual é a qualidade do acorde de sétima construído sobre o 2.º grau da menor harmónica (ii em A menor = B)?',
     choices: [
       'Sétima meio-diminuta (m7b5)',
       'Sétima menor',
       'Sétima totalmente diminuta',
       'Sétima da dominante',
     ],
-    hint: 'Em Lá menor harmónica, o ii7 é B-D-F-A: uma tríade diminuta (B-D-F) mais uma 7.a menor (A). Esta combinação chama-se meio-diminuta, escrita Bm7b5 ou B\u00f8.',
+    hint: 'Em A menor harmónica, o ii7 é B-D-F-A: uma tríade diminuta (B-D-F) mais uma 7.ª menor (A). Esta combinação chama-se meio-diminuta, escrita Bm7b5 ou B\u00f8.',
   },
 
   // =========================================================================
@@ -178,12 +178,12 @@ const overlay: ExerciseLevelOverlay = {
   l3u10m1e1: {
     prompt: 'Qual é a tessitura padrão para a voz de soprano na escrita SATB?',
     choices: [
-      'C4 a G5 (Dó central até ao Sol uma oitava e uma quinta acima)',
+      'C4 a G5 (C central até ao G uma oitava e uma quinta acima)',
       'C3 a G4',
       'G3 a D5',
       'C5 a C7',
     ],
-    hint: 'O soprano é a voz mais aguda em SATB. A sua tessitura prática vai aproximadamente de C4 (Dó central) a G5. Ultrapassar esta tessitura torna a parte difícil de cantar.',
+    hint: 'O soprano é a voz mais aguda em SATB. A sua tessitura prática vai aproximadamente de C4 (C central) a G5. Ultrapassar esta tessitura torna a parte difícil de cantar.',
   },
   l3u10m1e2: {
     prompt: 'Na escrita SATB, qual tipo de movimento entre duas vozes é geralmente proibido?',
@@ -199,11 +199,11 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Em tríades em estado fundamental, qual nota do acorde deve ser tipicamente dobrada?',
     choices: [
       'A fundamental do acorde',
-      'A 3.a do acorde',
-      'A 5.a do acorde',
+      'A 3.ª do acorde',
+      'A 5.ª do acorde',
       'Qualquer nota do acorde igualmente',
     ],
-    hint: 'Dobrar a fundamental reforça a identidade do acorde e é a escolha mais segura. Evita dobrar a sensível (7.o grau) ou outras notas com tendência de resolução, pois cria problemas na resolução.',
+    hint: 'Dobrar a fundamental reforça a identidade do acorde e é a escolha mais segura. Evita dobrar a sensível (7.º grau) ou outras notas com tendência de resolução, pois cria problemas na resolução.',
   },
 
   // ---- l3u10m2: Quintas e Oitavas Paralelas Proibidas ----
@@ -231,9 +231,9 @@ const overlay: ExerciseLevelOverlay = {
   l3u10m2e3: {
     prompt: 'Qual tipo de movimento de vozes é mais eficaz para criar linhas de vozes independentes?',
     choices: [
-      'Movimento contrário -- as vozes movem-se em direções opostas',
-      'Movimento paralelo -- as vozes movem-se na mesma direção pelo mesmo intervalo',
-      'Movimento direto -- as vozes movem-se na mesma direção por intervalos diferentes',
+      'Movimento contrário — as vozes movem-se em direções opostas',
+      'Movimento paralelo — as vozes movem-se na mesma direção pelo mesmo intervalo',
+      'Movimento direto — as vozes movem-se na mesma direção por intervalos diferentes',
       'Todos os tipos são igualmente eficazes',
     ],
     hint: 'O movimento contrário maximiza a independência das vozes porque as vozes viajam em direções opostas. Este é o tipo de movimento mais valorizado no contraponto e na escrita a partes.',
@@ -243,18 +243,18 @@ const overlay: ExerciseLevelOverlay = {
 
   l3u10m3e1: {
     prompt:
-      'Quando dois acordes em estado fundamental têm fundamentais a uma 5.a de distância (ex.: I para V), qual técnica de condução de vozes é mais importante?',
+      'Quando dois acordes em estado fundamental têm fundamentais a uma 5.ª de distância (ex.: I para V), qual técnica de condução de vozes é mais importante?',
     choices: [
       'Manter a nota comum na mesma voz e mover as outras por grau',
       'Mover as quatro vozes na mesma direção',
       'Manter todas as vozes o mais juntas possível independentemente de notas comuns',
-      'Dobrar a 3.a do segundo acorde',
+      'Dobrar a 3.ª do segundo acorde',
     ],
-    hint: 'Quando as fundamentais se movem por 5.a (ou 4.a), os dois acordes partilham uma nota comum. Mantê-la na mesma voz garante uma condução de vozes suave enquanto as outras vozes se movem por grau.',
+    hint: 'Quando as fundamentais se movem por 5.ª (ou 4.ª), os dois acordes partilham uma nota comum. Mantê-la na mesma voz garante uma condução de vozes suave enquanto as outras vozes se movem por grau.',
   },
   l3u10m3e2: {
     prompt:
-      'Quando dois acordes em estado fundamental têm fundamentais a uma 2.a de distância (ex.: IV para V), qual é a melhor abordagem de condução de vozes?',
+      'Quando dois acordes em estado fundamental têm fundamentais a uma 2.ª de distância (ex.: IV para V), qual é a melhor abordagem de condução de vozes?',
     choices: [
       'Mover as três vozes superiores em movimento contrário ao baixo',
       'Mover todas as vozes em movimento paralelo com o baixo',
@@ -284,7 +284,7 @@ const overlay: ExerciseLevelOverlay = {
       '6/4',
       '7',
     ],
-    hint: 'A primeira inversão coloca a 3.a do acorde no baixo. Os intervalos acima do baixo são uma 3.a e uma 6.a. O 6/3 completo é abreviado para apenas 6.',
+    hint: 'A primeira inversão coloca a 3.ª do acorde no baixo. Os intervalos acima do baixo são uma 3.ª e uma 6.ª. O 6/3 completo é abreviado para apenas 6.',
   },
   l3u10m4e2: {
     prompt: 'O acorde cadencial 6/4 ocorre em que parte da cadência?',
@@ -294,17 +294,17 @@ const overlay: ExerciseLevelOverlay = {
       'Logo no início de uma frase',
       'Apenas no final de uma peça, no acorde final',
     ],
-    hint: 'O 6/4 cadencial (I6/4) funciona como uma decoração da dominante. Aparece num tempo forte com o baixo no 5.o grau, e as vozes superiores resolvem por grau descendente para formar V.',
+    hint: 'O 6/4 cadencial (I6/4) funciona como uma decoração da dominante. Aparece num tempo forte com o baixo no 5.º grau, e as vozes superiores resolvem por grau descendente para formar V.',
   },
   l3u10m4e3: {
     prompt: 'Porque é a segunda inversão (6/4) usada com mais cuidado do que a primeira inversão?',
     choices: [
-      'A 4.a acima do baixo é uma dissonância que requer resolução específica',
+      'A 4.ª acima do baixo é uma dissonância que requer resolução específica',
       'Os acordes na segunda inversão soam pior do que na primeira inversão',
-      'A 5.a no baixo torna o acorde impossível de identificar',
+      'A 5.ª no baixo torna o acorde impossível de identificar',
       'A segunda inversão é proibida em toda a música clássica',
     ],
-    hint: 'A 4.a perfeita acima do baixo (na posição 6/4) era tratada como dissonância na harmonia de prática comum. Aparece tipicamente em quatro contextos específicos: 6/4 cadencial, de passagem, de pedal e arpejado.',
+    hint: 'A 4.ª perfeita acima do baixo (na posição 6/4) era tratada como dissonância na harmonia de prática comum. Aparece tipicamente em quatro contextos específicos: 6/4 cadencial, de passagem, de pedal e arpejado.',
   },
 
   // =========================================================================
@@ -314,24 +314,24 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l3u11m1: Cadências ----
 
   l3u11m1e1: {
-    prompt: 'O que define uma Cadência Autêntica Perfeita (CAP)?',
+    prompt: 'O que define uma Cadência Perfeita (CAP)?',
     choices: [
       'V para I com ambos os acordes em estado fundamental e a tónica no soprano sobre o acorde I',
       'Qualquer progressão que termine no acorde I',
       'IV para I em estado fundamental',
-      'V para I com a 3.a de I no soprano',
+      'V para I com a 3.ª de I no soprano',
     ],
-    hint: 'Uma CAP tem três requisitos: (1) V vai para I, (2) ambos os acordes estão em estado fundamental, e (3) o soprano termina na nota tónica (1.o grau). É o tipo de cadência mais forte.',
+    hint: 'Uma CAP tem três requisitos: (1) V vai para I, (2) ambos os acordes estão em estado fundamental, e (3) o soprano termina na nota tónica (1.º grau). É o tipo de cadência mais forte.',
   },
   l3u11m1e2: {
-    prompt: 'O que é uma cadência suspensiva?',
+    prompt: 'O que é uma meia cadência?',
     choices: [
       'Qualquer cadência que termine no acorde de dominante (V)',
       'Uma cadência que termina no acorde de tónica (I)',
       'Uma cadência que usa apenas mínimas',
       'Uma cadência que modula para uma nova tonalidade',
     ],
-    hint: 'Uma cadência suspensiva termina em V, criando uma sensação aberta e não resolvida -- como uma vírgula numa frase. O acorde que precede V pode ser I, ii, IV ou vi. Exige continuação.',
+    hint: 'Uma meia cadência termina em V, criando uma sensação aberta e não resolvida — como uma vírgula numa frase. O acorde que precede V pode ser I, ii, IV ou vi. Exige continuação.',
   },
   l3u11m1e3: {
     prompt: 'Numa cadência interrompida, o que acontece?',
@@ -346,10 +346,10 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m1e4: {
     prompt: 'O que é uma cadência plagal?',
     choices: [
-      'IV para I -- a cadência do "Amen"',
-      'V para I -- a cadência mais forte',
-      'V para vi -- a cadência interrompida',
-      'ii para V -- uma progressão pré-dominante comum',
+      'IV para I — a cadência do "Amen"',
+      'V para I — a cadência mais forte',
+      'V para vi — a cadência interrompida',
+      'ii para V — uma progressão pré-dominante comum',
     ],
     hint: 'A cadência plagal move-se de IV para I. É frequentemente chamada a cadência do "Amen" porque é tradicionalmente usada no final de hinos. Tem uma qualidade mais suave e menos impulsionada do que V-I.',
   },
@@ -359,12 +359,12 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m2e1: {
     prompt: 'O que é um período antecedente-consequente?',
     choices: [
-      'Duas frases em que a primeira termina com cadência suspensiva e a segunda com cadência autêntica',
+      'Duas frases em que a primeira termina com meia cadência e a segunda com cadência autêntica',
       'Uma única frase repetida exatamente duas vezes',
       'Duas frases completamente sem relação',
       'Uma frase que modula para a dominante e regressa',
     ],
-    hint: 'Um período é um par de frases: o antecedente (pergunta) termina inconclusivamente com uma cadência suspensiva, e o consequente (resposta) termina conclusivamente com uma CAP. Juntos formam uma afirmação musical completa, como uma pergunta e a sua resposta.',
+    hint: 'Um período é um par de frases: o antecedente (pergunta) termina inconclusivamente com uma meia cadência, e o consequente (resposta) termina conclusivamente com uma CAP. Juntos formam uma afirmação musical completa, como uma pergunta e a sua resposta.',
   },
   l3u11m2e2: {
     prompt: 'O que torna um período paralelo diferente de um período contrastante?',
@@ -402,8 +402,8 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m3e2: {
     prompt: 'O que acontece tipicamente ao ritmo harmónico nos pontos cadenciais?',
     choices: [
-      'Acelera -- os acordes mudam mais frequentemente a aproximar-se da cadência',
-      'Desacelera -- os acordes mudam menos frequentemente nas cadências',
+      'Acelera — os acordes mudam mais frequentemente a aproximar-se da cadência',
+      'Desacelera — os acordes mudam menos frequentemente nas cadências',
       'Mantém-se igual ao longo da frase',
       'Para completamente antes do acorde cadencial',
     ],
@@ -430,7 +430,7 @@ const overlay: ExerciseLevelOverlay = {
       'Uma nota estranha abordada por salto e resolvida por grau',
       'Um trilo ornamental sobre uma nota do acorde',
     ],
-    hint: 'Uma nota de passagem preenche a lacuna entre duas notas do acorde a uma 3.a de distância. É abordada por grau e resolvida por grau na mesma direção. Exemplo: num acorde de C, D passa entre C e E.',
+    hint: 'Uma nota de passagem preenche a lacuna entre duas notas do acorde a uma 3.ª de distância. É abordada por grau e resolvida por grau na mesma direção. Exemplo: num acorde de C, D passa entre C e E.',
   },
   l3u11m4e2: {
     prompt: 'O que é uma bordadura?',
@@ -445,7 +445,7 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m4e3: {
     prompt: 'O que é uma antecipação?',
     choices: [
-      'Uma nota estranha que chega cedo -- soa uma nota do acorde seguinte antes de o acorde mudar',
+      'Uma nota estranha que chega cedo — soa uma nota do acorde seguinte antes de o acorde mudar',
       'Uma nota do acorde que é atrasada até depois do tempo',
       'Uma nota que é mantida do acorde anterior',
       'Uma pausa que substitui uma nota esperada',
@@ -456,22 +456,22 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l3u11m5: Transposição ----
 
   l3u11m5e1: {
-    prompt: 'Transpõe C4 uma 2.a maior acima. Identifica o intervalo de 2 semitons ascendente a partir de C.',
-    hint: 'Uma 2.a maior são 2 semitons. C mais 2 semitons = D. Transpor uma 2.a maior acima move cada nota um tom acima.',
+    prompt: 'Transpõe C4 uma 2.ª maior acima. Identifica o intervalo de 2 meios-tons ascendente a partir de C.',
+    hint: 'Uma 2.ª maior são 2 meios-tons. C mais 2 meios-tons = D. Transpor uma 2.ª maior acima move cada nota um tom acima.',
   },
   l3u11m5e2: {
-    prompt: 'Transpõe C4 uma 5.a perfeita acima. Identifica o intervalo de 7 semitons ascendente a partir de C.',
-    hint: 'Uma 5.a perfeita são 7 semitons. C mais 7 semitons = G. Transpor uma 5.aP acima é uma das transposições mais comuns, passando de Dó maior para Sol maior.',
+    prompt: 'Transpõe C4 uma 5.ª perfeita acima. Identifica o intervalo de 7 meios-tons ascendente a partir de C.',
+    hint: 'Uma 5.ª perfeita são 7 meios-tons. C mais 7 meios-tons = G. Transpor uma 5.aP acima é uma das transposições mais comuns, passando de C maior para G maior.',
   },
   l3u11m5e3: {
-    prompt: 'Ao transpor uma melodia uma 3.a menor acima, o que acontece à armação de clave?',
+    prompt: 'Ao transpor uma melodia uma 3.ª menor acima, o que acontece à armação de clave?',
     choices: [
-      'Muda para refletir a nova tonalidade (ex.: Dó maior torna-se Mib maior, ganhando 3 bemóis)',
+      'Muda para refletir a nova tonalidade (ex.: C maior torna-se Eb maior, ganhando 3 bemóis)',
       'Mantém-se igual; só as notas se movem',
       'Os sustenidos e bemóis são removidos',
       'Cada nota recebe um acidente',
     ],
-    hint: 'A transposição desloca tudo para uma nova tonalidade. Subir uma 3.a menor (3 semitons) a partir de Dó maior chega a Mib maior. A nova armação de clave (3 bemóis) preserva todas as relações intervalares.',
+    hint: 'A transposição desloca tudo para uma nova tonalidade. Subir uma 3.ª menor (3 meios-tons) a partir de C maior chega a Eb maior. A nova armação de clave (3 bemóis) preserva todas as relações intervalares.',
   },
 };
 

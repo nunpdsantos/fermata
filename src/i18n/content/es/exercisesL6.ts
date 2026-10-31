@@ -14,8 +14,8 @@ const overlay: ExerciseLevelOverlay = {
 
   l6u18m1e1: {
     prompt:
-      'Construye el acorde napolitano (bII) en Do menor. Es una tríada de Db mayor: selecciona Db, F y Ab.',
-    hint: 'El acorde napolitano es una tríada mayor construida sobre el 2.º grado rebajado. En Do menor, bII = Db mayor = Db, F, Ab (clases de altura 1, 5, 8).',
+      'Construye el acorde napolitano (bII) en C menor. Es una tríada de Db mayor: selecciona Db, F y Ab.',
+    hint: 'El acorde napolitano es una tríada mayor construida sobre el 2.º grado rebajado. En C menor, bII = Db mayor = Db, F, Ab (clases de altura 1, 5, 8).',
   },
   l6u18m1e2: {
     prompt: '¿Cuál es la función armónica del acorde napolitano (bII)?',
@@ -74,27 +74,27 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l6u18m3: Sexta Alemana ----
 
   l6u18m3e1: {
-    prompt: 'El acorde de sexta alemana (Gr+6) es enarmónicamente equivalente a qué acorde común?',
+    prompt: '¿A qué acorde común equivale enarmónicamente el acorde de sexta alemana (Gr+6)?',
     choices: [
       'Un acorde de séptima de dominante (V7) — mismas alturas, escritura y resolución diferentes',
       'Un acorde de séptima disminuida — misma estructura interválica',
       'Un acorde de séptima semidisminuida — mismo sonido, contexto diferente',
       'Un acorde de séptima mayor — idéntico en posición cerrada',
     ],
-    hint: 'La Gr+6 tiene las mismas clases de altura que un acorde de séptima de dominante. Por ejemplo, en Do menor la Gr+6 (Ab, C, Eb, F#) suena idéntica a Ab7 (Ab, C, Eb, Gb). La escritura diferente refleja destinos de conducción de voces diferentes.',
+    hint: 'La Gr+6 tiene las mismas clases de altura que un acorde de séptima de dominante. Por ejemplo, en C menor la Gr+6 (Ab, C, Eb, F#) suena idéntica a Ab7 (Ab, C, Eb, Gb). La escritura diferente refleja destinos de conducción de voces diferentes.',
   },
   l6u18m3e2: {
-    prompt: '¿Cómo se cifra el acorde de sexta alemana en una tonalidad menor (p. ej., Do menor)?',
+    prompt: '¿Cómo se cifra el acorde de sexta alemana en una tonalidad menor (p. ej., C menor)?',
     choices: [
       'Ab, C, Eb, F# — b6, 1, b3, #4',
       'Ab, C, E, F# — b6, 1, 3, #4',
       'Ab, Cb, Eb, F# — b6, b1, b3, #4',
       'Ab, C, Eb, Gb — b6, 1, b3, b5',
     ],
-    hint: 'En Do menor, la Gr+6 contiene b6 (Ab), 1 (C), b3 (Eb) y #4 (F#). El intervalo crucial de sexta aumentada está entre Ab y F#, que resuelve divergentemente hacia Sol–Sol (octava sobre la dominante).',
+    hint: 'En C menor, la Gr+6 contiene b6 (Ab), 1 (C), b3 (Eb) y #4 (F#). El intervalo crucial de sexta aumentada está entre Ab y F#, que resuelve divergentemente hacia G–G (octava sobre la dominante).',
   },
   l6u18m3e3: {
-    prompt: 'El acorde de sexta alemana resuelve típicamente hacia qué acorde?',
+    prompt: '¿Hacia qué acorde resuelve típicamente el acorde de sexta alemana?',
     choices: [
       'La dominante (V) o 6/4 cadencial, con b6 y #4 resolviendo divergentemente hacia el 5.º grado',
       'La tónica (I) directamente en posición fundamental',
@@ -117,7 +117,7 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Dado que Gr+6 y V7 son enarmónicamente idénticos, una única sonoridad puede pivotar entre dos tonalidades distantes. La reescritura cambia qué voz conduce hacia dónde, redirigiendo la trayectoria armónica.',
   },
   l6u18m4e2: {
-    prompt: 'La modulación enarmónica vía Gr+6/V7 permite modulación directa a tonalidades a qué distancia?',
+    prompt: '¿A qué distancia están las tonalidades a las que se puede modular directamente mediante la modulación enarmónica vía Gr+6/V7?',
     choices: [
       'Tonalidades distantes — por ejemplo, tónicas a medio tono de distancia (C a Db), cinco pasos en el círculo de quintas, mucho más allá del alcance de pivote diatónico',
       'Solo tonalidades cercanas con una diferencia de una alteración',
@@ -127,14 +127,14 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Los acordes pivote diatónicos enlazan solo tonalidades cercanas. Reinterpretar la Gr+6 de la tonalidad como V7 (o viceversa) mueve la tónica medio tono — de C a Db hay cinco pasos en el círculo de quintas, una tonalidad distante alcanzada a través de un solo acorde. Es una técnica emblemática de los compositores del periodo romántico.',
   },
   l6u18m4e3: {
-    prompt: 'Si una Gr+6 en Do menor (Ab, C, Eb, F#) se reinterpreta como V7, ¿qué tonalidad toniciza ahora?',
+    prompt: 'Si una Gr+6 en C menor (Ab, C, Eb, F#) se reinterpreta como V7, ¿qué tonalidad toniciza ahora?',
     choices: [
-      'Reb mayor/menor — reescrita como Ab, C, Eb, Gb = Ab7 = V7/Db',
-      'Sol mayor — porque F# resuelve ascendiendo hacia Sol',
-      'Fa mayor — el acorde se convierte en V7/Fa',
-      'Mib mayor — porque Eb es la nota del medio',
+      'Db mayor/menor — reescrita como Ab, C, Eb, Gb = Ab7 = V7/Db',
+      'G mayor — porque F# resuelve ascendiendo hacia G',
+      'F mayor — el acorde se convierte en V7/F',
+      'Eb mayor — porque Eb es la nota del medio',
     ],
-    hint: 'Reescribir F# como Gb transforma el acorde en Ab, C, Eb, Gb = Lab séptima de dominante. Ab7 es V7 de Db, por tanto la música puede pivotar suavemente de Do menor a Reb mayor — un desplazamiento de medio tono, enlazando territorio tonal muy distante.',
+    hint: 'Reescribir F# como Gb transforma el acorde en Ab, C, Eb, Gb = Ab séptima de dominante. Ab7 es V7 de Db, por tanto la música puede pivotar suavemente de C menor a Db mayor — un desplazamiento de medio tono, enlazando territorio tonal muy distante.',
   },
 
   // =========================================================================
@@ -159,14 +159,14 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'El acorde dim7 está construido enteramente con terceras menores (3 semitonos cada una). Como 3 × 4 = 12, las cuatro notas dividen la octava uniformemente. Esto significa que cada inversión del acorde suena idéntica en su estructura interválica.',
   },
   l6u19m1e3: {
-    prompt: '¿Hacia cuántas tonalidades diferentes puede resolver un único acorde de séptima disminuida como acorde de sensible (viiº7)?',
+    prompt: '¿Hacia cuántas tonalidades diferentes puede resolver un único acorde de séptima disminuida como acorde de sensible (vii°7)?',
     choices: [
       'Cuatro tonalidades — cualquiera de sus cuatro notas puede tratarse como sensible',
       'Dos tonalidades — una mayor y una menor',
       'Doce tonalidades — una para cada semitono',
       'Una tonalidad — determinada por su fundamental',
     ],
-    hint: 'Debido a su simetría, cada nota del acorde dim7 puede reescribirse como sensible que resuelve ascendentemente por medio tono hacia una tónica diferente. C–Eb–Gb–Bbb puede ser viiº7 de Db, E, G o Bb.',
+    hint: 'Debido a su simetría, cada nota del acorde dim7 puede reescribirse como sensible que resuelve ascendentemente por medio tono hacia una tónica diferente. C–Eb–Gb–Bbb puede ser vii°7 de Db, E, G o Bb.',
   },
 
   // ---- l6u19m2: Séptima Disminuida con Nota Común ----
@@ -182,14 +182,14 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'La séptima disminuida con nota común mantiene una nota (la nota común) del acorde que decora. Las otras tres voces se mueven por grado conjunto, creando un embellecimiento cromático por notas vecinas.',
   },
   l6u19m2e2: {
-    prompt: 'En un CTo7 que embellece un acorde de Do mayor, ¿cuál es típicamente la nota común?',
+    prompt: 'En un CTo7 que embellece un acorde de C mayor, ¿cuál es típicamente la nota común?',
     choices: [
       'La fundamental del acorde embellecido (C)',
       'La 3.ª del acorde embellecido (E)',
       'La 5.ª del acorde embellecido (G)',
       'La 7.ª del acorde embellecido (B)',
     ],
-    hint: 'La forma más habitual mantiene la fundamental del acorde objetivo. Para un CTo7 que embellece Do mayor, C se mantiene mientras las otras voces (D#, F#, A) se mueven por grado conjunto de vuelta a las notas del acorde de Do mayor.',
+    hint: 'La forma más habitual mantiene la fundamental del acorde objetivo. Para un CTo7 que embellece C mayor, C se mantiene mientras las otras voces (D#, F#, A) se mueven por grado conjunto de vuelta a las notas del acorde de C mayor.',
   },
   l6u19m2e3: {
     prompt: '¿Cuál es la función principal de un acorde de séptima disminuida con nota común?',
@@ -199,7 +199,7 @@ const overlay: ExerciseLevelOverlay = {
       'Dominante — resuelve hacia la tónica con movimiento de sensible',
       'Modulatoria — inicia siempre un cambio de tonalidad',
     ],
-    hint: 'A diferencia del viiº7 (que tiene función dominante), el CTo7 es puramente decorativo. Embellece un acorde a través de movimiento cromático por notas vecinas, añadiendo color sin cambiar la dirección armónica.',
+    hint: 'A diferencia del vii°7 (que tiene función dominante), el CTo7 es puramente decorativo. Embellece un acorde a través de movimiento cromático por notas vecinas, añadiendo color sin cambiar la dirección armónica.',
   },
 
   // ---- l6u19m3: Mediantes Cromáticas ----
@@ -212,7 +212,7 @@ const overlay: ExerciseLevelOverlay = {
       'Cualquier progresión de acordes que usa conducción cromática de voces',
       'Dos acordes que comparten las tres notas pero en inversiones diferentes',
     ],
-    hint: 'Las mediantes diatónicas (I–iii, I–vi) comparten dos notas comunes. Las mediantes cromáticas (p. ej., Do mayor a Mi mayor, o Do mayor a Lab mayor) tienen fundamentales a una 3.ª de distancia pero con cualidad alterada, compartiendo solo una o cero notas comunes.',
+    hint: 'Las mediantes diatónicas (I–iii, I–vi) comparten dos notas comunes. Las mediantes cromáticas (p. ej., C mayor a E mayor, o C mayor a Ab mayor) tienen fundamentales a una 3.ª de distancia pero con cualidad alterada, compartiendo solo una o cero notas comunes.',
   },
   l6u19m3e2: {
     prompt: '¿Cuántos tipos de relaciones de tercera cromática existen entre tríadas mayores?',
@@ -308,7 +308,7 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l6u20m2: Contrapunto de Especies 4–5 ----
 
   l6u20m2e1: {
-    prompt: 'El contrapunto de cuarta especie se define principalmente por qué recurso rítmico?',
+    prompt: '¿Por qué recurso rítmico se define principalmente el contrapunto de cuarta especie?',
     choices: [
       'Síncopa a través de suspensiones — notas ligadas crean disonancia en tiempos fuertes',
       'Ritmos con puntillo alternando entre notas largas y cortas',

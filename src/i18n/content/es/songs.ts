@@ -1,7 +1,7 @@
 import type { SongOverlay } from '../types';
 
 // ---------------------------------------------------------------------------
-// Castilian Spanish translations for song reference context strings (L1–L3)
+// Castilian Spanish translations for song reference context strings (L1–L3 + l4u14m2)
 // Only the `context` field is translated — song titles and artist names are
 // kept in their original language.
 // ---------------------------------------------------------------------------
@@ -37,8 +37,8 @@ const overlay: SongOverlay = {
     'La línea de bajo demuestra un pulso constante de negras con subdivisiones en corcheas.',
   ],
   'l1u2m2': [
-    'Alterna entre compás 6/8 y 3/4, evidenciando cómo las indicaciones de compás moldean la sensación rítmica.',
-    'Escrita en compás 5/4, demostrando cómo los compases irregulares crean un carácter rítmico distintivo.',
+    'El vals por excelencia — cuenta UN-dos-tres de principio a fin y el compás de 3/4 se revela al instante.',
+    'Una marcha enérgica en 2/4 — dos tiempos por compás, con el patrón fuerte-débil que define el compás binario.',
   ],
 
   // ---- L1U3: Escalas, Intervalos y Primeros Acordes ----
@@ -48,8 +48,8 @@ const overlay: SongOverlay = {
     'La melodía inicial es una escala mayor descendente de la tónica a la tónica.',
   ],
   'l1u3m2': [
-    'Escrita en Sol mayor (un sostenido — Fa#), demostrando cómo una armadura de clave sencilla moldea el sonido de una canción clásica.',
-    'En la tonalidad de Fa mayor (un bemol), un buen punto de partida para leer armaduras de clave más allá de Do mayor.',
+    'Escrita en G mayor (un sostenido — F#), demostrando cómo una armadura de clave sencilla moldea el sonido de una canción clásica.',
+    'En la tonalidad de F mayor (un bemol), un buen punto de partida para leer armaduras de clave más allá de C mayor.',
   ],
   'l1u3m3': [
     'Abre con una cuarta justa — uno de los intervalos más reconocibles en la música occidental.',
@@ -57,8 +57,8 @@ const overlay: SongOverlay = {
     'Abre con una quinta justa, un intervalo fundamental para el entrenamiento auditivo.',
   ],
   'l1u3m4': [
-    'Construida sobre una progresión de cuatro acordes (Do–Sol–Lam–Fa) en que todos los acordes mayores son tríadas en posición fundamental.',
-    'Utiliza tríadas mayores simples (La, Re, Mi) en un patrón repetitivo — la esencia de la armonía básica de acordes.',
+    'Construida sobre una progresión de cuatro acordes (C–G–Am–F) en que todos los acordes mayores son tríadas en posición fundamental.',
+    'Utiliza tríadas mayores simples (A, D, E) en un patrón repetitivo — la esencia de la armonía básica de acordes.',
   ],
 
   // =========================================================================
@@ -68,8 +68,8 @@ const overlay: SongOverlay = {
   // ---- L2U4: Todas las Tonalidades Mayores y Grados de la Escala ----
 
   'l2u4m1': [
-    'En Do mayor — demuestra cómo el ciclo de quintas coloca la tonalidad más sencilla en la posición de las 12 en punto.',
-    'Escrita en La mayor (tres sostenidos), mostrando cómo los compositores trabajan cómodamente en tonalidades con sostenidos.',
+    'En C mayor — demuestra cómo el ciclo de quintas coloca la tonalidad más sencilla en la posición de las 12 en punto.',
+    'Escrita en A mayor (tres sostenidos), mostrando cómo los compositores trabajan cómodamente en tonalidades con sostenidos.',
   ],
   'l2u4m2': [
     'La melodía sigue el movimiento 1–1–5–5–6–6–5, delineando claramente los grados de tónica, dominante y submediante.',
@@ -79,23 +79,24 @@ const overlay: SongOverlay = {
   // ---- L2U5: Escalas Menores y Relaciones entre Tonalidades ----
 
   'l2u5m1': [
-    'Construida sobre la escala menor natural (eólico) en La menor, con la característica séptima rebajada.',
-    'Escrita íntegramente en Mi menor usando solo los acordes de Em y C — un sonido menor natural (eólico) puro, sin sexta ni séptima elevadas, lo que la convierte en un ejemplo de manual del modo eólico.',
+    'Construida sobre la escala menor natural (eólico) en A menor, con la característica séptima rebajada.',
+    'Se basa en los acordes Em y C, con un sabor modal que mezcla el eólico y el dórico — en algunos momentos la melodía eleva la 6.ª (C♯), lo que le da una cualidad modal y no la de un menor puramente diatónico.',
   ],
   'l2u5m2': [
     'Utiliza la escala menor armónica — la segunda aumentada entre el b6 y el #7 le confiere su sonoridad distintiva.',
-    'El uso de Mi mayor (V) sobre una tonalidad de La menor implica la menor armónica, con el 7.º grado elevado (Sol#) creando una fuerte atracción de vuelta a la tónica.',
+    'El uso de E mayor (V) sobre una tonalidad de A menor implica la menor armónica, con el 7.º grado elevado (G#) creando una fuerte atracción de vuelta a la tónica.',
   ],
   'l2u5m3': [
-    'Comienza en La menor (relativa menor de Do mayor), modulando después — una relación clásica entre tonalidades relativas.',
-    'Alterna entre los versos en La menor y el contexto de su relativa mayor (Do mayor), demostrando la relación cercana entre tonalidades relativas que comparten la misma armadura de clave.',
+    'Comienza en A menor (relativa menor de C mayor), modulando después — una relación clásica entre tonalidades relativas.',
+    'Alterna entre los versos en A menor y el contexto de su relativa mayor (C mayor), demostrando la relación cercana entre tonalidades relativas que comparten la misma armadura de clave.',
   ],
 
   // ---- L2U6: Compás Compuesto y Síncopa ----
 
   'l2u6m1': [
-    'El acompañamiento arpegiado en compás 6/8 demuestra el compás compuesto binario, donde cada uno de los dos tiempos principales se subdivide en grupos de tres corcheas.',
+    'El acompañamiento arpegiado en compás 6/8 demuestra el compás compuesto binario, donde cada uno de los dos tiempos principales se subdivide en grupos de tres corcheas (algunas ediciones lo escriben en 12/8; la sensación de compás compuesto binario es la misma).',
     'El verso está en 6/8 antes de que el estribillo cambie de sensación — un contraste entre compás compuesto y simple.',
+    'Alterna entre 6/8 y 3/4 — las mismas seis corcheas reagrupadas, la hemiolia clásica entre compás compuesto y simple.',
   ],
   'l2u6m2': [
     'Un ejemplo definitorio de síncopa en el ragtime — los acentos caen consistentemente entre los tiempos.',
@@ -106,15 +107,15 @@ const overlay: SongOverlay = {
 
   'l2u7m1': [
     'Abre con un salto de cuarta justa, y la melodía delinea intervalos mayores y menores a lo largo de la pieza.',
-    'La figura inicial de cuatro notas (Do–Mi–Fa–Sol) comienza con un brillante salto de tercera mayor — una de las referencias clásicas de entrenamiento auditivo para identificar el intervalo de 3.ª mayor.',
+    'La figura inicial de cuatro notas (C–E–F–G) comienza con un brillante salto de tercera mayor — una de las referencias clásicas de entrenamiento auditivo para identificar el intervalo de 3.ª mayor.',
   ],
   'l2u7m2': [
     'Abre con una cuarta aumentada (tritono) — el «intervalo del diablo» utilizado para efecto dramático.',
     'Contiene intervalos compuestos (novenas, décimas) en la melodía, extendiéndose más allá de la octava.',
   ],
   'l2u7m3': [
-    'Presenta tríadas mayores, menores y aumentadas — el acorde de Mi aumentado crea tensión antes de resolver, demostrando cómo diferentes cualidades de tríadas sirven diferentes funciones armónicas.',
-    'La progresión I–III–IV–iv (Sol–Si–Do–Dom) presenta un acorde mayor cromático (III) tomado de fuera de la tonalidad y un subdominante menor prestado (iv), mostrando cómo la cualidad de las tríadas crea color emocional.',
+    'Presenta tríadas mayores, menores y aumentadas — el acorde de E aumentado crea tensión antes de resolver, demostrando cómo diferentes cualidades de tríadas sirven diferentes funciones armónicas.',
+    'La progresión I–III–IV–iv (G–B–C–Cm) presenta un acorde mayor cromático (III) tomado de fuera de la tonalidad y un subdominante menor prestado (iv), mostrando cómo la cualidad de las tríadas crea color emocional.',
   ],
   'l2u7m4': [
     'La línea de bajo se mueve por tríadas en posición fundamental y primera inversión — un ejemplo clásico de conducción de voces en el bajo cifrado.',
@@ -144,8 +145,8 @@ const overlay: SongOverlay = {
     'La progresión de «rhythm changes» (Imaj7–vi7–ii7–V7) se convirtió en un modelo para cientos de composiciones de jazz.',
   ],
   'l3u9m4': [
-    'Abre en Do menor con una progresión i7–iv7–iiø7–V7, demostrando cómo los acordes de séptima diatónicos y el movimiento cadencial ii–V funcionan en una tonalidad menor.',
-    'La progresión de acordes de séptima en tonalidad menor (i–iv7–V7) crea la sensación lánguida de la canción.',
+    'Abre en C menor con una progresión i7–iv7–iiø7–V7, demostrando cómo los acordes de séptima diatónicos y el movimiento cadencial ii–V funcionan en una tonalidad menor.',
+    'La progresión de acordes de séptima en tonalidad menor (i–iiø7–V7–i) crea la sensación lánguida de la canción.',
   ],
 
   // ---- L3U10: Conducción de Voces y Escritura a Partes ----
@@ -167,11 +168,11 @@ const overlay: SongOverlay = {
   // ---- L3U11: Cadencias, Frases y Ornamentación ----
 
   'l3u11m1': [
-    'Cada verso termina con una cadencia perfecta clara (V–I) en la palabra «Hallelujah».',
-    'Contiene tanto semicadencias (reposo en el V) como cadencias perfectas dentro de su estructura fraseológica.',
+    'Cada verso termina con una cadencia auténtica clara (V–I) en la palabra «Hallelujah». La letra narra su propia armonía: «the fourth, the fifth» (IV–V), «the minor fall» (vi), «the major lift» (IV) — y ese movimiento V–vi es un gesto ejemplar de cadencia rota.',
+    'Contiene tanto semicadencias (reposo en el V) como cadencias auténticas dentro de su estructura fraseológica.',
   ],
   'l3u11m2': [
-    'La melodía está estructurada como un período paralelo — dos frases, la primera terminando en una semicadencia, la segunda en una cadencia perfecta.',
+    'La melodía está estructurada como un período paralelo — dos frases, la primera terminando en una semicadencia, la segunda en una cadencia auténtica perfecta.',
     'Un ejemplo clásico de estructura antecedente-consecuente formando un período musical.',
   ],
   'l3u11m3': [
@@ -185,6 +186,17 @@ const overlay: SongOverlay = {
   'l3u11m5': [
     'La línea melódica ornamentada está construida sobre cadenas de suspensiones y notas de paso sobre un bajo simple.',
     'La melodía ornamentada entrelaza notas de paso cromáticas y notas auxiliares en torno a las notas estructurales del acorde.',
+  ],
+
+  // =========================================================================
+  // Nivel 4
+  // =========================================================================
+
+  // ---- L4U14: Compases Asimétricos y Mixtos ----
+
+  'l4u14m2': [
+    'Escrita en 5/4 (3+2), demuestra cómo los compases asimétricos crean un carácter rítmico propio.',
+    'El famoso riff de bajo está en 7/4 — cuenta el ciclo y siente el tiempo de más que un compás simple no permitiría.',
   ],
 };
 

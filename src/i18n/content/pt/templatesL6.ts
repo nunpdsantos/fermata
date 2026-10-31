@@ -18,7 +18,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói uma tríade maior de {root}{accidental} (acorde napolitano).',
       hintTemplate:
-        'O acorde napolitano é uma tríade maior construída sobre o 2.o grau rebaixado. Constrói uma tríade maior sobre {root}{accidental}.',
+        'O acorde napolitano é uma tríade maior construída sobre o 2.º grau rebaixado. Constrói uma tríade maior sobre {root}{accidental}.',
     },
     {
       // multiple_choice
@@ -34,10 +34,10 @@ const overlay: TemplateLevelOverlay = {
           'O napolitano está sempre em posição fundamental',
         ],
         [
-          'O acorde napolitano em Dó menor é Réb maior (Réb-Fá-Láb)',
-          'O napolitano em Dó menor é Ré maior',
-          'O napolitano em Dó menor é Mib maior',
-          'O napolitano em Dó menor é Si maior',
+          'O acorde napolitano em C menor é Db maior (Db-F-Ab)',
+          'O napolitano em C menor é D maior',
+          'O napolitano em C menor é Eb maior',
+          'O napolitano em C menor é B maior',
         ],
       ],
     },
@@ -50,17 +50,17 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica o tipo e a estrutura deste acorde de sexta aumentada.',
       hintTemplate:
-        'Sexta italiana: b6, 1, #4 (3 notas). Sexta francesa: b6, 1, 2, #4 (4 notas, inclui o 2.o grau). Ambas resolvem para V com as vozes extremas a expandirem-se para uma oitava.',
+        'Sexta italiana: b6, 1, #4 (3 notas). Sexta francesa: b6, 1, 2, #4 (4 notas, inclui o 2.º grau). Ambas resolvem para V com as vozes extremas a expandirem-se para uma oitava.',
       choiceSets: [
         [
           'A sexta italiana tem 3 notas: b6, 1 e #4',
           'A sexta italiana tem 4 notas',
-          'A sexta italiana contém o 2.o grau',
-          'A sexta italiana contém o 3.o grau',
+          'A sexta italiana contém o 2.º grau',
+          'A sexta italiana contém o 3.º grau',
         ],
         [
-          'A sexta francesa acrescenta o 2.o grau à sexta italiana',
-          'A sexta francesa acrescenta o 3.o grau',
+          'A sexta francesa acrescenta o 2.º grau à sexta italiana',
+          'A sexta francesa acrescenta o 3.º grau',
           'A sexta francesa tem apenas 2 notas',
           'A francesa é idêntica à italiana',
         ],
@@ -71,10 +71,10 @@ const overlay: TemplateLevelOverlay = {
           'Os acordes de sexta aumentada não resolvem',
         ],
         [
-          'O intervalo entre b6 e #4 é uma sexta aumentada (10 semitons), que resolve para P8',
-          'O intervalo de sexta aumentada é de 8 semitons',
+          'O intervalo entre b6 e #4 é uma sexta aumentada (10 meios-tons), que resolve para P8',
+          'O intervalo de sexta aumentada é de 8 meios-tons',
           'A sexta aumentada resolve para P5',
-          'O intervalo de sexta aumentada é de 6 semitons',
+          'O intervalo de sexta aumentada é de 6 meios-tons',
         ],
       ],
     },
@@ -87,13 +87,13 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Analisa o acorde de sexta alemã e a sua resolução.',
       hintTemplate:
-        'Sexta alemã: b6, 1, b3, #4 (4 notas, inclui a 3.a menor). Resolve para um 6/4 cadencial para evitar quintas paralelas, depois para V.',
+        'Sexta alemã: b6, 1, b3, #4 (4 notas, inclui a 3.ª menor). Resolve para um 6/4 cadencial para evitar quintas paralelas, depois para V.',
       choiceSets: [
         [
           'A sexta alemã contém b6, 1, b3 e #4',
           'A sexta alemã contém b6, 1, 2 e #4',
           'A sexta alemã tem apenas 3 notas',
-          'A sexta alemã contém o 5.o grau',
+          'A sexta alemã contém o 5.º grau',
         ],
         [
           'A sexta alemã resolve para um 6/4 cadencial para evitar quintas paralelas com V',
@@ -115,7 +115,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói um acorde de sétima da dominante de {root}{accidental} (sexta alemã enarmónica).',
       hintTemplate:
-        'A sexta alemã é enarmonicamente equivalente a um acorde de sétima da dominante. Constrói uma sétima da dominante sobre {root}{accidental}: fundamental + 3.a maior + 5.a perfeita + 7.a menor.',
+        'A sexta alemã é enarmonicamente equivalente a um acorde de sétima da dominante. Constrói uma sétima da dominante sobre {root}{accidental}: fundamental + 3.ª maior + 5.ª perfeita + 7.ª menor.',
     },
   ],
 
@@ -129,7 +129,7 @@ const overlay: TemplateLevelOverlay = {
         'A sexta alemã é enarmonicamente idêntica a um acorde de sétima da dominante. Reescrevê-la permite uma modulação súbita para uma tonalidade remota: Gr+6 numa tonalidade = V7 noutra.',
       choiceSets: [
         [
-          'A sexta alemã em Dó menor (Láb-Dó-Mib-Fá#) pode ser reescrita como Láb7 (Láb-Dó-Mib-Solb), resolvendo para Réb',
+          'A sexta alemã em C menor (Ab-C-Eb-F#) pode ser reescrita como Ab7 (Ab-C-Eb-Gb), resolvendo para Db',
           'A sexta alemã não pode ser reinterpretada como sétima da dominante',
           'A reinterpretação enarmónica só funciona com a sexta italiana',
           'O acorde reescrito resolve para a mesma tonalidade',
@@ -176,10 +176,10 @@ const overlay: TemplateLevelOverlay = {
           'Cada tonalidade tem a sua sétima diminuta única',
         ],
         [
-          'Sio7 (Si-Ré-Fá-Láb) pode resolver para Dó, Mib, Solb ou Lá dependendo da grafia enarmónica',
-          'Sio7 só pode resolver para Dó',
-          'Sio7 tem 2 resoluções possíveis',
-          'Sio7 resolve apenas para Si maior',
+          'B°7 (B-D-F-Ab) pode resolver para C, Eb, Gb ou A dependendo da grafia enarmónica',
+          'B°7 só pode resolver para C',
+          'B°7 tem 2 resoluções possíveis',
+          'B°7 resolve apenas para B maior',
         ],
       ],
     },
@@ -242,25 +242,25 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Identifica a relação de mediante cromática descrita.',
       hintTemplate:
-        'As mediantes cromáticas são acordes relacionados por uma 3.a maior ou menor com fundamentais que diferem cromaticamente (ex. Dó maior para Mi maior ou Láb maior). Partilham uma nota comum.',
+        'As mediantes cromáticas são acordes relacionados por uma 3.ª maior ou menor com fundamentais que diferem cromaticamente (ex. C maior para E maior ou Ab maior). Partilham uma nota comum.',
       choiceSets: [
         [
-          'Dó maior para Mi maior é uma mediante cromática: fundamentais a uma 3.aM de distância, partilhando uma nota comum (Mi)',
-          'Dó maior para Sol maior é uma mediante cromática',
-          'Dó maior para Fá maior é uma mediante cromática',
+          'C maior para E maior é uma mediante cromática: fundamentais a uma 3.aM de distância, partilhando uma nota comum (E)',
+          'C maior para G maior é uma mediante cromática',
+          'C maior para F maior é uma mediante cromática',
           'As mediantes cromáticas não partilham notas comuns',
         ],
         [
-          'As mediantes cromáticas produzem uma mudança de cor impressionante porque alteram o modo ao mover-se por 3.a',
+          'As mediantes cromáticas produzem uma mudança de cor impressionante porque alteram o modo ao mover-se por 3.ª',
           'As mediantes cromáticas soam sempre subtis e suaves',
           'As mediantes cromáticas são o mesmo que mediantes diatónicas',
           'As mediantes cromáticas limitam-se a peças em modo maior',
         ],
         [
           'C maior para Ab maior é uma mediante cromática: fundamentais a uma 3.aM de distância, partilhando uma nota comum (C)',
-          'Dó para Láb é uma relação de dominante',
+          'C para Ab é uma relação de dominante',
           'Esta relação não tem notas comuns',
-          'Dó para Láb é uma relação de subdominante',
+          'C para Ab é uma relação de subdominante',
         ],
       ],
     },

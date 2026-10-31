@@ -48,7 +48,6 @@ function fallbackT(key: string, options?: Record<string, unknown>): string {
     'exerciseFeedback.choiceCorrect': 'Correct! "{{label}}" is right.',
     'exerciseFeedback.choiceIncorrect': 'The correct answer is "{{label}}".',
     'exerciseFeedback.choiceNoAnswer': 'No correct answer defined.',
-    'exerciseFeedback.semitones': '{{count}} semitones',
     'exerciseFeedback.degreeName1': 'Tonic (1st)',
     'exerciseFeedback.degreeName2': 'Supertonic (2nd)',
     'exerciseFeedback.degreeName3': 'Mediant (3rd)',
@@ -58,33 +57,26 @@ function fallbackT(key: string, options?: Record<string, unknown>): string {
     'exerciseFeedback.degreeName7': 'Leading tone (7th)',
   };
 
-  let template = STRINGS[key] ?? key;
-
-  // Handle plural keys: if count > 1, try _plural variant
-  if (options && typeof options.count === 'number' && options.count !== 1) {
-    const pluralKey = key + '_plural';
-    const PLURAL_STRINGS: Record<string, string> = {
-      'exerciseFeedback.scaleMissing_plural': 'missing {{count}} notes',
-      'exerciseFeedback.scaleExtra_plural': '{{count}} extra notes',
-      'exerciseFeedback.chordMissing_plural': 'missing {{count}} notes',
-      'exerciseFeedback.chordExtra_plural': '{{count}} extra notes',
-    };
-    if (PLURAL_STRINGS[pluralKey]) {
-      template = PLURAL_STRINGS[pluralKey];
-    }
-  }
-
-  // Singular forms (count === 1)
-  const SINGULAR_STRINGS: Record<string, string> = {
-    'exerciseFeedback.scaleMissing': 'missing {{count}} note',
-    'exerciseFeedback.scaleExtra': '{{count}} extra note',
-    'exerciseFeedback.chordMissing': 'missing {{count}} note',
-    'exerciseFeedback.chordExtra': '{{count}} extra note',
+  // Plural keys use i18next's JSON v4 suffixes (`_one` / `_other`), exactly
+  // as the locale files do: the real `t` picks the suffix by Intl.PluralRules,
+  // this English fallback by count === 1.
+  const PLURAL_STRINGS: Record<string, string> = {
+    'exerciseFeedback.scaleMissing_one': 'missing {{count}} note',
+    'exerciseFeedback.scaleMissing_other': 'missing {{count}} notes',
+    'exerciseFeedback.scaleExtra_one': '{{count}} extra note',
+    'exerciseFeedback.scaleExtra_other': '{{count}} extra notes',
+    'exerciseFeedback.chordMissing_one': 'missing {{count}} note',
+    'exerciseFeedback.chordMissing_other': 'missing {{count}} notes',
+    'exerciseFeedback.chordExtra_one': '{{count}} extra note',
+    'exerciseFeedback.chordExtra_other': '{{count}} extra notes',
+    'exerciseFeedback.semitones_one': '{{count}} semitone',
+    'exerciseFeedback.semitones_other': '{{count}} semitones',
   };
-  if (!template || template === key) {
-    if (SINGULAR_STRINGS[key]) {
-      template = SINGULAR_STRINGS[key];
-    }
+
+  let template = STRINGS[key] ?? key;
+  if (options && typeof options.count === 'number') {
+    const suffixed = PLURAL_STRINGS[`${key}_${options.count === 1 ? 'one' : 'other'}`];
+    if (suffixed) template = suffixed;
   }
 
   if (options) {

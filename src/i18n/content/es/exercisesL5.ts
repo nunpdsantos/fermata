@@ -14,13 +14,13 @@ const overlay: ExerciseLevelOverlay = {
 
   l5u15m1e1: {
     prompt:
-      'Construye V/V en Do mayor. La dominante secundaria de V es una tríada de D mayor. Selecciona las 3 notas: D, F#, A.',
-    hint: 'V/V en Do significa «el acorde V de Sol mayor». La dominante de Sol es Re mayor: D (2), F# (6), A (9). El F# es cromático — no pertenece a Do mayor.',
+      'Construye V/V en C mayor. La dominante secundaria de V es una tríada de D mayor. Selecciona las 3 notas: D, F#, A.',
+    hint: 'V/V en C significa «el acorde V de G mayor». La dominante de G es D mayor: D (2), F# (6), A (9). El F# es cromático — no pertenece a C mayor.',
   },
   l5u15m1e2: {
     prompt:
-      'Construye V7/V en Do mayor. Es un acorde de D dominante con séptima: D, F#, A, C. Selecciona las 4 notas.',
-    hint: 'V7/V en Do = D7: D (2), F# (6), A (9), C (0). La séptima menor añadida (C) refuerza la atracción hacia Sol. El F# es la alteración cromática.',
+      'Construye V7/V en C mayor. Es un acorde de D dominante con séptima: D, F#, A, C. Selecciona las 4 notas.',
+    hint: 'V7/V en C = D7: D (2), F# (6), A (9), C (0). La séptima menor añadida (C) refuerza la atracción hacia G. El F# es la alteración cromática.',
   },
   l5u15m1e3: {
     prompt: '¿Qué es V/V?',
@@ -30,30 +30,30 @@ const overlay: ExerciseLevelOverlay = {
       'Un acorde disminuido construido sobre el segundo grado de la escala',
       'El acorde dominante en segunda inversión',
     ],
-    hint: 'V/V significa «la dominante de la dominante». En Do mayor, V es Sol. La dominante de Sol es Re mayor. Por tanto, V/V en Do = Re mayor, un acorde cromático que toniciza temporalmente Sol.',
+    hint: 'V/V significa «la dominante de la dominante». En C mayor, V es G. La dominante de G es D mayor. Por tanto, V/V en C = D mayor, un acorde cromático que toniciza temporalmente G.',
   },
 
   // ---- l5u15m2: Dominantes Secundarias de ii, iii, IV, vi ----
 
   l5u15m2e1: {
-    prompt: 'En Do mayor, ¿qué acorde funciona como V/ii?',
+    prompt: 'En C mayor, ¿qué acorde funciona como V/ii?',
     choices: [
-      'La mayor (A, C#, E) — la dominante de Re menor',
-      'Sol mayor (G, B, D) — la dominante de Do',
-      'Mi mayor (E, G#, B) — la dominante de La menor',
-      'Fa mayor (F, A, C) — la subdominante',
+      'A mayor (A, C#, E) — la dominante de D menor',
+      'G mayor (G, B, D) — la dominante de C',
+      'E mayor (E, G#, B) — la dominante de A menor',
+      'F mayor (F, A, C) — la subdominante',
     ],
-    hint: 'En Do mayor, ii es Re menor. La dominante de Re menor es La mayor (A, C#, E). El C# es la nota cromática que crea la sensible de Re.',
+    hint: 'En C mayor, ii es D menor. La dominante de D menor es A mayor (A, C#, E). El C# es la nota cromática que crea la sensible de D.',
   },
   l5u15m2e2: {
-    prompt: 'En Do mayor, ¿qué acorde funciona como V/IV?',
+    prompt: 'En C mayor, ¿qué acorde funciona como V/IV?',
     choices: [
-      'Do mayor (C, E, G) — la dominante de Fa',
-      'Sol mayor (G, B, D) — la dominante de Do',
-      'Sib mayor (Bb, D, F) — prestado de Do menor',
-      'Re mayor (D, F#, A) — la dominante de Sol',
+      'C mayor (C, E, G) — la dominante de F',
+      'G mayor (G, B, D) — la dominante de C',
+      'Bb mayor (Bb, D, F) — prestado de C menor',
+      'D mayor (D, F#, A) — la dominante de G',
     ],
-    hint: 'V/IV significa la dominante de IV. En Do mayor, IV es Fa. La dominante de Fa es Do mayor. Esto es inusual porque Do mayor ya es la tónica — el contexto determina si funciona como I o V/IV.',
+    hint: 'V/IV significa la dominante de IV. En C mayor, IV es F. La dominante de F es C mayor. Esto es inusual porque C mayor ya es la tónica — el contexto determina si funciona como I o V/IV.',
   },
   l5u15m2e3: {
     prompt: '¿Qué define una dominante aplicada (secundaria)?',
@@ -61,7 +61,7 @@ const overlay: ExerciseLevelOverlay = {
       'Una tríada mayor o acorde de séptima dominante que resuelve hacia un acorde diatónico distinto de I, funcionando como V de ese acorde',
       'Cualquier acorde de séptima dominante usado en una progresión',
       'Un acorde que modula permanentemente a una nueva tonalidad',
-      'El acorde V que resuelve de forma engañosa hacia vi',
+      'El acorde V que resuelve hacia vi en una cadencia rota',
     ],
     hint: 'Una dominante aplicada funciona temporalmente como V (o V7) de un acorde diatónico. Introduce notas cromáticas para crear una resolución de sensible hacia su objetivo, sin establecer una nueva tonalidad.',
   },
@@ -70,14 +70,14 @@ const overlay: ExerciseLevelOverlay = {
 
   l5u15m3e1: {
     prompt:
-      '¿Cuál es la función de un acorde de sensible secundaria (p. ej., viiº/V)?',
+      '¿Cuál es la función de un acorde de sensible secundaria (p. ej., vii°/V)?',
     choices: [
-      'Funciona como un acorde disminuido que resuelve medio tono arriba hacia el acorde tonicizado, tal como viiº resuelve hacia I',
+      'Funciona como un acorde disminuido que resuelve medio tono arriba hacia el acorde tonicizado, tal como vii° resuelve hacia I',
       'Sustituye completamente al acorde dominante en las cadencias',
       'Funciona como un acorde de paso sin atracción armónica',
       'Es la sensible de la tonalidad tocada como nota aislada',
     ],
-    hint: 'viiº/V funciona del mismo modo que viiº en una tonalidad: la fundamental está medio tono por debajo del acorde objetivo, y la cualidad disminuida crea un fuerte impulso de resolución ascendente hacia el objetivo.',
+    hint: 'vii°/V funciona del mismo modo que vii° en una tonalidad: la fundamental está medio tono por debajo del acorde objetivo, y la cualidad disminuida crea un fuerte impulso de resolución ascendente hacia el objetivo.',
   },
   l5u15m3e2: {
     prompt:
@@ -92,14 +92,14 @@ const overlay: ExerciseLevelOverlay = {
   },
   l5u15m3e3: {
     prompt:
-      'En Do mayor, ¿cuál es el acorde objetivo hacia el que resuelve viiº/V?',
+      'En C mayor, ¿cuál es el acorde objetivo hacia el que resuelve vii°/V?',
     choices: [
-      'Sol mayor (V) — viiº/V resuelve medio tono arriba hacia la dominante',
-      'Do mayor (I) — resuelve hacia la tónica',
-      'Fa mayor (IV) — resuelve hacia la subdominante',
-      'Re menor (ii) — resuelve hacia la supertónica',
+      'G mayor (V) — vii°/V resuelve medio tono arriba hacia la dominante',
+      'C mayor (I) — resuelve hacia la tónica',
+      'F mayor (IV) — resuelve hacia la subdominante',
+      'D menor (ii) — resuelve hacia la supertónica',
     ],
-    hint: 'El «/V» indica el objetivo: V. En Do mayor, V es Sol. viiº/V es Fa# disminuido (F#, A, C), y el F# resuelve medio tono arriba hacia Sol, la fundamental del acorde objetivo.',
+    hint: 'El «/V» indica el objetivo: V. En C mayor, V es G. vii°/V es F# disminuido (F#, A, C), y el F# resuelve medio tono arriba hacia G, la fundamental del acorde objetivo.',
   },
 
   // ---- l5u15m4: Tonicización vs. Modulación ----
@@ -130,7 +130,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Una tonicización prolongada — más larga que un solo acorde pero sin confirmación cadencial completa en la nueva tonalidad',
       'Una modulación por acorde pivote',
-      'Una cadencia engañosa',
+      'Una cadencia rota',
       'Una secuencia cromática',
     ],
     hint: 'Las tonicizaciones prolongadas ocupan una zona gris: duran más que un rápido V/x – x, pero la nueva tonalidad nunca se confirma con una cadencia fuerte. La frontera entre tonicización prolongada y modulación es subjetiva.',
@@ -150,7 +150,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l5u15m5e2: {
     prompt:
-      'En una cadena de dominantes secundarias descendente por quintas (p. ej., V7/vi – V7/ii – V7/V – V – I en Do mayor), ¿qué movimiento de fundamentales enlaza cada acorde?',
+      'En una cadena de dominantes secundarias descendente por quintas (p. ej., V7/vi – V7/ii – V7/V – V – I en C mayor), ¿qué movimiento de fundamentales enlaza cada acorde?',
     choices: [
       'Cada fundamental desciende una quinta justa (o asciende una cuarta justa) hacia la siguiente',
       'Cada fundamental asciende un semitono cromáticamente',
@@ -165,7 +165,7 @@ const overlay: ExerciseLevelOverlay = {
       'Un patrón armónico en el que el mismo gesto de tonicización (p. ej., V7 – objetivo) se repite en diferentes niveles de altura en secuencia',
       'Una modulación que pasa por todas las tonalidades en el círculo de quintas',
       'Tocar escalas en secuencia ascendente cromáticamente',
-      'Una serie de cadencias engañosas en diferentes tonalidades',
+      'Una serie de cadencias rotas en diferentes tonalidades',
     ],
     hint: 'La tonicización secuencial aplica el mismo patrón armónico (frecuentemente V7 – acorde) a grados de la escala sucesivos, creando un movimiento cromático previsible pero colorido. Es habitual en la música barroca y en el jazz.',
   },
@@ -184,18 +184,18 @@ const overlay: ExerciseLevelOverlay = {
       'Un acorde disminuido que resuelve la modulación',
       'El acorde dominante de la tonalidad original',
     ],
-    hint: 'Un acorde pivote es diatónico en ambas tonalidades. Por ejemplo, al modular de Do mayor a Sol mayor, el acorde Mi menor es tanto iii en Do como vi en Sol, creando un puente armónico suave entre las dos tonalidades.',
+    hint: 'Un acorde pivote es diatónico en ambas tonalidades. Por ejemplo, al modular de C mayor a G mayor, el acorde E menor es tanto iii en C como vi en G, creando un puente armónico suave entre las dos tonalidades.',
   },
   l5u16m1e2: {
     prompt:
-      'Al modular de Do mayor a Sol mayor, ¿qué acorde podría servir como pivote?',
+      'Al modular de C mayor a G mayor, ¿qué acorde podría servir como pivote?',
     choices: [
-      'Mi menor — es iii en Do mayor y vi en Sol mayor',
-      'Fa mayor — es IV en Do mayor y no es diatónico en Sol mayor',
-      'Sib mayor — es prestado de Do menor',
-      'Fa# disminuido — señala la nueva tonalidad',
+      'E menor — es iii en C mayor y vi en G mayor',
+      'F mayor — es IV en C mayor y no es diatónico en G mayor',
+      'Bb mayor — es prestado de C menor',
+      'F# disminuido — señala la nueva tonalidad',
     ],
-    hint: 'Busca acordes comunes a ambas tonalidades. Do mayor: C Dm Em F G Am Bdim. Sol mayor: G Am Bm C D Em F#dim. Los acordes compartidos incluyen C, Em, Am, G. Mi menor como iii/vi es una elección fuerte de pivote.',
+    hint: 'Busca acordes comunes a ambas tonalidades. C mayor: C Dm Em F G Am Bdim. G mayor: G Am Bm C D Em F#dim. Los acordes compartidos incluyen C, Em, Am, G. E menor como iii/vi es una elección fuerte de pivote.',
   },
   l5u16m1e3: {
     prompt: '¿Cuál es el proceso típico de una modulación por acorde pivote?',
@@ -218,7 +218,7 @@ const overlay: ExerciseLevelOverlay = {
       '12 — todas las tonalidades son cercanas',
       '3 — la relativa menor, la dominante y la subdominante',
     ],
-    hint: 'Las tonalidades cercanas difieren en como máximo una alteración en sus armaduras de clave. Para Do mayor: Sol mayor (+1#), Fa mayor (+1b), La menor (relativa), Mi menor (rel. de Sol), Re menor (rel. de Fa). Eso da 5 tonalidades cercanas.',
+    hint: 'Las tonalidades cercanas difieren en como máximo una alteración en sus armaduras de clave. Para C mayor: G mayor (+1#), F mayor (+1b), A menor (relativa), E menor (rel. de G), D menor (rel. de F). Eso da 5 tonalidades cercanas.',
   },
   l5u16m2e2: {
     prompt:
@@ -229,17 +229,17 @@ const overlay: ExerciseLevelOverlay = {
       'La tonalidad de la dominante no usa sostenidos ni bemoles',
       'La dominante es siempre la tonalidad con sonido más brillante',
     ],
-    hint: 'Do mayor y Sol mayor comparten 6 de 7 notas (solo F vs F#). Esta superposición significa que muchos acordes son comunes a ambas tonalidades, proporcionando abundantes opciones de acorde pivote y una transición fluida.',
+    hint: 'C mayor y G mayor comparten 6 de 7 notas (solo F vs F#). Esta superposición significa que muchos acordes son comunes a ambas tonalidades, proporcionando abundantes opciones de acorde pivote y una transición fluida.',
   },
   l5u16m2e3: {
-    prompt: '¿Cuáles de las siguientes son tonalidades cercanas de Do mayor?',
+    prompt: '¿Cuáles de las siguientes son tonalidades cercanas de C mayor?',
     choices: [
-      'Sol mayor, Fa mayor, La menor, Mi menor, Re menor',
-      'Reb mayor, Lab mayor, Mib mayor, Sib mayor, Fa menor',
-      'Sol mayor, Re mayor, La mayor, Mi mayor, Si mayor',
-      'Do menor, Mib mayor, Lab mayor, Sib mayor, Fa menor',
+      'G mayor, F mayor, A menor, E menor, D menor',
+      'Db mayor, Ab mayor, Eb mayor, Bb mayor, F menor',
+      'G mayor, D mayor, A mayor, E mayor, B mayor',
+      'C menor, Eb mayor, Ab mayor, Bb mayor, F menor',
     ],
-    hint: 'Las tonalidades cercanas comparten todas las alteraciones menos una con Do mayor (0 sostenidos/bemoles). Sol mayor tiene 1#, Fa mayor tiene 1b, y sus relativas menores (Mi menor, Re menor) más la relativa menor de Do (La menor) completan el conjunto.',
+    hint: 'Las tonalidades cercanas comparten todas las alteraciones menos una con C mayor (0 sostenidos/bemoles). G mayor tiene 1#, F mayor tiene 1b, y sus relativas menores (E menor, D menor) más la relativa menor de C (A menor) completan el conjunto.',
   },
 
   // ---- l5u16m3: Modulación Directa / Por Nota Común / Cromática ----
@@ -279,13 +279,13 @@ const overlay: ExerciseLevelOverlay = {
 
   l5u16m4e1: {
     prompt:
-      'Construye bVI en Do mayor. Este acorde está prestado de Do menor: Lab mayor (Ab, C, Eb). Selecciona las 3 notas.',
-    hint: 'bVI en Do mayor = Lab mayor: Ab (8), C (0), Eb (3). Este acorde está prestado de Do menor natural, donde VI es Lab mayor. El Ab y el Eb son notas cromáticas en Do mayor.',
+      'Construye bVI en C mayor. Este acorde está prestado de C menor: Ab mayor (Ab, C, Eb). Selecciona las 3 notas.',
+    hint: 'bVI en C mayor = Ab mayor: Ab (8), C (0), Eb (3). Este acorde está prestado de C menor natural, donde VI es Ab mayor. El Ab y el Eb son notas cromáticas en C mayor.',
   },
   l5u16m4e2: {
     prompt:
-      'Construye iv en Do mayor. Este acorde está prestado de Do menor: Fa menor (F, Ab, C). Selecciona las 3 notas.',
-    hint: 'iv en Do mayor = Fa menor: F (5), Ab (8), C (0). En Do mayor, IV es Fa mayor (F, A, C). Prestar de Do menor rebaja el A a Ab, creando la subdominante menor más oscura.',
+      'Construye iv en C mayor. Este acorde está prestado de C menor: F menor (F, Ab, C). Selecciona las 3 notas.',
+    hint: 'iv en C mayor = F menor: F (5), Ab (8), C (0). En C mayor, IV es F mayor (F, A, C). Prestar de C menor rebaja el A a Ab, creando la subdominante menor más oscura.',
   },
   l5u16m4e3: {
     prompt:
@@ -296,7 +296,7 @@ const overlay: ExerciseLevelOverlay = {
       'Tocar un acorde mayor y uno menor al mismo tiempo',
       'Alternar entre relativa mayor y relativa menor',
     ],
-    hint: 'La mezcla modal toma prestados acordes de la tonalidad paralela (misma tónica, modo opuesto). En Do mayor, se toma prestado de Do menor: bIII (Mib), iv (Fam), bVI (Lab), bVII (Sib). Añaden oscuridad y riqueza cromática.',
+    hint: 'La mezcla modal toma prestados acordes de la tonalidad paralela (misma tónica, modo opuesto). En C mayor, se toma prestado de C menor: bIII (Eb), iv (Fm), bVI (Ab), bVII (Bb). Añaden oscuridad y riqueza cromática.',
   },
 
   // ---- l5u16m5: Tercera de Picardía ----
@@ -309,7 +309,7 @@ const overlay: ExerciseLevelOverlay = {
       'Un intervalo de tercera menor usado en una tonalidad mayor',
       'Un ornamento francés en trino sobre el tercer grado',
     ],
-    hint: 'La tercera de Picardía es una técnica secular: una pieza en tonalidad menor termina con un acorde I mayor (p. ej., pieza en Do menor que termina en Do mayor). La tercera elevada crea un final brillante y resuelto tras la oscuridad del modo menor.',
+    hint: 'La tercera de Picardía es una técnica secular: una pieza en tonalidad menor termina con un acorde I mayor (p. ej., pieza en C menor que termina en C mayor). La tercera elevada crea un final brillante y resuelto tras la oscuridad del modo menor.',
   },
   l5u16m5e2: {
     prompt:
@@ -320,7 +320,7 @@ const overlay: ExerciseLevelOverlay = {
       'Tocar la escala mayor sobre acordes menores',
       'Usar los acordes de la relativa mayor',
     ],
-    hint: 'La mezcla modal funciona en ambas direcciones. Una tonalidad menor puede tomar prestado de su mayor paralelo: p. ej., en La menor, puedes tomar prestado IV de La mayor (Re mayor en vez de Re menor) para iluminar temporalmente la armonía.',
+    hint: 'La mezcla modal funciona en ambas direcciones. Una tonalidad menor puede tomar prestado de su mayor paralelo: p. ej., en A menor, puedes tomar prestado IV de A mayor (D mayor en vez de D menor) para iluminar temporalmente la armonía.',
   },
   l5u16m5e3: {
     prompt:
@@ -452,7 +452,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l5u17m4e2: {
     prompt:
-      'En una progresión ii7–V7–I en Do mayor (Dm7–G7–Cmaj7), ¿cómo se mueven las notas guía?',
+      'En una progresión ii7–V7–I en C mayor (Dm7–G7–Cmaj7), ¿cómo se mueven las notas guía?',
     choices: [
       'Las notas guía se mueven por grado o se mantienen como notas comunes: F–C en Dm7, F–B en G7, E–B en Cmaj7',
       'Las notas guía saltan por intervalos amplios entre cada acorde',

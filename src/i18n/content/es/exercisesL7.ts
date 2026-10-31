@@ -37,7 +37,7 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l7u21m2: Voicings de Shell ----
 
   l7u21m2e1: {
-    prompt: 'Un voicing de shell contiene típicamente qué notas del acorde?',
+    prompt: '¿Qué notas del acorde contiene típicamente un voicing de shell?',
     choices: [
       'Solo fundamental, tercera y séptima — omitiendo la quinta y las extensiones',
       'Fundamental, quinta y octava — omitiendo la tercera y la séptima',
@@ -73,12 +73,12 @@ const overlay: ExerciseLevelOverlay = {
 
   l7u21m3e1: {
     prompt:
-      'Construye el acorde ii7 en Do mayor (Dm7). Selecciona las 4 notas: D, F, A, C.',
+      'Construye el acorde ii7 en C mayor (Dm7). Selecciona las 4 notas: D, F, A, C.',
     hint: 'Dm7 = D, F, A, C. Fundamental (D), tercera menor (F), quinta justa (A), séptima menor (C). Clases de altura: 2, 5, 9, 0.',
   },
   l7u21m3e2: {
     prompt:
-      'Construye el acorde V7 en Do mayor (G7). Selecciona las 4 notas: G, B, D, F.',
+      'Construye el acorde V7 en C mayor (G7). Selecciona las 4 notas: G, B, D, F.',
     hint: 'G7 = G, B, D, F. Fundamental (G), tercera mayor (B), quinta justa (D), séptima menor (F). Clases de altura: 7, 11, 2, 5.',
   },
   l7u21m3e3: {
@@ -113,7 +113,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'En la progresión Dm7 - Db7 - Cmaj7, ¿qué es el acorde Db7?',
     choices: [
       'Una sustitución tritonal de G7, creando una línea cromática de bajo (D - Db - C)',
-      'Un acorde prestado de Reb mayor',
+      'Un acorde prestado de Db mayor',
       'El acorde napolitano en primera inversión',
       'Un acorde disminuido de paso reescrito enarmónicamente',
     ],
@@ -124,7 +124,7 @@ const overlay: ExerciseLevelOverlay = {
 
   l7u21m5e1: {
     prompt:
-      '¿Cuál es la progresión estándar de un blues básico de 12 compases en la tonalidad de Do?',
+      '¿Cuál es la progresión estándar de un blues básico de 12 compases en la tonalidad de C?',
     choices: [
       'I7-I7-I7-I7 | IV7-IV7-I7-I7 | V7-IV7-I7-V7 (forma C7-F7-G7)',
       'I-IV-V-I | I-IV-V-I | I-IV-V-I (tres acordes simples repetidos)',
@@ -188,7 +188,7 @@ const overlay: ExerciseLevelOverlay = {
       'Una repetición exacta de la sección A en otra tonalidad',
       'Una serie dodecafónica',
     ],
-    hint: 'El puente presenta típicamente una cadena de séptimas dominantes: III7-VI7-II7-V7 (en Sib: D7-G7-C7-F7). Cada dominante resuelve una quinta abajo hacia el siguiente, creando un fuerte impulso hacia adelante.',
+    hint: 'El puente presenta típicamente una cadena de séptimas dominantes: III7-VI7-II7-V7 (en Bb: D7-G7-C7-F7). Cada dominante resuelve una quinta abajo hacia el siguiente, creando un fuerte impulso hacia adelante.',
   },
 
   // =========================================================================
@@ -199,13 +199,13 @@ const overlay: ExerciseLevelOverlay = {
 
   l7u22m1e1: {
     prompt:
-      'Construye Re dórico — la escala de acorde para Dm7 en una ii-V-I en Do. Selecciona las 7 notas.',
-    hint: 'Re dórico: D, E, F, G, A, B, C. Es el 2.º modo de Do mayor. La sexta natural (B) lo distingue del menor natural (que tiene Bb). Clases de altura: 2, 4, 5, 7, 9, 11, 0.',
+      'Construye D dórico — la escala de acorde para Dm7 en una ii-V-I en C. Selecciona las 7 notas.',
+    hint: 'D dórico: D, E, F, G, A, B, C. Es el 2.º modo de C mayor. La sexta natural (B) lo distingue del menor natural (que tiene Bb). Clases de altura: 2, 4, 5, 7, 9, 11, 0.',
   },
   l7u22m1e2: {
     prompt:
-      'Construye Sol mixolidio — la escala de acorde para G7 en una ii-V-I en Do. Selecciona las 7 notas.',
-    hint: 'Sol mixolidio: G, A, B, C, D, E, F. Es el 5.º modo de Do mayor. La b7 (F en lugar de F#) define el sonido dominante. Clases de altura: 7, 9, 11, 0, 2, 4, 5.',
+      'Construye G mixolidio — la escala de acorde para G7 en una ii-V-I en C. Selecciona las 7 notas.',
+    hint: 'G mixolidio: G, A, B, C, D, E, F. Es el 5.º modo de C mayor. La b7 (F en lugar de F#) define el sonido dominante. Clases de altura: 7, 9, 11, 0, 2, 4, 5.',
   },
   l7u22m1e3: {
     prompt: '¿Cuál es el principio fundamental de la teoría acorde-escala?',
@@ -215,7 +215,7 @@ const overlay: ExerciseLevelOverlay = {
       'Las escalas se construyen apilando acordes unos sobre otros',
       'La teoría acorde-escala se aplica solo a tonalidades mayores',
     ],
-    hint: 'La teoría acorde-escala empareja cada acorde con una escala madre. Sobre Dm7, toca Re dórico; sobre G7, toca Sol mixolidio; sobre Cmaj7, toca Do jónico. La escala cambia con cada acorde.',
+    hint: 'La teoría acorde-escala empareja cada acorde con una escala madre. Sobre Dm7, toca D dórico; sobre G7, toca G mixolidio; sobre Cmaj7, toca C jónico. La escala cambia con cada acorde.',
   },
 
   // ---- l7u22m2: Estructuras Superiores ----
@@ -228,7 +228,7 @@ const overlay: ExerciseLevelOverlay = {
       'Una tríada tocada una octava por encima de lo escrito',
       'Una técnica de análisis estructural para identificar formas',
     ],
-    hint: 'Las estructuras superiores superponen una tríada simple (p. ej., Re mayor) sobre una nota de bajo y séptima (p. ej., C y Bb), creando extensiones complejas. D/C7 resulta en C7 con novena, #11 y decimotercera.',
+    hint: 'Las estructuras superiores superponen una tríada simple (p. ej., D mayor) sobre una nota de bajo y séptima (p. ej., C y Bb), creando extensiones complejas. D/C7 resulta en C7 con novena, #11 y decimotercera.',
   },
   l7u22m2e2: {
     prompt: '¿Qué es la rearmonización en el jazz?',
@@ -262,7 +262,7 @@ const overlay: ExerciseLevelOverlay = {
       'Centros tonales moviéndose por quintas justas a lo largo del ciclo',
       'Centros tonales alternando entre dos tonalidades a un tritono de distancia',
     ],
-    hint: 'Los cambios de Coltrane recorren tres centros tonales a una tercera mayor de distancia (p. ej., Si, Sol, Mib). Estas tres tonalidades dividen la octava simétricamente en tres segmentos iguales de 4 semitonos cada uno.',
+    hint: 'Los cambios de Coltrane recorren tres centros tonales a una tercera mayor de distancia (p. ej., B, G, Eb). Estas tres tonalidades dividen la octava simétricamente en tres segmentos iguales de 4 semitonos cada uno.',
   },
   l7u22m3e2: {
     prompt:
@@ -273,7 +273,7 @@ const overlay: ExerciseLevelOverlay = {
       'Modulación directa sin ninguna preparación',
       'Cada tonalidad se aborda mediante una cadencia rota desde la tonalidad anterior',
     ],
-    hint: 'Coltrane prepara cada tónica con su dominante: p. ej., Bmaj7 - D7 - Gmaj7 - Bb7 - Ebmaj7. El D7 es el V7 de Sol, Bb7 es el V7 de Mib. Esto crea movimiento constante dominante-tónica.',
+    hint: 'Coltrane prepara cada tónica con su dominante: p. ej., Bmaj7 - D7 - Gmaj7 - Bb7 - Ebmaj7. El D7 es el V7 de G, Bb7 es el V7 de Eb. Esto crea movimiento constante dominante-tónica.',
   },
   l7u22m3e3: {
     prompt: '¿Qué es la "estructura constante" en la armonía jazz?',
@@ -290,13 +290,13 @@ const overlay: ExerciseLevelOverlay = {
 
   l7u22m4e1: {
     prompt:
-      'Construye el modo Re dórico. Este modo crea un sonido menor con una sexta natural característica.',
-    hint: 'Re dórico: D, E, F, G, A, B, C. Comparado con Re menor natural, el 6.º grado está elevado (Si natural en lugar de Sib). Clases de altura: 2, 4, 5, 7, 9, 11, 0.',
+      'Construye el modo D dórico. Este modo crea un sonido menor con una sexta natural característica.',
+    hint: 'D dórico: D, E, F, G, A, B, C. Comparado con D menor natural, el 6.º grado está elevado (B natural en lugar de Bb). Clases de altura: 2, 4, 5, 7, 9, 11, 0.',
   },
   l7u22m4e2: {
     prompt:
-      'Construye el modo Mi frigio. Este modo tiene un semitono distintivo desde la fundamental hasta el 2.º grado.',
-    hint: 'Mi frigio: E, F, G, A, B, C, D. La b2 (Fa natural, un semitono por encima de Mi) le da al frigio su carácter oscuro y con sabor español. Clases de altura: 4, 5, 7, 9, 11, 0, 2.',
+      'Construye el modo E frigio. Este modo tiene un semitono distintivo desde la fundamental hasta el 2.º grado.',
+    hint: 'E frigio: E, F, G, A, B, C, D. La b2 (F natural, un semitono por encima de E) le da al frigio su carácter oscuro y con sabor español. Clases de altura: 4, 5, 7, 9, 11, 0, 2.',
   },
   l7u22m4e3: {
     prompt:
@@ -341,7 +341,7 @@ const overlay: ExerciseLevelOverlay = {
       'Se usan solo en la música clásica india, no en el jazz',
       'Crean función dominante al sostener la quinta de la tonalidad',
     ],
-    hint: 'Un pedal (nota de bajo sostenida o quinta abierta) establece un centro modal. Sobre un pedal de Re, puedes explorar libremente Re dórico, Re mixolidio u otros modos sin que la armonía empuje hacia la resolución.',
+    hint: 'Un pedal (nota de bajo sostenida o quinta abierta) establece un centro modal. Sobre un pedal de D, puedes explorar libremente D dórico, D mixolidio u otros modos sin que la armonía empuje hacia la resolución.',
   },
 
   // =========================================================================
@@ -359,7 +359,7 @@ const overlay: ExerciseLevelOverlay = {
       'ii - V - I - vi',
       'I - bVII - IV - I',
     ],
-    hint: 'I-V-vi-IV (en Do: C-G-Am-F) es una de las progresiones pop más comunes. Se repite indefinidamente y soporta tanto melodías edificantes como melancólicas dependiendo de qué acorde enfatice la melodía.',
+    hint: 'I-V-vi-IV (en C: C-G-Am-F) es una de las progresiones pop más comunes. Se repite indefinidamente y soporta tanto melodías edificantes como melancólicas dependiendo de qué acorde enfatice la melodía.',
   },
   l7u23m1e2: {
     prompt: '¿Qué es el sistema de números de Nashville?',
@@ -386,18 +386,18 @@ const overlay: ExerciseLevelOverlay = {
 
   l7u23m2e1: {
     prompt:
-      'Cuando una canción pop en una tonalidad mayor usa un acorde bVII (p. ej., Sib mayor en la tonalidad de Do), ¿qué técnica se emplea?',
+      'Cuando una canción pop en una tonalidad mayor usa un acorde bVII (p. ej., Bb mayor en la tonalidad de C), ¿qué técnica se emplea?',
     choices: [
       'Mezcla modal (préstamo del paralelo menor/modo mixolidio)',
-      'Una modulación a la tonalidad de Sib mayor',
+      'Una modulación a la tonalidad de Bb mayor',
       'Un dominante secundario apuntando al acorde IV',
       'Una reescritura enarmónica del acorde vii disminuido',
     ],
-    hint: 'bVII se toma prestado del mixolidio de Do o del Do menor natural. En Do mayor, Sib no es diatónico, pero tomarlo prestado crea un sonido rock/pop. Esto es mezcla modal (también llamada acordes prestados).',
+    hint: 'bVII se toma prestado del mixolidio de C o del C menor natural. En C mayor, Bb no es diatónico, pero tomarlo prestado crea un sonido rock/pop. Esto es mezcla modal (también llamada acordes prestados).',
   },
   l7u23m2e2: {
     prompt:
-      '¿Qué efecto emocional crea típicamente una relación de mediante cromática (p. ej., Do mayor a Lab mayor) en la música pop?',
+      '¿Qué efecto emocional crea típicamente una relación de mediante cromática (p. ej., C mayor a Ab mayor) en la música pop?',
     choices: [
       'Un cambio dramático y cinematográfico de color — inesperado pero suave debido a notas compartidas o estrechamente relacionadas',
       'Una sensación de regreso a casa, a la tónica',
@@ -422,17 +422,17 @@ const overlay: ExerciseLevelOverlay = {
 
   l7u23m3e1: {
     prompt:
-      'Construye la escala de Do menor melódica (forma ascendente). Selecciona las 7 notas.',
-    hint: 'Do menor melódica: C, D, Eb, F, G, A, B. Es como Do mayor con una b3. La sexta natural (A) y la séptima natural (B) la distinguen de la menor natural y de la menor armónica. Clases de altura: 0, 2, 3, 5, 7, 9, 11.',
+      'Construye la escala de C menor melódica (forma ascendente). Selecciona las 7 notas.',
+    hint: 'C menor melódica: C, D, Eb, F, G, A, B. Es como C mayor con una b3. La sexta natural (A) y la séptima natural (B) la distinguen de la menor natural y de la menor armónica. Clases de altura: 0, 2, 3, 5, 7, 9, 11.',
   },
   l7u23m3e2: {
     prompt:
-      'Construye la escala alterada de Sol (7.º modo de Lab menor melódica). Selecciona las 7 notas.',
-    hint: 'Sol alterada (superlocria): G, Ab, Bb, Cb, Db, Eb, F. Todas las notas no esenciales están alteradas: b9, #9 (=b3), b5 (#11), b13 (#5). Clases de altura: 7, 8, 10, 11, 1, 3, 5.',
+      'Construye la escala alterada de G (7.º modo de Ab menor melódica). Selecciona las 7 notas.',
+    hint: 'G alterada (superlocria): G, Ab, Bb, Cb, Db, Eb, F. Todas las notas no esenciales están alteradas: b9, #9 (=b3), b5 (#11), b13 (#5). Clases de altura: 7, 8, 10, 11, 1, 3, 5.',
   },
   l7u23m3e3: {
     prompt:
-      'La escala lidia dominante (4.º modo de la menor melódica) se usa comúnmente sobre qué tipo de acorde?',
+      '¿Sobre qué tipo de acorde se usa comúnmente la escala lidia dominante (4.º modo de la menor melódica)?',
     choices: [
       'Acordes de séptima dominante con #11, especialmente sustituciones tritonales y dominantes no resolutivos',
       'Acordes m7 en una ii-V-I',
@@ -446,13 +446,13 @@ const overlay: ExerciseLevelOverlay = {
 
   l7u23m4e1: {
     prompt:
-      'Construye la escala de Do tonos enteros. Esta escala simétrica de 6 notas tiene intervalos de tono iguales a lo largo de toda la escala.',
-    hint: 'Do tonos enteros: C, D, E, F#, G#, A#. Cada intervalo es un tono (2 semitonos). Existen solo dos escalas de tonos enteros únicas (la otra empieza en Db). Clases de altura: 0, 2, 4, 6, 8, 10.',
+      'Construye la escala de C tonos enteros. Esta escala simétrica de 6 notas tiene intervalos de tono iguales a lo largo de toda la escala.',
+    hint: 'C tonos enteros: C, D, E, F#, G#, A#. Cada intervalo es un tono (2 semitonos). Existen solo dos escalas de tonos enteros únicas (la otra empieza en Db). Clases de altura: 0, 2, 4, 6, 8, 10.',
   },
   l7u23m4e2: {
     prompt:
-      'Construye la escala disminuida semitono-tono de Do. Esta escala simétrica de 8 notas alterna semitonos y tonos.',
-    hint: 'Do disminuida semitono-tono: C, Db, Eb, E, F#, G, A, Bb. Alterna semitono, tono a lo largo de toda la escala. Existen solo tres escalas disminuidas distintas. Clases de altura: 0, 1, 3, 4, 6, 7, 9, 10.',
+      'Construye la escala disminuida semitono-tono de C. Esta escala simétrica de 8 notas alterna semitonos y tonos.',
+    hint: 'C disminuida semitono-tono: C, Db, Eb, E, F#, G, A, Bb. Alterna semitono, tono a lo largo de toda la escala. Existen solo tres escalas disminuidas distintas. Clases de altura: 0, 1, 3, 4, 6, 7, 9, 10.',
   },
   l7u23m4e3: {
     prompt: '¿Cuál es la propiedad definitoria de una escala simétrica?',
