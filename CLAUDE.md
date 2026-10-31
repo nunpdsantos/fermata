@@ -35,7 +35,7 @@ Scale degree function is encoded in color throughout the app:
 **Name:** Music Theory App
 **Domain:** Music theory education / interactive instrument
 **Stack:** React 19 + TypeScript 5.9 + Vite 7 + Tailwind CSS v4 + Zustand 5 + Framer Motion 12
-**Tests:** 6,425 passing (Vitest + React Testing Library, 143 test files; counted 2026-10-30) + Playwright e2e on the dev server and on the production build
+**Tests:** 6,943 passing (Vitest + React Testing Library, 188 test files; counted 2026-10-31) + Playwright e2e on the dev server and on the production build
 **Languages:** English + Portuguese + Spanish (react-i18next + content overlay system)
 **PWA:** Offline-capable with Workbox precaching
 
@@ -75,7 +75,8 @@ Scale degree function is encoded in color throughout the app:
 - Header-only deploys never reach installed PWAs: the service worker precaches `index.html` WITH its response headers, and identical content means no SW update. Any `vercel.json` header change must be paired with a content change (e.g. the build comment atop `index.html`).
 - **NEXT RELEASE MUST REMOVE the one-off skipWaiting** (review B2, 2026-10-31). The W9 release ships workbox `skipWaiting: true` ONCE (`ONE_OFF_SKIP_WAITING` in `vite.config.ts`) because installed clients on the previous autoUpdate build never send SKIP_WAITING — a waiting worker would sit until every window closed, with no toast; with the one-off they take W9 and reload themselves as before. In the release after W9: set `ONE_OFF_SKIP_WAITING = false`, drop the one-off branch in `e2e/pwa.spec.ts`, delete this note. `src/__tests__/oneOffSkipWaiting.test.ts` FAILS after `ONE_OFF_SKIP_WAITING_EXPIRES` (2026-11-14) while it is still on.
 - App updates are `registerType: 'prompt'` (W9-06; in force from the release after W9 — see the note above): a new service worker waits; the "new version — reload" toast asks; its Reload activates the waiting worker and the page reloads when it takes control (`usePWA.applyUpdateOrReload`; a plain `location.reload()` would be served the OLD precached index.html). The app itself never reloads unasked, BUT accepting the update in one tab also reloads the app's other open tabs (vite-plugin-pwa reloads every tab when the new worker takes control — plugin design), and the one-off W9 release reloads old clients by itself. Updates are re-checked when the app returns to the foreground; "Try again" on a view whose file 404s asks the server for the new version first, so one tap is enough.
-- Precache: entry chunks are listed in `vite.config.ts` globPatterns; their static imports are added automatically (manifestTransforms closure). Translated-content chunks are named `i18n-*` (chunkFileNames) and runtime-cached by the content-cache route. Run `npm run check:sw` after changing chunking.
+- Precache: the shell's entry chunks — including the Explore and Learn views, StaffNotation, the Fretboard and Quick Search — are listed in `vite.config.ts` globPatterns; their static imports are added automatically (manifestTransforms closure). Translated-content chunks are named `i18n-*` (chunkFileNames) and runtime-cached by the content-cache route. On a first visit, whatever the page loaded before the worker took control (VexFlow, an early level, samples) is re-fetched through it (`usePWA.warmRuntimeCaches`) so it is cached for offline. Run `npm run check:sw` after changing chunking; `e2e/offline-after-visit.spec.ts` (preview) proves the app opens with every request blocked.
+- PWA toasts (update / offline-ready / install) render in ONE stack (`PWAPrompts`), update first — never give a toast its own fixed position.
 - **Fretboard orientation is SETTLED — do not "fix" it.** It renders nut-RIGHT, low E on top (mirrored from printed chord charts). A flip to textbook orientation was shipped and **reverted on Nuno's feedback** (2026-06-09): he reads the original natively. Position legibility is handled instead by the anchor-fret badge ("3fr") + nut-closest default voicing for chords, and the Roman-numeral badge for scale positions (see Audio & instruments below).
 - **Spelling is one engine** (`src/core/utils/degreeSpelling.ts`, W1/W2 2026-10-30): note names, degree labels and colours (read from the spelled letter), interval names, key signatures, staff octaves/accidentals and the key picker's root names all go through it — never derive a label from a semitone count or a note's position in a list. Staves that show what the instrument plays (Explore, `followInstrument`) write the guitar an octave above sounding (treble-8vb, D-05); Learn exercise staves are AUTHORED notation and are never transposed for the instrument; chords sound exactly the voicing the piano lights (`chordVoicingPitches` in `pianoLayout.ts`).
 - PT overlay files carry full PT-PT diacritics (restored 2026-07-24) — write proper European Portuguese orthography in every edit; conventions in `docs/pt-diacritic-todo.md`.
@@ -108,7 +109,7 @@ src/
     instruments/     Piano, PianoKey, Fretboard, FretCell, FretboardString, FretboardPositionSelector, InstrumentSelector
     theory/          ScaleDegreeBar, ChordGrid, ChordBrowser, ChordWorkspace, ChordBuilderPanel, ChromaticStrip, CircleOfFifths (+ circleOfFifthsConstants.ts), ScaleComparison
     panels/          CurrentChordPanel, LearnMoreButton
-    navigation/      KeySelector, QuickSearch (Cmd+K; lazy chunk), QuickSearchHost (owns Cmd/Ctrl+K until search first opens)
+    navigation/      KeySelector, QuickSearch (Cmd+K; lazy chunk), QuickSearchHost (owns Cmd/Ctrl+K until search first opens; a failed download is retried on the next open)
     layout/          AppShell, TopBar, Toast, PWAPrompts
     notation/        StaffNotation, StaffNotationSkeleton, useStaffNotation (VexFlow 5.0)
     learn/           LevelsOverview, LevelCard, LevelDetail, LevelAchievement, UnitCard, UnitDetail, ModuleView, ModuleRow, ReviewQueue, ContinueBanner, LearnBreadcrumb, ProgressBar, DifficultyBadge, Confetti, ScreenFrame (a Learn screen; inert while it animates out)
@@ -303,8 +304,8 @@ src/
 The app is a lean, single-user personal tool — no accounts, no cloud sync, no
 gamification. Curriculum, exercises, spaced repetition, trilingual content, offline
 PWA, sampled piano, instrument-aware playback, and (WS9, branch `ws9-drill-mode`)
-the phone-first Drill view: all functional, all gates green (6,425 tests / 143 files on
-2026-10-30, eslint 0/0, content audits clean).
+the phone-first Drill view: all functional, all gates green (6,943 tests / 188 files on
+2026-10-31, eslint 0/0, content audits clean).
 
 WS9 details worth knowing: drill bank generated from core (`drillBank/` directory
 module, ~1,321 items, token/params contract-tested against the i18n templates);
