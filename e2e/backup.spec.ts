@@ -45,12 +45,15 @@ test.describe('Progress backup', () => {
     await page.getByRole('menuitem', { name: 'Import backup' }).click();
     await page.locator('input[type="file"]').setInputFiles(filePath!);
 
+    // A poll that lands while the page is reloading itself loses its
+    // execution context — that is "not yet", not a failure (seen once in a
+    // full parallel run after validation became async in W9-18).
     await expect
       .poll(
         () => page.evaluate(
           (key) => JSON.parse(localStorage.getItem(key) ?? 'null')?.state?.progress?.completedModules ?? null,
           PROGRESS_KEY,
-        ),
+        ).catch(() => null),
         { timeout: 10_000 },
       )
       .toEqual(['l1u1m1']);
