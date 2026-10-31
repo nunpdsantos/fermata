@@ -30,7 +30,7 @@ import { getPitchClass } from '../constants/notes';
 import { buildScale, SCALE_FORMULAS } from '../constants/scales';
 import { SCALE_DEGREE_FORMULAS } from './degreeSpelling';
 import { GUITAR_MAX_FRET, scaleDegreeLabel, tuningOpenMidi } from './guitarPositions';
-import { fingerLine, reverseFingering } from './guitarFingering';
+import { fingerLine, fingerLineScored, reverseFingering } from './guitarFingering';
 import type { FingeredNote, LinePitch, NotePin } from './guitarFingering';
 
 /** Heptatonic scale types with one letter per degree — the ones a route can be spelled for. */
@@ -118,6 +118,9 @@ function decorate(root: Note, notes: FingeredNote[], degrees: number[]): ScaleRo
 
 const countShifts = (notes: readonly FingeredNote[]) => notes.filter((n) => n.shift !== null).length;
 
+/** What a re-spread at the top of a melodic-minor scale costs, against keeping the hand's frame. */
+const REACH_COST = 15;
+
 /**
  * A suggested fingered route for `scaleType` on `root`, from the lowest tonic,
  * `octaves` octaves up and back down; null when the neck cannot hold it or the
@@ -145,15 +148,17 @@ export function getScaleRoute(root: Note, scaleType: ScaleType, options: ScaleRo
   } else {
     // Search the natural-minor line in ascending order (the costs are
     // symmetric under reversal), pinned to the ascent's two tonics. At the top
-    // the hand keeps the ascent's frame when it can; otherwise the finger on
-    // the top note stays down and the hand re-spreads around it in the same
-    // position — reported as a reach on the first note down.
+    // the hand either keeps the ascent's frame, or keeps the finger on the top
+    // note and re-spreads around it in the same position — reported as a reach
+    // on the first note down, and charged REACH_COST. The cheaper wins: a
+    // re-spread that lets the index reach back beats sliding one finger down
+    // the string twice (B melodic minor: 2-1 then an index shift, not 2-2-2).
     const downLine = scaleLine(root, descendingScaleType, start, octaves);
     const first = up[0];
     const top = up[up.length - 1];
     const reference = new Map(up.map((n) => [n.midi, { stringIndex: n.stringIndex, fret: n.fret }]));
     const search = (end: NotePin) =>
-      fingerLine(downLine, {
+      fingerLineScored(downLine, {
         tuning,
         maxFret,
         openStrings,
@@ -161,10 +166,13 @@ export function getScaleRoute(root: Note, scaleType: ScaleType, options: ScaleRo
         start: { stringIndex: first.stringIndex, fret: first.fret },
         end,
       });
-    const down =
-      search({ stringIndex: top.stringIndex, fret: top.fret, frame: top.frame }) ??
-      search({ stringIndex: top.stringIndex, fret: top.fret, finger: top.finger, position: top.position });
-    if (down === null) return null;
+    const keep = search({ stringIndex: top.stringIndex, fret: top.fret, frame: top.frame });
+    const respread = search({ stringIndex: top.stringIndex, fret: top.fret, finger: top.finger, position: top.position });
+    const reachCost = (r: typeof respread) =>
+      r === null ? Infinity : r.cost + (JSON.stringify(r.notes[r.notes.length - 1].frame) === JSON.stringify(top.frame) ? 0 : REACH_COST);
+    const chosen = keep !== null && keep.cost <= reachCost(respread) ? keep : respread;
+    if (chosen === null) return null;
+    const down = chosen.notes;
     const reversed = reverseFingering(down);
     const turn = reversed[1];
     if (

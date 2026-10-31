@@ -2,56 +2,98 @@
 // D-04: syllabus-neutral — the items common to ABRSM, Trinity, LCM and the
 // Madeira EAE programme, audit Track G R3/R9/R12/R16):
 //
-//   • scales in 3rds and 6ths, broken (one note after the other) and together
-//     (double stops), and scales in octaves;
-//   • tonic arpeggios (major / minor) over two octaves;
-//   • the dominant-7th arpeggio of a key, resolving to the tonic;
+//   • scales in 3rds, 6ths, octaves and 10ths, broken and together;
+//   • the chromatic scale;
+//   • broken chords;
+//   • tonic arpeggios (major / minor);
+//   • the dominant-7th arpeggio of a key, resolving on the tonic;
 //   • the diminished-7th arpeggio on a note.
 //
-// Notes and spelling come from the engine (buildScale, buildChord); single
-// lines are fingered by guitarFingering.ts (the scale-route engine), double
-// stops by the dyad search below. Every exercise starts from the lowest note
-// the tuning reaches, like the scales. Octave counts and the resolution note
-// are parameters: syllabuses differ (the research did not establish one
-// convention [verify]).
+// Patterns follow the ABRSM guitar syllabus (from 2019), pp. 10 and 14–15,
+// read from the score examples themselves:
+//   • 3rds and 10ths begin with the tonic as the lower note, 6ths with the
+//     tonic as the UPPER note (p. 10); octaves with the tonic below;
+//   • broken intervals play each pair low → high, going up and coming down;
+//   • the dominant 7th climbs 1 3 5 7 … to the top root, comes down to the 3rd
+//     (the leading note) and resolves up a semitone to the tonic;
+//   • a broken chord climbs in groups of three chord tones, each group from its
+//     lowest note: going up from 1, 3, 5 and the top 1; coming down from the 5
+//     and the 3 below it; then the tonic alone;
+//   • the chromatic scale is written with sharps going up, flats coming down.
+//
+// Right hand (TechniqueExercise.rightHand, TechniqueEvent.rh): ABRSM asks for
+// tirando everywhere except fingers-only scales, and arpeggios / dominant /
+// diminished sevenths "without over-ringing", broken chords "with
+// over-ringing" (pp. 10, 24); Trinity Grade 5 gives the fingers — arpeggios
+// ppppima, dominant and diminished 7ths ppimim…, sixths ip/mp, broken thirds im
+// (Trinity Digital Grades technical work, 2023). Where a syllabus names the
+// fingering for one item only, its extension to the others is marked
+// basis: 'inferred'.
+//
+// Left hand: single lines are fingered by guitarFingering.ts (arpeggio lines
+// with its arpeggio rules — no finger rolled across strings, the index as a
+// flagged partial barré, chord-grip shapes with two fingers on one fret, a
+// finger change allowed when the hand slides along a string, open strings
+// welcome up to position IV, no little finger on the bass root where
+// avoidable), double stops by the dyad search below.
 //
 // Pure and framework-agnostic.
 
 import type { ChordQuality, Note, ScaleType } from '../types/music';
 import type { GuitarTuning } from '../constants/guitarTunings';
 import { TUNING_STANDARD } from '../constants/guitarTunings';
+import { getPitchClass } from '../constants/notes';
 import { buildChord, CHORD_FORMULAS } from '../constants/chords';
 import { SCALE_FORMULAS, buildScale } from '../constants/scales';
 import { spellDegree, parseDegree } from './degreeSpelling';
 import { GUITAR_MAX_FRET, tuningOpenMidi } from './guitarPositions';
 import type { LeftHandFinger } from './guitarPositions';
-import { fingerLine, reverseFingering } from './guitarFingering';
-import type { FingeredNote, LinePitch, Shift } from './guitarFingering';
+import { annotateBarres, fingerLine, reverseFingering } from './guitarFingering';
+import type { FingeredNote, FingeringOptions, LinePitch, Shift } from './guitarFingering';
 import { lowestTonicMidi, highestMidi, ROUTE_SCALE_TYPES } from './scaleRoutes';
 
+export type IntervalKind = 'thirds' | 'sixths' | 'octaves' | 'tenths';
+
 export type TechniqueKind =
-  | 'thirds'
-  | 'sixths'
-  | 'octaves'
+  | IntervalKind
+  | 'chromatic'
+  | 'brokenChord'
   | 'tonicArpeggio'
   | 'dominantSeventh'
   | 'diminishedSeventh';
+
+export type RightHandFingerName = 'p' | 'i' | 'm' | 'a';
+export type RightHandStroke = 'tirando' | 'apoyando';
+
+export interface TechniqueRightHand {
+  /** Strokes the syllabus accepts. */
+  strokes: RightHandStroke[];
+  /** Whether notes may ring on: false = "without over-ringing", true = "with", null = not specified. */
+  overRinging: boolean | null;
+  /** The fingering in syllabus notation ('ppppima', 'ip/mp', 'im', 'p + im', 'by string'). */
+  pattern: string;
+  /** 'syllabus' = stated for this item; 'inferred' = our extension of a stated pattern. */
+  basis: 'syllabus' | 'inferred';
+  source: string;
+}
 
 /** One thing to play: a single note, or two at once (a double stop). */
 export interface TechniqueEvent {
   /** Low → high. */
   notes: FingeredNote[];
-  /** Degree of each note in the scale (interval scales) or chord tone 1/3/5/7 (arpeggios); 0 = resolution. */
+  /** Degree of each note: scale degree (interval scales), chord tone 1/3/5/7 (arpeggios, broken chords), semitone step 1–12 (chromatic); 0 = resolution. */
   degrees: number[];
+  /** Right-hand finger for each note. */
+  rh: RightHandFingerName[];
 }
 
 export interface TechniqueExercise {
   kind: TechniqueKind;
   style: 'broken' | 'together' | 'line';
   root: Note;
-  /** The scale (interval scales) or the key (arpeggios). */
+  /** The scale (interval scales), the key (arpeggios, broken chords) or 'chromatic'. */
   scaleType: ScaleType;
-  /** Arpeggios: the chord arpeggiated (the dominant for 'dominantSeventh'). */
+  /** Arpeggios and broken chords: the chord (the dominant for 'dominantSeventh'). */
   chord: { root: Note; quality: ChordQuality } | null;
   octaves: number;
   /** MIDI of the first (lowest) note. */
@@ -60,6 +102,7 @@ export interface TechniqueExercise {
   events: TechniqueEvent[];
   /** How many of `events` belong to the way up. */
   ascendingCount: number;
+  rightHand: TechniqueRightHand;
 }
 
 export interface TechniqueOptions {
@@ -69,99 +112,150 @@ export interface TechniqueOptions {
   openStrings?: 'low-positions' | 'avoid';
 }
 
-// ─── Interval scales ────────────────────────────────────────────────────────
+const ABRSM = 'ABRSM guitar syllabus from 2019, pp. 10, 14–15, 24';
+const TRINITY = 'Trinity Digital Grades guitar technical work (2023), Grade 5';
 
-/** Scale-step distance and string gap of each interval scale (gap: strings between the two notes + 1). */
-const INTERVAL_STEPS: Record<'thirds' | 'sixths' | 'octaves', { steps: number; gaps: readonly number[] }> = {
-  thirds: { steps: 2, gaps: [1] },
-  sixths: { steps: 5, gaps: [2] },
-  octaves: { steps: 7, gaps: [2] },
+/** Left-hand rules for arpeggio-like lines (guitarFingering.ts). */
+const ARPEGGIO_RULES: FingeringOptions = {
+  maxStringStep: 1,
+  fingerChangeShifts: true,
+  sharedFrets: true,
+  openFreeUpTo: 4,
+  littleFingerRootCost: 60,
 };
 
-interface ScaleTone extends LinePitch {
+interface Tone extends LinePitch {
   degree: number;
 }
 
-/** Scale tones from `startMidi` upward, `count` of them (any length; octaves repeat). */
-function scaleTones(root: Note, type: ScaleType, startMidi: number, count: number): ScaleTone[] {
-  const notes = buildScale(root, type).notes;
-  const semis = SCALE_FORMULAS[type];
-  const out: ScaleTone[] = [];
-  for (let i = 0; i < count; i++) {
-    const o = Math.floor(i / 7);
-    const d = i % 7;
-    out.push({ midi: startMidi + 12 * o + semis[d], note: notes[d], degree: d + 1, openFree: d === 0 });
-  }
-  return out;
+// ─── Right-hand helpers ─────────────────────────────────────────────────────
+
+/** i m i m … (or any pair), `count` long, continuing from `offset`. */
+function alternate(count: number, pair: readonly [RightHandFingerName, RightHandFingerName] = ['i', 'm'], offset = 0): RightHandFingerName[] {
+  return Array.from({ length: count }, (_, k) => pair[(k + offset) % 2]);
+}
+
+/** The classical string rule: thumb on the 6th–4th strings, i on the 3rd, m on the 2nd, a on the 1st. */
+export function rhByString(stringIndex: number): RightHandFingerName {
+  return stringIndex <= 2 ? 'p' : stringIndex === 3 ? 'i' : stringIndex === 4 ? 'm' : 'a';
 }
 
 /**
- * The pairs of an interval scale: up, the lower voice climbs the scale from
- * the tonic to the tonic `octaves` higher with the upper voice `steps` scale
- * steps above; down, the pairs come back without repeating the top one.
- * Melodic minor goes up melodic and comes down natural (W10-09).
+ * Thumb and fingers combined (ABRSM ◆: thumb for the lower octave, fingers for
+ * the upper octave): p below `split`, alternating i m from `split` up.
  */
-function intervalPairs(root: Note, type: ScaleType, steps: number, octaves: number, start: number) {
+export function rhThumbAndFingers(midis: readonly number[], split: number): RightHandFingerName[] {
+  let k = 0;
+  return midis.map((m) => (m < split ? 'p' : (['i', 'm'] as const)[k++ % 2]));
+}
+
+/**
+ * Right hand for a scale route: fingers only (alternating i m or m a; ABRSM
+ * and Trinity — from Grade 5 prepared tirando AND apoyando), or thumb and
+ * fingers combined (ABRSM ◆; tirando).
+ */
+export function scaleRightHand(
+  midis: readonly number[],
+  scheme: 'im' | 'ma' | 'thumbAndFingers',
+): { fingers: RightHandFingerName[]; strokes: RightHandStroke[] } {
+  if (scheme === 'thumbAndFingers') {
+    return { fingers: rhThumbAndFingers(midis, Math.min(...midis) + 12), strokes: ['tirando'] };
+  }
+  return { fingers: alternate(midis.length, scheme === 'im' ? ['i', 'm'] : ['m', 'a']), strokes: ['tirando', 'apoyando'] };
+}
+
+// ─── Interval scales ────────────────────────────────────────────────────────
+
+const INTERVALS: Record<IntervalKind, { steps: number; gaps: readonly number[]; tonic: 'lower' | 'upper' }> = {
+  thirds: { steps: 2, gaps: [1], tonic: 'lower' },
+  sixths: { steps: 5, gaps: [2], tonic: 'upper' },
+  octaves: { steps: 7, gaps: [2], tonic: 'lower' },
+  tenths: { steps: 9, gaps: [3], tonic: 'lower' },
+};
+
+/** Scale tone at step j from the tonic at `tonicMidi` (j may be negative). */
+function toneAt(root: Note, type: ScaleType, tonicMidi: number, j: number): Tone {
+  const notes = buildScale(root, type).notes;
+  const semis = SCALE_FORMULAS[type];
+  const d = ((j % 7) + 7) % 7;
+  const o = Math.floor(j / 7);
+  return { midi: tonicMidi + 12 * o + semis[d], note: notes[d], degree: d + 1, openFree: d === 0 };
+}
+
+/**
+ * The pairs of an interval scale. With the tonic as the lower note, the lower
+ * voice climbs from the tonic to the tonic `octaves` higher; with the tonic as
+ * the upper note (6ths), the upper voice does. Coming down, the pairs return
+ * without repeating the top one. Melodic minor goes up melodic and comes down
+ * natural (W10-09).
+ */
+function intervalPairs(root: Note, type: ScaleType, steps: number, tonic: 'lower' | 'upper', octaves: number, tonicMidi: number) {
   const n = 7 * octaves + 1;
-  const upTones = scaleTones(root, type, start, n + steps);
+  const offset = tonic === 'lower' ? 0 : -steps;
   const downType: ScaleType = type === 'melodic_minor' ? 'natural_minor' : type;
-  const downTones = scaleTones(root, downType, start, n + steps);
-  const up = Array.from({ length: n }, (_, i) => [upTones[i], upTones[i + steps]] as const);
-  const down = Array.from({ length: n - 1 }, (_, k) => {
-    const i = n - 2 - k;
-    return [downTones[i], downTones[i + steps]] as const;
-  });
+  const pair = (t: ScaleType, i: number) => [toneAt(root, t, tonicMidi, offset + i), toneAt(root, t, tonicMidi, offset + i + steps)] as const;
+  const up = Array.from({ length: n }, (_, i) => pair(type, i));
+  const down = Array.from({ length: n - 1 }, (_, k) => pair(downType, n - 2 - k));
   return { up, down };
 }
 
 /**
- * A scale in 3rds, 6ths or octaves, together (double stops) or broken (the
- * same two notes one after the other: low then high going up, high then low
- * coming down). Broken intervals are fingered with the double-stop hand
- * shapes — the hand holds the shape and plays its notes in turn, which is
- * what lets broken octaves move up the neck at all.
+ * A scale in 3rds, 6ths, octaves or 10ths, together (double stops) or broken
+ * (each pair low → high, going up and coming down — ABRSM's examples). 3rds,
+ * 10ths and octaves begin with the tonic as the lower note, 6ths with the
+ * tonic as the upper note (ABRSM p. 10); `tonicVoice` overrides.
  *
- * One octave by default, from the lowest tonic — or an octave higher when the
- * bottom pair cannot be stopped on two strings (3rds and 6ths in E and F
- * minor: nothing but the 6th string reaches G♯2 / A♭2). Null when the neck
- * cannot hold it or the scale is not heptatonic.
+ * Broken intervals are fingered with the double-stop hand shapes (the hand
+ * holds the shape and plays its notes in turn). One octave by default, from
+ * the lowest playable pair — an octave higher when the bottom pairs cannot be
+ * stopped (3rds and 6ths in E and F minor: nothing but the 6th string reaches
+ * G♯2 / A♭2). Null when the neck cannot hold it or the scale is not heptatonic.
  */
 export function intervalScale(
   root: Note,
   type: ScaleType,
-  kind: 'thirds' | 'sixths' | 'octaves',
+  kind: IntervalKind,
   style: 'broken' | 'together',
-  options: TechniqueOptions = {},
+  options: TechniqueOptions & { tonicVoice?: 'lower' | 'upper' } = {},
 ): TechniqueExercise | null {
   if (!ROUTE_SCALE_TYPES.includes(type)) return null;
   const tuning = options.tuning ?? TUNING_STANDARD;
   const maxFret = options.maxFret ?? GUITAR_MAX_FRET;
   const octaves = options.octaves ?? 1;
-  const { steps, gaps } = INTERVAL_STEPS[kind];
-  const lowest = lowestTonicMidi(root, tuning);
+  const { steps, gaps } = INTERVALS[kind];
+  const tonicVoice = options.tonicVoice ?? INTERVALS[kind].tonic;
+  const lowestOpen = Math.min(...tuningOpenMidi(tuning));
+  const top = highestMidi(tuning, maxFret);
 
-  for (const start of [lowest, lowest + 12]) {
-    const { up, down } = intervalPairs(root, type, steps, octaves, start);
-    if (up[up.length - 1][1].midi > highestMidi(tuning, maxFret)) return null;
-    const dyads = fingerDyads([...up, ...down], gaps, { tuning, maxFret, openStrings: options.openStrings });
+  for (let k = 0; k < 4; k++) {
+    const tonicMidi = lowestTonicMidi(root, tuning) + 12 * k;
+    const { up, down } = intervalPairs(root, type, steps, tonicVoice, octaves, tonicMidi);
+    const all = [...up, ...down];
+    if (Math.max(...all.map(([, hi]) => hi.midi)) > top) return null;
+    if (Math.min(...all.map(([lo]) => lo.midi)) < lowestOpen) continue;
+    const dyads = fingerDyads(all, gaps, { tuning, maxFret, openStrings: options.openStrings });
     if (dyads === null) continue;
-    const src = (i: number) => (i < up.length ? up[i] : down[i - up.length]);
-    const base = { kind, style, root, scaleType: type, chord: null, octaves, startMidi: start } as const;
+    const degreesOf = (i: number) => [all[i][0].degree, all[i][1].degree];
+    const syllabus = (kind === 'sixths' && style === 'together') || (kind === 'thirds' && style === 'broken');
+    const rightHand: TechniqueRightHand = {
+      strokes: ['tirando'],
+      overRinging: null,
+      pattern: style === 'together' ? 'ip/mp' : 'im',
+      basis: syllabus ? 'syllabus' : 'inferred',
+      source: `${TRINITY} (sixths ip/mp, broken thirds im); ${ABRSM} (interval scales tirando)`,
+    };
+    const base = { kind, style, root, scaleType: type, chord: null, octaves, startMidi: all[0][0].midi, rightHand } as const;
     if (style === 'together') {
-      const events = dyads.map((pair, i) => ({ notes: pair, degrees: [src(i)[0].degree, src(i)[1].degree] }));
+      const upper = alternate(dyads.length);
+      const events = dyads.map((pair, i) => ({ notes: pair, degrees: degreesOf(i), rh: ['p', upper[i]] as RightHandFingerName[] }));
       return { ...base, events, ascendingCount: up.length };
     }
-    // Broken: low → high going up, high → low coming down; a shift belongs to
-    // the first note of the pair it brings the hand to.
-    const events: TechniqueEvent[] = [];
-    dyads.forEach(([lo, hi], i) => {
-      const [dLo, dHi] = [src(i)[0].degree, src(i)[1].degree];
-      const order = i < up.length ? [[lo, dLo], [hi, dHi]] : [[hi, dHi], [lo, dLo]];
-      order.forEach(([n, d], j) => {
-        const note = n as FingeredNote;
-        events.push({ notes: [{ ...note, shift: j === 0 ? note.shift : null }], degrees: [d as number] });
-      });
-    });
+    // Broken: low then high, both ways; a shift belongs to the note played first.
+    const rh = alternate(2 * dyads.length);
+    const events: TechniqueEvent[] = dyads.flatMap(([lo, hi], i) => [
+      { notes: [lo], degrees: [degreesOf(i)[0]], rh: [rh[2 * i]] },
+      { notes: [{ ...hi, shift: null }], degrees: [degreesOf(i)[1]], rh: [rh[2 * i + 1]] },
+    ]);
     return { ...base, events, ascendingCount: 2 * up.length };
   }
   return null;
@@ -174,14 +268,17 @@ export function intervalScale(
 // p+k−1, or one fret lower so it can share a fret with the finger below on
 // the next string (two fingertips side by side, as in the open A-major grip),
 // or — the 4th finger only — one fret higher (a stretch), or — the index only
-// — one fret lower (a reach back). While the hand stays in a position no
+// — one fret lower (a reach back). Two fingers never span more frets than
+// they are apart plus one (|fret gap| − |finger gap| ≤ 1: the 3rd and 4th
+// fingers cannot hold frets 4 and 7). While the hand stays in a position no
 // finger moves to another fret; it changes position only with a guide finger
-// that keeps its string and slides. Same costs as single lines where they
-// apply (guitarFingering.ts), plus 4 for a shared fret and 4 per string the
-// pair moves. One more move is allowed for double stops: the 'shape' shift —
-// the same two fingers keep their shape and move to the next pair of strings
-// (how an octave scale crosses from strings 5–3 to 4–2), at most 3 positions,
-// cost 30 + 4 per position.
+// that keeps its string and slides, or — 'shape' — by moving the same
+// two-finger shape to the next pair of strings (how an octave scale crosses
+// from strings 5–3 to 4–2), at most 3 positions. Costs as for single lines
+// where they apply (guitarFingering.ts), plus 4 for a shared fret, 4 per
+// string the pair moves, and 3 per fret above the 9th (keeps an octave scale
+// from climbing one string pair to the top of the neck when the next pair
+// lies under the hand).
 
 interface DyadState {
   sLow: number;
@@ -242,6 +339,7 @@ function fingerDyads(
         for (const shape of dyadShapes(fLow, fHigh)) {
           const own =
             shape.squeeze * 4 + shape.stretch * (10 + ((shape.p ?? 5) < 5 ? 6 : 0)) + (shape.p ?? 0) +
+            3 * (Math.max(0, fLow - 9) + Math.max(0, fHigh - 9)) +
             openCost(fLow, lo, shape.p) + openCost(fHigh, hi, shape.p);
           const base = { sLow, fLow, kLow: shape.kLow, sHigh, fHigh, kHigh: shape.kHigh, p: shape.p };
           if (i === 0) {
@@ -286,6 +384,7 @@ function fingerDyads(
       segment,
       shift: st.shift,
       reach: null,
+      barre: false,
     });
     return [mk(lo, st.sLow, st.fLow, st.kLow), mk(hi, st.sHigh, st.fHigh, st.kHigh)];
   });
@@ -313,11 +412,13 @@ function dyadShapes(fLow: number, fHigh: number): DyadShape[] {
   for (const a of options(fLow)) {
     for (const b of options(fHigh)) {
       if (a.k !== 0 && a.k === b.k) continue; // one finger, one note
-      // Fingers rise with the fret; on one fret the lower string takes the lower finger.
       if (a.k !== 0 && b.k !== 0) {
+        // Fingers rise with the fret; on one fret the lower string takes the lower finger.
         if (fHigh > fLow && b.k < a.k) continue;
         if (fHigh < fLow && b.k > a.k) continue;
         if (fHigh === fLow && b.k !== a.k + 1) continue;
+        // Two fingers reach at most one fret beyond their own distance.
+        if (Math.abs(fHigh - fLow) - Math.abs(b.k - a.k) >= 2) continue;
       }
       const candidates = a.k === 0 ? b.ps : b.k === 0 ? a.ps : a.ps.filter((p) => b.ps.includes(p));
       for (const p of [...new Set(candidates)].sort((x, y) => x - y)) {
@@ -376,17 +477,57 @@ function dyadMove(
 
 // ─── Arpeggios ──────────────────────────────────────────────────────────────
 
-/** Chord tones from `startMidi` up over `octaves` octaves (root repeated on top). */
-function chordLine(root: Note, quality: ChordQuality, startMidi: number, octaves: number): ScaleTone[] {
-  const notes = buildChord(root, quality).notes;
-  const semis = CHORD_FORMULAS[quality];
-  const tones = [1, 3, 5, 7];
-  const out: ScaleTone[] = [];
-  for (let o = 0; o < octaves; o++) {
-    notes.forEach((n, i) => out.push({ midi: startMidi + 12 * o + semis[i], note: n, degree: tones[i], openFree: i === 0 }));
+const CHORD_TONE = [1, 3, 5, 7];
+
+/** Chord tone k (0 = root) of a chord from its root at `rootMidi`, any octave. */
+function chordToneAt(notes: readonly Note[], semis: readonly number[], rootMidi: number, k: number): Tone {
+  const n = notes.length;
+  const i = ((k % n) + n) % n;
+  return {
+    midi: rootMidi + 12 * Math.floor(k / n) + semis[i],
+    note: notes[i],
+    degree: CHORD_TONE[i],
+    openFree: i === 0,
+    root: i === 0,
+  };
+}
+
+function arpeggioRightHand(kind: TechniqueKind, octaves: number, upCount: number, total: number): { rh: RightHandFingerName[]; rightHand: TechniqueRightHand } {
+  if (kind === 'tonicArpeggio' && octaves === 2 && upCount === 7) {
+    const up: RightHandFingerName[] = ['p', 'p', 'p', 'p', 'i', 'm', 'a'];
+    return {
+      rh: [...up, ...[...up].reverse().slice(1)],
+      rightHand: {
+        strokes: ['tirando'],
+        overRinging: false,
+        pattern: 'ppppima',
+        basis: 'syllabus',
+        source: `${TRINITY} (arpeggios ppppima, tirando; the descent mirrors it — inferred); ${ABRSM} (tirando, without over-ringing)`,
+      },
+    };
   }
-  out.push({ midi: startMidi + 12 * octaves, note: notes[0], degree: 1, openFree: true });
-  return out;
+  if (kind === 'dominantSeventh' || kind === 'diminishedSeventh') {
+    return {
+      rh: ['p', 'p', ...alternate(total - 2)],
+      rightHand: {
+        strokes: ['tirando'],
+        overRinging: false,
+        pattern: 'ppimim…',
+        basis: 'syllabus',
+        source: `${TRINITY} (ppimim…, read as p p then i m alternating); ${ABRSM} (tirando, without over-ringing)`,
+      },
+    };
+  }
+  return {
+    rh: [],
+    rightHand: {
+      strokes: ['tirando'],
+      overRinging: false,
+      pattern: 'by string',
+      basis: 'inferred',
+      source: `${ABRSM} (tirando, without over-ringing); fingers by string (p 6–4, i 3, m 2, a 1)`,
+    },
+  };
 }
 
 function arpeggioExercise(
@@ -396,33 +537,39 @@ function arpeggioExercise(
   chordRoot: Note,
   quality: ChordQuality,
   options: TechniqueOptions,
-  resolution: LinePitch | null,
 ): TechniqueExercise | null {
   const tuning = options.tuning ?? TUNING_STANDARD;
   const maxFret = options.maxFret ?? GUITAR_MAX_FRET;
   const octaves = options.octaves ?? 2;
   const start = lowestTonicMidi(chordRoot, tuning);
-  const upLine = chordLine(chordRoot, quality, start, octaves);
+  const notes = buildChord(chordRoot, quality).notes;
+  const semis = CHORD_FORMULAS[quality];
+  const upLine = Array.from({ length: notes.length * octaves + 1 }, (_, k) => chordToneAt(notes, semis, start, k));
   if (upLine[upLine.length - 1].midi > highestMidi(tuning, maxFret)) return null;
-  // Up, then down the same way (the ascent reversed, like the scales).
-  const up = fingerLine(upLine, { tuning, maxFret, maxStringStep: 1, openStrings: options.openStrings });
+  const rules: FingeringOptions = { ...ARPEGGIO_RULES, tuning, maxFret, openStrings: options.openStrings };
+
+  // Up, then down the same way (the ascent reversed, like the scales). The
+  // dominant 7th comes down only to its 3rd — the leading note — and resolves
+  // up a semitone to the tonic (ABRSM p. 14).
+  const up = fingerLine(upLine, rules);
   if (up === null) return null;
-  const fingered = [...up, ...reverseFingering(up).slice(1)];
-  const line: (LinePitch & { degree: number })[] = [...upLine, ...[...upLine].reverse().slice(1)];
-  if (resolution) {
-    // The resolution is fingered from where the descent ends.
+  const isDominant = kind === 'dominantSeventh';
+  const down = reverseFingering(up).slice(1, isDominant ? -1 : undefined);
+  const lineDegrees = [...upLine, ...[...upLine].reverse().slice(1, isDominant ? -1 : undefined)].map((t) => t.degree);
+  let fingered = [...up, ...down];
+  if (isDominant) {
     const last = fingered[fingered.length - 1];
+    const resolution: LinePitch = { midi: last.midi + 1, note: root, openFree: true };
     const step = fingerLine([last, resolution], {
-      tuning,
-      maxFret,
-      maxStringStep: 1,
-      openStrings: options.openStrings,
+      ...rules,
       start: { stringIndex: last.stringIndex, fret: last.fret, frame: last.frame },
     });
     if (step === null) return null;
     fingered.push({ ...step[1], segment: last.segment + (step[1].shift ? 1 : 0) });
-    line.push({ ...resolution, degree: 0 });
+    lineDegrees.push(0);
   }
+  fingered = annotateBarres(fingered);
+  const { rh, rightHand } = arpeggioRightHand(kind, octaves, upLine.length, fingered.length);
   return {
     kind,
     style: 'line',
@@ -431,21 +578,22 @@ function arpeggioExercise(
     chord: { root: chordRoot, quality },
     octaves,
     startMidi: start,
-    events: fingered.map((n, i) => ({ notes: [n], degrees: [line[i].degree] })),
+    events: fingered.map((n, i) => ({ notes: [n], degrees: [lineDegrees[i]], rh: [rh[i] ?? rhByString(n.stringIndex)] })),
     ascendingCount: upLine.length,
+    rightHand,
   };
 }
 
 /** The tonic arpeggio of a major or minor key, from the lowest tonic, up and down (2 octaves by default). */
 export function tonicArpeggio(root: Note, mode: 'major' | 'minor', options: TechniqueOptions = {}): TechniqueExercise | null {
-  return arpeggioExercise('tonicArpeggio', root, mode === 'major' ? 'major' : 'natural_minor', root, mode, options, null);
+  return arpeggioExercise('tonicArpeggio', root, mode === 'major' ? 'major' : 'natural_minor', root, mode, options);
 }
 
 /**
  * The dominant-7th arpeggio of a key (major, or minor with the raised 7th),
- * from the lowest dominant, up and down, then resolving to the tonic a perfect
- * fourth above the dominant it ended on (the bass's V → I). Syllabuses word
- * the resolution differently [verify]; the note is the last event, degree 0.
+ * from the lowest dominant: up 1 3 5 7 … to the top root, down to the 3rd
+ * (the leading note), resolving up a semitone on the tonic (ABRSM p. 14). The
+ * resolution is the last event, degree 0.
  */
 export function dominantSeventhArpeggio(
   keyRoot: Note,
@@ -453,23 +601,133 @@ export function dominantSeventhArpeggio(
   options: TechniqueOptions = {},
 ): TechniqueExercise | null {
   const dominant = spellDegree(keyRoot, parseDegree('5'));
-  const tuning = options.tuning ?? TUNING_STANDARD;
-  const start = lowestTonicMidi(dominant, tuning);
-  const resolution: LinePitch = { midi: start + 5, note: keyRoot, openFree: true };
-  return arpeggioExercise(
-    'dominantSeventh',
-    keyRoot,
-    mode === 'major' ? 'major' : 'harmonic_minor',
-    dominant,
-    'dominant7',
-    options,
-    resolution,
-  );
+  return arpeggioExercise('dominantSeventh', keyRoot, mode === 'major' ? 'major' : 'harmonic_minor', dominant, 'dominant7', options);
 }
 
 /** The diminished-7th arpeggio on `root` (1 ♭3 ♭5 𝄫7), from its lowest note, up and down. */
 export function diminishedSeventhArpeggio(root: Note, options: TechniqueOptions = {}): TechniqueExercise | null {
-  return arpeggioExercise('diminishedSeventh', root, 'harmonic_minor', root, 'diminished7', options, null);
+  return arpeggioExercise('diminishedSeventh', root, 'harmonic_minor', root, 'diminished7', options);
+}
+
+// ─── Broken chords ──────────────────────────────────────────────────────────
+
+/**
+ * A broken chord (ABRSM p. 14): groups of three chord tones, each from its
+ * lowest note — going up from every chord tone between the tonic and the top
+ * tonic, coming down from the chord tones below the top tonic down to the 3rd
+ * — then the tonic alone. One octave by default; `startOctave: 1` starts an
+ * octave above the lowest tonic (ABRSM Grade 5: "E minor starting an octave
+ * above lowest tonic"). Played "with over-ringing".
+ */
+export function brokenChord(
+  root: Note,
+  mode: 'major' | 'minor',
+  options: TechniqueOptions & { startOctave?: number } = {},
+): TechniqueExercise | null {
+  const tuning = options.tuning ?? TUNING_STANDARD;
+  const maxFret = options.maxFret ?? GUITAR_MAX_FRET;
+  const octaves = options.octaves ?? 1;
+  const start = lowestTonicMidi(root, tuning) + 12 * (options.startOctave ?? 0);
+  const notes = buildChord(root, mode).notes;
+  const semis = CHORD_FORMULAS[mode];
+  const top = 3 * octaves;
+  const groupStarts = [
+    ...Array.from({ length: top + 1 }, (_, k) => k),
+    ...Array.from({ length: top - 1 }, (_, k) => top - 1 - k),
+  ];
+  const line: Tone[] = [
+    ...groupStarts.flatMap((k) => [0, 1, 2].map((j) => chordToneAt(notes, semis, start, k + j))),
+    chordToneAt(notes, semis, start, 0),
+  ];
+  if (Math.max(...line.map((t) => t.midi)) > highestMidi(tuning, maxFret)) return null;
+  // The closing tonic drops an octave from the last group's top note, which
+  // takes a two-string step (E4 on the 2nd string → E3 on the 4th).
+  const fingered = fingerLine(line, { ...ARPEGGIO_RULES, maxStringStep: 2, tuning, maxFret, openStrings: options.openStrings });
+  if (fingered === null) return null;
+  return {
+    kind: 'brokenChord',
+    style: 'line',
+    root,
+    scaleType: mode === 'major' ? 'major' : 'natural_minor',
+    chord: { root, quality: mode },
+    octaves,
+    startMidi: start,
+    events: fingered.map((n, i) => ({ notes: [n], degrees: [line[i].degree], rh: [rhByString(n.stringIndex)] })),
+    ascendingCount: 3 * (top + 1),
+    rightHand: {
+      strokes: ['tirando'],
+      overRinging: true,
+      pattern: 'by string',
+      basis: 'inferred',
+      source: `${ABRSM} (broken chords: tirando, with over-ringing); fingers by string (p 6–4, i 3, m 2, a 1)`,
+    },
+  };
+}
+
+// ─── Chromatic scale ────────────────────────────────────────────────────────
+
+const SHARP_NAMES: readonly Note[] = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'].map(
+  (s) => ({ natural: s[0], accidental: s.slice(1) }) as Note,
+);
+const FLAT_NAMES: readonly Note[] = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'].map(
+  (s) => ({ natural: s[0], accidental: s.slice(1) }) as Note,
+);
+
+/**
+ * The chromatic scale from the lowest `start`, `octaves` octaves (2 by
+ * default, as ABRSM Grade 5 asks), up and back down the same way; written
+ * with sharps going up and flats coming down (ABRSM p. 14), the start note
+ * keeping its own spelling. Right hand: thumb and fingers combined (ABRSM ◆).
+ *
+ * Fingered with open strings (the default style). openStrings: 'avoid' returns
+ * null: with strings a 4th apart a closed position cannot hold five semitones
+ * per string, so every string crossing would need a shift onto another
+ * string, which the fingering model does not offer (a shift needs a guide).
+ */
+export function chromaticScale(start: Note, options: TechniqueOptions = {}): TechniqueExercise | null {
+  const tuning = options.tuning ?? TUNING_STANDARD;
+  const maxFret = options.maxFret ?? GUITAR_MAX_FRET;
+  const octaves = options.octaves ?? 2;
+  if (options.openStrings === 'avoid') return null;
+  const first = lowestTonicMidi(start, tuning);
+  const pc0 = getPitchClass(start);
+  const count = 12 * octaves + 1;
+  if (first + 12 * octaves > highestMidi(tuning, maxFret)) return null;
+  const spell = (midi: number, names: readonly Note[]): Note => ((midi - first) % 12 === 0 ? start : names[(pc0 + midi - first) % 12]);
+  const upLine: Tone[] = Array.from({ length: count }, (_, k) => ({
+    midi: first + k,
+    note: spell(first + k, SHARP_NAMES),
+    degree: (k % 12) + 1,
+    openFree: k % 12 === 0,
+  }));
+  const up = fingerLine(upLine, { tuning, maxFret });
+  if (up === null) return null;
+  const down = reverseFingering(up)
+    .slice(1)
+    .map((n) => {
+      const note = spell(n.midi, FLAT_NAMES);
+      return { ...n, note, pitched: { ...note, octave: n.pitched.octave } };
+    });
+  const fingered = [...up, ...down];
+  const rh = rhThumbAndFingers(fingered.map((n) => n.midi), first + 12);
+  return {
+    kind: 'chromatic',
+    style: 'line',
+    root: start,
+    scaleType: 'chromatic',
+    chord: null,
+    octaves,
+    startMidi: first,
+    events: fingered.map((n, i) => ({ notes: [n], degrees: [((n.midi - first) % 12) + 1], rh: [rh[i]] })),
+    ascendingCount: count,
+    rightHand: {
+      strokes: ['tirando'],
+      overRinging: null,
+      pattern: 'p + im',
+      basis: 'syllabus',
+      source: `${ABRSM} (Grade 5 chromatic: thumb and fingers combined — thumb for the lower octave, fingers for the upper; tirando)`,
+    },
+  };
 }
 
 /** All the notes of an exercise in playing order (double stops low → high). */

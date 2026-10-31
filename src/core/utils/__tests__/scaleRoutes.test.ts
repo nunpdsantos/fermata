@@ -199,6 +199,36 @@ describe('scale routes — open strings and determinism', () => {
       }
     }
   });
+  it('never slides the same finger twice in a row, and uses only scale shifts (no finger change on a string)', () => {
+    let routes = 0;
+    for (const style of ['low-positions', 'avoid'] as const) {
+      for (const type of ROUTE_SCALE_TYPES) {
+        for (const root of ROOTS(type)) {
+          for (const octaves of [2, 3]) {
+            const route = getScaleRoute(root, type, { octaves, openStrings: style });
+            if (!route) continue;
+            routes++;
+            for (const dir of ['ascending', 'descending'] as const) {
+              const ns = route[dir];
+              ns.forEach((n, i) => {
+                expect(n.shift?.kind ?? 'none', `${nameOf(root)} ${type}`).not.toBe('change');
+                const p = i > 0 ? ns[i - 1].shift : null;
+                const repeat = p !== null && n.shift !== null && p.kind === 'guide' && n.shift.kind === 'guide' && p.finger === n.shift.finger;
+                expect(repeat, `${nameOf(root)} ${type} ${octaves}oct ${style} ${dir} #${i}: finger ${n.finger} slides again`).toBe(false);
+              });
+            }
+          }
+        }
+      }
+    }
+    expect(routes).toBe(704);
+  });
+  it('B melodic minor comes down 2-1 with an index shift, not sliding the 2nd finger twice', () => {
+    const route = getScaleRoute({ natural: 'B', accidental: '' }, 'melodic_minor')!;
+    expect(route.descending.slice(0, 5).map((n) => `${6 - n.stringIndex}-${n.fret}/${n.finger}`).join(' ')).toBe('1-7/2 1-5/1 1-3/3 1-2/2 1-0/0');
+    expect(route.descending[1].reach).not.toBeNull();
+    expect(route.descending[2].shift?.kind).toBe('index');
+  });
   it('is deterministic', () => {
     for (const type of EXAM_SCALE_TYPES) {
       for (const root of ROOTS(type)) {

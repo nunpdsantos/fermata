@@ -16,31 +16,55 @@
 //   spreadUp     N   N+1 N+3 N+4   position N, hand spread (5-6-8-9 = 1-2-3-4)
 //   stretchDown  N−1 N+1 N+2 N+3   position N, index reaches back
 //
+// and, for arpeggio lines only (option sharedFrets), the chord-grip shapes in
+// which two neighbouring fingers share a fret on two strings — the lower
+// string takes the lower finger (the Am grip's 2nd and 3rd fingers on fret 2):
+//
+//   share12      N   N   N+1 N+2
+//   share23      N   N+1 N+1 N+2
+//   share34      N   N+1 N+2 N+2
+//
 // A fretted note is played by the finger whose frame fret it is, so one finger
-// never plays two frets and one fret never takes two fingers while the hand
-// stays put. The frame only changes at a shift, and a shift is allowed only
+// never plays two frets while the hand stays put, and — outside the shared
+// shapes — one fret never takes two fingers. The frame only changes at a shift, and a shift is allowed only
 // when the hand has a guide (classical practice, audit Track G R21):
 //
 //   guide  the same finger stays on the same string and slides to the new fret;
 //   index  on the same string, the index takes the next note after a 2nd/3rd/
 //          4th finger going up (and the reverse coming down) — the usual scale
 //          shift;
-//   open   the shift happens while an open string sounds (the hand is free).
+//   open   the shift happens while an open string sounds (the hand is free);
+//   change (opt-in, arpeggios) on the same string, another finger lands on the
+//          next note after the hand slides (3 → 4 up the 1st string to the
+//          top of an open-position C arpeggio).
 //
 // Everything else (jumping to another string and another position at once) is
-// not offered. The cheapest playable line under the costs below is found by an
+// not offered. Two consecutive notes on different strings at the same fret
+// would put one finger on both (the frame has one finger per fret): with the
+// 2nd–4th finger that is a roll that lets both strings ring, which classical
+// arpeggios avoid ("without over-ringing", ABRSM guitar syllabus p. 10), so it
+// is not offered; with the index it is a partial barré — allowed, costed and
+// flagged on the note (`barre`). The cheapest playable line under the costs below is found by an
 // exact shortest-path search over (note, string, fret, frame); ties go to the
 // first candidate in a fixed enumeration order, so the result is deterministic.
 //
 // Costs (integers, so sums are exact):
-//   shift       guide 30 + 4·frets slid; index 30 (40 from the 2nd finger) +
-//               3·frets between the two notes + 1·positions moved; open 12 +
-//               2·positions moved; at most 7 positions per shift; 25 more
-//               for a shift straight after another
+//   shift       guide 30 + 4·frets slid; index and change 30 (index from the
+//               2nd finger: 40) + 3·frets between the two notes + 1·positions
+//               moved; open 12 + 2·positions moved; at
+//               most 7 positions per shift; 25 more for a shift straight
+//               after another, 60 more when it is the same finger sliding
+//               again (a melodic-minor descent sliding 2-2-2 down a string)
+//   barré       15 per note the index takes at the fret of the note before,
+//               on another string
 //   stretch     10 per note played by a reaching finger (+6 below position V)
 //   string      4 per string crossing, 15 more when a string is skipped
 //   open string free at the start, on a note marked openFree (a scale's
-//               tonic) and in position I; 15 in II–IV; 30 from V
+//               tonic) and up to position I (openFreeUpTo; arpeggios use IV);
+//               15 up to IV; 30 from V
+//   root        littleFingerRootCost when the 4th finger plays the first note
+//               and it is a chord root (the bass of an arpeggio)
+//   shared fret 3 per note on the shared fret of a share12/23/34 shape
 //               (openStrings 'avoid': closed-position routes — an open
 //               string only where no fretted place reaches the pitch)
 //   height      1 per position, per fretted note (nut-closest wins ties)
@@ -61,9 +85,11 @@ export interface LinePitch {
   note: Note;
   /** An open string costs nothing on this note (a scale's tonic). */
   openFree?: boolean;
+  /** A chord root (arpeggios): the little finger on it costs littleFingerRootCost. */
+  root?: boolean;
 }
 
-export type HandFrameKind = 'compact' | 'stretchUp' | 'spreadUp' | 'stretchDown';
+export type HandFrameKind = 'compact' | 'stretchUp' | 'spreadUp' | 'stretchDown' | 'share12' | 'share23' | 'share34';
 
 export interface HandFrame {
   kind: HandFrameKind;
@@ -74,11 +100,11 @@ export interface HandFrame {
 }
 
 /**
- * 'guide', 'index', 'open': see the header. 'shape' (double stops only): the
+ * 'guide', 'index', 'open', 'change': see the header. 'shape' (double stops only): the
  * hand keeps the same two fingers in the same shape and moves it to the next
  * pair of strings (an octave shape crossing from strings 5–3 to 4–2).
  */
-export type ShiftKind = 'guide' | 'index' | 'open' | 'shape';
+export type ShiftKind = 'guide' | 'index' | 'open' | 'change' | 'shape';
 
 export interface Shift {
   kind: ShiftKind;
@@ -122,13 +148,23 @@ export interface FingeredNote {
   shift: Shift | null;
   /** A re-spread in the same position that brings the hand to this note, if any. */
   reach: Reach | null;
+  /** The index takes this note at the same fret as the note before, on another string (a partial barré). */
+  barre: boolean;
 }
 
 export interface FingeringOptions {
   tuning?: GuitarTuning;
   maxFret?: number;
-  /** Largest string change between consecutive notes (1 for scales, 2 for arpeggios). */
+  /** Largest string change between consecutive notes (default 1 — scales and arpeggios alike). */
   maxStringStep?: number;
+  /** Allow 'change' shifts (same string, another finger lands). Default false. */
+  fingerChangeShifts?: boolean;
+  /** Highest position in which an open string is free (default 1). */
+  openFreeUpTo?: number;
+  /** Cost of the 4th finger on the first note when it is marked root (default 0). */
+  littleFingerRootCost?: number;
+  /** Allow the shared-fret shapes share12/23/34 (arpeggio lines). Default false. */
+  sharedFrets?: boolean;
   /**
    * Places to prefer, pitch by pitch (MIDI → string/fret): every note played
    * elsewhere costs `referenceWeight`. Keeps a melodic-minor descent on the
@@ -167,14 +203,21 @@ const FRAME_OFFSETS: Record<HandFrameKind, readonly [number, number, number, num
   stretchUp: [0, 1, 2, 4],
   spreadUp: [0, 1, 3, 4],
   stretchDown: [0, 2, 3, 4],
+  share12: [0, 0, 1, 2],
+  share23: [0, 1, 1, 2],
+  share34: [0, 1, 2, 2],
 };
 const FRAME_KINDS: readonly HandFrameKind[] = ['compact', 'stretchUp', 'spreadUp', 'stretchDown'];
+const SHARED_KINDS: readonly HandFrameKind[] = ['share12', 'share23', 'share34'];
 /** Fingers that reach outside the compact window in each frame (1-based). */
 const REACHING: Record<HandFrameKind, ReadonlySet<number>> = {
   compact: new Set(),
   stretchUp: new Set([4]),
   spreadUp: new Set([3, 4]),
   stretchDown: new Set([1]),
+  share12: new Set(),
+  share23: new Set(),
+  share34: new Set(),
 };
 
 export function makeFrame(kind: HandFrameKind, firstFret: number): HandFrame {
@@ -188,24 +231,37 @@ export function makeFrame(kind: HandFrameKind, firstFret: number): HandFrame {
 
 const frameId = (f: HandFrame | null) => (f === null ? '-' : `${f.kind}@${f.frets[0]}`);
 
-/** Every frame that holds `fret`, in a fixed order (compact first, low first). */
-function framesHolding(fret: number, maxFret: number): HandFrame[] {
+/** Every frame that holds `fret`, in a fixed order (compact first, low first; shared shapes last). */
+function framesHolding(fret: number, maxFret: number, shared: boolean): HandFrame[] {
   const out: HandFrame[] = [];
-  for (const kind of FRAME_KINDS) {
+  const seen = new Set<string>();
+  for (const kind of shared ? [...FRAME_KINDS, ...SHARED_KINDS] : FRAME_KINDS) {
     const o = FRAME_OFFSETS[kind];
     for (let j = 0; j < 4; j++) {
       const first = fret - o[j];
       if (first < 1 || first + o[3] > maxFret) continue;
-      out.push(makeFrame(kind, first));
+      const frame = makeFrame(kind, first);
+      if (seen.has(frameId(frame))) continue;
+      seen.add(frameId(frame));
+      out.push(frame);
     }
   }
   return out;
 }
 
-/** The finger (1–4) a frame puts on `fret`, or 0 when no finger is there. */
+/** The finger (1–4) a frame puts on `fret`, or 0 when no finger is there (the lower one on a shared fret). */
 export function fingerInFrame(frame: HandFrame, fret: number): LeftHandFinger {
   const i = frame.frets.indexOf(fret);
   return (i < 0 ? 0 : i + 1) as LeftHandFinger;
+}
+
+/** Every finger a frame puts on `fret` (two on a shared fret). */
+function fingersInFrame(frame: HandFrame, fret: number): LeftHandFinger[] {
+  const out: LeftHandFinger[] = [];
+  frame.frets.forEach((f, i) => {
+    if (f === fret) out.push((i + 1) as LeftHandFinger);
+  });
+  return out;
 }
 
 // ─── Costs ──────────────────────────────────────────────────────────────────
@@ -221,6 +277,9 @@ const COST = {
   perPositionOpen: 2,
   maxShift: 7,
   backToBack: 25,
+  repeatSlide: 60,
+  barre: 15,
+  shared: 3,
   stretch: 10,
   stretchLow: 6,
   crossing: 4,
@@ -230,8 +289,8 @@ const COST = {
   height: 1,
 } as const;
 
-function openStringCost(free: boolean, frame: HandFrame | null): number {
-  if (free || frame === null || frame.position <= 1) return 0;
+function openStringCost(free: boolean, frame: HandFrame | null, freeUpTo: number): number {
+  if (free || frame === null || frame.position <= freeUpTo) return 0;
   return frame.position <= 4 ? COST.openMid : COST.openHigh;
 }
 
@@ -263,6 +322,7 @@ function shiftBetween(
   finger: LeftHandFinger,
   frame: HandFrame,
   dir: number,
+  fingerChange: boolean,
 ): { shift: Shift; cost: number } | null {
   const from = p.frame!;
   if (from.position === frame.position) return null; // one frame per position
@@ -294,6 +354,12 @@ function shiftBetween(
         COST.perPositionIndex * moved,
     };
   }
+  if (fingerChange) {
+    return {
+      shift: { ...base, kind: 'change', stringIndex: s, finger },
+      cost: COST.shiftIndex + COST.perFretIndex * Math.abs(f - p.f) + COST.perPositionIndex * moved,
+    };
+  }
   return null;
 }
 
@@ -307,12 +373,24 @@ function pitchedOf(p: LinePitch): PitchedNote {
  * pitch off the neck, or no sensible shift between two notes).
  */
 export function fingerLine(line: readonly LinePitch[], options: FingeringOptions = {}): FingeredNote[] | null {
-  if (line.length === 0) return [];
+  return fingerLineScored(line, options)?.notes ?? null;
+}
+
+/** As fingerLine, with the total cost of the fingering (to compare alternatives). */
+export function fingerLineScored(
+  line: readonly LinePitch[],
+  options: FingeringOptions = {},
+): { notes: FingeredNote[]; cost: number } | null {
+  if (line.length === 0) return { notes: [], cost: 0 };
   const tuning = options.tuning ?? TUNING_STANDARD;
   const maxFret = options.maxFret ?? GUITAR_MAX_FRET;
   const maxStep = options.maxStringStep ?? 1;
   const refWeight = options.referenceWeight ?? 5;
   const openPolicy = options.openStrings ?? 'low-positions';
+  const freeUpTo = options.openFreeUpTo ?? 1;
+  const fingerChange = options.fingerChangeShifts ?? false;
+  const littleRoot = options.littleFingerRootCost ?? 0;
+  const shared = options.sharedFrets ?? false;
   const open = tuningOpenMidi(tuning);
 
   const layers: State[][] = [];
@@ -324,7 +402,7 @@ export function fingerLine(line: readonly LinePitch[], options: FingeringOptions
     const layer: State[] = [];
     const index = new Map<string, number>();
     const offer = (st: State) => {
-      const key = `${st.s}:${st.f}:${frameId(st.frame)}`;
+      const key = `${st.s}:${st.f}:${st.finger}:${frameId(st.frame)}`;
       const at = index.get(key);
       if (at === undefined) {
         index.set(key, layer.length);
@@ -353,18 +431,19 @@ export function fingerLine(line: readonly LinePitch[], options: FingeringOptions
           if (!stringStepOk(p.s, s, dir, maxStep)) return;
           if (pin?.position !== undefined && (p.frame?.position ?? null) !== pin.position) return;
           if (pin?.frame !== undefined && frameId(pin.frame) !== frameId(p.frame)) return;
-          const cost = p.cost + refCost + crossingCost(p.s, s) + openStringCost(line[i].openFree === true, p.frame);
+          const cost = p.cost + refCost + crossingCost(p.s, s) + openStringCost(line[i].openFree === true, p.frame, freeUpTo);
           offer({ s, f, finger: 0, frame: p.frame, cost, prev: pi, shift: null });
         });
         continue;
       }
 
-      for (const frame of pin?.frame ? [pin.frame] : framesHolding(f, maxFret)) {
-        const finger = fingerInFrame(frame, f);
-        if (finger === 0) continue;
+      for (const frame of pin?.frame ? [pin.frame] : framesHolding(f, maxFret, shared)) {
+       for (const finger of fingersInFrame(frame, f)) {
         if (pin?.finger !== undefined && pin.finger !== finger) continue;
         if (pin?.position !== undefined && pin.position !== frame.position) continue;
-        const own = refCost + stretchCost(frame, finger) + COST.height * frame.position;
+        const rootCost = i === 0 && finger === 4 && line[i].root ? littleRoot : 0;
+        const sharedCost = fingersInFrame(frame, f).length > 1 ? COST.shared : 0;
+        const own = refCost + rootCost + sharedCost + stretchCost(frame, finger) + COST.height * frame.position;
         if (prevLayer === null) {
           offer({ s, f, finger, frame, cost: own, prev: -1, shift: null });
           continue;
@@ -372,15 +451,30 @@ export function fingerLine(line: readonly LinePitch[], options: FingeringOptions
         prevLayer.forEach((p, pi) => {
           if (!stringStepOk(p.s, s, dir, maxStep)) return;
           let cost = p.cost + own + crossingCost(p.s, s);
+          // Same fret, next string, same finger: a roll (fingers 2–4, never)
+          // or a partial barré (the index, costed). Two fingers on one fret
+          // (a shared shape): the lower string takes the lower finger.
+          if (p.f === f && p.s !== s && p.f > 0) {
+            if (p.finger === finger) {
+              if (finger >= 2) return;
+              cost += COST.barre;
+            } else if (Math.sign(s - p.s) !== Math.sign(finger - p.finger)) {
+              return;
+            }
+          }
           let shift: Shift | null = null;
           if (p.frame !== null && frameId(p.frame) !== frameId(frame)) {
-            const move = shiftBetween(p, s, f, finger, frame, dir);
+            const move = shiftBetween(p, s, f, finger, frame, dir, fingerChange);
             if (move === null) return;
             cost += move.cost + (p.shift !== null ? COST.backToBack : 0);
+            if (p.shift?.kind === 'guide' && move.shift.kind === 'guide' && p.shift.finger === move.shift.finger) {
+              cost += COST.repeatSlide;
+            }
             shift = move.shift;
           }
           offer({ s, f, finger, frame, cost, prev: pi, shift });
         });
+       }
       }
     }
     if (layer.length === 0) return null;
@@ -401,21 +495,38 @@ export function fingerLine(line: readonly LinePitch[], options: FingeringOptions
   path.reverse();
 
   let segment = 0;
-  return path.map((st, i) => {
-    if (st.shift) segment++;
-    return {
-      midi: line[i].midi,
-      note: line[i].note,
-      pitched: pitchedOf(line[i]),
-      stringIndex: st.s,
-      fret: st.f,
-      finger: st.finger,
-      position: st.frame?.position ?? null,
-      frame: st.frame,
-      segment,
-      shift: st.shift,
-      reach: null,
-    };
+  const notes = annotateBarres(
+    path.map((st, i) => {
+      if (st.shift) segment++;
+      return {
+        midi: line[i].midi,
+        note: line[i].note,
+        pitched: pitchedOf(line[i]),
+        stringIndex: st.s,
+        fret: st.f,
+        finger: st.finger,
+        position: st.frame?.position ?? null,
+        frame: st.frame,
+        segment,
+        shift: st.shift,
+        reach: null,
+        barre: false,
+      };
+    }),
+  );
+  return { notes, cost: last[best].cost };
+}
+
+/**
+ * Flag the partial barrés of a fingered passage: a note the index takes at the
+ * same fret as the note before, on another string. Recomputed on the final
+ * order (a reversed or joined passage pairs its notes differently).
+ */
+export function annotateBarres(notes: readonly FingeredNote[]): FingeredNote[] {
+  return notes.map((n, i) => {
+    const p = i > 0 ? notes[i - 1] : null;
+    const barre = p !== null && n.fret > 0 && p.fret === n.fret && p.stringIndex !== n.stringIndex && p.finger === 1 && n.finger === 1;
+    return n.barre === barre ? n : { ...n, barre };
   });
 }
 
@@ -441,7 +552,7 @@ export function reverseFingering(notes: readonly FingeredNote[]): FingeredNote[]
   const rev = [...notes].reverse();
   const lastSegment = notes.length > 0 ? notes[notes.length - 1].segment : 0;
   let carried: HandFrame | null = null;
-  return rev.map((n, i) => {
+  const reversed = rev.map((n, i) => {
     // In reverse, the shift that led INTO note k now leads OUT of it into the
     // note before it (now after it).
     const leading = i > 0 ? rev[i - 1].shift : null;
@@ -466,4 +577,5 @@ export function reverseFingering(notes: readonly FingeredNote[]): FingeredNote[]
         : null,
     };
   });
+  return annotateBarres(reversed);
 }
