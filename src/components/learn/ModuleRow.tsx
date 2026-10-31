@@ -51,12 +51,12 @@ export function ModuleRow({ module, index, isCompleted, isLocked, isComingSoon, 
 
       <div className="flex-1 min-w-0">
         <span
-          className="text-xs font-medium block truncate transition-colors"
+          className="text-xs font-medium block transition-colors"
           style={{ color: isCompleted || disabled ? 'var(--text-dim)' : 'var(--text-muted)' }}
         >
           {module.title}
         </span>
-        <span className="text-caption block truncate" style={{ color: 'var(--text-dim)' }}>
+        <span className="text-caption block" style={{ color: 'var(--text-dim)' }}>
           {module.subtitle}
         </span>
       </div>

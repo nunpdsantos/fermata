@@ -121,7 +121,7 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
         <div className="flex gap-2">
           <button
             onClick={handleClear}
-            className="px-3 py-1.5 rounded-lg text-xs transition-colors"
+            className="inline-flex items-center justify-center min-h-(--tap) px-3 rounded-lg text-ui transition-colors"
             style={{ color: 'var(--text-dim)', border: '1px solid color-mix(in srgb, var(--border) 50%, transparent)' }}
             onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--card-hover)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = ''; }}
@@ -131,7 +131,7 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
           <button
             onClick={handleCheck}
             disabled={toggledPCs.size === 0}
-            className="px-4 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-40"
+            className="inline-flex items-center justify-center min-h-(--tap) px-4 rounded-lg text-ui font-medium transition-colors disabled:opacity-40"
             style={{
               backgroundColor: `${accentColor}20`,
               color: accentText(accentColor),

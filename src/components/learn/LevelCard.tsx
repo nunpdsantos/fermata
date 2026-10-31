@@ -50,14 +50,17 @@ export function LevelCard({ level, state, completedModuleCount, index, onClick }
       >
         <div className="px-4 py-4">
         {/* Top row: number + badge */}
-        <div className="flex items-center justify-between mb-3">
+        {/* The badges WRAP (right-aligned) in a narrow card: in three columns
+            "Complete Level 2" + "Upper Beginner" ran past the card edge and
+            squeezed the number (W11-A clipping check). */}
+        <div className="flex items-start justify-between gap-2 mb-3">
           <div
-            className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
+            className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-xs font-bold"
             style={{ backgroundColor: `${accent}20`, color: accentText(accent) }}
           >
             {level.number}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-end gap-1.5 min-w-0">
             {state === 'locked' && (
               <Badge shape="pill" size="xs">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
@@ -82,7 +85,7 @@ export function LevelCard({ level, state, completedModuleCount, index, onClick }
         <h3 className="text-sm font-semibold learn-serif mb-1" style={{ color: 'var(--text)' }}>
           {level.title}
         </h3>
-        <p className="text-xs line-clamp-2 mb-3" style={{ color: 'var(--text-dim)' }}>
+        <p className="text-xs mb-3" style={{ color: 'var(--text-dim)' }}>
           {level.description}
         </p>
 

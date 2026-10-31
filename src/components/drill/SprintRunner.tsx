@@ -254,7 +254,7 @@ function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t 
         <button
           type="button"
           onClick={onExit}
-          className="flex items-center justify-center w-9 h-9 rounded-lg transition-colors"
+          className="flex items-center justify-center w-(--tap) h-(--tap) rounded-lg transition-colors"
           style={{ color: 'var(--text-dim)' }}
           aria-label={t('drill.endSession')}
         >

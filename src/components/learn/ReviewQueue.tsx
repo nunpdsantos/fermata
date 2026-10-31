@@ -179,7 +179,7 @@ export function ReviewQueue({ progress, onStartReview }: ReviewQueueProps) {
                     </svg>
                   </span>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium truncate" style={{ color: 'var(--text)' }} title={position}>
+                    <p className="text-sm font-medium" style={{ color: 'var(--text)' }} title={position}>
                       {moduleTitle}
                     </p>
                     <p className="text-caption" style={{ color: 'var(--text-dim)' }}>

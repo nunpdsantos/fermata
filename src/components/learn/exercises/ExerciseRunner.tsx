@@ -328,7 +328,7 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
               <div className="mb-3 flex justify-center">
                 <button
                   onClick={playEarAudio}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-[1.03]"
+                  className="flex items-center gap-1.5 min-h-(--tap) px-4 rounded-xl text-ui font-semibold transition-all hover:scale-[1.03]"
                   style={{
                     backgroundColor: `${accentColor}15`,
                     color: accentText(accentColor),
@@ -362,7 +362,7 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
                   >
                     <button
                       onClick={handleSubmitChoice}
-                      className="px-4 py-1.5 max-sm:py-2 max-sm:px-5 rounded-lg text-xs font-medium transition-colors"
+                      className="inline-flex items-center justify-center min-h-(--tap) px-4 max-sm:px-5 rounded-lg text-ui font-medium transition-colors"
                       style={{
                         backgroundColor: `${accentColor}20`,
                         color: accentText(accentColor),

@@ -26,7 +26,7 @@ export function LearnBreadcrumb({ segments, accentColor }: LearnBreadcrumbProps)
           <span key={i} className="flex items-center gap-0.5 min-w-0">
             {i > 0 && <span aria-hidden="true" style={{ color: 'var(--text-dim)' }}>/</span>}
             {isLast ? (
-              <span aria-current="page" className="px-1.5 truncate" style={{ color: accentText(accentColor) }}>{seg.label}</span>
+              <span aria-current="page" className="px-1.5" style={{ color: accentText(accentColor) }}>{seg.label}</span>
             ) : seg.onClick ? (
               <button type="button" onClick={seg.onClick} className="btn btn-quiet px-1.5" style={{ fontWeight: 500 }}>
                 {seg.label}

@@ -139,7 +139,7 @@ export function NoteChips({
         <button
           type="button"
           onClick={clear}
-          className="self-start text-xs font-medium px-1 transition-colors"
+          className="self-start inline-flex items-center min-h-(--tap) text-ui font-medium px-1 transition-colors"
           style={{ color: 'var(--text-dim)' }}
         >
           {t('drill.clear')}

@@ -71,7 +71,7 @@ export function LevelAchievement({ levelNumber, accentColor, moduleCount, onDism
 
         <button
           onClick={onDismiss}
-          className="px-6 py-2.5 rounded-xl text-sm font-semibold transition-colors"
+          className="inline-flex items-center justify-center min-h-(--tap) px-6 py-2.5 rounded-xl text-sm font-semibold transition-colors"
           style={{
             backgroundColor: `${accentColor}20`,
             color: accentText(accentColor),

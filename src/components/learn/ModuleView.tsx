@@ -363,7 +363,7 @@ export function ModuleView({
             </p>
             <button
               onClick={onRetryExercises}
-              className="px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
+              className="inline-flex items-center justify-center min-h-(--tap) px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
               style={{ backgroundColor: `${accent}20`, color: accentText(accent), border: `1px solid ${accent}30` }}
             >
               {t('common.tryAgain')}

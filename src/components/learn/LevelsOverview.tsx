@@ -165,7 +165,7 @@ export function LevelsOverview({
           </p>
           <button
             onClick={() => onOpenLevel('l1')}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-150 hover:scale-[1.03]"
+            className="inline-flex items-center gap-2 min-h-(--tap) px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-150 hover:scale-[1.03]"
             style={{
               backgroundColor: `color-mix(in srgb, var(--accent) 12%, transparent)`,
               color: "var(--accent-text)",
