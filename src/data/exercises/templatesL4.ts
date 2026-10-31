@@ -132,7 +132,6 @@ const templates: ModuleTemplateConfig[] = [
           chordQualities: ['dominant7'],
           noteCounts: [4],
         },
-        points: 2,
       },
       {
         type: 'multiple_choice',
@@ -200,7 +199,6 @@ const templates: ModuleTemplateConfig[] = [
           chordQualities: ['dominant7'],
           noteCounts: [4],
         },
-        points: 2,
       },
     ],
     targetCount: 5,
@@ -224,7 +222,6 @@ const templates: ModuleTemplateConfig[] = [
           chordQualities: ['minor7'],
           noteCounts: [4],
         },
-        points: 2,
       },
       {
         type: 'multiple_choice',
@@ -403,7 +400,6 @@ const templates: ModuleTemplateConfig[] = [
           chordQualities: ['major'],
           noteCounts: [3],
         },
-        points: 2,
       },
     ],
     targetCount: 6,

@@ -22,7 +22,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 4,
       },
       hint: 'Middle C sits on one ledger line just below the treble staff.',
-      points: 1,
     },
     {
       id: 'l1u1m1e2',
@@ -35,7 +34,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 4,
       },
       hint: 'The treble clef lines from bottom to top are E-G-B-D-F. The first line is E4.',
-      points: 1,
     },
     {
       id: 'l1u1m1e3',
@@ -48,7 +46,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 4,
       },
       hint: 'The treble clef curls around the second line, marking it as G. That is why it is also called the G clef.',
-      points: 1,
     },
     {
       id: 'l1u1m1e4',
@@ -64,7 +61,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The treble clef is also called the G clef because it wraps around the second line, defining it as G.',
-      points: 1,
     },
   ],
 
@@ -81,7 +77,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 3,
       },
       hint: 'Below the treble staff: B3 is in the space below the first ledger line (C4), and A3 is on the second ledger line.',
-      points: 1,
     },
     {
       id: 'l1u1m2e2',
@@ -94,7 +89,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 6,
       },
       hint: 'C6 sits on the second ledger line above the treble staff. Count up from the top line (F5): G5, A5, B5, C6.',
-      points: 1,
     },
     {
       id: 'l1u1m2e3',
@@ -110,7 +104,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The staff has only five lines. Notes that go beyond those lines need extra short lines to indicate their position.',
-      points: 1,
     },
     {
       id: 'l1u1m2e_ear1',
@@ -124,7 +117,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 4,
       },
       hint: 'This is middle C -- the most central note on the piano keyboard.',
-      points: 1,
     },
     {
       id: 'l1u1m2e_ear2',
@@ -138,7 +130,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 4,
       },
       hint: 'This natural note sits on the first line of the treble staff.',
-      points: 1,
     },
     {
       id: 'l1u1m2e_ear3',
@@ -152,7 +143,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 4,
       },
       hint: 'This note sits on the second line of the treble staff -- the line the treble clef curls around.',
-      points: 1,
     },
     {
       id: 'l1u1m2e_ear4',
@@ -166,7 +156,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 4,
       },
       hint: 'This is the standard tuning reference note at 440 Hz.',
-      points: 1,
     },
   ],
 
@@ -185,7 +174,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'descending',
       },
       hint: 'Db down to C is the smallest possible distance in Western music: one half step (1 semitone), from the black key to the white key just below it. Two different letter names (D, C) make it a 2nd — a minor 2nd.',
-      points: 1,
     },
     {
       id: 'l1u1m3e2',
@@ -200,7 +188,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C to D is a whole step: two half steps, which equals 2 semitones. There is one key (C#/Db) between them.',
-      points: 1,
     },
     {
       id: 'l1u1m3e3',
@@ -215,7 +202,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'E to F is a natural half step: there is no black key between them on the piano. It is only 1 semitone.',
-      points: 1,
     },
   ],
 
@@ -233,7 +219,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         acceptEnharmonic: true,
       },
       hint: 'The black key between F and G can be called F# (F sharp) or Gb (G flat). Both names refer to the same pitch.',
-      points: 1,
     },
     {
       id: 'l1u1m4e2',
@@ -247,7 +232,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         acceptEnharmonic: true,
       },
       hint: 'The black key between A and B can be called Bb (B flat) or A# (A sharp). In flat keys this note is called Bb.',
-      points: 1,
     },
     {
       id: 'l1u1m4e3',
@@ -263,7 +247,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The chromatic scale includes every note: 7 white keys + 5 black keys = 12 distinct pitches per octave.',
-      points: 1,
     },
   ],
 
@@ -287,7 +270,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A whole note fills an entire measure of 4/4 time. It lasts 4 quarter-note beats.',
-      points: 1,
     },
     {
       id: 'l1u2m1e2',
@@ -303,7 +285,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A half note is half the duration of a whole note. One whole = two halves = 4 beats / 2 = 2 beats each.',
-      points: 1,
     },
     {
       id: 'l1u2m1e3',
@@ -319,7 +300,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In 4/4 time, the bottom number (4) tells you that a quarter note gets one beat. Four quarter notes fill one measure.',
-      points: 1,
     },
   ],
 
@@ -339,7 +319,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The top number (4) is beats per measure. The bottom number (4) means the quarter note gets one beat.',
-      points: 1,
     },
     {
       id: 'l1u2m2e2',
@@ -355,7 +334,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: '3/4 means three quarter-note beats per measure. This creates the ONE-two-three waltz feel.',
-      points: 1,
     },
     {
       id: 'l1u2m2e3',
@@ -371,7 +349,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In simple meter, beats subdivide into two. In compound meter, beats subdivide into three. 4/4 and 3/4 are simple meters.',
-      points: 1,
     },
   ],
 
@@ -393,7 +370,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'C major uses only the white keys: C, D, E, F, G, A, B. The pattern is W-W-H-W-W-W-H.',
-      points: 2,
     },
     {
       id: 'l1u3m1e2',
@@ -407,7 +383,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'G major: G, A, B, C, D, E, F#. The F must be raised to F# to maintain the W-W-H-W-W-W-H pattern.',
-      points: 2,
     },
     {
       id: 'l1u3m1e_deg1',
@@ -423,7 +398,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         correctDegree: 3,
       },
       hint: 'Count up from the root: C=1, D=2, E=3.',
-      points: 1,
     },
     {
       id: 'l1u3m1e_deg2',
@@ -439,7 +413,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         correctDegree: 5,
       },
       hint: 'G is the 5th note of C major — the dominant.',
-      points: 1,
     },
     {
       id: 'l1u3m1e_deg3',
@@ -455,7 +428,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         correctDegree: 4,
       },
       hint: 'F is the 4th note of C major — the subdominant.',
-      points: 1,
     },
     {
       id: 'l1u3m1e_deg4',
@@ -471,7 +443,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         correctDegree: 3,
       },
       hint: 'Count from G: G=1, A=2, B=3.',
-      points: 1,
     },
   ],
 
@@ -491,7 +462,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'G major needs F# to keep the W-W-H-W-W-W-H pattern. That single sharp is its key signature.',
-      points: 1,
     },
     {
       id: 'l1u3m2e2',
@@ -507,7 +477,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'F major needs Bb to maintain the major scale pattern. The fourth note (B) must be lowered to Bb.',
-      points: 1,
     },
     {
       id: 'l1u3m2e3',
@@ -523,7 +492,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'D major adds C# on top of G major\'s F#. Sharps accumulate in order: F#, C#, G#, D#, A#, E#, B#.',
-      points: 1,
     },
   ],
 
@@ -542,7 +510,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C-D-E-F-G = 5 letter names = a 5th. C to G is 7 semitones, making it a perfect 5th.',
-      points: 1,
     },
     {
       id: 'l1u3m3e2',
@@ -557,7 +524,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C-D-E-F = 4 letter names = a 4th. C to F is 5 semitones, making it a perfect 4th.',
-      points: 1,
     },
     {
       id: 'l1u3m3e3',
@@ -572,7 +538,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C-D-E = 3 letter names = a 3rd. C to E is 4 semitones, making it a major 3rd.',
-      points: 1,
     },
   ],
 
@@ -590,7 +555,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'C major = C, E, G. Root (C) + major 3rd (E, 4 semitones up) + perfect 5th (G, 7 semitones up).',
-      points: 2,
     },
     {
       id: 'l1u3m4e2',
@@ -604,7 +568,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'G major = G, B, D. Root (G) + major 3rd (B, 4 semitones up) + perfect 5th (D, 7 semitones up).',
-      points: 2,
     },
     {
       id: 'l1u3m4e3',
@@ -620,7 +583,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A major triad stacks a major 3rd (4 half steps from root) and then a minor 3rd on top (3 more), giving root + M3 + P5.',
-      points: 1,
     },
   ],
 };

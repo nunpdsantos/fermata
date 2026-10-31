@@ -148,7 +148,6 @@ describe('applyExerciseOverlay', () => {
         prompt: 'Identify this note',
         config: { type: 'note_id', note: 'C', accidental: '', octave: 4 },
         hint: 'It is middle C',
-        points: 1,
       },
       {
         id: 'l1u1m1e2',
@@ -162,7 +161,6 @@ describe('applyExerciseOverlay', () => {
           ],
         },
         hint: 'G clef',
-        points: 1,
       },
       {
         id: 'l1u1m1e_ear1',
@@ -180,7 +178,6 @@ describe('applyExerciseOverlay', () => {
           ],
         },
         hint: 'Major chords sound bright',
-        points: 1,
       },
     ],
   };

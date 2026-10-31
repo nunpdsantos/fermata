@@ -24,7 +24,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 4,
       },
       hint: 'Middle C (C4) is the central reference point on the piano — anchor it in your ear.',
-      points: 1,
     },
     {
       id: 'l9u30m1e2',
@@ -38,7 +37,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 4,
       },
       hint: 'G4 is a perfect 5th above middle C — 7 semitones up. Compare it against C4 in your ear.',
-      points: 1,
     },
     {
       id: 'l9u30m1e3',
@@ -54,7 +52,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Ascending means moving upward in pitch. Descending means moving downward.',
-      points: 1,
     },
     {
       id: 'l9u30m1e4',
@@ -70,7 +67,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Register describes a portion of the pitch spectrum — low register, middle register, or high register.',
-      points: 1,
     },
   ],
 
@@ -92,7 +88,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The major 3rd (4 semitones from root) gives major chords a bright, stable character.',
-      points: 1,
     },
     {
       id: 'l9u30m2e2',
@@ -110,7 +105,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The minor 3rd (3 semitones from root) gives minor chords a darker, more somber quality.',
-      points: 1,
     },
     {
       id: 'l9u30m2e3',
@@ -126,7 +120,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Major triad: root + major 3rd (4 semitones) + P5. Minor triad: root + minor 3rd (3 semitones) + P5. Only the 3rd changes.',
-      points: 1,
     },
   ],
 
@@ -146,7 +139,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: '1 semitone = minor 2nd (half step) — the smallest interval in Western music. Think of the "Jaws" theme.',
-      points: 1,
     },
     {
       id: 'l9u30m3e2',
@@ -162,7 +154,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: '2 semitones = major 2nd (whole step). The everyday melodic step.',
-      points: 1,
     },
     {
       id: 'l9u30m3e3',
@@ -178,7 +169,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: '3 semitones = minor 3rd — dark and melancholy. This interval defines the bottom of a minor triad.',
-      points: 1,
     },
     {
       id: 'l9u30m3e4',
@@ -194,7 +184,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: '7 semitones = perfect 5th — strong and open. The most consonant interval after the octave and unison.',
-      points: 1,
     },
   ],
 
@@ -214,7 +203,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: '8 semitones = minor 6th — bittersweet and yearning, with a poignant, somewhat tense quality.',
-      points: 1,
     },
     {
       id: 'l9u30m4e2',
@@ -230,7 +218,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: '9 semitones = major 6th — warm, romantic and consonant.',
-      points: 1,
     },
     {
       id: 'l9u30m4e3',
@@ -246,7 +233,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: '10 semitones = minor 7th — a dominant, bluesy tension that wants to resolve.',
-      points: 1,
     },
     {
       id: 'l9u30m4e4',
@@ -262,7 +248,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: '12 semitones = perfect octave — the two notes sound like the same pitch at different heights.',
-      points: 1,
     },
   ],
 
@@ -283,7 +268,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: '5 semitones = perfect 4th. When sounded together it has an open, hollow quality.',
-      points: 1,
     },
     {
       id: 'l9u30m5e2',
@@ -300,7 +284,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: '4 semitones = major 3rd — a warm, consonant harmonic sound.',
-      points: 1,
     },
     {
       id: 'l9u30m5e3',
@@ -316,7 +299,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Harmonic = both notes at the same time. Melodic = one note after the other. The same two notes can form either type.',
-      points: 1,
     },
   ],
 
@@ -344,7 +326,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The major scale (W-W-H-W-W-W-H) has a bright, resolved character at every step.',
-      points: 1,
     },
     {
       id: 'l9u31m1e2',
@@ -364,7 +345,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Natural minor (W-H-W-W-H-W-W) has a darker mood than major — the lowered 3rd, 6th and 7th shape its color.',
-      points: 1,
     },
     {
       id: 'l9u31m1e3',
@@ -380,7 +360,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Major scales are perceived as bright and stable. The major 3rd and major 7th contribute to this positive character.',
-      points: 1,
     },
   ],
 
@@ -405,7 +384,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Dorian is like natural minor with a raised 6th degree — that natural 6 in a minor context is the characteristic tone.',
-      points: 1,
     },
     {
       id: 'l9u31m2e2',
@@ -426,7 +404,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Lydian is like major with a raised 4th degree — listen for the bright #4 pulling upward.',
-      points: 1,
     },
     {
       id: 'l9u31m2e3',
@@ -442,7 +419,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Dorian differs from natural minor by one note: the 6th degree is raised a half step. In D Dorian, that is B natural instead of Bb.',
-      points: 1,
     },
   ],
 
@@ -467,7 +443,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Major pentatonic has five notes and no half steps — the major scale without its 4th and 7th degrees.',
-      points: 1,
     },
     {
       id: 'l9u31m3e2',
@@ -488,7 +463,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The blues scale is the minor pentatonic plus the "blue note" (b5) — listen for that extra chromatic bite.',
-      points: 1,
     },
     {
       id: 'l9u31m3e3',
@@ -504,7 +478,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The blue note is the b5 (or #4) added to the minor pentatonic. In C blues, it is Gb/F#, sitting between F and G.',
-      points: 1,
     },
   ],
 
@@ -528,7 +501,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Diminished = two stacked minor 3rds. The tritone between root and 5th creates its tense, unstable quality.',
-      points: 1,
     },
     {
       id: 'l9u31m4e2',
@@ -548,7 +520,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Augmented = two stacked major 3rds. The symmetrical structure gives it a dreamy, unresolved quality.',
-      points: 1,
     },
     {
       id: 'l9u31m4e3',
@@ -564,7 +535,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Diminished = minor 3rd (3 semitones) + diminished 5th (6 semitones). Two stacked minor 3rds produce the tritone between root and 5th.',
-      points: 1,
     },
     {
       id: 'l9u31m4e4',
@@ -580,7 +550,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Augmented triads divide the octave into three equal parts (major 3rd + major 3rd). This symmetry creates an ambiguous, suspended feeling.',
-      points: 1,
     },
   ],
 
@@ -604,7 +573,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The major 7th chord layers a major 7th over a major triad — lush and dreamy, common in jazz and bossa nova.',
-      points: 1,
     },
     {
       id: 'l9u31m5e2',
@@ -624,7 +592,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The minor 7th chord layers a minor 7th over a minor triad — mellow, warm and relaxed.',
-      points: 1,
     },
     {
       id: 'l9u31m5e3',
@@ -640,7 +607,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In G7 (G-B-D-F), B and F form a tritone (6 semitones). This dissonance creates the pull toward resolution to C major.',
-      points: 1,
     },
     {
       id: 'l9u31m5e4',
@@ -656,7 +622,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The half-diminished seventh (m7b5) naturally occurs on the 2nd degree of harmonic minor. It serves as the predominant chord leading to V in minor key ii-V-i progressions.',
-      points: 1,
     },
   ],
 
@@ -678,7 +643,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 4,
       },
       hint: 'This pitch is the 3rd degree of C major. Sing up from C to locate it.',
-      points: 1,
     },
     {
       id: 'l9u32m1e2',
@@ -692,7 +656,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 4,
       },
       hint: 'This pitch is the 6th degree of C major. Sing up from C to locate it.',
-      points: 1,
     },
     {
       id: 'l9u32m1e3',
@@ -708,7 +671,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Diatonic means "belonging to the key." A diatonic melody in C major uses only C, D, E, F, G, A, and B — no accidentals.',
-      points: 1,
     },
     {
       id: 'l9u32m1e4',
@@ -724,7 +686,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Scale degree hearing means perceiving each note in relation to the tonic. Singing up from "do" to the target note is a reliable method.',
-      points: 1,
     },
   ],
 
@@ -744,7 +705,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'E to F is a half step (1 semitone) between two different letter names — a diatonic half step, already inside C major. A chromatic half step keeps the letter name (F to F#). Either kind often works as a passing or neighbor motion in a melody.',
-      points: 1,
     },
     {
       id: 'l9u32m2e2',
@@ -760,7 +720,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'The tritone (6 semitones, augmented 4th / diminished 5th) is one of the sharpest dissonances (with the minor 2nd and major 7th) and divides the octave exactly in half.',
-      points: 1,
     },
     {
       id: 'l9u32m2e3',
@@ -776,7 +735,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A chromatic passing tone is a non-diatonic note that connects two diatonic notes a whole step apart, dividing that whole step into two half steps.',
-      points: 1,
     },
   ],
 
@@ -796,7 +754,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A perfect authentic cadence (PAC) requires V to I in root position with the tonic in the soprano. It provides the strongest sense of finality.',
-      points: 1,
     },
     {
       id: 'l9u32m3e2',
@@ -812,7 +769,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A half cadence ends on V, creating a feeling of suspension or incompleteness — like a comma rather than a period.',
-      points: 1,
     },
     {
       id: 'l9u32m3e3',
@@ -828,7 +784,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A deceptive cadence substitutes vi for the expected I after V. The ear expects resolution but gets a surprise detour.',
-      points: 1,
     },
   ],
 
@@ -848,7 +803,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In movable-do, "Do" always represents the tonic regardless of key. In C major, Do = C. In G major, Do = G.',
-      points: 1,
     },
     {
       id: 'l9u32m4e2',
@@ -864,7 +818,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Do-Re-Mi-Fa-Sol-La-Ti maps to the 7 scale degrees. In C major: C(Do), D(Re), E(Mi), F(Fa), G(Sol), A(La), B(Ti).',
-      points: 1,
     },
     {
       id: 'l9u32m4e3',
@@ -880,7 +833,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Establishing the key center (tonic) in your ear is essential. Singing a quick scale or tonic arpeggio grounds your pitch perception before reading the melody.',
-      points: 1,
     },
   ],
 
@@ -900,7 +852,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Monophonic texture consists of a single melodic line with no accompaniment or harmony. One voice, one line.',
-      points: 1,
     },
     {
       id: 'l9u32m5e2',
@@ -916,7 +867,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Verse-chorus form alternates verses (changing lyrics, same melody) with a recurring chorus. It is the most common structure in popular music.',
-      points: 1,
     },
     {
       id: 'l9u32m5e3',
@@ -932,7 +882,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Style periods are identified by a combination of factors: instrumentation (harpsichord vs. piano), harmonic vocabulary (triadic vs. chromatic), and formal conventions (binary vs. sonata form).',
-      points: 1,
     },
   ],
 };

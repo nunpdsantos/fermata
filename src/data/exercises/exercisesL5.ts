@@ -23,7 +23,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'V/V in C means "the V chord of G major." The dominant of G is D major: D (2), F# (6), A (9). The F# is chromatic -- it does not belong to C major.',
-      points: 2,
     },
     {
       id: 'l5u15m1e2',
@@ -37,7 +36,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'V7/V in C = D7: D (2), F# (6), A (9), C (0). The added minor 7th (C) strengthens the pull toward G. The F# is the chromatic alteration.',
-      points: 2,
     },
     {
       id: 'l5u15m1e3',
@@ -53,7 +51,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'V/V means "the dominant of the dominant." In C major, V is G. The dominant of G is D major. So V/V in C = D major, a chromatic chord that temporarily tonicizes G.',
-      points: 1,
     },
   ],
 
@@ -73,7 +70,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In C major, ii is D minor. The dominant of D minor is A major (A, C#, E). The C# is the chromatic note that creates the leading tone to D.',
-      points: 1,
     },
     {
       id: 'l5u15m2e2',
@@ -89,7 +85,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'V/IV means the dominant of IV. In C major, IV is F. The dominant of F is C major. This is unusual because C major is already the tonic -- context determines whether it functions as I or V/IV.',
-      points: 1,
     },
     {
       id: 'l5u15m2e3',
@@ -105,7 +100,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'An applied dominant temporarily acts as V (or V7) of a diatonic chord. It introduces chromatic notes to create a leading-tone resolution to its target, without establishing a new key.',
-      points: 1,
     },
   ],
 
@@ -125,7 +119,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'viio/V works the same way viio works in a key: the root is a half step below the target chord, and the diminished quality creates strong resolution drive upward to the target.',
-      points: 1,
     },
     {
       id: 'l5u15m3e2',
@@ -141,7 +134,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Both have a diminished triad (root, m3, dim5). The 7th differs: half-dim has a minor 7th (10 semitones), fully-dim has a diminished 7th (9 semitones). Fully-dim is more common as a secondary leading-tone chord.',
-      points: 1,
     },
     {
       id: 'l5u15m3e3',
@@ -157,7 +149,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The "/V" tells you the target: V. In C major, V is G. viio/V is F# diminished (F#, A, C), and the F# resolves up by half step to G, the root of the target chord.',
-      points: 1,
     },
   ],
 
@@ -177,7 +168,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Tonicization is fleeting: a secondary dominant or leading-tone chord briefly treats a diatonic chord as a local tonic, but the original key remains in control. Think of it as a momentary detour.',
-      points: 1,
     },
     {
       id: 'l5u15m4e2',
@@ -193,7 +183,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The key test: does the new tonal center stick around with its own cadences and stable passages? If yes, it is a modulation. If the original key reasserts itself quickly, it is just a tonicization.',
-      points: 1,
     },
     {
       id: 'l5u15m4e3',
@@ -209,7 +198,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Extended tonicizations occupy a gray area: they last longer than a quick V/x - x motion, but the new key is never confirmed with a strong cadence. The boundary between extended tonicization and modulation is subjective.',
-      points: 1,
     },
   ],
 
@@ -229,7 +217,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A dominant chain creates cascading tension: e.g., V7/vi - V7/ii - V7/V - V7 - I. Each dominant 7th resolves to the next link, pulling the harmony back toward the tonic through a cycle.',
-      points: 1,
     },
     {
       id: 'l5u15m5e2',
@@ -245,7 +232,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Dominant chains exploit the strongest root motion in tonal music: down a 5th. Each V7 resolves down a 5th to its target, and that target is reinterpreted as the next V7.',
-      points: 1,
     },
     {
       id: 'l5u15m5e3',
@@ -261,7 +247,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Sequential tonicization applies the same harmonic pattern (often V7 - chord) to successive scale degrees, creating a predictable but colorful chromatic motion. It is common in Baroque and jazz music.',
-      points: 1,
     },
   ],
 
@@ -285,7 +270,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A pivot chord is diatonic in both keys. For example, when modulating from C major to G major, the chord E minor is both iii in C and vi in G, creating a smooth harmonic bridge between the two keys.',
-      points: 1,
     },
     {
       id: 'l5u16m1e2',
@@ -301,7 +285,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Find chords common to both keys. C major: C Dm Em F G Am Bdim. G major: G Am Bm C D Em F#dim. Shared chords include C, Em, Am, G. E minor as iii/vi is a strong pivot choice.',
-      points: 1,
     },
     {
       id: 'l5u16m1e3',
@@ -317,7 +300,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Pivot chord modulation unfolds in three stages: (1) the old key is clearly established, (2) a diatonic chord is reinterpreted as belonging to the new key, (3) the new key is confirmed with a cadence (typically V-I).',
-      points: 1,
     },
   ],
 
@@ -337,7 +319,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Closely related keys differ by at most one accidental in their key signatures. For C major: G major (+1#), F major (+1b), A minor (relative), E minor (rel. of G), D minor (rel. of F). That gives 5 closely related keys.',
-      points: 1,
     },
     {
       id: 'l5u16m2e2',
@@ -353,7 +334,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'C major and G major share 6 of 7 notes (only F vs F#). This overlap means many chords are common to both keys, providing abundant pivot chord options and a seamless transition.',
-      points: 1,
     },
     {
       id: 'l5u16m2e3',
@@ -369,7 +349,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Closely related keys share all but one accidental with C major (0 sharps/flats). G major has 1#, F major has 1b, and their relative minors (E minor, D minor) plus the relative minor of C (A minor) complete the set.',
-      points: 1,
     },
   ],
 
@@ -389,7 +368,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Direct modulation is the most abrupt type: one phrase ends in the old key, and the next phrase simply starts in the new key. No pivot chord or chromatic preparation bridges the gap. Common in pop and hymn tunes.',
-      points: 1,
     },
     {
       id: 'l5u16m3e2',
@@ -405,7 +383,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In common-tone modulation, one note is held (or repeated) while the harmony shifts around it. That note gains a new function in the new key. This technique works well for modulating to distant keys.',
-      points: 1,
     },
     {
       id: 'l5u16m3e3',
@@ -421,7 +398,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Chromatic modulation uses half-step voice leading to transform a chord from the old key into a chord that belongs to the new key. One or more notes shift by a semitone, smoothly redirecting the harmony.',
-      points: 1,
     },
   ],
 
@@ -439,7 +415,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'bVI in C major = Ab major: Ab (8), C (0), Eb (3). This chord is borrowed from C natural minor, where VI is Ab major. The Ab and Eb are chromatic notes in C major.',
-      points: 2,
     },
     {
       id: 'l5u16m4e2',
@@ -453,7 +428,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'iv in C major = F minor: F (5), Ab (8), C (0). In C major, IV is F major (F, A, C). Borrowing from C minor lowers the A to Ab, creating the darker-sounding minor subdominant.',
-      points: 2,
     },
     {
       id: 'l5u16m4e3',
@@ -469,7 +443,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Mode mixture borrows chords from the parallel key (same tonic, opposite mode). In C major, you borrow from C minor: bIII (Eb), iv (Fm), bVI (Ab), bVII (Bb). These add darkness and chromatic richness.',
-      points: 1,
     },
   ],
 
@@ -489,7 +462,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The Picardy third is a centuries-old technique: a minor-key piece ends on a major I chord (e.g., C minor piece ending on C major). The raised third creates a bright, resolved ending after minor-key darkness.',
-      points: 1,
     },
     {
       id: 'l5u16m5e2',
@@ -505,7 +477,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Mode mixture works in both directions. A minor key can borrow from its parallel major: e.g., in A minor, you can borrow IV from A major (D major instead of D minor) to brighten the harmony temporarily.',
-      points: 1,
     },
     {
       id: 'l5u16m5e3',
@@ -521,7 +492,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The V chord in minor comes from harmonic minor \u2014 it belongs to the minor key itself, not to mode mixture. Mode mixture borrows chords from the parallel key. A major IV in minor (e.g., D major in A minor instead of D minor) is a common example; Level 4 traced the same chord to ascending melodic minor, and both readings are common.',
-      points: 1,
     },
   ],
 
@@ -545,7 +515,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Binary form (AB) divides a piece into two complementary sections. Section A typically ends away from the tonic (often on V), and section B returns to the tonic. Both sections are usually repeated (||: A :||: B :||).',
-      points: 1,
     },
     {
       id: 'l5u17m1e2',
@@ -561,7 +530,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Rounded binary (||: A :||: B A\' :||) brings back the opening A material at the end of the B section. Simple binary does not return to A. Many Classical minuets and scherzos use rounded binary form.',
-      points: 1,
     },
     {
       id: 'l5u17m1e3',
@@ -577,7 +545,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Ternary form has three distinct sections: A (statement), B (contrast), A (return). Unlike rounded binary, each section in ternary form is harmonically self-contained, usually ending with a cadence in its own key.',
-      points: 1,
     },
   ],
 
@@ -597,7 +564,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Verse-chorus is the most common pop/rock form. Verses advance the story with changing lyrics over the same music. The chorus provides the emotional peak with a consistent, memorable hook.',
-      points: 1,
     },
     {
       id: 'l5u17m2e2',
@@ -613,7 +579,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'AABA is the classic Tin Pan Alley / Great American Songbook form. Each section is typically 8 bars. The B section (bridge or "middle eight") provides contrast before the final A returns. Many jazz standards use this form.',
-      points: 1,
     },
     {
       id: 'l5u17m2e3',
@@ -629,7 +594,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Sonata form: the exposition presents two contrasting themes in different keys, the development fragments and transforms them through distant keys, and the recapitulation restates both themes in the home key.',
-      points: 1,
     },
   ],
 
@@ -649,7 +613,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Monophony is the simplest texture: a single unaccompanied melody. Even if many people sing or play the same melody (in unison or octaves), it remains monophonic because there is only one musical line.',
-      points: 1,
     },
     {
       id: 'l5u17m3e2',
@@ -665,7 +628,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Polyphony features multiple independent voices, each with melodic interest. A Bach fugue is the classic example: each voice enters with the same theme but then moves independently, weaving a complex contrapuntal web.',
-      points: 1,
     },
     {
       id: 'l5u17m3e3',
@@ -681,7 +643,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Homophony has one dominant melody with harmonic accompaniment. Most pop, rock, and classical music from the Classical era onward is homophonic. A singer with guitar chords is a clear example.',
-      points: 1,
     },
   ],
 
@@ -701,7 +662,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Guide tones (3rds and 7ths) are the most harmonically defining notes of a chord. The root and 5th are structurally important but generic; the 3rd determines major/minor and the 7th determines chord type.',
-      points: 1,
     },
     {
       id: 'l5u17m4e2',
@@ -717,7 +677,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Dm7 guide tones: F (3rd), C (7th). Into G7: F holds as a common tone and becomes the 7th, while C steps down a half step to B, the 3rd. Into Cmaj7: B holds and becomes the 7th, while F steps down a half step to E, the 3rd. Minimal motion = smooth voice leading.',
-      points: 1,
     },
     {
       id: 'l5u17m4e3',
@@ -733,7 +692,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Good voice leading minimizes movement: hold common tones, move other voices by step. This creates smooth, connected harmonic progressions. Guide tone lines demonstrate this principle with just the two most essential notes per chord.',
-      points: 1,
     },
   ],
 };

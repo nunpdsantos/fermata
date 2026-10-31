@@ -1,7 +1,6 @@
-import { useEffect, Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import type { ExerciseDefinition } from '../../../core/types/exercise';
 import type { NaturalNote, Accidental, PitchedNote } from '../../../core/types/music';
-import { useAppStore } from '../../../state/store';
 import { StaffNotationSkeleton } from '../../notation/StaffNotationSkeleton';
 import { intervalTargetNote, writtenOctave } from '../../../core/utils/degreeSpelling';
 
@@ -14,21 +13,9 @@ interface ExercisePromptProps {
 }
 
 export function ExercisePrompt({ exercise }: ExercisePromptProps) {
-  const setHighlightedNotes = useAppStore((s) => s.setHighlightedNotes);
-
-  useEffect(() => {
-    // For note_id exercises, highlight the target note on the instrument
-    if (exercise.config.type === 'note_id') {
-      const { note, accidental, octave } = exercise.config;
-      setHighlightedNotes([
-        { natural: note as NaturalNote, accidental: (accidental || '') as Accidental, octave },
-      ]);
-    }
-
-    return () => {
-      setHighlightedNotes([]);
-    };
-  }, [exercise.id, exercise.config, setHighlightedNotes]);
+  // No instrument highlight here: a note-ID answer lit on the instrument
+  // (which shows note names) would give the answer away (audit W4-21). The
+  // build input owns the highlight channel and clears it itself.
 
   // Build staff notes for note_id / interval_id
   const staffNotes: PitchedNote[] | null = (() => {

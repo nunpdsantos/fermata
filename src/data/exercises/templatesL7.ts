@@ -27,7 +27,6 @@ const templates: ModuleTemplateConfig[] = [
           chordQualities: ['major9', 'minor9', 'dominant9'],
           noteCounts: [5],
         },
-        points: 2,
       },
       {
         type: 'multiple_choice',
@@ -154,7 +153,6 @@ const templates: ModuleTemplateConfig[] = [
           chordQualities: ['minor7'],
           noteCounts: [4],
         },
-        points: 2,
       },
       {
         type: 'multiple_choice',
@@ -195,7 +193,6 @@ const templates: ModuleTemplateConfig[] = [
           chordQualities: ['dominant7'],
           noteCounts: [4],
         },
-        points: 2,
       },
       {
         type: 'multiple_choice',
@@ -236,7 +233,6 @@ const templates: ModuleTemplateConfig[] = [
           scaleTypes: ['blues', 'pentatonic_minor'],
           noteCounts: [6, 5],
         },
-        points: 2,
       },
       {
         type: 'multiple_choice',
@@ -316,7 +312,6 @@ const templates: ModuleTemplateConfig[] = [
           scaleTypes: ['dorian', 'phrygian', 'lydian', 'mixolydian', 'locrian'],
           noteCounts: [7],
         },
-        points: 2,
       },
     ],
     targetCount: 6,
@@ -377,7 +372,6 @@ const templates: ModuleTemplateConfig[] = [
           chordQualities: ['major', 'major', 'major', 'minor', 'major', 'minor', 'major'],
           noteCounts: [3],
         },
-        points: 2,
       },
       {
         type: 'multiple_choice',
@@ -492,7 +486,6 @@ const templates: ModuleTemplateConfig[] = [
           scaleTypes: ['pentatonic_major', 'pentatonic_minor', 'blues'],
           noteCounts: [5, 5, 6],
         },
-        points: 2,
       },
     ],
     targetCount: 6,
@@ -512,7 +505,6 @@ const templates: ModuleTemplateConfig[] = [
           scaleTypes: ['whole_tone', 'chromatic'],
           noteCounts: [6, 12],
         },
-        points: 2,
       },
     ],
     targetCount: 5,
@@ -532,7 +524,6 @@ const templates: ModuleTemplateConfig[] = [
           scaleTypes: ['dorian', 'mixolydian'],
           noteCounts: [7],
         },
-        points: 2,
       },
       {
         type: 'multiple_choice',

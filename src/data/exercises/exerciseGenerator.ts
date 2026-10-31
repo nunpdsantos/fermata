@@ -336,7 +336,6 @@ export function generateExercises(
       prompt: fillTemplate(template.promptTemplate, exerciseConfig, lang, config.moduleId),
       config: exerciseConfig,
       hint: fillTemplate(template.hintTemplate, exerciseConfig, lang, config.moduleId),
-      points: template.points ?? 1,
     });
   }
 

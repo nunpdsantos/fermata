@@ -23,7 +23,6 @@ const SIMPLE_CONFIG: ModuleTemplateConfig = {
         accidentals: ['', '', '', '', '', '', ''],
         octaves: [4],
       },
-      points: 1,
     },
   ],
 };
@@ -42,7 +41,6 @@ const SCALE_CONFIG: ModuleTemplateConfig = {
         scaleTypes: ['major'],
         noteCounts: [7],
       },
-      points: 2,
     },
   ],
 };
@@ -94,10 +92,9 @@ describe('exerciseGenerator', () => {
       }
     });
 
-    it('assigns points from template', () => {
-      const exercises = generateExercises(SCALE_CONFIG);
-      for (const ex of exercises) {
-        expect(ex.points).toBe(2);
+    it('carries no points weight (decision D-16: every exercise counts 1)', () => {
+      for (const ex of generateExercises(SCALE_CONFIG)) {
+        expect('points' in ex).toBe(false);
       }
     });
 

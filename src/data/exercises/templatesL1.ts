@@ -342,7 +342,6 @@ const templates: ModuleTemplateConfig[] = [
           chordQualities: ['major'],
           noteCounts: [3],
         },
-        points: 2,
       },
       {
         type: 'chord_build',
@@ -354,7 +353,6 @@ const templates: ModuleTemplateConfig[] = [
           chordQualities: ['major'],
           noteCounts: [3],
         },
-        points: 2,
       },
     ],
     targetCount: 6,

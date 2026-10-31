@@ -83,7 +83,7 @@ describe('W1-01 — interval staff spelling', () => {
 
   it('C up a minor 3rd is C–Eb; F down a minor 3rd is F–D', async () => {
     const make = (root: string, semis: number, direction: 'ascending' | 'descending'): ExerciseDefinition => ({
-      id: 't', type: 'interval_id', prompt: '', points: 1,
+      id: 't', type: 'interval_id', prompt: '',
       config: { type: 'interval_id', root, rootAccidental: '', rootOctave: 4, targetSemitones: semis, direction },
     } as ExerciseDefinition);
     render(<ExercisePrompt exercise={make('C', 3, 'ascending')} />);

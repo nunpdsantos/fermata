@@ -23,7 +23,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'The Neapolitan chord is a major triad built on the lowered 2nd degree. In C minor, bII = Db major = Db, F, Ab (pitch classes 1, 5, 8).',
-      points: 2,
     },
     {
       id: 'l6u18m1e2',
@@ -39,7 +38,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The Neapolitan functions as a pre-dominant chord, typically moving to V (often through a cadential 6/4). It intensifies the approach to the dominant with its chromatic root.',
-      points: 1,
     },
     {
       id: 'l6u18m1e3',
@@ -55,7 +53,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The Neapolitan is almost always found in first inversion (bII6), placing the 4th scale degree in the bass. This provides smoother voice leading to V.',
-      points: 1,
     },
   ],
 
@@ -75,7 +72,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'An augmented 6th is one half step larger than a major 6th (9 semitones). It spans 10 semitones and is enharmonically the same size as a minor 7th, but the two notes resolve outward to an octave.',
-      points: 1,
     },
     {
       id: 'l6u18m2e2',
@@ -91,7 +87,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The Italian +6 is the simplest: b6, 1, #4 (three notes). The French +6 adds the 2nd scale degree (b6, 1, 2, #4), creating a characteristic whole-tone subset with an augmented 4th above the bass.',
-      points: 1,
     },
     {
       id: 'l6u18m2e3',
@@ -107,7 +102,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'All augmented 6th chords function as chromatic pre-dominants. The augmented 6th interval (b6 and #4) resolves outward by half step in both voices to the dominant note, creating an intensely directed approach to V.',
-      points: 1,
     },
   ],
 
@@ -127,7 +121,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The Gr+6 has the same pitch classes as a dominant 7th chord. For example, in C minor the Gr+6 (Ab, C, Eb, F#) sounds identical to Ab7 (Ab, C, Eb, Gb). The different spelling reflects different voice-leading destinations.',
-      points: 1,
     },
     {
       id: 'l6u18m3e2',
@@ -143,7 +136,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In C minor, the Gr+6 contains b6 (Ab), 1 (C), b3 (Eb), and #4 (F#). The crucial augmented 6th interval is between Ab and F#, which resolves outward to G-G (octave on the dominant).',
-      points: 1,
     },
     {
       id: 'l6u18m3e3',
@@ -159,7 +151,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Like all augmented 6th chords, the Gr+6 resolves to V. The outer voices (b6 and #4) converge on the dominant pitch by half step. A cadential 6/4 often intervenes to avoid parallel 5ths.',
-      points: 1,
     },
   ],
 
@@ -179,7 +170,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Since Gr+6 and V7 are enharmonically identical, a single sonority can pivot between two distant keys. The respelling changes which voice leads where, redirecting the harmonic trajectory.',
-      points: 1,
     },
     {
       id: 'l6u18m4e2',
@@ -195,7 +185,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Diatonic pivot chords only connect closely related keys. Reinterpreting the tonic key\'s Gr+6 as V7 (or vice versa) moves the tonic by a half step -- C to Db is five steps around the circle of fifths, a distant key reached through a single chord. It is a signature technique of Romantic-era composers.',
-      points: 1,
     },
     {
       id: 'l6u18m4e3',
@@ -211,7 +200,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Respelling F# as Gb turns the chord into Ab, C, Eb, Gb = Ab dominant 7th. Ab7 is V7 of Db, so the music can pivot smoothly from C minor into Db major -- a shift of a half step, bridging very distant tonal territory.',
-      points: 1,
     },
   ],
 
@@ -233,7 +221,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'A diminished 7th chord stacks three minor 3rds: C (0), Eb (3), Gb (6), Bbb (9). These four pitch classes divide the octave into equal parts. Bbb is enharmonically A.',
-      points: 2,
     },
     {
       id: 'l6u19m1e2',
@@ -249,7 +236,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The dim7 chord is built entirely of minor 3rds (3 semitones each). Since 3 x 4 = 12, the four notes divide the octave evenly. This means every inversion of the chord sounds identical in interval structure.',
-      points: 1,
     },
     {
       id: 'l6u19m1e3',
@@ -265,7 +251,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Because of its symmetry, each note of the dim7 chord can be respelled as a leading tone resolving up by half step to a different tonic. C-Eb-Gb-Bbb can be viio7 of Db, E, G, or Bb.',
-      points: 1,
     },
   ],
 
@@ -285,7 +270,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The common-tone diminished 7th keeps one note (the common tone) from the chord it decorates. The other three voices move by step, creating a chromatic neighbor-note embellishment.',
-      points: 1,
     },
     {
       id: 'l6u19m2e2',
@@ -301,7 +285,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The most common form retains the root of the target chord. For a CTo7 embellishing C major, C is held while the other voices (D#, F#, A) move by step back to the notes of the C major chord.',
-      points: 1,
     },
     {
       id: 'l6u19m2e3',
@@ -317,7 +300,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Unlike viio7 (which has dominant function), the CTo7 is purely decorative. It embellishes a chord through chromatic neighbor motion, adding color without changing the harmonic direction.',
-      points: 1,
     },
   ],
 
@@ -337,7 +319,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Diatonic mediants (I-iii, I-vi) share two common tones. Chromatic mediants (e.g., C major to E major, or C major to Ab major) have roots a 3rd apart but with altered quality, sharing only one or zero common tones.',
-      points: 1,
     },
     {
       id: 'l6u19m3e2',
@@ -353,7 +334,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'From any major triad, you can move to another major triad a major or minor 3rd above or below: C to E, C to Eb, C to A, C to Ab. Each produces a different color, and all four are chromatic mediants.',
-      points: 1,
     },
     {
       id: 'l6u19m3e3',
@@ -369,7 +349,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Chromatic mediants often share one common tone while the other voices shift by half step. In some cases (doubly chromatic mediants like C major to Ab minor, Ab-Cb-Eb) there are zero common tones, and every voice shifts by half step: C to Cb, E to Eb, G to Ab.',
-      points: 1,
     },
   ],
 
@@ -389,7 +368,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In nonfunctional harmony, chord progressions are driven by smooth voice leading, shared tones, or coloristic effect rather than the traditional T-PD-D-T functional cycle. Wagner, Liszt, and late Chopin pioneered this approach.',
-      points: 1,
     },
     {
       id: 'l6u19m4e2',
@@ -405,7 +383,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Planing moves an entire chord structure (e.g., a major triad or dominant 7th) up or down chromatically or by whole steps, maintaining the same voicing. Debussy used this extensively.',
-      points: 1,
     },
     {
       id: 'l6u19m4e3',
@@ -421,7 +398,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Composers like Wagner (Tristan und Isolde) used continuous chromaticism, deceptive resolutions, and enharmonic ambiguity so extensively that the sense of a home key became elusive -- paving the way for atonality in the 20th century.',
-      points: 1,
     },
   ],
 
@@ -445,7 +421,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'First species allows only consonances: perfect consonances (P1, P5, P8) and imperfect consonances (3rds and 6ths). Dissonances (2nds, 4ths, 7ths, tritones) are forbidden in first species.',
-      points: 1,
     },
     {
       id: 'l6u20m1e2',
@@ -461,7 +436,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Second species introduces the passing tone: a dissonance on a weak beat that fills in the gap between two consonances by stepwise motion. Strong beats must still be consonant.',
-      points: 1,
     },
     {
       id: 'l6u20m1e3',
@@ -477,7 +451,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Third species sets four quarter notes against each whole note in the cantus firmus. This introduces neighbor tones and double passing tones (two passing tones in a row, moving stepwise in one direction to fill a fourth) in addition to the passing tones from second species.',
-      points: 1,
     },
   ],
 
@@ -497,7 +470,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Fourth species introduces the suspension: a consonance on a weak beat is tied into the next strong beat where it becomes a dissonance, then resolves downward by step. This creates the characteristic syncopated texture.',
-      points: 1,
     },
     {
       id: 'l6u20m2e2',
@@ -513,7 +485,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Fifth (florid) species combines techniques from all four previous species into a flowing melodic line. It uses whole notes, half notes, quarter notes, suspensions, and passing tones in a musically satisfying way.',
-      points: 1,
     },
     {
       id: 'l6u20m2e3',
@@ -529,7 +500,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A suspension requires: (1) Preparation -- the note is introduced as a consonance; (2) Suspension -- the note is held (tied) into a strong beat where it becomes dissonant; (3) Resolution -- the note resolves downward by step to a consonance.',
-      points: 1,
     },
   ],
 
@@ -549,7 +519,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In invertible counterpoint at the octave, voice A above voice B sounds correct, AND voice B above voice A also sounds correct. When the voices swap, intervals invert: 3rds become 6ths, 5ths become 4ths, etc.',
-      points: 1,
     },
     {
       id: 'l6u20m3e2',
@@ -565,7 +534,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Triple counterpoint means three voices (A, B, C) can be rearranged in any order -- ABC, ACB, BAC, BCA, CAB, CBA -- and all six permutations produce correct counterpoint. Bach mastered this technique.',
-      points: 1,
     },
     {
       id: 'l6u20m3e3',
@@ -581,7 +549,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'When voices invert at the octave, a P5 becomes a P4. In two-voice counterpoint, 4ths against the bass are dissonant. So any P5 in the original becomes a problem when the voices swap positions.',
-      points: 1,
     },
   ],
 
@@ -601,7 +568,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'SATB stands for Soprano (highest), Alto, Tenor, and Bass (lowest). Soprano and Alto share the treble staff; Tenor and Bass share the bass staff in standard chorale notation.',
-      points: 1,
     },
     {
       id: 'l6u20m4e2',
@@ -617,7 +583,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Figured bass was the Baroque shorthand for harmony. The player reads the written bass note and the figures (numbers) below it, then fills in the upper voices to create complete chords following voice-leading rules.',
-      points: 1,
     },
     {
       id: 'l6u20m4e3',
@@ -633,7 +598,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A Bb clarinet sounds a major 2nd lower than written. When the part says C, the instrument sounds Bb. Score reading requires knowing each instrument\'s transposition to hear the actual (concert) pitches.',
-      points: 1,
     },
   ],
 };

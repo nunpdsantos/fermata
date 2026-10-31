@@ -25,7 +25,6 @@ const templates: ModuleTemplateConfig[] = [
           scaleTypes: ['major'],
           noteCounts: [7],
         },
-        points: 2,
       },
       {
         type: 'multiple_choice',
@@ -122,7 +121,6 @@ const templates: ModuleTemplateConfig[] = [
           scaleTypes: ['natural_minor'],
           noteCounts: [7],
         },
-        points: 2,
       },
     ],
     targetCount: 5,
@@ -142,7 +140,6 @@ const templates: ModuleTemplateConfig[] = [
           scaleTypes: ['harmonic_minor'],
           noteCounts: [7],
         },
-        points: 2,
       },
       {
         type: 'scale_build',
@@ -154,7 +151,6 @@ const templates: ModuleTemplateConfig[] = [
           scaleTypes: ['melodic_minor'],
           noteCounts: [7],
         },
-        points: 2,
       },
     ],
     targetCount: 6,
@@ -358,7 +354,6 @@ const templates: ModuleTemplateConfig[] = [
           ],
           noteCounts: [3],
         },
-        points: 2,
       },
     ],
     targetCount: 6,
@@ -419,7 +414,6 @@ const templates: ModuleTemplateConfig[] = [
           chordQualities: ['major', 'minor', 'minor', 'major', 'major', 'minor', 'diminished'],
           noteCounts: [3],
         },
-        points: 2,
       },
       {
         type: 'multiple_choice',

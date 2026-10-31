@@ -10,8 +10,6 @@ export interface ExerciseTemplate {
   /** Hint template with {param} placeholders */
   hintTemplate: string;
   params: ExerciseTemplateParams;
-  /** Override default point value (default: 1) */
-  points?: number;
 }
 
 export interface ExerciseTemplateParams {

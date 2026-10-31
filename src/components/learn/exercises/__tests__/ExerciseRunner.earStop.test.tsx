@@ -29,7 +29,6 @@ const scaleEx = (id: string, root: 'C' | 'D'): ExerciseDefinition => ({
       { label: 'Natural minor', correct: false },
     ],
   },
-  points: 1,
 });
 
 const voice = {

@@ -26,7 +26,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The subject enters first in the tonic key. The answer follows in the dominant, imitating the subject a fifth higher (or fourth lower).',
-      points: 1,
     },
     {
       id: 'l8u25m1e2',
@@ -42,7 +41,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A real answer is an exact transposition to the dominant. A tonal answer modifies certain intervals (typically scale degrees 1 and 5) to maintain tonal coherence.',
-      points: 1,
     },
     {
       id: 'l8u25m1e3',
@@ -58,7 +56,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The exposition is the opening section where voices enter one at a time, alternating between subject (tonic) and answer (dominant).',
-      points: 1,
     },
   ],
 
@@ -78,7 +75,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Episodes are passages between subject entries that typically use sequences built from subject fragments. They serve as modulatory bridges.',
-      points: 1,
     },
     {
       id: 'l8u25m2e2',
@@ -94,7 +90,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Stretto compresses subject entries so they overlap, creating intensified counterpoint. It often appears near the climax of a fugue.',
-      points: 1,
     },
     {
       id: 'l8u25m2e3',
@@ -110,7 +105,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Augmentation stretches the subject by multiplying its note durations (typically by two). Diminution does the opposite, halving note values.',
-      points: 1,
     },
   ],
 
@@ -130,7 +124,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A canon is strict imitation: one voice (the leader or dux) is followed at a fixed time interval by one or more voices (the follower or comes) copying it exactly.',
-      points: 1,
     },
     {
       id: 'l8u25m3e2',
@@ -146,7 +139,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The interval name refers to the pitch transposition, not the time delay. A canon at the fifth transposes the melody by a P5.',
-      points: 1,
     },
     {
       id: 'l8u25m3e3',
@@ -162,7 +154,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Strict imitation preserves every interval precisely. Free imitation allows alterations to intervals while maintaining the general shape and rhythm of the model.',
-      points: 1,
     },
   ],
 
@@ -186,7 +177,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The exposition establishes tonal conflict: the first theme group is in the tonic, the second theme group moves to the dominant (or relative major in minor keys).',
-      points: 1,
     },
     {
       id: 'l8u26m1e2',
@@ -202,7 +192,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The development takes ideas from the exposition and works them through various keys, sequences, and contrapuntal techniques, building tension toward the recapitulation.',
-      points: 1,
     },
     {
       id: 'l8u26m1e3',
@@ -218,7 +207,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The recapitulation resolves the harmonic tension by bringing back both theme groups in the tonic. The second theme, originally in the dominant, now returns in the home key.',
-      points: 1,
     },
   ],
 
@@ -238,7 +226,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Variations typically preserve the harmonic framework and phrase structure of the theme while altering melody, rhythm, texture, or mode.',
-      points: 1,
     },
     {
       id: 'l8u26m2e2',
@@ -254,7 +241,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Rondo form features a main theme (A) that keeps returning between different contrasting sections (B, C, etc.). The minimum pattern is ABACA.',
-      points: 1,
     },
     {
       id: 'l8u26m2e3',
@@ -270,7 +256,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A chaconne/passacaglia is a variation form built over a repeating bass pattern (ground bass). The upper voices change while the bass cycles continuously.',
-      points: 1,
     },
   ],
 
@@ -290,7 +275,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The standard orchestral sections are: Strings (violin, viola, cello, bass), Woodwinds (flute, oboe, clarinet, bassoon), Brass (horn, trumpet, trombone, tuba), and Percussion.',
-      points: 1,
     },
     {
       id: 'l8u26m3e2',
@@ -306,7 +290,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A transposing instrument produces a different pitch than what is notated. This simplifies fingerings across instrument families of different sizes.',
-      points: 1,
     },
     {
       id: 'l8u26m3e3',
@@ -322,7 +305,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A Bb instrument sounds a major 2nd lower than written. When the player reads C, the audience hears Bb. To sound a concert C, the player must read D.',
-      points: 1,
     },
   ],
 
@@ -346,7 +328,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Pitch-class integer notation assigns C = 0, C#/Db = 1, D = 2, and so on through B = 11. The system is modulo 12.',
-      points: 1,
     },
     {
       id: 'l8u27m1e2',
@@ -362,7 +343,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Normal order is the most compact ascending arrangement of a pitch-class set. You rotate through all orderings and pick the one with the smallest outer interval.',
-      points: 1,
     },
     {
       id: 'l8u27m1e3',
@@ -378,7 +358,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Prime form is the most reduced version of a set, starting on 0 and packed as tightly as possible to the left. It lets analysts compare sets regardless of transposition or inversion.',
-      points: 1,
     },
   ],
 
@@ -398,7 +377,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A tone row (or series) is a fixed ordering of all 12 chromatic pitch classes. No pitch class repeats until all 12 have been sounded.',
-      points: 1,
     },
     {
       id: 'l8u27m2e2',
@@ -414,7 +392,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'P is the original row. R reverses it. I inverts all intervals. RI applies both retrograde and inversion. Each can also be transposed to any of the 12 pitch levels.',
-      points: 1,
     },
     {
       id: 'l8u27m2e3',
@@ -430,7 +407,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The matrix (or magic square) is a 12x12 grid. Rows read left-to-right give P forms, right-to-left give R, columns top-to-bottom give I, and bottom-to-top give RI.',
-      points: 1,
     },
   ],
 
@@ -450,7 +426,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Planing moves a fixed chord shape or interval up or down in parallel. Debussy famously used parallel triads and ninth chords, abandoning traditional voice-leading rules.',
-      points: 1,
     },
     {
       id: 'l8u27m3e2',
@@ -466,7 +441,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Polytonality layers different tonal centers at the same time. Bitonality (two keys) is the most common type. Milhaud and Stravinsky used it extensively.',
-      points: 1,
     },
     {
       id: 'l8u27m3e3',
@@ -482,7 +456,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Pandiatonicism uses diatonic pitch material (e.g., all white keys) but without tonal hierarchy or functional progressions. Stravinsky and Copland employed this freely.',
-      points: 1,
     },
   ],
 
@@ -502,7 +475,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Minimalism (Riley, Reich, Glass, Adams) features repetitive patterns, steady pulse, consonant harmony, and slow processes of gradual transformation.',
-      points: 1,
     },
     {
       id: 'l8u27m4e2',
@@ -518,7 +490,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Aleatory comes from the Latin "alea" (dice). Cage, Lutoslawski, and others incorporated randomness or performer indeterminacy into their compositions.',
-      points: 1,
     },
     {
       id: 'l8u27m4e3',
@@ -534,7 +505,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Extended techniques produce non-standard sounds: prepared piano, col legno, multiphonics, flutter-tonguing, bowing behind the bridge, and many more.',
-      points: 1,
     },
   ],
 
@@ -554,7 +524,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Polyrhythm layers different rhythmic groupings at the same time (e.g., triplets against duplets, or 4 against 3). Each layer maintains its own pulse division.',
-      points: 1,
     },
     {
       id: 'l8u27m5e2',
@@ -570,7 +539,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Hemiola regroups beats so that what was felt in three is temporarily felt in two, or vice versa. Common in Baroque music and Latin American rhythms.',
-      points: 1,
     },
     {
       id: 'l8u27m5e3',
@@ -586,7 +554,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Metric modulation (a term associated with Elliott Carter) uses a common rhythmic value as a pivot between two tempos. For example, an eighth-note triplet in the old tempo becomes the new eighth note.',
-      points: 1,
     },
   ],
 };

@@ -116,8 +116,6 @@ export interface ExerciseDefinition {
   config: ExerciseConfig;
   /** Shown after first wrong attempt */
   hint?: string;
-  /** Default: 1 */
-  points?: number;
 }
 
 // Progress tracking types
@@ -127,7 +125,7 @@ export interface ModuleExerciseResult {
   scores: Record<string, 0 | 0.5 | 1>;
   totalAttempts: number;
   lastAttemptAt: number;
-  /** True if >= 80% of max points earned */
+  /** True if the module's score reached 80% of its exercise count (decision D-16: every exercise counts 1) */
   passed: boolean;
 }
 

@@ -40,7 +40,6 @@ const mcExercise = (id: string): ExerciseDefinition => ({
     ],
   },
   hint: 'The right one.',
-  points: 1,
 });
 
 const earNoteExercise: ExerciseDefinition = {
@@ -48,7 +47,6 @@ const earNoteExercise: ExerciseDefinition = {
   type: 'ear_training',
   prompt: 'Listen to this pitch and identify it.',
   config: { type: 'ear_training', mode: 'note', note: 'C', accidental: '', octave: 4 },
-  points: 1,
 };
 
 const earScaleExercise: ExerciseDefinition = {
@@ -67,7 +65,6 @@ const earScaleExercise: ExerciseDefinition = {
       { label: 'Natural minor', correct: false },
     ],
   },
-  points: 1,
 };
 
 function renderRunner(exercises: ExerciseDefinition[]) {
@@ -238,7 +235,6 @@ const progEx = (id: string, root: 'C' | 'G'): ExerciseDefinition => ({
   id,
   type: 'ear_training',
   prompt: 'Identify the progression',
-  points: 1,
   config: {
     type: 'ear_training',
     mode: 'progression',

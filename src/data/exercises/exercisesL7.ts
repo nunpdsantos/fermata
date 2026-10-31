@@ -24,7 +24,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 5,
       },
       hint: 'Cmaj9 = C, E, G, B, D. Stack: root (C), major 3rd (E), perfect 5th (G), major 7th (B), major 9th (D). Pitch classes: 0, 4, 7, 11, 2.',
-      points: 2,
     },
     {
       id: 'l7u21m1e2',
@@ -38,7 +37,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 5,
       },
       hint: 'Dm9 = D, F, A, C, E. Stack: root (D), minor 3rd (F), perfect 5th (A), minor 7th (C), major 9th (E). Pitch classes: 2, 5, 9, 0, 4.',
-      points: 2,
     },
     {
       id: 'l7u21m1e3',
@@ -54,7 +52,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The "alt" suffix means the chord has altered extensions: b9, #9, b5 (or #11), and #5 (or b13). It is paired with the altered (superlocrian) scale.',
-      points: 1,
     },
   ],
 
@@ -74,7 +71,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Shell voicings strip a chord to its essentials: root defines the bass, 3rd determines major/minor quality, and 7th determines the chord type (maj7, dom7, m7). In those chords the perfect 5th is redundant; in m7b5 and dim7 chords the flatted 5th is what defines the chord, so it stays.',
-      points: 1,
     },
     {
       id: 'l7u21m2e2',
@@ -90,7 +86,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'An altered dominant keeps the root, 3rd, and b7 but chromatically alters the 5th (b5 or #5) and 9th (b9 or #9), creating maximum tension before resolution.',
-      points: 1,
     },
     {
       id: 'l7u21m2e3',
@@ -106,7 +101,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A sus4 chord replaces the 3rd with a 4th, removing the major/minor quality. In jazz, G7sus4 often precedes G7 in a V7sus4 to V7 to I resolution, delaying the leading tone.',
-      points: 1,
     },
   ],
 
@@ -124,7 +118,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'Dm7 = D, F, A, C. Root (D), minor 3rd (F), perfect 5th (A), minor 7th (C). Pitch classes: 2, 5, 9, 0.',
-      points: 2,
     },
     {
       id: 'l7u21m3e2',
@@ -138,7 +131,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'G7 = G, B, D, F. Root (G), major 3rd (B), perfect 5th (D), minor 7th (F). Pitch classes: 7, 11, 2, 5.',
-      points: 2,
     },
     {
       id: 'l7u21m3e3',
@@ -154,7 +146,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The ii-V-I encapsulates complete harmonic motion: preparation (ii), tension (V), resolution (I). Nearly every jazz standard contains multiple ii-V-I progressions in various keys.',
-      points: 1,
     },
   ],
 
@@ -172,7 +163,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'Db7 = Db, F, Ab, Cb. The tritone sub shares the same tritone interval (F-Cb enharmonic to F-B) as the original G7 chord. Pitch classes: 1, 5, 8, 11.',
-      points: 2,
     },
     {
       id: 'l7u21m4e2',
@@ -188,7 +178,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'G7 has B and F as its 3rd and 7th. Db7 has F and Cb (=B) as its 3rd and 7th. The guide tones are identical (enharmonically), so Db7 can resolve to C just like G7.',
-      points: 1,
     },
     {
       id: 'l7u21m4e3',
@@ -204,7 +193,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Db7 replaces G7 (the V7). The bass descends chromatically: D (ii) - Db (tritone sub of V) - C (I). This smooth voice leading is one of the main benefits of tritone subs.',
-      points: 1,
     },
   ],
 
@@ -224,7 +212,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The 12-bar blues follows a specific pattern over 12 measures: 4 bars of I7, 2 bars of IV7, 2 bars of I7, then V7-IV7-I7-V7 (turnaround). All chords are dominant 7ths.',
-      points: 1,
     },
     {
       id: 'l7u21m5e2',
@@ -240,7 +227,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In blues, the b7 is part of the blues scale and the overall blues sound. Every chord — I, IV, and V — uses dominant 7th quality. This defies classical theory, where I7 would imply a secondary dominant.',
-      points: 1,
     },
     {
       id: 'l7u21m5e3',
@@ -256,7 +242,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Jazz blues enriches the basic form by inserting ii-V progressions (e.g., bars 9-10 become ii-V instead of just V-IV), adding tritone subs, and using quick ii-V turnarounds to create harmonic motion.',
-      points: 1,
     },
   ],
 
@@ -276,7 +261,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Rhythm changes follow a 32-bar AABA form: the A sections use I-vi-ii-V based progressions, and the B section (bridge) typically uses a cycle of dominants. Based on the chord changes to a famous Gershwin tune.',
-      points: 1,
     },
     {
       id: 'l7u21m6e2',
@@ -292,7 +276,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The turnaround (I-vi-ii-V) cycles back to the top of the form. In jazz, the vi is often replaced with VI7 (a secondary dominant), and further embellished with tritone subs and passing chords.',
-      points: 1,
     },
     {
       id: 'l7u21m6e3',
@@ -308,7 +291,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The bridge typically features a chain of dominant 7ths: III7-VI7-II7-V7 (in Bb: D7-G7-C7-F7). Each dominant resolves down a fifth to the next, creating strong forward motion.',
-      points: 1,
     },
   ],
 
@@ -330,7 +312,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'D dorian: D, E, F, G, A, B, C. It is the 2nd mode of C major. The natural 6th (B) distinguishes it from natural minor (which has Bb). Pitch classes: 2, 4, 5, 7, 9, 11, 0.',
-      points: 2,
     },
     {
       id: 'l7u22m1e2',
@@ -344,7 +325,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'G mixolydian: G, A, B, C, D, E, F. It is the 5th mode of C major. The b7 (F instead of F#) defines the dominant sound. Pitch classes: 7, 9, 11, 0, 2, 4, 5.',
-      points: 2,
     },
     {
       id: 'l7u22m1e3',
@@ -360,7 +340,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Chord-scale theory matches each chord to a parent scale. Over Dm7, play D dorian; over G7, play G mixolydian; over Cmaj7, play C ionian. The scale changes with each chord.',
-      points: 1,
     },
   ],
 
@@ -380,7 +359,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Upper structures layer a simple triad (e.g., D major) over a bass note and 7th (e.g., C and Bb), creating complex extensions. D/C7 gives C7 with 9th, #11th, and 13th.',
-      points: 1,
     },
     {
       id: 'l7u22m2e2',
@@ -396,7 +374,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Reharmonization changes the harmonic context under a melody. Techniques include tritone substitution, chord quality changes, chromatic approaches, and constant structure movement.',
-      points: 1,
     },
     {
       id: 'l7u22m2e3',
@@ -412,7 +389,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Chromatic bass motion creates smooth voice leading: e.g., C - B - Bb - A (Cmaj7 - B7 or G/B - Bb7 or C7/Bb - Am7). Each chord is chosen to support a half-step bass descent.',
-      points: 1,
     },
   ],
 
@@ -432,7 +408,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Coltrane changes cycle through three key centers a major 3rd apart (e.g., B, G, Eb). These three keys divide the octave symmetrically into three equal segments of 4 semitones each.',
-      points: 1,
     },
     {
       id: 'l7u22m3e2',
@@ -448,7 +423,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Coltrane prepares each tonic with its dominant: e.g., Bmaj7 - D7 - Gmaj7 - Bb7 - Ebmaj7. The D7 is the V7 of G, Bb7 is the V7 of Eb. This creates constant dominant-tonic motion.',
-      points: 1,
     },
     {
       id: 'l7u22m3e3',
@@ -464,7 +438,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Constant structure moves a fixed chord type (e.g., maj7) through a sequence of roots (e.g., Cmaj7 - Ebmaj7 - Gbmaj7 - Amaj7). The voicing shape stays identical while the root pattern creates harmonic interest.',
-      points: 1,
     },
   ],
 
@@ -482,7 +455,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'D dorian: D, E, F, G, A, B, C. Compared to D natural minor, the 6th degree is raised (B natural instead of Bb). Pitch classes: 2, 4, 5, 7, 9, 11, 0.',
-      points: 2,
     },
     {
       id: 'l7u22m4e2',
@@ -496,7 +468,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'E phrygian: E, F, G, A, B, C, D. The b2 (F natural, a half step above E) gives phrygian its dark, Spanish-flavored character. Pitch classes: 4, 5, 7, 9, 11, 0, 2.',
-      points: 2,
     },
     {
       id: 'l7u22m4e3',
@@ -512,7 +483,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In tonal harmony, chords have functions (tonic, dominant, subdominant) that drive toward resolution. In modal harmony, one mode colors a static vamp or drone, and progressions avoid V-I cadences that would establish a key.',
-      points: 1,
     },
   ],
 
@@ -532,7 +502,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Quartal harmony stacks 4ths (e.g., C-F-Bb-Eb). This creates an ambiguous, open sound that avoids clear major/minor quality. McCoy Tyner popularized quartal voicings in modal jazz.',
-      points: 1,
     },
     {
       id: 'l7u22m5e2',
@@ -548,7 +517,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'While a 4th inverts to a 5th, the voicing sound differs based on register and spacing. Quintal voicings (e.g., C-G-D-A) create wide, bright sonorities. Both avoid traditional tertian (3rd-based) harmony.',
-      points: 1,
     },
     {
       id: 'l7u22m5e3',
@@ -564,7 +532,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A drone (sustained bass note or open 5th) establishes a modal center. Over a D drone, you can freely explore D dorian, D mixolydian, or other modes without the harmony pulling toward resolution.',
-      points: 1,
     },
   ],
 
@@ -588,7 +555,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'I-V-vi-IV (in C: C-G-Am-F) is one of the most common pop progressions. It loops indefinitely and supports both uplifting and melancholic melodies depending on which chord the melody emphasizes.',
-      points: 1,
     },
     {
       id: 'l7u23m1e2',
@@ -604,7 +570,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The Nashville number system writes chords as scale-degree numbers (1=I, 4=IV, 5=V). A chart reading "1-5-6m-4" can be played in any key instantly. It is used extensively in Nashville studio sessions.',
-      points: 1,
     },
     {
       id: 'l7u23m1e3',
@@ -620,7 +585,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Pop loops (like I-V-vi-IV or vi-IV-I-V) repeat a small harmonic pattern throughout a song. The static harmony lets melody, rhythm, and production carry the musical interest, which suits verse/chorus forms.',
-      points: 1,
     },
   ],
 
@@ -640,7 +604,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'bVII is borrowed from C mixolydian or C natural minor. In C major, Bb is not diatonic, but borrowing it creates a rock/pop sound. This is modal mixture (also called modal interchange or borrowed chords).',
-      points: 1,
     },
     {
       id: 'l7u23m2e2',
@@ -656,7 +619,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'C major (C, E, G) and Ab major (Ab, C, Eb) share one common tone (C). The E and Eb are a half step apart, creating the smooth color shift characteristic of chromatic mediants.',
-      points: 1,
     },
     {
       id: 'l7u23m2e3',
@@ -672,7 +634,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Direct modulation (also called abrupt or phrase modulation) simply starts a new section in the new key with no harmonic preparation. Common in pop: the final chorus jumps up a half step or whole step for energy.',
-      points: 1,
     },
   ],
 
@@ -690,7 +651,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'C melodic minor: C, D, Eb, F, G, A, B. It is like C major with a b3. The natural 6th (A) and natural 7th (B) distinguish it from natural and harmonic minor. Pitch classes: 0, 2, 3, 5, 7, 9, 11.',
-      points: 2,
     },
     {
       id: 'l7u23m3e2',
@@ -704,7 +664,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'G altered (superlocrian): G, Ab, Bb, Cb, Db, Eb, F. Every non-essential tone is altered: b9, #9 (=b3), b5 (#11), b13 (#5). Pitch classes: 7, 8, 10, 11, 1, 3, 5.',
-      points: 2,
     },
     {
       id: 'l7u23m3e3',
@@ -720,7 +679,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Lydian dominant (e.g., C D E F# G A Bb) combines a #4 (lydian) with a b7 (dominant). It fits dominant 7(#11) chords and is the go-to scale for tritone substitution chords.',
-      points: 1,
     },
   ],
 
@@ -738,7 +696,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 6,
       },
       hint: 'C whole tone: C, D, E, F#, G#, A#. Every interval is a whole step (2 semitones). Only two whole-tone scales exist (the other starts on Db). Pitch classes: 0, 2, 4, 6, 8, 10.',
-      points: 2,
     },
     {
       id: 'l7u23m4e2',
@@ -752,7 +709,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 8,
       },
       hint: 'C diminished half-whole: C, Db, Eb, E, F#, G, A, Bb. It alternates half step, whole step throughout. Only three distinct diminished scales exist. Pitch classes: 0, 1, 3, 4, 6, 7, 9, 10.',
-      points: 2,
     },
     {
       id: 'l7u23m4e3',
@@ -768,7 +724,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Symmetric scales repeat a fixed interval pattern (e.g., whole tone = W-W-W-W-W-W; diminished = H-W-H-W-H-W-H-W). This symmetry means they have fewer unique transpositions than asymmetric scales.',
-      points: 1,
     },
   ],
 
@@ -788,7 +743,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'There are exactly 4 triad types, defined by their 3rd and 5th: major (M3+P5), minor (m3+P5), diminished (m3+dim5), and augmented (M3+aug5). All other triadic labels are variants of these four.',
-      points: 1,
     },
     {
       id: 'l7u23m5e2',
@@ -804,7 +758,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Extended chords continue the tertian (3rd-stacking) principle past the 7th: 9th = octave + 2nd, 11th = octave + 4th, 13th = octave + 6th. A 13th chord theoretically contains all 7 scale degrees.',
-      points: 1,
     },
     {
       id: 'l7u23m5e3',
@@ -820,7 +773,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Chord quality families group chords by their core sound: the major family has a major 3rd and major 7th; the dominant family has a major 3rd and minor 7th; the minor family has a minor 3rd. Extensions expand each family.',
-      points: 1,
     },
   ],
 };

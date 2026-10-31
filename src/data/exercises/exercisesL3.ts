@@ -23,7 +23,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'Cmaj7 = C, E, G, B. A major triad (C-E-G) plus a major 7th (B, 11 semitones above the root).',
-      points: 2,
     },
     {
       id: 'l3u9m1e2',
@@ -37,7 +36,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'Dm7 = D, F, A, C. A minor triad (D-F-A) plus a minor 7th (C, 10 semitones above the root).',
-      points: 2,
     },
     {
       id: 'l3u9m1e3',
@@ -53,7 +51,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The dominant 7th (e.g., G7) combines a major triad with a minor 7th. It is the only seventh chord type with this combination, creating strong tension that resolves to the tonic.',
-      points: 1,
     },
     {
       id: 'l3u9m1e4',
@@ -69,7 +66,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Both share a diminished triad (root, m3, dim5). The half-diminished adds a minor 7th (10 semitones), while the fully diminished adds a diminished 7th (9 semitones).',
-      points: 1,
     },
     {
       id: 'l3u9m1e_ear1',
@@ -89,7 +85,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A major 7th chord: a major triad plus a major 7th (C-E-G-B). Warm and lush — the 7th sits just a half step below the octave.',
-      points: 1,
     },
     {
       id: 'l3u9m1e_ear2',
@@ -109,7 +104,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A minor 7th chord: a minor triad plus a minor 7th (A-C-E-G). Soft and mellow, without the restless pull of the dominant 7th.',
-      points: 1,
     },
     {
       id: 'l3u9m1e_ear3',
@@ -129,7 +123,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A dominant 7th chord: a major triad plus a minor 7th (D-F#-A-C). The tritone F#-C inside it makes it restless — it wants to resolve.',
-      points: 1,
     },
     {
       id: 'l3u9m1e_ear4',
@@ -149,7 +142,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A half-diminished 7th chord: a diminished triad plus a minor 7th (E-G-Bb-D). Dark and unsettled — like a minor 7th chord with a lowered 5th.',
-      points: 1,
     },
   ],
 
@@ -169,7 +161,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In root position, the intervals above the bass are 3rd, 5th, and 7th. The full figuring 7/5/3 is shortened to just 7.',
-      points: 1,
     },
     {
       id: 'l3u9m2e2',
@@ -185,7 +176,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'First inversion places the 3rd of the chord in the bass. The characteristic intervals above the bass are a 6th and a 5th, giving the symbol 6/5.',
-      points: 1,
     },
     {
       id: 'l3u9m2e3',
@@ -201,7 +191,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Third inversion places the 7th of the chord in the bass. The intervals above the bass are a 2nd and a 4th, giving the symbol 4/2 (or 2).',
-      points: 1,
     },
   ],
 
@@ -219,7 +208,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'G7 = G, B, D, F. A major triad (G-B-D) plus a minor 7th (F, 10 semitones above G). The tritone B-F drives resolution to C.',
-      points: 2,
     },
     {
       id: 'l3u9m3e2',
@@ -233,7 +221,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'Am7 = A, C, E, G. A minor triad (A-C-E) plus a minor 7th (G, 10 semitones above A).',
-      points: 2,
     },
     {
       id: 'l3u9m3e3',
@@ -249,7 +236,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In G7 (G-B-D-F), the tritone is between B (the 3rd) and F (the 7th), spanning 6 semitones. B resolves up to C while F resolves down to E, creating the V7-I resolution.',
-      points: 1,
     },
   ],
 
@@ -267,7 +253,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'E7 = E, G#, B, D. The G# comes from the raised 7th degree of A harmonic minor. This dominant 7th chord provides the leading tone (G#) that resolves to A.',
-      points: 2,
     },
     {
       id: 'l3u9m4e2',
@@ -283,7 +268,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In A natural minor, VII is G-B-D (major). Raising G to G# in harmonic minor gives G#-B-D, which is diminished (root to 3rd = m3, root to 5th = dim5).',
-      points: 1,
     },
     {
       id: 'l3u9m4e3',
@@ -299,7 +283,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In A harmonic minor, the ii7 chord is B-D-F-A: a diminished triad (B-D-F) plus a minor 7th (A). This combination is called half-diminished, written Bm7b5 or B\u00f8.',
-      points: 1,
     },
   ],
 
@@ -323,7 +306,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The soprano is the highest voice in SATB. Its practical range is approximately C4 (middle C) to G5. Exceeding this range makes the part difficult to sing.',
-      points: 1,
     },
     {
       id: 'l3u10m1e2',
@@ -339,7 +321,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Parallel perfect 5ths and octaves are avoided because they undermine the independence of voices. Each voice should sound like its own melodic line, and parallel perfects cause voices to fuse.',
-      points: 1,
     },
     {
       id: 'l3u10m1e3',
@@ -355,7 +336,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Doubling the root reinforces the chord identity and is the safest choice. Avoid doubling the leading tone (scale degree 7) or other tendency tones, as it creates resolution problems.',
-      points: 1,
     },
   ],
 
@@ -375,7 +355,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Perfect intervals (unisons, 5ths, octaves) have strong acoustic fusion. When two voices move in parallel 5ths, they lose their individual identity, reducing the number of perceived independent lines.',
-      points: 1,
     },
     {
       id: 'l3u10m2e2',
@@ -391,7 +370,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Parallel = same direction, same interval. Similar = same direction, different interval. Oblique = one voice moves, the other stays. Contrary = opposite directions.',
-      points: 1,
     },
     {
       id: 'l3u10m2e3',
@@ -407,7 +385,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Contrary motion maximizes voice independence because the voices travel in opposite directions. This is the most valued type of motion in counterpoint and part writing.',
-      points: 1,
     },
   ],
 
@@ -427,7 +404,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'When roots move by 5th (or 4th), the two chords share one common tone. Holding it in the same voice ensures smooth voice leading while the other voices move by step.',
-      points: 1,
     },
     {
       id: 'l3u10m3e2',
@@ -443,7 +419,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'When roots move by step, there are no common tones. Moving the upper voices contrary to the bass prevents parallel 5ths and octaves while keeping voice motion smooth.',
-      points: 1,
     },
     {
       id: 'l3u10m3e3',
@@ -459,7 +434,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Smooth voice leading minimizes the distance each voice travels. Stepwise motion (or common-tone retention) is preferred over leaps, producing more singable, connected lines.',
-      points: 1,
     },
   ],
 
@@ -479,7 +453,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'First inversion places the 3rd of the chord in the bass. The intervals above the bass are a 3rd and a 6th. The full 6/3 is abbreviated to just 6.',
-      points: 1,
     },
     {
       id: 'l3u10m4e2',
@@ -495,7 +468,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The cadential 6/4 (I6/4) functions as a decoration of the dominant. It appears on a strong beat with the bass on scale degree 5, and the upper voices resolve down by step to form V.',
-      points: 1,
     },
     {
       id: 'l3u10m4e3',
@@ -511,7 +483,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The perfect 4th above the bass (in 6/4 position) was treated as a dissonance in common-practice harmony. It typically appears in four specific contexts: cadential, passing, pedal, and arpeggiated 6/4.',
-      points: 1,
     },
   ],
 
@@ -535,7 +506,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A PAC has three requirements: (1) V goes to I, (2) both chords are in root position, and (3) the soprano lands on the tonic note (scale degree 1). It is the strongest cadence type.',
-      points: 1,
     },
     {
       id: 'l3u11m1e2',
@@ -551,7 +521,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A half cadence ends on V, creating an open, unresolved feeling -- like a comma in a sentence. The chord preceding V can be I, ii, IV, or vi. It demands continuation.',
-      points: 1,
     },
     {
       id: 'l3u11m1e3',
@@ -567,7 +536,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The deceptive cadence (V to vi) sets up the expectation of a resolution to I but "deceives" the listener by going to vi instead. Vi shares two notes with I, making it a smooth but surprising substitution.',
-      points: 1,
     },
     {
       id: 'l3u11m1e4',
@@ -583,7 +551,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The plagal cadence moves from IV to I. It is often called the "Amen" cadence because it is traditionally used at the end of hymns. It has a gentler, less driven quality than V-I.',
-      points: 1,
     },
   ],
 
@@ -603,7 +570,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A period is a pair of phrases: the antecedent (question) ends inconclusively with a half cadence, and the consequent (answer) ends conclusively with a PAC. Together they make one complete musical statement, like a question and its answer.',
-      points: 1,
     },
     {
       id: 'l3u11m2e2',
@@ -619,7 +585,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In a parallel period, the consequent phrase begins like the antecedent but diverges to reach a stronger cadence. In a contrasting period, the two phrases start with different melodic ideas.',
-      points: 1,
     },
     {
       id: 'l3u11m2e3',
@@ -635,7 +600,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The classical sentence has two parts: a presentation (basic idea + repetition) and a continuation (fragmentation + acceleration toward a cadence). The continuation drives the phrase to its conclusion.',
-      points: 1,
     },
   ],
 
@@ -655,7 +619,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Harmonic rhythm refers to how frequently the underlying harmony changes, independent of surface rhythmic activity. A passage can have fast melodic rhythm but slow harmonic rhythm (one chord per bar).',
-      points: 1,
     },
     {
       id: 'l3u11m3e2',
@@ -671,7 +634,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Cadential acceleration is a common technique: chord changes speed up near cadences, creating a sense of momentum and arrival. For example, chords might change every bar, then every two beats, then every beat at the cadence.',
-      points: 1,
     },
     {
       id: 'l3u11m3e3',
@@ -687,7 +649,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Slow harmonic rhythm (one chord for several bars) gives a sense of calm or stasis. Fast harmonic rhythm (multiple chord changes per bar) creates urgency, complexity, and forward drive.',
-      points: 1,
     },
   ],
 
@@ -707,7 +668,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A passing tone fills in the gap between two chord tones a 3rd apart. It is approached by step and left by step in the same direction. Example: in a C chord, D passes between C and E.',
-      points: 1,
     },
     {
       id: 'l3u11m4e2',
@@ -723,7 +683,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A neighbor tone (or auxiliary tone) leaves a chord tone by step (up or down) and returns to the same chord tone. It decorates a single pitch: chord tone -> step away -> step back.',
-      points: 1,
     },
     {
       id: 'l3u11m4e3',
@@ -739,7 +698,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'An anticipation "anticipates" the next chord by sounding one of its tones early, before the harmony changes. It is typically a short, unaccented note that resolves by staying on the same pitch.',
-      points: 1,
     },
   ],
 
@@ -758,7 +716,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'A major 2nd is 2 semitones. C up 2 semitones = D. Transposing up by a major 2nd moves every note up by a whole step.',
-      points: 1,
     },
     {
       id: 'l3u11m5e2',
@@ -773,7 +730,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'A perfect 5th is 7 semitones. C up 7 semitones = G. Transposing up a P5 is one of the most common transpositions, moving from C major to G major.',
-      points: 1,
     },
     {
       id: 'l3u11m5e3',
@@ -789,7 +745,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Transposition shifts everything to a new key. Moving up a minor 3rd (3 semitones) from C major lands on Eb major. The new key signature (3 flats) preserves all the interval relationships.',
-      points: 1,
     },
   ],
 };

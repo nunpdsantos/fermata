@@ -25,7 +25,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In a 4-3 suspension, the 4th above the bass is a dissonance carried over (suspended) from the previous chord. It then resolves downward by step to the consonant 3rd.',
-      points: 1,
     },
     {
       id: 'l4u12m1e2',
@@ -41,7 +40,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A suspension has three stages: preparation (the note is consonant in the previous chord), suspension (the note is held while the harmony changes, creating dissonance), and resolution (it moves stepwise to a consonance).',
-      points: 1,
     },
     {
       id: 'l4u12m1e3',
@@ -57,7 +55,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The C was consonant in the IV chord (F-A-C), then held over into the V chord (G-B-D) where it is dissonant (a perfect 4th above the bass G), and resolves down by step to B (the 3rd of V, a major 3rd above G). This is a textbook 4-3 suspension.',
-      points: 1,
     },
   ],
 
@@ -77,7 +74,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'An appoggiatura is an accented non-chord tone approached by leap and resolved by step in the opposite direction. Unlike a suspension, it has no preparation — it leaps directly onto the dissonance.',
-      points: 1,
     },
     {
       id: 'l4u12m2e2',
@@ -93,7 +89,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'An escape tone (echappee) moves stepwise from a chord tone, then leaps away in the opposite direction to the next chord tone. A passing tone moves stepwise in the same direction throughout.',
-      points: 1,
     },
     {
       id: 'l4u12m2e3',
@@ -109,7 +104,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A retardation is essentially a suspension that resolves upward by step rather than downward. The most common example is 7-8, where the 7th above the bass resolves up to the octave.',
-      points: 1,
     },
   ],
 
@@ -129,7 +123,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A pedal point (or pedal tone) is a single note — usually the tonic or dominant — sustained in one voice while the other voices move through harmonies that may be dissonant against it. Named after the organ pedal that holds bass notes.',
-      points: 1,
     },
     {
       id: 'l4u12m3e2',
@@ -145,7 +138,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A changing tone (neighbor group) decorates a chord tone by moving to its upper neighbor, then its lower neighbor (or vice versa) before returning. For example: C-D-B-C ornaments the note C.',
-      points: 1,
     },
     {
       id: 'l4u12m3e3',
@@ -161,7 +153,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Although pedal points can occur in any voice (an "inverted pedal" is in the soprano, an "inner pedal" is in a middle voice), the most common placement is in the bass on scale degree 1 (tonic pedal) or 5 (dominant pedal).',
-      points: 1,
     },
   ],
 
@@ -179,7 +170,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'G7 = G, B, D, F. Root (G) + major 3rd (B) + perfect 5th (D) + minor 7th (F). The tritone between B and F drives the resolution to C major.',
-      points: 2,
     },
     {
       id: 'l4u12m4e2',
@@ -193,7 +183,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'D7 = D, F#, A, C. Root (D) + major 3rd (F#) + perfect 5th (A) + minor 7th (C). The tritone between F# and C resolves to G major.',
-      points: 2,
     },
     {
       id: 'l4u12m4e3',
@@ -209,7 +198,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In G7 resolving to C: B (leading tone, 3rd of V7) resolves up to C; F (7th of V7) resolves down to E. The tritone B-F contracts inward to C-E. This contrary motion is the engine of tonal resolution.',
-      points: 1,
     },
   ],
 
@@ -229,7 +217,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'V6/5 means the 3rd of V7 is the bass note. In C major, that means B is the lowest note of G7. The figures 6 and 5 describe the intervals above the bass (B to G = 6th, B to F = 5th).',
-      points: 1,
     },
     {
       id: 'l4u12m5e2',
@@ -245,7 +232,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'V4/3 has the 5th of V7 in the bass (D in G7/D in C major). The D typically resolves stepwise — down to C (root of I) or up to E (giving I6). The tritone B-F still resolves as usual.',
-      points: 1,
     },
     {
       id: 'l4u12m5e3',
@@ -261,7 +247,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'V4/2 (also written V2) places the 7th of V7 in the bass. In C major, that means F is the bass note of G7. The F resolves down by step to E, producing I6 (C major in first inversion).',
-      points: 1,
     },
   ],
 
@@ -283,7 +268,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'Dm7 = D, F, A, C. Root (D) + minor 3rd (F) + perfect 5th (A) + minor 7th (C). This is the most common pre-dominant seventh chord in major keys.',
-      points: 2,
     },
     {
       id: 'l4u13m1e2',
@@ -297,7 +281,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'Dø7 = D, F, Ab, C. Root (D) + minor 3rd (F) + diminished 5th (Ab) + minor 7th (C). In minor keys, the ii chord is half-diminished because the 5th (Ab) is lowered.',
-      points: 2,
     },
     {
       id: 'l4u13m1e3',
@@ -313,7 +296,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In the standard T-PD-D-T functional model, ii (and ii7) serves a pre-dominant function. It creates harmonic momentum toward V, which then resolves to I. The ii-V-I progression is foundational in both classical and jazz.',
-      points: 1,
     },
   ],
 
@@ -333,7 +315,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In C major, iii7 = E-G-B-D. The triad E-G-B is minor, and E to D is a minor 7th (10 semitones). So iii7 is a minor 7th chord, just like ii7 and vi7.',
-      points: 1,
     },
     {
       id: 'l4u13m2e2',
@@ -349,7 +330,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In C major, vi7 = A-C-E-G. The triad A-C-E is minor, and A to G is a minor 7th (10 semitones). Like ii7 and iii7, the vi7 is a minor 7th chord.',
-      points: 1,
     },
     {
       id: 'l4u13m2e3',
@@ -365,7 +345,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In C major, Imaj7 = C-E-G-B. The major 7th (B) adds warmth and color to the tonic triad without undermining its stability. It is a staple sonority in jazz, bossa nova, and many pop styles.',
-      points: 1,
     },
   ],
 
@@ -383,7 +362,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'Bo7 = B, D, F, Ab. Root (B) + minor 3rd (D) + diminished 5th (F) + diminished 7th (Ab). All three upper intervals are minor 3rds stacked on top of each other (3+3+3 semitones).',
-      points: 2,
     },
     {
       id: 'l4u13m3e2',
@@ -397,7 +375,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'Bø7 = B, D, F, A. Root (B) + minor 3rd (D) + diminished 5th (F) + minor 7th (A). Unlike the fully diminished 7th, the top interval is a major 3rd (F to A), making the 7th minor rather than diminished.',
-      points: 2,
     },
     {
       id: 'l4u13m3e3',
@@ -413,7 +390,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Both chords share a diminished triad (minor 3rd + diminished 5th). The difference is the 7th: fully diminished = diminished 7th (enharmonic major 6th, 9 semitones); half-diminished = minor 7th (10 semitones).',
-      points: 1,
     },
   ],
 
@@ -433,7 +409,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The ii chord (along with IV) is the primary pre-dominant harmony. In the functional cycle T-PD-D-T, pre-dominants bridge tonic stability and dominant tension: I → ii → V → I.',
-      points: 1,
     },
     {
       id: 'l4u13m4e2',
@@ -449,7 +424,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The normative functional progression is T-PD-D-T. Music begins at rest (tonic), builds tension through pre-dominant and dominant, then returns to rest. Skipping stages is possible (T-D-T), but reversing the order (D before PD) is rare in common practice.',
-      points: 1,
     },
     {
       id: 'l4u13m4e3',
@@ -465,7 +439,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In C major, IV = F-A-C and ii = D-F-A. They share F and A (two common tones) and both create pre-dominant momentum toward V. The ii chord is often preferred in four-part writing because ii-V features smooth bass motion by 5th.',
-      points: 1,
     },
   ],
 
@@ -485,7 +458,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The descending-fifths (or circle-of-fifths) sequence moves each chord root down by a 5th diatonically. In C major: C-F-B-E-A-D-G-C (I-IV-viio-iii-vi-ii-V-I). This is the backbone of countless progressions in Western music.',
-      points: 1,
     },
     {
       id: 'l4u13m5e2',
@@ -501,7 +473,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'An ascending-seconds sequence moves each root stepwise up through the scale. While less common than descending fifths, it creates a strong sense of forward motion. It is often combined with alternating inversions for smooth voice leading.',
-      points: 1,
     },
     {
       id: 'l4u13m5e3',
@@ -517,7 +488,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A harmonic sequence takes a short chord pattern (the model) and repeats it at different diatonic pitch levels. The intervals between roots stay consistent, though their exact quality may change to stay within the key.',
-      points: 1,
     },
   ],
 
@@ -541,7 +511,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'First species (1:1) is the simplest counterpoint: one note in the added voice for each note of the cantus firmus. Every vertical interval must be consonant (3rds, 5ths, 6ths, octaves, unisons). No dissonance is allowed.',
-      points: 1,
     },
     {
       id: 'l4u14m1e2',
@@ -557,7 +526,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In two-voice counterpoint, the consonances are: perfect consonances (unison, P5, P8) and imperfect consonances (m3, M3, m6, M6). The perfect 4th is treated as a dissonance in two-voice counterpoint. Seconds, 7ths, and tritones are dissonant.',
-      points: 1,
     },
     {
       id: 'l4u14m1e3',
@@ -573,7 +541,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Second species (2:1) has two notes against each cantus firmus note. Strong beats must be consonant. Weak beats can include passing tones — stepwise dissonances that connect two consonances. This introduces controlled dissonance.',
-      points: 1,
     },
   ],
 
@@ -593,7 +560,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: '5/4 is an asymmetric (or irregular) meter. It cannot be divided into equal groups, so it splits as 3+2 or 2+3. The choice of grouping affects the accent pattern and rhythmic feel.',
-      points: 1,
     },
     {
       id: 'l4u14m2e2',
@@ -609,7 +575,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: '7/8 is an additive meter: 7 eighth notes are grouped into unequal sub-beats. Common groupings are 2+2+3 (short-short-long), 3+2+2 (long-short-short), or 2+3+2. The long group feels like a slightly stretched beat.',
-      points: 1,
     },
     {
       id: 'l4u14m2e3',
@@ -625,7 +590,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Cut time (alla breve) is 2/2: two half-note beats per measure. A 2/2 bar has the same total duration as a 4/4 bar, but it is counted in 2 (half-note beat) rather than 4 (quarter-note beat) — the same notes felt in two beats, giving a broader, faster-moving pulse.',
-      points: 1,
     },
   ],
 
@@ -645,7 +609,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A chromatic passing tone fills the gap between two chord tones that are a whole step apart. For example, between C and D, a C# chromatic passing tone creates smooth semitone motion: C-C#-D.',
-      points: 1,
     },
     {
       id: 'l4u14m3e2',
@@ -661,7 +624,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A chromatic neighbor is an embellishment that moves by semitone from a chord tone and returns: e.g. E-E#-E or G-Gb-G. It adds color without altering the harmonic direction, functioning as a surface decoration.',
-      points: 1,
     },
     {
       id: 'l4u14m3e3',
@@ -677,7 +639,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Chromatic embellishments (passing tones, neighbors) are surface decorations that do not affect the underlying harmony. Structural chromatic notes (like applied leading tones or borrowed chords) actually change the chord or briefly tonicize a different key.',
-      points: 1,
     },
   ],
 
@@ -697,7 +658,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'F-A-C in root position is an F major triad. In C major, F is the 4th scale degree. A major triad on the 4th degree is notated with an uppercase Roman numeral: IV.',
-      points: 1,
     },
     {
       id: 'l4u14m4e2',
@@ -713,7 +673,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Roman numeral analysis encodes both scale degree and chord quality. Uppercase (I, IV, V) = major triads. Lowercase (ii, iii, vi) = minor triads. A superscript ° marks diminished (viio), and + marks augmented.',
-      points: 1,
     },
     {
       id: 'l4u14m4e3',
@@ -729,7 +688,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Figured bass numbers show intervals above the lowest sounding note. No numbers (or 5/3) = root position. 6 (or 6/3) = first inversion. 6/4 = second inversion. For seventh chords: 7, 6/5, 4/3, 4/2 indicate root position through third inversion.',
-      points: 1,
     },
   ],
 
@@ -747,7 +705,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'In A natural minor (A-B-C-D-E-F-G), the triad on the 3rd degree is C-E-G, a major triad. This is III — the relative major. It is one of the characteristic chords of minor-key harmony.',
-      points: 2,
     },
     {
       id: 'l4u14m5e2',
@@ -761,7 +718,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'In A natural minor, the triad on the 7th degree is G-B-D, a major triad. VII (subtonic chord) is a whole step below the tonic, unlike viio (leading-tone chord) from harmonic minor.',
-      points: 2,
     },
     {
       id: 'l4u14m5e3',
@@ -777,7 +733,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In A natural minor, VII = G major (G-B-D), a whole step below A. In A harmonic minor, viio = G#-B-D (diminished), a half step below A. The raised 7th (G#) creates the leading tone that gives viio its strong pull toward the tonic.',
-      points: 1,
     },
   ],
 };
