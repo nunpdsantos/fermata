@@ -27,6 +27,20 @@ Interactive music theory education platform that teaches through instrument-firs
 Scale degree function is encoded in color throughout the app:
 - Tonic (1) = blue, Supertonic (2) = violet, Mediant (3) = pink
 - Subdominant (4) = emerald, Dominant (5) = amber, Submediant (6) = orange, Leading tone (7) = red
+- Degree hues are FILLS with dark ink on them (`--on-degree`, 5.8–9.6:1) — never a hue as text on cream (1.3–2.4:1). Coloured text uses the ink tokens `--deg-ink-1…7` (800 shades by day, 400 at night; `DEGREE_INKS` / `inkFor()` in `design/tokens/colors.ts`).
+
+### Design system v2 (W11-A, 2026-10-31, decision D-28 "Editorial")
+
+Tokens and component classes live in `src/index.css`; components in `src/components/ui/`. Mockups: the design review's `system.html` / `phone-shell.html` (Option A).
+- **Type — five steps, nothing below 12 px:** caption 12 · ui 14 · body 16 · title 20 · display 28 (italic serif, `.learn-serif`). Defined ONCE in `@theme static` in Tailwind v4's `--text-*` namespace (`text-caption/ui/body/title/display`; Tailwind's stock `text-xs…3xl` are mapped onto the same five steps). There is no `text-2xs` (it was v3 `--font-size-*` naming: no CSS, it inherited 16 px) and no arbitrary `text-[Npx]` below 12 — `design/__tests__/typeScale.test.ts` fails on either, and on any inline `fontSize` < 12. Section labels: `.type-section` / `.type-label` = 14 px small caps. All Source Serif (`font-mono` too, with tabular figures).
+- **Controls:** `--tap` = 36 px with a mouse, 44 px under `(pointer: coarse)` — every Button, chip, segment, select, list row, menu item and top-bar tab is at least that.
+- **TWO selected states, and only two:** CHOICE CHIP (one value out of many — root, scale, octave, guitar position, chord shape, CoF minor variant): `ChipGroup`, a radiogroup, selected = solid `--accent` + `--on-accent`. SEGMENT (switches a view — Piano/Guitar, Fingers/Degrees/Notes, Day/Night/Auto, languages, Diatonic/All/Build, the app tabs): `Segment`, radiogroup or (only where it switches panels) tablist, selected = page colour + `--seg-on-border` edge (≥ 3:1). One keyboard pattern for both (`ui/roving.ts`): one Tab stop, arrows move AND select, Home/End.
+- **Other tokens:** `--accent-text` for accent-coloured text (`--accent` itself is 4.45:1 on cream), `--focus-outline` (keyboard focus), `--piano-label` (≥ 4.5:1 on the ivory keys in both themes). Toasts and the info tone use tokens, not the old Tailwind blue (`palette.accent` is still the L1 level hue only).
+- **Components (`src/components/ui/`):** Button (primary / secondary / quiet / link; `IconButton` needs an aria-label; `buttonClass()` for an `<a>`), ChipGroup + ChoiceChip (aria-pressed toggle), Segment, SelectTrigger (native select as a pill), Card, ListRow, Badge (12 px, ink text), Feedback (correct / wrong / near-miss card: tone edge, title, hint, "Learn about this →"), Sheet (modal: focus in, Tab trap, Escape / scrim / drag closes, focus returned), DetentSheet (non-modal, Peek / Half / Full, a window-splitter handle: drag, tap, ↑↓ Home End Enter), Menu (the "⋯" menu button).
+- **Shell (`components/layout/`):** TopBar = Fermata · tabs (a tabs-mode Segment: the highlight is the selected tab itself — nothing is measured, so it cannot drift on font load / resize / rotation / language change) · search · "⋯" Menu → **SettingsSheet** (Language, Theme Day / Night / Auto, Your data Export / Import with the W9 per-store vetting, footer "Fermata · build <date> · works offline" — date from vite `define` `__BUILD_DATE__` via `src/buildInfo.ts`; "works offline" only while a service worker controls the page). **InstrumentDock**: phone (< 640 px) = DetentSheet; tablet / laptop = docked panel that collapses to its bar; bar = Piano/Guitar + context line ("Position II", "C4 · 1 octave"; the fretboard publishes its position in `state/dockContextStore.ts`) + Show / Hide. Detent per view is persisted (`dockDetents`, shape-guarded); Learn rests at Peek (D-20). **API: `useAppStore.getState().requestDock('half' | 'peek' | 'full')`** (no-op in Drill) — an instrument-input exercise already calls it. **ToastRegion**: the ONE place toasts render — under the top bar on phones, above the dock (`--dock-h`, published by AppShell) elsewhere; PWA stack first.
+- **Drill on phones:** question at the top; answers, the verdict and a big Continue in the lower half (thumb zone, `.drill-thumb`).
+- **Theme:** `themeMode` is `fermata` (Day) | `fermata-night` | `auto` (follows `prefers-color-scheme`, live; `useResolvedTheme()`); the index.html pre-paint script handles all three.
+- **Proof:** `e2e/design-system.spec.ts` sweeps the main screens at 390 / 768 / 1440 × day / night (computed font sizes incl. SVG on-screen size, tap boxes, text-vs-painted-background contrast, sideways scroll, toast overlap) with `e2e/helpers/designAudit.ts`; the instrument's keys/frets and links inside sentences are the only tap-size exemptions. `design/__tests__/themeContrast.test.ts` pins every token pair; `i18n/__tests__/ptInterface.test.tsx` fails on listed English words in the PT/ES shell.
 
 ---
 
@@ -35,7 +49,7 @@ Scale degree function is encoded in color throughout the app:
 **Name:** Music Theory App
 **Domain:** Music theory education / interactive instrument
 **Stack:** React 19 + TypeScript 5.9 + Vite 7 + Tailwind CSS v4 + Zustand 5 + Framer Motion 12
-**Tests:** 7,066 passing (Vitest + React Testing Library, 194 test files; counted 2026-11-02) + Playwright e2e on the dev server and on the production build
+**Tests:** 7,016 passing (Vitest + React Testing Library, 194 test files; counted 2026-10-31, W11-A) + Playwright e2e: 47 specs on the production build (40 + 7 skipped PWA-only on the dev server)
 **Languages:** English + Portuguese + Spanish (react-i18next + content overlay system)
 **PWA:** Offline-capable with Workbox precaching
 
@@ -78,7 +92,7 @@ Scale degree function is encoded in color throughout the app:
 <!-- ONE-OFF-SKIPWAITING:END -->
 - App updates are `registerType: 'prompt'` (W9-06; fully in force from the first release after 2026-11-14 — see the note above): a new service worker waits; the "new version — reload" toast asks; its Reload activates the waiting worker and the page reloads when it takes control (`usePWA.applyUpdateOrReload`; a plain `location.reload()` would be served the OLD precached index.html). The app itself never reloads unasked, BUT accepting the update in one tab also reloads the app's other open tabs (vite-plugin-pwa reloads every tab when the new worker takes control — plugin design), and until 2026-11-14 the transition skipWaiting lets old autoUpdate clients reload themselves. Updates are re-checked when the app returns to the foreground; "Try again" on a view whose file 404s asks the server for the new version first, so one tap is enough.
 - Precache: the shell's entry chunks — including the Explore and Learn views, StaffNotation, the Fretboard and Quick Search — are listed in `vite.config.ts` globPatterns; their static imports are added automatically (manifestTransforms closure). Translated-content chunks are named `i18n-*` (chunkFileNames) and runtime-cached by the content-cache route. On a first visit, whatever the page loaded before the worker took control (VexFlow, an early level, samples) is re-fetched through it (`usePWA.warmRuntimeCaches`) so it is cached for offline. Run `npm run check:sw` after changing chunking; `e2e/offline-after-visit.spec.ts` (preview) proves the app opens with every request blocked.
-- PWA toasts (update / offline-ready / install) render in ONE stack (`PWAPrompts`), update first — never give a toast its own fixed position.
+- PWA toasts (update / offline-ready / install) render in ONE stack (`PWAPrompts`), update first, inside the one `ToastRegion` (W11-A) — never give a toast its own fixed position.
 - **Fretboard orientation is SETTLED — do not "fix" it.** It renders nut-RIGHT, low E on top (mirrored from printed chord charts). A flip to textbook orientation was shipped and **reverted on Nuno's feedback** (2026-06-09): he reads the original natively. Position legibility is handled instead by the anchor-fret badge ("3fr") + nut-closest default voicing for chords, and the Roman-numeral badge for scale positions (see Audio & instruments below).
 - **Spelling is one engine** (`src/core/utils/degreeSpelling.ts`, W1/W2 2026-10-30): note names, degree labels and colours (read from the spelled letter), interval names, key signatures, staff octaves/accidentals and the key picker's root names all go through it — never derive a label from a semitone count or a note's position in a list. Staves that show what the instrument plays (Explore, `followInstrument`) write the guitar an octave above sounding (treble-8vb, D-05); Learn exercise staves are AUTHORED notation and are never transposed for the instrument; chords sound exactly the voicing the piano lights (`chordVoicingPitches` in `pianoLayout.ts`).
 - PT overlay files carry full PT-PT diacritics (restored 2026-07-24) — write proper European Portuguese orthography in every edit; conventions in `docs/pt-diacritic-todo.md`.
@@ -96,6 +110,7 @@ src/
   state/slices/      Slice creators (musicSlice, instrumentSlice, audioSlice, navigationSlice, preferencesSlice)
   state/progressStore.ts  Zustand curriculum progress (persisted)
   state/toastStore.ts  Standalone toast queue (Zustand, not in main store)
+  state/dock.ts      Instrument-dock detents (Peek / Half / Full) per view + shape guard; state/dockContextStore.ts = what the instrument shows (dock bar line)
   i18n/              i18next config + locales (en.json, pt.json, es.json) — 366 keys, 35 namespaces
   i18n/content/      Translation overlay system for educational content (lazy-loaded per level)
     types.ts         ContentLanguage, CurriculumLevelOverlay, ExerciseLevelOverlay, TemplateLevelOverlay, SongOverlay
@@ -112,13 +127,14 @@ src/
     theory/          ScaleDegreeBar, ChordGrid, ChordBrowser, ChordWorkspace, ChordBuilderPanel, ChromaticStrip, CircleOfFifths (+ circleOfFifthsConstants.ts), ScaleComparison
     panels/          CurrentChordPanel, LearnMoreButton
     navigation/      KeySelector, QuickSearch (Cmd+K; lazy chunk), QuickSearchHost (owns Cmd/Ctrl+K until search first opens; a failed download is retried on the next open)
-    layout/          AppShell, TopBar, Toast, PWAPrompts
+    ui/              Design system v2: Button/IconButton, ChipGroup/ChoiceChip, Segment, SelectTrigger, Card, ListRow, Badge, Feedback, Sheet, DetentSheet, Menu (+ roving.ts keyboard, focus.ts trap)
+    layout/          AppShell, TopBar, SettingsSheet, InstrumentDock, ToastRegion, Toast, PWAPrompts
     notation/        StaffNotation, StaffNotationSkeleton, useStaffNotation (VexFlow 5.0)
     learn/           LevelsOverview, LevelCard, LevelDetail, LevelAchievement, UnitCard, UnitDetail, ModuleView, ModuleRow, ReviewQueue, ContinueBanner, LearnBreadcrumb, ProgressBar, DifficultyBadge, Confetti, ScreenFrame (a Learn screen; inert while it animates out)
       exercises/     ExerciseRunner, ExercisePrompt, ExerciseFeedback, ExerciseProgress
         inputs/      ChoiceInput, InstrumentInput
   views/             ExploreView, LearnView
-  hooks/             useAudio, useKeyContext (incl. exercise-input mode), useTheme, usePWA (prompt-mode updates), useLanguage, useLearnProgress, useMediaQuery, useDegreeColors, useStopPlaybackOnViewChange
+  hooks/             useAudio, useKeyContext (incl. exercise-input mode), useTheme, usePWA (prompt-mode updates), useLanguage, useLearnProgress, useMediaQuery, useDegreeColors, useStopPlaybackOnViewChange, useServiceWorkerActive
   services/          spacedRepetition, exerciseSelector, synthConfig (FM fallback voice),
                      pianoSampler (sampled piano), guitarSampler (sampled guitar),
                      karplusStrong (guitar fallback engine), instrumentVoices (registers the
@@ -306,8 +322,8 @@ src/
 The app is a lean, single-user personal tool — no accounts, no cloud sync, no
 gamification. Curriculum, exercises, spaced repetition, trilingual content, offline
 PWA, sampled piano, instrument-aware playback, and (WS9, branch `ws9-drill-mode`)
-the phone-first Drill view: all functional, all gates green (7,066 tests / 194 files on
-2026-11-02, eslint 0/0, content audits clean).
+the phone-first Drill view: all functional, all gates green (7,016 tests / 194 files on
+2026-10-31 after W11-A, eslint 0/0, content audits clean).
 
 WS9 details worth knowing: drill bank generated from core (`drillBank/` directory
 module, ~1,321 items, token/params contract-tested against the i18n templates);
