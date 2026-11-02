@@ -1,8 +1,8 @@
 /**
  * SessionSummary — the end-of-session screen.
  *
- * Reads the runner's in-memory SessionSummaryData (no store fields): the
- * headline score, a per-family breakdown of THIS session, and tier-change
+ * Reads the runner's SessionSummaryData (the session log the drill store
+ * keeps, so a reload does not lose it — W9b): the headline score, a per-family breakdown of THIS session, and tier-change
  * callouts ("2 facts now by heart"). Three navigation buttons: New session,
  * Mastery map, Sprint. Deliberately no confetti — drill is a focused tool.
  */

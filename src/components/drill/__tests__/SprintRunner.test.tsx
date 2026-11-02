@@ -94,6 +94,8 @@ function answerCorrect(bank: DrillItem[]) {
 
 beforeEach(() => {
   counter = 0;
+  // A run left open by the previous test would be resumed (W9b) — start clean.
+  useDrillStore.setState({ sprint: null });
 });
 
 afterEach(() => {

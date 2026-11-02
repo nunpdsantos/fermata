@@ -34,7 +34,9 @@ type SubScreen = null | 'settings' | 'mastery' | 'sprint';
 
 export function DrillView() {
   const runner = useDrillRunner();
-  const [subScreen, setSubScreen] = useState<SubScreen>(null);
+  // A Sprint left open (a reload, or back from another view) comes back on
+  // screen where it was (W9b).
+  const [subScreen, setSubScreen] = useState<SubScreen>(() => (useDrillStore.getState().sprint ? 'sprint' : null));
   // Wall-clock snapshot taken when the mastery screen opens (due-today is a
   // point-in-time count). Captured in the handler — never read in render.
   const [masteryNow, setMasteryNow] = useState(0);

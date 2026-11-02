@@ -107,13 +107,13 @@ describe('v1 → v2 migration keeps all progress', () => {
     expect(items[E].tier).toBe('learning');
   });
 
-  it('writes the migrated payload back as version 2', async () => {
+  it('writes the migrated payload back as the current version (3 since W9b)', async () => {
     seed(fixture());
     await useDrillStore.persist.rehydrate();
     // Any state change persists; the stored version must now be the current one.
     useDrillStore.getState().recordSprint('degree', 3);
     const stored = JSON.parse(localStorage.getItem(DRILL_STORE_KEY)!) as Blob;
-    expect(stored.version).toBe(2);
+    expect(stored.version).toBe(3);
     expect((stored.state.items as Record<string, { tier: string }>)[B].tier).toBe('review');
   });
 
