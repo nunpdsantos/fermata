@@ -26,7 +26,7 @@ const curriculumL8: CurriculumLevelOverlay = {
       milestone: {
         skillsSummary: [
           'Analisar a forma-sonata em todo o detalhe: GTP, TR, GTS, CT, desenvolvimento e reexposição',
-          'Distinguir estruturas de variação: tema e variações, chacona, passacaglia, rondó e ritornello',
+          'Distinguir as formas de variação (tema e variações, chacona, passacaglia) do rondó e da forma de ritornello',
           'Identificar as famílias orquestrais, os timbres e os instrumentos transpositores',
         ],
         bridgeText:

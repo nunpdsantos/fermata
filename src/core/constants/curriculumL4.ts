@@ -818,7 +818,7 @@ export const L4_UNITS: CurriculumUnit[] = [
       skillsSummary: [
         'Identify suspensions, appoggiaturas, escape tones, retardations, pedal points, and changing tones',
         'Resolve V7 in all inversions with correct voice leading and tendency tone treatment',
-        'Understand why V4/2 must resolve to I6 and how each inversion determines bass motion',
+        'Understand why V4/2 almost always resolves to I6 and how each inversion determines bass motion',
       ],
       bridgeText:
         'You now understand all non-chord tone types and can resolve the dominant seventh in every inversion. Next you will explore the full palette of diatonic seventh chords, classify chords by harmonic function, and discover how sequences create directed harmonic motion.',

@@ -43,7 +43,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         'La escala mayor, armaduras de clave, números de intervalos y tríadas mayores',
       milestone: {
         skillsSummary: [
-          'Construir escalas mayores en C, G, D y F usando el patrón T-T-S',
+          'Construir escalas mayores en C, G, D y F usando el patrón T-T-S-T-T-T-S',
           'Leer las armaduras de clave de las primeras cuatro tonalidades mayores',
           'Nombrar intervalos del unísono a la octava contando los nombres de las notas',
           'Construir tríadas mayores a partir de cualquier fundamental',

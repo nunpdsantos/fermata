@@ -657,7 +657,7 @@ export const L8_UNITS: CurriculumUnit[] = [
     milestone: {
       skillsSummary: [
         'Analyze sonata form in full detail: FTG, TR, STG, CT, development, and recapitulation',
-        'Distinguish variation structures: theme-and-variations, chaconne, passacaglia, rondo, and ritornello',
+        'Distinguish the variation forms (theme and variations, chaconne, passacaglia) from rondo and ritornello form',
         'Identify orchestral families, timbres, and transposing instruments',
       ],
       bridgeText:

@@ -11,7 +11,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         skillsSummary: [
           'Identificar suspensões, apogiaturas, escapatórias, retardos, pedais e notas cambiadas',
           'Resolver o V7 em todas as inversões com a condução de vozes e o tratamento das notas de tendência corretos',
-          'Compreender por que V4/2 tem de resolver para I6 e como cada inversão determina o movimento do baixo',
+          'Compreender por que V4/2 resolve quase sempre para I6 e como cada inversão determina o movimento do baixo',
         ],
         bridgeText:
           'Já compreendes todos os tipos de notas estranhas ao acorde e consegues resolver a sétima da dominante em todas as inversões. A seguir vais explorar a paleta completa de acordes de sétima diatónicos, classificar acordes por função harmónica e descobrir como as sequências criam movimento harmónico direcionado.',

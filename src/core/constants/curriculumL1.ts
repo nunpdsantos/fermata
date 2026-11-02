@@ -466,7 +466,7 @@ export const L1_UNITS: CurriculumUnit[] = [
     modules: [l1u3m1, l1u3m2, l1u3m3, l1u3m4],
     milestone: {
       skillsSummary: [
-        'Build major scales in C, G, D, and F using the W-W-H pattern',
+        'Build major scales in C, G, D, and F using the W-W-H-W-W-W-H pattern',
         'Read key signatures for the first four major keys',
         'Name intervals from unison to octave by counting letter names',
         'Build major triads from any root note',

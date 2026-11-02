@@ -11,7 +11,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         skillsSummary: [
           'Identificar retardos, apoyaturas, escapatorias, retardos ascendentes, notas pedal y notas cambiadas',
           'Resolver el V7 en todas las inversiones con la conducción de voces y el tratamiento de las notas de tendencia correctos',
-          'Comprender por qué V4/2 debe resolver a I6 y cómo cada inversión determina el movimiento del bajo',
+          'Comprender por qué V4/2 resuelve casi siempre a I6 y cómo cada inversión determina el movimiento del bajo',
         ],
         bridgeText:
           'Ya comprendes todos los tipos de notas extrañas al acorde y puedes resolver la séptima de dominante en todas las inversiones. A continuación explorarás la paleta completa de acordes de séptima diatónicos, clasificarás acordes por función armónica y descubrirás cómo las secuencias crean movimiento armónico dirigido.',
