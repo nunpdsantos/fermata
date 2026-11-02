@@ -1,0 +1,15 @@
+{
+  "$comment": "Release notes for the update prompt (W9b). Newest first. Adding an entry = a new release: increment `release` by 1, one line per language (EN / PT-PT / ES, max 160 characters, no line breaks). `critical: true` marks an emergency: every app on an older release applies it at the next safe moment, even after the learner chose Later. The build reads this file (vite.config.ts) and publishes dist/version.json; a deploy without a new entry shows no What's-new line. CLAUDE.md, PWA section.",
+  "releases": [
+    {
+      "release": 1,
+      "date": "2026-11-02",
+      "critical": false,
+      "notes": {
+        "en": "Updates now install themselves when you open the app; a Drill session or a Sprint carries on where you left off.",
+        "pt": "As atualizações passam a instalar-se sozinhas quando abres a app; uma sessão de Treino ou um Sprint continua onde ficaste.",
+        "es": "Las actualizaciones ahora se instalan solas al abrir la app; una sesión de Práctica o un Sprint sigue donde lo dejaste."
+      }
+    }
+  ]
+}

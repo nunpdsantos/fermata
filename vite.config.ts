@@ -1,8 +1,10 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { execSync } from 'node:child_process'
 import { existsSync, readFileSync, statSync } from 'node:fs'
+import { parseReleaseNotes, versionInfo } from './src/release/releaseNotes.ts'
 
 // `vite preview` serves the PRODUCTION security headers from vercel.json (the
 // catch-all rule), so the preview-build browser tests run under the real CSP
@@ -48,6 +50,37 @@ function addStaticImportClosure(entries: PrecacheEntry[]): { manifest: PrecacheE
   return { manifest, warnings: [] }
 }
 
+/**
+ * Release notes + the build's version file (W9b). release-notes.json (repo
+ * root, newest first) is the source; a malformed file fails the build. The
+ * app gets its own release number and note (`__APP_RELEASE__`), and every
+ * build publishes dist/version.json — build id, date, release, critical,
+ * criticalSince, one-line notes in EN/PT/ES — which a running app fetches to
+ * show "What's new" and to tell a critical update. It is NOT precached (the
+ * globs below have no *.json): the network copy describes the waiting version.
+ */
+const RELEASES = parseReleaseNotes(JSON.parse(readFileSync(new URL('./release-notes.json', import.meta.url), 'utf8')))
+const BUILD_DATE = new Date().toISOString().slice(0, 10)
+function buildId(): string {
+  const fromVercel = process.env.VERCEL_GIT_COMMIT_SHA
+  if (fromVercel) return fromVercel.slice(0, 12)
+  try {
+    return execSync('git rev-parse --short=12 HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+  } catch {
+    return 'unknown'
+  }
+}
+function versionJson(): Plugin {
+  return {
+    name: 'fermata-version-json',
+    apply: 'build',
+    generateBundle() {
+      const info = versionInfo(RELEASES, buildId(), BUILD_DATE)
+      this.emitFile({ type: 'asset', fileName: 'version.json', source: `${JSON.stringify(info, null, 2)}\n` })
+    },
+  }
+}
+
 /** Entry module of a translated-content chunk (see chunkFileNames). */
 function isTranslatedContent(modulePath: string): boolean {
   return modulePath.includes('/src/i18n/content/') || /\/src\/.+\.[a-z]{2}\.(ts|json)$/.test(modulePath)
@@ -57,7 +90,10 @@ export default defineConfig({
   // The build's UTC date, shown in Settings ("Fermata · build 2026-10-31",
   // W11-A). src/buildInfo.ts reads it; unit tests run without it.
   define: {
-    __BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)),
+    __BUILD_DATE__: JSON.stringify(BUILD_DATE),
+    // This build's newest release and its note (src/buildInfo.ts) — never
+    // the build id, so a deploy without code changes ships no update.
+    __APP_RELEASE__: JSON.stringify({ release: RELEASES[0].release, notes: RELEASES[0].notes }),
   },
   preview: {
     headers: productionHeaders(),
@@ -65,6 +101,7 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    versionJson(),
     VitePWA({
       // 'prompt' (audit W9-06 / D-21): a new version installs in the background
       // and WAITS; the "new version — reload" toast asks, and only the
