@@ -48,35 +48,6 @@ function addStaticImportClosure(entries: PrecacheEntry[]): { manifest: PrecacheE
   return { manifest, warnings: [] }
 }
 
-/**
- * ONE-OFF-SKIPWAITING:BEGIN (policy block — oneOffSkipWaiting.test.ts reads it)
- * TRANSITION WINDOW — keep ON in EVERY release until 2026-11-14 (coordinator
- * decision, review B2; policy corrected 2026-10-31). Then remove it in the
- * FIRST release AFTER that date; prompt mode applies from then on.
- *
- * Why: installed clients still running the old autoUpdate page code only
- * listen for the worker's `activated` event (and then reload); they never
- * send SKIP_WAITING. A prompt-mode worker would wait, unseen, until every
- * window was closed — no toast, no update. While this is on, each release's
- * worker activates itself, so such a client takes WHICHEVER release it meets
- * next and reloads as before. Switching it off in the release right after W9
- * would strand every client that had not yet loaded a skipWaiting release —
- * hence a dated window, not "one release".
- *
- * Known effect while on: a hotfix deploy also activates at once under pages
- * already running a newer (prompt-mode) build. Those pages do not reload;
- * until the next reload they can hit files the deploy removed, and ViewSlot's
- * "Try again" (which asks for the new version first) recovers.
- *
- * src/__tests__/oneOffSkipWaiting.test.ts turns RED on 2026-11-15 while this
- * is still on — intentionally, for every PR, until it is removed. CLAUDE.md
- * carries the same note.
- * ONE-OFF-SKIPWAITING:END
- */
-const ONE_OFF_SKIP_WAITING = true
-const ONE_OFF_SKIP_WAITING_EXPIRES = '2026-11-14'
-void ONE_OFF_SKIP_WAITING_EXPIRES // read by the dated test (source text), not at build time
-
 /** Entry module of a translated-content chunk (see chunkFileNames). */
 function isTranslatedContent(modulePath: string): boolean {
   return modulePath.includes('/src/i18n/content/') || /\/src\/.+\.[a-z]{2}\.(ts|json)$/.test(modulePath)
@@ -139,12 +110,12 @@ export default defineConfig({
         // The FIRST install takes control of the open page at once, so runtime
         // caching (samples, notation, lesson data) works from the first
         // session — as it did under autoUpdate. Updates wait for the learner:
-        // prompt mode adds no skipWaiting (only a SKIP_WAITING message handler
-        // the toast's Reload sends) — EXCEPT during the transition window below.
+        // prompt mode adds no skipWaiting on install (only a SKIP_WAITING
+        // message handler the toast's Reload sends). Spelled out as `false` so
+        // it cannot come back by accident; src/__tests__/promptModeWorker.test.ts
+        // fails if it does.
         clientsClaim: true,
-        // Transition window: on in every release until 2026-11-14 — see
-        // ONE_OFF_SKIP_WAITING above.
-        skipWaiting: ONE_OFF_SKIP_WAITING,
+        skipWaiting: false,
         // Precache only the app shell + small core deps. Curriculum data,
         // exercises, and VexFlow stream in via runtimeCaching on demand —
         // a Level-1 user shouldn't pay for Level-9 content on first visit.
