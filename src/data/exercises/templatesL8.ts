@@ -464,7 +464,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'Metric modulation: if triplet eighths at ♩ = 120 become the new eighth notes, the new ♩ = 180', correct: true },
-              { label: 'Metric modulation: if triplet eighths at ♩ = 120 become the new eighths, the new tempo stays ♩ = 120, since a metric modulation never changes speed', correct: false },
+              { label: 'Metric modulation: if triplet eighths at ♩ = 120 become the new eighths, the tempo of the new passage is still ♩ = 120, since a metric modulation never changes speed', correct: false },
               { label: 'Metric modulation means changing key', correct: false },
               { label: 'Metric modulation is a gradual ritardando, the music slowing little by little until a new, calmer tempo is reached', correct: false },
             ],

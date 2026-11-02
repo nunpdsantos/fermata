@@ -248,14 +248,14 @@ const overlay: ExerciseLevelOverlay = {
   },
   l8u27m1e3: {
     prompt:
-      '¿Cuál es el propósito de reducir un conjunto de clases de altura a su "forma primaria"?',
+      '¿Cuál es el propósito de reducir un conjunto de clases de altura a su "forma prima"?',
     choices: [
       'Dar una sola etiqueta estándar a conjuntos relacionados por transposición o inversión, para que compartan una misma identidad',
       'Determinar en qué tonalidad está la música',
       'Encontrar la fundamental de un acorde',
       'Convertir el conjunto de nuevo en notación musical común, volviendo a dar a cada altura su octava exacta',
     ],
-    hint: 'La forma primaria es la versión más reducida de un conjunto, comenzando en 0 y compactada lo más posible a la izquierda. Permite comparar conjuntos independientemente de la transposición o inversión.',
+    hint: 'La forma prima es la versión más reducida de un conjunto, comenzando en 0 y compactada lo más posible a la izquierda. Permite comparar conjuntos independientemente de la transposición o inversión.',
   },
 
   // ---- l8u27m2: Técnica de los Doce Tonos ----

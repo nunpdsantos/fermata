@@ -254,7 +254,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        '¿Cuál de estas afirmaciones sobre vectores interválicos, forma primaria y relaciones Z es verdadera?',
+        '¿Cuál de estas afirmaciones sobre vectores interválicos, forma prima y relaciones Z es verdadera?',
       hintTemplate:
         'Vector interválico: conteos de cada clase de intervalo (ci 1-6) en un conjunto, escrito como <x x x x x x>. Dos conjuntos son Z-relacionados cuando comparten el mismo vector interválico pero NO están relacionados por transposición o inversión (pertenecen a clases de conjuntos diferentes).',
       choiceSets: [
@@ -265,15 +265,15 @@ const overlay: TemplateLevelOverlay = {
           'Los vectores interválicos son otro nombre de la forma normal, que lista las clases de altura de un conjunto en orden ascendente',
         ],
         [
-          'La forma primaria transpone y/o invierte un conjunto a su forma más compacta, comenzando siempre en 0',
-          'La forma primaria es lo mismo que la forma normal: el conjunto no se transpone a 0 ni se invierte',
-          'La forma primaria solo transpone',
-          'La forma primaria comienza siempre en la nota más aguda',
+          'La forma prima transpone y/o invierte un conjunto a su forma más compacta, comenzando siempre en 0',
+          'La forma prima es lo mismo que la forma normal: el conjunto no se transpone a 0 ni se invierte',
+          'La forma prima solo transpone',
+          'La forma prima comienza siempre en la nota más aguda',
         ],
         [
           'Los conjuntos Z-relacionados comparten el mismo vector interválico pero no son equivalentes por transposición/inversión',
           'Los conjuntos Z-relacionados son transposiciones unos de otros, así que sus vectores interválicos difieren',
-          'Los conjuntos Z-relacionados comparten la misma forma primaria, y por eso sus vectores interválicos coinciden',
+          'Los conjuntos Z-relacionados comparten la misma forma prima, y por eso sus vectores interválicos coinciden',
           'La relación Z no existe en la teoría de conjuntos',
         ],
       ],
@@ -420,7 +420,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Modulación métrica: si las corcheas de tresillo a ♩ = 120 pasan a ser las nuevas corcheas, la nueva ♩ = 180',
-          'Modulación métrica: si las corcheas de tresillo a ♩ = 120 pasan a ser las nuevas corcheas, el nuevo tempo queda ♩ = 120, porque la modulación métrica nunca cambia la velocidad',
+          'Modulación métrica: si las corcheas de tresillo a ♩ = 120 pasan a ser las nuevas corcheas, el tempo del nuevo pasaje sigue siendo ♩ = 120, porque la modulación métrica nunca cambia la velocidad',
           'Modulación métrica significa cambiar de tonalidad',
           'La modulación métrica es un ritardando gradual, en el que la música se frena poco a poco hasta llegar a un tempo nuevo y más tranquilo',
         ],

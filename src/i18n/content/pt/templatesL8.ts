@@ -420,7 +420,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Modulação métrica: se as colcheias de tercina a ♩ = 120 passam a ser as novas colcheias, o novo ♩ = 180',
-          'Modulação métrica: se as colcheias de tercina a ♩ = 120 passam a ser as novas colcheias, o novo andamento fica ♩ = 120, porque a modulação métrica nunca muda a velocidade',
+          'Modulação métrica: se as colcheias de tercina a ♩ = 120 passam a ser as novas colcheias, o andamento da nova passagem continua ♩ = 120, porque a modulação métrica nunca muda a velocidade',
           'Modulação métrica significa mudar de tonalidade',
           'A modulação métrica é um ritardando gradual, em que a música abranda pouco a pouco até chegar a um andamento novo e mais calmo',
         ],
