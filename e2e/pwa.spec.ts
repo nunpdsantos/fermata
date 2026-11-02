@@ -113,6 +113,10 @@ test.describe('PWA basics', () => {
       await expect.poll(async () => (await workerState()).controlled, { timeout: 20_000 }).toBe(true);
       await expect(page.getByRole('alert').filter({ hasText: /offline/i })).toBeVisible({ timeout: 15_000 });
 
+      // The learner is using the app (a key press): mid-use, an update ASKS.
+      // (W9b: at an untouched fresh start with nothing in progress it would
+      // apply silently instead — e2e/update-robustness.spec.ts.)
+      await page.keyboard.press('Shift');
       // A new version goes live; the page marks THIS load (it vanishes on reload).
       deployed = true;
       await page.evaluate(() => { (window as unknown as { __pageLoad: number }).__pageLoad = 1; });
