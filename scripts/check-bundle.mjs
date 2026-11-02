@@ -11,6 +11,9 @@
  *  - Notation ships VexFlow's Bravura-only entry: its chunk embeds at most
  *    the three fonts that entry registers (Bravura, Academico, Academico
  *    Bold) — the full entry embeds six (audit W9-10).
+ *  - The build id (commit) in dist/version.json appears in NO code file and
+ *    not in index.html (W9b): baked into the bundle it would make every
+ *    deploy — even a docs-only one — a new app version for every learner.
  *
  * Usage: node scripts/check-bundle.mjs [distDir=dist]
  * Exit 0 = all good; 1 = a budget broken (listed); 2 = no build.
@@ -73,6 +76,24 @@ for (const script of inlineScripts) {
   const hash = crypto.createHash('sha256').update(script, 'utf8').digest('base64');
   if (!csp.includes(`'sha256-${hash}'`)) {
     problems.push(`inline script in index.html (sha256-${hash}) is not allowed by the CSP in vercel.json — production would block it`);
+  }
+}
+
+const versionPath = path.join(dist, 'version.json');
+if (!fs.existsSync(versionPath)) {
+  problems.push('dist/version.json is missing — the build-id probe below cannot run');
+} else {
+  const { build } = JSON.parse(fs.readFileSync(versionPath, 'utf8'));
+  if (typeof build !== 'string' || build.length < 7) {
+    problems.push(`dist/version.json build id "${build}" is too short to probe for`);
+  } else {
+    const shipped = [
+      ['index.html', html],
+      ...assets.filter((f) => /\.(js|css)$/.test(f)).map((f) => [`assets/${f}`, fs.readFileSync(path.join(dist, 'assets', f), 'utf8')]),
+    ];
+    for (const [name, text] of shipped) {
+      if (text.includes(build)) problems.push(`${name} contains the build id ${build} — every deploy would be a new version`);
+    }
   }
 }
 
