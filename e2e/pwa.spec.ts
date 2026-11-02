@@ -1,16 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { readFileSync } from 'node:fs';
-
-// ONE-OFF-SKIPWAITING:BEGIN (policy block — oneOffSkipWaiting.test.ts reads it)
-// 2026-10-31 (W9, review B2): every release until 2026-11-14 ships workbox
-// skipWaiting (ONE_OFF_SKIP_WAITING in vite.config.ts) so installed clients
-// still on the old autoUpdate code — which only reloads on `activated` — keep
-// updating. While it is on the built worker skips waiting on its own. It is
-// removed in the first release after 2026-11-14 (the dated
-// src/__tests__/oneOffSkipWaiting.test.ts fails until it is); delete this
-// branch then.
-// ONE-OFF-SKIPWAITING:END
-const ONE_OFF_SKIP_WAITING = /const ONE_OFF_SKIP_WAITING = true\b/.test(readFileSync('vite.config.ts', 'utf8'));
+import { createServer } from 'node:http';
+import type { AddressInfo } from 'node:net';
 
 test.describe('PWA basics', () => {
   test('page has correct title', async ({ page }) => {
@@ -78,16 +68,78 @@ test.describe('PWA basics', () => {
     );
     // First install still controls the open page (runtime caching from visit one).
     expect(text).toContain('clientsClaim()');
-    if (ONE_OFF_SKIP_WAITING) {
-      // Transition window (see the note at the top): skips waiting by itself.
-      expect(text).toContain('skipWaiting()');
-      return;
-    }
     // Prompt mode: the ONLY skipWaiting is inside the SKIP_WAITING message
     // handler that the "new version — reload" toast triggers. autoUpdate
     // emitted an unconditional self.skipWaiting() and reloaded on its own.
     expect(text).toContain('SKIP_WAITING');
     expect(text.match(/skipWaiting/g) ?? []).toHaveLength(1);
+  });
+
+  test('a new version waits, asks, and one tap on Reload applies it (W9-06, prompt mode in a real browser)', async ({ page, baseURL }) => {
+    const manifest = await page.request.get('/manifest.webmanifest');
+    test.skip(!(manifest.headers()['content-type'] ?? '').includes('json'), 'No service worker on the dev server (devOptions disabled)');
+
+    // A tiny proxy in front of `vite preview` plays the deploy: while `deployed`
+    // is false it relays everything untouched; once true it serves /sw.js with
+    // one extra comment, so the browser sees NEW worker bytes and installs a new
+    // version. (Playwright routes do not see the browser's own sw.js update
+    // fetch, and dist/ must stay untouched, hence the proxy.)
+    let deployed = false;
+    const proxy = createServer((req, res) => {
+      void (async () => {
+        const upstream = await fetch(new URL(req.url ?? '/', baseURL), { method: req.method, redirect: 'manual' });
+        let body = Buffer.from(await upstream.arrayBuffer());
+        if (deployed && new URL(req.url ?? '/', 'http://x').pathname === '/sw.js') {
+          body = Buffer.concat([body, Buffer.from('\n// e2e: a new version was deployed\n')]);
+        }
+        res.statusCode = upstream.status;
+        upstream.headers.forEach((value, name) => {
+          if (!['content-encoding', 'content-length', 'transfer-encoding', 'connection'].includes(name)) res.setHeader(name, value);
+        });
+        res.setHeader('content-length', body.length);
+        res.end(body);
+      })().catch(() => { res.statusCode = 502; res.end(); });
+    });
+    await new Promise<void>((resolve) => proxy.listen(0, '127.0.0.1', resolve));
+    try {
+      const origin = `http://localhost:${(proxy.address() as AddressInfo).port}`;
+      const workerState = () => page.evaluate(async () => {
+        const reg = await navigator.serviceWorker.getRegistration();
+        return { controlled: !!navigator.serviceWorker.controller, waiting: reg?.waiting?.state ?? null, active: reg?.active?.state ?? null };
+      });
+
+      // First install: the worker takes control of the open page (clientsClaim).
+      await page.goto(`${origin}/`);
+      await expect.poll(async () => (await workerState()).controlled, { timeout: 20_000 }).toBe(true);
+      await expect(page.getByRole('alert').filter({ hasText: /offline/i })).toBeVisible({ timeout: 15_000 });
+
+      // A new version goes live; the page marks THIS load (it vanishes on reload).
+      deployed = true;
+      await page.evaluate(() => { (window as unknown as { __pageLoad: number }).__pageLoad = 1; });
+      await page.evaluate(async () => { await (await navigator.serviceWorker.getRegistration())!.update(); });
+
+      // The new worker installs and WAITS — it must not activate by itself…
+      await expect.poll(async () => (await workerState()).waiting, { timeout: 15_000 }).toBe('installed');
+      // …the learner is asked…
+      const toast = page.getByRole('alert').filter({ hasText: /new version/i });
+      await expect(toast).toBeVisible();
+      // …and nothing happened behind their back: same page, still waiting.
+      await page.waitForTimeout(1000);
+      expect(await page.evaluate(() => (window as unknown as { __pageLoad?: number }).__pageLoad)).toBe(1);
+      expect((await workerState()).waiting).toBe('installed');
+
+      // One tap on Reload activates the waiting worker and reloads the page.
+      const reloaded = page.waitForEvent('load', { timeout: 15_000 });
+      await toast.getByRole('button', { name: /^reload$/i }).click();
+      await reloaded;
+
+      await expect(page.locator('#root')).not.toBeEmpty();
+      expect(await page.evaluate(() => (window as unknown as { __pageLoad?: number }).__pageLoad)).toBeUndefined();
+      await expect.poll(workerState, { timeout: 15_000 }).toEqual({ controlled: true, waiting: null, active: 'activated' });
+      await expect(page.getByRole('alert').filter({ hasText: /new version/i })).toHaveCount(0);
+    } finally {
+      await new Promise<void>((resolve) => proxy.close(() => resolve()));
+    }
   });
 
   test('PWA toasts stack instead of covering each other (review B1)', async ({ page }) => {
