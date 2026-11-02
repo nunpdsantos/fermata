@@ -335,14 +335,14 @@ const curriculumL4: CurriculumLevelOverlay = {
         'iii7, vi7, Imaj7 — séptimas de función tónica y la tónica jazz',
       objectives: [
         'Comprender iii7 como sustituto de tónica y eslabón en el ciclo de quintas',
-        'Reconocer vi7 como el principal sustituto de función tónica y objetivo de la resolución de engaño',
+        'Reconocer vi7 como el principal sustituto de función tónica y objetivo de la resolución rota',
         'Distinguir Imaj7 (tónica jazz) de I7 (tónica blues)',
       ],
       concepts: [
         {
           title: 'Los Acordes iii7 y vi7',
           explanation:
-            'El iii7 funciona como sustituto de tónica (compartiendo dos notas con I) o como eslabón en el movimiento por ciclo de quintas: iii7-vi7-ii7-V7-I. Raramente aparece aislado, pero es esencial en secuencias prolongadas. El vi7 es el principal sustituto de función tónica; vi7-ii7-V7-I es extremadamente común tanto en la armonía clásica como en el jazz. La resolución de engaño V7-vi7 es más suave que V7-vi porque el acorde de séptima comparte más notas con V7, atenuando la sorpresa.',
+            'El iii7 funciona como sustituto de tónica (compartiendo dos notas con I) o como eslabón en el movimiento por ciclo de quintas: iii7-vi7-ii7-V7-I. Raramente aparece aislado, pero es esencial en secuencias prolongadas. El vi7 es el principal sustituto de función tónica; vi7-ii7-V7-I es extremadamente común tanto en la armonía clásica como en el jazz. La resolución rota V7-vi7 es más suave que V7-vi porque el acorde de séptima comparte más notas con V7, atenuando la sorpresa.',
           tryThisLabel: 'Escucha iii7 en la tonalidad de C',
         },
         {
@@ -369,7 +369,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Compara "Am7" con "Am" — la séptima (G) añade suavidad a vi7 y hace la resolución de engaño V7-vi7 más fluida que V7-vi. La nota añadida crea una nota común con V7',
+            'Compara "Am7" con "Am" — la séptima (G) añade suavidad a vi7 y hace la resolución rota V7-vi7 más fluida que V7-vi. La nota añadida crea una nota común con V7',
         },
       ],
     },
@@ -446,7 +446,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Sustitución de Acordes Dentro de Funciones',
           explanation:
-            'Acordes dentro del mismo grupo funcional pueden sustituirse mutuamente porque comparten grados de la escala. El vi puede sustituir a I (por eso la cadencia de engaño V-vi funciona — vi es función tónica). El ii puede sustituir a IV (ambos son predominantes). El vii° puede sustituir a V (ambos son función dominante). La sustitución explica por qué tantas progresiones diferentes funcionan: siguen el mismo patrón funcional T-PD-D-T con acordes específicos diferentes ocupando cada papel.',
+            'Acordes dentro del mismo grupo funcional pueden sustituirse mutuamente porque comparten grados de la escala. El vi puede sustituir a I (por eso la cadencia rota V-vi funciona — vi es función tónica). El ii puede sustituir a IV (ambos son predominantes). El vii° puede sustituir a V (ambos son función dominante). La sustitución explica por qué tantas progresiones diferentes funcionan: siguen el mismo patrón funcional T-PD-D-T con acordes específicos diferentes ocupando cada papel.',
           tryThisLabel: 'Observa qué acordes comparten función',
         },
       ],

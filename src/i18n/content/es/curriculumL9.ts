@@ -639,7 +639,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       subtitle:
         'Identificar cadencias y transcribir progresiones siguiendo el bajo',
       objectives: [
-        'Identificar tipos de cadencia (auténtica, plagal, semicadencia, deceptiva) de oído',
+        'Identificar tipos de cadencia (auténtica, plagal, semicadencia, rota) de oído',
         'Transcribir progresiones diatónicas de cuatro acordes usando numeración romana',
         'Seguir la línea del bajo (la fundamental de cada acorde) para nombrar los números romanos de una progresión',
       ],
@@ -654,7 +654,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Reconocimiento de Cadencias',
           explanation:
-            'Las cadencias son la puntuación de la música — aprende a escucharlas antes de abordar progresiones completas. La cadencia auténtica (V-I) suena final y conclusiva — un punto final. La cadencia plagal (IV-I) suena más suave y cálida — como «Amén». La semicadencia (terminando en V) suena incompleta — un signo de interrogación. La cadencia deceptiva (V-vi) sorprende: esperas resolución a I pero aterrizas en vi. Identificar la cadencia al final de una frase te da dos acordes inmediatamente y ancla la tonalidad.',
+            'Las cadencias son la puntuación de la música — aprende a escucharlas antes de abordar progresiones completas. La cadencia auténtica (V-I) suena final y conclusiva — un punto final. La cadencia plagal (IV-I) suena más suave y cálida — como «Amén». La semicadencia (terminando en V) suena incompleta — un signo de interrogación. La cadencia rota (V-vi) sorprende: esperas resolución a I pero aterrizas en vi. Identificar la cadencia al final de una frase te da dos acordes inmediatamente y ancla la tonalidad.',
           tryThisLabel: 'Escucha V (G) — ¿atrae hacia C (I)?',
         },
         {
@@ -676,7 +676,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Comienza con cadencias de dos acordes: toca pares aleatorios de V-I y IV-I en diferentes tonalidades en el piano. ¿Puedes decir qué tipo de cadencia es antes de verificar? Después añade cadencias deceptivas (V-vi)',
+            'Comienza con cadencias de dos acordes: toca pares aleatorios de V-I y IV-I en diferentes tonalidades en el piano. ¿Puedes decir qué tipo de cadencia es antes de verificar? Después añade cadencias rotas (V-vi)',
         },
       ],
     },

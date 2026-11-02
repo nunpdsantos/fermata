@@ -265,7 +265,7 @@ const overlay: ExerciseLevelOverlay = {
       'La eliminación del ritmo y el metro de la estructura musical',
       'La sustitución de toda la armonía por melodías al unísono',
     ],
-    hint: 'Compositores como Wagner (Tristán e Isolda) usaron cromatismo continuo, resoluciones deceptivas y ambigüedad enarmónica tan extensamente que la sensación de una tonalidad «hogar» se volvió elusiva — abriendo camino a la atonalidad en el siglo XX.',
+    hint: 'Compositores como Wagner (Tristán e Isolda) usaron cromatismo continuo, resoluciones rotas y ambigüedad enarmónica tan extensamente que la sensación de una tonalidad «hogar» se volvió elusiva — abriendo camino a la atonalidad en el siglo XX.',
   },
 
   // =========================================================================

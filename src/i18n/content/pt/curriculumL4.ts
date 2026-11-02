@@ -335,14 +335,14 @@ const curriculumL4: CurriculumLevelOverlay = {
         'iii7, vi7, Imaj7 — sétimas de função tónica e a tónica jazz',
       objectives: [
         'Compreender iii7 como substituto de tónica e elo no ciclo de quintas',
-        'Reconhecer vi7 como o principal substituto de função tónica e alvo da resolução de engano',
+        'Reconhecer vi7 como o principal substituto de função tónica e alvo da resolução interrompida',
         'Distinguir Imaj7 (tónica jazz) de I7 (tónica blues)',
       ],
       concepts: [
         {
           title: 'Os Acordes iii7 e vi7',
           explanation:
-            'O iii7 funciona como substituto de tónica (partilhando duas notas com I) ou como elo no movimento por ciclo de quintas: iii7-vi7-ii7-V7-I. Raramente aparece isolado, mas é essencial em sequências prolongadas. O vi7 é o principal substituto de função tónica; vi7-ii7-V7-I é extremamente comum tanto na harmonia clássica como no jazz. A resolução de engano V7-vi7 é mais suave do que V7-vi porque o acorde de sétima partilha mais notas com V7, atenuando a surpresa.',
+            'O iii7 funciona como substituto de tónica (partilhando duas notas com I) ou como elo no movimento por ciclo de quintas: iii7-vi7-ii7-V7-I. Raramente aparece isolado, mas é essencial em sequências prolongadas. O vi7 é o principal substituto de função tónica; vi7-ii7-V7-I é extremamente comum tanto na harmonia clássica como no jazz. A resolução interrompida V7-vi7 é mais suave do que V7-vi porque o acorde de sétima partilha mais notas com V7, atenuando a surpresa.',
           tryThisLabel: 'Ouve iii7 na tonalidade de C',
         },
         {
@@ -369,7 +369,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Compara "Am7" com "Am" — a sétima (G) acrescenta suavidade a vi7 e torna a resolução de engano V7-vi7 mais fluida do que V7-vi. A nota acrescentada cria uma nota comum com V7',
+            'Compara "Am7" com "Am" — a sétima (G) acrescenta suavidade a vi7 e torna a resolução interrompida V7-vi7 mais fluida do que V7-vi. A nota acrescentada cria uma nota comum com V7',
         },
       ],
     },

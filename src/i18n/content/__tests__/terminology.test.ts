@@ -31,6 +31,7 @@ const FORBIDDEN: Record<'pt' | 'es', Array<[RegExp, string]>> = {
     [/\bmeios? tons?\b/i, 'hyphenate "meio-tom"'],
     [/\bdeceptiv/i, 'deceptive cadence = "cadência interrompida"'],
     [/\benganos[ao]s?\b|cadência de engano/i, 'deceptive cadence = "cadência interrompida"'],
+    [/\bde engano\b/i, 'deceptive resolution / cadence = "interrompida" (resolução interrompida, as the L4 lessons say)'],
     [/\bcadências? suspensivas?\b|\bSuspensiva\b/, 'half cadence = "meia cadência" (suspensiva only as the one alternative mention)'],
     [/\bmeias?-cadências?\b/i, 'write "meia cadência" without a hyphen'],
     [/\bautênticas? (?:im)?perfeitas?\b/i, 'PAC/IAC = "cadência perfeita" / "cadência imperfeita"'],
@@ -38,6 +39,8 @@ const FORBIDDEN: Record<'pt' | 'es', Array<[RegExp, string]>> = {
   es: [
     [/\bcadencias? interrumpidas?\b|\bInterrumpida[:(]|\bInterrumpida \(/i, 'deceptive cadence = "cadencia rota" (interrumpida only as the one alternative mention)'],
     [/\bengañosa/i, 'deceptive cadence = "cadencia rota"'],
+    [/\bdeceptiv/i, 'deceptive cadence = "cadencia rota" (D-19a)'],
+    [/\bde engaño\b/i, 'deceptive resolution / cadence = "rota" (resolución rota, cadencia rota)'],
     [/\bcadencias? perfectas?\b/i, 'PAC = "cadencia auténtica perfecta"'],
     [/\bmedia cadencia\b/i, 'half cadence = "semicadencia"'],
   ],
@@ -85,6 +88,10 @@ describe('PT/ES terminology is consistent (D-19)', () => {
       ['es', 'Una cadencia interrumpida sustituye vi'],
       ['es', 'Una cadencia engañosa'],
       ['es', 'esta es una cadencia perfecta (V7-I)'],
+      ['es', 'Después añade cadencias deceptivas (V-vi)'],
+      ['es', 'La resolución de engaño V7-vi7 es más suave'],
+      ['es', 'la cadencia de engaño V-vi funciona'],
+      ['pt', 'A resolução de engano V7-vi7 é mais suave'],
     ];
     for (const [lang, text] of planted) {
       expect(FORBIDDEN[lang].some(([re]) => re.test(text)), text).toBe(true);
