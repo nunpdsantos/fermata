@@ -360,6 +360,7 @@ const overlay: ExerciseLevelOverlay = {
       'I - bVII - IV - I',
     ],
     hint: 'I-V-vi-IV (en C: C-G-Am-F) es una de las progresiones pop más comunes. Se repite indefinidamente y soporta tanto melodías edificantes como melancólicas dependiendo de qué acorde enfatice la melodía.',
+    nudge: 'Toca cada opción en C y escucha. El bucle usa cuatro acordes distintos, todos de la tonalidad, y empieza en la tónica: ¿qué patrón has oído en innumerables canciones pop?',
   },
   l7u23m1e2: {
     prompt: '¿Qué es el sistema de números de Nashville?',

@@ -46,6 +46,16 @@ describe('Re-read › goes to the concept a question is about', () => {
   it('nothing in common → the first concept', () => {
     expect(conceptForQuestion('zzz qqq', mod('l1u1m1'))).toBe(0);
   });
+  it('a tie (statement-style stem) goes to the concept most specific to the keyed answer, not the earliest', () => {
+    const m = { concepts: [
+      { title: 'Scales', explanation: 'Scales and modes share their notes.' },
+      { title: 'Rotation', explanation: 'Each scale can rotate to start on another degree.' },
+    ] };
+    // Both concepts share two of the words; the answer's words are the second one's.
+    expect(conceptForQuestion('Which statement about scales is true?', m, 'Modes rotate the scale')).toBe(1);
+    // With no answer, the old rule: the earlier concept.
+    expect(conceptForQuestion('Which statement about scales is true? Modes rotate the scale', m)).toBe(0);
+  });
 });
 
 describe('Try This in place shows what the executor would select', () => {

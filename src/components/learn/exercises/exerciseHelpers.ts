@@ -9,7 +9,7 @@ import { chordVoicingPitches, midiToNote } from '../../../core/utils/pianoLayout
 import { MAJOR_DEGREE_SEMITONES, intervalNameOfDegree, canonicalIntervalNumber } from '../../../core/utils/degreeSpelling';
 import { buildScale } from '../../../core/constants/scales';
 import { mulberry32, seededShuffle } from '../../../core/utils/prng';
-import type { EarTrainingConfig } from '../../../core/types/exercise';
+import type { EarTrainingConfig, ExerciseDefinition } from '../../../core/types/exercise';
 import { parseWrittenPitch } from './exerciseStaff';
 
 export interface ChoiceOption {
@@ -288,6 +288,15 @@ export function earPlaybackLockMs(cfg: EarTrainingConfig): number {
 
 /** Middle C: the reference played before a single-note ear item. */
 export const EAR_REFERENCE_PITCH: PitchedNote = { natural: 'C', accidental: '', octave: 4 };
+/**
+ * The reference when the note to name IS a C (W4b review): middle C first
+ * would hand over the answer, so those items hear the G above middle C
+ * first, and the line under the prompt says so.
+ */
+export const EAR_REFERENCE_ALT_PITCH: PitchedNote = { natural: 'G', accidental: '', octave: 4 };
+
+const PITCH_CLASS: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+const ACCIDENTAL_SHIFT: Record<string, number> = { '': 0, '#': 1, b: -1, '##': 2, bb: -2 };
 /** How long the reference sounds (s) and how long after it starts the item begins (ms). */
 export const EAR_REFERENCE_NOTE_S = 0.8;
 export const EAR_REFERENCE_CHORD_S = 1.1;
@@ -303,13 +312,16 @@ export type EarReference =
 
 /**
  * What sounds BEFORE the item, so it is heard relative to something (D-11):
- * middle C before a single note (W4-12), the key's tonic chord — root
+ * middle C before a single note (W4-12; the G above it when the note is a C), the key's tonic chord — root
  * position, as the progressions voice their chords — before a progression /
  * cadence (W4-11) or a melody (W4-13). Other modes are already relative
  * (an interval, a chord's quality, a scale's type).
  */
 export function earReference(cfg: EarTrainingConfig): EarReference | null {
-  if (cfg.mode === 'note') return { kind: 'pitch', pitches: [EAR_REFERENCE_PITCH] };
+  if (cfg.mode === 'note') {
+    const pc = ((PITCH_CLASS[cfg.note ?? 'C'] ?? 0) + (ACCIDENTAL_SHIFT[cfg.accidental ?? ''] ?? 0) + 12) % 12;
+    return { kind: 'pitch', pitches: [pc === 0 ? EAR_REFERENCE_ALT_PITCH : EAR_REFERENCE_PITCH] };
+  }
   if (cfg.mode === 'progression' || cfg.mode === 'melody') {
     const key: Note = { natural: (cfg.root ?? 'C') as NaturalNote, accidental: (cfg.rootAccidental ?? '') as Accidental };
     return { kind: 'key', key, pitches: chordVoicingPitches(buildChord(key, 'major').notes, 3) };
@@ -434,4 +446,36 @@ function shuffle<T>(arr: T[]): T[] {
     [out[i], out[j]] = [out[j], out[i]];
   }
   return out;
+}
+
+/**
+ * The options a question offers, exactly as the focused check shows them
+ * (one function for the runner and the corpus tests — e.g. the hint-leak test
+ * reads each question's keyed answer from here).
+ */
+export function choicesForExercise(exercise: ExerciseDefinition, t: TFunc): ChoiceOption[] {
+  const cfg = exercise.config;
+  switch (cfg.type) {
+    case 'note_id':
+      return generateNoteChoices(cfg.note, cfg.accidental);
+    case 'interval_id':
+      if (cfg.answer === 'step') return generateStepChoices(cfg.targetSemitones, t);
+      if (cfg.answer === 'number') return generateIntervalNumberChoices(intervalNumberOf(cfg.intervalNumber, cfg.targetSemitones), t);
+      return cfg.intervalNumber !== undefined
+        ? generateSpelledIntervalChoices(cfg.intervalNumber, cfg.targetSemitones)
+        : generateIntervalChoices(cfg.targetSemitones);
+    case 'multiple_choice':
+      return generateMultipleChoiceOptions(cfg.choices, exercise.id);
+    case 'ear_training': {
+      if (cfg.mode === 'note') return generateNoteChoices(cfg.note ?? 'C', cfg.accidental ?? '');
+      if (cfg.mode === 'interval') return generateIntervalChoices(cfg.targetSemitones ?? 7);
+      if (cfg.mode === 'melody') return generateMelodyChoices(cfg, exercise.id);
+      if ((cfg.mode === 'chord' || cfg.mode === 'scale' || cfg.mode === 'progression') && cfg.choices) return generateEarChoices(cfg.choices);
+      return [];
+    }
+    case 'scale_degree_id':
+      return generateDegreeChoices(cfg.correctDegree, t);
+    default:
+      return [];
+  }
 }

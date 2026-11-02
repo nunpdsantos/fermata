@@ -16,16 +16,19 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Identifica esta nota na clave de sol: encontra-se numa pequena linha extra (uma linha suplementar) logo abaixo da pauta.',
     hint: 'O C central situa-se numa linha suplementar logo abaixo da pauta de clave de sol.',
+    nudge: 'A clave de sol enrola-se em torno da segunda linha e marca-a como G. Conta para baixo a partir daí, uma letra por cada linha ou espaço, até chegares à linha suplementar abaixo da pauta.',
   },
   l1u1m1e2: {
     prompt:
       'Identifica esta nota: encontra-se na primeira linha da pauta de clave de sol.',
     hint: 'As linhas da clave de sol, de baixo para cima, são E-G-B-D-F. A primeira linha é E4.',
+    nudge: 'A clave de sol enrola-se em torno da segunda linha e marca-a como G. Desce a partir daí, uma letra por cada espaço ou linha, até chegares à primeira linha.',
   },
   l1u1m1e3: {
     prompt:
       'Identifica esta nota: encontra-se na segunda linha da pauta de clave de sol.',
     hint: 'A clave de sol enrola-se em torno da segunda linha, marcando-a como G. Por isso também se chama clave de G.',
+    nudge: 'Conta para cima a partir do C central (a linha suplementar logo abaixo da pauta), uma letra por cada linha ou espaço, até chegares a esta linha.',
   },
   l1u1m1e4: {
     prompt:
@@ -37,6 +40,7 @@ const overlay: ExerciseLevelOverlay = {
       'Clave de percussão',
     ],
     hint: 'A clave de sol também se chama clave de G porque se enrola em torno da segunda linha, definindo-a como G.',
+    nudge: 'Cada clave de altura definida nasceu de uma letra estilizada e fixa uma nota numa linha da pauta. Qual delas tem a espiral enrolada à volta da segunda linha a contar de baixo?',
   },
 
   // ---- l1u1m2: Linhas Suplementares ----
@@ -45,11 +49,13 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Identifica esta nota abaixo da pauta de clave de sol: encontra-se na segunda linha suplementar inferior.',
     hint: 'Abaixo da pauta de clave de sol: B3 está no espaço abaixo da primeira linha suplementar (C4), e A3 está na segunda linha suplementar.',
+    nudge: 'Começa no C central, na primeira linha suplementar abaixo da pauta de clave de sol, e conta para baixo uma letra por cada linha ou espaço.',
   },
   l1u1m2e2: {
     prompt:
       'Identifica esta nota acima da pauta de clave de sol: encontra-se duas linhas suplementares acima da linha superior.',
     hint: 'C6 situa-se na segunda linha suplementar acima da pauta de clave de sol. Conta a partir da linha superior (F5): G5, A5, B5, C6.',
+    nudge: 'Começa na linha superior da pauta de clave de sol (F5) e conta para cima uma letra por cada linha ou espaço: o espaço acima dela, a primeira linha suplementar, o espaço seguinte e, por fim, a segunda linha suplementar.',
   },
   l1u1m2e3: {
     prompt: 'Qual é a função das linhas suplementares?',
@@ -83,15 +89,18 @@ const overlay: ExerciseLevelOverlay = {
   l1u1m3e1: {
     prompt: 'Qual é o intervalo de Db, a descer, até C?',
     hint: 'De Db a descer até C é a menor distância possível na música ocidental: um meio-tom (1 meio-tom), da tecla preta para a tecla branca logo abaixo. Duas letras diferentes (D, C) fazem dele uma 2.ª — uma 2.ª menor.',
+    nudge: 'Encontra Db e C no teclado e repara no que há entre elas: são teclas vizinhas, ou há outra tecla, branca ou preta, entre as duas?',
   },
   l1u1m3e2: {
     prompt: 'Qual é o intervalo de C a D?',
     hint: 'De C a D é um tom: dois meios-tons, equivalente a 2 meios-tons. Existe uma tecla (C#/Db) entre eles.',
+    nudge: 'Encontra C e D no teclado e conta as teclas de uma à outra, incluindo as pretas: o D é a tecla imediatamente a seguir, ou há uma tecla pelo meio?',
   },
   l1u1m3e3: {
     prompt:
       'Qual é o intervalo de E a F? Este é um par especial de notas naturais.',
     hint: 'De E a F é um meio-tom natural: não existe tecla preta entre elas no piano. É apenas 1 meio-tom.',
+    nudge: 'Olha para E e F no teclado: há uma tecla preta entre elas, como há entre a maioria das teclas brancas vizinhas?',
   },
 
   // ---- l1u1m4: Escala Cromática ----
@@ -99,16 +108,19 @@ const overlay: ExerciseLevelOverlay = {
   l1u1m4e1: {
     prompt: 'Identifica esta nota: a tecla preta entre F e G.',
     hint: 'A tecla preta entre F e G pode chamar-se F# (F sustenido) ou Gb (G bemol). Ambos os nomes referem-se à mesma altura.',
+    nudge: 'Um sustenido sobe uma nota natural meio-tom, e todas as opções aqui são sustenidos. Esta tecla preta fica meio-tom acima de que tecla branca? Dá-lhe o nome a partir dessa tecla.',
   },
   l1u1m4e2: {
     prompt: 'Identifica esta nota: a tecla preta entre A e B.',
     hint: 'A tecla preta entre A e B pode chamar-se Bb (B bemol) ou A# (A sustenido). Em tonalidades com bemóis, esta nota chama-se Bb.',
+    nudge: 'Um bemol desce uma nota natural meio-tom, e todas as opções aqui são bemóis. Esta tecla preta fica meio-tom abaixo de que tecla branca? Dá-lhe o nome a partir dessa tecla.',
   },
   l1u1m4e3: {
     prompt:
       'Quantas alturas distintas tem a escala cromática antes de se repetir?',
     choices: ['12', '7', '8', '10'],
     hint: 'A escala cromática inclui todas as notas: 7 teclas brancas + 5 teclas pretas = 12 alturas distintas por oitava.',
+    nudge: 'Conta todas as teclas, brancas e pretas, de um C até ao C seguinte, mas sem contar o C de cima: é aí que o padrão recomeça.',
   },
 
   // =========================================================================
@@ -122,11 +134,13 @@ const overlay: ExerciseLevelOverlay = {
       'Em compasso 4/4, quantos tempos dura uma semibreve?',
     choices: ['4 tempos', '2 tempos', '1 tempo', '8 tempos'],
     hint: 'Uma semibreve preenche um compasso inteiro de 4/4. Dura 4 tempos de semínima.',
+    nudge: 'Uma semibreve preenche sozinha um compasso inteiro de 4/4. Olha para a indicação de compasso: o que conta o número de cima?',
   },
   l1u2m1e2: {
     prompt: 'Quantos tempos vale uma mínima em compasso 4/4?',
     choices: ['2 tempos', '4 tempos', '1 tempo', '3 tempos'],
     hint: 'Uma mínima tem metade da duração de uma semibreve. Uma semibreve = duas mínimas = 4 tempos / 2 = 2 tempos cada.',
+    nudge: 'Uma mínima dura metade de uma semibreve, e a semibreve preenche um compasso inteiro de 4/4.',
   },
   l1u2m1e3: {
     prompt: 'Quantos tempos vale uma semínima em compasso 4/4?',
@@ -235,16 +249,19 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Identifica o intervalo: C até G (ascendente). Conta os nomes das notas.',
     hint: 'C-D-E-F-G = 5 nomes de notas = uma 5.ª. De C a G são 7 meios-tons, o que corresponde a uma 5.ª perfeita.',
+    nudge: 'Diz os nomes das notas por ordem, de C até G, e conta-os, incluindo o C e o G: esse total é o número do intervalo. Conta as próprias notas, não os passos entre elas.',
   },
   l1u3m3e2: {
     prompt:
       'Identifica o intervalo: C até F (ascendente). Conta os nomes das notas.',
     hint: 'C-D-E-F = 4 nomes de notas = uma 4.ª. De C a F são 5 meios-tons, o que corresponde a uma 4.ª perfeita.',
+    nudge: 'Diz os nomes das notas por ordem, de C até F, e conta-os, incluindo o C e o F: esse total é o número do intervalo. Conta as próprias notas, não os passos entre elas.',
   },
   l1u3m3e3: {
     prompt:
       'Identifica o intervalo: C até E (ascendente). Conta os nomes das notas.',
     hint: 'C-D-E = 3 nomes de notas = uma 3.ª. De C a E são 4 meios-tons, o que corresponde a uma 3.ª maior.',
+    nudge: 'Diz os nomes das notas por ordem, de C até E, e conta-os, incluindo o C e o E: esse total é o número do intervalo. Conta as próprias notas, não os passos entre elas.',
   },
 
   // ---- l1u3m4: Tríades Maiores ----

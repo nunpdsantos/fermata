@@ -107,6 +107,7 @@ const overlay: TemplateLevelOverlay = {
         'Como se ligam os voicings de shell num contexto jazz?',
       hintTemplate:
         'Num ii-V-I, a terça do ii mantém-se como sétima do V, enquanto a sétima do ii desce meio-tom para a terça do V (e o mesmo volta a acontecer do V para o I). Esta eficiência na condução de vozes chama-se linhas de guide tones.',
+      nudgeTemplate: 'Identifica a 3.ª e a 7.ª de cada acorde de um ii-V-I (em C: Dm7, G7, Cmaj7) e segue cada uma dessas notas até ao acorde seguinte: quais ficam onde estão, e quanto se deslocam as outras?',
       choiceSets: [
         [
           'Os guide tones (terças e sétimas) movem-se por grau conjunto ou mantêm-se entre acordes num ii-V-I',

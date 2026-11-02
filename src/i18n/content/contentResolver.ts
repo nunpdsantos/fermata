@@ -111,6 +111,7 @@ export function applyExerciseOverlay(
         ...ex,
         prompt: exOv.prompt,
         hint: exOv.hint ?? ex.hint,
+        ...(ex.nudge !== undefined || exOv.nudge !== undefined ? { nudge: exOv.nudge ?? ex.nudge } : {}),
       };
 
       // Translate answer-choice labels. multiple_choice always carries them;
@@ -159,6 +160,7 @@ export function applyTemplateOverlay(
           ...tmpl,
           promptTemplate: tmplOv.promptTemplate,
           hintTemplate: tmplOv.hintTemplate,
+          ...(tmpl.nudgeTemplate !== undefined || tmplOv.nudgeTemplate !== undefined ? { nudgeTemplate: tmplOv.nudgeTemplate ?? tmpl.nudgeTemplate } : {}),
         };
 
         // Translate choice set labels

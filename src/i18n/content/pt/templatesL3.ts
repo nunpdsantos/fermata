@@ -209,6 +209,7 @@ const overlay: TemplateLevelOverlay = {
         'Qual destas afirmações sobre a escrita a partes com tríades no estado fundamental é verdadeira?',
       hintTemplate:
         'Fundamentais a uma 5.ª partilham uma nota comum, a uma 3.ª partilham duas, a uma 2.ª nenhuma. Mantém as notas comuns na mesma voz; quando não há nenhuma, move as vozes superiores contra o baixo.',
+      nudgeTemplate: 'Testa cada afirmação com acordes reais em C maior — I–V (fundamentais a uma 5.ª), I–vi (a uma 3.ª), IV–V (a uma 2.ª): escreve os dois acordes, conta as notas que partilham e vê quanto tem de se mover cada voz superior. Para saber que nota dobrar, pergunta-te qual é o membro mais estável do acorde.',
       choiceSets: [
         [
           'Fundamentais a uma 5.ª partilham uma nota comum: mantém-na na mesma voz',
@@ -252,6 +253,7 @@ const overlay: TemplateLevelOverlay = {
         'Qual destas afirmações sobre tríades invertidas é verdadeira?',
       hintTemplate:
         '1.ª inversão (6/3): 3.ª no baixo, usada para linhas de baixo suaves. 2.ª inversão (6/4): 5.ª no baixo, usada apenas como 6/4 cadencial, de passagem, de pedal ou arpejado.',
+      nudgeTemplate: 'Lê os números como intervalos acima do baixo: empilha uma 6.ª e uma 3.ª (6/3) ou uma 6.ª e uma 4.ª (6/4) sobre uma nota do baixo e vê que membro do acorde fica no baixo. Depois pensa em como cada acorde se comporta: que notas têm uma atração forte, e em que poucos padrões fixos aparece um 6/4?',
       choiceSets: [
         [
           'A 1.ª inversão (6/3) põe a 3.ª no baixo e suaviza a linha do baixo',

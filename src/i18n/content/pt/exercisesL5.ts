@@ -78,6 +78,7 @@ const overlay: ExerciseLevelOverlay = {
       'É a sensível da tonalidade principal, tocada sozinha como uma única nota da melodia acima do baixo',
     ],
     hint: 'vii°/V funciona da mesma forma que vii° numa tonalidade: a fundamental está meio-tom abaixo do acorde alvo, e a qualidade diminuta cria forte impulso de resolução ascendente para o alvo.',
+    nudge: 'Pensa no que o vii° faz numa tonalidade: a sua fundamental é a sensível. No vii°/V, de que acorde é sensível essa fundamental, e para onde tende a ir uma sensível?',
   },
   l5u15m3e2: {
     prompt:
@@ -460,6 +461,7 @@ const overlay: ExerciseLevelOverlay = {
       'As notas-guia seguem exatamente a linha do baixo',
     ],
     hint: 'Notas-guia de Dm7: F (3.ª), C (7.ª). Para G7: F mantém-se como nota comum e torna-se a 7.ª, enquanto C desce meio-tom para B, a 3.ª. Para Cmaj7: B mantém-se e torna-se a 7.ª, enquanto F desce meio-tom para E, a 3.ª. Movimento mínimo = condução de vozes suave.',
+    nudge: 'As notas-guia são a 3.ª e a 7.ª de cada acorde. Escreve-as para Dm7, G7 e Cmaj7 e compara: que notas ficam paradas de um acorde para o seguinte, e quanto se movem as outras?',
   },
   l5u17m4e3: {
     prompt:

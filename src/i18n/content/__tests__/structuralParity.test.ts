@@ -139,6 +139,8 @@ describe('content overlays', () => {
           if (!o) { problems.push(`${e.id} missing`); continue; }
           if (!o.prompt.trim()) problems.push(`${e.id} empty prompt`);
           if (e.hint && !o.hint) problems.push(`${e.id} hint falls back to English`);
+          if (e.nudge && !o.nudge) problems.push(`${e.id} nudge falls back to English`);
+          if (!e.nudge && o.nudge) problems.push(`${e.id} has a nudge English lacks`);
           const cfg = e.config as { type: string; choices?: { label: string }[] };
           const applies = cfg.type === 'multiple_choice' || cfg.type === 'ear_training';
           if (cfg.choices && applies) {
@@ -164,6 +166,8 @@ describe('content overlays', () => {
           if (!o) { problems.push(`${cfg.moduleId} templates missing`); continue; }
           if (o.length !== cfg.templates.length) problems.push(`${cfg.moduleId}: EN ${cfg.templates.length} templates vs ${o.length}`);
           cfg.templates.forEach((t, i) => {
+            if (t.nudgeTemplate && !o[i]?.nudgeTemplate) problems.push(`${cfg.moduleId}[${i}] nudge falls back to English`);
+            if (!t.nudgeTemplate && o[i]?.nudgeTemplate) problems.push(`${cfg.moduleId}[${i}] has a nudge English lacks`);
             const sets = t.params.choiceSets;
             const os = o[i]?.choiceSets;
             if (sets) {

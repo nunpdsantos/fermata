@@ -273,7 +273,8 @@
     "melodyOption": "Melody {{letter}}: {{notes}}",
     "melodyLetter": "Melody {{letter}}",
     "playRhythm": "Play the rhythm",
-    "rhythmLabel": "A rhythm in {{time}}: {{values}}"
+    "rhythmLabel": "A rhythm in {{time}}: {{values}}",
+    "referenceNoteG": "First you hear the G above middle C (the reference), then the note."
   },
   "exerciseFeedback": {
     "noteCorrectExact": "Correct! {{note}} is the right note.",
@@ -988,8 +989,8 @@
     "itIs": "it is",
     "reread": "Re-read",
     "rereadLabel": "Re-read: {{section}}",
-    "practiseMissed_one": "Practise the one I missed",
-    "practiseMissed_other": "Practise the {{count}} I missed",
+    "practiseMissed_one": "Practise the one I didn't get first time",
+    "practiseMissed_other": "Practise the {{count}} I didn't get first time",
     "startOver": "Start over",
     "backToLesson": "Back to the lesson",
     "backToLearn": "Back to Learn",
@@ -1016,6 +1017,31 @@
     "rhythmTriplet": "{{value}} (triplet)",
     "rhythmAccent": "accented {{value}}",
     "rhythmTied": "{{value}} tied to the next",
-    "notQuiteMarked": "Not quite — the answer is marked."
+    "notQuiteMarked": "Not quite — the answer is marked.",
+    "lookAgainAt": "Look again at: {{section}}",
+    "lookAgainSection": "Look again at section {{n}} of the lesson.",
+    "nudgeNoteId": "Count from a note you know — {{ref}} — one letter for each line or space, up or down to this note.",
+    "nudgeRefTrebleG": "the G on the second line, the line the treble clef curls around",
+    "nudgeRefTrebleE": "the E on the bottom line",
+    "nudgeRefTrebleF": "the F on the top line",
+    "nudgeRefTrebleC": "middle C, on the ledger line just below the staff",
+    "nudgeRefBassF": "the F on the fourth line, the line between the bass clef's two dots",
+    "nudgeRefBassG": "the G on the bottom line",
+    "nudgeRefBassA": "the A on the top line",
+    "nudgeRefBassC": "middle C, on the ledger line just above the staff",
+    "nudgeChord": "Count up from the root: the other notes lie {{intervals}} above it.",
+    "nudgeScale": "The steps from the first note up: {{steps}} (W = whole step, H = half step).",
+    "nudgeScaleWide": "The steps from the first note up: {{steps}} (W = whole step, H = half step, W+H = a step and a half).",
+    "nudgeInterval": "Count the letters from the lower note to the upper one, both included: that is the number. Then count the half steps to tell the quality.",
+    "nudgeIntervalNumber": "Count the letters from the lower note to the upper one, both included.",
+    "nudgeIntervalStep": "Look at the piano keys between the two notes: is there one key between them, or none?",
+    "nudgeDegree": "Count up the scale from its first note, one letter at a time, until you reach this note.",
+    "nudgeEarNote": "Sing from the reference to the note, up or down, one step of the scale at a time, and count the steps.",
+    "nudgeEarInterval": "Sing from the lower note to the upper one and count the half steps between them.",
+    "nudgeEarChord": "Listen to the 3rd above the bass — bright or dark? — then to the 5th: steady, squeezed or stretched? Is there a fourth note on top?",
+    "nudgeEarScale": "Sing it back slowly: where do the half steps fall, and is the 3rd above the first note bright or dark?",
+    "nudgeEarProgression": "Hum the bass from chord to chord, and listen for the darker chords and for where the last one lands.",
+    "nudgeEarMelody": "Trace the shape: does each note move up or down, by step or by leap? Then compare where each option ends.",
+    "oneTryNote": "A question with only two options has one try."
   }
 }

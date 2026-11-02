@@ -50,6 +50,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to this interval and identify it. It is always a third — decide whether it is major or minor.',
         hintTemplate: 'Major 3rd = 4 semitones (bright, happy). Minor 3rd = 3 semitones (dark, sad). The difference is just one half step, but the character changes dramatically.',
+        nudgeTemplate: 'Listen to the colour of the two notes: a bright, open third, or a darker, more somber one? To check, sing up from the lower note by half steps and count how many it takes to reach the upper one; the darker third is one half step narrower.',
         params: {
           earMode: 'interval',
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
@@ -63,6 +64,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to this chord and identify its quality.',
         hintTemplate: 'Major sounds bright and open. Minor sounds dark and pensive. Focus on the 3rd: major 3rd = 4 semitones, minor 3rd = 3 semitones.',
+        nudgeTemplate: 'Focus on the 3rd above the root: 4 half steps sounds bright and open, 3 half steps dark and pensive. Which one do you hear?',
         params: {
           earMode: 'chord',
           roots: ['C', 'D', 'E', 'F', 'G', 'A'],
@@ -82,6 +84,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to this interval, played {direction}, and identify it. Focus on intervals up to a perfect 5th.',
         hintTemplate: 'Interval ear training: m2=1 (tense), M2=2 (step), m3=3 (sad), M3=4 (bright), P4=5 (open), tritone=6 (unstable), P5=7 (power). Count the semitones you hear.',
+        nudgeTemplate: 'Count the half steps between the two notes (singing the steps in between helps), then recall which interval has that size.',
         params: {
           earMode: 'interval',
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
@@ -103,6 +106,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to this wider interval, played {direction}, and identify it.',
         hintTemplate: 'Wider intervals: m6=8 (bittersweet), M6=9 (warm), m7=10 (jazz), M7=11 (longing), P8=12 (octave).',
+        nudgeTemplate: 'First listen whether the two notes blend as one note at two heights. If not, sing the lower note again, moved up to sit just above the upper one, name the small interval this makes, and invert it: the numbers add up to 9, and the quality turns into its opposite.',
         params: {
           earMode: 'interval',
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
@@ -141,6 +145,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to these two notes played together and identify the compound interval (wider than an octave).',
         hintTemplate: 'A compound interval is a simple interval plus an octave: a 9th = octave + 2nd (m9 = 13, M9 = 14 semitones), a 10th = octave + 3rd (M10 = 16), an 11th = octave + 4th (P11 = 17). Listen for the simple interval above the octave.',
+        nudgeTemplate: 'A compound interval is a simple interval plus an octave. Listen for the simple interval above the octave, name it, then add 7 to its number; the quality stays the same.',
         params: {
           earMode: 'interval',
           harmonic: true,
@@ -167,6 +172,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to this scale and identify its type.',
         hintTemplate: 'Major scale: W-W-H-W-W-W-H (bright, resolved). Natural minor: W-H-W-W-H-W-W (dark, open). Harmonic minor: raises the 7th, creating a distinctive step-and-a-half gap. Melodic minor (ascending): raises both the 6th and the 7th — minor at the bottom, major at the top.',
+        nudgeTemplate: 'First the 3rd: 4 or 3 half steps above the tonic? If 3, follow the last notes up to the tonic: is the 7th a whole step or a half step below it, and is there a step-and-a-half gap just before the 7th?',
         params: {
           earMode: 'scale',
           roots: ['C', 'G', 'D', 'F', 'A', 'E', 'B'],
@@ -187,6 +193,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to this scale and identify the mode. Listen for the characteristic note.',
         hintTemplate: 'Mode identifiers: Dorian = natural 6 in a minor context, Phrygian = b2, Lydian = #4, Mixolydian = b7 in a major context, Locrian = b2 and b5 (the darkest).',
+        nudgeTemplate: 'First the 3rd: 4 or 3 half steps above the tonic? Then compare with the major scale (if 4) or the natural minor (if 3) and find what differs: a lowered 2nd (alone, or with a lowered 5th too), a raised 4th, a raised 6th or a lowered 7th?',
         params: {
           earMode: 'scale',
           roots: ['C', 'D', 'E', 'F', 'G', 'A'],
@@ -207,6 +214,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to this scale and identify its type.',
         hintTemplate: 'Pentatonic scales have five notes and no half-step tension. The blues scale adds the "blue note" (b5). The whole-tone scale is all whole steps — dreamlike and rootless. The diminished (half-whole) scale alternates half and whole steps — eight notes, symmetric and tense.',
+        nudgeTemplate: 'Count the notes and the half steps: five notes with no half steps, six notes all a whole step apart, six with a chromatic note between the 4th and 5th, or eight alternating half and whole steps? If five, check whether the 3rd is 4 or 3 half steps above the tonic.',
         params: {
           earMode: 'scale',
           roots: ['C', 'D', 'F', 'G', 'A'],
@@ -227,6 +235,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to this triad and identify its quality.',
         hintTemplate: 'Major = bright/stable. Minor = dark/stable. Diminished = tense/unstable. Augmented = bright/unresolved.',
+        nudgeTemplate: 'Hear the triad as two stacked 3rds, from the bottom up: 4 + 3, 3 + 4, 3 + 3 or 4 + 4 half steps? Check the outer 5th as well: perfect, or a half step narrower or wider?',
         params: {
           earMode: 'chord',
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
@@ -246,6 +255,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to this seventh chord and identify its quality.',
         hintTemplate: 'maj7 = dreamy/lush. min7 = mellow/warm. dom7 = bright/needs resolution. half-dim7 = dark/unresolved. dim7 = very tense. minor-major 7th = a dark minor triad under a bright major 7th, unsettling.',
+        nudgeTemplate: 'Hear it in two layers. The triad: is the 3rd 4 or 3 half steps above the root, and is the 5th perfect or a half step lower? The 7th: is it 1, 2 or 3 half steps below the octave?',
         params: {
           earMode: 'chord',
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
@@ -301,6 +311,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to this note and identify it. Most notes in this set are sharps.',
         hintTemplate: 'Sharps such as C#, F# and G# lie outside C major; in a C major melody they would be chromatic notes, pulling toward a neighbouring scale note.',
+        nudgeTemplate: 'Start from the reference note you hear first and sing up one half step at a time, counting, until you reach the note. Then place it on the keyboard: a black key takes its name from the white key just below it, plus a sharp.',
         params: {
           earMode: 'note',
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
@@ -312,6 +323,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to this interval, played {direction}, and identify it.',
         hintTemplate: 'Count the half steps: minor 2nd = 1, minor 3rd = 3, tritone = 6, minor 6th = 8, minor 7th = 10, major 7th = 11. Measured up from a major-key tonic, the first five are exactly the notes outside the scale (b2, b3, #4, b6, b7).',
+        nudgeTemplate: 'Sing from the lower note up to the upper one and count the half steps. For a wide leap, measure instead how far it falls short of an octave, then work back to its size.',
         params: {
           earMode: 'interval',
           roots: ['C', 'D', 'E', 'F', 'G', 'A'],
@@ -333,6 +345,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to this cadence in C major and identify it.',
         hintTemplate: 'Authentic (V-I) = conclusive arrival. Plagal (IV-I) = the "Amen" cadence. Deceptive (V-vi) = expected arrival sidestepped. Half (I-V) = pause on tension.',
+        nudgeTemplate: 'Listen to where it stops: on the home chord, on a minor chord where home was expected, or on an open chord that leaves things hanging? If it reaches home, does it arrive with the strong pull of the dominant or with the softer "Amen" sound?',
         params: {
           earMode: 'progression',
           roots: ['C'],
@@ -349,6 +362,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to this chord progression in C major and identify the Roman numeral pattern.',
         hintTemplate: 'Focus on the bass motion and the quality of each chord. Common progressions: I-IV-V-I (basic), I-V-vi-IV (pop), ii-V-I (jazz), I-vi-IV-V (50s).',
+        nudgeTemplate: 'Count the chords (three or four?) and listen for minor chords: is there none, or does one come first, second or third? Then follow the bass to tell the major chords apart.',
         params: {
           earMode: 'progression',
           roots: ['C'],

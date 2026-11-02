@@ -95,16 +95,38 @@ describe('a single note is heard against middle C (W4-12)', () => {
     expect(items.length).toBeGreaterThanOrEqual(15);
     expect(items.some((ex) => ex.id.startsWith('l1u1m2'))).toBe(true);
   });
-  it('every item: middle C first, alone; then the item\'s note, 1.3 s later', async () => {
+  it('every item: middle C first, alone (the G above it when the note is a C — never the answer itself); then the item\'s note, 1.3 s later', async () => {
     const bad: string[] = [];
+    let cTargets = 0;
     for (const ex of items) {
       const cfg = ex.config as EarTrainingConfig;
       const target = midiOfWritten(`${cfg.note}${cfg.accidental ?? ''}${cfg.octave ?? 4}`);
+      const reference = target % 12 === 0 ? 67 : 60;
+      if (target % 12 === 0) cTargets++;
       const o = onsets(await sounds(ex, 3000));
-      const ok = o.length === 2 && o[0].midis.join() === '60' && o[1].midis.join() === String(target) && o[1].at - o[0].at === 1300;
+      const ok = o.length === 2 && o[0].midis.join() === String(reference) && o[0].midis[0] % 12 !== target % 12 && o[1].midis.join() === String(target) && o[1].at - o[0].at === 1300;
       if (!ok) bad.push(`${ex.id}: ${JSON.stringify(o)}`);
     }
     expect(bad).toEqual([]);
+    expect(cTargets).toBeGreaterThanOrEqual(2); // l1u1m2e_ear1, l9u30m1e1 (review)
+  });
+  it('the line under the prompt says which reference is played (EN, PT, ES)', async () => {
+    const said: Record<string, string> = {
+      en: 'First you hear the G above middle C (the reference), then the note.',
+      pt: 'Primeiro ouves o G acima do C central (a referência) e depois a nota.',
+      es: 'Primero oyes el G por encima del C central (la referencia) y después la nota.',
+    };
+    for (const lang of ['en', 'pt', 'es'] as const) {
+      await i18n.changeLanguage(lang);
+      for (const id of ['l1u1m2e_ear1', 'l9u30m1e1']) {
+        const level = id.startsWith('l1') ? 1 : 9;
+        const ex = levelCorpus(level, lang).find((i) => i.exercise.id === id)!.exercise;
+        render(<ExerciseRunner exercises={[ex]} accentColor="#8b5cf6" onRecordResult={() => {}} onComplete={() => {}} />);
+        expect(screen.getByTestId('ear-reference').textContent).toBe(said[lang]);
+        cleanup();
+      }
+    }
+    await i18n.changeLanguage('en');
   });
 });
 

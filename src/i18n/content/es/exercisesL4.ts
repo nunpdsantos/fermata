@@ -31,6 +31,7 @@ const overlay: ExerciseLevelOverlay = {
       'Anticipación, suspensión, demora',
     ],
     hint: 'Un retardo tiene tres etapas: preparación (la nota es consonante en el acorde anterior), retardo (la nota se mantiene mientras la armonía cambia, creando disonancia) y resolución (se mueve por grado conjunto hacia una consonancia).',
+    nudge: 'Sigue la nota retenida: primero suena como consonancia en un acorde, luego se mantiene mientras la armonía cambia y choca con ella, y por último se mueve por grado conjunto hacia una consonancia. Ponle nombre a cada uno de esos tres momentos.',
   },
   l4u12m1e3: {
     prompt:
@@ -42,6 +43,7 @@ const overlay: ExerciseLevelOverlay = {
       'Escapatoria',
     ],
     hint: 'El C era consonante en el acorde IV (F-A-C), luego se mantuvo sobre el acorde V (G-B-D) donde es disonante (una 4.ª justa por encima del bajo G), y resuelve bajando por grado conjunto a B (la 3.ª de V, una 3.ª mayor por encima de G). Este es un retardo 4-3 ejemplar.',
+    nudge: 'Sigue el C en tres momentos: era consonancia en el acorde IV, se mantiene mientras la armonía cambia por debajo (ahora una 4.ª por encima del bajo G) y luego baja por grado conjunto a B. ¿Qué nota extraña al acorde se prepara, se mantiene y se resuelve de esta forma?',
   },
 
   // ---- l4u12m2: Apoyatura / Escapatoria ----
@@ -55,6 +57,7 @@ const overlay: ExerciseLevelOverlay = {
       'Siempre por semitono cromático, viniendo desde abajo',
     ],
     hint: 'Una apoyatura es una nota extraña acentuada abordada por salto y resuelta por grado conjunto en la dirección opuesta. A diferencia de un retardo, no tiene preparación — salta directamente a la disonancia.',
+    nudge: 'Compárala con un retardo, que se mantiene del acorde anterior. Una apoyatura no está preparada y resuelve por grado conjunto; entonces, ¿cómo llega la melodía hasta ella?',
   },
   l4u12m2e2: {
     prompt: '¿En qué se diferencia una escapatoria de una nota de paso?',
@@ -65,6 +68,7 @@ const overlay: ExerciseLevelOverlay = {
       'No hay diferencia; son lo mismo',
     ],
     hint: 'Una escapatoria (échappée) se mueve por grado conjunto desde una nota del acorde, luego salta en la dirección opuesta hacia la nota del acorde siguiente. Una nota de paso se mueve por grado conjunto en la misma dirección a lo largo de todo el recorrido.',
+    nudge: 'Comprueba dos cosas en cada nota: cómo se llega a ella y cómo se deja (por grado conjunto o por salto), y si la línea sigue en el mismo sentido o vuelve atrás. Una nota de paso se mueve por grado conjunto siempre en el mismo sentido.',
   },
   l4u12m2e3: {
     prompt: 'En un retardo 7-8, ¿en qué dirección resuelve la nota retenida?',
@@ -155,6 +159,7 @@ const overlay: ExerciseLevelOverlay = {
       'ii — el bajo mantiene la 5.ª de V7, que pasa a ser la fundamental de ii',
     ],
     hint: 'V4/3 tiene la 5.ª de V7 en el bajo (D en G7/D en C mayor). El D resuelve típicamente por grado conjunto — desciende a C (fundamental de I) o asciende a E (dando I6). El tritono B-F sigue resolviendo como de costumbre.',
+    nudge: 'En C mayor, el V4/3 tiene D en el bajo, mientras el tritono B–F resuelve como de costumbre. ¿Qué notas del acorde de tónica puede alcanzar ese D por grado conjunto, y el I queda entonces en estado fundamental o invertido?',
   },
   l4u12m5e3: {
     prompt: 'En V4/2 (V7 en tercera inversión), ¿qué nota del acorde está en el bajo?',
@@ -298,6 +303,7 @@ const overlay: ExerciseLevelOverlay = {
       'Descenso cromático — cada fundamental desciende un semitono',
     ],
     hint: 'La secuencia de quintas descendentes (o ciclo de quintas) mueve cada fundamental una 5.ª abajo diatónicamente. En C mayor: C-F-B-E-A-D-G-C (I-IV-vii°-iii-vi-ii-V-I). Esta es la columna vertebral de innumerables progresiones en la música occidental.',
+    nudge: 'Toma el movimiento de fundamentales de V–I y repítelo por todos los acordes de la tonalidad; ii–V–I son solo los tres últimos eslabones de esa cadena.',
   },
   l4u13m5e2: {
     prompt:
@@ -416,6 +422,7 @@ const overlay: ExerciseLevelOverlay = {
       'Cualquier bordadura que aparezca dentro de un pasaje de escala cromática',
     ],
     hint: 'Una bordadura cromática es un ornamento que se mueve por semitono desde una nota del acorde y regresa: ej. E-E#-E o G-Gb-G. Añade color sin alterar la dirección armónica, funcionando como decoración de superficie.',
+    nudge: 'Junta las dos palabras: ¿qué hace una bordadura después de dejar la nota del acorde, y qué te dice «cromática» sobre el tamaño del paso?',
   },
   l4u14m3e3: {
     prompt:
@@ -427,6 +434,7 @@ const overlay: ExerciseLevelOverlay = {
       'Las notas estructurales están siempre en el bajo mientras que las ornamentaciones están en las voces superiores',
     ],
     hint: 'Las ornamentaciones cromáticas (notas de paso, bordaduras) son decoraciones de superficie que no afectan la armonía subyacente. Las notas cromáticas estructurales (como sensibles aplicadas o acordes prestados) alteran efectivamente el acorde o tonicizan brevemente una tonalidad diferente.',
+    nudge: 'Haz una prueba de eliminación: quita la nota cromática (o devuélvele su forma diatónica) y pregúntate qué se pierde: ¿solo un toque de color, o la propia identidad del acorde?',
   },
 
   // ---- l4u14m4: Análisis con Números Romanos ----
@@ -487,6 +495,7 @@ const overlay: ExerciseLevelOverlay = {
       'Ambos tienen función dominante, pero VII es más fuerte por ser una tríada mayor',
     ],
     hint: 'En A menor natural, VII = G mayor (G-B-D), a un tono por debajo de A. En A menor armónica, vii° = G#-B-D (disminuido), a medio tono por debajo de A. El 7.º grado elevado (G#) crea la sensible que confiere a vii° su fuerte atracción hacia la tónica.',
+    nudge: 'En A menor, construye dos veces la tríada sobre el 7.º grado: una con G (menor natural) y otra con G# (menor armónica). Comprueba la cualidad de cada acorde y a qué distancia queda su fundamental por debajo de A.',
   },
 };
 

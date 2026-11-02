@@ -12,7 +12,7 @@ export function useReferenceLine(exercise: ExerciseDefinition): string | null {
   if (cfg.type !== 'ear_training') return null;
   const ref = earReference(cfg);
   if (!ref) return null;
-  if (ref.kind === 'pitch') return t('exercise.referenceNote');
+  if (ref.kind === 'pitch') return t(ref.pitches[0].natural === 'G' ? 'exercise.referenceNoteG' : 'exercise.referenceNote');
   const lang = (['pt', 'es'].includes(i18n.language?.slice(0, 2)) ? i18n.language.slice(0, 2) : 'en') as ContentLanguage;
   const key = `${noteToString(ref.key)} ${lang === 'en' ? 'major' : translateScaleType('major', lang)}`;
   return t(cfg.mode === 'melody' ? 'exercise.referenceKeyMelody' : 'exercise.referenceKeyChords', { key });

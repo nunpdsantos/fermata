@@ -103,6 +103,16 @@ export interface RhythmPattern {
   notes: string;
   /** Quarter notes per minute (default 80). */
   bpm?: number;
+  /**
+   * How one bar of an odd (additive) meter groups, in units of the time
+   * signature's lower number, adding up to its upper number: 7/8 as 2+2+3 →
+   * [2, 2, 3]; 5/4 as 3+2 → [3, 2]. In eighth-note meters (5/8, 7/8, 8/8,
+   * 11/8 …) the beams follow it and never cross a group; without it the
+   * grouping is read from the accents ('>8 8 >8 8 >8 8 8' = 2+2+3). In
+   * quarter-note meters eighths are beamed by the beat, which never crosses
+   * a group either. Drawing only: playback does not read it.
+   */
+  grouping?: number[];
 }
 
 export interface MultipleChoiceConfig {
@@ -184,8 +194,20 @@ export interface ExerciseDefinition {
   /** Question shown to the user */
   prompt: string;
   config: ExerciseConfig;
-  /** Shown after first wrong attempt */
+  /**
+   * The explanation: why the answer is what it is. Shown once the item is
+   * final, next to the revealed answer (W4b review B1) — it may name the
+   * answer, so it is never shown before.
+   */
   hint?: string;
+  /**
+   * A nudge, shown after a first wrong try (W4b review B1). It must not give
+   * the answer away: no keyed option text, no target note list, no note
+   * name for a note to identify, no description of the right melody. When an
+   * item has none, the check derives one from the exercise type or points
+   * back to the lesson section that teaches it (`nudge.ts`).
+   */
+  nudge?: string;
 }
 
 // Progress tracking types

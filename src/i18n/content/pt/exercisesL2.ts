@@ -21,6 +21,7 @@ const overlay: ExerciseLevelOverlay = {
       'F B E A D G C',
     ],
     hint: 'Lembra-te: os sustenidos acumulam-se nesta ordem fixa: F-C-G-D-A-E-B.',
+    nudge: 'Cada novo sustenido fica uma 5.ª perfeita acima do anterior. Começa pelo único sustenido da armação de clave de G maior e continua a subir por 5.as.',
   },
   l2u4m1e2: {
     prompt: 'Qual é a ordem dos bemóis tal como aparecem nas armações de clave?',
@@ -31,6 +32,7 @@ const overlay: ExerciseLevelOverlay = {
       'E B A D G C F',
     ],
     hint: 'A ordem dos bemóis é o inverso dos sustenidos: B-E-A-D-G-C-F.',
+    nudge: 'Cada novo bemol fica uma 4.ª perfeita acima (uma 5.ª abaixo) do anterior. Começa pelo único bemol da armação de clave de F maior e continua.',
   },
   l2u4m1e3: {
     prompt: 'Constrói a escala de D maior. Seleciona as 7 notas no instrumento. Lembra-te: D maior tem 2 sustenidos.',
@@ -58,6 +60,7 @@ const overlay: ExerciseLevelOverlay = {
       'Supertónica',
     ],
     hint: 'O 5.º grau chama-se dominante porque é a segunda nota mais importante após a tónica, dominando a tonalidade.',
+    nudge: 'Pensa na sua função: depois da tónica, é o grau mais forte da tonalidade, e o seu acorde é o que puxa a música com mais firmeza de volta a casa.',
   },
   l2u4m2e2: {
     prompt: 'Como se chama o 7.º grau da escala maior?',
@@ -68,6 +71,7 @@ const overlay: ExerciseLevelOverlay = {
       'Supertónica',
     ],
     hint: 'Na escala maior, o 7.º grau está a meio-tom abaixo da tónica. "Conduz" fortemente para cima, em direção à tónica, daí chamar-se sensível.',
+    nudge: 'Na escala maior, o 7.º grau fica apenas meio-tom abaixo da tónica (e não um tom), por isso puxa fortemente para cima, em direção a ela.',
   },
   l2u4m2e3: {
     prompt: 'Qual grau da escala se chama subdominante?',
@@ -78,6 +82,7 @@ const overlay: ExerciseLevelOverlay = {
       '6.º grau',
     ],
     hint: 'A subdominante é o 4.º grau. Situa-se uma 5.ª abaixo da tónica (sub = abaixo), tal como a dominante se situa uma 5.ª acima.',
+    nudge: '"Sub" significa abaixo: a subdominante fica uma 5.ª abaixo da tónica, tal como a dominante fica uma 5.ª acima. Em C maior, desce uma 5.ª a partir de C e vê em que grau chegas.',
   },
 
   // =========================================================================
@@ -113,6 +118,7 @@ const overlay: ExerciseLevelOverlay = {
       '2.º, 5.º e 7.º',
     ],
     hint: 'Compara C maior (C D E F G A B) com C menor natural (C D Eb F G Ab Bb). O 3.º, 6.º e 7.º graus são cada um baixados meio-tom.',
+    nudge: 'Compara C maior com C menor natural, cuja armação de clave tem três bemóis. Descobre em que graus da escala caem esses três bemóis.',
   },
 
   // ---- l2u5m2: Menor Harmónica/Melódica ----
@@ -144,6 +150,7 @@ const overlay: ExerciseLevelOverlay = {
       'Para remover todos os meios-tons da escala',
     ],
     hint: 'A escala menor harmónica tem uma 2.ª aumentada incómoda (3 meios-tons) entre o 6.º e o 7.º grau elevado. Elevar também o 6.º suaviza esta distância para um tom.',
+    nudge: 'Toca a escala menor harmónica a subir e ouve o salto do 6.º para o 7.º grau elevado. O que acontece a esse salto quando também elevas o 6.º?',
   },
 
   // ---- l2u5m3: Tonalidades Relativas/Paralelas ----
@@ -157,6 +164,7 @@ const overlay: ExerciseLevelOverlay = {
       'D menor',
     ],
     hint: 'A relativa menor começa no 6.º grau da escala maior. Em C maior, o 6.º grau é A. Tanto C maior como A menor partilham a mesma armação de clave (sem sustenidos nem bemóis).',
+    nudge: 'A relativa menor usa a mesma armação de clave e começa no 6.º grau da escala maior. Sobe pela escala de C maior para a encontrar.',
   },
   l2u5m3e2: {
     prompt: 'Qual é a relativa maior de D menor?',
@@ -167,6 +175,7 @@ const overlay: ExerciseLevelOverlay = {
       'G maior',
     ],
     hint: 'A relativa maior começa uma 3.ª menor (3 meios-tons) acima da tonalidade menor. D mais 3 meios-tons = F. Tanto D menor como F maior partilham um bemol (Bb).',
+    nudge: 'A relativa maior partilha a armação de clave e começa uma 3.ª menor (3 meios-tons) acima da tónica da tonalidade menor. Conta 3 meios-tons a partir de D.',
   },
   l2u5m3e3: {
     prompt: 'Qual é a paralela menor de G maior?',
@@ -177,6 +186,7 @@ const overlay: ExerciseLevelOverlay = {
       'B menor',
     ],
     hint: 'Tonalidades paralelas partilham a mesma fundamental mas diferem na qualidade. A paralela menor de G maior é G menor. Têm armações de clave diferentes.',
+    nudge: 'Tonalidades paralelas mantêm a mesma tónica e mudam só a qualidade (e, com ela, a armação de clave). Não as confundas com as relativas, que partilham a armação de clave.',
   },
   l2u5m3e4: {
     prompt: 'Qual é a diferença entre tonalidades relativas e tonalidades paralelas?',
@@ -224,6 +234,7 @@ const overlay: ExerciseLevelOverlay = {
       '2 tempos principais (cada um dividido em 3 colcheias)',
     ],
     hint: '9/8 é compasso composto ternário: 9 colcheias formam 3 grupos de 3. Cada grupo de 3 é um tempo principal (uma semínima com ponto).',
+    nudge: '9/8 é um compasso composto: as colcheias agrupam-se de três em três, e cada grupo é um tempo principal. Quantos grupos cabem em nove colcheias?',
   },
 
   // ---- l2u6m2: Síncopa ----
@@ -258,14 +269,17 @@ const overlay: ExerciseLevelOverlay = {
   l2u7m1e1: {
     prompt: 'Identifica o intervalo de C ascendente até G. Este é um dos intervalos mais consonantes da música.',
     hint: 'De C a G são 7 meios-tons. É uma 5.ª perfeita — o intervalo encontrado nos power chords e a base do círculo de quintas.',
+    nudge: 'Primeiro conta os nomes das notas de C até G, incluindo ambas, para obter o número. Depois conta os meios-tons de C até G e compara-os com os tamanhos que esse número pode ter.',
   },
   l2u7m1e2: {
     prompt: 'Identifica o intervalo de C ascendente até Eb. Este intervalo dá aos acordes menores o seu som característico.',
     hint: 'De C a Eb são 3 meios-tons. É uma 3.ª menor — o intervalo que distingue os acordes menores dos maiores.',
+    nudge: 'Conta os nomes das notas de C até Eb para obter o número. Depois compara o Eb com a nota da mesma letra na escala de C maior: é a mesma nota ou está meio-tom abaixo, e o que é que isso faz à qualidade?',
   },
   l2u7m1e3: {
     prompt: 'Identifica o intervalo de D ascendente até B. Conta tanto os nomes das notas como os meios-tons.',
     hint: 'De D a B abrange 6 nomes de notas (D-E-F-G-A-B) = uma 6.ª. D a B são 9 meios-tons, o que faz uma 6.ª maior.',
+    nudge: 'Conta os nomes das notas de D até B, incluindo ambas, para obter o número. Depois conta os meios-tons de D até B e compara-os com os tamanhos que esse número pode ter.',
   },
   l2u7m1e4: {
     prompt: 'O que torna um intervalo "perfeito"?',
@@ -299,14 +313,17 @@ const overlay: ExerciseLevelOverlay = {
   l2u7m2e1: {
     prompt: 'Identifica o intervalo de C ascendente até F#. Este intervalo divide a oitava exatamente ao meio.',
     hint: 'De C a F# (ou Gb) são 6 meios-tons — exatamente metade de 12. É o trítono, também chamado 4.ª aumentada ou 5.ª diminuta.',
+    nudge: 'Conta os meios-tons de C até F#, tecla a tecla, e compara o total com os 12 meios-tons da oitava. Que opção dá nome ao intervalo com exatamente esse tamanho?',
   },
   l2u7m2e2: {
     prompt: 'Identifica o intervalo de C ascendente até Db. Este é o menor intervalo com nome próprio.',
     hint: 'De C a Db é 1 meio-tom. É uma 2.ª menor — o menor intervalo na música ocidental padrão, criando tensão máxima.',
+    nudge: 'Conta os nomes das notas de C até Db para obter o número. Depois compara o Db com a nota da mesma letra na escala de C maior: é a mesma nota ou está meio-tom abaixo, e o que é que isso faz à qualidade?',
   },
   l2u7m2e3: {
     prompt: 'Identifica o intervalo de C ascendente até B. Este intervalo amplo está a apenas meio-tom de uma oitava.',
     hint: 'De C a B são 11 meios-tons. É uma 7.ª maior — um intervalo amplo e dissonante frequentemente usado em acordes de jazz.',
+    nudge: 'Conta os nomes das notas de C até B, incluindo ambas, para obter o número. Depois conta os meios-tons de C até B e compara-os com os tamanhos que esse número pode ter.',
   },
   l2u7m2e4: {
     prompt: 'O que é um trítono?',
@@ -348,6 +365,7 @@ const overlay: ExerciseLevelOverlay = {
       'Aumentada — duas 3.as maiores sobrepostas',
     ],
     hint: 'Um trítono tem 6 meios-tons. Duas 3.as menores (3 + 3) somam exatamente 6, por isso só a tríade diminuta tem um trítono da fundamental à 5.ª. As tríades maior e menor somam 7 (uma 5.ª perfeita); a aumentada soma 8 (uma 5.ª aumentada).',
+    nudge: 'Um trítono tem 6 meios-tons. Para cada tipo de tríade, soma os meios-tons das suas duas 3.as (3.ª maior = 4, 3.ª menor = 3) e procura a combinação que dá 6.',
   },
 
   // ---- l2u7m4: Inversões/Baixo Cifrado ----
@@ -394,6 +412,7 @@ const overlay: ExerciseLevelOverlay = {
       'Aumentada',
     ],
     hint: 'As tríades diatónicas na escala maior são: I(M) ii(m) iii(m) IV(M) V(M) vi(m) vii\u00b0(dim). Algarismos romanos minúsculos indicam qualidade menor. O acorde iii é menor.',
+    nudge: 'Constrói-o em C maior: sobrepõe 3.as sobre E usando só teclas brancas e conta os meios-tons da fundamental até à 3.ª e até à 5.ª. A numeração romana em minúsculas também é uma pista.',
   },
   l2u7m5e2: {
     prompt: 'Numa tonalidade maior, qual é a qualidade do acorde vii\u00b0 (construído sobre o 7.º grau)?',
@@ -404,6 +423,7 @@ const overlay: ExerciseLevelOverlay = {
       'Aumentada',
     ],
     hint: 'O acorde construído sobre o 7.º grau da escala maior (ex: B-D-F em C maior) contém um trítono entre a fundamental e a 5.ª, tornando-o diminuto. Nota-se vii°.',
+    nudge: 'Constrói-o em C maior sobre B, usando só teclas brancas, e conta os meios-tons da fundamental até à 5.ª. É uma 5.ª perfeita (7 meios-tons) ou algo mais pequeno?',
   },
   l2u7m5e3: {
     prompt: 'Constrói uma tríade de F maior. Este é o acorde IV na tonalidade de C maior.',

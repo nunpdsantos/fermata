@@ -199,6 +199,7 @@ const overlay: TemplateLevelOverlay = {
         'Qual destas afirmações sobre as inversões de V7 é verdadeira?',
       hintTemplate:
         'Inversões de V7: estado fundamental (V7), 1.ª inv = V6/5 (3.ª/sensível no baixo), 2.ª inv = V4/3 (5.ª no baixo), 3.ª inv = V4/2 (7.ª no baixo).',
+      nudgeTemplate: 'Os números são intervalos acima do baixo. Em C maior, põe a 3.ª, a 5.ª e a 7.ª de G7 no baixo, uma de cada vez: que números dá cada uma, e que nota do acorde de tónica pode esse baixo alcançar por grau conjunto?',
       choiceSets: [
         [
           'V6/5 tem a sensível no baixo, que sobe por grau para a tónica',

@@ -7,8 +7,10 @@ export interface ExerciseTemplate {
   type: ExerciseType;
   /** Template string with {param} placeholders, e.g. "Build the {root} {scaleType} scale" */
   promptTemplate: string;
-  /** Hint template with {param} placeholders */
+  /** Explanation template with {param} placeholders (shown once the item is final; `ExerciseDefinition.hint`). */
   hintTemplate: string;
+  /** Nudge template, shown after a first wrong try — must not give the answer away (`ExerciseDefinition.nudge`). */
+  nudgeTemplate?: string;
   params: ExerciseTemplateParams;
 }
 

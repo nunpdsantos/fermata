@@ -199,6 +199,7 @@ const overlay: ExerciseLevelOverlay = {
       'Violines, Violonchelos, Trompetas, Tambores',
     ],
     hint: 'Las secciones orquestales estándar son: Cuerdas (violín, viola, violonchelo, contrabajo), Maderas (flauta, oboe, clarinete, fagot), Metales (trompa, trompeta, trombón, tuba) y Percusión.',
+    nudge: 'Las familias de la orquesta agrupan los instrumentos según cómo producen el sonido (con arco o pulsando, soplando, haciendo vibrar los labios, golpeando o agitando), no por registro, por función ni por instrumentos sueltos.',
   },
   l8u26m3e2: {
     prompt:
@@ -234,6 +235,7 @@ const overlay: ExerciseLevelOverlay = {
       'En la notación por enteros de clases de altura, ¿qué número representa la nota C?',
     choices: ['0', '1', '12', '7'],
     hint: 'La notación por enteros de clases de altura asigna C = 0, C#/Db = 1, D = 2, y así sucesivamente hasta B = 11. El sistema es módulo 12.',
+    nudge: 'Cada clase de altura se numera por su distancia en semitonos por encima de C, en módulo 12 (así que el 12 da la vuelta). Aplica esa regla al propio C.',
   },
   l8u27m1e2: {
     prompt:

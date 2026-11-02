@@ -555,6 +555,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'I-V-vi-IV (in C: C-G-Am-F) is one of the most common pop progressions. It loops indefinitely and supports both uplifting and melancholic melodies depending on which chord the melody emphasizes.',
+      nudge: 'Play each option in C and listen. The loop uses four different chords, all from the key, and starts on the tonic: which pattern have you heard in countless pop songs?',
     },
     {
       id: 'l7u23m1e2',

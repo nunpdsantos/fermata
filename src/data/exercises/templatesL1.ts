@@ -19,6 +19,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'note_id',
         promptTemplate: 'Identify the note shown on or just around the treble staff.',
         hintTemplate: 'Use the treble clef line/space positions: lines are E-G-B-D-F, spaces are F-A-C-E.',
+        nudgeTemplate: 'Start from the line the treble clef curls around, which holds the note the clef centers on. Count up or down from there, one letter for each line or space, until you reach the note.',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
           accidentals: ['', '', '', '', '', '', ''],
@@ -60,6 +61,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'note_id',
         promptTemplate: 'Identify this note below the treble staff. Count down line by line from the bottom of the staff.',
         hintTemplate: 'Below the treble staff, middle C sits on the first ledger line. Count down by step from there: lines and spaces alternate, so the next ledger line down holds A and the one after that F.',
+        nudgeTemplate: 'The bottom line of the treble staff is E. Count down from it one letter at a time, alternating space and ledger line (the space just below the staff, then the first ledger line, then the space under it…), until you reach the note.',
         params: {
           roots: ['C', 'B', 'A', 'G', 'F'],
           accidentals: ['', '', '', '', ''],
@@ -86,6 +88,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'note_id',
         promptTemplate: 'Identify this note above the bass staff. Count up line by line from the top of the staff.',
         hintTemplate: 'The top line of the bass staff is A. Middle C sits on the first ledger line above it — the same middle C that sits on the first ledger line below the treble staff. E is on the second ledger line.',
+        nudgeTemplate: 'The top line of the bass staff is A. Count up from it one letter at a time, alternating space and ledger line (the space just above the staff, then the first ledger line, then the space above it…), until you reach the note.',
         params: {
           roots: ['C', 'D', 'E'],
           accidentals: ['', '', ''],
@@ -105,6 +108,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'interval_id',
         promptTemplate: 'What is the {direction} interval from {root}? Is it a half step or whole step?',
         hintTemplate: 'A half step is 1 semitone (adjacent keys on the piano). A whole step is 2 semitones (one key between them). From {root}, count carefully.',
+        nudgeTemplate: 'Find {root} and the second note on the keyboard, counting black keys too: is the second note the very next key up, or is there one key in between?',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
           accidentals: ['', '', '', '', '', '', ''],
@@ -298,6 +302,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'multiple_choice',
         promptTemplate: 'Which major key has this key signature?',
         hintTemplate: 'No sharps or flats = C major. One sharp (F#) = G major. Two sharps (F#, C#) = D major. One flat (Bb) = F major.',
+        nudgeTemplate: 'Count the sharps or flats and note which ones they are. With sharps, the key note sits a half step above the last sharp; otherwise, find the major scale that needs exactly that one flat, or no black keys at all.',
         params: {
           choiceSets: [
             [
@@ -345,6 +350,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'interval_id',
         promptTemplate: 'Identify the {direction} interval from {root} by its number: count the letter names, including both notes.',
         hintTemplate: 'Count the letter names from {root} up to the second note, counting both: two letters make a 2nd, three a 3rd, four a 4th, five a 5th.',
+        nudgeTemplate: "Count the letter names from {root} up to the second note, counting both notes: the number of letters you say is the interval's number. Count the notes themselves, not the steps between them.",
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A'],
           accidentals: ['', '', '', '', '', ''],

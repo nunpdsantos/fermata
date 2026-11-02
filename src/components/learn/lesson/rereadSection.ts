@@ -1,13 +1,18 @@
 /**
  * Which lesson section a missed question sends the learner back to ("Re-read
- * ›" on the result screen, W4b). Exercises carry no link to a concept, so it
- * is the concept whose title and explanation share the most content words
- * with the question (its prompt, hint and answer), in the language the lesson
- * is shown in; ties go to the earlier concept, and a question that shares
- * nothing with any concept goes to the first one. A heuristic, pinned on a
- * few real lessons by its test.
+ * ›" on the result screen, and the check's pointer after a first miss, W4b).
+ * Exercises carry no link to a concept, so it is the concept whose title and
+ * explanation share the most content words with the question (its prompt
+ * and explanation) and its answer, in the language the lesson is shown in.
+ *
+ * Ties — common on statement-style stems ("Which statement is true?") —
+ * go to the concept most specific to the keyed answer: the answer's words
+ * that the concept shares, each weighted by how few concepts use it (a word
+ * only one concept uses counts 1, one that three use counts ⅓). Only then
+ * the earlier concept; a question that shares nothing goes to the first. A
+ * heuristic, pinned on real lessons by its test.
  */
-import type { CurriculumModule } from '../../../core/types/curriculum';
+import type { CurriculumConcept } from '../../../core/types/curriculum';
 
 // Function words that carry no topic (EN / PT / ES); words of < 4 letters are skipped anyway.
 const STOP = new Set([
@@ -31,18 +36,28 @@ export function contentWords(text: string): Set<string> {
   return new Set(words.filter((w) => w.length >= 4 && !STOP.has(w)));
 }
 
-/** The concept index (0-based) a question is about. */
-export function conceptForQuestion(question: string, module: Pick<CurriculumModule, 'concepts'>): number {
-  const q = contentWords(question);
+/** The concept index (0-based) a question is about; `answer` is the keyed answer, in words. */
+export function conceptForQuestion(
+  question: string,
+  module: { concepts: readonly Pick<CurriculumConcept, 'title' | 'explanation'>[] },
+  answer = '',
+): number {
+  const q = contentWords(`${question} ${answer}`);
+  const a = contentWords(answer);
+  const sets = module.concepts.map((c) => contentWords(`${c.title} ${c.title} ${c.explanation}`));
+  const usedBy = (w: string) => sets.filter((s) => s.has(w)).length;
   let best = 0;
   let bestScore = 0;
-  module.concepts.forEach((c, i) => {
-    const words = contentWords(`${c.title} ${c.title} ${c.explanation}`);
+  let bestSpecific = 0;
+  sets.forEach((words, i) => {
     let score = 0;
     for (const w of q) if (words.has(w)) score++;
-    if (score > bestScore) {
+    let specific = 0;
+    for (const w of a) if (words.has(w)) specific += 1 / usedBy(w);
+    if (score > bestScore || (score === bestScore && score > 0 && specific > bestSpecific + 1e-9)) {
       best = i;
       bestScore = score;
+      bestSpecific = specific;
     }
   });
   return best;

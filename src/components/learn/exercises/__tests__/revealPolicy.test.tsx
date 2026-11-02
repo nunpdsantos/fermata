@@ -1,7 +1,10 @@
 /**
- * Audit W4-04 / decision D-09 — a first wrong try shows "Not X — have another
- * go." and the hint, never the answer; the tried option is struck through and
- * cannot be picked again; the answer is marked only when the item is final.
+ * Audit W4-04 / decision D-09 / review B1 — a first wrong try shows "Not X —
+ * have another go." and a NUDGE (the item's own, its type's method, or a
+ * pointer back to the lesson section with Re-read), never the answer and
+ * never the item's explanation (its `hint`); the tried option is struck
+ * through and cannot be picked again; the answer — and the explanation — are
+ * shown only when the item is final.
  * Plus: a two-option item gets one try (its second could not be wrong), a
  * practice round records nothing, a build question keeps the learner's picks
  * for the second try and opens / folds the dock (D-20), and a run resumes
@@ -30,7 +33,14 @@ const mc = (id: string, labels = ['Right answer', 'Wrong answer A', 'Wrong answe
   prompt: `Question ${id}?`,
   config: { type: 'multiple_choice', choices: labels.map((label, i) => ({ label, correct: i === 0 })) },
   hint: 'Think about the lesson.',
+  nudge: 'Where does the clef curl?',
 });
+/** A multiple-choice item with no nudge: the check points back to the lesson. */
+const bare = (id: string, labels: string[]): ExerciseDefinition => ({ ...mc(id, labels), nudge: undefined, hint: 'The treble clef curls around G.' });
+const CONCEPTS = [
+  { title: 'The staff', explanation: 'Five lines and four spaces.' },
+  { title: 'The treble clef', explanation: 'The treble clef curls around the second line, so that line is G.' },
+];
 
 const option = (label: string) => screen.getByRole('button', { name: new RegExp(`^${label}`) });
 const answerMarked = () => document.querySelectorAll('[data-state="answer"]').length;
@@ -44,12 +54,13 @@ function run(exercises: ExerciseDefinition[], extra: Partial<Parameters<typeof E
 }
 
 describe('reveal policy (D-09)', () => {
-  it('first wrong try: "Not X — have another go", the hint, X struck through — and nothing says which option is right', () => {
+  it('first wrong try: "Not X — have another go", the nudge (not the explanation), X struck through — and nothing says which option is right', () => {
     const { onRecordResult } = run([mc('q1', ['G', 'B', 'C', 'D'])]);
     fireEvent.click(option('B'));
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
     expect(screen.getByText('Not B — have another go.')).toBeTruthy();
-    expect(screen.getByText('Hint: Think about the lesson.')).toBeTruthy();
+    expect(screen.getByText('Hint: Where does the clef curl?')).toBeTruthy();
+    expect(screen.queryByText(/Think about the lesson/)).toBeNull();
     expect(answerMarked()).toBe(0);
     expect(document.body.textContent).not.toMatch(/it is G|answer is|Correct/);
     const tried = option('B');
@@ -69,6 +80,31 @@ describe('reveal policy (D-09)', () => {
     expect(answerMarked()).toBe(1);
     expect(option('G').getAttribute('aria-label')).toBe('G (the answer)');
     expect(screen.getByText('Not quite — it is G.')).toBeTruthy();
+    // …and now the explanation, next to the answer (not labelled a hint).
+    expect(screen.getByText('Think about the lesson.')).toBeTruthy();
+    expect(screen.queryByText(/Where does the clef curl/)).toBeNull();
+  });
+
+  it('no nudge: "Look again at: n · section" with Re-read, which opens that section in place', () => {
+    run([bare('q3', ['G', 'B', 'C', 'D'])], { concepts: CONCEPTS });
+    fireEvent.click(option('B'));
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    expect(screen.getByText('Look again at: 2 · The treble clef')).toBeTruthy();
+    expect(screen.queryByText(/curls around/)).toBeNull();
+    const toggle = screen.getByTestId('check-reread-toggle');
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    fireEvent.click(toggle);
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    expect(screen.getByTestId('check-reread').textContent).toContain('so that line is G');
+    expect(answerMarked()).toBe(0);
+  });
+
+  it('no nudge, and the section title would name the answer: the pointer gives the section number only', () => {
+    run([bare('q4', ['Treble clef', 'Bass clef', 'Alto clef', 'Tenor clef'])], { concepts: CONCEPTS });
+    fireEvent.click(option('Bass clef'));
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    expect(screen.getByText('Look again at section 2 of the lesson.')).toBeTruthy();
+    expect(screen.queryByText(/The treble clef/)).toBeNull();
   });
 
   it('a long statement answer is not quoted in the verdict title', () => {
@@ -113,7 +149,7 @@ describe('a build question (instrument input)', () => {
   const build: ExerciseDefinition = {
     id: 'b1', type: 'chord_build', prompt: 'Build a C major triad.',
     config: { type: 'chord_build', root: 'C', rootAccidental: '', quality: 'major', noteCount: 3 },
-    hint: 'Root, major third, perfect fifth.',
+    hint: 'C major = C, E, G.',
   };
   // A key down and up, as two renders (the input toggles on each note-on).
   const press = (midi: number) => {
@@ -127,7 +163,9 @@ describe('a build question (instrument input)', () => {
     press(60); press(64); press(66); // C E F# — wrong
     fireEvent.click(screen.getByRole('button', { name: 'Check Answer' }));
     expect(screen.getByText('Not quite — have another go.')).toBeTruthy();
-    expect(screen.getByText('Hint: Root, major third, perfect fifth.')).toBeTruthy();
+    // The nudge is the chord's interval recipe — never its notes (review B1).
+    expect(screen.getByText('Hint: Count up from the root: the other notes lie a major 3rd and a perfect 5th above it.')).toBeTruthy();
+    expect(screen.queryByText(/C, E, G/)).toBeNull();
     expect(onRecordResult).not.toHaveBeenCalled();
     press(66); press(67); // un-toggle F#, add G — the picks C E are still there
     fireEvent.click(screen.getByRole('button', { name: 'Check Answer' }));

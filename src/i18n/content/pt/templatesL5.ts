@@ -245,6 +245,7 @@ const overlay: TemplateLevelOverlay = {
         'Qual destas afirmações sobre a modulação direta (de frase) é verdadeira?',
       hintTemplate:
         'A modulação direta (de frase) muda de tonalidade abruptamente numa fronteira de frase sem acorde pivot. Comum na música pop e nos hinos.',
+      nudgeTemplate: 'Pergunta onde chega a nova tonalidade (a meio de uma frase ou no início de uma frase nova) e se algum acorde a prepara. Numa modulação "truck driver", pergunta em que sentido se move a tonalidade e que efeito isso tem.',
       choiceSets: [
         [
           'Uma modulação direta passa a uma nova tonalidade numa fronteira de frase, sem pivot',
@@ -287,6 +288,7 @@ const overlay: TemplateLevelOverlay = {
         'Qual destas afirmações sobre a modulação cromática é verdadeira?',
       hintTemplate:
         'A modulação cromática usa uma alteração cromática para conduzir suavemente à nova tonalidade. Uma voz move-se por meio-tom de uma nota diatónica para uma nota cromática na nova tonalidade.',
+      nudgeTemplate: 'A modulação cromática altera uma nota de um acorde para conduzir à nova tonalidade. Segue a voz que leva a alteração: quanto se desloca, e que papel assume a nota alterada na nova tonalidade?',
       choiceSets: [
         [
           'Uma voz move-se por meio-tom de uma nota diatónica para uma cromática',

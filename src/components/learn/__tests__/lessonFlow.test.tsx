@@ -150,10 +150,10 @@ describe('check → result → practice', () => {
     const missed = within(result).getAllByTestId('missed-question');
     expect(missed).toHaveLength(1);
     expect(missed[0].textContent).toMatch(/you said no, then maybe · it is yes/);
-    for (const name of ['Practise the one I missed', 'Start over', 'Back to the lesson']) expect(screen.getByRole('button', { name })).toBeTruthy();
+    for (const name of ["Practise the one I didn't get first time", 'Start over', 'Back to the lesson']) expect(screen.getByRole('button', { name })).toBeTruthy();
 
     // Practice: only the missed one, nothing recorded.
-    click('Practise the one I missed');
+    click("Practise the one I didn't get first time");
     expect(screen.getByTestId('check-position').textContent).toBe('1 / 1');
     answer('yes');
     click('Continue');

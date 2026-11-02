@@ -48,6 +48,7 @@ export interface ExerciseLevelOverlay {
   [exerciseId: string]: {
     prompt: string;
     hint?: string;
+    nudge?: string;
     choices?: string[];  // for multiple_choice: translated labels (same order)
   };
 }
@@ -56,6 +57,7 @@ export interface TemplateLevelOverlay {
   [moduleId: string]: {
     promptTemplate: string;
     hintTemplate: string;
+    nudgeTemplate?: string;
     choiceSets?: string[][];  // [setIndex][choiceIndex] = translated label
   }[];
 }

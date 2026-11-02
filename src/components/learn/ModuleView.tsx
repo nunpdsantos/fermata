@@ -361,7 +361,7 @@ export function ModuleView({
   }, [module.id, saveCheck]);
 
   const rereadFor = useCallback((o: ItemOutcome) => {
-    const i = conceptForQuestion(`${o.exercise.prompt} ${o.exercise.hint ?? ''} ${o.answer}`, module);
+    const i = conceptForQuestion(`${o.exercise.prompt} ${o.exercise.hint ?? ''}`, module, o.answer);
     const c = module.concepts[i];
     if (!c) return null;
     return { label: t('lesson.conceptItem', { n: i + 1, title: c.title }), onClick: () => backToLesson(`c${i}`) };
@@ -379,6 +379,7 @@ export function ModuleView({
           practice={run.kind === 'practice'}
           resume={run.resume}
           onSnapshot={onSnapshot}
+          concepts={module.concepts}
           onRecordResult={onRecordExerciseResult}
           onComplete={onRunComplete}
           onExit={() => (isReviewMode ? (saveCheck(null), onBack()) : backToLesson('check'))}

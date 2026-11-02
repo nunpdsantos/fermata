@@ -18,6 +18,7 @@ const overlay: TemplateLevelOverlay = {
         'Identifica la nota mostrada en el pentagrama en clave de sol o justo alrededor de él.',
       hintTemplate:
         'Usa las posiciones en la clave de sol: líneas E-G-B-D-F, espacios F-A-C-E.',
+      nudgeTemplate: 'Parte de la línea alrededor de la cual se enrolla la clave de sol, que lleva la nota en la que se centra la clave. Cuenta hacia arriba o hacia abajo desde ahí, una letra por cada línea o espacio, hasta llegar a la nota.',
     },
     {
       // multiple_choice
@@ -49,6 +50,7 @@ const overlay: TemplateLevelOverlay = {
         'Identifica esta nota por debajo del pentagrama en clave de sol. Cuenta línea a línea hacia abajo desde la parte inferior del pentagrama.',
       hintTemplate:
         'Por debajo del pentagrama en clave de sol, el C central se sitúa en la primera línea adicional. Cuenta hacia abajo grado a grado desde ahí: líneas y espacios se alternan, así que la siguiente línea adicional tiene el A y la siguiente el F.',
+      nudgeTemplate: 'La línea inferior del pentagrama en clave de sol es el E. Cuenta hacia abajo desde ella, una letra cada vez, alternando espacio y línea adicional (el espacio justo por debajo del pentagrama, luego la primera línea adicional, luego el espacio por debajo de ella…), hasta llegar a la nota.',
     },
     {
       promptTemplate:
@@ -61,6 +63,7 @@ const overlay: TemplateLevelOverlay = {
         'Identifica esta nota por encima del pentagrama en clave de fa. Cuenta línea a línea hacia arriba desde la parte superior del pentagrama.',
       hintTemplate:
         'La línea superior del pentagrama en clave de fa es el A. El C central se sitúa en la primera línea adicional por encima — el mismo C central que está en la primera línea adicional por debajo del pentagrama en clave de sol. El E está en la segunda línea adicional.',
+      nudgeTemplate: 'La línea superior del pentagrama en clave de fa es el A. Cuenta hacia arriba desde ella, una letra cada vez, alternando espacio y línea adicional (el espacio justo por encima del pentagrama, luego la primera línea adicional, luego el espacio por encima de ella…), hasta llegar a la nota.',
     },
   ],
 
@@ -72,6 +75,7 @@ const overlay: TemplateLevelOverlay = {
         '¿Cuál es el intervalo a partir de {root} en sentido {direction}? ¿Es un semitono o un tono?',
       hintTemplate:
         'Un semitono es 1 semitono (teclas adyacentes en el piano). Un tono es 2 semitonos (una tecla entre ellas). A partir de {root}, cuenta con cuidado.',
+      nudgeTemplate: 'Busca {root} y la segunda nota en el teclado, contando también las teclas negras: ¿la segunda nota es la tecla inmediatamente superior o hay una tecla en medio?',
     },
     {
       // multiple_choice
@@ -211,6 +215,7 @@ const overlay: TemplateLevelOverlay = {
         '¿Qué tonalidad mayor tiene esta armadura de clave?',
       hintTemplate:
         'Sin sostenidos ni bemoles = C mayor. Un sostenido (F#) = G mayor. Dos sostenidos (F#, C#) = D mayor. Un bemol (Bb) = F mayor.',
+      nudgeTemplate: 'Cuenta los sostenidos o bemoles y fíjate en cuáles son. Con sostenidos, la tónica está un semitono por encima del último sostenido; si no, busca la escala mayor que necesita exactamente ese bemol, o ninguna tecla negra.',
       choiceSets: [
         [
           'C mayor',
@@ -248,6 +253,7 @@ const overlay: TemplateLevelOverlay = {
         'Identifica el intervalo a partir de {root} en sentido {direction} por su número: cuenta los nombres de las notas, incluidas las dos notas.',
       hintTemplate:
         'Cuenta los nombres de las notas desde {root} hasta la segunda nota, contando ambas: dos letras forman una 2.ª, tres una 3.ª, cuatro una 4.ª, cinco una 5.ª.',
+      nudgeTemplate: 'Cuenta los nombres de las notas desde {root} hasta la segunda nota, contando ambas: el número de letras que dices es el número del intervalo. Cuenta las notas mismas, no los pasos entre ellas.',
     },
   ],
 

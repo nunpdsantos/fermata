@@ -107,6 +107,7 @@ const overlay: TemplateLevelOverlay = {
         '¿Cómo se enlazan los voicings de shell en un contexto jazz?',
       hintTemplate:
         'En una ii-V-I, la tercera del ii se mantiene como séptima del V, mientras la séptima del ii baja un semitono a la tercera del V (y lo mismo vuelve a ocurrir del V al I). Esta eficiencia en la conducción de voces se denomina líneas de notas guía.',
+      nudgeTemplate: 'Identifica la 3.ª y la 7.ª de cada acorde de un ii-V-I (en C: Dm7, G7, Cmaj7) y sigue cada una de esas notas hasta el acorde siguiente: ¿cuáles se quedan donde están y cuánto se desplazan las demás?',
       choiceSets: [
         [
           'Las notas guía (terceras y séptimas) se mueven por grado conjunto o se mantienen entre acordes en una ii-V-I',

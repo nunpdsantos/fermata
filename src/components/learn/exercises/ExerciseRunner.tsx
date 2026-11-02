@@ -4,12 +4,11 @@ import type { ExerciseDefinition, ValidationResult, EarTrainingConfig } from '..
 import type { RunItem, RunSnapshot } from '../../../state/learnSessionStore';
 import { validateAnswer } from './validateExercise';
 import {
-  generateNoteChoices, generateIntervalChoices, generateSpelledIntervalChoices, generateIntervalNumberChoices,
-  generateStepChoices, intervalNumberOf, generateEarChoices, generateDegreeChoices, generateMultipleChoiceOptions,
-  generateMelodyChoices, earPlaybackLockMs, earChordPitches, earProgressionPitches, earIntervalPitches, earReference,
+  choicesForExercise, earPlaybackLockMs, earChordPitches, earProgressionPitches, earIntervalPitches, earReference,
   earReferenceLeadMs, earMelodyPitches, optionText, EAR_REFERENCE_NOTE_S, EAR_REFERENCE_CHORD_S, MELODY_STEP_S, MELODY_NOTE_S, MELODY_LAST_S,
 } from './exerciseHelpers';
 import type { ChoiceOption } from './exerciseHelpers';
+import { nudgeFor, sectionPointer } from './nudge';
 import { ExercisePrompt } from './ExercisePrompt';
 import { ChoiceInput } from './inputs/ChoiceInput';
 import { InstrumentInput } from './inputs/InstrumentInput';
@@ -58,22 +57,29 @@ interface ExerciseRunnerProps {
   resume?: RunSnapshot;
   /** Every change of the run's state, to be saved (learnSessionStore). */
   onSnapshot?: (run: RunSnapshot) => void;
+  /**
+   * The lesson's sections (its concepts), for the pointer after a first miss
+   * when an item has no nudge: "Look again at: 2 · …" with Re-read.
+   */
+  concepts?: readonly { title: string; explanation: string }[];
 }
 
 /**
  * The focused check (W4b, decision D-27 / D-09): one question at a time, the
  * position always shown ("4 / 9"), ✕ Exit, and the answers low on a phone,
- * in thumb reach. Reveal policy (audit W4-04): a first wrong try shows "Not X
- * — have another go." and the hint, the tried option struck through — never
- * the answer; the answer is shown only once the item is final (right, or the
- * last try used).
+ * in thumb reach. Reveal policy (audit W4-04, review B1): a first wrong try
+ * shows "Not X — have another go." and a NUDGE (`nudge.ts`: the item's own,
+ * its type's method, or a pointer back to the lesson section with Re-read),
+ * the tried option struck through — never the answer; the answer, and the
+ * item's explanation (its `hint`), are shown only once the item is final
+ * (right, or the last try used).
  *
  * Scoring is unchanged: right first time 1, right on the second try 0.5,
  * otherwise 0; a set passes at 80 % of its questions. One change keeps the
  * pass mark meaningful: an item with only two options gets ONE try — after a
  * miss its second try could not be wrong. Practice rounds are never scored.
  */
-export function ExerciseRunner({ exercises, accentColor, title, reviewMode = false, practice = false, onRecordResult, onComplete, onExit, resume, onSnapshot }: ExerciseRunnerProps) {
+export function ExerciseRunner({ exercises, accentColor, title, reviewMode = false, practice = false, onRecordResult, onComplete, onExit, resume, onSnapshot, concepts }: ExerciseRunnerProps) {
   const { t, i18n } = useTranslation();
   // Scale/chord names inside feedback follow the UI language (audit W1-10).
   const feedbackLang = (['pt', 'es'].includes(i18n.language?.slice(0, 2)) ? i18n.language.slice(0, 2) : 'en') as 'en' | 'pt' | 'es';
@@ -128,33 +134,7 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
   }, [exercise]);
 
   // Generate choices for current exercise (memoized per exercise)
-  const choices: ChoiceOption[] = useMemo(() => {
-    if (!exercise) return [];
-    const cfg = exercise.config;
-    switch (cfg.type) {
-      case 'note_id':
-        return generateNoteChoices(cfg.note, cfg.accidental);
-      case 'interval_id':
-        if (cfg.answer === 'step') return generateStepChoices(cfg.targetSemitones, t);
-        if (cfg.answer === 'number') return generateIntervalNumberChoices(intervalNumberOf(cfg.intervalNumber, cfg.targetSemitones), t);
-        return cfg.intervalNumber !== undefined
-          ? generateSpelledIntervalChoices(cfg.intervalNumber, cfg.targetSemitones)
-          : generateIntervalChoices(cfg.targetSemitones);
-      case 'multiple_choice':
-        return generateMultipleChoiceOptions(cfg.choices, exercise.id);
-      case 'ear_training': {
-        if (cfg.mode === 'note') return generateNoteChoices(cfg.note ?? 'C', cfg.accidental ?? '');
-        if (cfg.mode === 'interval') return generateIntervalChoices(cfg.targetSemitones ?? 7);
-        if (cfg.mode === 'melody') return generateMelodyChoices(cfg, exercise.id);
-        if ((cfg.mode === 'chord' || cfg.mode === 'scale' || cfg.mode === 'progression') && cfg.choices) return generateEarChoices(cfg.choices);
-        return [];
-      }
-      case 'scale_degree_id':
-        return generateDegreeChoices(cfg.correctDegree, t);
-      default:
-        return [];
-    }
-  }, [exercise, t]);
+  const choices: ChoiceOption[] = useMemo(() => (exercise ? choicesForExercise(exercise, t) : []), [exercise, t]);
 
   // ── Ear training: reference, stimulus, replay ────────────────────────────
   // The replay lock belongs to ONE exercise (audit W0-04 / F-01 / C-48). It is
@@ -268,6 +248,16 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
   // A second try is offered when it is still a real choice (≥ 2 options left).
   const choiceRetry = choices.length >= 3;
 
+  // What a first miss shows (review B1): a nudge, else the lesson section.
+  const nudge = useMemo(() => (exercise ? nudgeFor(exercise, t, feedbackLang) : null), [exercise, t, feedbackLang]);
+  const pointer = useMemo(() => {
+    if (!exercise || nudge || !concepts?.length) return null;
+    const others = choices.filter((c) => !c.correct).map(optionText);
+    return sectionPointer(exercise, concepts, answerWords, others, feedbackLang);
+  }, [exercise, nudge, concepts, choices, answerWords, feedbackLang]);
+  const [rereadOpenFor, setRereadOpenFor] = useState<string | null>(null);
+  const rereadOpen = !!exercise && rereadOpenFor === exercise.id;
+
   const settle = useCallback((result: ValidationResult, score: 0 | 0.5 | 1, answers: string[], answer: string) => {
     if (!exercise) return;
     if (!practice) onRecordResult(exercise.id, score);
@@ -369,23 +359,58 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
             ? t('lesson.itIsAnswer', { answer: isInstrumentBased ? final.expected : answerWords })
             : t('lesson.notQuiteMarked')}
         // Right: the title says it. Final miss: the answer is in the title;
-        // below it, what explains it — the item's hint (now that nothing is
-        // left to give away), else the grader's explanation.
+        // below it, what explains it — the item's explanation (its `hint`,
+        // now that nothing is left to give away), else the grader's.
         hint={right ? undefined : (
           <>
-            {isInstrumentBased || !exercise.hint ? final.explanation : t('exercise.hint', { hint: exercise.hint })}
+            {isInstrumentBased || !exercise.hint ? final.explanation : exercise.hint}
             {expectedNotes ? ` ${t('lesson.expectedNotes', { notes: expectedNotes })}` : ''}
           </>
         )}
       />
     );
   } else if (missed !== null) {
+    const concept = pointer ? concepts?.[pointer.index] : undefined;
     feedback = (
-      <Feedback
-        tone="nearMiss"
-        title={missed && missed.length <= SHORT_ANSWER ? t('lesson.notAnswer', { answer: missed }) : t('lesson.notQuiteRetry')}
-        hint={exercise.hint ? t('exercise.hint', { hint: exercise.hint }) : t('lesson.noHint')}
-      />
+      <>
+        <Feedback
+          tone="nearMiss"
+          title={missed && missed.length <= SHORT_ANSWER ? t('lesson.notAnswer', { answer: missed }) : t('lesson.notQuiteRetry')}
+          hint={nudge
+            ? t('exercise.hint', { hint: nudge })
+            : pointer
+              ? (pointer.title
+                ? t('lesson.lookAgainAt', { section: t('lesson.conceptItem', { n: pointer.index + 1, title: pointer.title }) })
+                : t('lesson.lookAgainSection', { n: pointer.index + 1 }))
+              : t('lesson.noHint')}
+        >
+          {concept && (
+            <Button
+              variant="link"
+              className="mt-1 -ml-1.5"
+              aria-expanded={rereadOpen}
+              aria-controls={`reread-${exercise.id}`}
+              onClick={() => setRereadOpenFor(rereadOpen ? null : exercise.id)}
+              data-testid="check-reread-toggle"
+            >
+              {t('lesson.reread')}
+              <span aria-hidden="true">{rereadOpen ? '‹' : '›'}</span>
+            </Button>
+          )}
+        </Feedback>
+        {concept && rereadOpen && (
+          <section
+            id={`reread-${exercise.id}`}
+            className="rounded-xl px-4 py-3 flex flex-col gap-1.5"
+            style={{ backgroundColor: 'var(--card)' }}
+            aria-label={t('lesson.rereadLabel', { section: t('lesson.conceptItem', { n: (pointer?.index ?? 0) + 1, title: concept.title }) })}
+            data-testid="check-reread"
+          >
+            <p className="text-ui font-semibold" style={{ color: 'var(--text)' }}>{t('lesson.conceptItem', { n: (pointer?.index ?? 0) + 1, title: concept.title })}</p>
+            <p className="learn-concept-text text-ui" style={{ color: 'var(--text-muted)', lineHeight: 1.55 }}>{concept.explanation}</p>
+          </section>
+        )}
+      </>
     );
   }
 

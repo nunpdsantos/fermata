@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ItemOutcome } from '../exercises/ExerciseRunner';
 import { passMark } from '../exercises/scoring';
+import { choicesForExercise } from '../exercises/exerciseHelpers';
 import { Button } from '../../ui/Button';
 
 export interface ResultAction {
@@ -41,6 +42,8 @@ export function ResultScreen({ title, outcomes, kind, passed, rereadFor, note, a
 
   const heading = kind === 'practice' ? 'lesson.practiceFinished' : kind === 'review' ? 'lesson.reviewFinished' : 'lesson.checkFinished';
   const right = outcomes.filter((o) => o.score > 0).length;
+  // A question with two options gets one try (its second could not be wrong) — say so when the set had one.
+  const hadOneTry = outcomes.some((o) => choicesForExercise(o.exercise, t).length === 2);
 
   return (
     <div className="flex flex-col gap-4 w-full max-w-[640px] mx-auto px-4 max-sm:px-3 py-6" data-testid="check-result">
@@ -61,7 +64,11 @@ export function ResultScreen({ title, outcomes, kind, passed, rereadFor, note, a
               : `${t('lesson.needToPass', { score: fmt(passMark(total)) })} ${t('lesson.nothingLost')}`}
         </span>
       </div>
-      {kind !== 'practice' && <p className="text-ui" style={{ color: 'var(--text-muted)' }}>{t('lesson.scoring')}</p>}
+      {kind !== 'practice' && (
+        <p className="text-ui" style={{ color: 'var(--text-muted)' }} data-testid="result-scoring">
+          {hadOneTry ? `${t('lesson.scoring')} ${t('lesson.oneTryNote')}` : t('lesson.scoring')}
+        </p>
+      )}
       {note}
 
       {missed.length > 0 ? (

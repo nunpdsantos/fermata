@@ -17,7 +17,7 @@ const curriculumL6: CurriculumLevelOverlay = {
           'Ya puedes emplear los acordes cromáticos más dramáticos de la música tonal y modular entre tonalidades distantes mediante el pivote de la sexta alemana. A continuación explorarás la reinterpretación de la séptima disminuida, el embellecimiento por nota común y el paisaje cromático más amplio que llevó la tonalidad a sus límites.',
         tryThisLabel: 'Toca el napolitano de C',
         tryThisPrompt:
-          '¿Puedes cifrar el acorde napolitano en otras tres tonalidades menores antes de verificar?',
+          '¿Puedes deletrear el acorde napolitano en otras tres tonalidades menores antes de verificar?',
       },
     },
     u19: {

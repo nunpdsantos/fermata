@@ -296,6 +296,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'multiple_choice',
         promptTemplate: 'Which statement about direct (phrase) modulation is true?',
         hintTemplate: 'Direct (phrase) modulation changes key abruptly at a phrase boundary without a pivot chord. Common in pop music and hymns.',
+        nudgeTemplate: 'Ask where the new key arrives (in the middle of a phrase or as a new phrase begins) and whether any chord prepares it. For a "truck driver" change, ask which way the key moves and what effect that has.',
         params: {
           choiceSets: [
             [
@@ -338,6 +339,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'multiple_choice',
         promptTemplate: 'Which statement about chromatic modulation is true?',
         hintTemplate: 'Chromatic modulation uses a chromatic alteration to smoothly lead into the new key. One voice moves by half step from a diatonic note to a chromatic one in the new key.',
+        nudgeTemplate: 'Chromatic modulation alters one note of a chord to steer into the new key. Follow the voice that carries the alteration: how far does it travel, and what role does the altered note take in the new key?',
         params: {
           choiceSets: [
             [

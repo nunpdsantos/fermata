@@ -41,13 +41,14 @@ const mcExercise = (id: string): ExerciseDefinition => ({
     ],
   },
   hint: 'The right one.',
+  nudge: 'Read the question again.',
 });
 
 const earNoteExercise: ExerciseDefinition = {
   id: 'ear1',
   type: 'ear_training',
   prompt: 'Listen to this pitch and identify it.',
-  config: { type: 'ear_training', mode: 'note', note: 'C', accidental: '', octave: 4 },
+  config: { type: 'ear_training', mode: 'note', note: 'E', accidental: '', octave: 4 },
 };
 
 const earScaleExercise: ExerciseDefinition = {
@@ -101,9 +102,9 @@ describe('ExerciseRunner scoring', () => {
 
     fireEvent.click(screen.getByText('Wrong answer A'));
     fireEvent.click(screen.getByText('Submit'));
-    // No score recorded yet — the retry is in place, with the hint shown.
+    // No score recorded yet — the retry is in place, with the nudge shown.
     expect(onRecordResult).not.toHaveBeenCalled();
-    expect(screen.getByText(/The right one\./)).toBeTruthy();
+    expect(screen.getByText(/Read the question again\./)).toBeTruthy();
 
     fireEvent.click(screen.getByText('Right answer'));
     fireEvent.click(screen.getByText('Submit'));

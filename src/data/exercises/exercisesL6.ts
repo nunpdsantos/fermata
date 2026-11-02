@@ -87,6 +87,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The Italian +6 is the simplest: b6, 1, #4 (three notes). The French +6 adds the 2nd scale degree (b6, 1, 2, #4), creating a characteristic whole-tone subset with an augmented 4th above the bass.',
+      nudge: "Spell both over the same bass, b6: list each chord's scale degrees and count them. Then find the note the French has that the Italian lacks, and measure it against the bass.",
     },
     {
       id: 'l6u18m2e3',
@@ -185,6 +186,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Diatonic pivot chords only connect closely related keys. Reinterpreting the tonic key\'s Gr+6 as V7 (or vice versa) moves the tonic by a half step -- C to Db is five steps around the circle of fifths, a distant key reached through a single chord. It is a signature technique of Romantic-era composers.',
+      nudge: "Respell C major's Gr+6 (Ab, C, Eb, F#) with Gb in place of F#: which key is it now the V7 of? Then measure how far that tonic is from C, both as an interval and around the circle of fifths.",
     },
     {
       id: 'l6u18m4e3',

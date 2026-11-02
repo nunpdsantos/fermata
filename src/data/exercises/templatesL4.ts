@@ -230,6 +230,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'multiple_choice',
         promptTemplate: 'Which statement about the inversions of V7 is true?',
         hintTemplate: 'V7 inversions: root pos (V7), 1st inv = V6/5 (3rd/leading tone in bass), 2nd inv = V4/3 (5th in bass), 3rd inv = V4/2 (7th in bass).',
+        nudgeTemplate: 'The figures are intervals above the bass. In C major, put the 3rd, 5th and 7th of G7 in the bass in turn: which figure does each give, and which note of the tonic chord can that bass reach by step?',
         params: {
           choiceSets: [
             [
