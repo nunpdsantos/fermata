@@ -30,6 +30,19 @@ Nuno, 2026-10-30: "we need to do all the improvements … do it all the way unti
 | D-23 | Unit milestone summaries | Show at unit completion. | Data and translations already exist. |
 | D-24 | L6–L8 planning docs | Mark as superseded. | |
 
+## Design decisions (2026-10-30, delegated by Nuno: "can you choose what you think would be best")
+
+Nuno delegated the design review's open choices (the `design-review` proposals: Explore A/B, the phone shell, the Learn flow, the visual system). Taken by Claude (Opus 5.5) on the basis below; each is reversible, and Nuno can overrule any of them. Implemented: D-26 (sheet) and D-28 in W11-A; D-25, D-29, D-30 and the D-26 landscape neck view in W11-B (Explore workbench). D-27 (Learn flow) is not part of either.
+
+| # | Decision | Call | Why |
+|---|---|---|---|
+| D-25 | Explore layout | A — Workbench: key and scale pickers, merged staff + degree strip, chord detail in place, circle of fifths beside the work; no page scroll at 1440×900; linked focus note across instrument, staff and panels | Nuno looks things up; keeps key, chords and neck in view together |
+| D-26 | Phone instrument | A — pull-up sheet (Peek / Half / Full); landscape full-neck view added later as an extra guitar view | One-handed in any orientation |
+| D-27 | Learn flow | B — lesson with section rail; practice before the check; inline Try-this; focused check with hint-first feedback; result screen with "Practise the N I missed / Start over" | Natural reading, less to build |
+| D-28 | Visual style | A — Editorial (all Source Serif), five type steps, nothing below 12 px, 36 px controls desktop / 44 px touch, two selected states, degree colours as fills with dark ink | Keeps Fermata recognisable; 12 px floor protects legibility |
+| D-29 | Copy / Print / Compare | Into a "⋯" menu | Cleaner main surface |
+| D-30 | Circle of fifths on a laptop | Always visible beside the work | Matches D-25 |
+
 ## Amendments
 
 - **D-13 (2026-10-30, coordinator):** Blues blue note is ♭5, except where ♭5 would need a double flat; then ♯4. Implemented in `src/core/utils/degreeSpelling.ts` (`spellScale`), branch `fix/w1-w2-spelling-harmony`.
