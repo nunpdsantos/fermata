@@ -12,7 +12,7 @@ import type { Note, ScaleType } from '../../../core/types/music';
 import { ScaleStrip } from '../../explore/ScaleStrip';
 import { ChordsCard } from '../../explore/ChordsCard';
 import { useAppStore } from '../../../state/store';
-import { DEGREE_COLORS } from '../../../design/tokens/colors';
+import { DEGREE_INKS } from '../../../design/tokens/colors';
 import { SCALE_FORMULAS } from '../../../core/constants/scales';
 import { buildChord } from '../../../core/constants/chords';
 import { SELECTABLE_ROOTS, letterDegree } from '../../../core/utils/__tests__/theoryOracle';
@@ -50,6 +50,9 @@ async function staffFor(root: string, type: ScaleType) {
   return { notes, colors, follow: el.getAttribute('data-follow') === 'true' };
 }
 
+// Since W11-B the noteheads really show these colours, in each degree's INK
+// shade (≥ 4.5:1 on the card; the 400 fills are 1.3–2.4:1 by day) — see
+// design/__tests__/themeContrast.test.ts "staff noteheads".
 describe('Explore scale staff colours', () => {
   it('Explore staves show what the instrument plays (they follow the instrument; Learn staves do not)', async () => {
     const scaleStaff = await staffFor('C', 'major');
@@ -63,13 +66,13 @@ describe('Explore scale staff colours', () => {
   it('W1-18: the octave tonic on top is coloured like the tonic', async () => {
     const { notes, colors } = await staffFor('C', 'major');
     expect(notes).toHaveLength(8);
-    expect(colors[7]).toBe(DEGREE_COLORS[1]);
+    expect(colors[7]).toBe(DEGREE_INKS[1]);
   });
 
   it('W1-06: C major pentatonic colours G as the dominant and A as the submediant', async () => {
     const { colors } = await staffFor('C', 'pentatonic_major');
     expect([0, 1, 2, 3, 4, 5].map((i) => colors[i])).toEqual([
-      DEGREE_COLORS[1], DEGREE_COLORS[2], DEGREE_COLORS[3], DEGREE_COLORS[5], DEGREE_COLORS[6], DEGREE_COLORS[1],
+      DEGREE_INKS[1], DEGREE_INKS[2], DEGREE_INKS[3], DEGREE_INKS[5], DEGREE_INKS[6], DEGREE_INKS[1],
     ]);
   });
 
@@ -79,7 +82,7 @@ describe('Explore scale staff colours', () => {
       for (const root of SELECTABLE_ROOTS.filter((_, i) => i % 4 === 0)) {
         const { notes, colors } = await staffFor(root, type);
         notes.forEach((n, i) => {
-          const want = DEGREE_COLORS[letterDegree(root, n.natural + n.accidental) as keyof typeof DEGREE_COLORS];
+          const want = DEGREE_INKS[letterDegree(root, n.natural + n.accidental) as keyof typeof DEGREE_INKS];
           if (colors[i] !== want) bad.push(`${root} ${type} note ${i} ${n.natural}${n.accidental}`);
         });
         cleanup();

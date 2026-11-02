@@ -12,7 +12,7 @@ import { useAudio } from '../../hooks/useAudio.ts';
 import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { useAppStore } from '../../state/store.ts';
 import { useFocusNoteStore, useFocusNote, focusMatches, type FocusNote } from '../../state/focusNoteStore.ts';
-import { DEGREE_COLORS, DEGREE_INKS } from '../../design/tokens/colors.ts';
+import { DEGREE_INKS } from '../../design/tokens/colors.ts';
 import { StaffNotationSkeleton } from '../notation/StaffNotationSkeleton.tsx';
 import type { StaffLayoutInfo } from '../notation/useStaffNotation.ts';
 import { staffTrim } from './staffTrim.ts';
@@ -57,8 +57,11 @@ export function ScaleStrip() {
   const notes: PitchedNote[] = useMemo(() => getScaleNotesWithOctaves(scale.notes, 4), [scale]);
   const midis = useMemo(() => notes.map((n) => getMidiNumber(n, n.octave)), [notes]);
   const degrees = useMemo(() => notes.map((n) => degreeOf(scale.root, n)), [notes, scale.root]);
+  // Noteheads in their degree's INK shade (800 by day, 400 at night): the
+  // mockup's degree colours, at ≥ 4.5:1 on the card — the 400 fills
+  // themselves are 1.3–2.4:1 on cream, under the 3:1 a notehead needs.
   const noteColors = useMemo(
-    () => Object.fromEntries(degrees.map((d, i) => [i, DEGREE_COLORS[degreeColorSlot(d)]])),
+    () => Object.fromEntries(degrees.map((d, i) => [i, DEGREE_INKS[degreeColorSlot(d)]])),
     [degrees],
   );
   const chordPcs = useMemo(() => {
@@ -99,11 +102,15 @@ export function ScaleStrip() {
   const onLayout = useCallback((l: StaffLayoutInfo) => {
     setDrawn((prev) => (prev && prev.width === l.width && prev.xs.length === l.xs.length && prev.xs.every((x, i) => Math.abs(x - l.xs[i]) < 0.5) ? prev : { xs: l.xs, width: l.width }));
   }, []);
-  const xs = useMemo(() => {
-    if (drawn && drawn.xs.length === notes.length && Math.abs(drawn.width - staffWidth) < 1) return drawn.xs;
+  // Column centres as FRACTIONS of the staff's width: the drawing scales
+  // with its box (a viewBox), so columns placed in % stay under their heads
+  // while a resize re-renders, and when the page prints at paper width.
+  const fx = useMemo(() => {
+    if (drawn && drawn.xs.length === notes.length && drawn.width > 0) return drawn.xs.map((x) => x / drawn.width);
     const step = (staffWidth - prefix - 20) / Math.max(1, notes.length);
-    return notes.map((_, i) => prefix + step * (i + 0.5));
+    return notes.map((_, i) => (prefix + step * (i + 0.5)) / staffWidth);
   }, [drawn, notes, staffWidth, prefix]);
+  const xs = useMemo(() => fx.map((f) => f * staffWidth), [fx, staffWidth]);
   const half = useMemo(() => {
     let min = Infinity;
     for (let i = 1; i < xs.length; i++) min = Math.min(min, xs[i] - xs[i - 1]);
@@ -154,7 +161,7 @@ export function ScaleStrip() {
     <section className="explore-card strip-card" aria-labelledby="strip-title" data-testid="scale-strip">
       <div className="explore-card-head">
         <h2 id="strip-title" className="type-section">{t('explore.strip.title')}</h2>
-        <p className="text-caption explore-card-hint" style={{ color: 'var(--text-dim)' }}>{hint}</p>
+        <p className={`text-caption explore-card-hint${written ? '' : ' no-print'}`} style={{ color: 'var(--text-dim)' }}>{hint}</p>
       </div>
       <div ref={scrollRef} className="strip-scroll">
         <div className="strip-body" style={{ width: staffWidth }}>
@@ -180,7 +187,7 @@ export function ScaleStrip() {
                   data-midi={midis[i]}
                   data-note={name}
                   tabIndex={i === tabStop ? 0 : -1}
-                  style={{ left: xs[i] - half, width: half * 2 }}
+                  style={{ left: `${((xs[i] - half) / staffWidth) * 100}%`, width: `${((half * 2) / staffWidth) * 100}%` }}
                   aria-label={t('explore.degreeButton', { degree: i % scale.notes.length + 1, interval: formatDegree(d), note: name })}
                   onPointerEnter={(e) => onEnter(e, i)}
                   onPointerLeave={onLeave}
@@ -209,7 +216,12 @@ export function ScaleStrip() {
               );
             })}
           </div>
-          <div className="strip-staff" aria-hidden="true" style={{ marginTop: -trim.top, marginBottom: -trim.bottom }}>
+          {/* Percent margins (of the strip's width) scale with the drawing. */}
+          <div
+            className="strip-staff"
+            aria-hidden="true"
+            style={{ marginTop: `${(-trim.top / staffWidth) * 100}%`, marginBottom: `${(-trim.bottom / staffWidth) * 100}%` }}
+          >
             <Suspense fallback={<StaffNotationSkeleton height={STAFF_HEIGHT} />}>
               <StaffNotation
                 notes={notes}

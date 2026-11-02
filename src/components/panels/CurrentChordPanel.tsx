@@ -30,6 +30,7 @@ import { chordVoicingPitches, getMidiNumber, midiToNote } from '../../core/utils
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { SCALE_FORMULAS, getScaleDegreeFunctionKey } from '../../core/constants/scales.ts';
 import { useAudio } from '../../hooks/useAudio.ts';
+import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { useFocusNoteStore, useFocusNote, type FocusNote } from '../../state/focusNoteStore.ts';
 import { useToastAvoid } from '../layout/toastLayout.ts';
 import {
@@ -76,6 +77,7 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
   const clearFocus = useFocusNoteStore((s) => s.clear);
   const focusPc = useFocusNote()?.pc ?? null;
   const toneGroupId = useId();
+  const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const synthPreset = useAppStore((s) => s.synthPreset);
   const chordInversion = useAppStore((s) => s.chordInversion);
   const setChordInversion = useAppStore((s) => s.setChordInversion);
@@ -220,7 +222,7 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
   return (
     <m.div
       ref={detailRef}
-      initial={{ opacity: 0, y: 4 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.15 }}
       className="chord-detail"

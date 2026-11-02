@@ -1244,6 +1244,14 @@ body {
     z-index: 1;
     pointer-events: none;
   }
+  /* The drawing fills its box (a viewBox): during a resize, before VexFlow
+     redraws, it scales — and the %-placed columns stay under the heads. */
+  .strip-staff svg {
+    display: block;
+    /* VexFlow writes a px width / height inline; the box decides. */
+    width: 100% !important;
+    height: auto !important;
+  }
   /* VexFlow gives each note a hit rect with pointer-events="auto"; the
      columns under the staff must get the pointer, so nothing in it may. */
   .strip-staff * {
@@ -1339,6 +1347,33 @@ body {
     box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
   }
 
+  /* Tablet: the circle's heading is a disclosure button (remembered). */
+  .circle-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: var(--tap);
+    margin: 0 0 0 -8px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-variant-caps: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+  }
+  .circle-toggle:hover {
+    background: var(--card-hover);
+  }
+  .circle-toggle > svg {
+    transition: transform 0.15s ease;
+  }
+  .circle-body[data-folded] {
+    display: none;
+  }
+
   /* Circle of fifths card + the key's facts. */
   .key-facts {
     display: grid;
@@ -1430,6 +1465,54 @@ body {
     line-height: 1.2;
     color: var(--text);
     overflow-wrap: anywhere;
+  }
+}
+
+/* A laptop shorter than ~900 px (1280×800, 1366×768, 1536×864): the circle
+   column cannot hold the circle over its facts, and only the WORK column may
+   scroll — so the column widens and the facts (with the circle's caption
+   and minor-variant chips) stand beside the circle. */
+@media (min-width: 1200px) and (max-height: 899px) {
+  .explore-work {
+    grid-template-columns: minmax(0, 1fr) 500px;
+  }
+  .explore-aside .circle-card {
+    display: grid;
+    grid-template-columns: 276px minmax(0, 1fr);
+    grid-template-rows: auto auto auto 1fr;
+    column-gap: 16px;
+    align-content: start;
+  }
+  .explore-aside .circle-card > .explore-card-head {
+    grid-column: 1 / -1;
+  }
+  .explore-aside .circle-body,
+  .explore-aside .cof-root {
+    display: contents;
+  }
+  .explore-aside .cof-root > svg {
+    grid-column: 1;
+    grid-row: 2 / span 3;
+  }
+  .explore-aside .cof-caption,
+  .explore-aside .cof-variants,
+  .explore-aside .key-facts {
+    grid-column: 2;
+  }
+  .explore-aside .cof-caption {
+    text-align: left;
+    margin-top: 8px;
+  }
+  .explore-aside .cof-variants {
+    justify-content: flex-start;
+  }
+  /* A narrow column: each fact's name over its value. */
+  .explore-aside .key-facts {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0;
+  }
+  .explore-aside .key-fact dd {
+    margin-bottom: 6px;
   }
 }
 
@@ -1666,7 +1749,14 @@ p.explore-prose {
 
 /* Print styles — hide navigation/instruments, show content only */
 @media print {
-  :root {
+  /* Paper: light tokens whatever theme is on screen (the Night block is
+     more specific, so it is named too — Night used to print dark), ink
+     shades of the degree colours, and dim text that still reads (#888 was
+     3.5:1). The staff picks these up live: its inline colours are the
+     variables, not the values (useStaffNotation). */
+  :root,
+  :root.fermata-night {
+    color-scheme: light;
     --bg: #fff;
     --bg-raised: #fafafa;
     --card: #f5f5f5;
@@ -1676,9 +1766,21 @@ p.explore-prose {
     --border-light: #ccc;
     --border-subtle: #eee;
     --text: #111;
-    --text-muted: #555;
-    --text-dim: #888;
-    --accent: #2563eb;
+    --text-muted: #444;
+    --text-dim: #5c5c5c;
+    --accent: #a65a2a;
+    --accent-hover: #8f4a1e;
+    --accent-text: #8f4a1e;
+    --on-accent: #fff;
+    --seg-on-border: #8b7551;
+    --deg-ink-1: #1e40af;
+    --deg-ink-2: #5b21b6;
+    --deg-ink-3: #9d174d;
+    --deg-ink-4: #065f46;
+    --deg-ink-5: #92400e;
+    --deg-ink-6: #9a3412;
+    --deg-ink-7: #991b1b;
+    --on-degree: #2a1f14;
     --shadow-sm: none;
     --shadow-md: none;
     --shadow-lg: none;
@@ -1689,8 +1791,10 @@ p.explore-prose {
     background: #fff !important;
     color: #111 !important;
   }
-  /* Hide instrument bar, top bar, and non-printable elements */
-  header, [aria-label$="instrument"], .no-print {
+  /* Hide the top bar, the instrument dock (bar and all), toasts, menus,
+     sheets, the full-neck view and anything marked no-print. */
+  header, [aria-label$="instrument"], .no-print,
+  [data-testid="instrument-dock"], .toast-region, .menu-popup, .sheet-root, .neck-view {
     display: none !important;
   }
   /* Expand main content */
@@ -1707,5 +1811,35 @@ p.explore-prose {
     display: block !important;
     height: auto !important;
     overflow: visible !important;
+  }
+  .explore-main > * + *, .explore-aside {
+    margin-top: 10px;
+  }
+  .explore-card {
+    break-inside: avoid;
+  }
+  /* The staff strip at the page's width: the drawing scales (viewBox) and
+     the note columns are placed in % of it, so they stay under their heads. */
+  .strip-scroll {
+    overflow: visible !important;
+  }
+  .strip-body {
+    width: 100% !important;
+  }
+  .strip-staff > div {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  /* A folded circle (tablet) still prints. */
+  .circle-body[data-folded] {
+    display: block !important;
+  }
+  .circle-toggle > svg {
+    display: none;
+  }
+  /* The circle at a size that leaves room for its facts on the page. */
+  .circle-card svg {
+    max-width: 300px !important;
   }
 }

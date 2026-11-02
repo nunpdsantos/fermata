@@ -19,6 +19,8 @@ import { ScaleStrip } from '../ScaleStrip';
 import { ChordsCard } from '../ChordsCard';
 import { ExploreHeader } from '../ExploreHeader';
 import { DockReadout } from '../../layout/DockReadout';
+import { CircleNavigator } from '../CircleNavigator';
+import { sanitizePersistedAppState } from '../../../state/store';
 
 const noteOn = vi.fn().mockResolvedValue(71);
 const noteOff = vi.fn();
@@ -226,5 +228,31 @@ describe('dock read-out', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+});
+
+describe('tablet: the circle below the work folds (remembered)', () => {
+  it('folded by default; the heading button unfolds it and the choice lands in the persisted preferences', () => {
+    useAppStore.setState({ exploreCircleOpen: false });
+    render(<CircleNavigator collapsible />);
+    const toggle = screen.getByRole('button', { name: 'Circle of Fifths' });
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    expect(screen.getByTestId('circle-card').querySelector('.circle-body')!.hasAttribute('data-folded')).toBe(true);
+    fireEvent.click(toggle);
+    expect(useAppStore.getState().exploreCircleOpen).toBe(true);
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    expect(useAppStore.persist.getOptions().partialize!(useAppStore.getState())).toMatchObject({ exploreCircleOpen: true });
+  });
+
+  it('beside the work (laptop) it never folds', () => {
+    useAppStore.setState({ exploreCircleOpen: false });
+    render(<CircleNavigator />);
+    expect(screen.queryByRole('button', { name: 'Circle of Fifths' })).toBeNull();
+    expect(screen.getByTestId('circle-card').querySelector('.circle-body')!.hasAttribute('data-folded')).toBe(false);
+  });
+
+  it('a corrupt saved value falls back to the default', () => {
+    expect(sanitizePersistedAppState({ exploreCircleOpen: 'yes' })).not.toHaveProperty('exploreCircleOpen');
+    expect(sanitizePersistedAppState({ exploreCircleOpen: true })).toMatchObject({ exploreCircleOpen: true });
   });
 });

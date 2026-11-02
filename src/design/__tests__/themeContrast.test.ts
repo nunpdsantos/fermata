@@ -318,6 +318,23 @@ describe.each(Object.entries(THEMES))('v2 token pairs — %s', (_theme, vars) =>
     expect(bad).toEqual([]);
   });
 
+  // W11-B: the Explore staff strip colours its noteheads by degree (the
+  // D-25 mockup) in the INK shades, and dims notes outside a chord to
+  // --text-dim. A notehead is a graphic: ≥ 3:1 against what it sits on —
+  // the card, the focused column (--bg) and a hovered one (--card-hover).
+  it('staff noteheads: degree inks and the dimmed --text-dim ≥ 3:1 on the strip\'s backgrounds', () => {
+    const bad: string[] = [];
+    for (const s of ['--card', '--bg', '--card-hover']) {
+      for (const d of DEGREES) {
+        const r = contrast(rgb(`--deg-ink-${d}`), rgb(s));
+        if (r < MIN_UI) bad.push(`--deg-ink-${d} on ${s}: ${r.toFixed(2)}`);
+      }
+      const dim = contrast(rgb('--text-dim'), rgb(s));
+      if (dim < MIN_UI) bad.push(`--text-dim on ${s}: ${dim.toFixed(2)}`);
+    }
+    expect(bad).toEqual([]);
+  });
+
   it('dark ink on every degree fill (5.8–9.6:1 by design)', () => {
     for (const d of DEGREES) {
       expect(contrast(any('--on-degree'), any(`--deg-${d}`)), `deg ${d}`).toBeGreaterThanOrEqual(5.8);
@@ -356,6 +373,14 @@ describe.each(Object.entries(THEMES))('v2 token pairs — %s', (_theme, vars) =>
   it('piano key labels on the black keys', () => {
     expect(contrast(rgb('--piano-white'), rgb('--piano-black'))).toBeGreaterThanOrEqual(MIN_TEXT);
     expect(contrast(rgb('--piano-label'), rgb('--piano-black'))).toBeLessThan(MIN_TEXT); // why not --piano-label
+  });
+});
+
+describe('why the noteheads are not the 400 fills (W11-B)', () => {
+  it('by day most degree fills are under 3:1 on the card — a notehead in them would not meet non-text contrast', () => {
+    const vars = THEMES['fermata (day)'];
+    const under = DEGREES.filter((d) => contrast(hexVar(vars, `--deg-${d}`), hexVar(vars, '--card')) < MIN_UI);
+    expect(under.length).toBeGreaterThanOrEqual(5);
   });
 });
 

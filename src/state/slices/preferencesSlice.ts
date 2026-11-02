@@ -14,6 +14,8 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
   preferencesUpdatedAt: 0,
   lastView: 'explore',
   dockDetents: { ...DEFAULT_DOCK_DETENTS },
+  // Tablet: the circle below the work starts folded (the column stays short).
+  exploreCircleOpen: false,
 
   setColorMode: (mode) => set({ colorMode: mode, preferencesUpdatedAt: Date.now() }),
   setThemeMode: (mode) => set({ themeMode: mode, preferencesUpdatedAt: Date.now() }),
@@ -25,6 +27,7 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
     if (get().dockDetents[view] === detent) return;
     set((s) => ({ dockDetents: { ...s.dockDetents, [view]: detent } }));
   },
+  setExploreCircleOpen: (open) => set({ exploreCircleOpen: open }),
   requestDock: (detent) => {
     const view = get().view;
     if (view === 'drill') return;

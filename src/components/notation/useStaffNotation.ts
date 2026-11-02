@@ -19,6 +19,10 @@ interface UseStaffNotationOptions {
   keySignature?: string;
   width?: number;
   height?: number;
+  /** Note index → colour for the whole note (head, stem, ledger lines): a
+   *  hex value or a CSS variable (`var(--deg-ink-3)`), resolved against the
+   *  painted theme. Applied after the theme pass, which used to overwrite it
+   *  (noteheads came out in --text whatever was asked — W11-B). */
   noteColors?: Record<number, string>;
   duration?: string;
   /** When true, render all notes stacked as a single chord (one StaveNote with
@@ -126,10 +130,18 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
     const renderer = new Renderer(container, Renderer.Backends.SVG);
     renderer.resize(w, h);
     const context = renderer.getContext();
+    // A viewBox, so a stylesheet may scale the drawing (the Explore strip
+    // prints at the page's width with its note columns still under the heads).
+    container.querySelector('svg')?.setAttribute('viewBox', `0 0 ${w} ${h}`);
 
     // Read CSS custom properties for theme colors
     const computedStyle = getComputedStyle(document.documentElement);
     const textColor = computedStyle.getPropertyValue('--text').trim() || '#e4e4e7';
+    // A colour as the painted theme has it ("var(--deg-ink-3)" → "#9d174d").
+    const resolve = (c: string) => {
+      const m = /^var\((--[\w-]+)\)$/.exec(c.trim());
+      return m ? computedStyle.getPropertyValue(m[1]).trim() || textColor : c;
+    };
 
     context.setFont('Arial', 10);
     // VexFlow SVGContext exposes these methods but they're missing from RenderContext typings
@@ -171,7 +183,7 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
       // Use the first provided color for the whole chord (StaveNote-level styling).
       const firstColor = options.noteColors?.[0];
       if (firstColor) {
-        sn.setStyle({ fillStyle: firstColor, strokeStyle: firstColor });
+        sn.setStyle({ fillStyle: resolve(firstColor), strokeStyle: resolve(firstColor) });
       }
       staveNotes = [sn];
     } else {
@@ -188,8 +200,8 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
         // Apply degree color if provided
         if (options.noteColors?.[i]) {
           sn.setStyle({
-            fillStyle: options.noteColors[i],
-            strokeStyle: options.noteColors[i],
+            fillStyle: resolve(options.noteColors[i]),
+            strokeStyle: resolve(options.noteColors[i]),
           });
         }
 
@@ -208,32 +220,42 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
     voice.draw(context, stave);
 
 
-    // Apply theme colors to SVG elements
+    // Apply theme colors to SVG elements. Inline styles name the theme's
+    // VARIABLES (not the values read now), so a theme change — or printing,
+    // whose stylesheet redefines them for paper — recolours the staff
+    // without redrawing it (W11-B).
+    const TEXT = 'var(--text)';
     const svg = container.querySelector('svg');
     if (svg) {
       svg.querySelectorAll('line, path').forEach((el) => {
         const elem = el as SVGElement;
         // Only override elements that don't have degree colors set
         if (!elem.style.fill || elem.style.fill === 'none' || elem.style.fill === 'black' || elem.style.fill === '#000000') {
-          elem.style.fill = textColor;
+          elem.style.fill = TEXT;
         }
         if (!elem.style.stroke || elem.style.stroke === 'none' || elem.style.stroke === 'black' || elem.style.stroke === '#000000') {
-          elem.style.stroke = textColor;
+          elem.style.stroke = TEXT;
         }
       });
       svg.querySelectorAll('text').forEach((el) => {
         if (!el.style.fill || el.style.fill === 'black' || el.style.fill === '#000000') {
-          el.style.fill = textColor;
+          el.style.fill = TEXT;
         }
       });
+      // Per-note colours win over the theme pass (VexFlow puts them on the
+      // note's group as attributes, which the inline theme fill above beat).
+      const paint = (sn: InstanceType<typeof StaveNote>, colour: string) =>
+        sn.getSVGElement()?.querySelectorAll<SVGElement>('text, path').forEach((el) => {
+          el.style.fill = colour;
+          el.style.stroke = colour;
+        });
+      staveNotes.forEach((sn, i) => {
+        const c = options.chord ? options.noteColors?.[0] : options.noteColors?.[i];
+        if (c) paint(sn, c);
+      });
       if (options.noteDim) {
-        const dim = computedStyle.getPropertyValue('--text-dim').trim() || textColor;
         staveNotes.forEach((sn, i) => {
-          if (!options.noteDim?.[i]) return;
-          sn.getSVGElement()?.querySelectorAll<SVGElement>('text, path').forEach((el) => {
-            el.style.fill = dim;
-            el.style.stroke = dim;
-          });
+          if (options.noteDim?.[i]) paint(sn, 'var(--text-dim)');
         });
       }
     }

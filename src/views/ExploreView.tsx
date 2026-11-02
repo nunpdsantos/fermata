@@ -47,7 +47,7 @@ export function ExploreView() {
         <div className="explore-main">
           <ScaleStrip />
           <ChordsCard />
-          {!wide && !phone && <CircleNavigator />}
+          {!wide && !phone && <CircleNavigator collapsible />}
         </div>
         {wide && (
           <aside className="explore-aside">

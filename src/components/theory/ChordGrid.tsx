@@ -8,6 +8,7 @@ import { DEGREE_COLORS, DEGREE_INKS } from '../../design/tokens/colors.ts';
 import { qualityName } from '../../utils/qualityName.ts';
 import { toContentLanguage } from '../drill/drillText.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
+import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 
 export function ChordGrid() {
   const { t, i18n } = useTranslation();
@@ -16,6 +17,9 @@ export function ChordGrid() {
   const setSelectedChord = useAppStore((s) => s.setSelectedChord);
   const selectedChord = useAppStore((s) => s.selectedChord);
   const degreeColorsOn = useDegreeColorsEnabled();
+  // Reduced motion: the cards are simply there (framer's "user" mode still
+  // fades opacity — measured mid-fade, their text failed contrast, W11-B).
+  const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
   if (diatonicChords.length === 0) {
     return (
@@ -70,7 +74,7 @@ export function ChordGrid() {
               border: isSelected ? '1.5px solid var(--accent)' : '1.5px solid var(--border-subtle)',
               boxShadow: 'var(--shadow-sm)',
             }}
-            initial={{ opacity: 0, y: 12 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             // one-off spring (400/25) — balances the staggered reveal so
             // adjacent chips don't feel identical; tighter than GENTLE but

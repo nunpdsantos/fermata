@@ -23,6 +23,7 @@ const ALLOWED_VALUES: Record<string, readonly unknown[]> = {
   colorMode: ['functional', 'absolute'],
   lastView: ['explore', 'learn', 'drill'],
   scaleOctaves: [1, 2],
+  exploreCircleOpen: [true, false],
 };
 
 // Numeric ranges. baseOctave = the piano's octave tabs (0–8, whole numbers);
@@ -147,6 +148,7 @@ export const useAppStore = create<AppState>()(
         preferencesUpdatedAt: state.preferencesUpdatedAt,
         lastView: state.lastView,
         dockDetents: state.dockDetents,
+        exploreCircleOpen: state.exploreCircleOpen,
       }),
       migrate: (persisted: unknown, version: number) => {
         const state = persisted && typeof persisted === 'object'

@@ -568,7 +568,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
   // Caption under the circle: the hovered key's relation, or the selected
   // key's scale + signature. Two fixed lines, so hovering never shifts layout.
   const caption = (
-    <div className="text-center text-ui mt-1 min-h-[2.9em]" style={{ color: 'var(--text-muted)' }} aria-live="polite">
+    <div className="cof-caption text-center text-ui mt-1 min-h-[2.9em]" style={{ color: 'var(--text-muted)' }} aria-live="polite">
       {hoveredIdx !== null && hoverInfo ? (
         <>
           <div data-testid={hoverInfo.distLabel ? 'cof-hover-dist' : undefined} style={{ color: 'var(--text-dim)' }}>{hoverInfo.distLabel || '\u00a0'}</div>
@@ -588,11 +588,11 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
   );
 
   return (
-    <div>
+    <div className="cof-root">
       {svgContent}
       {caption}
       {isMinorSel && (
-        <div className="flex justify-center mt-2">
+        <div className="cof-variants flex justify-center mt-2">
           {/* Natural / harmonic / melodic: one of many (D-28 choice chip). */}
           <ChipGroup
             label={t('explore.minorVariant')}
