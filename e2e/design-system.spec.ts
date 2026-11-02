@@ -569,6 +569,25 @@ for (const v of VIEWPORTS) {
           await raiseToastStack(page);
           await check(page, v, combo, 'toasts');
           await reloadFromToast(page, where('explore'));
+          // "Later" (round 5): the toast goes, a dot on "⋯" and its name say an
+          // update waits; the menu item reloads.
+          await expect(page.locator('#root')).not.toBeEmpty();
+          await page.waitForTimeout(1200); // the reloaded page's entrance fades, as in open()
+          await page.evaluate(`(async () => { (await import('/src/hooks/usePWA.ts')).usePwaUpdateStore.setState({ needRefresh: true }); })()`);
+          const update = page.locator('.toast-card').filter({ hasText: /new version/i });
+          await expect(update).toBeVisible();
+          await expect(page.getByTestId('app-menu-badge')).toHaveCount(0);
+          await update.getByRole('button', { name: 'Later' }).click();
+          await expect(update).toHaveCount(0);
+          await expect(page.getByTestId('app-menu-badge')).toBeVisible();
+          const more = page.getByRole('button', { name: 'More — update ready' });
+          await expect(more).toBeVisible();
+          await check(page, v, combo, 'menu-badge');
+          await more.click();
+          await Promise.all([
+            page.waitForEvent('load', { timeout: 15_000 }),
+            page.getByRole('menuitem', { name: 'Update ready: reload' }).click(),
+          ]);
         }
         await context.close();
       }
@@ -721,6 +740,35 @@ for (const v of VIEWPORTS) {
       }
     });
   }
+}
+
+// Circle of fifths under a real mouse (W11-A review round 5): hovering any
+// wedge tints it (and its relative); every label must stay >= 4.5:1. The old
+// tint put them at 3.6-3.7:1 — this test fails on it (checked).
+for (const th of THEMES) {
+  test(`laptop-${th.name}: every circle-of-fifths wedge hovered keeps its label readable`, async ({ browser }) => {
+    test.setTimeout(120_000);
+    const v = VIEWPORTS[3];
+    const { context, page } = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore', dockDetents: { explore: 'peek', learn: 'peek' } });
+    const wedges = page.locator('g[role="button"][data-key]');
+    const n = await wedges.count();
+    expect(n, 'the circle of fifths is on the page').toBe(24);
+    let tinted = 0;
+    for (let i = 0; i < n; i++) {
+      const w = wedges.nth(i);
+      await w.scrollIntoViewIfNeeded();
+      const label = await w.getAttribute('data-key');
+      const resting = await w.locator('path').getAttribute('fill');
+      const t = (await w.locator('text').first().boundingBox())!;
+      await page.mouse.move(t.x + t.width / 2, t.y + t.height + 4);
+      await page.waitForTimeout(200);
+      if ((await w.locator('path').getAttribute('fill')) !== resting || (await w.locator('path').getAttribute('stroke')) === 'var(--accent)') tinted++;
+      const r = await auditPage(page, { minFontPx: 12, minTapPx: 36 });
+      expect.soft(r.contrastViolations, `hovering ${label}`).toEqual([]);
+    }
+    expect(tinted, 'the mouse really hovered the wedges').toBeGreaterThan(20);
+    await context.close();
+  });
 }
 
 // Clipping at the widths where the chord cards are narrowest (1024 px, the
