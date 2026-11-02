@@ -7,16 +7,51 @@ const curriculumL1: CurriculumLevelOverlay = {
       title: 'Notação e Altura',
       description:
         'A pauta, claves, meios-tons, tons, acidentes e a escala cromática',
+      milestone: {
+        skillsSummary: [
+          'Ler a clave de sol e a clave de fá e localizar o C central na pauta dupla',
+          'Definir meios-tons e tons e encontrá-los no piano',
+          'Identificar sustenidos, bemóis e equivalentes enarmónicos',
+          'Conhecer as 12 alturas cromáticas e vê-las no teclado',
+        ],
+        bridgeText:
+          'Já conheces as 12 alturas e como funciona a distância no teclado. A seguir vais aprender como se organiza o tempo na música — figuras rítmicas, pausas e compasso.',
+        tryThisLabel: 'Toca as 12 notas por ordem',
+        tryThisPrompt: 'Consegues nomear cada nota antes de a ouvir?',
+      },
     },
     u2: {
       title: 'Ritmo e Compasso',
       description:
         'Figuras rítmicas, pausas, pontos de aumentação, ligaduras e compassos simples',
+      milestone: {
+        skillsSummary: [
+          'Conhecer a hierarquia das figuras rítmicas, da semibreve à semicolcheia',
+          'Compreender os pontos de aumentação e as ligaduras como modificadores de duração',
+          'Ler indicações de compasso simples: 2/4, 3/4, 4/4',
+          'Sentir o metro binário, ternário e quaternário',
+        ],
+        bridgeText:
+          'Já compreendes a altura e o ritmo — as duas dimensões da notação musical. Agora vais combiná-los em escalas, intervalos e nos teus primeiros acordes.',
+        tryThisLabel: 'Toca G maior a um tempo regular',
+        tryThisPrompt: 'Experimenta marcar semínimas enquanto a escala toca.',
+      },
     },
     u3: {
       title: 'Escalas, Intervalos e Primeiros Acordes',
       description:
         'A escala maior, armações de clave, números de intervalos e tríades maiores',
+      milestone: {
+        skillsSummary: [
+          'Construir escalas maiores em C, G, D e F usando o padrão T-T-mT',
+          'Ler as armações de clave das primeiras quatro tonalidades maiores',
+          'Nomear intervalos do uníssono à oitava contando os nomes das notas',
+          'Construir tríades maiores a partir de qualquer fundamental',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Constrói uma tríade de D maior',
+        tryThisPrompt: 'Nomeia as três notas antes de tocar.',
+      },
     },
   },
 

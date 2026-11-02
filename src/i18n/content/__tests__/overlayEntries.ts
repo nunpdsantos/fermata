@@ -169,6 +169,15 @@ export function overlayEntries(): Entry[] {
     for (const unit of EN_UNITS[n]) {
       add(`cur:${lvl}.${unit.id}.title`, unit.title, (l) => curriculumOverlay(l, n).units[unit.id]?.title);
       add(`cur:${lvl}.${unit.id}.description`, unit.description, (l) => curriculumOverlay(l, n).units[unit.id]?.description);
+      // The milestone shown at unit completion (D-23).
+      const ms = unit.milestone;
+      if (ms) {
+        const mov = (l: Lang) => curriculumOverlay(l, n).units[unit.id]?.milestone;
+        ms.skillsSummary.forEach((s, i) => add(`cur:${lvl}.${unit.id}.milestone.skillsSummary[${i}]`, s, (l) => mov(l)?.skillsSummary[i]));
+        if (ms.bridgeText) add(`cur:${lvl}.${unit.id}.milestone.bridgeText`, ms.bridgeText, (l) => mov(l)?.bridgeText);
+        add(`cur:${lvl}.${unit.id}.milestone.tryThisLabel`, ms.tryThisLabel, (l) => mov(l)?.tryThisLabel);
+        add(`cur:${lvl}.${unit.id}.milestone.tryThisPrompt`, ms.tryThisPrompt, (l) => mov(l)?.tryThisPrompt);
+      }
       for (const mod of unit.modules) {
         const ov = (l: Lang) => curriculumOverlay(l, n).modules[mod.id];
         add(`cur:${mod.id}.title`, mod.title, (l) => ov(l)?.title);

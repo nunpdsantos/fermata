@@ -7,16 +7,50 @@ const curriculumL9: CurriculumLevelOverlay = {
       title: 'Treino de Altura e Intervalos',
       description:
         'Correspondência de altura, direção melódica, reconhecimento maior/menor e identificação completa de intervalos de ouvido',
+      milestone: {
+        skillsSummary: [
+          'Corresponder alturas de ouvido e identificar a direção melódica em diferentes registos',
+          'Reconhecer instintivamente a tonalidade maior vs. menor em acordes e escalas',
+          'Identificar de ouvido todos os intervalos simples (de 2m a 8P), ascendentes e descendentes, tanto melódicos como harmónicos',
+          'Reconhecer intervalos compostos (9.as, 10.as, 11.as) como versões mais largas de intervalos simples',
+        ],
+        bridgeText:
+          'Já consegues ouvir altura, direção, intervalos e consonância vs. dissonância. Agora vais treinar os teus ouvidos para reconhecer escalas inteiras, qualidades de acordes e passagens musicais completas.',
+        tryThisLabel: 'Ouve C menor — sombrio e estável',
+        tryThisPrompt: 'Consegues perceber que é menor antes de olhar para as notas?',
+      },
     },
     u31: {
       title: 'Competências de Escalas, Acordes e Ditado',
       description:
         'Reconhecimento de escalas e modos, identificação de qualidades de tríades e acordes de sétima de ouvido',
+      milestone: {
+        skillsSummary: [
+          'Distinguir de ouvido escalas maiores, menores, modais, pentatónicas, de blues e simétricas',
+          'Identificar as quatro qualidades de tríade e todas as qualidades de acordes de sétima apenas pelo som',
+          'Ouvir as notas características que definem cada modo e cada escala especial',
+        ],
+        bridgeText:
+          'Os teus ouvidos já conseguem descodificar escalas e acordes apenas pelo som. As competências finais são o ditado, a leitura à primeira vista e a audição contextual — ligando os teus ouvidos à compreensão musical completa.',
+        tryThisLabel: 'Ouve o meio-diminuto — sombrio e cheio de anseio',
+        tryThisPrompt: 'Consegues distingui-lo de um acorde de 7.ª menor de ouvido?',
+      },
     },
     u32: {
       title: 'Ditado, Leitura à Primeira Vista e Audição Contextual',
       description:
         'Ditado melódico e harmónico, solfejo móvel para leitura à primeira vista e audição crítica de textura, forma e estilo',
+      milestone: {
+        skillsSummary: [
+          'Transcrever melodias diatónicas e cromáticas de ouvido usando processos sistemáticos de ditado',
+          'Identificar cadências e transcrever progressões harmónicas usando numeração romana',
+          'Cantar à primeira vista em tonalidades maiores e menores usando solfejo móvel com sílabas cromáticas',
+          'Identificar de ouvido texturas musicais, estruturas formais e períodos estilísticos históricos',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Canta junto em solfejo: do-re-me-fa-sol-le-ti-do',
+        tryThisPrompt: 'Consegues cantar a 7.ª elevada (ti) antes de a ouvir?',
+      },
     },
   },
 

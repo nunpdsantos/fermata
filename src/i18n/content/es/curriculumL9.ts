@@ -7,16 +7,50 @@ const curriculumL9: CurriculumLevelOverlay = {
       title: 'Entrenamiento de Altura e Intervalos',
       description:
         'Correspondencia de alturas, dirección melódica, reconocimiento mayor/menor e identificación completa de intervalos de oído',
+      milestone: {
+        skillsSummary: [
+          'Hacer corresponder alturas de oído e identificar la dirección melódica en diferentes registros',
+          'Reconocer instintivamente la tonalidad mayor frente a menor en acordes y escalas',
+          'Identificar de oído todos los intervalos simples (de 2m a 8J), ascendentes y descendentes, tanto melódicos como armónicos',
+          'Reconocer intervalos compuestos (9.as, 10.as, 11.as) como versiones más amplias de intervalos simples',
+        ],
+        bridgeText:
+          'Ya puedes oír altura, dirección, intervalos y consonancia frente a disonancia. Ahora entrenarás tus oídos para reconocer escalas enteras, cualidades de acordes y pasajes musicales completos.',
+        tryThisLabel: 'Escucha C menor — oscuro y estable',
+        tryThisPrompt: '¿Puedes darte cuenta de que es menor antes de mirar las notas?',
+      },
     },
     u31: {
       title: 'Competencias de Escalas, Acordes y Dictado',
       description:
         'Reconocimiento de escalas y modos, identificación de cualidades de tríadas y acordes de séptima de oído',
+      milestone: {
+        skillsSummary: [
+          'Distinguir de oído escalas mayores, menores, modales, pentatónicas, de blues y simétricas',
+          'Identificar las cuatro cualidades de tríada y todas las cualidades de acordes de séptima solo por el sonido',
+          'Escuchar las notas características que definen cada modo y cada escala especial',
+        ],
+        bridgeText:
+          'Tus oídos ya pueden descifrar escalas y acordes solo por el sonido. Las competencias finales son el dictado, la lectura a primera vista y la escucha contextual — conectando tus oídos con la comprensión musical completa.',
+        tryThisLabel: 'Escucha el semidisminuido — oscuro y anhelante',
+        tryThisPrompt: '¿Puedes distinguirlo de un acorde de 7.ª menor de oído?',
+      },
     },
     u32: {
       title: 'Dictado, Lectura a Primera Vista y Escucha Contextual',
       description:
         'Dictado melódico y armónico, solfeo móvil para lectura a primera vista y escucha crítica de textura, forma y estilo',
+      milestone: {
+        skillsSummary: [
+          'Transcribir melodías diatónicas y cromáticas de oído usando procesos sistemáticos de dictado',
+          'Identificar cadencias y transcribir progresiones armónicas usando numeración romana',
+          'Cantar a primera vista en tonalidades mayores y menores usando solfeo móvil con sílabas cromáticas',
+          'Identificar de oído texturas musicales, estructuras formales y periodos estilísticos históricos',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Canta en solfeo: do-re-me-fa-sol-le-ti-do',
+        tryThisPrompt: '¿Puedes cantar la 7.ª elevada (ti) antes de oírla?',
+      },
     },
   },
 

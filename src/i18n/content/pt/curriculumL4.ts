@@ -7,16 +7,49 @@ const curriculumL4: CurriculumLevelOverlay = {
       title: 'Notas Estranhas ao Acorde e Sétima da Dominante',
       description:
         'Suspensões, apogiatura, pedal, regras de resolução da sétima da dominante e inversões de V7',
+      milestone: {
+        skillsSummary: [
+          'Identificar suspensões, apogiaturas, escapatórias, retardos, pedais e notas cambiadas',
+          'Resolver o V7 em todas as inversões com a condução de vozes e o tratamento das notas de tendência corretos',
+          'Compreender por que V4/2 tem de resolver para I6 e como cada inversão determina o movimento do baixo',
+        ],
+        bridgeText:
+          'Já compreendes todos os tipos de notas estranhas ao acorde e consegues resolver a sétima da dominante em todas as inversões. A seguir vais explorar a paleta completa de acordes de sétima diatónicos, classificar acordes por função harmónica e descobrir como as sequências criam movimento harmónico direcionado.',
+        tryThisLabel: 'Toca G7 e resolve para C maior',
+        tryThisPrompt: 'Consegues nomear as duas notas de tendência e para onde resolve cada uma?',
+      },
     },
     u13: {
       title: 'Acordes de Sétima Diatónicos, Função e Sequências',
       description:
         'Sétimas pré-dominantes, mediante e sensível, teoria da função harmónica e sequências harmónicas',
+      milestone: {
+        skillsSummary: [
+          'Construir e resolver todos os acordes de sétima diatónicos, incluindo ii7, iii7, vi7, viiø7 e vii°7',
+          'Classificar cada acorde diatónico por função harmónica: Tónica, Pré-Dominante ou Dominante',
+          'Reconhecer sequências harmónicas de quintas descendentes, segundas ascendentes e terças descendentes',
+        ],
+        bridgeText:
+          'Já consegues construir todos os acordes de sétima diatónicos, compreender a função de cada um dentro de uma tonalidade e ouvir como os acordes se movem em padrões sequenciais. A unidade final aplica todo este conhecimento ao contraponto, ao compasso, à ornamentação cromática, à análise e ao rico mundo harmónico das tonalidades menores.',
+        tryThisLabel: 'Começa uma progressão ii7-V7-Imaj7',
+        tryThisPrompt:
+          'Consegues traçar a progressão ii7-V7-Imaj7 e identificar a função de cada acorde?',
+      },
     },
     u14: {
       title: 'Contraponto, Compasso, Análise e Harmonia Menor',
       description:
         'Contraponto a duas vozes, compassos assimétricos, ornamentação cromática, análise com numerais romanos e sistema de acordes em modo menor',
+      milestone: {
+        skillsSummary: [
+          'Aplicar as regras de consonância e dissonância no contraponto de primeira e segunda espécie',
+          'Fazer uma análise completa com numerais romanos, incluindo inversões, notas estranhas ao acorde e cadências',
+          'Navegar a paleta fluida de acordes das tonalidades menores, extraída das três formas da escala menor',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Explora a paleta de acordes da menor harmónica',
+        tryThisPrompt: 'Que acordes vêm da menor harmónica e quais vêm da menor natural?',
+      },
     },
   },
 

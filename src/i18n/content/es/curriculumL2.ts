@@ -7,21 +7,67 @@ const curriculumL2: CurriculumLevelOverlay = {
       title: 'Todas las Tonalidades Mayores y Grados de la Escala',
       description:
         'Las 15 armaduras de clave mayores, el Círculo de Quintas y los nombres y funciones de los grados de la escala',
+      milestone: {
+        skillsSummary: [
+          'Identificar las 15 armaduras de clave mayores y recorrer todo el Círculo de Quintas',
+          'Nombrar los grados de la escala por su función: tónica, dominante, sensible y otros',
+          'Usar trucos de identificación rápida para tonalidades con sostenidos y con bemoles',
+        ],
+        bridgeText:
+          'Ya conoces todas las tonalidades mayores y todos los grados de la escala por su nombre. Ahora explorarás el lado más oscuro de la tonalidad — las tres formas de la escala menor y cómo se relacionan las tonalidades mayores y menores.',
+        tryThisLabel: 'Construye F# mayor — 6 sostenidos',
+        tryThisPrompt: '¿Puedes nombrar los 6 sostenidos antes de mirar?',
+      },
     },
     u5: {
       title: 'Escalas Menores y Relaciones entre Tonalidades',
       description:
         'Escalas menor natural, armónica y melódica, además de las relaciones entre tonalidades relativas y paralelas',
+      milestone: {
+        skillsSummary: [
+          'Construir las tres formas de la escala menor en cualquier tonalidad',
+          'Comprender por qué existen tres formas y cuándo se usa cada una',
+          'Encontrar al instante las relaciones entre tonalidades relativas y paralelas',
+        ],
+        bridgeText:
+          'Ya dominas los dos lados de la tonalidad — mayor y menor. A continuación, ampliarás tu vocabulario rítmico con el compás compuesto y la síncopa.',
+        tryThisLabel: 'Construye D menor armónica',
+        tryThisPrompt: '¿Qué nota se eleva en comparación con la menor natural?',
+      },
     },
     u6: {
       title: 'Compás Compuesto y Síncopa',
       description:
         'Indicaciones de compás compuesto, síncopa, tresillos y conceptos rítmicos avanzados',
+      milestone: {
+        skillsSummary: [
+          'Distinguir compás simple de compás compuesto por cómo se subdividen los tiempos',
+          'Leer indicaciones de compás compuesto: 6/8, 9/8, 12/8',
+          'Escuchar la síncopa como acentos en tiempos normalmente débiles',
+          'Comprender tresillos como agrupamientos prestados de tres',
+        ],
+        bridgeText:
+          'Ya comprendes el ritmo simple y el compuesto. La unidad final reúne el sistema completo de intervalos, los cuatro tipos de tríadas y la armonía diatónica.',
+        tryThisLabel: 'Siente el pulso en A mayor',
+        tryThisPrompt: 'Prueba a contar en grupos de 3 (compuesto) y después de 2 (simple).',
+      },
     },
     u7: {
       title: 'Intervalos, Tríadas y Armonía Diatónica',
       description:
         'El sistema completo de cualidad de intervalos, los cuatro tipos de tríadas, inversiones con bajo cifrado y tríadas diatónicas con números romanos',
+      milestone: {
+        skillsSummary: [
+          'Clasificar cualquier intervalo por su cualidad: justo, mayor, menor, aumentado, disminuido',
+          'Identificar intervalos compuestos y el tritono',
+          'Construir e identificar los cuatro tipos de tríadas a partir de cualquier fundamental',
+          'Usar bajo cifrado y notación de barra para inversiones',
+          'Construir tríadas diatónicas en cualquier tonalidad mayor usando el patrón I-ii-iii-IV-V-vi-vii°',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Explora la tonalidad de Bb',
+        tryThisPrompt: 'Nombra las tríadas diatónicas antes de verificar.',
+      },
     },
   },
 

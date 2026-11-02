@@ -7,16 +7,51 @@ const curriculumL8: CurriculumLevelOverlay = {
       title: 'Fuga y Formas Imitativas',
       description:
         'Análisis de fugas, tipos de canon y técnicas de composición imitativa',
+      milestone: {
+        skillsSummary: [
+          'Analizar la exposición de la fuga: sujeto, respuesta (real vs. tonal) y contrasujeto',
+          'Identificar episodios, stretto, aumentación, disminución e inversión en fugas',
+          'Clasificar cánones por intervalo, tipo de transformación y grado de rigor',
+        ],
+        bridgeText:
+          'Ya puedes diseccionar las formas contrapuntísticas más sofisticadas de la música occidental. A continuación: el análisis formal a gran escala y la paleta orquestal.',
+        tryThisLabel: 'Observa C mayor — la tonalidad de la primera fuga del CBT de Bach',
+        tryThisPrompt: '¿Cuántas voces usa la fuga en C mayor del CBT Libro I?',
+      },
     },
     u26: {
       title: 'Gran Forma y Orquestación',
       description:
         'Análisis formal avanzado, familias orquestales e instrumentación',
+      milestone: {
+        skillsSummary: [
+          'Analizar la forma sonata con todo detalle: GTP, TR, GTS, CT, desarrollo y reexposición',
+          'Distinguir estructuras de variación: tema y variaciones, chacona, passacaglia, rondó y ritornello',
+          'Identificar las familias orquestales, los timbres y los instrumentos transpositores',
+        ],
+        bridgeText:
+          'Ya dominas el vocabulario analítico de las formas más amplias y de la orquesta completa. La unidad final cruza la frontera de la música tonal a la postonal.',
+        tryThisLabel: 'Escucha G7 — la dominante que da paso a una reexposición',
+        tryThisPrompt:
+          'En una sonata en C mayor, ¿en qué tonalidad aparece típicamente el GTS durante la exposición?',
+      },
     },
     u27: {
       title: 'Postonal y Contemporáneo',
       description:
         'Teoría de conjuntos, técnica dodecafónica y métodos composicionales del siglo XX',
+      milestone: {
+        skillsSummary: [
+          'Analizar conjuntos de clases de altura usando notación por enteros, forma normal, forma prima y vectores interválicos',
+          'Construir series dodecafónicas, derivar las 48 formas y construir una matriz',
+          'Identificar planing, politonalidad, pandiatonicismo y procesos minimalistas',
+          'Distinguir polirritmia de polimetría, reconocer la hemiola y calcular modulaciones métricas',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Escucha la escala de tonos enteros — más allá de la tonalidad',
+        tryThisPrompt:
+          '¿Cuántas transposiciones de la escala de tonos enteros existen? (Respuesta: solo 2.)',
+      },
     },
   },
 

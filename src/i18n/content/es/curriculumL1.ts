@@ -7,16 +7,51 @@ const curriculumL1: CurriculumLevelOverlay = {
       title: 'Notación y Altura',
       description:
         'El pentagrama, claves, semitonos, tonos, alteraciones y la escala cromática',
+      milestone: {
+        skillsSummary: [
+          'Leer la clave de sol y la clave de fa y localizar el C central en el sistema de pentagramas',
+          'Definir semitonos y tonos y encontrarlos en el piano',
+          'Identificar sostenidos, bemoles y equivalentes enarmónicos',
+          'Conocer las 12 alturas cromáticas y verlas en el teclado',
+        ],
+        bridgeText:
+          'Ya conoces las 12 alturas y cómo funciona la distancia en el teclado. A continuación aprenderás cómo se organiza el tiempo en la música — figuras rítmicas, silencios y compás.',
+        tryThisLabel: 'Toca las 12 notas en orden',
+        tryThisPrompt: '¿Puedes nombrar cada nota antes de oírla?',
+      },
     },
     u2: {
       title: 'Ritmo y Compás',
       description:
         'Figuras rítmicas, silencios, puntillos, ligaduras y compases simples',
+      milestone: {
+        skillsSummary: [
+          'Conocer la jerarquía de las figuras rítmicas, de la redonda a la semicorchea',
+          'Comprender los puntillos y las ligaduras como modificadores de duración',
+          'Leer indicaciones de compás simples: 2/4, 3/4, 4/4',
+          'Sentir el metro binario, ternario y cuaternario',
+        ],
+        bridgeText:
+          'Ya comprendes la altura y el ritmo — las dos dimensiones de la notación musical. Ahora vas a combinarlos en escalas, intervalos y tus primeros acordes.',
+        tryThisLabel: 'Toca G mayor a un tempo regular',
+        tryThisPrompt: 'Prueba a marcar negras mientras suena la escala.',
+      },
     },
     u3: {
       title: 'Escalas, Intervalos y Primeros Acordes',
       description:
         'La escala mayor, armaduras de clave, números de intervalos y tríadas mayores',
+      milestone: {
+        skillsSummary: [
+          'Construir escalas mayores en C, G, D y F usando el patrón T-T-S',
+          'Leer las armaduras de clave de las primeras cuatro tonalidades mayores',
+          'Nombrar intervalos del unísono a la octava contando los nombres de las notas',
+          'Construir tríadas mayores a partir de cualquier fundamental',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Construye una tríada de D mayor',
+        tryThisPrompt: 'Nombra las tres notas antes de tocar.',
+      },
     },
   },
 

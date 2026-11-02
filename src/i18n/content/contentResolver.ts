@@ -37,7 +37,23 @@ function applyUnitOverlay(
 ): CurriculumUnit {
   const unitOv = overlay.units[unit.id];
   const translatedUnit: CurriculumUnit = unitOv
-    ? { ...unit, title: unitOv.title, description: unitOv.description }
+    ? {
+        ...unit,
+        title: unitOv.title,
+        description: unitOv.description,
+        // The milestone's prose is translated; its Try-This query is not.
+        ...(unit.milestone && unitOv.milestone
+          ? {
+              milestone: {
+                ...unit.milestone,
+                skillsSummary: unitOv.milestone.skillsSummary,
+                bridgeText: unitOv.milestone.bridgeText,
+                tryThisLabel: unitOv.milestone.tryThisLabel,
+                tryThisPrompt: unitOv.milestone.tryThisPrompt,
+              },
+            }
+          : {}),
+      }
     : unit;
 
   return {

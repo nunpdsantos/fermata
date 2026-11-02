@@ -7,16 +7,54 @@ const curriculumL3: CurriculumLevelOverlay = {
       title: 'Acordes de Séptima y Armonía Diatónica',
       description:
         'Las cinco cualidades de acordes de séptima, inversiones, acordes de séptima diatónicos en mayor y menor, y la séptima de dominante como motor armónico',
+      milestone: {
+        skillsSummary: [
+          'Construir e identificar las cinco cualidades de acordes de séptima por su sonido y su estructura',
+          'Disponer acordes de séptima en las cuatro inversiones usando la notación de bajo cifrado',
+          'Mapear los acordes de séptima diatónicos en cualquier tonalidad mayor o menor armónica usando números romanos',
+          'Escuchar el tritono dentro del V7 y comprender su resolución como el motor de la música tonal',
+        ],
+        bridgeText:
+          'Ya puedes construir, invertir y analizar todos los acordes de séptima estándar y ubicarlos en tonalidades mayores y menores. A continuación, aprenderás a enlazar estos acordes con fluidez mediante la conducción de voces — el arte de hacer que cada voz cante su propia línea melódica.',
+        tryThisLabel: 'Construye el viiø7 semidisminuido en C mayor',
+        tryThisPrompt:
+          'Este es el acorde viiø7 en C mayor. ¿Puedes nombrar sus cuatro notas y explicar por qué funciona como sustituto de la dominante?',
+      },
     },
     u10: {
       title: 'Conducción de Voces y Escritura a Cuatro Partes',
       description:
         'Disposición SATB, reglas de espaciado, quintas y octavas paralelas prohibidas, enlace de acordes con movimiento suave de voces, y el papel de las inversiones',
+      milestone: {
+        skillsSummary: [
+          'Aplicar correctamente las reglas SATB de espaciado, duplicación y cruzamiento de voces',
+          'Identificar los cuatro tipos de movimiento de voces y evitar las paralelas prohibidas',
+          'Enlazar tríadas en estado fundamental usando estrategias de nota común y de movimiento contrario',
+          'Usar tríadas en primera y segunda inversión para crear líneas de bajo suaves y patrones cadenciales',
+        ],
+        bridgeText:
+          'Ya puedes escribir y enlazar acordes siguiendo las reglas de la conducción de voces. La unidad final aplica estas habilidades a las cadencias, la estructura de la frase, la ornamentación y la transposición — completando tus fundamentos de armonía.',
+        tryThisLabel: 'Escucha C mayor en primera inversión',
+        tryThisPrompt:
+          'La primera inversión coloca E en el bajo. ¿Cómo crea esto una línea de bajo más suave al pasar de un acorde de D a un acorde de C?',
+      },
     },
     u11: {
       title: 'Cadencias, Frases y Ornamentación',
       description:
         'Los seis tipos de cadencia, estructura de frase y período, ritmo armónico, notas extrañas al acorde y transposición a cualquier tonalidad',
+      milestone: {
+        skillsSummary: [
+          'Identificar los seis tipos de cadencia y su fuerza relativa como puntuación armónica',
+          'Analizar estructuras de frase como períodos (antecedente-consecuente) o frases (Satz)',
+          'Escuchar cómo el ritmo armónico y las notas extrañas al acorde moldean la superficie de la música tonal',
+          'Transponer cualquier pasaje a una nueva tonalidad usando los métodos de intervalo o de armadura de clave',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Transpón C mayor una sexta menor hacia arriba, a Ab',
+        tryThisPrompt:
+          'Cada nota de C mayor desplazada una sexta menor hacia arriba produce Ab mayor. ¿Puedes nombrar todas las notas antes de mirar?',
+      },
     },
   },
 

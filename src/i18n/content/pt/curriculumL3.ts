@@ -7,16 +7,54 @@ const curriculumL3: CurriculumLevelOverlay = {
       title: 'Acordes de Sétima e Harmonia Diatónica',
       description:
         'As cinco qualidades de acordes de sétima, inversões, acordes de sétima diatónicos em maior e menor, e a sétima da dominante como motor harmónico',
+      milestone: {
+        skillsSummary: [
+          'Construir e identificar as cinco qualidades de acordes de sétima pelo som e pela estrutura',
+          'Dispor acordes de sétima nas quatro inversões usando a notação de baixo cifrado',
+          'Mapear os acordes de sétima diatónicos em qualquer tonalidade maior ou menor harmónica usando numeração romana',
+          'Ouvir o trítono dentro do V7 e compreender a sua resolução como o motor da música tonal',
+        ],
+        bridgeText:
+          'Já consegues construir, inverter e analisar todos os acordes de sétima padrão e localizá-los em tonalidades maiores e menores. A seguir, vais aprender a ligar estes acordes de forma fluida através da condução de vozes — a arte de fazer cada voz cantar a sua própria linha melódica.',
+        tryThisLabel: 'Constrói o viiø7 meio-diminuto em C maior',
+        tryThisPrompt:
+          'Este é o acorde viiø7 em C maior. Consegues nomear as suas quatro notas e explicar porque funciona como substituto da dominante?',
+      },
     },
     u10: {
       title: 'Condução de Vozes e Escrita a Quatro Partes',
       description:
         'Disposição SATB, regras de espaçamento, quintas e oitavas paralelas proibidas, ligação de acordes com movimento suave de vozes, e o papel das inversões',
+      milestone: {
+        skillsSummary: [
+          'Aplicar corretamente as regras SATB de espaçamento, dobragem e cruzamento de vozes',
+          'Identificar os quatro tipos de movimento de vozes e evitar as paralelas proibidas',
+          'Ligar tríades em estado fundamental usando estratégias de nota comum e de movimento contrário',
+          'Usar tríades na primeira e na segunda inversão para criar linhas de baixo suaves e padrões cadenciais',
+        ],
+        bridgeText:
+          'Já consegues escrever e ligar acordes seguindo as regras da condução de vozes. A unidade final aplica estas competências às cadências, à estrutura da frase, à ornamentação e à transposição — completando os teus fundamentos de harmonia.',
+        tryThisLabel: 'Ouve C maior na primeira inversão',
+        tryThisPrompt:
+          'A primeira inversão coloca E no baixo. Como é que isto cria uma linha de baixo mais suave ao passar de um acorde de D para um acorde de C?',
+      },
     },
     u11: {
       title: 'Cadências, Frases e Ornamentação',
       description:
         'Os seis tipos de cadência, estrutura de frase e período, ritmo harmónico, notas estranhas ao acorde e transposição para qualquer tonalidade',
+      milestone: {
+        skillsSummary: [
+          'Identificar os seis tipos de cadência e a sua força relativa como pontuação harmónica',
+          'Analisar estruturas de frase como períodos (antecedente-consequente) ou frases (Satz)',
+          'Ouvir como o ritmo harmónico e as notas estranhas ao acorde moldam a superfície da música tonal',
+          'Transpor qualquer passagem para uma nova tonalidade usando os métodos de intervalo ou de armação de clave',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Transpõe C maior uma sexta menor acima, para Ab',
+        tryThisPrompt:
+          'Cada nota de C maior deslocada uma sexta menor acima produz Ab maior. Consegues nomear todas as notas antes de olhar?',
+      },
     },
   },
 

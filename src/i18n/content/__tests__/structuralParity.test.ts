@@ -99,6 +99,17 @@ describe('content overlays', () => {
         const modIds = new Set(EN_UNITS[n].flatMap((u) => u.modules.map((m) => m.id)));
         for (const u of EN_UNITS[n]) {
           if (!ov.units[u.id]) problems.push(`L${n} unit ${u.id} missing`);
+          // The milestone (D-23): translated wherever English has one, same
+          // number of skills, nothing empty (the bridge only where English has one).
+          const ms = u.milestone;
+          const mov = ov.units[u.id]?.milestone;
+          if (ms && !mov) problems.push(`L${n} unit ${u.id} milestone missing`);
+          if (!ms && mov) problems.push(`L${n} unit ${u.id} extra milestone`);
+          if (ms && mov) {
+            if (mov.skillsSummary.length !== ms.skillsSummary.length) problems.push(`L${n} ${u.id}.milestone.skillsSummary: EN ${ms.skillsSummary.length} vs ${mov.skillsSummary.length}`);
+            if (mov.skillsSummary.some((x) => !x.trim()) || !mov.tryThisLabel.trim() || !mov.tryThisPrompt.trim()) problems.push(`L${n} ${u.id}.milestone empty field`);
+            if (!!ms.bridgeText.trim() !== !!mov.bridgeText.trim()) problems.push(`L${n} ${u.id}.milestone.bridgeText: present in one language only`);
+          }
           for (const m of u.modules) {
             const o = ov.modules[m.id];
             if (!o) { problems.push(`${m.id} missing`); continue; }
