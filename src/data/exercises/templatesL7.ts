@@ -123,10 +123,10 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Guide tones (3rds and 7ths) always move by step or hold between chords in a ii-V-I', correct: true },
-              { label: 'Shell voicings require large leaps between chords', correct: false },
-              { label: 'Shell voicings move every voice by a large leap, because the guide tones (3rd and 7th) never stay put from chord to chord', correct: false },
-              { label: 'Voice leading does not matter in jazz', correct: false },
+              { label: 'Guide tones (3rds and 7ths) move by step or hold between chords in a ii-V-I', correct: true },
+              { label: 'Shell voicings connect only through common tones; chords that share no note cannot be linked smoothly', correct: false },
+              { label: 'Guide tones (3rds and 7ths) follow the bass, leaping a 4th or 5th from chord to chord in a ii-V-I', correct: false },
+              { label: "Voice leading is the bass player's job, so the shell voicings above it can be placed freely", correct: false },
             ],
             [
               { label: 'The 3rd of ii is held as the 7th of V, and the 7th of ii falls a half step to the 3rd of V', correct: true },
@@ -169,10 +169,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'In minor keys, the ii chord is a major 7th chord (maj7), built on the raised 2nd degree', correct: false },
             ],
             [
-              { label: 'ii-V-I can be used to tonicize any chord, creating transient key centers', correct: true },
+              { label: 'ii-V-I can be used to tonicize any major or minor chord, creating transient key centers', correct: true },
               { label: 'ii-V-I works only in the home key, never in another key', correct: false },
               { label: 'ii-V-I cannot create tonicization', correct: false },
-              { label: 'Only V-I creates tonicization in jazz', correct: false },
+              { label: 'ii-V-I exists only in major keys; in minor keys the V7 cannot be preceded by a ii', correct: false },
             ],
           ],
         },
@@ -350,7 +350,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'Locrian or Locrian ♮2, mode 6 of melodic minor, fits half-diminished m7b5 chords', correct: true },
               { label: 'Dorian is the scale for half-diminished (m7b5) chords, because its natural 6th matches the chord\'s b5', correct: false },
-              { label: 'Mixolydian is used for half-diminished chords, since its b7 matches the minor 7th of those chords', correct: false },
+              { label: 'Mixolydian, mode 5 of the major scale, fits half-diminished (m7b5) chords, since its b7 matches their 7th', correct: false },
               { label: 'Half-diminished chords have no associated scale, so improvisers can only use the chord tones over them', correct: false },
             ],
           ],
@@ -515,9 +515,9 @@ const templates: ModuleTemplateConfig[] = [
           choiceSets: [
             [
               { label: 'Quartal harmony stacks perfect 4ths instead of 3rds, creating an open and ambiguous sound', correct: true },
-              { label: 'Quartal harmony stacks major 3rds only, which makes it sound exactly like traditional triads', correct: false },
+              { label: 'Quartal harmony stacks perfect 5ths over a bass pedal, creating a spacious, orchestral sound', correct: false },
               { label: 'Quartal harmony is the same as traditional triadic harmony', correct: false },
-              { label: 'Quartal chords are always dissonant', correct: false },
+              { label: 'Quartal chords are always dissonant (like a dominant 7th) and must resolve', correct: false },
             ],
             [
               { label: 'Planing moves a whole chord shape up or down so that every voice moves in parallel', correct: true },
@@ -706,14 +706,14 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'Jazz melodic minor raises the 6th and 7th of natural minor, both going up and coming down', correct: true },
               { label: 'Jazz melodic minor lowers both the 6th and the 7th degree, which simply makes it the natural minor scale', correct: false },
-              { label: 'It has a lowered 3rd and a lowered 7th', correct: false },
-              { label: 'It is a pentatonic scale', correct: false },
+              { label: 'Jazz melodic minor has a lowered 3rd and a lowered 7th', correct: false },
+              { label: 'Jazz melodic minor raises only the 7th of natural minor, like harmonic minor', correct: false },
             ],
             [
               { label: 'Locrian ♮2 is mode 6 of melodic minor and fits the half-diminished (m7b5) chord', correct: true },
               { label: 'Locrian ♮2 is mode 2 of melodic minor and fits the fully diminished 7th chord (dim7)', correct: false },
-              { label: 'Locrian ♮2 has a perfect 5th', correct: false },
-              { label: 'It fits a major 7th chord', correct: false },
+              { label: 'Locrian ♮2 is mode 7 of melodic minor (the altered scale), used over 7alt chords', correct: false },
+              { label: 'Locrian ♮2 fits a major 7th chord (maj7), as Lydian does', correct: false },
             ],
           ],
         },
@@ -751,9 +751,9 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'The Hungarian minor scale has two augmented 2nds, creating its distinctive dramatic sound', correct: true },
-              { label: 'The Hungarian minor scale has no augmented 2nds at all: it is just the natural minor scale renamed', correct: false },
+              { label: 'The Hungarian minor scale is mode 5 of harmonic minor, the Phrygian dominant, with a major 3rd', correct: false },
               { label: 'Hungarian minor has no augmented intervals', correct: false },
-              { label: 'Hungarian minor is the same as melodic minor', correct: false },
+              { label: 'Hungarian minor is the same as melodic minor (raised 6th and 7th)', correct: false },
             ],
             [
               { label: 'There are only two different whole-tone scales: on C and on Db', correct: true },
@@ -764,8 +764,8 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'The diminished scale alternates half and whole steps, giving 8 notes in an octave', correct: true },
               { label: 'The diminished scale alternates whole steps and minor 3rds, giving it 7 notes like the major scale', correct: false },
-              { label: 'It is a pentatonic scale', correct: false },
-              { label: 'It has no half steps', correct: false },
+              { label: 'The diminished scale is a pentatonic scale', correct: false },
+              { label: 'The diminished scale has no half steps, like the whole-tone scale, and has only 6 notes in an octave', correct: false },
             ],
           ],
         },

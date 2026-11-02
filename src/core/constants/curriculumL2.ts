@@ -231,7 +231,7 @@ const l2u5m3: CurriculumModule = {
     {
       title: 'Parallel Keys',
       explanation:
-        "Parallel keys share the same root but have different qualities. C major and C minor are parallel. They share the tonic note but differ in the 3rd, 6th, and 7th degrees. The parallel relationship becomes critical later in mode mixture — borrowing chords from the parallel key to add color.",
+        "Parallel keys share the same root but have different qualities. C major and C minor are parallel: C minor is the parallel minor of C major, and C major is the parallel major of C minor. They share the tonic note but differ in the 3rd, 6th, and 7th degrees. The parallel relationship becomes critical later in mode mixture — borrowing chords from the parallel key to add color.",
       tryThisQuery: 'C minor scale',
       tryThisLabel: 'Compare C minor with C major',
     },

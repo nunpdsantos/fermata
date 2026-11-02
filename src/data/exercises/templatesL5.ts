@@ -125,9 +125,9 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'It can be a diminished triad, a half-diminished 7th or a fully diminished 7th', correct: true },
-              { label: 'It is always a major triad, exactly like the secondary dominant it replaces', correct: false },
-              { label: 'It is always a minor 7th chord built on the root of its target', correct: false },
-              { label: 'It can be a minor triad or a minor 7th, but never a diminished chord', correct: false },
+              { label: 'It is a major triad or dominant 7th, like the secondary dominant it replaces', correct: false },
+              { label: 'It is a half-diminished 7th built on the root of its target chord', correct: false },
+              { label: 'It can be a minor triad or a minor 7th built on the leading tone of its target', correct: false },
             ],
           ],
         },
@@ -154,15 +154,15 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'A single secondary dominant and its target is a tonicization', correct: true },
-              { label: 'A single secondary dominant and its target is always a modulation', correct: false },
+              { label: 'A single secondary dominant and its target is a modulation in the new key', correct: false },
               { label: 'A tonicization must last at least eight bars in the new key', correct: false },
               { label: 'A tonicization needs a perfect authentic cadence in the new key', correct: false },
             ],
             [
-              { label: 'A modulation is only confirmed when the music cadences in the new key', correct: true },
+              { label: 'A modulation is confirmed when the music cadences in the new key', correct: true },
               { label: 'A modulation is confirmed as soon as the time signature changes', correct: false },
               { label: 'A modulation is confirmed by any single chromatic note in the melody', correct: false },
-              { label: 'A modulation can only ever be confirmed at the very end of a piece', correct: false },
+              { label: 'A modulation is confirmed when the melody cadences in the original key', correct: false },
             ],
           ],
         },
@@ -302,13 +302,13 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'A direct modulation moves to a new key at a phrase boundary, with no pivot', correct: true },
               { label: 'A direct modulation moves to a new key mid-phrase through a shared pivot chord', correct: false },
               { label: 'A direct modulation is another name for a brief tonicization that soon returns home', correct: false },
-              { label: 'A direct modulation can only move up by a half step', correct: false },
+              { label: 'A direct modulation is smoothed by the dominant of the new key, so it sounds gradual rather than abrupt', correct: false },
             ],
             [
               { label: 'The "truck driver" modulation jumps up a half or whole step for a lift', correct: true },
-              { label: 'The "truck driver" modulation always moves down to the dominant key', correct: false },
+              { label: 'The "truck driver" modulation is smoothed by a pivot chord shared by the two keys', correct: false },
               { label: 'The "truck driver" modulation is found only in Baroque and Classical music', correct: false },
-              { label: 'The "truck driver" modulation always lowers the key by a semitone', correct: false },
+              { label: 'The "truck driver" modulation lowers the key by a half or whole step to relax the tension', correct: false },
             ],
           ],
         },
@@ -320,8 +320,8 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'A single held note is always reheard as a different scale degree in the new key', correct: true },
-              { label: 'One held note keeps exactly the same scale degree in the new key', correct: false },
+              { label: 'One held note is reheard as a different scale degree in the new key', correct: true },
+              { label: 'In a C-to-Eb modulation, the held G is the 5th of C and also the 5th of Eb', correct: false },
               { label: 'Every note of the chord must be common to both of the keys', correct: false },
               { label: 'No note is held: the music stops, then restarts in the new key', correct: false },
             ],
@@ -343,7 +343,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'One voice moves by half step from a diatonic note to a chromatic one', correct: true },
               { label: 'One voice leaps by a tritone from a diatonic note to a chromatic one', correct: false },
-              { label: 'Every voice moves by whole step, so no half steps appear at all', correct: false },
+              { label: 'The altered chord keeps the same function in both keys, so nothing is reinterpreted', correct: false },
               { label: 'It needs a pivot chord that is diatonic in both keys', correct: false },
             ],
             [
@@ -426,7 +426,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Two contrasting sections, each repeated (||:A:||:B:||), is simple binary form', correct: true },
               { label: 'Two contrasting sections, each repeated (||:A:||:B:||), is ternary form', correct: false },
               { label: 'Two contrasting sections, each repeated (||:A:||:B:||), is rondo form', correct: false },
-              { label: 'Two contrasting sections, each repeated (||:A:||:B:||), is through-composed form', correct: false },
+              { label: 'Two contrasting sections, each repeated (||:A:||:B:||), is rounded binary form', correct: false },
             ],
             [
               { label: 'ABA, where the first section returns after a contrast, is ternary form', correct: true },
@@ -436,9 +436,9 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'Rounded binary always brings back A material at the end of the B section', correct: true },
-              { label: 'Rounded binary has three independent sections that never return', correct: false },
-              { label: 'Rounded binary never modulates away from the tonic key at any point', correct: false },
-              { label: 'Rounded binary is just another name for simple binary form', correct: false },
+              { label: 'In rounded binary, the B section returns at the end in place of A', correct: false },
+              { label: 'Rounded binary stays in the tonic key throughout, with no modulation', correct: false },
+              { label: 'Rounded binary is another name for simple binary form', correct: false },
             ],
           ],
         },

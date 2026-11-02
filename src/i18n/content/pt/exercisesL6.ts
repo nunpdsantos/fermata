@@ -21,7 +21,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Qual é a função harmónica do acorde napolitano (bII)?',
     choices: [
       'Pré-dominante — substitui ii ou iv e move-se para V',
-      'Dominante — resolve diretamente para a tónica',
+      'Dominante — tal como V, resolve diretamente para o acorde de tónica I',
       'Tónica — funciona como substituto de I',
       'Acorde de passagem — não tem uma verdadeira função estrutural',
     ],
@@ -63,9 +63,9 @@ const overlay: ExerciseLevelOverlay = {
   l6u18m2e3: {
     prompt: 'Qual é a função harmónica dos acordes de sexta aumentada?',
     choices: [
-      'Pré-dominante — intensificam sempre o movimento para a dominante',
+      'Pré-dominante — intensificam o movimento para a dominante',
       'Dominante — resolvem diretamente para a tónica',
-      'Prolongamento da tónica — decoram a harmonia de tónica',
+      'Prolongamento da tónica — a 6.ª aumentada resolve para fora, na oitava da tónica',
       'Função de mediante — substituem iii ou VI',
     ],
     hint: 'Todos os acordes de sexta aumentada funcionam como pré-dominantes cromáticos. O intervalo de sexta aumentada (b6 e #4) resolve divergentemente por meio-tom em ambas as vozes para a nota da dominante, criando uma abordagem intensamente direcionada para V.',
@@ -79,7 +79,7 @@ const overlay: ExerciseLevelOverlay = {
       'Um acorde de sétima da dominante (V7) — mesmas alturas, grafia e resolução diferentes',
       'Um acorde de sétima diminuta — mesma estrutura intervalar',
       'Um acorde de sétima semi-diminuta — o mesmo som num contexto diferente',
-      'Um acorde de sétima maior — idêntico em posição cerrada',
+      'Um acorde de sétima maior — as três notas inferiores formam uma tríade maior com uma sétima por cima',
     ],
     hint: 'A Gr+6 tem as mesmas classes de altura que um acorde de sétima da dominante. Por exemplo, em C menor a Gr+6 (Ab, C, Eb, F#) soa idêntica a Ab7 (Ab, C, Eb, Gb). A grafia diferente reflete destinos de condução de vozes diferentes.',
   },
@@ -120,7 +120,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'A modulação enarmónica via Gr+6/V7 permite modulação direta para tonalidades a que distância?',
     choices: [
       'Tonalidades distantes: tónicas a meio-tom (C para Db), cinco passos no círculo de quintas',
-      'Apenas tonalidades próximas: tónicas a uma 5.ª (C para G), um passo no círculo de quintas',
+      'Tonalidades próximas: tónicas a uma 5.ª (C para G), um passo no círculo de quintas',
       'Apenas entre tonalidades paralelas maior e menor',
       'Apenas entre tonalidades relativas maior e menor',
     ],
@@ -154,7 +154,7 @@ const overlay: ExerciseLevelOverlay = {
       'Divide sempre a oitava de 12 meios-tons em quatro terças menores iguais (0, 3, 6, 9)',
       'Contém apenas notas naturais sem sustenidos ou bemóis',
       'Cada uma das suas inversões soa de forma diferente, como nos outros acordes de sétima',
-      'Tem o mesmo número de intervalos maiores e menores',
+      'Sobrepõe alternadamente terça maior e terça menor, o que equilibra o acorde de sétima',
     ],
     hint: 'O acorde dim7 é construído inteiramente com terças menores (3 meios-tons cada). Como 3 x 4 = 12, as quatro notas dividem a oitava uniformemente. Isto significa que cada inversão do acorde soa idêntica na sua estrutura intervalar.',
   },
@@ -164,7 +164,7 @@ const overlay: ExerciseLevelOverlay = {
       'Quatro tonalidades — qualquer das suas quatro notas pode ser tratada como sensível',
       'Duas tonalidades — uma maior e uma menor',
       'Doze tonalidades — uma para cada meio-tom',
-      'Uma só tonalidade — aquela cuja sensível é a fundamental escrita do próprio acorde',
+      'Uma tonalidade — só a fundamental escrita pode funcionar como sensível; as outras três notas do acorde não podem',
     ],
     hint: 'Devido à sua simetria, cada nota do acorde dim7 pode ser reescrita como sensível resolvendo ascendentemente por meio-tom para uma tónica diferente. C-Eb-Gb-Bbb pode ser vii°7 de Db, E, G ou Bb.',
   },
@@ -175,7 +175,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que define um acorde de sétima diminuta com nota comum (CTo7)?',
     choices: [
       'Um acorde de sétima diminuta que partilha sempre uma nota com o acorde que embeleza',
-      'Um acorde de sétima diminuta que resolve para a dominante',
+      'Um acorde de sétima diminuta que resolve para V como o seu vii°7, numa tonicização',
       'Qualquer acorde de sétima diminuta usado numa tonalidade menor',
       'Um acorde de sétima diminuta que partilha todas as suas notas com o acorde seguinte',
     ],
@@ -185,7 +185,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Num CTo7 que embeleza um acorde de C maior, qual é tipicamente a nota comum?',
     choices: [
       'A fundamental do acorde embelezado (C)',
-      'A 3.ª do acorde embelezado (E)',
+      'A 3.ª do acorde embelezado (E), a nota que o torna maior',
       'A 5.ª do acorde embelezado (G)',
       'A 7.ª do acorde embelezado (B)',
     ],
@@ -250,8 +250,8 @@ const overlay: ExerciseLevelOverlay = {
   l6u19m4e2: {
     prompt: 'O que é planing cromático (harmonia paralela)?',
     choices: [
-      'Mover uma forma fixa de acorde em movimento paralelo, todas as vozes pelo mesmo meio-tom ou tom',
-      'Alternar entre dois acordes repetidamente',
+      'Mover uma forma fixa de acorde em movimento paralelo, todas as vozes pelo mesmo intervalo',
+      'Alternar acordes diatónicos, cada um com a sua função, em progressões tradicionais rumo a cadências numa tonalidade',
       'Mover só o baixo por meio-tom de acorde para acorde, enquanto as vozes superiores ficam nas mesmas notas',
       'Tocar as doze alturas cromáticas simultaneamente',
     ],
@@ -288,7 +288,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'No contraponto de segunda espécie (duas notas contra uma), como são tratadas as dissonâncias?',
     choices: [
       'As dissonâncias podem aparecer apenas em tempos fracos como notas de passagem abordadas e deixadas por grau conjunto',
-      'As dissonâncias são completamente proibidas como na primeira espécie',
+      'Como a primeira espécie, proíbe dissonâncias: só consonâncias perfeitas e imperfeitas contra o cantus firmus',
       'As dissonâncias podem aparecer no tempo forte desde que resolvam por grau conjunto no tempo fraco seguinte',
       'As dissonâncias são permitidas livremente em tempos fortes e fracos',
     ],
@@ -298,8 +298,8 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Que relação rítmica define o contraponto de terceira espécie?',
     choices: [
       'Quatro notas no contraponto contra cada nota do cantus firmus',
-      'Três notas no contraponto contra cada uma das notas do cantus firmus',
-      'Duas notas no contraponto contra cada uma das notas do cantus firmus, a mover-se ao dobro da velocidade',
+      'Três notas no contraponto contra cada nota do cantus firmus',
+      'Duas notas no contraponto contra cada nota do cantus firmus, a mover-se ao dobro da velocidade',
       'Ritmo livre, sem proporção fixa entre as duas linhas, com os valores das notas a mudar de compasso para compasso',
     ],
     hint: 'A terceira espécie coloca quatro semínimas contra cada semibreve do cantus firmus. Isto introduz bordaduras e notas de passagem duplas (duas notas de passagem seguidas, movendo-se por grau conjunto numa só direção para preencher uma quarta) além das notas de passagem da segunda espécie.',
@@ -331,7 +331,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Quais são as três fases de uma suspensão corretamente executada?',
     choices: [
       'Preparação (consonância), suspensão (dissonância no tempo forte), resolução (grau conjunto descendente)',
-      'Ataque (dissonância no tempo forte), sustentação (nota mantida por cima da barra), libertação (por salto)',
+      'Preparação (dissonância no tempo forte), suspensão (nota mantida por cima da barra), resolução (grau conjunto descendente para outra dissonância)',
       'Abordagem por salto, manutenção, resolução por salto',
       'Consonância, consonância, dissonância',
     ],
@@ -377,7 +377,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Quais são as quatro vozes na escrita a partes SATB (estilo coral), da mais aguda para a mais grave?',
     choices: [
       'Soprano, Contralto, Tenor, Baixo',
-      'Soprano, Contralto, Agudo, Baixo',
+      'Soprano, Tenor, Contralto, Baixo',
       'Soprano, Barítono, Tenor, Baixo',
       'Soprano, Contralto, Tenor, Barítono',
     ],
@@ -388,7 +388,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Ler uma linha de baixo com números e improvisar as vozes superiores para formar os acordes indicados',
       'Tocar apenas as notas do baixo exatamente como escritas, sem lhes acrescentar absolutamente nada',
-      'Transpor a linha de baixo para corresponder aos números cifrados',
+      'Transpor a linha de baixo para corresponder aos números cifrados e depois tocá-la nas vozes superiores',
       'Duplicar cada nota do baixo à oitava em ambas as mãos',
     ],
     hint: 'O baixo cifrado era a taquigrafia barroca para a harmonia. O intérprete lê a nota do baixo escrita e as cifras (números) abaixo dela, depois preenche as vozes superiores para criar acordes completos seguindo regras de condução de vozes.',

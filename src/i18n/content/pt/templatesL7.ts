@@ -109,10 +109,10 @@ const overlay: TemplateLevelOverlay = {
         'Num ii-V-I, a terça do ii mantém-se como sétima do V, enquanto a sétima do ii desce meio-tom para a terça do V (e o mesmo volta a acontecer do V para o I). Esta eficiência na condução de vozes chama-se linhas de guide tones.',
       choiceSets: [
         [
-          'Os guide tones (terças e sétimas) movem-se sempre por grau conjunto ou mantêm-se entre acordes num ii-V-I',
-          'Os voicings de shell requerem grandes saltos entre acordes',
-          'Os voicings de shell movem todas as vozes por grandes saltos, porque os guide tones (terça e sétima) nunca se mantêm de acorde para acorde',
-          'A condução de vozes não importa no jazz',
+          'Os guide tones (terças e sétimas) movem-se por grau conjunto ou mantêm-se entre acordes num ii-V-I',
+          'Os voicings de shell ligam-se apenas por notas comuns; acordes que não partilham nenhuma nota não se conseguem ligar com suavidade',
+          'Os guide tones (terças e sétimas) acompanham o baixo, saltando uma quarta ou uma quinta de acorde para acorde num ii-V-I',
+          'A condução de vozes é trabalho do baixista, por isso os voicings de shell por cima podem ser colocados livremente',
         ],
         [
           'A terça do ii mantém-se como sétima do V, e a sétima do ii desce meio-tom para a terça do V',
@@ -147,10 +147,10 @@ const overlay: TemplateLevelOverlay = {
           'Em tonalidades menores, o acorde ii é um acorde de sétima maior (maj7), construído sobre o 2.º grau elevado',
         ],
         [
-          'A ii-V-I pode ser usada para tonicizar qualquer acorde, criando centros tonais transitórios',
+          'A ii-V-I pode ser usada para tonicizar qualquer acorde maior ou menor, criando centros tonais transitórios',
           'A ii-V-I só funciona na tonalidade principal, nunca noutra tonalidade',
           'A ii-V-I não pode criar tonicização',
-          'Apenas V-I cria tonicização no jazz',
+          'A ii-V-I existe apenas em tonalidades maiores; em tonalidades menores o V7 não pode ser precedido por um ii',
         ],
       ],
     },
@@ -298,7 +298,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'O lócrio ou o lócrio com 2.ª natural, modo 6 da menor melódica, serve acordes semidiminutos m7b5',
           'O dórico é a escala dos acordes semidiminutos (m7b5), porque a sua sexta natural coincide com a b5 do acorde, nota a nota',
-          'O mixolídio é usado para acordes semidiminutos, já que a sua b7 coincide com a sétima menor desses acordes',
+          'O mixolídio, modo 5 da escala maior, serve acordes semidiminutos (m7b5), já que a sua b7 coincide com a sétima desses acordes',
           'Os acordes semidiminutos não têm escala associada, por isso os improvisadores só podem usar as notas do acorde',
         ],
       ],
@@ -435,9 +435,9 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'A harmonia quartal empilha quartas perfeitas em vez de terças, criando um som aberto e ambíguo',
-          'A harmonia quartal empilha apenas terças maiores, o que a faz soar exatamente como as tríades tradicionais',
+          'A harmonia quartal empilha quintas perfeitas sobre um pedal no baixo, criando um som amplo, orquestral',
           'A harmonia quartal é o mesmo que a harmonia triádica tradicional',
-          'Os acordes quartais são sempre dissonantes',
+          'Os acordes quartais são sempre dissonantes (como uma sétima da dominante) e têm de resolver',
         ],
         [
           'O planing move uma forma de acorde inteira para cima ou para baixo com todas as vozes em paralelo',
@@ -586,14 +586,14 @@ const overlay: TemplateLevelOverlay = {
         [
           'A escala menor melódica do jazz eleva a 6.ª e a 7.ª da menor natural, tanto a subir como a descer',
           'A escala menor melódica do jazz rebaixa tanto o 6.º como o 7.º grau, o que a torna simplesmente a escala menor natural',
-          'Tem a terça e a sétima rebaixadas',
-          'É uma escala pentatónica',
+          'A escala menor melódica do jazz tem a terça e a sétima rebaixadas',
+          'A escala menor melódica do jazz eleva apenas a 7.ª da menor natural, como a menor harmónica',
         ],
         [
           'O lócrio com 2.ª natural é o modo 6 da menor melódica e serve o acorde semidiminuto (m7b5)',
           'O lócrio com 2.ª natural é o modo 2 da menor melódica e serve o acorde de 7.ª diminuta completo (dim7)',
-          'O lócrio com 2.ª natural tem uma quinta perfeita',
-          'Serve um acorde maj7',
+          'O lócrio com 2.ª natural é o modo 7 da menor melódica (a escala alterada), usada em acordes 7alt',
+          'O lócrio com 2.ª natural serve um acorde de sétima maior (maj7), como o lídio',
         ],
       ],
     },
@@ -623,9 +623,9 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'A escala húngara menor tem duas segundas aumentadas, criando a sua sonoridade dramática distintiva',
-          'A escala húngara menor não tem nenhuma segunda aumentada: é apenas a escala menor natural com outro nome',
+          'A escala húngara menor é o modo 5 da menor harmónica, o frígio dominante, com uma 3.ª maior',
           'A húngara menor não tem intervalos aumentados',
-          'A húngara menor é igual à menor melódica',
+          'A húngara menor é igual à menor melódica (6.ª e 7.ª elevadas)',
         ],
         [
           'Existem apenas duas escalas de tons inteiros diferentes: em C e em Db',
@@ -636,8 +636,8 @@ const overlay: TemplateLevelOverlay = {
         [
           'A escala diminuta alterna meios-tons e tons, o que dá 8 notas numa oitava',
           'A escala diminuta alterna tons e terças menores, o que lhe dá 7 notas, como a escala maior',
-          'É uma escala pentatónica',
-          'Não tem meios-tons',
+          'A escala diminuta é uma escala pentatónica',
+          'A escala diminuta não tem meios-tons, tal como a escala de tons inteiros, e tem apenas 6 notas numa oitava',
         ],
       ],
     },

@@ -34,7 +34,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'A clave de fá marca a quarta linha (a contar de baixo) como F',
-          'A clave de fá marca a segunda linha como G',
+          'A clave de fá marca como G a segunda linha a partir de baixo',
           'A clave de fá marca a terceira linha como C',
           'A clave de fá marca a primeira linha como E',
         ],
@@ -178,7 +178,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Nos compassos 2/4, 3/4 e 4/4, o 4 de baixo indica que a semínima vale um tempo',
           'Nos compassos 2/4, 3/4 e 4/4, o 4 de baixo indica que a semibreve vale um tempo',
-          'Nos compassos 2/4, 3/4 e 4/4, o 4 de baixo indica que há quatro compassos',
+          'Nos compassos 2/4, 3/4 e 4/4, o 4 de baixo indica que cada compasso vale quatro tempos',
           'Nos compassos 2/4, 3/4 e 4/4, o 4 de baixo fixa o andamento em quatro tempos por segundo',
         ],
       ],

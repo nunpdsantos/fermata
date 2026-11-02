@@ -301,7 +301,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'A 4.ª acima do baixo é uma dissonância que requer resolução específica',
       'Os acordes na segunda inversão soam pior do que na primeira inversão',
-      'A 5.ª no baixo torna o acorde impossível de identificar',
+      'A 5.ª no baixo é uma nota instável que tem de resolver descendo por grau',
       'A segunda inversão é proibida em toda a música clássica',
     ],
     hint: 'A 4.ª perfeita acima do baixo (na posição 6/4) era tratada como dissonância na harmonia de prática comum. Aparece tipicamente em quatro contextos específicos: 6/4 cadencial, de passagem, de pedal e arpejado.',
@@ -380,7 +380,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Na estrutura clássica de "frase" (Satz), o que acontece depois da apresentação (a ideia básica e a sua repetição)?',
     choices: [
       'Uma continuação que fragmenta e acelera em direção a uma cadência',
-      'Uma repetição exata da apresentação',
+      'A ideia básica é apresentada pela terceira vez, sem alterações, antes da cadência',
       'Uma secção contrastante, como num período contrastante, que responde à apresentação',
       'Um silêncio seguido de um novo tema',
     ],
@@ -436,7 +436,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que é uma bordadura?',
     choices: [
       'Uma nota estranha que se afasta por grau de uma nota do acorde e regressa a ela',
-      'Uma nota estranha que se move por grau de uma nota do acorde para outra nota diferente do acorde',
+      'Uma nota estranha que se move por grau de uma nota do acorde para uma nota diferente do acorde, sem regressar à primeira',
       'Uma nota do acorde que se repete no tempo seguinte',
       'Uma nota emprestada de uma tonalidade vizinha',
     ],
@@ -448,7 +448,7 @@ const overlay: ExerciseLevelOverlay = {
       'Uma nota estranha que faz soar cedo uma nota do acorde seguinte',
       'Uma nota do acorde que é atrasada até depois do tempo e depois resolve',
       'Uma nota que é mantida do acorde anterior',
-      'Uma pausa que substitui uma nota esperada',
+      'Uma pausa que substitui uma nota esperada do acorde seguinte, mesmo antes de ele chegar',
     ],
     hint: 'Uma antecipação "antecipa" o acorde seguinte ao fazer soar uma das suas notas mais cedo, antes de a harmonia mudar. É tipicamente uma nota curta e não acentuada que resolve mantendo-se na mesma altura.',
   },

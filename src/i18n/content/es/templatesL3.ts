@@ -175,7 +175,7 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'Quintas paralelas: dos voces a una 5.ª J se mueven en la misma dirección hacia otra 5.ª J',
-          'Quintas paralelas: dos voces cualesquiera que estén a una 5.ª en cualquier acorde',
+          'Quintas paralelas: dos voces cualesquiera a una 5.ª en cualquier acorde, se muevan o no',
           'Quintas paralelas: un error solo cuando aparecen entre el soprano y el bajo',
           'Quintas paralelas: aceptables en SATB siempre que las dos voces se muevan por grado y no por salto',
         ],
@@ -188,7 +188,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Las quintas directas entre las voces extremas se permiten si la soprano se mueve por grado',
           'Las quintas directas entre las voces extremas se permiten si la soprano salta en vez de ir por grado',
-          'Las quintas directas surgen de movimiento contrario hacia una quinta justa',
+          'Las quintas directas surgen de dos voces extremas en movimiento contrario hacia una quinta justa',
           'Las quintas directas no se permiten ni siquiera entre las voces interiores',
         ],
         [
@@ -269,7 +269,7 @@ const overlay: TemplateLevelOverlay = {
           'El 6/4 cadencial decora el V: su 6.ª y su 4.ª bajan por grado a la 5.ª y la 3.ª',
           'El 6/4 cadencial es un acorde de tónica que termina la frase en lugar del I',
           'El 6/4 cadencial resuelve su 6.ª y su 4.ª por grado ascendente al acorde de tónica siguiente',
-          'El 6/4 cadencial cae en un tiempo débil, después del acorde de dominante',
+          'El 6/4 cadencial cae en un tiempo débil, después del acorde de dominante, como decoración de paso de la línea del bajo',
         ],
         [
           'La 2.ª inversión (6/4) pone la 5.ª en el bajo, con la fundamental una 4.ª por encima',
@@ -346,7 +346,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Período paralelo: las dos frases empiezan con material similar',
           'Período paralelo: dos frases con material sin relación y la misma cadencia',
-          'Período paralelo: siempre dura exactamente ocho compases',
+          'Período paralelo: siempre dura ocho compases',
           'Período paralelo: las dos frases terminan con semicadencia',
         ],
         [
@@ -390,7 +390,7 @@ const overlay: TemplateLevelOverlay = {
           'Un ritmo armónico más rápido crea una mayor sensación de impulso',
           'Un ritmo armónico más rápido crea un ambiente más tranquilo y estático',
           'El ritmo armónico no influye en la energía de un pasaje',
-          'Un ritmo armónico más lento es la forma habitual de construir un clímax',
+          'Un ritmo armónico más rápido obliga a la melodía a usar figuras más rápidas',
         ],
         [
           'En la práctica común, los acordes suelen cambiar en los tiempos fuertes',
@@ -400,9 +400,9 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'El ritmo armónico es el ritmo de los cambios de acorde, no el de la melodía',
-          'El ritmo armónico es simplemente el ritmo que toca la melodía',
+          'El ritmo armónico es el ritmo que toca la melodía',
           'El ritmo armónico es la velocidad de la línea del bajo',
-          'El ritmo armónico es el número de tiempos de cada compás',
+          'El ritmo armónico es el número de tiempos de cada compás de la melodía',
         ],
       ],
     },
@@ -426,7 +426,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Las notas de paso pueden ser acentuadas (en el tiempo) o no acentuadas',
           'Las notas de paso caen siempre en el tiempo, nunca entre tiempos',
-          'Las notas de paso caen siempre entre tiempos y nunca pueden ser acentuadas',
+          'Las notas de paso, igual que las bordaduras, regresan a la nota del acorde de la que partieron',
           'Las notas de paso deben ser siempre notas ajenas a la tonalidad',
         ],
         [
@@ -445,7 +445,7 @@ const overlay: TemplateLevelOverlay = {
           'Una bordadura incompleta se aborda o se abandona por salto en lugar de por grado',
           'Una bordadura incompleta nunca llega a resolver',
           'Una bordadura incompleta se mueve solo por tono',
-          'Una bordadura incompleta se aborda y se abandona por grado, como una bordadura completa',
+          'Una bordadura incompleta se aborda y se abandona por grado, sin salto, como una bordadura completa',
         ],
         [
           'Una anticipación hace sonar una nota del acorde siguiente antes de que llegue ese acorde',

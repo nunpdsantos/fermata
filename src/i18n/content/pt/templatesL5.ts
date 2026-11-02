@@ -100,9 +100,9 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Pode ser uma tríade diminuta, uma 7.ª meio-diminuta ou uma 7.ª diminuta',
-          'É sempre uma tríade maior, tal como a dominante secundária que substitui',
-          'É sempre um acorde de 7.ª menor construído sobre a fundamental do alvo',
-          'Pode ser uma tríade menor ou uma 7.ª menor, mas nunca um acorde diminuto',
+          'É uma tríade maior ou um acorde de sétima dominante, como a dominante secundária que substitui',
+          'É uma 7.ª meio-diminuta construída sobre a fundamental do acorde alvo',
+          'Pode ser uma tríade menor ou uma 7.ª menor construída sobre a sensível do alvo',
         ],
       ],
     },
@@ -125,15 +125,15 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Uma única dominante secundária e o seu alvo são uma tonicização',
-          'Uma única dominante secundária e o seu alvo são sempre uma modulação',
+          'Uma única dominante secundária e o seu alvo são uma modulação na nova tonalidade',
           'Uma tonicização tem de durar pelo menos oito compassos na nova tonalidade',
           'Uma tonicização precisa de uma cadência perfeita na nova tonalidade',
         ],
         [
-          'Uma modulação confirma-se apenas quando a música faz uma cadência na nova tonalidade',
+          'Uma modulação confirma-se quando a música faz uma cadência na nova tonalidade',
           'Uma modulação confirma-se assim que muda a indicação de compasso',
           'Uma modulação confirma-se por qualquer nota cromática isolada na melodia',
-          'Uma modulação só se pode confirmar mesmo no final de uma peça, e em mais lado nenhum',
+          'Uma modulação confirma-se quando a melodia faz uma cadência na tonalidade original',
         ],
       ],
     },
@@ -249,14 +249,14 @@ const overlay: TemplateLevelOverlay = {
         [
           'Uma modulação direta passa a uma nova tonalidade numa fronteira de frase, sem pivot',
           'Uma modulação direta passa a uma nova tonalidade a meio da frase através de um acorde pivot comum',
-          'Uma modulação direta é apenas outro nome para uma tonicização breve que regressa logo à tonalidade principal',
-          'Uma modulação direta só pode subir meio-tom',
+          'Uma modulação direta é outro nome para uma tonicização breve que regressa logo à tonalidade principal',
+          'Uma modulação direta é suavizada pela dominante da nova tonalidade, soando gradual em vez de abrupta',
         ],
         [
           'A modulação "truck driver" sobe meio-tom ou um tom para dar um impulso',
-          'A modulação "truck driver" desce sempre para a tonalidade da dominante',
+          'A modulação "truck driver" é suavizada por um acorde pivot comum às duas tonalidades',
           'A modulação "truck driver" só se encontra na música barroca e clássica',
-          'A modulação "truck driver" baixa sempre a tonalidade meio-tom',
+          'A modulação "truck driver" baixa a tonalidade meio-tom ou um tom para aliviar a tensão',
         ],
       ],
     },
@@ -268,8 +268,8 @@ const overlay: TemplateLevelOverlay = {
         'A modulação por nota comum sustém uma única nota que é reinterpretada na nova tonalidade. Frequentemente usada para modulações distantes onde existem poucos acordes pivot.',
       choiceSets: [
         [
-          'Uma única nota mantida é sempre reouvida como um grau diferente na nova tonalidade',
-          'Uma nota mantida conserva exatamente o mesmo grau na nova tonalidade',
+          'Uma nota mantida é reouvida como um grau diferente na nova tonalidade',
+          'Numa modulação de C para Eb, o G mantido é a 5.ª de C e também a 5.ª de Eb',
           'Todas as notas do acorde têm de ser comuns às duas tonalidades',
           'Nenhuma nota é mantida: a música para e recomeça na nova tonalidade',
         ],
@@ -291,7 +291,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Uma voz move-se por meio-tom de uma nota diatónica para uma cromática',
           'Uma voz salta um trítono de uma nota diatónica para uma cromática',
-          'Todas as vozes se movem por tom, por isso não aparece nenhum meio-tom',
+          'O acorde alterado mantém a mesma função nas duas tonalidades, por isso nada é reinterpretado',
           'Precisa de um acorde pivot diatónico nas duas tonalidades',
         ],
         [
@@ -360,7 +360,7 @@ const overlay: TemplateLevelOverlay = {
           'Duas secções contrastantes, cada uma repetida (||:A:||:B:||), é a forma binária simples',
           'Duas secções contrastantes, cada uma repetida (||:A:||:B:||), é a forma ternária',
           'Duas secções contrastantes, cada uma repetida (||:A:||:B:||), é a forma rondó',
-          'Duas secções contrastantes, cada uma repetida (||:A:||:B:||), é uma forma de composição contínua',
+          'Duas secções contrastantes, cada uma repetida (||:A:||:B:||), é a forma binária com retorno',
         ],
         [
           'ABA, em que a primeira secção regressa depois de um contraste, é a forma ternária',
@@ -370,9 +370,9 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'A binária com retorno traz sempre de volta material de A no fim da secção B',
-          'A binária com retorno tem três secções independentes que nunca regressam',
-          'A binária com retorno nunca modula para fora da tonalidade principal em momento algum',
-          'A binária com retorno é apenas outro nome para a binária simples',
+          'Na binária com retorno, a secção B regressa no fim, no lugar de A',
+          'A binária com retorno fica na tonalidade principal do início ao fim, sem modulação',
+          'A binária com retorno é outro nome para a binária simples',
         ],
       ],
     },

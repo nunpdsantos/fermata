@@ -14,7 +14,7 @@ const overlay: ExerciseLevelOverlay = {
 
   l1u1m1e1: {
     prompt:
-      'Identifica esta nota na clave de sol: encontra-se na linha suplementar abaixo da pauta.',
+      'Identifica esta nota na clave de sol: encontra-se numa pequena linha extra (uma linha suplementar) logo abaixo da pauta.',
     hint: 'O C central situa-se numa linha suplementar logo abaixo da pauta de clave de sol.',
   },
   l1u1m1e2: {
@@ -55,8 +55,8 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Qual é a função das linhas suplementares?',
     choices: [
       'Escrever notas acima ou abaixo das cinco linhas da pauta',
-      'Indicar a que velocidade, rápida ou lenta, a peça deve ser tocada',
-      'Marcar onde termina um compasso e começa o seguinte',
+      'Indicar a velocidade a que a peça deve ser tocada',
+      'Mostrar que mão, direita ou esquerda, toca cada nota',
       'Mostrar onde ocorrem as pausas',
     ],
     hint: 'A pauta tem apenas cinco linhas. As notas que ultrapassam essas linhas necessitam de pequenas linhas adicionais para indicar a sua posição.',

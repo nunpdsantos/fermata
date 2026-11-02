@@ -36,7 +36,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Numa suspensão 9-8, a 9.ª acima do baixo resolve descendo para a oitava',
           'Numa suspensão 9-8, a 9.ª acima do baixo resolve subindo por grau para a 10.ª',
-          'Uma suspensão 9-8 é simplesmente uma suspensão 2-1 na voz do baixo',
+          'Uma suspensão 9-8 é uma suspensão 2-1 na voz do baixo',
           'Numa suspensão 9-8, a oitava acima do baixo é a nota dissonante e sobe para a 9.ª',
         ],
         [
@@ -103,7 +103,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'As apogiaturas acentuadas e sem preparação são uma marca da expressão romântica',
           'As apogiaturas são proibidas na música romântica, que evita a dissonância acentuada',
-          'As apogiaturas têm de ser sempre preparadas, exatamente como as suspensões',
+          'As apogiaturas têm de ser sempre preparadas, como as suspensões',
           'As apogiaturas só ocorrem na voz do baixo, nunca na melodia que fica por cima dela',
         ],
       ],
@@ -138,7 +138,7 @@ const overlay: TemplateLevelOverlay = {
           'Um pedal duplo é um pedal repetido duas vezes seguidas',
         ],
         [
-          'Um pedal invertido é sempre mantido numa voz superior e nunca no baixo',
+          'Um pedal invertido é mantido na voz do soprano, e não no baixo',
           'Um pedal invertido desce grau a grau em vez de ser mantido',
           'Um pedal invertido muda de altura em cada compasso',
           'Os pedais invertidos nunca aparecem na música clássica',
@@ -365,7 +365,7 @@ const overlay: TemplateLevelOverlay = {
           'viiø7 tem uma 7.ª maior; vii°7 tem uma 5.ª perfeita e uma 7.ª menor',
         ],
         [
-          'Bdim7, Ddim7, Fdim7 e G#dim7 soam todos as mesmas quatro notas, reescritas',
+          'Bdim7, Ddim7, Fdim7 e G#dim7 soam todos com as mesmas quatro notas, reescritas',
           'Bdim7 e Ddim7 não partilham notas, porque as fundamentais estão a uma 3.ª',
           'Cada acorde de sétima diminuta tem o seu próprio conjunto de notas, único',
           'Um acorde de sétima diminuta só pode ser reescrito sobre uma das suas notas, a fundamental',

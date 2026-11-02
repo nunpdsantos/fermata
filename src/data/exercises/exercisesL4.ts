@@ -98,9 +98,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Upward by step, like a suspension resolving the other way', correct: true },
-          { label: 'Downward by step, exactly as an ordinary suspension resolves', correct: false },
+          { label: 'Downward by step, as an ordinary suspension resolves', correct: false },
           { label: 'Downward by leap', correct: false },
-          { label: 'It does not resolve; the dissonance is simply left hanging', correct: false },
+          { label: 'It does not resolve; the dissonance is left hanging', correct: false },
         ],
       },
       hint: 'A retardation is essentially a suspension that resolves upward by step rather than downward. The most common example is 7-8, where the 7th above the bass resolves up to the octave.',
@@ -119,7 +119,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'A sustained or repeated note held through changing harmonies above it', correct: true },
           { label: 'A non-chord tone that steps between two chord tones', correct: false },
           { label: 'A chord that is held for an entire phrase', correct: false },
-          { label: 'The lowest note of any chord voicing', correct: false },
+          { label: 'The lowest note of each chord, which moves with every change of harmony', correct: false },
         ],
       },
       hint: 'A pedal point (or pedal tone) is a single note — usually the tonic or dominant — sustained in one voice while the other voices move through harmonies that may be dissonant against it. Named after the organ pedal that holds bass notes.',
@@ -148,7 +148,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'In the bass voice, usually on the tonic or dominant pitch', correct: true },
           { label: 'In the soprano voice exclusively', correct: false },
-          { label: 'Only between the two inner voices', correct: false },
+          { label: 'In an inner voice such as the tenor, because the bass has to move with the chord roots', correct: false },
           { label: 'Alternating, phrase by phrase, between the highest and lowest voices', correct: false },
         ],
       },
@@ -193,7 +193,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'The 3rd rises a half step to the tonic; the 7th falls a half step', correct: true },
           { label: 'Both notes of the tritone resolve upward by step', correct: false },
-          { label: 'The tritone expands outward to an octave', correct: false },
+          { label: 'The 7th rises a half step to the tonic; the 3rd falls a half step', correct: false },
           { label: 'Both notes of the tritone move down by a whole step into the I chord', correct: false },
         ],
       },
@@ -228,7 +228,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'I or I6 — the bass steps down to the root or up to the 3rd', correct: true },
           { label: 'IV — the bass leaps up from the 5th of V7 to the subdominant above', correct: false },
           { label: 'vi — the bass leaps up a 5th, from the 5th of V7 to the submediant', correct: false },
-          { label: 'It does not resolve; it is a stable chord', correct: false },
+          { label: 'ii — the bass holds the 5th of V7, which becomes the root of ii', correct: false },
         ],
       },
       hint: 'V4/3 has the 5th of V7 in the bass (D in G7/D in C major). The D typically resolves stepwise — down to C (root of I) or up to E (giving I6). The tritone B-F still resolves as usual.',
@@ -340,7 +340,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Major 7th — often used as a colorful tonic chord in jazz and pop', correct: true },
           { label: 'Dominant 7th — always resolves to IV', correct: false },
-          { label: 'Minor 7th — used only in minor keys', correct: false },
+          { label: 'Major 7th — a classical chord whose 7th must resolve, so jazz and pop do not use it as a tonic', correct: false },
           { label: 'Half-diminished 7th — creates strong dissonance at rest', correct: false },
         ],
       },
@@ -435,7 +435,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'ii — both are pre-dominants and share two notes', correct: true },
           { label: 'V — because it is close to IV on the circle of fifths', correct: false },
           { label: 'iii — because it is adjacent to IV by step', correct: false },
-          { label: 'viio — because it contains the leading tone', correct: false },
+          { label: 'viio — it shares two notes with ii, so it can replace IV as a pre-dominant', correct: false },
         ],
       },
       hint: 'In C major, IV = F-A-C and ii = D-F-A. They share F and A (two common tones) and both create pre-dominant momentum toward V. The ii chord is often preferred in four-part writing because ii-V features smooth bass motion by 5th.',
@@ -468,7 +468,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Each chord root moves up by a diatonic second: e.g. I-ii-iii-IV', correct: true },
           { label: 'Each chord root moves down by a second: e.g. I-viio-vi-V', correct: false },
-          { label: 'Roots alternate between ascending and descending seconds', correct: false },
+          { label: 'Chord roots alternate between ascending and descending seconds', correct: false },
           { label: 'Roots move by thirds but sound like seconds', correct: false },
         ],
       },
@@ -554,7 +554,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'As 3+2 or 2+3 — an asymmetric grouping of quarter-note beats', correct: true },
-          { label: 'As 5 equal beats with no internal grouping', correct: false },
+          { label: 'As 5 equal quarter-note beats, all felt as equally strong, with no internal grouping', correct: false },
           { label: 'As 4+1, treating it like 4/4 with an extra beat', correct: false },
           { label: 'As 2.5+2.5, splitting evenly in half', correct: false },
         ],
@@ -585,7 +585,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: '2/2 time — two half-note beats per measure, felt in two rather than four', correct: true },
           { label: '4/4 time played at double speed', correct: false },
-          { label: '2/4 time with the tempo cut in half', correct: false },
+          { label: '2/4 time — two quarter-note beats per measure, played at half the tempo', correct: false },
           { label: 'Any time signature where the note values are halved', correct: false },
         ],
       },
@@ -617,8 +617,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A half-step neighbor that always returns to the same chord tone', correct: true },
-          { label: 'A neighbor tone that modulates to a new key', correct: false },
+          { label: 'A half-step neighbor that returns to the same chord tone', correct: true },
+          { label: 'A neighbor tone taken from the scale of the key, usually a whole step away', correct: false },
           { label: 'A tone borrowed from the parallel key', correct: false },
           { label: 'Any neighbor tone that appears inside a chromatic scale passage', correct: false },
         ],
@@ -681,7 +681,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The intervals above the bass note, which always reveal the inversion of the chord', correct: true },
+          { label: 'The intervals above the bass note, which reveal the inversion of the chord', correct: true },
           { label: "The scale degrees of the chord's notes in the key, for example 5-7-2-4 for V7 in C", correct: false },
           { label: 'The number of separate voices that are sounding the chord at that moment', correct: false },
           { label: 'The length of time the chord lasts, counted in beats within the bar', correct: false },

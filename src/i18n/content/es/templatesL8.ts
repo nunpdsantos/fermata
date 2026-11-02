@@ -23,7 +23,7 @@ const overlay: TemplateLevelOverlay = {
           'El sujeto entra primero en la tonalidad de la tónica y la respuesta entra en la dominante',
           'La respuesta entra primero, en la subdominante, y el sujeto la sigue después en la tonalidad de la tónica',
           'Tanto el sujeto como la respuesta están en la tónica, así que la exposición se queda en la tonalidad principal desde la primera entrada',
-          'El sujeto entra primero en la dominante',
+          'El sujeto entra primero en la tonalidad de la dominante y la respuesta entra después en la tonalidad de la tónica',
         ],
         [
           'Una respuesta tonal ajusta intervalos para evitar tonicizar la dominante en el punto de entrada',
@@ -32,10 +32,10 @@ const overlay: TemplateLevelOverlay = {
           'Respuestas tonales y reales son el mismo concepto con dos nombres, usados en épocas distintas',
         ],
         [
-          'Una respuesta real siempre transpone el sujeto exactamente a la dominante (una 5.ª J por encima o 4.ª J por debajo)',
+          'Una respuesta real transpone el sujeto exactamente a la dominante (una 5.ª J por encima o 4.ª J por debajo)',
           'Una respuesta real cambia algunos intervalos del sujeto para poder quedarse en la tonalidad de la tónica',
-          'Una respuesta real usa inversión',
-          'Una respuesta real está siempre en la tónica',
+          'Una respuesta tonal, y no una real, transpone exactamente los intervalos del sujeto a la dominante, una 5.ª J por encima',
+          'Una respuesta real es el contrasujeto, una segunda melodía escrita contra el sujeto',
         ],
         [
           'El contrasujeto es una línea melódica recurrente que acompaña cada nueva entrada del sujeto',
@@ -57,15 +57,15 @@ const overlay: TemplateLevelOverlay = {
         'Episodios: pasajes entre entradas del sujeto, frecuentemente usando secuencias basadas en fragmentos. Stretto: entradas solapadas del sujeto donde la respuesta comienza antes de que el sujeto termine.',
       choiceSets: [
         [
-          'En el stretto, cada nueva entrada comienza el sujeto antes de que la anterior lo haya terminado',
+          'En el stretto, una nueva entrada comienza el sujeto antes de que la anterior lo haya terminado',
           'En el stretto cada voz espera a que la entrada anterior termine y solo entonces entra',
-          'Stretto es lo mismo que un episodio',
-          'Stretto solo ocurre en la exposición',
+          'En el stretto, cuanto mayor es el espacio entre las entradas, más dramáticamente poderoso es el pasaje',
+          'El stretto está reservado a la exposición y se evita cerca del final de la fuga',
         ],
         [
           'Los episodios modulan entre áreas tonales, frecuentemente usando secuencias derivadas del sujeto',
           'Los episodios presentan siempre el sujeto completo en la tónica, sin ninguna modulación',
-          'Los episodios nunca usan material del sujeto',
+          'Los episodios son las entradas intermedias: presentaciones completas del sujeto en tonalidades relacionadas',
           'Los episodios deben permanecer en la tonalidad de la tónica',
         ],
         [
@@ -75,9 +75,9 @@ const overlay: TemplateLevelOverlay = {
           'La aumentación acorta los valores de nota',
         ],
         [
-          'La disminución siempre presenta el sujeto en valores de nota más cortos (generalmente reducidos a la mitad)',
+          'La disminución presenta el sujeto en valores de nota más cortos (generalmente reducidos a la mitad)',
           'La disminución quita notas al sujeto, pero mantiene sus valores de nota originales',
-          'La disminución es lo mismo que la retrogradación',
+          'La disminución presenta el sujeto en valores de nota más largos (generalmente duplicados)',
           'La disminución hace el sujeto más fuerte',
         ],
       ],
@@ -102,8 +102,8 @@ const overlay: TemplateLevelOverlay = {
         [
           'Un canon cangrejo (canon cancrizans) presenta la melodía en retrogradación',
           'Un canon cangrejo (canon cancrizans) pone la melodía cabeza abajo, en movimiento contrario',
-          'Un canon cangrejo se toca de lado',
-          'Un canon cangrejo no tiene relación con la melodía original',
+          'Un canon cangrejo (canon cancrizans) duplica los valores de las notas en el seguidor',
+          'Un canon cangrejo (canon cancrizans) es un canon perpetuo al unísono, con voces que entran a intervalos regulares',
         ],
         [
           'Un canon perpetuo vuelve al inicio',
@@ -136,21 +136,21 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'El desarrollo típicamente presenta fragmentación, secuencia y modulación por tonalidades remotas',
-          'El desarrollo repite simplemente la exposición nota a nota, siempre en la tonalidad de la tónica de principio a fin',
+          'El desarrollo construye la retransición sobre la tónica para preparar el regreso',
           'El desarrollo permanece en la tónica',
           'El desarrollo deja de lado los temas de la exposición e introduce melodías nuevas, cada una oída por primera vez',
         ],
         [
           'Una falsa reexposición comienza el regreso del tema en la tonalidad equivocada antes de la verdadera reexposición',
-          'Una falsa reexposición es simplemente la verdadera reexposición en la tónica, pero con el primer tema dejado fuera',
-          'Una falsa reexposición está en la tónica',
-          'Las falsas reexposiciones nunca ocurren en sonatas clásicas',
+          'Una falsa reexposición es la verdadera reexposición en la tónica, pero con el primer tema dejado fuera',
+          'Una falsa reexposición es la retransición, el pasaje construido sobre la dominante para preparar el verdadero regreso',
+          'Una falsa reexposición aparece después de la verdadera reexposición, como apertura de una coda expandida',
         ],
         [
           'En una sonata en tonalidad menor, el segundo tema está típicamente en el relativo mayor (III)',
           'En una sonata en tonalidad menor, el segundo tema permanece normalmente en la tónica menor y nunca modula',
           'Las sonatas menores ponen normalmente el segundo tema en la subdominante (iv), una 4.ª por encima de la tónica',
-          'Las sonatas menores no tienen segundo tema',
+          'En una sonata en tonalidad menor, el segundo tema está típicamente en la dominante menor (v), una 5.ª por encima de la tónica',
         ],
       ],
     },
@@ -167,15 +167,15 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'La forma de ritornello alterna pasajes de tutti orquestal con episodios solistas',
-          'La forma de ritornello es solo otro nombre del rondó, con solistas tocando todas las secciones',
+          'La forma de ritornello alterna pasajes solistas con episodios orquestales, así que es el solista quien toca el tema recurrente',
           'El ritornello solo usa solistas',
           'La forma de ritornello no tiene material recurrente: cada pasaje orquestal trae un tema propio',
         ],
         [
           'El sonata-rondó combina el tema A recurrente del rondó con las relaciones tonales de la forma sonata',
           'El sonata-rondó es un rondó simple, sin ningún tema recurrente, y se usa únicamente en la música vocal',
-          'El sonata-rondó es simplemente un rondó corriente, ABACA, cuyos episodios se quedan en la tonalidad de la tónica de principio a fin',
-          'El sonata-rondó no tiene tema recurrente',
+          'El sonata-rondó es un rondó común, ABACA, cuyos episodios se quedan en la tonalidad de la tónica',
+          'En el sonata-rondó, la sección B regresa en la dominante en la segunda mitad',
         ],
         [
           'Una passacaglia es un conjunto de variaciones sobre una línea de bajo recurrente (bajo ostinato)',
@@ -199,7 +199,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Cuerdas de la más aguda a la más grave: violín I, violín II, viola, violonchelo, contrabajo',
           'Cuerdas de la más aguda a la más grave: violas, violín I, violín II, contrabajos, violonchelos',
-          'Los violonchelos son más agudos que las violas',
+          'Cuerdas de la más aguda a la más grave: violín I, violín II, violonchelo, viola, contrabajo',
           'El contrabajo es más agudo que el violonchelo',
         ],
         [
@@ -246,7 +246,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'El conjunto {C, E, G} = {0, 4, 7} es una tríada mayor expresada como clases de altura',
           '{0, 4, 7} es una tríada menor, porque 4 semitonos por encima de la fundamental son siempre una 3.ª menor',
-          '{0, 4, 7} representa una tríada disminuida',
+          'El conjunto {C, E, G} = {0, 4, 7} es una tríada disminuida expresada como clases de altura',
           'Las tríadas no pueden expresarse como conjuntos de clases de altura',
         ],
       ],
@@ -260,20 +260,20 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'El vector interválico cuenta ocurrencias de cada clase de intervalo (1 a 6) en un conjunto de clases de altura',
-          'El vector interválico cuenta solo los intervalos justos de un conjunto e ignora todas sus 2.as, 3.as, 6.as y 7.as',
+          'El vector interválico cuenta solo los intervalos justos (4.as y 5.as) de un conjunto e ignora todas sus 2.as, 3.as, 6.as y 7.as',
           'El vector interválico usa nombres de notas',
-          'Los vectores interválicos son solo otro nombre de la forma normal, que lista las clases de altura de un conjunto en orden ascendente',
+          'Los vectores interválicos son otro nombre de la forma normal, que lista las clases de altura de un conjunto en orden ascendente',
         ],
         [
           'La forma primaria transpone y/o invierte un conjunto a su forma más compacta, comenzando siempre en 0',
-          'La forma primaria es la forma normal dejada exactamente como está, nunca transpuesta a 0 y nunca invertida',
+          'La forma primaria es lo mismo que la forma normal: el conjunto no se transpone a 0 ni se invierte',
           'La forma primaria solo transpone',
           'La forma primaria comienza siempre en la nota más aguda',
         ],
         [
           'Los conjuntos Z-relacionados comparten el mismo vector interválico pero no son equivalentes por transposición/inversión',
-          'Los conjuntos Z-relacionados son simplemente transposiciones unos de otros, así que tienen siempre vectores interválicos diferentes',
-          'Los conjuntos Z-relacionados tienen vectores interválicos diferentes',
+          'Los conjuntos Z-relacionados son transposiciones unos de otros, así que sus vectores interválicos difieren',
+          'Los conjuntos Z-relacionados comparten la misma forma primaria, y por eso sus vectores interválicos coinciden',
           'La relación Z no existe en la teoría de conjuntos',
         ],
       ],
@@ -291,21 +291,21 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'Una serie dodecafónica usa cada una de las 12 clases de altura exactamente una vez antes de cualquier repetición',
-          'Una serie dodecafónica puede repetir alturas libremente, con tal de que aparezcan las doce notas',
+          'Una serie dodecafónica puede repetir libremente sus 12 clases de altura dentro de la serie original',
           'Una serie usa solo 7 alturas',
           'Una serie debe ser una escala',
         ],
         [
           'Las cuatro transformaciones básicas de la serie son Original, Inversión, Retrógrada y Retrógrada-Inversión',
-          'Las cuatro transformaciones básicas de la serie son Original, Aumentación, Disminución y Modulación a la dominante',
-          'Existen solo 2 transformaciones de la serie',
+          'Las cuatro transformaciones básicas de la serie son Original, Inversión, Retrógrada y Aumentación',
+          'Existen solo 2 transformaciones básicas de la serie, Original y Retrógrada, porque la inversión no es una forma de la serie',
           'Las series quedan fijas una vez escritas, así que el compositor usa la serie original sin cambios a lo largo de la pieza',
         ],
         [
           'La matriz 12x12 contiene las 48 formas posibles (12P + 12I + 12R + 12RI)',
-          'La matriz 12x12 contiene 144 formas de la serie diferentes, una para cada celda de la cuadrícula',
-          'La matriz tiene 24 formas de la serie',
-          'Cada forma de la serie es exclusiva de una celda',
+          'La matriz 12x12 muestra solo las 12 transposiciones de la serie original, porque las inversiones y las retrógradas no se pueden leer en ella',
+          'La matriz contiene 36 formas de la serie: P, I y R, pero no RI',
+          'Una serie puede dejar fuera una clase de altura, siempre que las otras once mantengan un orden fijo',
         ],
       ],
     },
@@ -328,7 +328,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'El pandiatonicismo usa solo las notas de una tonalidad, libremente, sin progresiones armónicas funcionales',
-          'El pandiatonicismo usa las doce notas cromáticas por igual, de modo que no llega a oírse ninguna tonalidad',
+          'El pandiatonicismo usa libremente las doce notas cromáticas, sin tonalidad ni armonía funcional',
           'El pandiatonicismo usa solo escalas pentatónicas',
           'El pandiatonicismo exige cadencias V-I',
         ],
@@ -364,14 +364,14 @@ const overlay: TemplateLevelOverlay = {
         'Minimalismo: patrones repetitivos, proceso gradual, material armónico limitado. Pioneros: Reich (desfase), Glass (proceso aditivo), Riley (bucles de cinta). La música aleatoria deja elementos al azar; las técnicas expandidas son formas no convencionales de tocar.',
       choiceSets: [
         [
-          'El desfase siempre parte de dos patrones idénticos y los desplaza gradualmente fuera de sincronía',
-          'El desfase mantiene dos patrones idénticos perfectamente sincronizados durante toda la pieza',
+          'El desfase parte de dos patrones idénticos y los desplaza gradualmente fuera de sincronía',
+          'El desfase añade gradualmente notas a un patrón repetido, que va creciendo poco a poco',
           'El desfase usa técnica dodecafónica',
           'El desfase implica alterar el contenido de alturas',
         ],
         [
           'El proceso aditivo añade gradualmente notas a un patrón repetido, creando una melodía que se expande lentamente',
-          'El proceso aditivo quita una nota al patrón en cada repetición, hasta que al final de la pieza ya solo queda el silencio',
+          'El proceso aditivo quita gradualmente una nota al patrón de repetición en repetición, creando una melodía que se encoge lentamente',
           'El proceso aditivo cambia de tonalidad en cada repetición',
           'El proceso aditivo es lo mismo que tema y variaciones: cada repetición presenta una nueva versión ornamentada del tema original',
         ],
@@ -382,10 +382,10 @@ const overlay: TemplateLevelOverlay = {
           'Aleatoria significa música muy rápida',
         ],
         [
-          'Las técnicas expandidas incluyen multifónicos, piano preparado, col legno y armónicos',
-          'Las técnicas expandidas son simplemente las formas habituales de tocar enseñadas en cualquier método de conservatorio',
+          'Las técnicas expandidas incluyen multifónicos, piano preparado, col legno y sprechstimme',
+          'Las técnicas expandidas son otro nombre de la música aleatoria: el intérprete decide qué notas tocar',
           'Las técnicas expandidas se aplican solo a la percusión',
-          'Las técnicas expandidas son efectos que solo existen en la música electrónica, nunca en instrumentos acústicos',
+          'Las técnicas expandidas son patrones repetitivos que evolucionan gradualmente, como el desfase',
         ],
       ],
     },
@@ -420,7 +420,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Modulación métrica: si las corcheas de tresillo a ♩ = 120 pasan a ser las nuevas corcheas, la nueva ♩ = 180',
-          'Modulación métrica: si las corcheas de tresillo a ♩ = 120 pasan a ser las nuevas corcheas, el tempo queda ♩ = 120, porque la modulación métrica nunca cambia la velocidad',
+          'Modulación métrica: si las corcheas de tresillo a ♩ = 120 pasan a ser las nuevas corcheas, el nuevo tempo queda ♩ = 120, porque la modulación métrica nunca cambia la velocidad',
           'Modulación métrica significa cambiar de tonalidad',
           'La modulación métrica es un ritardando gradual, en el que la música se frena poco a poco hasta llegar a un tempo nuevo y más tranquilo',
         ],

@@ -10,19 +10,21 @@
  *   shortest by characters and words, most / least like the others, prompt-
  *   word overlap, shared vocabulary, "no absolute words", longest without
  *   absolute words, most punctuation, most digits) hits ≤ 40% (chance 25%).
- * - Rank family (round 4): for characters, words, punctuation, digits and
- *   parentheses, the right answer is UNIQUELY the r-th largest — for every r —
- *   in at most chance + 15 points of the sets (4 options: 40%; 3 options: 50%),
- *   and is among the two longest (characters or words) in ≤ 65% of 4-option
- *   sets (chance 50%). Moving the answer from "longest" to "second-longest"
- *   is the same cue, so every rank is bounded.
+ * - Rank family (round 4): for characters, words, punctuation, numerals,
+ *   parentheses and all punctuation marks, "pick the r-th largest option"
+ *   (ties share their ranks) hits the answer in at most chance + 15 points of
+ *   the sets for every r (4 options: 40%; 3 options: 50%), and "pick one of
+ *   the two largest" in ≤ 65% (chance 50%). Moving the answer from "longest"
+ *   to "second-longest" is the same cue, so every rank is bounded.
+ * - Lesson vocabulary (round 4b): the option sharing the most content words
+ *   with the module's own lesson text is the answer in ≤ 45% of sets.
  * - Outlier: where one option is at least 1.25× longer than every other, it
  *   is the answer at most chance + 15 points of the time (levels with ≥ 10
  *   such sets).
  */
 import { describe, it, expect } from 'vitest';
 import { CONTENT_LANGS, LEVELS } from './learnCorpus';
-import { HEURISTICS, heuristicRates, uniqueExtremes, rankCells, uniqueRank, amongTopTwo, RANK_FEATURES, servedSets, longOutliers, rankBound, OUTLIER_MIN_SETS, type ServedSet } from './answerCues';
+import { HEURISTICS, heuristicRates, uniqueExtremes, rankCells, uniqueRank, amongTopTwo, rankProbs, RANK_FEATURES, servedSets, longOutliers, rankBound, OUTLIER_MIN_SETS, lessonVocabRate, LESSON_VOCAB_BOUND, type ServedSet } from './answerCues';
 
 describe('answer-cue heuristics', () => {
   it('each heuristic finds a planted cue and credits ties fairly', () => {
@@ -51,11 +53,13 @@ describe('answer-cue heuristics', () => {
     const cells = rankCells([second]).ranks.filter((c) => c.feature === 'characters');
     expect(cells.find((c) => c.rank === 2)!.rate).toBe(1);
     expect(cells.find((c) => c.rank === 1)!.rate).toBe(0);
+    expect(rankProbs(second, RANK_FEATURES['all punctuation'])).toEqual([0.25, 0.25, 0.25, 0.25]);
     const tied: ServedSet = { id: 'x', prompt: '', choices: [
       { label: 'abcdefghij', correct: false }, { label: 'abcde', correct: true }, { label: 'vwxyz', correct: false }, { label: 'a', correct: false },
     ] };
     expect(uniqueRank(tied, RANK_FEATURES.characters)).toBe(0);
     expect(amongTopTwo(tied, RANK_FEATURES.characters)).toBe(0.5);
+    expect(rankProbs(tied, RANK_FEATURES.characters)).toEqual([0, 0.5, 0.5, 0]);
     expect(uniqueRank({ ...tied, choices: tied.choices.map((c, i) => ({ ...c, label: ['(a)', 'b', '(c)', 'd'][i] })) }, RANK_FEATURES.parentheses)).toBe(0);
   });
 });
@@ -81,6 +85,11 @@ for (const lang of CONTENT_LANGS) {
           .filter((c) => c.rate > c.bound + 1e-12)
           .map((c) => `${topTwo.includes(c) ? `among the two largest by ${c.feature}` : `${c.feature} rank ${c.rank}`} (${c.size} options) ${(100 * c.rate).toFixed(1)}% > ${(100 * c.bound).toFixed(0)}%`);
         expect(over).toEqual([]);
+      });
+
+      it(`L${n}: the option in the lesson's own words is not usually the answer`, () => {
+        const r = lessonVocabRate(servedSets(n, lang), lang);
+        expect(r, `lesson-vocabulary pick ${(100 * r).toFixed(1)}%`).toBeLessThanOrEqual(LESSON_VOCAB_BOUND);
       });
 
       it(`L${n}: a conspicuously longer option is not usually the answer`, () => {

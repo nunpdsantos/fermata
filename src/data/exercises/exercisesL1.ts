@@ -14,7 +14,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l1u1m1e1',
       type: 'note_id',
-      prompt: 'Identify this note on the treble clef: it sits on the ledger line below the staff.',
+      prompt: 'Identify this note on the treble clef: it sits on a short extra line (a ledger line) just below the staff.',
       config: {
         type: 'note_id',
         note: 'C',
@@ -100,8 +100,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'To write notes above or below the five lines of the staff', correct: true },
-          { label: 'To show how fast or slow the whole piece should be played', correct: false },
-          { label: 'To mark where one measure ends and the next begins', correct: false },
+          { label: 'To show how fast the piece should be played', correct: false },
+          { label: 'To show which hand, right or left, plays each note', correct: false },
           { label: 'To show where the rests occur', correct: false },
         ],
       },

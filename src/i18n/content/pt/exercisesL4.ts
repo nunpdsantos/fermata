@@ -70,9 +70,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Em que direção resolve um retardo?',
     choices: [
       'Para cima por grau, como uma suspensão que resolve ao contrário',
-      'Para baixo por grau conjunto, exatamente como resolve uma suspensão comum',
+      'Para baixo por grau conjunto, como resolve uma suspensão comum',
       'Para baixo por salto',
-      'Não resolve; a dissonância fica simplesmente no ar, por resolver',
+      'Não resolve; a dissonância fica no ar, por resolver',
     ],
     hint: 'Um retardo é essencialmente uma suspensão que resolve por grau conjunto ascendente em vez de descendente. O exemplo mais comum é 7-8, onde a 7.ª acima do baixo resolve para cima até à oitava.',
   },
@@ -85,7 +85,7 @@ const overlay: ExerciseLevelOverlay = {
       'Uma nota sustentada ou repetida mantida através de harmonias em mudança acima dela',
       'Uma nota estranha ao acorde que se move por grau conjunto entre duas notas do acorde',
       'Um acorde mantido durante uma frase inteira',
-      'A nota mais grave de qualquer disposição de acorde',
+      'A nota mais grave de cada acorde, que muda a cada mudança de harmonia',
     ],
     hint: 'Um pedal (ou nota pedal) é uma nota única — geralmente a tónica ou a dominante — sustentada numa voz enquanto as outras vozes se movem por harmonias que podem ser dissonantes contra ela. O nome vem do pedal do órgão que mantém notas no baixo.',
   },
@@ -105,7 +105,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Na voz do baixo, geralmente na tónica ou na dominante',
       'Exclusivamente na voz do soprano',
-      'Apenas entre as duas vozes interiores',
+      'Numa voz interior, como o tenor, porque o baixo tem de acompanhar as fundamentais dos acordes',
       'Alternando, frase a frase, entre a voz mais aguda e a mais grave',
     ],
     hint: 'Embora os pedais possam ocorrer em qualquer voz (um "pedal invertido" está no soprano, um "pedal interno" está numa voz intermédia), a colocação mais comum é no baixo nos graus 1 (pedal de tónica) ou 5 (pedal de dominante).',
@@ -128,7 +128,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'A 3.ª sobe meio-tom para a tónica; a 7.ª desce meio-tom',
       'Ambas as notas do trítono resolvem por grau conjunto ascendente',
-      'O trítono expande-se para uma oitava',
+      'A 7.ª sobe meio-tom para a tónica; a 3.ª desce meio-tom',
       'Ambas as notas do trítono descem um tom até ao acorde de I',
     ],
     hint: 'Em G7 a resolver para C: B (sensível, 3.ª de V7) resolve para cima até C; F (7.ª de V7) resolve para baixo até E. O trítono B-F contrai para dentro para C-E. Este movimento contrário é o motor da resolução tonal.',
@@ -152,7 +152,7 @@ const overlay: ExerciseLevelOverlay = {
       'I ou I6 — o baixo desce à fundamental ou sobe à 3.ª',
       'IV — o baixo salta da 5.ª de V7 para a nota da subdominante, acima',
       'vi — o baixo salta uma 5.ª, da 5.ª de V7 para a submediante',
-      'Não resolve; é um acorde estável',
+      'ii — o baixo mantém a 5.ª de V7, que passa a fundamental de ii',
     ],
     hint: 'V4/3 tem a 5.ª de V7 no baixo (D em G7/D em C maior). O D resolve tipicamente por grau conjunto — desce para C (fundamental de I) ou sobe para E (dando I6). O trítono B-F continua a resolver como habitualmente.',
   },
@@ -202,7 +202,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sétima menor — uma tríade menor com 7.ª menor',
       'Sétima maior — construído com uma tríade maior e 7.ª maior',
       'Sétima da dominante — uma tríade maior com 7.ª menor',
-      'Sétima meio-diminuto — uma tríade diminuta com 7.ª menor',
+      'Sétima meio-diminuta — uma tríade diminuta com 7.ª menor',
     ],
     hint: 'Em C maior, iii7 = E-G-B-D. A tríade E-G-B é menor, e E a D é uma 7.ª menor (10 meios-tons). Portanto iii7 é um acorde de sétima menor, tal como ii7 e vi7.',
   },
@@ -222,8 +222,8 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Sétima maior — frequentemente usado como acorde de tónica colorido no jazz e pop',
       'Sétima da dominante — resolve sempre para IV',
-      'Sétima menor — usado apenas em tonalidades menores',
-      'Sétima meio-diminuto — cria forte dissonância em repouso',
+      'Sétima maior — um acorde clássico cuja 7.ª tem de resolver, por isso o jazz e o pop não o usam como tónica',
+      'Sétima meio-diminuta — cria forte dissonância em repouso',
     ],
     hint: 'Em C maior, Imaj7 = C-E-G-B. A 7.ª maior (B) acrescenta calor e cor à tríade de tónica sem comprometer a sua estabilidade. É uma sonoridade básica no jazz, bossa nova e muitos estilos pop.',
   },
@@ -282,7 +282,7 @@ const overlay: ExerciseLevelOverlay = {
       'ii — ambos são pré-dominantes e partilham duas notas',
       'V — porque está muito próximo de IV no ciclo de quintas',
       'iii — porque é adjacente a IV por grau conjunto',
-      'vii° — porque contém a sensível',
+      'vii° — partilha duas notas com ii, por isso pode substituir IV como pré-dominante',
     ],
     hint: 'Em C maior, IV = F-A-C e ii = D-F-A. Partilham F e A (duas notas comuns) e ambos criam impulso pré-dominante para V. O acorde ii é frequentemente preferido na escrita a quatro vozes porque ii-V apresenta movimento de baixo suave por 5.ª.',
   },
@@ -305,7 +305,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Cada fundamental sobe uma 2.ª diatónica: ex. I-ii-iii-IV',
       'Cada fundamental desce uma 2.ª: ex. I-vii°-vi-V',
-      'As fundamentais alternam entre 2.as ascendentes e descendentes',
+      'As fundamentais dos acordes alternam entre 2.as ascendentes e descendentes',
       'As fundamentais movem-se por 3.as mas soam como 2.as',
     ],
     hint: 'Uma sequência de segundas ascendentes move cada fundamental por grau conjunto ascendente ao longo da escala. Embora menos comum do que as quintas descendentes, cria um forte sentido de movimento para a frente. É frequentemente combinada com inversões alternadas para suavizar a condução de vozes.',
@@ -367,7 +367,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Como é tipicamente agrupado o compasso 5/4?',
     choices: [
       'Como 3+2 ou 2+3 — um agrupamento assimétrico de tempos de semínima',
-      'Como 5 tempos iguais sem agrupamento interno',
+      'Como 5 tempos de semínima iguais, todos sentidos com a mesma força, sem agrupamento interno',
       'Como 4+1, tratando-o como 4/4 com um tempo extra',
       'Como 2,5+2,5, dividindo igualmente ao meio',
     ],
@@ -389,7 +389,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       '2/2 — dois tempos de mínima por compasso, sentido em dois em vez de quatro',
       '4/4 tocado ao dobro da velocidade',
-      '2/4 com o andamento cortado ao meio',
+      '2/4 — dois tempos de semínima por compasso, com o andamento reduzido a metade',
       'Qualquer indicação de compasso onde os valores das notas são reduzidos a metade',
     ],
     hint: 'O tempo cortado (alla breve) é 2/2: dois tempos de mínima por compasso. Um compasso de 2/2 tem a mesma duração total que um de 4/4, mas conta-se em 2 (tempo de mínima) em vez de 4 (tempo de semínima) — as mesmas notas sentidas em dois tempos, dando uma pulsação mais ampla e fluida.',
@@ -410,8 +410,8 @@ const overlay: ExerciseLevelOverlay = {
   l4u14m3e2: {
     prompt: 'O que é uma bordadura cromática?',
     choices: [
-      'Uma bordadura a meio-tom que regressa sempre à mesma nota do acorde',
-      'Uma bordadura que modula para uma nova tonalidade',
+      'Uma bordadura a meio-tom que regressa à mesma nota do acorde',
+      'Uma bordadura retirada da escala da tonalidade, em geral a um tom de distância',
       'Um som emprestado da tonalidade paralela',
       'Qualquer bordadura que apareça dentro de uma passagem de escala cromática',
     ],
@@ -457,7 +457,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'O que indicam os números após um numeral romano (baixo cifrado)?',
     choices: [
-      'Os intervalos acima da nota do baixo, que revelam sempre a inversão do acorde',
+      'Os intervalos acima da nota do baixo, que revelam a inversão do acorde',
       'Os graus da escala das notas do acorde na tonalidade, por exemplo 5-7-2-4 para V7 em C',
       'O número de vozes diferentes que estão a tocar o acorde nesse momento',
       'A duração do acorde, contada em tempos dentro do compasso',

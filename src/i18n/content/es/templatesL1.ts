@@ -34,7 +34,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'La clave de fa marca la cuarta línea (contando desde abajo) como F',
-          'La clave de fa marca la segunda línea como G',
+          'La clave de fa marca la segunda línea desde abajo como G',
           'La clave de fa marca la tercera línea como C',
           'La clave de fa marca la primera línea como E',
         ],
@@ -136,7 +136,7 @@ const overlay: TemplateLevelOverlay = {
           'Una blanca con puntillo dura 1,5 tiempos en compás 4/4',
         ],
         [
-          'Una semicorchea vale la mitad de un tiempo en compás 4/4',
+          'Una semicorchea vale medio tiempo en compás 4/4',
           'Una semicorchea vale un cuarto de tiempo en compás 4/4',
           'Una semicorchea vale un tiempo en compás 4/4',
           'Una semicorchea vale tres cuartos de tiempo en compás 4/4',
@@ -175,7 +175,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'En 2/4, 3/4 y 4/4, el 4 de abajo indica que la negra vale un tiempo',
           'En 2/4, 3/4 y 4/4, el 4 de abajo indica que la redonda vale un tiempo',
-          'En 2/4, 3/4 y 4/4, el 4 de abajo indica que hay cuatro compases',
+          'En 2/4, 3/4 y 4/4, el 4 de abajo indica que cada compás vale cuatro tiempos',
           'En 2/4, 3/4 y 4/4, el 4 de abajo fija el tempo en cuatro tiempos por segundo',
         ],
       ],

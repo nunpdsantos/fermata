@@ -139,7 +139,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Por qué la escala menor melódica eleva tanto el 6.º como el 7.º grado en la forma ascendente?',
     choices: [
       'Para eliminar la 2.ª aumentada entre el 6.º y el 7.º grado elevado de la menor armónica',
-      'Para convertirla exactamente en la escala mayor, haciendo desaparecer por completo el sonido menor',
+      'Para convertirla en la escala mayor, haciendo desaparecer el sonido menor',
       'Para facilitar la ejecución en el piano',
       'Para eliminar todos los semitonos de la escala',
     ],
@@ -232,7 +232,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué es la síncopa?',
     choices: [
       'Colocar acentos en tiempos normalmente débiles o contratiempos',
-      'Tocar todas las notas exactamente con el mismo volumen y la misma duración',
+      'Tocar todas las notas con el mismo volumen y la misma duración',
       'Acelerar gradualmente el tempo',
       'Tocar notas en una octava diferente',
     ],
@@ -271,7 +271,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué hace que un intervalo sea «justo»?',
     choices: [
       'No tiene formas mayor/menor: solo justo, aumentado o disminuido',
-      'Suena perfectamente afinado en cualquier instrumento, sin ningún batimiento',
+      'Se da entre la tónica y los grados 2.º, 3.º, 6.º y 7.º de una escala mayor',
       'Usa solo teclas blancas en el piano',
       'Es siempre consonante',
     ],

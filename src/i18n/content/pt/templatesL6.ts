@@ -233,7 +233,7 @@ const overlay: TemplateLevelOverlay = {
           'Embeleza um acorde: uma voz mantém-se enquanto três vozes se movem por grau conjunto',
           'Embeleza um acorde: as quatro vozes movem-se por grau conjunto e nenhuma delas se mantém',
           'Modula: as quatro vozes saltam juntas para um acorde de uma nova tonalidade distante',
-          'Substitui a dominante: a sua fundamental resolve meio-tom acima para a tónica',
+          'Funciona como vii°7 funcional: a sua fundamental é sensível e resolve meio-tom acima para a tónica',
         ],
       ],
     },
@@ -256,7 +256,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Pode prolongar uma harmonia de dominante através de troca cromática de vozes',
-          'Modula sempre para uma tonalidade distante através de troca cromática de vozes',
+          'Move todas as vozes cromaticamente na mesma direção, sem troca de vozes',
           'Só pode prolongar a harmonia de tónica, nunca a harmonia de dominante',
           'Substitui a cadência final de uma frase por uma cadência plagal, de IV de volta a I',
         ],
@@ -324,11 +324,11 @@ const overlay: TemplateLevelOverlay = {
           'Há apenas 2 escalas de tons inteiros, cada uma com 6 das 12 notas',
           'Há 12 escalas de tons inteiros, uma a começar em cada uma das 12 notas',
           'Há apenas 1 escala de tons inteiros, e contém as 12 notas',
-          'Há 6 escalas de tons inteiros, uma por cada uma das suas 6 notas',
+          'Há 4 escalas de tons inteiros, uma em cada nota de um acorde de sétima diminuta, separadas por terças menores',
         ],
         [
           'Um acorde de sétima diminuta divide a oitava em 4 terças menores iguais',
-          'Um acorde de sétima diminuta divide a oitava em 6 tons iguais',
+          'Um acorde de sétima diminuta divide a oitava em 6 tons inteiros iguais',
           'Um acorde de sétima diminuta divide a oitava em 2 quintas perfeitas iguais',
           'Um acorde de sétima diminuta não divide a oitava em partes iguais',
         ],
@@ -343,7 +343,7 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'Os acordes podem ligar-se por condução de vozes por meio-tom em vez de por função',
-          'Os acordes só se podem ligar por movimento de fundamental de 5.ª, como na harmonia funcional',
+          'Os acordes ligam-se por movimento de fundamental de 5.ª em vez de por condução de vozes por meio-tom',
           'Os acordes ligam-se por grandes saltos em todas as vozes para evitar notas comuns',
           'Toda a sucessão não funcional tem de terminar numa cadência V–I',
         ],
@@ -469,7 +469,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Acima do cantus, as suspensões dissonantes são 7-6, 4-3 e 9-8; abaixo, 2-3',
-          'Acima do cantus, as suspensões dissonantes são 6-5, 3-2 e 8-7; abaixo, 4-5',
+          'Acima do cantus, as suspensões dissonantes são 6-5, 3-2 e 8-7; abaixo, 4-5 e 9-8',
           'Acima do cantus, a única suspensão dissonante é 2-3; abaixo, 7-6 e 4-3',
           'Acima ou abaixo do cantus, a única suspensão dissonante permitida é 4-3',
         ],

@@ -219,7 +219,7 @@ const templates: ModuleTemplateConfig[] = [
           choiceSets: [
             [
               { label: 'Parallel fifths: two voices a P5 apart move in the same direction to another P5', correct: true },
-              { label: 'Parallel fifths: any two voices that are a 5th apart anywhere in a chord', correct: false },
+              { label: 'Parallel fifths: any two voices a 5th apart anywhere in a chord, whether or not they move', correct: false },
               { label: 'Parallel fifths: an error only when they occur between soprano and bass', correct: false },
               { label: 'Parallel fifths: acceptable in SATB as long as both voices move by step rather than leap', correct: false },
             ],
@@ -232,7 +232,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'Direct fifths between outer voices are allowed if the soprano moves by step', correct: true },
               { label: 'Direct fifths between outer voices are allowed if the soprano leaps instead of stepping', correct: false },
-              { label: 'Direct fifths come from contrary motion into a perfect fifth', correct: false },
+              { label: 'Direct fifths come from two outer voices moving in contrary motion into a perfect fifth', correct: false },
               { label: 'Direct fifths are not allowed even between the inner voices', correct: false },
             ],
             [
@@ -321,7 +321,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'The cadential 6/4 decorates V: its 6th and 4th fall by step to the 5th and 3rd', correct: true },
               { label: 'The cadential 6/4 is a tonic chord that ends the phrase in place of I', correct: false },
               { label: 'The cadential 6/4 resolves its 6th and 4th upward by step into the following tonic chord', correct: false },
-              { label: 'The cadential 6/4 falls on a weak beat, after the dominant chord', correct: false },
+              { label: 'The cadential 6/4 falls on a weak beat after the dominant chord, as a passing decoration of the bass line', correct: false },
             ],
             [
               { label: 'Second inversion (6/4) puts the 5th in the bass, with the root a 4th above it', correct: true },
@@ -406,13 +406,13 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'A parallel period: both phrases begin with similar material', correct: true },
               { label: 'A parallel period: two phrases with unrelated material and the same cadence', correct: false },
-              { label: 'A parallel period: always exactly eight bars long', correct: false },
+              { label: 'A parallel period: always eight bars long', correct: false },
               { label: 'A parallel period: both phrases end with a half cadence', correct: false },
             ],
             [
               { label: 'The antecedent usually ends with a weak cadence (HC or IAC)', correct: true },
               { label: 'The antecedent usually ends with a PAC', correct: false },
-              { label: 'The antecedent has no cadence at all', correct: false },
+              { label: 'The antecedent has no cadence', correct: false },
               { label: 'The antecedent is always the second phrase of the period', correct: false },
             ],
             [
@@ -454,7 +454,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Faster harmonic rhythm creates a greater sense of momentum', correct: true },
               { label: 'Faster harmonic rhythm creates a calmer, more static mood', correct: false },
               { label: 'Harmonic rhythm has no effect on the energy of a passage', correct: false },
-              { label: 'Slower harmonic rhythm is the usual way to build toward a climax', correct: false },
+              { label: 'Faster harmonic rhythm means the melody must use faster note values', correct: false },
             ],
             [
               { label: 'In common-practice music, chords usually change on strong beats', correct: true },
@@ -464,9 +464,9 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'Harmonic rhythm is the rate of chord change, not the melody\'s rhythm', correct: true },
-              { label: 'Harmonic rhythm is simply the rhythm the melody plays', correct: false },
+              { label: 'Harmonic rhythm is the rhythm the melody plays', correct: false },
               { label: 'Harmonic rhythm is the speed of the bass line', correct: false },
-              { label: 'Harmonic rhythm means the number of beats in each bar', correct: false },
+              { label: 'Harmonic rhythm means the number of beats in each bar of the melody', correct: false },
             ],
           ],
         },
@@ -494,7 +494,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'Passing tones may be accented (on the beat) or unaccented', correct: true },
               { label: 'Passing tones always fall on the beat, never between beats', correct: false },
-              { label: 'Passing tones always fall between beats and can never be accented', correct: false },
+              { label: 'Passing tones, like neighbor tones, return to the chord tone they started from', correct: false },
               { label: 'Passing tones must always be notes from outside the key', correct: false },
             ],
             [
@@ -511,9 +511,9 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'An incomplete neighbor is approached or left by leap instead of step', correct: true },
-              { label: 'An incomplete neighbor never resolves at all', correct: false },
+              { label: 'An incomplete neighbor never resolves', correct: false },
               { label: 'An incomplete neighbor moves by a whole step only', correct: false },
-              { label: 'An incomplete neighbor is approached and left by step, like a full neighbor tone', correct: false },
+              { label: 'An incomplete neighbor is approached and left by step, with no leap, like a full neighbor tone', correct: false },
             ],
             [
               { label: 'An anticipation sounds a note of the next chord before that chord arrives', correct: true },

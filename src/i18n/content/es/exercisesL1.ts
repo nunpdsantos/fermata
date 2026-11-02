@@ -14,7 +14,7 @@ const overlay: ExerciseLevelOverlay = {
 
   l1u1m1e1: {
     prompt:
-      'Identifica esta nota en la clave de sol: se encuentra en la línea adicional por debajo del pentagrama.',
+      'Identifica esta nota en la clave de sol: se encuentra en una pequeña línea extra (una línea adicional) justo por debajo del pentagrama.',
     hint: 'El C central se sitúa en una línea adicional justo por debajo del pentagrama de clave de sol.',
   },
   l1u1m1e2: {
@@ -55,8 +55,8 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Cuál es la función de las líneas adicionales?',
     choices: [
       'Escribir notas fuera de las cinco líneas del pentagrama',
-      'Indicar a qué velocidad, rápida o lenta, debe tocarse la pieza',
-      'Marcar dónde termina un compás y empieza el siguiente',
+      'Indicar a qué velocidad debe tocarse la pieza',
+      'Mostrar qué mano, derecha o izquierda, toca cada nota',
       'Mostrar dónde se producen los silencios',
     ],
     hint: 'El pentagrama tiene solo cinco líneas. Las notas que sobrepasan esas líneas necesitan pequeñas líneas adicionales para indicar su posición.',

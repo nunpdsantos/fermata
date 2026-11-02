@@ -235,7 +235,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'To eliminate the augmented 2nd between the 6th and raised 7th in harmonic minor', correct: true },
-          { label: 'To turn it into the major scale exactly, so the minor sound disappears completely', correct: false },
+          { label: 'To turn it into the major scale, so the minor sound disappears', correct: false },
           { label: 'To make it easier to play on the piano', correct: false },
           { label: 'To remove all half steps from the scale', correct: false },
         ],
@@ -371,7 +371,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Placing accents on normally weak beats or off-beats', correct: true },
-          { label: 'Playing every note at exactly the same volume and length', correct: false },
+          { label: 'Playing every note at the same volume and length', correct: false },
           { label: 'Gradually speeding up the tempo', correct: false },
           { label: 'Playing notes in a different octave', correct: false },
         ],
@@ -451,7 +451,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'It has no major/minor forms: only perfect, augmented or diminished', correct: true },
-          { label: 'It sounds perfectly in tune on every instrument, with no beating at all', correct: false },
+          { label: 'It occurs between the tonic and scale degrees 2, 3, 6 and 7 of a major scale', correct: false },
           { label: 'It only uses white keys on the piano', correct: false },
           { label: 'It is always consonant', correct: false },
         ],

@@ -61,7 +61,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'The relative highness or lowness of a range of pitches', correct: true },
-          { label: 'The loudness or softness with which the notes are played', correct: false },
+          { label: 'How loudly the notes are played, louder in the high range and softer in the low', correct: false },
           { label: 'The speed at which the notes are played, from very slow to very fast', correct: false },
           { label: 'The number of instruments playing simultaneously', correct: false },
         ],
@@ -355,8 +355,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Bright, happy, and resolved', correct: true },
           { label: 'Dark, sad, and tense', correct: false },
-          { label: 'Mysterious, ambiguous and unsettled', correct: false },
-          { label: 'Dissonant and unstable', correct: false },
+          { label: 'Mysterious, ambiguous, and unsettled', correct: false },
+          { label: 'Dissonant, harsh, and unstable', correct: false },
         ],
       },
       hint: 'Major scales are perceived as bright and stable. The major 3rd and major 7th contribute to this positive character.',
@@ -707,7 +707,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'A melody using only notes of the key', correct: true },
           { label: 'A melody that uses sharps and flats outside the key', correct: false },
           { label: 'A melody played on only one string of a guitar', correct: false },
-          { label: 'A melody that moves exclusively by step, never by leap, from note to note', correct: false },
+          { label: 'A melody built only from stepwise motion, with no chord outlines like C-E-G', correct: false },
         ],
       },
       hint: 'Diatonic means "belonging to the key." A diatonic melody in C major uses only C, D, E, F, G, A, and B — no accidentals.',
@@ -720,9 +720,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Relating each note to the tonic by singing the scale up to that degree', correct: true },
-          { label: 'Memorizing the exact frequency, in hertz, of every single note on the keyboard', correct: false },
+          { label: 'Memorizing the exact frequency, in hertz, of every note on the keyboard', correct: false },
           { label: 'Counting the number of ledger lines on the staff', correct: false },
-          { label: 'Playing the melody backwards to check your answer', correct: false },
+          { label: 'Treating the first note of the melody as the tonic and counting up from there', correct: false },
         ],
       },
       hint: 'Scale degree hearing means perceiving each note in relation to the tonic. Singing up from "do" to the target note is a reliable method.',
@@ -868,7 +868,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Establishing the tonic by singing the scale or arpeggio of the key', correct: true },
           { label: 'Memorizing the entire melody by heart before you sing a single note of it', correct: false },
-          { label: 'Reading the lyrics first, so you know exactly which words you will have to sing', correct: false },
+          { label: 'Reading the lyrics first, so you know which words you will have to sing', correct: false },
           { label: 'Counting the total number of notes in the melody before you start to sing', correct: false },
         ],
       },
@@ -902,7 +902,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Verse-chorus form', correct: true },
           { label: 'Through-composed form', correct: false },
-          { label: 'Rondo form', correct: false },
+          { label: 'Rondo (ABACA)', correct: false },
           { label: 'Sonata form', correct: false },
         ],
       },

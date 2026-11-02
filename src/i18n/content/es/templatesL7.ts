@@ -109,10 +109,10 @@ const overlay: TemplateLevelOverlay = {
         'En una ii-V-I, la tercera del ii se mantiene como séptima del V, mientras la séptima del ii baja un semitono a la tercera del V (y lo mismo vuelve a ocurrir del V al I). Esta eficiencia en la conducción de voces se denomina líneas de notas guía.',
       choiceSets: [
         [
-          'Las notas guía (terceras y séptimas) siempre se mueven por grado conjunto o se mantienen entre acordes en una ii-V-I',
-          'Los voicings de shell requieren grandes saltos entre acordes',
-          'Los voicings de shell mueven todas las voces por grandes saltos, porque las notas guía (tercera y séptima) nunca se mantienen de acorde en acorde',
-          'La conducción de voces no importa en el jazz',
+          'Las notas guía (terceras y séptimas) se mueven por grado conjunto o se mantienen entre acordes en una ii-V-I',
+          'Los voicings de shell se enlazan solo mediante notas comunes; los acordes que no comparten ninguna nota no pueden enlazarse con suavidad',
+          'Las notas guía (terceras y séptimas) siguen al bajo, saltando una cuarta o una quinta de acorde en acorde en una ii-V-I',
+          'La conducción de voces es tarea del bajista, así que los voicings de shell por encima pueden colocarse libremente',
         ],
         [
           'La tercera del ii se mantiene como séptima del V, y la séptima del ii baja un semitono a la tercera del V',
@@ -147,10 +147,10 @@ const overlay: TemplateLevelOverlay = {
           'En tonalidades menores, el acorde ii es un acorde de séptima mayor (maj7), construido sobre el 2.º grado elevado',
         ],
         [
-          'La ii-V-I puede usarse para tonicizar cualquier acorde, creando centros tonales transitorios',
+          'La ii-V-I puede usarse para tonicizar cualquier acorde mayor o menor, creando centros tonales transitorios',
           'La ii-V-I solo funciona en la tonalidad principal, nunca en otra tonalidad',
           'La ii-V-I no puede crear tonicización',
-          'Solo V-I crea tonicización en el jazz',
+          'La ii-V-I existe solo en tonalidades mayores; en tonalidades menores el V7 no puede ir precedido por un ii',
         ],
       ],
     },
@@ -298,7 +298,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'El locrio o el locrio con 2.ª natural, modo 6 de la menor melódica, sirve para acordes semidisminuidos m7b5',
           'El dórico es la escala de los acordes semidisminuidos (m7b5), porque su sexta natural coincide con la b5 del acorde, nota a nota',
-          'El mixolidio se usa para los acordes semidisminuidos, ya que su b7 coincide con la séptima menor de esos acordes',
+          'El mixolidio, modo 5 de la escala mayor, sirve para acordes semidisminuidos (m7b5), ya que su b7 coincide con la séptima de esos acordes',
           'Los acordes semidisminuidos no tienen ninguna escala asociada, así que los improvisadores solo pueden usar las notas del acorde',
         ],
       ],
@@ -435,9 +435,9 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'La armonía cuartal apila cuartas justas en lugar de terceras, creando un sonido abierto y ambiguo',
-          'La armonía cuartal apila solo terceras mayores, lo que la hace sonar exactamente como las tríadas tradicionales',
+          'La armonía cuartal apila quintas justas sobre un pedal en el bajo, creando un sonido amplio, orquestal',
           'La armonía cuartal es lo mismo que la armonía triádica tradicional',
-          'Los acordes cuartales son siempre disonantes',
+          'Los acordes cuartales son siempre disonantes (como una séptima de dominante) y deben resolver',
         ],
         [
           'El planing mueve una forma de acorde entera hacia arriba o hacia abajo con todas las voces en paralelo',
@@ -586,14 +586,14 @@ const overlay: TemplateLevelOverlay = {
         [
           'La escala menor melódica del jazz eleva la 6.ª y la 7.ª de la menor natural, tanto al subir como al bajar',
           'La escala menor melódica del jazz desciende tanto el 6.º como el 7.º grado, lo que la convierte simplemente en la escala menor natural',
-          'Tiene la tercera y la séptima descendidas',
-          'Es una escala pentatónica',
+          'La escala menor melódica del jazz tiene la tercera y la séptima descendidas',
+          'La escala menor melódica del jazz eleva solo la 7.ª de la menor natural, como la menor armónica',
         ],
         [
           'El locrio con 2.ª natural es el modo 6 de la menor melódica y sirve para el acorde semidisminuido (m7b5)',
           'El locrio con 2.ª natural es el modo 2 de la menor melódica y sirve para el acorde de 7.ª disminuida completo (dim7)',
-          'El locrio con 2.ª natural tiene una quinta justa',
-          'Sirve para un acorde maj7',
+          'El locrio con 2.ª natural es el modo 7 de la menor melódica (la escala alterada), usada sobre acordes 7alt',
+          'El locrio con 2.ª natural sirve para un acorde de séptima mayor (maj7), como el lidio',
         ],
       ],
     },
@@ -623,9 +623,9 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'La escala húngara menor tiene dos segundas aumentadas, creando su distintivo sonido dramático',
-          'La escala húngara menor no tiene ninguna segunda aumentada: es solo la escala menor natural con otro nombre',
+          'La escala húngara menor es el modo 5 de la menor armónica, el frigio dominante, con una 3.ª mayor',
           'La húngara menor no tiene intervalos aumentados',
-          'La húngara menor es igual a la menor melódica',
+          'La húngara menor es igual a la menor melódica (6.ª y 7.ª elevadas)',
         ],
         [
           'Existen solo dos escalas de tonos enteros diferentes: en C y en Db',
@@ -636,8 +636,8 @@ const overlay: TemplateLevelOverlay = {
         [
           'La escala disminuida alterna semitonos y tonos, lo que da 8 notas en una octava',
           'La escala disminuida alterna tonos y terceras menores, lo que le da 7 notas, como la escala mayor',
-          'Es una escala pentatónica',
-          'No tiene semitonos',
+          'La escala disminuida es una escala pentatónica',
+          'La escala disminuida no tiene semitonos, como la escala de tonos enteros, y solo tiene 6 notas en una octava',
         ],
       ],
     },

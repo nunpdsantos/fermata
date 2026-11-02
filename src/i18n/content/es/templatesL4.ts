@@ -38,7 +38,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'En un retardo 9-8, la 9.ª sobre el bajo resuelve bajando a la octava',
           'En un retardo 9-8, la 9.ª sobre el bajo resuelve subiendo por grado a la 10.ª',
-          'Un retardo 9-8 es simplemente un retardo 2-1 en la voz del bajo',
+          'Un retardo 9-8 es un retardo 2-1 en la voz del bajo',
           'En un retardo 9-8, la octava sobre el bajo es la nota disonante y sube a la 9.ª',
         ],
         [
@@ -105,7 +105,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Las apoyaturas acentuadas y sin preparación son una seña de la expresión romántica',
           'Las apoyaturas están prohibidas en la música romántica, que evita la disonancia acentuada',
-          'Las apoyaturas deben prepararse siempre, exactamente como los retardos',
+          'Las apoyaturas deben prepararse siempre, como los retardos',
           'Las apoyaturas solo aparecen en la voz del bajo, nunca en la melodía que va por encima',
         ],
       ],
@@ -140,7 +140,7 @@ const overlay: TemplateLevelOverlay = {
           'Un pedal doble es un pedal que se repite dos veces seguidas',
         ],
         [
-          'Un pedal invertido siempre se mantiene en una voz superior y nunca en el bajo',
+          'Un pedal invertido se mantiene en la voz del soprano, y no en el bajo',
           'Un pedal invertido desciende grado a grado en lugar de mantenerse',
           'Un pedal invertido cambia de altura en cada compás',
           'Los pedales invertidos nunca aparecen en la música clásica',

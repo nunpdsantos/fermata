@@ -43,12 +43,12 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'In a 7-6 suspension, the 7th resolves down to the 6th', correct: true },
               { label: 'In a 7-6 suspension, the 7th above the bass resolves up to the octave', correct: false },
               { label: 'In a 7-6 suspension, the bass holds the dissonance while the upper voice moves', correct: false },
-              { label: 'In a 7-6 suspension, the dissonance is never resolved at all', correct: false },
+              { label: 'In a 7-6 suspension, the dissonance is never resolved', correct: false },
             ],
             [
               { label: 'In a 9-8 suspension, the 9th above the bass resolves down to the octave', correct: true },
               { label: 'In a 9-8 suspension, the 9th above the bass resolves up by step to the 10th', correct: false },
-              { label: 'A 9-8 suspension is simply a 2-1 suspension in the bass voice', correct: false },
+              { label: 'A 9-8 suspension is a 2-1 suspension in the bass voice', correct: false },
               { label: 'In a 9-8 suspension, the octave above the bass is the dissonance and rises to the 9th', correct: false },
             ],
             [
@@ -119,7 +119,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'Unprepared, accented appoggiaturas are a hallmark of Romantic expression', correct: true },
               { label: 'Appoggiaturas are forbidden in Romantic music, which avoids accented dissonance', correct: false },
-              { label: 'Appoggiaturas must always be prepared, exactly like suspensions', correct: false },
+              { label: 'Appoggiaturas must always be prepared, like suspensions', correct: false },
               { label: 'Appoggiaturas occur only in the bass voice, never in the melody that sits above it', correct: false },
             ],
           ],
@@ -158,7 +158,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'A double pedal is a pedal that is repeated twice in a row', correct: false },
             ],
             [
-              { label: 'An inverted pedal is always held in an upper voice and never in the bass', correct: true },
+              { label: 'An inverted pedal is held in the soprano voice, not in the bass', correct: true },
               { label: 'An inverted pedal descends step by step instead of being held', correct: false },
               { label: 'An inverted pedal changes pitch in every bar', correct: false },
               { label: 'Inverted pedals never appear in classical music', correct: false },
@@ -445,7 +445,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Like V7, viiø7 resolves to I: the leading tone rises, the 7th falls', correct: true },
               { label: 'Like IV, viiø7 is a pre-dominant chord that resolves to V', correct: false },
               { label: 'viiø7 resolves to vi, its leading tone falling to the 6th degree', correct: false },
-              { label: 'viiø7 does not resolve at all, because it is the most stable seventh chord in the key', correct: false },
+              { label: 'viiø7 does not resolve, because it is the most stable seventh chord in the key', correct: false },
             ],
           ],
         },
@@ -581,7 +581,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'First species: one counterpoint note against each cantus firmus note', correct: true },
               { label: 'First species: two counterpoint notes against each cantus firmus note', correct: false },
               { label: 'First species: four counterpoint notes against each cantus firmus note', correct: false },
-              { label: 'First species: any rhythm at all against the cantus firmus', correct: false },
+              { label: 'First species: any rhythm against the cantus firmus', correct: false },
             ],
             [
               { label: 'In first species, every vertical interval must be a consonance', correct: true },

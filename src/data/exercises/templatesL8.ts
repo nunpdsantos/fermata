@@ -27,7 +27,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'The subject enters first in the tonic key, and the answer enters in the dominant', correct: true },
               { label: 'The answer enters first, in the subdominant, and the subject follows it in the tonic key', correct: false },
               { label: 'Both subject and answer are in the tonic, so the exposition stays in its home key from the first entry on', correct: false },
-              { label: 'The subject enters in the dominant first', correct: false },
+              { label: 'The subject enters first in the dominant key, and the answer then enters in the tonic key', correct: false },
             ],
             [
               { label: 'A tonal answer adjusts intervals to avoid tonicizing the dominant at the entry point', correct: true },
@@ -36,10 +36,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Tonal and real answers are the same concept under two names, used in different periods', correct: false },
             ],
             [
-              { label: 'A real answer always transposes the subject exactly to the dominant (up a P5 or down a P4)', correct: true },
+              { label: 'A real answer transposes the subject exactly to the dominant (up a P5 or down a P4)', correct: true },
               { label: 'A real answer changes some of the subject\'s intervals so it can stay in the tonic', correct: false },
-              { label: 'A real answer uses inversion', correct: false },
-              { label: 'A real answer is always in the tonic', correct: false },
+              { label: "A tonal answer, not a real one, transposes the subject's intervals exactly to the dominant, a P5 above", correct: false },
+              { label: 'A real answer is the countersubject, a second melody written against the subject', correct: false },
             ],
             [
               { label: 'The countersubject is a recurring melodic line that accompanies each new entry of the subject', correct: true },
@@ -65,15 +65,15 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'In stretto, every new entry begins the subject before the previous one has finished it', correct: true },
+              { label: 'In stretto, a new entry begins the subject before the previous one has finished it', correct: true },
               { label: 'In stretto each voice waits for the previous entry to end, and only then enters', correct: false },
-              { label: 'Stretto is the same as an episode', correct: false },
-              { label: 'Stretto only occurs in the exposition', correct: false },
+              { label: 'In stretto, the wider the gap between entries, the more dramatically forceful the passage', correct: false },
+              { label: 'Stretto is reserved for the exposition and avoided near the end of the fugue', correct: false },
             ],
             [
               { label: 'Episodes modulate between key areas, often using sequences derived from the subject', correct: true },
               { label: 'Episodes always state the whole subject in the tonic key, without modulating', correct: false },
-              { label: 'Episodes never use material from the subject', correct: false },
+              { label: 'Episodes are the middle entries: complete statements of the subject in related keys', correct: false },
               { label: 'Episodes must stay in the tonic key', correct: false },
             ],
             [
@@ -83,9 +83,9 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Augmentation shortens the note values', correct: false },
             ],
             [
-              { label: 'Diminution always presents the subject in shorter note values (usually halved)', correct: true },
+              { label: 'Diminution presents the subject in shorter note values (usually halved)', correct: true },
               { label: 'Diminution removes notes from the subject but keeps its original note values', correct: false },
-              { label: 'Diminution is the same as retrograde', correct: false },
+              { label: 'Diminution presents the subject in longer note values (usually doubled)', correct: false },
               { label: 'Diminution makes the subject louder', correct: false },
             ],
           ],
@@ -114,8 +114,8 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'A crab canon (canon cancrizans) presents the melody in retrograde', correct: true },
               { label: 'A crab canon (canon cancrizans) turns the melody upside down, in contrary motion', correct: false },
-              { label: 'A crab canon is played sideways', correct: false },
-              { label: 'A crab canon has no relationship to the original melody', correct: false },
+              { label: 'A crab canon (canon cancrizans) doubles the note values in the follower', correct: false },
+              { label: 'A crab canon (canon cancrizans) is a perpetual canon at the unison, with voices entering at regular intervals', correct: false },
             ],
             [
               { label: 'A perpetual canon loops to its start', correct: true },
@@ -152,21 +152,21 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'The development typically features fragmentation, sequence, and modulation through remote keys', correct: true },
-              { label: 'The development simply repeats the exposition note for note, staying in the tonic key throughout', correct: false },
+              { label: "The development builds its retransition on the tonic to prepare the return", correct: false },
               { label: 'The development stays in the tonic', correct: false },
               { label: "The development sets the exposition's themes aside, introducing new melodies, each heard for the first time", correct: false },
             ],
             [
               { label: 'A false recapitulation begins the return of the theme in the wrong key before the real recap', correct: true },
-              { label: 'A false recapitulation is simply the real recapitulation in the tonic, with the first theme left out of it', correct: false },
-              { label: 'A false recapitulation is in the tonic', correct: false },
-              { label: 'False recapitulations never occur in classical sonatas', correct: false },
+              { label: 'A false recapitulation is the real recapitulation in the tonic key, with the first theme left out of it', correct: false },
+              { label: 'A false recapitulation is the retransition, the passage built on the dominant to prepare the real return', correct: false },
+              { label: 'A false recapitulation comes after the real recapitulation, as the opening of an expanded coda', correct: false },
             ],
             [
               { label: 'In a minor-key sonata, the second theme is typically in the relative major (III)', correct: true },
               { label: 'In a minor-key sonata, the second theme normally stays in the tonic minor and never modulates', correct: false },
               { label: 'Minor-key sonatas usually put the second theme in the subdominant (iv), a 4th above the tonic', correct: false },
-              { label: 'Minor-key sonatas do not have a second theme', correct: false },
+              { label: 'In a minor-key sonata, the second theme is typically in the dominant minor (v), a 5th above the tonic', correct: false },
             ],
           ],
         },
@@ -187,15 +187,15 @@ const templates: ModuleTemplateConfig[] = [
           choiceSets: [
             [
               { label: 'Ritornello form alternates orchestral tutti passages with solo episodes', correct: true },
-              { label: 'Ritornello form is just another name for rondo, with soloists playing every section', correct: false },
+              { label: 'Ritornello form alternates solo passages with orchestral episodes, so the soloist plays the recurring theme', correct: false },
               { label: 'Ritornello only uses soloists', correct: false },
               { label: 'Ritornello form has no recurring material: each orchestral passage brings in a theme of its own', correct: false },
             ],
             [
               { label: 'Sonata-rondo combines the recurring A theme of rondo with sonata-form tonal relationships', correct: true },
               { label: 'Sonata-rondo is a plain rondo without any recurring theme, and it is used only in vocal music', correct: false },
-              { label: 'Sonata-rondo is simply an ordinary rondo, ABACA, whose episodes stay in the tonic key from start to finish', correct: false },
-              { label: 'Sonata-rondo has no recurring theme', correct: false },
+              { label: 'Sonata-rondo is an ordinary rondo, ABACA, whose episodes stay in the tonic key', correct: false },
+              { label: 'In sonata-rondo, the B section returns in the dominant in the second half', correct: false },
             ],
             [
               { label: 'A passacaglia is a set of variations over a recurring bass line (ground bass)', correct: true },
@@ -223,7 +223,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'Strings from highest to lowest: violin I, violin II, viola, cello, double bass', correct: true },
               { label: 'Strings from highest to lowest: violas, violin I, violin II, double basses, cellos', correct: false },
-              { label: 'Cellos are higher than violas', correct: false },
+              { label: 'Strings from highest to lowest: violin I, violin II, cello, viola, double bass', correct: false },
               { label: 'Double bass is higher than cello', correct: false },
             ],
             [
@@ -274,7 +274,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'The set {C, E, G} = {0, 4, 7} is a major triad expressed as pitch classes', correct: true },
               { label: '{0, 4, 7} is a minor triad, because 4 semitones above the root is always a minor 3rd', correct: false },
-              { label: '{0, 4, 7} represents a diminished triad', correct: false },
+              { label: 'The set {C, E, G} = {0, 4, 7} is a diminished triad expressed as pitch classes', correct: false },
               { label: 'Triads cannot be expressed as pitch-class sets', correct: false },
             ],
           ],
@@ -288,20 +288,20 @@ const templates: ModuleTemplateConfig[] = [
           choiceSets: [
             [
               { label: 'The interval vector counts occurrences of each interval class (1 through 6) in a pitch-class set', correct: true },
-              { label: 'The interval vector counts only the perfect intervals in a set and ignores every 2nd, 3rd, 6th and 7th', correct: false },
+              { label: 'The interval vector counts only the perfect intervals (4ths and 5ths) in a set and ignores every 2nd, 3rd, 6th and 7th', correct: false },
               { label: 'The interval vector uses letter names', correct: false },
-              { label: "Interval vectors are just another name for normal form, which lists a set's pitch classes in ascending order", correct: false },
+              { label: "Interval vectors are another name for normal form, which lists a set's pitch classes in ascending order", correct: false },
             ],
             [
               { label: 'Prime form transposes and/or inverts a set to its most compact form, always starting on 0', correct: true },
-              { label: 'Prime form is the normal form left exactly as it is, never transposed to 0 and never inverted', correct: false },
+              { label: 'Prime form is the same as normal form: the set is not transposed to 0 or inverted', correct: false },
               { label: 'Prime form only transposes', correct: false },
               { label: 'Prime form always starts on the highest note', correct: false },
             ],
             [
               { label: 'Z-related sets share the same interval vector but are not transposition/inversion equivalent', correct: true },
-              { label: 'Z-related sets are simply transpositions of each other, so they always have different interval vectors', correct: false },
-              { label: 'Z-related sets have different interval vectors', correct: false },
+              { label: 'Z-related sets are transpositions of each other, so their interval vectors differ', correct: false },
+              { label: 'Z-related sets share a prime form, which is why their interval vectors match', correct: false },
               { label: 'Z-relation does not exist in set theory', correct: false },
             ],
           ],
@@ -323,21 +323,21 @@ const templates: ModuleTemplateConfig[] = [
           choiceSets: [
             [
               { label: 'A twelve-tone row uses each of the 12 pitch classes exactly once before any is repeated', correct: true },
-              { label: 'A tone row may repeat pitches freely, provided the twelve notes appear at some point', correct: false },
+              { label: 'A twelve-tone row may repeat its 12 pitch classes freely within the prime row', correct: false },
               { label: 'A tone row uses only 7 pitches', correct: false },
               { label: 'A tone row must be a scale', correct: false },
             ],
             [
               { label: 'The four basic row transformations are Prime, Inversion, Retrograde, and Retrograde Inversion', correct: true },
-              { label: 'The four basic row transformations are Prime, Augmentation, Diminution and Modulation to the dominant', correct: false },
-              { label: 'There are only 2 row transformations', correct: false },
+              { label: 'The four basic row transformations are Prime, Inversion, Retrograde and Augmentation', correct: false },
+              { label: 'There are only 2 basic row transformations, Prime and Retrograde, because inversion is not a row form', correct: false },
               { label: 'Tone rows stay fixed once written, so the composer uses the original prime row unchanged throughout the piece', correct: false },
             ],
             [
               { label: 'The 12x12 matrix contains all 48 possible forms (12P + 12I + 12R + 12RI)', correct: true },
-              { label: 'The 12x12 matrix contains 144 different row forms, one for every single cell of the grid', correct: false },
-              { label: 'The matrix has 24 row forms', correct: false },
-              { label: 'Each row form is unique to one cell', correct: false },
+              { label: 'The 12x12 matrix shows only the 12 transpositions of the prime row, since inversions and retrogrades cannot be read from it', correct: false },
+              { label: 'The matrix contains 36 row forms: P, I and R, but not RI', correct: false },
+              { label: 'A tone row may leave out one pitch class, as long as the other eleven keep a fixed order', correct: false },
             ],
           ],
         },
@@ -364,7 +364,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'Pandiatonicism uses only the notes of one key, freely, without functional chord progressions', correct: true },
-              { label: 'Pandiatonicism uses all twelve chromatic notes equally, so that no key can be heard at all', correct: false },
+              { label: 'Pandiatonicism freely uses all twelve chromatic notes, with no key and no functional harmony', correct: false },
               { label: 'Pandiatonicism uses only pentatonic scales', correct: false },
               { label: 'Pandiatonicism requires V-I cadences', correct: false },
             ],
@@ -404,14 +404,14 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Phasing always starts from two identical patterns and shifts them gradually out of sync', correct: true },
-              { label: 'Phasing keeps two identical patterns perfectly in sync for the whole piece', correct: false },
+              { label: 'Phasing starts from two identical patterns and shifts them gradually out of sync', correct: true },
+              { label: 'Phasing gradually adds notes to a repeated pattern so that it slowly grows', correct: false },
               { label: 'Phasing uses twelve-tone technique', correct: false },
               { label: 'Phasing involves changing the pitch content', correct: false },
             ],
             [
               { label: 'Additive process gradually adds notes to a repeated pattern, creating a slowly expanding melody', correct: true },
-              { label: 'Additive process removes one note from the pattern at every repetition until only silence remains', correct: false },
+              { label: 'Additive process gradually removes one note from the pattern, repetition after repetition, creating a slowly shrinking melody', correct: false },
               { label: 'Additive process changes key with each repetition', correct: false },
               { label: 'Additive process is the same as theme and variations: each repetition presents a new decorated version of the original theme', correct: false },
             ],
@@ -422,10 +422,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Aleatory means very fast music', correct: false },
             ],
             [
-              { label: 'Extended techniques include multiphonics, prepared piano, col legno, and harmonics', correct: true },
-              { label: 'Extended techniques are simply the standard ways of playing taught in every conservatory method', correct: false },
+              { label: 'Extended techniques include multiphonics, prepared piano, col legno, and sprechstimme', correct: true },
+              { label: 'Extended techniques are another name for aleatory music: the performer decides which notes to play', correct: false },
               { label: 'Extended techniques only apply to percussion', correct: false },
-              { label: 'Extended techniques are effects found only in electronic music, never on acoustic instruments', correct: false },
+              { label: 'Extended techniques are repetitive patterns that evolve gradually, such as phasing', correct: false },
             ],
           ],
         },
@@ -464,7 +464,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'Metric modulation: if triplet eighths at ♩ = 120 become the new eighth notes, the new ♩ = 180', correct: true },
-              { label: 'Metric modulation: if triplet eighths at ♩ = 120 become the new eighths, the tempo stays ♩ = 120, since a metric modulation never changes speed', correct: false },
+              { label: 'Metric modulation: if triplet eighths at ♩ = 120 become the new eighths, the new tempo stays ♩ = 120, since a metric modulation never changes speed', correct: false },
               { label: 'Metric modulation means changing key', correct: false },
               { label: 'Metric modulation is a gradual ritardando, the music slowing little by little until a new, calmer tempo is reached', correct: false },
             ],

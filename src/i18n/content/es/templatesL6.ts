@@ -233,7 +233,7 @@ const overlay: TemplateLevelOverlay = {
           'Embellece un acorde: una voz se mantiene mientras tres voces se mueven por grado conjunto',
           'Embellece un acorde: las cuatro voces se mueven por grado conjunto y ninguna de ellas se mantiene',
           'Modula: las cuatro voces saltan juntas a un acorde de una nueva tonalidad lejana',
-          'Sustituye a la dominante: su fundamental resuelve medio tono arriba hacia la tónica',
+          'Funciona como vii°7 funcional: su fundamental es sensible y resuelve medio tono arriba hacia la tónica',
         ],
       ],
     },
@@ -256,7 +256,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Puede prolongar una armonía de dominante mediante intercambio cromático de voces',
-          'Siempre modula a una tonalidad muy lejana mediante intercambio cromático de voces',
+          'Mueve todas las voces cromáticamente en la misma dirección, sin intercambio de voces',
           'Solo puede prolongar la armonía de tónica, nunca la armonía de dominante',
           'Sustituye la cadencia final de una frase por una cadencia plagal, de IV de vuelta a I',
         ],
@@ -324,12 +324,12 @@ const overlay: TemplateLevelOverlay = {
           'Solo hay 2 escalas de tonos enteros, cada una con 6 de las 12 notas',
           'Hay 12 escalas de tonos enteros, una que empieza en cada una de las 12 notas',
           'Solo hay 1 escala de tonos enteros, y contiene las 12 notas',
-          'Hay 6 escalas de tonos enteros, una por cada una de sus 6 notas',
+          'Hay 4 escalas de tonos enteros, una en cada nota de un acorde de séptima disminuida, separadas por terceras menores',
         ],
         [
           'Un acorde de séptima disminuida divide la octava en 4 terceras menores iguales',
-          'Un acorde de séptima disminuida divide la octava en 6 tonos iguales',
-          'Un acorde de séptima disminuida divide la octava en 2 quintas justas exactamente iguales',
+          'Un acorde de séptima disminuida divide la octava en 6 tonos enteros iguales',
+          'Un acorde de séptima disminuida divide la octava en 2 quintas justas iguales',
           'Un acorde de séptima disminuida no divide la octava en partes iguales',
         ],
       ],
@@ -343,7 +343,7 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'Los acordes pueden enlazarse por conducción de voces por semitono en lugar de por función',
-          'Los acordes solo pueden enlazarse por movimiento de fundamental de 5.ª, como en la armonía funcional',
+          'Los acordes se enlazan por movimiento de fundamental de 5.ª en lugar de por conducción de voces por semitono',
           'Los acordes se enlazan con grandes saltos en todas las voces para evitar notas comunes',
           'Toda sucesión no funcional debe terminar en una cadencia V–I',
         ],
@@ -469,7 +469,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Por encima del cantus, las suspensiones disonantes son 7-6, 4-3 y 9-8; por debajo, 2-3',
-          'Por encima del cantus, las suspensiones disonantes son 6-5, 3-2 y 8-7; por debajo, 4-5',
+          'Por encima del cantus, las suspensiones disonantes son 6-5, 3-2 y 8-7; por debajo, 4-5 y 9-8',
           'Por encima del cantus, la única suspensión disonante es 2-3; por debajo, 7-6 y 4-3',
           'Por encima o por debajo del cantus, la única suspensión disonante permitida es 4-3',
         ],

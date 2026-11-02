@@ -281,7 +281,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'It embellishes a chord: one voice holds while three voices move by step', correct: true },
               { label: 'It embellishes a chord: all four voices move by step and none holds', correct: false },
               { label: 'It modulates: all four voices leap together to a chord in a distant new key', correct: false },
-              { label: 'It replaces the dominant: its root resolves up a half step to the tonic', correct: false },
+              { label: 'It acts as a functional viio7: its root is a leading tone that resolves up a half step to the tonic', correct: false },
             ],
           ],
         },
@@ -308,7 +308,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'It can prolong a dominant harmony through chromatic voice exchange', correct: true },
-              { label: 'It always modulates to a distant key through chromatic voice exchange', correct: false },
+              { label: 'It moves every voice chromatically in the same direction, with no voice exchange', correct: false },
               { label: 'It can prolong only the tonic harmony, never the dominant harmony', correct: false },
               { label: 'It replaces the final cadence of a phrase with a plagal cadence, from IV back to I', correct: false },
             ],
@@ -393,7 +393,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'There are only 2 whole-tone scales, each with 6 of the 12 notes', correct: true },
               { label: 'There are 12 whole-tone scales, one starting on each of the 12 notes', correct: false },
               { label: 'There is only 1 whole-tone scale, and it holds all 12 notes', correct: false },
-              { label: 'There are 6 whole-tone scales, one for each of its 6 notes', correct: false },
+              { label: 'There are 4 whole-tone scales, one on each note of a diminished seventh chord, spaced in minor thirds', correct: false },
             ],
             [
               { label: 'A diminished 7th chord divides the octave into 4 equal minor 3rds', correct: true },
@@ -412,7 +412,7 @@ const templates: ModuleTemplateConfig[] = [
           choiceSets: [
             [
               { label: 'Chords can connect by half-step voice leading instead of by function', correct: true },
-              { label: 'Chords can connect only by root motion of a 5th, as in functional harmony', correct: false },
+              { label: 'Chords connect by root motion of a 5th instead of by half-step voice leading', correct: false },
               { label: 'Chords connect by large leaps in every voice to avoid common tones', correct: false },
               { label: 'Every nonfunctional succession must still end on a V–I cadence', correct: false },
             ],
@@ -547,7 +547,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'Above the cantus the dissonant suspensions are 7-6, 4-3 and 9-8; below it, 2-3', correct: true },
-              { label: 'Above the cantus the dissonant suspensions are 6-5, 3-2 and 8-7; below it, 4-5', correct: false },
+              { label: 'Above the cantus the dissonant suspensions are 6-5, 3-2 and 8-7; below it, 4-5 and 9-8', correct: false },
               { label: 'Above the cantus the only dissonant suspension is 2-3; below it, 7-6 and 4-3', correct: false },
               { label: 'Above or below the cantus, the only dissonant suspension allowed is 4-3', correct: false },
             ],

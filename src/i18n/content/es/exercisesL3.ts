@@ -301,7 +301,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'La 4.ª por encima del bajo es una disonancia que requiere resolución específica',
       'Los acordes en segunda inversión suenan peor que en primera inversión',
-      'La 5.ª en el bajo hace que el acorde sea imposible de identificar',
+      'La 5.ª en el bajo es una nota inestable que debe resolver bajando por grado',
       'La segunda inversión está prohibida en toda la música clásica',
     ],
     hint: 'La 4.ª justa por encima del bajo (en posición 6/4) era tratada como disonancia en la armonía de práctica común. Aparece típicamente en cuatro contextos específicos: 6/4 cadencial, de paso, de pedal y arpegiado.',
@@ -380,7 +380,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'En la estructura clásica de «frase» (Satz), ¿qué ocurre tras la presentación (la idea básica y su repetición)?',
     choices: [
       'Una continuación que fragmenta y acelera hacia una cadencia',
-      'Una repetición exacta de la presentación',
+      'La idea básica se presenta por tercera vez, sin cambios, antes de la cadencia',
       'Una sección contrastante, como en un período contrastante, que responde a la presentación',
       'Un silencio seguido de un nuevo tema',
     ],
@@ -436,7 +436,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué es una bordadura?',
     choices: [
       'Una nota extraña que se aleja por grado de una nota del acorde y regresa a ella',
-      'Una nota extraña que se mueve por grado de una nota del acorde a otra nota diferente del acorde',
+      'Una nota extraña que se mueve por grado de una nota del acorde a una nota distinta del acorde, sin regresar a la primera',
       'Una nota del acorde que se repite en el siguiente tiempo',
       'Una nota prestada de una tonalidad vecina',
     ],
@@ -448,7 +448,7 @@ const overlay: ExerciseLevelOverlay = {
       'Una nota extraña que hace sonar antes una nota del acorde siguiente',
       'Una nota del acorde que se retrasa hasta después del tiempo y luego resuelve',
       'Una nota que se mantiene del acorde anterior',
-      'Una pausa que sustituye a una nota esperada',
+      'Una pausa que sustituye a una nota esperada del acorde siguiente justo antes de que llegue',
     ],
     hint: 'Una anticipación «anticipa» el acorde siguiente haciendo sonar una de sus notas antes de tiempo, antes de que la armonía cambie. Es típicamente una nota breve y no acentuada que resuelve manteniéndose en la misma altura.',
   },

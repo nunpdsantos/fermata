@@ -175,7 +175,7 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'Quintas paralelas: duas vozes a uma 5.ª P movem-se na mesma direção para outra 5.ª P',
-          'Quintas paralelas: quaisquer duas vozes que estejam a uma 5.ª em qualquer acorde',
+          'Quintas paralelas: quaisquer duas vozes a uma 5.ª em qualquer acorde, quer se movam quer não',
           'Quintas paralelas: um erro apenas quando ocorrem entre o soprano e o baixo',
           'Quintas paralelas: aceitáveis em SATB desde que as duas vozes se movam por grau e não por salto',
         ],
@@ -188,7 +188,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'As quintas diretas entre as vozes extremas são permitidas se o soprano se mover por grau',
           'As quintas diretas entre as vozes extremas são permitidas se o soprano saltar em vez de ir por grau',
-          'As quintas diretas resultam de movimento contrário para uma quinta perfeita',
+          'As quintas diretas resultam de duas vozes extremas em movimento contrário para uma quinta perfeita',
           'As quintas diretas não são permitidas nem entre as vozes interiores',
         ],
         [
@@ -269,7 +269,7 @@ const overlay: TemplateLevelOverlay = {
           'O 6/4 cadencial decora o V: a sua 6.ª e a sua 4.ª descem por grau para a 5.ª e a 3.ª',
           'O 6/4 cadencial é um acorde de tónica que termina a frase em vez do I',
           'O 6/4 cadencial resolve a sua 6.ª e a sua 4.ª por grau ascendente para o acorde de tónica seguinte',
-          'O 6/4 cadencial cai num tempo fraco, depois do acorde de dominante',
+          'O 6/4 cadencial cai num tempo fraco, depois do acorde de dominante, como decoração de passagem da linha do baixo',
         ],
         [
           'A 2.ª inversão (6/4) põe a 5.ª no baixo, com a fundamental uma 4.ª acima',
@@ -346,7 +346,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Período paralelo: as duas frases começam com material semelhante',
           'Período paralelo: duas frases com material sem relação e a mesma cadência',
-          'Período paralelo: tem sempre exatamente oito compassos',
+          'Período paralelo: tem sempre oito compassos',
           'Período paralelo: as duas frases terminam com meia cadência',
         ],
         [
@@ -390,7 +390,7 @@ const overlay: TemplateLevelOverlay = {
           'Um ritmo harmónico mais rápido cria maior sensação de impulso',
           'Um ritmo harmónico mais rápido cria um ambiente mais calmo e estático',
           'O ritmo harmónico não tem efeito na energia de uma passagem',
-          'Um ritmo harmónico mais lento é a forma habitual de construir um clímax',
+          'Um ritmo harmónico mais rápido obriga a melodia a usar figuras mais rápidas',
         ],
         [
           'Na prática comum, os acordes mudam em geral nos tempos fortes',
@@ -400,9 +400,9 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'O ritmo harmónico é o ritmo das mudanças de acorde, não o da melodia',
-          'O ritmo harmónico é simplesmente o ritmo que a melodia toca',
+          'O ritmo harmónico é o ritmo que a melodia toca',
           'O ritmo harmónico é a velocidade da linha do baixo',
-          'O ritmo harmónico é o número de tempos de cada compasso',
+          'O ritmo harmónico é o número de tempos de cada compasso da melodia',
         ],
       ],
     },
@@ -426,7 +426,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'As notas de passagem podem ser acentuadas (no tempo) ou não acentuadas',
           'As notas de passagem caem sempre no tempo, nunca entre tempos',
-          'As notas de passagem caem sempre entre tempos e nunca podem ser acentuadas',
+          'As notas de passagem, tal como as bordaduras, regressam à nota do acorde de onde partiram',
           'As notas de passagem têm de ser sempre notas de fora da tonalidade',
         ],
         [
@@ -445,7 +445,7 @@ const overlay: TemplateLevelOverlay = {
           'Uma bordadura incompleta é abordada ou deixada por salto em vez de grau',
           'Uma bordadura incompleta nunca chega a resolver',
           'Uma bordadura incompleta move-se apenas por tom',
-          'Uma bordadura incompleta é abordada e deixada por grau, como uma bordadura completa',
+          'Uma bordadura incompleta é abordada e deixada por grau, sem salto, como uma bordadura completa',
         ],
         [
           'Uma antecipação faz soar uma nota do acorde seguinte antes de esse acorde chegar',

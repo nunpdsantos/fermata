@@ -9,15 +9,16 @@
  */
 import type { ContentLanguage } from '../../../i18n/content/types';
 import { levelCorpus } from './learnCorpus';
+import { EN_UNITS, curriculumOverlay } from '../../../i18n/content/__tests__/overlayEntries';
 
 export type Choice = { label: string; correct: boolean };
-export interface ServedSet { id: string; prompt: string; choices: Choice[] }
+export interface ServedSet { id: string; prompt: string; choices: Choice[]; moduleId?: string }
 
 /** Served multiple-choice items of a level in one language (authored + generated). */
 export function servedSets(level: number, lang: ContentLanguage): ServedSet[] {
   return levelCorpus(level, lang)
     .filter((i) => i.exercise.config.type === 'multiple_choice')
-    .map((i) => ({ id: i.exercise.id, prompt: i.exercise.prompt, choices: (i.exercise.config as { choices: Choice[] }).choices }));
+    .map((i) => ({ id: i.exercise.id, prompt: i.exercise.prompt, choices: (i.exercise.config as { choices: Choice[] }).choices, moduleId: i.moduleId }));
 }
 
 /** Python's [\w'’]+ on lower-cased text (Unicode letters, digits, underscore, apostrophes). */
@@ -119,10 +120,12 @@ export function uniqueExtremes(level: number, lang: ContentLanguage) {
 /*
  * Rank family (review round 4). Moving the right answer off "longest" onto
  * "second-longest" is the same cue one place down, so every rank is checked:
- * for each feature and each rank r, how often the right answer is UNIQUELY
- * the r-th largest (a tie at its value means the heuristic makes no pick).
- * Bound: chance + 15 points (4 options: 40%; 3 options: 50% by decision),
- * and for 4-option sets "among the two longest" (chance 50%) at most 65%.
+ * for each feature and each rank r, the expected hit rate of "pick the r-th
+ * largest option" — a tie block shares its ranks evenly, as in the review's
+ * rankfam.py (round 4b; the first version counted unique ranks only, which
+ * hid tie-heavy features such as punctuation marks). Bound: chance + 15
+ * points (4 options: 40%; 3 options: 50% by decision), and "among the two
+ * largest" (4 options, chance 50%) at most 65%, for every feature.
  */
 export const RANK_FEATURES: Record<string, (label: string) => number> = {
   characters: (s) => len(s),
@@ -130,6 +133,8 @@ export const RANK_FEATURES: Record<string, (label: string) => number> = {
   punctuation: (s) => (s.match(/[,;:()]/g) ?? []).length,
   digits: (s) => (s.match(/\d/g) ?? []).length,
   parentheses: (s) => (s.match(/[()]/g) ?? []).length,
+  /** Every mark (review round 4b, rankfam.py): commas, semicolons, colons, parentheses, dashes, quotes, slashes. */
+  'all punctuation': (s) => (s.match(/[,;:()—–\-"“”«»'/]/g) ?? []).length,
 };
 
 /** 1-based rank (largest first) of the right answer by a feature, or 0 when another option has the same value. */
@@ -138,6 +143,21 @@ export function uniqueRank(s: ServedSet, feature: (label: string) => number): nu
   const mine = v[ci(s)];
   if (v.filter((x) => x === mine).length > 1) return 0;
   return 1 + v.filter((x) => x > mine).length;
+}
+
+/**
+ * Probability that "pick the r-th largest" hits the right answer, per rank r
+ * (index 0 = largest): the right answer's tie block shares its ranks evenly;
+ * when every option ties, the feature carries no information (1/n each).
+ */
+export function rankProbs(s: ServedSet, feature: (label: string) => number): number[] {
+  const v = s.choices.map((c) => feature(c.label));
+  const n = v.length;
+  if (new Set(v).size === 1) return new Array<number>(n).fill(1 / n);
+  const mine = v[ci(s)];
+  const higher = v.filter((x) => x > mine).length;
+  const ties = v.filter((x) => x === mine).length;
+  return v.map((_, r) => (r >= higher && r < higher + ties ? 1 / ties : 0));
 }
 
 /** Credit for "the right answer is among the two largest" (fractional when a tie straddles the cut). */
@@ -164,13 +184,12 @@ export function rankCells(sets: ServedSet[]): { ranks: RankCell[]; topTwo: RankC
   const topTwo: RankCell[] = [];
   for (const [size, group] of bySize) {
     for (const [feature, f] of Object.entries(RANK_FEATURES)) {
-      const r = group.map((s) => uniqueRank(s, f));
+      const acc = new Array<number>(size).fill(0);
+      for (const s of group) rankProbs(s, f).forEach((p, i) => (acc[i] += p));
       for (let rank = 1; rank <= size; rank++) {
-        ranks.push({ feature, size, rank, rate: r.filter((x) => x === rank).length / group.length, bound: rankBound(size), sets: group.length });
+        ranks.push({ feature, size, rank, rate: acc[rank - 1] / group.length, bound: rankBound(size), sets: group.length });
       }
-      if (size === 4 && (feature === 'characters' || feature === 'words')) {
-        topTwo.push({ feature, size, rank: 2, rate: group.reduce((n, s) => n + amongTopTwo(s, f), 0) / group.length, bound: TOP_TWO_BOUND, sets: group.length });
-      }
+      if (size === 4) topTwo.push({ feature, size, rank: 2, rate: (acc[0] + acc[1]) / group.length, bound: TOP_TWO_BOUND, sets: group.length });
     }
   }
   return { ranks, topTwo };
@@ -197,4 +216,49 @@ export function longOutliers(sets: ServedSet[]): { sets: number; right: number; 
     if (L[ci(s)] === sorted[0]) ids.push(s.id);
   }
   return { sets: n, right: ids.length, ids };
+}
+
+/*
+ * Lesson-vocabulary cue (review round 4b): "pick the option that shares the
+ * most content words with the module's own lesson text". Padded distractors
+ * written in generic words ("exactly", "never", "so … never read a staff
+ * again") lose to the answer, which is phrased in the lesson's terms. Content
+ * words = tokens minus the stop words below; the lesson text is the module's
+ * concept explanations in that language (as in the review's rankfam.py).
+ * Bound: ≤ 45% per level per language (chance 25%).
+ */
+export const LESSON_VOCAB_BOUND = 0.45;
+
+export const STOP_WORDS: Record<ContentLanguage, ReadonlySet<string>> = {
+  en: new Set(('a an the and or but nor so yet of to in on at by for with from into onto over under about as than then that this these those it its it\'s is are was were be been being has have had do does did not no can could may might must will would shall should which who whom whose what when where why how there here their they them he she his her we our you your i me my one ones also just only very more most less much many each every all any some such other another same own both either neither too up down out off again once while if because until after before between through during without within upon whether always never still often usually also etc').split(' ')),
+  pt: new Set(('a o as os um uma uns umas e ou mas nem de do da dos das em no na nos nas num numa por pelo pela pelos pelas para com sem sob sobre entre até ao aos à às que se não é são foi ser está estão tem têm há como mais menos muito muitos muita muitas seu sua seus suas este esta estes estas esse essa esses essas isto isso aquele aquela lhe lhes eles elas ele ela também já só cada outro outra outros outras mesmo mesma qual quais quando onde porque pois então depois antes durante tal tão enquanto ainda assim bem sempre nunca vezes geralmente normalmente frequentemente').split(' ')),
+  es: new Set(('a al el la los las un una unos unas y o u pero ni de del en por para con sin sobre entre hasta desde que se no es son fue ser está están tiene tienen hay como más menos muy mucho muchos mucha muchas su sus este esta estos estas ese esa esos esas esto eso aquel aquella le les ellos ellas él ella también ya solo sólo cada otro otra otros otras mismo misma cual cuales cuando donde porque pues entonces después antes durante tal tan lo mientras aún todavía así bien siempre nunca menudo veces generalmente normalmente').split(' ')),
+};
+
+export const contentToks = (s: string, lang: ContentLanguage): string[] => toks(s).filter((w) => !STOP_WORDS[lang].has(w));
+
+const lessonCache = new Map<string, ReadonlySet<string>>();
+/** Content words of a module's concept explanations, in one language. */
+export function lessonVocabulary(moduleId: string, lang: ContentLanguage): ReadonlySet<string> {
+  const key = `${lang}:${moduleId}`;
+  const hit = lessonCache.get(key);
+  if (hit) return hit;
+  const level = Number(moduleId.slice(1, moduleId.indexOf('u')));
+  const mod = EN_UNITS[level].flatMap((u) => u.modules).find((m) => m.id === moduleId);
+  const ov = lang === 'en' ? undefined : curriculumOverlay(lang, level).modules[moduleId];
+  const text = (mod?.concepts ?? []).map((c, i) => ov?.concepts[i]?.explanation ?? c.explanation).join(' ');
+  const set = new Set(contentToks(text, lang));
+  lessonCache.set(key, set);
+  return set;
+}
+
+/** Credit for "the option sharing the most lesson content words is right" (ties share the credit). */
+export function lessonVocabPick(s: ServedSet, lang: ContentLanguage): number {
+  if (!s.moduleId) return 0;
+  const lex = lessonVocabulary(s.moduleId, lang);
+  return pick(s.choices.map((c) => new Set(contentToks(c.label, lang).filter((w) => lex.has(w))).size), ci(s));
+}
+
+export function lessonVocabRate(sets: ServedSet[], lang: ContentLanguage): number {
+  return sets.reduce((n, s) => n + lessonVocabPick(s, lang), 0) / sets.length;
 }

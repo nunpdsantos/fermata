@@ -39,7 +39,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'The bass clef marks the fourth line (from the bottom) as F', correct: true },
-              { label: 'The bass clef marks the second line as G', correct: false },
+              { label: 'The bass clef marks the second line from the bottom as G', correct: false },
               { label: 'The bass clef marks the third line as C', correct: false },
               { label: 'The bass clef marks the first line as E', correct: false },
             ],
@@ -233,7 +233,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: '3/4 groups its beats in threes: strong-weak-weak', correct: true },
               { label: '3/4 groups its beats in pairs: strong-weak, strong-weak', correct: false },
               { label: '3/4 groups its beats in fours: strong-weak-medium-weak', correct: false },
-              { label: '3/4 has no strong beat at all', correct: false },
+              { label: '3/4 has no strong beat', correct: false },
             ],
             [
               { label: '4/4 is quadruple: four beats per measure', correct: true },
@@ -244,7 +244,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'In 2/4, 3/4 and 4/4, the bottom 4 means a quarter note gets one beat', correct: true },
               { label: 'In 2/4, 3/4 and 4/4, the bottom 4 means a whole note gets one beat', correct: false },
-              { label: 'In 2/4, 3/4 and 4/4, the bottom 4 means there are four measures', correct: false },
+              { label: 'In 2/4, 3/4 and 4/4, the bottom 4 means each measure lasts four beats', correct: false },
               { label: 'In 2/4, 3/4 and 4/4, the bottom 4 sets the tempo at four beats per second', correct: false },
             ],
           ],

@@ -478,7 +478,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'The 4th above the bass is a dissonance that requires specific resolution', correct: true },
           { label: 'Second inversion chords sound worse than first inversion', correct: false },
-          { label: 'The 5th in the bass makes the chord impossible to identify', correct: false },
+          { label: 'The 5th in the bass is an unstable note that has to resolve down by step', correct: false },
           { label: 'Second inversion is banned in all classical music', correct: false },
         ],
       },
@@ -594,7 +594,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'A continuation that fragments and accelerates toward a cadence', correct: true },
-          { label: 'An exact repetition of the presentation', correct: false },
+          { label: 'The basic idea is stated a third time, unchanged, before the cadence', correct: false },
           { label: 'A contrasting section, as in a contrasting period, that answers the presentation', correct: false },
           { label: 'A silence followed by a new theme', correct: false },
         ],
@@ -677,7 +677,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'A non-chord tone that steps away from a chord tone and then steps back to it', correct: true },
-          { label: 'A non-chord tone that moves by step from one chord tone to a different chord tone', correct: false },
+          { label: 'A non-chord tone that moves by step from one chord tone to a different chord tone and does not return', correct: false },
           { label: 'A chord tone that repeats on the next beat', correct: false },
           { label: 'A tone borrowed from a neighboring key', correct: false },
         ],
@@ -694,7 +694,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'A non-chord tone that sounds a note of the next chord early', correct: true },
           { label: 'A chord tone that is delayed until after the beat, then resolves', correct: false },
           { label: 'A note that is held over from the previous chord', correct: false },
-          { label: 'A rest that replaces an expected note', correct: false },
+          { label: 'A rest that replaces an expected note of the next chord just before it arrives', correct: false },
         ],
       },
       hint: 'An anticipation "anticipates" the next chord by sounding one of its tones early, before the harmony changes. It is typically a short, unaccented note that resolves by staying on the same pitch.',

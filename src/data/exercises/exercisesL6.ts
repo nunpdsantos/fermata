@@ -32,7 +32,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Pre-dominant -- it substitutes for ii or iv and moves to V', correct: true },
-          { label: 'Dominant -- it resolves directly to the tonic', correct: false },
+          { label: 'Dominant -- like V, it resolves directly to the tonic chord I', correct: false },
           { label: 'Tonic -- it functions as a substitute for I', correct: false },
           { label: 'Passing chord -- it has no real structural function', correct: false },
         ],
@@ -95,9 +95,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Pre-dominant -- they always intensify motion toward the dominant', correct: true },
+          { label: 'Pre-dominant -- they intensify motion toward the dominant', correct: true },
           { label: 'Dominant -- they resolve directly to the tonic', correct: false },
-          { label: 'Tonic prolongation -- they decorate the tonic harmony', correct: false },
+          { label: 'Tonic prolongation -- the augmented 6th resolves outward to the tonic octave', correct: false },
           { label: 'Mediant function -- they substitute for iii or VI', correct: false },
         ],
       },
@@ -117,7 +117,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'A dominant 7th chord (V7) -- same pitches, different spelling and resolution', correct: true },
           { label: 'A diminished 7th chord -- same interval structure', correct: false },
           { label: 'A half-diminished 7th chord -- the same sound in a different context', correct: false },
-          { label: 'A major 7th chord -- identical in close position', correct: false },
+          { label: 'A major 7th chord -- its lower three notes form a major triad with a seventh on top', correct: false },
         ],
       },
       hint: 'The Gr+6 has the same pitch classes as a dominant 7th chord. For example, in C minor the Gr+6 (Ab, C, Eb, F#) sounds identical to Ab7 (Ab, C, Eb, Gb). The different spelling reflects different voice-leading destinations.',
@@ -179,7 +179,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Distant keys: tonics a half step apart (C to Db), five steps around the circle of fifths', correct: true },
-          { label: 'Only closely related keys: tonics a 5th apart (C to G), one step around the circle of fifths', correct: false },
+          { label: 'Closely related keys: tonics a 5th apart (C to G), one step around the circle of fifths', correct: false },
           { label: 'Only between parallel major and minor', correct: false },
           { label: 'Only between relative major and minor keys', correct: false },
         ],
@@ -232,7 +232,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'It always divides the 12-semitone octave into four equal minor 3rds (0, 3, 6, 9)', correct: true },
           { label: 'It contains only natural notes with no sharps or flats', correct: false },
           { label: 'Its inversions each sound different from the root position, as with other seventh chords', correct: false },
-          { label: 'It has the same number of major and minor intervals', correct: false },
+          { label: 'Its stacked thirds alternate between a major third and a minor third, which balances the seventh chord', correct: false },
         ],
       },
       hint: 'The dim7 chord is built entirely of minor 3rds (3 semitones each). Since 3 x 4 = 12, the four notes divide the octave evenly. This means every inversion of the chord sounds identical in interval structure.',
@@ -247,7 +247,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Four keys -- any of its four notes can be treated as a leading tone', correct: true },
           { label: 'Two keys -- one major and one minor', correct: false },
           { label: 'Twelve keys -- one for each semitone', correct: false },
-          { label: 'One key only -- the one whose leading tone is the chord\'s written root', correct: false },
+          { label: 'One key -- only the written root can act as the leading tone; the other three chord notes cannot', correct: false },
         ],
       },
       hint: 'Because of its symmetry, each note of the dim7 chord can be respelled as a leading tone resolving up by half step to a different tonic. C-Eb-Gb-Bbb can be viio7 of Db, E, G, or Bb.',
@@ -264,7 +264,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'A diminished 7th chord that always shares one note with the chord it embellishes', correct: true },
-          { label: 'A diminished 7th chord that resolves to the dominant', correct: false },
+          { label: 'A diminished 7th chord that resolves to V as its viio7, a tonicization', correct: false },
           { label: 'Any diminished 7th chord used in a minor key', correct: false },
           { label: 'A diminished 7th chord that shares all of its notes with the next chord', correct: false },
         ],
@@ -279,7 +279,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'The root of the chord being embellished (C)', correct: true },
-          { label: 'The 3rd of the chord being embellished (E)', correct: false },
+          { label: 'The 3rd of the chord being embellished (E), the note that makes it major', correct: false },
           { label: 'The 5th of the chord being embellished (G)', correct: false },
           { label: 'The 7th of the chord being embellished (B)', correct: false },
         ],
@@ -376,8 +376,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Moving a fixed chord shape in parallel motion, every voice by the same half or whole step', correct: true },
-          { label: 'Alternating between two chords repeatedly', correct: false },
+          { label: 'Moving a fixed chord shape in parallel motion, every voice by the same interval', correct: true },
+          { label: 'Alternating diatonic chords, each with its function, through traditional progressions toward cadences within one key', correct: false },
           { label: 'Moving only the bass by half step from chord to chord, while the upper voices stay on the same notes', correct: false },
           { label: 'Playing all twelve chromatic pitches simultaneously', correct: false },
         ],
@@ -430,7 +430,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Dissonances may appear only on weak beats as passing tones approached and left by step', correct: true },
-          { label: 'Dissonances are completely forbidden as in first species', correct: false },
+          { label: 'Like first species, it forbids dissonances: it permits only consonant intervals, perfect and imperfect, against the cantus firmus', correct: false },
           { label: 'Dissonances may appear on the strong beat as long as they resolve by step on the weak beat that follows', correct: false },
           { label: 'Dissonances are allowed freely on both strong and weak beats', correct: false },
         ],
@@ -494,7 +494,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Preparation (consonance), suspension (dissonance on strong beat), resolution (step down)', correct: true },
-          { label: 'Attack (dissonance on the strong beat), sustain (held over the barline), release (leap away)', correct: false },
+          { label: 'Preparation (dissonance on the strong beat), suspension (held over the barline), resolution (step down to another dissonance)', correct: false },
           { label: 'Approach by leap, hold, resolve by leap', correct: false },
           { label: 'Consonance, consonance, dissonance', correct: false },
         ],
@@ -562,7 +562,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Soprano, Alto, Tenor, Bass', correct: true },
-          { label: 'Soprano, Alto, Treble, Bass', correct: false },
+          { label: 'Soprano, Tenor, Alto, Bass', correct: false },
           { label: 'Soprano, Baritone, Tenor, Bass', correct: false },
           { label: 'Soprano, Alto, Tenor, Baritone', correct: false },
         ],
@@ -578,7 +578,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Read a bass line with numbers and improvise the upper voices to form the indicated chords', correct: true },
           { label: 'Play only the bass notes exactly as written, adding nothing at all to them', correct: false },
-          { label: 'Transpose the bass line to match the figured numbers', correct: false },
+          { label: 'Transpose the bass line to match the figured numbers, then play it in the upper voices', correct: false },
           { label: 'Double every bass note at the octave in both hands', correct: false },
         ],
       },
