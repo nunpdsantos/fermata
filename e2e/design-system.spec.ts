@@ -10,9 +10,11 @@ import { auditPage, type AuditResult } from './helpers/designAudit';
  * guitar; a chord selected in each of Diatonic / All / Build), the "⋯" menu
  * and the Settings sheet open, the instrument dock (phone: Peek / Half /
  * Full), Learn (level list, a returning learner's review queue, a lesson, an
- * exercise in its wrong-answer and right-answer states), Drill (a question,
- * a wrong answer's feedback, settings, the mastery map, the session summary).
- * Portuguese and Spanish at 390 px for the main screens. On every screen:
+ * exercise in its wrong-answer and right-answer states; W4a's question
+ * screens: a key signature on a question staff — 1–2 and 5–6 sharps or
+ * flats — half / whole step and interval-number answers), Drill (a question, a wrong answer's feedback,
+ * settings, the mastery map, the session summary). Portuguese and Spanish at
+ * 390 px for the main screens and W4a's question screens. On every screen:
  *  - no text renders below 12 px (SVG text measured at its on-screen size);
  *  - every enabled control is ≥ 44 px on touch / ≥ 36 px with a mouse;
  *  - every text colour is ≥ 4.5:1 on what is painted under it (3:1 large);
@@ -350,27 +352,144 @@ async function openLessonBySearch(page: Page, title: string) {
   await page.waitForTimeout(800);
 }
 
+/** The exercise screen's words in each language (en.json / pt.json / es.json). */
+const EXERCISE_WORDS = {
+  en: { exercises: 'Exercises', submit: 'Submit', tryAgain: 'Try Again', next: /^(Continue|Next)$/, check: 'Check Answer' },
+  pt: { exercises: 'Exercícios', submit: 'Enviar', tryAgain: 'Tentar Novamente', next: /^(Continuar|Seguinte)$/, check: 'Verificar Resposta' },
+  es: { exercises: 'Ejercicios', submit: 'Enviar', tryAgain: 'Intentar de nuevo', next: /^(Continuar|Siguiente)$/, check: 'Comprobar Respuesta' },
+} as const;
+type Lang = keyof typeof EXERCISE_WORDS;
+
 /** Answer the current choice exercise (right on the second try) and move on. */
-async function answerChoice(page: Page) {
+async function answerChoice(page: Page, lang: Lang = 'en') {
+  const words = EXERCISE_WORDS[lang];
   const screen = learnScreen(page);
   const grid = screen.locator('.grid.grid-cols-2').first();
   await grid.locator('button:not([disabled])').last().click();
-  await screen.getByRole('button', { name: 'Submit' }).click();
+  await screen.getByRole('button', { name: words.submit }).click();
   await page.waitForTimeout(400);
-  const tryAgain = screen.getByRole('button', { name: 'Try Again' });
+  const tryAgain = screen.getByRole('button', { name: words.tryAgain });
   if (await tryAgain.count()) {
     const revealed = (await screen.locator('button.text-success').first().textContent())?.trim();
     await tryAgain.click();
     if (revealed) {
       const exact = new RegExp(`^${revealed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
       await grid.locator('button').filter({ hasText: exact }).first().click();
-      await screen.getByRole('button', { name: 'Submit' }).click();
+      await screen.getByRole('button', { name: words.submit }).click();
       await page.waitForTimeout(400);
     }
   }
-  const cont = screen.getByRole('button', { name: /^(Continue|Next)$/ });
+  const cont = screen.getByRole('button', { name: words.next });
   if (await cont.count()) await cont.first().click();
   await page.waitForTimeout(300);
+}
+
+/** Get past the current exercise: a choice one is answered, a build one (on the piano) is failed. */
+async function passExercise(page: Page, lang: Lang) {
+  const words = EXERCISE_WORDS[lang];
+  const screen = learnScreen(page);
+  if (await screen.locator('.grid.grid-cols-2').first().locator('button:not([disabled])').count()) return answerChoice(page, lang);
+  const check = screen.getByRole('button', { name: words.check });
+  const tryAgain = screen.getByRole('button', { name: words.tryAgain });
+  const cont = screen.getByRole('button', { name: words.next }).first();
+  if (!(await check.count())) return;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    // Try Again brings the input back after its feedback animates out.
+    await expect(check, `${lang}: a build exercise's Check Answer`).toBeVisible();
+    // Middle C, which every dock shows (the strip's first key, A0, sits off
+    // screen on a phone), tapped low on the key, below the black keys.
+    if (await check.isDisabled()) {
+      const key = page.locator('[data-piano-key][aria-label="C4"]:visible').first();
+      const box = (await key.boundingBox())!;
+      await key.click({ position: { x: box.width / 2, y: box.height * 0.85 } });
+    }
+    await check.click();
+    await expect(tryAgain.or(cont)).toBeVisible();
+    if (!(await tryAgain.count())) break;
+    await tryAgain.click();
+  }
+  await cont.click();
+  await page.waitForTimeout(300);
+}
+
+/**
+ * W4a's question screens: a question that points at a key signature drawn on
+ * a staff (`exerciseStaff.ts` stimulus, no notes) — one of L1's (1–2 sharps
+ * or flats) and one of L2's widest (B / F#, 5–6 sharps) — and intervals
+ * answered by half / whole step and by number (the new choice labels, each
+ * over its interval staff). Lessons open through Cmd+K by their translated
+ * titles; the prompt is the same in both key-signature lessons.
+ */
+const W4A_QUESTIONS = {
+  en: {
+    keySigPrompt: 'Which major key has this key signature?',
+    keySig: 'Key Signatures — First Four Keys',
+    keySigWide: 'All Major Keys and the Circle of Fifths',
+    step: { lesson: 'Half Steps, Whole Steps, and Accidentals', choice: 'Half step' },
+    number: { lesson: 'Intervals by Number', choice: /^(Unison|2nd|3rd|4th|5th|6th|7th|Octave)$/ },
+  },
+  pt: {
+    keySigPrompt: 'Que tonalidade maior tem esta armação de clave?',
+    keySig: 'Armações de Clave — Primeiras Quatro Tonalidades',
+    keySigWide: 'Todas as Tonalidades Maiores e o Círculo de Quintas',
+    step: { lesson: 'Meios-Tons, Tons e Acidentes', choice: 'Meio-tom' },
+    number: { lesson: 'Intervalos por Número', choice: /^(Uníssono|[2-7]\.ª|Oitava)$/ },
+  },
+  es: {
+    keySigPrompt: '¿Qué tonalidad mayor tiene esta armadura de clave?',
+    keySig: 'Armaduras de Clave — Primeras Cuatro Tonalidades',
+    keySigWide: 'Todas las Tonalidades Mayores y el Círculo de Quintas',
+    step: { lesson: 'Semitonos, Tonos y Alteraciones', choice: 'Semitono' },
+    number: { lesson: 'Intervalos por Número', choice: /^(Unísono|[2-7]\.ª|Octava)$/ },
+  },
+} as const;
+
+async function questionScreens(page: Page, lang: Lang, onScreen: (screen: string) => Promise<void>) {
+  const q = W4A_QUESTIONS[lang];
+  const words = EXERCISE_WORDS[lang];
+  const screen = learnScreen(page);
+  const toExercises = () => screen.getByText(words.exercises, { exact: true }).first().scrollIntoViewIfNeeded();
+  // Exercise order is shuffled: get past exercises until the wanted one is up.
+  const until = async (up: () => Promise<boolean>, what: string) => {
+    for (let i = 0; i < 12 && !(await up()); i++) await passExercise(page, lang);
+    expect(await up(), `${lang}: reached ${what}`).toBe(true);
+  };
+  const choiceUp = (name: string | RegExp) => async () =>
+    (await screen.locator('.grid.grid-cols-2').first().locator('button').filter({ hasText: name }).count()) > 0;
+
+  // A key signature with at least `glyphs` - 1 sharps or flats: VexFlow draws
+  // the clef and each accidental as SVG text (C major's staff is the clef alone).
+  const keySigPrompt = screen.getByText(q.keySigPrompt, { exact: true });
+  const staff = keySigPrompt.locator('xpath=..').locator('svg').first();
+  const keySigUp = (glyphs: number) => async () => {
+    if (!(await keySigPrompt.count())) return false;
+    // The clef, not just an <svg>: the loading skeleton is an svg too.
+    await expect(staff.locator('text').first(), `${lang}: the key signature is drawn`).toBeVisible({ timeout: 15_000 });
+    return (await staff.locator('text').count()) >= glyphs;
+  };
+  for (const [lesson, glyphs, name] of [
+    [q.keySig, 2, 'learn-exercise-key-signature'],
+    [q.keySigWide, 6, 'learn-exercise-key-signature-wide'],
+  ] as const) {
+    await openLessonBySearch(page, lesson);
+    await toExercises();
+    await until(keySigUp(glyphs), `a key signature with ${glyphs - 1}+ sharps or flats`);
+    await staff.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(400);
+    await onScreen(name);
+  }
+
+  await openLessonBySearch(page, q.step.lesson);
+  await toExercises();
+  await until(choiceUp(new RegExp(`^${q.step.choice}$`)), 'a half / whole step question');
+  await page.waitForTimeout(400);
+  await onScreen('learn-exercise-step');
+
+  await openLessonBySearch(page, q.number.lesson);
+  await toExercises();
+  await until(choiceUp(q.number.choice), 'an interval-number question');
+  await page.waitForTimeout(400);
+  await onScreen('learn-exercise-interval-number');
 }
 
 // Level 1 finished but for its last module, whose tasks and exercises are done:
@@ -664,7 +783,9 @@ for (const v of VIEWPORTS) {
         const screen = learnScreen(page);
         await screen.getByText('Exercises', { exact: true }).first().scrollIntoViewIfNeeded();
         const checkAnswer = screen.getByRole('button', { name: 'Check Answer' });
-        for (let i = 0; i < 8 && !(await checkAnswer.count()); i++) await answerChoice(page);
+        // 12 exercises, 3 of them builds: 9 answers always reach one (8 missed
+        // when all three were shuffled last — 1 in 220 per run).
+        for (let i = 0; i < 9 && !(await checkAnswer.count()); i++) await answerChoice(page);
         await expect(checkAnswer, where('reached an instrument exercise')).toBeVisible();
         await checkAnswer.scrollIntoViewIfNeeded();
         await page.waitForTimeout(400);
@@ -678,6 +799,16 @@ for (const v of VIEWPORTS) {
         await replay.scrollIntoViewIfNeeded();
         await page.waitForTimeout(300);
         await check(page, v, combo, 'learn-exercise-ear');
+        await context.close();
+      }
+
+      // Learn: a key signature on a question staff; half / whole step and
+      // interval-number answers (W4a).
+      {
+        // The piano answers the build exercises the loop gets past.
+        const { context, page } = await open(browser, v, th.mode, { lastView: 'learn', instrument: 'piano' });
+        await expect(page.getByRole('heading', { name: 'Learn Music Theory' })).toBeVisible({ timeout: 15_000 });
+        await questionScreens(page, 'en', (s) => check(page, v, combo, s));
         await context.close();
       }
 
@@ -834,6 +965,13 @@ for (const L of LANGS) {
         await expect(learnScreen(page).getByRole('heading', { level: 1 })).toBeVisible({ timeout: 15_000 });
         await page.waitForTimeout(800);
         await check(page, v, combo, 'learn-lesson');
+        await context.close();
+      }
+      {
+        // W4a's question screens, translated (key-signature staff, step / number answers).
+        const { context, page } = await open(browser, v, th.mode, { lastView: 'learn', instrument: 'piano' }, { lang: L.lang });
+        await expect(learnScreen(page).getByRole('heading', { level: 1 }).first()).toBeVisible({ timeout: 15_000 });
+        await questionScreens(page, L.lang, (s) => check(page, v, combo, s));
         await context.close();
       }
       {
