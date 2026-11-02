@@ -4,7 +4,7 @@
  * A new worker must WAIT; only the learner's tap on the "new version — reload"
  * toast activates it (the SKIP_WAITING message handler, usePWA.ts). The
  * one-off transition `skipWaiting` (review B2) that let installed autoUpdate
- * clients update themselves was removed on 2026-11-14 — it must not come back:
+ * clients update themselves was removed on 2026-11-02 — it must not come back:
  * a worker that skips waiting on install swaps itself in under a running page
  * (files the old build loaded can vanish, an exercise in progress is cut off).
  *
