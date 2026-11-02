@@ -110,8 +110,37 @@ function expectClean(r: AuditResult, where: string) {
   expect.soft(r.clipViolations, `${where}: text cut off ${fmt(r.clipViolations)}`).toEqual([]);
 }
 
+/**
+ * Wait until nothing on the page is moving: no running Web Animation (CSS or
+ * framer-motion's WAAPI), and every element's opacity and transform the same
+ * on two looks 60 ms apart (a JS-driven tween too). Contrast measured mid
+ * fade-in blends text with the page — the chord cards' flaky failures on
+ * phone combos (W11-B). The contexts also run with prefers-reduced-motion,
+ * which the components honour (entrances skip their fade).
+ */
+async function settle(page: Page) {
+  const snapshot = () => page.evaluate(() => {
+    const running = document.getAnimations().filter((a) => a.playState === 'running' || a.pending).length;
+    let sig = '';
+    for (const el of Array.from(document.querySelectorAll('body *'))) {
+      const cs = getComputedStyle(el);
+      if (cs.opacity !== '1' || cs.transform !== 'none') sig += `${cs.opacity}|${cs.transform};`;
+    }
+    return { running, sig };
+  });
+  let prev = await snapshot();
+  for (let i = 0; i < 40; i++) {
+    await page.waitForTimeout(60);
+    const now = await snapshot();
+    if (now.running === 0 && prev.running === 0 && now.sig === prev.sig) return;
+    prev = now;
+  }
+  throw new Error('the page never stopped moving (2.4 s)');
+}
+
 /** Audit the page as it is now; record it (and a screenshot) when asked to. */
 async function check(page: Page, v: Viewport, combo: string, screen: string) {
+  await settle(page);
   const r = await auditPage(page, { minFontPx: 12, minTapPx: v.touch ? 44 : 36 });
   if (OUT) {
     fs.mkdirSync(OUT, { recursive: true });
@@ -653,8 +682,8 @@ const ANSWERS = '[data-testid="drill-answers"]';
 for (const v of VIEWPORTS) {
   for (const th of THEMES) {
     const combo = `${v.name}-${th.name}`;
-    test(`${combo}: type ≥ 12 px, targets ≥ ${v.touch ? 44 : 36} px, contrast, no clipping, focus, no sideways scroll, toasts clear`, async ({ browser }) => {
-      test.setTimeout(480_000);
+    test(`${combo} explore: type ≥ 12 px, targets ≥ ${v.touch ? 44 : 36} px, contrast, no clipping, focus, no sideways scroll, toasts clear`, async ({ browser }) => {
+      test.setTimeout(240_000);
       const where = (s: string) => `${combo} ${s}`;
 
       // Explore; sharp and flat keys on the piano; the chord panel in
@@ -762,6 +791,12 @@ for (const v of VIEWPORTS) {
         await context.close();
       }
 
+    });
+
+    test(`${combo} guitar + dock: type ≥ 12 px, targets ≥ ${v.touch ? 44 : 36} px, contrast, no clipping, focus, no sideways scroll, toasts clear`, async ({ browser }) => {
+      test.setTimeout(240_000);
+      const where = (s: string) => `${combo} ${s}`;
+
       // Guitar + the dock's detents (a sheet on phones and short screens).
       {
         const { context, page } = await open(browser, v, th.mode, { instrument: 'guitar', lastView: 'explore' });
@@ -849,6 +884,12 @@ for (const v of VIEWPORTS) {
         await context.close();
       }
 
+    });
+
+    test(`${combo} learn: type ≥ 12 px, targets ≥ ${v.touch ? 44 : 36} px, contrast, no clipping, focus, no sideways scroll, toasts clear`, async ({ browser }) => {
+      test.setTimeout(300_000);
+      const where = (s: string) => `${combo} ${s}`;
+
       // Learn: level list, a lesson, an exercise selected / wrong / right.
       {
         const { context, page } = await open(browser, v, th.mode, { lastView: 'learn' });
@@ -923,6 +964,12 @@ for (const v of VIEWPORTS) {
         await context.close();
       }
 
+    });
+
+    test(`${combo} drill: type ≥ 12 px, targets ≥ ${v.touch ? 44 : 36} px, contrast, no clipping, focus, no sideways scroll, toasts clear`, async ({ browser }) => {
+      test.setTimeout(240_000);
+      const where = (s: string) => `${combo} ${s}`;
+
       // Drill: question, wrong-answer feedback (+ toasts over it), settings,
       // mastery map, the session summary, a Sprint.
       {
@@ -953,6 +1000,51 @@ for (const v of VIEWPORTS) {
           await page.waitForTimeout(400);
           await check(page, v, combo, 'drill-sprint');
         }
+        await context.close();
+      }
+    });
+  }
+}
+
+// Common laptop sizes (W11-B), with a mouse: the workbench where it cannot
+// all fit — only the work column may scroll; the circle (facts beside it
+// below 900 px tall) and the instrument stay put; the same audit rules.
+const LAPTOPS = [
+  { name: 'laptop-1280x800', viewport: { width: 1280, height: 800 }, touch: false },
+  { name: 'laptop-1366x768', viewport: { width: 1366, height: 768 }, touch: false },
+  { name: 'laptop-1536x864', viewport: { width: 1536, height: 864 }, touch: false },
+] as unknown as Viewport[];
+for (const v of LAPTOPS) {
+  for (const th of THEMES) {
+    const combo = `${v.name}-${th.name}`;
+    test(`${combo}: the workbench — only the work column scrolls; type, targets, contrast, clipping`, async ({ browser }) => {
+      test.setTimeout(120_000);
+      for (const instrument of ['piano', 'guitar'] as const) {
+        const { context, page } = await open(browser, v, th.mode, { instrument, lastView: 'explore' });
+        if (instrument === 'guitar') await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+        await check(page, v, combo, `explore-${instrument}`);
+        await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
+        await expect(page.getByTestId('chord-detail')).toBeVisible();
+        await check(page, v, combo, `explore-${instrument}-chord`);
+        const s = await page.evaluate(() => {
+          const se = document.scrollingElement!;
+          const aside = document.querySelector('.explore-aside')!;
+          const onScreen = (sel: string) => {
+            const r = document.querySelector(sel)!.getBoundingClientRect();
+            return r.top >= -0.5 && r.bottom <= innerHeight + 0.5 && r.left >= -0.5 && r.right <= innerWidth + 0.5;
+          };
+          return {
+            page: se.scrollHeight - se.clientHeight,
+            aside: aside.scrollHeight - aside.clientHeight,
+            circle: onScreen('[data-testid="circle-card"]'),
+            facts: onScreen('[data-testid="key-facts"]'),
+            dock: onScreen('[data-testid="instrument-dock"]'),
+          };
+        });
+        const where = `${combo} ${instrument}`;
+        expect.soft(s.page, `${where}: page scroll`).toBeLessThanOrEqual(0);
+        expect.soft(s.aside, `${where}: the circle column scrolls`).toBeLessThanOrEqual(1);
+        expect.soft([s.circle, s.facts, s.dock], `${where}: circle, facts and dock on screen`).toEqual([true, true, true]);
         await context.close();
       }
     });

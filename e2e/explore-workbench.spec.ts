@@ -254,3 +254,116 @@ test('844×390 guitar: the full-neck view shows all six strings and frets 0–12
   await expect(page.getByTestId('neck-open')).toBeFocused();
   await context.close();
 });
+
+// Common laptops: at 1440×900 nothing scrolls (above); shorter, the WORK
+// column scrolls and nothing else — the circle (its facts beside it) and the
+// instrument stay put.
+for (const [w, h] of [[1280, 800], [1366, 768], [1536, 864]] as const) {
+  test(`${w}×${h}: only the work column scrolls; the circle and the instrument stay put`, async ({ browser }) => {
+    const { context, page } = await open(browser, { w, h, state: { instrument: 'guitar' } });
+    await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+    await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
+    await expect(page.getByTestId('chord-detail')).toBeVisible();
+    await page.waitForTimeout(400);
+    const s = await scrollState(page);
+    expect(s.layout).toBe('workbench');
+    expect(s.page).toBeLessThanOrEqual(0);
+    expect(s.sideways).toBeLessThanOrEqual(0);
+    expect(s.aside!.scroll, 'the circle column does not scroll').toBeLessThanOrEqual(s.aside!.client + 1);
+    for (const sel of ['[data-testid="circle-card"]', '[data-testid="key-facts"]', '[data-testid="instrument-dock"]', '[data-testid="key-summary"]', '[data-testid="scale-strip"]']) {
+      expect(await inView(page, sel), `${sel} fully on screen`).toBe(true);
+    }
+    // The work column scrolls to the chord detail; the circle does not move.
+    const circleTop = (await page.getByTestId('circle-card').boundingBox())!.y;
+    await page.getByTestId('chord-detail').scrollIntoViewIfNeeded();
+    expect(await inView(page, '[data-testid="chord-detail"]')).toBe(true);
+    expect((await page.getByTestId('circle-card').boundingBox())!.y).toBe(circleTop);
+    await context.close();
+  });
+}
+
+test('768×1024: the circle below the work folds, and stays as left across a reload', async ({ browser }) => {
+  const { context, page } = await open(browser, { w: 768, h: 1024, touch: true });
+  const toggle = page.getByRole('button', { name: 'Circle of Fifths' });
+  // Folded by default: the tablet column is short.
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.getByTestId('key-facts')).toBeHidden();
+  await expect(page.locator('g[role="button"][data-key]').first()).toBeHidden();
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('g[role="button"][data-key]').first()).toBeVisible();
+  await expect(page.getByTestId('key-facts')).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole('button', { name: 'Circle of Fifths' })).toHaveAttribute('aria-expanded', 'true');
+  await page.getByRole('button', { name: 'Circle of Fifths' }).click();
+  await page.reload();
+  await expect(page.getByRole('button', { name: 'Circle of Fifths' })).toHaveAttribute('aria-expanded', 'false');
+  await context.close();
+});
+
+test('staff noteheads wear their degree colour (the ink shade), dimmed outside a chord', async ({ browser }) => {
+  for (const theme of ['fermata', 'fermata-night'] as const) {
+    const { context, page } = await open(browser, { w: 1440, h: 900, state: { themeMode: theme } });
+    await expect(page.locator('.strip-staff g.vf-stavenote').first()).toBeAttached({ timeout: 15_000 });
+    const fills = () => page.evaluate(() => {
+      const root = getComputedStyle(document.documentElement);
+      const toRgb = (hex: string) => {
+        const n = parseInt(hex.slice(1), 16);
+        return `rgb(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255})`;
+      };
+      const want = [1, 2, 3, 4, 5, 6, 7, 1].map((d) => toRgb(root.getPropertyValue(`--deg-ink-${d}`).trim()));
+      const got = Array.from(document.querySelectorAll('.strip-staff g.vf-stavenote')).map((g) => getComputedStyle(g.querySelector('text')!).fill);
+      return { want, got, dim: toRgb(root.getPropertyValue('--text-dim').trim()) };
+    });
+    const before = await fills();
+    expect(before.got, theme).toEqual(before.want);
+    await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
+    await page.waitForTimeout(300);
+    const after = await fills();
+    // C major's G chord: G (5), B (7), D (2) keep their colour; the rest dim.
+    expect(after.got, theme).toEqual([after.dim, after.want[1], after.dim, after.dim, after.want[4], after.dim, after.want[6], after.dim]);
+    await context.close();
+  }
+});
+
+test('print: a clean page — staff with its strip aligned, chords, circle and key facts; no dock, no menus; Night prints light', async ({ browser }) => {
+  const { context, page } = await open(browser, { w: 1440, h: 900, state: { themeMode: 'fermata-night' } });
+  await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
+  await expect(page.getByTestId('chord-detail')).toBeVisible();
+  await page.getByRole('button', { name: 'Scale actions' }).click();
+  await page.emulateMedia({ media: 'print' });
+  // Paper width (A4 at 96 dpi less margins): the strip scales with it.
+  await page.setViewportSize({ width: 718, height: 1000 });
+  await page.waitForTimeout(400);
+  const p = await page.evaluate(() => {
+    const shown = (sel: string) => Array.from(document.querySelectorAll(sel)).some((e) => e.getClientRects().length > 0);
+    const heads = Array.from(document.querySelectorAll('.strip-staff g.vf-stavenote')).map((g) => {
+      const r = g.querySelector('text')!.getBoundingClientRect();
+      return r.left + r.width / 2;
+    });
+    const cols = Array.from(document.querySelectorAll('.strip-col')).map((c) => {
+      const r = c.getBoundingClientRect();
+      return r.left + r.width / 2;
+    });
+    const strip = document.querySelector('.strip-body')!.getBoundingClientRect();
+    const staff = document.querySelector('.strip-staff svg')!.getBoundingClientRect();
+    return {
+      offset: Math.max(...heads.map((x, i) => Math.abs(x - cols[i]))),
+      staffInside: staff.left >= strip.left - 0.5 && staff.right <= strip.right + 0.5,
+      dock: shown('[data-testid="instrument-dock"]'),
+      topbar: shown('.app-topbar'),
+      menus: shown('.menu-popup') || shown('.explore-pickers'),
+      parts: ['[data-testid="scale-strip"]', '[data-testid="chords-card"]', '[data-testid="circle-card"]', '[data-testid="key-facts"]'].map(shown),
+      ink: getComputedStyle(document.body).color,
+      bg: getComputedStyle(document.body).backgroundColor,
+    };
+  });
+  expect(p.offset, 'noteheads over their columns').toBeLessThan(3);
+  expect(p.staffInside, 'the staff stays inside its strip').toBe(true);
+  expect([p.dock, p.topbar, p.menus]).toEqual([false, false, false]);
+  expect(p.parts).toEqual([true, true, true, true]);
+  expect([p.ink, p.bg]).toEqual(['rgb(17, 17, 17)', 'rgb(255, 255, 255)']);
+  const pdf = await page.pdf({ format: 'A4' });
+  expect(pdf.byteLength).toBeGreaterThan(10_000);
+  await context.close();
+});
