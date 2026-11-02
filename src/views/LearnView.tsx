@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
-import type { CurriculumLevel } from '../core/types/curriculum';
+import type { CurriculumLevel, CurriculumUnit } from '../core/types/curriculum';
 import type { ExerciseDefinition } from '../core/types/exercise';
 import type { ContentLanguage } from '../i18n/content/types';
 import { loadLevel, getLevelModuleCount } from '../data/curriculumLoader';
@@ -15,6 +15,8 @@ import { UnitDetail } from '../components/learn/UnitDetail';
 import { ModuleView } from '../components/learn/ModuleView';
 import { LevelAchievement } from '../components/learn/LevelAchievement';
 import { ScreenFrame } from '../components/learn/ScreenFrame';
+import { MilestoneSheet } from '../components/learn/lesson/MilestoneSheet';
+import { useLearnSessionStore, restorableScreen } from '../state/learnSessionStore';
 
 // ─── Screen state machine ───────────────────────────────────────────────────
 
@@ -22,8 +24,20 @@ type LearnScreen =
   | { type: 'levels' }
   | { type: 'level'; levelId: string }
   | { type: 'unit'; levelId: string; unitId: string }
-  | { type: 'module'; levelId: string; unitId: string; moduleId: string }
+  | { type: 'module'; levelId: string; unitId: string; moduleId: string; section?: string | null }
   | { type: 'review'; levelId: string; unitId: string; moduleId: string };
+
+/**
+ * Where Learn opens: a lesson or review the learner was in (saved by
+ * learnSessionStore, fresh) — so a reload or a trip to another tab loses
+ * nothing — else the levels overview.
+ */
+function initialScreen(): LearnScreen {
+  const saved = restorableScreen();
+  if (!saved) return { type: 'levels' };
+  const { type, levelId, unitId, moduleId, section } = saved;
+  return type === 'review' ? { type, levelId, unitId, moduleId } : { type, levelId, unitId, moduleId, section };
+}
 
 interface LevelCelebration {
   levelNumber: number;
@@ -33,9 +47,11 @@ interface LevelCelebration {
 
 export function LearnView() {
   const { t } = useTranslation();
-  const [screen, setScreen] = useState<LearnScreen>({ type: 'levels' });
+  const [screen, setScreen] = useState<LearnScreen>(initialScreen);
   const [direction, setDirection] = useState<'forward' | 'back'>('forward');
   const [levelCelebration, setLevelCelebration] = useState<LevelCelebration | null>(null);
+  // A unit's milestone (D-23), then — if the level is done too — the level celebration.
+  const [milestone, setMilestone] = useState<{ unit: CurriculumUnit; accent: string; then: LevelCelebration | null } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -64,7 +80,7 @@ export function LearnView() {
   const goToLevelBack = useCallback((levelId: string) => navigate({ type: 'level', levelId }, 'back'), [navigate]);
   const goToUnit = useCallback((levelId: string, unitId: string) => navigate({ type: 'unit', levelId, unitId }, 'forward'), [navigate]);
   const goToUnitBack = useCallback((levelId: string, unitId: string) => navigate({ type: 'unit', levelId, unitId }, 'back'), [navigate]);
-  const goToModule = useCallback((levelId: string, unitId: string, moduleId: string) => navigate({ type: 'module', levelId, unitId, moduleId }, 'forward'), [navigate]);
+  const goToModule = useCallback((levelId: string, unitId: string, moduleId: string, section?: string) => navigate({ type: 'module', levelId, unitId, moduleId, section }, 'forward'), [navigate]);
   const goToReview = useCallback((levelId: string, unitId: string, moduleId: string) => navigate({ type: 'review', levelId, unitId, moduleId }, 'forward'), [navigate]);
 
   // Consume deep-link targets set by Explore or QuickSearch so the user lands
@@ -78,10 +94,35 @@ export function LearnView() {
     queueMicrotask(() => navigate({ type: 'module', levelId, unitId, moduleId }, 'forward'));
   }, [pendingLearnTarget, setPendingLearnTarget, navigate]);
 
-  // Scroll to top on screen change
+  // Scroll to top on screen change (a lesson opened at a section scrolls itself).
   useEffect(() => {
+    if (screen.type === 'module' && screen.section) return;
     scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   }, [screen]);
+
+  // Remember the open lesson / review, so a reload comes back to it; any other
+  // screen means the learner left it (and any check in it).
+  const saveScreen = useLearnSessionStore((s) => s.setScreen);
+  const saveCheck = useLearnSessionStore((s) => s.setCheck);
+  useEffect(() => {
+    if (screen.type === 'module' || screen.type === 'review') {
+      const prev = useLearnSessionStore.getState().screen;
+      const same = prev && prev.moduleId === screen.moduleId && prev.type === screen.type;
+      saveScreen({
+        type: screen.type,
+        levelId: screen.levelId,
+        unitId: screen.unitId,
+        moduleId: screen.moduleId,
+        section: screen.type === 'module' ? (screen.section ?? (same ? prev.section : null)) : null,
+        at: Date.now(),
+      });
+      const check = useLearnSessionStore.getState().check;
+      if (check && check.moduleId !== screen.moduleId) saveCheck(null);
+    } else {
+      saveScreen(null);
+      saveCheck(null);
+    }
+  }, [screen, saveScreen, saveCheck]);
 
   // ─── Async level + exercise loading ─────────────────────────────────────────
   const [loadedLevel, setLoadedLevel] = useState<CurriculumLevel | null>(null);
@@ -183,7 +224,7 @@ export function LearnView() {
   );
 
   return (
-    <div ref={scrollRef} className="h-full overflow-y-auto" role="region" aria-label={t('learn.region')}>
+    <div ref={scrollRef} className="h-full overflow-y-auto" role="region" aria-label={t('learn.region')} data-learn-scroll="">
       <AnimatePresence mode="wait" initial={false}>
         {screen.type === 'levels' && (
           <ScreenFrame key="levels" xOffset={xOffset} enterFrom="left">
@@ -270,19 +311,27 @@ export function LearnView() {
                   exercisesPassed={isModuleExercisesPassed(mod.id, modExercises.length)}
                   levelCompletedModuleCount={getLevelCompletedModuleCount(loadedLevel)}
                   onToggleTask={toggleTask}
-                  onCompleteModule={completeModule}
+                  onCompleteModule={(moduleId) => {
+                    // Celebrations: the unit's milestone when this completes the
+                    // unit (D-23), the level overlay when it completes the level,
+                    // otherwise a toast.
+                    const done = new Set([...progress.completedModules, moduleId]);
+                    completeModule(moduleId);
+                    const unitDone = unit.modules.every((x) => done.has(x.id));
+                    const levelDone = loadedLevel.units.every((u) => u.modules.every((x) => done.has(x.id)));
+                    const level = levelDone
+                      ? { levelNumber: loadedLevel.number, accentColor: loadedLevel.accentColor, moduleCount: getLevelModuleCount(loadedLevel) }
+                      : null;
+                    if (unitDone && unit.milestone) setMilestone({ unit, accent: loadedLevel.accentColor, then: level });
+                    else if (level) setLevelCelebration(level);
+                    else toast(t('toast.moduleCompleted', { title: mod.title }), 'success');
+                  }}
                   onRecordExerciseResult={(exerciseId, score) => recordExerciseResult(mod.id, exerciseId, score)}
                   onExercisesComplete={(passed) => { if (passed) markExercisesPassed(mod.id); }}
                   onBack={() => goToUnitBack(screen.levelId, screen.unitId)}
                   onBackToLevels={goToLevels}
                   onNavigateModule={(moduleId) => goToModule(screen.levelId, screen.unitId, moduleId)}
-                  onLevelComplete={() => {
-                    setLevelCelebration({
-                      levelNumber: loadedLevel.number,
-                      accentColor: loadedLevel.accentColor,
-                      moduleCount: getLevelModuleCount(loadedLevel),
-                    });
-                  }}
+                  initialSection={screen.section ?? null}
                 />
               );
             })()}
@@ -331,12 +380,25 @@ export function LearnView() {
                   onBack={() => goToLevels()}
                   onBackToLevels={goToLevels}
                   onNavigateModule={(moduleId) => goToModule(screen.levelId, screen.unitId, moduleId)}
+                  onOpenLesson={(section) => goToModule(screen.levelId, screen.unitId, mod.id, section)}
                 />
               );
             })()}
           </ScreenFrame>
         )}
       </AnimatePresence>
+
+      {milestone && (
+        <MilestoneSheet
+          unit={milestone.unit}
+          accent={milestone.accent}
+          onClose={() => {
+            const then = milestone.then;
+            setMilestone(null);
+            if (then) setLevelCelebration(then);
+          }}
+        />
+      )}
 
       {levelCelebration && (
         <LevelAchievement

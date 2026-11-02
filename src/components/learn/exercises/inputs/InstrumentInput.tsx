@@ -5,9 +5,11 @@ import type { Note, PitchedNote } from '../../../../core/types/music';
 import { noteToString } from '../../../../core/types/music';
 import { directionSpeller } from '../../../../core/utils/spelling';
 import { accentText } from '../../../../design/tokens/learnColors';
+import { openDockForLesson, foldDockAfterLesson } from '../../../../services/lessonDock';
 
 interface InstrumentInputProps {
   expectedCount: number;
+  /** The item is over (right, or the last try used): picks are frozen. */
   submitted: boolean;
   onSubmit: (pitchClasses: Set<number>) => void;
   accentColor: string;
@@ -31,10 +33,13 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
   // toggled selection instead (see useKeyContext exercise-input mode).
   useEffect(() => {
     setExerciseInputActive(true);
-    // The answer is played on the instrument: make sure the dock is open (Learn
-    // keeps it at Peek by default, D-20). Full D-20 wiring is a later batch.
-    useAppStore.getState().requestDock('half');
-    return () => setExerciseInputActive(false);
+    // The answer is played on the instrument: open the dock if it is folded
+    // (Learn rests at Peek, D-20) and fold it back when this question is done.
+    openDockForLesson();
+    return () => {
+      setExerciseInputActive(false);
+      foldDockAfterLesson();
+    };
   }, [setExerciseInputActive]);
 
   // Toggle a pitch class once per NOTE-ON. Diffing against the previous

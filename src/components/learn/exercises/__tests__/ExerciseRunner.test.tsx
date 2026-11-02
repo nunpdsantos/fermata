@@ -83,6 +83,8 @@ function renderRunner(exercises: ExerciseDefinition[]) {
 }
 
 describe('ExerciseRunner scoring', () => {
+  const passedArg = (fn: ReturnType<typeof vi.fn>) => fn.mock.calls[0][0];
+
   it('awards 1 point for a first-try correct answer and passes a full-score set', () => {
     const { onRecordResult, onComplete } = renderRunner([mcExercise('m1')]);
 
@@ -91,7 +93,7 @@ describe('ExerciseRunner scoring', () => {
     expect(onRecordResult).toHaveBeenCalledWith('m1', 1);
 
     fireEvent.click(screen.getByText('Continue'));
-    expect(onComplete).toHaveBeenCalledWith(true);
+    expect(passedArg(onComplete)).toBe(true);
   });
 
   it('awards 0.5 for correct on retry, and 50% does not pass the 80% threshold', () => {
@@ -99,17 +101,16 @@ describe('ExerciseRunner scoring', () => {
 
     fireEvent.click(screen.getByText('Wrong answer A'));
     fireEvent.click(screen.getByText('Submit'));
-    // No score recorded yet — retry is available with the hint shown.
+    // No score recorded yet — the retry is in place, with the hint shown.
     expect(onRecordResult).not.toHaveBeenCalled();
     expect(screen.getByText(/The right one\./)).toBeTruthy();
 
-    fireEvent.click(screen.getByText('Try Again'));
     fireEvent.click(screen.getByText('Right answer'));
     fireEvent.click(screen.getByText('Submit'));
     expect(onRecordResult).toHaveBeenCalledWith('m1', 0.5);
 
     fireEvent.click(screen.getByText('Continue'));
-    expect(onComplete).toHaveBeenCalledWith(false);
+    expect(passedArg(onComplete)).toBe(false);
   });
 
   it('awards 0 after two wrong attempts and fails the set', () => {
@@ -117,33 +118,33 @@ describe('ExerciseRunner scoring', () => {
 
     fireEvent.click(screen.getByText('Wrong answer A'));
     fireEvent.click(screen.getByText('Submit'));
-    fireEvent.click(screen.getByText('Try Again'));
     fireEvent.click(screen.getByText('Wrong answer B'));
     fireEvent.click(screen.getByText('Submit'));
     expect(onRecordResult).toHaveBeenCalledWith('m1', 0);
 
-    fireEvent.click(screen.getByText('Next'));
-    expect(onComplete).toHaveBeenCalledWith(false);
+    fireEvent.click(screen.getByText('Continue'));
+    expect(passedArg(onComplete)).toBe(false);
   });
 
   it('accumulates across a set: 1 + 0.5 of 2 (75%) fails, 2 of 2 passes', () => {
     // Two identical-config exercises so shuffle order cannot matter.
     const { onComplete } = renderRunner([mcExercise('a'), mcExercise('b')]);
 
-    // First: correct on first try.
     fireEvent.click(screen.getByText('Right answer'));
     fireEvent.click(screen.getByText('Submit'));
     fireEvent.click(screen.getByText('Continue'));
 
-    // Second: correct on retry (0.5). Total 1.5/2 = 75% < 80%.
     fireEvent.click(screen.getByText('Wrong answer A'));
     fireEvent.click(screen.getByText('Submit'));
-    fireEvent.click(screen.getByText('Try Again'));
     fireEvent.click(screen.getByText('Right answer'));
     fireEvent.click(screen.getByText('Submit'));
     fireEvent.click(screen.getByText('Continue'));
 
-    expect(onComplete).toHaveBeenCalledWith(false);
+    expect(passedArg(onComplete)).toBe(false);
+    // The outcomes carry what was answered, in words (the result screen's list).
+    const outcomes = onComplete.mock.calls[0][1] as { answers: string[]; score: number; answer: string }[];
+    expect(outcomes.map((o) => o.score).sort()).toEqual([0.5, 1]);
+    expect(outcomes.find((o) => o.score === 0.5)).toMatchObject({ answers: ['Wrong answer A', 'Right answer'], answer: 'Right answer' });
   });
 });
 
@@ -163,26 +164,39 @@ describe('ExerciseRunner ear-training replay lock (R-01)', () => {
     });
   }
 
-  it('autoplays a note once and blocks Replay until its playback window ends', async () => {
+  it('plays middle C first, then the note, and blocks Replay until the whole window ends (D-11 + R-01)', async () => {
     renderRunner([earNoteExercise]);
     await flushAutoplay();
-    expect(playNote).toHaveBeenCalledTimes(1);
-
-    const replay = screen.getByRole('button', { name: 'Replay audio' });
-    // Immediately replaying must be a no-op — the lock is still held (1.1 s).
+    // The reference sounds at once (middle C), the note itself 1.3 s later.
+    expect(playPitchedNotes).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(playPitchedNotes).mock.calls[0][0]).toEqual([{ natural: 'C', accidental: '', octave: 4 }]);
+    expect(playNote).toHaveBeenCalledTimes(0);
     await act(async () => {
-      fireEvent.click(replay);
+      vi.advanceTimersByTime(1300);
       await Promise.resolve();
     });
     expect(playNote).toHaveBeenCalledTimes(1);
 
-    // After the lock releases, Replay works again.
+    const replay = screen.getByRole('button', { name: 'Replay audio' });
+    // Replaying while the note still sounds is a no-op — the lock holds (2.4 s in all).
+    await act(async () => {
+      fireEvent.click(replay);
+      await Promise.resolve();
+    });
+    expect(playPitchedNotes).toHaveBeenCalledTimes(1);
+
+    // After the lock releases, Replay plays reference + note again.
     await act(async () => {
       vi.advanceTimersByTime(1200);
       await Promise.resolve();
     });
     await act(async () => {
       fireEvent.click(replay);
+      await Promise.resolve();
+    });
+    expect(playPitchedNotes).toHaveBeenCalledTimes(2);
+    await act(async () => {
+      vi.advanceTimersByTime(1300);
       await Promise.resolve();
     });
     expect(playNote).toHaveBeenCalledTimes(2);
@@ -298,8 +312,9 @@ describe('ExerciseRunner ear-training: the next item always autoplays (W0-04)', 
       await tick(6000);
 
       const after = vi.mocked(playPitchedNotes).mock.calls.slice(before);
-      // Exactly the next progression's four chords — none of the old ones.
-      expect(after).toHaveLength(4);
+      // Exactly the next item: its key chord (D-11), then its four chords —
+      // none of the old ones.
+      expect(after).toHaveLength(5);
       expect(firstNoteOf(after[0])).not.toEqual(firstRoot);
       // Scheduled playback of the abandoned stimulus is stopped.
       expect(stopPlayback).toHaveBeenCalled();

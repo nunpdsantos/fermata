@@ -1087,6 +1087,30 @@ export function playChordVoiced(
   playPitchedNotes(chordVoicingPitches(notes, startOctave, bassNote), duration, config);
 }
 
+/** One note of a timed phrase: `at` seconds from now, lasting `duration` seconds. */
+export interface TimedNote {
+  note: PitchedNote;
+  at: number;
+  duration: number;
+  /** 0–1; defaults to the config's volume. */
+  volume?: number;
+}
+
+/**
+ * Schedule a phrase on the AUDIO clock in one go — a melody, or a rhythm's
+ * count-in and clicks (W4b). Every note is handed to the voice up front with
+ * its offset, so the timing is sample-accurate (no timers) and
+ * stopPlayback() / cancelScheduledAudio() cancel whatever has not sounded.
+ * The tempo multiplier is NOT applied: the offsets are the schedule.
+ */
+export function playTimedNotes(notes: readonly TimedNote[], config: Partial<SynthConfig> = {}): void {
+  const ctx = getAudioContext();
+  const now = ctx.currentTime;
+  for (const n of notes) {
+    playNote(n.note, n.note.octave, n.duration, { ...config, volume: n.volume ?? config.volume ?? DEFAULT_SYNTH_CONFIG.volume }, now + n.at);
+  }
+}
+
 // Check if audio is available
 export function isAudioAvailable(): boolean {
   return (

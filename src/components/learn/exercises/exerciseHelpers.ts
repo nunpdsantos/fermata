@@ -10,11 +10,14 @@ import { MAJOR_DEGREE_SEMITONES, intervalNameOfDegree, canonicalIntervalNumber }
 import { buildScale } from '../../../core/constants/scales';
 import { mulberry32, seededShuffle } from '../../../core/utils/prng';
 import type { EarTrainingConfig } from '../../../core/types/exercise';
+import { parseWrittenPitch } from './exerciseStaff';
 
 export interface ChoiceOption {
   label: string;
   value: string;
   correct: boolean;
+  /** A melody option (melodic dictation): drawn on a staff; `label` is its letter. */
+  melody?: PitchedNote[];
 }
 
 /** Interval name for a semitone count. */
@@ -251,9 +254,10 @@ export function generateDegreeChoices(correctDegree: number, t: TFunc): ChoiceOp
  */
 export function earPlaybackLockMs(cfg: EarTrainingConfig): number {
   const MARGIN = 100;
+  const lead = earReferenceLeadMs(cfg);
   switch (cfg.mode) {
     case 'note':
-      return 1000 + MARGIN;
+      return lead + 1000 + MARGIN;
     case 'interval':
       return (cfg.harmonic ? 1200 : 700 + 600) + MARGIN;
     case 'chord':
@@ -271,9 +275,78 @@ export function earPlaybackLockMs(cfg: EarTrainingConfig): number {
     }
     case 'progression': {
       const chords = cfg.progression?.length ?? 4;
-      return (chords - 1) * 950 + 1200 + MARGIN;
+      return lead + (chords - 1) * 950 + 1200 + MARGIN;
+    }
+    case 'melody': {
+      const notes = Math.max(1, earMelodyPitches(cfg).length);
+      return lead + Math.round(((notes - 1) * MELODY_STEP_S + MELODY_LAST_S) * 1000) + MARGIN;
     }
   }
+}
+
+// ─── Reference pre-roll and melody mode (decision D-11, W4-11/12/13) ─────────
+
+/** Middle C: the reference played before a single-note ear item. */
+export const EAR_REFERENCE_PITCH: PitchedNote = { natural: 'C', accidental: '', octave: 4 };
+/** How long the reference sounds (s) and how long after it starts the item begins (ms). */
+export const EAR_REFERENCE_NOTE_S = 0.8;
+export const EAR_REFERENCE_CHORD_S = 1.1;
+const LEAD_MS = { pitch: 1300, key: 1700 } as const;
+/** A melody's notes: one every 0.6 s, each 0.5 s; the last one rings 0.9 s. */
+export const MELODY_STEP_S = 0.6;
+export const MELODY_NOTE_S = 0.5;
+export const MELODY_LAST_S = 0.9;
+
+export type EarReference =
+  | { kind: 'pitch'; pitches: PitchedNote[] }
+  | { kind: 'key'; key: Note; pitches: PitchedNote[] };
+
+/**
+ * What sounds BEFORE the item, so it is heard relative to something (D-11):
+ * middle C before a single note (W4-12), the key's tonic chord — root
+ * position, as the progressions voice their chords — before a progression /
+ * cadence (W4-11) or a melody (W4-13). Other modes are already relative
+ * (an interval, a chord's quality, a scale's type).
+ */
+export function earReference(cfg: EarTrainingConfig): EarReference | null {
+  if (cfg.mode === 'note') return { kind: 'pitch', pitches: [EAR_REFERENCE_PITCH] };
+  if (cfg.mode === 'progression' || cfg.mode === 'melody') {
+    const key: Note = { natural: (cfg.root ?? 'C') as NaturalNote, accidental: (cfg.rootAccidental ?? '') as Accidental };
+    return { kind: 'key', key, pitches: chordVoicingPitches(buildChord(key, 'major').notes, 3) };
+  }
+  return null;
+}
+
+/** Milliseconds from the reference's start to the item's start (0 = no reference). */
+export function earReferenceLeadMs(cfg: EarTrainingConfig): number {
+  const ref = earReference(cfg);
+  return ref ? LEAD_MS[ref.kind] : 0;
+}
+
+/** The melody a melody-mode item plays: its correct option's written pitches. */
+export function earMelodyPitches(cfg: EarTrainingConfig): PitchedNote[] {
+  const correct = cfg.melodyChoices?.find((c) => c.correct);
+  return correct ? correct.notes.map(parseWrittenPitch) : [];
+}
+
+/** How an option reads in words (a melody option: its notes). */
+export function optionText(opt: ChoiceOption): string {
+  return opt.melody ? opt.melody.map((n) => `${n.natural}${n.accidental}`).join(' ') : opt.label;
+}
+
+/** A melody option's value: its written pitches, space-separated ('E4 F#4 G4'). */
+export const melodyValue = (notes: readonly string[]) => notes.join(' ');
+
+/**
+ * The options of a melody item, in a stable order seeded by the exercise id,
+ * lettered A, B, C … in that order; each carries its melody for the staff.
+ */
+export function generateMelodyChoices(cfg: EarTrainingConfig, exerciseId: string): ChoiceOption[] {
+  const options = seededShuffle(
+    (cfg.melodyChoices ?? []).map((c) => ({ value: melodyValue(c.notes), correct: c.correct, melody: c.notes.map(parseWrittenPitch) })),
+    mulberry32(djb2(`melody:${exerciseId}`)),
+  );
+  return options.map((o, i) => ({ ...o, label: String.fromCharCode(65 + i) }));
 }
 
 /**

@@ -189,7 +189,7 @@ describe('feedback/status components use the semantic tokens, not fixed dark-the
     'components/drill/AccidentalSlots.tsx',
     'components/drill/RootQualityChips.tsx',
     'components/drill/MasteryMap.tsx',
-    'components/learn/exercises/ExerciseFeedback.tsx',
+    'components/learn/exercises/ExerciseRunner.tsx', // the check's verdict (W4b) renders through ui/Feedback
     'components/learn/exercises/inputs/ChoiceInput.tsx',
     'components/learn/ReviewQueue.tsx',
     'components/learn/UnitCard.tsx',
@@ -275,9 +275,6 @@ describe('accentText()', () => {
 
 describe('learn components colour accent TEXT through accentText()', () => {
   const FILES = [
-    'components/learn/exercises/ExerciseFeedback.tsx',
-    'components/learn/exercises/ExerciseRunner.tsx',
-    'components/learn/exercises/inputs/ChoiceInput.tsx',
     'components/learn/exercises/inputs/InstrumentInput.tsx',
     'components/learn/LearnBreadcrumb.tsx',
     'components/learn/ModuleView.tsx',

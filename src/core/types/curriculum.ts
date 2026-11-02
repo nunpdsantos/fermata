@@ -25,6 +25,12 @@ export interface CurriculumConcept {
   tryThisQuery: string;
   /** Label shown on the "Try This" button */
   tryThisLabel: string;
+  /**
+   * A rhythm to show and play instead of the query's notes (rhythm lessons,
+   * audit W5-64). When set, the inline Try This draws it on a one-line staff
+   * and plays it as clicks.
+   */
+  rhythm?: import('./exercise').RhythmPattern;
   /** Simplified explanation for children's audience mode */
   childDescription?: string;
   /** Simplified query for children's audience mode */

@@ -86,17 +86,42 @@ export interface StaffStimulus {
   chord?: boolean;
 }
 
+/**
+ * A rhythm (audit W5-64): drawn on a one-line staff and played as clicks
+ * after a one-bar count-in. Language-neutral — never translated.
+ */
+export interface RhythmPattern {
+  /** Time signature: '2/4', '3/4', '4/4', '6/8', '5/4', '7/8' … */
+  time: string;
+  /**
+   * Note values, space-separated, '|' between bars: w h q 8 16 (whole …
+   * sixteenth). A '.' after the value dots it ('h.'), an 'r' after it makes
+   * it a rest ('qr', 'h.r'), a '~' after it ties it to the next note ('h~ q'),
+   * 't' before an eighth makes it one of a triplet ('t8 t8 t8' = one beat),
+   * '>' before a value accents it ('>8').
+   */
+  notes: string;
+  /** Quarter notes per minute (default 80). */
+  bpm?: number;
+}
+
 export interface MultipleChoiceConfig {
   type: 'multiple_choice';
   choices: { label: string; correct: boolean }[];
   /** What "this chord / this key signature" refers to, when the question points at notation. */
   stimulus?: StaffStimulus;
+  /** A rhythm the question points at (drawn, with a Play button). */
+  rhythm?: RhythmPattern;
 }
 
 export interface EarTrainingConfig {
   type: 'ear_training';
-  /** What to play and identify */
-  mode: 'note' | 'interval' | 'chord' | 'scale' | 'progression';
+  /**
+   * What to play and identify. 'note', 'progression' and 'melody' items
+   * play a reference first (decision D-11): middle C before a single note,
+   * the key's tonic chord before a progression or a melody.
+   */
+  mode: 'note' | 'interval' | 'chord' | 'scale' | 'progression' | 'melody';
   /** For note mode: note to play, user identifies by name */
   note?: string;
   accidental?: string;
@@ -120,6 +145,13 @@ export interface EarTrainingConfig {
   progression?: string[];
   /** Choices for chord, scale and progression modes */
   choices?: { label: string; correct: boolean }[];
+  /**
+   * Melody mode (melodic dictation, W4-13): the melodies offered, each as
+   * written pitches ('E4', 'F#4', …), drawn on a staff; the one marked correct
+   * is the one PLAYED, so what is heard is the answer key by construction.
+   * `root` / `rootAccidental` name the major key whose tonic chord sounds first.
+   */
+  melodyChoices?: { notes: string[]; correct: boolean }[];
 }
 
 export interface ScaleDegreeIdConfig {
