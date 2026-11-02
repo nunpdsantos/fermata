@@ -122,20 +122,34 @@ async function settle(page: Page) {
   const snapshot = () => page.evaluate(() => {
     const running = document.getAnimations().filter((a) => a.playState === 'running' || a.pending).length;
     let sig = '';
+    // An entrance still in its delay (framer-motion / a JS tween): the
+    // element sits at an inline opacity of 0 — not yet moving, so two equal
+    // samples would pass it mid-entrance (review probe: a 500 ms delay).
+    let waiting = 0;
     for (const el of Array.from(document.querySelectorAll('body *'))) {
       const cs = getComputedStyle(el);
       if (cs.opacity !== '1' || cs.transform !== 'none') sig += `${cs.opacity}|${cs.transform};`;
+      if ((el as HTMLElement).style?.opacity === '0') waiting++;
     }
-    return { running, sig };
+    return { running, sig, waiting };
   });
+  // Settled = nothing has changed for QUIET ms and no entrance is waiting;
+  // an inline-0 element that has not moved for REST ms is at rest, not an
+  // entrance (a faded-out leftover).
+  const QUIET = 300;
+  const REST = 1500;
+  const start = Date.now();
   let prev = await snapshot();
-  for (let i = 0; i < 40; i++) {
+  let quietSince = Date.now();
+  while (Date.now() - start < 5000) {
     await page.waitForTimeout(60);
     const now = await snapshot();
-    if (now.running === 0 && prev.running === 0 && now.sig === prev.sig) return;
+    if (now.running > 0 || now.sig !== prev.sig) quietSince = Date.now();
     prev = now;
+    const quiet = Date.now() - quietSince;
+    if ((quiet >= QUIET && now.waiting === 0) || quiet >= REST) return;
   }
-  throw new Error('the page never stopped moving (2.4 s)');
+  throw new Error('the page never stopped moving (5 s)');
 }
 
 /** Audit the page as it is now; record it (and a screenshot) when asked to. */
@@ -204,7 +218,7 @@ async function focusWalk(page: Page, where: string, steps = 40) {
   const seen = new Set<unknown>();
   for (let i = 0; i < steps; i++) {
     await page.keyboard.press('Tab');
-    const stop = await page.evaluate(() => {
+    const stop = await page.evaluate(async () => {
       const el = document.activeElement as HTMLElement | null;
       if (!el || el === document.body || el === document.documentElement) return null;
       const name = `${el.tagName.toLowerCase()}${el.getAttribute('role') ? `[${el.getAttribute('role')}]` : ''} "${(el.getAttribute('aria-label') || el.textContent || '').trim().slice(0, 30)}"`;
@@ -212,13 +226,23 @@ async function focusWalk(page: Page, where: string, steps = 40) {
         const cs = getComputedStyle(e);
         return [cs.outlineStyle, cs.outlineWidth, cs.outlineColor, cs.boxShadow, cs.borderColor, cs.backgroundColor, cs.stroke, cs.strokeWidth].join('|');
       }).join('§');
-      const focused = sig(el);
-      // The same element unfocused (restore focus right after: still keyboard
-      // modality, so :focus-visible matches again).
-      el.blur();
-      const resting = sig(el);
-      el.focus({ preventScroll: true });
-      const indicator = focused !== resting;
+      // Let a ring that React paints after the focus event land (two
+      // frames) before each look — sampling once, under load, read a piano
+      // key before its ring was drawn (W11-B review). Up to three tries.
+      const frames = () => new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+      let indicator = false;
+      for (let attempt = 0; attempt < 3 && !indicator; attempt++) {
+        await frames();
+        const focused = sig(el);
+        // The same element unfocused (restore focus right after: still
+        // keyboard modality, so :focus-visible matches again).
+        el.blur();
+        await frames();
+        const resting = sig(el);
+        el.focus({ preventScroll: true });
+        indicator = focused !== resting;
+      }
+      await frames();
       const r = el.getBoundingClientRect();
       const vw = innerWidth, vh = innerHeight;
       const x0 = Math.max(r.left, 0), x1 = Math.min(r.right, vw), y0 = Math.max(r.top, 0), y1 = Math.min(r.bottom, vh);
@@ -1161,5 +1185,39 @@ for (const L of LANGS) {
         await context.close();
       }
     });
+  }
+}
+
+// PT and ES on narrow phones, 360 and 320 px (W11-B review: the chords' In
+// key / All / Build tabs ran off the card — "Construir" 44 % visible at 360,
+// ~2 % at 320). Explore with each tab open: the tabs stay inside the card,
+// and the same audit rules hold.
+for (const L of LANGS) {
+  for (const width of [360, 320] as const) {
+    for (const th of THEMES) {
+      const v = { name: `phone-${width}`, viewport: { width, height: width === 320 ? 568 : 740 }, touch: true } as unknown as Viewport;
+      const combo = `phone${width}-${L.lang}-${th.name}`;
+      test(`${combo}: Explore in ${L.lang.toUpperCase()} at ${width} px — the chord tabs fit, same rules`, async ({ browser }) => {
+        test.setTimeout(120_000);
+        const { context, page } = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore', dockDetents: { explore: 'peek', learn: 'peek' } }, { lang: L.lang });
+        await check(page, v, combo, 'explore');
+        const tabs = page.getByTestId('chords-card').getByRole('tab');
+        await expect(tabs).toHaveCount(3);
+        for (let i = 0; i < 3; i++) {
+          await tabs.nth(i).click();
+          await page.waitForTimeout(300);
+          const fit = await page.getByTestId('chords-card').evaluate((card) => {
+            const c = card.getBoundingClientRect();
+            return Array.from(card.querySelectorAll('[role="tab"]')).map((t) => {
+              const r = t.getBoundingClientRect();
+              return r.left >= c.left - 0.5 && r.right <= c.right + 0.5 && r.right <= innerWidth + 0.5;
+            });
+          });
+          expect.soft(fit, `${combo}: every chord tab inside the card (tab ${i} open)`).toEqual([true, true, true]);
+          await check(page, v, combo, `explore-chords-tab-${i}`);
+        }
+        await context.close();
+      });
+    }
   }
 }

@@ -262,21 +262,27 @@ for (const [w, h] of [[1280, 800], [1366, 768], [1536, 864]] as const) {
   test(`${w}×${h}: only the work column scrolls; the circle and the instrument stay put`, async ({ browser }) => {
     const { context, page } = await open(browser, { w, h, state: { instrument: 'guitar' } });
     await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+    // Before a chord: everything on screen.
+    for (const sel of ['[data-testid="circle-card"]', '[data-testid="key-facts"]', '[data-testid="instrument-dock"]', '[data-testid="key-summary"]', '[data-testid="scale-strip"]']) {
+      expect(await inView(page, sel), `${sel} fully on screen`).toBe(true);
+    }
+    const circleTop = (await page.getByTestId('circle-card').boundingBox())!.y;
+    // A chord: its detail scrolls into view in the WORK column only.
     await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
     await expect(page.getByTestId('chord-detail')).toBeVisible();
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(700);
     const s = await scrollState(page);
     expect(s.layout).toBe('workbench');
     expect(s.page).toBeLessThanOrEqual(0);
     expect(s.sideways).toBeLessThanOrEqual(0);
     expect(s.aside!.scroll, 'the circle column does not scroll').toBeLessThanOrEqual(s.aside!.client + 1);
-    for (const sel of ['[data-testid="circle-card"]', '[data-testid="key-facts"]', '[data-testid="instrument-dock"]', '[data-testid="key-summary"]', '[data-testid="scale-strip"]']) {
+    for (const sel of ['[data-testid="circle-card"]', '[data-testid="key-facts"]', '[data-testid="instrument-dock"]', '[data-testid="key-summary"]']) {
       expect(await inView(page, sel), `${sel} fully on screen`).toBe(true);
     }
-    // The work column scrolls to the chord detail; the circle does not move.
-    const circleTop = (await page.getByTestId('circle-card').boundingBox())!.y;
-    await page.getByTestId('chord-detail').scrollIntoViewIfNeeded();
-    expect(await inView(page, '[data-testid="chord-detail"]')).toBe(true);
+    const play = page.getByTestId('chord-detail').getByRole('button', { name: 'Chord', exact: true });
+    const pb = (await play.boundingBox())!;
+    const work = (await page.locator('.explore-main').boundingBox())!;
+    expect(pb.y >= work.y - 1 && pb.y + pb.height <= work.y + work.height + 1, '▶ Chord in view').toBe(true);
     expect((await page.getByTestId('circle-card').boundingBox())!.y).toBe(circleTop);
     await context.close();
   });
@@ -353,6 +359,13 @@ test('print: a clean page — staff with its strip aligned, chords, circle and k
       dock: shown('[data-testid="instrument-dock"]'),
       topbar: shown('.app-topbar'),
       menus: shown('.menu-popup') || shown('.explore-pickers'),
+      // Screen-only bits: the In key / All / Build tabs, "Learn about this",
+      // "Tap a note to hear it".
+      screenOnly: [
+        shown('[data-testid="chords-card"] [role="tablist"]'),
+        Array.from(document.querySelectorAll('button')).some((b) => /Learn about this/.test(b.textContent ?? '') && b.getClientRects().length > 0),
+        Array.from(document.querySelectorAll('.explore-card-hint span')).some((e) => /Tap a note/.test(e.textContent ?? '') && e.getClientRects().length > 0),
+      ],
       parts: ['[data-testid="scale-strip"]', '[data-testid="chords-card"]', '[data-testid="circle-card"]', '[data-testid="key-facts"]'].map(shown),
       ink: getComputedStyle(document.body).color,
       bg: getComputedStyle(document.body).backgroundColor,
@@ -361,9 +374,74 @@ test('print: a clean page — staff with its strip aligned, chords, circle and k
   expect(p.offset, 'noteheads over their columns').toBeLessThan(3);
   expect(p.staffInside, 'the staff stays inside its strip').toBe(true);
   expect([p.dock, p.topbar, p.menus]).toEqual([false, false, false]);
+  expect(p.screenOnly, 'tabs, "Learn about this", the tap hint: not printed').toEqual([false, false, false]);
   expect(p.parts).toEqual([true, true, true, true]);
   expect([p.ink, p.bg]).toEqual(['rgb(17, 17, 17)', 'rgb(255, 255, 255)']);
   const pdf = await page.pdf({ format: 'A4' });
   expect(pdf.byteLength).toBeGreaterThan(10_000);
+  await context.close();
+});
+
+test('phone, sheet at Half: a tapped chord\'s detail comes into view (▶ Chord on screen, above the sheet)', async ({ browser }) => {
+  for (const [w, h] of [[390, 844], [360, 740]] as const) {
+    const { context, page } = await open(browser, { w, h, touch: true, state: { dockDetents: { explore: 'half', learn: 'peek' }, dockChosen: { explore: true, learn: false } } });
+    await expect(page.getByTestId('instrument-dock')).toHaveAttribute('data-detent', 'half');
+    await page.getByRole('button', { name: 'G Major chord, degree 5' }).tap();
+    const play = page.getByTestId('chord-detail').getByRole('button', { name: 'Chord', exact: true });
+    await expect(play).toBeVisible();
+    await page.waitForTimeout(700); // the smooth scroll
+    const r = await page.evaluate(() => {
+      const b = Array.from(document.querySelectorAll('[data-testid="chord-detail"] button')).find((e) => e.textContent?.trim() === 'Chord')!.getBoundingClientRect();
+      const sheet = document.querySelector('[data-testid="instrument-dock"]')!.getBoundingClientRect();
+      const main = document.getElementById('main-content')!.getBoundingClientRect();
+      return { top: b.top, bottom: b.bottom, viewTop: main.top, sheetTop: sheet.top };
+    });
+    expect(r.top, `${w}: ▶ Chord below the top of the view`).toBeGreaterThanOrEqual(r.viewTop - 1);
+    expect(r.bottom, `${w}: ▶ Chord above the sheet`).toBeLessThanOrEqual(r.sheetTop + 1);
+    await context.close();
+  }
+});
+
+test('a phone sideways rests Explore\'s dock at Peek until the learner sets it; then their choice stays', async ({ browser }) => {
+  const { context, page } = await open(browser, { w: 844, h: 390, touch: true });
+  const dock = page.getByTestId('instrument-dock');
+  await expect(dock).toHaveAttribute('data-detent', 'peek');
+  expect((await page.locator('#main-content').boundingBox())!.height).toBeGreaterThan(200);
+  // The learner opens it: remembered across a reload.
+  const handle = page.getByRole('separator', { name: 'Instrument panel' });
+  await handle.focus();
+  await page.keyboard.press('ArrowUp');
+  await expect(dock).toHaveAttribute('data-detent', 'half');
+  await page.reload();
+  await expect(page.getByTestId('instrument-dock')).toHaveAttribute('data-detent', 'half');
+  await context.close();
+  // Upright, a first visit opens at Half as before.
+  const tall = await open(browser, { w: 390, h: 844, touch: true });
+  await expect(tall.page.getByTestId('instrument-dock')).toHaveAttribute('data-detent', 'half');
+  await tall.context.close();
+});
+
+test('with a chord on the fretboard, the scale\'s other notes stay in view, faded and unlabelled — dock and full neck', async ({ browser }) => {
+  const { context, page } = await open(browser, { w: 844, h: 390, touch: true, state: { instrument: 'guitar' } });
+  await page.getByRole('button', { name: 'G Major chord, degree 5' }).tap();
+  await page.getByTestId('neck-open').tap();
+  const neck = page.getByTestId('neck-view');
+  await expect(neck.locator('[data-dot="voicing"]').first()).toBeVisible({ timeout: 15_000 });
+  const dots = await neck.evaluate((root) => {
+    const ctx = Array.from(root.querySelectorAll('[data-dot="context"]'));
+    return {
+      context: ctx.length,
+      labelled: ctx.filter((d) => (d.textContent ?? '').trim() !== '').length,
+      faded: ctx.every((d) => Number(getComputedStyle(d).opacity) < 0.6),
+      voicing: root.querySelectorAll('[data-dot="voicing"]').length,
+      // No faded dot where the shape already has one.
+      overlap: ctx.filter((d) => d.parentElement?.querySelector('[data-dot="voicing"]')).length,
+    };
+  });
+  expect(dots.voicing).toBeGreaterThan(0);
+  expect(dots.context).toBeGreaterThan(10);
+  expect(dots.labelled).toBe(0);
+  expect(dots.faded).toBe(true);
+  expect(dots.overlap).toBe(0);
   await context.close();
 });
