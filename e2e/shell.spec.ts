@@ -170,21 +170,25 @@ for (const vp of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
 }
 
 test('choice chips: one Tab stop, arrow keys move and select', async ({ page }) => {
-  await seed(page, { lastView: 'explore', selectedKey: { natural: 'C', accidental: '' }, selectedScale: 'major' });
+  // The piano's octave chips (the root chips moved into the phone's key
+  // picker sheet with the Explore workbench, W11-B).
+  await seed(page, { lastView: 'explore', instrument: 'piano', baseOctave: 4, selectedKey: { natural: 'C', accidental: '' }, selectedScale: 'major' });
   await page.goto('/');
-  const roots = page.getByRole('radiogroup', { name: 'Root' });
-  const c = roots.getByRole('radio', { name: 'C', exact: true });
-  await expect(c).toHaveAttribute('aria-checked', 'true');
-  await expect(c).toHaveAttribute('tabindex', '0');
-  await expect(roots.getByRole('radio', { name: 'D', exact: true })).toHaveAttribute('tabindex', '-1');
-  await c.focus();
+  const octaves = page.getByRole('radiogroup', { name: 'Base octave' });
+  const c4 = octaves.getByRole('radio', { name: 'C4', exact: true });
+  await expect(c4).toHaveAttribute('aria-checked', 'true');
+  await expect(c4).toHaveAttribute('tabindex', '0');
+  await expect(octaves.getByRole('radio', { name: 'C5', exact: true })).toHaveAttribute('tabindex', '-1');
+  await c4.focus();
   await page.keyboard.press('ArrowRight');
-  const db = roots.getByRole('radio', { name: 'Db', exact: true });
-  await expect(db).toBeFocused();
-  await expect(db).toHaveAttribute('aria-checked', 'true');
-  await page.keyboard.press('ArrowLeft');
-  await page.keyboard.press('ArrowLeft'); // wraps to B
-  await expect(roots.getByRole('radio', { name: 'B', exact: true })).toHaveAttribute('aria-checked', 'true');
+  const c5 = octaves.getByRole('radio', { name: 'C5', exact: true });
+  await expect(c5).toBeFocused();
+  await expect(c5).toHaveAttribute('aria-checked', 'true');
+  await page.keyboard.press('Home');
+  const radios = octaves.getByRole('radio');
+  await expect(radios.first()).toHaveAttribute('aria-checked', 'true');
+  await page.keyboard.press('ArrowLeft'); // wraps to the last
+  await expect(radios.last()).toHaveAttribute('aria-checked', 'true');
 });
 
 test.describe('phone instrument sheet (D-26)', () => {
