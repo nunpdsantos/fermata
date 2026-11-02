@@ -398,12 +398,12 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
         <div className="flex-1 flex justify-center gap-1 min-w-0" aria-hidden="true" data-testid="check-pips">
           {orderedExercises.map((ex, i) => {
             const s = scores[i];
-            const bg = i === currentIndex && !final ? accentColor
+            const bg = i === currentIndex && !final ? 'var(--accent)'
               : s === 1 ? 'var(--success-text)'
               : s === 0.5 ? 'var(--warning-text)'
               : s === 0 ? 'var(--danger-text)'
               : 'var(--card-active)';
-            return <i key={ex.id} className="block h-1.5 rounded-full" style={{ flex: '1 1 0', maxWidth: 26, minWidth: 4, backgroundColor: bg }} />;
+            return <i key={ex.id} data-score={s ?? (i === currentIndex ? "now" : "")} className="block h-1.5 rounded-full" style={{ flex: "1 1 0", maxWidth: 26, minWidth: 4, backgroundColor: bg }} />;
           })}
         </div>
         <span className="text-ui tabular-nums shrink-0" style={{ color: 'var(--text-muted)' }} aria-label={t('lesson.questionOf', { current: currentIndex + 1, total })} data-testid="check-position">

@@ -289,6 +289,15 @@ export function ModuleView({
     return () => scroller.removeEventListener('scroll', onScroll);
   }, [mode, sections]);
 
+  // Under the sticky phone picker, keyboard focus scrolling must stop below it
+  // (WCAG 2.4.11: a focused control is never hidden under it).
+  useEffect(() => {
+    const scroller = scrollerOf(rootRef.current);
+    if (!scroller || mode !== 'lesson' || wide) return;
+    scroller.style.scrollPaddingTop = '72px';
+    return () => { scroller.style.scrollPaddingTop = ''; };
+  }, [mode, wide]);
+
   // Save the section being read, so a reload comes back to it.
   useEffect(() => {
     if (mode === 'lesson') saveSection(currentSection);
