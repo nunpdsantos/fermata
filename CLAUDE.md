@@ -114,7 +114,7 @@ src/
   state/toastStore.ts  Standalone toast queue (Zustand, not in main store)
   state/dock.ts      Instrument-dock detents (Peek / Half / Full) per view + shape guard; state/dockContextStore.ts = what the instrument shows (dock bar line)
   state/focusNoteStore.ts  The linked focus note (W11-B): hover / keyboard / pinned slots, where the instrument lights it
-  i18n/              i18next config + locales (en.json, pt.json, es.json) — 782 keys, 44 namespaces (counted 2026-11-02)
+  i18n/              i18next config + locales (en.json, pt.json, es.json) — 828 keys, 45 namespaces (counted 2026-11-02, after W11-B)
   i18n/content/      Translation overlay system for educational content (lazy-loaded per level)
     types.ts         ContentLanguage, CurriculumLevelOverlay, ExerciseLevelOverlay, TemplateLevelOverlay, SongOverlay
     contentResolver.ts  Pure apply functions (applyCurriculumOverlay, applyExerciseOverlay, etc.)
