@@ -709,6 +709,20 @@ body {
   }
 
   /* "⋯" menu */
+  /* "Something waits in here" (an update put off with "Later"): a dot on
+     the "⋯" button. The accent on the bar is >= 3:1 (a non-text cue); the
+     button's name says it in words. */
+  .menu-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 2px var(--bg);
+    pointer-events: none;
+  }
   .menu-popup {
     position: absolute;
     right: 0;

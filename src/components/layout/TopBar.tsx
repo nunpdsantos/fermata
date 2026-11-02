@@ -38,6 +38,8 @@ export function TopBar() {
   // Below 360 px the three tabs need the room: search moves into the menu.
   const narrow = useMediaQuery('(max-width: 359px)');
   const updateReady = usePwaUpdateStore((s) => s.needRefresh);
+  // Put off with "Later": a dot on "⋯" says an update is waiting in there.
+  const updateDeferred = usePwaUpdateStore((s) => s.needRefresh && s.updateDeferred);
   const openSearch = () => useAppStore.getState().setQuickSearchOpen(true);
 
   return (
@@ -84,6 +86,8 @@ export function TopBar() {
         <Menu
           label={t('nav.more')}
           testId="app-menu"
+          badge={updateDeferred}
+          buttonLabel={updateDeferred ? t('nav.moreUpdateReady') : undefined}
           items={[
             ...(narrow ? [{ id: 'search', label: t('nav.search'), onSelect: openSearch }] : []),
             { id: 'settings', label: t('settings.title'), onSelect: () => setSettingsOpen(true) },

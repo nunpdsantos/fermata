@@ -148,12 +148,18 @@ describe('toasts that do not linger (W11-A review round 4)', () => {
     fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
 
     act(() => stub.lastOptions!.onNeedRefresh!());
+    // While the toast asks, "⋯" stays plain.
+    expect(document.querySelector('[data-testid="app-menu-badge"]')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Later' }));
     expect(screen.queryByText(/new version/i)).toBeNull();
     expect(stub.updateCalls).toEqual([]);
     expect(reloadPage).not.toHaveBeenCalled();
 
-    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    // Put off: a dot on "⋯", and its name says why.
+    expect(document.querySelector('[data-testid="app-menu-badge"]')).not.toBeNull();
+    expect(screen.queryByRole('button', { name: 'More' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'More — update ready' }));
+    expect(screen.getByRole('menu', { name: 'More' })).toBeTruthy();
     await act(async () => {
       fireEvent.click(screen.getByRole('menuitem', { name: /update ready/i }));
     });

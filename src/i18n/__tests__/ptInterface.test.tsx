@@ -26,6 +26,7 @@ import { ChordBrowser } from '../../components/theory/ChordBrowser';
 import { CurrentChordPanel } from '../../components/panels/CurrentChordPanel';
 import { buildChord, CHORD_QUALITY_NAMES } from '../../core/constants/chords';
 import type { ChordQuality } from '../../core/types/music';
+import { usePwaUpdateStore } from '../../hooks/usePWA';
 
 vi.mock('../../hooks/useAudio', () => ({
   useAudio: () => ({ noteOn: vi.fn().mockResolvedValue(60), noteOff: vi.fn() }),
@@ -57,6 +58,7 @@ beforeAll(() => {
 afterEach(() => {
   cleanup();
   useToastStore.setState({ toasts: [] });
+  usePwaUpdateStore.setState({ needRefresh: false, offlineReady: false, updateDeferred: false });
 });
 afterAll(async () => {
   await i18n.changeLanguage('en');
@@ -78,6 +80,7 @@ const ENGLISH = [
   'Fewer new facts', 'More new facts', 'by heart', 'due today', 'Triads', 'Intervals',
   // Chord-quality names and the chord panel's scale notes (D-17, W11-A review)
   'Augmented', 'Suspended', 'Half-Diminished', 'Altered', 'Flat', 'Sharp', 'Add', 'Power Chord',
+  'Update ready', 'update ready', 'reload', 'Later',
   'Contains', 'avoid', 'Works', 'brightness', 'tension', 'symmetric', 'mode', 'melodic minor',
 ];
 const ENGLISH_RE = new RegExp(`(?<![\\p{L}])(${ENGLISH.join('|')})(?![\\p{L}])`, 'u');
@@ -116,10 +119,14 @@ describe.each(['pt', 'es'] as const)('%s interface has no hard-coded English', (
 
   it('top bar, "⋯" menu and the Settings sheet', () => {
     useAppStore.setState({ language: lang, view: 'explore' });
+    // An update put off with "Later": the "⋯" name and the menu item too.
+    usePwaUpdateStore.setState({ needRefresh: true, updateDeferred: true });
     render(<TopBar />);
+    expect(screen.getByRole('button', { name: lang === 'pt' ? 'Mais — atualização pronta' : 'Más — actualización lista' })).toBeTruthy();
     fireEvent.click(screen.getAllByRole('button')[1]); // the "⋯" button (search is first)
     expect(englishIn(document.body)).toEqual([]);
-    fireEvent.click(screen.getByRole('menuitem'));
+    expect(screen.getByRole('menuitem', { name: lang === 'pt' ? 'Atualização pronta: recarregar' : 'Actualización lista: recargar' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('menuitem', { name: lang === 'pt' ? 'Definições' : 'Ajustes' }));
     expect(screen.getByRole('dialog', { name: lang === 'pt' ? 'Definições' : 'Ajustes' })).toBeTruthy();
     expect(screen.getByRole('radio', { name: lang === 'pt' ? 'Noite' : 'Noche' })).toBeTruthy();
     expect(englishIn(document.body)).toEqual([]);

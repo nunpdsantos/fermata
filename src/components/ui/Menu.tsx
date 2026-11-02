@@ -24,6 +24,13 @@ export interface MenuProps {
   items: readonly MenuItem[];
   icon?: ReactNode;
   testId?: string;
+  /**
+   * Something inside waits for the learner (e.g. an update put off with
+   * "Later"): a dot on the button, and the button's name says what
+   * (`buttonLabel`, e.g. "More — update ready"; the menu keeps `label`).
+   */
+  badge?: boolean;
+  buttonLabel?: string;
 }
 
 const DOTS = (
@@ -34,7 +41,7 @@ const DOTS = (
   </svg>
 );
 
-export function Menu({ label, items, icon = DOTS, testId }: MenuProps) {
+export function Menu({ label, items, icon = DOTS, testId, badge = false, buttonLabel }: MenuProps) {
   const [open, setOpen] = useState(false);
   const [focusFirst, setFocusFirst] = useState<'first' | 'last'>('first');
   const rootRef = useRef<HTMLDivElement>(null);
@@ -87,7 +94,7 @@ export function Menu({ label, items, icon = DOTS, testId }: MenuProps) {
     <div ref={rootRef} className="relative" data-testid={testId}>
       <IconButton
         ref={buttonRef}
-        aria-label={label}
+        aria-label={buttonLabel ?? label}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={open ? menuId : undefined}
@@ -104,6 +111,7 @@ export function Menu({ label, items, icon = DOTS, testId }: MenuProps) {
           }
         }}
       />
+      {badge && <span className="menu-badge" data-testid={testId ? `${testId}-badge` : undefined} aria-hidden="true" />}
       {open && (
         <div
           ref={menuRef}
