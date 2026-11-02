@@ -329,10 +329,24 @@ for (const [w, h] of [[1280, 800], [1366, 768], [1536, 864]] as const) {
       expect(await inView(page, sel), `${sel} fully on screen`).toBe(true);
     }
     const play = page.getByTestId('chord-detail').getByRole('button', { name: 'Chord', exact: true });
-    const pb = (await play.boundingBox())!;
     const work = (await page.locator('.explore-main').boundingBox())!;
-    expect(pb.y >= work.y - 1 && pb.y + pb.height <= work.y + work.height + 1, '▶ Chord in view').toBe(true);
     expect((await page.getByTestId('circle-card').boundingBox())!.y).toBe(circleTop);
+    // The staff strip stays at the top of the work column (sticky) with the
+    // detail — the chord's notes lit, the others faded, in view together —
+    // and the detail scrolls in below it, not under it. Every chord in key.
+    const cards = page.locator('.chord-row button');
+    for (let i = 0; i < 7; i++) {
+      if ((await cards.nth(i).getAttribute('aria-pressed')) !== 'true') await cards.nth(i).click();
+      await page.waitForTimeout(500);
+      const name = await page.locator('.chord-detail-name').textContent();
+      const strip = (await page.getByTestId('scale-strip').boundingBox())!;
+      const pb = (await play.boundingBox())!;
+      expect(strip.y, `${name}: the strip at the top of the work column`).toBeGreaterThanOrEqual(work.y - 1);
+      expect(strip.y + strip.height, `${name}: the whole strip in view`).toBeLessThanOrEqual(work.y + work.height + 1);
+      expect(pb.y, `${name}: ▶ Chord below the strip, not under it`).toBeGreaterThanOrEqual(strip.y + strip.height - 1);
+      expect(pb.y + pb.height, `${name}: ▶ Chord in view`).toBeLessThanOrEqual(work.y + work.height + 1);
+      await expect(page.locator('.strip-col[data-dim]').first(), `${name}: the strip shows the chord (others faded)`).toBeAttached();
+    }
     await context.close();
   });
 }
@@ -409,11 +423,13 @@ test('print: a clean page — staff with its strip aligned, chords, circle and k
       topbar: shown('.app-topbar'),
       menus: shown('.menu-popup') || shown('.explore-pickers'),
       // Screen-only bits: the In key / All / Build tabs, "Learn about this",
-      // "Tap a note to hear it".
+      // "Tap a note to hear it", ▶ Chord / ▶ Arpeggio, the inversion chips.
       screenOnly: [
         shown('[data-testid="chords-card"] [role="tablist"]'),
         Array.from(document.querySelectorAll('button')).some((b) => /Learn about this/.test(b.textContent ?? '') && b.getClientRects().length > 0),
         Array.from(document.querySelectorAll('.explore-card-hint span')).some((e) => /Tap a note/.test(e.textContent ?? '') && e.getClientRects().length > 0),
+        Array.from(document.querySelectorAll('[data-testid="chord-detail"] button')).some((b) => /^(Chord|Arpeggio)$/.test(b.textContent?.trim() ?? '') && b.getClientRects().length > 0),
+        shown('[data-testid="chord-detail"] [role="radiogroup"]'),
       ],
       // The chord's own small staff: hidden on the workbench screen, printed.
       parts: ['[data-testid="scale-strip"]', '[data-testid="chords-card"]', '[data-testid="circle-card"]', '[data-testid="key-facts"]', '[data-testid="chord-staff"]'].map(shown),
@@ -424,7 +440,7 @@ test('print: a clean page — staff with its strip aligned, chords, circle and k
   expect(p.offset, 'noteheads over their columns').toBeLessThan(3);
   expect(p.staffInside, 'the staff stays inside its strip').toBe(true);
   expect([p.dock, p.topbar, p.menus]).toEqual([false, false, false]);
-  expect(p.screenOnly, 'tabs, "Learn about this", the tap hint: not printed').toEqual([false, false, false]);
+  expect(p.screenOnly, 'tabs, "Learn about this", the tap hint, ▶ Chord / ▶ Arpeggio, the inversion chips: not printed').toEqual([false, false, false, false, false]);
   expect(p.parts).toEqual([true, true, true, true, true]);
   expect([p.ink, p.bg]).toEqual(['rgb(17, 17, 17)', 'rgb(255, 255, 255)']);
   const pdf = await page.pdf({ format: 'A4' });
@@ -432,8 +448,11 @@ test('print: a clean page — staff with its strip aligned, chords, circle and k
   await context.close();
 });
 
-test('phone, sheet at Half: a tapped chord\'s detail comes into view (▶ Chord on screen, above the sheet)', async ({ browser }) => {
-  for (const [w, h] of [[390, 844], [360, 740]] as const) {
+test('phone, sheet at Half: a tapped chord\'s detail comes into view (▶ Chord on screen, above the sheet) — upright and sideways', async ({ browser }) => {
+  // 844×390 at Half leaves ~120 px of view: the detail keeps a toast's room
+  // above it only while a toast is up (it pushed ▶ Chord out — W11-B delta
+  // review).
+  for (const [w, h] of [[390, 844], [360, 740], [844, 390]] as const) {
     const { context, page } = await open(browser, { w, h, touch: true, state: { dockDetents: { explore: 'half', learn: 'peek' }, dockChosen: { explore: true, learn: false } } });
     await expect(page.getByTestId('instrument-dock')).toHaveAttribute('data-detent', 'half');
     await page.getByRole('button', { name: 'G Major chord, degree 5' }).tap();
@@ -450,6 +469,29 @@ test('phone, sheet at Half: a tapped chord\'s detail comes into view (▶ Chord 
     expect(r.bottom, `${w}: ▶ Chord above the sheet`).toBeLessThanOrEqual(r.sheetTop + 1);
     await context.close();
   }
+  // Sideways with a toast up: the detail keeps the toast's room above it,
+  // but never so much that ▶ Chord leaves the view, and the toast does not
+  // cover it. The toast is raised through the dev server's own module (the
+  // production build has no /src: noted and skipped there).
+  const { context, page } = await open(browser, { w: 844, h: 390, touch: true, state: { dockDetents: { explore: 'half', learn: 'peek' }, dockChosen: { explore: true, learn: false } } });
+  const dev = await page.request.get('/src/state/toastStore.ts');
+  if (!(dev.ok() && (dev.headers()['content-type'] ?? '').includes('javascript'))) {
+    test.info().annotations.push({ type: 'note', description: 'the with-a-toast step needs the dev server: skipped on this build' });
+  } else {
+    await page.evaluate("import('/src/state/toastStore.ts').then((m) => m.toast('Copied to clipboard', 'success', 30000))");
+    await expect(page.locator('.toast-region .toast-card')).toHaveCount(1);
+    await page.getByRole('button', { name: 'G Major chord, degree 5' }).tap();
+    await page.waitForTimeout(700);
+    const r = await page.evaluate(() => {
+      const b = Array.from(document.querySelectorAll('[data-testid="chord-detail"] button')).find((e) => e.textContent?.trim() === 'Chord')!.getBoundingClientRect();
+      const sheet = document.querySelector('[data-testid="instrument-dock"]')!.getBoundingClientRect();
+      const toastCard = document.querySelector('.toast-region .toast-card')!.getBoundingClientRect();
+      return { top: b.top, bottom: b.bottom, sheetTop: sheet.top, toastBottom: toastCard.bottom };
+    });
+    expect(r.bottom, '844 with a toast: ▶ Chord above the sheet').toBeLessThanOrEqual(r.sheetTop + 1);
+    expect(r.top, '844 with a toast: ▶ Chord clear of the toast').toBeGreaterThanOrEqual(r.toastBottom - 1);
+  }
+  await context.close();
 });
 
 test('a phone sideways rests Explore\'s dock at Peek until the learner sets it; then their choice stays', async ({ browser }) => {

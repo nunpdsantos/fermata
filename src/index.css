@@ -231,6 +231,11 @@
   --piano-border: #8b5e2a;
   /* Key-name labels on the ivory keys: ≥ 4.5:1 (was #8b7551, 4.05:1). */
   --piano-label: #6d5c44;
+  /* A key's keyboard-focus ring: two lines, dark outside and light inside,
+     so one of them is ≥ 3:1 on any key face — ivory, tinted, a degree or
+     accent fill, ebony (themeContrast.test.ts checks every face). */
+  --piano-ring-dark: #24170b;
+  --piano-ring-light: #fff8ec;
 }
 
 /* Fermata Night — warm walnut/espresso dark variant of the Fermata aesthetic. */
@@ -303,6 +308,9 @@
   /* The night ivory keys stay light, so their labels are dark (was #a8916a,
      2.2:1). */
   --piano-label: #5f4e34;
+  /* The night ivory is still light: the accent ring was 2.2:1 on it. */
+  --piano-ring-dark: #24170b;
+  --piano-ring-light: #fff8ec;
 }
 
 /* Touch screens get 44 px controls (D-28). */
@@ -336,12 +344,25 @@ body {
 [data-focus-ring="custom"]:focus-visible {
   outline: none;
 }
-/* A piano key's keyboard focus: the accent outline inside the key, drawn by
-   CSS with the focus itself (W11-B review: the React-painted ring was late
-   under load, and only ~1.9:1). */
+/* A piano key's keyboard focus, drawn by CSS with the focus itself (W11-B
+   review: the React-painted ring was late under load, and only ~1.9:1): a
+   TWO-TONE ring inside the key — 2 px dark, then 2 px light — so it shows on
+   every face in both themes (the accent outline alone was 2.2:1 on the night
+   ivory and 1.7–2.1:1 on its tinted in-scale keys — W11-B delta review). The
+   dark line is the outline (what the design sweep's Tab walk reads); the
+   light one a pseudo-element just inside it, without a z-index so a white
+   key's stays under the black keys that overlap it. */
 [data-piano-key][data-focus-ring="custom"]:focus-visible {
-  outline: 3px solid var(--focus-outline) !important;
-  outline-offset: -3px !important;
+  outline: 2px solid var(--piano-ring-dark) !important;
+  outline-offset: -2px !important;
+}
+[data-piano-key][data-focus-ring="custom"]:focus-visible::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 2px var(--piano-ring-light);
+  pointer-events: none;
 }
 
 /* ─── Reduced motion (a11y) ──────────────────────────────────────
@@ -1132,6 +1153,19 @@ body {
     }
   }
 
+  /* A laptop shorter than 900 px (1280×800, 1366×768, 1536×864): the work
+     column scrolls when a chord's detail opens — the staff strip stays at
+     its top, so the chord's notes (lit) and the rest (faded) stay in view
+     with the detail (W11-B delta review). CurrentChordPanel scrolls the
+     detail in below it. */
+  @media screen and (min-width: 1200px) {
+    .explore-main > .strip-card {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+  }
+
   /* A short screen (a phone sideways): the header scrolls away with the
      work — one scroller for the little room left above the sheet, so a
      focused note column is never half under the sheet. */
@@ -1306,9 +1340,12 @@ body {
     }
   }
   .chord-detail {
-    /* Scrolled into view with one toast's room above it (the same room the
-       phone sheet keeps at Full): a toast then never has to cover it, even
-       on a phone held sideways. */
+    /* Scrolled into view with one toast's room above it, so a toast then
+       never has to cover it and nothing moves when one comes. This is the
+       fallback: CurrentChordPanel (roomAbove) sets the real value — it also
+       counts a laptop's held staff strip, and clamps it so ▶ Chord stays in
+       the view (a phone sideways at Half has ~120 px; the fixed gap pushed
+       ▶ Chord under the sheet — W11-B delta review). */
     scroll-margin-top: calc(var(--tap) + 32px);
     scroll-margin-bottom: 8px;
     display: grid;
@@ -1382,6 +1419,16 @@ body {
     /* On a phone the row wraps line by line: ▶ Chord / ▶ Arpeggio come
        right under the chord's name, so they are what the scrolled-in detail
        shows first above the sheet. */
+    .chord-detail-row:first-child > .chord-detail-group {
+      order: 2;
+    }
+    .chord-detail-row:first-child > .chord-detail-actions {
+      order: 1;
+    }
+  }
+  /* A short screen (a phone sideways) too: ▶ Chord / ▶ Arpeggio right after
+     the name, at the top of the little view above the sheet. */
+  @media (max-height: 500px) {
     .chord-detail-row:first-child > .chord-detail-group {
       order: 2;
     }

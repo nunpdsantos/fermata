@@ -376,6 +376,62 @@ describe.each(Object.entries(THEMES))('v2 token pairs — %s', (_theme, vars) =>
   });
 });
 
+// The piano's keyboard-focus ring (W11-B delta review: the accent outline
+// was 2.2:1 on the night ivory, 1.7–2.1:1 on its tinted in-scale keys). It is
+// two lines — dark (the outline) and light (just inside) — so that on EVERY
+// face a key can wear, one of them is ≥ 3:1: ivory, ebony, an in-scale ivory
+// (35 % of its colour mixed in, PianoKey), a full fill (an in-scale black
+// key, a pressed or voiced key) in each degree hue or the two walnuts used
+// when degree colours are off, and the accent (a pressed key outside the
+// scale). Day and night.
+const keyContextSrc = fs.readFileSync(fromHere('../../hooks/useKeyContext.ts'), 'utf8');
+const WALNUTS = (() => {
+  const m = /degree === 1 \? '(#[0-9a-fA-F]{6})' : '(#[0-9a-fA-F]{6})'/.exec(keyContextSrc);
+  if (!m) throw new Error('walnut key colours not found in useKeyContext.ts');
+  return [m[1], m[2]];
+})();
+
+describe('the piano focus ring is the two-line one these tests check', () => {
+  it('index.css: the dark outline and the light line inside it', () => {
+    expect(indexCss).toMatch(/\[data-piano-key\]\[data-focus-ring="custom"\]:focus-visible \{\s*outline: 2px solid var\(--piano-ring-dark\) !important;/);
+    expect(indexCss).toMatch(/\[data-piano-key\]\[data-focus-ring="custom"\]:focus-visible::after \{[^}]*box-shadow: inset 0 0 0 2px var\(--piano-ring-light\);/);
+  });
+});
+
+describe.each(Object.entries(THEMES))('piano focus ring on every key face — %s', (_theme, vars) => {
+  const any = (name: string) => (vars[name] ? hexVar(vars, name) : hexVar(THEMES['fermata (day)'], name));
+  const white = any('--piano-white');
+  const fills = [
+    ...DEGREES.map((d) => ({ label: `--deg-${d}`, rgb: any(`--deg-${d}`) })),
+    ...WALNUTS.map((hex) => ({ label: `walnut ${hex}`, rgb: hexToRgb(hex) })),
+  ];
+  const faces = [
+    { label: 'ivory', rgb: white },
+    { label: 'ebony', rgb: any('--piano-black') },
+    { label: 'accent (pressed)', rgb: any('--accent') },
+    ...fills.map((f) => ({ label: `ivory + 35% ${f.label}`, rgb: over(f.rgb, 0.35, white) })),
+    ...fills.map((f) => ({ label: `${f.label} fill`, rgb: f.rgb })),
+  ];
+  const dark = any('--piano-ring-dark');
+  const light = any('--piano-ring-light');
+
+  it('one of the two lines is ≥ 3:1 on each face, and the lines ≥ 3:1 to each other', () => {
+    expect(faces.length).toBe(21);
+    const bad = faces
+      .map((f) => ({ f, best: Math.max(contrast(dark, f.rgb), contrast(light, f.rgb)) }))
+      .filter(({ best }) => best < MIN_UI)
+      .map(({ f, best }) => `${f.label}: ${best.toFixed(2)}`);
+    expect(bad).toEqual([]);
+    expect(contrast(dark, light)).toBeGreaterThanOrEqual(MIN_UI);
+  });
+
+  it('known negative: the old single ring (--focus-outline) — the check can see a failure', () => {
+    const old = any('--focus-outline');
+    const under = faces.filter((f) => contrast(old, f.rgb) < MIN_UI);
+    expect(under.length).toBeGreaterThan(0);
+  });
+});
+
 describe('why the noteheads are not the 400 fills (W11-B)', () => {
   it('by day most degree fills are under 3:1 on the card — a notehead in them would not meet non-text contrast', () => {
     const vars = THEMES['fermata (day)'];

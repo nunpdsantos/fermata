@@ -50,6 +50,63 @@ interface CurrentChordPanelProps {
 
 const INVERSION_LABEL_KEYS = ['panel.rootPos', 'panel.inv1', 'panel.inv2', 'panel.inv3'];
 
+/** How far a toast slides into place (Toast.tsx: `initial y: 12`). */
+const TOAST_TRAVEL = 12;
+
+/** The view the detail scrolls in: its nearest scrolling ancestor (the work
+ *  column; on a short screen, the whole Explore area). */
+function scrollerOf(detail: HTMLElement): HTMLElement | null {
+  let scroller: HTMLElement | null = detail.parentElement;
+  while (scroller) {
+    const oy = getComputedStyle(scroller).overflowY;
+    if ((oy === 'auto' || oy === 'scroll') && scroller.scrollHeight > scroller.clientHeight) return scroller;
+    scroller = scroller.parentElement;
+  }
+  return null;
+}
+
+/**
+ * The room kept above the chord detail as it scrolls into view: 8 px below
+ * whatever covers, or may come to cover, the top of its view — the staff
+ * strip held at the top of a laptop's work column (sticky), and one toast's
+ * room under the top bar (a toast that comes later must not cover the
+ * detail, and nothing may move when it comes or goes), more while a taller
+ * stack is up — but never so much that ▶ Chord / ▶ Arpeggio leave the view:
+ * a phone sideways at Half has ~120 px of it, and the fixed toast gap
+ * pushed ▶ Chord under the sheet there (W11-B delta review).
+ */
+function roomAbove(detail: HTMLElement): number {
+  const BASE = 8;
+  const scroller = scrollerOf(detail);
+  if (!scroller) return BASE;
+  const viewTop = scroller.getBoundingClientRect().top;
+  let cover = viewTop;
+  const strip = scroller.querySelector<HTMLElement>(':scope > .strip-card');
+  if (strip) {
+    const cs = getComputedStyle(strip);
+    if (cs.position === 'sticky') cover = Math.max(cover, viewTop + (parseFloat(cs.top) || 0) + strip.getBoundingClientRect().height);
+  }
+  const region = document.querySelector<HTMLElement>('.toast-region');
+  if (region) {
+    const box = region.getBoundingClientRect();
+    // One toast always fits the region (index.css: --tap + 16 px); where
+    // toasts are up, where they REST (layout offsets ignore the entrance
+    // transform). Plus the 12 px a toast slides in by: clear even
+    // mid-entrance.
+    const tap = parseFloat(getComputedStyle(region).getPropertyValue('--tap')) || 36;
+    let bottom = box.top + tap + 16;
+    const toasts = Array.from(region.querySelectorAll<HTMLElement>('.toast-card'));
+    if (toasts.length > 0) {
+      const rest = Math.max(...toasts.map((t) => box.top + t.offsetTop + t.offsetHeight - region.scrollTop));
+      bottom = Math.max(bottom, Math.min(box.bottom, rest));
+    }
+    cover = Math.max(cover, bottom + TOAST_TRAVEL);
+  }
+  const actions = detail.querySelector('.chord-detail-actions');
+  const need = actions ? actions.getBoundingClientRect().bottom - detail.getBoundingClientRect().top : 0;
+  return Math.round(Math.max(BASE, Math.min(cover - viewTop + BASE, scroller.clientHeight - need - BASE)));
+}
+
 function computeVoicedMidi(notes: Note[], startOctave: number): number[] {
   return buildAscendingMidi(notes, startOctave).midi;
 }
@@ -224,9 +281,15 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
   // room. Once per chord, so browsing the inversions never jumps.
   const chordId = `${noteToString(chord.root)}|${chord.quality}|${chord.bassNote ? noteToString(chord.bassNote) : ''}`;
   useEffect(() => {
-    detailRef.current?.scrollIntoView?.({ block: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
+    const el = detailRef.current;
+    if (!el) return;
+    // Room above it for what covers (or may cover) the view's top — a
+    // laptop's held staff strip, a toast's room — clamped so ▶ Chord still
+    // shows (W11-B delta review: the fixed toast gap pushed it under the
+    // sheet at 844×390, Half).
+    el.style.scrollMarginTop = `${roomAbove(el)}px`;
+    el.scrollIntoView?.({ block: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
   }, [chordId, reduceMotion]);
-
   const playIcon = <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>;
 
   return (
@@ -292,8 +355,9 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
 
         {/* Root / 1st / 2nd …: one of many — a ChipGroup (D-28 choice chip).
             4th inversion and up (5+ note chords) use "Inv n" — never a second
-            "Root" (audit W2-09). */}
-        <div className="chord-detail-group">
+            "Root" (audit W2-09). Controls: not printed (nor ▶ Chord /
+            ▶ Arpeggio) — W11-B delta review. */}
+        <div className="chord-detail-group no-print">
           <span className="type-label" aria-hidden="true">{t('panel.voicing')}</span>
           <ChipGroup
             label={t('panel.chordInversion')}
@@ -306,7 +370,7 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
           />
         </div>
 
-        <div className="chord-detail-actions">
+        <div className="chord-detail-actions no-print">
           {/* Chord is the main action here (primary). */}
           <Button variant="primary" onClick={handlePlayChord} startIcon={playIcon}>
             {t('panel.chord')}
