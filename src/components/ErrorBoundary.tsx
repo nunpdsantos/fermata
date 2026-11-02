@@ -50,6 +50,15 @@ const DRILL_STORE_KEY_LITERAL = 'fermata-drill-v1';
  */
 const FINGERING_STORE_KEY_LITERAL = 'fermata-fingering-v1';
 
+/**
+ * Where the learner is in Learn (LEARN_SESSION_KEY in
+ * src/state/learnSessionStore.ts: the open lesson and an in-progress check,
+ * restored after a reload — W4b). Both recoveries clear it: it is view state,
+ * and a saved position must never be able to crash Learn on every reload.
+ * src/state/__tests__/learnSessionStore.test.ts asserts the two stay equal.
+ */
+const LEARN_SESSION_KEY_LITERAL = 'fermata-learn-session-v1';
+
 interface Props {
   children: ReactNode;
   /** When this value changes, the boundary resets (clears the error). */
@@ -93,6 +102,7 @@ export class ErrorBoundary extends Component<Props, State> {
    * directly instead; every other key is left alone.
    */
   private handleResetViewSettings = () => {
+    localStorage.removeItem(LEARN_SESSION_KEY_LITERAL);
     try {
       useAppStore.setState(VIEW_SETTINGS_DEFAULTS);
     } catch {
@@ -129,6 +139,7 @@ export class ErrorBoundary extends Component<Props, State> {
     localStorage.removeItem(DRILL_STORE_KEY_LITERAL);
     // Guitar fingering overrides (a small store with no heavy dependencies).
     localStorage.removeItem(FINGERING_STORE_KEY_LITERAL);
+    localStorage.removeItem(LEARN_SESSION_KEY_LITERAL);
     import('../state/drillStore')
       .then((m) => m.useDrillStore.getState().resetDrillData())
       .catch(() => {})

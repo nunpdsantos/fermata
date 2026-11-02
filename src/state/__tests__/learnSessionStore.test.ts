@@ -21,6 +21,7 @@ import {
 import { hasWorkInProgress } from '../../services/workInProgress';
 import { useProgressStore } from '../progressStore';
 import type { ExerciseDefinition } from '../../core/types/exercise';
+import errorBoundarySource from '../../components/ErrorBoundary.tsx?raw';
 
 const ex = (id: string, prompt = `Q ${id}?`): ExerciseDefinition => ({
   id, type: 'multiple_choice', prompt,
@@ -115,5 +116,13 @@ describe('Learn session store', () => {
     expect(hasWorkInProgress()).toBe(false);
     useLearnSessionStore.getState().setCheck(null);
     expect(hasWorkInProgress()).toBe(false);
+  });
+});
+
+describe('recovery clears the Learn session', () => {
+  it('ErrorBoundary carries the key verbatim and removes it in both resets', () => {
+    expect(errorBoundarySource).toContain(`'${LEARN_SESSION_KEY}'`);
+    const removals = errorBoundarySource.match(/localStorage\.removeItem\(LEARN_SESSION_KEY_LITERAL\)/g) ?? [];
+    expect(removals.length).toBe(2);
   });
 });
