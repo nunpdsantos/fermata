@@ -317,7 +317,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'La Progresión Omnibus',
           explanation:
-            'El omnibus es un patrón cromático de intercambio de voces (en un intercambio de voces, dos voces se intercambian las notas): una voz asciende cromáticamente mientras otra desciende, con las restantes voces sostenidas. Esto crea un paisaje armónico lentamente evolutivo, moviéndose a través de sonoridades de séptima de dominante y de sexta aumentada. Habitual en la música del siglo XIX, produce una sensación de errancia armónica sin dirección funcional clara.',
+            'El omnibus es un patrón cromático de intercambio de voces (en un intercambio de voces, dos voces se intercambian las notas): una voz asciende cromáticamente mientras otra desciende, con las restantes voces sostenidas. Esto crea un paisaje armónico lentamente evolutivo, moviéndose a través de sonoridades de séptima de dominante y de sexta aumentada. Habitual en la música del siglo XIX, produce una sensación de errancia armónica sin dirección funcional clara. Su función habitual es prolongar una única armonía de dominante: el patrón sale de la séptima de dominante y regresa a ella.',
           tryThisLabel: 'Escucha C7#5 — una sonoridad de dominante alterada',
         },
       ],

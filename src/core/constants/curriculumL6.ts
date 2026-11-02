@@ -375,7 +375,7 @@ const l6u19m3: CurriculumModule = {
     {
       title: 'The Omnibus Progression',
       explanation:
-        'The omnibus is a chromatic voice-exchange pattern (a voice exchange is two voices trading pitches with each other): one voice ascends chromatically while another descends, with the remaining voices holding steady. This creates a slowly evolving harmonic landscape moving through dominant seventh and augmented sixth sonorities. Common in 19th-century music, it produces a sense of harmonic wandering without clear functional direction.',
+        'The omnibus is a chromatic voice-exchange pattern (a voice exchange is two voices trading pitches with each other): one voice ascends chromatically while another descends, with the remaining voices holding steady. This creates a slowly evolving harmonic landscape moving through dominant seventh and augmented sixth sonorities. Common in 19th-century music, it produces a sense of harmonic wandering without clear functional direction. Its usual job is to prolong a single dominant harmony: the pattern leaves the dominant seventh and returns to it.',
       tryThisQuery: 'C7#5',
       tryThisLabel: 'Hear C7#5 \u2014 an altered dominant sonority',
     },

@@ -35,7 +35,7 @@ const overlay: ExerciseLevelOverlay = {
   l3u9m1e4: {
     prompt: 'Qual é a diferença entre um acorde de sétima meio-diminuto e um totalmente diminuto?',
     choices: [
-      'O meio-diminuto tem 7.ª menor; o totalmente diminuto tem 7.ª diminuta (duplo bemol)',
+      'O meio-diminuto tem 7.ª menor; o totalmente diminuto tem 7.ª diminuta',
       'O meio-diminuto tem 7.ª maior; o totalmente diminuto tem 7.ª menor',
       'Usam tríades diferentes: o meio-diminuto é menor, o totalmente diminuto é diminuto',
       'Não há diferença; são o mesmo acorde',
@@ -89,9 +89,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Qual símbolo de baixo cifrado representa um acorde de sétima em estado fundamental?',
     choices: [
       '7 (abreviatura de 7/5/3)',
-      '6/5',
-      '4/3',
-      '4/2',
+      '6/5 (abreviatura de 6/5/3)',
+      '4/3 (abreviatura de 6/4/3)',
+      '4/2 (abreviatura de 6/4/2)',
     ],
     hint: 'Em estado fundamental, os intervalos acima do baixo são 3.ª, 5.ª e 7.ª. A cifragem completa 7/5/3 é abreviada para apenas 7.',
   },
@@ -99,9 +99,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Qual símbolo de baixo cifrado representa um acorde de sétima na primeira inversão?',
     choices: [
       '6/5 (abreviatura de 6/5/3)',
-      '7',
-      '4/3',
-      '4/2',
+      '7 (abreviatura de 7/5/3)',
+      '4/3 (abreviatura de 6/4/3)',
+      '4/2 (abreviatura de 6/4/2)',
     ],
     hint: 'A primeira inversão coloca a 3.ª do acorde no baixo. Os intervalos característicos acima do baixo são uma 6.ª e uma 5.ª, resultando no símbolo 6/5.',
   },
@@ -109,9 +109,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Qual símbolo de baixo cifrado representa um acorde de sétima na terceira inversão?',
     choices: [
       '4/2 (abreviatura de 6/4/2)',
-      '6/5',
-      '4/3',
-      '7',
+      '6/5 (abreviatura de 6/5/3)',
+      '4/3 (abreviatura de 6/4/3)',
+      '7 (abreviatura de 7/5/3)',
     ],
     hint: 'A terceira inversão coloca a 7.ª do acorde no baixo. Os intervalos acima do baixo são uma 2.ª e uma 4.ª, resultando no símbolo 4/2 (ou 2).',
   },
@@ -150,7 +150,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Em A menor natural, o acorde construído sobre o 7.º grau (G) é uma tríade maior. Porque muda isto na menor harmónica?',
     choices: [
-      'Elevar o 7.º grau (G para G#) transforma VII em vii°, uma tríade diminuta',
+      'Elevar G para G# torna VII em vii° diminuto',
       'O acorde do 7.º grau é sempre diminuto independentemente da forma da escala menor',
       'A escala menor harmónica baixa o 7.º grau, criando um acorde diminuto',
       'A qualidade do acorde não muda entre menor natural e menor harmónica',
@@ -178,7 +178,7 @@ const overlay: ExerciseLevelOverlay = {
   l3u10m1e1: {
     prompt: 'Qual é a tessitura padrão para a voz de soprano na escrita SATB?',
     choices: [
-      'C4 a G5 (C central até ao G uma oitava e uma quinta acima)',
+      'C4 a G5',
       'C3 a G4',
       'G3 a D5',
       'C5 a C7',
@@ -212,7 +212,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Porque são as quintas perfeitas paralelas consideradas problemáticas na condução de vozes?',
     choices: [
       'Destroem a independência das vozes ao fazer duas vozes soarem como uma só',
-      'Criam dissonância que o ouvido não consegue resolver',
+      'Criam uma dissonância áspera que o ouvido não consegue resolver',
       'São fisicamente impossíveis de cantar',
       'Violam as regras do ritmo',
     ],
@@ -246,7 +246,7 @@ const overlay: ExerciseLevelOverlay = {
       'Quando dois acordes em estado fundamental têm fundamentais a uma 5.ª de distância (ex.: I para V), qual técnica de condução de vozes é mais importante?',
     choices: [
       'Manter a nota comum na mesma voz e mover as outras por grau',
-      'Mover as quatro vozes na mesma direção',
+      'Mover as quatro vozes na mesma direção, para que o acorde inteiro se desloque como um só bloco',
       'Manter todas as vozes o mais juntas possível independentemente de notas comuns',
       'Dobrar a 3.ª do segundo acorde',
     ],
@@ -266,7 +266,7 @@ const overlay: ExerciseLevelOverlay = {
   l3u10m3e3: {
     prompt: 'O que é a "lei do caminho mais curto" na condução de vozes?',
     choices: [
-      'Cada voz deve mover-se para a nota do acorde mais próxima, preferindo movimento por grau',
+      'Cada voz superior move-se para a nota mais próxima do acorde seguinte',
       'O baixo deve mover-se sempre a menor distância',
       'Os acordes devem ser espaçados o mais junto possível',
       'A peça deve usar o menor número possível de acordes',
@@ -280,9 +280,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Qual é o símbolo de baixo cifrado para uma tríade na primeira inversão?',
     choices: [
       '6 (abreviatura de 6/3)',
-      '5/3',
-      '6/4',
-      '7',
+      '5/3 (muitas vezes omitido)',
+      '6/4 (escrito sempre por extenso)',
+      '7 (abreviatura de 7/5/3)',
     ],
     hint: 'A primeira inversão coloca a 3.ª do acorde no baixo. Os intervalos acima do baixo são uma 3.ª e uma 6.ª. O 6/3 completo é abreviado para apenas 6.',
   },
@@ -292,7 +292,7 @@ const overlay: ExerciseLevelOverlay = {
       'Num tempo forte, imediatamente antes do acorde de dominante (V)',
       'Num tempo fraco, após o acorde de tónica',
       'Logo no início de uma frase',
-      'Apenas no final de uma peça, no acorde final',
+      'Apenas no final de uma peça, como o último acorde que se ouve',
     ],
     hint: 'O 6/4 cadencial (I6/4) funciona como uma decoração da dominante. Aparece num tempo forte com o baixo no 5.º grau, e as vozes superiores resolvem por grau descendente para formar V.',
   },
@@ -301,7 +301,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'A 4.ª acima do baixo é uma dissonância que requer resolução específica',
       'Os acordes na segunda inversão soam pior do que na primeira inversão',
-      'A 5.ª no baixo torna o acorde impossível de identificar',
+      'A 5.ª no baixo é uma nota instável que tem de resolver descendo por grau',
       'A segunda inversão é proibida em toda a música clássica',
     ],
     hint: 'A 4.ª perfeita acima do baixo (na posição 6/4) era tratada como dissonância na harmonia de prática comum. Aparece tipicamente em quatro contextos específicos: 6/4 cadencial, de passagem, de pedal e arpejado.',
@@ -316,10 +316,10 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m1e1: {
     prompt: 'O que define uma Cadência Perfeita (CAP)?',
     choices: [
-      'V para I com ambos os acordes em estado fundamental e a tónica no soprano sobre o acorde I',
+      'V para I, ambos em estado fundamental, com a tónica no soprano',
       'Qualquer progressão que termine no acorde I',
-      'IV para I em estado fundamental',
-      'V para I com a 3.ª de I no soprano',
+      'IV para I, ambos em estado fundamental, com a tónica no soprano, no fim',
+      'V para I, ambos em estado fundamental, com a 3.ª de I no soprano',
     ],
     hint: 'Uma CAP tem três requisitos: (1) V vai para I, (2) ambos os acordes estão em estado fundamental, e (3) o soprano termina na nota tónica (1.º grau). É o tipo de cadência mais forte.',
   },
@@ -359,10 +359,10 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m2e1: {
     prompt: 'O que é um período antecedente-consequente?',
     choices: [
-      'Duas frases em que a primeira termina com meia cadência e a segunda com cadência autêntica',
-      'Uma única frase repetida exatamente duas vezes',
+      'Duas frases: a primeira acaba em meia cadência, a segunda em cadência autêntica',
+      'Uma única frase tocada duas vezes seguidas, que termina de ambas as vezes com a mesma cadência',
       'Duas frases completamente sem relação',
-      'Uma frase que modula para a dominante e regressa',
+      'Duas frases em que a primeira modula para a dominante e a segunda regressa à tónica',
     ],
     hint: 'Um período é um par de frases: o antecedente (pergunta) termina inconclusivamente com uma meia cadência, e o consequente (resposta) termina conclusivamente com uma CAP. Juntos formam uma afirmação musical completa, como uma pergunta e a sua resposta.',
   },
@@ -377,11 +377,11 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Num período paralelo, a frase consequente começa como o antecedente mas diverge para alcançar uma cadência mais forte. Num período contrastante, as duas frases começam com ideias melódicas diferentes.',
   },
   l3u11m2e3: {
-    prompt: 'Na estrutura clássica de "frase" (Satz), o que acontece após a ideia inicial (apresentação)?',
+    prompt: 'Na estrutura clássica de "frase" (Satz), o que acontece depois da apresentação (a ideia básica e a sua repetição)?',
     choices: [
       'Uma continuação que fragmenta e acelera em direção a uma cadência',
-      'Uma repetição exata da apresentação',
-      'Uma secção contrastante numa nova tonalidade',
+      'A ideia básica é apresentada pela terceira vez, sem alterações, antes da cadência',
+      'Uma secção contrastante, como num período contrastante, que responde à apresentação',
       'Um silêncio seguido de um novo tema',
     ],
     hint: 'A frase clássica tem duas partes: uma apresentação (ideia básica + repetição) e uma continuação (fragmentação + aceleração em direção a uma cadência). A continuação impulsiona a frase até à sua conclusão.',
@@ -400,12 +400,12 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'O ritmo harmónico refere-se à frequência com que a harmonia subjacente muda, independentemente da atividade rítmica de superfície. Uma passagem pode ter ritmo melódico rápido mas ritmo harmónico lento (um acorde por compasso).',
   },
   l3u11m3e2: {
-    prompt: 'O que acontece tipicamente ao ritmo harmónico nos pontos cadenciais?',
+    prompt: 'Como se comporta tipicamente o ritmo harmónico à medida que se aproxima uma cadência?',
     choices: [
-      'Acelera — os acordes mudam mais frequentemente a aproximar-se da cadência',
-      'Desacelera — os acordes mudam menos frequentemente nas cadências',
+      'Acelera — os acordes mudam mais vezes perto da cadência',
+      'Abranda — os acordes mudam menos vezes à medida que a cadência se aproxima',
       'Mantém-se igual ao longo da frase',
-      'Para completamente antes do acorde cadencial',
+      'Para completamente: um só acorde é mantido durante toda a frase até ao acorde cadencial',
     ],
     hint: 'A aceleração cadencial é uma técnica comum: as mudanças de acorde aceleram perto das cadências, criando uma sensação de impulso e chegada. Por exemplo, os acordes podem mudar a cada compasso, depois a cada dois tempos, depois a cada tempo na cadência.',
   },
@@ -427,7 +427,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Uma nota estranha que se move por grau entre duas notas do acorde na mesma direção',
       'Uma nota que é mantida do acorde anterior',
-      'Uma nota estranha abordada por salto e resolvida por grau',
+      'Uma nota estranha abordada por salto e depois resolvida por grau na direção oposta',
       'Um trilo ornamental sobre uma nota do acorde',
     ],
     hint: 'Uma nota de passagem preenche a lacuna entre duas notas do acorde a uma 3.ª de distância. É abordada por grau e resolvida por grau na mesma direção. Exemplo: num acorde de C, D passa entre C e E.',
@@ -436,7 +436,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que é uma bordadura?',
     choices: [
       'Uma nota estranha que se afasta por grau de uma nota do acorde e regressa a ela',
-      'Uma nota estranha que se move por grau entre duas notas do acorde diferentes',
+      'Uma nota estranha que se move por grau de uma nota do acorde para uma nota diferente do acorde, sem regressar à primeira',
       'Uma nota do acorde que se repete no tempo seguinte',
       'Uma nota emprestada de uma tonalidade vizinha',
     ],
@@ -445,10 +445,10 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m4e3: {
     prompt: 'O que é uma antecipação?',
     choices: [
-      'Uma nota estranha que chega cedo — soa uma nota do acorde seguinte antes de o acorde mudar',
-      'Uma nota do acorde que é atrasada até depois do tempo',
+      'Uma nota estranha que faz soar cedo uma nota do acorde seguinte',
+      'Uma nota do acorde que é atrasada até depois do tempo e depois resolve',
       'Uma nota que é mantida do acorde anterior',
-      'Uma pausa que substitui uma nota esperada',
+      'Uma pausa que substitui uma nota esperada do acorde seguinte, mesmo antes de ele chegar',
     ],
     hint: 'Uma antecipação "antecipa" o acorde seguinte ao fazer soar uma das suas notas mais cedo, antes de a harmonia mudar. É tipicamente uma nota curta e não acentuada que resolve mantendo-se na mesma altura.',
   },
@@ -456,19 +456,19 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l3u11m5: Transposição ----
 
   l3u11m5e1: {
-    prompt: 'Transpõe C4 uma 2.ª maior acima. Identifica o intervalo de 2 meios-tons ascendente a partir de C.',
+    prompt: 'Uma melodia que começa em C4 é transposta para começar na segunda nota mostrada. Qual foi o intervalo da transposição?',
     hint: 'Uma 2.ª maior são 2 meios-tons. C mais 2 meios-tons = D. Transpor uma 2.ª maior acima move cada nota um tom acima.',
   },
   l3u11m5e2: {
-    prompt: 'Transpõe C4 uma 5.ª perfeita acima. Identifica o intervalo de 7 meios-tons ascendente a partir de C.',
+    prompt: 'C4 é transposto até à segunda nota mostrada. Indica o intervalo desta transposição.',
     hint: 'Uma 5.ª perfeita são 7 meios-tons. C mais 7 meios-tons = G. Transpor uma 5.aP acima é uma das transposições mais comuns, passando de C maior para G maior.',
   },
   l3u11m5e3: {
     prompt: 'Ao transpor uma melodia uma 3.ª menor acima, o que acontece à armação de clave?',
     choices: [
-      'Muda para refletir a nova tonalidade (ex.: C maior torna-se Eb maior, ganhando 3 bemóis)',
-      'Mantém-se igual; só as notas se movem',
-      'Os sustenidos e bemóis são removidos',
+      'Muda para a nova tonalidade (C maior → Eb maior: 3 bemóis)',
+      'Mantém-se igual, e cada nota deslocada recebe o seu próprio acidente',
+      'Os sustenidos e bemóis são removidos e cada nota é escrita sem acidentes',
       'Cada nota recebe um acidente',
     ],
     hint: 'A transposição desloca tudo para uma nova tonalidade. Subir uma 3.ª menor (3 meios-tons) a partir de C maior chega a Eb maior. A nova armação de clave (3 bemóis) preserva todas as relações intervalares.',

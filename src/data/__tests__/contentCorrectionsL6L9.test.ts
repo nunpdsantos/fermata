@@ -179,10 +179,12 @@ describe('L6 — chromatic harmony', () => {
     const en = mod(L6_UNITS, 'l6u19m4').concepts[0].explanation;
     expect(en).toMatch(/6 equal parts: the whole-tone scale/);
     expect(en).toMatch(/3 equal parts: the augmented triad/);
-    const hint = templatesL6.find((t) => t.moduleId === 'l6u20m2')!.templates[1].hintTemplate;
+    // The equal-division block moved from l6u20m2 to l6u19m4, the module whose
+    // lesson teaches it (W4a re-keying, W4-01).
+    const hint = templatesL6.find((t) => t.moduleId === 'l6u19m4')!.templates[1].hintTemplate;
     expect(hint).toMatch(/augmented triad \(3 equal parts/);
     expect(hint).not.toMatch(/div by/);
-    for (const ov of [ptTplL6, esTplL6]) expect(JSON.stringify(ov.l6u20m2)).not.toMatch(/div\.? por/);
+    for (const ov of [ptTplL6, esTplL6]) expect(JSON.stringify(ov.l6u19m4)).not.toMatch(/div\.? por/);
   });
 
   it('the octatonic scale holds 8 minor thirds and 4 tritones (W5-17)', () => {

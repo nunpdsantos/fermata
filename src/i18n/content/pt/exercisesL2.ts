@@ -139,7 +139,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Porque é que a escala menor melódica eleva tanto o 6.º como o 7.º grau na forma ascendente?',
     choices: [
       'Para eliminar a 2.ª aumentada entre o 6.º e o 7.º grau elevado da menor harmónica',
-      'Para igualar exatamente a escala maior',
+      'Para a transformar na escala maior, fazendo desaparecer o som menor',
       'Para facilitar a execução no piano',
       'Para remover todos os meios-tons da escala',
     ],
@@ -198,7 +198,7 @@ const overlay: ExerciseLevelOverlay = {
   l2u6m1e1: {
     prompt: 'No compasso 6/8, como se organizam os tempos?',
     choices: [
-      '2 tempos principais, cada um dividido em 3 colcheias',
+      '2 tempos de semínima com ponto, cada um dividido em 3 colcheias',
       '6 tempos iguais de colcheias',
       '3 tempos principais, cada um dividido em 2 colcheias',
       '8 tempos agrupados em seis',
@@ -208,7 +208,7 @@ const overlay: ExerciseLevelOverlay = {
   l2u6m1e2: {
     prompt: 'O que define o compasso composto?',
     choices: [
-      'Cada tempo principal divide-se naturalmente em 3 partes iguais',
+      'Cada tempo divide-se em 3 partes iguais',
       'Cada tempo principal divide-se naturalmente em 2 partes iguais',
       'A indicação de compasso tem um número grande em cima',
       'O andamento é mais rápido que no compasso simples',
@@ -218,10 +218,10 @@ const overlay: ExerciseLevelOverlay = {
   l2u6m1e3: {
     prompt: 'Quantos tempos principais tem o compasso 9/8?',
     choices: [
-      '3 tempos principais (cada um dividido em 3 colcheias)',
-      '9 tempos',
-      '4 tempos principais',
-      '2 tempos principais',
+      '3 tempos de semínima com ponto (cada um dividido em 3 colcheias)',
+      '9 tempos (cada um com uma colcheia)',
+      '4 tempos principais (cada um dividido em 3 colcheias)',
+      '2 tempos principais (cada um dividido em 3 colcheias)',
     ],
     hint: '9/8 é compasso composto ternário: 9 colcheias formam 3 grupos de 3. Cada grupo de 3 é um tempo principal (uma semínima com ponto).',
   },
@@ -232,7 +232,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que é síncopa?',
     choices: [
       'Colocar acentos em tempos normalmente fracos ou contratempos',
-      'Tocar todas as notas com o mesmo volume',
+      'Tocar todas as notas com o mesmo volume e a mesma duração',
       'Acelerar gradualmente o andamento',
       'Tocar notas numa oitava diferente',
     ],
@@ -241,8 +241,8 @@ const overlay: ExerciseLevelOverlay = {
   l2u6m2e2: {
     prompt: 'O que são tercinas?',
     choices: [
-      '3 notas tocadas no tempo normalmente ocupado por 2 notas do mesmo valor',
-      '3 notas tocadas uma após a outra',
+      '3 notas iguais no tempo normalmente ocupado por 2 do mesmo valor',
+      '3 notas iguais no tempo de 4 do mesmo valor',
       'Um acorde com 3 notas',
       '3 compassos agrupados',
     ],
@@ -270,8 +270,8 @@ const overlay: ExerciseLevelOverlay = {
   l2u7m1e4: {
     prompt: 'O que torna um intervalo "perfeito"?',
     choices: [
-      'Não tem variantes maior/menor — apenas perfeito, aumentado ou diminuto',
-      'Soa perfeitamente afinado',
+      'Não tem formas maior/menor: apenas perfeito, aumentado ou diminuto',
+      'Ocorre entre a tónica e os graus 2.º, 3.º, 6.º e 7.º de uma escala maior',
       'Usa apenas teclas brancas no piano',
       'É sempre consonante',
     ],
@@ -312,7 +312,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que é um trítono?',
     choices: [
       'Um intervalo de 6 meios-tons que divide a oitava ao meio',
-      'Um acorde construído a partir de 3 tons',
+      'Um acorde construído empilhando três tons inteiros uns sobre os outros',
       'Um intervalo de 3 meios-tons',
       'Uma escala com 3 notas',
     ],
@@ -340,14 +340,14 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Uma tríade aumentada empilha duas 3.as maiores: C a E (4 meios-tons) e E a G# (4 meios-tons). A 5.ª é elevada (aumentada) em relação à tríade maior.',
   },
   l2u7m3e4: {
-    prompt: 'Qual tipo de tríade é considerado o mais instável e dissonante?',
+    prompt: 'Que tipo de tríade tem um trítono entre a fundamental e a 5.ª?',
     choices: [
-      'Diminuta — duas 3.as menores com um trítono entre fundamental e 5.ª',
-      'Menor — porque soa triste',
-      'Maior — porque é a mais comum',
-      'Aumentada — porque tem a 5.ª elevada',
+      'Diminuta — duas 3.as menores sobrepostas',
+      'Menor — uma 3.ª menor sob uma 3.ª maior',
+      'Maior — uma 3.ª maior sob uma 3.ª menor',
+      'Aumentada — duas 3.as maiores sobrepostas',
     ],
-    hint: 'A tríade diminuta contém um trítono (6 meios-tons) entre a fundamental e a 5.ª. Isso torna-a o tipo de tríade mais dissonante e instável, com forte necessidade de resolver.',
+    hint: 'Um trítono tem 6 meios-tons. Duas 3.as menores (3 + 3) somam exatamente 6, por isso só a tríade diminuta tem um trítono da fundamental à 5.ª. As tríades maior e menor somam 7 (uma 5.ª perfeita); a aumentada soma 8 (uma 5.ª aumentada).',
   },
 
   // ---- l2u7m4: Inversões/Baixo Cifrado ----
@@ -355,20 +355,20 @@ const overlay: ExerciseLevelOverlay = {
   l2u7m4e1: {
     prompt: 'Que números de baixo cifrado representam uma tríade em estado fundamental?',
     choices: [
-      '5/3 (frequentemente abreviado não escrevendo nada)',
-      '6/3',
-      '6/4',
-      '7/5/3',
+      '5/3 (normalmente não se escreve)',
+      '6/3 (normalmente abreviado para 6)',
+      '6/4 (sempre escrito por extenso)',
+      '7/5/3 (um acorde de sétima)',
     ],
     hint: 'No estado fundamental, os intervalos acima do baixo são uma 3.ª e uma 5.ª. O baixo cifrado escreve-os como 5/3. Como o estado fundamental é a posição por defeito, os números são geralmente omitidos.',
   },
   l2u7m4e2: {
     prompt: 'Que números de baixo cifrado representam uma tríade em 1.ª inversão?',
     choices: [
-      '6/3 (frequentemente abreviado para apenas 6)',
-      '5/3',
-      '6/4',
-      '4/2',
+      '6/3 (normalmente abreviado para 6)',
+      '5/3 (normalmente não se escreve)',
+      '6/4 (sempre escrito por extenso)',
+      '4/2 (cifra de acorde de sétima)',
     ],
     hint: 'Na 1.ª inversão, a 3.ª do acorde está no baixo. Os intervalos acima do baixo são uma 3.ª e uma 6.ª. O baixo cifrado abrevia 6/3 para apenas 6.',
   },
@@ -376,8 +376,8 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que é uma inversão de tríade?',
     choices: [
       'Reorganizar o acorde para que uma nota diferente da fundamental fique no baixo',
-      'Virar o acorde ao contrário para que a nota de cima fique em baixo',
-      'Mudar o acorde de maior para menor',
+      'Construir o acorde para baixo a partir da fundamental, em vez de para cima',
+      'Mudar a qualidade do acorde, por exemplo de maior para menor ou de menor para maior',
       'Tocar o acorde numa tonalidade diferente',
     ],
     hint: 'As inversões mudam qual nota do acorde está no baixo. Estado fundamental tem a fundamental no baixo, 1.ª inversão tem a 3.ª, 2.ª inversão tem a 5.ª. A identidade do acorde mantém-se.',

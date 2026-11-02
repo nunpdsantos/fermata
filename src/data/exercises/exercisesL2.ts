@@ -25,7 +25,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Remember the mnemonic: Father Charles Goes Down And Ends Battle. Sharps accumulate in this fixed order.',
-      points: 1,
     },
     {
       id: 'l2u4m1e2',
@@ -41,7 +40,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The order of flats is the reverse of sharps: Battle Ends And Down Goes Charles Father.',
-      points: 1,
     },
     {
       id: 'l2u4m1e3',
@@ -55,7 +53,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'D major: D, E, F#, G, A, B, C#. The two sharps are F# and C#, following the order of sharps.',
-      points: 2,
     },
     {
       id: 'l2u4m1e4',
@@ -71,7 +68,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A major is three steps clockwise on the circle of fifths from C: G (1#), D (2#), A (3#). The sharps are F#, C#, G#.',
-      points: 1,
     },
   ],
 
@@ -91,7 +87,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The 5th scale degree is called the dominant because it is the second most important note after the tonic, dominating the key.',
-      points: 1,
     },
     {
       id: 'l2u4m2e2',
@@ -107,7 +102,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In a major scale, the 7th degree is a half step below the tonic. It "leads" strongly upward to the tonic, hence leading tone.',
-      points: 1,
     },
     {
       id: 'l2u4m2e3',
@@ -123,7 +117,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The subdominant is the 4th degree. It sits a 5th below the tonic (sub = below), just as the dominant sits a 5th above.',
-      points: 1,
     },
   ],
 
@@ -145,7 +138,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'A natural minor: A, B, C, D, E, F, G. The interval pattern is W-H-W-W-H-W-W. No sharps or flats needed.',
-      points: 2,
     },
     {
       id: 'l2u5m1e2',
@@ -159,7 +151,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'E natural minor: E, F#, G, A, B, C, D. The F# is needed to maintain the W-H-W-W-H-W-W pattern.',
-      points: 2,
     },
     {
       id: 'l2u5m1e3',
@@ -175,7 +166,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The natural minor scale has half steps between degrees 2-3 and 5-6. Compare with major (W-W-H-W-W-W-H): the 3rd, 6th, and 7th are lowered.',
-      points: 1,
     },
     {
       id: 'l2u5m1e4',
@@ -191,7 +181,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Compare C major (C D E F G A B) with C natural minor (C D Eb F G Ab Bb). The 3rd, 6th, and 7th are each lowered by a half step.',
-      points: 1,
     },
   ],
 
@@ -209,7 +198,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'A harmonic minor: A, B, C, D, E, F, G#. The 7th degree (G) is raised to G# to create a leading tone back to A.',
-      points: 2,
     },
     {
       id: 'l2u5m2e2',
@@ -223,7 +211,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'A melodic minor ascending: A, B, C, D, E, F#, G#. Both the 6th (F to F#) and 7th (G to G#) are raised to smooth out the augmented 2nd.',
-      points: 2,
     },
     {
       id: 'l2u5m2e3',
@@ -239,7 +226,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The harmonic minor raises the 7th degree to create a leading tone (half step below tonic). This is essential for forming a dominant chord (V) in minor keys.',
-      points: 1,
     },
     {
       id: 'l2u5m2e4',
@@ -249,13 +235,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'To eliminate the augmented 2nd between the 6th and raised 7th in harmonic minor', correct: true },
-          { label: 'To match the major scale exactly', correct: false },
+          { label: 'To turn it into the major scale, so the minor sound disappears', correct: false },
           { label: 'To make it easier to play on the piano', correct: false },
           { label: 'To remove all half steps from the scale', correct: false },
         ],
       },
       hint: 'The harmonic minor has an awkward augmented 2nd (3 semitones) between the 6th and raised 7th. Raising the 6th also smooths this gap to a whole step.',
-      points: 1,
     },
   ],
 
@@ -275,7 +260,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The relative minor starts on the 6th degree of the major scale. In C major, the 6th degree is A. Both C major and A minor share the same key signature (no sharps or flats).',
-      points: 1,
     },
     {
       id: 'l2u5m3e2',
@@ -291,7 +275,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The relative major starts a minor 3rd (3 semitones) above the minor key. D up 3 semitones = F. Both D minor and F major share one flat (Bb).',
-      points: 1,
     },
     {
       id: 'l2u5m3e3',
@@ -307,7 +290,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Parallel keys share the same root note but differ in quality. The parallel minor of G major is G minor. They have different key signatures.',
-      points: 1,
     },
     {
       id: 'l2u5m3e4',
@@ -323,7 +305,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'C major and A minor are relative (same key signature: no sharps/flats). C major and C minor are parallel (same tonic: C).',
-      points: 1,
     },
   ],
 
@@ -340,14 +321,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: '2 main beats, each divided into 3 eighth notes', correct: true },
+          { label: '2 dotted-quarter beats, each divided into 3 eighth notes', correct: true },
           { label: '6 equal beats of eighth notes', correct: false },
           { label: '3 main beats, each divided into 2 eighth notes', correct: false },
           { label: '8 beats grouped in sixes', correct: false },
         ],
       },
       hint: '6/8 is compound duple meter: 6 eighth notes are grouped as 2 groups of 3. Each group of 3 forms one main beat, giving a ONE-two-three TWO-two-three feel.',
-      points: 1,
     },
     {
       id: 'l2u6m1e2',
@@ -356,14 +336,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Each main beat divides naturally into 3 equal parts', correct: true },
+          { label: 'Each beat divides into 3 equal parts', correct: true },
           { label: 'Each main beat divides naturally into 2 equal parts', correct: false },
           { label: 'The time signature has a large top number', correct: false },
           { label: 'The tempo is faster than simple meter', correct: false },
         ],
       },
       hint: 'In compound meter, the beat unit is a dotted note that subdivides into three. In simple meter, beats subdivide into two.',
-      points: 1,
     },
     {
       id: 'l2u6m1e3',
@@ -372,14 +351,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: '3 main beats (each divided into 3 eighth notes)', correct: true },
-          { label: '9 beats', correct: false },
-          { label: '4 main beats', correct: false },
-          { label: '2 main beats', correct: false },
+          { label: '3 dotted-quarter beats (each divided into 3 eighth notes)', correct: true },
+          { label: '9 beats (each one eighth note long)', correct: false },
+          { label: '4 main beats (each divided into 3 eighth notes)', correct: false },
+          { label: '2 main beats (each divided into 3 eighth notes)', correct: false },
         ],
       },
       hint: '9/8 is compound triple meter: 9 eighth notes form 3 groups of 3. Each group of 3 is one main beat (a dotted quarter note).',
-      points: 1,
     },
   ],
 
@@ -393,13 +371,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Placing accents on normally weak beats or off-beats', correct: true },
-          { label: 'Playing all notes at the same volume', correct: false },
+          { label: 'Playing every note at the same volume and length', correct: false },
           { label: 'Gradually speeding up the tempo', correct: false },
           { label: 'Playing notes in a different octave', correct: false },
         ],
       },
       hint: 'Syncopation disrupts the expected rhythmic pattern by stressing beats or parts of beats that are normally unaccented, creating rhythmic tension and energy.',
-      points: 1,
     },
     {
       id: 'l2u6m2e2',
@@ -408,14 +385,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: '3 notes played in the time normally occupied by 2 notes of the same value', correct: true },
-          { label: '3 notes played one after another', correct: false },
+          { label: '3 equal notes in the time normally taken by 2 of the same value', correct: true },
+          { label: '3 equal notes in the time of 4 of the same value', correct: false },
           { label: 'A chord with 3 notes', correct: false },
           { label: '3 measures grouped together', correct: false },
         ],
       },
       hint: 'Triplets subdivide a beat into 3 equal parts instead of the usual 2. An eighth-note triplet fits 3 eighth notes in the space of one quarter note.',
-      points: 1,
     },
   ],
 
@@ -438,7 +414,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C to G is 7 semitones. This is a perfect 5th -- the interval found in power chords and the basis of the circle of fifths.',
-      points: 1,
     },
     {
       id: 'l2u7m1e2',
@@ -453,7 +428,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C to Eb is 3 semitones. This is a minor 3rd -- the interval that distinguishes minor chords from major chords.',
-      points: 1,
     },
     {
       id: 'l2u7m1e3',
@@ -468,7 +442,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'D to B spans 6 letter names (D-E-F-G-A-B) = a 6th. D to B is 9 semitones, making it a major 6th.',
-      points: 1,
     },
     {
       id: 'l2u7m1e4',
@@ -477,14 +450,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'It does not come in major/minor variants -- only perfect, augmented, or diminished', correct: true },
-          { label: 'It sounds perfectly in tune', correct: false },
+          { label: 'It has no major/minor forms: only perfect, augmented or diminished', correct: true },
+          { label: 'It occurs between the tonic and scale degrees 2, 3, 6 and 7 of a major scale', correct: false },
           { label: 'It only uses white keys on the piano', correct: false },
           { label: 'It is always consonant', correct: false },
         ],
       },
       hint: 'Unisons, 4ths, 5ths, and octaves are "perfect" intervals. Unlike 2nds, 3rds, 6ths, and 7ths which come in major/minor pairs, perfect intervals have only one basic form.',
-      points: 1,
     },
     {
       id: 'l2u7m1e_ear1',
@@ -500,7 +472,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'This is one of the most consonant intervals. It spans 7 semitones and is the basis of the circle of fifths.',
-      points: 1,
     },
     {
       id: 'l2u7m1e_ear2',
@@ -516,7 +487,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'This bright, warm interval spans 4 semitones and defines the character of major chords.',
-      points: 1,
     },
     {
       id: 'l2u7m1e_ear3',
@@ -532,7 +502,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'This interval spans 5 semitones. It is the inversion of the perfect 5th.',
-      points: 1,
     },
     {
       id: 'l2u7m1e_ear4',
@@ -548,7 +517,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'This darker interval spans 3 semitones and gives minor chords their characteristic sound.',
-      points: 1,
     },
   ],
 
@@ -567,7 +535,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C to F# (or Gb) is 6 semitones -- exactly half of 12. This is the tritone, also called an augmented 4th or diminished 5th.',
-      points: 1,
     },
     {
       id: 'l2u7m2e2',
@@ -582,7 +549,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C to Db is 1 semitone. This is a minor 2nd -- the smallest interval in standard Western music, creating maximum tension.',
-      points: 1,
     },
     {
       id: 'l2u7m2e3',
@@ -597,7 +563,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C to B is 11 semitones. This is a major 7th -- a wide, dissonant interval often used in jazz chords.',
-      points: 1,
     },
     {
       id: 'l2u7m2e4',
@@ -607,13 +572,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'An interval of 6 semitones that divides the octave in half', correct: true },
-          { label: 'A chord built from 3 whole tones', correct: false },
+          { label: 'A chord built by stacking three whole tones on top of each other', correct: false },
           { label: 'An interval of 3 semitones', correct: false },
           { label: 'A scale with 3 notes', correct: false },
         ],
       },
       hint: 'The tritone spans 3 whole tones (6 semitones). It can be called an augmented 4th or diminished 5th. In medieval times it was called "the devil in music" due to its dissonance.',
-      points: 1,
     },
   ],
 
@@ -631,7 +595,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'D minor = D, F, A. Root (D) + minor 3rd (F, 3 semitones up) + perfect 5th (A, 7 semitones up from root).',
-      points: 2,
     },
     {
       id: 'l2u7m3e2',
@@ -645,7 +608,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'B diminished = B, D, F. Root (B) + minor 3rd (D, 3 semitones up) + diminished 5th (F, 6 semitones up from root). Both intervals are minor 3rds stacked.',
-      points: 2,
     },
     {
       id: 'l2u7m3e3',
@@ -661,23 +623,21 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'An augmented triad stacks two major 3rds: C to E (4 semitones) and E to G# (4 semitones). The 5th is raised (augmented) compared to a major triad.',
-      points: 1,
     },
     {
       id: 'l2u7m3e4',
       type: 'multiple_choice',
-      prompt: 'Which triad type is considered the most unstable and dissonant?',
+      prompt: 'Which triad type has a tritone between its root and its 5th?',
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Diminished -- two minor 3rds with a tritone between root and 5th', correct: true },
-          { label: 'Minor -- because it sounds sad', correct: false },
-          { label: 'Major -- because it is the most common', correct: false },
-          { label: 'Augmented -- because it has a raised 5th', correct: false },
+          { label: 'Diminished -- two stacked minor 3rds', correct: true },
+          { label: 'Minor -- a minor 3rd under a major 3rd', correct: false },
+          { label: 'Major -- a major 3rd under a minor 3rd', correct: false },
+          { label: 'Augmented -- two stacked major 3rds', correct: false },
         ],
       },
-      hint: 'The diminished triad contains a tritone (6 semitones) between its root and 5th. This makes it the most dissonant and unstable of the four triad types, strongly wanting to resolve.',
-      points: 1,
+      hint: 'A tritone is 6 semitones. Two minor 3rds (3 + 3) span exactly 6, so only the diminished triad has a tritone from root to 5th. Major and minor span 7 (a perfect 5th); augmented spans 8 (an augmented 5th).',
     },
   ],
 
@@ -690,14 +650,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: '5/3 (often abbreviated by writing nothing)', correct: true },
-          { label: '6/3', correct: false },
-          { label: '6/4', correct: false },
-          { label: '7/5/3', correct: false },
+          { label: '5/3 (usually left unwritten)', correct: true },
+          { label: '6/3 (usually shortened to 6)', correct: false },
+          { label: '6/4 (always written in full)', correct: false },
+          { label: '7/5/3 (a seventh chord)', correct: false },
         ],
       },
       hint: 'In root position, the intervals above the bass are a 3rd and a 5th. Figured bass writes these as 5/3. Since root position is the default, the numbers are usually omitted.',
-      points: 1,
     },
     {
       id: 'l2u7m4e2',
@@ -706,14 +665,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: '6/3 (often abbreviated to just 6)', correct: true },
-          { label: '5/3', correct: false },
-          { label: '6/4', correct: false },
-          { label: '4/2', correct: false },
+          { label: '6/3 (usually shortened to 6)', correct: true },
+          { label: '5/3 (usually left unwritten)', correct: false },
+          { label: '6/4 (always written in full)', correct: false },
+          { label: '4/2 (a seventh-chord figure)', correct: false },
         ],
       },
       hint: 'In first inversion, the 3rd of the chord is in the bass. The intervals above the bass are a 3rd and a 6th. Figured bass abbreviates 6/3 to just 6.',
-      points: 1,
     },
     {
       id: 'l2u7m4e3',
@@ -723,13 +681,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Rearranging the chord so a note other than the root is the lowest note', correct: true },
-          { label: 'Flipping the chord upside down so the top note becomes the bottom', correct: false },
-          { label: 'Changing the chord from major to minor', correct: false },
+          { label: 'Building the chord downward from the root instead of upward', correct: false },
+          { label: 'Changing the quality of the chord, for example from major to minor or the reverse', correct: false },
           { label: 'Playing the chord in a different key', correct: false },
         ],
       },
       hint: 'Inversions change which chord tone is in the bass. Root position has the root in the bass, first inversion has the 3rd, second inversion has the 5th. The chord identity stays the same.',
-      points: 1,
     },
   ],
 
@@ -749,7 +706,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The diatonic triads in major are: I(M) ii(m) iii(m) IV(M) V(M) vi(m) vii\u00b0(dim). Lowercase Roman numerals indicate minor quality. The iii chord is minor.',
-      points: 1,
     },
     {
       id: 'l2u7m5e2',
@@ -765,7 +721,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The chord built on the 7th degree of the major scale (e.g., B-D-F in C major) contains a tritone between root and 5th, making it diminished. It is notated vii\u00b0.',
-      points: 1,
     },
     {
       id: 'l2u7m5e3',
@@ -779,7 +734,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'F major = F, A, C. Root (F) + major 3rd (A, 4 semitones up) + perfect 5th (C, 7 semitones up from root).',
-      points: 2,
     },
     {
       id: 'l2u7m5e4',
@@ -793,7 +747,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'A minor = A, C, E. Root (A) + minor 3rd (C, 3 semitones up) + perfect 5th (E, 7 semitones up from root).',
-      points: 2,
     },
   ],
 };

@@ -39,7 +39,7 @@ const titles: Record<string, readonly [title: string, subtitle: string]> = {
   l3u11m4: ["Notas Extrañas al Acorde (Parte 1)", "Notas de paso, bordaduras y anticipaciones — el condimento de la melodía"],
   l3u11m5: ["Transposición", "Mover música a cualquier tonalidad preservando todas las relaciones interválicas"],
   l4u12m1: ["Retardos", "Los tipos de retardo 4-3, 7-6, 9-8 y 2-3"],
-  l4u12m2: ["Apoyatura, Escapatoria y Anticipación Ascendente", "Notas extrañas acentuadas y no acentuadas, abordadas por salto o resueltas hacia arriba"],
+  l4u12m2: ["Apoyatura, Escapatoria y Retardo Ascendente", "Notas extrañas acentuadas y no acentuadas, abordadas por salto o resueltas hacia arriba"],
   l4u12m3: ["Nota Pedal y Notas Cambiadas", "Notas sostenidas en el bajo y ornamentos de doble bordadura"],
   l4u12m4: ["La Séptima de Dominante — Reglas de Resolución", "Notas de tendencia del V7, conducción de voces y la resolución del trítono"],
   l4u12m5: ["Inversiones de V7 y Sus Resoluciones", "Cómo V6/5, V4/3 y V4/2 resuelven a posiciones de tónica"],
@@ -118,7 +118,7 @@ const titles: Record<string, readonly [title: string, subtitle: string]> = {
   l9u31m5: ["Reconocimiento de Cualidad de Acordes de Séptima", "Identificar todas las cualidades de acordes de séptima de oído — del cálido mayor con 7.ª al tenso disminuido con 7.ª"],
   l9u32m1: ["Dictado Melódico: Diatónico", "Transcribir melodías diatónicas cortas de oído — movimiento por grados y triádico"],
   l9u32m2: ["Dictado Melódico: Cromático", "Transcribir melodías con notas cromáticas de paso, notas vecinas y dominantes secundarias"],
-  l9u32m3: ["Dictado Armónico: Cadencias y Progresiones", "Identificar cadencias, transcribir progresiones y dictado de línea de bajo"],
+  l9u32m3: ["Dictado Armónico: Cadencias y Progresiones", "Identificar cadencias y transcribir progresiones siguiendo el bajo"],
   l9u32m4: ["Fundamentos de Lectura a Primera Vista", "Solfeo móvil para lectura a primera vista en tonalidades mayores y menores"],
   l9u32m5: ["Escucha Contextual", "Identificar textura, forma, instrumentos y periodos estilísticos de oído"],
 };

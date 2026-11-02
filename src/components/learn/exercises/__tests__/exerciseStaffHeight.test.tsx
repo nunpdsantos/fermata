@@ -24,7 +24,7 @@ afterEach(() => {
 });
 
 const noteId = (note: string, octave: number): ExerciseDefinition => ({
-  id: `t-${note}${octave}`, type: 'note_id', prompt: 'Identify this note.', points: 1,
+  id: `t-${note}${octave}`, type: 'note_id', prompt: 'Identify this note.',
   config: { type: 'note_id', note, accidental: '', octave },
 } as ExerciseDefinition);
 

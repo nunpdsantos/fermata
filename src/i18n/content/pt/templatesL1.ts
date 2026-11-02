@@ -22,7 +22,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Que nota se encontra na linha ou espaço indicado da pauta?',
+        'Qual destas afirmações sobre as claves é verdadeira?',
       hintTemplate:
         'Lembra-te das linhas da clave de sol (E-G-B-D-F) e dos espaços (F-A-C-E).',
       choiceSets: [
@@ -33,8 +33,8 @@ const overlay: TemplateLevelOverlay = {
           'A clave de sol é também conhecida como clave de D',
         ],
         [
-          'A clave de fá marca a quarta linha como F',
-          'A clave de fá marca a segunda linha como G',
+          'A clave de fá marca a quarta linha (a contar de baixo) como F',
+          'A clave de fá marca como G a segunda linha a partir de baixo',
           'A clave de fá marca a terceira linha como C',
           'A clave de fá marca a primeira linha como E',
         ],
@@ -45,18 +45,25 @@ const overlay: TemplateLevelOverlay = {
   // ---- l1u1m2: Linhas Suplementares ----
   l1u1m2: [
     {
-      // note_id
+      // note_id (clave de sol, abaixo da pauta)
       promptTemplate:
-        'Identifica esta nota que necessita de linhas suplementares.',
+        'Identifica esta nota abaixo da pauta em clave de sol. Conta linha a linha para baixo a partir da parte inferior da pauta.',
       hintTemplate:
-        'As notas acima ou abaixo da pauta utilizam linhas suplementares. Conta passo a passo a partir da linha da pauta mais próxima.',
+        'Abaixo da pauta em clave de sol, o C central situa-se na primeira linha suplementar. Conta para baixo grau a grau a partir daí: linhas e espaços alternam, por isso a linha suplementar seguinte tem o A e a outra a seguir o F.',
     },
     {
-      // note_id
+      // note_id (clave de sol, acima da pauta)
       promptTemplate:
-        'Identifica esta nota numa linha suplementar abaixo da pauta em clave de sol.',
+        'Identifica esta nota acima da pauta em clave de sol. Conta linha a linha para cima a partir do topo da pauta.',
       hintTemplate:
-        'Abaixo da pauta em clave de sol: o C central situa-se numa linha suplementar. Conta para baixo a partir daí para notas mais graves.',
+        'A linha superior da pauta em clave de sol é o F. Conta para cima grau a grau: o G fica logo acima da pauta, o A na primeira linha suplementar, o C na segunda e o E na terceira.',
+    },
+    {
+      // note_id (clave de fá, acima da pauta)
+      promptTemplate:
+        'Identifica esta nota acima da pauta em clave de fá. Conta linha a linha para cima a partir do topo da pauta.',
+      hintTemplate:
+        'A linha superior da pauta em clave de fá é o A. O C central situa-se na primeira linha suplementar acima dela — o mesmo C central que fica na primeira linha suplementar abaixo da pauta em clave de sol. O E está na segunda linha suplementar.',
     },
   ],
 
@@ -109,7 +116,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Como se relacionam estes valores de notas entre si?',
+        'Qual destas afirmações sobre os valores das notas é verdadeira?',
       hintTemplate:
         'Cada valor de nota tem exatamente metade da duração do valor imediatamente superior. Semibreve = 4 tempos, mínima = 2, semínima = 1, colcheia = 0,5 em compasso 4/4.',
       choiceSets: [
@@ -135,7 +142,7 @@ const overlay: TemplateLevelOverlay = {
           'Uma semicolcheia vale metade de um tempo em compasso 4/4',
           'Uma semicolcheia vale um quarto de tempo em compasso 4/4',
           'Uma semicolcheia vale um tempo em compasso 4/4',
-          'Uma semicolcheia vale um oitavo de tempo em compasso 4/4',
+          'Uma semicolcheia vale três quartos de tempo em compasso 4/4',
         ],
       ],
     },
@@ -146,33 +153,33 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'O que indica esta fórmula de compasso sobre a música?',
+        'Qual destas afirmações sobre as fórmulas de compasso é verdadeira?',
       hintTemplate:
-        'O número de cima indica os tempos por compasso. O número de baixo indica qual figura recebe um tempo (4 = semínima, 8 = colcheia, 2 = mínima).',
+        'O número de cima conta os tempos de cada compasso: 2 = binário, 3 = ternário, 4 = quaternário. O 4 de baixo indica que cada tempo é uma semínima.',
       choiceSets: [
         [
-          '2/4 significa 2 tempos de semínima por compasso',
+          '2/4 significa 2 tempos de semínima em cada compasso',
           '2/4 significa 4 tempos de mínima por compasso',
           '2/4 significa 2 tempos de mínima por compasso',
           '2/4 significa 4 tempos de semínima por compasso',
         ],
         [
-          '6/8 é um compasso composto com 2 tempos principais',
-          '6/8 é um compasso simples com 6 tempos',
-          '6/8 é o mesmo que 3/4',
-          '6/8 tem 8 tempos por compasso',
+          '3/4 agrupa os tempos de três em três: forte-fraco-fraco',
+          '3/4 agrupa os tempos de dois em dois: forte-fraco, forte-fraco',
+          '3/4 agrupa os tempos de quatro em quatro: forte-fraco-médio-fraco',
+          '3/4 não tem nenhum tempo forte',
         ],
         [
-          'Tempo comum (C) equivale a 4/4',
-          'Tempo comum (C) equivale a 2/2',
-          'Tempo comum (C) significa que a peça está em C maior',
-          'Tempo comum (C) equivale a 3/4',
+          '4/4 é quaternário: quatro tempos por compasso',
+          '4/4 é ternário: três tempos por compasso',
+          '4/4 é binário: dois tempos por compasso',
+          '4/4 significa quatro compassos em cada linha de música',
         ],
         [
-          'Tempo cortado (alla breve) equivale a 2/2',
-          'Tempo cortado equivale a 4/4',
-          'Tempo cortado significa tocar a metade do andamento',
-          'Tempo cortado equivale a 6/8',
+          'Nos compassos 2/4, 3/4 e 4/4, o 4 de baixo indica que a semínima vale um tempo',
+          'Nos compassos 2/4, 3/4 e 4/4, o 4 de baixo indica que a semibreve vale um tempo',
+          'Nos compassos 2/4, 3/4 e 4/4, o 4 de baixo indica que cada compasso vale quatro tempos',
+          'Nos compassos 2/4, 3/4 e 4/4, o 4 de baixo fixa o andamento em quatro tempos por segundo',
         ],
       ],
     },
@@ -203,35 +210,35 @@ const overlay: TemplateLevelOverlay = {
   // ---- l1u3m2: Armações de Clave ----
   l1u3m2: [
     {
-      // multiple_choice
+      // multiple_choice (a pauta mostra uma armação de clave)
       promptTemplate:
-        'Qual é a armação de clave para esta tonalidade maior?',
+        'Que tonalidade maior tem esta armação de clave?',
       hintTemplate:
-        'As tonalidades com sustenidos seguem o ciclo de quintas: G(1#), D(2#), A(3#), E(4#). Com bemóis: F(1b), Bb(2b), Eb(3b), Ab(4b).',
+        'Sem sustenidos nem bemóis = C maior. Um sustenido (F#) = G maior. Dois sustenidos (F#, C#) = D maior. Um bemol (Bb) = F maior.',
       choiceSets: [
         [
-          'A tonalidade de E maior tem 4 sustenidos: F#, C#, G#, D#',
-          'A tonalidade de E maior tem 3 sustenidos: F#, C#, G#',
-          'A tonalidade de E maior tem 5 sustenidos',
-          'A tonalidade de E maior tem 2 sustenidos',
+          'C maior',
+          'G maior',
+          'D maior',
+          'F maior',
         ],
         [
-          'Bb maior tem 2 bemóis: Bb, Eb',
-          'Bb maior tem 1 bemol: Bb',
-          'Bb maior tem 3 bemóis',
-          'Bb maior não tem bemóis',
+          'G maior',
+          'D maior',
+          'F maior',
+          'C maior',
         ],
         [
-          'Ab maior tem 4 bemóis: Bb, Eb, Ab, Db',
-          'Ab maior tem 3 bemóis',
-          'Ab maior tem 5 bemóis',
-          'Ab maior tem 2 bemóis',
+          'D maior',
+          'G maior',
+          'C maior',
+          'F maior',
         ],
         [
-          'C maior não tem sustenidos nem bemóis',
-          'C maior tem 1 sustenido',
-          'C maior tem 1 bemol',
-          'C maior tem 7 sustenidos',
+          'F maior',
+          'C maior',
+          'G maior',
+          'D maior',
         ],
       ],
     },
@@ -242,9 +249,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // interval_id
       promptTemplate:
-        'Identifica o intervalo a partir de {root} no sentido {direction}. Conta os nomes das notas e os meios-tons.',
+        'Identifica o intervalo a partir de {root} no sentido {direction} pelo seu número: conta os nomes das notas, incluindo as duas notas.',
       hintTemplate:
-        'A partir de {root}, conta os nomes das notas para o número do intervalo e os meios-tons para a qualidade. {semitones} meios-tons {direction}.',
+        'Conta os nomes das notas de {root} até à segunda nota, contando ambas: duas letras dão uma 2.ª, três uma 3.ª, quatro uma 4.ª, cinco uma 5.ª.',
     },
   ],
 

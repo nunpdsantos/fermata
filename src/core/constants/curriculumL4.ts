@@ -26,7 +26,7 @@ const l4u12m1: CurriculumModule = {
     {
       title: 'Suspension Types: 4-3, 7-6, 9-8',
       explanation:
-        'Suspensions are named by the intervals they form above the bass at the moment of dissonance and resolution. The 4-3 suspension is the most common: a 4th above the bass resolves to a 3rd. The 7-6 suspension holds a 7th that resolves to a 6th \u2014 common in sequences and chains of suspensions. The 9-8 suspension holds a 9th (or 2nd an octave up) that resolves to an octave. All three resolve downward by step.',
+        'Suspensions are named by the intervals they form above the bass at the moment of dissonance and resolution. The 4-3 suspension is the most common: a 4th above the bass resolves to a 3rd. The 7-6 suspension holds a 7th that resolves to a 6th \u2014 common in sequences and chains of suspensions. The 9-8 suspension holds a 9th (or 2nd an octave up) that resolves to an octave. All three resolve downward by step. A decorated (ornamented) suspension adds one or more notes between the suspension and its resolution, such as a brief lower neighbor, before the line arrives on its resolution a step below.',
       tryThisQuery: 'G major chord',
       tryThisLabel: 'Imagine holding C over this chord (4-3 sus)',
     },
@@ -509,7 +509,7 @@ const l4u13m5: CurriculumModule = {
     {
       title: 'Ascending Seconds and Descending Thirds',
       explanation:
-        'In an ascending-seconds sequence, roots move up by step: I-ii-iii-IV-V, creating a climbing sensation. First inversions are often used to keep the bass line smooth (the 5-6 technique). In a descending-thirds sequence, roots fall by thirds: I-vi-IV-ii, producing a gentle, falling motion common in Romantic music. Each pair in a thirds sequence shares a common tone, making the voice leading exceptionally smooth.',
+        'In an ascending-seconds sequence, roots move up by step: I-ii-iii-IV-V, creating a climbing sensation. First inversions are often used to keep the bass line smooth (the 5-6 technique): in the ascending 5-6 sequence each root-position (5/3) chord is followed by a 6/3 chord over the same bass note, and then the bass rises a step. In a descending-thirds sequence, roots fall by thirds: I-vi-IV-ii, producing a gentle, falling motion common in Romantic music. Each pair in a thirds sequence shares a common tone, making the voice leading exceptionally smooth.',
       tryThisQuery: 'Dm7',
       tryThisLabel: 'ii7 sits at the center of many sequences',
     },

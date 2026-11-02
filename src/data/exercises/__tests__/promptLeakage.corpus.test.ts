@@ -37,7 +37,7 @@ const TEMPLATES = [templatesL1, templatesL2, templatesL3, templatesL4, templates
 function resolvedNoteIdExercises(): ExerciseDefinition[] {
   const all: ExerciseDefinition[] = [];
   for (let i = 0; i < 9; i++) {
-    const merged = mergeExerciseMaps(AUTHORED[i], generateAllForLevel(TEMPLATES[i], 'en'));
+    const merged = mergeExerciseMaps(AUTHORED[i], generateAllForLevel(TEMPLATES[i], 'en', AUTHORED[i]));
     for (const list of Object.values(merged)) {
       for (const ex of list) {
         if (ex.config.type === 'note_id') all.push(ex);

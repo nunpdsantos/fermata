@@ -2,19 +2,15 @@ import type { TemplateLevelOverlay } from '../types';
 
 // ---------------------------------------------------------------------------
 // Castilian Spanish overlay for Level 5 exercise templates
-// 14 modules, 14 template groups
+// Mirrors templatesL5.ts entry by entry (W4a, 2026-10-31)
 // ---------------------------------------------------------------------------
 
 const overlay: TemplateLevelOverlay = {
-  // =========================================================================
-  // Unidad 15: Dominantes Secundarias y Tonicización
-  // =========================================================================
 
-  // ---- l5u15m1: Dominantes Secundarias V/V ----
+  // ---- l5u15m1: Secondary Dominants V/V ----
   l5u15m1: [
     {
-      // chord_build — {root} es la fundamental del acorde, no la tonalidad:
-      // la respuesta evaluada es una tríada mayor SOBRE {root}. Refleja el EN.
+      // chord_build
       promptTemplate:
         'Construye una tríada mayor de {root}.',
       hintTemplate:
@@ -23,27 +19,27 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Identifica la función y resolución de V/V.',
+        '¿Cuál de estas afirmaciones sobre V/V (la dominante de la dominante) es verdadera?',
       hintTemplate:
         'V/V toniciza el acorde dominante. Contiene una alteración cromática (4.º grado elevado) y resuelve hacia V.',
       choiceSets: [
         [
-          'V/V contiene el 4.º grado elevado y resuelve hacia V',
+          'V/V contiene el 4.º grado elevado y va hacia V',
           'V/V contiene el 7.º grado rebajado y resuelve hacia IV',
-          'V/V es lo mismo que el acorde IV',
-          'V/V resuelve hacia I',
+          'V/V contiene el 4.º grado elevado y resuelve hacia I',
+          'V/V solo contiene notas diatónicas, así que es el mismo acorde que ii',
         ],
         [
-          'En C mayor, V/V es D mayor (D–F#–A) que resuelve hacia G mayor',
-          'En C mayor, V/V es F mayor que resuelve hacia G',
-          'En C mayor, V/V es A mayor que resuelve hacia D',
-          'En C mayor, V/V es B mayor que resuelve hacia C',
+          'En C mayor, V/V es D mayor (D-F#-A), que resuelve hacia G mayor',
+          'En C mayor, V/V es F mayor (F-A-C), que resuelve hacia G mayor',
+          'En C mayor, V/V es A mayor (A-C#-E), que resuelve hacia D menor',
+          'En C mayor, V/V es B mayor (B-D#-F#), que resuelve hacia C mayor',
         ],
       ],
     },
   ],
 
-  // ---- l5u15m2: Dominantes Secundarias de ii, iii, IV, vi ----
+  // ---- l5u15m2: Secondary Dominants of ii, iii, IV, vi ----
   l5u15m2: [
     {
       // chord_build
@@ -55,162 +51,161 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Identifica qué acorde está siendo tonicizado por esta dominante secundaria.',
+        '¿Cuál de estas afirmaciones sobre las dominantes secundarias de ii, iii, IV y vi es verdadera?',
       hintTemplate:
         'Cada dominante secundaria apunta a un acorde diatónico específico. V7/ii resuelve hacia ii, V7/IV resuelve hacia IV, V7/vi resuelve hacia vi, etc.',
       choiceSets: [
         [
-          'V7/vi en C mayor es E7 (E–G#–B–D), que resuelve hacia A menor',
-          'V7/vi en C mayor resuelve hacia F mayor',
-          'V7/vi en C mayor es D7',
-          'V7/vi resuelve hacia la dominante',
+          'V7/vi en C mayor es E7 (E-G#-B-D), que resuelve hacia A menor',
+          'V7/vi en C mayor es D7 (D-F#-A-C), que resuelve hacia G mayor',
+          'V7/vi en C mayor es E7 (E-G#-B-D), que resuelve hacia F mayor',
+          'V7/vi en C mayor es A7 (A-C#-E-G), que resuelve hacia D menor',
         ],
         [
-          'V7/IV en C mayor es C7 (C–E–G–Bb), que resuelve hacia F mayor',
-          'V7/IV en C mayor es F7',
-          'V7/IV resuelve hacia G mayor',
-          'V7/IV no contiene alteraciones cromáticas',
+          'V7/IV en C mayor es C7 (C-E-G-Bb), que lleva a F mayor',
+          'V7/IV en C mayor es F7 (F-A-C-Eb), que resuelve hacia Bb mayor',
+          'V7/IV en C mayor es C7 (C-E-G-Bb), que resuelve hacia G mayor',
+          'V7/IV en C mayor es G7 (G-B-D-F), que resuelve hacia C mayor',
         ],
         [
-          'V7/ii en C mayor es A7 (A–C#–E–G), que resuelve hacia D menor',
-          'V7/ii resuelve hacia C mayor',
-          'V7/ii en C mayor es B7',
-          'V7/ii es lo mismo que V/V',
+          'V7/ii en C mayor es A7 (A-C#-E-G), que lleva a D menor',
+          'V7/ii en C mayor es B7 (B-D#-F#-A), que resuelve hacia E menor',
+          'V7/ii en C mayor es A7 (A-C#-E-G), que resuelve hacia C mayor',
+          'V7/ii en C mayor es D7 (D-F#-A-C), que resuelve hacia G mayor',
         ],
       ],
     },
   ],
 
-  // ---- l5u15m3: Acordes de Sensible Secundaria ----
+  // ---- l5u15m3: Secondary Leading-Tone Chords ----
   l5u15m3: [
     {
       // multiple_choice
       promptTemplate:
-        'Identifica el acorde de sensible secundaria y su resolución.',
+        '¿Cuál de estas afirmaciones sobre los acordes de sensible secundaria es verdadera?',
       hintTemplate:
         'Los acordes de sensible secundaria (vii°/x) funcionan como dominantes secundarias pero son disminuidos. Resuelven medio tono arriba hacia el acorde objetivo.',
       choiceSets: [
         [
-          'vii°7/V en C mayor es F#dim7, que resuelve hacia G',
-          'vii°7/V en C mayor es Bdim7',
-          'vii°7/V resuelve descendiendo hacia F',
-          'vii°7/V es lo mismo que V/V',
+          'vii°7/V en C mayor es F#dim7, que sube hacia G',
+          'vii°7/V en C mayor es Bdim7, que resuelve subiendo hacia C',
+          'vii°7/V en C mayor es F#dim7, que resuelve bajando hacia F',
+          'vii°7/V en C mayor es C#dim7, que resuelve subiendo hacia D',
         ],
         [
-          'Los acordes de sensible secundaria tienen la fundamental medio tono por debajo del acorde objetivo',
-          'Tienen la fundamental una 5.ª por encima del objetivo',
-          'Tienen la fundamental una 4.ª por debajo del objetivo',
-          'La posición de la fundamental es aleatoria',
+          'Su fundamental está medio tono por debajo del acorde al que resuelven',
+          'Su fundamental está una 5.ª justa por encima del acorde al que resuelven',
+          'Su fundamental está un tono por debajo del acorde al que resuelven',
+          'Su fundamental está una 3.ª mayor por debajo del acorde al que resuelven',
         ],
         [
-          'vii°/x puede ser tanto una tríada disminuida como un acorde de séptima totalmente disminuida',
-          'vii°/x es siempre un acorde mayor',
-          'vii°/x es siempre un acorde de séptima menor',
-          'vii°/x tiene que ser un acorde semidisminuido',
+          'Puede ser una tríada disminuida, una 7.ª semidisminuida o una 7.ª disminuida',
+          'Es una tríada mayor o un acorde de séptima de dominante, como la dominante secundaria a la que sustituye',
+          'Es una 7.ª semidisminuida construida sobre la fundamental del acorde objetivo',
+          'Puede ser una tríada menor o una 7.ª menor construida sobre la sensible del objetivo',
         ],
       ],
     },
   ],
 
-  // ---- l5u15m4: Tonicización vs. Modulación ----
+  // ---- l5u15m4: Tonicization vs Modulation ----
   l5u15m4: [
     {
       // multiple_choice
       promptTemplate:
-        'Distingue entre tonicización y modulación.',
+        '¿Cuál de estas afirmaciones sobre la tonicización y la modulación es verdadera?',
       hintTemplate:
         'La tonicización es un énfasis breve y momentáneo en un acorde no tónica (de 1 a 2 acordes de duración). La modulación es un cambio más permanente hacia una nueva tonalidad (confirmada por una cadencia en la nueva tonalidad).',
       choiceSets: [
         [
-          'La tonicización enfatiza temporalmente un acorde; la modulación establece una nueva tonalidad con una cadencia',
-          'Tonicización y modulación significan lo mismo',
-          'La tonicización requiere una cadencia en la nueva tonalidad',
-          'La modulación nunca usa acordes cromáticos',
+          'La tonicización realza brevemente un acorde; la modulación confirma una nueva tonalidad con una cadencia',
+          'La tonicización confirma una nueva tonalidad con una cadencia; la modulación realza brevemente un acorde',
+          'Tonicización y modulación son dos nombres para exactamente el mismo proceso',
+          'La modulación nunca usa acordes cromáticos; la tonicización siempre los usa',
         ],
         [
-          'Una única dominante secundaria seguida de su objetivo es tonicización, no modulación',
-          'Una dominante secundaria crea siempre una modulación',
-          'La tonicización requiere al menos 8 compases en la nueva tonalidad',
-          'No hay diferencia práctica entre ambas',
+          'Una sola dominante secundaria y su objetivo son una tonicización',
+          'Una sola dominante secundaria y su objetivo son una modulación en la nueva tonalidad',
+          'Una tonicización debe durar al menos ocho compases en la nueva tonalidad',
+          'Una tonicización necesita una cadencia auténtica perfecta en la nueva tonalidad',
         ],
         [
-          'La modulación se confirma cuando la música cadencia en la nueva tonalidad',
-          'La modulación requiere cambiar la indicación de compás',
-          'La modulación solo ocurre al final de una pieza',
-          'La modulación nunca involucra notas cromáticas',
+          'Una modulación se confirma cuando la música hace una cadencia en la nueva tonalidad',
+          'Una modulación se confirma en cuanto cambia el compás',
+          'Una modulación se confirma con cualquier nota cromática aislada en la melodía',
+          'Una modulación se confirma cuando la melodía hace una cadencia en la tonalidad original',
         ],
       ],
     },
   ],
 
-  // ---- l5u15m5: Cadenas de Dominantes ----
+  // ---- l5u15m5: Dominant Chains ----
   l5u15m5: [
     {
       // multiple_choice
       promptTemplate:
-        'Analiza esta cadena de dominantes secundarias.',
+        '¿Cuál de estas afirmaciones sobre las cadenas de dominantes secundarias es verdadera?',
       hintTemplate:
         'Una cadena de dominantes enlaza dominantes secundarias: p. ej., V7/vi → V7/ii → V7/V → V7 → I. Cada dominante resuelve hacia la siguiente, creando movimiento cromático en dirección a la tónica.',
       choiceSets: [
         [
-          'En una cadena de dominantes, cada acorde funciona como V7 del acorde siguiente',
-          'Una cadena de dominantes usa solo acordes diatónicos',
-          'Una cadena de dominantes se mueve siempre por quintas ascendentes',
-          'Las cadenas de dominantes están limitadas a 2 acordes',
+          'En una cadena de dominantes, cada acorde actúa como V7 del acorde siguiente',
+          'En una cadena de dominantes, cada acorde actúa como IV del acorde siguiente',
+          'En una cadena de dominantes, todos los acordes se quedan diatónicos en la tonalidad principal',
+          'En una cadena de dominantes, cada acorde actúa como V7 del acorde que vino antes',
         ],
         [
-          'La cadena V7/vi → V7/ii → V7/V → V → I se mueve por quintas descendentes',
-          'Esta cadena se mueve por terceras ascendentes',
-          'Esta cadena no tiene patrón',
-          'Esta cadena se mueve por quintas ascendentes',
+          'La cadena V7/vi -> V7/ii -> V7/V -> V -> I se mueve por 5.as descendentes',
+          'La cadena V7/vi -> V7/ii -> V7/V -> V -> I se mueve por 5.as ascendentes',
+          'La cadena V7/vi -> V7/ii -> V7/V -> V -> I se mueve por 3.as ascendentes',
+          'La cadena V7/vi -> V7/ii -> V7/V -> V -> I se mueve por grados conjuntos descendentes',
         ],
         [
-          'La tonicización prolongada mediante cadenas de dominantes crea movimiento cromático en el bajo',
-          'Las cadenas de dominantes nunca producen movimiento cromático',
-          'El bajo se mantiene siempre diatónico en las cadenas de dominantes',
-          'Las cadenas de dominantes usan solo acordes en posición fundamental',
+          'Cada dominante aplicada suele añadir una nota cromática: la sensible de su objetivo',
+          'Cada dominante aplicada se queda diatónica, así que la cadena no añade ninguna nota cromática',
+          'Cada dominante aplicada mantiene el bajo en la misma nota durante toda la cadena',
+          'Cada dominante aplicada debe tocarse en segunda inversión',
         ],
       ],
     },
   ],
 
   // =========================================================================
-  // Unidad 16: Modulación
+  // Unit 16: Modulation
   // =========================================================================
 
-  // ---- l5u16m1: Modulación por Acorde Pivote ----
+  // ---- l5u16m1: Pivot Chord Modulation ----
   l5u16m1: [
     {
       // multiple_choice
       promptTemplate:
-        'Analiza esta modulación por acorde pivote.',
+        '¿Cuál de estas afirmaciones sobre la modulación por acorde pivote es verdadera?',
       hintTemplate:
         'Un acorde pivote pertenece tanto a la tonalidad antigua como a la nueva. Reinterpreta un acorde diatónico: p. ej., IV en C = I en F. El pivote es la bisagra entre dos regiones tonales.',
       choiceSets: [
         [
-          'Un acorde pivote funciona diatónicamente tanto en la tonalidad antigua como en la nueva',
-          'Un acorde pivote tiene que ser cromático',
-          'Un acorde pivote solo existe en tonalidades menores',
-          'Un acorde pivote es siempre V7',
+          'Un acorde pivote es diatónico tanto en la tonalidad antigua como en la nueva',
+          'Un acorde pivote es diatónico en la tonalidad antigua pero cromático en la nueva',
+          'Un acorde pivote tiene que ser siempre el V7 de la nueva tonalidad, así que nunca puede ser un acorde menor',
+          'Un acorde pivote solo puede enlazar dos tonalidades menores',
         ],
         [
-          'Al modular de C a G, el acorde de C mayor puede pivotar como IV en G',
-          'C mayor no puede funcionar como acorde pivote',
-          'Los pivotes solo funcionan entre tonalidades relativas',
-          'El pivote tiene que ser un acorde disminuido',
+          'De C a G, el acorde de C mayor puede servir de pivote como IV de G',
+          'De C a G, el acorde de C mayor puede servir de pivote como V de G',
+          'De C a G, el acorde de C mayor puede servir de pivote como vii° de G',
+          'De C a G, el acorde de C mayor no puede servir de pivote en absoluto',
         ],
         [
-          'Las tonalidades cercanas (que difieren en 1 sostenido/bemol) comparten más acordes pivote',
-          'Las tonalidades distantes tienen más acordes pivote',
-          'Todas las tonalidades comparten el mismo número de acordes pivote',
-          'Los acordes pivote solo funcionan entre tonalidades paralelas',
+          'Las tonalidades cercanas (a una alteración de distancia) comparten más acordes pivote',
+          'Las tonalidades lejanas, a muchas alteraciones de distancia, comparten más acordes pivote',
+          'Todos los pares de tonalidades comparten exactamente el mismo número de acordes pivote',
+          'Las tonalidades paralelas (misma tónica) comparten siempre más acordes pivote',
         ],
       ],
     },
   ],
 
-  // ---- l5u16m2: Modulación a Tonalidades Cercanas ----
-  // (re-asignada desde l5u16m4 para corresponder al tema del currículo)
+  // ---- l5u16m2: Modulation to Closely Related Keys ----
   l5u16m2: [
     {
       // scale_build
@@ -222,97 +217,94 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Identifica las tonalidades cercanas para esta tónica.',
+        '¿Cuál de estas afirmaciones sobre las tonalidades cercanas es verdadera?',
       hintTemplate:
         'Cada tonalidad mayor tiene 5 tonalidades cercanas: la dominante, la subdominante y las relativas menores de las tres (tónica, dominante, subdominante).',
       choiceSets: [
         [
-          'C mayor tiene tonalidades cercanas: G mayor, F mayor, A menor, E menor, D menor',
-          'C mayor es cercano a Db mayor y B mayor',
-          'C mayor no tiene tonalidades cercanas',
-          'C mayor es cercano a Ab mayor y Eb mayor',
+          'Las tonalidades cercanas de C mayor: G mayor, F mayor, A menor, E menor, D menor',
+          'Las tonalidades cercanas de C mayor: D mayor, Bb mayor, B menor, G menor, F# menor',
+          'Las tonalidades cercanas de C mayor: Db mayor, B mayor, C menor, Bb menor, Eb menor',
+          'Las tonalidades cercanas de C mayor: G mayor, D mayor, A mayor, E mayor, B mayor',
         ],
         [
-          'G mayor tiene tonalidades cercanas: D mayor, C mayor, E menor, B menor, A menor',
-          'G mayor es cercano a Gb mayor',
-          'G mayor solo está relacionado con C mayor',
-          'G mayor es cercano a F mayor',
+          'Las tonalidades cercanas de G mayor: D mayor, C mayor, E menor, B menor, A menor',
+          'Las tonalidades cercanas de G mayor: Gb mayor, Ab mayor, G menor, Eb menor, F menor',
+          'Las tonalidades cercanas de G mayor: F mayor, Bb mayor, D menor, G menor, C menor',
+          'Las tonalidades cercanas de G mayor: D mayor, A mayor, E mayor, B mayor, F# mayor',
         ],
       ],
     },
   ],
 
-  // ---- l5u16m3: Modulación Directa, por Nota Común y Cromática ----
-  // (fusionados los bloques Directa/De Frase, Nota Común y Cromática — el currículo
-  //  agrupa los tres en este módulo; antes divididos en m2/m3/m5)
+  // ---- l5u16m3: Direct, Common-Tone, and Chromatic Modulation ----
   l5u16m3: [
     {
-      // multiple_choice — modulación directa / de frase
+      // multiple_choice
       promptTemplate:
-        'Identifica las características de esta técnica de modulación.',
+        '¿Cuál de estas afirmaciones sobre la modulación directa (de frase) es verdadera?',
       hintTemplate:
         'La modulación directa (de frase) cambia de tonalidad abruptamente en un límite de frase sin acorde pivote. Es habitual en la música pop y en los himnos.',
       choiceSets: [
         [
-          'Una modulación directa cambia a una nueva tonalidad en un límite de frase sin acorde pivote',
-          'Una modulación directa usa siempre un acorde pivote',
-          'Una modulación directa es lo mismo que la tonicización',
-          'Una modulación directa solo sube medio tono',
+          'Una modulación directa pasa a una nueva tonalidad en un límite de frase, sin pivote',
+          'Una modulación directa pasa a una nueva tonalidad a mitad de frase mediante un acorde pivote común',
+          'Una modulación directa es otro nombre para una tonicización breve que regresa enseguida a la tonalidad principal',
+          'Una modulación directa se suaviza con la dominante de la nueva tonalidad y suena gradual en lugar de abrupta',
         ],
         [
-          'La modulación «del camionero» sube medio tono o un tono para efecto dramático',
-          'La modulación del camionero va siempre a la dominante',
-          'Esta técnica es exclusiva de la música clásica',
-          'Esta modulación es siempre descendente',
+          'La modulación "truck driver" sube medio tono o un tono para dar un impulso',
+          'La modulación "truck driver" se suaviza con un acorde pivote común a las dos tonalidades',
+          'La modulación "truck driver" solo se encuentra en la música barroca y clásica',
+          'La modulación "truck driver" baja la tonalidad medio tono o un tono para relajar la tensión',
         ],
       ],
     },
     {
-      // multiple_choice — modulación por nota común
+      // multiple_choice
       promptTemplate:
-        '¿Cómo funciona la modulación por nota común?',
+        '¿Cuál de estas afirmaciones sobre la modulación por nota común es verdadera?',
       hintTemplate:
         'La modulación por nota común sostiene una única nota que se reinterpreta en la nueva tonalidad. Se usa frecuentemente para modulaciones distantes donde existen pocos acordes pivote.',
       choiceSets: [
         [
-          'La modulación por nota común sostiene una nota que se convierte en un grado de la escala diferente en la nueva tonalidad',
-          'La modulación por nota común requiere que todas las notas sean comunes',
-          'La modulación por nota común nunca involucra notas sostenidas',
-          'La modulación por nota común es lo mismo que la modulación por acorde pivote',
+          'Una nota mantenida se vuelve a oír como un grado distinto en la nueva tonalidad',
+          'En una modulación de C a Eb, el G mantenido es la 5.ª de C y también la 5.ª de Eb',
+          'Todas las notas del acorde deben ser comunes a las dos tonalidades',
+          'No se mantiene ninguna nota: la música se detiene y vuelve a empezar en la nueva tonalidad',
         ],
         [
-          'La modulación por nota común es especialmente útil para tonalidades distantes que comparten pocos acordes',
-          'La modulación por nota común solo funciona para tonalidades cercanas',
-          'Esta técnica requiere secuencias cromáticas',
-          'Esta técnica se limita a la relativa mayor/menor',
+          'Es especialmente útil entre tonalidades lejanas que comparten pocos acordes',
+          'Solo funciona entre tonalidades cercanas que comparten muchos acordes',
+          'Exige una secuencia cromática por todas las tonalidades que quedan entre las dos',
+          'Solo funciona entre una tonalidad y su relativa mayor o menor',
         ],
       ],
     },
     {
-      // multiple_choice — modulación cromática
+      // multiple_choice
       promptTemplate:
-        'Analiza esta técnica de modulación cromática.',
+        '¿Cuál de estas afirmaciones sobre la modulación cromática es verdadera?',
       hintTemplate:
         'La modulación cromática usa una alteración cromática para conducir suavemente hacia la nueva tonalidad. Una voz se mueve por medio tono de una nota diatónica a una nota cromática en la nueva tonalidad.',
       choiceSets: [
         [
-          'La modulación cromática presenta una voz moviéndose por medio tono de una nota diatónica a una cromática',
-          'La modulación cromática evita todos los medios tonos',
-          'La modulación cromática requiere un acorde pivote',
-          'La modulación cromática se mueve siempre entre tonalidades paralelas',
+          'Una voz se mueve por medio tono de una nota diatónica a una cromática',
+          'Una voz salta un tritono de una nota diatónica a una cromática',
+          'El acorde alterado mantiene la misma función en las dos tonalidades, así que nada se reinterpreta',
+          'Necesita un acorde pivote diatónico en las dos tonalidades',
         ],
         [
-          'La alteración cromática típicamente introduce la sensible o una nota del acorde de la nueva tonalidad',
-          'La nota cromática es siempre la tónica de la nueva tonalidad',
-          'La modulación cromática nunca involucra sensibles',
-          'La alteración tiene que estar en la voz del bajo',
+          'La nota alterada se convierte a menudo en la sensible o en una nota del acorde de la nueva tonalidad',
+          'La nota alterada es siempre la tónica de la nueva tonalidad, nunca su sensible',
+          'La nota alterada debe estar siempre en el bajo, nunca en una voz superior',
+          'La modulación cromática nunca implica la sensible de la nueva tonalidad en ninguna de las voces',
         ],
       ],
     },
   ],
 
-  // ---- l5u16m4: Mezcla Modal — Acordes Prestados ----
-  // (re-asignada desde l5u17m1 para corresponder al tema del currículo)
+  // ---- l5u16m4: Mode Mixture — Borrowed Chords ----
   l5u16m4: [
     {
       // chord_build
@@ -324,136 +316,141 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Identifica este acorde prestado del modo menor paralelo.',
+        '¿Cuál de estas afirmaciones sobre los acordes prestados del modo menor paralelo es verdadera?',
       hintTemplate:
         'Acordes prestados habituales en el modo mayor: iv (subdominante menor), bVI (sexto grado bemol mayor), bVII (séptimo grado bemol mayor), bIII. Añaden un color más oscuro a una tonalidad mayor.',
       choiceSets: [
         [
-          'El acorde bVI en C mayor es Ab mayor (prestado de C menor)',
-          'El acorde bVI en C mayor es F# mayor',
-          'El acorde bVI en C mayor es A mayor',
-          'bVI no existe en la mezcla modal',
+          'En C mayor, bVI es Ab mayor (Ab-C-Eb), prestado de C menor',
+          'En C mayor, bVI es A mayor (A-C#-E), prestado de A menor',
+          'En C mayor, bVI es F# mayor (F#-A#-C#), prestado de C menor',
+          'En C mayor, bVI es Ab menor (Ab-Cb-Eb), prestado de Ab menor',
         ],
         [
-          'El acorde iv en C mayor es F menor (prestado de C menor)',
-          'El acorde iv en C mayor es F mayor sin alterar',
-          'El acorde iv en C mayor es A menor',
-          'La mezcla modal no puede alterar la subdominante',
+          'En C mayor, iv es F menor (F-Ab-C), prestado de C menor',
+          'En C mayor, iv es F mayor (F-A-C), igual que en la tonalidad mayor',
+          'En C mayor, iv es A menor (A-C-E), prestado de A menor',
+          'En C mayor, iv es D menor (D-F-A), prestado de C menor',
         ],
       ],
     },
   ],
 
-  // ---- l5u16m5: Tercera de Picardía y Mezcla Modal en Menor ----
-  // Sin plantilla generada (laguna de cobertura reconocida en la auditoría WS5).
+  // ---- l5u16m5: Picardy Third and Mode Mixture in Minor ----
+  // No generated template: the template set has no item that teaches the Picardy
+  // third / mixture-in-minor concept. (The mode-mixture chord_build belongs to the
+  // major-key borrowing module l5u16m4.) Rather than attach an off-topic generated
+  // exercise, this module relies on its hand-authored exercises only. Coverage gap
+  // acknowledged in the WS5 audit (L5 E1).
 
   // =========================================================================
-  // Unidad 17: Forma, Textura y Conducción de Voces
+  // Unit 17: Form, Texture, and Voice Leading
   // =========================================================================
 
-  // ---- l5u17m1: Formas Binaria y Ternaria ----
-  // (re-asignada desde l5u17m2 para corresponder al tema del currículo)
+  // ---- l5u17m1: Binary and Ternary Forms ----
   l5u17m1: [
     {
       // multiple_choice
       promptTemplate:
-        'Clasifica esta forma musical según su estructura.',
+        '¿Cuál de estas afirmaciones sobre las formas binaria y ternaria es verdadera?',
       hintTemplate:
-        "Binaria: dos secciones (AB). Ternaria: tres secciones (ABA). Binaria con retorno: A modula, B desarrolla, A regresa (||:A:||:BA':||).",
+        'Binaria: dos secciones (AB). Ternaria: tres secciones (ABA). Binaria con retorno: A modula, B desarrolla, A regresa (||:A:||:BA\':||).',
       choiceSets: [
         [
-          'Una pieza con dos secciones contrastantes (AB) ambas repetidas es forma binaria simple',
-          'La forma AB es ternaria',
-          'La forma AB es composición continua',
-          'La forma AB es rondó',
+          'Dos secciones contrastantes, cada una repetida (||:A:||:B:||), es la forma binaria simple',
+          'Dos secciones contrastantes, cada una repetida (||:A:||:B:||), es la forma ternaria',
+          'Dos secciones contrastantes, cada una repetida (||:A:||:B:||), es la forma rondó',
+          'Dos secciones contrastantes, cada una repetida (||:A:||:B:||), es la forma binaria con retorno',
         ],
         [
-          'La forma ABA en la que la primera sección regresa es forma ternaria',
-          'La forma ABA es binaria',
-          'La forma ABA es estrófica',
-          'La forma ABA es composición continua',
+          'ABA, en la que la primera sección vuelve tras un contraste, es la forma ternaria',
+          'ABA, en la que la primera sección vuelve tras un contraste, es la forma rondó',
+          'ABA, en la que la primera sección vuelve tras un contraste, es la forma estrófica',
+          'ABA, en la que la primera sección vuelve tras un contraste, es una forma de composición continua',
         ],
         [
-          'La binaria con retorno presenta el regreso del material de A al final de la sección B',
-          'La binaria con retorno tiene tres secciones completamente independientes',
-          'La binaria con retorno nunca modula',
-          'La binaria con retorno es lo mismo que la binaria simple',
+          'La binaria con retorno siempre trae de vuelta material de A al final de la sección B',
+          'En la binaria con retorno, la sección B vuelve al final, en lugar de A',
+          'La binaria con retorno se queda en la tonalidad principal, sin modulación',
+          'La binaria con retorno es otro nombre para la binaria simple',
         ],
       ],
     },
   ],
 
-  // ---- l5u17m2: Formas Canción y Grandes Formas ----
-  // (fusionados los bloques Rondó/Variaciones y Sonata — el currículo agrupa rondó,
-  //  tema con variaciones y sonata en este módulo; antes divididos en m3/m4)
+  // ---- l5u17m2: Song Forms and Large Forms Introduction ----
   l5u17m2: [
     {
-      // multiple_choice — rondó y variaciones
+      // multiple_choice
       promptTemplate:
-        'Identifica las características de esta forma musical.',
+        '¿Cuál de estas afirmaciones sobre las formas rondó y tema con variaciones es verdadera?',
       hintTemplate:
         'Rondó: estribillo recurrente alternando con episodios (ABACA o ABACABA). Tema con variaciones: un tema seguido de repeticiones variadas.',
       choiceSets: [
         [
-          'ABACABA es una forma rondó en siete partes',
-          'ABACABA es forma ternaria',
-          'ABACABA es forma binaria',
-          'ABACABA es forma sonata',
+          'ABACABA es un rondó en siete partes',
+          'ABACABA es una forma ternaria en tres partes',
+          'ABACABA es una forma binaria en dos partes',
+          'ABACABA es una forma sonata en tres partes',
         ],
         [
-          'En el tema con variaciones, cada variación mantiene el tema reconocible (a menudo a través de su esqueleto armónico) mientras altera otros elementos',
-          'Las variaciones deben mantener la melodía exacta',
-          'Las variaciones cambian siempre de tonalidad',
-          'Las variaciones nunca alteran el ritmo',
+          'Cada variación mantiene el tema reconocible mientras cambia otros elementos',
+          'Cada variación debe mantener la melodía y el ritmo exactamente iguales',
+          'Cada variación debe pasar a una nueva tonalidad y nunca mantener la original',
+          'Cada variación sustituye el tema por material completamente nuevo y sin relación',
         ],
         [
-          'El estribillo del rondó (A) permanece típicamente en la tonalidad de la tónica',
-          'El estribillo modula a una nueva tonalidad cada vez',
-          'Los episodios deben permanecer en la tonalidad de la tónica',
-          'El estribillo es siempre diferente cada vez',
+          'El estribillo del rondó (A) vuelve normalmente en la tonalidad principal',
+          'El estribillo del rondó (A) cambia a una nueva tonalidad cada vez que vuelve',
+          'Los episodios del rondó deben quedarse todos en la tonalidad principal',
+          'El estribillo del rondó se reescribe por completo cada vez',
         ],
       ],
     },
     {
-      // multiple_choice — forma sonata
+      // multiple_choice
       promptTemplate:
-        'Responde a esta pregunta sobre la estructura de la forma sonata.',
+        '¿Cuál de estas afirmaciones sobre la forma sonata es verdadera?',
       hintTemplate:
         'Forma sonata: Exposición (tema 1 en la tónica, tema 2 en la dominante), Desarrollo (fragmentación, modulación), Recapitulación (ambos temas en la tónica).',
       choiceSets: [
         [
-          'La exposición presenta dos grupos temáticos: el primero en la tónica, el segundo en una tonalidad contrastante',
-          'La exposición tiene solo un tema',
-          'Ambos temas están en la tonalidad de la tónica',
-          'La exposición es la sección del medio',
+          'La exposición tiene dos grupos temáticos: el primero en la tónica, el segundo en una tonalidad contrastante',
+          'La exposición tiene dos grupos temáticos, y ambos se quedan en la tonalidad de la tónica de principio a fin',
+          'La exposición tiene un solo tema, que después se varía en la tonalidad de la tónica',
+          'La exposición es la sección central, entre el desarrollo y la recapitulación',
         ],
         [
-          'La sección de desarrollo fragmenta y desarrolla los temas a través de modulación y secuencia',
-          'El desarrollo simplemente repite la exposición',
-          'El desarrollo introduce temas completamente nuevos',
-          'El desarrollo permanece en la tonalidad de la tónica',
+          'El desarrollo fragmenta los temas y pasa por varias tonalidades',
+          'El desarrollo repite la exposición exactamente, nota por nota, en la tónica',
+          'El desarrollo solo presenta temas nuevos, nunca los anteriores',
+          'El desarrollo se queda en la tónica de principio a fin',
         ],
         [
-          'En la recapitulación, el segundo tema regresa en la tonalidad de la tónica en vez de la dominante',
-          'La recapitulación repite la exposición exactamente',
-          'La recapitulación está en la tonalidad de la dominante',
-          'El segundo tema se omite en la recapitulación',
+          'En la recapitulación, el segundo tema vuelve en la tónica, no en la dominante',
+          'En la recapitulación, el segundo tema vuelve en la dominante, no en la tónica',
+          'En la recapitulación, el segundo tema se omite por completo',
+          'La recapitulación repite la exposición exactamente, tonalidades incluidas',
         ],
         [
-          'En una sonata en tonalidad mayor, el segundo tema está típicamente en la dominante (V)',
-          'El segundo tema está siempre en la subdominante (IV)',
-          'El segundo tema está siempre en la relativa menor',
-          'El segundo tema permanece en la tónica',
+          'En una sonata en modo mayor, el segundo tema está normalmente en la dominante (V)',
+          'En una sonata en modo mayor, el segundo tema está normalmente en la subdominante (IV)',
+          'En una sonata en modo mayor, el segundo tema está normalmente en la relativa menor (vi)',
+          'En una sonata en modo mayor, el segundo tema se queda en la tónica (I)',
         ],
       ],
     },
   ],
 
-  // ---- l5u17m3: Textura ----
-  // Sin plantilla generada (laguna de cobertura reconocida en la auditoría WS5).
+  // ---- l5u17m3: Texture ----
+  // No generated template: the template set has no item teaching texture types
+  // (monophony, homophony, polyphony, etc.). This module relies on its
+  // hand-authored exercises only. Coverage gap acknowledged in the WS5 audit (L5 E1).
 
-  // ---- l5u17m4: Líneas de Notas Guía ----
-  // Sin plantilla generada (laguna de cobertura reconocida en la auditoría WS5).
+  // ---- l5u17m4: Guide Tone Lines ----
+  // No generated template: the template set has no item teaching guide-tone lines
+  // (3rds and 7ths through progressions). This module relies on its hand-authored
+  // exercises only. Coverage gap acknowledged in the WS5 audit (L5 E1).
 };
 
 export default overlay;

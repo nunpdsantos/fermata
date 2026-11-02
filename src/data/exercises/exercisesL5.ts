@@ -14,7 +14,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l5u15m1e1',
       type: 'chord_build',
-      prompt: 'Build V/V in C major. The secondary dominant of V is a D major triad. Select the 3 notes: D, F#, A.',
+      prompt: 'Build V/V in C major. Select all 3 notes.',
       config: {
         type: 'chord_build',
         root: 'D',
@@ -23,12 +23,11 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'V/V in C means "the V chord of G major." The dominant of G is D major: D (2), F# (6), A (9). The F# is chromatic -- it does not belong to C major.',
-      points: 2,
     },
     {
       id: 'l5u15m1e2',
       type: 'chord_build',
-      prompt: 'Build V7/V in C major. This is a D dominant 7th chord: D, F#, A, C. Select all 4 notes.',
+      prompt: 'Build V7/V in C major. Select all 4 notes.',
       config: {
         type: 'chord_build',
         root: 'D',
@@ -37,7 +36,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'V7/V in C = D7: D (2), F# (6), A (9), C (0). The added minor 7th (C) strengthens the pull toward G. The F# is the chromatic alteration.',
-      points: 2,
     },
     {
       id: 'l5u15m1e3',
@@ -47,13 +45,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'A secondary dominant that tonicizes the dominant chord of the key', correct: true },
-          { label: 'The fifth chord played twice in a row', correct: false },
-          { label: 'A diminished chord built on the second scale degree', correct: false },
-          { label: 'The dominant chord in second inversion', correct: false },
+          { label: 'The fifth chord of the key played twice in a row, to give the dominant extra weight', correct: false },
+          { label: 'A diminished chord built on the second scale degree of the major key', correct: false },
+          { label: 'The dominant chord of the key in second inversion', correct: false },
         ],
       },
       hint: 'V/V means "the dominant of the dominant." In C major, V is G. The dominant of G is D major. So V/V in C = D major, a chromatic chord that temporarily tonicizes G.',
-      points: 1,
     },
   ],
 
@@ -73,7 +70,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In C major, ii is D minor. The dominant of D minor is A major (A, C#, E). The C# is the chromatic note that creates the leading tone to D.',
-      points: 1,
     },
     {
       id: 'l5u15m2e2',
@@ -89,7 +85,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'V/IV means the dominant of IV. In C major, IV is F. The dominant of F is C major. This is unusual because C major is already the tonic -- context determines whether it functions as I or V/IV.',
-      points: 1,
     },
     {
       id: 'l5u15m2e3',
@@ -98,14 +93,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A major triad or dominant 7th that resolves to a diatonic chord other than I, acting as V of that chord', correct: true },
-          { label: 'Any dominant 7th chord used in a progression', correct: false },
+          { label: 'A major triad or dominant 7th that resolves to a diatonic chord other than I, always acting as V of that chord', correct: true },
+          { label: 'The diatonic V7 of the home key, a dominant 7th chord that resolves to I, acting as V of the tonic', correct: false },
           { label: 'A chord that modulates permanently to a new key', correct: false },
-          { label: 'The V chord resolving deceptively to vi', correct: false },
+          { label: 'The V chord of the home key resolving deceptively to vi instead of to I, as in a deceptive cadence', correct: false },
         ],
       },
       hint: 'An applied dominant temporarily acts as V (or V7) of a diatonic chord. It introduces chromatic notes to create a leading-tone resolution to its target, without establishing a new key.',
-      points: 1,
     },
   ],
 
@@ -118,14 +112,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'It acts as a diminished chord that resolves up by half step to the tonicized chord, like viio resolves to I', correct: true },
-          { label: 'It replaces the dominant chord entirely in cadences', correct: false },
-          { label: 'It functions as a passing chord with no harmonic pull', correct: false },
-          { label: 'It is the leading tone of the key played as a single note', correct: false },
+          { label: 'It acts as a diminished chord that resolves up by half step to the tonicized chord', correct: true },
+          { label: 'It acts as a diminished chord whose root resolves down a fifth, as V7 does, to the tonicized chord', correct: false },
+          { label: 'It functions as a single decorative passing chord between two other chords, with no harmonic pull of its own', correct: false },
+          { label: 'It is the leading tone of the home key, played on its own as a single melody note above the bass', correct: false },
         ],
       },
       hint: 'viio/V works the same way viio works in a key: the root is a half step below the target chord, and the diminished quality creates strong resolution drive upward to the target.',
-      points: 1,
     },
     {
       id: 'l5u15m3e2',
@@ -136,12 +129,11 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Half-diminished has a minor 7th above the root; fully-diminished has a diminished 7th (one semitone lower)', correct: true },
           { label: 'Half-diminished resolves up; fully-diminished resolves down', correct: false },
-          { label: 'Half-diminished is used in major keys only; fully-diminished in minor keys only', correct: false },
+          { label: 'Half-diminished is used only in major keys and fully-diminished only in minor keys, never the other way round', correct: false },
           { label: 'There is no difference; they are the same chord', correct: false },
         ],
       },
       hint: 'Both have a diminished triad (root, m3, dim5). The 7th differs: half-dim has a minor 7th (10 semitones), fully-dim has a diminished 7th (9 semitones). Fully-dim is more common as a secondary leading-tone chord.',
-      points: 1,
     },
     {
       id: 'l5u15m3e3',
@@ -152,12 +144,11 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'G major (V) -- the viio/V resolves up by half step to the dominant', correct: true },
           { label: 'C major (I) -- it resolves to the tonic', correct: false },
-          { label: 'F major (IV) -- it resolves to the subdominant', correct: false },
-          { label: 'D minor (ii) -- it resolves to the supertonic', correct: false },
+          { label: 'F major (IV) -- the viio/V moves on to the subdominant, the usual chord before V', correct: false },
+          { label: 'D minor (ii) -- the vii°/V resolves down by half step to the supertonic', correct: false },
         ],
       },
       hint: 'The "/V" tells you the target: V. In C major, V is G. viio/V is F# diminished (F#, A, C), and the F# resolves up by half step to G, the root of the target chord.',
-      points: 1,
     },
   ],
 
@@ -171,13 +162,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'A brief, temporary emphasis on a non-tonic chord using its own dominant, without leaving the original key', correct: true },
-          { label: 'A permanent change of key center to a new tonic', correct: false },
-          { label: 'Playing the tonic chord repeatedly to establish the key', correct: false },
-          { label: 'Transposing a melody to a new key', correct: false },
+          { label: 'A permanent change from the original key to a new tonic, set up by its own dominant chord and confirmed by a cadence', correct: false },
+          { label: 'Playing the tonic chord over and over, in every voice and register, until the home key is firmly established', correct: false },
+          { label: 'Transposing a melody and its accompaniment into a new key, so the passage is heard at a new pitch', correct: false },
         ],
       },
       hint: 'Tonicization is fleeting: a secondary dominant or leading-tone chord briefly treats a diatonic chord as a local tonic, but the original key remains in control. Think of it as a momentary detour.',
-      points: 1,
     },
     {
       id: 'l5u15m4e2',
@@ -186,14 +176,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Modulation establishes a new key through cadences and extended passages; tonicization is brief and returns to the original key', correct: true },
-          { label: 'Modulation uses sharps; tonicization uses flats', correct: false },
-          { label: 'Modulation only occurs at the end of a piece; tonicization occurs in the middle', correct: false },
+          { label: 'Modulation sets up a new key with cadences and longer passages; tonicization is brief and returns home', correct: true },
+          { label: 'Tonicization sets up the new key with cadences and long passages; modulation is the brief one that returns home', correct: false },
+          { label: 'Modulation happens at the end of a piece and tonicization in the middle, before the final cadence', correct: false },
           { label: 'There is no real difference; the terms are interchangeable', correct: false },
         ],
       },
       hint: 'The key test: does the new tonal center stick around with its own cadences and stable passages? If yes, it is a modulation. If the original key reasserts itself quickly, it is just a tonicization.',
-      points: 1,
     },
     {
       id: 'l5u15m4e3',
@@ -203,13 +192,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'An extended tonicization -- longer than a single chord but lacking full cadential confirmation in the new key', correct: true },
-          { label: 'A pivot chord modulation', correct: false },
+          { label: 'A pivot chord modulation -- a key change that moves through a chord shared by the old key and the new one', correct: false },
           { label: 'A deceptive cadence', correct: false },
           { label: 'A chromatic sequence', correct: false },
         ],
       },
       hint: 'Extended tonicizations occupy a gray area: they last longer than a quick V/x - x motion, but the new key is never confirmed with a strong cadence. The boundary between extended tonicization and modulation is subjective.',
-      points: 1,
     },
   ],
 
@@ -224,12 +212,11 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'A sequence where each chord acts as V7 of the next, moving through multiple tonicizations before resolving to the tonic', correct: true },
           { label: 'Playing the V chord of every major key in succession', correct: false },
-          { label: 'A series of diminished chords descending chromatically', correct: false },
+          { label: 'A sequence of tonicizations in which each 7th chord acts as IV of the next, moving through several major keys in succession before resolving to the tonic', correct: false },
           { label: 'Alternating between I and V repeatedly', correct: false },
         ],
       },
       hint: 'A dominant chain creates cascading tension: e.g., V7/vi - V7/ii - V7/V - V7 - I. Each dominant 7th resolves to the next link, pulling the harmony back toward the tonic through a cycle.',
-      points: 1,
     },
     {
       id: 'l5u15m5e2',
@@ -239,13 +226,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Each root falls by a perfect 5th (or rises by a perfect 4th) to the next', correct: true },
-          { label: 'Each root rises by a half step chromatically', correct: false },
-          { label: 'Each root falls by a whole step', correct: false },
-          { label: 'The roots alternate between ascending and descending 3rds', correct: false },
+          { label: 'Each root rises by a half step chromatically, because each dominant sits a half step above its target', correct: false },
+          { label: 'Each root falls by a whole step, so the chain descends through the notes of the major scale', correct: false },
+          { label: 'The roots alternate between ascending 3rds and descending 3rds, never moving by 5th', correct: false },
         ],
       },
       hint: 'Dominant chains exploit the strongest root motion in tonal music: down a 5th. Each V7 resolves down a 5th to its target, and that target is reinterpreted as the next V7.',
-      points: 1,
     },
     {
       id: 'l5u15m5e3',
@@ -254,14 +240,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A harmonic pattern where the same tonicization gesture (e.g., V7 - target) is repeated at different pitch levels in sequence', correct: true },
-          { label: 'A modulation that passes through every key in the circle of fifths', correct: false },
-          { label: 'Playing scales in sequence ascending chromatically', correct: false },
-          { label: 'A series of deceptive cadences in different keys', correct: false },
+          { label: 'A pattern in which the same tonicizing gesture (e.g., V7 - target) is repeated at different pitch levels', correct: true },
+          { label: 'A modulation that passes through every one of the twelve keys around the circle of fifths, one after another', correct: false },
+          { label: 'Practising scales one after another in many keys, so that all of them become familiar to the performer', correct: false },
+          { label: 'A series of deceptive cadences in different keys, landing on the vi chord of a new key instead of on its tonic', correct: false },
         ],
       },
       hint: 'Sequential tonicization applies the same harmonic pattern (often V7 - chord) to successive scale degrees, creating a predictable but colorful chromatic motion. It is common in Baroque and jazz music.',
-      points: 1,
     },
   ],
 
@@ -278,14 +263,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A chord that belongs to both the old key and the new key, serving as the hinge between them', correct: true },
-          { label: 'The first chord of the new key that contains a chromatic note', correct: false },
+          { label: 'A chord common to both keys', correct: true },
+          { label: 'The first chord heard in the new key that contains a chromatic note that is foreign to the old key', correct: false },
           { label: 'A diminished chord that resolves the modulation', correct: false },
           { label: 'The dominant chord of the original key', correct: false },
         ],
       },
       hint: 'A pivot chord is diatonic in both keys. For example, when modulating from C major to G major, the chord E minor is both iii in C and vi in G, creating a smooth harmonic bridge between the two keys.',
-      points: 1,
     },
     {
       id: 'l5u16m1e2',
@@ -296,12 +280,11 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'E minor -- it is iii in C major and vi in G major', correct: true },
           { label: 'F major -- it is IV in C major and not diatonic in G major', correct: false },
-          { label: 'Bb major -- it is borrowed from C minor', correct: false },
+          { label: 'Bb major -- it is borrowed from C minor and is not diatonic in G major', correct: false },
           { label: 'F# diminished -- it signals the new key', correct: false },
         ],
       },
       hint: 'Find chords common to both keys. C major: C Dm Em F G Am Bdim. G major: G Am Bm C D Em F#dim. Shared chords include C, Em, Am, G. E minor as iii/vi is a strong pivot choice.',
-      points: 1,
     },
     {
       id: 'l5u16m1e3',
@@ -313,11 +296,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Establish the old key, introduce the pivot chord, then confirm the new key with a cadence', correct: true },
           { label: 'Play a chromatic scale between the two keys', correct: false },
           { label: 'Stop playing, change key signature, then resume', correct: false },
-          { label: 'Repeat the tonic of the new key until the listener adjusts', correct: false },
+          { label: 'Establish the new key, then introduce the pivot chord between the two keys, then confirm the old key with a cadence', correct: false },
         ],
       },
       hint: 'Pivot chord modulation unfolds in three stages: (1) the old key is clearly established, (2) a diatonic chord is reinterpreted as belonging to the new key, (3) the new key is confirmed with a cadence (typically V-I).',
-      points: 1,
     },
   ],
 
@@ -330,14 +312,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: '5 -- the keys whose signatures differ by at most one sharp or flat', correct: true },
+          { label: '5 -- the other keys that differ from the home key by at most one sharp or flat', correct: true },
           { label: '2 -- only the dominant and subdominant', correct: false },
           { label: '12 -- every key is closely related', correct: false },
-          { label: '3 -- the relative minor, dominant, and subdominant', correct: false },
+          { label: '3 -- the relative minor, the dominant and the subdominant, and no others', correct: false },
         ],
       },
       hint: 'Closely related keys differ by at most one accidental in their key signatures. For C major: G major (+1#), F major (+1b), A minor (relative), E minor (rel. of G), D minor (rel. of F). That gives 5 closely related keys.',
-      points: 1,
     },
     {
       id: 'l5u16m2e2',
@@ -347,13 +328,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'The dominant key differs by only one accidental, and the two keys share most of their diatonic chords', correct: true },
-          { label: 'The dominant key has the same tonic note', correct: false },
+          { label: 'The two keys share only one chord, the V of the home key, which becomes the new tonic', correct: false },
           { label: 'The dominant key uses no sharps or flats', correct: false },
           { label: 'The dominant is always the brightest sounding key', correct: false },
         ],
       },
       hint: 'C major and G major share 6 of 7 notes (only F vs F#). This overlap means many chords are common to both keys, providing abundant pivot chord options and a seamless transition.',
-      points: 1,
     },
     {
       id: 'l5u16m2e3',
@@ -369,7 +349,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Closely related keys share all but one accidental with C major (0 sharps/flats). G major has 1#, F major has 1b, and their relative minors (E minor, D minor) plus the relative minor of C (A minor) complete the set.',
-      points: 1,
     },
   ],
 
@@ -382,14 +361,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A modulation that moves to the new key abruptly at a phrase boundary, without a pivot chord', correct: true },
+          { label: 'A modulation that moves to the new key abruptly at a phrase boundary, with no pivot chord', correct: true },
           { label: 'A modulation that uses a pivot chord shared between the two keys', correct: false },
-          { label: 'A modulation that moves by half step using chromatic voice leading', correct: false },
+          { label: 'A modulation that slides gradually up or down a half step using chromatic voice leading', correct: false },
           { label: 'A modulation that happens gradually over many measures', correct: false },
         ],
       },
       hint: 'Direct modulation is the most abrupt type: one phrase ends in the old key, and the next phrase simply starts in the new key. No pivot chord or chromatic preparation bridges the gap. Common in pop and hymn tunes.',
-      points: 1,
     },
     {
       id: 'l5u16m3e2',
@@ -398,14 +376,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A modulation where a single sustained pitch serves as a bridge between two keys, reinterpreted in the new key context', correct: true },
-          { label: 'A modulation where the bass note stays on the tonic throughout', correct: false },
+          { label: 'A modulation in which one sustained pitch bridges two keys and is reheard in the new key', correct: true },
+          { label: 'A modulation in which a chord is respelled enharmonically so that the same sound belongs to two distant keys', correct: false },
           { label: 'A modulation that uses only notes common to both scales', correct: false },
-          { label: 'A modulation that resolves to the common chord of two keys', correct: false },
+          { label: 'A modulation that resolves to a chord common to both keys and then stays on it as the new tonic', correct: false },
         ],
       },
       hint: 'In common-tone modulation, one note is held (or repeated) while the harmony shifts around it. That note gains a new function in the new key. This technique works well for modulating to distant keys.',
-      points: 1,
     },
     {
       id: 'l5u16m3e3',
@@ -415,13 +392,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'A modulation achieved by chromatically altering one or more notes in a chord to pivot into the new key', correct: true },
-          { label: 'A modulation that uses only chromatic scales', correct: false },
+          { label: 'A modulation through a diatonic pivot chord shared by the old key and the new, with no chromatic alteration of its notes', correct: false },
           { label: 'A modulation to a key with more sharps or flats', correct: false },
           { label: 'A modulation that avoids all diatonic chords', correct: false },
         ],
       },
       hint: 'Chromatic modulation uses half-step voice leading to transform a chord from the old key into a chord that belongs to the new key. One or more notes shift by a semitone, smoothly redirecting the harmony.',
-      points: 1,
     },
   ],
 
@@ -430,7 +406,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l5u16m4e1',
       type: 'chord_build',
-      prompt: 'Build bVI in C major. This chord is borrowed from C minor: Ab major (Ab, C, Eb). Select all 3 notes.',
+      prompt: 'Build bVI in C major, a chord borrowed from C minor. Select all 3 notes.',
       config: {
         type: 'chord_build',
         root: 'A',
@@ -439,12 +415,11 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'bVI in C major = Ab major: Ab (8), C (0), Eb (3). This chord is borrowed from C natural minor, where VI is Ab major. The Ab and Eb are chromatic notes in C major.',
-      points: 2,
     },
     {
       id: 'l5u16m4e2',
       type: 'chord_build',
-      prompt: 'Build iv in C major. This chord is borrowed from C minor: F minor (F, Ab, C). Select all 3 notes.',
+      prompt: 'Build iv in C major, a chord borrowed from C minor. Select all 3 notes.',
       config: {
         type: 'chord_build',
         root: 'F',
@@ -453,7 +428,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 3,
       },
       hint: 'iv in C major = F minor: F (5), Ab (8), C (0). In C major, IV is F major (F, A, C). Borrowing from C minor lowers the A to Ab, creating the darker-sounding minor subdominant.',
-      points: 2,
     },
     {
       id: 'l5u16m4e3',
@@ -462,14 +436,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Borrowing chords from the parallel minor (or major) key to add chromatic color without leaving the home key', correct: true },
-          { label: 'Mixing two different modes like Dorian and Mixolydian in the same passage', correct: false },
+          { label: 'Borrowing chords from the parallel key', correct: true },
+          { label: 'Mixing the scales of two unrelated keys, such as C major and F# major, freely within the same passage', correct: false },
           { label: 'Playing a major and minor chord at the same time', correct: false },
-          { label: 'Switching between relative major and minor keys', correct: false },
+          { label: 'Borrowing chords from the relative major or minor key', correct: false },
         ],
       },
       hint: 'Mode mixture borrows chords from the parallel key (same tonic, opposite mode). In C major, you borrow from C minor: bIII (Eb), iv (Fm), bVI (Ab), bVII (Bb). These add darkness and chromatic richness.',
-      points: 1,
     },
   ],
 
@@ -482,14 +455,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Ending a piece in a minor key with a major tonic chord by raising the third of the final chord', correct: true },
+          { label: 'Ending a piece in a minor key with a major tonic chord by raising only the third of the final chord', correct: true },
           { label: 'A chord progression that uses only thirds', correct: false },
           { label: 'A minor third interval used in a major key', correct: false },
-          { label: 'A French ornamental trill on the third degree', correct: false },
+          { label: 'Ending a piece in a major key with a minor tonic chord by lowering the third of the final chord', correct: false },
         ],
       },
       hint: 'The Picardy third is a centuries-old technique: a minor-key piece ends on a major I chord (e.g., C minor piece ending on C major). The raised third creates a bright, resolved ending after minor-key darkness.',
-      points: 1,
     },
     {
       id: 'l5u16m5e2',
@@ -498,14 +470,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Using chords from the major key with the same tonic, such as a major IV or major I chord, in a minor-key context', correct: true },
-          { label: 'Modulating permanently to the major key', correct: false },
+          { label: 'Using chords from the major key with the same tonic in a minor-key context', correct: true },
+          { label: 'Modulating permanently to the relative major key, the major key that shares its key signature', correct: false },
           { label: 'Playing the major scale over minor chords', correct: false },
-          { label: 'Using the relative major key chords', correct: false },
+          { label: 'Using chords from the relative major key in a minor-key context', correct: false },
         ],
       },
       hint: 'Mode mixture works in both directions. A minor key can borrow from its parallel major: e.g., in A minor, you can borrow IV from A major (D major instead of D minor) to brighten the harmony temporarily.',
-      points: 1,
     },
     {
       id: 'l5u16m5e3',
@@ -516,12 +487,11 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Using a major IV chord in a minor key, borrowed from the parallel major', correct: true },
           { label: 'Using the V chord in a minor key (which requires a raised 7th from harmonic minor)', correct: false },
-          { label: 'Modulating to the relative major key', correct: false },
-          { label: 'Using a secondary dominant to tonicize the dominant', correct: false },
+          { label: 'Modulating to the relative major key and confirming it with a cadence in that key', correct: false },
+          { label: 'Using a secondary dominant to tonicize the dominant, as when V/V moves to V in the minor key', correct: false },
         ],
       },
       hint: 'The V chord in minor comes from harmonic minor \u2014 it belongs to the minor key itself, not to mode mixture. Mode mixture borrows chords from the parallel key. A major IV in minor (e.g., D major in A minor instead of D minor) is a common example; Level 4 traced the same chord to ascending melodic minor, and both readings are common.',
-      points: 1,
     },
   ],
 
@@ -541,11 +511,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'A two-part structure (A-B) where each section is usually repeated, and B often modulates or contrasts with A', correct: true },
           { label: 'A piece with only two chords', correct: false },
           { label: 'A composition for two instruments', correct: false },
-          { label: 'A form with two identical sections played twice', correct: false },
+          { label: 'A three-part structure (A-B-A) where the first section returns after B', correct: false },
         ],
       },
       hint: 'Binary form (AB) divides a piece into two complementary sections. Section A typically ends away from the tonic (often on V), and section B returns to the tonic. Both sections are usually repeated (||: A :||: B :||).',
-      points: 1,
     },
     {
       id: 'l5u17m1e2',
@@ -554,14 +523,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'In rounded binary, the A material returns at the end of the B section, creating an ABA-like structure within the binary framework', correct: true },
-          { label: 'Rounded binary has curved phrase endings instead of straight cadences', correct: false },
+          { label: 'In rounded binary, the A material returns at the end of B, giving an ABA-like shape inside the binary form', correct: true },
+          { label: 'In rounded binary, the A material returns in full at the end as a separate third section, so the form is really ternary', correct: false },
           { label: 'Rounded binary repeats each section three times instead of two', correct: false },
           { label: 'Rounded binary is always in a minor key', correct: false },
         ],
       },
       hint: 'Rounded binary (||: A :||: B A\' :||) brings back the opening A material at the end of the B section. Simple binary does not return to A. Many Classical minuets and scherzos use rounded binary form.',
-      points: 1,
     },
     {
       id: 'l5u17m1e3',
@@ -570,14 +538,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A three-part structure where the first section returns after a contrasting middle section, with each section being self-contained', correct: true },
+          { label: 'A three-part structure where the first section returns after a contrasting middle section', correct: true },
           { label: 'A piece with three different melodies that never repeat', correct: false },
-          { label: 'A form where the tempo changes three times', correct: false },
+          { label: 'A two-part structure where the first section is repeated and then a contrasting section ends the piece', correct: false },
           { label: 'A piece written in 3/4 time', correct: false },
         ],
       },
       hint: 'Ternary form has three distinct sections: A (statement), B (contrast), A (return). Unlike rounded binary, each section in ternary form is harmonically self-contained, usually ending with a cadence in its own key.',
-      points: 1,
     },
   ],
 
@@ -590,14 +557,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A form where verses have the same music but different lyrics, alternating with a recurring chorus that has fixed lyrics and melody', correct: true },
-          { label: 'A form where the verse and chorus are identical', correct: false },
+          { label: 'A form in which verses with new lyrics alternate with a recurring chorus', correct: true },
+          { label: 'A form where the verse and the chorus use identical music, lyrics and melody from start to finish', correct: false },
           { label: 'A form with only a verse section and no chorus', correct: false },
-          { label: 'A classical form used exclusively in opera', correct: false },
+          { label: 'A classical form used exclusively in opera, where each act is sung straight through without repeats', correct: false },
         ],
       },
       hint: 'Verse-chorus is the most common pop/rock form. Verses advance the story with changing lyrics over the same music. The chorus provides the emotional peak with a consistent, memorable hook.',
-      points: 1,
     },
     {
       id: 'l5u17m2e2',
@@ -606,14 +572,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A form with a repeated A section, a contrasting B section (bridge), and a final return of A, typically 32 bars total', correct: true },
-          { label: 'A form with four identical 8-bar sections', correct: false },
-          { label: 'A form with two verses and two choruses', correct: false },
+          { label: 'A form with a repeated A section and a contrasting bridge before A returns, usually in 32 bars', correct: true },
+          { label: 'A form with four identical 8-bar sections, each a copy of the first: 32 bars of unbroken repetition', correct: false },
+          { label: 'A form with two verses and two choruses that alternate, plus a short instrumental break that repeats the chorus melody', correct: false },
           { label: 'A jazz improvisation structure with no fixed sections', correct: false },
         ],
       },
       hint: 'AABA is the classic Tin Pan Alley / Great American Songbook form. Each section is typically 8 bars. The B section (bridge or "middle eight") provides contrast before the final A returns. Many jazz standards use this form.',
-      points: 1,
     },
     {
       id: 'l5u17m2e3',
@@ -624,12 +589,11 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'Exposition, development, and recapitulation', correct: true },
           { label: 'Verse, chorus, and bridge', correct: false },
-          { label: 'Introduction, theme, and coda', correct: false },
+          { label: 'Introduction, development, and recapitulation', correct: false },
           { label: 'Prelude, fugue, and postlude', correct: false },
         ],
       },
       hint: 'Sonata form: the exposition presents two contrasting themes in different keys, the development fragments and transforms them through distant keys, and the recapitulation restates both themes in the home key.',
-      points: 1,
     },
   ],
 
@@ -643,13 +607,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'A single melodic line with no accompaniment or harmony -- one voice, one pitch at a time', correct: true },
-          { label: 'A melody with chordal accompaniment underneath', correct: false },
-          { label: 'Multiple independent melodies sounding simultaneously', correct: false },
-          { label: 'A solo instrument playing chords', correct: false },
+          { label: 'A melody with chordal accompaniment underneath it, played by a pianist or a guitarist in block chords', correct: false },
+          { label: 'Multiple independent melodies sounding simultaneously, each with its own rhythm and contour', correct: false },
+          { label: 'A solo instrument playing a succession of chords, with no melody on top of them', correct: false },
         ],
       },
       hint: 'Monophony is the simplest texture: a single unaccompanied melody. Even if many people sing or play the same melody (in unison or octaves), it remains monophonic because there is only one musical line.',
-      points: 1,
     },
     {
       id: 'l5u17m3e2',
@@ -658,14 +621,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Two or more independent melodic lines sounding simultaneously, each with its own rhythm and contour', correct: true },
-          { label: 'A single melody played by many instruments in unison', correct: false },
-          { label: 'A melody supported by block chords', correct: false },
-          { label: 'Music with no discernible melody', correct: false },
+          { label: 'Two or more independent melodic lines sounding at once with their own rhythms and contours', correct: true },
+          { label: 'A single melody played by many instruments in unison, the parts sharing one rhythm and one contour', correct: false },
+          { label: 'A main melody supported by block chords that move in the same rhythm as the tune that sits above them', correct: false },
+          { label: 'Music with no discernible melody, in which only rhythm and harmony carry the musical interest', correct: false },
         ],
       },
       hint: 'Polyphony features multiple independent voices, each with melodic interest. A Bach fugue is the classic example: each voice enters with the same theme but then moves independently, weaving a complex contrapuntal web.',
-      points: 1,
     },
     {
       id: 'l5u17m3e3',
@@ -675,13 +637,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'A primary melody accompanied by chords or harmonic support, where all parts move in the same rhythm or support the melody', correct: true },
-          { label: 'All voices singing the same melody at the same pitch', correct: false },
-          { label: 'Two equally important melodies intertwining', correct: false },
-          { label: 'Music without any melody, consisting only of rhythmic patterns', correct: false },
+          { label: 'All voices singing the same melody at the same pitch and in the same rhythm', correct: false },
+          { label: 'Two or more independent melodies of equal importance, each moving in its own rhythm', correct: false },
+          { label: 'Music without any melody, consisting only of rhythmic patterns played on unpitched percussion instruments', correct: false },
         ],
       },
       hint: 'Homophony has one dominant melody with harmonic accompaniment. Most pop, rock, and classical music from the Classical era onward is homophonic. A singer with guitar chords is a clear example.',
-      points: 1,
     },
   ],
 
@@ -694,14 +655,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'The 3rd and 7th of each chord, which define its quality and create smooth voice leading between chords', correct: true },
-          { label: 'The root and 5th of each chord', correct: false },
-          { label: 'The melody notes that fall on strong beats', correct: false },
+          { label: "The 3rd and 7th that define each chord's quality and lead smoothly between chords", correct: true },
+          { label: "The root and 5th, since the root names the chord and the 5th decides whether it is major or minor", correct: false },
+          { label: 'The melody notes that fall on the strong beats of each bar, since those are the notes heard most clearly in the piece', correct: false },
           { label: 'Chromatic passing tones between chord tones', correct: false },
         ],
       },
       hint: 'Guide tones (3rds and 7ths) are the most harmonically defining notes of a chord. The root and 5th are structurally important but generic; the 3rd determines major/minor and the 7th determines chord type.',
-      points: 1,
     },
     {
       id: 'l5u17m4e2',
@@ -712,12 +672,11 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'The guide tones move by step or remain as common tones: F-C in Dm7, F-B in G7, E-B in Cmaj7', correct: true },
           { label: 'The guide tones jump by large intervals between each chord', correct: false },
-          { label: 'The guide tones remain the same notes throughout all three chords', correct: false },
+          { label: 'The guide tones remain the same two notes throughout all three chords: F-C in Dm7, G7 and Cmaj7', correct: false },
           { label: 'The guide tones follow the bass line exactly', correct: false },
         ],
       },
       hint: 'Dm7 guide tones: F (3rd), C (7th). Into G7: F holds as a common tone and becomes the 7th, while C steps down a half step to B, the 3rd. Into Cmaj7: B holds and becomes the 7th, while F steps down a half step to E, the 3rd. Minimal motion = smooth voice leading.',
-      points: 1,
     },
     {
       id: 'l5u17m4e3',
@@ -726,14 +685,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Move each voice to the nearest available chord tone, preferring stepwise motion and common tones over leaps', correct: true },
+          { label: 'Move each voice to its nearest chord tone', correct: true },
           { label: 'All voices should move in parallel motion at all times', correct: false },
-          { label: 'Each voice should leap to the most distant chord tone for variety', correct: false },
+          { label: 'Each voice should move to the root of the next chord', correct: false },
           { label: 'The top voice must always ascend while the bottom voice descends', correct: false },
         ],
       },
       hint: 'Good voice leading minimizes movement: hold common tones, move other voices by step. This creates smooth, connected harmonic progressions. Guide tone lines demonstrate this principle with just the two most essential notes per chord.',
-      points: 1,
     },
   ],
 };

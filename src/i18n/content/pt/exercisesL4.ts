@@ -15,10 +15,10 @@ const overlay: ExerciseLevelOverlay = {
   l4u12m1e1: {
     prompt: 'O que é uma suspensão 4-3?',
     choices: [
-      'A 4.ª acima do baixo é retida do acorde anterior e resolve descendo para a 3.ª',
+      'Uma 4.ª retida desce para a 3.ª',
       'A 3.ª é elevada para a 4.ª e permanece aí',
       'Um acorde que alterna entre o 4.º e o 3.º graus',
-      'O baixo move-se do 4.º grau para o 3.º grau da escala',
+      'O baixo move-se do 4.º grau da escala para o 3.º grau da escala',
     ],
     hint: 'Numa suspensão 4-3, a 4.ª acima do baixo é uma dissonância transportada (suspensa) do acorde anterior. Depois resolve por grau conjunto descendente para a 3.ª consonante.',
   },
@@ -38,7 +38,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Suspensão (4-3 sobre o acorde V)',
       'Nota de passagem',
-      'Apogiatura',
+      'Apogiatura, atingida por salto',
       'Escapatória',
     ],
     hint: 'O C era consonante no acorde IV (F-A-C), depois foi retido para o acorde V (G-B-D) onde é dissonante (uma 4.ª perfeita acima do baixo G), e resolve descendo por grau conjunto para B (a 3.ª de V, uma 3.ª maior acima de G). Esta é uma suspensão 4-3 exemplar.',
@@ -49,10 +49,10 @@ const overlay: ExerciseLevelOverlay = {
   l4u12m2e1: {
     prompt: 'Como é que uma apogiatura aborda a sua nota dissonante?',
     choices: [
-      'Por salto — chega à dissonância sem preparação por grau conjunto',
-      'Por grau conjunto descendente apenas',
+      'Por salto, sem preparação por grau conjunto',
+      'Por grau conjunto descendente, e apenas a partir de cima',
       'Sendo retida do acorde anterior',
-      'Por meio-tom cromático',
+      'Sempre por meio-tom cromático, vindo de baixo',
     ],
     hint: 'Uma apogiatura é uma nota estranha acentuada abordada por salto e resolvida por grau conjunto na direção oposta. Ao contrário de uma suspensão, não tem preparação — salta diretamente para a dissonância.',
   },
@@ -60,7 +60,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Como é que uma escapatória difere de uma nota de passagem?',
     choices: [
       'Uma escapatória é abordada por grau conjunto mas parte por salto na direção oposta',
-      'Uma escapatória é abordada por salto e parte por grau conjunto',
+      'Uma escapatória é abordada por salto a partir da nota anterior do acorde e parte por grau conjunto',
       'Uma escapatória ocorre num tempo forte enquanto uma nota de passagem ocorre num tempo fraco',
       'Não há diferença; são a mesma coisa',
     ],
@@ -69,10 +69,10 @@ const overlay: ExerciseLevelOverlay = {
   l4u12m2e3: {
     prompt: 'Em que direção resolve um retardo?',
     choices: [
-      'Para cima por grau conjunto — é uma suspensão que resolve para cima em vez de para baixo',
-      'Para baixo por grau conjunto, como uma suspensão padrão',
+      'Para cima por grau, como uma suspensão que resolve ao contrário',
+      'Para baixo por grau conjunto, como resolve uma suspensão comum',
       'Para baixo por salto',
-      'Não resolve; permanece dissonante',
+      'Não resolve; a dissonância fica no ar, por resolver',
     ],
     hint: 'Um retardo é essencialmente uma suspensão que resolve por grau conjunto ascendente em vez de descendente. O exemplo mais comum é 7-8, onde a 7.ª acima do baixo resolve para cima até à oitava.',
   },
@@ -85,7 +85,7 @@ const overlay: ExerciseLevelOverlay = {
       'Uma nota sustentada ou repetida mantida através de harmonias em mudança acima dela',
       'Uma nota estranha ao acorde que se move por grau conjunto entre duas notas do acorde',
       'Um acorde mantido durante uma frase inteira',
-      'A nota mais grave de qualquer disposição de acorde',
+      'A nota mais grave de cada acorde, que muda a cada mudança de harmonia',
     ],
     hint: 'Um pedal (ou nota pedal) é uma nota única — geralmente a tónica ou a dominante — sustentada numa voz enquanto as outras vozes se movem por harmonias que podem ser dissonantes contra ela. O nome vem do pedal do órgão que mantém notas no baixo.',
   },
@@ -93,10 +93,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'O que é uma "nota cambiada" (também chamada grupo de bordaduras ou dupla bordadura)?',
     choices: [
-      'Duas notas estranhas ao acorde que se aproximam de uma nota do acorde tanto por cima como por baixo em sucessão',
+      'Bordaduras superior e inferior seguidas, à volta de uma nota do acorde',
       'Uma nota do acorde que muda para uma nota do acorde diferente',
       'Uma modulação de uma tonalidade para outra',
-      'Um acidente que muda a qualidade de um acorde',
+      'Um acidente que transforma a qualidade de um acorde, de maior para menor',
     ],
     hint: 'Uma nota cambiada (grupo de bordaduras) decora uma nota do acorde movendo-se para a bordadura superior, depois para a bordadura inferior (ou vice-versa) antes de regressar. Por exemplo: C-D-B-C ornamenta a nota C.',
   },
@@ -105,8 +105,8 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Na voz do baixo, geralmente na tónica ou na dominante',
       'Exclusivamente na voz do soprano',
-      'Apenas entre as duas vozes interiores',
-      'Alternando entre a voz mais aguda e a mais grave',
+      'Numa voz interior, como o tenor, porque o baixo tem de acompanhar as fundamentais dos acordes',
+      'Alternando, frase a frase, entre a voz mais aguda e a mais grave',
     ],
     hint: 'Embora os pedais possam ocorrer em qualquer voz (um "pedal invertido" está no soprano, um "pedal interno" está numa voz intermédia), a colocação mais comum é no baixo nos graus 1 (pedal de tónica) ou 5 (pedal de dominante).',
   },
@@ -115,21 +115,21 @@ const overlay: ExerciseLevelOverlay = {
 
   l4u12m4e1: {
     prompt:
-      'Constrói um acorde V7 na tonalidade de C maior. É G sétima da dominante: G-B-D-F. Seleciona as 4 notas.',
+      'Constrói um acorde V7 na tonalidade de C maior. Seleciona as 4 notas.',
     hint: 'G7 = G, B, D, F. Fundamental (G) + 3.ª maior (B) + 5.ª perfeita (D) + 7.ª menor (F). O trítono entre B e F impulsiona a resolução para C maior.',
   },
   l4u12m4e2: {
     prompt:
-      'Constrói um acorde V7 na tonalidade de G maior. É D sétima da dominante: D-F#-A-C. Seleciona as 4 notas.',
+      'Constrói um acorde V7 na tonalidade de G maior. Seleciona as 4 notas.',
     hint: 'D7 = D, F#, A, C. Fundamental (D) + 3.ª maior (F#) + 5.ª perfeita (A) + 7.ª menor (C). O trítono entre F# e C resolve para G maior.',
   },
   l4u12m4e3: {
     prompt: 'Como é que o trítono dentro de V7 resolve ao mover-se para I?',
     choices: [
-      'A sensível (3.ª de V7) resolve por meio-tom ascendente para a tónica; a 7.ª de V7 resolve por meio-tom descendente',
+      'A 3.ª sobe meio-tom para a tónica; a 7.ª desce meio-tom',
       'Ambas as notas do trítono resolvem por grau conjunto ascendente',
-      'O trítono expande-se para uma oitava',
-      'Ambas as notas do trítono descem por tom',
+      'A 7.ª sobe meio-tom para a tónica; a 3.ª desce meio-tom',
+      'Ambas as notas do trítono descem um tom até ao acorde de I',
     ],
     hint: 'Em G7 a resolver para C: B (sensível, 3.ª de V7) resolve para cima até C; F (7.ª de V7) resolve para baixo até E. O trítono B-F contrai para dentro para C-E. Este movimento contrário é o motor da resolução tonal.',
   },
@@ -149,10 +149,10 @@ const overlay: ExerciseLevelOverlay = {
   l4u12m5e2: {
     prompt: 'V4/3 (V7 em segunda inversão) resolve tipicamente para que acorde?',
     choices: [
-      'I (ou I6) — o baixo (5.ª de V7) desce por grau conjunto até à fundamental ou 3.ª de I',
-      'IV — o baixo salta para a subdominante',
-      'vi — o baixo move-se para a submediante',
-      'Não resolve; é um acorde estável',
+      'I ou I6 — o baixo desce à fundamental ou sobe à 3.ª',
+      'IV — o baixo salta da 5.ª de V7 para a nota da subdominante, acima',
+      'vi — o baixo salta uma 5.ª, da 5.ª de V7 para a submediante',
+      'ii — o baixo mantém a 5.ª de V7, que passa a fundamental de ii',
     ],
     hint: 'V4/3 tem a 5.ª de V7 no baixo (D em G7/D em C maior). O D resolve tipicamente por grau conjunto — desce para C (fundamental de I) ou sobe para E (dando I6). O trítono B-F continua a resolver como habitualmente.',
   },
@@ -175,19 +175,19 @@ const overlay: ExerciseLevelOverlay = {
 
   l4u13m1e1: {
     prompt:
-      'Constrói um acorde ii7 em C maior. É D sétima menor: D-F-A-C. Seleciona as 4 notas.',
+      'Constrói um acorde ii7 em C maior. Seleciona as 4 notas.',
     hint: 'Dm7 = D, F, A, C. Fundamental (D) + 3.ª menor (F) + 5.ª perfeita (A) + 7.ª menor (C). Este é o acorde de sétima pré-dominante mais comum em tonalidades maiores.',
   },
   l4u13m1e2: {
     prompt:
-      'Constrói um acorde iiø7 em C menor. É D sétima meio-diminuto: D-F-Ab-C. Seleciona as 4 notas.',
+      'Constrói um acorde iiø7 em C menor. Seleciona as 4 notas.',
     hint: 'Dø7 = D, F, Ab, C. Fundamental (D) + 3.ª menor (F) + 5.ª diminuta (Ab) + 7.ª menor (C). Em tonalidades menores, o acorde ii é meio-diminuto porque a 5.ª (Ab) é baixada.',
   },
   l4u13m1e3: {
     prompt: 'Por que é que o acorde ii7 é considerado um pré-dominante?',
     choices: [
-      'Progride mais frequentemente para V ou V7, preparando a harmonia dominante',
-      'Resolve diretamente para o acorde I de tónica',
+      'Vai normalmente para V ou V7, preparando a dominante',
+      'Resolve diretamente para o acorde I de tónica, saltando a dominante',
       'Substitui a função dominante inteiramente',
       'Aparece apenas antes do acorde IV',
     ],
@@ -199,17 +199,17 @@ const overlay: ExerciseLevelOverlay = {
   l4u13m2e1: {
     prompt: 'Numa tonalidade maior, qual é a qualidade do acorde iii7?',
     choices: [
-      'Sétima menor — construído sobre a mediante com uma tríade menor e 7.ª menor',
+      'Sétima menor — uma tríade menor com 7.ª menor',
       'Sétima maior — construído com uma tríade maior e 7.ª maior',
       'Sétima da dominante — uma tríade maior com 7.ª menor',
-      'Sétima meio-diminuto — uma tríade diminuta com 7.ª menor',
+      'Sétima meio-diminuta — uma tríade diminuta com 7.ª menor',
     ],
     hint: 'Em C maior, iii7 = E-G-B-D. A tríade E-G-B é menor, e E a D é uma 7.ª menor (10 meios-tons). Portanto iii7 é um acorde de sétima menor, tal como ii7 e vi7.',
   },
   l4u13m2e2: {
     prompt: 'Numa tonalidade maior, qual é a qualidade do acorde vi7?',
     choices: [
-      'Sétima menor — uma tríade menor mais uma 7.ª menor acima da fundamental',
+      'Sétima menor — tríade menor mais 7.ª menor',
       'Sétima maior — uma tríade maior mais uma 7.ª maior acima da fundamental',
       'Sétima da dominante — uma tríade maior mais uma 7.ª menor acima da fundamental',
       'Sétima diminuto — uma tríade diminuta mais uma 7.ª diminuta',
@@ -222,8 +222,8 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Sétima maior — frequentemente usado como acorde de tónica colorido no jazz e pop',
       'Sétima da dominante — resolve sempre para IV',
-      'Sétima menor — usado apenas em tonalidades menores',
-      'Sétima meio-diminuto — cria forte dissonância em repouso',
+      'Sétima maior — um acorde clássico cuja 7.ª tem de resolver, por isso o jazz e o pop não o usam como tónica',
+      'Sétima meio-diminuta — cria forte dissonância em repouso',
     ],
     hint: 'Em C maior, Imaj7 = C-E-G-B. A 7.ª maior (B) acrescenta calor e cor à tríade de tónica sem comprometer a sua estabilidade. É uma sonoridade básica no jazz, bossa nova e muitos estilos pop.',
   },
@@ -232,19 +232,19 @@ const overlay: ExerciseLevelOverlay = {
 
   l4u13m3e1: {
     prompt:
-      'Constrói um acorde de sétima diminuto sobre B (vii°7 em C menor): B-D-F-Ab. Seleciona as 4 notas.',
+      'Constrói vii°7 em C menor (menor harmónica): o acorde de sétima diminuta sobre a sensível. Seleciona as 4 notas.',
     hint: 'B°7 = B, D, F, Ab. Fundamental (B) + 3.ª menor (D) + 5.ª diminuta (F) + 7.ª diminuta (Ab). Todos os três intervalos superiores são 3.as menores empilhadas (3+3+3 meios-tons).',
   },
   l4u13m3e2: {
     prompt:
-      'Constrói um acorde de sétima meio-diminuto sobre B (viiø7 em C maior): B-D-F-A. Seleciona as 4 notas.',
+      'Constrói viiø7 em C maior: o acorde de sétima meio-diminuta sobre a sensível. Seleciona as 4 notas.',
     hint: 'Bø7 = B, D, F, A. Fundamental (B) + 3.ª menor (D) + 5.ª diminuta (F) + 7.ª menor (A). Ao contrário do sétima diminuto, o intervalo superior é uma 3.ª maior (F a A), tornando a 7.ª menor em vez de diminuta.',
   },
   l4u13m3e3: {
     prompt:
       'Qual é a diferença fundamental entre um acorde de sétima diminuto e um meio-diminuto?',
     choices: [
-      'O diminuto tem uma 7.ª diminuta (9 meios-tons); o meio-diminuto tem uma 7.ª menor (10 meios-tons)',
+      'A 7.ª: diminuta num, menor no outro',
       'O diminuto usa uma tríade menor; o meio-diminuto usa uma tríade maior',
       'O diminuto tem uma 5.ª perfeita; o meio-diminuto tem uma 5.ª diminuta',
       'São o mesmo acorde com nomes diferentes',
@@ -259,7 +259,7 @@ const overlay: ExerciseLevelOverlay = {
       'No modelo funcional T-PD-D-T, que função harmónica desempenha o acorde ii?',
     choices: [
       'Pré-dominante (PD) — prepara a dominante',
-      'Tónica (T) — substitui I',
+      'Tónica (T) — substitui o acorde de I',
       'Dominante (D) — resolve para I',
       'Não tem função padrão',
     ],
@@ -279,10 +279,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Que acorde pode substituir IV como pré-dominante numa tonalidade maior?',
     choices: [
-      'ii — ambos partilham duas notas comuns e desempenham a mesma função pré-dominante',
-      'V — porque está próximo de IV no ciclo de quintas',
+      'ii — ambos são pré-dominantes e partilham duas notas',
+      'V — porque está muito próximo de IV no ciclo de quintas',
       'iii — porque é adjacente a IV por grau conjunto',
-      'vii° — porque contém a sensível',
+      'vii° — partilha duas notas com ii, por isso pode substituir IV como pré-dominante',
     ],
     hint: 'Em C maior, IV = F-A-C e ii = D-F-A. Partilham F e A (duas notas comuns) e ambos criam impulso pré-dominante para V. O acorde ii é frequentemente preferido na escrita a quatro vozes porque ii-V apresenta movimento de baixo suave por 5.ª.',
   },
@@ -292,7 +292,7 @@ const overlay: ExerciseLevelOverlay = {
   l4u13m5e1: {
     prompt: 'Qual é a sequência harmónica diatónica mais comum?',
     choices: [
-      'Quintas descendentes — cada fundamental desce uma 5.ª (ou sobe uma 4.ª): ex. I-IV-vii°-iii-vi-ii-V-I',
+      'Quintas descendentes',
       'Quintas ascendentes — cada fundamental sobe uma 5.ª',
       'Terças descendentes — cada fundamental desce uma 3.ª',
       'Descida cromática — cada fundamental desce um meio-tom',
@@ -305,7 +305,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Cada fundamental sobe uma 2.ª diatónica: ex. I-ii-iii-IV',
       'Cada fundamental desce uma 2.ª: ex. I-vii°-vi-V',
-      'As fundamentais alternam entre 2.as ascendentes e descendentes',
+      'As fundamentais dos acordes alternam entre 2.as ascendentes e descendentes',
       'As fundamentais movem-se por 3.as mas soam como 2.as',
     ],
     hint: 'Uma sequência de segundas ascendentes move cada fundamental por grau conjunto ascendente ao longo da escala. Embora menos comum do que as quintas descendentes, cria um forte sentido de movimento para a frente. É frequentemente combinada com inversões alternadas para suavizar a condução de vozes.',
@@ -313,10 +313,10 @@ const overlay: ExerciseLevelOverlay = {
   l4u13m5e3: {
     prompt: 'O que define uma sequência harmónica?',
     choices: [
-      'Um padrão de progressões de acordes repetido em níveis de altura sucessivos dentro da tonalidade',
-      'Um único acorde repetido várias vezes',
+      'Um padrão de acordes repetido em níveis de altura sucessivos na tonalidade',
+      'Um único acorde repetido várias vezes enquanto a melodia por cima sobe grau a grau',
       'Uma melodia tocada em oitavas diferentes',
-      'Uma série de modulações para tonalidades distantes',
+      'Uma fórmula cadencial repetida sem qualquer alteração no fim de cada uma das frases',
     ],
     hint: 'Uma sequência harmónica pega num padrão curto de acordes (o modelo) e repete-o em diferentes níveis de altura diatónicos. Os intervalos entre fundamentais mantêm-se consistentes, embora a sua qualidade exata possa mudar para permanecer dentro da tonalidade.',
   },
@@ -331,7 +331,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'No contraponto de primeira espécie, qual é a regra fundamental?',
     choices: [
-      'Nota contra nota — cada nota no contraponto alinha-se com uma nota no cantus firmus, usando apenas consonâncias',
+      'Nota contra nota, usando apenas consonâncias',
       'Duas notas contra uma — o contraponto move-se ao dobro da velocidade do cantus firmus',
       'Ritmo livre — qualquer ritmo pode ser usado contra o cantus firmus',
       'Apenas uníssonos e oitavas são permitidos entre as vozes',
@@ -356,7 +356,7 @@ const overlay: ExerciseLevelOverlay = {
       'As dissonâncias podem ocorrer apenas em tempos fracos, abordadas e abandonadas por grau conjunto na mesma direção',
       'As dissonâncias podem ocorrer em qualquer tempo desde que resolvam',
       'Nenhuma dissonância é permitida na segunda espécie',
-      'As dissonâncias devem ocorrer em tempos fortes e resolver em tempos fracos',
+      'As dissonâncias devem ocorrer em tempos fortes e depois resolver por grau conjunto nos tempos fracos',
     ],
     hint: 'A segunda espécie (2:1) tem duas notas contra cada nota do cantus firmus. Tempos fortes devem ser consonantes. Tempos fracos podem incluir notas de passagem — dissonâncias por grau conjunto que ligam duas consonâncias. Isto introduz dissonância controlada.',
   },
@@ -367,7 +367,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Como é tipicamente agrupado o compasso 5/4?',
     choices: [
       'Como 3+2 ou 2+3 — um agrupamento assimétrico de tempos de semínima',
-      'Como 5 tempos iguais sem agrupamento interno',
+      'Como 5 tempos de semínima iguais, todos sentidos com a mesma força, sem agrupamento interno',
       'Como 4+1, tratando-o como 4/4 com um tempo extra',
       'Como 2,5+2,5, dividindo igualmente ao meio',
     ],
@@ -376,10 +376,10 @@ const overlay: ExerciseLevelOverlay = {
   l4u14m2e2: {
     prompt: 'Como funciona o compasso 7/8 como compasso aditivo?',
     choices: [
-      'Combina grupos desiguais de colcheias (ex. 2+2+3, 3+2+2 ou 2+3+2)',
+      'Grupos desiguais de colcheias, ex. 2+2+3',
       'Tem 7 tempos iguais como um compasso simples padrão',
       'É um compasso composto com tempos de semínima com ponto',
-      'Alterna entre 3/8 e 4/8 a cada compasso',
+      'Alterna entre 3/8 e 4/8 de compasso em compasso, como um compasso misto',
     ],
     hint: '7/8 é um compasso aditivo: 7 colcheias são agrupadas em subtempos desiguais. Agrupamentos comuns são 2+2+3 (curto-curto-longo), 3+2+2 (longo-curto-curto) ou 2+3+2. O grupo longo soa como um tempo ligeiramente esticado.',
   },
@@ -389,7 +389,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       '2/2 — dois tempos de mínima por compasso, sentido em dois em vez de quatro',
       '4/4 tocado ao dobro da velocidade',
-      '2/4 com o andamento cortado ao meio',
+      '2/4 — dois tempos de semínima por compasso, com o andamento reduzido a metade',
       'Qualquer indicação de compasso onde os valores das notas são reduzidos a metade',
     ],
     hint: 'O tempo cortado (alla breve) é 2/2: dois tempos de mínima por compasso. Um compasso de 2/2 tem a mesma duração total que um de 4/4, mas conta-se em 2 (tempo de mínima) em vez de 4 (tempo de semínima) — as mesmas notas sentidas em dois tempos, dando uma pulsação mais ampla e fluida.',
@@ -400,20 +400,20 @@ const overlay: ExerciseLevelOverlay = {
   l4u14m3e1: {
     prompt: 'O que é uma nota de passagem cromática?',
     choices: [
-      'Uma nota estranha ao acorde que preenche um tom com um meio-tom cromático, movendo-se por meio-tom entre duas notas do acorde',
-      'Qualquer acidente que aparece na melodia',
+      'Uma nota que preenche um tom entre duas notas diatónicas, movendo-se por meios-tons',
+      'Qualquer nota com acidente que apareça na melodia, onde quer que ocorra',
       'Uma nota que salta cromaticamente de uma nota do acorde para outra',
-      'Uma nota de passagem que muda a tonalidade da passagem',
+      'Uma nota de passagem que muda a tonalidade de toda a passagem em que aparece',
     ],
     hint: 'Uma nota de passagem cromática preenche o intervalo entre duas notas do acorde que estão a um tom de distância. Por exemplo, entre C e D, um C# como nota de passagem cromática cria movimento suave por meio-tom: C-C#-D.',
   },
   l4u14m3e2: {
     prompt: 'O que é uma bordadura cromática?',
     choices: [
-      'Uma nota estranha ao acorde a meio-tom acima ou abaixo de uma nota do acorde, regressando à mesma nota do acorde',
-      'Uma bordadura que modula para uma nova tonalidade',
+      'Uma bordadura a meio-tom que regressa à mesma nota do acorde',
+      'Uma bordadura retirada da escala da tonalidade, em geral a um tom de distância',
       'Um som emprestado da tonalidade paralela',
-      'Qualquer bordadura numa passagem de escala cromática',
+      'Qualquer bordadura que apareça dentro de uma passagem de escala cromática',
     ],
     hint: 'Uma bordadura cromática é um ornamento que se move por meio-tom a partir de uma nota do acorde e regressa: ex. E-E#-E ou G-Gb-G. Acrescenta cor sem alterar a direção harmónica, funcionando como decoração de superfície.',
   },
@@ -421,7 +421,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Como se distingue uma ornamentação cromática de uma nota cromática estrutural (como uma sensível secundária)?',
     choices: [
-      'Ornamentações são notas estranhas ao acorde que decoram; notas cromáticas estruturais alteram a harmonia ou tonicizam um novo acorde',
+      'Só as notas estruturais mudam a harmonia',
       'Não há diferença; todas as notas cromáticas são ornamentações',
       'Ornamentações duram mais do que notas estruturais',
       'Notas estruturais estão sempre no baixo enquanto ornamentações estão nas vozes superiores',
@@ -436,7 +436,7 @@ const overlay: ExerciseLevelOverlay = {
       'Na tonalidade de C maior, um acorde contém as notas F, A e C. Qual é a sua análise com numerais romanos?',
     choices: [
       'IV — tríade de F maior construída sobre o 4.º grau da escala',
-      'ii — tríade de D menor em primeira inversão',
+      'ii — tríade de D menor em primeira inversão, com F no baixo',
       'vi — tríade de A menor em primeira inversão',
       'I6/4 — C maior em segunda inversão',
     ],
@@ -457,10 +457,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'O que indicam os números após um numeral romano (baixo cifrado)?',
     choices: [
-      'Os intervalos acima da nota do baixo, revelando a inversão do acorde',
-      'Os graus da escala das notas do acorde',
-      'O número de vozes a tocar o acorde',
-      'A duração do acorde em tempos',
+      'Os intervalos acima da nota do baixo, que revelam a inversão do acorde',
+      'Os graus da escala das notas do acorde na tonalidade, por exemplo 5-7-2-4 para V7 em C',
+      'O número de vozes diferentes que estão a tocar o acorde nesse momento',
+      'A duração do acorde, contada em tempos dentro do compasso',
     ],
     hint: 'Os números do baixo cifrado mostram intervalos acima da nota mais grave a soar. Sem números (ou 5/3) = estado fundamental. 6 (ou 6/3) = primeira inversão. 6/4 = segunda inversão. Para acordes de sétima: 7, 6/5, 4/3, 4/2 indicam do estado fundamental até à terceira inversão.',
   },
@@ -469,22 +469,22 @@ const overlay: ExerciseLevelOverlay = {
 
   l4u14m5e1: {
     prompt:
-      'Constrói o acorde III em A menor (menor natural). É C maior: C-E-G. Seleciona as 3 notas.',
+      'Constrói o acorde III em A menor (menor natural). Seleciona as 3 notas.',
     hint: 'Em A menor natural (A-B-C-D-E-F-G), a tríade sobre o 3.º grau é C-E-G, uma tríade maior. Este é III — a relativa maior. É um dos acordes característicos da harmonia em modo menor.',
   },
   l4u14m5e2: {
     prompt:
-      'Constrói o acorde VII em A menor (menor natural). É G maior: G-B-D. Seleciona as 3 notas.',
+      'Constrói o acorde VII em A menor (menor natural). Seleciona as 3 notas.',
     hint: 'Em A menor natural, a tríade sobre o 7.º grau é G-B-D, uma tríade maior. VII (acorde subtónico) está a um tom abaixo da tónica, ao contrário de vii° (acorde da sensível) da menor harmónica.',
   },
   l4u14m5e3: {
     prompt:
       'O que é o acorde subtónico VII na menor natural, e como difere de vii° na menor harmónica?',
     choices: [
-      'VII é uma tríade maior a um tom abaixo da tónica; vii° é uma tríade diminuta a meio-tom abaixo — apenas vii° tem função dominante',
-      'VII e vii° são o mesmo acorde com nomes diferentes',
+      'VII é maior, um tom abaixo; vii° é diminuto, meio-tom abaixo',
+      'VII e vii° são o mesmo acorde com nomes diferentes, consoante a escala menor usada',
       'VII é diminuto e vii° é maior',
-      'Ambos têm função dominante mas VII é mais forte',
+      'Ambos têm função dominante, mas VII é mais forte por ser uma tríade maior',
     ],
     hint: 'Em A menor natural, VII = G maior (G-B-D), a um tom abaixo de A. Em A menor harmónica, vii° = G#-B-D (diminuto), a meio-tom abaixo de A. O 7.º grau elevado (G#) cria a sensível que confere a vii° a sua forte atração para a tónica.',
   },

@@ -37,8 +37,8 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que significa "registo" em música?',
     choices: [
       'A posição relativa de agudo ou grave numa faixa de alturas',
-      'O nível de volume de uma interpretação',
-      'A velocidade a que as notas são tocadas',
+      'A intensidade com que se toca, mais forte no agudo e mais suave no grave',
+      'A velocidade a que as notas são tocadas, de muito lenta a muito rápida',
       'O número de instrumentos a tocar simultaneamente',
     ],
     hint: 'Registo descreve uma porção do espetro de alturas — registo grave, registo médio ou registo agudo.',
@@ -132,8 +132,8 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Qual é a diferença entre um intervalo harmónico e um intervalo melódico?',
     choices: [
-      'Intervalos harmónicos soam simultaneamente; intervalos melódicos soam em sequência',
-      'Intervalos harmónicos são consonantes; intervalos melódicos são dissonantes',
+      'Intervalos harmónicos fazem soar as duas notas ao mesmo tempo; intervalos melódicos tocam-nas uma após a outra',
+      'Intervalos harmónicos são sempre consonantes; intervalos melódicos são sempre dissonantes',
       'Intervalos harmónicos usam sustenidos; intervalos melódicos usam bemóis',
       'Intervalos harmónicos abrangem mais de uma oitava; intervalos melódicos não',
     ],
@@ -164,8 +164,8 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Brilhante, alegre e resolvido',
       'Sombrio, triste e tenso',
-      'Misterioso e ambíguo',
-      'Dissonante e instável',
+      'Misterioso, ambíguo e inquieto',
+      'Dissonante, áspero e instável',
     ],
     hint: 'As escalas maiores são percebidas como brilhantes e estáveis. A 3.ª maior e a 7.ª maior contribuem para este carácter positivo.',
   },
@@ -188,12 +188,24 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Qual é a nota característica que distingue o Dórico do menor natural?',
     choices: [
-      'Um 6.º grau elevado',
+      'Um 6.º grau elevado (natural)',
       'Um 2.º grau baixado',
       'Um 7.º grau elevado',
       'Um 5.º grau baixado',
     ],
     hint: 'O Dórico difere do menor natural por uma nota: o 6.º grau é elevado meio-tom. Em D Dórico, é B natural em vez de Bb.',
+  },
+  l9u31m2e4: {
+    prompt:
+      'Ouve esta escala e identifica o modo.',
+    choices: ['Jónio', 'Lídio', 'Mixolídio', 'Dórico'],
+    hint: 'O Jónio é a própria escala maior: o 1.º modo, sem nenhum grau alterado. O Lídio elevaria o 4.º grau (#4); o Mixolídio baixaria o 7.º (b7).',
+  },
+  l9u31m2e5: {
+    prompt:
+      'Ouve esta escala e identifica o modo.',
+    choices: ['Eólio', 'Dórico', 'Frígio', 'Lócrio'],
+    hint: 'O Eólio é a escala menor natural: o 6.º modo da escala maior. O Dórico elevaria o 6.º grau (6 natural); o Frígio baixaria o 2.º (b2); o Lócrio baixa o 2.º e o 5.º.',
   },
 
   // ---- l9u31m3: Pentatónica/Blues/Simétrica ----
@@ -213,10 +225,10 @@ const overlay: ExerciseLevelOverlay = {
   l9u31m3e3: {
     prompt: 'O que é a "blue note" numa escala de blues?',
     choices: [
-      'A nota cromática entre o 4.º e o 5.º graus (5.ª bemolizada / 4.ª sustenida)',
-      'A 3.ª menor de qualquer acorde',
+      'A 5.ª bemolizada (ou 4.ª sustenida), entre o 4.º e o 5.º graus',
+      'A tónica repetida uma oitava acima, no ponto mais agudo da escala',
       'Qualquer nota tocada com vibrato',
-      'A sensível da tonalidade',
+      'A sensível da tonalidade, a nota que fica meio-tom abaixo da tónica',
     ],
     hint: 'A blue note é a b5 (ou #4) acrescentada à pentatónica menor. Em C blues, é Gb/F#, entre F e G.',
   },
@@ -239,17 +251,17 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Que intervalos compõem uma tríade diminuta?',
     choices: [
       'Fundamental, 3.ª menor e 5.ª diminuta (trítono)',
-      'Fundamental, 3.ª maior e 5.ª perfeita',
+      'Fundamental, 3.ª maior e 5.ª perfeita (uma tríade maior)',
       'Fundamental, 3.ª menor e 5.ª perfeita',
-      'Fundamental, 3.ª maior e 5.ª aumentada',
+      'Fundamental, 3.ª maior e 5.ª aumentada (duas 3.as maiores)',
     ],
     hint: 'Diminuta = 3.ª menor (3 meios-tons) + 5.ª diminuta (6 meios-tons). Duas 3.as menores empilhadas produzem o trítono entre fundamental e 5.ª.',
   },
   l9u31m4e4: {
     prompt: 'Como descreverias o som de uma tríade aumentada?',
     choices: [
-      'Tensa e não resolvida com uma qualidade sonhadora e flutuante',
-      'Brilhante e estável como um acorde maior',
+      'Tensa e não resolvida, com uma qualidade sonhadora, flutuante e ambígua',
+      'Brilhante, assente e estável, tal como um simples acorde maior',
       'Sombria e pesada como um acorde menor',
       'Oca e medieval como um power chord',
     ],
@@ -274,8 +286,8 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'O que dá a um acorde de 7.ª dominante a sua sensação característica de tensão e desejo de resolver?',
     choices: [
-      'O trítono formado entre a 3.ª maior e a 7.ª menor',
-      'A 5.ª perfeita entre fundamental e 5.ª',
+      'O trítono entre a 3.ª e a 7.ª',
+      'A 5.ª perfeita formada entre a fundamental e a 5.ª do acorde',
       'A 3.ª maior entre fundamental e 3.ª',
       'A duplicação à oitava da fundamental',
     ],
@@ -288,7 +300,7 @@ const overlay: ExerciseLevelOverlay = {
       'Como acorde ii em tonalidades menores (p. ex. Bm7b5 em A menor)',
       'Como acorde I em tonalidades maiores',
       'Como acorde V em tonalidades maiores',
-      'Como acorde IV em progressões de blues',
+      'Como acorde IV de um blues de 12 compassos, onde todos os acordes são de 7.ª da dominante',
     ],
     hint: 'O acorde de sétima meio-diminuto (m7b5) ocorre naturalmente no 2.º grau da menor harmónica. Serve como acorde predominante conduzindo ao V em progressões ii-V-i menores.',
   },
@@ -312,10 +324,10 @@ const overlay: ExerciseLevelOverlay = {
   l9u32m1e3: {
     prompt: 'O que significa "melodia diatónica"?',
     choices: [
-      'Uma melodia que usa apenas as notas da tonalidade ou escala predominante',
+      'Uma melodia só com notas da tonalidade',
       'Uma melodia que usa sustenidos e bemóis fora da tonalidade',
       'Uma melodia tocada apenas numa corda da guitarra',
-      'Uma melodia que se move exclusivamente por graus',
+      'Uma melodia construída apenas com movimento por graus conjuntos, sem contornos de acorde como C-E-G',
     ],
     hint: 'Diatónico significa "pertencente à tonalidade." Uma melodia diatónica em C maior usa apenas C, D, E, F, G, A e B — sem acidentes.',
   },
@@ -324,9 +336,9 @@ const overlay: ExerciseLevelOverlay = {
       'Qual estratégia é mais eficaz para identificar graus individuais da escala numa melodia?',
     choices: [
       'Relacionar cada nota com a tónica cantando a escala até esse grau',
-      'Memorizar a frequência em hertz de cada nota',
+      'Memorizar a frequência exata, em hertz, de todas as notas do teclado',
       'Contar o número de linhas suplementares na pauta',
-      'Tocar a melodia ao contrário para verificar a resposta',
+      'Tratar a primeira nota da melodia como a tónica e contar a partir daí',
     ],
     hint: 'Ouvir graus da escala significa perceber cada nota em relação à tónica. Cantar desde "do" até à nota alvo é um método fiável.',
   },
@@ -348,8 +360,8 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Uma nota fora da tonalidade que preenche um tom entre duas notas diatónicas',
       'Qualquer nota tocada com acento',
-      'A primeira nota de uma escala cromática',
-      'Uma nota sustentada para lá da barra de compasso',
+      'A primeira nota de uma escala cromática, que começa na tónica e sobe por meios-tons',
+      'Uma nota prolongada do acorde anterior para o seguinte, através da barra de compasso',
     ],
     hint: 'Uma nota cromática de passagem é uma nota não diatónica que liga duas notas diatónicas a um tom de distância, dividindo esse tom em dois meios-tons.',
   },
@@ -362,7 +374,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Cadência perfeita (CAP)',
       'Meia cadência',
-      'Cadência plagal',
+      'Cadência imperfeita (CAI)',
       'Cadência interrompida',
     ],
     hint: 'Uma cadência perfeita (CAP) requer V para I em posição fundamental com a tónica no soprano. Proporciona a sensação mais forte de finalidade.',
@@ -409,9 +421,9 @@ const overlay: ExerciseLevelOverlay = {
       'Qual é o passo de preparação mais importante antes de ler à primeira vista uma melodia?',
     choices: [
       'Estabelecer a tónica cantando a escala ou arpejo da tonalidade',
-      'Memorizar a melodia inteira antes de começar',
-      'Ler a letra primeiro',
-      'Contar o número total de notas',
+      'Memorizar a melodia inteira de cor antes de cantares uma única nota',
+      'Ler a letra primeiro, para saberes que palavras vais ter de cantar',
+      'Contar o número total de notas da melodia antes de começares a cantar',
     ],
     hint: 'Estabelecer o centro tonal (tónica) no ouvido é essencial. Cantar uma escala ou arpejo de tónica rápidos ancora a tua perceção de altura antes de ler a melodia.',
   },
@@ -431,11 +443,11 @@ const overlay: ExerciseLevelOverlay = {
   },
   l9u32m5e2: {
     prompt:
-      'Uma canção alterna entre uma secção recorrente e secções contrastantes (A-B-A-B). Que forma é esta?',
+      'Uma canção pop alterna estrofes (letra nova de cada vez, mesma música) com um refrão que regressa sempre com a mesma letra e a mesma música. Que forma é esta?',
     choices: [
       'Forma estrofe-refrão',
       'Forma through-composed',
-      'Forma rondó',
+      'Forma rondó (ABACA)',
       'Forma sonata',
     ],
     hint: 'A forma estrofe-refrão alterna estrofes (letras diferentes, mesma melodia) com um refrão recorrente. É a estrutura mais comum na música popular.',
@@ -445,9 +457,9 @@ const overlay: ExerciseLevelOverlay = {
       'Que característica musical é mais útil para identificar o período estilístico histórico de uma peça?',
     choices: [
       'A combinação de instrumentação, linguagem harmónica e estrutura formal',
-      'A indicação de andamento sozinha',
+      'A indicação de andamento sozinha, tal como impressa por cima do primeiro compasso',
       'A armação de clave sozinha',
-      'O número de compassos na peça',
+      'O número total de compassos da peça, contados desde o primeiro até ao último',
     ],
     hint: 'Os períodos estilísticos são identificados por uma combinação de fatores: instrumentação (cravo vs. piano), vocabulário harmónico (triádico vs. cromático) e convenções formais (binária vs. forma sonata).',
   },

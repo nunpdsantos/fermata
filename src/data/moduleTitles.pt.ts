@@ -62,7 +62,7 @@ const titles: Record<string, readonly [title: string, subtitle: string]> = {
   l5u16m2: ["Modulação para Tonalidades Próximas", "Modulações práticas para V, IV, vi e relativa maior/menor"],
   l5u16m3: ["Modulação Direta, por Nota Comum e Cromática", "Modulação sem acordes pivot diatónicos"],
   l5u16m4: ["Mistura Modal — Acordes de Empréstimo", "Emprestar acordes do modo menor paralelo para cor expressiva"],
-  l5u16m5: ["Terça Picardia e Mistura Modal no Modo Menor", "Emprestar do modo maior paralelo num contexto de tonalidade menor"],
+  l5u16m5: ["Terça de Picardia e Mistura Modal no Modo Menor", "Emprestar do modo maior paralelo num contexto de tonalidade menor"],
   l5u17m1: ["Forma Binária e Ternária", "Estruturas musicais em duas e três partes"],
   l5u17m2: ["Formas de Canção e Introdução às Grandes Formas", "Estrofe-refrão, AABA, forma sonata, rondó e tema com variações"],
   l5u17m3: ["Textura", "Monofónica, homofónica, polifónica e outros tipos de textura"],
@@ -118,7 +118,7 @@ const titles: Record<string, readonly [title: string, subtitle: string]> = {
   l9u31m5: ["Reconhecimento de Qualidade de Acordes de Sétima", "Identificar todas as qualidades de acordes de sétima de ouvido — do caloroso maior com 7.ª ao tenso diminuto com 7.ª"],
   l9u32m1: ["Ditado Melódico: Diatónico", "Transcrever melodias diatónicas curtas de ouvido — movimento por graus e triádico"],
   l9u32m2: ["Ditado Melódico: Cromático", "Transcrever melodias com notas cromáticas de passagem, notas de vizinhança e dominantes secundárias"],
-  l9u32m3: ["Ditado Harmónico: Cadências e Progressões", "Identificar cadências, transcrever progressões e ditado de linha de baixo"],
+  l9u32m3: ["Ditado Harmónico: Cadências e Progressões", "Identificar cadências e transcrever progressões seguindo o baixo"],
   l9u32m4: ["Fundamentos de Leitura à Primeira Vista", "Solfejo móvel para leitura à primeira vista em tonalidades maiores e menores"],
   l9u32m5: ["Audição Contextual", "Identificar textura, forma, instrumentos e períodos estilísticos de ouvido"],
 };

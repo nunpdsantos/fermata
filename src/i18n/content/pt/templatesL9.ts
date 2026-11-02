@@ -54,7 +54,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve este intervalo, tocado em movimento {direction}, e identifica-o. Concentra-te em intervalos até à 5.ª perfeita.',
       hintTemplate:
-        'Treino auditivo de intervalos: 2m=1 (tenso), 2M=2 (passo), 3m=3 (triste), 3M=4 (brilhante), 4P=5 (aberto), 5P=7 (forte). Conta os meios-tons que ouves.',
+        'Treino auditivo de intervalos: 2m=1 (tenso), 2M=2 (passo), 3m=3 (triste), 3M=4 (brilhante), 4P=5 (aberto), trítono=6 (instável), 5P=7 (forte). Conta os meios-tons que ouves.',
     },
   ],
 
@@ -65,7 +65,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve este intervalo mais largo, tocado em movimento {direction}, e identifica-o.',
       hintTemplate:
-        'Intervalos largos: trítono=6 (tenso), 6m=8 (agridoce), 6M=9 (quente), 7m=10 (jazz), 7M=11 (anelante), 8P=12 (oitava).',
+        'Intervalos largos: 6m=8 (agridoce), 6M=9 (quente), 7m=10 (jazz), 7M=11 (anelante), 8P=12 (oitava).',
     },
   ],
 
@@ -77,6 +77,13 @@ const overlay: TemplateLevelOverlay = {
         'Ouve estas duas notas tocadas em simultâneo e identifica o intervalo harmónico.',
       hintTemplate:
         'Os intervalos harmónicos soam ambas as notas ao mesmo tempo. As consonâncias (3, 4, 5, 7, 8, 9, 12 meios-tons) fundem-se suavemente. As dissonâncias (1, 2, 6, 10, 11) criam tensão.',
+    },
+    {
+      // ear_training (interval, harmónico, composto)
+      promptTemplate:
+        'Ouve estas duas notas tocadas em simultâneo e identifica o intervalo composto (maior do que uma oitava).',
+      hintTemplate:
+        'Um intervalo composto é um intervalo simples mais uma oitava: uma 9.ª = oitava + 2.ª (9m = 13, 9M = 14 meios-tons), uma 10.ª = oitava + 3.ª (10M = 16), uma 11.ª = oitava + 4.ª (11P = 17). Ouve o intervalo simples acima da oitava.',
     },
   ],
 
@@ -91,7 +98,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve esta escala e identifica o seu tipo.',
       hintTemplate:
-        'Escala maior: T-T-mT-T-T-T-mT (brilhante, resolvida). Menor natural: T-mT-T-T-mT-T-T (sombria, aberta). Menor harmónica: eleva o 7.º, criando um salto distintivo de tom e meio.',
+        'Escala maior: T-T-mT-T-T-T-mT (brilhante, resolvida). Menor natural: T-mT-T-T-mT-T-T (sombria, aberta). Menor harmónica: eleva o 7.º, criando um salto distintivo de tom e meio. Menor melódica (ascendente): eleva o 6.º e o 7.º — menor em baixo, maior em cima.',
     },
   ],
 
@@ -102,7 +109,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve esta escala e identifica o modo. Ouve com atenção a nota característica.',
       hintTemplate:
-        'Identificadores dos modos: Dórico = 6 natural em contexto menor, Frígio = b2, Lídio = #4, Mixolídio = b7 em contexto maior.',
+        'Identificadores dos modos: Dórico = 6 natural em contexto menor, Frígio = b2, Lídio = #4, Mixolídio = b7 em contexto maior, Lócrio = b2 e b5 (o mais sombrio).',
     },
   ],
 
@@ -113,7 +120,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve esta escala e identifica o seu tipo.',
       hintTemplate:
-        'As escalas pentatónicas têm cinco notas e nenhuma tensão de meio-tom. A escala de blues acrescenta a "blue note" (b5). A escala de tons inteiros é toda em tons — onírica e sem centro.',
+        'As escalas pentatónicas têm cinco notas e nenhuma tensão de meio-tom. A escala de blues acrescenta a "blue note" (b5). A escala de tons inteiros é toda em tons — onírica e sem centro. A escala diminuta (meio-tom/tom) alterna meios-tons e tons — oito notas, simétrica e tensa.',
     },
   ],
 
@@ -135,7 +142,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve este acorde de sétima e identifica a sua qualidade.',
       hintTemplate:
-        'maj7 = sonhador/exuberante. m7 = suave/quente. 7 da dominante = brilhante/pede resolução. meio-diminuto = sombrio/não resolvido. dim7 = muito tenso.',
+        'maj7 = sonhador/exuberante. m7 = suave/quente. 7 da dominante = brilhante/pede resolução. meio-diminuto = sombrio/não resolvido. dim7 = muito tenso. menor com 7.ª M = uma tríade menor sombria sob uma 7.ª maior brilhante, inquietante.',
     },
   ],
 

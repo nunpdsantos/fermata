@@ -41,7 +41,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Tipos de Suspensão: 4-3, 7-6, 9-8',
           explanation:
-            'As suspensões são nomeadas pelos intervalos que formam acima do baixo no momento da dissonância e da resolução. A suspensão 4-3 é a mais comum: uma 4.ª acima do baixo resolve para uma 3.ª. A suspensão 7-6 retém uma 7.ª que resolve para uma 6.ª — comum em sequências e cadeias de suspensões. A suspensão 9-8 retém uma 9.ª (ou 2.ª uma oitava acima) que resolve para uma oitava. Todas as três resolvem por grau conjunto descendente.',
+            'As suspensões são nomeadas pelos intervalos que formam acima do baixo no momento da dissonância e da resolução. A suspensão 4-3 é a mais comum: uma 4.ª acima do baixo resolve para uma 3.ª. A suspensão 7-6 retém uma 7.ª que resolve para uma 6.ª — comum em sequências e cadeias de suspensões. A suspensão 9-8 retém uma 9.ª (ou 2.ª uma oitava acima) que resolve para uma oitava. Todas as três resolvem por grau conjunto descendente. Uma suspensão ornamentada acrescenta uma ou mais notas entre a suspensão e a sua resolução, como uma breve bordadura inferior, antes de a linha chegar à sua resolução um grau abaixo.',
           tryThisLabel: 'Imagina manter C sobre este acorde (sus 4-3)',
         },
         {
@@ -459,7 +459,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Segundas Ascendentes e Terças Descendentes',
           explanation:
-            'Numa sequência de segundas ascendentes, as fundamentais sobem por grau conjunto: I-ii-iii-IV-V, criando uma sensação de escalada. Primeiras inversões são frequentemente usadas para manter a linha de baixo suave (a técnica 5-6). Numa sequência de terças descendentes, as fundamentais descem por terças: I-vi-IV-ii, produzindo um movimento descendente suave comum na música Romântica. Cada par numa sequência de terças partilha uma nota comum, tornando a condução de vozes excecionalmente suave.',
+            'Numa sequência de segundas ascendentes, as fundamentais sobem por grau conjunto: I-ii-iii-IV-V, criando uma sensação de escalada. Primeiras inversões são frequentemente usadas para manter a linha de baixo suave (a técnica 5-6): na sequência 5-6 ascendente, cada acorde em posição fundamental (5/3) é seguido de um acorde 6/3 sobre a mesma nota do baixo, e depois o baixo sobe um grau. Numa sequência de terças descendentes, as fundamentais descem por terças: I-vi-IV-ii, produzindo um movimento descendente suave comum na música Romântica. Cada par numa sequência de terças partilha uma nota comum, tornando a condução de vozes excecionalmente suave.',
           tryThisLabel: 'ii7 situa-se no centro de muitas sequências',
         },
       ],

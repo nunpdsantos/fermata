@@ -14,6 +14,13 @@ export interface NoteIdConfig {
   octave: number;
   /** Accept enharmonic equivalents as correct (default: true) */
   acceptEnharmonic?: boolean;
+  /**
+   * The clef the note is AUTHORED in (audit W4-05). When a prompt describes
+   * the note's place on a staff ("second ledger line below the treble
+   * staff"), the clef is part of the exercise and must be stated; without it
+   * the staff picks bass clef for anything written below middle C.
+   */
+  clef?: 'treble' | 'bass';
 }
 
 export interface IntervalIdConfig {
@@ -26,6 +33,21 @@ export interface IntervalIdConfig {
   targetSemitones: number;
   /** 'ascending' | 'descending' */
   direction: 'ascending' | 'descending';
+  /**
+   * The interval NUMBER (2nd, 4th, 9th …) when the exercise is about spelling
+   * (audit W4-14): with it the staff spells the second note on that letter
+   * and the answer is the spelled name (6 semitones as a 4th = Augmented 4th,
+   * as a 5th = Diminished 5th; 14 semitones as a 9th = Major 9th). Without it
+   * the answer key names the semitone count's usual interval (INTERVAL_LABELS).
+   */
+  intervalNumber?: number;
+  /**
+   * How the learner names the interval (audit W4-15). Default: by full name
+   * ("Minor 3rd"). 'number' names only the interval number (L1 counts
+   * letters: "for now, the number is enough"); 'step' asks half step or
+   * whole step (L1, before interval qualities are taught).
+   */
+  answer?: 'number' | 'step';
 }
 
 export interface ScaleBuildConfig {
@@ -50,9 +72,25 @@ export interface ChordBuildConfig {
   noteCount: number;
 }
 
+/**
+ * Notation a question points at (audit W4-06): drawn above the choices with
+ * the app's staff, as AUTHORED notation (never transposed for the guitar).
+ */
+export interface StaffStimulus {
+  /** Written pitches in scientific (letter) octaves, e.g. 'C4', 'Eb4', 'F#5'. May be empty (a bare key signature). */
+  notes: string[];
+  clef?: 'treble' | 'bass';
+  /** Key signature by its major key, as VexFlow names it ('G', 'Bb', 'F#'). */
+  keySignature?: string;
+  /** Stack the notes as one chord instead of a melody. */
+  chord?: boolean;
+}
+
 export interface MultipleChoiceConfig {
   type: 'multiple_choice';
   choices: { label: string; correct: boolean }[];
+  /** What "this chord / this key signature" refers to, when the question points at notation. */
+  stimulus?: StaffStimulus;
 }
 
 export interface EarTrainingConfig {
@@ -116,8 +154,6 @@ export interface ExerciseDefinition {
   config: ExerciseConfig;
   /** Shown after first wrong attempt */
   hint?: string;
-  /** Default: 1 */
-  points?: number;
 }
 
 // Progress tracking types
@@ -127,7 +163,7 @@ export interface ModuleExerciseResult {
   scores: Record<string, 0 | 0.5 | 1>;
   totalAttempts: number;
   lastAttemptAt: number;
-  /** True if >= 80% of max points earned */
+  /** True if the module's score reached 80% of its exercise count (decision D-16: every exercise counts 1) */
   passed: boolean;
 }
 

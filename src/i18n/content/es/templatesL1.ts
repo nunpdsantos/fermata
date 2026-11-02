@@ -22,7 +22,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        '¿Qué nota se encuentra en la línea o espacio indicado del pentagrama?',
+        '¿Cuál de estas afirmaciones sobre las claves es verdadera?',
       hintTemplate:
         'Recuerda las líneas de la clave de sol (E-G-B-D-F) y los espacios (F-A-C-E).',
       choiceSets: [
@@ -33,8 +33,8 @@ const overlay: TemplateLevelOverlay = {
           'La clave de sol también se conoce como clave de D',
         ],
         [
-          'La clave de fa marca la cuarta línea como F',
-          'La clave de fa marca la segunda línea como G',
+          'La clave de fa marca la cuarta línea (contando desde abajo) como F',
+          'La clave de fa marca la segunda línea desde abajo como G',
           'La clave de fa marca la tercera línea como C',
           'La clave de fa marca la primera línea como E',
         ],
@@ -45,18 +45,22 @@ const overlay: TemplateLevelOverlay = {
   // ---- l1u1m2: Líneas Adicionales ----
   l1u1m2: [
     {
-      // note_id
       promptTemplate:
-        'Identifica esta nota que necesita líneas adicionales.',
+        'Identifica esta nota por debajo del pentagrama en clave de sol. Cuenta línea a línea hacia abajo desde la parte inferior del pentagrama.',
       hintTemplate:
-        'Las notas por encima o por debajo del pentagrama utilizan líneas adicionales. Cuenta paso a paso desde la línea del pentagrama más cercana.',
+        'Por debajo del pentagrama en clave de sol, el C central se sitúa en la primera línea adicional. Cuenta hacia abajo grado a grado desde ahí: líneas y espacios se alternan, así que la siguiente línea adicional tiene el A y la siguiente el F.',
     },
     {
-      // note_id
       promptTemplate:
-        'Identifica esta nota en una línea adicional por debajo del pentagrama en clave de sol.',
+        'Identifica esta nota por encima del pentagrama en clave de sol. Cuenta línea a línea hacia arriba desde la parte superior del pentagrama.',
       hintTemplate:
-        'Por debajo del pentagrama en clave de sol: el C central se sitúa en una línea adicional. Cuenta hacia abajo desde ahí para notas más graves.',
+        'La línea superior del pentagrama en clave de sol es el F. Cuenta hacia arriba grado a grado: el G queda justo encima del pentagrama, el A en la primera línea adicional, el C en la segunda y el E en la tercera.',
+    },
+    {
+      promptTemplate:
+        'Identifica esta nota por encima del pentagrama en clave de fa. Cuenta línea a línea hacia arriba desde la parte superior del pentagrama.',
+      hintTemplate:
+        'La línea superior del pentagrama en clave de fa es el A. El C central se sitúa en la primera línea adicional por encima — el mismo C central que está en la primera línea adicional por debajo del pentagrama en clave de sol. El E está en la segunda línea adicional.',
     },
   ],
 
@@ -109,7 +113,7 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        '¿Cómo se relacionan estos valores de notas entre sí?',
+        '¿Cuál de estas afirmaciones sobre los valores de las notas es verdadera?',
       hintTemplate:
         'Cada valor de nota tiene exactamente la mitad de la duración del valor inmediatamente superior. Redonda = 4 tiempos, blanca = 2, negra = 1, corchea = 0,5 en compás 4/4.',
       choiceSets: [
@@ -132,10 +136,10 @@ const overlay: TemplateLevelOverlay = {
           'Una blanca con puntillo dura 1,5 tiempos en compás 4/4',
         ],
         [
-          'Una semicorchea vale la mitad de un tiempo en compás 4/4',
+          'Una semicorchea vale medio tiempo en compás 4/4',
           'Una semicorchea vale un cuarto de tiempo en compás 4/4',
           'Una semicorchea vale un tiempo en compás 4/4',
-          'Una semicorchea vale un octavo de tiempo en compás 4/4',
+          'Una semicorchea vale tres cuartos de tiempo en compás 4/4',
         ],
       ],
     },
@@ -146,33 +150,33 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        '¿Qué indica esta indicación de compás sobre la música?',
+        '¿Cuál de estas afirmaciones sobre las indicaciones de compás es verdadera?',
       hintTemplate:
-        'El número superior indica los tiempos por compás. El número inferior indica qué figura recibe un tiempo (4 = negra, 8 = corchea, 2 = blanca).',
+        'El número de arriba cuenta los tiempos de cada compás: 2 = binario, 3 = ternario, 4 = cuaternario. El 4 de abajo indica que cada tiempo es una negra.',
       choiceSets: [
         [
-          '2/4 significa 2 tiempos de negra por compás',
+          '2/4 significa 2 tiempos de negra en cada compás',
           '2/4 significa 4 tiempos de blanca por compás',
           '2/4 significa 2 tiempos de blanca por compás',
           '2/4 significa 4 tiempos de negra por compás',
         ],
         [
-          '6/8 es un compás compuesto con 2 tiempos principales',
-          '6/8 es un compás simple con 6 tiempos',
-          '6/8 es lo mismo que 3/4',
-          '6/8 tiene 8 tiempos por compás',
+          '3/4 agrupa los tiempos de tres en tres: fuerte-débil-débil',
+          '3/4 agrupa los tiempos de dos en dos: fuerte-débil, fuerte-débil',
+          '3/4 agrupa los tiempos de cuatro en cuatro: fuerte-débil-semifuerte-débil',
+          '3/4 no tiene ningún tiempo fuerte',
         ],
         [
-          'Tiempo común (C) equivale a 4/4',
-          'Tiempo común (C) equivale a 2/2',
-          'Tiempo común (C) significa que la pieza está en C mayor',
-          'Tiempo común (C) equivale a 3/4',
+          '4/4 es cuaternario: cuatro tiempos por compás',
+          '4/4 es ternario: tres tiempos por compás',
+          '4/4 es binario: dos tiempos por compás',
+          '4/4 significa cuatro compases en cada línea de música',
         ],
         [
-          'Tiempo cortado (alla breve) equivale a 2/2',
-          'Tiempo cortado equivale a 4/4',
-          'Tiempo cortado significa tocar a la mitad del tempo',
-          'Tiempo cortado equivale a 6/8',
+          'En 2/4, 3/4 y 4/4, el 4 de abajo indica que la negra vale un tiempo',
+          'En 2/4, 3/4 y 4/4, el 4 de abajo indica que la redonda vale un tiempo',
+          'En 2/4, 3/4 y 4/4, el 4 de abajo indica que cada compás vale cuatro tiempos',
+          'En 2/4, 3/4 y 4/4, el 4 de abajo fija el tempo en cuatro tiempos por segundo',
         ],
       ],
     },
@@ -203,35 +207,34 @@ const overlay: TemplateLevelOverlay = {
   // ---- l1u3m2: Armaduras de Clave ----
   l1u3m2: [
     {
-      // multiple_choice
       promptTemplate:
-        '¿Cuál es la armadura de clave para esta tonalidad mayor?',
+        '¿Qué tonalidad mayor tiene esta armadura de clave?',
       hintTemplate:
-        'Las tonalidades con sostenidos siguen el ciclo de quintas: G(1#), D(2#), A(3#), E(4#). Con bemoles: F(1b), Bb(2b), Eb(3b), Ab(4b).',
+        'Sin sostenidos ni bemoles = C mayor. Un sostenido (F#) = G mayor. Dos sostenidos (F#, C#) = D mayor. Un bemol (Bb) = F mayor.',
       choiceSets: [
         [
-          'E mayor tiene 4 sostenidos: F#, C#, G#, D#',
-          'E mayor tiene 3 sostenidos: F#, C#, G#',
-          'E mayor tiene 5 sostenidos',
-          'E mayor tiene 2 sostenidos',
+          'C mayor',
+          'G mayor',
+          'D mayor',
+          'F mayor',
         ],
         [
-          'Bb mayor tiene 2 bemoles: Bb, Eb',
-          'Bb mayor tiene 1 bemol: Bb',
-          'Bb mayor tiene 3 bemoles',
-          'Bb mayor no tiene bemoles',
+          'G mayor',
+          'D mayor',
+          'F mayor',
+          'C mayor',
         ],
         [
-          'Ab mayor tiene 4 bemoles: Bb, Eb, Ab, Db',
-          'Ab mayor tiene 3 bemoles',
-          'Ab mayor tiene 5 bemoles',
-          'Ab mayor tiene 2 bemoles',
+          'D mayor',
+          'G mayor',
+          'C mayor',
+          'F mayor',
         ],
         [
-          'C mayor no tiene sostenidos ni bemoles',
-          'C mayor tiene 1 sostenido',
-          'C mayor tiene 1 bemol',
-          'C mayor tiene 7 sostenidos',
+          'F mayor',
+          'C mayor',
+          'G mayor',
+          'D mayor',
         ],
       ],
     },
@@ -242,9 +245,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // interval_id
       promptTemplate:
-        'Identifica el intervalo a partir de {root} en sentido {direction}. Cuenta los nombres de las notas y los semitonos.',
+        'Identifica el intervalo a partir de {root} en sentido {direction} por su número: cuenta los nombres de las notas, incluidas las dos notas.',
       hintTemplate:
-        'A partir de {root}, cuenta los nombres de las notas para el número del intervalo y los semitonos para la cualidad. {semitones} semitonos {direction}.',
+        'Cuenta los nombres de las notas desde {root} hasta la segunda nota, contando ambas: dos letras forman una 2.ª, tres una 3.ª, cuatro una 4.ª, cinco una 5.ª.',
     },
   ],
 

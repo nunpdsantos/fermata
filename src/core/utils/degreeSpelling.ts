@@ -260,8 +260,9 @@ export function intervalTargetNote(
   root: PitchedNote,
   semitones: number,
   direction: 'ascending' | 'descending',
+  /** The interval number to spell on (W4-14: 6 semitones as a 4th or a 5th); default: the answer key's usual number. */
+  number: number = canonicalIntervalNumber(semitones),
 ): PitchedNote {
-  const number = canonicalIntervalNumber(semitones);
   const note = direction === 'descending'
     ? spellIntervalBelow(root, number, semitones)
     : spellIntervalAbove(root, number, semitones);

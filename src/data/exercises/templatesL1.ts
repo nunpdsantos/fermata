@@ -27,7 +27,7 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Which note sits on the indicated line or space of the staff?',
+        promptTemplate: 'Which statement about the clefs is true?',
         hintTemplate: 'Remember the treble clef lines (E-G-B-D-F) and spaces (F-A-C-E).',
         params: {
           choiceSets: [
@@ -38,8 +38,8 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'The treble clef is also known as the D clef', correct: false },
             ],
             [
-              { label: 'The bass clef marks the fourth line as F', correct: true },
-              { label: 'The bass clef marks the second line as G', correct: false },
+              { label: 'The bass clef marks the fourth line (from the bottom) as F', correct: true },
+              { label: 'The bass clef marks the second line from the bottom as G', correct: false },
               { label: 'The bass clef marks the third line as C', correct: false },
               { label: 'The bass clef marks the first line as E', correct: false },
             ],
@@ -55,23 +55,42 @@ const templates: ModuleTemplateConfig[] = [
     moduleId: 'l1u1m2',
     templates: [
       {
+        // Below the treble staff (bottom line E4): C4 on the 1st ledger line,
+        // B3 under it, A3 on the 2nd, G3 under it, F3 on the 3rd (audit W4-05).
         type: 'note_id',
-        promptTemplate: 'Identify this note that requires ledger lines.',
-        hintTemplate: 'Notes above or below the staff use ledger lines. Count step by step from the nearest staff line.',
+        promptTemplate: 'Identify this note below the treble staff. Count down line by line from the bottom of the staff.',
+        hintTemplate: 'Below the treble staff, middle C sits on the first ledger line. Count down by step from there: lines and spaces alternate, so the next ledger line down holds A and the one after that F.',
         params: {
-          roots: ['C', 'D', 'A', 'B', 'G'],
+          roots: ['C', 'B', 'A', 'G', 'F'],
           accidentals: ['', '', '', '', ''],
-          octaves: [3, 4, 5, 6],
+          noteOctaves: [4, 3, 3, 3, 3],
+          clef: 'treble',
         },
       },
       {
+        // Above the treble staff (top line F5): A5 on the 1st ledger line, B5
+        // above it, C6 on the 2nd, D6 above it, E6 on the 3rd.
         type: 'note_id',
-        promptTemplate: 'Identify this note on a ledger line below the treble staff.',
-        hintTemplate: 'Below the treble staff: middle C sits on one ledger line. Count down from there for lower notes.',
+        promptTemplate: 'Identify this note above the treble staff. Count up line by line from the top of the staff.',
+        hintTemplate: 'The top line of the treble staff is F. Count up by step: G sits just above the staff, A on the first ledger line, C on the second and E on the third.',
         params: {
-          roots: ['C', 'B', 'A'],
+          roots: ['A', 'B', 'C', 'D', 'E'],
+          accidentals: ['', '', '', '', ''],
+          noteOctaves: [5, 5, 6, 6, 6],
+          clef: 'treble',
+        },
+      },
+      {
+        // Above the bass staff (top line A3): middle C (C4) on the 1st ledger
+        // line, D4 above it, E4 on the 2nd.
+        type: 'note_id',
+        promptTemplate: 'Identify this note above the bass staff. Count up line by line from the top of the staff.',
+        hintTemplate: 'The top line of the bass staff is A. Middle C sits on the first ledger line above it — the same middle C that sits on the first ledger line below the treble staff. E is on the second ledger line.',
+        params: {
+          roots: ['C', 'D', 'E'],
           accidentals: ['', '', ''],
-          octaves: [3, 4],
+          noteOctaves: [4, 4, 4],
+          clef: 'bass',
         },
       },
     ],
@@ -92,6 +111,8 @@ const templates: ModuleTemplateConfig[] = [
           intervals: [1, 2],
           directions: ['ascending'],
           octaves: [4],
+          // L1 names steps, not interval qualities (W4-15).
+          intervalAnswer: 'step',
         },
       },
       {
@@ -157,7 +178,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'How do these note values relate to each other?',
+        promptTemplate: 'Which statement about note values is true?',
         hintTemplate: 'Each note value is exactly half the duration of the next larger value. Whole = 4 beats, half = 2, quarter = 1, eighth = 0.5 in 4/4 time.',
         params: {
           choiceSets: [
@@ -183,7 +204,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'A sixteenth note receives half a beat in 4/4 time', correct: false },
               { label: 'A sixteenth note receives one quarter of a beat in 4/4 time', correct: true },
               { label: 'A sixteenth note receives one beat in 4/4 time', correct: false },
-              { label: 'A sixteenth note receives one eighth of a beat in 4/4 time', correct: false },
+              { label: 'A sixteenth note receives three quarters of a beat in 4/4 time', correct: false },
             ],
           ],
         },
@@ -198,33 +219,33 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'What does this time signature tell you about the music?',
-        hintTemplate: 'The top number is beats per measure. The bottom number tells you which note value gets one beat (4 = quarter, 8 = eighth, 2 = half).',
+        promptTemplate: 'Which statement about time signatures is true?',
+        hintTemplate: 'The top number counts the beats in each measure: 2 = duple, 3 = triple, 4 = quadruple. The bottom number 4 means each beat is a quarter note.',
         params: {
           choiceSets: [
             [
-              { label: '2/4 means 2 quarter-note beats per measure', correct: true },
+              { label: '2/4 means 2 quarter-note beats in every measure', correct: true },
               { label: '2/4 means 4 half-note beats per measure', correct: false },
               { label: '2/4 means 2 half-note beats per measure', correct: false },
               { label: '2/4 means 4 quarter-note beats per measure', correct: false },
             ],
             [
-              { label: '6/8 is a compound meter with 2 main beats', correct: true },
-              { label: '6/8 is a simple meter with 6 beats', correct: false },
-              { label: '6/8 is the same as 3/4', correct: false },
-              { label: '6/8 has 8 beats per measure', correct: false },
+              { label: '3/4 groups its beats in threes: strong-weak-weak', correct: true },
+              { label: '3/4 groups its beats in pairs: strong-weak, strong-weak', correct: false },
+              { label: '3/4 groups its beats in fours: strong-weak-medium-weak', correct: false },
+              { label: '3/4 has no strong beat', correct: false },
             ],
             [
-              { label: 'Common time (C) is equivalent to 4/4', correct: true },
-              { label: 'Common time (C) is equivalent to 2/2', correct: false },
-              { label: 'Common time (C) means the piece is in C major', correct: false },
-              { label: 'Common time (C) is equivalent to 3/4', correct: false },
+              { label: '4/4 is quadruple: four beats per measure', correct: true },
+              { label: '4/4 is triple: three beats per measure', correct: false },
+              { label: '4/4 is duple: two beats per measure', correct: false },
+              { label: '4/4 means four measures on each line of music', correct: false },
             ],
             [
-              { label: 'Cut time (alla breve) is equivalent to 2/2', correct: true },
-              { label: 'Cut time is equivalent to 4/4', correct: false },
-              { label: 'Cut time means to play at half tempo', correct: false },
-              { label: 'Cut time is equivalent to 6/8', correct: false },
+              { label: 'In 2/4, 3/4 and 4/4, the bottom 4 means a quarter note gets one beat', correct: true },
+              { label: 'In 2/4, 3/4 and 4/4, the bottom 4 means a whole note gets one beat', correct: false },
+              { label: 'In 2/4, 3/4 and 4/4, the bottom 4 means each measure lasts four beats', correct: false },
+              { label: 'In 2/4, 3/4 and 4/4, the bottom 4 sets the tempo at four beats per second', correct: false },
             ],
           ],
         },
@@ -272,40 +293,48 @@ const templates: ModuleTemplateConfig[] = [
     moduleId: 'l1u3m2',
     templates: [
       {
+        // The staff shows a key signature; the learner reads it (W4-06).
+        // Only the four keys this module teaches (W4-15).
         type: 'multiple_choice',
-        promptTemplate: 'What is the key signature for this major key?',
-        hintTemplate: 'Sharp keys follow the circle of fifths: G(1#), D(2#), A(3#), E(4#). Flat keys: F(1b), Bb(2b), Eb(3b), Ab(4b).',
+        promptTemplate: 'Which major key has this key signature?',
+        hintTemplate: 'No sharps or flats = C major. One sharp (F#) = G major. Two sharps (F#, C#) = D major. One flat (Bb) = F major.',
         params: {
           choiceSets: [
             [
-              { label: 'E major has 4 sharps: F#, C#, G#, D#', correct: true },
-              { label: 'E major has 3 sharps: F#, C#, G#', correct: false },
-              { label: 'E major has 5 sharps', correct: false },
-              { label: 'E major has 2 sharps', correct: false },
+              { label: 'C major', correct: true },
+              { label: 'G major', correct: false },
+              { label: 'D major', correct: false },
+              { label: 'F major', correct: false },
             ],
             [
-              { label: 'Bb major has 2 flats: Bb, Eb', correct: true },
-              { label: 'Bb major has 1 flat: Bb', correct: false },
-              { label: 'Bb major has 3 flats', correct: false },
-              { label: 'Bb major has no flats', correct: false },
+              { label: 'G major', correct: true },
+              { label: 'D major', correct: false },
+              { label: 'F major', correct: false },
+              { label: 'C major', correct: false },
             ],
             [
-              { label: 'Ab major has 4 flats: Bb, Eb, Ab, Db', correct: true },
-              { label: 'Ab major has 3 flats', correct: false },
-              { label: 'Ab major has 5 flats', correct: false },
-              { label: 'Ab major has 2 flats', correct: false },
+              { label: 'D major', correct: true },
+              { label: 'G major', correct: false },
+              { label: 'C major', correct: false },
+              { label: 'F major', correct: false },
             ],
             [
-              { label: 'C major has no sharps or flats', correct: true },
-              { label: 'C major has 1 sharp', correct: false },
-              { label: 'C major has 1 flat', correct: false },
-              { label: 'C major has 7 sharps', correct: false },
+              { label: 'F major', correct: true },
+              { label: 'C major', correct: false },
+              { label: 'G major', correct: false },
+              { label: 'D major', correct: false },
             ],
+          ],
+          stimuli: [
+            { notes: [], keySignature: 'C', clef: 'treble' },
+            { notes: [], keySignature: 'G', clef: 'treble' },
+            { notes: [], keySignature: 'D', clef: 'treble' },
+            { notes: [], keySignature: 'F', clef: 'treble' },
           ],
         },
       },
     ],
-    targetCount: 5,
+    targetCount: 4,
   },
 
   // ---- l1u3m3: Intervals ----
@@ -314,14 +343,16 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'interval_id',
-        promptTemplate: 'Identify the {direction} interval from {root}. Count both letter names and semitones.',
-        hintTemplate: 'From {root}, count letter names for the interval number and semitones for the quality. {semitones} semitones {direction}.',
+        promptTemplate: 'Identify the {direction} interval from {root} by its number: count the letter names, including both notes.',
+        hintTemplate: 'Count the letter names from {root} up to the second note, counting both: two letters make a 2nd, three a 3rd, four a 4th, five a 5th.',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A'],
           accidentals: ['', '', '', '', '', ''],
           intervals: [2, 3, 4, 5, 7],
           directions: ['ascending'],
           octaves: [4],
+          // "For now, the number is enough" (L1): answers are 2nd, 3rd … (W4-15).
+          intervalAnswer: 'number',
         },
       },
     ],
@@ -342,7 +373,6 @@ const templates: ModuleTemplateConfig[] = [
           chordQualities: ['major'],
           noteCounts: [3],
         },
-        points: 2,
       },
       {
         type: 'chord_build',
@@ -354,7 +384,6 @@ const templates: ModuleTemplateConfig[] = [
           chordQualities: ['major'],
           noteCounts: [3],
         },
-        points: 2,
       },
     ],
     targetCount: 6,

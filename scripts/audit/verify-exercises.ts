@@ -18,7 +18,11 @@ import { buildChord, CHORD_FORMULAS } from '../../src/core/constants/chords';
 import { SCALE_FORMULAS } from '../../src/core/constants/scales';
 import { getPitchClass } from '../../src/core/constants/notes';
 import { validateAnswer } from '../../src/components/learn/exercises/validateExercise';
-import { translateChordQuality } from '../../src/i18n/content/musicTerms';
+import { translateChordQuality, translateScaleType } from '../../src/i18n/content/musicTerms';
+import { canonicalIntervalNumber } from '../../src/core/utils/degreeSpelling';
+
+/** Scale types whose mode name is a correct label too (Ionian = major, Aeolian = natural minor). */
+const MODE_NAMES: Record<string, string> = { major: 'ionian', natural_minor: 'aeolian' };
 
 // Dynamic import so script doesn't need to compile the entire module graph
 async function loadAll(): Promise<Record<string, ExerciseDefinition[]>[]> {
@@ -51,6 +55,11 @@ function deriveCorrect(cfg: ExerciseConfig): string | Set<number> | null {
     case 'note_id':
       return cfg.note + (cfg.accidental ?? '');
     case 'interval_id':
+      // W4a answer styles: by interval number (L1), half/whole step, or a
+      // spelled name keyed "number:semitones" (A4 vs d5).
+      if (cfg.answer === 'number') return String(cfg.intervalNumber ?? canonicalIntervalNumber(cfg.targetSemitones));
+      if (cfg.answer === 'step') return String(cfg.targetSemitones);
+      if (cfg.intervalNumber !== undefined) return `${cfg.intervalNumber}:${cfg.targetSemitones}`;
       return String(cfg.targetSemitones);
     case 'scale_build': {
       const root = toNote(cfg.root, cfg.rootAccidental);
@@ -182,7 +191,10 @@ function deriveCorrect(cfg: ExerciseConfig): string | Set<number> | null {
               ![norm(cfg.quality), norm(translateChordQuality(cfg.quality, 'en'))].includes(norm(correct[0].label))
             ) {
               problem = `correct label '${correct[0].label}' does not match quality '${cfg.quality}'`;
-            } else if (cfg.mode === 'scale' && cfg.scaleType && norm(correct[0].label) !== norm(cfg.scaleType)) {
+            } else if (
+              cfg.mode === 'scale' && cfg.scaleType &&
+              ![norm(cfg.scaleType), norm(translateScaleType(cfg.scaleType, 'en')), norm(MODE_NAMES[cfg.scaleType] ?? '')].includes(norm(correct[0].label))
+            ) {
               problem = `correct label '${correct[0].label}' does not match scaleType '${cfg.scaleType}'`;
             } else if (cfg.mode === 'progression' && cfg.progression && correct[0].label !== cfg.progression.join(' - ')) {
               problem = `correct label '${correct[0].label}' does not match progression '${cfg.progression.join(' - ')}'`;

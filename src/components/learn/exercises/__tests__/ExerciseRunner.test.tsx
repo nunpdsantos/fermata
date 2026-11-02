@@ -15,12 +15,13 @@ vi.mock('../../../../core/services/audio', async (importOriginal) => {
     resumeAudio: vi.fn().mockResolvedValue(undefined),
     playNote: vi.fn(),
     playChord: vi.fn(),
+    playPitchedNotes: vi.fn(),
     playScale: vi.fn(),
     stopPlayback: vi.fn(),
   };
 });
 
-import { playNote, playScale, playChord, stopPlayback } from '../../../../core/services/audio';
+import { playNote, playScale, playPitchedNotes, stopPlayback } from '../../../../core/services/audio';
 
 afterEach(() => {
   cleanup();
@@ -40,7 +41,6 @@ const mcExercise = (id: string): ExerciseDefinition => ({
     ],
   },
   hint: 'The right one.',
-  points: 1,
 });
 
 const earNoteExercise: ExerciseDefinition = {
@@ -48,7 +48,6 @@ const earNoteExercise: ExerciseDefinition = {
   type: 'ear_training',
   prompt: 'Listen to this pitch and identify it.',
   config: { type: 'ear_training', mode: 'note', note: 'C', accidental: '', octave: 4 },
-  points: 1,
 };
 
 const earScaleExercise: ExerciseDefinition = {
@@ -67,7 +66,6 @@ const earScaleExercise: ExerciseDefinition = {
       { label: 'Natural minor', correct: false },
     ],
   },
-  points: 1,
 };
 
 function renderRunner(exercises: ExerciseDefinition[]) {
@@ -238,7 +236,6 @@ const progEx = (id: string, root: 'C' | 'G'): ExerciseDefinition => ({
   id,
   type: 'ear_training',
   prompt: 'Identify the progression',
-  points: 1,
   config: {
     type: 'ear_training',
     mode: 'progression',
@@ -292,15 +289,15 @@ describe('ExerciseRunner ear-training: the next item always autoplays (W0-04)', 
     it(`progression: continuing ${at} ms in autoplays the next one and cancels the old chords`, async () => {
       renderRunner([progEx('p1', 'C'), progEx('p2', 'G')]);
       await tick(300 + at);
-      const firstRoot = firstNoteOf(vi.mocked(playChord).mock.calls[0]);
+      const firstRoot = firstNoteOf(vi.mocked(playPitchedNotes).mock.calls[0]);
       // Chords of p1 already sounded (all 4 by 3.3 s; its last one still rings
       // and the lock would hold to ~4.45 s).
-      const before = vi.mocked(playChord).mock.calls.length;
+      const before = vi.mocked(playPitchedNotes).mock.calls.length;
 
       answerAndContinue('I - IV - V - I');
       await tick(6000);
 
-      const after = vi.mocked(playChord).mock.calls.slice(before);
+      const after = vi.mocked(playPitchedNotes).mock.calls.slice(before);
       // Exactly the next progression's four chords — none of the old ones.
       expect(after).toHaveLength(4);
       expect(firstNoteOf(after[0])).not.toEqual(firstRoot);

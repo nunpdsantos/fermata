@@ -221,7 +221,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'Tonalidades Paralelas',
           explanation:
-            'Tonalidades paralelas partilham a mesma fundamental mas têm qualidades diferentes. C maior e C menor são paralelas. Partilham a nota tónica mas diferem no 3.º, 6.º e 7.º graus. A relação paralela torna-se crítica mais tarde na mistura modal — emprestar acordes da tonalidade paralela para acrescentar cor.',
+            'Tonalidades paralelas partilham a mesma fundamental mas têm qualidades diferentes. C maior e C menor são paralelas: C menor é a paralela menor de C maior, e C maior é a paralela maior de C menor. Partilham a nota tónica mas diferem no 3.º, 6.º e 7.º graus. A relação paralela torna-se crítica mais tarde na mistura modal — emprestar acordes da tonalidade paralela para acrescentar cor.',
           tryThisLabel: 'Compara C menor com C maior',
         },
       ],

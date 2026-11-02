@@ -9,7 +9,10 @@ describe('translateScaleType', () => {
   it('returns space-separated English for en', () => {
     expect(translateScaleType('natural_minor', 'en')).toBe('natural minor');
     expect(translateScaleType('major', 'en')).toBe('major');
-    expect(translateScaleType('diminished_half_whole', 'en')).toBe('diminished half whole');
+    // The diminished scales read as the app names them, not as a garbled id (W4a).
+    expect(translateScaleType('diminished_half_whole', 'en')).toBe('diminished (half-whole)');
+    expect(translateScaleType('diminished_whole_half', 'en')).toBe('diminished (whole-half)');
+    expect(translateScaleType('whole_tone', 'en')).toBe('whole tone');
   });
 
   it('returns Portuguese for pt', () => {

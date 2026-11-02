@@ -429,19 +429,19 @@ const curriculumL5: CurriculumLevelOverlay = {
 
     // ── U16 M5: Picardy Third and Mode Mixture in Minor ────────────────────
     l5u16m5: {
-      title: 'Terça Picardia e Mistura Modal no Modo Menor',
+      title: 'Terça de Picardia e Mistura Modal no Modo Menor',
       subtitle: 'Emprestar do modo maior paralelo num contexto de tonalidade menor',
       objectives: [
-        'Compreender a terça picardia (I maior a terminar uma peça em tonalidade menor)',
+        'Compreender a terça de Picardia (I maior a terminar uma peça em tonalidade menor)',
         'Identificar mistura modal em tonalidades menores (empréstimo do modo maior paralelo)',
         'Reconhecer o efeito expressivo de acordes maiores num contexto menor',
       ],
       concepts: [
         {
-          title: 'A Terça Picardia',
+          title: 'A Terça de Picardia',
           explanation:
-            'A terça picardia é mistura modal na direção oposta: emprestar do modo maior paralelo para uma tonalidade menor. Uma peça em tonalidade menor termina a sua cadência final com uma tónica maior (I em vez de i). Em C menor, o acorde final torna-se C maior — a terça elevada (E natural em vez de Eb) cria um brilho inesperado, um raio de luz no final. Comum na música barroca e renascentista, onde peças em tonalidade menor terminam muitas vezes com terça picardia, sobretudo nas cadências do final do Renascimento e do início do Barroco.',
-          tryThisLabel: 'Ouve C maior — a terça picardia num contexto de C menor',
+            'A terça de Picardia é mistura modal na direção oposta: emprestar do modo maior paralelo para uma tonalidade menor. Uma peça em tonalidade menor termina a sua cadência final com uma tónica maior (I em vez de i). Em C menor, o acorde final torna-se C maior — a terça elevada (E natural em vez de Eb) cria um brilho inesperado, um raio de luz no final. Comum na música barroca e renascentista, onde peças em tonalidade menor terminam muitas vezes com terça de Picardia, sobretudo nas cadências do final do Renascimento e do início do Barroco.',
+          tryThisLabel: 'Ouve C maior — a terça de Picardia num contexto de C menor',
         },
         {
           title: 'Mistura Modal em Tonalidades Menores',
@@ -452,14 +452,14 @@ const curriculumL5: CurriculumLevelOverlay = {
         {
           title: 'O Alcance Expressivo da Mistura Modal',
           explanation:
-            'Mistura modal em ambas as direções dá aos compositores uma paleta expressiva enorme. Tonalidades maiores podem escurecer emprestando do menor (bVI, iv, bVII). Tonalidades menores podem iluminar emprestando do maior (terça picardia, IV maior). A capacidade de se mover livremente entre versões maiores e menores de acordes construídos sobre as mesmas fundamentais é uma das características definidoras da harmonia do período Romântico. Esbate completamente a fronteira entre maior e menor.',
+            'Mistura modal em ambas as direções dá aos compositores uma paleta expressiva enorme. Tonalidades maiores podem escurecer emprestando do menor (bVI, iv, bVII). Tonalidades menores podem iluminar emprestando do maior (terça de Picardia, IV maior). A capacidade de se mover livremente entre versões maiores e menores de acordes construídos sobre as mesmas fundamentais é uma das características definidoras da harmonia do período Romântico. Esbate completamente a fronteira entre maior e menor.',
           tryThisLabel: 'Vê C menor — a tonalidade paralela que empresta e recebe',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escreve "C minor scale" para estabelecer o contexto menor. Agora escreve "C major chord" — a terça elevada (E natural em vez de Eb) é a terça picardia. Um final brilhante para uma tonalidade escura.',
+            'Escreve "C minor scale" para estabelecer o contexto menor. Agora escreve "C major chord" — a terça elevada (E natural em vez de Eb) é a terça de Picardia. Um final brilhante para uma tonalidade escura.',
         },
         {
           instruction:
@@ -467,7 +467,7 @@ const curriculumL5: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Pensa num final de tonalidade menor com terça picardia: Dm7b5 (iiø7 em C menor), G7 (V7), depois C maior (I picardia em vez de Cm). O final maior transforma todo o carácter emocional da cadência.',
+            'Pensa num final de tonalidade menor com terça de Picardia: Dm7b5 (iiø7 em C menor), G7 (V7), depois C maior (I com terça de Picardia em vez de Cm). O final maior transforma todo o carácter emocional da cadência.',
         },
       ],
     },

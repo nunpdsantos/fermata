@@ -256,7 +256,17 @@
     "degree4": "4th (Subdominant)",
     "degree5": "5th (Dominant)",
     "degree6": "6th (Submediant)",
-    "degree7": "7th (Leading tone)"
+    "degree7": "7th (Leading tone)",
+    "intervalNumber1": "Unison",
+    "intervalNumber2": "2nd",
+    "intervalNumber3": "3rd",
+    "intervalNumber4": "4th",
+    "intervalNumber5": "5th",
+    "intervalNumber6": "6th",
+    "intervalNumber7": "7th",
+    "intervalNumber8": "Octave",
+    "halfStep": "Half step",
+    "wholeStep": "Whole step"
   },
   "exerciseFeedback": {
     "noteCorrectExact": "Correct! {{note}} is the right note.",

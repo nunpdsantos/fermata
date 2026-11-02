@@ -3,17 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { m, AnimatePresence } from 'framer-motion';
 import type { ExerciseDefinition, ValidationResult, EarTrainingConfig } from '../../../core/types/exercise';
 import { validateAnswer } from './validateExercise';
-import { generateNoteChoices, generateIntervalChoices, generateEarChoices, generateDegreeChoices, generateMultipleChoiceOptions, earPlaybackLockMs } from './exerciseHelpers';
+import { generateNoteChoices, generateIntervalChoices, generateSpelledIntervalChoices, generateIntervalNumberChoices, generateStepChoices, intervalNumberOf, generateEarChoices, generateDegreeChoices, generateMultipleChoiceOptions, earPlaybackLockMs, earChordPitches, earProgressionPitches, earIntervalPitches } from './exerciseHelpers';
 import type { ChoiceOption } from './exerciseHelpers';
 import { ExerciseProgress } from './ExerciseProgress';
 import { ExercisePrompt } from './ExercisePrompt';
 import { ExerciseFeedback } from './ExerciseFeedback';
 import { ChoiceInput } from './inputs/ChoiceInput';
 import { InstrumentInput } from './inputs/InstrumentInput';
-import { playNote, playChord, playScale, resumeAudio, stopPlayback } from '../../../core/services/audio';
+import { playNote, playPitchedNotes, playScale, resumeAudio, stopPlayback } from '../../../core/services/audio';
 import { getSynthConfig } from '../../../services/synthConfig';
 import type { NaturalNote, Accidental, Note, ChordQuality, ScaleType } from '../../../core/types/music';
-import { buildChord, getDiatonicTriads } from '../../../core/constants/chords';
+import { buildChord } from '../../../core/constants/chords';
 import { buildScale } from '../../../core/constants/scales';
 import { palette } from '../../../design/tokens/palette';
 import { selectWeightedExercises } from '../../../services/exerciseSelector';
@@ -72,7 +72,11 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
       case 'note_id':
         return generateNoteChoices(cfg.note, cfg.accidental);
       case 'interval_id':
-        return generateIntervalChoices(cfg.targetSemitones);
+        if (cfg.answer === 'step') return generateStepChoices(cfg.targetSemitones, t);
+        if (cfg.answer === 'number') return generateIntervalNumberChoices(intervalNumberOf(cfg.intervalNumber, cfg.targetSemitones), t);
+        return cfg.intervalNumber !== undefined
+          ? generateSpelledIntervalChoices(cfg.intervalNumber, cfg.targetSemitones)
+          : generateIntervalChoices(cfg.targetSemitones);
       case 'multiple_choice':
         return generateMultipleChoiceOptions(cfg.choices, exercise.id);
       case 'ear_training': {
@@ -138,42 +142,28 @@ export function ExerciseRunner({ exercises, accentColor, reviewMode = false, onR
         const note: Note = { natural: cfg.note as NaturalNote, accidental: (cfg.accidental ?? '') as Accidental };
         playNote(note, cfg.octave ?? 4, 1.0, pianoConfig);
       } else if (cfg.mode === 'interval' && cfg.root && cfg.targetSemitones !== undefined) {
-        const rootNote: Note = { natural: cfg.root as NaturalNote, accidental: (cfg.rootAccidental ?? '') as Accidental };
-        const oct = cfg.rootOctave ?? 4;
-        // Compute the interval note pitch class
-        const semitones = cfg.direction === 'descending' ? -cfg.targetSemitones : cfg.targetSemitones;
-        const NATURALS: NaturalNote[] = ['C', 'C', 'D', 'D', 'E', 'F', 'F', 'G', 'G', 'A', 'A', 'B'];
-        const ACCIDENTALS: Accidental[] = ['', '#', '', '#', '', '', '#', '', '#', '', '#', ''];
-        const rootPCs: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-        let rootPC = rootPCs[cfg.root] ?? 0;
-        if (cfg.rootAccidental === '#') rootPC += 1;
-        if (cfg.rootAccidental === 'b') rootPC -= 1;
-        const targetPC = ((rootPC + semitones) % 12 + 12) % 12;
-        const targetNote: Note = { natural: NATURALS[targetPC], accidental: ACCIDENTALS[targetPC] };
-        const targetOct = oct + (rootPC + semitones >= 12 ? 1 : rootPC + semitones < 0 ? -1 : 0);
+        // Both pitches by MIDI arithmetic: compound intervals sound right (W4-18).
+        const [root, target] = earIntervalPitches(cfg)!;
         if (cfg.harmonic) {
           // Harmonic interval: both notes sound together.
-          playNote(rootNote, oct, 1.2, pianoConfig);
-          playNote(targetNote, targetOct, 1.2, pianoConfig);
+          playNote(root, root.octave, 1.2, pianoConfig);
+          playNote(target, target.octave, 1.2, pianoConfig);
         } else {
-          playNote(rootNote, oct, 0.6, pianoConfig);
-          scheduleEar(() => playNote(targetNote, targetOct, 0.6, pianoConfig), 700);
+          playNote(root, root.octave, 0.6, pianoConfig);
+          scheduleEar(() => playNote(target, target.octave, 0.6, pianoConfig), 700);
         }
       } else if (cfg.mode === 'chord' && cfg.chordRoot && cfg.quality) {
-        const root: Note = { natural: cfg.chordRoot as NaturalNote, accidental: (cfg.chordRootAccidental ?? '') as Accidental };
-        const chord = buildChord(root, cfg.quality as ChordQuality);
-        playChord(chord.notes, 4, 1.2, pianoConfig);
+        // Root position, as the piano lights it (audit W4-10).
+        playPitchedNotes(earChordPitches(cfg), 1.2, pianoConfig);
       } else if (cfg.mode === 'scale' && cfg.root && cfg.scaleType) {
         const root: Note = { natural: cfg.root as NaturalNote, accidental: (cfg.rootAccidental ?? '') as Accidental };
         const scale = buildScale(root, cfg.scaleType as ScaleType);
         playScale(scale.notes, cfg.rootOctave ?? 4, true, false, 0.35, undefined, undefined, pianoConfig);
       } else if (cfg.mode === 'progression' && cfg.progression) {
-        const key: Note = { natural: (cfg.root ?? 'C') as NaturalNote, accidental: (cfg.rootAccidental ?? '') as Accidental };
-        const triads = getDiatonicTriads(key);
-        cfg.progression.forEach((numeral, i) => {
-          const entry = triads.find((t2) => t2.numeral.replace('°', '') === numeral.replace('°', ''));
-          if (!entry) return;
-          scheduleEar(() => playChord(entry.chord.notes, 4, 0.85, pianoConfig), i * 950);
+        // Each chord in root position over a clear bass (audit W4-10).
+        earProgressionPitches(cfg).forEach((pitches, i) => {
+          if (pitches.length === 0) return;
+          scheduleEar(() => playPitchedNotes(pitches, 0.85, pianoConfig), i * 950);
         });
       }
     } finally {

@@ -137,7 +137,7 @@ const l9u30m3: CurriculumModule = {
   title: 'Interval Recognition: P1-P5',
   subtitle: 'Identifying perfect and small intervals by ear using song associations and direct recognition',
   objectives: [
-    'Identify unison, minor 2nd, major 2nd, minor 3rd, major 3rd, perfect 4th, tritone, and perfect 5th by ear',
+    'Identify minor 2nd, major 2nd, minor 3rd, major 3rd, perfect 4th, tritone, and perfect 5th by ear',
     'Use song associations as mnemonic training aids for each interval',
     'Recognize these intervals both ascending and descending',
   ],
@@ -480,7 +480,7 @@ const l9u31m4: CurriculumModule = {
   objectives: [
     'Identify major, minor, diminished, and augmented triads by ear',
     'Understand the stability distinction: perfect 5th (stable) vs. altered 5th (unstable)',
-    'Recognize triad inversions by the character of the bass note',
+    'Hear each triad quality in root position, with the root in the bass',
   ],
   concepts: [
     {
@@ -706,11 +706,11 @@ const l9u32m3: CurriculumModule = {
   unitId: 'u32',
   levelId: 'l9',
   title: 'Harmonic Dictation: Cadences and Progressions',
-  subtitle: 'Identifying cadences, transcribing progressions, and bass line dictation',
+  subtitle: 'Identifying cadences and transcribing progressions by following the bass',
   objectives: [
     'Identify cadence types (authentic, plagal, half, deceptive) by ear',
     'Transcribe four-chord diatonic progressions using Roman numerals',
-    'Perform bass line dictation as the gateway to full harmonic transcription',
+    'Follow the bass line (each chord\'s root) to name the Roman numerals of a progression',
   ],
   concepts: [
     {

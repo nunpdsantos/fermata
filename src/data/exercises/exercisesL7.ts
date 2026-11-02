@@ -24,7 +24,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 5,
       },
       hint: 'Cmaj9 = C, E, G, B, D. Stack: root (C), major 3rd (E), perfect 5th (G), major 7th (B), major 9th (D). Pitch classes: 0, 4, 7, 11, 2.',
-      points: 2,
     },
     {
       id: 'l7u21m1e2',
@@ -38,7 +37,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 5,
       },
       hint: 'Dm9 = D, F, A, C, E. Stack: root (D), minor 3rd (F), perfect 5th (A), minor 7th (C), major 9th (E). Pitch classes: 2, 5, 9, 0, 4.',
-      points: 2,
     },
     {
       id: 'l7u21m1e3',
@@ -47,14 +45,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A dominant chord with both altered 5ths and altered 9ths (b5/#5, b9/#9)', correct: true },
-          { label: 'An alternate voicing of a standard dominant chord', correct: false },
+          { label: 'A dominant with altered 5ths and/or 9ths', correct: true },
+          { label: 'An alternate voicing of a plain dominant chord, with every note left exactly as written', correct: false },
           { label: 'A chord that alternates between major and minor quality', correct: false },
           { label: 'A chord that can be substituted by any other chord', correct: false },
         ],
       },
       hint: 'The "alt" suffix means the chord has altered extensions: b9, #9, b5 (or #11), and #5 (or b13). It is paired with the altered (superlocrian) scale.',
-      points: 1,
     },
   ],
 
@@ -68,13 +65,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Root, 3rd, and 7th only — omitting the 5th and extensions', correct: true },
-          { label: 'Root, 5th, and octave — omitting the 3rd and 7th', correct: false },
-          { label: 'All seven notes of the parent scale', correct: false },
+          { label: 'Root, 5th and octave only — no 3rd, no 7th', correct: false },
+          { label: 'All seven notes of the parent scale — root, 3rd, 5th, 7th, 9th, 11th, 13th', correct: false },
           { label: 'Root and 5th only — a power chord voicing', correct: false },
         ],
       },
       hint: 'Shell voicings strip a chord to its essentials: root defines the bass, 3rd determines major/minor quality, and 7th determines the chord type (maj7, dom7, m7). In those chords the perfect 5th is redundant; in m7b5 and dim7 chords the flatted 5th is what defines the chord, so it stays.',
-      points: 1,
     },
     {
       id: 'l7u21m2e2',
@@ -83,14 +79,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'It has a dominant 7th with one or more chromatically altered 5ths or 9ths', correct: true },
+          { label: 'It always has a dominant 7th with one or more chromatically altered 5ths or 9ths', correct: true },
           { label: 'It replaces the 3rd with a suspended 4th', correct: false },
-          { label: 'It uses only notes from the whole-tone scale', correct: false },
+          { label: 'It uses only the whole-tone scale, which excludes a b9 or #9', correct: false },
           { label: 'It omits the root entirely', correct: false },
         ],
       },
       hint: 'An altered dominant keeps the root, 3rd, and b7 but chromatically alters the 5th (b5 or #5) and 9th (b9 or #9), creating maximum tension before resolution.',
-      points: 1,
     },
     {
       id: 'l7u21m2e3',
@@ -100,13 +95,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'It delays resolution by replacing the 3rd with a 4th, creating anticipation before V7', correct: true },
-          { label: 'It always functions as a tonic chord', correct: false },
-          { label: 'It acts as a substitute for the ii chord', correct: false },
-          { label: 'It is used exclusively in modal jazz', correct: false },
+          { label: 'It always functions as a tonic chord, so jazz tunes normally end on a sus4 instead of on I', correct: false },
+          { label: 'It turns the dominant into a minor chord, because the 4th replaces the major 3rd with a minor 3rd', correct: false },
+          { label: 'It is used exclusively in modal jazz, so it never appears in tunes built on ii-V-I progressions', correct: false },
         ],
       },
       hint: 'A sus4 chord replaces the 3rd with a 4th, removing the major/minor quality. In jazz, G7sus4 often precedes G7 in a V7sus4 to V7 to I resolution, delaying the leading tone.',
-      points: 1,
     },
   ],
 
@@ -115,7 +109,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l7u21m3e1',
       type: 'chord_build',
-      prompt: 'Build the ii7 chord in C major (Dm7). Select all 4 notes: D, F, A, C.',
+      prompt: 'Build the ii7 chord in C major. Select all 4 notes.',
       config: {
         type: 'chord_build',
         root: 'D',
@@ -124,12 +118,11 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'Dm7 = D, F, A, C. Root (D), minor 3rd (F), perfect 5th (A), minor 7th (C). Pitch classes: 2, 5, 9, 0.',
-      points: 2,
     },
     {
       id: 'l7u21m3e2',
       type: 'chord_build',
-      prompt: 'Build the V7 chord in C major (G7). Select all 4 notes: G, B, D, F.',
+      prompt: 'Build the V7 chord in C major. Select all 4 notes.',
       config: {
         type: 'chord_build',
         root: 'G',
@@ -138,7 +131,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'G7 = G, B, D, F. Root (G), major 3rd (B), perfect 5th (D), minor 7th (F). Pitch classes: 7, 11, 2, 5.',
-      points: 2,
     },
     {
       id: 'l7u21m3e3',
@@ -147,14 +139,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'It combines subdominant, dominant, and tonic functions in the strongest possible cadential motion', correct: true },
-          { label: 'It was invented by Duke Ellington and became a jazz standard', correct: false },
+          { label: 'It chains subdominant, dominant and tonic', correct: true },
+          { label: 'It was invented by Duke Ellington in the 1940s and has been a jazz standard ever since', correct: false },
           { label: 'It uses only three notes total across all three chords', correct: false },
           { label: 'It avoids any dissonance, making it easy to improvise over', correct: false },
         ],
       },
       hint: 'The ii-V-I encapsulates complete harmonic motion: preparation (ii), tension (V), resolution (I). Nearly every jazz standard contains multiple ii-V-I progressions in various keys.',
-      points: 1,
     },
   ],
 
@@ -163,7 +154,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l7u21m4e1',
       type: 'chord_build',
-      prompt: 'Build the tritone substitution of G7: Db7. Select all 4 notes: Db, F, Ab, Cb.',
+      prompt: 'Build the tritone substitution of G7. Select all 4 notes.',
       config: {
         type: 'chord_build',
         root: 'D',
@@ -172,7 +163,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 4,
       },
       hint: 'Db7 = Db, F, Ab, Cb. The tritone sub shares the same tritone interval (F-Cb enharmonic to F-B) as the original G7 chord. Pitch classes: 1, 5, 8, 11.',
-      points: 2,
     },
     {
       id: 'l7u21m4e2',
@@ -181,14 +171,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Two dominant 7th chords a tritone apart share the same 3rd and 7th (enharmonically), so one can replace the other', correct: true },
-          { label: 'Any chord can be replaced by the chord a tritone away regardless of quality', correct: false },
+          { label: 'Dominant 7ths a tritone apart share the tritone between 3rd and 7th, so either can replace the other', correct: true },
+          { label: 'Any chord at all can be replaced by the chord a tritone away, whatever its quality, with the same effect', correct: false },
           { label: 'The tritone sub always moves the root up by a whole step', correct: false },
           { label: 'It replaces the V chord with the IV chord', correct: false },
         ],
       },
       hint: 'G7 has B and F as its 3rd and 7th. Db7 has F and Cb (=B) as its 3rd and 7th. The guide tones are identical (enharmonically), so Db7 can resolve to C just like G7.',
-      points: 1,
     },
     {
       id: 'l7u21m4e3',
@@ -197,14 +186,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A tritone substitution for G7, creating a chromatic bass line (D - Db - C)', correct: true },
-          { label: 'A borrowed chord from Db major', correct: false },
+          { label: 'A tritone substitution for G7, so the bass line moves only by half steps from D to Db to C', correct: true },
+          { label: 'A back-door dominant (bVII7) borrowed from the parallel minor, resolving to Cmaj7 from a whole step below', correct: false },
           { label: 'The Neapolitan chord in first inversion', correct: false },
-          { label: 'A passing diminished chord respelled enharmonically', correct: false },
+          { label: 'A passing diminished 7th chord between Dm7 and Cmaj7 (respelled enharmonically as Db7)', correct: false },
         ],
       },
       hint: 'Db7 replaces G7 (the V7). The bass descends chromatically: D (ii) - Db (tritone sub of V) - C (I). This smooth voice leading is one of the main benefits of tritone subs.',
-      points: 1,
     },
   ],
 
@@ -220,11 +208,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'I7-I7-I7-I7 | IV7-IV7-I7-I7 | V7-IV7-I7-V7 (C7-F7-G7 form)', correct: true },
           { label: 'I-IV-V-I | I-IV-V-I | I-IV-V-I (simple three-chord repeated)', correct: false },
           { label: 'ii-V-I-vi | ii-V-I-vi | ii-V-I-vi (jazz turnaround repeated)', correct: false },
-          { label: 'I-V-vi-IV | I-V-vi-IV | I-V-vi-IV (pop loop repeated)', correct: false },
+          { label: 'I-V-vi-IV | I-V-vi-IV | I-V-vi-IV (four-chord pop loop repeated)', correct: false },
         ],
       },
       hint: 'The 12-bar blues follows a specific pattern over 12 measures: 4 bars of I7, 2 bars of IV7, 2 bars of I7, then V7-IV7-I7-V7 (turnaround). All chords are dominant 7ths.',
-      points: 1,
     },
     {
       id: 'l7u21m5e2',
@@ -233,14 +220,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Blues tonality uses the b7 as a blue note; the dominant 7th on every chord is a defining feature of the style', correct: true },
-          { label: 'Because blues musicians did not know about major 7th chords', correct: false },
-          { label: 'The dominant 7th is easier to play on guitar', correct: false },
-          { label: 'It is a notational convention that does not affect the sound', correct: false },
+          { label: 'Blues tonality uses the b7 as a blue note; dominant 7ths on every chord define the style', correct: true },
+          { label: 'Because each dominant 7th resolves fully into the next chord, giving the 12 bars a feeling of constant arrival', correct: false },
+          { label: 'Because the b7 makes the chord minor, which gives the blues its dark, melancholic mood', correct: false },
+          { label: 'It is only a notational convention: a C7 and a Cmaj7 sound exactly the same in a blues', correct: false },
         ],
       },
       hint: 'In blues, the b7 is part of the blues scale and the overall blues sound. Every chord — I, IV, and V — uses dominant 7th quality. This defies classical theory, where I7 would imply a secondary dominant.',
-      points: 1,
     },
     {
       id: 'l7u21m5e3',
@@ -250,13 +236,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'ii-V turnarounds, tritone substitutions, and diminished passing chords', correct: true },
-          { label: 'Only major 7th chords replace all dominant 7ths', correct: false },
-          { label: 'A key change every 4 bars', correct: false },
+          { label: 'Minor-blues substitutions: minor 7th chords on I and IV, with bVI7 (Ab7) for V7', correct: false },
+          { label: 'A key change every 4 bars, up a half step each time (C, Db, D…)', correct: false },
           { label: 'Exclusively minor chords throughout', correct: false },
         ],
       },
       hint: 'Jazz blues enriches the basic form by inserting ii-V progressions (e.g., bars 9-10 become ii-V instead of just V-IV), adding tritone subs, and using quick ii-V turnarounds to create harmonic motion.',
-      points: 1,
     },
   ],
 
@@ -270,13 +255,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'AABA — 32 bars with an 8-bar bridge', correct: true },
-          { label: 'ABAB — alternating 8-bar sections', correct: false },
-          { label: '12-bar blues repeated with variations', correct: false },
-          { label: 'Through-composed with no repeating sections', correct: false },
+          { label: 'ABAB — two alternating 8-bar sections', correct: false },
+          { label: '12-bar blues, repeated with an 8-bar bridge in between', correct: false },
+          { label: 'Through-composed — the A sections never return after the 8-bar bridge', correct: false },
         ],
       },
       hint: 'Rhythm changes follow a 32-bar AABA form: the A sections use I-vi-ii-V based progressions, and the B section (bridge) typically uses a cycle of dominants. Based on the chord changes to a famous Gershwin tune.',
-      points: 1,
     },
     {
       id: 'l7u21m6e2',
@@ -287,12 +271,11 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: 'I - vi - ii - V (or I - VI7 - ii - V7)', correct: true },
           { label: 'IV - V - I - I', correct: false },
-          { label: 'I - IV - I - V', correct: false },
-          { label: 'vi - IV - I - V', correct: false },
+          { label: 'I - IV - I - V (or Imaj7 - IVmaj7 - Imaj7 - V7)', correct: false },
+          { label: 'I - bVII - IV - I (or I - bVII7 - IVmaj7 - I)', correct: false },
         ],
       },
       hint: 'The turnaround (I-vi-ii-V) cycles back to the top of the form. In jazz, the vi is often replaced with VI7 (a secondary dominant), and further embellished with tritone subs and passing chords.',
-      points: 1,
     },
     {
       id: 'l7u21m6e3',
@@ -301,14 +284,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A cycle of dominant 7th chords moving through a cycle of fifths (each resolving down a fifth to the next)', correct: true },
-          { label: 'A sustained pedal note with no chord changes', correct: false },
-          { label: 'An exact repeat of the A section in a different key', correct: false },
-          { label: 'A twelve-tone serial row', correct: false },
+          { label: 'A cycle of dominant 7ths, each resolving down a fifth to the next (D7-G7-C7-F7)', correct: true },
+          { label: 'The I-vi-ii-V turnaround of the A sections, repeated in Bb major through the bridge', correct: false },
+          { label: 'An exact repeat of the A section, transposed up a whole step, with no new chords at all', correct: false },
+          { label: 'A modulation to the dominant key (F major) that stays there for all eight bars', correct: false },
         ],
       },
       hint: 'The bridge typically features a chain of dominant 7ths: III7-VI7-II7-V7 (in Bb: D7-G7-C7-F7). Each dominant resolves down a fifth to the next, creating strong forward motion.',
-      points: 1,
     },
   ],
 
@@ -330,7 +312,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'D dorian: D, E, F, G, A, B, C. It is the 2nd mode of C major. The natural 6th (B) distinguishes it from natural minor (which has Bb). Pitch classes: 2, 4, 5, 7, 9, 11, 0.',
-      points: 2,
     },
     {
       id: 'l7u22m1e2',
@@ -344,7 +325,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'G mixolydian: G, A, B, C, D, E, F. It is the 5th mode of C major. The b7 (F instead of F#) defines the dominant sound. Pitch classes: 7, 9, 11, 0, 2, 4, 5.',
-      points: 2,
     },
     {
       id: 'l7u22m1e3',
@@ -353,14 +333,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Each chord in a progression has a corresponding scale whose notes are all available for melody and improvisation', correct: true },
-          { label: 'Every chord must only use notes from one fixed scale throughout a piece', correct: false },
+          { label: 'Each chord in a progression has a matching scale whose notes are all available for melody and improvisation', correct: true },
+          { label: 'Every chord in a piece must use notes from one single fixed scale, chosen once at the start', correct: false },
           { label: 'Scales are built by stacking chords on top of each other', correct: false },
           { label: 'Chord-scale theory only applies to major keys', correct: false },
         ],
       },
       hint: 'Chord-scale theory matches each chord to a parent scale. Over Dm7, play D dorian; over G7, play G mixolydian; over Cmaj7, play C ionian. The scale changes with each chord.',
-      points: 1,
     },
   ],
 
@@ -373,14 +352,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A triad played in the upper register over a different root and 7th in the bass, producing extensions and alterations', correct: true },
-          { label: 'The top three notes of any seventh chord', correct: false },
-          { label: 'A triad played one octave higher than written', correct: false },
-          { label: 'A structural analysis technique for identifying form', correct: false },
+          { label: 'A triad played above a different root and 7th, so its notes become extensions or alterations', correct: true },
+          { label: 'The top three notes of any 7th chord (the 3rd, 5th and 7th)', correct: false },
+          { label: 'Any triad just played one octave higher than written, so that the chord sounds brighter and clearer', correct: false },
+          { label: 'A triad built on the bass note itself, so its notes are the root, 3rd and 5th, not extensions', correct: false },
         ],
       },
       hint: 'Upper structures layer a simple triad (e.g., D major) over a bass note and 7th (e.g., C and Bb), creating complex extensions. D/C7 gives C7 with 9th, #11th, and 13th.',
-      points: 1,
     },
     {
       id: 'l7u22m2e2',
@@ -389,14 +367,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Replacing the original chords of a melody with different chords that still support the melody notes', correct: true },
+          { label: 'Replacing a melody\'s original chords with others that still support its notes', correct: true },
           { label: 'Playing the same chords but in a different key', correct: false },
           { label: 'Adding harmony vocals to a solo melody', correct: false },
-          { label: 'Removing all chords and playing the melody unaccompanied', correct: false },
+          { label: 'Removing all the chords and playing the melody completely alone', correct: false },
         ],
       },
       hint: 'Reharmonization changes the harmonic context under a melody. Techniques include tritone substitution, chord quality changes, chromatic approaches, and constant structure movement.',
-      points: 1,
     },
     {
       id: 'l7u22m2e3',
@@ -405,14 +382,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A bass line that moves by half steps, often achieved through inversions, passing chords, and tritone substitutions', correct: true },
-          { label: 'A bass line that uses only the 12-tone chromatic scale with no repetition', correct: false },
+          { label: 'A bass line moving by half steps, often through inversions, passing chords and tritone subs', correct: true },
+          { label: 'A bass line built from diminished passing chords, each a whole step above the last, as in C-D-E', correct: false },
           { label: 'A bass line that only plays on the chromatic notes (black keys)', correct: false },
           { label: 'A bass line that moves in contrary motion to the melody', correct: false },
         ],
       },
       hint: 'Chromatic bass motion creates smooth voice leading: e.g., C - B - Bb - A (Cmaj7 - B7 or G/B - Bb7 or C7/Bb - Am7). Each chord is chosen to support a half-step bass descent.',
-      points: 1,
     },
   ],
 
@@ -426,13 +402,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Key centers moving by major 3rds, dividing the octave into three equal parts', correct: true },
-          { label: 'Key centers moving by minor 2nds chromatically', correct: false },
-          { label: 'Key centers moving by perfect 5ths around the cycle', correct: false },
-          { label: 'Key centers alternating between two keys a tritone apart', correct: false },
+          { label: 'Key centers moving by minor 2nds chromatically, each a half step above the last', correct: false },
+          { label: 'Key centers moving by perfect 5ths around the cycle, like an ordinary chain of secondary dominants', correct: false },
+          { label: 'Key centers alternating between just two keys a tritone apart, back and forth for the whole tune', correct: false },
         ],
       },
       hint: 'Coltrane changes cycle through three key centers a major 3rd apart (e.g., B, G, Eb). These three keys divide the octave symmetrically into three equal segments of 4 semitones each.',
-      points: 1,
     },
     {
       id: 'l7u22m3e2',
@@ -441,14 +416,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Each key center is preceded by its own V7 chord, creating rapid ii-V or V-I motion', correct: true },
+          { label: 'Every key center is preceded by its own V7 chord, creating rapid ii-V or V-I motion', correct: true },
           { label: 'Key centers are connected by diminished passing chords only', correct: false },
-          { label: 'Direct modulation without any preparation', correct: false },
-          { label: 'Each key is approached by a deceptive cadence from the previous key', correct: false },
+          { label: 'Constant structure: each key center is reached by planing one maj7 shape — no ii-V, no V7', correct: false },
+          { label: 'Each new key arrives by a deceptive cadence (V7-vi), never via its own V7', correct: false },
         ],
       },
       hint: 'Coltrane prepares each tonic with its dominant: e.g., Bmaj7 - D7 - Gmaj7 - Bb7 - Ebmaj7. The D7 is the V7 of G, Bb7 is the V7 of Eb. This creates constant dominant-tonic motion.',
-      points: 1,
     },
     {
       id: 'l7u22m3e3',
@@ -457,14 +431,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Moving the same chord quality in parallel through a non-diatonic root pattern, maintaining voicing shape', correct: true },
-          { label: 'Using the same chord for an entire song', correct: false },
+          { label: 'Moving one chord quality in parallel through non-diatonic roots, keeping the voicing shape', correct: true },
+          { label: 'Using one single chord for an entire song while only the melody and the bass line change', correct: false },
           { label: 'A structural analysis method for identifying melodic motifs', correct: false },
           { label: 'Building all chords from the same four notes', correct: false },
         ],
       },
       hint: 'Constant structure moves a fixed chord type (e.g., maj7) through a sequence of roots (e.g., Cmaj7 - Ebmaj7 - Gbmaj7 - Amaj7). The voicing shape stays identical while the root pattern creates harmonic interest.',
-      points: 1,
     },
   ],
 
@@ -482,7 +455,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'D dorian: D, E, F, G, A, B, C. Compared to D natural minor, the 6th degree is raised (B natural instead of Bb). Pitch classes: 2, 4, 5, 7, 9, 11, 0.',
-      points: 2,
     },
     {
       id: 'l7u22m4e2',
@@ -496,7 +468,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'E phrygian: E, F, G, A, B, C, D. The b2 (F natural, a half step above E) gives phrygian its dark, Spanish-flavored character. Pitch classes: 4, 5, 7, 9, 11, 0, 2.',
-      points: 2,
     },
     {
       id: 'l7u22m4e3',
@@ -505,14 +476,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Modal harmony emphasizes a static tonal center and avoids dominant-tonic resolution, letting the mode color define the sound', correct: true },
-          { label: 'Modal harmony uses more chords than tonal harmony', correct: false },
+          { label: 'Modal harmony keeps a static center and avoids V-I resolution, letting the mode\'s color define the sound', correct: true },
+          { label: "Modal harmony uses more chords than tonal harmony — all seven, one for each degree's mode", correct: false },
           { label: 'Modal harmony always uses minor scales exclusively', correct: false },
-          { label: 'There is no functional difference; they are interchangeable terms', correct: false },
+          { label: "Modal harmony relies on strong V-I resolution, like tonal harmony, but uses the mode's own color", correct: false },
         ],
       },
       hint: 'In tonal harmony, chords have functions (tonic, dominant, subdominant) that drive toward resolution. In modal harmony, one mode colors a static vamp or drone, and progressions avoid V-I cadences that would establish a key.',
-      points: 1,
     },
   ],
 
@@ -525,14 +495,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Notes stacked in intervals of perfect 4ths instead of 3rds', correct: true },
-          { label: 'A voicing that uses four notes from a seventh chord', correct: false },
-          { label: 'A chord played in four different octaves simultaneously', correct: false },
+          { label: 'Notes stacked in perfect 4ths instead of 3rds', correct: true },
+          { label: 'A voicing that uses all 4 notes of a 7th chord', correct: false },
+          { label: 'A chord whose notes are doubled in four different octaves at the same time', correct: false },
           { label: 'A voicing technique exclusive to string quartets', correct: false },
         ],
       },
       hint: 'Quartal harmony stacks 4ths (e.g., C-F-Bb-Eb). This creates an ambiguous, open sound that avoids clear major/minor quality. McCoy Tyner popularized quartal voicings in modal jazz.',
-      points: 1,
     },
     {
       id: 'l7u22m5e2',
@@ -541,14 +510,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Quintal harmony stacks perfect 5ths instead of 4ths, producing an equally open but slightly different sound', correct: true },
-          { label: 'Quintal uses five notes while quartal uses four', correct: false },
-          { label: 'Quintal is used in pop music while quartal is used in jazz', correct: false },
-          { label: 'They are identical since a 4th inverted is a 5th', correct: false },
+          { label: 'Quintal harmony stacks perfect 5ths instead of 4ths, an equally open sound', correct: true },
+          { label: 'Quintal uses five notes per chord while quartal uses four, so the names simply count the notes', correct: false },
+          { label: 'Quintal harmony belongs only to pop music, while quartal harmony is found only in jazz recordings', correct: false },
+          { label: 'Quintal harmony stacks major 3rds; quartal harmony stacks minor 3rds', correct: false },
         ],
       },
       hint: 'While a 4th inverts to a 5th, the voicing sound differs based on register and spacing. Quintal voicings (e.g., C-G-D-A) create wide, bright sonorities. Both avoid traditional tertian (3rd-based) harmony.',
-      points: 1,
     },
     {
       id: 'l7u22m5e3',
@@ -557,14 +525,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'They anchor the tonal center, allowing modal colors to unfold without functional chord progressions', correct: true },
+          { label: 'They anchor the tonal center, letting modal colors unfold without functional progressions', correct: true },
           { label: 'They provide rhythmic subdivision for the ensemble', correct: false },
           { label: 'They are only used in Indian classical music, not jazz', correct: false },
-          { label: 'They create dominant function by sustaining the 5th of the key', correct: false },
+          { label: 'They create dominant function by sustaining the 5th of the key, so the music always wants to resolve', correct: false },
         ],
       },
       hint: 'A drone (sustained bass note or open 5th) establishes a modal center. Over a D drone, you can freely explore D dorian, D mixolydian, or other modes without the harmony pulling toward resolution.',
-      points: 1,
     },
   ],
 
@@ -588,7 +555,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'I-V-vi-IV (in C: C-G-Am-F) is one of the most common pop progressions. It loops indefinitely and supports both uplifting and melancholic melodies depending on which chord the melody emphasizes.',
-      points: 1,
     },
     {
       id: 'l7u23m1e2',
@@ -597,14 +563,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A shorthand that uses Arabic numerals (1-7) for scale degrees, allowing instant transposition to any key', correct: true },
+          { label: 'A shorthand that writes chords as scale-degree numbers so a chart works in any key', correct: true },
           { label: 'A method of counting bars in country music recordings', correct: false },
-          { label: 'A tuning system developed in Nashville recording studios', correct: false },
+          { label: 'A guitar tuning used in Nashville studios, with every string a half step lower', correct: false },
           { label: 'A rhythm notation system for session drummers', correct: false },
         ],
       },
       hint: 'The Nashville number system writes chords as scale-degree numbers (1=I, 4=IV, 5=V). A chart reading "1-5-6m-4" can be played in any key instantly. It is used extensively in Nashville studio sessions.',
-      points: 1,
     },
     {
       id: 'l7u23m1e3',
@@ -613,14 +578,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A short repeating chord progression (usually 4 bars) that provides harmonic continuity while the melody and lyrics evolve', correct: true },
-          { label: 'A digital audio loop sampled from an existing hit song', correct: false },
-          { label: 'A specific production technique that repeats the chorus melody', correct: false },
+          { label: 'A short repeating progression that keeps the harmony steady while melody and lyrics change', correct: true },
+          { label: 'A chord change that happens only once, at the very end of a song', correct: false },
+          { label: 'A studio production technique that copies the chorus melody and pastes it under every single verse of the song', correct: false },
           { label: 'A bass riff that cycles through all 12 notes', correct: false },
         ],
       },
       hint: 'Pop loops (like I-V-vi-IV or vi-IV-I-V) repeat a small harmonic pattern throughout a song. The static harmony lets melody, rhythm, and production carry the musical interest, which suits verse/chorus forms.',
-      points: 1,
     },
   ],
 
@@ -636,11 +600,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Modal mixture (borrowing from the parallel minor/mixolydian mode)', correct: true },
           { label: 'A modulation to the key of Bb major', correct: false },
           { label: 'A secondary dominant targeting the IV chord', correct: false },
-          { label: 'An enharmonic respelling of the vii diminished chord', correct: false },
+          { label: 'An enharmonic respelling of the vii° chord of C major, B diminished, written as Bb', correct: false },
         ],
       },
       hint: 'bVII is borrowed from C mixolydian or C natural minor. In C major, Bb is not diatonic, but borrowing it creates a rock/pop sound. This is modal mixture (also called modal interchange or borrowed chords).',
-      points: 1,
     },
     {
       id: 'l7u23m2e2',
@@ -649,14 +612,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A dramatic, cinematic shift in color — unexpected but smooth due to shared or closely related tones', correct: true },
+          { label: 'A dramatic, cinematic shift in color — unexpected, yet smooth thanks to a shared tone', correct: true },
           { label: 'A sense of returning home to the tonic', correct: false },
-          { label: 'No noticeable effect since the chords are closely related', correct: false },
+          { label: 'No noticeable effect at all, since the two chords belong to the same key and sound alike', correct: false },
           { label: 'A dissonant clash that sounds like a mistake', correct: false },
         ],
       },
       hint: 'C major (C, E, G) and Ab major (Ab, C, Eb) share one common tone (C). The E and Eb are a half step apart, creating the smooth color shift characteristic of chromatic mediants.',
-      points: 1,
     },
     {
       id: 'l7u23m2e3',
@@ -666,13 +628,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Changing key without any pivot chord or preparation — the new key simply starts', correct: true },
-          { label: 'A gradual key change that takes several measures to complete', correct: false },
+          { label: 'A gradual key change spread over several bars, prepared by a pivot chord shared by both keys', correct: false },
           { label: 'A modulation that always moves up by a half step', correct: false },
-          { label: 'Using a ii-V-I to smoothly transition between keys', correct: false },
+          { label: 'Using a ii-V-I in the new key to prepare the change, so the transition sounds smooth and gradual', correct: false },
         ],
       },
       hint: 'Direct modulation (also called abrupt or phrase modulation) simply starts a new section in the new key with no harmonic preparation. Common in pop: the final chorus jumps up a half step or whole step for energy.',
-      points: 1,
     },
   ],
 
@@ -690,7 +651,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'C melodic minor: C, D, Eb, F, G, A, B. It is like C major with a b3. The natural 6th (A) and natural 7th (B) distinguish it from natural and harmonic minor. Pitch classes: 0, 2, 3, 5, 7, 9, 11.',
-      points: 2,
     },
     {
       id: 'l7u23m3e2',
@@ -704,7 +664,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 7,
       },
       hint: 'G altered (superlocrian): G, Ab, Bb, Cb, Db, Eb, F. Every non-essential tone is altered: b9, #9 (=b3), b5 (#11), b13 (#5). Pitch classes: 7, 8, 10, 11, 1, 3, 5.',
-      points: 2,
     },
     {
       id: 'l7u23m3e3',
@@ -713,14 +672,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Dominant 7th chords with a #11, especially tritone substitutions and non-resolving dominants', correct: true },
-          { label: 'Minor 7th chords in a ii-V-I', correct: false },
+          { label: 'Dominant 7th chords with a #11, such as tritone subs and non-resolving dominants', correct: true },
+          { label: 'Minor 7th chords in a ii-V-I, since the Lydian dominant scale contains a minor 3rd (b3)', correct: false },
           { label: 'Major 7th chords functioning as tonic', correct: false },
           { label: 'Diminished 7th passing chords', correct: false },
         ],
       },
       hint: 'Lydian dominant (e.g., C D E F# G A Bb) combines a #4 (lydian) with a b7 (dominant). It fits dominant 7(#11) chords and is the go-to scale for tritone substitution chords.',
-      points: 1,
     },
   ],
 
@@ -738,7 +696,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 6,
       },
       hint: 'C whole tone: C, D, E, F#, G#, A#. Every interval is a whole step (2 semitones). Only two whole-tone scales exist (the other starts on Db). Pitch classes: 0, 2, 4, 6, 8, 10.',
-      points: 2,
     },
     {
       id: 'l7u23m4e2',
@@ -752,7 +709,6 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         noteCount: 8,
       },
       hint: 'C diminished half-whole: C, Db, Eb, E, F#, G, A, Bb. It alternates half step, whole step throughout. Only three distinct diminished scales exist. Pitch classes: 0, 1, 3, 4, 6, 7, 9, 10.',
-      points: 2,
     },
     {
       id: 'l7u23m4e3',
@@ -761,14 +717,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'It divides the octave into equal segments using a repeating interval pattern, producing limited transpositions', correct: true },
+          { label: 'It divides the octave into equal parts with one repeating interval pattern, so it has few transpositions', correct: true },
           { label: 'It has the same ascending and descending form', correct: false },
-          { label: 'It contains exactly 7 notes like diatonic scales', correct: false },
+          { label: 'It always contains exactly seven notes, one on each letter name, just like the major and minor scales', correct: false },
           { label: 'It sounds the same played forward or backward', correct: false },
         ],
       },
       hint: 'Symmetric scales repeat a fixed interval pattern (e.g., whole tone = W-W-W-W-W-W; diminished = H-W-H-W-H-W-H-W). This symmetry means they have fewer unique transpositions than asymmetric scales.',
-      points: 1,
     },
   ],
 
@@ -784,11 +739,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: '4 — major, minor, diminished, and augmented', correct: true },
           { label: '2 — major and minor only', correct: false },
           { label: '3 — major, minor, and diminished', correct: false },
-          { label: '7 — one for each scale degree', correct: false },
+          { label: '7 — one triad type for each degree of the scale', correct: false },
         ],
       },
       hint: 'There are exactly 4 triad types, defined by their 3rd and 5th: major (M3+P5), minor (m3+P5), diminished (m3+dim5), and augmented (M3+aug5). All other triadic labels are variants of these four.',
-      points: 1,
     },
     {
       id: 'l7u23m5e2',
@@ -797,14 +751,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'It includes notes beyond the 7th — the 9th, 11th, or 13th — built by continuing to stack 3rds', correct: true },
-          { label: 'It uses more than 4 notes from any source', correct: false },
-          { label: 'It spans more than one octave on the instrument', correct: false },
-          { label: 'It adds chromatic notes not found in the parent scale', correct: false },
+          { label: 'It has notes beyond the 7th (9th, 11th or 13th), built by stacking more 3rds', correct: true },
+          { label: 'It adds a 9th, or a 6th and 9th, to a triad, as in Cadd9 or C6/9, with no 7th', correct: false },
+          { label: 'It replaces the 3rd with a 2nd or a 4th, as in Csus2 or Csus4', correct: false },
+          { label: 'It doubles chord tones an octave up (root, 3rd, 5th, 7th), adding no new notes', correct: false },
         ],
       },
       hint: 'Extended chords continue the tertian (3rd-stacking) principle past the 7th: 9th = octave + 2nd, 11th = octave + 4th, 13th = octave + 6th. A 13th chord theoretically contains all 7 scale degrees.',
-      points: 1,
     },
     {
       id: 'l7u23m5e3',
@@ -813,14 +766,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Major family (maj, maj7, maj9), minor family (m, m7, m9), dominant family (7, 9, 13), diminished family (dim, dim7), augmented family (aug, aug7)', correct: true },
-          { label: 'Consonant chords (major, minor) and dissonant chords (all 7th chords and beyond)', correct: false },
+          { label: 'Major, minor, dominant, diminished and augmented, each with its 7th and extended forms', correct: true },
+          { label: 'Consonant chords (major and minor triads) versus dissonant chords (every 7th chord and everything beyond it)', correct: false },
           { label: 'Diatonic family (I, ii, iii, IV, V, vi) and chromatic family (everything else)', correct: false },
           { label: 'Simple chords (triads) and complex chords (anything with more than 3 notes)', correct: false },
         ],
       },
       hint: 'Chord quality families group chords by their core sound: the major family has a major 3rd and major 7th; the dominant family has a major 3rd and minor 7th; the minor family has a minor 3rd. Extensions expand each family.',
-      points: 1,
     },
   ],
 };

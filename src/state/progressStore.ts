@@ -13,6 +13,7 @@ import {
   updateScheduleAfterReview,
   backfillSchedules,
 } from '../services/spacedRepetition';
+import { RETIRED_EXERCISE_IDS } from './retiredExerciseIds';
 
 function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((item) => typeof item === 'string');
@@ -42,6 +43,17 @@ export function isValidPersistedProgress(value: unknown): value is { progress: C
   if (!isStringArray(progress.completedModules)) return false;
   if (!isPlainObject(progress.moduleProgress)) return false;
   if (!Object.values(progress.moduleProgress).every(isStringArray)) return false;
+  if (progress.exemptedModules !== undefined && !isStringArray(progress.exemptedModules)) return false;
+  if (progress.exerciseResults !== undefined) {
+    // module -> { scores: { exerciseId: 0 | 0.5 | 1 }, totalAttempts, lastAttemptAt, passed }
+    if (!isPlainObject(progress.exerciseResults)) return false;
+    for (const result of Object.values(progress.exerciseResults)) {
+      if (!isPlainObject(result) || !isPlainObject(result.scores)) return false;
+      if (!Object.values(result.scores).every((s) => s === 0 || s === 0.5 || s === 1)) return false;
+      if (typeof result.totalAttempts !== 'number' || typeof result.lastAttemptAt !== 'number') return false;
+      if (typeof result.passed !== 'boolean') return false;
+    }
+  }
   if (progress.reviewSchedules !== undefined) {
     if (!isPlainObject(progress.reviewSchedules)) return false;
     for (const schedule of Object.values(progress.reviewSchedules)) {
@@ -52,6 +64,41 @@ export function isValidPersistedProgress(value: unknown): value is { progress: C
     }
   }
   return true;
+}
+
+/**
+ * The persisted progress version: 1, raised by every content release that
+ * retires saved per-exercise scores (retiredExerciseIds.ts).
+ */
+export const PROGRESS_STORE_VERSION = Math.max(1, ...RETIRED_EXERCISE_IDS.map((r) => r.version));
+
+/**
+ * Drop the saved per-exercise scores that content releases after
+ * `fromVersion` retired — the exercise at that id changed or was removed, so
+ * the score would otherwise attach to a different exercise (audit W4a).
+ * Completed modules, task ticks, review schedules, each module's attempt
+ * count and its "passed" flag are untouched, so completion, unlocks and level
+ * progress stay exactly as they were. Malformed entries pass through as-is.
+ */
+export function retireChangedExerciseScores(progress: CurriculumProgress, fromVersion: number): CurriculumProgress {
+  const results = progress.exerciseResults;
+  const releases = RETIRED_EXERCISE_IDS.filter((r) => r.version > fromVersion);
+  if (!isPlainObject(results) || releases.length === 0) return progress;
+  const next: NonNullable<CurriculumProgress['exerciseResults']> = {};
+  for (const [moduleId, result] of Object.entries(results)) {
+    const retired = new Set(
+      releases.flatMap((r) => (r.ids[moduleId] ?? '').split(' ').filter(Boolean).map((suffix) => `${moduleId}${suffix}`)),
+    );
+    if (retired.size === 0 || !isPlainObject(result) || !isPlainObject(result.scores)) {
+      next[moduleId] = result;
+      continue;
+    }
+    next[moduleId] = {
+      ...result,
+      scores: Object.fromEntries(Object.entries(result.scores).filter(([id]) => !retired.has(id))),
+    };
+  }
+  return { ...progress, exerciseResults: next };
 }
 
 interface ProgressStore {
@@ -210,35 +257,17 @@ export const useProgressStore = create<ProgressStore>()(
     }),
     {
       name: 'music-theory-progress',
-      version: 1,
+      version: PROGRESS_STORE_VERSION,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ progress: state.progress }),
-      // Migrate from old format (raw CurriculumProgress) to wrapped { progress }
+      // Migrate from old format (raw CurriculumProgress) to wrapped { progress },
+      // then retire the per-exercise scores of exercises that changed since
+      // `version` (W4a: re-keyed templates, rewritten questions).
       migrate: (persisted: unknown, version: number) => {
-        if (version === 0 || !persisted || typeof persisted !== 'object') {
-          // Old format: the stored value IS the CurriculumProgress directly
-          // Try to read from old key
-          try {
-            const raw = localStorage.getItem('music-theory-progress');
-            if (raw) {
-              const parsed = JSON.parse(raw);
-              // If it has completedModules at top level, it's old format
-              if (Array.isArray(parsed.completedModules)) {
-                return { progress: parsed as CurriculumProgress };
-              }
-              // If it has state.progress, it's already new format
-              if (parsed.state?.progress) {
-                return { progress: parsed.state.progress as CurriculumProgress };
-              }
-            }
-          } catch {
-            // Fall through to default
-          }
-          return { progress: getDefaultProgress() };
-        }
-        return isValidPersistedProgress(persisted)
-          ? persisted
-          : { progress: getDefaultProgress() };
+        const upgraded = migrateShape(persisted, version);
+        return version < PROGRESS_STORE_VERSION
+          ? { progress: retireChangedExerciseScores(upgraded.progress, version) }
+          : upgraded;
       },
       // zustand skips migrate() when the stored version matches, so corrupt
       // same-version data must be caught here on the merge path.
@@ -251,3 +280,31 @@ export const useProgressStore = create<ProgressStore>()(
     },
   ),
 );
+
+/** The pre-W4a migration: any older saved shape → { progress } (defaults when unusable). */
+function migrateShape(persisted: unknown, version: number): { progress: CurriculumProgress } {
+  if (version === 0 || !persisted || typeof persisted !== 'object') {
+    // Old format: the stored value IS the CurriculumProgress directly
+    // Try to read from old key
+    try {
+      const raw = localStorage.getItem('music-theory-progress');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        // If it has completedModules at top level, it's old format
+        if (Array.isArray(parsed.completedModules)) {
+          return { progress: parsed as CurriculumProgress };
+        }
+        // If it has state.progress, it's already new format
+        if (parsed.state?.progress) {
+          return { progress: parsed.state.progress as CurriculumProgress };
+        }
+      }
+    } catch {
+      // Fall through to default
+    }
+    return { progress: getDefaultProgress() };
+  }
+  return isValidPersistedProgress(persisted)
+    ? persisted
+    : { progress: getDefaultProgress() };
+}

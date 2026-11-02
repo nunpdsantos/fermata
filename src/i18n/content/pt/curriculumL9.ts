@@ -123,7 +123,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       subtitle:
         'Identificar intervalos perfeitos e pequenos de ouvido usando associações com canções e reconhecimento direto',
       objectives: [
-        'Identificar uníssono, 2.ª menor, 2.ª maior, 3.ª menor, 3.ª maior, 4.ª perfeita, trítono e 5.ª perfeita de ouvido',
+        'Identificar 2.ª menor, 2.ª maior, 3.ª menor, 3.ª maior, 4.ª perfeita, trítono e 5.ª perfeita de ouvido',
         'Usar associações com canções como auxiliares mnemónicos para cada intervalo',
         'Reconhecer estes intervalos tanto ascendentes como descendentes',
       ],
@@ -413,7 +413,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       objectives: [
         'Identificar tríades maiores, menores, diminutas e aumentadas de ouvido',
         'Compreender a distinção de estabilidade: 5.ª perfeita (estável) vs. 5.ª alterada (instável)',
-        'Reconhecer inversões de tríades pelo carácter da nota do baixo',
+        'Ouvir cada qualidade de tríade em posição fundamental, com a fundamental no baixo',
       ],
       concepts: [
         {
@@ -603,11 +603,11 @@ const curriculumL9: CurriculumLevelOverlay = {
     l9u32m3: {
       title: 'Ditado Harmónico: Cadências e Progressões',
       subtitle:
-        'Identificar cadências, transcrever progressões e ditado de linha de baixo',
+        'Identificar cadências e transcrever progressões seguindo o baixo',
       objectives: [
         'Identificar tipos de cadência (autêntica, plagal, meia cadência, interrompida) de ouvido',
         'Transcrever progressões diatónicas de quatro acordes usando numeração romana',
-        'Realizar ditado de linha de baixo como porta de entrada para transcrição harmónica completa',
+        'Acompanhar a linha do baixo (a fundamental de cada acorde) para nomear a numeração romana de uma progressão',
       ],
       concepts: [
         {

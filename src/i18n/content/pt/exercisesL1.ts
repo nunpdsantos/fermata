@@ -14,7 +14,7 @@ const overlay: ExerciseLevelOverlay = {
 
   l1u1m1e1: {
     prompt:
-      'Identifica esta nota na clave de sol: encontra-se na linha suplementar abaixo da pauta.',
+      'Identifica esta nota na clave de sol: encontra-se numa pequena linha extra (uma linha suplementar) logo abaixo da pauta.',
     hint: 'O C central situa-se numa linha suplementar logo abaixo da pauta de clave de sol.',
   },
   l1u1m1e2: {
@@ -34,7 +34,7 @@ const overlay: ExerciseLevelOverlay = {
       'Clave de sol',
       'Clave de fá',
       'Clave de dó (alto)',
-      'Clave de dó (tenor)',
+      'Clave de percussão',
     ],
     hint: 'A clave de sol também se chama clave de G porque se enrola em torno da segunda linha, definindo-a como G.',
   },
@@ -54,9 +54,9 @@ const overlay: ExerciseLevelOverlay = {
   l1u1m2e3: {
     prompt: 'Qual é a função das linhas suplementares?',
     choices: [
-      'Prolongar a pauta para notas acima ou abaixo das suas cinco linhas',
-      'Indicar o andamento de uma peça',
-      'Separar os compassos uns dos outros',
+      'Escrever notas acima ou abaixo das cinco linhas da pauta',
+      'Indicar a velocidade a que a peça deve ser tocada',
+      'Mostrar que mão, direita ou esquerda, toca cada nota',
       'Mostrar onde ocorrem as pausas',
     ],
     hint: 'A pauta tem apenas cinco linhas. As notas que ultrapassam essas linhas necessitam de pequenas linhas adicionais para indicar a sua posição.',
@@ -141,7 +141,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       '4 tempos de semínima por compasso',
       '4 tempos de mínima por compasso',
-      '4 tempos de colcheia por compasso',
+      '4 tempos de semicolcheia por compasso',
       '4 compassos por linha',
     ],
     hint: 'O número superior (4) indica os tempos por compasso. O número inferior (4) indica que a semínima vale um tempo.',
@@ -151,7 +151,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       '3 tempos de semínima por compasso',
       '3 tempos de mínima por compasso',
-      '4 tempos agrupados em três',
+      '3 tempos de semicolcheia por compasso',
       '3 compassos de 4 tempos',
     ],
     hint: '3/4 significa três tempos de semínima por compasso. Isto cria a sensação de valsa: UM-dois-três.',
@@ -162,8 +162,8 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Cada tempo divide-se naturalmente em duas partes iguais',
       'Cada tempo divide-se naturalmente em três partes iguais',
-      'A música não tem indicação de compasso',
-      'O andamento é lento e regular',
+      'A música não tem indicação de compasso escrita no início da peça',
+      'O andamento é lento e regular do primeiro compasso ao último',
     ],
     hint: 'No compasso simples, os tempos subdividem-se em dois. No compasso composto, subdividem-se em três. 4/4 e 3/4 são compassos simples.',
   },
@@ -209,13 +209,13 @@ const overlay: ExerciseLevelOverlay = {
       '1 sustenido (F#)',
       '0 sustenidos ou bemóis',
       '2 sustenidos (F#, C#)',
-      '1 bemol (Bb)',
+      '2 bemóis (Bb, Eb)',
     ],
     hint: 'G maior necessita de F# para manter o padrão T-T-mT-T-T-T-mT. Esse único sustenido é a sua armação de clave.',
   },
   l1u3m2e2: {
-    prompt: 'Qual é a tonalidade com a armação de clave de um bemol (Bb)?',
-    choices: ['F maior', 'Bb maior', 'C maior', 'G maior'],
+    prompt: 'Que nota é bemolizada na armação de clave de F maior?',
+    choices: ['B (passa a Bb)', 'E (passa a Eb)', 'A (passa a Ab)', 'F (passa a Fb)'],
     hint: 'F maior necessita de Bb para manter o padrão da escala maior. A quarta nota (B) tem de ser rebaixada para Bb.',
   },
   l1u3m2e3: {

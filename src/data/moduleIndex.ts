@@ -181,7 +181,7 @@ const RAW: Array<[string, string, string]> = [
   ['l9u31m5', 'Seventh Chord Quality Recognition', 'Identifying all seventh chord qualities by ear — from warm major 7th to tense diminished 7th'],
   ['l9u32m1', 'Melodic Dictation: Diatonic', 'Transcribing short diatonic melodies by ear — stepwise and triadic motion'],
   ['l9u32m2', 'Melodic Dictation: Chromatic', 'Transcribing melodies with chromatic passing tones, neighbor tones, and secondary dominants'],
-  ['l9u32m3', 'Harmonic Dictation: Cadences and Progressions', 'Identifying cadences, transcribing progressions, and bass line dictation'],
+  ['l9u32m3', 'Harmonic Dictation: Cadences and Progressions', 'Identifying cadences and transcribing progressions by following the bass'],
   ['l9u32m4', 'Sight Singing Fundamentals', 'Movable-do solfege for sight singing in major and minor keys'],
   ['l9u32m5', 'Contextual Listening', 'Identifying texture, form, instruments, and style periods by ear'],
 ];

@@ -65,7 +65,8 @@ export async function loadExercises(
   // Apply template overlay + generate
   if (templateMod) {
     const translatedTemplates = applyTemplateOverlay(templateMod.default, templateOv);
-    const generated = generateAllForLevel(translatedTemplates, lang);
+    // The authored items go in so generated ones never repeat them (W4-19).
+    const generated = generateAllForLevel(translatedTemplates, lang, exerciseMod.default);
     exercises = mergeExerciseMaps(exercises, generated);
   }
 
