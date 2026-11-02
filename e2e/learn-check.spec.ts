@@ -17,8 +17,8 @@ import { levelCorpus } from '../src/data/exercises/__tests__/learnCorpus';
 
 const MODULE = 'l2u5m3'; // Relative and Parallel Keys: 9 multiple-choice questions
 const W = {
-  en: { lesson: 'Relative and Parallel Keys', start: 'Start the check', submit: 'Submit', cont: 'Continue', show: 'Show on the piano', hear: 'Hear it', retry: /have another go\.$/, hint: /^Hint: /, second: 'Correct on the second try', practise: 'Practise the one I missed', practiceScore: '1 of 1 right', check: 'Check' },
-  pt: { lesson: 'Tonalidades Relativas e Paralelas', start: 'Começar a verificação', submit: 'Enviar', cont: 'Continuar', show: 'Mostrar no piano', hear: 'Ouvir', retry: /tenta outra vez\.$/, hint: /^Dica: /, second: 'Correto à segunda tentativa', practise: 'Praticar a que falhei', practiceScore: '1 de 1 certas', check: 'Verificação' },
+  en: { lesson: 'Relative and Parallel Keys', start: 'Start the check', submit: 'Submit', cont: 'Continue', show: 'Show on the piano', hear: 'Hear it', retry: /have another go\.$/, hint: /^(Hint: |Look again at)/, second: 'Correct on the second try', practise: "Practise the one I didn't get first time", practiceScore: '1 of 1 right', check: 'Check' },
+  pt: { lesson: 'Tonalidades Relativas e Paralelas', start: 'Começar a verificação', submit: 'Enviar', cont: 'Continuar', show: 'Mostrar no piano', hear: 'Ouvir', retry: /tenta outra vez\.$/, hint: /^(Dica: |Volta a ver)/, second: 'Correto à segunda tentativa', practise: 'Praticar a que não acertei à primeira', practiceScore: '1 de 1 certas', check: 'Verificação' },
 } as const;
 type Lang = keyof typeof W;
 
@@ -110,7 +110,8 @@ for (const v of VIEWPORTS) {
       await page.getByRole('button', { name: w.start }).click();
       await expect(page.getByTestId('focused-check')).toBeVisible();
 
-      // Question 1: a miss → "Not X — have another go" + the hint; nothing marks the answer.
+      // Question 1: a miss → "Not X — have another go" + a nudge or the lesson section to look at again
+      // (review B1); nothing marks the answer.
       const first = await correctFor(page, key);
       await option(page, first.wrong).click();
       await page.getByRole('button', { name: w.submit }).click();

@@ -7,6 +7,7 @@ export const createMusicSlice: StateCreator<AppState, [], [], MusicSlice> = (set
   selectedChord: null,
   selectedDegree: null,
   chordInversion: 0,
+  lessonLoan: null,
 
   // The guitar position is deliberately NOT reset here: a classical position
   // ("V position") exists in every key and scale (audit W3-08).

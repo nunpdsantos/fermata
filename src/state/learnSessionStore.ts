@@ -17,14 +17,17 @@
  * simply dropped. Scores themselves are recorded in the progress store as each
  * question is answered — this only lets the run itself continue.
  *
- * It registers 'learn-check' with workInProgress: a check under way and not
- * finished is work an update should not reload under.
+ * It registers 'learn' with workInProgress: a lesson (or review) open in
+ * Learn — reading a section counts, a silent reload would move the learner —
+ * or a check under way and not finished is work an update should not reload
+ * under. The Learn overview and level lists are not.
  */
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { ExerciseDefinition } from '../core/types/exercise';
 import { exerciseFingerprint } from '../data/exercises/exerciseFingerprint';
 import { registerWorkInProgress } from '../services/workInProgress';
+import { useAppStore } from './store';
 
 export const LEARN_SESSION_KEY = 'fermata-learn-session-v1';
 export const LEARN_SESSION_VERSION = 1;
@@ -187,4 +190,14 @@ export function learnCheckInProgress(now = Date.now()): boolean {
   return !!c && !c.finished && isFresh(c.at, now);
 }
 
-registerWorkInProgress('learn-check', () => learnCheckInProgress());
+/**
+ * True while the learner is in a lesson or review in Learn (the app on Learn
+ * and a lesson screen saved and fresh), or a check is under way — what a
+ * silent update must not reload under (W9b).
+ */
+export function learnInProgress(now = Date.now()): boolean {
+  if (learnCheckInProgress(now)) return true;
+  return useAppStore.getState().view === 'learn' && restorableScreen(now) !== null;
+}
+
+registerWorkInProgress('learn', () => learnInProgress());

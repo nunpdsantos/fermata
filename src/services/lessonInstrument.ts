@@ -8,31 +8,37 @@
  * (resolveTheoryQuery → applyResolvedTheoryQuery) — just without jumping to
  * Explore.
  *
- * Learn only BORROWS the instrument: the first lesson selection remembers
- * Explore's key and scale, and they are given back the moment the app leaves
- * Learn (a store subscription, so it happens inside the view switch, before
- * anything else selects). "Open in Explore" keeps the lesson's selection
- * instead (`keepLessonInstrument`, then the executor as before).
+ * Learn only BORROWS the instrument: the first lesson selection puts
+ * Explore's key and scale on loan (`lessonLoan` in the main store), and they
+ * are given back the moment the app leaves Learn (a store subscription, so it
+ * happens inside the view switch, before anything else selects). "Open in
+ * Explore" keeps the lesson's selection instead (`keepLessonInstrument`, then
+ * the executor as before).
+ *
+ * Reloads and closed tabs (B2): the loan lives in memory only, but while it
+ * is set the main store SAVES the loaned selection in place of the lesson's
+ * (store.ts partialize). So every boot — a reload mid-lesson, a reopened tab,
+ * a saved lesson that has expired, a boot into another view — starts on
+ * Explore's own key and scale, with nothing to give back; a reopened lesson
+ * simply borrows them again. (The loan used to be a module variable while the
+ * store saved the lesson's selection: after a reload the reopened lesson
+ * recorded its own selection as Explore's.)
  */
 import { useAppStore } from '../state/store';
 import { resolveTheoryQuery } from '../utils/theoryQuery';
 import { applyResolvedTheoryQuery } from '../utils/queryExecutor';
-import type { Note, ScaleType } from '../core/types/music';
 
-let saved: { key: Note; scale: ScaleType } | null = null;
 let unsubscribe: (() => void) | null = null;
 
 function borrow(): void {
-  if (saved) return;
   const s = useAppStore.getState();
-  saved = { key: s.selectedKey, scale: s.selectedScale };
-  unsubscribe = useAppStore.subscribe((state, prev) => {
+  if (!s.lessonLoan) useAppStore.setState({ lessonLoan: { key: s.selectedKey, scale: s.selectedScale } });
+  unsubscribe ??= useAppStore.subscribe((state, prev) => {
     if (prev.view === 'learn' && state.view !== 'learn') returnLessonInstrument();
   });
 }
 
-function release(): void {
-  saved = null;
+function stopWatching(): void {
   unsubscribe?.();
   unsubscribe = null;
 }
@@ -52,20 +58,23 @@ export function showLessonQuery(query: string): boolean {
 
 /** Give Explore back the key and scale it had before the lesson borrowed the instrument. */
 export function returnLessonInstrument(): void {
-  if (!saved) return;
-  const { key, scale } = saved;
-  release();
+  stopWatching();
+  const loan = useAppStore.getState().lessonLoan;
+  if (!loan) return;
   const s = useAppStore.getState();
-  s.setKey(key);
-  s.setScale(scale);
+  // Selection first, loan last: every save on the way holds Explore's selection.
+  s.setKey(loan.key);
+  s.setScale(loan.scale);
+  useAppStore.setState({ lessonLoan: null });
 }
 
-/** The learner is taking the lesson's selection to Explore: keep it there. */
+/** The learner is taking the lesson's selection to Explore: keep it there (and in the save). */
 export function keepLessonInstrument(): void {
-  release();
+  stopWatching();
+  if (useAppStore.getState().lessonLoan) useAppStore.setState({ lessonLoan: null });
 }
 
 /** Test seam: is Explore's selection currently on loan to a lesson? */
 export function isLessonInstrumentBorrowed(): boolean {
-  return saved !== null;
+  return useAppStore.getState().lessonLoan !== null;
 }

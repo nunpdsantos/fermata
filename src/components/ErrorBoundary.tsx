@@ -20,6 +20,9 @@ const VIEW_SETTINGS_DEFAULTS: Partial<AppState> = {
   selectedChord: null,
   selectedDegree: null,
   chordInversion: 0,
+  // A lesson's loan of Explore's selection (B2): while set, the save keeps
+  // the loaned selection instead of the defaults above.
+  lessonLoan: null,
   guitarScalePosition: null,
   comparisonScale: null,
   highlightedNotes: [],

@@ -43,6 +43,12 @@ export function sanitizePersistedAppState(persisted: unknown): Record<string, un
   if (typeof persisted !== 'object' || persisted === null || Array.isArray(persisted)) return null;
   const state = { ...(persisted as Record<string, unknown>) };
 
+  // lessonLoan is never saved (partialize saves the selection it holds in
+  // place of the lesson's). One in a hand-edited save — well-formed or not —
+  // must not reach memory, where it would be saved back as Explore's
+  // selection (B2).
+  delete state.lessonLoan;
+
   // selectedKey: { natural: A-G, accidental: '' | '#' | 'b' }
   const key = state.selectedKey as Record<string, unknown> | null | undefined;
   if (
@@ -132,22 +138,30 @@ export const useAppStore = create<AppState>()(
       name: 'music-theory-app',
       version: 6,
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        selectedKey: state.selectedKey,
-        selectedScale: state.selectedScale,
-        instrument: state.instrument,
-        guitarTuningId: state.guitarTuningId,
-        guitarScalePosition: state.guitarScalePosition,
-        baseOctave: state.baseOctave,
-        colorMode: state.colorMode,
-        scaleOctaves: state.scaleOctaves,
-        volume: state.volume,
-        themeMode: state.themeMode,
-        language: state.language,
-        preferencesUpdatedAt: state.preferencesUpdatedAt,
-        lastView: state.lastView,
-        dockDetents: state.dockDetents,
-      }),
+      partialize: (state) => {
+        // While a lesson borrows the instrument (lessonInstrument.ts, D-20)
+        // the selection on screen is the lesson's; the save keeps Explore's
+        // own. A reload or a closed tab mid-lesson then boots on Explore's
+        // selection, and the reopened lesson borrows THAT again — instead of
+        // recording its own as Explore's (B2). The loan is never saved.
+        const own = state.lessonLoan ?? { key: state.selectedKey, scale: state.selectedScale };
+        return {
+          selectedKey: own.key,
+          selectedScale: own.scale,
+          instrument: state.instrument,
+          guitarTuningId: state.guitarTuningId,
+          guitarScalePosition: state.guitarScalePosition,
+          baseOctave: state.baseOctave,
+          colorMode: state.colorMode,
+          scaleOctaves: state.scaleOctaves,
+          volume: state.volume,
+          themeMode: state.themeMode,
+          language: state.language,
+          preferencesUpdatedAt: state.preferencesUpdatedAt,
+          lastView: state.lastView,
+          dockDetents: state.dockDetents,
+        };
+      },
       migrate: (persisted: unknown, version: number) => {
         const state = persisted && typeof persisted === 'object'
           ? { ...(persisted as Record<string, unknown>) }

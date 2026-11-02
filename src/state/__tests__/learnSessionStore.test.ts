@@ -14,12 +14,14 @@ import {
   restorableScreen,
   restorableCheck,
   learnCheckInProgress,
+  learnInProgress,
   fingerprintsOf,
   isValidLearnSession,
   type SavedCheck,
 } from '../learnSessionStore';
 import { hasWorkInProgress } from '../../services/workInProgress';
 import { useProgressStore } from '../progressStore';
+import { useAppStore } from '../store';
 import type { ExerciseDefinition } from '../../core/types/exercise';
 import errorBoundarySource from '../../components/ErrorBoundary.tsx?raw';
 
@@ -103,6 +105,21 @@ describe('Learn session store', () => {
     }
     expect(useProgressStore.getState().progress.completedModules).toEqual(['l1u1m1']);
     expect(isValidLearnSession({ screen: null, check: savedCheck() })).toBe(true);
+  });
+
+  it("'learn' work in progress: a lesson open in Learn (reading counts), not the overview, not another view", () => {
+    useAppStore.setState({ view: 'learn' });
+    expect(learnInProgress()).toBe(false); // the overview / level list: no lesson screen saved
+    useLearnSessionStore.getState().setScreen({ type: 'module', levelId: 'l1', unitId: 'u1', moduleId: 'l1u1m1', section: 'c1', at: Date.now() });
+    expect(learnInProgress()).toBe(true);
+    expect(hasWorkInProgress()).toBe(true);
+    useAppStore.setState({ view: 'explore' });
+    expect(learnInProgress()).toBe(false); // the lesson is behind another view: a reload moves nobody
+    useAppStore.setState({ view: 'learn' });
+    useLearnSessionStore.getState().setScreen({ type: 'review', levelId: 'l1', unitId: 'u1', moduleId: 'l1u1m1', section: null, at: Date.now() - LEARN_SESSION_TTL_MS - 1 });
+    expect(learnInProgress()).toBe(false); // stale
+    useLearnSessionStore.getState().setScreen(null);
+    expect(hasWorkInProgress()).toBe(false);
   });
 
   it('hasWorkInProgress(): true while a check is under way, false when finished, gone or stale', () => {

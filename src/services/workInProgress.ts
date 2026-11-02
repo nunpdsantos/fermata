@@ -5,8 +5,9 @@
  * under the same source replaces the earlier one. A check that throws counts
  * as work in progress (when in doubt, don't reload under the learner).
  *
- * Learn registers 'learn-check': true while a check (or review / practice
- * round) is under way and not finished.
+ * Learn registers 'learn': true while a lesson or review is open in Learn
+ * (reading counts) or a check (or practice round) is under way and not
+ * finished; false on the Learn overview and level lists.
  */
 const checks = new Map<string, () => boolean>();
 
