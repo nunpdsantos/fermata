@@ -428,6 +428,20 @@ describe('broken chords (ABRSM pattern, with over-ringing)', () => {
     expect(hold).toEqual({ fingered: 66, groups: 468 });
   });
 
+  it('is deterministic (cached against fresh, and fresh against fresh)', () => {
+    for (const mode of ['major', 'minor'] as const) {
+      for (const r of ROOTS(mode === 'major' ? 'major' : 'natural_minor')) {
+        for (const startOctave of [0, 1]) {
+          const o = { startOctave };
+          expect(bc(r, mode, o)).toEqual(brokenChord(r, mode, o));
+          expect(brokenChord(r, mode, o)).toEqual(brokenChord(r, mode, o));
+          expect(bcAvailability(r, mode, o)).toEqual(brokenChordAvailability(r, mode, o));
+          expect(brokenChordAvailability(r, mode, o)).toEqual(brokenChordAvailability(r, mode, o));
+        }
+      }
+    }
+  }, EXHAUSTIVE);
+
   it('the oracle rejects grips no hand can hold (mutation check on the grips the review found)', () => {
     const mk = (name: string, midi: number, stringIndex: number, fret: number, finger: number, barre = false, position = 2): OracleNote => ({
       midi,

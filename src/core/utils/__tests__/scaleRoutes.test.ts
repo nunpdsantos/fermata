@@ -253,9 +253,15 @@ describe('scale routes — open strings and determinism', () => {
     expect(route.descending[2].shift?.kind).toBe('index');
   });
   it('is deterministic', () => {
-    for (const type of EXAM_SCALE_TYPES) {
-      for (const root of ROOTS(type)) {
-        expect(routeOf(root, type)).toEqual(getScaleRoute(root, type));
+    for (const opts of [{}, { openStrings: 'avoid' as const }]) {
+      for (const type of EXAM_SCALE_TYPES) {
+        for (const root of ROOTS(type)) {
+          // Cached (computed earlier in the file) against fresh, and fresh
+          // against fresh: two calls in a row would expose a state that flips
+          // between calls (period 2), which a cached-vs-fresh pair can miss.
+          expect(routeOf(root, type, opts)).toEqual(getScaleRoute(root, type, opts));
+          expect(getScaleRoute(root, type, opts)).toEqual(getScaleRoute(root, type, opts));
+        }
       }
     }
   }, EXHAUSTIVE);
