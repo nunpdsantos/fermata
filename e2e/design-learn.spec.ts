@@ -144,7 +144,7 @@ async function learnScreens(browser: Browser, v: Viewport, theme: string, combo:
         hinted = true;
         await check(page, v, combo, 'check-hint');
         // A toast during the check: it stays off the answers and nothing moves.
-        const before = await page.getByTestId('check-thumb').boundingBox();
+        const before = await page.getByTestId('check-answer-zone').boundingBox();
         const raised = await page.evaluate(`(async () => {
           try { const m = await import('/src/state/toastStore.ts'); m.toast('A long message that wraps onto two lines on a phone, raised during the check', 'info'); return true; } catch { return false; }
         })()`);
@@ -152,7 +152,8 @@ async function learnScreens(browser: Browser, v: Viewport, theme: string, combo:
           const toast = page.locator('.toast-card').first();
           await expect(toast).toBeVisible();
           const t = (await toast.boundingBox())!;
-          const thumb = (await page.getByTestId('check-thumb').boundingBox())!;
+          // The answers and Submit (the verdict above them may be covered for a moment, as in Drill).
+          const thumb = (await page.getByTestId('check-answer-zone').boundingBox())!;
           expect.soft(t.y + t.height <= thumb.y + 0.5 || t.y >= thumb.y + thumb.height, `${combo}: the toast covers the answers ${JSON.stringify({ t, thumb })}`).toBe(true);
           expect.soft(Math.abs(thumb.y - before!.y), `${combo}: the answers moved under a toast`).toBeLessThan(2);
           // Dismissed before the next screen is audited.

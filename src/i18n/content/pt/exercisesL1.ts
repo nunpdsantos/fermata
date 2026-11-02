@@ -63,7 +63,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u1m2e_ear1: {
     prompt: 'Ouve esta nota e identifica-a.',
-    hint: 'Este é o C central — a nota mais central do teclado do piano.',
+    hint: 'Compara-a com a referência que ouviste primeiro: é mais aguda, mais grave ou exatamente a mesma nota?',
   },
   l1u1m2e_ear2: {
     prompt: 'Ouve esta nota e identifica-a.',
@@ -75,7 +75,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u1m2e_ear4: {
     prompt: 'Ouve esta nota e identifica-a.',
-    hint: 'Esta é a nota de referência padrão para afinação, a 440 Hz.',
+    hint: 'É mais aguda do que o C de referência: canta subindo pelas teclas brancas a partir de C, um grau de cada vez, até lá chegares.',
   },
 
   // ---- l1u1m3: Meios-tons e Tons ----

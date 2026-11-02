@@ -118,7 +118,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         accidental: '',
         octave: 4,
       },
-      hint: 'This is middle C -- the most central note on the piano keyboard.',
+      hint: 'Compare it with the reference you heard first: is it higher, lower, or the very same note?',
     },
     {
       id: 'l1u1m2e_ear2',
@@ -157,7 +157,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         accidental: '',
         octave: 4,
       },
-      hint: 'This is the standard tuning reference note at 440 Hz.',
+      hint: 'It is higher than the reference C: sing up the white keys from C, one step at a time, until you reach it.',
     },
   ],
 

@@ -328,9 +328,17 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
     }
   }, [currentIndex, total, scores, onComplete, outcomesOf, run.items]);
 
-  // Answers, verdict and Continue: never under a toast (W11-A toastLayout).
-  const thumbRef = useRef<HTMLDivElement>(null);
-  useToastAvoid(thumbRef, true);
+  // The answers and Submit / Continue: never under a toast (W11-A
+  // toastLayout) — a toast may cover the question or the verdict for a
+  // moment, never an answer (as in Drill).
+  const answersRef = useRef<HTMLDivElement>(null);
+  useToastAvoid(answersRef, true);
+
+  // Each question starts at the top of the view (a landscape phone scrolls).
+  const rootRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    rootRef.current?.closest<HTMLElement>('[data-learn-scroll]')?.scrollTo?.({ top: 0 });
+  }, [currentIndex]);
 
   // Continue takes focus when an item becomes final (keyboard flow).
   const continueRef = useRef<HTMLButtonElement>(null);
@@ -382,7 +390,7 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
   }
 
   return (
-    <div className="check-run flex-1 flex flex-col w-full max-w-[640px] mx-auto px-4 max-sm:px-3 pt-2 pb-4" data-testid="focused-check">
+    <div ref={rootRef} className="check-run flex-1 flex flex-col w-full max-w-[640px] mx-auto px-4 max-sm:px-3 pt-2 pb-4" data-testid="focused-check">
       {/* ✕ Exit · progress · n / N */}
       <div className="flex items-center gap-2 min-h-12">
         {onExit && (
@@ -430,8 +438,9 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
       </div>
 
       {/* Verdict, answers, Submit / Continue — low on a phone (thumb zone) */}
-      <div ref={thumbRef} className="flex flex-col gap-3 max-sm:mt-auto" data-testid="check-thumb">
+      <div className="flex flex-col gap-3 max-sm:mt-auto" data-testid="check-thumb">
         {feedback}
+        <div ref={answersRef} className="flex flex-col gap-3" data-testid="check-answer-zone">
         {isInstrumentBased ? (
           <InstrumentInput
             key={exercise.id}
@@ -459,6 +468,7 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
             {t('common.submit')}
           </Button>
         )}
+        </div>
       </div>
     </div>
   );
