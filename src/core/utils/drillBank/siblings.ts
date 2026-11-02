@@ -38,6 +38,19 @@ function signatureOfKey(key: string): string | null {
 
 const NOTE_RE = /^[A-G](##|bb|#|b)?$/;
 
+/**
+ * Sounding MIDI of a reading item id's written note ('read:staff-to-fret:V:C#5'
+ * → 61: written C♯5 sounds C♯4), or null. Parsed here rather than imported
+ * from genRead.ts so the persisted store's sibling rule does not pull the
+ * generator into the entry chunk.
+ */
+const READ_ID_RE = /^read:staff-to-fret:[^:]+:([A-G](?:#|b)?)(-?\d+)$/;
+function soundingMidiOfReadId(id: string): number | null {
+  const m = READ_ID_RE.exec(id);
+  if (!m) return null;
+  return 12 * (Number(m[2]) + 1) + getPitchClass(stringToNote(m[1])) - 12;
+}
+
 function pitchClassOf(ascii: string): number | null {
   return NOTE_RE.test(ascii) ? getPitchClass(stringToNote(ascii)) : null;
 }
@@ -107,6 +120,12 @@ function groupFor(id: string): string | null {
         return above ? `interval:${p[2]}:${noteToString(above)}` : null;
       }
       return null;
+    }
+    case 'read': {
+      // Every reading item about one sounding pitch — any position, either
+      // spelling (G♯4 / A♭4 are played in the same places).
+      const midi = soundingMidiOfReadId(id);
+      return midi === null ? null : `read:${midi}`;
     }
     case 'circle': {
       // "A fifth up from C?" (G) ↔ "A fifth down from G?" (C): same fifth.

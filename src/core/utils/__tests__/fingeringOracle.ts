@@ -1,0 +1,257 @@
+/**
+ * Independent playability oracle for fingered guitar passages (audit W10-03).
+ *
+ * Imports NOTHING from the engine except types. Every rule is re-derived from
+ * the list of notes the engine returns: the place sounds the pitch (hard-coded
+ * standard-tuning MIDI numbers), fingers 1–4 with 0 exactly on open strings,
+ * one finger per fret and one fret per finger while the hand stays put, at
+ * most five frets from lowest to highest finger, fingers rising with the
+ * fret, a reported shift whenever the position changes, and every shift
+ * guided (same finger on the same string, the index taking over on the same
+ * string, or the hand moving while an open string sounds).
+ *
+ * Arpeggio rules (ABRSM: arpeggios "without over-ringing"): two consecutive
+ * notes at one fret on different strings never share the 2nd–4th finger (a
+ * roll); with the index they are a partial barré and must be flagged `barre`.
+ * Options relax two scale rules for arpeggio lines only: a finger change while
+ * the hand slides along one string, and two neighbouring fingers on one fret
+ * (lower string, lower finger — a chord grip).
+ */
+import { expect } from 'vitest';
+import type { Note } from '../../types/music';
+
+/** Standard tuning, 6th → 1st string (E2 A2 D3 G3 B3 E4). */
+export const OPEN = [40, 45, 50, 55, 59, 64];
+export const MAX_FRET = 15;
+export const nameOf = (n: Note) => `${n.natural}${n.accidental}`;
+
+/** The fields of a fingered note this oracle reads. */
+export interface OracleNote {
+  midi: number;
+  note: Note;
+  stringIndex: number;
+  fret: number;
+  finger: number;
+  position: number | null;
+  shift: { kind: string; finger: number } | null;
+  reach?: { anchorFinger: number; anchorFret: number; stringIndex: number; position: number } | null;
+  barre?: boolean;
+}
+
+export interface LineRules {
+  maxStringStep?: number;
+  maxFret?: number;
+  /** Accept a shift on one string that lands on another finger. */
+  allowFingerChange?: boolean;
+  /** Accept two neighbouring fingers on one fret (lower string, lower finger). */
+  allowSharedFrets?: boolean;
+  /**
+   * Ringing groups ("with over-ringing"): notes with the same group id go on
+   * different strings — one string per note within each group.
+   */
+  groups?: readonly (number | undefined)[];
+  /** Per-note string step allowed INTO the note (overrides maxStringStep). */
+  leaps?: readonly (number | undefined)[];
+  /** Notes the hand may jump to without a guide (a broken chord's group start). */
+  jumpOk?: readonly boolean[];
+}
+
+/**
+ * Arpeggio-line violations, counted (not asserted) — used to report
+ * before/after numbers. A barré flag is expected on a note the index takes at
+ * the fret of the note before (on another string), and — inside a ringing
+ * group — on both notes of an index pair at one fret.
+ */
+export function lineViolations(
+  notes: readonly OracleNote[],
+  groups?: readonly (number | undefined)[],
+): { rolls: number; unflaggedBarres: number; wrongFlags: number } {
+  let rolls = 0;
+  let unflaggedBarres = 0;
+  let wrongFlags = 0;
+  notes.forEach((n, i) => {
+    const p = i > 0 ? notes[i - 1] : null;
+    const sameFretAcross = p !== null && n.fret > 0 && p.fret === n.fret && p.stringIndex !== n.stringIndex;
+    const g = groups?.[i];
+    const groupPartner =
+      g !== undefined && n.finger === 1 && n.fret > 0 &&
+      notes.some((m, j) => j !== i && groups![j] === g && m.finger === 1 && m.fret === n.fret && m.stringIndex !== n.stringIndex);
+    const isBarre = (sameFretAcross && p!.finger === 1 && n.finger === 1) || groupPartner;
+    if (sameFretAcross && p!.finger === n.finger && n.finger >= 2) rolls++;
+    if (isBarre && !n.barre) unflaggedBarres++;
+    if (!isBarre && n.barre) wrongFlags++;
+  });
+  return { rolls, unflaggedBarres, wrongFlags };
+}
+
+/** A single melodic line (scale, arpeggio, broken intervals). */
+export function checkPlayableLine(notes: readonly OracleNote[], label: string, opts: LineRules = {}): void {
+  const maxStep = opts.maxStringStep ?? 1;
+  const maxFret = opts.maxFret ?? MAX_FRET;
+  let fingerToFret = new Map<number, number>();
+  let fretToFinger = new Map<number, number>();
+  const v = lineViolations(notes, opts.groups);
+  expect(v, `${label}: rolls / unflagged barrés / wrong barré flags`).toEqual({ rolls: 0, unflaggedBarres: 0, wrongFlags: 0 });
+  let segFrets: number[] = [];
+  // One string per note within each ringing group.
+  if (opts.groups) {
+    const byGroup = new Map<number, number[]>();
+    notes.forEach((n, i) => {
+      const g = opts.groups![i];
+      if (g === undefined) return;
+      byGroup.set(g, [...(byGroup.get(g) ?? []), n.stringIndex]);
+    });
+    for (const [g, strings] of byGroup) {
+      expect(new Set(strings).size, `${label}: group ${g} shares a string (${strings.join(',')})`).toBe(strings.length);
+    }
+    // A ringing group is one grip held at once: every pair of its notes, not
+    // only neighbours, must be holdable together.
+    const members = new Map<number, number[]>();
+    notes.forEach((_, i) => {
+      const g = opts.groups![i];
+      if (g !== undefined) members.set(g, [...(members.get(g) ?? []), i]);
+    });
+    for (const [g, idx] of members) {
+      const grip = idx.map((i) => notes[i]);
+      idx.slice(1).forEach((i) => expect(notes[i].shift, `${label}: group ${g} shifts inside its grip`).toBeNull());
+      for (let x = 0; x < grip.length; x++) {
+        for (let y = x + 1; y < grip.length; y++) {
+          const P = grip[x];
+          const Q = grip[y];
+          if (P.fret === 0 || Q.fret === 0 || P.fret !== Q.fret) continue;
+          const where = `${label}: group ${g} ${nameOf(P.note)}+${nameOf(Q.note)} on fret ${P.fret}`;
+          if (P.finger === Q.finger) {
+            expect(P.finger, `${where}: the ${P.finger}th finger cannot stop two strings`).toBe(1);
+            const lo = Math.min(P.stringIndex, Q.stringIndex);
+            const hi = Math.max(P.stringIndex, Q.stringIndex);
+            const under = grip.filter((n) => n.stringIndex > lo && n.stringIndex < hi && n.fret < P.fret);
+            expect(under.map((n) => nameOf(n.note)), `${where}: the barré passes over a string played lower or open`).toEqual([]);
+            expect([P.barre, Q.barre], `${where}: barré not flagged on both notes`).toEqual([true, true]);
+          } else {
+            expect(Math.sign(Q.stringIndex - P.stringIndex), `${where}: lower string must take the lower finger`).toBe(Math.sign(Q.finger - P.finger));
+          }
+        }
+      }
+    }
+  }
+  notes.forEach((n, i) => {
+    const where = `${label} #${i} ${nameOf(n.note)}`;
+    expect(OPEN[n.stringIndex] + n.fret, where).toBe(n.midi);
+    expect(n.fret >= 0 && n.fret <= maxFret, `${where}: fret ${n.fret}`).toBe(true);
+    expect(n.fret === 0 ? n.finger === 0 : n.finger >= 1 && n.finger <= 4, `${where}: finger ${n.finger}`).toBe(true);
+
+    const prev = i > 0 ? notes[i - 1] : null;
+    if (n.shift) {
+      expect(prev, `${where}: a shift needs a previous note`).not.toBeNull();
+      const p = prev!;
+      const up = n.midi > p.midi;
+      const openShift = p.fret === 0 || n.fret === 0;
+      const guide = p.stringIndex === n.stringIndex && p.finger === n.finger && n.finger > 0;
+      const index =
+        p.stringIndex === n.stringIndex &&
+        ((up && n.finger === 1 && p.finger >= 2) || (!up && p.finger === 1 && n.finger >= 2));
+      const change = opts.allowFingerChange === true && p.stringIndex === n.stringIndex && p.fret > 0 && n.fret > 0;
+      const jump = opts.jumpOk?.[i] === true && n.shift.kind === 'jump';
+      expect(n.shift.kind !== 'jump' || jump, `${where}: jump where none is allowed`).toBe(true);
+      expect(
+        openShift || guide || index || change || jump,
+        `${where}: shift without a guide (${p.stringIndex}/${p.fret}/${p.finger} → ${n.stringIndex}/${n.fret}/${n.finger})`,
+      ).toBe(true);
+      fingerToFret = new Map();
+      fretToFinger = new Map();
+      segFrets = [];
+    } else if (n.reach) {
+      // A re-spread around the held previous note, in the same position.
+      const p = prev!;
+      expect(p.fret, `${where}: reach needs a fretted anchor`).toBeGreaterThan(0);
+      expect([n.reach.anchorFinger, n.reach.anchorFret, n.reach.stringIndex], where).toEqual([p.finger, p.fret, p.stringIndex]);
+      expect(n.position, `${where}: a reach keeps the position`).toBe(p.position);
+      fingerToFret = new Map([[p.finger, p.fret]]);
+      fretToFinger = new Map([[p.fret, p.finger]]);
+      segFrets = [p.fret];
+    } else if (prev && prev.position !== null && n.position !== null) {
+      expect(n.position, `${where}: position changed without a shift`).toBe(prev.position);
+    }
+    if (n.fret > 0) {
+      const f = fingerToFret.get(n.finger);
+      expect(f === undefined || f === n.fret, `${where}: finger ${n.finger} on frets ${f} and ${n.fret}`).toBe(true);
+      const k = fretToFinger.get(n.fret);
+      if (k !== undefined && k !== n.finger) {
+        // Two fingers on one fret: only neighbours, only where allowed.
+        expect(opts.allowSharedFrets === true && Math.abs(k - n.finger) === 1, `${where}: fret ${n.fret} under fingers ${k} and ${n.finger}`).toBe(true);
+      }
+      if (prev && prev.fret === n.fret && prev.stringIndex !== n.stringIndex && prev.finger !== n.finger) {
+        expect(Math.sign(n.stringIndex - prev.stringIndex), `${where}: shared fret, lower string takes the lower finger`).toBe(Math.sign(n.finger - prev.finger));
+      }
+      fingerToFret.set(n.finger, n.fret);
+      if (k === undefined) fretToFinger.set(n.fret, n.finger);
+      segFrets.push(n.fret);
+      expect(Math.max(...segFrets) - Math.min(...segFrets), `${where}: span`).toBeLessThanOrEqual(4);
+      for (const [finger, fret] of fingerToFret) {
+        if (fret === n.fret) continue; // a shared fret
+        expect(Math.sign(fret - n.fret), `${where}: finger order`).toBe(Math.sign(finger - n.finger));
+      }
+      expect(n.position, where).not.toBeNull();
+      expect(Math.abs(n.fret - n.finger + 1 - n.position!), `${where}: position ${n.position}`).toBeLessThanOrEqual(1);
+    }
+    if (prev) {
+      const ds = n.stringIndex - prev.stringIndex;
+      expect(Math.abs(ds), `${where}: string step`).toBeLessThanOrEqual(opts.leaps?.[i] ?? maxStep);
+      if (n.midi > prev.midi) expect(ds, `${where}: higher pitch on a lower string`).toBeGreaterThanOrEqual(0);
+      if (n.midi < prev.midi) expect(ds, `${where}: lower pitch on a higher string`).toBeLessThanOrEqual(0);
+    }
+  });
+}
+
+/**
+ * Double stops: two notes at once on two strings `gap` apart. Within a pair:
+ * two different fingers, rising with the fret (on one fret, the lower string
+ * takes the lower finger), at most four frets apart. Between pairs: while the
+ * hand stays (no shift) no finger moves to another fret; a shift keeps one
+ * finger on its string (it slides), or moves the same two-finger shape to the
+ * next pair of strings, the hand at most four frets away ('shape'). The shift may be
+ * reported on either note of the pair (broken intervals report it on the
+ * note played first).
+ */
+export function checkDoubleStops(pairs: readonly (readonly OracleNote[])[], label: string, gaps: readonly number[]): void {
+  pairs.forEach((pair, i) => {
+    const where = `${label} pair #${i} ${pair.map((n) => nameOf(n.note)).join('+')}`;
+    expect(pair.length, where).toBe(2);
+    const [lo, hi] = pair;
+    for (const n of pair) {
+      expect(OPEN[n.stringIndex] + n.fret, where).toBe(n.midi);
+      expect(n.fret >= 0 && n.fret <= MAX_FRET, where).toBe(true);
+      expect(n.fret === 0 ? n.finger === 0 : n.finger >= 1 && n.finger <= 4, where).toBe(true);
+    }
+    expect(gaps, `${where}: string gap`).toContain(hi.stringIndex - lo.stringIndex);
+    expect(hi.midi, where).toBeGreaterThan(lo.midi);
+    if (lo.fret > 0 && hi.fret > 0) {
+      expect(lo.finger, `${where}: one finger per note`).not.toBe(hi.finger);
+      if (hi.fret === lo.fret) expect(hi.finger, `${where}: same fret`).toBe(lo.finger + 1);
+      else expect(Math.sign(hi.finger - lo.finger), `${where}: finger order`).toBe(Math.sign(hi.fret - lo.fret));
+      expect(Math.abs(hi.fret - lo.fret), `${where}: span`).toBeLessThanOrEqual(3);
+      // Two fingers reach at most one fret beyond their own distance (3 and 4 cannot hold frets 4 and 7).
+      expect(Math.abs(hi.fret - lo.fret) - Math.abs(hi.finger - lo.finger), `${where}: finger span`).toBeLessThanOrEqual(1);
+    }
+    if (i === 0) return;
+    const prev = pairs[i - 1];
+    const fingers = (p: readonly OracleNote[]) => p.filter((n) => n.fret > 0);
+    if (lo.shift || hi.shift) {
+      const guide = fingers(pair).some((n) => fingers(prev).some((m) => m.finger === n.finger && m.stringIndex === n.stringIndex));
+      const [plo, phi] = prev;
+      const shape =
+        fingers(pair).length === 2 && fingers(prev).length === 2 &&
+        lo.finger === plo.finger && hi.finger === phi.finger &&
+        hi.fret - lo.fret === phi.fret - plo.fret &&
+        Math.abs(lo.stringIndex - plo.stringIndex) === 1 &&
+        Math.abs(lo.fret - plo.fret) <= 4; // a pair of strings over, the hand at most 4 frets away
+      expect(guide || shape, `${where}: shift without a guide finger or a kept shape`).toBe(true);
+    } else {
+      for (const n of fingers(pair)) {
+        for (const m of fingers(prev)) {
+          if (m.finger === n.finger) expect(n.fret, `${where}: finger ${n.finger} moved without a shift`).toBe(m.fret);
+        }
+      }
+    }
+  });
+}

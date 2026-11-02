@@ -658,7 +658,8 @@
       "triad": "Triads",
       "seventh": "Seventh chords",
       "roman": "Roman numerals",
-      "function": "Harmonic function"
+      "function": "Harmonic function",
+      "read": "Reading (guitar)"
     },
     "clear": "Clear",
     "done": "Done",
@@ -729,7 +730,10 @@
       "chordFunction": "In {{key}}, {{chord}} functions as…?",
       "cadence": "{{pair}} at a phrase end is which cadence?",
       "cadenceRootPosition": "{{pair}} at a phrase end, both chords in root position with the tonic on top, is which cadence?",
-      "v7Of": "What is the V7 of {{key}}?"
+      "v7Of": "What is the V7 of {{key}}?",
+      "readAnywhere": "Where is this note on the guitar? Any string.",
+      "readOpenPosition": "Where is this note in the open position (open strings and frets 1–4)?",
+      "readInPosition": "Where is this note in position {{position}}?"
     },
     "why": {
       "keyToCount": "{{key}} has {{answer}}. Count along the circle of fifths from C (no accidentals).",
@@ -758,7 +762,8 @@
       "functionPull": "{{chord}} pulls {{direction}} — that is its harmonic function.",
       "cadenceDef": "{{answer}} (UK: {{uk}}).",
       "cadencePerfect": "{{answer}} (UK: {{uk}}): V → I with both chords in root position and the tonic in the top voice. Invert either chord, or end the top voice on another note, and it becomes an imperfect authentic cadence.",
-      "v7Derivation": "Degree 5 of {{key}} is {{five}}; its dominant seventh is {{answer}}."
+      "v7Derivation": "Degree 5 of {{key}} is {{five}}; its dominant seventh is {{answer}}.",
+      "readPlaces": "Written {{written}} sounds {{sounding}}: the guitar sounds an octave lower than written. {{places}} (circled number = string, then the fret)."
     }
   }
 }

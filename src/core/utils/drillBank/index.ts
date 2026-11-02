@@ -9,7 +9,7 @@
  * (per spec: 'choice' answers store display form).
  */
 
-import type { DrillFamily, DrillItem } from '../../types/drill';
+import type { DrillBankItem, DrillFamily, DrillItem } from '../../types/drill';
 import { genDegree } from './genDegree';
 import { genCircle } from './genCircle';
 import { genKeysig } from './genKeysig';
@@ -19,9 +19,23 @@ import { genScale } from './genScale';
 import { genSeventh } from './genSeventh';
 import { genRoman } from './genRoman';
 import { genFunction } from './genFunction';
+import { genRead } from './genRead';
 
-export function generateDrillBank(): DrillItem[] {
-  const items = [
+export interface DrillBankOptions {
+  /**
+   * Add the guitar reading family (W10-02, genRead.ts). Off by default: the
+   * Drill view cannot render its fretboard input yet (see ReadDrillItem in
+   * types/drill.ts). Its ranks sit after every other family's, so the other
+   * items keep their order.
+   */
+  includeRead?: boolean;
+}
+
+export function generateDrillBank(): DrillItem[];
+export function generateDrillBank(options: DrillBankOptions & { includeRead: true }): DrillBankItem[];
+export function generateDrillBank(options?: DrillBankOptions): DrillBankItem[];
+export function generateDrillBank(options: DrillBankOptions = {}): DrillBankItem[] {
+  const items: DrillBankItem[] = [
     ...genDegree(),
     ...genCircle(),
     ...genKeysig(),
@@ -31,6 +45,7 @@ export function generateDrillBank(): DrillItem[] {
     ...genSeventh(),
     ...genRoman(),
     ...genFunction(),
+    ...(options.includeRead ? genRead() : []),
   ];
   return items.sort((a, b) => a.rank - b.rank);
 }
@@ -42,6 +57,7 @@ export function getItemsByFamily(bank: DrillItem[], family: DrillFamily): DrillI
 // Public helpers re-exported so existing `import ... from '../drillBank'` keeps working
 export { displayNote, keySignatureOf, MAJOR_KEYS, SHARP_ORDER, FLAT_ORDER } from './shared';
 export { drillSiblingGroup } from './siblings';
+export { genRead, READ_LADDER, READ_PROMPT_KEYS, READ_WHY_KEYS } from './genRead';
 
 // ---------------------------------------------------------------------------
 // i18n key registries — source of truth for translation parity
