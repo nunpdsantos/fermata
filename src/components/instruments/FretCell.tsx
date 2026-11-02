@@ -37,6 +37,10 @@ interface FretCellProps {
   showHighlight?: boolean;
   // Keyboard navigation
   isFocused: boolean;
+  /** Lit as the linked focus note (W11-B): a ring around the cell's centre. */
+  isFocusNote?: boolean;
+  /** A real mouse entered (true) / left (false) the cell. */
+  onHover?: (on: boolean) => void;
   onClick: () => void;
 }
 
@@ -59,6 +63,8 @@ export const FretCell = memo(function FretCell({
   scaleDotLabel,
   showHighlight = false,
   isFocused,
+  isFocusNote = false,
+  onHover,
   onClick,
 }: FretCellProps) {
   const { t } = useTranslation();
@@ -120,9 +126,13 @@ export const FretCell = memo(function FretCell({
           borderRadius: 4,
         } : undefined),
       }}
+      data-focus-note={isFocusNote || undefined}
       onPointerDown={handlePointerDown}
+      onPointerEnter={onHover ? (e) => { if (e.pointerType === 'mouse') onHover(true); } : undefined}
+      onPointerLeave={onHover ? (e) => { if (e.pointerType === 'mouse') onHover(false); } : undefined}
       onClick={handleClick}
     >
+      {isFocusNote && <span aria-hidden="true" className="focus-note-ring" />}
       {/* String line */}
       <div
         className="absolute w-full"

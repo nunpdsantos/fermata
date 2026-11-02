@@ -106,6 +106,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
   const setKey = useAppStore((s) => s.setKey);
   const setScale = useAppStore((s) => s.setScale);
   const { diatonicChords } = useKeyContext();
+  const selectedChord = useAppStore((s) => s.selectedChord);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   // The hover TINT follows a real mouse only: a tap is reported as a hover
   // that never leaves, and the tint left the label at 4.1:1 on touch (W11-A
@@ -167,6 +168,18 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
     }
     return m;
   }, [diatonicChords]);
+
+  // The selected chord's root, marked on the circle (W11-B, D-30): on the
+  // inner ring for a minor-type chord (minor, diminished, half-diminished),
+  // else on the outer ring — where the circle already writes that chord.
+  const chordMark = useMemo<{ ring: Ring; idx: number } | null>(() => {
+    if (!selectedChord) return null;
+    const pc = getPitchClass(selectedChord.root);
+    const q = selectedChord.quality;
+    const ring: Ring = q.startsWith('minor') || q.startsWith('diminished') || q === 'half_diminished7' ? 'minor' : 'major';
+    const idx = (ring === 'major' ? CIRCLE_MAJOR : CIRCLE_MINOR).findIndex((n) => getPitchClass(n) === pc);
+    return idx >= 0 ? { ring, idx } : null;
+  }, [selectedChord]);
 
   // The KEY a segment selects and describes on hover. The selected position
   // keeps the selection's spelling (C♯ major reads "C♯ / A♯m", E♭ phrygian's
@@ -332,11 +345,27 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
 
   // Accessible name = the visible text (name and numeral) plus what a click
   // does — "B♯° (vii°) — select C minor" (WCAG 2.5.3 label in name).
-  const segmentLabel = (s: { display: string; numeral?: string; note: Note }, ring: Ring) =>
-    t('circle.segmentLabel', {
+  const segmentLabel = (s: { display: string; numeral?: string; note: Note; i: number }, ring: Ring) => {
+    const label = t('circle.segmentLabel', {
       name: s.numeral ? `${s.display} (${s.numeral})` : s.display,
       key: t(ring === 'major' ? 'circle.keyMajor' : 'circle.keyMinor', { note: noteToString(s.note) }),
     });
+    return chordMark?.ring === ring && chordMark.idx === s.i ? `${label}, ${t('explore.circleChordRoot')}` : label;
+  };
+
+  /** A dashed ring over the segment that holds the selected chord's root. */
+  const markPath = (path: string, ring: Ring, i: number) =>
+    chordMark?.ring === ring && chordMark.idx === i ? (
+      <path
+        data-testid="cof-chord-mark"
+        d={path}
+        fill="none"
+        stroke="var(--text)"
+        strokeWidth={2.5}
+        strokeDasharray="5 3"
+        className="pointer-events-none"
+      />
+    ) : null;
 
   /** Name + numeral stacked in a segment (numeral below, never overlapping). */
   const segmentText = (
@@ -451,6 +480,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
               strokeWidth={s.selected || tintIdx === s.i ? 2 : 1}
               style={{ transition: 'fill 0.15s, stroke 0.15s' }}
             />
+            {markPath(s.path, 'major', s.i)}
             {segmentText(s, 'major')}
           </g>
         );
@@ -488,6 +518,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
               strokeWidth={s.selected || tintIdx === s.i ? 2 : 1}
               style={{ transition: 'fill 0.15s, stroke 0.15s' }}
             />
+            {markPath(s.path, 'minor', s.i)}
             {segmentText(s, 'minor')}
           </g>
         );

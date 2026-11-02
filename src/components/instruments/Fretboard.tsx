@@ -1,4 +1,5 @@
-import { useMemo, useCallback, useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { useMemo, useCallback, useState, useEffect, useRef, useLayoutEffect, useContext } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { getTuningById, getTuningPitchClasses, getTuningStringLabels, GUITAR_TUNINGS } from '../../core/constants/guitarTunings.ts';
 import type { GuitarTuning } from '../../core/constants/guitarTunings.ts';
@@ -30,11 +31,27 @@ import { SelectTrigger } from '../ui/SelectTrigger.tsx';
 import type { FretNote, PositionDot } from './fretboardConstants.ts';
 import { ChordShapeSelector, ScalePositionSelector, LabelToolbar, PositionLegend } from './FretboardPositionSelector.tsx';
 import { FretboardString } from './FretboardString.tsx';
+import { DockToolsContext } from '../layout/dockTools.ts';
+import { useFocusNote, useFocusNoteStore, type FocusNote } from '../../state/focusNoteStore.ts';
 import type { FretboardMode } from './FretboardString.tsx';
 
 const EMPTY_POSITION_DOTS = new Map<number, Map<number, PositionDot>>();
+const NO_FRETS: ReadonlySet<number> = new Set();
+/** Frets the full-neck view draws: 12, or 15 when the position reaches past 12. */
+const NECK_FRETS = 12;
 
-export function Fretboard() {
+export interface FretboardProps {
+  /**
+   * 'dock' (default): the instrument dock's fretboard. 'neck': the landscape
+   * full-neck view (W11-B, D-26 extra) — every fret 1–12 (or 1–15) fits the
+   * screen and the rows fill the height; its stepper and label toggle go to
+   * the view's header (DockToolsContext).
+   */
+  variant?: 'dock' | 'neck';
+}
+
+export function Fretboard({ variant = 'dock' }: FretboardProps = {}) {
+  const neck = variant === 'neck';
   const { t } = useTranslation();
   const { getNoteColor, spellPitchClass, chordPitchClasses } = useKeyContext();
   const { noteOn, noteOff } = useAudio();
@@ -55,7 +72,17 @@ export function Fretboard() {
   const setOverride = useFingeringStore((s) => s.setOverride);
   const clearOverrides = useFingeringStore((s) => s.clearOverrides);
   const [editMode, setEditMode] = useState(false);
-  const mobile = useIsMobile();
+  const phoneWidth = useIsMobile();
+  // The neck view is a phone held sideways: phone-sized dots and touch handling.
+  const mobile = phoneWidth || neck;
+  // Laptop dock: the position stepper and label toggle live in the dock bar.
+  const toolsSlot = useContext(DockToolsContext);
+  const focus = useFocusNote();
+  const setFocus = useFocusNoteStore((s) => s.set);
+  const clearFocus = useFocusNoteStore((s) => s.clear);
+  const setLocations = useFocusNoteStore((s) => s.setLocations);
+  // The linked focus note is Explore's (W11-B); Learn's instrument shows none.
+  const exploring = useAppStore((s) => s.view === 'explore');
 
   const tuning: GuitarTuning = useMemo(() => getTuningById(guitarTuningId), [guitarTuningId]);
   const isStandardTuning = tuning.id === 'standard';
@@ -208,6 +235,17 @@ export function Fretboard() {
       for (let f = end; f >= start; f--) frets.push(f);
       return frets;
     };
+    if (neck) {
+      // The whole neck at once: frets 1–12, or 1–15 when the position or
+      // the chord shape reaches past the 12th fret.
+      let reach = positionNumber !== null ? positionNumber + 4 : 0;
+      if (mode === 'chord' && currentShape) {
+        for (const pos of currentShape.shape.strings) {
+          if (pos.fret !== null) reach = Math.max(reach, currentShape.baseFret + pos.fret);
+        }
+      }
+      return { visibleFrets: range(1, reach > NECK_FRETS ? FULL_FRETS : NECK_FRETS), isZoomed: false };
+    }
     if (mode === 'position' && positionNumber !== null) {
       // The 4-fret window plus the stretch fret on each side.
       if (positionNumber === OPEN_POSITION) return { visibleFrets: range(1, 5), isZoomed: true };
@@ -242,7 +280,7 @@ export function Fretboard() {
     const start = Math.max(1, minUsed - 1);
     const end = Math.min(FULL_FRETS, Math.max(start + CHORD_FRET_WINDOW - 1, maxUsed + 1));
     return { visibleFrets: range(start, end), isZoomed: true };
-  }, [mode, positionNumber, currentShape]);
+  }, [mode, positionNumber, currentShape, neck]);
 
   // Generate all notes on the fretboard as a Map for O(1) lookup
   const fretNoteMap = useMemo(() => {
@@ -293,8 +331,10 @@ export function Fretboard() {
   // Tap / Enter on a cell. In fingering-edit mode a fretted position dot
   // cycles its finger 1→2→3→4→1 instead of sounding (W10-05); landing back on
   // the suggested finger removes the override.
+  const fretFocus = useCallback((fn: FretNote): FocusNote => ({ pc: fn.pitchClass, midi: fn.midiNumber, source: 'fret' }), []);
   const handleCellActivate = useCallback(
     (fn: FretNote) => {
+      setFocus('pinned', fretFocus(fn));
       if (editing && position && fn.fret > 0) {
         const note = position.notes.find((n) => n.stringIndex === fn.stringIndex && n.fret === fn.fret);
         if (note) {
@@ -307,7 +347,15 @@ export function Fretboard() {
       }
       playFretNote(fn);
     },
-    [editing, position, selectedScale, tuning.id, keyRootPc, overrides, setOverride, playFretNote],
+    [editing, position, selectedScale, tuning.id, keyRootPc, overrides, setOverride, playFretNote, setFocus, fretFocus],
+  );
+  // A real mouse over a cell makes it the focus note while it stays there.
+  const handleCellHover = useCallback(
+    (fn: FretNote | null) => {
+      if (fn) setFocus('hover', fretFocus(fn));
+      else clearFocus('hover', 'fret');
+    },
+    [setFocus, clearFocus, fretFocus],
   );
 
   // ─── Walking positions (W10-07) ───────────────────────
@@ -492,6 +540,68 @@ export function Fretboard() {
       })
     : '';
 
+  // The keyboard's cell is the focus note while the board has focus.
+  useEffect(() => {
+    if (focusedCell) setFocus('keyboard', fretFocus(getFretNote(focusedCell.stringIdx, focusedCell.fret)));
+    else clearFocus('keyboard', 'fret');
+  }, [focusedCell, getFretNote, setFocus, clearFocus, fretFocus]);
+
+  // ─── Linked focus note (W11-B, D-25) ─────────────────
+  // Which cells light for the focus note: among the cells showing a dot, the
+  // exact pitch if it is there, else its pitch class; only when no dot
+  // matches, any visible cell (a note outside the scale / chord).
+  const showsDot = useCallback(
+    (fn: FretNote): boolean => {
+      if (mode === 'chord') {
+        const v = voicingLookup.get(fn.stringIndex);
+        return !!v && v.fret === fn.fret;
+      }
+      if (mode === 'position') return positionDots.get(fn.stringIndex)?.has(fn.fret) ?? false;
+      if (mode === 'scale') return getNoteColor(midiToNote(fn.midiNumber)) !== undefined;
+      return highlightPcs?.has(fn.pitchClass) ?? false;
+    },
+    [mode, voicingLookup, positionDots, getNoteColor, highlightPcs],
+  );
+  const focusCells = useMemo(() => {
+    const byString = new Map<number, Set<number>>();
+    const list: FretNote[] = [];
+    if (!focus || exerciseInputActive || !exploring) return { byString, list };
+    const all: FretNote[] = [];
+    for (let st = 0; st < 6; st++) for (const f of [0, ...visibleFrets]) all.push(getFretNote(st, f));
+    const pick = (pool: FretNote[]) => {
+      if (focus.midi !== undefined) {
+        const exact = pool.filter((fn) => fn.midiNumber === focus.midi);
+        if (exact.length) return exact;
+      }
+      return pool.filter((fn) => fn.pitchClass === focus.pc);
+    };
+    let lit = pick(all.filter(showsDot));
+    if (lit.length === 0) lit = pick(all);
+    for (const fn of lit) {
+      const row = byString.get(fn.stringIndex) ?? new Set<number>();
+      row.add(fn.fret);
+      byString.set(fn.stringIndex, row);
+      list.push(fn);
+    }
+    return { byString, list };
+  }, [focus, exerciseInputActive, exploring, visibleFrets, getFretNote, showsDot]);
+
+  // Tell the read-out where the note is: "string 5 fret 2, string 2 open".
+  useEffect(() => {
+    if (!focus || focusCells.list.length === 0) {
+      setLocations(null);
+      return;
+    }
+    const words = focusCells.list
+      .slice(0, 4)
+      .map((fn) => (fn.fret === 0
+        ? t('explore.readout.stringOpen', { string: 6 - fn.stringIndex })
+        : t('explore.readout.stringFret', { string: 6 - fn.stringIndex, fret: fn.fret })));
+    if (focusCells.list.length > 4) words.push('…');
+    setLocations({ instrument: 'guitar', items: words });
+  }, [focus, focusCells, setLocations, t]);
+  useEffect(() => () => setLocations(null), [setLocations]);
+
   // Auto-scroll the focused cell into view.
   useEffect(() => {
     if (!focusedCell) return;
@@ -518,6 +628,19 @@ export function Fretboard() {
     if (el) el.scrollLeft = el.scrollWidth - el.clientWidth;
   }, [isZoomed]);
 
+  // ─── Full-neck view: rows fill the screen's height ───
+  const [neckRow, setNeckRow] = useState(40);
+  useLayoutEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!neck || !el || typeof ResizeObserver === 'undefined') return;
+    // Fret-marker row + fret-number row + padding ≈ 60 px; the rest is strings.
+    const measure = () => setNeckRow(Math.max(30, Math.min(64, Math.floor((el.clientHeight - 60) / 6))));
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [neck]);
+
   // ─── Display state ────────────────────────────────────
   const isOpenChordShape = mode === 'chord' && currentShape !== null && currentShape.baseFret === 0;
   const lowestVisibleFret = visibleFrets[visibleFrets.length - 1];
@@ -540,9 +663,11 @@ export function Fretboard() {
   const positionAnchorFret = mode === 'position' && positionNumber !== null && positionNumber > 0 ? positionNumber : null;
   const anchorFret = chordAnchorFret ?? positionAnchorFret;
 
-  const fretMinWidth = isZoomed
-    ? (mobile ? 40 : 56)
-    : (mobile ? 36 : 44);
+  const fretMinWidth = neck
+    ? 0
+    : isZoomed
+      ? (mobile ? 40 : 56)
+      : (mobile ? 36 : 44);
 
   const badgeStyle: React.CSSProperties = {
     fontSize: 12,
@@ -563,12 +688,57 @@ export function Fretboard() {
     ? t('fretboard.tuningGapNotice')
     : null;
 
+  // Laptop dock: the stepper and the label toggle go into the dock bar;
+  // full-neck view: into its header (with the chord-shape chips).
+  const barTools = !!toolsSlot && scaleView && !neck;
+  const neckTools = !!toolsSlot && neck;
+  const positionSelector = scaleView ? (
+    <ScalePositionSelector
+      position={positionChoice}
+      onSelect={(p) => setGuitarScalePosition(p)}
+      onStep={stepPosition}
+      mobile={mobile || barTools}
+      fullRow={!barTools && !neck}
+    />
+  ) : null;
+  const labelToolbar = (part: 'all' | 'labels' | 'edit') => (
+    <LabelToolbar
+      part={part}
+      labelMode={labelMode}
+      onLabelMode={setLabelMode}
+      positionView={mode === 'position'}
+      editing={editing}
+      onToggleEdit={() => setEditMode((v) => !v)}
+      onResetFingering={() => clearOverrides(positionKeys)}
+      hasOverrides={hasOverrides}
+    />
+  );
+
   return (
-    <div className="w-full flex flex-col" style={{ backgroundColor: 'var(--bg)', borderTop: '1px solid var(--border-subtle)' }}>
+    <div
+      className={neck ? 'w-full h-full flex flex-col' : 'w-full flex flex-col'}
+      style={{ backgroundColor: 'var(--bg)', borderTop: neck ? undefined : '1px solid var(--border-subtle)' }}
+    >
+      {barTools && toolsSlot && createPortal(<>{positionSelector}{labelToolbar('labels')}</>, toolsSlot)}
+      {neckTools && toolsSlot && createPortal(
+        <>
+          {mode === 'chord' && (
+            <ChordShapeSelector
+              shapeCount={chordShapes.length}
+              labels={positionLabels}
+              selectedIdx={selectedShapeIdx}
+              onSelect={setSelectedShapeIdx}
+            />
+          )}
+          {positionSelector}
+          {scaleView && labelToolbar('labels')}
+        </>,
+        toolsSlot,
+      )}
       {/* Controls — outside the scrolling board so they never scroll away.
           On a phone they come AFTER the board, so the strings are what the
           sheet shows first at Half (W11-A review). */}
-      {!exerciseInputActive && (
+      {!exerciseInputActive && !neck && (
         <div className="fretboard-controls px-4 max-sm:px-2 pt-2 max-sm:pb-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 max-sm:order-last">
           {mode === 'chord' && (
             <ChordShapeSelector
@@ -578,25 +748,8 @@ export function Fretboard() {
               onSelect={setSelectedShapeIdx}
             />
           )}
-          {scaleView && (
-            <ScalePositionSelector
-              position={positionChoice}
-              onSelect={(p) => setGuitarScalePosition(p)}
-              onStep={stepPosition}
-              mobile={mobile}
-            />
-          )}
-          {scaleView && (
-            <LabelToolbar
-              labelMode={labelMode}
-              onLabelMode={setLabelMode}
-              positionView={mode === 'position'}
-              editing={editing}
-              onToggleEdit={() => setEditMode((v) => !v)}
-              onResetFingering={() => clearOverrides(positionKeys)}
-              hasOverrides={hasOverrides}
-            />
-          )}
+          {!barTools && positionSelector}
+          {scaleView && labelToolbar(barTools ? 'edit' : 'all')}
 
           {/* Tuning selector — a compact native <select> (one control, so the
               toolbar stays short; review B1). On phones it only appears once a
@@ -631,7 +784,7 @@ export function Fretboard() {
       role="grid"
       aria-label={t('fretboard.label')}
       tabIndex={0}
-      className="w-full overflow-x-auto fretboard-scroll focus:outline-none"
+      className={`w-full overflow-x-auto fretboard-scroll focus:outline-none${neck ? ' flex-1 min-h-0' : ''}`}
       style={{
         cursor: mobile ? undefined : 'grab',
         scrollbarWidth: 'none',
@@ -646,13 +799,17 @@ export function Fretboard() {
       onPointerDown={mobile ? undefined : dragScroll.onPointerDown}
       onClickCapture={mobile ? undefined : handleFretboardClickCapture}
       onKeyDown={handleKeyDown}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) clearFocus('keyboard', 'fret');
+      }}
     >
       {/* Screen reader live region */}
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {announcedNote}
       </div>
 
-      <div className="px-4 max-sm:px-2 py-2" style={{ minWidth: isZoomed ? 0 : (mobile ? 660 : 800) }}>
+      {/* A laptop's docked guitar loses 8 px of padding (the workbench fits 1440×900). */}
+      <div className="px-4 max-sm:px-2 py-2 min-[1200px]:py-1" style={{ minWidth: isZoomed || neck ? 0 : (mobile ? 660 : 800) }}>
         {/* Fret markers row — carries the loud position badge in chord/position view */}
         <div className="flex mb-1 items-center">
           <div style={{ width: 32 }} />
@@ -741,6 +898,9 @@ export function Fretboard() {
               scaleLabelFor={scaleLabelFor}
               highlightPcs={highlightPcs}
               focusedFret={focusedCell?.stringIdx === stringIdx ? focusedCell.fret : null}
+              focusFrets={focusCells.byString.get(stringIdx) ?? NO_FRETS}
+              onCellHover={mobile ? undefined : handleCellHover}
+              rowHeight={neck ? neckRow : undefined}
             />
           ))}
         </div>
@@ -778,7 +938,7 @@ export function Fretboard() {
     {/* Mobile: dedicated scroll handle. The fretboard surface owns its touches
         (taps fire notes), so reaching other positions happens here, via the
         position chips, or (desktop) wheel/drag. */}
-    {mobile && <ScrollStrip containerRef={scrollContainerRef} label={t('fretboard.label')} />}
+    {mobile && !neck && <ScrollStrip containerRef={scrollContainerRef} label={t('fretboard.label')} />}
     </div>
   );
 }

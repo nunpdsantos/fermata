@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { noteToString, type ChordQuality } from '../../core/types/music.ts';
 import { buildChord, CHORD_SYMBOLS, CHORD_FORMULAS } from '../../core/constants/chords.ts';
@@ -68,7 +68,7 @@ const SAME_NOTES: Partial<Record<ChordQuality, ChordQuality[]>> = (() => {
   return out;
 })();
 
-export function ChordBrowser() {
+export function ChordBrowser({ detail }: { detail?: ReactNode } = {}) {
   const { t, i18n } = useTranslation();
   const lang = toContentLanguage(i18n.language);
   const selectedKey = useAppStore((s) => s.selectedKey);
@@ -78,6 +78,68 @@ export function ChordBrowser() {
 
   const rootLabel = noteToString(selectedKey);
   const group = CHORD_QUALITY_GROUPS[activeCategory];
+
+  // Columns follow the panel's own width, so the chord detail can open UNDER
+  // the row that holds the chord tapped (W11-B, D-25).
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [cols, setCols] = useState(3);
+  useLayoutEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    const measure = () => {
+      const w = el.clientWidth;
+      if (w > 0) setCols(w >= 860 ? 5 : w >= 640 ? 4 : w >= 420 ? 3 : 2);
+    };
+    measure();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const isActive = (quality: ChordQuality) =>
+    selectedChord?.quality === quality &&
+    selectedChord?.root.natural === selectedKey.natural &&
+    selectedChord?.root.accidental === selectedKey.accidental;
+  const activeIdx = group.qualities.findIndex(isActive);
+  const rows: ChordQuality[][] = [];
+  for (let i = 0; i < group.qualities.length; i += cols) rows.push(group.qualities.slice(i, i + cols));
+  const detailRow = activeIdx >= 0 ? Math.floor(activeIdx / cols) : -1;
+
+  const card = (quality: ChordQuality) => {
+    const symbol = CHORD_SYMBOLS[quality];
+    const name = qualityName(quality, lang);
+    const active = isActive(quality);
+    // Selected = the choice-chip state (accent fill, --on-accent text; D-28).
+    const ink = active ? 'var(--on-accent)' : undefined;
+    return (
+      <button
+        key={quality}
+        type="button"
+        data-quality={quality}
+        aria-pressed={active}
+        onClick={() => setSelectedChord(active ? null : buildChord(selectedKey, quality))}
+        className="flex flex-col items-start px-2.5 py-2 rounded-xl transition-colors text-left min-h-(--tap) [overflow-wrap:anywhere]"
+        style={{
+          backgroundColor: active ? 'var(--accent)' : 'var(--card)',
+          border: `1px solid ${active ? 'var(--accent)' : 'var(--border-subtle)'}`,
+          boxShadow: 'var(--shadow-sm)',
+        }}
+      >
+        <span className="text-ui font-bold" style={{ color: ink ?? 'var(--text)' }}>
+          {rootLabel}{symbol}
+        </span>
+        <span className="text-caption leading-tight mt-0.5" style={{ color: ink ?? 'var(--text-dim)' }}>
+          {name}
+        </span>
+        {SAME_NOTES[quality] && (
+          <span className="text-caption leading-tight" style={{ color: ink ?? 'var(--text-dim)' }}>
+            {SAME_NOTES[quality]!.map((o) => `= ${rootLabel}${CHORD_SYMBOLS[o]}`).join(' ')}
+          </span>
+        )}
+      </button>
+    );
+  };
 
   return (
     <div className="space-y-3">
@@ -89,54 +151,18 @@ export function ChordBrowser() {
         options={CHORD_QUALITY_GROUPS.map((g, i) => ({ value: i, label: t(g.labelKey) }))}
       />
 
-      {/* Chord pills grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-        {group.qualities.map((quality) => {
-          const symbol = CHORD_SYMBOLS[quality];
-          const name = qualityName(quality, lang);
-          const isActive =
-            selectedChord?.quality === quality &&
-            selectedChord?.root.natural === selectedKey.natural &&
-            selectedChord?.root.accidental === selectedKey.accidental;
-
-          return (
-            <button
-              key={quality}
-              data-quality={quality}
-              onClick={() => {
-                const chord = buildChord(selectedKey, quality);
-                setSelectedChord(chord);
-              }}
-              className="flex flex-col items-start px-2.5 py-2 rounded-xl transition-all text-left"
-              style={{
-                backgroundColor: isActive ? 'var(--accent-dim)' : 'var(--card)',
-                border: isActive ? '1px solid color-mix(in srgb, var(--accent) 25%, transparent)' : '1px solid var(--card-hover)',
-                boxShadow: 'var(--shadow-sm)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-              }}
-            >
-              <span
-                className="text-sm font-bold"
-                style={{ color: isActive ? 'var(--accent-text)' : 'var(--text)' }}
-              >
-                {rootLabel}{symbol}
-              </span>
-              <span className="text-caption leading-tight mt-0.5" style={{ color: 'var(--text-dim)' }}>
-                {name}
-              </span>
-              {SAME_NOTES[quality] && (
-                <span className="text-caption leading-tight" style={{ color: 'var(--text-dim)' }}>
-                  {SAME_NOTES[quality]!.map((o) => `= ${rootLabel}${CHORD_SYMBOLS[o]}`).join(' ')}
-                </span>
-              )}
-            </button>
-          );
-        })}
+      {/* Chord cards, row by row; the detail opens under the tapped row. */}
+      <div ref={gridRef} className="space-y-1.5">
+        {rows.map((row, r) => (
+          <div key={r} className="space-y-1.5">
+            <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+              {row.map(card)}
+            </div>
+            {r === detailRow && detail}
+          </div>
+        ))}
+        {/* A chord chosen elsewhere (In key, Build) still shows its detail. */}
+        {detailRow < 0 && detail}
       </div>
     </div>
   );

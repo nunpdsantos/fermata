@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useRef, useMemo } from 'react';
+import { useCallback, useEffect, useId, useRef, useMemo, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import { noteToString, type Chord, type Note } from '../../core/types/music.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { QUALITY_TO_MODULE } from '../../data/qualityToModule.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
-import { DEGREE_COLORS, inkFor } from '../../design/tokens/colors.ts';
+import { DEGREE_COLORS, ON_DEGREE, inkFor } from '../../design/tokens/colors.ts';
 import { Button } from '../ui/Button.tsx';
 import { qualityName } from '../../utils/qualityName.ts';
 import { scaleContext } from '../../i18n/scaleSuggestionContext.ts';
@@ -26,19 +26,25 @@ import {
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import { useAppStore } from '../../state/store.ts';
 import { buildAscendingMidi } from '../../utils/midiHelpers.ts';
-import { chordVoicingPitches, getMidiNumber } from '../../core/utils/pianoLayout.ts';
+import { chordVoicingPitches, getMidiNumber, midiToNote } from '../../core/utils/pianoLayout.ts';
+import { getPitchClass } from '../../core/constants/notes.ts';
+import { SCALE_FORMULAS, getScaleDegreeFunctionKey } from '../../core/constants/scales.ts';
+import { useAudio } from '../../hooks/useAudio.ts';
+import { useFocusNoteStore, useFocusNote, type FocusNote } from '../../state/focusNoteStore.ts';
+import { useToastAvoid } from '../layout/toastLayout.ts';
 import {
   CHORD_QUALITY_NAMES,
   getChordShortIntervalLabels,
 } from '../../core/constants/chords.ts';
 import { LearnMoreButton } from './LearnMoreButton.tsx';
 import { ChipGroup } from '../ui/ChoiceChip.tsx';
-import { Badge } from '../ui/Badge';
 
 import { getScaleSuggestions } from '../../core/constants/chordScaleRelationships.ts';
 
 interface CurrentChordPanelProps {
   chord: Chord;
+  /** Drawn beside the detail (Explore: the chord on a small staff). */
+  aside?: ReactNode;
 }
 
 const INVERSION_LABEL_KEYS = ['panel.rootPos', 'panel.inv1', 'panel.inv2', 'panel.inv3'];
@@ -61,10 +67,15 @@ const FIT_COLORS_MUTED: Record<keyof typeof FIT_COLORS, string> = {
   color: 'var(--text-dim)',
 };
 
-export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
+export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
   const { t, i18n } = useTranslation();
   const lang = toContentLanguage(i18n.language);
-  const { getNoteDegree, invertedNotes } = useKeyContext();
+  const { getNoteDegree, invertedNotes, diatonicChords, scale } = useKeyContext();
+  const { noteOn, noteOff } = useAudio();
+  const setFocus = useFocusNoteStore((s) => s.set);
+  const clearFocus = useFocusNoteStore((s) => s.clear);
+  const focusPc = useFocusNote()?.pc ?? null;
+  const toneGroupId = useId();
   const synthPreset = useAppStore((s) => s.synthPreset);
   const chordInversion = useAppStore((s) => s.chordInversion);
   const setChordInversion = useAppStore((s) => s.setChordInversion);
@@ -169,35 +180,178 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
     );
   }, [notesForPlayback, synthPreset, baseOctave, lightKey, unlightKeys, stopVisuals]);
 
+  // The chord's place in the key: "V · dominant" when it is a diatonic chord.
+  const role = useMemo(() => {
+    const rootPc = getPitchClass(chord.root);
+    const match = diatonicChords.find((d) => getPitchClass(d.chord.root) === rootPc && d.chord.quality === chord.quality);
+    if (!match) return degree ? t('panel.degree', { n: degree }) : null;
+    const i = scale.notes.findIndex((n) => getPitchClass(n) === rootPc);
+    const fnKey = scale.notes.length === 7 && i >= 0 ? getScaleDegreeFunctionKey(i, SCALE_FORMULAS[scale.type]?.[i] ?? 0) : null;
+    return fnKey ? `${match.numeral} · ${t(fnKey.replace('degreeShort.', 'explore.fn.'))}` : match.numeral;
+  }, [chord, diatonicChords, scale, degree, t]);
+
+  // Each tone's sounding pitch in the voicing the instruments light, so a
+  // tone made the focus note lights that exact key on the piano.
+  const toneMidi = useMemo(() => {
+    const m = new Map<number, number>();
+    for (const p of chordVoicingPitches(notesForPlayback, baseOctave, chord.bassNote)) {
+      const pc = getPitchClass(p);
+      if (!m.has(pc)) m.set(pc, getMidiNumber(p, p.octave));
+    }
+    return m;
+  }, [notesForPlayback, baseOctave, chord.bassNote]);
+  const toneFocus = (note: Note): FocusNote => {
+    const pc = getPitchClass(note);
+    return { pc, midi: toneMidi.get(pc), source: 'chord' };
+  };
+  const playTone = (note: Note) => {
+    const midi = toneMidi.get(getPitchClass(note));
+    if (midi === undefined) return;
+    const p = midiToNote(midi);
+    noteOn(p, p.octave).then((played) => window.setTimeout(() => noteOff(played), 700), () => {});
+  };
+
+  // Toasts never cover the open chord detail (W11-B).
+  const detailRef = useRef<HTMLDivElement>(null);
+  useToastAvoid(detailRef);
+
+  const playIcon = <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>;
+
   return (
     <m.div
-      initial={{ opacity: 0, y: 8 }}
+      ref={detailRef}
+      initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
-      className="space-y-5"
+      transition={{ duration: 0.15 }}
+      className="chord-detail"
+      data-testid="chord-detail"
     >
-      {/* Header */}
-      <div>
-        <h2 className="text-xl font-bold learn-serif" style={{ color: 'var(--text)' }}>
-          {chord.algorithmicDisplayName
-            ? <>{noteToString(chord.root)}<span className="font-normal ml-1.5" style={{ color: 'var(--text-muted)' }}>{chord.algorithmicDisplayName}</span></>
-            : <>{noteToString(chord.root)}<span className="font-normal ml-1.5" style={{ color: 'var(--text-muted)' }}>{qualityName(chord.quality, lang)}</span></>
-          }
+      <div className="chord-detail-main">
+      <div className="chord-detail-row">
+        <h3 className="chord-detail-name">
+          {noteToString(chord.root)}
+          <span className="chord-detail-quality">
+            {chord.algorithmicDisplayName ?? qualityName(chord.quality, lang)}
+          </span>
           {chord.bassNote && (
-            <span className="font-normal ml-0.5" style={{ color: 'var(--text-dim)' }}>/{noteToString(chord.bassNote)}</span>
+            <span style={{ color: 'var(--text-dim)' }}>/{noteToString(chord.bassNote)}</span>
           )}
-        </h2>
-        {degree && (
-          <Badge
-            degree={degree as keyof typeof DEGREE_COLORS}
-            shape="pill"
-            size="xs"
-            outlined
-            className="mt-2"
-          >
-            {t('panel.degree', { n: degree })}
-          </Badge>
+        </h3>
+        {role && <span className="text-ui" style={{ color: 'var(--text-muted)' }}>{role}</span>}
+
+        {/* Notes: each tone is the focus note on hover / focus, and plays on a tap. */}
+        <div className="chord-detail-group">
+          <span className="type-label" id={`${toneGroupId}-label`}>{t('panel.notes')}</span>
+          <div className="flex gap-1.5" role="group" aria-labelledby={`${toneGroupId}-label`}>
+            {notesForPlayback.map((note, i) => {
+              const noteDegree = getNoteDegree(note);
+              const fill = noteDegree ? DEGREE_COLORS[noteDegree as keyof typeof DEGREE_COLORS] : null;
+              const isBass = i === 0 && chordInversion > 0;
+              const isSlashBass = !!chord.bassNote && noteToString(note) === noteToString(chord.bassNote) && i === 0;
+              const on = focusPc === getPitchClass(note);
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  className="tone-btn"
+                  data-on={on || undefined}
+                  style={{
+                    backgroundColor: fill ?? 'var(--bg-raised)',
+                    color: fill ? ON_DEGREE : 'var(--text)',
+                    borderStyle: isSlashBass ? 'dashed' : 'solid',
+                    borderColor: isBass || isSlashBass ? 'var(--text)' : (fill ?? 'var(--border)'),
+                  }}
+                  title={isSlashBass ? t('panel.slashBass') : undefined}
+                  onPointerEnter={(e) => { if (e.pointerType === 'mouse') setFocus('hover', toneFocus(note)); }}
+                  onPointerLeave={(e) => { if (e.pointerType === 'mouse') clearFocus('hover', 'chord'); }}
+                  onFocus={(e) => { if (e.currentTarget.matches(':focus-visible')) setFocus('keyboard', toneFocus(note)); }}
+                  onBlur={() => clearFocus('keyboard', 'chord')}
+                  onClick={() => {
+                    setFocus('pinned', toneFocus(note));
+                    playTone(note);
+                  }}
+                >
+                  {noteToString(note)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Root / 1st / 2nd …: one of many — a ChipGroup (D-28 choice chip).
+            4th inversion and up (5+ note chords) use "Inv n" — never a second
+            "Root" (audit W2-09). */}
+        <div className="chord-detail-group">
+          <span className="type-label" aria-hidden="true">{t('panel.voicing')}</span>
+          <ChipGroup
+            label={t('panel.chordInversion')}
+            value={chordInversion}
+            onChange={setChordInversion}
+            options={Array.from({ length: maxInversion + 1 }, (_, i) => ({
+              value: i,
+              label: i < INVERSION_LABEL_KEYS.length ? t(INVERSION_LABEL_KEYS[i]) : t('chordBuilder.inversion.nth', { n: i }),
+            }))}
+          />
+        </div>
+
+        <div className="chord-detail-actions">
+          {/* Chord is the main action here (primary). */}
+          <Button variant="primary" onClick={handlePlayChord} startIcon={playIcon}>
+            {t('panel.chord')}
+          </Button>
+          <Button onClick={handlePlayArpeggio} startIcon={playIcon}>
+            {t('panel.arpeggio')}
+          </Button>
+        </div>
+      </div>
+
+      <div className="chord-detail-row">
+        {/* Formula — real interval labels */}
+        <div className="chord-detail-group">
+          <span className="type-label">{t('panel.formula')}</span>
+          <span className="flex items-center gap-1.5">
+            {intervalLabels.map((label, i) => (
+              <span
+                key={i}
+                className="text-caption font-mono px-2 py-0.5 rounded-md"
+                style={{ color: 'var(--text-muted)', backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border-subtle)' }}
+              >
+                {label}
+              </span>
+            ))}
+          </span>
+        </div>
+
+        {/* Compatible scales: choosing one makes it the key (root = this chord's). */}
+        {scaleSuggestions.length > 0 && (
+          <div className="chord-detail-group">
+            <span className="type-label">{t('panel.compatibleScales')}</span>
+            <span className="flex flex-wrap gap-1.5">
+              {scaleSuggestions.map((s) => {
+                const fitColor = degreeColorsOn ? FIT_COLORS[s.fit] : FIT_COLORS_MUTED[s.fit];
+                return (
+                  <button
+                    key={s.scale}
+                    onClick={() => {
+                      setKey(chord.root);
+                      setScale(s.scale);
+                    }}
+                    className="btn"
+                    style={{
+                      backgroundColor: alpha(fitColor, '12'),
+                      color: inkFor(fitColor),
+                      borderColor: alpha(fitColor, '45'),
+                    }}
+                    title={scaleContext(s.context, lang)}
+                  >
+                    {t(`scaleName.${s.scale}`)}
+                  </button>
+                );
+              })}
+            </span>
+          </div>
         )}
+
         {/* Only chords a lesson actually teaches get a link (null = none; the
             fuzzy title fallback would land on an unrelated lesson). */}
         {QUALITY_TO_MODULE[chord.quality] && (
@@ -207,131 +361,8 @@ export function CurrentChordPanel({ chord }: CurrentChordPanelProps) {
           />
         )}
       </div>
-
-      {/* Notes */}
-      <div>
-        <h3 className="type-section mb-2">
-          {t('panel.notes')}
-        </h3>
-        <div className="flex gap-1.5">
-          {notesForPlayback.map((note, i) => {
-            const noteDegree = getNoteDegree(note);
-            const noteColor = degreeColorsOn && noteDegree
-              ? DEGREE_COLORS[noteDegree as keyof typeof DEGREE_COLORS]
-              : noteDegree
-                ? 'var(--accent)'
-                : 'var(--text-muted)';
-            const isBass = i === 0 && chordInversion > 0;
-            const isSlashBass = chord.bassNote &&
-              noteToString(note) === noteToString(chord.bassNote) && i === 0;
-            return (
-              <span
-                key={i}
-                className="px-2.5 py-1.5 rounded-lg text-ui font-semibold"
-                style={{
-                  backgroundColor: alpha(noteColor, '15'),
-                  // The hue tints the chip; the letter is its ink (D-28).
-                  color: inkFor(noteColor),
-                  border: isSlashBass
-                    ? `1.5px dashed ${noteColor}`
-                    : isBass ? `1.5px solid ${noteColor}` : `1px solid ${noteColor}30`,
-                }}
-                title={isSlashBass ? t('panel.slashBass') : undefined}
-              >
-                {noteToString(note)}
-              </span>
-            );
-          })}
-        </div>
       </div>
-
-      {/* Inversions */}
-      <div>
-        <h3 className="type-section mb-2">
-          {t('panel.voicing')}
-        </h3>
-        {/* Root / 1st / 2nd …: one of many — a ChipGroup (D-28 choice chip).
-            4th inversion and up (5+ note chords) use "Inv n" — never a second
-            "Root" (audit W2-09). */}
-        <ChipGroup
-          label={t('panel.chordInversion')}
-          value={chordInversion}
-          onChange={setChordInversion}
-          options={Array.from({ length: maxInversion + 1 }, (_, i) => ({
-            value: i,
-            label: i < INVERSION_LABEL_KEYS.length ? t(INVERSION_LABEL_KEYS[i]) : t('chordBuilder.inversion.nth', { n: i }),
-          }))}
-        />
-      </div>
-
-      {/* Formula — real interval labels */}
-      <div>
-        <h3 className="type-section mb-2">
-          {t('panel.formula')}
-        </h3>
-        <div className="flex items-center gap-1.5">
-          {intervalLabels.map((label, i) => (
-            <span
-              key={i}
-              className="text-xs font-mono px-2 py-1 rounded-md"
-              style={{ color: 'var(--text-muted)', backgroundColor: 'color-mix(in srgb, var(--card) 60%, transparent)' }}
-            >
-              {label}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Compatible Scales */}
-      {scaleSuggestions.length > 0 && (
-        <div>
-          <h3 className="type-section mb-2">
-            {t('panel.compatibleScales')}
-          </h3>
-          <div className="flex flex-wrap gap-1.5">
-            {scaleSuggestions.map((s) => {
-              const fitColor = degreeColorsOn ? FIT_COLORS[s.fit] : FIT_COLORS_MUTED[s.fit];
-              return (
-                <button
-                  key={s.scale}
-                  onClick={() => {
-                    setKey(chord.root);
-                    setScale(s.scale);
-                  }}
-                  className="btn"
-                  style={{
-                    backgroundColor: alpha(fitColor, '12'),
-                    color: inkFor(fitColor),
-                    borderColor: alpha(fitColor, '45'),
-                  }}
-                  title={scaleContext(s.context, lang)}
-                >
-                  {t(`scaleName.${s.scale}`)}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Play controls */}
-      <div className="flex gap-2 pt-1">
-        {/* Chord is the main action here (primary); it used to be the
-            degree hue as text at ~2:1 (W11-A). */}
-        <Button
-          variant="primary"
-          onClick={handlePlayChord}
-          startIcon={<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>}
-        >
-          {t('panel.chord')}
-        </Button>
-        <Button
-          onClick={handlePlayArpeggio}
-          startIcon={<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>}
-        >
-          {t('panel.arpeggio')}
-        </Button>
-      </div>
+      {aside}
     </m.div>
   );
 }

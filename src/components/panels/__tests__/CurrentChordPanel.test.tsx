@@ -51,8 +51,8 @@ describe('CurrentChordPanel rendering', () => {
     // "C" appears in both the h2 header and the note chip — getAllByText is correct here
     const cElements = screen.getAllByText('C');
     expect(cElements.length).toBeGreaterThanOrEqual(1);
-    // The h2 should contain the root
-    const heading = cElements.find((el) => el.tagName === 'H2' || el.closest('h2'));
+    // The chord's heading (an h3 in the workbench's chord detail) holds the root
+    const heading = cElements.find((el) => el.closest('h2, h3'));
     expect(heading).toBeDefined();
   });
 

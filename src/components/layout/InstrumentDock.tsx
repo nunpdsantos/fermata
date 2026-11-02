@@ -1,5 +1,9 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Piano } from '../instruments/Piano.tsx';
+import { NeckView, NECK_QUERY } from '../instruments/NeckView.tsx';
+import { DockReadout } from './DockReadout.tsx';
+import { DockToolsContext, DOCK_TOOLS_QUERY } from './dockTools.ts';
 import { InstrumentSelector } from '../instruments/InstrumentSelector.tsx';
 import { ViewSlot, type ViewLoader } from '../ViewSlot.tsx';
 import { DetentSheet } from '../ui/DetentSheet.tsx';
@@ -62,13 +66,33 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
   const context = useContextLine();
   const open = detent !== 'peek';
   const setDetent = (d: Detent) => setDockDetent(view, d);
+  // Laptop: the bar carries the fretboard's position stepper and label
+  // toggle (DockToolsContext), so the guitar dock is one row shorter.
+  const wideBar = useMediaQuery(DOCK_TOOLS_QUERY) && !isPhone;
+  const [toolsSlot, setToolsSlot] = useState<HTMLElement | null>(null);
+  // A phone held sideways with the guitar: the full-neck view (D-26 extra).
+  const neckAvailable = useMediaQuery(NECK_QUERY) && instrument === 'guitar';
+  const exercise = useAppStore((s) => s.exerciseInputActive);
+  const [neckOpen, setNeckOpen] = useState(false);
+  const showNeck = neckOpen && neckAvailable && !exercise;
 
   const bar = (
     <div className="dock-bar-row">
       <InstrumentSelector />
-      <span className="dock-context text-ui" aria-live="polite">
-        {context}
-      </span>
+      <DockReadout context={context} />
+      {wideBar && instrument === 'guitar' && <div ref={setToolsSlot} className="dock-tools" data-testid="dock-tools" />}
+      {neckAvailable && !exercise && (
+        <IconButton
+          variant="secondary"
+          aria-label={t('neck.open')}
+          aria-haspopup="dialog"
+          data-testid="neck-open"
+          onClick={() => setNeckOpen(true)}
+          icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+          </svg>}
+        />
+      )}
       {/* On the phone sheet the button is icon-only (the bar is narrow and
           the context line needs the room — PT/ES "Esconder" ellipsized it);
           elsewhere it says Show / Hide. */}
@@ -118,9 +142,18 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
       }
       style={{ backgroundColor: 'var(--bg)', overscrollBehavior: 'contain' }}
     >
-      {instrument === 'piano' ? <Piano /> : <ViewSlot viewKey="guitar" loaders={GUITAR_LOADER} fallbackClassName={GUITAR_LOADING_SIZE} />}
+      {instrument === 'piano' ? (
+        <Piano />
+      ) : showNeck ? null : (
+        // While the full-neck view is open it owns the one fretboard (two
+        // would both answer the [ ] position keys).
+        <DockToolsContext.Provider value={wideBar ? toolsSlot : null}>
+          <ViewSlot viewKey="guitar" loaders={GUITAR_LOADER} fallbackClassName={GUITAR_LOADING_SIZE} />
+        </DockToolsContext.Provider>
+      )}
     </div>
   );
+  const neck = showNeck ? <NeckView onClose={() => setNeckOpen(false)} /> : null;
 
   if (isPhone) {
     return (
@@ -135,6 +168,7 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
         bar={bar}
       >
         {region}
+        {neck}
       </DetentSheet>
     );
   }
@@ -143,6 +177,7 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
     <section className="dock-panel" data-testid="instrument-dock" data-detent={detent}>
       <div className="dock-panel-bar">{bar}</div>
       {open && region}
+      {neck}
     </section>
   );
 }

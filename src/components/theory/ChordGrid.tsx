@@ -40,7 +40,9 @@ export function ChordGrid() {
   }
 
   return (
-    <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))' }} role="group" aria-label={t('explore.diatonicChordsGroup')}>
+    // ONE row (W11-B): the chord detail opens under it, in place. On a narrow
+    // screen the row scrolls sideways inside its card; each card keeps 84 px.
+    <div className="chord-row" style={{ gridTemplateColumns: `repeat(${diatonicChords.length}, minmax(84px, 1fr))` }} role="group" aria-label={t('explore.diatonicChordsGroup')}>
       {diatonicChords.map(({ chord, numeral, degree }, i) => {
         const deg = degree as keyof typeof DEGREE_COLORS;
         // The degree hue is a FILL (the top line); the numeral is written in
@@ -59,9 +61,9 @@ export function ChordGrid() {
           <m.button
             key={degree}
             onClick={() => setSelectedChord(isSelected ? null : chord)}
-            // Cards are never narrower than 96 px and their text wraps rather
+            // Cards are never narrower than 84 px and their text wraps rather
             // than clips ("Diminished" / "Disminuido" were cut off at 61 px).
-            className="relative flex flex-col items-center gap-1 p-2.5 rounded-xl group text-center [overflow-wrap:anywhere]"
+            className="relative flex flex-col items-center gap-0.5 px-1.5 py-2 rounded-xl group text-center [overflow-wrap:anywhere]"
             // Selected = the choice-chip state (accent fill, --on-accent text).
             style={{
               backgroundColor: isSelected ? 'var(--accent)' : 'var(--card)',
@@ -74,7 +76,6 @@ export function ChordGrid() {
             // adjacent chips don't feel identical; tighter than GENTLE but
             // less damped than SNAPPY. Only used here.
             transition={{ delay: i * 0.04, type: 'spring', stiffness: 400, damping: 25 }}
-            whileHover={{ scale: 1.04, y: -2, boxShadow: 'var(--shadow-md)' }}
             whileTap={{ scale: 0.96 }}
             aria-pressed={isSelected}
             aria-label={t('explore.chordButton', { root: rootLabel, quality: qualityFull, degree })}
@@ -85,14 +86,14 @@ export function ChordGrid() {
               style={{ backgroundColor: color }}
             />
 
-            <span className="text-ui font-bold" style={{ color: isSelected ? 'var(--on-accent)' : ink }}>
+            <span className="text-ui font-bold leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : ink }}>
               {numeral}
             </span>
-            <span className="text-body font-semibold" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text)' }}>
+            <span className="text-body font-semibold leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text)' }}>
               {rootLabel}
               <span className="font-normal" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text-dim)' }}>{qualityLabel}</span>
             </span>
-            <span className="text-caption" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text-dim)' }}>
+            <span className="text-caption leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text-dim)' }}>
               {qualityFull}
             </span>
           </m.button>

@@ -13,6 +13,9 @@ import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useIsMobile, useIsCompact, useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { ScrollStrip } from './ScrollStrip.tsx';
 import { ChipGroup } from '../ui/ChoiceChip.tsx';
+import { noteToString } from '../../core/types/music.ts';
+import { writtenOctave } from '../../core/utils/degreeSpelling.ts';
+import { useFocusNote, useFocusNoteStore } from '../../state/focusNoteStore.ts';
 
 const START_OCTAVE = 0;
 const END_OCTAVE = 8;
@@ -68,6 +71,11 @@ export function Piano() {
   const { scale, invertedNotes, scaleMidiNumbers, getNoteColor, spellPitchClass, chordVoicingMidi, hasSelectedChord } = useKeyContext();
   const scaleOctaves = useAppStore((s) => s.scaleOctaves);
   const selectedChord = useAppStore((s) => s.selectedChord);
+  const exploring = useAppStore((s) => s.view === 'explore' && !s.exerciseInputActive);
+  const focus = useFocusNote();
+  const setFocus = useFocusNoteStore((s) => s.set);
+  const clearFocus = useFocusNoteStore((s) => s.clear);
+  const setLocations = useFocusNoteStore((s) => s.setLocations);
 
   // Octaves whose scale (and selected chord) stay on the 88 keys; the others'
   // buttons are disabled, and a stored octave that no longer fits (after a
@@ -134,8 +142,10 @@ export function Piano() {
     return hasMidi60 ? 60 : sortedKeys[0]?.midiNumber ?? 0;
   });
 
-  const handleKeyFocus = useCallback((k: PianoKey) => {
+  const handleKeyFocus = useCallback((k: PianoKey, visible = false) => {
     setFocusedMidi(k.midiNumber);
+    // Keyboard focus on a key makes it the linked focus note.
+    if (visible) useFocusNoteStore.getState().set('keyboard', { pc: k.midiNumber % 12, midi: k.midiNumber, source: 'piano' });
   }, []);
 
   const handleKeyNavKeyDown = useCallback(
@@ -154,6 +164,46 @@ export function Piano() {
     },
     [sortedKeys],
   );
+
+  // ─── Linked focus note (W11-B, D-25) ─────────────────
+  // Among the keys the piano lights (scale / chord), the exact pitch if it is
+  // one of them, else its pitch class; a note outside them lights its own
+  // key, or (no exact pitch) its pitch class in the octave(s) shown.
+  const focusKeys = useMemo(() => {
+    const out = new Set<number>();
+    if (!focus || !exploring) return out;
+    const shown = [...scaleMidiNumbers, ...chordVoicingMidi];
+    if (focus.midi !== undefined && shown.includes(focus.midi)) return out.add(focus.midi);
+    for (const m of shown) if (m % 12 === focus.pc) out.add(m);
+    if (out.size > 0) return out;
+    if (focus.midi !== undefined) return out.add(focus.midi);
+    const base = 12 + baseOctave * 12;
+    for (let m = base; m < base + 12 * scaleOctaves; m++) if (m % 12 === focus.pc) out.add(m);
+    return out;
+  }, [focus, exploring, scaleMidiNumbers, chordVoicingMidi, baseOctave, scaleOctaves]);
+
+  // Tell the read-out which keys: "B4".
+  useEffect(() => {
+    if (focusKeys.size === 0) {
+      setLocations(null);
+      return;
+    }
+    const items = [...focusKeys].sort((a, b) => a - b).map((m) => {
+      const spelled = spellPitchClass(m % 12);
+      return `${noteToString(spelled)}${writtenOctave(spelled, Math.floor(m / 12) - 1)}`;
+    });
+    setLocations({ instrument: 'piano', items });
+  }, [focusKeys, spellPitchClass, setLocations]);
+  useEffect(() => () => setLocations(null), [setLocations]);
+
+  const handleKeyHover = useCallback(
+    (k: PianoKey, on: boolean) => {
+      if (on) setFocus('hover', { pc: k.midiNumber % 12, midi: k.midiNumber, source: 'piano' });
+      else clearFocus('hover', 'piano');
+    },
+    [setFocus, clearFocus],
+  );
+  const handleKeyBlur = useCallback(() => clearFocus('keyboard', 'piano'), [clearFocus]);
 
   const isInScale = useCallback(
     (key: PianoKey) => scaleMidiNumbers.has(key.midiNumber),
@@ -189,6 +239,8 @@ export function Piano() {
 
   const handleNoteOn = useCallback(
     (key: PianoKey) => {
+      // The key played is the linked focus note until another one is.
+      useFocusNoteStore.getState().set('pinned', { pc: key.midiNumber % 12, midi: key.midiNumber, source: 'piano' });
       lastPointerNoteKey.current = key;
       const pending = { released: false };
       pendingNoteOns.current.set(key.midiNumber, pending);
@@ -463,6 +515,9 @@ export function Piano() {
               isFocused={focusedMidi === wk.midiNumber}
               onKeyDown={handleKeyNavKeyDown}
               onFocus={handleKeyFocus}
+              isFocusNote={focusKeys.has(wk.midiNumber)}
+              onHover={mobile ? undefined : handleKeyHover}
+              onKeyBlur={handleKeyBlur}
             />
           ))}
 
@@ -488,6 +543,9 @@ export function Piano() {
                 isFocused={focusedMidi === bk.midiNumber}
                 onKeyDown={handleKeyNavKeyDown}
                 onFocus={handleKeyFocus}
+                isFocusNote={focusKeys.has(bk.midiNumber)}
+                onHover={mobile ? undefined : handleKeyHover}
+                onKeyBlur={handleKeyBlur}
               />
             </div>
           ))}

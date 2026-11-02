@@ -5,8 +5,9 @@
  *  - useKeyContext reports EVERY scale note (chromatic has 12, bebop 8) and
  *    colours it by function (W3-03, W1-06). The fretboard treats "no colour"
  *    as "not in the scale", so this contract is what lights its notes.
- *  - ScaleDegreeBar labels agree with the note printed under them, in one
- *    notation (b3 style), coloured by function (W1-05, W1-06, W1-11).
+ *  - The Explore staff strip's degree labels (it replaced the degree bar,
+ *    W11-B) agree with the note printed under them, in one notation (b3
+ *    style), coloured by function (W1-05, W1-06, W1-11).
  *  - Scale Comparison labels each row from its own spelling (W1-15).
  *  - Piano screen-reader labels give B#/Cb the letter octave (W1-17).
  */
@@ -15,7 +16,7 @@ import { render, cleanup, renderHook } from '@testing-library/react';
 import type { Note, ScaleType } from '../../../core/types/music';
 import { useAppStore } from '../../../state/store';
 import { useKeyContext } from '../../../hooks/useKeyContext';
-import { ScaleDegreeBar } from '../ScaleDegreeBar';
+import { ScaleStrip } from '../../explore/ScaleStrip';
 import { ScaleComparison } from '../ScaleComparison';
 import { PianoKeyComponent } from '../../instruments/PianoKey';
 import { DEGREE_COLORS } from '../../../design/tokens/colors';
@@ -34,15 +35,16 @@ vi.mock('framer-motion', async () => {
   return { motion: proxy, m: proxy, AnimatePresence: (p: { children: React.ReactNode }) => p.children, LazyMotion: (p: { children: React.ReactNode }) => p.children, domAnimation: {} };
 });
 
+vi.mock('../../notation/StaffNotation.tsx', async () => {
+  const React = await import('react');
+  return { StaffNotation: () => React.createElement('div', { 'data-testid': 'staff-mock' }) };
+});
+
 afterEach(cleanup);
 
 const toNote = (s: string): Note => ({ natural: s[0], accidental: s.slice(1) }) as Note;
 const str = (n: Note) => `${n.natural}${n.accidental}`;
 const TYPES = Object.keys(SCALE_FORMULAS) as ScaleType[];
-const hexToRgb = (hex: string) => {
-  const n = parseInt(hex.slice(1), 16);
-  return `rgb(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255})`;
-};
 const select = (root: string, type: ScaleType, extra: Record<string, unknown> = {}) =>
   useAppStore.setState({ selectedKey: toNote(root), selectedScale: type, selectedChord: null, selectedDegree: null, exerciseInputActive: false, comparisonScale: null, ...extra });
 
@@ -82,15 +84,16 @@ describe('W3-03 / W1-06 — useKeyContext reports and colours every scale note b
   });
 });
 
-describe('W1-05 / W1-06 / W1-11 — Scale Degrees bar', () => {
+describe('W1-05 / W1-06 / W1-11 — the staff strip\'s degree labels', () => {
   it('label names the note under it, b3 style, coloured by function — every type x root', () => {
     const bad: string[] = [];
     for (const type of TYPES) {
       for (const root of SELECTABLE_ROOTS) {
         select(root, type);
-        const { container } = render(<ScaleDegreeBar />);
+        const { container } = render(<ScaleStrip />);
         const buttons = [...container.querySelectorAll('[aria-label^="Degree "]')];
-        expect(buttons.length, `${root} ${type}`).toBe(SCALE_FORMULAS[type].length);
+        // Every scale note, plus the octave tonic the staff draws on top.
+        expect(buttons.length, `${root} ${type}`).toBe(SCALE_FORMULAS[type].length + 1);
         for (const b of buttons) {
           const m = /^Degree (\d+), ([^,]+), (.+)$/.exec(b.getAttribute('aria-label')!)!;
           const [label, note] = [m[2], m[3]];
@@ -98,9 +101,11 @@ describe('W1-05 / W1-06 / W1-11 — Scale Degrees bar', () => {
           if (!lm) { bad.push(`${root} ${type}: "${label}" not b3 style`); continue; }
           const num = lm[2] === 'R' ? 1 : Number(lm[2]);
           if (spellDegree(root, lm[2] === 'R' ? '1' : label) !== note) bad.push(`${root} ${type}: "${label}" over ${note}`);
-          // The degree colour is the label's FILL (dark ink on it, D-28).
-          const labelSpan = b.querySelectorAll('span')[1] as HTMLElement;
-          if (labelSpan.style.backgroundColor !== hexToRgb(DEGREE_COLORS[num as keyof typeof DEGREE_COLORS])) bad.push(`${root} ${type}: colour of ${label}`);
+          // The degree label is written in its function's INK (D-28: never the
+          // fill hue as text).
+          const labelSpan = b.querySelector('.strip-degree') as HTMLElement;
+          if (labelSpan.style.color !== `var(--deg-ink-${num})`) bad.push(`${root} ${type}: colour of ${label}`);
+          if (labelSpan.textContent !== (lm[2] === 'R' ? `${lm[1] ?? ''}1` : label)) bad.push(`${root} ${type}: printed ${labelSpan.textContent} for ${label}`);
         }
         cleanup();
       }
@@ -110,9 +115,9 @@ describe('W1-05 / W1-06 / W1-11 — Scale Degrees bar', () => {
 
   it('A blues reads R b3 4 b5 5 b7 over A C D Eb E G', () => {
     select('A', 'blues');
-    const { container } = render(<ScaleDegreeBar />);
+    const { container } = render(<ScaleStrip />);
     const pairs = [...container.querySelectorAll('[aria-label^="Degree "]')].map((b) => b.getAttribute('aria-label')!.split(', ').slice(1).join('/'));
-    expect(pairs).toEqual(['R/A', 'b3/C', '4/D', 'b5/Eb', '5/E', 'b7/G']);
+    expect(pairs).toEqual(['R/A', 'b3/C', '4/D', 'b5/Eb', '5/E', 'b7/G', 'R/A']);
   });
 });
 

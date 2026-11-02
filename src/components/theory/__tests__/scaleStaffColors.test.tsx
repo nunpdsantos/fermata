@@ -2,12 +2,15 @@
  * Audit W1-18 / W1-06 — the Explore scale staff colours every note by its
  * FUNCTION (read from the spelled letter), including the octave tonic on top.
  * Pre-fix: colours came from note order (C major pentatonic's G got the
- * subdominant colour) and the top tonic had no colour at all.
+ * subdominant colour) and the top tonic had no colour at all. Since W11-B the
+ * scale staff is the workbench's staff strip; the chord staff sits in the
+ * chord detail.
  */
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
 import type { Note, ScaleType } from '../../../core/types/music';
-import { ChordWorkspace } from '../ChordWorkspace';
+import { ScaleStrip } from '../../explore/ScaleStrip';
+import { ChordsCard } from '../../explore/ChordsCard';
 import { useAppStore } from '../../../state/store';
 import { DEGREE_COLORS } from '../../../design/tokens/colors';
 import { SCALE_FORMULAS } from '../../../core/constants/scales';
@@ -40,7 +43,7 @@ const toNote = (s: string): Note => ({ natural: s[0], accidental: s.slice(1) }) 
 
 async function staffFor(root: string, type: ScaleType) {
   useAppStore.setState({ selectedKey: toNote(root), selectedScale: type, selectedChord: null, selectedDegree: null, chordInversion: 0 });
-  render(<ChordWorkspace />);
+  render(<ScaleStrip />);
   const el = await screen.findByTestId('staff');
   const notes = JSON.parse(el.getAttribute('data-notes')!) as { natural: string; accidental: string }[];
   const colors = JSON.parse(el.getAttribute('data-colors')!) as Record<string, string>;
@@ -53,7 +56,7 @@ describe('Explore scale staff colours', () => {
     expect(scaleStaff.follow).toBe(true);
     cleanup();
     useAppStore.setState({ selectedChord: buildChord({ natural: 'C', accidental: '' }, 'major') });
-    render(<ChordWorkspace />);
+    render(<ChordsCard />);
     expect((await screen.findByTestId('staff')).getAttribute('data-follow')).toBe('true');
   });
 
