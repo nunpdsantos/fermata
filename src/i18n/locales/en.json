@@ -308,7 +308,9 @@
     "updateReady": "Update ready: reload",
     "newVersion": "New version available",
     "offlineReady": "App ready for offline use",
-    "installPrompt": "Install Fermata?"
+    "installPrompt": "Install Fermata?",
+    "whatsNew": "What’s new: {{note}}",
+    "updated": "Updated to the latest version"
   },
   "error": {
     "somethingWentWrong": "Something went wrong",

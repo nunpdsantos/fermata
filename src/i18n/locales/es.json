@@ -308,7 +308,9 @@
     "updateReady": "Actualización lista: recargar",
     "newVersion": "Nueva versi\u00f3n disponible",
     "offlineReady": "App lista para uso sin conexi\u00f3n",
-    "installPrompt": "\u00bfInstalar Fermata?"
+    "installPrompt": "\u00bfInstalar Fermata?",
+    "whatsNew": "Novedades: {{note}}",
+    "updated": "Actualizado a la \u00faltima versi\u00f3n"
   },
   "error": {
     "somethingWentWrong": "Algo ha ido mal",
