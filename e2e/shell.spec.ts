@@ -75,11 +75,21 @@ test.describe('"⋯" menu and Settings sheet', () => {
     await expect(sheet.getByRole('button', { name: 'Import backup' })).toBeVisible();
 
     // Footer: build date; "works offline" only with an active service worker.
+    // The production build's worker claims the page a moment after load
+    // (clientsClaim) and the footer follows the controller live: wait for
+    // that control explicitly — reading it once raced it (W11-B delta
+    // review). The dev server has no worker: never controlled there.
     const footer = sheet.getByTestId('settings-footer');
     await expect(footer).toContainText(/Fermata · build \d{4}-\d{2}-\d{2}/);
-    const controlled = await page.evaluate(() => !!navigator.serviceWorker?.controller);
-    if (controlled) await expect(footer).toContainText('works offline');
-    else await expect(footer).not.toContainText('works offline');
+    const manifest = await page.request.get('/manifest.webmanifest');
+    const productionBuild = (manifest.headers()['content-type'] ?? '').includes('json');
+    if (productionBuild) {
+      await page.waitForFunction(() => !!navigator.serviceWorker?.controller, undefined, { timeout: 20_000 });
+      await expect(footer).toContainText('works offline');
+    } else {
+      expect(await page.evaluate(() => !!navigator.serviceWorker?.controller)).toBe(false);
+      await expect(footer).not.toContainText('works offline');
+    }
 
     // Language last: the whole UI switches (and the sheet with it).
     await sheet.getByRole('radio', { name: 'Português' }).click();
