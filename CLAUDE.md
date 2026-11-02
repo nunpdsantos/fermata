@@ -50,7 +50,7 @@ Tokens and component classes live in `src/index.css`; components in `src/compone
 **Name:** Music Theory App
 **Domain:** Music theory education / interactive instrument
 **Stack:** React 19 + TypeScript 5.9 + Vite 7 + Tailwind CSS v4 + Zustand 5 + Framer Motion 12
-**Tests:** 7,044 passing (Vitest + React Testing Library, 197 test files; counted 2026-10-31, W11-A round 4) + Playwright e2e: 59 tests on the production build (52 + 7 skipped PWA-only on the dev server; the design sweep's toast-stack and Sprint steps need the dev server's /src modules and are skipped, with a note, on the build)
+**Tests:** 7,165 passing (Vitest + React Testing Library, 202 test files; counted 2026-11-02, W11-A on top of W10) + Playwright e2e: 61 tests on the production build (54 + 7 skipped PWA-only on the dev server; the design sweep's toast-stack and Sprint steps need the dev server's /src modules and are skipped, with a note, on the build)
 **Languages:** English + Portuguese + Spanish (react-i18next + content overlay system)
 **PWA:** Offline-capable with Workbox precaching
 
@@ -323,8 +323,8 @@ src/
 The app is a lean, single-user personal tool — no accounts, no cloud sync, no
 gamification. Curriculum, exercises, spaced repetition, trilingual content, offline
 PWA, sampled piano, instrument-aware playback, and (WS9, branch `ws9-drill-mode`)
-the phone-first Drill view: all functional, all gates green (7,044 tests / 197 files on
-2026-10-31 after W11-A, eslint 0/0, content audits clean).
+the phone-first Drill view: all functional, all gates green (7,165 tests / 202 files on
+2026-11-02 after W11-A, eslint 0/0, content audits clean).
 
 WS9 details worth knowing: drill bank generated from core (`drillBank/` directory
 module, ~1,321 items, token/params contract-tested against the i18n templates);
