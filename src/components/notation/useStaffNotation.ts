@@ -27,6 +27,23 @@ interface UseStaffNotationOptions {
   /** Draw what the selected instrument plays (guitar: treble-8vb, written an
    *  octave up). Only for Explore's staves — authored notation never follows. */
   followInstrument?: boolean;
+  /** Notes drawn in the dim text colour (--text-dim, still ≥ 4.5:1): the
+   *  Explore strip fades the notes outside a selected chord this way —
+   *  never by opacity, which would take a notehead under 3:1. */
+  noteDim?: Record<number, boolean>;
+  /** Called after every render with the centre x of each notehead (container
+   *  px) and the staff's top / bottom line y — the Explore strip lines its
+   *  note columns up under the noteheads with it. */
+  onLayout?: (layout: StaffLayoutInfo) => void;
+}
+
+export interface StaffLayoutInfo {
+  /** Centre x of each note (sequential mode), in container px. */
+  xs: number[];
+  /** Top and bottom staff-line y, in container px. */
+  top: number;
+  bottom: number;
+  width: number;
 }
 
 export function useStaffNotation(options: UseStaffNotationOptions) {
@@ -37,6 +54,12 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
   // The PAINTED theme (Auto follows the system) — CSS colours are re-read on change.
   const themeMode = useResolvedTheme();
   const instrument = useAppStore((s) => s.instrument);
+  // Latest callback without re-rendering the staff when the caller's
+  // function identity changes.
+  const onLayoutRef = useRef(options.onLayout);
+  useEffect(() => {
+    onLayoutRef.current = options.onLayout;
+  });
 
   // Height and stave position that fit every note, ledger lines included (the
   // exercise staff used to clip middle C at a fixed 100 px). Pure from props,
@@ -184,6 +207,7 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
     new Formatter().joinVoices([voice]).format([voice], formatWidth);
     voice.draw(context, stave);
 
+
     // Apply theme colors to SVG elements
     const svg = container.querySelector('svg');
     if (svg) {
@@ -202,9 +226,26 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
           el.style.fill = textColor;
         }
       });
+      if (options.noteDim) {
+        const dim = computedStyle.getPropertyValue('--text-dim').trim() || textColor;
+        staveNotes.forEach((sn, i) => {
+          if (!options.noteDim?.[i]) return;
+          sn.getSVGElement()?.querySelectorAll<SVGElement>('text, path').forEach((el) => {
+            el.style.fill = dim;
+            el.style.stroke = dim;
+          });
+        });
+      }
     }
+
+    onLayoutRef.current?.({
+      xs: options.chord ? [] : staveNotes.map((sn) => (sn.getNoteHeadBeginX() + sn.getNoteHeadEndX()) / 2),
+      top: stave.getYForLine(0),
+      bottom: stave.getYForLine(4),
+      width: w,
+    });
   // eslint-disable-next-line react-hooks/exhaustive-deps -- themeMode triggers re-render so CSS custom properties are re-read
-  }, [loading, containerWidth, options.notes, options.clef, options.keySignature, options.width, options.height, options.noteColors, options.duration, options.chord, themeMode, staff]);
+  }, [loading, containerWidth, options.notes, options.clef, options.keySignature, options.width, options.height, options.noteColors, options.noteDim, options.duration, options.chord, themeMode, staff]);
 
   // Trigger render when dependencies change
   useEffect(() => {
