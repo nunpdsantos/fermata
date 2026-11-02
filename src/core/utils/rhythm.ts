@@ -70,6 +70,87 @@ export function barQuarters([beats, unit]: [number, number]): number {
 }
 
 /**
+ * An additive meter: eighths (or shorter) as the unit and an upper number
+ * that is neither 1, 2, 4 nor a multiple of three — 5/8, 7/8, 8/8, 10/8,
+ * 11/8 … Its groups of 2 and 3 cannot be read off the time signature.
+ */
+export function isAdditiveMeter([beats, unit]: [number, number]): boolean {
+  return unit >= 8 && beats > 4 && beats % 3 !== 0;
+}
+
+export interface MeterGrouping {
+  /** One bar's groups in units of the lower number (7/8 as 2+2+3 → [2, 2, 3]). */
+  groups: number[];
+  /**
+   * Where the groups come from: the pattern's own `grouping`; its accents
+   * (an additive meter with none declared); three units to a group in
+   * compound time (6/8, 9/8, 12/8; 3/8 is one such group); the beat in
+   * simple time (2/4, 3/4, 4/4, 2/2, 5/4 … — and the quarter for 2/8 and
+   * 4/8); or 'ungrouped' — an additive meter neither declared nor accented
+   * (rhythmProblems reports it; every unit stands alone).
+   */
+  source: 'declared' | 'accents' | 'compound' | 'simple' | 'ungrouped';
+}
+
+/** A declared grouping that adds up to the bar (whole, positive units). */
+function validGrouping(grouping: number[], beats: number): boolean {
+  return (
+    Array.isArray(grouping) &&
+    grouping.length > 0 &&
+    grouping.every((g) => Number.isInteger(g) && g > 0) &&
+    grouping.reduce((n, g) => n + g, 0) === beats
+  );
+}
+
+/**
+ * An additive meter's groups read from its accents: in every bar that has
+ * any, the accented notes fall on whole units starting with the downbeat,
+ * cut the bar into groups of 2 and 3, and every such bar agrees. Otherwise
+ * null — the accents say nothing reliable about the grouping.
+ */
+function groupingFromAccents(bars: RhythmToken[][], [beats, unit]: [number, number]): number[] | null {
+  let found: number[] | null = null;
+  for (const bar of bars) {
+    const starts: number[] = [];
+    let at = 0; // in units of the lower number
+    for (const token of bar) {
+      if (token.accent && !token.rest) starts.push(at);
+      at += (token.quarters * unit) / 4;
+    }
+    if (starts.length === 0) continue;
+    if (starts[0] !== 0 || starts.some((s) => Math.abs(s - Math.round(s)) > 1e-9)) return null;
+    const groups = [...starts.slice(1), beats].map((end, i) => Math.round(end - starts[i]));
+    if (groups.some((g) => g !== 2 && g !== 3)) return null;
+    if (found && found.join('+') !== groups.join('+')) return null;
+    found = groups;
+  }
+  return found;
+}
+
+/**
+ * How one bar of the pattern's meter groups — what the staff beams by
+ * (RhythmStaff / rhythmBeams). Never changes playback.
+ */
+export function meterGrouping(pattern: RhythmPattern): MeterGrouping {
+  const time = parseTimeSignature(pattern.time);
+  const [beats, unit] = time;
+  if (pattern.grouping && validGrouping(pattern.grouping, beats)) return { groups: [...pattern.grouping], source: 'declared' };
+  if (isAdditiveMeter(time)) {
+    let fromAccents: number[] | null = null;
+    try {
+      fromAccents = groupingFromAccents(parseRhythm(pattern).bars, time);
+    } catch {
+      fromAccents = null; // malformed values: rhythmProblems names them
+    }
+    if (fromAccents) return { groups: fromAccents, source: 'accents' };
+    return { groups: Array.from({ length: beats }, () => 1), source: 'ungrouped' };
+  }
+  if (unit >= 8 && beats % 3 === 0) return { groups: Array.from({ length: beats / 3 }, () => 3), source: 'compound' };
+  if (unit >= 8) return { groups: beats === 1 ? [1] : Array.from({ length: beats / 2 }, () => 2), source: 'simple' };
+  return { groups: Array.from({ length: beats }, () => 1), source: 'simple' };
+}
+
+/**
  * Problems with a pattern (empty when it is well formed): every bar must add
  * up exactly to the time signature, triplets come in threes, a tie joins two
  * sounded notes, and the pattern does not end on a tie.
@@ -107,6 +188,13 @@ export function rhythmProblems(pattern: RhythmPattern): string[] {
     else if (next.rest) problems.push(`token ${i + 1}: tied into a rest`);
   });
   if (parsed.bars.length === 0) problems.push('no bars');
+  const [beats] = parsed.time;
+  if (pattern.grouping !== undefined && !validGrouping(pattern.grouping, beats)) {
+    problems.push(`grouping [${pattern.grouping.join(', ')}] must be whole groups adding up to ${beats}`);
+  }
+  if (meterGrouping(pattern).source === 'ungrouped') {
+    problems.push(`${pattern.time} is an additive meter: declare its grouping (e.g. grouping: [2, 2, 3] for 7/8) or accent the first note of each group`);
+  }
   return problems;
 }
 

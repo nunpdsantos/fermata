@@ -608,7 +608,7 @@ const l4u14m2: CurriculumModule = {
         'Asymmetric meters have beat counts that do not divide evenly into equal groups. 5/4 or 5/8 groups as either 2+3 or 3+2 \u2014 the grouping determines the rhythmic feel entirely. 7/4 or 7/8 groups as 2+2+3, 2+3+2, or 3+2+2. The unequal grouping creates a lopsided groove that is characteristic of Balkan folk music, progressive rock, and much 20th-century concert music.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Hear 7/8 grouped 2+2+3',
-      rhythm: { time: '7/8', notes: '>8 8 >8 8 >8 8 8 | >8 8 >8 8 >8 8 8' },
+      rhythm: { time: '7/8', notes: '>8 8 >8 8 >8 8 8 | >8 8 >8 8 >8 8 8', grouping: [2, 2, 3] },
     },
     {
       title: 'Additive Meters',
@@ -616,7 +616,7 @@ const l4u14m2: CurriculumModule = {
         'Additive meters are built by combining groups of 2 and 3 beats. 5 = 2+3 or 3+2. 7 = 2+2+3 or 2+3+2 or 3+2+2. 8 = 3+3+2, common in Balkan music and some rock. 11 = 2+2+3+2+2, used by Dave Brubeck and others. The internal grouping pattern is what gives each meter its distinctive character \u2014 the same total number of beats with different groupings creates entirely different rhythmic feels.',
       tryThisQuery: 'G major scale',
       tryThisLabel: 'Hear 5/4 grouped 3+2',
-      rhythm: { time: '5/4', notes: '>q q q >q q | >q q q >q q' },
+      rhythm: { time: '5/4', notes: '>q q q >q q | >q q q >q q', grouping: [3, 2] },
     },
     {
       title: 'Mixed Meters and Cut Time',

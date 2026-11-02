@@ -4,7 +4,8 @@
 /**
  * A rhythm on a one-line staff (audit W5-64): time signature, note values
  * with dots, rests, ties, eighth-note triplets, accents and barlines, beamed
- * by the time signature's beat groups. VexFlow is lazy-loaded (the shared
+ * by the meter's groups (rhythmBeams: 7/8 as 2+2+3, 6/8 by the dotted
+ * quarter, simple time by the beat). VexFlow is lazy-loaded (the shared
  * loader); the drawing follows the theme. Its text alternative names every
  * value ("A rhythm in 4/4: quarter note, quarter note, half note | …").
  */
@@ -13,6 +14,7 @@ import { loadVexFlow } from '../../utils/vexflowLoader';
 import { useResolvedTheme } from '../../hooks/useTheme';
 import { parseRhythm, type RhythmToken } from '../../core/utils/rhythm';
 import { useRhythmDescription } from './rhythmDescription';
+import { rhythmBeams } from './rhythmBeams';
 import type { RhythmPattern } from '../../core/types/exercise';
 
 const HEIGHT = 110;
@@ -41,14 +43,8 @@ function draw(vf: VexFlow, container: HTMLDivElement, pattern: RhythmPattern, wi
 
   const tickables: InstanceType<typeof StaveNote | typeof BarNote>[] = [];
   const notes: InstanceType<typeof StaveNote>[] = [];
-  const triplets: InstanceType<typeof StaveNote>[][] = [];
-  let tripletRun: InstanceType<typeof StaveNote>[] = [];
-  const beamable: InstanceType<typeof StaveNote>[][] = [[]];
   parsed.bars.forEach((bar, b) => {
-    if (b > 0) {
-      tickables.push(new BarNote());
-      beamable.push([]);
-    }
+    if (b > 0) tickables.push(new BarNote());
     for (const token of bar) {
       const note = new StaveNote({
         keys: ['b/4'],
@@ -61,24 +57,17 @@ function draw(vf: VexFlow, container: HTMLDivElement, pattern: RhythmPattern, wi
       if (token.accent && !token.rest) note.addModifier(new Articulation('a>').setPosition(4), 0);
       tickables.push(note);
       notes.push(note);
-      if (token.triplet) {
-        tripletRun.push(note);
-        if (tripletRun.length === 3) {
-          triplets.push(tripletRun);
-          tripletRun = [];
-        }
-      } else {
-        beamable[beamable.length - 1].push(note);
-      }
     }
   });
 
   const voice = new Voice({ numBeats: 4, beatValue: 4 }).setMode(Voice.Mode.SOFT);
   voice.addTickables(tickables);
-  const beams = beamable.flatMap((group) =>
-    group.length ? Beam.generateBeams(group, { groups: Beam.getDefaultBeamGroups(pattern.time), stemDirection: 1 }) : [],
-  );
-  const tuplets = triplets.map((group) => {
+  // Beamed by the meter's grouping (rhythmBeams) — not VexFlow's default
+  // groups, which cut 7/8 as 2+2+2+1 whatever the pattern says.
+  const groups = rhythmBeams(pattern);
+  const beams = groups.filter((g) => !g.triplet).map((g) => new Beam(g.notes.map((i) => notes[i])));
+  const tuplets = groups.filter((g) => g.triplet).map((g) => {
+    const group = g.notes.map((i) => notes[i]);
     beams.push(new Beam(group));
     return new Tuplet(group, { numNotes: 3, notesOccupied: 2, bracketed: false });
   });
