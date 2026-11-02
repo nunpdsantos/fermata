@@ -153,6 +153,10 @@ export default defineConfig({
         // fails if it does.
         clientsClaim: true,
         skipWaiting: false,
+        // W9b: a worker can count the app's open windows for a page about to
+        // apply an update silently (public/sw-window-count.js; a tab that
+        // cannot say it is idle counts as busy — src/services/otherTabs.ts).
+        importScripts: ['sw-window-count.js'],
         // EVERY JS and CSS file of the build is precached (W9b, superseding
         // D-22's "load on demand" for code chunks): app code, every level's
         // curriculum / exercises / templates, VexFlow, and every translated-

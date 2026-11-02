@@ -243,9 +243,9 @@ async function raiseToastStack(page: Page): Promise<boolean> {
       needRefresh: true,
       offlineReady: true,
       incoming: { critical: false, notes: {
-        en: 'Updates now install themselves when you open the app; a Drill session or a Sprint carries on where you left off.',
-        pt: 'As atualizações passam a instalar-se sozinhas quando abres a app; uma sessão de Treino ou um Sprint continua onde ficaste.',
-        es: 'Las actualizaciones ahora se instalan solas al abrir la app; una sesión de Práctica o un Sprint sigue donde lo dejaste.',
+        en: 'Updates now install themselves when you open the app, never mid-session, and a Drill session or a Sprint picks up where you left off.',
+        pt: 'As atualizações passam a instalar-se sozinhas quando abres a app, nunca a meio de uma sessão, e um Treino ou um Sprint continua onde ficaste.',
+        es: 'Las actualizaciones ahora se instalan solas al abrir la app, nunca a mitad de una sesión, y una Práctica o un Sprint sigue donde lo dejaste.',
       } },
     });
     const e = new Event('beforeinstallprompt');

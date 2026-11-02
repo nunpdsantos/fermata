@@ -34,6 +34,9 @@ const V2_DRILL_SAVE = readFileSync(new URL('../src/state/__tests__/fixtures/dril
 let proxy: DeployProxy;
 
 test.beforeEach(async ({ page, baseURL }) => {
+  // Worker installs, deploys and reloads: generous under a loaded machine
+  // (one run at load average ~25 took 30 s per test; unloaded: 4–16 s).
+  test.setTimeout(90_000);
   const manifest = await page.request.get('/manifest.webmanifest');
   test.skip(!(manifest.headers()['content-type'] ?? '').includes('json'), 'No service worker on the dev server (devOptions disabled)');
   proxy = await startDeployProxy(baseURL!);
@@ -119,6 +122,37 @@ test('a waiting update applies silently on a fresh start with nothing in progres
   await page.getByRole('button', { name: 'More', exact: true }).click();
   await page.getByRole('menuitem', { name: 'Settings' }).click();
   await expect(page.getByRole('dialog', { name: 'Settings' })).toContainText(/build \d{4}-\d{2}-\d{2} · works offline/);
+});
+
+test('silence counts as busy: another tab that cannot answer (as on an older version) keeps a launch from applying silently', async ({ page, context }) => {
+  await firstVisit(page);
+  await interact(page);
+  await deployAndFind(page);
+
+  // A second tab of the app that cannot take part in the "busy?" exchange —
+  // like a tab still running a version from before W9b.
+  const silent = await context.newPage();
+  await silent.addInitScript(() => {
+    (window as unknown as { BroadcastChannel?: unknown }).BroadcastChannel = undefined;
+  });
+  await silent.goto(`${proxy.origin}/`);
+  await expect(silent.locator('#root')).not.toBeEmpty();
+  await expect(updateToast(silent)).toBeVisible({ timeout: 10_000 }); // it cannot ask either: it asks the learner
+
+  // A cold launch in the first tab: the worker counts 2 windows, only 1 can answer.
+  const before = await loads(page);
+  await coldLaunch(page);
+  await expect(updateToast(page)).toBeVisible({ timeout: 10_000 });
+  await page.waitForTimeout(3000);
+  expect(await loads(page)).toBe(before + 1); // no reload behind either tab's back
+  expect((await workerState(page)).waiting).toBe('installed');
+
+  // That tab closes; the next launch is alone again and goes in silently.
+  await silent.close();
+  await coldLaunch(page);
+  await expect.poll(() => loads(page), { timeout: 20_000 }).toBe(before + 3);
+  await expect.poll(() => workerState(page), { timeout: 15_000 }).toEqual({ controlled: true, waiting: null, active: 'activated' });
+  await expect(page.getByRole('alert').filter({ hasText: 'Updated to the latest version' })).toBeVisible();
 });
 
 // ── 2. Never silently during a Drill session or a Sprint ──────────────────

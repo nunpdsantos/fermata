@@ -6,7 +6,7 @@ import { APP_RELEASE } from '../buildInfo';
 import type { ReleaseNoteText } from '../release/releaseNotes';
 import { hasWorkInProgress } from '../services/workInProgress';
 import { isFreshStart, startFreshStartTracking } from '../services/freshStart';
-import { listenForBusyQuestions, otherTabsBusy } from '../services/otherTabs';
+import { countAppWindows, listenForBusyQuestions, otherTabsBusy } from '../services/otherTabs';
 import {
   clearAutoUpdateMark,
   fetchIncomingVersion,
@@ -222,9 +222,21 @@ function safeMomentHere(): boolean {
   return (fresh || away) && !hasWorkInProgress();
 }
 
+/** This page's registration — the plugin may report a waiting worker before it hands the registration over. */
+async function currentRegistration(): Promise<ServiceWorkerRegistration | undefined> {
+  if (registration) return registration;
+  try {
+    return await navigator.serviceWorker?.getRegistration?.();
+  } catch {
+    return undefined;
+  }
+}
+
 async function decide(): Promise<boolean> {
   if (!safeMomentHere()) return false;
-  if (await otherTabsBusy()) return false;
+  // Every other open window must answer "idle"; one that cannot (an older
+  // version) or does not counts as busy (services/otherTabs.ts).
+  if (await otherTabsBusy(await countAppWindows(await currentRegistration()))) return false;
   // Asking the other tabs took a moment: the learner may have started since.
   if (!safeMomentHere()) return false;
   applySilently();

@@ -16,7 +16,8 @@
  *  - audio samples stay OUT of the precache, on their runtime routes;
  *  - dist/version.json (the build's release + What's-new note, W9b) exists, is
  *    well-formed and is NOT precached (the network copy describes the
- *    waiting version).
+ *    waiting version);
+ *  - the worker imports the window-count add-on (sw-window-count.js, W9b).
  *
  * Usage: node scripts/check-sw-coverage.mjs [distDir=dist]
  * Exit 0 = all good; 1 = problems (listed); 2 = no build / parser out of date.
@@ -133,7 +134,11 @@ if (!fs.existsSync(versionPath)) {
   }
 }
 if (precached.has('version.json')) otherProblems.push('version.json is precached — it must come from the network');
-console.log(`check-sw-coverage: samples + version.json — ${otherProblems.length} problem(s)`);
+
+// The window-count add-on (W9b): imported by the worker, shipped at the root.
+if (!/importScripts\("sw-window-count\.js"\)/.test(sw)) otherProblems.push('sw.js does not importScripts("sw-window-count.js") (vite.config.ts workbox.importScripts)');
+if (!fs.existsSync(path.join(dist, 'sw-window-count.js'))) otherProblems.push('dist/sw-window-count.js is missing (public/)');
+console.log(`check-sw-coverage: samples, version.json, window-count add-on — ${otherProblems.length} problem(s)`);
 for (const p of otherProblems) console.log(`  PROBLEM ${p}`);
 
 process.exit(notPrecached.length || missingDeps.length || overlayProblems.length || otherProblems.length ? 1 : 0);

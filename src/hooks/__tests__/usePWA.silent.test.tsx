@@ -30,8 +30,31 @@ function versionJson(over: Partial<{ release: number; criticalSince: number; cri
   return { build: 'abc1234def56', date: '2026-11-02', release: 1, critical: false, criticalSince: 0, notes: NOTES, ...over };
 }
 
-let swContainer: EventTarget & { controller: unknown };
+let swContainer: EventTarget & { controller: unknown; getRegistration: () => Promise<unknown> };
 let versionResponse: unknown = null;
+/**
+ * How many app windows the waiting worker reports (public/sw-window-count.js);
+ * null = the worker never answers.
+ */
+let openWindows: number | null = 1;
+const waitingWorker = {
+  postMessage(msg: { type: string; id: string }) {
+    if (msg.type !== 'FERMATA_COUNT_WINDOWS' || openWindows === null) return;
+    const windows = openWindows;
+    setTimeout(() => swContainer.dispatchEvent(new MessageEvent('message', { data: { type: 'FERMATA_WINDOW_COUNT', id: msg.id, windows } })), 0);
+  },
+};
+
+/** Another open tab of the app, on this version: answers "busy?" over the channel. */
+function otherTab(busy: boolean, tab = 'tab-2') {
+  (globalThis as { BroadcastChannel?: unknown }).BroadcastChannel = FakeBroadcastChannel;
+  const ch = new FakeBroadcastChannel('fermata-work-in-progress');
+  ch.addEventListener('message', (e) => {
+    const msg = e.data as { type: string; id: string };
+    if (msg.type === 'busy?') ch.postMessage({ type: 'busy', id: msg.id, tab, busy });
+  });
+  return ch;
+}
 
 async function freshApp() {
   vi.resetModules();
@@ -63,7 +86,11 @@ beforeEach(() => {
   sessionStorage.clear();
   resetFakeBroadcastChannels();
   setVisibility('visible');
-  swContainer = Object.assign(new EventTarget(), { controller: {} });
+  openWindows = 1;
+  swContainer = Object.assign(new EventTarget(), {
+    controller: {},
+    getRegistration: async () => ({ waiting: waitingWorker, active: null }),
+  });
   Object.defineProperty(navigator, 'serviceWorker', { configurable: true, value: swContainer });
   Object.defineProperty(navigator, 'onLine', { configurable: true, get: () => true });
   versionResponse = null;
@@ -147,13 +174,8 @@ describe('work in progress: NEVER silently — it asks', () => {
   });
 
   it('another open tab with work in progress blocks it (activating reloads every tab)', async () => {
-    (globalThis as { BroadcastChannel?: unknown }).BroadcastChannel = FakeBroadcastChannel;
-    // The other tab: answers "busy?" with busy = true.
-    const otherTab = new FakeBroadcastChannel('fermata-work-in-progress');
-    otherTab.addEventListener('message', (e) => {
-      const msg = e.data as { type: string; id: string };
-      if (msg.type === 'busy?') otherTab.postMessage({ type: 'busy', id: msg.id, busy: true });
-    });
+    openWindows = 2;
+    otherTab(true);
     const { stub, PWAPrompts } = await freshApp();
     render(<PWAPrompts />);
     act(() => stub.lastOptions!.onNeedRefresh!());
@@ -162,29 +184,81 @@ describe('work in progress: NEVER silently — it asks', () => {
     expect(screen.getByText(/new version/i)).toBeTruthy();
   });
 
-  it('other tabs idle (or silent for 300 ms) → it applies', async () => {
-    (globalThis as { BroadcastChannel?: unknown }).BroadcastChannel = FakeBroadcastChannel;
-    const otherTab = new FakeBroadcastChannel('fermata-work-in-progress');
-    otherTab.addEventListener('message', (e) => {
-      const msg = e.data as { type: string; id: string };
-      if (msg.type === 'busy?') otherTab.postMessage({ type: 'busy', id: msg.id, busy: false });
-    });
+  it('every other tab answers "idle" → it applies at once (no need to wait out the 300 ms)', async () => {
+    openWindows = 3;
+    const tab2 = otherTab(false, 'tab-2');
+    otherTab(false, 'tab-3');
     const { stub, PWAPrompts, wip } = await freshApp();
     render(<PWAPrompts />);
     act(() => stub.lastOptions!.onNeedRefresh!());
     await settle(10);
-    expect(stub.updateCalls).toEqual([]); // still listening for a "busy"
-    await settle(300);
     expect(stub.updateCalls).toEqual([true]);
     // …and this tab answers others with its own state.
     let answer: unknown = null;
-    otherTab.addEventListener('message', (e) => {
+    tab2.addEventListener('message', (e) => {
       if ((e.data as { type: string }).type === 'busy') answer = e.data;
     });
     wip.registerWorkInProgress('drill', () => true);
-    otherTab.postMessage({ type: 'busy?', id: 'q1' });
+    tab2.postMessage({ type: 'busy?', id: 'q1' });
     await settle(10);
-    expect(answer).toEqual({ type: 'busy', id: 'q1', busy: true });
+    expect(answer).toEqual({ type: 'busy', id: 'q1', tab: expect.any(String), busy: true });
+  });
+
+  it('SILENCE COUNTS AS BUSY: one other window that never answers (an older version) → the prompt', async () => {
+    openWindows = 2; // the worker sees two windows…
+    (globalThis as { BroadcastChannel?: unknown }).BroadcastChannel = FakeBroadcastChannel; // …but nobody answers
+    const { stub, PWAPrompts, pwa } = await freshApp();
+    render(<PWAPrompts />);
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    await settle(1000);
+    expect(stub.updateCalls).toEqual([]);
+    expect(screen.getByText(/new version/i)).toBeTruthy();
+    expect(pwa.usePwaUpdateStore.getState().needRefresh).toBe(true);
+  });
+
+  it('two other windows, only one answers "idle" → the prompt', async () => {
+    openWindows = 3;
+    otherTab(false, 'tab-2');
+    const { stub, PWAPrompts } = await freshApp();
+    render(<PWAPrompts />);
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    await settle(1000);
+    expect(stub.updateCalls).toEqual([]);
+    expect(screen.getByText(/new version/i)).toBeTruthy();
+  });
+
+  it('the same tab answering twice still counts once', async () => {
+    openWindows = 3;
+    const twice = otherTab(false, 'tab-2');
+    twice.addEventListener('message', (e) => {
+      const msg = e.data as { type: string; id: string };
+      if (msg.type === 'busy?') twice.postMessage({ type: 'busy', id: msg.id, tab: 'tab-2', busy: false });
+    });
+    const { stub, PWAPrompts } = await freshApp();
+    render(<PWAPrompts />);
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    await settle(1000);
+    expect(stub.updateCalls).toEqual([]);
+  });
+
+  it('other windows but no way to ask them (no BroadcastChannel) → the prompt', async () => {
+    openWindows = 2;
+    const { stub, PWAPrompts } = await freshApp();
+    render(<PWAPrompts />);
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    await settle(1000);
+    expect(stub.updateCalls).toEqual([]);
+    expect(screen.getByText(/new version/i)).toBeTruthy();
+  });
+
+  it('no worker can count the windows → never silently: the prompt', async () => {
+    openWindows = null;
+    const { stub, PWAPrompts } = await freshApp();
+    render(<PWAPrompts />);
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    await settle(2000);
+    expect(stub.updateCalls).toEqual([]);
+    expect(screen.getByText(/new version/i)).toBeTruthy();
   });
 });
 
