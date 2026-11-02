@@ -1,4 +1,4 @@
-import { useLayoutEffect, type RefObject } from 'react';
+import { useLayoutEffect, useSyncExternalStore, type RefObject } from 'react';
 
 /**
  * Where toasts may go (W9-22, W11-A review round 4).
@@ -20,6 +20,11 @@ let frame = 0;
 
 const GAP = 8;
 
+// The room, also for React (W9b: the update toast shows its "What's new"
+// line only where it fits — useToastRoom).
+let lastRoom = Number.POSITIVE_INFINITY;
+const roomListeners = new Set<() => void>();
+
 export function measureToastRoom(): void {
   if (typeof document === 'undefined') return;
   const root = document.documentElement;
@@ -30,8 +35,26 @@ export function measureToastRoom(): void {
     const r = el.getBoundingClientRect();
     if (r.height > 0 && r.top < limit) limit = r.top;
   }
+  const room = Math.max(0, Math.floor(limit - GAP - top));
   root.style.setProperty('--toast-top', `${Math.round(top)}px`);
-  root.style.setProperty('--toast-room', `${Math.max(0, Math.floor(limit - GAP - top))}px`);
+  root.style.setProperty('--toast-room', `${room}px`);
+  if (room !== lastRoom) {
+    lastRoom = room;
+    for (const listener of roomListeners) listener();
+  }
+}
+
+function subscribeRoom(listener: () => void): () => void {
+  roomListeners.add(listener);
+  return () => roomListeners.delete(listener);
+}
+
+/**
+ * The height (px) toasts may take before an avoided element, as last
+ * measured; Infinity until the first measurement (nothing to avoid yet).
+ */
+export function useToastRoom(): number {
+  return useSyncExternalStore(subscribeRoom, () => lastRoom, () => lastRoom);
 }
 
 function schedule(): void {
@@ -85,4 +108,5 @@ export function resetToastLayoutForTests(): void {
   avoided.clear();
   observer?.disconnect();
   observer = null;
+  lastRoom = Number.POSITIVE_INFINITY;
 }

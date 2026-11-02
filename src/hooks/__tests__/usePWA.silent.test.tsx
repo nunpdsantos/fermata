@@ -371,6 +371,19 @@ describe('What\'s new: the waiting version\'s note on the prompt, in the learner
     expect(screen.getByRole('alert').textContent).toContain('Novedades: Escalas más rápidas en Explorar.');
   });
 
+  it('no room for it (a phone\'s instrument at Full): the prompt stays one line; the note comes back with the room', async () => {
+    await promptWithNote();
+    const layout = await import('../../components/layout/toastLayout');
+    const tall = window.innerHeight;
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 120 }); // room = 120 - 16 px
+    act(() => layout.measureToastRoom());
+    expect(screen.getByRole('alert').textContent).toMatch(/new version/i);
+    expect(screen.getByRole('alert').textContent).not.toMatch(/what.s new/i);
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: tall });
+    act(() => layout.measureToastRoom());
+    expect(screen.getByRole('alert').textContent).toContain('What’s new: Faster scales in Explore.');
+  });
+
   it('no newer release on the server (same release as this build) → no note; offline → no note', async () => {
     versionResponse = versionJson({ release: 0 }); // tests run as release 0 (no build define)
     const { stub, PWAPrompts } = await freshApp();

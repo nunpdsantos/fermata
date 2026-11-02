@@ -2,6 +2,16 @@ import { useTranslation } from 'react-i18next';
 import { usePWA } from '../../hooks/usePWA.ts';
 import { noteFor } from '../../services/appVersion.ts';
 import { Button, IconButton } from '../ui/Button';
+import { useToastRoom } from './toastLayout.ts';
+
+/**
+ * The "What's new" line makes a toast two to five lines tall; it shows only
+ * where the toast region has room for that (W9b). Over a phone's instrument
+ * at Full — or a phone held sideways — the region has room for one plain
+ * toast (W11-A) and a taller card would cover the instrument; there the
+ * prompt stays one line, and the note shows once the instrument is lowered.
+ */
+export const NOTE_MIN_ROOM_PX = 160;
 
 export function PWAPrompts() {
   const { t, i18n } = useTranslation();
@@ -12,8 +22,9 @@ export function PWAPrompts() {
   // "Later" hides the update toast; the "⋯" menu keeps "Update ready" until the reload.
   const showUpdate = needRefresh && !updateDeferred;
   // One line about the new version, in the learner's language (W9b, version.json).
+  const roomForNote = useToastRoom() >= NOTE_MIN_ROOM_PX;
   const whatsNew = (notes: Parameters<typeof noteFor>[0] | null | undefined) =>
-    notes ? t('pwa.whatsNew', { note: noteFor(notes, i18n.language) }) : undefined;
+    notes && roomForNote ? t('pwa.whatsNew', { note: noteFor(notes, i18n.language) }) : undefined;
 
   if (!showUpdate && !updated && !offlineReady && !canInstall) return null;
 
