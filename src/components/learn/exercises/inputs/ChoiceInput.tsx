@@ -89,7 +89,7 @@ export function ChoiceInput({ options, selected, tried, final, onSelect }: Choic
                   {t('exercise.melodyLetter', { letter: opt.label })}
                 </span>
                 <Suspense fallback={<StaffNotationSkeleton height={84} />}>
-                  <StaffNotation notes={opt.melody} height={84} duration="q" />
+                  <StaffNotation notes={opt.melody} clef="treble" height={84} duration="q" />
                 </Suspense>
               </span>
             ) : (

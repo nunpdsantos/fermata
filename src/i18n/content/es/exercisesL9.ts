@@ -342,6 +342,26 @@ const overlay: ExerciseLevelOverlay = {
     ],
     hint: 'Oír grados de la escala implica percibir cada nota en relación con la tónica. Cantar desde «do» hasta la nota objetivo es un método fiable.',
   },
+  l9u32m1e5: {
+    prompt: 'Escucha la melodía y elige la que has oído.',
+    hint: 'Sigue primero el contorno: ¿la línea vuelve al punto de partida o sigue subiendo?',
+  },
+  l9u32m1e6: {
+    prompt: 'Escucha la melodía y elige la que has oído.',
+    hint: 'Sube por grado conjunto y después baja a saltos por las notas del acorde de tónica hasta acabar en la tónica.',
+  },
+  l9u32m1e7: {
+    prompt: 'Escucha la melodía y elige la que has oído.',
+    hint: '¿Grados conjuntos o saltos? Una melodía que dibuja el acorde de tónica se mueve por terceras y acaba donde empezó.',
+  },
+  l9u32m1e8: {
+    prompt: 'Escucha la melodía y elige la que has oído.',
+    hint: 'Escucha el final: la última nota es la tónica, a la que se llega desde la nota un semitono por debajo.',
+  },
+  l9u32m1e9: {
+    prompt: 'Escucha la melodía y elige la que has oído.',
+    hint: 'Baja de la 5.ª a la tónica, pero no escala abajo de seguido: escucha los saltos.',
+  },
 
   // ---- l9u32m2: Dictado Melódico Cromático ----
 
@@ -364,6 +384,22 @@ const overlay: ExerciseLevelOverlay = {
       'Una nota prolongada del acorde anterior al siguiente, a través de la barra de compás',
     ],
     hint: 'Una nota cromática de paso es una nota no diatónica que enlaza dos notas diatónicas separadas por un tono, dividiendo ese tono en dos semitonos.',
+  },
+  l9u32m2e4: {
+    prompt: 'Escucha la melodía y elige la que has oído.',
+    hint: 'Una nota cromática de paso rellena un tono: escucha la nota encajada entre las dos primeras notas de la escala.',
+  },
+  l9u32m2e5: {
+    prompt: 'Escucha la melodía y elige la que has oído.',
+    hint: 'Una nota sale justo fuera de la tonalidad y vuelve enseguida: una bordadura cromática.',
+  },
+  l9u32m2e6: {
+    prompt: 'Escucha la melodía y elige la que has oído.',
+    hint: 'Escucha la nota que atrae hacia G por semitono ascendente: una sensible secundaria (V/V).',
+  },
+  l9u32m2e7: {
+    prompt: 'Escucha la melodía y elige la que has oído.',
+    hint: 'Un sostenido conduce por semitono ascendente a la nota siguiente. ¿Hacia dónde va la línea después?',
   },
 
   // ---- l9u32m3: Dictado Armónico ----

@@ -552,6 +552,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'How is 5/4 time typically grouped?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '5/4', notes: '>q q q >q q' },
         choices: [
           { label: 'As 3+2 or 2+3 — an asymmetric grouping of quarter-note beats', correct: true },
           { label: 'As 5 equal quarter-note beats, all felt as equally strong, with no internal grouping', correct: false },
@@ -567,6 +568,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'How does 7/8 time work as an additive meter?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '7/8', notes: '>8 8 >8 8 >8 8 8' },
         choices: [
           { label: 'Unequal groups of eighths, e.g. 2+2+3', correct: true },
           { label: 'It has 7 equal beats like a standard simple meter', correct: false },
@@ -582,6 +584,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'What does the time signature "cut time" (alla breve, C with a vertical line) mean?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '2/2', notes: '>h h | >h h' },
         choices: [
           { label: '2/2 time — two half-note beats per measure, felt in two rather than four', correct: true },
           { label: '4/4 time played at double speed', correct: false },

@@ -224,19 +224,19 @@ const curriculumL1: CurriculumLevelOverlay = {
           title: 'A Hierarquia de Durações',
           explanation:
             'A música organiza o tempo através de uma hierarquia de figuras rítmicas. A semibreve é a mais longa. A mínima dura metade. A semínima é metade disso — e assim por diante até às colcheias e semicolcheias. Cada nível divide por dois: 1 semibreve = 2 mínimas = 4 semínimas = 8 colcheias = 16 semicolcheias. Este sistema permite aos músicos escrever qualquer ritmo com precisão.',
-          tryThisLabel: 'Ouve uma pulsação regular sobre a escala',
+          tryThisLabel: 'Ouve um compasso de cada: semibreves, mínimas, semínimas e colcheias',
         },
         {
           title: 'Pausas',
           explanation:
             'Cada figura rítmica tem uma pausa correspondente — um símbolo para silêncio medido. Uma pausa de semínima dura tanto como uma semínima. Uma pausa de mínima dura tanto como uma mínima. As pausas não são "nada" — são silêncios ativos que moldam as frases tanto como as próprias notas. Os grandes músicos prestam tanta atenção ao que não tocam como ao que tocam.',
-          tryThisLabel: 'Toca um acorde — depois imagina o silêncio a preencher o mesmo espaço',
+          tryThisLabel: 'Ouve notas e pausas a partilhar os tempos: semínima, pausa de semínima; mínima, pausa de mínima',
         },
         {
           title: 'Pontos de Aumentação e Ligaduras',
           explanation:
             'Um ponto depois de uma nota aumenta a sua duração em metade — uma mínima com ponto dura três tempos em vez de dois (quando a semínima é a unidade de tempo). Uma ligadura de prolongamento une duas notas da mesma altura num som contínuo — uma mínima ligada a uma semínima dura três tempos no total. Pontos e ligaduras permitem criar durações que não encaixam na hierarquia básica.',
-          tryThisLabel: 'Ouve a escala a um tempo regular',
+          tryThisLabel: 'Ouve uma mínima com ponto e depois uma mínima ligada a uma semínima: ambas duram três tempos',
         },
       ],
       tasks: [
@@ -265,13 +265,13 @@ const curriculumL1: CurriculumLevelOverlay = {
           title: 'Pulsação, Metro e Compassos',
           explanation:
             'A música tem uma pulsação regular — o tempo em que bates o pé. O metro organiza esses tempos em grupos recorrentes de 2, 3 ou 4, com o primeiro tempo de cada grupo a sentir-se mais forte. Um compasso é um grupo completo, separado por barras de compasso. A indicação de compasso no início diz-te o agrupamento: 4/4 significa quatro tempos de semínima por compasso. 3/4 significa três. 2/4 significa dois.',
-          tryThisLabel: 'Acompanha em compasso 4/4',
+          tryThisLabel: 'Ouve 4/4: quatro tempos por compasso, o primeiro acentuado',
         },
         {
           title: 'Compassos Simples',
           explanation:
             'No metro simples, cada tempo divide-se naturalmente em duas partes iguais. 4/4 é a indicação de compasso mais comum — quatro tempos de semínima por compasso, com o tempo 1 mais forte e o tempo 3 com um acento secundário. 3/4 dá à música um carácter de valsa — UM-dois-três, UM-dois-três. 2/4 cria um carácter de marcha — UM-dois, UM-dois. O número de cima indica os tempos por compasso; o número de baixo indica qual a figura que vale um tempo.',
-          tryThisLabel: 'Imagina contar 1-2-3-4 sobre estes acordes',
+          tryThisLabel: 'Ouve 3/4: UM-dois-três, UM-dois-três',
         },
       ],
       tasks: [

@@ -301,13 +301,13 @@ const curriculumL2: CurriculumLevelOverlay = {
           title: 'Simple vs. Compuesto',
           explanation:
             'En el compás simple, cada tiempo se divide naturalmente en dos partes iguales (una negra se divide en dos corcheas). En el compás compuesto, cada tiempo se divide en tres (una negra con puntillo se divide en tres corcheas). El número de arriba en las indicaciones compuestas es 6, 9 o 12 — divide entre 3 para encontrar el número de tiempos: 6/8 tiene 2 tiempos, 9/8 tiene 3, 12/8 tiene 4.',
-          tryThisLabel: 'Siente un pulso ondulante — UN-y-a DOS-y-a',
+          tryThisLabel: 'Escucha 6/8: dos tiempos grandes, cada uno dividido en tres',
         },
         {
           title: '3/4 vs. 6/8',
           explanation:
             '3/4 tiene tres tiempos, cada uno dividido en dos: UN-y DOS-y TRES-y. 6/8 tiene dos tiempos, cada uno dividido en tres: UN-y-a DOS-y-a. El mismo número total de corcheas por compás (seis), pero agrupamiento diferente. 3/4 suena como un vals; 6/8 suena como una jiga. La distinción se basa en la sensación, no en las matemáticas.',
-          tryThisLabel: 'Prueba contar en grupos de 3 vs. grupos de 2',
+          tryThisLabel: 'Escucha 3/4: las mismas seis corcheas, agrupadas de dos en dos; compáralo con 6/8',
         },
       ],
       tasks: [
@@ -336,13 +336,13 @@ const curriculumL2: CurriculumLevelOverlay = {
           title: 'Síncopa',
           explanation:
             'La síncopa coloca acentos donde el oído no los espera — en tiempos débiles o entre tiempos. En lugar de UN-dos-TRES-cuatro, un ritmo sincopado puede acentuar el «y» del tiempo 2: un-dos-Y-tres-cuatro. Este desplazamiento crea tensión rítmica y energía. La síncopa es la fuerza motriz del jazz, funk, música latina y prácticamente toda la música popular. Sin ella, el ritmo es predecible; con ella, el ritmo cobra vida.',
-          tryThisLabel: 'Toca un acorde — ahora imagina tocarlo en el «y» del 2',
+          tryThisLabel: 'Escucha el acento caer entre los tiempos',
         },
         {
           title: 'Tresillos y Dosillos',
           explanation:
             'Un tresillo divide un tiempo que normalmente tiene dos subdivisiones en tres partes iguales. En 4/4, un tresillo de corcheas encaja tres notas en el espacio de dos — crea una breve sensación compuesta dentro del compás simple. Lo inverso también existe: un dosillo divide un tiempo compuesto en dos en lugar de tres. Estas divisiones prestadas añaden variedad rítmica y efectos de ritmo cruzado.',
-          tryThisLabel: 'Escucha un acorde — imagina tres pulsaciones en un solo tiempo',
+          tryThisLabel: 'Escucha dos corcheas por tiempo y después tres (un tresillo)',
         },
       ],
       tasks: [

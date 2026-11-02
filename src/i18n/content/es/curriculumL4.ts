@@ -573,19 +573,19 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'Compases Asimétricos',
           explanation:
             'Los compases asimétricos tienen conteos de tiempos que no se dividen igualmente en grupos iguales. 5/4 o 5/8 se agrupa como 2+3 o 3+2 — la agrupación determina enteramente el carácter rítmico. 7/4 o 7/8 se agrupa como 2+2+3, 2+3+2 o 3+2+2. La agrupación desigual crea un groove asimétrico que es característico de la música folclórica balcánica, el rock progresivo y mucha música de concierto del siglo XX.',
-          tryThisLabel: 'Cuenta 7 notas de la escala en grupos de 2+2+3',
+          tryThisLabel: 'Escucha 7/8 agrupado en 2+2+3',
         },
         {
           title: 'Compases Aditivos',
           explanation:
             'Los compases aditivos se construyen combinando grupos de 2 y 3 tiempos. 5 = 2+3 o 3+2. 7 = 2+2+3 o 2+3+2 o 3+2+2. 8 = 3+3+2, habitual en la música balcánica y algo de rock. 11 = 2+2+3+2+2, empleado por Dave Brubeck y otros. El patrón de agrupación interno es lo que da a cada compás su carácter distintivo — el mismo número total de tiempos con agrupaciones diferentes crea caracteres rítmicos enteramente distintos.',
-          tryThisLabel: 'Cuenta 5 notas en grupos de 3+2',
+          tryThisLabel: 'Escucha 5/4 agrupado en 3+2',
         },
         {
           title: 'Compases Mixtos y Tiempo Cortado',
           explanation:
             'El compás mixto cambia la indicación de compás de un compás a otro: un compás de 4/4, el siguiente de 3/4, luego 5/4. Esto crea una superficie rítmica impredecible y cambiante, habitual en bandas sonoras de cine y rock progresivo. El tiempo cortado (alla breve, 2/2) usa dos tiempos de blanca por compás — un compás de 2/2 tiene la misma duración total que un compás de 4/4, pero la unidad de tiempo es la blanca en lugar de la negra, por lo que la música se cuenta en 2 y gana una sensación más amplia y de movimiento más rápido, con mayor impulso métrico. El tiempo cortado es estándar en marchas y movimientos rápidos del periodo Clásico.',
-          tryThisLabel: 'Sigue en tiempo cortado: 2 tiempos por compás',
+          tryThisLabel: 'Escucha el compás de 2/2: dos tiempos de blanca por compás',
         },
       ],
       tasks: [

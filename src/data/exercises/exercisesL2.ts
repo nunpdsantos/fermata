@@ -320,6 +320,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'In 6/8 time, how are the beats organized?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '6/8', notes: '>8 8 8 >8 8 8 | >q. >q.' },
         choices: [
           { label: '2 dotted-quarter beats, each divided into 3 eighth notes', correct: true },
           { label: '6 equal beats of eighth notes', correct: false },
@@ -350,6 +351,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'How many main beats does 9/8 time have?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '9/8', notes: '>8 8 8 >8 8 8 >8 8 8' },
         choices: [
           { label: '3 dotted-quarter beats (each divided into 3 eighth notes)', correct: true },
           { label: '9 beats (each one eighth note long)', correct: false },
@@ -369,6 +371,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'What is syncopation?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '4/4', notes: '8 >q 8 q q | 8 >q 8 h' },
         choices: [
           { label: 'Placing accents on normally weak beats or off-beats', correct: true },
           { label: 'Playing every note at the same volume and length', correct: false },
@@ -384,6 +387,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'What are triplets?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '2/4', notes: '8 8 t8 t8 t8 | q q' },
         choices: [
           { label: '3 equal notes in the time normally taken by 2 of the same value', correct: true },
           { label: '3 equal notes in the time of 4 of the same value', correct: false },

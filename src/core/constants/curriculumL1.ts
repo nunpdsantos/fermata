@@ -174,21 +174,24 @@ const l1u2m1: CurriculumModule = {
       explanation:
         'Music organizes time through a hierarchy of note values. A whole note lasts the longest. A half note is half as long. A quarter note is half of that — and so on down to eighth and sixteenth notes. Each level divides by two: 1 whole = 2 halves = 4 quarters = 8 eighths = 16 sixteenths. This system lets musicians write any rhythm with precision.',
       tryThisQuery: 'C major scale',
-      tryThisLabel: 'Hear a steady pulse on the scale',
+      tryThisLabel: 'Hear one bar each of whole, half, quarter and eighth notes',
+      rhythm: { time: '4/4', notes: 'w | h h | q q q q | 8 8 8 8 8 8 8 8' },
     },
     {
       title: 'Rests',
       explanation:
         'Every note value has a corresponding rest — a symbol for measured silence. A quarter rest lasts as long as a quarter note. A half rest lasts as long as a half note. Rests are not "nothing" — they are active silences that shape phrases just as much as the notes themselves. Great musicians pay as much attention to where they do not play as to where they do.',
       tryThisQuery: 'C major chord',
-      tryThisLabel: 'Play a chord — then imagine silence filling the same space',
+      tryThisLabel: 'Hear notes and rests share the beat: quarter, quarter rest; half, half rest',
+      rhythm: { time: '4/4', notes: 'q qr q qr | h hr' },
     },
     {
       title: 'Dots and Ties',
       explanation:
         "A dot after a note increases its duration by half — a dotted half note lasts three beats instead of two (when the quarter note gets the beat). A tie connects two notes of the same pitch into one continuous sound — a half note tied to a quarter note lasts three beats total. Dots and ties let you create durations that don't fit neatly into the basic hierarchy.",
       tryThisQuery: 'G major scale',
-      tryThisLabel: 'Hear the scale at a steady tempo',
+      tryThisLabel: 'Hear a dotted half, then a half tied to a quarter: both last three beats',
+      rhythm: { time: '4/4', notes: 'h. q | h~ q q' },
     },
   ],
   tasks: [
@@ -215,14 +218,16 @@ const l1u2m2: CurriculumModule = {
       explanation:
         "Music has a steady pulse — the beat you tap your foot to. Meter organizes those beats into recurring groups of 2, 3, or 4, with the first beat of each group feeling stronger. A measure (or bar) is one complete group, separated by barlines. The time signature at the beginning tells you the grouping: 4/4 means four quarter-note beats per measure. 3/4 means three. 2/4 means two.",
       tryThisQuery: 'C major scale',
-      tryThisLabel: 'Tap along in 4/4 time',
+      tryThisLabel: 'Hear 4/4: four beats to a bar, the first one stressed',
+      rhythm: { time: '4/4', notes: '>q q q q | >q q q q' },
     },
     {
       title: 'Simple Time Signatures',
       explanation:
         "In simple meter, each beat divides naturally into two equal parts. 4/4 is the most common time signature — four quarter-note beats per measure, with beat 1 strongest and beat 3 having a secondary accent. 3/4 gives music a waltz feel — ONE-two-three, ONE-two-three. 2/4 creates a march-like feel — ONE-two, ONE-two. The top number is beats per measure; the bottom number is which note value gets one beat.",
       tryThisQuery: 'key of C',
-      tryThisLabel: 'Imagine counting 1-2-3-4 over these chords',
+      tryThisLabel: 'Hear 3/4: ONE-two-three, ONE-two-three',
+      rhythm: { time: '3/4', notes: '>q q q | >q q q | >h q | >h.' },
     },
   ],
   tasks: [

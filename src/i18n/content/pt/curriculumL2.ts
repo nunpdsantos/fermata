@@ -301,13 +301,13 @@ const curriculumL2: CurriculumLevelOverlay = {
           title: 'Simples vs. Composto',
           explanation:
             'No compasso simples, cada tempo divide-se naturalmente em duas partes iguais (uma semínima divide-se em duas colcheias). No compasso composto, cada tempo divide-se em três (uma semínima com ponto divide-se em três colcheias). O número de cima nas indicações compostas é 6, 9 ou 12 — divide por 3 para encontrar o número de tempos: 6/8 tem 2 tempos, 9/8 tem 3, 12/8 tem 4.',
-          tryThisLabel: 'Sente uma pulsação ondulante — UM-e-a DOIS-e-a',
+          tryThisLabel: 'Ouve 6/8: dois tempos grandes, cada um dividido em três',
         },
         {
           title: '3/4 vs. 6/8',
           explanation:
             '3/4 tem três tempos, cada um dividido em dois: UM-e DOIS-e TRÊS-e. 6/8 tem dois tempos, cada um dividido em três: UM-e-a DOIS-e-a. O mesmo número total de colcheias por compasso (seis), mas agrupamento diferente. 3/4 soa como uma valsa; 6/8 soa como uma jiga. A distinção é sobre a sensação, não sobre a matemática.',
-          tryThisLabel: 'Experimenta contar em grupos de 3 vs. grupos de 2',
+          tryThisLabel: 'Ouve 3/4: as mesmas seis colcheias, agrupadas aos pares; compara com 6/8',
         },
       ],
       tasks: [
@@ -336,13 +336,13 @@ const curriculumL2: CurriculumLevelOverlay = {
           title: 'Síncopa',
           explanation:
             'A síncopa coloca acentos onde o ouvido não os espera — em tempos fracos ou entre tempos. Em vez de UM-dois-TRES-quatro, um ritmo sincopado pode acentuar o "e" do tempo 2: um-dois-E-três-quatro. Este deslocamento cria tensão rítmica e energia. A síncopa é a força motriz do jazz, funk, música latina e praticamente toda a música popular. Sem ela, o ritmo é previsível; com ela, o ritmo ganha vida.',
-          tryThisLabel: 'Toca um acorde — agora imagina tocá-lo no "e" do 2',
+          tryThisLabel: 'Ouve o acento cair entre os tempos',
         },
         {
           title: 'Tercinas e Duinas',
           explanation:
             'Uma tercina divide um tempo que normalmente tem duas subdivisões em três partes iguais. Em 4/4, uma tercina de colcheias encaixa três notas no espaço de duas — cria uma breve sensação composta dentro do compasso simples. O inverso também existe: uma duina divide um tempo composto em dois em vez de três. Estas divisões emprestadas acrescentam variedade rítmica e efeitos de ritmo cruzado.',
-          tryThisLabel: 'Ouve um acorde — imagina três pulsações num só tempo',
+          tryThisLabel: 'Ouve duas colcheias por tempo e depois três (uma tercina)',
         },
       ],
       tasks: [

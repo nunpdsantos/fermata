@@ -573,19 +573,19 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'Compassos Assimétricos',
           explanation:
             'Compassos assimétricos têm contagens de tempos que não se dividem igualmente em grupos iguais. 5/4 ou 5/8 agrupa-se como 2+3 ou 3+2 — o agrupamento determina inteiramente o carácter rítmico. 7/4 ou 7/8 agrupa-se como 2+2+3, 2+3+2 ou 3+2+2. O agrupamento desigual cria um groove assimétrico que é característico da música folclórica balcânica, rock progressivo e muita música de concerto do século XX.',
-          tryThisLabel: 'Conta 7 notas da escala em grupos de 2+2+3',
+          tryThisLabel: 'Ouve 7/8 agrupado em 2+2+3',
         },
         {
           title: 'Compassos Aditivos',
           explanation:
             'Compassos aditivos são construídos combinando grupos de 2 e 3 tempos. 5 = 2+3 ou 3+2. 7 = 2+2+3 ou 2+3+2 ou 3+2+2. 8 = 3+3+2, comum na música balcânica e algum rock. 11 = 2+2+3+2+2, usado por Dave Brubeck e outros. O padrão de agrupamento interno é o que dá a cada compasso o seu carácter distintivo — o mesmo número total de tempos com agrupamentos diferentes cria caracteres rítmicos inteiramente distintos.',
-          tryThisLabel: 'Conta 5 notas em grupos de 3+2',
+          tryThisLabel: 'Ouve 5/4 agrupado em 3+2',
         },
         {
           title: 'Compassos Mistos e Tempo Cortado',
           explanation:
             'O compasso misto muda a indicação de compasso de compasso para compasso: um compasso de 4/4, o seguinte de 3/4, depois 5/4. Isto cria uma superfície rítmica imprevisível e mutável, comum em bandas sonoras de cinema e rock progressivo. O tempo cortado (alla breve, 2/2) usa dois tempos de mínima por compasso — um compasso de 2/2 tem a mesma duração total que um compasso de 4/4, mas a unidade de tempo é a mínima em vez da semínima, pelo que a música é contada em 2 e ganha uma sensação mais ampla e de movimento mais rápido, com maior impulso métrico. O tempo cortado é padrão em marchas e movimentos rápidos do período Clássico.',
-          tryThisLabel: 'Acompanha em tempo cortado: 2 tempos por compasso',
+          tryThisLabel: 'Ouve o compasso 2/2: dois tempos de mínima por compasso',
         },
       ],
       tasks: [

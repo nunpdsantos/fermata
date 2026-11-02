@@ -342,6 +342,26 @@ const overlay: ExerciseLevelOverlay = {
     ],
     hint: 'Ouvir graus da escala significa perceber cada nota em relação à tónica. Cantar desde "do" até à nota alvo é um método fiável.',
   },
+  l9u32m1e5: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Segue primeiro o contorno: a linha volta ao ponto de partida ou continua a subir?',
+  },
+  l9u32m1e6: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Sobe por grau conjunto e depois desce aos saltos pelas notas do acorde de tónica até acabar na tónica.',
+  },
+  l9u32m1e7: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Graus conjuntos ou saltos? Uma melodia que desenha o acorde de tónica move-se por terceiras e acaba onde começou.',
+  },
+  l9u32m1e8: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Ouve o final: a última nota é a tónica, alcançada a partir da nota meio-tom abaixo.',
+  },
+  l9u32m1e9: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Desce da 5.ª até à tónica, mas não pela escala abaixo de seguida: ouve os saltos.',
+  },
 
   // ---- l9u32m2: Ditado Melódico Cromático ----
 
@@ -364,6 +384,22 @@ const overlay: ExerciseLevelOverlay = {
       'Uma nota prolongada do acorde anterior para o seguinte, através da barra de compasso',
     ],
     hint: 'Uma nota cromática de passagem é uma nota não diatónica que liga duas notas diatónicas a um tom de distância, dividindo esse tom em dois meios-tons.',
+  },
+  l9u32m2e4: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Uma nota cromática de passagem preenche um tom: ouve a nota apertada entre as duas primeiras notas da escala.',
+  },
+  l9u32m2e5: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Uma nota sai mesmo à beira da tonalidade e volta logo: uma bordadura cromática.',
+  },
+  l9u32m2e6: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Ouve a nota que puxa para G por meio-tom ascendente: uma sensível secundária (V/V).',
+  },
+  l9u32m2e7: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Um sustenido conduz por meio-tom ascendente à nota seguinte. Para onde vai a linha a seguir?',
   },
 
   // ---- l9u32m3: Ditado Harmónico ----

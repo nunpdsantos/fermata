@@ -82,6 +82,11 @@ function deriveCorrect(cfg: ExerciseConfig): string | Set<number> | null {
         const correct = cfg.choices.find(c => c.correct);
         return correct?.label ?? null;
       }
+      // Melodic dictation (W4b): the answer is the played (correct) melody.
+      if (cfg.mode === 'melody' && cfg.melodyChoices) {
+        const correct = cfg.melodyChoices.find(c => c.correct);
+        return correct ? correct.notes.join(' ') : null;
+      }
       return null;
     }
     case 'scale_degree_id':
@@ -142,6 +147,21 @@ function deriveCorrect(cfg: ExerciseConfig): string | Set<number> | null {
             findings.push({
               level: lvl, moduleId, exerciseId: ex.id, type: ex.type,
               problem: `noteCount=${ex.config.noteCount} but chord has ${uniquePCs} unique PCs / ${formula.length} notes`,
+              prompt: ex.prompt.slice(0, 80),
+            });
+          }
+        }
+
+        // melody mode: exactly one played melody, every option different, every pitch written right
+        if (ex.config.type === 'ear_training' && ex.config.mode === 'melody') {
+          const opts = ex.config.melodyChoices ?? [];
+          const corr = opts.filter(c => c.correct).length;
+          const distinct = new Set(opts.map(c => c.notes.join(' '))).size;
+          const badPitch = opts.flatMap(c => c.notes).find(n => !/^[A-G](#|b)?\d$/.test(n));
+          if (corr !== 1 || distinct !== opts.length || opts.length < 3 || badPitch) {
+            findings.push({
+              level: lvl, moduleId, exerciseId: ex.id, type: ex.type,
+              problem: `melody options: ${corr} played, ${distinct}/${opts.length} distinct${badPitch ? `, bad pitch ${badPitch}` : ''}`,
               prompt: ex.prompt.slice(0, 80),
             });
           }

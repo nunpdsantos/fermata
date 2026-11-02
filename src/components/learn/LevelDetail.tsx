@@ -10,6 +10,7 @@ import { DifficultyBadge } from './DifficultyBadge';
 import { ProgressBar } from './ProgressBar';
 import { UnitCard } from './UnitCard';
 import { accentText } from '../../design/tokens/learnColors';
+import { UnlockLevelNotice } from './lesson/UnlockLevel';
 
 interface LevelDetailProps {
   level: CurriculumLevel;
@@ -104,6 +105,9 @@ export function LevelDetail({
           </span>
         </div>
       </m.div>
+
+      {/* Locked: "Unlock anyway" (D-10) */}
+      <UnlockLevelNotice level={level} progress={progress} />
 
       {/* Continue banner */}
       {nextUp && (

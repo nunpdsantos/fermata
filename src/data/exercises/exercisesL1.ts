@@ -267,6 +267,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'In 4/4 time, how many beats does a whole note last?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '4/4', notes: 'w' },
         choices: [
           { label: '4 beats', correct: true },
           { label: '2 beats', correct: false },
@@ -282,6 +283,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'How many beats does a half note receive in 4/4 time?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '4/4', notes: 'h h' },
         choices: [
           { label: '2 beats', correct: true },
           { label: '4 beats', correct: false },
@@ -297,6 +299,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'How many beats does a quarter note receive in 4/4 time?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '4/4', notes: 'q q q q' },
         choices: [
           { label: '1 beat', correct: true },
           { label: '2 beats', correct: false },
@@ -316,6 +319,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'What does the time signature 4/4 mean?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '4/4', notes: '>q q q q | >q q q q' },
         choices: [
           { label: '4 quarter-note beats per measure', correct: true },
           { label: '4 half-note beats per measure', correct: false },
@@ -331,6 +335,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'What does the time signature 3/4 tell you?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '3/4', notes: '>q q q | >q q q' },
         choices: [
           { label: '3 quarter-note beats per measure', correct: true },
           { label: '3 half-note beats per measure', correct: false },

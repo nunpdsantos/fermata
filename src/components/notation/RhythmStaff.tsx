@@ -15,7 +15,7 @@ import { parseRhythm, type RhythmToken } from '../../core/utils/rhythm';
 import { useRhythmDescription } from './rhythmDescription';
 import type { RhythmPattern } from '../../core/types/exercise';
 
-const HEIGHT = 96;
+const HEIGHT = 110;
 const VEX_DURATION: Record<RhythmToken['base'], string> = { w: 'w', h: 'h', q: 'q', '8': '8', '16': '16' };
 
 type VexFlow = typeof import('vexflow/bravura');
@@ -32,8 +32,10 @@ function draw(vf: VexFlow, container: HTMLDivElement, pattern: RhythmPattern, wi
   ctx.setStrokeStyle?.(textColor);
   ctx.setFillStyle?.(textColor);
 
-  // One line; notes sit on it (line 0 is the top line, F5 in treble terms).
-  const stave = new Stave(8, 6, width - 16, { numLines: 1 });
+  // A percussion staff (the neutral clef: no pitch), every value on the
+  // middle line, stems up — the usual way to write a rhythm alone.
+  const stave = new Stave(8, 10, width - 16);
+  stave.addClef('percussion');
   stave.addTimeSignature(pattern.time);
   stave.setContext(context).draw();
 
@@ -49,13 +51,14 @@ function draw(vf: VexFlow, container: HTMLDivElement, pattern: RhythmPattern, wi
     }
     for (const token of bar) {
       const note = new StaveNote({
-        keys: ['f/5'],
+        keys: ['b/4'],
         duration: `${VEX_DURATION[token.base]}${token.rest ? 'r' : ''}`,
         dots: token.dotted ? 1 : 0,
         stemDirection: 1,
+        clef: 'percussion',
       });
       if (token.dotted) Dot.buildAndAttach([note], { all: true });
-      if (token.accent && !token.rest) note.addModifier(new Articulation('a>').setPosition(3), 0);
+      if (token.accent && !token.rest) note.addModifier(new Articulation('a>').setPosition(4), 0);
       tickables.push(note);
       notes.push(note);
       if (token.triplet) {
@@ -73,7 +76,7 @@ function draw(vf: VexFlow, container: HTMLDivElement, pattern: RhythmPattern, wi
   const voice = new Voice({ numBeats: 4, beatValue: 4 }).setMode(Voice.Mode.SOFT);
   voice.addTickables(tickables);
   const beams = beamable.flatMap((group) =>
-    group.length ? Beam.generateBeams(group, { groups: Beam.getDefaultBeamGroups(pattern.time) }) : [],
+    group.length ? Beam.generateBeams(group, { groups: Beam.getDefaultBeamGroups(pattern.time), stemDirection: 1 }) : [],
   );
   const tuplets = triplets.map((group) => {
     beams.push(new Beam(group));
