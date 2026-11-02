@@ -44,6 +44,9 @@ test.beforeEach(async ({ page, baseURL }) => {
   // survives the reloads), so "silently" and "no reload" can be asserted.
   await page.addInitScript(() => {
     sessionStorage.setItem('e2e:loads', String(Number(sessionStorage.getItem('e2e:loads') ?? 0) + 1));
+    // "Time away": Date.now runs ahead by e2e:skew ms (see awayFor).
+    const realNow = Date.now.bind(Date);
+    Date.now = () => realNow() + Number(sessionStorage.getItem('e2e:skew') ?? 0);
     new MutationObserver(() => {
       const seen = JSON.parse(sessionStorage.getItem('e2e:alerts') ?? '[]') as string[];
       for (const el of Array.from(document.querySelectorAll('[role="alert"]'))) {
@@ -92,6 +95,17 @@ async function deployAndFind(page: Page, options: Parameters<DeployProxy['deploy
 
 /** The learner is using the app (a key press): no longer a fresh start. */
 const interact = (page: Page) => page.keyboard.press('Shift');
+
+/** The learner leaves the app for `ms` and comes back (visibility simulated; the clock skewed). */
+async function awayFor(page: Page, ms: number) {
+  await page.evaluate((away) => {
+    Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' });
+    document.dispatchEvent(new Event('visibilitychange'));
+    sessionStorage.setItem('e2e:skew', String(Number(sessionStorage.getItem('e2e:skew') ?? 0) + away));
+    Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'visible' });
+    document.dispatchEvent(new Event('visibilitychange'));
+  }, ms);
+}
 
 /** A cold launch: the app is opened again (a new page load in this tab). */
 async function coldLaunch(page: Page) {
@@ -153,6 +167,89 @@ test('silence counts as busy: another tab that cannot answer (as on an older ver
   await expect.poll(() => loads(page), { timeout: 20_000 }).toBe(before + 3);
   await expect.poll(() => workerState(page), { timeout: 15_000 }).toEqual({ controlled: true, waiting: null, active: 'activated' });
   await expect(page.getByRole('alert').filter({ hasText: 'Updated to the latest version' })).toBeVisible();
+});
+
+// ── 1b. Never silently inside Learn (review W9b-B1; interim source 'learn') ──
+
+async function openLesson(page: Page, title: string) {
+  await page.keyboard.press('Control+k');
+  const dialog = page.getByRole('dialog', { name: 'Quick search' });
+  await expect(dialog).toBeVisible();
+  await dialog.locator('input').fill(title);
+  await dialog.getByRole('button', { name: new RegExp(`^${title}`) }).first().click();
+  await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible({ timeout: 15_000 });
+}
+
+test('in a lesson, back after 31 min: the update asks — the learner stays in the lesson (B1)', async ({ page }) => {
+  await firstVisit(page);
+  await openLesson(page, 'The Staff and Clefs');
+  await deployAndFind(page);
+  await expect(updateToast(page)).toBeVisible();
+  const before = await loads(page);
+
+  await awayFor(page, 31 * 60_000);
+  await page.waitForTimeout(5000);
+  expect(await loads(page)).toBe(before); // was: a silent reload to the Learn overview
+  expect((await workerState(page)).waiting).toBe('installed');
+  await expect(page.getByRole('heading', { level: 1, name: 'The Staff and Clefs' })).toBeVisible();
+
+  // Control: in Explore, the same return goes in silently.
+  await page.getByRole('tab', { name: 'Explore' }).click();
+  await page.waitForTimeout(2000); // Explore settles before the learner leaves
+  await awayFor(page, 31 * 60_000);
+  await expect.poll(() => loads(page), { timeout: 20_000 }).toBe(before + 1);
+  await expect.poll(() => workerState(page), { timeout: 15_000 }).toEqual({ controlled: true, waiting: null, active: 'activated' });
+});
+
+test('a tab in a lesson is not reloaded by another tab\'s cold launch (B1); a takeover it did not ask for asks instead', async ({ page, context }) => {
+  await firstVisit(page);
+  await openLesson(page, 'The Staff and Clefs');
+  await deployAndFind(page);
+  const before = await loads(page);
+
+  const tab2 = await context.newPage();
+  await tab2.goto(`${proxy.origin}/`); // a cold launch, untouched
+  await expect(updateToast(tab2)).toBeVisible({ timeout: 10_000 }); // tab 1 said "busy": it asks
+  await page.waitForTimeout(3000);
+  expect(await loads(page)).toBe(before);
+  expect((await workerState(page)).waiting).toBe('installed');
+  await expect(page.getByRole('heading', { level: 1, name: 'The Staff and Clefs' })).toBeVisible();
+
+  // Tab 2's learner taps Reload: the update takes over. Tab 1 did not ask —
+  // it is not reloaded under its learner, it asks (review W9b-g).
+  await Promise.all([tab2.waitForEvent('load', { timeout: 20_000 }), updateToast(tab2).getByRole('button', { name: /^reload$/i }).click()]);
+  await expect(page.getByRole('alert').filter({ hasText: 'Reload to finish updating' })).toBeVisible({ timeout: 15_000 });
+  expect(await loads(page)).toBe(before);
+  await expect(page.getByRole('heading', { level: 1, name: 'The Staff and Clefs' })).toBeVisible();
+  await Promise.all([
+    page.waitForEvent('load', { timeout: 20_000 }),
+    page.getByRole('alert').filter({ hasText: 'Reload to finish updating' }).getByRole('button', { name: /^reload$/i }).click(),
+  ]);
+  expect(await loads(page)).toBe(before + 1);
+});
+
+// ── 1c. A late takeover never reloads under the learner (review W9b-g) ────
+
+test('a silent apply whose takeover comes late: the prompt after 4 s, then "Reload to finish updating" — no reload under the learner', async ({ page }) => {
+  await firstVisit(page);
+  await interact(page);
+  await deployAndFind(page, { lateSkipWaitingMs: 8000 }); // the new worker obeys SKIP_WAITING 8 s late
+  const before = await loads(page);
+
+  await coldLaunch(page); // fresh start: it tries the silent apply…
+  await expect(updateToast(page)).toBeVisible({ timeout: 10_000 }); // …gives up after 4 s and asks
+  await interact(page); // the learner is busy now
+  await expect(page.getByRole('alert').filter({ hasText: 'Reload to finish updating' })).toBeVisible({ timeout: 15_000 });
+  expect(await loads(page)).toBe(before + 1); // the late takeover did not reload the page
+  await expect(updateToast(page)).toHaveCount(0);
+  await expect.poll(() => workerState(page), { timeout: 10_000 }).toEqual({ controlled: true, waiting: null, active: 'activated' });
+
+  await Promise.all([
+    page.waitForEvent('load', { timeout: 20_000 }),
+    page.getByRole('alert').filter({ hasText: 'Reload to finish updating' }).getByRole('button', { name: /^reload$/i }).click(),
+  ]);
+  expect(await loads(page)).toBe(before + 2);
+  await expect(page.getByRole('alert').filter({ hasText: 'Reload to finish updating' })).toHaveCount(0);
 });
 
 // ── 2. Never silently during a Drill session or a Sprint ──────────────────

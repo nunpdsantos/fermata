@@ -301,6 +301,20 @@ describe('back after a long absence = a fresh start again', () => {
     expect(stub.updateCalls).toEqual([true]);
   });
 
+  it('a return that comes while the hide\'s decision is still in flight is decided too, not dropped', async () => {
+    const { stub, PWAPrompts, fresh } = await freshApp();
+    render(<PWAPrompts />);
+    fireEvent.pointerDown(window);
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    await settle();
+    // Hidden and shown again in one go: the hide's decision has not settled yet.
+    setVisibility('hidden');
+    vi.setSystemTime(Date.now() + fresh.LONG_ABSENCE_MS + 1000);
+    setVisibility('visible');
+    await settle();
+    expect(stub.updateCalls).toEqual([true]);
+  });
+
   it('a short absence (< 30 min) is not a fresh start', async () => {
     const { stub, PWAPrompts, fresh } = await freshApp();
     render(<PWAPrompts />);
@@ -591,5 +605,161 @@ describe('old code caches', () => {
     const { PWAPrompts } = await freshApp();
     render(<PWAPrompts />);
     expect(del).not.toHaveBeenCalled();
+  });
+});
+
+describe('review W9b-B1: Learn counts as work in progress (interim source "learn")', () => {
+  async function inLearnWithUpdateAsked() {
+    const app = await freshApp();
+    const { registerInterimLearnWorkInProgress } = await import('../../services/learnWorkInProgress');
+    const { useAppStore } = await import('../../state/store');
+    registerInterimLearnWorkInProgress();
+    act(() => useAppStore.setState({ view: 'learn' }));
+    render(<app.PWAPrompts />);
+    fireEvent.pointerDown(window); // reading a lesson
+    act(() => app.stub.lastOptions!.onNeedRefresh!());
+    await settle();
+    expect(screen.getByText(/new version/i)).toBeTruthy();
+    return { ...app, useAppStore };
+  }
+
+  it('in a lesson, back after 31 min untouched: NOT applied (was: silent reload to the Learn overview)', async () => {
+    const { stub, fresh, useAppStore } = await inLearnWithUpdateAsked();
+    setVisibility('hidden');
+    await settle(fresh.LONG_ABSENCE_MS + 60_000);
+    setVisibility('visible');
+    await settle(1000);
+    expect(stub.updateCalls).toEqual([]);
+    expect(screen.getByText(/new version/i)).toBeTruthy();
+    // Control: out of Learn (the learner taps Explore), the same return applies it.
+    fireEvent.pointerDown(window);
+    act(() => useAppStore.setState({ view: 'explore' }));
+    setVisibility('hidden');
+    await settle(fresh.LONG_ABSENCE_MS + 60_000);
+    setVisibility('visible');
+    await settle(1000);
+    expect(stub.updateCalls).toEqual([true]);
+  });
+
+  it('this tab in a lesson answers another tab\'s "busy?" with busy (so a cold launch there will not reload it)', async () => {
+    (globalThis as { BroadcastChannel?: unknown }).BroadcastChannel = FakeBroadcastChannel;
+    const app = await freshApp();
+    const { registerInterimLearnWorkInProgress } = await import('../../services/learnWorkInProgress');
+    const { useAppStore } = await import('../../state/store');
+    registerInterimLearnWorkInProgress();
+    act(() => useAppStore.setState({ view: 'learn' }));
+    render(<app.PWAPrompts />);
+    const tab2 = new FakeBroadcastChannel('fermata-work-in-progress');
+    const answers: unknown[] = [];
+    tab2.addEventListener('message', (e) => answers.push(e.data));
+    tab2.postMessage({ type: 'busy?', id: 'cold-launch' });
+    await settle(10);
+    expect(answers).toEqual([{ type: 'busy', id: 'cold-launch', tab: expect.any(String), busy: true }]);
+    act(() => useAppStore.setState({ view: 'explore' }));
+    tab2.postMessage({ type: 'busy?', id: 'again' });
+    await settle(10);
+    expect(answers[1]).toEqual({ type: 'busy', id: 'again', tab: expect.any(String), busy: false });
+  });
+});
+
+describe('review W9b-g: a takeover nobody here asked for never reloads the page', () => {
+  it('silent apply gives up after 4 s → the prompt; the takeover that comes later asks "Reload to finish updating" instead of reloading', async () => {
+    const { stub, PWAPrompts, pwa } = await freshApp();
+    render(<PWAPrompts />);
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    await settle();
+    expect(stub.updateCalls).toEqual([true]); // asked to take over…
+    await settle(pwa.TAKEOVER_FALLBACK_MS + 1); // …it did not, in time
+    expect(screen.getByText(/new version/i)).toBeTruthy();
+    fireEvent.pointerDown(window); // the learner is busy now
+
+    // The late takeover. A plugin-style listener registered after ours (the
+    // vite-plugin-pwa one reloads on every update takeover) must not run.
+    const pluginReload = vi.fn();
+    swContainer.addEventListener('controllerchange', pluginReload);
+    act(() => {
+      swContainer.dispatchEvent(new Event('controllerchange'));
+    });
+    expect(pluginReload).not.toHaveBeenCalled();
+    expect(reloadPage).not.toHaveBeenCalled();
+    expect(screen.queryByText(/new version/i)).toBeNull();
+    const finish = screen.getByRole('alert');
+    expect(finish.textContent).toContain('Reload to finish updating');
+
+    fireEvent.click(screen.getByRole('button', { name: /^reload$/i }));
+    expect(reloadPage).toHaveBeenCalledTimes(1);
+  });
+
+  it('another tab\'s Reload activated the update: this controlled page is not reloaded, it asks', async () => {
+    const { PWAPrompts } = await freshApp();
+    render(<PWAPrompts />);
+    fireEvent.pointerDown(window);
+    act(() => {
+      swContainer.dispatchEvent(new Event('controllerchange'));
+    });
+    expect(reloadPage).not.toHaveBeenCalled();
+    expect(screen.getByRole('alert').textContent).toContain('Reload to finish updating');
+  });
+
+  it('a takeover this page asked for (the learner\'s Reload) still reloads, once', async () => {
+    const { stub, PWAPrompts } = await freshApp();
+    render(<PWAPrompts />);
+    fireEvent.pointerDown(window);
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /^reload$/i }));
+    });
+    expect(stub.updateCalls).toEqual([true]);
+    swContainer.dispatchEvent(new Event('controllerchange'));
+    expect(reloadPage).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText(/finish updating/i)).toBeNull();
+  });
+
+  it('the first install (an uncontrolled page) passes through untouched', async () => {
+    swContainer.controller = null;
+    const { PWAPrompts } = await freshApp();
+    render(<PWAPrompts />);
+    const later = vi.fn();
+    swContainer.addEventListener('controllerchange', later);
+    swContainer.dispatchEvent(new Event('controllerchange'));
+    expect(later).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText(/finish updating/i)).toBeNull();
+    // From then on the page is controlled: the next, unasked, takeover asks.
+    act(() => {
+      swContainer.dispatchEvent(new Event('controllerchange'));
+    });
+    expect(later).toHaveBeenCalledTimes(1);
+    expect(reloadPage).not.toHaveBeenCalled();
+    expect(screen.getByRole('alert').textContent).toContain('Reload to finish updating');
+  });
+});
+
+describe('review W9b-c / d', () => {
+  it('c: one waiting version reported twice (installed + waiting) fetches /version.json once', async () => {
+    versionResponse = versionJson({ release: 1 });
+    const { stub, PWAPrompts } = await freshApp();
+    render(<PWAPrompts />);
+    fireEvent.pointerDown(window);
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    await settle(200);
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    await settle();
+    const versionFetches = vi.mocked(fetch).mock.calls.filter(([url]) => url === '/version.json');
+    expect(versionFetches).toHaveLength(1);
+    expect(screen.getByRole('alert').textContent).toContain('What’s new: Faster scales in Explore.');
+  });
+
+  it('d: the "Updated" notice counts its 10 s only while the page is visible', async () => {
+    sessionStorage.setItem('fermata-pwa-auto-updated', JSON.stringify({ fromRelease: 0, reason: 'critical', at: Date.now() }));
+    Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' }); // applied while away
+    const { PWAPrompts, pwa } = await freshApp();
+    render(<PWAPrompts />);
+    await settle(pwa.UPDATED_NOTICE_MS * 3); // still away
+    expect(screen.getByText('Updated to the latest version')).toBeTruthy();
+    setVisibility('visible'); // back
+    await settle(pwa.UPDATED_NOTICE_MS - 100);
+    expect(screen.getByText('Updated to the latest version')).toBeTruthy();
+    await settle(200);
+    expect(screen.queryByText('Updated to the latest version')).toBeNull();
   });
 });

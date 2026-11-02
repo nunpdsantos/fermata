@@ -63,6 +63,13 @@ interface PwaUpdateState {
   incoming: IncomingVersion | null;
   /** The first page after an automatic update: the "Updated" notice and this version's note (if newer). */
   updated: { notes: ReleaseNoteText | null } | null;
+  /**
+   * A new version took control of this page without this page asking (a
+   * takeover that came after the silent apply gave up, or another tab's
+   * Reload): the page is NOT reloaded under the learner — "Reload to finish
+   * updating" asks instead (review W9b-g).
+   */
+  finishUpdate: boolean;
 }
 
 export const usePwaUpdateStore = create<PwaUpdateState>(() => ({
@@ -71,6 +78,7 @@ export const usePwaUpdateStore = create<PwaUpdateState>(() => ({
   updateDeferred: false,
   incoming: null,
   updated: null,
+  finishUpdate: false,
 }));
 
 /** "Ready to work offline" is news, not a task: it leaves by itself. */
@@ -90,9 +98,16 @@ export const FOREGROUND_CHECK_MIN_GAP_MS = 60_000;
 /** While the app is open, look for a new version once an hour (W9b). */
 export const PERIODIC_CHECK_MS = 60 * 60 * 1000;
 
-/** "Updated to the latest version" leaves by itself after this long. */
+/** "Updated to the latest version" leaves by itself after this long — counted while the page is visible. */
 export const UPDATED_NOTICE_MS = 10_000;
 let updatedTimer: ReturnType<typeof setTimeout> | undefined;
+
+/**
+ * The plugin reports one waiting version twice ("installed", then "waiting"
+ * 200 ms later): /version.json is fetched once per this span (review W9b-c).
+ */
+export const INCOMING_REFETCH_MS = 60_000;
+let incomingFetchedAt = Number.NEGATIVE_INFINITY;
 
 /**
  * Runtime caches of code chunks from before W9b. Every JS/CSS file is
@@ -117,6 +132,10 @@ let updateWaiting = false;
 /** A silent update is under way (the new worker was asked to take over). */
 let applyingSilently = false;
 let deciding: Promise<boolean> | null = null;
+/** This page asked a waiting worker to take over (Reload, Try again, a silent apply) and awaits it. */
+let expectingTakeover = false;
+/** A worker already controls this page: the next controllerchange is an update taking over (not the first install). */
+let pageControlled = false;
 
 function reloadOnce(): void {
   if (reloading) return;
@@ -131,7 +150,30 @@ function reloadOnce(): void {
  */
 function reloadWhenControllerChanges(): void {
   if (typeof navigator === 'undefined' || !navigator.serviceWorker) return;
+  expectingTakeover = true;
   navigator.serviceWorker.addEventListener('controllerchange', reloadOnce, { once: true });
+}
+
+/**
+ * Registered BEFORE the plugin's own listeners (startPwaRegistration). A new
+ * worker that takes control of a page that was already controlled, when this
+ * page did not ask for it, must not reload it under the learner — the
+ * plugin's listener would (it reloads on every update takeover, for good).
+ * Stop it there and ask: "Reload to finish updating". The first install's
+ * takeover (an uncontrolled page — this one counts as controlled from then
+ * on) and a takeover this page asked for pass through.
+ */
+function guardUnaskedTakeover(event: Event): void {
+  const wasControlled = pageControlled;
+  pageControlled = true;
+  if (!wasControlled || expectingTakeover || reloading) return;
+  event.stopImmediatePropagation();
+  usePwaUpdateStore.setState({ needRefresh: false, updateDeferred: false, finishUpdate: true });
+}
+
+/** "Reload to finish updating": the new worker already controls the page; a plain reload loads the new version. */
+export function finishUpdateReload(): void {
+  reloadOnce();
 }
 
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | undefined> {
@@ -245,11 +287,18 @@ async function decide(): Promise<boolean> {
 
 /**
  * Apply the waiting update now if this is a safe moment (see the model
- * above). Resolves true when it started applying. One decision at a time.
+ * above). Resolves true when it started applying. One decision at a time —
+ * a cue that arrives while one is under way (the page hidden, then shown
+ * again moments later) is decided right after it, never dropped.
  */
 export function applyAtSafeMoment(): Promise<boolean> {
-  if (!deciding) deciding = decide().finally(() => (deciding = null));
-  return deciding;
+  const next: Promise<boolean> = (deciding ?? Promise.resolve(false))
+    .then((applied) => applied || decide())
+    .finally(() => {
+      if (deciding === next) deciding = null;
+    });
+  deciding = next;
+  return next;
 }
 
 function applySilently(): void {
@@ -258,10 +307,13 @@ function applySilently(): void {
   reloadWhenControllerChanges();
   void updateServiceWorker?.(true);
   // The new worker never took over: never reload into the same old version
-  // behind the learner's back — ask instead.
+  // behind the learner's back — ask instead. A takeover that still comes
+  // later is no longer expected: it asks too ("Reload to finish updating").
   setTimeout(() => {
     if (reloading) return;
     applyingSilently = false;
+    expectingTakeover = false;
+    navigator.serviceWorker?.removeEventListener('controllerchange', reloadOnce);
     clearAutoUpdateMark();
     raiseUpdatePrompt();
   }, TAKEOVER_FALLBACK_MS);
@@ -279,6 +331,10 @@ function onUpdateWaiting(): void {
   } else {
     raiseUpdatePrompt();
   }
+  // Once per waiting version (the plugin reports it twice, 200 ms apart).
+  const now = Date.now();
+  if (now - incomingFetchedAt < INCOMING_REFETCH_MS) return;
+  incomingFetchedAt = now;
   void fetchIncomingVersion().then((incoming) => {
     if (!incoming || applyingSilently) return;
     usePwaUpdateStore.setState({ incoming });
@@ -293,7 +349,25 @@ function showUpdatedNotice(): void {
   if (!mark) return;
   const notes = APP_RELEASE.release > mark.fromRelease ? APP_RELEASE.notes : null;
   usePwaUpdateStore.setState({ updated: { notes } });
+  startUpdatedNoticeClock();
+}
+
+/**
+ * The notice's UPDATED_NOTICE_MS count only while the page is visible: a
+ * critical update applied while the learner was away must still greet them
+ * when they come back (review W9b-d).
+ */
+function startUpdatedNoticeClock(): void {
   clearTimeout(updatedTimer);
+  if (typeof document !== 'undefined' && document.visibilityState === 'hidden') {
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible') return;
+      document.removeEventListener('visibilitychange', onVisible);
+      startUpdatedNoticeClock();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return;
+  }
   updatedTimer = setTimeout(() => usePwaUpdateStore.setState({ updated: null }), UPDATED_NOTICE_MS);
 }
 
@@ -311,6 +385,13 @@ function deleteLegacyCodeCaches(): void {
 export function startPwaRegistration(): void {
   if (started) return;
   started = true;
+
+  // Before every other controllerchange listener (the plugin's included):
+  // an update nobody here asked for never reloads the page (review W9b-g).
+  if (typeof navigator !== 'undefined' && navigator.serviceWorker) {
+    pageControlled = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', guardUnaskedTakeover);
+  }
 
   // First visit: the page loads before any worker controls it. When the
   // newly installed worker takes control, push what was already loaded
@@ -428,6 +509,7 @@ export function usePWA() {
   const dismissOffline = useCallback(() => usePwaUpdateStore.setState({ offlineReady: false }), []);
   const deferUpdate = useCallback(() => usePwaUpdateStore.setState({ updateDeferred: true }), []);
   const dismissUpdated = useCallback(() => usePwaUpdateStore.setState({ updated: null }), []);
+  const finishUpdate = usePwaUpdateStore((s) => s.finishUpdate);
 
   return {
     needRefresh,
@@ -439,6 +521,9 @@ export function usePWA() {
     /** "Updated to the latest version" after an automatic update. */
     updated,
     dismissUpdated,
+    /** A new version took over without this page asking: "Reload to finish updating". */
+    finishUpdate,
+    finishUpdateReload,
     canInstall: installPrompt !== null,
     install,
     dismissInstall,

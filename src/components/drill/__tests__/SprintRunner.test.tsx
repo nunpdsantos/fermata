@@ -241,3 +241,35 @@ describe('SprintRunner — SRS store untouched', () => {
     useDrillStore.getState().resetDrillData();
   });
 });
+
+describe('SprintRunner — leaving Drill pauses the run (W9b, review W9b-a)', () => {
+  it('the clock stops when the runner unmounts: no timer keeps running', () => {
+    vi.useFakeTimers();
+    const { bank, items } = eligibleBank(6);
+    const { unmount } = render(
+      <SprintRunner bank={bank} items={items} families={ALL_ON} priorBest={0} onRecord={vi.fn()} onExit={() => {}} />,
+    );
+    act(() => vi.advanceTimersByTime(3_000));
+    expect(screen.getByText('57s')).toBeDefined();
+    unmount();
+    // One-off timers (a layout re-measure frame) run out; a running clock (an interval) would stay.
+    act(() => vi.advanceTimersByTime(1_000));
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('the run is saved with the time it had when Drill was left, and resumes from there', () => {
+    vi.useFakeTimers();
+    const { bank, items } = eligibleBank(6);
+    const props = { bank, items, families: ALL_ON, priorBest: 0, onRecord: vi.fn(), onExit: () => {} };
+    const { unmount } = render(<SprintRunner {...props} />);
+    act(() => answerCorrect(bank));
+    act(() => vi.advanceTimersByTime(3_000)); // 57 s left; the last clock save was at 60 s
+    unmount(); // the learner switches to Explore (no pagehide)
+    expect(useDrillStore.getState().sprint).toMatchObject({ secondsLeft: 57, correct: 1, step: 1, recorded: false });
+
+    act(() => vi.advanceTimersByTime(30_000)); // away for a while: paused, not running
+    render(<SprintRunner {...props} />);
+    expect(screen.getByText('57s')).toBeDefined();
+    expect(screen.getByText('1 correct')).toBeDefined();
+  });
+});

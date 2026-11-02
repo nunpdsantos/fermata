@@ -9,9 +9,16 @@
  *   2. a return after a long absence — the page becomes visible again after
  *      being hidden for at least LONG_ABSENCE_MS (30 minutes, the usual
  *      "new visit" boundary in web analytics),
- * and it ENDS at the learner's first interaction (pointer down, key down,
- * wheel, touch — any of them, trusted or not: ending early only falls back to
- * the prompt) or after FRESH_START_WINDOW_MS (15 s), whichever comes first.
+ * and it ENDS at the learner's first interaction or after
+ * FRESH_START_WINDOW_MS (15 s), whichever comes first. Interaction = pointer
+ * down, key down, wheel, touch, a focus move (focusin) or a VERTICAL scroll —
+ * the last two because a screen-reader user in browse mode moves focus and
+ * scrolls the content without any pointer or key event reaching the page
+ * (review W9b-f). Horizontal scrolls do not count: the app itself scrolls the
+ * piano strip sideways at boot (to centre middle C — observed on every
+ * launch into Explore, and into Learn on a phone), which would otherwise end
+ * every fresh start. Any of these events counts, trusted or not: ending early
+ * only falls back to the prompt.
  *
  * So an update that is waiting at launch, or finishes installing within the
  * first seconds while nobody has touched anything, can go in without a word;
@@ -20,9 +27,22 @@
 
 export const LONG_ABSENCE_MS = 30 * 60_000;
 export const FRESH_START_WINDOW_MS = 15_000;
-const INTERACTIONS = ['pointerdown', 'keydown', 'wheel', 'touchstart'] as const;
+const INTERACTIONS = ['pointerdown', 'keydown', 'wheel', 'touchstart', 'focusin', 'scroll'] as const;
 
 let startedAt: number | null = null;
+/** Last vertical position seen per scrolled element (or the page). */
+const lastScrollTop = new WeakMap<object, number>();
+
+/** Did this scroll event move its element (or the page) up or down? */
+function scrolledVertically(event: Event): boolean {
+  const target = event.target;
+  const isPage = target === document || target === window || target === document.documentElement || target === null;
+  const key: object = isPage ? document : (target as object);
+  const top = isPage ? window.scrollY : target instanceof Element ? target.scrollTop : 0;
+  const before = lastScrollTop.get(key) ?? 0;
+  lastScrollTop.set(key, top);
+  return top !== before;
+}
 let interacted = false;
 let hiddenAt: number | null = null;
 let tracking = false;
@@ -45,9 +65,12 @@ export function startFreshStartTracking(onFreshStart: () => void): void {
   if (shownYet) begin();
   else hiddenAt = Date.now();
 
-  const onInteract = () => {
+  const onInteract = (event: Event) => {
+    if (event.type === 'scroll' && !scrolledVertically(event)) return;
     interacted = true;
   };
+  // Capture on the window: the capture phase runs for events that do not
+  // bubble too, so a scroll of any element (not only the page) is seen here.
   for (const type of INTERACTIONS) window.addEventListener(type, onInteract, { capture: true, passive: true });
 
   document.addEventListener('visibilitychange', () => {

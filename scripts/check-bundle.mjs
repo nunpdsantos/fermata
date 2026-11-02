@@ -13,7 +13,11 @@
  *    Bold) — the full entry embeds six (audit W9-10).
  *  - The build id (commit) in dist/version.json appears in NO code file and
  *    not in index.html (W9b): baked into the bundle it would make every
- *    deploy — even a docs-only one — a new app version for every learner.
+ *    commit's deploy a new app version for every learner. (The build DATE is
+ *    in the bundle — the Settings footer — so a deploy on a later UTC day is
+ *    a new version anyway; one on the same day with no code change is not.)
+ *    A build with no commit to name (no git, no VERCEL_GIT_COMMIT_SHA) is
+ *    "unknown": nothing to probe for, the check is skipped with a note.
  *
  * Usage: node scripts/check-bundle.mjs [distDir=dist]
  * Exit 0 = all good; 1 = a budget broken (listed); 2 = no build.
@@ -84,7 +88,9 @@ if (!fs.existsSync(versionPath)) {
   problems.push('dist/version.json is missing — the build-id probe below cannot run');
 } else {
   const { build } = JSON.parse(fs.readFileSync(versionPath, 'utf8'));
-  if (typeof build !== 'string' || build.length < 7) {
+  if (build === 'unknown') {
+    console.log('check-bundle: NOTE build id is "unknown" (no git, no VERCEL_GIT_COMMIT_SHA) — the build-id probe is skipped');
+  } else if (typeof build !== 'string' || build.length < 7) {
     problems.push(`dist/version.json build id "${build}" is too short to probe for`);
   } else {
     const shipped = [

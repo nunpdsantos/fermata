@@ -17,7 +17,7 @@ export function PWAPrompts() {
   const { t, i18n } = useTranslation();
   const {
     needRefresh, offlineReady, updateDeferred, deferUpdate, incoming, updated, dismissUpdated,
-    canInstall, install, dismissInstall, reload, dismissOffline,
+    finishUpdate, finishUpdateReload, canInstall, install, dismissInstall, reload, dismissOffline,
   } = usePWA();
   // "Later" hides the update toast; the "⋯" menu keeps "Update ready" until the reload.
   const showUpdate = needRefresh && !updateDeferred;
@@ -26,9 +26,9 @@ export function PWAPrompts() {
   const whatsNew = (notes: Parameters<typeof noteFor>[0] | null | undefined) =>
     notes && roomForNote ? t('pwa.whatsNew', { note: noteFor(notes, i18n.language) }) : undefined;
 
-  if (!showUpdate && !updated && !offlineReady && !canInstall) return null;
+  if (!showUpdate && !finishUpdate && !updated && !offlineReady && !canInstall) return null;
 
-  // ONE stack, highest priority first (update > updated > offline-ready > install).
+  // ONE stack, highest priority first (update > finish updating > updated > offline-ready > install).
   // Each toast used to fix itself at the same spot, so later ones covered the
   // update toast and its Reload (review B1). The stack itself is placed by
   // ToastRegion, above the instrument dock (W9-22).
@@ -44,6 +44,17 @@ export function PWAPrompts() {
           onAction={reload}
           secondary={t('pwa.later')}
           onSecondary={deferUpdate}
+        />
+      )}
+
+      {/* A new version took control without this page asking (a late
+          takeover, another tab's Reload): never reloaded under the learner —
+          one tap finishes it (W9b review). */}
+      {finishUpdate && (
+        <Toast
+          message={t('pwa.finishUpdate')}
+          action={t('common.reload')}
+          onAction={finishUpdateReload}
         />
       )}
 

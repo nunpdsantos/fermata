@@ -310,7 +310,8 @@
     "offlineReady": "App lista para uso sin conexi\u00f3n",
     "installPrompt": "\u00bfInstalar Fermata?",
     "whatsNew": "Novedades: {{note}}",
-    "updated": "Actualizado a la \u00faltima versi\u00f3n"
+    "updated": "Actualizado a la \u00faltima versi\u00f3n",
+    "finishUpdate": "Recarga para terminar la actualizaci\u00f3n"
   },
   "error": {
     "somethingWentWrong": "Algo ha ido mal",

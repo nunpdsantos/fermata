@@ -43,11 +43,34 @@ describe('cold launch', () => {
     ['keydown', () => fireEvent.keyDown(document.body, { key: 'Tab' })],
     ['wheel', () => fireEvent.wheel(document.body)],
     ['touchstart', () => fireEvent.touchStart(document.body)],
+    // A screen-reader user in browse mode: focus moves and scrolling, no pointer or key (review W9b-f).
+    ['focusin', () => fireEvent.focusIn(document.body)],
+    ['vertical scroll of an element (scroll does not bubble)', () => {
+      const box = document.createElement('div');
+      document.body.appendChild(box);
+      box.scrollTop = 120;
+      box.dispatchEvent(new Event('scroll', { bubbles: false }));
+      box.remove();
+    }],
   ])('ends at the first %s', async (_name, interact) => {
     const f = await load();
     f.startFreshStartTracking(() => {});
     interact();
     expect(f.isFreshStart()).toBe(false);
+  });
+
+  it('a sideways scroll does not end it (the app centres the piano strip by itself at boot)', async () => {
+    const f = await load();
+    f.startFreshStartTracking(() => {});
+    const strip = document.createElement('div');
+    document.body.appendChild(strip);
+    strip.scrollLeft = 640;
+    strip.dispatchEvent(new Event('scroll', { bubbles: false }));
+    expect(f.isFreshStart()).toBe(true);
+    strip.scrollTop = 30; // …but up / down does
+    strip.dispatchEvent(new Event('scroll', { bubbles: false }));
+    expect(f.isFreshStart()).toBe(false);
+    strip.remove();
   });
 
   it('a page opened in the background becomes fresh when it is first shown', async () => {

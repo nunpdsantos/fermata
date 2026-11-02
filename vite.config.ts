@@ -92,7 +92,8 @@ export default defineConfig({
   define: {
     __BUILD_DATE__: JSON.stringify(BUILD_DATE),
     // This build's newest release and its note (src/buildInfo.ts) — never
-    // the build id, so a deploy without code changes ships no update.
+    // the build id, so a commit without code changes ships no update the same
+    // UTC day (__BUILD_DATE__ above does change the bundle on a later day).
     __APP_RELEASE__: JSON.stringify({ release: RELEASES[0].release, notes: RELEASES[0].notes }),
   },
   preview: {
