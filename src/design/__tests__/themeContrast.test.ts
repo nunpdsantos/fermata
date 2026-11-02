@@ -13,6 +13,7 @@
 import { describe, it, expect } from 'vitest';
 import { palette } from '../tokens/palette';
 import { LEVEL_ACCENTS, DIFFICULTY_CONFIG, accentText } from '../tokens/learnColors';
+import { DIST_FILL_MAJOR, DIST_FILL_MINOR, DIST_TEXT_MAJOR, DIST_TEXT_MINOR, hoverFillFor } from '../../components/theory/circleOfFifthsConstants';
 
 // Read the CSS from disk: under Vitest a `?raw` CSS import comes back as ''
 // (CSS processing is off), so the files are read with Node's fs. The module
@@ -364,5 +365,43 @@ describe('degree fills are the same hues in both themes (one palette, D-28)', ()
     const day = THEMES['fermata (day)'];
     for (const d of DEGREES) expect(day[`--deg-${d}`].toLowerCase()).toBe(DEGREE_COLORS[d].toLowerCase());
     expect(THEMES['fermata-night']['--deg-1']).toBeUndefined(); // inherited, not redefined
+  });
+});
+
+// Circle of fifths (W11-A review): every wedge label on its fill, at rest and
+// under the mouse, over every surface the circle can sit on.
+describe.each(Object.entries(THEMES))('circle of fifths labels, at rest and hovered — %s', (_theme, vars) => {
+  const accent = hexVar(vars, '--accent');
+  /** A wedge fill as the browser paints it over `surface`. */
+  const paint = (fill: string, surface: RGB): RGB => {
+    const mix = /color-mix\(in srgb, var\(--accent\) (\d+)%, transparent\)/.exec(fill);
+    if (mix) return over(accent, Number(mix[1]) / 100, surface);
+    const v = /^var\((--[\w-]+)\)$/.exec(fill);
+    if (!v) throw new Error(`unparsed fill ${fill}`);
+    return hexVar(vars, v[1]);
+  };
+  const ink = (text: string): RGB => hexVar(vars, /^var\((--[\w-]+)\)$/.exec(text)![1]);
+  const surfaces = ['--bg', '--bg-raised', '--card'];
+
+  it.each([
+    ['major', DIST_FILL_MAJOR, DIST_TEXT_MAJOR],
+    ['minor', DIST_FILL_MINOR, DIST_TEXT_MINOR],
+  ] as const)('%s ring: >= 4.5:1 at every distance, resting and hovered', (_ring, fills, texts) => {
+    const bad: string[] = [];
+    fills.forEach((fill, dist) => {
+      for (const s of surfaces) {
+        const surface = hexVar(vars, s);
+        for (const [state, f] of [['rest', fill], ['hover', hoverFillFor(texts[dist])]] as const) {
+          const ratio = contrast(ink(texts[dist]), paint(f, surface));
+          if (ratio < MIN_TEXT) bad.push(`dist ${dist} ${state} on ${s}: ${texts[dist]} ${ratio.toFixed(2)}`);
+        }
+      }
+    });
+    expect(bad).toEqual([]);
+  });
+
+  it('the old hover tint (31 % / 15 %) is what failed — the check can see it', () => {
+    const dim = ink('var(--text-dim)');
+    expect(contrast(dim, paint('color-mix(in srgb, var(--accent) 31%, transparent)', hexVar(vars, '--card')))).toBeLessThan(MIN_TEXT);
   });
 });

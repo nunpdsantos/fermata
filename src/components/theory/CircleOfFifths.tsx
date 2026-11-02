@@ -17,7 +17,7 @@ import {
   CIRCLE_MAJOR, CIRCLE_MINOR,
   MINOR_SCALES,
   SIZE, CENTER, MAJOR_INNER, MAJOR_OUTER, MINOR_INNER, MINOR_OUTER,
-  KEYSIG_R, SEG_GAP, TONIC_HUE, accentAlpha,
+  KEYSIG_R, SEG_GAP, TONIC_HUE, hoverFillFor, HOVER_STROKE,
   DIST_FILL_MAJOR, DIST_STROKE_MAJOR, DIST_TEXT_MAJOR,
   DIST_FILL_MINOR, DIST_STROKE_MINOR, DIST_TEXT_MINOR,
 } from './circleOfFifthsConstants.ts';
@@ -256,7 +256,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
         path: arcPath(CENTER, CENTER, MAJOR_INNER, MAJOR_OUTER, start, end),
         stroke: neutral ? NEUTRAL_STROKE : DIST_STROKE_MAJOR[dist],
         textFill: neutral ? NEUTRAL_TEXT : DIST_TEXT_MAJOR[dist],
-        hoverFill: neutral ? NEUTRAL_HOVER : dist === 0 ? TONIC_HUE : accentAlpha(dist <= 2 ? 31 : 15),
+        hoverFill: neutral ? NEUTRAL_HOVER : hoverFillFor(DIST_TEXT_MAJOR[dist]),
       };
     });
   }, [keyFor, selectedSeg, refIdx, chordAt, neutral]);
@@ -282,7 +282,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
         path: arcPath(CENTER, CENTER, MINOR_INNER, MINOR_OUTER, start, end),
         stroke: neutral ? NEUTRAL_STROKE : DIST_STROKE_MINOR[dist],
         textFill: neutral ? NEUTRAL_TEXT : DIST_TEXT_MINOR[dist],
-        hoverFill: neutral ? NEUTRAL_HOVER : dist === 0 ? TONIC_HUE : accentAlpha(dist <= 2 ? 25 : 10),
+        hoverFill: neutral ? NEUTRAL_HOVER : hoverFillFor(DIST_TEXT_MINOR[dist]),
       };
     });
   }, [keyFor, selectedSeg, refIdx, chordAt, neutral]);
@@ -447,8 +447,8 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
             <path
               d={s.path}
               fill={tintIdx === s.i ? s.hoverFill : s.fill}
-              stroke={s.stroke}
-              strokeWidth={s.selected ? 2 : 1}
+              stroke={tintIdx === s.i && !neutral ? HOVER_STROKE : s.stroke}
+              strokeWidth={s.selected || tintIdx === s.i ? 2 : 1}
               style={{ transition: 'fill 0.15s, stroke 0.15s' }}
             />
             {segmentText(s, 'major')}
@@ -484,8 +484,8 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
             <path
               d={s.path}
               fill={tintIdx === s.i ? s.hoverFill : s.fill}
-              stroke={s.stroke}
-              strokeWidth={s.selected ? 2 : 1}
+              stroke={tintIdx === s.i && !neutral ? HOVER_STROKE : s.stroke}
+              strokeWidth={s.selected || tintIdx === s.i ? 2 : 1}
               style={{ transition: 'fill 0.15s, stroke 0.15s' }}
             />
             {segmentText(s, 'minor')}

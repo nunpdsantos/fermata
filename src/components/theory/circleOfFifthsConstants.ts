@@ -102,3 +102,18 @@ export const DIST_STROKE_MINOR = [
 export const DIST_TEXT_MINOR = [
   'var(--on-accent)', 'var(--text-muted)', 'var(--text-muted)', 'var(--text-dim)', 'var(--text-dim)', 'var(--text-dim)', 'var(--text-dim)',
 ];
+
+// Hover (a real mouse only — see CircleOfFifths): the tint a wedge takes is
+// the most accent its LABEL can sit on at >= 4.5:1 over every surface the
+// circle is drawn on (bg, bg-raised, card), both themes; a tint the size of
+// the selection's neighbour (31 %) put --text-dim at 3.6:1 (W11-A review).
+// The accent stroke makes the hover visible even where the tint can only
+// grow a little. themeContrast.test.ts pins every label at rest and hovered.
+const HOVER_TINT_BY_LABEL: Record<string, string> = {
+  'var(--on-accent)': TONIC_HUE,
+  'var(--text)': accentAlpha(31),
+  'var(--text-muted)': accentAlpha(18),
+  'var(--text-dim)': accentAlpha(10),
+};
+export const hoverFillFor = (labelColor: string): string => HOVER_TINT_BY_LABEL[labelColor] ?? accentAlpha(10);
+export const HOVER_STROKE = 'var(--accent)';
