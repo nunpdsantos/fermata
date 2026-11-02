@@ -17,6 +17,7 @@ import { generateScaleSummary, copyToClipboard } from '../../utils/exportHelpers
 import { toast } from '../../state/toastStore.ts';
 import { keyFacts } from './keyFacts.ts';
 import { keyName } from './focusReadout.ts';
+import { toContentLanguage } from '../drill/drillText.ts';
 
 const PLAY_ICON = (
   <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -32,7 +33,7 @@ const PLAY_ICON = (
  * sheet with the circle of fifths and the twelve roots.
  */
 export function ExploreHeader() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { scale, diatonicChords } = useKeyContext();
   const selectedKey = useAppStore((s) => s.selectedKey);
   const selectedScale = useAppStore((s) => s.selectedScale);
@@ -54,7 +55,7 @@ export function ExploreHeader() {
   }, [scale, synthPreset, baseOctave]);
 
   const copy = async () => {
-    const ok = await copyToClipboard(generateScaleSummary(scale, diatonicChords, selectedChord));
+    const ok = await copyToClipboard(generateScaleSummary(scale, diatonicChords, selectedChord, { t, lang: toContentLanguage(i18n.language) }));
     if (ok) toast(t('toast.copiedToClipboard'), 'success');
   };
 

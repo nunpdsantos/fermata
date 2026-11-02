@@ -106,7 +106,7 @@
     "strip": {
       "title": "Notes of the scale",
       "hint": "Tap a note to hear it",
-      "hintGuitar": "Tap a note to hear it · written an octave above sounding",
+      "writtenOctave": "written an octave above sounding",
       "group": "Notes of the scale: tap one to hear it"
     },
     "facts": {
@@ -145,6 +145,11 @@
       "notIn": "not in {{key}}",
       "stringFret": "string {{string}} fret {{fret}}",
       "stringOpen": "string {{string}} open"
+    },
+    "summary": {
+      "notes": "Notes",
+      "count": "Count",
+      "selectedChord": "Selected chord"
     }
   },
   "play": {

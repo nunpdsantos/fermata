@@ -39,6 +39,9 @@ interface FretCellProps {
   isFocused: boolean;
   /** Lit as the linked focus note (W11-B): a ring around the cell's centre. */
   isFocusNote?: boolean;
+  /** A scale note outside the selected chord, drawn faded (no label) behind
+   *  the chord's shape — the scale stays in view, as on the strip (W11-B). */
+  contextColor?: string;
   /** A real mouse entered (true) / left (false) the cell. */
   onHover?: (on: boolean) => void;
   onClick: () => void;
@@ -64,6 +67,7 @@ export const FretCell = memo(function FretCell({
   showHighlight = false,
   isFocused,
   isFocusNote = false,
+  contextColor,
   onHover,
   onClick,
 }: FretCellProps) {
@@ -143,6 +147,15 @@ export const FretCell = memo(function FretCell({
           transform: 'translateY(-50%)',
         }}
       />
+      {/* A scale note outside the chord: a small faded dot, no label. */}
+      {contextColor && !showVoicing && !positionDot && !showHighlight && !showScaleDot && (
+        <div
+          {...dotData('context')}
+          aria-hidden="true"
+          className="relative z-10 rounded-full"
+          style={{ width: 14, height: 14, backgroundColor: contextColor, opacity: 0.45 }}
+        />
+      )}
       {/* Chord voicing dot */}
       {showVoicing && (
         <div

@@ -217,6 +217,16 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
   const detailRef = useRef<HTMLDivElement>(null);
   useToastAvoid(detailRef);
 
+  // The detail opens under the row tapped — on a phone with the sheet at
+  // Half that can be below the visible view (▶ Chord off screen; W11-B
+  // review). Bring it into view: 'nearest' moves nothing when it already
+  // shows (1440×900), and puts its top in view when it is taller than the
+  // room. Once per chord, so browsing the inversions never jumps.
+  const chordId = `${noteToString(chord.root)}|${chord.quality}|${chord.bassNote ? noteToString(chord.bassNote) : ''}`;
+  useEffect(() => {
+    detailRef.current?.scrollIntoView?.({ block: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
+  }, [chordId, reduceMotion]);
+
   const playIcon = <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>;
 
   return (

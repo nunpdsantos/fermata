@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Piano } from '../instruments/Piano.tsx';
-import { NeckView, NECK_QUERY } from '../instruments/NeckView.tsx';
 import { DockReadout } from './DockReadout.tsx';
-import { DockToolsContext, DOCK_TOOLS_QUERY } from './dockTools.ts';
+import { DockToolsContext, DOCK_TOOLS_QUERY, NECK_QUERY } from './dockTools.ts';
+import { SHORT_SCREEN_QUERY, defaultExploreDetent } from '../../state/dock.ts';
+
+// The landscape full-neck view is its own chunk (precached): only a phone
+// held sideways with the guitar ever opens it.
+const NeckView = lazy(() => import('../instruments/NeckView.tsx').then((m) => ({ default: m.NeckView })));
 import { InstrumentSelector } from '../instruments/InstrumentSelector.tsx';
 import { ViewSlot, type ViewLoader } from '../ViewSlot.tsx';
 import { DetentSheet } from '../ui/DetentSheet.tsx';
@@ -75,6 +79,17 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
   const exercise = useAppStore((s) => s.exerciseInputActive);
   const [neckOpen, setNeckOpen] = useState(false);
   const showNeck = neckOpen && neckAvailable && !exercise;
+
+  // Until the learner sets Explore's dock, it follows the screen: Peek when
+  // short (a phone sideways), Half otherwise — also when the phone turns.
+  const short = useMediaQuery(SHORT_SCREEN_QUERY);
+  const exploreChosen = useAppStore((s) => s.dockChosen.explore);
+  useEffect(() => {
+    if (view !== 'explore' || exploreChosen) return;
+    const want = defaultExploreDetent(short);
+    const s = useAppStore.getState();
+    if (s.dockDetents.explore !== want) useAppStore.setState({ dockDetents: { ...s.dockDetents, explore: want } });
+  }, [short, exploreChosen, view]);
 
   const bar = (
     <div className="dock-bar-row">
@@ -153,7 +168,11 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
       )}
     </div>
   );
-  const neck = showNeck ? <NeckView onClose={() => setNeckOpen(false)} /> : null;
+  const neck = showNeck ? (
+    <Suspense fallback={null}>
+      <NeckView onClose={() => setNeckOpen(false)} />
+    </Suspense>
+  ) : null;
 
   if (isPhone) {
     return (

@@ -99,6 +99,9 @@ export interface PreferencesSlice {
   lastView: ViewMode;
   /** Instrument dock detent per view (D-26), persisted. */
   dockDetents: Record<DockView, Detent>;
+  /** Which views' detent the LEARNER set (drag, tap, keys, Show / Hide).
+   *  Until then Explore follows the screen: Peek when short, else Half. */
+  dockChosen: Record<DockView, boolean>;
   /** Explore on a tablet: the circle of fifths below the work is unfolded
    *  (W11-B; folded by default there so the column is not a long scroll;
    *  remembered). Laptops always show it beside the work. */

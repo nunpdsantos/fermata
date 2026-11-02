@@ -56,6 +56,8 @@ interface FretboardStringProps {
   onCellHover?: (fn: FretNote | null) => void;
   /** Fixed row height (the full-neck view fills the screen). */
   rowHeight?: number;
+  /** A chord is shown: the scale's other notes appear faded behind it. */
+  scaleContext?: boolean;
 }
 
 export const FretboardString = memo(function FretboardString({
@@ -82,6 +84,7 @@ export const FretboardString = memo(function FretboardString({
   focusFrets,
   onCellHover,
   rowHeight,
+  scaleContext = false,
 }: FretboardStringProps) {
   const { t } = useTranslation();
   const openFretNote = getFretNote(stringIdx, 0);
@@ -220,6 +223,7 @@ export const FretboardString = memo(function FretboardString({
               showHighlight={showHighlight}
               isFocused={focusedFret === fret}
               isFocusNote={focusFrets?.has(fret) ?? false}
+              contextColor={scaleContext && isInScale && !isVoicingPosition && !showHighlight ? color : undefined}
               onHover={onCellHover ? (on) => onCellHover(on ? fn : null) : undefined}
               onClick={() => onCellActivate(fn)}
             />

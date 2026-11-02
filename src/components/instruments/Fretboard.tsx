@@ -901,6 +901,7 @@ export function Fretboard({ variant = 'dock' }: FretboardProps = {}) {
               focusFrets={focusCells.byString.get(stringIdx) ?? NO_FRETS}
               onCellHover={mobile ? undefined : handleCellHover}
               rowHeight={neck ? neckRow : undefined}
+              scaleContext={!exerciseInputActive && selectedChord !== null && (mode === 'chord' || mode === 'highlight')}
             />
           ))}
         </div>

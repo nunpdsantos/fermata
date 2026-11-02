@@ -155,13 +155,17 @@ export function ScaleStrip() {
   const trim = useMemo(() => staffTrim(notes, instrument, STAFF_HEIGHT), [notes, instrument]);
 
   const written = instrument === 'guitar';
-  const hint = written ? t('explore.strip.hintGuitar') : t('explore.strip.hint');
 
   return (
     <section className="explore-card strip-card" aria-labelledby="strip-title" data-testid="scale-strip">
       <div className="explore-card-head">
         <h2 id="strip-title" className="type-section">{t('explore.strip.title')}</h2>
-        <p className={`text-caption explore-card-hint${written ? '' : ' no-print'}`} style={{ color: 'var(--text-dim)' }}>{hint}</p>
+        {/* "Tap a note to hear it" means nothing on paper; the guitar
+            staff's octave note still prints. */}
+        <p className="text-caption explore-card-hint" style={{ color: 'var(--text-dim)' }}>
+          <span className="no-print">{t('explore.strip.hint')}</span>
+          {written && <><span className="no-print"> · </span>{t('explore.strip.writtenOctave')}</>}
+        </p>
       </div>
       <div ref={scrollRef} className="strip-scroll">
         <div className="strip-body" style={{ width: staffWidth }}>

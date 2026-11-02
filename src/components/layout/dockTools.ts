@@ -9,3 +9,6 @@ export const DockToolsContext = createContext<HTMLElement | null>(null);
 
 /** Wide enough for the bar to carry the fretboard's stepper and label toggle. */
 export const DOCK_TOOLS_QUERY = '(min-width: 1200px)';
+
+/** A phone (or any short window) held sideways: where the full-neck view is offered. */
+export const NECK_QUERY = '(max-height: 500px) and (orientation: landscape)';

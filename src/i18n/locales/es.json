@@ -106,7 +106,7 @@
     "strip": {
       "title": "Notas de la escala",
       "hint": "Toca una nota para oírla",
-      "hintGuitar": "Toca una nota para oírla · escrita una octava por encima de como suena",
+      "writtenOctave": "escrita una octava por encima de como suena",
       "group": "Notas de la escala: toca una para oírla"
     },
     "facts": {
@@ -145,6 +145,11 @@
       "notIn": "fuera de {{key}}",
       "stringFret": "cuerda {{string}} traste {{fret}}",
       "stringOpen": "cuerda {{string}} al aire"
+    },
+    "summary": {
+      "notes": "Notas",
+      "count": "Cantidad",
+      "selectedChord": "Acorde elegido"
     }
   },
   "play": {

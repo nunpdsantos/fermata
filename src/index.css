@@ -336,6 +336,13 @@ body {
 [data-focus-ring="custom"]:focus-visible {
   outline: none;
 }
+/* A piano key's keyboard focus: the accent outline inside the key, drawn by
+   CSS with the focus itself (W11-B review: the React-painted ring was late
+   under load, and only ~1.9:1). */
+[data-piano-key][data-focus-ring="custom"]:focus-visible {
+  outline: 3px solid var(--focus-outline) !important;
+  outline-offset: -3px !important;
+}
 
 /* ─── Reduced motion (a11y) ──────────────────────────────────────
    Users with prefers-reduced-motion get near-instant transitions. */
@@ -1275,7 +1282,35 @@ body {
   .chords-panel > * + * {
     margin-top: 10px;
   }
+  /* In key / All / Build fit any label length (PT "Todos os Acordes", ES
+     "Construir" at 320 px ran off the card — W11-B review): the labels wrap
+     inside their tabs; on a phone the tabs take their own row, equal widths. */
+  .chords-tabs {
+    max-width: 100%;
+  }
+  .chords-tabs .seg-btn {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: center;
+    line-height: 1.2;
+  }
+  @media (max-width: 639px) {
+    .chords-tabs {
+      display: flex;
+      width: 100%;
+    }
+    .chords-tabs .seg-btn {
+      flex: 1 1 0;
+      padding: 4px 6px;
+    }
+  }
   .chord-detail {
+    /* Scrolled into view with one toast's room above it (the same room the
+       phone sheet keeps at Full): a toast then never has to cover it, even
+       on a phone held sideways. */
+    scroll-margin-top: calc(var(--tap) + 32px);
+    scroll-margin-bottom: 8px;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
@@ -1327,6 +1362,15 @@ body {
   @media (max-width: 639px) {
     .chord-detail {
       grid-template-columns: minmax(0, 1fr);
+    }
+    /* On a phone the row wraps line by line: ▶ Chord / ▶ Arpeggio come
+       right under the chord's name, so they are what the scrolled-in detail
+       shows first above the sheet. */
+    .chord-detail-row:first-child > .chord-detail-group {
+      order: 2;
+    }
+    .chord-detail-row:first-child > .chord-detail-actions {
+      order: 1;
     }
   }
   /* A chord tone: a degree-coloured disc with dark ink, a full tap target. */

@@ -73,7 +73,9 @@ export function ChordsCard() {
         <h2 id="chords-title" className="type-section">
           {t('explore.chordsIn', { key: keyName(scale, t) })}
         </h2>
+        {/* Tabs switch what the screen shows: not printed. */}
         <Segment
+          className="chords-tabs no-print"
           mode="tabs"
           label={t('explore.chords')}
           value={mode}

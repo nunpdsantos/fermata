@@ -11,9 +11,6 @@ import { DockToolsContext } from '../layout/dockTools.ts';
 // The same chunk as the dock's fretboard (it is precached).
 const Fretboard = lazy(() => import('./Fretboard.tsx').then((m) => ({ default: m.Fretboard })));
 
-/** A phone (or any short window) held sideways: where the full-neck view is offered. */
-export const NECK_QUERY = '(max-height: 500px) and (orientation: landscape)';
-
 /**
  * The LANDSCAPE FULL-NECK VIEW (W11-B, decision D-26 extra): on a phone held
  * sideways with the guitar, the whole neck — all six strings, frets 0–12

@@ -106,7 +106,7 @@
     "strip": {
       "title": "Notas da escala",
       "hint": "Toca numa nota para a ouvir",
-      "hintGuitar": "Toca numa nota para a ouvir · escrita uma oitava acima do som real",
+      "writtenOctave": "escrita uma oitava acima do som real",
       "group": "Notas da escala: toca numa para a ouvir"
     },
     "facts": {
@@ -145,6 +145,11 @@
       "notIn": "fora de {{key}}",
       "stringFret": "corda {{string}} traste {{fret}}",
       "stringOpen": "corda {{string}} solta"
+    },
+    "summary": {
+      "notes": "Notas",
+      "count": "Quantidade",
+      "selectedChord": "Acorde escolhido"
     }
   },
   "play": {
