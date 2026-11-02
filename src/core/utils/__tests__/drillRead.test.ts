@@ -161,7 +161,7 @@ describe('read family — grading by exact pitch, every item × every place', ()
       }
     }
     expect(checked).toBe(items.length * 6 * 16);
-  });
+  }, 60_000);
 
   it('pitch class is not enough: written C5 is the C4 on string 2 fret 1, not the C3 or C5', () => {
     const item = byId.get('read:staff-to-fret:open:C5')!;

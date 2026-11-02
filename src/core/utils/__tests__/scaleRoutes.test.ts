@@ -58,6 +58,21 @@ function oracleLine(root: string, type: ScaleType, octaves: number): { name: str
 
 const ROOTS = (type: ScaleType) => Array.from({ length: 12 }, (_, pc) => preferredRootSpelling(pc, type));
 
+/**
+ * Routes are pure and deterministic, so the exhaustive tests below share one
+ * computation per (root, scale, options) instead of each recomputing the same
+ * hundreds of routes (CI timing, PR #30). The determinism test still compares
+ * this cached result against a fresh computation.
+ */
+const routeCache = new Map<string, ScaleRoute | null>();
+function routeOf(root: Note, type: ScaleType, options: Parameters<typeof getScaleRoute>[2] = {}): ScaleRoute | null {
+  const key = `${nameOf(root)}|${type}|${JSON.stringify(options)}`;
+  if (!routeCache.has(key)) routeCache.set(key, getScaleRoute(root, type, options));
+  return routeCache.get(key)!;
+}
+/** Exhaustive tests get room on slow CI runners (the default is 5 s). */
+const EXHAUSTIVE = 60_000;
+
 function checkSpelling(notes: readonly ScaleRouteNote[], expected: ReturnType<typeof oracleLine>, label: string): void {
   expect(notes.map((n) => n.midi), label).toEqual(expected.map((e) => e.midi));
   notes.forEach((n, i) => {
@@ -107,13 +122,13 @@ describe('scale routes — exam scales, 12 roots, 2 octaves (oracle)', () => {
     for (const style of ['low-positions', 'avoid'] as const) {
       it(`${type} (${style})`, () => {
         for (const root of ROOTS(type)) {
-          const route = getScaleRoute(root, type, { octaves: 2, openStrings: style });
+          const route = routeOf(root, type, { octaves: 2, openStrings: style });
           expect(route, `${nameOf(root)} ${type}`).not.toBeNull();
           checkRoute(route!, root, type, 2, `${nameOf(root)} ${type} ${style}`);
           // Spelling never needs to fall back for these keys.
           expect(oracleLine(nameOf(root), type, 2).every((e) => e.name !== null)).toBe(true);
         }
-      });
+      }, EXHAUSTIVE);
     }
   }
 });
@@ -125,18 +140,18 @@ describe('scale routes — every heptatonic scale, 12 roots, 2 octaves', () => {
     expect(ROUTE_SCALE_TYPES).toContain('dorian');
     for (const t of ['pentatonic_major', 'blues', 'whole_tone', 'chromatic', 'bebop_major', 'diminished_half_whole'] as ScaleType[]) {
       expect(ROUTE_SCALE_TYPES).not.toContain(t);
-      expect(getScaleRoute({ natural: 'C', accidental: '' }, t)).toBeNull();
+      expect(routeOf({ natural: 'C', accidental: '' }, t)).toBeNull();
     }
     for (const t of ROUTE_SCALE_TYPES) expect(ORACLE_SCALES[t].degrees.length).toBe(7);
   });
   for (const type of ROUTE_SCALE_TYPES.filter((t) => !EXAM_SCALE_TYPES.includes(t))) {
     it(type, () => {
       for (const root of ROOTS(type)) {
-        const route = getScaleRoute(root, type, { octaves: 2 });
+        const route = routeOf(root, type, { octaves: 2 });
         expect(route, `${nameOf(root)} ${type}`).not.toBeNull();
         checkRoute(route!, root, type, 2, `${nameOf(root)} ${type}`);
       }
-    });
+    }, EXHAUSTIVE);
   }
 });
 
@@ -156,7 +171,7 @@ describe('scale routes — three octaves where the neck allows', () => {
   for (const type of EXAM_SCALE_TYPES) {
     it(`${type}: 3 octaves where possible, null elsewhere`, () => {
       for (const root of ROOTS(type)) {
-        const route = getScaleRoute(root, type, { octaves: 3 });
+        const route = routeOf(root, type, { octaves: 3 });
         if (oracleLowestTonic(nameOf(root)) + 36 > 64 + MAX_FRET) {
           expect(route, `${nameOf(root)} ${type}`).toBeNull();
           continue;
@@ -164,12 +179,12 @@ describe('scale routes — three octaves where the neck allows', () => {
         expect(route, `${nameOf(root)} ${type}`).not.toBeNull();
         checkRoute(route!, root, type, 3, `${nameOf(root)} ${type} 3oct`);
       }
-    });
+    }, EXHAUSTIVE);
   }
   it('a 19-fret neck allows three octaves from A (A2–A5)', () => {
     const A = { natural: 'A' as const, accidental: '' as const };
-    expect(getScaleRoute(A, 'major', { octaves: 3 })).toBeNull();
-    const wide = getScaleRoute(A, 'major', { octaves: 3, maxFret: 19 });
+    expect(routeOf(A, 'major', { octaves: 3 })).toBeNull();
+    const wide = routeOf(A, 'major', { octaves: 3, maxFret: 19 });
     expect(wide).not.toBeNull();
     expect(wide!.ascending[wide!.ascending.length - 1].midi).toBe(45 + 36);
   });
@@ -179,18 +194,18 @@ describe('scale routes — open strings and determinism', () => {
   it('default style: an open string off the tonic only in position I (or before the hand is placed)', () => {
     for (const type of EXAM_SCALE_TYPES) {
       for (const root of ROOTS(type)) {
-        const route = getScaleRoute(root, type)!;
+        const route = routeOf(root, type)!;
         for (const n of fullRoute(route)) {
           if (n.fret !== 0 || n.isTonic) continue;
           expect(n.position === null || n.position <= 1, `${nameOf(root)} ${type} open ${nameOf(n.note)} in ${n.position}`).toBe(true);
         }
       }
     }
-  });
+  }, EXHAUSTIVE);
   it("'avoid' style: open strings only where no fretted place reaches the pitch", () => {
     for (const type of EXAM_SCALE_TYPES) {
       for (const root of ROOTS(type)) {
-        const route = getScaleRoute(root, type, { openStrings: 'avoid' })!;
+        const route = routeOf(root, type, { openStrings: 'avoid' })!;
         for (const n of fullRoute(route)) {
           if (n.fret !== 0) continue;
           const fretted = OPEN.some((o) => n.midi - o >= 1 && n.midi - o <= MAX_FRET);
@@ -198,14 +213,17 @@ describe('scale routes — open strings and determinism', () => {
         }
       }
     }
-  });
-  it('never slides the same finger twice in a row, and uses only scale shifts (no finger change on a string)', () => {
-    let routes = 0;
-    for (const style of ['low-positions', 'avoid'] as const) {
-      for (const type of ROUTE_SCALE_TYPES) {
-        for (const root of ROOTS(type)) {
-          for (const octaves of [2, 3]) {
-            const route = getScaleRoute(root, type, { octaves, openStrings: style });
+  }, EXHAUSTIVE);
+  // Split by style × octave count so each test stays short on slow runners;
+  // the last one checks that the four together covered all 704 routes.
+  let slideRoutes = 0;
+  for (const style of ['low-positions', 'avoid'] as const) {
+    for (const octaves of [2, 3]) {
+      it(`never slides the same finger twice in a row, and uses only scale shifts (no finger change on a string) — ${style}, ${octaves} octaves`, () => {
+        let routes = 0;
+        for (const type of ROUTE_SCALE_TYPES) {
+          for (const root of ROOTS(type)) {
+            const route = routeOf(root, type, { octaves, openStrings: style });
             if (!route) continue;
             routes++;
             for (const dir of ['ascending', 'descending'] as const) {
@@ -219,12 +237,17 @@ describe('scale routes — open strings and determinism', () => {
             }
           }
         }
-      }
+        // 22 heptatonic scales × 12 roots at 2 octaves; × the 4 roots (E, F, F♯, G) at 3.
+        expect(routes).toBe(octaves === 2 ? 264 : 88);
+        slideRoutes += routes;
+      }, EXHAUSTIVE);
     }
-    expect(routes).toBe(704);
+  }
+  it('…the slide checks covered every route (704)', () => {
+    expect(slideRoutes).toBe(704);
   });
   it('B melodic minor comes down 2-1 with an index shift, not sliding the 2nd finger twice', () => {
-    const route = getScaleRoute({ natural: 'B', accidental: '' }, 'melodic_minor')!;
+    const route = routeOf({ natural: 'B', accidental: '' }, 'melodic_minor')!;
     expect(route.descending.slice(0, 5).map((n) => `${6 - n.stringIndex}-${n.fret}/${n.finger}`).join(' ')).toBe('1-7/2 1-5/1 1-3/3 1-2/2 1-0/0');
     expect(route.descending[1].reach).not.toBeNull();
     expect(route.descending[2].shift?.kind).toBe('index');
@@ -232,10 +255,10 @@ describe('scale routes — open strings and determinism', () => {
   it('is deterministic', () => {
     for (const type of EXAM_SCALE_TYPES) {
       for (const root of ROOTS(type)) {
-        expect(getScaleRoute(root, type)).toEqual(getScaleRoute(root, type));
+        expect(routeOf(root, type)).toEqual(getScaleRoute(root, type));
       }
     }
-  });
+  }, EXHAUSTIVE);
   it('lowest tonic: E2…D♯3 in standard tuning', () => {
     for (const pc of Array.from({ length: 12 }, (_, i) => i)) {
       const root = preferredRootSpelling(pc, 'major');
@@ -252,33 +275,33 @@ const golden = (route: ScaleRoute | null) =>
 describe('scale routes — hand-checked references (suggested fingerings)', () => {
   const N = (natural: Note['natural'], accidental: Note['accidental'] = ''): Note => ({ natural, accidental });
   it('C major, 2 octaves', () => {
-    expect(golden(getScaleRoute(N('C'), 'major'))).toBe(
+    expect(golden(routeOf(N('C'), 'major'))).toBe(
       '5-3/3 4-0/0 4-2/2 4-3/3 3-0/0 3-2/2 2-0/0 2-1/1 2-3/3 1-0/0 1-1/1 1-3/3 1-5/1 1-7/3 1-8/4',
     );
-    expect(golden(getScaleRoute(N('C'), 'major', { openStrings: 'avoid' }))).toBe(
+    expect(golden(routeOf(N('C'), 'major', { openStrings: 'avoid' }))).toBe(
       '5-3/2 5-5/4 4-2/1 4-3/2 4-5/4 3-2/1 3-4/3 3-5/1 3-7/3 2-5/1 2-6/2 2-8/4 1-5/1 1-7/3 1-8/4',
     );
   });
   it('G major, 2 octaves from the 6th string', () => {
-    const route = getScaleRoute(N('G'), 'major')!;
+    const route = routeOf(N('G'), 'major')!;
     expect(route.ascending[0].stringIndex).toBe(0);
     expect(golden(route)).toBe('6-3/3 5-0/0 5-2/2 5-3/3 4-0/0 4-2/2 4-4/4 3-0/0 3-2/2 2-0/0 2-1/1 2-3/3 1-0/0 1-2/2 1-3/3');
-    expect(golden(getScaleRoute(N('G'), 'major', { openStrings: 'avoid' }))).toBe(
+    expect(golden(routeOf(N('G'), 'major', { openStrings: 'avoid' }))).toBe(
       '6-3/2 6-5/4 5-2/1 5-3/2 5-5/4 4-2/1 4-4/3 4-5/4 3-2/1 3-4/3 3-5/4 2-3/2 2-5/4 1-2/1 1-3/2',
     );
   });
   it('A melodic minor, 2 octaves', () => {
-    const route = getScaleRoute(N('A'), 'melodic_minor')!;
+    const route = routeOf(N('A'), 'melodic_minor')!;
     expect(golden(route)).toBe('5-0/0 5-2/2 5-3/3 4-0/0 4-2/2 4-4/4 3-1/1 3-2/2 2-0/0 2-1/1 2-3/3 1-0/0 1-2/1 1-4/3 1-5/4');
     expect(route.descending.map((n) => `${6 - n.stringIndex}-${n.fret}/${n.finger}`).join(' ')).toBe(
       '1-5/4 1-3/2 1-1/1 1-0/0 2-3/3 2-1/1 2-0/0 3-2/2 3-0/0 4-3/3 4-2/2 4-0/0 5-3/3 5-2/2 5-0/0',
     );
   });
   it('E major, 3 octaves', () => {
-    expect(golden(getScaleRoute(N('E'), 'major', { octaves: 3 }))).toBe(
+    expect(golden(routeOf(N('E'), 'major', { octaves: 3 }))).toBe(
       '6-0/0 6-2/2 6-4/4 5-0/0 5-2/2 5-4/4 4-1/1 4-2/2 4-4/4 3-1/1 3-2/2 2-0/0 2-2/2 2-4/4 1-0/0 1-2/2 1-4/4 1-5/1 1-7/3 1-9/1 1-11/3 1-12/4',
     );
-    expect(golden(getScaleRoute(N('E'), 'major', { octaves: 3, openStrings: 'avoid' }))).toBe(
+    expect(golden(routeOf(N('E'), 'major', { octaves: 3, openStrings: 'avoid' }))).toBe(
       '6-0/0 6-2/1 6-4/3 6-5/4 5-2/1 5-4/3 5-6/3 5-7/4 4-4/1 4-6/3 4-7/4 3-4/1 3-6/3 2-4/1 2-5/2 2-7/4 1-4/1 1-5/2 1-7/4 1-9/1 1-11/3 1-12/4',
     );
   });

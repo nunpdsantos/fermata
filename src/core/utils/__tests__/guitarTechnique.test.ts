@@ -43,6 +43,27 @@ const ROOTS = (type: ScaleType) => Array.from({ length: 12 }, (_, pc) => preferr
 const SCALES: ScaleType[] = ['major', 'natural_minor', 'harmonic_minor', 'melodic_minor'];
 const STYLES = ['low-positions', 'avoid'] as const;
 const ARPEGGIO_RULES = { maxStringStep: 1, allowFingerChange: true, allowSharedFrets: true };
+/** Exhaustive tests get room on slow CI runners (the default is 5 s). */
+const EXHAUSTIVE = 60_000;
+
+/**
+ * Broken chords and their availability are pure and deterministic, so the
+ * broken-chord tests share one computation per input instead of each
+ * recomputing the same enumeration (CI timing, PR #30).
+ */
+const bcCache = new Map<string, TechniqueExercise | null>();
+const avCache = new Map<string, ReturnType<typeof brokenChordAvailability>>();
+const bcKey = (r: Note, mode: string, o: object) => `${nameOf(r)}|${mode}|${JSON.stringify(o)}`;
+function bc(r: Note, mode: 'major' | 'minor', o: Parameters<typeof brokenChord>[2] = {}): TechniqueExercise | null {
+  const k = bcKey(r, mode, o);
+  if (!bcCache.has(k)) bcCache.set(k, brokenChord(r, mode, o));
+  return bcCache.get(k)!;
+}
+function bcAvailability(r: Note, mode: 'major' | 'minor', o: Parameters<typeof brokenChord>[2] = {}) {
+  const k = bcKey(r, mode, o);
+  if (!avCache.has(k)) avCache.set(k, brokenChordAvailability(r, mode, o));
+  return avCache.get(k)!;
+}
 const place = (n: { stringIndex: number; fret: number; finger: number }) => [n.stringIndex, n.fret, n.finger];
 
 // ─── Interval scales ────────────────────────────────────────────────────────
@@ -126,7 +147,7 @@ describe('interval scales — 12 roots × 4 scale forms × 3rds/6ths/octaves/10t
             }
           }
         }
-      });
+      }, EXHAUSTIVE);
     }
   }
   it('2 octaves where the neck holds them: same rules', () => {
@@ -140,7 +161,7 @@ describe('interval scales — 12 roots × 4 scale forms × 3rds/6ths/octaves/10t
       }
     }
     expect(built).toBeGreaterThan(0);
-  });
+  }, EXHAUSTIVE);
   it('tonicVoice overrides the convention (6ths with the tonic below)', () => {
     const C: Note = { natural: 'C', accidental: '' };
     const ex = intervalScale(C, 'major', 'sixths', 'together', { tonicVoice: 'lower' })!;
@@ -166,7 +187,7 @@ describe('interval scales — 12 roots × 4 scale forms × 3rds/6ths/octaves/10t
     }
     // D major used to climb strings 4–2 to the 15th fret.
     expect(Math.max(...techniqueNotes(intervalScale({ natural: 'D', accidental: '' }, 'major', 'octaves', 'together')!).map((n) => n.fret))).toBe(10);
-  });
+  }, EXHAUSTIVE);
   it('is deterministic and rejects non-heptatonic scales', () => {
     const C: Note = { natural: 'C', accidental: '' };
     expect(intervalScale(C, 'major', 'tenths', 'together')).toEqual(intervalScale(C, 'major', 'tenths', 'together'));
@@ -244,7 +265,7 @@ describe('arpeggios — 5 types × 12 roots (oracle)', () => {
         expect(ex, `${nameOf(r)} ${t.label}`).not.toBeNull();
         checkArpeggio(ex!, nameOf(r), t, `${nameOf(r)} ${t.label}`);
       }
-    });
+    }, EXHAUSTIVE);
   }
 
   it('every arpeggio is clean: 0 rolled fingers, 0 unflagged barrés (60 exercises)', () => {
@@ -258,7 +279,7 @@ describe('arpeggios — 5 types × 12 roots (oracle)', () => {
       }
     }
     for (const t of ARP_TYPES) expect(report[t.label], t.label).toEqual({ exercises: 12, clean: 12 });
-  });
+  }, EXHAUSTIVE);
 
   it('closed style is not offered for arpeggios or broken chords (null, like the chromatic scale)', () => {
     for (const t of ARP_TYPES) for (const r of ROOTS(t.spell)) expect(t.make(r, { openStrings: 'avoid' }), `${nameOf(r)} ${t.label}`).toBeNull();
@@ -267,7 +288,7 @@ describe('arpeggios — 5 types × 12 roots (oracle)', () => {
         for (const startOctave of [0, 1]) expect(brokenChord(r, mode, { startOctave, openStrings: 'avoid' })).toBeNull();
       }
     }
-  });
+  }, EXHAUSTIVE);
 
   it('right hand: ppppima for 2-octave tonic arpeggios (Trinity G5), ppimim… for the 7ths', () => {
     const C: Note = { natural: 'C', accidental: '' };
@@ -329,7 +350,7 @@ describe('broken chords (ABRSM pattern, with over-ringing)', () => {
       for (const r of ROOTS(mode === 'major' ? 'major' : 'natural_minor')) {
         for (const startOctave of [0, 1]) {
           const label = `${nameOf(r)} ${mode} +${startOctave}`;
-          const ex = brokenChord(r, mode, { startOctave });
+          const ex = bc(r, mode, { startOctave });
           const expected = oracleBrokenChord(nameOf(r), mode, 1, lowest(nameOf(r)) + 12 * startOctave);
           const groupsOk = Array.from({ length: (expected.length - 1) / 3 }, (_, g) => expected.slice(3 * g, 3 * g + 3)).every(([a, b, c]) =>
             groupStoppable(a.midi, b.midi, c.midi),
@@ -371,38 +392,40 @@ describe('broken chords (ABRSM pattern, with over-ringing)', () => {
         .concat(['C', 'D', 'Eb', 'B'].flatMap((k) => [`${k} major +1`, `${k} minor +1`]), ['Db major +1', 'C# minor +1'])
         .sort(),
     );
-  });
-  it('every group is a grip a hand can hold — all spellings × major/minor × 1–2 octaves × both starts', () => {
-    const LETTERS = ['C', 'D', 'E', 'F', 'G', 'A', 'B'] as const;
-    let fingered = 0;
-    let groupsChecked = 0;
-    for (const l of LETTERS) {
-      for (const a of ['', 'b', '#'] as const) {
-        const r: Note = { natural: l, accidental: a };
-        for (const mode of ['major', 'minor'] as const) {
-          for (const octaves of [1, 2]) {
+  }, EXHAUSTIVE);
+  // Split by mode × octave count so each test stays short on slow runners;
+  // the last one checks the four together covered 66 exercises / 468 groups.
+  const hold = { fingered: 0, groups: 0 };
+  for (const mode of ['major', 'minor'] as const) {
+    for (const octaves of [1, 2]) {
+      it(`every group is a grip a hand can hold — all spellings, both starts — ${mode}, ${octaves} octave(s)`, () => {
+        const LETTERS = ['C', 'D', 'E', 'F', 'G', 'A', 'B'] as const;
+        for (const l of LETTERS) {
+          for (const a of ['', 'b', '#'] as const) {
+            const r: Note = { natural: l, accidental: a };
             for (const startOctave of [0, 1]) {
               const label = `${nameOf(r)} ${mode} ${octaves}oct +${startOctave}`;
-              const ex = brokenChord(r, mode, { octaves, startOctave });
-              const av = brokenChordAvailability(r, mode, { octaves, startOctave });
+              const ex = bc(r, mode, { octaves, startOctave });
+              const av = bcAvailability(r, mode, { octaves, startOctave });
               expect(av.available, `${label}: availability agrees with brokenChord`).toBe(ex !== null);
               if (ex === null) {
                 expect(av.available ? null : av.reason, label).toMatch(/^(bass-notes-on-one-string|beyond-neck|no-holdable-grip)$/);
                 continue;
               }
-              fingered++;
+              hold.fingered++;
               const notes = techniqueNotes(ex);
               const groupOf = notes.map((_, i) => (i < notes.length - 1 ? Math.floor(i / 3) : undefined));
               const groupStart = notes.map((_, i) => i === notes.length - 1 || i % 3 === 0);
               checkPlayableLine(notes, label, { ...ARPEGGIO_RULES, maxStringStep: 2, groups: groupOf, leaps: groupStart.map((st) => (st ? 3 : undefined)), jumpOk: groupStart });
-              groupsChecked += (notes.length - 1) / 3;
+              hold.groups += (notes.length - 1) / 3;
             }
           }
         }
-      }
+      }, EXHAUSTIVE);
     }
-    expect(fingered).toBe(66);
-    expect(groupsChecked).toBe(468);
+  }
+  it('…the grip checks covered every fingered broken chord (66 exercises, 468 groups)', () => {
+    expect(hold).toEqual({ fingered: 66, groups: 468 });
   });
 
   it('the oracle rejects grips no hand can hold (mutation check on the grips the review found)', () => {
@@ -442,7 +465,7 @@ describe('broken chords (ABRSM pattern, with over-ringing)', () => {
     for (const mode of ['major', 'minor'] as const) {
       for (const r of ROOTS(mode === 'major' ? 'major' : 'natural_minor')) {
         for (const startOctave of [0, 1]) {
-          const av = brokenChordAvailability(r, mode, { startOctave });
+          const av = bcAvailability(r, mode, { startOctave });
           if (av.available) continue;
           // Every one of these keys works from the other start.
           expect(av.suggestStartOctave, `${nameOf(r)} ${mode} +${startOctave}`).toBe(1 - startOctave);
@@ -453,7 +476,7 @@ describe('broken chords (ABRSM pattern, with over-ringing)', () => {
     expect(Object.keys(reasons).sort()).toEqual(['bass-notes-on-one-string', 'beyond-neck']);
     expect(reasons['bass-notes-on-one-string'].sort()).toEqual(['E major +0', 'E minor +0', 'F major +0', 'F minor +0', 'F# major +0', 'F# minor +0']);
     expect(reasons['beyond-neck']).toHaveLength(10);
-  });
+  }, EXHAUSTIVE);
 
   it('the open-position keys ring on three strings in every group: G and C major, A minor; E minor from an octave up (ABRSM Grade 5)', () => {
     const N = (s: string): Note => ({ natural: s[0] as Note['natural'], accidental: s.slice(1) as Note['accidental'] });
@@ -500,7 +523,7 @@ describe('chromatic scale (ABRSM)', () => {
       ex.events.forEach((e) => expect(e.rh[0] === 'p', `${nameOf(start)} rh`).toBe(e.notes[0].midi < first + 12));
       expect(ex.rightHand).toMatchObject({ strokes: ['tirando'], pattern: 'p + im', basis: 'syllabus' });
     }
-  });
+  }, EXHAUSTIVE);
   it('closed-position style is not offered (it would need unguided cross-string shifts)', () => {
     expect(chromaticScale({ natural: 'B', accidental: '' }, { openStrings: 'avoid' })).toBeNull();
   });
