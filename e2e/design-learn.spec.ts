@@ -151,6 +151,11 @@ async function learnScreens(browser: Browser, v: Viewport, theme: string, combo:
         if (raised) {
           const toast = page.locator('.toast-card').first();
           await expect(toast).toBeVisible();
+          await page.waitForTimeout(400); // settled
+          // Its Dismiss button is a full tap target (44 px on touch, 36 with a mouse).
+          const tap = v.touch ? 44 : 36;
+          const dismiss = (await toast.getByRole('button').first().boundingBox())!;
+          expect.soft(Math.min(dismiss.width, dismiss.height), `${combo}: toast Dismiss ${dismiss.width}×${dismiss.height} < ${tap}`).toBeGreaterThanOrEqual(tap - 0.5);
           const t = (await toast.boundingBox())!;
           // The answers and Submit (the verdict above them may be covered for a moment, as in Drill).
           const thumb = (await page.getByTestId('check-answer-zone').boundingBox())!;

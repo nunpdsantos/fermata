@@ -42,9 +42,12 @@ export function ToastContainer() {
           <m.div
             key={t.id}
             layout
-            initial={{ opacity: 0, y: 12, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.97 }}
+            // No scale in or out: the Dismiss button stays a full --tap
+            // square at every frame (a toast caught mid-exit at scale 0.97
+            // measured 42.7 px on touch — W4b design sweep).
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
             transition={SPRING_SNAPPY}
             className="pointer-events-auto"
           >

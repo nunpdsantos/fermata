@@ -1,4 +1,4 @@
-import { test, expect, type Browser, type Page } from '@playwright/test';
+import { test, expect, type Browser, type Locator, type Page } from '@playwright/test';
 import * as fs from 'node:fs';
 import { auditPage, type AuditResult } from './helpers/designAudit';
 
@@ -528,6 +528,14 @@ async function seedSprintItems(page: Page): Promise<boolean> {
   return true;
 }
 
+/** Every button of a toast is at least the tap size (44 px on touch, 36 px with a mouse). */
+async function toastButtonsAtTapSize(page: Page, toast: Locator, where: string) {
+  const tap = await page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tap')) || 36);
+  const sizes = await toast.locator('button').evaluateAll((bs) => bs.map((b) => { const r = b.getBoundingClientRect(); return [Math.round(r.width * 10) / 10, Math.round(r.height * 10) / 10, b.getAttribute('aria-label') ?? b.textContent]; }));
+  expect(sizes.length, `${where}: the toast has a button`).toBeGreaterThan(0);
+  for (const [w, h, name] of sizes) expect.soft(Math.min(Number(w), Number(h)), `${where}: toast button "${name}" is ${w}×${h}, the tap size is ${tap}`).toBeGreaterThanOrEqual(tap - 0.5);
+}
+
 async function exportToast(page: Page): Promise<Box> {
   const download = page.waitForEvent('download');
   await openSettings(page);
@@ -542,6 +550,8 @@ async function exportToast(page: Page): Promise<Box> {
   });
   const vp = page.viewportSize()!;
   expect.soft(box.top >= 0 && box.left >= 0 && box.bottom <= vp.height + 0.5 && box.right <= vp.width + 0.5, `backup toast on screen ${JSON.stringify(box)}`).toBe(true);
+  await page.waitForTimeout(500); // settled
+  await toastButtonsAtTapSize(page, toast, 'backup toast');
   // Dismiss it, so a later screen is not audited mid fade-out.
   await toast.getByRole('button', { name: 'Dismiss' }).click();
   await expect(toast).toHaveCount(0);
