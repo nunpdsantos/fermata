@@ -8,10 +8,8 @@ import { ChordWorkspace } from '../components/theory/ChordWorkspace.tsx';
 import { CircleOfFifths } from '../components/theory/CircleOfFifths.tsx';
 import { useKeyContext } from '../hooks/useKeyContext.ts';
 import { noteToString } from '../core/types/music.ts';
-import { SCALE_TYPE_NAMES } from '../core/constants/scales.ts';
 import { useAppStore } from '../state/store.ts';
-import { DEGREE_COLORS } from '../design/tokens/colors.ts';
-import { useDegreeColorsEnabled } from '../hooks/useDegreeColors.ts';
+import { Button } from '../components/ui/Button.tsx';
 import {
   playScale,
   resumeAudio,
@@ -52,13 +50,6 @@ export function ExploreView() {
     playScale(scale.notes, baseOctave, true, false, 0.25, () => {}, () => {}, config);
   }, [scale, synthPreset, baseOctave]);
 
-  const degreeColorsOn = useDegreeColorsEnabled();
-  const tonicColor = degreeColorsOn ? DEGREE_COLORS[1] : 'var(--accent)';
-  const tonicAlpha = (hex: string): string =>
-    degreeColorsOn
-      ? `${DEGREE_COLORS[1]}${hex}`
-      : `color-mix(in srgb, var(--accent) ${Math.round((parseInt(hex, 16) / 255) * 100)}%, transparent)`;
-
   return (
     <div className="flex h-full">
       {/* Main content */}
@@ -75,87 +66,63 @@ export function ExploreView() {
           </m.div>
 
           {/* ─── Hero: Current Scale Context ───────────────────── */}
-          <m.div
-            variants={fadeUp}
-            className="relative rounded-2xl overflow-hidden"
-            style={{
-              backgroundColor: tonicAlpha('06'),
-              border: `1px solid ${tonicAlpha('12')}`,
-              boxShadow: 'var(--shadow-sm)',
-            }}
-          >
-            {/* Subtle gradient wash */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background: `radial-gradient(ellipse at 20% 50%, ${tonicAlpha('08')} 0%, transparent 60%)`,
-              }}
-            />
-
-            <div className="relative px-5 max-sm:px-3 py-4 max-sm:py-3 flex items-center justify-between max-sm:flex-col max-sm:items-start max-sm:gap-3">
-              <div>
-                <h2 className="text-xl font-bold learn-serif" style={{ color: 'var(--text)' }}>
+          <m.div variants={fadeUp} className="card-base px-5 max-sm:px-4 py-4">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div className="min-w-0">
+                <h2 className="learn-serif" style={{ color: 'var(--text)' }}>
                   {noteToString(scale.root)}{' '}
-                  <span className="font-normal" style={{ color: 'var(--text-muted)' }}>
-                    {SCALE_TYPE_NAMES[selectedScale]}
+                  <span style={{ color: 'var(--text-muted)' }}>
+                    {t(`scaleName.${selectedScale}`)}
                   </span>
                 </h2>
-                <p className="text-xs mt-1 explore-prose" style={{ color: 'var(--text-dim)' }}>
+                <p className="text-caption mt-1 explore-prose" style={{ color: 'var(--text-dim)' }}>
                   {t('explore.notes', { count: scale.notes.length })} &middot;{' '}
                   {scale.notes.map((n) => noteToString(n)).join(' ')}
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 max-sm:flex-col max-sm:items-stretch max-sm:gap-1.5">
-                <button
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Play is THE action here: primary (walnut fill, --on-accent
+                    text). It used to be tonic-blue text at 2.1:1 (W11-A). */}
+                <Button
+                  variant="primary"
                   onClick={handleQuickPlay}
-                  className="flex items-center gap-1.5 px-3 py-1.5 max-sm:py-2 rounded-xl text-xs font-semibold transition-all duration-150 hover:scale-[1.03] active:scale-[0.97] max-sm:justify-center"
-                  style={{
-                    backgroundColor: tonicAlpha('15'),
-                    color: tonicColor,
-                    border: `1px solid ${tonicAlpha('30')}`,
-                  }}
                   aria-label={t('explore.playScaleAscending')}
+                  startIcon={
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
+                  }
                 >
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
-                    <polygon points="5 3 19 12 5 21 5 3" />
-                  </svg>
                   {t('common.play')}
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={async () => {
                     const text = generateScaleSummary(scale, diatonicChords, selectedChord);
                     const ok = await copyToClipboard(text);
                     if (ok) toast(t('toast.copiedToClipboard'), 'success');
                   }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 max-sm:py-2 rounded-xl text-xs font-medium transition-all duration-150 active:scale-[0.97] max-sm:justify-center"
-                  style={{
-                    color: 'var(--text-muted)',
-                    backgroundColor: 'color-mix(in srgb, var(--card) 40%, transparent)',
-                    border: '1px solid color-mix(in srgb, var(--border) 40%, transparent)',
-                  }}
                   aria-label={t('explore.copyScaleSummary')}
+                  startIcon={
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                  }
                 >
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                  </svg>
                   {t('common.copy')}
-                </button>
-                <button
+                </Button>
+                <Button
+                  className="no-print"
                   onClick={() => window.print()}
-                  className="flex items-center gap-1.5 px-3 py-1.5 max-sm:py-2 rounded-xl text-xs font-medium transition-all duration-150 active:scale-[0.97] no-print max-sm:justify-center"
-                  style={{
-                    color: 'var(--text-muted)',
-                    backgroundColor: 'color-mix(in srgb, var(--card) 40%, transparent)',
-                    border: '1px solid color-mix(in srgb, var(--border) 40%, transparent)',
-                  }}
                   aria-label={t('explore.printScaleDiagram')}
+                  startIcon={
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polyline points="6 9 6 2 18 2 18 9" /><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><rect x="6" y="14" width="12" height="8" />
+                    </svg>
+                  }
                 >
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="6 9 6 2 18 2 18 9" /><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><rect x="6" y="14" width="12" height="8" />
-                  </svg>
                   {t('common.print')}
-                </button>
+                </Button>
               </div>
             </div>
           </m.div>
@@ -176,7 +143,7 @@ export function ExploreView() {
           {/* ─── Chord Workspace + Circle of Fifths ────────────── */}
           <m.div
             variants={fadeUp}
-            className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6"
+            className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6"
           >
             <ChordWorkspace />
             <div>

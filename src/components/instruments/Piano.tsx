@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-syntax -- legacy instrument palette.
-   Migration deferred alongside PianoKey. */
 import { useMemo, useCallback, useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -12,8 +10,9 @@ import { PianoKeyComponent } from './PianoKey.tsx';
 import { useAudio } from '../../hooks/useAudio.ts';
 import { useAppStore } from '../../state/store.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
-import { useIsMobile, useIsCompact } from '../../hooks/useMediaQuery.ts';
+import { useIsMobile, useIsCompact, useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { ScrollStrip } from './ScrollStrip.tsx';
+import { ChipGroup } from '../ui/ChoiceChip.tsx';
 
 const START_OCTAVE = 0;
 const END_OCTAVE = 8;
@@ -94,7 +93,11 @@ export function Piano() {
   // and the key stayed shown as pressed).
   const pendingNoteOns = useRef<Map<number, { released: boolean }>>(new Map());
 
-  const mobile = useIsMobile();
+  const phoneWidth = useIsMobile();
+  // A phone held sideways (short + touch) gets the phone keyboard: the
+  // tablet keys (160 px) left only a sliver at the sheet's Half (W11-A review).
+  const shortTouch = useMediaQuery('(max-height: 500px) and (pointer: coarse)');
+  const mobile = phoneWidth || shortTouch;
   const compact = useIsCompact();
 
   const keyWidth = mobile ? KEY_WIDTH_MOBILE : compact ? KEY_WIDTH_TABLET : KEY_WIDTH_DESKTOP;
@@ -400,30 +403,21 @@ export function Piano() {
   }, [blackKeys, whiteKeys, keys, keyWidth, blackKeyOffset]);
 
   return (
-    <div role="group" aria-label={t('instrument.pianoKeyboard')} className="w-full" style={{ backgroundColor: 'var(--bg)', borderTop: '1px solid var(--border-subtle)' }}>
-      {/* Octave selector strip */}
-      <div role="tablist" aria-label={t('instrument.baseOctave')} className="flex items-center gap-1 max-sm:gap-0.5 px-3 max-sm:px-2 py-1.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-        <span className="text-[10px] uppercase tracking-wider mr-1" style={{ color: 'var(--text-dim)' }}>{t('play.octave')}</span>
-        {/* Only octaves that keep the scale (and chord) on the 88 keys — C8 never
-            does, C0 only for A/B♭/B roots — so no dead tabs (review item 6). */}
-        {[0, 1, 2, 3, 4, 5, 6, 7, 8].filter((oct) => octaveFits[oct]).map((oct) => {
-          const isActive = baseOctave === oct;
-          return (
-            <button
-              key={oct}
-              role="tab"
-              aria-selected={isActive}
-              onClick={() => setBaseOctave(oct)}
-              className="px-2 py-0.5 rounded text-[10px] font-medium transition-colors"
-              style={{
-                backgroundColor: isActive ? 'var(--accent)' : 'transparent',
-                color: isActive ? '#000' : 'var(--text-dim)',
-              }}
-            >
-              C{oct}
-            </button>
-          );
-        })}
+    <div role="group" aria-label={t('instrument.pianoKeyboard')} className="w-full flex flex-col" style={{ backgroundColor: 'var(--bg)', borderTop: '1px solid var(--border-subtle)' }}>
+      {/* Octave chooser: a ChipGroup (D-28 choice chip). Only octaves that
+          keep the scale (and chord) on the 88 keys — C8 never does, C0 only
+          for A/B♭/B roots — so no dead chips (review item 6). */}
+      {/* On a short screen it comes AFTER the keys (piano-octave-row in
+          index.css), so the keys are what the sheet shows first. */}
+      <div className="piano-octave-row flex items-center gap-2 px-3 max-sm:px-2 py-1.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+        <span className="type-label shrink-0" aria-hidden="true">{t('play.octave')}</span>
+        <ChipGroup
+          label={t('instrument.baseOctave')}
+          className="chip-row-phone min-w-0"
+          value={baseOctave}
+          onChange={setBaseOctave}
+          options={[0, 1, 2, 3, 4, 5, 6, 7, 8].filter((oct) => octaveFits[oct]).map((oct) => ({ value: oct, label: `C${oct}` }))}
+        />
       </div>
 
       {/* Piano keyboard with drag-to-scroll */}

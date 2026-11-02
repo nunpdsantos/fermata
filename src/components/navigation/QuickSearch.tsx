@@ -164,7 +164,7 @@ export function QuickSearch() {
                   className="flex-1 bg-transparent text-sm outline-none"
                   style={{ color: 'var(--text)' }}
                 />
-                <kbd className="text-[10px] px-1.5 py-0.5 rounded" style={{ color: 'var(--text-dim)', backgroundColor: 'var(--card)' }}>
+                <kbd className="text-caption px-1.5 py-0.5 rounded" style={{ color: 'var(--text-dim)', backgroundColor: 'var(--card)' }}>
                   ESC
                 </kbd>
               </div>
@@ -174,7 +174,7 @@ export function QuickSearch() {
                     <button
                       key={`${r.type}-${r.label}-${i}`}
                       onClick={() => executeResult(i)}
-                      className="w-full text-left px-4 py-2.5 transition-colors flex items-center justify-between"
+                      className="w-full text-left px-4 py-2.5 min-h-(--tap) transition-colors flex items-center justify-between"
                       style={{
                         backgroundColor: i === selectedIdx ? 'var(--card-hover)' : 'transparent',
                       }}
@@ -182,7 +182,7 @@ export function QuickSearch() {
                     >
                       <span className="text-sm" style={{ color: 'var(--text)' }}>{r.label}</span>
                       <span
-                        className="text-[10px] px-1.5 py-0.5 rounded font-medium"
+                        className="text-caption px-1.5 py-0.5 rounded font-medium"
                         style={{
                           backgroundColor: degreeColorsOn
                             ? (

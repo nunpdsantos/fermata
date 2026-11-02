@@ -83,6 +83,11 @@ function isTranslatedContent(modulePath: string): boolean {
 }
 
 export default defineConfig({
+  // The build's UTC date, shown in Settings ("Fermata · build 2026-10-31",
+  // W11-A). src/buildInfo.ts reads it; unit tests run without it.
+  define: {
+    __BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)),
+  },
   preview: {
     headers: productionHeaders(),
   },

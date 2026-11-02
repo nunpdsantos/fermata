@@ -19,6 +19,7 @@ import type { DrillFamily, DrillItem, ItemSrsState } from '../../core/types/dril
 import { mulberry32, seededShuffle } from '../../core/utils/prng';
 import { gradeAnswer, type AnswerPayload } from './grading';
 import { DrillInput } from './DrillInput';
+import { useToastAvoid } from '../layout/toastLayout';
 import { itemPrompt, toContentLanguage } from './drillText';
 import {
   eligibleSprintItems,
@@ -129,6 +130,8 @@ function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t 
   // Monotonic question counter — drives both the pool index (modulo recycle)
   // and the input `key` so each question remounts a fresh input instance.
   const [step, setStep] = useState(0);
+  const answersRef = useRef<HTMLDivElement>(null);
+  useToastAvoid(answersRef);
 
   // Latest correct count, mirrored into a ref so the finish effect can read the
   // final score without re-subscribing the recorder each answer. Written in an
@@ -225,7 +228,7 @@ function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t 
           type="button"
           onClick={onExit}
           className="min-h-[44px] px-6 rounded-lg text-sm font-medium transition-colors"
-          style={{ backgroundColor: 'var(--accent)', color: 'var(--bg)' }}
+          style={{ backgroundColor: 'var(--accent)', color: 'var(--on-accent)' }}
         >
           {t('drill.sprint.exit')}
         </button>
@@ -254,7 +257,7 @@ function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t 
         <button
           type="button"
           onClick={onExit}
-          className="flex items-center justify-center w-9 h-9 rounded-lg transition-colors"
+          className="flex items-center justify-center w-(--tap) h-(--tap) rounded-lg transition-colors"
           style={{ color: 'var(--text-dim)' }}
           aria-label={t('drill.endSession')}
         >
@@ -270,8 +273,11 @@ function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t 
         {itemPrompt(currentItem, t, lang)}
       </p>
 
-      {/* Fresh input per question (key by step). Always 'answering' phase. */}
-      <DrillInput key={step} item={currentItem} phase="answering" onAnswer={handleAnswer} />
+      {/* Fresh input per question (key by step). Always 'answering' phase.
+          Toasts never cover it (useToastAvoid). */}
+      <div ref={answersRef}>
+        <DrillInput key={step} item={currentItem} phase="answering" onAnswer={handleAnswer} />
+      </div>
     </div>
   );
 }

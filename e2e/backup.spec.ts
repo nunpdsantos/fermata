@@ -1,11 +1,18 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 /**
  * Backup round trip (audit F-09 / R-02): export the persisted stores, wipe
- * them, import the file, and verify the data returns intact.
+ * them, import the file, and verify the data returns intact. Export / Import
+ * live in Settings ("⋯" → Settings → Your data) since W11-A.
  */
 
 const PROGRESS_KEY = 'music-theory-progress';
+
+async function openSettings(page: Page) {
+  await page.getByRole('button', { name: 'More', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Settings' }).click();
+  await expect(page.getByRole('dialog', { name: 'Settings' })).toBeVisible();
+}
 
 test.describe('Progress backup', () => {
   test('export → wipe → import restores Learn progress', async ({ page }) => {
@@ -26,10 +33,10 @@ test.describe('Progress backup', () => {
       [PROGRESS_KEY, seeded] as const,
     );
 
-    // Export from the Backup menu.
-    await page.getByRole('button', { name: 'Backup' }).click();
+    // Export from Settings.
+    await openSettings(page);
     const downloadPromise = page.waitForEvent('download');
-    await page.getByRole('menuitem', { name: 'Export backup' }).click();
+    await page.getByRole('button', { name: 'Export backup' }).click();
     const download = await downloadPromise;
     const filePath = await download.path();
     expect(filePath).toBeTruthy();
@@ -40,10 +47,14 @@ test.describe('Progress backup', () => {
 
     // Import: accept the confirm dialog; the app writes to localStorage and
     // reloads itself. Poll the store rather than racing the self-reload.
+    // The reload is COUNTED (W11-A): the store check alone also passed when
+    // the import wrote localStorage but never reloaded the app.
+    let navigations = 0;
+    page.on('framenavigated', (frame) => { if (frame === page.mainFrame()) navigations++; });
     page.on('dialog', (dialog) => void dialog.accept());
-    await page.getByRole('button', { name: 'Backup' }).click();
-    await page.getByRole('menuitem', { name: 'Import backup' }).click();
-    await page.locator('input[type="file"]').setInputFiles(filePath!);
+    const fileChooser = page.waitForEvent('filechooser');
+    await page.getByRole('button', { name: 'Import backup' }).click();
+    await (await fileChooser).setFiles(filePath!);
 
     // A poll that lands while the page is reloading itself loses its
     // execution context — that is "not yet", not a failure (seen once in a
@@ -57,6 +68,7 @@ test.describe('Progress backup', () => {
         { timeout: 10_000 },
       )
       .toEqual(['l1u1m1']);
+    await expect.poll(() => navigations, { timeout: 10_000 }).toBeGreaterThan(0);
     await expect(page.locator('#root')).not.toBeEmpty();
   });
 
@@ -76,9 +88,10 @@ test.describe('Progress backup', () => {
     };
     let dialogs = 0;
     page.on('dialog', (dialog) => { dialogs++; void dialog.dismiss(); });
-    await page.getByRole('button', { name: 'Backup' }).click();
-    await page.getByRole('menuitem', { name: 'Import backup' }).click();
-    await page.locator('input[type="file"]').setInputFiles({
+    await openSettings(page);
+    const fileChooser = page.waitForEvent('filechooser');
+    await page.getByRole('button', { name: 'Import backup' }).click();
+    await (await fileChooser).setFiles({
       name: 'bad-backup.json',
       mimeType: 'application/json',
       buffer: Buffer.from(JSON.stringify(bad)),

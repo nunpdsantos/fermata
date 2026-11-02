@@ -92,7 +92,7 @@ describe('W1-09 — root spelling chosen by mode', () => {
     for (const root of ['Gb', 'Db', 'C#', 'D#']) {
       select(root, 'major');
       const { container } = render(<KeySelector />);
-      const pressed = rootButtons(container).filter((b) => b.getAttribute('aria-pressed') === 'true');
+      const pressed = rootButtons(container).filter((b) => b.getAttribute('aria-checked') === 'true');
       expect(pressed.map((b) => b.textContent), root).toEqual([root]);
       expect(pcOf(pressed[0].getAttribute('data-root')!)).toBe(pcOf(root));
       cleanup();
@@ -144,7 +144,7 @@ describe('W1-09 — root spelling chosen by mode', () => {
     for (const root of ['C', 'C#']) {
       select(root, 'major');
       const { getByTestId } = render(<KeySelector />);
-      expect(getByTestId('root-label-row').className, root).toContain('h-[22px]');
+      expect(getByTestId('root-label-row').className, root).toContain('h-(--tap)');
       cleanup();
     }
   });

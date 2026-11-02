@@ -61,9 +61,9 @@ describe('ChordWorkspace — mode tabs', () => {
     render(<ChordWorkspace />);
     await screen.findByTestId('staff-mock'); // flush lazy staff
 
-    expect(screen.getByRole('button', { name: 'Diatonic' })).toBeDefined();
-    expect(screen.getByRole('button', { name: 'All Chords' })).toBeDefined();
-    expect(screen.getByRole('button', { name: 'Build' })).toBeDefined();
+    expect(screen.getByRole('tab', { name: 'Diatonic' })).toBeDefined();
+    expect(screen.getByRole('tab', { name: 'All Chords' })).toBeDefined();
+    expect(screen.getByRole('tab', { name: 'Build' })).toBeDefined();
   });
 
   it('clicking the "All" tab swaps the diatonic grid for the chord browser', async () => {
@@ -73,7 +73,7 @@ describe('ChordWorkspace — mode tabs', () => {
     // Diatonic grid is the default picker.
     expect(screen.getByRole('group', { name: 'Diatonic chords' })).toBeDefined();
 
-    fireEvent.click(screen.getByRole('button', { name: 'All Chords' }));
+    fireEvent.click(screen.getByRole('tab', { name: 'All Chords' }));
 
     // ChordGrid is gone, ChordBrowser is shown. The triads category (default)
     // renders an "Augmented" pill that the C-major diatonic grid never shows.

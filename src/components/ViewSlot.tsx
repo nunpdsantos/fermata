@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ErrorBoundary } from './ErrorBoundary.tsx';
 import { applyUpdateOrReload } from '../hooks/usePWA.ts';
 import { isChunkLoadError } from '../utils/chunkLoadError.ts';
+import { Button } from './ui/Button.tsx';
 
 export type ViewLoader = () => Promise<{ default: ComponentType }>;
 
@@ -19,13 +20,11 @@ function ViewErrorFallback({ onRetry, sizeClassName }: { onRetry: () => void; si
   return (
     <div className={`flex-1 flex items-center justify-center ${sizeClassName ?? ''}`}>
       <div className="text-center p-8">
-        <p className="text-zinc-400 text-sm mb-4">{t('error.viewError')}</p>
-        <button
-          onClick={onRetry}
-          className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-500 transition-colors"
-        >
+        {/* Tokens, not the stray Tailwind blue / zinc (W11-A). */}
+        <p className="text-ui mb-4" style={{ color: 'var(--text-muted)' }}>{t('error.viewError')}</p>
+        <Button variant="primary" onClick={onRetry}>
           {t('common.tryAgain')}
-        </button>
+        </Button>
       </div>
     </div>
   );

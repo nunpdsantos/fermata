@@ -98,8 +98,9 @@ describe('W1-05 / W1-06 / W1-11 — Scale Degrees bar', () => {
           if (!lm) { bad.push(`${root} ${type}: "${label}" not b3 style`); continue; }
           const num = lm[2] === 'R' ? 1 : Number(lm[2]);
           if (spellDegree(root, lm[2] === 'R' ? '1' : label) !== note) bad.push(`${root} ${type}: "${label}" over ${note}`);
+          // The degree colour is the label's FILL (dark ink on it, D-28).
           const labelSpan = b.querySelectorAll('span')[1] as HTMLElement;
-          if (labelSpan.style.color !== hexToRgb(DEGREE_COLORS[num as keyof typeof DEGREE_COLORS])) bad.push(`${root} ${type}: colour of ${label}`);
+          if (labelSpan.style.backgroundColor !== hexToRgb(DEGREE_COLORS[num as keyof typeof DEGREE_COLORS])) bad.push(`${root} ${type}: colour of ${label}`);
         }
         cleanup();
       }

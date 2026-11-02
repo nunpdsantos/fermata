@@ -131,7 +131,7 @@ export function ReviewQueue({ progress, onStartReview }: ReviewQueueProps) {
           {t('review.title')}
         </h3>
         <span
-          className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+          className="text-caption font-semibold px-1.5 py-0.5 rounded-full"
           style={{ backgroundColor: `${AMBER}20`, color: AMBER_TEXT }}
         >
           {dueModuleIds.length}
@@ -179,17 +179,17 @@ export function ReviewQueue({ progress, onStartReview }: ReviewQueueProps) {
                     </svg>
                   </span>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium truncate" style={{ color: 'var(--text)' }} title={position}>
+                    <p className="text-sm font-medium" style={{ color: 'var(--text)' }} title={position}>
                       {moduleTitle}
                     </p>
-                    <p className="text-[10px]" style={{ color: 'var(--text-dim)' }}>
+                    <p className="text-caption" style={{ color: 'var(--text-dim)' }}>
                       {levelTitle} &middot; {t('review.interval', { interval })}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <span
-                    className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                    className="text-caption font-semibold px-2 py-0.5 rounded-full"
                     style={{ backgroundColor: `${AMBER}20`, color: AMBER_TEXT }}
                   >
                     {reviewStatus}
@@ -210,7 +210,7 @@ export function ReviewQueue({ progress, onStartReview }: ReviewQueueProps) {
       </div>
 
       {remaining > 0 && (
-        <p className="text-[10px] mt-2 text-center" style={{ color: 'var(--text-dim)' }}>
+        <p className="text-caption mt-2 text-center" style={{ color: 'var(--text-dim)' }}>
           {t('review.moreItems', { count: remaining })}
         </p>
       )}

@@ -1,6 +1,5 @@
-/* eslint-disable no-restricted-syntax -- legacy instrument palette (string
-   shading, muted/active markers). Migration deferred alongside PianoKey. */
 import { memo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { noteToString } from '../../core/types/music.ts';
 import type { Note, PitchedNote } from '../../core/types/music.ts';
 import type { ChordShape, FingerNumber } from '../../core/constants/guitarChordShapes.ts';
@@ -75,6 +74,7 @@ export const FretboardString = memo(function FretboardString({
   highlightPcs,
   focusedFret,
 }: FretboardStringProps) {
+  const { t } = useTranslation();
   const openFretNote = getFretNote(stringIdx, 0);
   const openPitched = midiToNote(openFretNote.midiNumber);
   const openColor = getNoteColor(openPitched);
@@ -123,7 +123,7 @@ export const FretboardString = memo(function FretboardString({
       style={{
         width: mobile ? 26 : 24,
         height: mobile ? 26 : 24,
-        fontSize: mobile ? 11 : 10,
+        fontSize: 12,
         backgroundColor: solid ? bg : `${bg}30`,
         color: solid ? readableTextOn(bg) : 'var(--text)',
         border: ring ? '3px solid #ffffff' : `${solid ? 2 : 1.5}px solid ${bg}`,
@@ -138,7 +138,7 @@ export const FretboardString = memo(function FretboardString({
   let openContent: React.ReactNode = null;
   if (mode === 'chord') {
     if (isMuted) {
-      openContent = <span className="font-bold" style={{ fontSize: 14, color: '#ef4444aa' }}>✕</span>;
+      openContent = <span className="font-bold" style={{ fontSize: 14, color: 'var(--danger-text)' }}>✕</span>;
     } else if (isOpenVoicing) {
       openContent = openDot('voicing', openColor ?? ACCENT_FILL, openLabel, isOpenRoot);
     }
@@ -224,14 +224,15 @@ export const FretboardString = memo(function FretboardString({
       {/* Open string / muted indicator */}
       <div
         role="button"
-        aria-label={isMuted ? `String ${6 - stringIdx} muted` : `${openLabel} open string`}
+        aria-label={isMuted ? t('fretboard.mutedStringLabel', { string: 6 - stringIdx }) : t('fretboard.openStringLabel', { note: openLabel })}
+        data-open-string=""
         className="flex items-center justify-center cursor-pointer"
         style={{ width: 40, ...(mobile ? { touchAction: 'none' } : undefined) }}
         onPointerDown={handleOpenPointerDown}
         onClick={handleOpenClick}
       >
         {openContent ?? (
-          <span className="font-mono" style={{ fontSize: 11, color: 'var(--text-dim)' }}>{stringName}</span>
+          <span className="font-mono" style={{ fontSize: 12, color: 'var(--text-dim)' }}>{stringName}</span>
         )}
       </div>
     </div>

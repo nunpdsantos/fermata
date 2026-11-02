@@ -459,7 +459,7 @@ describe('DrillView — settings sub-screen', () => {
     render(<DrillView />);
     fireEvent.click(screen.getByRole('button', { name: 'Drill settings' }));
     act(() => {
-      fireEvent.click(screen.getByRole('button', { name: '40' }));
+      fireEvent.click(screen.getByRole('radio', { name: '40' }));
     });
     expect(useDrillStore.getState().settings.length).toBe(40);
   });
@@ -476,7 +476,7 @@ describe('DrillView — summary navigation to sub-screens', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Mastery map' }));
     });
     // Mastery screen header renders, with a family switch.
-    expect(screen.getByRole('switch', { name: 'Triads' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Triads' })).toBeDefined();
 
     // Back returns to the summary.
     act(() => {

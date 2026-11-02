@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { noteToString, type ChordQuality } from '../../core/types/music.ts';
-import { buildChord, CHORD_QUALITY_NAMES, CHORD_SYMBOLS, CHORD_FORMULAS } from '../../core/constants/chords.ts';
+import { buildChord, CHORD_SYMBOLS, CHORD_FORMULAS } from '../../core/constants/chords.ts';
+import { qualityName } from '../../utils/qualityName.ts';
+import { toContentLanguage } from '../drill/drillText.ts';
+import { ChipGroup } from '../ui/ChoiceChip.tsx';
 import { useAppStore } from '../../state/store.ts';
 
 const CHORD_QUALITY_GROUPS: { labelKey: string; qualities: ChordQuality[] }[] = [
@@ -66,7 +69,8 @@ const SAME_NOTES: Partial<Record<ChordQuality, ChordQuality[]>> = (() => {
 })();
 
 export function ChordBrowser() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = toContentLanguage(i18n.language);
   const selectedKey = useAppStore((s) => s.selectedKey);
   const setSelectedChord = useAppStore((s) => s.setSelectedChord);
   const selectedChord = useAppStore((s) => s.selectedChord);
@@ -77,32 +81,19 @@ export function ChordBrowser() {
 
   return (
     <div className="space-y-3">
-      {/* Category tabs */}
-      <div className="flex flex-wrap gap-1">
-        {CHORD_QUALITY_GROUPS.map((g, i) => {
-          const isActive = activeCategory === i;
-          return (
-            <button
-              key={g.labelKey}
-              onClick={() => setActiveCategory(i)}
-              className="px-2 py-1 text-[10px] font-medium rounded-lg transition-colors"
-              style={{
-                backgroundColor: isActive ? 'var(--border)' : 'transparent',
-                color: isActive ? 'var(--text)' : 'var(--text-dim)',
-                border: isActive ? '1px solid var(--border-light)' : '1px solid transparent',
-              }}
-            >
-              {t(g.labelKey)}
-            </button>
-          );
-        })}
-      </div>
+      {/* Category: one of many — a ChipGroup (D-28). */}
+      <ChipGroup
+        label={t('explore.allChords')}
+        value={activeCategory}
+        onChange={setActiveCategory}
+        options={CHORD_QUALITY_GROUPS.map((g, i) => ({ value: i, label: t(g.labelKey) }))}
+      />
 
       {/* Chord pills grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
         {group.qualities.map((quality) => {
           const symbol = CHORD_SYMBOLS[quality];
-          const name = CHORD_QUALITY_NAMES[quality];
+          const name = qualityName(quality, lang);
           const isActive =
             selectedChord?.quality === quality &&
             selectedChord?.root.natural === selectedKey.natural &&
@@ -131,15 +122,15 @@ export function ChordBrowser() {
             >
               <span
                 className="text-sm font-bold"
-                style={{ color: isActive ? 'var(--accent)' : 'var(--text)' }}
+                style={{ color: isActive ? 'var(--accent-text)' : 'var(--text)' }}
               >
                 {rootLabel}{symbol}
               </span>
-              <span className="text-[9px] leading-tight mt-0.5" style={{ color: 'var(--text-dim)' }}>
+              <span className="text-caption leading-tight mt-0.5" style={{ color: 'var(--text-dim)' }}>
                 {name}
               </span>
               {SAME_NOTES[quality] && (
-                <span className="text-[9px] leading-tight" style={{ color: 'var(--text-dim)' }}>
+                <span className="text-caption leading-tight" style={{ color: 'var(--text-dim)' }}>
                   {SAME_NOTES[quality]!.map((o) => `= ${rootLabel}${CHORD_SYMBOLS[o]}`).join(' ')}
                 </span>
               )}

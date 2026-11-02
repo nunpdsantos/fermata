@@ -1,14 +1,16 @@
 import { useRef, useState } from 'react';
 import { m } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import type { ChordQuality } from '../../core/types/music';
-import { CHORD_QUALITY_NAMES } from '../../core/constants/chords';
+import { qualityName } from '../../utils/qualityName';
+import { toContentLanguage } from './drillText';
 import { SPRING_MICRO } from '../../design/tokens/motion';
 import { normalizeDisplay } from './grading';
 
 interface RootQualityChipsProps {
   /** Candidate roots as display strings (the chord tones — root ID is the skill). */
   roots: string[];
-  /** Candidate qualities; labelled via CHORD_QUALITY_NAMES. */
+  /** Candidate qualities; labelled in the learner's language (qualityName). */
   qualities: ChordQuality[];
   disabled: boolean;
   /** Fires when a quality is tapped (root must already be chosen). */
@@ -36,6 +38,8 @@ export function RootQualityChips({
   onAnswer,
   feedback,
 }: RootQualityChipsProps) {
+  const { t, i18n } = useTranslation();
+  const lang = toContentLanguage(i18n.language);
   const [root, setRoot] = useState<string | null>(null);
   // Commit guard: prevents a double-tap on a quality from re-grading.
   const locked = useRef(false);
@@ -57,7 +61,7 @@ export function RootQualityChips({
     <div className="flex flex-col gap-4">
       {/* Stage 1 — root */}
       <div>
-        <div role="group" aria-label="root" className="grid grid-cols-3 gap-2">
+        <div role="group" aria-label={t('drill.a11y.root')} className="grid grid-cols-3 gap-2">
           {roots.map((r, i) => {
             const isChosen = root === r;
             const showCorrect = disabled && correctRootAscii !== undefined && normalizeDisplay(r) === correctRootAscii;
@@ -105,7 +109,7 @@ export function RootQualityChips({
       {/* Stage 2 — quality (revealed once a root is chosen, or always during feedback) */}
       {(root !== null || disabled) && (
         <div>
-          <div role="group" aria-label="quality" className="grid grid-cols-2 gap-2">
+          <div role="group" aria-label={t('drill.a11y.quality')} className="grid grid-cols-2 gap-2">
             {qualities.map((q) => {
               const showCorrect = disabled && feedback?.correctQuality === q;
               let stateClass = '';
@@ -133,7 +137,7 @@ export function RootQualityChips({
                       : undefined
                   }
                 >
-                  {CHORD_QUALITY_NAMES[q]}
+                  {qualityName(q, lang)}
                 </m.button>
               );
             })}

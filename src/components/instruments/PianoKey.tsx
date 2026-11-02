@@ -7,13 +7,15 @@ import { noteToString } from '../../core/types/music.ts';
 import type { Note } from '../../core/types/music.ts';
 import { writtenOctave } from '../../core/utils/degreeSpelling.ts';
 import { useAppStore } from '../../state/store.ts';
+import { ON_DEGREE } from '../../design/tokens/colors.ts';
 
 type SizeMode = 'mobile' | 'tablet' | 'desktop';
 
 const DIMS: Record<SizeMode, { white: [number, number]; black: [number, number]; labelSize: string }> = {
-  desktop: { white: [44, 210], black: [28, 130], labelSize: '10px' },
-  tablet:  { white: [36, 160], black: [22, 100], labelSize: '9px' },
-  mobile:  { white: [36, 130], black: [22, 80],  labelSize: '8px' },
+  // Key labels never go below the 12 px floor (D-28; were 10 / 9 / 8 px).
+  desktop: { white: [44, 210], black: [28, 130], labelSize: '12px' },
+  tablet:  { white: [36, 160], black: [22, 100], labelSize: '12px' },
+  mobile:  { white: [36, 130], black: [22, 80],  labelSize: '12px' },
 };
 
 interface PianoKeyProps {
@@ -97,7 +99,8 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
   // hierarchy because the warm walnut accent looks like a black key. Switch to
   // a soft top-tint so the key still reads as white while the colour signals
   // "in scale".
-  const isFermata = useAppStore((s) => s.themeMode === 'fermata' || s.themeMode === 'fermata-night');
+  // Every theme (Day, Night, Auto) is a Fermata theme.
+  const isFermata = useAppStore((s) => s.themeMode === 'fermata' || s.themeMode === 'fermata-night' || s.themeMode === 'auto');
 
   // Roving tabindex: when this key becomes the tab stop, take focus ONLY if the
   // user is already navigating the keyboard (focus is on another key of the
@@ -229,7 +232,9 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
     let border = '1px solid var(--piano-border)';
     let shadow = 'var(--piano-black-shadow)';
     let transform = 'none';
-    let labelColor = 'var(--piano-label)';
+    // A label on a BLACK key is light (the ivory colour): --piano-label is a
+    // dark ink for the ivory keys and read 2.4–2.5:1 on black (W11-A review).
+    let labelColor = 'var(--piano-white)';
 
     if (isActive) {
       bg = color;
@@ -243,15 +248,18 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
       transform = 'translateY(2px)';
       labelColor = '#000';
     } else if (isChordTone) {
-      bg = `${color}88`;
+      // Degree hue as a FILL with dark ink (D-28; white on the 53% tint read ~2:1).
+      bg = color;
       border = `1.5px solid ${color}`;
-      labelColor = '#fff';
+      labelColor = ON_DEGREE;
     } else if (isDimmed) {
       bg = 'var(--piano-black)';
     } else if (isHighlighted) {
       if (isFermata) {
-        bg = `color-mix(in srgb, ${color} 60%, var(--piano-black))`;
-        labelColor = 'var(--piano-white)';
+        // A full degree fill with dark ink: the old 60% mix under a light
+        // label read 3.3:1 on the amber / emerald keys (D-28).
+        bg = color;
+        labelColor = ON_DEGREE;
       } else {
         bg = color;
         opacity = 0.8;
@@ -268,6 +276,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
       <div
         ref={elementRef}
         role="button"
+        data-piano-key=""
         aria-label={spokenName}
         aria-pressed={isActive}
         tabIndex={isFocused ? 0 : -1}
@@ -340,13 +349,15 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
   } else if (isChordTone) {
     bg = `${color}33`;
     border = `2px solid ${color}88`;
-    labelColor = color;
+    // Dark ink, not the degree hue as text (1.3–2.4:1, D-28).
+    labelColor = ON_DEGREE;
   } else if (isDimmed) {
     bg = 'var(--piano-white)';
   } else if (isHighlighted) {
     if (isFermata) {
       bg = `color-mix(in srgb, ${color} 35%, var(--piano-white))`;
-      labelColor = 'var(--text)';
+      // The tinted ivory is light in BOTH themes: dark ink (night --text was 1.3:1).
+      labelColor = ON_DEGREE;
     } else {
       bg = color;
       opacity = 0.7;
@@ -360,6 +371,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
     <div
       ref={elementRef}
       role="button"
+      data-piano-key=""
       aria-label={spokenName}
       aria-pressed={isActive}
       tabIndex={isFocused ? 0 : -1}

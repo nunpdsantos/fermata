@@ -59,3 +59,13 @@ export function accentText(accent: string): string {
   const key = LEVEL_KEY_BY_ACCENT.get(accent.toLowerCase());
   return key ? `var(--level-text-${key})` : 'var(--text-muted)';
 }
+
+/**
+ * A level accent as a FILL that must stand out as non-text UI (≥ 3:1: a
+ * progress bar against its track). The pastel accents are ~1.5–2.3:1 on
+ * cream, so a known level accent uses its text shade; anything else is
+ * returned unchanged (W11-A).
+ */
+export function accentStrong(color: string): string {
+  return LEVEL_KEY_BY_ACCENT.has(color.toLowerCase()) ? accentText(color) : color;
+}

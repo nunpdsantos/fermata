@@ -4,6 +4,7 @@ import { m } from 'framer-motion';
 import type { CurriculumLevel, CurriculumProgress } from '../../core/types/curriculum';
 import { findNextIncompleteModule, getLevelModuleCount } from '../../data/curriculumLoader';
 import { LearnBreadcrumb } from './LearnBreadcrumb';
+import { IconButton } from '../ui/Button';
 import { ContinueBanner } from './ContinueBanner';
 import { DifficultyBadge } from './DifficultyBadge';
 import { ProgressBar } from './ProgressBar';
@@ -49,21 +50,15 @@ export function LevelDetail({
     <div className="max-w-2xl mx-auto px-5 max-sm:px-3 py-6 max-sm:py-4 pb-24">
       {/* Breadcrumb */}
       <div className="mb-6 flex items-center gap-2">
-        <button
+        <IconButton
           onClick={onBack}
-          className="flex items-center gap-1 text-xs transition-colors group"
-          style={{ color: 'var(--text-dim)' }}
-          onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-dim)'; }}
-        >
-          <svg
-            width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-            className="group-hover:-translate-x-0.5 transition-transform"
-          >
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-        </button>
+          aria-label={t('common.back')}
+          icon={
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+          }
+        />
         <LearnBreadcrumb
           accentColor={accent}
           segments={[
@@ -88,7 +83,7 @@ export function LevelDetail({
             {level.number}
           </div>
           {level.comingSoon && (
-            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ color: 'var(--text-dim)', backgroundColor: 'var(--card-hover)' }}>
+            <span className="text-caption font-medium px-2 py-0.5 rounded-full" style={{ color: 'var(--text-dim)', backgroundColor: 'var(--card-hover)' }}>
               {t('status.comingSoon')}
             </span>
           )}

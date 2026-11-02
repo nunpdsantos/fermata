@@ -3,8 +3,6 @@ import { LazyMotion, MotionConfig, domAnimation, AnimatePresence, m } from 'fram
 import { AppShell } from './components/layout/AppShell.tsx';
 import { ViewSlot, type ViewLoader } from './components/ViewSlot.tsx';
 import { QuickSearchHost } from './components/navigation/QuickSearchHost.tsx';
-import { PWAPrompts } from './components/layout/PWAPrompts.tsx';
-import { ToastContainer } from './components/layout/Toast.tsx';
 import { useTheme } from './hooks/useTheme.ts';
 import { useLanguage } from './hooks/useLanguage.ts';
 import { useStopPlaybackOnViewChange } from './hooks/useStopPlaybackOnViewChange.ts';
@@ -68,15 +66,13 @@ function App() {
             className="h-full flex flex-col min-h-0"
             id={`${view}-panel`}
             role="tabpanel"
-            aria-label={`${view} view`}
+            aria-labelledby={`tab-${view}`}
           >
             <ViewSlot viewKey={view} loaders={VIEW_LOADERS} />
           </m.div>
         </AnimatePresence>
       </AppShell>
       <QuickSearchHost />
-      <PWAPrompts />
-      <ToastContainer />
       </MotionConfig>
     </LazyMotion>
   );

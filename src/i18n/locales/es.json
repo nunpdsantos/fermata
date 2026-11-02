@@ -1,5 +1,7 @@
 {
   "nav": {
+    "moreUpdateReady": "Más — actualización lista",
+    "more": "Más",
     "musicTheory": "Fermata",
     "explore": "Explorar",
     "play": "Tocar",
@@ -20,6 +22,12 @@
     "fermataNight": "Fermata Noche"
   },
   "backup": {
+    "section": {
+      "preferences": "preferencias",
+      "learnProgress": "progreso en Aprender",
+      "drillProgress": "memoria de la Práctica",
+      "guitarFingerings": "digitaciones de la guitarra"
+    },
     "menuLabel": "Backup",
     "export": "Exportar datos",
     "import": "Importar datos",
@@ -28,6 +36,8 @@
     "confirmImport": "\u00bfReemplazar los datos actuales con este backup ({{sections}})? La aplicaci\u00f3n se recargar\u00e1."
   },
   "common": {
+    "back": "Volver",
+    "close": "Cerrar",
     "play": "Tocar",
     "stop": "Parar",
     "start": "Iniciar",
@@ -54,6 +64,11 @@
     "contentInDevelopment": "Contenido en desarrollo"
   },
   "explore": {
+    "minorVariant": "Variante de la escala menor",
+    "diatonicChordsGroup": "Acordes diatónicos",
+    "chordButton": "Acorde de {{root}} {{quality}}, grado {{degree}}",
+    "scaleDegreesGroup": "Grados de la escala",
+    "degreeButton": "Grado {{degree}}, {{interval}}, {{note}}",
     "scaleDegrees": "Grados de la Escala",
     "chords": "Acordes",
     "diatonic": "Diat\u00f3nicos",
@@ -279,6 +294,8 @@
     "semitones_other": "{{count}} semitonos"
   },
   "pwa": {
+    "later": "Más tarde",
+    "updateReady": "Actualización lista: recargar",
     "newVersion": "Nueva versi\u00f3n disponible",
     "offlineReady": "App lista para uso sin conexi\u00f3n",
     "installPrompt": "\u00bfInstalar Fermata?"
@@ -510,6 +527,10 @@
     "leading": "Sensible"
   },
   "fretboard": {
+    "cellLabel": "{{note}}, traste {{fret}}, cuerda {{string}}",
+    "openStringLabel": "{{note}}, cuerda al aire",
+    "mutedStringLabel": "Cuerda {{string}} apagada",
+    "announce": "Cuerda {{string}}, traste {{fret}}, {{note}}",
     "label": "M\u00e1stil de la guitarra",
     "tuning": "Afinaci\u00f3n:",
     "tuningLabel": "Afinaci\u00f3n de la guitarra",
@@ -565,6 +586,13 @@
     "finish": "Entendido"
   },
   "chordBuilder": {
+    "strip": {
+      "label": "Franja cromática desde {{note}}",
+      "root": "Fundamental, {{note}}",
+      "step": "{{interval}}, {{note}}",
+      "selected": "seleccionada",
+      "degree": "grado {{n}} de la escala"
+    },
     "chordRoot": "Fundamental del acorde",
     "clear": "Limpiar",
     "syncRoot": "Igualar a la tónica",
@@ -597,6 +625,8 @@
     "progress": "{{current}} de {{total}}",
     "endSession": "Terminar sesión",
     "settings": {
+      "fewerNew": "Menos conceptos nuevos",
+      "moreNew": "Más conceptos nuevos",
       "title": "Ajustes de práctica",
       "length": "Duración de la sesión",
       "newPerSession": "Conceptos nuevos por sesión",
@@ -664,6 +694,8 @@
     "clear": "Borrar",
     "done": "Listo",
     "a11y": {
+      "root": "fundamental",
+      "quality": "calidad",
       "notes": "notas",
       "scaleNotes": "notas de la escala",
       "choices": "opciones"
@@ -765,5 +797,110 @@
       "v7Derivation": "El grado 5 de {{key}} es {{five}}; su séptima de dominante es {{answer}}.",
       "readPlaces": "{{written}} escrito suena {{sounding}}: la guitarra suena una octava más grave de lo que está escrito. {{places}} (número en círculo = cuerda; después, el traste)."
     }
+  },
+  "settings": {
+    "title": "Ajustes",
+    "language": "Idioma",
+    "theme": "Tema",
+    "themeDay": "Día",
+    "themeNight": "Noche",
+    "themeAuto": "Automático",
+    "yourData": "Tus datos",
+    "yourDataMeta": "Progreso, memoria de la Práctica, ajustes",
+    "export": "Exportar",
+    "import": "Importar",
+    "build": "versión del {{date}}",
+    "worksOffline": "funciona sin conexión"
+  },
+  "dock": {
+    "handle": "Panel del instrumento",
+    "peek": "Recogido",
+    "half": "Medio",
+    "full": "Completo",
+    "show": "Mostrar",
+    "hide": "Ocultar",
+    "exerciseInput": "Responde en el instrumento",
+    "openPosition": "Posición abierta",
+    "position": "Posición {{numeral}}",
+    "octaves_one": "{{count}} octava",
+    "octaves_other": "{{count}} octavas"
+  },
+  "scaleChip": {
+    "major": "Mayor",
+    "natural_minor": "Menor",
+    "harmonic_minor": "Menor arm.",
+    "melodic_minor": "Menor mel.",
+    "dorian": "Dórico",
+    "phrygian": "Frigio",
+    "lydian": "Lidio",
+    "mixolydian": "Mixolidio",
+    "locrian": "Locrio",
+    "pentatonic_major": "Pent. mayor",
+    "pentatonic_minor": "Pent. menor",
+    "blues": "Blues",
+    "major_blues": "Blues mayor",
+    "whole_tone": "Tonos enteros",
+    "diminished_whole_half": "Dism. T/½T",
+    "diminished_half_whole": "Dism. ½T/T",
+    "chromatic": "Cromática",
+    "altered": "Alterada",
+    "lydian_dominant": "Lidio dom.",
+    "locrian_natural2": "Locrio ♮2",
+    "dorian_b2": "Dórico ♭2",
+    "lydian_augmented": "Lidio aum.",
+    "mixolydian_b6": "Mixolidio ♭6",
+    "phrygian_dominant": "Frigio dom.",
+    "bebop_dominant": "Bebop dom.",
+    "bebop_major": "Bebop mayor",
+    "bebop_dorian": "Bebop dórico",
+    "hungarian_minor": "Húngara menor",
+    "hungarian_major": "Húngara mayor",
+    "double_harmonic": "Doble arm.",
+    "persian": "Persa",
+    "neapolitan_minor": "Napol. menor",
+    "neapolitan_major": "Napol. mayor",
+    "hirajoshi": "Hirajoshi",
+    "in_sen": "In Sen",
+    "iwato": "Iwato",
+    "egyptian": "Egipcia"
+  },
+  "scaleName": {
+    "major": "mayor",
+    "natural_minor": "menor natural",
+    "harmonic_minor": "menor armónica",
+    "melodic_minor": "menor melódica",
+    "dorian": "dórico",
+    "phrygian": "frigio",
+    "lydian": "lidio",
+    "mixolydian": "mixolidio",
+    "locrian": "locrio",
+    "pentatonic_major": "pentatónica mayor",
+    "pentatonic_minor": "pentatónica menor",
+    "blues": "blues",
+    "whole_tone": "tonos enteros",
+    "diminished_whole_half": "disminuida (tono/semitono)",
+    "diminished_half_whole": "disminuida (semitono/tono)",
+    "chromatic": "cromática",
+    "altered": "alterada",
+    "lydian_dominant": "lidio dominante",
+    "phrygian_dominant": "frigio dominante",
+    "major_blues": "blues mayor",
+    "locrian_natural2": "locrio ♮2",
+    "bebop_dominant": "bebop dominante",
+    "bebop_major": "bebop mayor",
+    "bebop_dorian": "bebop dórico",
+    "dorian_b2": "dórico ♭2",
+    "lydian_augmented": "lidio aumentado",
+    "mixolydian_b6": "mixolidio ♭6",
+    "hungarian_minor": "húngara menor",
+    "hungarian_major": "húngara mayor",
+    "double_harmonic": "doble armónica",
+    "persian": "persa",
+    "neapolitan_minor": "napolitana menor",
+    "neapolitan_major": "napolitana mayor",
+    "hirajoshi": "Hirajoshi",
+    "in_sen": "In Sen",
+    "iwato": "Iwato",
+    "egyptian": "egipcia"
   }
 }

@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Note, NaturalNote, Accidental, noteToString, ChordIdentification } from '../../core/types/music.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { identifyChordFromNotes } from '../../core/utils/reverseChordParser.ts';
-import { CHORD_QUALITY_NAMES } from '../../core/constants/chords.ts';
-import { SCALE_TYPE_NAMES } from '../../core/constants/scales.ts';
+import { qualityName } from '../../utils/qualityName.ts';
+import { toContentLanguage } from '../drill/drillText.ts';
 import {
   canonicalIntervalNumber,
   spellIntervalAbove,
@@ -17,6 +17,8 @@ import { useAppStore } from '../../state/store.ts';
 import { resumeAudio, playChordVoiced, cancelScheduledAudio } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import { ChromaticStrip } from './ChromaticStrip.tsx';
+import { SelectTrigger } from '../ui/SelectTrigger.tsx';
+import { Button } from '../ui/Button.tsx';
 
 // Both everyday names of every black key, so the dropdown can always show the
 // strip's root as spelled (C♯ and D♭ are different roots to spell from).
@@ -55,7 +57,8 @@ function intervalLabelFor(root: Note, note: Note, step: number): string {
  * (C augmented's raised 5th is G♯, labelled A5). The key no longer decides.
  */
 export function ChordBuilderPanel() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = toContentLanguage(i18n.language);
   const { scale, scalePitchClasses, diatonicChords } = useKeyContext();
   const selectedKey = useAppStore((s) => s.selectedKey);
   const synthPreset = useAppStore((s) => s.synthPreset);
@@ -167,7 +170,7 @@ export function ChordBuilderPanel() {
       (dc) => getPitchClass(dc.chord.root) === rootPc && dc.chord.quality === top.chord.quality
     );
     // Display names, never internal ids (audit W1-10: was "C diminished whole_half").
-    const keyLabel = `${noteToString(scale.root)} ${SCALE_TYPE_NAMES[scale.type]}`;
+    const keyLabel = `${noteToString(scale.root)} ${t(`scaleName.${scale.type}`)}`;
     if (match) return { label: `${match.numeral} ${t('chordBuilder.ofKey', { key: keyLabel })}`, inKey: true };
     const degIdx = scale.notes.findIndex((n) => getPitchClass(n) === rootPc);
     if (degIdx >= 0) {
@@ -185,20 +188,16 @@ export function ChordBuilderPanel() {
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap gap-3 items-end">
-        <label className="flex flex-col gap-1 text-2xs uppercase tracking-wide" style={{ color: 'var(--text-muted)' }}>
-          <span>{t('chordBuilder.chordRoot')}</span>
-          <select
+      {/* W11-A: v2 controls (36 / 44 px, tokens); the layout is the Explore
+          batch's (D-25). */}
+      <div className="flex flex-wrap gap-2 items-end">
+        <label className="flex flex-col gap-1">
+          <span className="type-label">{t('chordBuilder.chordRoot')}</span>
+          <SelectTrigger
             value={`${chordRoot.natural}${chordRoot.accidental}`}
             onChange={(e) => {
               setChordRoot(noteFromValue(e.target.value));
               setActive(new Set([0]));
-            }}
-            className="rounded-md px-2 py-1.5 text-sm normal-case tracking-normal"
-            style={{
-              backgroundColor: 'var(--input-bg)',
-              color: 'var(--text)',
-              border: '1px solid var(--border)',
             }}
           >
             {rootOptionsFor(chordRoot).map((n) => {
@@ -209,48 +208,15 @@ export function ChordBuilderPanel() {
                 </option>
               );
             })}
-          </select>
+          </SelectTrigger>
         </label>
-        <button
-          type="button"
-          onClick={onClear}
-          className="rounded-md px-3 py-1.5 text-sm"
-          style={{
-            backgroundColor: 'var(--input-bg)',
-            color: 'var(--text)',
-            border: '1px solid var(--border)',
-          }}
-        >
-          {t('chordBuilder.clear')}
-        </button>
-        <button
-          type="button"
-          onClick={onSyncToTonic}
-          className="rounded-md px-3 py-1.5 text-sm"
-          style={{
-            backgroundColor: 'transparent',
-            color: 'var(--text-muted)',
-            border: '1px solid var(--border)',
-          }}
-          title={t('chordBuilder.syncRootTitle', { tonic: noteToString(selectedKey) })}
-        >
+        <Button onClick={onClear}>{t('chordBuilder.clear')}</Button>
+        <Button variant="quiet" onClick={onSyncToTonic} title={t('chordBuilder.syncRootTitle', { tonic: noteToString(selectedKey) })}>
           {t('chordBuilder.syncRoot')}
-        </button>
-        <button
-          type="button"
-          onClick={handlePlay}
-          disabled={active.size === 0}
-          className="rounded-md px-3 py-1.5 text-sm"
-          style={{
-            backgroundColor: active.size === 0 ? 'var(--input-bg)' : 'var(--accent)',
-            color: active.size === 0 ? 'var(--text-muted)' : 'var(--bg)',
-            border: '1px solid var(--border)',
-            opacity: active.size === 0 ? 0.5 : 1,
-            cursor: active.size === 0 ? 'not-allowed' : 'pointer',
-          }}
-        >
+        </Button>
+        <Button variant="primary" onClick={handlePlay} disabled={active.size === 0}>
           {t('chordBuilder.play')}
-        </button>
+        </Button>
       </div>
 
       <ChromaticStrip
@@ -273,13 +239,13 @@ export function ChordBuilderPanel() {
         }}
       >
         <div className="flex items-baseline gap-3 flex-wrap">
-          <span className="text-2xs uppercase tracking-wide" style={{ color: 'var(--text-muted)' }}>
+          <span className="text-caption uppercase tracking-wide" style={{ color: 'var(--text-muted)' }}>
             {t('chordBuilder.detected')}
           </span>
           {top ? (
-            <span className="text-base font-semibold" style={{ color: 'var(--accent)' }}>
+            <span className="text-base font-semibold" style={{ color: 'var(--accent-text)' }}>
               {noteToString(top.chord.root)}{' '}
-              {CHORD_QUALITY_NAMES[top.chord.quality] ?? top.chord.quality}
+              {qualityName(top.chord.quality, lang)}
             </span>
           ) : (
             <span style={{ color: 'var(--text-muted)' }}>
@@ -294,7 +260,7 @@ export function ChordBuilderPanel() {
           {role && (
             <span
               className="text-xs font-medium"
-              style={{ color: role.inKey ? 'var(--accent)' : 'var(--text-muted)' }}
+              style={{ color: role.inKey ? 'var(--accent-text)' : 'var(--text-muted)' }}
             >
               {role.inKey ? role.label : `(${role.label})`}
             </span>
@@ -317,7 +283,7 @@ export function ChordBuilderPanel() {
               {identification.results.slice(1, 5).map((r, i) => (
                 <li key={i}>
                   {noteToString(r.chord.root)}{' '}
-                  {CHORD_QUALITY_NAMES[r.chord.quality] ?? r.chord.quality}
+                  {qualityName(r.chord.quality, lang)}
                   {' — '}
                   <span style={{ color: 'var(--text-dim)' }}>{r.interpretation}</span>
                 </li>

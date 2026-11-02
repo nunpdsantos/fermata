@@ -2,23 +2,27 @@
  * DrillSettings — the full settings screen (replaces the old inline panel).
  *
  * Controls (all write straight to the drill store via updateSettings):
- *   - session length: 12 / 24 / 40 segmented
+ *   - session length: 12 / 24 / 40 — a ChipGroup (one of many, D-28)
  *   - new facts per session: 0–8 stepper
- *   - topic (family) toggles: same state the MasteryMap edits
- *   - answer-sound switch
- *   - show-timer switch (governs the NORMAL session timer; sprint always counts)
+ *   - topics: toggle chips (several can be on — same state the MasteryMap edits)
+ *   - answer sound / show timer: toggle chips (show-timer governs the NORMAL
+ *     session timer; sprint always counts)
  *
  * A Back button returns to the running question (settings do NOT end a session);
  * a Mastery-map link makes the map reachable from here too.
  * A destructive "Reset drill progress" section at the bottom clears SRS state
  * while preserving settings.
+ *
+ * W11-A: on the v2 system — the two selected states (choice chip; the toggle
+ * chips use the same "on" look), --tap targets, 12 px floor, tokens only.
  */
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DRILL_FAMILIES } from '../../core/types/drill';
 import type { DrillFamily } from '../../core/types/drill';
 import type { DrillSettings as DrillSettingsState } from '../../state/drillStore';
-import { FamilyToggle } from './MasteryMap';
+import { ChipGroup, ChoiceChip } from '../ui/ChoiceChip';
+import { Button, IconButton } from '../ui/Button';
 
 const SESSION_LENGTHS = [12, 24, 40] as const;
 const MIN_NEW = 0;
@@ -32,6 +36,13 @@ interface DrillSettingsProps {
   onResetProgress: () => void;
 }
 
+const BACK_ICON = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <line x1="19" y1="12" x2="5" y2="12" />
+    <polyline points="12 19 5 12 12 5" />
+  </svg>
+);
+
 export function DrillSettings({ settings, onUpdate, onBack, onMasteryMap, onResetProgress }: DrillSettingsProps) {
   const { t } = useTranslation();
   const [confirmingReset, setConfirmingReset] = useState(false);
@@ -40,215 +51,115 @@ export function DrillSettings({ settings, onUpdate, onBack, onMasteryMap, onRese
     <div className="flex flex-col gap-6 py-4">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={onBack}
-          className="flex items-center justify-center w-9 h-9 rounded-lg transition-colors"
-          style={{ color: 'var(--text-dim)' }}
-          aria-label={t('drill.settings.back')}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <line x1="19" y1="12" x2="5" y2="12" />
-            <polyline points="12 19 5 12 12 5" />
-          </svg>
-        </button>
-        <h2 className="text-base font-semibold" style={{ color: 'var(--text)' }}>
+        <IconButton onClick={onBack} aria-label={t('drill.settings.back')} icon={BACK_ICON} />
+        <h2 className="text-title font-semibold" style={{ color: 'var(--text)' }}>
           {t('drill.settings.title')}
         </h2>
       </div>
 
-      {/* Session length — segmented */}
+      {/* Session length — one of three values */}
       <section className="flex flex-col gap-2">
-        <p className="text-xs font-medium" style={{ color: 'var(--text-dim)' }}>
-          {t('drill.settings.length')}
-        </p>
-        <div
-          role="group"
-          aria-label={t('drill.settings.length')}
-          className="grid grid-cols-3 gap-1 rounded-lg p-0.5"
-          style={{ backgroundColor: 'color-mix(in srgb, var(--card-hover) 60%, transparent)' }}
-        >
-          {SESSION_LENGTHS.map((len) => {
-            const active = len === settings.length;
-            return (
-              <button
-                key={len}
-                type="button"
-                onClick={() => onUpdate({ length: len })}
-                className="min-h-[40px] rounded-md text-sm tabular-nums transition-colors"
-                style={{
-                  backgroundColor: active ? 'var(--accent-dim)' : 'transparent',
-                  color: active ? 'var(--accent)' : 'var(--text-muted)',
-                  fontWeight: active ? 600 : 500,
-                }}
-                aria-pressed={active}
-              >
-                {len}
-              </button>
-            );
-          })}
-        </div>
+        <p className="type-label">{t('drill.settings.length')}</p>
+        <ChipGroup
+          label={t('drill.settings.length')}
+          value={settings.length}
+          onChange={(len) => onUpdate({ length: len })}
+          chipClassName="tabular-nums"
+          options={SESSION_LENGTHS.map((len) => ({ value: len, label: String(len) }))}
+        />
       </section>
 
       {/* New facts per session — stepper */}
       <section className="flex items-center justify-between gap-3">
-        <p className="text-sm" style={{ color: 'var(--text)' }}>
+        <p className="text-body" style={{ color: 'var(--text)' }}>
           {t('drill.settings.newPerSession')}
         </p>
-        <div className="flex items-center gap-3">
-          <StepperButton
-            label="−"
+        <div className="flex items-center gap-2">
+          <IconButton
+            variant="secondary"
+            aria-label={t('drill.settings.fewerNew')}
             disabled={settings.newPerSession <= MIN_NEW}
             onClick={() => onUpdate({ newPerSession: Math.max(MIN_NEW, settings.newPerSession - 1) })}
+            icon={<span aria-hidden="true" className="text-title leading-none">−</span>}
           />
-          <span className="w-5 text-center text-sm font-medium tabular-nums" style={{ color: 'var(--text)' }} aria-live="polite">
+          <span className="w-6 text-center text-body font-semibold tabular-nums" style={{ color: 'var(--text)' }} aria-live="polite">
             {settings.newPerSession}
           </span>
-          <StepperButton
-            label="+"
+          <IconButton
+            variant="secondary"
+            aria-label={t('drill.settings.moreNew')}
             disabled={settings.newPerSession >= MAX_NEW}
             onClick={() => onUpdate({ newPerSession: Math.min(MAX_NEW, settings.newPerSession + 1) })}
+            icon={<span aria-hidden="true" className="text-title leading-none">+</span>}
           />
         </div>
       </section>
 
-      {/* Topic (family) toggles */}
-      <section className="flex flex-col gap-2.5">
-        <p className="text-xs font-medium" style={{ color: 'var(--text-dim)' }}>
-          {t('drill.settings.families')}
-        </p>
-        <ul className="flex flex-col gap-2">
+      {/* Topics — several can be on: toggle chips (pressed = on) */}
+      <section className="flex flex-col gap-2">
+        <p className="type-label">{t('drill.settings.families')}</p>
+        <div role="group" aria-label={t('drill.settings.families')} className="chip-group">
           {DRILL_FAMILIES.map((family: DrillFamily) => (
-            <li key={family} className="flex items-center justify-between">
-              <span className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                {t(`drill.families.${family}`)}
-              </span>
-              <FamilyToggle
-                enabled={settings.families[family]}
-                label={t(`drill.families.${family}`)}
-                onToggle={(next) =>
-                  onUpdate({ families: { ...settings.families, [family]: next } })
-                }
-              />
-            </li>
+            <ChoiceChip
+              key={family}
+              pressed={settings.families[family]}
+              onClick={() => onUpdate({ families: { ...settings.families, [family]: !settings.families[family] } })}
+            >
+              {t(`drill.families.${family}`)}
+            </ChoiceChip>
           ))}
-        </ul>
+        </div>
       </section>
 
-      {/* Switches */}
-      <section className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <span className="text-sm" style={{ color: 'var(--text)' }}>
-            {t('drill.settings.sound')}
-          </span>
-          <FamilyToggle
-            enabled={settings.sound}
-            label={t('drill.settings.sound')}
-            onToggle={(next) => onUpdate({ sound: next })}
-          />
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-sm" style={{ color: 'var(--text)' }}>
-            {t('drill.settings.showTimer')}
-          </span>
-          <FamilyToggle
-            enabled={settings.showTimer}
-            label={t('drill.settings.showTimer')}
-            onToggle={(next) => onUpdate({ showTimer: next })}
-          />
-        </div>
+      {/* Answer sound / show timer — on/off toggle chips */}
+      <section className="chip-group">
+        <ChoiceChip pressed={settings.sound} onClick={() => onUpdate({ sound: !settings.sound })}>
+          {t('drill.settings.sound')}
+        </ChoiceChip>
+        <ChoiceChip pressed={settings.showTimer} onClick={() => onUpdate({ showTimer: !settings.showTimer })}>
+          {t('drill.settings.showTimer')}
+        </ChoiceChip>
       </section>
 
       {/* Mastery-map link */}
-      <button
-        type="button"
-        onClick={onMasteryMap}
-        className="self-start text-sm font-medium transition-colors"
-        style={{ color: 'var(--accent)' }}
-      >
-        {t('drill.summary.masteryMap')} →
-      </button>
+      <Button variant="link" className="self-start -ml-1.5" onClick={onMasteryMap}>
+        {t('drill.summary.masteryMap')} <span aria-hidden="true">→</span>
+      </Button>
 
       {/* ── Destructive zone ─────────────────────────────────────────────── */}
-      <div
-        className="flex flex-col gap-3 pt-4"
-        style={{ borderTop: '1px solid color-mix(in srgb, var(--border) 50%, transparent)' }}
-      >
+      <div className="flex flex-col gap-3 pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
         {!confirmingReset ? (
-          <button
-            type="button"
+          <Button
+            variant="quiet"
+            className="self-start -ml-3.5"
+            style={{ color: 'var(--danger-text)' }}
             onClick={() => setConfirmingReset(true)}
-            className="self-start text-sm font-medium transition-colors"
-            style={{ color: 'color-mix(in srgb, var(--text-dim) 80%, red)' }}
           >
             {t('drill.settings.resetLabel')}
-          </button>
+          </Button>
         ) : (
           <div className="flex flex-col gap-3">
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-ui" style={{ color: 'var(--text-muted)' }}>
               {t('drill.settings.resetWarning')}
             </p>
             <div className="flex gap-2">
-              <button
-                type="button"
+              <Button
+                className="flex-1"
+                style={{ color: 'var(--danger-text)', borderColor: 'var(--danger-text)' }}
                 onClick={() => {
                   setConfirmingReset(false);
                   onResetProgress();
                 }}
-                className="flex-1 min-h-[44px] rounded-lg text-sm font-medium transition-colors"
-                style={{
-                  backgroundColor: 'color-mix(in srgb, red 15%, transparent)',
-                  border: '1px solid color-mix(in srgb, red 40%, transparent)',
-                  color: 'color-mix(in srgb, red 70%, var(--text))',
-                }}
               >
                 {t('drill.settings.resetConfirm')}
-              </button>
-              <button
-                type="button"
-                onClick={() => setConfirmingReset(false)}
-                className="flex-1 min-h-[44px] rounded-lg text-sm font-medium transition-colors"
-                style={{
-                  backgroundColor: 'color-mix(in srgb, var(--card) 60%, transparent)',
-                  border: '1px solid color-mix(in srgb, var(--border) 50%, transparent)',
-                  color: 'var(--text-muted)',
-                }}
-              >
+              </Button>
+              <Button className="flex-1" onClick={() => setConfirmingReset(false)}>
                 {t('drill.settings.resetCancel')}
-              </button>
+              </Button>
             </div>
           </div>
         )}
       </div>
     </div>
-  );
-}
-
-function StepperButton({
-  label,
-  disabled,
-  onClick,
-}: {
-  label: string;
-  disabled: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={label === '+' ? 'increment' : 'decrement'}
-      className="flex items-center justify-center w-9 h-9 rounded-lg text-lg font-medium transition-colors"
-      style={{
-        backgroundColor: 'color-mix(in srgb, var(--card) 60%, transparent)',
-        border: '1px solid color-mix(in srgb, var(--border) 50%, transparent)',
-        color: disabled ? 'var(--text-dim)' : 'var(--text)',
-        opacity: disabled ? 0.5 : 1,
-        cursor: disabled ? 'default' : 'pointer',
-      }}
-    >
-      {label}
-    </button>
   );
 }

@@ -31,6 +31,9 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
   // toggled selection instead (see useKeyContext exercise-input mode).
   useEffect(() => {
     setExerciseInputActive(true);
+    // The answer is played on the instrument: make sure the dock is open (Learn
+    // keeps it at Peek by default, D-20). Full D-20 wiring is a later batch.
+    useAppStore.getState().requestDock('half');
     return () => setExerciseInputActive(false);
   }, [setExerciseInputActive]);
 
@@ -88,7 +91,7 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
         <span className="text-xs" style={{ color: 'var(--text-dim)' }}>
           {t('exercise.instrumentSelected', { selected: toggledPCs.size, expected: expectedCount })}
         </span>
-        <span className="text-[10px] flex items-center gap-1.5" style={{ color: 'var(--text-dim)' }}>
+        <span className="text-caption flex items-center gap-1.5" style={{ color: 'var(--text-dim)' }}>
           {t('exercise.instrumentToggle')}
         </span>
       </div>
@@ -118,7 +121,7 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
         <div className="flex gap-2">
           <button
             onClick={handleClear}
-            className="px-3 py-1.5 rounded-lg text-xs transition-colors"
+            className="inline-flex items-center justify-center min-h-(--tap) px-3 rounded-lg text-ui transition-colors"
             style={{ color: 'var(--text-dim)', border: '1px solid color-mix(in srgb, var(--border) 50%, transparent)' }}
             onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--card-hover)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = ''; }}
@@ -128,7 +131,7 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
           <button
             onClick={handleCheck}
             disabled={toggledPCs.size === 0}
-            className="px-4 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-40"
+            className="inline-flex items-center justify-center min-h-(--tap) px-4 rounded-lg text-ui font-medium transition-colors disabled:opacity-40"
             style={{
               backgroundColor: `${accentColor}20`,
               color: accentText(accentColor),

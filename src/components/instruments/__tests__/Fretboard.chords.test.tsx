@@ -145,7 +145,7 @@ describe('barre overlay is visible on the light theme (review #6)', () => {
   it('draws the barre in theme colours, not translucent white', async () => {
     useAppStore.setState({ selectedChord: buildChord(N('F'), 'major') });
     const { container } = await renderFretboard();
-    const tabs = within(screen.getByRole('tablist', { name: 'fretboard.chordPosition' })).getAllByRole('tab');
+    const tabs = within(screen.getByRole('radiogroup', { name: 'fretboard.chordPosition' })).getAllByRole('radio');
     let overlay: HTMLElement | null = null;
     for (const tab of tabs) {
       fireEvent.click(tab);
@@ -163,12 +163,12 @@ describe('chord-shape index follows the chord in the same render (W3-15)', () =>
   it('switching chords selects the new chord\'s first shape immediately', async () => {
     useAppStore.setState({ selectedChord: buildChord(N('C'), 'major') });
     await renderFretboard();
-    const tabs = () => within(screen.getByRole('tablist', { name: 'fretboard.chordPosition' })).getAllByRole('tab');
+    const tabs = () => within(screen.getByRole('radiogroup', { name: 'fretboard.chordPosition' })).getAllByRole('radio');
     expect(tabs().length).toBeGreaterThan(3);
     fireEvent.click(tabs()[3]);
-    expect(tabs()[3].getAttribute('aria-selected')).toBe('true');
+    expect(tabs()[3].getAttribute('aria-checked')).toBe('true');
     act(() => useAppStore.getState().setSelectedChord(buildChord(N('D'), 'major')));
     // Synchronously after the change — no microtask has run yet.
-    expect(tabs()[0].getAttribute('aria-selected')).toBe('true');
+    expect(tabs()[0].getAttribute('aria-checked')).toBe('true');
   });
 });

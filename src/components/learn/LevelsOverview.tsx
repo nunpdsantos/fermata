@@ -17,7 +17,6 @@ import { ContinueBanner } from './ContinueBanner';
 import { ReviewQueue } from './ReviewQueue';
 import { LevelCard } from './LevelCard';
 import { ProgressBar } from './ProgressBar';
-import { DEGREE_COLORS } from '../../design/tokens/colors';
 import { useAppStore } from '../../state/store.ts';
 
 type ResolvedNext =
@@ -129,7 +128,7 @@ export function LevelsOverview({
           <div className="flex-1">
             <ProgressBar
               percent={totalModules > 0 ? (totalCompleted / totalModules) * 100 : 0}
-              color={DEGREE_COLORS[1]}
+              color="var(--accent)"
               height={6}
             />
           </div>
@@ -148,12 +147,12 @@ export function LevelsOverview({
           transition={{ duration: 0.3, delay: 0.1 }}
           className="mb-6 rounded-xl px-6 py-6 text-center"
           style={{
-            backgroundColor: `color-mix(in srgb, ${DEGREE_COLORS[1]} 7%, transparent)`,
-            border: `1px solid color-mix(in srgb, ${DEGREE_COLORS[1]} 12%, transparent)`,
+            backgroundColor: `color-mix(in srgb, var(--accent) 7%, transparent)`,
+            border: `1px solid color-mix(in srgb, var(--accent) 12%, transparent)`,
             boxShadow: 'var(--shadow-sm)',
           }}
         >
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke={DEGREE_COLORS[1]} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-3">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-3">
             <path d="M9 18V5l12-2v13" />
             <circle cx="6" cy="18" r="3" />
             <circle cx="18" cy="16" r="3" />
@@ -166,11 +165,11 @@ export function LevelsOverview({
           </p>
           <button
             onClick={() => onOpenLevel('l1')}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-150 hover:scale-[1.03]"
+            className="inline-flex items-center gap-2 min-h-(--tap) px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-150 hover:scale-[1.03]"
             style={{
-              backgroundColor: `color-mix(in srgb, ${DEGREE_COLORS[1]} 12%, transparent)`,
-              color: DEGREE_COLORS[1],
-              border: `1px solid color-mix(in srgb, ${DEGREE_COLORS[1]} 19%, transparent)`,
+              backgroundColor: `color-mix(in srgb, var(--accent) 12%, transparent)`,
+              color: "var(--accent-text)",
+              border: `1px solid color-mix(in srgb, var(--accent) 19%, transparent)`,
             }}
           >
             {t('learn.startLevel1')}

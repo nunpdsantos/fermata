@@ -170,7 +170,7 @@ export function LearnView() {
       <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{t('error.viewError')}</p>
       <button
         onClick={retryLoads}
-        className="px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer border"
+        className="inline-flex items-center justify-center min-h-(--tap) px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer border"
         style={{ borderColor: 'var(--border)', color: 'var(--text)' }}
       >
         {t('common.tryAgain')}

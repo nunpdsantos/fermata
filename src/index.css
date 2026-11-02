@@ -36,10 +36,51 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* ─── Tailwind v4 theme extensions ─────────────────────────────── */
-@theme {
-  --font-size-2xs: 10px;
-  --font-size-2xs--line-height: 1.4;
+/* ─── Design system v2 — type (W11-A, decision D-28) ──────────────
+   FIVE type steps, nothing below 12 px:
+     caption 12 (the floor: captions, badges) · ui 14 (labels, controls)
+     body 16 (prose) · title 20 · display 28 (italic serif headings)
+   Tailwind v4 reads font sizes from the `--text-*` namespace. The old
+   `--font-size-2xs` (Tailwind v3 naming) registered nothing, so `text-2xs`
+   generated no CSS and silently inherited 16 px; and an unlayered
+   `:root { --text-xs: 11px … }` block overrode Tailwind's own scale with
+   11/13/14/15/18/24. Both are gone: the scale lives here, once. Tailwind's
+   stock names are mapped onto the same five steps so every existing
+   utility lands on one of them. `static` keeps the variables emitted for
+   the plain-CSS rules below that read them. A source test
+   (src/design/__tests__/typeScale.test.ts) fails on `text-2xs` or an
+   arbitrary `text-[Npx]` below 12; e2e/design-system.spec.ts measures the
+   rendered sizes. */
+@theme static {
+  --text-caption: 12px;
+  --text-caption--line-height: 1.4;
+  --text-ui: 14px;
+  --text-ui--line-height: 1.45;
+  --text-body: 16px;
+  --text-body--line-height: 1.6;
+  --text-title: 20px;
+  --text-title--line-height: 1.3;
+  --text-display: 28px;
+  --text-display--line-height: 1.15;
+
+  --text-xs: 12px;
+  --text-xs--line-height: 1.4;
+  --text-sm: 14px;
+  --text-sm--line-height: 1.45;
+  --text-base: 16px;
+  --text-base--line-height: 1.6;
+  --text-lg: 16px;
+  --text-lg--line-height: 1.6;
+  --text-xl: 20px;
+  --text-xl--line-height: 1.3;
+  --text-2xl: 28px;
+  --text-2xl--line-height: 1.15;
+  --text-3xl: 28px;
+  --text-3xl--line-height: 1.15;
+
+  /* "All Source Serif" (D-28): monospace utilities (timers, the 3fr badge,
+     formulas) use the serif with tabular figures instead of a system mono. */
+  --font-mono: 'Source Serif 4', Georgia, serif;
 }
 
 /* Theme-aware semantic text colours as utilities: text-success, text-danger,
@@ -70,14 +111,11 @@
   --space-10: 40px;
   --space-12: 48px;
 
-  /* Typography */
-  --text-2xs: 10px;
-  --text-xs: 11px;
-  --text-sm: 13px;
-  --text-base: 14px;
-  --text-lg: 15px;
-  --text-xl: 18px;
-  --text-2xl: 24px;
+  /* Typography: the five steps live in `@theme static` above (D-28). */
+
+  /* Controls (D-28): 36 px with a mouse, 44 px on touch. Every Button,
+     ChoiceChip, Segment, Select trigger, ListRow and top-bar tab reads it. */
+  --tap: 36px;
 
   /* Leading */
   --leading-tight: 1.25;
@@ -149,8 +187,38 @@
   --accent-dim: rgba(166, 90, 42, 0.15);
   /* Text on a solid --accent fill (≥ 4.5:1: white on walnut ≈ 5.1:1). */
   --on-accent: #ffffff;
+  /* The accent as TEXT (links, "Learn about this →", accented labels):
+     --accent itself is only 4.45:1 on --bg; this is its hover shade,
+     ≥ 4.5:1 on every surface and on the feedback tints. */
+  --accent-text: #8f4a1e;
   --accent-bg: rgba(166, 90, 42, 0.08);
   --focus-ring: rgba(166, 90, 42, 0.5);
+  /* Keyboard focus outline: the solid accent (≥ 3:1 on every surface). */
+  --focus-outline: #a65a2a;
+  /* Selected SEGMENT edge (D-28 "segment" state): ≥ 3:1 against the
+     segment track (--card), so the state is visible without colour. */
+  --seg-on-border: #8b7551;
+
+  /* Scale-degree colours (D-28): the 400 hues are FILLS with dark ink on
+     top (--on-degree, 5.8–9.6:1). Never use a fill hue as text on cream
+     (1.3–2.4:1). Coloured TEXT uses the deg-ink tokens — the same hue in its
+     800 shade by day (≥ 4.5:1 on bg / card / card-hover), its 400 shade at
+     night. */
+  --deg-1: #60a5fa;
+  --deg-2: #a78bfa;
+  --deg-3: #f472b6;
+  --deg-4: #34d399;
+  --deg-5: #fbbf24;
+  --deg-6: #fb923c;
+  --deg-7: #f87171;
+  --on-degree: #2a1f14;
+  --deg-ink-1: #1e40af;
+  --deg-ink-2: #5b21b6;
+  --deg-ink-3: #9d174d;
+  --deg-ink-4: #065f46;
+  --deg-ink-5: #92400e;
+  --deg-ink-6: #9a3412;
+  --deg-ink-7: #991b1b;
   --shadow-sm: 0 1px 3px rgba(74, 48, 24, 0.08), 0 1px 2px rgba(74, 48, 24, 0.04);
   --shadow-md: 0 4px 12px rgba(74, 48, 24, 0.1), 0 2px 4px rgba(74, 48, 24, 0.05);
   --shadow-lg: 0 8px 30px rgba(74, 48, 24, 0.14), 0 4px 8px rgba(74, 48, 24, 0.07);
@@ -161,7 +229,8 @@
   --piano-black: #2a1f14;
   --piano-black-shadow: 0 2px 6px rgba(0, 0, 0, 0.35), inset 0 -1px 2px rgba(255, 255, 255, 0.08);
   --piano-border: #8b5e2a;
-  --piano-label: #8b7551;
+  /* Key-name labels on the ivory keys: ≥ 4.5:1 (was #8b7551, 4.05:1). */
+  --piano-label: #6d5c44;
 }
 
 /* Fermata Night — warm walnut/espresso dark variant of the Fermata aesthetic. */
@@ -207,8 +276,20 @@
   --accent-dim: rgba(210, 128, 74, 0.18);
   /* Text on a solid --accent fill (≥ 4.5:1: night bg on amber ≈ 6:1). */
   --on-accent: #181208;
+  --accent-text: #e6915a;
   --accent-bg: rgba(210, 128, 74, 0.10);
   --focus-ring: rgba(210, 128, 74, 0.55);
+  --focus-outline: #d2804a;
+  --seg-on-border: #a8916a;
+  /* Degree fills are the same hues; at night the 400 shades also read as
+     text (5.2–8.7:1 on the night surfaces). */
+  --deg-ink-1: #60a5fa;
+  --deg-ink-2: #a78bfa;
+  --deg-ink-3: #f472b6;
+  --deg-ink-4: #34d399;
+  --deg-ink-5: #fbbf24;
+  --deg-ink-6: #fb923c;
+  --deg-ink-7: #f87171;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.6);
@@ -219,7 +300,16 @@
   --piano-black: #120d06;
   --piano-black-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), inset 0 -1px 2px rgba(255, 255, 255, 0.06);
   --piano-border: #6b4a26;
-  --piano-label: #a8916a;
+  /* The night ivory keys stay light, so their labels are dark (was #a8916a,
+     2.2:1). */
+  --piano-label: #5f4e34;
+}
+
+/* Touch screens get 44 px controls (D-28). */
+@media (pointer: coarse) {
+  :root {
+    --tap: 44px;
+  }
 }
 
 body {
@@ -237,9 +327,10 @@ body {
   outline: none;
 }
 *:focus-visible {
-  outline: 2px solid var(--focus-ring);
+  outline: 2px solid var(--focus-outline);
   outline-offset: 2px;
-  border-radius: 4px;
+  /* No border-radius here: the outline follows each element's own shape
+     (it used to square off the pill chips and segments). */
 }
 /* Opt-out for components that draw their own focus affordance. */
 [data-focus-ring="custom"]:focus-visible {
@@ -257,91 +348,630 @@ body {
   }
 }
 
-/* ─── Button utilities ─────────────────────────────────────────
-   Consumed by <Button> primitive (src/components/ui/Button.tsx).
-   Hover states are gated with :not(:disabled) so disabled/loading
-   buttons don't respond to pointer hover. */
-.btn-accent {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1-5);
-  padding: var(--space-1-5) var(--space-3-5);
-  border-radius: 0.5rem;
-  font-size: var(--text-sm);
-  font-weight: var(--font-weight-medium);
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  transition: background 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
-  box-shadow: var(--shadow-sm);
-}
-.btn-accent:not(:disabled):hover {
-  background: var(--accent-hover);
-  box-shadow: var(--shadow-md);
+/* ─── Design system v2 components (W11-A, D-28) ───────────────────
+   Consumed by src/components/ui/* (Button, ChoiceChip, Segment,
+   SelectTrigger, ListRow, Feedback, Sheet, Menu). In the components layer
+   so a Tailwind utility passed as className can still adjust spacing.
+
+   TWO SELECTED STATES, and only two (D-28):
+   • CHOICE CHIP — one of many values (root, scale, position, tuning,
+     octave, chord shape): a pill; selected = solid --accent fill with
+     --on-accent text (white 5.1:1 by day, dark 6.1:1 at night; the fill is
+     4.45:1 against the page). `.chip[aria-checked="true"]` /
+     `[aria-pressed="true"]`.
+   • SEGMENT — switches a view (Piano/Guitar, Notes/Fingers, Day/Night/
+     Auto, the app tabs): a track of equal buttons; selected = the page
+     colour lifted out of the --card track, --text in 600 weight and a
+     --seg-on-border edge (≥ 3:1 against the track). `.seg-btn[aria-checked
+     |aria-selected="true"]`.
+   Anything else that looks "selected" is a bug. */
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: var(--tap);
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: var(--text-ui);
+    line-height: 1.2;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  }
+  .btn:not(:disabled):hover {
+    background: var(--card-hover);
+    border-color: var(--border-light);
+  }
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+    box-shadow: var(--shadow-sm);
+  }
+  .btn-primary:not(:disabled):hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+    color: var(--on-accent);
+    box-shadow: var(--shadow-md);
+  }
+  .btn-quiet {
+    background: transparent;
+    border-color: transparent;
+    color: var(--text-muted);
+  }
+  .btn-quiet:not(:disabled):hover {
+    background: var(--card-hover);
+    border-color: transparent;
+    color: var(--text);
+  }
+  /* Accent-coloured quiet action: "Learn about this →". */
+  .btn-link {
+    background: transparent;
+    border-color: transparent;
+    color: var(--accent-text);
+    padding: 0 6px;
+  }
+  .btn-link:not(:disabled):hover {
+    background: var(--accent-bg);
+    border-color: transparent;
+    color: var(--accent-text);
+  }
+  .btn-icon {
+    flex: none;
+    width: var(--tap);
+    padding: 0;
+  }
+  .btn-block {
+    width: 100%;
+  }
+  .btn-lg {
+    min-height: max(var(--tap), 52px);
+    font-size: var(--text-body);
+    border-radius: 14px;
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn[aria-busy="true"] {
+    cursor: progress;
+    opacity: 0.75;
+  }
+
+  /* CHOICE CHIP */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: var(--tap);
+    min-width: var(--tap);
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--text-ui);
+    line-height: 1.2;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .chip:not(:disabled):not([aria-checked="true"]):not([aria-pressed="true"]):hover {
+    background: var(--card-hover);
+    color: var(--text);
+  }
+  .chip[aria-checked="true"],
+  .chip[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+    font-weight: 600;
+  }
+  .chip:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+  .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .chip-subgroup {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .chip-divider {
+    display: inline-block;
+    width: 1px;
+    height: 18px;
+    margin: 0 4px;
+    background: var(--border);
+  }
+  /* One scrolling row at every width (guitar positions). */
+  .chip-group.chip-row-scroll {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 2px;
+  }
+  .chip-group.chip-row-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .chip-group.chip-row-scroll > .chip {
+    flex: none;
+  }
+  /* One scrolling row on phones (the root strip). */
+  @media (max-width: 639px) {
+    .chip-group.chip-row-phone {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 2px;
+      margin: 0 -2px;
+    }
+    .chip-group.chip-row-phone::-webkit-scrollbar {
+      display: none;
+    }
+    .chip-group.chip-row-phone > .chip {
+      flex: none;
+    }
+  }
+
+  /* SEGMENT */
+  .seg {
+    display: inline-flex;
+    align-items: stretch;
+    padding: 2px;
+    gap: 2px;
+    border-radius: 12px;
+    background: var(--card);
+    border: 1px solid var(--border-subtle);
+    max-width: 100%;
+  }
+  /* Each segment button is itself a full --tap target (the track adds its
+     2 px padding around it). */
+  .seg-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+    min-height: var(--tap);
+    padding: 0 14px;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--text-ui);
+    line-height: 1.2;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .seg-btn:not([aria-checked="true"]):not([aria-selected="true"]):hover {
+    color: var(--text);
+  }
+  .seg-btn:disabled {
+    cursor: default;
+    opacity: 0.55;
+  }
+  .seg-btn[aria-checked="true"],
+  .seg-btn[aria-selected="true"] {
+    background: var(--bg);
+    border-color: var(--seg-on-border);
+    color: var(--text);
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* SELECT TRIGGER (native <select> dressed as a pill with a caret) */
+  .select-trigger {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+  }
+  .select-trigger > select {
+    appearance: none;
+    -webkit-appearance: none;
+    min-height: var(--tap);
+    max-width: 100%;
+    padding: 0 32px 0 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-raised);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: var(--text-ui);
+    font-weight: 600;
+    cursor: pointer;
+    text-overflow: ellipsis;
+  }
+  .select-trigger > svg {
+    position: absolute;
+    right: 11px;
+    pointer-events: none;
+    color: var(--text-dim);
+  }
+
+  /* LIST ROW */
+  .list-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: max(var(--tap), 52px);
+    padding: 8px 4px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: transparent;
+    color: var(--text);
+    text-align: left;
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+  }
+  .list-row:last-child {
+    border-bottom: 0;
+  }
+  button.list-row {
+    cursor: pointer;
+  }
+  button.list-row:hover {
+    background: var(--card-hover);
+  }
+
+  /* FEEDBACK */
+  .feedback {
+    border-radius: 14px;
+    border: 1px solid var(--border-subtle);
+    border-left-width: 4px;
+    background: var(--card);
+    padding: 12px 14px;
+    font-size: var(--text-body);
+    line-height: 1.5;
+  }
+  .feedback[data-tone="correct"] { border-left-color: var(--success-text); }
+  .feedback[data-tone="wrong"] { border-left-color: var(--danger-text); }
+  .feedback[data-tone="nearMiss"] { border-left-color: var(--warning-text); }
+
+  /* Section label: 14 px small caps (D-28 "label"). */
+  .type-label {
+    font-family: var(--font-sans);
+    font-size: var(--text-ui);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
 }
 
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1-5);
-  padding: var(--space-1-5) var(--space-3);
-  border-radius: 0.5rem;
-  font-size: var(--text-sm);
-  font-weight: var(--font-weight-medium);
-  background: var(--card);
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
-}
-.btn-secondary:not(:disabled):hover {
-  background: var(--card-hover);
-  color: var(--text);
-  border-color: var(--border-light);
-}
+/* ─── App shell v2 (W11-A, D-26) ──────────────────────────────── */
+@layer components {
+  /* Top bar: brand · tabs · search · ⋯. Its height follows --tap and the
+     top safe-area inset (installed iOS app: black-translucent status bar). */
+  .app-topbar {
+    position: relative;
+    /* Above the toast region (65): its "⋯" menu must open OVER a toast that
+       sits under the bar on a phone (seen with the PWA offline-ready toast).
+       Sheets (70) still cover it. */
+    z-index: 66;
+    flex: none;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+    height: calc(var(--tap) + 16px + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) max(12px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left));
+    background: var(--bg);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .app-brand {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--text-title);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  @media (max-width: 639px) {
+    .app-topbar {
+      grid-template-columns: auto 1fr auto;
+      gap: 4px;
+      padding-left: max(8px, env(safe-area-inset-left));
+      padding-right: max(4px, env(safe-area-inset-right));
+    }
+    .app-tabs {
+      justify-self: center;
+      min-width: 0;
+    }
+    .app-tabs .seg-btn {
+      padding: 0 10px;
+    }
+  }
+  @media (max-width: 359px) {
+    .app-tabs .seg-btn {
+      padding: 0 6px;
+    }
+  }
 
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1-5);
-  padding: var(--space-1-5) var(--space-2-5);
-  border-radius: 0.5rem;
-  font-size: var(--text-sm);
-  font-weight: var(--font-weight-medium);
-  background: transparent;
-  color: var(--text-muted);
-  border: none;
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
-}
-.btn-ghost:not(:disabled):hover {
-  background: var(--card-hover);
-  color: var(--text);
-}
+  /* "⋯" menu */
+  /* "Something waits in here" (an update put off with "Later"): a dot on
+     the "⋯" button. The accent on the bar is >= 3:1 (a non-text cue); the
+     button's name says it in words. */
+  .menu-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 2px var(--bg);
+    pointer-events: none;
+  }
+  .menu-popup {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 60;
+    min-width: 200px;
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-raised);
+    box-shadow: var(--shadow-lg);
+  }
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: var(--tap);
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: var(--text-ui);
+    text-align: left;
+    cursor: pointer;
+  }
+  .menu-item:hover,
+  .menu-item:focus-visible {
+    background: var(--card-hover);
+  }
 
-/* Size modifier — smaller padding + smaller type */
-.btn-sm {
-  padding: var(--space-1) var(--space-2-5);
-  font-size: var(--text-xs);
-  gap: var(--space-1);
-}
+  /* Modal sheet */
+  .sheet-root {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+  }
+  .sheet-scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(24, 18, 8, 0.38);
+  }
+  .sheet-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0 auto;
+    max-width: 520px;
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+    padding: 4px 18px calc(20px + env(safe-area-inset-bottom));
+    border-radius: 18px 18px 0 0;
+    background: var(--bg);
+    color: var(--text);
+    box-shadow: var(--shadow-lg);
+    animation: sheet-up 0.18s ease-out;
+  }
+  .sheet-grab {
+    display: flex;
+    justify-content: center;
+    padding: 6px 0 4px;
+    touch-action: none;
+    cursor: grab;
+  }
+  .sheet-grip {
+    display: block;
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-light);
+  }
+  @media (min-width: 640px) {
+    .sheet-panel {
+      left: auto;
+      right: 16px;
+      bottom: auto;
+      top: calc(var(--tap) + 24px + env(safe-area-inset-top));
+      width: 400px;
+      max-height: calc(100dvh - var(--tap) - 48px);
+      border-radius: 16px;
+      padding-top: 12px;
+      animation: none;
+    }
+    .sheet-grab {
+      display: none;
+    }
+  }
+  @keyframes sheet-up {
+    from { transform: translateY(24px); }
+    to { transform: none; }
+  }
 
-/* Disabled + loading (shared across variants) */
-.btn-accent:disabled,
-.btn-secondary:disabled,
-.btn-ghost:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.btn-accent[aria-busy="true"],
-.btn-secondary[aria-busy="true"],
-.btn-ghost[aria-busy="true"] {
-  cursor: progress;
-  opacity: 0.75;
+  /* Instrument dock — phone pull-up sheet (DetentSheet) */
+  .detent-sheet {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--bg-raised);
+    border-top: 1px solid var(--border-subtle);
+    border-radius: 16px 16px 0 0;
+    /* No upward shadow: it darkened the text just above the sheet (chord
+       labels measured 4.0–4.2:1 in the review). The border separates it. */
+  }
+  .detent-head {
+    position: relative;
+    flex: none;
+    padding: 14px 10px 8px;
+  }
+  /* The handle covers the whole head (grip + bar); the bar's own controls
+     sit above it and take their own taps. */
+  .detent-handle {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
+    border-radius: 16px 16px 0 0;
+    touch-action: none;
+    cursor: grab;
+  }
+  /* The handle spans the whole head (a big drag / tap target), but its focus
+     ring is drawn on the grip only — not around the bar's own controls. */
+  .detent-handle:focus-visible {
+    outline: none;
+  }
+  .detent-handle:focus-visible .sheet-grip {
+    outline: 2px solid var(--focus-outline);
+    outline-offset: 3px;
+    width: 56px;
+  }
+  .detent-bar {
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .detent-bar :is(button, select, a, input, label) {
+    pointer-events: auto;
+  }
+  .detent-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* Short screens (a phone sideways): the piano's octave row and the
+     fretboard's controls go under the instrument, so the sheet at Half
+     shows the keys / strings first (as on a phone held upright). */
+  @media (max-height: 500px) {
+    .piano-octave-row,
+    .fretboard-controls {
+      order: 1;
+    }
+  }
+
+  /* Instrument dock — tablet / laptop docked panel */
+  .dock-panel {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    border-top: 1px solid var(--border-subtle);
+  }
+  .dock-panel-bar {
+    padding: 6px 12px;
+    background: var(--bg-raised);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .dock-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  /* Wraps (up to two short lines) rather than ellipsize: PT/ES "Posição
+     aberta" / "1 oitava" were cut off at 390 px (W11-A review). */
+  .dock-context {
+    flex: 1 1 auto;
+    min-width: 0;
+    color: var(--text-muted);
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  /* Drill (D-26): the question at the top; answers, the verdict and
+     Continue in the lower half on a phone — the one-handed thumb zone. */
+  .drill-run {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .drill-thumb {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  @media (max-width: 639px) {
+    .drill-thumb {
+      margin-top: auto;
+    }
+    .drill-thumb > .drill-feedback {
+      order: -1;
+    }
+  }
+
+  /* Toasts: ONE region (ToastRegion), a fixed OVERLAY under the top bar —
+     never in the page flow, so a toast appearing or leaving moves nothing
+     (W11-A review round 4: the in-flow band shifted the instrument and
+     Drill's answers by up to 269 px). It grows down at most to the first
+     element that must stay uncovered (the instrument dock / sheet, Drill's
+     answers): --toast-top / --toast-room come from toastLayout.ts. Taller
+     stacks scroll inside it; it always has room for one whole toast. */
+  .toast-region {
+    position: fixed;
+    z-index: 65;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+    top: var(--toast-top, calc(var(--tap) + 24px));
+    right: 16px;
+    width: min(380px, calc(100vw - 32px));
+    max-height: max(var(--toast-room, 40vh), calc(var(--tap) + 16px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  .toast-region > * {
+    flex: none;
+  }
+  .toast-card {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    box-shadow: var(--shadow-lg);
+  }
+  @media (max-width: 639px) {
+    .toast-region {
+      left: max(12px, env(safe-area-inset-left));
+      right: max(12px, env(safe-area-inset-right));
+      width: auto;
+    }
+  }
 }
 
 /* ─── Card utilities ────────────────────────────────────────────
@@ -350,8 +980,8 @@ body {
    element's inline style, so :hover can pick up per-card accents
    without JS event handlers. */
 .card-base {
-  border-radius: 0.75rem;
-  border: 1px solid var(--border);
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle);
   background: var(--card);
   transition: background-color 0.15s ease, border-color 0.15s ease,
               box-shadow 0.15s ease, transform 0.15s ease;
@@ -393,13 +1023,14 @@ body {
   cursor: not-allowed;
 }
 
-/* ─── Type scale ─────────────────────────────────────────────── */
+/* ─── Section label (D-28 "label": 14 px small caps) ─────────────
+   Was 10 px uppercase. Same look as .type-label. */
 .type-section {
-  font-size: var(--text-2xs);
-  font-weight: var(--font-weight-bold);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
-  color: var(--text-dim);
+  font-size: var(--text-ui);
+  font-variant-caps: all-small-caps;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
 }
 
 @supports (height: 100dvh) {
@@ -463,14 +1094,8 @@ body {
   font-style: italic;
   font-weight: 400;
   letter-spacing: -0.015em;
-  font-size: 1.6em;
+  font-size: var(--text-display); /* display 28 italic (D-28) */
   line-height: 1.15;
-}
-
-.type-section {
-  color: var(--text-muted);
-  letter-spacing: 0.18em;
-  font-weight: var(--font-weight-semibold);
 }
 
 /* Body prose — make description text italic serif.
@@ -487,7 +1112,7 @@ p.explore-prose {
 /* Learn view — concept explanation text */
 .learn-concept-text {
   font-family: var(--font-serif);
-  font-size: 0.9375rem;
+  font-size: var(--text-body);
   line-height: 1.75;
   font-weight: 400;
   letter-spacing: 0.005em;

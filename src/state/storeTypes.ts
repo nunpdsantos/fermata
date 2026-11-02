@@ -7,13 +7,15 @@
 
 import type { Note, ScaleType, Chord, PitchedNote } from '../core/types/music.ts';
 import type { SynthPresetName } from '../core/types/visual.ts';
+import type { Detent, DockView } from './dock.ts';
 
 // ─── Enums ──────────────────────────────────────────────────────────────────
 
 export type ViewMode = 'explore' | 'learn' | 'drill';
 export type InstrumentType = 'piano' | 'guitar';
 export type ColorMode = 'functional' | 'absolute';
-export type ThemeMode = 'fermata' | 'fermata-night';
+/** Day, Night, or Auto (follows the system, W11-A). */
+export type ThemeMode = 'fermata' | 'fermata-night' | 'auto';
 /** 0 = Open position, 1–12 = I–XII, 'all' = whole neck, null = automatic. */
 export type GuitarPositionChoice = number | 'all' | null;
 
@@ -95,12 +97,21 @@ export interface PreferencesSlice {
   /** Last view the user was on — persisted so a fresh boot (no ?view= param)
    *  restores where they left off. Written by navigationSlice.setView. */
   lastView: ViewMode;
+  /** Instrument dock detent per view (D-26), persisted. */
+  dockDetents: Record<DockView, Detent>;
   setColorMode: (mode: ColorMode) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setScaleOctaves: (octaves: 1 | 2) => void;
   setBaseOctave: (octave: number) => void;
   setLanguage: (language: string) => void;
   setPreferencesUpdatedAt: (at: number) => void;
+  setDockDetent: (view: DockView, detent: Detent) => void;
+  /**
+   * Open (or rest) the instrument dock of the CURRENT view at a detent — the
+   * API a Learn exercise calls when it needs the instrument (D-20). No-op in
+   * Drill, which has no dock.
+   */
+  requestDock: (detent: Detent) => void;
 }
 
 // ─── Composed state ─────────────────────────────────────────────────────────

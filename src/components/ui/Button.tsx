@@ -1,28 +1,32 @@
 import { forwardRef } from 'react';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import { buttonClass, type ButtonSize, type ButtonVariant } from './buttonClass';
 
-type Variant = 'accent' | 'secondary' | 'ghost';
-type Size = 'sm' | 'md';
-
+/**
+ * Button (design system v2, D-28).
+ *  - primary   — the one main action on a surface (solid accent, --on-accent text)
+ *  - secondary — other actions (card fill, border)
+ *  - quiet     — low-emphasis actions, toolbars (no fill until hover)
+ *  - link      — an accent-coloured quiet action ("Learn about this →")
+ * Every button is at least --tap tall (36 px with a mouse, 44 px on touch).
+ * `accent` and `ghost` are the v1 names, kept as aliases of primary / quiet.
+ */
 export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
-  variant?: Variant;
-  size?: Size;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  /** Full width. */
+  block?: boolean;
   loading?: boolean;
   startIcon?: ReactNode;
   endIcon?: ReactNode;
   type?: 'button' | 'submit' | 'reset';
 }
 
-const VARIANT_CLASS: Record<Variant, string> = {
-  accent: 'btn-accent',
-  secondary: 'btn-secondary',
-  ghost: 'btn-ghost',
-};
-
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
     variant = 'secondary',
     size = 'md',
+    block = false,
     loading = false,
     disabled,
     startIcon,
@@ -34,14 +38,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   },
   ref,
 ) {
-  const classes = [
-    VARIANT_CLASS[variant],
-    size === 'sm' ? 'btn-sm' : '',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
+  const classes = [buttonClass({ variant, size, block }), className].filter(Boolean).join(' ');
   const isInert = disabled || loading;
 
   return (
@@ -58,6 +55,24 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {children}
       {!loading && endIcon}
     </button>
+  );
+});
+
+export interface IconButtonProps extends Omit<ButtonProps, 'children' | 'startIcon' | 'endIcon' | 'aria-label'> {
+  /** Required: an icon button has no visible text. */
+  'aria-label': string;
+  icon: ReactNode;
+}
+
+/** A square --tap button showing only an icon; the name is its aria-label. */
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
+  { icon, variant = 'quiet', className, ...rest },
+  ref,
+) {
+  return (
+    <Button ref={ref} variant={variant} className={['btn-icon', className].filter(Boolean).join(' ')} {...rest}>
+      {icon}
+    </Button>
   );
 });
 

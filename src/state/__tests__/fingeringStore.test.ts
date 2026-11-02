@@ -104,7 +104,7 @@ describe('backup and reset coverage', () => {
     expect(backup.data[FINGERING_STORE_KEY as keyof typeof backup.data]).toMatchObject({ state: { overrides: { [K1]: 3 } } });
     const validated = await validateBackup(JSON.parse(JSON.stringify(backup)));
     expect(validated.ok).toBe(true);
-    if (validated.ok) expect(backupSections(validated.backup)).toContain('guitar fingerings');
+    if (validated.ok) expect(backupSections(validated.backup)).toContain('guitarFingerings');
   });
 
   it('"Reset app data" clears the fingering store too, via an inlined key literal (review #6)', () => {

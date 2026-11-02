@@ -10,6 +10,7 @@ import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { loadVexFlow } from '../../utils/vexflowLoader';
 import { pitchedNoteToVexKey, vexAccidentals, staffLayout, staffPlan } from '../../utils/notationHelpers';
 import { useAppStore } from '../../state/store';
+import { useResolvedTheme } from '../../hooks/useTheme';
 import type { PitchedNote } from '../../core/types/music';
 
 interface UseStaffNotationOptions {
@@ -33,7 +34,8 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
   const [loading, setLoading] = useState(true);
   const vfRef = useRef<typeof import('vexflow') | null>(null);
   const [containerWidth, setContainerWidth] = useState(0);
-  const themeMode = useAppStore((s) => s.themeMode);
+  // The PAINTED theme (Auto follows the system) — CSS colours are re-read on change.
+  const themeMode = useResolvedTheme();
   const instrument = useAppStore((s) => s.instrument);
 
   // Height and stave position that fit every note, ledger lines included (the

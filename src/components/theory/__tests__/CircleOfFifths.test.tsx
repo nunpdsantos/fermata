@@ -188,7 +188,7 @@ describe('W2-06 — circle clicks go through the store actions', () => {
   it('a minor variant button resets the comparison too', () => {
     select('A', 'natural_minor', { comparisonScale: 'dorian' });
     const { getByText } = render(<CircleOfFifths />);
-    fireEvent.click(getByText('Harmonic'));
+    fireEvent.click(getByText('Harm. Minor'));
     expect(useAppStore.getState().selectedScale).toBe('harmonic_minor');
     expect(useAppStore.getState().comparisonScale).toBeNull();
   });

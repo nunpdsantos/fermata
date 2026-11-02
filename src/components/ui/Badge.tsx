@@ -1,5 +1,5 @@
 import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
-import { DEGREE_COLORS } from '../../design/tokens/colors';
+import { DEGREE_COLORS, inkFor } from '../../design/tokens/colors';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors';
 
 type BadgeShape = 'pill' | 'square';
@@ -13,7 +13,7 @@ export interface BadgeProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'color
   degree?: DegreeNumber;
   /** `pill` = rounded-full (default), `square` = rounded-md (note chips). */
   shape?: BadgeShape;
-  /** `xs` = 10px text, tight padding (default). `sm` = 12px text, roomier. */
+  /** `xs` = 12 px caption (the floor, D-28), tight padding (default). `sm` = 14 px. */
   size?: BadgeSize;
   /** Monospace font (for formula labels). */
   mono?: boolean;
@@ -33,8 +33,8 @@ const SHAPE_CLASS: Record<BadgeShape, string> = {
 };
 
 const SIZE_CLASS: Record<BadgeSize, string> = {
-  xs: 'text-[10px] px-2 py-0.5',
-  sm: 'text-xs px-2.5 py-1.5',
+  xs: 'text-caption px-2 py-0.5',
+  sm: 'text-ui px-2.5 py-1',
 };
 
 export function Badge({
@@ -61,7 +61,9 @@ export function Badge({
   const resolvedStyle: CSSProperties = isAccented
     ? {
         backgroundColor: tint(color!, 0.12),
-        color: color!,
+        // The hue tints the pill; the text is that hue's ink (D-28: a 400
+        // hue as text is 1.3–2.4:1 on cream). A caller's style.color wins.
+        color: inkFor(color!),
         ...(outlined && { border: `1px solid ${tint(color!, 0.3)}` }),
       }
     : {

@@ -106,6 +106,30 @@ describe('W9-14 theme before first paint', () => {
       expect(document.documentElement.classList.contains('fermata-night')).toBe(true);
     });
 
+    it('a saved Auto theme follows the system: dark → night, light or unknown → day (W11-A)', () => {
+      const original = window.matchMedia;
+      try {
+        localStorage.setItem('music-theory-app', JSON.stringify({ state: { themeMode: 'auto' }, version: 6 }));
+        window.matchMedia = ((q: string) => ({ matches: q === '(prefers-color-scheme: dark)' })) as unknown as typeof window.matchMedia;
+        run();
+        expect(document.documentElement.classList.contains('fermata-night')).toBe(true);
+        expect(meta.content).toBe('#181208');
+
+        document.documentElement.className = '';
+        meta.content = '#f5efe2';
+        window.matchMedia = (() => ({ matches: false })) as unknown as typeof window.matchMedia;
+        run();
+        expect(document.documentElement.classList.contains('fermata-night')).toBe(false);
+
+        (window as unknown as { matchMedia: undefined }).matchMedia = undefined;
+        expect(run).not.toThrow();
+        expect(document.documentElement.classList.contains('fermata-night')).toBe(false);
+        expect(meta.content).toBe('#f5efe2');
+      } finally {
+        window.matchMedia = original;
+      }
+    });
+
     it('day theme, no saved state, or garbage → day, and never throws', () => {
       localStorage.setItem('music-theory-app', JSON.stringify({ state: { themeMode: 'fermata' }, version: 6 }));
       run();

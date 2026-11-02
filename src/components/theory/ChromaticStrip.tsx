@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Note, noteToString } from '../../core/types/music.ts';
-import { DEGREE_COLORS, DEGREE_COLORS_DIM } from '../../design/tokens/colors.ts';
+import { DEGREE_COLORS, DEGREE_COLORS_DIM, DEGREE_INKS } from '../../design/tokens/colors.ts';
 
 const INTERVAL_SHORT = [
   'R', 'm2', 'M2', 'm3', 'M3', 'P4', 'TT', 'P5', 'm6', 'M6', 'm7', 'M7', '8',
@@ -60,6 +61,7 @@ export function ChromaticStrip({
   keyboard = true,
   className = '',
 }: ChromaticStripProps) {
+  const { t } = useTranslation();
   useEffect(() => {
     if (!keyboard) return;
     const onKey = (e: KeyboardEvent) => {
@@ -76,11 +78,14 @@ export function ChromaticStrip({
   }, [keyboard, onToggleStep]);
 
   return (
+    // Every step is a full --tap target (W11-A): on a narrow screen the strip
+    // scrolls sideways inside its own box instead of squeezing the buttons.
+    <div className="overflow-x-auto -mx-1 px-1 py-1" style={{ overscrollBehaviorX: 'contain' }}>
     <div
       className={`grid gap-1.5 ${className}`}
-      style={{ gridTemplateColumns: 'repeat(13, minmax(0, 1fr))' }}
+      style={{ gridTemplateColumns: 'repeat(13, minmax(var(--tap), 1fr))' }}
       role="group"
-      aria-label={`Chromatic strip from ${noteToString(rootNote)}`}
+      aria-label={t('chordBuilder.strip.label', { note: noteToString(rootNote) })}
     >
       {Array.from({ length: 13 }, (_, step) => {
         const note = noteAtStep(step);
@@ -93,8 +98,12 @@ export function ChromaticStrip({
         const degree = inKey && pitchClassToDegree && pc !== undefined ? pitchClassToDegree(pc) : undefined;
 
         const stateLabel = isRoot
-          ? `Root, ${noteLabel}`
-          : `${intervalLabel}, ${noteLabel}${isActive ? ', selected' : ''}${degree ? `, scale degree ${degree}` : ''}`;
+          ? t('chordBuilder.strip.root', { note: noteLabel })
+          : [
+              t('chordBuilder.strip.step', { interval: intervalLabel, note: noteLabel }),
+              isActive ? t('chordBuilder.strip.selected') : null,
+              degree ? t('chordBuilder.strip.degree', { n: degree }) : null,
+            ].filter(Boolean).join(', ');
 
         // Two orthogonal visual channels:
         //   1) Background tint encodes scale-degree / key context (degree colors when in-key).
@@ -132,18 +141,19 @@ export function ChromaticStrip({
           >
             {degree && (
               <span
-                className="absolute right-1.5 top-0.5 text-[9px] font-semibold"
-                style={{ color: DEGREE_COLORS[degree as 1 | 2 | 3 | 4 | 5 | 6 | 7] }}
+                className="absolute right-1.5 top-0.5 text-caption font-semibold"
+                style={{ color: DEGREE_INKS[degree as 1 | 2 | 3 | 4 | 5 | 6 | 7] }}
               >
                 {degree}
               </span>
             )}
-            <span className="block text-[10px] opacity-70">{step}</span>
+            <span className="block text-caption opacity-70">{step}</span>
             <span className="block text-base font-semibold mt-0.5">{noteLabel}</span>
-            <span className="block text-[11px] opacity-80">{intervalLabel}</span>
+            <span className="block text-caption opacity-80">{intervalLabel}</span>
           </button>
         );
       })}
+    </div>
     </div>
   );
 }

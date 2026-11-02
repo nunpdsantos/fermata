@@ -86,7 +86,7 @@ function expectedDots(root: Note, scale: Parameters<typeof getGuitarPosition>[1]
 }
 
 function chip(name: string) {
-  return within(screen.getByRole('tablist', { name: 'fretboard.scalePosition' })).getByRole('tab', { name: new RegExp(`^${name}$`) });
+  return within(screen.getByRole('radiogroup', { name: 'fretboard.scalePosition' })).getByRole('radio', { name: new RegExp(`^${name}$`) });
 }
 
 describe('default view is a classical position, not the whole neck (D-02)', () => {
@@ -97,14 +97,14 @@ describe('default view is a classical position, not the whole neck (D-02)', () =
     const open = dots(container).filter((d) => d.fret === 0);
     expect(open).toHaveLength(6);
     expect(open.every((d) => d.label === '0')).toBe(true);
-    expect(chip('fretboard.open').getAttribute('aria-selected')).toBe('true');
+    expect(chip('fretboard.open').getAttribute('aria-checked')).toBe('true');
   });
 
   it('D major opens in II position (lowest with the root on string 5 or 6)', async () => {
     useAppStore.setState({ selectedKey: N('D') });
     const { container } = await renderFretboard();
     expect(dots(container)).toEqual(expectedDots(N('D'), 'major', 2));
-    expect(chip('II').getAttribute('aria-selected')).toBe('true');
+    expect(chip('II').getAttribute('aria-checked')).toBe('true');
   });
 });
 
@@ -139,7 +139,7 @@ describe('the chosen position persists across key and scale changes (W3-08)', ()
     const { container } = await renderFretboard();
     fireEvent.click(chip('V'));
     act(() => useAppStore.getState().setKey(N('G')));
-    expect(chip('V').getAttribute('aria-selected')).toBe('true');
+    expect(chip('V').getAttribute('aria-checked')).toBe('true');
     expect(dots(container)).toEqual(expectedDots(N('G'), 'major', 5));
     act(() => useAppStore.getState().setScale('dorian'));
     expect(dots(container)).toEqual(expectedDots(N('G'), 'dorian', 5));
@@ -235,13 +235,13 @@ describe('dot labels: finger / degree / note (W10-04)', () => {
   it('toggles what the dots show', async () => {
     const { container } = await renderFretboard();
     fireEvent.click(chip('V'));
-    fireEvent.click(screen.getByRole('button', { name: 'fretboard.labelDegree' }));
+    fireEvent.click(screen.getByRole('radio', { name: 'fretboard.labelDegree' }));
     expect(dots(container)).toEqual(expectedDots(N('C'), 'major', 5, 'degree'));
-    fireEvent.click(screen.getByRole('button', { name: 'fretboard.labelNote' }));
+    fireEvent.click(screen.getByRole('radio', { name: 'fretboard.labelNote' }));
     expect(dots(container).map((d) => d.label).sort()).toEqual(
       getGuitarPosition(N('C'), 'major', 5).notes.map((x) => `${x.note.natural}${x.note.accidental}`).sort(),
     );
-    fireEvent.click(screen.getByRole('button', { name: 'fretboard.labelFinger' }));
+    fireEvent.click(screen.getByRole('radio', { name: 'fretboard.labelFinger' }));
     expect(dots(container)).toEqual(expectedDots(N('C'), 'major', 5, 'finger'));
     expect(useFingeringStore.getState().labelMode).toBe('finger');
   });

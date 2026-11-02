@@ -1,9 +1,12 @@
-import { useRef, useLayoutEffect, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppStore, type ViewMode, type ThemeMode } from '../../state/store.ts';
-import { SUPPORTED_LANGUAGES } from '../../i18n/index.ts';
-import { toast } from '../../state/toastStore.ts';
-import { buildBackup, validateBackup, applyBackup, backupSections } from '../../utils/backupHelpers.ts';
+import { useAppStore, type ViewMode } from '../../state/store.ts';
+import { Segment } from '../ui/Segment.tsx';
+import { Button } from '../ui/Button.tsx';
+import { Menu } from '../ui/Menu.tsx';
+import { SettingsSheet } from './SettingsSheet.tsx';
+import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
+import { usePwaUpdateStore, applyUpdateOrReload } from '../../hooks/usePWA.ts';
 
 const VIEWS: ViewMode[] = ['explore', 'learn', 'drill'];
 const VIEW_KEYS: Record<ViewMode, string> = {
@@ -12,395 +15,88 @@ const VIEW_KEYS: Record<ViewMode, string> = {
   drill: 'nav.drill',
 };
 
-const THEME_OPTIONS: ThemeMode[] = ['fermata', 'fermata-night'];
-const THEME_KEYS: Record<ThemeMode, string> = {
-  fermata: 'theme.fermata',
-  'fermata-night': 'theme.fermataNight',
-};
+const SEARCH_ICON = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="shrink-0">
+    <circle cx="11" cy="11" r="7" />
+    <line x1="20" y1="20" x2="16" y2="16" />
+  </svg>
+);
 
-function ThemeIcon({ mode }: { mode: ThemeMode }) {
-  const s = 14;
-  if (mode === 'fermata-night') {
-    // Moon/night icon
-    return (
-      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-      </svg>
-    );
-  }
-  // fermata (day) — Fermata symbol: arc over a dot
-  return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-      <path d="M4 14 A 8 8 0 0 1 20 14" />
-      <circle cx="12" cy="16" r="1.5" fill="currentColor" />
-    </svg>
-  );
-}
-
+/**
+ * Top bar (W11-A, D-26/D-28): Fermata · Explore / Learn / Drill · search · "⋯".
+ * The tabs are a Segment in tabs mode: the selected tab paints its own
+ * highlight, so it can never sit misaligned after a font load, a resize, an
+ * orientation change or a language change (the old sliding indicator was
+ * measured once per view change and drifted). Language, theme and backup
+ * moved from here into Settings ("⋯" → Settings).
+ */
 export function TopBar() {
   const { t } = useTranslation();
   const view = useAppStore((s) => s.view);
   const setView = useAppStore((s) => s.setView);
-  const themeMode = useAppStore((s) => s.themeMode);
-  const setThemeMode = useAppStore((s) => s.setThemeMode);
-  const language = useAppStore((s) => s.language);
-  const setLanguage = useAppStore((s) => s.setLanguage);
-  const navRef = useRef<HTMLElement>(null);
-  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
-
-  useLayoutEffect(() => {
-    const nav = navRef.current;
-    if (!nav) return;
-    const btn = nav.querySelector<HTMLElement>(`[data-tab="${view}"]`);
-    if (!btn) return;
-    setIndicator({ left: btn.offsetLeft, width: btn.offsetWidth });
-  }, [view]);
-
-  const themeLabel = t(THEME_KEYS[themeMode]);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  // Below 360 px the three tabs need the room: search moves into the menu.
+  const narrow = useMediaQuery('(max-width: 359px)');
+  const updateReady = usePwaUpdateStore((s) => s.needRefresh);
+  // Put off with "Later": a dot on "⋯" says an update is waiting in there.
+  const updateDeferred = usePwaUpdateStore((s) => s.needRefresh && s.updateDeferred);
+  const openSearch = () => useAppStore.getState().setQuickSearchOpen(true);
 
   return (
-    <header
-      className="flex items-center justify-between px-4 max-sm:px-2.5 h-12 backdrop-blur-md shrink-0"
-      style={{
-        backgroundColor: 'color-mix(in srgb, var(--bg) 80%, transparent)',
-        borderBottom: '1px solid var(--border-subtle)',
-      }}
-    >
-      <div className="flex items-center gap-3">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" className="max-sm:hidden shrink-0" aria-hidden="true">
+    <header className="app-topbar" data-testid="app-topbar">
+      <div className="flex items-center gap-2 min-w-0">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" className="shrink-0" aria-hidden="true">
           <path d="M4 14 A 8 8 0 0 1 20 14" />
           <circle cx="12" cy="16" r="1.8" fill="var(--accent)" />
         </svg>
-        <span
-          className="max-sm:hidden"
-          style={{
-            fontFamily: 'var(--font-serif)',
-            fontStyle: 'italic',
-            fontSize: '17px',
-            fontWeight: 500,
-            color: 'var(--text)',
-            letterSpacing: '-0.01em',
-          }}
-        >
-          {t('nav.musicTheory')}
-        </span>
+        <span className="app-brand max-sm:sr-only">{t('nav.musicTheory')}</span>
       </div>
 
-      <nav
-        ref={navRef}
-        className="flex items-center rounded-lg p-0.5 relative"
-        style={{ backgroundColor: 'color-mix(in srgb, var(--card-hover) 60%, transparent)' }}
-        role="tablist"
-        aria-label={t('nav.appViews')}
-      >
-        <div
-          className="absolute rounded-md"
-          style={{
-            left: indicator.left,
-            width: indicator.width,
-            top: 2,
-            bottom: 2,
-            backgroundColor: 'var(--accent-dim)',
-            transition: 'left 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-          }}
-        />
-        {VIEWS.map((v) => (
-          <button
-            key={v}
-            data-tab={v}
-            onClick={() => setView(v)}
-            className="relative px-3 max-sm:px-2 py-1 max-sm:py-0.5 text-xs font-medium rounded-md transition-colors z-10"
-            style={{
-              color: view === v ? 'var(--text)' : 'var(--text-muted)',
-            }}
-            role="tab"
-            aria-selected={view === v}
-            aria-controls={`${v}-panel`}
-          >
-            <span className="relative z-10">{t(VIEW_KEYS[v])}</span>
-          </button>
-        ))}
-      </nav>
-
-      <div className="flex items-center gap-2">
-        {/* Language selector */}
-        <select
-          value={language}
-          onChange={(e) => {
-            setLanguage(e.target.value);
-            toast(t('toast.languageChanged'), 'info');
-          }}
-          className="text-2xs px-1.5 py-1 rounded-lg appearance-none cursor-pointer bg-transparent"
-          style={{
-            color: 'var(--text-dim)',
-            border: '1px solid color-mix(in srgb, var(--border) 50%, transparent)',
-          }}
-          aria-label={t('nav.languageLabel')}
-        >
-          {SUPPORTED_LANGUAGES.map((lang) => (
-            <option key={lang.code} value={lang.code}>{lang.code.toUpperCase()}</option>
-          ))}
-        </select>
-
-        {/* Theme menu — pick directly instead of cycling */}
-        <ThemeMenu
-          mode={themeMode}
-          onChange={setThemeMode}
-          ariaLabel={t('nav.themeLabel', { mode: themeLabel })}
-          label={themeLabel}
-        />
-
-
-        {/* Progress backup */}
-        <BackupMenu />
-
-        {/* Quick search */}
-        <button
-          onClick={() => useAppStore.getState().setQuickSearchOpen(true)}
-          className="flex items-center gap-1.5 px-2.5 max-sm:px-2 py-1 rounded-lg text-xs transition-colors"
-          style={{
-            color: 'var(--text-dim)',
-            backgroundColor: 'color-mix(in srgb, var(--card-hover) 50%, transparent)',
-            border: '1px solid color-mix(in srgb, var(--border) 50%, transparent)',
-            boxShadow: 'var(--shadow-sm)',
-          }}
-          aria-label={t('nav.quickSearchLabel')}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:hidden shrink-0">
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <span className="max-sm:hidden">{t('nav.search')}</span>
-          <kbd
-            className="text-2xs px-1 py-0.5 rounded ml-1 max-sm:hidden"
-            style={{ color: 'var(--text-dim)', backgroundColor: 'var(--bg)' }}
-            aria-hidden="true"
-          >
-            &#8984;K
-          </kbd>
-        </button>
-      </div>
-    </header>
-  );
-}
-
-interface ThemeMenuProps {
-  mode: ThemeMode;
-  onChange: (m: ThemeMode) => void;
-  ariaLabel: string;
-  label: string;
-}
-
-function ThemeMenu({ mode, onChange, ariaLabel, label }: ThemeMenuProps) {
-  const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  // Close on outside click or Escape.
-  useEffect(() => {
-    if (!open) return;
-    const onClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
-    };
-    document.addEventListener('mousedown', onClick);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onClick);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [open]);
-
-  const pick = (m: ThemeMode) => {
-    onChange(m);
-    setOpen(false);
-    toast(t('toast.themeChanged', { mode: t(THEME_KEYS[m]) }), 'info');
-  };
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition-colors"
-        style={{
-          color: 'var(--text-dim)',
-          border: '1px solid color-mix(in srgb, var(--border) 50%, transparent)',
-          backgroundColor: open ? 'var(--card-hover)' : 'transparent',
-        }}
-        aria-label={ariaLabel}
-        aria-haspopup="menu"
-        aria-expanded={open}
-      >
-        <ThemeIcon mode={mode} />
-        <span className="max-sm:hidden">{label}</span>
-      </button>
-      {open && (
-        <div
-          role="menu"
-          className="absolute right-0 mt-1.5 z-50 rounded-lg overflow-hidden min-w-[150px]"
-          style={{
-            backgroundColor: 'var(--bg-raised)',
-            border: '1px solid var(--border)',
-            boxShadow: 'var(--shadow-md)',
-          }}
-        >
-          {THEME_OPTIONS.map((m) => {
-            const active = m === mode;
-            return (
-              <button
-                key={m}
-                type="button"
-                role="menuitemradio"
-                aria-checked={active}
-                onClick={() => pick(m)}
-                className="flex items-center gap-2 w-full px-3 py-2 text-xs text-left transition-colors"
-                style={{
-                  color: active ? 'var(--accent)' : 'var(--text)',
-                  backgroundColor: active ? 'var(--accent-dim)' : 'transparent',
-                  fontWeight: active ? 600 : 400,
-                }}
-              >
-                <ThemeIcon mode={m} />
-                <span className="flex-1">{t(THEME_KEYS[m])}</span>
-                {active && (
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function BackupMenu() {
-  const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Close on outside click or Escape.
-  useEffect(() => {
-    if (!open) return;
-    const onClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
-    };
-    document.addEventListener('mousedown', onClick);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onClick);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [open]);
-
-  const handleExport = () => {
-    setOpen(false);
-    const backup = buildBackup(localStorage);
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `fermata-backup-${backup.exportedAt.slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast(t('backup.exported'), 'success');
-  };
-
-  const handleImportFile = async (file: File) => {
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(await file.text());
-    } catch {
-      toast(t('backup.invalidFile'), 'error');
-      return;
-    }
-    // Every section is vetted by its own store before anything is offered.
-    const result = await validateBackup(parsed);
-    if (!result.ok) {
-      toast(t('backup.invalidFile'), 'error');
-      return;
-    }
-    const sections = backupSections(result.backup).join(', ');
-    if (!window.confirm(t('backup.confirmImport', { sections }))) return;
-    applyBackup(result.backup, localStorage);
-    // Reload so every store rehydrates through its shape guards + migrations.
-    window.location.reload();
-  };
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition-colors"
-        style={{
-          color: 'var(--text-dim)',
-          border: '1px solid color-mix(in srgb, var(--border) 50%, transparent)',
-          backgroundColor: open ? 'var(--card-hover)' : 'transparent',
-        }}
-        aria-label={t('backup.menuLabel')}
-        aria-haspopup="menu"
-        aria-expanded={open}
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="7 10 12 15 17 10" />
-          <line x1="12" y1="15" x2="12" y2="3" />
-        </svg>
-      </button>
-      {open && (
-        <div
-          role="menu"
-          className="absolute right-0 mt-1.5 z-50 rounded-lg overflow-hidden min-w-[170px]"
-          style={{
-            backgroundColor: 'var(--bg-raised)',
-            border: '1px solid var(--border)',
-            boxShadow: 'var(--shadow-md)',
-          }}
-        >
-          <button
-            type="button"
-            role="menuitem"
-            onClick={handleExport}
-            className="flex items-center gap-2 w-full px-3 py-2 text-xs text-left transition-colors"
-            style={{ color: 'var(--text)' }}
-          >
-            {t('backup.export')}
-          </button>
-          <button
-            type="button"
-            role="menuitem"
-            onClick={() => {
-              setOpen(false);
-              fileInputRef.current?.click();
-            }}
-            className="flex items-center gap-2 w-full px-3 py-2 text-xs text-left transition-colors"
-            style={{ color: 'var(--text)' }}
-          >
-            {t('backup.import')}
-          </button>
-        </div>
-      )}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="application/json,.json"
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          e.target.value = '';
-          if (file) void handleImportFile(file);
-        }}
+      <Segment
+        mode="tabs"
+        label={t('nav.appViews')}
+        value={view}
+        onChange={setView}
+        className="app-tabs"
+        options={VIEWS.map((v) => ({
+          value: v,
+          label: t(VIEW_KEYS[v]),
+          id: `tab-${v}`,
+          controls: `${v}-panel`,
+          data: { 'data-tab': v },
+        }))}
       />
-    </div>
+
+      <div className="flex items-center gap-1 justify-end">
+        {/* One search button: icon only (a --tap square) on phones. */}
+        {!narrow && (
+          <Button
+            variant="quiet"
+            className="max-sm:w-(--tap) max-sm:px-0"
+            onClick={openSearch}
+            aria-label={t('nav.quickSearchLabel')}
+            startIcon={SEARCH_ICON}
+          >
+            <span className="max-sm:hidden">{t('nav.search')}</span>
+            <kbd className="text-caption px-1 rounded max-sm:hidden" style={{ color: 'var(--text-dim)', backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border-subtle)' }} aria-hidden="true">
+              ⌘K
+            </kbd>
+          </Button>
+        )}
+        <Menu
+          label={t('nav.more')}
+          testId="app-menu"
+          badge={updateDeferred}
+          buttonLabel={updateDeferred ? t('nav.moreUpdateReady') : undefined}
+          items={[
+            ...(narrow ? [{ id: 'search', label: t('nav.search'), onSelect: openSearch }] : []),
+            { id: 'settings', label: t('settings.title'), onSelect: () => setSettingsOpen(true) },
+            // A waiting update stays one tap away after "Later" (until the reload).
+            ...(updateReady ? [{ id: 'update', label: t('pwa.updateReady'), onSelect: () => void applyUpdateOrReload() }] : []),
+          ]}
+        />
+      </div>
+      <SettingsSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+    </header>
   );
 }

@@ -34,7 +34,7 @@ export function ContinueBanner({ module, unit, level, onClick }: ContinueBannerP
       <div className="flex items-center justify-between">
         <div>
           <span
-            className="text-[10px] font-bold uppercase tracking-widest"
+            className="text-caption font-bold uppercase tracking-widest"
             style={{ color: accentText(accent) }}
           >
             {t('common.continue')}
@@ -53,7 +53,7 @@ export function ContinueBanner({ module, unit, level, onClick }: ContinueBannerP
           height="20"
           viewBox="0 0 24 24"
           fill="none"
-          stroke={accent}
+          stroke={accentText(accent)}
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"

@@ -9,6 +9,40 @@ export const DEGREE_COLORS = {
   7: '#F87171', // vii (Leading tone) — red, strong tension
 } as const;
 
+/**
+ * Degree colours as TEXT (D-28): the fills above read 1.3–2.4:1 on cream, so
+ * coloured text uses these theme tokens instead — the same hue's 800 shade
+ * by day, its 400 shade at night (≥ 4.5:1 on --bg / --card / --card-hover;
+ * src/design/__tests__/themeContrast.test.ts). On a degree FILL, write with
+ * ON_DEGREE (dark ink, 5.8–9.6:1).
+ */
+export const DEGREE_INKS = {
+  1: 'var(--deg-ink-1)',
+  2: 'var(--deg-ink-2)',
+  3: 'var(--deg-ink-3)',
+  4: 'var(--deg-ink-4)',
+  5: 'var(--deg-ink-5)',
+  6: 'var(--deg-ink-6)',
+  7: 'var(--deg-ink-7)',
+} as const;
+
+/** Ink for text drawn ON a degree fill (both themes). */
+export const ON_DEGREE = 'var(--on-degree)';
+
+const INK_BY_FILL = new Map<string, string>(
+  (Object.keys(DEGREE_COLORS) as unknown as (keyof typeof DEGREE_COLORS)[]).map((k) => [DEGREE_COLORS[k].toLowerCase(), DEGREE_INKS[k]]),
+);
+
+/**
+ * The TEXT colour for something tinted with `color`: a degree fill hue → its
+ * ink token; the accent → --accent-text; anything else unchanged.
+ */
+export function inkFor(color: string): string {
+  const c = color.trim().toLowerCase();
+  if (c === 'var(--accent)') return 'var(--accent-text)';
+  return INK_BY_FILL.get(c) ?? color;
+}
+
 export const DEGREE_COLORS_DIM = {
   1: 'rgba(96, 165, 250, 0.15)',
   2: 'rgba(167, 139, 250, 0.15)',

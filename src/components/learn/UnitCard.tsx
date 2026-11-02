@@ -54,11 +54,11 @@ export function UnitCard({ unit, index, completedCount, accentColor, isComplete,
           <div className="flex items-start justify-between mb-2">
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-dim)' }}>
+                <span className="text-caption font-bold uppercase tracking-wider" style={{ color: 'var(--text-dim)' }}>
                   {t('learn.unit', { n: index + 1 })}
                 </span>
                 {isComplete && (
-                  <span className="text-[10px] font-medium text-success bg-emerald-400/10 px-1.5 py-0.5 rounded-full">
+                  <span className="text-caption font-medium text-success bg-emerald-400/10 px-1.5 py-0.5 rounded-full">
                     {t('status.complete')}
                   </span>
                 )}
@@ -88,7 +88,7 @@ export function UnitCard({ unit, index, completedCount, accentColor, isComplete,
           </p>
 
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[10px]" style={{ color: 'var(--text-dim)' }}>
+            <span className="text-caption" style={{ color: 'var(--text-dim)' }}>
               {t('learn.moduleCount', { count: totalModules })}
             </span>
           </div>
@@ -97,7 +97,7 @@ export function UnitCard({ unit, index, completedCount, accentColor, isComplete,
             <div className="flex-1">
               <ProgressBar percent={progressPercent} color={accentColor} height={4} delay={index * 0.08} />
             </div>
-            <span className="text-[10px] tabular-nums" style={{ color: 'var(--text-dim)' }}>
+            <span className="text-caption tabular-nums" style={{ color: 'var(--text-dim)' }}>
               {completedCount}/{totalModules}
             </span>
           </div>

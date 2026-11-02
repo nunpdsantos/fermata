@@ -13,6 +13,7 @@
 import { describe, it, expect } from 'vitest';
 import { palette } from '../tokens/palette';
 import { LEVEL_ACCENTS, DIFFICULTY_CONFIG, accentText } from '../tokens/learnColors';
+import { DIST_FILL_MAJOR, DIST_FILL_MINOR, DIST_TEXT_MAJOR, DIST_TEXT_MINOR, hoverFillFor } from '../../components/theory/circleOfFifthsConstants';
 
 // Read the CSS from disk: under Vitest a `?raw` CSS import comes back as ''
 // (CSS processing is off), so the files are read with Node's fs. The module
@@ -182,7 +183,7 @@ describe.each(Object.entries(THEMES))('semantic text tokens — %s', (_theme, va
 
 describe('feedback/status components use the semantic tokens, not fixed dark-theme shades', () => {
   const FILES = [
-    'components/drill/FeedbackStrip.tsx',
+    'components/ui/Feedback.tsx', // the Drill verdict (FeedbackStrip) renders through it
     'components/drill/ChoiceChips.tsx',
     'components/drill/NoteChips.tsx',
     'components/drill/AccidentalSlots.tsx',
@@ -291,5 +292,116 @@ describe('learn components colour accent TEXT through accentText()', () => {
     // `color: accent` / `color: accentColor` as a text colour is the old pattern.
     expect(src).not.toMatch(/\bcolor:\s*(accent|accentColor)\s*[,}\n]/);
     expect(src).toMatch(/accentText\(/);
+  });
+});
+
+// ─── Design system v2 (W11-A, D-28): every token pair the v2 components use ───
+// Text ≥ 4.5:1; non-text UI (a selected state's edge, a fill that must stand
+// out) ≥ 3:1. Day and night. The browser sweep (e2e/design-system.spec.ts)
+// measures the rendered pages; this pins the tokens themselves.
+
+const MIN_UI = 3;
+const DEGREES = [1, 2, 3, 4, 5, 6, 7] as const;
+
+describe.each(Object.entries(THEMES))('v2 token pairs — %s', (_theme, vars) => {
+  const rgb = (name: string) => hexVar(vars, name);
+  // Night redefines only what changes; read the rest from the day block.
+  const any = (name: string) => (vars[name] ? hexVar(vars, name) : hexVar(THEMES['fermata (day)'], name));
+  const surfaces = ['--bg', '--bg-raised', '--card', '--card-hover'];
+
+  it('degree inks as text on every surface', () => {
+    const bad: string[] = [];
+    for (const d of DEGREES) for (const s of surfaces) {
+      const r = contrast(rgb(`--deg-ink-${d}`), rgb(s));
+      if (r < MIN_TEXT) bad.push(`--deg-ink-${d} on ${s}: ${r.toFixed(2)}`);
+    }
+    expect(bad).toEqual([]);
+  });
+
+  it('dark ink on every degree fill (5.8–9.6:1 by design)', () => {
+    for (const d of DEGREES) {
+      expect(contrast(any('--on-degree'), any(`--deg-${d}`)), `deg ${d}`).toBeGreaterThanOrEqual(5.8);
+    }
+  });
+
+  it('choice chip: --on-accent on --accent; the accent fill stands out from every surface', () => {
+    expect(contrast(rgb('--on-accent'), rgb('--accent'))).toBeGreaterThanOrEqual(MIN_TEXT);
+    for (const s of surfaces) expect(contrast(rgb('--accent'), rgb(s)), s).toBeGreaterThanOrEqual(MIN_UI);
+  });
+
+  it('segment: the selected edge shows against the track; text on both', () => {
+    expect(contrast(rgb('--seg-on-border'), rgb('--card'))).toBeGreaterThanOrEqual(MIN_UI);
+    expect(contrast(rgb('--text'), rgb('--bg'))).toBeGreaterThanOrEqual(MIN_TEXT);
+    expect(contrast(rgb('--text-muted'), rgb('--card'))).toBeGreaterThanOrEqual(MIN_TEXT);
+  });
+
+  // The v2 Feedback card is --card with a tone EDGE (no tinted fill), so the
+  // "Learn about this →" link sits on the plain surfaces.
+  it('--accent-text on every surface', () => {
+    const fg = rgb('--accent-text');
+    const bad = surfaces.filter((s) => contrast(fg, rgb(s)) < MIN_TEXT).map((s) => `${s}: ${contrast(fg, rgb(s)).toFixed(2)}`);
+    expect(bad).toEqual([]);
+  });
+
+  it('keyboard focus outline ≥ 3:1 on every surface', () => {
+    for (const s of surfaces) expect(contrast(rgb('--focus-outline'), rgb(s)), s).toBeGreaterThanOrEqual(MIN_UI);
+  });
+
+  it('piano key labels on the ivory keys', () => {
+    expect(contrast(rgb('--piano-label'), rgb('--piano-white'))).toBeGreaterThanOrEqual(MIN_TEXT);
+  });
+
+  // A label on a black key is drawn in the ivory colour (W11-A review: the
+  // dark --piano-label read 2.4–2.5:1 there).
+  it('piano key labels on the black keys', () => {
+    expect(contrast(rgb('--piano-white'), rgb('--piano-black'))).toBeGreaterThanOrEqual(MIN_TEXT);
+    expect(contrast(rgb('--piano-label'), rgb('--piano-black'))).toBeLessThan(MIN_TEXT); // why not --piano-label
+  });
+});
+
+describe('degree fills are the same hues in both themes (one palette, D-28)', () => {
+  it('index.css --deg-N matches DEGREE_COLORS', async () => {
+    const { DEGREE_COLORS } = await import('../tokens/colors');
+    const day = THEMES['fermata (day)'];
+    for (const d of DEGREES) expect(day[`--deg-${d}`].toLowerCase()).toBe(DEGREE_COLORS[d].toLowerCase());
+    expect(THEMES['fermata-night']['--deg-1']).toBeUndefined(); // inherited, not redefined
+  });
+});
+
+// Circle of fifths (W11-A review): every wedge label on its fill, at rest and
+// under the mouse, over every surface the circle can sit on.
+describe.each(Object.entries(THEMES))('circle of fifths labels, at rest and hovered — %s', (_theme, vars) => {
+  const accent = hexVar(vars, '--accent');
+  /** A wedge fill as the browser paints it over `surface`. */
+  const paint = (fill: string, surface: RGB): RGB => {
+    const mix = /color-mix\(in srgb, var\(--accent\) (\d+)%, transparent\)/.exec(fill);
+    if (mix) return over(accent, Number(mix[1]) / 100, surface);
+    const v = /^var\((--[\w-]+)\)$/.exec(fill);
+    if (!v) throw new Error(`unparsed fill ${fill}`);
+    return hexVar(vars, v[1]);
+  };
+  const ink = (text: string): RGB => hexVar(vars, /^var\((--[\w-]+)\)$/.exec(text)![1]);
+  const surfaces = ['--bg', '--bg-raised', '--card'];
+
+  it.each([
+    ['major', DIST_FILL_MAJOR, DIST_TEXT_MAJOR],
+    ['minor', DIST_FILL_MINOR, DIST_TEXT_MINOR],
+  ] as const)('%s ring: >= 4.5:1 at every distance, resting and hovered', (_ring, fills, texts) => {
+    const bad: string[] = [];
+    fills.forEach((fill, dist) => {
+      for (const s of surfaces) {
+        const surface = hexVar(vars, s);
+        for (const [state, f] of [['rest', fill], ['hover', hoverFillFor(texts[dist])]] as const) {
+          const ratio = contrast(ink(texts[dist]), paint(f, surface));
+          if (ratio < MIN_TEXT) bad.push(`dist ${dist} ${state} on ${s}: ${texts[dist]} ${ratio.toFixed(2)}`);
+        }
+      }
+    });
+    expect(bad).toEqual([]);
+  });
+
+  it('the old hover tint (31 % / 15 %) is what failed — the check can see it', () => {
+    const dim = ink('var(--text-dim)');
+    expect(contrast(dim, paint('color-mix(in srgb, var(--accent) 31%, transparent)', hexVar(vars, '--card')))).toBeLessThan(MIN_TEXT);
   });
 });
