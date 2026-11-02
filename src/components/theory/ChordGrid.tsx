@@ -67,7 +67,7 @@ export function ChordGrid() {
             onClick={() => setSelectedChord(isSelected ? null : chord)}
             // Cards are never narrower than 84 px and their text wraps rather
             // than clips ("Diminished" / "Disminuido" were cut off at 61 px).
-            className="relative flex flex-col items-center gap-0.5 px-1.5 py-2 rounded-xl group text-center [overflow-wrap:anywhere]"
+            className="relative flex flex-col items-center gap-0.5 px-1.5 py-2 min-[1200px]:py-1.5 rounded-xl group text-center [overflow-wrap:anywhere]"
             // Selected = the choice-chip state (accent fill, --on-accent text).
             style={{
               backgroundColor: isSelected ? 'var(--accent)' : 'var(--card)',
@@ -90,12 +90,18 @@ export function ChordGrid() {
               style={{ backgroundColor: color }}
             />
 
-            <span className="text-ui font-bold leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : ink }}>
-              {numeral}
-            </span>
-            <span className="text-body font-semibold leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text)' }}>
-              {rootLabel}
-              <span className="font-normal" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text-dim)' }}>{qualityLabel}</span>
+            {/* Numeral over name; on the workbench (≥1200 px) side by side,
+                one line less, so the 1440×900 work column keeps its
+                headroom with the chord detail open (it wraps back under
+                if a long seventh name has no room). */}
+            <span className="flex flex-col items-center gap-0.5 min-[1200px]:flex-row min-[1200px]:flex-wrap min-[1200px]:justify-center min-[1200px]:items-baseline min-[1200px]:gap-x-1.5">
+              <span className="text-ui font-bold leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : ink }}>
+                {numeral}
+              </span>
+              <span className="text-body font-semibold leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text)' }}>
+                {rootLabel}
+                <span className="font-normal" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text-dim)' }}>{qualityLabel}</span>
+              </span>
             </span>
             <span className="text-caption leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text-dim)' }}>
               {qualityFull}

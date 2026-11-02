@@ -5,7 +5,9 @@ import { test, expect, type Browser, type Page } from '@playwright/test';
  * landscape neck), in a real browser:
  *  - 1440×900: no page scroll and nothing scrolled inside either — the key
  *    summary, the staff strip, the chords (detail open) and the circle of
- *    fifths beside them, over the docked instrument (piano and guitar);
+ *    fifths beside them, over the docked instrument (piano and guitar) —
+ *    with ≥ 40 px to spare in the work column for every chord in key, in
+ *    EN / PT / ES (it once fitted with 0 px on a Mac and overflowed on CI);
  *  - the LINKED FOCUS NOTE: B in the staff strip lights B on the piano and on
  *    the fretboard, and B on the instrument lights the strip's B; the
  *    read-out names it; screen readers hear it once it settles, not per note;
@@ -71,6 +73,39 @@ async function scrollState(page: Page) {
   });
 }
 
+/**
+ * Room to spare at the foot of the main column: its content box's bottom
+ * less the last card's. Negative = it overflows (and scrolls) by that much.
+ * The 1440×900 layout must not fit "just": a wrapped line on another
+ * platform's glyph widths (CI on Linux) once cost a whole detail row.
+ */
+async function headroom(page: Page) {
+  return page.evaluate(() => {
+    const m = document.querySelector('.explore-main')!;
+    const top = m.getBoundingClientRect().top + m.clientTop - m.scrollTop;
+    const bottom = Math.max(...Array.from(m.children).map((c) => c.getBoundingClientRect().bottom + parseFloat(getComputedStyle(c).marginBottom))) - top;
+    return m.clientHeight - parseFloat(getComputedStyle(m).paddingBottom) - bottom;
+  });
+}
+const HEADROOM = 40;
+
+/** Each chord in key in turn: its detail opens in two rows, nothing scrolls, the headroom holds. */
+async function everyChordFits(page: Page, label: string) {
+  const cards = page.locator('.chord-row button');
+  const n = await cards.count();
+  expect(n).toBe(7);
+  for (let i = 0; i < n; i++) {
+    if ((await cards.nth(i).getAttribute('aria-pressed')) !== 'true') await cards.nth(i).click();
+    await expect(page.getByTestId('chord-detail')).toBeVisible();
+    const name = await page.locator('.chord-detail-name').textContent();
+    const rows = await page.locator('[data-testid="chord-detail"] .chord-detail-row').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().height)));
+    expect(rows, `${label} ${name}: the detail's rows are one line each`).toEqual([36, 36]);
+    const s = await scrollState(page);
+    expect(s.main!.scroll, `${label} ${name}: the main column needs no scrolling`).toBeLessThanOrEqual(s.main!.client + 1);
+    expect(await headroom(page), `${label} ${name}: px to spare in the main column`).toBeGreaterThanOrEqual(HEADROOM);
+  }
+}
+
 for (const instrument of ['piano', 'guitar'] as const) {
   test(`1440×900 ${instrument}: no scroll anywhere; summary, staff strip, chords (detail open) and the circle beside them, over the docked instrument`, async ({ browser }) => {
     const { context, page } = await open(browser, { w: 1440, h: 900, state: { instrument } });
@@ -83,7 +118,11 @@ for (const instrument of ['piano', 'guitar'] as const) {
     expect(s.page, 'page scroll').toBeLessThanOrEqual(0);
     expect(s.sideways, 'sideways page scroll').toBeLessThanOrEqual(0);
     expect(s.main!.scroll, 'the main column needs no scrolling').toBeLessThanOrEqual(s.main!.client + 1);
+    expect(await headroom(page), 'px to spare in the main column').toBeGreaterThanOrEqual(HEADROOM);
     expect(s.aside!.scroll, 'the circle column needs no scrolling').toBeLessThanOrEqual(s.aside!.client + 1);
+    // The staff strip shows the chord (its tones lit); the detail's own small
+    // staff is for narrower screens and paper.
+    await expect(page.getByTestId('chord-staff')).toBeHidden();
     for (const sel of ['[data-testid="key-summary"]', '[data-testid="scale-strip"]', '[data-testid="chords-card"]', '[data-testid="chord-detail"]', '[data-testid="circle-card"]', '[data-testid="key-facts"]', '[data-testid="instrument-dock"]']) {
       expect(await inView(page, sel), `${sel} fully on screen`).toBe(true);
     }
@@ -94,9 +133,19 @@ for (const instrument of ['piano', 'guitar'] as const) {
     await expect(page.getByRole('separator', { name: 'Instrument panel' })).toHaveCount(0);
     await expect(page.getByTestId('cof-chord-mark')).toHaveCount(1); // the chord's root is marked
     await expect(page.getByTestId('key-facts')).toContainText('Dominant key');
+    // Not just G: every chord in key (the minor ones list more scales).
+    await everyChordFits(page, instrument);
     await context.close();
   });
 }
+
+test('1440×900 in Portuguese and Spanish: every chord in key opens in place, two rows, no scroll, the same headroom', async ({ browser }) => {
+  for (const language of ['pt', 'es']) {
+    const { context, page } = await open(browser, { w: 1440, h: 900, state: { language } });
+    await everyChordFits(page, language);
+    await context.close();
+  }
+});
 
 test('linked focus (piano): B in the staff strip lights B4 on the piano, and B4 on the piano lights the strip\'s B; the read-out says so', async ({ browser }) => {
   const { context, page } = await open(browser, { w: 1440, h: 900 });
@@ -366,7 +415,8 @@ test('print: a clean page — staff with its strip aligned, chords, circle and k
         Array.from(document.querySelectorAll('button')).some((b) => /Learn about this/.test(b.textContent ?? '') && b.getClientRects().length > 0),
         Array.from(document.querySelectorAll('.explore-card-hint span')).some((e) => /Tap a note/.test(e.textContent ?? '') && e.getClientRects().length > 0),
       ],
-      parts: ['[data-testid="scale-strip"]', '[data-testid="chords-card"]', '[data-testid="circle-card"]', '[data-testid="key-facts"]'].map(shown),
+      // The chord's own small staff: hidden on the workbench screen, printed.
+      parts: ['[data-testid="scale-strip"]', '[data-testid="chords-card"]', '[data-testid="circle-card"]', '[data-testid="key-facts"]', '[data-testid="chord-staff"]'].map(shown),
       ink: getComputedStyle(document.body).color,
       bg: getComputedStyle(document.body).backgroundColor,
     };
@@ -375,7 +425,7 @@ test('print: a clean page — staff with its strip aligned, chords, circle and k
   expect(p.staffInside, 'the staff stays inside its strip').toBe(true);
   expect([p.dock, p.topbar, p.menus]).toEqual([false, false, false]);
   expect(p.screenOnly, 'tabs, "Learn about this", the tap hint: not printed').toEqual([false, false, false]);
-  expect(p.parts).toEqual([true, true, true, true]);
+  expect(p.parts).toEqual([true, true, true, true, true]);
   expect([p.ink, p.bg]).toEqual(['rgb(17, 17, 17)', 'rgb(255, 255, 255)']);
   const pdf = await page.pdf({ format: 'A4' });
   expect(pdf.byteLength).toBeGreaterThan(10_000);

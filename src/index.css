@@ -1359,6 +1359,22 @@ body {
   .chord-detail-staff {
     width: 132px;
   }
+  /* The workbench (≥1200 px, D-25): the staff strip above already shows the
+     chord (its tones lit, the others faded) and the instrument its voicing,
+     so the detail drops its own small staff and its two rows get the card's
+     full width. With the staff beside them they ran ~95% full and one or
+     both wrapped for 5 of the 7 chords in key at 1440×900 in EN, 6 of 7 in
+     PT / ES — and for G too with Linux glyph widths (CI). Paper keeps the
+     staff. */
+  @media screen and (min-width: 1200px) {
+    .chord-detail {
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: 8px;
+    }
+    .chord-detail-staff {
+      display: none;
+    }
+  }
   @media (max-width: 639px) {
     .chord-detail {
       grid-template-columns: minmax(0, 1fr);
