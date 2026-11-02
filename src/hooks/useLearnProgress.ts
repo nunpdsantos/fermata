@@ -27,6 +27,7 @@ export function useLearnProgress() {
   const scheduleModuleReview = useProgressStore((s) => s.scheduleModuleReview);
   const recordReviewResult = useProgressStore((s) => s.recordReviewResult);
   const backfillReviewSchedules = useProgressStore((s) => s.backfillReviewSchedules);
+  const unlockLevel = useProgressStore((s) => s.unlockLevel);
 
   // One-time backfill for modules completed before SRS existed
   const backfillDone = useRef(false);
@@ -110,8 +111,8 @@ export function useLearnProgress() {
 
   const getLevelState = useCallback(
     (level: CurriculumLevel, allLevels: CurriculumLevel[]): LevelState =>
-      computeLevelState(level, allLevels, progress.completedModules),
-    [progress.completedModules],
+      computeLevelState(level, allLevels, progress.completedModules, progress.unlockedLevels),
+    [progress.completedModules, progress.unlockedLevels],
   );
 
   // Spaced repetition
@@ -151,6 +152,7 @@ export function useLearnProgress() {
     isLevelCompleted,
     isUnitCompleted,
     getLevelState,
+    unlockLevel,
     // Exercise tracking
     recordExerciseResult,
     markExercisesPassed,

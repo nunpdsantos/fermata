@@ -44,6 +44,7 @@ export function isValidPersistedProgress(value: unknown): value is { progress: C
   if (!isPlainObject(progress.moduleProgress)) return false;
   if (!Object.values(progress.moduleProgress).every(isStringArray)) return false;
   if (progress.exemptedModules !== undefined && !isStringArray(progress.exemptedModules)) return false;
+  if (progress.unlockedLevels !== undefined && !isStringArray(progress.unlockedLevels)) return false;
   if (progress.exerciseResults !== undefined) {
     // module -> { scores: { exerciseId: 0 | 0.5 | 1 }, totalAttempts, lastAttemptAt, passed }
     if (!isPlainObject(progress.exerciseResults)) return false;
@@ -113,6 +114,8 @@ interface ProgressStore {
   scheduleModuleReview: (moduleId: string) => void;
   recordReviewResult: (moduleId: string, passed: boolean) => void;
   backfillReviewSchedules: () => void;
+  /** "Unlock anyway" (D-10): open a level before its prerequisite level is finished. */
+  unlockLevel: (levelId: string) => void;
 
   // Bulk replace (for sync merge)
   replaceProgress: (progress: CurriculumProgress) => void;
@@ -252,6 +255,13 @@ export const useProgressStore = create<ProgressStore>()(
           },
         });
       },
+
+      unlockLevel: (levelId) =>
+        set((state) => {
+          const unlocked = state.progress.unlockedLevels ?? [];
+          if (unlocked.includes(levelId)) return state;
+          return { progress: { ...state.progress, unlockedLevels: [...unlocked, levelId] } };
+        }),
 
       replaceProgress: (progress) => set({ progress }),
     }),

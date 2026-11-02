@@ -100,4 +100,11 @@ export interface CurriculumProgress {
   exerciseResults?: Record<string, import('./exercise').ModuleExerciseResult>;
   /** Spaced repetition review schedules: moduleId -> schedule */
   reviewSchedules?: Record<string, import('./exercise').ModuleReviewSchedule>;
+  /**
+   * Level ids the learner opened out of order with "Unlock anyway" (decision
+   * D-10, W4b): the level is no longer shown as locked and its first module
+   * no longer waits for the previous level. Optional — saves without it are
+   * unchanged (nothing unlocked out of order).
+   */
+  unlockedLevels?: string[];
 }

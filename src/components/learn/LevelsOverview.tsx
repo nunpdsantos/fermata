@@ -99,8 +99,8 @@ export function LevelsOverview({
   const parallelLevels = translatedMeta.filter((l) => l.parallel);
 
   const getLevelState = useCallback(
-    (meta: LevelMeta) => computeLevelStateMeta(meta, LEVEL_METADATA, progress.completedModules),
-    [progress.completedModules],
+    (meta: LevelMeta) => computeLevelStateMeta(meta, LEVEL_METADATA, progress.completedModules, progress.unlockedLevels),
+    [progress.completedModules, progress.unlockedLevels],
   );
 
   const getCompletedCount = useCallback(

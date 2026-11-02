@@ -83,4 +83,22 @@ describe('findNextModuleEntry (static index) == findNextIncompleteModule (full d
       expectSame(progressWith(completed, k % 2 ? inProgress : []));
     }
   });
+
+  it('levels opened with "Unlock anyway" (D-10): both agree, and the unlocked level\'s first module is offered', () => {
+    const rand = mulberry32(20261102);
+    const levelIds = LEVELS.map((l) => l.id);
+    for (let k = 0; k < 300; k++) {
+      const completed = ALL_MODULES.filter(() => rand() < 0.3).map((m) => m.id);
+      const p = progressWith(completed);
+      p.unlockedLevels = levelIds.filter(() => rand() < 0.3);
+      expectSame(p);
+    }
+    // A fresh learner who unlocks Level 3 and has ticked a task in its first
+    // module is offered that module; without the unlock it waits for Level 2.
+    const p = progressWith([], ['l3u9m1']);
+    expect(findNextModuleEntry(p)?.id).toBe('l1u1m1');
+    p.unlockedLevels = ['l3'];
+    expectSame(p);
+    expect(findNextModuleEntry(p)?.id).toBe('l3u9m1');
+  });
 });
