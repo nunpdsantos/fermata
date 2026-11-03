@@ -242,7 +242,7 @@ const curriculumL4: CurriculumLevelOverlay = {
       title: 'Inversiones de V7 y Sus Resoluciones',
       subtitle: 'Cómo V6/5, V4/3 y V4/2 resuelven a posiciones de tónica',
       objectives: [
-        'Resolver las cuatro inversiones de V7 hacia sus objetivos de tónica correctos',
+        'Resolver el estado fundamental y las tres inversiones de V7 hacia sus objetivos de tónica correctos',
         'Comprender por qué V4/2 resuelve casi siempre a I6 (tónica en primera inversión)',
         'Reconocer cómo la inversión determina el movimiento del bajo y la resolución',
       ],

@@ -242,7 +242,7 @@ const curriculumL4: CurriculumLevelOverlay = {
       title: 'Inversões de V7 e as Suas Resoluções',
       subtitle: 'Como V6/5, V4/3 e V4/2 resolvem para posições de tónica',
       objectives: [
-        'Resolver as quatro inversões de V7 para os seus alvos de tónica corretos',
+        'Resolver o estado fundamental e as três inversões de V7 para os seus alvos de tónica corretos',
         'Compreender por que V4/2 resolve quase sempre para I6 (tónica em primeira inversão)',
         'Reconhecer como a inversão determina o movimento do baixo e a resolução',
       ],

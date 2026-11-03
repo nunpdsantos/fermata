@@ -107,8 +107,8 @@ const overlay: ExerciseLevelOverlay = {
   l9u30m4e1: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '8 meios-tons = 6.ª menor — agridoce e anelante, com uma qualidade pungente e algo tensa.',
-    nudge: 'Um salto largo com uma cor agridoce e anelante. Para confirmares, canta a nota mais grave uma oitava acima, identifica o pequeno intervalo que forma com a outra nota e inverte-o: os números somam 9, e a qualidade passa à oposta.',
+    hint: '8 meios-tons = 6.ª menor. Ouve a distância entre as notas: faltam 4 meios-tons para completar a oitava.',
+    nudge: 'Ouve a distância entre as duas notas. Para a confirmares, canta a nota mais grave uma oitava acima, identifica o pequeno intervalo que forma com a outra nota e inverte-o: os números somam 9, e a qualidade passa à oposta.',
   },
   l9u30m4e2: {
     prompt:

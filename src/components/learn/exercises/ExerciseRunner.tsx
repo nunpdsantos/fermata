@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ExerciseDefinition, ValidationResult, EarTrainingConfig } from '../../../core/types/exercise';
-import type { RunItem, RunSnapshot } from '../../../state/learnSessionStore';
+import { isValidRun, type RunItem, type RunSnapshot } from '../../../state/learnSessionStore';
 import { validateAnswer } from './validateExercise';
 import {
   choicesForExercise, earPlaybackLockMs, earChordPitches, earProgressionPitches, earIntervalPitches, earReference,
@@ -59,7 +59,8 @@ interface ExerciseRunnerProps {
   onSnapshot?: (run: RunSnapshot) => void;
   /**
    * The lesson's sections (its concepts), for the pointer after a first miss
-   * when an item has no nudge: "Look again at: 2 · …" with Re-read.
+   * when an item has no nudge: "Look again at: 2 · …". Re-read opens only
+   * after the item is final.
    */
   concepts?: readonly { title: string; explanation: string }[];
 }
@@ -69,7 +70,7 @@ interface ExerciseRunnerProps {
  * position always shown ("4 / 9"), ✕ Exit, and the answers low on a phone,
  * in thumb reach. Reveal policy (audit W4-04, review B1): a first wrong try
  * shows "Not X — have another go." and a NUDGE (`nudge.ts`: the item's own,
- * its type's method, or a pointer back to the lesson section with Re-read),
+ * its type's method, or a pointer back to the lesson section),
  * the tried option struck through — never the answer; the answer, and the
  * item's explanation (its `hint`), are shown only once the item is final
  * (right, or the last try used).
@@ -84,13 +85,15 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
   // Scale/chord names inside feedback follow the UI language (audit W1-10).
   const feedbackLang = (['pt', 'es'].includes(i18n.language?.slice(0, 2)) ? i18n.language.slice(0, 2) : 'en') as 'en' | 'pt' | 'es';
 
+  const validResume = resume && isValidRun(resume) && resume.order.every((id) => exercises.some((ex) => ex.id === id)) ? resume : undefined;
+
   // Plain shuffle — no concept weighting after gamification removal. A
   // resumed run keeps its saved order.
   const [orderedExercises] = useState(() => {
-    if (resume) {
+    if (validResume) {
       const byId = new Map(exercises.map((ex) => [ex.id, ex]));
-      const ordered = resume.order.map((id) => byId.get(id)).filter((ex): ex is ExerciseDefinition => !!ex);
-      if (ordered.length === resume.order.length) return ordered;
+      const ordered = validResume.order.map((id) => byId.get(id)).filter((ex): ex is ExerciseDefinition => !!ex);
+      if (ordered.length === validResume.order.length) return ordered;
     }
     return selectWeightedExercises(exercises, [], exercises.length);
   });
@@ -98,9 +101,9 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
 
   /** The whole run in one value: what is saved, and what a reload restores. */
   const [run, setRun] = useState<RunSnapshot>(() =>
-    resume && resume.order.length === orderedExercises.length
-      ? resume
-      : { order: orderedExercises.map((ex) => ex.id), index: 0, scores: [], items: [], attempt: 1, tried: [], missed: null, final: null },
+    validResume
+      ? validResume
+      : { order: orderedExercises.map((ex) => ex.id), index: 0, scores: [], items: [], attempt: 1, selectedNotes: [], tried: [], missed: null, final: null },
   );
   const [selected, setSelected] = useState<string | null>(null);
   const [finished, setFinished] = useState(false);
@@ -289,6 +292,11 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
     }
   }, [exercise, selected, final, t, feedbackLang, wordsFor, tried, attempt, choiceRetry, settle, miss, answerWords]);
 
+  const handleSelectionChange = useCallback((notes: number[]) => {
+    setRun((r) => r.selectedNotes.length === notes.length && r.selectedNotes.every((n, i) => n === notes[i])
+      ? r : { ...r, selectedNotes: notes });
+  }, []);
+
   const handleSubmitInstrument = useCallback((pitchClasses: Set<number>) => {
     if (!exercise || final) return;
     const result = validateAnswer(exercise.config, pitchClasses, t, feedbackLang);
@@ -314,7 +322,7 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
       onComplete(earned >= total * 0.8, outcomesOf(run.items));
     } else {
       setSelected(null);
-      setRun((r) => ({ ...r, index: nextIndex, attempt: 1, tried: [], missed: null, final: null }));
+      setRun((r) => ({ ...r, index: nextIndex, attempt: 1, selectedNotes: [], tried: [], missed: null, final: null }));
     }
   }, [currentIndex, total, scores, onComplete, outcomesOf, run.items]);
 
@@ -336,7 +344,7 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
     if (final) continueRef.current?.focus({ preventScroll: true });
   }, [final]);
 
-  if (!exercise || finished) return null;
+  if (!exercise || finished) return <Button variant="quiet" aria-label={t('lesson.exitLabel')} onClick={onExit ?? (() => onComplete(false, outcomesOf(run.items)))}>{t('lesson.exit')}</Button>;
 
   const cfg = exercise.config;
   const isEarTraining = cfg.type === 'ear_training';
@@ -344,6 +352,8 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
   const context = title
     ? t(practice ? 'lesson.practiceContext' : reviewMode ? 'lesson.reviewContext' : 'lesson.checkContext', { title })
     : null;
+
+  const concept = pointer ? concepts?.[pointer.index] : undefined;
 
   // The verdict card. Before the item is final it never names the answer.
   let feedback: React.ReactNode = null;
@@ -370,47 +380,18 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
       />
     );
   } else if (missed !== null) {
-    const concept = pointer ? concepts?.[pointer.index] : undefined;
     feedback = (
-      <>
-        <Feedback
-          tone="nearMiss"
-          title={missed && missed.length <= SHORT_ANSWER ? t('lesson.notAnswer', { answer: missed }) : t('lesson.notQuiteRetry')}
-          hint={nudge
-            ? t('exercise.hint', { hint: nudge })
-            : pointer
-              ? (pointer.title
-                ? t('lesson.lookAgainAt', { section: t('lesson.conceptItem', { n: pointer.index + 1, title: pointer.title }) })
-                : t('lesson.lookAgainSection', { n: pointer.index + 1 }))
-              : t('lesson.noHint')}
-        >
-          {concept && (
-            <Button
-              variant="link"
-              className="mt-1 -ml-1.5"
-              aria-expanded={rereadOpen}
-              aria-controls={`reread-${exercise.id}`}
-              onClick={() => setRereadOpenFor(rereadOpen ? null : exercise.id)}
-              data-testid="check-reread-toggle"
-            >
-              {t('lesson.reread')}
-              <span aria-hidden="true">{rereadOpen ? '‹' : '›'}</span>
-            </Button>
-          )}
-        </Feedback>
-        {concept && rereadOpen && (
-          <section
-            id={`reread-${exercise.id}`}
-            className="rounded-xl px-4 py-3 flex flex-col gap-1.5"
-            style={{ backgroundColor: 'var(--card)' }}
-            aria-label={t('lesson.rereadLabel', { section: t('lesson.conceptItem', { n: (pointer?.index ?? 0) + 1, title: concept.title }) })}
-            data-testid="check-reread"
-          >
-            <p className="text-ui font-semibold" style={{ color: 'var(--text)' }}>{t('lesson.conceptItem', { n: (pointer?.index ?? 0) + 1, title: concept.title })}</p>
-            <p className="learn-concept-text text-ui" style={{ color: 'var(--text-muted)', lineHeight: 1.55 }}>{concept.explanation}</p>
-          </section>
-        )}
-      </>
+      <Feedback
+        tone="nearMiss"
+        title={missed && missed.length <= SHORT_ANSWER ? t('lesson.notAnswer', { answer: missed }) : t('lesson.notQuiteRetry')}
+        hint={nudge
+          ? t('exercise.hint', { hint: nudge })
+          : pointer
+            ? (pointer.title
+              ? t('lesson.lookAgainAt', { section: t('lesson.conceptItem', { n: pointer.index + 1, title: pointer.title }) })
+              : t('lesson.lookAgainSection', { n: pointer.index + 1 }))
+            : t('lesson.noHint')}
+      />
     );
   }
 
@@ -418,16 +399,14 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
     <div ref={rootRef} className="check-run flex-1 flex flex-col w-full max-w-[640px] mx-auto px-4 max-sm:px-3 pt-2 pb-4" data-testid="focused-check">
       {/* ✕ Exit · progress · n / N */}
       <div className="flex items-center gap-2 min-h-12">
-        {onExit && (
-          <Button
-            variant="quiet"
-            onClick={onExit}
-            aria-label={t('lesson.exitLabel')}
-            startIcon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>}
-          >
-            {t('lesson.exit')}
-          </Button>
-        )}
+        <Button
+          variant="quiet"
+          onClick={onExit ?? (() => onComplete(false, outcomesOf(run.items)))}
+          aria-label={t('lesson.exitLabel')}
+          startIcon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>}
+        >
+          {t('lesson.exit')}
+        </Button>
         <div className="flex-1 flex justify-center gap-1 min-w-0" aria-hidden="true" data-testid="check-pips">
           {orderedExercises.map((ex, i) => {
             const s = scores[i];
@@ -465,6 +444,33 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
       {/* Verdict, answers, Submit / Continue — low on a phone (thumb zone) */}
       <div className="flex flex-col gap-3 max-sm:mt-auto" data-testid="check-thumb">
         {feedback}
+        {final && concept && (
+          <>
+            <Button
+              variant="link"
+              className="self-start mt-1 -ml-1.5"
+              aria-expanded={rereadOpen}
+              aria-controls={`reread-${exercise.id}`}
+              onClick={() => setRereadOpenFor(rereadOpen ? null : exercise.id)}
+              data-testid="check-reread-toggle"
+            >
+              {t('lesson.reread')}
+              <span aria-hidden="true">{rereadOpen ? '‹' : '›'}</span>
+            </Button>
+            {rereadOpen && (
+              <section
+                id={`reread-${exercise.id}`}
+                className="rounded-xl px-4 py-3 flex flex-col gap-1.5"
+                style={{ backgroundColor: 'var(--card)' }}
+                aria-label={t('lesson.rereadLabel', { section: t('lesson.conceptItem', { n: (pointer?.index ?? 0) + 1, title: concept.title }) })}
+                data-testid="check-reread"
+              >
+                <p className="text-ui font-semibold" style={{ color: 'var(--text)' }}>{t('lesson.conceptItem', { n: (pointer?.index ?? 0) + 1, title: concept.title })}</p>
+                <p className="learn-concept-text text-ui" style={{ color: 'var(--text-muted)', lineHeight: 1.55 }}>{concept.explanation}</p>
+              </section>
+            )}
+          </>
+        )}
         <div ref={answersRef} className="flex flex-col gap-3" data-testid="check-answer-zone">
         {isInstrumentBased ? (
           <InstrumentInput
@@ -474,6 +480,8 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
             onSubmit={handleSubmitInstrument}
             accentColor={accentColor}
             spellingContext={buildTargetNotes}
+            initialSelection={run.selectedNotes}
+            onSelectionChange={handleSelectionChange}
           />
         ) : (
           <ChoiceInput

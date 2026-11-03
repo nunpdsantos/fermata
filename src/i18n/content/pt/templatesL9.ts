@@ -68,7 +68,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve este intervalo mais largo, tocado em movimento {direction}, e identifica-o.',
       hintTemplate:
-        'Intervalos largos: 6m=8 (agridoce), 6M=9 (quente), 7m=10 (jazz), 7M=11 (anelante), 8P=12 (oitava).',
+        'Compara a distância com a oitava: 6m=8, 6M=9, 7m=10, 7M=11 e 8P=12 meios-tons.',
       nudgeTemplate: 'Primeiro ouve se as duas notas se fundem como uma só nota em duas alturas. Se não, canta de novo a nota mais grave, mas deslocada para logo acima da mais aguda, identifica o pequeno intervalo que se forma e inverte-o: os números somam 9, e a qualidade passa à oposta.',
     },
   ],

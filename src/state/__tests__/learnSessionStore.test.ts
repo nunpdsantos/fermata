@@ -34,7 +34,7 @@ const LIST = [ex('l1u1m1e1'), ex('l1u1m1e2'), ex('l1u1m1e3')];
 function savedCheck(over: Partial<SavedCheck> = {}): SavedCheck {
   return {
     moduleId: 'l1u1m1', kind: 'check', lang: 'en', fingerprints: fingerprintsOf(LIST),
-    run: { order: ['l1u1m1e2', 'l1u1m1e1', 'l1u1m1e3'], index: 1, scores: [1], items: [{ id: 'l1u1m1e2', answers: ['yes'], score: 1, answer: 'yes' }], attempt: 2, tried: [{ value: 'no', words: 'no' }], missed: 'no', final: null },
+    run: { order: ['l1u1m1e2', 'l1u1m1e1', 'l1u1m1e3'], index: 1, scores: [1], items: [{ id: 'l1u1m1e2', answers: ['yes'], score: 1, answer: 'yes' }], attempt: 2, selectedNotes: [], tried: [{ value: 'no', words: 'no' }], missed: 'no', final: null },
     finished: false, at: Date.now(), ...over,
   };
 }
@@ -141,5 +141,32 @@ describe('recovery clears the Learn session', () => {
     expect(errorBoundarySource).toContain(`'${LEARN_SESSION_KEY}'`);
     const removals = errorBoundarySource.match(/localStorage\.removeItem\(LEARN_SESSION_KEY_LITERAL\)/g) ?? [];
     expect(removals.length).toBe(2);
+  });
+});
+
+
+describe('inconsistent saves are rejected before mounting', () => {
+  const corruptions = [
+    ['index at end', { index: 3 }], ['fractional index', { index: 0.5 }],
+    ['duplicate order', { order: ['l1u1m1e2', 'l1u1m1e2', 'l1u1m1e3'] }],
+    ['missing scores', { scores: [] }], ['missing items', { items: [] }],
+    ['wrong item order', { items: [{ id: 'l1u1m1e3', answers: ['yes'], score: 1, answer: 'yes' }] }],
+    ['mismatched score', { scores: [0] }], ['retry without miss', { missed: null }],
+    ['fractional pitch class', { selectedNotes: [0.5] }], ['out of range pitch class', { selectedNotes: [12] }],
+    ['duplicate pitch classes', { selectedNotes: [0, 0] }],
+  ] as const;
+  it.each(corruptions)('%s', async (_, patch) => {
+    const check = savedCheck();
+    const data = { screen: null, check: { ...check, run: { ...check.run, selectedNotes: [], ...patch } } };
+    expect(isValidLearnSession(data)).toBe(false);
+    localStorage.setItem(LEARN_SESSION_KEY, JSON.stringify({ state: data, version: 1 }));
+    await useLearnSessionStore.persist.rehydrate();
+    expect(useLearnSessionStore.getState().check).toBeNull();
+  });
+  it('unfinished result and unknown or mismatched screen ids', () => {
+    expect(isValidLearnSession({ screen: null, check: savedCheck({ finished: true }) })).toBe(false);
+    for (const patch of [{ levelId: 'l99' }, { unitId: 'u99' }, { moduleId: 'gone' }, { levelId: 'l2' }]) {
+      expect(isValidLearnSession({ screen: { type: 'module', levelId: 'l1', unitId: 'u1', moduleId: 'l1u1m1', section: null, at: Date.now(), ...patch }, check: null })).toBe(false);
+    }
   });
 });

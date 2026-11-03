@@ -9,6 +9,8 @@ import { openDockForLesson, foldDockAfterLesson } from '../../../../services/les
 
 interface InstrumentInputProps {
   expectedCount: number;
+  initialSelection?: readonly number[];
+  onSelectionChange?: (notes: number[]) => void;
   /** The item is over (right, or the last try used): picks are frozen. */
   submitted: boolean;
   onSubmit: (pitchClasses: Set<number>) => void;
@@ -21,13 +23,17 @@ interface InstrumentInputProps {
   spellingContext?: readonly Note[];
 }
 
-export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColor, spellingContext }: InstrumentInputProps) {
+export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColor, spellingContext, initialSelection, onSelectionChange }: InstrumentInputProps) {
   const { t } = useTranslation();
   const spell = useMemo(() => directionSpeller(spellingContext ?? []), [spellingContext]);
-  const [toggledPCs, setToggledPCs] = useState<Set<number>>(new Set());
+  const [toggledPCs, setToggledPCs] = useState<Set<number>>(() => new Set(initialSelection));
   const activeNotes = useAppStore((s) => s.activeNotes);
   const setHighlightedNotes = useAppStore((s) => s.setHighlightedNotes);
   const setExerciseInputActive = useAppStore((s) => s.setExerciseInputActive);
+
+  useEffect(() => {
+    onSelectionChange?.([...toggledPCs].sort((a, b) => a - b));
+  }, [toggledPCs, onSelectionChange]);
 
   // While mounted, the instruments suppress Explore visuals and render the
   // toggled selection instead (see useKeyContext exercise-input mode).

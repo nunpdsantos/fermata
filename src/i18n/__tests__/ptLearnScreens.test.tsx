@@ -101,7 +101,7 @@ function failAll() {
     const open = [...answers.querySelectorAll('button')].filter((b) => !(b as HTMLButtonElement).disabled && b.getAttribute('data-state') === 'open');
     const final = answers.querySelector('[data-state="answer"]');
     if (final) {
-      fireEvent.click(screen.getAllByRole('button').find((b) => b.className.includes('btn') && b.closest('[data-testid="check-thumb"]') && !b.closest('[data-testid="check-answers"]'))!);
+      fireEvent.click(screen.getByRole('button', { name: i18n.t('common.continue') }));
       continue;
     }
     fireEvent.click(open[open.length - 1]);

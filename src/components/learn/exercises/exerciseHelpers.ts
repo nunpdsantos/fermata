@@ -288,15 +288,6 @@ export function earPlaybackLockMs(cfg: EarTrainingConfig): number {
 
 /** Middle C: the reference played before a single-note ear item. */
 export const EAR_REFERENCE_PITCH: PitchedNote = { natural: 'C', accidental: '', octave: 4 };
-/**
- * The reference when the note to name IS a C (W4b review): middle C first
- * would hand over the answer, so those items hear the G above middle C
- * first, and the line under the prompt says so.
- */
-export const EAR_REFERENCE_ALT_PITCH: PitchedNote = { natural: 'G', accidental: '', octave: 4 };
-
-const PITCH_CLASS: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-const ACCIDENTAL_SHIFT: Record<string, number> = { '': 0, '#': 1, b: -1, '##': 2, bb: -2 };
 /** How long the reference sounds (s) and how long after it starts the item begins (ms). */
 export const EAR_REFERENCE_NOTE_S = 0.8;
 export const EAR_REFERENCE_CHORD_S = 1.1;
@@ -312,15 +303,14 @@ export type EarReference =
 
 /**
  * What sounds BEFORE the item, so it is heard relative to something (D-11):
- * middle C before a single note (W4-12; the G above it when the note is a C), the key's tonic chord — root
+ * middle C before every single note (W4-12), including a unison, the key's tonic chord — root
  * position, as the progressions voice their chords — before a progression /
  * cadence (W4-11) or a melody (W4-13). Other modes are already relative
  * (an interval, a chord's quality, a scale's type).
  */
 export function earReference(cfg: EarTrainingConfig): EarReference | null {
   if (cfg.mode === 'note') {
-    const pc = ((PITCH_CLASS[cfg.note ?? 'C'] ?? 0) + (ACCIDENTAL_SHIFT[cfg.accidental ?? ''] ?? 0) + 12) % 12;
-    return { kind: 'pitch', pitches: [pc === 0 ? EAR_REFERENCE_ALT_PITCH : EAR_REFERENCE_PITCH] };
+    return { kind: 'pitch', pitches: [EAR_REFERENCE_PITCH] };
   }
   if (cfg.mode === 'progression' || cfg.mode === 'melody') {
     const key: Note = { natural: (cfg.root ?? 'C') as NaturalNote, accidental: (cfg.rootAccidental ?? '') as Accidental };

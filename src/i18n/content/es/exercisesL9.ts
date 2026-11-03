@@ -81,7 +81,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Escucha este intervalo ascendente e identifícalo.',
     hint: '1 semitono = 2.ª menor (semitono) — el intervalo más pequeño de la música occidental. Piensa en el tema de Tiburón.',
-    nudge: 'Evalúa primero el tamaño: ¿las dos notas están tan cerca como pueden estarlo dos notas distintas, tensas y reptantes, o cabe otra nota entre ellas?',
+    nudge: 'Evalúa primero el tamaño: ¿las dos notas están tan cerca como pueden estarlo dos notas distintas, o cabe otra nota entre ellas?',
   },
   l9u30m3e2: {
     prompt:

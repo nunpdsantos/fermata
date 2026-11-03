@@ -72,7 +72,7 @@ const l3u9m2: CurriculumModule = {
   subtitle:
     'Four positions for every seventh chord — root position through third inversion',
   objectives: [
-    'Identify and build all four inversions of any seventh chord',
+    'Identify and build root position and all three inversions of any seventh chord',
     'Use figured bass labels (7, 6/5, 4/3, 4/2) to name inversions',
     'Hear how each inversion changes the bass note and the chord\u2019s weight',
   ],
@@ -80,7 +80,7 @@ const l3u9m2: CurriculumModule = {
     {
       title: 'Four Positions',
       explanation:
-        'Because a seventh chord has four notes, it has four possible bass notes and therefore four inversions. Root position (figured bass: 7) places the root in the bass — the most grounded and common voicing. First inversion (6/5) puts the third in the bass, creating a lighter sonority. Second inversion (4/3) puts the fifth in the bass. Third inversion (4/2 or simply 2) puts the seventh in the bass — the most unstable position, strongly demanding downward resolution of the bass note.',
+        'Because a seventh chord has four notes, it has four possible bass notes: root position and three inversions. Root position (figured bass: 7) places the root in the bass — the most grounded and common voicing. First inversion (6/5) puts the third in the bass, creating a lighter sonority. Second inversion (4/3) puts the fifth in the bass. Third inversion (4/2 or simply 2) puts the seventh in the bass — the most unstable position, strongly demanding downward resolution of the bass note.',
       tryThisQuery: 'Cmaj7',
       tryThisLabel: 'Hear Cmaj7 in root position — root in the bass',
     },
@@ -778,7 +778,7 @@ export const L3_UNITS: CurriculumUnit[] = [
     milestone: {
       skillsSummary: [
         'Build and identify all five seventh chord qualities by sound and structure',
-        'Voice seventh chords in all four inversions using figured bass notation',
+        'Voice seventh chords in root position and all three inversions using figured bass notation',
         'Map diatonic seventh chords in any major or harmonic minor key using Roman numerals',
         'Hear the tritone inside V7 and understand its resolution as the engine of tonal music',
       ],

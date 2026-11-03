@@ -79,8 +79,10 @@ export function ChoiceInput({ options, selected, tried, final, onSelect }: Choic
             aria-label={name}
             data-answer={opt.label}
             data-state={showCorrect ? 'answer' : showWrong ? 'wrong' : isTried ? 'tried' : isSelected ? 'selected' : 'open'}
-            className={`relative min-h-[max(var(--tap),56px)] px-3 py-2.5 rounded-xl text-body font-semibold transition-colors ${cls} ${disabled ? 'cursor-default' : 'cursor-pointer'} ${melodies ? 'text-left' : ''}`}
-            style={style}
+            className={`relative min-h-[max(var(--tap),56px)] px-3 py-2.5 rounded-xl text-body font-semibold ${cls} ${disabled ? 'cursor-default' : 'cursor-pointer'} ${melodies ? 'text-left' : ''}`}
+            // Every state must switch fill and ink together, including selection
+            // and reset. Cancelling only on arrival at tried is too late (W4b).
+            style={{ ...style, transition: 'none' }}
           >
             {opt.melody ? (
               <span className="flex flex-col gap-1">

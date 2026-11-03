@@ -220,7 +220,7 @@ const l4u12m5: CurriculumModule = {
   title: 'V7 Inversions and Their Resolutions',
   subtitle: 'How V6/5, V4/3, and V4/2 resolve to tonic positions',
   objectives: [
-    'Resolve all four inversions of V7 to their proper tonic targets',
+    'Resolve root position and all three inversions of V7 to their proper tonic targets',
     'Understand why V4/2 almost always resolves to I6 (first-inversion tonic)',
     'Recognize how inversion determines bass motion and resolution',
   ],

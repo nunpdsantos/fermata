@@ -10,7 +10,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       milestone: {
         skillsSummary: [
           'Construir e identificar as cinco qualidades de acordes de sétima pelo som e pela estrutura',
-          'Dispor acordes de sétima nas quatro inversões usando a notação de baixo cifrado',
+          'Dispor acordes de sétima no estado fundamental e nas três inversões usando a notação de baixo cifrado',
           'Mapear os acordes de sétima diatónicos em qualquer tonalidade maior ou menor harmónica usando numeração romana',
           'Ouvir o trítono dentro do V7 e compreender a sua resolução como o motor da música tonal',
         ],
@@ -112,7 +112,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       subtitle:
         'Quatro posições para cada acorde de sétima — do estado fundamental à terceira inversão',
       objectives: [
-        'Identificar e construir as quatro inversões de qualquer acorde de sétima',
+        'Identificar e construir o estado fundamental e as três inversões de qualquer acorde de sétima',
         'Usar as cifras de baixo cifrado (7, 6/5, 4/3, 4/2) para nomear as inversões',
         'Ouvir como cada inversão altera a nota do baixo e o peso do acorde',
       ],
@@ -120,7 +120,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'Quatro Posições',
           explanation:
-            'Como um acorde de sétima tem quatro notas, tem quatro notas possíveis no baixo e, portanto, quatro inversões. O estado fundamental (baixo cifrado: 7) coloca a fundamental no baixo — a disposição mais estável e mais comum. A primeira inversão (6/5) coloca a terceira no baixo, criando uma sonoridade mais leve. A segunda inversão (4/3) coloca a quinta no baixo. A terceira inversão (4/2 ou simplesmente 2) coloca a sétima no baixo — a posição mais instável, que exige fortemente a resolução descendente da nota do baixo.',
+            'Como um acorde de sétima tem quatro notas, tem quatro notas possíveis no baixo: o estado fundamental e três inversões. O estado fundamental (baixo cifrado: 7) coloca a fundamental no baixo — a disposição mais estável e mais comum. A primeira inversão (6/5) coloca a terceira no baixo, criando uma sonoridade mais leve. A segunda inversão (4/3) coloca a quinta no baixo. A terceira inversão (4/2 ou simplesmente 2) coloca a sétima no baixo — a posição mais instável, que exige fortemente a resolução descendente da nota do baixo.',
           tryThisLabel: 'Ouve Cmaj7 em estado fundamental — fundamental no baixo',
         },
         {

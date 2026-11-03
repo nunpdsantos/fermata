@@ -27,6 +27,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { ExerciseDefinition } from '../core/types/exercise';
 import { exerciseFingerprint } from '../data/exercises/exerciseFingerprint';
 import { registerWorkInProgress } from '../services/workInProgress';
+import { MODULE_INDEX } from '../data/moduleIndex';
 import { useAppStore } from './store';
 
 export const LEARN_SESSION_KEY = 'fermata-learn-session-v1';
@@ -62,6 +63,8 @@ export interface RunSnapshot {
   scores: Score[];
   items: RunItem[];
   attempt: 1 | 2;
+  /** Pitch classes currently selected on a build question. */
+  selectedNotes: number[];
   /** Wrong first tries of the current question (struck through). */
   tried: { value: string; words: string }[];
   /** The current question's first miss, in words ('' for a build answer), or null. */
@@ -101,12 +104,13 @@ const isStrArr = (v: unknown): v is string[] => Array.isArray(v) && v.every(isSt
 
 function isScreen(v: unknown): v is SavedScreen {
   return isObj(v) && (v.type === 'module' || v.type === 'review') && isStr(v.levelId) && isStr(v.unitId) && isStr(v.moduleId)
-    && (v.section === null || isStr(v.section)) && isNum(v.at);
+    && (v.section === null || isStr(v.section)) && isNum(v.at)
+    && MODULE_INDEX.some((m) => m.id === v.moduleId && m.level === v.levelId && m.unitId === v.unitId);
 }
 
-function isRun(v: unknown): v is RunSnapshot {
+export function isValidRun(v: unknown, finished = false): v is RunSnapshot {
   if (!isObj(v)) return false;
-  if (!isStrArr(v.order) || !isNum(v.index) || v.index < 0 || v.index > v.order.length) return false;
+  if (!isStrArr(v.order) || !isNum(v.index) || !Number.isInteger(v.index) || v.index < 0 || v.index >= v.order.length || new Set(v.order).size !== v.order.length) return false;
   if (!Array.isArray(v.scores) || !v.scores.every(isScore) || v.scores.length > v.order.length) return false;
   if (!Array.isArray(v.items) || !v.items.every((i) => isObj(i) && isStr(i.id) && isStrArr(i.answers) && isScore(i.score) && isStr(i.answer))) return false;
   if (v.attempt !== 1 && v.attempt !== 2) return false;
@@ -114,12 +118,31 @@ function isRun(v: unknown): v is RunSnapshot {
   if (!(v.missed === null || isStr(v.missed))) return false;
   const f = v.final;
   if (!(f === null || (isObj(f) && isScore(f.score) && typeof f.correct === 'boolean' && isStr(f.explanation) && isStr(f.expected)))) return false;
-  return true;
+  // v1 has never shipped: extend it in place, with no legacy migration.
+  if (!Array.isArray(v.selectedNotes) || !v.selectedNotes.every((n) => Number.isInteger(n) && n >= 0 && n < 12)
+    || new Set(v.selectedNotes).size !== v.selectedNotes.length) return false;
+  if (v.tried.length !== v.attempt - 1 || (v.attempt === 1 ? v.missed !== null : v.missed === null)) return false;
+  const settled = v.index + (f === null ? 0 : 1);
+  if (v.scores.length !== settled || v.items.length !== settled) return false;
+  for (let i = 0; i < settled; i++) {
+    const item = v.items[i];
+    if (item.id !== v.order[i] || item.score !== v.scores[i] || item.answers.length < 1 || item.answers.length > 2) return false;
+    if (item.score === 1 && item.answers.length !== 1 || item.score === 0.5 && item.answers.length !== 2) return false;
+  }
+  if (f !== null) {
+    const item = v.items[v.index];
+    if (f.score !== item.score || f.correct !== (f.score !== 0) || item.answers.length !== v.attempt
+      || f.score !== (f.correct ? (v.attempt === 1 ? 1 : 0.5) : 0)
+      || !v.tried.every((x, i) => x.words === item.answers[i])) return false;
+  }
+  return !finished || (v.index === v.order.length - 1 && f !== null);
 }
 
 function isCheck(v: unknown): v is SavedCheck {
   return isObj(v) && isStr(v.moduleId) && (v.kind === 'check' || v.kind === 'review' || v.kind === 'practice') && isStr(v.lang)
-    && isObj(v.fingerprints) && Object.values(v.fingerprints).every(isStr) && isRun(v.run) && typeof v.finished === 'boolean' && isNum(v.at);
+    && MODULE_INDEX.some((m) => m.id === v.moduleId) && ['en', 'pt', 'es'].includes(v.lang)
+    && isObj(v.fingerprints) && Object.values(v.fingerprints).every(isStr) && typeof v.finished === 'boolean'
+    && isValidRun(v.run, v.finished) && v.run.order.every((id) => isObj(v.fingerprints) && isStr(v.fingerprints[id])) && isNum(v.at);
 }
 
 export function isValidLearnSession(v: unknown): v is { screen: SavedScreen | null; check: SavedCheck | null } {
@@ -158,7 +181,7 @@ export const isFresh = (at: number, now = Date.now()) => now - at >= 0 && now - 
 /** The saved screen, if it is still worth restoring. */
 export function restorableScreen(now = Date.now()): SavedScreen | null {
   const s = useLearnSessionStore.getState().screen;
-  return s && isFresh(s.at, now) ? s : null;
+  return s && isScreen(s) && isFresh(s.at, now) ? s : null;
 }
 
 /** Fingerprints of a run's exercises (saved when it starts). */
@@ -174,10 +197,16 @@ export function fingerprintsOf(exercises: readonly ExerciseDefinition[]): Record
 export function restorableCheck(moduleId: string, exercises: readonly ExerciseDefinition[], lang: string, now = Date.now()): { check: SavedCheck; ordered: ExerciseDefinition[] } | null {
   const check = useLearnSessionStore.getState().check;
   if (!check || check.moduleId !== moduleId) return null;
+  if (!isCheck(check)) {
+    useLearnSessionStore.getState().setCheck(null);
+    return null;
+  }
   const byId = new Map(exercises.map((ex) => [ex.id, ex]));
   const ordered = check.run.order.map((id) => byId.get(id));
   const unchanged = ordered.every((ex) => ex && check.fingerprints[ex.id] === exerciseFingerprint(ex));
-  if (!isFresh(check.at, now) || check.lang !== lang || !unchanged || ordered.length === 0) {
+  const cfg = ordered[check.run.index]?.config;
+  const validSelection = cfg && (cfg.type === 'chord_build' || cfg.type === 'scale_build' || check.run.selectedNotes.length === 0);
+  if (!validSelection || !isFresh(check.at, now) || check.lang !== lang || !unchanged || ordered.length === 0) {
     useLearnSessionStore.getState().setCheck(null);
     return null;
   }

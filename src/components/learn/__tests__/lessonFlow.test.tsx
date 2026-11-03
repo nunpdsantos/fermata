@@ -207,7 +207,7 @@ describe('through LearnView', () => {
       },
     });
     useAppStore.setState({ pendingLearnTarget: { levelId: 'l1', unitId: unit.id, moduleId: last.id } });
-    render(<LearnView />);
+    const first = render(<LearnView />);
     const complete = await screen.findByRole('button', { name: 'Complete the lesson' }, { timeout: 8000 });
     await act(async () => { fireEvent.click(complete); });
     const dialog = await screen.findByRole('dialog', { name: 'Unit complete' });
@@ -215,6 +215,22 @@ describe('through LearnView', () => {
     fireEvent.click(within(dialog).getByRole('button', { name: 'Continue' }));
     expect(screen.queryByRole('dialog', { name: 'Unit complete' })).toBeNull();
     expect(useProgressStore.getState().progress.completedModules).toContain(last.id);
+    first.unmount();
+    const progressRaw = localStorage.getItem('music-theory-progress')!;
+    const sessionRaw = localStorage.getItem('fermata-learn-session-v1')!;
+    useProgressStore.setState({ progress: getDefaultProgress() });
+    useLearnSessionStore.setState({ screen: null, check: null });
+    localStorage.setItem('music-theory-progress', progressRaw);
+    localStorage.setItem('fermata-learn-session-v1', sessionRaw);
+    await useProgressStore.persist.rehydrate();
+    await useLearnSessionStore.persist.rehydrate();
+    render(<LearnView />);
+    await screen.findByRole('heading', { name: last.title, level: 1 });
+    expect(screen.queryByRole('dialog', { name: 'Unit complete' })).toBeNull();
+    // A finished lesson cannot be completed again to replay its milestone.
+    expect(screen.queryByRole('button', { name: 'Complete the lesson' })).toBeNull();
+    expect(useProgressStore.getState().progress.completedModules.filter((id) => id === last.id)).toHaveLength(1);
+
   }, 20_000);
 
   it('Unlock anyway: a locked level says what it skips, and the unlock is saved', () => {
@@ -236,4 +252,46 @@ describe('through LearnView', () => {
     expect(screen.getAllByText('Pairs with Level 7').length).toBe(2);
     expect(screen.getByText('Pairs with Level 3')).toBeTruthy();
   });
+});
+
+it('a production v2 save survives a completed check through real persistence', async () => {
+  const progress = {
+    completedModules: ['l3u11m1'],
+    moduleProgress: { l3u11m1: ['l3u11m1t1'], [MOD.id]: [MOD.tasks[0].id] },
+    exemptedModules: ['l4u12m1'],
+    unlockedLevels: ['l3'],
+    exerciseResults: {
+      l3u11m1: { scores: { l3u11m1e2: 0.5 }, totalAttempts: 7, lastAttemptAt: 1793000000000, passed: true },
+      [MOD.id]: { scores: { l1u1m1g1: 0.5 }, totalAttempts: 4, lastAttemptAt: 1793000000000, passed: false },
+    },
+    reviewSchedules: { l3u11m1: { completedAt: 1793000000000, nextReviewAt: 1793086400000, intervalLevel: 2, reviewCount: 3, lastReviewedAt: 1793000000000 } },
+  };
+  localStorage.setItem('music-theory-progress', JSON.stringify({ state: { progress }, version: 2 }));
+  await useProgressStore.persist.rehydrate();
+  expect(useProgressStore.getState().progress).toEqual(progress);
+  const first = renderModule({
+    onRecordExerciseResult: (id, score) => useProgressStore.getState().recordExerciseResult(MOD.id, id, score),
+    onExercisesComplete: (passed) => { if (passed) useProgressStore.getState().markExercisesPassed(MOD.id); },
+  });
+  click('Start the check');
+  for (let i = 0; i < EXERCISES.length; i++) { answer('yes'); click('Continue'); }
+  expect(screen.getByTestId('check-result')).toBeTruthy();
+  first.unmount();
+  // Clear memory, then hydrate the actual write from the completed flow.
+  const raw = localStorage.getItem('music-theory-progress')!;
+  useProgressStore.setState({ progress: getDefaultProgress() });
+  localStorage.setItem('music-theory-progress', raw);
+  await useProgressStore.persist.rehydrate();
+  expect(JSON.parse(raw).version).toBe(2);
+  const expected = {
+    ...progress,
+    exerciseResults: {
+      ...progress.exerciseResults,
+      [MOD.id]: {
+        scores: { ...progress.exerciseResults[MOD.id].scores, ...Object.fromEntries(EXERCISES.map((ex) => [ex.id, 1])) },
+        totalAttempts: 7, lastAttemptAt: expect.any(Number), passed: true,
+      },
+    },
+  };
+  expect(useProgressStore.getState().progress).toEqual(expected);
 });

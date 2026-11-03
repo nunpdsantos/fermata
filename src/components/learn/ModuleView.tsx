@@ -213,7 +213,7 @@ export function ModuleView({
         kind,
         lang,
         fingerprints: fingerprintsOf(list),
-        run: { order: [], index: 0, scores: [], items: [], attempt: 1, tried: [], missed: null, final: null },
+        run: { order: [], index: 0, scores: [], items: [], attempt: 1, selectedNotes: [], tried: [], missed: null, final: null },
         finished: false,
         at: Date.now(),
       });

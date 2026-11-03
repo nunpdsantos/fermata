@@ -1,6 +1,7 @@
 import { test, expect, type Browser, type Locator, type Page } from '@playwright/test';
 import * as fs from 'node:fs';
 import { auditPage, type AuditResult } from './helpers/designAudit';
+import { learnScreens } from './helpers/learnDesignScreens';
 
 /**
  * Design system v2 acceptance (W11-A, D-28 / D-26), in a real browser.
@@ -997,4 +998,13 @@ for (const L of LANGS) {
       }
     });
   }
+}
+
+// The complete W4b sweep shares its assertions with design-learn.spec.ts.
+// Include Spanish explicitly in this main gate, at the phone viewport.
+for (const th of THEMES) {
+  test(`phone-es-${th.name}: new Learn screens, pointer and final Re-read`, async ({ browser }) => {
+    test.setTimeout(300_000);
+    await learnScreens(browser, VIEWPORTS[0], th.mode, `phone-es-${th.name}`, 'es');
+  });
 }

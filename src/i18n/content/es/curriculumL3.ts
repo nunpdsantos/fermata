@@ -10,7 +10,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       milestone: {
         skillsSummary: [
           'Construir e identificar las cinco cualidades de acordes de séptima por su sonido y su estructura',
-          'Disponer acordes de séptima en las cuatro inversiones usando la notación de bajo cifrado',
+          'Disponer acordes de séptima en estado fundamental y en las tres inversiones usando la notación de bajo cifrado',
           'Mapear los acordes de séptima diatónicos en cualquier tonalidad mayor o menor armónica usando números romanos',
           'Escuchar el tritono dentro del V7 y comprender su resolución como el motor de la música tonal',
         ],
@@ -112,7 +112,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       subtitle:
         'Cuatro posiciones para cada acorde de séptima — del estado fundamental a la tercera inversión',
       objectives: [
-        'Identificar y construir las cuatro inversiones de cualquier acorde de séptima',
+        'Identificar y construir el estado fundamental y las tres inversiones de cualquier acorde de séptima',
         'Usar las cifras de bajo cifrado (7, 6/5, 4/3, 4/2) para nombrar las inversiones',
         'Escuchar cómo cada inversión altera la nota del bajo y el peso del acorde',
       ],
@@ -120,7 +120,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'Cuatro Posiciones',
           explanation:
-            'Como un acorde de séptima tiene cuatro notas, tiene cuatro notas posibles en el bajo y, por tanto, cuatro inversiones. El estado fundamental (bajo cifrado: 7) coloca la fundamental en el bajo — la disposición más estable y más común. La primera inversión (6/5) coloca la tercera en el bajo, creando una sonoridad más ligera. La segunda inversión (4/3) coloca la quinta en el bajo. La tercera inversión (4/2 o simplemente 2) coloca la séptima en el bajo — la posición más inestable, que exige con fuerza la resolución descendente de la nota del bajo.',
+            'Como un acorde de séptima tiene cuatro notas, tiene cuatro notas posibles en el bajo: el estado fundamental y tres inversiones. El estado fundamental (bajo cifrado: 7) coloca la fundamental en el bajo — la disposición más estable y más común. La primera inversión (6/5) coloca la tercera en el bajo, creando una sonoridad más ligera. La segunda inversión (4/3) coloca la quinta en el bajo. La tercera inversión (4/2 o simplemente 2) coloca la séptima en el bajo — la posición más inestable, que exige con fuerza la resolución descendente de la nota del bajo.',
           tryThisLabel: 'Escucha Cmaj7 en estado fundamental — fundamental en el bajo',
         },
         {

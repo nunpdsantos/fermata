@@ -273,8 +273,7 @@
     "melodyOption": "Melodia {{letter}}: {{notes}}",
     "melodyLetter": "Melodia {{letter}}",
     "playRhythm": "Tocar o ritmo",
-    "rhythmLabel": "Um ritmo em {{time}}: {{values}}",
-    "referenceNoteG": "Primeiro ouves o G acima do C central (a referência) e depois a nota."
+    "rhythmLabel": "Um ritmo em {{time}}: {{values}}"
   },
   "exerciseFeedback": {
     "noteCorrectExact": "Correto! {{note}} \u00e9 a nota certa.",

@@ -85,18 +85,22 @@ describe('reveal policy (D-09)', () => {
     expect(screen.queryByText(/Where does the clef curl/)).toBeNull();
   });
 
-  it('no nudge: "Look again at: n · section" with Re-read, which opens that section in place', () => {
+  it('no nudge: "Look again at: n · section" with Re-read available only once final', () => {
     run([bare('q3', ['G', 'B', 'C', 'D'])], { concepts: CONCEPTS });
     fireEvent.click(option('B'));
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
     expect(screen.getByText('Look again at: 2 · The treble clef')).toBeTruthy();
     expect(screen.queryByText(/curls around/)).toBeNull();
+    expect(screen.queryByTestId('check-reread-toggle')).toBeNull();
+    expect(answerMarked()).toBe(0);
+    fireEvent.click(option('G'));
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
     const toggle = screen.getByTestId('check-reread-toggle');
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
     fireEvent.click(toggle);
     expect(toggle.getAttribute('aria-expanded')).toBe('true');
     expect(screen.getByTestId('check-reread').textContent).toContain('so that line is G');
-    expect(answerMarked()).toBe(0);
+    expect(answerMarked()).toBe(1);
   });
 
   it('no nudge, and the section title would name the answer: the pointer gives the section number only', () => {
@@ -184,6 +188,7 @@ describe('resuming a saved run (reload loses nothing)', () => {
       scores: [1, 0.5],
       items: [{ id: 'c', answers: ['Right answer'], score: 1, answer: 'Right answer' }, { id: 'a', answers: ['Wrong answer A', 'Right answer'], score: 0.5, answer: 'Right answer' }],
       attempt: 2,
+      selectedNotes: [],
       tried: [{ value: 'Wrong answer B', words: 'Wrong answer B' }],
       missed: 'Wrong answer B',
       final: null,
