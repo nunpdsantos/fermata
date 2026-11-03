@@ -532,20 +532,20 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Consonancia y Disonancia en el Contrapunto',
           explanation:
-            'En el contrapunto a dos partes, cada intervalo vertical entre las voces se clasifica. Consonancias perfectas (P1, P5, P8) son las más estables, pero suenan huecas si se usan en exceso. Consonancias imperfectas (m3, M3, m6, M6) son estables y cálidas — forman la columna vertebral del buen contrapunto, proporcionando el mejor equilibrio entre armonía e independencia. Disonancias (m2, M2, P4, trítono, m7, M7) son inestables y deben resolver por grado conjunto hacia una consonancia.',
-          tryThisLabel: 'C-E es una consonancia imperfecta (M3)',
+            'En el contrapunto a dos partes, cada intervalo vertical entre las voces se clasifica. Consonancias perfectas (1J, 5J, 8J) son las más estables, pero suenan huecas si se usan en exceso. Consonancias imperfectas (3m, 3M, 6m, 6M) son estables y cálidas — forman la columna vertebral del buen contrapunto, proporcionando el mejor equilibrio entre armonía e independencia. Disonancias (2m, 2M, 4J, trítono, 7m, 7M) son inestables y deben resolver por grado conjunto hacia una consonancia.',
+          tryThisLabel: 'C-E es una consonancia imperfecta (3M)',
         },
         {
           title: 'Primera y Segunda Especie',
           explanation:
-            'La primera especie (1:1) coloca una nota del contrapunto contra cada nota del cantus firmus (melodía dada). Cada intervalo debe ser consonante. Comienza y termina en P1, P5 o P8, usa mayoritariamente consonancias imperfectas y nunca se aproxima a consonancias perfectas en movimiento paralelo. La segunda especie (2:1) añade dos notas contra cada nota del cantus firmus. Los tiempos fuertes deben ser consonantes; en la especie estricta, la única disonancia permitida en un tiempo débil es la nota de paso, abordada y abandonada por grado conjunto (las bordaduras disonantes llegan más tarde, en la tercera especie — aunque algunos textos modernos las admiten antes). Los tiempos débiles también pueden ser consonantes — se permite un salto a un intervalo consonante. Es aquí donde las notas extrañas al acorde entran por primera vez en el contrapunto.',
+            'La primera especie (1:1) coloca una nota del contrapunto contra cada nota del cantus firmus (melodía dada). Cada intervalo debe ser consonante. Comienza y termina en unísono, 5.ª justa u octava, usa mayoritariamente consonancias imperfectas y nunca se aproxima a consonancias perfectas en movimiento paralelo. La segunda especie (2:1) añade dos notas contra cada nota del cantus firmus. Los tiempos fuertes deben ser consonantes; en la especie estricta, la única disonancia permitida en un tiempo débil es la nota de paso, abordada y abandonada por grado conjunto (las bordaduras disonantes llegan más tarde, en la tercera especie — aunque algunos textos modernos las admiten antes). Los tiempos débiles también pueden ser consonantes — se permite un salto a un intervalo consonante. Es aquí donde las notas extrañas al acorde entran por primera vez en el contrapunto.',
           tryThisLabel: 'Imagina una segunda voz contra esta línea',
         },
       ],
       tasks: [
         {
           instruction:
-            'Clasifica estos intervalos para contrapunto: C-E (consonancia imperfecta, M3), C-G (consonancia perfecta, P5), C-F (disonancia, P4 en textura a dos voces), C-B (disonancia, M7)',
+            'Clasifica estos intervalos para contrapunto: C-E (consonancia imperfecta, 3M), C-G (consonancia perfecta, 5J), C-F (disonancia, 4J en textura a dos voces), C-B (disonancia, 7M)',
         },
         {
           instruction:
@@ -553,7 +553,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            '¿Por qué están prohibidas las quintas perfectas paralelas? Porque dos voces en P5 paralelas pierden su independencia melódica — comienzan a sonar como una sola voz doblada, no dos líneas individuales. Las consonancias imperfectas mantienen mejor la independencia',
+            '¿Por qué están prohibidas las quintas perfectas paralelas? Porque dos voces en quintas justas paralelas pierden su independencia melódica — comienzan a sonar como una sola voz doblada, no dos líneas individuales. Las consonancias imperfectas mantienen mejor la independencia',
         },
       ],
     },

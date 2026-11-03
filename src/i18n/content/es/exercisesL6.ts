@@ -284,7 +284,7 @@ const overlay: ExerciseLevelOverlay = {
       'Todos los intervalos excepto el tritono',
       'Segundas, cuartas y séptimas además de terceras y sextas',
     ],
-    hint: 'La primera especie permite solo consonancias: consonancias perfectas (P1, P5, P8) y consonancias imperfectas (terceras y sextas). Las disonancias (segundas, cuartas, séptimas, tritonos) están prohibidas en la primera especie.',
+    hint: 'La primera especie permite solo consonancias: consonancias perfectas (1J, 5J, 8J) y consonancias imperfectas (terceras y sextas). Las disonancias (segundas, cuartas, séptimas, tritonos) están prohibidas en la primera especie.',
   },
   l6u20m1e2: {
     prompt: 'En el contrapunto de segunda especie (dos notas contra una), ¿cómo se tratan las disonancias?',
@@ -370,7 +370,7 @@ const overlay: ExerciseLevelOverlay = {
       'Una quinta se invierte en un tritono, que se trata como disonancia inutilizable por encima del bajo en el contrapunto estricto',
       'Las quintas perfectas no pueden invertirse en absoluto',
     ],
-    hint: 'Cuando las voces se invierten a la octava, una P5 se convierte en una P4. En el contrapunto a dos voces, las cuartas por encima del bajo son disonantes. Por tanto, cualquier P5 en el original se convierte en un problema cuando las voces intercambian posición.',
+    hint: 'Cuando las voces se invierten a la octava, una 5.ª justa se convierte en una 4.ª justa. En el contrapunto a dos voces, las cuartas por encima del bajo son disonantes. Por tanto, cualquier 5.ª justa en el original se convierte en un problema cuando las voces intercambian posición.',
   },
 
   // ---- l6u20m4: Escritura a Partes Avanzada ----

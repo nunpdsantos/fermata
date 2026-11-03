@@ -1124,5 +1124,6 @@
   "neck": {
     "open": "Full neck",
     "close": "Close full neck"
-  }
+  },
+  "practice": {"title": "Practise on the guitar"}
 }

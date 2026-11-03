@@ -556,3 +556,21 @@ describe('scale right hand', () => {
     });
   });
 });
+
+it('repeated physical broken-chord grips keep one fingering, in every key and starting octave', () => {
+  for (const mode of ['major', 'minor'] as const) for (const root of ROOTS(mode === 'major' ? 'major' : 'natural_minor')) {
+    for (const startOctave of [0, 1]) {
+      const exercise = brokenChord(root, mode, { startOctave });
+      if (!exercise) continue;
+      const notes = techniqueNotes(exercise);
+      const shapes = new Map<string, number[]>();
+      for (let i = 0; i + 2 < notes.length; i += 3) {
+        const group = notes.slice(i, i + 3);
+        const shape = group.map((n) => `${n.stringIndex}:${n.fret}`).join(',');
+        const fingers = group.map((n) => n.finger);
+        if (shapes.has(shape)) expect(fingers, `${nameOf(root)} ${mode} +${startOctave}: ${shape}`).toEqual(shapes.get(shape));
+        shapes.set(shape, fingers);
+      }
+    }
+  }
+}, EXHAUSTIVE);

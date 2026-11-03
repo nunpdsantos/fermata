@@ -853,6 +853,18 @@ for (const v of VIEWPORTS) {
         const { context, page } = await open(browser, v, th.mode, { instrument: 'guitar', lastView: 'explore' });
         await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
         await check(page, v, combo, 'explore-guitar');
+        await page.getByTestId('practice-open').click();
+        const practice = page.getByTestId('practice-sheet');
+        await expect(practice.getByTestId('practice-player')).toBeVisible();
+        for (const name of ['Scales', 'Technical set', 'Right hand']) {
+          await practice.getByRole('tab', { name, exact: true }).click();
+          await expect(practice.getByTestId('practice-staff').locator('svg')).toBeVisible();
+          await check(page, v, combo, `guitar-practice-${name}`);
+        }
+        await practice.getByRole('tab', { name: 'Scales', exact: true }).click();
+        await practice.getByRole('button', { name: 'Edit fingering' }).click();
+        await check(page, v, combo, 'guitar-practice-edit');
+        await practice.getByRole('button', { name: 'Close', exact: true }).click();
         if (v.name === 'laptop') {
           // The circle of fifths stands beside the work (D-30).
           await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();

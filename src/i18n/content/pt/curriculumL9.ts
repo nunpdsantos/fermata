@@ -172,14 +172,14 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Consonância Perfeita vs. Imperfeita',
           explanation:
-            'Os intervalos deste módulo dividem-se em duas famílias. Consonâncias perfeitas (P1, P4, P5) soam "abertas" e "ocas" — como um sino ou uma corda solta. Têm uma qualidade austera e despojada. Consonâncias imperfeitas (3.ª m, 3.ª M) soam "quentes" e "fundidas" — as notas combinam-se suavemente mas com mais cor. Segundas (2.ª m, 2.ª M) são dissonâncias — soam "ásperas" ou "crocantes" quando tocadas em simultâneo. O trítono é uma das dissonâncias mais ásperas (com a 2.ª m e a 7.ª M) — tenso, instável e exigindo resolução. Aprender a categorizar por consonância/dissonância é mais rápido do que memorizar cada intervalo individualmente. (No contraponto de espécies, estudado nos Níveis 4 e 6, a P4 acima do baixo é tratada como dissonância; a classificação acústica de "perfeita" usada aqui está orientada para o treino auditivo.)',
+            'Os intervalos deste módulo dividem-se em duas famílias. Consonâncias perfeitas (1P, 4P, 5P) soam "abertas" e "ocas" — como um sino ou uma corda solta. Têm uma qualidade austera e despojada. Consonâncias imperfeitas (3m, 3M) soam "quentes" e "fundidas" — as notas combinam-se suavemente mas com mais cor. Segundas (2m, 2M) são dissonâncias — soam "ásperas" ou "crocantes" quando tocadas em simultâneo. O trítono é uma das dissonâncias mais ásperas (com a 2.ª menor e a 7.ª maior) — tenso, instável e exigindo resolução. Aprender a categorizar por consonância/dissonância é mais rápido do que memorizar cada intervalo individualmente. (No contraponto de espécies, estudado nos Níveis 4 e 6, a 4.ª perfeita acima do baixo é tratada como dissonância; a classificação acústica de "perfeita" usada aqui está orientada para o treino auditivo.)',
           tryThisLabel:
             'Ouve a 3.ª maior (C a E) e a 5.ª perfeita (C a G)',
         },
         {
           title: 'Ascendente vs. Descendente',
           explanation:
-            'Cada intervalo tem um carácter diferente ascendente vs. descendente. A 2.ª menor ascendente soa tensa e rastejante. A 2.ª menor descendente soa suspirante e resolutiva. A 4.ª perfeita ascendente soa como uma fanfarra. A 4.ª perfeita descendente soa assente e cadencial. Tens de treinar ambas as direções independentemente — saber identificar uma 5.ª perfeita ascendente não significa automaticamente que a consegues identificar descendente. Usa também associações com canções descendentes: 2.ª M descendente = Mary Had a Little Lamb (primeiras duas notas), 3.ª m descendente = Hey Jude (hey-Jude). Constrói o conjunto descendente como uma competência separada.',
+            'Cada intervalo tem um carácter diferente ascendente vs. descendente. A 2.ª menor ascendente soa tensa e rastejante. A 2.ª menor descendente soa suspirante e resolutiva. A 4.ª perfeita ascendente soa como uma fanfarra. A 4.ª perfeita descendente soa assente e cadencial. Tens de treinar ambas as direções independentemente — saber identificar uma 5.ª perfeita ascendente não significa automaticamente que a consegues identificar descendente. Usa também associações com canções descendentes: 2M descendente = Mary Had a Little Lamb (primeiras duas notas), 3m descendente = Hey Jude (hey-Jude). Constrói o conjunto descendente como uma competência separada.',
           tryThisLabel: 'Ouve o trítono dentro de C7 (E a Bb)',
         },
       ],
@@ -190,7 +190,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Toca pares de notas no piano a partir de C: C-Db (2.ª m), C-D (2.ª M), C-Eb (3.ª m), C-E (3.ª M), C-F (4.ª P), C-Gb (trítono), C-G (5.ª P). Nomeia cada um antes de verificar',
+            'Toca pares de notas no piano a partir de C: C-Db (2m), C-D (2M), C-Eb (3m), C-E (3M), C-F (4P), C-Gb (trítono), C-G (5P). Nomeia cada um antes de verificar',
         },
         {
           instruction:
@@ -213,13 +213,13 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Associações com Canções: Intervalos Amplos',
           explanation:
-            'Continuando a abordagem mnemónica para a metade superior da oitava. 6.ª menor = The Entertainer (ascendente: o salto de E para C que se segue às notas iniciais D-D#-E; o tema "Where Do I Begin" de Love Story é o exemplo descendente clássico). 6.ª maior = My Bonnie (my-bon). 7.ª menor = Somewhere (West Side Story). 7.ª maior = Take On Me (take-on). Oitava = Somewhere Over the Rainbow. Intervalos amplos são mais difíceis de identificar porque parecem "grandes saltos" e as diferenças de tamanho entre eles são proporcionalmente menores. As sextas e sétimas são particularmente árduas — são inversões de terças e segundas, portanto o seu carácter está relacionado mas é mais largo. Treina contrastando pares: 6.ª m vs. 6.ª M, 7.ª m vs. 7.ª M.',
+            'Continuando a abordagem mnemónica para a metade superior da oitava. 6.ª menor = The Entertainer (ascendente: o salto de E para C que se segue às notas iniciais D-D#-E; o tema "Where Do I Begin" de Love Story é o exemplo descendente clássico). 6.ª maior = My Bonnie (my-bon). 7.ª menor = Somewhere (West Side Story). 7.ª maior = Take On Me (take-on). Oitava = Somewhere Over the Rainbow. Intervalos amplos são mais difíceis de identificar porque parecem "grandes saltos" e as diferenças de tamanho entre eles são proporcionalmente menores. As sextas e sétimas são particularmente árduas — são inversões de terças e segundas, portanto o seu carácter está relacionado mas é mais largo. Treina contrastando pares: 6m vs. 6M, 7m vs. 7M.',
           tryThisLabel: 'Ouve o intervalo de 7.ª maior (C a B)',
         },
         {
           title: 'Intervalos Amplos Descendentes',
           explanation:
-            'Os intervalos descendentes soam diferentes dos ascendentes mesmo que a distância seja igual. Uma 5.ª perfeita descendente (G descendo para C) soa como resolução ou aterragem. Uma 6.ª maior descendente soa quente e nostálgica. Sétimas descendentes soam dramáticas e amplas. Treina intervalos descendentes separadamente — muitos estudantes que dominam intervalos ascendentes debatem-se com os descendentes. Usa associações com canções descendentes: 5.ª P descendente = as duas primeiras notas de "Feelings" (Feel-ings) ou do tema dos Flintstones (Flint-stones), 3.ª m descendente = Hey Jude (hey-Jude). Constrói o conjunto descendente como competência própria.',
+            'Os intervalos descendentes soam diferentes dos ascendentes mesmo que a distância seja igual. Uma 5.ª perfeita descendente (G descendo para C) soa como resolução ou aterragem. Uma 6.ª maior descendente soa quente e nostálgica. Sétimas descendentes soam dramáticas e amplas. Treina intervalos descendentes separadamente — muitos estudantes que dominam intervalos ascendentes debatem-se com os descendentes. Usa associações com canções descendentes: 5P descendente = as duas primeiras notas de "Feelings" (Feel-ings) ou do tema dos Flintstones (Flint-stones), 3m descendente = Hey Jude (hey-Jude). Constrói o conjunto descendente como competência própria.',
           tryThisLabel:
             'Toca C maior descendente — ouve os intervalos ao contrário',
         },
@@ -238,11 +238,11 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Toca C a Ab (6.ª m) e depois C a A (6.ª M) no piano. A 6.ª menor soa mais sombria e pungente. A 6.ª maior soa mais quente e aberta. Repete a partir de diferentes fundamentais até as conseguires distinguir com fiabilidade',
+            'Toca C a Ab (6m) e depois C a A (6M) no piano. A 6.ª menor soa mais sombria e pungente. A 6.ª maior soa mais quente e aberta. Repete a partir de diferentes fundamentais até as conseguires distinguir com fiabilidade',
         },
         {
           instruction:
-            'Toca C até ao C agudo (oitava). A oitava soa como "a mesma nota, altura diferente." Agora contrasta com C a B (7.ª M) — quase uma oitava, mas com tensão. Essa qualidade de quase-lá é a assinatura da 7.ª maior',
+            'Toca C até ao C agudo (oitava). A oitava soa como "a mesma nota, altura diferente." Agora contrasta com C a B (7M) — quase uma oitava, mas com tensão. Essa qualidade de quase-lá é a assinatura da 7.ª maior',
         },
       ],
     },
@@ -261,7 +261,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Intervalos Harmónicos',
           explanation:
-            'Ouvir intervalos quando ambas as notas tocam simultaneamente é mais difícil do que intervalos melódicos (sequenciais) porque os sons fundem-se. Consonâncias perfeitas (5.ª P, 8.ª P) soam "abertas" e "ocas." Consonâncias imperfeitas (3.as, 6.as) soam "quentes" e "fundidas." Dissonâncias (2.as, 7.as, trítono) soam "ásperas" ou "tensas." Aprende primeiro intervalos melódicos, depois transita para harmónicos. A distinção de qualidade — consonante vs. dissonante — é a tua pista principal quando as notas soam simultaneamente.',
+            'Ouvir intervalos quando ambas as notas tocam simultaneamente é mais difícil do que intervalos melódicos (sequenciais) porque os sons fundem-se. Consonâncias perfeitas (5P, 8P) soam "abertas" e "ocas." Consonâncias imperfeitas (3.as, 6.as) soam "quentes" e "fundidas." Dissonâncias (2.as, 7.as, trítono) soam "ásperas" ou "tensas." Aprende primeiro intervalos melódicos, depois transita para harmónicos. A distinção de qualidade — consonante vs. dissonante — é a tua pista principal quando as notas soam simultaneamente.',
           tryThisLabel: 'Ouve B contra C — um intervalo de 7.ª maior',
         },
         {
@@ -275,17 +275,17 @@ const curriculumL9: CurriculumLevelOverlay = {
           explanation:
             'O reconhecimento de intervalos só é útil se for rápido. Na música real, as notas passam depressa — não tens tempo para deliberar. O objetivo é passar de "analisar, depois nomear" para "ouvir e saber instantaneamente." Treina com exercícios cronometrados: toca duas notas aleatórias e identifica o intervalo em três segundos. Acompanha a precisão ao longo das sessões. Começa com um conjunto restrito (apenas intervalos perfeitos, ou apenas consonâncias) e expande quando a precisão ultrapassar 80 porcento. Misturar apresentações melódicas, harmónicas, ascendentes e descendentes no mesmo exercício constrói reconhecimento robusto e independente do contexto.',
           tryThisLabel:
-            'Ouve três intervalos de uma vez — 5.ª P, 3.ª M e 3.ª m',
+            'Ouve três intervalos de uma vez — 5P, 3M e 3m',
         },
       ],
       tasks: [
         {
           instruction:
-            'Toca duas notas simultaneamente no piano: C e E (3.ª M), C e G (5.ª P), C e B (7.ª M). Ouve como se fundem de forma diferente. Consonâncias misturam-se; dissonâncias criam batimentos e aspereza',
+            'Toca duas notas simultaneamente no piano: C e E (3M), C e G (5P), C e B (7M). Ouve como se fundem de forma diferente. Consonâncias misturam-se; dissonâncias criam batimentos e aspereza',
         },
         {
           instruction:
-            'Escreve "Cmaj7" e ouve todos os intervalos harmónicos dentro dele: C-E (3.ª M), C-G (5.ª P), C-B (7.ª M), E-G (3.ª m), E-B (5.ª P), G-B (3.ª M). Um único acorde contém muitos intervalos simultâneos',
+            'Escreve "Cmaj7" e ouve todos os intervalos harmónicos dentro dele: C-E (3M), C-G (5P), C-B (7M), E-G (3m), E-B (5P), G-B (3M). Um único acorde contém muitos intervalos simultâneos',
         },
         {
           instruction:

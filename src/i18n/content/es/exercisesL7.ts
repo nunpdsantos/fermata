@@ -477,7 +477,7 @@ const overlay: ExerciseLevelOverlay = {
       '3 — mayor, menor y disminuida',
       '7 — un tipo de tríada para cada grado de la escala',
     ],
-    hint: 'Existen exactamente 4 tipos de tríada, definidos por la tercera y la quinta: mayor (3.ªM+5.ªJ), menor (3.ªm+5.ªJ), disminuida (3.ªm+5.ªdism) y aumentada (3.ªM+5.ªaum). Todas las demás designaciones triádicas son variantes de estas cuatro.',
+    hint: 'Existen exactamente 4 tipos de tríada, definidos por la tercera y la quinta: mayor (3M + 5J), menor (3m + 5J), disminuida (3m + 5.ª disminuida) y aumentada (3M + 5.ª aumentada). Todas las demás designaciones triádicas son variantes de estas cuatro.',
   },
   l7u23m5e2: {
     prompt: '¿Qué hace de un acorde un acorde "con extensiones"?',

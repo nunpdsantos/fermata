@@ -658,7 +658,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Familias de acordes: construye un acorde de {root} {quality}.',
       hintTemplate:
-        'Menor con 7.ª M = tríada menor + 7.ª mayor. Aumentado con 7.ª M = tríada aumentada (5.ª elevada) + 7.ª mayor. Construye desde {root}.',
+        'Menor con 7.ª mayor = tríada menor + 7.ª mayor. Aumentado con 7.ª mayor = tríada aumentada (5.ª elevada) + 7.ª mayor. Construye desde {root}.',
     },
     {
       // multiple_choice
