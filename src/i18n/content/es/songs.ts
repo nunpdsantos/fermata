@@ -7,6 +7,11 @@ import type { SongOverlay } from '../types';
 // ---------------------------------------------------------------------------
 
 const overlay: SongOverlay = {
+  'l1u33m2': [
+    'Esta pieza de tremolo usa el patrón de cuatro notas p-a-m-i: pulgar, anular, medio, índice. Lee las letras como dedos de la mano derecha y después imita la secuencia lentamente.',
+    'La mano derecha toca un arpegio continuo, con la melodía en las notas más agudas. Escucha la melodía dentro de la textura de acordes desplegados.',
+    'Estos 120 ejercicios de arpegios para la mano derecha usan distintos patrones sobre acordes básicos de C y G7. Las notas de los acordes aportan el material; el orden de la mano derecha cambia la forma de tocarlo.',
+  ],
   // =========================================================================
   // Nivel 1
   // =========================================================================
@@ -81,6 +86,7 @@ const overlay: SongOverlay = {
   'l2u5m1': [
     'Construida sobre la escala menor natural (eólico) en A menor, con la característica séptima rebajada.',
     'Se basa en los acordes Em y C, con un sabor modal que mezcla el eólico y el dórico — en algunos momentos la melodía eleva la 6.ª (C♯), lo que le da una cualidad modal y no la de un menor puramente diatónico.',
+    'Esta bourrée está en E menor. La suite fue escrita para un instrumento de tipo laúd y se toca mucho en la guitarra. Usa E como tónica de referencia al escuchar.',
   ],
   'l2u5m2': [
     'Utiliza la escala menor armónica — la segunda aumentada entre el b6 y el #7 le confiere su sonoridad distintiva.',
@@ -89,6 +95,8 @@ const overlay: SongOverlay = {
   'l2u5m3': [
     'Comienza en A menor (relativa menor de C mayor), modulando después — una relación clásica entre tonalidades relativas.',
     'Alterna entre los versos en A menor y el contexto de su relativa mayor (C mayor), demostrando la relación cercana entre tonalidades relativas que comparten la misma armadura de clave.',
+    'El inicio está en E mayor y la sección central en E menor, su tonalidad paralela menor. Escucha el regreso del inicio en la forma A–B–A.',
+    'El preludio está en E menor y su sección central en E mayor. Compara estas tonalidades paralelas: la tónica sigue siendo E mientras cambia el modo.',
   ],
 
   // ---- L2U6: Compás Compuesto y Síncopa ----

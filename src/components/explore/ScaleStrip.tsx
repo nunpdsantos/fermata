@@ -3,7 +3,7 @@ import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerE
 import { useTranslation } from 'react-i18next';
 import { noteToString, type PitchedNote } from '../../core/types/music.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
-import { SCALE_FORMULAS, getScaleDegreeFunctionKey } from '../../core/constants/scales.ts';
+import { SCALE_FORMULAS, getScaleDegreeFunctionKey, buildScale } from '../../core/constants/scales.ts';
 import { getScaleNotesWithOctaves, getMidiNumber } from '../../core/utils/pianoLayout.ts';
 import { degreeOf, degreeColorSlot, formatDegree, keySignatureForScale } from '../../core/utils/degreeSpelling.ts';
 import { getKeySignatureForScale } from '../../utils/notationHelpers.ts';
@@ -15,6 +15,8 @@ import { useFocusNoteStore, useFocusNote, focusMatches, type FocusNote } from '.
 import { DEGREE_INKS } from '../../design/tokens/colors.ts';
 import { StaffNotationSkeleton } from '../notation/StaffNotationSkeleton.tsx';
 import type { StaffLayoutInfo } from '../notation/useStaffNotation.ts';
+import { classicalDescendingType } from '../../core/utils/classicalScale.ts';
+import { Segment } from '../ui/Segment.tsx';
 import { staffTrim } from './staffTrim.ts';
 
 const StaffNotation = lazy(() =>
@@ -40,8 +42,13 @@ const CLEF_ROOM = 64;
  */
 export function ScaleStrip() {
   const { t } = useTranslation();
-  const { scale } = useKeyContext();
+  const { scale: ascendingScale } = useKeyContext();
   const selectedScale = useAppStore((s) => s.selectedScale);
+  const [direction, setDirection] = useState<'ascending' | 'descending'>('ascending');
+  const melodic = selectedScale === 'melodic_minor';
+  const descending = melodic && direction === 'descending';
+  const displayType = descending ? classicalDescendingType(selectedScale) : selectedScale;
+  const scale = useMemo(() => descending ? buildScale(ascendingScale.root, displayType) : ascendingScale, [ascendingScale, descending, displayType]);
   const selectedChord = useAppStore((s) => s.selectedChord);
   const instrument = useAppStore((s) => s.instrument);
   const { noteOn, noteOff } = useAudio();
@@ -54,7 +61,10 @@ export function ScaleStrip() {
   // The scale as the staff draws it: every note plus the octave tonic, each
   // coloured and labelled by its FUNCTION read from the spelled letter (a
   // pentatonic's G is the dominant — audit W1-06, W1-18).
-  const notes: PitchedNote[] = useMemo(() => getScaleNotesWithOctaves(scale.notes, 4), [scale]);
+  const notes: PitchedNote[] = useMemo(() => {
+    const up = getScaleNotesWithOctaves(scale.notes, 4);
+    return descending ? up.reverse() : up;
+  }, [scale, descending]);
   const midis = useMemo(() => notes.map((n) => getMidiNumber(n, n.octave)), [notes]);
   const degrees = useMemo(() => notes.map((n) => degreeOf(scale.root, n)), [notes, scale.root]);
   // Noteheads in their degree's INK shade (800 by day, 400 at night): the
@@ -76,8 +86,8 @@ export function ScaleStrip() {
     [dimmed, chordPcs],
   );
   const lit = useMemo(() => focusMatches(focus, midis), [focus, midis]);
-  const formula = SCALE_FORMULAS[selectedScale];
-  const keySignature = getKeySignatureForScale(scale.root, selectedScale) ?? undefined;
+  const formula = SCALE_FORMULAS[displayType];
+  const keySignature = getKeySignatureForScale(scale.root, displayType) ?? undefined;
 
   // ── Width: the card's, or wider (it then scrolls) so columns stay taps ──
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -93,7 +103,7 @@ export function ScaleStrip() {
     return () => ro.disconnect();
   }, []);
   const minCol = coarse ? 48 : 44;
-  const sigCount = keySignature ? (keySignatureForScale(scale.root, selectedScale)?.count ?? 0) : 0;
+  const sigCount = keySignature ? (keySignatureForScale(scale.root, displayType)?.count ?? 0) : 0;
   const prefix = CLEF_ROOM + 10 * sigCount;
   const staffWidth = Math.max(boxWidth, prefix + notes.length * minCol + 12);
 
@@ -159,13 +169,33 @@ export function ScaleStrip() {
   return (
     <section className="explore-card strip-card" aria-labelledby="strip-title" data-testid="scale-strip">
       <div className="explore-card-head">
-        <h2 id="strip-title" className="type-section">{t('explore.strip.title')}</h2>
+        <div>
+          <h2 id="strip-title" className="type-section">{t(melodic ? 'explore.strip.classicalMinor' : 'explore.strip.title')}</h2>
+          {melodic && written && <p className="text-caption explore-card-hint" style={{ color: 'var(--text-dim)' }}>{t('explore.strip.writtenOctave')}</p>}
+        </div>
         {/* "Tap a note to hear it" means nothing on paper; the guitar
             staff's octave note still prints. */}
-        <p className="text-caption explore-card-hint" style={{ color: 'var(--text-dim)' }}>
-          <span className="no-print">{t('explore.strip.hint')}</span>
-          {written && <><span className="no-print"> · </span>{t('explore.strip.writtenOctave')}</>}
-        </p>
+        {melodic ? (
+          <Segment
+            label={t('explore.strip.direction')}
+            value={direction}
+            options={[
+              { value: 'ascending', label: t('explore.strip.ascending') },
+              { value: 'descending', label: t('explore.strip.descending') },
+            ]}
+            onChange={(value) => {
+              clearFocus('keyboard', 'staff');
+              clearFocus('hover', 'staff');
+              clearFocus('pinned', 'staff');
+              setDirection(value);
+            }}
+          />
+        ) : (
+          <p className="text-caption explore-card-hint" style={{ color: 'var(--text-dim)' }}>
+            <span className="no-print">{t('explore.strip.hint')}</span>
+            {written && <><span className="no-print"> · </span>{t('explore.strip.writtenOctave')}</>}
+          </p>
+        )}
       </div>
       <div ref={scrollRef} className="strip-scroll">
         <div className="strip-body" style={{ width: staffWidth }}>
@@ -178,7 +208,8 @@ export function ScaleStrip() {
               const d = degrees[i];
               const slot = degreeColorSlot(d);
               const on = lit.has(midis[i]);
-              const fnKey = showFunctions ? getScaleDegreeFunctionKey(i % 7, formula[i % 7] ?? 0) : null;
+              const degreeIndex = (descending ? notes.length - 1 - i : i) % scale.notes.length;
+              const fnKey = showFunctions ? getScaleDegreeFunctionKey(degreeIndex, formula[degreeIndex] ?? 0) : null;
               const name = noteToString(n);
               return (
                 <button
@@ -192,7 +223,7 @@ export function ScaleStrip() {
                   data-note={name}
                   tabIndex={i === tabStop ? 0 : -1}
                   style={{ left: `${((xs[i] - half) / staffWidth) * 100}%`, width: `${((half * 2) / staffWidth) * 100}%` }}
-                  aria-label={t('explore.degreeButton', { degree: i % scale.notes.length + 1, interval: formatDegree(d), note: name })}
+                  aria-label={t('explore.degreeButton', { degree: degreeIndex + 1, interval: formatDegree(d), note: name })}
                   onPointerEnter={(e) => onEnter(e, i)}
                   onPointerLeave={onLeave}
                   onFocus={(e) => {

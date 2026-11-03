@@ -55,7 +55,7 @@ export function UnitCard({ unit, index, completedCount, accentColor, isComplete,
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-caption font-bold uppercase tracking-wider" style={{ color: 'var(--text-dim)' }}>
-                  {t('learn.unit', { n: index + 1 })}
+                  {unit.optional ? t('learn.optionalUnit') : t('learn.unit', { n: index + 1 })}
                 </span>
                 {isComplete && (
                   <span className="text-caption font-medium text-success bg-emerald-400/10 px-1.5 py-0.5 rounded-full">

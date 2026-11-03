@@ -6,6 +6,108 @@ import type { ExerciseLevelOverlay } from '../types';
 // ---------------------------------------------------------------------------
 
 const overlay: ExerciseLevelOverlay = {
+
+  l1u33m1e1: {
+    prompt: 'Uma parte de guitarra tem clave de sol com um pequeno 8 por baixo. Como soa o E4 escrito?',
+    choices: [
+      'Como E5',
+      'Como E3',
+      'Como E4',
+      'Como B3'
+    ],
+    hint: 'O pequeno 8 por baixo da clave significa uma oitava abaixo: o E4 escrito soa como E3.'
+  },
+  l1u33m1e2: {
+    prompt: 'O que indica ③ junto de uma nota de guitarra?',
+    choices: [
+      'Dedo 3',
+      'Posição III',
+      'Corda 3',
+      'Trasto 3'
+    ],
+    hint: 'Um número em círculo indica a corda. Os números dos dedos da mão esquerda não têm círculo.'
+  },
+  l1u33m1e3: {
+    prompt: 'Na afinação padrão da guitarra, que corda solta soa E2?',
+    choices: [
+      '⑥',
+      '①',
+      '④',
+      '②'
+    ],
+    hint: 'A corda 6 é a mais grossa e grave: a sua altura solta é E2 na afinação padrão.'
+  },
+  l1u33m2e1: {
+    prompt: 'Que dedo da mão esquerda indica o número 4?',
+    choices: [
+      'Indicador',
+      'Anelar',
+      'Médio',
+      'Mindinho'
+    ],
+    hint: 'Os dedos da mão esquerda são 1 indicador, 2 médio, 3 anelar e 4 mindinho.'
+  },
+  l1u33m2e2: {
+    prompt: 'O que significa 0 numa dedilhação de guitarra?',
+    choices: [
+      'Corda solta',
+      'Dedo indicador',
+      'Pestana completa',
+      'Polegar direito'
+    ],
+    hint: 'Zero significa que nenhum dedo da mão esquerda prime a corda.'
+  },
+  l1u33m2e3: {
+    prompt: 'Que ordem de dedos indica p-i-m-a?',
+    choices: [
+      'Polegar, anelar, médio, indicador',
+      'Polegar, indicador, médio, anelar',
+      'Indicador, médio, anelar, mindinho',
+      'Anelar, médio, indicador, polegar'
+    ],
+    hint: 'As letras da mão direita são p polegar, i indicador, m médio e a anelar.'
+  },
+  l1u33m2e4: {
+    prompt: 'Que letras significam polegar, anelar, médio, indicador?',
+    choices: [
+      'p-i-m-a',
+      'i-m-a-p',
+      'p-a-m-i',
+      'a-m-i-p'
+    ],
+    hint: 'Lê as letras por ordem: p é polegar, a é anelar, m é médio e i é indicador.'
+  },
+  l1u33m3e1: {
+    prompt: 'Na posição V, que trasto serve normalmente de base ao indicador?',
+    choices: [
+      'Trasto 4',
+      'Trasto 5',
+      'Trasto 6',
+      'Trasto 7'
+    ],
+    hint: 'V significa quinta posição: o indicador tem como base o trasto 5.'
+  },
+  l1u33m3e2: {
+    prompt: 'Que instrução dá CV na notação de guitarra?',
+    choices: [
+      'Pestana parcial no trasto 5',
+      'Pestana completa no trasto 4',
+      'Pestana parcial no trasto 4',
+      'Pestana completa no trasto 5'
+    ],
+    hint: 'C indica uma pestana completa e V localiza-a no trasto 5. V sozinho indica a posição sem exigir uma pestana.'
+  },
+  l1u33m3e3: {
+    prompt: 'Que indicação pede uma pestana parcial no trasto 5?',
+    choices: [
+      '½CV',
+      'CV',
+      'V',
+      '⑤'
+    ],
+    hint: '½C pede uma pestana parcial; V indica o trasto. A partitura ou a dedilhação diz que cordas deves abranger.'
+  }
+,
   // =========================================================================
   // Unidade 1: Notação e Altura
   // =========================================================================

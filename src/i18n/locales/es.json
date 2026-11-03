@@ -64,6 +64,8 @@
     "contentInDevelopment": "Contenido en desarrollo"
   },
   "explore": {
+    "playScaleClassical": "Tocar la escala menor melódica clásica al subir y al bajar",
+    "playScaleBoth": "Tocar escala ↑↓",
     "minorVariant": "Variante de la escala menor",
     "diatonicChordsGroup": "Acordes diatónicos",
     "chordButton": "Acorde de {{root}} {{quality}}, grado {{degree}}",
@@ -104,6 +106,10 @@
     "inKey": "En la tonalidad",
     "circleChordRoot": "fundamental del acorde elegido",
     "strip": {
+      "classicalMinor": "Menor melódica · clásica",
+      "direction": "Sentido de la escala",
+      "ascending": "↑ Ascendente",
+      "descending": "↓ Descendente",
       "title": "Notas de la escala",
       "hint": "Toca una nota para oírla",
       "writtenOctave": "escrita una octava por encima de como suena",
@@ -266,6 +272,7 @@
     "harmMinorModes": "Modos Harm. Menor"
   },
   "learn": {
+    "optionalUnit": "Unidad opcional",
     "title": "Aprender Teor\u00eda Musical",
     "subtitle": "Un camino estructurado desde lo b\u00e1sico hasta la armon\u00eda avanzada",
     "parallelTrack": "Recorrido Paralelo",

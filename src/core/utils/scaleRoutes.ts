@@ -27,6 +27,7 @@ import type { Note, ScaleType } from '../types/music';
 import type { GuitarTuning } from '../constants/guitarTunings';
 import { TUNING_STANDARD } from '../constants/guitarTunings';
 import { getPitchClass } from '../constants/notes';
+import { classicalDescendingType } from './classicalScale';
 import { buildScale, SCALE_FORMULAS } from '../constants/scales';
 import { SCALE_DEGREE_FORMULAS } from './degreeSpelling';
 import { GUITAR_MAX_FRET, scaleDegreeLabel, tuningOpenMidi } from './guitarPositions';
@@ -141,7 +142,7 @@ export function getScaleRoute(root: Note, scaleType: ScaleType, options: ScaleRo
   if (up === null) return null;
   const ascending = decorate(root, up, upLine.map((p) => p.degree));
 
-  const descendingScaleType: ScaleType = scaleType === 'melodic_minor' ? 'natural_minor' : scaleType;
+  const descendingScaleType: ScaleType = classicalDescendingType(scaleType);
   let descending: ScaleRouteNote[];
   if (descendingScaleType === scaleType) {
     descending = decorate(root, reverseFingering(up), [...upLine].reverse().map((p) => p.degree));

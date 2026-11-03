@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { MODULE_INDEX, findModulesByQuery } from '../moduleIndex';
 
 describe('moduleIndex', () => {
-  it('contains all 118 curriculum modules', () => {
-    expect(MODULE_INDEX).toHaveLength(118);
+  it('contains 118 required and three optional curriculum modules', () => {
+    expect(MODULE_INDEX).toHaveLength(121);
   });
 
   it('has no duplicate ids', () => {
