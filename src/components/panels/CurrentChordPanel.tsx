@@ -19,14 +19,17 @@ function alpha(color: string, hex: string): string {
 }
 import {
   playChordVoiced,
+  playPitchedNotes,
+  playPitchedArpeggio,
   playArpeggioAscending,
   cancelScheduledAudio,
   resumeAudio,
 } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
+import { exploreRegister } from '../explore/exploreRegister';
 import { useAppStore } from '../../state/store.ts';
 import { buildAscendingMidi } from '../../utils/midiHelpers.ts';
-import { chordVoicingPitches, getMidiNumber, midiToNote } from '../../core/utils/pianoLayout.ts';
+import { getMidiNumber, midiToNote } from '../../core/utils/pianoLayout.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { SCALE_FORMULAS, getScaleDegreeFunctionKey } from '../../core/constants/scales.ts';
 import { useAudio } from '../../hooks/useAudio.ts';
@@ -138,6 +141,7 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
   const synthPreset = useAppStore((s) => s.synthPreset);
   const chordInversion = useAppStore((s) => s.chordInversion);
   const setChordInversion = useAppStore((s) => s.setChordInversion);
+  const instrument = useAppStore((s) => s.instrument);
   const baseOctave = useAppStore((s) => s.baseOctave);
   const addActiveNote = useAppStore((s) => s.addActiveNote);
   const removeActiveNote = useAppStore((s) => s.removeActiveNote);
@@ -202,13 +206,17 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
     const config = getSynthConfig(synthPreset);
     const duration = 1.5;
     // Sound and lit keys share one voicing (bass lowest; slash bass below).
-    const midiNumbers = chordVoicingPitches(notesForPlayback, baseOctave, chord.bassNote)
+    const midiNumbers = exploreRegister(instrument, baseOctave).chordPitches(notesForPlayback, chord.bassNote)
       .map((p) => getMidiNumber(p, p.octave));
     for (const m of midiNumbers) lightKey(m);
-    playChordVoiced(notesForPlayback, baseOctave, duration, config, chord.bassNote);
+    if (instrument === 'guitar') {
+      playPitchedNotes(exploreRegister(instrument).chordPitches(notesForPlayback, chord.bassNote), duration, config);
+    } else {
+      playChordVoiced(notesForPlayback, baseOctave, duration, config, chord.bassNote);
+    }
     const t = setTimeout(() => unlightKeys(midiNumbers), duration * 1000);
     timeoutsRef.current.push(t);
-  }, [notesForPlayback, synthPreset, baseOctave, lightKey, unlightKeys, stopVisuals, chord.bassNote]);
+  }, [notesForPlayback, synthPreset, baseOctave, lightKey, unlightKeys, stopVisuals, chord.bassNote, instrument]);
 
   const handlePlayArpeggio = useCallback(async () => {
     await resumeAudio();
@@ -216,28 +224,31 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
     stopVisuals();
     const config = getSynthConfig(synthPreset);
     const noteDuration = 0.35;
-    const midiNumbers = computeVoicedMidi(notesForPlayback, baseOctave);
+    const guitarPitches = instrument === 'guitar'
+      ? exploreRegister(instrument).chordPitches(notesForPlayback, chord.bassNote) : null;
+    const midiNumbers = guitarPitches
+      ? guitarPitches.map((p) => getMidiNumber(p, p.octave))
+      : computeVoicedMidi(notesForPlayback, baseOctave);
     const litNotes: number[] = [];
-    playArpeggioAscending(
-      notesForPlayback,
-      baseOctave,
-      noteDuration,
-      (noteIndex) => {
-        const midi = midiNumbers[noteIndex];
-        if (midi !== undefined) {
-          lightKey(midi);
-          litNotes.push(midi);
-        }
-      },
-      // Runs when the arpeggio ends — or at once if it is cancelled (core
-      // settles a cancelled phrase's visuals).
-      () => {
-        const t = setTimeout(() => unlightKeys(litNotes), noteDuration * 1000);
-        timeoutsRef.current.push(t);
-      },
-      config,
-    );
-  }, [notesForPlayback, synthPreset, baseOctave, lightKey, unlightKeys, stopVisuals]);
+    const onNotePlay = (noteIndex: number) => {
+      const midi = midiNumbers[noteIndex];
+      if (midi !== undefined) {
+        lightKey(midi);
+        litNotes.push(midi);
+      }
+    };
+    // Runs when the arpeggio ends — or at once if it is cancelled (core
+    // settles a cancelled phrase's visuals).
+    const onComplete = () => {
+      const t = setTimeout(() => unlightKeys(litNotes), noteDuration * 1000);
+      timeoutsRef.current.push(t);
+    };
+    if (guitarPitches) {
+      playPitchedArpeggio(guitarPitches, noteDuration, onNotePlay, onComplete, config);
+    } else {
+      playArpeggioAscending(notesForPlayback, baseOctave, noteDuration, onNotePlay, onComplete, config);
+    }
+  }, [notesForPlayback, synthPreset, baseOctave, lightKey, unlightKeys, stopVisuals, instrument, chord.bassNote]);
 
   // The chord's place in the key: "V · dominant" when it is a diatonic chord.
   const role = useMemo(() => {
@@ -253,12 +264,12 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
   // tone made the focus note lights that exact key on the piano.
   const toneMidi = useMemo(() => {
     const m = new Map<number, number>();
-    for (const p of chordVoicingPitches(notesForPlayback, baseOctave, chord.bassNote)) {
+    for (const p of exploreRegister(instrument, baseOctave).chordPitches(notesForPlayback, chord.bassNote)) {
       const pc = getPitchClass(p);
       if (!m.has(pc)) m.set(pc, getMidiNumber(p, p.octave));
     }
     return m;
-  }, [notesForPlayback, baseOctave, chord.bassNote]);
+  }, [notesForPlayback, baseOctave, chord.bassNote, instrument]);
   const toneFocus = (note: Note): FocusNote => {
     const pc = getPitchClass(note);
     return { pc, midi: toneMidi.get(pc), source: 'chord' };

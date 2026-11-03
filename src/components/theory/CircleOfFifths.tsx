@@ -8,6 +8,7 @@ import {
   formatKeySignature,
   spellIntervalAbove,
 } from '../../core/utils/degreeSpelling.ts';
+import { exploreRegister } from '../explore/exploreRegister';
 import { useAppStore } from '../../state/store.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { ChipGroup } from '../ui/ChoiceChip.tsx';
@@ -102,6 +103,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
   const { t } = useTranslation();
   const selectedKey = useAppStore((s) => s.selectedKey);
   const selectedScale = useAppStore((s) => s.selectedScale);
+  const instrument = useAppStore((s) => s.instrument);
   const synthPreset = useAppStore((s) => s.synthPreset);
   const setKey = useAppStore((s) => s.setKey);
   const setScale = useAppStore((s) => s.setScale);
@@ -207,9 +209,9 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
       await resumeAudio();
       const config = getSynthConfig(synthPreset);
       cancelScheduledAudio(); // a new key replaces the previous one's sound (W8-01)
-      playChordVoiced([note], 4, 0.5, config);
+      playChordVoiced([note], exploreRegister(instrument).octave, 0.5, config);
     },
-    [synthPreset, setKey, setScale],
+    [synthPreset, setKey, setScale, instrument],
   );
 
   const handleMinorVariant = (scaleType: ScaleType) => {

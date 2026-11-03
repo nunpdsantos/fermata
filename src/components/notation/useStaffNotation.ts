@@ -19,6 +19,7 @@ interface UseStaffNotationOptions {
   annotation?: '8vb';
   keySignature?: string;
   width?: number;
+  minNoteStartX?: number;
   height?: number;
   /** Note index → colour for the whole note (head, stem, ledger lines): a
    *  hex value or a CSS variable (`var(--deg-ink-3)`), resolved against the
@@ -76,8 +77,11 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
   // accidentals all use these written notes.
   const staff = useMemo(() => {
     const plan = staffPlan(options.notes, options.clef, instrument, options.followInstrument);
-    return { ...plan, annotation: options.annotation ?? plan.annotation, layout: staffLayout(plan.written, plan.clef, options.height ?? 150) };
-  }, [options.notes, options.clef, options.height, options.followInstrument, options.annotation, instrument]);
+    const annotation = options.annotation ?? plan.annotation;
+    return { ...plan, annotation, layout: staffLayout(plan.written, plan.clef, options.height ?? 150, {
+      annotation, duration: options.duration, keySignature: options.keySignature,
+    }) };
+  }, [options.notes, options.clef, options.height, options.followInstrument, options.annotation, options.duration, options.keySignature, instrument]);
   const layout = staff.layout;
 
   // Load VexFlow
@@ -160,6 +164,10 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
 
     if (options.keySignature) {
       stave.addKeySignature(options.keySignature);
+    }
+
+    if (options.minNoteStartX !== undefined) {
+      stave.setNoteStartX(Math.max(stave.getNoteStartX(), options.minNoteStartX));
     }
 
     stave.setContext(context).draw();
@@ -268,7 +276,7 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
       width: w,
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps -- themeMode triggers re-render so CSS custom properties are re-read
-  }, [loading, containerWidth, options.notes, options.clef, options.keySignature, options.width, options.height, options.noteColors, options.noteDim, options.duration, options.chord, themeMode, staff]);
+  }, [loading, containerWidth, options.notes, options.clef, options.keySignature, options.width, options.minNoteStartX, options.height, options.noteColors, options.noteDim, options.duration, options.chord, themeMode, staff]);
 
   // Trigger render when dependencies change
   useEffect(() => {

@@ -2,6 +2,16 @@
   "$comment": "Release notes for the update prompt (W9b). Newest first. Adding an entry = a new release: increment `release` by 1, one line per language (EN / PT-PT / ES, max 160 characters, no line breaks). `critical: true` marks an emergency: every app on an older release applies it at the next safe moment, even after the learner chose Later. The build reads this file (vite.config.ts) and publishes dist/version.json; a deploy without a new entry shows no What's-new line. CLAUDE.md, PWA section.",
   "releases": [
     {
+      "release": 2,
+      "date": "2026-11-03",
+      "critical": false,
+      "notes": {
+        "en": "Staves now show all five lines and the whole clef. With the guitar, Explore writes and plays scales and chords in the guitar's own register.",
+        "pt": "As pautas mostram agora as cinco linhas e a clave inteira. Com a guitarra, o Explorar escreve e toca escalas e acordes no registo da guitarra.",
+        "es": "Los pentagramas muestran ahora las cinco líneas y la clave entera. Con la guitarra, Explorar escribe y toca escalas y acordes en su propio registro."
+      }
+    },
+    {
       "release": 1,
       "date": "2026-11-02",
       "critical": false,

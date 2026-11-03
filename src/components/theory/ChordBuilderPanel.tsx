@@ -13,8 +13,9 @@ import {
   degreeColorSlot,
 } from '../../core/utils/degreeSpelling.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
+import { exploreRegister } from '../explore/exploreRegister';
 import { useAppStore } from '../../state/store.ts';
-import { resumeAudio, playChordVoiced, cancelScheduledAudio } from '../../core/services/audio.ts';
+import { resumeAudio, playChordVoiced, playPitchedNotes, cancelScheduledAudio } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import { ChromaticStrip } from './ChromaticStrip.tsx';
 import { SelectTrigger } from '../ui/SelectTrigger.tsx';
@@ -59,9 +60,10 @@ function intervalLabelFor(root: Note, note: Note, step: number): string {
 export function ChordBuilderPanel() {
   const { t, i18n } = useTranslation();
   const lang = toContentLanguage(i18n.language);
-  const { scale, scalePitchClasses, diatonicChords } = useKeyContext();
+  const { scale, scalePitchClasses, diatonicChords, invertedNotes } = useKeyContext();
   const selectedKey = useAppStore((s) => s.selectedKey);
   const synthPreset = useAppStore((s) => s.synthPreset);
+  const instrument = useAppStore((s) => s.instrument);
   const baseOctave = useAppStore((s) => s.baseOctave);
   const setSelectedChord = useAppStore((s) => s.setSelectedChord);
 
@@ -155,8 +157,13 @@ export function ChordBuilderPanel() {
     // selected chord's voicing); an unrecognised set plays as built.
     const recognised = top && top.confidence === 'exact' ? top.chord : null;
     cancelScheduledAudio(); // replaces whatever was sounding (W8-01)
+    if (instrument === 'guitar') {
+      const notes = recognised ? (invertedNotes.length ? invertedNotes : recognised.notes) : inputNotes;
+      playPitchedNotes(exploreRegister(instrument).chordPitches(notes, recognised?.bassNote), 1.2, getSynthConfig(synthPreset));
+      return;
+    }
     playChordVoiced(recognised ? recognised.notes : inputNotes, baseOctave, 1.2, getSynthConfig(synthPreset), recognised?.bassNote);
-  }, [active.size, inputNotes, baseOctave, synthPreset, top]);
+  }, [active.size, inputNotes, baseOctave, synthPreset, top, instrument, invertedNotes]);
 
   const stepsSorted = useMemo(() => [...active].sort((a, b) => a - b), [active]);
   const intervalsLabel = stepsSorted.map(intervalAtStep).join(', ');

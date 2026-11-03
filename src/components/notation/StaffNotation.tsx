@@ -13,6 +13,8 @@ export interface StaffNotationProps {
   annotation?: '8vb';
   keySignature?: string;
   width?: number;
+  /** Reserve space before notes, e.g. for wide labels beside a clef. */
+  minNoteStartX?: number;
   height?: number;
   /** Map of note index → hex color for degree-based highlighting */
   noteColors?: Record<number, string>;
@@ -37,6 +39,7 @@ export function StaffNotation({
   annotation,
   keySignature,
   width,
+  minNoteStartX,
   height = 150,
   noteColors,
   duration,
@@ -52,6 +55,7 @@ export function StaffNotation({
     annotation,
     keySignature,
     width,
+    minNoteStartX,
     height,
     noteColors,
     duration,

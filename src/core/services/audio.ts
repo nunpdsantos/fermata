@@ -1006,14 +1006,6 @@ export function playArpeggioAscending(
   onComplete?: () => void,
   synthConfig: Partial<SynthConfig> = {}
 ): void {
-  const ctx = getAudioContext();
-  const audioStartTime = ctx.currentTime;
-  // Apply tempo to timing
-  const scaledNoteDuration = noteDuration / playbackTempo;
-  // Gap proportional to note duration (15%) — maintains consistent phrasing
-  const scaledGap = scaledNoteDuration * 0.15;
-  const noteInterval = scaledNoteDuration + scaledGap;
-
   // Calculate octaves for each note to ensure ascending pitch
   const notesWithOctaves: { note: Note; octave: number }[] = [];
   let currentOctave = startOctave;
@@ -1031,6 +1023,28 @@ export function playArpeggioAscending(
     notesWithOctaves.push({ note, octave: currentOctave });
     lastPitchClass = pitchClass;
   }
+
+  playPitchedArpeggio(notesWithOctaves.map(({ note, octave }) => ({ ...note, octave })), noteDuration, onNotePlay, onComplete, synthConfig);
+}
+
+/** Play an exact voicing in order without recomputing octave placement.
+ * Explore's guitar uses this for the same pitches its chord staff shows. */
+export function playPitchedArpeggio(
+  pitches: PitchedNote[],
+  noteDuration: number = 0.3,
+  onNotePlay?: PitchedNotePlayCallback,
+  onComplete?: () => void,
+  synthConfig: Partial<SynthConfig> = {},
+): void {
+  const ctx = getAudioContext();
+  const audioStartTime = ctx.currentTime;
+  // Apply tempo to timing
+  const scaledNoteDuration = noteDuration / playbackTempo;
+  // Gap proportional to note duration (15%) — maintains consistent phrasing
+  const scaledGap = scaledNoteDuration * 0.15;
+  const noteInterval = scaledNoteDuration + scaledGap;
+
+  const notesWithOctaves = pitches.map((note) => ({ note, octave: note.octave }));
 
   // Slightly reduced volume for arpeggios, merged with synth preset
   const config = {

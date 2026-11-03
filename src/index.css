@@ -1237,6 +1237,8 @@ body {
   }
   .strip-body {
     position: relative;
+    /* The clef's 8 shares the label band below the staff's flow box. */
+    overflow: visible;
     /* A flow root: the staff's negative top margin (trimmed headroom) must
        not collapse through and lift the whole strip under the card's edge. */
     display: flow-root;
@@ -1302,6 +1304,7 @@ body {
   }
   .strip-staff {
     position: relative;
+    overflow: visible;
     z-index: 1;
     pointer-events: none;
   }
@@ -1320,6 +1323,7 @@ body {
   }
   .strip-labels-room {
     height: 40px;
+    overflow: visible;
   }
 
   /* Chords: one row of diatonic chords (it scrolls sideways on a phone),

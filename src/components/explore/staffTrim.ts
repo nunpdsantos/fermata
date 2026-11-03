@@ -1,5 +1,5 @@
 import type { PitchedNote } from '../../core/types/music.ts';
-import { staffLine, staffLayout, staffPlan } from '../../utils/notationHelpers.ts';
+import { staffInkBounds, staffLayout, staffPlan } from '../../utils/notationHelpers.ts';
 
 /**
  * How much empty room the Explore staves can lose above and below (W11-B:
@@ -14,21 +14,35 @@ export function staffTrim(
   notes: readonly PitchedNote[],
   instrument: string,
   requestedHeight: number,
+  keySignature?: string,
 ): { top: number; bottom: number; height: number } {
   const plan = staffPlan(notes, undefined, instrument, true);
-  const layout = staffLayout(plan.written, plan.clef, requestedHeight);
-  if (plan.written.length === 0) return { top: 0, bottom: 0, height: layout.height };
-  const lines = plan.written.map((n) => staffLine(n, plan.clef));
-  const staffTop = layout.staveY + 40;
-  const staffBottom = layout.staveY + 80;
-  // A notehead with its ledger line needs ~8 px either side of its centre.
-  const noteTop = layout.staveY + 90 - 10 * Math.max(...lines) - 8;
-  const noteBottom = layout.staveY + 90 - 10 * Math.min(...lines) + 8;
-  // The treble clef curls ~16 px over the top line and ~22 px under the
-  // bottom one; the guitar clef's 8 hangs ~12 px lower still.
-  const clefTop = staffTop - 16;
-  const clefBottom = staffBottom + 22 + (plan.annotation ? 12 : 0);
-  const top = Math.max(0, Math.min(clefTop, noteTop) - 4);
-  const bottom = Math.max(0, layout.height - Math.max(clefBottom, noteBottom) - 2);
+  const options = { annotation: plan.annotation, duration: 'w', keySignature };
+  const layout = staffLayout(plan.written, plan.clef, requestedHeight, options);
+  const ink = staffInkBounds(plan.written, plan.clef, options);
+  const top = Math.max(0, layout.staveY + ink.top - 4);
+  const bottom = Math.max(0, layout.height - (layout.staveY + ink.bottom) - 2);
   return { top, bottom, height: layout.height };
+}
+
+/**
+ * Only the scale strip has an unclipped label band beside the clef's tail.
+ * Keep the full annotated SVG, but let the 8 occupy that band's empty left
+ * end. Flow reserves the ordinary clef hook plus all note/signature ink;
+ * the strip's labels start to the right, under the noteheads. Other callers
+ * must use staffTrim: without the label band this tailroom is not available.
+ */
+export function scaleStripTrim(
+  notes: readonly PitchedNote[],
+  instrument: string,
+  requestedHeight: number,
+  keySignature?: string,
+): { top: number; bottom: number; height: number } {
+  const trim = staffTrim(notes, instrument, requestedHeight, keySignature);
+  if (instrument !== 'guitar') return trim;
+  const plan = staffPlan(notes, undefined, instrument, true);
+  const options = { duration: 'w', keySignature };
+  const layout = staffLayout(plan.written, plan.clef, requestedHeight, { ...options, annotation: plan.annotation });
+  const flowInk = staffInkBounds(plan.written, plan.clef, options);
+  return { ...trim, bottom: Math.max(0, trim.height - (layout.staveY + flowInk.bottom) - 2) };
 }
