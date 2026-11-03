@@ -1106,5 +1106,6 @@
   "neck": {
     "open": "Braço inteiro",
     "close": "Fechar o braço inteiro"
-  }
+  },
+  "practice": {"title": "Praticar na guitarra"}
 }

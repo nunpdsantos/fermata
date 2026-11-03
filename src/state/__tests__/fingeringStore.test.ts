@@ -115,3 +115,30 @@ describe('backup and reset coverage', () => {
     expect(errorBoundarySource).not.toMatch(/import[^;]*from\s+['"][./]*state\/fingeringStore/);
   });
 });
+
+describe('additive route namespace, unchanged production v1 shape', () => {
+  const routeKey = 'route:1|standard|Bb|major|scale|2|0|1|1';
+  it('loads the old production-shaped envelope without losing a position or preference', async () => {
+    // Same version/shape as existing installed saves; no route field is needed.
+    seed({ overrides: { 'major|standard|p5|2|4': 3, 'natural_minor|drop-d|open9|1|2': 4 }, labelMode: 'degree' });
+    await useFingeringStore.persist.rehydrate();
+    expect(useFingeringStore.getState().overrides).toEqual({ 'major|standard|p5|2|4': 3, 'natural_minor|drop-d|open9|1|2': 4 });
+    expect(useFingeringStore.getState().labelMode).toBe('degree');
+    useFingeringStore.getState().setOverride(routeKey, 2);
+    await useFingeringStore.persist.rehydrate();
+    expect(useFingeringStore.getState().overrides[routeKey]).toBe(2);
+    useFingeringStore.getState().clearOverrides([routeKey]);
+    expect(useFingeringStore.getState().overrides['major|standard|p5|2|4']).toBe(3);
+    expect(JSON.parse(localStorage.getItem(FINGERING_STORE_KEY)!).version).toBe(1);
+  });
+  it('guards route entries individually on load and carries them through backup validation', async () => {
+    seed({ overrides: { [K1]: 3, [routeKey]: 2, [routeKey.replace('|1|1', '|9|99')]: 4 }, labelMode: 'note' });
+    await useFingeringStore.persist.rehydrate();
+    expect(useFingeringStore.getState().overrides).toEqual({ [K1]: 3, [routeKey]: 2 });
+    // Rehydration sanitizes memory; the next legitimate edit writes that clean state.
+    useFingeringStore.getState().setOverride(routeKey, 2);
+    const result = await validateBackup(buildBackup(localStorage));
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.backup.data[FINGERING_STORE_KEY]).toMatchObject({ state: { overrides: { [K1]: 3, [routeKey]: 2 } } });
+  });
+});

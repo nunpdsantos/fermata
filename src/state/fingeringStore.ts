@@ -43,6 +43,10 @@ const POSITION_SEGMENT = /^(open|p)(\d|1[01])$/;
 /** Structural check of a key made by fingeringKey(). */
 export function isValidFingeringKey(key: unknown): key is string {
   if (typeof key !== 'string') return false;
+  // Additive namespace, same v1 dictionary and backup format. A route key
+  // includes its spelling, exercise, range and the physical note occurrence;
+  // it cannot collide with a transposable position override.
+  if (key.startsWith('route:')) return isValidRouteFingeringKey(key);
   const parts = key.split('|');
   if (parts.length !== 5) return false;
   const [scaleType, tuningId, pos, stringIdx, fret] = parts;
@@ -53,6 +57,17 @@ export function isValidFingeringKey(key: unknown): key is string {
   if (!/^-?\d{1,2}$/.test(fret)) return false;
   const f = Number(fret);
   return f >= -1 && f <= 15;
+}
+
+function isValidRouteFingeringKey(key: string): boolean {
+  const p = key.split('|');
+  return p.length === 9 && p[0] === 'route:1'
+    && /^[a-z0-9-]{1,32}$/.test(p[1])
+    && /^[A-G](bb|##|b|#)?$/.test(p[2])
+    && Object.hasOwn(SCALE_FORMULAS, p[3])
+    && /^(scale|tonicArpeggio|dominantSeventh|diminishedSeventh|thirds|sixths|octaves|chromatic|brokenChord)(-broken|-together|-upper)?$/.test(p[4])
+    && /^[1-3]$/.test(p[5]) && /^\d{1,3}$/.test(p[6])
+    && /^[0-5]$/.test(p[7]) && /^(?:[1-9]|1[0-5])$/.test(p[8]);
 }
 
 function isOverrideFinger(v: unknown): v is OverrideFinger {
