@@ -7,18 +7,22 @@
  * landscape full-neck view draws the whole neck and closes on Escape.
  */
 import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, act, within } from '@testing-library/react';
 import { useAppStore } from '../../../state/store';
 import { useFocusNoteStore } from '../../../state/focusNoteStore';
+import { useGuitarShapeStore } from '../../../state/guitarShapeStore';
 import { useFingeringStore } from '../../../state/fingeringStore';
 import { buildChord } from '../../../core/constants/chords';
 import { Piano } from '../Piano';
 import { Fretboard } from '../Fretboard';
 import { NeckView } from '../NeckView';
+import { InstrumentDock } from '../../layout/InstrumentDock';
+import { DockReadout } from '../../layout/DockReadout';
 import { CircleOfFifths } from '../../theory/CircleOfFifths';
 
+const { noteOn } = vi.hoisted(() => ({ noteOn: vi.fn().mockResolvedValue(60) }));
 vi.mock('../../../hooks/useAudio', () => ({
-  useAudio: () => ({ noteOn: vi.fn().mockResolvedValue(60), noteOff: vi.fn() }),
+  useAudio: () => ({ noteOn, noteOff: vi.fn() }),
 }));
 
 beforeAll(() => {
@@ -27,6 +31,8 @@ beforeAll(() => {
   Element.prototype.scrollTo = vi.fn() as typeof Element.prototype.scrollTo;
 });
 beforeEach(() => {
+  noteOn.mockClear();
+  useGuitarShapeStore.setState({ shapeChoice: { key: '', idx: 0 } });
   useFocusNoteStore.setState({ hover: null, keyboard: null, pinned: null, locations: null });
   useFingeringStore.setState({ overrides: {}, labelMode: 'finger' });
   useAppStore.setState({
@@ -36,7 +42,10 @@ beforeEach(() => {
     quickSearchOpen: false, themeMode: 'fermata', language: 'en',
   });
 });
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
 
 const litKeys = () => [...document.querySelectorAll('[data-piano-key][data-focus-note]')].map((k) => k.getAttribute('aria-label'));
 const litCells = () =>
@@ -45,6 +54,32 @@ const litCells = () =>
   );
 
 describe('piano', () => {
+  it.each(['hover', 'press', 'Enter'] as const)('C3 outside the scale octave stays lit and named on %s', (input) => {
+    render(<><Piano /><DockReadout context="C4 · 1 octave" /></>);
+    const c3 = screen.getByRole('button', { name: 'C3' });
+    if (input === 'hover') fireEvent.pointerEnter(c3, { pointerType: 'mouse' });
+    else if (input === 'press') fireEvent.pointerDown(c3, { pointerType: 'mouse', button: 0 });
+    else fireEvent.keyDown(c3, { key: 'Enter' });
+    expect(useFocusNoteStore.getState()[input === 'hover' ? 'hover' : 'pinned']).toEqual({ pc: 0, midi: 48, source: 'piano' });
+    if (input !== 'hover') expect(noteOn).toHaveBeenCalledWith(expect.objectContaining({ natural: 'C' }), 3);
+    expect(litKeys()).toEqual(['C3']);
+    expect(useFocusNoteStore.getState().locations?.items).toEqual(['C3']);
+    expect(screen.getByTestId('dock-readout').textContent).toContain('C3');
+    expect(screen.getByTestId('dock-readout').textContent).not.toMatch(/C4|C5/);
+  });
+
+  it('the focus-ring detector rejects a known-bad missing ring', () => {
+    render(<Piano />);
+    const c4 = screen.getByRole('button', { name: 'C4' });
+    fireEvent.pointerEnter(c4, { pointerType: 'mouse' });
+    const check = () => expect(litKeys()).toEqual(['C4']);
+    check();
+    c4.removeAttribute('data-focus-note');
+    expect(check).toThrow();
+    c4.setAttribute('data-focus-note', 'true');
+    check();
+  });
+
   it('lights the exact key when it is one it shows (B4), else the pitch class in the octave shown', () => {
     render(<Piano />);
     act(() => useFocusNoteStore.getState().set('hover', { pc: 11, midi: 71, source: 'staff' }));
@@ -73,6 +108,33 @@ describe('piano', () => {
 });
 
 describe('fretboard', () => {
+  it.each(['hover', 'tap'] as const)('string 6 fret 5 is lit and named first on %s, ahead of the open A string', async (input) => {
+    useAppStore.setState({ instrument: 'guitar' });
+    render(<><Fretboard variant={input === 'tap' ? 'neck' : 'dock'} /><DockReadout context="Open position" /></>);
+    await screen.findAllByRole('grid');
+    const cell = document.querySelector('[data-string-row="0"][data-fret="5"]')!;
+    if (input === 'hover') fireEvent.pointerEnter(cell, { pointerType: 'mouse' });
+    else fireEvent.pointerDown(cell, { pointerType: 'touch', pointerId: 1 });
+    expect(useFocusNoteStore.getState()[input === 'hover' ? 'hover' : 'pinned']).toMatchObject({ pc: 9, midi: 45, source: 'fret' });
+    if (input === 'tap') expect(noteOn).toHaveBeenCalledWith(expect.objectContaining({ natural: 'A' }), 2);
+    expect(cell.hasAttribute('data-focus-note')).toBe(true);
+    expect(useFocusNoteStore.getState().locations?.items[0]).toBe('string 6 fret 5');
+    expect(screen.getByTestId('dock-readout').textContent).toContain('string 6 fret 5');
+  });
+
+  it('moving between two cells of the same pitch updates the first location', async () => {
+    useAppStore.setState({ instrument: 'guitar', guitarScalePosition: 'all' });
+    render(<Fretboard />);
+    await screen.findAllByRole('grid');
+    const cell = (row: number, fret: number) => document.querySelector(`[data-string-row="${row}"][data-fret="${fret}"]`)!;
+    // Both are B3; neither transition changes MIDI, pitch class or source.
+    for (const [row, fret, location] of [[3, 4, 'string 3 fret 4'], [2, 9, 'string 4 fret 9'], [3, 4, 'string 3 fret 4']] as const) {
+      fireEvent.click(cell(row, fret));
+      expect(cell(row, fret).hasAttribute('data-focus-note')).toBe(true);
+      expect(useFocusNoteStore.getState().locations?.items[0]).toBe(location);
+    }
+  });
+
   it('open position: B lights string 5 fret 2 and the open B string, and says so', async () => {
     useAppStore.setState({ instrument: 'guitar' });
     render(<Fretboard />);
@@ -96,9 +158,9 @@ describe('fretboard', () => {
     await screen.findAllByRole('grid');
     const cell = document.querySelector('[data-string-row="1"][data-fret="2"]')!;
     fireEvent.pointerEnter(cell, { pointerType: 'mouse' });
-    expect(useFocusNoteStore.getState().hover).toEqual({ pc: 11, midi: 47, source: 'fret' });
+    expect(useFocusNoteStore.getState().hover).toEqual({ pc: 11, midi: 47, source: 'fret', cell: { stringIndex: 1, fret: 2 } });
     fireEvent.click(cell);
-    expect(useFocusNoteStore.getState().pinned).toEqual({ pc: 11, midi: 47, source: 'fret' });
+    expect(useFocusNoteStore.getState().pinned).toEqual({ pc: 11, midi: 47, source: 'fret', cell: { stringIndex: 1, fret: 2 } });
   });
 });
 
@@ -122,6 +184,58 @@ describe('circle of fifths', () => {
 });
 
 describe('landscape full-neck view', () => {
+  function landscapeDock(chord = true) {
+    vi.stubGlobal('matchMedia', vi.fn((query: string) => ({
+      matches: query.includes('max-height: 500px'), media: query,
+      addEventListener: vi.fn(), removeEventListener: vi.fn(),
+    })));
+    useAppStore.setState({
+      instrument: 'guitar', selectedChord: chord ? buildChord({ natural: 'C', accidental: '' }, 'major') : null,
+      dockDetents: { explore: 'half', learn: 'peek' }, dockChosen: { explore: true, learn: false },
+    });
+    return render(<InstrumentDock view="explore" available={320} />);
+  }
+
+  it('preserves the chosen chord grip from dock to full neck and back, including a change in the neck', async () => {
+    landscapeDock();
+    const group = () => screen.findByRole('radiogroup', { name: 'Chord position' });
+    const choose = async (name: string) => fireEvent.click(within(await group()).getByRole('radio', { name }));
+    const selected = async (name: string) => expect(within(await group()).getByRole('radio', { name }).getAttribute('aria-checked')).toBe('true');
+    await choose('A barre');
+    fireEvent.click(screen.getByTestId('neck-open'));
+    await screen.findByTestId('neck-view');
+    await selected('A barre');
+    expect(document.querySelector('#instrument-region [role="grid"]')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Close full neck' }));
+    await selected('A barre');
+    fireEvent.click(screen.getByTestId('neck-open'));
+    await screen.findByTestId('neck-view');
+    await choose('E barre');
+    fireEvent.click(screen.getByRole('button', { name: 'Close full neck' }));
+    await selected('E barre');
+    fireEvent.click(screen.getByTestId('neck-open'));
+    await screen.findByTestId('neck-view');
+    await selected('E barre');
+    act(() => useAppStore.setState({ selectedChord: buildChord({ natural: 'D', accidental: '' }, 'major') }));
+    expect((await group()).querySelector('[role="radio"]')!.getAttribute('aria-checked')).toBe('true');
+  });
+
+  it('steps once per bracket key before, during and after full neck', async () => {
+    landscapeDock(false);
+    await screen.findAllByRole('grid');
+    fireEvent.keyDown(window, { key: ']', code: 'BracketRight' });
+    expect(useAppStore.getState().guitarScalePosition).toBe(1);
+    fireEvent.click(screen.getByTestId('neck-open'));
+    await screen.findByTestId('neck-view');
+    await screen.findAllByRole('grid');
+    fireEvent.keyDown(window, { key: ']', code: 'BracketRight' });
+    expect(useAppStore.getState().guitarScalePosition).toBe(2);
+    fireEvent.click(screen.getByRole('button', { name: 'Close full neck' }));
+    await screen.findAllByRole('grid');
+    fireEvent.keyDown(window, { key: ']', code: 'BracketRight' });
+    expect(useAppStore.getState().guitarScalePosition).toBe(3);
+  });
+
   it('a modal dialog with the whole neck (frets 1–12 and the open strings), the stepper and the label toggle; Escape closes', async () => {
     useAppStore.setState({ instrument: 'guitar' });
     const onClose = vi.fn();

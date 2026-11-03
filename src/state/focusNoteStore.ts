@@ -27,6 +27,8 @@ export interface FocusNote {
   /** The exact pitch (MIDI) when the source has one (a staff note, a key, a fret). */
   midi?: number;
   source: FocusSource;
+  /** The touched cell: several strings can play the same MIDI pitch. */
+  cell?: { stringIndex: number; fret: number };
 }
 
 /** Where the focus note lights on the instrument, already worded. */
@@ -49,7 +51,8 @@ interface FocusNoteState {
 }
 
 const same = (a: FocusNote | null, b: FocusNote | null) =>
-  a === b || (!!a && !!b && a.pc === b.pc && a.midi === b.midi && a.source === b.source);
+  a === b || (!!a && !!b && a.pc === b.pc && a.midi === b.midi && a.source === b.source &&
+    a.cell?.stringIndex === b.cell?.stringIndex && a.cell?.fret === b.cell?.fret);
 
 export const useFocusNoteStore = create<FocusNoteState>((set, get) => ({
   hover: null,

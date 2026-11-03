@@ -537,3 +537,46 @@ test('with a chord on the fretboard, the scale\'s other notes stay in view, fade
   expect(dots.overlap).toBe(0);
   await context.close();
 });
+
+
+test('844×390 guitar: a non-default chord grip survives full neck in both directions', async ({ browser }) => {
+  const { context, page } = await open(browser, { w: 844, h: 390, touch: true, state: { instrument: 'guitar' } });
+  await page.getByRole('button', { name: 'C Major chord, degree 1' }).tap();
+  const dock = page.getByTestId('instrument-dock');
+  const handle = page.getByRole('separator', { name: 'Instrument panel' });
+  await handle.focus();
+  await page.keyboard.press('End');
+  await expect(dock).toHaveAttribute('data-detent', 'full');
+  const dockGrip = (name: string) => page.locator('#instrument-region').getByRole('radio', { name, exact: true });
+  const neck = page.getByTestId('neck-view');
+  const neckGrip = (name: string) => neck.getByRole('radio', { name, exact: true });
+  const voicing = () => page.locator('[data-dot="voicing"]').evaluateAll((dots) =>
+    dots.map((d) => `${d.getAttribute('data-dot-string')}:${d.getAttribute('data-dot-fret')}`).sort(),
+  );
+  await dockGrip('A barre').tap();
+  await expect(dockGrip('A barre')).toHaveAttribute('aria-checked', 'true');
+  const aBarre = await voicing();
+  expect(aBarre.length).toBeGreaterThan(0);
+  await page.getByTestId('neck-open').tap();
+  await expect(neckGrip('A barre')).toHaveAttribute('aria-checked', 'true');
+  await expect(page.locator('#instrument-region [role="grid"]')).toHaveCount(0);
+  expect(await voicing()).toEqual(aBarre);
+  await neck.getByRole('button', { name: 'Close full neck' }).tap();
+  await expect(neck).toHaveCount(0);
+  await expect(dockGrip('A barre')).toHaveAttribute('aria-checked', 'true');
+  expect(await voicing()).toEqual(aBarre);
+
+  // A choice made in full neck must travel back to the dock too.
+  await page.getByTestId('neck-open').tap();
+  await neckGrip('E barre').tap();
+  await expect(neckGrip('E barre')).toHaveAttribute('aria-checked', 'true');
+  const eBarre = await voicing();
+  expect(eBarre).not.toEqual(aBarre);
+  await neck.getByRole('button', { name: 'Close full neck' }).tap();
+  await expect(dockGrip('E barre')).toHaveAttribute('aria-checked', 'true');
+  expect(await voicing()).toEqual(eBarre);
+  await page.getByTestId('neck-open').tap();
+  await expect(neckGrip('E barre')).toHaveAttribute('aria-checked', 'true');
+  expect(await voicing()).toEqual(eBarre);
+  await context.close();
+});

@@ -166,12 +166,14 @@ export function Piano() {
   );
 
   // ─── Linked focus note (W11-B, D-25) ─────────────────
-  // Among the keys the piano lights (scale / chord), the exact pitch if it is
+  // A key touched on this piano always lights itself. From other surfaces,
+  // among the keys the piano lights (scale / chord), the exact pitch if it is
   // one of them, else its pitch class; a note outside them lights its own
   // key, or (no exact pitch) its pitch class in the octave(s) shown.
   const focusKeys = useMemo(() => {
     const out = new Set<number>();
     if (!focus || !exploring) return out;
+    if (focus.source === 'piano' && focus.midi !== undefined) return out.add(focus.midi);
     const shown = [...scaleMidiNumbers, ...chordVoicingMidi];
     if (focus.midi !== undefined && shown.includes(focus.midi)) return out.add(focus.midi);
     for (const m of shown) if (m % 12 === focus.pc) out.add(m);

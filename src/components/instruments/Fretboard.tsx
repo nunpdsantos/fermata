@@ -22,6 +22,7 @@ import { useAudio } from '../../hooks/useAudio.ts';
 import { useAppStore } from '../../state/store.ts';
 import { useFingeringStore } from '../../state/fingeringStore.ts';
 import { useDockContextStore } from '../../state/dockContextStore.ts';
+import { useGuitarShapeStore } from '../../state/guitarShapeStore.ts';
 import type { OverrideFinger } from '../../state/fingeringStore.ts';
 import { useIsMobile } from '../../hooks/useMediaQuery.ts';
 import { useDragScroll } from '../../hooks/useDragScroll.ts';
@@ -126,9 +127,10 @@ export function Fretboard({ variant = 'dock' }: FretboardProps = {}) {
         : '',
     [selectedChord, chordInversion],
   );
-  const [shapeChoice, setShapeChoice] = useState<{ key: string; idx: number }>({ key: '', idx: 0 });
+  const shapeChoice = useGuitarShapeStore((s) => s.shapeChoice);
+  const setShapeChoice = useGuitarShapeStore((s) => s.setShapeChoice);
   const selectedShapeIdx = shapeChoice.key === chordKey ? shapeChoice.idx : 0;
-  const setSelectedShapeIdx = useCallback((idx: number) => setShapeChoice({ key: chordKey, idx }), [chordKey]);
+  const setSelectedShapeIdx = useCallback((idx: number) => setShapeChoice({ key: chordKey, idx }), [chordKey, setShapeChoice]);
 
   const currentShape = chordShapes[selectedShapeIdx] ?? null;
 
@@ -331,7 +333,9 @@ export function Fretboard({ variant = 'dock' }: FretboardProps = {}) {
   // Tap / Enter on a cell. In fingering-edit mode a fretted position dot
   // cycles its finger 1→2→3→4→1 instead of sounding (W10-05); landing back on
   // the suggested finger removes the override.
-  const fretFocus = useCallback((fn: FretNote): FocusNote => ({ pc: fn.pitchClass, midi: fn.midiNumber, source: 'fret' }), []);
+  const fretFocus = useCallback((fn: FretNote): FocusNote => ({
+    pc: fn.pitchClass, midi: fn.midiNumber, source: 'fret', cell: { stringIndex: fn.stringIndex, fret: fn.fret },
+  }), []);
   const handleCellActivate = useCallback(
     (fn: FretNote) => {
       setFocus('pinned', fretFocus(fn));
@@ -547,9 +551,10 @@ export function Fretboard({ variant = 'dock' }: FretboardProps = {}) {
   }, [focusedCell, getFretNote, setFocus, clearFocus, fretFocus]);
 
   // ─── Linked focus note (W11-B, D-25) ─────────────────
-  // Which cells light for the focus note: among the cells showing a dot, the
-  // exact pitch if it is there, else its pitch class; only when no dot
-  // matches, any visible cell (a note outside the scale / chord).
+  // The touched cell comes first, even without a dot. Other surfaces use the
+  // cells showing a dot: the exact pitch if it is there, else its pitch
+  // class; only when no dot matches, any visible cell (a note outside the
+  // scale / chord).
   const showsDot = useCallback(
     (fn: FretNote): boolean => {
       if (mode === 'chord') {
@@ -576,7 +581,12 @@ export function Fretboard({ variant = 'dock' }: FretboardProps = {}) {
       return pool.filter((fn) => fn.pitchClass === focus.pc);
     };
     let lit = pick(all.filter(showsDot));
-    if (lit.length === 0) lit = pick(all);
+    const cell = focus.source === 'fret' ? focus.cell : undefined;
+    const touched = cell
+      ? all.find((fn) => fn.stringIndex === cell.stringIndex && fn.fret === cell.fret && fn.midiNumber === focus.midi)
+      : undefined;
+    if (touched) lit = [touched, ...lit.filter((fn) => fn !== touched && fn.midiNumber === touched.midiNumber)];
+    else if (lit.length === 0) lit = pick(all);
     for (const fn of lit) {
       const row = byString.get(fn.stringIndex) ?? new Set<number>();
       row.add(fn.fret);
