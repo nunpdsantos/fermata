@@ -460,7 +460,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'Quatro Qualidades de Tríades',
           explanation:
-            'Toda a tríade empilha duas terças. Maior = 3.ª maior + 3.ª menor (3.aM+3.am), da fundamental à 5.ª é uma 5.ª perfeita. Menor = 3.ª menor + 3.ª maior (3.am+3.aM), da fundamental à 5.ª continua a ser uma 5.ª perfeita. Diminuta = 3.ª menor + 3.ª menor (3.am+3.am), da fundamental à 5.ª é uma 5.ª diminuta. Aumentada = 3.ª maior + 3.ª maior (3.aM+3.aM), da fundamental à 5.ª é uma 5.ª aumentada.',
+            'Toda a tríade empilha duas terças. Maior = 3.ª maior + 3.ª menor (3M+3m), da fundamental à 5.ª é uma 5.ª perfeita. Menor = 3.ª menor + 3.ª maior (3m+3M), da fundamental à 5.ª continua a ser uma 5.ª perfeita. Diminuta = 3.ª menor + 3.ª menor (3m+3m), da fundamental à 5.ª é uma 5.ª diminuta. Aumentada = 3.ª maior + 3.ª maior (3M+3M), da fundamental à 5.ª é uma 5.ª aumentada.',
           tryThisLabel: 'Ouve a tríade maior estável',
         },
         {
@@ -483,11 +483,11 @@ const curriculumL2: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escreve "Fdim" e conta: da fundamental à 3.ª são 3 meios-tons (3.am), da 3.ª à 5.ª são 3 meios-tons (3.am). Ambas as terças são menores — é o que a torna diminuta',
+            'Escreve "Fdim" e conta: da fundamental à 3.ª são 3 meios-tons (3m), da 3.ª à 5.ª são 3 meios-tons (3m). Ambas as terças são menores — é o que a torna diminuta',
         },
         {
           instruction:
-            'Escreve "Caug" e conta: da fundamental à 3.ª são 4 meios-tons (3.aM), da 3.ª à 5.ª são 4 meios-tons (3.aM). Ambas as terças são maiores — aumentada',
+            'Escreve "Caug" e conta: da fundamental à 3.ª são 4 meios-tons (3M), da 3.ª à 5.ª são 4 meios-tons (3M). Ambas as terças são maiores — aumentada',
         },
       ],
     },

@@ -80,7 +80,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'As Cinco Qualidades Padrão',
           explanation:
-            'Sétima maior (Cmaj7): 3.aM+3.am+3.aM — caloroso e luxuriante. Sétima da dominante (C7): 3.aM+3.am+3.am — tenso e exigindo resolução. Sétima menor (Cm7): 3.am+3.aM+3.am — suave e macio. Meio-diminuto (Cm7b5): 3.am+3.am+3.aM — sombrio e ansiante. Totalmente diminuto (Cdim7): 3.am+3.am+3.am — extremamente tenso, com estrutura simétrica em que cada nota está a uma 3.ª menor de distância. Uma sexta qualidade, a sétima menor-maior (CmMaj7: 3.am+3.aM+3.aM), combina uma tríade menor com uma sétima maior — rara mas inquietantemente perturbadora, usada no cinema e no jazz.',
+            'Sétima maior (Cmaj7): 3M+3m+3M — caloroso e luxuriante. Sétima da dominante (C7): 3M+3m+3m — tenso e exigindo resolução. Sétima menor (Cm7): 3m+3M+3m — suave e macio. Meio-diminuto (Cm7b5): 3m+3m+3M — sombrio e ansiante. Totalmente diminuto (Cdim7): 3m+3m+3m — extremamente tenso, com estrutura simétrica em que cada nota está a uma 3.ª menor de distância. Uma sexta qualidade, a sétima menor-maior (CmMaj7: 3m+3M+3M), combina uma tríade menor com uma sétima maior — rara mas inquietantemente perturbadora, usada no cinema e no jazz.',
           tryThisLabel: 'Ouve C7 — a sétima da dominante exige resolução',
         },
         {

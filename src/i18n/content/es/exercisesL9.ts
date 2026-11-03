@@ -290,7 +290,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sombría y pesada como un acorde menor',
       'Hueca y medieval como un power chord',
     ],
-    hint: 'Las tríadas aumentadas dividen la octava en tres partes iguales (3.ª M + 3.ª M). Esta simetría crea una sensación ambigua y suspendida.',
+    hint: 'Las tríadas aumentadas dividen la octava en tres partes iguales (3M + 3M). Esta simetría crea una sensación ambigua y suspendida.',
   },
 
   // ---- l9u31m5: Cualidad de Acordes de Séptima ----
@@ -298,14 +298,14 @@ const overlay: ExerciseLevelOverlay = {
   l9u31m5e1: {
     prompt:
       'Escucha este acorde de séptima e identifica su cualidad.',
-    choices: ['Mayor con 7.ª M', 'Menor con 7.ª', 'Séptima de dominante', 'Semidisminuido'],
+    choices: ['Mayor con 7.ª mayor', 'Menor con 7.ª', 'Séptima de dominante', 'Semidisminuido'],
     hint: 'El acorde mayor con 7.ª superpone una 7.ª mayor a una tríada mayor — exuberante y etéreo, común en el jazz y la bossa nova.',
     nudge: 'Primero la tríada: ¿la 3.ª está a 4 o a 3 semitonos de la fundamental, y la 5.ª es justa o un semitono más baja? Después la 7.ª: ¿queda a un semitono o a un tono por debajo de la octava?',
   },
   l9u31m5e2: {
     prompt:
       'Escucha este acorde de séptima e identifica su cualidad.',
-    choices: ['Mayor con 7.ª M', 'Menor con 7.ª', 'Séptima de dominante', 'Semidisminuido'],
+    choices: ['Mayor con 7.ª mayor', 'Menor con 7.ª', 'Séptima de dominante', 'Semidisminuido'],
     hint: 'El acorde menor con 7.ª superpone una 7.ª menor a una tríada menor — suave, cálido y relajado.',
     nudge: 'Escucha el acorde en dos capas. La tríada: ¿la 3.ª está a 4 o a 3 semitonos de la fundamental, y la 5.ª es justa o descendida? La 7.ª: ¿queda a un semitono o a un tono por debajo de la octava?',
   },
