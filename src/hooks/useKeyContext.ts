@@ -1,4 +1,6 @@
 import { useMemo } from 'react';
+import { useScaleDirectionStore } from '../state/scaleDirectionStore.ts';
+import { classicalDescendingType } from '../core/utils/classicalScale.ts';
 import { useAppStore } from '../state/store.ts';
 import { buildScale } from '../core/constants/scales.ts';
 import { getDiatonicChordsForScale } from '../core/constants/chords.ts';
@@ -18,6 +20,8 @@ export interface DiatonicChord {
 
 export interface KeyContextValue {
   scale: Scale;
+  /** Direction-aware Explore pitches; harmonic context remains `scale`. */
+  displayScale: Scale;
   scaleNotesWithOctaves: PitchedNote[];
   diatonicChords: DiatonicChord[];
   getNoteColor: (note: Note) => string | undefined;
@@ -28,7 +32,7 @@ export interface KeyContextValue {
    * Honours selected chord → scale → key-signature bias → sharp default.
    */
   spellPitchClass: (pc: number) => Note;
-  scalePitchClasses: Set<number>; // for guitar/circle of fifths (all octaves)
+  scalePitchClasses: Set<number>; // harmonic pitch pool for chord-building hints
   scaleMidiNumbers: Set<number>; // for piano (limited octave range)
   chordPitchClasses: Set<number>; // pitch classes of selected chord (empty if none)
   chordVoicingMidi: Set<number>; // exact MIDI numbers for the current inversion voicing
@@ -56,11 +60,20 @@ export function useKeyContext(): KeyContextValue {
   const baseOctave = useAppStore((s) => s.baseOctave);
   const degreeColorsOn = useDegreeColorsEnabled();
   const exerciseInputActive = useAppStore((s) => s.exerciseInputActive);
+  const exploring = useAppStore((s) => s.view === 'explore');
+  const direction = useScaleDirectionStore((s) => s.direction);
   const highlightedNotes = useAppStore((s) => s.highlightedNotes);
 
   const scale = useMemo(
     () => buildScale(selectedKey, selectedScale),
     [selectedKey, selectedScale]
+  );
+
+  const displayScale = useMemo(
+    () => exploring && !exerciseInputActive && selectedScale === 'melodic_minor' && direction === 'descending'
+      ? buildScale(selectedKey, classicalDescendingType(selectedScale))
+      : scale,
+    [exploring, exerciseInputActive, direction, selectedKey, selectedScale, scale],
   );
 
   const scaleNotesWithOctaves = useMemo(
@@ -86,12 +99,12 @@ export function useKeyContext(): KeyContextValue {
   // chromatic and bebop notes (audit W3-03).
   const pitchClassToDegree = useMemo(() => {
     const m = new Map<number, number>();
-    for (const note of scale.notes) {
+    for (const note of displayScale.notes) {
       const pc = getPitchClass(note);
-      if (!m.has(pc)) m.set(pc, degreeColorSlot(degreeOf(scale.root, note)));
+      if (!m.has(pc)) m.set(pc, degreeColorSlot(degreeOf(displayScale.root, note)));
     }
     return m;
-  }, [scale]);
+  }, [displayScale]);
 
   // Fermata-coherent fallback when functional degree colours are disabled.
   // Single hue, two saturations: tonic strong walnut, other scale notes a
@@ -114,22 +127,25 @@ export function useKeyContext(): KeyContextValue {
     };
   }, [pitchClassToDegree, degreeColorsOn]);
 
+  // Chord panels describe the harmonic scale, even while the instruments
+  // practise its classical descent. Their degrees and in-key hints stay put.
   const getNoteDegree = useMemo(() => {
     return (note: Note): number | undefined => {
-      return pitchClassToDegree.get(getPitchClass(note));
+      const spelled = scale.notes.find((n) => getPitchClass(n) === getPitchClass(note));
+      return spelled ? degreeColorSlot(degreeOf(scale.root, spelled)) : undefined;
     };
-  }, [pitchClassToDegree]);
+  }, [scale]);
 
   // Context spelling map: pitch class → engine-correct Note, prioritised
   // chord > scale > key-signature bias > sharp default. Rebuilt only when the
   // chord or scale changes. Display labels only — positions/colours/pitch are
   // unaffected (those still key off the physical MIDI/note).
   const spellPitchClass = useMemo(() => {
-    const m = buildSpellingMap(selectedChord, scale);
+    const m = buildSpellingMap(selectedChord, displayScale);
     return (pc: number): Note => spellFromMap(m, pc);
-  }, [selectedChord, scale]);
+  }, [selectedChord, displayScale]);
 
-  // Pitch class set — used by guitar and circle of fifths (highlights all octaves)
+  // The chord builder's in-key hints follow the harmonic scale.
   const scalePitchClasses = useMemo(() => {
     const s = new Set<number>();
     for (const n of scale.notes) s.add(getPitchClass(n));
@@ -140,13 +156,13 @@ export function useKeyContext(): KeyContextValue {
   const scaleMidiNumbers = useMemo(() => {
     const s = new Set<number>();
     for (let oct = 0; oct < scaleOctaves; oct++) {
-      const pitched = getScaleNotesWithOctaves(scale.notes, baseOctave + oct);
+      const pitched = getScaleNotesWithOctaves(displayScale.notes, baseOctave + oct);
       for (const p of pitched) {
         s.add(getMidiNumber(p, p.octave));
       }
     }
     return s;
-  }, [scale, scaleOctaves, baseOctave]);
+  }, [displayScale, scaleOctaves, baseOctave]);
 
   const chordPitchClasses = useMemo(() => {
     const s = new Set<number>();
@@ -207,6 +223,7 @@ export function useKeyContext(): KeyContextValue {
   if (exerciseInputActive) {
     return {
       scale,
+      displayScale,
       scaleNotesWithOctaves,
       diatonicChords,
       getNoteColor: () => undefined,
@@ -227,6 +244,7 @@ export function useKeyContext(): KeyContextValue {
 
   return {
     scale,
+    displayScale,
     scaleNotesWithOctaves,
     diatonicChords,
     getNoteColor,

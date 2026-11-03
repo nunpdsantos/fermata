@@ -68,7 +68,7 @@ export function Piano() {
   const activeNotes = useAppStore((s) => s.activeNotes);
   const baseOctave = useAppStore((s) => s.baseOctave);
   const setBaseOctave = useAppStore((s) => s.setBaseOctave);
-  const { scale, invertedNotes, scaleMidiNumbers, getNoteColor, spellPitchClass, chordVoicingMidi, hasSelectedChord } = useKeyContext();
+  const { displayScale: scale, invertedNotes, scaleMidiNumbers, getNoteColor, spellPitchClass, chordVoicingMidi, hasSelectedChord } = useKeyContext();
   const scaleOctaves = useAppStore((s) => s.scaleOctaves);
   const selectedChord = useAppStore((s) => s.selectedChord);
   const exploring = useAppStore((s) => s.view === 'explore' && !s.exerciseInputActive);

@@ -1,11 +1,13 @@
 /**
- * Reviewed ambiguous spellings: A3/A4/A5 are pitches, A7 is a chord,
+ * Reviewed ambiguous spellings: A2/A3/A4/A5 are pitches (A2 = the open
+ * 5th string in the l1u33 open-string list), A7 is a chord,
  * and m7 is a chord quality in these exact strings. Hashing the WHOLE text
  * makes any edit require renewed review; a new interval in an exempt hint
  * cannot silently inherit its exemption. Do not regenerate without reading
  * each changed string. No P*, M*, d* or ordinal hybrid is exempt.
  */
 export const intervalCollisions: Record<string, readonly [hash: string, tokens: readonly string[]]> = {
+  "pt/curriculumL1 modules.l1u33m1.concepts[1].explanation": ["14dd28e1", ["A2"]],
   "pt/curriculumL4 modules.l4u13m1.concepts[2].explanation": ["0913d6db", ["m7"]],
   "pt/curriculumL5 modules.l5u15m2.concepts[0].tryThisLabel": ["21c7e1f6", ["A7"]],
   "pt/curriculumL5 modules.l5u15m2.tasks[0].instruction": ["2fd992c4", ["A7"]],
@@ -44,6 +46,7 @@ export const intervalCollisions: Record<string, readonly [hash: string, tokens: 
   "pt/templatesL7 l7u22m1[1].choiceSets[0][3]": ["5b2cfe16", ["m7"]],
   "pt/templatesL9 l9u30m1[0].hintTemplate": ["a8cc0c57", ["A4"]],
   "pt/templatesL9 l9u31m5[0].hintTemplate": ["e04ad9cd", ["m7"]],
+  "es/curriculumL1 modules.l1u33m1.concepts[1].explanation": ["ac35539a", ["A2"]],
   "es/curriculumL4 modules.l4u13m1.concepts[2].explanation": ["d357c173", ["m7"]],
   "es/curriculumL5 modules.l5u15m2.concepts[0].tryThisLabel": ["a7f8613c", ["A7"]],
   "es/curriculumL5 modules.l5u15m2.tasks[0].instruction": ["fc3f6cd0", ["A7"]],

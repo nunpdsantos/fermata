@@ -3,7 +3,7 @@ import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerE
 import { useTranslation } from 'react-i18next';
 import { noteToString, type PitchedNote } from '../../core/types/music.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
-import { SCALE_FORMULAS, getScaleDegreeFunctionKey, buildScale } from '../../core/constants/scales.ts';
+import { SCALE_FORMULAS, getScaleDegreeFunctionKey } from '../../core/constants/scales.ts';
 import { getScaleNotesWithOctaves, getMidiNumber } from '../../core/utils/pianoLayout.ts';
 import { degreeOf, degreeColorSlot, formatDegree, keySignatureForScale } from '../../core/utils/degreeSpelling.ts';
 import { getKeySignatureForScale } from '../../utils/notationHelpers.ts';
@@ -15,7 +15,7 @@ import { useFocusNoteStore, useFocusNote, focusMatches, type FocusNote } from '.
 import { DEGREE_INKS } from '../../design/tokens/colors.ts';
 import { StaffNotationSkeleton } from '../notation/StaffNotationSkeleton.tsx';
 import type { StaffLayoutInfo } from '../notation/useStaffNotation.ts';
-import { classicalDescendingType } from '../../core/utils/classicalScale.ts';
+import { useScaleDirectionStore } from '../../state/scaleDirectionStore.ts';
 import { Segment } from '../ui/Segment.tsx';
 import { staffTrim } from './staffTrim.ts';
 
@@ -42,13 +42,13 @@ const CLEF_ROOM = 64;
  */
 export function ScaleStrip() {
   const { t } = useTranslation();
-  const { scale: ascendingScale } = useKeyContext();
+  const { displayScale: scale } = useKeyContext();
   const selectedScale = useAppStore((s) => s.selectedScale);
-  const [direction, setDirection] = useState<'ascending' | 'descending'>('ascending');
+  const direction = useScaleDirectionStore((s) => s.direction);
+  const setDirection = useScaleDirectionStore((s) => s.setDirection);
   const melodic = selectedScale === 'melodic_minor';
   const descending = melodic && direction === 'descending';
-  const displayType = descending ? classicalDescendingType(selectedScale) : selectedScale;
-  const scale = useMemo(() => descending ? buildScale(ascendingScale.root, displayType) : ascendingScale, [ascendingScale, descending, displayType]);
+  const displayType = scale.type;
   const selectedChord = useAppStore((s) => s.selectedChord);
   const instrument = useAppStore((s) => s.instrument);
   const { noteOn, noteOff } = useAudio();
