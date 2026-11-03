@@ -284,7 +284,7 @@ const overlay: ExerciseLevelOverlay = {
       'Todos os intervalos exceto o trítono',
       'Segundas, quartas e sétimas além de terças e sextas',
     ],
-    hint: 'A primeira espécie permite apenas consonâncias: consonâncias perfeitas (P1, P5, P8) e consonâncias imperfeitas (terças e sextas). Dissonâncias (segundas, quartas, sétimas, trítonos) são proibidas na primeira espécie.',
+    hint: 'A primeira espécie permite apenas consonâncias: consonâncias perfeitas (1P, 5P, 8P) e consonâncias imperfeitas (terças e sextas). Dissonâncias (segundas, quartas, sétimas, trítonos) são proibidas na primeira espécie.',
   },
   l6u20m1e2: {
     prompt: 'No contraponto de segunda espécie (duas notas contra uma), como são tratadas as dissonâncias?',
@@ -370,7 +370,7 @@ const overlay: ExerciseLevelOverlay = {
       'Uma quinta inverte-se num trítono, que é tratado como dissonância inutilizável acima do baixo no contraponto estrito',
       'As quintas perfeitas não podem ser invertidas de todo',
     ],
-    hint: 'Quando as vozes se invertem à oitava, uma P5 torna-se uma P4. No contraponto a duas vozes, quartas acima do baixo são dissonantes. Portanto, qualquer P5 no original torna-se um problema quando as vozes trocam de posição.',
+    hint: 'Quando as vozes se invertem à oitava, uma 5.ª perfeita torna-se uma 4.ª perfeita. No contraponto a duas vozes, quartas acima do baixo são dissonantes. Portanto, qualquer 5.ª perfeita no original torna-se um problema quando as vozes trocam de posição.',
   },
 
   // ---- l6u20m4: Escrita a Partes Avançada ----

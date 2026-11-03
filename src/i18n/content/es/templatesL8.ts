@@ -32,9 +32,9 @@ const overlay: TemplateLevelOverlay = {
           'Respuestas tonales y reales son el mismo concepto con dos nombres, usados en épocas distintas',
         ],
         [
-          'Una respuesta real transpone el sujeto exactamente a la dominante (una 5.ª J por encima o 4.ª J por debajo)',
+          'Una respuesta real transpone el sujeto exactamente a la dominante (una 5.ª justa por encima o 4.ª justa por debajo)',
           'Una respuesta real cambia algunos intervalos del sujeto para poder quedarse en la tonalidad de la tónica',
-          'Una respuesta tonal, y no una real, transpone exactamente los intervalos del sujeto a la dominante, una 5.ª J por encima',
+          'Una respuesta tonal, y no una real, transpone exactamente los intervalos del sujeto a la dominante, una 5.ª justa por encima',
           'Una respuesta real es el contrasujeto, una segunda melodía escrita contra el sujeto',
         ],
         [

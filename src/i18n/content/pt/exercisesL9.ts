@@ -72,7 +72,7 @@ const overlay: ExerciseLevelOverlay = {
       'A fundamental é elevada meio-tom no menor',
       'Tríades menores têm quatro notas em vez de três',
     ],
-    hint: 'Tríade maior: fundamental + 3.ª maior (4 meios-tons) + 5.ª P. Tríade menor: fundamental + 3.ª menor (3 meios-tons) + 5.ª P. Só a 3.ª muda.',
+    hint: 'Tríade maior: fundamental + 3.ª maior (4 meios-tons) + 5.ª perfeita. Tríade menor: fundamental + 3.ª menor (3 meios-tons) + 5.ª perfeita. Só a 3.ª muda.',
   },
 
   // ---- l9u30m3: Reconhecimento de Intervalos P1-P5 ----
@@ -290,7 +290,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sombria e pesada como um acorde menor',
       'Oca e medieval como um power chord',
     ],
-    hint: 'Tríades aumentadas dividem a oitava em três partes iguais (3.ª M + 3.ª M). Esta simetria cria uma sensação ambígua e suspensa.',
+    hint: 'Tríades aumentadas dividem a oitava em três partes iguais (3M + 3M). Esta simetria cria uma sensação ambígua e suspensa.',
   },
 
   // ---- l9u31m5: Qualidade de Acordes de Sétima ----
@@ -298,14 +298,14 @@ const overlay: ExerciseLevelOverlay = {
   l9u31m5e1: {
     prompt:
       'Ouve este acorde de sétima e identifica a sua qualidade.',
-    choices: ['Maior com 7.ª M', 'Menor com 7.ª', 'Sétima da dominante', 'Meio-diminuto'],
+    choices: ['Maior com 7.ª maior', 'Menor com 7.ª', 'Sétima da dominante', 'Meio-diminuto'],
     hint: 'O acorde maior com 7.ª sobrepõe uma 7.ª maior a uma tríade maior — exuberante e sonhador, comum no jazz e na bossa nova.',
     nudge: 'Primeiro a tríade: a 3.ª está a 4 ou a 3 meios-tons da fundamental, e a 5.ª é perfeita ou meio-tom mais baixa? Depois a 7.ª: fica a meio-tom ou a um tom abaixo da oitava?',
   },
   l9u31m5e2: {
     prompt:
       'Ouve este acorde de sétima e identifica a sua qualidade.',
-    choices: ['Maior com 7.ª M', 'Menor com 7.ª', 'Sétima da dominante', 'Meio-diminuto'],
+    choices: ['Maior com 7.ª maior', 'Menor com 7.ª', 'Sétima da dominante', 'Meio-diminuto'],
     hint: 'O acorde menor com 7.ª sobrepõe uma 7.ª menor a uma tríade menor — suave, quente e descontraído.',
     nudge: 'Ouve o acorde em duas camadas. A tríade: a 3.ª está a 4 ou a 3 meios-tons da fundamental, e a 5.ª é perfeita ou baixada? A 7.ª: fica a meio-tom ou a um tom abaixo da oitava?',
   },

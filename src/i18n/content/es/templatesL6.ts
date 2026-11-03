@@ -374,7 +374,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         '¿Cuál de estas afirmaciones sobre el cantus firmus y la primera especie (1:1) es verdadera?',
       hintTemplate:
-        'Cantus firmus: 8–12 redondas, de tónica a tónica, sobre todo por grado conjunto, un solo punto culminante. Primera especie: solo consonancias (P1, 3.as, P5, 6.as, P8); empieza en P1, P5 o P8; termina en P1 o P8 alcanzado por grado conjunto.',
+        'Cantus firmus: 8–12 redondas, de tónica a tónica, sobre todo por grado conjunto, un solo punto culminante. Primera especie: solo consonancias (1J, 3.as, 5J, 6.as, 8J); empieza en 1J, 5J o 8J; termina en 1J o 8J alcanzado por grado conjunto.',
       choiceSets: [
         [
           'Un cantus firmus empieza y termina en la tónica y se mueve sobre todo por grado conjunto',

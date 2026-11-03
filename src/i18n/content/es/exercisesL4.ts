@@ -353,7 +353,7 @@ const overlay: ExerciseLevelOverlay = {
       'Todos los intervalos excepto el tritono',
       '2.as, 4.as, 7.as y tritonos',
     ],
-    hint: 'En el contrapunto a dos voces, las consonancias son: consonancias perfectas (unísono, P5, P8) y consonancias imperfectas (m3, M3, m6, M6). La 4.ª justa se trata como disonancia en el contrapunto a dos voces. Segundas, 7.as y tritonos son disonantes.',
+    hint: 'En el contrapunto a dos voces, las consonancias son: consonancias perfectas (unísono, 5J, 8J) y consonancias imperfectas (3m, 3M, 6m, 6M). La 4.ª justa se trata como disonancia en el contrapunto a dos voces. Segundas, 7.as y tritonos son disonantes.',
   },
   l4u14m1e3: {
     prompt:

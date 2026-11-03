@@ -18,7 +18,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói um acorde de {root} {quality}. Seleciona as 4 notas.',
       hintTemplate:
-        'Construção de acordes de sétima a partir de {root}: maj7 = 3.aM+5.aP+7.aM, min7 = 3.am+5.aP+7.am, dom7 = 3.aM+5.aP+7.am, meio-dim7 = 3.am+5.adim+7.am, dim7 = 3.am+5.adim+7.adim.',
+        'Construção de acordes de sétima a partir de {root}: maj7 = 3M + 5P + 7M, min7 = 3m + 5P + 7m, dom7 = 3M + 5P + 7m, meio-dim7 = 3m + 5.ª diminuta + 7m, dim7 = 3m + 5.ª diminuta + 7.ª diminuta.',
     },
     {
       // multiple_choice
@@ -174,7 +174,7 @@ const overlay: TemplateLevelOverlay = {
         'Evita 5.as e 8.as paralelas, resolve a sensível para cima, cuidado com 5.as e 8.as diretas entre as vozes extremas, e mantém notas comuns quando possível.',
       choiceSets: [
         [
-          'Quintas paralelas: duas vozes a uma 5.ª P movem-se na mesma direção para outra 5.ª P',
+          'Quintas paralelas: duas vozes a uma 5.ª perfeita movem-se na mesma direção para outra 5.ª perfeita',
           'Quintas paralelas: quaisquer duas vozes a uma 5.ª em qualquer acorde, quer se movam quer não',
           'Quintas paralelas: um erro apenas quando ocorrem entre o soprano e o baixo',
           'Quintas paralelas: aceitáveis em SATB desde que as duas vozes se movam por grau e não por salto',

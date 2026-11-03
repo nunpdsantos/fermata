@@ -353,7 +353,7 @@ const overlay: ExerciseLevelOverlay = {
       'Todos os intervalos exceto o trítono',
       '2.as, 4.as, 7.as e trítonos',
     ],
-    hint: 'No contraponto a duas vozes, as consonâncias são: consonâncias perfeitas (uníssono, P5, P8) e consonâncias imperfeitas (m3, M3, m6, M6). A 4.ª perfeita é tratada como dissonância no contraponto a duas vozes. Segundas, 7.as e trítonos são dissonantes.',
+    hint: 'No contraponto a duas vozes, as consonâncias são: consonâncias perfeitas (uníssono, 5P, 8P) e consonâncias imperfeitas (3m, 3M, 6m, 6M). A 4.ª perfeita é tratada como dissonância no contraponto a duas vozes. Segundas, 7.as e trítonos são dissonantes.',
   },
   l4u14m1e3: {
     prompt:
