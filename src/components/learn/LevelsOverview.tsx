@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
+import { isOptionalModuleId } from '../../core/constants/optionalCurriculum';
 import type { CurriculumLevel, CurriculumModule, CurriculumProgress, CurriculumUnit } from '../../core/types/curriculum';
 import type { ContentLanguage } from '../../i18n/content/types';
 import {
@@ -92,7 +93,7 @@ export function LevelsOverview({
   }, [nextEntry, nextKey, resolved, translatedMeta]);
 
   const totalModules = translatedMeta.reduce((s, l) => s + l.moduleCount, 0);
-  const totalCompleted = progress.completedModules.length;
+  const totalCompleted = progress.completedModules.filter((id) => !isOptionalModuleId(id)).length;
 
   // Split levels: main track (l1-l8) and parallel (l9)
   const mainLevels = translatedMeta.filter((l) => !l.parallel);

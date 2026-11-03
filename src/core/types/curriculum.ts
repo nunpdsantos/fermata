@@ -82,6 +82,8 @@ export interface CurriculumCompletionContent {
 
 /** A unit containing modules */
 export interface CurriculumUnit {
+  /** Bonus work: excluded from level completion, gating and the main Continue sequence. */
+  optional?: boolean;
   id: string;
   levelId: string;
   title: string;

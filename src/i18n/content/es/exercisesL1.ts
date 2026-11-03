@@ -6,6 +6,108 @@ import type { ExerciseLevelOverlay } from '../types';
 // ---------------------------------------------------------------------------
 
 const overlay: ExerciseLevelOverlay = {
+
+  l1u33m1e1: {
+    prompt: 'Una parte de guitarra tiene clave de sol con un pequeño 8 debajo. ¿Cómo suena el E4 escrito?',
+    choices: [
+      'Como E5',
+      'Como E3',
+      'Como E4',
+      'Como B3'
+    ],
+    hint: 'El pequeño 8 debajo de la clave significa una octava más baja: el E4 escrito suena como E3.'
+  },
+  l1u33m1e2: {
+    prompt: '¿Qué indica ③ junto a una nota de guitarra?',
+    choices: [
+      'Dedo 3',
+      'Posición III',
+      'Cuerda 3',
+      'Traste 3'
+    ],
+    hint: 'Un número en círculo indica la cuerda. Los números de los dedos de la mano izquierda no llevan círculo.'
+  },
+  l1u33m1e3: {
+    prompt: 'En la afinación estándar de la guitarra, ¿qué cuerda al aire suena E2?',
+    choices: [
+      '⑥',
+      '①',
+      '④',
+      '②'
+    ],
+    hint: 'La cuerda 6 es la más gruesa y grave: su altura al aire es E2 en la afinación estándar.'
+  },
+  l1u33m2e1: {
+    prompt: '¿Qué dedo de la mano izquierda indica el número 4?',
+    choices: [
+      'Índice',
+      'Anular',
+      'Medio',
+      'Meñique'
+    ],
+    hint: 'Los dedos de la mano izquierda son 1 índice, 2 medio, 3 anular y 4 meñique.'
+  },
+  l1u33m2e2: {
+    prompt: '¿Qué significa 0 en una digitación de guitarra?',
+    choices: [
+      'Cuerda al aire',
+      'Dedo índice',
+      'Cejilla completa',
+      'Pulgar derecho'
+    ],
+    hint: 'Cero significa que ningún dedo de la mano izquierda pisa la cuerda.'
+  },
+  l1u33m2e3: {
+    prompt: '¿Qué orden de dedos indica p-i-m-a?',
+    choices: [
+      'Pulgar, anular, medio, índice',
+      'Pulgar, índice, medio, anular',
+      'Índice, medio, anular, meñique',
+      'Anular, medio, índice, pulgar'
+    ],
+    hint: 'Las letras de la mano derecha son p pulgar, i índice, m medio y a anular.'
+  },
+  l1u33m2e4: {
+    prompt: '¿Qué letras significan pulgar, anular, medio, índice?',
+    choices: [
+      'p-i-m-a',
+      'i-m-a-p',
+      'p-a-m-i',
+      'a-m-i-p'
+    ],
+    hint: 'Lee las letras en orden: p es pulgar, a es anular, m es medio e i es índice.'
+  },
+  l1u33m3e1: {
+    prompt: 'En la posición V, ¿qué traste sirve normalmente de base al índice?',
+    choices: [
+      'Traste 4',
+      'Traste 5',
+      'Traste 6',
+      'Traste 7'
+    ],
+    hint: 'V significa quinta posición: el índice tiene como base el traste 5.'
+  },
+  l1u33m3e2: {
+    prompt: '¿Qué instrucción da CV en la notación de guitarra?',
+    choices: [
+      'Cejilla parcial en el traste 5',
+      'Cejilla completa en el traste 4',
+      'Cejilla parcial en el traste 4',
+      'Cejilla completa en el traste 5'
+    ],
+    hint: 'C indica una cejilla completa y V la sitúa en el traste 5. V solo indica la posición sin exigir una cejilla.'
+  },
+  l1u33m3e3: {
+    prompt: '¿Qué indicación pide una cejilla parcial en el traste 5?',
+    choices: [
+      '½CV',
+      'CV',
+      'V',
+      '⑤'
+    ],
+    hint: '½C pide una cejilla parcial; V indica el traste. La partitura o la digitación dice qué cuerdas debes abarcar.'
+  }
+,
   // =========================================================================
   // Unidad 1: Notación y Altura
   // =========================================================================

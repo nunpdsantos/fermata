@@ -894,7 +894,8 @@ export function playScale(
   noteDuration: number = 0.35, // Slower default for learning (was 0.25)
   onNotePlay?: ScaleNotePlayCallback,
   onComplete?: () => void,
-  synthConfig: Partial<SynthConfig> = {}
+  synthConfig: Partial<SynthConfig> = {},
+  descendingNotes: Note[] = notes
 ): void {
   const ctx = getAudioContext();
   const audioStartTime = ctx.currentTime;
@@ -933,21 +934,22 @@ export function playScale(
   }
 
   if (descending) {
+    // An explicit pool supports classical melodic minor without changing jazz callers.
     // Descending: go back down from where ascending ended
     // Start from the note before the octave and go down
     let currentOctave =
       sequence.length > 0 ? sequence[sequence.length - 1].octave : startOctave + 1;
     let lastPitchClass = getPitchClass(notes[0]); // We just played the octave (root)
 
-    for (let i = notes.length - 1; i >= 0; i--) {
-      const pitchClass = getPitchClass(notes[i]);
+    for (let i = descendingNotes.length - 1; i >= 0; i--) {
+      const pitchClass = getPitchClass(descendingNotes[i]);
 
       // If pitch class is higher or equal, drop down octave
       if (pitchClass >= lastPitchClass) {
         currentOctave--;
       }
 
-      sequence.push({ note: notes[i], octave: currentOctave, noteIndex: i });
+      sequence.push({ note: descendingNotes[i], octave: currentOctave, noteIndex: i });
       lastPitchClass = pitchClass;
     }
   }

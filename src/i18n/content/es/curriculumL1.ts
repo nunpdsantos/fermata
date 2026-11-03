@@ -3,6 +3,10 @@ import type { CurriculumLevelOverlay } from '../types';
 const curriculumL1: CurriculumLevelOverlay = {
   // ─── Unidades ─────────────────────────────────────────────────────────────
   units: {
+    u33: {
+      title: 'Notación de Guitarra — Opcional',
+      description: 'Clave, cuerdas, dedos, posiciones y cejillas. Estas tres lecciones no cuentan para completar niveles ni para desbloquearlos.'
+    },
     u1: {
       title: 'Notación y Altura',
       description:
@@ -57,6 +61,91 @@ const curriculumL1: CurriculumLevelOverlay = {
 
   // ─── Módulos ──────────────────────────────────────────────────────────────
   modules: {
+    l1u33m1: {
+      title: 'Notación de Guitarra: Clave y Cuerdas',
+      subtitle: 'Lee la altura sonora y los números de cuerda en círculo',
+      objectives: [
+        'Explicar por qué la guitarra se escribe una octava por encima de su sonido',
+        'Distinguir un número de cuerda de un número de dedo'
+      ],
+      concepts: [
+        {
+          title: 'El Pequeño 8 Debajo de la Clave',
+          explanation: 'La música para guitarra usa la clave de sol con un pequeño 8 debajo: las notas suenan una octava por debajo de lo escrito. Un E4 escrito suena como E3. El pequeño 8 cambia el registro, no los nombres de las notas. En Explorar, selecciona Guitarra para ver esta clave; el Piano usa la clave de sol simple.',
+          tryThisLabel: 'Abre en Explorar, selecciona Guitarra y compara la clave con la del Piano'
+        },
+        {
+          title: 'Los Números en Círculo Indican Cuerdas',
+          explanation: 'Los símbolos ① ② ③ ④ ⑤ ⑥ indican las cuerdas, desde la más fina y aguda hasta la más gruesa y grave. En la afinación estándar, las cuerdas al aire suenan E4, B3, G3, D3, A2, E2. Un ③ en círculo significa tocar en la cuerda 3, no con el dedo 3. Estos nombres de altura describen el sonido, antes de la transposición de octava en la escritura.',
+          tryThisLabel: 'Muestra en la Guitarra y encuentra las dos cuerdas E al aire'
+        }
+      ],
+      tasks: [
+        {
+          instruction: 'Selecciona Guitarra en Explorar. Encuentra el pequeño 8 debajo de la clave de sol y explica la diferencia entre el E4 escrito y el E3 que suena.'
+        },
+        {
+          instruction: 'En tu guitarra, señala ① y ⑥. Di sus alturas sonoras en la afinación estándar y después encuentra ③.'
+        }
+      ]
+    },
+    l1u33m2: {
+      title: 'Notación de Guitarra: Las Dos Manos',
+      subtitle: 'Mano izquierda 0–4 y mano derecha p-i-m-a',
+      objectives: [
+        'Leer los números de los dedos de la mano izquierda y el signo de cuerda al aire',
+        'Descifrar p-i-m-a y distinguir un arpegio de un tremolo'
+      ],
+      concepts: [
+        {
+          title: 'Números de la Mano Izquierda',
+          explanation: 'Los números de la mano izquierda indican los dedos que pisan las cuerdas: 1 = índice, 2 = medio, 3 = anular, 4 = meñique. El número 0 significa cuerda al aire: ningún dedo de la mano izquierda la pisa. Estos números no son los números de cuerda en círculo. En el mástil de la aplicación, elige Dedos para ver sugerencias de digitación de la mano izquierda.',
+          tryThisLabel: 'Muestra en la Guitarra y compara Dedos con Notas'
+        },
+        {
+          title: 'Letras de la Mano Derecha',
+          explanation: 'Las letras p-i-m-a indican los dedos que pulsan: p = pulgar, i = índice, m = medio, a = anular. En un arpegio, las notas del acorde suenan una tras otra. Lee p-i-m-a como pulgar, índice, medio, anular. El patrón de tremolo p-a-m-i es pulgar, anular, medio, índice: el orden de las letras importa. La aplicación toca alturas; practica los movimientos de las manos en tu guitarra.',
+          tryThisLabel: 'Escucha el acorde y después pulsa sus notas por separado en tu guitarra'
+        }
+      ],
+      tasks: [
+        {
+          instruction: 'En tu guitarra, toca una cuerda al aire y después písala con los dedos 1, 2, 3 y 4, uno cada vez. Di los números mientras tocas.'
+        },
+        {
+          instruction: 'Imita lentamente p-i-m-a y después p-a-m-i. Nombra cada dedo que pulsa; no confundas una letra de la mano derecha con un número de la mano izquierda.'
+        }
+      ]
+    },
+    l1u33m3: {
+      title: 'Notación de Guitarra: Posiciones y Cejillas',
+      subtitle: 'Números romanos, C y ½C en el mástil',
+      objectives: [
+        'Leer posiciones en números romanos, como V',
+        'Distinguir una indicación de posición de una cejilla completa o parcial'
+      ],
+      concepts: [
+        {
+          title: 'Posiciones en Números Romanos',
+          explanation: 'Un número romano indica la posición de la mano izquierda: I = 1.ª, II = 2.ª, V = 5.ª, VII = 7.ª. En la posición V, el índice tiene como base el traste 5; los demás dedos cubren normalmente los trastes 6, 7 y 8. Una posición es un lugar de la mano, no un número de cuerda ni un acorde. Una indicación de posición, por sí sola, no exige una cejilla.',
+          tryThisLabel: 'Muestra en la Guitarra y elige la posición V'
+        },
+        {
+          title: 'El Signo de Cejilla',
+          explanation: 'Una cejilla usa un dedo, normalmente el índice, para pisar varias cuerdas en el mismo traste. C indica una cejilla completa; ½C indica una cejilla parcial. CV significa cejilla completa en el traste 5, mientras que ½CV significa cejilla parcial en ese traste. La partitura o la digitación indica qué cuerdas abarca la cejilla parcial; no deduzcas un número fijo de cuerdas solo a partir de ½.',
+          tryThisLabel: 'Muestra en la Guitarra; en tu guitarra, localiza el traste 5 para CV'
+        }
+      ],
+      tasks: [
+        {
+          instruction: 'Elige la posición V en el mástil de la aplicación. Localiza el traste 5 y compara el número de posición con los números de los dedos en los puntos.'
+        },
+        {
+          instruction: 'Lee V, CV y ½CV en voz alta. Explica qué indicación solo sitúa la mano, cuál pide una cejilla completa y cuál pide una cejilla parcial.'
+        }
+      ]
+    },
+
     // ── U1 M1: El Pentagrama y las Claves ─────────────────────────────────
     l1u1m1: {
       title: 'El Pentagrama y las Claves',
@@ -76,7 +165,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'Clave de Sol y Clave de Fa',
           explanation:
-            'Una clave aparece al comienzo de un pentagrama e indica qué alturas representan las líneas y los espacios. La clave de sol (𝄞) se centra en el G por encima del C central — se usa para instrumentos más agudos y la mano derecha en el piano. La clave de fa (𝄢) se centra en el F por debajo del C central — se usa para instrumentos más graves y la mano izquierda en el piano. Sin una clave, el pentagrama es solo líneas — la clave les da significado.',
+            'Una clave aparece al comienzo de un pentagrama e indica qué alturas representan las líneas y los espacios. La clave de sol (𝄞) se centra en el G por encima del C central — se usa para instrumentos más agudos y la mano derecha en el piano. La clave de fa (𝄢) se centra en el F por debajo del C central — se usa para instrumentos más graves y la mano izquierda en el piano. Sin una clave, el pentagrama es solo líneas — la clave les da significado. La guitarra usa la clave de sol con un pequeño 8 debajo: suena una octava por debajo de lo escrito. La unidad opcional Notación de Guitarra explica esta convención.',
           tryThisLabel: 'Explora la tonalidad de C',
         },
       ],

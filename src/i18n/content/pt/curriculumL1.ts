@@ -3,6 +3,10 @@ import type { CurriculumLevelOverlay } from '../types';
 const curriculumL1: CurriculumLevelOverlay = {
   // ─── Units ──────────────────────────────────────────────────────────────────
   units: {
+    u33: {
+      title: 'Notação de Guitarra — Opcional',
+      description: 'Clave, cordas, dedos, posições e pestanas. Estas três lições não contam para concluir níveis nem para os desbloquear.'
+    },
     u1: {
       title: 'Notação e Altura',
       description:
@@ -57,6 +61,91 @@ const curriculumL1: CurriculumLevelOverlay = {
 
   // ─── Modules ────────────────────────────────────────────────────────────────
   modules: {
+    l1u33m1: {
+      title: 'Notação de Guitarra: Clave e Cordas',
+      subtitle: 'Lê a altura sonora e os números de corda em círculo',
+      objectives: [
+        'Explicar por que razão a guitarra se escreve uma oitava acima do som',
+        'Distinguir um número de corda de um número de dedo'
+      ],
+      concepts: [
+        {
+          title: 'O Pequeno 8 Debaixo da Clave',
+          explanation: 'A música para guitarra usa a clave de sol com um pequeno 8 por baixo: as notas soam uma oitava abaixo do que está escrito. Um E4 escrito soa como E3. O pequeno 8 muda o registo, não os nomes das notas. Em Explorar, seleciona Guitarra para veres esta clave; o Piano usa a clave de sol simples.',
+          tryThisLabel: 'Abre em Explorar, seleciona Guitarra e compara a clave com a do Piano'
+        },
+        {
+          title: 'Números em Círculo Indicam Cordas',
+          explanation: 'Os símbolos ① ② ③ ④ ⑤ ⑥ indicam as cordas, da mais fina e aguda à mais grossa e grave. Na afinação padrão, as cordas soltas soam E4, B3, G3, D3, A2, E2. Um ③ em círculo significa tocar na corda 3, não com o dedo 3. Estes nomes de altura descrevem o som, antes da transposição de oitava na escrita.',
+          tryThisLabel: 'Mostra na Guitarra e encontra as duas cordas E soltas'
+        }
+      ],
+      tasks: [
+        {
+          instruction: 'Seleciona Guitarra em Explorar. Encontra o pequeno 8 debaixo da clave de sol e explica a diferença entre o E4 escrito e o E3 que soa.'
+        },
+        {
+          instruction: 'Na tua guitarra, aponta para ① e ⑥. Diz as suas alturas sonoras na afinação padrão e depois encontra ③.'
+        }
+      ]
+    },
+    l1u33m2: {
+      title: 'Notação de Guitarra: As Duas Mãos',
+      subtitle: 'Mão esquerda 0–4 e mão direita p-i-m-a',
+      objectives: [
+        'Ler os números dos dedos da mão esquerda e o sinal de corda solta',
+        'Descodificar p-i-m-a e distinguir um arpejo de um tremolo'
+      ],
+      concepts: [
+        {
+          title: 'Números da Mão Esquerda',
+          explanation: 'Os números da mão esquerda indicam os dedos que premem as cordas: 1 = indicador, 2 = médio, 3 = anelar, 4 = mindinho. O número 0 significa corda solta: nenhum dedo da mão esquerda a prime. Estes números não são os números de corda em círculo. No braço da guitarra da aplicação, escolhe Dedos para veres sugestões de dedilhação da mão esquerda.',
+          tryThisLabel: 'Mostra na Guitarra e compara Dedos com Notas'
+        },
+        {
+          title: 'Letras da Mão Direita',
+          explanation: 'As letras p-i-m-a indicam os dedos que dedilham: p = polegar, i = indicador, m = médio, a = anelar. Num arpejo, as notas do acorde soam uma após outra. Lê p-i-m-a como polegar, indicador, médio, anelar. O padrão de tremolo p-a-m-i é polegar, anelar, médio, indicador: a ordem das letras importa. A aplicação toca alturas; pratica os movimentos das mãos na tua guitarra.',
+          tryThisLabel: 'Ouve o acorde e depois dedilha as suas notas separadamente na tua guitarra'
+        }
+      ],
+      tasks: [
+        {
+          instruction: 'Na tua guitarra, toca uma corda solta e depois prime-a com os dedos 1, 2, 3 e 4, um de cada vez. Diz os números enquanto tocas.'
+        },
+        {
+          instruction: 'Imita lentamente p-i-m-a e depois p-a-m-i. Nomeia cada dedo que dedilha; não confundas uma letra da mão direita com um número da mão esquerda.'
+        }
+      ]
+    },
+    l1u33m3: {
+      title: 'Notação de Guitarra: Posições e Pestanas',
+      subtitle: 'Algarismos romanos, C e ½C no braço',
+      objectives: [
+        'Ler posições em algarismos romanos, como V',
+        'Distinguir uma indicação de posição de uma pestana completa ou parcial'
+      ],
+      concepts: [
+        {
+          title: 'Posições em Algarismos Romanos',
+          explanation: 'Um algarismo romano indica a posição da mão esquerda: I = 1.ª, II = 2.ª, V = 5.ª, VII = 7.ª. Na posição V, o indicador tem como base o trasto 5; os outros dedos cobrem normalmente os trastos 6, 7 e 8. Uma posição é um local da mão, não um número de corda nem um acorde. Uma indicação de posição, por si só, não exige uma pestana.',
+          tryThisLabel: 'Mostra na Guitarra e escolhe a posição V'
+        },
+        {
+          title: 'O Sinal de Pestana',
+          explanation: 'Uma pestana usa um dedo, geralmente o indicador, para premir várias cordas no mesmo trasto. C indica uma pestana completa; ½C indica uma pestana parcial. CV significa pestana completa no trasto 5, enquanto ½CV significa pestana parcial nesse trasto. A partitura ou a dedilhação indica que cordas a pestana parcial abrange; não deduzas um número fixo de cordas apenas a partir de ½.',
+          tryThisLabel: 'Mostra na Guitarra; na tua guitarra, localiza o trasto 5 para CV'
+        }
+      ],
+      tasks: [
+        {
+          instruction: 'Escolhe a posição V no braço da guitarra da aplicação. Localiza o trasto 5 e compara o número da posição com os números dos dedos nos pontos.'
+        },
+        {
+          instruction: 'Lê V, CV e ½CV em voz alta. Explica qual das indicações apenas localiza a mão, qual pede uma pestana completa e qual pede uma pestana parcial.'
+        }
+      ]
+    },
+
     // ── U1 M1: The Staff and Clefs ──────────────────────────────────────────
     l1u1m1: {
       title: 'A Pauta e as Claves',
@@ -76,7 +165,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'Clave de Sol e Clave de Fá',
           explanation:
-            'Uma clave aparece no início de uma pauta e indica quais alturas as linhas e espaços representam. A clave de sol (𝄞) centra-se no G acima do C central — é usada para instrumentos mais agudos e a mão direita no piano. A clave de fá (𝄢) centra-se no F abaixo do C central — é usada para instrumentos mais graves e a mão esquerda no piano. Sem uma clave, a pauta é apenas linhas — a clave dá-lhes significado.',
+            'Uma clave aparece no início de uma pauta e indica quais alturas as linhas e espaços representam. A clave de sol (𝄞) centra-se no G acima do C central — é usada para instrumentos mais agudos e a mão direita no piano. A clave de fá (𝄢) centra-se no F abaixo do C central — é usada para instrumentos mais graves e a mão esquerda no piano. Sem uma clave, a pauta é apenas linhas — a clave dá-lhes significado. A guitarra usa a clave de sol com um pequeno 8 por baixo: soa uma oitava abaixo do que está escrito. A unidade opcional Notação de Guitarra explica esta convenção.',
           tryThisLabel: 'Explora a tonalidade de C',
         },
       ],

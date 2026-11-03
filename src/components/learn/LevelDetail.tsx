@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import type { CurriculumLevel, CurriculumProgress } from '../../core/types/curriculum';
-import { findNextIncompleteModule, getLevelModuleCount } from '../../data/curriculumLoader';
+import { findNextIncompleteModule, getLevelModuleCount, getLevelCompletedModuleCount } from '../../data/curriculumLoader';
 import { LearnBreadcrumb } from './LearnBreadcrumb';
 import { IconButton } from '../ui/Button';
 import { ContinueBanner } from './ContinueBanner';
@@ -35,10 +35,7 @@ export function LevelDetail({
   const { t } = useTranslation();
   const accent = level.accentColor;
   const totalModules = getLevelModuleCount(level);
-  const completedModules = level.units.reduce(
-    (sum, u) => sum + u.modules.filter((m) => progress.completedModules.includes(m.id)).length,
-    0,
-  );
+  const completedModules = getLevelCompletedModuleCount(level, progress.completedModules);
   const progressPercent = totalModules > 0 ? (completedModules / totalModules) * 100 : 0;
 
   // Continue banner — scoped to this level

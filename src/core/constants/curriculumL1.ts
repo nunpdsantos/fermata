@@ -27,7 +27,7 @@ const l1u1m1: CurriculumModule = {
     {
       title: 'Treble and Bass Clef',
       explanation:
-        "A clef sits at the beginning of a staff and tells you which pitches the lines and spaces represent. The treble clef (𝄞) centers on G above middle C — it's used for higher instruments and the right hand on piano. The bass clef (𝄢) centers on F below middle C — it's used for lower instruments and the left hand on piano. Without a clef, the staff is just lines — the clef gives them meaning.",
+        "A clef sits at the beginning of a staff and tells you which pitches the lines and spaces represent. The treble clef (𝄞) centers on G above middle C — it's used for higher instruments and the right hand on piano. The bass clef (𝄢) centers on F below middle C — it's used for lower instruments and the left hand on piano. Without a clef, the staff is just lines — the clef gives them meaning. Guitar uses treble clef with a small 8 below: it sounds an octave lower than written. The optional Guitar Notation unit explains this convention.",
       tryThisQuery: 'key of C',
       tryThisLabel: 'Explore the key of C',
     },
@@ -414,6 +414,129 @@ const l1u3m4: CurriculumModule = {
 // Exported units
 // ---------------------------------------------------------------------------
 
+const guitarNotation: CurriculumUnit = {
+  id: 'u33',
+  levelId: 'l1',
+  optional: true,
+  icon: 'building-blocks',
+  title: 'Guitar Notation — Optional',
+  description: 'Clef, strings, fingers, positions and barres. These three lessons do not count towards level completion or unlocks.',
+  modules: [
+    {
+      title: 'Guitar Notation: Clef and Strings',
+      subtitle: 'Read sounding pitch and circled string numbers',
+      objectives: [
+        'Explain why guitar notation is written an octave above its sound',
+        'Distinguish a string number from a finger number'
+      ],
+      concepts: [
+        {
+          title: 'The Small 8 Below the Clef',
+          explanation: 'Guitar music uses the treble clef with a small 8 below it: the notes sound one octave lower than written. Written E4 sounds as E3. The small 8 changes the register, not the note names. In Explore, select Guitar to see this clef; Piano uses plain treble clef.',
+          tryThisQuery: 'E major scale',
+          tryThisLabel: 'Open in Explore, select Guitar, and compare the clef with Piano'
+        },
+        {
+          title: 'Circled Numbers Name Strings',
+          explanation: 'The symbols ① ② ③ ④ ⑤ ⑥ name strings, from the thinnest, highest-pitched string to the thickest, lowest-pitched string. In standard tuning, the open strings sound E4, B3, G3, D3, A2, E2. A circled ③ means play on string 3, not with finger 3. These pitch names describe the sound, before the written octave shift.',
+          tryThisQuery: 'E minor chord',
+          tryThisLabel: 'Show on Guitar and find the two open E strings'
+        }
+      ],
+      tasks: [
+        {
+          id: 'l1u33m1t1',
+          instruction: 'Select Guitar in Explore. Find the small 8 below the treble clef and explain the difference between written E4 and sounding E3.'
+        },
+        {
+          id: 'l1u33m1t2',
+          instruction: 'On your guitar, point to ① and ⑥. Say their sounding pitches in standard tuning, then find ③.'
+        }
+      ],
+      id: 'l1u33m1',
+      unitId: 'u33',
+      levelId: 'l1',
+      prerequisites: []
+    },
+    {
+      title: 'Guitar Notation: The Two Hands',
+      subtitle: 'Left-hand 0–4 and right-hand p-i-m-a',
+      objectives: [
+        'Read left-hand finger numbers and the open-string sign',
+        'Decode p-i-m-a and distinguish an arpeggio from tremolo'
+      ],
+      concepts: [
+        {
+          title: 'Left-Hand Numbers',
+          explanation: 'Left-hand numbers name the fingers that stop the strings: 1 = index, 2 = middle, 3 = ring, 4 = little finger. The number 0 means an open string: no left-hand finger stops it. These numbers are not circled string numbers. On the app fretboard, choose Fingers to see suggested left-hand fingerings.',
+          tryThisQuery: 'C major scale',
+          tryThisLabel: 'Show on Guitar and compare Fingers with Notes'
+        },
+        {
+          title: 'Right-Hand Letters',
+          explanation: 'The letters p-i-m-a name the plucking fingers: p = thumb, i = index, m = middle, a = ring. In an arpeggio, chord notes sound one after another. Read p-i-m-a as thumb, index, middle, ring. The tremolo pattern p-a-m-i is thumb, ring, middle, index: the order of the letters matters. The app plays pitches; practise the hand movements on your own guitar.',
+          tryThisQuery: 'C major chord',
+          tryThisLabel: 'Hear the chord, then pluck its notes separately on your guitar'
+        }
+      ],
+      tasks: [
+        {
+          id: 'l1u33m2t1',
+          instruction: 'On your guitar, play an open string, then stop it with fingers 1, 2, 3 and 4 in turn. Say the numbers as you play.'
+        },
+        {
+          id: 'l1u33m2t2',
+          instruction: 'Slowly mime p-i-m-a, then p-a-m-i. Name each plucking finger; do not confuse a right-hand letter with a left-hand number.'
+        }
+      ],
+      id: 'l1u33m2',
+      unitId: 'u33',
+      levelId: 'l1',
+      prerequisites: [
+        'l1u33m1'
+      ]
+    },
+    {
+      title: 'Guitar Notation: Positions and Barres',
+      subtitle: 'Roman numerals, C and ½C on the neck',
+      objectives: [
+        'Read Roman-numeral positions such as V',
+        'Distinguish a position marking from a full or partial barre'
+      ],
+      concepts: [
+        {
+          title: 'Roman-Numeral Positions',
+          explanation: 'A Roman numeral names the left-hand position: I = 1st, II = 2nd, V = 5th, VII = 7th. In position V the index finger is based at fret 5; the other fingers normally cover frets 6, 7 and 8. A position is a hand location, not a string number or a chord. A position marking alone does not demand a barre.',
+          tryThisQuery: 'A minor scale',
+          tryThisLabel: 'Show on Guitar and choose position V'
+        },
+        {
+          title: 'The Barre Sign',
+          explanation: 'A barre uses one finger, usually the index, to stop several strings at the same fret. C marks a full barre; ½C marks a partial barre. CV means a full barre at fret 5, while ½CV means a partial barre there. The score or fingering indicates which strings the partial barre covers; do not infer a fixed number of strings from ½ alone.',
+          tryThisQuery: 'A minor chord',
+          tryThisLabel: 'Show on Guitar; on your own guitar, locate fret 5 for CV'
+        }
+      ],
+      tasks: [
+        {
+          id: 'l1u33m3t1',
+          instruction: 'Choose position V on the app fretboard. Locate fret 5 and compare that position number with the finger numbers on the dots.'
+        },
+        {
+          id: 'l1u33m3t2',
+          instruction: 'Read V, CV and ½CV aloud. Explain which mark only locates the hand, which requests a full barre, and which requests a partial barre.'
+        }
+      ],
+      id: 'l1u33m3',
+      unitId: 'u33',
+      levelId: 'l1',
+      prerequisites: [
+        'l1u33m2'
+      ]
+    }
+  ]
+};
+
 export const L1_UNITS: CurriculumUnit[] = [
   {
     id: 'u1',
@@ -494,4 +617,5 @@ export const L1_UNITS: CurriculumUnit[] = [
         'You know G major has one sharp. In Level 2 you will learn every key on the Circle of Fifths.',
     },
   },
+  guitarNotation,
 ];

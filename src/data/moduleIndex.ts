@@ -1,5 +1,5 @@
 /**
- * Lightweight static index of all 118 curriculum modules for search.
+ * Lightweight static index of all 121 curriculum modules (118 required + 3 optional) for search.
  *
  * Titles and subtitles are copied from src/core/constants/curriculumL1-9.ts;
  * src/data/__tests__/moduleIndex.test.ts fails if an entry drifts from the
@@ -76,6 +76,9 @@ const RAW: Array<[string, string, string]> = [
   ['l1u3m2', 'Key Signatures — First Four Keys', 'C, G, D, and F — the keys you will use most'],
   ['l1u3m3', 'Intervals by Number', 'Measuring distance between notes — unison through octave'],
   ['l1u3m4', 'Your First Chords — Major Triads', 'Three notes that sound complete — root, major third, perfect fifth'],
+  ['l1u33m1', 'Guitar Notation: Clef and Strings', 'Read sounding pitch and circled string numbers'],
+  ['l1u33m2', 'Guitar Notation: The Two Hands', 'Left-hand 0–4 and right-hand p-i-m-a'],
+  ['l1u33m3', 'Guitar Notation: Positions and Barres', 'Roman numerals, C and ½C on the neck'],
   ['l2u4m1', 'All Major Keys and the Circle of Fifths', 'The full set of 15 major key signatures and how they connect'],
   ['l2u4m2', 'Scale Degree Names and Functions', 'The seven functional names every musician must know'],
   ['l2u5m1', 'Natural Minor Scale', 'The W-H-W-W-H-W-W pattern and the darker side of tonality'],

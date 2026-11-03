@@ -5,6 +5,284 @@ import type { ExerciseDefinition } from '../../core/types/exercise';
 // ---------------------------------------------------------------------------
 
 const exercises: Record<string, ExerciseDefinition[]> = {
+
+  l1u33m1: [
+    {
+      id: 'l1u33m1e1',
+      type: 'multiple_choice',
+      prompt: 'A guitar part has a treble clef with a small 8 below. How does written E4 sound?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          {
+            label: 'As E5',
+            correct: false
+          },
+          {
+            label: 'As E3',
+            correct: true
+          },
+          {
+            label: 'As E4',
+            correct: false
+          },
+          {
+            label: 'As B3',
+            correct: false
+          }
+        ]
+      },
+      hint: 'The small 8 below the clef means one octave lower: written E4 sounds as E3.'
+    },
+    {
+      id: 'l1u33m1e2',
+      type: 'multiple_choice',
+      prompt: 'What does ③ beside a guitar note specify?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          {
+            label: 'Finger 3',
+            correct: false
+          },
+          {
+            label: 'Position III',
+            correct: false
+          },
+          {
+            label: 'String 3',
+            correct: true
+          },
+          {
+            label: 'Fret 3',
+            correct: false
+          }
+        ]
+      },
+      hint: 'A number in a circle specifies the string. Left-hand finger numbers are not circled.'
+    },
+    {
+      id: 'l1u33m1e3',
+      type: 'multiple_choice',
+      prompt: 'In standard guitar tuning, which open string sounds E2?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          {
+            label: '⑥',
+            correct: true
+          },
+          {
+            label: '①',
+            correct: false
+          },
+          {
+            label: '④',
+            correct: false
+          },
+          {
+            label: '②',
+            correct: false
+          }
+        ]
+      },
+      hint: 'String 6 is the thickest and lowest-pitched string: its open pitch is E2 in standard tuning.'
+    }
+  ],
+  l1u33m2: [
+    {
+      id: 'l1u33m2e1',
+      type: 'multiple_choice',
+      prompt: 'Which left-hand finger does the number 4 name?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          {
+            label: 'Index',
+            correct: false
+          },
+          {
+            label: 'Ring',
+            correct: false
+          },
+          {
+            label: 'Middle',
+            correct: false
+          },
+          {
+            label: 'Little',
+            correct: true
+          }
+        ]
+      },
+      hint: 'Left-hand fingers are 1 index, 2 middle, 3 ring and 4 little.'
+    },
+    {
+      id: 'l1u33m2e2',
+      type: 'multiple_choice',
+      prompt: 'What does 0 mean in a guitar fingering?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          {
+            label: 'Open string',
+            correct: true
+          },
+          {
+            label: 'Index finger',
+            correct: false
+          },
+          {
+            label: 'Full barre',
+            correct: false
+          },
+          {
+            label: 'Right thumb',
+            correct: false
+          }
+        ]
+      },
+      hint: 'Zero means that no left-hand finger stops the string.'
+    },
+    {
+      id: 'l1u33m2e3',
+      type: 'multiple_choice',
+      prompt: 'Which finger order does p-i-m-a specify?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          {
+            label: 'Thumb, ring, middle, index',
+            correct: false
+          },
+          {
+            label: 'Thumb, index, middle, ring',
+            correct: true
+          },
+          {
+            label: 'Index, middle, ring, little',
+            correct: false
+          },
+          {
+            label: 'Ring, middle, index, thumb',
+            correct: false
+          }
+        ]
+      },
+      hint: 'The right-hand letters are p thumb, i index, m middle and a ring.'
+    },
+    {
+      id: 'l1u33m2e4',
+      type: 'multiple_choice',
+      prompt: 'Which letters mean thumb, ring, middle, index?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          {
+            label: 'p-i-m-a',
+            correct: false
+          },
+          {
+            label: 'i-m-a-p',
+            correct: false
+          },
+          {
+            label: 'p-a-m-i',
+            correct: true
+          },
+          {
+            label: 'a-m-i-p',
+            correct: false
+          }
+        ]
+      },
+      hint: 'Read the letters in order: p is thumb, a is ring, m is middle and i is index.'
+    }
+  ],
+  l1u33m3: [
+    {
+      id: 'l1u33m3e1',
+      type: 'multiple_choice',
+      prompt: 'In position V, which fret is the normal base for the index finger?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          {
+            label: 'Fret 4',
+            correct: false
+          },
+          {
+            label: 'Fret 5',
+            correct: true
+          },
+          {
+            label: 'Fret 6',
+            correct: false
+          },
+          {
+            label: 'Fret 7',
+            correct: false
+          }
+        ]
+      },
+      hint: 'V means fifth position: the index finger is based at fret 5.'
+    },
+    {
+      id: 'l1u33m3e2',
+      type: 'multiple_choice',
+      prompt: 'Which instruction does CV give in guitar notation?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          {
+            label: 'Partial barre at fret 5',
+            correct: false
+          },
+          {
+            label: 'Full barre at fret 4',
+            correct: false
+          },
+          {
+            label: 'Partial barre at fret 4',
+            correct: false
+          },
+          {
+            label: 'Full barre at fret 5',
+            correct: true
+          }
+        ]
+      },
+      hint: 'C marks a full barre and V locates it at fret 5. V alone names the position without requiring a barre.'
+    },
+    {
+      id: 'l1u33m3e3',
+      type: 'multiple_choice',
+      prompt: 'Which mark requests a partial barre at fret 5?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          {
+            label: '½CV',
+            correct: true
+          },
+          {
+            label: 'CV',
+            correct: false
+          },
+          {
+            label: 'V',
+            correct: false
+          },
+          {
+            label: '⑤',
+            correct: false
+          }
+        ]
+      },
+      hint: '½C requests a partial barre; V sets its fret. The score or fingering tells you which strings to cover.'
+    }
+  ]
+,
   // =========================================================================
   // Unit 1: Notation and Pitch
   // =========================================================================

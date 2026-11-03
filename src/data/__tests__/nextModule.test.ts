@@ -14,6 +14,7 @@ import { describe, it, expect } from 'vitest';
 import { findNextModuleEntry } from '../nextModule';
 import { findNextIncompleteModule, getDefaultProgress, LEVEL_METADATA } from '../curriculumLoader';
 import { MODULE_INDEX } from '../moduleIndex';
+import { isOptionalModuleId } from '../../core/constants/optionalCurriculum';
 import type { CurriculumLevel, CurriculumProgress, CurriculumUnit } from '../../core/types/curriculum';
 import { mulberry32 } from '../../core/utils/prng';
 import { L1_UNITS } from '../../core/constants/curriculumL1';
@@ -55,8 +56,9 @@ describe('findNextModuleEntry (static index) == findNextIncompleteModule (full d
     expect(MODULE_INDEX.map((e) => e.id)).toEqual(ALL_MODULES.map((m) => m.id));
     const chained = new Set(LEVEL_METADATA.filter((l) => l.prerequisites.length > 0).map((l) => l.id));
     expect([...chained].sort()).toEqual(['l2', 'l3', 'l4', 'l5', 'l6', 'l7', 'l8']);
-    ALL_MODULES.forEach((mod, i) => {
-      const prev = ALL_MODULES[i - 1];
+    const required = ALL_MODULES.filter((m) => !isOptionalModuleId(m.id));
+    required.forEach((mod, i) => {
+      const prev = required[i - 1];
       const expected = prev && (prev.levelId === mod.levelId || chained.has(mod.levelId)) ? [prev.id] : [];
       expect(mod.prerequisites, mod.id).toEqual(expected);
       expect(mod.comingSoon ?? false, mod.id).toBe(false);

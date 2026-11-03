@@ -22,7 +22,7 @@ const Fretboard = lazy(() => import('./Fretboard.tsx').then((m) => ({ default: m
  */
 export function NeckView({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation();
-  const { scale } = useKeyContext();
+  const { displayScale: scale } = useKeyContext();
   const chord = useAppStore((s) => s.selectedChord);
   const rootRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);

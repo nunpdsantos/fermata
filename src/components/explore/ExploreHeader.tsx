@@ -15,6 +15,7 @@ import { playScale, resumeAudio, cancelScheduledAudio } from '../../core/service
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import { generateScaleSummary, copyToClipboard } from '../../utils/exportHelpers.ts';
 import { toast } from '../../state/toastStore.ts';
+import { classicalDescendingNotes } from '../../core/utils/classicalScale.ts';
 import { keyFacts } from './keyFacts.ts';
 import { keyName } from './focusReadout.ts';
 import { toContentLanguage } from '../drill/drillText.ts';
@@ -51,8 +52,8 @@ export function ExploreHeader({ practiceAction }: { practiceAction?: ReactNode }
     // Audio only: stopPlayback() would also clear other components' visual
     // timeouts (e.g. the chord panel's arpeggio un-lighting its keys — B2).
     cancelScheduledAudio();
-    playScale(scale.notes, baseOctave, true, false, 0.25, () => {}, () => {}, getSynthConfig(synthPreset));
-  }, [scale, synthPreset, baseOctave]);
+    playScale(scale.notes, baseOctave, true, selectedScale === 'melodic_minor', 0.25, () => {}, () => {}, getSynthConfig(synthPreset), classicalDescendingNotes(scale.root, selectedScale));
+  }, [scale, selectedScale, synthPreset, baseOctave]);
 
   const copy = async () => {
     const ok = await copyToClipboard(generateScaleSummary(scale, diatonicChords, selectedChord, { t, lang: toContentLanguage(i18n.language) }));
@@ -98,13 +99,13 @@ export function ExploreHeader({ practiceAction }: { practiceAction?: ReactNode }
         {phone ? (
           <IconButton
             variant="primary"
-            aria-label={t('explore.playScaleAscending')}
+            aria-label={t(selectedScale === 'melodic_minor' ? 'explore.playScaleClassical' : 'explore.playScaleAscending')}
             onClick={playScaleNow}
             icon={PLAY_ICON}
           />
         ) : (
-          <Button variant="primary" onClick={playScaleNow} aria-label={t('explore.playScaleAscending')} startIcon={PLAY_ICON}>
-            {t('explore.playScale')}
+          <Button variant="primary" onClick={playScaleNow} aria-label={t(selectedScale === 'melodic_minor' ? 'explore.playScaleClassical' : 'explore.playScaleAscending')} startIcon={PLAY_ICON}>
+            {t(selectedScale === 'melodic_minor' ? 'explore.playScaleBoth' : 'explore.playScale')}
           </Button>
         )}
         <Menu
