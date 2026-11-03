@@ -26,6 +26,15 @@ async function freshApp() {
   return { stub: stub.pwaRegisterStub, PWAPrompts, pwa };
 }
 
+/**
+ * The learner is using the app (a tap): no longer a fresh start, so a waiting
+ * update ASKS — the W9-06 flow these tests cover. (At a fresh start with no
+ * work in progress it would apply silently instead: usePWA.silent.test.tsx.)
+ */
+function learnerInteracts() {
+  fireEvent.pointerDown(window);
+}
+
 function setVisibility(state: 'visible' | 'hidden') {
   Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => state });
   document.dispatchEvent(new Event('visibilitychange'));
@@ -52,6 +61,7 @@ describe('app update flow (W9-06)', () => {
     expect(stub.registerCalls).toBe(1);
     expect(screen.queryByText(/new version/i)).toBeNull();
 
+    learnerInteracts();
     act(() => stub.lastOptions!.onNeedRefresh!());
 
     expect(screen.getByText(/new version/i)).toBeTruthy();
@@ -62,6 +72,7 @@ describe('app update flow (W9-06)', () => {
   it('tapping Reload activates the waiting worker (not a plain reload of the old version)', async () => {
     const { stub, PWAPrompts } = await freshApp();
     render(<PWAPrompts />);
+    learnerInteracts();
     act(() => stub.lastOptions!.onNeedRefresh!());
 
     await act(async () => {
@@ -75,6 +86,7 @@ describe('app update flow (W9-06)', () => {
   it('unmounting never applies an update behind the learner\'s back', async () => {
     const { stub, PWAPrompts } = await freshApp();
     const { unmount } = render(<PWAPrompts />);
+    learnerInteracts();
     act(() => stub.lastOptions!.onNeedRefresh!());
     unmount();
     expect(stub.updateCalls).toEqual([]);
@@ -84,35 +96,47 @@ describe('app update flow (W9-06)', () => {
   it('checks for an update when the app returns to the foreground (throttled, online only)', async () => {
     vi.useFakeTimers({ toFake: ['Date'] });
     vi.setSystemTime(new Date('2026-10-30T12:00:00Z'));
+    // W9b: every check first probes the worker script with a no-store fetch
+    // (vite-plugin-pwa's edge-case guard); a 200 lets update() run.
+    const probe = vi.fn(async () => ({ status: 200 }) as Response);
+    vi.stubGlobal('fetch', probe);
     const { stub, PWAPrompts, pwa } = await freshApp();
     render(<PWAPrompts />);
     const update = vi.fn(() => Promise.resolve());
     act(() => stub.lastOptions!.onRegisteredSW!('/sw.js', { update } as unknown as ServiceWorkerRegistration));
+    const settle = () => act(async () => {});
 
     setVisibility('hidden');
+    await settle();
     expect(update).not.toHaveBeenCalled();
 
     setVisibility('visible');
+    await settle();
     expect(update).toHaveBeenCalledTimes(1);
+    expect(probe).toHaveBeenCalledWith('/sw.js', expect.objectContaining({ cache: 'no-store' }));
 
     setVisibility('hidden');
     setVisibility('visible'); // within a minute: throttled
+    await settle();
     expect(update).toHaveBeenCalledTimes(1);
 
     vi.setSystemTime(Date.now() + pwa.FOREGROUND_CHECK_MIN_GAP_MS + 1);
     setVisibility('visible');
+    await settle();
     expect(update).toHaveBeenCalledTimes(2);
 
     // No update traffic while offline.
     Object.defineProperty(window.navigator, 'onLine', { configurable: true, get: () => false });
     vi.setSystemTime(Date.now() + pwa.FOREGROUND_CHECK_MIN_GAP_MS + 1);
     setVisibility('visible');
+    await settle();
     expect(update).toHaveBeenCalledTimes(2);
     Object.defineProperty(window.navigator, 'onLine', { configurable: true, get: () => true });
 
     // A found update never reloads — it only raises the toast.
     expect(reloadPage).not.toHaveBeenCalled();
     expect(stub.updateCalls).toEqual([]);
+    vi.unstubAllGlobals();
   });
 
   it('applyUpdateOrReload: with no update waiting it is a plain reload', async () => {
@@ -147,6 +171,7 @@ describe('toasts that do not linger (W11-A review round 4)', () => {
     expect(screen.queryByRole('menuitem', { name: /update ready/i })).toBeNull();
     fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
 
+    learnerInteracts();
     act(() => stub.lastOptions!.onNeedRefresh!());
     // While the toast asks, "⋯" stays plain.
     expect(document.querySelector('[data-testid="app-menu-badge"]')).toBeNull();
@@ -169,9 +194,11 @@ describe('toasts that do not linger (W11-A review round 4)', () => {
   it('a newer waiting version asks again after "Later"', async () => {
     const { stub, PWAPrompts } = await freshApp();
     render(<PWAPrompts />);
+    learnerInteracts();
     act(() => stub.lastOptions!.onNeedRefresh!());
     fireEvent.click(screen.getByRole('button', { name: 'Later' }));
     expect(screen.queryByText(/new version/i)).toBeNull();
+    learnerInteracts();
     act(() => stub.lastOptions!.onNeedRefresh!());
     expect(screen.getByText(/new version/i)).toBeTruthy();
     expect(screen.getByRole('button', { name: /reload/i })).toBeTruthy();

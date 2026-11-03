@@ -12,11 +12,17 @@
  *   - Esc or ✕ exits early WITHOUT recording.
  *   - Fewer than MIN_SPRINT_ITEMS eligible → an empty-state, never a started run.
  *   - Pool recycles (re-shuffled) when exhausted within the 60s.
+ *   - A reload resumes the run exactly (W9b): seed, pool order, score, step and
+ *     time left are saved in the drill store (`sprint`) on every answer, every
+ *     5 s of the clock, at the finish, and when the page is hidden or goes
+ *     away. A crash while visible resumes from the last save, up to 5 s
+ *     earlier. Leaving the Drill view pauses it; ✕ / Esc / Done close it.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { DrillFamily, DrillItem, ItemSrsState } from '../../core/types/drill';
 import { mulberry32, seededShuffle } from '../../core/utils/prng';
+import { useDrillStore, SPRINT_SECONDS, type SprintRun } from '../../state/drillStore';
 import { gradeAnswer, type AnswerPayload } from './grading';
 import { DrillInput } from './DrillInput';
 import { useToastAvoid } from '../layout/toastLayout';
@@ -27,8 +33,44 @@ import {
   MIN_SPRINT_ITEMS,
 } from './sprintSelectors';
 
-/** Sprint duration in seconds. */
-const SPRINT_SECONDS = 60;
+/** The clock is saved every this many seconds while it runs (plus on every answer). */
+const SAVE_EVERY_SECONDS = 5;
+
+interface RunSetup {
+  seed: number;
+  pool: DrillItem[];
+  /** The best for this topic mix before the run — for "New best!". */
+  priorBest: number;
+  /** A saved run being resumed (null = a new run). */
+  resumed: SprintRun | null;
+}
+
+/**
+ * The run to show: the saved one when it belongs to this topic mix (a
+ * reload, or back from another view), else a new one — one wall-clock seed
+ * and the pool shuffled by it. Ids the bank no longer has are left out.
+ */
+function setUpRun(
+  bank: DrillItem[],
+  items: Record<string, ItemSrsState>,
+  families: Record<DrillFamily, boolean>,
+  familiesKey: string,
+  priorBest: number,
+): RunSetup {
+  const saved = useDrillStore.getState().sprint;
+  if (saved && saved.familiesKey === familiesKey) {
+    const byId = new Map(bank.map((item) => [item.id, item]));
+    const pool = saved.pool.flatMap((id) => byId.get(id) ?? []);
+    if (pool.length >= MIN_SPRINT_ITEMS) return { seed: saved.seed, pool, priorBest: saved.priorBest, resumed: saved };
+  }
+  const seed = Date.now();
+  return {
+    seed,
+    pool: seededShuffle(eligibleSprintItems(bank, items, families), mulberry32(seed)),
+    priorBest,
+    resumed: null,
+  };
+}
 
 interface SprintRunnerProps {
   bank: DrillItem[];
@@ -52,29 +94,33 @@ export function SprintRunner({
 }: SprintRunnerProps) {
   const { t } = useTranslation();
 
-  // One wall-clock seed + the shuffled pool, both captured ONCE per mount via
-  // lazy initializers (allowed to be impure — they run a single time, not on
-  // every render). Every later shuffle (recycled laps) derives from the seed,
-  // so render stays pure and the run order is stable across re-renders.
-  const [seed] = useState(() => Date.now());
-  const [pool] = useState<DrillItem[]>(() =>
-    seededShuffle(eligibleSprintItems(bank, items, families), mulberry32(seed)),
-  );
-
   const familiesKey = useMemo(() => sprintFamiliesKey(families), [families]);
-  const enoughItems = pool.length >= MIN_SPRINT_ITEMS;
+  // The seed + the shuffled pool (or the saved run), captured ONCE per mount
+  // via a lazy initializer (allowed to be impure — it runs a single time, not
+  // on every render). Every later shuffle (recycled laps) derives from the
+  // seed, so render stays pure and the run order is stable across re-renders.
+  const [run] = useState<RunSetup>(() => setUpRun(bank, items, families, familiesKey, priorBest));
+  const enoughItems = run.pool.length >= MIN_SPRINT_ITEMS;
 
   // ── Empty-state: never start a run with too few eligible items. ─────────────
   if (!enoughItems) {
-    return <SprintEmptyState onExit={onExit} />;
+    return (
+      <SprintEmptyState
+        onExit={() => {
+          useDrillStore.getState().saveSprint(null); // nothing to resume
+          onExit();
+        }}
+      />
+    );
   }
 
   return (
     <SprintActive
-      pool={pool}
-      seed={seed}
+      pool={run.pool}
+      seed={run.seed}
       familiesKey={familiesKey}
-      priorBest={priorBest}
+      priorBest={run.priorBest}
+      resumed={run.resumed}
       onRecord={onRecord}
       onExit={onExit}
       t={t}
@@ -114,29 +160,81 @@ interface SprintActiveProps {
   seed: number;
   familiesKey: string;
   priorBest: number;
+  /** A saved run to continue (W9b); null = start at 60s, 0 correct. */
+  resumed: SprintRun | null;
   onRecord: (familiesKey: string, score: number) => void;
   onExit: () => void;
   t: ReturnType<typeof useTranslation>['t'];
 }
 
-function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t }: SprintActiveProps) {
+function SprintActive({ pool, seed, familiesKey, priorBest, resumed, onRecord, onExit, t }: SprintActiveProps) {
   const { i18n } = useTranslation();
   const lang = toContentLanguage(i18n.language);
-  const [secondsLeft, setSecondsLeft] = useState(SPRINT_SECONDS);
+  const [secondsLeft, setSecondsLeft] = useState(resumed?.secondsLeft ?? SPRINT_SECONDS);
   // 'finished' is DERIVED from the clock, never stored — so the finish effect
   // below performs side effects only (no setState-in-effect cascade).
   const finished = secondsLeft <= 0;
-  const [correct, setCorrect] = useState(0);
+  const [correct, setCorrect] = useState(resumed?.correct ?? 0);
   // Monotonic question counter — drives both the pool index (modulo recycle)
   // and the input `key` so each question remounts a fresh input instance.
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(resumed?.step ?? 0);
   const answersRef = useRef<HTMLDivElement>(null);
   useToastAvoid(answersRef);
+
+  // ── Saving the run (W9b) ────────────────────────────────────────────────────
+  // The latest numbers, mirrored into a ref (in an effect, never during
+  // render) so the savers below always write the current run. Declared FIRST:
+  // effects run in order, so the savers in the same commit see fresh values.
+  const latest = useRef({ step, correct, secondsLeft });
+  useEffect(() => {
+    latest.current = { step, correct, secondsLeft };
+  }, [step, correct, secondsLeft]);
+  const recordedRef = useRef(resumed?.recorded ?? false);
+  const exitedRef = useRef(false);
+  const poolIds = useMemo(() => pool.map((item) => item.id), [pool]);
+  const save = useCallback(() => {
+    if (exitedRef.current) return; // closed: nothing to resume
+    useDrillStore.getState().saveSprint({
+      seed,
+      pool: poolIds,
+      ...latest.current,
+      familiesKey,
+      priorBest,
+      recorded: recordedRef.current,
+    });
+  }, [seed, poolIds, familiesKey, priorBest]);
+  // On mount (the run is now resumable) and after every answer…
+  useEffect(() => save(), [step, correct, save]);
+  // …every few seconds of the clock…
+  useEffect(() => {
+    if (secondsLeft % SAVE_EVERY_SECONDS === 0) save();
+  }, [secondsLeft, save]);
+  // …and whenever the page is hidden or goes away (a reload, an app switch),
+  // or the learner leaves the Drill view (the run pauses there).
+  useEffect(() => {
+    const onHidden = () => {
+      if (document.visibilityState === 'hidden') save();
+    };
+    window.addEventListener('pagehide', save);
+    document.addEventListener('visibilitychange', onHidden);
+    return () => {
+      window.removeEventListener('pagehide', save);
+      document.removeEventListener('visibilitychange', onHidden);
+      save();
+    };
+  }, [save]);
+
+  // ✕, Esc and Done close the run: it is no longer resumable.
+  const exit = useCallback(() => {
+    exitedRef.current = true;
+    useDrillStore.getState().saveSprint(null);
+    onExit();
+  }, [onExit]);
 
   // Latest correct count, mirrored into a ref so the finish effect can read the
   // final score without re-subscribing the recorder each answer. Written in an
   // effect (never during render) per React 19 purity rules.
-  const correctRef = useRef(0);
+  const correctRef = useRef(correct);
   useEffect(() => {
     correctRef.current = correct;
   }, [correct]);
@@ -157,26 +255,29 @@ function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t 
 
   // Finish exactly once when the clock reaches 0: stop the interval and record
   // the final score. The ref guard makes the recording one-shot even if the
-  // effect re-runs; the finished SCREEN is pure render off `finished`.
-  const recordedRef = useRef(false);
+  // effect re-runs — or the page reloads on the score screen (the saved run
+  // remembers it was recorded); the finished SCREEN is pure render off
+  // `finished`.
   useEffect(() => {
-    if (!finished || recordedRef.current) return;
-    recordedRef.current = true;
+    if (!finished) return;
     if (intervalRef.current !== null) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+    if (recordedRef.current) return;
+    recordedRef.current = true;
     onRecord(familiesKey, correctRef.current);
-  }, [finished, familiesKey, onRecord]);
+    save();
+  }, [finished, familiesKey, onRecord, save]);
 
   // Esc exits early WITHOUT recording.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onExit();
+      if (e.key === 'Escape') exit();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onExit]);
+  }, [exit]);
 
   // Resolve the current item purely: lap = floor(step / pool.length). Lap 0 is
   // the base pool; each later lap is a fresh re-shuffle seeded by (seed + lap),
@@ -226,7 +327,7 @@ function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t 
         )}
         <button
           type="button"
-          onClick={onExit}
+          onClick={exit}
           className="min-h-[44px] px-6 rounded-lg text-sm font-medium transition-colors"
           style={{ backgroundColor: 'var(--accent)', color: 'var(--on-accent)' }}
         >
@@ -256,7 +357,7 @@ function SprintActive({ pool, seed, familiesKey, priorBest, onRecord, onExit, t 
         <div className="flex-1" />
         <button
           type="button"
-          onClick={onExit}
+          onClick={exit}
           className="flex items-center justify-center w-(--tap) h-(--tap) rounded-lg transition-colors"
           style={{ color: 'var(--text-dim)' }}
           aria-label={t('drill.endSession')}

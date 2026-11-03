@@ -1,0 +1,15 @@
+{
+  "$comment": "Release notes for the update prompt (W9b). Newest first. Adding an entry = a new release: increment `release` by 1, one line per language (EN / PT-PT / ES, max 160 characters, no line breaks). `critical: true` marks an emergency: every app on an older release applies it at the next safe moment, even after the learner chose Later. The build reads this file (vite.config.ts) and publishes dist/version.json; a deploy without a new entry shows no What's-new line. CLAUDE.md, PWA section.",
+  "releases": [
+    {
+      "release": 1,
+      "date": "2026-11-02",
+      "critical": false,
+      "notes": {
+        "en": "Updates wait for idle. Drill and Sprint resume exactly after reload or leaving the app; after a crash, Sprint resumes its last save, up to 5 seconds earlier.",
+        "pt": "Só atualiza sem trabalho em curso. Treino e Sprint retomam após recarregar ou sair da app; após falha, o Sprint retoma a última gravação, até 5 segundos antes.",
+        "es": "Se actualiza sin tareas en curso. Práctica y Sprint se retoman al recargar o salir; tras un fallo, Sprint retoma el último guardado, hasta 5 segundos antes."
+      }
+    }
+  ]
+}

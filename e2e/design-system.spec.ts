@@ -294,7 +294,16 @@ async function raiseToastStack(page: Page): Promise<boolean> {
   if (!(await hasDevModules(page))) return false;
   await page.evaluate(`(async () => {
     const pwa = await import('/src/hooks/usePWA.ts');
-    pwa.usePwaUpdateStore.setState({ needRefresh: true, offlineReady: true });
+    // The update toast with its "What's new" line (W9b) — the tallest it gets.
+    pwa.usePwaUpdateStore.setState({
+      needRefresh: true,
+      offlineReady: true,
+      incoming: { critical: false, notes: {
+        en: 'Updates now install themselves when you open the app, never mid-session, and a Drill session or a Sprint picks up where you left off.',
+        pt: 'As atualizações passam a instalar-se sozinhas quando abres a app, nunca a meio de uma sessão, e um Treino ou um Sprint continua onde ficaste.',
+        es: 'Las actualizaciones ahora se instalan solas al abrir la app, nunca a mitad de una sesión, y una Práctica o un Sprint sigue donde lo dejaste.',
+      } },
+    });
     const e = new Event('beforeinstallprompt');
     e.prompt = async () => {};
     e.userChoice = Promise.resolve({ outcome: 'dismissed' });
@@ -304,13 +313,19 @@ async function raiseToastStack(page: Page): Promise<boolean> {
   })()`);
   await expect(page.locator('.toast-card')).toHaveCount(4);
   await page.waitForTimeout(400); // the layout settles (sheet re-measures)
+  // The update toast's "What's new" line shows exactly where the region has
+  // room for it (PWAPrompts NOTE_MIN_ROOM_PX = 160) — not over a phone's
+  // instrument at Full / sideways, where the taller card would cover it.
+  const room = await page.evaluate(() => parseInt(getComputedStyle(document.documentElement).getPropertyValue('--toast-room'), 10));
+  const note = page.locator('.toast-card').filter({ hasText: 'What’s new: Updates now install themselves' });
+  await expect(note, `the What's new line at --toast-room ${room}px`).toHaveCount(Number.isNaN(room) || room >= 160 ? 1 : 0);
   return true;
 }
 
 async function lowerToastStack(page: Page) {
   await page.evaluate(`(async () => {
     const pwa = await import('/src/hooks/usePWA.ts');
-    pwa.usePwaUpdateStore.setState({ needRefresh: false, offlineReady: false });
+    pwa.usePwaUpdateStore.setState({ needRefresh: false, offlineReady: false, incoming: null });
     const ts = await import('/src/state/toastStore.ts');
     ts.useToastStore.setState({ toasts: [] });
   })()`);

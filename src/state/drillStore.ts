@@ -22,6 +22,7 @@ import {
   requeueSecondExposure,
   type SessionConfig,
 } from '../services/drillSession';
+import { setDrillWorkStateReader } from './drillWork';
 import { mulberry32 } from '../core/utils/prng';
 
 // ─── Public Types ──────────────────────────────────────────────────────────────
@@ -35,6 +36,72 @@ export interface ActiveSession {
   startedAt: number;
   seed: number;
   missRequeues: Record<string, number>; // per-item miss-requeue count for this session
+  /**
+   * v3 (W9b): the answered question whose verdict is on screen, until
+   * Continue / the auto-advance — so a reload resumes ON it, not past it.
+   * Absent / null = answering the question at `index`.
+   */
+  feedback?: SessionFeedback | null;
+  /** v3 (W9b): this session's tally for the summary (absent = nothing yet). */
+  log?: SessionLog;
+}
+
+/** The verdict on screen for an answered question (W9b). */
+export interface SessionFeedback {
+  itemId: string;
+  correct: boolean;
+  nearMiss: boolean;
+}
+
+/** Per-family answered tally for one session. */
+export interface FamilySessionTally {
+  asked: number;
+  correct: number;
+}
+
+/**
+ * A session's summary data: per-family breakdown and tier-up crossings. Was
+ * kept in memory by the runner (a reload lost it); persisted since v3.
+ */
+export interface SessionLog {
+  correct: number;
+  asked: number;
+  /** Only families that were actually answered this session appear here. */
+  byFamily: Partial<Record<DrillFamily, FamilySessionTally>>;
+  /** Count of answered items whose tier crossed UP into 'byHeart' this session. */
+  newlyByHeart: number;
+  /** Count of answered items whose tier crossed UP into 'review' this session. */
+  newlyReview: number;
+}
+
+export function emptySessionLog(): SessionLog {
+  return { correct: 0, asked: 0, byFamily: {}, newlyByHeart: 0, newlyReview: 0 };
+}
+
+/** Sprint length in seconds (the 60s timed mode). */
+export const SPRINT_SECONDS = 60;
+
+/**
+ * A Sprint under way (v3, W9b) — written by SprintRunner as it runs, so a
+ * reload resumes the same run: same questions in the same order, same score,
+ * same time left. Leaving the app also saves; a crash while visible resumes
+ * from the last save, up to 5 s earlier. null = no Sprint open.
+ */
+export interface SprintRun {
+  /** Mount seed: lap re-shuffles derive from it. */
+  seed: number;
+  /** The shuffled pool, as item ids. */
+  pool: string[];
+  /** Questions answered so far (drives the pool index). */
+  step: number;
+  correct: number;
+  /** 0 = finished (the score screen). */
+  secondsLeft: number;
+  familiesKey: string;
+  /** The best for this topic mix BEFORE the run (for "New best!"). */
+  priorBest: number;
+  /** The final score was recorded (never record twice after a reload). */
+  recorded: boolean;
 }
 
 export interface DrillSettings extends SessionConfig {
@@ -66,9 +133,18 @@ interface DrillStoreState {
   sprintBests: Record<string, number>;
   lifetime: { answered: number; correct: number };
   activeSession: ActiveSession | null;
+  sprint: SprintRun | null;
 
   startSession: (bank: DrillItem[], now: number) => void;
-  recordAnswer: (item: DrillItem, correct: boolean, ms: number, now: number) => void;
+  /**
+   * Record an answer: SRS update, requeue, counters, the session log, and the
+   * verdict now on screen (`feedback`, cleared by clearFeedback()).
+   */
+  recordAnswer: (item: DrillItem, correct: boolean, ms: number, now: number, nearMiss?: boolean) => void;
+  /** The verdict leaves the screen (Continue / auto-advance). */
+  clearFeedback: () => void;
+  /** Save (or, with null, close) the Sprint under way. */
+  saveSprint: (run: SprintRun | null) => void;
   endSession: () => void;
   updateSettings: (patch: Partial<DrillSettings>) => void;
   recordSprint: (familiesKey: string, score: number) => void;
@@ -84,6 +160,9 @@ function isPlainObject(v: unknown): v is Record<string, unknown> {
 }
 
 const TIERS: readonly MasteryTier[] = ['new', 'learning', 'review', 'byHeart'];
+
+/** Ordinal rank of a tier, for detecting an upward crossing. */
+const TIER_RANK: Record<MasteryTier, number> = { new: 0, learning: 1, review: 2, byHeart: 3 };
 
 function isFiniteNumber(v: unknown): v is number {
   return typeof v === 'number' && Number.isFinite(v);
@@ -180,6 +259,70 @@ function isValidActiveSession(v: unknown): v is ActiveSession {
   return true;
 }
 
+function sanitizeFeedback(v: unknown): SessionFeedback | null {
+  if (!isPlainObject(v)) return null;
+  if (typeof v.itemId !== 'string' || typeof v.correct !== 'boolean' || typeof v.nearMiss !== 'boolean') return null;
+  return { itemId: v.itemId, correct: v.correct, nearMiss: v.nearMiss };
+}
+
+function isCount(v: unknown): v is number {
+  return isFiniteNumber(v) && v >= 0;
+}
+
+function sanitizeLog(v: unknown): SessionLog | undefined {
+  if (!isPlainObject(v) || !isPlainObject(v.byFamily)) return undefined;
+  if (![v.correct, v.asked, v.newlyByHeart, v.newlyReview].every(isCount)) return undefined;
+  const byFamily: Partial<Record<DrillFamily, FamilySessionTally>> = {};
+  for (const [family, tally] of Object.entries(v.byFamily)) {
+    if (!(DRILL_FAMILIES as readonly string[]).includes(family)) continue;
+    if (isPlainObject(tally) && isCount(tally.asked) && isCount(tally.correct)) {
+      byFamily[family as DrillFamily] = { asked: tally.asked, correct: tally.correct };
+    }
+  }
+  return {
+    correct: v.correct as number,
+    asked: v.asked as number,
+    byFamily,
+    newlyByHeart: v.newlyByHeart as number,
+    newlyReview: v.newlyReview as number,
+  };
+}
+
+/**
+ * A stored session, cleaned, or null when its core fields are unusable. A
+ * malformed v3 `feedback` / `log` is dropped on its own — never the session.
+ */
+function sanitizeActiveSession(v: unknown): ActiveSession | null {
+  if (!isValidActiveSession(v)) return null;
+  const { id, queue, index, asked, correct, startedAt, seed, missRequeues } = v;
+  const feedback = sanitizeFeedback(v.feedback);
+  const log = sanitizeLog(v.log);
+  return {
+    id, queue, index, asked, correct, startedAt, seed, missRequeues,
+    ...(feedback ? { feedback } : {}),
+    ...(log ? { log } : {}),
+  };
+}
+
+/** A stored Sprint, or null when it cannot be resumed as it was. */
+export function sanitizeSprint(v: unknown): SprintRun | null {
+  if (!isPlainObject(v)) return null;
+  if (!Array.isArray(v.pool) || v.pool.length === 0 || !v.pool.every((x) => typeof x === 'string')) return null;
+  if (![v.seed, v.step, v.correct, v.priorBest].every(isCount)) return null;
+  if (!isCount(v.secondsLeft) || (v.secondsLeft as number) > SPRINT_SECONDS) return null;
+  if (typeof v.familiesKey !== 'string' || typeof v.recorded !== 'boolean') return null;
+  return {
+    seed: v.seed as number,
+    pool: v.pool as string[],
+    step: v.step as number,
+    correct: v.correct as number,
+    secondsLeft: v.secondsLeft as number,
+    familiesKey: v.familiesKey,
+    priorBest: v.priorBest as number,
+    recorded: v.recorded,
+  };
+}
+
 /** Full persisted shape guard — returns null on any mismatch (caller falls back). */
 export function validatePersistedShape(value: unknown): {
   items: Record<string, ItemSrsState>;
@@ -187,6 +330,7 @@ export function validatePersistedShape(value: unknown): {
   sprintBests: Record<string, number>;
   lifetime: { answered: number; correct: number };
   activeSession: ActiveSession | null;
+  sprint: SprintRun | null;
 } | null {
   if (!isPlainObject(value)) return null;
 
@@ -234,15 +378,13 @@ export function validatePersistedShape(value: unknown): {
       ? { answered: lt.answered, correct: lt.correct }
       : INITIAL_LIFETIME;
 
-  // activeSession — null it if malformed
-  const activeSession =
-    value.activeSession === null || value.activeSession === undefined
-      ? null
-      : isValidActiveSession(value.activeSession)
-        ? value.activeSession
-        : null;
+  // activeSession — null it if malformed (its v3 extras: dropped one by one)
+  const activeSession = sanitizeActiveSession(value.activeSession);
 
-  return { items, settings, sprintBests, lifetime, activeSession };
+  // sprint (v3) — absent in older saves; a malformed one is closed
+  const sprint = sanitizeSprint(value.sprint);
+
+  return { items, settings, sprintBests, lifetime, activeSession, sprint };
 }
 
 /**
@@ -282,6 +424,7 @@ export const useDrillStore = create<DrillStoreState>()(
       sprintBests: {},
       lifetime: INITIAL_LIFETIME,
       activeSession: null,
+      sprint: null,
 
       startSession: (bank, now) => {
         const { settings, items } = get();
@@ -302,7 +445,7 @@ export const useDrillStore = create<DrillStoreState>()(
         });
       },
 
-      recordAnswer: (item, correct, ms, now) => {
+      recordAnswer: (item, correct, ms, now, nearMiss = false) => {
         const state = get();
         const session = state.activeSession;
 
@@ -350,6 +493,23 @@ export const useDrillStore = create<DrillStoreState>()(
           const newAsked = s.asked + 1;
           const newCorrect = s.correct + (correct ? 1 : 0);
 
+          // (d) The session log (summary breakdown + tier-up crossings).
+          const log = s.log ?? emptySessionLog();
+          const family = log.byFamily[item.family] ?? { asked: 0, correct: 0 };
+          const tierBefore = prevItemState?.tier ?? 'new';
+          const tierAfter = newItemState.tier;
+          const tierUp = TIER_RANK[tierAfter] > TIER_RANK[tierBefore];
+          const newLog: SessionLog = {
+            asked: log.asked + 1,
+            correct: log.correct + (correct ? 1 : 0),
+            byFamily: {
+              ...log.byFamily,
+              [item.family]: { asked: family.asked + 1, correct: family.correct + (correct ? 1 : 0) },
+            },
+            newlyByHeart: log.newlyByHeart + (tierUp && tierAfter === 'byHeart' ? 1 : 0),
+            newlyReview: log.newlyReview + (tierUp && tierAfter === 'review' ? 1 : 0),
+          };
+
           return {
             items: { ...prev.items, [item.id]: newItemState },
             lifetime: {
@@ -363,10 +523,19 @@ export const useDrillStore = create<DrillStoreState>()(
               asked: newAsked,
               correct: newCorrect,
               missRequeues: newMissRequeues,
+              feedback: { itemId: item.id, correct, nearMiss },
+              log: newLog,
             },
           };
         });
       },
+
+      clearFeedback: () =>
+        set((prev) =>
+          prev.activeSession?.feedback ? { activeSession: { ...prev.activeSession, feedback: null } } : prev,
+        ),
+
+      saveSprint: (run) => set({ sprint: run }),
 
       endSession: () => set({ activeSession: null }),
 
@@ -390,6 +559,7 @@ export const useDrillStore = create<DrillStoreState>()(
           sprintBests: {},
           lifetime: INITIAL_LIFETIME,
           activeSession: null,
+          sprint: null,
         }),
 
       resetDrillProgress: () =>
@@ -398,6 +568,7 @@ export const useDrillStore = create<DrillStoreState>()(
           sprintBests: {},
           lifetime: INITIAL_LIFETIME,
           activeSession: null,
+          sprint: null,
           // Preserve the user's settings intact.
           settings: prev.settings,
         })),
@@ -405,15 +576,21 @@ export const useDrillStore = create<DrillStoreState>()(
     {
       name: DRILL_STORE_KEY,
       // v2 (W7): first-answer "by heart" rule — v1 tiers are re-judged in migrate.
-      version: 2,
+      // v3 (W9b): a reload resumes exactly — the session keeps the verdict on
+      // screen (`feedback`) and its summary tally (`log`), and a Sprint under
+      // way is saved (`sprint`). Older saves load as they are: no verdict
+      // showing, an empty tally, no Sprint open.
+      version: 3,
       storage: createJSONStorage(() => localStorage),
-      // Persist everything — mid-session app kill must resume losslessly
+      // Persist every store change. SprintRunner also saves on pagehide /
+      // hidden; a visible crash resumes its last save (up to 5 s earlier).
       partialize: (state) => ({
         items: state.items,
         settings: state.settings,
         sprintBests: state.sprintBests,
         lifetime: state.lifetime,
         activeSession: state.activeSession,
+        sprint: state.sprint,
       }),
       migrate: (persisted: unknown, version: number) => {
         // Any version mismatch or corrupt data → attempt shape rescue or fall back
@@ -425,8 +602,11 @@ export const useDrillStore = create<DrillStoreState>()(
             sprintBests: {},
             lifetime: INITIAL_LIFETIME,
             activeSession: null,
+            sprint: null,
           };
         }
+        // v2 → v3 needs nothing beyond the shape rescue: the new fields are
+        // optional (feedback, log) or default to closed (sprint).
         if (version < 2) return { ...validated, items: migrateItemsFromV1(validated.items) };
         return validated;
       },
@@ -442,6 +622,7 @@ export const useDrillStore = create<DrillStoreState>()(
             sprintBests: {},
             lifetime: INITIAL_LIFETIME,
             activeSession: null,
+            sprint: null,
           };
         }
         return { ...current, ...validated };
@@ -449,3 +630,6 @@ export const useDrillStore = create<DrillStoreState>()(
     },
   ),
 );
+
+// Once loaded, this tab's session wins over another tab's localStorage writes.
+setDrillWorkStateReader(useDrillStore.getState);

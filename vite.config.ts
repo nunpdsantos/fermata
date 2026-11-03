@@ -1,8 +1,10 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { execSync } from 'node:child_process'
 import { existsSync, readFileSync, statSync } from 'node:fs'
+import { parseReleaseNotes, versionInfo } from './src/release/releaseNotes.ts'
 
 // `vite preview` serves the PRODUCTION security headers from vercel.json (the
 // catch-all rule), so the preview-build browser tests run under the real CSP
@@ -48,6 +50,37 @@ function addStaticImportClosure(entries: PrecacheEntry[]): { manifest: PrecacheE
   return { manifest, warnings: [] }
 }
 
+/**
+ * Release notes + the build's version file (W9b). release-notes.json (repo
+ * root, newest first) is the source; a malformed file fails the build. The
+ * app gets its own release number and note (`__APP_RELEASE__`), and every
+ * build publishes dist/version.json — build id, date, release, critical,
+ * criticalSince, one-line notes in EN/PT/ES — which a running app fetches to
+ * show "What's new" and to tell a critical update. It is NOT precached (the
+ * globs below have no *.json): the network copy describes the waiting version.
+ */
+const RELEASES = parseReleaseNotes(JSON.parse(readFileSync(new URL('./release-notes.json', import.meta.url), 'utf8')))
+const BUILD_DATE = new Date().toISOString().slice(0, 10)
+function buildId(): string {
+  const fromVercel = process.env.VERCEL_GIT_COMMIT_SHA
+  if (fromVercel) return fromVercel.slice(0, 12)
+  try {
+    return execSync('git rev-parse --short=12 HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+  } catch {
+    return 'unknown'
+  }
+}
+function versionJson(): Plugin {
+  return {
+    name: 'fermata-version-json',
+    apply: 'build',
+    generateBundle() {
+      const info = versionInfo(RELEASES, buildId(), BUILD_DATE)
+      this.emitFile({ type: 'asset', fileName: 'version.json', source: `${JSON.stringify(info, null, 2)}\n` })
+    },
+  }
+}
+
 /** Entry module of a translated-content chunk (see chunkFileNames). */
 function isTranslatedContent(modulePath: string): boolean {
   return modulePath.includes('/src/i18n/content/') || /\/src\/.+\.[a-z]{2}\.(ts|json)$/.test(modulePath)
@@ -57,7 +90,11 @@ export default defineConfig({
   // The build's UTC date, shown in Settings ("Fermata · build 2026-10-31",
   // W11-A). src/buildInfo.ts reads it; unit tests run without it.
   define: {
-    __BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)),
+    __BUILD_DATE__: JSON.stringify(BUILD_DATE),
+    // This build's newest release and its note (src/buildInfo.ts) — never
+    // the build id, so a commit without code changes ships no update the same
+    // UTC day (__BUILD_DATE__ above does change the bundle on a later day).
+    __APP_RELEASE__: JSON.stringify({ release: RELEASES[0].release, notes: RELEASES[0].notes }),
   },
   preview: {
     headers: productionHeaders(),
@@ -65,6 +102,7 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    versionJson(),
     VitePWA({
       // 'prompt' (audit W9-06 / D-21): a new version installs in the background
       // and WAITS; the "new version — reload" toast asks, and only the
@@ -116,49 +154,35 @@ export default defineConfig({
         // fails if it does.
         clientsClaim: true,
         skipWaiting: false,
-        // Precache only the app shell + small core deps. Curriculum data,
-        // exercises, and VexFlow stream in via runtimeCaching on demand —
-        // a Level-1 user shouldn't pay for Level-9 content on first visit.
-        // Drill chunks ARE precached: the manifest advertises a "Start Drill"
-        // shortcut, which must work from a fresh offline install.
-        // prng is shared by Drill and the Learn exercise shuffle → its own
-        // chunk; it must ride along or the DrillView import fails offline.
-        // The lazy Fretboard and Quick Search chunks are part of the shell, so
-        // they are precached too (audit W9-11); their own imports ride along
-        // via manifestTransforms below. `npm run check:sw` fails if a
-        // precached file imports a chunk that is not precached.
-        globPatterns: [
-          '**/*.{css,html,ico,png,svg,woff2}',
-          'assets/index-*.js', 'assets/i18next-*.js', 'assets/framer-motion-*.js', 'assets/zustand-*.js',
-          'assets/DrillView-*.js', 'assets/drillStore-*.js', 'assets/prng-*.js', 'assets/workbox-window*.js',
-          'assets/Fretboard-*.js', 'assets/QuickSearch-*.js', 'assets/NeckView-*.js',
-          // The Explore and Learn views and the notation component they lazy-
-          // load are part of the shell too: offline after a single online
-          // visit, Explore and Learn must open even with no HTTP cache
-          // (review item 6 — they loaded before the new worker took control,
-          // so runtime caching never saw them). VexFlow stays runtime-cached;
-          // usePWA warms it (and anything else loaded before control).
-          'assets/ExploreView-*.js', 'assets/LearnView-*.js', 'assets/StaffNotation-*.js',
-          'assets/celebrationSound-*.js',
-        ],
-        // …plus every chunk those import statically, transitively (their
-        // split-out dependencies: fingeringStore, moduleIndex, parsers, …).
+        // W9b: a worker can count the app's open windows for a page about to
+        // apply an update silently (public/sw-window-count.js; a tab that
+        // cannot say it is idle counts as busy — src/services/otherTabs.ts).
+        importScripts: ['sw-window-count.js'],
+        // EVERY JS and CSS file of the build is precached (W9b, superseding
+        // D-22's "load on demand" for code chunks): app code, every level's
+        // curriculum / exercises / templates, VexFlow, and every translated-
+        // content `i18n-*` chunk. This includes the lazy Fretboard, Quick
+        // Search and W11-B NeckView, plus Explore / Learn / StaffNotation /
+        // celebrationSound; Drill and its shared prng must work from a fresh
+        // offline install (the manifest's "Start Drill" shortcut). Views must
+        // open offline after one online visit, even without an HTTP cache;
+        // usePWA warms files loaded before the worker took control.
+        // A page still running an older build — an
+        // update waiting, "Later" — then never needs the server for its own
+        // files: after a deploy those URLs are gone from the server, and a
+        // view or level opened for the first time used to fail until the
+        // reload. Cost (measured, CLAUDE.md PWA section): the precache grows
+        // to the whole code bundle, downloaded once, AFTER the page has
+        // loaded (the worker registers on window load — first paint is not
+        // delayed), then only changed files per update (hashed names).
+        // Audio samples stay on demand (runtime-cached below). `npm run
+        // check:sw` fails if any JS/CSS file is not precached.
+        globPatterns: ['**/*.{css,html,ico,png,svg,woff2}', 'assets/**/*.js'],
+        // A precached file's static imports, transitively — a no-op while the
+        // globs take every chunk; kept so narrowing them can never leave a
+        // precached file with an import that is not.
         manifestTransforms: [addStaticImportClosure],
-        globIgnores: [
-          '**/vexflow*',
-          '**/curriculum[lL]*',
-          '**/exercisesL*',
-          '**/templatesL*',
-        ],
         runtimeCaching: [
-          {
-            urlPattern: /\/assets\/vexflow-.*\.js$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'vexflow-cache',
-              expiration: { maxEntries: 2, maxAgeSeconds: 30 * 24 * 60 * 60 },
-            },
-          },
           // Salamander piano samples (~2 MB total): immutable, fetched lazily,
           // cached forever so the sampled piano works offline after first use.
           {
@@ -180,38 +204,9 @@ export default defineConfig({
               expiration: { maxEntries: 45, maxAgeSeconds: 365 * 24 * 60 * 60 },
             },
           },
-          // Curriculum levels + exercises + templates + view chunks + the
-          // notation/celebration satellites those views lazy-import:
-          // StaleWhileRevalidate so users get offline support after first
-          // touch without blowing up the first-visit precache. StaffNotation
-          // is the entry point for the cached vexflow chunk — without it,
-          // notation exercises broke offline even with vexflow cached.
-          // `i18n-` = EVERY translated-content chunk, whatever its file is
-          // called (PT/ES curriculum / exercise / template / song overlays,
-          // per-language module titles …) — see chunkFileNames below. One
-          // generic pattern, so a new overlay file can't silently fall
-          // outside the cache and drop to English offline.
-          {
-            urlPattern: /\/assets\/(i18n-|curriculum[Ll]|exercisesL|templatesL|ExploreView-|LearnView-|StaffNotation|notationHelpers|celebrationSound).*\.js$/,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'content-cache',
-              expiration: { maxEntries: 80, maxAgeSeconds: 30 * 24 * 60 * 60 },
-            },
-          },
-          // Every OTHER code-split file (a store split out by a dynamic
-          // import, the lazy Fretboard / Quick Search chunks, …). Hashed names
-          // never change content, so CacheFirst. Must stay LAST: workbox uses
-          // the first matching route. `npm run check:sw` fails if any emitted
-          // JS/CSS file is neither precached nor matched by a route.
-          {
-            urlPattern: /\/assets\/[^/]+\.(js|css)$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'app-chunks',
-              expiration: { maxEntries: 120, maxAgeSeconds: 30 * 24 * 60 * 60 },
-            },
-          },
+          // (The code-chunk runtime caches of before W9b — vexflow-cache,
+          // content-cache, app-chunks — are gone: every chunk is precached.
+          // usePWA deletes the old caches once this worker controls the page.)
         ],
       },
       // Dev service worker disabled: a registered SW during development
@@ -225,12 +220,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // Translated content gets an `i18n-` file-name prefix so the service
-        // worker's content-cache route covers all of it generically: any chunk
-        // whose entry module lives under src/i18n/content/ (the PT/ES
-        // overlays, loaded per language and level) or is a language-suffixed
-        // data file (e.g. moduleTitles.pt.ts). `npm run check:sw` fails if a
-        // content-overlay chunk is not covered by that route.
+        // Translated content gets an `i18n-` file-name prefix: any chunk whose
+        // entry module lives under src/i18n/content/ (the PT/ES overlays,
+        // loaded per language and level) or is a language-suffixed data file
+        // (e.g. moduleTitles.pt.ts). `npm run check:sw` finds every overlay
+        // chunk by it (and by the loader's glob map) and fails if one is not
+        // precached.
         chunkFileNames(chunk) {
           const entry = chunk.facadeModuleId?.replace(/\\/g, '/') ?? '';
           return isTranslatedContent(entry) ? 'assets/i18n-[name]-[hash].js' : 'assets/[name]-[hash].js';

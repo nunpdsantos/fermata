@@ -7,7 +7,7 @@
  * e2e/pwa.spec.ts).
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, cleanup, act, within } from '@testing-library/react';
+import { render, screen, cleanup, act, within, fireEvent } from '@testing-library/react';
 
 const { reloadPage } = vi.hoisted(() => ({ reloadPage: vi.fn() }));
 vi.mock('../../../utils/pageReload', () => ({ reloadPage }));
@@ -36,6 +36,9 @@ describe('PWA toasts never overlap (review B1)', () => {
   it('all three at once: one stack, update first, every action reachable', async () => {
     const { stub, PWAPrompts } = await fresh();
     render(<PWAPrompts />);
+    // Mid-use (the learner has touched the app): an update asks (W9b — at a
+    // fresh start with nothing in progress it would apply silently instead).
+    fireEvent.pointerDown(window);
     act(() => {
       stub.lastOptions!.onOfflineReady!();
       stub.lastOptions!.onNeedRefresh!();

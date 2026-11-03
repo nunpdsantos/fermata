@@ -365,7 +365,10 @@
     "updateReady": "Atualização pronta: recarregar",
     "newVersion": "Nova vers\u00e3o dispon\u00edvel",
     "offlineReady": "App pronta para uso offline",
-    "installPrompt": "Instalar Fermata?"
+    "installPrompt": "Instalar Fermata?",
+    "whatsNew": "Novidades: {{note}}",
+    "updated": "Atualizado para a versão mais recente",
+    "finishUpdate": "Recarrega para concluir a atualização"
   },
   "error": {
     "somethingWentWrong": "Algo correu mal",
