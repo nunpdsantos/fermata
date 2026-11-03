@@ -10,52 +10,33 @@
  * recorded. To keep the just-answered question (and its feedback) on screen, the
  * runner tracks the DISPLAYED question id in its own state and only moves it
  * forward on `advance()` — never as a side effect of recording.
+ *
+ * Lossless reload (W9b): the store also keeps the verdict on screen
+ * (`activeSession.feedback`) and the session's summary tally
+ * (`activeSession.log`), so after a reload — an app update, the OS killing
+ * the page — the runner comes back on the same question, in the same phase,
+ * with the same summary to come.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { DrillFamily, DrillItem, MasteryTier } from '../../core/types/drill';
+import type { DrillItem } from '../../core/types/drill';
 import { generateDrillBank } from '../../core/utils/drillBank';
 import {
   useDrillStore,
   isSessionComplete,
+  emptySessionLog,
   type ActiveSession,
+  type SessionLog,
 } from '../../state/drillStore';
 import { gradeAnswer, type AnswerPayload, type GradeResult } from './grading';
 import { playAnswerAudio } from './answerAudio';
 
-// ─── In-memory session log (drives SessionSummary) ───────────────────────────
-// The runner accumulates a lightweight per-session record so the summary can
-// show a per-family breakdown and tier-change callouts WITHOUT adding any store
-// fields. It lives only in a ref for the life of one session — a mid-session app
-// kill loses it (acceptable: the spec scopes it to in-memory only).
+// ─── Session log (drives SessionSummary) ─────────────────────────────────────
+// Per-family breakdown + tier-up crossings for the summary. Kept by the store
+// in `activeSession.log` since W9b (it used to live in a ref here, so a reload
+// lost it).
 
-/** Per-family answered tally for the current session. */
-export interface FamilySessionTally {
-  asked: number;
-  correct: number;
-}
-
-export interface SessionSummaryData {
-  correct: number;
-  asked: number;
-  /** Only families that were actually answered this session appear here. */
-  byFamily: Partial<Record<DrillFamily, FamilySessionTally>>;
-  /** Count of answered items whose tier crossed UP into 'byHeart' this session. */
-  newlyByHeart: number;
-  /** Count of answered items whose tier crossed UP into 'review' this session. */
-  newlyReview: number;
-}
-
-function emptyLog(): SessionSummaryData {
-  return { correct: 0, asked: 0, byFamily: {}, newlyByHeart: 0, newlyReview: 0 };
-}
-
-/** Ordinal rank of a tier, for detecting an upward crossing. */
-const TIER_RANK: Record<MasteryTier, number> = {
-  new: 0,
-  learning: 1,
-  review: 2,
-  byHeart: 3,
-};
+export type { FamilySessionTally } from '../../state/drillStore';
+export type SessionSummaryData = SessionLog;
 
 // ─── Module-level bank memo ──────────────────────────────────────────────────
 // generateDrillBank() is expensive (~1,300 items). Build it once per module
@@ -113,7 +94,7 @@ export interface DrillRunner {
   total: number;
   correctCount: number;
   sessionComplete: boolean;
-  /** In-memory per-session breakdown for the summary screen. */
+  /** Per-session breakdown for the summary screen (the store's session log). */
   summary: SessionSummaryData;
   answer: (payload: AnswerPayload) => void; // grades, records, enters feedback
   advance: () => void; // feedback → next question (manual; used on wrong answers)
@@ -130,25 +111,30 @@ export function useDrillRunner(): DrillRunner {
   const settings = useDrillStore((s) => s.settings);
   const startSession = useDrillStore((s) => s.startSession);
   const recordAnswer = useDrillStore((s) => s.recordAnswer);
+  const clearFeedback = useDrillStore((s) => s.clearFeedback);
   const endSessionStore = useDrillStore((s) => s.endSession);
 
-  const [phase, setPhase] = useState<'answering' | 'feedback'>('answering');
-  const [result, setResult] = useState<GradeResult | null>(null);
+  // A verdict that was on screen when the page went away (W9b): resume ON it.
+  // Read once, at mount (lazy initializer); an id the bank no longer has is
+  // ignored (the question at the pointer is shown instead).
+  const [resumed] = useState(() => {
+    const feedback = useDrillStore.getState().activeSession?.feedback;
+    return feedback && byId.has(feedback.itemId) ? feedback : null;
+  });
+  const [phase, setPhase] = useState<'answering' | 'feedback'>(resumed ? 'feedback' : 'answering');
+  const [result, setResult] = useState<GradeResult | null>(
+    resumed ? { correct: resumed.correct, nearMiss: resumed.nearMiss } : null,
+  );
   // The question currently ON SCREEN. Decoupled from the store pointer so a
   // just-answered question (and its feedback) survives the pointer advancing.
-  const [displayId, setDisplayId] = useState<string | null>(null);
+  const [displayId, setDisplayId] = useState<string | null>(resumed?.itemId ?? null);
   // Bumped on every deliberate move to a question (advance, restart), so an
   // item shown twice in a row still gets a fresh input instance.
   const [presentation, setPresentation] = useState(0);
   // Snapshot captured when the user ENDS a session early (✕). The store nulls
   // the session, so the summary reads its score from here. null = not ended this
   // way (either running or completed naturally — which keeps its live session).
-  const [endedSummary, setEndedSummary] = useState<{ asked: number; correct: number } | null>(null);
-
-  // In-memory session log — accumulates per-family tallies + tier-up crossings.
-  // A ref (not state): mutating it must not re-render; the summary reads it once
-  // the session completes. Reset on every fresh session (mount-start + restart).
-  const sessionLog = useRef<SessionSummaryData>(emptyLog());
+  const [endedSummary, setEndedSummary] = useState<{ asked: number; correct: number; log: SessionLog } | null>(null);
 
   // Timestamp the displayed prompt was shown; reset whenever it changes.
   const promptShownAt = useRef<number>(performance.now());
@@ -211,49 +197,45 @@ export function useDrillRunner(): DrillRunner {
 
   const advance = useCallback(() => {
     clearAdvanceTimer();
+    clearFeedback();
     setResult(null);
     setPhase('answering');
     goToCurrent(); // store index already advanced by recordAnswer
-  }, [clearAdvanceTimer, goToCurrent]);
+  }, [clearAdvanceTimer, clearFeedback, goToCurrent]);
+
+  // Auto-advance after a brief feedback flash (correct answers). Timing is
+  // not an animation — kept even under prefers-reduced-motion.
+  const scheduleAutoAdvance = useCallback(() => {
+    clearAdvanceTimer();
+    advanceTimer.current = setTimeout(() => {
+      advanceTimer.current = null;
+      advance();
+    }, AUTO_ADVANCE_MS);
+  }, [clearAdvanceTimer, advance]);
+
+  // Resumed on a CORRECT verdict: it auto-advances as it would have.
+  useEffect(() => {
+    if (resumed?.correct) scheduleAutoAdvance();
+    // Once, on mount (the resumed verdict is a mount-time snapshot).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const answer = useCallback(
     (payload: AnswerPayload) => {
       if (phase !== 'answering' || !item) return;
       const ms = performance.now() - promptShownAt.current;
       const graded = gradeAnswer(item, payload);
-      // Capture the tier BEFORE recording so the summary can report crossings.
-      const tierBefore = useDrillStore.getState().items[item.id]?.tier ?? 'new';
-      recordAnswer(item, graded.correct, ms, Date.now()); // advances store pointer
-      // Read the post-answer tier and log this answer in-memory for the summary.
-      const tierAfter = useDrillStore.getState().items[item.id]?.tier ?? 'new';
-      const log = sessionLog.current;
-      log.asked += 1;
-      if (graded.correct) log.correct += 1;
-      const fam = (log.byFamily[item.family] ??= { asked: 0, correct: 0 });
-      fam.asked += 1;
-      if (graded.correct) fam.correct += 1;
-      if (TIER_RANK[tierAfter] > TIER_RANK[tierBefore]) {
-        if (tierAfter === 'byHeart') log.newlyByHeart += 1;
-        else if (tierAfter === 'review') log.newlyReview += 1;
-      }
+      // Advances the store pointer, logs the answer for the summary and keeps
+      // the verdict (so a reload comes back on it).
+      recordAnswer(item, graded.correct, ms, Date.now(), graded.nearMiss);
       setResult(graded);
       setPhase('feedback'); // displayId stays on the answered item
       // Reveal audio: play the answer (chords/intervals/scales) on every answer,
       // right or wrong, when sound is on. Fire-and-forget — never blocks advance.
       if (settings.sound) playAnswerAudio(item);
-      if (graded.correct) {
-        // Auto-advance after a brief feedback flash. (Timing is not an
-        // animation — keep it even under prefers-reduced-motion.)
-        clearAdvanceTimer();
-        advanceTimer.current = setTimeout(() => {
-          advanceTimer.current = null;
-          setResult(null);
-          setPhase('answering');
-          goToCurrent();
-        }, AUTO_ADVANCE_MS);
-      }
+      if (graded.correct) scheduleAutoAdvance();
     },
-    [phase, item, recordAnswer, clearAdvanceTimer, goToCurrent, settings.sound],
+    [phase, item, recordAnswer, settings.sound, scheduleAutoAdvance],
   );
 
   const endSession = useCallback(() => {
@@ -264,7 +246,7 @@ export function useDrillRunner(): DrillRunner {
     // Snapshot the score BEFORE the store nulls the session, so the summary
     // can show it.
     const s = useDrillStore.getState().activeSession;
-    setEndedSummary({ asked: s?.asked ?? 0, correct: s?.correct ?? 0 });
+    setEndedSummary({ asked: s?.asked ?? 0, correct: s?.correct ?? 0, log: s?.log ?? emptySessionLog() });
     endSessionStore();
   }, [clearAdvanceTimer, endSessionStore]);
 
@@ -273,8 +255,7 @@ export function useDrillRunner(): DrillRunner {
     setResult(null);
     setPhase('answering');
     setEndedSummary(null);
-    sessionLog.current = emptyLog(); // fresh log for the new session
-    startSession(bank, Date.now());
+    startSession(bank, Date.now()); // a new session starts with an empty log
     // Read the freshly-composed queue's first id immediately.
     const session = useDrillStore.getState().activeSession;
     setDisplayId(session ? currentKnownId(session, byId) : null);
@@ -309,9 +290,9 @@ export function useDrillRunner(): DrillRunner {
     correctCount,
     sessionComplete: complete,
     // Headline numbers track the store/snapshot (authoritative even on resume);
-    // the per-family breakdown + crossings come from the in-memory log.
+    // the per-family breakdown + crossings come from the session log.
     summary: {
-      ...sessionLog.current,
+      ...(endedSummary?.log ?? activeSession?.log ?? emptySessionLog()),
       asked,
       correct: correctCount,
     },

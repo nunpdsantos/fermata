@@ -1,27 +1,29 @@
 /**
- * "Is the learner in the middle of something?" — asked before an app update
- * is applied silently (W9b). Each part of the app that can hold work in
- * progress registers a check under its own source name; a later registration
- * under the same source replaces the earlier one. A check that throws counts
- * as work in progress (when in doubt, don't reload under the learner).
+ * Work in progress — the one question an app update asks before it applies
+ * itself without asking: "would reloading now cut something off?"
  *
- * Learn registers 'learn': true while a lesson or review is open in Learn
- * (reading counts) or a check (or practice round) is under way and not
- * finished; false on the Learn overview and level lists.
+ * Each part of the app that holds unsaved, in-progress work registers a
+ * check (Drill: a session or a Sprint under way — src/state/drillWork.ts;
+ * Learn: an exercise check in progress, registered by Learn). usePWA only
+ * applies a waiting update silently when no registered source reports
+ * active (W9b). Interface fixed by the coordinator; W4b uses the same file.
  */
-const checks = new Map<string, () => boolean>();
 
-/** Register (or replace) a source's check. Returns a function that unregisters it. */
+const sources = new Map<string, () => boolean>();
+
+/** Sources that hold unsaved, in-progress work (a Drill session, a Learn check…). */
 export function registerWorkInProgress(source: string, isActive: () => boolean): () => void {
-  checks.set(source, isActive);
+  // Registering the same source again replaces its check.
+  sources.set(source, isActive);
   return () => {
-    if (checks.get(source) === isActive) checks.delete(source);
+    // Only remove our own check — never a newer registration of the same source.
+    if (sources.get(source) === isActive) sources.delete(source);
   };
 }
 
-/** True if any registered check reports work in progress (a throwing check counts as true). */
+/** True if any registered source reports active. A check that throws counts as active (the safe side). */
 export function hasWorkInProgress(): boolean {
-  for (const isActive of checks.values()) {
+  for (const isActive of sources.values()) {
     try {
       if (isActive()) return true;
     } catch {

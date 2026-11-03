@@ -11,6 +11,13 @@
  *  - Notation ships VexFlow's Bravura-only entry: its chunk embeds at most
  *    the three fonts that entry registers (Bravura, Academico, Academico
  *    Bold) — the full entry embeds six (audit W9-10).
+ *  - The build id (commit) in dist/version.json appears in NO code file and
+ *    not in index.html (W9b): baked into the bundle it would make every
+ *    commit's deploy a new app version for every learner. (The build DATE is
+ *    in the bundle — the Settings footer — so a deploy on a later UTC day is
+ *    a new version anyway; one on the same day with no code change is not.)
+ *    A build with no commit to name (no git, no VERCEL_GIT_COMMIT_SHA) is
+ *    "unknown": nothing to probe for, the check is skipped with a note.
  *
  * Usage: node scripts/check-bundle.mjs [distDir=dist]
  * Exit 0 = all good; 1 = a budget broken (listed); 2 = no build.
@@ -73,6 +80,26 @@ for (const script of inlineScripts) {
   const hash = crypto.createHash('sha256').update(script, 'utf8').digest('base64');
   if (!csp.includes(`'sha256-${hash}'`)) {
     problems.push(`inline script in index.html (sha256-${hash}) is not allowed by the CSP in vercel.json — production would block it`);
+  }
+}
+
+const versionPath = path.join(dist, 'version.json');
+if (!fs.existsSync(versionPath)) {
+  problems.push('dist/version.json is missing — the build-id probe below cannot run');
+} else {
+  const { build } = JSON.parse(fs.readFileSync(versionPath, 'utf8'));
+  if (build === 'unknown') {
+    console.log('check-bundle: NOTE build id is "unknown" (no git, no VERCEL_GIT_COMMIT_SHA) — the build-id probe is skipped');
+  } else if (typeof build !== 'string' || build.length < 7) {
+    problems.push(`dist/version.json build id "${build}" is too short to probe for`);
+  } else {
+    const shipped = [
+      ['index.html', html],
+      ...assets.filter((f) => /\.(js|css)$/.test(f)).map((f) => [`assets/${f}`, fs.readFileSync(path.join(dist, 'assets', f), 'utf8')]),
+    ];
+    for (const [name, text] of shipped) {
+      if (text.includes(build)) problems.push(`${name} contains the build id ${build} — every deploy would be a new version`);
+    }
   }
 }
 

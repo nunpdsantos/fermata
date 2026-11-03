@@ -41,7 +41,13 @@ interface PianoKeyProps {
   isFocused?: boolean;
   onKeyDown?: (e: React.KeyboardEvent, keyData: PianoKeyData) => void;
   onKeyUp?: (e: React.KeyboardEvent, keyData: PianoKeyData) => void;
-  onFocus?: (keyData: PianoKeyData) => void;
+  /** `visible`: the focus came from the keyboard (:focus-visible). */
+  onFocus?: (keyData: PianoKeyData, visible?: boolean) => void;
+  /** Lit as the linked focus note (W11-B): an accent ring inside the key. */
+  isFocusNote?: boolean;
+  /** A real mouse entered (true) / left (false) the key. */
+  onHover?: (keyData: PianoKeyData, on: boolean) => void;
+  onKeyBlur?: () => void;
 }
 
 export const PianoKeyComponent = memo(function PianoKeyComponent({
@@ -61,6 +67,9 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
   onKeyDown,
   onKeyUp,
   onFocus,
+  isFocusNote = false,
+  onHover,
+  onKeyBlur,
 }: PianoKeyProps) {
   const isMobile = sizeMode === 'mobile';
 
@@ -142,16 +151,24 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
     [keyData, onNoteOff, onKeyUp],
   );
 
-  const handleFocus = useCallback(() => {
-    onFocus?.(keyData);
+  const handleFocus = useCallback((e: React.FocusEvent<HTMLDivElement>) => {
+    onFocus?.(keyData, e.currentTarget.matches(':focus-visible'));
   }, [keyData, onFocus]);
 
   const handleBlur = useCallback(() => {
+    onKeyBlur?.();
     if (isPressed.current) {
       isPressed.current = false;
       onNoteOff(keyData);
     }
-  }, [keyData, onNoteOff]);
+  }, [keyData, onNoteOff, onKeyBlur]);
+
+  const handlePointerEnter = useCallback(
+    (e: React.PointerEvent) => {
+      if (e.pointerType === 'mouse') onHover?.(keyData, true);
+    },
+    [keyData, onHover],
+  );
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
@@ -199,13 +216,14 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
       // (v1: no cross-key slide retriggering). Leave is a no-op on touch.
       if (isMobile) return;
       // Desktop: the mouse leaving a pressed key releases that note.
+      if (e.pointerType === 'mouse') onHover?.(keyData, false);
       e.preventDefault();
       if (isPressed.current) {
         isPressed.current = false;
         onNoteOff(keyData);
       }
     },
-    [keyData, onNoteOff, isMobile]
+    [keyData, onNoteOff, isMobile, onHover]
   );
 
   // The printed name follows the context spelling; everything physical (octave,
@@ -282,6 +300,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
         tabIndex={isFocused ? 0 : -1}
         data-focus-ring="custom"
         className="absolute z-10 cursor-pointer select-none touch-none"
+        data-focus-note={isFocusNote || undefined}
         style={{
           width: bw + touchPad * 2,
           height: bh + touchPad,
@@ -292,6 +311,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
         }}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
+        onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
         onPointerCancel={handlePointerUp}
         onKeyDown={handleKeyDown}
@@ -307,7 +327,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
             opacity,
             borderRadius: '0 0 4px 4px',
             border,
-            boxShadow: shadow,
+            boxShadow: isFocusNote ? `${shadow}, inset 0 0 0 3px var(--accent), 0 0 0 2px var(--accent)` : shadow,
             transform,
             transition: 'transform 0.05s, background-color 0.08s, opacity 0.15s, box-shadow 0.15s, border 0.1s',
             position: 'relative',
@@ -377,20 +397,26 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
       tabIndex={isFocused ? 0 : -1}
       data-focus-ring="custom"
       className="relative shrink-0 cursor-pointer select-none touch-none"
+      data-focus-note={isFocusNote || undefined}
       style={{
         width: ww,
         height: wh,
         backgroundColor: bg,
         opacity,
         borderRadius: '0 0 6px 6px',
-        border: isFocused ? '2px solid var(--focus-ring)' : border,
+        // Longhand sides (no top edge): mixing the border shorthand with
+        // borderTop made React warn on every re-render that changed it.
+        borderLeft: isFocused ? '2px solid var(--focus-ring)' : border,
+        borderRight: isFocused ? '2px solid var(--focus-ring)' : border,
+        borderBottom: isFocused ? '2px solid var(--focus-ring)' : border,
         borderTop: 'none',
-        boxShadow: shadow,
+        boxShadow: isFocusNote ? `${shadow}, inset 0 0 0 3px var(--accent)` : shadow,
         transform,
         transition: 'transform 0.05s, background-color 0.08s, opacity 0.15s, box-shadow 0.15s, border 0.1s',
       }}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
+      onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
       onPointerCancel={handlePointerUp}
       onKeyDown={handleKeyDown}

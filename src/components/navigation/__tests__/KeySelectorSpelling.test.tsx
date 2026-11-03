@@ -9,7 +9,19 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, cleanup, fireEvent, screen } from '@testing-library/react';
 import type { Note, ScaleType } from '../../../core/types/music';
-import { KeySelector } from '../KeySelector';
+import { RootChips, ScalePicker } from '../KeySelector';
+
+// The workbench pickers (W11-B): root chips (with the respell button) and the scale select.
+function KeySelector() {
+  return (
+    <>
+      <RootChips />
+      <ScalePicker />
+    </>
+  );
+}
+const pickScale = (type: string) =>
+  fireEvent.change(screen.getByRole('combobox', { name: 'Scale' }), { target: { value: type } });
 import { useAppStore } from '../../../state/store';
 import { SCALE_FORMULAS } from '../../../core/constants/scales';
 import { spellDegree, pcOf, majorKeySignature, PARENT_RULE, ORACLE_SCALES, accMarks } from '../../../core/utils/__tests__/theoryOracle';
@@ -113,16 +125,16 @@ describe('W1-09 — root spelling chosen by mode', () => {
   it('changing the scale respells the root only when the other name is simpler', () => {
     select('Db', 'major');
     render(<KeySelector />);
-    fireEvent.click(screen.getByText('Minor'));
+    pickScale('natural_minor');
     expect(str(useAppStore.getState().selectedKey)).toBe('C#'); // Db minor would need Fb and Bbb
-    fireEvent.click(screen.getByText('Dorian'));
+    pickScale('dorian');
     expect(str(useAppStore.getState().selectedKey)).toBe('C#'); // C# dorian (5) beats Db dorian (7)
   });
 
   it('G# minor switched to melodic minor stays G# (5♯ beats A♭ melodic minor 7♭)', () => {
     select('G#', 'natural_minor');
     render(<KeySelector />);
-    fireEvent.click(screen.getByText('Mel. Minor'));
+    pickScale('melodic_minor');
     expect(useAppStore.getState().selectedScale).toBe('melodic_minor');
     expect(str(useAppStore.getState().selectedKey)).toBe('G#');
   });
@@ -136,7 +148,7 @@ describe('W1-09 — root spelling chosen by mode', () => {
   it('re-clicking the active scale never respells the root', () => {
     select('C#', 'major');
     render(<KeySelector />);
-    fireEvent.click(screen.getByText('Major'));
+    pickScale('major');
     expect(str(useAppStore.getState().selectedKey)).toBe('C#');
   });
 

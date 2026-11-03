@@ -94,7 +94,63 @@
     "vs": "vs",
     "staffNotation": "Staff Notation",
     "noDiatonicChords": "No diatonic chords for this scale type",
-    "noDiatonicChordsHint": "Try a different scale to see chord harmony"
+    "noDiatonicChordsHint": "Try a different scale to see chord harmony",
+    "playScale": "Play scale",
+    "scaleActions": "Scale actions",
+    "keyPickerLabel": "Key: {{key}} — choose a key",
+    "keySheetTitle": "Key",
+    "relativeKey": "relative {{key}}",
+    "chordsIn": "Chords in {{key}}",
+    "inKey": "In key",
+    "circleChordRoot": "root of the selected chord",
+    "strip": {
+      "title": "Notes of the scale",
+      "hint": "Tap a note to hear it",
+      "writtenOctave": "written an octave above sounding",
+      "group": "Notes of the scale: tap one to hear it"
+    },
+    "facts": {
+      "signature": "Signature",
+      "relative": "Relative",
+      "dominant": "Dominant key",
+      "subdominant": "Subdominant key"
+    },
+    "fn": {
+      "tonic": "tonic",
+      "supertonic": "supertonic",
+      "mediant": "mediant",
+      "subdominant": "subdominant",
+      "tritone": "tritone",
+      "dominant": "dominant",
+      "augFifth": "augmented 5th",
+      "submediant": "submediant",
+      "subtonic": "subtonic",
+      "leading": "leading note"
+    },
+    "readout": {
+      "rootOf": "root of {{chord}}",
+      "bassOf": "bass of {{chord}}",
+      "toneOf": "{{tone}} of {{chord}}",
+      "tone2": "2nd",
+      "tone3": "3rd",
+      "tone4": "4th",
+      "tone5": "5th",
+      "tone6": "6th",
+      "tone7": "7th",
+      "tone9": "9th",
+      "tone11": "11th",
+      "tone13": "13th",
+      "fnOf": "{{fn}} of {{key}}",
+      "degreeOf": "{{degree}} of {{key}}",
+      "notIn": "not in {{key}}",
+      "stringFret": "string {{string}} fret {{fret}}",
+      "stringOpen": "string {{string}} open"
+    },
+    "summary": {
+      "notes": "Notes",
+      "count": "Count",
+      "selectedChord": "Selected chord"
+    }
   },
   "play": {
     "performanceMode": "Performance Mode",
@@ -206,7 +262,8 @@
     "symmetric": "Symmetric",
     "melMinorModes": "Mel. Minor Modes",
     "bebop": "Bebop",
-    "world": "World"
+    "world": "World",
+    "harmMinorModes": "Harm. Minor Modes"
   },
   "learn": {
     "title": "Learn Music Theory",
@@ -317,7 +374,10 @@
     "updateReady": "Update ready: reload",
     "newVersion": "New version available",
     "offlineReady": "App ready for offline use",
-    "installPrompt": "Install Fermata?"
+    "installPrompt": "Install Fermata?",
+    "whatsNew": "What’s new: {{note}}",
+    "updated": "Updated to the latest version",
+    "finishUpdate": "Reload to finish updating"
   },
   "error": {
     "somethingWentWrong": "Something went wrong",
@@ -1042,5 +1102,9 @@
     "nudgeEarProgression": "Hum the bass from chord to chord, and listen for the darker chords and for where the last one lands.",
     "nudgeEarMelody": "Trace the shape: does each note move up or down, by step or by leap? Then compare where each option ends.",
     "oneTryNote": "A question with only two options has one try."
+  },
+  "neck": {
+    "open": "Full neck",
+    "close": "Close full neck"
   }
 }

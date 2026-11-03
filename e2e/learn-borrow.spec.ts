@@ -15,8 +15,8 @@ import { test, expect, type Page } from '@playwright/test';
 test.use({ serviceWorkers: 'block', contextOptions: { reducedMotion: 'reduce' } });
 
 const LESSON = 'The Staff and Clefs';
-const FS_MELODIC_MINOR = /^F#\s*Melodic Minor$/;
-const C_MAJOR = /^C\s*Major$/;
+const FS_MELODIC_MINOR = /^F#\s*Melodic Minor\s*·/;
+const C_MAJOR = /^C\s*Major\s*·/;
 
 async function seedExplore(page: Page) {
   await page.addInitScript((blob) => {
@@ -32,9 +32,11 @@ async function seedExplore(page: Page) {
   await expectExplore(page, FS_MELODIC_MINOR);
 }
 
-/** Explore's scale heading ("F# Melodic Minor"). */
+/** The header summary starts with the selected root AND scale, before its key facts. */
 async function expectExplore(page: Page, name: RegExp) {
-  await expect(page.locator('#explore-panel').getByRole('heading', { name })).toBeVisible({ timeout: 15_000 });
+  const summary = page.locator('#explore-panel').getByTestId('explore-header').getByTestId('key-summary');
+  await expect(summary).toBeVisible({ timeout: 15_000 });
+  await expect(summary).toHaveText(name);
 }
 
 const lessonHeading = (page: Page) => page.getByRole('heading', { level: 1, name: LESSON });

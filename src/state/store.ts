@@ -8,7 +8,7 @@ import { createPreferencesSlice } from './slices/preferencesSlice.ts';
 import { SCALE_FORMULAS } from '../core/constants/scales.ts';
 import { GUITAR_TUNINGS } from '../core/constants/guitarTunings.ts';
 import { isAppLanguage } from '../i18n/language.ts';
-import { sanitizeDockDetents } from './dock.ts';
+import { sanitizeDockDetents, sanitizeDockChosen } from './dock.ts';
 import type { AppState } from './storeTypes.ts';
 
 // Re-export types so consumers don't need to change imports
@@ -23,6 +23,7 @@ const ALLOWED_VALUES: Record<string, readonly unknown[]> = {
   colorMode: ['functional', 'absolute'],
   lastView: ['explore', 'learn', 'drill'],
   scaleOctaves: [1, 2],
+  exploreCircleOpen: [true, false],
 };
 
 // Numeric ranges. baseOctave = the piano's octave tabs (0–8, whole numbers);
@@ -94,6 +95,13 @@ export function sanitizePersistedAppState(persisted: unknown): Record<string, un
     if (d === null) delete state.dockDetents;
     else if (raw?.explore !== d.explore || raw?.learn !== d.learn) state.dockDetents = d;
   }
+  // dockChosen (W11-B): which detents the learner set; same identity rule.
+  if ('dockChosen' in state) {
+    const c = sanitizeDockChosen(state.dockChosen);
+    const raw = state.dockChosen as Record<string, unknown> | null;
+    if (c === null) delete state.dockChosen;
+    else if (raw?.explore !== c.explore || raw?.learn !== c.learn) state.dockChosen = c;
+  }
 
   // Numeric fields: non-finite or out of range falls back to the default.
   for (const [k, { min, max, integer }] of Object.entries(NUMERIC_RANGES)) {
@@ -160,6 +168,8 @@ export const useAppStore = create<AppState>()(
           preferencesUpdatedAt: state.preferencesUpdatedAt,
           lastView: state.lastView,
           dockDetents: state.dockDetents,
+          dockChosen: state.dockChosen,
+          exploreCircleOpen: state.exploreCircleOpen,
         };
       },
       migrate: (persisted: unknown, version: number) => {
@@ -196,7 +206,19 @@ export const useAppStore = create<AppState>()(
       merge: (persisted, current) => {
         const sanitized = sanitizePersistedAppState(persisted);
         if (sanitized === null) return current;
-        return { ...current, ...sanitized };
+        const merged = { ...current, ...sanitized } as AppState;
+        // A saved Explore detent counts only if the learner set it (W11-B);
+        // otherwise this screen's default applies (Peek when short). A save
+        // from before `dockChosen` existed: anything but the old default
+        // 'half' must have been the learner's.
+        const saved = sanitized.dockDetents as AppState['dockDetents'] | undefined;
+        const chosen = (sanitized.dockChosen as AppState['dockChosen'] | undefined) ?? {
+          explore: !!saved && saved.explore !== 'half',
+          learn: !!saved && saved.learn !== 'peek',
+        };
+        merged.dockChosen = chosen;
+        if (!chosen.explore) merged.dockDetents = { ...merged.dockDetents, explore: current.dockDetents.explore };
+        return merged;
       },
     }
   )

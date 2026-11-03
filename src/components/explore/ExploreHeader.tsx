@@ -1,0 +1,145 @@
+import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { noteToString } from '../../core/types/music.ts';
+import { KeyPicker, ScalePicker, RootChips, RespellButton } from '../navigation/KeySelector.tsx';
+import { ScaleComparison } from '../theory/ScaleComparison.tsx';
+import { CircleOfFifths } from '../theory/CircleOfFifths.tsx';
+import { KeyFactsList } from './CircleNavigator.tsx';
+import { Button, IconButton } from '../ui/Button.tsx';
+import { Menu } from '../ui/Menu.tsx';
+import { Sheet } from '../ui/Sheet.tsx';
+import { useKeyContext } from '../../hooks/useKeyContext.ts';
+import { useMediaQuery, PHONE_QUERY } from '../../hooks/useMediaQuery.ts';
+import { useAppStore } from '../../state/store.ts';
+import { playScale, resumeAudio, cancelScheduledAudio } from '../../core/services/audio.ts';
+import { getSynthConfig } from '../../services/synthConfig.ts';
+import { generateScaleSummary, copyToClipboard } from '../../utils/exportHelpers.ts';
+import { toast } from '../../state/toastStore.ts';
+import { keyFacts } from './keyFacts.ts';
+import { keyName } from './focusReadout.ts';
+import { toContentLanguage } from '../drill/drillText.ts';
+
+const PLAY_ICON = (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <polygon points="5 3 19 12 5 21 5 3" />
+  </svg>
+);
+
+/**
+ * The top of the Explore workbench (W11-B, D-25 / D-29): the key and scale
+ * pickers, a one-line summary ("C Major · no ♯/♭ · relative A minor"),
+ * ▶ Play scale, and a "⋯" with Copy, Print and Compare — they left the main
+ * surface (D-29) but stay one tap away. On a phone the key picker opens a
+ * sheet with the circle of fifths and the twelve roots.
+ */
+export function ExploreHeader() {
+  const { t, i18n } = useTranslation();
+  const { scale, diatonicChords } = useKeyContext();
+  const selectedKey = useAppStore((s) => s.selectedKey);
+  const selectedScale = useAppStore((s) => s.selectedScale);
+  const selectedChord = useAppStore((s) => s.selectedChord);
+  const synthPreset = useAppStore((s) => s.synthPreset);
+  const baseOctave = useAppStore((s) => s.baseOctave);
+  const phone = useMediaQuery(PHONE_QUERY);
+  const [keySheet, setKeySheet] = useState(false);
+  const [compare, setCompare] = useState(false);
+  const facts = keyFacts(selectedKey, selectedScale, t);
+
+  const playScaleNow = useCallback(async () => {
+    await resumeAudio();
+    // Play again restarts cleanly instead of layering a second scale (W8-01).
+    // Audio only: stopPlayback() would also clear other components' visual
+    // timeouts (e.g. the chord panel's arpeggio un-lighting its keys — B2).
+    cancelScheduledAudio();
+    playScale(scale.notes, baseOctave, true, false, 0.25, () => {}, () => {}, getSynthConfig(synthPreset));
+  }, [scale, synthPreset, baseOctave]);
+
+  const copy = async () => {
+    const ok = await copyToClipboard(generateScaleSummary(scale, diatonicChords, selectedChord, { t, lang: toContentLanguage(i18n.language) }));
+    if (ok) toast(t('toast.copiedToClipboard'), 'success');
+  };
+
+  return (
+    <div className="explore-header" data-testid="explore-header">
+      <div className="explore-pickers no-print">
+        {phone ? (
+          <button
+            type="button"
+            className="key-trigger"
+            aria-haspopup="dialog"
+            aria-expanded={keySheet}
+            aria-label={t('explore.keyPickerLabel', { key: noteToString(selectedKey) })}
+            data-testid="key-picker"
+            onClick={() => setKeySheet(true)}
+          >
+            <span aria-hidden="true">{noteToString(selectedKey)}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+        ) : (
+          <>
+            <KeyPicker />
+            <RespellButton />
+          </>
+        )}
+        <ScalePicker className="explore-scale-picker" />
+      </div>
+
+      <p className="explore-summary" data-testid="key-summary">
+        <span className="explore-summary-key">{keyName(scale, t)}</span>
+        {' · '}
+        {facts.signatureText}
+        {facts.relative && <>{' · '}{t('explore.relativeKey', { key: facts.relative })}</>}
+      </p>
+
+      <div className="explore-actions no-print">
+        {phone ? (
+          <IconButton
+            variant="primary"
+            aria-label={t('explore.playScaleAscending')}
+            onClick={playScaleNow}
+            icon={PLAY_ICON}
+          />
+        ) : (
+          <Button variant="primary" onClick={playScaleNow} aria-label={t('explore.playScaleAscending')} startIcon={PLAY_ICON}>
+            {t('explore.playScale')}
+          </Button>
+        )}
+        <Menu
+          label={t('explore.scaleActions')}
+          testId="explore-menu"
+          portal
+          items={[
+            { id: 'copy', label: t('explore.copyScaleSummary'), onSelect: () => void copy() },
+            { id: 'print', label: t('explore.printScaleDiagram'), onSelect: () => window.print() },
+            { id: 'compare', label: t('explore.compareScales'), onSelect: () => setCompare(true) },
+          ]}
+        />
+      </div>
+
+      <Sheet
+        open={keySheet}
+        onClose={() => setKeySheet(false)}
+        title={t('explore.keySheetTitle')}
+        closeLabel={t('common.close')}
+        testId="key-sheet"
+      >
+        <div className="space-y-4 pb-2">
+          <RootChips />
+          <CircleOfFifths />
+          <KeyFactsList />
+        </div>
+      </Sheet>
+      <Sheet
+        open={compare}
+        onClose={() => setCompare(false)}
+        title={t('explore.compareScales')}
+        closeLabel={t('common.close')}
+        testId="compare-sheet"
+      >
+        <ScaleComparison inSheet />
+      </Sheet>
+    </div>
+  );
+}

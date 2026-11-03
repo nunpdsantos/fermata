@@ -218,10 +218,7 @@ export function getResults(query: string, localized?: LocalizedModuleIndex | nul
       type: 'Lesson',
       label: mod.title,
       action: () => {
-        useAppStore.setState({
-          view: 'learn',
-          pendingLearnTarget: { levelId: mod.level, unitId: mod.unitId, moduleId: mod.id },
-        });
+        useAppStore.getState().openLearnTarget({ levelId: mod.level, unitId: mod.unitId, moduleId: mod.id });
       },
     });
   }

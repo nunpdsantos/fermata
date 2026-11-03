@@ -14,7 +14,6 @@ import {
   restorableScreen,
   restorableCheck,
   learnCheckInProgress,
-  learnInProgress,
   fingerprintsOf,
   isValidLearnSession,
   type SavedCheck,
@@ -107,19 +106,25 @@ describe('Learn session store', () => {
     expect(isValidLearnSession({ screen: null, check: savedCheck() })).toBe(true);
   });
 
-  it("'learn' work in progress: a lesson open in Learn (reading counts), not the overview, not another view", () => {
+  it("'learn' work in progress: the overview and reading a lesson or review are idle", () => {
     useAppStore.setState({ view: 'learn' });
-    expect(learnInProgress()).toBe(false); // the overview / level list: no lesson screen saved
-    useLearnSessionStore.getState().setScreen({ type: 'module', levelId: 'l1', unitId: 'u1', moduleId: 'l1u1m1', section: 'c1', at: Date.now() });
-    expect(learnInProgress()).toBe(true);
-    expect(hasWorkInProgress()).toBe(true);
-    useAppStore.setState({ view: 'explore' });
-    expect(learnInProgress()).toBe(false); // the lesson is behind another view: a reload moves nobody
-    useAppStore.setState({ view: 'learn' });
-    useLearnSessionStore.getState().setScreen({ type: 'review', levelId: 'l1', unitId: 'u1', moduleId: 'l1u1m1', section: null, at: Date.now() - LEARN_SESSION_TTL_MS - 1 });
-    expect(learnInProgress()).toBe(false); // stale
-    useLearnSessionStore.getState().setScreen(null);
     expect(hasWorkInProgress()).toBe(false);
+    for (const type of ['module', 'review'] as const) {
+      useLearnSessionStore.getState().setScreen({ type, levelId: 'l1', unitId: 'u1', moduleId: 'l1u1m1', section: 'c1', at: Date.now() });
+      expect(restorableScreen()).not.toBeNull();
+      expect(hasWorkInProgress()).toBe(false);
+    }
+    useAppStore.setState({ view: 'explore' });
+    expect(hasWorkInProgress()).toBe(false);
+  });
+
+  it('the first question counts before any answers, even behind another view', () => {
+    const check = savedCheck();
+    check.run = { ...check.run, index: 0, scores: [], items: [], attempt: 1, tried: [], missed: null };
+    expect(isValidLearnSession({ screen: null, check })).toBe(true);
+    useLearnSessionStore.getState().setCheck(check);
+    useAppStore.setState({ view: 'explore' });
+    expect(hasWorkInProgress()).toBe(true);
   });
 
   it('hasWorkInProgress(): true while a check is under way, false when finished, gone or stale', () => {

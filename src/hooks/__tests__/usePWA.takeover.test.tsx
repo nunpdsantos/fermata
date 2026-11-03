@@ -8,7 +8,7 @@
  *     activates the new version instead of reloading into the old one.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, cleanup, act } from '@testing-library/react';
+import { render, cleanup, act, fireEvent } from '@testing-library/react';
 
 const { reloadPage } = vi.hoisted(() => ({ reloadPage: vi.fn() }));
 vi.mock('../../utils/pageReload', () => ({ reloadPage }));
@@ -40,6 +40,9 @@ async function freshApp() {
   const { PWAPrompts } = await import('../../components/layout/PWAPrompts');
   const pwa = await import('../usePWA');
   render(<PWAPrompts />);
+  // Mid-use: an update waiting asks for the learner's Reload (W9b applies one
+  // silently only at an untouched fresh start — usePWA.silent.test.tsx).
+  fireEvent.pointerDown(window);
   return { stub: stub.pwaRegisterStub, pwa };
 }
 

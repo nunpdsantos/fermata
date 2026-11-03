@@ -1,18 +1,26 @@
 #!/usr/bin/env node
 /**
- * Offline guard for the production build (audit W9-07 / W9-11).
+ * Offline / stale-page guard for the production build (audit W9-07 / W9-11,
+ * tightened by W9b).
  *
- * Every JS/CSS file the build emits must be either PRECACHED by the service
- * worker or matched by one of its RUNTIME-CACHING routes; otherwise the file
- * that needs it breaks offline. Splitting code into new chunks (lazy
- * Fretboard, Quick Search, stores pulled apart by a dynamic import …) is
- * exactly how a file silently falls through both lists.
+ * Since W9b EVERY JS/CSS file the build emits must be PRECACHED by the service
+ * worker — runtime caching is no longer enough: a page still running an older
+ * build (an update waiting, "Later") must load any view, level or translation
+ * it has never opened from its own precache, because after a deploy the
+ * server no longer has those files. That includes every translated-content
+ * chunk (PT/ES overlays, per-language module titles …), found by the `i18n-`
+ * file-name prefix AND by the overlay loader's import.meta.glob map.
  *
- * It also checks that every translated-content chunk (PT/ES overlays, per-
- * language module titles ...) is covered by the content-cache route.
+ * Also:
+ *  - precache closure: a precached file's static imports are precached;
+ *  - audio samples stay OUT of the precache, on their runtime routes;
+ *  - dist/version.json (the build's release + What's-new note, W9b) exists, is
+ *    well-formed and is NOT precached (the network copy describes the
+ *    waiting version);
+ *  - the worker imports the window-count add-on (sw-window-count.js, W9b).
  *
  * Usage: node scripts/check-sw-coverage.mjs [distDir=dist]
- * Exit 0 = every file covered; 1 = uncovered files (listed); 2 = no build.
+ * Exit 0 = all good; 1 = problems (listed); 2 = no build / parser out of date.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -26,30 +34,35 @@ if (!fs.existsSync(swPath)) {
 const sw = fs.readFileSync(swPath, 'utf8');
 
 const precached = new Set([...sw.matchAll(/url:"([^"]+)"/g)].map((m) => m[1]));
-// Runtime routes as emitted by workbox: e.registerRoute(/regex/flags,new e.Strategy(…
-// (lazy up to "/flags,new " so a "/" inside a character class is no problem)
-const routeList = [...sw.matchAll(/registerRoute\((\/.+?\/[a-z]*),new e\.\w+\(\{cacheName:"([^"]+)"/g)].map((m) => {
+// Runtime routes as emitted by workbox: <ns>.registerRoute(/regex/flags,new <ns>.Strategy({cacheName:"…"
+// (the minifier's namespace letter changes between builds; lazy up to
+// "/flags,new " so a "/" inside a character class is no problem)
+const routeList = [...sw.matchAll(/registerRoute\((\/.+?\/[a-z]*),new \w+\.\w+\(\{cacheName:"([^"]+)"/g)].map((m) => {
   const [, body, flags] = m[1].match(/^\/(.*)\/([a-z]*)$/);
   return { re: new RegExp(body, flags), cacheName: m[2] };
 });
-const routes = routeList.map((r) => r.re);
 
 if (precached.size === 0) {
   console.error('check-sw-coverage: found no precache entries in sw.js — parser out of date?');
   process.exit(2);
 }
+// Known positives for the route parser: the two sample caches must be found.
+for (const name of ['piano-samples', 'guitar-samples']) {
+  if (!routeList.some((r) => r.cacheName === name)) {
+    console.error(`check-sw-coverage: runtime route "${name}" not found in sw.js — parser out of date?`);
+    process.exit(2);
+  }
+}
 
 const assetsDir = path.join(dist, 'assets');
 const files = fs.readdirSync(assetsDir).filter((f) => /\.(js|css)$/.test(f));
-const uncovered = files
-  .map((f) => `assets/${f}`)
-  .filter((u) => !precached.has(u) && !routes.some((r) => r.test(`https://host/${u}`)));
+const notPrecached = files.map((f) => `assets/${f}`).filter((u) => !precached.has(u));
 
 console.log(
-  `check-sw-coverage: ${files.length} JS/CSS files, ${precached.size} precache entries, ${routes.length} runtime routes, ${uncovered.length} uncovered`,
+  `check-sw-coverage: ${files.length} JS/CSS files, ${precached.size} precache entries, ${routeList.length} runtime routes, ${notPrecached.length} JS/CSS file(s) not precached`,
 );
-for (const u of uncovered) {
-  console.log(`  UNCOVERED ${u} (${fs.statSync(path.join(dist, u)).size} B)`);
+for (const u of notPrecached) {
+  console.log(`  NOT PRECACHED ${u} (${fs.statSync(path.join(dist, u)).size} B)`);
 }
 
 // Precache closure: a precached file's STATIC imports must be precached too,
@@ -67,13 +80,11 @@ for (const entry of precached) {
 console.log(`check-sw-coverage: precache closure — ${missingDeps.length} precached file(s) import a chunk that is not precached`);
 for (const d of missingDeps) console.log(`  NOT PRECACHED ${d}`);
 
-// Translated content (PT/ES overlays, per-language module titles ...): every
-// such chunk must hit the content-cache route — not just the catch-all — so
-// it stays readable offline after first use instead of dropping to English.
-// Found two ways: the `i18n-` file-name prefix vite.config.ts gives
-// translated content, and the import.meta.glob map the overlay loader is
-// built into ("./pt/curriculumL1.ts":()=>...import("./<chunk>.js")).
-const contentRoute = routeList.find((r) => r.cacheName === 'content-cache');
+// Translated content (PT/ES overlays, per-language module titles ...): found
+// two ways — the `i18n-` file-name prefix vite.config.ts gives translated
+// content, and the import.meta.glob map the overlay loader is built into
+// ("./pt/curriculumL1.ts":()=>...import("./<chunk>.js")). Every such chunk
+// must be precached, so a stale page never drops to English.
 const allJs = files.filter((f) => f.endsWith('.js'));
 const globMapped = new Set();
 for (const f of allJs) {
@@ -84,13 +95,50 @@ for (const f of allJs) {
 }
 const overlays = new Set([...globMapped, ...allJs.filter((f) => f.startsWith('i18n-'))]);
 const overlayProblems = [];
-if (!contentRoute) overlayProblems.push('no runtime route with cacheName "content-cache"');
 if (globMapped.size === 0) overlayProblems.push("found no overlay chunks in the overlay loader's glob map — parser out of date?");
 for (const f of overlays) {
   if (!f.startsWith('i18n-')) overlayProblems.push(`assets/${f}: content overlay without the i18n- prefix (vite.config.ts chunkFileNames)`);
-  if (contentRoute && !contentRoute.re.test(`https://host/assets/${f}`)) overlayProblems.push(`assets/${f}: not matched by the content-cache route`);
+  if (!precached.has(`assets/${f}`)) overlayProblems.push(`assets/${f}: content overlay not precached`);
 }
 console.log(`check-sw-coverage: content overlays — ${overlays.size} chunk(s) (${globMapped.size} from the loader's glob map), ${overlayProblems.length} problem(s)`);
 for (const p of overlayProblems) console.log(`  OVERLAY ${p}`);
 
-process.exit(uncovered.length || missingDeps.length || overlayProblems.length ? 1 : 0);
+// Audio samples: on demand (runtime routes), never in the precache.
+const otherProblems = [];
+for (const u of precached) {
+  if (/\.mp3$/.test(u) || u.startsWith('samples/')) otherProblems.push(`${u}: an audio sample is precached (they load on first use)`);
+}
+for (const [dir, name] of [['piano', 'piano-samples'], ['guitar', 'guitar-samples']]) {
+  const route = routeList.find((r) => r.cacheName === name);
+  if (route && !route.re.test(`https://host/samples/${dir}/C4.mp3`)) otherProblems.push(`route "${name}" no longer matches /samples/${dir}/*.mp3`);
+}
+
+// version.json: published, well-formed, not precached.
+const versionPath = path.join(dist, 'version.json');
+if (!fs.existsSync(versionPath)) {
+  otherProblems.push('dist/version.json is missing (vite.config.ts versionJson plugin)');
+} else {
+  let info;
+  try {
+    info = JSON.parse(fs.readFileSync(versionPath, 'utf8'));
+  } catch {
+    otherProblems.push('dist/version.json is not valid JSON');
+  }
+  if (info) {
+    const langs = ['en', 'pt', 'es'];
+    if (typeof info.build !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(info.date ?? '')) otherProblems.push('dist/version.json: build / date missing');
+    if (!Number.isInteger(info.release) || !Number.isInteger(info.criticalSince) || typeof info.critical !== 'boolean') {
+      otherProblems.push('dist/version.json: release / criticalSince / critical missing');
+    }
+    if (!langs.every((l) => typeof info.notes?.[l] === 'string' && info.notes[l] !== '')) otherProblems.push('dist/version.json: notes need en, pt and es');
+  }
+}
+if (precached.has('version.json')) otherProblems.push('version.json is precached — it must come from the network');
+
+// The window-count add-on (W9b): imported by the worker, shipped at the root.
+if (!/importScripts\("sw-window-count\.js"\)/.test(sw)) otherProblems.push('sw.js does not importScripts("sw-window-count.js") (vite.config.ts workbox.importScripts)');
+if (!fs.existsSync(path.join(dist, 'sw-window-count.js'))) otherProblems.push('dist/sw-window-count.js is missing (public/)');
+console.log(`check-sw-coverage: samples, version.json, window-count add-on — ${otherProblems.length} problem(s)`);
+for (const p of otherProblems) console.log(`  PROBLEM ${p}`);
+
+process.exit(notPrecached.length || missingDeps.length || overlayProblems.length || otherProblems.length ? 1 : 0);

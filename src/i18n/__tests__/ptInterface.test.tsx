@@ -1,8 +1,9 @@
 /**
- * W6-05 / W11-A — no hard-coded English in the Portuguese (and Spanish)
- * interface W11-A touched: the top bar, the "⋯" menu and Settings sheet, the
- * instrument dock and both instruments, the key/scale pickers, the scale-
- * degree bar, the chord grid and a toast. Visible text AND accessible names
+ * W6-05 / W11-A / W11-B — no hard-coded English in the Portuguese (and
+ * Spanish) interface: the top bar, the "⋯" menu and Settings sheet, the
+ * instrument dock and both instruments (with the focus-note read-out), the
+ * Explore workbench (key / scale pickers, summary, "⋯" scale actions, the
+ * staff strip, chords, circle of fifths and key facts) and a toast. Visible text AND accessible names
  * (aria-label, title) are checked against a list of English words that must
  * not appear. (Note names, numerals and chord symbols are notation, not
  * English — D-17 / D-18.)
@@ -15,8 +16,12 @@ import { toast, useToastStore } from '../../state/toastStore';
 import { TopBar } from '../../components/layout/TopBar';
 import { InstrumentDock } from '../../components/layout/InstrumentDock';
 import { ToastContainer } from '../../components/layout/Toast';
-import { KeySelector } from '../../components/navigation/KeySelector';
-import { ScaleDegreeBar } from '../../components/theory/ScaleDegreeBar';
+import { RootChips } from '../../components/navigation/KeySelector';
+import { ExploreHeader } from '../../components/explore/ExploreHeader';
+import { ScaleStrip } from '../../components/explore/ScaleStrip';
+import { ChordsCard } from '../../components/explore/ChordsCard';
+import { CircleNavigator } from '../../components/explore/CircleNavigator';
+import { useFocusNoteStore } from '../../state/focusNoteStore';
 import { ChordGrid } from '../../components/theory/ChordGrid';
 import { Fretboard } from '../../components/instruments/Fretboard';
 import { DrillSettings } from '../../components/drill/DrillSettings';
@@ -111,7 +116,7 @@ describe.each(['pt', 'es'] as const)('%s interface has no hard-coded English', (
   it('a known positive: the same check flags the English interface', async () => {
     await i18n.changeLanguage('en');
     useAppStore.setState({ language: 'en', view: 'explore' });
-    const { container } = render(<KeySelector />);
+    const { container } = render(<div><RootChips /><ExploreHeader /></div>);
     expect(englishIn(container).length).toBeGreaterThan(0);
     cleanup();
     await i18n.changeLanguage(lang);
@@ -132,7 +137,7 @@ describe.each(['pt', 'es'] as const)('%s interface has no hard-coded English', (
     expect(englishIn(document.body)).toEqual([]);
   });
 
-  it('the instrument dock (piano and guitar), key / scale pickers, degree bar, chord grid, a toast', async () => {
+  it('the instrument dock (piano and guitar) with the read-out, the Explore workbench, a toast', async () => {
     useAppStore.setState({
       language: lang,
       view: 'explore',
@@ -144,21 +149,30 @@ describe.each(['pt', 'es'] as const)('%s interface has no hard-coded English', (
     });
     const { container } = render(
       <div>
-        <KeySelector />
-        <ScaleDegreeBar />
+        <ExploreHeader />
+        <RootChips />
+        <ScaleStrip />
+        <ChordsCard />
         <ChordGrid />
+        <CircleNavigator />
         <InstrumentDock view="explore" available={800} />
         <ToastContainer />
       </div>,
     );
-    fireEvent.click(screen.getByRole('button', { expanded: false, name: /▾/ })); // "More scales…" → every chip
     act(() => toast(i18n.t('backup.exported'), 'success'));
+    // The read-out of a focus note (B: the leading note of C major).
+    act(() => useFocusNoteStore.getState().set('pinned', { pc: 11, midi: 71, source: 'staff' }));
+    // The "⋯" scale actions.
+    fireEvent.click(screen.getByRole('button', { name: lang === 'pt' ? 'Ações da escala' : 'Acciones de la escala' }));
     // It really rendered the translated interface (not an empty one).
-    expect(screen.getByRole('radio', { name: lang === 'pt' ? 'Menor harm.' : 'Menor arm.' })).toBeTruthy();
-    expect(screen.getByRole('radio', { name: lang === 'pt' ? 'Húngara menor' : 'Húngara menor' })).toBeTruthy();
+    expect(screen.getByRole('option', { name: lang === 'pt' ? 'Menor harm.' : 'Menor arm.' })).toBeTruthy();
+    expect(screen.getByRole('option', { name: lang === 'pt' ? 'Húngara menor' : 'Húngara menor' })).toBeTruthy();
+    expect(screen.getByTestId('dock-readout').textContent).toMatch(lang === 'pt' ? /sensível/ : /sensible/);
+    expect(screen.getAllByRole('menuitem').length).toBe(3);
     expect(screen.getAllByRole('button', { name: /C4/ }).length).toBeGreaterThan(0);
     expect(englishIn(container)).toEqual([]);
     cleanup();
+    act(() => useFocusNoteStore.getState().clearAll());
 
     useAppStore.setState({ instrument: 'guitar', guitarScalePosition: 5 });
     const guitar = render(<div><Fretboard /><InstrumentDock view="explore" available={800} /></div>);

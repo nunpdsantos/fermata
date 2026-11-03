@@ -34,7 +34,9 @@ type SubScreen = null | 'settings' | 'mastery' | 'sprint';
 
 export function DrillView() {
   const runner = useDrillRunner();
-  const [subScreen, setSubScreen] = useState<SubScreen>(null);
+  // A Sprint left open (a reload, or back from another view) comes back on
+  // screen where it was (W9b).
+  const [subScreen, setSubScreen] = useState<SubScreen>(() => (useDrillStore.getState().sprint ? 'sprint' : null));
   // Wall-clock snapshot taken when the mastery screen opens (due-today is a
   // point-in-time count). Captured in the handler — never read in render.
   const [masteryNow, setMasteryNow] = useState(0);
@@ -259,19 +261,16 @@ function canonicalAnswer(item: DrillItem): string {
 
 /**
  * Navigate to the Learn module most relevant to this item's family — the same
- * store handoff the Explore "Learn about this" buttons use (setView('learn') +
- * pendingLearnTarget). Read-only: never touches module progress.
+ * openLearnTarget action the Explore "Learn about this" buttons use.
+ * Read-only: never touches module progress.
  */
 function openLearnModule(item: DrillItem): void {
   const moduleId = DRILL_FAMILY_TO_MODULE[item.family];
   const match = MODULE_INDEX.find((m) => m.id === moduleId);
   if (!match) return;
-  useAppStore.setState({
-    view: 'learn',
-    pendingLearnTarget: {
-      levelId: match.level,
-      unitId: match.unitId,
-      moduleId: match.id,
-    },
+  useAppStore.getState().openLearnTarget({
+    levelId: match.level,
+    unitId: match.unitId,
+    moduleId: match.id,
   });
 }

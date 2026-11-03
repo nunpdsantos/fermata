@@ -95,6 +95,7 @@ export interface NavigationSlice {
   /** Pending Learn target set by Explore/search so LearnView can deep-link to a module on mount. Cleared after consumption. */
   pendingLearnTarget: LearnDeepLink | null;
   setView: (view: ViewMode) => void;
+  openLearnTarget: (target: LearnDeepLink) => void;
   setDetailPanelOpen: (open: boolean) => void;
   setQuickSearchOpen: (open: boolean) => void;
   setComparisonScale: (scale: ScaleType | null) => void;
@@ -109,10 +110,17 @@ export interface PreferencesSlice {
   language: string;
   preferencesUpdatedAt: number;
   /** Last view the user was on — persisted so a fresh boot (no ?view= param)
-   *  restores where they left off. Written by navigationSlice.setView. */
+   *  restores where they left off. Written by navigationSlice navigation actions. */
   lastView: ViewMode;
   /** Instrument dock detent per view (D-26), persisted. */
   dockDetents: Record<DockView, Detent>;
+  /** Which views' detent the LEARNER set (drag, tap, keys, Show / Hide).
+   *  Until then Explore follows the screen: Peek when short, else Half. */
+  dockChosen: Record<DockView, boolean>;
+  /** Explore on a tablet: the circle of fifths below the work is unfolded
+   *  (W11-B; folded by default there so the column is not a long scroll;
+   *  remembered). Laptops always show it beside the work. */
+  exploreCircleOpen: boolean;
   setColorMode: (mode: ColorMode) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setScaleOctaves: (octaves: 1 | 2) => void;
@@ -120,6 +128,7 @@ export interface PreferencesSlice {
   setLanguage: (language: string) => void;
   setPreferencesUpdatedAt: (at: number) => void;
   setDockDetent: (view: DockView, detent: Detent) => void;
+  setExploreCircleOpen: (open: boolean) => void;
   /**
    * Open (or rest) the instrument dock of the CURRENT view at a detent — the
    * API a Learn exercise calls when it needs the instrument (D-20). No-op in

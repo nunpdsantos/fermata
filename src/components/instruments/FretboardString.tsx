@@ -50,6 +50,14 @@ interface FretboardStringProps {
   highlightPcs: Set<number> | null;
   // Keyboard navigation
   focusedFret: number | null;
+  /** Frets on this string lit as the linked focus note (0 = the open string). */
+  focusFrets?: ReadonlySet<number>;
+  /** A real mouse entered / left a cell (the linked focus note follows it). */
+  onCellHover?: (fn: FretNote | null) => void;
+  /** Fixed row height (the full-neck view fills the screen). */
+  rowHeight?: number;
+  /** A chord is shown: the scale's other notes appear faded behind it. */
+  scaleContext?: boolean;
 }
 
 export const FretboardString = memo(function FretboardString({
@@ -73,6 +81,10 @@ export const FretboardString = memo(function FretboardString({
   scaleLabelFor,
   highlightPcs,
   focusedFret,
+  focusFrets,
+  onCellHover,
+  rowHeight,
+  scaleContext = false,
 }: FretboardStringProps) {
   const { t } = useTranslation();
   const openFretNote = getFretNote(stringIdx, 0);
@@ -151,8 +163,12 @@ export const FretboardString = memo(function FretboardString({
     openContent = openDot('highlight', openColor ?? ACCENT_FILL, openLabel, isOpenRoot);
   }
 
+  const openFocus = focusFrets?.has(0) ?? false;
+
   return (
-    <div className="flex items-center" style={{ height: mobile ? 32 : (isChordView ? 32 : 28) }}>
+    // 28 px rows on a laptop (the 28 px dots just fit), so the docked guitar
+    // leaves the Explore workbench its room at 1440×900 (W11-B); 32 on touch.
+    <div className="flex items-center" style={{ height: rowHeight ?? (mobile ? 32 : 28) }}>
       {/* String name — always the tuning's (W1-16) */}
       <div
         data-string-name
@@ -206,6 +222,9 @@ export const FretboardString = memo(function FretboardString({
               scaleDotLabel={showScaleDot ? scaleLabelFor(fn.pitchClass) : undefined}
               showHighlight={showHighlight}
               isFocused={focusedFret === fret}
+              isFocusNote={focusFrets?.has(fret) ?? false}
+              contextColor={scaleContext && isInScale && !isVoicingPosition && !showHighlight ? color : undefined}
+              onHover={onCellHover ? (on) => onCellHover(on ? fn : null) : undefined}
               onClick={() => onCellActivate(fn)}
             />
           );
@@ -226,11 +245,15 @@ export const FretboardString = memo(function FretboardString({
         role="button"
         aria-label={isMuted ? t('fretboard.mutedStringLabel', { string: 6 - stringIdx }) : t('fretboard.openStringLabel', { note: openLabel })}
         data-open-string=""
-        className="flex items-center justify-center cursor-pointer"
+        data-focus-note={openFocus || undefined}
+        className="relative flex items-center justify-center cursor-pointer"
         style={{ width: 40, ...(mobile ? { touchAction: 'none' } : undefined) }}
         onPointerDown={handleOpenPointerDown}
+        onPointerEnter={(e) => { if (e.pointerType === 'mouse') onCellHover?.(openFretNote); }}
+        onPointerLeave={(e) => { if (e.pointerType === 'mouse') onCellHover?.(null); }}
         onClick={handleOpenClick}
       >
+        {openFocus && <span aria-hidden="true" className="focus-note-ring" />}
         {openContent ?? (
           <span className="font-mono" style={{ fontSize: 12, color: 'var(--text-dim)' }}>{stringName}</span>
         )}
