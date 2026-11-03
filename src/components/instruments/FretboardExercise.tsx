@@ -1,9 +1,10 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { Fragment, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { FretboardInputSpec, FretPlace } from '../../core/types/drill';
 import { getTuningById } from '../../core/constants/guitarTunings';
 import { tuningOpenMidi } from '../../core/utils/guitarPositions';
 import { midiToNote } from '../../core/utils/pianoLayout';
+import { FretboardBreak } from './FretboardBreak';
 import { FretCell } from './FretCell';
 import { ScrollStrip } from './ScrollStrip';
 
@@ -78,10 +79,15 @@ export function FretboardExercise({ spec, disabled, accepted, picked, onAnswer }
           next?.focus({ preventScroll: true });
           next?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
         }}>
-        <div style={{ minWidth: 28 + frets.length * 44 + 6 }}>
+        <div style={{ minWidth: 28 + frets.length * 44 + 6 + (from > 1 ? 24 : 0) }}>
           <div className="flex text-caption text-center" aria-hidden="true" style={{ color: 'var(--text-dim)' }}>
             <span style={{ width: 28, flexShrink: 0 }}>⑥–①</span>
-            {frets.map((fret) => <span key={fret} className="flex-1" style={{ minWidth: fret === 0 ? 50 : 44, borderLeft: fret === 0 ? '6px solid transparent' : undefined }}>{fret}</span>)}
+            {frets.map((fret) => (
+              <Fragment key={fret}>
+                {fret === 0 && from > 1 && <span style={{ width: 24, flexShrink: 0 }}>…</span>}
+                <span className="flex-1" style={{ minWidth: fret === 0 ? 50 : 44, borderLeft: fret === 0 ? '6px solid transparent' : undefined }}>{fret}</span>
+              </Fragment>
+            ))}
           </div>
           {[0, 1, 2, 3, 4, 5].map((stringIndex) => (
             <div key={stringIndex} className="flex" style={{ height: 44 }}>
@@ -92,15 +98,18 @@ export function FretboardExercise({ spec, disabled, accepted, picked, onAnswer }
                 const mark = correct ? 'correct' : disabled && matches(picked, place) ? 'wrong' : undefined;
                 const label = t(fret === 0 ? 'drill.reading.stringOpen' : 'drill.reading.stringFret', { string: 6 - stringIndex, fret });
                 return (
-                  <div key={fret} className="flex flex-1" style={{ minWidth: fret === 0 ? 50 : 44, borderLeft: fret === 0 ? '6px solid var(--text-muted)' : undefined }}>
-                    <FretCell fret={fret} stringIdx={stringIndex} displayNote={midiToNote(openMidi[stringIndex] + fret)}
-                      color={undefined} dotColor="var(--accent)" isActive={false} isRoot={false} isMuted={false}
-                      fretMinWidth={44} isChordView={false} mobile showVoicing={false} finger={undefined} showScaleDot={false}
-                      isFocused={false} onClick={() => activate(place)}
-                      exercise={{ label: mark ? `${label}, ${t(`drill.reading.${mark}`)}` : label, disabled,
-                        inPosition: !win || (fret === 0 ? win.openStrings : fret >= win.fromFret && fret <= win.toFret),
-                        mark, tabIndex: matches(focused, place) ? 0 : -1, onFocus: () => setFocused(place) }} />
-                  </div>
+                  <Fragment key={fret}>
+                    {fret === 0 && from > 1 && <FretboardBreak />}
+                    <div className="flex flex-1" style={{ minWidth: fret === 0 ? 50 : 44, borderLeft: fret === 0 ? '6px solid var(--text-muted)' : undefined }}>
+                      <FretCell fret={fret} stringIdx={stringIndex} displayNote={midiToNote(openMidi[stringIndex] + fret)}
+                        color={undefined} dotColor="var(--accent)" isActive={false} isRoot={false} isMuted={false}
+                        fretMinWidth={44} isChordView={false} mobile showVoicing={false} finger={undefined} showScaleDot={false}
+                        isFocused={false} onClick={() => activate(place)}
+                        exercise={{ label: mark ? `${label}, ${t(`drill.reading.${mark}`)}` : label, disabled,
+                          inPosition: !win || (fret === 0 ? win.openStrings : fret >= win.fromFret && fret <= win.toFret),
+                          mark, tabIndex: matches(focused, place) ? 0 : -1, onFocus: () => setFocused(place) }} />
+                    </div>
+                  </Fragment>
                 );
               })}
             </div>
