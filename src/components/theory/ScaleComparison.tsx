@@ -16,7 +16,11 @@ import { degreeOf, degreeColorSlot, formatDegree } from '../../core/utils/degree
 
 const SCALE_OPTIONS = Object.keys(SCALE_TYPE_NAMES) as ScaleType[];
 
-export function ScaleComparison() {
+/**
+ * `inSheet`: shown in Explore's Compare sheet ("⋯" → Compare, D-29), whose
+ * title and close button replace this panel's own heading and ✕.
+ */
+export function ScaleComparison({ inSheet = false }: { inSheet?: boolean } = {}) {
   const { t } = useTranslation();
   const selectedKey = useAppStore((s) => s.selectedKey);
   const selectedScale = useAppStore((s) => s.selectedScale);
@@ -144,9 +148,11 @@ export function ScaleComparison() {
   if (!comparisonScale) {
     return (
       <div className="flex items-center gap-3">
-        <h3 className="type-section">
-          {t('explore.compareScales')}
-        </h3>
+        {!inSheet && (
+          <h3 className="type-section">
+            {t('explore.compareScales')}
+          </h3>
+        )}
         <SelectTrigger
           value=""
           onChange={(e) => setComparisonScale(e.target.value as ScaleType)}
@@ -167,7 +173,7 @@ export function ScaleComparison() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-3">
+      {!inSheet && <div className="flex items-center justify-between mb-3">
         <h3 className="type-section">
           {t('explore.scaleComparison')}
         </h3>
@@ -181,7 +187,7 @@ export function ScaleComparison() {
             </svg>
           }
         />
-      </div>
+      </div>}
 
       {/* Scale labels + selector */}
       <div className="flex items-center justify-between mb-3 gap-3 flex-wrap">

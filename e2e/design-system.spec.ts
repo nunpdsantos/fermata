@@ -7,7 +7,10 @@ import { auditPage, type AuditResult } from './helpers/designAudit';
  *
  * Viewports: phone 390×844 and phone landscape 844×390 and tablet 768×1024
  * (touch), laptop 1440×900 (mouse); day and night. Screens: Explore (piano,
- * guitar; a chord selected in each of Diatonic / All / Build), the "⋯" menu
+ * guitar; a chord selected in each of In key / All / Build, its detail open
+ * in place; a linked focus note; the scale actions "⋯" menu and the Compare
+ * sheet; the phone's key-picker sheet with the circle; the landscape
+ * full-neck guitar view — W11-B), the "⋯" menu
  * and the Settings sheet open, the instrument dock (phone: Peek / Half /
  * Full), Learn (level list, a returning learner's review queue, a lesson, an
  * exercise in its wrong-answer and right-answer states; W4a's question
@@ -107,8 +110,51 @@ function expectClean(r: AuditResult, where: string) {
   expect.soft(r.clipViolations, `${where}: text cut off ${fmt(r.clipViolations)}`).toEqual([]);
 }
 
+/**
+ * Wait until nothing on the page is moving: no running Web Animation (CSS or
+ * framer-motion's WAAPI), and every element's opacity and transform the same
+ * on two looks 60 ms apart (a JS-driven tween too). Contrast measured mid
+ * fade-in blends text with the page — the chord cards' flaky failures on
+ * phone combos (W11-B). The contexts also run with prefers-reduced-motion,
+ * which the components honour (entrances skip their fade).
+ */
+async function settle(page: Page) {
+  const snapshot = () => page.evaluate(() => {
+    const running = document.getAnimations().filter((a) => a.playState === 'running' || a.pending).length;
+    let sig = '';
+    // An entrance still in its delay (framer-motion / a JS tween): the
+    // element sits at an inline opacity of 0 — not yet moving, so two equal
+    // samples would pass it mid-entrance (review probe: a 500 ms delay).
+    let waiting = 0;
+    for (const el of Array.from(document.querySelectorAll('body *'))) {
+      const cs = getComputedStyle(el);
+      if (cs.opacity !== '1' || cs.transform !== 'none') sig += `${cs.opacity}|${cs.transform};`;
+      if ((el as HTMLElement).style?.opacity === '0') waiting++;
+    }
+    return { running, sig, waiting };
+  });
+  // Settled = nothing has changed for QUIET ms and no entrance is waiting;
+  // an inline-0 element that has not moved for REST ms is at rest, not an
+  // entrance (a faded-out leftover).
+  const QUIET = 300;
+  const REST = 1500;
+  const start = Date.now();
+  let prev = await snapshot();
+  let quietSince = Date.now();
+  while (Date.now() - start < 5000) {
+    await page.waitForTimeout(60);
+    const now = await snapshot();
+    if (now.running > 0 || now.sig !== prev.sig) quietSince = Date.now();
+    prev = now;
+    const quiet = Date.now() - quietSince;
+    if ((quiet >= QUIET && now.waiting === 0) || quiet >= REST) return;
+  }
+  throw new Error('the page never stopped moving (5 s)');
+}
+
 /** Audit the page as it is now; record it (and a screenshot) when asked to. */
 async function check(page: Page, v: Viewport, combo: string, screen: string) {
+  await settle(page);
   const r = await auditPage(page, { minFontPx: 12, minTapPx: v.touch ? 44 : 36 });
   if (OUT) {
     fs.mkdirSync(OUT, { recursive: true });
@@ -172,7 +218,7 @@ async function focusWalk(page: Page, where: string, steps = 40) {
   const seen = new Set<unknown>();
   for (let i = 0; i < steps; i++) {
     await page.keyboard.press('Tab');
-    const stop = await page.evaluate(() => {
+    const stop = await page.evaluate(async () => {
       const el = document.activeElement as HTMLElement | null;
       if (!el || el === document.body || el === document.documentElement) return null;
       const name = `${el.tagName.toLowerCase()}${el.getAttribute('role') ? `[${el.getAttribute('role')}]` : ''} "${(el.getAttribute('aria-label') || el.textContent || '').trim().slice(0, 30)}"`;
@@ -180,13 +226,23 @@ async function focusWalk(page: Page, where: string, steps = 40) {
         const cs = getComputedStyle(e);
         return [cs.outlineStyle, cs.outlineWidth, cs.outlineColor, cs.boxShadow, cs.borderColor, cs.backgroundColor, cs.stroke, cs.strokeWidth].join('|');
       }).join('§');
-      const focused = sig(el);
-      // The same element unfocused (restore focus right after: still keyboard
-      // modality, so :focus-visible matches again).
-      el.blur();
-      const resting = sig(el);
-      el.focus({ preventScroll: true });
-      const indicator = focused !== resting;
+      // Let a ring that React paints after the focus event land (two
+      // frames) before each look — sampling once, under load, read a piano
+      // key before its ring was drawn (W11-B review). Up to three tries.
+      const frames = () => new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+      let indicator = false;
+      for (let attempt = 0; attempt < 3 && !indicator; attempt++) {
+        await frames();
+        const focused = sig(el);
+        // The same element unfocused (restore focus right after: still
+        // keyboard modality, so :focus-visible matches again).
+        el.blur();
+        await frames();
+        const resting = sig(el);
+        el.focus({ preventScroll: true });
+        indicator = focused !== resting;
+      }
+      await frames();
       const r = el.getBoundingClientRect();
       const vw = innerWidth, vh = innerHeight;
       const x0 = Math.max(r.left, 0), x1 = Math.min(r.right, vw), y0 = Math.max(r.top, 0), y1 = Math.min(r.bottom, vh);
@@ -621,6 +677,25 @@ async function drillWrong(page: Page, notQuite: RegExp, continueName: string) {
   throw new Error('never reached a wrong-answer feedback');
 }
 
+/**
+ * Choose a root by pitch class: the Root select on a tablet / laptop, the
+ * key-picker sheet's chips on a phone (W11-B) — audited there once.
+ */
+async function chooseRoot(page: Page, v: Viewport, pc: number, audit?: () => Promise<void>) {
+  if (v.viewport.width >= 640) {
+    await page.getByRole('combobox', { name: 'Root' }).selectOption(String(pc));
+    return;
+  }
+  await page.getByTestId('key-picker').click();
+  const sheet = page.getByRole('dialog', { name: 'Key' });
+  await expect(sheet).toBeVisible();
+  await page.waitForTimeout(300);
+  if (audit) await audit();
+  await sheet.getByRole('radiogroup', { name: 'Root' }).getByRole('radio').nth(pc).click();
+  await page.keyboard.press('Escape');
+  await expect(sheet).toHaveCount(0);
+}
+
 /** Where the instrument is a pull-up sheet: phones and short screens (SHEET_QUERY). */
 const isSheet = (v: Viewport) => v.viewport.width < 640 || v.viewport.height <= 500;
 const DOCK = '[data-testid="instrument-dock"]';
@@ -631,8 +706,8 @@ const ANSWERS = '[data-testid="drill-answers"]';
 for (const v of VIEWPORTS) {
   for (const th of THEMES) {
     const combo = `${v.name}-${th.name}`;
-    test(`${combo}: type ≥ 12 px, targets ≥ ${v.touch ? 44 : 36} px, contrast, no clipping, focus, no sideways scroll, toasts clear`, async ({ browser }) => {
-      test.setTimeout(480_000);
+    test(`${combo} explore: type ≥ 12 px, targets ≥ ${v.touch ? 44 : 36} px, contrast, no clipping, focus, no sideways scroll, toasts clear`, async ({ browser }) => {
+      test.setTimeout(240_000);
       const where = (s: string) => `${combo} ${s}`;
 
       // Explore; sharp and flat keys on the piano; the chord panel in
@@ -650,29 +725,58 @@ for (const v of VIEWPORTS) {
         }
         await focusWalk(page, where('explore'));
         // Black keys carrying a sharp, then a flat (D major: F♯ C♯; E♭ major: E♭ A♭ B♭).
-        const roots = page.getByRole('radiogroup', { name: 'Root' }).getByRole('radio');
-        await roots.nth(2).click();
+        await chooseRoot(page, v, 2, () => check(page, v, combo, 'key-sheet'));
         await page.waitForTimeout(400);
         await check(page, v, combo, 'explore-sharps');
-        await roots.nth(3).click();
+        await chooseRoot(page, v, 3);
         await page.waitForTimeout(400);
         await check(page, v, combo, 'explore-flats');
-        await roots.nth(0).click();
+        await chooseRoot(page, v, 0);
         await page.waitForTimeout(300);
+        // A linked focus note: B in the staff strip, lit on the instrument.
+        await page.locator('.strip-col[data-note="B"]').first().click();
+        await expect(page.locator('[data-piano-key][data-focus-note]').first()).toBeAttached();
+        await page.waitForTimeout(300);
+        await check(page, v, combo, 'explore-focus');
+        // The detail opens in place under the chord row (W11-B).
         await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
         await expect(page.getByRole('radiogroup', { name: 'Chord inversion' })).toBeVisible();
         await page.waitForTimeout(500);
         await check(page, v, combo, 'explore-chord-diatonic');
+        {
+          const row = await boxOf(page, '.chord-row');
+          const detail = await boxOf(page, '[data-testid="chord-detail"]');
+          expect.soft(detail.top, where('chord detail opens under the chord row')).toBeGreaterThanOrEqual(row.bottom - 1);
+        }
         await page.getByRole('tab', { name: 'All Chords' }).click();
         await page.waitForTimeout(500);
         await check(page, v, combo, 'explore-chord-all');
         await page.getByRole('tab', { name: 'Build' }).click();
         await page.waitForTimeout(500);
         await check(page, v, combo, 'explore-chord-build');
-        await page.getByRole('tab', { name: 'Diatonic' }).click();
+        await page.getByRole('tab', { name: 'In key' }).click();
+        // The chord detail open again: no toast may cover it (or the dock).
+        await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
+        await expect(page.getByTestId('chord-detail')).toBeVisible();
+        await page.waitForTimeout(400);
         const toast = await exportToast(page);
         const dock = await boxOf(page, DOCK);
         expect(overlaps(toast, dock), where('toast vs dock')).toBe(false);
+        const detailBox = await boxOf(page, '[data-testid="chord-detail"]');
+        if (detailBox.bottom > 0) expect(overlaps(toast, detailBox), where('toast vs chord detail')).toBe(false);
+        // The scale actions "⋯" (Copy / Print / Compare, D-29) and Compare.
+        await page.getByRole('button', { name: 'Scale actions' }).click();
+        await expect(page.getByRole('menu', { name: 'Scale actions' })).toBeVisible();
+        await expect(page.getByRole('menuitem')).toHaveCount(3);
+        await check(page, v, combo, 'explore-menu');
+        await page.getByRole('menuitem', { name: 'Compare Scales' }).click();
+        const compare = page.getByRole('dialog', { name: 'Compare Scales' });
+        await expect(compare).toBeVisible();
+        await compare.getByRole('combobox', { name: 'Select scale to compare' }).selectOption('natural_minor');
+        await page.waitForTimeout(300);
+        await check(page, v, combo, 'explore-compare');
+        await page.keyboard.press('Escape');
+        await expect(compare).toHaveCount(0);
         // The "⋯" menu, then the Settings sheet.
         await page.getByRole('button', { name: 'More', exact: true }).click();
         await expect(page.getByRole('menu', { name: 'More' })).toBeVisible();
@@ -683,8 +787,8 @@ for (const v of VIEWPORTS) {
         await page.keyboard.press('Escape');
         await page.waitForTimeout(300);
         // The whole stack over Explore at the default detent.
-        const avoidDock = [DOCK, isSheet(v) ? '.detent-head' : '.dock-panel-bar', TOPBAR];
-        if (await toastsInAndOut(page, where('explore'), [DOCK, INSTRUMENT, '#main-content'], avoidDock)) {
+        const avoidDock = [DOCK, isSheet(v) ? '.detent-head' : '.dock-panel-bar', TOPBAR, '[data-testid="chord-detail"]'];
+        if (await toastsInAndOut(page, where('explore'), [DOCK, INSTRUMENT, '#main-content', '[data-testid="chord-detail"]'], avoidDock)) {
           await raiseToastStack(page);
           await check(page, v, combo, 'toasts');
           await reloadFromToast(page, where('explore'));
@@ -711,11 +815,52 @@ for (const v of VIEWPORTS) {
         await context.close();
       }
 
+    });
+
+    test(`${combo} guitar + dock: type ≥ 12 px, targets ≥ ${v.touch ? 44 : 36} px, contrast, no clipping, focus, no sideways scroll, toasts clear`, async ({ browser }) => {
+      test.setTimeout(240_000);
+      const where = (s: string) => `${combo} ${s}`;
+
       // Guitar + the dock's detents (a sheet on phones and short screens).
       {
         const { context, page } = await open(browser, v, th.mode, { instrument: 'guitar', lastView: 'explore' });
         await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
         await check(page, v, combo, 'explore-guitar');
+        if (v.name === 'laptop') {
+          // The circle of fifths stands beside the work (D-30).
+          await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
+          await expect(page.getByTestId('cof-chord-mark')).toHaveCount(1);
+          await page.waitForTimeout(400);
+          await check(page, v, combo, 'explore-guitar-chord-circle');
+          await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
+          await page.waitForTimeout(300);
+        }
+        if (v.name === 'phone-landscape') {
+          // The full-neck view (D-26 extra): all six strings, frets 0–12.
+          await page.getByTestId('neck-open').click();
+          const neck = page.getByTestId('neck-view');
+          await expect(neck).toBeVisible();
+          await expect(neck.locator('[data-string-row="0"]').first()).toBeVisible({ timeout: 15_000 });
+          await page.waitForTimeout(400);
+          await check(page, v, combo, 'guitar-neck');
+          const fit = await neck.evaluate((root) => {
+            const vh = innerHeight;
+            const vw = innerWidth;
+            const rows = [0, 1, 2, 3, 4, 5].map((s) => {
+              const cells = Array.from(root.querySelectorAll(`[data-string-row="${s}"]`)).map((c) => c.getBoundingClientRect());
+              return cells.every((r) => r.top >= 0 && r.bottom <= vh + 0.5 && r.left >= 0 && r.right <= vw + 0.5);
+            });
+            const frets = Array.from(root.querySelectorAll('[data-string-row="0"]')).map((c) => Number(c.getAttribute('data-fret')));
+            const cell = root.querySelector('[data-string-row="3"][data-fret="5"]')!.getBoundingClientRect();
+            return { rows, maxFret: Math.max(...frets), cellW: cell.width, cellH: cell.height };
+          });
+          expect.soft(fit.rows, where('neck: all six strings on screen')).toEqual([true, true, true, true, true, true]);
+          expect.soft(fit.maxFret, where('neck: frets up to 12')).toBeGreaterThanOrEqual(12);
+          test.info().annotations.push({ type: 'neck-cell', description: `${combo}: fret cell ${Math.round(fit.cellW)}×${Math.round(fit.cellH)} px` });
+          await page.getByRole('button', { name: 'Close full neck' }).click();
+          await expect(neck).toHaveCount(0);
+          await expect(page.getByTestId('neck-open')).toBeFocused();
+        }
         const handle = page.getByRole('separator', { name: 'Instrument panel' });
         const detents = [['Home', 'peek'], ['ArrowUp', 'half'], ['End', 'full']] as const;
         const setDetent = async (key: string, detent: string) => {
@@ -762,6 +907,12 @@ for (const v of VIEWPORTS) {
         }
         await context.close();
       }
+
+    });
+
+    test(`${combo} learn: type ≥ 12 px, targets ≥ ${v.touch ? 44 : 36} px, contrast, no clipping, focus, no sideways scroll, toasts clear`, async ({ browser }) => {
+      test.setTimeout(300_000);
+      const where = (s: string) => `${combo} ${s}`;
 
       // Learn: level list, a lesson, an exercise selected / wrong / right.
       {
@@ -837,6 +988,12 @@ for (const v of VIEWPORTS) {
         await context.close();
       }
 
+    });
+
+    test(`${combo} drill: type ≥ 12 px, targets ≥ ${v.touch ? 44 : 36} px, contrast, no clipping, focus, no sideways scroll, toasts clear`, async ({ browser }) => {
+      test.setTimeout(240_000);
+      const where = (s: string) => `${combo} ${s}`;
+
       // Drill: question, wrong-answer feedback (+ toasts over it), settings,
       // mastery map, the session summary, a Sprint.
       {
@@ -867,6 +1024,51 @@ for (const v of VIEWPORTS) {
           await page.waitForTimeout(400);
           await check(page, v, combo, 'drill-sprint');
         }
+        await context.close();
+      }
+    });
+  }
+}
+
+// Common laptop sizes (W11-B), with a mouse: the workbench where it cannot
+// all fit — only the work column may scroll; the circle (facts beside it
+// below 900 px tall) and the instrument stay put; the same audit rules.
+const LAPTOPS = [
+  { name: 'laptop-1280x800', viewport: { width: 1280, height: 800 }, touch: false },
+  { name: 'laptop-1366x768', viewport: { width: 1366, height: 768 }, touch: false },
+  { name: 'laptop-1536x864', viewport: { width: 1536, height: 864 }, touch: false },
+] as unknown as Viewport[];
+for (const v of LAPTOPS) {
+  for (const th of THEMES) {
+    const combo = `${v.name}-${th.name}`;
+    test(`${combo}: the workbench — only the work column scrolls; type, targets, contrast, clipping`, async ({ browser }) => {
+      test.setTimeout(120_000);
+      for (const instrument of ['piano', 'guitar'] as const) {
+        const { context, page } = await open(browser, v, th.mode, { instrument, lastView: 'explore' });
+        if (instrument === 'guitar') await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+        await check(page, v, combo, `explore-${instrument}`);
+        await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
+        await expect(page.getByTestId('chord-detail')).toBeVisible();
+        await check(page, v, combo, `explore-${instrument}-chord`);
+        const s = await page.evaluate(() => {
+          const se = document.scrollingElement!;
+          const aside = document.querySelector('.explore-aside')!;
+          const onScreen = (sel: string) => {
+            const r = document.querySelector(sel)!.getBoundingClientRect();
+            return r.top >= -0.5 && r.bottom <= innerHeight + 0.5 && r.left >= -0.5 && r.right <= innerWidth + 0.5;
+          };
+          return {
+            page: se.scrollHeight - se.clientHeight,
+            aside: aside.scrollHeight - aside.clientHeight,
+            circle: onScreen('[data-testid="circle-card"]'),
+            facts: onScreen('[data-testid="key-facts"]'),
+            dock: onScreen('[data-testid="instrument-dock"]'),
+          };
+        });
+        const where = `${combo} ${instrument}`;
+        expect.soft(s.page, `${where}: page scroll`).toBeLessThanOrEqual(0);
+        expect.soft(s.aside, `${where}: the circle column scrolls`).toBeLessThanOrEqual(1);
+        expect.soft([s.circle, s.facts, s.dock], `${where}: circle, facts and dock on screen`).toEqual([true, true, true]);
         await context.close();
       }
     });
@@ -983,5 +1185,39 @@ for (const L of LANGS) {
         await context.close();
       }
     });
+  }
+}
+
+// PT and ES on narrow phones, 360 and 320 px (W11-B review: the chords' In
+// key / All / Build tabs ran off the card — "Construir" 44 % visible at 360,
+// ~2 % at 320). Explore with each tab open: the tabs stay inside the card,
+// and the same audit rules hold.
+for (const L of LANGS) {
+  for (const width of [360, 320] as const) {
+    for (const th of THEMES) {
+      const v = { name: `phone-${width}`, viewport: { width, height: width === 320 ? 568 : 740 }, touch: true } as unknown as Viewport;
+      const combo = `phone${width}-${L.lang}-${th.name}`;
+      test(`${combo}: Explore in ${L.lang.toUpperCase()} at ${width} px — the chord tabs fit, same rules`, async ({ browser }) => {
+        test.setTimeout(120_000);
+        const { context, page } = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore', dockDetents: { explore: 'peek', learn: 'peek' } }, { lang: L.lang });
+        await check(page, v, combo, 'explore');
+        const tabs = page.getByTestId('chords-card').getByRole('tab');
+        await expect(tabs).toHaveCount(3);
+        for (let i = 0; i < 3; i++) {
+          await tabs.nth(i).click();
+          await page.waitForTimeout(300);
+          const fit = await page.getByTestId('chords-card').evaluate((card) => {
+            const c = card.getBoundingClientRect();
+            return Array.from(card.querySelectorAll('[role="tab"]')).map((t) => {
+              const r = t.getBoundingClientRect();
+              return r.left >= c.left - 0.5 && r.right <= c.right + 0.5 && r.right <= innerWidth + 0.5;
+            });
+          });
+          expect.soft(fit, `${combo}: every chord tab inside the card (tab ${i} open)`).toEqual([true, true, true]);
+          await check(page, v, combo, `explore-chords-tab-${i}`);
+        }
+        await context.close();
+      });
+    }
   }
 }

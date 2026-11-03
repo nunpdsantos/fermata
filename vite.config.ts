@@ -131,7 +131,7 @@ export default defineConfig({
           '**/*.{css,html,ico,png,svg,woff2}',
           'assets/index-*.js', 'assets/i18next-*.js', 'assets/framer-motion-*.js', 'assets/zustand-*.js',
           'assets/DrillView-*.js', 'assets/drillStore-*.js', 'assets/prng-*.js', 'assets/workbox-window*.js',
-          'assets/Fretboard-*.js', 'assets/QuickSearch-*.js',
+          'assets/Fretboard-*.js', 'assets/QuickSearch-*.js', 'assets/NeckView-*.js',
           // The Explore and Learn views and the notation component they lazy-
           // load are part of the shell too: offline after a single online
           // visit, Explore and Learn must open even with no HTTP cache

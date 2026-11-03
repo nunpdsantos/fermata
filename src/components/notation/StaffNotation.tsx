@@ -3,7 +3,7 @@
  * Lazy-loads VexFlow on first use, shows skeleton while loading.
  */
 import type { PitchedNote } from '../../core/types/music';
-import { useStaffNotation } from './useStaffNotation';
+import { useStaffNotation, type StaffLayoutInfo } from './useStaffNotation';
 import { StaffNotationSkeleton } from './StaffNotationSkeleton';
 
 export interface StaffNotationProps {
@@ -22,6 +22,10 @@ export interface StaffNotationProps {
   /** Show what the selected instrument plays (Explore). Off for authored
    *  notation such as Learn exercises, which is never transposed. */
   followInstrument?: boolean;
+  /** Notes drawn in the dim text colour (index → true). */
+  noteDim?: Record<number, boolean>;
+  /** Notehead centres after each render (see useStaffNotation). */
+  onLayout?: (layout: StaffLayoutInfo) => void;
   className?: string;
 }
 
@@ -35,6 +39,8 @@ export function StaffNotation({
   duration,
   chord,
   followInstrument,
+  noteDim,
+  onLayout,
   className,
 }: StaffNotationProps) {
   const { containerRef, loading, height: fittedHeight } = useStaffNotation({
@@ -47,6 +53,8 @@ export function StaffNotation({
     duration,
     chord,
     followInstrument,
+    noteDim,
+    onLayout,
   });
 
   if (loading) {

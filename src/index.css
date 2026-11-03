@@ -231,6 +231,11 @@
   --piano-border: #8b5e2a;
   /* Key-name labels on the ivory keys: ≥ 4.5:1 (was #8b7551, 4.05:1). */
   --piano-label: #6d5c44;
+  /* A key's keyboard-focus ring: two lines, dark outside and light inside,
+     so one of them is ≥ 3:1 on any key face — ivory, tinted, a degree or
+     accent fill, ebony (themeContrast.test.ts checks every face). */
+  --piano-ring-dark: #24170b;
+  --piano-ring-light: #fff8ec;
 }
 
 /* Fermata Night — warm walnut/espresso dark variant of the Fermata aesthetic. */
@@ -303,6 +308,9 @@
   /* The night ivory keys stay light, so their labels are dark (was #a8916a,
      2.2:1). */
   --piano-label: #5f4e34;
+  /* The night ivory is still light: the accent ring was 2.2:1 on it. */
+  --piano-ring-dark: #24170b;
+  --piano-ring-light: #fff8ec;
 }
 
 /* Touch screens get 44 px controls (D-28). */
@@ -335,6 +343,26 @@ body {
 /* Opt-out for components that draw their own focus affordance. */
 [data-focus-ring="custom"]:focus-visible {
   outline: none;
+}
+/* A piano key's keyboard focus, drawn by CSS with the focus itself (W11-B
+   review: the React-painted ring was late under load, and only ~1.9:1): a
+   TWO-TONE ring inside the key — 2 px dark, then 2 px light — so it shows on
+   every face in both themes (the accent outline alone was 2.2:1 on the night
+   ivory and 1.7–2.1:1 on its tinted in-scale keys — W11-B delta review). The
+   dark line is the outline (what the design sweep's Tab walk reads); the
+   light one a pseudo-element just inside it, without a z-index so a white
+   key's stays under the black keys that overlap it. */
+[data-piano-key][data-focus-ring="custom"]:focus-visible {
+  outline: 2px solid var(--piano-ring-dark) !important;
+  outline-offset: -2px !important;
+}
+[data-piano-key][data-focus-ring="custom"]:focus-visible::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 2px var(--piano-ring-light);
+  pointer-events: none;
 }
 
 /* ─── Reduced motion (a11y) ──────────────────────────────────────
@@ -905,8 +933,14 @@ body {
   /* Wraps (up to two short lines) rather than ellipsize: PT/ES "Posição
      aberta" / "1 oitava" were cut off at 390 px (W11-A review). */
   .dock-context {
+    position: relative;
     flex: 1 1 auto;
     min-width: 0;
+    /* Room for two lines always (W11-B read-out): the bar's height never
+       changes when a note comes into focus. */
+    min-height: calc(2em * 1.25);
+    display: flex;
+    align-items: center;
     color: var(--text-muted);
     line-height: 1.25;
     overflow-wrap: anywhere;
@@ -972,6 +1006,635 @@ body {
       width: auto;
     }
   }
+}
+
+/* ─── Explore workbench (W11-B, D-25 / D-29 / D-30) ───────────────
+   Header (pickers · summary · Play · ⋯) over the work: the staff strip and
+   the chords, with the circle of fifths beside them at ≥ 1200 px. The page
+   never scrolls; at ≥ 1200 px each column scrolls on its own if the window
+   is short (at 1440×900 neither has to); below that the work area scrolls
+   as one column. */
+@layer components {
+  .explore-root {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .explore-header {
+    flex: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 8px 20px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg);
+  }
+  .explore-pickers {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .explore-summary {
+    flex: 1 1 260px;
+    min-width: 0;
+    margin: 0;
+    font-size: var(--text-ui);
+    line-height: 1.35;
+    color: var(--text-muted);
+  }
+  .explore-summary-key {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--text-body);
+    font-weight: 500;
+    color: var(--text);
+  }
+  .explore-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+  /* The phone's key picker: a button that looks like the select pill and
+     opens the circle-of-fifths sheet. */
+  .key-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: var(--tap);
+    min-width: var(--tap);
+    padding: 0 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-raised);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: var(--text-ui);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .key-trigger > svg {
+    color: var(--text-dim);
+  }
+  @media (max-width: 639px) {
+    .explore-header {
+      padding: 8px 12px;
+      gap: 6px 8px;
+    }
+    .explore-pickers {
+      flex: 1 1 0;
+    }
+    .explore-scale-picker {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .explore-scale-picker > select {
+      width: 100%;
+    }
+    .explore-summary {
+      order: 3;
+      flex-basis: 100%;
+      font-size: var(--text-caption);
+    }
+    .explore-summary-key {
+      font-size: var(--text-ui);
+    }
+  }
+
+  .explore-work {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .explore-main {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 12px 16px 20px;
+  }
+  @media (max-width: 639px) {
+    .explore-main {
+      padding: 10px 10px 16px;
+      gap: 10px;
+    }
+  }
+  @media (min-width: 1200px) {
+    .explore-work {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 312px;
+      gap: 16px;
+      overflow: hidden;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 8px 20px;
+    }
+    .explore-main {
+      min-height: 0;
+      max-width: none;
+      margin: 0;
+      padding: 2px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .explore-aside {
+      min-height: 0;
+      padding: 2px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+  }
+
+  /* A laptop shorter than 900 px (1280×800, 1366×768, 1536×864): the work
+     column scrolls when a chord's detail opens — the staff strip stays at
+     its top, so the chord's notes (lit) and the rest (faded) stay in view
+     with the detail (W11-B delta review). CurrentChordPanel scrolls the
+     detail in below it. */
+  @media screen and (min-width: 1200px) {
+    .explore-main > .strip-card {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+  }
+
+  /* A short screen (a phone sideways): the header scrolls away with the
+     work — one scroller for the little room left above the sheet, so a
+     focused note column is never half under the sheet. */
+  @media (max-height: 500px) {
+    .explore-root {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .explore-work,
+    .explore-main,
+    .explore-aside {
+      flex: none;
+      min-height: auto;
+      overflow: visible;
+    }
+  }
+
+  .explore-card {
+    border-radius: 14px;
+    border: 1px solid var(--border-subtle);
+    background: var(--card);
+    padding: 10px 14px 12px;
+  }
+  .explore-card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px 12px;
+    margin-bottom: 4px;
+  }
+  .explore-card-hint {
+    margin: 0;
+  }
+  @media (max-width: 639px) {
+    .explore-card {
+      padding: 10px 10px 12px;
+    }
+  }
+
+  /* Notes of the scale: staff + degree strip in one. The note columns are
+     buttons under the staff (it is drawn over them, transparent and deaf to
+     the pointer); each column's labels sit below the staff. */
+  .strip-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+  .strip-body {
+    position: relative;
+    /* A flow root: the staff's negative top margin (trimmed headroom) must
+       not collapse through and lift the whole strip under the card's edge. */
+    display: flow-root;
+  }
+  .strip-columns {
+    position: absolute;
+    inset: 0;
+  }
+  .strip-col {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1px;
+    padding: 0 0 4px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    background: transparent;
+    color: var(--text);
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: background-color 0.12s ease, border-color 0.12s ease;
+  }
+  @media (hover: hover) {
+    .strip-col:hover {
+      background: var(--card-hover);
+    }
+  }
+  .strip-col[data-on] {
+    background: var(--bg);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-sm);
+  }
+  .strip-name {
+    font-size: var(--text-ui);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .strip-col[data-dim] .strip-name {
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+  /* Degree and function on one line: "7 · leading". */
+  .strip-sub {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .strip-degree {
+    font-size: var(--text-caption);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .strip-fn {
+    font-size: var(--text-caption);
+    font-style: italic;
+    line-height: 1.2;
+    color: var(--text-dim);
+  }
+  .strip-staff {
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+  }
+  /* The drawing fills its box (a viewBox): during a resize, before VexFlow
+     redraws, it scales — and the %-placed columns stay under the heads. */
+  .strip-staff svg {
+    display: block;
+    /* VexFlow writes a px width / height inline; the box decides. */
+    width: 100% !important;
+    height: auto !important;
+  }
+  /* VexFlow gives each note a hit rect with pointer-events="auto"; the
+     columns under the staff must get the pointer, so nothing in it may. */
+  .strip-staff * {
+    pointer-events: none !important;
+  }
+  .strip-labels-room {
+    height: 40px;
+  }
+
+  /* Chords: one row of diatonic chords (it scrolls sideways on a phone),
+     the detail in place under it. */
+  .chord-row {
+    display: grid;
+    gap: 8px;
+    padding: 2px;
+    margin: 0 -2px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+  .chords-panel > * + * {
+    margin-top: 10px;
+  }
+  /* In key / All / Build fit any label length (PT "Todos os Acordes", ES
+     "Construir" at 320 px ran off the card — W11-B review): the labels wrap
+     inside their tabs; on a phone the tabs take their own row, equal widths. */
+  .chords-tabs {
+    max-width: 100%;
+  }
+  .chords-tabs .seg-btn {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: center;
+    line-height: 1.2;
+  }
+  @media (max-width: 639px) {
+    .chords-tabs {
+      display: flex;
+      width: 100%;
+    }
+    .chords-tabs .seg-btn {
+      flex: 1 1 0;
+      padding: 4px 6px;
+    }
+  }
+  .chord-detail {
+    /* Scrolled into view with one toast's room above it, so a toast then
+       never has to cover it and nothing moves when one comes. This is the
+       fallback: CurrentChordPanel (roomAbove) sets the real value — it also
+       counts a laptop's held staff strip, and clamps it so ▶ Chord stays in
+       the view (a phone sideways at Half has ~120 px; the fixed gap pushed
+       ▶ Chord under the sheet — W11-B delta review). */
+    scroll-margin-top: calc(var(--tap) + 32px);
+    scroll-margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px 16px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg);
+  }
+  .chord-detail-main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+  .chord-detail-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+  }
+  .chord-detail-name {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--text-title);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--text);
+  }
+  .chord-detail-quality {
+    margin-left: 6px;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+  .chord-detail-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+  }
+  .chord-detail-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .chord-detail-staff {
+    width: 132px;
+  }
+  /* The workbench (≥1200 px, D-25): the staff strip above already shows the
+     chord (its tones lit, the others faded) and the instrument its voicing,
+     so the detail drops its own small staff and its two rows get the card's
+     full width. With the staff beside them they ran ~95% full and one or
+     both wrapped for 5 of the 7 chords in key at 1440×900 in EN, 6 of 7 in
+     PT / ES — and for G too with Linux glyph widths (CI). Paper keeps the
+     staff. */
+  @media screen and (min-width: 1200px) {
+    .chord-detail {
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: 8px;
+    }
+    .chord-detail-staff {
+      display: none;
+    }
+  }
+  @media (max-width: 639px) {
+    .chord-detail {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    /* On a phone the row wraps line by line: ▶ Chord / ▶ Arpeggio come
+       right under the chord's name, so they are what the scrolled-in detail
+       shows first above the sheet. */
+    .chord-detail-row:first-child > .chord-detail-group {
+      order: 2;
+    }
+    .chord-detail-row:first-child > .chord-detail-actions {
+      order: 1;
+    }
+  }
+  /* A short screen (a phone sideways) too: ▶ Chord / ▶ Arpeggio right after
+     the name, at the top of the little view above the sheet. */
+  @media (max-height: 500px) {
+    .chord-detail-row:first-child > .chord-detail-group {
+      order: 2;
+    }
+    .chord-detail-row:first-child > .chord-detail-actions {
+      order: 1;
+    }
+  }
+  /* A chord tone: a degree-coloured disc with dark ink, a full tap target. */
+  .tone-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--tap);
+    height: var(--tap);
+    border-radius: 50%;
+    border-width: 2px;
+    font-family: var(--font-sans);
+    font-size: var(--text-ui);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .tone-btn[data-on] {
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+  }
+
+  /* Tablet: the circle's heading is a disclosure button (remembered). */
+  .circle-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: var(--tap);
+    margin: 0 0 0 -8px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-variant-caps: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+  }
+  .circle-toggle:hover {
+    background: var(--card-hover);
+  }
+  .circle-toggle > svg {
+    transition: transform 0.15s ease;
+  }
+  .circle-body[data-folded] {
+    display: none;
+  }
+
+  /* Circle of fifths card + the key's facts. */
+  .key-facts {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2px 14px;
+    margin: 6px 0 0;
+    font-size: var(--text-ui);
+    line-height: 1.35;
+  }
+  .key-fact {
+    display: contents;
+  }
+  .key-fact dt {
+    color: var(--text-dim);
+  }
+  .key-fact dd {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* The linked focus note on the fretboard: a ring around the cell's
+     centre (the dot, when there is one). */
+  .focus-note-ring {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 36px;
+    height: 36px;
+    margin: -18px 0 0 -18px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    box-shadow: 0 0 0 2px var(--bg);
+    z-index: 12;
+    pointer-events: none;
+  }
+
+  /* The dock bar's read-out: two lines, never more (DockReadout fits the
+     wording), so the bar never grows when a note comes into focus. */
+  .dock-context-probe {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  /* Laptop: the fretboard's position stepper and label toggle in the bar. */
+  .dock-tools {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Landscape full-neck view (D-26 extra): the whole screen. */
+  .neck-view {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  .neck-head {
+    flex: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .neck-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+  }
+  .neck-title {
+    flex: 1 1 120px;
+    min-width: 0;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--text-title);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+}
+
+/* A laptop shorter than ~900 px (1280×800, 1366×768, 1536×864): the circle
+   column cannot hold the circle over its facts, and only the WORK column may
+   scroll — so the column widens and the facts (with the circle's caption
+   and minor-variant chips) stand beside the circle. */
+@media (min-width: 1200px) and (max-height: 899px) {
+  .explore-work {
+    grid-template-columns: minmax(0, 1fr) 500px;
+  }
+  .explore-aside .circle-card {
+    display: grid;
+    grid-template-columns: 276px minmax(0, 1fr);
+    grid-template-rows: auto auto auto 1fr;
+    column-gap: 16px;
+    align-content: start;
+  }
+  .explore-aside .circle-card > .explore-card-head {
+    grid-column: 1 / -1;
+  }
+  .explore-aside .circle-body,
+  .explore-aside .cof-root {
+    display: contents;
+  }
+  .explore-aside .cof-root > svg {
+    grid-column: 1;
+    grid-row: 2 / span 3;
+  }
+  .explore-aside .cof-caption,
+  .explore-aside .cof-variants,
+  .explore-aside .key-facts {
+    grid-column: 2;
+  }
+  .explore-aside .cof-caption {
+    text-align: left;
+    margin-top: 8px;
+  }
+  .explore-aside .cof-variants {
+    justify-content: flex-start;
+  }
+  /* A narrow column: each fact's name over its value. */
+  .explore-aside .key-facts {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0;
+  }
+  .explore-aside .key-fact dd {
+    margin-bottom: 6px;
+  }
+}
+
+/* The circle beside the work keeps the key facts in view at 1440×900
+   (unlayered: it must beat the circle's own max-w utility). 276 px is the
+   smallest at which every inner-ring wedge stays a 36 px mouse target. */
+.explore-aside .circle-card svg {
+  max-width: 276px;
+}
+.explore-aside .circle-card {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.explore-aside .circle-card .explore-card-head {
+  margin-bottom: 0;
 }
 
 /* ─── Card utilities ────────────────────────────────────────────
@@ -1193,7 +1856,14 @@ p.explore-prose {
 
 /* Print styles — hide navigation/instruments, show content only */
 @media print {
-  :root {
+  /* Paper: light tokens whatever theme is on screen (the Night block is
+     more specific, so it is named too — Night used to print dark), ink
+     shades of the degree colours, and dim text that still reads (#888 was
+     3.5:1). The staff picks these up live: its inline colours are the
+     variables, not the values (useStaffNotation). */
+  :root,
+  :root.fermata-night {
+    color-scheme: light;
     --bg: #fff;
     --bg-raised: #fafafa;
     --card: #f5f5f5;
@@ -1203,9 +1873,21 @@ p.explore-prose {
     --border-light: #ccc;
     --border-subtle: #eee;
     --text: #111;
-    --text-muted: #555;
-    --text-dim: #888;
-    --accent: #2563eb;
+    --text-muted: #444;
+    --text-dim: #5c5c5c;
+    --accent: #a65a2a;
+    --accent-hover: #8f4a1e;
+    --accent-text: #8f4a1e;
+    --on-accent: #fff;
+    --seg-on-border: #8b7551;
+    --deg-ink-1: #1e40af;
+    --deg-ink-2: #5b21b6;
+    --deg-ink-3: #9d174d;
+    --deg-ink-4: #065f46;
+    --deg-ink-5: #92400e;
+    --deg-ink-6: #9a3412;
+    --deg-ink-7: #991b1b;
+    --on-degree: #2a1f14;
     --shadow-sm: none;
     --shadow-md: none;
     --shadow-lg: none;
@@ -1216,8 +1898,10 @@ p.explore-prose {
     background: #fff !important;
     color: #111 !important;
   }
-  /* Hide instrument bar, top bar, and non-printable elements */
-  header, [aria-label$="instrument"], .no-print {
+  /* Hide the top bar, the instrument dock (bar and all), toasts, menus,
+     sheets, the full-neck view and anything marked no-print. */
+  header, [aria-label$="instrument"], .no-print,
+  [data-testid="instrument-dock"], .toast-region, .menu-popup, .sheet-root, .neck-view {
     display: none !important;
   }
   /* Expand main content */
@@ -1228,5 +1912,41 @@ p.explore-prose {
   /* Remove fixed layout constraints */
   .h-screen, .h-dvh {
     height: auto !important;
+  }
+  /* The Explore workbench's scroll boxes print in full, one column. */
+  .explore-root, .explore-work, .explore-main, .explore-aside {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .explore-main > * + *, .explore-aside {
+    margin-top: 10px;
+  }
+  .explore-card {
+    break-inside: avoid;
+  }
+  /* The staff strip at the page's width: the drawing scales (viewBox) and
+     the note columns are placed in % of it, so they stay under their heads. */
+  .strip-scroll {
+    overflow: visible !important;
+  }
+  .strip-body {
+    width: 100% !important;
+  }
+  .strip-staff > div {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  /* A folded circle (tablet) still prints. */
+  .circle-body[data-folded] {
+    display: block !important;
+  }
+  .circle-toggle > svg {
+    display: none;
+  }
+  /* The circle at a size that leaves room for its facts on the page. */
+  .circle-card svg {
+    max-width: 300px !important;
   }
 }
