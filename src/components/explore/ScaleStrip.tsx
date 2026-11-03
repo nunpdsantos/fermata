@@ -10,6 +10,7 @@ import { getKeySignatureForScale } from '../../utils/notationHelpers.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAudio } from '../../hooks/useAudio.ts';
 import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
+import { exploreRegister } from './exploreRegister';
 import { useAppStore } from '../../state/store.ts';
 import { useFocusNoteStore, useFocusNote, focusMatches, type FocusNote } from '../../state/focusNoteStore.ts';
 import { DEGREE_INKS } from '../../design/tokens/colors.ts';
@@ -17,7 +18,7 @@ import { StaffNotationSkeleton } from '../notation/StaffNotationSkeleton.tsx';
 import type { StaffLayoutInfo } from '../notation/useStaffNotation.ts';
 import { useScaleDirectionStore } from '../../state/scaleDirectionStore.ts';
 import { Segment } from '../ui/Segment.tsx';
-import { staffTrim } from './staffTrim.ts';
+import { scaleStripTrim } from './staffTrim.ts';
 
 const StaffNotation = lazy(() =>
   import('../notation/StaffNotation.tsx').then((m) => ({ default: m.StaffNotation })),
@@ -26,6 +27,9 @@ const StaffNotation = lazy(() =>
 const STAFF_HEIGHT = 80;
 /** Room the clef takes before the first note (px), plus 10 px per signature accidental. */
 const CLEF_ROOM = 64;
+// A column can extend 58px left of its notehead. Leave the complete clef
+// (right edge < 42px), including its 8 in the label band, at least 4px clear.
+const GUITAR_NOTE_START = 104;
 
 /**
  * NOTES OF THE SCALE (W11-B, D-25): the staff and the scale-degree strip in
@@ -62,9 +66,9 @@ export function ScaleStrip() {
   // coloured and labelled by its FUNCTION read from the spelled letter (a
   // pentatonic's G is the dominant — audit W1-06, W1-18).
   const notes: PitchedNote[] = useMemo(() => {
-    const up = getScaleNotesWithOctaves(scale.notes, 4);
+    const up = getScaleNotesWithOctaves(scale.notes, exploreRegister(instrument).octave);
     return descending ? up.reverse() : up;
-  }, [scale, descending]);
+  }, [scale, descending, instrument]);
   const midis = useMemo(() => notes.map((n) => getMidiNumber(n, n.octave)), [notes]);
   const degrees = useMemo(() => notes.map((n) => degreeOf(scale.root, n)), [notes, scale.root]);
   // Noteheads in their degree's INK shade (800 by day, 400 at night): the
@@ -104,7 +108,7 @@ export function ScaleStrip() {
   }, []);
   const minCol = coarse ? 48 : 44;
   const sigCount = keySignature ? (keySignatureForScale(scale.root, displayType)?.count ?? 0) : 0;
-  const prefix = CLEF_ROOM + 10 * sigCount;
+  const prefix = Math.max(CLEF_ROOM + 10 * sigCount, instrument === 'guitar' ? GUITAR_NOTE_START : 0);
   const staffWidth = Math.max(boxWidth, prefix + notes.length * minCol + 12);
 
   // Where VexFlow put each notehead; until it has drawn, an even spread.
@@ -161,8 +165,9 @@ export function ScaleStrip() {
     if (e.pointerType === 'mouse') clearFocus('hover', 'staff');
   };
 
-  // The staff's empty headroom is trimmed (the workbench fits 1440×900).
-  const trim = useMemo(() => staffTrim(notes, instrument, STAFF_HEIGHT), [notes, instrument]);
+  // The full clef stays in the SVG; its 8 may share the label band's empty
+  // left end without adding height to the workbench.
+  const trim = useMemo(() => scaleStripTrim(notes, instrument, STAFF_HEIGHT, keySignature), [notes, instrument, keySignature]);
 
   const written = instrument === 'guitar';
 
@@ -264,6 +269,7 @@ export function ScaleStrip() {
                 noteColors={noteColors}
                 noteDim={noteDim}
                 width={staffWidth}
+                minNoteStartX={instrument === 'guitar' ? GUITAR_NOTE_START : undefined}
                 height={STAFF_HEIGHT}
                 duration="w"
                 followInstrument

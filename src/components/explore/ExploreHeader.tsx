@@ -10,6 +10,7 @@ import { Menu } from '../ui/Menu.tsx';
 import { Sheet } from '../ui/Sheet.tsx';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useMediaQuery, PHONE_QUERY } from '../../hooks/useMediaQuery.ts';
+import { exploreRegister } from './exploreRegister';
 import { useAppStore } from '../../state/store.ts';
 import { playScale, resumeAudio, cancelScheduledAudio } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
@@ -40,6 +41,7 @@ export function ExploreHeader({ practiceAction }: { practiceAction?: ReactNode }
   const selectedScale = useAppStore((s) => s.selectedScale);
   const selectedChord = useAppStore((s) => s.selectedChord);
   const synthPreset = useAppStore((s) => s.synthPreset);
+  const instrument = useAppStore((s) => s.instrument);
   const baseOctave = useAppStore((s) => s.baseOctave);
   const phone = useMediaQuery(PHONE_QUERY);
   const [keySheet, setKeySheet] = useState(false);
@@ -52,8 +54,8 @@ export function ExploreHeader({ practiceAction }: { practiceAction?: ReactNode }
     // Audio only: stopPlayback() would also clear other components' visual
     // timeouts (e.g. the chord panel's arpeggio un-lighting its keys — B2).
     cancelScheduledAudio();
-    playScale(scale.notes, baseOctave, true, selectedScale === 'melodic_minor', 0.25, () => {}, () => {}, getSynthConfig(synthPreset), classicalDescendingNotes(scale.root, selectedScale));
-  }, [scale, selectedScale, synthPreset, baseOctave]);
+    playScale(scale.notes, exploreRegister(instrument, baseOctave).octave, true, selectedScale === 'melodic_minor', 0.25, () => {}, () => {}, getSynthConfig(synthPreset), classicalDescendingNotes(scale.root, selectedScale));
+  }, [scale, selectedScale, synthPreset, baseOctave, instrument]);
 
   const copy = async () => {
     const ok = await copyToClipboard(generateScaleSummary(scale, diatonicChords, selectedChord, { t, lang: toContentLanguage(i18n.language) }));

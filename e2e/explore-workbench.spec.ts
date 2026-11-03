@@ -44,6 +44,117 @@ async function open(browser: Browser, opts: { w: number; h: number; touch?: bool
   return { context, page };
 }
 
+/** Measure actual glyph ink: SVG text getBBox can include Bravura's very
+ * tall font-wide em box. Canvas actualBoundingBox measures this glyph's
+ * outline, including the 8 in U+E052, using the loaded browser font. */
+async function expectStaffInk(page: Page, selector: string, instrument: string) {
+  const staff = page.locator(selector);
+  await expect(staff.locator('g.vf-stavenote').first()).toBeAttached();
+  await page.evaluate(() => document.fonts.ready);
+  // A scroller clips only what is scrolled away; bring the staff into view
+  // first (a phone's chord detail opens below the fold of the work area).
+  await staff.scrollIntoViewIfNeeded();
+  const measured = await staff.evaluate((root) => {
+    const svg = root.querySelector('svg')!;
+    const svgBox = svg.getBoundingClientRect();
+    const rootBox = root.getBoundingClientRect();
+    const style = getComputedStyle(root);
+    // The strip shares its label band with the clef's 8. A negative margin
+    // changes flow, not clipping: include that band in its visible region.
+    let top = Math.max(svgBox.top, rootBox.top - parseFloat(style.marginTop));
+    let bottom = Math.min(svgBox.bottom, rootBox.bottom + parseFloat(style.marginBottom));
+    let left = svgBox.left;
+    let right = svgBox.right;
+    const stripBody = root.closest('.strip-body');
+    if (stripBody) bottom = Math.min(svgBox.bottom, stripBody.getBoundingClientRect().bottom);
+    // Check every clipping ancestor, including the staff wrapper, work
+    // column and horizontal scroller. Their client boxes exclude borders
+    // and scrollbars. The complete glyph must survive all intersections.
+    for (let ancestor: Element | null = svg.parentElement; ancestor; ancestor = ancestor.parentElement) {
+      const css = getComputedStyle(ancestor);
+      const box = ancestor.getBoundingClientRect();
+      if (/(hidden|clip|auto|scroll)/.test(css.overflowY)) {
+        top = Math.max(top, box.top + ancestor.clientTop);
+        bottom = Math.min(bottom, box.top + ancestor.clientTop + ancestor.clientHeight);
+      }
+      if (/(hidden|clip|auto|scroll)/.test(css.overflowX)) {
+        left = Math.max(left, box.left + ancestor.clientLeft);
+        right = Math.min(right, box.left + ancestor.clientLeft + ancestor.clientWidth);
+      }
+    }
+    const labels = Array.from(stripBody?.querySelectorAll('.strip-col, .strip-name, .strip-sub, .strip-degree, .strip-fn') ?? []).map((label) => {
+      const box = label.getBoundingClientRect();
+      return { left: box.left, right: box.right, top: box.top, bottom: box.bottom };
+    });
+    const bounds = (element: SVGGraphicsElement, x: number, y: number) =>
+      new DOMPoint(x, y).matrixTransform(element.getScreenCTM()!);
+    const lines = Array.from(svg.querySelectorAll<SVGPathElement>('g.vf-stave > path')).flatMap((path) => {
+      const points = (path.getAttribute('d')?.match(/-?\d+(?:\.\d+)?/g) ?? []).map(Number);
+      if (points.length !== 4 || points[1] !== points[3] || points[0] === points[2]) return [];
+      const halfStroke = parseFloat(getComputedStyle(path).strokeWidth) / 2;
+      return [{ top: bounds(path, points[0], points[1] - halfStroke).y, bottom: bounds(path, points[2], points[3] + halfStroke).y }];
+    });
+    const clef = svg.querySelector<SVGTextElement>('g.vf-clef text')!;
+    const font = getComputedStyle(clef);
+    const canvas = document.createElement('canvas').getContext('2d')!;
+    canvas.font = `${font.fontStyle} ${font.fontWeight} ${font.fontSize} ${font.fontFamily}`;
+    const metrics = canvas.measureText(clef.textContent!);
+    const x = Number(clef.getAttribute('x'));
+    const y = Number(clef.getAttribute('y'));
+    const a = bounds(clef, x - metrics.actualBoundingBoxLeft, y - metrics.actualBoundingBoxAscent);
+    const b = bounds(clef, x + metrics.actualBoundingBoxRight, y + metrics.actualBoundingBoxDescent);
+    return { top, bottom, lines, glyph: clef.textContent, clef: { top: a.y, bottom: b.y, left: a.x, right: b.x }, left, right, labels, isStrip: !!stripBody };
+  });
+  expect(measured.lines, `${selector}: five staff lines`).toHaveLength(5);
+  expect(measured.glyph).toBe(instrument === 'guitar' ? '\uE052' : '\uE050');
+  expect(measured.clef.bottom - measured.clef.top, 'a real font outline was measured').toBeGreaterThan(60);
+  for (const ink of [...measured.lines, measured.clef]) {
+    // 0.1px rounding only: 0.5px would mask the original bottom-stroke bug.
+    expect(ink.top, `${selector}: ink above visible box`).toBeGreaterThanOrEqual(measured.top - 0.1);
+    expect(ink.bottom, `${selector}: ink below visible box`).toBeLessThanOrEqual(measured.bottom + 0.1);
+  }
+  expect(measured.clef.left).toBeGreaterThanOrEqual(measured.left - 0.1);
+  expect(measured.clef.right).toBeLessThanOrEqual(measured.right + 0.1);
+  if (measured.isStrip && instrument === 'guitar') {
+    expect(measured.labels.length, 'label boxes were measured').toBeGreaterThan(0);
+    for (const [i, label] of measured.labels.entries()) {
+      // The full clef bounds enclose the 8: disjoint boxes prove that the 8
+      // cannot touch any name, degree, function, or column background.
+      const overlaps = measured.clef.left < label.right && measured.clef.right > label.left
+        && measured.clef.top < label.bottom && measured.clef.bottom > label.top;
+      expect(overlaps, `8vb clef overlaps label/column box ${i}`).toBe(false);
+    }
+  }
+}
+
+for (const instrument of ['piano', 'guitar'] as const) {
+  for (const [w, h] of [[1440, 900], [390, 844]] as const) {
+    for (const selectedScale of ['major', 'natural_minor', 'melodic_minor'] as const) {
+      test(`${w}×${h} ${instrument} ${selectedScale}: five full staff strokes and complete clefs`, async ({ browser }) => {
+        const { context, page } = await open(browser, { w, h, touch: w < 600, state: {
+          instrument, selectedKey: { natural: selectedScale === 'major' ? 'C' : 'A', accidental: '' }, selectedScale,
+        } });
+        await expectStaffInk(page, '.strip-staff', instrument);
+        if (selectedScale === 'melodic_minor') {
+          await page.getByRole('radio', { name: '↓ Descending' }).click();
+          await expect(page.locator('.strip-col').nth(1)).toHaveAttribute('data-note', 'G');
+          await expectStaffInk(page, '.strip-staff', instrument);
+        }
+        await page.locator('.chord-row button').first().click();
+        // The desktop design intentionally hides the detail staff on screen;
+        // at that viewport its visible use is print. Phone checks screen ink.
+        if (w >= 1200) {
+          await expect(page.getByTestId('chord-staff')).toBeHidden();
+          await page.emulateMedia({ media: 'print' });
+        }
+        await expect(page.getByTestId('chord-staff')).toBeVisible();
+        await expectStaffInk(page, '.chord-detail-staff', instrument);
+        await context.close();
+      });
+    }
+  }
+}
+
 const readout = (page: Page) => page.getByTestId('dock-readout').locator('.dock-context-text');
 const stripB = (page: Page) => page.locator('.strip-col[data-note="B"]').first();
 
@@ -141,9 +252,11 @@ for (const instrument of ['piano', 'guitar'] as const) {
 
 test('1440×900 in Portuguese and Spanish: every chord in key opens in place, two rows, no scroll, the same headroom', async ({ browser }) => {
   for (const language of ['pt', 'es']) {
-    const { context, page } = await open(browser, { w: 1440, h: 900, state: { language } });
-    await everyChordFits(page, language);
-    await context.close();
+    for (const instrument of ['piano', 'guitar']) {
+      const { context, page } = await open(browser, { w: 1440, h: 900, state: { language, instrument } });
+      await everyChordFits(page, `${language} ${instrument}`);
+      await context.close();
+    }
   }
 });
 
@@ -178,14 +291,16 @@ test('linked focus (piano): B in the staff strip lights B4 on the piano, and B4 
   await context.close();
 });
 
-test('linked focus (guitar): B in the strip lights the Bs of the open position, and a fret lights the strip', async ({ browser }) => {
+test('linked focus (guitar): the strip’s B3 lights only the open B string, and a fret lights the strip', async ({ browser }) => {
   const { context, page } = await open(browser, { w: 1440, h: 900, state: { instrument: 'guitar' } });
   await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
   await stripB(page).hover();
   const lit = page.locator('[role="grid"] [data-focus-note]');
-  await expect(lit).toHaveCount(2);
-  await expect(page.locator('[data-string-row="1"][data-fret="2"]')).toHaveAttribute('data-focus-note', 'true');
-  await expect(readout(page)).toHaveText('B — leading note of C Major · string 5 fret 2, string 2 open');
+  await expect(stripB(page)).toHaveAttribute('data-midi', '59');
+  await expect(lit).toHaveCount(1);
+  await expect(lit).toHaveAttribute('data-open-string');
+  await expect(page.locator('[data-string-row="1"][data-fret="2"]')).not.toHaveAttribute('data-focus-note');
+  await expect(readout(page)).toHaveText('B — leading note of C Major · string 2 open');
   // Vice versa: the mouse over string 5, fret 2.
   await page.mouse.move(5, 5);
   await expect(lit).toHaveCount(0);

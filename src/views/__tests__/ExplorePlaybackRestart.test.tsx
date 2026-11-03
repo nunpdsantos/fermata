@@ -97,7 +97,8 @@ async function renderExplore() {
   expect(screen.getAllByTestId('staff-mock').length).toBeGreaterThan(0);
 }
 
-describe('Explore playback restart keeps the chord panel highlights consistent (B2)', () => {
+describe.each(['piano', 'guitar'] as const)('%s: Explore playback restart keeps the chord panel highlights consistent (B2)', (instrument) => {
+  beforeEach(() => useAppStore.setState({ instrument }));
   it('control: the arpeggio alone lights keys and un-lights them when it ends', async () => {
     await renderExplore();
     fireEvent.click(screen.getByRole('button', { name: 'Arpeggio' }));

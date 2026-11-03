@@ -6,10 +6,10 @@ import { ChordBuilderPanel } from '../theory/ChordBuilderPanel.tsx';
 import { CurrentChordPanel } from '../panels/CurrentChordPanel.tsx';
 import { Segment } from '../ui/Segment.tsx';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
+import { exploreRegister } from './exploreRegister';
 import { useAppStore } from '../../state/store.ts';
 import { keyName } from './focusReadout.ts';
 import { staffTrim } from './staffTrim.ts';
-import { getVoicedChordNotes } from '../../core/utils/pianoLayout.ts';
 import { StaffNotationSkeleton } from '../notation/StaffNotationSkeleton.tsx';
 
 const StaffNotation = lazy(() =>
@@ -24,8 +24,8 @@ function ChordStaff() {
   const chord = useAppStore((s) => s.selectedChord);
   const instrument = useAppStore((s) => s.instrument);
   const notes = useMemo(
-    () => (chord ? getVoicedChordNotes(invertedNotes.length > 0 ? invertedNotes : chord.notes, 4) : []),
-    [chord, invertedNotes],
+    () => (chord ? exploreRegister(instrument).chordPitches(invertedNotes.length > 0 ? invertedNotes : chord.notes, instrument === 'guitar' ? chord.bassNote : undefined) : []),
+    [chord, invertedNotes, instrument],
   );
   const trim = useMemo(() => staffTrim(notes, instrument, CHORD_STAFF_HEIGHT), [notes, instrument]);
   if (!chord) return null;

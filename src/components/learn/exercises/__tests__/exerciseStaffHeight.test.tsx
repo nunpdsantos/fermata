@@ -36,8 +36,10 @@ async function measure(ex: ExerciseDefinition) {
   const head = container.querySelector('g.vf-notehead text')!;
   const y = Number(head.getAttribute('y'));
   const box = svg.parentElement as HTMLElement;
-  const clef = container.querySelector('g.vf-clef text')!.textContent!.codePointAt(0);
-  return { svgHeight, y, boxHeight: parseFloat(box.style.height), clef };
+  const clefText = container.querySelector('g.vf-clef text')!;
+  const clef = clefText.textContent!.codePointAt(0);
+  const clefY = Number(clefText.getAttribute('y'));
+  return { svgHeight, y, boxHeight: parseFloat(box.style.height), clef, clefY };
 }
 
 describe('exercise staff fits its notes', () => {
@@ -77,8 +79,13 @@ describe('exercise staff fits its notes', () => {
     expect(clef).toBe(0xe062); // bass clef glyph
   });
 
-  it('a note on the staff keeps the compact 100 px height', async () => {
+  it('a note on the staff reserves the complete clef, even when 100 px was requested', async () => {
     const r = await measure(noteId('G', 4));
-    expect(r.svgHeight).toBe(100);
+    // Bravura gClef at 40px: upper curl 43.92px above its anchor,
+    // lower hook 26.329px below. The old 100px SVG cut off that hook.
+    expect(r.clefY - 43.92).toBeGreaterThanOrEqual(0);
+    expect(r.clefY + 26.329).toBeLessThanOrEqual(r.svgHeight);
+    expect(r.svgHeight).toBe(109);
+    expect(r.boxHeight).toBe(r.svgHeight);
   });
 });

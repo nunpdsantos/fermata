@@ -126,31 +126,79 @@ export function staffLine(note: PitchedNote, clef: 'treble' | 'bass'): number {
   return (octave * 7 - 28 + LETTER_INDEX[note.natural]) / 2 + CLEF_LINE_SHIFT[clef];
 }
 
+export interface StaffInkOptions {
+  annotation?: '8vb';
+  /** Matches StaffNotation's default. Explore and Drill use stemless wholes. */
+  duration?: string;
+  keySignature?: string;
+}
+
+/** Bravura accidental outlines rounded outward at the same 40px size. */
+function accidentalInk(accidental: StaffAccidental): { top: number; bottom: number } {
+  if (accidental === 'b' || accidental === 'bb') return { top: 18, bottom: 8 };
+  if (accidental === '#' || accidental === 'n') return { top: 14, bottom: 14 };
+  return { top: 8, bottom: 8 };
+}
+
 /**
- * Where to put the stave and how tall to draw it so every note fits: the
- * requested height for notes on the staff, grown (and the stave moved down)
- * for ledger-line notes above or below it. VexFlow places a note's centre at
- * staveY + 90 − 10·line (10 px per line, 4 lines of headroom); a notehead and
- * its ledger line need about 8 px either side of that centre.
+ * Ink bounds relative to VexFlow's staveY, shared by fitting and trimming.
+ * Default Bravura clefs are 30pt (40px), anchored at y=70 (treble) / 50
+ * (bass). Bounds rounded OUT from the bundled font's 1000 units/em outlines:
+ * gClef y=[-658.215,1098], gClef8vb=[-878,1098];
+ * fClef y=[-635,262], fClef8vb=[-744,262]. The 8 is part of the glyph.
+ * Staff lines run from 40.5 to 80.5, including a 1px stroke: [40,81].
  */
+export function staffInkBounds(
+  notes: readonly PitchedNote[],
+  clef: 'treble' | 'bass',
+  options: StaffInkOptions = {},
+): { top: number; bottom: number } {
+  const clefBounds = clef === 'treble'
+    ? { top: 26, bottom: options.annotation ? 106 : 97 }
+    : { top: 39, bottom: options.annotation ? 80 : 76 };
+  let top = Math.min(40, clefBounds.top);
+  let bottom = Math.max(81, clefBounds.bottom);
+  // VexFlow's signature order, measured down from the top staff line.
+  // In a signature with 3+ sharps, G# reaches ABOVE the treble clef curl.
+  const signature = Object.values(keySignatureAlterations(options.keySignature));
+  const signatureType = signature[0];
+  if (signatureType === '#' || signatureType === 'b') {
+    const positions = signatureType === '#' ? [0, 1.5, -0.5, 1, 2.5, 0.5, 2] : [2, 0.5, 2.5, 1, 3, 1.5, 3.5];
+    const accidental = accidentalInk(signatureType);
+    positions.slice(0, signature.length).forEach((line) => {
+      const y = 40 + 10 * (line + (clef === 'bass' ? 1 : 0));
+      top = Math.min(top, y - accidental.top);
+      bottom = Math.max(bottom, y + accidental.bottom);
+    });
+  }
+  const accidentals = vexAccidentals(notes, options.keySignature);
+  notes.forEach((note, i) => {
+    const y = 90 - 10 * staffLine(note, clef);
+    // At least 8px for the notehead and ledger stroke, more for accidentals.
+    const accidental = accidentalInk(accidentals[i]);
+    // StaveNote defaults to upward 35px stems (including stacked chords).
+    // The callers use w/h/q; whole notes have no stems.
+    const stemTop = (options.duration ?? 'q') === 'w' ? 8 : 36;
+    top = Math.min(top, y - Math.max(stemTop, accidental.top));
+    bottom = Math.max(bottom, y + accidental.bottom);
+  });
+  return { top, bottom };
+}
+
+/** Fit ALL ink, including an empty staff's lines and annotated clef. */
 export function staffLayout(
   notes: readonly PitchedNote[],
   clef: 'treble' | 'bass',
   requestedHeight: number,
+  options: StaffInkOptions = {},
 ): { height: number; staveY: number } {
-  let staveY = Math.max(0, (requestedHeight - 80) / 2);
-  let height = requestedHeight;
-  if (notes.length === 0) return { height, staveY };
-  const lines = notes.map((n) => staffLine(n, clef));
-  const MARGIN = 8;
-  const top = staveY + 90 - 10 * Math.max(...lines) - MARGIN;
-  if (top < 0) {
-    staveY -= top;
-    height -= top;
-  }
-  const bottom = staveY + 90 - 10 * Math.min(...lines) + MARGIN;
-  if (bottom > height) height = bottom;
-  return { height: Math.ceil(height), staveY };
+  const ink = staffInkBounds(notes, clef, options);
+  const initialY = Math.max(0, (requestedHeight - 80) / 2);
+  const staveY = Math.max(initialY, 4 - ink.top);
+  return {
+    height: Math.ceil(Math.max(requestedHeight, staveY + ink.bottom + 2)),
+    staveY,
+  };
 }
 
 /**
