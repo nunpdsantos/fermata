@@ -11,9 +11,9 @@ import { Segment } from '../ui/Segment';
 import { SelectTrigger } from '../ui/SelectTrigger';
 import { ChipGroup } from '../ui/ChoiceChip';
 import { PracticePlayer } from './PracticePlayer';
-import { keyMode, rightHandPractice, scalePractice, technicalSet } from './practiceModel';
+import { keyMode, positionWalkPractice, rightHandPractice, scalePractice, technicalSet } from './practiceModel';
 
-type Tab = 'scales' | 'technical' | 'rightHand';
+type Tab = 'scales' | 'walk' | 'technical' | 'rightHand';
 
 /** Lazy entry: the fingering search and technical engines never enter the app bundle. */
 export default function GuitarPractice() {
@@ -34,18 +34,20 @@ export default function GuitarPractice() {
   const scaleRoute = useMemo(() => tab === 'scales' ? scalePractice(root, scale, tuning, shownOctaves, scheme) : null, [tab, root, scale, tuning, shownOctaves, scheme]);
   const items = useMemo(() => tab === 'technical' ? technicalSet(root, scale, tuning) : [], [tab, root, scale, tuning]);
   const study = useMemo(() => tab === 'rightHand' ? rightHandPractice(root, scale, tuning, pattern) : null, [tab, root, scale, tuning, pattern]);
+  const walk = useMemo(() => tab === 'walk' ? positionWalkPractice(root, scale, tuning) : null, [tab, root, scale, tuning]);
   const selected = items.find((entry) => entry.id === item);
-  const route = tab === 'scales' ? scaleRoute : tab === 'technical' ? selected?.route : study;
+  const route = tab === 'walk' ? walk : tab === 'scales' ? scaleRoute : tab === 'technical' ? selected?.route : study;
   const reason = tab === 'scales' ? ROUTE_SCALE_TYPES.includes(scale) ? 'noRoute' : 'heptatonic'
-    : tab === 'technical' ? selected?.reason ?? 'noRoute' : tuning.id !== 'standard' ? 'standardOnly' : keyMode(scale) ? 'noGrip' : 'majorMinor';
+    : tab === 'walk' ? 'noWalk' : tab === 'technical' ? selected?.reason ?? 'noRoute' : tuning.id !== 'standard' ? 'standardOnly' : keyMode(scale) ? 'noGrip' : 'majorMinor';
   const routeTypes = [...EXAM_SCALE_TYPES, ...ROUTE_SCALE_TYPES.filter((s) => !EXAM_SCALE_TYPES.includes(s))];
   const playerKey = [noteToString(root), scale, tuning.id, tab, route?.id, route?.octaves, scheme, stroke].join('|');
 
   return <div className="practice-content space-y-4">
     <p className="text-ui">{t('practice.keyOfPiece', { key: `${noteToString(root)} ${t(`scaleName.${scale}`)}` })}</p>
     <Segment mode="tabs" className="practice-tabs" label={t('practice.title')} value={tab} onChange={setTab}
-      options={(['scales', 'technical', 'rightHand'] as const).map((value) => ({ value, label: t(`practice.tabs.${value}`), id: `practice-tab-${value}`, controls: 'practice-panel' }))} />
+      options={(['scales', 'walk', 'technical', 'rightHand'] as const).map((value) => ({ value, label: t(`practice.tabs.${value}`), id: `practice-tab-${value}`, controls: 'practice-panel' }))} />
     <div id="practice-panel" role="tabpanel" aria-labelledby={`practice-tab-${tab}`} className="space-y-3">
+      {tab === 'walk' && <p className="text-ui">{t('practice.walkHint')}</p>}
       {tab === 'scales' && <>
         <div className="flex flex-wrap gap-3 items-center">
           <label className="practice-select-label">{t('keySelector.scale')}

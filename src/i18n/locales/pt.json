@@ -613,6 +613,7 @@
     "announce": "Corda {{string}}, traste {{fret}}, {{note}}",
     "label": "Braço da guitarra",
     "tuning": "Afinação:",
+    "standardTuning": "Padrão",
     "tuningLabel": "Afinação da guitarra",
     "position": "Posição:",
     "all": "Todas",

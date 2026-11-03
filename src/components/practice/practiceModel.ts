@@ -10,6 +10,8 @@ import {
 } from '../../core/utils/guitarTechnique';
 import { rightHandStudy } from '../../core/utils/rightHandPatterns';
 import type { TimedNote } from '../../core/services/audio';
+import { getPositionWalk, type WalkStop } from '../../core/utils/positionWalk';
+import { scaleDegreeMap } from '../../core/utils/guitarPositions';
 
 export interface PracticeEvent extends TechniqueEvent { numeral?: string }
 export interface PracticeRoute {
@@ -17,6 +19,7 @@ export interface PracticeRoute {
   octaves: number;
   events: PracticeEvent[];
   overRinging: boolean | null;
+  stops?: WalkStop[];
 }
 export interface PracticeItem {
   id: string;
@@ -36,6 +39,16 @@ export function scalePractice(root: Note, type: ScaleType, tuning: GuitarTuning,
   const notes = fullRoute(route);
   const rh = scaleRightHand(notes.map((n) => n.midi), scheme);
   return { id: 'scale', octaves, overRinging: false, events: notes.map((n, i) => ({ notes: [n], degrees: [n.degree], rh: [rh.fingers[i]] })) };
+}
+
+export function positionWalkPractice(root: Note, type: ScaleType, tuning: GuitarTuning): PracticeRoute | null {
+  const walk = getPositionWalk(root, type, { tuning });
+  if (!walk) return null;
+  const degrees = scaleDegreeMap(root, type);
+  const rh = scaleRightHand(walk.notes.map((n) => n.midi), 'im');
+  return { id: 'position-walk', octaves: Math.max(...walk.stops.map((s) => s.octaves)),
+    stops: walk.stops, overRinging: false,
+    events: walk.notes.map((n, i) => ({ notes: [n], degrees: [degrees.get(n.midi % 12)!.degreeIndex + 1], rh: [rh.fingers[i]] })) };
 }
 
 const fromTechnique = (ex: TechniqueExercise | null, id: string): PracticeRoute | null => ex && ({

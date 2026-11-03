@@ -613,6 +613,7 @@
     "announce": "Cuerda {{string}}, traste {{fret}}, {{note}}",
     "label": "M\u00e1stil de la guitarra",
     "tuning": "Afinaci\u00f3n:",
+    "standardTuning": "Estándar",
     "tuningLabel": "Afinaci\u00f3n de la guitarra",
     "position": "Posici\u00f3n:",
     "all": "Todas",

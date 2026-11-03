@@ -241,6 +241,7 @@ src/
   hand-typed CAGED/3NPS library was deleted, not repaired. The guitar dock is content-sized
   on desktop (`AppShell`; the piano keeps 260 px) — a fixed height hid the high-E string
   under the wrapped controls; `e2e/fretboard-fit.spec.ts` measures it in a real browser.
+- **Position walk and classical tunings (W10-UI-d):** the lazy guitar practice sheet's fourth tab, Position walk, uses `core/utils/positionWalk.ts`: up to four successive closed positions, each with a complete one- or two-octave tonic-to-tonic ascent. In-key connectors keep the selected form (also for melodic minor); every change of position is a same-string, same-finger guide slide, revalidated by `fingerLine` with exact pins. Positions hold one hand frame throughout, so some combinations have no suggested walk (e.g. C natural minor in 6=D 5=G); the sheet says so. The shared player names the guide and string on the neck and strip, marks both ends of a slide, supports tempo/stepping, and preserves teacher overrides (shift annotations remain the generated suggestion). Tuning order: Standard, Drop D (6=D), 6=D 5=G, Half Step Down, Open G, Open D, DADGAD. The new tuning's ID is `d-g`; all six old IDs and pitches are unchanged, store remains v6. The tuning selector is available from Standard on phones too. Generated dock positions already worked in every tuning and now include the new preset in the exhaustive independent oracle. Hand-written chord grips/right-hand chord patterns remain standard-only with their existing notices; Drill reading stays standard-tuning and does not alter Explore's tuning. Browser acceptance is in `e2e/guitar-practice.spec.ts` and the day/night practice sweep in `e2e/design-system.spec.ts`; the builder does not run them.
 - **Exercise instrument input:** `useKeyContext` has an exercise-input mode
   (`exerciseInputActive` in the instrument slice) that suppresses Explore's scale/chord
   visuals during exercises and surfaces the learner's toggled notes through the
@@ -282,7 +283,7 @@ src/
 - ~380 hand-authored exercises across 118 modules in 9 levels
 
 ### Features (Phase 6)
-- Custom guitar tunings (6 presets, chord shapes gated for non-standard — the board shows the chord's notes + a notice; scale positions work in every tuning)
+- Custom guitar tunings (7 presets, chord shapes gated for non-standard — the board shows the chord's notes + a notice; scale positions work in every tuning)
 - Theme system (fermata day + fermata-night, CSS custom properties, full migration)
 - PWA (offline, install prompt, update notification — reachable since W9-06's prompt mode, font caching)
 - Scale comparison (chromatic diff grid, shared/unique visualization)

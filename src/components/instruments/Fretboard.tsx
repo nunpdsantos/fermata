@@ -768,22 +768,19 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
           {scaleView && labelToolbar(barTools ? 'edit' : 'all')}
 
           {/* Tuning selector — a compact native <select> (one control, so the
-              toolbar stays short; review B1). On phones it only appears once a
-              non-standard tuning is in use, as before. */}
-          {!(mobile && isStandardTuning) && (
-            <label className="flex items-center gap-2">
-              <span className="text-ui" style={{ color: 'var(--text-muted)' }}>{t('fretboard.tuning')}</span>
-              <SelectTrigger
-                value={guitarTuningId}
-                onChange={(e) => setGuitarTuningId(e.target.value)}
-                aria-label={t('fretboard.tuningLabel')}
-              >
-                {GUITAR_TUNINGS.map((tn) => (
-                  <option key={tn.id} value={tn.id}>{tn.shortName}</option>
-                ))}
-              </SelectTrigger>
-            </label>
-          )}
+              toolbar stays short; review B1). Available in every tuning on phones too. */}
+          <label className="flex items-center gap-2">
+            <span className="text-ui" style={{ color: 'var(--text-muted)' }}>{t('fretboard.tuning')}</span>
+            <SelectTrigger
+              value={guitarTuningId}
+              onChange={(e) => setGuitarTuningId(e.target.value)}
+              aria-label={t('fretboard.tuningLabel')}
+            >
+              {GUITAR_TUNINGS.map((tn) => (
+                <option key={tn.id} value={tn.id}>{tn.id === 'standard' ? t('fretboard.standardTuning') : tn.id === 'drop-d' ? 'Drop D (6=D)' : tn.shortName}</option>
+              ))}
+            </SelectTrigger>
+          </label>
 
           {scaleView && mode === 'position' && <PositionLegend />}
 
