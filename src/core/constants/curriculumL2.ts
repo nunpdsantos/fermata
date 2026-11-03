@@ -279,14 +279,16 @@ const l2u6m1: CurriculumModule = {
       explanation:
         'In simple meter, each beat divides naturally into two equal parts (a quarter note splits into two eighths). In compound meter, each beat divides into three (a dotted quarter splits into three eighths). The top number in compound signatures is 6, 9, or 12 — divide by 3 to find the number of beats: 6/8 has 2 beats, 9/8 has 3, 12/8 has 4.',
       tryThisQuery: 'C major scale',
-      tryThisLabel: 'Feel a lilting pulse — ONE-and-a TWO-and-a',
+      tryThisLabel: 'Hear 6/8: two big beats, each divided in three',
+      rhythm: { time: '6/8', notes: '>8 8 8 >8 8 8 | >q. >q.' },
     },
     {
       title: '3/4 vs. 6/8',
       explanation:
         '3/4 has three beats, each dividing into two: ONE-and TWO-and THREE-and. 6/8 has two beats, each dividing into three: ONE-and-a TWO-and-a. Same total number of eighth notes per measure (six), but different grouping. 3/4 feels like a waltz; 6/8 feels like a jig. The distinction is about feel, not math.',
       tryThisQuery: 'G major scale',
-      tryThisLabel: 'Try counting in groups of 3 vs groups of 2',
+      tryThisLabel: 'Hear 3/4: the same six eighth notes, grouped in pairs; compare it with 6/8',
+      rhythm: { time: '3/4', notes: '>8 8 >8 8 >8 8 | >q q q' },
     },
   ],
   tasks: [
@@ -319,14 +321,16 @@ const l2u6m2: CurriculumModule = {
       explanation:
         "Syncopation places accents where the ear doesn't expect them — on weak beats or between beats. Instead of ONE-two-THREE-four, a syncopated rhythm might stress the 'and' of beat 2: one-two-AND-three-four. This displacement creates rhythmic tension and energy. Syncopation is the driving force behind jazz, funk, Latin music, and virtually all popular music. Without it, rhythm is predictable; with it, rhythm comes alive.",
       tryThisQuery: 'C major chord',
-      tryThisLabel: 'Play a chord — now imagine striking it on the "and" of 2',
+      tryThisLabel: 'Hear the accent land between the beats',
+      rhythm: { time: '4/4', notes: '8 >q 8 q q | 8 >q 8 h' },
     },
     {
       title: 'Triplets and Duplets',
       explanation:
         'A triplet divides a beat that normally has two subdivisions into three equal parts. In 4/4, an eighth-note triplet squeezes three notes into the space of two — it creates a brief compound feel inside simple meter. The reverse also exists: a duplet divides a compound beat into two instead of three. These borrowed divisions add rhythmic variety and cross-rhythm effects.',
       tryThisQuery: 'G major chord',
-      tryThisLabel: 'Hear a chord — imagine three pulses in one beat',
+      tryThisLabel: 'Hear two eighths to a beat, then three (a triplet)',
+      rhythm: { time: '2/4', notes: '8 8 8 8 | t8 t8 t8 t8 t8 t8 | 8 8 t8 t8 t8 | q q' },
     },
   ],
   tasks: [

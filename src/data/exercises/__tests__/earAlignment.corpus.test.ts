@@ -71,7 +71,7 @@ describe('listen-prompt / ear_training alignment (corpus)', () => {
     const ears = flatten(merged).filter((ex) => ex.config.type === 'ear_training');
     expect(ears.length).toBeGreaterThan(50);
     const modes = new Set(ears.map((ex) => (ex.config.type === 'ear_training' ? ex.config.mode : '')));
-    expect([...modes].sort()).toEqual(['chord', 'interval', 'note', 'progression', 'scale']);
+    expect([...modes].sort()).toEqual(['chord', 'interval', 'melody', 'note', 'progression', 'scale']);
   });
 
   it('PT: Level 9 listening prompts are all ear_training', () => {

@@ -7,21 +7,67 @@ const curriculumL2: CurriculumLevelOverlay = {
       title: 'Todas as Tonalidades Maiores e Graus da Escala',
       description:
         'As 15 armações de clave maiores, o Círculo de Quintas e os nomes e funções dos graus da escala',
+      milestone: {
+        skillsSummary: [
+          'Identificar as 15 armações de clave maiores e percorrer todo o Círculo de Quintas',
+          'Nomear os graus da escala pela função: tónica, dominante, sensível e outros',
+          'Usar truques de identificação rápida para tonalidades com sustenidos e com bemóis',
+        ],
+        bridgeText:
+          'Já conheces todas as tonalidades maiores e todos os graus da escala pelo nome. Agora vais explorar o lado mais sombrio da tonalidade — as três formas da escala menor e como se relacionam as tonalidades maiores e menores.',
+        tryThisLabel: 'Constrói F# maior — 6 sustenidos',
+        tryThisPrompt: 'Consegues nomear os 6 sustenidos antes de olhar?',
+      },
     },
     u5: {
       title: 'Escalas Menores e Relações entre Tonalidades',
       description:
         'Escalas menor natural, harmónica e melódica, além das relações entre tonalidades relativas e paralelas',
+      milestone: {
+        skillsSummary: [
+          'Construir as três formas da escala menor em qualquer tonalidade',
+          'Compreender porque existem três formas e quando se usa cada uma',
+          'Encontrar de imediato as relações entre tonalidades relativas e paralelas',
+        ],
+        bridgeText:
+          'Já dominas os dois lados da tonalidade — maior e menor. A seguir, vais expandir o teu vocabulário rítmico com o compasso composto e a síncopa.',
+        tryThisLabel: 'Constrói D menor harmónica',
+        tryThisPrompt: 'Que nota é elevada em comparação com a menor natural?',
+      },
     },
     u6: {
       title: 'Compasso Composto e Síncopa',
       description:
         'Indicações de compasso composto, síncopa, tercinas e conceitos rítmicos avançados',
+      milestone: {
+        skillsSummary: [
+          'Distinguir compasso simples de compasso composto pela forma como os tempos se subdividem',
+          'Ler indicações de compasso composto: 6/8, 9/8, 12/8',
+          'Ouvir a síncopa como acentos em tempos normalmente fracos',
+          'Compreender tercinas como agrupamentos emprestados de três',
+        ],
+        bridgeText:
+          'Já compreendes o ritmo simples e o composto. A unidade final reúne o sistema completo de intervalos, os quatro tipos de tríades e a harmonia diatónica.',
+        tryThisLabel: 'Sente a pulsação em A maior',
+        tryThisPrompt: 'Experimenta contar em grupos de 3 (composto) e depois de 2 (simples).',
+      },
     },
     u7: {
       title: 'Intervalos, Tríades e Harmonia Diatónica',
       description:
         'O sistema completo de qualidade de intervalos, os quatro tipos de tríades, inversões com baixo cifrado e tríades diatónicas com numeração romana',
+      milestone: {
+        skillsSummary: [
+          'Classificar qualquer intervalo pela qualidade: perfeito, maior, menor, aumentado, diminuto',
+          'Identificar intervalos compostos e o trítono',
+          'Construir e identificar os quatro tipos de tríades a partir de qualquer fundamental',
+          'Usar baixo cifrado e notação de barra para inversões',
+          'Construir tríades diatónicas em qualquer tonalidade maior usando o padrão I-ii-iii-IV-V-vi-vii°',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Explora a tonalidade de Bb',
+        tryThisPrompt: 'Nomeia as tríades diatónicas antes de verificar.',
+      },
     },
   },
 
@@ -255,13 +301,13 @@ const curriculumL2: CurriculumLevelOverlay = {
           title: 'Simples vs. Composto',
           explanation:
             'No compasso simples, cada tempo divide-se naturalmente em duas partes iguais (uma semínima divide-se em duas colcheias). No compasso composto, cada tempo divide-se em três (uma semínima com ponto divide-se em três colcheias). O número de cima nas indicações compostas é 6, 9 ou 12 — divide por 3 para encontrar o número de tempos: 6/8 tem 2 tempos, 9/8 tem 3, 12/8 tem 4.',
-          tryThisLabel: 'Sente uma pulsação ondulante — UM-e-a DOIS-e-a',
+          tryThisLabel: 'Ouve 6/8: dois tempos grandes, cada um dividido em três',
         },
         {
           title: '3/4 vs. 6/8',
           explanation:
             '3/4 tem três tempos, cada um dividido em dois: UM-e DOIS-e TRÊS-e. 6/8 tem dois tempos, cada um dividido em três: UM-e-a DOIS-e-a. O mesmo número total de colcheias por compasso (seis), mas agrupamento diferente. 3/4 soa como uma valsa; 6/8 soa como uma jiga. A distinção é sobre a sensação, não sobre a matemática.',
-          tryThisLabel: 'Experimenta contar em grupos de 3 vs. grupos de 2',
+          tryThisLabel: 'Ouve 3/4: as mesmas seis colcheias, agrupadas aos pares; compara com 6/8',
         },
       ],
       tasks: [
@@ -290,13 +336,13 @@ const curriculumL2: CurriculumLevelOverlay = {
           title: 'Síncopa',
           explanation:
             'A síncopa coloca acentos onde o ouvido não os espera — em tempos fracos ou entre tempos. Em vez de UM-dois-TRES-quatro, um ritmo sincopado pode acentuar o "e" do tempo 2: um-dois-E-três-quatro. Este deslocamento cria tensão rítmica e energia. A síncopa é a força motriz do jazz, funk, música latina e praticamente toda a música popular. Sem ela, o ritmo é previsível; com ela, o ritmo ganha vida.',
-          tryThisLabel: 'Toca um acorde — agora imagina tocá-lo no "e" do 2',
+          tryThisLabel: 'Ouve o acento cair entre os tempos',
         },
         {
           title: 'Tercinas e Duinas',
           explanation:
             'Uma tercina divide um tempo que normalmente tem duas subdivisões em três partes iguais. Em 4/4, uma tercina de colcheias encaixa três notas no espaço de duas — cria uma breve sensação composta dentro do compasso simples. O inverso também existe: uma duina divide um tempo composto em dois em vez de três. Estas divisões emprestadas acrescentam variedade rítmica e efeitos de ritmo cruzado.',
-          tryThisLabel: 'Ouve um acorde — imagina três pulsações num só tempo',
+          tryThisLabel: 'Ouve duas colcheias por tempo e depois três (uma tercina)',
         },
       ],
       tasks: [

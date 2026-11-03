@@ -199,6 +199,7 @@ const overlay: ExerciseLevelOverlay = {
       'Violinos, Violoncelos, Trompetes, Tambores',
     ],
     hint: 'As secções orquestrais padrão são: Cordas (violino, viola, violoncelo, contrabaixo), Madeiras (flauta, oboé, clarinete, fagote), Metais (trompa, trompete, trombone, tuba) e Percussão.',
+    nudge: 'As famílias da orquestra agrupam os instrumentos pela forma como produzem o som (com arco ou dedilhando, soprando, fazendo vibrar os lábios, batendo ou agitando), não pelo registo, pela função nem por instrumentos isolados.',
   },
   l8u26m3e2: {
     prompt:
@@ -234,6 +235,7 @@ const overlay: ExerciseLevelOverlay = {
       'Na notação por inteiros de classes de altura, que número representa a nota C?',
     choices: ['0', '1', '12', '7'],
     hint: 'A notação por inteiros de classes de altura atribui C = 0, C#/Db = 1, D = 2, e assim por diante até B = 11. O sistema é módulo 12.',
+    nudge: 'Cada classe de altura é numerada pela sua distância em meios-tons acima de C, em módulo 12 (por isso o 12 dá a volta). Aplica essa regra ao próprio C.',
   },
   l8u27m1e2: {
     prompt:

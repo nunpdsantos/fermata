@@ -7,16 +7,49 @@ const curriculumL4: CurriculumLevelOverlay = {
       title: 'Notas Extrañas al Acorde y Séptima de Dominante',
       description:
         'Retardos, apoyaturas, pedal, reglas de resolución de la séptima de dominante e inversiones de V7',
+      milestone: {
+        skillsSummary: [
+          'Identificar retardos, apoyaturas, escapatorias, retardos ascendentes, notas pedal y notas cambiadas',
+          'Resolver el V7 en todas las inversiones con la conducción de voces y el tratamiento de las notas de tendencia correctos',
+          'Comprender por qué V4/2 resuelve casi siempre a I6 y cómo cada inversión determina el movimiento del bajo',
+        ],
+        bridgeText:
+          'Ya comprendes todos los tipos de notas extrañas al acorde y puedes resolver la séptima de dominante en todas las inversiones. A continuación explorarás la paleta completa de acordes de séptima diatónicos, clasificarás acordes por función armónica y descubrirás cómo las secuencias crean movimiento armónico dirigido.',
+        tryThisLabel: 'Toca G7 y resuelve a C mayor',
+        tryThisPrompt: '¿Puedes nombrar las dos notas de tendencia y adónde resuelve cada una?',
+      },
     },
     u13: {
       title: 'Acordes de Séptima Diatónicos, Función y Secuencias',
       description:
         'Séptimas predominantes, mediante y sensible, teoría de la función armónica y secuencias armónicas',
+      milestone: {
+        skillsSummary: [
+          'Construir y resolver todos los acordes de séptima diatónicos, incluidos ii7, iii7, vi7, viiø7 y vii°7',
+          'Clasificar cada acorde diatónico por función armónica: Tónica, Predominante o Dominante',
+          'Reconocer secuencias armónicas de quintas descendentes, segundas ascendentes y terceras descendentes',
+        ],
+        bridgeText:
+          'Ya puedes construir todos los acordes de séptima diatónicos, comprender cómo funciona cada uno dentro de una tonalidad y escuchar cómo se mueven los acordes en patrones secuenciales. La unidad final aplica todo este conocimiento al contrapunto, al compás, a la ornamentación cromática, al análisis y al rico mundo armónico de las tonalidades menores.',
+        tryThisLabel: 'Empieza una progresión ii7-V7-Imaj7',
+        tryThisPrompt:
+          '¿Puedes trazar la progresión ii7-V7-Imaj7 e identificar la función de cada acorde?',
+      },
     },
     u14: {
       title: 'Contrapunto, Compás, Análisis y Armonía Menor',
       description:
         'Contrapunto a dos voces, compases asimétricos, ornamentación cromática, análisis con números romanos y sistema de acordes en modo menor',
+      milestone: {
+        skillsSummary: [
+          'Aplicar las reglas de consonancia y disonancia en el contrapunto de primera y segunda especie',
+          'Realizar un análisis completo con números romanos, incluyendo inversiones, notas extrañas al acorde y cadencias',
+          'Recorrer la paleta fluida de acordes de las tonalidades menores, extraída de las tres formas de la escala menor',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Explora la paleta de acordes de la menor armónica',
+        tryThisPrompt: '¿Qué acordes vienen de la menor armónica y cuáles de la menor natural?',
+      },
     },
   },
 
@@ -209,7 +242,7 @@ const curriculumL4: CurriculumLevelOverlay = {
       title: 'Inversiones de V7 y Sus Resoluciones',
       subtitle: 'Cómo V6/5, V4/3 y V4/2 resuelven a posiciones de tónica',
       objectives: [
-        'Resolver las cuatro inversiones de V7 hacia sus objetivos de tónica correctos',
+        'Resolver el estado fundamental y las tres inversiones de V7 hacia sus objetivos de tónica correctos',
         'Comprender por qué V4/2 resuelve casi siempre a I6 (tónica en primera inversión)',
         'Reconocer cómo la inversión determina el movimiento del bajo y la resolución',
       ],
@@ -302,14 +335,14 @@ const curriculumL4: CurriculumLevelOverlay = {
         'iii7, vi7, Imaj7 — séptimas de función tónica y la tónica jazz',
       objectives: [
         'Comprender iii7 como sustituto de tónica y eslabón en el ciclo de quintas',
-        'Reconocer vi7 como el principal sustituto de función tónica y objetivo de la resolución de engaño',
+        'Reconocer vi7 como el principal sustituto de función tónica y objetivo de la resolución rota',
         'Distinguir Imaj7 (tónica jazz) de I7 (tónica blues)',
       ],
       concepts: [
         {
           title: 'Los Acordes iii7 y vi7',
           explanation:
-            'El iii7 funciona como sustituto de tónica (compartiendo dos notas con I) o como eslabón en el movimiento por ciclo de quintas: iii7-vi7-ii7-V7-I. Raramente aparece aislado, pero es esencial en secuencias prolongadas. El vi7 es el principal sustituto de función tónica; vi7-ii7-V7-I es extremadamente común tanto en la armonía clásica como en el jazz. La resolución de engaño V7-vi7 es más suave que V7-vi porque el acorde de séptima comparte más notas con V7, atenuando la sorpresa.',
+            'El iii7 funciona como sustituto de tónica (compartiendo dos notas con I) o como eslabón en el movimiento por ciclo de quintas: iii7-vi7-ii7-V7-I. Raramente aparece aislado, pero es esencial en secuencias prolongadas. El vi7 es el principal sustituto de función tónica; vi7-ii7-V7-I es extremadamente común tanto en la armonía clásica como en el jazz. La resolución rota V7-vi7 es más suave que V7-vi porque el acorde de séptima comparte más notas con V7, atenuando la sorpresa.',
           tryThisLabel: 'Escucha iii7 en la tonalidad de C',
         },
         {
@@ -336,7 +369,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Compara "Am7" con "Am" — la séptima (G) añade suavidad a vi7 y hace la resolución de engaño V7-vi7 más fluida que V7-vi. La nota añadida crea una nota común con V7',
+            'Compara "Am7" con "Am" — la séptima (G) añade suavidad a vi7 y hace la resolución rota V7-vi7 más fluida que V7-vi. La nota añadida crea una nota común con V7',
         },
       ],
     },
@@ -413,7 +446,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Sustitución de Acordes Dentro de Funciones',
           explanation:
-            'Acordes dentro del mismo grupo funcional pueden sustituirse mutuamente porque comparten grados de la escala. El vi puede sustituir a I (por eso la cadencia de engaño V-vi funciona — vi es función tónica). El ii puede sustituir a IV (ambos son predominantes). El vii° puede sustituir a V (ambos son función dominante). La sustitución explica por qué tantas progresiones diferentes funcionan: siguen el mismo patrón funcional T-PD-D-T con acordes específicos diferentes ocupando cada papel.',
+            'Acordes dentro del mismo grupo funcional pueden sustituirse mutuamente porque comparten grados de la escala. El vi puede sustituir a I (por eso la cadencia rota V-vi funciona — vi es función tónica). El ii puede sustituir a IV (ambos son predominantes). El vii° puede sustituir a V (ambos son función dominante). La sustitución explica por qué tantas progresiones diferentes funcionan: siguen el mismo patrón funcional T-PD-D-T con acordes específicos diferentes ocupando cada papel.',
           tryThisLabel: 'Observa qué acordes comparten función',
         },
       ],
@@ -540,19 +573,19 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'Compases Asimétricos',
           explanation:
             'Los compases asimétricos tienen conteos de tiempos que no se dividen igualmente en grupos iguales. 5/4 o 5/8 se agrupa como 2+3 o 3+2 — la agrupación determina enteramente el carácter rítmico. 7/4 o 7/8 se agrupa como 2+2+3, 2+3+2 o 3+2+2. La agrupación desigual crea un groove asimétrico que es característico de la música folclórica balcánica, el rock progresivo y mucha música de concierto del siglo XX.',
-          tryThisLabel: 'Cuenta 7 notas de la escala en grupos de 2+2+3',
+          tryThisLabel: 'Escucha 7/8 agrupado en 2+2+3',
         },
         {
           title: 'Compases Aditivos',
           explanation:
             'Los compases aditivos se construyen combinando grupos de 2 y 3 tiempos. 5 = 2+3 o 3+2. 7 = 2+2+3 o 2+3+2 o 3+2+2. 8 = 3+3+2, habitual en la música balcánica y algo de rock. 11 = 2+2+3+2+2, empleado por Dave Brubeck y otros. El patrón de agrupación interno es lo que da a cada compás su carácter distintivo — el mismo número total de tiempos con agrupaciones diferentes crea caracteres rítmicos enteramente distintos.',
-          tryThisLabel: 'Cuenta 5 notas en grupos de 3+2',
+          tryThisLabel: 'Escucha 5/4 agrupado en 3+2',
         },
         {
           title: 'Compases Mixtos y Tiempo Cortado',
           explanation:
             'El compás mixto cambia la indicación de compás de un compás a otro: un compás de 4/4, el siguiente de 3/4, luego 5/4. Esto crea una superficie rítmica impredecible y cambiante, habitual en bandas sonoras de cine y rock progresivo. El tiempo cortado (alla breve, 2/2) usa dos tiempos de blanca por compás — un compás de 2/2 tiene la misma duración total que un compás de 4/4, pero la unidad de tiempo es la blanca en lugar de la negra, por lo que la música se cuenta en 2 y gana una sensación más amplia y de movimiento más rápido, con mayor impulso métrico. El tiempo cortado es estándar en marchas y movimientos rápidos del periodo Clásico.',
-          tryThisLabel: 'Sigue en tiempo cortado: 2 tiempos por compás',
+          tryThisLabel: 'Escucha el compás de 2/2: dos tiempos de blanca por compás',
         },
       ],
       tasks: [

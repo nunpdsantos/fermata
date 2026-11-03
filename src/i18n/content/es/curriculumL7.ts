@@ -7,16 +7,52 @@ const curriculumL7: CurriculumLevelOverlay = {
       title: 'Armonía Jazz',
       description:
         'Cifrado jazz, extensiones, voicings de shell, progresiones ii-V-I, sustitución tritonal, formas de blues, rhythm changes y turnarounds',
+      milestone: {
+        skillsSummary: [
+          'Leer y construir cualquier cifrado jazz, incluidas extensiones, alteraciones y voicings de shell',
+          'Construir progresiones ii-V-I en mayor y en menor, aplicar la sustitución tritonal y dominantes de la puerta de atrás',
+          'Recorrer formas de blues (12 compases, jazz blues, blues menor) y rhythm changes con turnarounds',
+        ],
+        bridgeText:
+          'Dominas todo el vocabulario armónico del jazz — cifrados, progresiones, formas de blues y turnarounds. Ahora profundiza con la teoría acorde-escala, la rearmonización y el pensamiento modal.',
+        tryThisLabel: 'Construye Dm9 — empieza un ii-V-I',
+        tryThisPrompt:
+          '¿Puedes tocar un ii-V-I completo con extensiones? Prueba Dm9 — G13 — Cmaj9.',
+      },
     },
     u22: {
       title: 'Jazz Avanzado, Modal y Pop',
       description:
         'Teoría acorde-escala, estructuras superiores, rearmonización, cambios de Coltrane, progresiones modales, voicings cuartales y pedales',
+      milestone: {
+        skillsSummary: [
+          'Asociar cualquier acorde con sus escalas compatibles usando la teoría acorde-escala',
+          'Disponer acordes complejos usando tríadas de estructura superior y aplicar técnicas de rearmonización',
+          'Construir progresiones modales que preserven el color característico de cada modo usando pedales y voicings cuartales',
+        ],
+        bridgeText:
+          'Ya puedes pensar en términos jazzísticos, modales y tonales y comprender las técnicas avanzadas que los conectan. El paso final: dominar el catálogo completo de escalas, acordes y armonía pop que ofrece el motor.',
+        tryThisLabel: 'Explora el modo E frigio',
+        tryThisPrompt:
+          'Construye un vamp frigio: alterna entre Em y F mayor. Escucha cómo la 2.ª rebajada define el modo.',
+      },
     },
     u23: {
       title: 'Armonía Pop y Taxonomía Completa',
       description:
         'Progresiones pop, números de Nashville, mezcla modal, mediantes cromáticas, las familias de escalas del motor (modos de menor melódica, modos de menor armónica, simétricas, del mundo) y su conjunto completo de tipos de acordes',
+      milestone: {
+        skillsSummary: [
+          'Analizar bucles de acordes pop, aplicar mezcla modal y mediantes cromáticas en contextos contemporáneos',
+          'Recorrer todas las familias de escalas del motor: modos de menor melódica, modos de menor armónica, simétricas, pentatónicas, bebop y del mundo',
+          'Construir cualquier tipo de acorde del motor a partir de cualquier fundamental y asociar cualquier acorde con sus escalas compatibles',
+        ],
+        bridgeText:
+          'Has explorado todo el alcance del motor — cada escala, cada acorde, cada relación armónica en contextos de jazz, modales y pop. Este es el conjunto completo de herramientas para el análisis, la composición y la improvisación en cualquier género.',
+        tryThisLabel: 'Revisita la escala alterada',
+        tryThisPrompt:
+          'Toca C7alt junto a la escala alterada de C. Todas las notas del acorde están dentro de la escala — alineación acorde-escala total.',
+      },
     },
   },
 

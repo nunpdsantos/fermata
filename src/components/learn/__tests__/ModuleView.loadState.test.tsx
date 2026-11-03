@@ -69,18 +69,18 @@ function renderModuleView(overrides: Partial<Parameters<typeof ModuleView>[0]> =
 describe('ModuleView exercise load states', () => {
   it('allows completion when exercises loaded successfully and module has none', () => {
     renderModuleView({ exercisesState: 'ready' });
-    expect(screen.getByText('Mark Module Complete')).toBeTruthy();
+    expect(screen.getByText('Complete the lesson')).toBeTruthy();
   });
 
   it('blocks completion while exercises are still loading', () => {
     renderModuleView({ exercisesState: 'loading' });
-    expect(screen.queryByText('Mark Module Complete')).toBeNull();
+    expect(screen.queryByText('Complete the lesson')).toBeNull();
   });
 
   it('blocks completion and shows a retryable error when the exercise load failed', () => {
     const onRetry = vi.fn();
     renderModuleView({ exercisesState: 'error', onRetryExercises: onRetry });
-    expect(screen.queryByText('Mark Module Complete')).toBeNull();
+    expect(screen.queryByText('Complete the lesson')).toBeNull();
     const retry = screen.getByRole('button', { name: 'Try Again' });
     fireEvent.click(retry);
     expect(onRetry).toHaveBeenCalledOnce();

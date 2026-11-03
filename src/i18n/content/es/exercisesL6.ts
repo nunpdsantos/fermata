@@ -59,6 +59,7 @@ const overlay: ExerciseLevelOverlay = {
       'Son el mismo acorde con nombres diferentes, según la época en que se usó',
     ],
     hint: 'La It+6 es la más sencilla: b6, 1, #4 (tres notas). La Fr+6 añade el 2.º grado (b6, 1, 2, #4), creando un subconjunto característico de tonos enteros con una cuarta aumentada sobre el bajo.',
+    nudge: 'Escribe las dos sobre el mismo bajo, b6: enumera los grados de cada acorde y cuéntalos. Después busca la nota que tiene la francesa y no la italiana, y mídela respecto al bajo.',
   },
   l6u18m2e3: {
     prompt: '¿Cuál es la función armónica de los acordes de sexta aumentada?',
@@ -125,6 +126,7 @@ const overlay: ExerciseLevelOverlay = {
       'Solo entre tonalidades relativas mayor y menor',
     ],
     hint: 'Los acordes pivote diatónicos enlazan solo tonalidades cercanas. Reinterpretar la Gr+6 de la tonalidad como V7 (o viceversa) mueve la tónica medio tono — de C a Db hay cinco pasos en el círculo de quintas, una tonalidad distante alcanzada a través de un solo acorde. Es una técnica emblemática de los compositores del periodo romántico.',
+    nudge: 'Reescribe la Gr+6 de C mayor (Ab, C, Eb, F#) con Gb en lugar de F#: ¿de qué tonalidad pasa a ser el V7? Después mide la separación entre esa tónica y C, como intervalo y en el círculo de quintas.',
   },
   l6u18m4e3: {
     prompt: 'Si una Gr+6 en C menor (Ab, C, Eb, F#) se reinterpreta como V7, ¿qué tonalidad toniciza ahora?',
@@ -265,7 +267,7 @@ const overlay: ExerciseLevelOverlay = {
       'La eliminación del ritmo y el metro de la estructura musical',
       'La sustitución de toda la armonía por melodías al unísono',
     ],
-    hint: 'Compositores como Wagner (Tristán e Isolda) usaron cromatismo continuo, resoluciones deceptivas y ambigüedad enarmónica tan extensamente que la sensación de una tonalidad «hogar» se volvió elusiva — abriendo camino a la atonalidad en el siglo XX.',
+    hint: 'Compositores como Wagner (Tristán e Isolda) usaron cromatismo continuo, resoluciones rotas y ambigüedad enarmónica tan extensamente que la sensación de una tonalidad «hogar» se volvió elusiva — abriendo camino a la atonalidad en el siglo XX.',
   },
 
   // =========================================================================

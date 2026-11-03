@@ -15,19 +15,11 @@
  */
 import type { ExerciseConfig, ExerciseDefinition } from '../../../core/types/exercise';
 import type { ModuleTemplateConfig } from '../exerciseTemplates';
-import { exerciseIdentity } from '../exerciseGenerator';
+import { exerciseFingerprint } from '../exerciseFingerprint';
 
-/** djb2 → 8 hex digits: short, stable, enough to tell two exercises apart. */
-function hash(text: string): string {
-  let h = 5381;
-  for (let i = 0; i < text.length; i++) h = ((h * 33) ^ text.charCodeAt(i)) >>> 0;
-  return h.toString(16).padStart(8, '0');
-}
-
+/** The one identity function (shared with the app's Learn session store). */
 export function fingerprint(ex: Pick<ExerciseDefinition, 'type' | 'prompt'> & { config: ExerciseConfig }): string {
-  const c = ex.config;
-  if (c.type === 'multiple_choice') return hash(`mc|${ex.prompt}|${c.choices.find((x) => x.correct)?.label ?? ''}`);
-  return hash(`${c.type}|${exerciseIdentity(c)}`);
+  return exerciseFingerprint(ex);
 }
 
 /** moduleId → exerciseId → fingerprint, for one source tree's served EN exercises. */

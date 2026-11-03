@@ -169,6 +169,15 @@ export function overlayEntries(): Entry[] {
     for (const unit of EN_UNITS[n]) {
       add(`cur:${lvl}.${unit.id}.title`, unit.title, (l) => curriculumOverlay(l, n).units[unit.id]?.title);
       add(`cur:${lvl}.${unit.id}.description`, unit.description, (l) => curriculumOverlay(l, n).units[unit.id]?.description);
+      // The milestone shown at unit completion (D-23).
+      const ms = unit.milestone;
+      if (ms) {
+        const mov = (l: Lang) => curriculumOverlay(l, n).units[unit.id]?.milestone;
+        ms.skillsSummary.forEach((s, i) => add(`cur:${lvl}.${unit.id}.milestone.skillsSummary[${i}]`, s, (l) => mov(l)?.skillsSummary[i]));
+        if (ms.bridgeText) add(`cur:${lvl}.${unit.id}.milestone.bridgeText`, ms.bridgeText, (l) => mov(l)?.bridgeText);
+        add(`cur:${lvl}.${unit.id}.milestone.tryThisLabel`, ms.tryThisLabel, (l) => mov(l)?.tryThisLabel);
+        add(`cur:${lvl}.${unit.id}.milestone.tryThisPrompt`, ms.tryThisPrompt, (l) => mov(l)?.tryThisPrompt);
+      }
       for (const mod of unit.modules) {
         const ov = (l: Lang) => curriculumOverlay(l, n).modules[mod.id];
         add(`cur:${mod.id}.title`, mod.title, (l) => ov(l)?.title);
@@ -187,6 +196,7 @@ export function overlayEntries(): Entry[] {
       const ov = (l: Lang) => exerciseOverlay(l, n)[ex.id];
       add(`ex:${ex.id}.prompt`, ex.prompt, (l) => ov(l)?.prompt);
       if (ex.hint) add(`ex:${ex.id}.hint`, ex.hint, (l) => ov(l)?.hint);
+      if (ex.nudge) add(`ex:${ex.id}.nudge`, ex.nudge, (l) => ov(l)?.nudge);
       const cfg = ex.config as { type: string; choices?: { label: string }[] };
       if (cfg.choices && (cfg.type === 'multiple_choice' || cfg.type === 'ear_training')) {
         cfg.choices.forEach((c, i) => add(`ex:${ex.id}.choices[${i}]`, c.label, (l) => ov(l)?.choices?.[i]));
@@ -198,6 +208,7 @@ export function overlayEntries(): Entry[] {
         const ov = (l: Lang) => templateOverlay(l, n)[cfg.moduleId]?.[i];
         add(`tm:${cfg.moduleId}[${i}].promptTemplate`, t.promptTemplate, (l) => ov(l)?.promptTemplate);
         add(`tm:${cfg.moduleId}[${i}].hintTemplate`, t.hintTemplate, (l) => ov(l)?.hintTemplate);
+        if (t.nudgeTemplate) add(`tm:${cfg.moduleId}[${i}].nudgeTemplate`, t.nudgeTemplate, (l) => ov(l)?.nudgeTemplate);
         t.params.choiceSets?.forEach((set, s) =>
           set.forEach((c, k) => add(`tm:${cfg.moduleId}[${i}].choiceSets[${s}][${k}]`, c.label, (l) => ov(l)?.choiceSets?.[s]?.[k])),
         );

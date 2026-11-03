@@ -7,16 +7,52 @@ const curriculumL6: CurriculumLevelOverlay = {
       title: 'Acordes Cromáticos',
       description:
         'Acorde napolitano, acordes de sexta aumentada e modulação enarmónica pela sexta alemã',
+      milestone: {
+        skillsSummary: [
+          'Construir e resolver o acorde napolitano (bII6) como pré-dominante cromático',
+          'Construir os acordes de sexta aumentada italiana, francesa e alemã e compreender o carácter distinto de cada um',
+          'Reconhecer a equivalência enarmónica Gr+6/V7 e usá-la para modular entre tonalidades distantes',
+        ],
+        bridgeText:
+          'Já consegues usar os acordes cromáticos mais dramáticos da música tonal e modular entre tonalidades distantes através do pivot da sexta alemã. A seguir vais explorar a reinterpretação da sétima diminuta, o embelezamento por nota comum e a paisagem cromática mais ampla que levou a tonalidade aos seus limites.',
+        tryThisLabel: 'Toca o napolitano de C',
+        tryThisPrompt:
+          'Consegues soletrar o acorde napolitano noutras três tonalidades menores antes de verificar?',
+      },
     },
     u19: {
       title: 'Técnicas Cromáticas Avançadas',
       description:
         'Modulação pela sétima diminuta, embelezamento por nota comum, mediante cromáticas e dissolução tardo-romântica',
+      milestone: {
+        skillsSummary: [
+          'Usar a reinterpretação enarmónica da sétima diminuta para modular para quatro tonalidades possíveis',
+          'Aplicar acordes de sétima diminuta com nota comum (CTo7) como embelezamentos cromáticos',
+          'Identificar relações de mediante cromática, dominantes alteradas e técnicas tardo-românticas não funcionais',
+        ],
+        bridgeText:
+          'Acompanhaste o cromatismo desde os acordes individuais, passando pela modulação enarmónica, até à própria dissolução da tonalidade funcional. Agora vais desenvolver as competências contrapontísticas que sustentam toda a escrita a partes — do contraponto de espécies estrito à leitura de partituras orquestrais completas.',
+        tryThisLabel: 'Explora a escala de tons inteiros',
+        tryThisPrompt:
+          'Toca-a e repara: sem meios-tons, sem sensíveis, sem sentido de tonalidade. Que sensação te dá em comparação com uma escala maior?',
+      },
     },
     u20: {
       title: 'Contraponto e Escrita a Partes',
       description:
         'Contraponto de espécies completo, contraponto invertível, harmonização SATB e leitura de partitura',
+      milestone: {
+        skillsSummary: [
+          'Aplicar as cinco espécies de contraponto, do cantus firmus à escrita florida',
+          'Compreender as técnicas de contraponto invertível e triplo usadas nas fugas de Bach',
+          'Harmonizar melodias em SATB, realizar baixo cifrado e ler partituras orquestrais',
+        ],
+        bridgeText:
+          'Percorreste todo o arco da harmonia cromática e da técnica contrapontística. Estas competências — acordes cromáticos, modulação enarmónica, contraponto de espécies e escrita a partes — formam o conjunto de ferramentas da composição e da análise tonais avançadas.',
+        tryThisLabel: 'Vê C maior — compõe um cantus firmus',
+        tryThisPrompt:
+          'Experimenta escrever um cantus firmus de 8 notas em C maior: começa em C, termina em C, maioritariamente por grau conjunto, um único ponto culminante. Consegues seguir todas as regras?',
+      },
     },
   },
 

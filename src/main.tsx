@@ -6,7 +6,7 @@ import App from './App.tsx'
 import { ErrorBoundary } from './components/ErrorBoundary.tsx'
 import { registerInstrumentVoices } from './services/instrumentVoices.ts'
 import { registerDrillWorkInProgress } from './state/drillWork.ts'
-import { registerInterimLearnWorkInProgress } from './services/learnWorkInProgress.ts'
+import { registerLearnWorkInProgress } from './state/learnWork.ts'
 
 // One-time eviction of the persisted stores for the removed gamification +
 // concept-tracking features. After the first load the keys are gone and
@@ -22,9 +22,8 @@ registerInstrumentVoices();
 // is under way (W9b, services/workInProgress.ts). Registered at boot, before
 // the Drill view's code loads, so it holds from the first moment of a launch.
 registerDrillWorkInProgress();
-// Interim (W9b review B1): the whole Learn view counts as work in progress
-// until W4b registers its precise check under the same key, 'learn'.
-registerInterimLearnWorkInProgress();
+// Protect a saved check before the lazy Learn view/store or an update decision.
+registerLearnWorkInProgress();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

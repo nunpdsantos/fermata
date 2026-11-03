@@ -256,6 +256,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'multiple_choice',
         promptTemplate: 'Which statement about part writing with root-position triads is true?',
         hintTemplate: 'Roots a 5th apart share one common tone, roots a 3rd apart share two, roots a 2nd apart share none. Keep common tones in the same voice; when there are none, move the upper voices against the bass.',
+        nudgeTemplate: 'Test each statement on real chords in C major — I–V (roots a 5th apart), I–vi (a 3rd), IV–V (a 2nd): spell both chords, count the notes they share and see how far each upper voice has to move. For doubling, ask which chord member is the most stable to reinforce.',
         params: {
           choiceSets: [
             [
@@ -303,6 +304,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'multiple_choice',
         promptTemplate: 'Which statement about triads in inversion is true?',
         hintTemplate: 'First inversion (6/3): 3rd in the bass, used for smooth bass lines. Second inversion (6/4): 5th in the bass, used only as a cadential, passing, pedal or arpeggiated 6/4.',
+        nudgeTemplate: 'Read the figures as intervals above the bass: stack a 6th and a 3rd (6/3) or a 6th and a 4th (6/4) on a bass note and see which chord member ends up lowest. Then ask how each chord behaves: which notes have a strong pull, and in what few set patterns does a 6/4 appear?',
         params: {
           choiceSets: [
             [

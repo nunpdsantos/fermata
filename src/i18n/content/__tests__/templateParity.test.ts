@@ -138,8 +138,15 @@ describe('template overlay parity (PT/ES vs EN)', () => {
               ).toEqual(tokenSet(enTmpl.hintTemplate));
             });
 
-            it(`${moduleId}[${i}]: prompt/hint only use generator-fillable tokens`, () => {
-              const tokens = [...tokenSet(ov.promptTemplate), ...tokenSet(ov.hintTemplate)];
+            it(`${moduleId}[${i}]: nudge uses the same {tokens} as EN`, () => {
+              expect(
+                tokenSet(ov.nudgeTemplate ?? ''),
+                `${lang} ${moduleId}[${i}] nudge tokens diverge from EN\n  EN: "${enTmpl.nudgeTemplate}"\n  ${lang}: "${ov.nudgeTemplate}"`,
+              ).toEqual(tokenSet(enTmpl.nudgeTemplate ?? ''));
+            });
+
+            it(`${moduleId}[${i}]: prompt/hint/nudge only use generator-fillable tokens`, () => {
+              const tokens = [...tokenSet(ov.promptTemplate), ...tokenSet(ov.hintTemplate), ...tokenSet(ov.nudgeTemplate ?? '')];
               for (const token of tokens) {
                 expect(
                   FILLABLE_TOKENS.has(token.slice(1, -1)),

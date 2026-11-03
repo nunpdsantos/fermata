@@ -427,6 +427,7 @@ export function generateExercises(
       prompt: fillTemplate(template.promptTemplate, exerciseConfig, lang, config.moduleId, built.tokens),
       config: exerciseConfig,
       hint: fillTemplate(template.hintTemplate, exerciseConfig, lang, config.moduleId, built.tokens),
+      ...(template.nudgeTemplate ? { nudge: fillTemplate(template.nudgeTemplate, exerciseConfig, lang, config.moduleId, built.tokens) } : {}),
     });
   }
 

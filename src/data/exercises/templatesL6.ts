@@ -496,6 +496,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'multiple_choice',
         promptTemplate: 'Which statement about third species (4:1) counterpoint is true?',
         hintTemplate: 'Third species: four notes against each cantus note. The first is consonant; the others may be passing tones, neighbor tones, a cambiata (step to the dissonance, leap of a 3rd, step back) or a double neighbor.',
+        nudgeTemplate: 'Third species sets four notes against each cantus note. Ask which of the four falls on the beat and so must be consonant; for each dissonant figure, trace its path note by note: by step or by leap, and does it come back to where it started?',
         params: {
           choiceSets: [
             [
@@ -558,6 +559,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'multiple_choice',
         promptTemplate: 'Which statement about suspension chains and fifth (florid) species is true?',
         hintTemplate: 'In a chain each resolution is tied over to become the next suspension. Fifth (florid) species mixes the note values of the first four species in one line, each kept to its own rules.',
+        nudgeTemplate: 'In a chain, follow each note that has just resolved: what happens to it across the next barline? For fifth (florid) species, ask whether it throws away what the first four species taught or builds on it.',
         params: {
           choiceSets: [
             [
@@ -629,6 +631,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'multiple_choice',
         promptTemplate: 'Which statement about triple counterpoint is true?',
         hintTemplate: 'Triple counterpoint: three voices that work in all six vertical orderings (ABC, ACB, BAC, BCA, CAB, CBA), so every pair of voices must be invertible.',
+        nudgeTemplate: 'Count how many ways three voices can be stacked from top to bottom, and ask which pairs of voices end up swapping places across those stackings.',
         params: {
           choiceSets: [
             [
@@ -658,6 +661,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'multiple_choice',
         promptTemplate: 'Which statement about harmonizing a soprano melody in SATB is true?',
         hintTemplate: 'Harmonizing a soprano: find the key and the cadence points, choose a bass line and chords that lead to them, fill in alto and tenor by the shortest path, then check for parallels, spacing and doubling.',
+        nudgeTemplate: 'Plan the way a composer would: decide where the phrases are heading before filling in the details, and keep the final step for proofreading the result against the part-writing rules.',
         params: {
           choiceSets: [
             [

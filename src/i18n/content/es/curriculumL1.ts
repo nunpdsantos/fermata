@@ -7,16 +7,51 @@ const curriculumL1: CurriculumLevelOverlay = {
       title: 'Notación y Altura',
       description:
         'El pentagrama, claves, semitonos, tonos, alteraciones y la escala cromática',
+      milestone: {
+        skillsSummary: [
+          'Leer la clave de sol y la clave de fa y localizar el C central en el sistema de pentagramas',
+          'Definir semitonos y tonos y encontrarlos en el piano',
+          'Identificar sostenidos, bemoles y equivalentes enarmónicos',
+          'Conocer las 12 alturas cromáticas y verlas en el teclado',
+        ],
+        bridgeText:
+          'Ya conoces las 12 alturas y cómo funciona la distancia en el teclado. A continuación aprenderás cómo se organiza el tiempo en la música — figuras rítmicas, silencios y compás.',
+        tryThisLabel: 'Toca las 12 notas en orden',
+        tryThisPrompt: '¿Puedes nombrar cada nota antes de oírla?',
+      },
     },
     u2: {
       title: 'Ritmo y Compás',
       description:
         'Figuras rítmicas, silencios, puntillos, ligaduras y compases simples',
+      milestone: {
+        skillsSummary: [
+          'Conocer la jerarquía de las figuras rítmicas, de la redonda a la semicorchea',
+          'Comprender los puntillos y las ligaduras como modificadores de duración',
+          'Leer indicaciones de compás simples: 2/4, 3/4, 4/4',
+          'Sentir el metro binario, ternario y cuaternario',
+        ],
+        bridgeText:
+          'Ya comprendes la altura y el ritmo — las dos dimensiones de la notación musical. Ahora vas a combinarlos en escalas, intervalos y tus primeros acordes.',
+        tryThisLabel: 'Toca G mayor a un tempo regular',
+        tryThisPrompt: 'Prueba a marcar negras mientras suena la escala.',
+      },
     },
     u3: {
       title: 'Escalas, Intervalos y Primeros Acordes',
       description:
         'La escala mayor, armaduras de clave, números de intervalos y tríadas mayores',
+      milestone: {
+        skillsSummary: [
+          'Construir escalas mayores en C, G, D y F usando el patrón T-T-S-T-T-T-S',
+          'Leer las armaduras de clave de las primeras cuatro tonalidades mayores',
+          'Nombrar intervalos del unísono a la octava contando los nombres de las notas',
+          'Construir tríadas mayores a partir de cualquier fundamental',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Construye una tríada de D mayor',
+        tryThisPrompt: 'Nombra las tres notas antes de tocar.',
+      },
     },
   },
 
@@ -189,19 +224,19 @@ const curriculumL1: CurriculumLevelOverlay = {
           title: 'La Jerarquía de Duraciones',
           explanation:
             'La música organiza el tiempo mediante una jerarquía de figuras rítmicas. La redonda es la más larga. La blanca dura la mitad. La negra es la mitad de eso — y así sucesivamente hasta las corcheas y semicorcheas. Cada nivel divide por dos: 1 redonda = 2 blancas = 4 negras = 8 corcheas = 16 semicorcheas. Este sistema permite a los músicos escribir cualquier ritmo con precisión.',
-          tryThisLabel: 'Escucha un pulso regular sobre la escala',
+          tryThisLabel: 'Escucha un compás de cada: redondas, blancas, negras y corcheas',
         },
         {
           title: 'Silencios',
           explanation:
             'Cada figura rítmica tiene un silencio correspondiente — un símbolo para silencio medido. Un silencio de negra dura tanto como una negra. Un silencio de blanca dura tanto como una blanca. Los silencios no son «nada» — son silencios activos que moldean las frases tanto como las propias notas. Los grandes músicos prestan tanta atención a lo que no tocan como a lo que tocan.',
-          tryThisLabel: 'Toca un acorde — después imagina el silencio llenando el mismo espacio',
+          tryThisLabel: 'Escucha notas y silencios repartirse los tiempos: negra, silencio de negra; blanca, silencio de blanca',
         },
         {
           title: 'Puntillos y Ligaduras',
           explanation:
             'Un puntillo después de una nota aumenta su duración en la mitad — una blanca con puntillo dura tres tiempos en lugar de dos (cuando la negra es la unidad de tiempo). Una ligadura de prolongación une dos notas de la misma altura en un sonido continuo — una blanca ligada a una negra dura tres tiempos en total. Los puntillos y las ligaduras permiten crear duraciones que no encajan en la jerarquía básica.',
-          tryThisLabel: 'Escucha la escala a un tempo regular',
+          tryThisLabel: 'Escucha una blanca con puntillo y después una blanca ligada a una negra: las dos duran tres tiempos',
         },
       ],
       tasks: [
@@ -230,13 +265,13 @@ const curriculumL1: CurriculumLevelOverlay = {
           title: 'Pulso, Metro y Compases',
           explanation:
             'La música tiene un pulso regular — el tiempo al que marcas con el pie. El metro organiza esos tiempos en grupos recurrentes de 2, 3 o 4, con el primer tiempo de cada grupo sintiéndose más fuerte. Un compás es un grupo completo, separado por barras de compás. La indicación de compás al comienzo indica el agrupamiento: 4/4 significa cuatro tiempos de negra por compás. 3/4 significa tres. 2/4 significa dos.',
-          tryThisLabel: 'Acompaña en compás 4/4',
+          tryThisLabel: 'Escucha 4/4: cuatro tiempos por compás, el primero acentuado',
         },
         {
           title: 'Compases Simples',
           explanation:
             'En el metro simple, cada tiempo se divide naturalmente en dos partes iguales. 4/4 es la indicación de compás más común — cuatro tiempos de negra por compás, con el tiempo 1 más fuerte y el tiempo 3 con un acento secundario. 3/4 da a la música un carácter de vals — UN-dos-tres, UN-dos-tres. 2/4 crea un carácter de marcha — UN-dos, UN-dos. El número de arriba indica los tiempos por compás; el número de abajo indica qué figura vale un tiempo.',
-          tryThisLabel: 'Imagina contar 1-2-3-4 sobre estos acordes',
+          tryThisLabel: 'Escucha 3/4: UN-dos-tres, UN-dos-tres',
         },
       ],
       tasks: [

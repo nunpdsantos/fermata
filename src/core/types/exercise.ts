@@ -86,17 +86,52 @@ export interface StaffStimulus {
   chord?: boolean;
 }
 
+/**
+ * A rhythm (audit W5-64): drawn on a one-line staff and played as clicks
+ * after a one-bar count-in. Language-neutral — never translated.
+ */
+export interface RhythmPattern {
+  /** Time signature: '2/4', '3/4', '4/4', '6/8', '5/4', '7/8' … */
+  time: string;
+  /**
+   * Note values, space-separated, '|' between bars: w h q 8 16 (whole …
+   * sixteenth). A '.' after the value dots it ('h.'), an 'r' after it makes
+   * it a rest ('qr', 'h.r'), a '~' after it ties it to the next note ('h~ q'),
+   * 't' before an eighth makes it one of a triplet ('t8 t8 t8' = one beat),
+   * '>' before a value accents it ('>8').
+   */
+  notes: string;
+  /** Quarter notes per minute (default 80). */
+  bpm?: number;
+  /**
+   * How one bar of an odd (additive) meter groups, in units of the time
+   * signature's lower number, adding up to its upper number: 7/8 as 2+2+3 →
+   * [2, 2, 3]; 5/4 as 3+2 → [3, 2]. In eighth-note meters (5/8, 7/8, 8/8,
+   * 11/8 …) the beams follow it and never cross a group; without it the
+   * grouping is read from the accents ('>8 8 >8 8 >8 8 8' = 2+2+3). In
+   * quarter-note meters eighths are beamed by the beat, which never crosses
+   * a group either. Drawing only: playback does not read it.
+   */
+  grouping?: number[];
+}
+
 export interface MultipleChoiceConfig {
   type: 'multiple_choice';
   choices: { label: string; correct: boolean }[];
   /** What "this chord / this key signature" refers to, when the question points at notation. */
   stimulus?: StaffStimulus;
+  /** A rhythm the question points at (drawn, with a Play button). */
+  rhythm?: RhythmPattern;
 }
 
 export interface EarTrainingConfig {
   type: 'ear_training';
-  /** What to play and identify */
-  mode: 'note' | 'interval' | 'chord' | 'scale' | 'progression';
+  /**
+   * What to play and identify. 'note', 'progression' and 'melody' items
+   * play a reference first (decision D-11): middle C before a single note,
+   * the key's tonic chord before a progression or a melody.
+   */
+  mode: 'note' | 'interval' | 'chord' | 'scale' | 'progression' | 'melody';
   /** For note mode: note to play, user identifies by name */
   note?: string;
   accidental?: string;
@@ -120,6 +155,13 @@ export interface EarTrainingConfig {
   progression?: string[];
   /** Choices for chord, scale and progression modes */
   choices?: { label: string; correct: boolean }[];
+  /**
+   * Melody mode (melodic dictation, W4-13): the melodies offered, each as
+   * written pitches ('E4', 'F#4', …), drawn on a staff; the one marked correct
+   * is the one PLAYED, so what is heard is the answer key by construction.
+   * `root` / `rootAccidental` name the major key whose tonic chord sounds first.
+   */
+  melodyChoices?: { notes: string[]; correct: boolean }[];
 }
 
 export interface ScaleDegreeIdConfig {
@@ -152,8 +194,20 @@ export interface ExerciseDefinition {
   /** Question shown to the user */
   prompt: string;
   config: ExerciseConfig;
-  /** Shown after first wrong attempt */
+  /**
+   * The explanation: why the answer is what it is. Shown once the item is
+   * final, next to the revealed answer (W4b review B1) — it may name the
+   * answer, so it is never shown before.
+   */
   hint?: string;
+  /**
+   * A nudge, shown after a first wrong try (W4b review B1). It must not give
+   * the answer away: no keyed option text, no target note list, no note
+   * name for a note to identify, no description of the right melody. When an
+   * item has none, the check derives one from the exercise type or points
+   * back to the lesson section that teaches it (`nudge.ts`).
+   */
+  nudge?: string;
 }
 
 // Progress tracking types

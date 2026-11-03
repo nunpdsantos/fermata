@@ -37,7 +37,23 @@ function applyUnitOverlay(
 ): CurriculumUnit {
   const unitOv = overlay.units[unit.id];
   const translatedUnit: CurriculumUnit = unitOv
-    ? { ...unit, title: unitOv.title, description: unitOv.description }
+    ? {
+        ...unit,
+        title: unitOv.title,
+        description: unitOv.description,
+        // The milestone's prose is translated; its Try-This query is not.
+        ...(unit.milestone && unitOv.milestone
+          ? {
+              milestone: {
+                ...unit.milestone,
+                skillsSummary: unitOv.milestone.skillsSummary,
+                bridgeText: unitOv.milestone.bridgeText,
+                tryThisLabel: unitOv.milestone.tryThisLabel,
+                tryThisPrompt: unitOv.milestone.tryThisPrompt,
+              },
+            }
+          : {}),
+      }
     : unit;
 
   return {
@@ -95,6 +111,7 @@ export function applyExerciseOverlay(
         ...ex,
         prompt: exOv.prompt,
         hint: exOv.hint ?? ex.hint,
+        ...(ex.nudge !== undefined || exOv.nudge !== undefined ? { nudge: exOv.nudge ?? ex.nudge } : {}),
       };
 
       // Translate answer-choice labels. multiple_choice always carries them;
@@ -143,6 +160,7 @@ export function applyTemplateOverlay(
           ...tmpl,
           promptTemplate: tmplOv.promptTemplate,
           hintTemplate: tmplOv.hintTemplate,
+          ...(tmpl.nudgeTemplate !== undefined || tmplOv.nudgeTemplate !== undefined ? { nudgeTemplate: tmplOv.nudgeTemplate ?? tmpl.nudgeTemplate } : {}),
         };
 
         // Translate choice set labels

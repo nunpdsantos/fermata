@@ -37,6 +37,7 @@ const overlay: TemplateLevelOverlay = {
         'Escucha este intervalo e identifícalo. Siempre es una tercera — decide si es mayor o menor.',
       hintTemplate:
         '3.ª mayor = 4 semitonos (brillante, alegre). 3.ª menor = 3 semitonos (sombría, triste). La diferencia es solo un semitono, pero el carácter cambia drásticamente.',
+      nudgeTemplate: 'Escucha el color de las dos notas: ¿una tercera brillante y abierta, o una más oscura y sombría? Para comprobarlo, canta desde la nota grave de semitono en semitono y cuenta cuántos hacen falta hasta la aguda; la tercera más oscura es un semitono más estrecha.',
     },
     {
       // ear_training (chord)
@@ -44,6 +45,7 @@ const overlay: TemplateLevelOverlay = {
         'Escucha este acorde e identifica su cualidad.',
       hintTemplate:
         'El mayor suena brillante y abierto. El menor suena sombrío y pensativo. Céntrate en la 3.ª: 3.ª mayor = 4 semitonos, 3.ª menor = 3 semitonos.',
+      nudgeTemplate: 'Céntrate en la 3.ª sobre la fundamental: a 4 semitonos suena brillante y abierta, a 3 semitonos suena sombría y pensativa. ¿Cuál oyes?',
     },
   ],
 
@@ -55,6 +57,7 @@ const overlay: TemplateLevelOverlay = {
         'Escucha este intervalo, tocado en movimiento {direction}, e identifícalo. Céntrate en intervalos hasta la 5.ª justa.',
       hintTemplate:
         'Entrenamiento auditivo de intervalos: 2m=1 (tenso), 2M=2 (paso), 3m=3 (triste), 3M=4 (brillante), 4J=5 (abierto), tritono=6 (inestable), 5J=7 (fuerte). Cuenta los semitonos que oyes.',
+      nudgeTemplate: 'Cuenta los semitonos entre las dos notas (cantar los pasos intermedios ayuda) y después recuerda qué intervalo tiene ese tamaño.',
     },
   ],
 
@@ -66,6 +69,7 @@ const overlay: TemplateLevelOverlay = {
         'Escucha este intervalo más amplio, tocado en movimiento {direction}, e identifícalo.',
       hintTemplate:
         'Intervalos amplios: 6m=8 (agridulce), 6M=9 (cálido), 7m=10 (jazz), 7M=11 (anhelante), 8J=12 (octava).',
+      nudgeTemplate: 'Primero escucha si las dos notas se funden como una sola nota a dos alturas. Si no, canta de nuevo la nota grave, pero desplazada inmediatamente por encima de la aguda, identifica el pequeño intervalo que se forma e inviértelo: los números suman 9, y la cualidad pasa a la opuesta.',
     },
   ],
 
@@ -84,6 +88,7 @@ const overlay: TemplateLevelOverlay = {
         'Escucha estas dos notas tocadas simultáneamente e identifica el intervalo compuesto (más amplio que una octava).',
       hintTemplate:
         'Un intervalo compuesto es un intervalo simple más una octava: una 9.ª = octava + 2.ª (9m = 13, 9M = 14 semitonos), una 10.ª = octava + 3.ª (10M = 16), una 11.ª = octava + 4.ª (11J = 17). Escucha el intervalo simple por encima de la octava.',
+      nudgeTemplate: 'Un intervalo compuesto es un intervalo simple más una octava. Escucha el intervalo simple por encima de la octava, ponle nombre y súmale 7 a su número; la cualidad se mantiene.',
     },
   ],
 
@@ -99,6 +104,7 @@ const overlay: TemplateLevelOverlay = {
         'Escucha esta escala e identifica su tipo.',
       hintTemplate:
         'Escala mayor: T-T-S-T-T-T-S (brillante, resuelta). Menor natural: T-S-T-T-S-T-T (sombría, abierta). Menor armónica: eleva el 7.º, creando un salto distintivo de tono y medio. Menor melódica (ascendente): eleva el 6.º y el 7.º — menor abajo, mayor arriba.',
+      nudgeTemplate: 'Primero la 3.ª: ¿está a 4 o a 3 semitonos de la tónica? Si está a 3, sigue las últimas notas hasta la tónica: ¿el 7.º grado queda a un tono o a un semitono de ella, y hay un salto de tono y medio justo antes del 7.º?',
     },
   ],
 
@@ -110,6 +116,7 @@ const overlay: TemplateLevelOverlay = {
         'Escucha esta escala e identifica el modo. Presta atención a la nota característica.',
       hintTemplate:
         'Identificadores de los modos: dórico = 6 natural en contexto menor, frigio = b2, lidio = #4, mixolidio = b7 en contexto mayor, locrio = b2 y b5 (el más oscuro).',
+      nudgeTemplate: 'Primero la 3.ª: ¿está a 4 o a 3 semitonos de la tónica? Después compárala con la escala mayor (si son 4) o con la menor natural (si son 3) y busca qué cambia: ¿un 2.º descendido (solo, o también con el 5.º descendido), un 4.º elevado, un 6.º elevado o un 7.º descendido?',
     },
   ],
 
@@ -121,6 +128,7 @@ const overlay: TemplateLevelOverlay = {
         'Escucha esta escala e identifica su tipo.',
       hintTemplate:
         'Las escalas pentatónicas tienen cinco notas y ninguna tensión de semitono. La escala de blues añade la «blue note» (b5). La escala de tonos enteros es toda de tonos — onírica y sin centro. La escala disminuida (semitono/tono) alterna semitonos y tonos — ocho notas, simétrica y tensa.',
+      nudgeTemplate: 'Cuenta las notas y los semitonos: ¿son cinco notas sin semitonos, seis notas todas a un tono de distancia, seis con una nota cromática entre el 4.º y el 5.º grados, u ocho que alternan semitono y tono? Si son cinco, comprueba si la 3.ª está a 4 o a 3 semitonos de la tónica.',
     },
   ],
 
@@ -132,6 +140,7 @@ const overlay: TemplateLevelOverlay = {
         'Escucha esta tríada e identifica su cualidad.',
       hintTemplate:
         'Mayor = brillante/estable. Menor = sombría/estable. Disminuida = tensa/inestable. Aumentada = brillante/sin resolución.',
+      nudgeTemplate: 'Escucha la tríada como dos 3.as apiladas, de abajo arriba: ¿4 + 3, 3 + 4, 3 + 3 o 4 + 4 semitonos? Comprueba también la 5.ª exterior: ¿es justa, o un semitono más estrecha o más amplia?',
     },
   ],
 
@@ -143,6 +152,7 @@ const overlay: TemplateLevelOverlay = {
         'Escucha este acorde de séptima e identifica su cualidad.',
       hintTemplate:
         'maj7 = etéreo/exuberante. m7 = suave/cálido. 7 de dominante = brillante/pide resolución. semidisminuido = sombrío/sin resolución. dim7 = muy tenso. menor con 7.ª M = una tríada menor sombría bajo una 7.ª mayor brillante, inquietante.',
+      nudgeTemplate: 'Escucha el acorde en dos capas. La tríada: ¿la 3.ª está a 4 o a 3 semitonos de la fundamental, y la 5.ª es justa o un semitono más baja? La 7.ª: ¿queda a 1, 2 o 3 semitonos por debajo de la octava?',
     },
   ],
 
@@ -176,6 +186,7 @@ const overlay: TemplateLevelOverlay = {
         'Escucha esta nota e identifícala. La mayoría de las notas de este conjunto son sostenidos.',
       hintTemplate:
         'Sostenidos como C#, F# y G# están fuera de C mayor; en una melodía en C mayor serían notas cromáticas, atraídas hacia una nota vecina de la escala.',
+      nudgeTemplate: 'Parte de la nota de referencia que oyes primero y canta hacia arriba, semitono a semitono, contando, hasta llegar a la nota. Después sitúala en el teclado: una tecla negra toma el nombre de la tecla blanca justo por debajo, con un sostenido.',
     },
     {
       // ear_training (interval)
@@ -183,6 +194,7 @@ const overlay: TemplateLevelOverlay = {
         'Escucha este intervalo, tocado en movimiento {direction}, e identifícalo.',
       hintTemplate:
         'Cuenta los semitonos: 2.ª menor = 1, 3.ª menor = 3, tritono = 6, 6.ª menor = 8, 7.ª menor = 10, 7.ª mayor = 11. Medidos desde la tónica de una tonalidad mayor, los cinco primeros son exactamente las notas fuera de la escala (b2, b3, #4, b6, b7).',
+      nudgeTemplate: 'Canta desde la nota grave hasta la aguda y cuenta los semitonos. En un salto amplio, mide mejor cuánto le falta para la octava y deduce de ahí el tamaño.',
     },
   ],
 
@@ -194,6 +206,7 @@ const overlay: TemplateLevelOverlay = {
         'Escucha esta cadencia en C mayor e identifícala.',
       hintTemplate:
         'Auténtica (V-I) = llegada conclusiva. Plagal (IV-I) = la cadencia del «Amén». Rota (V-vi) = llegada esperada desviada. Semicadencia (I-V) = pausa en la tensión.',
+      nudgeTemplate: 'Escucha dónde termina: ¿en la tónica, en un acorde menor donde se esperaba la tónica o en un acorde abierto que lo deja todo en suspenso? Si llega a la tónica, ¿llega con la atracción fuerte de la dominante o con el sonido más suave del «Amén»?',
     },
     {
       // ear_training (progression)
@@ -201,6 +214,7 @@ const overlay: TemplateLevelOverlay = {
         'Escucha esta progresión de acordes en C mayor e identifica el patrón de números romanos.',
       hintTemplate:
         'Céntrate en el movimiento del bajo y en la cualidad de cada acorde. Progresiones comunes: I-IV-V-I (básica), I-V-vi-IV (pop), ii-V-I (jazz), I-vi-IV-V (años 50).',
+      nudgeTemplate: 'Cuenta los acordes (¿tres o cuatro?) y busca acordes menores: ¿no hay ninguno, o hay uno en primer, segundo o tercer lugar? Después sigue el bajo para distinguir los acordes mayores.',
     },
   ],
 

@@ -166,10 +166,11 @@ describe('the runner plays exactly those pitches (W4-10)', () => {
     try {
       const cfg: EarTrainingConfig = { type: 'ear_training', mode: 'progression', root: 'C', rootAccidental: '', progression: ['I', 'V', 'vi', 'IV'], choices: [{ label: 'I - V - vi - IV', correct: true }, { label: 'I - IV - V - I', correct: false }] };
       run({ id: 'w410p', type: 'ear_training', prompt: 'Listen.', config: cfg });
-      await tick(300 + 4 * 950);
+      await tick(300 + 1700 + 4 * 950);
       expect(playChord).not.toHaveBeenCalled();
       const basses = vi.mocked(playPitchedNotes).mock.calls.map((c) => bass(c[0]) % 12);
-      expect(basses).toEqual([0, 7, 9, 5]);
+      // The key chord first (D-11, its bass the tonic), then the progression.
+      expect(basses).toEqual([0, 0, 7, 9, 5]);
     } finally {
       vi.useRealTimers();
     }

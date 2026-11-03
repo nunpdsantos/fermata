@@ -31,6 +31,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sétima meio-diminuta',
     ],
     hint: 'A sétima da dominante (ex.: G7) combina uma tríade maior com uma 7.ª menor. É o único tipo de acorde de sétima com esta combinação, criando forte tensão que resolve para a tónica.',
+    nudge: 'Constrói um acorde de sétima sobre cada grau de C maior, só com teclas brancas, e procura o que tem uma tríade maior com uma 7.ª menor. O tipo de acorde tem o nome desse grau.',
   },
   l3u9m1e4: {
     prompt: 'Qual é a diferença entre um acorde de sétima meio-diminuto e um totalmente diminuto?',
@@ -51,6 +52,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sétima meio-diminuta',
     ],
     hint: 'Um acorde de sétima maior: uma tríade maior mais uma 7.ª maior (C-E-G-B). Caloroso e rico — a 7.ª fica apenas meio-tom abaixo da oitava.',
+    nudge: 'Ouve em dois passos. Primeiro, a tríade de base: brilhante (maior), suave (menor) ou tensa e oca (diminuta)? Depois, a 7.ª no topo: está colada à fundamental uma oitava acima, a roçar nela, ou um tom abaixo dela?',
   },
   l3u9m1e_ear2: {
     prompt: 'Ouve este acorde de sétima e identifica a sua qualidade.',
@@ -61,6 +63,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sétima meio-diminuta',
     ],
     hint: 'Um acorde de sétima menor: uma tríade menor mais uma 7.ª menor (A-C-E-G). Suave e macio, sem a atração inquieta da sétima da dominante.',
+    nudge: 'Ouve em dois passos. Primeiro, a tríade de base: brilhante (maior), suave (menor) ou tensa e oca (diminuta)? Depois, a 7.ª no topo: está colada à fundamental uma oitava acima, a roçar nela, ou um tom abaixo dela?',
   },
   l3u9m1e_ear3: {
     prompt: 'Ouve este acorde de sétima e identifica a sua qualidade.',
@@ -71,6 +74,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sétima meio-diminuta',
     ],
     hint: 'Um acorde de sétima da dominante: uma tríade maior mais uma 7.ª menor (D-F#-A-C). O trítono F#-C dentro dele torna-o inquieto — quer resolver.',
+    nudge: 'Ouve em dois passos. Primeiro, a tríade de base: brilhante (maior), suave (menor) ou tensa e oca (diminuta)? Depois, a 7.ª no topo: está colada à fundamental uma oitava acima, a roçar nela, ou um tom abaixo dela?',
   },
   l3u9m1e_ear4: {
     prompt: 'Ouve este acorde de sétima e identifica a sua qualidade.',
@@ -81,6 +85,7 @@ const overlay: ExerciseLevelOverlay = {
       'Sétima meio-diminuta',
     ],
     hint: 'Um acorde de sétima meio-diminuta: uma tríade diminuta mais uma 7.ª menor (E-G-Bb-D). Sombrio e instável — como um acorde de sétima menor com a 5.ª baixada.',
+    nudge: 'Ouve em dois passos. Primeiro, a tríade de base: brilhante (maior), suave (menor) ou tensa e oca (diminuta)? Depois, a 7.ª no topo: está colada à fundamental uma oitava acima, a roçar nela, ou um tom abaixo dela?',
   },
 
   // ---- l3u9m2: Inversões de Acordes de Sétima ----
@@ -194,6 +199,7 @@ const overlay: ExerciseLevelOverlay = {
       'Movimento direto em 3.as',
     ],
     hint: 'As 5.as e 8.as perfeitas paralelas são evitadas porque comprometem a independência das vozes. Cada voz deve soar como a sua própria linha melódica, e paralelas perfeitas fazem as vozes fundirem-se.',
+    nudge: 'A regra protege a independência de cada voz. Que movimento faz duas vozes fundirem-se numa só, ao moverem-se juntas mantendo a mesma consonância de som aberto e oco?',
   },
   l3u10m1e3: {
     prompt: 'Em tríades em estado fundamental, qual nota do acorde deve ser tipicamente dobrada?',
@@ -227,6 +233,7 @@ const overlay: ExerciseLevelOverlay = {
       'Consonante, dissonante, resolvido e suspenso',
     ],
     hint: 'Paralelo = mesma direção, mesmo intervalo. Direto = mesma direção, intervalo diferente. Oblíquo = uma voz move-se, a outra mantém-se. Contrário = direções opostas.',
+    nudge: 'Classifica pela forma como duas vozes se movem uma em relação à outra: na mesma direção ou em direções opostas, mantendo o mesmo intervalo ou mudando-o, ou com uma voz parada.',
   },
   l3u10m2e3: {
     prompt: 'Qual tipo de movimento de vozes é mais eficaz para criar linhas de vozes independentes?',
@@ -237,6 +244,7 @@ const overlay: ExerciseLevelOverlay = {
       'Todos os tipos são igualmente eficazes',
     ],
     hint: 'O movimento contrário maximiza a independência das vozes porque as vozes viajam em direções opostas. Este é o tipo de movimento mais valorizado no contraponto e na escrita a partes.',
+    nudge: 'Independência significa que cada voz mantém o seu próprio contorno. Que movimento torna as duas linhas menos parecidas, de modo que nenhuma pareça seguir a outra?',
   },
 
   // ---- l3u10m3: Escrita a Partes em Estado Fundamental ----
@@ -251,6 +259,7 @@ const overlay: ExerciseLevelOverlay = {
       'Dobrar a 3.ª do segundo acorde',
     ],
     hint: 'Quando as fundamentais se movem por 5.ª (ou 4.ª), os dois acordes partilham uma nota comum. Mantê-la na mesma voz garante uma condução de vozes suave enquanto as outras vozes se movem por grau.',
+    nudge: 'Escreve I e V em C maior e encontra a nota que têm em comum. Como pode essa nota ajudar cada voz a mover-se o mínimo possível?',
   },
   l3u10m3e2: {
     prompt:
@@ -441,6 +450,7 @@ const overlay: ExerciseLevelOverlay = {
       'Uma nota emprestada de uma tonalidade vizinha',
     ],
     hint: 'Uma bordadura (ou nota auxiliar) afasta-se de uma nota do acorde por grau (para cima ou para baixo) e regressa à mesma nota. Decora uma única altura: nota do acorde -> grau para fora -> grau de volta.',
+    nudge: 'Sobre um acorde de C maior, compara C–D–C com C–D–E: um deles é uma nota de passagem. O que faz o D no outro?',
   },
   l3u11m4e3: {
     prompt: 'O que é uma antecipação?',
@@ -458,10 +468,12 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m5e1: {
     prompt: 'Uma melodia que começa em C4 é transposta para começar na segunda nota mostrada. Qual foi o intervalo da transposição?',
     hint: 'Uma 2.ª maior são 2 meios-tons. C mais 2 meios-tons = D. Transpor uma 2.ª maior acima move cada nota um tom acima.',
+    nudge: 'O intervalo de transposição é o intervalo de C até à nova nota inicial. Conta os nomes das notas de C até à segunda nota da pauta para obter o número e depois conta os meios-tons entre elas para a qualidade.',
   },
   l3u11m5e2: {
     prompt: 'C4 é transposto até à segunda nota mostrada. Indica o intervalo desta transposição.',
     hint: 'Uma 5.ª perfeita são 7 meios-tons. C mais 7 meios-tons = G. Transpor uma 5.aP acima é uma das transposições mais comuns, passando de C maior para G maior.',
+    nudge: 'Todas as notas se movem pelo mesmo intervalo, por isso mede-o só na primeira nota: conta os nomes das notas de C até à segunda nota mostrada, incluindo ambas, e verifica se essa nota pertence a C maior para decidires a qualidade.',
   },
   l3u11m5e3: {
     prompt: 'Ao transpor uma melodia uma 3.ª menor acima, o que acontece à armação de clave?',

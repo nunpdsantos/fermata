@@ -169,7 +169,7 @@ test('silence counts as busy: another tab that cannot answer (as on an older ver
   await expect(page.getByRole('alert').filter({ hasText: 'Updated to the latest version' })).toBeVisible();
 });
 
-// ── 1b. Never silently inside Learn (review W9b-B1; interim source 'learn') ──
+// ── 1b. Learn: unfinished checks are busy; overview and reading are idle ──
 
 async function openLesson(page: Page, title: string) {
   await page.keyboard.press('Control+k');
@@ -180,47 +180,87 @@ async function openLesson(page: Page, title: string) {
   await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible({ timeout: 15_000 });
 }
 
-test('in a lesson, back after 31 min: the update asks — the learner stays in the lesson (B1)', async ({ page }) => {
-  await firstVisit(page);
+async function openCheck(page: Page) {
   await openLesson(page, 'The Staff and Clefs');
+  await page.getByTestId('section-rail').locator('[data-section-link="check"]').click();
+  await page.getByRole('button', { name: 'Start the check' }).click();
+  await expect(page.getByTestId('focused-check')).toBeVisible();
+}
+
+for (const place of ['overview', 'lesson'] as const) {
+  test(`Learn ${place}: back after 31 min applies silently`, async ({ page }) => {
+    await firstVisit(page);
+    if (place === 'lesson') await openLesson(page, 'The Staff and Clefs');
+    else await page.getByRole('tab', { name: 'Learn' }).click();
+    await deployAndFind(page);
+    await expect(updateToast(page)).toBeVisible();
+    const before = await loads(page);
+    await awayFor(page, 31 * 60_000);
+    await expect.poll(() => loads(page), { timeout: 20_000 }).toBe(before + 1);
+    await expect.poll(() => workerState(page), { timeout: 15_000 }).toEqual({ controlled: true, waiting: null, active: 'activated' });
+    if (place === 'lesson') await expect(page.getByRole('heading', { level: 1, name: 'The Staff and Clefs' })).toBeVisible();
+  });
+}
+
+test('a cold launch with a saved Learn check asks before any lazy Learn view loads; Reload resumes it', async ({ page }) => {
+  await firstVisit(page);
+  await openCheck(page);
+  const prompt = await page.getByTestId('check-prompt').textContent();
+  await deployAndFind(page);
+  const before = await loads(page);
+  await coldLaunch(page);
+  await expect(updateToast(page)).toBeVisible({ timeout: 10_000 });
+  await page.waitForTimeout(3000);
+  expect(await loads(page)).toBe(before + 1);
+  expect((await workerState(page)).waiting).toBe('installed');
+  await expect(page.getByTestId('check-prompt')).toHaveText(prompt!);
+  await Promise.all([page.waitForEvent('load', { timeout: 20_000 }), updateToast(page).getByRole('button', { name: /^reload$/i }).click()]);
+  await expect.poll(() => workerState(page), { timeout: 15_000 }).toEqual({ controlled: true, waiting: null, active: 'activated' });
+  await expect(page.getByTestId('check-prompt')).toHaveText(prompt!);
+});
+
+test('in a Learn check, back after 31 min: the update asks; reading afterwards is idle', async ({ page }) => {
+  await firstVisit(page);
+  await openCheck(page);
   await deployAndFind(page);
   await expect(updateToast(page)).toBeVisible();
   const before = await loads(page);
 
   await awayFor(page, 31 * 60_000);
   await page.waitForTimeout(5000);
-  expect(await loads(page)).toBe(before); // was: a silent reload to the Learn overview
+  expect(await loads(page)).toBe(before); // no reload under an unfinished check
   expect((await workerState(page)).waiting).toBe('installed');
-  await expect(page.getByRole('heading', { level: 1, name: 'The Staff and Clefs' })).toBeVisible();
+  await expect(page.getByTestId('focused-check')).toBeVisible();
 
-  // Control: in Explore, the same return goes in silently.
-  await page.getByRole('tab', { name: 'Explore' }).click();
-  await page.waitForTimeout(2000); // Explore settles before the learner leaves
+  // Control: back in the lesson, the same return goes in silently.
+  await page.getByRole('button', { name: 'Exit the check' }).click();
+  await expect(page.getByTestId('focused-check')).toHaveCount(0);
+  await page.waitForTimeout(2000); // the lesson settles before the learner leaves
   await awayFor(page, 31 * 60_000);
   await expect.poll(() => loads(page), { timeout: 20_000 }).toBe(before + 1);
   await expect.poll(() => workerState(page), { timeout: 15_000 }).toEqual({ controlled: true, waiting: null, active: 'activated' });
 });
 
-test('a tab in a lesson is not reloaded by another tab\'s cold launch (B1); a takeover it did not ask for asks instead', async ({ page, context }) => {
+test('a tab in a Learn check is not reloaded by another tab\'s cold launch (B1); a takeover it did not ask for asks instead', async ({ page, context }) => {
   await firstVisit(page);
-  await openLesson(page, 'The Staff and Clefs');
+  await openCheck(page);
   await deployAndFind(page);
   const before = await loads(page);
 
   const tab2 = await context.newPage();
-  await tab2.goto(`${proxy.origin}/`); // a cold launch, untouched
+  await tab2.goto(`${proxy.origin}/?view=explore`); // idle locally; tab 1's check must block it
   await expect(updateToast(tab2)).toBeVisible({ timeout: 10_000 }); // tab 1 said "busy": it asks
   await page.waitForTimeout(3000);
   expect(await loads(page)).toBe(before);
   expect((await workerState(page)).waiting).toBe('installed');
-  await expect(page.getByRole('heading', { level: 1, name: 'The Staff and Clefs' })).toBeVisible();
+  await expect(page.getByTestId('focused-check')).toBeVisible();
 
   // Tab 2's learner taps Reload: the update takes over. Tab 1 did not ask —
   // it is not reloaded under its learner, it asks (review W9b-g).
   await Promise.all([tab2.waitForEvent('load', { timeout: 20_000 }), updateToast(tab2).getByRole('button', { name: /^reload$/i }).click()]);
   await expect(page.getByRole('alert').filter({ hasText: 'Reload to finish updating' })).toBeVisible({ timeout: 15_000 });
   expect(await loads(page)).toBe(before);
-  await expect(page.getByRole('heading', { level: 1, name: 'The Staff and Clefs' })).toBeVisible();
+  await expect(page.getByTestId('focused-check')).toBeVisible();
   await Promise.all([
     page.waitForEvent('load', { timeout: 20_000 }),
     page.getByRole('alert').filter({ hasText: 'Reload to finish updating' }).getByRole('button', { name: /^reload$/i }).click(),

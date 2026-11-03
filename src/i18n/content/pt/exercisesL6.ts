@@ -59,6 +59,7 @@ const overlay: ExerciseLevelOverlay = {
       'São o mesmo acorde com nomes diferentes, consoante a época em que foi usado',
     ],
     hint: 'A It+6 é a mais simples: b6, 1, #4 (três notas). A Fr+6 acrescenta o 2.º grau (b6, 1, 2, #4), criando um subconjunto característico de tons inteiros com uma quarta aumentada acima do baixo.',
+    nudge: 'Escreve as duas sobre o mesmo baixo, b6: enumera os graus de cada acorde e conta-os. Depois encontra a nota que a francesa tem e a italiana não, e mede-a em relação ao baixo.',
   },
   l6u18m2e3: {
     prompt: 'Qual é a função harmónica dos acordes de sexta aumentada?',
@@ -125,6 +126,7 @@ const overlay: ExerciseLevelOverlay = {
       'Apenas entre tonalidades relativas maior e menor',
     ],
     hint: 'Os acordes pivot diatónicos ligam apenas tonalidades próximas. Reinterpretar a Gr+6 da tonalidade como V7 (ou vice-versa) move a tónica meio-tom — de C para Db são cinco passos no círculo de quintas, uma tonalidade distante alcançada através de um único acorde. É uma técnica-assinatura dos compositores do período romântico.',
+    nudge: 'Reescreve a Gr+6 de C maior (Ab, C, Eb, F#) com Gb em vez de F#: de que tonalidade passa a ser o V7? Depois mede o afastamento entre essa tónica e C, como intervalo e no círculo de quintas.',
   },
   l6u18m4e3: {
     prompt: 'Se uma Gr+6 em C menor (Ab, C, Eb, F#) for reinterpretada como V7, que tonalidade toniciza agora?',

@@ -119,6 +119,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'viio/V works the same way viio works in a key: the root is a half step below the target chord, and the diminished quality creates strong resolution drive upward to the target.',
+      nudge: 'Think of what viio does in a key: its root is the leading tone. In viio/V, whose leading tone is that root, and which way does a leading tone want to go?',
     },
     {
       id: 'l5u15m3e2',
@@ -677,6 +678,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Dm7 guide tones: F (3rd), C (7th). Into G7: F holds as a common tone and becomes the 7th, while C steps down a half step to B, the 3rd. Into Cmaj7: B holds and becomes the 7th, while F steps down a half step to E, the 3rd. Minimal motion = smooth voice leading.',
+      nudge: "Guide tones are each chord's 3rd and 7th. Spell them for Dm7, G7 and Cmaj7, then compare: which notes stay put from one chord to the next, and how far do the others move?",
     },
     {
       id: 'l5u17m4e3',

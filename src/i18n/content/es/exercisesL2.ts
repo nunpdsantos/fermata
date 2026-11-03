@@ -21,6 +21,7 @@ const overlay: ExerciseLevelOverlay = {
       'F B E A D G C',
     ],
     hint: 'Recuerda: los sostenidos se acumulan en este orden fijo: F-C-G-D-A-E-B.',
+    nudge: 'Cada nuevo sostenido está una 5.ª justa por encima del anterior. Empieza por el único sostenido de la armadura de clave de G mayor y sigue subiendo por 5.as.',
   },
   l2u4m1e2: {
     prompt: '¿Cuál es el orden de los bemoles tal como aparecen en las armaduras de clave?',
@@ -31,6 +32,7 @@ const overlay: ExerciseLevelOverlay = {
       'E B A D G C F',
     ],
     hint: 'El orden de los bemoles es el inverso de los sostenidos: B-E-A-D-G-C-F.',
+    nudge: 'Cada nuevo bemol está una 4.ª justa por encima (una 5.ª por debajo) del anterior. Empieza por el único bemol de la armadura de clave de F mayor y sigue.',
   },
   l2u4m1e3: {
     prompt: 'Construye la escala de D mayor. Selecciona las 7 notas en el instrumento. Recuerda: D mayor tiene 2 sostenidos.',
@@ -58,6 +60,7 @@ const overlay: ExerciseLevelOverlay = {
       'Supertónica',
     ],
     hint: 'El 5.º grado se llama dominante porque es la segunda nota más importante después de la tónica, dominando la tonalidad.',
+    nudge: 'Piensa en su función: después de la tónica, es el grado más fuerte de la tonalidad, y su acorde es el que con más firmeza devuelve la música a casa.',
   },
   l2u4m2e2: {
     prompt: '¿Cómo se llama el 7.º grado de la escala mayor?',
@@ -68,6 +71,7 @@ const overlay: ExerciseLevelOverlay = {
       'Supertónica',
     ],
     hint: 'En la escala mayor, el 7.º grado está a un semitono por debajo de la tónica. «Conduce» fuertemente hacia arriba, hacia la tónica, de ahí que se llame sensible.',
+    nudge: 'En la escala mayor, el 7.º grado está solo un semitono por debajo de la tónica (no un tono), así que tira con fuerza hacia arriba, hacia ella.',
   },
   l2u4m2e3: {
     prompt: '¿Qué grado de la escala se llama subdominante?',
@@ -78,6 +82,7 @@ const overlay: ExerciseLevelOverlay = {
       '6.º grado',
     ],
     hint: 'La subdominante es el 4.º grado. Se sitúa una 5.ª por debajo de la tónica (sub = debajo), igual que la dominante se sitúa una 5.ª por encima.',
+    nudge: '«Sub» significa debajo: la subdominante está una 5.ª por debajo de la tónica, igual que la dominante está una 5.ª por encima. En C mayor, baja una 5.ª desde C y mira a qué grado llegas.',
   },
 
   // =========================================================================
@@ -113,6 +118,7 @@ const overlay: ExerciseLevelOverlay = {
       '2.º, 5.º y 7.º',
     ],
     hint: 'Compara C mayor (C D E F G A B) con C menor natural (C D Eb F G Ab Bb). El 3.er, 6.º y 7.º grados son cada uno descendidos un semitono.',
+    nudge: 'Compara C mayor con C menor natural, cuya armadura de clave tiene tres bemoles. Descubre en qué grados de la escala caen esos tres bemoles.',
   },
 
   // ---- l2u5m2: Menor Armónica/Melódica ----
@@ -144,6 +150,7 @@ const overlay: ExerciseLevelOverlay = {
       'Para eliminar todos los semitonos de la escala',
     ],
     hint: 'La escala menor armónica tiene una 2.ª aumentada incómoda (3 semitonos) entre el 6.º y el 7.º grado elevado. Elevar también el 6.º suaviza esta distancia a un tono.',
+    nudge: 'Toca la escala menor armónica en sentido ascendente y escucha el salto del 6.º al 7.º grado elevado. ¿Qué le pasa a ese salto cuando elevas también el 6.º?',
   },
 
   // ---- l2u5m3: Tonalidades Relativas/Paralelas ----
@@ -157,6 +164,7 @@ const overlay: ExerciseLevelOverlay = {
       'D menor',
     ],
     hint: 'La relativa menor comienza en el 6.º grado de la escala mayor. En C mayor, el 6.º grado es A. Tanto C mayor como A menor comparten la misma armadura de clave (sin sostenidos ni bemoles).',
+    nudge: 'La relativa menor usa la misma armadura de clave y comienza en el 6.º grado de la escala mayor. Sube por la escala de C mayor para encontrarla.',
   },
   l2u5m3e2: {
     prompt: '¿Cuál es la relativa mayor de D menor?',
@@ -167,6 +175,7 @@ const overlay: ExerciseLevelOverlay = {
       'G mayor',
     ],
     hint: 'La relativa mayor comienza una 3.ª menor (3 semitonos) por encima de la tonalidad menor. D más 3 semitonos = F. Tanto D menor como F mayor comparten un bemol (Bb).',
+    nudge: 'La relativa mayor comparte la armadura de clave y comienza una 3.ª menor (3 semitonos) por encima de la tónica de la tonalidad menor. Cuenta 3 semitonos hacia arriba desde D.',
   },
   l2u5m3e3: {
     prompt: '¿Cuál es la paralela menor de G mayor?',
@@ -177,6 +186,7 @@ const overlay: ExerciseLevelOverlay = {
       'B menor',
     ],
     hint: 'Las tonalidades paralelas comparten la misma fundamental pero difieren en la cualidad. La paralela menor de G mayor es G menor. Tienen armaduras de clave diferentes.',
+    nudge: 'Las tonalidades paralelas mantienen la misma tónica y cambian solo la cualidad (y, con ella, la armadura de clave). No las confundas con las relativas, que comparten la armadura de clave.',
   },
   l2u5m3e4: {
     prompt: '¿Cuál es la diferencia entre tonalidades relativas y tonalidades paralelas?',
@@ -224,6 +234,7 @@ const overlay: ExerciseLevelOverlay = {
       '2 tiempos principales (cada uno dividido en 3 corcheas)',
     ],
     hint: '9/8 es compás compuesto ternario: 9 corcheas forman 3 grupos de 3. Cada grupo de 3 es un tiempo principal (una negra con puntillo).',
+    nudge: '9/8 es un compás compuesto: las corcheas se agrupan de tres en tres, y cada grupo es un tiempo principal. ¿Cuántos grupos caben en nueve corcheas?',
   },
 
   // ---- l2u6m2: Síncopa ----
@@ -258,14 +269,17 @@ const overlay: ExerciseLevelOverlay = {
   l2u7m1e1: {
     prompt: 'Identifica el intervalo de C ascendente hasta G. Este es uno de los intervalos más consonantes de la música.',
     hint: 'De C a G son 7 semitonos. Es una 5.ª justa — el intervalo que se encuentra en los power chords y la base del círculo de quintas.',
+    nudge: 'Primero cuenta los nombres de las notas de C a G, incluidas ambas, para obtener el número. Después cuenta los semitonos de C a G y compáralos con los tamaños que puede tener ese número.',
   },
   l2u7m1e2: {
     prompt: 'Identifica el intervalo de C ascendente hasta Eb. Este intervalo da a los acordes menores su sonido característico.',
     hint: 'De C a Eb son 3 semitonos. Es una 3.ª menor — el intervalo que distingue los acordes menores de los mayores.',
+    nudge: 'Cuenta los nombres de las notas de C a Eb para obtener el número. Después compara el Eb con la nota de la misma letra en la escala de C mayor: ¿es la misma nota o está un semitono más abajo, y qué efecto tiene eso en la cualidad?',
   },
   l2u7m1e3: {
     prompt: 'Identifica el intervalo de D ascendente hasta B. Cuenta tanto los nombres de las notas como los semitonos.',
     hint: 'De D a B abarca 6 nombres de notas (D-E-F-G-A-B) = una 6.ª. D a B son 9 semitonos, lo que la convierte en una 6.ª mayor.',
+    nudge: 'Cuenta los nombres de las notas de D a B, incluidas ambas, para obtener el número. Después cuenta los semitonos de D a B y compáralos con los tamaños que puede tener ese número.',
   },
   l2u7m1e4: {
     prompt: '¿Qué hace que un intervalo sea «justo»?',
@@ -299,14 +313,17 @@ const overlay: ExerciseLevelOverlay = {
   l2u7m2e1: {
     prompt: 'Identifica el intervalo de C ascendente hasta F#. Este intervalo divide la octava exactamente por la mitad.',
     hint: 'De C a F# (o Gb) son 6 semitonos — exactamente la mitad de 12. Es el tritono, también llamado 4.ª aumentada o 5.ª disminuida.',
+    nudge: 'Cuenta los semitonos de C a F#, tecla a tecla, y compara el total con los 12 semitonos de la octava. ¿Qué opción nombra el intervalo de exactamente ese tamaño?',
   },
   l2u7m2e2: {
     prompt: 'Identifica el intervalo de C ascendente hasta Db. Este es el menor intervalo con nombre propio.',
     hint: 'De C a Db es 1 semitono. Es una 2.ª menor — el menor intervalo en la música occidental estándar, creando tensión máxima.',
+    nudge: 'Cuenta los nombres de las notas de C a Db para obtener el número. Después compara el Db con la nota de la misma letra en la escala de C mayor: ¿es la misma nota o está un semitono más abajo, y qué efecto tiene eso en la cualidad?',
   },
   l2u7m2e3: {
     prompt: 'Identifica el intervalo de C ascendente hasta B. Este intervalo amplio está a solo un semitono de una octava.',
     hint: 'De C a B son 11 semitonos. Es una 7.ª mayor — un intervalo amplio y disonante frecuentemente usado en acordes de jazz.',
+    nudge: 'Cuenta los nombres de las notas de C a B, incluidas ambas, para obtener el número. Después cuenta los semitonos de C a B y compáralos con los tamaños que puede tener ese número.',
   },
   l2u7m2e4: {
     prompt: '¿Qué es un tritono?',
@@ -348,6 +365,7 @@ const overlay: ExerciseLevelOverlay = {
       'Aumentada — dos 3.as mayores superpuestas',
     ],
     hint: 'Un tritono tiene 6 semitonos. Dos 3.as menores (3 + 3) suman exactamente 6, así que solo la tríada disminuida tiene un tritono de la fundamental a la 5.ª. Las tríadas mayor y menor suman 7 (una 5.ª justa); la aumentada suma 8 (una 5.ª aumentada).',
+    nudge: 'Un tritono tiene 6 semitonos. Para cada tipo de tríada, suma los semitonos de sus dos 3.as (3.ª mayor = 4, 3.ª menor = 3) y busca la combinación que da 6.',
   },
 
   // ---- l2u7m4: Inversiones/Bajo Cifrado ----
@@ -394,6 +412,7 @@ const overlay: ExerciseLevelOverlay = {
       'Aumentada',
     ],
     hint: 'Las tríadas diatónicas en la escala mayor son: I(M) ii(m) iii(m) IV(M) V(M) vi(m) vii°(dim). Los números romanos en minúscula indican cualidad menor. El acorde iii es menor.',
+    nudge: 'Constrúyelo en C mayor: superpón 3.as sobre E usando solo teclas blancas y cuenta los semitonos desde la fundamental hasta la 3.ª y hasta la 5.ª. El número romano en minúscula también es una pista.',
   },
   l2u7m5e2: {
     prompt: 'En una tonalidad mayor, ¿cuál es la cualidad del acorde vii° (construido sobre el 7.º grado)?',
@@ -404,6 +423,7 @@ const overlay: ExerciseLevelOverlay = {
       'Aumentada',
     ],
     hint: 'El acorde construido sobre el 7.º grado de la escala mayor (ej: B-D-F en C mayor) contiene un tritono entre la fundamental y la 5.ª, haciéndolo disminuido. Se nota vii°.',
+    nudge: 'Constrúyelo en C mayor sobre B, usando solo teclas blancas, y cuenta los semitonos desde la fundamental hasta la 5.ª. ¿Es una 5.ª justa (7 semitonos) o algo más pequeño?',
   },
   l2u7m5e3: {
     prompt: 'Construye una tríada de F mayor. Este es el acorde IV en la tonalidad de C mayor.',

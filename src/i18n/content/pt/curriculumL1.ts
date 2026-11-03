@@ -7,16 +7,51 @@ const curriculumL1: CurriculumLevelOverlay = {
       title: 'Notação e Altura',
       description:
         'A pauta, claves, meios-tons, tons, acidentes e a escala cromática',
+      milestone: {
+        skillsSummary: [
+          'Ler a clave de sol e a clave de fá e localizar o C central na pauta dupla',
+          'Definir meios-tons e tons e encontrá-los no piano',
+          'Identificar sustenidos, bemóis e equivalentes enarmónicos',
+          'Conhecer as 12 alturas cromáticas e vê-las no teclado',
+        ],
+        bridgeText:
+          'Já conheces as 12 alturas e como funciona a distância no teclado. A seguir vais aprender como se organiza o tempo na música — figuras rítmicas, pausas e compasso.',
+        tryThisLabel: 'Toca as 12 notas por ordem',
+        tryThisPrompt: 'Consegues nomear cada nota antes de a ouvir?',
+      },
     },
     u2: {
       title: 'Ritmo e Compasso',
       description:
         'Figuras rítmicas, pausas, pontos de aumentação, ligaduras e compassos simples',
+      milestone: {
+        skillsSummary: [
+          'Conhecer a hierarquia das figuras rítmicas, da semibreve à semicolcheia',
+          'Compreender os pontos de aumentação e as ligaduras como modificadores de duração',
+          'Ler indicações de compasso simples: 2/4, 3/4, 4/4',
+          'Sentir o metro binário, ternário e quaternário',
+        ],
+        bridgeText:
+          'Já compreendes a altura e o ritmo — as duas dimensões da notação musical. Agora vais combiná-los em escalas, intervalos e nos teus primeiros acordes.',
+        tryThisLabel: 'Toca G maior a um tempo regular',
+        tryThisPrompt: 'Experimenta marcar semínimas enquanto a escala toca.',
+      },
     },
     u3: {
       title: 'Escalas, Intervalos e Primeiros Acordes',
       description:
         'A escala maior, armações de clave, números de intervalos e tríades maiores',
+      milestone: {
+        skillsSummary: [
+          'Construir escalas maiores em C, G, D e F usando o padrão T-T-mT-T-T-T-mT',
+          'Ler as armações de clave das primeiras quatro tonalidades maiores',
+          'Nomear intervalos do uníssono à oitava contando os nomes das notas',
+          'Construir tríades maiores a partir de qualquer fundamental',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Constrói uma tríade de D maior',
+        tryThisPrompt: 'Nomeia as três notas antes de tocar.',
+      },
     },
   },
 
@@ -189,19 +224,19 @@ const curriculumL1: CurriculumLevelOverlay = {
           title: 'A Hierarquia de Durações',
           explanation:
             'A música organiza o tempo através de uma hierarquia de figuras rítmicas. A semibreve é a mais longa. A mínima dura metade. A semínima é metade disso — e assim por diante até às colcheias e semicolcheias. Cada nível divide por dois: 1 semibreve = 2 mínimas = 4 semínimas = 8 colcheias = 16 semicolcheias. Este sistema permite aos músicos escrever qualquer ritmo com precisão.',
-          tryThisLabel: 'Ouve uma pulsação regular sobre a escala',
+          tryThisLabel: 'Ouve um compasso de cada: semibreves, mínimas, semínimas e colcheias',
         },
         {
           title: 'Pausas',
           explanation:
             'Cada figura rítmica tem uma pausa correspondente — um símbolo para silêncio medido. Uma pausa de semínima dura tanto como uma semínima. Uma pausa de mínima dura tanto como uma mínima. As pausas não são "nada" — são silêncios ativos que moldam as frases tanto como as próprias notas. Os grandes músicos prestam tanta atenção ao que não tocam como ao que tocam.',
-          tryThisLabel: 'Toca um acorde — depois imagina o silêncio a preencher o mesmo espaço',
+          tryThisLabel: 'Ouve notas e pausas a partilhar os tempos: semínima, pausa de semínima; mínima, pausa de mínima',
         },
         {
           title: 'Pontos de Aumentação e Ligaduras',
           explanation:
             'Um ponto depois de uma nota aumenta a sua duração em metade — uma mínima com ponto dura três tempos em vez de dois (quando a semínima é a unidade de tempo). Uma ligadura de prolongamento une duas notas da mesma altura num som contínuo — uma mínima ligada a uma semínima dura três tempos no total. Pontos e ligaduras permitem criar durações que não encaixam na hierarquia básica.',
-          tryThisLabel: 'Ouve a escala a um tempo regular',
+          tryThisLabel: 'Ouve uma mínima com ponto e depois uma mínima ligada a uma semínima: ambas duram três tempos',
         },
       ],
       tasks: [
@@ -230,13 +265,13 @@ const curriculumL1: CurriculumLevelOverlay = {
           title: 'Pulsação, Metro e Compassos',
           explanation:
             'A música tem uma pulsação regular — o tempo em que bates o pé. O metro organiza esses tempos em grupos recorrentes de 2, 3 ou 4, com o primeiro tempo de cada grupo a sentir-se mais forte. Um compasso é um grupo completo, separado por barras de compasso. A indicação de compasso no início diz-te o agrupamento: 4/4 significa quatro tempos de semínima por compasso. 3/4 significa três. 2/4 significa dois.',
-          tryThisLabel: 'Acompanha em compasso 4/4',
+          tryThisLabel: 'Ouve 4/4: quatro tempos por compasso, o primeiro acentuado',
         },
         {
           title: 'Compassos Simples',
           explanation:
             'No metro simples, cada tempo divide-se naturalmente em duas partes iguais. 4/4 é a indicação de compasso mais comum — quatro tempos de semínima por compasso, com o tempo 1 mais forte e o tempo 3 com um acento secundário. 3/4 dá à música um carácter de valsa — UM-dois-três, UM-dois-três. 2/4 cria um carácter de marcha — UM-dois, UM-dois. O número de cima indica os tempos por compasso; o número de baixo indica qual a figura que vale um tempo.',
-          tryThisLabel: 'Imagina contar 1-2-3-4 sobre estes acordes',
+          tryThisLabel: 'Ouve 3/4: UM-dois-três, UM-dois-três',
         },
       ],
       tasks: [

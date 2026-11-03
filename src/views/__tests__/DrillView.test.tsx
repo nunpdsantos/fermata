@@ -389,7 +389,7 @@ describe('DrillView — learn deep-link (Task 10)', () => {
   it('navigates to the family module on a wrong answer', () => {
     vi.clearAllMocks();
     // Reset the app store navigation state before asserting on it.
-    useAppStore.setState({ view: 'drill', pendingLearnTarget: null });
+    useAppStore.setState({ view: 'drill', lastView: 'drill', pendingLearnTarget: null });
     startDegreeSession();
     render(<DrillView />);
 
@@ -407,6 +407,8 @@ describe('DrillView — learn deep-link (Task 10)', () => {
 
     const app = useAppStore.getState();
     expect(app.view).toBe('learn');
+    expect(app.lastView).toBe('learn');
+    expect(JSON.parse(localStorage.getItem('music-theory-app')!).state.lastView).toBe('learn');
     expect(app.pendingLearnTarget?.moduleId).toBe(DRILL_FAMILY_TO_MODULE.degree);
   });
 

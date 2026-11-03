@@ -25,6 +25,12 @@ export interface CurriculumConcept {
   tryThisQuery: string;
   /** Label shown on the "Try This" button */
   tryThisLabel: string;
+  /**
+   * A rhythm to show and play instead of the query's notes (rhythm lessons,
+   * audit W5-64). When set, the inline Try This draws it on a one-line staff
+   * and plays it as clicks.
+   */
+  rhythm?: import('./exercise').RhythmPattern;
   /** Simplified explanation for children's audience mode */
   childDescription?: string;
   /** Simplified query for children's audience mode */
@@ -100,4 +106,11 @@ export interface CurriculumProgress {
   exerciseResults?: Record<string, import('./exercise').ModuleExerciseResult>;
   /** Spaced repetition review schedules: moduleId -> schedule */
   reviewSchedules?: Record<string, import('./exercise').ModuleReviewSchedule>;
+  /**
+   * Level ids the learner opened out of order with "Unlock anyway" (decision
+   * D-10, W4b): the level is no longer shown as locked and its first module
+   * no longer waits for the previous level. Optional — saves without it are
+   * unchanged (nothing unlocked out of order).
+   */
+  unlockedLevels?: string[];
 }

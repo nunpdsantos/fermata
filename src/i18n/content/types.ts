@@ -21,6 +21,20 @@ export interface ModuleOverlay {
 export interface UnitOverlay {
   title: string;
   description: string;
+  /**
+   * The unit's milestone summary (shown at unit completion, D-23): the same
+   * fields as the English `CurriculumMilestone` that a learner reads. The
+   * Try-This query stays English (it is a query, not prose).
+   */
+  milestone?: MilestoneOverlay;
+}
+
+export interface MilestoneOverlay {
+  skillsSummary: string[];
+  /** Empty where the English is empty (the last unit of a level). */
+  bridgeText: string;
+  tryThisLabel: string;
+  tryThisPrompt: string;
 }
 
 export interface CurriculumLevelOverlay {
@@ -34,6 +48,7 @@ export interface ExerciseLevelOverlay {
   [exerciseId: string]: {
     prompt: string;
     hint?: string;
+    nudge?: string;
     choices?: string[];  // for multiple_choice: translated labels (same order)
   };
 }
@@ -42,6 +57,7 @@ export interface TemplateLevelOverlay {
   [moduleId: string]: {
     promptTemplate: string;
     hintTemplate: string;
+    nudgeTemplate?: string;
     choiceSets?: string[][];  // [setIndex][choiceIndex] = translated label
   }[];
 }

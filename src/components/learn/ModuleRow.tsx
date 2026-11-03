@@ -1,5 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import type { CurriculumModule } from '../../core/types/curriculum';
+import type { ContentLanguage } from '../../i18n/content/types';
+import { Badge } from '../ui/Badge';
+import { pairsWithLevel } from './lesson/levelPairs';
 
 interface ModuleRowProps {
   module: CurriculumModule;
@@ -12,8 +15,10 @@ interface ModuleRowProps {
 }
 
 export function ModuleRow({ module, index, isCompleted, isLocked, isComingSoon, accentColor: _accentColor, onClick }: ModuleRowProps) {
-  const { t } = useTranslation();
-  const disabled = isComingSoon; // Only truly disable coming-soon modules; locked ones are browsable
+  const { t, i18n } = useTranslation();
+  const disabled = isComingSoon;
+  // Level 9 modules: the theory level each one goes with (D-10, W4-17).
+  const pairs = pairsWithLevel(module.id, (i18n.language || 'en').slice(0, 2) as ContentLanguage); // Only truly disable coming-soon modules; locked ones are browsable
 
   return (
     <button
@@ -60,6 +65,12 @@ export function ModuleRow({ module, index, isCompleted, isLocked, isComingSoon, 
           {module.subtitle}
         </span>
       </div>
+
+      {pairs && (
+        <Badge className="shrink-0" title={pairs.title ? t('lesson.pairsWithTitle', { n: pairs.level, title: pairs.title }) : undefined}>
+          {t('lesson.pairsWith', { n: pairs.level })}
+        </Badge>
+      )}
 
       {isComingSoon && (
         <span className="text-caption font-medium px-1.5 py-0.5 rounded-full shrink-0" style={{ color: 'var(--text-dim)', backgroundColor: 'var(--card-hover)' }}>

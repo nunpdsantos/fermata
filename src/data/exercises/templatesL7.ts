@@ -120,6 +120,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'multiple_choice',
         promptTemplate: 'How do shell voicings connect in a jazz context?',
         hintTemplate: 'In ii-V-I, the 3rd of ii is held as the 7th of V, while the 7th of ii falls a half step to the 3rd of V (and the same happens again from V to I). This voice-leading efficiency is called guide-tone lines.',
+        nudgeTemplate: 'Spell the 3rd and 7th of each chord in a ii-V-I (in C: Dm7, G7, Cmaj7), then follow each of those notes into the next chord: which ones stay where they are, and how far do the others travel?',
         params: {
           choiceSets: [
             [

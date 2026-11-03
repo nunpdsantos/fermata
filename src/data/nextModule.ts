@@ -23,11 +23,13 @@ const CHAINED_LEVELS = new Set(LEVEL_METADATA.filter((l) => l.prerequisites.leng
  */
 export function findNextModuleEntry(progress: CurriculumProgress): ModuleIndexEntry | undefined {
   const done = new Set(progress.completedModules);
+  // A level unlocked out of order (D-10) no longer waits for the previous level.
+  const unlocked = new Set(progress.unlockedLevels ?? []);
   const candidates: ModuleIndexEntry[] = [];
   MODULE_INDEX.forEach((entry, i) => {
     if (done.has(entry.id)) return;
     const prev = MODULE_INDEX[i - 1];
-    const requiresPrev = !!prev && (prev.level === entry.level || CHAINED_LEVELS.has(entry.level));
+    const requiresPrev = !!prev && (prev.level === entry.level || (CHAINED_LEVELS.has(entry.level) && !unlocked.has(entry.level)));
     const prerequisitesMet = !requiresPrev || done.has(prev.id);
     if (prerequisitesMet) candidates.push(entry);
   });

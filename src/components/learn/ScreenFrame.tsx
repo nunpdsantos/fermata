@@ -23,6 +23,9 @@ export function ScreenFrame({ children, xOffset, enterFrom }: ScreenFrameProps) 
   return (
     <m.div
       data-learn-screen=""
+      // At least the Learn region's height, as a column: the focused check
+      // puts its answers at the bottom on a phone (W4b).
+      className="min-h-full flex flex-col"
       initial={{ opacity: 0, x }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -x }}

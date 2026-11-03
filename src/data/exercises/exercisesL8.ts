@@ -275,6 +275,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The standard orchestral sections are: Strings (violin, viola, cello, bass), Woodwinds (flute, oboe, clarinet, bassoon), Brass (horn, trumpet, trombone, tuba), and Percussion.',
+      nudge: 'Orchestral families group instruments by how they make their sound (bowing or plucking, blowing, buzzing the lips, striking or shaking), not by register, by role or by single instruments.',
     },
     {
       id: 'l8u26m3e2',
@@ -328,6 +329,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Pitch-class integer notation assigns C = 0, C#/Db = 1, D = 2, and so on through B = 11. The system is modulo 12.',
+      nudge: 'Each pitch class is numbered by its distance in half steps above C, counting modulo 12 (so 12 wraps round). Apply that rule to C itself.',
     },
     {
       id: 'l8u27m1e2',

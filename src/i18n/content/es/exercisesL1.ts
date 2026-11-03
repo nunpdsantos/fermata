@@ -16,16 +16,19 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Identifica esta nota en la clave de sol: se encuentra en una pequeña línea extra (una línea adicional) justo por debajo del pentagrama.',
     hint: 'El C central se sitúa en una línea adicional justo por debajo del pentagrama de clave de sol.',
+    nudge: 'La clave de sol se enrolla alrededor de la segunda línea y la marca como G. Cuenta hacia abajo desde ahí, una letra por cada línea o espacio, hasta llegar a la línea adicional por debajo del pentagrama.',
   },
   l1u1m1e2: {
     prompt:
       'Identifica esta nota: se encuentra en la primera línea del pentagrama de clave de sol.',
     hint: 'Las líneas de la clave de sol, de abajo a arriba, son E-G-B-D-F. La primera línea es E4.',
+    nudge: 'La clave de sol se enrolla alrededor de la segunda línea y la marca como G. Baja desde ahí, una letra por cada espacio o línea, hasta llegar a la primera línea.',
   },
   l1u1m1e3: {
     prompt:
       'Identifica esta nota: se encuentra en la segunda línea del pentagrama de clave de sol.',
     hint: 'La clave de sol se enrolla alrededor de la segunda línea, marcándola como G. Por eso también se llama clave de G.',
+    nudge: 'Cuenta hacia arriba desde el C central (la línea adicional justo por debajo del pentagrama), una letra por cada línea o espacio, hasta llegar a esta línea.',
   },
   l1u1m1e4: {
     prompt:
@@ -37,6 +40,7 @@ const overlay: ExerciseLevelOverlay = {
       'Clave de percusión',
     ],
     hint: 'La clave de sol también se llama clave de G porque se enrolla alrededor de la segunda línea, definiéndola como G.',
+    nudge: 'Cada clave de altura definida nació de una letra estilizada y fija una nota en una línea del pentagrama. ¿Cuál tiene la espiral enrollada alrededor de la segunda línea contando desde abajo?',
   },
 
   // ---- l1u1m2: Líneas Adicionales ----
@@ -45,11 +49,13 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Identifica esta nota por debajo del pentagrama de clave de sol: se encuentra en la segunda línea adicional inferior.',
     hint: 'Por debajo del pentagrama de clave de sol: B3 está en el espacio por debajo de la primera línea adicional (C4), y A3 está en la segunda línea adicional.',
+    nudge: 'Empieza en el C central, en la primera línea adicional por debajo del pentagrama de clave de sol, y cuenta hacia abajo una letra por cada línea o espacio.',
   },
   l1u1m2e2: {
     prompt:
       'Identifica esta nota por encima del pentagrama de clave de sol: se encuentra dos líneas adicionales por encima de la línea superior.',
     hint: 'C6 se sitúa en la segunda línea adicional por encima del pentagrama de clave de sol. Cuenta desde la línea superior (F5): G5, A5, B5, C6.',
+    nudge: 'Empieza en la línea superior del pentagrama de clave de sol (F5) y cuenta hacia arriba una letra por cada línea o espacio: el espacio de encima, la primera línea adicional, el espacio siguiente y, por último, la segunda línea adicional.',
   },
   l1u1m2e3: {
     prompt: '¿Cuál es la función de las líneas adicionales?',
@@ -63,7 +69,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u1m2e_ear1: {
     prompt: 'Escucha esta nota e identifícala.',
-    hint: 'Este es el C central — la nota más central del teclado del piano.',
+    hint: 'Compárala con la referencia que oíste primero: ¿es más aguda, más grave o exactamente la misma nota?',
   },
   l1u1m2e_ear2: {
     prompt: 'Escucha esta nota e identifícala.',
@@ -75,7 +81,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u1m2e_ear4: {
     prompt: 'Escucha esta nota e identifícala.',
-    hint: 'Esta es la nota de referencia estándar para la afinación, a 440 Hz.',
+    hint: 'Es más aguda que el C de referencia: canta subiendo por las teclas blancas desde C, un grado cada vez, hasta llegar a ella.',
   },
 
   // ---- l1u1m3: Semitonos y Tonos ----
@@ -83,15 +89,18 @@ const overlay: ExerciseLevelOverlay = {
   l1u1m3e1: {
     prompt: '¿Cuál es el intervalo de Db, descendiendo, hasta C?',
     hint: 'De Db descendiendo hasta C es la menor distancia posible en la música occidental: un semitono (medio tono), de la tecla negra a la tecla blanca justo por debajo. Dos letras distintas (D, C) lo convierten en una 2.ª — una 2.ª menor.',
+    nudge: 'Busca Db y C en el teclado y fíjate en lo que hay entre ellas: ¿son teclas vecinas o hay otra tecla, blanca o negra, en medio?',
   },
   l1u1m3e2: {
     prompt: '¿Cuál es el intervalo de C a D?',
     hint: 'De C a D es un tono: dos semitonos, equivalente a 2 semitonos. Hay una tecla (C#/Db) entre ellos.',
+    nudge: 'Busca C y D en el teclado y cuenta las teclas de una a otra, incluidas las negras: ¿el D es la tecla inmediatamente siguiente o hay una tecla en medio?',
   },
   l1u1m3e3: {
     prompt:
       '¿Cuál es el intervalo de E a F? Este es un par especial de notas naturales.',
     hint: 'De E a F es un semitono natural: no hay tecla negra entre ellas en el piano. Es solo 1 semitono.',
+    nudge: 'Mira E y F en el teclado: ¿hay una tecla negra entre ellas, como la hay entre la mayoría de las teclas blancas vecinas?',
   },
 
   // ---- l1u1m4: Escala Cromática ----
@@ -99,16 +108,19 @@ const overlay: ExerciseLevelOverlay = {
   l1u1m4e1: {
     prompt: 'Identifica esta nota: la tecla negra entre F y G.',
     hint: 'La tecla negra entre F y G puede llamarse F# (F sostenido) o Gb (G bemol). Ambos nombres se refieren a la misma altura.',
+    nudge: 'Un sostenido sube una nota natural un semitono, y todas las opciones aquí son sostenidos. ¿Un semitono por encima de qué tecla blanca está esta tecla negra? Nómbrala a partir de esa tecla.',
   },
   l1u1m4e2: {
     prompt: 'Identifica esta nota: la tecla negra entre A y B.',
     hint: 'La tecla negra entre A y B puede llamarse Bb (B bemol) o A# (A sostenido). En tonalidades con bemoles, esta nota se llama Bb.',
+    nudge: 'Un bemol baja una nota natural un semitono, y todas las opciones aquí son bemoles. ¿Un semitono por debajo de qué tecla blanca está esta tecla negra? Nómbrala a partir de esa tecla.',
   },
   l1u1m4e3: {
     prompt:
       '¿Cuántas alturas distintas tiene la escala cromática antes de repetirse?',
     choices: ['12', '7', '8', '10'],
     hint: 'La escala cromática incluye todas las notas: 7 teclas blancas + 5 teclas negras = 12 alturas distintas por octava.',
+    nudge: 'Cuenta todas las teclas, blancas y negras, desde un C hasta el C siguiente, pero sin contar el C de arriba: ahí es donde el patrón vuelve a empezar.',
   },
 
   // =========================================================================
@@ -122,11 +134,13 @@ const overlay: ExerciseLevelOverlay = {
       'En compás 4/4, ¿cuántos tiempos dura una redonda?',
     choices: ['4 tiempos', '2 tiempos', '1 tiempo', '8 tiempos'],
     hint: 'Una redonda ocupa un compás entero de 4/4. Dura 4 tiempos de negra.',
+    nudge: 'Una redonda ocupa por sí sola un compás entero de 4/4. Mira la indicación de compás: ¿qué cuenta el número de arriba?',
   },
   l1u2m1e2: {
     prompt: '¿Cuántos tiempos vale una blanca en compás 4/4?',
     choices: ['2 tiempos', '4 tiempos', '1 tiempo', '3 tiempos'],
     hint: 'Una blanca tiene la mitad de la duración de una redonda. Una redonda = dos blancas = 4 tiempos / 2 = 2 tiempos cada una.',
+    nudge: 'Una blanca dura la mitad que una redonda, y la redonda ocupa un compás entero de 4/4.',
   },
   l1u2m1e3: {
     prompt: '¿Cuántos tiempos vale una negra en compás 4/4?',
@@ -235,16 +249,19 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Identifica el intervalo: C a G (ascendente). Cuenta los nombres de las notas.',
     hint: 'C-D-E-F-G = 5 nombres de notas = una 5.ª. De C a G son 7 semitonos, lo que corresponde a una 5.ª justa.',
+    nudge: 'Di los nombres de las notas en orden, de C hasta G, y cuéntalos, incluidos el C y el G: ese total es el número del intervalo. Cuenta las notas mismas, no los pasos entre ellas.',
   },
   l1u3m3e2: {
     prompt:
       'Identifica el intervalo: C a F (ascendente). Cuenta los nombres de las notas.',
     hint: 'C-D-E-F = 4 nombres de notas = una 4.ª. De C a F son 5 semitonos, lo que corresponde a una 4.ª justa.',
+    nudge: 'Di los nombres de las notas en orden, de C hasta F, y cuéntalos, incluidos el C y el F: ese total es el número del intervalo. Cuenta las notas mismas, no los pasos entre ellas.',
   },
   l1u3m3e3: {
     prompt:
       'Identifica el intervalo: C a E (ascendente). Cuenta los nombres de las notas.',
     hint: 'C-D-E = 3 nombres de notas = una 3.ª. De C a E son 4 semitonos, lo que corresponde a una 3.ª mayor.',
+    nudge: 'Di los nombres de las notas en orden, de C hasta E, y cuéntalos, incluidos el C y el E: ese total es el número del intervalo. Cuenta las notas mismas, no los pasos entre ellas.',
   },
 
   // ---- l1u3m4: Tríadas Mayores ----

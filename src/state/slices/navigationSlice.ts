@@ -21,6 +21,9 @@ export const createNavigationSlice: StateCreator<AppState, [], [], NavigationSli
       selectedDegree: null,
       activeNotes: new Set(),
     }),
+  // Deep links preserve the caller's selections, unlike the tab-switch reset.
+  // Record the boot destination in the same update as the in-memory target.
+  openLearnTarget: (target) => set({ view: 'learn', lastView: 'learn', pendingLearnTarget: target }),
   setDetailPanelOpen: (open) => set({ detailPanelOpen: open }),
   setQuickSearchOpen: (open) => set({ quickSearchOpen: open }),
   setComparisonScale: (scale) => set({ comparisonScale: scale }),

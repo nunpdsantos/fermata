@@ -7,16 +7,50 @@ const curriculumL9: CurriculumLevelOverlay = {
       title: 'Treino de Altura e Intervalos',
       description:
         'Correspondência de altura, direção melódica, reconhecimento maior/menor e identificação completa de intervalos de ouvido',
+      milestone: {
+        skillsSummary: [
+          'Corresponder alturas de ouvido e identificar a direção melódica em diferentes registos',
+          'Reconhecer instintivamente a tonalidade maior vs. menor em acordes e escalas',
+          'Identificar de ouvido todos os intervalos simples (de 2m a 8P), ascendentes e descendentes, tanto melódicos como harmónicos',
+          'Reconhecer intervalos compostos (9.as, 10.as, 11.as) como versões mais largas de intervalos simples',
+        ],
+        bridgeText:
+          'Já consegues ouvir altura, direção, intervalos e consonância vs. dissonância. Agora vais treinar os teus ouvidos para reconhecer escalas inteiras, qualidades de acordes e passagens musicais completas.',
+        tryThisLabel: 'Ouve C menor — sombrio e estável',
+        tryThisPrompt: 'Consegues perceber que é menor antes de olhar para as notas?',
+      },
     },
     u31: {
       title: 'Competências de Escalas, Acordes e Ditado',
       description:
         'Reconhecimento de escalas e modos, identificação de qualidades de tríades e acordes de sétima de ouvido',
+      milestone: {
+        skillsSummary: [
+          'Distinguir de ouvido escalas maiores, menores, modais, pentatónicas, de blues e simétricas',
+          'Identificar as quatro qualidades de tríade e todas as qualidades de acordes de sétima apenas pelo som',
+          'Ouvir as notas características que definem cada modo e cada escala especial',
+        ],
+        bridgeText:
+          'Os teus ouvidos já conseguem descodificar escalas e acordes apenas pelo som. As competências finais são o ditado, a leitura à primeira vista e a audição contextual — ligando os teus ouvidos à compreensão musical completa.',
+        tryThisLabel: 'Ouve o meio-diminuto — sombrio e cheio de anseio',
+        tryThisPrompt: 'Consegues distingui-lo de um acorde de 7.ª menor de ouvido?',
+      },
     },
     u32: {
       title: 'Ditado, Leitura à Primeira Vista e Audição Contextual',
       description:
         'Ditado melódico e harmónico, solfejo móvel para leitura à primeira vista e audição crítica de textura, forma e estilo',
+      milestone: {
+        skillsSummary: [
+          'Transcrever melodias diatónicas e cromáticas de ouvido usando processos sistemáticos de ditado',
+          'Identificar cadências e transcrever progressões harmónicas usando numeração romana',
+          'Cantar à primeira vista em tonalidades maiores e menores usando solfejo móvel com sílabas cromáticas',
+          'Identificar de ouvido texturas musicais, estruturas formais e períodos estilísticos históricos',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Canta junto em solfejo: do-re-me-fa-sol-le-ti-do',
+        tryThisPrompt: 'Consegues cantar a 7.ª elevada (ti) antes de a ouvir?',
+      },
     },
   },
 
@@ -467,7 +501,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Qualidades de Acordes de Sétima de Ouvido',
           explanation:
-            'Seis qualidades distintas de acordes de sétima, cada uma com um carácter emocional único. 7.ª maior (Cmaj7): quente, exuberante, balada de jazz. 7.ª dominante (C7): tensa, bluesy, exige resolução. 7.ª menor (Cm7): suave, macia, descontraída. Meio-diminuto (Cm7b5): sombrio, anelante, film noir. Diminuto (Cdim7): maximamente tenso, cada nota quer mover-se. Menor-maior com 7.ª (CmMaj7): misterioso, inquietante — o choque entre tríade menor e 7.ª maior. Treina tocando os seis a partir da mesma fundamental em sequência.',
+            'Seis qualidades distintas de acordes de sétima, cada uma com um carácter emocional único. 7.ª maior (Cmaj7): quente, exuberante, balada de jazz. 7.ª dominante (C7): tensa, bluesy, exige resolução. 7.ª menor (Cm7): suave, macia, descontraída. Meio-diminuto (Cm7b5): ouve a tensão da 5.ª diminuta e o contraste com a 7.ª menor. Diminuto (Cdim7): maximamente tenso, cada nota quer mover-se. Menor-maior com 7.ª (CmMaj7): misterioso, inquietante — o choque entre tríade menor e 7.ª maior. Treina tocando os seis a partir da mesma fundamental em sequência.',
           tryThisLabel: 'Ouve 7.ª maior — quente e exuberante',
         },
         {
@@ -480,9 +514,9 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'O Lado Sombrio: Meio-Diminuto e Diminuto',
           explanation:
-            'Meio-diminuto (Cm7b5) e diminuto (Cdim7) são as qualidades de acordes de sétima mais sombrias. O meio-diminuto combina uma tríade diminuta com uma 7.ª menor — soa anelante, instável e cinemático. O diminuto empilha 3.as menores simetricamente — é maximamente tenso, com cada nota equidistante e cada nota querendo resolver. A distinção: o meio-diminuto tem um intervalo "normal" (a 7.ª menor a partir da fundamental) que lhe dá um toque de calidez. O diminuto é uniformemente comprimido e tenso ao longo de toda a estrutura. No jazz, o meio-diminuto é o acorde ii em tonalidades menores; o diminuto é um acorde de passagem ou substituto do dominante.',
+            'Meio-diminuto (Cm7b5) e diminuto (Cdim7) são as qualidades de acordes de sétima mais sombrias. O meio-diminuto combina uma tríade diminuta com uma 7.ª menor — ouve a tensão da 5.ª diminuta e a 7.ª menor acima da fundamental. O diminuto empilha 3.as menores simetricamente — é maximamente tenso, com cada nota equidistante e cada nota querendo resolver. A distinção: o meio-diminuto tem um intervalo "normal" (a 7.ª menor a partir da fundamental) que lhe dá um som menos tenso. O diminuto é uniformemente comprimido e tenso ao longo de toda a estrutura. No jazz, o meio-diminuto é o acorde ii em tonalidades menores; o diminuto é um acorde de passagem ou substituto do dominante.',
           tryThisLabel:
-            'Ouve meio-diminuto — sombrio e anelante',
+            'Ouve o acorde meio-diminuto e repara na tensão da 5.ª diminuta',
         },
       ],
       tasks: [
@@ -496,7 +530,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Toca "Cm7" e depois "Cm7b5". A 7.ª menor é suave e macia. O meio-diminuto é mais sombrio e anelante — a 5.ª baixada acrescenta instabilidade. Esta distinção importa no jazz e na condução de vozes clássica',
+            'Toca "Cm7" e depois "Cm7b5". A 7.ª menor é suave e macia. No meio-diminuto, ouve como a 5.ª baixada acrescenta tensão. Esta distinção importa no jazz e na condução de vozes clássica',
         },
       ],
     },

@@ -18,6 +18,7 @@ const overlay: TemplateLevelOverlay = {
         'Identifica a nota mostrada na pauta em clave de sol ou logo junto dela.',
       hintTemplate:
         'Usa as posições na clave de sol: linhas E-G-B-D-F, espaços F-A-C-E.',
+      nudgeTemplate: 'Parte da linha em torno da qual a clave de sol se enrola, que tem a nota em que a clave se centra. Conta para cima ou para baixo a partir daí, uma letra por cada linha ou espaço, até chegares à nota.',
     },
     {
       // multiple_choice
@@ -50,6 +51,7 @@ const overlay: TemplateLevelOverlay = {
         'Identifica esta nota abaixo da pauta em clave de sol. Conta linha a linha para baixo a partir da parte inferior da pauta.',
       hintTemplate:
         'Abaixo da pauta em clave de sol, o C central situa-se na primeira linha suplementar. Conta para baixo grau a grau a partir daí: linhas e espaços alternam, por isso a linha suplementar seguinte tem o A e a outra a seguir o F.',
+      nudgeTemplate: 'Na pauta em clave de sol, a linha inferior é o E. Conta para baixo a partir dela, uma letra de cada vez, alternando espaço e linha suplementar (o espaço logo abaixo da pauta, depois a primeira linha suplementar, depois o espaço por baixo dela…), até chegares à nota.',
     },
     {
       // note_id (clave de sol, acima da pauta)
@@ -64,6 +66,7 @@ const overlay: TemplateLevelOverlay = {
         'Identifica esta nota acima da pauta em clave de fá. Conta linha a linha para cima a partir do topo da pauta.',
       hintTemplate:
         'A linha superior da pauta em clave de fá é o A. O C central situa-se na primeira linha suplementar acima dela — o mesmo C central que fica na primeira linha suplementar abaixo da pauta em clave de sol. O E está na segunda linha suplementar.',
+      nudgeTemplate: 'Na pauta em clave de fá, a linha superior é o A. Conta para cima a partir dela, uma letra de cada vez, alternando espaço e linha suplementar (o espaço logo acima da pauta, depois a primeira linha suplementar, depois o espaço acima dela…), até chegares à nota.',
     },
   ],
 
@@ -75,6 +78,7 @@ const overlay: TemplateLevelOverlay = {
         'Qual é o intervalo a partir de {root} no sentido {direction}? É um meio-tom ou um tom?',
       hintTemplate:
         'Um meio-tom é 1 meio-tom (teclas adjacentes no piano). Um tom é 2 meios-tons (uma tecla entre elas). A partir de {root}, conta com cuidado.',
+      nudgeTemplate: 'Encontra {root} e a segunda nota no teclado, contando também as teclas pretas: a segunda nota é a tecla imediatamente acima, ou há uma tecla entre as duas?',
     },
     {
       // multiple_choice
@@ -215,6 +219,7 @@ const overlay: TemplateLevelOverlay = {
         'Que tonalidade maior tem esta armação de clave?',
       hintTemplate:
         'Sem sustenidos nem bemóis = C maior. Um sustenido (F#) = G maior. Dois sustenidos (F#, C#) = D maior. Um bemol (Bb) = F maior.',
+      nudgeTemplate: 'Conta os sustenidos ou bemóis e repara em quais são. Com sustenidos, a tónica fica meio-tom acima do último sustenido; caso contrário, procura a escala maior que precisa exatamente desse bemol, ou de nenhuma tecla preta.',
       choiceSets: [
         [
           'C maior',
@@ -252,6 +257,7 @@ const overlay: TemplateLevelOverlay = {
         'Identifica o intervalo a partir de {root} no sentido {direction} pelo seu número: conta os nomes das notas, incluindo as duas notas.',
       hintTemplate:
         'Conta os nomes das notas de {root} até à segunda nota, contando ambas: duas letras dão uma 2.ª, três uma 3.ª, quatro uma 4.ª, cinco uma 5.ª.',
+      nudgeTemplate: 'Conta os nomes das notas de {root} até à segunda nota, contando ambas: o número de letras que dizes é o número do intervalo. Conta as próprias notas, não os passos entre elas.',
     },
   ],
 

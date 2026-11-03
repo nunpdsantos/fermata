@@ -108,6 +108,20 @@ describe('ErrorBoundary — error screen actions (W0-01)', () => {
     expect(s.view).toBe('explore');
   });
 
+  it('reset view settings in the middle of a lesson saves the defaults, not the selection the lesson borrowed (B2)', () => {
+    seedCrashingState();
+    // A lesson has Explore's selection on loan (lessonInstrument.ts): while it
+    // does, the save keeps Explore's own selection — the reset must clear that too.
+    useAppStore.setState({ lessonLoan: { key: { natural: 'E', accidental: '' }, scale: 'dorian' } });
+    expect(JSON.parse(localStorage.getItem(APP_KEY)!).state.selectedScale).toBe('dorian');
+    render(<ErrorBoundary><Bomb /></ErrorBoundary>);
+    fireEvent.click(screen.getByRole('button', { name: 'Reset view settings (keeps your progress)' }));
+    const persisted = JSON.parse(localStorage.getItem(APP_KEY)!).state;
+    expect(persisted.selectedKey).toEqual({ natural: 'C', accidental: '' });
+    expect(persisted.selectedScale).toBe('major');
+    expect(useAppStore.getState().lessonLoan).toBeNull();
+  });
+
   it('the destructive full reset still clears progress and drill data (unchanged behaviour)', async () => {
     seedCrashingState();
     render(<ErrorBoundary><Bomb /></ErrorBoundary>);

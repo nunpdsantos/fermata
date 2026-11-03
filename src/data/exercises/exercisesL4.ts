@@ -40,6 +40,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A suspension has three stages: preparation (the note is consonant in the previous chord), suspension (the note is held while the harmony changes, creating dissonance), and resolution (it moves stepwise to a consonance).',
+      nudge: 'Follow the held note: first it sounds as a consonance in one chord, then it is held over while the harmony changes and clashes with it, and finally it moves by step to a consonance. Name each of those three moments.',
     },
     {
       id: 'l4u12m1e3',
@@ -55,6 +56,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The C was consonant in the IV chord (F-A-C), then held over into the V chord (G-B-D) where it is dissonant (a perfect 4th above the bass G), and resolves down by step to B (the 3rd of V, a major 3rd above G). This is a textbook 4-3 suspension.',
+      nudge: 'Trace the C through three moments: it was a consonance in the IV chord, it is held while the harmony changes beneath it (now a 4th above the bass G), and then it falls by step to B. Which non-chord tone is prepared, held and resolved like that?',
     },
   ],
 
@@ -74,6 +76,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'An appoggiatura is an accented non-chord tone approached by leap and resolved by step in the opposite direction. Unlike a suspension, it has no preparation — it leaps directly onto the dissonance.',
+      nudge: 'Contrast it with a suspension, which is held over from the previous chord. An appoggiatura is unprepared and resolves by step — so how does the melody reach it in the first place?',
     },
     {
       id: 'l4u12m2e2',
@@ -89,6 +92,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'An escape tone (echappee) moves stepwise from a chord tone, then leaps away in the opposite direction to the next chord tone. A passing tone moves stepwise in the same direction throughout.',
+      nudge: 'Check two things for each note: how it is approached and how it is left (by step or by leap), and whether the line keeps going the same way or turns back. A passing tone moves by step in one direction throughout.',
     },
     {
       id: 'l4u12m2e3',
@@ -232,6 +236,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'V4/3 has the 5th of V7 in the bass (D in G7/D in C major). The D typically resolves stepwise — down to C (root of I) or up to E (giving I6). The tritone B-F still resolves as usual.',
+      nudge: 'In C major, V4/3 has D in the bass while the tritone B–F resolves as usual. Which notes of the tonic chord can that D reach by step, and is the I then in root position or inverted?',
     },
     {
       id: 'l4u12m5e3',
@@ -458,6 +463,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The descending-fifths (or circle-of-fifths) sequence moves each chord root down by a 5th diatonically. In C major: C-F-B-E-A-D-G-C (I-IV-viio-iii-vi-ii-V-I). This is the backbone of countless progressions in Western music.',
+      nudge: 'Take the root motion of V–I and repeat it through every chord of the key; ii–V–I is just the last three links of that chain.',
     },
     {
       id: 'l4u13m5e2',
@@ -552,6 +558,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'How is 5/4 time typically grouped?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '5/4', notes: '>q q q >q q' },
         choices: [
           { label: 'As 3+2 or 2+3 — an asymmetric grouping of quarter-note beats', correct: true },
           { label: 'As 5 equal quarter-note beats, all felt as equally strong, with no internal grouping', correct: false },
@@ -567,6 +574,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'How does 7/8 time work as an additive meter?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '7/8', notes: '>8 8 >8 8 >8 8 8' },
         choices: [
           { label: 'Unequal groups of eighths, e.g. 2+2+3', correct: true },
           { label: 'It has 7 equal beats like a standard simple meter', correct: false },
@@ -582,6 +590,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'What does the time signature "cut time" (alla breve, C with a vertical line) mean?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '2/2', notes: '>h h | >h h' },
         choices: [
           { label: '2/2 time — two half-note beats per measure, felt in two rather than four', correct: true },
           { label: '4/4 time played at double speed', correct: false },
@@ -624,6 +633,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A chromatic neighbor is an embellishment that moves by semitone from a chord tone and returns: e.g. E-E#-E or G-Gb-G. It adds color without altering the harmonic direction, functioning as a surface decoration.',
+      nudge: "Put the two words together: what does a neighbor tone do after leaving its chord tone, and what does 'chromatic' tell you about the size of the step?",
     },
     {
       id: 'l4u14m3e3',
@@ -639,6 +649,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Chromatic embellishments (passing tones, neighbors) are surface decorations that do not affect the underlying harmony. Structural chromatic notes (like applied leading tones or borrowed chords) actually change the chord or briefly tonicize a different key.',
+      nudge: 'Try a removal test: take the chromatic note out (or restore its diatonic form) and ask what is lost — just a touch of color, or the identity of the chord itself?',
     },
   ],
 
@@ -733,6 +744,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In A natural minor, VII = G major (G-B-D), a whole step below A. In A harmonic minor, viio = G#-B-D (diminished), a half step below A. The raised 7th (G#) creates the leading tone that gives viio its strong pull toward the tonic.',
+      nudge: "In A minor, build the triad on the 7th degree twice: once with G (natural minor) and once with G# (harmonic minor). Check each chord's quality and how far its root lies below A.",
     },
   ],
 };

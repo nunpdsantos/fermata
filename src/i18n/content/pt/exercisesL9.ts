@@ -16,11 +16,13 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Ouve esta altura e identifica-a.',
     hint: 'O C central (C4) é o ponto de referência central no piano — ancora-o no teu ouvido.',
+    nudge: 'Compara-a com a altura de referência que ouviste primeiro: é mais aguda, mais grave ou exatamente a mesma nota? Canta a referência e depois a nota, e ouve se há algum passo entre elas.',
   },
   l9u30m1e2: {
     prompt:
       'Ouve esta altura e identifica-a.',
     hint: 'G4 está uma 5.ª perfeita acima do C central — 7 meios-tons acima. Compara-o com C4 no teu ouvido.',
+    nudge: 'Compara-a com o C de referência que ouviste primeiro: canta a escala maior a subir a partir de C, uma nota de cada vez, até lá chegares, e conta quantos graus subiste.',
   },
   l9u30m1e3: {
     prompt:
@@ -32,6 +34,7 @@ const overlay: ExerciseLevelOverlay = {
       'Estático',
     ],
     hint: 'Ascendente significa mover-se para cima em altura. Descendente significa mover-se para baixo.',
+    nudge: 'Pensa na altura como uma subida ou uma descida: se a segunda nota é mais aguda, a melodia foi para cima ou para baixo? Escolhe a palavra que dá nome a essa direção.',
   },
   l9u30m1e4: {
     prompt: 'O que significa "registo" em música?',
@@ -51,12 +54,14 @@ const overlay: ExerciseLevelOverlay = {
       'Ouve este acorde. É maior ou menor?',
     choices: ['Maior', 'Menor'],
     hint: 'A 3.ª maior (4 meios-tons a partir da fundamental) dá aos acordes maiores um carácter brilhante e estável.',
+    nudge: 'Ouve a 3.ª acima da fundamental: está a 4 meios-tons (som mais brilhante e aberto) ou a 3 meios-tons (som mais sombrio)?',
   },
   l9u30m2e2: {
     prompt:
       'Ouve este acorde. É maior ou menor?',
     choices: ['Maior', 'Menor'],
     hint: 'A 3.ª menor (3 meios-tons a partir da fundamental) dá aos acordes menores uma qualidade mais sombria e melancólica.',
+    nudge: 'Canta a fundamental e depois a 3.ª do acorde: estão a 4 meios-tons de distância (mais brilhante) ou a 3 (mais sombrio)?',
   },
   l9u30m2e3: {
     prompt:
@@ -76,21 +81,25 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
     hint: '1 meio-tom = 2.ª menor (meio-tom) — o menor intervalo na música ocidental. Pensa no tema de Tubarão.',
+    nudge: 'Avalia primeiro o tamanho: as duas notas estão tão próximas quanto duas notas diferentes podem estar, tensas e rastejantes, ou há espaço para outra nota entre elas?',
   },
   l9u30m3e2: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
     hint: '2 meios-tons = 2.ª maior (tom). O passo melódico do dia a dia.',
+    nudge: 'É um passo ou um salto? Se for um passo, decide se as notas são teclas vizinhas (apertado e tenso) ou se têm uma tecla entre elas (um passo simples, do dia a dia).',
   },
   l9u30m3e3: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
     hint: '3 meios-tons = 3.ª menor — sombria e melancólica. Este intervalo define a base de uma tríade menor.',
+    nudge: 'É um pequeno salto, maior do que um passo. Ouve a sua cor: brilhante e aberta, ou mais escura e melancólica? Depois canta por meios-tons a partir da nota mais grave para confirmares o tamanho.',
   },
   l9u30m3e4: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
     hint: '7 meios-tons = 5.ª perfeita — forte e aberta. O intervalo mais consonante depois da oitava e do uníssono.',
+    nudge: 'Ouve o carácter do salto: tenso e instável, quente e doce, ou despido, aberto e forte? Depois conta os meios-tons a partir da nota mais grave para confirmares.',
   },
 
   // ---- l9u30m4: Reconhecimento de Intervalos 6.a m-P8 ----
@@ -98,22 +107,26 @@ const overlay: ExerciseLevelOverlay = {
   l9u30m4e1: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: '8 meios-tons = 6.ª menor — agridoce e anelante, com uma qualidade pungente e algo tensa.',
+    hint: '8 meios-tons = 6.ª menor. Ouve a distância entre as notas: faltam 4 meios-tons para completar a oitava.',
+    nudge: 'Ouve a distância entre as duas notas. Para a confirmares, canta a nota mais grave uma oitava acima, identifica o pequeno intervalo que forma com a outra nota e inverte-o: os números somam 9, e a qualidade passa à oposta.',
   },
   l9u30m4e2: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
     hint: '9 meios-tons = 6.ª maior — quente, romântica e consonante.',
+    nudge: 'Um salto largo que continua a soar quente e doce. Para confirmares, canta a nota mais grave uma oitava acima, identifica o pequeno intervalo que forma com a outra nota e inverte-o: os números somam 9, e a qualidade passa à oposta.',
   },
   l9u30m4e3: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
     hint: '10 meios-tons = 7.ª menor — uma tensão dominante e bluesy que quer resolver.',
+    nudge: 'Um salto muito largo com uma atração bluesy que pede resolução. Canta a nota mais grave uma oitava acima e compara: o salto fica meio-tom aquém dessa oitava, ou um tom aquém?',
   },
   l9u30m4e4: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
     hint: '12 meios-tons = oitava perfeita — as duas notas soam como a mesma altura em registos diferentes.',
+    nudge: 'Ouve se as duas notas se fundem tão completamente que soam como uma só nota em duas alturas, ou se fica entre elas alguma fricção ou tensão.',
   },
 
   // ---- l9u30m5: Intervalos Harmónicos ----
@@ -122,11 +135,13 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Ouve estas duas notas tocadas em simultâneo e identifica o intervalo harmónico.',
     hint: '5 meios-tons = 4.ª perfeita. Em simultâneo tem uma qualidade aberta e oca.',
+    nudge: 'Classifica-o primeiro pelo som: aberto e oco, quente e fundido, ou áspero e tenso? Depois canta as duas notas uma a seguir à outra e conta os meios-tons entre elas para fixares o tamanho.',
   },
   l9u30m5e2: {
     prompt:
       'Ouve estas duas notas tocadas em simultâneo e identifica o intervalo harmónico.',
     hint: '4 meios-tons = 3.ª maior — um som harmónico quente e consonante.',
+    nudge: 'Classifica-o primeiro pelo som: aberto e oco, quente e fundido, ou áspero e tenso? Se for quente, decide se é do tipo mais brilhante ou mais escuro: canta as duas notas uma a seguir à outra e conta os meios-tons.',
   },
   l9u30m5e3: {
     prompt:
@@ -151,12 +166,14 @@ const overlay: ExerciseLevelOverlay = {
       'Ouve esta escala e identifica o seu tipo.',
     choices: ['Maior', 'Menor natural', 'Menor harmónica'],
     hint: 'A escala maior (T-T-mT-T-T-T-mT) tem um carácter brilhante e resolvido em cada passo.',
+    nudge: 'Verifica primeiro a 3.ª acima da tónica: 4 meios-tons ou 3? Se forem 3, ouve o topo da escala: há um salto de tom e meio entre o 6.º e o 7.º graus?',
   },
   l9u31m1e2: {
     prompt:
       'Ouve esta escala e identifica o seu tipo.',
     choices: ['Maior', 'Menor natural', 'Menor harmónica'],
     hint: 'A escala menor natural (T-mT-T-T-mT-T-T) tem uma atmosfera mais sombria do que a maior — a 3.ª, 6.ª e 7.ª baixadas moldam a sua cor.',
+    nudge: 'Canta a partir da tónica: a 3.ª está a 4 ou a 3 meios-tons dela? Depois ouve o 7.º grau: fica a um tom da tónica de cima, ou a meio-tom, com um salto de tom e meio por baixo?',
   },
   l9u31m1e3: {
     prompt:
@@ -177,12 +194,14 @@ const overlay: ExerciseLevelOverlay = {
       'Ouve esta escala e identifica o modo.',
     choices: ['Dórico', 'Frígio', 'Lídio', 'Mixolídio'],
     hint: 'O Dórico é como o menor natural com o 6.º grau elevado — esse 6 natural em contexto menor é a nota característica.',
+    nudge: 'Primeiro a 3.ª: está a 4 ou a 3 meios-tons da tónica? Depois compara com a escala maior (se forem 4) ou com a menor natural (se forem 3) e encontra o único grau que muda: um 2.º baixado, um 4.º elevado, um 6.º elevado ou um 7.º baixado?',
   },
   l9u31m2e2: {
     prompt:
       'Ouve esta escala e identifica o modo.',
     choices: ['Dórico', 'Frígio', 'Lídio', 'Mixolídio'],
     hint: 'O Lídio é como o maior com o 4.º grau elevado — ouve o #4 brilhante a puxar para cima.',
+    nudge: 'A 3.ª está a 4 ou a 3 meios-tons da tónica? Compara a escala com a maior (se forem 4) ou com a menor natural (se forem 3) e procura o único grau diferente: o 2.º, o 4.º, o 6.º ou o 7.º?',
   },
   l9u31m2e3: {
     prompt:
@@ -200,12 +219,14 @@ const overlay: ExerciseLevelOverlay = {
       'Ouve esta escala e identifica o modo.',
     choices: ['Jónio', 'Lídio', 'Mixolídio', 'Dórico'],
     hint: 'O Jónio é a própria escala maior: o 1.º modo, sem nenhum grau alterado. O Lídio elevaria o 4.º grau (#4); o Mixolídio baixaria o 7.º (b7).',
+    nudge: 'Compara cada grau com a escala maior que conheces: o 4.º está elevado, o 7.º baixado, a 3.ª baixada, ou todos os graus coincidem?',
   },
   l9u31m2e5: {
     prompt:
       'Ouve esta escala e identifica o modo.',
     choices: ['Eólio', 'Dórico', 'Frígio', 'Lócrio'],
     hint: 'O Eólio é a escala menor natural: o 6.º modo da escala maior. O Dórico elevaria o 6.º grau (6 natural); o Frígio baixaria o 2.º (b2); o Lócrio baixa o 2.º e o 5.º.',
+    nudge: 'Compara cada grau com a escala menor natural: o 6.º está elevado, o 2.º baixado, o 2.º e o 5.º ambos baixados, ou todos os graus coincidem?',
   },
 
   // ---- l9u31m3: Pentatónica/Blues/Simétrica ----
@@ -215,12 +236,14 @@ const overlay: ExerciseLevelOverlay = {
       'Ouve esta escala e identifica o seu tipo.',
     choices: ['Pentatónica maior', 'Pentatónica menor', 'Blues', 'Tons inteiros'],
     hint: 'A pentatónica maior tem cinco notas e nenhum meio-tom — a escala maior sem o 4.º e o 7.º graus.',
+    nudge: 'Conta as notas e procura meios-tons. Se houver cinco notas e nenhum meio-tom, verifica a 3.ª: está a 4 ou a 3 meios-tons da tónica?',
   },
   l9u31m3e2: {
     prompt:
       'Ouve esta escala e identifica o seu tipo.',
     choices: ['Pentatónica maior', 'Pentatónica menor', 'Blues', 'Tons inteiros'],
     hint: 'A escala de blues é a pentatónica menor mais a "blue note" (b5) — ouve essa mordida cromática extra.',
+    nudge: 'Conta as notas e procura meios-tons: cinco notas sem nenhum, seis notas todas a um tom de distância, ou seis notas com uma nota cromática extra entre o 4.º e o 5.º graus?',
   },
   l9u31m3e3: {
     prompt: 'O que é a "blue note" numa escala de blues?',
@@ -240,12 +263,14 @@ const overlay: ExerciseLevelOverlay = {
       'Ouve esta tríade e identifica a sua qualidade.',
     choices: ['Maior', 'Menor', 'Diminuta', 'Aumentada'],
     hint: 'Diminuta = duas 3.as menores empilhadas. O trítono entre fundamental e 5.ª cria a sua qualidade tensa e instável.',
+    nudge: 'Ouve o intervalo exterior, da fundamental à 5.ª: é uma 5.ª perfeita, ou meio-tom mais estreita ou mais larga? Depois verifica as duas 3.as empilhadas: 4 ou 3 meios-tons cada uma?',
   },
   l9u31m4e2: {
     prompt:
       'Ouve esta tríade e identifica a sua qualidade.',
     choices: ['Maior', 'Menor', 'Diminuta', 'Aumentada'],
     hint: 'Aumentada = duas 3.as maiores empilhadas. A estrutura simétrica dá-lhe uma qualidade sonhadora e não resolvida.',
+    nudge: 'Empilha as duas 3.as que ouves, de baixo para cima: têm 4 + 3, 3 + 4, 3 + 3 ou 4 + 4 meios-tons? A 5.ª exterior também ajuda: é perfeita, ou meio-tom mais estreita ou mais larga?',
   },
   l9u31m4e3: {
     prompt: 'Que intervalos compõem uma tríade diminuta?',
@@ -275,12 +300,14 @@ const overlay: ExerciseLevelOverlay = {
       'Ouve este acorde de sétima e identifica a sua qualidade.',
     choices: ['Maior com 7.ª M', 'Menor com 7.ª', 'Sétima da dominante', 'Meio-diminuto'],
     hint: 'O acorde maior com 7.ª sobrepõe uma 7.ª maior a uma tríade maior — exuberante e sonhador, comum no jazz e na bossa nova.',
+    nudge: 'Primeiro a tríade: a 3.ª está a 4 ou a 3 meios-tons da fundamental, e a 5.ª é perfeita ou meio-tom mais baixa? Depois a 7.ª: fica a meio-tom ou a um tom abaixo da oitava?',
   },
   l9u31m5e2: {
     prompt:
       'Ouve este acorde de sétima e identifica a sua qualidade.',
     choices: ['Maior com 7.ª M', 'Menor com 7.ª', 'Sétima da dominante', 'Meio-diminuto'],
     hint: 'O acorde menor com 7.ª sobrepõe uma 7.ª menor a uma tríade menor — suave, quente e descontraído.',
+    nudge: 'Ouve o acorde em duas camadas. A tríade: a 3.ª está a 4 ou a 3 meios-tons da fundamental, e a 5.ª é perfeita ou baixada? A 7.ª: fica a meio-tom ou a um tom abaixo da oitava?',
   },
   l9u31m5e3: {
     prompt:
@@ -342,6 +369,26 @@ const overlay: ExerciseLevelOverlay = {
     ],
     hint: 'Ouvir graus da escala significa perceber cada nota em relação à tónica. Cantar desde "do" até à nota alvo é um método fiável.',
   },
+  l9u32m1e5: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Segue primeiro o contorno: a linha volta ao ponto de partida ou continua a subir?',
+  },
+  l9u32m1e6: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Sobe por grau conjunto e depois desce aos saltos pelas notas do acorde de tónica até acabar na tónica.',
+  },
+  l9u32m1e7: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Graus conjuntos ou saltos? Uma melodia que desenha o acorde de tónica move-se por terceiras e acaba onde começou.',
+  },
+  l9u32m1e8: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Ouve o final: a última nota é a tónica, alcançada a partir da nota meio-tom abaixo.',
+  },
+  l9u32m1e9: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Desce da 5.ª até à tónica, mas não pela escala abaixo de seguida: ouve os saltos.',
+  },
 
   // ---- l9u32m2: Ditado Melódico Cromático ----
 
@@ -354,6 +401,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
     hint: 'O trítono (6 meios-tons, 4.ª aumentada / 5.ª diminuta) é uma das dissonâncias mais ásperas (com a 2.ª menor e a 7.ª maior) e divide a oitava exatamente ao meio.',
+    nudge: 'O salto soa estável e aberto, ou inquieto e por resolver, como se tivesse de seguir em frente? Conta os meios-tons a partir da nota mais grave e compara o total com os 12 da oitava.',
   },
   l9u32m2e3: {
     prompt: 'O que é uma nota cromática de passagem?',
@@ -364,6 +412,22 @@ const overlay: ExerciseLevelOverlay = {
       'Uma nota prolongada do acorde anterior para o seguinte, através da barra de compasso',
     ],
     hint: 'Uma nota cromática de passagem é uma nota não diatónica que liga duas notas diatónicas a um tom de distância, dividindo esse tom em dois meios-tons.',
+  },
+  l9u32m2e4: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Uma nota cromática de passagem preenche um tom: ouve a nota apertada entre as duas primeiras notas da escala.',
+  },
+  l9u32m2e5: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Uma nota sai mesmo à beira da tonalidade e volta logo: uma bordadura cromática.',
+  },
+  l9u32m2e6: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Ouve a nota que puxa para G por meio-tom ascendente: uma sensível secundária (V/V).',
+  },
+  l9u32m2e7: {
+    prompt: 'Ouve a melodia e escolhe a que ouviste.',
+    hint: 'Um sustenido conduz por meio-tom ascendente à nota seguinte. Para onde vai a linha a seguir?',
   },
 
   // ---- l9u32m3: Ditado Harmónico ----
@@ -378,6 +442,7 @@ const overlay: ExerciseLevelOverlay = {
       'Cadência interrompida',
     ],
     hint: 'Uma cadência perfeita (CAP) requer V para I em posição fundamental com a tónica no soprano. Proporciona a sensação mais forte de finalidade.',
+    nudge: 'Faz três perguntas: o V vai para o I, os dois acordes estão na posição fundamental, e a melodia chega à tónica? Quando as três se cumprem, é a cadência conclusiva mais forte; se falhar alguma, é a sua versão mais fraca.',
   },
   l9u32m3e2: {
     prompt:
@@ -389,6 +454,7 @@ const overlay: ExerciseLevelOverlay = {
       'Cadência interrompida',
     ],
     hint: 'Uma meia cadência termina em V, criando uma sensação de suspensão ou incompletude — como uma vírgula em vez de um ponto final.',
+    nudge: 'Olha para o último acorde: uma cadência que acaba na tónica soa fechada; uma que fica na dominante soa aberta, como uma vírgula. Que nome descreve um final aberto, por concluir?',
   },
   l9u32m3e3: {
     prompt:
@@ -400,6 +466,7 @@ const overlay: ExerciseLevelOverlay = {
       'Cadência plagal',
     ],
     hint: 'Uma cadência interrompida substitui vi pelo I esperado após V. O ouvido espera resolução mas recebe um desvio surpresa.',
+    nudge: 'A dominante faz esperar a tónica, mas chega outro acorde no seu lugar. Que cadência tem o nome de uma chegada que é cortada, e não de uma chegada ou de uma pausa?',
   },
 
   // ---- l9u32m4: Leitura à Primeira Vista ----
@@ -409,12 +476,14 @@ const overlay: ExerciseLevelOverlay = {
       'No solfejo móvel, que sílaba é sempre atribuída à tónica da tonalidade atual?',
     choices: ['Do', 'La', 'Sol', 'Re'],
     hint: 'No solfejo móvel, "Do" representa sempre a tónica independentemente da tonalidade. Em C maior, Do = C. Em G maior, Do = G.',
+    nudge: 'No solfejo móvel, as sílabas seguem os graus da escala e não alturas fixas, e a tónica recebe sempre a primeira sílaba da série. Qual é a sílaba que a abre?',
   },
   l9u32m4e2: {
     prompt:
       'Na tonalidade de C maior, que nota corresponde à sílaba de solfejo "Mi"?',
     choices: ['E', 'D', 'F', 'G'],
     hint: 'Do-Re-Mi-Fa-Sol-La-Ti mapeia para os 7 graus da escala. Em C maior: C(Do), D(Re), E(Mi), F(Fa), G(Sol), A(La), B(Ti).',
+    nudge: 'No solfejo móvel, as sílabas seguem os graus da escala: em C maior, Do = C. Sobe pela escala sílaba a sílaba até chegares a Mi.',
   },
   l9u32m4e3: {
     prompt:
@@ -426,6 +495,7 @@ const overlay: ExerciseLevelOverlay = {
       'Contar o número total de notas da melodia antes de começares a cantar',
     ],
     hint: 'Estabelecer o centro tonal (tónica) no ouvido é essencial. Cantar uma escala ou arpejo de tónica rápidos ancora a tua perceção de altura antes de ler a melodia.',
+    nudge: 'Antes de ler qualquer nota, o teu ouvido precisa de um ponto de referência: a altura em relação à qual se ouvem todas as outras. Que opção dá ao ouvido esse ponto de partida?',
   },
 
   // ---- l9u32m5: Audição Contextual ----
@@ -440,6 +510,7 @@ const overlay: ExerciseLevelOverlay = {
       'Heterofónica',
     ],
     hint: 'A textura monofónica consiste numa única linha melódica sem acompanhamento nem harmonia. Uma voz, uma linha.',
+    nudge: 'Os nomes das texturas vêm de prefixos gregos. Conta quantas linhas independentes estão a soar e como se relacionam, e depois associa isso ao prefixo.',
   },
   l9u32m5e2: {
     prompt:
@@ -451,6 +522,7 @@ const overlay: ExerciseLevelOverlay = {
       'Forma sonata',
     ],
     hint: 'A forma estrofe-refrão alterna estrofes (letras diferentes, mesma melodia) com um refrão recorrente. É a estrutura mais comum na música popular.',
+    nudge: 'Repara em como a canção está construída: dois tipos de secção que alternam, um dos quais regressa sem mudanças. Que forma tem o nome exatamente dessas secções?',
   },
   l9u32m5e3: {
     prompt:

@@ -46,6 +46,7 @@ vi.mock('../../components/notation/StaffNotation.tsx', async () => {
 import { LearnView } from '../LearnView';
 import { useAppStore } from '../../state/store';
 import { useProgressStore } from '../../state/progressStore';
+import { useLearnSessionStore } from '../../state/learnSessionStore';
 import { getDefaultProgress } from '../../data/curriculumLoader';
 import { L1_UNITS } from '../../core/constants/curriculumL1';
 
@@ -62,6 +63,8 @@ beforeAll(() => {
 beforeEach(() => {
   useAppStore.setState({ language: 'en', view: 'learn', pendingLearnTarget: null });
   useProgressStore.setState({ progress: getDefaultProgress() });
+  // Each test starts outside any lesson (the session store restores the last one).
+  useLearnSessionStore.setState({ screen: null, check: null });
 });
 afterEach(cleanup);
 
@@ -125,7 +128,8 @@ describe('LearnView navigation (W9-20)', () => {
 
     const row = screen.getByTitle('Level 1 · Unit 1 · Module 1').closest('button, [role="button"]') as HTMLElement;
     await act(async () => { fireEvent.click(row); });
-    await h1(MOD1.title);
-    expect(screen.getAllByText('Review').length).toBeGreaterThan(0); // the review badge
+    // A review goes straight into its focused check (W4b), titled as a review.
+    expect(await screen.findByText(`${MOD1.title} · review`, undefined, { timeout: 5000 })).toBeTruthy();
+    expect(screen.getByTestId('focused-check')).toBeTruthy();
   }, 15_000);
 });

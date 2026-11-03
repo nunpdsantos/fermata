@@ -1,6 +1,7 @@
-import { test, expect, type Browser, type Page } from '@playwright/test';
+import { test, expect, type Browser, type Locator, type Page } from '@playwright/test';
 import * as fs from 'node:fs';
 import { auditPage, type AuditResult } from './helpers/designAudit';
+import { learnScreens } from './helpers/learnDesignScreens';
 
 /**
  * Design system v2 acceptance (W11-A, D-28 / D-26), in a real browser.
@@ -423,34 +424,37 @@ async function openLessonBySearch(page: Page, title: string) {
   await page.waitForTimeout(800);
 }
 
-/** The exercise screen's words in each language (en.json / pt.json / es.json). */
+/** The check's words in each language (en.json / pt.json / es.json). W4b: the
+ *  exercises run in a focused check opened from the lesson's Check section. */
 const EXERCISE_WORDS = {
-  en: { exercises: 'Exercises', submit: 'Submit', tryAgain: 'Try Again', next: /^(Continue|Next)$/, check: 'Check Answer' },
-  pt: { exercises: 'Exercícios', submit: 'Enviar', tryAgain: 'Tentar Novamente', next: /^(Continuar|Seguinte)$/, check: 'Verificar Resposta' },
-  es: { exercises: 'Ejercicios', submit: 'Enviar', tryAgain: 'Intentar de nuevo', next: /^(Continuar|Siguiente)$/, check: 'Comprobar Respuesta' },
+  en: { start: 'Start the check', submit: 'Submit', next: /^(Continue|Next)$/, check: 'Check Answer' },
+  pt: { start: 'Começar a verificação', submit: 'Enviar', next: /^(Continuar|Seguinte)$/, check: 'Verificar Resposta' },
+  es: { start: 'Empezar la comprobación', submit: 'Enviar', next: /^(Continuar|Siguiente)$/, check: 'Comprobar Respuesta' },
 } as const;
 type Lang = keyof typeof EXERCISE_WORDS;
 
-/** Answer the current choice exercise (right on the second try) and move on. */
+/** Open the lesson's check (W4b: a focused check, started from the Check section). */
+async function startCheck(page: Page, lang: Lang = 'en') {
+  const start = learnScreen(page).getByRole('button', { name: EXERCISE_WORDS[lang].start });
+  await start.scrollIntoViewIfNeeded();
+  await start.click();
+  await expect(page.getByTestId('focused-check')).toBeVisible();
+  await page.waitForTimeout(300);
+}
+
+/** Answer the current choice question (a second try after a miss — D-09: no answer is shown) and move on. */
 async function answerChoice(page: Page, lang: Lang = 'en') {
   const words = EXERCISE_WORDS[lang];
-  const screen = learnScreen(page);
-  const grid = screen.locator('.grid.grid-cols-2').first();
-  await grid.locator('button:not([disabled])').last().click();
-  await screen.getByRole('button', { name: words.submit }).click();
-  await page.waitForTimeout(400);
-  const tryAgain = screen.getByRole('button', { name: words.tryAgain });
-  if (await tryAgain.count()) {
-    const revealed = (await screen.locator('button.text-success').first().textContent())?.trim();
-    await tryAgain.click();
-    if (revealed) {
-      const exact = new RegExp(`^${revealed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
-      await grid.locator('button').filter({ hasText: exact }).first().click();
-      await screen.getByRole('button', { name: words.submit }).click();
-      await page.waitForTimeout(400);
-    }
+  const answers = page.getByTestId('check-answers');
+  await answers.locator('button[data-state="open"]').last().click();
+  await page.getByRole('button', { name: words.submit }).click();
+  await page.waitForTimeout(300);
+  if ((await answers.locator('[data-state="tried"]').count()) && !(await answers.locator('[data-state="answer"]').count())) {
+    await answers.locator('button[data-state="open"]').first().click();
+    await page.getByRole('button', { name: words.submit }).click();
+    await page.waitForTimeout(300);
   }
-  const cont = screen.getByRole('button', { name: words.next });
+  const cont = page.getByRole('button', { name: words.next });
   if (await cont.count()) await cont.first().click();
   await page.waitForTimeout(300);
 }
@@ -458,14 +462,12 @@ async function answerChoice(page: Page, lang: Lang = 'en') {
 /** Get past the current exercise: a choice one is answered, a build one (on the piano) is failed. */
 async function passExercise(page: Page, lang: Lang) {
   const words = EXERCISE_WORDS[lang];
-  const screen = learnScreen(page);
-  if (await screen.locator('.grid.grid-cols-2').first().locator('button:not([disabled])').count()) return answerChoice(page, lang);
-  const check = screen.getByRole('button', { name: words.check });
-  const tryAgain = screen.getByRole('button', { name: words.tryAgain });
-  const cont = screen.getByRole('button', { name: words.next }).first();
+  if (await page.getByTestId('check-answers').locator('button[data-state="open"]').count()) return answerChoice(page, lang);
+  const check = page.getByRole('button', { name: words.check });
+  const cont = page.getByRole('button', { name: words.next }).first();
   if (!(await check.count())) return;
-  for (let attempt = 0; attempt < 2; attempt++) {
-    // Try Again brings the input back after its feedback animates out.
+  for (let attempt = 0; attempt < 2 && !(await cont.count()); attempt++) {
+    // A miss keeps the picks and the input in place for the second try (W4b).
     await expect(check, `${lang}: a build exercise's Check Answer`).toBeVisible();
     // Middle C, which every dock shows (the strip's first key, A0, sits off
     // screen on a phone), tapped low on the key, below the black keys.
@@ -475,9 +477,7 @@ async function passExercise(page: Page, lang: Lang) {
       await key.click({ position: { x: box.width / 2, y: box.height * 0.85 } });
     }
     await check.click();
-    await expect(tryAgain.or(cont)).toBeVisible();
-    if (!(await tryAgain.count())) break;
-    await tryAgain.click();
+    await page.waitForTimeout(300);
   }
   await cont.click();
   await page.waitForTimeout(300);
@@ -517,16 +517,15 @@ const W4A_QUESTIONS = {
 
 async function questionScreens(page: Page, lang: Lang, onScreen: (screen: string) => Promise<void>) {
   const q = W4A_QUESTIONS[lang];
-  const words = EXERCISE_WORDS[lang];
   const screen = learnScreen(page);
-  const toExercises = () => screen.getByText(words.exercises, { exact: true }).first().scrollIntoViewIfNeeded();
+  const toExercises = () => startCheck(page, lang);
   // Exercise order is shuffled: get past exercises until the wanted one is up.
   const until = async (up: () => Promise<boolean>, what: string) => {
     for (let i = 0; i < 12 && !(await up()); i++) await passExercise(page, lang);
     expect(await up(), `${lang}: reached ${what}`).toBe(true);
   };
   const choiceUp = (name: string | RegExp) => async () =>
-    (await screen.locator('.grid.grid-cols-2').first().locator('button').filter({ hasText: name }).count()) > 0;
+    (await page.getByTestId('check-answers').locator('button').filter({ hasText: name }).count()) > 0;
 
   // A key signature with at least `glyphs` - 1 sharps or flats: VexFlow draws
   // the clef and each accidental as SVG text (C major's staff is the clef alone).
@@ -601,6 +600,14 @@ async function seedSprintItems(page: Page): Promise<boolean> {
   return true;
 }
 
+/** Every button of a toast is at least the tap size (44 px on touch, 36 px with a mouse). */
+async function toastButtonsAtTapSize(page: Page, toast: Locator, where: string) {
+  const tap = await page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tap')) || 36);
+  const sizes = await toast.locator('button').evaluateAll((bs) => bs.map((b) => { const r = b.getBoundingClientRect(); return [Math.round(r.width * 10) / 10, Math.round(r.height * 10) / 10, b.getAttribute('aria-label') ?? b.textContent]; }));
+  expect(sizes.length, `${where}: the toast has a button`).toBeGreaterThan(0);
+  for (const [w, h, name] of sizes) expect.soft(Math.min(Number(w), Number(h)), `${where}: toast button "${name}" is ${w}×${h}, the tap size is ${tap}`).toBeGreaterThanOrEqual(tap - 0.5);
+}
+
 async function exportToast(page: Page): Promise<Box> {
   const download = page.waitForEvent('download');
   await openSettings(page);
@@ -615,6 +622,8 @@ async function exportToast(page: Page): Promise<Box> {
   });
   const vp = page.viewportSize()!;
   expect.soft(box.top >= 0 && box.left >= 0 && box.bottom <= vp.height + 0.5 && box.right <= vp.width + 0.5, `backup toast on screen ${JSON.stringify(box)}`).toBe(true);
+  await page.waitForTimeout(500); // settled
+  await toastButtonsAtTapSize(page, toast, 'backup toast');
   // Dismiss it, so a later screen is not audited mid fade-out.
   await toast.getByRole('button', { name: 'Dismiss' }).click();
   await expect(toast).toHaveCount(0);
@@ -628,15 +637,18 @@ async function openFirstLesson(page: Page, heading = 'The Staff and Clefs') {
   await page.waitForTimeout(800);
 }
 
-/** Answer choice exercises until we have seen a wrong answer and a right one. */
-async function exerciseStates(page: Page, onState: (state: 'selected' | 'wrong' | 'right') => Promise<void>) {
-  const screen = learnScreen(page);
-  await screen.getByText('Exercises', { exact: true }).first().scrollIntoViewIfNeeded();
+/**
+ * Answer check questions until we have seen an answer selected, a first miss
+ * (D-09: the hint and the struck option — no answer shown) and a right one,
+ * then finish the set: the result screen (W4b).
+ */
+async function exerciseStates(page: Page, onState: (state: 'selected' | 'wrong' | 'right' | 'result') => Promise<void>) {
+  await startCheck(page);
+  const answers = page.getByTestId('check-answers');
   const seen = new Set<string>();
-  for (let i = 0; i < 12 && seen.size < 3; i++) {
-    const grid = screen.locator('.grid.grid-cols-2').first();
-    if (!(await grid.count())) break;
-    const options = grid.locator('button:not([disabled])');
+  for (let i = 0; i < 20; i++) {
+    if (await page.getByTestId('check-result').count()) break;
+    const options = answers.locator('button[data-state="open"]');
     if (!(await options.count())) break;
     await options.last().click();
     if (!seen.has('selected')) {
@@ -645,32 +657,29 @@ async function exerciseStates(page: Page, onState: (state: 'selected' | 'wrong' 
       await page.waitForTimeout(300);
       await onState('selected');
     }
-    await screen.getByRole('button', { name: 'Submit' }).click();
+    await page.getByRole('button', { name: 'Submit' }).click();
     await page.waitForTimeout(400);
-    const tryAgain = screen.getByRole('button', { name: 'Try Again' });
-    if (await tryAgain.count()) {
+    if ((await answers.locator('[data-state="tried"]').count()) && !(await answers.locator('[data-state="answer"]').count())) {
       if (!seen.has('wrong')) {
         seen.add('wrong');
         await onState('wrong');
       }
-      const revealed = (await screen.locator('button.text-success').first().textContent())?.trim();
-      await tryAgain.click();
-      if (revealed) {
-        const exact = new RegExp(`^${revealed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
-        await grid.locator('button').filter({ hasText: exact }).first().click();
-        await screen.getByRole('button', { name: 'Submit' }).click();
-        await page.waitForTimeout(400);
-      }
+      await answers.locator('button[data-state="open"]').first().click();
+      await page.getByRole('button', { name: 'Submit' }).click();
+      await page.waitForTimeout(400);
     }
-    const cont = screen.getByRole('button', { name: /^(Continue|Next)$/ });
-    if ((await cont.count()) && !seen.has('right') && (await screen.getByText(/Correct/).count())) {
+    if (!seen.has('right') && (await page.getByTestId('check-thumb').getByText(/^Correct/).count())) {
       seen.add('right');
       await onState('right');
     }
-    if (await cont.count()) await cont.first().click();
+    await page.getByRole('button', { name: 'Continue' }).click();
     await page.waitForTimeout(300);
   }
-  expect([...seen].sort(), 'reached every exercise state').toEqual(['right', 'selected', 'wrong']);
+  await expect(page.getByTestId('check-result')).toBeVisible();
+  await page.waitForTimeout(300);
+  await onState('result');
+  seen.add('result');
+  expect([...seen].sort(), 'reached every exercise state').toEqual(['result', 'right', 'selected', 'wrong']);
 }
 
 /** Answer Drill questions until a wrong answer's feedback shows. */
@@ -946,9 +955,8 @@ for (const v of VIEWPORTS) {
         const { context, page } = await open(browser, v, th.mode, { lastView: 'learn', instrument: 'piano' });
         await expect(page.getByRole('heading', { name: 'Learn Music Theory' })).toBeVisible({ timeout: 15_000 });
         await openLessonBySearch(page, 'The Major Scale');
-        const screen = learnScreen(page);
-        await screen.getByText('Exercises', { exact: true }).first().scrollIntoViewIfNeeded();
-        const checkAnswer = screen.getByRole('button', { name: 'Check Answer' });
+        await startCheck(page);
+        const checkAnswer = page.getByRole('button', { name: 'Check Answer' });
         // 12 exercises, 3 of them builds: 9 answers always reach one (8 missed
         // when all three were shuffled last — 1 in 220 per run).
         for (let i = 0; i < 9 && !(await checkAnswer.count()); i++) await answerChoice(page);
@@ -956,10 +964,11 @@ for (const v of VIEWPORTS) {
         await checkAnswer.scrollIntoViewIfNeeded();
         await page.waitForTimeout(400);
         await check(page, v, combo, 'learn-exercise-instrument');
+        await page.getByRole('button', { name: 'Exit the check' }).click();
         await openLessonBySearch(page, 'Pitch Matching and Direction');
-        await learnScreen(page).getByText('Exercises', { exact: true }).first().scrollIntoViewIfNeeded();
+        await startCheck(page);
         // Exercise order is shuffled: answer until an ear-training one is up.
-        const replay = learnScreen(page).getByRole('button', { name: 'Replay audio' });
+        const replay = page.getByRole('button', { name: 'Replay audio' });
         for (let i = 0; i < 10 && !(await replay.count()); i++) await answerChoice(page);
         await expect(replay, where('ear-training exercise')).toBeVisible();
         await replay.scrollIntoViewIfNeeded();
@@ -985,9 +994,14 @@ for (const v of VIEWPORTS) {
         await learnScreen(page).getByRole('button').filter({ has: page.locator('h3') }).first().click();
         await expect(page.getByRole('heading', { level: 1, name: 'Your First Chords — Major Triads' })).toBeVisible({ timeout: 15_000 });
         await page.waitForTimeout(800);
-        const done = learnScreen(page).getByRole('button', { name: 'Mark Module Complete' });
+        const done = learnScreen(page).getByRole('button', { name: 'Complete the lesson' });
         await done.scrollIntoViewIfNeeded();
         await done.click();
+        // The last lesson of Level 1 also completes its unit: the unit's
+        // milestone comes first (D-23), then the level celebration.
+        const milestone = page.getByRole('dialog', { name: 'Unit complete' });
+        await expect(milestone).toBeVisible();
+        await milestone.getByRole('button', { name: 'Continue' }).click();
         await expect(page.getByRole('heading', { name: 'Level 1 Complete!' })).toBeVisible();
         await page.waitForTimeout(700);
         await check(page, v, combo, 'learn-level-achievement');
@@ -1201,6 +1215,15 @@ for (const L of LANGS) {
       }
     });
   }
+}
+
+// The complete W4b sweep shares its assertions with design-learn.spec.ts.
+// Include Spanish explicitly in this main gate, at the phone viewport.
+for (const th of THEMES) {
+  test(`phone-es-${th.name}: new Learn screens, pointer and final Re-read`, async ({ browser }) => {
+    test.setTimeout(300_000);
+    await learnScreens(browser, VIEWPORTS[0], th.mode, `phone-es-${th.name}`, 'es');
+  });
 }
 
 // PT and ES on narrow phones, 360 and 320 px (W11-B review: the chords' In

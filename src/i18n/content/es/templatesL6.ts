@@ -423,6 +423,7 @@ const overlay: TemplateLevelOverlay = {
         '¿Cuál de estas afirmaciones sobre el contrapunto de tercera especie (4:1) es verdadera?',
       hintTemplate:
         'Tercera especie: cuatro notas contra cada nota del cantus. La primera es consonante; las demás pueden ser notas de paso, bordaduras, una cambiata (grado conjunto a la disonancia, salto de 3.ª, grado conjunto de vuelta) o una bordadura doble.',
+      nudgeTemplate: 'La tercera especie pone cuatro notas contra cada nota del cantus. Pregúntate cuál de las cuatro cae en el tiempo y, por tanto, debe ser consonante; en cada figura disonante, sigue el recorrido nota a nota: ¿por grado conjunto o por salto, y vuelve al punto de partida?',
       choiceSets: [
         [
           'La primera de cada cuatro notas es consonante; las demás pueden ser notas de paso o bordaduras',
@@ -481,6 +482,7 @@ const overlay: TemplateLevelOverlay = {
         '¿Cuál de estas afirmaciones sobre las cadenas de suspensiones y la quinta especie (florida) es verdadera?',
       hintTemplate:
         'En una cadena, cada resolución queda ligada y se convierte en la suspensión siguiente. La quinta especie (contrapunto florido) mezcla en una sola línea los valores de las cuatro primeras especies, cada uno con sus reglas.',
+      nudgeTemplate: 'En una cadena, sigue cada nota que acaba de resolver: ¿qué le ocurre en la siguiente barra de compás? En la quinta especie (contrapunto florido), pregúntate si desecha lo que enseñaron las cuatro especies anteriores o si se apoya en ello.',
       choiceSets: [
         [
           'En una cadena, cada resolución queda ligada para preparar la suspensión siguiente',
@@ -545,6 +547,7 @@ const overlay: TemplateLevelOverlay = {
         '¿Cuál de estas afirmaciones sobre el contrapunto triple es verdadera?',
       hintTemplate:
         'Contrapunto triple: tres voces que funcionan en las seis disposiciones verticales (ABC, ACB, BAC, BCA, CAB, CBA), así que cada par de voces debe ser invertible.',
+      nudgeTemplate: 'Cuenta de cuántas maneras se pueden apilar tres voces, de arriba abajo, y pregúntate qué pares de voces acaban intercambiando su lugar a lo largo de esas disposiciones.',
       choiceSets: [
         [
           'Sus tres voces funcionan en las 6 disposiciones verticales posibles',
@@ -570,6 +573,7 @@ const overlay: TemplateLevelOverlay = {
         '¿Cuál de estas afirmaciones sobre armonizar una melodía de soprano a cuatro voces (SATB) es verdadera?',
       hintTemplate:
         'Para armonizar un soprano: encuentra la tonalidad y los puntos de cadencia, elige una línea de bajo y acordes que lleven a ellos, completa contralto y tenor por el camino más corto y revisa paralelas, espaciado y duplicaciones.',
+      nudgeTemplate: 'Planifica como un compositor: decide hacia dónde van las frases antes de rellenar los detalles, y reserva el último paso para revisar el resultado según las reglas de la escritura a cuatro voces.',
       choiceSets: [
         [
           'Primero encuentra los puntos de cadencia y después elige un bajo y acordes que lleven a ellos',

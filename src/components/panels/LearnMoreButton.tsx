@@ -32,13 +32,10 @@ export function LearnMoreButton({ query, moduleId }: LearnMoreButtonProps) {
     <button
       type="button"
       onClick={() => {
-        useAppStore.setState({
-          view: 'learn',
-          pendingLearnTarget: {
-            levelId: match.level,
-            unitId: match.unitId,
-            moduleId: match.id,
-          },
+        useAppStore.getState().openLearnTarget({
+          levelId: match.level,
+          unitId: match.unitId,
+          moduleId: match.id,
         });
       }}
       // An accent-coloured quiet action (D-28 link button; was the

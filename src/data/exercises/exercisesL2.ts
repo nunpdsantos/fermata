@@ -25,6 +25,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Remember the mnemonic: Father Charles Goes Down And Ends Battle. Sharps accumulate in this fixed order.',
+      nudge: "Each new sharp lies a perfect 5th above the previous one. Start from the single sharp in G major's key signature and keep going up in 5ths.",
     },
     {
       id: 'l2u4m1e2',
@@ -40,6 +41,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The order of flats is the reverse of sharps: Battle Ends And Down Goes Charles Father.',
+      nudge: "Each new flat lies a perfect 4th above (a 5th below) the previous one. Start from the single flat in F major's key signature and keep going.",
     },
     {
       id: 'l2u4m1e3',
@@ -87,6 +89,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The 5th scale degree is called the dominant because it is the second most important note after the tonic, dominating the key.',
+      nudge: 'Think about its job: after the tonic, it is the strongest degree in the key, and its chord pulls the music most firmly back home.',
     },
     {
       id: 'l2u4m2e2',
@@ -102,6 +105,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'In a major scale, the 7th degree is a half step below the tonic. It "leads" strongly upward to the tonic, hence leading tone.',
+      nudge: 'In major, the 7th degree sits only a half step below the tonic (not a whole step), so it pulls strongly upward into it.',
     },
     {
       id: 'l2u4m2e3',
@@ -117,6 +121,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The subdominant is the 4th degree. It sits a 5th below the tonic (sub = below), just as the dominant sits a 5th above.',
+      nudge: "'Sub' means below: the subdominant lies a 5th below the tonic, just as the dominant lies a 5th above. In C major, count down a 5th from C and see which degree you land on.",
     },
   ],
 
@@ -181,6 +186,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Compare C major (C D E F G A B) with C natural minor (C D Eb F G Ab Bb). The 3rd, 6th, and 7th are each lowered by a half step.',
+      nudge: 'Compare C major with C natural minor, whose key signature has three flats. Find which scale degrees those three flats land on.',
     },
   ],
 
@@ -241,6 +247,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The harmonic minor has an awkward augmented 2nd (3 semitones) between the 6th and raised 7th. Raising the 6th also smooths this gap to a whole step.',
+      nudge: 'Play harmonic minor going up and listen to the jump from the 6th to the raised 7th. What happens to that jump when the 6th is raised as well?',
     },
   ],
 
@@ -260,6 +267,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The relative minor starts on the 6th degree of the major scale. In C major, the 6th degree is A. Both C major and A minor share the same key signature (no sharps or flats).',
+      nudge: 'The relative minor uses the same key signature and starts on the 6th degree of the major scale. Count up the C major scale to find it.',
     },
     {
       id: 'l2u5m3e2',
@@ -275,6 +283,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The relative major starts a minor 3rd (3 semitones) above the minor key. D up 3 semitones = F. Both D minor and F major share one flat (Bb).',
+      nudge: "The relative major shares the key signature and starts a minor 3rd (3 semitones) above the minor key's tonic. Count 3 semitones up from D.",
     },
     {
       id: 'l2u5m3e3',
@@ -290,6 +299,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Parallel keys share the same root note but differ in quality. The parallel minor of G major is G minor. They have different key signatures.',
+      nudge: "Parallel keys keep the same tonic and change only the quality (and with it the key signature). Don't confuse them with relative keys, which share a key signature.",
     },
     {
       id: 'l2u5m3e4',
@@ -320,6 +330,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'In 6/8 time, how are the beats organized?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '6/8', notes: '>8 8 8 >8 8 8 | >q. >q.' },
         choices: [
           { label: '2 dotted-quarter beats, each divided into 3 eighth notes', correct: true },
           { label: '6 equal beats of eighth notes', correct: false },
@@ -350,6 +361,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'How many main beats does 9/8 time have?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '9/8', notes: '>8 8 8 >8 8 8 >8 8 8' },
         choices: [
           { label: '3 dotted-quarter beats (each divided into 3 eighth notes)', correct: true },
           { label: '9 beats (each one eighth note long)', correct: false },
@@ -358,6 +370,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: '9/8 is compound triple meter: 9 eighth notes form 3 groups of 3. Each group of 3 is one main beat (a dotted quarter note).',
+      nudge: '9/8 is a compound meter: the eighth notes are grouped in threes, and each group is one main beat. How many groups fit into nine eighth notes?',
     },
   ],
 
@@ -369,6 +382,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'What is syncopation?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '4/4', notes: '8 >q 8 q q | 8 >q 8 h' },
         choices: [
           { label: 'Placing accents on normally weak beats or off-beats', correct: true },
           { label: 'Playing every note at the same volume and length', correct: false },
@@ -384,6 +398,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'What are triplets?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '2/4', notes: '8 8 t8 t8 t8 | q q' },
         choices: [
           { label: '3 equal notes in the time normally taken by 2 of the same value', correct: true },
           { label: '3 equal notes in the time of 4 of the same value', correct: false },
@@ -414,6 +429,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C to G is 7 semitones. This is a perfect 5th -- the interval found in power chords and the basis of the circle of fifths.',
+      nudge: 'First count the letter names from C up to G, both included, to get the number. Then count the half steps from C up to G and compare them with the sizes that number can have.',
     },
     {
       id: 'l2u7m1e2',
@@ -428,6 +444,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C to Eb is 3 semitones. This is a minor 3rd -- the interval that distinguishes minor chords from major chords.',
+      nudge: 'Count the letter names from C up to Eb to get the number. Then compare Eb with the note of the same letter in the C major scale: is it the same note or a half step lower, and what does that do to the quality?',
     },
     {
       id: 'l2u7m1e3',
@@ -442,6 +459,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'D to B spans 6 letter names (D-E-F-G-A-B) = a 6th. D to B is 9 semitones, making it a major 6th.',
+      nudge: 'Count the letter names from D up to B, both included, to get the number. Then count the half steps from D up to B and compare them with the sizes that number can have.',
     },
     {
       id: 'l2u7m1e4',
@@ -535,6 +553,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C to F# (or Gb) is 6 semitones -- exactly half of 12. This is the tritone, also called an augmented 4th or diminished 5th.',
+      nudge: 'Count the half steps from C up to F#, one key at a time, and compare the total with the 12 half steps of an octave. Which option names the interval of exactly that size?',
     },
     {
       id: 'l2u7m2e2',
@@ -549,6 +568,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C to Db is 1 semitone. This is a minor 2nd -- the smallest interval in standard Western music, creating maximum tension.',
+      nudge: 'Count the letter names from C up to Db to get the number. Then compare Db with the note of the same letter in the C major scale: is it the same note or a half step lower, and what does that do to the quality?',
     },
     {
       id: 'l2u7m2e3',
@@ -563,6 +583,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C to B is 11 semitones. This is a major 7th -- a wide, dissonant interval often used in jazz chords.',
+      nudge: 'Count the letter names from C up to B, both included, to get the number. Then count the half steps from C up to B and compare them with the sizes that number can have.',
     },
     {
       id: 'l2u7m2e4',
@@ -638,6 +659,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A tritone is 6 semitones. Two minor 3rds (3 + 3) span exactly 6, so only the diminished triad has a tritone from root to 5th. Major and minor span 7 (a perfect 5th); augmented spans 8 (an augmented 5th).',
+      nudge: 'A tritone is 6 semitones. For each triad type, add up the semitones of its two stacked 3rds (major 3rd = 4, minor 3rd = 3) and find the combination that totals 6.',
     },
   ],
 
@@ -706,6 +728,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The diatonic triads in major are: I(M) ii(m) iii(m) IV(M) V(M) vi(m) vii\u00b0(dim). Lowercase Roman numerals indicate minor quality. The iii chord is minor.',
+      nudge: 'Build it in C major: stack 3rds on E using white keys only, then count the semitones from the root up to the 3rd and up to the 5th. The lowercase Roman numeral is a clue too.',
     },
     {
       id: 'l2u7m5e2',
@@ -721,6 +744,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The chord built on the 7th degree of the major scale (e.g., B-D-F in C major) contains a tritone between root and 5th, making it diminished. It is notated vii\u00b0.',
+      nudge: 'Build it in C major on B using white keys only, then count the semitones from the root to the 5th. Is that a perfect 5th (7 semitones) or something smaller?',
     },
     {
       id: 'l2u7m5e3',

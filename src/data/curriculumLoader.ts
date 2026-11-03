@@ -141,9 +141,11 @@ export function computeLevelState(
   level: CurriculumLevel,
   allLevels: CurriculumLevel[],
   completedModules: string[],
+  unlockedLevels: readonly string[] = [],
 ): LevelState {
   if (level.comingSoon) return 'coming-soon';
-  for (const prereqId of level.prerequisites) {
+  // "Unlock anyway" (D-10) lifts the level's prerequisite, nothing else.
+  for (const prereqId of unlockedLevels.includes(level.id) ? [] : level.prerequisites) {
     const prereq = allLevels.find((l) => l.id === prereqId);
     if (prereq && !isLevelCompleted(prereq, completedModules)) return 'locked';
   }
@@ -171,9 +173,10 @@ export function computeLevelStateMeta(
   meta: LevelMeta,
   allMeta: LevelMeta[],
   completedModules: string[],
+  unlockedLevels: readonly string[] = [],
 ): LevelState {
   if (meta.comingSoon) return 'coming-soon';
-  for (const prereqId of meta.prerequisites) {
+  for (const prereqId of unlockedLevels.includes(meta.id) ? [] : meta.prerequisites) {
     const prereq = allMeta.find((m) => m.id === prereqId);
     if (prereq && !isLevelCompletedMeta(prereq, completedModules)) return 'locked';
   }
@@ -194,7 +197,13 @@ export function areModulePrereqsMet(
   module: CurriculumModule,
   progress: CurriculumProgress,
 ): boolean {
-  return module.prerequisites.every((prereq) => progress.completedModules.includes(prereq));
+  // A level unlocked out of order (D-10) waives the prerequisites that lie in
+  // OTHER levels (its first module waits for the previous level's last one);
+  // the order inside the level stays.
+  const unlocked = progress.unlockedLevels?.includes(module.levelId) ?? false;
+  return module.prerequisites.every(
+    (prereq) => progress.completedModules.includes(prereq) || (unlocked && !prereq.startsWith(`${module.levelId}u`)),
+  );
 }
 
 export function getNextModuleInLevel(

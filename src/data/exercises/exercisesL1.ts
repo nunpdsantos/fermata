@@ -22,6 +22,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 4,
       },
       hint: 'Middle C sits on one ledger line just below the treble staff.',
+      nudge: 'The treble clef curls around the second line, marking it as G. Count down from there, one letter for each line or space, until you reach the ledger line below the staff.',
     },
     {
       id: 'l1u1m1e2',
@@ -34,6 +35,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 4,
       },
       hint: 'The treble clef lines from bottom to top are E-G-B-D-F. The first line is E4.',
+      nudge: 'The treble clef curls around the second line, marking it as G. Step down from there, one letter for each space or line, until you reach the first line.',
     },
     {
       id: 'l1u1m1e3',
@@ -46,6 +48,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 4,
       },
       hint: 'The treble clef curls around the second line, marking it as G. That is why it is also called the G clef.',
+      nudge: 'Count up from middle C (the ledger line just below the staff), one letter for each line or space, until you reach this line.',
     },
     {
       id: 'l1u1m1e4',
@@ -61,6 +64,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The treble clef is also called the G clef because it wraps around the second line, defining it as G.',
+      nudge: 'Each pitched clef began as a stylized letter and fixes one note on one line of the staff. Which clef has its curl wrapped around the second line from the bottom?',
     },
   ],
 
@@ -78,6 +82,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 3,
       },
       hint: 'Below the treble staff: B3 is in the space below the first ledger line (C4), and A3 is on the second ledger line.',
+      nudge: 'Start from middle C on the first ledger line below the treble staff and count down one letter for each line or space.',
     },
     {
       id: 'l1u1m2e2',
@@ -91,6 +96,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         octave: 6,
       },
       hint: 'C6 sits on the second ledger line above the treble staff. Count up from the top line (F5): G5, A5, B5, C6.',
+      nudge: 'Start from the top line of the treble staff (F5) and count up one letter for each line or space: the space above it, the first ledger line, the next space, then the second ledger line.',
     },
     {
       id: 'l1u1m2e3',
@@ -118,7 +124,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         accidental: '',
         octave: 4,
       },
-      hint: 'This is middle C -- the most central note on the piano keyboard.',
+      hint: 'Compare it with the reference you heard first: is it higher, lower, or the very same note?',
     },
     {
       id: 'l1u1m2e_ear2',
@@ -157,7 +163,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         accidental: '',
         octave: 4,
       },
-      hint: 'This is the standard tuning reference note at 440 Hz.',
+      hint: 'It is higher than the reference C: sing up the white keys from C, one step at a time, until you reach it.',
     },
   ],
 
@@ -177,6 +183,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'descending',
       },
       hint: 'Db down to C is the smallest possible distance in Western music: one half step (1 semitone), from the black key to the white key just below it. Two different letter names (D, C) make it a 2nd — a minor 2nd.',
+      nudge: 'Find Db and C on the keyboard and look at what lies between them: are they direct neighbours, or is there another key, white or black, in between?',
     },
     {
       id: 'l1u1m3e2',
@@ -192,6 +199,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C to D is a whole step: two half steps, which equals 2 semitones. There is one key (C#/Db) between them.',
+      nudge: 'Find C and D on the keyboard and count the keys from one to the other, black keys included: is D the very next key, or is there a key in between?',
     },
     {
       id: 'l1u1m3e3',
@@ -207,6 +215,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'E to F is a natural half step: there is no black key between them on the piano. It is only 1 semitone.',
+      nudge: 'Look at E and F on the keyboard: is there a black key between them, as there is between most neighbouring white keys?',
     },
   ],
 
@@ -224,6 +233,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         acceptEnharmonic: true,
       },
       hint: 'The black key between F and G can be called F# (F sharp) or Gb (G flat). Both names refer to the same pitch.',
+      nudge: 'A sharp raises a natural note by one half step, and every option here is a sharp. Which white key is this black key a half step above? Name it from that key.',
     },
     {
       id: 'l1u1m4e2',
@@ -237,6 +247,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         acceptEnharmonic: true,
       },
       hint: 'The black key between A and B can be called Bb (B flat) or A# (A sharp). In flat keys this note is called Bb.',
+      nudge: 'A flat lowers a natural note by one half step, and every option here is a flat. Which white key is this black key a half step below? Name it from that key.',
     },
     {
       id: 'l1u1m4e3',
@@ -252,6 +263,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The chromatic scale includes every note: 7 white keys + 5 black keys = 12 distinct pitches per octave.',
+      nudge: 'Count every key, white and black, from one C up to the next C, but leave out the top C: that is where the pattern starts again.',
     },
   ],
 
@@ -267,6 +279,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'In 4/4 time, how many beats does a whole note last?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '4/4', notes: 'w' },
         choices: [
           { label: '4 beats', correct: true },
           { label: '2 beats', correct: false },
@@ -275,6 +288,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A whole note fills an entire measure of 4/4 time. It lasts 4 quarter-note beats.',
+      nudge: 'A whole note fills an entire bar of 4/4 on its own. Look at the time signature: what does its top number count?',
     },
     {
       id: 'l1u2m1e2',
@@ -282,6 +296,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'How many beats does a half note receive in 4/4 time?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '4/4', notes: 'h h' },
         choices: [
           { label: '2 beats', correct: true },
           { label: '4 beats', correct: false },
@@ -290,6 +305,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A half note is half the duration of a whole note. One whole = two halves = 4 beats / 2 = 2 beats each.',
+      nudge: 'A half note lasts half as long as a whole note, and a whole note fills an entire bar of 4/4.',
     },
     {
       id: 'l1u2m1e3',
@@ -297,6 +313,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'How many beats does a quarter note receive in 4/4 time?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '4/4', notes: 'q q q q' },
         choices: [
           { label: '1 beat', correct: true },
           { label: '2 beats', correct: false },
@@ -316,6 +333,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'What does the time signature 4/4 mean?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '4/4', notes: '>q q q q | >q q q q' },
         choices: [
           { label: '4 quarter-note beats per measure', correct: true },
           { label: '4 half-note beats per measure', correct: false },
@@ -331,6 +349,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       prompt: 'What does the time signature 3/4 tell you?',
       config: {
         type: 'multiple_choice',
+        rhythm: { time: '3/4', notes: '>q q q | >q q q' },
         choices: [
           { label: '3 quarter-note beats per measure', correct: true },
           { label: '3 half-note beats per measure', correct: false },
@@ -516,6 +535,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C-D-E-F-G = 5 letter names = a 5th. C to G is 7 semitones, making it a perfect 5th.',
+      nudge: "Say the letter names in order from C up to G and count them, counting both C and G: that total is the interval's number. Count the notes themselves, not the steps between them.",
     },
     {
       id: 'l1u3m3e2',
@@ -531,6 +551,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C-D-E-F = 4 letter names = a 4th. C to F is 5 semitones, making it a perfect 4th.',
+      nudge: "Say the letter names in order from C up to F and count them, counting both C and F: that total is the interval's number. Count the notes themselves, not the steps between them.",
     },
     {
       id: 'l1u3m3e3',
@@ -546,6 +567,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'C-D-E = 3 letter names = a 3rd. C to E is 4 semitones, making it a major 3rd.',
+      nudge: "Say the letter names in order from C up to E and count them, counting both C and E: that total is the interval's number. Count the notes themselves, not the steps between them.",
     },
   ],
 

@@ -21,7 +21,7 @@ import { getPitchClass, areEnharmonic } from '../../../core/constants/notes';
 import { buildScale, SCALE_TYPE_NAMES } from '../../../core/constants/scales';
 import { buildChord, INTERVAL_LABELS, CHORD_QUALITY_NAMES } from '../../../core/constants/chords';
 import { translateScaleType, translateChordQuality } from '../../../i18n/content/musicTerms';
-import { spelledIntervalName, spelledIntervalValue, intervalNumberOf } from './exerciseHelpers';
+import { spelledIntervalName, spelledIntervalValue, intervalNumberOf, melodyValue } from './exerciseHelpers';
 import type { ContentLanguage } from '../../../i18n/content/types';
 
 /** Minimal translation function signature compatible with i18next's TFunction */
@@ -49,6 +49,8 @@ function fallbackT(key: string, options?: Record<string, unknown>): string {
     'exerciseFeedback.choiceCorrect': 'Correct! "{{label}}" is right.',
     'exerciseFeedback.choiceIncorrect': 'The correct answer is "{{label}}".',
     'exerciseFeedback.choiceNoAnswer': 'No correct answer defined.',
+    'exerciseFeedback.melodyCorrect': 'Correct! The melody was {{melody}}.',
+    'exerciseFeedback.melodyIncorrect': 'The melody you heard was {{melody}}.',
     'exerciseFeedback.degreeName1': 'Tonic (1st)',
     'exerciseFeedback.degreeName2': 'Supertonic (2nd)',
     'exerciseFeedback.degreeName3': 'Mediant (3rd)',
@@ -285,6 +287,15 @@ function validateEarTraining(config: EarTrainingConfig, answer: string, t: Trans
       answer,
       t,
     );
+  }
+  if (config.mode === 'melody' && config.melodyChoices) {
+    // Melodic dictation (W4-13): the answer is the option whose notes were played.
+    const played = config.melodyChoices.find((c) => c.correct);
+    if (!played) return { correct: false, explanation: t('exerciseFeedback.choiceNoAnswer'), expected: '' };
+    const melody = played.notes.map((n) => n.replace(/-?\d+$/, '')).join(' ');
+    return answer === melodyValue(played.notes)
+      ? { correct: true, explanation: t('exerciseFeedback.melodyCorrect', { melody }), expected: melody }
+      : { correct: false, explanation: t('exerciseFeedback.melodyIncorrect', { melody }), expected: melody };
   }
   if ((config.mode === 'chord' || config.mode === 'scale' || config.mode === 'progression') && config.choices) {
     return validateMultipleChoice(

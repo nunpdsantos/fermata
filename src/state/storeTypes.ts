@@ -19,6 +19,12 @@ export type ThemeMode = 'fermata' | 'fermata-night' | 'auto';
 /** 0 = Open position, 1–12 = I–XII, 'all' = whole neck, null = automatic. */
 export type GuitarPositionChoice = number | 'all' | null;
 
+/** Explore's key and scale, held while a lesson borrows the instrument. */
+export interface LessonLoan {
+  key: Note;
+  scale: ScaleType;
+}
+
 // ─── Slice interfaces ───────────────────────────────────────────────────────
 
 export interface MusicSlice {
@@ -27,6 +33,14 @@ export interface MusicSlice {
   selectedChord: Chord | null;
   selectedDegree: number | null;
   chordInversion: number;
+  /**
+   * Explore's selection while a lesson BORROWS the instrument
+   * (services/lessonInstrument.ts, D-20); null otherwise. Set and cleared only
+   * there. Never saved itself: while it is set, the save keeps THIS selection
+   * in place of the lesson's (store.ts partialize), so a reload or a closed
+   * tab mid-lesson cannot turn the lesson's selection into Explore's (B2).
+   */
+  lessonLoan: LessonLoan | null;
   setKey: (key: Note) => void;
   setScale: (scale: ScaleType) => void;
   setSelectedChord: (chord: Chord | null) => void;
@@ -81,6 +95,7 @@ export interface NavigationSlice {
   /** Pending Learn target set by Explore/search so LearnView can deep-link to a module on mount. Cleared after consumption. */
   pendingLearnTarget: LearnDeepLink | null;
   setView: (view: ViewMode) => void;
+  openLearnTarget: (target: LearnDeepLink) => void;
   setDetailPanelOpen: (open: boolean) => void;
   setQuickSearchOpen: (open: boolean) => void;
   setComparisonScale: (scale: ScaleType | null) => void;
@@ -95,7 +110,7 @@ export interface PreferencesSlice {
   language: string;
   preferencesUpdatedAt: number;
   /** Last view the user was on — persisted so a fresh boot (no ?view= param)
-   *  restores where they left off. Written by navigationSlice.setView. */
+   *  restores where they left off. Written by navigationSlice navigation actions. */
   lastView: ViewMode;
   /** Instrument dock detent per view (D-26), persisted. */
   dockDetents: Record<DockView, Detent>;

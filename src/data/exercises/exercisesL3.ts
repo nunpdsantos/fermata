@@ -51,6 +51,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The dominant 7th (e.g., G7) combines a major triad with a minor 7th. It is the only seventh chord type with this combination, creating strong tension that resolves to the tonic.',
+      nudge: 'Build a seventh chord on each degree of C major, white keys only, and find the one with a major triad and a minor 7th. The chord type is named after that degree.',
     },
     {
       id: 'l3u9m1e4',
@@ -85,6 +86,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A major 7th chord: a major triad plus a major 7th (C-E-G-B). Warm and lush — the 7th sits just a half step below the octave.',
+      nudge: 'Listen in two steps. First the triad underneath: bright (major), soft (minor), or tense and hollow (diminished)? Then the 7th on top: is it right next to the root an octave up, rubbing against it, or a whole step below it?',
     },
     {
       id: 'l3u9m1e_ear2',
@@ -104,6 +106,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A minor 7th chord: a minor triad plus a minor 7th (A-C-E-G). Soft and mellow, without the restless pull of the dominant 7th.',
+      nudge: 'Listen in two steps. First the triad underneath: bright (major), soft (minor), or tense and hollow (diminished)? Then the 7th on top: is it right next to the root an octave up, rubbing against it, or a whole step below it?',
     },
     {
       id: 'l3u9m1e_ear3',
@@ -123,6 +126,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A dominant 7th chord: a major triad plus a minor 7th (D-F#-A-C). The tritone F#-C inside it makes it restless — it wants to resolve.',
+      nudge: 'Listen in two steps. First the triad underneath: bright (major), soft (minor), or tense and hollow (diminished)? Then the 7th on top: is it right next to the root an octave up, rubbing against it, or a whole step below it?',
     },
     {
       id: 'l3u9m1e_ear4',
@@ -142,6 +146,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A half-diminished 7th chord: a diminished triad plus a minor 7th (E-G-Bb-D). Dark and unsettled — like a minor 7th chord with a lowered 5th.',
+      nudge: 'Listen in two steps. First the triad underneath: bright (major), soft (minor), or tense and hollow (diminished)? Then the 7th on top: is it right next to the root an octave up, rubbing against it, or a whole step below it?',
     },
   ],
 
@@ -321,6 +326,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Parallel perfect 5ths and octaves are avoided because they undermine the independence of voices. Each voice should sound like its own melodic line, and parallel perfects cause voices to fuse.',
+      nudge: "The rule protects each voice's independence. Which motion makes two voices fuse into one, by moving together while keeping the same open, hollow-sounding consonance?",
     },
     {
       id: 'l3u10m1e3',
@@ -370,6 +376,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Parallel = same direction, same interval. Similar = same direction, different interval. Oblique = one voice moves, the other stays. Contrary = opposite directions.',
+      nudge: 'Classify by how two voices move relative to each other: in the same direction or in opposite ones, keeping the same interval or changing it, or with one voice holding still.',
     },
     {
       id: 'l3u10m2e3',
@@ -385,6 +392,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'Contrary motion maximizes voice independence because the voices travel in opposite directions. This is the most valued type of motion in counterpoint and part writing.',
+      nudge: 'Independence means each voice keeps its own shape. Which motion makes the two lines least alike, so that neither seems to shadow the other?',
     },
   ],
 
@@ -404,6 +412,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'When roots move by 5th (or 4th), the two chords share one common tone. Holding it in the same voice ensures smooth voice leading while the other voices move by step.',
+      nudge: 'Spell I and V in C major and find the note they share. How can that shared note help every voice move as little as possible?',
     },
     {
       id: 'l3u10m3e2',
@@ -683,6 +692,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'A neighbor tone (or auxiliary tone) leaves a chord tone by step (up or down) and returns to the same chord tone. It decorates a single pitch: chord tone -> step away -> step back.',
+      nudge: 'Over a C major chord, compare C–D–C with C–D–E: one of them is a passing tone. What does the D do in the other one?',
     },
     {
       id: 'l3u11m4e3',
@@ -716,6 +726,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'A major 2nd is 2 semitones. C up 2 semitones = D. Transposing up by a major 2nd moves every note up by a whole step.',
+      nudge: 'The transposition interval is the interval from C up to the new starting note. Count the letter names from C to the second note on the staff for the number, then count the half steps between them for the quality.',
     },
     {
       id: 'l3u11m5e2',
@@ -730,6 +741,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         direction: 'ascending',
       },
       hint: 'A perfect 5th is 7 semitones. C up 7 semitones = G. Transposing up a P5 is one of the most common transpositions, moving from C major to G major.',
+      nudge: 'Every note moves by the same interval, so measure it on the first note alone: count the letter names from C up to the second note shown, both included, then check whether that note belongs to C major to settle the quality.',
     },
     {
       id: 'l3u11m5e3',

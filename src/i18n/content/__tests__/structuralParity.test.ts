@@ -99,6 +99,17 @@ describe('content overlays', () => {
         const modIds = new Set(EN_UNITS[n].flatMap((u) => u.modules.map((m) => m.id)));
         for (const u of EN_UNITS[n]) {
           if (!ov.units[u.id]) problems.push(`L${n} unit ${u.id} missing`);
+          // The milestone (D-23): translated wherever English has one, same
+          // number of skills, nothing empty (the bridge only where English has one).
+          const ms = u.milestone;
+          const mov = ov.units[u.id]?.milestone;
+          if (ms && !mov) problems.push(`L${n} unit ${u.id} milestone missing`);
+          if (!ms && mov) problems.push(`L${n} unit ${u.id} extra milestone`);
+          if (ms && mov) {
+            if (mov.skillsSummary.length !== ms.skillsSummary.length) problems.push(`L${n} ${u.id}.milestone.skillsSummary: EN ${ms.skillsSummary.length} vs ${mov.skillsSummary.length}`);
+            if (mov.skillsSummary.some((x) => !x.trim()) || !mov.tryThisLabel.trim() || !mov.tryThisPrompt.trim()) problems.push(`L${n} ${u.id}.milestone empty field`);
+            if (!!ms.bridgeText.trim() !== !!mov.bridgeText.trim()) problems.push(`L${n} ${u.id}.milestone.bridgeText: present in one language only`);
+          }
           for (const m of u.modules) {
             const o = ov.modules[m.id];
             if (!o) { problems.push(`${m.id} missing`); continue; }
@@ -128,6 +139,8 @@ describe('content overlays', () => {
           if (!o) { problems.push(`${e.id} missing`); continue; }
           if (!o.prompt.trim()) problems.push(`${e.id} empty prompt`);
           if (e.hint && !o.hint) problems.push(`${e.id} hint falls back to English`);
+          if (e.nudge && !o.nudge) problems.push(`${e.id} nudge falls back to English`);
+          if (!e.nudge && o.nudge) problems.push(`${e.id} has a nudge English lacks`);
           const cfg = e.config as { type: string; choices?: { label: string }[] };
           const applies = cfg.type === 'multiple_choice' || cfg.type === 'ear_training';
           if (cfg.choices && applies) {
@@ -153,6 +166,8 @@ describe('content overlays', () => {
           if (!o) { problems.push(`${cfg.moduleId} templates missing`); continue; }
           if (o.length !== cfg.templates.length) problems.push(`${cfg.moduleId}: EN ${cfg.templates.length} templates vs ${o.length}`);
           cfg.templates.forEach((t, i) => {
+            if (t.nudgeTemplate && !o[i]?.nudgeTemplate) problems.push(`${cfg.moduleId}[${i}] nudge falls back to English`);
+            if (!t.nudgeTemplate && o[i]?.nudgeTemplate) problems.push(`${cfg.moduleId}[${i}] has a nudge English lacks`);
             const sets = t.params.choiceSets;
             const os = o[i]?.choiceSets;
             if (sets) {

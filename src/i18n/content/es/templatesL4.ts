@@ -201,6 +201,7 @@ const overlay: TemplateLevelOverlay = {
         '¿Cuál de estas afirmaciones sobre las inversiones de V7 es verdadera?',
       hintTemplate:
         'Inversiones de V7: estado fundamental (V7), 1.ª inv = V6/5 (3.ª/sensible en el bajo), 2.ª inv = V4/3 (5.ª en el bajo), 3.ª inv = V4/2 (7.ª en el bajo).',
+      nudgeTemplate: 'Los números son intervalos por encima del bajo. En C mayor, pon la 3.ª, la 5.ª y la 7.ª de G7 en el bajo, una por una: ¿qué números da cada una, y qué nota del acorde de tónica puede alcanzar ese bajo por grado conjunto?',
       choiceSets: [
         [
           'V6/5 tiene la sensible en el bajo, que sube por grado a la tónica',

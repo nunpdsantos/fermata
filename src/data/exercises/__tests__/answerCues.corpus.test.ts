@@ -23,7 +23,7 @@
  *   such sets).
  */
 import { describe, it, expect } from 'vitest';
-import { CONTENT_LANGS, LEVELS } from './learnCorpus';
+import { CONTENT_LANGS, LEVELS, levelCorpus } from './learnCorpus';
 import { HEURISTICS, heuristicRates, uniqueExtremes, rankCells, uniqueRank, amongTopTwo, rankProbs, RANK_FEATURES, servedSets, longOutliers, rankBound, OUTLIER_MIN_SETS, lessonVocabRate, LESSON_VOCAB_BOUND, type ServedSet } from './answerCues';
 
 describe('answer-cue heuristics', () => {
@@ -100,3 +100,37 @@ for (const lang of CONTENT_LANGS) {
     }
   });
 }
+
+// Three options: chance is 1/3. Allow at most one extra expected hit across
+// nine items (4/9), below the existing chance + 15 percentage point bound.
+const melodyCueProbability = (notes: string[][], correct: number, positions: number[]) => {
+  const scores = notes.map((a, i) => notes.reduce((sum, b, j) =>
+    sum + (i === j ? 0 : positions.filter((k) => a[k] === b[k]).length), 0));
+  const leaders = scores.flatMap((s, i) => s === Math.max(...scores) ? [i] : []);
+  return leaders.includes(correct) ? 1 / leaders.length : 0;
+};
+
+describe('melody notation offers no shortcut around listening', () => {
+  it('finds a planted central option and credits ties fairly', () => {
+    expect(melodyCueProbability([['C', 'D', 'E'], ['C', 'D', 'F'], ['C', 'G', 'E']], 0, [0, 1, 2])).toBe(1);
+    expect(melodyCueProbability([['C'], ['C'], ['C']], 0, [0])).toBeCloseTo(1 / 3);
+  });
+  for (const lang of CONTENT_LANGS) {
+    for (const cue of ['central', 'first', 'last', 'endpoints'] as const) {
+      it(`${lang}: ${cue} ≤ 4/9 expected accuracy`, () => {
+        const hits: number[] = [];
+        for (const { exercise } of levelCorpus(9, lang)) {
+          const cfg = exercise.config;
+          if (cfg.type !== 'ear_training' || cfg.mode !== 'melody') continue;
+          const opts = cfg.melodyChoices!;
+          const notes = opts.map((o) => o.notes);
+          const last = notes[0].length - 1;
+          const positions = cue === 'first' ? [0] : cue === 'last' ? [last] : cue === 'endpoints' ? [0, last] : notes[0].map((_, i) => i);
+          hits.push(melodyCueProbability(notes, opts.findIndex((o) => o.correct), positions));
+        }
+        expect(hits).toHaveLength(9);
+        expect(hits.reduce((a, b) => a + b, 0) / hits.length).toBeLessThanOrEqual(4 / 9 + 1e-12);
+      });
+    }
+  }
+});

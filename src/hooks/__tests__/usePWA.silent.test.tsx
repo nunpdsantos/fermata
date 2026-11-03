@@ -608,32 +608,51 @@ describe('old code caches', () => {
   });
 });
 
-describe('review W9b-B1: Learn counts as work in progress (interim source "learn")', () => {
-  async function inLearnWithUpdateAsked() {
-    const app = await freshApp();
-    const { registerInterimLearnWorkInProgress } = await import('../../services/learnWorkInProgress');
+describe('Learn checks protect updates; overview and lesson reading are idle', () => {
+  async function learnState() {
+    const { useLearnSessionStore } = await import('../../state/learnSessionStore');
     const { useAppStore } = await import('../../state/store');
-    registerInterimLearnWorkInProgress();
-    act(() => useAppStore.setState({ view: 'learn' }));
-    render(<app.PWAPrompts />);
-    fireEvent.pointerDown(window); // reading a lesson
-    act(() => app.stub.lastOptions!.onNeedRefresh!());
-    await settle();
-    expect(screen.getByText(/new version/i)).toBeTruthy();
-    return { ...app, useAppStore };
+    act(() => {
+      useAppStore.setState({ view: 'learn' });
+      useLearnSessionStore.setState({ screen: null, check: null });
+    });
+    return useLearnSessionStore;
   }
 
-  it('in a lesson, back after 31 min untouched: NOT applied (was: silent reload to the Learn overview)', async () => {
-    const { stub, fresh, useAppStore } = await inLearnWithUpdateAsked();
+  function startCheck(store: Awaited<ReturnType<typeof learnState>>) {
+    act(() => store.getState().setCheck({
+      moduleId: 'l1u1m1', kind: 'check', lang: 'en', fingerprints: { l1u1m1e1: 'test-identity' },
+      run: { order: ['l1u1m1e1'], index: 0, scores: [], items: [], attempt: 1, selectedNotes: [], tried: [], missed: null, final: null },
+      finished: false, at: Date.now(),
+    }));
+  }
+
+  it.each(['overview', 'lesson'] as const)('%s: a fresh start can apply silently', async (place) => {
+    const app = await freshApp();
+    const store = await learnState();
+    if (place === 'lesson') act(() => store.getState().setScreen({ type: 'module', levelId: 'l1', unitId: 'u1', moduleId: 'l1u1m1', section: 'c1', at: Date.now() }));
+    render(<app.PWAPrompts />);
+    act(() => app.stub.lastOptions!.onNeedRefresh!());
+    await settle();
+    expect(app.stub.updateCalls).toEqual([true]);
+  });
+
+  it('an unfinished check blocks a return after 31 min; leaving the check allows the next return', async () => {
+    const { stub, fresh, PWAPrompts } = await freshApp();
+    const store = await learnState();
+    startCheck(store);
+    render(<PWAPrompts />);
+    fireEvent.pointerDown(window);
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    await settle();
     setVisibility('hidden');
     await settle(fresh.LONG_ABSENCE_MS + 60_000);
     setVisibility('visible');
     await settle(1000);
     expect(stub.updateCalls).toEqual([]);
     expect(screen.getByText(/new version/i)).toBeTruthy();
-    // Control: out of Learn (the learner taps Explore), the same return applies it.
     fireEvent.pointerDown(window);
-    act(() => useAppStore.setState({ view: 'explore' }));
+    act(() => store.getState().setCheck(null));
     setVisibility('hidden');
     await settle(fresh.LONG_ABSENCE_MS + 60_000);
     setVisibility('visible');
@@ -641,13 +660,11 @@ describe('review W9b-B1: Learn counts as work in progress (interim source "learn
     expect(stub.updateCalls).toEqual([true]);
   });
 
-  it('this tab in a lesson answers another tab\'s "busy?" with busy (so a cold launch there will not reload it)', async () => {
+  it('another tab sees an unfinished check as busy, then lesson reading as idle', async () => {
     (globalThis as { BroadcastChannel?: unknown }).BroadcastChannel = FakeBroadcastChannel;
     const app = await freshApp();
-    const { registerInterimLearnWorkInProgress } = await import('../../services/learnWorkInProgress');
-    const { useAppStore } = await import('../../state/store');
-    registerInterimLearnWorkInProgress();
-    act(() => useAppStore.setState({ view: 'learn' }));
+    const store = await learnState();
+    startCheck(store);
     render(<app.PWAPrompts />);
     const tab2 = new FakeBroadcastChannel('fermata-work-in-progress');
     const answers: unknown[] = [];
@@ -655,10 +672,14 @@ describe('review W9b-B1: Learn counts as work in progress (interim source "learn
     tab2.postMessage({ type: 'busy?', id: 'cold-launch' });
     await settle(10);
     expect(answers).toEqual([{ type: 'busy', id: 'cold-launch', tab: expect.any(String), busy: true }]);
-    act(() => useAppStore.setState({ view: 'explore' }));
+    act(() => {
+      store.getState().setCheck(null);
+      store.getState().setScreen({ type: 'module', levelId: 'l1', unitId: 'u1', moduleId: 'l1u1m1', section: 'c1', at: Date.now() });
+    });
     tab2.postMessage({ type: 'busy?', id: 'again' });
     await settle(10);
     expect(answers[1]).toEqual({ type: 'busy', id: 'again', tab: expect.any(String), busy: false });
+    tab2.close();
   });
 });
 

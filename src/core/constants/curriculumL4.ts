@@ -220,7 +220,7 @@ const l4u12m5: CurriculumModule = {
   title: 'V7 Inversions and Their Resolutions',
   subtitle: 'How V6/5, V4/3, and V4/2 resolve to tonic positions',
   objectives: [
-    'Resolve all four inversions of V7 to their proper tonic targets',
+    'Resolve root position and all three inversions of V7 to their proper tonic targets',
     'Understand why V4/2 almost always resolves to I6 (first-inversion tonic)',
     'Recognize how inversion determines bass motion and resolution',
   ],
@@ -607,21 +607,24 @@ const l4u14m2: CurriculumModule = {
       explanation:
         'Asymmetric meters have beat counts that do not divide evenly into equal groups. 5/4 or 5/8 groups as either 2+3 or 3+2 \u2014 the grouping determines the rhythmic feel entirely. 7/4 or 7/8 groups as 2+2+3, 2+3+2, or 3+2+2. The unequal grouping creates a lopsided groove that is characteristic of Balkan folk music, progressive rock, and much 20th-century concert music.',
       tryThisQuery: 'C major scale',
-      tryThisLabel: 'Count 7 scale tones in groups of 2+2+3',
+      tryThisLabel: 'Hear 7/8 grouped 2+2+3',
+      rhythm: { time: '7/8', notes: '>8 8 >8 8 >8 8 8 | >8 8 >8 8 >8 8 8', grouping: [2, 2, 3] },
     },
     {
       title: 'Additive Meters',
       explanation:
         'Additive meters are built by combining groups of 2 and 3 beats. 5 = 2+3 or 3+2. 7 = 2+2+3 or 2+3+2 or 3+2+2. 8 = 3+3+2, common in Balkan music and some rock. 11 = 2+2+3+2+2, used by Dave Brubeck and others. The internal grouping pattern is what gives each meter its distinctive character \u2014 the same total number of beats with different groupings creates entirely different rhythmic feels.',
       tryThisQuery: 'G major scale',
-      tryThisLabel: 'Count 5 tones in groups of 3+2',
+      tryThisLabel: 'Hear 5/4 grouped 3+2',
+      rhythm: { time: '5/4', notes: '>q q q >q q | >q q q >q q', grouping: [3, 2] },
     },
     {
       title: 'Mixed Meters and Cut Time',
       explanation:
         'Mixed meter changes the time signature from measure to measure: one bar of 4/4, the next of 3/4, then 5/4. This creates an unpredictable, shifting rhythmic surface common in film scores and progressive rock. Cut time (alla breve, 2/2) uses two half-note beats per measure \u2014 a 2/2 bar has the same total duration as a 4/4 bar, but the beat unit is the half note rather than the quarter, so the music is counted in 2 and gains a broader, faster-moving feel with stronger metric drive. Cut time is standard in marches and fast Classical movements.',
       tryThisQuery: 'C major chord',
-      tryThisLabel: 'Tap along in cut time: 2 beats per bar',
+      tryThisLabel: 'Hear cut time: two half-note beats to a bar',
+      rhythm: { time: '2/2', notes: '>h h | >q q h | >w' },
     },
   ],
   tasks: [
@@ -815,7 +818,7 @@ export const L4_UNITS: CurriculumUnit[] = [
       skillsSummary: [
         'Identify suspensions, appoggiaturas, escape tones, retardations, pedal points, and changing tones',
         'Resolve V7 in all inversions with correct voice leading and tendency tone treatment',
-        'Understand why V4/2 must resolve to I6 and how each inversion determines bass motion',
+        'Understand why V4/2 almost always resolves to I6 and how each inversion determines bass motion',
       ],
       bridgeText:
         'You now understand all non-chord tone types and can resolve the dominant seventh in every inversion. Next you will explore the full palette of diatonic seventh chords, classify chords by harmonic function, and discover how sequences create directed harmonic motion.',

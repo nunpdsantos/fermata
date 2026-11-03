@@ -7,16 +7,50 @@ const curriculumL5: CurriculumLevelOverlay = {
       title: 'Dominantes Secundárias e Tonicização',
       description:
         'Dominantes aplicadas, acordes de sensível secundária, tonicização e cadeias de dominantes',
+      milestone: {
+        skillsSummary: [
+          'Construir dominantes secundárias (V/X) para cada alvo diatónico, incluindo V7/V',
+          'Construir acordes de sensível secundária (vii°/X) como substitutos da dominante',
+          'Distinguir tonicização de modulação e traçar cadeias de dominantes que descem por quintas',
+        ],
+        bridgeText:
+          'Já consegues injetar tensão cromática em qualquer progressão diatónica e encadear dominantes para ganhar impulso. A seguir vais aprender a sair completamente da tonalidade — através da modulação — e a emprestar acordes da tonalidade paralela para obter cor expressiva.',
+        tryThisLabel: 'Toca D7 (V7/V em C maior)',
+        tryThisPrompt: 'Que nota de D7 é cromática em C maior? Para onde quer resolver?',
+      },
     },
     u16: {
       title: 'Modulação e Mistura Modal',
       description:
         'Modulação por acorde pivot, tonalidades próximas, outros tipos de modulação e mistura modal',
+      milestone: {
+        skillsSummary: [
+          'Executar modulações por acorde pivot para tonalidades próximas (V, IV, vi)',
+          'Reconhecer os tipos de modulação direta, por nota comum, cromática e sequencial',
+          'Emprestar acordes da tonalidade paralela nos dois sentidos (mistura modal em maior e em menor, terça de Picardia)',
+        ],
+        bridgeText:
+          'Já consegues sair de uma tonalidade e regressar, emprestar acordes entre modos e navegar a harmonia cromática com confiança. A unidade final explora a forma musical, a textura e a condução de vozes por notas-guia — as ferramentas para compreender como se estruturam peças inteiras.',
+        tryThisLabel: 'Toca Ab (bVI, acorde de empréstimo em C maior)',
+        tryThisPrompt:
+          'Que notas de Ab maior são cromáticas em C maior? De que tonalidade paralela vêm?',
+      },
     },
     u17: {
       title: 'Forma, Textura e Condução de Vozes',
       description:
         'Formas musicais, tipos de textura e condução de vozes por notas-guia',
+      milestone: {
+        skillsSummary: [
+          'Analisar formas binárias, ternárias e de canção com rótulos de letras',
+          'Identificar as estruturas de forma sonata, rondó e tema com variações',
+          'Traçar linhas de notas-guia (3.as e 7.as) ao longo de progressões de acordes para uma condução de vozes suave',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Começa a traçar as notas-guia de um ii–V–I',
+        tryThisPrompt:
+          'Encontra a 3.ª e a 7.ª de Dm7. Consegues prever para onde se move cada uma em G7?',
+      },
     },
   },
 

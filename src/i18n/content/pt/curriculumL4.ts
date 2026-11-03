@@ -7,16 +7,49 @@ const curriculumL4: CurriculumLevelOverlay = {
       title: 'Notas Estranhas ao Acorde e Sétima da Dominante',
       description:
         'Suspensões, apogiatura, pedal, regras de resolução da sétima da dominante e inversões de V7',
+      milestone: {
+        skillsSummary: [
+          'Identificar suspensões, apogiaturas, escapatórias, retardos, pedais e notas cambiadas',
+          'Resolver o V7 em todas as inversões com a condução de vozes e o tratamento das notas de tendência corretos',
+          'Compreender por que V4/2 resolve quase sempre para I6 e como cada inversão determina o movimento do baixo',
+        ],
+        bridgeText:
+          'Já compreendes todos os tipos de notas estranhas ao acorde e consegues resolver a sétima da dominante em todas as inversões. A seguir vais explorar a paleta completa de acordes de sétima diatónicos, classificar acordes por função harmónica e descobrir como as sequências criam movimento harmónico direcionado.',
+        tryThisLabel: 'Toca G7 e resolve para C maior',
+        tryThisPrompt: 'Consegues nomear as duas notas de tendência e para onde resolve cada uma?',
+      },
     },
     u13: {
       title: 'Acordes de Sétima Diatónicos, Função e Sequências',
       description:
         'Sétimas pré-dominantes, mediante e sensível, teoria da função harmónica e sequências harmónicas',
+      milestone: {
+        skillsSummary: [
+          'Construir e resolver todos os acordes de sétima diatónicos, incluindo ii7, iii7, vi7, viiø7 e vii°7',
+          'Classificar cada acorde diatónico por função harmónica: Tónica, Pré-Dominante ou Dominante',
+          'Reconhecer sequências harmónicas de quintas descendentes, segundas ascendentes e terças descendentes',
+        ],
+        bridgeText:
+          'Já consegues construir todos os acordes de sétima diatónicos, compreender a função de cada um dentro de uma tonalidade e ouvir como os acordes se movem em padrões sequenciais. A unidade final aplica todo este conhecimento ao contraponto, ao compasso, à ornamentação cromática, à análise e ao rico mundo harmónico das tonalidades menores.',
+        tryThisLabel: 'Começa uma progressão ii7-V7-Imaj7',
+        tryThisPrompt:
+          'Consegues traçar a progressão ii7-V7-Imaj7 e identificar a função de cada acorde?',
+      },
     },
     u14: {
       title: 'Contraponto, Compasso, Análise e Harmonia Menor',
       description:
         'Contraponto a duas vozes, compassos assimétricos, ornamentação cromática, análise com numerais romanos e sistema de acordes em modo menor',
+      milestone: {
+        skillsSummary: [
+          'Aplicar as regras de consonância e dissonância no contraponto de primeira e segunda espécie',
+          'Fazer uma análise completa com numerais romanos, incluindo inversões, notas estranhas ao acorde e cadências',
+          'Navegar a paleta fluida de acordes das tonalidades menores, extraída das três formas da escala menor',
+        ],
+        bridgeText: '',
+        tryThisLabel: 'Explora a paleta de acordes da menor harmónica',
+        tryThisPrompt: 'Que acordes vêm da menor harmónica e quais vêm da menor natural?',
+      },
     },
   },
 
@@ -209,7 +242,7 @@ const curriculumL4: CurriculumLevelOverlay = {
       title: 'Inversões de V7 e as Suas Resoluções',
       subtitle: 'Como V6/5, V4/3 e V4/2 resolvem para posições de tónica',
       objectives: [
-        'Resolver as quatro inversões de V7 para os seus alvos de tónica corretos',
+        'Resolver o estado fundamental e as três inversões de V7 para os seus alvos de tónica corretos',
         'Compreender por que V4/2 resolve quase sempre para I6 (tónica em primeira inversão)',
         'Reconhecer como a inversão determina o movimento do baixo e a resolução',
       ],
@@ -302,14 +335,14 @@ const curriculumL4: CurriculumLevelOverlay = {
         'iii7, vi7, Imaj7 — sétimas de função tónica e a tónica jazz',
       objectives: [
         'Compreender iii7 como substituto de tónica e elo no ciclo de quintas',
-        'Reconhecer vi7 como o principal substituto de função tónica e alvo da resolução de engano',
+        'Reconhecer vi7 como o principal substituto de função tónica e alvo da resolução interrompida',
         'Distinguir Imaj7 (tónica jazz) de I7 (tónica blues)',
       ],
       concepts: [
         {
           title: 'Os Acordes iii7 e vi7',
           explanation:
-            'O iii7 funciona como substituto de tónica (partilhando duas notas com I) ou como elo no movimento por ciclo de quintas: iii7-vi7-ii7-V7-I. Raramente aparece isolado, mas é essencial em sequências prolongadas. O vi7 é o principal substituto de função tónica; vi7-ii7-V7-I é extremamente comum tanto na harmonia clássica como no jazz. A resolução de engano V7-vi7 é mais suave do que V7-vi porque o acorde de sétima partilha mais notas com V7, atenuando a surpresa.',
+            'O iii7 funciona como substituto de tónica (partilhando duas notas com I) ou como elo no movimento por ciclo de quintas: iii7-vi7-ii7-V7-I. Raramente aparece isolado, mas é essencial em sequências prolongadas. O vi7 é o principal substituto de função tónica; vi7-ii7-V7-I é extremamente comum tanto na harmonia clássica como no jazz. A resolução interrompida V7-vi7 é mais suave do que V7-vi porque o acorde de sétima partilha mais notas com V7, atenuando a surpresa.',
           tryThisLabel: 'Ouve iii7 na tonalidade de C',
         },
         {
@@ -336,7 +369,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Compara "Am7" com "Am" — a sétima (G) acrescenta suavidade a vi7 e torna a resolução de engano V7-vi7 mais fluida do que V7-vi. A nota acrescentada cria uma nota comum com V7',
+            'Compara "Am7" com "Am" — a sétima (G) acrescenta suavidade a vi7 e torna a resolução interrompida V7-vi7 mais fluida do que V7-vi. A nota acrescentada cria uma nota comum com V7',
         },
       ],
     },
@@ -540,19 +573,19 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'Compassos Assimétricos',
           explanation:
             'Compassos assimétricos têm contagens de tempos que não se dividem igualmente em grupos iguais. 5/4 ou 5/8 agrupa-se como 2+3 ou 3+2 — o agrupamento determina inteiramente o carácter rítmico. 7/4 ou 7/8 agrupa-se como 2+2+3, 2+3+2 ou 3+2+2. O agrupamento desigual cria um groove assimétrico que é característico da música folclórica balcânica, rock progressivo e muita música de concerto do século XX.',
-          tryThisLabel: 'Conta 7 notas da escala em grupos de 2+2+3',
+          tryThisLabel: 'Ouve 7/8 agrupado em 2+2+3',
         },
         {
           title: 'Compassos Aditivos',
           explanation:
             'Compassos aditivos são construídos combinando grupos de 2 e 3 tempos. 5 = 2+3 ou 3+2. 7 = 2+2+3 ou 2+3+2 ou 3+2+2. 8 = 3+3+2, comum na música balcânica e algum rock. 11 = 2+2+3+2+2, usado por Dave Brubeck e outros. O padrão de agrupamento interno é o que dá a cada compasso o seu carácter distintivo — o mesmo número total de tempos com agrupamentos diferentes cria caracteres rítmicos inteiramente distintos.',
-          tryThisLabel: 'Conta 5 notas em grupos de 3+2',
+          tryThisLabel: 'Ouve 5/4 agrupado em 3+2',
         },
         {
           title: 'Compassos Mistos e Tempo Cortado',
           explanation:
             'O compasso misto muda a indicação de compasso de compasso para compasso: um compasso de 4/4, o seguinte de 3/4, depois 5/4. Isto cria uma superfície rítmica imprevisível e mutável, comum em bandas sonoras de cinema e rock progressivo. O tempo cortado (alla breve, 2/2) usa dois tempos de mínima por compasso — um compasso de 2/2 tem a mesma duração total que um compasso de 4/4, mas a unidade de tempo é a mínima em vez da semínima, pelo que a música é contada em 2 e ganha uma sensação mais ampla e de movimento mais rápido, com maior impulso métrico. O tempo cortado é padrão em marchas e movimentos rápidos do período Clássico.',
-          tryThisLabel: 'Acompanha em tempo cortado: 2 tempos por compasso',
+          tryThisLabel: 'Ouve o compasso 2/2: dois tempos de mínima por compasso',
         },
       ],
       tasks: [

@@ -31,6 +31,7 @@ const overlay: ExerciseLevelOverlay = {
       'Séptima semidisminuida',
     ],
     hint: 'La séptima de dominante (ej.: G7) combina una tríada mayor con una 7.ª menor. Es el único tipo de acorde de séptima con esta combinación, generando una fuerte tensión que resuelve hacia la tónica.',
+    nudge: 'Construye un acorde de séptima sobre cada grado de C mayor, solo con teclas blancas, y busca el que tiene una tríada mayor con una 7.ª menor. El tipo de acorde lleva el nombre de ese grado.',
   },
   l3u9m1e4: {
     prompt: '¿Cuál es la diferencia entre un acorde de séptima semidisminuido y uno totalmente disminuido?',
@@ -51,6 +52,7 @@ const overlay: ExerciseLevelOverlay = {
       'Séptima semidisminuida',
     ],
     hint: 'Un acorde de séptima mayor: una tríada mayor más una 7.ª mayor (C-E-G-B). Cálido y exuberante — la 7.ª queda solo un semitono por debajo de la octava.',
+    nudge: 'Escucha en dos pasos. Primero, ¿la tríada de base es brillante (mayor), suave (menor) o tensa y hueca (disminuida)? Después, ¿la 7.ª de arriba está pegada a la fundamental una octava más arriba, rozándola, o un tono por debajo de ella?',
   },
   l3u9m1e_ear2: {
     prompt: 'Escucha este acorde de séptima e identifica su cualidad.',
@@ -61,6 +63,7 @@ const overlay: ExerciseLevelOverlay = {
       'Séptima semidisminuida',
     ],
     hint: 'Un acorde de séptima menor: una tríada menor más una 7.ª menor (A-C-E-G). Suave y aterciopelado, sin la atracción inquieta de la séptima de dominante.',
+    nudge: 'Escucha en dos pasos. Primero, ¿la tríada de base es brillante (mayor), suave (menor) o tensa y hueca (disminuida)? Después, ¿la 7.ª de arriba está pegada a la fundamental una octava más arriba, rozándola, o un tono por debajo de ella?',
   },
   l3u9m1e_ear3: {
     prompt: 'Escucha este acorde de séptima e identifica su cualidad.',
@@ -71,6 +74,7 @@ const overlay: ExerciseLevelOverlay = {
       'Séptima semidisminuida',
     ],
     hint: 'Un acorde de séptima de dominante: una tríada mayor más una 7.ª menor (D-F#-A-C). El trítono F#-C que contiene lo vuelve inquieto — quiere resolver.',
+    nudge: 'Escucha en dos pasos. Primero, ¿la tríada de base es brillante (mayor), suave (menor) o tensa y hueca (disminuida)? Después, ¿la 7.ª de arriba está pegada a la fundamental una octava más arriba, rozándola, o un tono por debajo de ella?',
   },
   l3u9m1e_ear4: {
     prompt: 'Escucha este acorde de séptima e identifica su cualidad.',
@@ -81,6 +85,7 @@ const overlay: ExerciseLevelOverlay = {
       'Séptima semidisminuida',
     ],
     hint: 'Un acorde de séptima semidisminuida: una tríada disminuida más una 7.ª menor (E-G-Bb-D). Sombrío e inestable — como un acorde de séptima menor con la 5.ª rebajada.',
+    nudge: 'Escucha en dos pasos. Primero, ¿la tríada de base es brillante (mayor), suave (menor) o tensa y hueca (disminuida)? Después, ¿la 7.ª de arriba está pegada a la fundamental una octava más arriba, rozándola, o un tono por debajo de ella?',
   },
 
   // ---- l3u9m2: Inversiones de Acordes de Séptima ----
@@ -194,6 +199,7 @@ const overlay: ExerciseLevelOverlay = {
       'Movimiento directo en 3.as',
     ],
     hint: 'Las 5.as y 8.as justas paralelas se evitan porque comprometen la independencia de las voces. Cada voz debe sonar como su propia línea melódica, y las paralelas justas hacen que las voces se fusionen.',
+    nudge: 'La regla protege la independencia de cada voz. ¿Qué movimiento hace que dos voces se fundan en una sola, al moverse juntas manteniendo la misma consonancia de sonido abierto y hueco?',
   },
   l3u10m1e3: {
     prompt: 'En tríadas en estado fundamental, ¿qué nota del acorde debe doblarse típicamente?',
@@ -227,6 +233,7 @@ const overlay: ExerciseLevelOverlay = {
       'Consonante, disonante, resuelto y suspendido',
     ],
     hint: 'Paralelo = misma dirección, mismo intervalo. Directo = misma dirección, intervalo diferente. Oblicuo = una voz se mueve, la otra se mantiene. Contrario = direcciones opuestas.',
+    nudge: 'Clasifica según cómo se mueven dos voces una respecto a la otra: en la misma dirección o en direcciones opuestas, manteniendo el mismo intervalo o cambiándolo, o con una voz quieta.',
   },
   l3u10m2e3: {
     prompt: '¿Qué tipo de movimiento de voces es más eficaz para crear líneas vocales independientes?',
@@ -237,6 +244,7 @@ const overlay: ExerciseLevelOverlay = {
       'Todos los tipos son igualmente eficaces',
     ],
     hint: 'El movimiento contrario maximiza la independencia de las voces porque estas viajan en direcciones opuestas. Es el tipo de movimiento más valorado en el contrapunto y la escritura a partes.',
+    nudge: 'Independencia significa que cada voz mantiene su propio contorno. ¿Qué movimiento hace que las dos líneas se parezcan menos, de modo que ninguna parezca seguir a la otra?',
   },
 
   // ---- l3u10m3: Escritura a Partes en Estado Fundamental ----
@@ -251,6 +259,7 @@ const overlay: ExerciseLevelOverlay = {
       'Doblar la 3.ª del segundo acorde',
     ],
     hint: 'Cuando las fundamentales se mueven por 5.ª (o 4.ª), los dos acordes comparten una nota común. Mantenerla en la misma voz garantiza una conducción de voces suave mientras las demás voces se mueven por grado.',
+    nudge: 'Escribe I y V en C mayor y encuentra la nota que comparten. ¿Cómo puede esa nota ayudar a que cada voz se mueva lo menos posible?',
   },
   l3u10m3e2: {
     prompt:
@@ -441,6 +450,7 @@ const overlay: ExerciseLevelOverlay = {
       'Una nota prestada de una tonalidad vecina',
     ],
     hint: 'Una bordadura (o nota auxiliar) se aleja de una nota del acorde por grado (hacia arriba o hacia abajo) y regresa a la misma nota. Decora una sola altura: nota del acorde → grado hacia fuera → grado de vuelta.',
+    nudge: 'Sobre un acorde de C mayor, compara C–D–C con C–D–E: uno de ellos es una nota de paso. ¿Qué hace el D en el otro?',
   },
   l3u11m4e3: {
     prompt: '¿Qué es una anticipación?',
@@ -458,10 +468,12 @@ const overlay: ExerciseLevelOverlay = {
   l3u11m5e1: {
     prompt: 'Una melodía que empieza en C4 se transporta para que empiece en la segunda nota mostrada. ¿Por qué intervalo se transportó?',
     hint: 'Una 2.ª mayor son 2 semitonos. C más 2 semitonos = D. Transponer una 2.ª mayor hacia arriba mueve cada nota un tono arriba.',
+    nudge: 'El intervalo de transposición es el intervalo de C hasta la nueva nota inicial. Cuenta los nombres de las notas de C hasta la segunda nota del pentagrama para obtener el número y después cuenta los semitonos entre ellas para la cualidad.',
   },
   l3u11m5e2: {
     prompt: 'C4 se transporta hasta la segunda nota mostrada. Indica el intervalo de esta transposición.',
     hint: 'Una 5.ª justa son 7 semitonos. C más 7 semitonos = G. Transponer una 5.ªJ hacia arriba es una de las transposiciones más comunes, pasando de C mayor a G mayor.',
+    nudge: 'Todas las notas se mueven el mismo intervalo, así que mídelo solo en la primera nota: cuenta los nombres de las notas de C hasta la segunda nota mostrada, incluidas ambas, y comprueba si esa nota pertenece a C mayor para decidir la cualidad.',
   },
   l3u11m5e3: {
     prompt: 'Al transponer una melodía una 3.ª menor hacia arriba, ¿qué ocurre con la armadura de clave?',
