@@ -161,7 +161,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'La relativa menor de G mayor es E menor',
           'La relativa menor de G mayor es G menor',
-          'La relativa menor de G mayor es D menor',
+          'La relativa menor de G mayor es A menor',
           'La relativa menor de G mayor es B menor',
         ],
         [
@@ -183,10 +183,10 @@ const overlay: TemplateLevelOverlay = {
           'La relativa menor de Eb mayor es Ab menor',
         ],
         [
-          'Las tonalidades paralelas comparten la misma tónica pero difieren en la cualidad',
-          'Las tonalidades paralelas comparten la misma armadura de clave',
-          'Las tónicas de las tonalidades paralelas están siempre a una 5.ª justa la una de la otra',
-          'Las tonalidades paralelas usan las mismas notas',
+          'Las tonalidades paralelas comparten la misma tónica pero difieren en el modo',
+          'Las tonalidades paralelas comparten la armadura pero tienen tónicas distintas',
+          'Las tonalidades paralelas suelen tener tónicas a una quinta justa de distancia',
+          'Las tonalidades paralelas comparten las notas de la escala pero empiezan en tónicas distintas',
         ],
       ],
     },
@@ -206,10 +206,10 @@ const overlay: TemplateLevelOverlay = {
         'En el compás compuesto el número de arriba es 6, 9 o 12 y el tiempo se divide en 3. En el compás simple el tiempo se divide en 2.',
       choiceSets: [
         [
-          '12/8 es compuesto cuaternario: 4 tiempos de 3',
-          '12/8 es simple: doce tiempos de corchea, cada uno dividido en dos',
-          '12/8 es compuesto ternario: 3 tiempos, cada uno dividido en 4',
-          '12/8 es simple cuaternario: 4 tiempos de 3 corcheas',
+          '12/8 es cuaternario compuesto: cuatro tiempos de negra con puntillo',
+          '12/8 es simple: doce tiempos de corchea',
+          '12/8 es ternario compuesto: tres tiempos con cuatro corcheas cada uno',
+          '12/8 es simple: seis tiempos de negra',
         ],
         [
           '6/8 es compuesto binario: 2 tiempos de 3',
@@ -234,25 +234,25 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         '¿Cuál de estas afirmaciones sobre la síncopa y los tresillos es verdadera?',
       hintTemplate:
-        'La síncopa coloca énfasis en tiempos o subdivisiones normalmente débiles. Crea sorpresa rítmica e impulso hacia adelante.',
+        'La síncopa coloca énfasis en tiempos o subdivisiones normalmente débiles. Crea sorpresa rítmica e impulso hacia adelante. Un tresillo encaja tres notas iguales en el tiempo que normalmente ocupan dos del mismo valor.',
       choiceSets: [
         [
           'La síncopa crea interés rítmico al acentuar contratiempos',
-          'La síncopa significa tocar todas las notas justo en los tiempos fuertes',
-          'La síncopa elimina todos los acentos de la música',
-          'La síncopa involucra siempre tresillos',
+          "La síncopa crea interés rítmico al acentuar tiempos fuertes",
+          "La síncopa crea interés rítmico al suprimir los acentos de los contratiempos",
+          'La síncopa crea interés rítmico al subdividir tiempos sin desplazar acentos',
         ],
         [
-          'Una ligadura desde un tiempo débil sobre la barra de compás crea síncopa al prolongar el sonido a través del tiempo fuerte',
-          'Una ligadura sobre la barra de compás no tiene efecto rítmico',
-          'Una ligadura sobre la barra de compás siempre duplica el tempo de todo el compás que viene a continuación',
-          'Las ligaduras solo pueden ocurrir dentro de un mismo compás',
+          'Una ligadura desde un tiempo débil a través de la barra de compás crea síncopa al prolongar el sonido a través del tiempo fuerte',
+          'Una ligadura desde un tiempo débil a través de la barra de compás crea síncopa al volver a atacar en el tiempo fuerte',
+          "Una ligadura desde un tiempo débil a través de la barra de compás crea síncopa al cortar el sonido antes del tiempo fuerte",
+          'Una ligadura desde un tiempo débil a través de la barra de compás crea síncopa al añadir un acento en el tiempo fuerte',
         ],
         [
-          'Tres corcheas de tresillo ocupan el tiempo de dos',
+          'Tres corcheas de tresillo ocupan el tiempo de dos corcheas normales',
           'Tres corcheas de tresillo ocupan el tiempo de cuatro corcheas normales',
-          'Un tresillo hace que cada una de sus tres notas dure un tiempo entero',
-          'Un tresillo añade una tercera nota encima de un acorde de dos notas',
+          'Tres corcheas de tresillo ocupan el tiempo de tres corcheas normales',
+          'Tres corcheas de tresillo ocupan el tiempo de una corchea normal',
         ],
       ],
     },

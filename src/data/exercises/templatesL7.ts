@@ -33,14 +33,14 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about jazz chord symbols is true?',
-        hintTemplate: 'Jazz symbols: triangle/maj7 = major 7, - or m = minor, 7 = dominant, ° = diminished, ø = half-diminished, + = augmented, sus = suspended.',
+        hintTemplate: 'Jazz symbols: triangle/maj7 = major 7, - or m = minor, 7 = dominant, ° = diminished, ø = half-diminished, + = augmented, sus = suspended. Extensions are measured above the root: in C13, A is the 13th and F is usually omitted; in C7(#9), D# is the raised 9th alongside E and Bb.',
         params: {
           choiceSets: [
             [
-              { label: 'C13 implies a dominant 7th chord with added 9th, 11th (usually omitted) and 13th', correct: true },
-              { label: 'C13 has only root and 13th', correct: false },
-              { label: 'C13 is a C major triad with only the 13th (A) added on top, and no 7th anywhere in the chord', correct: false },
-              { label: 'C13 implies a minor 7th chord, because the 13th lowers the 3rd of the chord by a half step', correct: false },
+              { label: "C13 keeps a dominant seventh foundation and reaches up to A; the F is normally left out", correct: true },
+              { label: "C13 usually has a major seventh foundation and reaches up to A; its seventh is B", correct: false },
+              { label: "C13 keeps a dominant seventh foundation and reaches up to Ab; its thirteenth is lowered", correct: false },
+              { label: "C13 normally has a minor seventh foundation with Eb as its third; the A becomes its thirteenth", correct: false },
             ],
             [
               { label: 'Cmin7(b5) is the same as Cø (C half-diminished)', correct: true },
@@ -49,10 +49,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'The b5 makes it an augmented chord', correct: false },
             ],
             [
-              { label: 'C7(#9) is always a dominant chord with an augmented 9th, often called the "Hendrix chord"', correct: true },
-              { label: 'C7(#9) is a major 7th chord', correct: false },
-              { label: 'In C7(#9) the sharp 9th (D#) replaces the major 3rd, so the chord contains no E at all', correct: false },
-              { label: 'C7(#9) has no 7th', correct: false },
+              { label: 'C7(#9) specifies E, Bb, D#', correct: true },
+              { label: 'C7(#9) specifies E, B, D#', correct: false },
+              { label: 'C7(#9) specifies Eb, Bb, D', correct: false },
+              { label: 'C7(#9) specifies Eb, B, D', correct: false },
             ],
           ],
         },
@@ -73,9 +73,9 @@ const templates: ModuleTemplateConfig[] = [
           choiceSets: [
             [
               { label: 'Cmaj7 shell: C, E, B', correct: true },
-              { label: 'Cmaj7 full: C, E, G, B', correct: false },
-              { label: 'Cmaj7 without the 3rd: C, G, B', correct: false },
-              { label: 'Cmaj7 without the 7th: C, E, G', correct: false },
+              { label: 'Cmaj7 shell: C, G, B', correct: false },
+              { label: 'Cmaj7 shell: C, E, G', correct: false },
+              { label: 'Cmaj7 shell: C, G, Bb', correct: false },
             ],
             [
               { label: 'Dm7 shell: D, F, C', correct: true },
@@ -85,9 +85,9 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'G7 shell: G, B, F', correct: true },
-              { label: 'G7 full: G, B, D, F', correct: false },
-              { label: 'G7 without the 3rd: G, D, F', correct: false },
-              { label: 'G7 without the 7th: G, B, D', correct: false },
+              { label: 'G7 shell: G, D, F', correct: false },
+              { label: 'G7 shell: G, B, D', correct: false },
+              { label: 'G7 shell: G, D, F#', correct: false },
             ],
             [
               { label: 'Fmaj7 shell: F, A, E', correct: true },
@@ -103,15 +103,15 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'E7 shell: E, G#, D', correct: true },
-              { label: 'E7 full: E, G#, B, D', correct: false },
-              { label: 'E7 without the 3rd: E, B, D', correct: false },
-              { label: 'E7 without the 7th: E, G#, B', correct: false },
+              { label: 'E7 shell: E, B, D', correct: false },
+              { label: 'E7 shell: E, G#, B', correct: false },
+              { label: 'E7 shell: E, B, D#', correct: false },
             ],
             [
               { label: 'Bbmaj7 shell: Bb, D, A', correct: true },
-              { label: 'Bbmaj7 full: Bb, D, F, A', correct: false },
-              { label: 'Bbmaj7 without the 3rd: Bb, F, A', correct: false },
-              { label: 'Bbmaj7 without the 7th: Bb, D, F', correct: false },
+              { label: 'Bbmaj7 shell: Bb, Eb, G', correct: false },
+              { label: 'Bbmaj7 shell: Bb, F, C', correct: false },
+              { label: 'Bbmaj7 shell: Bb, C, Eb', correct: false },
             ],
           ],
         },
@@ -124,16 +124,16 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Guide tones (3rds and 7ths) move by step or hold between chords in a ii-V-I', correct: true },
-              { label: 'Shell voicings connect only through common tones; chords that share no note cannot be linked smoothly', correct: false },
-              { label: 'Guide tones (3rds and 7ths) follow the bass, leaping a 4th or 5th from chord to chord in a ii-V-I', correct: false },
-              { label: "Voice leading is the bass player's job, so the shell voicings above it can be placed freely", correct: false },
+              { label: 'In Dm7–G7, F stays on F; C moves to B', correct: true },
+              { label: 'In Dm7–G7, F moves to E; C moves to B', correct: false },
+              { label: 'In Dm7–G7, F stays on F; C moves to D', correct: false },
+              { label: 'In Dm7–G7, F moves to E; C moves to D', correct: false },
             ],
             [
-              { label: 'The 3rd of ii is held as the 7th of V, and the 7th of ii falls a half step to the 3rd of V', correct: true },
-              { label: 'Every note of ii is kept unchanged in V, so the shell voicing never needs to move', correct: false },
-              { label: 'The root of ii becomes the root of V', correct: false },
-              { label: 'No voice-leading connection exists between ii and V', correct: false },
+              { label: 'In Bb7–Ebmaj7, D→D and Ab→G', correct: true },
+              { label: 'In Bb7–Ebmaj7, D→Eb and Ab→G', correct: false },
+              { label: 'In Bb7–Ebmaj7, D→D and Ab→F', correct: false },
+              { label: 'In Bb7–Ebmaj7, D→Eb and Ab→F', correct: false },
             ],
           ],
         },
@@ -160,20 +160,20 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about the ii-V-I progression is true?',
-        hintTemplate: 'ii-V-I in major: min7 -> dom7 -> maj7. In minor: min7b5 -> dom7(b9) -> min(maj7). This is the backbone of jazz harmony.',
+        hintTemplate: 'ii-V-I in major: min7 -> dom7 -> maj7. In minor: min7b5 -> dom7(b9) -> min(maj7). This is the backbone of jazz harmony. A ii-V-I can also establish a temporary tonic elsewhere in the key.',
         params: {
           choiceSets: [
             [
               { label: 'In minor keys, the ii chord is half-diminished (min7b5)', correct: true },
-              { label: 'In minor keys, the ii chord is a dominant 7th', correct: false },
-              { label: 'Minor keys do not use ii-V-I', correct: false },
-              { label: 'In minor keys, the ii chord is a major 7th chord (maj7), built on the raised 2nd degree', correct: false },
+              { label: "In minor keys, the ii chord is dominant seventh (7)", correct: false },
+              { label: "In minor keys, the ii chord is major seventh (maj7)", correct: false },
+              { label: "In minor keys, the ii chord is fully diminished (dim7)", correct: false },
             ],
             [
-              { label: 'ii-V-I can be used to tonicize any major or minor chord, creating transient key centers', correct: true },
-              { label: 'ii-V-I works only in the home key, never in another key', correct: false },
-              { label: 'ii-V-I cannot create tonicization', correct: false },
-              { label: 'ii-V-I exists only in major keys; in minor keys the V7 cannot be preceded by a ii', correct: false },
+              { label: 'When a ii-V-I targets a chord other than I, that chord functions as the tonic of the temporary key', correct: true },
+              { label: 'When a ii-V-I targets a chord other than I, that chord functions as the supertonic of the temporary key', correct: false },
+              { label: 'When a ii-V-I targets a chord other than I, that chord functions as the subdominant of the temporary key', correct: false },
+              { label: 'When a ii-V-I targets a chord other than I, that chord functions as the dominant of the temporary key', correct: false },
             ],
           ],
         },
@@ -206,16 +206,16 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'The 3rd and 7th of the original V7 always become the 7th and 3rd of the tritone sub', correct: true },
-              { label: 'Tritone subs share the same root', correct: false },
-              { label: 'The two dominant chords share no notes, so the original guide tones disappear', correct: false },
-              { label: 'Tritone subs only work in minor keys', correct: false },
+              { label: 'G7 and Db7 share the sounding pitches F and B', correct: true },
+              { label: 'G7 and Db7 share the sounding pitches G and D', correct: false },
+              { label: 'G7 and Db7 share the sounding pitches B and E', correct: false },
+              { label: 'G7 and Db7 share the sounding pitches C and F', correct: false },
             ],
             [
-              { label: 'The tritone sub gives a chromatic bass line that falls a half step from bII to I', correct: true },
-              { label: 'The bass moves by a whole step, which smooths the line into the tonic', correct: false },
-              { label: 'The bass of the substitute still falls a perfect 5th to the tonic, exactly as it does in V7-I', correct: false },
-              { label: 'The bass motion is the same as V-I, because the substitute keeps the original root in the bass', correct: false },
+              { label: 'The substitute bass descends one semitone to the tonic', correct: true },
+              { label: 'The substitute bass descends one whole tone to the tonic', correct: false },
+              { label: 'The substitute bass ascends one semitone to the tonic', correct: false },
+              { label: 'The substitute bass ascends one whole tone to the tonic', correct: false },
             ],
           ],
         },
@@ -246,16 +246,16 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'The basic 12-bar blues uses only I7, IV7, and V7', correct: true },
-              { label: 'The basic 12-bar blues uses only major 7th chords: Imaj7, IVmaj7 and Vmaj7 throughout', correct: false },
-              { label: 'The 12-bar blues is 16 bars long', correct: false },
-              { label: 'The blues form stays on the I chord for all 12 bars and never moves to IV or V', correct: false },
+              { label: 'The three basic chords of a 12-bar blues in F are F7, Bb7, C7', correct: true },
+              { label: 'The three basic chords of a 12-bar blues in F are Fmaj7, Bb7, C7', correct: false },
+              { label: 'The three basic chords of a 12-bar blues in F are F7, Bbmaj7, C7', correct: false },
+              { label: 'The three basic chords of a 12-bar blues in F are Fmaj7, Bbmaj7, C7', correct: false },
             ],
             [
-              { label: 'Jazz blues often adds a ii-V in bar 4 to target IV7, and in bars 9-10 to target I', correct: true },
-              { label: 'Jazz blues removes every dominant 7th from all 12 bars (I7, IV7 and V7) and plays one minor vamp instead', correct: false },
-              { label: 'Jazz blues never modifies the basic form', correct: false },
-              { label: 'Jazz blues uses the same chords as basic blues', correct: false },
+              { label: 'In C jazz blues, Gm7–C7 in bar 4 is a ii–V leading to F7', correct: true },
+              { label: 'In C jazz blues, Dm7–G7 in bar 4 is a ii–V leading to F7', correct: false },
+              { label: 'In C jazz blues, Gm7–C7 in bars 9–10 is a ii–V leading to C7', correct: false },
+              { label: 'In C jazz blues, Am7–D7 in bars 9–10 is a ii–V leading to C7', correct: false },
             ],
           ],
         },
@@ -276,21 +276,21 @@ const templates: ModuleTemplateConfig[] = [
           choiceSets: [
             [
               { label: 'Rhythm changes A section is built on I-vi-ii-V turnarounds in Bb major', correct: true },
-              { label: 'Rhythm changes follows the 12-bar blues form, with its turnaround heard only in the final bar', correct: false },
-              { label: 'The A section is in C major, and the bridge always moves to the relative minor key', correct: false },
-              { label: 'Rhythm changes has no standard key, so each A section moves to a new key chosen by the soloist', correct: false },
+              { label: "Rhythm changes A section is built on I-IV-vi-V turnarounds in Bb major", correct: false },
+              { label: "Rhythm changes A section is built on I-V-vi-IV turnarounds in Bb major", correct: false },
+              { label: "Rhythm changes A section is built on I-bVII-IV-I turnarounds in Bb major", correct: false },
             ],
             [
-              { label: 'The bridge of rhythm changes uses a cycle of dominant 7th chords descending by 5ths', correct: true },
-              { label: 'The bridge stays on one chord', correct: false },
-              { label: 'The bridge of rhythm changes stays on a single minor 7th chord for all 8 of its bars', correct: false },
-              { label: 'The bridge is identical to the A section: it repeats the same I-vi-ii-V turnarounds, note for note, in the same key', correct: false },
+              { label: "The bridge links dominant chords whose roots fall a fifth each time", correct: true },
+              { label: "The bridge links dominant chords whose roots rise a fifth each time", correct: false },
+              { label: "The bridge links dominant chords whose roots fall a major third each time", correct: false },
+              { label: "The bridge links dominant chords whose roots rise a half step each time", correct: false },
             ],
             [
               { label: 'Rhythm changes form is AABA, totaling 32 bars', correct: true },
-              { label: 'Rhythm changes is 12 bars', correct: false },
-              { label: 'Rhythm changes is a 12-bar form that alternates two blues choruses (ABAB)', correct: false },
-              { label: 'Rhythm changes has no fixed form: each band decides the length and order of the sections', correct: false },
+              { label: "Rhythm changes form is ABAB, totaling 32 bars", correct: false },
+              { label: "Rhythm changes form is ABBA, totaling 32 bars", correct: false },
+              { label: "Rhythm changes form is ABAC, totaling 32 bars", correct: false },
             ],
           ],
         },
@@ -349,10 +349,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'There are no avoid notes in any scale', correct: false },
             ],
             [
-              { label: 'Locrian or Locrian ♮2, mode 6 of melodic minor, fits half-diminished m7b5 chords', correct: true },
-              { label: 'Dorian is the scale for half-diminished (m7b5) chords, because its natural 6th matches the chord\'s b5', correct: false },
-              { label: 'Mixolydian, mode 5 of the major scale, fits half-diminished (m7b5) chords, since its b7 matches their 7th', correct: false },
-              { label: 'Half-diminished chords have no associated scale, so improvisers can only use the chord tones over them', correct: false },
+              { label: "Locrian and Locrian ♮2 both supply the chord tones of a half-diminished m7b5 chord", correct: true },
+              { label: "Dorian and Aeolian both supply the chord tones of a half-diminished m7b5 chord", correct: false },
+              { label: "Ionian and Lydian both supply the chord tones of a half-diminished m7b5 chord", correct: false },
+              { label: "Mixolydian and Lydian dominant both supply the chord tones of a half-diminished m7b5 chord", correct: false },
             ],
           ],
         },
@@ -381,7 +381,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about upper structures and reharmonization is true?',
-        hintTemplate: 'An upper-structure triad sits over the dominant\'s shell (root, 3rd, b7); name its notes by their interval above the bass. Reharmonization swaps chords for others that still support the melody, often within the same function.',
+        hintTemplate: 'An upper-structure triad sits over the dominant\'s shell (root, 3rd, b7); name its notes by their interval above the bass. Reharmonization swaps chords for others that still support the melody, often within the same function. Passing diminished chords can connect chords a step apart through chromatic bass motion.',
         params: {
           choiceSets: [
             [
@@ -392,15 +392,15 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'In C major, Em7 can replace Cmaj7: they share E, G and B and both have tonic function', correct: true },
-              { label: 'In C major, G7 can replace Cmaj7 because both chords have tonic function and share every one of their notes', correct: false },
-              { label: 'Em7 and Cmaj7 share no notes, so swapping one for the other would always change the function of the harmony', correct: false },
-              { label: 'Only V7 can replace a tonic chord', correct: false },
+              { label: "In C major, Em7 can replace Cmaj7: they share E, G and B and both have dominant function", correct: false },
+              { label: "In C major, Em7 can replace Cmaj7: they share C, E and G and both have tonic function", correct: false },
+              { label: "In C major, Em7 can replace Cmaj7: they share C, E and G and both have dominant function", correct: false },
             ],
             [
-              { label: 'Reharmonization replaces the chords under a melody with others that still support its notes', correct: true },
-              { label: 'Reharmonization rewrites the melody\'s notes so that they fit the chords the tune already had, leaving the harmony untouched', correct: false },
-              { label: 'Reharmonization means transposing a tune to a new key, which keeps every chord function the same', correct: false },
-              { label: 'Reharmonization removes all chords, leaving the melody to be sung or played with no accompaniment at all', correct: false },
+              { label: "Reharmonization gives a familiar tune a fresh accompaniment by choosing different supporting chords", correct: true },
+              { label: "Reharmonization gives the original chords a different melody by replacing the melody notes above them", correct: false },
+              { label: "Reharmonization moves the melody and its original chords to a different key while preserving their harmonic functions", correct: false },
+              { label: "Reharmonization changes the inversion of the original chords while preserving the melody and the chord identities", correct: false },
             ],
             [
               { label: 'C#dim7 between Cmaj7 and Dm7 is a passing chord: the bass rises chromatically C-C#-D', correct: true },
@@ -445,10 +445,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'It stays in one key throughout', correct: false },
             ],
             [
-              { label: 'Three key centers a major 3rd apart divide the octave into three equal parts', correct: true },
-              { label: 'Three key centers a major 3rd apart divide the octave into four equal parts, like a diminished 7th chord', correct: false },
-              { label: 'They form a major scale', correct: false },
-              { label: 'They never return to the first key, moving on to a new key center every time the tune repeats', correct: false },
+              { label: "The octave is split evenly between three tonal homes four semitones apart", correct: true },
+              { label: 'The octave is split evenly between four tonal homes three semitones apart', correct: false },
+              { label: 'The octave is split evenly between two tonal homes six semitones apart', correct: false },
+              { label: 'The octave is split evenly between six tonal homes two semitones apart', correct: false },
             ],
             [
               { label: 'Constant structure moves one chord quality in parallel, whatever the key (Cmaj7-Dbmaj7-Dmaj7)', correct: true },
@@ -474,28 +474,28 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Dorian is distinguished from natural minor by its raised 6th degree', correct: true },
-              { label: 'Dorian has a raised 7th', correct: false },
-              { label: 'Dorian is distinguished from natural minor by a raised 7th degree, which gives it a leading tone', correct: false },
-              { label: 'Dorian is identical to natural minor on the same tonic, so the two names describe exactly the same seven notes', correct: false },
+              { label: "Take natural minor and lift its sixth note by a semitone to obtain Dorian", correct: true },
+              { label: "Take natural minor and lift its seventh note by a semitone to obtain Dorian", correct: false },
+              { label: "Take natural minor and lift its third note by a semitone to obtain Dorian", correct: false },
+              { label: "Take natural minor and lower its second note by a semitone to obtain Dorian", correct: false },
             ],
             [
-              { label: 'Lydian is distinguished from major by its raised 4th degree (#4)', correct: true },
-              { label: 'Lydian is distinguished from major by its lowered 7th degree (b7), the note Mixolydian adds', correct: false },
-              { label: 'Lydian has a lowered 3rd', correct: false },
-              { label: 'Lydian is identical to major: built on the same tonic, the two scales contain exactly the same notes', correct: false },
+              { label: "Raise just the fourth note of a major scale to obtain Lydian", correct: true },
+              { label: "Raise just the fifth note of a major scale to obtain Lydian", correct: false },
+              { label: "Lower just the seventh note of a major scale to obtain Lydian", correct: false },
+              { label: "Lower just the third note of a major scale to obtain Lydian", correct: false },
             ],
             [
               { label: 'A D Dorian vamp (Dm7 - G7) emphasizes the natural 6th (B natural over D)', correct: true },
-              { label: 'A D Dorian vamp (Dm7 - Gm7) emphasizes Bb, the lowered 6th that gives D Dorian its colour', correct: false },
-              { label: 'D Dorian vamps use only one chord', correct: false },
-              { label: 'Dorian vamps avoid the 6th degree, because that note would turn D Dorian into D major', correct: false },
+              { label: "A D Dorian vamp (Dm7 - Gm7) emphasizes the lowered 6th (Bb over D)", correct: false },
+              { label: "A D Dorian vamp (Dm7 - A7) emphasizes the raised 7th (C# over D)", correct: false },
+              { label: "A D Dorian vamp (Dmaj7 - Gmaj7) emphasizes the major 3rd (F# over D)", correct: false },
             ],
             [
               { label: 'Phrygian is characterized by the b2 interval, giving it a Spanish/flamenco flavor', correct: true },
-              { label: 'Phrygian sounds identical to major, since both modes sound bright and resolve the same way', correct: false },
-              { label: 'Phrygian is characterized by its raised 4th, which makes it the brightest of all the modes', correct: false },
-              { label: 'Phrygian has no b2', correct: false },
+              { label: "Phrygian is characterized by the #4 interval, giving it a Spanish/flamenco flavor", correct: false },
+              { label: 'Phrygian is characterized by the major 7th interval, giving it a Spanish/flamenco flavor', correct: false },
+              { label: "Phrygian is characterized by the natural 6th interval, giving it a Spanish/flamenco flavor", correct: false },
             ],
           ],
         },
@@ -515,22 +515,22 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Quartal harmony stacks perfect 4ths instead of 3rds, creating an open and ambiguous sound', correct: true },
-              { label: 'Quartal harmony stacks perfect 5ths over a bass pedal, creating a spacious, orchestral sound', correct: false },
-              { label: 'Quartal harmony is the same as traditional triadic harmony', correct: false },
-              { label: 'Quartal chords are always dissonant (like a dominant 7th) and must resolve', correct: false },
+              { label: 'The quartal stack D–G–C–F has three perfect fourths between adjacent notes', correct: true },
+              { label: 'The quartal stack D–G–C–F has three augmented fourths between adjacent notes', correct: false },
+              { label: 'The quartal stack D–G–C–F has perfect fourths alternating with perfect fifths', correct: false },
+              { label: 'The quartal stack D–G–C–F has two perfect fourths between its three notes', correct: false },
             ],
             [
-              { label: 'Planing moves a whole chord shape up or down so that every voice moves in parallel', correct: true },
-              { label: 'Planing moves the voices in contrary motion: the top rises as the bottom falls', correct: false },
-              { label: 'Planing is prohibited in all musical styles', correct: false },
-              { label: 'Planing always changes the chord quality at each step', correct: false },
+              { label: "Planing slides every note of a chord in the same direction at once", correct: true },
+              { label: "Planing usually sends the highest chord tone upward while the lowest moves downward", correct: false },
+              { label: "Planing holds every upper note still while moving the bass through the scale", correct: false },
+              { label: "Planing breaks a chord into a melody by sounding its notes one after another", correct: false },
             ],
             [
               { label: 'Diatonic planing keeps all notes within the key; chromatic planing maintains exact intervals', correct: true },
-              { label: 'Diatonic and chromatic planing are the same technique, since both keep every single note inside the key', correct: false },
-              { label: 'Chromatic planing stays within one key', correct: false },
-              { label: 'Diatonic planing uses all 12 chromatic notes', correct: false },
+              { label: "Diatonic planing maintains exact intervals; chromatic planing keeps all notes within the key", correct: false },
+              { label: "Diatonic planing keeps all voices stationary; chromatic planing changes only the bass", correct: false },
+              { label: "Diatonic planing moves all notes in contrary motion; chromatic planing maintains exact intervals", correct: false },
             ],
           ],
         },
@@ -554,22 +554,22 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'I-V-vi-IV is one of the most common pop progressions and is used in hundreds of hit songs', correct: true },
-              { label: 'I-V-vi-IV belongs to classical chorale writing and is almost never heard in pop songs', correct: false },
-              { label: 'This progression is rarely used in pop', correct: false },
-              { label: 'I-V-vi-IV always sounds the same in every key', correct: false },
+              { label: "I-V-vi-IV is common in pop, and its Roman numerals preserve the chord relationships across keys", correct: true },
+              { label: "I-V-vi-IV is common in pop, and its Roman numerals keep the same absolute pitches across keys", correct: false },
+              { label: "I-V-vi-IV is common in pop, and its vi represents a major chord on the sixth scale degree", correct: false },
+              { label: 'I-V-vi-IV is common in pop, and its IV represents a minor chord on the fourth scale degree', correct: false },
             ],
             [
-              { label: 'vi-IV-I-V is the "sensitive" rotation of the same I-V-vi-IV progression', correct: true },
-              { label: 'vi-IV-I-V shares no chords with I-V-vi-IV', correct: false },
-              { label: 'vi-IV-I-V does not work as a pop progression', correct: false },
-              { label: 'Starting on vi changes the qualities of all four chords', correct: false },
+              { label: "vi-IV-I-V rotates I-V-vi-IV so that the same four chords begin on vi", correct: true },
+              { label: "vi-IV-I-V rotates I-IV-vi-V so that the same four chords begin on vi", correct: false },
+              { label: "vi-IV-I-V rotates I-vi-IV-V so that the same four chords begin on vi", correct: false },
+              { label: "vi-IV-I-V rotates I-V-IV-vi so that the same four chords begin on vi", correct: false },
             ],
             [
-              { label: 'The Nashville Number System represents chords by scale degree number for easy transposition', correct: true },
-              { label: 'Nashville numbers name fixed pitches, so a chart written as 1-4-5 can only ever be played in C major', correct: false },
-              { label: 'Nashville numbers are only for country music', correct: false },
-              { label: 'Nashville numbers replace traditional notation entirely, so session players never read a staff or chord symbol again', correct: false },
+              { label: 'Nashville charts number chord roots by scale degree from the tonic, making 4 the chord on the fourth degree', correct: true },
+              { label: "Nashville charts usually number chord roots by semitones above the tonic, making 4 a major third", correct: false },
+              { label: "Nashville charts number chord roots as fixed pitches, making 1 the note C in every key", correct: false },
+              { label: "Nashville charts number chord durations in beats, making 4 a chord held for four beats", correct: false },
             ],
           ],
         },
@@ -700,9 +700,9 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'Lydian dominant is mode 4 of melodic minor and fits a dominant 7#11 chord', correct: true },
-              { label: 'Lydian dominant is mode 4 of the major scale, so it fits a major 7th chord with a natural 4th (no #11)', correct: false },
-              { label: 'Lydian dominant has a major 7th', correct: false },
-              { label: 'Lydian dominant fits minor chords', correct: false },
+              { label: "Lydian dominant is mode 2 of melodic minor and fits a dominant 7#11 chord", correct: false },
+              { label: "Lydian dominant is mode 6 of melodic minor and fits a dominant 7#11 chord", correct: false },
+              { label: "Lydian dominant is mode 7 of melodic minor and fits a dominant 7#11 chord", correct: false },
             ],
             [
               { label: 'Jazz melodic minor raises the 6th and 7th of natural minor, both going up and coming down', correct: true },
@@ -712,9 +712,9 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'Locrian ♮2 is mode 6 of melodic minor and fits the half-diminished (m7b5) chord', correct: true },
-              { label: 'Locrian ♮2 is mode 2 of melodic minor and fits the fully diminished 7th chord (dim7)', correct: false },
-              { label: 'Locrian ♮2 is mode 7 of melodic minor (the altered scale), used over 7alt chords', correct: false },
-              { label: 'Locrian ♮2 fits a major 7th chord (maj7), as Lydian does', correct: false },
+              { label: "Locrian ♮2 is mode 2 of melodic minor and fits the half-diminished (m7b5) chord", correct: false },
+              { label: "Locrian ♮2 is mode 4 of melodic minor and fits the half-diminished (m7b5) chord", correct: false },
+              { label: "Locrian ♮2 is mode 7 of melodic minor and fits the half-diminished (m7b5) chord", correct: false },
             ],
           ],
         },
@@ -741,7 +741,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about harmonic-minor modes, symmetric scales and world scales is true?',
-        hintTemplate: 'Harmonic minor has an "exotic" sound from the augmented 2nd. Phrygian dominant (5th mode of harmonic minor) is used in flamenco and Middle Eastern music. Symmetric scales repeat one interval pattern.',
+        hintTemplate: 'Harmonic minor has an "exotic" sound from the augmented 2nd. Phrygian dominant (5th mode of harmonic minor) is used in flamenco and Middle Eastern music. Symmetric scales repeat one interval pattern. Hungarian minor raises degree 4 of harmonic minor, giving two augmented seconds. Whole-tone scales use whole steps (two distinct collections); diminished scales alternate half and whole steps (eight notes).',
         params: {
           choiceSets: [
             [
@@ -764,9 +764,9 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'The diminished scale alternates half and whole steps, giving 8 notes in an octave', correct: true },
-              { label: 'The diminished scale alternates whole steps and minor 3rds, giving it 7 notes like the major scale', correct: false },
-              { label: 'The diminished scale is a pentatonic scale', correct: false },
-              { label: 'The diminished scale has no half steps, like the whole-tone scale, and has only 6 notes in an octave', correct: false },
+              { label: "The diminished scale alternates half and whole steps, giving 6 notes in an octave", correct: false },
+              { label: "The diminished scale alternates half and whole steps, giving 7 notes in an octave", correct: false },
+              { label: "The diminished scale alternates half and whole steps, giving 12 notes in an octave", correct: false },
             ],
           ],
         },
@@ -804,20 +804,20 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about the chord families is true?',
-        hintTemplate: 'Extensions (9, 11, 13) imply the 7th; added tones (add9, 6) do not. Sus chords replace the 3rd. A power chord is root and 5th only.',
+        hintTemplate: 'Extensions (9, 11, 13) imply the 7th; added tones (add9, 6) do not. Sus chords replace the 3rd. A power chord is root and 5th only. A minor-major seventh combines a minor triad with a major seventh: C-Eb-G-B.',
         params: {
           choiceSets: [
             [
-              { label: 'An extension implies the 7th: C9 contains Bb, while Cadd9 has no 7th at all', correct: true },
-              { label: 'Cadd9 and C9 are the same chord, because an added 9th always brings the dominant 7th with it', correct: false },
-              { label: 'C9 has no 3rd', correct: false },
-              { label: 'Cadd9 contains B', correct: false },
+              { label: 'For C9, include the seventh Bb; for Cadd9, omit the seventh', correct: true },
+              { label: 'For C9, omit the seventh; for Cadd9, include the seventh Bb', correct: false },
+              { label: 'For C9, include the seventh B; for Cadd9, omit the seventh', correct: false },
+              { label: 'For C9, omit the seventh; for Cadd9, include the seventh B', correct: false },
             ],
             [
               { label: 'A sus4 chord replaces the 3rd with the 4th, so Csus4 is C-F-G', correct: true },
-              { label: 'A sus4 chord keeps the 3rd and adds the 4th above it, so Csus4 is spelled C-E-F-G', correct: false },
-              { label: 'Csus4 is C-Eb-G', correct: false },
-              { label: 'Csus4 is a minor chord', correct: false },
+              { label: 'A sus4 chord keeps the 3rd and adds the 4th, so Csus4 is C-E-F-G', correct: false },
+              { label: 'A sus4 chord replaces the 3rd with the augmented 4th, so Csus4 is C-F#-G', correct: false },
+              { label: "A sus4 chord replaces the 5th with the 4th, so Csus4 is C-E-F", correct: false },
             ],
             [
               { label: 'A power chord (C5) has only a root and a 5th, so it is neither major nor minor', correct: true },
@@ -826,10 +826,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'C5 is a C minor triad', correct: false },
             ],
             [
-              { label: 'The minor-major 7th chord is a minor triad with a major 7th: C-Eb-G-B', correct: true },
-              { label: 'The minor-major 7th chord is a major triad with a minor 7th, which is the dominant 7th C-E-G-Bb', correct: false },
-              { label: 'The minor-major 7th chord has a minor 7th, so it is the same chord as Cm7', correct: false },
-              { label: 'The minor-major 7th chord is C-E-G#-B, an augmented triad with a major 7th', correct: false },
+              { label: 'The minor-major 7th chord on C contains C-Eb-G-B', correct: true },
+              { label: 'The minor-major 7th chord on C contains C-E-G-Bb', correct: false },
+              { label: 'The minor-major 7th chord on C contains C-Eb-G-Bb', correct: false },
+              { label: 'The minor-major 7th chord on C contains C-E-G-B', correct: false },
             ],
           ],
         },

@@ -24,13 +24,13 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre as cifras de jazz é verdadeira?',
       hintTemplate:
-        'Cifras de jazz: triângulo/maj7 = sétima maior, - ou m = menor, 7 = dominante, ° = diminuto, ø = semidiminuto, + = aumentado, sus = suspenso.',
+        'Cifras de jazz: triângulo/maj7 = sétima maior, - ou m = menor, 7 = dominante, ° = diminuto, ø = semidiminuto, + = aumentado, sus = suspenso. As extensões medem-se acima da fundamental: em C13, A é a 13.ª e F é geralmente omitido; em C7(#9), D# é a 9.ª aumentada, juntamente com E e Bb.',
       choiceSets: [
         [
-          'C13 implica um acorde de sétima dominante com 9.ª, 11.ª (geralmente omitida) e 13.ª',
-          'C13 tem apenas fundamental e décima terceira',
-          'C13 é uma tríade de C maior com apenas a décima terceira (A) acrescentada em cima, sem nenhuma sétima em todo o acorde',
-          'C13 implica um acorde menor com sétima, porque a 13.ª baixa meio-tom a terça do acorde',
+          "C13 mantém uma base de sétima da dominante e estende-se até A; o F fica normalmente de fora",
+          "C13 tem geralmente uma base de sétima maior e estende-se até A; a sétima é B",
+          "C13 mantém uma base de sétima da dominante e estende-se até Ab; a décima terceira é baixada",
+          "C13 tem normalmente uma base de sétima menor com Eb como terça; o A torna-se a décima terceira",
         ],
         [
           'Cmin7(b5) é o mesmo que Cø (C semidiminuto)',
@@ -39,10 +39,10 @@ const overlay: TemplateLevelOverlay = {
           'A b5 torna-o um acorde aumentado',
         ],
         [
-          'C7(#9) é sempre um acorde dominante com nona aumentada, frequentemente chamado o "acorde de Hendrix"',
-          'C7(#9) é um acorde de sétima maior',
-          'Em C7(#9) a nona aumentada (D#) substitui a terça maior, por isso o acorde já não tem nenhum E',
-          'C7(#9) não tem sétima',
+          'C7(#9) indica E, Bb, D#',
+          'C7(#9) indica E, B, D#',
+          'C7(#9) indica Eb, Bb, D',
+          'C7(#9) indica Eb, B, D',
         ],
       ],
     },
@@ -59,9 +59,9 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'Shell de Cmaj7: C, E, B',
-          'Cmaj7 completo: C, E, G, B',
-          'Cmaj7 sem a terça: C, G, B',
-          'Cmaj7 sem a sétima: C, E, G',
+          'Shell de Cmaj7: C, G, B',
+          'Shell de Cmaj7: C, E, G',
+          'Shell de Cmaj7: C, G, Bb',
         ],
         [
           'Shell de Dm7: D, F, C',
@@ -71,9 +71,9 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Shell de G7: G, B, F',
-          'G7 completo: G, B, D, F',
-          'G7 sem a terça: G, D, F',
-          'G7 sem a sétima: G, B, D',
+          'Shell de G7: G, D, F',
+          'Shell de G7: G, B, D',
+          'Shell de G7: G, D, F#',
         ],
         [
           'Shell de Fmaj7: F, A, E',
@@ -89,15 +89,15 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Shell de E7: E, G#, D',
-          'E7 completo: E, G#, B, D',
-          'E7 sem a terça: E, B, D',
-          'E7 sem a sétima: E, G#, B',
+          'Shell de E7: E, B, D',
+          'Shell de E7: E, G#, B',
+          'Shell de E7: E, B, D#',
         ],
         [
           'Shell de Bbmaj7: Bb, D, A',
-          'Bbmaj7 completo: Bb, D, F, A',
-          'Bbmaj7 sem a terça: Bb, F, A',
-          'Bbmaj7 sem a sétima: Bb, D, F',
+          'Shell de Bbmaj7: Bb, Eb, G',
+          'Shell de Bbmaj7: Bb, F, C',
+          'Shell de Bbmaj7: Bb, C, Eb',
         ],
       ],
     },
@@ -110,16 +110,16 @@ const overlay: TemplateLevelOverlay = {
       nudgeTemplate: 'Identifica a 3.ª e a 7.ª de cada acorde de um ii-V-I (em C: Dm7, G7, Cmaj7) e segue cada uma dessas notas até ao acorde seguinte: quais ficam onde estão, e quanto se deslocam as outras?',
       choiceSets: [
         [
-          'Os guide tones (terças e sétimas) movem-se por grau conjunto ou mantêm-se entre acordes num ii-V-I',
-          'Os voicings de shell ligam-se apenas por notas comuns; acordes que não partilham nenhuma nota não se conseguem ligar com suavidade',
-          'Os guide tones (terças e sétimas) acompanham o baixo, saltando uma quarta ou uma quinta de acorde para acorde num ii-V-I',
-          'A condução de vozes é trabalho do baixista, por isso os voicings de shell por cima podem ser colocados livremente',
+          'Em Dm7–G7, F mantém-se em F; C passa para B',
+          'Em Dm7–G7, F passa para E; C passa para B',
+          'Em Dm7–G7, F mantém-se em F; C passa para D',
+          'Em Dm7–G7, F passa para E; C passa para D',
         ],
         [
-          'A terça do ii mantém-se como sétima do V, e a sétima do ii desce meio-tom para a terça do V',
-          'Todas as notas do ii ficam iguais no V, logo o voicing de shell nunca tem de se mover',
-          'A fundamental do ii torna-se a fundamental do V',
-          'Não existe ligação na condução de vozes entre ii e V',
+          'Em Bb7–Ebmaj7, D→D e Ab→G',
+          'Em Bb7–Ebmaj7, D→Eb e Ab→G',
+          'Em Bb7–Ebmaj7, D→D e Ab→F',
+          'Em Bb7–Ebmaj7, D→Eb e Ab→F',
         ],
       ],
     },
@@ -132,26 +132,26 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói um acorde de sétima menor sobre {root} — o som ii7 de uma progressão ii-V-I.',
       hintTemplate:
-        'Um ii7 é um acorde de sétima menor sobre {root}: fundamental + 3.ª menor + 5.ª perfeita + 7.ª menor. No jazz, a ii-V-I é a progressão mais fundamental.',
+        'Um ii7 é um acorde de sétima menor sobre {root}: fundamental + 3.ª menor + 5.ª perfeita + 7.ª menor. No jazz, o ii-V-I é a progressão mais fundamental.',
     },
     {
       // multiple_choice
       promptTemplate:
         'Qual destas afirmações sobre a progressão ii-V-I é verdadeira?',
       hintTemplate:
-        'ii-V-I em maior: m7 -> dom7 -> maj7. Em menor: m7b5 -> dom7(b9) -> m(maj7). Esta é a espinha dorsal da harmonia jazz.',
+        'ii-V-I em maior: m7 -> dom7 -> maj7. Em menor: m7b5 -> dom7(b9) -> m(maj7). Esta é a espinha dorsal da harmonia jazz. Um ii-V-I também pode estabelecer uma tónica temporária noutro grau da tonalidade.',
       choiceSets: [
         [
           'Em tonalidades menores, o acorde ii é semidiminuto (m7b5)',
-          'Em tonalidades menores, o acorde ii é um acorde de sétima da dominante',
-          'As tonalidades menores não usam ii-V-I',
-          'Em tonalidades menores, o acorde ii é um acorde de sétima maior (maj7), construído sobre o 2.º grau elevado',
+          "Em tonalidades menores, o acorde ii é de sétima dominante (7)",
+          "Em tonalidades menores, o acorde ii é de sétima maior (maj7)",
+          "Em tonalidades menores, o acorde ii é de sétima diminuta (dim7)",
         ],
         [
-          'A ii-V-I pode ser usada para tonicizar qualquer acorde maior ou menor, criando centros tonais transitórios',
-          'A ii-V-I só funciona na tonalidade principal, nunca noutra tonalidade',
-          'A ii-V-I não pode criar tonicização',
-          'A ii-V-I existe apenas em tonalidades maiores; em tonalidades menores o V7 não pode ser precedido por um ii',
+          'Quando um ii-V-I aponta para um acorde diferente de I, esse acorde funciona como tónica da tonalidade temporária',
+          'Quando um ii-V-I aponta para um acorde diferente de I, esse acorde funciona como supertónica da tonalidade temporária',
+          'Quando um ii-V-I aponta para um acorde diferente de I, esse acorde funciona como subdominante da tonalidade temporária',
+          'Quando um ii-V-I aponta para um acorde diferente de I, esse acorde funciona como dominante da tonalidade temporária',
         ],
       ],
     },
@@ -174,16 +174,16 @@ const overlay: TemplateLevelOverlay = {
         'Dois dom7 a um trítono de distância partilham o mesmo intervalo de trítono (a terça e a sétima trocam). Isto cria movimento cromático do baixo: bII7 -> I em vez de V7 -> I.',
       choiceSets: [
         [
-          'A terça e a sétima do V7 original tornam-se sempre a sétima e a terça da substituição tritónica',
-          'As substituições tritónicas partilham a mesma fundamental',
-          'Os dois acordes dominantes não partilham notas, por isso os guide tones originais desaparecem',
-          'As substituições tritónicas só funcionam em tonalidades menores',
+          'G7 e Db7 partilham as alturas sonoras F e B',
+          'G7 e Db7 partilham as alturas sonoras G e D',
+          'G7 e Db7 partilham as alturas sonoras B e E',
+          'G7 e Db7 partilham as alturas sonoras C e F',
         ],
         [
-          'A substituição tritónica cria uma linha de baixo cromática que desce meio-tom de bII para I',
-          'O baixo move-se por um tom inteiro, o que torna mais suave a chegada à tónica',
-          'O baixo do substituto continua a descer uma 5.ª perfeita para a tónica, exatamente como em V7-I',
-          'O movimento do baixo é o mesmo que V-I, porque o substituto mantém a fundamental original no baixo',
+          'O baixo do substituto desce meio-tom para a tónica',
+          'O baixo do substituto desce um tom para a tónica',
+          'O baixo do substituto sobe meio-tom para a tónica',
+          'O baixo do substituto sobe um tom para a tónica',
         ],
       ],
     },
@@ -206,16 +206,16 @@ const overlay: TemplateLevelOverlay = {
         'O blues de 12 compassos: I7 (4 compassos), IV7 (2 compassos), I7 (2 compassos), V7 (1), IV7 (1), I7 (2). O jazz blues acrescenta movimento ii-V e substituições tritónicas.',
       choiceSets: [
         [
-          'O blues básico de 12 compassos usa apenas I7, IV7 e V7',
-          'O blues básico de 12 compassos usa apenas acordes de sétima maior: Imaj7, IVmaj7 e Vmaj7 do princípio ao fim',
-          'O blues de 12 compassos tem 16 compassos',
-          'A forma de blues fica no acorde I durante os 12 compassos e nunca passa para IV ou V',
+          'Os três acordes básicos de um blues de 12 compassos em F são F7, Bb7, C7',
+          'Os três acordes básicos de um blues de 12 compassos em F são Fmaj7, Bb7, C7',
+          'Os três acordes básicos de um blues de 12 compassos em F são F7, Bbmaj7, C7',
+          'Os três acordes básicos de um blues de 12 compassos em F são Fmaj7, Bbmaj7, C7',
         ],
         [
-          'O jazz blues acrescenta frequentemente um ii-V no compasso 4 que leva a IV7, e outro nos compassos 9-10 que leva a I',
-          'O jazz blues retira dos 12 compassos todos os acordes de sétima da dominante (I7, IV7 e V7) e toca só um vamp menor',
-          'O jazz blues nunca modifica a forma básica',
-          'O jazz blues usa os mesmos acordes do blues básico',
+          'No blues jazz em C, Gm7–C7 no compasso 4 é um ii–V que conduz a F7',
+          'No blues jazz em C, Dm7–G7 no compasso 4 é um ii–V que conduz a F7',
+          'No blues jazz em C, Gm7–C7 nos compassos 9–10 é um ii–V que conduz a C7',
+          'No blues jazz em C, Am7–D7 nos compassos 9–10 é um ii–V que conduz a C7',
         ],
       ],
     },
@@ -228,25 +228,25 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Analisa a forma dos rhythm changes.',
       hintTemplate:
-        'Rhythm changes (de Gershwin): forma AABA, 32 compassos. Secções A: turnarounds I-vi-ii-V. Ponte: III7-VI7-II7-V7 (ciclo de dominantes).',
+        'Rhythm changes (de "I Got Rhythm", de Gershwin): forma AABA, 32 compassos. Secções A: turnarounds I-vi-ii-V. Ponte: III7-VI7-II7-V7 (ciclo de dominantes).',
       choiceSets: [
         [
           'A secção A dos rhythm changes é construída sobre turnarounds I-vi-ii-V em Bb maior',
-          'Os rhythm changes seguem a forma de blues de 12 compassos, com o turnaround ouvido apenas no último compasso',
-          'A secção A é em C maior, e a ponte passa sempre para a sua tonalidade relativa menor',
-          'Os rhythm changes não têm tonalidade padrão, por isso cada secção A muda para uma nova tonalidade escolhida pelo solista',
+          "A secção A dos rhythm changes é construída sobre turnarounds I-IV-vi-V em Bb maior",
+          "A secção A dos rhythm changes é construída sobre turnarounds I-V-vi-IV em Bb maior",
+          "A secção A dos rhythm changes é construída sobre turnarounds I-bVII-IV-I em Bb maior",
         ],
         [
-          'A ponte dos rhythm changes usa um ciclo de acordes de sétima dominante a descer por quintas',
-          'A ponte mantém-se num só acorde',
-          'A ponte dos rhythm changes fica num único acorde de sétima menor durante todos os seus oito compassos',
-          'A ponte é idêntica à secção A: repete os mesmos turnarounds I-vi-ii-V, nota por nota, na mesma tonalidade',
+          "A ponte liga acordes dominantes cujas fundamentais descem uma quinta de cada vez",
+          "A ponte liga acordes dominantes cujas fundamentais sobem uma quinta de cada vez",
+          "A ponte liga acordes dominantes cujas fundamentais descem uma terça maior de cada vez",
+          "A ponte liga acordes dominantes cujas fundamentais sobem meio-tom de cada vez",
         ],
         [
           'A forma dos rhythm changes é AABA, num total de 32 compassos',
-          'Os rhythm changes têm 12 compassos',
-          'Os rhythm changes são uma forma de 12 compassos que alterna dois coros de blues (ABAB)',
-          'Os rhythm changes não têm forma fixa: cada banda decide a duração e a ordem das secções',
+          "A forma dos rhythm changes é ABAB, num total de 32 compassos",
+          "A forma dos rhythm changes é ABBA, num total de 32 compassos",
+          "A forma dos rhythm changes é ABAC, num total de 32 compassos",
         ],
       ],
     },
@@ -297,10 +297,10 @@ const overlay: TemplateLevelOverlay = {
           'Não existem notas a evitar em nenhuma escala',
         ],
         [
-          'O lócrio ou o lócrio com 2.ª natural, modo 6 da menor melódica, serve acordes semidiminutos m7b5',
-          'O dórico é a escala dos acordes semidiminutos (m7b5), porque a sua sexta natural coincide com a b5 do acorde, nota a nota',
-          'O mixolídio, modo 5 da escala maior, serve acordes semidiminutos (m7b5), já que a sua b7 coincide com a sétima desses acordes',
-          'Os acordes semidiminutos não têm escala associada, por isso os improvisadores só podem usar as notas do acorde',
+          "O lócrio e o lócrio com 2.ª natural fornecem as notas de um acorde semidiminuto m7b5",
+          "O dórico e o eólio fornecem as notas de um acorde semidiminuto m7b5",
+          "O jónio e o lídio fornecem as notas de um acorde semidiminuto m7b5",
+          "O mixolídio e o lídio dominante fornecem as notas de um acorde semidiminuto m7b5",
         ],
       ],
     },
@@ -320,7 +320,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre as estruturas superiores e a rearmonização é verdadeira?',
       hintTemplate:
-        'Uma tríade de estrutura superior fica sobre o shell da dominante (fundamental, terça, b7); nomeia as suas notas pelo intervalo acima do baixo. A rearmonização troca acordes por outros que ainda suportam a melodia, muitas vezes dentro da mesma função.',
+        'Uma tríade de estrutura superior fica sobre o shell da dominante (fundamental, terça, b7); nomeia as suas notas pelo intervalo acima do baixo. A rearmonização troca acordes por outros que ainda suportam a melodia, muitas vezes dentro da mesma função. Acordes diminutos de passagem podem ligar acordes à distância de um grau através de movimento cromático no baixo.',
       choiceSets: [
         [
           'Uma tríade de D maior sobre C7 fornece a nona, a #11 e a décima terceira (o som de C13#11)',
@@ -330,15 +330,15 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'Em C maior, Em7 pode substituir Cmaj7: partilham E, G e B e ambos têm função de tónica',
-          'Em C maior, G7 pode substituir Cmaj7 porque ambos os acordes têm função de tónica e partilham todas as suas notas',
-          'Em7 e Cmaj7 não partilham nenhuma nota, por isso trocar um acorde pelo outro mudaria sempre a função da harmonia',
-          'Apenas o V7 pode substituir um acorde de tónica',
+          "Em C maior, Em7 pode substituir Cmaj7: partilham E, G e B e ambos têm função dominante",
+          "Em C maior, Em7 pode substituir Cmaj7: partilham C, E e G e ambos têm função de tónica",
+          "Em C maior, Em7 pode substituir Cmaj7: partilham C, E e G e ambos têm função dominante",
         ],
         [
-          'A rearmonização substitui os acordes sob uma melodia por outros que ainda suportam as suas notas',
-          'A rearmonização reescreve as notas da melodia para que encaixem nos acordes que a música já tinha, deixando a harmonia intacta',
-          'A rearmonização significa transpor uma música para outra tonalidade, o que mantém todas as funções dos acordes',
-          'A rearmonização remove todos os acordes, deixando a melodia para ser cantada ou tocada sem qualquer acompanhamento',
+          "A rearmonização dá a uma melodia conhecida um acompanhamento novo, escolhendo outros acordes de apoio",
+          "A rearmonização dá aos acordes originais uma melodia diferente, substituindo as notas melódicas por cima deles",
+          "A rearmonização move a melodia e os acordes originais para outra tonalidade, preservando as suas funções harmónicas",
+          "A rearmonização muda a inversão dos acordes originais, preservando a melodia e a identidade dos acordes",
         ],
         [
           'C#dim7 entre Cmaj7 e Dm7 é um acorde de passagem: o baixo sobe cromaticamente C-C#-D',
@@ -373,10 +373,10 @@ const overlay: TemplateLevelOverlay = {
           'Fica numa só tonalidade do princípio ao fim',
         ],
         [
-          'Três centros tonais a uma 3.ª maior de distância dividem a oitava em três partes iguais',
-          'Três centros tonais a uma 3.ª maior de distância dividem a oitava em quatro partes iguais, como um acorde de sétima diminuta',
-          'Formam uma escala maior',
-          'Nunca regressam à primeira tonalidade e passam a um novo centro tonal sempre que a música se repete',
+          "A oitava reparte-se igualmente por três pontos de repouso tonal separados por quatro meios-tons",
+          'A oitava reparte-se igualmente por quatro pontos de repouso tonal separados por três meios-tons',
+          'A oitava reparte-se igualmente por dois pontos de repouso tonal separados por seis meios-tons',
+          'A oitava reparte-se igualmente por seis pontos de repouso tonal separados por dois meios-tons',
         ],
         [
           'A estrutura constante move uma mesma qualidade de acorde em paralelo, seja qual for a tonalidade (Cmaj7-Dbmaj7-Dmaj7)',
@@ -398,28 +398,28 @@ const overlay: TemplateLevelOverlay = {
         'Cada modo tem uma nota característica que o distingue. Dórico: sexta natural. Frígio: b2. Lídio: #4. Mixolídio: b7. Os vamps modais enfatizam estas notas.',
       choiceSets: [
         [
-          'O dórico distingue-se do menor natural pela sua sexta elevada',
-          'O dórico tem uma sétima elevada',
-          'O dórico distingue-se do menor natural por um 7.º grau elevado, que lhe dá uma sensível',
-          'O dórico é idêntico ao menor natural sobre a mesma tónica, por isso os dois nomes descrevem exatamente as mesmas sete notas',
+          "Parte da menor natural e sobe a sexta nota meio-tom para obter o dórico",
+          "Parte da menor natural e sobe a sétima nota meio-tom para obter o dórico",
+          "Parte da menor natural e sobe a terceira nota meio-tom para obter o dórico",
+          "Parte da menor natural e baixa a segunda nota meio-tom para obter o dórico",
         ],
         [
-          'O lídio distingue-se do maior pela sua quarta elevada (#4)',
-          'O lídio distingue-se do maior pelo seu 7.º grau rebaixado (b7), a nota que o mixolídio acrescenta',
-          'O lídio tem uma terça rebaixada',
-          'O lídio é idêntico ao maior: construídas sobre a mesma tónica, as duas escalas contêm exatamente as mesmas notas',
+          "Eleva apenas a quarta nota de uma escala maior para obter o lídio",
+          "Eleva apenas a quinta nota de uma escala maior para obter o lídio",
+          "Baixa apenas a sétima nota de uma escala maior para obter o lídio",
+          "Baixa apenas a terceira nota de uma escala maior para obter o lídio",
         ],
         [
           'Um vamp em D dórico (Dm7 - G7) enfatiza a sexta natural (B natural sobre D)',
-          'Um vamp em D dórico (Dm7 - Gm7) enfatiza o Bb, a sexta rebaixada que dá a cor ao D dórico',
-          'Os vamps em D dórico usam apenas um acorde',
-          'Os vamps dóricos evitam o 6.º grau, porque essa nota transformaria o D dórico em D maior',
+          "Um vamp em D dórico (Dm7 - Gm7) enfatiza a sexta baixada (Bb sobre D)",
+          "Um vamp em D dórico (Dm7 - A7) enfatiza a sétima elevada (C# sobre D)",
+          "Um vamp em D dórico (Dmaj7 - Gmaj7) enfatiza a terça maior (F# sobre D)",
         ],
         [
           'O frígio caracteriza-se pelo intervalo de b2, dando-lhe um sabor espanhol/flamenco',
-          'O frígio soa idêntico ao maior, já que ambos os modos soam brilhantes e resolvem da mesma maneira',
-          'O frígio caracteriza-se pela sua quarta elevada, que faz dele o mais brilhante de todos os modos',
-          'O frígio não tem b2',
+          "O frígio caracteriza-se pelo intervalo de #4, dando-lhe um sabor espanhol/flamenco",
+          'O frígio caracteriza-se pelo intervalo de sétima maior, dando-lhe um sabor espanhol/flamenco',
+          "O frígio caracteriza-se pelo intervalo de sexta natural, dando-lhe um sabor espanhol/flamenco",
         ],
       ],
     },
@@ -435,22 +435,22 @@ const overlay: TemplateLevelOverlay = {
         'Planing: mover uma forma de acorde em paralelo (diatónico ou cromático). Harmonia quartal: acordes construídos de quartas empilhadas em vez de terças, comuns no jazz e na música modal.',
       choiceSets: [
         [
-          'A harmonia quartal empilha quartas perfeitas em vez de terças, criando um som aberto e ambíguo',
-          'A harmonia quartal empilha quintas perfeitas sobre um pedal no baixo, criando um som amplo, orquestral',
-          'A harmonia quartal é o mesmo que a harmonia triádica tradicional',
-          'Os acordes quartais são sempre dissonantes (como uma sétima da dominante) e têm de resolver',
+          'O empilhamento quartal D–G–C–F tem três quartas perfeitas entre notas adjacentes',
+          'O empilhamento quartal D–G–C–F tem três quartas aumentadas entre notas adjacentes',
+          'O empilhamento quartal D–G–C–F tem quartas perfeitas alternadas com quintas perfeitas',
+          'O empilhamento quartal D–G–C–F tem duas quartas perfeitas entre as suas três notas',
         ],
         [
-          'O planing move uma forma de acorde inteira para cima ou para baixo com todas as vozes em paralelo',
-          'O planing move as vozes em movimento contrário: a voz aguda sobe enquanto a grave desce',
-          'O planing é proibido em todos os estilos musicais',
-          'O planing altera sempre a qualidade do acorde em cada passo',
+          "O planing desloca todas as notas de um acorde na mesma direção ao mesmo tempo",
+          "O planing costuma enviar a nota superior do acorde para cima enquanto a inferior desce",
+          "O planing mantém todas as notas superiores enquanto o baixo percorre a escala",
+          "O planing transforma um acorde em melodia fazendo soar as notas uma após outra",
         ],
         [
           'O planing diatónico mantém todas as notas dentro da tonalidade; o planing cromático mantém os intervalos exatos',
-          'O planing diatónico e o cromático são a mesma técnica, já que ambos mantêm sempre todas as notas dentro da tonalidade',
-          'O planing cromático mantém-se dentro de uma tonalidade',
-          'O planing diatónico usa todas as 12 notas cromáticas',
+          "O planing diatónico mantém os intervalos exatos; o planing cromático mantém todas as notas na tonalidade",
+          "O planing diatónico mantém todas as vozes imóveis; o planing cromático muda apenas o baixo",
+          "O planing diatónico move todas as notas em movimento contrário; o planing cromático mantém os intervalos exatos",
         ],
       ],
     },
@@ -470,22 +470,22 @@ const overlay: TemplateLevelOverlay = {
         'O sistema de números de Nashville usa graus da escala: 1=I, 4=IV, 5=V, 6m=vi. Comuns: 1-5-6m-4, 1-4-5-1, 6m-4-1-5.',
       choiceSets: [
         [
-          'I-V-vi-IV é uma das progressões pop mais comuns e é usada em centenas de músicas de sucesso',
-          'I-V-vi-IV pertence à escrita de corais clássicos e quase nunca se ouve em canções pop',
-          'Esta progressão é raramente usada no pop',
-          'I-V-vi-IV soa sempre igual em todas as tonalidades',
+          "I-V-vi-IV é comum no pop, e os seus algarismos romanos preservam as relações entre acordes em diferentes tonalidades",
+          "I-V-vi-IV é comum no pop, e os seus algarismos romanos mantêm as mesmas alturas absolutas em diferentes tonalidades",
+          "I-V-vi-IV é comum no pop, e o vi representa um acorde maior sobre o sexto grau da escala",
+          'I-V-vi-IV é comum no pop, e o IV representa um acorde menor sobre o quarto grau da escala',
         ],
         [
-          'vi-IV-I-V é a rotação "sensitive" da mesma progressão I-V-vi-IV',
-          'vi-IV-I-V não partilha acordes com I-V-vi-IV',
-          'vi-IV-I-V não funciona como progressão pop',
-          'Começar no vi muda a qualidade dos quatro acordes',
+          "vi-IV-I-V roda I-V-vi-IV de modo que os mesmos quatro acordes comecem no vi",
+          "vi-IV-I-V roda I-IV-vi-V de modo que os mesmos quatro acordes comecem no vi",
+          "vi-IV-I-V roda I-vi-IV-V de modo que os mesmos quatro acordes comecem no vi",
+          "vi-IV-I-V roda I-V-IV-vi de modo que os mesmos quatro acordes comecem no vi",
         ],
         [
-          'O sistema de números de Nashville representa acordes por número de grau da escala para transposição fácil',
-          'Os números de Nashville designam alturas fixas, por isso uma grelha escrita como 1-4-5 só pode ser tocada em C maior',
-          'Os números de Nashville são apenas para música country',
-          'Os números de Nashville substituem a notação tradicional inteiramente, por isso os músicos de sessão nunca mais leem uma pauta ou cifra',
+          'As cifras de Nashville numeram as fundamentais por grau da escala a partir da tónica, fazendo de 4 o acorde sobre o quarto grau',
+          'As cifras de Nashville costumam numerar as fundamentais por meios-tons acima da tónica, fazendo de 4 uma terça maior',
+          'As cifras de Nashville numeram as fundamentais como alturas fixas, fazendo de 1 a nota C em qualquer tonalidade',
+          'As cifras de Nashville numeram as durações dos acordes em tempos, fazendo de 4 um acorde com quatro tempos',
         ],
       ],
     },
@@ -570,7 +570,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre os modos da menor melódica é verdadeira?',
       hintTemplate:
-        'Numera os modos de C menor melódica (C D Eb F G A B) a partir de cada nota: o modo 4 começa em F (lídio dominante), o modo 6 em A (lócrio com 2.ª natural), o modo 7 em B (alterada).',
+        'Numera os modos de C menor melódica (C D Eb F G A B) a partir de cada nota: o modo 4 começa em F (lídio dominante), o modo 6 em A (lócrio com 2.ª natural), o modo 7 em B (escala alterada).',
       choiceSets: [
         [
           'A escala alterada é o modo 7 da menor melódica: G alterada tem as notas de Ab menor melódica',
@@ -579,10 +579,10 @@ const overlay: TemplateLevelOverlay = {
           'G alterada é G maior',
         ],
         [
-          'O lídio dominante é o modo 4 da menor melódica e serve um acorde de sétima da dominante com #11',
-          'O lídio dominante é o modo 4 da escala maior, por isso serve um acorde maj7 com a quarta natural (sem #11)',
-          'O lídio dominante tem uma sétima maior',
-          'O lídio dominante serve acordes menores',
+          'O lídio dominante é o modo 4 da menor melódica e serve para um acorde de sétima da dominante com #11',
+          'O lídio dominante é o modo 2 da menor melódica e serve para um acorde de sétima da dominante com #11',
+          'O lídio dominante é o modo 6 da menor melódica e serve para um acorde de sétima da dominante com #11',
+          'O lídio dominante é o modo 7 da menor melódica e serve para um acorde de sétima da dominante com #11',
         ],
         [
           'A escala menor melódica do jazz eleva a 6.ª e a 7.ª da menor natural, tanto a subir como a descer',
@@ -591,10 +591,10 @@ const overlay: TemplateLevelOverlay = {
           'A escala menor melódica do jazz eleva apenas a 7.ª da menor natural, como a menor harmónica',
         ],
         [
-          'O lócrio com 2.ª natural é o modo 6 da menor melódica e serve o acorde semidiminuto (m7b5)',
-          'O lócrio com 2.ª natural é o modo 2 da menor melódica e serve o acorde de 7.ª diminuta completo (dim7)',
-          'O lócrio com 2.ª natural é o modo 7 da menor melódica (a escala alterada), usada em acordes 7alt',
-          'O lócrio com 2.ª natural serve um acorde de sétima maior (maj7), como o lídio',
+          'O lócrio com 2.ª natural é o modo 6 da menor melódica e serve para o acorde semidiminuto (m7b5)',
+          'O lócrio com 2.ª natural é o modo 2 da menor melódica e serve para o acorde semidiminuto (m7b5)',
+          'O lócrio com 2.ª natural é o modo 4 da menor melódica e serve para o acorde semidiminuto (m7b5)',
+          'O lócrio com 2.ª natural é o modo 7 da menor melódica e serve para o acorde semidiminuto (m7b5)',
         ],
       ],
     },
@@ -614,7 +614,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre os modos da menor harmónica, as escalas simétricas e as do mundo é verdadeira?',
       hintTemplate:
-        'A escala menor harmónica tem um som "exótico" devido à segunda aumentada. O frígio dominante (5.º modo da menor harmónica) é usado no flamenco e na música do Médio Oriente. As escalas simétricas repetem um só padrão intervalar.',
+        'A escala menor harmónica tem um som "exótico" devido à segunda aumentada. O frígio dominante (5.º modo da menor harmónica) é usado no flamenco e na música do Médio Oriente. As escalas simétricas repetem um só padrão intervalar. A escala menor húngara eleva o grau 4 da menor harmónica, criando duas segundas aumentadas. As escalas de tons inteiros usam tons inteiros (duas coleções distintas); as diminutas alternam meios-tons e tons (oito notas).',
       choiceSets: [
         [
           'A escala frígio dominante (1-b2-3-4-5-b6-b7) é o 5.º modo da menor harmónica',
@@ -623,10 +623,10 @@ const overlay: TemplateLevelOverlay = {
           'O frígio dominante é uma escala de tons inteiros',
         ],
         [
-          'A escala húngara menor tem duas segundas aumentadas, criando a sua sonoridade dramática distintiva',
-          'A escala húngara menor é o modo 5 da menor harmónica, o frígio dominante, com uma 3.ª maior',
-          'A húngara menor não tem intervalos aumentados',
-          'A húngara menor é igual à menor melódica (6.ª e 7.ª elevadas)',
+          'A escala menor húngara tem duas segundas aumentadas, criando a sua sonoridade dramática distintiva',
+          'A escala menor húngara é o modo 5 da menor harmónica, o frígio dominante, com uma 3.ª maior',
+          'A escala menor húngara não tem intervalos aumentados',
+          'A escala menor húngara é igual à menor melódica (6.ª e 7.ª elevadas)',
         ],
         [
           'Existem apenas duas escalas de tons inteiros diferentes: em C e em Db',
@@ -636,9 +636,9 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'A escala diminuta alterna meios-tons e tons, o que dá 8 notas numa oitava',
-          'A escala diminuta alterna tons e terças menores, o que lhe dá 7 notas, como a escala maior',
-          'A escala diminuta é uma escala pentatónica',
-          'A escala diminuta não tem meios-tons, tal como a escala de tons inteiros, e tem apenas 6 notas numa oitava',
+          "A escala diminuta alterna meios-tons e tons, o que dá 6 notas numa oitava",
+          "A escala diminuta alterna meios-tons e tons, o que dá 7 notas numa oitava",
+          "A escala diminuta alterna meios-tons e tons, o que dá 12 notas numa oitava",
         ],
       ],
     },
@@ -665,19 +665,19 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre as famílias de acordes é verdadeira?',
       hintTemplate:
-        'As extensões (9, 11, 13) implicam a sétima; as notas acrescentadas (add9, 6) não. Os acordes sus substituem a terça. Um power chord tem apenas fundamental e quinta.',
+        'As extensões (9, 11, 13) implicam a sétima; as notas acrescentadas (add9, 6) não. Os acordes sus substituem a terça. Um power chord tem apenas fundamental e quinta. Um acorde menor com sétima maior combina uma tríade menor com uma sétima maior: C-Eb-G-B.',
       choiceSets: [
         [
-          'Uma extensão implica a sétima: C9 contém Bb, enquanto Cadd9 não tem sétima nenhuma',
-          'Cadd9 e C9 são o mesmo acorde, porque uma nona acrescentada traz sempre consigo a sétima da dominante',
-          'C9 não tem terça',
-          'Cadd9 contém B',
+          'Em C9, inclui a sétima Bb; em Cadd9, omite a sétima',
+          'Em C9, omite a sétima; em Cadd9, inclui a sétima Bb',
+          'Em C9, inclui a sétima B; em Cadd9, omite a sétima',
+          'Em C9, omite a sétima; em Cadd9, inclui a sétima B',
         ],
         [
           'Um acorde sus4 substitui a terça pela quarta, por isso Csus4 é C-F-G',
-          'Um acorde sus4 mantém a terça e acrescenta a quarta acima dela, por isso Csus4 escreve-se C-E-F-G',
-          'Csus4 é C-Eb-G',
-          'Csus4 é um acorde menor',
+          'Um acorde sus4 mantém a terça e acrescenta a quarta, por isso Csus4 é C-E-F-G',
+          'Um acorde sus4 substitui a terça pela quarta aumentada, por isso Csus4 é C-F#-G',
+          "Um acorde sus4 substitui a quinta pela quarta, por isso Csus4 é C-E-F",
         ],
         [
           'Um power chord (C5) tem apenas fundamental e quinta, por isso não é nem maior nem menor',
@@ -686,10 +686,10 @@ const overlay: TemplateLevelOverlay = {
           'C5 é uma tríade de C menor',
         ],
         [
-          'O acorde menor com 7.ª maior é uma tríade menor com sétima maior: C-Eb-G-B',
-          'O acorde menor com 7.ª maior é uma tríade maior com sétima menor, ou seja, a sétima da dominante C-E-G-Bb',
-          'O acorde menor com 7.ª maior tem uma sétima menor, por isso é o mesmo acorde que Cm7',
-          'O acorde menor com 7.ª maior é C-E-G#-B, uma tríade aumentada com sétima maior',
+          'O acorde menor com 7.ª maior sobre C contém C-Eb-G-B',
+          'O acorde menor com 7.ª maior sobre C contém C-E-G-Bb',
+          'O acorde menor com 7.ª maior sobre C contém C-Eb-G-Bb',
+          'O acorde menor com 7.ª maior sobre C contém C-E-G-B',
         ],
       ],
     },

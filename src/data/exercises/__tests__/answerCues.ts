@@ -151,12 +151,16 @@ export function uniqueRank(s: ServedSet, feature: (label: string) => number): nu
  * when every option ties, the feature carries no information (1/n each).
  */
 export function rankProbs(s: ServedSet, feature: (label: string) => number): number[] {
-  const v = s.choices.map((c) => feature(c.label));
+  return valueRankProbs(s.choices.map((c) => feature(c.label)), ci(s));
+}
+
+/** Floating-point sums that differ only by rounding share their rank block. */
+export function valueRankProbs(v: number[], correct: number): number[] {
   const n = v.length;
   if (new Set(v).size === 1) return new Array<number>(n).fill(1 / n);
-  const mine = v[ci(s)];
-  const higher = v.filter((x) => x > mine).length;
-  const ties = v.filter((x) => x === mine).length;
+  const mine = v[correct];
+  const higher = v.filter((x) => x - mine >= 1e-9).length;
+  const ties = v.filter((x) => Math.abs(x - mine) < 1e-9).length;
   return v.map((_, r) => (r >= higher && r < higher + ties ? 1 / ties : 0));
 }
 
@@ -177,15 +181,19 @@ export const TOP_TWO_BOUND = 0.65;
 export interface RankCell { feature: string; size: number; rank: number; rate: number; bound: number; sets: number }
 
 /** Every rank cell (feature × option count × rank) and the top-two cells, for one group of sets. */
-export function rankCells(sets: ServedSet[]): { ranks: RankCell[]; topTwo: RankCell[] } {
+export function rankCells(sets: ServedSet[], lang: ContentLanguage = 'en'): { ranks: RankCell[]; topTwo: RankCell[] } {
   const bySize = new Map<number, ServedSet[]>();
   for (const s of sets) bySize.set(s.choices.length, [...(bySize.get(s.choices.length) ?? []), s]);
   const ranks: RankCell[] = [];
   const topTwo: RankCell[] = [];
   for (const [size, group] of bySize) {
-    for (const [feature, f] of Object.entries(RANK_FEATURES)) {
+    const features: Record<string, (s: ServedSet) => number[]> = {
+      ...Object.fromEntries(Object.entries(RANK_FEATURES).map(([name, f]) => [name, (s: ServedSet) => s.choices.map((c) => f(c.label))])),
+      ...Object.fromEntries(Object.entries(CONTEXT_RANK_FEATURES).map(([name, f]) => [name, (s: ServedSet) => f(s, lang)])),
+    };
+    for (const [feature, f] of Object.entries(features)) {
       const acc = new Array<number>(size).fill(0);
-      for (const s of group) rankProbs(s, f).forEach((p, i) => (acc[i] += p));
+      for (const s of group) valueRankProbs(f(s), ci(s)).forEach((p, i) => (acc[i] += p));
       for (let rank = 1; rank <= size; rank++) {
         ranks.push({ feature, size, rank, rate: acc[rank - 1] / group.length, bound: rankBound(size), sets: group.length });
       }
@@ -262,3 +270,199 @@ export function lessonVocabPick(s: ServedSet, lang: ContentLanguage): number {
 export function lessonVocabRate(sets: ServedSet[], lang: ContentLanguage): number {
   return sets.reduce((n, s) => n + lessonVocabPick(s, lang), 0) / sets.length;
 }
+
+/**
+ * A human-applicable composite shortcut, fixed before the round-2 rewrite:
+ * count distinct lesson content words, subtract two for each absolute word,
+ * add one for each hedge, and add one if there is an example OR quotation.
+ * Pick the highest score, sharing credit uniformly between tied options.
+ * This catches the familiar "qualified, illustrated, lesson-worded answer"
+ * even when none of its individual clues exceeds its own bound. These are
+ * fixed language lexicons and weights, never fitted to the answer key.
+ */
+export const COMPOSITE_BOUND = 0.4;
+export const HEDGE_WORDS: Record<ContentLanguage, ReadonlySet<string>> = {
+  en: new Set(['usually', 'often', 'typically', 'generally', 'may', 'can', 'tends', 'mostly', 'commonly', 'most', 'sometimes', 'frequently', 'usual', 'typical', 'normally', 'tend', 'could', 'might', 'roughly', 'about', 'approximately']),
+  pt: new Set(['geralmente', 'normalmente', 'frequentemente', 'costuma', 'costumam', 'pode', 'podem', 'habitualmente', 'tipicamente', 'maioria', 'comummente']),
+  es: new Set(['generalmente', 'normalmente', 'suele', 'suelen', 'puede', 'pueden', 'habitualmente', 'típicamente', 'mayoría', 'comúnmente']),
+};
+const HEDGE_PHRASES: Record<ContentLanguage, readonly string[]> = {
+  en: [], pt: ['muitas vezes', 'por vezes', 'em geral'], es: ['muchas veces', 'a menudo', 'en general'],
+};
+const COMPOSITE_ABSOLUTES: Record<ContentLanguage, ReadonlySet<string>> = {
+  en: new Set([...ABSOLUTE_WORDS.en, 'exactly', 'entirely', 'completely', 'solely', 'exclusively', 'purely', 'simply', 'just', 'nothing', 'everything', 'whatever']),
+  pt: new Set([...ABSOLUTE_WORDS.pt, 'somente', 'exatamente', 'obrigatoriamente', 'exclusivamente', 'completamente', 'totalmente', 'nada', 'tudo', 'puramente', 'simplesmente']),
+  es: new Set([...ABSOLUTE_WORDS.es, 'exactamente', 'necesariamente', 'exclusivamente', 'completamente', 'totalmente', 'nada', 'puramente', 'simplemente']),
+};
+
+export function compositeScore(label: string, lessonWords: ReadonlySet<string>, lang: ContentLanguage): number {
+  const words = toks(label);
+  const content = new Set(contentToks(label, lang).filter((w) => lessonWords.has(w)));
+  const absolutes = words.filter((w) => COMPOSITE_ABSOLUTES[lang].has(w)).length;
+  const text = ` ${words.join(' ')} `;
+  const hedges = words.filter((w) => HEDGE_WORDS[lang].has(w)).length
+    + HEDGE_PHRASES[lang].reduce((sum, phrase) => sum + text.split(` ${phrase} `).length - 1, 0);
+  const illustrated = /e\.g\.|ex\.|p\. ex|por ejemplo|por exemplo|for example|["“”«»]/i.test(label) ? 1 : 0;
+  return content.size - 2 * absolutes + hedges + illustrated;
+}
+
+export function compositePick(s: ServedSet, lang: ContentLanguage): number {
+  const lex = s.moduleId ? lessonVocabulary(s.moduleId, lang) : new Set<string>();
+  return pick(s.choices.map((c) => compositeScore(c.label, lex, lang)), ci(s));
+}
+
+export function compositeRate(sets: ServedSet[], lang: ContentLanguage): number {
+  return sets.reduce((sum, s) => sum + compositePick(s, lang), 0) / sets.length;
+}
+
+/** Reference rankfam.py tokens include accidentals and chord-quality signs.
+ * Keep the original toks/heuristics unchanged so the existing gates retain
+ * their definitions; use this tokenizer for the additional rank family.
+ */
+export const rankToks = (s: string): string[] => s.toLowerCase().match(/[\p{L}\p{N}_'’♭♯#°ø]+/gu) ?? [];
+
+const allLessonCache = new Map<string, ReadonlySet<string>>();
+export function allLessonVocabulary(moduleId: string, lang: ContentLanguage): ReadonlySet<string> {
+  const key = `${lang}:${moduleId}`;
+  const hit = allLessonCache.get(key);
+  if (hit) return hit;
+  const level = Number(moduleId.slice(1, moduleId.indexOf('u')));
+  const mod = EN_UNITS[level]?.flatMap((u) => u.modules).find((m) => m.id === moduleId);
+  const ov = lang === 'en' ? undefined : curriculumOverlay(lang, level).modules[moduleId];
+  const text = (mod?.concepts ?? []).map((c, i) => ov?.concepts[i]?.explanation ?? c.explanation).join(' ');
+  const words = new Set(rankToks(text));
+  allLessonCache.set(key, words);
+  return words;
+}
+
+/** Curriculum-derived technical vocabulary: a token of at least five
+ * characters occurring in the module/concept titles of 1–6 modules across
+ * the entire curriculum, counted once per module, in the item's language.
+ * This is rankfam.py's implemented rule (its comment saying 12 is stale).
+ * No answer labels or answer keys take part in constructing the lexicon.
+ */
+const technicalCache = new Map<ContentLanguage, ReadonlySet<string>>();
+export function technicalVocabulary(lang: ContentLanguage): ReadonlySet<string> {
+  const hit = technicalCache.get(lang);
+  if (hit) return hit;
+  const counts = new Map<string, number>();
+  for (const [level, units] of Object.entries(EN_UNITS)) {
+    const overlay = lang === 'en' ? undefined : curriculumOverlay(lang, Number(level));
+    for (const mod of units.flatMap((u) => u.modules)) {
+      const ov = overlay?.modules[mod.id];
+      const titles = [ov?.title ?? mod.title, ...mod.concepts.map((c, i) => ov?.concepts[i]?.title ?? c.title)];
+      for (const w of new Set(rankToks(titles.join(' ')))) {
+        if (len(w) >= 5) counts.set(w, (counts.get(w) ?? 0) + 1);
+      }
+    }
+  }
+  const words = new Set([...counts].filter(([, count]) => count <= 6).map(([w]) => w));
+  technicalCache.set(lang, words);
+  return words;
+}
+
+/** Fraction of distinct option words found in the concept explanations.
+ * Content mode removes this language's STOP_WORDS, with no word-length cut.
+ * rank3.py instead uses English stop words and a five-character cut in ALL
+ * languages; that reference variant is cross-checked separately in review.
+ */
+export function lessonFractions(s: ServedSet, lang: ContentLanguage, content = false): number[] {
+  const lex = s.moduleId ? allLessonVocabulary(s.moduleId, lang) : new Set<string>();
+  return s.choices.map((c) => {
+    const words = new Set(rankToks(c.label).filter((w) => !content || !STOP_WORDS[lang].has(w)));
+    return [...words].filter((w) => lex.has(w)).length / Math.max(1, words.size);
+  });
+}
+
+export const CONTEXT_RANK_FEATURES: Record<string, (s: ServedSet, lang: ContentLanguage) => number[]> = {
+  similar_to_others: (s) => {
+    const words = s.choices.map((c) => rankToks(c.label));
+    return words.map((a, i) => words.reduce((sum, b, j) => sum + (i === j ? 0 : jaccard(a, b)), 0));
+  },
+  shared_tokens: (s) => {
+    const words = s.choices.map((c) => new Set(rankToks(c.label)));
+    const counts = new Map<string, number>();
+    for (const set of words) for (const w of set) counts.set(w, (counts.get(w) ?? 0) + 1);
+    return words.map((set) => [...set].reduce((sum, w) => sum + counts.get(w)! - 1, 0) / Math.max(1, set.size));
+  },
+  prefix_shared: (s) => {
+    const labels = s.choices.map((c) => [...c.label]);
+    return labels.map((a, i) => Math.max(0, ...labels.map((b, j) => {
+      if (i === j) return 0;
+      let n = 0;
+      while (n < a.length && n < b.length && a[n] === b[n]) n++;
+      return n;
+    })));
+  },
+  // rank3.py exposed this related cue after the first content pass: counting
+  // long words alone does not bound the average length of all option words.
+  avgwordlen: (s) => s.choices.map((c) => {
+    const words = rankToks(c.label);
+    return words.reduce((sum, w) => sum + len(w), 0) / Math.max(1, words.length);
+  }),
+  long_words: (s) => s.choices.map((c) => rankToks(c.label).filter((w) => len(w) >= 9).length),
+  tech_vocab: (s, lang) => s.choices.map((c) => rankToks(c.label).filter((w) => technicalVocabulary(lang).has(w)).length),
+  lesson_text_overlap: (s, lang) => lessonFractions(s, lang),
+  lesson_content_frac: (s, lang) => lessonFractions(s, lang, true),
+};
+
+export function lessonFractionRate(sets: ServedSet[], lang: ContentLanguage, content = false): number {
+  return sets.reduce((sum, s) => sum + pick(lessonFractions(s, lang, content), ci(s)), 0) / sets.length;
+}
+
+
+/** Round 3: mirror oddone.py's mean Jaccard and strict gap, using rankfam tokens. */
+export interface CueCount { right: number; sets: number; ids: string[] }
+export function oddOneOut(sets: ServedSet[], gap: number): CueCount {
+  const result: CueCount = { right: 0, sets: 0, ids: [] };
+  for (const s of sets.filter(s => s.choices.length === 4)) {
+    const tokens = s.choices.map(c => rankToks(c.label));
+    const means = tokens.map((a, i) => tokens.reduce((sum, b, j) => sum + (i === j ? 0 : jaccard(a, b)), 0) / 3);
+    const order = [0, 1, 2, 3].sort((a, b) => means[a] - means[b]);
+    if (means[order[1]] - means[order[0]] <= gap) continue;
+    result.sets++;
+    if (order[0] === ci(s)) { result.right++; result.ids.push(s.id); }
+  }
+  return result;
+}
+
+export function parallelWrongOptions(sets: ServedSet[]): string[] {
+  return sets.filter(s => {
+    if (s.choices.length !== 4) return false;
+    const tokens = s.choices.map(c => rankToks(c.label));
+    const wrong = tokens.filter((_, i) => i !== ci(s));
+    return wrong.every((a, i) => wrong.every((b, j) => i === j || jaccard(a, b) >= 0.6))
+      && wrong.every(a => jaccard(tokens[ci(s)], a) < 0.4);
+  }).map(s => s.id);
+}
+
+export function oddOpening(sets: ServedSet[], k: number): CueCount {
+  const result: CueCount = { right: 0, sets: 0, ids: [] };
+  for (const s of sets.filter(s => s.choices.length === 4)) {
+    const prefixes = s.choices.map(c => JSON.stringify(rankToks(c.label).slice(0, k)));
+    const counts = prefixes.map(p => prefixes.filter(x => x === p).length);
+    if (!counts.includes(3) || !counts.includes(1)) continue;
+    result.sets++;
+    if (counts[ci(s)] === 1) { result.right++; result.ids.push(s.id); }
+  }
+  return result;
+}
+
+export const EXPLANATION_WORDS: Record<ContentLanguage, ReadonlySet<string>> = {
+  en: new Set(['because']), pt: new Set(['porque']), es: new Set(['porque']),
+};
+/** Test-wise rule: never pick an option with X (or preferentially pick it).
+ * Count options containing a word, once per option, not token occurrences.
+ * Include every existing absolute/hedge list and the explanation words.
+ */
+export function wordAnswerShares(sets: ServedSet[], lang: ContentLanguage) {
+  const words = new Set([...HEDGE_WORDS[lang], ...COMPOSITE_ABSOLUTES[lang], ...EXPLANATION_WORDS[lang]]);
+  return [...words].map(word => {
+    const options = sets.flatMap(s => s.choices).filter(c => toks(c.label).includes(word));
+    return { word, right: options.filter(c => c.correct).length, options: options.length };
+  });
+}
+export const cueShareWithinBounds = (c: CueCount, lower = 0, min = 10) =>
+  c.sets < min || (c.right / c.sets >= lower && c.right / c.sets <= 0.4);
+export const wordShareWithinBounds = (c: { right: number; options: number }) =>
+  c.options < 10 || (c.right / c.options >= 0.08 && c.right / c.options <= 0.45);

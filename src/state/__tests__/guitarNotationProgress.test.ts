@@ -34,9 +34,10 @@ describe('W10-08: optional guitar notation cannot change existing progress', () 
     localStorage.setItem('music-theory-progress', raw);
     await useProgressStore.persist.rehydrate();
     const loaded = useProgressStore.getState().progress;
-    expect(PROGRESS_STORE_VERSION).toBe(2);
+    expect(PROGRESS_STORE_VERSION).toBe(3);
     expect(loaded).toEqual(saved.state.progress); // includes exemptions, scores, passed, tasks, SRS
-    expect(localStorage.getItem('music-theory-progress')).toBe(raw);
+    // The content retirement upgrades the envelope; this fixture's ids are unchanged.
+    expect(localStorage.getItem('music-theory-progress')).toBe(JSON.stringify({ ...saved, version: PROGRESS_STORE_VERSION }));
     const levels = await loadAllLevels();
     const expected = ['completed', 'completed', 'available', 'locked', 'locked', withUnlock ? 'available' : 'locked', 'locked', 'locked', 'available'];
     expect(levels.map((l) => computeLevelState(l, levels, loaded.completedModules, loaded.unlockedLevels))).toEqual(expected);

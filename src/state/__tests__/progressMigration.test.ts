@@ -29,6 +29,7 @@ import { EN_UNITS } from '../../i18n/content/__tests__/overlayEntries';
 import type { CurriculumProgress } from '../../core/types/curriculum';
 import { validateBackup, applyBackup } from '../../utils/backupHelpers';
 import identities from '../../data/exercises/__tests__/exerciseIdentities.json';
+import previousIdentities from './fixtures/learn-identities-v2.json';
 
 /** Current identities of every served exercise (snapshot pinned by exerciseIdentity.snapshot.test). */
 const NOW = identities as Record<string, Record<string, string>>;
@@ -128,7 +129,7 @@ describe('progress store v2: retiring scores of changed exercises', () => {
 
   it('the re-keyed module keeps only its unchanged authored scores', async () => {
     const after = await hydrateFrom(mainSave());
-    expect(Object.keys(after.exerciseResults!.l3u11m1.scores).sort()).toEqual(['l3u11m1e2', 'l3u11m1e3', 'l3u11m1e4']);
+    expect(Object.keys(after.exerciseResults!.l3u11m1.scores).sort()).toEqual(['l3u11m1e3']);
     expect(Object.keys(after.exerciseResults!.l9u30m1.scores).sort()).toEqual(['l9u30m1e1', 'l9u30m1g1', 'l9u30m1g2']);
   });
 
@@ -168,7 +169,7 @@ describe('backups: an old (v1) progress section is still accepted and migrates o
     await useProgressStore.persist.rehydrate();
     const p = useProgressStore.getState().progress;
     expect(p.completedModules).toEqual(L1_TO_L3);
-    expect(Object.keys(p.exerciseResults!.l3u11m1.scores).sort()).toEqual(['l3u11m1e2', 'l3u11m1e3', 'l3u11m1e4']);
+    expect(Object.keys(p.exerciseResults!.l3u11m1.scores).sort()).toEqual(['l3u11m1e3']);
   });
 
   it('a progress section from a newer app version is refused', async () => {
@@ -193,5 +194,83 @@ describe('the saved-progress shape guard checks exercise results (review follow-
     const save = good();
     mutate(save.progress);
     expect(isValidPersistedProgress(save)).toBe(false);
+  });
+});
+
+
+/** Frozen identities from main 4d14825, before the MC-cue content release.
+ * This is a synthetic production-shaped save, not the owner's private blob.
+ * Include every prior id, including scores freshly earned on v2 content, so
+ * the v3 migration cannot accidentally replay v2's retirement list.
+ */
+function previousReleaseSave(): { state: { progress: CurriculumProgress }; version: number } {
+  const t = 1_793_000_000_000;
+  return {
+    version: 2,
+    state: { progress: {
+      completedModules: [...L1_TO_L3],
+      unlockedLevels: ['l5', 'l7'],
+      exemptedModules: ['l4u12m1'],
+      moduleProgress: { l1u1m1: ['l1u1m1t1', 'l1u1m1t2'], l3u11m1: ['l3u11m1t1'] },
+      reviewSchedules: Object.fromEntries(L1_TO_L3.map((id) => [id, {
+        completedAt: t, nextReviewAt: t + 86_400_000, intervalLevel: 2, reviewCount: 4, lastReviewedAt: t,
+      }])),
+      exerciseResults: Object.fromEntries(Object.entries(previousIdentities).map(([moduleId, ids], i) => [moduleId, {
+        scores: scoresFor(Object.keys(ids)), totalAttempts: Object.keys(ids).length + i + 3, lastAttemptAt: t + i, passed: L1_TO_L3.includes(moduleId) || i % 2 === 0,
+      }])),
+    } },
+  };
+}
+
+describe('MC-cue release: production-shaped previous-version saved progress', () => {
+  it('retires exactly the main-to-release identity difference once, in version 3', () => {
+    expect(PROGRESS_STORE_VERSION).toBe(3);
+    const releases = RETIRED_EXERCISE_IDS.filter((r) => r.version === 3);
+    expect(releases).toHaveLength(1);
+    const retired = Object.entries(releases[0].ids).flatMap(([moduleId, suffixes]) =>
+      suffixes.split(' ').map((suffix) => `${moduleId}${suffix}`));
+    const changed = Object.entries(previousIdentities).flatMap(([moduleId, ids]) =>
+      Object.entries(ids).filter(([id, before]) => NOW[moduleId]?.[id] !== before).map(([id]) => id));
+    expect(new Set(retired).size).toBe(retired.length);
+    expect([...retired].sort()).toEqual(changed.sort());
+  });
+
+  it('drops exactly scores whose identities changed, preserving every other field and unlock', async () => {
+    const saved = previousReleaseSave();
+    expect(PROGRESS_STORE_VERSION).toBe(3);
+    expect(saved.version).toBe(PROGRESS_STORE_VERSION - 1);
+    const expected = structuredClone(saved.state.progress);
+    let dropped = 0;
+    let kept = 0;
+    for (const [moduleId, ids] of Object.entries(previousIdentities)) {
+      for (const [id, before] of Object.entries(ids)) {
+        if (NOW[moduleId]?.[id] !== before) {
+          delete expected.exerciseResults![moduleId].scores[id];
+          dropped++;
+        } else kept++;
+      }
+    }
+    expect(dropped).toBeGreaterThan(0);
+    expect(kept).toBeGreaterThan(0);
+    const after = await hydrateFrom(saved);
+    expect(after).toEqual(expected);
+    expect(unlocks(after)).toEqual(unlocks(saved.state.progress));
+    expect(LEVEL_METADATA.map(m => computeLevelStateMeta(m, LEVEL_METADATA, after.completedModules, after.unlockedLevels)))
+      .toEqual(LEVEL_METADATA.map(m => computeLevelStateMeta(m, LEVEL_METADATA, saved.state.progress.completedModules, saved.state.progress.unlockedLevels)));
+    expect(JSON.parse(localStorage.getItem('music-theory-progress')!)).toEqual({ state: { progress: expected }, version: PROGRESS_STORE_VERSION });
+  });
+
+  it('does not drop new scores after this release, on reload or backup import', async () => {
+    const saved = previousReleaseSave();
+    saved.version = PROGRESS_STORE_VERSION;
+    expect(await hydrateFrom(saved)).toEqual(saved.state.progress);
+    const validated = await validateBackup({
+      format: 'fermata-backup', version: 1, exportedAt: '2026-11-03T12:00:00.000Z',
+      data: { 'music-theory-progress': saved },
+    });
+    if (!validated.ok) throw new Error(validated.reason);
+    applyBackup(validated.backup, localStorage);
+    await useProgressStore.persist.rehydrate();
+    expect(useProgressStore.getState().progress).toEqual(saved.state.progress);
   });
 });

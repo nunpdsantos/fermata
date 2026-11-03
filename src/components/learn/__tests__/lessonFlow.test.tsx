@@ -261,14 +261,22 @@ it('a production v2 save survives a completed check through real persistence', a
     exemptedModules: ['l4u12m1'],
     unlockedLevels: ['l3'],
     exerciseResults: {
-      l3u11m1: { scores: { l3u11m1e2: 0.5 }, totalAttempts: 7, lastAttemptAt: 1793000000000, passed: true },
+      l3u11m1: { scores: { l3u11m1e2: 0.5, l3u11m1e3: 1 }, totalAttempts: 7, lastAttemptAt: 1793000000000, passed: true },
       [MOD.id]: { scores: { l1u1m1g1: 0.5 }, totalAttempts: 4, lastAttemptAt: 1793000000000, passed: false },
     },
     reviewSchedules: { l3u11m1: { completedAt: 1793000000000, nextReviewAt: 1793086400000, intervalLevel: 2, reviewCount: 3, lastReviewedAt: 1793000000000 } },
   };
   localStorage.setItem('music-theory-progress', JSON.stringify({ state: { progress }, version: 2 }));
   await useProgressStore.persist.rehydrate();
-  expect(useProgressStore.getState().progress).toEqual(progress);
+  // Round 4 changes e2; the frozen unchanged e3 score must survive.
+  const migrated = {
+    ...progress,
+    exerciseResults: {
+      ...progress.exerciseResults,
+      l3u11m1: { ...progress.exerciseResults.l3u11m1, scores: { l3u11m1e3: 1 } },
+    },
+  };
+  expect(useProgressStore.getState().progress).toEqual(migrated);
   const first = renderModule({
     onRecordExerciseResult: (id, score) => useProgressStore.getState().recordExerciseResult(MOD.id, id, score),
     onExercisesComplete: (passed) => { if (passed) useProgressStore.getState().markExercisesPassed(MOD.id); },
@@ -282,11 +290,11 @@ it('a production v2 save survives a completed check through real persistence', a
   useProgressStore.setState({ progress: getDefaultProgress() });
   localStorage.setItem('music-theory-progress', raw);
   await useProgressStore.persist.rehydrate();
-  expect(JSON.parse(raw).version).toBe(2);
+  expect(JSON.parse(raw).version).toBe(3);
   const expected = {
-    ...progress,
+    ...migrated,
     exerciseResults: {
-      ...progress.exerciseResults,
+      ...migrated.exerciseResults,
       [MOD.id]: {
         scores: { ...progress.exerciseResults[MOD.id].scores, ...Object.fromEntries(EXERCISES.map((ex) => [ex.id, 1])) },
         totalAttempts: 7, lastAttemptAt: expect.any(Number), passed: true,

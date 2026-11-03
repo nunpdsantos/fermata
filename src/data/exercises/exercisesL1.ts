@@ -46,7 +46,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
             correct: false
           },
           {
-            label: 'Position III',
+            label: 'Fret 3',
             correct: false
           },
           {
@@ -54,7 +54,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
             correct: true
           },
           {
-            label: 'Fret 3',
+            label: 'Position III',
             correct: false
           }
         ]
@@ -125,19 +125,19 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           {
-            label: 'Open string',
+            label: 'Play the string with no left-hand finger pressing it at any fret',
             correct: true
           },
           {
-            label: 'Index finger',
+            label: 'Play the string with a left-hand finger pressing it at fret 1',
             correct: false
           },
           {
-            label: 'Full barre',
+            label: 'Play the string with a left-hand barre pressing it at fret 1',
             correct: false
           },
           {
-            label: 'Right thumb',
+            label: 'Play the string with a left-hand finger pressing it at fret 3',
             correct: false
           }
         ]
@@ -152,7 +152,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           {
-            label: 'Thumb, ring, middle, index',
+            label: 'Little, index, middle, ring',
             correct: false
           },
           {
@@ -160,11 +160,11 @@ const exercises: Record<string, ExerciseDefinition[]> = {
             correct: true
           },
           {
-            label: 'Index, middle, ring, little',
+            label: 'Thumb, index, middle, little',
             correct: false
           },
           {
-            label: 'Ring, middle, index, thumb',
+            label: 'Ring, index, middle, thumb',
             correct: false
           }
         ]
@@ -179,11 +179,11 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           {
-            label: 'p-i-m-a',
+            label: 'a-p-m-i',
             correct: false
           },
           {
-            label: 'i-m-a-p',
+            label: 'p-i-m-a',
             correct: false
           },
           {
@@ -191,7 +191,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
             correct: true
           },
           {
-            label: 'a-m-i-p',
+            label: 'a-m-p-i',
             correct: false
           }
         ]
@@ -383,10 +383,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'To write notes above or below the five lines of the staff', correct: true },
-          { label: 'To show how fast the piece should be played', correct: false },
-          { label: 'To show which hand, right or left, plays each note', correct: false },
-          { label: 'To show where the rests occur', correct: false },
+          { label: 'To notate pitches outside the staff', correct: true },
+          { label: 'To separate measures on the staff', correct: false },
+          { label: 'To raise every pitch by an octave', correct: false },
+          { label: 'To connect two staves into one system', correct: false },
         ],
       },
       hint: 'The staff has only five lines. Notes that go beyond those lines need extra short lines to indicate their position.',
@@ -615,8 +615,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: '4 quarter-note beats per measure', correct: true },
           { label: '4 half-note beats per measure', correct: false },
-          { label: '4 sixteenth-note beats per measure', correct: false },
-          { label: '4 measures per line', correct: false },
+          { label: '4 whole-note beats per measure', correct: false },
+          { label: '4 eighth-note beats per measure', correct: false },
         ],
       },
       hint: 'The top number (4) is beats per measure. The bottom number (4) means the quarter note gets one beat.',
@@ -631,8 +631,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         choices: [
           { label: '3 quarter-note beats per measure', correct: true },
           { label: '3 half-note beats per measure', correct: false },
-          { label: '3 sixteenth-note beats per measure', correct: false },
-          { label: '3 measures of 4 beats', correct: false },
+          { label: '3 whole-note beats per measure', correct: false },
+          { label: '3 eighth-note beats per measure', correct: false },
         ],
       },
       hint: '3/4 means three quarter-note beats per measure. This creates the ONE-two-three waltz feel.',
@@ -644,10 +644,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Each beat divides naturally into two equal parts', correct: true },
-          { label: 'Each beat divides naturally into three equal parts', correct: false },
-          { label: 'The music has no time signature written at the start of the piece', correct: false },
-          { label: 'The tempo is slow and steady from the first bar to the last', correct: false },
+          { label: 'The beat divides into 2 equal notes', correct: true },
+          { label: 'The beat divides into 3 equal notes', correct: false },
+          { label: 'The bar contains 2 beats', correct: false },
+          { label: 'The bar contains 3 beats', correct: false },
         ],
       },
       hint: 'In simple meter, beats subdivide into two. In compound meter, beats subdivide into three. 4/4 and 3/4 are simple meters.',
@@ -772,10 +772,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'B (it becomes Bb)', correct: true },
-          { label: 'E (it becomes Eb)', correct: false },
-          { label: 'A (it becomes Ab)', correct: false },
-          { label: 'F (it becomes Fb)', correct: false },
+          { label: 'B is flattened; A, E and F stay natural', correct: true },
+          { label: 'E is flattened; A, B and F stay natural', correct: false },
+          { label: 'A is flattened; B, E and F stay natural', correct: false },
+          { label: 'F is flattened; A, B and E stay natural', correct: false },
         ],
       },
       hint: 'F major needs Bb to maintain the major scale pattern. The fourth note (B) must be lowered to Bb.',
@@ -787,10 +787,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: '2 sharps (F# and C#)', correct: true },
-          { label: '1 sharp (F#)', correct: false },
-          { label: '3 sharps (F#, C#, G#)', correct: false },
-          { label: '2 flats (Bb, Eb)', correct: false },
+          { label: 'Key signature: F#, C#', correct: true },
+          { label: 'Key signature: F#', correct: false },
+          { label: 'Key signature: F#, C#, G#', correct: false },
+          { label: 'Key signature: Bb, Eb', correct: false },
         ],
       },
       hint: 'D major adds C# on top of G major\'s F#. Sharps accumulate in order: F#, C#, G#, D#, A#, E#, B#.',
@@ -879,16 +879,14 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     },
     {
       id: 'l1u3m4e3',
-      type: 'multiple_choice',
-      prompt: 'What intervals make up a major triad?',
+      type: 'chord_build',
+      prompt: 'Build a B major triad. Select its three notes.',
       config: {
-        type: 'multiple_choice',
-        choices: [
-          { label: 'Root, major 3rd (4 semitones), perfect 5th (7 semitones)', correct: true },
-          { label: 'Root, minor 3rd (3 semitones), perfect 5th (7 semitones)', correct: false },
-          { label: 'Root, major 3rd (4 semitones), diminished 5th (6 semitones)', correct: false },
-          { label: 'Root, perfect 4th (5 semitones), perfect 5th (7 semitones)', correct: false },
-        ],
+        type: 'chord_build',
+        root: 'B',
+        rootAccidental: '',
+        quality: 'major',
+        noteCount: 3,
       },
       hint: 'A major triad stacks a major 3rd (4 half steps from root) and then a minor 3rd on top (3 more), giving root + M3 + P5.',
     },

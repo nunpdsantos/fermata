@@ -4,9 +4,9 @@
  * level ids). The field is additive: progress saved by main (v2, W4a's
  * retirement already applied) must load exactly as it was — completions,
  * task ticks, exemptions, scores, attempts, "passed" flags and review
- * schedules — and no level is unlocked by it. The store version is not
- * raised (nothing to migrate); the shape guard checks the new field, and a
- * backup carrying it round-trips.
+ * schedules — and no level is unlocked by it. W4b added no migration;
+ * subsequent content releases may retire scores. This fixture uses unchanged
+ * items. The shape guard checks the new field, and backups round-trip.
  */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useProgressStore, PROGRESS_STORE_VERSION, isValidPersistedProgress } from '../progressStore';
@@ -51,9 +51,9 @@ const levelStates = (p: CurriculumProgress) =>
 beforeEach(() => localStorage.clear());
 
 describe('"Unlock anyway" is saved, and older saves load unchanged', () => {
-  it('the store version is unchanged by W4b (an additive optional field needs no migration)', () => {
-    expect(PROGRESS_STORE_VERSION).toBe(2);
-    expect(useProgressStore.persist.getOptions().version).toBe(2);
+  it('unlock persistence uses the current content-retirement version', () => {
+    expect(PROGRESS_STORE_VERSION).toBe(3);
+    expect(useProgressStore.persist.getOptions().version).toBe(3);
   });
 
   it('a production-shaped main (v2) save loads byte-for-byte: nothing lost, nothing unlocked', async () => {
@@ -87,7 +87,7 @@ describe('"Unlock anyway" is saved, and older saves load unchanged', () => {
     // Saved, and back after a reload.
     const stored = JSON.parse(localStorage.getItem('music-theory-progress')!);
     expect(stored.state.progress.unlockedLevels).toEqual(['l4']);
-    expect(stored.version).toBe(2);
+    expect(stored.version).toBe(PROGRESS_STORE_VERSION);
     // A fresh page load: the in-memory store starts empty, then reads the save.
     const raw = localStorage.getItem('music-theory-progress')!;
     useProgressStore.setState({ progress: { completedModules: [], moduleProgress: {} } });

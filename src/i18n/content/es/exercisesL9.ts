@@ -39,10 +39,10 @@ const overlay: ExerciseLevelOverlay = {
   l9u30m1e4: {
     prompt: '¿Qué significa «registro» en música?',
     choices: [
-      'La posición relativa de agudo o grave dentro de un rango de alturas',
-      'La intensidad con que se toca, más fuerte en el agudo y más suave en el grave',
-      'La velocidad a la que se tocan las notas, desde muy lenta hasta muy rápida',
-      'El número de instrumentos que suenan simultáneamente',
+      'La región aguda o grave en que suenan las alturas',
+      'La extensión entre los extremos de una melodía',
+      'El movimiento ascendente o descendente de una melodía',
+      'El número de notas que suenan en un acorde',
     ],
     hint: 'El registro describe una porción del espectro de alturas: registro grave, registro medio o registro agudo.',
   },
@@ -65,12 +65,12 @@ const overlay: ExerciseLevelOverlay = {
   },
   l9u30m2e3: {
     prompt:
-      '¿Cuál es la diferencia estructural entre una tríada mayor y una tríada menor?',
+      '¿Qué tríada es la forma menor de C–E–G?',
     choices: [
-      'La tercera desciende un semitono en el menor',
-      'La quinta desciende un semitono en el menor',
-      'La fundamental sube un semitono en el menor',
-      'Las tríadas menores tienen cuatro notas en vez de tres',
+      'C–Eb–G',
+      'C–E#–G',
+      'C#–E–G',
+      'C–E–Gb',
     ],
     hint: 'Tríada mayor: fundamental + 3.ª mayor (4 semitonos) + 5.ª justa. Tríada menor: fundamental + 3.ª menor (3 semitonos) + 5.ª justa. Solo cambia la 3.ª.',
   },
@@ -148,9 +148,9 @@ const overlay: ExerciseLevelOverlay = {
       '¿Cuál es la diferencia entre un intervalo armónico y un intervalo melódico?',
     choices: [
       'Los intervalos armónicos hacen sonar las dos notas a la vez; los melódicos las tocan una tras otra',
-      'Los intervalos armónicos son siempre consonantes; los melódicos son siempre disonantes',
-      'Los intervalos armónicos usan sostenidos; los melódicos usan bemoles',
-      'Los intervalos armónicos abarcan más de una octava; los melódicos no',
+      "Los intervalos armónicos hacen sonar las dos notas una tras otra; los melódicos las tocan a la vez",
+      'Los intervalos armónicos hacen sonar las dos notas en la misma octava; los melódicos las tocan en octavas distintas',
+      'Los intervalos armónicos hacen sonar las dos notas en un instrumento; los melódicos las tocan en dos instrumentos',
     ],
     hint: 'Armónico = ambas notas al mismo tiempo. Melódico = una nota después de la otra. Las mismas dos notas pueden formar cualquiera de los dos tipos.',
   },
@@ -207,10 +207,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Cuál es la nota característica que distingue el dórico del menor natural?',
     choices: [
-      'Un 6.º grado elevado (natural)',
-      'Un 2.º grado descendido',
-      'Un 7.º grado elevado',
-      'Un 5.º grado descendido',
+      "El 6.º grado elevado un semitono",
+      "El 7.º grado elevado un semitono",
+      "El 3.º grado elevado un semitono",
+      'El 2.º grado rebajado un semitono',
     ],
     hint: 'El dórico difiere del menor natural en una nota: el 6.º grado está elevado un semitono. En D dórico, es B natural en vez de Bb.',
   },
@@ -248,12 +248,12 @@ const overlay: ExerciseLevelOverlay = {
   l9u31m3e3: {
     prompt: '¿Qué es la «blue note» en una escala de blues?',
     choices: [
-      'La 5.ª bemolizada (o 4.ª sostenida), entre el 4.º y el 5.º grados',
-      'La tónica repetida una octava más arriba, en el punto más agudo de la escala',
-      'Cualquier nota tocada con vibrato',
-      'La sensible de la tonalidad, la nota que queda medio tono por debajo de la tónica',
+      'La 5.ª bemolizada (o 4.ª sostenida), entre los grados 4.º y 5.º',
+      "La 2.ª bemolizada (o tónica sostenida), entre los grados 1.º y 2.º",
+      "La 6.ª bemolizada (o 5.ª sostenida), entre los grados 5.º y 6.º",
+      "La 7.ª natural (o octava bemolizada), entre la 7.ª bemolizada y la tónica",
     ],
-    hint: 'La blue note es la b5 (o #4) añadida a la pentatónica menor. En C blues, es Gb/F#, entre F y G.',
+    hint: 'La blue note es la b5 (o #4) que la escala de blues de seis notas añade a la pentatónica menor. En el blues en C, es Gb/F#, entre F y G.',
   },
 
   // ---- l9u31m4: Reconocimiento de Cualidad de Tríadas ----
@@ -275,10 +275,10 @@ const overlay: ExerciseLevelOverlay = {
   l9u31m4e3: {
     prompt: '¿Qué intervalos componen una tríada disminuida?',
     choices: [
-      'Fundamental, 3.ª menor y 5.ª disminuida (tritono)',
-      'Fundamental, 3.ª mayor y 5.ª justa (tríada mayor)',
-      'Fundamental, 3.ª menor y 5.ª justa',
-      'Fundamental, 3.ª mayor y 5.ª aumentada (dos 3.as mayores)',
+      'Fundamental + 3.ª menor + 5.ª disminuida',
+      'Fundamental + 3.ª mayor + 5.ª disminuida',
+      'Fundamental + 3.ª menor + 5.ª justa',
+      'Fundamental + 3.ª mayor + 5.ª justa',
     ],
     hint: 'Disminuida = 3.ª menor (3 semitonos) + 5.ª disminuida (6 semitonos). Dos 3.as menores apiladas producen el tritono entre fundamental y 5.ª.',
   },
@@ -314,9 +314,9 @@ const overlay: ExerciseLevelOverlay = {
       '¿Qué confiere a un acorde de 7.ª dominante su sensación característica de tensión y deseo de resolver?',
     choices: [
       'El tritono entre la 3.ª y la 7.ª',
-      'La 5.ª justa formada entre la fundamental y la 5.ª del acorde',
-      'La 3.ª mayor entre fundamental y 3.ª',
-      'La duplicación a la octava de la fundamental',
+      'El tritono entre la fundamental y la 5.ª',
+      'La 5.ª justa entre la fundamental y la 5.ª',
+      'La 3.ª mayor entre la fundamental y la 3.ª',
     ],
     hint: 'En G7 (G-B-D-F), B y F forman un tritono (6 semitonos). Esta disonancia crea la atracción hacia la resolución a C mayor.',
   },
@@ -325,11 +325,11 @@ const overlay: ExerciseLevelOverlay = {
       '¿En qué contexto musical se encuentra con mayor frecuencia el acorde de séptima semidisminuido?',
     choices: [
       'Como acorde ii en tonalidades menores (p. ej. Bm7b5 en A menor)',
-      'Como acorde I en tonalidades mayores',
-      'Como acorde V en tonalidades mayores',
-      'Como acorde IV de un blues de 12 compases, donde todos los acordes son de 7.ª de dominante',
+      "Como acorde i en tonalidades menores (p. ej. Am7b5 en A menor)",
+      "Como acorde V en tonalidades menores (p. ej. Em7b5 en A menor)",
+      "Como acorde iv en tonalidades menores (p. ej. Dm7b5 en A menor)",
     ],
-    hint: 'El acorde de séptima semidisminuido (m7b5) aparece naturalmente en el 2.º grado de la menor armónica. Funciona como acorde predominante conduciendo al V en progresiones ii-V-i menores.',
+    hint: 'El acorde de séptima semidisminuido (m7b5) aparece diatónicamente sobre ii en la menor natural o armónica y sobre vii en mayor. En las progresiones ii-V-i en tonalidades menores, es la predominante habitual que conduce a V.',
   },
 
   // =========================================================================
@@ -352,9 +352,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué significa «melodía diatónica»?',
     choices: [
       'Una melodía solo con notas de la tonalidad',
-      'Una melodía que utiliza sostenidos y bemoles ajenos a la tonalidad',
-      'Una melodía tocada en una sola cuerda de la guitarra',
-      'Una melodía construida solo con movimiento por grados conjuntos, sin contornos de acorde como C-E-G',
+      'Una melodía con notas de fuera de la tonalidad',
+      'Una melodía que sube y después baja',
+      'Una melodía que solo se mueve por grados conjuntos',
     ],
     hint: 'Diatónico significa «perteneciente a la tonalidad». Una melodía diatónica en C mayor utiliza solo C, D, E, F, G, A y B — sin alteraciones.',
   },
@@ -363,11 +363,11 @@ const overlay: ExerciseLevelOverlay = {
       '¿Qué estrategia es más eficaz para identificar grados individuales de la escala en una melodía?',
     choices: [
       'Relacionar cada nota con la tónica cantando la escala hasta ese grado',
-      'Memorizar la frecuencia exacta, en hercios, de todas las notas del teclado',
-      'Contar el número de líneas adicionales en el pentagrama',
-      'Tratar la primera nota de la melodía como la tónica y contar a partir de ahí',
+      "Relacionar cada nota con la dominante llamando primer grado a la dominante",
+      "Relacionar cada nota con la tónica contando cada semitono como un nuevo grado de la escala",
+      "Relacionar cada nota con la primera nota de la melodía llamando tónica a esa nota",
     ],
-    hint: 'Oír grados de la escala implica percibir cada nota en relación con la tónica. Cantar desde «do» hasta la nota objetivo es un método fiable.',
+    hint: 'Oír grados de la escala implica percibir cada nota en relación con la tónica. Cantar la escala desde la tónica hasta la nota objetivo es un método fiable.',
   },
   l9u32m1e5: {
     prompt: 'Escucha la melodía y elige la que has oído.',
@@ -404,14 +404,14 @@ const overlay: ExerciseLevelOverlay = {
     nudge: '¿El salto suena estable y abierto, o inquieto y sin resolver, como si tuviera que seguir adelante? Cuenta los semitonos desde la nota grave y compara el total con los 12 de la octava.',
   },
   l9u32m2e3: {
-    prompt: '¿Qué es una nota cromática de paso?',
+    prompt: '¿Qué es una nota de paso cromática?',
     choices: [
-      'Una nota ajena a la tonalidad que rellena un tono entre dos notas diatónicas',
-      'Cualquier nota tocada con acento',
-      'La primera nota de una escala cromática, que empieza en la tónica y sube por semitonos',
-      'Una nota prolongada del acorde anterior al siguiente, a través de la barra de compás',
+      'Una nota que une, por semitonos, dos notas de la escala separadas por un tono',
+      'Una nota un semitono por encima de una nota de la escala, que vuelve a ella',
+      'Una nota un semitono por debajo de una nota de la escala, que vuelve a ella',
+      "Una nota sostenida bajo otras notas de la escala en movimiento",
     ],
-    hint: 'Una nota cromática de paso es una nota no diatónica que enlaza dos notas diatónicas separadas por un tono, dividiendo ese tono en dos semitonos.',
+    hint: 'Una nota de paso cromática es una nota no diatónica que enlaza dos notas diatónicas separadas por un tono, dividiendo ese tono en dos semitonos.',
   },
   l9u32m2e4: {
     prompt: 'Escucha la melodía y elige la que has oído.',
@@ -487,14 +487,14 @@ const overlay: ExerciseLevelOverlay = {
   },
   l9u32m4e3: {
     prompt:
-      '¿Cuál es el paso de preparación más importante antes de leer a primera vista una melodía?',
+      '¿Qué preparación establece una referencia tonal antes de cantar una melodía a primera vista?',
     choices: [
-      'Establecer la tónica cantando la escala o arpegio de la tonalidad',
-      'Memorizar la melodía entera de memoria antes de cantar una sola nota',
-      'Leer la letra primero, para saber qué palabras vas a tener que cantar',
-      'Contar el número total de notas de la melodía antes de empezar a cantar',
+      'Encontrar la tónica cantando la escala o el arpegio de la tonalidad',
+      'Encontrar la tónica eligiendo la nota más aguda de la melodía',
+      'Encontrar la tónica eligiendo la primera nota de la melodía',
+      'Encontrar la tónica usando la nota indicada por la clave',
     ],
-    hint: 'Establecer el centro tonal (tónica) en el oído es esencial. Cantar una escala o arpegio de tónica rápidos ancla la percepción de altura antes de leer la melodía.',
+    hint: 'Establecer el centro tonal (tónica) en el oído es esencial. Cantar rápidamente la escala o el arpegio de la tónica ancla la percepción de altura antes de leer la melodía.',
     nudge: 'Antes de leer ninguna nota, tu oído necesita un punto de referencia: la altura con la que se comparan todas las demás. ¿Qué opción le da al oído ese punto de partida?',
   },
 
@@ -529,11 +529,11 @@ const overlay: ExerciseLevelOverlay = {
       '¿Qué característica musical es más útil para identificar el periodo estilístico histórico de una pieza?',
     choices: [
       'La combinación de instrumentación, lenguaje armónico y estructura formal',
-      'La indicación de tempo por sí sola, tal como aparece impresa sobre el primer compás',
-      'La armadura de clave por sí sola',
-      'El número total de compases de la pieza, contados desde el primero hasta el último',
+      'La combinación de armadura, indicación de compás e indicación de tempo',
+      'La combinación de extensión melódica, dinámica y duración de la pieza',
+      'La combinación de la primera nota, la última nota y la nota más aguda',
     ],
-    hint: 'Los periodos estilísticos se identifican por una combinación de factores: instrumentación (clave vs. piano), vocabulario armónico (triádico vs. cromático) y convenciones formales (binaria vs. forma sonata).',
+    hint: 'Los periodos estilísticos se identifican por una combinación de factores: instrumentación (clavecín vs. piano), vocabulario armónico (sobre todo diatónico vs. muy cromático) y convenciones formales (binaria vs. forma sonata).',
   },
 };
 

@@ -29,7 +29,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about the clefs is true?',
-        hintTemplate: 'Remember the treble clef lines (E-G-B-D-F) and spaces (F-A-C-E).',
+        hintTemplate: 'The treble (G) clef marks G on the second line; the bass (F) clef marks F on the fourth line. From bottom to top: treble lines E-G-B-D-F, spaces F-A-C-E; bass lines G-B-D-F-A, spaces A-C-E-G.',
         params: {
           choiceSets: [
             [
@@ -40,9 +40,9 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'The bass clef marks the fourth line (from the bottom) as F', correct: true },
-              { label: 'The bass clef marks the second line from the bottom as G', correct: false },
-              { label: 'The bass clef marks the third line as C', correct: false },
-              { label: 'The bass clef marks the first line as E', correct: false },
+              { label: 'The bass clef marks the second line (from the bottom) as G', correct: false },
+              { label: 'The bass clef marks the third line (from the bottom) as C', correct: false },
+              { label: 'The bass clef marks the first line (from the bottom) as E', correct: false },
             ],
           ],
         },
@@ -128,14 +128,14 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'E and F', correct: true },
               { label: 'C and D', correct: false },
-              { label: 'G and A', correct: false },
+              { label: 'A and B', correct: false },
               { label: 'D and E', correct: false },
             ],
             [
               { label: 'B and C', correct: true },
               { label: 'A and B', correct: false },
-              { label: 'F and G', correct: false },
-              { label: 'G and A', correct: false },
+              { label: 'C and D', correct: false },
+              { label: 'D and E', correct: false },
             ],
           ],
         },
@@ -183,20 +183,20 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about note values is true?',
-        hintTemplate: 'Each note value is exactly half the duration of the next larger value. Whole = 4 beats, half = 2, quarter = 1, eighth = 0.5 in 4/4 time.',
+        hintTemplate: 'Each note value is exactly half the duration of the next larger value. Whole = 4 beats, half = 2, quarter = 1, eighth = 0.5, sixteenth = 0.25 in 4/4 time.',
         params: {
           choiceSets: [
             [
               { label: 'Two half notes equal one whole note', correct: true },
               { label: 'Two half notes equal one quarter note', correct: false },
-              { label: 'Four half notes equal one whole note', correct: false },
-              { label: 'One half note equals four quarter notes', correct: false },
+              { label: 'Two half notes equal one dotted whole note', correct: false },
+              { label: 'Two half notes equal one dotted half note', correct: false },
             ],
             [
               { label: 'Two eighth notes equal one quarter note', correct: true },
               { label: 'Two eighth notes equal one half note', correct: false },
-              { label: 'Four eighth notes equal one quarter note', correct: false },
-              { label: 'One eighth note equals one quarter note', correct: false },
+              { label: 'Two eighth notes equal one whole note', correct: false },
+              { label: 'Two eighth notes equal one sixteenth note', correct: false },
             ],
             [
               { label: 'A dotted half note lasts 3 beats in 4/4 time', correct: true },
@@ -206,7 +206,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: 'A sixteenth note receives half a beat in 4/4 time', correct: false },
-              { label: 'A sixteenth note receives one quarter of a beat in 4/4 time', correct: true },
+              { label: 'A sixteenth note receives a quarter of a beat in 4/4 time', correct: true },
               { label: 'A sixteenth note receives one beat in 4/4 time', correct: false },
               { label: 'A sixteenth note receives three quarters of a beat in 4/4 time', correct: false },
             ],
@@ -229,27 +229,27 @@ const templates: ModuleTemplateConfig[] = [
           choiceSets: [
             [
               { label: '2/4 means 2 quarter-note beats in every measure', correct: true },
-              { label: '2/4 means 4 half-note beats per measure', correct: false },
-              { label: '2/4 means 2 half-note beats per measure', correct: false },
-              { label: '2/4 means 4 quarter-note beats per measure', correct: false },
+              { label: '2/4 means 4 half-note beats in every measure', correct: false },
+              { label: '2/4 means 2 half-note beats in every measure', correct: false },
+              { label: '2/4 means 4 quarter-note beats in every measure', correct: false },
             ],
             [
               { label: '3/4 groups its beats in threes: strong-weak-weak', correct: true },
               { label: '3/4 groups its beats in pairs: strong-weak, strong-weak', correct: false },
               { label: '3/4 groups its beats in fours: strong-weak-medium-weak', correct: false },
-              { label: '3/4 has no strong beat', correct: false },
+              { label: '3/4 groups its beats singly: strong-strong-strong', correct: false },
             ],
             [
-              { label: '4/4 is quadruple: four beats per measure', correct: true },
-              { label: '4/4 is triple: three beats per measure', correct: false },
-              { label: '4/4 is duple: two beats per measure', correct: false },
+              { label: '4/4 means four quarter-note beats per measure', correct: true },
+              { label: '4/4 means four half-note beats per measure', correct: false },
+              { label: '4/4 means four eighth-note beats per measure', correct: false },
               { label: '4/4 means four measures on each line of music', correct: false },
             ],
             [
-              { label: 'In 2/4, 3/4 and 4/4, the bottom 4 means a quarter note gets one beat', correct: true },
-              { label: 'In 2/4, 3/4 and 4/4, the bottom 4 means a whole note gets one beat', correct: false },
-              { label: 'In 2/4, 3/4 and 4/4, the bottom 4 means each measure lasts four beats', correct: false },
-              { label: 'In 2/4, 3/4 and 4/4, the bottom 4 sets the tempo at four beats per second', correct: false },
+              { label: 'The bottom 4 in 2/4, 3/4 and 4/4 selects the quarter note as the beat unit', correct: true },
+              { label: 'The bottom 4 in 2/4, 3/4 and 4/4 selects the whole note as the beat unit', correct: false },
+              { label: 'The bottom 4 in 2/4, 3/4 and 4/4 sets four beats per measure', correct: false },
+              { label: 'The bottom 4 in 2/4, 3/4 and 4/4 sets four beats per second', correct: false },
             ],
           ],
         },

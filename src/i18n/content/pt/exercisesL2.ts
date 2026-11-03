@@ -145,11 +145,11 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Porque é que a escala menor melódica eleva tanto o 6.º como o 7.º grau na forma ascendente?',
     choices: [
       'Para eliminar a 2.ª aumentada entre o 6.º e o 7.º grau elevado da menor harmónica',
-      'Para a transformar na escala maior, fazendo desaparecer o som menor',
-      'Para facilitar a execução no piano',
-      'Para remover todos os meios-tons da escala',
+      'Para eliminar o meio-tom entre o 7.º grau elevado e a tónica',
+      'Para transformar a escala na sua paralela maior ao elevar o 6.º e o 7.º graus',
+      'Para substituir a sensível por uma nota um tom abaixo da tónica',
     ],
-    hint: 'A escala menor harmónica tem uma 2.ª aumentada incómoda (3 meios-tons) entre o 6.º e o 7.º grau elevado. Elevar também o 6.º suaviza esta distância para um tom.',
+    hint: 'O 7.º grau é elevado para criar uma sensível meio-tom abaixo da tónica. A escala menor harmónica tem uma 2.ª aumentada (3 meios-tons) entre o 6.º e o 7.º grau elevado; elevar também o 6.º reduz esta distância a um tom.',
     nudge: 'Toca a escala menor harmónica a subir e ouve o salto do 6.º para o 7.º grau elevado. O que acontece a esse salto quando também elevas o 6.º?',
   },
 
@@ -182,10 +182,10 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'G menor',
       'E menor',
-      'D menor',
-      'B menor',
+      'A menor',
+      'C menor',
     ],
-    hint: 'Tonalidades paralelas partilham a mesma fundamental mas diferem na qualidade. A paralela menor de G maior é G menor. Têm armações de clave diferentes.',
+    hint: 'Tonalidades paralelas partilham a mesma tónica mas diferem no modo. A paralela menor de G maior é G menor. Têm armações de clave diferentes.',
     nudge: 'Tonalidades paralelas mantêm a mesma tónica e mudam só a qualidade (e, com ela, a armação de clave). Não as confundas com as relativas, que partilham a armação de clave.',
   },
   l2u5m3e4: {
@@ -193,8 +193,8 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Relativas partilham a mesma armação de clave; paralelas partilham a mesma tónica',
       'Relativas partilham a mesma tónica; paralelas partilham a mesma armação de clave',
-      'Relativas são sempre maiores; paralelas são sempre menores',
-      'Não há diferença; são o mesmo conceito',
+      'Relativas partilham a mesma tónica e armação de clave; paralelas não partilham nenhuma',
+      'Relativas não partilham tónica nem armação de clave; paralelas partilham ambas',
     ],
     hint: 'C maior e A menor são relativas (mesma armação de clave: sem sustenidos/bemóis). C maior e C menor são paralelas (mesma tónica: C).',
   },
@@ -208,30 +208,30 @@ const overlay: ExerciseLevelOverlay = {
   l2u6m1e1: {
     prompt: 'No compasso 6/8, como se organizam os tempos?',
     choices: [
-      '2 tempos de semínima com ponto, cada um dividido em 3 colcheias',
-      '6 tempos iguais de colcheias',
-      '3 tempos principais, cada um dividido em 2 colcheias',
-      '8 tempos agrupados em seis',
+      '2 tempos principais, agrupados em 3 + 3 colcheias',
+      '6 tempos principais, um por cada colcheia',
+      '3 tempos principais, agrupados em 2 + 2 + 2 colcheias',
+      '2 tempos principais, agrupados em 4 + 2 colcheias',
     ],
-    hint: '6/8 é compasso composto binário: 6 colcheias agrupam-se em 2 grupos de 3. Cada grupo de 3 forma um tempo principal, dando a sensação UM-e-a DOIS-e-a.',
+    hint: '6/8 é compasso composto binário: 6 colcheias agrupam-se em 2 grupos de 3. Cada grupo de 3 forma um tempo principal, dando a sensação UM-dois-três DOIS-dois-três.',
   },
   l2u6m1e2: {
     prompt: 'O que define o compasso composto?',
     choices: [
       'Cada tempo divide-se em 3 partes iguais',
-      'Cada tempo principal divide-se naturalmente em 2 partes iguais',
-      'A indicação de compasso tem um número grande em cima',
-      'O andamento é mais rápido que no compasso simples',
+      'Cada tempo divide-se em 2 partes iguais',
+      'Cada compasso tem exatamente 3 tempos principais',
+      'Cada indicação de compasso tem 8 como número inferior',
     ],
     hint: 'No compasso composto, a unidade de tempo é uma nota com ponto que se subdivide em três. No compasso simples, os tempos subdividem-se em dois.',
   },
   l2u6m1e3: {
     prompt: 'Quantos tempos principais tem o compasso 9/8?',
     choices: [
-      '3 tempos de semínima com ponto (cada um dividido em 3 colcheias)',
-      '9 tempos (cada um com uma colcheia)',
-      '4 tempos principais (cada um dividido em 3 colcheias)',
-      '2 tempos principais (cada um dividido em 3 colcheias)',
+      '3 tempos principais',
+      '9 tempos principais',
+      '4 tempos principais',
+      '2 tempos principais',
     ],
     hint: '9/8 é compasso composto ternário: 9 colcheias formam 3 grupos de 3. Cada grupo de 3 é um tempo principal (uma semínima com ponto).',
     nudge: '9/8 é um compasso composto: as colcheias agrupam-se de três em três, e cada grupo é um tempo principal. Quantos grupos cabem em nove colcheias?',
@@ -243,9 +243,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que é síncopa?',
     choices: [
       'Colocar acentos em tempos normalmente fracos ou contratempos',
-      'Tocar todas as notas com o mesmo volume e a mesma duração',
-      'Acelerar gradualmente o andamento',
-      'Tocar notas numa oitava diferente',
+      "Colocar acentos em tempos normalmente fortes ou primeiros tempos",
+      "Dividir tempos em tercinas sem deslocar os seus acentos",
+      "Dividir tempos em pares iguais sem deslocar os seus acentos",
     ],
     hint: 'A síncopa perturba o padrão rítmico esperado ao acentuar tempos ou partes de tempos normalmente não acentuados, criando tensão rítmica e energia.',
   },
@@ -253,11 +253,11 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que são tercinas?',
     choices: [
       '3 notas iguais no tempo normalmente ocupado por 2 do mesmo valor',
-      '3 notas iguais no tempo de 4 do mesmo valor',
-      'Um acorde com 3 notas',
-      '3 compassos agrupados',
+      '3 notas iguais no tempo normalmente ocupado por 4 do mesmo valor',
+      '3 notas iguais no tempo normalmente ocupado por 6 do mesmo valor',
+      '3 notas iguais no tempo normalmente ocupado por 1 do mesmo valor',
     ],
-    hint: 'As tercinas subdividem um tempo em 3 partes iguais em vez das habituais 2. Uma tercina de colcheias encaixa 3 colcheias no espaço de uma semínima.',
+    hint: 'As tercinas encaixam 3 notas iguais no tempo normalmente ocupado por 2 do mesmo valor. Uma tercina de colcheias encaixa 3 colcheias no espaço de uma semínima.',
   },
 
   // =========================================================================
@@ -285,9 +285,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que torna um intervalo "perfeito"?',
     choices: [
       'Não tem formas maior/menor: apenas perfeito, aumentado ou diminuto',
-      'Ocorre entre a tónica e os graus 2.º, 3.º, 6.º e 7.º de uma escala maior',
-      'Usa apenas teclas brancas no piano',
-      'É sempre consonante',
+      "Não tem formas aumentado/diminuto: apenas perfeito, maior ou menor",
+      'Ocorre da tónica para os graus 2, 3, 6 e 7 de uma escala maior',
+      'Tem formas maiores e menores, como as terceiras e sextas',
     ],
     hint: 'Uníssonos, 4.as, 5.as e oitavas são intervalos "perfeitos". Ao contrário das 2.as, 3.as, 6.as e 7.as que têm pares maior/menor, os intervalos perfeitos têm apenas uma forma básica.',
   },
@@ -329,11 +329,11 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que é um trítono?',
     choices: [
       'Um intervalo de 6 meios-tons que divide a oitava ao meio',
-      'Um acorde construído empilhando três tons inteiros uns sobre os outros',
-      'Um intervalo de 3 meios-tons',
-      'Uma escala com 3 notas',
+      'Um intervalo de 4 meios-tons que divide a oitava em três',
+      'Um intervalo de 3 meios-tons que divide a oitava em quatro',
+      'Um intervalo de 2 meios-tons que divide a oitava em seis',
     ],
-    hint: 'O trítono abrange 3 tons (6 meios-tons). Pode chamar-se 4.ª aumentada ou 5.ª diminuta. Na Idade Média era chamado "o diabo na música" devido à sua dissonância.',
+    hint: 'O trítono abrange 3 tons (6 meios-tons). Pode chamar-se 4.ª aumentada ou 5.ª diminuta.',
   },
 
   // ---- l2u7m3: Os Quatro Tipos de Tríades ----
@@ -393,12 +393,12 @@ const overlay: ExerciseLevelOverlay = {
   l2u7m4e3: {
     prompt: 'O que é uma inversão de tríade?',
     choices: [
-      'Reorganizar o acorde para que uma nota diferente da fundamental fique no baixo',
-      'Construir o acorde para baixo a partir da fundamental, em vez de para cima',
-      'Mudar a qualidade do acorde, por exemplo de maior para menor ou de menor para maior',
-      'Tocar o acorde numa tonalidade diferente',
+      'Reorganizar o acorde para que uma nota diferente da fundamental seja a nota mais grave',
+      'Reorganizar o acorde para que uma nota diferente da fundamental seja a nota mais aguda',
+      'Reorganizar o acorde para que uma nota diferente da fundamental seja duplicada',
+      'Reorganizar o acorde para que as suas notas abranjam mais de uma oitava',
     ],
-    hint: 'As inversões mudam qual nota do acorde está no baixo. Estado fundamental tem a fundamental no baixo, 1.ª inversão tem a 3.ª, 2.ª inversão tem a 5.ª. A identidade do acorde mantém-se.',
+    hint: 'As inversões mudam qual nota do acorde está no baixo. O estado fundamental tem a fundamental no baixo, a 1.ª inversão tem a 3.ª, a 2.ª inversão tem a 5.ª. A identidade do acorde mantém-se.',
   },
 
   // ---- l2u7m5: Tríades Diatónicas/Numeração Romana ----
