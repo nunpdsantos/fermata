@@ -80,7 +80,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'Las Cinco Cualidades Estándar',
           explanation:
-            'Séptima mayor (Cmaj7): 3.ªM+3.ªm+3.ªM — cálido y exuberante. Séptima de dominante (C7): 3.ªM+3.ªm+3.ªm — tenso y exigiendo resolución. Séptima menor (Cm7): 3.ªm+3.ªM+3.ªm — suave y aterciopelado. Semidisminuido (Cm7b5): 3.ªm+3.ªm+3.ªM — sombrío y anhelante. Totalmente disminuido (Cdim7): 3.ªm+3.ªm+3.ªm — extremadamente tenso, con estructura simétrica en la que cada nota dista una 3.ª menor de la siguiente. Una sexta cualidad, la séptima menor-mayor (CmMaj7: 3.ªm+3.ªM+3.ªM), combina una tríada menor con una séptima mayor — rara pero inquietantemente perturbadora, utilizada en el cine y en el jazz.',
+            'Séptima mayor (Cmaj7): 3M+3m+3M — cálido y exuberante. Séptima de dominante (C7): 3M+3m+3m — tenso y exigiendo resolución. Séptima menor (Cm7): 3m+3M+3m — suave y aterciopelado. Semidisminuido (Cm7b5): 3m+3m+3M — sombrío y anhelante. Totalmente disminuido (Cdim7): 3m+3m+3m — extremadamente tenso, con estructura simétrica en la que cada nota dista una 3.ª menor de la siguiente. Una sexta cualidad, la séptima menor-mayor (CmMaj7: 3m+3M+3M), combina una tríada menor con una séptima mayor — rara pero inquietantemente perturbadora, utilizada en el cine y en el jazz.',
           tryThisLabel: 'Escucha C7 — la séptima de dominante exige resolución',
         },
         {

@@ -151,7 +151,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Escucha este acorde de séptima e identifica su cualidad.',
       hintTemplate:
-        'maj7 = etéreo/exuberante. m7 = suave/cálido. 7 de dominante = brillante/pide resolución. semidisminuido = sombrío/sin resolución. dim7 = muy tenso. menor con 7.ª M = una tríada menor sombría bajo una 7.ª mayor brillante, inquietante.',
+        'maj7 = etéreo/exuberante. m7 = suave/cálido. 7 de dominante = brillante/pide resolución. semidisminuido = sombrío/sin resolución. dim7 = muy tenso. menor con 7.ª mayor = una tríada menor sombría bajo una 7.ª mayor brillante, inquietante.',
       nudgeTemplate: 'Escucha el acorde en dos capas. La tríada: ¿la 3.ª está a 4 o a 3 semitonos de la fundamental, y la 5.ª es justa o un semitono más baja? La 7.ª: ¿queda a 1, 2 o 3 semitonos por debajo de la octava?',
     },
   ],

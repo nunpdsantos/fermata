@@ -46,7 +46,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói um acorde de dominante de sétima em {root} (uma forma muito comum de dominante secundária).',
       hintTemplate:
-        'Uma dominante secundária é uma tríade maior ou uma sétima de dominante construída uma 5.aP acima do acorde que toniciza. Aqui constrói apenas {root}7: fundamental + 3.ª maior + 5.aP + 7.ª menor. Por exemplo, A7 (A-C#-E-G) é V7/ii em C maior, tonicizando D menor.',
+        'Uma dominante secundária é uma tríade maior ou uma sétima de dominante construída uma 5.ª perfeita acima do acorde que toniciza. Aqui constrói apenas {root}7: fundamental + 3.ª maior + 5.ª perfeita + 7.ª menor. Por exemplo, A7 (A-C#-E-G) é V7/ii em C maior, tonicizando D menor.',
     },
     {
       // multiple_choice

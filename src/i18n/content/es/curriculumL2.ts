@@ -460,7 +460,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         {
           title: 'Cuatro Cualidades de Tríadas',
           explanation:
-            'Toda tríada apila dos terceras. Mayor = 3.ª mayor + 3.ª menor (3.ªM+3.ªm), de la fundamental a la 5.ª es una 5.ª justa. Menor = 3.ª menor + 3.ª mayor (3.ªm+3.ªM), de la fundamental a la 5.ª sigue siendo una 5.ª justa. Disminuida = 3.ª menor + 3.ª menor (3.ªm+3.ªm), de la fundamental a la 5.ª es una 5.ª disminuida. Aumentada = 3.ª mayor + 3.ª mayor (3.ªM+3.ªM), de la fundamental a la 5.ª es una 5.ª aumentada.',
+            'Toda tríada apila dos terceras. Mayor = 3.ª mayor + 3.ª menor (3M+3m), de la fundamental a la 5.ª es una 5.ª justa. Menor = 3.ª menor + 3.ª mayor (3m+3M), de la fundamental a la 5.ª sigue siendo una 5.ª justa. Disminuida = 3.ª menor + 3.ª menor (3m+3m), de la fundamental a la 5.ª es una 5.ª disminuida. Aumentada = 3.ª mayor + 3.ª mayor (3M+3M), de la fundamental a la 5.ª es una 5.ª aumentada.',
           tryThisLabel: 'Escucha la tríada mayor estable',
         },
         {
@@ -483,11 +483,11 @@ const curriculumL2: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "Fdim" y cuenta: de la fundamental a la 3.ª son 3 semitonos (3.ªm), de la 3.ª a la 5.ª son 3 semitonos (3.ªm). Ambas terceras son menores — eso es lo que la hace disminuida',
+            'Escribe "Fdim" y cuenta: de la fundamental a la 3.ª son 3 semitonos (3m), de la 3.ª a la 5.ª son 3 semitonos (3m). Ambas terceras son menores — eso es lo que la hace disminuida',
         },
         {
           instruction:
-            'Escribe "Caug" y cuenta: de la fundamental a la 3.ª son 4 semitonos (3.ªM), de la 3.ª a la 5.ª son 4 semitonos (3.ªM). Ambas terceras son mayores — aumentada',
+            'Escribe "Caug" y cuenta: de la fundamental a la 3.ª son 4 semitonos (3M), de la 3.ª a la 5.ª son 4 semitonos (3M). Ambas terceras son mayores — aumentada',
         },
       ],
     },

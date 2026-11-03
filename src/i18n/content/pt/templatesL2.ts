@@ -291,7 +291,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói uma tríade de {root} {quality}. Seleciona as 3 notas que formam este acorde.',
       hintTemplate:
-        'Maior = fundamental + 3.aM(4) + 5.aP(7). Menor = fundamental + 3.am(3) + 5.aP(7). Diminuta = fundamental + 3.am(3) + 5.adim(6). Aumentada = fundamental + 3.aM(4) + 5.aaum(8). Começa em {root}.',
+        'Maior = fundamental + 3M(4) + 5P(7). Menor = fundamental + 3m(3) + 5P(7). Diminuta = fundamental + 3m(3) + 5.ª diminuta (6). Aumentada = fundamental + 3M(4) + 5.ª aumentada (8). Começa em {root}.',
     },
   ],
 

@@ -151,7 +151,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Ouve este acorde de sétima e identifica a sua qualidade.',
       hintTemplate:
-        'maj7 = sonhador/exuberante. m7 = suave/quente. 7 da dominante = brilhante/pede resolução. meio-diminuto = sombrio/não resolvido. dim7 = muito tenso. menor com 7.ª M = uma tríade menor sombria sob uma 7.ª maior brilhante, inquietante.',
+        'maj7 = sonhador/exuberante. m7 = suave/quente. 7 da dominante = brilhante/pede resolução. meio-diminuto = sombrio/não resolvido. dim7 = muito tenso. menor com 7.ª maior = uma tríade menor sombria sob uma 7.ª maior brilhante, inquietante.',
       nudgeTemplate: 'Ouve o acorde em duas camadas. A tríade: a 3.ª está a 4 ou a 3 meios-tons da fundamental, e a 5.ª é perfeita ou meio-tom mais baixa? A 7.ª: fica a 1, 2 ou 3 meios-tons abaixo da oitava?',
     },
   ],

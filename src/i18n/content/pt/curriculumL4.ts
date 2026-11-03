@@ -532,20 +532,20 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Consonância e Dissonância no Contraponto',
           explanation:
-            'No contraponto a duas partes, cada intervalo vertical entre as vozes é classificado. Consonâncias perfeitas (P1, P5, P8) são as mais estáveis, mas soam ocas se usadas em excesso. Consonâncias imperfeitas (m3, M3, m6, M6) são estáveis e quentes — formam a espinha dorsal do bom contraponto, proporcionando o melhor equilíbrio entre harmonia e independência. Dissonâncias (m2, M2, P4, trítono, m7, M7) são instáveis e devem resolver por grau conjunto para uma consonância.',
-          tryThisLabel: 'C-E é uma consonância imperfeita (M3)',
+            'No contraponto a duas partes, cada intervalo vertical entre as vozes é classificado. Consonâncias perfeitas (1P, 5P, 8P) são as mais estáveis, mas soam ocas se usadas em excesso. Consonâncias imperfeitas (3m, 3M, 6m, 6M) são estáveis e quentes — formam a espinha dorsal do bom contraponto, proporcionando o melhor equilíbrio entre harmonia e independência. Dissonâncias (2m, 2M, 4P, trítono, 7m, 7M) são instáveis e devem resolver por grau conjunto para uma consonância.',
+          tryThisLabel: 'C-E é uma consonância imperfeita (3M)',
         },
         {
           title: 'Primeira e Segunda Espécie',
           explanation:
-            'A primeira espécie (1:1) coloca uma nota do contraponto contra cada nota do cantus firmus (melodia dada). Cada intervalo deve ser consonante. Começa e termina em P1, P5 ou P8, usa maioritariamente consonâncias imperfeitas, e nunca se aproxima de consonâncias perfeitas em movimento paralelo. A segunda espécie (2:1) acrescenta duas notas contra cada nota do cantus firmus. Tempos fortes devem ser consonantes; na espécie estrita, a única dissonância permitida num tempo fraco é a nota de passagem, abordada e abandonada por grau conjunto (as bordaduras dissonantes chegam mais tarde, na terceira espécie — embora alguns textos modernos as admitam mais cedo). Os tempos fracos também podem ser consonantes — é permitido um salto para um intervalo consonante. É aqui que as notas estranhas ao acorde entram pela primeira vez no contraponto.',
+            'A primeira espécie (1:1) coloca uma nota do contraponto contra cada nota do cantus firmus (melodia dada). Cada intervalo deve ser consonante. Começa e termina em uníssono, 5.ª perfeita ou oitava, usa maioritariamente consonâncias imperfeitas, e nunca se aproxima de consonâncias perfeitas em movimento paralelo. A segunda espécie (2:1) acrescenta duas notas contra cada nota do cantus firmus. Tempos fortes devem ser consonantes; na espécie estrita, a única dissonância permitida num tempo fraco é a nota de passagem, abordada e abandonada por grau conjunto (as bordaduras dissonantes chegam mais tarde, na terceira espécie — embora alguns textos modernos as admitam mais cedo). Os tempos fracos também podem ser consonantes — é permitido um salto para um intervalo consonante. É aqui que as notas estranhas ao acorde entram pela primeira vez no contraponto.',
           tryThisLabel: 'Imagina uma segunda voz contra esta linha',
         },
       ],
       tasks: [
         {
           instruction:
-            'Classifica estes intervalos para contraponto: C-E (consonância imperfeita, M3), C-G (consonância perfeita, P5), C-F (dissonância, P4 em textura a duas vozes), C-B (dissonância, M7)',
+            'Classifica estes intervalos para contraponto: C-E (consonância imperfeita, 3M), C-G (consonância perfeita, 5P), C-F (dissonância, 4P em textura a duas vozes), C-B (dissonância, 7M)',
         },
         {
           instruction:
@@ -553,7 +553,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Por que são proibidas as quintas perfeitas paralelas? Porque duas vozes em P5 paralelas perdem a sua independência melódica — começam a soar como uma única voz dobrada, não duas linhas individuais. As consonâncias imperfeitas mantêm melhor a independência',
+            'Por que são proibidas as quintas perfeitas paralelas? Porque duas vozes em quintas perfeitas paralelas perdem a sua independência melódica — começam a soar como uma única voz dobrada, não duas linhas individuais. As consonâncias imperfeitas mantêm melhor a independência',
         },
       ],
     },
