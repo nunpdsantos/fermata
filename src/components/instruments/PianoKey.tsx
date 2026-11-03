@@ -1,6 +1,3 @@
-/* eslint-disable no-restricted-syntax -- legacy instrument palette (key
-   shadows, active/hover tints). Migration deferred: needs instrument-specific
-   SURFACE tokens that don't overlap the app-wide palette. */
 import { memo, useCallback, useEffect, useRef } from 'react';
 import type { PianoKey as PianoKeyData } from '../../core/utils/pianoLayout.ts';
 import { noteToString } from '../../core/types/music.ts';
@@ -8,6 +5,7 @@ import type { Note } from '../../core/types/music.ts';
 import { writtenOctave } from '../../core/utils/degreeSpelling.ts';
 import { useAppStore } from '../../state/store.ts';
 import { ON_DEGREE } from '../../design/tokens/colors.ts';
+import { readableTextOn } from './fretboardConstants.ts';
 
 type SizeMode = 'mobile' | 'tablet' | 'desktop';
 
@@ -242,6 +240,10 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
   // "B♯5" would be a different, higher note (audit W1-17).
   const spokenName = `${label}${writtenOctave(spelled, keyData.octave)}`;
   const color = highlightColor ?? 'var(--accent)';
+  // A chord/voicing note can be outside the displayed (descending) scale.
+  // Match the actual solid fill: accent ink follows the theme; hex degree
+  // and walnut fills use the higher-contrast black/white, like fretboard dots.
+  const solidLabelColor = color === 'var(--accent)' ? 'var(--on-accent)' : readableTextOn(color);
 
   if (keyData.isBlack) {
     const [bw, bh] = dims.black;
@@ -258,18 +260,18 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
       bg = color;
       shadow = `inset 0 -2px 4px rgba(0,0,0,0.3), 0 0 8px ${color}66`;
       transform = 'translateY(1px)';
-      labelColor = '#000';
+      labelColor = solidLabelColor;
     } else if (isVoicingNote) {
       bg = color;
       border = `2px solid #fff`;
       shadow = `0 0 16px ${color}, 0 0 6px ${color}88`;
       transform = 'translateY(2px)';
-      labelColor = '#000';
+      labelColor = solidLabelColor;
     } else if (isChordTone) {
-      // Degree hue as a FILL with dark ink (D-28; white on the 53% tint read ~2:1).
+      // Solid fill: degree, walnut or the out-of-scale accent fallback.
       bg = color;
       border = `1.5px solid ${color}`;
-      labelColor = ON_DEGREE;
+      labelColor = solidLabelColor;
     } else if (isDimmed) {
       bg = 'var(--piano-black)';
     } else if (isHighlighted) {
@@ -277,11 +279,11 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
         // A full degree fill with dark ink: the old 60% mix under a light
         // label read 3.3:1 on the amber / emerald keys (D-28).
         bg = color;
-        labelColor = ON_DEGREE;
+        labelColor = solidLabelColor;
       } else {
         bg = color;
         opacity = 0.8;
-        labelColor = '#000';
+        labelColor = solidLabelColor;
       }
     } else {
       bg = 'var(--piano-black)';
@@ -361,15 +363,17 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
     bg = color;
     shadow = `inset 0 -2px 6px rgba(0,0,0,0.15), 0 0 10px ${color}66`;
     transform = 'translateY(1px)';
-    labelColor = '#000';
+    labelColor = solidLabelColor;
   } else if (isVoicingNote) {
     bg = color;
     border = `3px solid #fff`;
     shadow = `0 0 20px ${color}, 0 0 8px ${color}88`;
     transform = 'translateY(2px)';
-    labelColor = '#000';
+    labelColor = solidLabelColor;
   } else if (isChordTone) {
-    bg = `${color}33`;
+    // Mix against ivory explicitly: appending hex alpha to var(--accent)
+    // is invalid CSS, and a transparent tint inherits the night background.
+    bg = `color-mix(in srgb, ${color} 20%, var(--piano-white))`;
     border = `2px solid ${color}88`;
     // Dark ink, not the degree hue as text (1.3–2.4:1, D-28).
     labelColor = ON_DEGREE;
@@ -383,7 +387,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
     } else {
       bg = color;
       opacity = 0.7;
-      labelColor = '#000';
+      labelColor = solidLabelColor;
     }
   } else {
     bg = 'var(--piano-white)';

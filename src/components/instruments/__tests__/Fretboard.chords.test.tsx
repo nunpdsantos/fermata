@@ -9,6 +9,8 @@ import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vite
 import { render, cleanup, fireEvent, screen, act, within } from '@testing-library/react';
 import { useAppStore } from '../../../state/store';
 import { useFingeringStore } from '../../../state/fingeringStore';
+import { useScaleDirectionStore } from '../../../state/scaleDirectionStore';
+import { ACCENT_FILL, ON_ACCENT_FILL } from '../fretboardConstants';
 import { buildChord } from '../../../core/constants/chords';
 import type { Note, PitchedNote } from '../../../core/types/music';
 
@@ -39,6 +41,7 @@ const P = (natural: Note['natural'], octave: number): PitchedNote => ({ natural,
 
 beforeEach(() => {
   localStorage.clear();
+  useScaleDirectionStore.setState({ direction: 'ascending' });
   useAppStore.setState({
     selectedKey: N('C'),
     selectedScale: 'major',
@@ -55,7 +58,10 @@ beforeEach(() => {
   });
   useFingeringStore.setState({ overrides: {}, labelMode: 'finger' });
 });
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  useScaleDirectionStore.setState({ direction: 'ascending' });
+});
 
 async function renderFretboard() {
   const { Fretboard } = await import('../Fretboard');
@@ -77,6 +83,23 @@ function cellsWithPcs(openMidi: number[], pcs: Set<number>) {
 
 const STANDARD = [40, 45, 50, 55, 59, 64];
 const DROP_D = [38, 45, 50, 55, 59, 64];
+
+it.each(['fermata', 'fermata-night'] as const)('%s: E-major G# outside descending A melodic minor uses the readable accent pair', async (themeMode) => {
+  useAppStore.setState({
+    selectedKey: N('A'), selectedScale: 'melodic_minor',
+    selectedChord: buildChord(N('E'), 'major'), view: 'explore', themeMode,
+  });
+  useScaleDirectionStore.setState({ direction: 'descending' });
+  const { container } = await renderFretboard();
+  const gSharpDots = [...container.querySelectorAll<HTMLElement>('[data-dot="voicing"]')]
+    .filter((dot) => (STANDARD[Number(dot.dataset.dotString)] + Number(dot.dataset.dotFret)) % 12 === 8);
+  expect(gSharpDots.length).toBeGreaterThan(0);
+  for (const dot of gSharpDots) {
+    // This pair's ≥ 4.5:1 in both themes is measured in fretboardContrast.test.ts.
+    expect(dot.style.backgroundColor).toBe(ACCENT_FILL);
+    expect(dot.style.color).toBe(ON_ACCENT_FILL);
+  }
+});
 
 describe('exercise taps light the fretboard (W3-04)', () => {
   it('every C, E and G on the neck lights after tapping C, E, G', async () => {

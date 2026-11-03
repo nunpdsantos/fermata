@@ -11,6 +11,11 @@
  * feedback strips and answered chips paint behind that text.
  */
 import { describe, it, expect } from 'vitest';
+import { createElement } from 'react';
+import { render, cleanup } from '@testing-library/react';
+import { PianoKeyComponent } from '../../components/instruments/PianoKey';
+import { readableTextOn } from '../../components/instruments/fretboardConstants';
+import { useAppStore } from '../../state/store';
 import { palette } from '../tokens/palette';
 import { LEVEL_ACCENTS, DIFFICULTY_CONFIG, accentText } from '../tokens/learnColors';
 import { DIST_FILL_MAJOR, DIST_FILL_MINOR, DIST_TEXT_MAJOR, DIST_TEXT_MINOR, hoverFillFor } from '../../components/theory/circleOfFifthsConstants';
@@ -395,19 +400,29 @@ describe('the piano focus ring is the two-line one these tests check', () => {
   });
 });
 
-describe.each(Object.entries(THEMES))('piano focus ring on every key face — %s', (_theme, vars) => {
+describe.each(Object.entries(THEMES))('piano focus ring and labels on every key face — %s', (theme, vars) => {
   const any = (name: string) => (vars[name] ? hexVar(vars, name) : hexVar(THEMES['fermata (day)'], name));
+  const resolve = (value: string): RGB => {
+    const token = /^var\((--[\w-]+)\)$/.exec(value);
+    if (token) return any(token[1]);
+    if (/^#[\da-f]{3}(?:[\da-f]{3})?$/i.test(value)) return hexToRgb(value);
+    const rgb = /^rgb\((\d+), (\d+), (\d+)\)$/.exec(value);
+    if (rgb) return rgb.slice(1).map(Number) as RGB;
+    const mix = /^color-mix\(in srgb, (.+) (\d+)%, var\(--piano-white\)\)$/.exec(value);
+    if (mix) return over(resolve(mix[1]), Number(mix[2]) / 100, any('--piano-white'));
+    throw new Error(`unparsed piano colour: ${value}`);
+  };
   const white = any('--piano-white');
   const fills = [
-    ...DEGREES.map((d) => ({ label: `--deg-${d}`, rgb: any(`--deg-${d}`) })),
-    ...WALNUTS.map((hex) => ({ label: `walnut ${hex}`, rgb: hexToRgb(hex) })),
+    ...DEGREES.map((d) => ({ label: `--deg-${d}`, rgb: any(`--deg-${d}`), fill: THEMES['fermata (day)'][`--deg-${d}`] })),
+    ...WALNUTS.map((hex) => ({ label: `walnut ${hex}`, rgb: hexToRgb(hex), fill: hex })),
   ];
   const faces = [
-    { label: 'ivory', rgb: white },
-    { label: 'ebony', rgb: any('--piano-black') },
-    { label: 'accent (pressed)', rgb: any('--accent') },
-    ...fills.map((f) => ({ label: `ivory + 35% ${f.label}`, rgb: over(f.rgb, 0.35, white) })),
-    ...fills.map((f) => ({ label: `${f.label} fill`, rgb: f.rgb })),
+    { label: 'ivory', rgb: white, ink: any('--piano-label') },
+    { label: 'ebony', rgb: any('--piano-black'), ink: white },
+    { label: 'accent (pressed / voiced / chord tone)', rgb: any('--accent'), ink: any('--on-accent') },
+    ...fills.map((f) => ({ label: `ivory + 35% ${f.label}`, rgb: over(f.rgb, 0.35, white), ink: any('--on-degree') })),
+    ...fills.map((f) => ({ label: `${f.label} fill`, rgb: f.rgb, ink: resolve(readableTextOn(f.fill)) })),
   ];
   const dark = any('--piano-ring-dark');
   const light = any('--piano-ring-light');
@@ -426,6 +441,59 @@ describe.each(Object.entries(THEMES))('piano focus ring on every key face — %s
     const old = any('--focus-outline');
     const under = faces.filter((f) => contrast(old, f.rgb) < MIN_UI);
     expect(under.length).toBeGreaterThan(0);
+  });
+
+  it('labels are ≥ 4.5:1 on all 21 faces, including the accent', () => {
+    for (const face of faces) {
+      expect(contrast(face.ink, face.rgb), face.label).toBeGreaterThanOrEqual(MIN_TEXT);
+    }
+  });
+
+  // Exercise the real component too: a correct token pair alone did not stop
+  // G#4 in E major keeping black ink on the descending A-minor accent face.
+  it.each(['active', 'voicing', 'chord', 'scale'] as const)('rendered %s labels match their white/black key faces', (state) => {
+    useAppStore.setState({ themeMode: theme === 'fermata-night' ? 'fermata-night' : 'fermata' });
+    for (const isBlack of [false, true]) {
+      for (const fill of [undefined, ...fills.map((f) => f.fill)]) {
+        const { container } = render(createElement(PianoKeyComponent, {
+          keyData: { note: { natural: 'G', accidental: isBlack ? '#' : '' }, octave: 4, isBlack, midiNumber: isBlack ? 68 : 67 },
+          highlightColor: fill,
+          isHighlighted: state === 'scale',
+          isActive: state === 'active',
+          isVoicingNote: state === 'voicing' || state === 'active',
+          isChordTone: state === 'chord',
+          isDimmed: false,
+          showLabel: true,
+          onNoteOn: () => {},
+          onNoteOff: () => {},
+        }));
+        try {
+          const label = container.querySelector('span')!;
+          const face = label.parentElement!;
+          expect(label.textContent).toBe(isBlack ? 'G#' : 'G');
+          const bg = resolve(face.style.backgroundColor);
+          const ink = resolve(label.style.color);
+          expect(contrast(ink, bg), `${isBlack ? 'black' : 'white'} ${fill ?? 'accent'}`).toBeGreaterThanOrEqual(MIN_TEXT);
+          if (fill === undefined && (isBlack || state === 'active' || state === 'voicing')) {
+            expect(face.style.backgroundColor).toBe('var(--accent)');
+            expect(label.style.color).toBe('var(--on-accent)');
+          }
+        } finally {
+          cleanup();
+        }
+      }
+    }
+  });
+});
+
+describe('piano label contrast known-bad controls', () => {
+  it('the old black label on the day accent is only 4.12:1', () => {
+    const ratio = contrast(hexToRgb('#000'), hexVar(THEMES['fermata (day)'], '--accent'));
+    expect(ratio).toBeCloseTo(4.12, 2);
+    expect(ratio).toBeLessThan(MIN_TEXT);
+  });
+  it('fixed white is not a safe accent label at night', () => {
+    expect(contrast(hexToRgb('#fff'), hexVar(THEMES['fermata-night'], '--accent'))).toBeLessThan(MIN_TEXT);
   });
 });
 
