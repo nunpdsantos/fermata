@@ -15,7 +15,8 @@
  *   - A reload resumes the run exactly (W9b): seed, pool order, score, step and
  *     time left are saved in the drill store (`sprint`) on every answer, every
  *     5 s of the clock, at the finish, and when the page is hidden or goes
- *     away. Leaving the Drill view pauses it; ✕ / Esc / Done close it.
+ *     away. A crash while visible resumes from the last save, up to 5 s
+ *     earlier. Leaving the Drill view pauses it; ✕ / Esc / Done close it.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -662,6 +662,50 @@ describe('review W9b-B1: Learn counts as work in progress (interim source "learn
   });
 });
 
+describe('activity after a silent request', () => {
+  it.each(['pointerdown', 'keydown', 'work'])('%s before takeover blocks both reload listeners and offers one-click Reload', async (activity) => {
+    const { stub, PWAPrompts, pwa, wip } = await freshApp();
+    render(<PWAPrompts />);
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    await settle();
+    expect(stub.updateCalls).toEqual([true]);
+    if (activity === 'work') wip.registerWorkInProgress('learn', () => true);
+    else fireEvent(window, new Event(activity));
+
+    const pluginReload = vi.fn();
+    swContainer.addEventListener('controllerchange', pluginReload);
+    act(() => swContainer.dispatchEvent(new Event('controllerchange')));
+    expect(reloadPage).not.toHaveBeenCalled();
+    expect(pluginReload).not.toHaveBeenCalled();
+    expect(screen.getByRole('alert').textContent).toContain('Reload to finish updating');
+    expect(sessionStorage.getItem('fermata-pwa-auto-updated')).toBeNull();
+    await settle(pwa.TAKEOVER_FALLBACK_MS + 1);
+    expect(screen.queryByText(/new version/i)).toBeNull();
+    expect(screen.getByRole('alert').textContent).toContain('Reload to finish updating');
+    fireEvent.click(screen.getByRole('button', { name: /^reload$/i }));
+    expect(reloadPage).toHaveBeenCalledTimes(1);
+  });
+
+  it('an explicit Reload supersedes a pending silent request, even after its timeout', async () => {
+    const { stub, PWAPrompts, pwa } = await freshApp();
+    render(<PWAPrompts />);
+    act(() => stub.lastOptions!.onNeedRefresh!());
+    await settle();
+    await settle(3000);
+    act(() => pwa.usePwaUpdateStore.setState({ needRefresh: true }));
+    fireEvent.pointerDown(window);
+    await act(async () => pwa.applyUpdateOrReload());
+    await settle(1001); // the silent request's deadline, before the explicit one's
+    const pluginReload = vi.fn();
+    swContainer.addEventListener('controllerchange', pluginReload);
+    act(() => swContainer.dispatchEvent(new Event('controllerchange')));
+    expect(reloadPage).toHaveBeenCalledTimes(1);
+    expect(pluginReload).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText(/finish updating/i)).toBeNull();
+    expect(sessionStorage.getItem('fermata-pwa-auto-updated')).toBeNull();
+  });
+});
+
 describe('review W9b-g: a takeover nobody here asked for never reloads the page', () => {
   it('silent apply gives up after 4 s → the prompt; the takeover that comes later asks "Reload to finish updating" instead of reloading', async () => {
     const { stub, PWAPrompts, pwa } = await freshApp();
@@ -762,4 +806,21 @@ describe('review W9b-c / d', () => {
     await settle(200);
     expect(screen.queryByText('Updated to the latest version')).toBeNull();
   });
+});
+
+it('the Updated countdown pauses and resumes across several hidden intervals', async () => {
+  sessionStorage.setItem('fermata-pwa-auto-updated', JSON.stringify({ fromRelease: 0, reason: 'fresh-start', at: Date.now() }));
+  const { PWAPrompts } = await freshApp();
+  render(<PWAPrompts />);
+  for (const visibleMs of [2000, 3000, 1000]) {
+    await settle(visibleMs);
+    setVisibility('hidden');
+    await settle(8001);
+    expect(screen.getByText('Updated to the latest version')).toBeTruthy();
+    setVisibility('visible');
+  }
+  await settle(3999);
+  expect(screen.getByText('Updated to the latest version')).toBeTruthy();
+  await settle(1);
+  expect(screen.queryByText('Updated to the latest version')).toBeNull();
 });

@@ -5,7 +5,7 @@ import { reloadPage } from '../utils/pageReload';
 import { APP_RELEASE } from '../buildInfo';
 import type { ReleaseNoteText } from '../release/releaseNotes';
 import { hasWorkInProgress } from '../services/workInProgress';
-import { isFreshStart, startFreshStartTracking } from '../services/freshStart';
+import { getInteractionCount, isFreshStart, startFreshStartTracking } from '../services/freshStart';
 import { countAppWindows, listenForBusyQuestions, otherTabsBusy } from '../services/otherTabs';
 import {
   clearAutoUpdateMark,
@@ -24,12 +24,12 @@ interface BeforeInstallPromptEvent extends Event {
  * App-update model (audit W9-06 / D-21: "ask first").
  *
  * vite.config.ts uses `registerType: 'prompt'`: a new service worker installs
- * in the background and WAITS. Nothing reloads by itself — not mid-exercise,
- * not ever. `needRefresh` raises the "new version — reload" toast; only the
- * learner's tap (or a "Try again" on a view whose files are gone, see
- * ViewSlot) activates the waiting worker, and the plugin reloads once it
- * takes control. Before this, `autoUpdate` reloaded a few seconds after launch
- * without asking and the toast could never appear.
+ * in the background and WAITS. `needRefresh` raises the "new version —
+ * reload" toast; the learner's tap (or "Try again" on a view whose files are
+ * gone, see ViewSlot) activates it. W9b also allows the safe moments below;
+ * any activity after a silent request blocks the reload at takeover. Before
+ * this, `autoUpdate` reloaded a few seconds after launch without asking and
+ * the toast could never appear.
  *
  * Shared state lives in a tiny store so the view error screen can apply a
  * waiting update too: with an update waiting, a plain reload would be served
@@ -65,7 +65,7 @@ interface PwaUpdateState {
   updated: { notes: ReleaseNoteText | null } | null;
   /**
    * A new version took control of this page without this page asking (a
-   * takeover that came after the silent apply gave up, or another tab's
+   * takeover after the silent apply gave up or was interrupted, or another tab's
    * Reload): the page is NOT reloaded under the learner — "Reload to finish
    * updating" asks instead (review W9b-g).
    */
@@ -131,6 +131,8 @@ let reloading = false;
 let updateWaiting = false;
 /** A silent update is under way (the new worker was asked to take over). */
 let applyingSilently = false;
+let silentInteractionCount = 0;
+let silentTakeoverTimer: ReturnType<typeof setTimeout> | undefined;
 let deciding: Promise<boolean> | null = null;
 /** This page asked a waiting worker to take over (Reload, Try again, a silent apply) and awaits it. */
 let expectingTakeover = false;
@@ -161,13 +163,19 @@ function reloadWhenControllerChanges(): void {
  * plugin's listener would (it reloads on every update takeover, for good).
  * Stop it there and ask: "Reload to finish updating". The first install's
  * takeover (an uncontrolled page — this one counts as controlled from then
- * on) and a takeover this page asked for pass through.
+ * on) and an explicit Reload pass through. A silent request passes only if
+ * no interaction occurred since it was sent and no work is now in progress.
  */
 function guardUnaskedTakeover(event: Event): void {
   const wasControlled = pageControlled;
   pageControlled = true;
-  if (!wasControlled || expectingTakeover || reloading) return;
+  if (reloading) return;
+  const interrupted = applyingSilently &&
+    (getInteractionCount() !== silentInteractionCount || hasWorkInProgress());
+  if (!interrupted && (!wasControlled || expectingTakeover)) return;
   event.stopImmediatePropagation();
+  stopSilentApply();
+  updateWaiting = false; // this worker is active now, not waiting
   usePwaUpdateStore.setState({ needRefresh: false, updateDeferred: false, finishUpdate: true });
 }
 
@@ -303,20 +311,27 @@ export function applyAtSafeMoment(): Promise<boolean> {
 
 function applySilently(): void {
   applyingSilently = true;
+  silentInteractionCount = getInteractionCount();
   markAutoUpdate(usePwaUpdateStore.getState().incoming?.critical ? 'critical' : 'fresh-start');
   reloadWhenControllerChanges();
   void updateServiceWorker?.(true);
   // The new worker never took over: never reload into the same old version
   // behind the learner's back — ask instead. A takeover that still comes
   // later is no longer expected: it asks too ("Reload to finish updating").
-  setTimeout(() => {
+  silentTakeoverTimer = setTimeout(() => {
     if (reloading) return;
-    applyingSilently = false;
-    expectingTakeover = false;
-    navigator.serviceWorker?.removeEventListener('controllerchange', reloadOnce);
-    clearAutoUpdateMark();
+    stopSilentApply();
     raiseUpdatePrompt();
   }, TAKEOVER_FALLBACK_MS);
+}
+
+/** Stop expecting a silent takeover; SKIP_WAITING itself cannot be cancelled. */
+function stopSilentApply(): void {
+  clearTimeout(silentTakeoverTimer);
+  applyingSilently = false;
+  expectingTakeover = false;
+  navigator.serviceWorker?.removeEventListener('controllerchange', reloadOnce);
+  clearAutoUpdateMark();
 }
 
 /** The plugin found a waiting version: apply it now if it is a safe moment, else ask. */
@@ -359,16 +374,21 @@ function showUpdatedNotice(): void {
  */
 function startUpdatedNoticeClock(): void {
   clearTimeout(updatedTimer);
-  if (typeof document !== 'undefined' && document.visibilityState === 'hidden') {
-    const onVisible = () => {
-      if (document.visibilityState !== 'visible') return;
-      document.removeEventListener('visibilitychange', onVisible);
-      startUpdatedNoticeClock();
-    };
-    document.addEventListener('visibilitychange', onVisible);
-    return;
-  }
-  updatedTimer = setTimeout(() => usePwaUpdateStore.setState({ updated: null }), UPDATED_NOTICE_MS);
+  let remaining = UPDATED_NOTICE_MS;
+  let visibleSince: number | null = null;
+  const onVisibility = () => {
+    clearTimeout(updatedTimer);
+    if (visibleSince !== null) remaining -= performance.now() - visibleSince;
+    visibleSince = null;
+    if (document.visibilityState === 'hidden') return;
+    visibleSince = performance.now();
+    updatedTimer = setTimeout(() => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      usePwaUpdateStore.setState({ updated: null });
+    }, Math.max(0, remaining));
+  };
+  document.addEventListener('visibilitychange', onVisibility);
+  onVisibility();
 }
 
 function deleteLegacyCodeCaches(): void {
@@ -450,10 +470,11 @@ export function startPwaRegistration(): void {
  *     item 5); wait for it to finish installing.
  *  3. If a new worker is waiting, activate it (the reload follows from 1);
  *     otherwise — or if it never takes over — a plain reload.
- * Note: activating the waiting worker also reloads the app's OTHER open tabs
- * (the plugin reloads every tab it controls when the worker changes).
+ * Other tabs stop their unasked takeover before the plugin can reload them
+ * (guardUnaskedTakeover) and offer "Reload to finish updating" instead.
  */
 export async function applyUpdateOrReload(): Promise<void> {
+  stopSilentApply(); // the learner's request supersedes any pending silent one
   reloadWhenControllerChanges();
 
   if (!usePwaUpdateStore.getState().needRefresh && registration && navigator.onLine !== false) {

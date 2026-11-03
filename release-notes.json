@@ -6,9 +6,9 @@
       "date": "2026-11-02",
       "critical": false,
       "notes": {
-        "en": "Updates now install themselves when you open the app, never mid-session, and a Drill session or a Sprint picks up where you left off.",
-        "pt": "As atualizações passam a instalar-se sozinhas quando abres a app, nunca a meio de uma sessão, e um Treino ou um Sprint continua onde ficaste.",
-        "es": "Las actualizaciones ahora se instalan solas al abrir la app, nunca a mitad de una sesión, y una Práctica o un Sprint sigue donde lo dejaste."
+        "en": "Updates wait for idle. Drill and Sprint resume exactly after reload or leaving the app; after a crash, Sprint resumes its last save, up to 5 seconds earlier.",
+        "pt": "Só atualiza sem trabalho em curso. Treino e Sprint retomam após recarregar ou sair da app; após falha, o Sprint retoma a última gravação, até 5 segundos antes.",
+        "es": "Se actualiza sin tareas en curso. Práctica y Sprint se retoman al recargar o salir; tras un fallo, Sprint retoma el último guardado, hasta 5 segundos antes."
       }
     }
   ]

@@ -44,6 +44,7 @@ function scrolledVertically(event: Event): boolean {
   return top !== before;
 }
 let interacted = false;
+let interactionCount = 0;
 let hiddenAt: number | null = null;
 let tracking = false;
 
@@ -68,6 +69,7 @@ export function startFreshStartTracking(onFreshStart: () => void): void {
   const onInteract = (event: Event) => {
     if (event.type === 'scroll' && !scrolledVertically(event)) return;
     interacted = true;
+    interactionCount++;
   };
   // Capture on the window: the capture phase runs for events that do not
   // bubble too, so a scroll of any element (not only the page) is seen here.
@@ -91,4 +93,9 @@ export function startFreshStartTracking(onFreshStart: () => void): void {
 /** True during a fresh start: just launched / back after a long absence, untouched, within the window. */
 export function isFreshStart(): boolean {
   return startedAt !== null && !interacted && Date.now() - startedAt <= FRESH_START_WINDOW_MS;
+}
+
+/** Monotonic across fresh starts: detects activity after an irreversible update request. */
+export function getInteractionCount(): number {
+  return interactionCount;
 }

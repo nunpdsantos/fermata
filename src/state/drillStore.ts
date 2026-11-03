@@ -22,6 +22,7 @@ import {
   requeueSecondExposure,
   type SessionConfig,
 } from '../services/drillSession';
+import { setDrillWorkStateReader } from './drillWork';
 import { mulberry32 } from '../core/utils/prng';
 
 // ─── Public Types ──────────────────────────────────────────────────────────────
@@ -83,7 +84,8 @@ export const SPRINT_SECONDS = 60;
 /**
  * A Sprint under way (v3, W9b) — written by SprintRunner as it runs, so a
  * reload resumes the same run: same questions in the same order, same score,
- * same time left. null = no Sprint open.
+ * same time left. Leaving the app also saves; a crash while visible resumes
+ * from the last save, up to 5 s earlier. null = no Sprint open.
  */
 export interface SprintRun {
   /** Mount seed: lap re-shuffles derive from it. */
@@ -580,8 +582,8 @@ export const useDrillStore = create<DrillStoreState>()(
       // showing, an empty tally, no Sprint open.
       version: 3,
       storage: createJSONStorage(() => localStorage),
-      // Persist everything — a mid-session app kill or reload (an update) must
-      // resume losslessly
+      // Persist every store change. SprintRunner also saves on pagehide /
+      // hidden; a visible crash resumes its last save (up to 5 s earlier).
       partialize: (state) => ({
         items: state.items,
         settings: state.settings,
@@ -628,3 +630,6 @@ export const useDrillStore = create<DrillStoreState>()(
     },
   ),
 );
+
+// Once loaded, this tab's session wins over another tab's localStorage writes.
+setDrillWorkStateReader(useDrillStore.getState);

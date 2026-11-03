@@ -22,6 +22,9 @@ import {
 } from '../drillStore';
 import { generateDrillBank } from '../../core/utils/drillBank';
 import v2Fixture from './fixtures/drill-v2-store.json';
+import v2ByHeartFixture from './fixtures/drill-v2-by-heart.json';
+import { migrateTierV1 } from '../../services/drillScheduler';
+import type { ItemSrsState } from '../../core/types/drill';
 
 type Blob = { state: Record<string, unknown>; version: number };
 const fixture = (): Blob => JSON.parse(JSON.stringify(v2Fixture)) as Blob;
@@ -75,6 +78,28 @@ describe('v2 → v3: a production-shaped save loads unchanged and resumes', () =
     expect(s.sprint).toBeNull();
   });
 
+  it('preserves every field of the production v2 save with multi-session byHeart evidence', async () => {
+    // Copied verbatim from the reviewer's production-generated-v2.json.
+    // At the history cap, v1's conservative re-judgement would demote it.
+    const f = structuredClone(v2ByHeartFixture);
+    expect(f.version).toBe(2);
+    const mastered = f.state.items['degree:num-to-name:1'];
+    expect(mastered.tier).toBe('byHeart');
+    expect(new Set(mastered.history.map((r) => r.sessionId)).size).toBe(10);
+    expect(migrateTierV1(mastered as ItemSrsState)).toBe('review');
+    localStorage.setItem(DRILL_STORE_KEY, JSON.stringify(f));
+    await useDrillStore.persist.rehydrate();
+    const s = useDrillStore.getState();
+    // Whole-item equality includes every card field, tier and history record.
+    expect(s.items).toEqual(f.state.items);
+    expect(s.settings).toEqual(f.state.settings);
+    expect(s.sprintBests).toEqual(f.state.sprintBests);
+    expect(s.lifetime).toEqual(f.state.lifetime);
+    expect(s.activeSession).toEqual(f.state.activeSession);
+    expect(s.sprint).toBeNull();
+    expect(stored()).toEqual({ version: 3, state: { ...f.state, sprint: null } });
+  });
+
   it('the running session carries on: the next answer goes to queue[3], and the save is written back as v3', async () => {
     localStorage.setItem(DRILL_STORE_KEY, JSON.stringify(fixture()));
     await useDrillStore.persist.rehydrate();
@@ -120,9 +145,51 @@ describe('v3 fields', () => {
     expect(log.correct).toBe(3);
     const perFamily = Object.values(log.byFamily).reduce((a, t) => a + t!.asked, 0);
     expect(perFamily).toBe(4);
-    expect(log.newlyByHeart + log.newlyReview).toBeGreaterThanOrEqual(0);
+    expect(log.newlyByHeart).toBe(0);
+    expect(log.newlyReview).toBe(0);
     useDrillStore.getState().startSession(BANK, Date.UTC(2026, 10, 2, 10));
     expect(useDrillStore.getState().activeSession!.log).toBeUndefined();
+  });
+
+  it('counts real learning → review and review → byHeart crossings, never repeats or demotions', () => {
+    const item = BY_ID.get('degree:num-to-name:1')!;
+    const begin = (now: number) => useDrillStore.setState({
+      activeSession: {
+        id: `s${now}`, queue: [item.id, item.id], index: 0, asked: 0, correct: 0,
+        startedAt: now, seed: 1, missRequeues: {},
+      },
+    });
+    const answer = (correct: boolean, now: number) => useDrillStore.getState().recordAnswer(item, correct, 1500, now);
+    const log = () => useDrillStore.getState().activeSession!.log!;
+    const tier = () => useDrillStore.getState().items[item.id].tier;
+    const first = Date.UTC(2026, 0, 1, 9);
+    begin(first);
+    answer(true, first + 1000);
+    expect(tier()).toBe('learning');
+    expect(log()).toMatchObject({ newlyReview: 0, newlyByHeart: 0 });
+    answer(true, first + 2000);
+    expect(tier()).toBe('review');
+    expect(log()).toMatchObject({ newlyReview: 1, newlyByHeart: 0 });
+
+    const second = Date.UTC(2026, 1, 1, 9);
+    begin(second);
+    answer(true, second + 1000);
+    expect(tier()).toBe('review');
+    expect(log()).toMatchObject({ newlyReview: 0, newlyByHeart: 0 });
+    const third = Date.UTC(2026, 2, 1, 9);
+    begin(third);
+    answer(true, third + 1000);
+    expect(tier()).toBe('byHeart');
+    expect(log()).toMatchObject({ newlyReview: 0, newlyByHeart: 1 });
+    answer(true, third + 2000);
+    expect(log()).toMatchObject({ newlyReview: 0, newlyByHeart: 1, asked: 2, correct: 2 });
+
+    const fourth = Date.UTC(2026, 3, 1, 9);
+    begin(fourth);
+    answer(false, fourth + 1000);
+    expect(tier()).toBe('review');
+    expect(log()).toMatchObject({ newlyReview: 0, newlyByHeart: 0, asked: 1, correct: 0 });
+    expect(stored().state.activeSession).toEqual(useDrillStore.getState().activeSession);
   });
 
   it('saveSprint persists the run; null closes it; resets close it too', () => {

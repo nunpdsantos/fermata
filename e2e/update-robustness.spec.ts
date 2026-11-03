@@ -230,6 +230,45 @@ test('a tab in a lesson is not reloaded by another tab\'s cold launch (B1); a ta
 
 // ── 1c. A late takeover never reloads under the learner (review W9b-g) ────
 
+test('interaction after SKIP_WAITING but before takeover blocks the plugin too; Reload still takes one click', async ({ page }) => {
+  await firstVisit(page);
+  await interact(page);
+  await deployAndFind(page);
+  const before = await loads(page);
+  // Observe the real activation request, then interact in the same task.
+  // The worker cannot deliver controllerchange until this task has ended.
+  await page.addInitScript(() => {
+    const postMessage = ServiceWorker.prototype.postMessage;
+    let requestedAt: number | null = null;
+    ServiceWorker.prototype.postMessage = function (message: unknown, options?: StructuredSerializeOptions | Transferable[]) {
+      const result = Reflect.apply(postMessage, this, [message, options]);
+      if (message && typeof message === 'object' && 'type' in message && message.type === 'SKIP_WAITING') {
+        requestedAt = performance.now();
+        window.dispatchEvent(new Event('pointerdown'));
+      }
+      return result;
+    };
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (requestedAt !== null) sessionStorage.setItem('e2e:takeover-ms', String(performance.now() - requestedAt));
+    });
+  });
+  await coldLaunch(page);
+  const finish = page.getByRole('alert').filter({ hasText: 'Reload to finish updating' });
+  await expect(finish).toBeVisible({ timeout: 15_000 });
+  expect(await loads(page)).toBe(before + 1);
+  const elapsed = await page.evaluate(() => sessionStorage.getItem('e2e:takeover-ms'));
+  expect(elapsed).not.toBeNull();
+  expect(Number(elapsed)).toBeLessThan(4000); // exercised the expected-takeover window
+  await page.waitForTimeout(4500);
+  await expect(updateToast(page)).toHaveCount(0); // no stale silent timeout
+  await expect(finish).toBeVisible();
+  await Promise.all([
+    page.waitForEvent('load', { timeout: 20_000 }),
+    finish.getByRole('button', { name: /^reload$/i }).click(),
+  ]);
+  expect(await loads(page)).toBe(before + 2);
+});
+
 test('a silent apply whose takeover comes late: the prompt after 4 s, then "Reload to finish updating" — no reload under the learner', async ({ page }) => {
   await firstVisit(page);
   await interact(page);
@@ -261,6 +300,32 @@ async function openDrillWithSave(page: Page, save: string) {
   await expect(page.locator('#drill-panel')).toBeVisible();
 }
 const drillPrompt = (page: Page) => page.locator('#drill-panel p.text-xl').first();
+
+test('another tab saving idle cannot hide a live Drill session from either update decision', async ({ page, context }) => {
+  await firstVisit(page);
+  await openDrillWithSave(page, V2_DRILL_SAVE);
+  await expect(page.getByText('4 of 8')).toBeVisible();
+  const before = await loads(page);
+  const tab2 = await context.newPage();
+  await tab2.goto(`${proxy.origin}/?view=explore`);
+  await expect(tab2.getByRole('tab', { name: 'Explore' })).toHaveAttribute('aria-selected', 'true');
+  await tab2.evaluate((key) => {
+    const saved = JSON.parse(localStorage.getItem(key)!);
+    saved.state.activeSession = null;
+    saved.state.sprint = null;
+    localStorage.setItem(key, JSON.stringify(saved));
+  }, DRILL_KEY);
+  await deployAndFind(page);
+  await awayFor(page, 31 * 60_000); // this tab's own fresh-start decision
+  await expect(updateToast(page)).toBeVisible();
+  await tab2.goto(`${proxy.origin}/?view=explore`); // the other tab asks this one's live check
+  await expect(updateToast(tab2)).toBeVisible({ timeout: 10_000 });
+  await page.waitForTimeout(4500);
+  expect(await loads(page)).toBe(before);
+  expect((await workerState(page)).waiting).toBe('installed');
+  await expect(page.getByText('4 of 8')).toBeVisible();
+  await tab2.close();
+});
 
 test('NEVER silently during a Drill session: a cold launch into one asks; Reload resumes it exactly', async ({ page }) => {
   await firstVisit(page);

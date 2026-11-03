@@ -5,11 +5,10 @@
  * cut off. In Drill that means: no session with answers in it still running,
  * no answered question whose feedback is on screen, no Sprint under way.
  *
- * The check reads the PERSISTED drill state (zustand's persist writes
- * localStorage synchronously on every change, so it is the live state), which
- * keeps it in the entry chunk without importing the drill store — that would
- * pull ts-fsrs into the entry (CLAUDE.md) — and makes it right from the first
- * moment of a cold launch, before the Drill view's code has even loaded.
+ * Before the lazy Drill store loads, read the persisted state. Once loaded,
+ * the store supplies this tab's live getter: localStorage is shared, and an
+ * idle save from another tab must never mask work here. This module never
+ * imports the store, keeping ts-fsrs out of the entry chunk (CLAUDE.md).
  */
 import { registerWorkInProgress } from '../services/workInProgress';
 import { useAppStore } from './store';
@@ -20,6 +19,13 @@ import { useAppStore } from './store';
  * equal to DRILL_STORE_KEY in src/state/drillStore.ts.
  */
 export const DRILL_STORE_KEY_LITERAL = 'fermata-drill-v1';
+
+let readLiveDrillState: (() => unknown) | undefined;
+
+/** The lazy Drill store supplies its getter when loaded; no store import here. */
+export function setDrillWorkStateReader(read: () => unknown): void {
+  readLiveDrillState = read;
+}
 
 function isObject(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -64,6 +70,6 @@ export function readPersistedDrillState(): unknown {
  */
 export function registerDrillWorkInProgress(): () => void {
   return registerWorkInProgress('drill', () =>
-    useAppStore.getState().view === 'drill' && drillStateHasWork(readPersistedDrillState()),
+    useAppStore.getState().view === 'drill' && drillStateHasWork(readLiveDrillState ? readLiveDrillState() : readPersistedDrillState()),
   );
 }

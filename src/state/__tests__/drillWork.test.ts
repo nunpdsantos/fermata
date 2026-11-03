@@ -1,9 +1,9 @@
 /**
  * Drill's side of "work in progress" (W9b, src/state/drillWork.ts): what a
- * silent app update must never cut off. Read from the persisted drill state,
- * which the drill store writes synchronously on every change.
+ * silent app update must never cut off. Live state after Drill loads;
+ * persisted state only before the lazy store loads.
  */
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { drillStateHasWork, registerDrillWorkInProgress, DRILL_STORE_KEY_LITERAL } from '../drillWork';
 import { useDrillStore, DRILL_STORE_KEY, DEFAULT_SETTINGS } from '../drillStore';
 import { useAppStore } from '../store';
@@ -70,8 +70,16 @@ describe('the registered Drill source', () => {
     expect(hasWorkInProgress()).toBe(false);
   });
 
+  it.each(['session', 'sprint'])('this tab has a live %s while another tab saves idle: still busy', (kind) => {
+    if (kind === 'session') useDrillStore.setState({ activeSession: session() });
+    else useDrillStore.getState().saveSprint(sprint(12));
+    expect(hasWorkInProgress()).toBe(true);
+    localStorage.setItem(DRILL_STORE_KEY, JSON.stringify({ state: { activeSession: null, sprint: null }, version: 3 }));
+    expect(hasWorkInProgress()).toBe(true);
+  });
+
   it('only while the learner is in the Drill view (an abandoned session elsewhere resumes exactly)', () => {
-    localStorage.setItem(DRILL_STORE_KEY, JSON.stringify({ state: { activeSession: session(), settings: { length: 12 } }, version: 3 }));
+    useDrillStore.setState({ activeSession: session() });
     expect(hasWorkInProgress()).toBe(true);
     useAppStore.setState({ view: 'explore' });
     expect(hasWorkInProgress()).toBe(false);
@@ -80,18 +88,42 @@ describe('the registered Drill source', () => {
   });
 
   it('a Sprint under way counts', () => {
-    localStorage.setItem(DRILL_STORE_KEY, JSON.stringify({ state: { activeSession: null, sprint: sprint(12) }, version: 3 }));
+    useDrillStore.getState().saveSprint(sprint(12));
     expect(hasWorkInProgress()).toBe(true);
   });
 
-  it('a corrupt saved blob counts as busy (the safe side)', () => {
+  it('after loading, even a corrupt external save cannot hide this tab’s work', () => {
+    useDrillStore.setState({ activeSession: session() });
     localStorage.setItem(DRILL_STORE_KEY, '{not json');
     expect(hasWorkInProgress()).toBe(true);
   });
 
   it('unregistering removes the source', () => {
-    localStorage.setItem(DRILL_STORE_KEY, JSON.stringify({ state: { activeSession: session(), settings: { length: 12 } }, version: 3 }));
+    useDrillStore.setState({ activeSession: session() });
     unregister();
     expect(hasWorkInProgress()).toBe(false);
+  });
+});
+
+describe('before the lazy Drill store has loaded', () => {
+  it.each([
+    ['a saved session', JSON.stringify({ state: { activeSession: session(), settings: { length: 12 } }, version: 3 }), true],
+    ['a saved Sprint', JSON.stringify({ state: { sprint: sprint(12) }, version: 3 }), true],
+    ['an idle save', JSON.stringify({ state: { activeSession: null, sprint: null }, version: 3 }), false],
+    ['corrupt JSON', '{not json', true],
+  ])('%s uses the persisted fallback', async (_name, saved, busy) => {
+    vi.resetModules();
+    const { registerDrillWorkInProgress } = await import('../drillWork');
+    const { useAppStore } = await import('../store');
+    const { hasWorkInProgress } = await import('../../services/workInProgress');
+    useAppStore.setState({ view: 'drill' });
+    localStorage.setItem(DRILL_STORE_KEY_LITERAL, saved);
+    const unregister = registerDrillWorkInProgress();
+    try {
+      expect(hasWorkInProgress()).toBe(busy);
+    } finally {
+      unregister();
+      localStorage.clear();
+    }
   });
 });
