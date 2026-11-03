@@ -131,7 +131,8 @@ describe('L6 — chromatic harmony', () => {
 
     const e2 = exercise(exercisesL6, 'l6u18m4e2');
     expect(correctLabel(e2)).not.toMatch(/tritone or more/);
-    expect(correctLabel(e2)).toMatch(/five steps around the circle of fifths/);
+    expect(e2.prompt).toMatch(/How many semitones apart/);
+    expect(correctLabel(e2)).toBe('1');
     expect(e2.hint).not.toMatch(/tritone or more/);
     expect(JSON.stringify(ptExL6.l6u18m4e2)).not.toMatch(/trítono ou mais/);
     expect(JSON.stringify(esExL6.l6u18m4e2)).not.toMatch(/tritono o más/);
@@ -309,9 +310,9 @@ describe('L7 — jazz harmony', () => {
     expect(mod12(V[1] - ii[3])).toBe(11); // C → B, down a half step
     const tpl = templatesL7.find((t) => t.moduleId === 'l7u21m2')!.templates[1];
     const keyed = (tpl.params.choiceSets ?? []).flat().filter((c) => c.correct).map((c) => c.label).join('\n');
-    expect(keyed).toMatch(/falls a half step to the 3rd of V/);
-    expect(JSON.stringify(ptTplL7.l7u21m2)).toMatch(/desce meio-tom/);
-    expect(JSON.stringify(esTplL7.l7u21m2)).toMatch(/baja un semitono/);
+    expect(keyed).toContain('In Dm7–G7, F stays on F; C moves to B');
+    expect(ptTplL7.l7u21m2[1].choiceSets?.[0][0]).toBe('Em Dm7–G7, F mantém-se em F; C passa para B');
+    expect(esTplL7.l7u21m2[1].choiceSets?.[0][0]).toBe('En Dm7–G7, F se mantiene en F; C pasa a B');
   });
 
   it('harmonic-minor objective names only the modes the app can play (W5-22, D-12)', () => {
@@ -400,7 +401,8 @@ describe('L8 — analysis and post-tonal', () => {
     expect(correctLabel(exercise(exercisesL8, 'l8u25m1e2'))).not.toMatch(/stay in the dominant key/);
     expect(correctLabel(exercise(exercisesL8, 'l8u25m1e2'))).toMatch(/undermine the tonic key/);
     const hint = templatesL8.find((t) => t.moduleId === 'l8u26m1')!.templates[0].hintTemplate;
-    expect(hint).toMatch(/FTG-TR-STG-CT/);
+    expect(hint).toMatch(/Exposition \(first theme group, transition, second theme group, closing theme\)/);
+    expect(hint).not.toMatch(/FTG-TR-STG-CT/);
     expect(hint).not.toMatch(/P-T-S-C/);
   });
 });

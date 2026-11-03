@@ -25,7 +25,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         '¿Cuál de estas afirmaciones sobre las claves es verdadera?',
       hintTemplate:
-        'Recuerda las líneas de la clave de sol (E-G-B-D-F) y los espacios (F-A-C-E).',
+        'La clave de sol (G) marca G en la segunda línea; la clave de fa (F) marca F en la cuarta línea. De abajo arriba: en clave de sol, líneas E-G-B-D-F y espacios F-A-C-E; en clave de fa, líneas G-B-D-F-A y espacios A-C-E-G.',
       choiceSets: [
         [
           'La clave de sol también se conoce como clave de G',
@@ -35,9 +35,9 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'La clave de fa marca la cuarta línea (contando desde abajo) como F',
-          'La clave de fa marca la segunda línea desde abajo como G',
-          'La clave de fa marca la tercera línea como C',
-          'La clave de fa marca la primera línea como E',
+          'La clave de fa marca la segunda línea (contando desde abajo) como G',
+          'La clave de fa marca la tercera línea (contando desde abajo) como C',
+          'La clave de fa marca la primera línea (contando desde abajo) como E',
         ],
       ],
     },
@@ -84,8 +84,8 @@ const overlay: TemplateLevelOverlay = {
       hintTemplate:
         'En el piano, la mayoría de las notas naturales tiene una tecla negra entre ellas (tono). Solo dos pares son directamente adyacentes, sin tecla negra entre ellos.',
       choiceSets: [
-        ['E y F', 'C y D', 'G y A', 'D y E'],
-        ['B y C', 'A y B', 'F y G', 'G y A'],
+        ['E y F', 'C y D', 'A y B', 'D y E'],
+        ['B y C', 'A y B', 'C y D', 'D y E'],
       ],
     },
   ],
@@ -119,19 +119,19 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         '¿Cuál de estas afirmaciones sobre los valores de las notas es verdadera?',
       hintTemplate:
-        'Cada valor de nota tiene exactamente la mitad de la duración del valor inmediatamente superior. Redonda = 4 tiempos, blanca = 2, negra = 1, corchea = 0,5 en compás 4/4.',
+        'Cada valor de nota tiene exactamente la mitad de la duración del valor inmediatamente superior. Redonda = 4 tiempos, blanca = 2, negra = 1, corchea = 0,5, semicorchea = 0,25 en compás 4/4.',
       choiceSets: [
         [
           'Dos blancas equivalen a una redonda',
           'Dos blancas equivalen a una negra',
-          'Cuatro blancas equivalen a una redonda',
-          'Una blanca equivale a cuatro negras',
+          'Dos blancas equivalen a una redonda con puntillo',
+          'Dos blancas equivalen a una blanca con puntillo',
         ],
         [
           'Dos corcheas equivalen a una negra',
           'Dos corcheas equivalen a una blanca',
-          'Cuatro corcheas equivalen a una negra',
-          'Una corchea equivale a una negra',
+          'Dos corcheas equivalen a una redonda',
+          'Dos corcheas equivalen a una semicorchea',
         ],
         [
           'Una blanca con puntillo dura 3 tiempos en compás 4/4',
@@ -140,10 +140,10 @@ const overlay: TemplateLevelOverlay = {
           'Una blanca con puntillo dura 1,5 tiempos en compás 4/4',
         ],
         [
-          'Una semicorchea vale medio tiempo en compás 4/4',
-          'Una semicorchea vale un cuarto de tiempo en compás 4/4',
-          'Una semicorchea vale un tiempo en compás 4/4',
-          'Una semicorchea vale tres cuartos de tiempo en compás 4/4',
+          'La semicorchea vale medio tiempo en 4/4',
+          'La semicorchea vale un cuarto de tiempo en 4/4',
+          'La semicorchea vale un tiempo en 4/4',
+          'La semicorchea vale tres cuartos de tiempo en 4/4',
         ],
       ],
     },
@@ -160,27 +160,27 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           '2/4 significa 2 tiempos de negra en cada compás',
-          '2/4 significa 4 tiempos de blanca por compás',
-          '2/4 significa 2 tiempos de blanca por compás',
-          '2/4 significa 4 tiempos de negra por compás',
+          '2/4 significa 4 tiempos de blanca en cada compás',
+          '2/4 significa 2 tiempos de blanca en cada compás',
+          '2/4 significa 4 tiempos de negra en cada compás',
         ],
         [
           '3/4 agrupa los tiempos de tres en tres: fuerte-débil-débil',
           '3/4 agrupa los tiempos de dos en dos: fuerte-débil, fuerte-débil',
           '3/4 agrupa los tiempos de cuatro en cuatro: fuerte-débil-semifuerte-débil',
-          '3/4 no tiene ningún tiempo fuerte',
+          '3/4 agrupa los tiempos por separado: fuerte-fuerte-fuerte',
         ],
         [
-          '4/4 es cuaternario: cuatro tiempos por compás',
-          '4/4 es ternario: tres tiempos por compás',
-          '4/4 es binario: dos tiempos por compás',
+          '4/4 significa cuatro tiempos de negra por compás',
+          '4/4 significa cuatro tiempos de blanca por compás',
+          '4/4 significa cuatro tiempos de corchea por compás',
           '4/4 significa cuatro compases en cada línea de música',
         ],
         [
-          'En 2/4, 3/4 y 4/4, el 4 de abajo indica que la negra vale un tiempo',
-          'En 2/4, 3/4 y 4/4, el 4 de abajo indica que la redonda vale un tiempo',
-          'En 2/4, 3/4 y 4/4, el 4 de abajo indica que cada compás vale cuatro tiempos',
-          'En 2/4, 3/4 y 4/4, el 4 de abajo fija el tempo en cuatro tiempos por segundo',
+          'El 4 inferior en 2/4, 3/4 y 4/4 elige la negra como unidad de tiempo',
+          'El 4 inferior en 2/4, 3/4 y 4/4 elige la redonda como unidad de tiempo',
+          'El 4 inferior en 2/4, 3/4 y 4/4 fija cuatro tiempos por compás',
+          'El 4 inferior en 2/4, 3/4 y 4/4 fija cuatro tiempos por segundo',
         ],
       ],
     },

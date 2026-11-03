@@ -25,7 +25,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre as claves é verdadeira?',
       hintTemplate:
-        'Lembra-te das linhas da clave de sol (E-G-B-D-F) e dos espaços (F-A-C-E).',
+        'A clave de sol (G) marca G na segunda linha; a clave de fá (F) marca F na quarta linha. De baixo para cima: na clave de sol, linhas E-G-B-D-F e espaços F-A-C-E; na clave de fá, linhas G-B-D-F-A e espaços A-C-E-G.',
       choiceSets: [
         [
           'A clave de sol é também conhecida como clave de G',
@@ -35,9 +35,9 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'A clave de fá marca a quarta linha (a contar de baixo) como F',
-          'A clave de fá marca como G a segunda linha a partir de baixo',
-          'A clave de fá marca a terceira linha como C',
-          'A clave de fá marca a primeira linha como E',
+          'A clave de fá marca a segunda linha (a contar de baixo) como G',
+          'A clave de fá marca a terceira linha (a contar de baixo) como C',
+          'A clave de fá marca a primeira linha (a contar de baixo) como E',
         ],
       ],
     },
@@ -87,8 +87,8 @@ const overlay: TemplateLevelOverlay = {
       hintTemplate:
         'No piano, a maioria das notas naturais tem uma tecla preta entre elas (tom). Apenas dois pares são diretamente adjacentes, sem tecla preta entre eles.',
       choiceSets: [
-        ['E e F', 'C e D', 'G e A', 'D e E'],
-        ['B e C', 'A e B', 'F e G', 'G e A'],
+        ['E e F', 'C e D', 'A e B', 'D e E'],
+        ['B e C', 'A e B', 'C e D', 'D e E'],
       ],
     },
   ],
@@ -122,19 +122,19 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre os valores das notas é verdadeira?',
       hintTemplate:
-        'Cada valor de nota tem exatamente metade da duração do valor imediatamente superior. Semibreve = 4 tempos, mínima = 2, semínima = 1, colcheia = 0,5 em compasso 4/4.',
+        'Cada valor de nota tem exatamente metade da duração do valor imediatamente superior. Semibreve = 4 tempos, mínima = 2, semínima = 1, colcheia = 0,5, semicolcheia = 0,25 em compasso 4/4.',
       choiceSets: [
         [
           'Duas mínimas equivalem a uma semibreve',
           'Duas mínimas equivalem a uma semínima',
-          'Quatro mínimas equivalem a uma semibreve',
-          'Uma mínima equivale a quatro semínimas',
+          'Duas mínimas equivalem a uma semibreve pontuada',
+          'Duas mínimas equivalem a uma mínima pontuada',
         ],
         [
           'Duas colcheias equivalem a uma semínima',
           'Duas colcheias equivalem a uma mínima',
-          'Quatro colcheias equivalem a uma semínima',
-          'Uma colcheia equivale a uma semínima',
+          'Duas colcheias equivalem a uma semibreve',
+          'Duas colcheias equivalem a uma semicolcheia',
         ],
         [
           'Uma mínima com ponto dura 3 tempos em compasso 4/4',
@@ -143,10 +143,10 @@ const overlay: TemplateLevelOverlay = {
           'Uma mínima com ponto dura 1,5 tempos em compasso 4/4',
         ],
         [
-          'Uma semicolcheia vale metade de um tempo em compasso 4/4',
-          'Uma semicolcheia vale um quarto de tempo em compasso 4/4',
-          'Uma semicolcheia vale um tempo em compasso 4/4',
-          'Uma semicolcheia vale três quartos de tempo em compasso 4/4',
+          'A semicolcheia vale meio tempo em 4/4',
+          'A semicolcheia vale um quarto de tempo em 4/4',
+          'A semicolcheia vale um tempo em 4/4',
+          'A semicolcheia vale três quartos de tempo em 4/4',
         ],
       ],
     },
@@ -157,33 +157,33 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Qual destas afirmações sobre as fórmulas de compasso é verdadeira?',
+        'Qual destas afirmações sobre as indicações de compasso é verdadeira?',
       hintTemplate:
         'O número de cima conta os tempos de cada compasso: 2 = binário, 3 = ternário, 4 = quaternário. O 4 de baixo indica que cada tempo é uma semínima.',
       choiceSets: [
         [
           '2/4 significa 2 tempos de semínima em cada compasso',
-          '2/4 significa 4 tempos de mínima por compasso',
-          '2/4 significa 2 tempos de mínima por compasso',
-          '2/4 significa 4 tempos de semínima por compasso',
+          '2/4 significa 4 tempos de mínima em cada compasso',
+          '2/4 significa 2 tempos de mínima em cada compasso',
+          '2/4 significa 4 tempos de semínima em cada compasso',
         ],
         [
           '3/4 agrupa os tempos de três em três: forte-fraco-fraco',
           '3/4 agrupa os tempos de dois em dois: forte-fraco, forte-fraco',
-          '3/4 agrupa os tempos de quatro em quatro: forte-fraco-médio-fraco',
-          '3/4 não tem nenhum tempo forte',
+          '3/4 agrupa os tempos de quatro em quatro: forte-fraco-meio-forte-fraco',
+          '3/4 agrupa os tempos um a um: forte-forte-forte',
         ],
         [
-          '4/4 é quaternário: quatro tempos por compasso',
-          '4/4 é ternário: três tempos por compasso',
-          '4/4 é binário: dois tempos por compasso',
+          '4/4 significa quatro tempos de semínima por compasso',
+          '4/4 significa quatro tempos de mínima por compasso',
+          '4/4 significa quatro tempos de colcheia por compasso',
           '4/4 significa quatro compassos em cada linha de música',
         ],
         [
-          'Nos compassos 2/4, 3/4 e 4/4, o 4 de baixo indica que a semínima vale um tempo',
-          'Nos compassos 2/4, 3/4 e 4/4, o 4 de baixo indica que a semibreve vale um tempo',
-          'Nos compassos 2/4, 3/4 e 4/4, o 4 de baixo indica que cada compasso vale quatro tempos',
-          'Nos compassos 2/4, 3/4 e 4/4, o 4 de baixo fixa o andamento em quatro tempos por segundo',
+          'O 4 inferior em 2/4, 3/4 e 4/4 escolhe a semínima como unidade de tempo',
+          'O 4 inferior em 2/4, 3/4 e 4/4 escolhe a semibreve como unidade de tempo',
+          'O 4 inferior em 2/4, 3/4 e 4/4 fixa quatro tempos por compasso',
+          'O 4 inferior em 2/4, 3/4 e 4/4 fixa quatro tempos por segundo',
         ],
       ],
     },

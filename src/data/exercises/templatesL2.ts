@@ -210,7 +210,7 @@ const templates: ModuleTemplateConfig[] = [
             [
               { label: 'The relative minor of G major is E minor', correct: true },
               { label: 'The relative minor of G major is G minor', correct: false },
-              { label: 'The relative minor of G major is D minor', correct: false },
+              { label: 'The relative minor of G major is A minor', correct: false },
               { label: 'The relative minor of G major is B minor', correct: false },
             ],
             [
@@ -232,10 +232,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'The relative minor of Eb major is Ab minor', correct: false },
             ],
             [
-              { label: 'Parallel keys share the same tonic but differ in quality', correct: true },
-              { label: 'Parallel keys share the same key signature', correct: false },
-              { label: 'Parallel keys always have their tonics a perfect 5th apart', correct: false },
-              { label: 'Parallel keys use the same notes', correct: false },
+              { label: 'Parallel keys share the same tonic but differ in mode', correct: true },
+              { label: 'Parallel keys share a key signature but have different tonics', correct: false },
+              { label: 'Parallel keys usually have tonics a perfect fifth apart', correct: false },
+              { label: 'Parallel keys share their scale notes but begin on different tonics', correct: false },
             ],
           ],
         },
@@ -259,10 +259,10 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: '12/8 is compound quadruple: 4 beats of 3', correct: true },
-              { label: '12/8 is simple: twelve eighth-note beats, each divided into two', correct: false },
-              { label: '12/8 is compound triple: 3 beats each dividing into 4', correct: false },
-              { label: '12/8 is simple quadruple: 4 beats of 3 eighth notes', correct: false },
+              { label: '12/8 is compound quadruple: four dotted-quarter beats', correct: true },
+              { label: '12/8 is simple: twelve eighth-note beats', correct: false },
+              { label: '12/8 is compound triple: three beats of four eighth notes', correct: false },
+              { label: '12/8 is simple: six quarter-note beats', correct: false },
             ],
             [
               { label: '6/8 is compound duple: 2 beats of 3', correct: true },
@@ -290,26 +290,26 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about syncopation and triplets is true?',
-        hintTemplate: 'Syncopation places emphasis on normally weak beats or subdivisions. It creates rhythmic surprise and forward momentum.',
+        hintTemplate: 'Syncopation places emphasis on normally weak beats or subdivisions. It creates rhythmic surprise and forward momentum. A triplet fits three equal notes into the time normally taken by two of the same value.',
         params: {
           choiceSets: [
             [
               { label: 'Syncopation creates rhythmic interest by accenting off-beats', correct: true },
-              { label: 'Syncopation means playing every note squarely on the strong beats', correct: false },
-              { label: 'Syncopation removes all accents from the music', correct: false },
-              { label: 'Syncopation always involves triplets', correct: false },
+              { label: "Syncopation creates rhythmic interest by accenting strong beats", correct: false },
+              { label: "Syncopation creates rhythmic interest by suppressing off-beat accents", correct: false },
+              { label: "Syncopation creates rhythmic interest by subdividing beats without moving accents", correct: false },
             ],
             [
               { label: 'A tie from a weak beat across the barline creates syncopation by sustaining through the strong beat', correct: true },
-              { label: 'A tie across the barline has no rhythmic effect', correct: false },
-              { label: 'A tie across the barline always doubles the tempo of the whole measure that follows it', correct: false },
-              { label: 'Ties can only occur within a single measure', correct: false },
+              { label: "A tie from a weak beat across the barline creates syncopation by reattacking on the strong beat", correct: false },
+              { label: "A tie from a weak beat across the barline creates syncopation by cutting off before the strong beat", correct: false },
+              { label: 'A tie from a weak beat across the barline creates syncopation by adding an accent on the strong beat', correct: false },
             ],
             [
-              { label: 'Three triplet eighths fill the time of two', correct: true },
-              { label: 'Three triplet eighths take the time of four ordinary eighths', correct: false },
-              { label: 'A triplet makes each of its three notes last a full beat', correct: false },
-              { label: 'A triplet adds a third note on top of a two-note chord', correct: false },
+              { label: 'Three triplet eighths fill the time of two ordinary eighth notes', correct: true },
+              { label: 'Three triplet eighths fill the time of four ordinary eighth notes', correct: false },
+              { label: 'Three triplet eighths fill the time of three ordinary eighth notes', correct: false },
+              { label: 'Three triplet eighths fill the time of one ordinary eighth note', correct: false },
             ],
           ],
         },

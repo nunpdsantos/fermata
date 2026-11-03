@@ -81,8 +81,8 @@ describe('answer choices keep their English order', () => {
   });
 
   it('a planted swap of two real choices fails the comparison', () => {
-    const real = choices.find((c) => c.key === 'ex:l5u15m2e1.choices[0]')!;
-    const other = choices.find((c) => c.key === 'ex:l5u15m2e1.choices[3]')!;
+    const real = choices.find((c) => c.key === 'ex:l5u15m3e3.choices[0]')!;
+    const other = choices.find((c) => c.key === 'ex:l5u15m3e3.choices[3]')!;
     expect(fingerprint(real.en)).toBe(fingerprint(real.tr.pt ?? ''));
     expect(fingerprint(real.en)).not.toBe(fingerprint(other.tr.pt ?? ''));
   });

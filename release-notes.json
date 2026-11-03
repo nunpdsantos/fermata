@@ -2,6 +2,16 @@
   "$comment": "Release notes for the update prompt (W9b). Newest first. Adding an entry = a new release: increment `release` by 1, one line per language (EN / PT-PT / ES, max 160 characters, no line breaks). `critical: true` marks an emergency: every app on an older release applies it at the next safe moment, even after the learner chose Later. The build reads this file (vite.config.ts) and publishes dist/version.json; a deploy without a new entry shows no What's-new line. CLAUDE.md, PWA section.",
   "releases": [
     {
+      "release": 4,
+      "date": "2026-11-03",
+      "critical": false,
+      "notes": {
+        "en": "Learn's multiple-choice answers no longer give themselves away by their wording. Scores on the 270 rewritten questions start fresh; completed lessons stay.",
+        "pt": "As respostas de escolha múltipla do Aprender já não se denunciam pela redação. As 270 perguntas reescritas recomeçam a pontuação; as lições concluídas ficam.",
+        "es": "Las respuestas de opción múltiple de Aprender ya no se delatan por su redacción. Las 270 preguntas reescritas reinician puntuación; las lecciones se mantienen."
+      }
+    },
+    {
       "release": 3,
       "date": "2026-11-03",
       "critical": false,

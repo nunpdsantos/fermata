@@ -21,9 +21,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que indica ③ junto de uma nota de guitarra?',
     choices: [
       'Dedo 3',
-      'Posição III',
+      'Trasto 3',
       'Corda 3',
-      'Trasto 3'
+      'Posição III'
     ],
     hint: 'Um número em círculo indica a corda. Os números dos dedos da mão esquerda não têm círculo.'
   },
@@ -50,30 +50,30 @@ const overlay: ExerciseLevelOverlay = {
   l1u33m2e2: {
     prompt: 'O que significa 0 numa dedilhação de guitarra?',
     choices: [
-      'Corda solta',
-      'Dedo indicador',
-      'Pestana completa',
-      'Polegar direito'
+      'Tocar a corda sem nenhum dedo da mão esquerda a premi-la em qualquer traste',
+      'Tocar a corda com um dedo da mão esquerda a premi-la no traste 1',
+      'Tocar a corda com uma pestana da mão esquerda a premi-la no traste 1',
+      'Tocar a corda com um dedo da mão esquerda a premi-la no traste 3'
     ],
     hint: 'Zero significa que nenhum dedo da mão esquerda prime a corda.'
   },
   l1u33m2e3: {
     prompt: 'Que ordem de dedos indica p-i-m-a?',
     choices: [
-      'Polegar, anelar, médio, indicador',
+      'Mindinho, indicador, médio, anelar',
       'Polegar, indicador, médio, anelar',
-      'Indicador, médio, anelar, mindinho',
-      'Anelar, médio, indicador, polegar'
+      'Polegar, indicador, médio, mindinho',
+      'Anelar, indicador, médio, polegar'
     ],
     hint: 'As letras da mão direita são p polegar, i indicador, m médio e a anelar.'
   },
   l1u33m2e4: {
     prompt: 'Que letras significam polegar, anelar, médio, indicador?',
     choices: [
+      'a-p-m-i',
       'p-i-m-a',
-      'i-m-a-p',
       'p-a-m-i',
-      'a-m-i-p'
+      'a-m-p-i'
     ],
     hint: 'Lê as letras por ordem: p é polegar, a é anelar, m é médio e i é indicador.'
   },
@@ -162,10 +162,10 @@ const overlay: ExerciseLevelOverlay = {
   l1u1m2e3: {
     prompt: 'Qual é a função das linhas suplementares?',
     choices: [
-      'Escrever notas acima ou abaixo das cinco linhas da pauta',
-      'Indicar a velocidade a que a peça deve ser tocada',
-      'Mostrar que mão, direita ou esquerda, toca cada nota',
-      'Mostrar onde ocorrem as pausas',
+      'Escrever alturas fora da pauta',
+      'Separar os compassos na pauta',
+      'Elevar todas as alturas uma oitava',
+      'Ligar duas pautas num sistema',
     ],
     hint: 'A pauta tem apenas cinco linhas. As notas que ultrapassam essas linhas necessitam de pequenas linhas adicionais para indicar a sua posição.',
   },
@@ -255,20 +255,20 @@ const overlay: ExerciseLevelOverlay = {
   l1u2m2e1: {
     prompt: 'O que significa a indicação de compasso 4/4?',
     choices: [
-      '4 tempos de semínima por compasso',
-      '4 tempos de mínima por compasso',
-      '4 tempos de semicolcheia por compasso',
-      '4 compassos por linha',
+      '4 tempos medidos em semínimas por compasso',
+      '4 tempos medidos em mínimas por compasso',
+      '4 tempos medidos em semibreves por compasso',
+      '4 tempos medidos em colcheias por compasso',
     ],
     hint: 'O número superior (4) indica os tempos por compasso. O número inferior (4) indica que a semínima vale um tempo.',
   },
   l1u2m2e2: {
-    prompt: 'O que indica a indicação de compasso 3/4?',
+    prompt: 'O que te diz a indicação de compasso 3/4?',
     choices: [
-      '3 tempos de semínima por compasso',
-      '3 tempos de mínima por compasso',
-      '3 tempos de semicolcheia por compasso',
-      '3 compassos de 4 tempos',
+      '3 tempos medidos em semínimas por compasso',
+      '3 tempos medidos em mínimas por compasso',
+      '3 tempos medidos em semibreves por compasso',
+      '3 tempos medidos em colcheias por compasso',
     ],
     hint: '3/4 significa três tempos de semínima por compasso. Isto cria a sensação de valsa: UM-dois-três.',
   },
@@ -276,10 +276,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Qual das seguintes opções descreve melhor o "compasso simples"?',
     choices: [
-      'Cada tempo divide-se naturalmente em duas partes iguais',
-      'Cada tempo divide-se naturalmente em três partes iguais',
-      'A música não tem indicação de compasso escrita no início da peça',
-      'O andamento é lento e regular do primeiro compasso ao último',
+      'O tempo divide-se em 2 notas iguais',
+      'O tempo divide-se em 3 notas iguais',
+      'O compasso contém 2 tempos',
+      'O compasso contém 3 tempos',
     ],
     hint: 'No compasso simples, os tempos subdividem-se em dois. No compasso composto, subdividem-se em três. 4/4 e 3/4 são compassos simples.',
   },
@@ -331,16 +331,16 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u3m2e2: {
     prompt: 'Que nota é bemolizada na armação de clave de F maior?',
-    choices: ['B (passa a Bb)', 'E (passa a Eb)', 'A (passa a Ab)', 'F (passa a Fb)'],
+    choices: ['B fica bemol; A, E e F ficam naturais', 'E fica bemol; A, B e F ficam naturais', 'A fica bemol; B, E e F ficam naturais', 'F fica bemol; A, B e E ficam naturais'],
     hint: 'F maior necessita de Bb para manter o padrão da escala maior. A quarta nota (B) tem de ser rebaixada para Bb.',
   },
   l1u3m2e3: {
     prompt: 'Qual é a armação de clave de D maior?',
     choices: [
-      '2 sustenidos (F# e C#)',
-      '1 sustenido (F#)',
-      '3 sustenidos (F#, C#, G#)',
-      '2 bemóis (Bb, Eb)',
+      'Armação de clave: F#, C#',
+      'Armação de clave: F#',
+      'Armação de clave: F#, C#, G#',
+      'Armação de clave: Bb, Eb',
     ],
     hint: 'D maior acrescenta C# ao F# de G maior. Os sustenidos acumulam-se por ordem: F#, C#, G#, D#, A#, E#, B#.',
   },
@@ -379,13 +379,7 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'G maior = G, B, D. Fundamental (G) + 3.ª maior (B, 4 meios-tons acima) + 5.ª perfeita (D, 7 meios-tons acima).',
   },
   l1u3m4e3: {
-    prompt: 'Quais intervalos compõem uma tríade maior?',
-    choices: [
-      'Fundamental, 3.ª maior (4 meios-tons), 5.ª perfeita (7 meios-tons)',
-      'Fundamental, 3.ª menor (3 meios-tons), 5.ª perfeita (7 meios-tons)',
-      'Fundamental, 3.ª maior (4 meios-tons), 5.ª diminuta (6 meios-tons)',
-      'Fundamental, 4.ª perfeita (5 meios-tons), 5.ª perfeita (7 meios-tons)',
-    ],
+    prompt: 'Constrói uma tríade de B maior. Seleciona as três notas.',
     hint: 'Uma tríade maior empilha uma 3.ª maior (4 meios-tons a partir da fundamental) e depois uma 3.ª menor por cima (mais 3), resultando em fundamental + 3M + 5P.',
   },
 };

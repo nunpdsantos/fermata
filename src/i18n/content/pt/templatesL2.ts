@@ -161,7 +161,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'A relativa menor de G maior é E menor',
           'A relativa menor de G maior é G menor',
-          'A relativa menor de G maior é D menor',
+          'A relativa menor de G maior é A menor',
           'A relativa menor de G maior é B menor',
         ],
         [
@@ -183,10 +183,10 @@ const overlay: TemplateLevelOverlay = {
           'A relativa menor de Eb maior é Ab menor',
         ],
         [
-          'Tonalidades paralelas partilham a mesma tónica mas diferem na qualidade',
-          'Tonalidades paralelas partilham a mesma armação de clave',
-          'As tónicas de tonalidades paralelas estão sempre a uma 5.ª perfeita de distância',
-          'Tonalidades paralelas usam as mesmas notas',
+          'As tonalidades paralelas partilham a mesma tónica mas diferem no modo',
+          'As tonalidades paralelas partilham a armação de clave mas têm tónicas diferentes',
+          'As tonalidades paralelas têm geralmente tónicas à distância de uma quinta perfeita',
+          'As tonalidades paralelas partilham as notas da escala mas começam em tónicas diferentes',
         ],
       ],
     },
@@ -206,10 +206,10 @@ const overlay: TemplateLevelOverlay = {
         'No compasso composto o número de cima é 6, 9 ou 12 e o tempo divide-se em 3. No compasso simples o tempo divide-se em 2.',
       choiceSets: [
         [
-          '12/8 é composto quaternário: 4 tempos de 3',
-          '12/8 é simples: doze tempos de colcheia, cada um dividido em dois',
-          '12/8 é composto ternário: 3 tempos, cada um dividido em 4',
-          '12/8 é simples quaternário: 4 tempos de 3 colcheias',
+          '12/8 é composto quaternário: quatro tempos de semínima com ponto',
+          '12/8 é simples: doze tempos de colcheia',
+          '12/8 é composto ternário: três tempos de quatro colcheias',
+          '12/8 é simples: seis tempos de semínima',
         ],
         [
           '6/8 é composto binário: 2 tempos de 3',
@@ -234,25 +234,25 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre síncopa e tercinas é verdadeira?',
       hintTemplate:
-        'A síncopa coloca ênfase em tempos ou subdivisões normalmente fracos. Cria surpresa rítmica e impulso para a frente.',
+        'A síncopa coloca ênfase em tempos ou subdivisões normalmente fracos. Cria surpresa rítmica e impulso para a frente. Uma tercina encaixa três notas iguais no tempo normalmente ocupado por duas do mesmo valor.',
       choiceSets: [
         [
           'A síncopa cria interesse rítmico ao acentuar contratempos',
-          'A síncopa significa tocar todas as notas exatamente nos tempos fortes',
-          'A síncopa remove todos os acentos da música',
-          'A síncopa envolve sempre tercinas',
+          "A síncopa cria interesse rítmico ao acentuar tempos fortes",
+          "A síncopa cria interesse rítmico ao suprimir os acentos dos contratempos",
+          "A síncopa cria interesse rítmico ao subdividir tempos sem deslocar acentos",
         ],
         [
-          'Uma ligadura de um tempo fraco sobre a barra de compasso cria síncopa ao prolongar o som através do tempo forte',
-          'Uma ligadura sobre a barra de compasso não tem efeito rítmico',
-          'Uma ligadura sobre a barra de compasso duplica sempre o andamento de todo o compasso que se lhe segue',
-          'As ligaduras só podem ocorrer dentro de um único compasso',
+          'Uma ligadura de um tempo fraco através da barra de compasso cria síncopa ao prolongar o som através do tempo forte',
+          'Uma ligadura de um tempo fraco através da barra de compasso cria síncopa ao voltar a atacar no tempo forte',
+          "Uma ligadura de um tempo fraco através da barra de compasso cria síncopa ao cortar o som antes do tempo forte",
+          'Uma ligadura de um tempo fraco através da barra de compasso cria síncopa ao acrescentar um acento no tempo forte',
         ],
         [
-          'Três colcheias em tercina ocupam o tempo de duas',
+          'Três colcheias em tercina ocupam o tempo de duas colcheias normais',
           'Três colcheias em tercina ocupam o tempo de quatro colcheias normais',
-          'Uma tercina faz cada uma das suas três notas durar um tempo inteiro',
-          'Uma tercina acrescenta uma terceira nota a um acorde de duas notas',
+          'Três colcheias em tercina ocupam o tempo de três colcheias normais',
+          'Três colcheias em tercina ocupam o tempo de uma colcheia normal',
         ],
       ],
     },

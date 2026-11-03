@@ -21,9 +21,9 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué indica ③ junto a una nota de guitarra?',
     choices: [
       'Dedo 3',
-      'Posición III',
+      'Traste 3',
       'Cuerda 3',
-      'Traste 3'
+      'Posición III'
     ],
     hint: 'Un número en círculo indica la cuerda. Los números de los dedos de la mano izquierda no llevan círculo.'
   },
@@ -50,30 +50,30 @@ const overlay: ExerciseLevelOverlay = {
   l1u33m2e2: {
     prompt: '¿Qué significa 0 en una digitación de guitarra?',
     choices: [
-      'Cuerda al aire',
-      'Dedo índice',
-      'Cejilla completa',
-      'Pulgar derecho'
+      'Tocar la cuerda sin ningún dedo de la mano izquierda pisándola en ningún traste',
+      'Tocar la cuerda con un dedo de la mano izquierda pisándola en el traste 1',
+      'Tocar la cuerda con una cejilla de la mano izquierda pisándola en el traste 1',
+      'Tocar la cuerda con un dedo de la mano izquierda pisándola en el traste 3'
     ],
     hint: 'Cero significa que ningún dedo de la mano izquierda pisa la cuerda.'
   },
   l1u33m2e3: {
     prompt: '¿Qué orden de dedos indica p-i-m-a?',
     choices: [
-      'Pulgar, anular, medio, índice',
+      'Meñique, índice, medio, anular',
       'Pulgar, índice, medio, anular',
-      'Índice, medio, anular, meñique',
-      'Anular, medio, índice, pulgar'
+      'Pulgar, índice, medio, meñique',
+      'Anular, índice, medio, pulgar'
     ],
     hint: 'Las letras de la mano derecha son p pulgar, i índice, m medio y a anular.'
   },
   l1u33m2e4: {
     prompt: '¿Qué letras significan pulgar, anular, medio, índice?',
     choices: [
+      'a-p-m-i',
       'p-i-m-a',
-      'i-m-a-p',
       'p-a-m-i',
-      'a-m-i-p'
+      'a-m-p-i'
     ],
     hint: 'Lee las letras en orden: p es pulgar, a es anular, m es medio e i es índice.'
   },
@@ -162,10 +162,10 @@ const overlay: ExerciseLevelOverlay = {
   l1u1m2e3: {
     prompt: '¿Cuál es la función de las líneas adicionales?',
     choices: [
-      'Escribir notas fuera de las cinco líneas del pentagrama',
-      'Indicar a qué velocidad debe tocarse la pieza',
-      'Mostrar qué mano, derecha o izquierda, toca cada nota',
-      'Mostrar dónde se producen los silencios',
+      'Escribir alturas fuera del pentagrama',
+      'Separar los compases en el pentagrama',
+      'Subir todas las alturas una octava',
+      'Unir dos pentagramas en un sistema',
     ],
     hint: 'El pentagrama tiene solo cinco líneas. Las notas que sobrepasan esas líneas necesitan pequeñas líneas adicionales para indicar su posición.',
   },
@@ -255,20 +255,20 @@ const overlay: ExerciseLevelOverlay = {
   l1u2m2e1: {
     prompt: '¿Qué significa la indicación de compás 4/4?',
     choices: [
-      '4 tiempos de negra por compás',
-      '4 tiempos de blanca por compás',
-      '4 tiempos de semicorchea por compás',
-      '4 compases por línea',
+      '4 tiempos medidos en negras por compás',
+      '4 tiempos medidos en blancas por compás',
+      '4 tiempos medidos en redondas por compás',
+      '4 tiempos medidos en corcheas por compás',
     ],
     hint: 'El número superior (4) indica los tiempos por compás. El número inferior (4) indica que la negra vale un tiempo.',
   },
   l1u2m2e2: {
-    prompt: '¿Qué indica la indicación de compás 3/4?',
+    prompt: '¿Qué te dice la indicación de compás 3/4?',
     choices: [
-      '3 tiempos de negra por compás',
-      '3 tiempos de blanca por compás',
-      '3 tiempos de semicorchea por compás',
-      '3 compases de 4 tiempos',
+      '3 tiempos medidos en negras por compás',
+      '3 tiempos medidos en blancas por compás',
+      '3 tiempos medidos en redondas por compás',
+      '3 tiempos medidos en corcheas por compás',
     ],
     hint: '3/4 significa tres tiempos de negra por compás. Esto crea la sensación de vals: UN-dos-tres.',
   },
@@ -276,10 +276,10 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       '¿Cuál de las siguientes opciones describe mejor el «compás simple»?',
     choices: [
-      'Cada tiempo se divide naturalmente en dos partes iguales',
-      'Cada tiempo se divide naturalmente en tres partes iguales',
-      'La música no tiene indicación de compás escrita al principio de la pieza',
-      'El tempo es lento y regular desde el primer compás hasta el último',
+      'El tiempo se divide en 2 notas iguales',
+      'El tiempo se divide en 3 notas iguales',
+      'El compás contiene 2 tiempos',
+      'El compás contiene 3 tiempos',
     ],
     hint: 'En el compás simple, los tiempos se subdividen en dos. En el compás compuesto, se subdividen en tres. 4/4 y 3/4 son compases simples.',
   },
@@ -331,16 +331,16 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u3m2e2: {
     prompt: '¿Qué nota se bemoliza en la armadura de clave de F mayor?',
-    choices: ['B (pasa a Bb)', 'E (pasa a Eb)', 'A (pasa a Ab)', 'F (pasa a Fb)'],
-    hint: 'F mayor necesita Bb para mantener el patrón de la escala mayor. La cuarta nota (B) debe descenderse a Bb.',
+    choices: ['B lleva bemol; A, E y F quedan naturales', 'E lleva bemol; A, B y F quedan naturales', 'A lleva bemol; B, E y F quedan naturales', 'F lleva bemol; A, B y E quedan naturales'],
+    hint: 'F mayor necesita Bb para mantener el patrón de la escala mayor. La cuarta nota (B) debe bajarse a Bb.',
   },
   l1u3m2e3: {
     prompt: '¿Cuál es la armadura de clave de D mayor?',
     choices: [
-      '2 sostenidos (F# y C#)',
-      '1 sostenido (F#)',
-      '3 sostenidos (F#, C#, G#)',
-      '2 bemoles (Bb, Eb)',
+      'Armadura de clave: F#, C#',
+      'Armadura de clave: F#',
+      'Armadura de clave: F#, C#, G#',
+      'Armadura de clave: Bb, Eb',
     ],
     hint: 'D mayor añade C# al F# de G mayor. Los sostenidos se acumulan en orden: F#, C#, G#, D#, A#, E#, B#.',
   },
@@ -379,13 +379,7 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'G mayor = G, B, D. Fundamental (G) + 3.ª mayor (B, 4 semitonos por encima) + 5.ª justa (D, 7 semitonos por encima).',
   },
   l1u3m4e3: {
-    prompt: '¿Qué intervalos componen una tríada mayor?',
-    choices: [
-      'Fundamental, 3.ª mayor (4 semitonos), 5.ª justa (7 semitonos)',
-      'Fundamental, 3.ª menor (3 semitonos), 5.ª justa (7 semitonos)',
-      'Fundamental, 3.ª mayor (4 semitonos), 5.ª disminuida (6 semitonos)',
-      'Fundamental, 4.ª justa (5 semitonos), 5.ª justa (7 semitonos)',
-    ],
+    prompt: 'Construye una tríada de B mayor. Selecciona las tres notas.',
     hint: 'Una tríada mayor apila una 3.ª mayor (4 semitonos desde la fundamental) y después una 3.ª menor encima (3 más), resultando en fundamental + 3M + 5J.',
   },
 };

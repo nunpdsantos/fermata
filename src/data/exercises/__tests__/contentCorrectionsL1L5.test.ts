@@ -336,7 +336,9 @@ describe('4-3 suspension over V (W5-04)', () => {
     expect(up('G', res)).toBe(4); // 3rd
     expect(up(res, held)).toBe(1); // down by step
     const correct = ex.config.type === 'multiple_choice' ? ex.config.choices.find((c) => c.correct)!.label : '';
-    expect(correct).toContain('4-3');
+    // The prompt already proves the 4–3 path above; choices now name the
+    // classification without restating facts that eliminate distractors.
+    expect(correct).toBe('Suspension C over V');
   });
 });
 
