@@ -296,7 +296,7 @@ describe('Fretboard accessibility', () => {
     const select = screen.getByRole('combobox', { name: 'fretboard.tuningLabel' }) as HTMLSelectElement;
     expect(select.value).toBe('standard');
     const options = within(select).getAllByRole('option');
-    expect(options.length).toBe(6);
+    expect(options.map((o) => (o as HTMLOptionElement).value)).toEqual(['standard', 'drop-d', 'd-g', 'half-step-down', 'open-g', 'open-d', 'dadgad']);
   });
 });
 

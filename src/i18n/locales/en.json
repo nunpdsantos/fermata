@@ -620,6 +620,7 @@
     "announce": "String {{string}}, fret {{fret}}, {{note}}",
     "label": "Guitar fretboard",
     "tuning": "Tuning:",
+    "standardTuning": "Standard",
     "tuningLabel": "Guitar tuning",
     "position": "Position:",
     "all": "All",

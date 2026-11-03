@@ -8,7 +8,7 @@
  * pitches from hard-coded MIDI numbers, and degree labels are parsed back to
  * semitones. Nothing here asks the engine whether the engine is right.
  *
- * Scope: every ScaleType x 12 roots x 13 positions (Open, I-XII) x 6 tunings.
+ * Scope: every ScaleType x 12 roots x 13 positions (Open, I-XII) x 7 tunings.
  */
 import { describe, it, expect } from 'vitest';
 import {
@@ -102,6 +102,7 @@ const ORACLE_SEMIS: Record<ScaleType, number[]> = {
 const ORACLE_TUNING_MIDI: Record<string, number[]> = {
   standard: [40, 45, 50, 55, 59, 64], // E2 A2 D3 G3 B3 E4
   'drop-d': [38, 45, 50, 55, 59, 64], // D2 A2 D3 G3 B3 E4
+  'd-g': [38, 43, 50, 55, 59, 64], // D2 G2 D3 G3 B3 E4
   'half-step-down': [39, 44, 49, 54, 58, 63], // Eb2 Ab2 Db3 Gb3 Bb3 Eb4
   'open-g': [38, 43, 50, 55, 59, 62], // D2 G2 D3 G3 B3 D4
   'open-d': [38, 45, 50, 54, 57, 62], // D2 A2 D3 F#3 A3 D4
@@ -280,7 +281,7 @@ describe('oracle self-checks', () => {
   });
 });
 
-describe('generated positions: every scale x 12 roots x Open-XII x 6 tunings', () => {
+describe('generated positions: every scale x 12 roots x Open-XII x 7 tunings', () => {
   for (const tuning of GUITAR_TUNINGS) {
     it(`${tuning.id}: all invariants hold`, () => {
       const violations: Violation[] = [];
@@ -382,7 +383,7 @@ describe('specific positions (hand-checked)', () => {
         }
       }
     }
-    expect(positions).toBe(6 * SCALES.length * 12 * 13);
+    expect(positions).toBe(7 * SCALES.length * 12 * 13);
     expect(bad.slice(0, 10)).toEqual([]);
   });
 

@@ -92,9 +92,19 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
     setOverride(keyFor(event, n), finger === n.finger ? null : finger);
   };
   const shifts = current.notes.filter((n, i) => n.shift && !current.notes.slice(0, i).some((m) => JSON.stringify(m.shift) === JSON.stringify(n.shift)));
+  const guideText = (n: FingeredNote) => n.shift?.kind === 'guide' ? t('practice.guide', {
+    finger: n.shift.finger, string: 6 - n.shift.stringIndex,
+    from: toRomanNumeral(n.shift.fromPosition), to: toRomanNumeral(n.shift.toPosition),
+  }) : '';
 
   return (
     <div className="practice-player space-y-3" data-testid="practice-player">
+      {route.stops && <div className="flex flex-wrap gap-2" role="group" aria-label={t('practice.walkPositions')} data-testid="walk-positions">
+        {route.stops.map((stop) => <Button key={stop.position} onClick={() => select(stop.start)}
+          aria-current={current.notes[0].position === stop.position ? 'step' : undefined}>
+          {toRomanNumeral(stop.position)} · {t('practice.octaveCount', { count: stop.octaves })}
+        </Button>)}
+      </div>}
       <div className="flex flex-wrap items-center gap-2">
         <Button variant="primary" onClick={() => playing ? stop() : void play()}>{playing ? t('practice.stop') : t('practice.play')}</Button>
         <IconButton aria-label={t('practice.previous')} disabled={index === 0} onClick={() => select(index - 1)} icon="←" />
@@ -119,7 +129,8 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
             {' · '}{t('explore.readout.stringFret', { string: 6 - n.stringIndex, fret: n.fret })}
             {n.barre && ` · ${t('practice.barre')}`}{n.reach && ` · ${t('practice.reach')}`}
           </p>)}
-          {shifts.map((n, j) => <p key={j} data-testid="practice-shift">{t(`practice.shift.${n.shift!.kind}`, {
+          {route.stops && <p>{t('fretboard.positionTitle', { numeral: toRomanNumeral(current.notes[0].position!), fret: current.notes[0].position })}</p>}
+          {shifts.map((n, j) => <p key={j} data-testid="practice-shift">{guideText(n) || t(`practice.shift.${n.shift!.kind}`, {
             from: toRomanNumeral(n.shift!.fromPosition), to: toRomanNumeral(n.shift!.toPosition),
           })}</p>)}
         </div>
@@ -147,13 +158,16 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
             const next = e.key === 'ArrowRight' ? Math.min(route.events.length - 1, i + 1) : e.key === 'ArrowLeft' ? Math.max(0, i - 1) : e.key === 'Home' ? 0 : e.key === 'End' ? route.events.length - 1 : null;
             if (next !== null) { e.preventDefault(); select(next); (e.currentTarget.parentElement?.children[next] as HTMLElement)?.focus(); }
           }}
-          onClick={() => select(i)} aria-label={t('practice.event', { number: i + 1, notes: event.notes.map((n) => noteToString(n.note)).join(' + ') })}>
+          onClick={() => select(i)} data-guide={event.notes.some((n) => n.shift?.kind === 'guide') || undefined}
+          title={event.notes.map(guideText).filter(Boolean).join(' ')}
+          aria-label={[t('practice.event', { number: i + 1, notes: event.notes.map((n) => noteToString(n.note)).join(' + ') }), ...event.notes.map(guideText)].filter(Boolean).join('. ')}>
           <span className="text-caption">{event.rh.join('+')}</span>
           <span>{event.notes.map((n) => noteToString(n.note)).join('+')}</span>
           <span className="text-caption">{event.notes.map((n) => fingerFor(i, n)).join('+')}{event.notes.some((n) => n.shift) ? ' ↗' : ''}</span>
         </button>)}
       </div>
       <p className="text-caption" style={{ color: 'var(--text-muted)' }}>{t('practice.suggested')}{' '}{route.overRinging ? t('practice.ring') : route.overRinging === false ? t('practice.noRing') : ''}</p>
+      {!editing && keys.some((k) => overrides[k] !== undefined) && <p className="text-caption">{t('practice.overrideHint')}</p>}
     </div>
   );
 }

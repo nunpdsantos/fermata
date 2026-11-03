@@ -4,7 +4,8 @@
   "tabs": {
     "scales": "Scales",
     "technical": "Technical set",
-    "rightHand": "Right hand"
+    "rightHand": "Right hand",
+    "walk": "Position walk"
   },
   "octaves": "Range",
   "octaveCount_one": "{{count}} octave",
@@ -42,7 +43,8 @@
     "beyond-neck": "The top notes cannot fit across three strings within frets 0–15.",
     "bass-notes-on-one-string": "The low notes share one string and cannot ring together. Try the tonic one octave higher.",
     "closed-style": "This exercise uses open strings; a closed-position route is not offered.",
-    "no-holdable-grip": "No sequence of grips can hold all three notes of each group."
+    "no-holdable-grip": "No sequence of grips can hold all three notes of each group.",
+    "noWalk": "No suggested walk connects two complete scales with guide-finger shifts in this tuning while keeping one hand shape in each position. Try another scale in Explore."
   },
   "pattern": "Pattern",
   "contour": {
@@ -82,5 +84,8 @@
   "event": "Step {{number}}: {{notes}}",
   "suggested": "Suggested fingering. 0 = open string; ↗ = position shift.",
   "ring": "Let the group ring.",
-  "noRing": "Release each note before the next."
+  "noRing": "Release each note before the next.",
+  "walkHint": "Play the scale in each position, then follow the connecting notes to the next. Slide the named guide finger along the same string. Each ascent spans one or two octaves; connecting notes keep the selected scale form, including melodic minor.",
+  "walkPositions": "Positions in playing order",
+  "guide": "Guide finger {{finger}}, string {{string}}: {{from}} → {{to}}"
 }

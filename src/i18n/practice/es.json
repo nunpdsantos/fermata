@@ -4,7 +4,8 @@
   "tabs": {
     "scales": "Escalas",
     "technical": "Conjunto técnico",
-    "rightHand": "Mano derecha"
+    "rightHand": "Mano derecha",
+    "walk": "Recorrido de posiciones"
   },
   "octaves": "Extensión",
   "octaveCount_one": "{{count}} octava",
@@ -42,7 +43,8 @@
     "beyond-neck": "Las notas más agudas no caben en tres cuerdas entre los trastes 0–15.",
     "bass-notes-on-one-string": "Las notas graves comparten una cuerda y no pueden sonar juntas. Prueba la tónica una octava más alta.",
     "closed-style": "Este ejercicio usa cuerdas al aire; no se propone un recorrido en posición cerrada.",
-    "no-holdable-grip": "No hay una secuencia de posiciones que sostenga las tres notas de cada grupo."
+    "no-holdable-grip": "No hay una secuencia de posiciones que sostenga las tres notas de cada grupo.",
+    "noWalk": "No hay un recorrido sugerido que conecte dos escalas completas por dedo guía en esta afinación, manteniendo la misma apertura de la mano en cada posición. Prueba otra escala en Explorar."
   },
   "pattern": "Patrón",
   "contour": {
@@ -82,5 +84,8 @@
   "event": "Paso {{number}}: {{notes}}",
   "suggested": "Digitación sugerida. 0 = cuerda al aire; ↗ = cambio de posición.",
   "ring": "Deja sonar el grupo.",
-  "noRing": "Suelta cada nota antes de la siguiente."
+  "noRing": "Suelta cada nota antes de la siguiente.",
+  "walkHint": "Toca la escala en cada posición y sigue las notas de enlace hasta la siguiente. Desliza el dedo guía indicado por la misma cuerda. Cada subida abarca una o dos octavas; las notas de enlace mantienen la forma de la escala elegida, incluida la menor melódica.",
+  "walkPositions": "Posiciones por orden de ejecución",
+  "guide": "Dedo guía {{finger}}, cuerda {{string}}: {{from}} → {{to}}"
 }

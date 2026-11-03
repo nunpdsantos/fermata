@@ -856,10 +856,15 @@ for (const v of VIEWPORTS) {
         await page.getByTestId('practice-open').click();
         const practice = page.getByTestId('practice-sheet');
         await expect(practice.getByTestId('practice-player')).toBeVisible();
-        for (const name of ['Scales', 'Technical set', 'Right hand']) {
+        for (const name of ['Scales', 'Position walk', 'Technical set', 'Right hand']) {
           await practice.getByRole('tab', { name, exact: true }).click();
           await expect(practice.getByTestId('practice-staff').locator('svg')).toBeVisible();
           await check(page, v, combo, `guitar-practice-${name}`);
+          if (name === 'Position walk') {
+            await practice.locator('.practice-event[data-guide]').first().click();
+            await expect(practice.getByTestId('neck-guide')).toBeVisible();
+            await check(page, v, combo, 'guitar-practice-walk-guide');
+          }
         }
         await practice.getByRole('tab', { name: 'Scales', exact: true }).click();
         await practice.getByRole('button', { name: 'Edit fingering' }).click();

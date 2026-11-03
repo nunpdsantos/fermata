@@ -181,6 +181,8 @@ export interface FingeredNote {
 export interface FingeringOptions {
   tuning?: GuitarTuning;
   maxFret?: number;
+  /** A closed-position study: keep this exact frame throughout, without open strings. */
+  fixedFrame?: HandFrame;
   /** Largest string change between consecutive notes (default 1 — scales and arpeggios alike). */
   maxStringStep?: number;
   /** Allow 'change' shifts (same string, another finger lands). Default false. */
@@ -495,6 +497,7 @@ export function fingerLineScored(
       const refCost = ref && (ref.stringIndex !== s || ref.fret !== f) ? refWeight : 0;
 
       if (f === 0) {
+        if (options.fixedFrame) continue;
         // Closed-position style: an open string only when nothing can fret the pitch.
         if (openPolicy === 'avoid' && open.some((o) => midi - o >= 1 && midi - o <= maxFret)) continue;
         // Open string: the hand keeps whatever frame it had.
@@ -516,7 +519,9 @@ export function fingerLineScored(
         continue;
       }
 
-      for (const frame of pin?.frame ? [pin.frame] : framesHolding(f, maxFret, shared)) {
+      for (const frame of options.fixedFrame ? [options.fixedFrame] : pin?.frame ? [pin.frame] : framesHolding(f, maxFret, shared)) {
+       if (frame.frets.some((fret) => fret < 1 || fret > maxFret)) continue;
+       if (pin?.frame && frameId(pin.frame) !== frameId(frame)) continue;
        for (const finger of fingersInFrame(frame, f)) {
         if (pin?.finger !== undefined && pin.finger !== finger) continue;
         if (pin?.position !== undefined && pin.position !== frame.position) continue;

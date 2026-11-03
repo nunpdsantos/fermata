@@ -88,6 +88,16 @@ export const TUNING_DADGAD: GuitarTuning = {
   ],
 };
 
+/** Classical scordatura: only strings 6 and 5 are lowered; the treble stays E. */
+export const TUNING_D_G: GuitarTuning = {
+  id: 'd-g',
+  name: '6=D 5=G',
+  shortName: '6=D 5=G',
+  strings: TUNING_STANDARD.strings.map((s, i) => i === 0
+    ? { natural: 'D', accidental: '', octave: 2 }
+    : i === 1 ? { natural: 'G', accidental: '', octave: 2 } : { ...s }),
+};
+
 export const TUNING_OPEN_G: GuitarTuning = {
   id: 'open-g',
   name: 'Open G',
@@ -134,6 +144,7 @@ export const TUNING_HALF_STEP_DOWN: GuitarTuning = {
 export const GUITAR_TUNINGS: GuitarTuning[] = [
   TUNING_STANDARD,
   TUNING_DROP_D,
+  TUNING_D_G,
   TUNING_HALF_STEP_DOWN,
   TUNING_OPEN_G,
   TUNING_OPEN_D,

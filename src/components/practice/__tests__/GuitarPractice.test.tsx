@@ -123,3 +123,54 @@ describe('playback ownership and cancellation', () => {
     expect(playTimedNotes).toHaveBeenCalledTimes(2);
   });
 });
+
+describe('position walk', () => {
+  it.each([
+    ['en', 'Position walk', 'Guide finger'],
+    ['pt', 'Percurso de posições', 'Dedo guia'],
+    ['es', 'Recorrido de posiciones', 'Dedo guía'],
+  ])('%s names the guide on the neck and strip, steps and schedules the same pitches', async (lang, tab, guide) => {
+    await i18n.changeLanguage(lang);
+    useAppStore.setState({ guitarTuningId: 'drop-d' });
+    render(<GuitarPractice />);
+    fireEvent.click(screen.getByRole('tab', { name: tab }));
+    expect(screen.getByTestId('walk-positions').children.length).toBeGreaterThanOrEqual(2);
+    const shift = document.querySelector<HTMLButtonElement>('.practice-event[data-guide]')!;
+    expect(shift.getAttribute('aria-label')).toContain(guide);
+    fireEvent.click(shift);
+    expect(screen.getByTestId('practice-shift').textContent).toContain(guide);
+    expect(screen.getByTestId('neck-guide').textContent).toBe(screen.getByTestId('practice-shift').textContent);
+    const guideDots = [...screen.getByTestId('practice-neck').querySelectorAll('[data-dot="position"]')].filter((d) => d.textContent?.includes('↗'));
+    expect(guideDots).toHaveLength(2);
+    expect(guideDots[0].getAttribute('data-dot-string')).toBe(guideDots[1].getAttribute('data-dot-string'));
+    expect(guideDots[0].textContent).toBe(guideDots[1].textContent);
+    const focus = useFocusNoteStore.getState().pinned!;
+    expect(focus.source).toBe('practice');
+    const staff = JSON.parse(screen.getByTestId('staff-notes').textContent!);
+    expect(staff).toHaveLength(1);
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: i18n.t('practice.play') })); });
+    const [scheduled, , callbacks] = vi.mocked(playTimedNotes).mock.calls.at(-1)!;
+    const index = [...shift.parentElement!.children].indexOf(shift);
+    expect(scheduled[index].note).toEqual(staff[0]);
+    act(() => callbacks!.onNotePlay!(index));
+    expect(useFocusNoteStore.getState().pinned?.midi).toBe(focus.midi);
+  });
+  it('reports an unavailable fixed-position walk instead of dropping scale tones', () => {
+    useAppStore.setState({ guitarTuningId: 'd-g', selectedScale: 'natural_minor' });
+    render(<GuitarPractice />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Position walk' }));
+    expect(screen.getByRole('status').textContent).toContain('guide-finger');
+    expect(screen.queryByTestId('practice-player')).toBeNull();
+  });
+  it('key and tuning changes reset the walk cursor without changing the dock position', () => {
+    useAppStore.setState({ guitarScalePosition: 7 });
+    render(<GuitarPractice />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Position walk' }));
+    fireEvent.click(document.querySelector<HTMLButtonElement>('.practice-event[data-guide]')!);
+    act(() => useAppStore.getState().setGuitarTuningId('drop-d'));
+    expect(screen.getByTestId('practice-current').textContent).toMatch(/^1 of /);
+    act(() => useAppStore.getState().setKey({ natural: 'D', accidental: '' }));
+    expect(screen.getByTestId('practice-current').textContent).toMatch(/^1 of /);
+    expect(useAppStore.getState().guitarScalePosition).toBe(7);
+  });
+});

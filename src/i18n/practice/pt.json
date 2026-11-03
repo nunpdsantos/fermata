@@ -4,7 +4,8 @@
   "tabs": {
     "scales": "Escalas",
     "technical": "Conjunto técnico",
-    "rightHand": "Mão direita"
+    "rightHand": "Mão direita",
+    "walk": "Percurso de posições"
   },
   "octaves": "Extensão",
   "octaveCount_one": "{{count}} oitava",
@@ -42,7 +43,8 @@
     "beyond-neck": "As notas mais agudas não cabem em três cordas entre os trastos 0–15.",
     "bass-notes-on-one-string": "As notas graves partilham uma corda e não podem soar juntas. Experimenta a tónica uma oitava acima.",
     "closed-style": "Este exercício usa cordas soltas; não é proposto um percurso em posição fechada.",
-    "no-holdable-grip": "Não há uma sequência de posições que sustente as três notas de cada grupo."
+    "no-holdable-grip": "Não há uma sequência de posições que sustente as três notas de cada grupo.",
+    "noWalk": "Não há um percurso sugerido que ligue duas escalas completas por dedo guia nesta afinação, mantendo a mesma abertura da mão em cada posição. Experimenta outra escala em Explorar."
   },
   "pattern": "Padrão",
   "contour": {
@@ -82,5 +84,8 @@
   "event": "Passo {{number}}: {{notes}}",
   "suggested": "Dedilhação sugerida. 0 = corda solta; ↗ = mudança de posição.",
   "ring": "Deixa o grupo soar.",
-  "noRing": "Solta cada nota antes da seguinte."
+  "noRing": "Solta cada nota antes da seguinte.",
+  "walkHint": "Toca a escala em cada posição e segue as notas de ligação até à seguinte. Desliza o dedo guia indicado na mesma corda. Cada subida abrange uma ou duas oitavas; as notas de ligação mantêm a forma da escala escolhida, incluindo a menor melódica.",
+  "walkPositions": "Posições por ordem de execução",
+  "guide": "Dedo guia {{finger}}, corda {{string}}: {{from}} → {{to}}"
 }
