@@ -99,7 +99,7 @@ const overlay: ExerciseLevelOverlay = {
       'O seguidor toca apenas a quinta nota de cada frase',
       'O seguidor toca a melodia do líder cinco vezes',
     ],
-    hint: 'O nome do intervalo refere-se à transposição de altura, não ao atraso temporal. Um cânone à quinta transpõe a melodia uma P5.',
+    hint: 'O nome do intervalo refere-se à transposição de altura, não ao atraso temporal. Um cânone à quinta transpõe a melodia uma 5.ª perfeita.',
   },
   l8u25m3e3: {
     prompt:

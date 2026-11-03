@@ -386,7 +386,7 @@ const overlay: ExerciseLevelOverlay = {
       'Fundamental, 3.ª maior (4 meios-tons), 5.ª diminuta (6 meios-tons)',
       'Fundamental, 4.ª perfeita (5 meios-tons), 5.ª perfeita (7 meios-tons)',
     ],
-    hint: 'Uma tríade maior empilha uma 3.ª maior (4 meios-tons a partir da fundamental) e depois uma 3.ª menor por cima (mais 3), resultando em fundamental + 3.aM + 5.aP.',
+    hint: 'Uma tríade maior empilha uma 3.ª maior (4 meios-tons a partir da fundamental) e depois uma 3.ª menor por cima (mais 3), resultando em fundamental + 3M + 5P.',
   },
 };
 

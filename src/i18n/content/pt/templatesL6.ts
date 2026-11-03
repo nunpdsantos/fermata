@@ -374,7 +374,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre o cantus firmus e a primeira espécie (1:1) é verdadeira?',
       hintTemplate:
-        'Cantus firmus: 8–12 semibreves, da tónica à tónica, sobretudo por grau conjunto, um só ponto culminante. Primeira espécie: só consonâncias (P1, 3.as, P5, 6.as, P8); começa em P1, P5 ou P8; termina em P1 ou P8 alcançado por grau conjunto.',
+        'Cantus firmus: 8–12 semibreves, da tónica à tónica, sobretudo por grau conjunto, um só ponto culminante. Primeira espécie: só consonâncias (1P, 3.as, 5P, 6.as, 8P); começa em 1P, 5P ou 8P; termina em 1P ou 8P alcançado por grau conjunto.',
       choiceSets: [
         [
           'Um cantus firmus começa e termina na tónica e move-se sobretudo por grau conjunto',

@@ -431,7 +431,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'Cantus Firmus e Primeira Espécie (1:1)',
           explanation:
-            'O cantus firmus (CF) é uma melodia simples de 8 a 12 semibreves, começando e terminando na tónica, maioritariamente por grau conjunto com um ponto culminante. A primeira espécie coloca uma nota contra cada nota do CF usando apenas consonâncias — começa com P1, P5 ou P8, termina com P1 ou P8 abordada por grau conjunto, favorece consonâncias imperfeitas (terças e sextas) e proíbe intervalos perfeitos paralelos. Sem cruzamento de vozes, sem mais de três terças ou sextas consecutivas.',
+            'O cantus firmus (CF) é uma melodia simples de 8 a 12 semibreves, começando e terminando na tónica, maioritariamente por grau conjunto com um ponto culminante. A primeira espécie coloca uma nota contra cada nota do CF usando apenas consonâncias — começa com uníssono, 5.ª perfeita ou oitava, termina com uníssono ou oitava abordada por grau conjunto, favorece consonâncias imperfeitas (terças e sextas) e proíbe intervalos perfeitos paralelos. Sem cruzamento de vozes, sem mais de três terças ou sextas consecutivas.',
           tryThisLabel: 'Vê as notas disponíveis para um CF em C maior',
         },
         {

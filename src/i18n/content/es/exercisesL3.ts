@@ -41,7 +41,7 @@ const overlay: ExerciseLevelOverlay = {
       'Usan tríadas diferentes: el semidisminuido es menor, el totalmente disminuido es disminuido',
       'No hay diferencia; son el mismo acorde',
     ],
-    hint: 'Ambos comparten una tríada disminuida (fundamental, 3.ªm, 5.ªdim). El semidisminuido añade una 7.ª menor (10 semitonos), mientras que el totalmente disminuido añade una 7.ª disminuida (9 semitonos).',
+    hint: 'Ambos comparten una tríada disminuida (fundamental, 3m, 5.ª disminuida). El semidisminuido añade una 7.ª menor (10 semitonos), mientras que el totalmente disminuido añade una 7.ª disminuida (9 semitonos).',
   },
   l3u9m1e_ear1: {
     prompt: 'Escucha este acorde de séptima e identifica su cualidad.',
@@ -160,7 +160,7 @@ const overlay: ExerciseLevelOverlay = {
       'La escala menor armónica desciende el 7.º grado, creando un acorde disminuido',
       'La cualidad del acorde no cambia entre menor natural y menor armónica',
     ],
-    hint: 'En A menor natural, VII es G-B-D (mayor). Elevar G a G# en la menor armónica da G#-B-D, que es disminuido (fundamental a 3.ª = 3.ªm, fundamental a 5.ª = 5.ªdim).',
+    hint: 'En A menor natural, VII es G-B-D (mayor). Elevar G a G# en la menor armónica da G#-B-D, que es disminuido (fundamental a 3.ª = 3m, fundamental a 5.ª = 5.ª disminuida).',
   },
   l3u9m4e3: {
     prompt:
@@ -472,7 +472,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l3u11m5e2: {
     prompt: 'C4 se transporta hasta la segunda nota mostrada. Indica el intervalo de esta transposición.',
-    hint: 'Una 5.ª justa son 7 semitonos. C más 7 semitonos = G. Transponer una 5.ªJ hacia arriba es una de las transposiciones más comunes, pasando de C mayor a G mayor.',
+    hint: 'Una 5.ª justa son 7 semitonos. C más 7 semitonos = G. Transponer una 5.ª justa hacia arriba es una de las transposiciones más comunes, pasando de C mayor a G mayor.',
     nudge: 'Todas las notas se mueven el mismo intervalo, así que mídelo solo en la primera nota: cuenta los nombres de las notas de C hasta la segunda nota mostrada, incluidas ambas, y comprueba si esa nota pertenece a C mayor para decidir la cualidad.',
   },
   l3u11m5e3: {

@@ -526,7 +526,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual é o intervalo formado entre as duas vozes? Partindo de {root}.',
       hintTemplate:
-        'No contraponto de espécies, consonâncias são 3.as, 6.as e intervalos perfeitos (P1, P5, P8). Dissonâncias (2.as, 7.as, trítono) requerem tratamento especial.',
+        'No contraponto de espécies, consonâncias são 3.as, 6.as e intervalos perfeitos (1P, 5P, 8P). Dissonâncias (2.as, 7.as, trítono) requerem tratamento especial.',
     },
   ],
 };

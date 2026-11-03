@@ -191,13 +191,15 @@ test.describe('PWA basics', () => {
       'SW does not register on the dev server (devOptions disabled)',
     );
 
-    // Wait for the service worker to activate and finish precaching.
+    // registration.active can already exist while the worker is ACTIVATING,
+    // before clientsClaim takes control. A fixed sleep races that takeover
+    // under load, so the next navigation can hit the disconnected network.
+    // Activated + controlling means precaching and the first claim finished.
     await page.waitForFunction(
-      async () => !!(await navigator.serviceWorker.getRegistration())?.active,
+      () => navigator.serviceWorker.controller?.state === 'activated',
       undefined,
       { timeout: 15_000 },
     );
-    await page.waitForTimeout(1500);
 
     await context.setOffline(true);
     await page.goto('/?view=drill');

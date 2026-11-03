@@ -41,7 +41,7 @@ const overlay: ExerciseLevelOverlay = {
       'Usam tríades diferentes: o meio-diminuto é menor, o totalmente diminuto é diminuto',
       'Não há diferença; são o mesmo acorde',
     ],
-    hint: 'Ambos partilham uma tríade diminuta (fundamental, 3.am, 5.adim). O meio-diminuto acrescenta uma 7.ª menor (10 meios-tons), enquanto o totalmente diminuto acrescenta uma 7.ª diminuta (9 meios-tons).',
+    hint: 'Ambos partilham uma tríade diminuta (fundamental, 3m, 5.ª diminuta). O meio-diminuto acrescenta uma 7.ª menor (10 meios-tons), enquanto o totalmente diminuto acrescenta uma 7.ª diminuta (9 meios-tons).',
   },
   l3u9m1e_ear1: {
     prompt: 'Ouve este acorde de sétima e identifica a sua qualidade.',
@@ -160,7 +160,7 @@ const overlay: ExerciseLevelOverlay = {
       'A escala menor harmónica baixa o 7.º grau, criando um acorde diminuto',
       'A qualidade do acorde não muda entre menor natural e menor harmónica',
     ],
-    hint: 'Em A menor natural, VII é G-B-D (maior). Elevar G para G# na menor harmónica dá G#-B-D, que é diminuto (fundamental à 3.ª = 3.am, fundamental à 5.ª = 5.adim).',
+    hint: 'Em A menor natural, VII é G-B-D (maior). Elevar G para G# na menor harmónica dá G#-B-D, que é diminuto (fundamental à 3.ª = 3m, fundamental à 5.ª = 5.ª diminuta).',
   },
   l3u9m4e3: {
     prompt:
@@ -472,7 +472,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l3u11m5e2: {
     prompt: 'C4 é transposto até à segunda nota mostrada. Indica o intervalo desta transposição.',
-    hint: 'Uma 5.ª perfeita são 7 meios-tons. C mais 7 meios-tons = G. Transpor uma 5.aP acima é uma das transposições mais comuns, passando de C maior para G maior.',
+    hint: 'Uma 5.ª perfeita são 7 meios-tons. C mais 7 meios-tons = G. Transpor uma 5.ª perfeita acima é uma das transposições mais comuns, passando de C maior para G maior.',
     nudge: 'Todas as notas se movem pelo mesmo intervalo, por isso mede-o só na primeira nota: conta os nomes das notas de C até à segunda nota mostrada, incluindo ambas, e verifica se essa nota pertence a C maior para decidires a qualidade.',
   },
   l3u11m5e3: {

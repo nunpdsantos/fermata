@@ -386,7 +386,7 @@ const overlay: ExerciseLevelOverlay = {
       'Fundamental, 3.ª mayor (4 semitonos), 5.ª disminuida (6 semitonos)',
       'Fundamental, 4.ª justa (5 semitonos), 5.ª justa (7 semitonos)',
     ],
-    hint: 'Una tríada mayor apila una 3.ª mayor (4 semitonos desde la fundamental) y después una 3.ª menor encima (3 más), resultando en fundamental + 3.ªM + 5.ªJ.',
+    hint: 'Una tríada mayor apila una 3.ª mayor (4 semitonos desde la fundamental) y después una 3.ª menor encima (3 más), resultando en fundamental + 3M + 5J.',
   },
 };
 
