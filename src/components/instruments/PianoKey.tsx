@@ -7,14 +7,7 @@ import { useAppStore } from '../../state/store.ts';
 import { ON_DEGREE } from '../../design/tokens/colors.ts';
 import { readableTextOn } from './fretboardConstants.ts';
 
-type SizeMode = 'mobile' | 'tablet' | 'desktop';
-
-const DIMS: Record<SizeMode, { white: [number, number]; black: [number, number]; labelSize: string }> = {
-  // Key labels never go below the 12 px floor (D-28; were 10 / 9 / 8 px).
-  desktop: { white: [44, 210], black: [28, 130], labelSize: '12px' },
-  tablet:  { white: [36, 160], black: [22, 100], labelSize: '12px' },
-  mobile:  { white: [36, 130], black: [22, 80],  labelSize: '12px' },
-};
+import { PIANO_DIMS, type SizeMode } from './pianoDimensions';
 
 interface PianoKeyProps {
   keyData: PianoKeyData;
@@ -90,7 +83,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
   const touchPointers = useRef<Set<number>>(new Set());
   const touchNoteOn = useRef(false);
   const elementRef = useRef<HTMLDivElement>(null);
-  const dims = DIMS[sizeMode];
+  const dims = PIANO_DIMS[sizeMode];
 
   const refreshTouchNote = useCallback(() => {
     const desired = touchPointers.current.size > 0;

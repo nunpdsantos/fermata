@@ -4,6 +4,7 @@ import { noteToString } from '../../core/types/music.ts';
 import type { Note, PitchedNote } from '../../core/types/music.ts';
 import type { ChordShape, FingerNumber } from '../../core/constants/guitarChordShapes.ts';
 import { midiToNote } from '../../core/utils/pianoLayout.ts';
+import { FretboardBreak } from './FretboardBreak';
 import { FretCell } from './FretCell.tsx';
 import { readableTextOn, ACCENT_FILL } from './fretboardConstants.ts';
 import type { FretNote, PositionDot } from './fretboardConstants.ts';
@@ -26,6 +27,8 @@ interface FretboardStringProps {
   isChordView: boolean;
   /** The lowest visible fret is the 1st, so the nut is drawn thick. */
   atNut: boolean;
+  /** A cropped practice passage omits frets between its window and the nut. */
+  showFretBreak?: boolean;
   mode: FretboardMode;
   /** The tuning's name for this string — never re-spelled by key (W1-16). */
   stringName: string;
@@ -67,6 +70,7 @@ export const FretboardString = memo(function FretboardString({
   mobile,
   isChordView,
   atNut,
+  showFretBreak = false,
   mode,
   stringName,
   activeNotes,
@@ -231,10 +235,12 @@ export const FretboardString = memo(function FretboardString({
         })}
       </div>
 
+      {showFretBreak && <FretboardBreak />}
       {/* Nut */}
       <div
         style={{
           width: atNut ? 6 : 2,
+          flexShrink: 0,
           backgroundColor: atNut ? 'var(--text-muted)' : 'var(--border)',
           height: '100%',
         }}

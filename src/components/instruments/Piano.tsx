@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useRef, useEffect, useState } from 'react';
+import { useMemo, useCallback, useRef, useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   generateKeyboardKeys,
@@ -6,6 +6,7 @@ import {
   chordFitsKeyboard,
   type PianoKey,
 } from '../../core/utils/pianoLayout.ts';
+import { PIANO_DIMS } from './pianoDimensions';
 import { PianoKeyComponent } from './PianoKey.tsx';
 import { useAudio } from '../../hooks/useAudio.ts';
 import { useAppStore } from '../../state/store.ts';
@@ -44,28 +45,11 @@ const KEYBOARD_MAP: Record<string, number> = {
   ';': 16,  // E
 };
 
-// Responsive key widths
-const KEY_WIDTH_DESKTOP = 46;
-const KEY_WIDTH_TABLET = 36;
-const KEY_WIDTH_MOBILE = 36; // height (130px) meets WCAG 44px touch target
-
-// Responsive container/key heights
-const CONTAINER_H_DESKTOP = 220;
-const CONTAINER_H_TABLET = 170;
-const CONTAINER_H_MOBILE = 140;
-
-const WHITE_H_DESKTOP = 210;
-const WHITE_H_TABLET = 160;
-const WHITE_H_MOBILE = 130;
-
-const BLACK_OFFSET_DESKTOP = 30;
-const BLACK_OFFSET_TABLET = 22;
-const BLACK_OFFSET_MOBILE = 22;
-
 export function Piano() {
   const { t } = useTranslation();
   const { noteOn, noteOff } = useAudio();
   const activeNotes = useAppStore((s) => s.activeNotes);
+  const exerciseInputActive = useAppStore((s) => s.exerciseInputActive);
   const baseOctave = useAppStore((s) => s.baseOctave);
   const setBaseOctave = useAppStore((s) => s.setBaseOctave);
   const { displayScale: scale, invertedNotes, scaleMidiNumbers, getNoteColor, spellPitchClass, chordVoicingMidi, hasSelectedChord } = useKeyContext();
@@ -108,13 +92,10 @@ export function Piano() {
   const mobile = phoneWidth || shortTouch;
   const compact = useIsCompact();
 
-  const keyWidth = mobile ? KEY_WIDTH_MOBILE : compact ? KEY_WIDTH_TABLET : KEY_WIDTH_DESKTOP;
-  const containerHeight = mobile ? CONTAINER_H_MOBILE : compact ? CONTAINER_H_TABLET : CONTAINER_H_DESKTOP;
-  const whiteKeyHeight = mobile ? WHITE_H_MOBILE : compact ? WHITE_H_TABLET : WHITE_H_DESKTOP;
-  const blackKeyOffset = mobile ? BLACK_OFFSET_MOBILE : compact ? BLACK_OFFSET_TABLET : BLACK_OFFSET_DESKTOP;
-
-  // Sizing mode passed to PianoKey
-  const sizeMode: 'mobile' | 'tablet' | 'desktop' = mobile ? 'mobile' : compact ? 'tablet' : 'desktop';
+  const sizeMode = mobile ? 'mobile' : compact ? 'tablet' : 'desktop';
+  const { white: [keyWidth, whiteKeyHeight], black: [blackKeyWidth] } = PIANO_DIMS[sizeMode];
+  const containerHeight = whiteKeyHeight + 10;
+  const blackKeyOffset = keyWidth - blackKeyWidth / 2;
 
   // Drag-to-scroll state (threshold-based: distinguishes click from drag)
   const DRAG_THRESHOLD = 8;
@@ -320,35 +301,34 @@ export function Piano() {
 
       const centerIdx = (minIdx + maxIdx) / 2;
       const scrollTo = centerIdx * keyWidth - containerRef.current.clientWidth / 2 + keyWidth / 2;
-      containerRef.current.scrollTo({ left: Math.max(0, scrollTo), behavior: 'smooth' });
+      containerRef.current.scrollTo({ left: Math.max(0, scrollTo), behavior: 'auto' });
     },
     [midiToWhiteKeyIndex, keyWidth]
   );
 
-  // Auto-scroll only when the actual selection changes (not on every render).
-  // Uses a serialized key so manual scrolling isn't overridden.
-  const prevSelectionKey = useRef('');
-  useEffect(() => {
-    const target = chordVoicingMidi.size > 0 ? chordVoicingMidi : scaleMidiNumbers;
-    if (target.size === 0) { prevSelectionKey.current = ''; return; }
-    const key = Array.from(target).sort((a, b) => a - b).join(',');
-    if (key === prevSelectionKey.current) return;
-    prevSelectionKey.current = key;
-    scrollToMidiRange(target);
-  }, [scaleMidiNumbers, chordVoicingMidi, scrollToMidiRange]);
+  // Exercise highlights span every octave (and start empty). Navigate by
+  // the selected octave independently of those highlights. Else retain the
+  // Explore scale/chord range. A stable key preserves manual scrolling.
+  const scrollTargetKey = useMemo(() => {
+    const target = exerciseInputActive
+      ? keys.filter((k) => k.octave === baseOctave).map((k) => k.midiNumber)
+      : [...(chordVoicingMidi.size > 0 ? chordVoicingMidi : scaleMidiNumbers)];
+    return target.sort((a, b) => a - b).join(',');
+  }, [exerciseInputActive, keys, baseOctave, chordVoicingMidi, scaleMidiNumbers]);
 
-  // Scroll on octave button change
-  useEffect(() => {
-    const t = setTimeout(() => {
-      if (chordVoicingMidi.size > 0) {
-        scrollToMidiRange(chordVoicingMidi);
-      } else if (scaleMidiNumbers.size > 0) {
-        scrollToMidiRange(scaleMidiNumbers);
-      }
-    }, 50);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [baseOctave]);
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    if (!container || !scrollTargetKey) return;
+    const target = new Set(scrollTargetKey.split(',').map(Number));
+    const scroll = () => scrollToMidiRange(target);
+    scroll();
+    // Dock/sheet opening and orientation changes can change the available
+    // width after mount. Observe the actual container, not just the viewport.
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(scroll);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [scrollTargetKey, scrollToMidiRange, exerciseInputActive]);
 
   const handleContainerPointerDown = useCallback((e: React.PointerEvent) => {
     isPointerDown.current = true;

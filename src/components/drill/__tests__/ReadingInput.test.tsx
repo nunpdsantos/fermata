@@ -70,6 +70,33 @@ describe('reading input', () => {
     expect(onGrade).toHaveBeenCalledWith({ correct: true, nearMiss: false });
   });
 
+  it('marks omitted frets between each position row and its nut', async () => {
+    await board(item('read:staff-to-fret:V:E4'));
+    const breaks = screen.getByTestId('reading-board').querySelectorAll('[data-fret-break]');
+    expect(breaks).toHaveLength(6);
+    for (const gap of breaks) {
+      expect(gap.textContent).toBe('//');
+      expect(gap.previousElementSibling?.querySelector('[data-fret]')?.getAttribute('data-fret')).toBe('4');
+      expect(gap.nextElementSibling?.querySelector('[data-fret]')?.getAttribute('data-fret')).toBe('0');
+    }
+  });
+
+  it.each([...new Set(READ.map((q) => q.input.position))])('keeps nut geography explicit for reading stage %s', async (position) => {
+    const q = READ.find((entry) => entry.input.position === position)!;
+    await board(q);
+    for (let string = 0; string < 6; string++) {
+      const open = cell(string, 0).parentElement!;
+      const adjacent = open.previousElementSibling!;
+      if (adjacent.hasAttribute('data-fret-break')) {
+        expect(adjacent.textContent).toBe('//');
+        expect((adjacent as HTMLElement).style.width).toBe('24px');
+        expect((adjacent as HTMLElement).style.flexShrink).toBe('0');
+      } else {
+        expect(adjacent.querySelector('[data-fret]')?.getAttribute('data-fret')).toBe('1');
+      }
+    }
+  });
+
   it('outside-position exact pitches are near misses and the correct window is revealed', async () => {
     const q = item('read:staff-to-fret:V:E4'); // E3: string 6 fret 12, outside V
     expect(gradeAnswer(q, { format: 'fretboard', stringIndex: 0, fret: 12 })).toEqual({ correct: false, nearMiss: true });
