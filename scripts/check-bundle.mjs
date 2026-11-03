@@ -59,10 +59,19 @@ if (!drillChunk || !FSRS_MARKERS.some((m) => fs.readFileSync(path.join(dist, 'as
 for (const marker of FSRS_MARKERS) {
   if (entry.includes(marker)) problems.push(`ts-fsrs ("${marker}") is in the entry chunk`);
 }
-for (const lazyChunk of ['Fretboard', 'QuickSearch']) {
+for (const lazyChunk of ['Fretboard', 'QuickSearch', 'GuitarPractice']) {
   if (!assets.some((f) => f.startsWith(`${lazyChunk}-`) && f.endsWith('.js'))) {
     problems.push(`no separate ${lazyChunk}-*.js chunk — it was pulled back into the entry`);
   }
+}
+// The route search and technical-set engine belong to the lazy practice
+// chunk. Stable object keys survive minification; verify the probe itself.
+const practiceChunk = assets.find((f) => /^GuitarPractice-.*\.js$/.test(f));
+for (const marker of ['share23Up', 'bass-notes-on-one-string']) {
+  if (!practiceChunk || !fs.readFileSync(path.join(dist, 'assets', practiceChunk), 'utf8').includes(marker)) {
+    problems.push(`practice engine marker "${marker}" is missing from GuitarPractice — update the probe`);
+  }
+  if (entry.includes(marker)) problems.push(`guitar practice engine ("${marker}") is in the entry chunk`);
 }
 
 const vexflowChunk = assets.find((f) => /^vexflow-.*\.js$/.test(f));

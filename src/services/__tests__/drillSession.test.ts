@@ -1,3 +1,4 @@
+import { genRead } from '../../core/utils/drillBank/genRead';
 /**
  * drillSession tests — session composer and in-session queue helpers.
  * Fixture banks are hand-crafted stubs (only the fields used by the service).
@@ -24,6 +25,7 @@ const NOW = 1_750_000_000_000;
 
 /** Bare minimum DrillItem stub. */
 function item(id: string, family: DrillFamily = 'keysig', rank = 0): DrillItem {
+  if (family === 'read') return { ...genRead()[0], id, rank };
   return {
     id,
     family,
@@ -652,7 +654,7 @@ describe('requeue: no adjacent duplicate (W0-02)', () => {
 
 describe('composeSession: integration with real bank', () => {
   it('composes a 24-item session from real bank with synthetic states', () => {
-    const bank = generateDrillBank();
+    const bank = generateDrillBank({ includeRead: true });
     expect(bank.length).toBeGreaterThan(1000);
 
     // Give every other item in the first 80 a review state
@@ -740,7 +742,7 @@ describe('composeSession: fresh items round-robin across families (W7-02)', () =
   }
 
   it('defaults: every family gets its first new fact within 3 sessions', () => {
-    const bank = generateDrillBank();
+    const bank = generateDrillBank({ includeRead: true });
     const { firstSession } = introduce(
       bank,
       { length: 24, newPerSession: 4, families: allFamilies() },
@@ -753,7 +755,7 @@ describe('composeSession: fresh items round-robin across families (W7-02)', () =
   });
 
   it('a session\'s new facts come from different families while enough families have fresh items', () => {
-    const bank = generateDrillBank();
+    const bank = generateDrillBank({ includeRead: true });
     const byId = new Map(bank.map((i) => [i.id, i]));
     const { perSession } = introduce(
       bank,
@@ -767,13 +769,13 @@ describe('composeSession: fresh items round-robin across families (W7-02)', () =
     }
   });
 
-  it('families take turns: over 9 sessions of 4, each family gets 4 new facts', () => {
-    const bank = generateDrillBank();
+  it('families take turns: over 10 sessions of 4, each family gets 4 new facts', () => {
+    const bank = generateDrillBank({ includeRead: true });
     const byId = new Map(bank.map((i) => [i.id, i]));
     const { perSession } = introduce(
       bank,
       { length: 24, newPerSession: 4, families: allFamilies() },
-      9,
+      DRILL_FAMILIES.length,
     );
     const counts: Partial<Record<DrillFamily, number>> = {};
     for (const id of perSession.flat()) {
@@ -784,7 +786,7 @@ describe('composeSession: fresh items round-robin across families (W7-02)', () =
   });
 
   it('within a family, new facts still arrive in rank order (spec introduction order)', () => {
-    const bank = generateDrillBank();
+    const bank = generateDrillBank({ includeRead: true });
     const byId = new Map(bank.map((i) => [i.id, i]));
     const { perSession } = introduce(
       bank,
@@ -800,7 +802,7 @@ describe('composeSession: fresh items round-robin across families (W7-02)', () =
   });
 
   it('one family enabled: plain rank order, as before', () => {
-    const bank = generateDrillBank();
+    const bank = generateDrillBank({ includeRead: true });
     const families = { ...noFamilies(), triad: true };
     const queue = composeSession(bank, {}, { length: 24, newPerSession: 4, families }, NOW, 1);
     const expected = bank
@@ -842,13 +844,13 @@ describe('composeSession / requeue: siblings never adjacent (W7-04)', () => {
   }
 
   it('known positive: the unfixed rank order puts triad spell/name siblings side by side', () => {
-    const bank = generateDrillBank();
+    const bank = generateDrillBank({ includeRead: true });
     const triads = bank.filter((i) => i.family === 'triad').sort((a, b) => a.rank - b.rank).slice(0, 4);
     expect(siblingPairs(triads.map((i) => i.id)).length).toBeGreaterThan(0);
   });
 
   it('triads only, fresh learner: no sibling pair in the composed queue', () => {
-    const bank = generateDrillBank();
+    const bank = generateDrillBank({ includeRead: true });
     const families = { ...noFamilies(), triad: true };
     for (let seed = 1; seed <= 20; seed++) {
       const q = composeSession(bank, {}, { length: 24, newPerSession: 4, families }, NOW, seed);

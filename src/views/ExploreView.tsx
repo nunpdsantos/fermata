@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ExploreHeader } from '../components/explore/ExploreHeader.tsx';
 import { ScaleStrip } from '../components/explore/ScaleStrip.tsx';
 import { ChordsCard } from '../components/explore/ChordsCard.tsx';
@@ -6,6 +7,10 @@ import { CircleNavigator } from '../components/explore/CircleNavigator.tsx';
 import { useMediaQuery, PHONE_QUERY } from '../hooks/useMediaQuery.ts';
 import { useAppStore } from '../state/store.ts';
 import { useFocusNoteStore } from '../state/focusNoteStore.ts';
+import { Button } from '../components/ui/Button.tsx';
+import { Sheet } from '../components/ui/Sheet.tsx';
+
+const GuitarPractice = lazy(() => import('../components/practice/GuitarPractice.tsx'));
 
 /** Laptop widths: the circle of fifths stands beside the work (D-30). */
 export const WORKBENCH_QUERY = '(min-width: 1200px)';
@@ -29,10 +34,14 @@ export const WORKBENCH_QUERY = '(min-width: 1200px)';
  * note (state/focusNoteStore.ts); changing the key or scale clears it.
  */
 export function ExploreView() {
+  const { t } = useTranslation();
   const wide = useMediaQuery(WORKBENCH_QUERY);
   const phone = useMediaQuery(PHONE_QUERY);
   const selectedKey = useAppStore((s) => s.selectedKey);
   const selectedScale = useAppStore((s) => s.selectedScale);
+  const guitar = useAppStore((s) => s.instrument === 'guitar');
+  const [practice, setPractice] = useState(false);
+  const practiceAction = guitar ? <Button data-testid="practice-open" aria-haspopup="dialog" onClick={() => setPractice(true)}>{t('practice.title')}</Button> : null;
 
   // A new key or scale starts with nothing in focus; so does leaving Explore.
   useEffect(() => {
@@ -42,11 +51,12 @@ export function ExploreView() {
 
   return (
     <div className="explore-root">
-      <ExploreHeader />
+      <ExploreHeader practiceAction={wide ? practiceAction : undefined} />
       <div className="explore-work" data-testid="explore-work" data-layout={wide ? 'workbench' : phone ? 'phone' : 'column'}>
         <div className="explore-main">
           <ScaleStrip key={`${selectedKey.natural}${selectedKey.accidental}:${selectedScale}`} />
           <ChordsCard />
+          {guitar && !wide && <section className="explore-card no-print" data-testid="practice-card">{practiceAction}</section>}
           {!wide && !phone && <CircleNavigator collapsible />}
         </div>
         {wide && (
@@ -55,6 +65,12 @@ export function ExploreView() {
           </aside>
         )}
       </div>
+      <Sheet open={practice && guitar} onClose={() => setPractice(false)} title={t('practice.title')}
+        closeLabel={t('common.close')} testId="practice-sheet">
+        <Suspense fallback={<p role="status">{t('common.loading')}</p>}>
+          {practice && guitar && <GuitarPractice />}
+        </Suspense>
+      </Sheet>
     </div>
   );
 }

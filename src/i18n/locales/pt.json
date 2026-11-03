@@ -766,6 +766,24 @@
       "empty": "Ainda não há nada dominado para treinar",
       "emptyHint": "Treina alguns factos para revisão primeiro e volta depois."
     },
+    "reading": {
+      "board": "Braço da guitarra para leitura",
+      "stringOpen": "Corda {{string}}, solta",
+      "stringFret": "Corda {{string}}, traste {{fret}}",
+      "correct": "posição correta",
+      "wrong": "a tua resposta",
+      "staff": "{{note}} escrito na clave de sol, oitava abaixo",
+      "nearMiss": "Confere a oitava ou posição: {{expected}}",
+      "explanation": "{{written}} escrito soa {{sounding}}. Número num círculo = corda; seguinte = traste.",
+      "noSprint": "A leitura na guitarra pratica-se sem o cronómetro do Sprint.",
+      "stages": {
+        "1": "1 · Posição aberta",
+        "2": "2 · Posição II",
+        "3": "3 · Posição V",
+        "4": "4 · Acima de V (VII, IX, XII)",
+        "5": "5 · Braço completo"
+      }
+    },
     "families": {
       "keysig": "Armações de clave",
       "circle": "Círculo das quintas",
@@ -1113,5 +1131,6 @@
   "neck": {
     "open": "Braço inteiro",
     "close": "Fechar o braço inteiro"
-  }
+  },
+  "practice": {"title": "Praticar na guitarra"}
 }

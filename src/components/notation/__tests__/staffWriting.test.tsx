@@ -125,7 +125,7 @@ const GLYPH: Record<number, string> = { 0xe260: 'b', 0xe261: 'n', 0xe262: '#', 0
 
 // These staves model Explore's (they show what the instrument plays), so they
 // follow the instrument; Learn's authored staves are covered in learn/exercises.
-async function renderStaff(notes: PitchedNote[], props: { keySignature?: string; clef?: 'treble' | 'bass' } = {}) {
+async function renderStaff(notes: PitchedNote[], props: { keySignature?: string; clef?: 'treble' | 'bass'; annotation?: '8vb'; followInstrument?: boolean } = {}) {
   const { container } = render(<StaffNotation notes={notes} width={700} height={130} followInstrument {...props} />);
   await waitFor(() => expect(container.querySelectorAll('svg g.vf-stavenote').length).toBeGreaterThan(0), { timeout: 15000 });
   const svg = container.querySelector('svg')!;
@@ -238,5 +238,22 @@ describe('W3-12 review B3 — the guitar staff is written an octave above soundi
     guitar.noteheadYs.forEach((y, i) => {
       expect(y - guitar.clefY, `note ${i}`).toBe(piano.noteheadYs[i] - piano.clefY - 35);
     });
+  });
+});
+
+
+describe('W10 reading notation is independent of Explore', () => {
+  it('draws the guitar clef with the written pitch unchanged, even with piano selected', async () => {
+    cleanup();
+    useAppStore.setState({ instrument: 'piano' });
+    const written: PitchedNote[] = [{ natural: 'C', accidental: '#', octave: 5 }];
+    const plain = await renderStaff(written, { followInstrument: false });
+    cleanup();
+    const reading = await renderStaff(written, { annotation: '8vb', followInstrument: false });
+    expect(reading.clefGlyphs).toContain(0xe052);
+    expect(reading.noteAccidentals).toEqual(['#']);
+    expect(reading.noteheadYs[0] - reading.clefY).toBe(plain.noteheadYs[0] - plain.clefY);
+    expect(useAppStore.getState().instrument).toBe('piano');
+    cleanup();
   });
 });

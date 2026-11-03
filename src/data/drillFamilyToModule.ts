@@ -14,6 +14,7 @@ import type { DrillFamily } from '../core/types/drill';
 
 export const DRILL_FAMILY_TO_MODULE: Record<DrillFamily, string> = {
   // All 15 major key signatures + the circle live in the same L2 module.
+  read: 'l1u1m1', // The Staff and Clefs
   keysig: 'l2u4m1', // All Major Keys and the Circle of Fifths
   circle: 'l2u4m1', // All Major Keys and the Circle of Fifths
   // Drill scales cover major + the three minor forms; the minor-scale module

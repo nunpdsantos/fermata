@@ -45,6 +45,15 @@ interface FretCellProps {
   /** A real mouse entered (true) / left (false) the cell. */
   onHover?: (on: boolean) => void;
   onClick: () => void;
+  /** Reading input: locations only, with the answer revealed after grading. */
+  exercise?: {
+    label: string;
+    disabled: boolean;
+    inPosition: boolean;
+    mark?: 'correct' | 'wrong';
+    tabIndex: number;
+    onFocus: () => void;
+  };
 }
 
 export const FretCell = memo(function FretCell({
@@ -70,6 +79,7 @@ export const FretCell = memo(function FretCell({
   contextColor,
   onHover,
   onClick,
+  exercise,
 }: FretCellProps) {
   const { t } = useTranslation();
   const noteLabel = noteToString(displayNote);
@@ -90,23 +100,24 @@ export const FretCell = memo(function FretCell({
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
-      if (!mobile) return;
+      if (!mobile || exercise?.disabled) return;
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       e.preventDefault(); // suppress the synthetic click that would double-fire
       firedFromPointer.current = true;
       onClick();
     },
-    [mobile, onClick],
+    [mobile, onClick, exercise?.disabled],
   );
 
   const handleClick = useCallback(() => {
+    if (exercise?.disabled) return;
     if (firedFromPointer.current) {
       // The pointerdown already fired this cell; swallow the compat click.
       firedFromPointer.current = false;
       return;
     }
     onClick();
-  }, [onClick]);
+  }, [onClick, exercise?.disabled]);
 
   const scaleLabel = scaleDotLabel ?? noteLabel;
   const scaleSolid = isActive || isRoot;
@@ -116,11 +127,20 @@ export const FretCell = memo(function FretCell({
       data-fret={fret}
       data-string-row={stringIdx}
       role="button"
-      aria-label={t('fretboard.cellLabel', { note: noteLabel, fret, string: 6 - stringIdx })}
+      aria-label={exercise?.label ?? t('fretboard.cellLabel', { note: noteLabel, fret, string: 6 - stringIdx })}
+      aria-disabled={exercise?.disabled}
+      tabIndex={exercise?.tabIndex}
+      onFocus={exercise?.onFocus}
+      data-answer={exercise?.mark}
       aria-pressed={isActive}
       className="flex-1 flex items-center justify-center relative cursor-pointer"
       style={{
         minWidth: fretMinWidth,
+        ...(exercise ? {
+          minHeight: 44,
+          borderRight: '1px solid var(--border)',
+          backgroundColor: exercise.inPosition ? 'var(--card-hover)' : 'var(--bg)',
+        } : undefined),
         // Mobile: the cell owns its touch so a tap fires instantly and is never
         // arbitrated into a scroll (that arbitration dropped taps — WS12).
         ...(mobile ? { touchAction: 'none' } : undefined),
@@ -136,6 +156,13 @@ export const FretCell = memo(function FretCell({
       onPointerLeave={onHover ? (e) => { if (e.pointerType === 'mouse') onHover(false); } : undefined}
       onClick={handleClick}
     >
+      {exercise?.mark && (
+        <span className="relative z-10 rounded-full flex items-center justify-center text-ui font-bold"
+          style={{ width: 28, height: 28, backgroundColor: 'var(--card)', color: exercise.mark === 'correct' ? 'var(--success-text)' : 'var(--danger-text)', border: '2px solid currentColor' }}
+          aria-hidden="true">
+          {exercise.mark === 'correct' ? '✓' : '×'}
+        </span>
+      )}
       {isFocusNote && <span aria-hidden="true" className="focus-note-ring" />}
       {/* String line */}
       <div

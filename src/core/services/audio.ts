@@ -1105,11 +1105,24 @@ export interface TimedNote {
  * stopPlayback() / cancelScheduledAudio() cancel whatever has not sounded.
  * The tempo multiplier is NOT applied: the offsets are the schedule.
  */
-export function playTimedNotes(notes: readonly TimedNote[], config: Partial<SynthConfig> = {}): void {
+export function playTimedNotes(
+  notes: readonly TimedNote[],
+  config: Partial<SynthConfig> = {},
+  callbacks?: { onNotePlay: (index: number) => void; onComplete: () => void },
+): void {
   const ctx = getAudioContext();
   const now = ctx.currentTime;
   for (const n of notes) {
     playNote(n.note, n.note.octave, n.duration, { ...config, volume: n.volume ?? config.volume ?? DEFAULT_SYNTH_CONFIG.volume }, now + n.at);
+  }
+  if (callbacks && notes.length) {
+    const end = Math.max(...notes.map((n) => n.at + n.duration));
+    scheduleVisualPhrase(
+      notes.map((n) => n.at * 1000),
+      callbacks.onNotePlay,
+      Math.max(0, end - notes[notes.length - 1].at) * 1000,
+      callbacks.onComplete,
+    );
   }
 }
 

@@ -9,6 +9,8 @@ import { StaffNotationSkeleton } from './StaffNotationSkeleton';
 export interface StaffNotationProps {
   notes: PitchedNote[];
   clef?: 'treble' | 'bass';
+  /** Clef annotation for already-written notation (does not transpose notes). */
+  annotation?: '8vb';
   keySignature?: string;
   width?: number;
   height?: number;
@@ -32,6 +34,7 @@ export interface StaffNotationProps {
 export function StaffNotation({
   notes,
   clef,
+  annotation,
   keySignature,
   width,
   height = 150,
@@ -46,6 +49,7 @@ export function StaffNotation({
   const { containerRef, loading, height: fittedHeight } = useStaffNotation({
     notes,
     clef,
+    annotation,
     keySignature,
     width,
     height,

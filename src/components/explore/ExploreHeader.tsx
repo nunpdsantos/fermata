@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { noteToString } from '../../core/types/music.ts';
 import { KeyPicker, ScalePicker, RootChips, RespellButton } from '../navigation/KeySelector.tsx';
@@ -33,7 +33,7 @@ const PLAY_ICON = (
  * surface (D-29) but stay one tap away. On a phone the key picker opens a
  * sheet with the circle of fifths and the twelve roots.
  */
-export function ExploreHeader() {
+export function ExploreHeader({ practiceAction }: { practiceAction?: ReactNode }) {
   const { t, i18n } = useTranslation();
   const { scale, diatonicChords } = useKeyContext();
   const selectedKey = useAppStore((s) => s.selectedKey);
@@ -95,6 +95,7 @@ export function ExploreHeader() {
       </p>
 
       <div className="explore-actions no-print">
+        {practiceAction}
         {phone ? (
           <IconButton
             variant="primary"

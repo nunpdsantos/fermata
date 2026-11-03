@@ -211,6 +211,8 @@ export interface FingeringOptions {
    */
   start?: NotePin;
   end?: NotePin;
+  /** Internal route constraints, e.g. one fingering for a repeated ringing grip. */
+  pins?: ReadonlyMap<number, NotePin>;
 }
 
 export interface NotePin {
@@ -366,6 +368,10 @@ function joinGroup(held: readonly Held[], n: Held): number | null {
       cost += COST.barre;
     } else if (Math.sign(n.s - m.s) !== Math.sign(n.finger - m.finger)) {
       return null; // two fingers on one fret: the lower string takes the lower finger
+    } else if (Math.min(n.finger, m.finger) === 3 && Math.abs(n.s - m.s) > 1) {
+      // Tie-break only: prefer the diagonal to ring + little straddling
+      // another string on the same fret. All musical costs are integers.
+      cost += 0.001;
     }
   }
   return cost;
@@ -465,7 +471,7 @@ export function fingerLineScored(
     const { midi } = line[i];
     const prevLayer = i > 0 ? layers[i - 1] : null;
     const dir = i > 0 ? Math.sign(midi - line[i - 1].midi) : 0;
-    const pin = i === 0 ? options.start : i === line.length - 1 ? options.end : undefined;
+    const pin = options.pins?.get(i) ?? (i === 0 ? options.start : i === line.length - 1 ? options.end : undefined);
     // Two notes of one ringing group never share a string.
     const sameGroup = i > 0 && line[i].group !== undefined && line[i].group === line[i - 1].group;
     const layer: State[] = [];

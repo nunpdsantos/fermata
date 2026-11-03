@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDrillRunner } from '../components/drill/useDrillRunner';
+import { ReadingStaff } from '../components/drill/ReadingStaff';
+import { formatPlaces } from '../core/utils/drillBank/genRead';
 import { QuestionCard } from '../components/drill/QuestionCard';
 import { DrillInput } from '../components/drill/DrillInput';
 import { FeedbackStrip } from '../components/drill/FeedbackStrip';
@@ -25,7 +27,7 @@ import { displayNote } from '../core/utils/drillBank/shared';
 // copy fed to the Mastery map + Sprint, which read tier counts off it).
 let VIEW_BANK: DrillItem[] | null = null;
 function viewBank(): DrillItem[] {
-  if (VIEW_BANK === null) VIEW_BANK = generateDrillBank();
+  if (VIEW_BANK === null) VIEW_BANK = generateDrillBank({ includeRead: true });
   return VIEW_BANK;
 }
 
@@ -63,7 +65,7 @@ export function DrillView() {
     <div className="flex-1 overflow-y-auto" style={{ overscrollBehavior: 'contain' }}>
       {/* min-h-full + flex: on a phone the running question fills the screen so
           its answers can sit in the thumb zone (D-26). */}
-      <div className="mx-auto w-full max-w-xl px-4 py-6 max-sm:py-4 min-h-full flex flex-col" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
+      <div className={`drill-content ${!subScreen && item?.family === 'read' ? 'drill-content--read' : 'max-w-xl py-6 max-sm:py-4'} mx-auto w-full px-4 min-h-full flex flex-col`} style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
         {subScreen === 'settings' ? (
           <DrillSettings
             settings={settings}
@@ -174,6 +176,7 @@ function RunningQuestion({
   return (
     <>
       <QuestionCard
+        stimulus={item.family === 'read' ? <ReadingStaff staff={item.staff} /> : undefined}
         asked={position}
         total={total}
         prompt={itemPrompt(item, t, lang)}
@@ -189,16 +192,17 @@ function RunningQuestion({
 
         {phase === 'feedback' && result && (
           <FeedbackStrip
+            reading={item.family === 'read'}
             result={result}
             answerText={
               item.answer.kind === 'choice'
                 ? choiceLabel(item, item.answer.correct, t, lang)
                 : canonicalAnswer(item)
             }
-            whyText={itemWhy(item, t, lang)}
+            whyText={item.family === 'read' ? t('drill.reading.explanation', item.whyParams) : itemWhy(item, t, lang)}
             // Deep link on wrong / near-miss only (correct answers
             // auto-advance and need no remediation prompt).
-            learnMoreLabel={!result.correct ? t('drill.feedback.learnMore') : undefined}
+            learnMoreLabel={!result.correct && item.family !== 'read' ? t('drill.feedback.learnMore') : undefined}
             onLearnMore={!result.correct ? () => openLearnModule(item) : undefined}
           />
         )}
@@ -254,6 +258,8 @@ function canonicalAnswer(item: DrillItem): string {
       return item.answer.notes.map(note).join(' ');
     case 'accidentals':
       return item.answer.spelled.map(note).join(' ');
+    case 'fretPitch':
+      return formatPlaces(item.answer.accepted);
     case 'rootQuality':
       return `${note(item.answer.root)} ${CHORD_QUALITY_NAMES[item.answer.quality] ?? item.answer.quality}`;
   }

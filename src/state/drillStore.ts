@@ -340,7 +340,7 @@ export function validatePersistedShape(value: unknown): {
   // settings — fill missing fields with defaults rather than rejecting
   let settings: DrillSettings;
   if (isValidSettings(value.settings)) {
-    settings = value.settings as DrillSettings;
+    settings = { ...value.settings, families: { ...DEFAULT_FAMILIES, ...value.settings.families } };
   } else if (isPlainObject(value.settings)) {
     // Partial settings: fill missing primitives from defaults
     const s = value.settings;

@@ -18,6 +18,7 @@ import { ChoiceChip } from '../ui/ChoiceChip';
 import { IconButton } from '../ui/Button';
 import {
   computeMasteryByFamily,
+  computeReadingMastery,
   dueTodayCount,
   totalByHeart,
   type FamilyMastery,
@@ -78,6 +79,7 @@ export function MasteryMap({
 }: MasteryMapProps) {
   const { t } = useTranslation();
   const mastery = computeMasteryByFamily(bank, items);
+  const reading = computeReadingMastery(bank, items);
   const byHeart = totalByHeart(mastery);
   const due = dueTodayCount(bank, items, now);
 
@@ -126,6 +128,19 @@ export function MasteryMap({
                 </span>
               </div>
               <StackedBar m={m} />
+              {family === 'read' && (
+                <ol className="flex flex-col gap-2 pl-3 mt-2">
+                  {reading.map((stage, i) => (
+                    <li key={i} data-reading-stage={i + 1}>
+                      <div className="flex flex-wrap justify-between gap-x-2 text-caption mb-1" style={{ color: 'var(--text-muted)' }}>
+                        <span>{t(`drill.reading.stages.${i + 1}`)}</span>
+                        <span>{t('drill.mastery.counts', { byHeart: stage.byHeart, total: stage.total })}</span>
+                      </div>
+                      <StackedBar m={stage} />
+                    </li>
+                  ))}
+                </ol>
+              )}
             </li>
           );
         })}

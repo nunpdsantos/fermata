@@ -967,6 +967,26 @@ body {
     }
   }
 
+  /* The reading instrument owns its space inside Drill, never the dock. */
+  .drill-content--read { max-width: 36rem; padding-top: 24px; }
+  @media (max-width: 639px) {
+    .drill-content--read { padding-top: 16px; }
+  }
+  .reading-staff { overflow: hidden; max-width: 320px; margin: 0 auto 8px; pointer-events: none; }
+  .reading-staff * { pointer-events: none !important; }
+  .reading-board { min-width: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .reading-board [data-fret]:focus-visible { outline: 2px solid var(--focus-outline); outline-offset: -3px; }
+  .drill-run--read .drill-thumb { gap: 8px; }
+  .drill-run--read .feedback { padding: 8px 12px; }
+  .drill-run--read .drill-thumb > .drill-feedback { order: 0; }
+  @media (max-height: 500px) and (min-width: 640px) {
+    .drill-content--read { max-width: 1100px; padding-top: 4px; padding-bottom: 4px !important; }
+    .drill-run--read { display: grid; grid-template-columns: minmax(220px, 2fr) minmax(0, 3fr); column-gap: 12px; align-content: start; }
+    .drill-run--read .drill-question-header { grid-column: 1; grid-row: 1; }
+    .drill-run--read .drill-question-prompt { grid-column: 1; grid-row: 2; }
+    .drill-run--read .drill-thumb { grid-column: 2; grid-row: 1 / span 3; }
+  }
+
   /* Toasts: ONE region (ToastRegion), a fixed OVERLAY under the top bar —
      never in the page flow, so a toast appearing or leaving moves nothing
      (W11-A review round 4: the in-flow band shifted the instrument and
@@ -1994,4 +2014,33 @@ p.explore-prose {
   .circle-card svg {
     max-width: 300px !important;
   }
+}
+
+/* W10: practice owns a sheet, keeping the laptop workbench's headroom.
+   The same scrolling sheet works upright and sideways; its neck follows a
+   five-fret hand window instead of shrinking the complete neck to a phone. */
+.sheet-panel[data-testid="practice-sheet"] {
+  width: min(860px, calc(100% - 32px));
+  max-width: 860px;
+}
+.practice-tabs { display: flex; width: 100%; }
+.practice-tabs .seg-btn { flex: 1; white-space: normal; }
+.practice-select-label { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; font-size: var(--text-ui); min-width: 0; }
+.practice-select-label .select-trigger { max-width: 100%; }
+.practice-select-label select { max-width: 100%; width: 100%; }
+.practice-playing-note { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.practice-neck { border: 1px solid var(--border); border-radius: 12px; background: var(--bg); padding: 8px 4px; }
+.practice-events { display: flex; gap: 4px; overflow-x: auto; padding: 4px; }
+.practice-event { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: var(--tap); min-height: var(--tap); padding: 4px 8px; border: 1px solid var(--border); border-radius: 8px; color: var(--text); background: var(--card); font-size: var(--text-ui); }
+.practice-event[aria-current="step"] { border: 2px solid var(--accent-text); background: var(--bg); }
+.practice-event:focus-visible { outline: 2px solid var(--focus-outline); outline-offset: 2px; }
+.practice-availability { font-size: var(--text-ui); }
+.practice-availability summary { min-height: var(--tap); display: flex; align-items: center; cursor: pointer; color: var(--accent-text); }
+.practice-availability summary::before { content: '▸'; margin-right: 8px; }
+.practice-availability[open] summary::before { content: '▾'; }
+@media (max-width: 639px) {
+  .sheet-panel[data-testid="practice-sheet"] { width: 100%; }
+}
+@media (max-height: 500px) {
+  .sheet-panel[data-testid="practice-sheet"] { top: 8px; bottom: 8px; max-height: calc(100dvh - 16px); }
 }

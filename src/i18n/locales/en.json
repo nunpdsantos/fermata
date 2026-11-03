@@ -766,6 +766,24 @@
       "empty": "Nothing mastered yet to sprint on",
       "emptyHint": "Drill some facts to review first, then come back."
     },
+    "reading": {
+      "board": "Guitar reading fretboard",
+      "stringOpen": "String {{string}}, open",
+      "stringFret": "String {{string}}, fret {{fret}}",
+      "correct": "correct place",
+      "wrong": "your answer",
+      "staff": "{{note}} written in treble clef, octave below",
+      "nearMiss": "Check octave or position: {{expected}}",
+      "explanation": "Written {{written}} sounds {{sounding}}. Circled number = string; next number = fret.",
+      "noSprint": "Guitar reading is practised without the Sprint clock.",
+      "stages": {
+        "1": "1 · Open position",
+        "2": "2 · Position II",
+        "3": "3 · Position V",
+        "4": "4 · Above V (VII, IX, XII)",
+        "5": "5 · Whole neck"
+      }
+    },
     "families": {
       "keysig": "Key signatures",
       "circle": "Circle of fifths",
@@ -1113,5 +1131,6 @@
   "neck": {
     "open": "Full neck",
     "close": "Close full neck"
-  }
+  },
+  "practice": {"title": "Practise on the guitar"}
 }

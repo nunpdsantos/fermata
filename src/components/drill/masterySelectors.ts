@@ -89,3 +89,10 @@ export function totalByHeart(mastery: Record<DrillFamily, FamilyMastery>): numbe
   for (const f of DRILL_FAMILIES) n += mastery[f].byHeart;
   return n;
 }
+
+/** Each reading rung has its own mastery; stage 4 includes VII, IX and XII. */
+export function computeReadingMastery(bank: DrillItem[], items: Record<string, ItemSrsState>): FamilyMastery[] {
+  return [1, 2, 3, 4, 5].map((stage) =>
+    computeMasteryByFamily(bank.filter((item) => item.family === 'read' && item.stage === stage), items).read,
+  );
+}

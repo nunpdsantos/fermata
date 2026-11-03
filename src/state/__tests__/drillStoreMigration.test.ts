@@ -86,7 +86,7 @@ describe('v1 → v2 migration keeps all progress', () => {
     seed(f);
     await useDrillStore.persist.rehydrate();
     const s = useDrillStore.getState();
-    expect(s.settings).toEqual(f.state.settings);
+    expect(s.settings).toEqual({ ...(f.state.settings as object), families: { ...(f.state.settings as { families: object }).families, read: true } });
     expect(s.settings.length).toBe(12);
     expect(s.sprintBests).toEqual({ degree: 9 });
     expect(s.lifetime).toEqual(f.state.lifetime);

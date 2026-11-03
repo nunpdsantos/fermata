@@ -16,6 +16,7 @@ interface QuestionCardProps {
   /** The answer area: input, feedback, Continue. On a phone it sits in the
    *  lower half of the screen — the one-handed thumb zone (D-26). */
   children: ReactNode;
+  stimulus?: ReactNode;
 }
 
 export function QuestionCard({
@@ -26,6 +27,7 @@ export function QuestionCard({
   onOpenSettings,
   elapsedSeconds,
   children,
+  stimulus,
 }: QuestionCardProps) {
   const { t } = useTranslation();
   const answersRef = useRef<HTMLDivElement>(null);
@@ -33,9 +35,9 @@ export function QuestionCard({
   const current = Math.min(asked + 1, total);
 
   return (
-    <div className="drill-run">
+    <div className={stimulus ? 'drill-run drill-run--read' : 'drill-run'}>
       {/* Slim header: progress · [elapsed] · spacer · settings · end-session */}
-      <div className="flex items-center gap-2 mb-5">
+      <div className={`drill-question-header flex items-center gap-2 ${stimulus ? 'mb-1' : 'mb-5'}`}>
         <span className="text-ui font-medium tabular-nums" style={{ color: 'var(--text-dim)' }}>
           {t('drill.progress', { current, total })}
         </span>
@@ -71,10 +73,13 @@ export function QuestionCard({
         />
       </div>
 
-      {/* Prompt — title step (20 px) */}
-      <p className="text-xl font-medium leading-snug mb-6" style={{ color: 'var(--text)' }}>
-        {prompt}
-      </p>
+      <div className="drill-question-prompt">
+        {/* Prompt — title step (20 px) */}
+        <p className={`text-xl font-medium leading-snug ${stimulus ? 'mb-1' : 'mb-6'}`} style={{ color: 'var(--text)' }}>
+          {prompt}
+        </p>
+        {stimulus}
+      </div>
 
       {/* Toasts never cover the answers (useToastAvoid). */}
       <div ref={answersRef} className="drill-thumb" data-testid="drill-answers">

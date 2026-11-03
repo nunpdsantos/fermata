@@ -694,7 +694,35 @@ function groupFitsThreeStrings(midis: readonly number[], tuning: GuitarTuning, m
 }
 
 function fingerBrokenChord(plan: BrokenChordPlan): FingeredNote[] | null {
-  return fingerLine(plan.line, { ...ARPEGGIO_RULES, maxStringStep: 2, tuning: plan.tuning, maxFret: plan.maxFret });
+  const rules = { ...ARPEGGIO_RULES, maxStringStep: 2, tuning: plan.tuning, maxFret: plan.maxFret };
+  const first = fingerLine(plan.line, rules);
+  if (!first) return null;
+  // Repeated physical grips must keep their fingering. Pin the repeated
+  // groups to a single frame, then SEARCH AGAIN so shifts and barrés still
+  // describe a legal whole passage (never patch fingers after the search).
+  const shapes = new Map<string, number[]>();
+  for (let i = 0; i + 2 < first.length; i += 3) {
+    const signature = first.slice(i, i + 3).map((n) => `${n.stringIndex}:${n.fret}`).join(',');
+    shapes.set(signature, [...(shapes.get(signature) ?? []), i]);
+  }
+  const repeated = [...shapes.values()].filter((starts) => starts.length > 1
+    && starts.some((i) => first.slice(i, i + 3).some((n, j) => n.finger !== first[starts[0] + j].finger)));
+  if (!repeated.length) return first;
+  const search = (group: number, pins: Map<number, import('./guitarFingering').NotePin>): FingeredNote[] | null => {
+    if (group === repeated.length) return fingerLine(plan.line, { ...rules, pins });
+    const starts = repeated[group];
+    for (const canonical of starts) {
+      const next = new Map(pins);
+      for (const start of starts) for (let j = 0; j < 3; j++) {
+        const n = first[canonical + j];
+        next.set(start + j, { stringIndex: n.stringIndex, fret: n.fret, finger: n.finger, frame: n.frame });
+      }
+      const result = search(group + 1, next);
+      if (result) return result;
+    }
+    return null;
+  };
+  return search(0, new Map()) ?? first;
 }
 
 function brokenChordProblem(root: Note, mode: 'major' | 'minor', options: BrokenChordOptions): BrokenChordUnavailable | null {
