@@ -211,31 +211,37 @@ function renderSurface(onError: (e: Error) => void) {
 
 describe('W0-01 Explore surface renders for every ScaleType × 12 roots', () => {
   for (const mode of ['Diatonic', 'Build'] as const) {
-    it(`renders ExploreView (${mode} chord mode) + Piano + Fretboard with no throw`, async () => {
+    // Keep every render (37 scales × 12 roots × both modes), but give each
+    // scale its own case and default timeout. One 444-update synchronous act
+    // loop per mode hid which scale was slow and exhausted 60 s under load.
+    it.each(SCALE_TYPES)(`%s: ExploreView (${mode} chord mode) + Piano + Fretboard with no throw`, async (type) => {
       const errors: string[] = [];
       let current = 'C major';
       // React logs caught render errors; keep the output readable.
       const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      renderSurface((e) => errors.push(`${current}: ${e.message}`));
-      // The initial C major render must work (baseline for the loop).
-      expect(errors).toEqual([]);
-      await screen.findAllByTestId('staff-mock');
-      if (mode === 'Build') {
-        fireEvent.click(screen.getByRole('tab', { name: 'Build' }));
-      }
-      for (const type of SCALE_TYPES) {
+      try {
+        renderSurface((e) => errors.push(`${current}: ${e.message}`));
+        // The initial C major render must work (baseline for the loop).
+        expect(errors).toEqual([]);
+        await screen.findAllByTestId('staff-mock');
+        if (mode === 'Build') {
+          fireEvent.click(screen.getByRole('tab', { name: 'Build' }));
+        }
         for (const root of ROOTS) {
           current = label(root, type);
           act(() => {
             useAppStore.getState().setKey(root);
             useAppStore.getState().setScale(type);
           });
-          if (screen.queryByTestId('caught')) break;
+          // componentDidCatch runs inside act. Avoid scanning the entire
+          // Explore + instrument DOM after each of the 888 updates.
+          if (errors.length) break;
         }
-        if (screen.queryByTestId('caught')) break;
+        expect(errors).toEqual([]);
+        expect(screen.queryByTestId('caught')).toBeNull();
+      } finally {
+        spy.mockRestore();
       }
-      spy.mockRestore();
-      expect(errors).toEqual([]);
-    }, 60_000);
+    });
   }
 });

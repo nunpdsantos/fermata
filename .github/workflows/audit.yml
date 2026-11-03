@@ -6,9 +6,18 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+# PR updates supersede their previous run. A unique group for every main run
+# also avoids GitHub replacing a PENDING main run, even with cancellation off.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || format('run-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
-  audit:
-    name: Lint, types, tests + coverage, audits, build, browser tests
+  static:
+    name: Lint, types, audits, build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,9 +31,6 @@ jobs:
       - name: Type-check
         # --force: the incremental cache can report a false "clean" (CLAUDE.md).
         run: npx tsc -b --force
-      - name: Unit tests with coverage thresholds
-        # Thresholds in vitest.config.ts are enforced only under --coverage.
-        run: npx vitest run --coverage
       # The three content audits exit non-zero on any finding (engine: any
       # non-INFO finding) — they used to exit 0 whatever they found.
       - name: Engine audit
@@ -37,13 +43,144 @@ jobs:
         run: npm run build
       - name: Bundle budget (entry < 500 kB, ts-fsrs out of entry, CSP hash of inline scripts)
         run: npm run check:bundle
-      - name: Offline coverage (every chunk precached or runtime-cached; precache closure)
+      - name: Offline coverage (every chunk precached; precache closure)
         run: npm run check:sw
-      - name: Install Playwright Chromium
+      - name: Share the checked production build
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-dist
+          path: dist/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+
+  unit:
+    name: Unit tests + coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Unit tests with coverage thresholds
+        # Thresholds in vitest.config.ts are enforced only under --coverage.
+        run: npx vitest run --coverage
+
+  e2e-dev:
+    name: Browser tests (dev, shard ${{ matrix.shard }}/8)
+    runs-on: ubuntu-latest
+    strategy:
+      # A failing shard must not cancel the other specs.
+      fail-fast: false
+      # fullyParallel in the existing config shards individual tests. Eight
+      # keeps the 66 long design cases from clustering into two large shards;
+      # all specs stay auto-discovered, with the same workers/retries/timeouts.
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
+    env:
+      PLAYWRIGHT_HTML_OPEN: never
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Installed Playwright version
+        id: playwright-version
+        run: node -e 'console.log("version=" + require("@playwright/test/package.json").version)' >> "$GITHUB_OUTPUT"
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-${{ runner.arch }}-chromium-${{ steps.playwright-version.outputs.version }}
+      - name: Install Playwright Chromium and system dependencies
+        # Always install OS dependencies; the CLI reuses cached browser binaries
+        # and repairs a missing install. No broad restore key across versions.
         run: npx playwright install --with-deps chromium
-      - name: Browser tests (dev server)
-        run: npx playwright test
-      - name: Browser tests (production build via vite preview, production CSP)
-        # pwa.spec.ts and theme-prepaint.spec.ts only run here: the dev server
-        # has no service worker, no manifest and no CSP.
-        run: npx playwright test -c playwright.preview.config.ts
+      - name: Browser tests (dev)
+        run: npx playwright test --shard=${{ matrix.shard }}/8 --reporter=list,html
+      - name: Failure report and traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-dev-${{ matrix.shard }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  e2e-preview:
+    name: Browser tests (preview, shard ${{ matrix.shard }}/8)
+    needs: static
+    runs-on: ubuntu-latest
+    strategy:
+      # A failing shard must not cancel the other specs.
+      fail-fast: false
+      # fullyParallel in the existing config shards individual tests. Eight
+      # keeps the 66 long design cases from clustering into two large shards;
+      # all specs stay auto-discovered, with the same workers/retries/timeouts.
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
+    env:
+      PLAYWRIGHT_HTML_OPEN: never
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Download the checked production build
+        # playwright.preview.config.ts only serves dist/ with vite preview.
+        # No rebuild: test the exact assets checked by check:bundle/check:sw.
+        uses: actions/download-artifact@v4
+        with:
+          name: production-dist
+          path: dist/
+      - name: Installed Playwright version
+        id: playwright-version
+        run: node -e 'console.log("version=" + require("@playwright/test/package.json").version)' >> "$GITHUB_OUTPUT"
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-${{ runner.arch }}-chromium-${{ steps.playwright-version.outputs.version }}
+      - name: Install Playwright Chromium and system dependencies
+        # Always install OS dependencies; the CLI reuses cached browser binaries
+        # and repairs a missing install. No broad restore key across versions.
+        run: npx playwright install --with-deps chromium
+      - name: Browser tests (preview)
+        run: npx playwright test -c playwright.preview.config.ts --shard=${{ matrix.shard }}/8 --reporter=list,html
+      - name: Failure report and traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-preview-${{ matrix.shard }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  audit:
+    name: Lint, types, tests + coverage, audits, build, browser tests
+    if: always()
+    needs: [static, unit, e2e-dev, e2e-preview]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every job and shard to succeed
+        env:
+          NEEDS_RESULTS: ${{ toJSON(needs) }}
+        run: |
+          node <<'NODE'
+          const jobs = JSON.parse(process.env.NEEDS_RESULTS);
+          for (const [name, job] of Object.entries(jobs)) {
+            console.log(`${name}: ${job.result}`);
+          }
+          if (Object.keys(jobs).length !== 4 ||
+              Object.values(jobs).some(job => job.result !== 'success')) {
+            process.exit(1);
+          }
+          NODE

@@ -38,13 +38,17 @@ test('opening Learn downloads one curriculum level for the Continue banner, not 
 
 test('notation uses only the Bravura music font (no Gonville / Petaluma)', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('svg text').first()).toBeAttached({ timeout: 20_000 }); // a staff rendered
-  await page.waitForTimeout(1000);
-  const families = await page.evaluate(() => {
+  // The circle of fifths also has SVG text and can render before VexFlow.
+  // Wait for the actual staff, then load the exact face it registered. A
+  // missing face makes fonts.load return [], which must not pass this test.
+  await expect(page.getByTestId('scale-strip').locator('.strip-staff svg text').first()).toBeAttached({ timeout: 20_000 });
+  const { families, loaded } = await page.evaluate(async () => {
+    const faces = await document.fonts.load('20px "Bravura"');
     const out: string[] = [];
     document.fonts.forEach((f) => out.push(f.family.replace(/["']/g, '')));
-    return out;
+    return { families: out, loaded: faces.length > 0 && faces.every((f) => f.status === 'loaded') };
   });
+  expect(loaded).toBe(true);
   expect(families).toContain('Bravura');
   expect(families.filter((f) => /Gonville|Petaluma/.test(f))).toEqual([]);
 });
