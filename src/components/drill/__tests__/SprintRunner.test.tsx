@@ -39,7 +39,7 @@ vi.mock('framer-motion', async () => {
 
 let counter = 0;
 /** Choice item whose correct answer is a unique, clickable label. */
-function makeChoiceItem(id: string, family: DrillFamily): DrillItem {
+function makeChoiceItem(id: string, family: Exclude<DrillFamily, 'read'>): DrillItem {
   const correct = `OK${counter++}`;
   return {
     id,
@@ -155,7 +155,7 @@ describe('SprintRunner — countdown + scoring', () => {
     // Recorded once with the sorted families key + the score of 2.
     expect(onRecord).toHaveBeenCalledTimes(1);
     const [key, score] = onRecord.mock.calls[0];
-    expect(key).toBe([...DRILL_FAMILIES].sort().join(','));
+    expect(key).toBe(DRILL_FAMILIES.filter((f) => f !== 'read').sort().join(','));
     expect(score).toBe(2);
 
     // Finished view: the score line is shown; inputs are gone (no answer group).

@@ -13,6 +13,7 @@
  * strip can show the gentler "right note, wrong name" message.
  */
 import type { DrillItem } from '../../core/types/drill';
+import { gradeFretAnswer } from '../../core/utils/fretboardReading';
 import { getPitchClass } from '../../core/constants/notes';
 import type { ChordQuality } from '../../core/types/music';
 import { stringToNote } from '../../core/types/music';
@@ -21,7 +22,8 @@ export type AnswerPayload =
   | { format: 'choice'; choice: string }
   | { format: 'noteChips'; notes: string[] } // DISPLAY strings as tapped
   | { format: 'accidentalSlots'; spelled: string[] }
-  | { format: 'rootQuality'; root: string; quality: ChordQuality };
+  | { format: 'rootQuality'; root: string; quality: ChordQuality }
+  | { format: 'fretboard'; stringIndex: number; fret: number };
 
 export interface GradeResult {
   correct: boolean;
@@ -86,6 +88,12 @@ export function isEnharmonicNoteChoice(choice: string, correct: string | null): 
 
 export function gradeAnswer(item: DrillItem, payload: AnswerPayload): GradeResult {
   switch (payload.format) {
+    case 'fretboard': {
+      if (item.family !== 'read') return { correct: false, nearMiss: false };
+      const { correct, nearMiss } = gradeFretAnswer(item, payload);
+      return { correct, nearMiss };
+    }
+
     case 'choice': {
       const correctAnswer = item.answer.kind === 'choice' ? item.answer.correct : null;
       if (payload.choice === correctAnswer) return { correct: true, nearMiss: false };

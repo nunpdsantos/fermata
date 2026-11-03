@@ -46,7 +46,7 @@ vi.mock('framer-motion', async () => {
 const BANK: DrillItem[] = generateDrillBank();
 const BY_ID = new Map(BANK.map((i) => [i.id, i]));
 const CHOICE_FAMILIES: Record<DrillFamily, boolean> = {
-  keysig: true, circle: true, degree: true, scale: false, interval: false, triad: false, seventh: false, roman: false, function: false,
+  keysig: true, circle: true, degree: true, scale: false, interval: false, triad: false, seventh: false, roman: false, function: false, read: false,
 };
 
 type DrillStoreModule = typeof import('../../state/drillStore');

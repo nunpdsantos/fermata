@@ -1,0 +1,172 @@
+{
+  "state": {
+    "items": {
+      "degree:num-to-name:1": {
+        "card": {
+          "due": 1794301742000,
+          "stability": 7.31530068,
+          "difficulty": 2.05634382,
+          "elapsed_days": 0,
+          "scheduled_days": 8,
+          "reps": 10,
+          "lapses": 0,
+          "state": 2,
+          "learning_steps": 0,
+          "last_review": 1793610542000
+        },
+        "history": [
+          {
+            "ts": 1793523602000,
+            "correct": true,
+            "ms": 1800,
+            "sessionId": "s1793523600000"
+          },
+          {
+            "ts": 1793610062000,
+            "correct": true,
+            "ms": 1800,
+            "sessionId": "s1793610060000"
+          },
+          {
+            "ts": 1793610122000,
+            "correct": true,
+            "ms": 1800,
+            "sessionId": "s1793610120000"
+          },
+          {
+            "ts": 1793610182000,
+            "correct": true,
+            "ms": 1800,
+            "sessionId": "s1793610180000"
+          },
+          {
+            "ts": 1793610242000,
+            "correct": true,
+            "ms": 1800,
+            "sessionId": "s1793610240000"
+          },
+          {
+            "ts": 1793610302000,
+            "correct": true,
+            "ms": 1800,
+            "sessionId": "s1793610300000"
+          },
+          {
+            "ts": 1793610362000,
+            "correct": true,
+            "ms": 1800,
+            "sessionId": "s1793610360000"
+          },
+          {
+            "ts": 1793610422000,
+            "correct": true,
+            "ms": 1800,
+            "sessionId": "s1793610420000"
+          },
+          {
+            "ts": 1793610482000,
+            "correct": true,
+            "ms": 1800,
+            "sessionId": "s1793610480000"
+          },
+          {
+            "ts": 1793610542000,
+            "correct": true,
+            "ms": 1800,
+            "sessionId": "s1793610540000"
+          }
+        ],
+        "tier": "byHeart",
+        "introSessionId": "s1793523600000",
+        "introCorrectCount": 1
+      },
+      "circle:next-sharp:F#": {
+        "card": {
+          "due": 1793613720000,
+          "stability": 0.212,
+          "difficulty": 6.4133,
+          "elapsed_days": 0,
+          "scheduled_days": 0,
+          "reps": 1,
+          "lapses": 0,
+          "state": 1,
+          "learning_steps": 0,
+          "last_review": 1793613660000
+        },
+        "history": [
+          {
+            "ts": 1793613660000,
+            "correct": false,
+            "ms": 2500,
+            "sessionId": "s1793613600000"
+          }
+        ],
+        "tier": "learning",
+        "introSessionId": "s1793613600000",
+        "introCorrectCount": 0
+      }
+    },
+    "settings": {
+      "length": 12,
+      "newPerSession": 4,
+      "families": {
+        "keysig": true,
+        "circle": true,
+        "scale": true,
+        "degree": true,
+        "interval": true,
+        "triad": true,
+        "seventh": true,
+        "roman": true,
+        "function": true
+      },
+      "sound": false,
+      "showTimer": true
+    },
+    "sprintBests": {
+      "degree": 8
+    },
+    "lifetime": {
+      "answered": 11,
+      "correct": 10
+    },
+    "activeSession": {
+      "id": "s1793613600000",
+      "queue": [
+        "circle:next-sharp:F#",
+        "keysig:key-to-count:C:major",
+        "interval:letter-third:C",
+        "triad:name-to-notes:C:major",
+        "degree:num-to-name:1",
+        "circle:next-sharp:F#"
+      ],
+      "index": 1,
+      "asked": 1,
+      "correct": 0,
+      "startedAt": 1793613600000,
+      "seed": 464753920,
+      "missRequeues": {
+        "circle:next-sharp:F#": 1
+      },
+      "feedback": {
+        "itemId": "circle:next-sharp:F#",
+        "correct": false,
+        "nearMiss": false
+      },
+      "log": {
+        "asked": 1,
+        "correct": 0,
+        "newlyByHeart": 0,
+        "newlyReview": 0,
+        "byFamily": {
+          "circle": {
+            "asked": 1,
+            "correct": 0
+          }
+        }
+      }
+    },
+    "sprint": null
+  },
+  "version": 3
+}

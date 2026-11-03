@@ -138,7 +138,7 @@ function SprintEmptyState({ onExit }: { onExit: () => void }) {
         {t('drill.sprint.empty')}
       </p>
       <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-        {t('drill.sprint.emptyHint')}
+        {t('drill.sprint.emptyHint')} {t('drill.reading.noSprint')}
       </p>
       <button
         type="button"

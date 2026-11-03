@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import type { DrillItem } from '../../core/types/drill';
 import { isEnharmonicNoteChoice, type AnswerPayload } from './grading';
 import { choiceLabel, toContentLanguage } from './drillText';
+import { ReadingInput } from './ReadingInput';
 import { ChoiceChips } from './ChoiceChips';
 import { NoteChips } from './NoteChips';
 import { AccidentalSlots } from './AccidentalSlots';
@@ -33,6 +34,11 @@ export function DrillInput({ item, phase, onAnswer }: DrillInputProps) {
   const lang = toContentLanguage(i18n.language);
 
   switch (item.input.format) {
+    case 'fretboard':
+      return <ReadingInput spec={item.input} disabled={disabled}
+        accepted={item.answer.kind === 'fretPitch' ? item.answer.accepted : []}
+        onAnswer={(place) => onAnswer({ format: 'fretboard', ...place })} />;
+
     case 'choice': {
       const correct = item.answer.kind === 'choice' ? item.answer.correct : null;
       return (

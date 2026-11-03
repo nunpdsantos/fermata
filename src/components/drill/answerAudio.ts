@@ -19,7 +19,7 @@ import type { DrillItem } from '../../core/types/drill';
 import type { Note } from '../../core/types/music';
 import { stringToNote } from '../../core/types/music';
 import { buildChord } from '../../core/constants/chords';
-import { cancelScheduledAudio, playArpeggioAscending, resumeAudio } from '../../core/services/audio';
+import { cancelScheduledAudio, playArpeggioAscending, playNote, resumeAudio } from '../../core/services/audio';
 import { normalizeDisplay } from './grading';
 
 /** How many leading notes of a spelled scale to play on reveal. */
@@ -81,6 +81,16 @@ const REVEAL_NOTE_DURATION = 0.32;
  * grading or auto-advance.
  */
 export function playAnswerAudio(item: DrillItem): void {
+  if (item.family === 'read') {
+    try {
+      resumeAudio().catch(() => {});
+      cancelScheduledAudio();
+      playNote(item.staff.sounding, item.staff.sounding.octave, REVEAL_NOTE_DURATION);
+    } catch {
+      // Audio cannot block grading.
+    }
+    return;
+  }
   const notes = planAnswerAudio(item);
   if (!notes || notes.length === 0) return;
   try {

@@ -1,3 +1,4 @@
+import { genRead } from '../../../core/utils/drillBank/genRead';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { MasteryMap } from '../MasteryMap';
@@ -5,6 +6,7 @@ import { DRILL_FAMILIES } from '../../../core/types/drill';
 import type { DrillFamily, DrillItem, ItemSrsState, MasteryTier } from '../../../core/types/drill';
 
 function makeItem(id: string, family: DrillFamily): DrillItem {
+  if (family === 'read') return { ...genRead()[0], id };
   return {
     id,
     family,

@@ -63,7 +63,7 @@ const CHOICE_FAMILIES: Record<DrillFamily, boolean> = {
   triad: false,
   seventh: false,
   roman: false,
-  function: false,
+  function: false, read: false,
 };
 
 function resetStore(length: 12 | 24 | 40 = 24) {
@@ -269,7 +269,7 @@ const TRIAD_FAMILIES: Record<DrillFamily, boolean> = {
   triad: true,
   seventh: false,
   roman: false,
-  function: false,
+  function: false, read: false,
 };
 
 function startTriadSession() {
@@ -347,7 +347,7 @@ function startDegreeSession() {
   useDrillStore.getState().updateSettings({
     families: {
       keysig: false, circle: false, degree: true, scale: false, interval: false,
-      triad: false, seventh: false, roman: false, function: false,
+      triad: false, seventh: false, roman: false, function: false, read: false,
     },
     length: 12,
     newPerSession: 12,

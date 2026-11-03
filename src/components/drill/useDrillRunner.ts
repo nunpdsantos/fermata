@@ -47,7 +47,7 @@ let bankById: Map<string, DrillItem> | null = null;
 
 function getBank(): { bank: DrillItem[]; byId: Map<string, DrillItem> } {
   if (BANK === null || bankById === null) {
-    BANK = generateDrillBank();
+    BANK = generateDrillBank({ includeRead: true });
     bankById = new Map(BANK.map((item) => [item.id, item]));
   }
   return { bank: BANK, byId: bankById };

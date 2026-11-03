@@ -1,3 +1,4 @@
+import { genRead } from '../../../core/utils/drillBank/genRead';
 import { describe, it, expect } from 'vitest';
 import {
   computeMasteryByFamily,
@@ -12,6 +13,7 @@ import type { DrillFamily, DrillItem, ItemSrsState, MasteryTier } from '../../..
 const NOW = 1_000_000;
 
 function makeItem(id: string, family: DrillFamily): DrillItem {
+  if (family === 'read') return { ...genRead()[0], id };
   return {
     id,
     family,

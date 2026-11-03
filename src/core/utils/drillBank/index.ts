@@ -22,12 +22,7 @@ import { genFunction } from './genFunction';
 import { genRead } from './genRead';
 
 export interface DrillBankOptions {
-  /**
-   * Add the guitar reading family (W10-02, genRead.ts). Off by default: the
-   * Drill view cannot render its fretboard input yet (see ReadDrillItem in
-   * types/drill.ts). Its ranks sit after every other family's, so the other
-   * items keep their order.
-   */
+  /** Include the guitar staff-reading ladder. The app opts in; theory-only consumers may omit it. */
   includeRead?: boolean;
 }
 
