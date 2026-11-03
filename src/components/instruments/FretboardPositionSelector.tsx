@@ -43,6 +43,9 @@ interface ScalePositionSelectorProps {
   onSelect: (p: number | 'all') => void;
   onStep: (delta: 1 | -1) => void;
   mobile?: boolean;
+  /** Takes a row of its own below 1024 px (the dock's controls); false in
+   *  the laptop dock bar and the full-neck view's header. */
+  fullRow?: boolean;
 }
 
 /**
@@ -50,7 +53,7 @@ interface ScalePositionSelectorProps {
  * announce themselves as tabs without behaving like tabs); on phones a
  * select. ‹ › step one position.
  */
-export function ScalePositionSelector({ position, onSelect, onStep, mobile = false }: ScalePositionSelectorProps) {
+export function ScalePositionSelector({ position, onSelect, onStep, mobile = false, fullRow = true }: ScalePositionSelectorProps) {
   const { t } = useTranslation();
   const name = (n: number) => (n === OPEN_POSITION ? t('fretboard.open') : toRomanNumeral(n));
   // The numeral names the position; the fret is a plain number (review B2).
@@ -82,7 +85,7 @@ export function ScalePositionSelector({ position, onSelect, onStep, mobile = fal
   // ‹ chips › stay on ONE line (the chips scroll inside it when the row is
   // narrow) — at 768 px the steppers used to wrap onto lines of their own.
   return (
-    <div className="flex items-center gap-2 min-w-0 basis-full lg:basis-auto" data-testid="position-row">
+    <div className={`flex items-center gap-2 min-w-0${fullRow ? ' basis-full lg:basis-auto' : ''}`} data-testid="position-row">
       <span className={GROUP_LABEL_CLASS} style={GROUP_LABEL_STYLE} aria-hidden="true">{t('fretboard.position')}</span>
       {stepButton(-1)}
       {mobile ? (
@@ -116,6 +119,12 @@ export function ScalePositionSelector({ position, onSelect, onStep, mobile = fal
 // ─── Dot labels + fingering editor ──────────────────────────────────────────
 
 interface LabelToolbarProps {
+  /**
+   * 'all' (default): Show: [Fingers | Degrees | Notes] and the fingering
+   * editor. 'labels': only the label toggle (the laptop dock bar and the
+   * full-neck view). 'edit': only the fingering editor (beside it).
+   */
+  part?: 'all' | 'labels' | 'edit';
   labelMode: FretboardLabelMode;
   onLabelMode: (m: FretboardLabelMode) => void;
   /** Position view: finger labels and the fingering editor are available. */
@@ -127,6 +136,7 @@ interface LabelToolbarProps {
 }
 
 export function LabelToolbar({
+  part = 'all',
   labelMode,
   onLabelMode,
   positionView,
@@ -144,18 +154,23 @@ export function LabelToolbar({
   // On the whole neck there are no fingers: 'finger' falls back to notes.
   const shown: FretboardLabelMode = editing ? 'finger' : !positionView && labelMode === 'finger' ? 'note' : labelMode;
 
+  if (part === 'edit' && !positionView) return null;
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      <span className={GROUP_LABEL_CLASS} style={GROUP_LABEL_STYLE} aria-hidden="true">{t('fretboard.show')}</span>
-      {/* What the dots say switches the board's VIEW: a Segment (D-28). */}
-      <Segment
-        label={t('fretboard.labelsGroup')}
-        value={shown}
-        onChange={onLabelMode}
-        disabled={editing}
-        options={modes.map(({ mode, key }) => ({ value: mode, label: t(key) }))}
-      />
-      {positionView && (
+      {part !== 'edit' && (
+        <>
+          <span className={GROUP_LABEL_CLASS} style={GROUP_LABEL_STYLE} aria-hidden="true">{t('fretboard.show')}</span>
+          {/* What the dots say switches the board's VIEW: a Segment (D-28). */}
+          <Segment
+            label={t('fretboard.labelsGroup')}
+            value={shown}
+            onChange={onLabelMode}
+            disabled={editing}
+            options={modes.map(({ mode, key }) => ({ value: mode, label: t(key) }))}
+          />
+        </>
+      )}
+      {positionView && part !== 'labels' && (
         <>
           <ChoiceChip pressed={editing} onClick={onToggleEdit}>
             {editing ? t('fretboard.doneEditing') : t('fretboard.editFingering')}

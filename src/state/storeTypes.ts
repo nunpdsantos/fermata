@@ -99,6 +99,13 @@ export interface PreferencesSlice {
   lastView: ViewMode;
   /** Instrument dock detent per view (D-26), persisted. */
   dockDetents: Record<DockView, Detent>;
+  /** Which views' detent the LEARNER set (drag, tap, keys, Show / Hide).
+   *  Until then Explore follows the screen: Peek when short, else Half. */
+  dockChosen: Record<DockView, boolean>;
+  /** Explore on a tablet: the circle of fifths below the work is unfolded
+   *  (W11-B; folded by default there so the column is not a long scroll;
+   *  remembered). Laptops always show it beside the work. */
+  exploreCircleOpen: boolean;
   setColorMode: (mode: ColorMode) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setScaleOctaves: (octaves: 1 | 2) => void;
@@ -106,6 +113,7 @@ export interface PreferencesSlice {
   setLanguage: (language: string) => void;
   setPreferencesUpdatedAt: (at: number) => void;
   setDockDetent: (view: DockView, detent: Detent) => void;
+  setExploreCircleOpen: (open: boolean) => void;
   /**
    * Open (or rest) the instrument dock of the CURRENT view at a detent — the
    * API a Learn exercise calls when it needs the instrument (D-20). No-op in

@@ -43,7 +43,8 @@ export function LearnMoreButton({ query, moduleId }: LearnMoreButtonProps) {
       }}
       // An accent-coloured quiet action (D-28 link button; was the
       // supertonic hue as text, ~2.4:1).
-      className="btn btn-link mt-2 -ml-1.5"
+      // no-print: a link into the app means nothing on paper.
+      className="btn btn-link -ml-1.5 no-print"
       // The lesson's title in the learner's language (no English tooltip in
       // PT/ES while the localized index is still loading).
       title={language === 'en' ? match.title : localized?.titles[match.id]?.[0]}

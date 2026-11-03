@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
-import { KeySelector } from '../KeySelector';
+import { RootChips, ScalePicker, KeyPicker } from '../KeySelector';
+import { SCALE_GROUPS } from '../keyChoice';
+import { SCALE_FORMULAS } from '../../../core/constants/scales';
 import { useAppStore } from '../../../state/store';
 
 afterEach(cleanup);
@@ -39,6 +41,19 @@ beforeEach(() => {
   });
 });
 
+// The workbench pickers (W11-B): the root as chips (phone key sheet) and as a
+// select (laptop / tablet), the scale as a select with every scale grouped.
+function KeySelector() {
+  return (
+    <>
+      <RootChips />
+      <ScalePicker />
+    </>
+  );
+}
+const scaleSelect = () => screen.getByRole('combobox', { name: 'Scale' }) as HTMLSelectElement;
+const pickScale = (type: string) => fireEvent.change(scaleSelect(), { target: { value: type } });
+
 // ---------------------------------------------------------------------------
 // Root note rendering
 // ---------------------------------------------------------------------------
@@ -74,6 +89,15 @@ describe('KeySelector root notes', () => {
     const state = useAppStore.getState();
     expect(state.selectedKey).toEqual({ natural: 'E', accidental: 'b' });
   });
+
+  it('the root select offers the same twelve names and sets the key', () => {
+    render(<KeyPicker />);
+    const select = screen.getByRole('combobox', { name: 'Root' }) as HTMLSelectElement;
+    expect([...select.options].map((o) => o.textContent)).toEqual(['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']);
+    expect(select.value).toBe('0');
+    fireEvent.change(select, { target: { value: '3' } });
+    expect(useAppStore.getState().selectedKey).toEqual({ natural: 'E', accidental: 'b' });
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -82,45 +106,33 @@ describe('KeySelector root notes', () => {
 describe('KeySelector scale types', () => {
   it('renders core scale options (Major, Minor)', () => {
     render(<KeySelector />);
-    expect(screen.getByText('Major')).toBeDefined();
-    expect(screen.getByText('Minor')).toBeDefined();
+    expect(screen.getByRole('option', { name: 'Major' })).toBeDefined();
+    expect(screen.getByRole('option', { name: 'Minor' })).toBeDefined();
   });
 
-  it('clicking a scale type changes the selected scale', () => {
+  it('choosing a scale changes the selected scale', () => {
     render(<KeySelector />);
-    fireEvent.click(screen.getByText('Minor'));
+    pickScale('natural_minor');
     expect(useAppStore.getState().selectedScale).toBe('natural_minor');
   });
 
-  it('active scale is the checked radio (D-28 choice chip)', () => {
+  it('the select shows the active scale', () => {
+    useAppStore.setState({ selectedScale: 'dorian' });
     render(<KeySelector />);
-    const majorButton = screen.getByText('Major').closest('button')!;
-    expect(majorButton.getAttribute('aria-checked')).toBe('true');
+    expect(scaleSelect().value).toBe('dorian');
   });
 
-  it('renders "More scales" toggle button', () => {
+  it('offers EVERY scale, grouped (the old "More scales" included)', () => {
     render(<KeySelector />);
-    expect(screen.getByText(/More scales/)).toBeDefined();
-  });
-
-  it('clicking "More scales" shows additional groups', () => {
-    render(<KeySelector />);
-    fireEvent.click(screen.getByText(/More scales/));
-    // After expanding, world scales should be visible
-    expect(screen.getByText('Persian')).toBeDefined();
-    expect(screen.getByText('Hirajoshi')).toBeDefined();
-  });
-
-  it('auto-expands when selected scale is in a hidden group', () => {
-    useAppStore.setState({ selectedScale: 'persian' });
-    render(<KeySelector />);
-    // Persian is in the World group — should auto-expand
-    expect(screen.getByText('Persian')).toBeDefined();
+    const offered = [...scaleSelect().options].map((o) => o.value).sort();
+    expect(offered).toEqual(Object.keys(SCALE_FORMULAS).sort());
+    expect(scaleSelect().querySelectorAll('optgroup')).toHaveLength(SCALE_GROUPS.length);
+    expect(screen.getByRole('option', { name: 'Persian' })).toBeDefined();
+    expect(screen.getByRole('option', { name: 'Hirajoshi' })).toBeDefined();
   });
 
   it('does not group Phrygian Dominant (harmonic-minor mode 5) with the melodic-minor modes (audit W5-45)', () => {
     render(<KeySelector />);
-    fireEvent.click(screen.getByText(/More scales/));
     const groupOf = (scale: string) =>
       document.querySelector(`[data-scale="${scale}"]`)?.parentElement ?? null;
     const melodicMinorGroup = groupOf('altered');
@@ -132,5 +144,6 @@ describe('KeySelector scale types', () => {
     // …and Phrygian Dominant is not in it.
     expect(groupOf('phrygian_dominant')).not.toBeNull();
     expect(groupOf('phrygian_dominant')).not.toBe(melodicMinorGroup);
+    expect(groupOf('phrygian_dominant')!.getAttribute('label')).toBe('Harm. Minor Modes');
   });
 });

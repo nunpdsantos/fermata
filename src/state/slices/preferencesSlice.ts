@@ -1,7 +1,7 @@
 import type { StateCreator } from 'zustand';
 import type { AppState, PreferencesSlice } from '../storeTypes.ts';
 import { detectBrowserLanguage } from '../../i18n/language.ts';
-import { DEFAULT_DOCK_DETENTS } from '../dock.ts';
+import { initialDockDetents } from '../dock.ts';
 
 export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesSlice> = (set, get) => ({
   colorMode: 'functional',
@@ -13,7 +13,10 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
   language: detectBrowserLanguage(),
   preferencesUpdatedAt: 0,
   lastView: 'explore',
-  dockDetents: { ...DEFAULT_DOCK_DETENTS },
+  dockDetents: initialDockDetents(),
+  dockChosen: { explore: false, learn: false },
+  // Tablet: the circle below the work starts folded (the column stays short).
+  exploreCircleOpen: false,
 
   setColorMode: (mode) => set({ colorMode: mode, preferencesUpdatedAt: Date.now() }),
   setThemeMode: (mode) => set({ themeMode: mode, preferencesUpdatedAt: Date.now() }),
@@ -21,13 +24,18 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
   setBaseOctave: (octave) => set({ baseOctave: octave, preferencesUpdatedAt: Date.now() }),
   setLanguage: (language) => set({ language, preferencesUpdatedAt: Date.now() }),
   setPreferencesUpdatedAt: (at) => set({ preferencesUpdatedAt: at }),
+  // The learner's own setting (drag, tap, keys, Show / Hide): remembered as
+  // a choice, so the screen-based default no longer applies to that view.
   setDockDetent: (view, detent) => {
-    if (get().dockDetents[view] === detent) return;
-    set((s) => ({ dockDetents: { ...s.dockDetents, [view]: detent } }));
+    const s = get();
+    if (s.dockDetents[view] === detent && s.dockChosen[view]) return;
+    set({ dockDetents: { ...s.dockDetents, [view]: detent }, dockChosen: { ...s.dockChosen, [view]: true } });
   },
+  setExploreCircleOpen: (open) => set({ exploreCircleOpen: open }),
+  // The app opening the dock for an exercise is not the learner's choice.
   requestDock: (detent) => {
-    const view = get().view;
-    if (view === 'drill') return;
-    get().setDockDetent(view, detent);
+    const { view, dockDetents } = get();
+    if (view === 'drill' || dockDetents[view] === detent) return;
+    set({ dockDetents: { ...dockDetents, [view]: detent } });
   },
 });

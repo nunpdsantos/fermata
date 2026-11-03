@@ -94,7 +94,63 @@
     "vs": "vs",
     "staffNotation": "Notaci\u00f3n en Pentagrama",
     "noDiatonicChords": "No hay acordes diat\u00f3nicos para este tipo de escala",
-    "noDiatonicChordsHint": "Prueba otra escala para ver la armon\u00eda"
+    "noDiatonicChordsHint": "Prueba otra escala para ver la armon\u00eda",
+    "playScale": "Tocar escala",
+    "scaleActions": "Acciones de la escala",
+    "keyPickerLabel": "Tonalidad: {{key}} — elegir la tonalidad",
+    "keySheetTitle": "Tonalidad",
+    "relativeKey": "relativa {{key}}",
+    "chordsIn": "Acordes en {{key}}",
+    "inKey": "En la tonalidad",
+    "circleChordRoot": "fundamental del acorde elegido",
+    "strip": {
+      "title": "Notas de la escala",
+      "hint": "Toca una nota para oírla",
+      "writtenOctave": "escrita una octava por encima de como suena",
+      "group": "Notas de la escala: toca una para oírla"
+    },
+    "facts": {
+      "signature": "Armadura",
+      "relative": "Relativa",
+      "dominant": "Tonalidad de la dominante",
+      "subdominant": "Tonalidad de la subdominante"
+    },
+    "fn": {
+      "tonic": "tónica",
+      "supertonic": "supertónica",
+      "mediant": "mediante",
+      "subdominant": "subdominante",
+      "tritone": "tritono",
+      "dominant": "dominante",
+      "augFifth": "5.ª aumentada",
+      "submediant": "submediante",
+      "subtonic": "subtónica",
+      "leading": "sensible"
+    },
+    "readout": {
+      "rootOf": "fundamental de {{chord}}",
+      "bassOf": "bajo de {{chord}}",
+      "toneOf": "{{tone}} de {{chord}}",
+      "tone2": "2.ª",
+      "tone3": "3.ª",
+      "tone4": "4.ª",
+      "tone5": "5.ª",
+      "tone6": "6.ª",
+      "tone7": "7.ª",
+      "tone9": "9.ª",
+      "tone11": "11.ª",
+      "tone13": "13.ª",
+      "fnOf": "{{fn}} de {{key}}",
+      "degreeOf": "grado {{degree}} de {{key}}",
+      "notIn": "fuera de {{key}}",
+      "stringFret": "cuerda {{string}} traste {{fret}}",
+      "stringOpen": "cuerda {{string}} al aire"
+    },
+    "summary": {
+      "notes": "Notas",
+      "count": "Cantidad",
+      "selectedChord": "Acorde elegido"
+    }
   },
   "play": {
     "performanceMode": "Modo Interpretaci\u00f3n",
@@ -206,7 +262,8 @@
     "symmetric": "Sim\u00e9tricas",
     "melMinorModes": "Modos Mel. Menor",
     "bebop": "Bebop",
-    "world": "Mundo"
+    "world": "Mundo",
+    "harmMinorModes": "Modos Harm. Menor"
   },
   "learn": {
     "title": "Aprender Teor\u00eda Musical",
@@ -915,5 +972,9 @@
     "in_sen": "In Sen",
     "iwato": "Iwato",
     "egyptian": "egipcia"
+  },
+  "neck": {
+    "open": "Mástil completo",
+    "close": "Cerrar el mástil completo"
   }
 }

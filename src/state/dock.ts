@@ -16,6 +16,34 @@ export const DEFAULT_DOCK_DETENTS: Record<DockView, Detent> = {
   learn: 'peek',
 };
 
+/** A phone held sideways (or any short window): the view above a Half
+ *  sheet is ~120 px, all header — so Explore rests at Peek there until the
+ *  learner sets the dock themselves (W11-B review). Mirrors SHEET_QUERY's
+ *  height half. */
+export const SHORT_SCREEN_QUERY = '(max-height: 500px)';
+
+const shortScreen = () =>
+  typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia(SHORT_SCREEN_QUERY).matches;
+
+/** Explore's detent while the learner has not chosen one. */
+export function defaultExploreDetent(short: boolean = shortScreen()): Detent {
+  return short ? 'peek' : 'half';
+}
+
+/** The detents a first visit starts with, for this screen. */
+export function initialDockDetents(): Record<DockView, Detent> {
+  return { ...DEFAULT_DOCK_DETENTS, explore: defaultExploreDetent() };
+}
+
+/** A persisted `dockChosen` value ({ explore?, learn? } booleans), or null. */
+export function sanitizeDockChosen(v: unknown): Record<DockView, boolean> | null {
+  if (typeof v !== 'object' || v === null || Array.isArray(v)) return null;
+  const r = v as Record<string, unknown>;
+  if (Object.keys(r).some((k) => k !== 'explore' && k !== 'learn')) return null;
+  if ((r.explore !== undefined && typeof r.explore !== 'boolean') || (r.learn !== undefined && typeof r.learn !== 'boolean')) return null;
+  return { explore: r.explore === true, learn: r.learn === true };
+}
+
 export const isDetent = (v: unknown): v is Detent => v === 'peek' || v === 'half' || v === 'full';
 
 /** A persisted `dockDetents` value, or null when it is not a valid one. */

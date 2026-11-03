@@ -9,9 +9,9 @@ import { test, expect } from '@playwright/test';
  * hash — a wrong hash is silently blocked in production.
  */
 test('saved night theme applies before first render, with no CSP violation', async ({ page }) => {
-  const res = await page.request.get('/');
-  test.skip(!res.headers()['content-security-policy'], 'Needs the production CSP (vite preview)');
-
+  // The CSP is read from the page's OWN navigation response. (A separate
+  // page.request.get('/') first used a second HTTP client, whose socket the
+  // preview server could reset under load — the ECONNRESET flake, W11-B.)
   await page.addInitScript(() => {
     localStorage.setItem('music-theory-app', JSON.stringify({ state: { themeMode: 'fermata-night' }, version: 6 }));
     const w = window as unknown as { __csp: string[]; __nightAt: number | null };
@@ -28,7 +28,8 @@ test('saved night theme applies before first render, with no CSP violation', asy
     }).observe(document, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] });
   });
 
-  await page.goto('/');
+  const res = await page.goto('/');
+  test.skip(!res?.headers()['content-security-policy'], 'Needs the production CSP (vite preview)');
   await expect(page.locator('#root')).not.toBeEmpty();
   const { csp, nightAt, themeColor } = await page.evaluate(() => {
     const w = window as unknown as { __csp: string[]; __nightAt: number | null };

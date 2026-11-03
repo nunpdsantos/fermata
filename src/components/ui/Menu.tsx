@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { KeyboardEvent as ReactKeyboardEvent, ReactNode } from 'react';
 import { IconButton } from './Button';
 
@@ -31,6 +32,12 @@ export interface MenuProps {
    */
   badge?: boolean;
   buttonLabel?: string;
+  /**
+   * Render the popup on <body>, fixed under the button: for a menu inside a
+   * view that clips its overflow (Explore's scale actions — on a phone held
+   * sideways the view is ~120 px tall and cut the menu off, W11-B).
+   */
+  portal?: boolean;
 }
 
 const DOTS = (
@@ -41,7 +48,7 @@ const DOTS = (
   </svg>
 );
 
-export function Menu({ label, items, icon = DOTS, testId, badge = false, buttonLabel }: MenuProps) {
+export function Menu({ label, items, icon = DOTS, testId, badge = false, buttonLabel, portal = false }: MenuProps) {
   const [open, setOpen] = useState(false);
   const [focusFirst, setFocusFirst] = useState<'first' | 'last'>('first');
   const rootRef = useRef<HTMLDivElement>(null);
@@ -56,11 +63,21 @@ export function Menu({ label, items, icon = DOTS, testId, badge = false, buttonL
     const els = itemEls();
     (focusFirst === 'last' ? els[els.length - 1] : els[0])?.focus();
     const onPointer = (e: PointerEvent) => {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+      const t = e.target as Node;
+      if (rootRef.current && !rootRef.current.contains(t) && !menuRef.current?.contains(t)) setOpen(false);
     };
     document.addEventListener('pointerdown', onPointer);
     return () => document.removeEventListener('pointerdown', onPointer);
   }, [open, focusFirst]);
+
+  // Portal: fixed, right-aligned under the button (re-measured on open).
+  const [fixedAt, setFixedAt] = useState<{ top: number; right: number } | null>(null);
+  useLayoutEffect(() => {
+    if (!open || !portal || !buttonRef.current) return;
+    const r = buttonRef.current.getBoundingClientRect();
+    // A DOM measurement, so it is set from this layout effect (before paint).
+    setFixedAt({ top: r.bottom + 6, right: Math.max(8, window.innerWidth - r.right) });
+  }, [open, portal]);
 
   const close = (refocus: boolean) => {
     setOpen(false);
@@ -90,6 +107,8 @@ export function Menu({ label, items, icon = DOTS, testId, badge = false, buttonL
     }
   };
 
+  const wrap = (popup: ReactNode) => (portal && typeof document !== 'undefined' ? createPortal(popup, document.body) : popup);
+
   return (
     <div ref={rootRef} className="relative" data-testid={testId}>
       <IconButton
@@ -112,13 +131,14 @@ export function Menu({ label, items, icon = DOTS, testId, badge = false, buttonL
         }}
       />
       {badge && <span className="menu-badge" data-testid={testId ? `${testId}-badge` : undefined} aria-hidden="true" />}
-      {open && (
+      {open && wrap(
         <div
           ref={menuRef}
           id={menuId}
           role="menu"
           aria-label={label}
           className="menu-popup"
+          style={portal ? { position: 'fixed', top: fixedAt?.top ?? 0, right: fixedAt?.right ?? 8, visibility: fixedAt ? undefined : 'hidden' } : undefined}
           onKeyDown={onMenuKey}
         >
           {items.map((item) => (
@@ -137,7 +157,7 @@ export function Menu({ label, items, icon = DOTS, testId, badge = false, buttonL
               {item.hint && <span className="text-caption" style={{ color: 'var(--text-dim)' }}>{item.hint}</span>}
             </button>
           ))}
-        </div>
+        </div>,
       )}
     </div>
   );

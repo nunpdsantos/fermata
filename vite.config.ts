@@ -161,7 +161,13 @@ export default defineConfig({
         // EVERY JS and CSS file of the build is precached (W9b, superseding
         // D-22's "load on demand" for code chunks): app code, every level's
         // curriculum / exercises / templates, VexFlow, and every translated-
-        // content `i18n-*` chunk. A page still running an older build — an
+        // content `i18n-*` chunk. This includes the lazy Fretboard, Quick
+        // Search and W11-B NeckView, plus Explore / Learn / StaffNotation /
+        // celebrationSound; Drill and its shared prng must work from a fresh
+        // offline install (the manifest's "Start Drill" shortcut). Views must
+        // open offline after one online visit, even without an HTTP cache;
+        // usePWA warms files loaded before the worker took control.
+        // A page still running an older build — an
         // update waiting, "Later" — then never needs the server for its own
         // files: after a deploy those URLs are gone from the server, and a
         // view or level opened for the first time used to fail until the
