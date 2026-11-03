@@ -24,6 +24,7 @@ import { translateLevelMetadata } from '../i18n/content/levelMetaResolver';
 
 export { LEVEL_METADATA, type LevelMeta } from './levelMetadata';
 import { LEVEL_METADATA, type LevelMeta } from './levelMetadata';
+import { isOptionalModuleId } from '../core/constants/optionalCurriculum';
 
 // ─── Dynamic level loading ───────────────────────────────────────────────────
 
@@ -104,7 +105,7 @@ export async function loadAllLevels(
 // ─── Pure utility functions (no static curriculum data imports) ──────────────
 
 export function getLevelModuleCount(level: CurriculumLevel): number {
-  return level.units.reduce((sum, u) => sum + u.modules.length, 0);
+  return level.units.filter((u) => !u.optional).reduce((sum, u) => sum + u.modules.length, 0);
 }
 
 export function getLevelCompletedModuleCount(
@@ -113,6 +114,7 @@ export function getLevelCompletedModuleCount(
 ): number {
   let count = 0;
   for (const unit of level.units) {
+    if (unit.optional) continue;
     for (const mod of unit.modules) {
       if (completedModules.includes(mod.id)) count++;
     }
@@ -161,7 +163,7 @@ export function computeLevelState(
 
 /** Count completed modules for a level using module ID prefix convention */
 function countLevelCompletedModulesMeta(levelId: string, completedModules: string[]): number {
-  return completedModules.filter((id) => id.startsWith(levelId)).length;
+  return completedModules.filter((id) => id.startsWith(levelId) && !isOptionalModuleId(id)).length;
 }
 
 function isLevelCompletedMeta(meta: LevelMeta, completedModules: string[]): boolean {
@@ -210,7 +212,8 @@ export function getNextModuleInLevel(
   currentModuleId: string,
   level: CurriculumLevel,
 ): CurriculumModule | undefined {
-  const allModules = level.units.flatMap((u) => u.modules);
+  const optional = isOptionalModuleId(currentModuleId);
+  const allModules = level.units.filter((u) => !!u.optional === optional).flatMap((u) => u.modules);
   const index = allModules.findIndex((m) => m.id === currentModuleId);
   if (index === -1 || index === allModules.length - 1) return undefined;
   return allModules[index + 1];
@@ -220,7 +223,8 @@ export function getPreviousModuleInLevel(
   currentModuleId: string,
   level: CurriculumLevel,
 ): CurriculumModule | undefined {
-  const allModules = level.units.flatMap((u) => u.modules);
+  const optional = isOptionalModuleId(currentModuleId);
+  const allModules = level.units.filter((u) => !!u.optional === optional).flatMap((u) => u.modules);
   const index = allModules.findIndex((m) => m.id === currentModuleId);
   if (index <= 0) return undefined;
   return allModules[index - 1];
@@ -234,6 +238,7 @@ export function findNextIncompleteModule(
   for (const level of levels) {
     if (level.comingSoon) continue;
     for (const unit of level.units) {
+      if (unit.optional) continue;
       for (const mod of unit.modules) {
         if (mod.comingSoon) continue;
         if (progress.completedModules.includes(mod.id)) continue;

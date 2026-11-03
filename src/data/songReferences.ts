@@ -12,6 +12,14 @@ export interface SongReference {
 }
 
 const SONG_REFERENCES: Record<string, SongReference[]> = {
+  'l1u33m2': [
+    // Verified classical reference ledger, row 2.
+    { song: 'Recuerdos de la Alhambra', artist: 'Francisco Tárrega', context: 'This tremolo piece uses the four-note pattern p-a-m-i: thumb, ring, middle, index. Read the letters as right-hand fingers, then mime the sequence slowly.' },
+    // Verified classical reference ledger, row 3.
+    { song: 'Romance (Spanish Romance, Romance Anónimo, Romanza)', artist: 'Anonymous', context: 'The right hand plays a running arpeggio, with the melody in its highest notes. Listen for the melody within the broken-chord texture.' },
+    // Verified classical reference ledger, row 6.
+    { song: '120 Right-Hand Studies (Studio per la chitarra, Op. 1, Part I)', artist: 'Mauro Giuliani', context: 'These 120 right-hand arpeggio exercises use different patterns over basic C and G7 chords. The chord notes provide the material; the right-hand order changes how you play it.' },
+  ],
   // ─── Level 1 ────────────────────────────────────────────────────────────────
 
   // L1U1: Notation and Pitch
@@ -77,6 +85,8 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
   'l2u5m1': [
     { song: 'Losing My Religion', artist: 'R.E.M.', context: 'Built on the natural minor (Aeolian) scale in A minor, with the characteristic flat seventh.' },
     { song: 'Eleanor Rigby', artist: 'The Beatles', context: 'Built on Em and C chords with a modal flavor that mixes Aeolian and Dorian — the melody raises the 6th (C♯) in places, giving it a modal rather than purely diatonic minor quality.' },
+    // Verified classical reference ledger, row 5.
+    { song: 'Bourrée from the Lute Suite in E minor, BWV 996', artist: 'J. S. Bach', context: 'This bourrée is in E minor. The suite was written for a lute-type instrument and is widely played on guitar. Use E as your reference tonic when listening.' },
   ],
   'l2u5m2': [
     { song: 'Hava Nagila', artist: 'Traditional', context: 'Uses the harmonic minor scale — the augmented second between b6 and #7 gives it its distinctive sound.' },
@@ -85,6 +95,10 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
   'l2u5m3': [
     { song: 'Stairway to Heaven', artist: 'Led Zeppelin', context: 'Begins in A minor (relative minor of C major), then modulates — a classic relative key relationship.' },
     { song: 'While My Guitar Gently Weeps', artist: 'The Beatles', context: 'Moves between A minor verses and its relative major context (C major), demonstrating the close relationship between relative keys that share the same key signature.' },
+    // Verified classical reference ledger, row 1.
+    { song: 'Lágrima', artist: 'Francisco Tárrega', context: 'The opening is in E major and the middle section is in E minor, its parallel minor. Listen for the opening to return in the A–B–A form.' },
+    // Verified classical reference ledger, row 4.
+    { song: 'Prelude No. 1', artist: 'Heitor Villa-Lobos', context: 'The prelude is in E minor and its middle section is in E major. Compare these parallel keys: the tonic stays E while the mode changes.' },
   ],
 
   // L2U6: Compound Meter and Syncopation

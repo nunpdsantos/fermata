@@ -1657,6 +1657,51 @@ body {
   margin-bottom: 0;
 }
 
+/* At 1440×900 the minor-variant controls otherwise wrap and push the key
+   facts below the dock. Keep the main column's width (and chord headroom),
+   the 276 px circle and full-height targets; compact only the minor aside.
+   Its geometry depends on neither the staff direction nor the open chord. */
+@media screen and (min-width: 1200px) and (min-height: 900px) {
+  .explore-aside .circle-card:has(.cof-variants) {
+    padding-block: 6px;
+
+    .cof-caption {
+      font-size: var(--text-caption);
+      line-height: 1.2;
+      min-height: 2.4em; /* Still two lines when a key is hovered. */
+      margin-top: 2px;
+    }
+    .cof-variants {
+      margin-top: 6px;
+    }
+    .cof-variants .chip-group {
+      gap: 4px;
+    }
+    .cof-variants .chip {
+      padding-inline: 4px;
+    }
+    .key-facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px 8px;
+      margin-top: 4px;
+      font-size: var(--text-caption);
+      line-height: 1.2;
+    }
+    .key-fact {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0 4px;
+    }
+    .key-fact:first-child {
+      display: none; /* Signature already appears in the circle caption. */
+    }
+    .key-fact:last-child {
+      grid-column: 1 / -1; /* Room for the longer PT/ES subdominant label. */
+    }
+  }
+}
+
 /* ─── Card utilities ────────────────────────────────────────────
    Consumed by <Card> primitive (src/components/ui/Card.tsx).
    Accent tinting arrives via --card-accent-* CSS variables on the

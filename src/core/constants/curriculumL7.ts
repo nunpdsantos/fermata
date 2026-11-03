@@ -758,7 +758,7 @@ const l7u23m3: CurriculumModule = {
     {
       title: 'The Melodic Minor Parent Scale',
       explanation:
-        'The ascending melodic minor scale raises both the 6th and 7th of natural minor, creating a scale with a minor 3rd but major 6th and 7th. Its interval pattern (W-H-W-W-W-W-H) generates seven modes, each with a distinct character and jazz application. Mode 1 (jazz minor itself) pairs with minor-major 7th chords — the m(maj7) sound. Unlike the diatonic modes which all share the same notes, melodic minor modes each have a unique chromatic flavor that makes them essential for navigating altered jazz harmony.',
+        'In jazz, this ascending form is used in both directions. Explore labels its up-and-down practice as classical melodic minor, whose descent uses natural minor. The ascending melodic minor scale raises both the 6th and 7th of natural minor, creating a scale with a minor 3rd but major 6th and 7th. Its interval pattern (W-H-W-W-W-W-H) generates seven modes, each with a distinct character and jazz application. Mode 1 (jazz minor itself) pairs with minor-major 7th chords — the m(maj7) sound. Unlike the diatonic modes which all share the same notes, melodic minor modes each have a unique chromatic flavor that makes them essential for navigating altered jazz harmony.',
       tryThisQuery: 'C melodic minor',
       tryThisLabel: 'See C melodic minor — the parent of 7 modes',
     },

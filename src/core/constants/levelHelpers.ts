@@ -16,7 +16,7 @@ export function getLevelForModule(moduleId: string): CurriculumLevel | undefined
 }
 
 export function getLevelModuleCount(level: CurriculumLevel): number {
-  return level.units.reduce((sum, u) => sum + u.modules.length, 0);
+  return level.units.filter((u) => !u.optional).reduce((sum, u) => sum + u.modules.length, 0);
 }
 
 export function getLevelCompletedModuleCount(
@@ -25,6 +25,7 @@ export function getLevelCompletedModuleCount(
 ): number {
   let count = 0;
   for (const unit of level.units) {
+    if (unit.optional) continue;
     for (const mod of unit.modules) {
       if (completedModules.includes(mod.id)) count++;
     }

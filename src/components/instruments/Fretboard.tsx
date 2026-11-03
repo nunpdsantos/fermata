@@ -60,13 +60,13 @@ export function Fretboard(props: FretboardProps | { exercise: FretboardExerciseP
 function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
   const neck = variant === 'neck';
   const { t } = useTranslation();
-  const { getNoteColor, spellPitchClass, chordPitchClasses } = useKeyContext();
+  const { displayScale, getNoteColor, spellPitchClass, chordPitchClasses } = useKeyContext();
   const { noteOn, noteOff } = useAudio();
   const activeNotes = useAppStore((s) => s.activeNotes);
   const selectedChord = useAppStore((s) => s.selectedChord);
   const chordInversion = useAppStore((s) => s.chordInversion);
   const selectedKey = useAppStore((s) => s.selectedKey);
-  const selectedScale = useAppStore((s) => s.selectedScale);
+  const selectedScale = displayScale.type;
   const guitarScalePosition = useAppStore((s) => s.guitarScalePosition);
   const setGuitarScalePosition = useAppStore((s) => s.setGuitarScalePosition);
   const quickSearchOpen = useAppStore((s) => s.quickSearchOpen);

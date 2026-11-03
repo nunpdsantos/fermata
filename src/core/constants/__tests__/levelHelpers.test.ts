@@ -15,8 +15,8 @@ import type { CurriculumLevel, CurriculumUnit } from '../../types/curriculum';
 const L1 = CURRICULUM_LEVELS.find(l => l.id === 'l1')!;
 const L2 = CURRICULUM_LEVELS.find(l => l.id === 'l2')!;
 
-// Collect all module IDs in L1 for convenience
-const L1_MODULE_IDS = L1.units.flatMap(u => u.modules.map(m => m.id));
+// Required module IDs define level completion; bonus lessons have their own progress.
+const L1_MODULE_IDS = L1.units.filter(u => !u.optional).flatMap(u => u.modules.map(m => m.id));
 
 // ---------------------------------------------------------------------------
 // getLevelById / getLevelForUnit / getLevelForModule

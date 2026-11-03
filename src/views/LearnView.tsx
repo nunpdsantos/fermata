@@ -318,7 +318,7 @@ export function LearnView() {
                     const done = new Set([...progress.completedModules, moduleId]);
                     completeModule(moduleId);
                     const unitDone = unit.modules.every((x) => done.has(x.id));
-                    const levelDone = loadedLevel.units.every((u) => u.modules.every((x) => done.has(x.id)));
+                    const levelDone = !unit.optional && loadedLevel.units.filter((u) => !u.optional).every((u) => u.modules.every((x) => done.has(x.id)));
                     const level = levelDone
                       ? { levelNumber: loadedLevel.number, accentColor: loadedLevel.accentColor, moduleCount: getLevelModuleCount(loadedLevel) }
                       : null;

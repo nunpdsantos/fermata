@@ -3,6 +3,7 @@ import * as fs from 'node:fs';
 import { auditPage, type AuditResult } from './helpers/designAudit';
 import { fret, readingFits, readingReady, readingSave, readingTargets, READING_QUEUE } from './helpers/readingDrill';
 import { learnScreens } from './helpers/learnDesignScreens';
+import { L1_UNITS } from '../src/core/constants/curriculumL1';
 
 /**
  * Design system v2 acceptance (W11-A, D-28 / D-26), in a real browser.
@@ -565,19 +566,18 @@ async function questionScreens(page: Page, lang: Lang, onScreen: (screen: string
   await onScreen('learn-exercise-interval-number');
 }
 
-// Level 1 finished but for its last module, whose tasks and exercises are done:
-// "Mark Module Complete" there raises the level-achievement overlay.
-const L1_SRC = fs.readFileSync('src/core/constants/curriculumL1.ts', 'utf8');
-const L1_MODULES = [...L1_SRC.matchAll(/id: '(l1u\d+m\d+)'/g)].map((m) => m[1]);
+// Level 1 finished but for its last REQUIRED module. Optional guitar lessons
+// do not gate completion and must not displace Major Triads in this fixture.
+const L1_MODULES = L1_UNITS.filter((unit) => !unit.optional).flatMap((unit) => unit.modules);
 const levelEndProgress = () => {
   const last = L1_MODULES[L1_MODULES.length - 1];
-  const tasks = [...L1_SRC.matchAll(new RegExp(`id: '(${last}t\\d+)'`, 'g'))].map((m) => m[1]);
+  const tasks = last.tasks.map((task) => task.id);
   return {
     state: {
       progress: {
-        completedModules: L1_MODULES.slice(0, -1),
-        moduleProgress: { [last]: tasks },
-        exerciseResults: { [last]: { scores: {}, totalAttempts: 1, lastAttemptAt: Date.now(), passed: true } },
+        completedModules: L1_MODULES.slice(0, -1).map((module) => module.id),
+        moduleProgress: { [last.id]: tasks },
+        exerciseResults: { [last.id]: { scores: {}, totalAttempts: 1, lastAttemptAt: Date.now(), passed: true } },
         reviewSchedules: {},
       },
     },

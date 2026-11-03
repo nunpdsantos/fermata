@@ -54,7 +54,7 @@ export function ExploreView() {
       <ExploreHeader practiceAction={wide ? practiceAction : undefined} />
       <div className="explore-work" data-testid="explore-work" data-layout={wide ? 'workbench' : phone ? 'phone' : 'column'}>
         <div className="explore-main">
-          <ScaleStrip />
+          <ScaleStrip key={`${selectedKey.natural}${selectedKey.accidental}:${selectedScale}`} />
           <ChordsCard />
           {guitar && !wide && <section className="explore-card no-print" data-testid="practice-card">{practiceAction}</section>}
           {!wide && !phone && <CircleNavigator collapsible />}

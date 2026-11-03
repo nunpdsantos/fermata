@@ -65,7 +65,7 @@ export function UnitDetail({
         className="mb-8"
       >
         <span className="text-caption font-bold uppercase tracking-wider" style={{ color: 'var(--text-dim)' }}>
-          {t('learn.unit', { n: unitIndex + 1 })}
+          {unit.optional ? t('learn.optionalUnit') : t('learn.unit', { n: unitIndex + 1 })}
         </span>
         <h1 className="text-2xl font-bold learn-serif mt-1 mb-1.5" style={{ color: 'var(--text)' }}>
           {unit.title}

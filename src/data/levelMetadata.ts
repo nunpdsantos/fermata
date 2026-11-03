@@ -23,7 +23,7 @@ export interface LevelMeta {
 }
 
 export const LEVEL_METADATA: LevelMeta[] = [
-  { id: 'l1', number: 1, title: 'Foundations of Music Literacy', description: 'Staff notation, pitch fundamentals, rhythm and meter, the major scale, basic intervals, and major triads.', difficulty: 'beginner', difficultyLabel: 'Absolute Beginner', accentColor: LEVEL_ACCENTS.l1, prerequisites: [], unitCount: 3, moduleCount: 10 },
+  { id: 'l1', number: 1, title: 'Foundations of Music Literacy', description: 'Staff notation, pitch fundamentals, rhythm and meter, the major scale, basic intervals, and major triads.', difficulty: 'beginner', difficultyLabel: 'Absolute Beginner', accentColor: LEVEL_ACCENTS.l1, prerequisites: [], unitCount: 4, moduleCount: 10 },
   { id: 'l2', number: 2, title: 'Expanding Fundamentals', description: 'All key signatures, scale degree names, minor scales, compound meter, syncopation, interval quality, all triad types, inversions, and diatonic harmony.', difficulty: 'beginner', difficultyLabel: 'Beginner', accentColor: LEVEL_ACCENTS.l2, prerequisites: ['l1'], unitCount: 4, moduleCount: 12 },
   { id: 'l3', number: 3, title: 'Harmony Foundations', description: 'Seventh chords, voice leading, cadences, phrase structure, and non-chord tones.', difficulty: 'beginner', difficultyLabel: 'Upper Beginner', accentColor: LEVEL_ACCENTS.l3, prerequisites: ['l2'], unitCount: 3, moduleCount: 13 },
   { id: 'l4', number: 4, title: 'Diatonic Mastery', description: 'Advanced non-chord tones, dominant seventh mastery, harmonic function, sequences, and counterpoint.', difficulty: 'intermediate', difficultyLabel: 'Intermediate', accentColor: LEVEL_ACCENTS.l4, prerequisites: ['l3'], unitCount: 3, moduleCount: 15 },

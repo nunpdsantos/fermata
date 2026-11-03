@@ -293,6 +293,38 @@ describe('cancelScheduledAudio — sound only, visuals and held notes untouched'
   });
 });
 
+describe('W10-09: classical melodic minor sounds its raised ascent and natural descent', () => {
+  it.each([
+    ['A', '', [69, 71, 72, 74, 76, 78, 80, 81, 79, 77, 76, 74, 72, 71, 69]],
+    ['E', '', [64, 66, 67, 69, 71, 73, 75, 76, 74, 72, 71, 69, 67, 66, 64]],
+    ['B', 'b', [70, 72, 73, 75, 77, 79, 81, 82, 80, 78, 77, 75, 73, 72, 70]],
+  ] as const)('%s%s: every sounding pitch and onset, top tonic once', async (natural, accidental, expected) => {
+    setupMockAudioContext();
+    const audio = await freshAudio();
+    const { buildScale } = await import('../../constants/scales');
+    const { classicalDescendingNotes } = await import('../../utils/classicalScale');
+    const root = { natural, accidental };
+    const voice = makeVoice(true);
+    audio.setInstrumentVoice(voice);
+    audio.playScale(buildScale(root, 'melodic_minor').notes, 4, true, true, 0.25, undefined, undefined, {}, classicalDescendingNotes(root, 'melodic_minor'));
+    expect(voice.playNote.mock.calls.map((c) => c[0])).toEqual(expected);
+    voice.playNote.mock.calls.forEach((c, i) => {
+      expect(c[1]).toBeCloseTo(i * 0.2875);
+      expect(c[2]).toBe(0.25);
+    });
+  });
+
+  it('an unqualified jazz caller still uses the raised form in both directions', async () => {
+    setupMockAudioContext();
+    const audio = await freshAudio();
+    const { buildScale } = await import('../../constants/scales');
+    const voice = makeVoice(true);
+    audio.setInstrumentVoice(voice);
+    audio.playScale(buildScale(N('A'), 'melodic_minor').notes, 4, true, true, 0.25);
+    expect(voice.playNote.mock.calls.map((c) => c[0])).toEqual([69, 71, 72, 74, 76, 78, 80, 81, 80, 78, 76, 74, 72, 71, 69]);
+  });
+});
+
 describe('practice timed phrase — shown pitches and cancellable visual callbacks', () => {
   it('hands the exact scale, dyad and pinch schedule to the registered voice', async () => {
     const { mockCtx } = setupMockAudioContext();

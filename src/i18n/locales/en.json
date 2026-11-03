@@ -64,6 +64,8 @@
     "contentInDevelopment": "Content in development"
   },
   "explore": {
+    "playScaleClassical": "Play classical melodic minor ascending and descending",
+    "playScaleBoth": "Play scale ↑↓",
     "minorVariant": "Minor scale variant",
     "diatonicChordsGroup": "Diatonic chords",
     "chordButton": "{{root}} {{quality}} chord, degree {{degree}}",
@@ -104,6 +106,10 @@
     "inKey": "In key",
     "circleChordRoot": "root of the selected chord",
     "strip": {
+      "classicalMinor": "Melodic minor · classical",
+      "direction": "Scale direction",
+      "ascending": "↑ Ascending",
+      "descending": "↓ Descending",
       "title": "Notes of the scale",
       "hint": "Tap a note to hear it",
       "writtenOctave": "written an octave above sounding",
@@ -266,6 +272,7 @@
     "harmMinorModes": "Harm. Minor Modes"
   },
   "learn": {
+    "optionalUnit": "Optional unit",
     "title": "Learn Music Theory",
     "subtitle": "A structured path from the basics to advanced harmony",
     "parallelTrack": "Parallel Track",

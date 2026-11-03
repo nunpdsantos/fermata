@@ -1,5 +1,6 @@
 import type { CurriculumUnit, CurriculumModule, CurriculumLevel, CurriculumProgress } from '../types/curriculum';
 import { CURRICULUM_LEVELS } from './levels';
+import { isOptionalModuleId } from './optionalCurriculum';
 export { CURRICULUM_LEVELS } from './levels';
 export { getLevelById, getLevelForUnit, getLevelForModule } from './levelHelpers';
 
@@ -29,7 +30,8 @@ export function getUnitByModuleId(moduleId: string): CurriculumUnit | undefined 
 
 /** Get the next module in sequence (across units and levels) */
 export function getNextModule(currentModuleId: string): CurriculumModule | undefined {
-  const allModules = getAllUnits().flatMap((u) => u.modules);
+  const optional = isOptionalModuleId(currentModuleId);
+  const allModules = getAllUnits().filter((u) => !!u.optional === optional).flatMap((u) => u.modules);
   const index = allModules.findIndex((m) => m.id === currentModuleId);
   if (index === -1 || index === allModules.length - 1) return undefined;
   return allModules[index + 1];
@@ -37,7 +39,8 @@ export function getNextModule(currentModuleId: string): CurriculumModule | undef
 
 /** Get the previous module in sequence */
 export function getPreviousModule(currentModuleId: string): CurriculumModule | undefined {
-  const allModules = getAllUnits().flatMap((u) => u.modules);
+  const optional = isOptionalModuleId(currentModuleId);
+  const allModules = getAllUnits().filter((u) => !!u.optional === optional).flatMap((u) => u.modules);
   const index = allModules.findIndex((m) => m.id === currentModuleId);
   if (index <= 0) return undefined;
   return allModules[index - 1];
@@ -63,6 +66,7 @@ export function getNextIncompleteModule(
   for (const level of resolvedLevels) {
     if (level.comingSoon) continue;
     for (const unit of level.units) {
+      if (unit.optional) continue;
       for (const mod of unit.modules) {
         if (mod.comingSoon) continue;
         if (progress.completedModules.includes(mod.id)) continue;

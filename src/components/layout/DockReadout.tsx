@@ -24,7 +24,7 @@ export function DockReadout({ context }: { context: string }) {
   const view = useAppStore((s) => s.view);
   const exercise = useAppStore((s) => s.exerciseInputActive);
   const chord = useAppStore((s) => s.selectedChord);
-  const { scale, spellPitchClass } = useKeyContext();
+  const { displayScale: scale, spellPitchClass } = useKeyContext();
   const focus = useFocusNote();
   const locations = useFocusNoteStore((s) => s.locations);
   const active = view === 'explore' && !exercise && focus !== null;
