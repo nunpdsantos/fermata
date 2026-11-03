@@ -16,6 +16,7 @@ import type { PitchedNote } from '../../core/types/music';
 interface UseStaffNotationOptions {
   notes: PitchedNote[];
   clef?: 'treble' | 'bass';
+  annotation?: '8vb';
   keySignature?: string;
   width?: number;
   height?: number;
@@ -75,8 +76,8 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
   // accidentals all use these written notes.
   const staff = useMemo(() => {
     const plan = staffPlan(options.notes, options.clef, instrument, options.followInstrument);
-    return { ...plan, layout: staffLayout(plan.written, plan.clef, options.height ?? 150) };
-  }, [options.notes, options.clef, options.height, options.followInstrument, instrument]);
+    return { ...plan, annotation: options.annotation ?? plan.annotation, layout: staffLayout(plan.written, plan.clef, options.height ?? 150) };
+  }, [options.notes, options.clef, options.height, options.followInstrument, options.annotation, instrument]);
   const layout = staff.layout;
 
   // Load VexFlow

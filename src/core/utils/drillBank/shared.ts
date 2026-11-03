@@ -123,6 +123,7 @@ export const FAMILY_BASE: Record<DrillFamily, number> = {
   seventh: 2400,
   roman: 3000,
   function: 3800,
+  read: 5000,
 };
 
 // ---------------------------------------------------------------------------

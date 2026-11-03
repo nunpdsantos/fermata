@@ -21,6 +21,8 @@ export function eligibleSprintItems(
   families: Record<DrillFamily, boolean>,
 ): DrillItem[] {
   return bank.filter((item) => {
+    // Neck navigation should not count against the timed recall score.
+    if (item.family === 'read') return false;
     if (!families[item.family]) return false;
     const tier = items[item.id]?.tier;
     return tier === 'review' || tier === 'byHeart';
@@ -34,7 +36,7 @@ export function eligibleSprintItems(
  */
 export function sprintFamiliesKey(families: Record<DrillFamily, boolean>): string {
   return Object.keys(families)
-    .filter((f) => families[f as DrillFamily])
+    .filter((f) => f !== 'read' && families[f as DrillFamily])
     .sort()
     .join(',');
 }

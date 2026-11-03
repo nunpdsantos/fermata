@@ -759,6 +759,24 @@
       "empty": "Aún no hay nada dominado para practicar",
       "emptyHint": "Practica algunos conceptos para repaso primero y vuelve luego."
     },
+    "reading": {
+      "board": "Diapasón de guitarra para lectura",
+      "stringOpen": "Cuerda {{string}}, al aire",
+      "stringFret": "Cuerda {{string}}, traste {{fret}}",
+      "correct": "posición correcta",
+      "wrong": "tu respuesta",
+      "staff": "{{note}} escrito en clave de sol, octava baja",
+      "nearMiss": "Comprueba la octava o posición: {{expected}}",
+      "explanation": "{{written}} escrito suena {{sounding}}. Número en un círculo = cuerda; siguiente = traste.",
+      "noSprint": "La lectura en la guitarra se practica sin el cronómetro del Sprint.",
+      "stages": {
+        "1": "1 · Posición abierta",
+        "2": "2 · Posición II",
+        "3": "3 · Posición V",
+        "4": "4 · Por encima de V (VII, IX, XII)",
+        "5": "5 · Diapasón completo"
+      }
+    },
     "families": {
       "keysig": "Armaduras de clave",
       "circle": "Círculo de quintas",

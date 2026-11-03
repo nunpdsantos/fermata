@@ -34,6 +34,7 @@ import { ChordShapeSelector, ScalePositionSelector, LabelToolbar, PositionLegend
 import { FretboardString } from './FretboardString.tsx';
 import { DockToolsContext } from '../layout/dockTools.ts';
 import { useFocusNote, useFocusNoteStore, type FocusNote } from '../../state/focusNoteStore.ts';
+import { FretboardExercise, type FretboardExerciseProps } from './FretboardExercise.tsx';
 import type { FretboardMode } from './FretboardString.tsx';
 
 const EMPTY_POSITION_DOTS = new Map<number, Map<number, PositionDot>>();
@@ -51,7 +52,12 @@ export interface FretboardProps {
   variant?: 'dock' | 'neck';
 }
 
-export function Fretboard({ variant = 'dock' }: FretboardProps = {}) {
+export function Fretboard(props: FretboardProps | { exercise: FretboardExerciseProps } = {}) {
+  if ('exercise' in props) return <FretboardExercise {...props.exercise} />;
+  return <ExplorationFretboard {...props} />;
+}
+
+function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
   const neck = variant === 'neck';
   const { t } = useTranslation();
   const { getNoteColor, spellPitchClass, chordPitchClasses } = useKeyContext();

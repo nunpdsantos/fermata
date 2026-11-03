@@ -1,6 +1,7 @@
 import { test, expect, type Browser, type Locator, type Page } from '@playwright/test';
 import * as fs from 'node:fs';
 import { auditPage, type AuditResult } from './helpers/designAudit';
+import { fret, readingFits, readingReady, readingSave, readingTargets, READING_QUEUE } from './helpers/readingDrill';
 import { learnScreens } from './helpers/learnDesignScreens';
 
 /**
@@ -71,7 +72,7 @@ const seededProgress = (now: number) => ({
 type Box = { top: number; bottom: number; left: number; right: number };
 const overlaps = (a: Box, b: Box) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
 
-async function open(browser: Browser, v: Viewport, theme: string, state: Record<string, unknown>, extra: { lang?: string; progress?: boolean | object } = {}) {
+async function open(browser: Browser, v: Viewport, theme: string, state: Record<string, unknown>, extra: { lang?: string; progress?: boolean | object; drill?: object } = {}) {
   const context = await browser.newContext({
     viewport: v.viewport,
     isMobile: v.touch,
@@ -81,16 +82,18 @@ async function open(browser: Browser, v: Viewport, theme: string, state: Record<
     acceptDownloads: true,
   });
   await context.addInitScript(
-    ([blob, progress]) => {
+    ([blob, progress, drill]) => {
       if (sessionStorage.getItem('__seeded')) return;
       localStorage.clear();
       localStorage.setItem('music-theory-app', blob);
       if (progress) localStorage.setItem('music-theory-progress', progress);
+      if (drill) localStorage.setItem('fermata-drill-v1', drill);
       sessionStorage.setItem('__seeded', '1');
     },
     [
       JSON.stringify({ state: { themeMode: theme, language: extra.lang ?? 'en', ...state }, version: 6 }),
       extra.progress === true ? JSON.stringify(seededProgress(Date.now())) : extra.progress ? JSON.stringify(extra.progress) : '',
+      extra.drill ? JSON.stringify(extra.drill) : '',
     ] as const,
   );
   const page = await context.newPage();
@@ -1269,5 +1272,30 @@ for (const L of LANGS) {
         await context.close();
       });
     }
+  }
+}
+
+
+// W10: the staff-reading input and revealed neck, with the same design audit.
+for (const v of VIEWPORTS.filter((v) => v.name !== 'tablet')) {
+  for (const th of THEMES) {
+    test(`${v.name}-${th.name} reading: staff, neck, feedback and Continue`, async ({ browser }) => {
+      test.setTimeout(120_000);
+      for (const id of READING_QUEUE) {
+        const { context, page } = await open(browser, v, th.mode, { lastView: 'drill', instrument: 'piano' }, { drill: readingSave([id, 'read:staff-to-fret:open:D5']) });
+        await readingReady(page);
+        await readingTargets(page);
+        await check(page, v, `${v.name}-${th.name}`, `reading-${id.split(':')[2]}-question`);
+        if (v.name !== 'phone-landscape') await readingFits(page);
+        // The longest feedback is a near miss: check it on Open and the high note.
+        if (id.includes(':open:')) await fret(page, 1, 3).click(); // C3, an octave low
+        else if (id.includes(':any:')) await fret(page, 3, 0).click(); // G3 for G5
+        else await fret(page, 0, 0).click();
+        await expect(page.getByRole('button', { name: 'Continue', exact: true })).toBeVisible();
+        await check(page, v, `${v.name}-${th.name}`, `reading-${id.split(':')[2]}-feedback`);
+        if (v.name !== 'phone-landscape') await readingFits(page);
+        await context.close();
+      }
+    });
   }
 }

@@ -1,3 +1,4 @@
+import { genRead } from '../../core/utils/drillBank/genRead';
 /**
  * Tests for drillStore — mirrors progressStore.test.ts patterns.
  * All time and seeds are injected; no Math.random / Date.now inside the store.
@@ -10,6 +11,7 @@ import type { DrillSettings } from '../drillStore';
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function makeItem(id: string, family: DrillFamily = 'interval', rank = 0): DrillItem {
+  if (family === 'read') return { ...genRead()[0], id, rank };
   return {
     id,
     family,

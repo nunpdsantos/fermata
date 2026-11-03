@@ -71,7 +71,7 @@ describe('v2 → v3: a production-shaped save loads unchanged and resumes', () =
     await useDrillStore.persist.rehydrate();
     const s = useDrillStore.getState();
     expect(s.items).toEqual(f.state.items);
-    expect(s.settings).toEqual(f.state.settings);
+    expect(s.settings).toEqual({ ...(f.state.settings as object), families: { ...(f.state.settings as { families: object }).families, read: true } });
     expect(s.sprintBests).toEqual(f.state.sprintBests);
     expect(s.lifetime).toEqual(f.state.lifetime);
     expect(s.activeSession).toEqual(f.state.activeSession);
@@ -92,12 +92,12 @@ describe('v2 → v3: a production-shaped save loads unchanged and resumes', () =
     const s = useDrillStore.getState();
     // Whole-item equality includes every card field, tier and history record.
     expect(s.items).toEqual(f.state.items);
-    expect(s.settings).toEqual(f.state.settings);
+    expect(s.settings).toEqual({ ...(f.state.settings as object), families: { ...(f.state.settings as { families: object }).families, read: true } });
     expect(s.sprintBests).toEqual(f.state.sprintBests);
     expect(s.lifetime).toEqual(f.state.lifetime);
     expect(s.activeSession).toEqual(f.state.activeSession);
     expect(s.sprint).toBeNull();
-    expect(stored()).toEqual({ version: 3, state: { ...f.state, sprint: null } });
+    expect(stored()).toEqual({ version: 3, state: { ...f.state, settings: s.settings, sprint: null } });
   });
 
   it('the running session carries on: the next answer goes to queue[3], and the save is written back as v3', async () => {

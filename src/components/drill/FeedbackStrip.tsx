@@ -7,6 +7,7 @@ import { Feedback, type FeedbackTone } from '../ui/Feedback';
 
 interface FeedbackStripProps {
   result: GradeResult;
+  reading?: boolean;
   /** Canonical answer text (the correct spelling, as shown on its chip/slots). */
   answerText: string;
   /** The translated "why" line for the item. */
@@ -45,7 +46,7 @@ const ICONS: Record<FeedbackTone, ReactNode> = {
  * tone's text colour, the "why" as the hint line, and "Learn about this →"
  * on a miss. The Continue button is the screen's own (thumb zone, DrillView).
  */
-export function FeedbackStrip({ result, answerText, whyText, learnMoreLabel, onLearnMore }: FeedbackStripProps) {
+export function FeedbackStrip({ result, answerText, whyText, learnMoreLabel, onLearnMore, reading }: FeedbackStripProps) {
   const { t } = useTranslation();
   const reduce = useReducedMotion();
   const tone: FeedbackTone = result.correct ? 'correct' : result.nearMiss ? 'nearMiss' : 'wrong';
@@ -69,7 +70,7 @@ export function FeedbackStrip({ result, answerText, whyText, learnMoreLabel, onL
               <span style={{ color: 'var(--text)' }}>{` — ${answerText}`}</span>
             </>
           ) : (
-            t('drill.feedback.nearMiss', { expected: answerText })
+            t(reading ? 'drill.reading.nearMiss' : 'drill.feedback.nearMiss', { expected: answerText })
           )
         }
         hint={whyText}
