@@ -292,3 +292,43 @@ describe('cancelScheduledAudio — sound only, visuals and held notes untouched'
     }
   });
 });
+
+describe('practice timed phrase — shown pitches and cancellable visual callbacks', () => {
+  it('hands the exact scale, dyad and pinch schedule to the registered voice', async () => {
+    const { mockCtx } = setupMockAudioContext();
+    mockCtx.currentTime = 10;
+    const audio = await freshAudio();
+    const voice = makeVoice(true);
+    audio.setInstrumentVoice(voice);
+    const { practiceSchedule, scalePractice, rightHandPractice, technicalSet } = await import('../../../components/practice/practiceModel');
+    const { TUNING_STANDARD: tuning } = await import('../../constants/guitarTunings');
+    for (const route of [scalePractice(N('C'), 'major', tuning, 2, 'im')!, rightHandPractice(N('C'), 'major', tuning, 'p+a-i-m-i')!, technicalSet(N('C'), 'major', tuning).find((i) => i.id === 'thirds-together')!.route!]) {
+      voice.playNote.mockClear();
+      const schedule = practiceSchedule(route, 80);
+      audio.playTimedNotes(schedule.notes);
+      const shown = route.events.flatMap((e) => e.notes.map((n) => n.midi));
+      expect(voice.playNote.mock.calls.map((c) => c[0])).toEqual(shown);
+      voice.playNote.mock.calls.forEach((c, i) => {
+        expect(c[1]).toBeCloseTo(schedule.notes[i].at);
+        expect(c[2]).toBeCloseTo(schedule.notes[i].duration);
+      });
+    }
+  });
+  it('another playback or a view exit cancels timed highlights and settles once', async () => {
+    vi.useFakeTimers();
+    try {
+      setupMockAudioContext();
+      const audio = await freshAudio();
+      audio.setInstrumentVoice(makeVoice(true));
+      const onNotePlay = vi.fn();
+      const onComplete = vi.fn();
+      audio.playTimedNotes([0, 1, 2].map((at) => ({ note: { ...N('C'), octave: 3 }, at, duration: 0.9 })), {}, { onNotePlay, onComplete });
+      vi.advanceTimersByTime(1000);
+      expect(onNotePlay.mock.calls).toEqual([[0], [1]]);
+      audio.cancelScheduledAudio();
+      vi.advanceTimersByTime(5000);
+      expect(onNotePlay).toHaveBeenCalledTimes(2);
+      expect(onComplete).toHaveBeenCalledTimes(1);
+    } finally { vi.useRealTimers(); }
+  });
+});

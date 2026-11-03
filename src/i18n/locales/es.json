@@ -1106,5 +1106,6 @@
   "neck": {
     "open": "Mástil completo",
     "close": "Cerrar el mástil completo"
-  }
+  },
+  "practice": {"title": "Practicar en la guitarra"}
 }

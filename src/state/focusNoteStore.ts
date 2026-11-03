@@ -18,7 +18,7 @@ import { create } from 'zustand';
  * fret 2", "B4"), so the read-out can say it. Display state only: never
  * persisted, kept out of the main store like dockContextStore.
  */
-export type FocusSource = 'staff' | 'chord' | 'piano' | 'fret';
+export type FocusSource = 'staff' | 'chord' | 'piano' | 'fret' | 'practice';
 export type FocusSlot = 'hover' | 'keyboard' | 'pinned';
 
 export interface FocusNote {
