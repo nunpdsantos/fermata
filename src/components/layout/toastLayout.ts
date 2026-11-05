@@ -11,8 +11,8 @@ import { useLayoutEffect, useSyncExternalStore, type RefObject } from 'react';
  * covers them. Two CSS custom properties on <html> carry the result:
  *   --toast-top   the region's top (the top bar's bottom + 8 px)
  *   --toast-room  the height it may take before an avoided element (- 8 px)
- * index.css reads them (`.toast-region`). The region scrolls when the stack
- * is taller than the room.
+ * index.css reads them (`.toast-region`). ToastRegion queues whole cards
+ * when the stack is taller than the room.
  */
 const avoided = new Set<HTMLElement>();
 let observer: ResizeObserver | null = null;
@@ -109,4 +109,21 @@ export function resetToastLayoutForTests(): void {
   observer?.disconnect();
   observer = null;
   lastRoom = Number.POSITIVE_INFINITY;
+}
+
+/** Whole cards only. PWA priority order is retained; cards that do not fit
+ * wait, without displacing the app. Re-evaluate as room/cards change. */
+export function fitToastQueue(heights: readonly number[], room: number): { visible: boolean[]; tops: number[]; height: number } {
+  let used = 0;
+  let waiting = false;
+  const tops: number[] = [];
+  const visible = heights.map((height) => {
+    const top = used ? used + GAP : 0;
+    const fits = !waiting && height > 0 && top + height <= room;
+    if (!fits) waiting = true;
+    tops.push(fits ? top : 0);
+    if (fits) used = top + height;
+    return fits;
+  });
+  return { visible, tops, height: used };
 }

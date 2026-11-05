@@ -644,21 +644,21 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
     if (el) el.scrollLeft = el.scrollWidth - el.clientWidth;
   }, [isZoomed]);
 
-  // ─── Full-neck view: rows fill the screen's height ───
-  const [neckRow, setNeckRow] = useState(40);
-  useLayoutEffect(() => {
-    const el = scrollContainerRef.current;
-    if (!neck || !el || typeof ResizeObserver === 'undefined') return;
-    // Fret-marker row + fret-number row + padding ≈ 60 px; the rest is strings.
-    const measure = () => setNeckRow(Math.max(30, Math.min(64, Math.floor((el.clientHeight - 60) / 6))));
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [neck]);
-
   // ─── Display state ────────────────────────────────────
   const isOpenChordShape = mode === 'chord' && currentShape !== null && currentShape.baseFret === 0;
+  // The translated open-position badge determines the shared column width.
+  // Keep it centred over the open strings without crossing the nut or edge.
+  const [openBadge, setOpenBadge] = useState<HTMLSpanElement | null>(null);
+  const [openColumnWidth, setOpenColumnWidth] = useState(40);
+  useLayoutEffect(() => {
+    if (!openBadge) return;
+    const measure = () => setOpenColumnWidth(Math.max(40, Math.ceil(openBadge.getBoundingClientRect().width)));
+    measure();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(openBadge);
+    return () => ro.disconnect();
+  }, [openBadge]);
   const lowestVisibleFret = visibleFrets[visibleFrets.length - 1];
   const atNut = lowestVisibleFret === 1;
 
@@ -732,8 +732,8 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
 
   return (
     <div
-      className={neck ? 'w-full h-full flex flex-col' : 'w-full flex flex-col'}
-      style={{ backgroundColor: 'var(--bg)', borderTop: neck ? undefined : '1px solid var(--border-subtle)' }}
+      className={neck ? 'w-full flex-1 min-h-0 flex flex-col' : 'w-full flex flex-col'}
+      style={{ backgroundColor: 'var(--bg)', borderTop: neck ? undefined : '1px solid var(--border-subtle)', '--fret-open-width': `${openBadge ? openColumnWidth : 40}px` } as React.CSSProperties}
     >
       {barTools && toolsSlot && createPortal(<>{positionSelector}{labelToolbar('labels')}</>, toolsSlot)}
       {neckTools && toolsSlot && createPortal(
@@ -822,7 +822,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
       </div>
 
       {/* A laptop's docked guitar loses 8 px of padding (the workbench fits 1440×900). */}
-      <div className="px-4 max-sm:px-2 py-2 min-[1200px]:py-1" style={{ minWidth: isZoomed || neck ? 0 : (mobile ? 660 : 800) }}>
+      <div className={`px-4 max-sm:px-2 py-2 min-[1200px]:py-1 ${neck ? 'neck-board-content' : ''}`} style={{ minWidth: isZoomed || neck ? 0 : (mobile ? 660 : 800) }}>
         {/* Fret markers row — carries the loud position badge in chord/position view */}
         <div className="flex mb-1 items-center">
           <div style={{ width: 32 }} />
@@ -857,12 +857,13 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
             ))}
           </div>
           <div style={{ width: 6 }} />
-          <div style={{ width: 40 }} className="flex items-center justify-center">
+          <div style={{ width: 'var(--fret-open-width)', flexShrink: 0 }} className="flex items-center justify-center">
             {mode === 'position' && positionNumber === OPEN_POSITION && (
               <span
+                ref={setOpenBadge}
                 data-testid="position-badge"
                 title={t('fretboard.openPositionTitle')}
-                className="inline-block px-1 rounded font-bold"
+                className="inline-block px-1 rounded font-bold fretboard-open-badge"
                 style={badgeStyle}
               >
                 {t('fretboard.open')}
@@ -872,9 +873,9 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
         </div>
 
         {/* Fretboard grid with barre overlay */}
-        <div ref={fretboardRef} className="relative">
+        <div ref={fretboardRef} className={`relative${neck ? ' neck-strings' : ''}`}>
           {/* Continuous fret lines overlay */}
-          <div className="absolute inset-0 flex pointer-events-none" style={{ zIndex: 1, left: 32, right: 46 }}>
+          <div className="absolute inset-0 flex pointer-events-none" style={{ zIndex: 1, left: 32, right: 'calc(var(--fret-open-width) + 6px)' }}>
             {visibleFrets.map((f) => (
               <div
                 key={f}
@@ -913,14 +914,14 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
               focusedFret={focusedCell?.stringIdx === stringIdx ? focusedCell.fret : null}
               focusFrets={focusCells.byString.get(stringIdx) ?? NO_FRETS}
               onCellHover={mobile ? undefined : handleCellHover}
-              rowHeight={neck ? neckRow : undefined}
+              rowHeight={neck ? '100%' : undefined}
               scaleContext={!exerciseInputActive && selectedChord !== null && (mode === 'chord' || mode === 'highlight')}
             />
           ))}
         </div>
 
         {/* Fret numbers row — larger when zoomed; the anchor fret is accented */}
-        <div className="flex mt-1">
+        <div data-dock-row="frets" className="flex mt-1">
           <div style={{ width: 32 }} />
           <div className="flex flex-1">
             {visibleFrets.map((f) => (
@@ -939,7 +940,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
             ))}
           </div>
           <div style={{ width: atNut ? 6 : 2 }} />
-          <div style={{ width: 40 }} className="flex items-center justify-center">
+          <div style={{ width: 'var(--fret-open-width)', flexShrink: 0 }} className="flex items-center justify-center">
             {mode === 'chord' && !isOpenChordShape ? (
               <span className="font-mono" style={{ color: 'var(--text-dim)', fontSize: 12 }}>{lowestVisibleFret}fr</span>
             ) : atNut ? (

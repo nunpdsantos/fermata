@@ -1,4 +1,4 @@
-import { Suspense, lazy, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, lazy, useCallback, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { noteToString, type PitchedNote } from '../../core/types/music.ts';
@@ -18,6 +18,7 @@ import { StaffNotationSkeleton } from '../notation/StaffNotationSkeleton.tsx';
 import type { StaffLayoutInfo } from '../notation/useStaffNotation.ts';
 import { useScaleDirectionStore } from '../../state/scaleDirectionStore.ts';
 import { Segment } from '../ui/Segment.tsx';
+import { stripViewport } from './stripViewport';
 import { scaleStripTrim } from './staffTrim.ts';
 
 const StaffNotation = lazy(() =>
@@ -94,10 +95,13 @@ export function ScaleStrip() {
   const keySignature = getKeySignatureForScale(scale.root, displayType) ?? undefined;
 
   // ── Width: the card's, or wider (it then scrolls) so columns stay taps ──
+  const frameRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const staffId = useId();
+  const [scrollLeft, setScrollLeft] = useState(0);
   const [boxWidth, setBoxWidth] = useState(0);
   useLayoutEffect(() => {
-    const el = scrollRef.current;
+    const el = frameRef.current;
     if (!el) return;
     const measure = () => setBoxWidth(el.clientWidth);
     measure();
@@ -114,8 +118,10 @@ export function ScaleStrip() {
   // Where VexFlow put each notehead; until it has drawn, an even spread.
   const [drawn, setDrawn] = useState<{ xs: number[]; width: number } | null>(null);
   const onLayout = useCallback((l: StaffLayoutInfo) => {
+    const svg = scrollRef.current?.querySelector('.strip-staff svg');
+    svg?.setAttribute('id', staffId);
     setDrawn((prev) => (prev && prev.width === l.width && prev.xs.length === l.xs.length && prev.xs.every((x, i) => Math.abs(x - l.xs[i]) < 0.5) ? prev : { xs: l.xs, width: l.width }));
-  }, []);
+  }, [staffId]);
   // Column centres as FRACTIONS of the staff's width: the drawing scales
   // with its box (a viewBox), so columns placed in % stay under their heads
   // while a resize re-renders, and when the page prints at paper width.
@@ -155,7 +161,7 @@ export function ScaleStrip() {
     if (j === null) return;
     e.preventDefault();
     setStop(j);
-    buttons.current[j]?.focus();
+    buttons.current[j]?.focus({ preventScroll: true });
     buttons.current[j]?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
   };
   const onEnter = (e: ReactPointerEvent, i: number) => {
@@ -169,6 +175,10 @@ export function ScaleStrip() {
   // left end without adding height to the workbench.
   const trim = useMemo(() => scaleStripTrim(notes, instrument, STAFF_HEIGHT, keySignature), [notes, instrument, keySignature]);
 
+  // Stop the resting edge between heads, not through one. At the far end
+  // native scroll clamping exposes the complete last column.
+  const { width: viewportWidth, moreLeft, moreRight } = stripViewport(xs, boxWidth, staffWidth, scrollLeft);
+  const clefWidth = Math.max(44, (xs[0] ?? prefix) - 16);
   const written = instrument === 'guitar';
 
   return (
@@ -202,7 +212,15 @@ export function ScaleStrip() {
           </p>
         )}
       </div>
-      <div ref={scrollRef} className="strip-scroll">
+      <div ref={frameRef} className="strip-frame">
+      <div className="strip-window" data-more-left={moreLeft || undefined} data-more-right={moreRight || undefined} style={{
+        width: viewportWidth || undefined,
+        '--strip-clef-width': `${clefWidth}px`,
+        '--strip-staff-height': `${trim.height - trim.top - trim.bottom}px`,
+        '--strip-clef-tail-width': written ? '44px' : '0px',
+      } as React.CSSProperties}>
+      <div ref={scrollRef} className="strip-scroll" onScroll={(e) => setScrollLeft(e.currentTarget.scrollLeft)}>
+
         <div className="strip-body" style={{ width: staffWidth }}>
           <div
             role="group"
@@ -279,6 +297,16 @@ export function ScaleStrip() {
           </div>
           <div className="strip-labels-room" />
         </div>
+      </div>
+      {/* Reuse the exact SVG, including its key signature and guitar 8.
+          Only the prefix is painted; all notehead/column geometry stays in
+          the original scrolling SVG. No second notation render or IDs. */}
+      <div className="strip-clef" aria-hidden="true" inert>
+        <svg aria-hidden="true" focusable="false" tabIndex={-1} width={staffWidth} height={trim.height} viewBox={`0 0 ${staffWidth} ${trim.height}`} style={{ marginTop: -trim.top }}>
+          <use href={`#${staffId}`} />
+        </svg>
+      </div>
+      </div>
       </div>
     </section>
   );

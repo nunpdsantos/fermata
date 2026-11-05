@@ -63,11 +63,14 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
   const detent = useAppStore((s) => s.dockDetents[view]);
   const setDockDetent = useAppStore((s) => s.setDockDetent);
   const isPhone = useMediaQuery(SHEET_QUERY);
-  // Full leaves one toast's height (+ margins) above the sheet: a toast then
-  // has room without covering the bar and without anything moving.
+  // Prefer room for one toast. Full can use that gap to fit the guitar
+  // board; the toast queue never changes the dock's size.
   const coarse = useMediaQuery('(pointer: coarse)');
   const fullGap = (coarse ? 44 : 36) + 32;
   const context = useContextLine();
+  const exercise = useAppStore((s) => s.exerciseInputActive);
+  const short = useMediaQuery(SHORT_SCREEN_QUERY);
+  const pianoTools = short && exercise && instrument === 'piano';
   const open = detent !== 'peek';
   const setDetent = (d: Detent) => setDockDetent(view, d);
   // Laptop: the bar carries the fretboard's position stepper and label
@@ -76,13 +79,11 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
   const [toolsSlot, setToolsSlot] = useState<HTMLElement | null>(null);
   // A phone held sideways with the guitar: the full-neck view (D-26 extra).
   const neckAvailable = useMediaQuery(NECK_QUERY) && instrument === 'guitar';
-  const exercise = useAppStore((s) => s.exerciseInputActive);
   const [neckOpen, setNeckOpen] = useState(false);
   const showNeck = neckOpen && neckAvailable && !exercise;
 
   // Until the learner sets Explore's dock, it follows the screen: Peek when
   // short (a phone sideways), Half otherwise — also when the phone turns.
-  const short = useMediaQuery(SHORT_SCREEN_QUERY);
   const exploreChosen = useAppStore((s) => s.dockChosen.explore);
   useEffect(() => {
     if (view !== 'explore' || exploreChosen) return;
@@ -94,8 +95,8 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
   const bar = (
     <div className="dock-bar-row">
       <InstrumentSelector />
-      <DockReadout context={context} />
-      {wideBar && instrument === 'guitar' && <div ref={setToolsSlot} className="dock-tools" data-testid="dock-tools" />}
+      {!pianoTools && <DockReadout context={context} />}
+      {((wideBar && instrument === 'guitar') || pianoTools) && <div ref={setToolsSlot} className={pianoTools ? 'dock-piano-tools' : 'dock-tools'} data-testid="dock-tools" />}
       {neckAvailable && !exercise && (
         <IconButton
           variant="secondary"
@@ -158,7 +159,7 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
       style={{ backgroundColor: 'var(--bg)', overscrollBehavior: 'contain' }}
     >
       {instrument === 'piano' ? (
-        <Piano />
+        <DockToolsContext.Provider value={pianoTools ? toolsSlot : null}><Piano /></DockToolsContext.Provider>
       ) : showNeck ? null : (
         // While the full-neck view is open it owns the one fretboard (two
         // would both answer the [ ] position keys).

@@ -617,6 +617,8 @@ body {
     appearance: none;
     -webkit-appearance: none;
     min-height: var(--tap);
+    width: 100%;
+    min-width: 0;
     max-width: 100%;
     padding: 0 32px 0 12px;
     border-radius: 12px;
@@ -717,8 +719,8 @@ body {
   }
   @media (max-width: 639px) {
     .app-topbar {
-      grid-template-columns: auto 1fr auto;
-      gap: 4px;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 8px;
       padding-left: max(8px, env(safe-area-inset-left));
       padding-right: max(4px, env(safe-area-inset-right));
     }
@@ -727,14 +729,13 @@ body {
       min-width: 0;
     }
     .app-tabs .seg-btn {
-      padding: 0 10px;
+      flex: 0 0 auto;
+      min-width: var(--tap);
+      padding: 0 5px;
+      font-size: var(--text-caption);
     }
   }
-  @media (max-width: 359px) {
-    .app-tabs .seg-btn {
-      padding: 0 6px;
-    }
-  }
+
 
   /* "⋯" menu */
   /* "Something waits in here" (an update put off with "Later"): a dot on
@@ -803,7 +804,9 @@ body {
     margin: 0 auto;
     max-width: 520px;
     max-height: calc(100dvh - 24px);
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     padding: 4px 18px calc(20px + env(safe-area-inset-bottom));
     border-radius: 18px 18px 0 0;
     background: var(--bg);
@@ -811,6 +814,15 @@ body {
     box-shadow: var(--shadow-lg);
     animation: sheet-up 0.18s ease-out;
   }
+  .sheet-heading, .sheet-actions, .sheet-grab { flex: none; }
+  .sheet-heading .btn { flex: none; }
+  .sheet-actions { padding-top: 12px; }
+  .scroll-body-frame { position: relative; display: flex; min-height: 0; flex: 1 1 auto; padding-block: 6px; }
+  .sheet-body { min-height: 0; width: 100%; overflow-y: auto; overscroll-behavior: contain; scroll-padding-block: 8px; }
+  .scroll-body-frame::before, .scroll-body-frame::after { content: ''; position: absolute; left: 0; right: 0; height: 5px; pointer-events: none; opacity: 0; }
+  .scroll-body-frame::before { top: 0; background: linear-gradient(var(--border), transparent); }
+  .scroll-body-frame::after { bottom: 0; background: linear-gradient(transparent, var(--border)); }
+  .scroll-body-frame[data-more-above]::before, .scroll-body-frame[data-more-below]::after { opacity: 1; }
   .sheet-grab {
     display: flex;
     justify-content: center;
@@ -848,6 +860,7 @@ body {
 
   /* Instrument dock — phone pull-up sheet (DetentSheet) */
   .detent-sheet {
+    position: relative;
     display: flex;
     flex-direction: column;
     min-height: 0;
@@ -858,6 +871,7 @@ body {
     /* No upward shadow: it darkened the text just above the sheet (chord
        labels measured 4.0–4.2:1 in the review). The border separates it. */
   }
+  .detent-sheet[data-more-below]::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--border); pointer-events: none; }
   .detent-head {
     position: relative;
     flex: none;
@@ -993,7 +1007,7 @@ body {
      Drill's answers by up to 269 px). It grows down at most to the first
      element that must stay uncovered (the instrument dock / sheet, Drill's
      answers): --toast-top / --toast-room come from toastLayout.ts. Taller
-     stacks scroll inside it; it always has room for one whole toast. */
+     stacks queue whole cards; no minimum height may overrule the safe room. */
   .toast-region {
     position: fixed;
     z-index: 65;
@@ -1004,14 +1018,15 @@ body {
     top: var(--toast-top, calc(var(--tap) + 24px));
     right: 16px;
     width: min(380px, calc(100vw - 32px));
-    max-height: max(var(--toast-room, 40vh), calc(var(--tap) + 16px));
+    max-height: var(--toast-room, 40vh);
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
   }
-  .toast-region > * {
-    flex: none;
-  }
+  .toast-region > div, .toast-region > div > div:not(.toast-card) { display: contents; }
+  .toast-region .toast-card { position: absolute; left: 0; width: 100%; pointer-events: auto; }
+  .toast-region .toast-card[data-toast-queued] { visibility: hidden; pointer-events: none; }
+
   .toast-card {
     border-radius: 12px;
     border: 1px solid var(--border);
@@ -1072,6 +1087,11 @@ body {
     font-size: var(--text-body);
     font-weight: 500;
     color: var(--text);
+  }
+  @media (min-width: 640px) and (max-width: 1199px) {
+    /* Let the summary use two lines inside the existing control height;
+       a respell button need not push the actions onto a separate row. */
+    .explore-summary { flex-basis: 180px; }
   }
   .explore-actions {
     display: flex;
@@ -1229,7 +1249,25 @@ body {
   /* Notes of the scale: staff + degree strip in one. The note columns are
      buttons under the staff (it is drawn over them, transparent and deaf to
      the pointer); each column's labels sit below the staff. */
+  .strip-frame { min-width: 0; }
+  .strip-window { position: relative; max-width: 100%; }
+  .strip-window::after, .strip-window::before {
+    content: ''; position: absolute; top: 0; bottom: 0; width: 18px;
+    pointer-events: none; z-index: 4; opacity: 0;
+  }
+  .strip-window::after { right: 0; background: linear-gradient(to right, transparent, var(--card)); }
+  .strip-window::before { left: var(--strip-clef-width); background: linear-gradient(to left, transparent, var(--card)); }
+  .strip-window[data-more-right]::after, .strip-window[data-more-left]::before { opacity: 1; }
+  .strip-clef { position: absolute; left: 0; top: 0; bottom: 0; width: var(--strip-clef-width); overflow: hidden; background: var(--card); pointer-events: none; z-index: 3; }
+  /* Only the guitar's narrow 8vb tail enters the label band. The opaque
+     signature prefix must never paint over a degree beneath a notehead. */
+  .strip-clef {
+    clip-path: polygon(0 0, 100% 0, 100% var(--strip-staff-height), var(--strip-clef-tail-width) var(--strip-staff-height), var(--strip-clef-tail-width) 100%, 0 100%);
+  }
+  .strip-clef * { pointer-events: none !important; }
   .strip-scroll {
+    scroll-padding-left: var(--strip-clef-width);
+    scroll-snap-type: x mandatory;
     overflow-x: auto;
     overflow-y: hidden;
     overscroll-behavior-x: contain;
@@ -1248,6 +1286,7 @@ body {
     inset: 0;
   }
   .strip-col {
+    scroll-snap-align: start;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -1561,6 +1600,17 @@ body {
   }
 
   /* Landscape full-neck view (D-26 extra): the whole screen. */
+  .neck-board-content {
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+  .neck-strings {
+    display: grid;
+    grid-template-rows: repeat(6, minmax(0, 1fr));
+  }
+  /* Measure the label's natural width; the shared open column fits it. */
+  .fretboard-open-badge { flex-shrink: 0; }
   .neck-view {
     position: fixed;
     inset: 0;
@@ -2049,3 +2099,50 @@ p.explore-prose {
 @media (max-height: 500px) {
   .sheet-panel[data-testid="practice-sheet"] { top: 8px; bottom: 8px; max-height: calc(100dvh - 16px); }
 }
+
+/* Search keeps its input and keyboard footer in the viewport too. */
+.quick-search-panel { display: flex; flex-direction: column; max-height: 72dvh; }
+.quick-search-panel > :first-child { flex: none; }
+.quick-search-panel > .overflow-y-auto { min-height: 0; }
+
+/* Learn's viewport is the shell's free area, not the window. */
+.learn-scroll { scroll-padding-top: var(--learn-top, 8px); scroll-padding-bottom: var(--learn-bottom, 8px); padding-bottom: var(--learn-bottom, 8px); }
+.learn-scroll-target { scroll-margin-top: 0; }
+@media (max-height: 500px) and (min-width: 640px) {
+  .check-run { max-width: 1100px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 16px; align-items: start; padding-top: 0; }
+  .check-header { grid-column: 1 / -1; min-height: var(--tap); }
+  .check-question { grid-column: 1; padding-block: 4px; position: sticky; top: var(--learn-top, 8px); }
+  .check-question > div { gap: 6px; }
+  .check-context { display: none; }
+  .check-question [data-testid="check-prompt"] { font-size: var(--text-body); }
+  .check-staff { overflow: hidden; padding-block: 4px; }
+  .check-staff-ink { margin-top: calc(-1 * var(--staff-trim-top)); margin-bottom: calc(-1 * var(--staff-trim-bottom)); }
+  .check-rhythm-staff { padding-block: 0; gap: 0; }
+  .check-run > [data-testid="check-thumb"] { grid-column: 2; min-width: 0; padding-top: 4px; }
+  .check-run[data-instrument] .check-header { grid-column: 1; grid-row: 1; }
+  .check-run[data-instrument] { grid-template-rows: auto 1fr; padding-block: 4px; }
+  .check-run[data-instrument] .check-question { padding: 0; grid-row: 2; }
+  .check-run[data-instrument] > [data-testid="check-thumb"] { grid-row: 1 / span 2; }
+  .check-run[data-instrument] [data-testid="check-thumb"], .check-run[data-instrument] [data-testid="check-answer-zone"] { gap: 4px; padding: 0; }
+}
+.dock-piano-tools { flex: 1; min-width: 0; }
+.dock-piano-tools .piano-octave-row { padding: 0; border: 0 !important; }
+.dock-piano-tools .chip-group { flex-wrap: nowrap; overflow-x: auto; }
+.dock-piano-tools .chip { flex: none; }
+
+@media (max-height: 500px) and (min-width: 640px) {
+  /* Keep reading feedback beside the board, replacing the answered prompt.
+     The board and its grading/fingering stay entirely unchanged. */
+  .drill-run--read .drill-thumb { display: contents; }
+  .drill-run--read .reading-board { grid-column: 2; grid-row: 1 / span 4; }
+  .drill-run--read .drill-feedback { grid-column: 1; grid-row: 2; }
+  .drill-run--read .drill-thumb > button { grid-column: 1; grid-row: 3; margin-top: 8px; }
+  .drill-run--read:has(.drill-feedback) .drill-question-prompt { display: none; }
+  .drill-run--read .feedback { font-size: var(--text-ui); }
+}
+@media print {
+  .strip-window { width: 100% !important; }
+  .strip-clef, .strip-window::before, .strip-window::after { display: none; }
+}
+.celebration-panel { display: flex; flex-direction: column; max-height: calc(100dvh - 24px); }
+.celebration-panel > button { flex: none; }

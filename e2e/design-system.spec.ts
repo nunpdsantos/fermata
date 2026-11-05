@@ -1,3 +1,4 @@
+import { smallScreenAssertions, dialogButtonsFit, toastsFitAtRest } from './helpers/smallScreenAssertions';
 import { test, expect, type Browser, type Locator, type Page } from '@playwright/test';
 import * as fs from 'node:fs';
 import { auditPage, type AuditResult } from './helpers/designAudit';
@@ -160,6 +161,8 @@ async function settle(page: Page) {
 /** Audit the page as it is now; record it (and a screenshot) when asked to. */
 async function check(page: Page, v: Viewport, combo: string, screen: string) {
   await settle(page);
+  await smallScreenAssertions(page, screen);
+  await dialogButtonsFit(page);
   const r = await auditPage(page, { minFontPx: 12, minTapPx: v.touch ? 44 : 36 });
   if (OUT) {
     fs.mkdirSync(OUT, { recursive: true });
@@ -344,6 +347,7 @@ async function lowerToastStack(page: Page) {
 
 /** Every toast: on screen, off `avoid`, its buttons the hit target. */
 async function toastsClear(page: Page, where: string, avoid: string[]) {
+  await toastsFitAtRest(page);
   const vp = page.viewportSize()!;
   const cards = page.locator('.toast-card');
   const n = await cards.count();
@@ -355,7 +359,9 @@ async function toastsClear(page: Page, where: string, avoid: string[]) {
   }
   for (let i = 0; i < n; i++) {
     const card = cards.nth(i);
-    await card.evaluate((el) => el.scrollIntoView({ block: 'nearest' }));
+    // Explicit queue membership is checked by toastsFitAtRest, including
+    // inertness and screen-reader exclusion. Never scroll away the fault.
+    if (await card.evaluate((el) => el.hasAttribute('data-toast-queued'))) continue;
     const b = await card.evaluate((el) => {
       const r = el.getBoundingClientRect();
       return { top: r.top, bottom: r.bottom, left: r.left, right: r.right };
@@ -887,6 +893,11 @@ for (const v of VIEWPORTS) {
           await expect(neck.locator('[data-string-row="0"]').first()).toBeVisible({ timeout: 15_000 });
           await page.waitForTimeout(400);
           await check(page, v, combo, 'guitar-neck');
+          // D-26 fills the available height, without a hidden vertical tail.
+          for (const area of [neck, neck.locator('.fretboard-scroll')]) {
+            const overflow = await area.evaluate((el) => el.scrollHeight - el.clientHeight);
+            expect.soft(overflow, where('neck: no vertical overflow')).toBeLessThanOrEqual(0);
+          }
           const fit = await neck.evaluate((root) => {
             const vh = innerHeight;
             const vw = innerWidth;
@@ -935,7 +946,24 @@ for (const v of VIEWPORTS) {
               await lowerToastStack(page);
             }
           }
-          if (await raiseToastStack(page)) await reloadFromToast(page, where('dock-full'));
+          // Portrait retains Reload at Full. In landscape the SAME queued
+          // update must become actionable when Full is lowered to Peek.
+          if (await raiseToastStack(page)) {
+            await expect(page.locator(DOCK)).toHaveAttribute('data-detent', 'full');
+            await toastsClear(page, where('dock-full before reload'), [DOCK, '.detent-head', TOPBAR]);
+            const update = page.locator('.toast-card').filter({ hasText: /new version/i });
+            if (v.viewport.height <= 500) {
+              await expect(update).toHaveAttribute('data-toast-queued', '');
+              await expect(update).toHaveAttribute('aria-hidden', 'true');
+              await expect(update).toHaveJSProperty('inert', true);
+              await expect(update).toBeHidden();
+              await setDetent('Home', 'peek');
+              await expect(update).not.toHaveAttribute('data-toast-queued', '');
+              await expect(update).not.toHaveAttribute('aria-hidden', 'true');
+              await expect(update).toHaveJSProperty('inert', false);
+            }
+            await reloadFromToast(page, where(v.viewport.height <= 500 ? 'dock-peek reload queued toast' : 'dock-full reload'));
+          }
         } else {
           await expect(handle).toHaveCount(0); // a docked panel, not a sheet
           await check(page, v, combo, 'dock-docked');
@@ -1303,4 +1331,46 @@ for (const v of VIEWPORTS.filter((v) => v.name !== 'tablet')) {
       }
     });
   }
+}
+
+// PR A: all requested widths/languages, including the otherwise missing EN
+// 320/360 and every portrait guitar Half row boundary.
+for (const width of [320, 360, 390]) {
+  for (const lang of ['en', 'pt', 'es']) {
+    test(`PR A ${width} ${lang}: nav, strip, select and Half rows`, async ({ browser }) => {
+      const v = { name: 'phone', viewport: { width, height: width === 320 ? 568 : 844 }, touch: true } as Viewport;
+      const { context, page } = await open(browser, v, 'fermata', { instrument: 'piano', lastView: 'explore', dockDetents: { explore: 'peek', learn: 'peek' }, dockChosen: { explore: true, learn: false } }, { lang });
+      await smallScreenAssertions(page, 'explore');
+      const strip = page.locator('.strip-scroll');
+      await page.locator('.strip-col').first().focus();
+      await page.keyboard.press('End');
+      await page.waitForTimeout(300);
+      await expect.poll(() => strip.evaluate((el) => el.scrollLeft)).toBeGreaterThan(0);
+      await smallScreenAssertions(page, 'explore-focus');
+      await page.getByTestId('chords-card').getByRole('tab').nth(2).click();
+      await smallScreenAssertions(page, 'explore-build');
+      // Reload with a guitar Half save, preserving the requested language.
+      await page.evaluate(() => {
+        const save = JSON.parse(localStorage.getItem('music-theory-app')!);
+        save.state.instrument = 'guitar';
+        save.state.dockDetents.explore = 'half';
+        localStorage.setItem('music-theory-app', JSON.stringify(save));
+      });
+      await page.reload();
+      await expect(page.locator('[data-string-row="5"]').first()).toBeAttached();
+      await page.waitForTimeout(300);
+      await smallScreenAssertions(page, 'dock-half');
+      await context.close();
+    });
+  }
+}
+
+for (const th of THEMES) {
+  test(`PR A 740x360 ${th.name}: first-load Learn staffs`, async ({ browser }) => {
+    test.setTimeout(120_000);
+    const v = { name: 'phone-landscape', viewport: { width: 740, height: 360 }, touch: true } as unknown as Viewport;
+    const { context, page } = await open(browser, v, th.mode, { lastView: 'learn', instrument: 'piano' });
+    await questionScreens(page, 'en', (s) => check(page, v, 'phone-landscape-small', s));
+    await context.close();
+  });
 }

@@ -1,3 +1,4 @@
+import { smallScreenAssertions, dialogButtonsFit } from './smallScreenAssertions';
 import { expect, type Browser, type Page } from '@playwright/test';
 import * as fs from 'node:fs';
 import { auditPage, type AuditResult } from './designAudit';
@@ -22,6 +23,7 @@ export const VIEWPORTS = [
   { name: 'phone-landscape', viewport: { width: 844, height: 390 }, touch: true },
   { name: 'tablet', viewport: { width: 768, height: 1024 }, touch: true },
   { name: 'laptop', viewport: { width: 1440, height: 900 }, touch: false },
+  { name: 'phone-landscape-small', viewport: { width: 740, height: 360 }, touch: true },
 ] as const;
 export const THEMES = [
   { name: 'day', mode: 'fermata' },
@@ -54,6 +56,8 @@ async function open(browser: Browser, v: Viewport, theme: string, lang: Lang, pr
 }
 
 async function check(page: Page, v: Viewport, combo: string, screen: string) {
+  await smallScreenAssertions(page, screen);
+  await dialogButtonsFit(page);
   const r: AuditResult = await auditPage(page, { minFontPx: 12, minTapPx: v.touch ? 44 : 36 });
   if (OUT) {
     fs.mkdirSync(OUT, { recursive: true });

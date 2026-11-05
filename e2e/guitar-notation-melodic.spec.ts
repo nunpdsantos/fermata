@@ -50,7 +50,7 @@ for (const lang of ['en', 'pt', 'es'] as const) {
       }, { themeMode: 'fermata', language: lang, lastView: 'explore', instrument, selectedKey: { natural: 'A', accidental: '' }, selectedScale: 'melodic_minor', guitarScalePosition: 0 });
       const page = await context.newPage();
       await page.goto('/');
-      await expect(page.getByTestId('scale-strip').locator('svg')).toBeVisible({ timeout: 15_000 });
+      await expect(page.getByTestId('scale-strip').locator('.strip-staff svg')).toBeVisible({ timeout: 15_000 });
       await expect(page.getByRole('button', { name: labels[lang].play })).toBeVisible();
       const cols = page.locator('.strip-col');
       for (const direction of ['up', 'down'] as const) {

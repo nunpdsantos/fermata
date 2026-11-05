@@ -53,6 +53,35 @@ const litCells = () =>
     c.hasAttribute('data-open-string') ? 'open' : `${c.getAttribute('data-string-row')}:${c.getAttribute('data-fret')}`,
   );
 
+it('fits the open-position label after font/language resize, and resets the column for other positions', () => {
+  useAppStore.setState({ instrument: 'guitar', guitarScalePosition: 0 });
+  let labelWidth = 54.25;
+  let resizeLabel = () => {};
+  const originalRect = HTMLElement.prototype.getBoundingClientRect;
+  const rect = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+    const r = originalRect.call(this);
+    return this.classList.contains('fretboard-open-badge') ? { ...r, width: labelWidth } as DOMRect : r;
+  });
+  vi.stubGlobal('ResizeObserver', class {
+    constructor(private cb: () => void) {}
+    observe(el: HTMLElement) { if (el.classList.contains('fretboard-open-badge')) resizeLabel = this.cb; }
+    unobserve() {}
+    disconnect() {}
+  });
+  try {
+    const { container } = render(<Fretboard />);
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.style.getPropertyValue('--fret-open-width')).toBe('55px');
+    labelWidth = 61.5;
+    act(() => resizeLabel());
+    expect(root.style.getPropertyValue('--fret-open-width')).toBe('62px');
+    act(() => useAppStore.setState({ guitarScalePosition: 1 }));
+    expect(root.style.getPropertyValue('--fret-open-width')).toBe('40px');
+  } finally {
+    rect.mockRestore();
+  }
+});
+
 describe('piano', () => {
   it.each(['hover', 'press', 'Enter'] as const)('C3 outside the scale octave stays lit and named on %s', (input) => {
     render(<><Piano /><DockReadout context="C4 · 1 octave" /></>);

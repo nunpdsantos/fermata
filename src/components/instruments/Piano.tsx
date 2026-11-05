@@ -1,4 +1,6 @@
-import { useMemo, useCallback, useRef, useEffect, useLayoutEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { DockToolsContext } from '../layout/dockTools';
+import { useMemo, useContext, useCallback, useRef, useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   generateKeyboardKeys,
@@ -47,6 +49,7 @@ const KEYBOARD_MAP: Record<string, number> = {
 
 export function Piano() {
   const { t } = useTranslation();
+  const toolsSlot = useContext(DockToolsContext);
   const { noteOn, noteOff } = useAudio();
   const activeNotes = useAppStore((s) => s.activeNotes);
   const exerciseInputActive = useAppStore((s) => s.exerciseInputActive);
@@ -436,23 +439,27 @@ export function Piano() {
     });
   }, [blackKeys, whiteKeys, keys, keyWidth, blackKeyOffset]);
 
+  const octaveRow = (
+    <div className="piano-octave-row flex items-center gap-2 px-3 max-sm:px-2 py-1.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+      <span className="type-label shrink-0" aria-hidden="true">{t('play.octave')}</span>
+      <ChipGroup
+        label={t('instrument.baseOctave')}
+        className="chip-row-phone min-w-0"
+        value={baseOctave}
+        onChange={setBaseOctave}
+        options={[0, 1, 2, 3, 4, 5, 6, 7, 8].filter((oct) => octaveFits[oct]).map((oct) => ({ value: oct, label: `C${oct}` }))}
+      />
+    </div>
+  );
+
   return (
     <div role="group" aria-label={t('instrument.pianoKeyboard')} className="w-full flex flex-col" style={{ backgroundColor: 'var(--bg)', borderTop: '1px solid var(--border-subtle)' }}>
       {/* Octave chooser: a ChipGroup (D-28 choice chip). Only octaves that
           keep the scale (and chord) on the 88 keys — C8 never does, C0 only
           for A/B♭/B roots — so no dead chips (review item 6). */}
-      {/* On a short screen it comes AFTER the keys (piano-octave-row in
-          index.css), so the keys are what the sheet shows first. */}
-      <div className="piano-octave-row flex items-center gap-2 px-3 max-sm:px-2 py-1.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-        <span className="type-label shrink-0" aria-hidden="true">{t('play.octave')}</span>
-        <ChipGroup
-          label={t('instrument.baseOctave')}
-          className="chip-row-phone min-w-0"
-          value={baseOctave}
-          onChange={setBaseOctave}
-          options={[0, 1, 2, 3, 4, 5, 6, 7, 8].filter((oct) => octaveFits[oct]).map((oct) => ({ value: oct, label: `C${oct}` }))}
-        />
-      </div>
+      {/* Short-screen instrument checks supply a bar slot so octaves stay
+          available beside the instrument switch; otherwise below the keys. */}
+      {toolsSlot ? createPortal(octaveRow, toolsSlot) : octaveRow}
 
       {/* Piano keyboard with drag-to-scroll */}
       <div
@@ -492,7 +499,7 @@ export function Piano() {
               isDimmed={isDimmed(wk)}
               onNoteOn={handleNoteOn}
               onNoteOff={handleNoteOff}
-              showLabel={!mobile || isInScale(wk) || activeNotes.has(wk.midiNumber) || (wk.note.natural === 'C' && wk.note.accidental === '')}
+              showLabel={!mobile || isInScale(wk) || isVoicingNote(wk) || focusKeys.has(wk.midiNumber) || activeNotes.has(wk.midiNumber) || (wk.note.natural === 'C' && wk.note.accidental === '')}
               sizeMode={sizeMode}
               isFocused={focusedMidi === wk.midiNumber}
               onKeyDown={handleKeyNavKeyDown}
@@ -520,7 +527,7 @@ export function Piano() {
                 isDimmed={isDimmed(bk)}
                 onNoteOn={handleNoteOn}
                 onNoteOff={handleNoteOff}
-                showLabel={!mobile || isInScale(bk) || activeNotes.has(bk.midiNumber)}
+                showLabel={!mobile || isInScale(bk) || isVoicingNote(bk) || focusKeys.has(bk.midiNumber) || activeNotes.has(bk.midiNumber)}
                 sizeMode={sizeMode}
                 isFocused={focusedMidi === bk.midiNumber}
                 onKeyDown={handleKeyNavKeyDown}

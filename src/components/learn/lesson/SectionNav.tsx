@@ -78,7 +78,7 @@ export function SectionRail({ sections, currentId, onJump, crumb, next }: Sectio
       {next && (
         <button type="button" onClick={next.onOpen} className="mt-3 text-left min-h-(--tap) px-2.5 py-1 rounded-[10px] hover:bg-[var(--card-hover)]">
           <span className="block text-ui" style={{ color: 'var(--text-muted)' }}>{t('lesson.nextLesson')}</span>
-          <span className="block text-ui font-semibold" style={{ color: 'var(--text)' }}>{next.title} <span aria-hidden="true">→</span></span>
+          <span className="flex items-baseline gap-1 text-ui font-semibold" style={{ color: 'var(--text)' }}><span className="min-w-0">{next.title}</span><span className="shrink-0" aria-hidden="true">→</span></span>
         </button>
       )}
     </nav>

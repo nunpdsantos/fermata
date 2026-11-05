@@ -1,6 +1,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { ScrollBody } from './ScrollBody';
 import { IconButton } from './Button';
 import { focusableIn, trapTab } from './focus';
 
@@ -19,13 +20,15 @@ export interface SheetProps {
   title: ReactNode;
   closeLabel: string;
   children: ReactNode;
+  /** Primary decisions stay outside the scrolling body. */
+  actions?: ReactNode;
   /** data-testid on the dialog. */
   testId?: string;
 }
 
 const DISMISS_DRAG_PX = 96;
 
-export function Sheet({ open, onClose, title, closeLabel, children, testId }: SheetProps) {
+export function Sheet({ open, onClose, title, closeLabel, children, actions, testId }: SheetProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
   const titleId = useId();
@@ -97,7 +100,7 @@ export function Sheet({ open, onClose, title, closeLabel, children, testId }: Sh
         >
           <span className="sheet-grip" />
         </div>
-        <div className="flex items-center justify-between gap-3 mb-1">
+        <div className="sheet-heading flex items-center justify-between gap-3 mb-1">
           <h2 id={titleId} className="text-title font-semibold" style={{ color: 'var(--text)' }}>
             {title}
           </h2>
@@ -112,7 +115,8 @@ export function Sheet({ open, onClose, title, closeLabel, children, testId }: Sh
             }
           />
         </div>
-        {children}
+        <ScrollBody>{children}</ScrollBody>
+        {actions && <div className="sheet-actions">{actions}</div>}
       </div>
     </div>,
     document.body,

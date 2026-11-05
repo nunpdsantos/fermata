@@ -149,7 +149,7 @@ export function QuickSearch() {
                   }
                 }
               }}
-              className="rounded-xl overflow-hidden"
+              className="quick-search-panel rounded-xl overflow-hidden"
               style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)' }}
             >
               <div className="flex items-center px-4 py-3" style={{ borderBottom: '1px solid var(--card)' }}>

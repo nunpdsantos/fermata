@@ -1,5 +1,6 @@
 import { useId, useLayoutEffect, useRef, useState } from 'react';
 import type { KeyboardEvent, PointerEvent, ReactNode } from 'react';
+import { fitDockDetents, type DockRow } from './detentGeometry';
 import { DETENTS, type Detent } from '../../state/dock';
 
 /**
@@ -21,9 +22,8 @@ export interface DetentSheetProps {
   handleLabel: string;
   detentLabels: Record<Detent, string>;
   /**
-   * Space left above the sheet at Full. The instrument dock leaves room for
-   * one toast there, so a toast never covers its bar and nothing has to move
-   * to make room (W11-A review round 4).
+   * Preferred gap above Full. A guitar board may need this room to show
+   * every string; ToastRegion then queues cards that cannot fit.
    */
   fullGap?: number;
   /** Controls shown on the bar at every detent. */
@@ -44,6 +44,8 @@ const coarsePointer = () => typeof window !== 'undefined' && typeof window.match
 const estimatePeek = () => (coarsePointer() ? 44 : 36) + 28;
 
 export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLabel, detentLabels, bar, children, testId }: DetentSheetProps) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [geometry, setGeometry] = useState<{ rows: DockRow[]; boardBottom: number }>({ rows: [], boardBottom: 0 });
   const headRef = useRef<HTMLDivElement>(null);
   // First render: a close estimate (tap + 28 px: grip strip + bar), corrected
   // by measurement before it matters — starting at 0 drew the sheet 1 px tall
@@ -60,7 +62,8 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
     const measure = () => {
       const section = head.parentElement;
       const pad = section ? parseFloat(getComputedStyle(section).paddingBottom) || 0 : 0;
-      setPeekHeight(head.offsetHeight + pad);
+      const border = section ? parseFloat(getComputedStyle(section).borderTopWidth) || 0 : 0;
+      setPeekHeight(head.offsetHeight + pad + border);
     };
     measure();
     if (typeof ResizeObserver === 'undefined') return;
@@ -69,13 +72,46 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
     return () => ro.disconnect();
   }, []);
 
-  const full = Math.max(peekHeight, available - fullGap);
+  useLayoutEffect(() => {
+    const content = contentRef.current;
+    if (!content) return;
+    const measure = () => {
+      content.parentElement?.toggleAttribute('data-more-below', content.scrollTop + content.clientHeight < content.scrollHeight - 1);
+      const origin = content.getBoundingClientRect().top - content.scrollTop;
+      const rows = Array.from(content.querySelectorAll<HTMLElement>('[data-dock-row], .fretboard-controls > *')).map((el) => {
+        const r = el.getBoundingClientRect();
+        const dots = Array.from(el.querySelectorAll('[data-dot]')).map((dot) => dot.getBoundingClientRect()).filter((dot) => dot.height > 0);
+        return {
+          top: r.top - origin, bottom: r.bottom - origin,
+          ...(dots.length ? { dots: { top: Math.min(...dots.map((dot) => dot.top)) - origin, bottom: Math.max(...dots.map((dot) => dot.bottom)) - origin } } : {}),
+        };
+      }).filter((r) => r.bottom > r.top);
+      const board = content.querySelector('.fretboard-scroll');
+      const boardBottom = board ? board.getBoundingClientRect().bottom - origin : 0;
+      setGeometry((prev) => JSON.stringify(prev) === JSON.stringify({ rows, boardBottom }) ? prev : { rows, boardBottom });
+    };
+    const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
+    const observe = () => {
+      ro?.disconnect();
+      ro?.observe(content);
+      content.querySelectorAll('[data-dock-row], [data-dot], .fretboard-controls, .fretboard-scroll').forEach((el) => ro?.observe(el));
+      measure();
+    };
+    const mo = new MutationObserver(observe);
+    mo.observe(content, { childList: true, subtree: true });
+    observe();
+    content.addEventListener('scroll', measure, { passive: true });
+    return () => { ro?.disconnect(); mo.disconnect(); content.removeEventListener('scroll', measure); };
+  }, []);
+
+  const preferredFull = Math.max(peekHeight, available - fullGap);
   const halfFloor = Math.min(peekHeight + HALF_CONTENT_MIN_PX, available - VIEW_MIN_PX);
-  const heights: Record<Detent, number> = {
-    peek: peekHeight,
-    half: Math.min(full, Math.max(peekHeight, Math.round(available * HALF_SHARE), halfFloor)),
-    full,
-  };
+  const fitted = fitDockDetents(
+    Math.min(preferredFull, Math.max(peekHeight, Math.round(available * HALF_SHARE), halfFloor)),
+    preferredFull, available, peekHeight, geometry.rows, geometry.boardBottom,
+  );
+  const full = fitted.full;
+  const heights: Record<Detent, number> = { peek: peekHeight, half: fitted.half, full };
   const index = DETENTS.indexOf(detent);
   const step = (dir: 1 | -1) => DETENTS[Math.min(DETENTS.length - 1, Math.max(0, index + dir))];
 
@@ -158,11 +194,12 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
         <div className="detent-bar">{bar}</div>
       </div>
       <div
+        ref={contentRef}
         id={contentId}
         className="detent-content"
         inert={collapsed}
         aria-hidden={collapsed || undefined}
-        style={collapsed ? { height: 0 } : undefined}
+        style={collapsed ? { height: 0 } : detent === 'half' ? { marginBottom: fitted.halfBottomGap } : undefined}
       >
         {children}
       </div>

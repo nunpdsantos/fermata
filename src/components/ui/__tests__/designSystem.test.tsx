@@ -353,3 +353,11 @@ describe('DetentSheet — Peek / Half / Full', () => {
     expect(spy).toHaveBeenLastCalledWith('full');
   });
 });
+
+it('Sheet keeps its decision outside the scroll body and its close/header pinned', () => {
+  const { getByRole } = render(<Sheet open onClose={() => {}} title="Decision" closeLabel="Close" actions={<button>Continue</button>}><p>Long body</p></Sheet>);
+  const panel = getByRole('dialog');
+  expect(getByRole('button', { name: 'Continue' }).closest('.sheet-actions')).not.toBeNull();
+  expect(getByRole('button', { name: 'Close' }).closest('.sheet-body')).toBeNull();
+  expect(panel.querySelector('.sheet-body')?.textContent).toBe('Long body');
+});

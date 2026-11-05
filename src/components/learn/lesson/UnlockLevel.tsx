@@ -44,14 +44,7 @@ export function UnlockLevelNotice({ level, progress }: { level: CurriculumLevel;
       <Button variant="secondary" onClick={() => setOpen(true)} aria-haspopup="dialog">
         {t('lesson.unlockAnyway')}
       </Button>
-      <Sheet open={open} onClose={() => setOpen(false)} title={t('lesson.unlockTitle', { n: level.number })} closeLabel={t('common.close')} testId="unlock-dialog">
-        <div className="flex flex-col gap-3 pb-2">
-          {prev && (
-            <p className="text-body" style={{ color: 'var(--text)' }}>
-              {t('lesson.unlockSkips', { n: level.number, prev: prev.number, prevTitle: prev.title, prevDescription: prev.description })}
-            </p>
-          )}
-          <p className="text-ui" style={{ color: 'var(--text-muted)' }}>{t('lesson.unlockAssumes', { prev: prev?.number ?? '' })}</p>
+      <Sheet open={open} onClose={() => setOpen(false)} title={t('lesson.unlockTitle', { n: level.number })} closeLabel={t('common.close')} testId="unlock-dialog" actions={
           <div className="flex flex-wrap gap-2 max-sm:flex-col">
             <Button
               variant="primary"
@@ -68,6 +61,15 @@ export function UnlockLevelNotice({ level, progress }: { level: CurriculumLevel;
               {t('lesson.cancel')}
             </Button>
           </div>
+      }>
+        <div className="flex flex-col gap-3 pb-2">
+          {prev && (
+            <p className="text-body" style={{ color: 'var(--text)' }}>
+              {t('lesson.unlockSkips', { n: level.number, prev: prev.number, prevTitle: prev.title, prevDescription: prev.description })}
+            </p>
+          )}
+          <p className="text-ui" style={{ color: 'var(--text-muted)' }}>{t('lesson.unlockAssumes', { prev: prev?.number ?? '' })}</p>
+
         </div>
       </Sheet>
     </div>

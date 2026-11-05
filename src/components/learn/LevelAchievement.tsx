@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import { SPRING_SNAPPY } from '../../design/tokens/motion';
+import { ScrollBody } from '../ui/ScrollBody';
 import { Confetti } from './Confetti';
 import { accentText } from '../../design/tokens/learnColors';
 
@@ -41,12 +42,13 @@ export function LevelAchievement({ levelNumber, accentColor, moduleCount, onDism
 
       {/* Card */}
       <m.div
-        className="relative z-10 rounded-2xl p-8 text-center max-w-sm mx-4"
+        className="celebration-panel relative z-10 rounded-2xl p-8 text-center max-w-sm mx-4"
         style={{ backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border)' }}
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={SPRING_SNAPPY}
       >
+        <ScrollBody>
         {/* Trophy icon */}
         <div
           className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
@@ -69,6 +71,7 @@ export function LevelAchievement({ levelNumber, accentColor, moduleCount, onDism
           {t('celebration.modulesCompleted', { count: moduleCount })}
         </p>
 
+        </ScrollBody>
         <button
           onClick={onDismiss}
           className="inline-flex items-center justify-center min-h-(--tap) px-6 py-2.5 rounded-xl text-sm font-semibold transition-colors"
