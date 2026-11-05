@@ -13,36 +13,36 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l4u12m1: Suspensões ----
 
   l4u12m1e1: {
-    prompt: 'O que é uma suspensão 4-3?',
+    prompt: 'O que é um retardo 4-3?',
     choices: [
       'Uma 4.ª preparada é retida e depois desce para a 3.ª',
       'Uma 4.ª não preparada é abordada por salto e depois desce para a 3.ª',
       'Uma 4.ª é atravessada por grau conjunto a caminho da 3.ª inferior',
       'Uma 4.ª antecipa o acorde seguinte antes de descer para a 3.ª',
     ],
-    hint: 'Numa suspensão 4-3, a 4.ª acima do baixo é uma dissonância transportada (suspensa) do acorde anterior. Depois resolve por grau conjunto descendente para a 3.ª consonante.',
+    hint: 'Num retardo 4-3, a 4.ª acima do baixo é uma dissonância transportada (suspensa) do acorde anterior. Depois resolve por grau conjunto descendente para a 3.ª consonante.',
   },
   l4u12m1e2: {
-    prompt: 'Qual é a ordem correta das três fases de uma suspensão?',
+    prompt: 'Qual é a ordem correta das três fases de um retardo?',
     choices: [
-      'Preparação → suspensão → resolução',
-      'Suspensão → resolução → preparação',
-      'Resolução → suspensão → preparação',
-      'Resolução → preparação → suspensão',
+      'Preparação → retardo → resolução',
+      'Retardo → resolução → preparação',
+      'Resolução → retardo → preparação',
+      'Resolução → preparação → retardo',
     ],
-    hint: 'Uma suspensão tem três fases: preparação (a nota é consonante no acorde anterior), suspensão (a nota é retida enquanto a harmonia muda, criando dissonância) e resolução (move-se por grau conjunto para uma consonância).',
+    hint: 'Um retardo tem três fases: preparação (a nota é consonante no acorde anterior), retardo (a nota é retida enquanto a harmonia muda, criando dissonância) e resolução (move-se por grau conjunto para uma consonância).',
     nudge: 'Segue a nota retida: primeiro soa como consonância num acorde, depois é mantida enquanto a harmonia muda e choca com ela, e por fim move-se por grau conjunto para uma consonância. Dá nome a cada um desses três momentos.',
   },
   l4u12m1e3: {
     prompt:
       'Na tonalidade de C maior, um acorde V está a soar e a nota C é retida do acorde IV anterior antes de resolver, a descer, para B. Que tipo de nota estranha ao acorde é o C?',
     choices: [
-      'Suspensão C sobre V',
+      'Retardo C sobre V',
       'Nota de passagem C sobre V',
       'Apogiatura C sobre V',
-      'Escapatória C sobre V',
+      'Escapada C sobre V',
     ],
-    hint: 'O C era consonante no acorde IV (F-A-C), depois foi retido para o acorde V (G-B-D) onde é dissonante (uma 4.ª perfeita acima do baixo G), e resolve descendo por grau conjunto para B (a 3.ª de V, uma 3.ª maior acima de G). Esta é uma suspensão 4-3 exemplar.',
+    hint: 'O C era consonante no acorde IV (F-A-C), depois foi retido para o acorde V (G-B-D) onde é dissonante (uma 4.ª perfeita acima do baixo G), e resolve descendo por grau conjunto para B (a 3.ª de V, uma 3.ª maior acima de G). Este é um retardo 4-3 exemplar.',
     nudge: 'Segue o C em três momentos: era consonância no acorde IV, é mantido enquanto a harmonia muda por baixo dele (agora uma 4.ª acima do baixo G) e depois desce por grau conjunto para B. Que nota estranha ao acorde é preparada, mantida e resolvida desta forma?',
   },
 
@@ -56,18 +56,18 @@ const overlay: ExerciseLevelOverlay = {
       'A nota é ligada do acorde anterior e torna-se dissonante',
       'A nota chega antecipadamente como consonância do acorde seguinte',
     ],
-    hint: 'Uma apogiatura é uma nota estranha acentuada abordada por salto e resolvida por grau conjunto na direção oposta. Ao contrário de uma suspensão, não tem preparação — salta diretamente para a dissonância.',
-    nudge: 'Compara-a com uma suspensão, que é retida do acorde anterior. Uma apogiatura não é preparada e resolve por grau conjunto — então como é que a melodia chega até ela?',
+    hint: 'Uma apogiatura é uma nota estranha acentuada abordada por salto e resolvida por grau conjunto na direção oposta. Ao contrário de um retardo, não tem preparação — salta diretamente para a dissonância.',
+    nudge: 'Compara-a com um retardo, que é retido do acorde anterior. Uma apogiatura não é preparada e resolve por grau conjunto — então como é que a melodia chega até ela?',
   },
   l4u12m2e2: {
-    prompt: 'Como é que uma escapatória difere de uma nota de passagem?',
+    prompt: 'Como é que uma escapada difere de uma nota de passagem?',
     choices: [
-      "Uma escapatória é abordada por grau conjunto mas parte por salto na direção oposta",
-      'Uma escapatória é abordada por salto mas parte por grau conjunto na direção oposta',
-      'Uma escapatória é abordada por grau conjunto mas parte por grau conjunto na mesma direção',
-      'Uma escapatória é abordada por salto mas parte por salto na mesma direção',
+      "Uma escapada é abordada por grau conjunto mas parte por salto na direção oposta",
+      'Uma escapada é abordada por salto mas parte por grau conjunto na direção oposta',
+      'Uma escapada é abordada por grau conjunto mas parte por grau conjunto na mesma direção',
+      'Uma escapada é abordada por salto mas parte por salto na mesma direção',
     ],
-    hint: 'Uma escapatória (échappée) move-se por grau conjunto a partir de uma nota do acorde, depois salta na direção oposta para a nota do acorde seguinte. Uma nota de passagem move-se por grau conjunto na mesma direção ao longo de todo o percurso.',
+    hint: 'Uma escapada (échappée) move-se por grau conjunto a partir de uma nota do acorde, depois salta na direção oposta para a nota do acorde seguinte. Uma nota de passagem move-se por grau conjunto na mesma direção ao longo de todo o percurso.',
     nudge: 'Verifica duas coisas em cada nota: como é abordada e como é deixada (por grau conjunto ou por salto), e se a linha segue no mesmo sentido ou volta para trás. Uma nota de passagem move-se por grau conjunto sempre no mesmo sentido.',
   },
   l4u12m2e3: {
@@ -75,10 +75,10 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Retardo ascendente',
       'Nota de passagem',
-      'Escapatória',
+      'Escapada',
       'Apogiatura',
     ],
-    hint: 'Um retardo é essencialmente uma suspensão que resolve por grau conjunto ascendente em vez de descendente. O exemplo mais comum é 7-8, onde a 7.ª acima do baixo resolve para cima até à oitava.',
+    hint: 'Um retardo ascendente é essencialmente um retardo que resolve por grau conjunto ascendente em vez de descendente. O exemplo mais comum é 7-8, onde a 7.ª acima do baixo resolve para cima até à oitava.',
   },
 
   // ---- l4u12m3: Pedal ----
@@ -95,14 +95,14 @@ const overlay: ExerciseLevelOverlay = {
   },
   l4u12m3e2: {
     prompt:
-      'O que é uma "nota cambiada" (também chamada grupo de bordaduras ou dupla bordadura)?',
+      'O que é uma "cambiata" (também chamada grupo de bordaduras ou bordadura dupla)?',
     choices: [
       "Uma melodia contorna uma nota do acorde usando as duas alturas adjacentes antes de regressar",
       "Uma melodia liga duas notas do acorde por graus conjuntos na mesma direção",
       "Uma melodia repete uma nota do acorde enquanto a harmonia muda por baixo",
       "Uma melodia deixa uma nota do acorde por salto e regressa por grau conjunto",
     ],
-    hint: 'Uma nota cambiada (grupo de bordaduras) decora uma nota do acorde movendo-se para a bordadura superior, depois para a bordadura inferior (ou vice-versa) antes de regressar. Por exemplo: C-D-B-C ornamenta a nota C.',
+    hint: 'Uma cambiata (grupo de bordaduras) decora uma nota do acorde movendo-se para a bordadura superior, depois para a bordadura inferior (ou vice-versa) antes de regressar. Por exemplo: C-D-B-C ornamenta a nota C.',
   },
   l4u12m3e3: {
     prompt: 'Onde é que um pedal é mais frequentemente encontrado?',

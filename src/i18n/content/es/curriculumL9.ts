@@ -4,7 +4,7 @@ const curriculumL9: CurriculumLevelOverlay = {
   // ─── Unidades ─────────────────────────────────────────────────────────────
   units: {
     u30: {
-      title: 'Entrenamiento de Altura e Intervalos',
+      title: 'Entrenamiento de altura e intervalos',
       description:
         'Correspondencia de alturas, dirección melódica, reconocimiento mayor/menor e identificación completa de intervalos de oído',
       milestone: {
@@ -21,7 +21,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       },
     },
     u31: {
-      title: 'Competencias de Escalas, Acordes y Dictado',
+      title: 'Competencias de escalas, acordes y dictado',
       description:
         'Reconocimiento de escalas y modos, identificación de cualidades de tríadas y acordes de séptima de oído',
       milestone: {
@@ -37,7 +37,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       },
     },
     u32: {
-      title: 'Dictado, Lectura a Primera Vista y Escucha Contextual',
+      title: 'Dictado, lectura a primera vista y escucha contextual',
       description:
         'Dictado melódico y armónico, solfeo móvil para lectura a primera vista y escucha crítica de textura, forma y estilo',
       milestone: {
@@ -58,7 +58,7 @@ const curriculumL9: CurriculumLevelOverlay = {
   modules: {
     // ── U30 M1: Pitch Matching and Direction ──────────────────────────────
     l9u30m1: {
-      title: 'Correspondencia de Altura y Dirección',
+      title: 'Correspondencia de altura y dirección',
       subtitle:
         'Hacer corresponder alturas de oído, identificar dirección melódica y percibir diferencias de registro',
       objectives: [
@@ -68,19 +68,19 @@ const curriculumL9: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Correspondencia de Altura',
+          title: 'Correspondencia de altura',
           explanation:
             'La competencia auditiva más fundamental es escuchar una nota y reproducirla — cantando o encontrándola en un instrumento. Se comienza con notas aisladas en el registro medio (cerca del C central) y después se expande hacia fuera. Practica tocando una nota en el piano e intentando encontrarla de nuevo con los ojos cerrados. Esto construye la conexión interna oído-mano que sustenta todo el entrenamiento auditivo posterior. El objetivo no es el oído absoluto (que es en gran parte innato), sino un oído relativo fiable — escuchar una nota en relación con una referencia.',
           tryThisLabel: 'Toca la escala de C mayor como referencia de altura',
         },
         {
-          title: 'Dirección del Movimiento',
+          title: 'Dirección del movimiento',
           explanation:
             '¿Puedes decir si una melodía sube, baja o se mantiene? Esto es más intuitivo de lo que parece, pero hacer que el juicio sea consciente y preciso es el objetivo. Toca dos notas en secuencia e identifica la dirección. Movimiento ascendente va hacia una altura más aguda; descendente va hacia una más grave. Comienza con saltos amplios (una octava de distancia) y estrecha progresivamente hasta poder detectar movimiento de un único semitono. Esto entrena la percepción de contorno que necesitarás para el dictado melódico más adelante.',
           tryThisLabel: 'Escucha movimiento por grados ascendentes',
         },
         {
-          title: 'Percepción de Registro',
+          title: 'Percepción de registro',
           explanation:
             'Agudo frente a grave es siempre relativo: el «agudo» de un clarinete bajo es el «grave» de una flauta. Percepción de registro significa identificar si una nota se sitúa en la zona superior, media o inferior de la extensión del instrumento. En el piano, la octava más grave tiene una cualidad profunda y retumbante; las octavas medias suenan claras y equilibradas; la octava más aguda es brillante y fina. Practica tocando notas a lo largo de toda la extensión e identificando en qué región de octava se encuentran sin mirar. Esta escucha espacial es esencial para comprender voicings orquestales y arreglos.',
           tryThisLabel:
@@ -105,7 +105,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U30 M2: Major vs Minor Recognition ──────────────────────────────
     l9u30m2: {
-      title: 'Reconocimiento Mayor frente a Menor',
+      title: 'Reconocimiento mayor frente a menor',
       subtitle:
         'Distinguir tonalidad mayor y menor de oído — acordes, escalas y color general',
       objectives: [
@@ -115,20 +115,20 @@ const curriculumL9: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Acordes Mayores frente a Menores',
+          title: 'Acordes mayores frente a menores',
           explanation:
             'El reconocimiento de cualidad más básico en el entrenamiento auditivo. Los acordes mayores suenan brillantes, abiertos y resueltos. Los acordes menores suenan sombríos, melancólicos e introspectivos. La explicación teórica — la diferencia está en el tercer grado, elevado o descendido un semitono — es secundaria en esta fase. Practica tocando acordes mayores y menores lado a lado a partir de la misma fundamental hasta que la distinción se vuelva instantánea y automática. Esto es un sentimiento visceral primero, comprensión intelectual después.',
           tryThisLabel: 'Escucha mayor — después prueba "C minor chord"',
         },
         {
-          title: 'Tonalidad Mayor frente a Menor',
+          title: 'Tonalidad mayor frente a menor',
           explanation:
             'Más allá de acordes individuales, tonalidades y melodías enteras tienen carácter mayor o menor. Una melodía en C mayor suena brillante y asentada; el mismo contorno en C menor suena más sombrío e introspectivo. Escucha el color emocional general en lugar de analizar notas individuales. Toca la escala de C mayor seguida de la escala de C menor natural — el cambio de atmósfera es inconfundible. Este reconocimiento de tonalidad es la base para todo el entrenamiento auditivo de cualidad posterior.',
           tryThisLabel:
             'Escucha la tonalidad menor — compara con la escala de C mayor',
         },
         {
-          title: 'Entrenar el Juicio Instantáneo',
+          title: 'Entrenar el juicio instantáneo',
           explanation:
             'El objetivo del reconocimiento mayor/menor no es análisis, sino reflejo. Debes oír la cualidad antes de que tu mente consciente la nombre. Esto requiere repetición: toca acordes mayores y menores aleatorios a partir de diferentes fundamentales e identifica la cualidad lo más rápido posible. La velocidad importa porque la música real no hace pausa para que analices. Prueba fundamentales menos familiares — Ab, Db, F# — donde tu familiaridad con el instrumento no puede ayudarte. Cuando puedas identificar mayor frente a menor en menos de un segundo a partir de cualquier fundamental, la competencia está interiorizada.',
           tryThisLabel:
@@ -153,7 +153,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U30 M3: Interval Recognition P1-P5 ──────────────────────────────
     l9u30m3: {
-      title: 'Reconocimiento de Intervalos: 1J–5J',
+      title: 'Reconocimiento de intervalos: 1J–5J',
       subtitle:
         'Identificar intervalos perfectos y pequeños de oído usando asociaciones con canciones y reconocimiento directo',
       objectives: [
@@ -163,21 +163,21 @@ const curriculumL9: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Asociaciones con Canciones: Intervalos Pequeños',
+          title: 'Asociaciones con canciones: intervalos pequeños',
           explanation:
             'Una técnica mnemónica comprobada: asociar cada intervalo con el comienzo de una melodía familiar. 2.ª menor ascendente = tema de Tiburón. 2.ª mayor = Cumpleaños Feliz. 3.ª menor = Greensleeves. 3.ª mayor = When the Saints (oh-when). 4.ª justa = Marcha Nupcial. Tritono = The Simpsons (The-Simp). 5.ª justa = Brilla Brilla Estrellita. Estas son ruedas de entrenamiento — el objetivo es interiorizar el sonido de cada intervalo directamente y después abandonar la muleta. Comienza solo con intervalos ascendentes y después añade descendentes cuando los ascendentes estén sólidos.',
           tryThisLabel:
             'Toca C mayor — escucha cada intervalo a partir de la fundamental',
         },
         {
-          title: 'Consonancia Perfecta frente a Imperfecta',
+          title: 'Consonancia perfecta frente a imperfecta',
           explanation:
             'Los intervalos de este módulo se dividen en dos familias. Las consonancias perfectas (1J, 4J, 5J) suenan «abiertas» y «huecas» — como una campana o una cuerda al aire. Tienen una cualidad austera y despojada. Las consonancias imperfectas (3m, 3M) suenan «cálidas» y «fundidas» — las notas se combinan suavemente pero con más color. Las segundas (2m, 2M) son disonancias — suenan «ásperas» o «crujientes» cuando se tocan simultáneamente. El tritono es una de las disonancias más ásperas (con la 2.ª menor y la 7.ª mayor) — tenso, inestable y exigiendo resolución. Aprender a categorizar por consonancia/disonancia es más rápido que memorizar cada intervalo individualmente. (En el contrapunto de especies, estudiado en los niveles 4 y 6, la 4.ª justa por encima del bajo se trata como disonancia; la clasificación acústica de «justa» que se usa aquí está orientada al entrenamiento auditivo.)',
           tryThisLabel:
             'Escucha la 3.ª mayor (C a E) y la 5.ª justa (C a G)',
         },
         {
-          title: 'Ascendente frente a Descendente',
+          title: 'Ascendente frente a descendente',
           explanation:
             'Cada intervalo tiene un carácter diferente ascendente frente a descendente. La 2.ª menor ascendente suena tensa y reptante. La 2.ª menor descendente suena suspirante y resolutiva. La 4.ª justa ascendente suena como una fanfarria. La 4.ª justa descendente suena asentada y cadencial. Es necesario entrenar ambas direcciones independientemente — saber identificar una 5.ª justa ascendente no significa automáticamente que puedas identificarla descendente. Usa también asociaciones con canciones descendentes: 2M descendente = Mary Had a Little Lamb (primeras dos notas), 3m descendente = Hey Jude (hey-Jude). Construye el conjunto descendente como una competencia separada.',
           tryThisLabel: 'Escucha el tritono dentro de C7 (E a Bb)',
@@ -201,7 +201,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U30 M4: Interval Recognition m6-P8 ──────────────────────────────
     l9u30m4: {
-      title: 'Reconocimiento de Intervalos: 6m–8J',
+      title: 'Reconocimiento de intervalos: 6m–8J',
       subtitle:
         'Identificar intervalos amplios de oído — sextas, séptimas y la octava',
       objectives: [
@@ -211,20 +211,20 @@ const curriculumL9: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Asociaciones con Canciones: Intervalos Amplios',
+          title: 'Asociaciones con canciones: intervalos amplios',
           explanation:
             'Continuando el enfoque mnemónico para la mitad superior de la octava. 6.ª menor = The Entertainer (ascendente: el salto de E a C que sigue a las notas iniciales D-D#-E; el tema «Where Do I Begin» de Love Story es el ejemplo descendente clásico). 6.ª mayor = My Bonnie (my-bon). 7.ª menor = Somewhere (West Side Story). 7.ª mayor = Take On Me (take-on). Octava = Somewhere Over the Rainbow. Los intervalos amplios son más difíciles de identificar porque parecen «grandes saltos» y las diferencias de tamaño entre ellos son proporcionalmente menores. Las sextas y séptimas son particularmente difíciles — son inversiones de terceras y segundas, por lo que su carácter está relacionado pero es más amplio. Practica contrastando pares: 6m frente a 6M, 7m frente a 7.ª mayor.',
           tryThisLabel: 'Escucha el intervalo de 7.ª mayor (C a B)',
         },
         {
-          title: 'Intervalos Amplios Descendentes',
+          title: 'Intervalos amplios descendentes',
           explanation:
             'Los intervalos descendentes suenan diferentes de los ascendentes aunque la distancia sea igual. Una 5.ª justa descendente (G descendiendo a C) suena como resolución o aterrizaje. Una 6.ª mayor descendente suena cálida y nostálgica. Las séptimas descendentes suenan dramáticas y amplias. Practica intervalos descendentes por separado — muchos estudiantes que dominan intervalos ascendentes se debaten con los descendentes. Usa asociaciones con canciones descendentes: 5J descendente = las dos primeras notas de «Feelings» (Feel-ings) o del tema de Los Picapiedra (Flint-stones), 3m descendente = Hey Jude (hey-Jude). Construye el conjunto descendente como competencia propia.',
           tryThisLabel:
             'Toca C mayor descendente — escucha los intervalos al revés',
         },
         {
-          title: 'Relaciones de Inversión de Intervalos',
+          title: 'Relaciones de inversión de intervalos',
           explanation:
             'Los intervalos amplios son inversiones de intervalos pequeños: una 6.ª mayor es una 3.ª menor invertida, una 7.ª menor es una 2.ª mayor invertida, una 7.ª mayor es una 2.ª menor invertida. Esto significa que su «sabor» está relacionado — una 3.ª menor y una 6.ª mayor comparten calidez, una 2.ª mayor y una 7.ª menor comparten una cualidad bluesy. Si oyes un intervalo amplio y no puedes identificarlo directamente, intenta invertirlo mentalmente: ¿suena como una 3.ª menor invertida? Entonces es una 6.ª mayor. Esta técnica de referencia cruzada acelera el aprendizaje de intervalos amplios.',
           tryThisLabel:
@@ -249,7 +249,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U30 M5: Harmonic Intervals and Compounds ────────────────────────
     l9u30m5: {
-      title: 'Intervalos Armónicos y Compuestos',
+      title: 'Intervalos armónicos y compuestos',
       subtitle:
         'Reconocimiento de intervalos simultáneos e intervalos compuestos más allá de la octava',
       objectives: [
@@ -259,19 +259,19 @@ const curriculumL9: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Intervalos Armónicos',
+          title: 'Intervalos armónicos',
           explanation:
             'Escuchar intervalos cuando ambas notas suenan simultáneamente es más difícil que los intervalos melódicos (secuenciales) porque los sonidos se funden. Las consonancias perfectas (5J, 8J) suenan «abiertas» y «huecas». Las consonancias imperfectas (3.as, 6.as) suenan «cálidas» y «fundidas». Las disonancias (2.as, 7.as, tritono) suenan «ásperas» o «tensas». Aprende primero los intervalos melódicos y después transita a los armónicos. La distinción de cualidad — consonante frente a disonante — es tu pista principal cuando las notas suenan simultáneamente.',
           tryThisLabel: 'Escucha B contra C — un intervalo de 7.ª mayor',
         },
         {
-          title: 'Intervalos Compuestos',
+          title: 'Intervalos compuestos',
           explanation:
             'Tras dominar los intervalos simples (dentro de una octava), se expande a intervalos compuestos que sobrepasan la octava. Una 9.ª = octava + 2.ª. Una 10.ª = octava + 3.ª. Una 11.ª = octava + 4.ª. Una 13.ª = octava + 6.ª. Los intervalos compuestos suenan como sus equivalentes simples pero «más amplios» y más espaciosos. Las reglas de cualidad se transfieren: una 9.ª mayor tiene la misma cualidad que una 2.ª mayor. Se oyen constantemente en acordes de jazz extendidos — la 9.ª en un Cmaj9 es D, una octava más una 2.ª mayor por encima de la fundamental (C).',
           tryThisLabel: 'Escucha el tritono dentro de C7 (E a Bb)',
         },
         {
-          title: 'Ejercicios de Velocidad y Fluidez',
+          title: 'Ejercicios de velocidad y fluidez',
           explanation:
             'El reconocimiento de intervalos solo es útil si es rápido. En la música real, las notas pasan deprisa — no hay tiempo para deliberar. El objetivo es pasar de «analizar, después nombrar» a «oír y saber instantáneamente». Practica con ejercicios cronometrados: toca dos notas aleatorias e identifica el intervalo en tres segundos. Registra la precisión a lo largo de las sesiones. Comienza con un conjunto restringido (solo intervalos perfectos, o solo consonancias) y amplía cuando la precisión supere el 80 por ciento. Mezclar presentaciones melódicas, armónicas, ascendentes y descendentes en el mismo ejercicio construye reconocimiento robusto e independiente del contexto.',
           tryThisLabel:
@@ -296,7 +296,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U31 M1: Scale Recognition Major/Minor ───────────────────────────
     l9u31m1: {
-      title: 'Reconocimiento de Escalas: Formas Mayores y Menores',
+      title: 'Reconocimiento de escalas: formas mayores y menores',
       subtitle:
         'Distinguir mayor, menor natural, menor armónica y menor melódica de oído',
       objectives: [
@@ -306,20 +306,20 @@ const curriculumL9: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Formas Mayores frente a Menores',
+          title: 'Formas mayores frente a menores',
           explanation:
             'Construyendo sobre el reconocimiento básico mayor/menor: ahora se identifican formas menores específicas. La escala menor natural suena sombría y folclórica — sin atracción fuerte al final porque el 7.º grado está un tono por debajo de la tónica (subtónica, no sensible). La escala menor armónica eleva el 7.º grado, creando una sensible y una 2.ª aumentada exótica entre los grados 6 y 7 — un sonido inconfundible. La escala menor melódica eleva tanto el 6.º como el 7.º grados ascendentes, suavizando la 2.ª aumentada — suena jazzística y sofisticada. Practica tocando las tres a partir de la misma fundamental (p. ej., A) y aislando las diferencias.',
           tryThisLabel:
             'Escucha el 7.º grado elevado exótico en la menor armónica',
         },
         {
-          title: 'Método de Entrenamiento: Aislamiento',
+          title: 'Método de entrenamiento: aislamiento',
           explanation:
             'La clave para el reconocimiento de escalas es aislar lo que cambia entre escalas similares. Toca A mayor y después A menor natural — tres notas cambian (C#/C, F#/F, G#/G). Ahora toca A menor natural y después A menor armónica — solo una nota cambia (G a G#). Finalmente, A menor armónica a A menor melódica ascendente — de nuevo una nota (F a F#). Al estrechar el enfoque a los grados específicos que difieren, se entrena más rápido que intentando escuchar la escala entera como una unidad.',
           tryThisLabel: 'Escucha menor melódica — suave y jazzística',
         },
         {
-          title: 'Anclaje al Centro Tonal',
+          title: 'Anclaje al centro tonal',
           explanation:
             'El reconocimiento de escalas se vuelve más difícil cuando la fundamental cambia. Es posible identificar A menor natural con facilidad pero debatirse con Eb menor natural porque la tonalidad desconocida distrae. La solución: anclar siempre la tónica primero. Toca la nota fundamental, establécela como «casa» y después escucha la escala. Una vez anclado el centro tonal, los intervalos relativos entre grados son los mismos en cualquier tonalidad. Practica el reconocimiento de escalas en las doce fundamentales — la cualidad debe ser identificable independientemente de la nota inicial.',
           tryThisLabel:
@@ -344,7 +344,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U31 M2: Scale Recognition Modes ─────────────────────────────────
     l9u31m2: {
-      title: 'Reconocimiento de Escalas: Modos',
+      title: 'Reconocimiento de escalas: modos',
       subtitle:
         'Identificar los siete modos eclesiásticos por sus notas características',
       objectives: [
@@ -354,21 +354,21 @@ const curriculumL9: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Carácter Modal',
+          title: 'Carácter modal',
           explanation:
             'Cada modo tiene un color característico definido por una o dos notas que difieren del mayor o menor natural. El Dórico es menor con 6.º elevado — cálido y jazzístico. El Frigio tiene 2.ª bemolizada — sombrío y con sonoridad española. El Lidio tiene 4.ª sostenida — soñador y flotante. El Mixolidio tiene 7.ª bemolizada — bluesy y rock. El Locrio tiene 2.ª y 5.ª bemolizadas — inestable y rara vez usado como tónica. Concéntrate en estas «notas características» al identificar modos de oído.',
           tryThisLabel:
             'Escucha Dórico — menor pero más cálido (6.º elevado)',
         },
         {
-          title: 'Método de Entrenamiento: Similar al Mayor frente a Similar al Menor',
+          title: 'Método de entrenamiento: similar al mayor frente a similar al menor',
           explanation:
             'Comienza separando modos en dos grupos. Modos similares al mayor tienen 3.ª mayor: Jónico (mayor puro), Lidio (#4 — soñador), Mixolidio (b7 — bluesy). Modos similares al menor tienen 3.ª menor: Eólico (menor puro), Dórico (6.ª natural — cálido), Frigio (b2 — sombrío), Locrio (b2 y b5 — inestable). Primero identifica el grupo, después afina hasta el modo específico. Esta primera pasada binaria reduce las opciones a la mitad inmediatamente y es mucho más fiable que adivinar entre siete opciones.',
           tryThisLabel:
             'Escucha Lidio — el #4 soñador eleva el sonido',
         },
         {
-          title: 'Anclas Auditivas de Nota Característica',
+          title: 'Anclas auditivas de nota característica',
           explanation:
             'Para cada modo, entrena el oído en la una o dos notas que lo hacen único. Dórico: toca menor natural y después eleva la 6.ª — escucha la calidez entrar. Frigio: toca menor natural y después desciende la 2.ª — escucha oscurecerse dramáticamente. Lidio: toca mayor y después eleva la 4.ª — escucha flotar. Mixolidio: toca mayor y después desciende la 7.ª — escucha relajarse hacia blues. Cada nota característica crea un cambio emocional específico. Memoriza ese cambio y podrás identificar cualquier modo al encontrar su momento característico.',
           tryThisLabel:
@@ -393,7 +393,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U31 M3: Scale Recognition Pentatonic/Blues/Symmetric ────────────
     l9u31m3: {
-      title: 'Reconocimiento de Escalas: Pentatónica, Blues, Simétrica',
+      title: 'Reconocimiento de escalas: pentatónica, blues, simétrica',
       subtitle:
         'Reconocer escalas especiales de oído — pentatónica, blues, tonos enteros y disminuida',
       objectives: [
@@ -403,20 +403,20 @@ const curriculumL9: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Escalas Pentatónicas',
+          title: 'Escalas pentatónicas',
           explanation:
             'La pentatónica mayor suena abierta y folclórica — cinco notas, sin semitonos, sin tensión. Es el sonido de canciones alrededor de la hoguera y melodías celtas. La pentatónica menor suena bluesy y cruda — la columna vertebral del rock y la guitarra blues. Ambas escalas pentatónicas son instantáneamente reconocibles porque carecen de las tensiones de semitono de las escalas diatónicas. Los huecos en la escala (4.º y 7.º grados ausentes en la pentatónica mayor, por ejemplo) crean una cualidad abierta distintiva que ninguna escala de siete notas tiene.',
           tryThisLabel:
             'Escucha la pentatónica — abierta, folclórica, sin tensión',
         },
         {
-          title: 'La Escala de Blues',
+          title: 'La escala de blues',
           explanation:
             'La escala de blues añade la 5.ª bemolizada («blue note») a la pentatónica menor, creando aspereza y expresividad. Esa única nota añadida transforma una pentatónica limpia en algo con alma y fluidez. La blue note se sitúa entre la 4.ª justa y la 5.ª justa — una intrusión cromática que crea tensión máxima con ambas vecinas. La escala de blues es la columna vertebral del blues, el rock y la improvisación jazz, y su sonido es instantáneamente identificable tras exposición incluso breve.',
           tryThisLabel: 'Escucha la escala de blues — áspera y expresiva',
         },
         {
-          title: 'Escalas Simétricas',
+          title: 'Escalas simétricas',
           explanation:
             'Las escalas de tonos enteros y disminuidas están construidas a partir de patrones interválicos repetitivos, dándoles una cualidad sin dirección única. La escala de tonos enteros usa únicamente tonos — ningún semitono — produciendo una cualidad soñadora, flotante y no resuelta asociada al impresionismo y bandas sonoras de cine. La escala disminuida (semitono-tono) alterna semitonos y tonos, creando un sonido tenso y simétrico, un elemento esencial del jazz y del film noir. Ambas escalas carecen de una atracción tonal clara porque su simetría significa que ninguna nota se siente más como «casa» que cualquier otra.',
           tryThisLabel:
@@ -441,7 +441,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U31 M4: Triad Quality Recognition ───────────────────────────────
     l9u31m4: {
-      title: 'Reconocimiento de Cualidad de Tríadas',
+      title: 'Reconocimiento de cualidad de tríadas',
       subtitle:
         'Identificar tríadas mayores, menores, disminuidas y aumentadas de oído',
       objectives: [
@@ -451,20 +451,20 @@ const curriculumL9: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Cualidades de Tríadas de Oído',
+          title: 'Cualidades de tríadas de oído',
           explanation:
             'Mayor suena brillante y asentado — el acorde predeterminado, estable. Menor suena sombrío pero apoyado — misma estabilidad, color diferente. Disminuido suena tenso, pequeño y ansioso — quiere moverse hacia algún lugar. Aumentado suena extraño, suspendido y sin dirección — sin resolución clara. La distinción clave: mayor y menor tienen ambos una 5.ª justa (estabilidad). Disminuido y aumentado tienen 5.as alteradas (inestabilidad). Practica tocando las cuatro cualidades a partir de la misma fundamental y cerrando los ojos antes de cada una.',
           tryThisLabel: 'Escucha disminuido — tenso, pequeño, ansioso',
         },
         {
-          title: 'Tríadas Estables frente a Inestables',
+          title: 'Tríadas estables frente a inestables',
           explanation:
             'La 5.ª justa es el intervalo que proporciona estabilidad a un acorde. Las tríadas mayores (3.ª mayor + 5.ª justa) y las tríadas menores (3.ª menor + 5.ª justa) la contienen — por eso suenan apoyadas incluso con colores diferentes. Las tríadas disminuidas sustituyen la 5.ª justa por una 5.ª disminuida (un semitono más pequeña), creando una cualidad comprimida y ansiosa. Las tríadas aumentadas la sustituyen por una 5.ª aumentada (un semitono más amplia), creando una cualidad expandida y no resuelta. Escuchar estable frente a inestable es el primer filtro — después se afina hasta la cualidad específica.',
           tryThisLabel:
             'Escucha aumentado — extraño, expandido, no resuelto',
         },
         {
-          title: 'Reconocer Inversiones',
+          title: 'Reconocer inversiones',
           explanation:
             'Cuando una tríada está invertida, la nota del bajo cambia el peso y la estabilidad percibidos. La posición fundamental suena apoyada y definitiva — la fundamental ancla todo. La primera inversión suena más ligera y más melódica — la 3.ª en el bajo crea una sensación menos estable pero fluida. La segunda inversión suena inestable — la 4.ª sobre el bajo crea tensión que históricamente requiere resolución. Practica escuchando el mismo acorde en todas las posiciones y observando cómo el carácter cambia mientras la cualidad (mayor/menor) permanece igual.',
           tryThisLabel:
@@ -489,30 +489,30 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U31 M5: Seventh Chord Quality Recognition ───────────────────────
     l9u31m5: {
-      title: 'Reconocimiento de Cualidad de Acordes de Séptima',
+      title: 'Reconocimiento de cualidad de acordes de séptima',
       subtitle:
         'Identificar todas las cualidades de acordes de séptima de oído — del cálido mayor con 7.ª al tenso disminuido con 7.ª',
       objectives: [
-        'Identificar acordes de 7.ª mayor, 7.ª dominante, 7.ª menor, semidisminuido y disminuido de oído',
+        'Identificar acordes de 7.ª mayor, 7.ª de dominante, 7.ª menor, semidisminuido y disminuido de oído',
         'Escuchar el acorde menor-mayor con 7.ª como una cualidad distinta e inquietante',
         'Distinguir cualidades de acordes de séptima por su carácter emocional y nivel de tensión',
       ],
       concepts: [
         {
-          title: 'Cualidades de Acordes de Séptima de Oído',
+          title: 'Cualidades de acordes de séptima de oído',
           explanation:
-            'Seis cualidades distintas de acordes de séptima, cada una con un carácter emocional único. 7.ª mayor (Cmaj7): cálido, exuberante, balada de jazz. 7.ª dominante (C7): tenso, bluesy, exige resolución. 7.ª menor (Cm7): suave, blando, relajado. Semidisminuido (Cm7b5): sombrío, anhelante, film noir. Disminuido (Cdim7): máximamente tenso, cada nota quiere moverse. Menor-mayor con 7.ª (CmMaj7): misterioso, inquietante — el choque entre tríada menor y 7.ª mayor. Practica tocando los seis a partir de la misma fundamental en secuencia.',
+            'Seis cualidades distintas de acordes de séptima, cada una con un carácter emocional único. 7.ª mayor (Cmaj7): cálido, exuberante, balada de jazz. 7.ª de dominante (C7): tenso, bluesy, exige resolución. 7.ª menor (Cm7): suave, blando, relajado. Semidisminuido (Cm7b5): sombrío, anhelante, film noir. Disminuido (Cdim7): máximamente tenso, cada nota quiere moverse. Menor-mayor con 7.ª (CmMaj7): misterioso, inquietante — el choque entre tríada menor y 7.ª mayor. Practica tocando los seis a partir de la misma fundamental en secuencia.',
           tryThisLabel: 'Escucha 7.ª mayor — cálido y exuberante',
         },
         {
-          title: 'La Distinción 7.ª Dominante frente a 7.ª Mayor',
+          title: 'La distinción 7.ª de dominante frente a 7.ª mayor',
           explanation:
-            'La distinción de acordes de séptima más importante. 7.ª mayor (Cmaj7) y 7.ª dominante (C7) comparten una tríada mayor pero difieren en una nota: B (7.ª mayor) frente a Bb (7.ª menor). Esa diferencia de un semitono transforma el acorde de reposo cálido a tensión bluesy. La 7.ª dominante exige resolución — atrae hacia un acorde una 5.ª por debajo (C7 quiere ir a F). La 7.ª mayor se queda contenta donde está. Esta distinción es la puerta de entrada a escuchar armonía funcional, porque la 7.ª dominante es el motor del movimiento armónico.',
+            'La distinción de acordes de séptima más importante. 7.ª mayor (Cmaj7) y 7.ª de dominante (C7) comparten una tríada mayor pero difieren en una nota: B (7.ª mayor) frente a Bb (7.ª menor). Esa diferencia de un semitono transforma el acorde de reposo cálido a tensión bluesy. La 7.ª de dominante exige resolución — atrae hacia un acorde una 5.ª por debajo (C7 quiere ir a F). La 7.ª mayor se queda contenta donde está. Esta distinción es la puerta de entrada a escuchar armonía funcional, porque la 7.ª de dominante es el motor del movimiento armónico.',
           tryThisLabel:
-            'Escucha 7.ª dominante — tensa, bluesy, necesita moverse',
+            'Escucha 7.ª de dominante — tensa, bluesy, necesita moverse',
         },
         {
-          title: 'El Lado Sombrío: Semidisminuido y Disminuido',
+          title: 'El lado sombrío: semidisminuido y disminuido',
           explanation:
             'Semidisminuido (Cm7b5) y disminuido (Cdim7) son las cualidades de acordes de séptima más sombrías. El semidisminuido combina una tríada disminuida con una 7.ª menor — suena anhelante, inestable y cinematográfico. El disminuido apila 3.as menores simétricamente — es máximamente tenso, con cada nota equidistante y cada nota queriendo resolver. La distinción: el semidisminuido tiene un intervalo «normal» (la 7.ª menor desde la fundamental) que le da un toque de calidez. El disminuido está uniformemente comprimido y tenso a lo largo de toda la estructura. En jazz, el semidisminuido es el acorde ii en tonalidades menores; el disminuido es un acorde de paso o sustituto del dominante.',
           tryThisLabel:
@@ -537,7 +537,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U32 M1: Melodic Dictation Diatonic ──────────────────────────────
     l9u32m1: {
-      title: 'Dictado Melódico: Diatónico',
+      title: 'Dictado melódico: diatónico',
       subtitle:
         'Transcribir melodías diatónicas cortas de oído — movimiento por grados y triádico',
       objectives: [
@@ -547,21 +547,21 @@ const curriculumL9: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'El Proceso de Dictado',
+          title: 'El proceso de dictado',
           explanation:
             'El dictado melódico sigue un proceso sistemático — apresurarse a escribir notas inmediatamente es el error más común. Primera escucha: capta la forma general, la tonalidad y el compás. Identifica la tónica encontrando la nota que suena como «casa» — normalmente la nota final. Segunda escucha: concéntrate en las primeras notas y las últimas. Tercera escucha: rellena el centro, construyendo frase a frase. Comienza siempre por el ritmo y el contorno (la forma de sube-y-baja) y después afina hacia alturas exactas. Verifica tu trabajo: ¿la transcripción tiene sentido musical?',
           tryThisLabel:
             'Toca una escala de referencia para anclar la tonalidad',
         },
         {
-          title: 'Estrategia del Marco Primero',
+          title: 'Estrategia del marco primero',
           explanation:
             'Antes de escribir una sola nota, establece el marco que restringe tus opciones. Identifica la tonalidad escuchando la tónica — la nota de reposo y resolución. Marca el pulso para encontrar el compás (¿está en 2, 3 o 4?). Escucha la cadencia al final — ¿resuelve conclusivamente (cadencia auténtica) o te deja en suspenso (semicadencia)? Después rellena notas, comenzando por el ritmo y la dirección general. El marco elimina respuestas erróneas antes de que empieces, haciendo el trabajo de detalle mucho más fácil.',
           tryThisLabel:
             'Escucha el acorde de tónica — tu punto de anclaje',
         },
         {
-          title: 'Contorno Antes de la Altura',
+          title: 'Contorno antes de la altura',
           explanation:
             'Contorno es la forma de una melodía — su patrón de subidas y bajadas — sin especificar intervalos exactos. Antes de intentar nombrar alturas específicas, dibuja el contorno: ¿la melodía sube, baja, hace arco o se mantiene? Una melodía en arco (sube y después baja) es la forma más común. Una melodía que desciende a lo largo de toda su duración es menos común y suena como si se estuviera asentando. El contorno es el esqueleto del dictado. Si tu contorno está equivocado, tus alturas estarán equivocadas por más cuidadosamente que escuches. Acierta siempre la forma primero y después rellena las notas exactas.',
           tryThisLabel:
@@ -586,7 +586,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U32 M2: Melodic Dictation Chromatic ─────────────────────────────
     l9u32m2: {
-      title: 'Dictado Melódico: Cromático',
+      title: 'Dictado melódico: cromático',
       subtitle:
         'Transcribir melodías con notas cromáticas de paso, notas vecinas y dominantes secundarias',
       objectives: [
@@ -596,21 +596,21 @@ const curriculumL9: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Ornamentación Cromática',
+          title: 'Ornamentación cromática',
           explanation:
             'Las notas cromáticas de paso y notas vecinas son notas fuera de la tonalidad que enlazan o decoran notas diatónicas. Una nota cromática de paso rellena el intervalo entre dos notas diatónicas a un tono de distancia — por ejemplo, C a C# a D en C mayor. Una nota cromática vecina sale de la tonalidad y regresa inmediatamente — D a D# a D. Estas notas crean color y tensión sin cambiar la tonalidad. El reto del entrenamiento auditivo es distinguir ornamentaciones cromáticas (desviaciones temporales) de modulaciones reales (cambios permanentes de tonalidad). Si la nota resuelve por grado de vuelta a la tonalidad, probablemente sea ornamentación.',
           tryThisLabel:
             'Toca el marco diatónico — después imagina relleno cromático',
         },
         {
-          title: 'Dominantes Secundarias en Melodías',
+          title: 'Dominantes secundarias en melodías',
           explanation:
             'Cuando una melodía introduce brevemente una nota fuera de la tonalidad que funciona como sensible de un acorde diatónico, se está oyendo la influencia de una dominante secundaria. En C mayor, un F# puede aparecer como sensible de G (la dominante) — atrae fuertemente hacia G de la misma forma que B atrae hacia C. En el dictado, estas sensibles prestadas son identificables porque resuelven por semitono ascendente a una nota diatónica. Escuchar F# resolver a G en una melodía en C mayor es una pista de dominante secundaria: V/V (quinto del quinto). Esta es la puente entre dictado diatónico y cromático.',
           tryThisLabel:
             'Escucha G7 — la sensible B atrae hacia C',
         },
         {
-          title: 'Progresión de Dificultad',
+          title: 'Progresión de dificultad',
           explanation:
             'El dictado cromático escala en niveles claros. Nivel 1: notas cromáticas de paso entre notas diatónicas (C-C#-D). Nivel 2: notas cromáticas vecinas (D-D#-D). Nivel 3: sensibles secundarias resolviendo por semitono ascendente (F#-G en C mayor). Nivel 4: secuencias cromáticas donde un patrón diatónico se transpone cromáticamente. Nivel 5: dictado a dos voces con elementos cromáticos en ambas. No saltes nunca de nivel — cada uno construye sobre el anterior. En cada etapa, mantén al menos un 80 por ciento de precisión antes de avanzar.',
           tryThisLabel:
@@ -635,7 +635,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U32 M3: Harmonic Dictation ──────────────────────────────────────
     l9u32m3: {
-      title: 'Dictado Armónico: Cadencias y Progresiones',
+      title: 'Dictado armónico: cadencias y progresiones',
       subtitle:
         'Identificar cadencias y transcribir progresiones siguiendo el bajo',
       objectives: [
@@ -645,20 +645,20 @@ const curriculumL9: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Escuchar la Línea de Bajo',
+          title: 'Escuchar la línea de bajo',
           explanation:
             'La línea de bajo es la puerta de entrada al dictado armónico. La nota del bajo define el acorde más que cualquier otra voz — indica la fundamental (o la inversión). Practica escuchando progresiones de acordes y cantando solo las notas del bajo. Si puedes seguir el bajo con precisión, estás la mayor parte del camino hacia identificar la armonía. Los acordes en posición fundamental tienen la relación bajo-acorde más clara. Las inversiones requieren que oigas la nota del bajo como no fundamental y después infierras el acorde real sobre ella.',
           tryThisLabel:
             'Escucha la nota del bajo — ancla el acorde',
         },
         {
-          title: 'Reconocimiento de Cadencias',
+          title: 'Reconocimiento de cadencias',
           explanation:
             'Las cadencias son la puntuación de la música — aprende a escucharlas antes de abordar progresiones completas. La cadencia auténtica (V-I) suena final y conclusiva — un punto final. La cadencia plagal (IV-I) suena más suave y cálida — como «Amén». La semicadencia (terminando en V) suena incompleta — un signo de interrogación. La cadencia rota (V-vi) sorprende: esperas resolución a I pero aterrizas en vi. Identificar la cadencia al final de una frase te da dos acordes inmediatamente y ancla la tonalidad.',
           tryThisLabel: 'Escucha V (G) — ¿atrae hacia C (I)?',
         },
         {
-          title: 'Proceso de Dictado de Progresiones',
+          title: 'Proceso de dictado de progresiones',
           explanation:
             'El dictado armónico completo sigue un proceso sistemático. Paso 1: escucha la tonalidad — identifica el acorde de tónica y la cadencia. Paso 2: sigue la línea de bajo — las notas del bajo delinean el movimiento armónico. Paso 3: identifica la cualidad del acorde en cada cambio de nota del bajo — ¿es mayor, menor o disminuido? Paso 4: asigna numeración romana según el grado de la escala de cada nota del bajo. Paso 5: verifica la coherencia — ¿el ritmo armónico (tasa de cambio de acorde) tiene sentido? Comienza con cadencias de dos acordes y avanza hacia progresiones de cuatro acordes.',
           tryThisLabel:
@@ -683,7 +683,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U32 M4: Sight Singing Fundamentals ──────────────────────────────
     l9u32m4: {
-      title: 'Fundamentos de Lectura a Primera Vista',
+      title: 'Fundamentos de lectura a primera vista',
       subtitle:
         'Solfeo móvil para lectura a primera vista en tonalidades mayores y menores',
       objectives: [
@@ -693,20 +693,20 @@ const curriculumL9: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Solfeo Móvil',
+          title: 'Solfeo móvil',
           explanation:
             'En el solfeo móvil, «do» representa siempre la tónica de la tonalidad actual — independientemente de qué nota sea. C mayor: do=C. G mayor: do=G. Bb mayor: do=Bb. Esto asigna sílabas a función, no a altura absoluta. «Sol» suena siempre como dominante, «ti» suena siempre como la sensible atrayendo hacia «do». Este es el enfoque Kodály/Berklee, y sus defensores argumentan que entrena la escucha funcional de forma más directa — aprendes a escuchar relaciones, no solo nombres de notas. El solfeo fijo (donde do es siempre C), el estándar en los conservatorios de muchos países incluyendo Francia e Italia, construye en cambio la asociación de altura absoluta — ambos sistemas son ampliamente usados.',
           tryThisLabel: 'Canta: do-re-mi-fa-sol-la-ti-do',
         },
         {
-          title: 'Solfeo Cromático para Tonalidades Menores',
+          title: 'Solfeo cromático para tonalidades menores',
           explanation:
             'Las tonalidades menores requieren sílabas modificadas para los grados descendidos. En el menor basado en do: 3.ª b = «me», 6.ª b = «le», 7.ª b = «te». Menor natural se convierte en: do-re-me-fa-sol-le-te-do. Menor armónica eleva el 7.º de vuelta a «ti»: do-re-me-fa-sol-le-ti-do. Menor melódica ascendente eleva ambos: do-re-me-fa-sol-la-ti-do. Para alteraciones cromáticas: sostenidos ascendentes usan -i (di, ri, fi, si, li); bemoles descendentes usan vocales modificadas (ra, me, se, le, te). Estas sílabas hacen explícitos los grados alterados al cantar.',
           tryThisLabel:
             'Canta: do-re-me-fa-sol-le-te-do (menor basado en la, un sistema alternativo común en la práctica Kodály: la-ti-do-re-mi-fa-sol)',
         },
         {
-          title: 'Proceso de Lectura a Primera Vista',
+          title: 'Proceso de lectura a primera vista',
           explanation:
             'Antes de cantar una sola nota, sigue una lista de verificación. (1) Identifica la armadura de clave y la indicación de compás. (2) Busca las notas más aguda y más grave para conocer los requisitos de extensión vocal. (3) Busca patrones — escalas, arpegios, motivos repetidos, secuencias. (4) Establece un tempo suficientemente lento para mantener la precisión (la velocidad se desarrolla naturalmente con la práctica). (5) Canta manteniendo un pulso regular por encima de todo. Una nota equivocada a un tempo regular es mejor que una nota correcta con ritmo roto. El pulso es el esqueleto; las alturas son la carne.',
           tryThisLabel:
@@ -731,7 +731,7 @@ const curriculumL9: CurriculumLevelOverlay = {
 
     // ── U32 M5: Contextual Listening ────────────────────────────────────
     l9u32m5: {
-      title: 'Escucha Contextual',
+      title: 'Escucha contextual',
       subtitle:
         'Identificar textura, forma, instrumentos y periodos estilísticos de oído',
       objectives: [
@@ -741,21 +741,21 @@ const curriculumL9: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Identificación de Textura',
+          title: 'Identificación de textura',
           explanation:
             'La textura musical describe cuántas voces están presentes y cómo se relacionan entre sí. La monofonía es una línea única sin acompañamiento — limpia y expuesta, como una melodía de flauta a solo. La homofonía es una melodía con armonía de soporte por debajo — la textura más común en la música occidental (piensa en un cantante con acordes de guitarra). La polifonía tiene múltiples melodías independientes sonando simultáneamente — densa y compleja, como una fuga de Bach. La homorritmia es un caso especial donde todas las voces se mueven en el mismo ritmo, como un coral. Aprender a escuchar textura es aprender a escuchar cómo la música está organizada verticalmente.',
           tryThisLabel:
             'Un acorde es textura homofónica en miniatura',
         },
         {
-          title: 'Forma de Oído',
+          title: 'Forma de oído',
           explanation:
             'Escuchar forma significa seguir repetición y contraste a lo largo del tiempo. Cuando el material regresa, etiquétalo «A». Cuando aparece material nuevo, etiquétalo «B». Forma binaria es AB (dos secciones contrastantes). Ternaria es ABA (ida y vuelta). Rondó alterna un tema recurrente con episodios contrastantes: ABACA. Estrofa-estribillo es el equivalente pop de secciones alternadas. Escucha los límites seccionales — cadencias, pausas, cambios de tonalidad y cambios de textura o dinámica señalan divisiones formales. La competencia es la capacidad de atención: hay que mantener la primera sección en la memoria para reconocer su regreso.',
           tryThisLabel:
             'Explora G mayor — la mayoría de las formas comienza y termina en la tonalidad de casa',
         },
         {
-          title: 'Reconocimiento de Periodo Estilístico',
+          title: 'Reconocimiento de periodo estilístico',
           explanation:
             'Cada era histórica tiene sonidos característicos que se pueden aprender a identificar. Barroco (1600-1750): motor rítmico continuo, bajo continuo, melodías ornamentales, dinámicas en terrazas (cambios súbitos forte/piano). Clásico (1750-1820): frases equilibradas de 4 y 8 compases, patrones de bajo Alberti, cadencias claras, simplicidad elegante. Romántico (1820-1900): orquestas expandidas, armonía cromática, melodías largas y amplias, extensión dinámica extrema. Siglo XX (1900-2000): disonancia como recurso primario, timbres nuevos, complejidad rítmica, experimentación formal. Cada periodo construye sobre y reacciona contra el anterior.',
           tryThisLabel:

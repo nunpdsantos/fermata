@@ -4,7 +4,7 @@ const curriculumL8: CurriculumLevelOverlay = {
   // ─── Units ──────────────────────────────────────────────────────────────────
   units: {
     u25: {
-      title: 'Fuga e Formas Imitativas',
+      title: 'Fuga e formas imitativas',
       description:
         'Análise de fugas, tipos de cânone e técnicas de composição imitativa',
       milestone: {
@@ -20,7 +20,7 @@ const curriculumL8: CurriculumLevelOverlay = {
       },
     },
     u26: {
-      title: 'Grande Forma e Orquestração',
+      title: 'Grande forma e orquestração',
       description:
         'Análise formal avançada, famílias orquestrais e instrumentação',
       milestone: {
@@ -37,14 +37,14 @@ const curriculumL8: CurriculumLevelOverlay = {
       },
     },
     u27: {
-      title: 'Pós-Tonal e Contemporâneo',
+      title: 'Pós-tonal e contemporâneo',
       description:
         'Teoria dos conjuntos, técnica dos doze sons e métodos composicionais do século XX',
       milestone: {
         skillsSummary: [
           'Analisar conjuntos de classes de altura usando notação por inteiros, forma normal, forma primária e vetores intervalares',
           'Construir séries dodecafónicas, derivar as 48 formas e construir uma matriz',
-          'Identificar planing, politonalidade, pandiatonicismo e processos minimalistas',
+          'Identificar paralelismo, politonalidade, pandiatonicismo e processos minimalistas',
           'Distinguir polirritmia de polimetria, reconhecer a hemíola e calcular modulações métricas',
         ],
         bridgeText: '',
@@ -59,7 +59,7 @@ const curriculumL8: CurriculumLevelOverlay = {
   modules: {
     // ── U25 M1: Fugue Exposition ──────────────────────────────────────────────
     l8u25m1: {
-      title: 'Fuga: Exposição e Sujeito/Resposta',
+      title: 'Fuga: exposição e sujeito/resposta',
       subtitle:
         'Estrutura da exposição da fuga, sujeito vs. resposta e o contra-sujeito',
       objectives: [
@@ -70,19 +70,19 @@ const curriculumL8: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Exposição da Fuga: Entrada Voz a Voz',
+          title: 'Exposição da fuga: entrada voz a voz',
           explanation:
             'Uma fuga é uma composição contrapontística construída a partir de uma única ideia melódica (o sujeito). A exposição introduz cada voz por sua vez: a primeira voz apresenta o sujeito sozinha na tónica, a segunda voz entra com a resposta na dominante enquanto a primeira continua com um contra-sujeito, e as vozes seguintes seguem o mesmo padrão alternado — sujeito na tónica, resposta na dominante. A exposição está completa quando todas as vozes entraram. O número de vozes (tipicamente 2 a 5) define a densidade textural da fuga e determina quantas entradas a exposição contém.',
           tryThisLabel: 'Vê a tonalidade da tónica que um sujeito de fuga habitaria',
         },
         {
-          title: 'Sujeito, Resposta e Contra-Sujeito',
+          title: 'Sujeito, resposta e contra-sujeito',
           explanation:
             'O sujeito é o tema principal da fuga, apresentado primeiro na tónica. Uma resposta real transpõe o sujeito exatamente para a dominante. Uma resposta tonal modifica o intervalo inicial para preservar a coerência tonal — tipicamente convertendo um salto inicial de tónica para dominante numa resposta de dominante para tónica (uma 5.ª torna-se uma 4.ª). As respostas tonais são usadas quando o sujeito apresenta de forma proeminente os graus 1 e 5. O contra-sujeito é uma linha melódica secundária escrita em contraponto invertível, de modo a funcionar corretamente quer seja colocada acima quer abaixo do sujeito. Um contra-sujeito bem elaborado complementa o sujeito em ritmo, contorno e conteúdo interválico.',
           tryThisLabel: 'Vê a tonalidade da dominante onde a resposta entra',
         },
         {
-          title: 'Fuga Dupla e Fuga Tripla',
+          title: 'Fuga dupla e fuga tripla',
           explanation:
             'Uma fuga dupla combina dois sujeitos, quer apresentando-os juntos desde o início, quer introduzindo cada um na sua própria exposição antes de os combinar numa secção culminante. Uma fuga tripla usa três sujeitos — A Arte da Fuga de Bach e a sua fuga final inacabada são os exemplos supremos. No tipo de apresentação combinada, ambos os sujeitos aparecem simultaneamente na exposição inicial; no tipo de exposições separadas, o segundo sujeito recebe a sua própria exposição completa antes de os dois serem entrecruzados contrapontisticamente. O desafio aumenta exponencialmente com cada sujeito adicional.',
           tryThisLabel: 'Vê C maior — a tonalidade da primeira fuga do CBT de Bach',
@@ -106,7 +106,7 @@ const curriculumL8: CurriculumLevelOverlay = {
 
     // ── U25 M2: Fugue Episodes and Stretto ────────────────────────────────────
     l8u25m2: {
-      title: 'Fuga: Episódios, Stretto e Procedimentos',
+      title: 'Fuga: episódios, stretto e procedimentos',
       subtitle:
         'Episódios de transição, técnica de stretto e transformações do sujeito',
       objectives: [
@@ -117,19 +117,19 @@ const curriculumL8: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Episódios e Entradas Intermédias',
+          title: 'Episódios e entradas intermédias',
           explanation:
             'Após a exposição, os episódios — passagens de transição construídas a partir de fragmentos motívicos do sujeito ou do contra-sujeito, frequentemente dispostos em sequência — modulam para novas tonalidades para as entradas intermédias. Cada episódio tipicamente toma um motivo curto (algumas notas da cabeça ou da cauda do sujeito) e sequencia-o através de uma cadeia de tonalidades, criando impulso para a frente. As entradas intermédias reapresentam o sujeito em tonalidades vizinhas: o relativo maior ou menor, a subdominante, ou áreas tonais mais remotas. A alternância de episódios e entradas confere à fuga a sua sensação característica de partida e regresso.',
           tryThisLabel: 'Vê A menor — uma tonalidade comum para entradas intermédias a partir de C maior',
         },
         {
-          title: 'Stretto: Entradas Sobrepostas do Sujeito',
+          title: 'Stretto: entradas sobrepostas do sujeito',
           explanation:
             'O stretto ocorre quando uma nova entrada do sujeito começa antes de a anterior ter terminado, criando apresentações sobrepostas que geram densidade contrapontística e intensidade climática. Quanto mais apertado o intervalo de stretto (mais curto o espaço entre entradas), mais tecnicamente impressionante e dramaticamente poderosa é a passagem. O stretto é frequentemente reservado para a secção final da fuga, intensificando o regresso à tónica. Nem todos os sujeitos de fuga se prestam ao stretto — a possibilidade de sobreposição depende das propriedades interválicas e rítmicas do sujeito.',
           tryThisLabel: 'Vê C maior — o stretto chega muitas vezes com o regresso final à tónica',
         },
         {
-          title: 'Procedimentos Composicionais: Aumentação, Diminuição, Inversão, Retrogradação',
+          title: 'Procedimentos composicionais: aumentação, diminuição, inversão, retrogradação',
           explanation:
             'A aumentação apresenta o sujeito em valores de nota mais longos, efetivamente reduzindo o tempo do tema a metade e conferindo-lhe gravidade e peso. A diminuição usa valores mais curtos, duplicando a velocidade e criando urgência. A inversão melódica inverte todos os intervalos — o movimento ascendente torna-se descendente — transformando o contorno do sujeito mas preservando o seu perfil rítmico. A retrogradação apresenta o sujeito de trás para a frente, embora isto seja raro em fugas (mais comum na música serial). Estes procedimentos podem combinar-se: aumentação invertida, diminuição retrógrada. A Arte da Fuga de Bach demonstra virtualmente todas as combinações.',
           tryThisLabel: 'Toca a escala ascendente — depois imagina-a invertida, descendente',
@@ -153,7 +153,7 @@ const curriculumL8: CurriculumLevelOverlay = {
 
     // ── U25 M3: Canon ─────────────────────────────────────────────────────────
     l8u25m3: {
-      title: 'Cânone e Outras Formas Imitativas',
+      title: 'Cânone e outras formas imitativas',
       subtitle: 'Cânones a vários intervalos e tipos especiais',
       objectives: [
         'Compreender o cânone a vários intervalos (uníssono, oitava, 5.ª, 4.ª, etc.)',
@@ -162,19 +162,19 @@ const curriculumL8: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Cânone Estrito e Intervalos Canónicos',
+          title: 'Cânone estrito e intervalos canónicos',
           explanation:
-            'Num cânone estrito, uma voz líder (dux) apresenta uma melodia e uma voz seguidora (comes) replica-a exatamente após um atraso temporal fixo, transposta por algum intervalo. O cânone ao uníssono repete na mesma altura; o cânone à oitava desloca uma oitava; o cânone à quinta transpõe uma quinta perfeita acima. O desafio composicional é profundo: o líder deve gerar uma melodia que produza contraponto válido contra uma cópia de si mesma com atraso temporal. Os cânones ao uníssono e à oitava são geralmente os mais simples de escrever; noutros intervalos, as notas do seguidor assumem outros papéis na tonalidade e algumas qualidades de intervalo mudam, o que acrescenta restrições.',
+            'Num cânone estrito, o dux, a voz que começa, apresenta uma melodia e o comes, a voz que imita, replica-a exatamente após um atraso temporal fixo, transposta por algum intervalo. O cânone ao uníssono repete na mesma altura; o cânone à oitava desloca uma oitava; o cânone à quinta transpõe uma quinta perfeita acima. O desafio composicional é profundo: o dux deve gerar uma melodia que produza contraponto válido contra uma cópia de si mesma com atraso temporal. Os cânones ao uníssono e à oitava são geralmente os mais simples de escrever; noutros intervalos, as notas do comes assumem outros papéis na tonalidade e algumas qualidades de intervalo mudam, o que acrescenta restrições.',
           tryThisLabel: 'Vê a escala — a matéria-prima melódica de um cânone',
         },
         {
-          title: 'Tipos Especiais de Cânone e a Ronda',
+          title: 'Tipos especiais de cânone e a ronda',
           explanation:
-            'O cânone espelhado (cânone por inversão) inverte todos os intervalos no seguidor — o movimento ascendente no dux torna-se descendente no comes. O cânone de caranguejo (retrógrado) toca a melodia do seguidor de trás para a frente. O cânone por aumentação duplica os valores das notas no seguidor; o cânone por diminuição reduz-los a metade. Estes podem combinar-se — retrogradação invertida, por exemplo. A ronda é o cânone mais simples: um cânone perpétuo ao uníssono onde as vozes entram a intervalos regulares e a melodia repete-se indefinidamente. O ricercar, predecessor da fuga, utiliza contraponto imitativo de forma mais livre, sem a estrutura formal de exposição-episódio da fuga.',
+            'O cânone espelhado (cânone por inversão) inverte todos os intervalos no comes — o movimento ascendente no dux torna-se descendente no comes. O cânone de caranguejo (retrógrado) toca a melodia do comes de trás para a frente. O cânone por aumentação duplica os valores das notas no comes; o cânone por diminuição redu-los a metade. Estes podem combinar-se — retrogradação invertida, por exemplo. A ronda é o cânone mais simples: um cânone perpétuo ao uníssono onde as vozes entram a intervalos regulares e a melodia repete-se indefinidamente. O ricercar, predecessor da fuga, utiliza contraponto imitativo de forma mais livre, sem a estrutura formal de exposição-episódio da fuga.',
           tryThisLabel: 'Vê C maior — a tonalidade mais simples para escrita canónica',
         },
         {
-          title: 'Imitação Livre vs. Cânone Estrito',
+          title: 'Imitação livre vs. cânone estrito',
           explanation:
             'O cânone estrito mantém replicação interválica exata ao longo de toda a peça; a imitação livre utiliza o sujeito como ponto de partida mas permite desvios quando a imitação estrita produziria contraponto deficiente ou dissonância. A maioria da polifonia renascentista e barroca utiliza imitação livre — as passagens começam com entradas canónicas (chamadas "pontos de imitação") mas rapidamente divergem para contraponto independente. Compreender o espectro do cânone estrito à imitação livre ilumina virtualmente toda a música polifónica de Josquin a Bach.',
           tryThisLabel: 'Ouve o menor — comum na escrita imitativa renascentista',
@@ -198,7 +198,7 @@ const curriculumL8: CurriculumLevelOverlay = {
 
     // ── U26 M1: Sonata Form ───────────────────────────────────────────────────
     l8u26m1: {
-      title: 'A Forma-Sonata em Detalhe',
+      title: 'A forma-sonata em detalhe',
       subtitle:
         'Exposição, desenvolvimento e reexposição em detalhe seccional completo',
       objectives: [
@@ -209,19 +209,19 @@ const curriculumL8: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Forma-Sonata: A Exposição',
+          title: 'Forma-sonata: A exposição',
           explanation:
             'A exposição contém um grupo temático principal (GTP) na tónica que estabelece carácter e tonalidade, uma transição modulante (TR) que acumula energia e desloca o centro tonal, uma cesura medial (CM) — a pausa dramática que marca a chegada à nova tonalidade —, um grupo temático secundário (GTS) na tonalidade secundária (tipicamente V em maior, III em menor) com carácter contrastante, e material de encerramento (CT) que reafirma a nova tonalidade com potencialmente várias ideias conclusivas. O sinal de repetição no final da exposição é estruturalmente significativo: assegura que o ouvinte interioriza a polaridade tonal entre tónica e dominante antes de o desenvolvimento a desmantelar.',
           tryThisLabel: 'Vê a tonalidade da tónica — a base da forma-sonata',
         },
         {
-          title: 'Desenvolvimento e Reexposição',
+          title: 'Desenvolvimento e reexposição',
           explanation:
             'O desenvolvimento fragmenta os temas em motivos, dispõe-nos em sequências por tonalidades remotas, pode encenar uma falsa reexposição (um regresso enganador do GTP na tonalidade errada) e constrói uma retransição sobre a dominante para preparar o regresso. A reexposição reapresenta todo o material na tónica — crucialmente, o GTS aparece agora na tónica, resolvendo a tensão tonal da exposição. A TR é modificada para evitar modular. As codas de Beethoven funcionam frequentemente como segundos desenvolvimentos, estendendo substancialmente a forma com novo trabalho temático e clímaxes dramáticos.',
           tryThisLabel: 'Ouve o acorde de sétima da dominante — o acorde que impulsiona a reexposição',
         },
         {
-          title: 'Forma de Concerto: Dupla Exposição',
+          title: 'Forma de concerto: dupla exposição',
           explanation:
             'A forma de concerto adapta os princípios da sonata com uma dupla exposição: a exposição orquestral apresenta ambos os temas na tónica, depois a exposição do solista reapresenta o primeiro tema na tónica e o segundo na dominante, seguindo a lógica tonal padrão da sonata. O desenvolvimento apresenta diálogo solista-orquestra. A reexposição resolve ambos os temas na tónica. A cadência — a passagem virtuosística não acompanhada do solista — precede tipicamente a coda final, originalmente improvisada mas cada vez mais escrita a partir de Beethoven.',
           tryThisLabel: 'Vê as relações de tonalidade que as formas-sonata percorrem',
@@ -245,30 +245,30 @@ const curriculumL8: CurriculumLevelOverlay = {
 
     // ── U26 M2: Variation, Rondo, and Ritornello ──────────────────────────────
     l8u26m2: {
-      title: 'Variações, Rondó e Ritornello',
+      title: 'Variações, rondó e ritornello',
       subtitle:
         'Tema e variações, chacona, passacaglia, rondó e ritornello',
       objectives: [
         'Distinguir tema e variações seccionais de formas de variação contínua',
         'Analisar a chacona (padrão harmónico repetido) e a passacaglia (baixo ostinato)',
-        'Identificar formas de rondó (5 partes, 7 partes) e híbridos sonata-rondó',
+        'Identificar formas de rondó (5 partes, 7 partes) e híbridos rondó-sonata',
         'Compreender a forma de ritornello barroca e a sua relação com o rondó',
       ],
       concepts: [
         {
-          title: 'Tema e Variações, Chacona e Passacaglia',
+          title: 'Tema e variações, chacona e passacaglia',
           explanation:
             'As formas de variação incluem o tema e variações seccional (cada variação é autónoma, separada por cadências claras), a chacona (variações contínuas sobre um padrão harmónico repetido, tipicamente de 4 ou 8 compassos) e a passacaglia (variações contínuas sobre uma linha de baixo repetida — o baixo ostinato). A distinção entre chacona e passacaglia é historicamente ambígua, mas o baixo ostinato é a característica definidora da passacaglia. Em todas as formas de variação, a arte composicional reside em transformar melodia, ritmo, textura e registo mantendo uma ligação audível ao tema ou padrão.',
           tryThisLabel: 'Ouve A menor — imagina-o como o primeiro acorde de um padrão repetido de chacona',
         },
         {
-          title: 'Formas de Rondó: Cinco Partes, Sete Partes e Sonata-Rondó',
+          title: 'Formas de rondó: cinco partes, sete partes e rondó-sonata',
           explanation:
-            'A forma de rondó apresenta um estribilho recorrente (A) alternando com episódios contrastantes: rondó de cinco partes (A-B-A-C-A), de sete partes (A-B-A-C-A-B-A ou A-B-A-C-A-D-A). O estribilho regressa tipicamente na tónica de cada vez, proporcionando estabilidade estrutural. O sonata-rondó hibrida as duas formas — A-B-A-desenvolvimento-A-B-A — combinando a clareza estrutural do rondó com a ambição desenvolvimental da sonata. A secção B regressa na tónica durante a segunda metade, espelhando a resolução tonal da forma-sonata. Este híbrido domina os finais do período clássico.',
+            'A forma de rondó apresenta um estribilho recorrente (A) alternando com episódios contrastantes: rondó de cinco partes (A-B-A-C-A), de sete partes (A-B-A-C-A-B-A ou A-B-A-C-A-D-A). O estribilho regressa tipicamente na tónica de cada vez, proporcionando estabilidade estrutural. O rondó-sonata hibrida as duas formas — A-B-A-desenvolvimento-A-B-A — combinando a clareza estrutural do rondó com a ambição desenvolvimental da sonata. A secção B regressa na tónica durante a segunda metade, espelhando a resolução tonal da forma-sonata. Este híbrido domina os finais do período clássico.',
           tryThisLabel: 'Vê C maior — a tónica que cada estribilho de rondó reafirma',
         },
         {
-          title: 'Forma de Ritornello',
+          title: 'Forma de ritornello',
           explanation:
             'A forma de ritornello barroca alterna uma passagem orquestral recorrente (o ritornello) com episódios solistas. O ritornello completo aparece na tónica no início e no fim; fragmentos dele regressam em tonalidades diferentes entre os episódios solistas, criando uma jornada tonal. Conceptualmente semelhante ao rondó mas mais fluida — o ritornello raramente é reapresentado completo no meio, e os episódios solistas são mais improvisatórios. Os concertos de Vivaldi epitomizam a forma: ritornello de abertura enérgico, passagens solistas virtuosísticas, fragmentos do ritornello em tonalidades vizinhas, regresso completo do ritornello no final.',
           tryThisLabel: 'Vê as relações de tonalidade que o ritornello percorre',
@@ -281,7 +281,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Ouve um finale em sonata-rondó (p. ex., Sonata "Patética" de Beethoven, terceiro andamento). Identifica cada regresso do estribilho (A) e etiqueta os episódios. Onde ocorre a secção de "desenvolvimento" dentro da estrutura do rondó?',
+            'Ouve um finale em rondó-sonata (p. ex., Sonata "Patética" de Beethoven, terceiro andamento). Identifica cada regresso do estribilho (A) e etiqueta os episódios. Onde ocorre a secção de "desenvolvimento" dentro da estrutura do rondó?',
         },
         {
           instruction:
@@ -292,7 +292,7 @@ const curriculumL8: CurriculumLevelOverlay = {
 
     // ── U26 M3: Orchestration ─────────────────────────────────────────────────
     l8u26m3: {
-      title: 'Orquestração e Consciência de Instrumentação',
+      title: 'Orquestração e consciência de instrumentação',
       subtitle:
         'Famílias orquestrais, timbres, dobragens e transposição',
       objectives: [
@@ -302,19 +302,19 @@ const curriculumL8: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'As Quatro Famílias Orquestrais',
+          title: 'As quatro famílias orquestrais',
           explanation:
             'As cordas (violino, viola, violoncelo, contrabaixo) formam a espinha dorsal da orquestra — sustentam, articulam e abrangem a gama dinâmica mais ampla através de técnicas como pizzicato, tremolo, harmónicos e col legno. As madeiras (flauta, oboé, clarinete, fagote e os seus auxiliares) contribuem com cores tímbricas distintas e destacam-se na escrita melódica. Os metais (trompa, trompete, trombone, tuba) conferem potência e brilho, dominando os clímaxes. A percussão divide-se em afinada (tímpanos, xilofone, glockenspiel, vibrafone, marimba, celesta) e não afinada (caixa, bombo, pratos, triângulo), proporcionando definição rítmica, cor e pontuação estrutural.',
           tryThisLabel: 'Vê a extensão — as cordas abrangem quase todo este teclado',
         },
         {
-          title: 'Instrumentos Transpositores e Leitura de Partitura',
+          title: 'Instrumentos transpositores e leitura de partitura',
           explanation:
             'Um instrumento transpositor soa uma altura diferente do C escrito. O clarinete em Bb soa uma segunda maior abaixo do escrito; a trompa em F soa uma quinta perfeita abaixo; o trompete em Bb soa uma segunda maior abaixo. Para ler uma partitura transpositora à altura real (de concerto), inverte a transposição: para um clarinete em Bb, transpõe a parte escrita uma segunda maior abaixo (ou lê uma segunda abaixo). Ordem padrão da partitura orquestral de cima para baixo: flautas, oboés, clarinetes, fagotes, trompas, trompetes, trombones, tuba, tímpanos, percussão, harpa, violinos I e II, violas, violoncelos, contrabaixos.',
           tryThisLabel: 'Vê Bb — a altura de concerto quando um clarinete em Bb lê C',
         },
         {
-          title: 'Textura Orquestral e Dobragens',
+          title: 'Textura orquestral e dobragens',
           explanation:
             'A orquestração é a arte de distribuir ideias musicais pelo conjunto para máximo efeito. A dobragem à oitava (p. ex., flauta e violino a uma oitava de distância) espessa uma melodia sem alterar o seu carácter. A dobragem ao uníssono (p. ex., oboé e violino na mesma altura) funde timbres para criar uma cor composta indisponível em qualquer instrumento isoladamente. A escrita por coros atribui um acorde completo a uma família (um coral de metais ou um coro de madeiras). A escolha de qual instrumento conduz a melodia, qual fornece preenchimento harmónico e qual fornece energia rítmica define o carácter de cada passagem orquestral.',
           tryThisLabel: 'Vê F maior — a tonalidade de concerto de uma trompa a ler em C',
@@ -338,7 +338,7 @@ const curriculumL8: CurriculumLevelOverlay = {
 
     // ── U27 M1: Pitch-Class Sets ──────────────────────────────────────────────
     l8u27m1: {
-      title: 'Conjuntos de Classes de Altura e Teoria dos Conjuntos',
+      title: 'Conjuntos de classes de altura e teoria dos conjuntos',
       subtitle:
         'Classe de altura, classe de intervalo, forma normal, forma primária, VIC e números de Forte',
       objectives: [
@@ -349,19 +349,19 @@ const curriculumL8: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Classe de Altura, Notação por Inteiros e Classe de Intervalo',
+          title: 'Classe de altura, notação por inteiros e classe de intervalo',
           explanation:
             'A teoria pós-tonal colapsa todas as alturas equivalentes por oitava em 12 classes de altura numeradas de 0 a 11 (C=0, C#/Db=1, D=2, ... B=11). As grafias enarmónicas tornam-se irrelevantes — F# e Gb são ambos a classe de altura 6. A classe de intervalo (CI) mede a menor distância entre duas classes de altura no relógio mod-12: o intervalo entre CA 0 e CA 4 é CI 4 (não 8, porque tomamos o complemento menor). Os valores de CI vão de 1 a 6, já que qualquer intervalo maior que 6 meios-tons tem um complemento menor. Esta eliminação de oitava, grafia e distinções direcionais revela o esqueleto interválico abstrato de qualquer sonoridade.',
           tryThisLabel: 'Vê todas as 12 classes de altura dispostas cromaticamente',
         },
         {
-          title: 'Conjuntos de Classes de Altura: Forma Normal e Forma Primária',
+          title: 'Conjuntos de classes de altura: forma normal e forma primária',
           explanation:
             'Um conjunto de classes de altura é uma coleção não ordenada de classes de altura distintas — o equivalente pós-tonal de um acorde. A forma normal é o arranjo ascendente mais compacto: roda-se o conjunto até que a extensão do primeiro ao último elemento seja a menor (usando compactação à esquerda para desempatar). A forma primária transpõe a forma normal para começar em 0, depois compara com a inversão para selecionar a que estiver mais compactada à esquerda. {C, E, G} tem forma normal [0,4,7]; a sua inversão dá [0,3,7], que está mais compactada à esquerda, por isso a forma primária é [0,3,7]. {D, F, A} reduz-se diretamente a [0,3,7]. O catálogo de Allen Forte atribui a cada forma primária um número — 3-11 para [0, 3, 7] — criando um sistema universal de classificação para sonoridades pós-tonais. Existem duas convenções de compactação — a de Forte, "compactado à esquerda" (usada aqui), e a de Rahn, "compactado a partir da direita" — e discordam num punhado de classes de conjuntos (nenhuma usada neste nível).',
           tryThisLabel: 'Vê C menor — conjunto de Forte 3-11, forma primária [0,3,7]',
         },
         {
-          title: 'Vetor Intervalar e Relações-Z',
+          title: 'Vetor intervalar e relações-Z',
           explanation:
             'O vetor intervalar (VIC) é uma impressão digital de seis dígitos que conta cada CI presente num conjunto. Para [0, 4, 7] (tríade maior), o VIC é <0,0,1,1,1,0>: um CI3, um CI4, um CI5. Dois conjuntos com VIC idênticos mas formas primárias diferentes são Z-relacionados — estruturalmente distintos, mas partilhando exatamente o mesmo conteúdo intervalar. Pares Z-relacionados são relativamente raros no catálogo e constituem uma curiosidade central da teoria dos conjuntos. O VIC proporciona uma forma eficiente de comparar o carácter sonoro dos conjuntos: conjuntos com VIC semelhantes partilham "cor" harmónica mesmo que o seu conteúdo de classes de altura difira inteiramente.',
           tryThisLabel: 'Vê a tríade maior — VIC <0,0,1,1,1,0>',
@@ -385,7 +385,7 @@ const curriculumL8: CurriculumLevelOverlay = {
 
     // ── U27 M2: Twelve-Tone Technique ─────────────────────────────────────────
     l8u27m2: {
-      title: 'Técnica dos Doze Sons',
+      title: 'Técnica dos doze sons',
       subtitle:
         'Séries, formas P/R/I/RI, a matriz dos doze sons e combinatorialidade',
       objectives: [
@@ -396,19 +396,19 @@ const curriculumL8: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'A Série e as Suas Quatro Formas',
+          title: 'A série e as suas quatro formas',
           explanation:
             'Na composição dodecafónica (serial), as 12 classes de altura são ordenadas numa sequência específica — a série. Esta série é a matéria-prima de toda a composição: melodia, harmonia e contraponto derivam dela. A série é manipulada através de quatro transformações: Original (P) — a série original; Retrógrada (R) — a série tocada de trás para a frente; Inversão (I) — cada intervalo invertido, o ascendente torna-se descendente; Retrógrada-Inversão (RI) — a inversão tocada de trás para a frente. Estas quatro operações preservam o ADN intervalar da série enquanto geram formas melódicas maximamente diversas.',
           tryThisLabel: 'Vê todas as 12 classes de altura — a matéria-prima de uma série',
         },
         {
-          title: 'A Matriz dos Doze Sons',
+          title: 'A matriz dos doze sons',
           explanation:
             'Cada uma das quatro formas da série pode ser transposta para começar em qualquer uma das 12 classes de altura, produzindo 48 formas no total (P0-P11, R0-R11, I0-I11, RI0-RI11). Estas são organizadas numa matriz 12x12: as formas P leem-se da esquerda para a direita, as formas R da direita para a esquerda, as formas I de cima para baixo e as formas RI de baixo para cima. A matriz é o conjunto de ferramentas completo do compositor — cada derivação serial possível da série está visível num relance. Webern favorecia séries com alta simetria interna, onde algumas formas são idênticas a outras, reduzindo efetivamente as 48 a menos séries distintas.',
           tryThisLabel: 'Vê 7 das 12 classes de altura — uma série usa todas as 12',
         },
         {
-          title: 'Combinatorialidade e Complementação Hexacordal',
+          title: 'Combinatorialidade e complementação hexacordal',
           explanation:
             'A combinatorialidade é uma propriedade da série em que o primeiro hexacorde (primeiras 6 notas) de uma forma e o primeiro hexacorde de outra forma específica juntos produzem as 12 classes de altura — um agregado. Isto assegura completude harmónica quando duas formas soam simultaneamente, evitando duplicação de classes de altura. Séries totalmente combinatoriais (como as de Babbitt) alcançam complementação de agregado sob relações P, I, R e RI. As obras tardias de Schoenberg exploram a combinatorialidade para controlar a dimensão vertical (harmónica) da música serial, não apenas a horizontal (melódica).',
           tryThisLabel: 'Ouve um acorde simétrico — as séries privilegiam a simetria',
@@ -432,29 +432,29 @@ const curriculumL8: CurriculumLevelOverlay = {
 
     // ── U27 M3: 20th-Century Techniques ───────────────────────────────────────
     l8u27m3: {
-      title: 'Técnicas do Século XX: Planing, Politonalidade, Pandiatonicismo',
+      title: 'Técnicas do século XX: paralelismo, politonalidade, pandiatonicismo',
       subtitle:
         'Harmonia quartal, movimento paralelo, bitonalidade e diatonicismo livre',
       objectives: [
         'Identificar a harmonia quartal/quintal como uma linguagem harmónica completa',
-        'Distinguir planing cromático de planing diatónico',
+        'Distinguir paralelismo estrito (cromático) de paralelismo diatónico',
         'Reconhecer politonalidade, polimodalidade e pandiatonicismo em contexto',
       ],
       concepts: [
         {
-          title: 'Harmonia Quartal/Quintal e Planing',
+          title: 'Harmonia quartal/quintal e paralelismo',
           explanation:
-            'A harmonia quartal constrói acordes a partir de quartas perfeitas empilhadas em vez de terças, produzindo sonoridades que não são maiores nem menores — abertas, ambíguas e características de Hindemith, Bartok e Copland. A harmonia quintal usa quintas empilhadas (inversamente equivalentes a quartas). O planing move uma estrutura de acorde inteira em paralelo: o planing cromático transpõe cada nota pelo mesmo número de meios-tons (preservando a qualidade exata do acorde), enquanto o planing diatónico move dentro de uma escala (alterando a qualidade para se ajustar à tonalidade). Os acordes de nona paralelos de Debussy e as tríades paralelas de Ravel exemplificam o planing como técnica harmónica estrutural, não meramente um recurso colorístico.',
-          tryThisLabel: 'Ouve a escala de tons inteiros — território simétrico puro para planing',
+            'A harmonia quartal constrói acordes a partir de quartas perfeitas empilhadas em vez de terças, produzindo sonoridades que não são maiores nem menores — abertas, ambíguas e características de Hindemith, Bartok e Copland. A harmonia quintal usa quintas empilhadas (inversamente equivalentes a quartas). O paralelismo move uma estrutura de acorde inteira em paralelo: o paralelismo estrito (cromático) transpõe cada nota pelo mesmo número de meios-tons (preservando a qualidade exata do acorde), enquanto o paralelismo diatónico move dentro de uma escala (alterando a qualidade para se ajustar à tonalidade). Os acordes de nona paralelos de Debussy e as tríades paralelas de Ravel exemplificam o paralelismo como técnica harmónica estrutural, não meramente um recurso colorístico.',
+          tryThisLabel: 'Ouve a escala de tons inteiros — território simétrico puro para paralelismo',
         },
         {
-          title: 'Politonalidade, Polimodalidade e Pandiatonicismo',
+          title: 'Politonalidade, polimodalidade e pandiatonicismo',
           explanation:
             'A politonalidade sobrepõe duas ou mais tonalidades simultaneamente — a bitonalidade de Milhaud pode colocar C maior na mão direita contra F# maior na esquerda, criando uma sonoridade densa e cintilante que não é tonal nem atonal. A polimodalidade sobrepõe modos diferentes sobre a mesma tónica: C lídio na melodia com C mixolídio no acompanhamento produz nove classes de altura distintas — as sete habituais mais F# (do lídio) e Bb (do mixolídio) — com inflexões modais conflituantes entre as vozes. O pandiatonicismo usa todas as notas de uma escala diatónica livremente, descartando regras de harmonia funcional — qualquer combinação é válida, produzindo música que soa tonal mas resiste à resolução. As obras neoclássicas de Stravinsky epitomizam esta técnica.',
           tryThisLabel: 'Ouve C aumentado — a tríade de tons inteiros, sem centro tonal',
         },
         {
-          title: 'Microtonalidade e Consciência Espectral',
+          title: 'Microtonalidade e consciência espectral',
           explanation:
             'A microtonalidade estende o contínuo de alturas para além das 12 divisões iguais: quartos de tom dividem cada meio-tom ao meio (24 notas por oitava), a afinação justa afina os intervalos segundo razões de frequência puras, e a afinação espectral, iniciada por Gérard Grisey e Tristan Murail, deriva intervalos da série de harmónicos. Temperamentos iguais alternativos — 19-TET, 31-TET, 53-TET — oferecem diferentes compromissos entre consonância e flexibilidade. Embora o motor desta aplicação opere em 12-TET padrão, a consciência dos sistemas microtonais revela que a escala cromática de 12 notas é uma convenção histórica, não uma inevitabilidade acústica.',
           tryThisLabel: 'Ouve a escala cromática 12-TET — uma de muitas divisões possíveis',
@@ -478,7 +478,7 @@ const curriculumL8: CurriculumLevelOverlay = {
 
     // ── U27 M4: Minimalism and Aleatory ───────────────────────────────────────
     l8u27m4: {
-      title: 'Minimalismo, Aleatoriedade e Técnicas Expandidas',
+      title: 'Minimalismo, aleatoriedade e técnicas expandidas',
       subtitle:
         'Desfasamento, processo aditivo, música aleatória e novos recursos sonoros',
       objectives: [
@@ -489,19 +489,19 @@ const curriculumL8: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Minimalismo: Desfasamento e Processo Aditivo',
+          title: 'Minimalismo: desfasamento e processo aditivo',
           explanation:
             'O minimalismo emprega estruturas repetitivas que evoluem gradualmente. O desfasamento (phase shifting) de Steve Reich começa dois padrões idênticos em sincronia perfeita, depois empurra um ligeiramente à frente — os padrões de interferência resultantes criam relações rítmicas e melódicas em constante mudança até as duas partes eventualmente se realinharem. O processo aditivo de Philip Glass expande padrões adicionando notas incrementalmente: uma célula de 4 notas torna-se 5, depois 6, depois 8, construindo complexidade a partir do material inicial mais simples possível. O minimalismo de drone (La Monte Young) sustenta sons durante períodos muito longos, enquanto o minimalismo baseado em pulsação (In C, de Terry Riley) mantém uma pulsação rítmica constante enquanto os padrões e a harmonia evoluem lentamente; ambos transformam a percepção do tempo pelo ouvinte.',
           tryThisLabel: 'Toca um padrão repetitivo com estas notas — a matéria-prima do minimalismo',
         },
         {
-          title: 'Aleatoriedade e Música de Acaso',
+          title: 'Aleatoriedade e música de acaso',
           explanation:
             'A aleatoriedade (música de acaso) introduz indeterminação na composição ou na interpretação. John Cage usou operações do I Ching, lançamentos de moedas e mapas estelares para determinar alturas, durações e dinâmicas — removendo inteiramente as escolhas subjetivas do compositor. Witold Lutoslawski desenvolveu a aleatoriedade controlada: os intérpretes escolhem livremente dentro de limites definidos (conteúdo de alturas fixo, ritmo livre), criando passagens de caos controlado. A forma móvel (Klavierstuck XI de Stockhausen, Terceira Sonata para Piano de Boulez) permite aos intérpretes tocar secções em qualquer ordem, de modo que cada interpretação cria uma trajetória formal única. Estas abordagens questionaram a própria definição de "obra" musical.',
           tryThisLabel: 'Vê todas as 12 classes de altura — a aleatoriedade recorre ao espectro completo',
         },
         {
-          title: 'Técnicas Expandidas',
+          title: 'Técnicas expandidas',
           explanation:
             'As técnicas expandidas transformam os instrumentos para além da sua paleta sonora convencional. O piano preparado (John Cage) coloca parafusos, porcas, borracha e feltro entre as cordas, convertendo o piano num conjunto de percussão para um só intérprete com timbres imprevisíveis. Os multifónicos extraem várias alturas simultâneas de um único instrumento de sopro através de dedilhações e embocaduras especializadas. O sul ponticello (arco perto do cavalete) e o col legno (golpear com a madeira do arco) alteram radicalmente o timbre das cordas. O sprechstimme (emissão vocal meio cantada, meio falada, usada pela primeira vez por Humperdinck em 1897 e tornada famosa pelo Pierrot lunaire de Schoenberg) habita o território entre a fala e o canto. Estas técnicas redefiniram o que constitui material musical em si.',
           tryThisLabel: 'Ouve a escala octatónica — recurso de Bartok e Stravinsky',
@@ -525,7 +525,7 @@ const curriculumL8: CurriculumLevelOverlay = {
 
     // ── U27 M5: Advanced Rhythm ───────────────────────────────────────────────
     l8u27m5: {
-      title: 'Ritmo Avançado: Polirritmia, Hemíola, Modulação Métrica',
+      title: 'Ritmo avançado: polirritmia, hemíola, modulação métrica',
       subtitle:
         'Quiálteras complexas, ritmos cruzados, polirritmia e modulação métrica',
       objectives: [
@@ -535,19 +535,19 @@ const curriculumL8: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Quiálteras Complexas e Ritmos Cruzados',
+          title: 'Quiálteras complexas e ritmos cruzados',
           explanation:
             'Para além das tercinas simples, as quiálteras complexas subdividem os tempos em quintinas (5 no espaço de 4), septinas (7:4 ou 7:6) e quiálteras aninhadas (tercinas dentro de tercinas, produzindo 9 subdivisões). Os ritmos cruzados sobrepõem agrupamentos diferentes simultaneamente: 3 contra 2 (três notas iguais numa voz contra duas noutra), 4 contra 3, ou 5 contra 4. A percepção-chave é que os ritmos cruzados criam dissonância rítmica análoga à dissonância harmónica — os pulsos conflituantes geram tensão que se resolve quando se realinham num tempo forte partilhado. Este princípio está na base de grande parte do rubato de Chopin, da complexidade rítmica de Brahms e de virtualmente toda a percussão da África subsariana.',
           tryThisLabel: 'Toca a escala — experimenta agrupar as notas em 3 e depois em 2',
         },
         {
-          title: 'Polirritmia vs. Polimetria e Hemíola',
+          title: 'Polirritmia vs. polimetria e hemíola',
           explanation:
             'Polirritmia e polimetria são frequentemente confundidas mas estruturalmente distintas. A polirritmia sobrepõe diferentes agrupamentos rítmicos dentro de um metro partilhado — os tempos fortes continuam a alinhar-se (3 contra 2 dentro de um compasso de 6/8). A polimetria sobrepõe metros diferentes simultaneamente — uma voz em 3/4 contra outra em 4/4 — de modo que os tempos fortes divergem e só se realinham no mínimo múltiplo comum (a cada 12 tempos). A hemíola é um ritmo cruzado específico e historicamente ubíquo: dois compassos de metro ternário (3+3) reinterpretados como três grupos binários (2+2+2), ou vice-versa em tempo composto. A hemíola permeia Handel, Brahms e a música latino-americana, criando uma ambiguidade métrica momentânea que energiza passagens cadenciais e de transição.',
           tryThisLabel: 'Toca em grupos de 2, depois de 3 — sente o ritmo cruzado',
         },
         {
-          title: 'Modulação Métrica e Ritmo Aditivo',
+          title: 'Modulação métrica e ritmo aditivo',
           explanation:
             'A modulação métrica (técnica assinatura de Elliott Carter) usa um valor rítmico partilhado como pivot entre tempos com precisão matemática. Se as colcheias em tercina no tempo antigo se tornam colcheias regulares no novo tempo, o novo tempo é exatamente 3/2 do antigo. Modulações baseadas em quintinas produzem razões 5:4; a técnica encadeia-se para percorrer múltiplos tempos. Os ritmos aditivos constroem padrões a partir de agrupamentos desiguais — 2+2+3, 3+2+2+3 — produzindo metros assimétricos centrais na música balcânica (aksak), em Bartok, Stravinsky e rock progressivo. As fórmulas de compasso irracionais (p. ex., 4/3, 5/6) estendem esta lógica ainda mais, especificando relações de tempo em vez de divisões tradicionais de pulso.',
           tryThisLabel: 'Toca o modo Dórico — experimenta acentuar cada 5.ª nota',

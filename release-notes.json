@@ -2,6 +2,16 @@
   "$comment": "Release notes for the update prompt (W9b). Newest first. Adding an entry = a new release: increment `release` by 1, one line per language (EN / PT-PT / ES, max 160 characters, no line breaks). `critical: true` marks an emergency: every app on an older release applies it at the next safe moment, even after the learner chose Later. The build reads this file (vite.config.ts) and publishes dist/version.json; a deploy without a new entry shows no What's-new line. CLAUDE.md, PWA section.",
   "releases": [
     {
+      "release": 7,
+      "date": "2026-11-05",
+      "critical": false,
+      "notes": {
+        "en": "Three questions now use the → arrow and the term \"normal order\"; their scores start fresh. Portuguese and Spanish use standard conservatory terms.",
+        "pt": "Termos de conservatório (retardo, reexposição, homónima) e títulos só com maiúscula inicial. Três perguntas recomeçam a pontuação.",
+        "es": "Términos de conservatorio (retardo, reexposición, homónima) y títulos solo con mayúscula inicial. Tres preguntas reinician su puntuación."
+      }
+    },
+    {
       "release": 6,
       "date": "2026-11-05",
       "critical": false,

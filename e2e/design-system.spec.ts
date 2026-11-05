@@ -438,8 +438,8 @@ async function openLessonBySearch(page: Page, title: string) {
  *  exercises run in a focused check opened from the lesson's Check section. */
 const EXERCISE_WORDS = {
   en: { start: 'Start the check', submit: 'Submit', next: /^(Continue|Next)$/, check: 'Check Answer' },
-  pt: { start: 'Começar a verificação', submit: 'Enviar', next: /^(Continuar|Seguinte)$/, check: 'Verificar Resposta' },
-  es: { start: 'Empezar la comprobación', submit: 'Enviar', next: /^(Continuar|Siguiente)$/, check: 'Comprobar Respuesta' },
+  pt: { start: 'Começar a verificação', submit: 'Enviar', next: /^(Continuar|Seguinte)$/, check: 'Verificar resposta' },
+  es: { start: 'Empezar la comprobación', submit: 'Enviar', next: /^(Continuar|Siguiente)$/, check: 'Comprobar respuesta' },
 } as const;
 type Lang = keyof typeof EXERCISE_WORDS;
 
@@ -511,17 +511,17 @@ const W4A_QUESTIONS = {
   },
   pt: {
     keySigPrompt: 'Que tonalidade maior tem esta armação de clave?',
-    keySig: 'Armações de Clave — Primeiras Quatro Tonalidades',
-    keySigWide: 'Todas as Tonalidades Maiores e o Círculo de Quintas',
-    step: { lesson: 'Meios-Tons, Tons e Acidentes', choice: 'Meio-tom' },
-    number: { lesson: 'Intervalos por Número', choice: /^(Uníssono|[2-7]\.ª|Oitava)$/ },
+    keySig: 'Armações de clave — primeiras quatro tonalidades',
+    keySigWide: 'Todas as tonalidades maiores e o círculo de quintas',
+    step: { lesson: 'Meios-tons, tons e acidentes', choice: 'Meio-tom' },
+    number: { lesson: 'Intervalos por número', choice: /^(Uníssono|[2-7]\.ª|Oitava)$/ },
   },
   es: {
     keySigPrompt: '¿Qué tonalidad mayor tiene esta armadura de clave?',
-    keySig: 'Armaduras de Clave — Primeras Cuatro Tonalidades',
-    keySigWide: 'Todas las Tonalidades Mayores y el Círculo de Quintas',
-    step: { lesson: 'Semitonos, Tonos y Alteraciones', choice: 'Semitono' },
-    number: { lesson: 'Intervalos por Número', choice: /^(Unísono|[2-7]\.ª|Octava)$/ },
+    keySig: 'Armaduras de clave — primeras cuatro tonalidades',
+    keySigWide: 'Todas las tonalidades mayores y el círculo de quintas',
+    step: { lesson: 'Semitonos, tonos y alteraciones', choice: 'Semitono' },
+    number: { lesson: 'Intervalos por número', choice: /^(Unísono|[2-7]\.ª|Octava)$/ },
   },
 } as const;
 

@@ -18,7 +18,7 @@ import { levelCorpus } from '../src/data/exercises/__tests__/learnCorpus';
 const MODULE = 'l2u5m3'; // Relative and Parallel Keys: 9 multiple-choice questions
 const W = {
   en: { lesson: 'Relative and Parallel Keys', start: 'Start the check', submit: 'Submit', cont: 'Continue', show: 'Show on the piano', hear: 'Hear it', retry: /have another go\.$/, hint: /^(Hint: |Look again at)/, second: 'Correct on the second try', practise: "Practise the one I didn't get first time", practiceScore: '1 of 1 right', check: 'Check' },
-  pt: { lesson: 'Tonalidades Relativas e Paralelas', start: 'Começar a verificação', submit: 'Enviar', cont: 'Continuar', show: 'Mostrar no piano', hear: 'Ouvir', retry: /tenta outra vez\.$/, hint: /^(Dica: |Volta a ver)/, second: 'Correto à segunda tentativa', practise: 'Praticar a que não acertei à primeira', practiceScore: '1 de 1 certas', check: 'Verificação' },
+  pt: { lesson: 'Tonalidades relativas e homónimas', start: 'Começar a verificação', submit: 'Enviar', cont: 'Continuar', show: 'Mostrar no piano', hear: 'Ouvir', retry: /tenta outra vez\.$/, hint: /^(Dica: |Volta a ver)/, second: 'Correto à segunda tentativa', practise: 'Praticar a que não acertei à primeira', practiceScore: '1 de 1 certas', check: 'Verificação' },
 } as const;
 type Lang = keyof typeof W;
 

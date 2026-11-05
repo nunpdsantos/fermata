@@ -339,7 +339,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         '¿Cuál de estas afirmaciones sobre la armonía no funcional del Romanticismo tardío es verdadera?',
       hintTemplate:
-        'En el Romanticismo tardío, los acordes se enlazan a menudo por cercanía en la conducción de voces, notas comunes o color, en lugar de por la función tónica–dominante; el planing mueve la forma de un acorde en paralelo.',
+        'En el Romanticismo tardío, los acordes se enlazan a menudo por cercanía en la conducción de voces, notas comunes o color, en lugar de por la función tónica–dominante; el paralelismo mueve la forma de un acorde en paralelo.',
       choiceSets: [
         [
           'Las conexiones no funcionales entre acordes favorecen principalmente la fluidez lineal y alturas compartidas',
@@ -348,10 +348,10 @@ const overlay: TemplateLevelOverlay = {
           'Las conexiones no funcionales entre acordes favorecen principalmente la eliminación de alturas comunes entre acordes sucesivos',
         ],
         [
-          'El planing cromático mueve la forma de un acorde en paralelo, manteniendo su cualidad exacta',
-          'El planing cromático mueve la forma de un acorde en paralelo, ajustándola en cada paso a la tonalidad',
-          'El planing cromático mueve todas las voces por movimiento contrario hacia la tónica',
-          'El planing cromático mantiene un acorde y solo cambia la nota del bajo',
+          'El paralelismo estricto (cromático) mueve la forma de un acorde en paralelo, manteniendo su cualidad exacta',
+          'El paralelismo estricto (cromático) mueve la forma de un acorde en paralelo, ajustándola en cada paso a la tonalidad',
+          'El paralelismo estricto (cromático) mueve todas las voces por movimiento contrario hacia la tónica',
+          'El paralelismo estricto (cromático) mantiene un acorde y solo cambia la nota del bajo',
         ],
         [
       'Los cambios cromáticos frecuentes y los destinos tonales lejanos suelen debilitar la sensación de una tonalidad estable',
@@ -454,41 +454,41 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         '¿Cuál de estas afirmaciones sobre el contrapunto de cuarta especie (sincopado) es verdadera?',
       hintTemplate:
-        'La cuarta especie liga una nota de un tiempo débil por encima de la barra de compás. Si la nota ligada es disonante en el tiempo fuerte, es una suspensión: preparada como consonancia, resuelta bajando por grado conjunto. Por encima del cantus: 7-6, 4-3, 9-8; por debajo: 2-3.',
+        'La cuarta especie liga una nota de un tiempo débil por encima de la barra de compás. Si la nota ligada es disonante en el tiempo fuerte, es un retardo: preparado como consonancia, resuelto bajando por grado conjunto. Por encima del cantus: 7-6, 4-3, 9-8; por debajo: 2-3.',
       choiceSets: [
         [
-      "En una suspensión, la preparación en tiempo débil queda ligada a la disonancia en tiempo fuerte y resuelve por grado conjunto de la nota superior a la inferior",
-      "En una suspensión, la preparación en tiempo fuerte queda ligada a la disonancia en tiempo débil y resuelve por grado conjunto de la nota superior a la inferior",
-      "En una suspensión, la preparación en tiempo débil queda ligada a la disonancia en tiempo fuerte y resuelve por grado conjunto de la nota inferior a la superior",
-      "En una suspensión, la preparación en tiempo fuerte queda ligada a la disonancia en tiempo débil y resuelve por grado conjunto de la nota inferior a la superior",
+      "En un retardo, la preparación en tiempo débil queda ligada a la disonancia en tiempo fuerte y resuelve por grado conjunto de la nota superior a la inferior",
+      "En un retardo, la preparación en tiempo fuerte queda ligada a la disonancia en tiempo débil y resuelve por grado conjunto de la nota superior a la inferior",
+      "En un retardo, la preparación en tiempo débil queda ligada a la disonancia en tiempo fuerte y resuelve por grado conjunto de la nota inferior a la superior",
+      "En un retardo, la preparación en tiempo fuerte queda ligada a la disonancia en tiempo débil y resuelve por grado conjunto de la nota inferior a la superior",
     ],
         [
-      "Una suspensión se prepara como consonancia y resuelve bajando por grado conjunto",
-      "Una suspensión se prepara como disonancia y resuelve subiendo por grado conjunto",
-      "Una suspensión se prepara como consonancia y resuelve subiendo por grado conjunto",
-      "Una suspensión se prepara como disonancia y resuelve bajando por grado conjunto",
+      "Un retardo se prepara como consonancia y resuelve bajando por grado conjunto",
+      "Un retardo se prepara como disonancia y resuelve subiendo por grado conjunto",
+      "Un retardo se prepara como consonancia y resuelve subiendo por grado conjunto",
+      "Un retardo se prepara como disonancia y resuelve bajando por grado conjunto",
     ],
         [
-      'Por encima del cantus, las principales suspensiones disonantes son 7-6, 4-3 y 9-8; por debajo, 2-3',
-      'Por encima del cantus, las principales suspensiones disonantes son 2-3, 4-3 y 9-8; por debajo, 7-6',
-      'Por encima del cantus, las principales suspensiones disonantes son 7-6, 2-3 y 9-8; por debajo, 4-3',
-      'Por encima del cantus, las principales suspensiones disonantes son 7-6, 4-3 y 2-3; por debajo, 9-8',
+      'Por encima del cantus, los principales retardos disonantes son 7-6, 4-3 y 9-8; por debajo, 2-3',
+      'Por encima del cantus, los principales retardos disonantes son 2-3, 4-3 y 9-8; por debajo, 7-6',
+      'Por encima del cantus, los principales retardos disonantes son 7-6, 2-3 y 9-8; por debajo, 4-3',
+      'Por encima del cantus, los principales retardos disonantes son 7-6, 4-3 y 2-3; por debajo, 9-8',
     ],
       ],
     },
     {
       // multiple_choice
       promptTemplate:
-        '¿Cuál de estas afirmaciones sobre las cadenas de suspensiones y la quinta especie (florida) es verdadera?',
+        '¿Cuál de estas afirmaciones sobre las cadenas de retardos y la quinta especie (florida) es verdadera?',
       hintTemplate:
-        'En una cadena, cada resolución queda ligada y se convierte en la suspensión siguiente. La quinta especie (contrapunto florido) mezcla en una sola línea los valores de las cuatro primeras especies, cada uno con sus reglas.',
+        'En una cadena, cada resolución queda ligada y se convierte en el retardo siguiente. La quinta especie (contrapunto florido) mezcla en una sola línea los valores de las cuatro primeras especies, cada uno con sus reglas.',
       nudgeTemplate: 'En una cadena, sigue cada nota que acaba de resolver: ¿qué le ocurre en la siguiente barra de compás? En la quinta especie (contrapunto florido), pregúntate si desecha lo que enseñaron las cuatro especies anteriores o si se apoya en ello.',
       choiceSets: [
         [
-      "En una cadena de suspensiones, cada resolución queda ligada al siguiente acorde para preparar otra suspensión",
-      'En una cadena de suspensiones, cada suspensión resuelve subiendo por grado para convertirse en la siguiente preparación',
-      "En una cadena de suspensiones, cada resolución salta al siguiente acorde para preparar otra suspensión",
-      'En una cadena de suspensiones, cada resolución se sustituye por un silencio antes de la siguiente preparación',
+      "En una cadena de retardos, cada resolución queda ligada al siguiente acorde para preparar otro retardo",
+      'En una cadena de retardos, cada retardo resuelve subiendo por grado para convertirse en la siguiente preparación',
+      "En una cadena de retardos, cada resolución salta al siguiente acorde para preparar otro retardo",
+      'En una cadena de retardos, cada resolución se sustituye por un silencio antes de la siguiente preparación',
     ],
         [
           "La quinta especie combina libremente los valores anteriores manteniendo sus reglas de disonancia",
@@ -498,7 +498,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'El contrapunto florido mantiene las reglas de cada especie anterior para sus valores',
-          "El contrapunto florido aplica reglas de suspensiones a notas de paso y reglas de paso a suspensiones",
+          "El contrapunto florido aplica reglas de retardos a notas de paso y reglas de paso a retardos",
           "El contrapunto florido abandona reglas anteriores cuando redondas y síncopa coexisten en la misma línea",
           "El contrapunto florido exige que cada valor de nota use una regla nueva sin relación con especies anteriores",
         ],

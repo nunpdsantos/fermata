@@ -295,10 +295,10 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-          { label: "The standard progression is T -> PD -> D -> T", correct: true },
-          { label: 'The standard progression is T -> PD -> D -> PD', correct: false },
-          { label: 'The standard progression is PD -> D -> PD -> T', correct: false },
-          { label: 'The standard progression is T -> D -> T -> PD', correct: false },
+          { label: "The standard progression is T → PD → D → T", correct: true },
+          { label: 'The standard progression is T → PD → D → PD', correct: false },
+          { label: 'The standard progression is PD → D → PD → T', correct: false },
+          { label: 'The standard progression is T → D → T → PD', correct: false },
         ],
             [
               { label: 'IV and ii (and IV7, ii7) are the main pre-dominant chords', correct: true },

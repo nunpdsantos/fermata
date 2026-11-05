@@ -286,3 +286,55 @@ for (const lang of CONTENT_LANGS) {
     });
   });
 }
+
+// Frozen 03fc07d melodies: the accepted baseline, including every wrong option.
+import previousMelodies from './melodies-v3.json';
+import exercisesL9 from '../exercisesL9';
+import { melodyCueHits, melodyCuePick, multisetOverlap, type MelodyFeature } from './answerCues';
+
+const melodies = Object.values(exercisesL9).flat().filter(e => e.config.type === 'ear_training' && e.config.mode === 'melody');
+const melodyConfigs = melodies.map(e => {
+  if (e.config.type !== 'ear_training' || !e.config.melodyChoices || !e.config.root) throw new Error(e.id);
+  return { ...e.config, root: e.config.root, melodyChoices: e.config.melodyChoices };
+});
+const melodyFeatures: MelodyFeature[] = ['pitch', 'pitchClass', 'contour', 'contourBag', 'positional', 'positionalPC'];
+
+describe('melody dictation: two-sided overlap cues on the accepted main baseline', () => {
+  it('preserves all nine complete melody items exactly as on 03fc07d', () => {
+    expect(melodies).toEqual(previousMelodies);
+    expect(melodyConfigs.every(c => c.melodyChoices.length === 3 && c.melodyChoices.filter(o => o.correct).length === 1)).toBe(true);
+  });
+
+  it('counts repeated pitches as a multiset and abstains on all ties', () => {
+    expect(multisetOverlap([60, 60, 62], [60, 62, 62])).toBe(2);
+    for (const most of [true, false]) {
+      expect(melodyCuePick(Array.from({ length: 3 }, (_, i) => ({ notes: ['C4', 'D4'], correct: i === 0 })), 'pitch', most)).toBeNull();
+    }
+  });
+
+  for (const feature of melodyFeatures) for (const most of [true, false]) {
+    it(`${feature}: ${most ? 'centroid' : 'anti-centroid'} hits at most 4 of 9`, () => {
+      expect(melodyConfigs).toHaveLength(9);
+      expect(melodyCueHits(melodyConfigs, feature, most)).toBeLessThanOrEqual(4);
+    });
+    it(`${feature}: a planted ${most ? 'centroid' : 'anti-centroid'} bias fails that same limit`, () => {
+      const seed = previousMelodies.find(e => melodyCuePick(e.config.melodyChoices, feature, most) !== null)?.config.melodyChoices
+        ?? [
+          { notes: ['C4', 'D4', 'E4'], correct: false },
+          { notes: ['C4', 'D4', 'F4'], correct: false },
+          { notes: ['G4', 'G4', 'E4'], correct: false },
+        ];
+      const picked = melodyCuePick(seed, feature, most);
+      expect(picked).not.toBeNull();
+      const planted = Array.from({ length: 9 }, () => ({ melodyChoices: seed.map((c, i) => ({ ...c, correct: i === picked })) }));
+      expect(melodyCueHits(planted, feature, most)).toBe(9);
+      expect(melodyCueHits(planted, feature, most) <= 4).toBe(false);
+    });
+  }
+
+  it('main passes every overlap gate with ties making no pick', () => {
+    const before = previousMelodies.map(e => e.config);
+    expect(melodyFeatures.map(f => [melodyCueHits(before, f, true), melodyCueHits(before, f, false)]))
+      .toEqual([[1, 1], [2, 1], [2, 2], [1, 4], [0, 0], [0, 0]]);
+  });
+});

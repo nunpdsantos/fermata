@@ -1,0 +1,398 @@
+[
+  {
+    "id": "l9u32m1e5",
+    "type": "ear_training",
+    "prompt": "Listen to the melody and choose the one you heard.",
+    "config": {
+      "type": "ear_training",
+      "mode": "melody",
+      "root": "C",
+      "rootAccidental": "",
+      "melodyChoices": [
+        {
+          "notes": [
+            "C4",
+            "D4",
+            "E4",
+            "D4",
+            "C4"
+          ],
+          "correct": true
+        },
+        {
+          "notes": [
+            "E4",
+            "F4",
+            "G4",
+            "F4",
+            "E4"
+          ],
+          "correct": false
+        },
+        {
+          "notes": [
+            "G4",
+            "E4",
+            "C4",
+            "B3",
+            "G3"
+          ],
+          "correct": false
+        }
+      ]
+    },
+    "hint": "Follow the contour first: does the line come back to where it started, or keep climbing?"
+  },
+  {
+    "id": "l9u32m1e6",
+    "type": "ear_training",
+    "prompt": "Listen to the melody and choose the one you heard.",
+    "config": {
+      "type": "ear_training",
+      "mode": "melody",
+      "root": "C",
+      "rootAccidental": "",
+      "melodyChoices": [
+        {
+          "notes": [
+            "E4",
+            "F4",
+            "G4",
+            "E4",
+            "C4"
+          ],
+          "correct": true
+        },
+        {
+          "notes": [
+            "C4",
+            "D4",
+            "E4",
+            "F4",
+            "G4"
+          ],
+          "correct": false
+        },
+        {
+          "notes": [
+            "G4",
+            "A4",
+            "B4",
+            "G4",
+            "E4"
+          ],
+          "correct": false
+        }
+      ]
+    },
+    "hint": "It rises by step, then skips back down through the notes of the tonic chord to finish on the tonic."
+  },
+  {
+    "id": "l9u32m1e7",
+    "type": "ear_training",
+    "prompt": "Listen to the melody and choose the one you heard.",
+    "config": {
+      "type": "ear_training",
+      "mode": "melody",
+      "root": "G",
+      "rootAccidental": "",
+      "melodyChoices": [
+        {
+          "notes": [
+            "G4",
+            "B4",
+            "D5",
+            "B4",
+            "G4"
+          ],
+          "correct": true
+        },
+        {
+          "notes": [
+            "G4",
+            "A4",
+            "B4",
+            "C5",
+            "G4"
+          ],
+          "correct": false
+        },
+        {
+          "notes": [
+            "G4",
+            "D5",
+            "C5",
+            "A4",
+            "G4"
+          ],
+          "correct": false
+        }
+      ]
+    },
+    "hint": "Steps or skips? A melody that outlines the tonic chord moves by thirds and ends where it began."
+  },
+  {
+    "id": "l9u32m1e8",
+    "type": "ear_training",
+    "prompt": "Listen to the melody and choose the one you heard.",
+    "config": {
+      "type": "ear_training",
+      "mode": "melody",
+      "root": "F",
+      "rootAccidental": "",
+      "melodyChoices": [
+        {
+          "notes": [
+            "A4",
+            "G4",
+            "F4",
+            "E4",
+            "F4"
+          ],
+          "correct": true
+        },
+        {
+          "notes": [
+            "F4",
+            "A4",
+            "G4",
+            "F4",
+            "A4"
+          ],
+          "correct": false
+        },
+        {
+          "notes": [
+            "C5",
+            "E5",
+            "D5",
+            "C5",
+            "D5"
+          ],
+          "correct": false
+        }
+      ]
+    },
+    "hint": "Listen to the ending: the last note is the tonic, reached from the note a half step below it."
+  },
+  {
+    "id": "l9u32m1e9",
+    "type": "ear_training",
+    "prompt": "Listen to the melody and choose the one you heard.",
+    "config": {
+      "type": "ear_training",
+      "mode": "melody",
+      "root": "C",
+      "rootAccidental": "",
+      "melodyChoices": [
+        {
+          "notes": [
+            "G4",
+            "E4",
+            "F4",
+            "D4",
+            "C4"
+          ],
+          "correct": true
+        },
+        {
+          "notes": [
+            "G4",
+            "F4",
+            "E4",
+            "C4",
+            "D4"
+          ],
+          "correct": false
+        },
+        {
+          "notes": [
+            "G4",
+            "D4",
+            "C4",
+            "E4",
+            "B3"
+          ],
+          "correct": false
+        }
+      ]
+    },
+    "hint": "It falls from the 5th to the tonic, but not straight down the scale: listen for the skips."
+  },
+  {
+    "id": "l9u32m2e4",
+    "type": "ear_training",
+    "prompt": "Listen to the melody and choose the one you heard.",
+    "config": {
+      "type": "ear_training",
+      "mode": "melody",
+      "root": "C",
+      "rootAccidental": "",
+      "melodyChoices": [
+        {
+          "notes": [
+            "C4",
+            "C#4",
+            "D4",
+            "E4",
+            "D4"
+          ],
+          "correct": true
+        },
+        {
+          "notes": [
+            "E4",
+            "F4",
+            "F#4",
+            "G4",
+            "E4"
+          ],
+          "correct": false
+        },
+        {
+          "notes": [
+            "G4",
+            "G#4",
+            "A4",
+            "B4",
+            "G4"
+          ],
+          "correct": false
+        }
+      ]
+    },
+    "hint": "A chromatic passing tone fills a whole step: listen for the note squeezed between the first two scale notes."
+  },
+  {
+    "id": "l9u32m2e5",
+    "type": "ear_training",
+    "prompt": "Listen to the melody and choose the one you heard.",
+    "config": {
+      "type": "ear_training",
+      "mode": "melody",
+      "root": "C",
+      "rootAccidental": "",
+      "melodyChoices": [
+        {
+          "notes": [
+            "E4",
+            "D#4",
+            "E4",
+            "F4",
+            "E4"
+          ],
+          "correct": true
+        },
+        {
+          "notes": [
+            "E4",
+            "F4",
+            "F#4",
+            "G4",
+            "E4"
+          ],
+          "correct": false
+        },
+        {
+          "notes": [
+            "E4",
+            "G4",
+            "G#4",
+            "A4",
+            "E4"
+          ],
+          "correct": false
+        }
+      ]
+    },
+    "hint": "One note steps just outside the key and comes straight back: a chromatic neighbour tone."
+  },
+  {
+    "id": "l9u32m2e6",
+    "type": "ear_training",
+    "prompt": "Listen to the melody and choose the one you heard.",
+    "config": {
+      "type": "ear_training",
+      "mode": "melody",
+      "root": "C",
+      "rootAccidental": "",
+      "melodyChoices": [
+        {
+          "notes": [
+            "E4",
+            "F#4",
+            "G4",
+            "F4",
+            "E4"
+          ],
+          "correct": true
+        },
+        {
+          "notes": [
+            "C4",
+            "C#4",
+            "D4",
+            "E4",
+            "C4"
+          ],
+          "correct": false
+        },
+        {
+          "notes": [
+            "G4",
+            "G#4",
+            "A4",
+            "G4",
+            "B4"
+          ],
+          "correct": false
+        }
+      ]
+    },
+    "hint": "Listen for the note that pulls up into G by a half step: a secondary leading tone (V/V)."
+  },
+  {
+    "id": "l9u32m2e7",
+    "type": "ear_training",
+    "prompt": "Listen to the melody and choose the one you heard.",
+    "config": {
+      "type": "ear_training",
+      "mode": "melody",
+      "root": "C",
+      "rootAccidental": "",
+      "melodyChoices": [
+        {
+          "notes": [
+            "G4",
+            "G#4",
+            "A4",
+            "G4",
+            "E4"
+          ],
+          "correct": true
+        },
+        {
+          "notes": [
+            "E4",
+            "D#4",
+            "E4",
+            "F4",
+            "G4"
+          ],
+          "correct": false
+        },
+        {
+          "notes": [
+            "C4",
+            "D4",
+            "D#4",
+            "E4",
+            "C4"
+          ],
+          "correct": false
+        }
+      ]
+    },
+    "hint": "A sharp leads up by a half step to the next note. Where does the line go after it?"
+  }
+]

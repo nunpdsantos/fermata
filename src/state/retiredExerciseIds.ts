@@ -229,4 +229,12 @@ export const RETIRED_EXERCISE_IDS: readonly RetiredExerciseIds[] = [
       l9u32m4: 'e3',
     },
   },
+  {
+    version: 4,
+    ids: {
+      l4u13m1: 'g3',
+      l5u15m5: 'g3',
+      l8u27m1: 'g5',
+    },
+  },
 ];

@@ -266,10 +266,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Pitch-class set integers range from 0 to 7', correct: false },
             ],
             [
-              { label: "Normal form packs the notes tightly within an octave, read from low to high", correct: true },
-              { label: "Normal form packs the notes tightly within an octave, read from high to low", correct: false },
-              { label: "Normal form packs the notes across the widest span within an octave, read from low to high", correct: false },
-              { label: "Normal form packs the notes across the widest span within an octave, read from high to low", correct: false },
+              { label: "Normal order packs the notes tightly within an octave, read from low to high", correct: true },
+              { label: "Normal order packs the notes tightly within an octave, read from high to low", correct: false },
+              { label: "Normal order packs the notes across the widest span within an octave, read from low to high", correct: false },
+              { label: "Normal order packs the notes across the widest span within an octave, read from high to low", correct: false },
             ],
             [
               { label: 'The pitch classes {0, 4, 7} spell the notes of a C major chord', correct: true },

@@ -52,8 +52,8 @@ beforeEach(() => localStorage.clear());
 
 describe('"Unlock anyway" is saved, and older saves load unchanged', () => {
   it('unlock persistence uses the current content-retirement version', () => {
-    expect(PROGRESS_STORE_VERSION).toBe(3);
-    expect(useProgressStore.persist.getOptions().version).toBe(3);
+    expect(PROGRESS_STORE_VERSION).toBe(4);
+    expect(useProgressStore.persist.getOptions().version).toBe(4);
   });
 
   it('a production-shaped main (v2) save loads byte-for-byte: nothing lost, nothing unlocked', async () => {

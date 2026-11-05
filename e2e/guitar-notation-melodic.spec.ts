@@ -4,8 +4,8 @@ import { auditPage } from './helpers/designAudit';
 // W10-UI-c: authored for the seat to run locally; builder does not run Playwright.
 const labels = {
   en: { up: '↑ Ascending', down: '↓ Descending', play: 'Play classical melodic minor ascending and descending', unit: 'Guitar Notation — Optional', modules: ['Guitar Notation: Clef and Strings', 'Guitar Notation: The Two Hands', 'Guitar Notation: Positions and Barres'], check: 'Start the check' },
-  pt: { up: '↑ Ascendente', down: '↓ Descendente', play: 'Tocar a escala menor melódica clássica a subir e a descer', unit: 'Notação de Guitarra — Opcional', modules: ['Notação de Guitarra: Clave e Cordas', 'Notação de Guitarra: As Duas Mãos', 'Notação de Guitarra: Posições e Pestanas'], check: 'Começar a verificação' },
-  es: { up: '↑ Ascendente', down: '↓ Descendente', play: 'Tocar la escala menor melódica clásica al subir y al bajar', unit: 'Notación de Guitarra — Opcional', modules: ['Notación de Guitarra: Clave y Cuerdas', 'Notación de Guitarra: Las Dos Manos', 'Notación de Guitarra: Posiciones y Cejillas'], check: 'Empezar la comprobación' },
+  pt: { up: '↑ Ascendente', down: '↓ Descendente', play: 'Tocar a escala menor melódica clássica a subir e a descer', unit: 'Notação de guitarra — opcional', modules: ['Notação de guitarra: clave e cordas', 'Notação de guitarra: as duas mãos', 'Notação de guitarra: posições e pestanas'], check: 'Começar a verificação' },
+  es: { up: '↑ Ascendente', down: '↓ Descendente', play: 'Tocar la escala menor melódica clásica al subir y al bajar', unit: 'Notación de guitarra — opcional', modules: ['Notación de guitarra: clave y cuerdas', 'Notación de guitarra: las dos manos', 'Notación de guitarra: posiciones y cejillas'], check: 'Empezar la comprobación' },
 } as const;
 
 // TopBar's nav.quickSearchLabel in each language, including its spoken hint.

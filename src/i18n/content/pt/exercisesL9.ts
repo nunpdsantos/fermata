@@ -311,7 +311,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l9u31m5e3: {
     prompt:
-      'O que dá a um acorde de 7.ª dominante a sua sensação característica de tensão e desejo de resolver?',
+      'O que dá a um acorde de 7.ª da dominante a sua sensação característica de tensão e desejo de resolver?',
     choices: [
       'O trítono entre a 3.ª e a 7.ª',
       'O trítono entre a fundamental e a 5.ª',

@@ -17,51 +17,51 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Qual destas afirmações sobre suspensões é verdadeira?',
+        'Qual destas afirmações sobre retardos é verdadeira?',
       hintTemplate:
-        'Suspensões: 4-3 resolve para uma 3.ª, 7-6 para uma 6.ª, 9-8 para uma oitava. A suspensão de baixo 2-3 resolve para baixo (o baixo desce por grau conjunto; o intervalo acima do baixo cresce de uma 2.ª para uma 3.ª). Cadeias de suspensões criam sequências. Uma suspensão é preparada como consonância e mantida como dissonância; a ornamentação pode inserir uma nota antes da resolução descendente por grau conjunto.',
+        'Retardos: 4-3 resolve para uma 3.ª, 7-6 para uma 6.ª, 9-8 para uma oitava. O retardo de baixo 2-3 resolve para baixo (o baixo desce por grau conjunto; o intervalo acima do baixo cresce de uma 2.ª para uma 3.ª). Cadeias de retardos criam sequências. Um retardo é preparado como consonância e mantido como dissonância; a ornamentação pode inserir uma nota antes da resolução descendente por grau conjunto.',
       choiceSets: [
         [
-          'Numa suspensão 4-3, a 4.ª acima do baixo resolve descendo para a 3.ª',
-          'Numa suspensão 4-3, a 3.ª acima do baixo sobe para a 4.ª',
-          'Numa suspensão 4-3, a 4.ª acima do baixo resolve subindo para a 5.ª',
-          'Numa suspensão 4-3, o baixo desce do 4.º para o 3.º grau',
+          'Num retardo 4-3, a 4.ª acima do baixo resolve descendo para a 3.ª',
+          'Num retardo 4-3, a 3.ª acima do baixo sobe para a 4.ª',
+          'Num retardo 4-3, a 4.ª acima do baixo resolve subindo para a 5.ª',
+          'Num retardo 4-3, o baixo desce do 4.º para o 3.º grau',
         ],
         [
-      "Numa suspensão 7-6, a 7.ª resolve descendo para a 6.ª",
-      'Numa suspensão 7-6, a 6.ª resolve subindo para a 7.ª',
-      'Numa suspensão 7-6, a 7.ª resolve subindo para a oitava',
-      'Numa suspensão 7-6, a 6.ª resolve descendo para a 5.ª',
+      "Num retardo 7-6, a 7.ª resolve descendo para a 6.ª",
+      'Num retardo 7-6, a 6.ª resolve subindo para a 7.ª',
+      'Num retardo 7-6, a 7.ª resolve subindo para a oitava',
+      'Num retardo 7-6, a 6.ª resolve descendo para a 5.ª',
     ],
         [
-      "Numa suspensão 9-8, a 9.ª acima do baixo resolve descendo para a oitava",
-      'Numa suspensão 9-8, a oitava acima do baixo resolve subindo para a 9.ª',
-      'Numa suspensão 9-8, a 9.ª acima do baixo resolve subindo para a 10.ª',
-      'Numa suspensão 9-8, a oitava acima do baixo resolve descendo para a 7.ª',
+      "Num retardo 9-8, a 9.ª acima do baixo resolve descendo para a oitava",
+      'Num retardo 9-8, a oitava acima do baixo resolve subindo para a 9.ª',
+      'Num retardo 9-8, a 9.ª acima do baixo resolve subindo para a 10.ª',
+      'Num retardo 9-8, a oitava acima do baixo resolve descendo para a 7.ª',
     ],
         [
-          'Numa suspensão de baixo 2-3, o baixo resolve descendo e a 2.ª passa a 3.ª',
-          'Numa suspensão de baixo 2-3, a voz superior resolve descendo para uma 3.ª',
-          'Numa suspensão de baixo 2-3, o baixo sobe por grau e a 2.ª passa a 3.ª',
-          'Numa suspensão de baixo 2-3, o baixo salta e a dissonância fica por resolver',
+          'Num retardo de baixo 2-3, o baixo resolve descendo e a 2.ª passa a 3.ª',
+          'Num retardo de baixo 2-3, a voz superior resolve descendo para uma 3.ª',
+          'Num retardo de baixo 2-3, o baixo sobe por grau e a 2.ª passa a 3.ª',
+          'Num retardo de baixo 2-3, o baixo salta e a dissonância fica por resolver',
         ],
         [
-          'Uma suspensão é preparada como consonância e depois mantida numa dissonância',
-          'Uma suspensão aparece sem preparação, no tempo forte',
-          'Uma suspensão é preparada como dissonância e resolve subindo',
-          'Uma suspensão é o mesmo que uma antecipação',
+          'Um retardo é preparado como consonância e depois mantido numa dissonância',
+          'Um retardo aparece sem preparação, no tempo forte',
+          'Um retardo é preparado como dissonância e resolve subindo',
+          'Um retardo é o mesmo que uma antecipação',
         ],
         [
-          'Uma cadeia de suspensões 7-6 faz a voz superior descer por grau',
-          'Uma cadeia de suspensões 7-6 faz a voz superior subir por grau',
-          'Uma cadeia de suspensões 7-6 é proibida no estilo da prática comum',
-          'Uma cadeia de suspensões 7-6 mantém o baixo numa só nota',
+          'Uma cadeia de retardos 7-6 faz a voz superior descer por grau',
+          'Uma cadeia de retardos 7-6 faz a voz superior subir por grau',
+          'Uma cadeia de retardos 7-6 é proibida no estilo da prática comum',
+          'Uma cadeia de retardos 7-6 mantém o baixo numa só nota',
         ],
         [
-      'Numa suspensão ornamentada, uma nota adicional adia a descida por grau até à nota de resolução',
-      'Numa suspensão ornamentada, uma nota adicional substitui a resolução descendente por grau conjunto por um salto',
-      'Numa suspensão ornamentada, uma nota adicional transforma a resolução numa subida por grau conjunto',
-      'Numa suspensão ornamentada, uma nota adicional elimina a necessidade de resolver a dissonância',
+      'Num retardo ornamentado, uma nota adicional adia a descida por grau até à nota de resolução',
+      'Num retardo ornamentado, uma nota adicional substitui a resolução descendente por grau conjunto por um salto',
+      'Num retardo ornamentado, uma nota adicional transforma a resolução numa subida por grau conjunto',
+      'Num retardo ornamentado, uma nota adicional elimina a necessidade de resolver a dissonância',
     ],
       ],
     },
@@ -72,9 +72,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Qual destas afirmações sobre apogiaturas, escapatórias e retardos é verdadeira?',
+        'Qual destas afirmações sobre apogiaturas, escapadas e retardos ascendentes é verdadeira?',
       hintTemplate:
-        'Apogiatura: salto para a dissonância, grau conjunto para a resolução — geralmente acentuada (num tempo forte). Escapatória: grau conjunto para a dissonância, salto para fora — geralmente não acentuada (num tempo fraco). Retardo: mantido como uma suspensão, resolve subindo por grau (7-8).',
+        'Apogiatura: salto para a dissonância, grau conjunto para a resolução — geralmente acentuada (num tempo forte). Escapada: grau conjunto para a dissonância, salto para fora — geralmente não acentuada (num tempo fraco). Retardo ascendente: mantido como um retardo, resolve subindo por grau (7-8).',
       choiceSets: [
         [
           'Uma apogiatura é abordada por salto e resolvida por grau, em geral num tempo forte',
@@ -83,21 +83,21 @@ const overlay: TemplateLevelOverlay = {
           'Uma apogiatura é abordada e deixada por grau na mesma direção, sempre num tempo fraco',
         ],
         [
-          'Uma escapatória é abordada por grau e deixada por salto na direção oposta',
-          'Uma escapatória é abordada por salto e deixada por grau na direção oposta',
-          'Uma escapatória é o mesmo que uma antecipação do acorde seguinte',
-          'Uma escapatória tem de voltar à nota de onde saiu, tal como uma bordadura',
+          'Uma escapada é abordada por grau e deixada por salto na direção oposta',
+          'Uma escapada é abordada por salto e deixada por grau na direção oposta',
+          'Uma escapada é o mesmo que uma antecipação do acorde seguinte',
+          'Uma escapada tem de voltar à nota de onde saiu, tal como uma bordadura',
         ],
         [
-      'Um retardo é preparado e mantido como dissonância, depois resolve subindo por grau',
-      'Um retardo é preparado e mantido como dissonância, depois resolve subindo por salto',
-      'Um retardo é atingido por salto sem preparação, depois resolve subindo por grau',
-      'Um retardo é atingido por salto sem preparação, depois resolve subindo por salto',
+      'Um retardo ascendente é preparado e mantido como dissonância, depois resolve subindo por grau',
+      'Um retardo ascendente é preparado e mantido como dissonância, depois resolve subindo por salto',
+      'Um retardo ascendente é atingido por salto sem preparação, depois resolve subindo por grau',
+      'Um retardo ascendente é atingido por salto sem preparação, depois resolve subindo por salto',
     ],
         [
-          'B mantido num acorde de C maior e a subir para C: um retardo 7-8',
-          'B mantido num acorde de C maior e a subir para C: uma suspensão 4-3',
-          'B mantido num acorde de C maior e a subir para C: uma escapatória',
+          'B mantido num acorde de C maior e a subir para C: um retardo ascendente 7-8',
+          'B mantido num acorde de C maior e a subir para C: um retardo 4-3',
+          'B mantido num acorde de C maior e a subir para C: uma escapada',
           'B mantido num acorde de C maior e a subir para C: uma apogiatura abordada por salto',
         ],
         [
@@ -115,9 +115,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Qual destas afirmações sobre pedais e notas cambiadas é verdadeira?',
+        'Qual destas afirmações sobre pedais e cambiatas é verdadeira?',
       hintTemplate:
-        'Os pedais são notas sustentadas ou repetidas (tipicamente tónica ou dominante no baixo) que criam dissonâncias com as harmonias em mudança acima. As notas cambiadas ornamentam uma nota por cima e por baixo antes de regressarem a ela. Um pedal invertido fica na voz mais aguda (soprano); um pedal duplo mantém duas alturas, frequentemente a tónica e a dominante.',
+        'Os pedais são notas sustentadas ou repetidas (tipicamente tónica ou dominante no baixo) que criam dissonâncias com as harmonias em mudança acima. As cambiatas ornamentam uma nota por cima e por baixo antes de regressarem a ela. Um pedal invertido fica na voz mais aguda (soprano); um pedal duplo mantém duas alturas, frequentemente a tónica e a dominante.',
       choiceSets: [
         [
           'Um pedal de tónica mantém o grau 1 enquanto os acordes mudam',
@@ -150,10 +150,10 @@ const overlay: TemplateLevelOverlay = {
           'Um pedal costuma mover-se por grau conjunto entre as notas de um acorde',
         ],
         [
-      'Notas cambiadas: a melodia visita as duas alturas adjacentes e regressa à nota inicial do acorde',
-      'Notas cambiadas: a melodia visita duas notas intermédias e continua até outra nota do acorde',
-      'Notas cambiadas: a melodia visita uma nota adjacente e regressa à nota inicial do acorde',
-      'Notas cambiadas: a melodia repete a nota inicial do acorde enquanto os acordes em redor mudam',
+      'Cambiatas: a melodia visita as duas alturas adjacentes e regressa à nota inicial do acorde',
+      'Cambiatas: a melodia visita duas notas intermédias e continua até outra nota do acorde',
+      'Cambiatas: a melodia visita uma nota adjacente e regressa à nota inicial do acorde',
+      'Cambiatas: a melodia repete a nota inicial do acorde enquanto os acordes em redor mudam',
     ],
       ],
     },

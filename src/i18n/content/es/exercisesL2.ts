@@ -146,7 +146,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Para eliminar la 2.ª aumentada entre el 6.º y el 7.º grado elevado de la menor armónica',
       'Para eliminar el semitono entre el 7.º grado elevado y la tónica',
-      'Para convertir la escala en su paralela mayor al elevar los grados 6.º y 7.º',
+      'Para convertir la escala en su homónima mayor al elevar los grados 6.º y 7.º',
       'Para sustituir la sensible por una nota un tono por debajo de la tónica',
     ],
     hint: 'El 7.º grado se eleva para crear una sensible un semitono por debajo de la tónica. La escala menor armónica tiene una 2.ª aumentada (3 semitonos) entre el 6.º y el 7.º grado elevado; elevar también el 6.º reduce esta distancia a un tono.',
@@ -178,25 +178,25 @@ const overlay: ExerciseLevelOverlay = {
     nudge: 'La relativa mayor comparte la armadura de clave y comienza una 3.ª menor (3 semitonos) por encima de la tónica de la tonalidad menor. Cuenta 3 semitonos hacia arriba desde D.',
   },
   l2u5m3e3: {
-    prompt: '¿Cuál es la paralela menor de G mayor?',
+    prompt: '¿Cuál es la homónima menor de G mayor?',
     choices: [
       'G menor',
       'E menor',
       'A menor',
       'C menor',
     ],
-    hint: 'Las tonalidades paralelas comparten la misma tónica pero difieren en el modo. La paralela menor de G mayor es G menor. Tienen armaduras de clave diferentes.',
-    nudge: 'Las tonalidades paralelas mantienen la misma tónica y cambian solo la cualidad (y, con ella, la armadura de clave). No las confundas con las relativas, que comparten la armadura de clave.',
+    hint: 'Las tonalidades homónimas comparten la misma tónica pero difieren en el modo. La homónima menor de G mayor es G menor. Tienen armaduras de clave diferentes.',
+    nudge: 'Las tonalidades homónimas mantienen la misma tónica y cambian solo la cualidad (y, con ella, la armadura de clave). No las confundas con las relativas, que comparten la armadura de clave.',
   },
   l2u5m3e4: {
-    prompt: '¿Cuál es la diferencia entre tonalidades relativas y tonalidades paralelas?',
+    prompt: '¿Cuál es la diferencia entre tonalidades relativas y tonalidades homónimas?',
     choices: [
-      'Las relativas comparten la misma armadura de clave; las paralelas comparten la misma tónica',
-      'Las relativas comparten la misma tónica; las paralelas comparten la misma armadura de clave',
-      'Las relativas comparten la misma tónica y armadura de clave; las paralelas no comparten ninguna',
-      'Las relativas no comparten tónica ni armadura de clave; las paralelas comparten ambas',
+      'Las relativas comparten la misma armadura de clave; las homónimas comparten la misma tónica',
+      'Las relativas comparten la misma tónica; las homónimas comparten la misma armadura de clave',
+      'Las relativas comparten la misma tónica y armadura de clave; las homónimas no comparten ninguna',
+      'Las relativas no comparten tónica ni armadura de clave; las homónimas comparten ambas',
     ],
-    hint: 'C mayor y A menor son relativas (misma armadura de clave: sin sostenidos/bemoles). C mayor y C menor son paralelas (misma tónica: C).',
+    hint: 'C mayor y A menor son relativas (misma armadura de clave: sin sostenidos/bemoles). C mayor y C menor son homónimas (misma tónica: C).',
   },
 
   // =========================================================================

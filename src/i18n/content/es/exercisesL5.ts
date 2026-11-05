@@ -137,7 +137,7 @@ const overlay: ExerciseLevelOverlay = {
       'En una cadena de V7, cada objetivo está un tono por encima de su dominante',
       'En una cadena de V7, cada objetivo está una tercera menor por encima de su dominante',
     ],
-    hint: 'Una cadena de dominantes crea tensión en cascada: p. ej., V7/vi – V7/ii – V7/V – V7 – I. Cada acorde de séptima dominante resuelve hacia el eslabón siguiente, arrastrando la armonía de vuelta a la tónica a través de un ciclo.',
+    hint: 'Una cadena de dominantes crea tensión en cascada: p. ej., V7/vi – V7/ii – V7/V – V7 – I. Cada acorde de séptima de dominante resuelve hacia el eslabón siguiente, arrastrando la armonía de vuelta a la tónica a través de un ciclo.',
   },
   l5u15m5e2: {
     prompt:
@@ -287,7 +287,7 @@ const overlay: ExerciseLevelOverlay = {
       'Usar armonías del modo opuesto sobre una tónica diferente',
       'Usar armonías de una tonalidad cercana una 5.ª por encima',
     ],
-    hint: 'La mezcla modal toma prestados acordes de la tonalidad paralela (misma tónica, modo opuesto). En C mayor, se toma prestado de C menor: bIII (Eb), iv (Fm), bVI (Ab), bVII (Bb). Añaden oscuridad y riqueza cromática.',
+    hint: 'La mezcla modal toma prestados acordes de la tonalidad homónima (misma tónica, modo opuesto). En C mayor, se toma prestado de C menor: bIII (Eb), iv (Fm), bVI (Ab), bVII (Bb). Añaden oscuridad y riqueza cromática.',
   },
 
   // ---- l5u16m5: Tercera de Picardía ----
@@ -304,25 +304,25 @@ const overlay: ExerciseLevelOverlay = {
   },
   l5u16m5e2: {
     prompt:
-      'En la mezcla modal, ¿qué significa tomar prestado de la tonalidad mayor paralela en una tonalidad menor?',
+      'En la mezcla modal, ¿qué significa tomar prestado de la tonalidad mayor homónima en una tonalidad menor?',
     choices: [
       'Usar acordes de la tonalidad mayor con la misma tónica en un contexto de tonalidad menor',
       'Usar acordes de la relativa mayor (misma armadura) en un contexto de tonalidad menor',
       "Usar acordes de una tonalidad mayor con una tónica diferente en un contexto de tonalidad menor",
       'Usar acordes de la tonalidad mayor una 5.ª por encima en un contexto de tonalidad menor',
     ],
-    hint: 'La mezcla modal funciona en ambas direcciones. Una tonalidad menor puede tomar prestado de su tonalidad mayor paralela: p. ej., en A menor, puedes tomar prestado IV de A mayor (D mayor en vez de D menor) para iluminar temporalmente la armonía.',
+    hint: 'La mezcla modal funciona en ambas direcciones. Una tonalidad menor puede tomar prestado de su tonalidad mayor homónima: p. ej., en A menor, puedes tomar prestado IV de A mayor (D mayor en vez de D menor) para iluminar temporalmente la armonía.',
   },
   l5u16m5e3: {
     prompt:
       '¿Cuál de los siguientes es un ejemplo de mezcla modal en una tonalidad menor?',
     choices: [
-      'Usar un acorde IV mayor en una tonalidad menor, prestado de la tonalidad mayor paralela',
+      'Usar un acorde IV mayor en una tonalidad menor, prestado de la tonalidad mayor homónima',
       'Usar un acorde III mayor en una tonalidad menor, compartido con la relativa mayor',
       'Usar un acorde V mayor en una tonalidad menor, construido con el 7.º grado elevado de la menor armónica',
       'Usar un acorde iv menor en una tonalidad menor, construido con su escala menor natural',
     ],
-    hint: 'El acorde V en el modo menor proviene de la menor armónica — pertenece a la propia tonalidad menor, no a la mezcla modal. La mezcla modal toma prestados acordes de la tonalidad paralela. Un IV mayor en el modo menor (p. ej., D mayor en A menor en vez de D menor) es un ejemplo habitual; el Nivel 4 relacionó el mismo acorde con la menor melódica ascendente, y ambas lecturas son habituales.',
+    hint: 'El acorde V en el modo menor proviene de la menor armónica — pertenece a la propia tonalidad menor, no a la mezcla modal. La mezcla modal toma prestados acordes de la tonalidad homónima. Un IV mayor en el modo menor (p. ej., D mayor en A menor en vez de D menor) es un ejemplo habitual; el Nivel 4 relacionó el mismo acorde con la menor melódica ascendente, y ambas lecturas son habituales.',
   },
 
   // =========================================================================
@@ -388,12 +388,12 @@ const overlay: ExerciseLevelOverlay = {
   l5u17m2e3: {
     prompt: '¿Cuál es el orden habitual de las tres secciones principales de la forma sonata?',
     choices: [
-      'Exposición → desarrollo → recapitulación',
-      'Desarrollo → recapitulación → exposición',
-      'Recapitulación → desarrollo → exposición',
-      'Recapitulación → exposición → desarrollo',
+      'Exposición → desarrollo → reexposición',
+      'Desarrollo → reexposición → exposición',
+      'Reexposición → desarrollo → exposición',
+      'Reexposición → exposición → desarrollo',
     ],
-    hint: 'Forma sonata: la exposición presenta dos temas contrastantes en tonalidades diferentes, el desarrollo los fragmenta y transforma por varias tonalidades, y la recapitulación reexpone ambos temas en la tonalidad de origen.',
+    hint: 'Forma sonata: la exposición presenta dos temas contrastantes en tonalidades diferentes, el desarrollo los fragmenta y transforma por varias tonalidades, y la reexposición presenta de nuevo ambos temas en la tonalidad de origen.',
   },
 
   // ---- l5u17m3: Textura ----

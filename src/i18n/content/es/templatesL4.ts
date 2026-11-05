@@ -74,9 +74,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        '¿Cuál de estas afirmaciones sobre apoyaturas, escapatorias y retardos ascendentes es verdadera?',
+        '¿Cuál de estas afirmaciones sobre apoyaturas, escapadas y retardos ascendentes es verdadera?',
       hintTemplate:
-        'Apoyatura: salto hacia la disonancia, grado conjunto hacia la resolución — normalmente acentuada (en un tiempo fuerte). Escapatoria: grado conjunto hacia la disonancia, salto hacia fuera — normalmente no acentuada (en un tiempo débil). Retardo ascendente: retenido como un retardo, resuelve subiendo por grado (7-8).',
+        'Apoyatura: salto hacia la disonancia, grado conjunto hacia la resolución — normalmente acentuada (en un tiempo fuerte). Escapada: grado conjunto hacia la disonancia, salto hacia fuera — normalmente no acentuada (en un tiempo débil). Retardo ascendente: retenido como un retardo, resuelve subiendo por grado (7-8).',
       choiceSets: [
         [
           'Una apoyatura se aborda por salto y se resuelve por grado, normalmente en un tiempo fuerte',
@@ -85,10 +85,10 @@ const overlay: TemplateLevelOverlay = {
           'Una apoyatura se aborda y se abandona por grado en la misma dirección, siempre en un tiempo débil',
         ],
         [
-          'Una escapatoria se aborda por grado y se abandona por salto en la dirección opuesta',
-          'Una escapatoria se aborda por salto y se abandona por grado en la dirección opuesta',
-          'Una escapatoria es lo mismo que una anticipación del acorde siguiente',
-          'Una escapatoria debe volver a la nota de la que salió, igual que una bordadura',
+          'Una escapada se aborda por grado y se abandona por salto en la dirección opuesta',
+          'Una escapada se aborda por salto y se abandona por grado en la dirección opuesta',
+          'Una escapada es lo mismo que una anticipación del acorde siguiente',
+          'Una escapada debe volver a la nota de la que salió, igual que una bordadura',
         ],
         [
       'Un retardo ascendente se prepara y se mantiene como disonancia, luego resuelve subiendo por grado',
@@ -99,7 +99,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'B retenido en un acorde de C mayor y que sube a C: un retardo ascendente 7-8',
           'B retenido en un acorde de C mayor y que sube a C: un retardo 4-3',
-          'B retenido en un acorde de C mayor y que sube a C: una escapatoria',
+          'B retenido en un acorde de C mayor y que sube a C: una escapada',
           'B retenido en un acorde de C mayor y que sube a C: una apoyatura abordada por salto',
         ],
         [
@@ -117,9 +117,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        '¿Cuál de estas afirmaciones sobre las notas pedal y las notas cambiadas es verdadera?',
+        '¿Cuál de estas afirmaciones sobre las notas pedal y las cambiatas es verdadera?',
       hintTemplate:
-        'Los pedales son notas sostenidas o repetidas (típicamente tónica o dominante en el bajo) que crean disonancias con las armonías cambiantes por encima. Las notas cambiadas adornan una nota por encima y por debajo antes de volver a ella. Un pedal invertido está en la voz más aguda (soprano); un pedal doble mantiene dos alturas, a menudo la tónica y la dominante.',
+        'Los pedales son notas sostenidas o repetidas (típicamente tónica o dominante en el bajo) que crean disonancias con las armonías cambiantes por encima. Las cambiatas adornan una nota por encima y por debajo antes de volver a ella. Un pedal invertido está en la voz más aguda (soprano); un pedal doble mantiene dos alturas, a menudo la tónica y la dominante.',
       choiceSets: [
         [
           'Un pedal de tónica mantiene el grado 1 mientras cambian los acordes',
@@ -152,10 +152,10 @@ const overlay: TemplateLevelOverlay = {
           "Un pedal típicamente se mueve por grado conjunto entre las notas de un acorde",
         ],
         [
-      'Notas cambiadas: la melodía visita las dos alturas adyacentes y regresa a la nota inicial del acorde',
-      'Notas cambiadas: la melodía visita dos notas intermedias y continúa hasta otra nota del acorde',
-      'Notas cambiadas: la melodía visita una nota adyacente y vuelve a la nota inicial del acorde',
-      'Notas cambiadas: la melodía repite la nota inicial del acorde mientras cambian los acordes de alrededor',
+      'Cambiatas: la melodía visita las dos alturas adyacentes y regresa a la nota inicial del acorde',
+      'Cambiatas: la melodía visita dos notas intermedias y continúa hasta otra nota del acorde',
+      'Cambiatas: la melodía visita una nota adyacente y vuelve a la nota inicial del acorde',
+      'Cambiatas: la melodía repite la nota inicial del acorde mientras cambian los acordes de alrededor',
     ],
       ],
     },

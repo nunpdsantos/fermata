@@ -40,7 +40,7 @@ const overlay: ExerciseLevelOverlay = {
       'Retardo C sobre V',
       'Nota de paso C sobre V',
       'Apoyatura C sobre V',
-      'Escapatoria C sobre V',
+      'Escapada C sobre V',
     ],
     hint: 'El C era consonante en el acorde IV (F-A-C), luego se mantuvo sobre el acorde V (G-B-D) donde es disonante (una 4.ª justa por encima del bajo G), y resuelve bajando por grado conjunto a B (la 3.ª de V, una 3.ª mayor por encima de G). Este es un retardo 4-3 ejemplar.',
     nudge: 'Sigue el C en tres momentos: era consonancia en el acorde IV, se mantiene mientras la armonía cambia por debajo (ahora una 4.ª por encima del bajo G) y luego baja por grado conjunto a B. ¿Qué nota extraña al acorde se prepara, se mantiene y se resuelve de esta forma?',
@@ -60,14 +60,14 @@ const overlay: ExerciseLevelOverlay = {
     nudge: 'Compárala con un retardo, que se mantiene del acorde anterior. Una apoyatura no está preparada y resuelve por grado conjunto; entonces, ¿cómo llega la melodía hasta ella?',
   },
   l4u12m2e2: {
-    prompt: '¿En qué se diferencia una escapatoria de una nota de paso?',
+    prompt: '¿En qué se diferencia una escapada de una nota de paso?',
     choices: [
-      "Una escapatoria se aborda por grado conjunto pero parte por salto en la dirección opuesta",
-      'Una escapatoria se aborda por salto pero parte por grado conjunto en la dirección opuesta',
-      'Una escapatoria se aborda por grado conjunto pero parte por grado conjunto en la misma dirección',
-      'Una escapatoria se aborda por salto pero parte por salto en la misma dirección',
+      "Una escapada se aborda por grado conjunto pero parte por salto en la dirección opuesta",
+      'Una escapada se aborda por salto pero parte por grado conjunto en la dirección opuesta',
+      'Una escapada se aborda por grado conjunto pero parte por grado conjunto en la misma dirección',
+      'Una escapada se aborda por salto pero parte por salto en la misma dirección',
     ],
-    hint: 'Una escapatoria (échappée) se mueve por grado conjunto desde una nota del acorde, luego salta en la dirección opuesta hacia la nota del acorde siguiente. Una nota de paso se mueve por grado conjunto en la misma dirección a lo largo de todo el recorrido.',
+    hint: 'Una escapada (échappée) se mueve por grado conjunto desde una nota del acorde, luego salta en la dirección opuesta hacia la nota del acorde siguiente. Una nota de paso se mueve por grado conjunto en la misma dirección a lo largo de todo el recorrido.',
     nudge: 'Comprueba dos cosas en cada nota: cómo se llega a ella y cómo se deja (por grado conjunto o por salto), y si la línea sigue en el mismo sentido o vuelve atrás. Una nota de paso se mueve por grado conjunto siempre en el mismo sentido.',
   },
   l4u12m2e3: {
@@ -75,7 +75,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Retardo ascendente',
       'Nota de paso',
-      'Escapatoria',
+      'Escapada',
       'Apoyatura',
     ],
     hint: 'Un retardo ascendente es esencialmente un retardo normal que resuelve por grado conjunto ascendente en lugar de descendente. El ejemplo más común es 7-8, donde la 7.ª por encima del bajo resuelve hacia arriba hasta la octava.',
@@ -95,14 +95,14 @@ const overlay: ExerciseLevelOverlay = {
   },
   l4u12m3e2: {
     prompt:
-      '¿Qué es una «nota cambiada» (también llamada grupo de bordaduras o doble bordadura)?',
+      '¿Qué es una «cambiata» (también llamada grupo de bordaduras o doble bordadura)?',
     choices: [
       "Una melodía rodea una nota del acorde usando las dos alturas adyacentes antes de regresar",
       "Una melodía enlaza dos notas del acorde por grados conjuntos en una dirección",
       "Una melodía repite una nota del acorde mientras cambia la armonía inferior",
       "Una melodía abandona una nota del acorde por salto y regresa por grado conjunto",
     ],
-    hint: 'Una nota cambiada (grupo de bordaduras) decora una nota del acorde moviéndose a la bordadura superior, luego a la bordadura inferior (o viceversa) antes de regresar. Por ejemplo: C-D-B-C ornamenta la nota C.',
+    hint: 'Una cambiata (grupo de bordaduras) decora una nota del acorde moviéndose a la bordadura superior, luego a la bordadura inferior (o viceversa) antes de regresar. Por ejemplo: C-D-B-C ornamenta la nota C.',
   },
   l4u12m3e3: {
     prompt: '¿Dónde se encuentra un pedal con mayor frecuencia?',

@@ -250,14 +250,14 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'En la armonía no funcional, las progresiones de acordes se impulsan por la conducción suave de voces, notas comunes o efecto colorístico en vez del ciclo funcional tradicional T–PD–D–T. Wagner, Liszt y el Chopin tardío fueron pioneros de esta aproximación.',
   },
   l6u19m4e2: {
-    prompt: '¿Qué es el planing cromático (armonía paralela)?',
+    prompt: '¿Qué es el paralelismo estricto o cromático (armonía paralela)?',
     choices: [
       'Todas las partes se mueven por un intervalo idéntico, conservando los intervalos del acorde',
       'Todas las partes se mueven a notas de la tonalidad, ajustando los intervalos del acorde',
       'Todas las partes salvo el bajo quedan fijas mientras el bajo cambia',
       'Todas las partes se mueven a las notas disponibles más cercanas del acorde',
     ],
-    hint: 'El planing mueve una estructura entera de acorde (p. ej., una tríada mayor o acorde de séptima de dominante) hacia arriba o hacia abajo cromáticamente o por tonos enteros, manteniendo la misma disposición. Debussy usó esta técnica extensamente.',
+    hint: 'El paralelismo mueve una estructura entera de acorde (p. ej., una tríada mayor o acorde de séptima de dominante) hacia arriba o hacia abajo cromáticamente o por tonos enteros, manteniendo la misma disposición. Debussy usó esta técnica extensamente.',
   },
   l6u19m4e3: {
     prompt: '¿A qué se refiere la «disolución de la tonalidad» en la música del final del siglo XIX?',
@@ -310,14 +310,14 @@ const overlay: ExerciseLevelOverlay = {
   // ---- l6u20m2: Contrapunto de Especies 4–5 ----
 
   l6u20m2e1: {
-    prompt: '¿Cuál de estas opciones describe una suspensión de cuarta especie?',
+    prompt: '¿Cuál de estas opciones describe un retardo de cuarta especie?',
     choices: [
       "La preparación en tiempo débil se prolonga en la disonancia del tiempo fuerte, resolviendo por grado conjunto de la nota superior a la inferior",
       "La preparación en tiempo fuerte se prolonga en la disonancia del tiempo débil, resolviendo por grado conjunto de la nota superior a la inferior",
       "La preparación en tiempo débil se prolonga en la disonancia del tiempo fuerte, resolviendo por grado conjunto de la nota inferior a la superior",
       "La preparación en tiempo fuerte se prolonga en la disonancia del tiempo débil, resolviendo por grado conjunto de la nota inferior a la superior",
     ],
-    hint: 'La cuarta especie introduce la suspensión: una consonancia en un tiempo débil se liga al tiempo fuerte siguiente donde se convierte en disonancia, y después resuelve descendentemente por grado conjunto. Esto crea la textura sincopada característica.',
+    hint: 'La cuarta especie introduce el retardo: una consonancia en un tiempo débil se liga al tiempo fuerte siguiente donde se convierte en disonancia, y después resuelve descendentemente por grado conjunto. Esto crea la textura sincopada característica.',
   },
   l6u20m2e2: {
     prompt: '¿Qué define el contrapunto de quinta especie (contrapunto florido)?',
@@ -327,17 +327,17 @@ const overlay: ExerciseLevelOverlay = {
       'Una mezcla de las especies anteriores, con un valor de nota fijo y sus reglas de disonancia',
       'Una mezcla de las especies anteriores, con un valor de nota fijo pero sin sus reglas de disonancia',
     ],
-    hint: 'La quinta especie (florida) combina técnicas de las cuatro especies anteriores en una línea melódica fluida. Usa redondas, blancas, negras, suspensiones y notas de paso de forma musicalmente satisfactoria.',
+    hint: 'La quinta especie (florida) combina técnicas de las cuatro especies anteriores en una línea melódica fluida. Usa redondas, blancas, negras, retardos y notas de paso de forma musicalmente satisfactoria.',
   },
   l6u20m2e3: {
-    prompt: '¿Cuáles son las tres fases de una suspensión correctamente ejecutada?',
+    prompt: '¿Cuáles son las tres fases de un retardo correctamente ejecutado?',
     choices: [
-      "Preparación (consonancia), suspensión (disonancia en tiempo fuerte), resolución (grado conjunto descendente)",
-      "Preparación (disonancia), suspensión (consonancia en tiempo fuerte), resolución (grado conjunto descendente)",
-      "Preparación (consonancia), suspensión (disonancia en tiempo fuerte), resolución (grado conjunto ascendente)",
-      "Preparación (disonancia), suspensión (consonancia en tiempo fuerte), resolución (grado conjunto ascendente)",
+      "Preparación (consonancia), retardo (disonancia en tiempo fuerte), resolución (grado conjunto descendente)",
+      "Preparación (disonancia), retardo (consonancia en tiempo fuerte), resolución (grado conjunto descendente)",
+      "Preparación (consonancia), retardo (disonancia en tiempo fuerte), resolución (grado conjunto ascendente)",
+      "Preparación (disonancia), retardo (consonancia en tiempo fuerte), resolución (grado conjunto ascendente)",
     ],
-    hint: 'Una suspensión requiere: (1) Preparación — la nota se introduce como consonancia; (2) Suspensión — la nota se mantiene (ligada) en un tiempo fuerte donde se vuelve disonante; (3) Resolución — la nota resuelve descendentemente por grado conjunto hacia una consonancia.',
+    hint: 'Un retardo requiere: (1) Preparación — la nota se introduce como consonancia; (2) Retardo — la nota se mantiene (ligada) en un tiempo fuerte donde se vuelve disonante; (3) Resolución — la nota resuelve descendentemente por grado conjunto hacia una consonancia.',
   },
 
   // ---- l6u20m3: Contrapunto a Tres Partes / Invertible ----

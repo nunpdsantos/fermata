@@ -279,10 +279,10 @@ const overlay: TemplateLevelOverlay = {
           'El lidio es la elección estándar para acordes m7',
         ],
         [
-          'El mixolidio es la elección de escala primaria para acordes de séptima dominante',
-          'El dórico se usa sobre acordes de séptima dominante',
-          'El eólico es la elección estándar sobre un acorde de séptima dominante, porque su b3 encaja con la tercera del acorde',
-          'El frigio es la elección estándar para acordes de séptima dominante',
+          'El mixolidio es la elección de escala primaria para acordes de séptima de dominante',
+          'El dórico se usa sobre acordes de séptima de dominante',
+          'El eólico es la elección estándar sobre un acorde de séptima de dominante, porque su b3 encaja con la tercera del acorde',
+          'El frigio es la elección estándar para acordes de séptima de dominante',
         ],
         [
           'El lidio se prefiere frecuentemente al jónico para acordes maj7 porque no tiene notas a evitar',
@@ -430,9 +430,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        '¿Cuál de estas afirmaciones sobre la armonía cuartal y el planing es verdadera?',
+        '¿Cuál de estas afirmaciones sobre la armonía cuartal y el paralelismo es verdadera?',
       hintTemplate:
-        'Planing: mover una forma de acorde en paralelo (diatónico o cromático). Armonía cuartal: acordes construidos de cuartas apiladas en lugar de terceras, comunes en el jazz y la música modal.',
+        'Paralelismo: mover una forma de acorde en paralelo (diatónico o cromático). Armonía cuartal: acordes construidos de cuartas apiladas en lugar de terceras, comunes en el jazz y la música modal.',
       choiceSets: [
         [
           'La superposición cuartal D–G–C–F tiene tres cuartas justas entre notas adyacentes',
@@ -441,16 +441,16 @@ const overlay: TemplateLevelOverlay = {
           'La superposición cuartal D–G–C–F tiene dos cuartas justas entre sus tres notas',
         ],
         [
-          "El planing desplaza todas las notas de un acorde en la misma dirección a la vez",
-          "El planing suele enviar la nota superior del acorde hacia arriba mientras la inferior baja",
-          "El planing mantiene todas las notas superiores mientras el bajo recorre la escala",
-          "El planing transforma un acorde en melodía haciendo sonar las notas una tras otra",
+          "El paralelismo desplaza todas las notas de un acorde en la misma dirección a la vez",
+          "El paralelismo suele enviar la nota superior del acorde hacia arriba mientras la inferior baja",
+          "El paralelismo mantiene todas las notas superiores mientras el bajo recorre la escala",
+          "El paralelismo transforma un acorde en melodía haciendo sonar las notas una tras otra",
         ],
         [
-          'El planing diatónico mantiene todas las notas dentro de la tonalidad; el planing cromático mantiene los intervalos exactos',
-          "El planing diatónico mantiene los intervalos exactos; el planing cromático mantiene todas las notas en la tonalidad",
-          "El planing diatónico mantiene todas las voces inmóviles; el planing cromático cambia solo el bajo",
-          "El planing diatónico mueve todas las notas en movimiento contrario; el planing cromático mantiene los intervalos exactos",
+          'El paralelismo diatónico mantiene todas las notas dentro de la tonalidad; el paralelismo estricto (cromático) mantiene los intervalos exactos',
+          "El paralelismo diatónico mantiene los intervalos exactos; el paralelismo estricto (cromático) mantiene todas las notas en la tonalidad",
+          "El paralelismo diatónico mantiene todas las voces inmóviles; el paralelismo estricto (cromático) cambia solo el bajo",
+          "El paralelismo diatónico mueve todas las notas en movimiento contrario; el paralelismo estricto (cromático) mantiene los intervalos exactos",
         ],
       ],
     },
@@ -503,45 +503,45 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'En {key} mayor, construye el acorde ♭VII tomado prestado del menor paralelo.',
+        'En {key} mayor, construye el acorde ♭VII tomado prestado del menor homónimo.',
       hintTemplate:
-        'El menor paralelo ({key} menor) presta su ♭VII a {key} mayor: la tríada mayor sobre {root}.',
+        'El menor homónimo ({key} menor) presta su ♭VII a {key} mayor: la tríada mayor sobre {root}.',
     },
     {
       // chord_build
       promptTemplate:
-        'En {key} mayor, construye el acorde ♭VI tomado prestado del menor paralelo.',
+        'En {key} mayor, construye el acorde ♭VI tomado prestado del menor homónimo.',
       hintTemplate:
-        'El menor paralelo ({key} menor) presta su ♭VI a {key} mayor: la tríada mayor sobre {root}.',
+        'El menor homónimo ({key} menor) presta su ♭VI a {key} mayor: la tríada mayor sobre {root}.',
     },
     {
       // chord_build
       promptTemplate:
-        'En {key} mayor, construye el acorde iv tomado prestado del menor paralelo.',
+        'En {key} mayor, construye el acorde iv tomado prestado del menor homónimo.',
       hintTemplate:
-        'El menor paralelo ({key} menor) presta su iv a {key} mayor: la tríada menor sobre {root}.',
+        'El menor homónimo ({key} menor) presta su iv a {key} mayor: la tríada menor sobre {root}.',
     },
     {
       // multiple_choice
       promptTemplate:
         '¿Cuál de estas afirmaciones sobre acordes prestados y mediantes cromáticas en el pop es verdadera?',
       hintTemplate:
-        'Préstamos comunes en el pop: iv, bVI y bVII del menor paralelo (bVII es también el acorde mixolidio). Mediantes cromáticas: fundamentales a una 3.ª de distancia, con notas fuera de la tonalidad.',
+        'Préstamos comunes en el pop: iv, bVI y bVII del menor homónimo (bVII es también el acorde mixolidio). Mediantes cromáticas: fundamentales a una 3.ª de distancia, con notas fuera de la tonalidad.',
       choiceSets: [
         [
-          'El acorde bVII en una tonalidad mayor se toma prestado del menor paralelo (o del mixolidio)',
+          'El acorde bVII en una tonalidad mayor se toma prestado del menor homónimo (o del mixolidio)',
           'El acorde bVII se toma prestado del lidio, que es el único modo con el 7.º grado descendido un semitono',
           'bVII es un acorde diatónico en mayor',
           'bVII se toma prestado del locrio',
         ],
         [
-          'El acorde iv en una tonalidad mayor se toma prestado del paralelo menor (eólico)',
+          'El acorde iv en una tonalidad mayor se toma prestado del homónimo menor (eólico)',
           'El acorde iv es diatónico en una tonalidad mayor, porque el 4.º grado de una escala mayor tiene una tríada menor',
           'iv se toma prestado del lidio',
           'iv no existe como acorde prestado',
         ],
         [
-          'La "cadencia Mario" bVI-bVII-I usa dos acordes tomados prestados del menor paralelo',
+          'La "cadencia Mario" bVI-bVII-I usa dos acordes tomados prestados del menor homónimo',
           'La "cadencia Mario" bVI-bVII-I usa solo acordes diatónicos de la tonalidad mayor, sin nada prestado',
           'Termina en el acorde vi',
           'Es solo una cadencia de tonalidad menor',

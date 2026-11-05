@@ -4,7 +4,7 @@ const curriculumL3: CurriculumLevelOverlay = {
   // ─── Units ──────────────────────────────────────────────────────────────────
   units: {
     u9: {
-      title: 'Acordes de Sétima e Harmonia Diatónica',
+      title: 'Acordes de sétima e harmonia diatónica',
       description:
         'As cinco qualidades de acordes de sétima, inversões, acordes de sétima diatónicos em maior e menor, e a sétima da dominante como motor harmónico',
       milestone: {
@@ -22,7 +22,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       },
     },
     u10: {
-      title: 'Condução de Vozes e Escrita a Quatro Partes',
+      title: 'Condução de vozes e escrita a quatro partes',
       description:
         'Disposição SATB, regras de espaçamento, quintas e oitavas paralelas proibidas, ligação de acordes com movimento suave de vozes, e o papel das inversões',
       milestone: {
@@ -40,7 +40,7 @@ const curriculumL3: CurriculumLevelOverlay = {
       },
     },
     u11: {
-      title: 'Cadências, Frases e Ornamentação',
+      title: 'Cadências, frases e ornamentação',
       description:
         'Os seis tipos de cadência, estrutura de frase e período, ritmo harmónico, notas estranhas ao acorde e transposição para qualquer tonalidade',
       milestone: {
@@ -62,7 +62,7 @@ const curriculumL3: CurriculumLevelOverlay = {
   modules: {
     // ── U9 M1: Seventh Chords — Five Qualities ─────────────────────────────
     l3u9m1: {
-      title: 'Acordes de Sétima: As Cinco Qualidades',
+      title: 'Acordes de sétima: as cinco qualidades',
       subtitle:
         'Constrói e identifica os cinco tipos padrão de acordes de sétima e ouve os seus caracteres distintos',
       objectives: [
@@ -72,19 +72,19 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'O Que É um Acorde de Sétima?',
+          title: 'O que é um acorde de sétima?',
           explanation:
             'Um acorde de sétima acrescenta uma quarta nota — uma sétima acima da fundamental — a uma tríade. Quatro notas em vez de três. Esta nota extra introduz uma cor mais rica e uma tensão harmónica maior do que qualquer tríade consegue produzir. Os acordes de sétima são a espinha dorsal harmónica do jazz, do pop e da música clássica do Romantismo, e compreendê-los abre uma dimensão inteiramente nova do vocabulário de acordes.',
           tryThisLabel: 'Ouve Cmaj7 — caloroso, luxuriante, jazzy',
         },
         {
-          title: 'As Cinco Qualidades Padrão',
+          title: 'As cinco qualidades padrão',
           explanation:
             'Sétima maior (Cmaj7): 3M+3m+3M — caloroso e luxuriante. Sétima da dominante (C7): 3M+3m+3m — tenso e exigindo resolução. Sétima menor (Cm7): 3m+3M+3m — suave e macio. Meio-diminuto (Cm7b5): 3m+3m+3M — sombrio e ansiante. Totalmente diminuto (Cdim7): 3m+3m+3m — extremamente tenso, com estrutura simétrica em que cada nota está a uma 3.ª menor de distância. Uma sexta qualidade, a sétima menor-maior (CmMaj7: 3m+3M+3M), combina uma tríade menor com uma sétima maior — rara mas inquietantemente perturbadora, usada no cinema e no jazz.',
           tryThisLabel: 'Ouve C7 — a sétima da dominante exige resolução',
         },
         {
-          title: 'Comparar as Cores dos Acordes de Sétima',
+          title: 'Comparar as cores dos acordes de sétima',
           explanation:
             'A diferença entre Cmaj7 e C7 é um único meio-tom: B natural contra Bb. Essa única nota transforma uma sonoridade luxuriante e estável num acorde a rebentar de tensão. Da mesma forma, Cm7 e Cm7b5 diferem apenas na quinta (G contra Gb), mas a qualidade meio-diminuta é muito mais sombria e inquieta. Treinar o ouvido para estas distinções subtis é o alicerce da escuta harmónica avançada.',
           tryThisLabel: 'Ouve Cm7 — suave e macio',
@@ -108,7 +108,7 @@ const curriculumL3: CurriculumLevelOverlay = {
 
     // ── U9 M2: Seventh Chord Inversions ─────────────────────────────────────
     l3u9m2: {
-      title: 'Inversões de Acordes de Sétima',
+      title: 'Inversões de acordes de sétima',
       subtitle:
         'Quatro posições para cada acorde de sétima — do estado fundamental à terceira inversão',
       objectives: [
@@ -118,19 +118,19 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Quatro Posições',
+          title: 'Quatro posições',
           explanation:
             'Como um acorde de sétima tem quatro notas, tem quatro notas possíveis no baixo: o estado fundamental e três inversões. O estado fundamental (baixo cifrado: 7) coloca a fundamental no baixo — a disposição mais estável e mais comum. A primeira inversão (6/5) coloca a terceira no baixo, criando uma sonoridade mais leve. A segunda inversão (4/3) coloca a quinta no baixo. A terceira inversão (4/2 ou simplesmente 2) coloca a sétima no baixo — a posição mais instável, que exige fortemente a resolução descendente da nota do baixo.',
           tryThisLabel: 'Ouve Cmaj7 em estado fundamental — fundamental no baixo',
         },
         {
-          title: 'Baixo Cifrado para Acordes de Sétima',
+          title: 'Baixo cifrado para acordes de sétima',
           explanation:
             'As cifras de baixo cifrado descrevem os intervalos acima da nota do baixo. Estado fundamental 7: intervalos de 7.ª, 5.ª e 3.ª acima do baixo. Primeira inversão 6/5: intervalos de 6.ª, 5.ª e 3.ª acima do baixo. Segunda inversão 4/3: intervalos de 6.ª, 4.ª e 3.ª acima do baixo. Terceira inversão 4/2: intervalos de 6.ª, 4.ª e 2.ª acima do baixo. Estas cifras abreviadas indicam ao intérprete, de imediato, que nota do acorde está no baixo (a inversão); o espaçamento das vozes superiores fica ao critério de quem toca.',
           tryThisLabel: 'Ouve Cmaj7 na primeira inversão (6/5) — com E no baixo',
         },
         {
-          title: 'Terceira Inversão e Resolução do Baixo',
+          title: 'Terceira inversão e resolução do baixo',
           explanation:
             'A terceira inversão (4/2) é a posição mais instável do acorde de sétima porque a sétima do acorde está no baixo. A sétima é uma dissonância que deve resolver por grau descendente. Na prática, um V4/2 resolve para I6 — o baixo desce meio-tom (F para E em C maior) enquanto o resto do acorde resolve normalmente. Este baixo com resolução descendente dá à terceira inversão a sua urgência e impulso característicos.',
           tryThisLabel:
@@ -155,7 +155,7 @@ const curriculumL3: CurriculumLevelOverlay = {
 
     // ── U9 M3: Diatonic Seventh Chords in Major ────────────────────────────
     l3u9m3: {
-      title: 'Acordes de Sétima Diatónicos em Maior',
+      title: 'Acordes de sétima diatónicos em maior',
       subtitle:
         'Acordes de sétima em cada grau da escala maior e a sétima da dominante como motor harmónico',
       objectives: [
@@ -165,20 +165,20 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Acordes de Sétima Diatónicos em Maior',
+          title: 'Acordes de sétima diatónicos em maior',
           explanation:
             'Empilha uma sétima em cada grau da escala maior usando apenas notas dessa tonalidade. O padrão de qualidades é sempre o mesmo: Imaj7, ii7, iii7, IVmaj7, V7, vi7, vii\u00f87. Em C maior: Cmaj7, Dm7, Em7, Fmaj7, G7, Am7, Bm7b5. A sétima da dominante (V7) é o único acorde de sétima com qualidade de dominante que ocorre naturalmente, e o meio-diminuto vii\u00f87 funciona como substituto da dominante.',
           tryThisLabel: 'Vê todos os acordes diatónicos em C maior',
         },
         {
-          title: 'A Sétima da Dominante e o Seu Trítono',
+          title: 'A sétima da dominante e o seu trítono',
           explanation:
             'O V7 é o acorde de sétima estruturalmente mais importante na música tonal. Em C maior, G7 contém as notas G-B-D-F. O trítono entre B e F é a fonte da sua tensão: B (a sensível) puxa para cima, para C, enquanto F (a sétima do acorde) puxa para baixo, para E. Esta dupla resolução em movimento contrário — a 5.ª diminuta de B até F (a subir) a contrair-se para dentro, até à 3.ª maior C–E (com F abaixo de B — a 4.ª aumentada de F até B — expande-se para fora, até à 6.ª menor E–C) — é o motor fundamental que impulsiona a harmonia tonal em direção à tónica.',
           tryThisLabel:
             'Ouve o trítono dentro de G7 — B e F exigem resolução',
         },
         {
-          title: 'A Progressão ii-V-I',
+          title: 'A progressão ii-V-I',
           explanation:
             'A progressão de acordes mais importante do jazz — e um movimento harmónico fundamental em toda a música ocidental — encadeia o ii7 pré-dominante com o V7 dominante e o Imaj7 tónica. Em C maior: Dm7-G7-Cmaj7. Cada acorde partilha notas comuns com o seguinte, produzindo uma condução de vozes suave. O ii7 estabelece tensão subdominante, o V7 intensifica-a com o trítono, e o Imaj7 resolve tudo. Este esqueleto de três acordes sustenta tudo, desde corais de Bach até standards de jazz.',
           tryThisLabel: 'Ouve Dm7 — o som do ii7 em C maior',
@@ -202,7 +202,7 @@ const curriculumL3: CurriculumLevelOverlay = {
 
     // ── U9 M4: Diatonic Seventh Chords in Minor ────────────────────────────
     l3u9m4: {
-      title: 'Acordes de Sétima Diatónicos em Menor',
+      title: 'Acordes de sétima diatónicos em menor',
       subtitle:
         'O panorama de acordes de sétima da menor harmónica — do inquietante i(m\u03947) ao explosivo vii°7',
       objectives: [
@@ -212,20 +212,20 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'A Escala Menor Harmónica Muda Tudo',
+          title: 'A escala menor harmónica muda tudo',
           explanation:
             'A escala menor harmónica eleva o sétimo grau, criando qualidades de acordes de sétima dramaticamente diferentes em comparação com o modo maior. No 1.º grau, a tríade menor ganha uma sétima maior, produzindo o raro acorde menor com sétima maior: i(m\u03947). No 3.º grau, o sétimo grau elevado transforma a tríade maior numa tríade aumentada com sétima maior: III+maj7. Estas qualidades exóticas dão às tonalidades menores a sua tensão e escuridão características. (O meio-diminuto escreve-se m7b5 ou com o símbolo ⌀ — por isso iiø7 e Bm7b5 designam o mesmo acorde.)',
           tryThisLabel:
             'Vê A menor harmónica — a escala-fonte dos acordes de sétima em menor',
         },
         {
-          title: 'O Padrão Completo de Acordes de Sétima Diatónicos em Menor',
+          title: 'O padrão completo de acordes de sétima diatónicos em menor',
           explanation:
             'Em A menor harmónica, os acordes de sétima em cada grau são: i(m\u03947) em A (A-C-E-G#), ii\u00f87 em B (B-D-F-A), III+maj7 em C (C-E-G#-B), iv7 em D (D-F-A-C), V7 em E (E-G#-B-D), VImaj7 em F (F-A-C-E), vii°7 em G# (G#-B-D-F). Os acordes críticos são V7 (função dominante, igual ao maior), vii°7 (totalmente diminuto, dominante intensificada) e ii\u00f87 (a sonoridade pré-dominante característica em menor).',
           tryThisLabel: 'Ouve Bm7b5 — o acorde ii\u00f87 em A menor',
         },
         {
-          title: 'A Progressão ii\u00f87-V7-i em Menor',
+          title: 'A progressão iiø7-V7-i em menor',
           explanation:
             'A contraparte em menor do ii-V-I maior: ii\u00f87-V7-i. Em A menor: Bm7b5-E7-Am. O ii\u00f87 meio-diminuto tem uma qualidade mais sombria e inquieta do que o ii7 de sétima menor das tonalidades maiores. Combinado com V7 (que contém a sensível elevada G#), esta progressão impulsiona-se em direção à tónica menor com uma intensidade que a versão em maior não consegue igualar. O vii°7 pode substituir o V7, acrescentando ainda mais tensão.',
           tryThisLabel:
@@ -250,7 +250,7 @@ const curriculumL3: CurriculumLevelOverlay = {
 
     // ── U10 M1: Voice Leading — SATB Basics ────────────────────────────────
     l3u10m1: {
-      title: 'Condução de Vozes — Noções Básicas de SATB',
+      title: 'Condução de vozes — noções básicas de SATB',
       subtitle: 'Disposição SATB, tessituras, regras de espaçamento e convenções de dobragem',
       objectives: [
         'Compreender a disposição SATB com tessituras, espaçamentos e dobragens corretos',
@@ -259,19 +259,19 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'SATB — As Quatro Vozes',
+          title: 'SATB — as quatro vozes',
           explanation:
             'A harmonia tradicional distribui as notas por quatro vozes com tessituras definidas: Soprano (C4-G5), Contralto (F3-C5), Tenor (C3-G4), Baixo (E2-C4). O soprano conduz a melodia e o baixo define o alicerce harmónico. As vozes superiores adjacentes devem manter-se a menos de uma oitava entre si, embora o intervalo entre tenor e baixo possa exceder uma oitava. As vozes nunca devem cruzar-se — o soprano fica acima do contralto, o contralto acima do tenor.',
           tryThisLabel: 'Vê as notas de C maior — imagina distribuí-las por quatro vozes',
         },
         {
-          title: 'Regras de Dobragem e Espaçamento',
+          title: 'Regras de dobragem e espaçamento',
           explanation:
             'Quando quatro vozes tocam uma tríade de três notas, uma nota tem de ser dobrada. Em estado fundamental, dobra a fundamental — é a escolha mais forte e estável. Na primeira inversão, dobra a nota do soprano — a menos que o soprano seja uma nota de tendência (a sensível ou uma nota alterada cromaticamente). Nunca dobres a sensível: esta tem uma resolução obrigatória para a tónica, e dobrá-la cria oitavas paralelas inevitáveis. Em tríades diminutas, dobra a terceira (a nota mais estável num acorde instável).',
           tryThisLabel: 'Vê Bdim — em SATB, dobra a terceira (D), nunca a fundamental',
         },
         {
-          title: 'Sobreposição de Vozes',
+          title: 'Sobreposição de vozes',
           explanation:
             'A sobreposição de vozes é um erro mais subtil do que o cruzamento: ocorre quando uma voz ultrapassa a posição onde a voz adjacente estava no tempo anterior. Por exemplo, se o contralto estava em D4 no tempo 1, o soprano não pode descer abaixo de D4 no tempo 2, mesmo que o contralto também tenha descido. A sobreposição obscurece a identidade das vozes tal como o cruzamento, tornando as linhas mais difíceis de seguir como melodias independentes.',
           tryThisLabel: 'Vê F maior — pratica imaginar disposições SATB no papel',
@@ -295,7 +295,7 @@ const curriculumL3: CurriculumLevelOverlay = {
 
     // ── U10 M2: Forbidden Parallels and Voice Motion ────────────────────────
     l3u10m2: {
-      title: 'Quintas e Oitavas Paralelas Proibidas e Movimento de Vozes (no Estilo da Prática Comum)',
+      title: 'Quintas e oitavas paralelas proibidas e movimento de vozes (no estilo da prática comum)',
       subtitle:
         'Os quatro tipos de movimento e as regras de quintas/oitavas paralelas que governam a escrita a partes',
       objectives: [
@@ -305,19 +305,19 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Quatro Tipos de Movimento de Vozes',
+          title: 'Quatro tipos de movimento de vozes',
           explanation:
             'Entre quaisquer duas vozes que se movem de um acorde para o seguinte: o movimento contrário (direções opostas) produz a maior independência e é sempre a escolha mais segura. O movimento oblíquo (uma mantém-se, a outra move-se) é suave e discreto. O movimento direto (mesma direção, intervalos diferentes) é aceitável mas requer vigilância. O movimento paralelo (mesma direção, mesmo intervalo) é o mais restringido — certos intervalos paralelos são proibidos porque destroem a independência das vozes.',
           tryThisLabel: 'Vê C maior — o acorde de partida para exercícios de movimento de vozes',
         },
         {
-          title: 'Quintas e Oitavas Paralelas',
+          title: 'Quintas e oitavas paralelas',
           explanation:
             'Quintas paralelas ocorrem quando duas vozes a uma quinta perfeita de distância se movem ambas pelo mesmo intervalo para outra quinta perfeita. Oitavas paralelas são o mesmo à oitava. Ambas são proibidas na harmonia de prática comum porque as vozes fundem-se acusticamente — deixam de soar como linhas melódicas independentes e colapsam numa única linha reforçada. Terceiras e sextas paralelas, pelo contrário, são encorajadas porque as consonâncias imperfeitas mantêm a independência das vozes.',
           tryThisLabel: 'Vê G maior — pratica mover de C para G e verifica se há paralelas',
         },
         {
-          title: 'Quintas e Oitavas Diretas (Ocultas)',
+          title: 'Quintas e oitavas diretas (ocultas)',
           explanation:
             'Quintas e oitavas diretas ocorrem quando duas vozes se movem em direção semelhante (mesma direção mas intervalos diferentes) para uma quinta perfeita ou oitava. São menos graves do que as paralelas mas ainda restringidas, especialmente entre as vozes extremas (soprano e baixo). A exceção padrão: quintas ou oitavas diretas são aceitáveis se o soprano se move por grau conjunto, porque o movimento por grau do soprano mascara o efeito. Nas vozes interiores, intervalos diretos são geralmente tolerados.',
           tryThisLabel: 'Vê F maior — imagina o soprano e o baixo a moverem-se para uma quinta',
@@ -341,7 +341,7 @@ const curriculumL3: CurriculumLevelOverlay = {
 
     // ── U10 M3: Root Position Part Writing ──────────────────────────────────
     l3u10m3: {
-      title: 'Escrita a Partes em Estado Fundamental',
+      title: 'Escrita a partes em estado fundamental',
       subtitle:
         'Ligar tríades em estado fundamental com condução de vozes suave conforme o tipo de movimento da fundamental',
       objectives: [
@@ -351,19 +351,19 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'O Objetivo da Escrita a Partes',
+          title: 'O objetivo da escrita a partes',
           explanation:
             'A escrita a partes produz quatro linhas melódicas independentes que, em conjunto, criam harmonia correta. Cada voz deve ser individualmente cantável. O baixo define o acorde. O soprano conduz a melodia. Contralto e tenor preenchem a harmonia. O desafio é mover todas as quatro vozes suavemente de acorde para acorde, obedecendo simultaneamente às regras de espaçamento, dobragem e movimento de vozes.',
           tryThisLabel: 'Vê C maior — o acorde que vais dispor a quatro partes',
         },
         {
-          title: 'Movimento da Fundamental por Quinta — Mantém a Nota Comum',
+          title: 'Movimento da fundamental por quinta — mantém a nota comum',
           explanation:
             'Quando as fundamentais dos acordes distam uma quinta (I-V, I-IV, ii-V), existe uma nota comum entre os dois acordes. Mantém essa nota comum na mesma voz e move as outras duas vozes superiores para as notas do acorde mais próximas. Este é o movimento de fundamental mais comum na música tonal e produz consistentemente a condução de vozes mais suave e económica.',
           tryThisLabel: 'Vê G maior — I para V partilham a nota comum G',
         },
         {
-          title: 'Movimento da Fundamental por Terceira e por Segunda',
+          title: 'Movimento da fundamental por terceira e por segunda',
           explanation:
             'Fundamentais a uma terceira de distância (I-vi, I-iii, IV-ii) partilham duas notas comuns — mantém ambas nas mesmas vozes e move apenas a voz restante. Fundamentais a uma segunda de distância (IV-V, V-vi, I-ii) não partilham nenhuma nota comum — as três vozes superiores têm de se mover. Para movimento do baixo por grau, move todas as vozes superiores em movimento contrário ao baixo para prevenir as quintas e oitavas paralelas que facilmente surgem.',
           tryThisLabel: 'Vê A menor — I para vi partilham duas notas comuns (C e E)',
@@ -387,7 +387,7 @@ const curriculumL3: CurriculumLevelOverlay = {
 
     // ── U10 M4: Triads in Inversion ─────────────────────────────────────────
     l3u10m4: {
-      title: 'Tríades em Inversão',
+      title: 'Tríades em inversão',
       subtitle:
         'Quando e porquê usar tríades invertidas — incluindo a restrita segunda inversão',
       objectives: [
@@ -397,21 +397,21 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Primeira Inversão — Versátil e Suave',
+          title: 'Primeira inversão — versátil e suave',
           explanation:
             'A primeira inversão coloca a terceira no baixo, criando uma versão mais leve e menos enfática do acorde. O seu propósito principal é criar uma linha de baixo suave, por grau — a razão mais comum pela qual os compositores invertem tríades. Qualquer tríade em estado fundamental pode ser colocada na primeira inversão para variedade. Dobra a nota do soprano; evita dobrar o baixo se este for a sensível ou uma nota com tendência de resolução.',
           tryThisLabel: 'Ouve C maior na primeira inversão — com E no baixo',
         },
         {
-          title: 'Segunda Inversão — Uso Restrito',
+          title: 'Segunda inversão — uso restrito',
           explanation:
             'A segunda inversão coloca a quinta no baixo, criando um intervalo de quarta perfeita acima do baixo — historicamente tratada como dissonância. Na harmonia de prática comum, as tríades na segunda inversão não são usadas livremente. Existem quatro padrões sancionados: o 6/4 cadencial (I6/4 a decorar o V numa cadência), o 6/4 de passagem (baixo por grau entre inversões), o 6/4 de pedal (vozes superiores movem-se sobre um baixo sustentado), e o 6/4 arpejado em figuras de acompanhamento.',
           tryThisLabel: 'Ouve C maior na segunda inversão — G no baixo',
         },
         {
-          title: 'O 6/4 Cadencial',
+          title: 'O 6/4 cadencial',
           explanation:
-            'O padrão mais importante de segunda inversão: I6/4 a resolver para V numa cadência. A 6.ª e a 4.ª acima do baixo funcionam como duplas apogiaturas que resolvem por grau descendente para a 5.ª e a 3.ª do V. Muitos teóricos analisam este acorde não como um acorde de tónica mas como uma dominante decorada — V com suspensões. Esta distinção importa: o 6/4 cadencial funciona como dominante, não como tónica, apesar da sua escrita.',
+            'O padrão mais importante de segunda inversão: I6/4 a resolver para V numa cadência. A 6.ª e a 4.ª acima do baixo funcionam como duplas apogiaturas que resolvem por grau descendente para a 5.ª e a 3.ª do V. Muitos teóricos analisam este acorde não como um acorde de tónica mas como uma dominante decorada — V com retardos. Esta distinção importa: o 6/4 cadencial funciona como dominante, não como tónica, apesar da sua escrita.',
           tryThisLabel:
             'Ouve I6/4 em C maior (C/G) — numa cadência, o seu E e o seu C descem para D e B sobre o mesmo baixo G',
         },
@@ -434,7 +434,7 @@ const curriculumL3: CurriculumLevelOverlay = {
 
     // ── U11 M1: Cadences ────────────────────────────────────────────────────
     l3u11m1: {
-      title: 'Cadências: O Conjunto Completo',
+      title: 'Cadências: o conjunto completo',
       subtitle:
         'Os seis tipos de cadência padrão — a pontuação harmónica que dá forma às frases musicais',
       objectives: [
@@ -444,21 +444,21 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Cadências Autênticas — Perfeita e Imperfeita',
+          title: 'Cadências autênticas — perfeita e imperfeita',
           explanation:
             'A cadência perfeita (CAP) é V(7) para I, ambos em estado fundamental, com o soprano a terminar no 1.º grau da escala. É a chegada harmónica mais forte — um ponto final. A cadência imperfeita (CAI) também faz V para I mas enfraquece o fecho: um dos acordes pode estar invertido, ou o soprano termina na 3.ª ou 5.ª do I em vez da fundamental, ou o vii°6 substitui o V (CAI de sensível). Uma CAI funciona como uma vírgula em vez de um ponto final.',
           tryThisLabel:
             'Ouve V7 em C maior — o ponto de partida das cadências autênticas',
         },
         {
-          title: 'Meia Cadência, Cadência Plagal e Cadência Interrompida',
+          title: 'Meia cadência, cadência plagal e cadência interrompida',
           explanation:
             'A meia cadência (também chamada cadência suspensiva) termina no V — qualquer acorde que se move para a dominante. Soa como uma pergunta sem resposta, criando suspense nos limites das frases. A cadência plagal (IV para I) é a suave cadência do "Ámen", mais leve do que a autêntica. A cadência interrompida (V para vi) subverte a resolução esperada: vi partilha duas notas com I (em C maior, Am partilha C e E com o acorde de C), produzindo um quase-acerto que surpreende o ouvinte e prolonga a frase. Nas tonalidades menores, a cadência interrompida é V para VI — um acorde maior (p. ex., E7 para F em A menor). O VI continua a partilhar duas notas com o i (F-A-C e A-C-E partilham A e C), mas agora o baixo sobe apenas meio-tom (de E para F, do 5.º grau para o ♭6.º) e o acorde de chegada é maior, o que dá à cadência interrompida em menor uma surpresa mais calorosa e dramática do que a sua congénere em maior.',
           tryThisLabel:
             'Ouve a tónica — o destino das cadências autênticas e plagais',
         },
         {
-          title: 'A Meia Cadência Frígia',
+          title: 'A meia cadência frígia',
           explanation:
             'Característica das tonalidades menores: iv6 a resolver para V, com o baixo a descer por meio-tom do ♭6.º grau para o 5.º. Esta descida de meio-tom no baixo dá à cadência o seu nome — assemelha-se ao meio-tom descendente característico do modo frígio. Comum na música barroca, a meia cadência frígia tem uma qualidade sombria e arcaica que nenhuma outra cadência replica.',
           tryThisLabel:
@@ -483,7 +483,7 @@ const curriculumL3: CurriculumLevelOverlay = {
 
     // ── U11 M2: Phrases and Periods ─────────────────────────────────────────
     l3u11m2: {
-      title: 'Frases e Períodos',
+      title: 'Frases e períodos',
       subtitle:
         'Frases musicais, pares antecedente-consequente e a estrutura de frase (Satz)',
       objectives: [
@@ -493,19 +493,19 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'A Frase Musical',
+          title: 'A frase musical',
           explanation:
             'A frase é a unidade fundamental da forma musical — tipicamente com 4 ou 8 compassos. Tem um início que estabelece a tonalidade, um meio que desenvolve o movimento harmónico e um fim marcado por uma cadência. Cada cadência assinala um limite de frase. Pensa numa frase como um pensamento musical completo, comparável a uma frase na linguagem falada — faz uma afirmação autocontida.',
           tryThisLabel: 'Vê a tonalidade de C — a maioria das frases começa e termina numa única tonalidade',
         },
         {
-          title: 'Períodos: Antecedente e Consequente',
+          title: 'Períodos: antecedente e consequente',
           explanation:
             'Um período emparelha duas frases numa estrutura de pergunta-e-resposta. O antecedente (primeira frase) termina com uma cadência fraca — normalmente meia cadência ou imperfeita — colocando uma pergunta musical. O consequente (segunda frase) termina com uma cadência forte — normalmente perfeita — fornecendo a resposta. Num período paralelo, ambas as frases partilham material de abertura semelhante. Num período contrastante, as aberturas diferem. Um período duplo agrupa quatro frases em dois pares antecedente-consequente maiores.',
           tryThisLabel: 'Ouve V — o acorde que termina uma frase antecedente (meia cadência)',
         },
         {
-          title: 'A Frase (Satz)',
+          title: 'A frase (Satz)',
           explanation:
             'Uma estrutura alternativa de 8 compassos comum na música clássica: uma ideia básica de 2 compassos é apresentada, depois repetida (frequentemente variada) nos compassos 3-4, seguida de uma continuação de 2 compassos que fragmenta a ideia e ganha impulso, concluindo com um gesto cadencial de 2 compassos. A frase cria impulso para a frente através de repetição, fragmentação e aceleração rítmica — uma arquitetura fundamentalmente diferente do período equilibrado.',
           tryThisLabel: 'Ouve I — a tónica que ancora tanto a frase como o período',
@@ -529,7 +529,7 @@ const curriculumL3: CurriculumLevelOverlay = {
 
     // ── U11 M3: Harmonic Rhythm ─────────────────────────────────────────────
     l3u11m3: {
-      title: 'Ritmo Harmónico',
+      title: 'Ritmo harmónico',
       subtitle:
         'Como a velocidade de mudança de acordes molda o impulso musical e a estrutura de frase',
       objectives: [
@@ -539,19 +539,19 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'O Que É o Ritmo Harmónico?',
+          title: 'O que é o ritmo harmónico?',
           explanation:
             'O ritmo harmónico é o padrão de mudanças de acordes ao longo do tempo. Um acorde por compasso (ou durante mais tempo) é ritmo harmónico lento. Dois acordes por compasso é moderado. Um acorde novo em cada tempo é rápido. Crucialmente, o ritmo harmónico é independente do ritmo melódico — a melodia pode correr sobre mudanças lentas de acordes ou sustentar notas longas sobre harmonia em rápida mutação. É uma das ferramentas primárias que os compositores usam para controlar tensão e ritmo.',
           tryThisLabel: 'Ouve C maior — imagina manter este acorde durante quatro compassos inteiros',
         },
         {
-          title: 'Ritmo Harmónico, Metro e Aceleração Cadencial',
+          title: 'Ritmo harmónico, metro e aceleração cadencial',
           explanation:
             'As mudanças de acorde são mais fortes nos tempos fortes. Em 4/4, mudar de acorde nos tempos 1 e 3 soa estável e natural; mudar nos tempos 2 e 4 cria um ritmo harmónico sincopado que soa instável. Um padrão universal em todos os estilos: o ritmo harmónico acelera em direção às cadências. Uma frase pode manter um acorde durante dois compassos, depois mudar a cada compasso, depois a cada tempo na cadência — construindo impulso no momento de chegada.',
           tryThisLabel: 'Ouve V7 — a aceleração cadencial culmina frequentemente na dominante',
         },
         {
-          title: 'O Ritmo Harmónico como Ferramenta Expressiva',
+          title: 'O ritmo harmónico como ferramenta expressiva',
           explanation:
             'Diferentes ritmos harmónicos criam caracteres fundamentalmente distintos. Um hino com um acorde por tempo soa medido e solene. Um standard de jazz com dois ou mais acordes por compasso soa harmonicamente denso e cinético. Uma banda sonora que mantém um único acorde durante oito compassos cria espaço vasto e aberto. Os compositores escolhem o ritmo harmónico tão deliberadamente como escolhem os acordes — este molda a experiência do ouvinte ao nível estrutural mais profundo.',
           tryThisLabel: 'Ouve Dm7 — num ritmo harmónico rápido, este poderia durar apenas um tempo',
@@ -575,7 +575,7 @@ const curriculumL3: CurriculumLevelOverlay = {
 
     // ── U11 M4: Non-Chord Tones Part 1 ──────────────────────────────────────
     l3u11m4: {
-      title: 'Notas Estranhas ao Acorde (Parte 1)',
+      title: 'Notas estranhas ao acorde (parte 1)',
       subtitle:
         'Notas de passagem, bordaduras e antecipações — o tempero da melodia',
       objectives: [
@@ -585,19 +585,19 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'O Que São Notas Estranhas ao Acorde?',
+          title: 'O que são notas estranhas ao acorde?',
           explanation:
             'Notas estranhas ao acorde são notas da melodia que não pertencem ao acorde subjacente. Criam interesse melódico, tensão e movimento por grau entre notas do acorde. Sem elas, as melodias consistiriam apenas em notas do acorde arpejadas — mecânicas e sem vida. As notas estranhas classificam-se pela forma como são abordadas e resolvidas: por grau, por salto ou por nota comum. São o tempero melódico que dá vida à harmonia.',
           tryThisLabel: 'Vê C maior — D, F, A e B são notas estranhas contra este acorde',
         },
         {
-          title: 'Notas de Passagem e Bordaduras',
+          title: 'Notas de passagem e bordaduras',
           explanation:
             'Uma nota de passagem preenche a lacuna entre duas notas do acorde diferentes, abordada e resolvida por grau na mesma direção (C-D-E sobre um acorde de C, onde D é uma nota de passagem entre C e E). Uma bordadura decora uma única nota do acorde — afasta-se por grau e regressa à nota de partida (C-D-C, onde D é uma bordadura superior). Ambos os tipos existem em versões acentuadas (no tempo forte, mais dramáticas) e não acentuadas (no tempo fraco, mais comuns).',
           tryThisLabel: 'Vê a escala de C maior — os graus entre notas do acorde são notas de passagem',
         },
         {
-          title: 'Antecipações e Bordaduras Incompletas',
+          title: 'Antecipações e bordaduras incompletas',
           explanation:
             'Uma antecipação chega cedo — uma nota pertencente ao acorde seguinte soa no final do acorde atual, mantendo-se depois enquanto a harmonia a alcança. Cria impulso para a frente ao saltar à frente da mudança harmónica. Uma bordadura incompleta é abordada por grau mas resolvida por salto (ou vice-versa), tendo apenas uma ligação por grau. As bordaduras incompletas são mais dramáticas e angulares do que as suas contrapartes completas e simétricas.',
           tryThisLabel: 'Vê G maior — antecipar uma nota do acorde seguinte cria impulso',
@@ -631,19 +631,19 @@ const curriculumL3: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'O Que É a Transposição?',
+          title: 'O que é a transposição?',
           explanation:
             'A transposição move uma passagem inteira para uma tonalidade diferente preservando todas as relações intervalares. Cada nota desloca-se pelo mesmo intervalo. A melodia soa idêntica — apenas mais aguda ou mais grave. A transposição serve propósitos práticos (adaptar à extensão vocal de um cantor, corresponder às tonalidades dos instrumentos) e teóricos (compreender que a mesma lógica harmónica opera em todas as tonalidades).',
           tryThisLabel: 'Vê C maior — a tua tonalidade de partida para transposição',
         },
         {
-          title: 'Dois Métodos de Transposição',
+          title: 'Dois métodos de transposição',
           explanation:
             'O método do intervalo: determina o intervalo entre a tonalidade original e a tonalidade de destino, depois desloca cada nota por esse mesmo intervalo. De C maior para Eb maior é uma 3.ª menor ascendente, portanto cada nota sobe uma 3.ª menor. O método da armação de clave: muda a armação de clave para a tonalidade de destino e ajusta quaisquer acidentes. Ambos produzem o mesmo resultado; o método do intervalo é mais fiável para passagens curtas.',
           tryThisLabel: 'Vê Eb maior — C maior transposto uma 3.ª menor acima',
         },
         {
-          title: 'Instrumentos Transpositores e Altura de Concerto',
+          title: 'Instrumentos transpositores e altura de concerto',
           explanation:
             'Alguns instrumentos soam uma altura diferente da que leem. O trompete em Bb e o clarinete em Bb soam uma 2.ª maior abaixo do que está escrito — para soar C de concerto, leem D. O saxofone tenor, também em Bb, soa uma oitava e uma 2.ª maior abaixo. Instrumentos em Eb, como o saxofone alto, soam uma 6.ª maior abaixo (o mesmo nome de nota que uma 3.ª menor acima, mas o som fica abaixo da nota escrita). Instrumentos em F (trompa) soam uma 5.ª perfeita abaixo. A altura de concerto é a altura real que soa; todos os instrumentos alinham-se com ela quando a orquestra afina pelo A440.',
           tryThisLabel:
