@@ -290,7 +290,7 @@ it('a production v2 save survives a completed check through real persistence', a
   useProgressStore.setState({ progress: getDefaultProgress() });
   localStorage.setItem('music-theory-progress', raw);
   await useProgressStore.persist.rehydrate();
-  expect(JSON.parse(raw).version).toBe(3);
+  expect(JSON.parse(raw).version).toBe(4);
   const expected = {
     ...migrated,
     exerciseResults: {

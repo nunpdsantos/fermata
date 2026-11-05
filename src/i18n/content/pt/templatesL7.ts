@@ -143,7 +143,7 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'Em tonalidades menores, o acorde ii é semidiminuto (m7b5)',
-          "Em tonalidades menores, o acorde ii é de sétima dominante (7)",
+          "Em tonalidades menores, o acorde ii é de sétima da dominante (7)",
           "Em tonalidades menores, o acorde ii é de sétima maior (maj7)",
           "Em tonalidades menores, o acorde ii é de sétima diminuta (dim7)",
         ],
@@ -279,10 +279,10 @@ const overlay: TemplateLevelOverlay = {
           'O lídio é a escolha padrão para acordes m7',
         ],
         [
-          'O mixolídio é a escolha de escala primária para acordes de sétima dominante',
-          'O dórico é usado sobre acordes de sétima dominante',
-          'O eólio é a escolha padrão sobre um acorde de sétima dominante, porque a sua b3 serve a terça do acorde',
-          'O frígio é a escolha padrão para acordes de sétima dominante',
+          'O mixolídio é a escolha de escala primária para acordes de sétima da dominante',
+          'O dórico é usado sobre acordes de sétima da dominante',
+          'O eólio é a escolha padrão sobre um acorde de sétima da dominante, porque a sua b3 serve a terça do acorde',
+          'O frígio é a escolha padrão para acordes de sétima da dominante',
         ],
         [
           'O lídio é frequentemente preferido ao jónio para acordes maj7 porque não tem notas a evitar',
@@ -430,9 +430,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Qual destas afirmações sobre a harmonia quartal e o planing é verdadeira?',
+        'Qual destas afirmações sobre a harmonia quartal e o paralelismo é verdadeira?',
       hintTemplate:
-        'Planing: mover uma forma de acorde em paralelo (diatónico ou cromático). Harmonia quartal: acordes construídos de quartas empilhadas em vez de terças, comuns no jazz e na música modal.',
+        'Paralelismo: mover uma forma de acorde em paralelo (diatónico ou cromático). Harmonia quartal: acordes construídos de quartas empilhadas em vez de terças, comuns no jazz e na música modal.',
       choiceSets: [
         [
           'O empilhamento quartal D–G–C–F tem três quartas perfeitas entre notas adjacentes',
@@ -441,16 +441,16 @@ const overlay: TemplateLevelOverlay = {
           'O empilhamento quartal D–G–C–F tem duas quartas perfeitas entre as suas três notas',
         ],
         [
-          "O planing desloca todas as notas de um acorde na mesma direção ao mesmo tempo",
-          "O planing costuma enviar a nota superior do acorde para cima enquanto a inferior desce",
-          "O planing mantém todas as notas superiores enquanto o baixo percorre a escala",
-          "O planing transforma um acorde em melodia fazendo soar as notas uma após outra",
+          "O paralelismo desloca todas as notas de um acorde na mesma direção ao mesmo tempo",
+          "O paralelismo costuma enviar a nota superior do acorde para cima enquanto a inferior desce",
+          "O paralelismo mantém todas as notas superiores enquanto o baixo percorre a escala",
+          "O paralelismo transforma um acorde em melodia fazendo soar as notas uma após outra",
         ],
         [
-          'O planing diatónico mantém todas as notas dentro da tonalidade; o planing cromático mantém os intervalos exatos',
-          "O planing diatónico mantém os intervalos exatos; o planing cromático mantém todas as notas na tonalidade",
-          "O planing diatónico mantém todas as vozes imóveis; o planing cromático muda apenas o baixo",
-          "O planing diatónico move todas as notas em movimento contrário; o planing cromático mantém os intervalos exatos",
+          'O paralelismo diatónico mantém todas as notas dentro da tonalidade; o paralelismo estrito (cromático) mantém os intervalos exatos',
+          "O paralelismo diatónico mantém os intervalos exatos; o paralelismo estrito (cromático) mantém todas as notas na tonalidade",
+          "O paralelismo diatónico mantém todas as vozes imóveis; o paralelismo estrito (cromático) muda apenas o baixo",
+          "O paralelismo diatónico move todas as notas em movimento contrário; o paralelismo estrito (cromático) mantém os intervalos exatos",
         ],
       ],
     },
@@ -503,45 +503,45 @@ const overlay: TemplateLevelOverlay = {
     {
       // chord_build
       promptTemplate:
-        'Em {key} maior, constrói o acorde ♭VII emprestado do menor paralelo.',
+        'Em {key} maior, constrói o acorde ♭VII emprestado do menor homónimo.',
       hintTemplate:
-        'O menor paralelo ({key} menor) empresta o seu ♭VII a {key} maior: a tríade maior sobre {root}.',
+        'O menor homónimo ({key} menor) empresta o seu ♭VII a {key} maior: a tríade maior sobre {root}.',
     },
     {
       // chord_build
       promptTemplate:
-        'Em {key} maior, constrói o acorde ♭VI emprestado do menor paralelo.',
+        'Em {key} maior, constrói o acorde ♭VI emprestado do menor homónimo.',
       hintTemplate:
-        'O menor paralelo ({key} menor) empresta o seu ♭VI a {key} maior: a tríade maior sobre {root}.',
+        'O menor homónimo ({key} menor) empresta o seu ♭VI a {key} maior: a tríade maior sobre {root}.',
     },
     {
       // chord_build
       promptTemplate:
-        'Em {key} maior, constrói o acorde iv emprestado do menor paralelo.',
+        'Em {key} maior, constrói o acorde iv emprestado do menor homónimo.',
       hintTemplate:
-        'O menor paralelo ({key} menor) empresta o seu iv a {key} maior: a tríade menor sobre {root}.',
+        'O menor homónimo ({key} menor) empresta o seu iv a {key} maior: a tríade menor sobre {root}.',
     },
     {
       // multiple_choice
       promptTemplate:
         'Qual destas afirmações sobre acordes emprestados e mediantes cromáticas no pop é verdadeira?',
       hintTemplate:
-        'Empréstimos comuns no pop: iv, bVI e bVII do menor paralelo (bVII é também o acorde mixolídio). Mediantes cromáticas: fundamentais a uma 3.ª de distância, com notas fora da tonalidade.',
+        'Empréstimos comuns no pop: iv, bVI e bVII do menor homónimo (bVII é também o acorde mixolídio). Mediantes cromáticas: fundamentais a uma 3.ª de distância, com notas fora da tonalidade.',
       choiceSets: [
         [
-          'O acorde bVII numa tonalidade maior é emprestado do menor paralelo (ou do mixolídio)',
+          'O acorde bVII numa tonalidade maior é emprestado do menor homónimo (ou do mixolídio)',
           'O acorde bVII é emprestado do lídio, que é o único modo com o 7.º grau rebaixado em meio-tom',
           'bVII é um acorde diatónico em maior',
           'bVII é emprestado do lócrio',
         ],
         [
-          'O acorde iv numa tonalidade maior é emprestado do paralelo menor (eólio)',
+          'O acorde iv numa tonalidade maior é emprestado do homónimo menor (eólio)',
           'O acorde iv é diatónico numa tonalidade maior, porque o 4.º grau de uma escala maior tem uma tríade menor',
           'iv é emprestado do lídio',
           'iv não existe como acorde emprestado',
         ],
         [
-          'A "cadência Mario" bVI-bVII-I usa dois acordes emprestados do menor paralelo',
+          'A "cadência Mario" bVI-bVII-I usa dois acordes emprestados do menor homónimo',
           'A "cadência Mario" bVI-bVII-I usa apenas acordes diatónicos da tonalidade maior, sem nada emprestado',
           'Termina no acorde vi',
           'É apenas uma cadência de tonalidade menor',

@@ -16,6 +16,7 @@
  */
 import { describe, it, expect } from 'vitest';
 import snapshot from './exerciseIdentities.json';
+import v3Snapshot from '../../../state/__tests__/fixtures/learn-identities-v3.json';
 import { treeFingerprints, changedIds, fingerprint } from './exerciseFingerprints';
 import { generateAllForLevel } from '../exerciseGenerator';
 import { enExercisesFor, enTemplatesFor } from '../../../i18n/content/__tests__/overlayEntries';
@@ -43,6 +44,12 @@ describe('exercise identities match the recorded snapshot', () => {
     const added = changedIds(current(), snapshot as Record<string, Record<string, string>>);
     expect(changed, 'run: npx tsx scripts/progress/retire-exercise-ids.ts').toEqual({});
     expect(added, 'new ids: re-record the snapshot with the same script').toEqual({});
+  });
+
+  it('the glossary adds no identities beyond the three EN typography items', () => {
+    expect(changedIds(v3Snapshot, current())).toEqual({
+      l4u13m1: ['l4u13m1g3'], l5u15m5: ['l5u15m5g3'], l8u27m1: ['l8u27m1g5'],
+    });
   });
 
   it('the progress store version follows the retirement list', () => {

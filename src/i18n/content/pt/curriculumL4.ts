@@ -4,12 +4,12 @@ const curriculumL4: CurriculumLevelOverlay = {
   // ─── Units ──────────────────────────────────────────────────────────────────
   units: {
     u12: {
-      title: 'Notas Estranhas ao Acorde e Sétima da Dominante',
+      title: 'Notas estranhas ao acorde e sétima da dominante',
       description:
-        'Suspensões, apogiatura, pedal, regras de resolução da sétima da dominante e inversões de V7',
+        'Retardos, apogiatura, pedal, regras de resolução da sétima da dominante e inversões de V7',
       milestone: {
         skillsSummary: [
-          'Identificar suspensões, apogiaturas, escapatórias, retardos, pedais e notas cambiadas',
+          'Identificar retardos, apogiaturas, escapadas, retardos ascendentes, pedais e cambiatas',
           'Resolver o V7 em todas as inversões com a condução de vozes e o tratamento das notas de tendência corretos',
           'Compreender por que V4/2 resolve quase sempre para I6 e como cada inversão determina o movimento do baixo',
         ],
@@ -20,7 +20,7 @@ const curriculumL4: CurriculumLevelOverlay = {
       },
     },
     u13: {
-      title: 'Acordes de Sétima Diatónicos, Função e Sequências',
+      title: 'Acordes de sétima diatónicos, função e sequências',
       description:
         'Sétimas pré-dominantes, mediante e sensível, teoria da função harmónica e sequências harmónicas',
       milestone: {
@@ -37,7 +37,7 @@ const curriculumL4: CurriculumLevelOverlay = {
       },
     },
     u14: {
-      title: 'Contraponto, Compasso, Análise e Harmonia Menor',
+      title: 'Contraponto, compasso, análise e harmonia menor',
       description:
         'Contraponto a duas vozes, compassos assimétricos, ornamentação cromática, análise com numerais romanos e sistema de acordes em modo menor',
       milestone: {
@@ -57,121 +57,121 @@ const curriculumL4: CurriculumLevelOverlay = {
   modules: {
     // ── U12 M1: Suspensions ──────────────────────────────────────────────────
     l4u12m1: {
-      title: 'Suspensões',
-      subtitle: 'Os tipos de suspensão 4-3, 7-6, 9-8 e 2-3',
+      title: 'Retardos',
+      subtitle: 'Os tipos de retardo 4-3, 7-6, 9-8 e 2-3',
       objectives: [
-        'Compreender o padrão de suspensão em três fases: preparação, dissonância, resolução',
-        'Identificar os quatro tipos de suspensão pelos seus intervalos acima do baixo',
-        'Reconhecer a suspensão de baixo 2-3: o baixo resolve por grau conjunto descendente e o intervalo acima dele cresce de uma 2.ª para uma 3.ª',
+        'Compreender o padrão de retardo em três fases: preparação, dissonância, resolução',
+        'Identificar os quatro tipos de retardo pelos seus intervalos acima do baixo',
+        'Reconhecer o retardo de baixo 2-3: o baixo resolve por grau conjunto descendente e o intervalo acima dele cresce de uma 2.ª para uma 3.ª',
       ],
       concepts: [
         {
-          title: 'O Mecanismo da Suspensão',
+          title: 'O mecanismo do retardo',
           explanation:
-            'Uma suspensão é uma nota retida (ligada) do acorde anterior para o novo acorde, criando uma dissonância que resolve por grau conjunto (geralmente descendente). Tem três fases: preparação (nota consonante no acorde anterior), suspensão (a mesma nota mantida sobre o novo acorde, agora dissonante, num tempo forte) e resolução (a nota retida move-se por grau conjunto até uma nota consonante do acorde). A dissonância no tempo forte é o que confere às suspensões o seu poder expressivo — o ouvinte espera consonância e recebe tensão.',
+            'Um retardo é uma nota retida (ligada) do acorde anterior para o novo acorde, criando uma dissonância que resolve por grau conjunto (geralmente descendente). Tem três fases: preparação (nota consonante no acorde anterior), retardo (a mesma nota mantida sobre o novo acorde, agora dissonante, num tempo forte) e resolução (a nota retida move-se por grau conjunto até uma nota consonante do acorde). A dissonância no tempo forte é o que confere aos retardos o seu poder expressivo — o ouvinte espera consonância e recebe tensão.',
           tryThisLabel: 'Ouve o alvo consonante da resolução',
         },
         {
-          title: 'Tipos de Suspensão: 4-3, 7-6, 9-8',
+          title: 'Tipos de retardo: 4-3, 7-6, 9-8',
           explanation:
-            'As suspensões são nomeadas pelos intervalos que formam acima do baixo no momento da dissonância e da resolução. A suspensão 4-3 é a mais comum: uma 4.ª acima do baixo resolve para uma 3.ª. A suspensão 7-6 retém uma 7.ª que resolve para uma 6.ª — comum em sequências e cadeias de suspensões. A suspensão 9-8 retém uma 9.ª (ou 2.ª uma oitava acima) que resolve para uma oitava. Todas as três resolvem por grau conjunto descendente. Uma suspensão ornamentada acrescenta uma ou mais notas entre a suspensão e a sua resolução, como uma breve bordadura inferior, antes de a linha chegar à sua resolução um grau abaixo.',
+            'Os retardos são nomeados pelos intervalos que formam acima do baixo no momento da dissonância e da resolução. O retardo 4-3 é o mais comum: uma 4.ª acima do baixo resolve para uma 3.ª. O retardo 7-6 retém uma 7.ª que resolve para uma 6.ª — comum em sequências e cadeias de retardos. O retardo 9-8 retém uma 9.ª (ou 2.ª uma oitava acima) que resolve para uma oitava. Todos os três resolvem por grau conjunto descendente. Um retardo ornamentado acrescenta uma ou mais notas entre o retardo e a sua resolução, como uma breve bordadura inferior, antes de a linha chegar à sua resolução um grau abaixo.',
           tryThisLabel: 'Imagina manter C sobre este acorde (sus 4-3)',
         },
         {
-          title: 'A Suspensão de Baixo 2-3',
+          title: 'O retardo de baixo 2-3',
           explanation:
-            'A suspensão 2-3 é única: ocorre na voz do baixo em vez de numa voz superior. A nota do baixo é retida do acorde anterior, formando uma 2.ª contra uma voz superior que fica parada, e depois resolve por grau conjunto descendente. A designação "2-3" descreve o intervalo acima do baixo: quando o baixo desce, esse intervalo cresce de uma 2.ª para uma 3.ª — a voz superior não se move. O baixo, como em todas as suspensões padrão, resolve por grau conjunto descendente. (Kostka/Payne, Tonal Harmony, cap. 12.)',
+            'O retardo 2-3 é único: ocorre na voz do baixo em vez de numa voz superior. A nota do baixo é retida do acorde anterior, formando uma 2.ª contra uma voz superior que fica parada, e depois resolve por grau conjunto descendente. A designação "2-3" descreve o intervalo acima do baixo: quando o baixo desce, esse intervalo cresce de uma 2.ª para uma 3.ª — a voz superior não se move. O baixo, como em todos os retardos padrão, resolve por grau conjunto descendente. (Kostka/Payne, Tonal Harmony, cap. 12.)',
           tryThisLabel: 'Mantém E numa voz superior enquanto o baixo desce D → C — o intervalo acima do baixo cresce de uma 2.ª para uma 3.ª',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escreve "C major chord" e imagina manter a nota F enquanto o acorde soa — o F é uma 4.ª dissonante acima do baixo que quer resolver por grau conjunto descendente para E (um padrão de suspensão 4-3)',
+            'Escreve "C major chord" e imagina manter a nota F enquanto o acorde soa — o F é uma 4.ª dissonante acima do baixo que quer resolver por grau conjunto descendente para E (um padrão de retardo 4-3)',
         },
         {
           instruction:
-            'Numa suspensão 7-6, uma 7.ª acima do baixo resolve para uma 6.ª. Imagina a nota B retida sobre um baixo C: B é uma 7.ª, e resolve descendo para A (uma 6.ª acima de C). Isto cria uma dissonância mais suave do que a 4-3',
+            'Num retardo 7-6, uma 7.ª acima do baixo resolve para uma 6.ª. Imagina a nota B retida sobre um baixo C: B é uma 7.ª, e resolve descendo para A (uma 6.ª acima de C). Isto cria uma dissonância mais suave do que o retardo 4-3',
         },
         {
           instruction:
-            'Compara os três tipos de suspensão em vozes superiores: 4-3 (a mais comum, dissonância forte), 7-6 (moderada, frequentemente encadeada em sequências), 9-8 (espaçamento amplo, resolução em oitava). Todos partilham o mesmo mecanismo de preparação-dissonância-resolução',
+            'Compara os três tipos de retardo em vozes superiores: 4-3 (o mais comum, dissonância forte), 7-6 (moderado, frequentemente encadeado em sequências), 9-8 (espaçamento amplo, resolução em oitava). Todos partilham o mesmo mecanismo de preparação-dissonância-resolução',
         },
       ],
     },
 
     // ── U12 M2: Appoggiatura, Escape Tone, Retardation ─────────────────────
     l4u12m2: {
-      title: 'Apogiatura, Escapatória e Retardo',
+      title: 'Apogiatura, escapada e retardo ascendente',
       subtitle:
         'Notas estranhas acentuadas e não acentuadas, abordadas por salto ou resolvidas para cima',
       objectives: [
         'Identificar a apogiatura pela sua abordagem por salto e resolução por grau conjunto num tempo forte',
-        'Reconhecer a escapatória como o inverso: abordagem por grau conjunto, saída por salto',
-        'Compreender o retardo como uma suspensão que resolve para cima em vez de para baixo',
+        'Reconhecer a escapada como o inverso: abordagem por grau conjunto, saída por salto',
+        'Compreender o retardo ascendente como um retardo que resolve para cima em vez de para baixo',
       ],
       concepts: [
         {
-          title: 'A Apogiatura',
+          title: 'A apogiatura',
           explanation:
             'A apogiatura é abordada por salto e resolvida por grau conjunto na direção oposta, caindo num tempo forte. A palavra significa "nota de apoio" — apoia-se fortemente na sua resolução, criando uma dissonância acentuada e dramática, mais marcante do que uma nota de passagem porque o salto a torna inesperada. O salto cria surpresa, e a resolução por grau conjunto proporciona o alívio esperado. As apogiaturas são uma marca da melodia expressiva da era Romântica.',
           tryThisLabel: 'Ouve o movimento por grau conjunto que as apogiaturas decoram',
         },
         {
-          title: 'A Escapatória',
+          title: 'A escapada',
           explanation:
-            'A escapatória (échappée) é o inverso da apogiatura: abordada por grau conjunto e abandonada por salto na direção oposta. Afasta-se por grau conjunto de uma nota do acorde, depois salta de volta para uma nota do acorde diferente, criando um breve gesto decorativo num tempo fraco. Porque cai num tempo fraco e parte por salto, é menos dramática do que a apogiatura — um ornamento fugaz em vez de um acento expressivo.',
-          tryThisLabel: 'O movimento por grau conjunto é onde as escapatórias começam',
+            'A escapada (échappée) é o inverso da apogiatura: abordada por grau conjunto e abandonada por salto na direção oposta. Afasta-se por grau conjunto de uma nota do acorde, depois salta de volta para uma nota do acorde diferente, criando um breve gesto decorativo num tempo fraco. Porque cai num tempo fraco e parte por salto, é menos dramática do que a apogiatura — um ornamento fugaz em vez de um acento expressivo.',
+          tryThisLabel: 'O movimento por grau conjunto é onde as escapadas começam',
         },
         {
-          title: 'O Retardo',
+          title: 'O retardo ascendente',
           explanation:
-            'Um retardo usa o mesmo mecanismo de nota retida que uma suspensão, mas resolve por grau conjunto ascendente em vez de descendente. O retardo mais típico é 7-8: a sensível é retida do acorde da dominante e resolve para cima até à tónica. Soa como uma suspensão que vai na direção "errada". Os retardos são menos comuns do que as suspensões porque a resolução ascendente é menos natural na condução de vozes tonal, mas o retardo 7-8 é idiomático em pontos cadenciais.',
+            'Um retardo ascendente usa o mesmo mecanismo de nota retida que um retardo descendente, mas resolve por grau conjunto ascendente em vez de descendente. O retardo ascendente mais típico é 7-8: a sensível é retida do acorde da dominante e resolve para cima até à tónica. Soa como um retardo que vai na direção "errada". Os retardos ascendentes são menos comuns do que os retardos descendentes porque a resolução ascendente é menos natural na condução de vozes tonal, mas o retardo ascendente 7-8 é idiomático em pontos cadenciais.',
           tryThisLabel: 'O B em G maior pode retardar para cima até C',
         },
       ],
       tasks: [
         {
           instruction:
-            'Classifica estas notas estranhas pela abordagem e saída: apogiatura (salto para tempo forte, resolução por grau conjunto na direção oposta), escapatória (abordagem por grau conjunto, saída por salto na direção oposta), retardo (nota retida, grau conjunto ascendente). A apogiatura e a escapatória são imagens espelhadas',
+            'Classifica estas notas estranhas pela abordagem e saída: apogiatura (salto para tempo forte, resolução por grau conjunto na direção oposta), escapada (abordagem por grau conjunto, saída por salto na direção oposta), retardo ascendente (nota retida, grau conjunto ascendente). A apogiatura e a escapada são imagens espelhadas',
         },
         {
           instruction:
-            'Escreve "G major chord" — imagina a nota B retida enquanto o acorde muda para C maior. B resolve para cima até C: isto é um retardo 7-8, o tipo de retardo mais comum',
+            'Escreve "G major chord" — imagina a nota B retida enquanto o acorde muda para C maior. B resolve para cima até C: isto é um retardo ascendente 7-8, o tipo de retardo ascendente mais comum',
         },
         {
           instruction:
-            'Compara: uma suspensão resolve para BAIXO por grau conjunto (4-3: F desce para E), enquanto um retardo resolve para CIMA por grau conjunto (7-8: B sobe para C). Mesmo mecanismo, direção oposta. As suspensões são muito mais comuns porque a resolução descendente soa mais natural',
+            'Compara: um retardo resolve para BAIXO por grau conjunto (4-3: F desce para E), enquanto um retardo ascendente resolve para CIMA por grau conjunto (7-8: B sobe para C). Mesmo mecanismo, direção oposta. Os retardos descendentes são muito mais comuns porque a resolução descendente soa mais natural',
         },
       ],
     },
 
     // ── U12 M3: Pedal Point and Changing Tones ──────────────────────────────
     l4u12m3: {
-      title: 'Pedal e Notas Cambiadas',
-      subtitle: 'Notas sustentadas no baixo e ornamentos de dupla bordadura',
+      title: 'Pedal e cambiatas',
+      subtitle: 'Notas sustentadas no baixo e ornamentos de bordadura dupla',
       objectives: [
         'Compreender o pedal como uma nota sustentada sobre harmonias em mudança',
         'Identificar os tipos de pedal: de baixo, invertido, interno e pedal duplo',
-        'Reconhecer as notas cambiadas (dupla bordadura) como uma figura ornamental emparelhada',
+        'Reconhecer as cambiatas (bordadura dupla) como uma figura ornamental emparelhada',
       ],
       concepts: [
         {
-          title: 'O Pedal',
+          title: 'O pedal',
           explanation:
             'Um pedal é uma nota sustentada ou repetida (geralmente no baixo) sobre harmonias em mudança, criando dissonâncias e consonâncias alternadas à medida que os acordes se movem acima dela. Os pedais de tónica ancoram inícios e finais de peças, proporcionando estabilidade de base. Os pedais de dominante criam tensão antes de um regresso à tónica, gerando uma sensação de antecipação enquanto as harmonias mudam acima da nota dominante sustentada.',
           tryThisLabel: 'C é a nota de pedal de tónica mais comum',
         },
         {
-          title: 'Tipos de Pedal',
+          title: 'Tipos de pedal',
           explanation:
             'O pedal de baixo é o tipo mais comum, com a nota sustentada na voz mais grave. Um pedal invertido sustenta uma nota na voz do soprano enquanto as harmonias se movem abaixo. Um pedal interno mantém uma nota numa voz interior (contralto ou tenor), criando um efeito mais subtil. Um pedal duplo sustenta duas notas em simultâneo, geralmente tónica e dominante (como C e G mantidos juntos), criando um poderoso efeito de ancoragem.',
           tryThisLabel: 'G é a nota de pedal de dominante em C maior',
         },
         {
-          title: 'Notas Cambiadas (Dupla Bordadura)',
+          title: 'Cambiatas (bordadura dupla)',
           explanation:
-            'As notas cambiadas são um par de bordaduras em sequência: nota do acorde, bordadura superior, bordadura inferior, regresso à nota original do acorde (ou na ordem inversa). Também chamadas "grupo de bordaduras" ou "dupla bordadura". Criam uma órbita decorativa em torno de uma única altura, ornamentando-a de ambos os lados antes de regressar. A figura ocorre tipicamente numa posição de tempo fraco e acrescenta interesse melódico sem perturbar a harmonia subjacente.',
+            'As cambiatas são um par de bordaduras em sequência: nota do acorde, bordadura superior, bordadura inferior, regresso à nota original do acorde (ou na ordem inversa). Também chamadas "grupo de bordaduras" ou "bordadura dupla". Criam uma órbita decorativa em torno de uma única altura, ornamentando-a de ambos os lados antes de regressar. A figura ocorre tipicamente numa posição de tempo fraco e acrescenta interesse melódico sem perturbar a harmonia subjacente.',
           tryThisLabel: 'Imagina orbitar em torno de E com F e depois D',
         },
       ],
@@ -186,14 +186,14 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Uma figura de notas cambiadas em torno de E em C maior: E-F-D-E. O F é a bordadura superior, o D é a bordadura inferior, e a figura regressa a E. Este ornamento de dupla bordadura decora uma única nota do acorde de ambos os lados',
+            'Uma figura de cambiata em torno de E em C maior: E-F-D-E. O F é a bordadura superior, o D é a bordadura inferior, e a figura regressa a E. Este ornamento de bordadura dupla decora uma única nota do acorde de ambos os lados',
         },
       ],
     },
 
     // ── U12 M4: The Dominant Seventh — Resolution Rules ─────────────────────
     l4u12m4: {
-      title: 'A Sétima da Dominante — Regras de Resolução',
+      title: 'A sétima da dominante — regras de resolução',
       subtitle:
         'Notas de tendência do V7, condução de vozes e a resolução do trítono',
       objectives: [
@@ -203,19 +203,19 @@ const curriculumL4: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Notas de Tendência do V7',
+          title: 'Notas de tendência do V7',
           explanation:
             'O acorde de sétima da dominante contém duas notas de tendência que criam a sua poderosa atração gravitacional em direção à tónica. A sensível (a 3.ª de V7) resolve por meio-tom ascendente para a tónica. A 7.ª do acorde resolve por grau conjunto descendente para a 3.ª de I. Juntas, estas duas vozes formam um trítono que contrai para uma consonância imperfeita (uma 3.ª ou 6.ª), gerando o impulso harmónico mais forte na música tonal.',
           tryThisLabel: 'Ouve a tensão não resolvida de G7',
         },
         {
-          title: 'V7 Completo vs. Incompleto',
+          title: 'V7 completo vs. incompleto',
           explanation:
             'Um V7 completo tem os quatro sons: fundamental, 3.ª, 5.ª e 7.ª. Um V7 incompleto omite a 5.ª e dobra a fundamental, usado quando a condução de vozes com a forma completa seria desajeitada. Quando um V7 completo resolve para I, o acorde de tónica resultante é frequentemente incompleto (fundamental triplicada, sem 5.ª) porque ambas as notas de tendência devem resolver corretamente. Este compromisso entre completude do acorde e suavidade da condução de vozes é uma preocupação central na escrita a quatro vozes.',
           tryThisLabel: 'Ouve o alvo de resolução de G7',
         },
         {
-          title: 'A Resolução do Trítono',
+          title: 'A resolução do trítono',
           explanation:
             'O trítono entre a sensível e a 7.ª do acorde é o que torna o V7 singularmente poderoso. Em G7, o trítono é B-F. Quando G7 resolve para C, B sobe para C e F desce para E — o trítono contrai para a 3.ª consonante C-E. Esta contração da dissonância máxima para a consonância é o motor da resolução tonal. Cada movimento V7-I em qualquer tonalidade segue este mesmo padrão de trítono-para-consonância.',
           tryThisLabel: 'B e F formam o trítono dentro de G7',
@@ -239,7 +239,7 @@ const curriculumL4: CurriculumLevelOverlay = {
 
     // ── U12 M5: V7 Inversions and Their Resolutions ─────────────────────────
     l4u12m5: {
-      title: 'Inversões de V7 e as Suas Resoluções',
+      title: 'Inversões de V7 e as suas resoluções',
       subtitle: 'Como V6/5, V4/3 e V4/2 resolvem para posições de tónica',
       objectives: [
         'Resolver o estado fundamental e as três inversões de V7 para os seus alvos de tónica corretos',
@@ -248,19 +248,19 @@ const curriculumL4: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'V7 em Estado Fundamental e Primeira Inversão (V6/5)',
+          title: 'V7 em estado fundamental e primeira inversão (V6/5)',
           explanation:
             'O V7 em estado fundamental resolve para I com o efeito mais enfático — o baixo desce uma 5.ª (ou sobe uma 4.ª) até à fundamental da tónica. A primeira inversão V6/5 coloca a sensível no baixo, que deve subir por meio-tom até à tónica. Isto cria o movimento de baixo mais suave possível para o acorde de tónica e é especialmente útil quando se deseja uma linha de baixo por grau conjunto.',
           tryThisLabel: 'V7 em estado fundamental em C maior',
         },
         {
-          title: 'Segunda Inversão (V4/3)',
+          title: 'Segunda inversão (V4/3)',
           explanation:
             'V4/3 coloca a 5.ª do acorde da dominante no baixo. Pode resolver tanto para I (tónica em estado fundamental) como para I6 (tónica em primeira inversão), dando ao compositor flexibilidade na condução da linha de baixo. A nota do baixo (a 5.ª de V) tipicamente desce por grau conjunto até à fundamental da tónica ou move-se para a 3.ª de I. V4/3 aparece frequentemente no meio de frases como uma dominante de passagem entre posições de tónica.',
           tryThisLabel: 'V4/3 (G7/D) tem D (a 5.ª) no baixo',
         },
         {
-          title: 'Terceira Inversão (V4/2)',
+          title: 'Terceira inversão (V4/2)',
           explanation:
             'V4/2 coloca a 7.ª do acorde no baixo. Como a 7.ª é uma nota de tendência que deve resolver por grau conjunto descendente, V4/2 resolve quase sempre para I6 (tónica em primeira inversão). Em G7, a 7.ª é F; F deve descer por grau conjunto para E, dando C/E (I6) como resolução. Esta restrição é absoluta na condução de vozes rigorosa — V4/2 para I em estado fundamental deixaria a 7.ª do baixo sem resolução.',
           tryThisLabel: 'Toca G7/F para ouvir o movimento do baixo de V4/2 (F → E quando a 7.ª resolve)',
@@ -284,7 +284,7 @@ const curriculumL4: CurriculumLevelOverlay = {
 
     // ── U13 M1: Pre-Dominant Seventh Chords ─────────────────────────────────
     l4u13m1: {
-      title: 'Acordes de Sétima Pré-Dominantes: ii7 e IV7',
+      title: 'Acordes de sétima pré-dominantes: ii7 e IV7',
       subtitle:
         'As sonoridades pré-dominantes mais fortes e a progressão ii7-V7-I',
       objectives: [
@@ -294,19 +294,19 @@ const curriculumL4: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'O Acorde ii7',
+          title: 'O acorde ii7',
           explanation:
             'O ii7 é o acorde pré-dominante mais importante. Em tonalidades maiores é um acorde de sétima menor; em tonalidades menores torna-se um acorde de sétima meio-diminuto (iiø7). A progressão ii7-V7-I é a sequência funcional mais forte na harmonia tonal porque a fundamental de ii7 (D) é uma nota comum com a 5.ª de V (D em G-B-D-F), criando uma ligação suave na condução de vozes. O baixo move-se por 5.ª descendente (ou 4.ª ascendente) em cada passo, reforçando a atração gravitacional em direção à tónica.',
           tryThisLabel: 'Ouve ii7 na tonalidade de C',
         },
         {
-          title: 'O Acorde IV7 / IVmaj7',
+          title: 'O acorde IV7 / IVmaj7',
           explanation:
             'IVmaj7 desempenha uma função subdominante (pré-dominante) com calor e cor acrescidos. O intervalo de 7.ª maior confere-lhe uma qualidade rica, distinta da tríade IV mais simples. A sétima intensifica a atração para a dominante ao acrescentar mais uma voz que quer resolver. Embora menos comum do que ii7 na prática clássica, IVmaj7 aparece frequentemente na harmonia jazz e pop como uma sonoridade pré-dominante alternativa.',
           tryThisLabel: 'Ouve IVmaj7 na tonalidade de C',
         },
         {
-          title: 'A Progressão ii7-V7-I',
+          title: 'A progressão ii7-V7-I',
           explanation:
             'Esta sequência de três acordes é a progressão harmónica mais fundamental no jazz e uma das mais fortes em toda a música tonal. Cada acorde flui para o seguinte por 5.ª descendente: D(m7) para G(7) para C. A condução de vozes é excecionalmente suave: a 7.ª de cada acorde resolve por grau conjunto para o acorde seguinte, e notas comuns ligam harmonias adjacentes. No jazz, esta progressão é frequentemente estendida: iii7-vi7-ii7-V7-Imaj7, uma descida completa pelo ciclo de quintas.',
           tryThisLabel: 'Começa o ii7-V7-I em C maior',
@@ -330,7 +330,7 @@ const curriculumL4: CurriculumLevelOverlay = {
 
     // ── U13 M2: Mediant, Submediant, and Tonic Sevenths ────────────────────
     l4u13m2: {
-      title: 'Sétimas da Mediante, Submediante e Tónica',
+      title: 'Sétimas da mediante, submediante e tónica',
       subtitle:
         'iii7, vi7, Imaj7 — sétimas de função tónica e a tónica jazz',
       objectives: [
@@ -340,19 +340,19 @@ const curriculumL4: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Os Acordes iii7 e vi7',
+          title: 'Os acordes iii7 e vi7',
           explanation:
             'O iii7 funciona como substituto de tónica (partilhando duas notas com I) ou como elo no movimento por ciclo de quintas: iii7-vi7-ii7-V7-I. Raramente aparece isolado, mas é essencial em sequências prolongadas. O vi7 é o principal substituto de função tónica; vi7-ii7-V7-I é extremamente comum tanto na harmonia clássica como no jazz. A resolução interrompida V7-vi7 é mais suave do que V7-vi porque o acorde de sétima partilha mais notas com V7, atenuando a surpresa.',
           tryThisLabel: 'Ouve iii7 na tonalidade de C',
         },
         {
-          title: 'A Sétima de Tónica: Imaj7',
+          title: 'A sétima de tónica: Imaj7',
           explanation:
-            'Na harmonia clássica, a 7.ª sobre um acorde de tónica é tipicamente tratada como nota de passagem ou suspensão que resolve. No jazz e pop, Imaj7 é a disposição de tónica padrão — quente, rica e sofisticada. O intervalo de 7.ª maior (B em Cmaj7) acrescenta cor sem criar tensão de qualidade dominante. Imaj7 é o ponto de repouso da progressão ii7-V7-Imaj7, a cadência jazz mais característica.',
+            'Na harmonia clássica, a 7.ª sobre um acorde de tónica é tipicamente tratada como nota de passagem ou retardo que resolve. No jazz e pop, Imaj7 é a disposição de tónica padrão — quente, rica e sofisticada. O intervalo de 7.ª maior (B em Cmaj7) acrescenta cor sem criar tensão de qualidade dominante. Imaj7 é o ponto de repouso da progressão ii7-V7-Imaj7, a cadência jazz mais característica.',
           tryThisLabel: 'Ouve a tónica jazz: Cmaj7',
         },
         {
-          title: 'A Tónica Blues: I7',
+          title: 'A tónica blues: I7',
           explanation:
             'No blues, o acorde I é uma sétima da dominante (I7), conferindo a cada acorde a tensão característica que define o estilo. C7 como acorde de tónica é "errado" segundo os padrões clássicos (sétimas da dominante devem resolver, não repousar), mas exatamente certo no blues. Num blues de 12 compassos, os três acordes principais (I7, IV7, V7) são todos sétimas da dominante. Isto transforma a sétima da dominante de um acorde de tensão no bloco sonoro básico de construção.',
           tryThisLabel: 'Ouve C7 como tónica blues — uma sétima da dominante que repousa em vez de resolver',
@@ -376,7 +376,7 @@ const curriculumL4: CurriculumLevelOverlay = {
 
     // ── U13 M3: Leading-Tone Sevenths ───────────────────────────────────────
     l4u13m3: {
-      title: 'Sétimas da Sensível: viiø7 e vii°7',
+      title: 'Sétimas da sensível: viiø7 e vii°7',
       subtitle:
         'Acordes de sétima meio-diminuto e diminuto como substitutos da dominante',
       objectives: [
@@ -386,19 +386,19 @@ const curriculumL4: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'O viiø7 Meio-Diminuto',
+          title: 'O viiø7 meio-diminuto',
           explanation:
             'O viiø7 em tonalidades maiores funciona como um V7 sem fundamental — as suas notas são a 3.ª, 5.ª, 7.ª e 9.ª de V. Em C maior, Bø7 contém B-D-F-A, que são as quatro notas superiores de G9 (G-B-D-F-A com a fundamental G removida). Resolve para I com a mesma lógica de notas de tendência: B sobe para C, F desce para E. A qualidade meio-diminuta é menos tensa do que a totalmente diminuta, conferindo-lhe uma atração dominante mais suave.',
           tryThisLabel: 'Ouve viiø7 na tonalidade de C',
         },
         {
-          title: 'O vii°7 Totalmente Diminuto',
+          title: 'O vii°7 totalmente diminuto',
           explanation:
             'O vii°7 em tonalidades menores é construído a partir do 7.º grau elevado da escala menor harmónica. As quatro notas são todas notas de tendência que puxam para a resolução, tornando-o o mais tenso de todos os acordes de sétima diatónicos. Em A menor, G#dim7 contém G#-B-D-F — cada nota quer mover-se por grau conjunto. O acorde de sétima diminuto divide a oitava em 3.as menores iguais, conferindo-lhe uma qualidade simétrica e inquieta.',
           tryThisLabel: 'Ouve o vii°7 totalmente diminuto',
         },
         {
-          title: 'Flexibilidade Enarmónica',
+          title: 'Flexibilidade enarmónica',
           explanation:
             'Como o acorde de sétima diminuto divide a oitava em quatro 3.as menores iguais, qualquer uma das suas quatro notas pode ser renomeada como fundamental. G#dim7, Bdim7, Ddim7 e Fdim7 contêm todos as mesmas alturas (enarmonicamente). Isto torna o acorde de sétima diminuto um poderoso acorde pivot para modulação — um único acorde pode resolver para quatro tonalidades diferentes. Esta flexibilidade enarmónica torna-se central na modulação cromática no Nível 6.',
           tryThisLabel: 'Mesmas alturas que G#dim7, Ddim7, Fdim7',
@@ -422,7 +422,7 @@ const curriculumL4: CurriculumLevelOverlay = {
 
     // ── U13 M4: Harmonic Function: T → PD → D → T ──────────────────────────
     l4u13m4: {
-      title: 'Função Harmónica: T \u2192 PD \u2192 D \u2192 T',
+      title: 'Função harmónica: T → PD → D → T',
       subtitle:
         'Tónica, Pré-Dominante e Dominante — os três pilares da harmonia tonal',
       objectives: [
@@ -432,19 +432,19 @@ const curriculumL4: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'As Três Funções Harmónicas',
+          title: 'As três funções harmónicas',
           explanation:
             'Cada acorde diatónico desempenha uma de três funções. Acordes de Tónica (T) — I, vi, e por vezes iii — proporcionam estabilidade e a sensação de casa. Acordes Pré-Dominantes (PD) — ii e IV — criam partida e movimento, sinalizando que a harmonia se dirige a algum lado. Acordes de Dominante (D) — V e vii° — geram tensão e urgência que exige resolução de volta à tónica. As cores dos graus nesta app codificam estas funções: azul para estabilidade tónica, âmbar para tensão dominante.',
           tryThisLabel: 'Vê as cores de função na barra de graus',
         },
         {
-          title: 'A Progressão Funcional Padrão',
+          title: 'A progressão funcional padrão',
           explanation:
             'T \u2192 PD \u2192 D \u2192 T é a frase harmónica fundamental, espelhando a estrutura narrativa: estabelecer casa, partir, criar tensão, resolver. Quase toda a música tonal segue este padrão a algum nível estrutural. A ordem importa: PD \u2192 D aumenta a tensão, D \u2192 T liberta-a. Inverter o fluxo (retrogressão) soa invulgar porque liberta a tensão prematuramente — D \u2192 PD ou PD \u2192 T sem passar por D cria desvio, evitamento da resolução, ou um regresso suave.',
           tryThisLabel: 'Traça I-IV-V-I como T-PD-D-T',
         },
         {
-          title: 'Substituição de Acordes Dentro de Funções',
+          title: 'Substituição de acordes dentro de funções',
           explanation:
             'Acordes dentro do mesmo grupo funcional podem substituir-se mutuamente porque partilham graus da escala. O vi pode substituir I (é por isso que a cadência interrompida V-vi funciona — vi é função tónica). O ii pode substituir IV (ambos são pré-dominantes). O vii° pode substituir V (ambos são função dominante). A substituição explica por que tantas progressões diferentes funcionam: seguem o mesmo padrão funcional T-PD-D-T com acordes específicos diferentes a preencher cada papel.',
           tryThisLabel: 'Vê quais acordes partilham função',
@@ -468,7 +468,7 @@ const curriculumL4: CurriculumLevelOverlay = {
 
     // ── U13 M5: Harmonic Sequences ──────────────────────────────────────────
     l4u13m5: {
-      title: 'Sequências Harmónicas',
+      title: 'Sequências harmónicas',
       subtitle:
         'Padrões harmónicos repetitivos que criam movimento direcional dentro de uma tonalidade',
       objectives: [
@@ -478,19 +478,19 @@ const curriculumL4: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'O Que É uma Sequência Harmónica?',
+          title: 'O que é uma sequência harmónica?',
           explanation:
             'Uma sequência harmónica é um padrão de acordes que se repete a intervalos regulares, transpondo-se para cima ou para baixo a cada repetição. As sequências criam um forte impulso direcional — o ouvinte percebe o padrão e antecipa a sua continuação. Sobrepõem temporariamente as progressões funcionais normais porque o padrão repetitivo em si mesmo fornece a lógica harmónica. Qualquer desvio do padrão estabelecido é imediatamente percetível, o que torna as sequências simultaneamente previsíveis e cativantes.',
           tryThisLabel: 'Vê todos os acordes diatónicos para construir sequências',
         },
         {
-          title: 'A Sequência de Quintas Descendentes',
+          title: 'A sequência de quintas descendentes',
           explanation:
             'A sequência harmónica mais comum. As fundamentais descem por quintas: I-IV-vii°-iii-vi-ii-V-I. Cada acorde resolve para o seguinte como se fosse um movimento V-I local. O ciclo completo regressa à tonalidade inicial. Qualquer subconjunto funciona como progressão utilizável: vi-ii-V-I é um fragmento de quintas descendentes usado constantemente na música tonal. Acrescentar acordes de sétima torna a condução de vozes ainda mais suave porque a 7.ª de cada acorde resolve por grau conjunto para o acorde seguinte.',
           tryThisLabel: 'vi7 inicia uma descida de quintas comum',
         },
         {
-          title: 'Segundas Ascendentes e Terças Descendentes',
+          title: 'Segundas ascendentes e terças descendentes',
           explanation:
             'Numa sequência de segundas ascendentes, as fundamentais sobem por grau conjunto: I-ii-iii-IV-V, criando uma sensação de escalada. Primeiras inversões são frequentemente usadas para manter a linha de baixo suave (a técnica 5-6): na sequência 5-6 ascendente, cada acorde em posição fundamental (5/3) é seguido de um acorde 6/3 sobre a mesma nota do baixo, e depois o baixo sobe um grau. Numa sequência de terças descendentes, as fundamentais descem por terças: I-vi-IV-ii, produzindo um movimento descendente suave comum na música Romântica. Cada par numa sequência de terças partilha uma nota comum, tornando a condução de vozes excecionalmente suave.',
           tryThisLabel: 'ii7 situa-se no centro de muitas sequências',
@@ -514,7 +514,7 @@ const curriculumL4: CurriculumLevelOverlay = {
 
     // ── U14 M1: First and Second Species Counterpoint ───────────────────────
     l4u14m1: {
-      title: 'Contraponto de Primeira e Segunda Espécie',
+      title: 'Contraponto de primeira e segunda espécie',
       subtitle:
         'Combinar melodias independentes com regras de consonância e dissonância',
       objectives: [
@@ -524,19 +524,19 @@ const curriculumL4: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'O Que É o Contraponto?',
+          title: 'O que é o contraponto?',
           explanation:
             'O contraponto é a arte de combinar duas ou mais linhas melódicas independentes que estão harmonicamente relacionadas mas melodicamente independentes. Enquanto a harmonia é uma perspetiva vertical (acordes empilhados num momento no tempo), o contraponto é horizontal (melodias que se desenrolam no tempo e se entrelaçam). As duas perspetivas complementam-se — boa harmonia geralmente implica bom contraponto, e vice-versa. O contraponto foi a técnica composicional dominante do Renascimento ao Barroco.',
           tryThisLabel: 'Uma escala é a linha melódica mais simples',
         },
         {
-          title: 'Consonância e Dissonância no Contraponto',
+          title: 'Consonância e dissonância no contraponto',
           explanation:
             'No contraponto a duas partes, cada intervalo vertical entre as vozes é classificado. Consonâncias perfeitas (1P, 5P, 8P) são as mais estáveis, mas soam ocas se usadas em excesso. Consonâncias imperfeitas (3m, 3M, 6m, 6M) são estáveis e quentes — formam a espinha dorsal do bom contraponto, proporcionando o melhor equilíbrio entre harmonia e independência. Dissonâncias (2m, 2M, 4P, trítono, 7m, 7M) são instáveis e devem resolver por grau conjunto para uma consonância.',
           tryThisLabel: 'C-E é uma consonância imperfeita (3M)',
         },
         {
-          title: 'Primeira e Segunda Espécie',
+          title: 'Primeira e segunda espécie',
           explanation:
             'A primeira espécie (1:1) coloca uma nota do contraponto contra cada nota do cantus firmus (melodia dada). Cada intervalo deve ser consonante. Começa e termina em uníssono, 5.ª perfeita ou oitava, usa maioritariamente consonâncias imperfeitas, e nunca se aproxima de consonâncias perfeitas em movimento paralelo. A segunda espécie (2:1) acrescenta duas notas contra cada nota do cantus firmus. Tempos fortes devem ser consonantes; na espécie estrita, a única dissonância permitida num tempo fraco é a nota de passagem, abordada e abandonada por grau conjunto (as bordaduras dissonantes chegam mais tarde, na terceira espécie — embora alguns textos modernos as admitam mais cedo). Os tempos fracos também podem ser consonantes — é permitido um salto para um intervalo consonante. É aqui que as notas estranhas ao acorde entram pela primeira vez no contraponto.',
           tryThisLabel: 'Imagina uma segunda voz contra esta linha',
@@ -560,7 +560,7 @@ const curriculumL4: CurriculumLevelOverlay = {
 
     // ── U14 M2: Asymmetric and Mixed Meters ─────────────────────────────────
     l4u14m2: {
-      title: 'Compassos Assimétricos e Mistos',
+      title: 'Compassos assimétricos e mistos',
       subtitle:
         'Contar em 5, 7 e mais — compassos aditivos e mistos',
       objectives: [
@@ -570,19 +570,19 @@ const curriculumL4: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Compassos Assimétricos',
+          title: 'Compassos assimétricos',
           explanation:
             'Compassos assimétricos têm contagens de tempos que não se dividem igualmente em grupos iguais. 5/4 ou 5/8 agrupa-se como 2+3 ou 3+2 — o agrupamento determina inteiramente o carácter rítmico. 7/4 ou 7/8 agrupa-se como 2+2+3, 2+3+2 ou 3+2+2. O agrupamento desigual cria um groove assimétrico que é característico da música folclórica balcânica, rock progressivo e muita música de concerto do século XX.',
           tryThisLabel: 'Ouve 7/8 agrupado em 2+2+3',
         },
         {
-          title: 'Compassos Aditivos',
+          title: 'Compassos aditivos',
           explanation:
             'Compassos aditivos são construídos combinando grupos de 2 e 3 tempos. 5 = 2+3 ou 3+2. 7 = 2+2+3 ou 2+3+2 ou 3+2+2. 8 = 3+3+2, comum na música balcânica e algum rock. 11 = 2+2+3+2+2, usado por Dave Brubeck e outros. O padrão de agrupamento interno é o que dá a cada compasso o seu carácter distintivo — o mesmo número total de tempos com agrupamentos diferentes cria caracteres rítmicos inteiramente distintos.',
           tryThisLabel: 'Ouve 5/4 agrupado em 3+2',
         },
         {
-          title: 'Compassos Mistos e Tempo Cortado',
+          title: 'Compassos mistos e tempo cortado',
           explanation:
             'O compasso misto muda a indicação de compasso de compasso para compasso: um compasso de 4/4, o seguinte de 3/4, depois 5/4. Isto cria uma superfície rítmica imprevisível e mutável, comum em bandas sonoras de cinema e rock progressivo. O tempo cortado (alla breve, 2/2) usa dois tempos de mínima por compasso — um compasso de 2/2 tem a mesma duração total que um compasso de 4/4, mas a unidade de tempo é a mínima em vez da semínima, pelo que a música é contada em 2 e ganha uma sensação mais ampla e de movimento mais rápido, com maior impulso métrico. O tempo cortado é padrão em marchas e movimentos rápidos do período Clássico.',
           tryThisLabel: 'Ouve o compasso 2/2: dois tempos de mínima por compasso',
@@ -606,7 +606,7 @@ const curriculumL4: CurriculumLevelOverlay = {
 
     // ── U14 M3: Chromatic Embellishment ──────────────────────────────────────
     l4u14m3: {
-      title: 'Ornamentação Cromática',
+      title: 'Ornamentação cromática',
       subtitle:
         'Acrescentar cor cromática à harmonia diatónica sem mudar de tonalidade',
       objectives: [
@@ -616,19 +616,19 @@ const curriculumL4: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Notas de Passagem e Bordaduras Cromáticas',
+          title: 'Notas de passagem e bordaduras cromáticas',
           explanation:
             'Uma nota de passagem cromática preenche um tom com uma nota não diatónica: C-C#-D usa o C# cromático para ligar dois tons diatónicos suavemente. Uma bordadura cromática orbita uma nota do acorde usando um meio-tom cromático: E-Eb-E cria uma órbita mais apertada do que uma bordadura diatónica. Ambas acrescentam suavidade e cor a linhas diatónicas de outro modo simples. São especialmente comuns em linhas de baixo e vozes interiores, onde o cromatismo acrescentado enriquece a textura sem perturbar a melodia.',
           tryThisLabel: 'Ouve todos os 12 passos cromáticos',
         },
         {
-          title: 'Ornamentação vs. Cromatismo Estrutural',
+          title: 'Ornamentação vs. cromatismo estrutural',
           explanation:
             'Neste nível, o cromatismo é decorativo — acrescenta cor à harmonia diatónica sem mudar de tonalidade. Uma nota de passagem cromática entre os graus 4 e 5 é decoração. Um acorde V/V (dominante secundária) é cromatismo estrutural que aponta brevemente para um novo centro tonal. A distinção é importante: a ornamentação decora a superfície enquanto a estrutura altera a direção harmónica. O cromatismo estrutural, incluindo dominantes secundárias e modulação, vem no Nível 5.',
           tryThisLabel: 'O enquadramento diatónico que o cromatismo decora',
         },
         {
-          title: 'Movimento Contrário Cromático',
+          title: 'Movimento contrário cromático',
           explanation:
             'No movimento contrário cromático, duas vozes movem-se cromaticamente em direções opostas, convergindo ou divergindo por meio-tom. Por exemplo, o baixo sobe C-C# enquanto uma voz superior desce E-Eb, ambas convergindo em D. Isto cria um efeito marcante de movimento cruzado que acrescenta intensidade e sofisticação à condução de vozes sem sair da tonalidade — e é uma peça básica dos acordes cromáticos estudados no Nível 6.',
           tryThisLabel: 'Os passos cromáticos são a matéria-prima',
@@ -652,7 +652,7 @@ const curriculumL4: CurriculumLevelOverlay = {
 
     // ── U14 M4: Roman Numeral Analysis Practice ─────────────────────────────
     l4u14m4: {
-      title: 'Prática de Análise com Numerais Romanos',
+      title: 'Prática de análise com numerais romanos',
       subtitle:
         'Analisar progressões harmónicas reais com notação completa de numerais romanos',
       objectives: [
@@ -662,21 +662,21 @@ const curriculumL4: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'O Método de Análise',
+          title: 'O método de análise',
           explanation:
             'A análise com numerais romanos segue um processo sistemático: (1) determinar a tonalidade a partir da armação de clave e dos padrões cadenciais, (2) em cada ponto de ritmo harmónico, identificar o acorde — que notas estão a soar, (3) determinar a fundamental e a qualidade, (4) rotular com numeral romano, símbolo de qualidade e cifra de inversão, (5) identificar notas estranhas ao acorde como notas que não pertencem ao acorde, (6) marcar cadências nos finais de frases. Este método transforma a escuta intuitiva em compreensão estruturada.',
           tryThisLabel: 'Vê todos os acordes disponíveis para análise em C',
         },
         {
-          title: 'Leitura de Texturas de Coral',
+          title: 'Leitura de texturas de coral',
           explanation:
-            'A textura de coral a quatro vozes coloca soprano e contralto na pauta de clave de sol (hastes para cima e para baixo respetivamente), tenor e baixo na pauta de clave de fá. Começa a análise identificando a nota do baixo — ela determina a inversão. Depois identifica as restantes notas do acorde acima. Circunda quaisquer notas que não encaixem no acorde — são notas estranhas. Suspensões e notas de passagem podem fazer os acordes parecerem errados à superfície; analisa sempre a harmonia subjacente no ponto de resolução.',
+            'A textura de coral a quatro vozes coloca soprano e contralto na pauta de clave de sol (hastes para cima e para baixo respetivamente), tenor e baixo na pauta de clave de fá. Começa a análise identificando a nota do baixo — ela determina a inversão. Depois identifica as restantes notas do acorde acima. Circunda quaisquer notas que não encaixem no acorde — são notas estranhas. Retardos e notas de passagem podem fazer os acordes parecerem errados à superfície; analisa sempre a harmonia subjacente no ponto de resolução.',
           tryThisLabel: 'Um acorde simples para praticar a identificação',
         },
         {
-          title: 'Armadilhas Comuns na Análise',
+          title: 'Armadilhas comuns na análise',
           explanation:
-            'O erro mais comum é identificar incorretamente acordes em inversão olhando apenas para a nota do baixo. Um acorde com E no baixo, G acima e C acima não é E menor — é C maior em primeira inversão (I6). Outra armadilha: as suspensões fazem o acorde parecer "errado" no momento da dissonância. Analisa sempre até à resolução para determinar a harmonia real. O contexto determina a melhor leitura quando uma nota pode servir tanto como nota do acorde como nota estranha.',
+            'O erro mais comum é identificar incorretamente acordes em inversão olhando apenas para a nota do baixo. Um acorde com E no baixo, G acima e C acima não é E menor — é C maior em primeira inversão (I6). Outra armadilha: os retardos fazem o acorde parecer "errado" no momento da dissonância. Analisa sempre até à resolução para determinar a harmonia real. O contexto determina a melhor leitura quando uma nota pode servir tanto como nota do acorde como nota estranha.',
           tryThisLabel: 'C/E é I6, não um acorde de E',
         },
       ],
@@ -698,7 +698,7 @@ const curriculumL4: CurriculumLevelOverlay = {
 
     // ── U14 M5: Minor Key Harmony in Detail ─────────────────────────────────
     l4u14m5: {
-      title: 'Harmonia em Modo Menor em Detalhe',
+      title: 'Harmonia em modo menor em detalhe',
       subtitle:
         'Como as três formas da escala menor criam um vocabulário de acordes fluido e alargado',
       objectives: [
@@ -708,19 +708,19 @@ const curriculumL4: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'A Paleta de Acordes em Modo Menor',
+          title: 'A paleta de acordes em modo menor',
           explanation:
-            'Na prática, as tonalidades menores extraem acordes das três formas da escala menor: V e vii° da menor harmónica (porque a sensível é necessária para cadências fortes), i, iv, VI e III da menor natural (usando o 6.º e 7.º graus inalterados), e ii e IV da menor melódica ascendente (que eleva o 6.º grau, além do 7.º) — tipicamente quando o 6.º grau elevado sobe por grau conjunto até ao 7.º elevado. Um IV maior usado pela sua cor mais luminosa é também frequentemente descrito como empréstimo do modo maior paralelo (mistura modal, Nível 5); ambas as descrições são comuns. Isto dá às tonalidades menores mais opções de acordes do que às maiores, não menos. O compositor escolhe qual forma usar com base nas necessidades de condução de vozes e na cor harmónica desejada.',
+            'Na prática, as tonalidades menores extraem acordes das três formas da escala menor: V e vii° da menor harmónica (porque a sensível é necessária para cadências fortes), i, iv, VI e III da menor natural (usando o 6.º e 7.º graus inalterados), e ii e IV da menor melódica ascendente (que eleva o 6.º grau, além do 7.º) — tipicamente quando o 6.º grau elevado sobe por grau conjunto até ao 7.º elevado. Um IV maior usado pela sua cor mais luminosa é também frequentemente descrito como empréstimo do modo maior homónimo (mistura modal, Nível 5); ambas as descrições são comuns. Isto dá às tonalidades menores mais opções de acordes do que às maiores, não menos. O compositor escolhe qual forma usar com base nas necessidades de condução de vozes e na cor harmónica desejada.',
           tryThisLabel: 'Vê a base da menor natural',
         },
         {
-          title: 'O Subtónico VII e o III+ Aumentado',
+          title: 'O subtónico VII e o III+ aumentado',
           explanation:
             'Na menor natural, o 7.º grau está a um tom abaixo da tónica, produzindo uma tríade maior VII em vez do vii° diminuto encontrado na menor harmónica. O VII frequentemente move-se para III, ou diretamente para i na cadência eólia VII–i (G para Am em A menor), comum no rock e pop. Construir uma tríade no 3.º grau da menor harmónica produz uma tríade aumentada (III+) porque o 7.º grau elevado torna-se a 5.ª dessa tríade. O III+ é áspero e raramente usado; os compositores usam quase sempre o III da menor natural (uma tríade maior simples).',
           tryThisLabel: 'Vê o 7.º grau elevado que cria V e vii°',
         },
         {
-          title: 'O Sistema Menor Fluido',
+          title: 'O sistema menor fluido',
           explanation:
             'Ao contrário do modo maior (uma escala, um conjunto fixo de acordes diatónicos), o menor é fluido — o 6.º e 7.º graus são variáveis. Esta variabilidade é uma característica, não um defeito. Uma passagem em modo menor pode usar uma cadência III-VII da menor natural numa frase e uma cadência V-i da menor harmónica na seguinte, extraindo livremente de toda a paleta. Compreender esta fluidez é essencial para analisar música real, onde a harmonia em modo menor raramente se mantém dentro de uma única forma de escala ao longo de toda a peça.',
           tryThisLabel: 'Compara com a menor natural acima',

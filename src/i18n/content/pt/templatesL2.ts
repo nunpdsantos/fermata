@@ -154,9 +154,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Qual destas afirmações sobre tonalidades relativas e paralelas é verdadeira?',
+        'Qual destas afirmações sobre tonalidades relativas e homónimas é verdadeira?',
       hintTemplate:
-        'Tonalidades relativas partilham a mesma armação de clave (ex: C maior / A menor). Tonalidades paralelas partilham a mesma tónica (ex: C maior / C menor).',
+        'Tonalidades relativas partilham a mesma armação de clave (ex: C maior / A menor). Tonalidades homónimas partilham a mesma tónica (ex: C maior / C menor).',
       choiceSets: [
         [
           'A relativa menor de G maior é E menor',
@@ -183,10 +183,10 @@ const overlay: TemplateLevelOverlay = {
           'A relativa menor de Eb maior é Ab menor',
         ],
         [
-          'As tonalidades paralelas partilham a mesma tónica mas diferem no modo',
-          'As tonalidades paralelas partilham a armação de clave mas têm tónicas diferentes',
-          'As tonalidades paralelas têm geralmente tónicas à distância de uma quinta perfeita',
-          'As tonalidades paralelas partilham as notas da escala mas começam em tónicas diferentes',
+          'As tonalidades homónimas partilham a mesma tónica mas diferem no modo',
+          'As tonalidades homónimas partilham a armação de clave mas têm tónicas diferentes',
+          'As tonalidades homónimas têm geralmente tónicas à distância de uma quinta perfeita',
+          'As tonalidades homónimas partilham as notas da escala mas começam em tónicas diferentes',
         ],
       ],
     },

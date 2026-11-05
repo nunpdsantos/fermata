@@ -100,7 +100,7 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Db7 = Db, F, Ab, Cb. A substituição tritónica partilha o mesmo intervalo de trítono (F-Cb enarmónico de F-B) do acorde G7 original. Pitch classes: 1, 5, 8, 11.',
   },
   l7u21m4e2: {
-    prompt: 'Qual é o princípio de substituir um acorde de sétima dominante por outro acorde de sétima dominante à distância de um trítono?',
+    prompt: 'Qual é o princípio de substituir um acorde de sétima da dominante por outro acorde de sétima da dominante à distância de um trítono?',
     choices: [
       'As terças e sétimas são as mesmas duas classes de altura, com os papéis trocados',
       "As fundamentais e quintas são geralmente as mesmas duas classes de altura, com os papéis trocados",
@@ -389,7 +389,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt:
       'Quando uma música pop numa tonalidade maior usa um acorde bVII (ex: Bb maior na tonalidade de C), que técnica está a ser usada?',
     choices: [
-      'Mistura modal (empréstimo do paralelo menor/modo mixolídio)',
+      'Mistura modal (empréstimo do homónimo menor/modo mixolídio)',
       'Uma modulação para a tonalidade de Bb maior',
       'Um dominante secundário a apontar para o acorde IV',
       'Uma reescrita enarmónica do acorde vii° de C maior, B diminuto, escrito como Bb',

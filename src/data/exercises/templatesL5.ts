@@ -188,10 +188,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'In a dominant chain, each chord acts as vi7 of the chord that follows', correct: false },
             ],
             [
-          { label: "The chain V7/vi -> V7/ii -> V7/V -> V -> I moves by descending 5ths", correct: true },
-          { label: "The chain V7/vi -> V7/ii -> V7/V -> V -> I moves by descending 3rds", correct: false },
-          { label: "The chain V7/vi -> V7/ii -> V7/V -> V -> I moves by descending 2nds", correct: false },
-          { label: "The chain V7/vi -> V7/ii -> V7/V -> V -> I moves by descending 4ths", correct: false },
+          { label: "The chain V7/vi → V7/ii → V7/V → V → I moves by descending 5ths", correct: true },
+          { label: "The chain V7/vi → V7/ii → V7/V → V → I moves by descending 3rds", correct: false },
+          { label: "The chain V7/vi → V7/ii → V7/V → V → I moves by descending 2nds", correct: false },
+          { label: "The chain V7/vi → V7/ii → V7/V → V → I moves by descending 4ths", correct: false },
         ],
             [
               { label: 'Each applied dominant usually adds a chromatic note: the leading tone of its target', correct: true },

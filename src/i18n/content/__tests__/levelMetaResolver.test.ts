@@ -37,14 +37,14 @@ describe('translateLevelMetadata', () => {
 
   it('translates to Portuguese', () => {
     const result = translateLevelMetadata(SAMPLE_META, 'pt');
-    expect(result[0].title).toBe('Fundamentos da Literacia Musical');
-    expect(result[1].title).toBe('Expansão dos Fundamentos');
+    expect(result[0].title).toBe('Fundamentos da literacia musical');
+    expect(result[1].title).toBe('Expansão dos fundamentos');
   });
 
   it('translates to Spanish', () => {
     const result = translateLevelMetadata(SAMPLE_META, 'es');
-    expect(result[0].title).toBe('Fundamentos de Lectura Musical');
-    expect(result[1].title).toBe('Expansión de los Fundamentos');
+    expect(result[0].title).toBe('Fundamentos de lectura musical');
+    expect(result[1].title).toBe('Expansión de los fundamentos');
   });
 
   it('preserves non-translated fields', () => {

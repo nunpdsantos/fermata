@@ -88,7 +88,7 @@ const overlay: ExerciseLevelOverlay = {
       'Um ostinato sob uma melodia sem relação',
       'Frases alternadas sem imitação melódica',
     ],
-    hint: 'Um cânone é imitação estrita: uma voz (o líder ou dux) é seguida a um intervalo temporal fixo por uma ou mais vozes (o seguidor ou comes) que a copiam exatamente.',
+    hint: 'Um cânone é imitação estrita: uma voz (o dux, a que começa) é seguida a um intervalo temporal fixo por uma ou mais vozes (o comes, as que imitam) que a copiam exatamente.',
   },
   l8u25m3e2: {
     prompt:
@@ -298,14 +298,14 @@ const overlay: ExerciseLevelOverlay = {
 
   l8u27m3e1: {
     prompt:
-      'O que é o "planing" (também chamado paralelismo) na música do início do século XX?',
+      'O que é o paralelismo na música do início do século XX?',
     choices: [
-      'Mover acordes em paralelo: o planing cromático mantém os intervalos exatos, o diatónico ajusta-os à escala',
-      "Mover acordes em paralelo: o planing cromático ajusta-os à escala, o diatónico mantém os intervalos exatos",
-      "Mover acordes em paralelo: o planing cromático mantém os intervalos exatos, o diatónico mantém os intervalos exatos",
-      "Mover acordes em paralelo: o planing cromático ajusta-os à escala, o diatónico ajusta-os à escala",
+      'Mover acordes em paralelo: o paralelismo estrito (cromático) mantém os intervalos exatos, o diatónico ajusta-os à escala',
+      "Mover acordes em paralelo: o paralelismo estrito (cromático) ajusta-os à escala, o diatónico mantém os intervalos exatos",
+      "Mover acordes em paralelo: o paralelismo estrito (cromático) mantém os intervalos exatos, o diatónico mantém os intervalos exatos",
+      "Mover acordes em paralelo: o paralelismo estrito (cromático) ajusta-os à escala, o diatónico ajusta-os à escala",
     ],
-    hint: 'O planing move uma forma de acorde ou intervalo fixa para cima ou para baixo em paralelo. Debussy usou famosamente tríades e acordes de nona paralelos, abandonando as regras tradicionais de condução de vozes.',
+    hint: 'O paralelismo move uma forma de acorde ou intervalo fixa para cima ou para baixo em paralelo. Debussy usou famosamente tríades e acordes de nona paralelos, abandonando as regras tradicionais de condução de vozes.',
   },
   l8u27m3e2: {
     prompt: 'O que é a politonalidade?',

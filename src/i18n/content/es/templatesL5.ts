@@ -198,7 +198,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'Las tonalidades cercanas (como máximo a una alteración de distancia) comparten más acordes pivote',
           'Las tonalidades lejanas (a muchas alteraciones de distancia) comparten más acordes pivote que las cercanas',
-          'Las tonalidades paralelas (la misma tónica en modos diferentes) comparten más acordes pivote que las cercanas',
+          'Las tonalidades homónimas (la misma tónica en modos diferentes) comparten más acordes pivote que las cercanas',
           'Las tonalidades cercanas (como máximo a una alteración de distancia) no comparten acordes pivote en ninguna tonalidad',
         ],
       ],
@@ -313,12 +313,12 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Construye el acorde prestado {root} (un acorde de mezcla modal en C mayor).',
       hintTemplate:
-        'La mezcla modal toma prestados acordes del modo menor paralelo. En C mayor estos acordes prestados son bVI (Ab mayor), bIII (Eb mayor), bVII (Bb mayor) y iv (F menor). Construye {root} tal como está escrito: las fundamentales rebajadas forman tríadas mayores, el acorde iv es F menor.',
+        'La mezcla modal toma prestados acordes del modo menor homónimo. En C mayor estos acordes prestados son bVI (Ab mayor), bIII (Eb mayor), bVII (Bb mayor) y iv (F menor). Construye {root} tal como está escrito: las fundamentales rebajadas forman tríadas mayores, el acorde iv es F menor.',
     },
     {
       // multiple_choice
       promptTemplate:
-        '¿Cuál de estas afirmaciones sobre los acordes prestados del modo menor paralelo es verdadera?',
+        '¿Cuál de estas afirmaciones sobre los acordes prestados del modo menor homónimo es verdadera?',
       hintTemplate:
         'Acordes prestados habituales en el modo mayor: iv (subdominante menor), bVI (sexto grado bemol mayor), bVII (séptimo grado bemol mayor), bIII. Añaden un color más oscuro a una tonalidad mayor.',
       choiceSets: [
@@ -414,7 +414,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         '¿Cuál de estas afirmaciones sobre la forma sonata es verdadera?',
       hintTemplate:
-        'Forma sonata: la exposición contrasta un tema en la tónica con una segunda tonalidad (normalmente la dominante en modo mayor y la relativa mayor en modo menor); el desarrollo fragmenta y modula; la recapitulación devuelve el segundo tema a la tónica.',
+        'Forma sonata: la exposición contrasta un tema en la tónica con una segunda tonalidad (normalmente la dominante en modo mayor y la relativa mayor en modo menor); el desarrollo fragmenta y modula; la reexposición devuelve el segundo tema a la tónica.',
       choiceSets: [
         [
       "La exposición tiene dos grupos temáticos: el primero en la tónica, el segundo en una tonalidad contrastante",
@@ -429,10 +429,10 @@ const overlay: TemplateLevelOverlay = {
           'El desarrollo se queda en la tónica de principio a fin',
         ],
         [
-      "En la recapitulación, el segundo tema vuelve en la tónica, no en la dominante",
-      "En la recapitulación, el segundo tema vuelve en la dominante, no en la tónica",
-      "En la recapitulación, el segundo tema vuelve en la subdominante, no en la tónica",
-      "En la recapitulación, el segundo tema vuelve en la supertónica, no en la tónica",
+      "En la reexposición, el segundo tema vuelve en la tónica, no en la dominante",
+      "En la reexposición, el segundo tema vuelve en la dominante, no en la tónica",
+      "En la reexposición, el segundo tema vuelve en la subdominante, no en la tónica",
+      "En la reexposición, el segundo tema vuelve en la supertónica, no en la tónica",
     ],
         [
           'En una sonata en modo mayor, el segundo tema está normalmente en la dominante (V)',

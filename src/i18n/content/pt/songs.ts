@@ -95,8 +95,8 @@ const overlay: SongOverlay = {
   'l2u5m3': [
     'Começa em A menor (relativa menor de C maior), modulando depois — uma relação clássica entre tonalidades relativas.',
     'Alterna entre os versos em A menor e o contexto da sua relativa maior (C maior), demonstrando a relação próxima entre tonalidades relativas que partilham a mesma armação de clave.',
-    'A abertura está em E maior e a secção central em E menor, a sua tonalidade paralela menor. Escuta o regresso da abertura na forma A–B–A.',
-    'O prelúdio está em E menor e a sua secção central em E maior. Compara estas tonalidades paralelas: a tónica mantém-se E enquanto o modo muda.',
+    'A abertura está em E maior e a secção central em E menor, a sua tonalidade homónima menor. Escuta o regresso da abertura na forma A–B–A.',
+    'O prelúdio está em E menor e a sua secção central em E maior. Compara estas tonalidades homónimas: a tónica mantém-se E enquanto o modo muda.',
   ],
 
   // ---- L2U6: Compasso Composto e Síncopa ----
@@ -189,10 +189,10 @@ const overlay: SongOverlay = {
   ],
   'l3u11m4': [
     'O acompanhamento arpejado apresenta notas de passagem e notas auxiliares entre as notas do acorde.',
-    'Rica em notas estranhas ao acorde — suspensões, apogiaturas e notas de passagem criam a sua qualidade onírica.',
+    'Rica em notas estranhas ao acorde — retardos, apogiaturas e notas de passagem criam a sua qualidade onírica.',
   ],
   'l3u11m5': [
-    'A linha melódica ornamentada é construída sobre cadeias de suspensões e notas de passagem sobre um baixo simples.',
+    'A linha melódica ornamentada é construída sobre cadeias de retardos e notas de passagem sobre um baixo simples.',
     'A melodia ornamentada entrelaça notas de passagem cromáticas e notas auxiliares em torno das notas estruturais do acorde.',
   ],
 

@@ -339,7 +339,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre a harmonia não funcional do Romantismo tardio é verdadeira?',
       hintTemplate:
-        'No Romantismo tardio, os acordes ligam-se muitas vezes por proximidade na condução de vozes, notas comuns ou cor, em vez da função tónica–dominante; o planing move a forma de um acorde em paralelo.',
+        'No Romantismo tardio, os acordes ligam-se muitas vezes por proximidade na condução de vozes, notas comuns ou cor, em vez da função tónica–dominante; o paralelismo move a forma de um acorde em paralelo.',
       choiceSets: [
         [
           'As ligações não funcionais entre acordes favorecem sobretudo a fluidez linear e alturas partilhadas',
@@ -348,10 +348,10 @@ const overlay: TemplateLevelOverlay = {
           'As ligações não funcionais entre acordes favorecem sobretudo a eliminação de alturas comuns entre acordes sucessivos',
         ],
         [
-          'O planing cromático move a forma de um acorde em paralelo, mantendo a sua qualidade exata',
-          'O planing cromático move a forma de um acorde em paralelo, ajustando-a à tonalidade',
-          'O planing cromático move todas as vozes em movimento contrário, sempre em direção à tónica',
-          'O planing cromático mantém um acorde e muda apenas a nota do baixo',
+          'O paralelismo estrito (cromático) move a forma de um acorde em paralelo, mantendo a sua qualidade exata',
+          'O paralelismo estrito (cromático) move a forma de um acorde em paralelo, ajustando-a à tonalidade',
+          'O paralelismo estrito (cromático) move todas as vozes em movimento contrário, sempre em direção à tónica',
+          'O paralelismo estrito (cromático) mantém um acorde e muda apenas a nota do baixo',
         ],
         [
       'As alterações cromáticas frequentes e os destinos tonais distantes costumam enfraquecer a sensação de uma tonalidade estável',
@@ -454,41 +454,41 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre o contraponto de quarta espécie (sincopado) é verdadeira?',
       hintTemplate:
-        'A quarta espécie liga uma nota de um tempo fraco por cima da barra de compasso. Se a nota ligada for dissonante no tempo forte, é uma suspensão: preparada como consonância, resolvida descendo por grau conjunto. Acima do cantus: 7-6, 4-3, 9-8; abaixo: 2-3.',
+        'A quarta espécie liga uma nota de um tempo fraco por cima da barra de compasso. Se a nota ligada for dissonante no tempo forte, é um retardo: preparado como consonância, resolvido descendo por grau conjunto. Acima do cantus: 7-6, 4-3, 9-8; abaixo: 2-3.',
       choiceSets: [
         [
-      "Numa suspensão, a preparação no tempo fraco fica ligada à dissonância no tempo forte e resolve por grau conjunto da nota superior para a inferior",
-      "Numa suspensão, a preparação no tempo forte fica ligada à dissonância no tempo fraco e resolve por grau conjunto da nota superior para a inferior",
-      "Numa suspensão, a preparação no tempo fraco fica ligada à dissonância no tempo forte e resolve por grau conjunto da nota inferior para a superior",
-      "Numa suspensão, a preparação no tempo forte fica ligada à dissonância no tempo fraco e resolve por grau conjunto da nota inferior para a superior",
+      "Num retardo, a preparação no tempo fraco fica ligada à dissonância no tempo forte e resolve por grau conjunto da nota superior para a inferior",
+      "Num retardo, a preparação no tempo forte fica ligada à dissonância no tempo fraco e resolve por grau conjunto da nota superior para a inferior",
+      "Num retardo, a preparação no tempo fraco fica ligada à dissonância no tempo forte e resolve por grau conjunto da nota inferior para a superior",
+      "Num retardo, a preparação no tempo forte fica ligada à dissonância no tempo fraco e resolve por grau conjunto da nota inferior para a superior",
     ],
         [
-      "Uma suspensão é preparada como consonância e resolve descendo por grau conjunto",
-      "Uma suspensão é preparada como dissonância e resolve subindo por grau conjunto",
-      "Uma suspensão é preparada como consonância e resolve subindo por grau conjunto",
-      "Uma suspensão é preparada como dissonância e resolve descendo por grau conjunto",
+      "Um retardo é preparado como consonância e resolve descendo por grau conjunto",
+      "Um retardo é preparado como dissonância e resolve subindo por grau conjunto",
+      "Um retardo é preparado como consonância e resolve subindo por grau conjunto",
+      "Um retardo é preparado como dissonância e resolve descendo por grau conjunto",
     ],
         [
-      'Acima do cantus, as principais suspensões dissonantes são 7-6, 4-3 e 9-8; abaixo, 2-3',
-      'Acima do cantus, as principais suspensões dissonantes são 2-3, 4-3 e 9-8; abaixo, 7-6',
-      'Acima do cantus, as principais suspensões dissonantes são 7-6, 2-3 e 9-8; abaixo, 4-3',
-      'Acima do cantus, as principais suspensões dissonantes são 7-6, 4-3 e 2-3; abaixo, 9-8',
+      'Acima do cantus, os principais retardos dissonantes são 7-6, 4-3 e 9-8; abaixo, 2-3',
+      'Acima do cantus, os principais retardos dissonantes são 2-3, 4-3 e 9-8; abaixo, 7-6',
+      'Acima do cantus, os principais retardos dissonantes são 7-6, 2-3 e 9-8; abaixo, 4-3',
+      'Acima do cantus, os principais retardos dissonantes são 7-6, 4-3 e 2-3; abaixo, 9-8',
     ],
       ],
     },
     {
       // multiple_choice
       promptTemplate:
-        'Qual destas afirmações sobre as cadeias de suspensões e a quinta espécie (florida) é verdadeira?',
+        'Qual destas afirmações sobre as cadeias de retardos e a quinta espécie (florida) é verdadeira?',
       hintTemplate:
-        'Numa cadeia, cada resolução fica ligada e torna-se a suspensão seguinte. A quinta espécie (contraponto florido) mistura numa só linha os valores das quatro primeiras espécies, cada um com as suas regras.',
+        'Numa cadeia, cada resolução fica ligada e torna-se o retardo seguinte. A quinta espécie (contraponto florido) mistura numa só linha os valores das quatro primeiras espécies, cada um com as suas regras.',
       nudgeTemplate: 'Numa cadeia, segue cada nota que acabou de resolver: o que lhe acontece na barra de compasso seguinte? Na quinta espécie (contraponto florido), pergunta se ela deita fora o que as quatro espécies anteriores ensinaram ou se parte disso.',
       choiceSets: [
         [
-      "Numa cadeia de suspensões, cada resolução fica ligada ao acorde seguinte para preparar outra suspensão",
-      'Numa cadeia de suspensões, cada suspensão resolve subindo por grau para se tornar a preparação seguinte',
-      "Numa cadeia de suspensões, cada resolução salta para o acorde seguinte para preparar outra suspensão",
-      'Numa cadeia de suspensões, cada resolução é substituída por uma pausa antes da preparação seguinte',
+      "Numa cadeia de retardos, cada resolução fica ligada ao acorde seguinte para preparar outro retardo",
+      'Numa cadeia de retardos, cada retardo resolve subindo por grau para se tornar a preparação seguinte',
+      "Numa cadeia de retardos, cada resolução salta para o acorde seguinte para preparar outro retardo",
+      'Numa cadeia de retardos, cada resolução é substituída por uma pausa antes da preparação seguinte',
     ],
         [
           "A quinta espécie combina livremente os valores anteriores mantendo as suas regras de dissonância",
@@ -498,7 +498,7 @@ const overlay: TemplateLevelOverlay = {
         ],
         [
           'O contraponto florido mantém as regras de cada espécie anterior para os seus valores',
-          "O contraponto florido aplica regras de suspensões a notas de passagem e regras de passagem a suspensões",
+          "O contraponto florido aplica regras de retardos a notas de passagem e regras de passagem a retardos",
           "O contraponto florido abandona regras anteriores quando semibreves e síncopa coexistem na mesma linha",
           "O contraponto florido exige que cada valor de nota use uma regra nova sem relação com espécies anteriores",
         ],

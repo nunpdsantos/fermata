@@ -4,6 +4,7 @@ import { noteToString, type ChordQuality } from '../../core/types/music.ts';
 import { buildChord, CHORD_SYMBOLS, CHORD_FORMULAS } from '../../core/constants/chords.ts';
 import { qualityName } from '../../utils/qualityName.ts';
 import { toContentLanguage } from '../drill/drillText.ts';
+import { chordCategoryLabel } from './chordCategoryLabel';
 import { ChipGroup } from '../ui/ChoiceChip.tsx';
 import { useAppStore } from '../../state/store.ts';
 
@@ -151,7 +152,7 @@ export function ChordBrowser({ detail }: { detail?: ReactNode } = {}) {
           if (selectedChord && !CHORD_QUALITY_GROUPS[next].qualities.some(isActive)) setSelectedChord(null);
           setActiveCategory(next);
         }}
-        options={CHORD_QUALITY_GROUPS.map((g, i) => ({ value: i, label: t(g.labelKey) }))}
+        options={CHORD_QUALITY_GROUPS.map((g, i) => ({ value: i, ...chordCategoryLabel(t(g.labelKey), lang) }))}
       />
 
       {/* Chord cards, row by row; the detail opens under the tapped row. */}

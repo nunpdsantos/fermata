@@ -15,7 +15,7 @@ describe('Level 9 "pairs with Level n" (D-10, W4-17)', () => {
     const l9 = EN_UNITS[9].flatMap((u) => u.modules.map((m) => m.id)).sort();
     expect(Object.keys(L9_PAIRS).sort()).toEqual(l9);
     expect(pairsWithLevel('l1u1m1')).toBeNull();
-    expect(pairsWithLevel('l9u31m2', 'pt')).toEqual({ level: 7, title: 'Jazz, Pop e Harmonia Modal' });
+    expect(pairsWithLevel('l9u31m2', 'pt')).toEqual({ level: 7, title: 'Jazz, pop e harmonia modal' });
   });
 
   it('evidence: the paired level teaches the theory, and no earlier level does (modes, pentatonic/blues, secondary dominants)', () => {

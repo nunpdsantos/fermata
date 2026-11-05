@@ -197,12 +197,12 @@ describe('lesson search in Portuguese and Spanish', () => {
     getResults(q, idx).filter((r) => r.type === 'Lesson').map((r) => r.label);
 
   it('PT "cadência" and the accent-less "cadencia" both find the cadence lesson, titled in Portuguese', () => {
-    expect(lessonIds('cadência', pt)).toContain('Cadências: O Conjunto Completo');
-    expect(lessonIds('cadencia', pt)).toContain('Cadências: O Conjunto Completo');
+    expect(lessonIds('cadência', pt)).toContain('Cadências: o conjunto completo');
+    expect(lessonIds('cadencia', pt)).toContain('Cadências: o conjunto completo');
   });
 
-  it('PT "suspensão" and "napolitano" find their lessons', () => {
-    expect(findModulesByQuery('suspensão', 5, pt).map((m) => m.id)).toContain('l4u12m1');
+  it('PT "retardo" and "napolitano" find their lessons', () => {
+    expect(findModulesByQuery('retardo', 5, pt).map((m) => m.id)).toContain('l4u12m1');
     expect(findModulesByQuery('napolitano', 5, pt).map((m) => m.id)).toContain('l6u18m1');
   });
 

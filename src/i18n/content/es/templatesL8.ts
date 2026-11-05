@@ -163,7 +163,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         '¿Cuál de estas afirmaciones sobre las formas de variación, rondó y ritornello es verdadera?',
       hintTemplate:
-        'Ritornello: pasaje orquestal recurrente alternando con episodios solistas (concierto barroco). Sonata-rondó: ABACAB\'A combina principios del rondó y de la sonata. Una passacaglia desarrolla variaciones sobre una línea de bajo recurrente.',
+        'Ritornello: pasaje orquestal recurrente alternando con episodios solistas (concierto barroco). Rondó-sonata: ABACAB\'A combina principios del rondó y de la sonata. Una passacaglia desarrolla variaciones sobre una línea de bajo recurrente.',
       choiceSets: [
         [
           'La forma de ritornello da los estribillos al tutti y los pasajes contrastantes al solista',
@@ -172,10 +172,10 @@ const overlay: TemplateLevelOverlay = {
           'La forma de ritornello da el tema orquestal a cada episodio solista como copia exacta',
         ],
         [
-          "El sonata-rondó retoma típicamente el tema A y vuelve a B en la tónica en la segunda mitad",
-          "El sonata-rondó retoma típicamente el tema A y vuelve a B en la tonalidad secundaria en la segunda mitad",
-          "El sonata-rondó evita típicamente retomar el tema A y vuelve a B en la tónica en la segunda mitad",
-          "El sonata-rondó retoma típicamente el tema A y omite el regreso de B en la segunda mitad",
+          "El rondó-sonata retoma típicamente el tema A y vuelve a B en la tónica en la segunda mitad",
+          "El rondó-sonata retoma típicamente el tema A y vuelve a B en la tonalidad secundaria en la segunda mitad",
+          "El rondó-sonata evita típicamente retomar el tema A y vuelve a B en la tónica en la segunda mitad",
+          "El rondó-sonata retoma típicamente el tema A y omite el regreso de B en la segunda mitad",
         ],
         [
           "Una passacaglia es un conjunto de variaciones sobre una línea de bajo recurrente",
@@ -316,9 +316,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        '¿Cuál de estas afirmaciones sobre el planing, la politonalidad y la música espectral es verdadera?',
+        '¿Cuál de estas afirmaciones sobre el paralelismo, la politonalidad y la música espectral es verdadera?',
       hintTemplate:
-        'El planing mueve una forma de acorde en paralelo. La politonalidad hace sonar dos o más tonalidades a la vez; el pandiatonicismo usa libremente las notas de una tonalidad, sin armonía funcional. El espectralismo construye la armonía a partir de la serie de armónicos; la microtonalidad usa pasos menores que un semitono.',
+        'El paralelismo mueve una forma de acorde en paralelo. La politonalidad hace sonar dos o más tonalidades a la vez; el pandiatonicismo usa libremente las notas de una tonalidad, sin armonía funcional. El espectralismo construye la armonía a partir de la serie de armónicos; la microtonalidad usa pasos menores que un semitono.',
       choiceSets: [
         [
           'La politonalidad siempre hace sonar dos o más tonalidades a la vez, por ejemplo C mayor contra F# mayor',
@@ -333,10 +333,10 @@ const overlay: TemplateLevelOverlay = {
           'El pandiatonicismo usa una colección cromática exigiendo progresiones funcionales',
         ],
         [
-          'El planing cromático siempre mantiene los intervalos exactos; el planing diatónico los ajusta a la escala',
-          "El planing cromático suele ajustar los intervalos a la escala; el planing diatónico mantiene los intervalos exactos",
-          "El planing cromático mueve las voces extremas en movimiento contrario; el diatónico las mueve en paralelo",
-          "El planing cromático mantiene el bajo inmóvil mientras se mueven las voces superiores; el diatónico mueve todas las voces",
+          'El paralelismo estricto (cromático) siempre mantiene los intervalos exactos; el paralelismo diatónico los ajusta a la escala',
+          "El paralelismo estricto (cromático) suele ajustar los intervalos a la escala; el paralelismo diatónico mantiene los intervalos exactos",
+          "El paralelismo estricto (cromático) mueve las voces extremas en movimiento contrario; el diatónico las mueve en paralelo",
+          "El paralelismo estricto (cromático) mantiene el bajo inmóvil mientras se mueven las voces superiores; el diatónico mueve todas las voces",
         ],
         [
           "La música espectral construye acordes estudiando las frecuencias que componen un sonido",

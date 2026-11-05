@@ -4,7 +4,7 @@ const curriculumL5: CurriculumLevelOverlay = {
   // ─── Unidades ─────────────────────────────────────────────────────────────
   units: {
     u15: {
-      title: 'Dominantes Secundarias y Tonicización',
+      title: 'Dominantes secundarias y tonicización',
       description:
         'Dominantes aplicadas, acordes de sensible secundaria, tonicización y cadenas de dominantes',
       milestone: {
@@ -14,30 +14,30 @@ const curriculumL5: CurriculumLevelOverlay = {
           'Distinguir la tonicización de la modulación y trazar cadenas de dominantes que descienden por quintas',
         ],
         bridgeText:
-          'Ya puedes inyectar tensión cromática en cualquier progresión diatónica y encadenar dominantes para ganar impulso. A continuación aprenderás a salir por completo de la tonalidad — mediante la modulación — y a tomar prestados acordes de la tonalidad paralela para obtener color expresivo.',
+          'Ya puedes inyectar tensión cromática en cualquier progresión diatónica y encadenar dominantes para ganar impulso. A continuación aprenderás a salir por completo de la tonalidad — mediante la modulación — y a tomar prestados acordes de la tonalidad homónima para obtener color expresivo.',
         tryThisLabel: 'Toca D7 (V7/V en C mayor)',
         tryThisPrompt: '¿Qué nota de D7 es cromática en C mayor? ¿Hacia dónde quiere resolver?',
       },
     },
     u16: {
-      title: 'Modulación y Mezcla Modal',
+      title: 'Modulación y mezcla modal',
       description:
         'Modulación por acorde pivote, tonalidades cercanas, otros tipos de modulación y mezcla modal',
       milestone: {
         skillsSummary: [
           'Realizar modulaciones por acorde pivote a tonalidades cercanas (V, IV, vi)',
           'Reconocer los tipos de modulación directa, por nota común, cromática y secuencial',
-          'Tomar prestados acordes de la tonalidad paralela en ambos sentidos (mezcla modal en mayor y en menor, tercera de Picardía)',
+          'Tomar prestados acordes de la tonalidad homónima en ambos sentidos (mezcla modal en mayor y en menor, tercera de Picardía)',
         ],
         bridgeText:
           'Ya puedes salir de una tonalidad y regresar, tomar prestados acordes entre modos y recorrer la armonía cromática con confianza. La unidad final explora la forma musical, la textura y la conducción de voces por notas guía — las herramientas para comprender cómo se estructuran piezas enteras.',
         tryThisLabel: 'Toca Ab (bVI, acorde prestado en C mayor)',
         tryThisPrompt:
-          '¿Qué notas de Ab mayor son cromáticas en C mayor? ¿De qué tonalidad paralela vienen?',
+          '¿Qué notas de Ab mayor son cromáticas en C mayor? ¿De qué tonalidad homónima vienen?',
       },
     },
     u17: {
-      title: 'Forma, Textura y Conducción de Voces',
+      title: 'Forma, textura y conducción de voces',
       description:
         'Formas musicales, tipos de textura y conducción de voces por notas guía',
       milestone: {
@@ -58,7 +58,7 @@ const curriculumL5: CurriculumLevelOverlay = {
   modules: {
     // ── U15 M1: Dominantes Secundarias V/V ────────────────────────────────
     l5u15m1: {
-      title: 'Dominantes Secundarias: V/V y V7/V',
+      title: 'Dominantes secundarias: V/V y V7/V',
       subtitle: 'La dominante de la dominante — tu primer acorde aplicado',
       objectives: [
         'Comprender qué significa «V de algo» (tonicizar temporalmente un acorde diatónico)',
@@ -67,19 +67,19 @@ const curriculumL5: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'La Idea Central: V de V',
+          title: 'La idea central: V de V',
           explanation:
             'Cualquier acorde diatónico (excepto el disminuido) puede ser tratado temporalmente como «tónica» y recibir su propia dominante. V/V significa «la dominante de la dominante». En C mayor, V = G mayor. La dominante de G es D mayor. D mayor contiene F# — una nota cromática que funciona como sensible de G. Esta es la forma más sencilla de cromatismo: tomar prestada una nota ajena a la tonalidad para reforzar el movimiento hacia un acorde diatónico.',
           tryThisLabel: 'Escucha D mayor — el V/V en C mayor',
         },
         {
-          title: 'V7/V — Añadir la Séptima',
+          title: 'V7/V — añadir la séptima',
           explanation:
             'La versión con séptima, V7/V, es aún más frecuente que la tríada. V7/V en C mayor = D7 (D–F#–A–C). El trítono F#–C (una 5.ª disminuida) se contrae hacia dentro, hasta la 3.ª mayor G–B. La séptima aporta la fuerza de atracción que hace tan eficaces a las dominantes secundarias. En D7 resolviendo a G: F# asciende a G (resolución de la sensible), C desciende a B (la séptima resuelve por grado descendente). Son las mismas reglas de conducción de voces de V7 a I, aplicadas a V como objetivo temporal.',
           tryThisLabel: 'Escucha D7 — el V7/V en C mayor',
         },
         {
-          title: 'Resolución y Conducción de Voces',
+          title: 'Resolución y conducción de voces',
           explanation:
             'Las dominantes secundarias siguen las mismas reglas de resolución que V7 a I. La «sensible» cromática resuelve medio tono arriba hacia la fundamental del objetivo. La séptima (si está presente) resuelve por grado descendente. En D7 resolviendo a G: F# sube a G, C baja a B. El trítono F#–C (una 5.ª disminuida) se contrae hacia dentro, hasta la 3.ª mayor G–B. Las notas cromáticas casi siempre resuelven en la dirección en que fueron alteradas — los sostenidos suben, los bemoles bajan.',
           tryThisLabel: 'Escucha el objetivo G tras D7',
@@ -103,7 +103,7 @@ const curriculumL5: CurriculumLevelOverlay = {
 
     // ── U15 M2: Dominantes Secundarias de ii, iii, IV, vi ─────────────────
     l5u15m2: {
-      title: 'Dominantes Secundarias de ii, iii, IV, vi',
+      title: 'Dominantes secundarias de ii, iii, IV, vi',
       subtitle: 'Dominantes aplicadas para cada objetivo diatónico',
       objectives: [
         'Construir y resolver V/ii, V/iii, V/IV y V/vi en tonalidades mayores',
@@ -112,19 +112,19 @@ const curriculumL5: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Dominantes Secundarias para Cada Objetivo',
+          title: 'Dominantes secundarias para cada objetivo',
           explanation:
             'Cada acorde diatónico (excepto vii°) tiene su propia dominante secundaria. V/ii = A(7) apuntando a Dm, con C# cromático. V/iii = B(7) apuntando a Em, con D# y F# cromáticos. V/IV = C(7) apuntando a F — mismas notas que I, distinguido solo por el contexto. V/vi = E(7) apuntando a Am, con G# cromático. La versión con séptima (V7/X) es más habitual porque el trítono que contiene crea una atracción más fuerte hacia el objetivo.',
           tryThisLabel: 'Escucha A7 — el V7/ii en C mayor',
         },
         {
-          title: 'El Caso Especial: V/IV',
+          title: 'El caso especial: V/IV',
           explanation:
             'V/IV en C mayor es C–E–G — notas idénticas a la tríada de la tónica. La distinción es puramente contextual: si C mayor va seguido de F mayor, funciona como V/IV en lugar de I. Añadir la séptima aclara la función: V7/IV = C7 (C–E–G–Bb). El Bb es cromático en C mayor y forma un trítono con E que tira hacia F. Por ello, V7/IV es mucho más frecuente que la tríada — la séptima elimina la ambigüedad.',
           tryThisLabel: 'Escucha C7 — el V7/IV en C mayor (observa el Bb)',
         },
         {
-          title: 'Notas Cromáticas y Sus Objetivos',
+          title: 'Notas cromáticas y sus objetivos',
           explanation:
             'Cada dominante secundaria introduce notas cromáticas específicas. V7/ii trae C# (sensible de D). V7/iii trae D# (sensible de E). V7/IV trae Bb (séptima por encima de C, que tira hacia A en F mayor). V7/vi trae G# (sensible de A). Estas notas cromáticas resuelven siempre en la dirección en que fueron alteradas: los sostenidos suben, los bemoles bajan. Aprender a oír estas inflexiones cromáticas es la clave para identificar las dominantes secundarias.',
           tryThisLabel: 'Escucha E7 — el V7/vi en C mayor',
@@ -148,7 +148,7 @@ const curriculumL5: CurriculumLevelOverlay = {
 
     // ── U15 M3: Acordes de Sensible Secundaria ───────────────────────────
     l5u15m3: {
-      title: 'Acordes de Sensible Secundaria',
+      title: 'Acordes de sensible secundaria',
       subtitle: 'Construir y resolver acordes vii°/X',
       objectives: [
         'Construir vii°/X y vii°7/X para cada acorde diatónico objetivo',
@@ -157,19 +157,19 @@ const curriculumL5: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: '¿Qué Son los Acordes de Sensible Secundaria?',
+          title: '¿Qué son los acordes de sensible secundaria?',
           explanation:
             'Igual que V puede «aplicarse» a cualquier acorde diatónico, lo mismo ocurre con vii°. Se construye una tríada disminuida (o acorde de séptima) sobre la nota un semitono por debajo de la fundamental del objetivo. vii°/V en C mayor = F#dim (F#–A–C), apuntando a G. vii°/ii = C#dim (C#–E–G), apuntando a Dm. El acorde de sensible es un sustituto de la dominante — comparte el mismo trítono que el V7 correspondiente, pero carece de la fundamental.',
           tryThisLabel: 'Escucha F#dim — vii°/V en C mayor',
         },
         {
-          title: 'Totalmente Disminuido vs. Semidisminuido',
+          title: 'Totalmente disminuido vs. semidisminuido',
           explanation:
             'vii°7/X (totalmente disminuido) es el más intenso de los dos, y la elección entre ellos depende del acorde que se toniciza y no del modo de la tonalidad de partida: los objetivos menores reciben el vii°7/X totalmente disminuido, mientras que los objetivos mayores pueden abordarse tanto con vii°7/X como con el más suave viiø7/X — los acordes secundarios totalmente disminuidos también son habituales en tonalidades mayores. Todos los intervalos del vii°7 son terceras menores, lo que hace al acorde simétrico — cualquier nota puede funcionar como fundamental. Esa simetría permite la reinterpretación enarmónica, lo que se vuelve importante para las modulaciones a tonalidades lejanas en el Nivel 6.',
           tryThisLabel: 'Escucha Bdim7 — un acorde de séptima totalmente disminuida',
         },
         {
-          title: 'Resolución y Comparación con V/X',
+          title: 'Resolución y comparación con V/X',
           explanation:
             'La fundamental del acorde de sensible secundaria resuelve un semitono arriba hacia la fundamental del objetivo, igual que la sensible diatónica resuelve hacia la tónica. Todas las demás voces resuelven por grado o por nota común, siguiendo los patrones estándar de resolución de acordes disminuidos. Al comparar V7/X con vii°7/X apuntando al mismo acorde, se revela un trítono compartido pero un movimiento diferente en el bajo: V7/X mueve el bajo una quinta descendente (fuerte), mientras que vii°7/X mueve el bajo un semitono ascendente (suave y cromático). La elección depende del contexto — V/X es más enfático, vii°/X es más sutil.',
           tryThisLabel: 'Escucha C#dim — vii°/ii en C mayor, apuntando a Dm',
@@ -193,7 +193,7 @@ const curriculumL5: CurriculumLevelOverlay = {
 
     // ── U15 M4: Tonicización vs. Modulación ────────────────────────────
     l5u15m4: {
-      title: 'Tonicización vs. Modulación',
+      title: 'Tonicización vs. modulación',
       subtitle: 'Distinguir una tonicización breve de un cambio permanente de tonalidad',
       objectives: [
         'Distinguir la tonicización de la modulación (cambio breve vs. permanente de tonalidad)',
@@ -202,19 +202,19 @@ const curriculumL5: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Tonicización vs. Modulación',
+          title: 'Tonicización vs. modulación',
           explanation:
             'La tonicización es un énfasis breve y momentáneo sobre un acorde no tónica. Uno o dos acordes «apuntan» al objetivo y después la música regresa a la tonalidad original. Sin cambio de armadura de clave, sin cadencia en la nueva tonalidad. La modulación es un cambio efectivo de tonalidad que persiste — confirmado por una cadencia en la nueva tonalidad. La regla práctica: si hay una cadencia en la nueva tonalidad, es modulación. Si es solo V/X resolviendo a X, es tonicización.',
           tryThisLabel: 'Observa C mayor — la tonalidad de origen a la que regresar',
         },
         {
-          title: 'Tonicización Breve vs. Prolongada',
+          title: 'Tonicización breve vs. prolongada',
           explanation:
             'Un único V7/X resolviendo a X es una tonicización breve. Pero varios acordes pueden funcionar en la «tonalidad temporal». ii/V a V7/V a V crea un mini ii–V–I en la tonalidad de V. La tonalidad temporal tiene su propia predominante y dominante, pero la música regresa a la tónica original. La tonicización prolongada difumina la frontera con la modulación — la distinción depende de si la música cadencia y permanece en la nueva tonalidad.',
           tryThisLabel: 'Observa G mayor — objetivo habitual de tonicización desde C',
         },
         {
-          title: 'Analizar Tonicizaciones en Música Real',
+          title: 'Analizar tonicizaciones en música real',
           explanation:
             'Al analizar un pasaje con dominantes secundarias, se marca la región tonicizada entre corchetes y se indica tanto la función local como la función en la tonalidad de origen. En C mayor, el pasaje C–D7–G–C se analiza como I–[V7/V–V]–I, donde los corchetes muestran la zona tonicizada. La cadencia V7–I al final confirma C como la verdadera tónica. Si el pasaje hubiera continuado en G con una cadencia (D7–G como V7–I en G), el análisis pasaría a ser modulación. La prueba de la cadencia es la línea divisoria fiable entre tonicización y modulación en el análisis real.',
           tryThisLabel: 'D7 toniciza G pero no modula a G',
@@ -238,7 +238,7 @@ const curriculumL5: CurriculumLevelOverlay = {
 
     // ── U15 M5: Cadenas de Dominantes ─────────────────────────────────────
     l5u15m5: {
-      title: 'Cadenas de Dominantes y Tonicización Secuencial',
+      title: 'Cadenas de dominantes y tonicización secuencial',
       subtitle: 'Cadenas de dominantes aplicadas descendentes por quintas',
       objectives: [
         'Construir cadenas de dominantes secundarias (cada dominante resuelve en la siguiente)',
@@ -247,19 +247,19 @@ const curriculumL5: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Cadenas de Dominantes Secundarias',
+          title: 'Cadenas de dominantes secundarias',
           explanation:
             'Una cadena de dominantes en la que cada una resuelve en la siguiente: V7/vi a V7/ii a V7/V a V7 a I. Cada acorde es la dominante del siguiente, creando un intenso impulso cromático descendente por quintas. En C mayor: E7 apunta a Am, A7 apunta a Dm, D7 apunta a G, G7 apunta a C. La cadena sigue el Círculo de Quintas en sentido antihorario. Esta técnica genera un poderoso movimiento hacia adelante a través de tensión cromática acumulada.',
           tryThisLabel: 'Observa el Círculo de Quintas que siguen las cadenas',
         },
         {
-          title: 'Tonicización Secuencial',
+          title: 'Tonicización secuencial',
           explanation:
             'Una secuencia armónica en la que cada paso toniciza el siguiente acorde diatónico. Quintas descendentes con dominantes secundarias: V7/IV a IV, V7/iii a iii, V7/ii a ii, V7 a I. Cada par es un V–I en miniatura en una tonalidad temporal. El patrón secuencial crea un ritmo armónico predecible mientras las notas cromáticas aportan color. Esta técnica es habitual en secuencias barrocas y turnarounds de jazz.',
           tryThisLabel: 'Observa C mayor — traza los objetivos diatónicos a lo largo de la secuencia',
         },
         {
-          title: 'Cadenas de Dominantes en la Práctica',
+          title: 'Cadenas de dominantes en la práctica',
           explanation:
             'La cadena más habitual en el jazz y la música popular es la progresión «cuenta atrás»: III7–VI7–II7–V7–I (en C: E7–A7–D7–G7–C). Cada acorde de séptima de dominante resuelve una quinta descendente hacia el siguiente. Esta es la columna vertebral de los puentes de rhythm changes, turnarounds de jazz e innumerables progresiones pop. La cadena funciona porque cada resolución es un V7–I satisfactorio, y el movimiento global conduce de forma implacable hacia la tónica.',
           tryThisLabel: 'Escucha G7 — la dominante final antes de la tónica en cualquier cadena',
@@ -283,7 +283,7 @@ const curriculumL5: CurriculumLevelOverlay = {
 
     // ── U16 M1: Modulación por Acorde Pivote ──────────────────────────────
     l5u16m1: {
-      title: 'Modulación por Acorde Pivote',
+      title: 'Modulación por acorde pivote',
       subtitle: 'Encontrar acordes compartidos entre tonalidades para modular con suavidad',
       objectives: [
         'Comprender el concepto de acorde pivote (un acorde con función válida en ambas tonalidades)',
@@ -292,19 +292,19 @@ const curriculumL5: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'El Acorde Pivote',
+          title: 'El acorde pivote',
           explanation:
             'Un acorde pivote tiene un análisis válido en cifrado romano tanto en la tonalidad antigua como en la nueva. Es la «bisagra» — el oyente lo reinterpreta. En una modulación de C mayor a G mayor, el acorde Am es vi en C y ii en G. Si la música pivota a través de Am, el oído pasa de escuchar vi en C a escuchar ii en G. El acorde pivote es el último acorde que tiene sentido en la tonalidad antigua Y el primero que tiene sentido en la nueva.',
           tryThisLabel: 'Observa G mayor — objetivo habitual de modulación desde C',
         },
         {
-          title: 'El Proceso Modulatorio',
+          title: 'El proceso modulatorio',
           explanation:
             'Cinco pasos: (1) Establecer la tonalidad 1 con una progresión clara. (2) Acercarse a un acorde que existe en ambas tonalidades. (3) El acorde pivote — reinterpretado por ambas tonalidades. (4) Seguir el pivote con función de dominante en la nueva tonalidad (V o V7). (5) Cadenciar en la tonalidad 2 para confirmar la modulación. El acorde pivote hace suave el cambio de tonalidad porque el oyente no advierte el cambio hasta que aparece la nueva dominante.',
           tryThisLabel: 'Observa C mayor — encuentra acordes compartidos con G mayor',
         },
         {
-          title: 'Notación Analítica para Acordes Pivote',
+          title: 'Notación analítica para acordes pivote',
           explanation:
             'En el acorde pivote se escribe cifrado romano para ambas tonalidades. C: I – IV – vi / ii – V7 – I :G. La barra marca el pivote — Am es vi en C y ii en G. Todo lo que precede a la barra se analiza en C, todo lo que sigue en G. Esta notación hace explícita la doble función y muestra exactamente dónde se produce el cambio de tonalidad.',
           tryThisLabel: 'Observa las tonalidades vecinas — cada par comparte muchos acordes pivote',
@@ -328,7 +328,7 @@ const curriculumL5: CurriculumLevelOverlay = {
 
     // ── U16 M2: Modulación a Tonalidades Cercanas ─────────────────────────
     l5u16m2: {
-      title: 'Modulación a Tonalidades Cercanas',
+      title: 'Modulación a tonalidades cercanas',
       subtitle: 'Modulaciones prácticas a V, IV, vi y relativa mayor/menor',
       objectives: [
         'Identificar tonalidades cercanas (difieren en 0 o 1 alteración)',
@@ -337,13 +337,13 @@ const curriculumL5: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Tonalidades Cercanas',
+          title: 'Tonalidades cercanas',
           explanation:
             'Las tonalidades cercanas comparten la mayoría de sus notas, difiriendo en cero o una alteración. Para C mayor, las tonalidades cercanas son: G mayor (dominante, un sostenido), F mayor (subdominante, un bemol), A menor (relativa menor), D menor (ii convertido en tónica) y E menor (iii convertido en tónica). Estas son las modulaciones más fáciles porque muchos acordes son compartidos entre las tonalidades. El Círculo de Quintas las muestra: cualquier tonalidad y sus vecinas inmediatas son tonalidades cercanas.',
           tryThisLabel: 'Observa las tonalidades cercanas como vecinas en el círculo',
         },
         {
-          title: 'Modulación a la Dominante (I a V)',
+          title: 'Modulación a la dominante (I a V)',
           explanation:
             'La modulación más natural y habitual en tonalidades mayores. De C mayor a G mayor, los acordes compartidos incluyen Am (vi/ii), C (I/IV), Em (iii/vi), G (V/I). La modulación se hace evidente cuando aparece F# — pertenece a G mayor pero no a C mayor. Un camino típico: C – Am – D7 – G. El Am sirve como pivote (vi en C, ii en G), D7 es V7 en G y G cadencia la nueva tonalidad.',
           tryThisLabel: 'Observa G mayor — la tonalidad de la dominante de C',
@@ -373,7 +373,7 @@ const curriculumL5: CurriculumLevelOverlay = {
 
     // ── U16 M3: Modulación Directa, por Nota Común y Cromática ───────────
     l5u16m3: {
-      title: 'Modulación Directa, por Nota Común y Cromática',
+      title: 'Modulación directa, por nota común y cromática',
       subtitle: 'Modulación sin acordes pivote diatónicos',
       objectives: [
         'Realizar una modulación directa (de frase)',
@@ -382,19 +382,19 @@ const curriculumL5: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Modulación Directa (de Frase)',
+          title: 'Modulación directa (de frase)',
           explanation:
             'Sin acorde pivote en absoluto. Una frase termina en la tonalidad 1 y la frase siguiente comienza en la tonalidad 2. El cambio de tonalidad ocurre entre frases, a menudo con un silencio o una pausa. Esta es la modulación del «camionero» habitual en la música pop — el último estribillo sube medio tono o un tono para ganar energía. Es el tipo de modulación más abrupto, que apuesta por la sorpresa en lugar de la lógica armónica.',
           tryThisLabel: 'Escucha Db mayor — medio tono por encima de C',
         },
         {
-          title: 'Modulación por Nota Común y Modulación Cromática',
+          title: 'Modulación por nota común y modulación cromática',
           explanation:
             'En la modulación por nota común, una nota se mantiene o se repite mientras la armonía cambia hacia una nueva tonalidad. La nota sostenida enlaza las dos regiones tonales como un hilo. Un G mantenido enlaza C mayor con Eb mayor (G es la 5.ª de C y la 3.ª de Eb). En la modulación cromática, un acorde se altera cromáticamente para señalar el cambio — el acorde alterado no tiene función diatónica en la tonalidad original. Ambas son más dramáticas que la modulación por acorde pivote.',
           tryThisLabel: 'Escucha Eb mayor — comparte G con C mayor',
         },
         {
-          title: 'Modulación Secuencial y Enarmónica',
+          title: 'Modulación secuencial y enarmónica',
           explanation:
             'Una secuencia armónica transporta la música a una nueva tonalidad. La lógica interna del patrón se superpone a la necesidad de un pivote. Una secuencia de quintas descendentes puede desplazar gradualmente el centro tonal sin que ningún acorde individual funcione como pivote. El oyente sigue el patrón en lugar de la tonalidad. La modulación enarmónica (usar el mismo sonido escrito de forma diferente para pivotar entre tonalidades lejanas) se introduce aquí y se trata en detalle en el Nivel 6.',
           tryThisLabel: 'Observa cómo las secuencias siguen el Círculo de Quintas',
@@ -418,28 +418,28 @@ const curriculumL5: CurriculumLevelOverlay = {
 
     // ── U16 M4: Mezcla Modal — Acordes Prestados ─────────────────────────
     l5u16m4: {
-      title: 'Mezcla Modal — Acordes Prestados',
-      subtitle: 'Tomar prestados acordes del modo menor paralelo para obtener color expresivo',
+      title: 'Mezcla modal — acordes prestados',
+      subtitle: 'Tomar prestados acordes del modo menor homónimo para obtener color expresivo',
       objectives: [
-        'Tomar prestados acordes del modo menor paralelo en un contexto de tonalidad mayor',
+        'Tomar prestados acordes del modo menor homónimo en un contexto de tonalidad mayor',
         'Identificar los acordes prestados más habituales: bVI, bIII, bVII, iv, ii°',
         'Comprender cómo los grados rebajados crean conducción cromática de voces',
       ],
       concepts: [
         {
-          title: '¿Qué Es la Mezcla Modal?',
+          title: '¿Qué es la mezcla modal?',
           explanation:
-            'La mezcla modal significa tomar prestados acordes de la tonalidad paralela. En C mayor, la tonalidad paralela es C menor. El préstamo trae acordes de la familia de C menor a un contexto de C mayor. El resultado: oscuridad inesperada, nostalgia o profundidad emocional que la armonía puramente mayor no puede alcanzar. Los acordes prestados más habituales son iv (Fm), bVI (Ab), bVII (Bb), bIII (Eb) e ii° (Ddim). Cada uno aporta un color distinto.',
+            'La mezcla modal significa tomar prestados acordes de la tonalidad homónima. En C mayor, la tonalidad homónima es C menor. El préstamo trae acordes de la familia de C menor a un contexto de C mayor. El resultado: oscuridad inesperada, nostalgia o profundidad emocional que la armonía puramente mayor no puede alcanzar. Los acordes prestados más habituales son iv (Fm), bVI (Ab), bVII (Bb), bIII (Eb) e ii° (Ddim). Cada uno aporta un color distinto.',
           tryThisLabel: 'Escucha Ab — el acorde bVI prestado en C mayor',
         },
         {
-          title: 'Los Acordes Prestados Más Habituales',
+          title: 'Los acordes prestados más habituales',
           explanation:
-            'iv (F menor en C) sustituye a IV con una subdominante oscura. bVI (Ab mayor en C) es dramático y cinematográfico — el acorde de Hollywood. bVII (Bb mayor en C) crea una cadencia rock o sensación modal. bIII (Eb mayor en C) suena sorprendentemente brillante a pesar de contener un bemol. Estos acordes comparten grados rebajados (b3, b6, b7) del modo menor paralelo. La conducción cromática de voces entre acordes diatónicos y prestados es parte de lo que hace tan eficaz a la mezcla modal.',
+            'iv (F menor en C) sustituye a IV con una subdominante oscura. bVI (Ab mayor en C) es dramático y cinematográfico — el acorde de Hollywood. bVII (Bb mayor en C) crea una cadencia rock o sensación modal. bIII (Eb mayor en C) suena sorprendentemente brillante a pesar de contener un bemol. Estos acordes comparten grados rebajados (b3, b6, b7) del modo menor homónimo. La conducción cromática de voces entre acordes diatónicos y prestados es parte de lo que hace tan eficaz a la mezcla modal.',
           tryThisLabel: 'Escucha Fm — el acorde iv prestado en C mayor',
         },
         {
-          title: 'Conducción de Voces con Acordes Prestados',
+          title: 'Conducción de voces con acordes prestados',
           explanation:
             'Las notas cromáticas de los acordes prestados siguen sus tendencias naturales: las notas rebajadas (b3, b6, b7) resuelven descendentemente. Cuando iv (Fm) pasa a I (C), el Ab de Fm desciende a G en C mayor — conducción cromática suave. Cuando bVI (Ab) pasa a V (G), el Ab desciende a G por semitono. Estas conexiones cromáticas son parte de lo que hace la mezcla modal tan expresiva. El color proviene no solo del acorde, sino del movimiento de entrada y salida del mismo.',
           tryThisLabel: 'Escucha Bb — el acorde bVII prestado en C mayor',
@@ -463,31 +463,31 @@ const curriculumL5: CurriculumLevelOverlay = {
 
     // ── U16 M5: Tercera de Picardía y Mezcla Modal en el Modo Menor ─────
     l5u16m5: {
-      title: 'Tercera de Picardía y Mezcla Modal en el Modo Menor',
-      subtitle: 'Tomar prestado del modo mayor paralelo en un contexto de tonalidad menor',
+      title: 'Tercera de picardía y mezcla modal en el modo menor',
+      subtitle: 'Tomar prestado del modo mayor homónimo en un contexto de tonalidad menor',
       objectives: [
         'Comprender la tercera de Picardía (I mayor al final de una pieza en tonalidad menor)',
-        'Identificar la mezcla modal en tonalidades menores (préstamo del modo mayor paralelo)',
+        'Identificar la mezcla modal en tonalidades menores (préstamo del modo mayor homónimo)',
         'Reconocer el efecto expresivo de acordes mayores en un contexto menor',
       ],
       concepts: [
         {
-          title: 'La Tercera de Picardía',
+          title: 'La tercera de picardía',
           explanation:
-            'La tercera de Picardía es la mezcla modal en dirección opuesta: tomar prestado del modo mayor paralelo hacia una tonalidad menor. Una pieza en tonalidad menor termina su cadencia final con una tónica mayor (I en lugar de i). En C menor, el acorde final se convierte en C mayor — la tercera elevada (E natural en vez de Eb) crea un brillo inesperado, un rayo de luz al final. Habitual en la música barroca y renacentista, donde las piezas en tonalidad menor terminan a menudo con tercera de Picardía, sobre todo en las cadencias del final del Renacimiento y del comienzo del Barroco.',
+            'La tercera de Picardía es la mezcla modal en dirección opuesta: tomar prestado del modo mayor homónimo hacia una tonalidad menor. Una pieza en tonalidad menor termina su cadencia final con una tónica mayor (I en lugar de i). En C menor, el acorde final se convierte en C mayor — la tercera elevada (E natural en vez de Eb) crea un brillo inesperado, un rayo de luz al final. Habitual en la música barroca y renacentista, donde las piezas en tonalidad menor terminan a menudo con tercera de Picardía, sobre todo en las cadencias del final del Renacimiento y del comienzo del Barroco.',
           tryThisLabel: 'Escucha C mayor — la tercera de Picardía en un contexto de C menor',
         },
         {
-          title: 'Mezcla Modal en Tonalidades Menores',
+          title: 'Mezcla modal en tonalidades menores',
           explanation:
-            'Tomar prestado del modo mayor paralelo hacia el menor es menos habitual pero eficaz. Usar IV (mayor) en lugar de iv (menor), o usar I (mayor) en lugar de i (menor) en cadencias internas. En C menor: F mayor (IV prestado de C mayor) sustituye al Fm esperado. La nota elevada (A natural en vez de Ab) aporta brillo sin abandonar la tonalidad menor. Esta técnica crea momentos de calidez dentro de un paisaje armónico predominantemente oscuro.',
+            'Tomar prestado del modo mayor homónimo hacia el menor es menos habitual pero eficaz. Usar IV (mayor) en lugar de iv (menor), o usar I (mayor) en lugar de i (menor) en cadencias internas. En C menor: F mayor (IV prestado de C mayor) sustituye al Fm esperado. La nota elevada (A natural en vez de Ab) aporta brillo sin abandonar la tonalidad menor. Esta técnica crea momentos de calidez dentro de un paisaje armónico predominantemente oscuro.',
           tryThisLabel: 'Escucha F mayor — IV prestado para C menor',
         },
         {
-          title: 'El Alcance Expresivo de la Mezcla Modal',
+          title: 'El alcance expresivo de la mezcla modal',
           explanation:
             'La mezcla modal en ambas direcciones otorga a los compositores una paleta expresiva enorme. Las tonalidades mayores pueden oscurecerse tomando prestado del menor (bVI, iv, bVII). Las tonalidades menores pueden iluminarse tomando prestado del mayor (tercera de Picardía, IV mayor). La capacidad de moverse libremente entre versiones mayores y menores de acordes construidos sobre las mismas fundamentales es una de las características definitorias de la armonía del periodo Romántico. Difumina por completo la frontera entre mayor y menor.',
-          tryThisLabel: 'Observa C menor — la tonalidad paralela que presta y recibe',
+          tryThisLabel: 'Observa C menor — la tonalidad homónima que presta y recibe',
         },
       ],
       tasks: [
@@ -508,7 +508,7 @@ const curriculumL5: CurriculumLevelOverlay = {
 
     // ── U17 M1: Forma Binaria y Ternaria ──────────────────────────────────
     l5u17m1: {
-      title: 'Forma Binaria y Ternaria',
+      title: 'Forma binaria y ternaria',
       subtitle: 'Estructuras musicales en dos y tres partes',
       objectives: [
         'Analizar la forma binaria (simple, con retorno, equilibrada)',
@@ -517,19 +517,19 @@ const curriculumL5: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Forma Binaria',
+          title: 'Forma binaria',
           explanation:
             'La forma binaria tiene dos secciones, cada una generalmente repetida. Binaria simple (AB): la primera sección se aleja de la tónica (modula o termina en V), la segunda regresa. Binaria con retorno (ABA\'): el material de A reaparece al final de la sección B, proporcionando cierre. Es extremadamente habitual y es la base de la forma sonata. Binaria equilibrada: ambas secciones terminan con el mismo material, aunque comiencen de forma diferente. La mayoría de las danzas barrocas usan forma binaria.',
           tryThisLabel: 'Observa G mayor — tonalidad habitual de la segunda sección en forma binaria',
         },
         {
-          title: 'Forma Ternaria',
+          title: 'Forma ternaria',
           explanation:
             'La forma ternaria (ABA) tiene tres secciones: exposición, contraste, retorno. Cada sección es autosuficiente con sus propias cadencias. La sección B proporciona contraste — tonalidad diferente, carácter diferente, material temático diferente. La ternaria compuesta encaja formas dentro de formas — el Minueto y Trío es una ternaria compuesta donde cada parte es a su vez binaria. El regreso de A tras el material contrastante B crea una de las estructuras más satisfactorias de la música.',
           tryThisLabel: 'Observa C mayor — la «tonalidad de casa» a la que regresan las secciones A',
         },
         {
-          title: 'Seccional vs. Continua',
+          title: 'Seccional vs. continua',
           explanation:
             'Una forma seccional tiene fronteras claras: cada sección termina con una cadencia fuerte en su propia tonalidad y podría existir por sí sola. Una forma continua fluye entre secciones sin cadencias internas fuertes — la música avanza atravesando las fronteras de sección. El mismo esquema de letras (AB, ABA) puede ser seccional o continuo. La forma seccional se asemeja a habitaciones separadas; la continua se asemeja a un espacio fluido dividido por cortinas.',
           tryThisLabel: 'Observa F mayor — región tonal contrastante habitual en la forma',
@@ -553,28 +553,28 @@ const curriculumL5: CurriculumLevelOverlay = {
 
     // ── U17 M2: Formas de Canción e Introducción a las Grandes Formas ────
     l5u17m2: {
-      title: 'Formas de Canción e Introducción a las Grandes Formas',
+      title: 'Formas de canción e introducción a las grandes formas',
       subtitle: 'Estrofa-estribillo, AABA, forma sonata, rondó y tema con variaciones',
       objectives: [
         'Reconocer formas de canción (estrofa-estribillo, AABA, estrófica)',
-        'Comprender la forma sonata (exposición, desarrollo, recapitulación)',
+        'Comprender la forma sonata (exposición, desarrollo, reexposición)',
         'Conocer la forma rondó y la estructura de tema con variaciones',
       ],
       concepts: [
         {
-          title: 'Formas de Canción',
+          title: 'Formas de canción',
           explanation:
             'La forma estrófica usa la misma música para cada estrofa — sencilla y repetitiva (himnos, música folk). Estrofa-estribillo alterna estrofas cambiantes con un estribillo fijo — la forma pop más habitual. AABA (forma de 32 compases) tiene cuatro secciones de ocho compases: A (tema), A (repetición), B (puente/contraste), A (retorno) — estándar en los standards de jazz. La composición continua no tiene secciones repetidas, usada para canciones narrativas donde la música sigue al texto.',
           tryThisLabel: 'Observa C mayor — tonalidad típica para el análisis de forma de canción',
         },
         {
-          title: 'Forma Sonata',
+          title: 'Forma sonata',
           explanation:
-            'La joya de la corona de la forma clásica. Tres grandes secciones: (1) Exposición — dos grupos temáticos en tonalidades contrastantes (primer tema en la tónica, segundo en la dominante o relativa mayor), generalmente repetida. (2) Desarrollo — los temas se fragmentan, recombinan y modulan por muchas tonalidades. La sección armónicamente más aventurera. (3) Recapitulación — la exposición regresa, pero ahora ambos temas están en la tónica. El conflicto tonal queda resuelto. Introducción lenta y coda opcionales.',
+            'La joya de la corona de la forma clásica. Tres grandes secciones: (1) Exposición — dos grupos temáticos en tonalidades contrastantes (primer tema en la tónica, segundo en la dominante o relativa mayor), generalmente repetida. (2) Desarrollo — los temas se fragmentan, recombinan y modulan por muchas tonalidades. La sección armónicamente más aventurera. (3) Reexposición — la exposición regresa, pero ahora ambos temas están en la tónica. El conflicto tonal queda resuelto. Introducción lenta y coda opcionales.',
           tryThisLabel: 'Observa C mayor — tonalidad típica del primer tema',
         },
         {
-          title: 'Rondó y Tema con Variaciones',
+          title: 'Rondó y tema con variaciones',
           explanation:
             'En la forma rondó, un tema principal (A) alterna con episodios contrastantes. Rondó en cinco partes: A–B–A–C–A. Rondó en siete partes: A–B–A–C–A–B–A. El A recurrente proporciona familiaridad; los episodios proporcionan variedad. Habitual en finales clásicos. Tema con variaciones presenta un tema y después lo repite con cambios: variación melódica, armónica, rítmica, modal (intercambio mayor/menor) o de carácter. La chacona y la passacaglia mantienen la línea de bajo constante mientras las voces superiores varían.',
           tryThisLabel: 'Observa C menor — variación modal de C mayor',
@@ -587,7 +587,7 @@ const curriculumL5: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Práctica de forma sonata: abre "key of C" (tónica) y "key of G" (dominante). En la exposición, el tema 1 está en C, el tema 2 en G. En la recapitulación, ambos temas regresan en C.',
+            'Práctica de forma sonata: abre "key of C" (tónica) y "key of G" (dominante). En la exposición, el tema 1 está en C, el tema 2 en G. En la reexposición, ambos temas regresan en C.',
         },
         {
           instruction:
@@ -607,19 +607,19 @@ const curriculumL5: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Monofonía y Homofonía',
+          title: 'Monofonía y homofonía',
           explanation:
             'La monofonía es una única línea melódica sin acompañamiento — todos interpretan la misma melodía, posiblemente en octavas. El canto gregoriano y las melodías de solista sin acompañamiento son monofónicos. Pura, enfocada, expuesta. La homofonía es una melodía con acompañamiento de acordes — la melodía domina mientras las demás voces la apoyan. Esta es la textura más habitual en la música occidental: canciones pop, himnos, escritura para piano clásico, melodía orquestal con acompañamiento.',
           tryThisLabel: 'Toca una única línea melódica — textura monofónica',
         },
         {
-          title: 'Polifonía y Contrapunto',
+          title: 'Polifonía y contrapunto',
           explanation:
             'La polifonía significa dos o más melodías independientes sonando simultáneamente, cada una con su propio interés rítmico y melódico. Las fugas, invenciones y motetes renacentistas son polifónicos. La homorritmia es una textura específica en la que todas las voces se mueven al mismo ritmo pero con alturas diferentes — escritura al estilo coral. La heterofonía se produce cuando varios intérpretes tocan la misma melodía simultáneamente con variaciones individuales, habitual en tradiciones folclóricas.',
           tryThisLabel: 'Observa C mayor — tonalidad de referencia para ejemplos de contrapunto',
         },
         {
-          title: 'Cambios de Textura Dentro de Una Pieza',
+          title: 'Cambios de textura dentro de una pieza',
           explanation:
             'La mayoría de las piezas emplea múltiples texturas. Un movimiento sinfónico puede comenzar con un tema monofónico, desarrollarlo homofónicamente con acompañamiento orquestal, construir hasta un clímax polifónico y regresar a la homofonía. Los cambios de textura son una herramienta primordial para crear contraste y estructura. Un cambio de homofonía a polifonía aumenta la complejidad y la intensidad; un cambio de vuelta proporciona alivio y claridad.',
           tryThisLabel: 'Toca una línea melódica — imagina añadir acompañamiento',
@@ -643,7 +643,7 @@ const curriculumL5: CurriculumLevelOverlay = {
 
     // ── U17 M4: Líneas de Notas Guía ──────────────────────────────────────
     l5u17m4: {
-      title: 'Líneas de Notas Guía',
+      title: 'Líneas de notas guía',
       subtitle: 'Trazar 3.as y 7.as a lo largo de progresiones',
       objectives: [
         'Definir las notas guía como las 3.as y 7.as de los acordes',
@@ -652,19 +652,19 @@ const curriculumL5: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: '¿Qué Son las Notas Guía?',
+          title: '¿Qué son las notas guía?',
           explanation:
             'La 3.ª y la 7.ª de cada acorde son las notas que más contribuyen a definir su cualidad. La fundamental indica el nombre del acorde; la 3.ª indica si es mayor o menor; la 7.ª, leída junto con la 3.ª, indica el tipo de acorde de séptima (por ejemplo, 3.ª mayor + 7.ª mayor = séptima mayor; 3.ª mayor + 7.ª menor = séptima de dominante; 3.ª menor + 7.ª menor = séptima menor). Por eso los músicos de jazz llaman a la 3.ª y la 7.ª la identidad del acorde — con una salvedad: Cm7 y Cm7b5 comparten la misma 3.ª y la misma 7.ª (Eb y Bb), así que en los acordes semidisminuidos la 5.ª también cuenta. Un bajista cubriendo la fundamental más un pianista tocando solo la 3.ª y la 7.ª proporciona un marco armónico claro. Casi todo lo demás es color.',
           tryThisLabel: 'Observa Dm7 — la 3.ª es F, la 7.ª es C',
         },
         {
-          title: 'Trazar Líneas de Notas Guía a Través de ii–V–I',
+          title: 'Trazar líneas de notas guía a través de ii–V–I',
           explanation:
             'Cuando se trazan las 3.as y 7.as a lo largo de una progresión ii–V–I en C mayor, forman líneas de conducción de voces suaves. Dm7: 3.ª = F, 7.ª = C. G7: 3.ª = B, 7.ª = F. Cmaj7: 3.ª = E, 7.ª = B. La 7.ª de cada acorde se convierte en la 3.ª del siguiente (C, 7.ª de Dm7, desciende a B, 3.ª de G7; F, 7.ª de G7, desciende a E, 3.ª de Cmaj7). Para improvisadores, apuntar a las notas guía garantiza acertar en las notas esenciales del acorde. Para arreglistas, las líneas de notas guía son el esqueleto de las partes de voces internas.',
           tryThisLabel: 'Observa G7 — la 3.ª es B, la 7.ª es F',
         },
         {
-          title: 'Notas Guía como Herramienta de Composición e Improvisación',
+          title: 'Notas guía como herramienta de composición e improvisación',
           explanation:
             'La conducción de voces por notas guía es el enfoque Berklee para la escritura suave de voces internas. Para componer un arreglo, se parte de las notas del bajo (fundamentales o inversiones) y las notas guía (3.as y 7.as), y después se rellenan con notas de color (5.as, extensiones, alteraciones) alrededor de ese esqueleto. Para la improvisación, tocar solo las notas guía de una progresión de acordes delinea la armonía con máxima eficiencia — un bajista cubriendo fundamentales más un pianista tocando 3.as y 7.as proporciona el marco armónico completo. La consciencia de las notas guía transforma elecciones de notas aleatorias en líneas direccionadas y armónicamente conectadas.',
           tryThisLabel: 'Observa Cmaj7 — la 3.ª es E, la 7.ª es B',

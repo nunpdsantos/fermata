@@ -146,7 +146,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Para eliminar a 2.ª aumentada entre o 6.º e o 7.º grau elevado da menor harmónica',
       'Para eliminar o meio-tom entre o 7.º grau elevado e a tónica',
-      'Para transformar a escala na sua paralela maior ao elevar o 6.º e o 7.º graus',
+      'Para transformar a escala na sua homónima maior ao elevar o 6.º e o 7.º graus',
       'Para substituir a sensível por uma nota um tom abaixo da tónica',
     ],
     hint: 'O 7.º grau é elevado para criar uma sensível meio-tom abaixo da tónica. A escala menor harmónica tem uma 2.ª aumentada (3 meios-tons) entre o 6.º e o 7.º grau elevado; elevar também o 6.º reduz esta distância a um tom.',
@@ -178,25 +178,25 @@ const overlay: ExerciseLevelOverlay = {
     nudge: 'A relativa maior partilha a armação de clave e começa uma 3.ª menor (3 meios-tons) acima da tónica da tonalidade menor. Conta 3 meios-tons a partir de D.',
   },
   l2u5m3e3: {
-    prompt: 'Qual é a paralela menor de G maior?',
+    prompt: 'Qual é a homónima menor de G maior?',
     choices: [
       'G menor',
       'E menor',
       'A menor',
       'C menor',
     ],
-    hint: 'Tonalidades paralelas partilham a mesma tónica mas diferem no modo. A paralela menor de G maior é G menor. Têm armações de clave diferentes.',
-    nudge: 'Tonalidades paralelas mantêm a mesma tónica e mudam só a qualidade (e, com ela, a armação de clave). Não as confundas com as relativas, que partilham a armação de clave.',
+    hint: 'Tonalidades homónimas partilham a mesma tónica mas diferem no modo. A homónima menor de G maior é G menor. Têm armações de clave diferentes.',
+    nudge: 'Tonalidades homónimas mantêm a mesma tónica e mudam só a qualidade (e, com ela, a armação de clave). Não as confundas com as relativas, que partilham a armação de clave.',
   },
   l2u5m3e4: {
-    prompt: 'Qual é a diferença entre tonalidades relativas e tonalidades paralelas?',
+    prompt: 'Qual é a diferença entre tonalidades relativas e tonalidades homónimas?',
     choices: [
-      'Relativas partilham a mesma armação de clave; paralelas partilham a mesma tónica',
-      'Relativas partilham a mesma tónica; paralelas partilham a mesma armação de clave',
-      'Relativas partilham a mesma tónica e armação de clave; paralelas não partilham nenhuma',
-      'Relativas não partilham tónica nem armação de clave; paralelas partilham ambas',
+      'Relativas partilham a mesma armação de clave; homónimas partilham a mesma tónica',
+      'Relativas partilham a mesma tónica; homónimas partilham a mesma armação de clave',
+      'Relativas partilham a mesma tónica e armação de clave; homónimas não partilham nenhuma',
+      'Relativas não partilham tónica nem armação de clave; homónimas partilham ambas',
     ],
-    hint: 'C maior e A menor são relativas (mesma armação de clave: sem sustenidos/bemóis). C maior e C menor são paralelas (mesma tónica: C).',
+    hint: 'C maior e A menor são relativas (mesma armação de clave: sem sustenidos/bemóis). C maior e C menor são homónimas (mesma tónica: C).',
   },
 
   // =========================================================================

@@ -46,7 +46,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói um acorde de dominante de sétima em {root} (uma forma muito comum de dominante secundária).',
       hintTemplate:
-        'Uma dominante secundária é uma tríade maior ou uma sétima de dominante construída uma 5.ª perfeita acima do acorde que toniciza. Aqui constrói apenas {root}7: fundamental + 3.ª maior + 5.ª perfeita + 7.ª menor. Por exemplo, A7 (A-C#-E-G) é V7/ii em C maior, tonicizando D menor.',
+        'Uma dominante secundária é uma tríade maior ou uma sétima da dominante construída uma 5.ª perfeita acima do acorde que toniciza. Aqui constrói apenas {root}7: fundamental + 3.ª maior + 5.ª perfeita + 7.ª menor. Por exemplo, A7 (A-C#-E-G) é V7/ii em C maior, tonicizando D menor.',
     },
     {
       // multiple_choice
@@ -198,7 +198,7 @@ const overlay: TemplateLevelOverlay = {
         [
           'As tonalidades próximas (no máximo a um acidente de distância) partilham mais acordes pivot',
           'As tonalidades distantes (a muitos acidentes de distância) partilham mais acordes pivot do que as próximas',
-          'As tonalidades paralelas (a mesma tónica em modos diferentes) partilham mais acordes pivot do que as próximas',
+          'As tonalidades homónimas (a mesma tónica em modos diferentes) partilham mais acordes pivot do que as próximas',
           'As tonalidades próximas (no máximo a um acidente de distância) não partilham acordes pivot em nenhuma tonalidade',
         ],
       ],
@@ -313,12 +313,12 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Constrói o acorde de empréstimo {root} (um acorde de mistura modal em C maior).',
       hintTemplate:
-        'A mistura modal empresta acordes do modo menor paralelo. Em C maior, estes acordes de empréstimo são bVI (Ab maior), bIII (Eb maior), bVII (Bb maior) e iv (F menor). Constrói {root} como escrito: as fundamentais rebaixadas formam tríades maiores, o acorde iv é F menor.',
+        'A mistura modal empresta acordes do modo menor homónimo. Em C maior, estes acordes de empréstimo são bVI (Ab maior), bIII (Eb maior), bVII (Bb maior) e iv (F menor). Constrói {root} como escrito: as fundamentais rebaixadas formam tríades maiores, o acorde iv é F menor.',
     },
     {
       // multiple_choice
       promptTemplate:
-        'Qual destas afirmações sobre os acordes de empréstimo do modo menor paralelo é verdadeira?',
+        'Qual destas afirmações sobre os acordes de empréstimo do modo menor homónimo é verdadeira?',
       hintTemplate:
         'Acordes de empréstimo comuns no modo maior: iv (subdominante menor), bVI (sexto grau bemol maior), bVII (sétimo grau bemol maior), bIII. Acrescentam uma cor mais escura a uma tonalidade maior.',
       choiceSets: [
@@ -414,7 +414,7 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre a forma sonata é verdadeira?',
       hintTemplate:
-        'Forma sonata: a exposição contrasta um tema na tónica com uma segunda tonalidade (geralmente a dominante no modo maior e a relativa maior no modo menor); o desenvolvimento fragmenta e modula; a recapitulação traz o segundo tema de volta à tónica.',
+        'Forma sonata: a exposição contrasta um tema na tónica com uma segunda tonalidade (geralmente a dominante no modo maior e a relativa maior no modo menor); o desenvolvimento fragmenta e modula; a reexposição traz o segundo tema de volta à tónica.',
       choiceSets: [
         [
       "A exposição tem dois grupos temáticos: o primeiro na tónica, o segundo numa tonalidade contrastante",
@@ -429,10 +429,10 @@ const overlay: TemplateLevelOverlay = {
           'O desenvolvimento fica na tónica do princípio ao fim',
         ],
         [
-      "Na recapitulação, o segundo tema regressa na tónica, não na dominante",
-      "Na recapitulação, o segundo tema regressa na dominante, não na tónica",
-      "Na recapitulação, o segundo tema regressa na subdominante, não na tónica",
-      "Na recapitulação, o segundo tema regressa na supertónica, não na tónica",
+      "Na reexposição, o segundo tema regressa na tónica, não na dominante",
+      "Na reexposição, o segundo tema regressa na dominante, não na tónica",
+      "Na reexposição, o segundo tema regressa na subdominante, não na tónica",
+      "Na reexposição, o segundo tema regressa na supertónica, não na tónica",
     ],
         [
           'Numa sonata em modo maior, o segundo tema está normalmente na dominante (V)',

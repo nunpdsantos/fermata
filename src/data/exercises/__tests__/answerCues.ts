@@ -466,3 +466,52 @@ export const cueShareWithinBounds = (c: CueCount, lower = 0, min = 10) =>
   c.sets < min || (c.right / c.sets >= lower && c.right / c.sets <= 0.4);
 export const wordShareWithinBounds = (c: { right: number; options: number }) =>
   c.options < 10 || (c.right / c.options >= 0.08 && c.right / c.options <= 0.45);
+
+export interface MelodyOption { notes: string[]; correct: boolean }
+export type MelodyFeature = 'pitch' | 'pitchClass' | 'contour' | 'contourBag' | 'positional' | 'positionalPC';
+
+/** Scientific pitches, including octave: C4 = 60. Reject malformed test data. */
+export function melodyPitch(note: string): number {
+  const match = /^([A-G])([#b]?)(\d)$/.exec(note);
+  if (!match) throw new Error(`Invalid melody pitch: ${note}`);
+  return 12 * (Number(match[3]) + 1)
+    + ({ C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[match[1]] ?? 0)
+    + (match[2] === '#' ? 1 : match[2] === 'b' ? -1 : 0);
+}
+export const melodyContour = (pitches: readonly number[]) => pitches.slice(1).map((p, i) => Math.sign(p - pitches[i]));
+
+/** Sum min(countA(p), countB(p)), preserving repeated pitches/directions. */
+export function multisetOverlap<T>(a: readonly T[], b: readonly T[]): number {
+  const remaining = new Map<T, number>();
+  for (const p of b) remaining.set(p, (remaining.get(p) ?? 0) + 1);
+  let count = 0;
+  for (const p of a) {
+    const n = remaining.get(p) ?? 0;
+    if (n > 0) { count++; remaining.set(p, n - 1); }
+  }
+  return count;
+}
+
+/** Total overlap with BOTH other options. A tie, on either side, makes no pick.
+ * Contour compares corresponding directions in the ordered sequence; contourBag
+ * additionally guards the simpler shortcut of counting ups/downs/repetitions. */
+export function melodyCuePick(choices: readonly MelodyOption[], feature: MelodyFeature, most: boolean): number | null {
+  const sequences = choices.map(c => {
+    if (feature === 'positional') return c.notes;
+    if (feature === 'positionalPC') return c.notes.map(n => n.replace(/\d/, ''));
+    const pitches = c.notes.map(melodyPitch);
+    return feature.startsWith('contour') ? melodyContour(pitches)
+      : feature === 'pitchClass' ? pitches.map(p => p % 12) : pitches;
+  });
+  const scores = sequences.map((a, i) => sequences.reduce((sum, b, j) => sum + (i === j ? 0 : feature === 'contour' || feature.startsWith('positional') ? a.filter((value, k) => value === b[k]).length : multisetOverlap<number | string>(a, b)), 0));
+  const best = most ? Math.max(...scores) : Math.min(...scores);
+  const winners = scores.flatMap((score, i) => score === best ? [i] : []);
+  return winners.length === 1 ? winners[0] : null;
+}
+
+export function melodyCueHits(items: readonly { melodyChoices: MelodyOption[] }[], feature: MelodyFeature, most: boolean): number {
+  return items.filter(item => {
+    const picked = melodyCuePick(item.melodyChoices, feature, most);
+    return picked !== null && item.melodyChoices[picked].correct;
+  }).length;
+}

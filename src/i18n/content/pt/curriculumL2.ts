@@ -4,7 +4,7 @@ const curriculumL2: CurriculumLevelOverlay = {
   // ─── Units ──────────────────────────────────────────────────────────────────
   units: {
     u4: {
-      title: 'Todas as Tonalidades Maiores e Graus da Escala',
+      title: 'Todas as tonalidades maiores e graus da escala',
       description:
         'As 15 armações de clave maiores, o Círculo de Quintas e os nomes e funções dos graus da escala',
       milestone: {
@@ -20,14 +20,14 @@ const curriculumL2: CurriculumLevelOverlay = {
       },
     },
     u5: {
-      title: 'Escalas Menores e Relações entre Tonalidades',
+      title: 'Escalas menores e relações entre tonalidades',
       description:
-        'Escalas menor natural, harmónica e melódica, além das relações entre tonalidades relativas e paralelas',
+        'Escalas menor natural, harmónica e melódica, além das relações entre tonalidades relativas e homónimas',
       milestone: {
         skillsSummary: [
           'Construir as três formas da escala menor em qualquer tonalidade',
           'Compreender porque existem três formas e quando se usa cada uma',
-          'Encontrar de imediato as relações entre tonalidades relativas e paralelas',
+          'Encontrar de imediato as relações entre tonalidades relativas e homónimas',
         ],
         bridgeText:
           'Já dominas os dois lados da tonalidade — maior e menor. A seguir, vais expandir o teu vocabulário rítmico com o compasso composto e a síncopa.',
@@ -36,7 +36,7 @@ const curriculumL2: CurriculumLevelOverlay = {
       },
     },
     u6: {
-      title: 'Compasso Composto e Síncopa',
+      title: 'Compasso composto e síncopa',
       description:
         'Indicações de compasso composto, síncopa, tercinas e conceitos rítmicos avançados',
       milestone: {
@@ -53,7 +53,7 @@ const curriculumL2: CurriculumLevelOverlay = {
       },
     },
     u7: {
-      title: 'Intervalos, Tríades e Harmonia Diatónica',
+      title: 'Intervalos, tríades e harmonia diatónica',
       description:
         'O sistema completo de qualidade de intervalos, os quatro tipos de tríades, inversões com baixo cifrado e tríades diatónicas com numeração romana',
       milestone: {
@@ -75,7 +75,7 @@ const curriculumL2: CurriculumLevelOverlay = {
   modules: {
     // ── U4 M1: All Major Keys and the Circle of Fifths ────────────────────
     l2u4m1: {
-      title: 'Todas as Tonalidades Maiores e o Círculo de Quintas',
+      title: 'Todas as tonalidades maiores e o círculo de quintas',
       subtitle: 'O conjunto completo de 15 armações de clave maiores e como se ligam entre si',
       objectives: [
         'Identificar as 15 armações de clave maiores, incluindo os pares enarmónicos',
@@ -85,19 +85,19 @@ const curriculumL2: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'O Conjunto Completo de Tonalidades Maiores',
+          title: 'O conjunto completo de tonalidades maiores',
           explanation:
             'Existem 15 armações de clave maiores, mas apenas 12 tonalidades distintas. Três pares são enarmónicos — soam de forma idêntica mas escrevem-se de maneira diferente: B/Cb, F#/Gb e C#/Db. As tonalidades com sustenidos vão de C (0 sustenidos) até C# (7 sustenidos). As tonalidades com bemóis vão de C até Cb (7 bemóis).',
           tryThisLabel: 'Vê B maior — 5 sustenidos',
         },
         {
-          title: 'Ordem dos Sustenidos e Bemóis',
+          title: 'Ordem dos sustenidos e bemóis',
           explanation:
             'Os sustenidos aparecem sempre na mesma ordem: F-C-G-D-A-E-B. Cada nova tonalidade com sustenidos acrescenta o próximo da sequência. G maior tem F#. D maior tem F# e C#. Os bemóis seguem a ordem inversa: B-E-A-D-G-C-F. F maior tem Bb. Bb maior tem Bb e Eb. Esta ordem nunca muda.',
           tryThisLabel: 'Vê A maior — 3 sustenidos',
         },
         {
-          title: 'Truques de Identificação Rápida',
+          title: 'Truques de identificação rápida',
           explanation:
             'Para tonalidades com sustenidos: o último sustenido é sempre o 7.º grau da escala — sobe meio-tom e encontras o nome da tonalidade. Se o último sustenido é F#, a tonalidade é G. Para tonalidades com bemóis: o penúltimo bemol É a tonalidade. Se tens Bb e Eb, a tonalidade é Bb. A exceção: um único bemol significa sempre F maior.',
           tryThisLabel: 'Vê Db maior — 5 bemóis',
@@ -121,7 +121,7 @@ const curriculumL2: CurriculumLevelOverlay = {
 
     // ── U4 M2: Scale Degree Names and Functions ───────────────────────────
     l2u4m2: {
-      title: 'Nomes e Funções dos Graus da Escala',
+      title: 'Nomes e funções dos graus da escala',
       subtitle: 'Os sete nomes funcionais que todo o músico deve conhecer',
       objectives: [
         'Nomear os sete graus da escala: tónica, supertónica, mediante, subdominante, dominante, submediante, sensível',
@@ -130,19 +130,19 @@ const curriculumL2: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Os Sete Nomes dos Graus da Escala',
+          title: 'Os sete nomes dos graus da escala',
           explanation:
             'Cada grau da escala tem um nome funcional: 1=Tónica (repouso), 2=Supertónica (acima da tónica), 3=Mediante (ponto médio entre tónica e dominante), 4=Subdominante (a "dominante inferior" — uma 5.ª abaixo da tónica, tal como a dominante está uma 5.ª acima), 5=Dominante (cria tensão em direção à tónica), 6=Submediante (a "mediante inferior" — a meio caminho entre a tónica e a subdominante abaixo dela), 7=Sensível (meio-tom abaixo da tónica, a atração mais forte para casa).',
           tryThisLabel: 'Vê os sete graus de C maior',
         },
         {
-          title: 'Sensível vs. Subtónica',
+          title: 'Sensível vs. subtónica',
           explanation:
             'Quando o 7.º grau está a meio-tom abaixo da tónica (como na escala maior e menor harmónica), chama-se sensível — puxa fortemente para cima, em direção à resolução. Quando o 7.º grau está a um tom abaixo da tónica (como na menor natural), chama-se subtónica — a atração é mais fraca. Esta distinção explica por que existe a menor harmónica: os compositores elevaram o 7.º grau para criar uma sensível.',
           tryThisLabel: 'Ouve a subtónica na menor natural',
         },
         {
-          title: 'Porque Importam Estes Nomes',
+          title: 'Porque importam estes nomes',
           explanation:
             'Os nomes não são rótulos arbitrários — descrevem função harmónica. A dominante (5) e a sensível (7) criam tensão. A tónica (1) proporciona resolução. A subdominante (4) e a supertónica (2) criam movimento em direção à dominante. Compreender a função é a chave para compreender a harmonia. O sistema de cores desta app codifica estas funções: azul=tónica, ambra=dominante, vermelho=sensível.',
           tryThisLabel: 'Vê as cores dos graus em G maior',
@@ -166,7 +166,7 @@ const curriculumL2: CurriculumLevelOverlay = {
 
     // ── U5 M1: Natural Minor Scale ────────────────────────────────────────
     l2u5m1: {
-      title: 'Escala Menor Natural',
+      title: 'Escala menor natural',
       subtitle: 'O padrão T-mT-T-T-mT-T-T e o lado mais sombrio da tonalidade',
       objectives: [
         'Construir a escala menor natural a partir de qualquer nota usando T-mT-T-T-mT-T-T',
@@ -175,13 +175,13 @@ const curriculumL2: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'O Padrão da Menor Natural',
+          title: 'O padrão da menor natural',
           explanation:
             'A escala menor natural segue T-mT-T-T-mT-T-T — compara com o padrão da maior: T-T-mT-T-T-T-mT. Os meios-tons caem em posições diferentes, e isso muda tudo. A escala de A menor natural é a mais fácil de ver: usa apenas teclas brancas, de A a G e de volta a A.',
           tryThisLabel: 'Ouve A menor natural — só teclas brancas',
         },
         {
-          title: 'Carácter Maior vs. Menor',
+          title: 'Carácter maior vs. menor',
           explanation:
             'Toca a escala de C maior e depois a escala de C menor. A escala menor soa mais sombria, mais emocional — ouves a diferença instantaneamente. A diferença vem de três graus baixados: o 3.º, 6.º e 7.º estão cada um meio-tom mais baixo do que na escala maior. Estas três alterações transformam brilhante e resolvido em sombrio e introspetivo.',
           tryThisLabel: 'Compara C menor com C maior',
@@ -205,7 +205,7 @@ const curriculumL2: CurriculumLevelOverlay = {
 
     // ── U5 M2: Harmonic and Melodic Minor ─────────────────────────────────
     l2u5m2: {
-      title: 'Menor Harmónica e Melódica',
+      title: 'Menor harmónica e melódica',
       subtitle: 'Porque existem três formas de menor — e o que cada uma resolve',
       objectives: [
         'Construir a menor harmónica elevando o 7.º grau da menor natural',
@@ -214,19 +214,19 @@ const curriculumL2: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Menor Harmónica',
+          title: 'Menor harmónica',
           explanation:
             'A escala menor harmónica eleva o 7.º grau meio-tom, criando uma sensível. A escala de A menor harmónica: A-B-C-D-E-F-G#. Agora o acorde V é maior, dando à tonalidade uma forte atração dominante-tónica. A contrapartida: surge uma 2.ª aumentada (3 meios-tons) entre o 6.º e 7.º graus, dando à menor harmónica o seu som exótico distintivo.',
           tryThisLabel: 'Ouve o 7.º grau elevado',
         },
         {
-          title: 'Menor Melódica',
+          title: 'Menor melódica',
           explanation:
             'A escala menor melódica corrige a 2.ª aumentada elevando também o 6.º grau — mas tradicionalmente só na forma ascendente. Ascendente: T-mT-T-T-T-T-mT. Descendente: menor natural. A forma melódica ascendente de A: A-B-C-D-E-F#-G#. No jazz, a forma ascendente usa-se em ambas as direções e chama-se escala "menor jazz".',
           tryThisLabel: 'Ouve a menor melódica',
         },
         {
-          title: 'Três Formas, Três Propósitos',
+          title: 'Três formas, três propósitos',
           explanation:
             'A escala menor natural é pura e folclórica, mas o seu acorde v menor carece de poder de resolução. A escala menor harmónica dá-te um acorde V maior com sensível — essencial para cadências fortes. A escala menor melódica suaviza a 2.ª aumentada incómoda para melodias vocais e instrumentais. Os compositores escolhem entre as formas conforme o que a música precisa em cada momento.',
           tryThisLabel: 'Constrói E menor natural',
@@ -250,24 +250,24 @@ const curriculumL2: CurriculumLevelOverlay = {
 
     // ── U5 M3: Relative and Parallel Keys ─────────────────────────────────
     l2u5m3: {
-      title: 'Tonalidades Relativas e Paralelas',
+      title: 'Tonalidades relativas e homónimas',
       subtitle: 'Duas formas de ligar maior e menor',
       objectives: [
         'Encontrar pares de relativa maior/menor usando a regra do 6.º grau / 3.º grau',
-        'Compreender tonalidades paralelas como mesma fundamental, qualidade diferente',
+        'Compreender tonalidades homónimas como mesma fundamental, qualidade diferente',
         'Ver como estas relações aparecem no Círculo de Quintas',
       ],
       concepts: [
         {
-          title: 'Tonalidades Relativas',
+          title: 'Tonalidades relativas',
           explanation:
             'Tonalidades relativas partilham a mesma armação de clave mas têm tónicas diferentes. Para encontrar a relativa menor de uma tonalidade maior, vai ao 6.º grau. C maior → A menor. G maior → E menor. Para encontrar a relativa maior, vai ao 3.º grau da escala menor. Assim, A menor → C maior. O Círculo de Quintas mostra ambas: tonalidades maiores no anel exterior, as suas relativas menores no anel interior.',
           tryThisLabel: 'Vê as tonalidades relativas no Círculo',
         },
         {
-          title: 'Tonalidades Paralelas',
+          title: 'Tonalidades homónimas',
           explanation:
-            'Tonalidades paralelas partilham a mesma fundamental mas têm qualidades diferentes. C maior e C menor são paralelas: C menor é a paralela menor de C maior, e C maior é a paralela maior de C menor. Partilham a nota tónica mas diferem no 3.º, 6.º e 7.º graus. A relação paralela torna-se crítica mais tarde na mistura modal — emprestar acordes da tonalidade paralela para acrescentar cor.',
+            'Tonalidades homónimas partilham a mesma fundamental mas têm qualidades diferentes. C maior e C menor são homónimas: C menor é a homónima menor de C maior, e C maior é a homónima maior de C menor. Partilham a nota tónica mas diferem no 3.º, 6.º e 7.º graus. A relação entre tonalidades homónimas torna-se crítica mais tarde na mistura modal — emprestar acordes da tonalidade homónima para acrescentar cor.',
           tryThisLabel: 'Compara C menor com C maior',
         },
       ],
@@ -278,7 +278,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escreve "C major scale" e depois "C minor scale" — quais três notas mudam? (3.ª, 6.ª, 7.ª). Estas são tonalidades paralelas',
+            'Escreve "C major scale" e depois "C minor scale" — quais três notas mudam? (3.ª, 6.ª, 7.ª). Estas são tonalidades homónimas',
         },
         {
           instruction:
@@ -289,7 +289,7 @@ const curriculumL2: CurriculumLevelOverlay = {
 
     // ── U6 M1: Compound Meter: 6/8, 9/8, 12/8 ───────────────────────────
     l2u6m1: {
-      title: 'Compasso Composto: 6/8, 9/8, 12/8',
+      title: 'Compasso composto: 6/8, 9/8, 12/8',
       subtitle: 'Quando os tempos se dividem em três — a cadência ondulante do compasso composto',
       objectives: [
         'Distinguir compasso simples (tempos dividem-se por 2) de compasso composto (tempos dividem-se por 3)',
@@ -298,7 +298,7 @@ const curriculumL2: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Simples vs. Composto',
+          title: 'Simples vs. composto',
           explanation:
             'No compasso simples, cada tempo divide-se naturalmente em duas partes iguais (uma semínima divide-se em duas colcheias). No compasso composto, cada tempo divide-se em três (uma semínima com ponto divide-se em três colcheias). O número de cima nas indicações compostas é 6, 9 ou 12 — divide por 3 para encontrar o número de tempos: 6/8 tem 2 tempos, 9/8 tem 3, 12/8 tem 4.',
           tryThisLabel: 'Ouve 6/8: dois tempos grandes, cada um dividido em três',
@@ -324,7 +324,7 @@ const curriculumL2: CurriculumLevelOverlay = {
 
     // ── U6 M2: Syncopation and Triplets ───────────────────────────────────
     l2u6m2: {
-      title: 'Síncopa e Tercinas',
+      title: 'Síncopa e tercinas',
       subtitle: 'Ritmos que empurram contra o tempo — acentos em tempos fracos e divisões emprestadas',
       objectives: [
         'Definir síncopa como a acentuação de tempos ou partes de tempos normalmente fracos',
@@ -339,7 +339,7 @@ const curriculumL2: CurriculumLevelOverlay = {
           tryThisLabel: 'Ouve o acento cair entre os tempos',
         },
         {
-          title: 'Tercinas e Duinas',
+          title: 'Tercinas e duinas',
           explanation:
             'Uma tercina divide um tempo que normalmente tem duas subdivisões em três partes iguais. Em 4/4, uma tercina de colcheias encaixa três notas no espaço de duas — cria uma breve sensação composta dentro do compasso simples. O inverso também existe: uma duina divide um tempo composto em dois em vez de três. Estas divisões emprestadas acrescentam variedade rítmica e efeitos de ritmo cruzado.',
           tryThisLabel: 'Ouve duas colcheias por tempo e depois três (uma tercina)',
@@ -359,7 +359,7 @@ const curriculumL2: CurriculumLevelOverlay = {
 
     // ── U7 M1: Interval Quality: Perfect, Major, Minor ───────────────────
     l2u7m1: {
-      title: 'Qualidade do Intervalo: Perfeito, Maior, Menor',
+      title: 'Qualidade do intervalo: perfeito, maior, menor',
       subtitle: 'Classificar intervalos pelo número e pela qualidade',
       objectives: [
         'Compreender que os intervalos têm um número (distância) e uma qualidade (carácter)',
@@ -368,19 +368,19 @@ const curriculumL2: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'O Sistema de Qualidades',
+          title: 'O sistema de qualidades',
           explanation:
             'No Nível 1, mediste intervalos por número: uma 3.ª, uma 5.ª. Agora acrescenta a qualidade — que refina o número com um carácter preciso. Os intervalos perfeitos (uníssono, 4.ª, 5.ª, oitava) ocorrem naturalmente entre a tónica e os graus 1, 4, 5 e 8 da escala. Os intervalos maiores (2.ª, 3.ª, 6.ª, 7.ª) ocorrem entre a tónica e os graus superiores numa escala maior. Os intervalos menores são meio-tom mais pequenos que os maiores.',
           tryThisLabel: 'Vê todos os intervalos da escala maior a partir de C',
         },
         {
-          title: 'Como Determinar a Qualidade',
+          title: 'Como determinar a qualidade',
           explanation:
             'Método: (1) Conta os nomes das notas para obter o número do intervalo. (2) Conta os meios-tons. (3) Compara com a escala maior: se a nota superior pertence à escala maior da nota inferior, é maior (para 2, 3, 6, 7) ou perfeito (para 1, 4, 5, 8). (4) Meio-tom mais pequeno que maior = menor.',
           tryThisLabel: 'Ouve uma 3.ª menor em C menor',
         },
         {
-          title: 'Ouvir a Diferença',
+          title: 'Ouvir a diferença',
           explanation:
             'Os intervalos perfeitos soam "abertos" e "ocos" — estáveis e fortes. Os intervalos maiores soam brilhantes e amplos. Os intervalos menores são meio-tom mais estreitos e soam mais sombrios, mais emocionais. Toca C a E (3.ª maior) e depois C a Eb (3.ª menor) — a diferença de meio-tom cria um carácter completamente diferente.',
           tryThisLabel: 'Ouve a 3.ª maior num acorde',
@@ -404,7 +404,7 @@ const curriculumL2: CurriculumLevelOverlay = {
 
     // ── U7 M2: Augmented, Diminished, and Compound Intervals ──────────────
     l2u7m2: {
-      title: 'Intervalos Aumentados, Diminutos e Compostos',
+      title: 'Intervalos aumentados, diminutos e compostos',
       subtitle: 'Os extremos da qualidade de intervalos e intervalos além da oitava',
       objectives: [
         'Compreender aumentado como meio-tom maior que perfeito ou maior',
@@ -413,19 +413,19 @@ const curriculumL2: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Aumentado e Diminuto',
+          title: 'Aumentado e diminuto',
           explanation:
             'Aumentado significa meio-tom maior que perfeito ou maior. Diminuto significa meio-tom menor que perfeito ou menor. Uma 5.ª perfeita (7 meios-tons) torna-se aumentada com 8 meios-tons ou diminuta com 6. O intervalo de 6 meios-tons — o trítono — tem dois nomes: 4.ª aumentada ou 5.ª diminuta. O mesmo som, grafia diferente.',
           tryThisLabel: 'Ouve o trítono dentro de C7',
         },
         {
-          title: 'O Trítono',
+          title: 'O trítono',
           explanation:
             'O trítono divide a oitava exatamente ao meio e é o intervalo mais instável na música tonal. Desempenha um papel crítico nos acordes de dominante com 7.ª, onde cria a tensão que impulsiona a resolução. Dentro de C7, o trítono situa-se entre E e Bb — ambas as notas exigem resolução.',
           tryThisLabel: 'Ouve a 5.ª diminuta em Cdim',
         },
         {
-          title: 'Intervalos Compostos',
+          title: 'Intervalos compostos',
           explanation:
             'Intervalos maiores que uma oitava são intervalos compostos. Uma 9.ª = oitava + 2.ª. Uma 10.ª = oitava + 3.ª. Uma 11.ª = oitava + 4.ª. Uma 13.ª = oitava + 6.ª. As regras de qualidade mantêm-se: uma 9.ª maior tem a mesma qualidade que uma 2.ª maior. Estes intervalos tornam-se importantes nos acordes com extensões.',
           tryThisLabel: 'A 9.ª é uma 2.ª composta',
@@ -449,7 +449,7 @@ const curriculumL2: CurriculumLevelOverlay = {
 
     // ── U7 M3: The Four Triad Types ───────────────────────────────────────
     l2u7m3: {
-      title: 'Os Quatro Tipos de Tríades',
+      title: 'Os quatro tipos de tríades',
       subtitle: 'Maior, menor, diminuta, aumentada — construir e identificar os quatro',
       objectives: [
         'Construir os quatro tipos de tríades a partir de qualquer fundamental usando terças empilhadas',
@@ -458,19 +458,19 @@ const curriculumL2: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Quatro Qualidades de Tríades',
+          title: 'Quatro qualidades de tríades',
           explanation:
             'Toda a tríade empilha duas terças. Maior = 3.ª maior + 3.ª menor (3M+3m), da fundamental à 5.ª é uma 5.ª perfeita. Menor = 3.ª menor + 3.ª maior (3m+3M), da fundamental à 5.ª continua a ser uma 5.ª perfeita. Diminuta = 3.ª menor + 3.ª menor (3m+3m), da fundamental à 5.ª é uma 5.ª diminuta. Aumentada = 3.ª maior + 3.ª maior (3M+3M), da fundamental à 5.ª é uma 5.ª aumentada.',
           tryThisLabel: 'Ouve a tríade maior estável',
         },
         {
-          title: 'Estável vs. Instável',
+          title: 'Estável vs. instável',
           explanation:
             'Maior e menor são estáveis — ambas têm uma 5.ª perfeita, que proporciona uma base sólida. Diminuta soa tensa e comprimida — a sua 5.ª diminuta comprime o acorde. Aumentada soa estranha e sem resolução — a sua 5.ª aumentada expande o acorde. Estabilidade vs. instabilidade é determinada pelo facto de a 5.ª ser perfeita ou alterada.',
           tryThisLabel: 'Ouve diminuta — tensa e comprimida',
         },
         {
-          title: 'Ler Cifras de Acordes',
+          title: 'Ler cifras de acordes',
           explanation:
             'Letra sozinha = maior (C). Letra minúscula "m" = menor (Cm). "dim" ou "°" = diminuta (Cdim). "aug" ou "+" = aumentada (Caug). Estas cifras indicam-te a fundamental e a qualidade de relance.',
           tryThisLabel: 'Ouve aumentada — flutuante e sem resolução',
@@ -494,7 +494,7 @@ const curriculumL2: CurriculumLevelOverlay = {
 
     // ── U7 M4: Triad Inversions and Figured Bass ──────────────────────────
     l2u7m4: {
-      title: 'Inversões de Tríades e Baixo Cifrado',
+      title: 'Inversões de tríades e baixo cifrado',
       subtitle: 'As mesmas notas, baixo diferente — estado fundamental, 1.ª inversão, 2.ª inversão',
       objectives: [
         'Compreender estado fundamental, 1.ª inversão e 2.ª inversão de tríades',
@@ -503,19 +503,19 @@ const curriculumL2: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Três Posições',
+          title: 'Três posições',
           explanation:
             'Uma tríade tem três notas, portanto tem três notas de baixo possíveis. O estado fundamental coloca a fundamental no baixo — a disposição mais sólida. A 1.ª inversão coloca a 3.ª no baixo — mais leve e melódica. A 2.ª inversão coloca a 5.ª no baixo — instável, com a 4.ª acima do baixo historicamente tratada como dissonância que requer resolução.',
           tryThisLabel: 'Ouve estado fundamental — C no baixo',
         },
         {
-          title: 'Baixo Cifrado',
+          title: 'Baixo cifrado',
           explanation:
             'Os números do baixo cifrado descrevem intervalos acima da nota do baixo. Estado fundamental = 5/3 (uma 5.ª e uma 3.ª acima do baixo). 1.ª inversão = 6/3 (abreviado para apenas 6). 2.ª inversão = 6/4. Esta era a notação padrão na era barroca e continua a ser central na análise de teoria musical.',
           tryThisLabel: '1.ª inversão = posição 6',
         },
         {
-          title: 'Porque Importam as Inversões',
+          title: 'Porque importam as inversões',
           explanation:
             'As inversões permitem que os acordes se liguem suavemente. Em vez de saltar entre acordes no estado fundamental, as inversões criam linhas de baixo por grau conjunto — o ingrediente mais importante de uma condução de vozes elegante. Uma linha de baixo que se move por grau conjunto soa mais polida do que uma que salta constantemente.',
           tryThisLabel: '2.ª inversão = posição 6/4',
@@ -539,7 +539,7 @@ const curriculumL2: CurriculumLevelOverlay = {
 
     // ── U7 M5: Diatonic Triads and Roman Numerals ─────────────────────────
     l2u7m5: {
-      title: 'Tríades Diatónicas e Numeração Romana',
+      title: 'Tríades diatónicas e numeração romana',
       subtitle: 'Os sete acordes que pertencem a cada tonalidade maior — e como os nomear',
       objectives: [
         'Construir uma tríade em cada grau da escala maior usando apenas notas dessa escala',
@@ -548,19 +548,19 @@ const curriculumL2: CurriculumLevelOverlay = {
       ],
       concepts: [
         {
-          title: 'Construir Tríades Diatónicas',
+          title: 'Construir tríades diatónicas',
           explanation:
             'Constrói uma tríade em cada grau da escala maior usando apenas notas dessa escala. Em C maior: C-E-G (maior), D-F-A (menor), E-G-B (menor), F-A-C (maior), G-B-D (maior), A-C-E (menor), B-D-F (diminuta). O padrão de qualidades é sempre I-ii-iii-IV-V-vi-vii° — em todas as tonalidades maiores. Só os nomes das notas mudam.',
           tryThisLabel: 'Vê todas as tríades diatónicas em C',
         },
         {
-          title: 'Convenções de Numeração Romana',
+          title: 'Convenções de numeração romana',
           explanation:
             'Algarismos romanos maiúsculos indicam tríades maiores (I, IV, V). Minúsculos indicam tríades menores (ii, iii, vi). O símbolo de grau (°) indica diminuta (vii°). Esta notação é universal — funciona em qualquer tonalidade. Quando vês I-IV-V, sabes as funções dos acordes independentemente das notas específicas usadas.',
           tryThisLabel: 'Vê o mesmo padrão em G maior',
         },
         {
-          title: 'Porque o Padrão é Fixo',
+          title: 'Porque o padrão é fixo',
           explanation:
             'O padrão de intervalos T-T-mT-T-T-T-mT da escala maior força combinações específicas de intervalos em cada grau. Os meios-tons entre os graus 3-4 e 7-1 criam a tríade diminuta no vii° e determinam quais tríades são maiores ou menores. Muda a escala e mudas o padrão — que é exatamente o que acontece nas tonalidades menores.',
           tryThisLabel: 'Verifica o padrão em D maior',
