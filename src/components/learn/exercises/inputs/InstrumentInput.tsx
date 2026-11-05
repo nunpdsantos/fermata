@@ -4,6 +4,7 @@ import { useAppStore } from '../../../../state/store';
 import type { Note, PitchedNote } from '../../../../core/types/music';
 import { noteToString } from '../../../../core/types/music';
 import { directionSpeller } from '../../../../core/utils/spelling';
+import { Button } from '../../../ui/Button';
 import { accentText } from '../../../../design/tokens/learnColors';
 import { openDockForLesson, foldDockAfterLesson } from '../../../../services/lessonDock';
 
@@ -139,17 +140,9 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
           >
             {t('common.clear')}
           </button>
-          <button
-            onClick={handleCheck}
-            disabled={toggledPCs.size === 0}
-            className="inline-flex items-center justify-center min-h-(--tap) px-4 rounded-lg text-ui font-medium transition-colors disabled:opacity-40"
-            style={{
-              backgroundColor: `${accentColor}20`,
-              color: accentText(accentColor),
-            }}
-          >
+          <Button variant="primary" onClick={handleCheck} disabled={toggledPCs.size === 0}>
             {t('exercise.checkAnswer')}
-          </button>
+          </Button>
         </div>
       )}
     </div>

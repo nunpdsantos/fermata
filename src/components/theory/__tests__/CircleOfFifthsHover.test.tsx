@@ -150,7 +150,7 @@ describe('item 2 — numerals are large enough and stacked under the name', () =
 describe('re-review nit — diatonic chord segments wear the selected key\'s spelling', () => {
   const names = (c: HTMLElement) => new Map(
     [...c.querySelectorAll('g[role="button"]')].map((g) => [
-      g.querySelector('[data-name]')!.textContent!,
+      g.querySelector('[data-name]')!.textContent!.replace(/𝄪/gu, '##').replace(/𝄫/gu, 'bb').replace(/♯/g, '#').replace(/♭/g, 'b'),
       g.querySelector('[data-numeral]')?.textContent ?? null,
     ]),
   );
@@ -180,7 +180,7 @@ describe('re-review nit — diatonic chord segments wear the selected key\'s spe
       for (const root of ['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B']) {
         select(root, type);
         const { container } = render(<CircleOfFifths />);
-        const shown = [...container.querySelectorAll('[data-numeral]')].map((x) => x.parentElement!.querySelector('[data-name]')!.textContent!.replace(/[m°+]$/, ''));
+        const shown = [...container.querySelectorAll('[data-numeral]')].map((x) => x.parentElement!.querySelector('[data-name]')!.textContent!.replace(/𝄪/gu, '##').replace(/𝄫/gu, 'bb').replace(/♯/g, '#').replace(/♭/g, 'b').replace(/[m°+]$/, ''));
         // oracle: the scale degrees spelled from the root
         const or = ORACLE_SCALES[type];
         const want = or.degrees.map((d) => spellDegree(root, d)!);

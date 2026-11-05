@@ -23,6 +23,8 @@ import {
   DIST_FILL_MINOR, DIST_STROKE_MINOR, DIST_TEXT_MINOR,
 } from './circleOfFifthsConstants.ts';
 
+import { innerLabelLayout, circleSpelling } from './circleLabelLayout';
+
 type Ring = 'major' | 'minor';
 
 function isMinorScale(scale: ScaleType): boolean {
@@ -99,7 +101,7 @@ const relativeMajorOf = (minor: Note): Note => spellIntervalAbove(minor, 3, 3);
 const keySignatureSize = (key: Note, ring: 'major' | 'minor'): number =>
   majorKeySignature(ring === 'major' ? key : relativeMajorOf(key)).count;
 
-export const CircleOfFifths = memo(function CircleOfFifths() {
+export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = false }: { signatureInFacts?: boolean } = {}) {
   const { t } = useTranslation();
   const selectedKey = useAppStore((s) => s.selectedKey);
   const selectedScale = useAppStore((s) => s.selectedScale);
@@ -349,7 +351,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
   // does — "B♯° (vii°) — select C minor" (WCAG 2.5.3 label in name).
   const segmentLabel = (s: { display: string; numeral?: string; note: Note; i: number }, ring: Ring) => {
     const label = t('circle.segmentLabel', {
-      name: s.numeral ? `${s.display} (${s.numeral})` : s.display,
+      name: s.numeral ? `${circleSpelling(s.display)} (${s.numeral})` : circleSpelling(s.display),
       key: t(ring === 'major' ? 'circle.keyMajor' : 'circle.keyMinor', { note: noteToString(s.note) }),
     });
     return chordMark?.ring === ring && chordMark.idx === s.i ? `${label}, ${t('explore.circleChordRoot')}` : label;
@@ -371,11 +373,23 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
 
   /** Name + numeral stacked in a segment (numeral below, never overlapping). */
   const segmentText = (
-    s: { mid: { x: number; y: number }; display: string; numeral?: string; textFill: string; fill: string },
+    s: { i: number; mid: { x: number; y: number }; display: string; numeral?: string; textFill: string; fill: string },
     ring: Ring,
   ) => {
     const nameSize = fs(ring === 'major' ? MAJOR_NAME_SIZE : MINOR_NAME_SIZE);
     const numeralSize = fs(NUMERAL_SIZE);
+    if (ring === 'minor') {
+      return <g>{[false, ...(s.numeral ? [true] : [])].map((numeral) => {
+        const lane = innerLabelLayout(s.i, numeral, !!s.numeral, unitFloor ? 12.5 * SIZE / unitFloor : 276, s.display, s.numeral);
+        const text = circleSpelling(numeral ? s.numeral! : s.display);
+        return <text key={String(numeral)} data-name={!numeral || undefined} data-numeral={numeral || undefined}
+          x={lane.x} y={lane.y}
+          textAnchor="middle" dominantBaseline="central" fontSize={lane.fontSize}
+          textLength={lane.width} lengthAdjust="spacingAndGlyphs"
+          className="font-medium select-none pointer-events-none"
+          fill={numeral ? s.fill === TONIC_HUE ? 'var(--on-accent)' : 'var(--text)' : s.textFill}>{text}</text>;
+      })}</g>;
+    }
     // Glyph boxes run ~1.4× the font size tall at small sizes; half of each plus
     // 1 unit of air keeps name and numeral apart at every render size.
     const gap = (nameSize * 0.7 + numeralSize * 0.7 + 1) / 2;
@@ -396,7 +410,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
           className={`${ring === 'major' ? 'font-semibold' : 'font-medium'} select-none pointer-events-none`}
           fill={s.textFill}
         >
-          {s.display}
+          {circleSpelling(s.display)}
         </text>
         {s.numeral && (
           <text
@@ -579,7 +593,7 @@ export const CircleOfFifths = memo(function CircleOfFifths() {
       ) : (
         <>
           <div data-testid={scaleLine ? 'cof-centre-scale' : undefined} style={{ color: 'var(--text-dim)' }}>{scaleLine ?? '\u00a0'}</div>
-          {signature ? (
+          {signatureInFacts ? null : signature ? (
             <div data-testid="cof-centre-sig">{formatKeySignature(signature, t('circle.noAccidentals'))}</div>
           ) : (
             <div data-testid="cof-centre-nosig">{t('circle.noStandardSignature')}</div>

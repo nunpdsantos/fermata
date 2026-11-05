@@ -197,7 +197,7 @@ export function ChordBuilderPanel() {
     <div className="space-y-3">
       {/* W11-A: v2 controls (36 / 44 px, tokens); the layout is the Explore
           batch's (D-25). */}
-      <div className="flex flex-wrap gap-2 items-end">
+      <div data-chord-scroll-row className="flex flex-wrap gap-2 items-end">
         <label className="flex flex-col gap-1">
           <span className="type-label">{t('chordBuilder.chordRoot')}</span>
           <SelectTrigger

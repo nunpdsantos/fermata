@@ -1,3 +1,4 @@
+// Rhythm-only percussion notation deliberately keeps all stems up.
 /* eslint-disable no-restricted-syntax -- VexFlow writes raw '#000000' /
    'black' into SVG style attributes; they are re-coloured to the theme here
    (comparison targets, not new colours) — the same treatment as useStaffNotation. */

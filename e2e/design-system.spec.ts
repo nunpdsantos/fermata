@@ -802,7 +802,7 @@ for (const v of VIEWPORTS) {
         await expect(page.getByRole('menu', { name: 'Scale actions' })).toBeVisible();
         await expect(page.getByRole('menuitem')).toHaveCount(3);
         await check(page, v, combo, 'explore-menu');
-        await page.getByRole('menuitem', { name: 'Compare Scales' }).click();
+        await page.getByRole('menuitem', { name: 'Compare scales' }).click();
         const compare = page.getByRole('dialog', { name: 'Compare Scales' });
         await expect(compare).toBeVisible();
         await compare.getByRole('combobox', { name: 'Select scale to compare' }).selectOption('natural_minor');

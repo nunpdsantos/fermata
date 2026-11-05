@@ -57,3 +57,49 @@ for (const size of [
     await context.close();
   });
 }
+
+// Main fails: Any-string feedback scrolls exclusively to fret 15 and hides
+// the wrong open-string tap. The string gutter scrolls away with the board.
+for (const [width, height] of [[320, 740], [360, 800], [390, 844], [844, 390], [768, 1024], [1280, 800], [1366, 768], [1440, 900], [1536, 864]]) {
+  test(`reading feedback and legend stay legible at ${width}×${height}`, async ({ browser }) => {
+    const context = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce', serviceWorkers: 'block' });
+    await context.addInitScript((save) => {
+      localStorage.clear();
+      localStorage.setItem('music-theory-app', JSON.stringify({ version: 6, state: { lastView: 'drill', language: 'en' } }));
+      localStorage.setItem('fermata-drill-v1', JSON.stringify(save));
+    }, readingSave());
+    const page = await context.newPage();
+    await page.goto('/');
+    await readingReady(page);
+    const legend = page.getByTestId('reading-corner');
+    const inspectLegend = async () => {
+      await expect(legend).toHaveAccessibleName('Strings 6 to 1');
+      const result = await legend.evaluate((el) => {
+        const range = document.createRange(); range.selectNodeContents(el);
+        const ink = range.getBoundingClientRect(), box = el.getBoundingClientRect();
+        const board = el.closest('.reading-board')!.getBoundingClientRect();
+        return { lines: range.getClientRects().length, left: ink.left - Math.max(box.left, board.left), right: box.right - ink.right };
+      });
+      expect(result.lines).toBe(1);
+      expect(result.left).toBeGreaterThanOrEqual(2);
+      expect(result.right).toBeGreaterThanOrEqual(2);
+      for (let s = 1; s <= 6; s++) await expect(page.locator(`[data-reading-string="${s}"]`)).toBeInViewport({ ratio: 1 });
+    };
+    await inspectLegend();
+    await fret(page, 0, 5).click();
+    await page.getByRole('button', { name: 'Continue', exact: true }).click();
+    await readingReady(page);
+    await inspectLegend();
+    await fret(page, 4, 1).click();
+    await expect(page.getByText('Where is this note on the guitar? Any string.')).toBeVisible();
+    await readingReady(page);
+    await inspectLegend();
+    await fret(page, 0, 0).click();
+    await expect(fret(page, 0, 0)).toHaveAttribute('data-answer', 'wrong');
+    await expect(fret(page, 0, 0)).toBeInViewport({ ratio: 1 });
+    await expect(fret(page, 5, 15)).toHaveAttribute('data-answer', 'correct');
+    await expect(fret(page, 5, 15)).toBeInViewport({ ratio: 1 });
+    await inspectLegend();
+    await context.close();
+  });
+}

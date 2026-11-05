@@ -147,7 +147,10 @@ export function ChordBrowser({ detail }: { detail?: ReactNode } = {}) {
       <ChipGroup
         label={t('explore.allChords')}
         value={activeCategory}
-        onChange={setActiveCategory}
+        onChange={(next) => {
+          if (selectedChord && !CHORD_QUALITY_GROUPS[next].qualities.some(isActive)) setSelectedChord(null);
+          setActiveCategory(next);
+        }}
         options={CHORD_QUALITY_GROUPS.map((g, i) => ({ value: i, label: t(g.labelKey) }))}
       />
 
@@ -155,14 +158,12 @@ export function ChordBrowser({ detail }: { detail?: ReactNode } = {}) {
       <div ref={gridRef} className="space-y-1.5">
         {rows.map((row, r) => (
           <div key={r} className="space-y-1.5">
-            <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+            <div data-chord-scroll-row className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
               {row.map(card)}
             </div>
             {r === detailRow && detail}
           </div>
         ))}
-        {/* A chord chosen elsewhere (In key, Build) still shows its detail. */}
-        {detailRow < 0 && detail}
       </div>
     </div>
   );

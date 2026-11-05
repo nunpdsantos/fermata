@@ -41,7 +41,7 @@ export const CENTER = SIZE / 2;
 export const MAJOR_INNER = 86;
 export const MAJOR_OUTER = 126;
 export const MINOR_INNER = 40;
-export const MINOR_OUTER = 82;
+export const MINOR_OUTER = 82.1; // narrowest wedge is >=36px wide at 276px (82 gave 35.99px)
 export const KEYSIG_R = 139;
 export const SEG_GAP = 1.2;
 

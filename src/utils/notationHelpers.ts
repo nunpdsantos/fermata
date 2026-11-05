@@ -126,11 +126,33 @@ export function staffLine(note: PitchedNote, clef: 'treble' | 'bass'): number {
   return (octave * 7 - 28 + LETTER_INDEX[note.natural]) / 2 + CLEF_LINE_SHIFT[clef];
 }
 
+/** Standard engraving, shared by drawing and ink bounds. Matches VexFlow's
+ * autoStem for isolated notes/chords, adding middle-line melodic neighbours.
+ * Equidistant chord extremes and conflicting equally-near neighbours take down.
+ */
+export function staffStemDirections(notes: readonly PitchedNote[], clef: 'treble' | 'bass', chord = false): (1 | -1)[] {
+  const distances = notes.map((note) => staffLine(note, clef) - 3);
+  const direction = (d: number): 1 | -1 => d < 0 ? 1 : -1;
+  if (chord) {
+    const extreme = distances.reduce((a, b) => Math.abs(b) > Math.abs(a) || (Math.abs(b) === Math.abs(a) && b > a) ? b : a, 0);
+    return notes.map(() => direction(extreme));
+  }
+  return distances.map((d, i) => {
+    if (d !== 0) return direction(d);
+    for (let gap = 1; gap < distances.length; gap++) {
+      const neighbours = [distances[i - gap], distances[i + gap]].filter((n) => n !== undefined && n !== 0);
+      if (neighbours.length) return neighbours.every((n) => n < 0) ? 1 : -1;
+    }
+    return -1;
+  });
+}
+
 export interface StaffInkOptions {
   annotation?: '8vb';
   /** Matches StaffNotation's default. Explore and Drill use stemless wholes. */
   duration?: string;
   keySignature?: string;
+  chord?: boolean;
 }
 
 /** Bravura accidental outlines rounded outward at the same 40px size. */
@@ -172,15 +194,14 @@ export function staffInkBounds(
     });
   }
   const accidentals = vexAccidentals(notes, options.keySignature);
+  const stems = staffStemDirections(notes, clef, options.chord);
   notes.forEach((note, i) => {
     const y = 90 - 10 * staffLine(note, clef);
     // At least 8px for the notehead and ledger stroke, more for accidentals.
     const accidental = accidentalInk(accidentals[i]);
-    // StaveNote defaults to upward 35px stems (including stacked chords).
-    // The callers use w/h/q; whole notes have no stems.
-    const stemTop = (options.duration ?? 'q') === 'w' ? 8 : 36;
-    top = Math.min(top, y - Math.max(stemTop, accidental.top));
-    bottom = Math.max(bottom, y + accidental.bottom);
+    const stem = (options.duration ?? 'q') === 'w' ? 8 : 36;
+    top = Math.min(top, y - Math.max(stems[i] === 1 ? stem : 8, accidental.top));
+    bottom = Math.max(bottom, y + Math.max(stems[i] === -1 ? stem : 8, accidental.bottom));
   });
   return { top, bottom };
 }

@@ -13,12 +13,16 @@
  * rather than left waiting to be wired up.)
  */
 
-import { ChordQuality, ScaleType } from '../types/music';
+import { ChordQuality, ScaleType, Chord, Scale } from '../types/music';
+
+import { getPitchClass } from './notes';
+import { SCALE_FORMULAS } from './scales';
 
 // Scale suggestion with context about why it works
 export interface ScaleSuggestion {
   scale: ScaleType;
   fit: 'primary' | 'secondary' | 'color'; // How well it fits
+  keyNotes?: boolean;
   context?: string; // Optional context about when to use it
 }
 
@@ -392,4 +396,19 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
  */
 export function getScaleSuggestions(quality: ChordQuality): ScaleSuggestion[] {
   return CHORD_SCALE_MAP[quality] || [];
+}
+
+/** The key's own pitch set, rotated onto this chord root, precedes quality
+ * suggestions when the entire chord is diatonic and the catalogue names it. */
+export function getKeyScaleSuggestions(chord: Chord, key: Scale): ScaleSuggestion[] {
+  const suggestions = getScaleSuggestions(chord.quality);
+  const pcs = new Set(key.notes.map(getPitchClass));
+  if (!chord.notes.every((n) => pcs.has(getPitchClass(n)))) return suggestions;
+  const root = getPitchClass(chord.root);
+  const intervals = [...pcs].map((pc) => (pc - root + 12) % 12).sort((a, b) => a - b);
+  const match = (Object.keys(SCALE_FORMULAS) as ScaleType[]).find((type) =>
+    SCALE_FORMULAS[type].length === intervals.length && SCALE_FORMULAS[type].every((n, i) => n === intervals[i]));
+  if (!match) return suggestions;
+  return [{ ...suggestions.find((s) => s.scale === match), scale: match, fit: 'primary', keyNotes: true },
+    ...suggestions.filter((s) => s.scale !== match)];
 }

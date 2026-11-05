@@ -606,7 +606,10 @@ export function ModuleView({
                     {!isModuleCompleted && exercisesPassed && !allTasksDone && (
                       <p className="text-ui mt-1" style={{ color: 'var(--text-muted)' }}>{t('lesson.tasksLeft', { count: tasksLeft })}</p>
                     )}
-                    {exercisesPassed && <p className="text-ui mt-1" style={{ color: 'var(--text-muted)' }}>{t('lesson.passedMark', { score: passMark(exercises.length).toLocaleString(i18n.language || 'en') })}</p>}
+                    {exercisesPassed && <>
+                      <p className="text-ui mt-1" style={{ color: 'var(--text-muted)' }}>{t('lesson.passedMark', { score: passMark(exercises.length).toLocaleString(i18n.language || 'en'), total: exercises.length })}</p>
+                      <p className="text-ui mt-1" style={{ color: 'var(--text-muted)' }}>{t('lesson.scoring')}</p>
+                    </>}
                   </div>
                   <div className="flex flex-wrap gap-2 max-sm:flex-col">
                     {!isModuleCompleted && canComplete && (

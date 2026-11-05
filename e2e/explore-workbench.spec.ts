@@ -347,7 +347,7 @@ test('"⋯" scale actions: Copy, Print and Compare stay one tap away (D-29)', as
   await page.getByRole('menuitem', { name: 'Print scale diagram' }).click();
   expect(await page.evaluate(() => (window as unknown as { __printed: number }).__printed)).toBe(1);
   await actions.click();
-  await page.getByRole('menuitem', { name: 'Compare Scales' }).click();
+  await page.getByRole('menuitem', { name: 'Compare scales' }).click();
   const sheet = page.getByRole('dialog', { name: 'Compare Scales' });
   await sheet.getByRole('combobox', { name: 'Select scale to compare' }).selectOption('lydian');
   await expect(sheet.getByRole('group', { name: 'Chromatic scale comparison' })).toBeVisible();
@@ -695,3 +695,63 @@ test('844×390 guitar: a non-default chord grip survives full neck in both direc
   expect(await voicing()).toEqual(eBarre);
   await context.close();
 });
+
+// Main fails because nearest-scrolling the DETAIL leaves the header/root
+// rows sliced under the sticky strip, with no visible indication of its tab.
+for (const [w, h] of [[1280, 800], [1366, 768], [1440, 900], [1536, 864]]) {
+  test(`${w}×${h}: chord actions land on complete rows below the sticky strip`, async ({ browser }) => {
+    const { context, page } = await open(browser, { w, h });
+    const check = async (source: string) => {
+      await expect(page.getByTestId('chord-detail')).toBeVisible();
+      await page.waitForTimeout(300);
+      const result = await page.evaluate(() => {
+        const strip = document.querySelector<HTMLElement>('.strip-card')!;
+        const card = document.querySelector<HTMLElement>('.chords-card')!;
+        const detail = document.querySelector<HTMLElement>('.chord-detail')!;
+        const main = card.closest<HTMLElement>('.explore-main')!;
+        const stripBottom = strip.getBoundingClientRect().bottom;
+        const clip = parseFloat(card.style.clipPath.replace('inset(', '')) || 0;
+        const edge = Math.max(stripBottom, card.getBoundingClientRect().top + clip);
+        // Text and controls above the detail must either be wholly hidden
+        // or wholly below the occlusion edge. No partial rows.
+        const sliced = Array.from(card.querySelectorAll<HTMLElement>('button, label, h2, .type-label'))
+          .filter((el) => !detail.contains(el)).filter((el) => {
+            const r = el.getBoundingClientRect(); return r.top < edge && r.bottom > edge;
+          }).map((el) => el.textContent);
+        const row = Array.from(card.querySelectorAll<HTMLElement>('.chord-row, [data-chord-scroll-row]'))
+          .filter((r) => r.compareDocumentPosition(detail) & Node.DOCUMENT_POSITION_FOLLOWING).at(-1);
+        const d = detail.getBoundingClientRect(), r = row?.getBoundingClientRect();
+        const room = main.getBoundingClientRect().bottom - stripBottom - 16;
+        return { sticky: getComputedStyle(strip).position, sliced, detailTop: d.top, stripBottom,
+          rowFits: !!r && d.bottom-r.top <= room, rowVisible: !!r && r.top >= edge,
+          headerVisible: card.querySelector('.explore-card-head')!.getBoundingClientRect().top >= edge,
+          source: detail.querySelector<HTMLElement>('.chord-detail-source')?.innerText,
+          playBottom: detail.querySelector('.chord-detail-actions')!.getBoundingClientRect().bottom,
+          bottom: main.getBoundingClientRect().bottom };
+      });
+      expect(result.sticky).toBe('sticky');
+      expect(result.sliced).toEqual([]);
+      expect(result.detailTop).toBeGreaterThanOrEqual(result.stripBottom);
+      expect(result.playBottom).toBeLessThanOrEqual(result.bottom);
+      if (result.rowFits) expect(result.rowVisible).toBe(true);
+      if (!result.headerVisible) expect(result.source).toBe(source);
+    };
+    const revealControls = () => page.locator('.explore-main').evaluate((el) => { el.scrollTop = 0; });
+    for (const i of [4, 0, 6]) {
+      await revealControls();
+      await page.locator('.chord-row button').nth(i).click();
+      await check('In key');
+    }
+    await revealControls();
+    await page.getByRole('tab', { name: 'All Chords', exact: true }).click();
+    await page.locator('[data-quality="minor"]').click();
+    await check('All Chords');
+    await revealControls();
+    await page.getByRole('tab', { name: 'Build', exact: true }).click();
+    // Use the builder's actual chromatic step controls, preserving pitches.
+    await page.getByRole('group', { name: 'Chromatic strip from C' }).getByRole('button').nth(4).click();
+    await page.getByRole('group', { name: 'Chromatic strip from C' }).getByRole('button').nth(7).click();
+    await check('Build');
+    await context.close();
+  });
+}

@@ -1,3 +1,4 @@
+import i18n from '../../../i18n';
 /**
  * W11-B — the Explore workbench's parts in jsdom:
  *  - the staff strip: one column per note (octave tonic included), tap to
@@ -149,6 +150,24 @@ describe('chords: In key / All / Build, the detail in place', () => {
     expect(screen.getByTestId('chord-staff')).toBeTruthy();
   });
 
+  it('clears a foreign selection on tab/category changes, including linked highlights', async () => {
+    render(<><ChordsCard /><ScaleStrip /><CircleNavigator /></>);
+    fireEvent.click(screen.getByRole('button', { name: 'G Major chord, degree 5' }));
+    expect(useAppStore.getState().selectedChord?.root.natural).toBe('G');
+    act(() => useFocusNoteStore.getState().set('pinned', { pc: 7, source: 'chord' }));
+    fireEvent.click(screen.getByRole('tab', { name: 'All Chords' }));
+    expect(screen.queryByTestId('chord-detail')).toBeNull();
+    expect(useAppStore.getState().selectedChord).toBeNull();
+    expect(document.querySelector('.strip-col[data-dim]')).toBeNull();
+    expect(useFocusNoteStore.getState().pinned).toBeNull();
+    expect(screen.queryByTestId('cof-chord-mark')).toBeNull();
+    fireEvent.click(document.querySelector('[data-quality="minor"]')!);
+    await screen.findByTestId('chord-detail');
+    fireEvent.click(screen.getByRole('radio', { name: '7ths' }));
+    expect(screen.queryByTestId('chord-detail')).toBeNull();
+    expect(useAppStore.getState().selectedChord).toBeNull();
+  });
+
   it('All: the detail opens under the ROW of the chord tapped, not at the end', async () => {
     render(<ChordsCard />);
     fireEvent.click(screen.getByRole('tab', { name: 'All Chords' }));
@@ -184,9 +203,9 @@ describe('header: pickers, summary, Play, "⋯"', () => {
     expect(screen.queryByRole('button', { name: /Copy scale summary/ })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Scale actions' }));
     expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual([
-      'Copy scale summary to clipboard', 'Print scale diagram', 'Compare Scales',
+      'Copy scale summary to clipboard', 'Print scale diagram', 'Compare scales',
     ]);
-    fireEvent.click(screen.getByRole('menuitem', { name: 'Compare Scales' }));
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Compare scales' }));
     expect(screen.getByRole('dialog', { name: 'Compare Scales' })).toBeTruthy();
     expect(screen.getByRole('combobox', { name: 'Select scale to compare' })).toBeTruthy();
   });
@@ -256,3 +275,23 @@ describe('tablet: the circle below the work folds (remembered)', () => {
     expect(sanitizePersistedAppState({ exploreCircleOpen: true })).toMatchObject({ exploreCircleOpen: true });
   });
 });
+
+for (const language of ['en', 'pt', 'es']) {
+  it(`${language}: one root label scopes every scale chip, including the key's first choice`, async () => {
+    await i18n.changeLanguage(language);
+    useAppStore.setState({ language: language as 'en' | 'pt' | 'es', selectedChord: buildChord({ natural: 'E', accidental: '' }, 'minor') });
+    render(<ChordsCard />);
+    const detail = await screen.findByTestId('chord-detail');
+    const group = detail.querySelector('.chord-detail-scales')!;
+    expect(group.querySelector('.type-label')!.textContent).toBe(`${i18n.t('panel.compatibleScales')} · E`);
+    const buttons = within(group as HTMLElement).getAllByRole('button');
+    expect(buttons.map((b) => b.textContent)).toEqual(['phrygian', 'dorian', 'natural_minor', 'pentatonic_minor', 'blues'].map((scale) => i18n.t(`scaleName.${scale}`)));
+    expect(buttons[0].getAttribute('data-key-notes')).toBe('true');
+    expect(buttons[0].getAttribute('aria-describedby')).toBeTruthy();
+    fireEvent.click(buttons[0]);
+    expect(useAppStore.getState().selectedKey).toEqual({ natural: 'E', accidental: '' });
+    expect(useAppStore.getState().selectedScale).toBe('phrygian');
+    cleanup();
+    await i18n.changeLanguage('en');
+  });
+}

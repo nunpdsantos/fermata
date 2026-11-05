@@ -26,6 +26,8 @@ export function fingerLabel(f: FingerNumber | undefined): string {
 
 /** A dot drawn in a scale position (classical position view). */
 export interface PositionDot {
+  /** Other practice shapes: faded dots with no finger text. */
+  context?: boolean;
   label: string;
   isRoot: boolean;
   isStretch: boolean;

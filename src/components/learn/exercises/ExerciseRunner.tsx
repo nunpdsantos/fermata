@@ -454,14 +454,14 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
           <>
             <Button
               variant="link"
-              className="self-start mt-1 -ml-1.5"
+              className="self-start mt-1"
               aria-expanded={rereadOpen}
               aria-controls={`reread-${exercise.id}`}
               onClick={() => setRereadOpenFor(rereadOpen ? null : exercise.id)}
               data-testid="check-reread-toggle"
             >
               {t('lesson.reread')}
-              <span aria-hidden="true">{rereadOpen ? '‹' : '›'}</span>
+              <span aria-hidden="true">{rereadOpen ? '⌄' : '›'}</span>
             </Button>
             {rereadOpen && (
               <section

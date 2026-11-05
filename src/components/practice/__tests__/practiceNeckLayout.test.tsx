@@ -36,6 +36,22 @@ for (const tuning of GUITAR_TUNINGS) {
                   throw new Error(`${tuning.id}/${pc}/${type}/${tab}/${route.id}/${index}: missing ${note.stringIndex}:${note.fret}`);
                 }
               }
+              const strong = [...layout.places.values()].filter((p) => p.currentShape);
+              // A physical place is string + fret. Legitimate sixth dyads
+              // use fingers 3 and 4 at the same fret on DIFFERENT strings.
+              const fingersByPlace = new Map<string, number>();
+              for (const { note, event: e } of strong) {
+                const place = `${note.stringIndex}:${note.fret}`;
+                const previous = fingersByPlace.get(place);
+                expect(previous === undefined || previous === note.finger).toBe(true);
+                fingersByPlace.set(place, note.finger);
+                if (note !== layout.departure) {
+                  if (event.numeral) expect(route.events[e].numeral).toBe(event.numeral);
+                  else expect(event.notes.some((n) => n.segment === note.segment && n.position === note.position && JSON.stringify(n.frame?.frets) === JSON.stringify(note.frame?.frets))).toBe(true);
+                }
+              }
+              for (const n of event.notes) expect(layout.places.get(`${n.stringIndex}:${n.fret}`)?.currentShape).toBe(true);
+              if (layout.departure) expect(layout.places.get(`${layout.departure.stringIndex}:${layout.departure.fret}`)?.currentShape).toBe(true);
               expect(layout.frets.at(-1)).toBe(layout.low);
             });
             // Verify real rendered cells/dots at the initial window AND the
@@ -49,6 +65,9 @@ for (const tuning of GUITAR_TUNINGS) {
               for (const { note } of layout.places.values()) {
                 expect(host.querySelector(`[data-dot-string="${note.stringIndex}"][data-dot-fret="${note.fret}"]`)).not.toBeNull();
               }
+              for (const dot of host.querySelectorAll('[data-dot="context"]')) expect(dot.textContent).toBe('');
+              const cells = [...host.querySelectorAll('[data-dot="position"]')].map((dot) => `${dot.getAttribute('data-dot-string')}:${dot.getAttribute('data-dot-fret')}`);
+              expect(new Set(cells).size).toBe(cells.length);
               expect(host.querySelectorAll('[data-fret-break]')).toHaveLength(layout.low > 1 ? 6 : 0);
               expect([...host.querySelectorAll('[data-string-row="0"]')].at(-1)?.getAttribute('data-fret')).toBe(String(layout.low));
             }
@@ -58,3 +77,9 @@ for (const tuning of GUITAR_TUNINGS) {
     }
   });
 }
+
+it('shift arrows distinguish ascent and descent', async () => {
+  const { shiftArrow } = await import('../practiceNeckLayout');
+  expect(shiftArrow({ kind: 'guide', fromPosition: 2, toPosition: 4, stringIndex: 3, finger: 1 })).toBe('↗');
+  expect(shiftArrow({ kind: 'guide', fromPosition: 4, toPosition: 2, stringIndex: 3, finger: 1 })).toBe('↘');
+});

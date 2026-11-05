@@ -10,6 +10,7 @@ import { MAJOR_DEGREE_SEMITONES, intervalNameOfDegree, canonicalIntervalNumber }
 import { buildScale } from '../../../core/constants/scales';
 import { mulberry32, seededShuffle } from '../../../core/utils/prng';
 import type { EarTrainingConfig, ExerciseDefinition } from '../../../core/types/exercise';
+import { noteToVexKeySignature } from '../../../utils/notationHelpers';
 import { parseWrittenPitch } from './exerciseStaff';
 
 export interface ChoiceOption {
@@ -18,6 +19,7 @@ export interface ChoiceOption {
   correct: boolean;
   /** A melody option (melodic dictation): drawn on a staff; `label` is its letter. */
   melody?: PitchedNote[];
+  keySignature?: string;
 }
 
 /** Interval name for a semitone count. */
@@ -345,7 +347,7 @@ export const melodyValue = (notes: readonly string[]) => notes.join(' ');
  */
 export function generateMelodyChoices(cfg: EarTrainingConfig, exerciseId: string): ChoiceOption[] {
   const options = seededShuffle(
-    (cfg.melodyChoices ?? []).map((c) => ({ value: melodyValue(c.notes), correct: c.correct, melody: c.notes.map(parseWrittenPitch) })),
+    (cfg.melodyChoices ?? []).map((c) => ({ value: melodyValue(c.notes), correct: c.correct, melody: c.notes.map(parseWrittenPitch), keySignature: noteToVexKeySignature({ natural: (cfg.root ?? 'C') as NaturalNote, accidental: (cfg.rootAccidental ?? '') as Accidental }) })),
     mulberry32(djb2(`melody:${exerciseId}`)),
   );
   return options.map((o, i) => ({ ...o, label: String.fromCharCode(65 + i) }));

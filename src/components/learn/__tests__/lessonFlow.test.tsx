@@ -145,7 +145,7 @@ describe('check → result → practice', () => {
     expect(onExercisesComplete).toHaveBeenCalledWith(false);
     const result = screen.getByTestId('check-result');
     expect(within(result).getByTestId('result-score').textContent).toBe('2 of 3');
-    expect(result.textContent).toContain('You need 2.5 to pass.');
+    expect(result.textContent).toContain('You need 2.5 of 3 to pass.');
     expect(result.textContent).toContain('Nothing is lost — try the ones you missed.');
     const missed = within(result).getAllByTestId('missed-question');
     expect(missed).toHaveLength(1);
