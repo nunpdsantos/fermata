@@ -31,11 +31,13 @@ export function QuestionCard({
 }: QuestionCardProps) {
   const { t } = useTranslation();
   const answersRef = useRef<HTMLDivElement>(null);
-  useToastAvoid(answersRef);
+  const rootRef = useRef<HTMLDivElement>(null);
+  useToastAvoid(answersRef, !stimulus);
+  useToastAvoid(rootRef, !!stimulus);
   const current = Math.min(asked + 1, total);
 
   return (
-    <div className={stimulus ? 'drill-run drill-run--read' : 'drill-run'}>
+    <div ref={rootRef} className={stimulus ? 'drill-run drill-run--read' : 'drill-run'}>
       {/* Slim header: progress · [elapsed] · spacer · settings · end-session */}
       <div className={`drill-question-header flex items-center gap-2 ${stimulus ? 'mb-1' : 'mb-5'}`}>
         <span className="text-ui font-medium tabular-nums" style={{ color: 'var(--text-dim)' }}>

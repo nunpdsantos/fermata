@@ -104,6 +104,15 @@ describe('scale strip flow and clef clearance', () => {
       const view = render(<ScaleStrip />);
       await drawn(8);
       const svg = document.querySelector<SVGSVGElement>('.strip-staff svg')!;
+      const copy = document.querySelector<SVGSVGElement>('.strip-clef svg')!;
+      expect(copy.getAttribute('aria-hidden')).toBe('true');
+      expect(copy.getAttribute('focusable')).toBe('false');
+      expect(copy.getAttribute('tabindex')).toBe('-1');
+      expect(copy.parentElement!.hasAttribute('inert')).toBe(true);
+      expect(copy.querySelectorAll('[id]')).toHaveLength(0);
+      expect(copy.hasAttribute('id')).toBe(false);
+      expect(copy.querySelector('use')!.getAttribute('href')).toBe(`#${svg.id}`);
+      expect(Array.from(document.querySelectorAll('[id]')).filter((el) => el.id === svg.id)).toHaveLength(1);
       const staff = document.querySelector<HTMLElement>('.strip-staff')!;
       const body = document.querySelector<HTMLElement>('.strip-body')!;
       const staffWidth = parseFloat(body.style.width);

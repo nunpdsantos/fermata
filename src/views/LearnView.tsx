@@ -1,3 +1,4 @@
+import { useLearnScrollInsets } from '../components/learn/learnScroll';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
@@ -53,6 +54,7 @@ export function LearnView() {
   // A unit's milestone (D-23), then — if the level is done too — the level celebration.
   const [milestone, setMilestone] = useState<{ unit: CurriculumUnit; accent: string; then: LevelCelebration | null } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  useLearnScrollInsets(scrollRef);
 
   const {
     progress,
@@ -224,7 +226,7 @@ export function LearnView() {
   );
 
   return (
-    <div ref={scrollRef} className="h-full overflow-y-auto" role="region" aria-label={t('learn.region')} data-learn-scroll="">
+    <div ref={scrollRef} className="learn-scroll flex-1 min-h-0 overflow-y-auto" role="region" aria-label={t('learn.region')} data-learn-scroll="">
       <AnimatePresence mode="wait" initial={false}>
         {screen.type === 'levels' && (
           <ScreenFrame key="levels" xOffset={xOffset} enterFrom="left">

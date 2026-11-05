@@ -338,6 +338,12 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
     rootRef.current?.closest<HTMLElement>('[data-learn-scroll]')?.scrollTo?.({ top: 0 });
   }, [currentIndex]);
 
+  useEffect(() => {
+    if (!final && missed === null) return;
+    const target = rootRef.current?.querySelector(rereadOpen ? '[data-testid="check-reread"]' : '.feedback');
+    target?.scrollIntoView?.({ block: 'start' });
+  }, [final, missed, rereadOpen]);
+
   // Continue takes focus when an item becomes final (keyboard flow).
   const continueRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -396,9 +402,9 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
   }
 
   return (
-    <div ref={rootRef} className="check-run flex-1 flex flex-col w-full max-w-[640px] mx-auto px-4 max-sm:px-3 pt-2 pb-4" data-testid="focused-check">
+    <div ref={rootRef} className="check-run flex-1 flex flex-col w-full max-w-[640px] mx-auto px-4 max-sm:px-3 pt-2 pb-4" data-testid="focused-check" data-instrument={isInstrumentBased || undefined}>
       {/* ✕ Exit · progress · n / N */}
-      <div className="flex items-center gap-2 min-h-12">
+      <div className="check-header flex items-center gap-2 min-h-12">
         <Button
           variant="quiet"
           onClick={onExit ?? (() => onComplete(false, outcomesOf(run.items)))}
@@ -424,8 +430,8 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
       </div>
 
       {/* The question */}
-      <div className="flex flex-col gap-3 py-4 sm:py-8" key={exercise.id}>
-        {context && <p className="text-ui" style={{ color: 'var(--text-muted)' }}>{context}</p>}
+      <div className="check-question flex flex-col gap-3 py-4 sm:py-8" key={exercise.id}>
+        {context && <p className="check-context text-ui" style={{ color: 'var(--text-muted)' }}>{context}</p>}
         <ExercisePrompt exercise={exercise} />
         {isEarTraining && (
           <div>

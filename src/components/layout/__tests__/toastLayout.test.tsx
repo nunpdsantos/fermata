@@ -6,7 +6,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { useRef } from 'react';
 import { render, cleanup } from '@testing-library/react';
-import { useToastAvoid, measureToastRoom, resetToastLayoutForTests } from '../toastLayout';
+import { fitToastQueue, useToastAvoid, measureToastRoom, resetToastLayoutForTests } from '../toastLayout';
 
 const rect = (top: number, height: number) => ({ top, bottom: top + height, height, left: 0, right: 390, width: 390, x: 0, y: top, toJSON: () => ({}) }) as DOMRect;
 
@@ -52,5 +52,24 @@ describe('toast room', () => {
     render(<Avoided top={100} height={0} />);
     measureToastRoom();
     expect(vars().room).toBe('584px');
+  });
+});
+
+describe('whole-card toast queue', () => {
+  it('never lets a smaller card overtake a waiting or unmeasured card', () => {
+    expect(fitToastQueue([58, 80, 20], 100)).toEqual({ visible: [true, false, false], tops: [0, 0, 0], height: 58 });
+    expect(fitToastQueue([80, 20], 60).visible).toEqual([false, false]);
+    expect(fitToastQueue([0, 20], 60).visible).toEqual([false, false]);
+    expect(fitToastQueue([80, 20], 108).visible).toEqual([true, true]);
+    expect(fitToastQueue([20], 60).visible).toEqual([true]);
+  });
+  it('queues the clipped third and fourth landscape cards without scrolling', () => {
+    const fitted = fitToastQueue([58, 58, 58, 54], 132);
+    expect(fitted.visible).toEqual([true, true, false, false]);
+    expect(fitted.height).toBe(124);
+  });
+  it('shows the next complete card after dismissal, and queues all with no room', () => {
+    expect(fitToastQueue([58, 54], 60).visible).toEqual([true, false]);
+    expect(fitToastQueue([58, 54], 0).visible).toEqual([false, false]);
   });
 });

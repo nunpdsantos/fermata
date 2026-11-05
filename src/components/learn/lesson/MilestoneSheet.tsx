@@ -15,7 +15,7 @@ export function MilestoneSheet({ unit, accent, onClose }: { unit: CurriculumUnit
   const ms = unit.milestone;
   if (!ms) return null;
   return (
-    <Sheet open onClose={onClose} title={t('lesson.unitComplete')} closeLabel={t('common.close')} testId="milestone-sheet">
+    <Sheet open onClose={onClose} title={t('lesson.unitComplete')} closeLabel={t('common.close')} testId="milestone-sheet" actions={<Button variant="primary" block onClick={onClose}>{t('common.continue')}</Button>}>
       <div className="flex flex-col gap-4 pb-2" data-testid="milestone">
         <p className="learn-serif" style={{ color: 'var(--text)' }}>{unit.title}</p>
         <section className="flex flex-col gap-2">
@@ -31,7 +31,6 @@ export function MilestoneSheet({ unit, accent, onClose }: { unit: CurriculumUnit
         </section>
         {ms.bridgeText && <p className="text-body" style={{ color: 'var(--text-muted)' }}>{ms.bridgeText}</p>}
         <InlineTryThis query={ms.tryThisQuery} label={ms.tryThisLabel} prompt={ms.tryThisPrompt} accent={accent} compact />
-        <Button variant="primary" block onClick={onClose}>{t('common.continue')}</Button>
       </div>
     </Sheet>
   );
