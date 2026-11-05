@@ -208,7 +208,7 @@ export const FretCell = memo(function FretCell({
       {/* Classical position dot */}
       {positionDot && (
         <div
-          {...dotData('position')}
+          {...dotData(positionDot.context ? 'context' : 'position')}
           title={positionDot.description}
           className="relative z-10 rounded-full flex items-center justify-center font-bold"
           style={{
@@ -223,11 +223,12 @@ export const FretCell = memo(function FretCell({
             border: positionDot.isRoot
               ? '3px solid #ffffff'
               : `2px solid ${dotColor}`,
+            ...(positionDot.context ? { opacity: 0.35, width: 14, height: 14, boxShadow: 'none' } : undefined),
             // A stretch (outside the 4-fret window) wears a dashed ring.
-            ...(positionDot.isStretch ? { outline: '2px dashed var(--text)', outlineOffset: 1 } : undefined),
+            ...(positionDot.isStretch && !positionDot.context ? { outline: '2px dashed var(--text)', outlineOffset: 1 } : undefined),
           }}
         >
-          {positionDot.label}
+          {positionDot.context ? '' : positionDot.label}
           {positionDot.isEdited && (
             // Small corner mark: this is the learner's own fingering.
             <span

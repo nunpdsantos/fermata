@@ -60,8 +60,8 @@ export function ResultScreen({ title, outcomes, kind, passed, rereadFor, note, a
           {kind === 'practice'
             ? t('lesson.practiceNote')
             : passed
-              ? t('lesson.passedMark', { score: fmt(passMark(total)) })
-              : `${t('lesson.needToPass', { score: fmt(passMark(total)) })} ${t('lesson.nothingLost')}`}
+              ? t('lesson.passedMark', { score: fmt(passMark(total)), total })
+              : `${t('lesson.needToPass', { score: fmt(passMark(total)), total })} ${t('lesson.nothingLost')}`}
         </span>
       </div>
       {kind !== 'practice' && (
@@ -91,6 +91,8 @@ export function ResultScreen({ title, outcomes, kind, passed, rereadFor, note, a
                     <span>{o.answers.join(`, ${t('lesson.then')} `)}</span>
                     <span style={{ color: 'var(--text-muted)' }}> · {t('lesson.itIs')} </span>
                     <b data-testid="missed-answer">{o.answer}</b>
+                    {/* After the answers, so no line starts with a bare "·". */}
+                    {o.score === 0.5 && <span className="block text-caption" data-testid="half-credit">{t('lesson.secondTryCredit')}</span>}
                   </span>
                   {reread && (
                     <Button variant="quiet" className="max-sm:col-start-2 max-sm:justify-self-start" onClick={reread.onClick} aria-label={t('lesson.rereadLabel', { section: reread.label })}>

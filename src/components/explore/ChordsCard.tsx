@@ -1,4 +1,4 @@
-import { Suspense, lazy, useMemo, useState } from 'react';
+import { Suspense, lazy, useMemo, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChordGrid } from '../theory/ChordGrid.tsx';
 import { ChordBrowser } from '../theory/ChordBrowser.tsx';
@@ -64,11 +64,12 @@ export function ChordsCard() {
   const { t } = useTranslation();
   const { scale } = useKeyContext();
   const selectedChord = useAppStore((s) => s.selectedChord);
+  const cardRef = useRef<HTMLElement>(null);
   const [mode, setMode] = useState<ChordMode>('diatonic');
-  const detail = selectedChord ? <CurrentChordPanel chord={selectedChord} aside={<ChordStaff />} /> : null;
+  const detail = selectedChord ? <CurrentChordPanel chord={selectedChord} sourceTab={t(mode === 'diatonic' ? 'explore.inKey' : mode === 'all' ? 'explore.allChords' : 'explore.build')} aside={<ChordStaff />} /> : null;
 
   return (
-    <section className="explore-card chords-card" aria-labelledby="chords-title" data-testid="chords-card">
+    <section ref={cardRef} className="explore-card chords-card" aria-labelledby="chords-title" data-testid="chords-card">
       <div className="explore-card-head">
         <h2 id="chords-title" className="type-section">
           {t('explore.chordsIn', { key: keyName(scale, t) })}
@@ -79,7 +80,14 @@ export function ChordsCard() {
           mode="tabs"
           label={t('explore.chords')}
           value={mode}
-          onChange={setMode}
+          onChange={(next) => {
+            // A selection belongs to the visible list. Clear it atomically with
+            // the tab change so the strip, instruments and circle agree.
+            useAppStore.getState().setSelectedChord(null);
+            setMode(next);
+            const main = cardRef.current?.closest<HTMLElement>('.explore-main');
+            if (main && getComputedStyle(main).overflowY === 'auto') main.scrollTop = 0;
+          }}
           options={[
             { value: 'diatonic', label: t('explore.inKey'), id: 'chords-tab-diatonic', controls: 'chords-panel' },
             { value: 'all', label: t('explore.allChords'), id: 'chords-tab-all', controls: 'chords-panel' },

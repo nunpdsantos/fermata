@@ -7,6 +7,7 @@ import { StaffNotationSkeleton } from '../../notation/StaffNotationSkeleton';
 import { RhythmStaff } from '../../notation/RhythmStaff';
 import { staffPlan, staffLayout, staffInkBounds } from '../../../utils/notationHelpers';
 import { exerciseStaff } from './exerciseStaff';
+import { displayPattern } from './displayPattern';
 import { useReferenceLine } from './referenceLine';
 
 /** A rhythm the question points at: drawn, and playable (count-in, then clicks). */
@@ -59,7 +60,7 @@ export function ExercisePrompt({ exercise }: ExercisePromptProps) {
   return (
     <div className="flex flex-col gap-3">
       <p className="text-title leading-snug" style={{ color: 'var(--text)' }} data-testid="check-prompt">
-        {exercise.prompt}
+        {displayPattern(exercise.prompt)}
       </p>
       {reference && (
         <p className="text-ui" style={{ color: 'var(--text-muted)' }} data-testid="ear-reference">

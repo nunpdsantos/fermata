@@ -8,7 +8,7 @@
  */
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { loadVexFlow } from '../../utils/vexflowLoader';
-import { pitchedNoteToVexKey, vexAccidentals, staffLayout, staffPlan } from '../../utils/notationHelpers';
+import { pitchedNoteToVexKey, vexAccidentals, staffLayout, staffPlan, staffStemDirections } from '../../utils/notationHelpers';
 import { useAppStore } from '../../state/store';
 import { useResolvedTheme } from '../../hooks/useTheme';
 import type { PitchedNote } from '../../core/types/music';
@@ -79,9 +79,9 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
     const plan = staffPlan(options.notes, options.clef, instrument, options.followInstrument);
     const annotation = options.annotation ?? plan.annotation;
     return { ...plan, annotation, layout: staffLayout(plan.written, plan.clef, options.height ?? 150, {
-      annotation, duration: options.duration, keySignature: options.keySignature,
+      annotation, duration: options.duration, keySignature: options.keySignature, chord: options.chord,
     }) };
-  }, [options.notes, options.clef, options.height, options.followInstrument, options.annotation, options.duration, options.keySignature, instrument]);
+  }, [options.notes, options.clef, options.height, options.followInstrument, options.annotation, options.duration, options.keySignature, options.chord, instrument]);
   const layout = staff.layout;
 
   // Load VexFlow
@@ -180,11 +180,12 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
     // signature would otherwise alter the note (audit W1-03).
     const accidentals = vexAccidentals(written, options.keySignature);
 
+    const stems = staffStemDirections(written, clef, options.chord);
     let staveNotes: InstanceType<typeof StaveNote>[];
     if (options.chord) {
       // Stacked-chord mode: one StaveNote with all keys.
       const keys = written.map(pitchedNoteToVexKey);
-      const sn = new StaveNote({ keys, duration, clef });
+      const sn = new StaveNote({ keys, duration, clef, stemDirection: stems[0] });
       options.notes.forEach((_, i) => {
         const acc = accidentals[i];
         if (acc) sn.addModifier(new Accidental(acc), i);
@@ -199,7 +200,7 @@ export function useStaffNotation(options: UseStaffNotationOptions) {
       // Sequential mode: one StaveNote per pitched note.
       staveNotes = written.map((note, i) => {
         const key = pitchedNoteToVexKey(note);
-        const sn = new StaveNote({ keys: [key], duration, clef });
+        const sn = new StaveNote({ keys: [key], duration, clef, stemDirection: stems[i] });
 
         const acc = accidentals[i];
         if (acc) {

@@ -206,10 +206,10 @@ export function ScaleComparison({ inSheet = false }: { inSheet?: boolean } = {})
             ))}
           </SelectTrigger>
         </div>
-        <div className="text-caption flex gap-3" style={{ color: "var(--text-dim)" }}>
+        <div className="text-caption flex flex-wrap gap-x-3 gap-y-1 [&>span]:whitespace-nowrap" style={{ color: "var(--text-dim)" }}>
           <span>{sharedCount} {t('explore.shared')}</span>
-          <span>{onlyACount} {t('explore.uniqueToA')}</span>
-          <span>{onlyBCount} {t('explore.uniqueToB')}</span>
+          <span>{t('explore.onlyIn', { n: onlyACount, name: t(`scaleName.${selectedScale}`) })}</span>
+          <span>{t('explore.onlyIn', { n: onlyBCount, name: t(`scaleName.${comparisonScale}`) })}</span>
         </div>
       </div>
 

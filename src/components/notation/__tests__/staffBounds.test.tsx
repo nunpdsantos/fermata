@@ -137,3 +137,26 @@ describe('other callers, including authored notation', () => {
     assertInk(svg, 0, Number(svg.getAttribute('height')));
   });
 });
+
+// Includes down stems extending BELOW a middle-line note and chord stack.
+for (const chord of [false, true]) {
+  it(`quarter-note trim contains actual stems (chord=${chord})`, async () => {
+    useAppStore.setState({ instrument: 'piano' });
+    const notes = [pitch('B', 4), pitch('D', 5), pitch('G', 5)];
+    const { container } = render(<StaffNotation notes={notes} width={500} height={80} chord={chord} duration="q" />);
+    await waitFor(() => expect(container.querySelector('g.vf-stem')).not.toBeNull());
+    const svg = container.querySelector('svg')!;
+    const trim = staffTrim(notes, 'piano', 80, undefined, { duration: 'q', chord });
+    expect(Number(svg.getAttribute('height'))).toBe(trim.height);
+    assertInk(svg, trim.top, trim.height - trim.bottom);
+  });
+}
+
+it('a down-stem chord extends below its low head without clipping', async () => {
+  const notes = [pitch('E', 4), pitch('G', 5)];
+  const { container } = render(<StaffNotation notes={notes} chord width={300} height={80} duration="q" />);
+  await waitFor(() => expect(container.querySelector('g.vf-stem')).not.toBeNull());
+  const svg = container.querySelector('svg')!;
+  const trim = staffTrim(notes, 'piano', 80, undefined, { duration: 'q', chord: true });
+  assertInk(svg, trim.top, trim.height - trim.bottom);
+});

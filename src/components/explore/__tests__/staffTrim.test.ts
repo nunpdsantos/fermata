@@ -97,3 +97,15 @@ it('every Drill reading prompt fits after trimming, including high/low accidenta
   expect(prompts.length).toBeGreaterThan(200);
   for (const { staff } of prompts) check([staff.sounding], 'guitar', undefined, 150);
 });
+
+it('quarter-note chord trim preserves a down stem below the bottom staff line', () => {
+  // G5 is further above the middle line than E4 is below it: stem DOWN,
+  // extending from the lowest head at y=80 to y=115, plus stroke clearance.
+  const notes: PitchedNote[] = [
+    { natural: 'E', accidental: '', octave: 4 },
+    { natural: 'G', accidental: '', octave: 5 },
+  ];
+  const trim = staffTrim(notes, 'piano', 80, undefined, { duration: 'q', chord: true });
+  expect(trim.height - trim.bottom).toBeGreaterThanOrEqual(116);
+  expect(trim.top).toBeLessThanOrEqual(26);
+});

@@ -2,6 +2,16 @@
   "$comment": "Release notes for the update prompt (W9b). Newest first. Adding an entry = a new release: increment `release` by 1, one line per language (EN / PT-PT / ES, max 160 characters, no line breaks). `critical: true` marks an emergency: every app on an older release applies it at the next safe moment, even after the learner chose Later. The build reads this file (vite.config.ts) and publishes dist/version.json; a deploy without a new entry shows no What's-new line. CLAUDE.md, PWA section.",
   "releases": [
     {
+      "release": 6,
+      "date": "2026-11-05",
+      "critical": false,
+      "notes": {
+        "en": "Stems point the standard way, melodies show their key signature, chords list the key's own scale first, and practice marks only the current hand shape.",
+        "pt": "As hastes seguem a regra, as melodias mostram a armação de clave, os acordes indicam primeiro a escala da tonalidade e a prática marca só a posição atual.",
+        "es": "Las plicas siguen la norma, las melodías muestran su armadura, los acordes dan primero la escala de la tonalidad y la práctica marca solo la posición actual."
+      }
+    },
+    {
       "release": 5,
       "date": "2026-11-05",
       "critical": false,

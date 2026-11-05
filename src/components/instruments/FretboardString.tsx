@@ -129,7 +129,7 @@ export const FretboardString = memo(function FretboardString({
   };
 
   // ── Open-string column content ─────────────────────────────
-  const openDot = (kind: string, bg: string, label: string, ring: boolean, title?: string, solid = true) => (
+  const openDot = (kind: string, bg: string, label: string, ring: boolean, title?: string, solid = true, context = false) => (
     <div
       data-dot={kind}
       data-dot-string={stringIdx}
@@ -144,6 +144,7 @@ export const FretboardString = memo(function FretboardString({
         color: solid ? readableTextOn(bg) : 'var(--text)',
         border: ring ? '3px solid #ffffff' : `${solid ? 2 : 1.5}px solid ${bg}`,
         boxShadow: ring ? `0 0 12px ${bg}aa` : 'none',
+        ...(context ? { opacity: 0.35, width: 14, height: 14, boxShadow: 'none' } : undefined),
         transform: isOpenActive ? 'scale(1.15)' : 'scale(1)',
       }}
     >
@@ -160,7 +161,7 @@ export const FretboardString = memo(function FretboardString({
     }
   } else if (mode === 'position') {
     const dot = positionDots?.get(0);
-    if (dot) openContent = openDot('position', openColor ?? ACCENT_FILL, dot.label, dot.isRoot, dot.description);
+    if (dot) openContent = openDot(dot.context ? 'context' : 'position', openColor ?? ACCENT_FILL, dot.context ? '' : dot.label, dot.isRoot, dot.description, true, dot.context);
   } else if (mode === 'scale') {
     if (openColor) openContent = openDot('scale', openColor, scaleLabelFor(openPc), false, undefined, isOpenRoot || isOpenActive);
   } else if (highlightPcs?.has(openPc)) {

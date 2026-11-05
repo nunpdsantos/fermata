@@ -62,7 +62,7 @@ export function CircleNavigator({ collapsible = false }: { collapsible?: boolean
       {/* Folded = hidden, not unmounted: a printed page still carries the
           circle and the key facts. */}
       <div id={bodyId} className="circle-body" data-folded={!open || undefined}>
-        <CircleOfFifths />
+        <CircleOfFifths signatureInFacts />
         <KeyFactsList />
       </div>
     </section>

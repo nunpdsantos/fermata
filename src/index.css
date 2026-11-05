@@ -1420,6 +1420,8 @@ body {
     border: 1px solid var(--border-subtle);
     background: var(--bg);
   }
+  .chord-detail-source { display: none; }
+  .chord-detail[data-compact-source] .chord-detail-source { display: inline; }
   .chord-detail-main {
     display: flex;
     flex-direction: column;
@@ -1452,6 +1454,11 @@ body {
     align-items: center;
     gap: 6px 8px;
   }
+  .chord-scale-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
   .chord-detail-actions {
     display: flex;
     gap: 8px;
@@ -1471,7 +1478,47 @@ body {
       grid-template-columns: minmax(0, 1fr);
       padding-block: 8px;
     }
+    .chord-detail-scales .btn {
+      padding-inline: 8px;
+      white-space: nowrap;
+    }
+    .chord-scale-options {
+      gap: 4px;
+    }
     .chord-detail-staff {
+      display: none;
+    }
+  }
+  /* At 1440px and above keep two detail rows. Shorter laptops retain
+     their existing wrapping/scrolling layout and all scale suggestions. */
+  @media screen and (min-width: 1440px) {
+    .chord-detail-scales .btn {
+      flex-shrink: 0;
+    }
+    .chord-detail-context,
+    .chord-detail-context > .chord-detail-group {
+      flex-wrap: nowrap;
+    }
+    .chord-detail-context > :not(.chord-detail-scales),
+    .chord-detail-scales > .type-label {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .chord-detail-context > .btn-link {
+      margin-left: 0;
+    }
+    .chord-detail-scales {
+      flex: 1;
+      min-width: 0;
+    }
+    .chord-scale-options {
+      flex: 1;
+      min-width: 0;
+      flex-wrap: nowrap;
+    }
+    /* Hidden choices leave both layout and keyboard navigation. Outside
+       this screen layout (including print), every suggestion returns. */
+    .chord-scale-options [data-fit-hidden] {
       display: none;
     }
   }

@@ -25,7 +25,17 @@ export function FretboardExercise({ spec, disabled, accepted, picked, onAnswer }
   // Include both stretch frets, independent of which note is being asked.
   const from = win ? Math.max(1, win.fromFret - 1) : 1;
   const to = win ? Math.min(spec.maxFret, win.toFret + 1) : spec.maxFret;
-  const frets = Array.from({ length: to - from + 1 }, (_, i) => to - i).concat(0);
+  // Answered diagrams keep the learner's tap and the nearest accepted place
+  // together at full cell size. Omitted frets have explicit breaks; the nut
+  // remains on the right. No distant answer can scroll the tap out of view.
+  const nearest = accepted?.slice().sort((a, b) => Math.abs(a.fret - (picked?.fret ?? 0)) - Math.abs(b.fret - (picked?.fret ?? 0)))[0];
+  const feedbackFrets = disabled && nearest
+    ? [...new Set([0, ...(accepted ?? []).map((p) => p.fret), ...(picked ? [picked.fret] : [])])].sort((a, b) => b - a) : null;
+  const frets = feedbackFrets ?? Array.from({ length: to - from + 1 }, (_, i) => to - i).concat(0);
+  const gapBefore = (i: number) => i > 0 && frets[i - 1] - frets[i] > 1;
+  const gaps = frets.filter((_, i) => gapBefore(i)).length;
+  const labelStyle = { width: 44, flexShrink: 0, position: 'sticky' as const, left: 0, zIndex: 1,
+    backgroundColor: 'var(--card)', paddingInline: 3 };
   const [focused, setFocused] = useState<FretPlace>({ stringIndex: 0, fret: win?.fromFret ?? 0 });
   const locked = useRef(false);
   const matches = (a: FretPlace | null, b: FretPlace) => a?.stringIndex === b.stringIndex && a.fret === b.fret;
@@ -43,13 +53,17 @@ export function FretboardExercise({ spec, disabled, accepted, picked, onAnswer }
   useLayoutEffect(() => {
     if (!disabled) return;
     const el = scrollRef.current;
-    const correct = el?.querySelector<HTMLElement>('[data-answer="correct"]');
+    const correct = nearest && el?.querySelector<HTMLElement>(`[data-string-row="${nearest.stringIndex}"][data-fret="${nearest.fret}"]`);
     if (!el || !correct) return;
     const box = el.getBoundingClientRect();
-    const target = correct.getBoundingClientRect();
-    if (target.left < box.left) el.scrollLeft -= box.left - target.left;
-    else if (target.right > box.right) el.scrollLeft += target.right - box.right;
-  }, [disabled, accepted]);
+    const answer = correct.getBoundingClientRect();
+    const tap = picked && el.querySelector<HTMLElement>(`[data-string-row="${picked.stringIndex}"][data-fret="${picked.fret}"]`)?.getBoundingClientRect();
+    const left = Math.min(answer.left, tap ? tap.left : answer.left);
+    const right = Math.max(answer.right, tap ? tap.right : answer.right);
+    // The fixed string gutter occupies the first 44px of the viewport.
+    if (left < box.left + 44) el.scrollLeft -= box.left + 44 - left;
+    else if (right > box.right) el.scrollLeft += right - box.right;
+  }, [disabled, nearest, picked]);
 
   return (
     <div className="reading-board" data-testid="reading-board">
@@ -79,27 +93,27 @@ export function FretboardExercise({ spec, disabled, accepted, picked, onAnswer }
           next?.focus({ preventScroll: true });
           next?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
         }}>
-        <div style={{ minWidth: 28 + frets.length * 44 + 6 + (from > 1 ? 24 : 0) }}>
-          <div className="flex text-caption text-center" aria-hidden="true" style={{ color: 'var(--text-dim)' }}>
-            <span style={{ width: 28, flexShrink: 0 }}>⑥–①</span>
-            {frets.map((fret) => (
+        <div style={{ minWidth: 44 + frets.length * 44 + 6 + gaps * 24 }}>
+          <div className="flex text-caption text-center" style={{ color: 'var(--text-dim)' }}>
+            <span data-testid="reading-corner" className="whitespace-nowrap" style={labelStyle} aria-label={t('drill.reading.stringRange')}>⑥–①</span>
+            {frets.map((fret, i) => (
               <Fragment key={fret}>
-                {fret === 0 && from > 1 && <span style={{ width: 24, flexShrink: 0 }}>…</span>}
+                {gapBefore(i) && <span style={{ width: 24, flexShrink: 0 }}>…</span>}
                 <span className="flex-1" style={{ minWidth: fret === 0 ? 50 : 44, borderLeft: fret === 0 ? '6px solid transparent' : undefined }}>{fret}</span>
               </Fragment>
             ))}
           </div>
           {[0, 1, 2, 3, 4, 5].map((stringIndex) => (
             <div key={stringIndex} className="flex" style={{ height: 44 }}>
-              <span className="flex items-center justify-center text-caption" style={{ width: 28, flexShrink: 0, color: 'var(--text-muted)' }} aria-hidden="true">{6 - stringIndex}</span>
-              {frets.map((fret) => {
+              <span className="flex items-center justify-center text-caption" data-reading-string={6 - stringIndex} style={{ ...labelStyle, color: 'var(--text-muted)' }} aria-hidden="true">{6 - stringIndex}</span>
+              {frets.map((fret, i) => {
                 const place = { stringIndex, fret };
                 const correct = accepted?.some((p) => matches(p, place));
                 const mark = correct ? 'correct' : disabled && matches(picked, place) ? 'wrong' : undefined;
                 const label = t(fret === 0 ? 'drill.reading.stringOpen' : 'drill.reading.stringFret', { string: 6 - stringIndex, fret });
                 return (
                   <Fragment key={fret}>
-                    {fret === 0 && from > 1 && <FretboardBreak />}
+                    {gapBefore(i) && <FretboardBreak />}
                     <div className="flex flex-1" style={{ minWidth: fret === 0 ? 50 : 44, borderLeft: fret === 0 ? '6px solid var(--text-muted)' : undefined }}>
                       <FretCell fret={fret} stringIdx={stringIndex} displayNote={midiToNote(openMidi[stringIndex] + fret)}
                         color={undefined} dotColor="var(--accent)" isActive={false} isRoot={false} isMuted={false}

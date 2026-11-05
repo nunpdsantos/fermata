@@ -82,7 +82,7 @@
   "overrideHint": "Teacher fingerings are saved for this route. Shift marks describe the suggested route; changing a finger does not recompute them.",
   "route": "Route in playing order",
   "event": "Step {{number}}: {{notes}}",
-  "suggested": "Suggested fingering. 0 = open string; ↗ = position shift.",
+  "suggested": "Suggested fingering. 0 = open string; ↗ = shift up, ↘ = shift down.",
   "ring": "Let the group ring.",
   "noRing": "Release each note before the next.",
   "walkHint": "Play the scale in each position, then follow the connecting notes to the next. Slide the named guide finger along the same string. Each ascent spans one or two octaves; connecting notes keep the selected scale form, including melodic minor.",

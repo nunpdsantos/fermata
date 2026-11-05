@@ -15,9 +15,10 @@ export function staffTrim(
   instrument: string,
   requestedHeight: number,
   keySignature?: string,
+  engraving: { duration?: string; chord?: boolean } = {},
 ): { top: number; bottom: number; height: number } {
   const plan = staffPlan(notes, undefined, instrument, true);
-  const options = { annotation: plan.annotation, duration: 'w', keySignature };
+  const options = { annotation: plan.annotation, duration: 'w', keySignature, ...engraving };
   const layout = staffLayout(plan.written, plan.clef, requestedHeight, options);
   const ink = staffInkBounds(plan.written, plan.clef, options);
   const top = Math.max(0, layout.staveY + ink.top - 4);

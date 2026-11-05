@@ -117,7 +117,7 @@ export function ExploreHeader({ practiceAction }: { practiceAction?: ReactNode }
           items={[
             { id: 'copy', label: t('explore.copyScaleSummary'), onSelect: () => void copy() },
             { id: 'print', label: t('explore.printScaleDiagram'), onSelect: () => window.print() },
-            { id: 'compare', label: t('explore.compareScales'), onSelect: () => setCompare(true) },
+            { id: 'compare', label: t('explore.compareScalesAction'), onSelect: () => setCompare(true) },
           ]}
         />
       </div>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useRef, useMemo, type ReactNode } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useId, useRef, useMemo, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import { noteToString, type Chord, type Note } from '../../core/types/music.ts';
@@ -43,10 +43,14 @@ import {
 import { LearnMoreButton } from './LearnMoreButton.tsx';
 import { ChipGroup } from '../ui/ChoiceChip.tsx';
 
-import { getScaleSuggestions } from '../../core/constants/chordScaleRelationships.ts';
+import { landChordDetail } from './chordScrollLanding';
+import { fitScaleChips } from './fitScaleChips';
+
+import { getKeyScaleSuggestions } from '../../core/constants/chordScaleRelationships.ts';
 
 interface CurrentChordPanelProps {
   chord: Chord;
+  sourceTab?: string;
   /** Drawn beside the detail (Explore: the chord on a small staff). */
   aside?: ReactNode;
 }
@@ -128,7 +132,7 @@ const FIT_COLORS_MUTED: Record<keyof typeof FIT_COLORS, string> = {
   color: 'var(--text-dim)',
 };
 
-export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
+export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanelProps) {
   const { t, i18n } = useTranslation();
   const lang = toContentLanguage(i18n.language);
   const { getNoteDegree, invertedNotes, diatonicChords, scale } = useKeyContext();
@@ -181,7 +185,8 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
   useEffect(() => () => {
     cancelScheduledAudio();
     stopVisuals();
-  }, [stopVisuals]);
+    for (const slot of ['hover', 'keyboard', 'pinned'] as const) clearFocus(slot, 'chord');
+  }, [stopVisuals, clearFocus]);
 
   const maxInversion = chord.notes.length - 1;
   const notesForPlayback = invertedNotes.length > 0 ? invertedNotes : chord.notes;
@@ -194,9 +199,17 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
 
   // Compatible scales
   const scaleSuggestions = useMemo(
-    () => getScaleSuggestions(chord.quality),
-    [chord.quality],
+    () => {
+      const priority = { primary: 0, secondary: 1, color: 2 };
+      return [...getKeyScaleSuggestions(chord, scale)].sort((a, b) =>
+        Number(!!b.keyNotes) - Number(!!a.keyNotes) || priority[a.fit] - priority[b.fit]);
+    },
+    [chord, scale],
   );
+  const scaleOptionsRef = useRef<HTMLSpanElement>(null);
+  useLayoutEffect(() => {
+    if (scaleOptionsRef.current) return fitScaleChips(scaleOptionsRef.current);
+  }, [scaleSuggestions, lang]);
 
   const handlePlayChord = useCallback(async () => {
     await resumeAudio();
@@ -298,16 +311,27 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
     // laptop's held staff strip, a toast's room — clamped so ▶ Chord still
     // shows (W11-B delta review: the fixed toast gap pushed it under the
     // sheet at 844×390, Half).
-    el.style.scrollMarginTop = `${roomAbove(el)}px`;
-    el.scrollIntoView?.({ block: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
-  }, [chordId, reduceMotion]);
+    const scroller = scrollerOf(el);
+    const strip = scroller?.querySelector<HTMLElement>(':scope > .strip-card');
+    const sticky = strip && getComputedStyle(strip).position === 'sticky';
+    const behavior = reduceMotion ? 'auto' : 'smooth';
+    // Keep the recorded nearest/clamped behaviour on the other layouts.
+    if (!scroller || !sticky) {
+      el.style.scrollMarginTop = `${roomAbove(el)}px`;
+      el.scrollIntoView?.({ block: 'nearest', behavior });
+      return;
+    }
+    // Whole-row landings are atomic; smooth intermediate offsets can hide
+    // the play action while the learner is already trying to use it.
+    return landChordDetail(el, scroller, strip, () => roomAbove(el));
+  }, [chordId, reduceMotion, sourceTab]);
   const playIcon = <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>;
 
   return (
     <m.div
       ref={detailRef}
-      initial={reduceMotion ? false : { opacity: 0, y: 4 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={reduceMotion ? false : { opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.15 }}
       className="chord-detail"
       data-testid="chord-detail"
@@ -323,6 +347,7 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
             <span style={{ color: 'var(--text-dim)' }}>/{noteToString(chord.bassNote)}</span>
           )}
         </h3>
+        {sourceTab && <span className="chord-detail-source text-caption" data-testid="chord-detail-source">{sourceTab}</span>}
         {role && <span className="text-ui" style={{ color: 'var(--text-muted)' }}>{role}</span>}
 
         {/* Notes: each tone is the focus note on hover / focus, and plays on a tap. */}
@@ -392,7 +417,7 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
         </div>
       </div>
 
-      <div className="chord-detail-row">
+      <div className="chord-detail-row chord-detail-context">
         {/* Formula — real interval labels */}
         <div className="chord-detail-group">
           <span className="type-label">{t('panel.formula')}</span>
@@ -411,9 +436,10 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
 
         {/* Compatible scales: choosing one makes it the key (root = this chord's). */}
         {scaleSuggestions.length > 0 && (
-          <div className="chord-detail-group">
-            <span className="type-label">{t('panel.compatibleScales')}</span>
-            <span className="flex flex-wrap gap-1.5">
+          <div className="chord-detail-group chord-detail-scales" role="group" aria-labelledby={`${toneGroupId}-scales-label`}>
+            <span className="type-label" id={`${toneGroupId}-scales-label`}>{t('panel.compatibleScales')} · {noteToString(chord.root)}</span>
+            <span id={`${toneGroupId}-key-notes`} className="sr-only">{t('panel.keyOwnNotes')}</span>
+            <span className="chord-scale-options" ref={scaleOptionsRef}>
               {scaleSuggestions.map((s) => {
                 const fitColor = degreeColorsOn ? FIT_COLORS[s.fit] : FIT_COLORS_MUTED[s.fit];
                 return (
@@ -429,7 +455,11 @@ export function CurrentChordPanel({ chord, aside }: CurrentChordPanelProps) {
                       color: inkFor(fitColor),
                       borderColor: alpha(fitColor, '45'),
                     }}
-                    title={scaleContext(s.context, lang)}
+                    title={s.keyNotes ? t('panel.keyOwnNotes') : scaleContext(s.context, lang)}
+                    aria-describedby={s.keyNotes ? `${toneGroupId}-key-notes` : undefined}
+                    data-key-notes={s.keyNotes || undefined}
+                    data-scale={s.scale}
+                    data-fit={s.fit}
                   >
                     {t(`scaleName.${s.scale}`)}
                   </button>

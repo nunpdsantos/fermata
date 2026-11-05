@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ChoiceOption } from '../exerciseHelpers';
+import { displayPattern } from '../displayPattern';
 import { optionText } from '../exerciseHelpers';
 import { StaffNotationSkeleton } from '../../../notation/StaffNotationSkeleton';
 
@@ -41,6 +42,10 @@ export function ChoiceInput({ options, selected, tried, final, onSelect }: Choic
         const disabled = final || isTried;
         const strike = isTried || showWrong;
         const words = opt.melody ? t('exercise.melodyOption', { letter: opt.label, notes: optionText(opt) }) : opt.label;
+        const displayLabel = displayPattern(opt.label);
+        const space = displayLabel.indexOf(' ');
+        const firstWord = space < 0 ? displayLabel : displayLabel.slice(0, space);
+        const remaining = space < 0 ? '' : displayLabel.slice(space);
         const name = showCorrect
           ? t('lesson.answerIs', { answer: words })
           : isTried
@@ -91,13 +96,12 @@ export function ChoiceInput({ options, selected, tried, final, onSelect }: Choic
                   {t('exercise.melodyLetter', { letter: opt.label })}
                 </span>
                 <Suspense fallback={<StaffNotationSkeleton height={84} />}>
-                  <StaffNotation notes={opt.melody} clef="treble" height={84} duration="q" />
+                  <StaffNotation notes={opt.melody} keySignature={opt.keySignature} clef="treble" height={84} duration="q" />
                 </Suspense>
               </span>
             ) : (
-              <span aria-hidden="true" className={`inline-flex items-center justify-center gap-1.5 ${strike ? 'line-through' : ''}`}>
-                {showCorrect && <Check />}
-                {opt.label}
+              <span aria-hidden="true" className={`${strike ? 'line-through' : ''}`}>
+                {showCorrect ? <><span className="whitespace-nowrap"><Check />{firstWord}</span>{remaining}</> : displayLabel}
               </span>
             )}
           </button>
@@ -109,7 +113,7 @@ export function ChoiceInput({ options, selected, tried, final, onSelect }: Choic
 
 function Check() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg className="inline-block align-middle mr-1.5 shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <polyline points="20 6 9 17 4 12" />
     </svg>
   );

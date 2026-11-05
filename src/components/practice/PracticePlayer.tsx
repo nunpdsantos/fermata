@@ -10,6 +10,8 @@ import { useFocusNoteStore } from '../../state/focusNoteStore';
 import { useAppStore } from '../../state/store';
 import { getSynthConfig } from '../../services/synthConfig';
 import { Button, IconButton } from '../ui/Button';
+import { ChoiceChip } from '../ui/ChoiceChip';
+import { shiftArrow } from './practiceNeckLayout';
 import { SelectTrigger } from '../ui/SelectTrigger';
 import { LabelToolbar } from '../instruments/FretboardPositionSelector';
 import { StaffNotation } from '../notation/StaffNotation';
@@ -100,10 +102,10 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
   return (
     <div className="practice-player space-y-3" data-testid="practice-player">
       {route.stops && <div className="flex flex-wrap gap-2" role="group" aria-label={t('practice.walkPositions')} data-testid="walk-positions">
-        {route.stops.map((stop) => <Button key={stop.position} onClick={() => select(stop.start)}
+        {route.stops.map((stop) => <ChoiceChip pressed={current.notes[0].position === stop.position} key={stop.position} onClick={() => select(stop.start)}
           aria-current={current.notes[0].position === stop.position ? 'step' : undefined}>
           {toRomanNumeral(stop.position)} · {t('practice.octaveCount', { count: stop.octaves })}
-        </Button>)}
+        </ChoiceChip>)}
       </div>}
       <div className="flex flex-wrap items-center gap-2">
         <Button variant="primary" onClick={() => playing ? stop() : void play()}>{playing ? t('practice.stop') : t('practice.play')}</Button>
@@ -163,7 +165,7 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
           aria-label={[t('practice.event', { number: i + 1, notes: event.notes.map((n) => noteToString(n.note)).join(' + ') }), ...event.notes.map(guideText)].filter(Boolean).join('. ')}>
           <span className="text-caption">{event.rh.join('+')}</span>
           <span>{event.notes.map((n) => noteToString(n.note)).join('+')}</span>
-          <span className="text-caption">{event.notes.map((n) => fingerFor(i, n)).join('+')}{event.notes.some((n) => n.shift) ? ' ↗' : ''}</span>
+          <span className="text-caption">{event.notes.map((n) => fingerFor(i, n)).join('+')}{event.notes.some((n) => n.shift) ? ` ${shiftArrow(event.notes.find((n) => n.shift)!.shift)}` : ''}</span>
         </button>)}
       </div>
       <p className="text-caption" style={{ color: 'var(--text-muted)' }}>{t('practice.suggested')}{' '}{route.overRinging ? t('practice.ring') : route.overRinging === false ? t('practice.noRing') : ''}</p>

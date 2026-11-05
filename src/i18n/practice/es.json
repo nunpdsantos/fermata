@@ -82,7 +82,7 @@
   "overrideHint": "Las digitaciones del profesor se guardan para este recorrido. Los cambios de posición describen el recorrido sugerido; cambiar un dedo no los recalcula.",
   "route": "Recorrido por orden de ejecución",
   "event": "Paso {{number}}: {{notes}}",
-  "suggested": "Digitación sugerida. 0 = cuerda al aire; ↗ = cambio de posición.",
+  "suggested": "Digitación sugerida. 0 = cuerda al aire; ↗ = cambio ascendente, ↘ = cambio descendente.",
   "ring": "Deja sonar el grupo.",
   "noRing": "Suelta cada nota antes de la siguiente.",
   "walkHint": "Toca la escala en cada posición y sigue las notas de enlace hasta la siguiente. Desliza el dedo guía indicado por la misma cuerda. Cada subida abarca una o dos octavas; las notas de enlace mantienen la forma de la escala elegida, incluida la menor melódica.",

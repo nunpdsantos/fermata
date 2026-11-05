@@ -82,7 +82,7 @@
   "overrideHint": "As dedilhações do professor ficam guardadas para este percurso. As mudanças de posição descrevem o percurso sugerido; alterar um dedo não as recalcula.",
   "route": "Percurso por ordem de execução",
   "event": "Passo {{number}}: {{notes}}",
-  "suggested": "Dedilhação sugerida. 0 = corda solta; ↗ = mudança de posição.",
+  "suggested": "Dedilhação sugerida. 0 = corda solta; ↗ = mudança para cima, ↘ = mudança para baixo.",
   "ring": "Deixa o grupo soar.",
   "noRing": "Solta cada nota antes da seguinte.",
   "walkHint": "Toca a escala em cada posição e segue as notas de ligação até à seguinte. Desliza o dedo guia indicado na mesma corda. Cada subida abrange uma ou duas oitavas; as notas de ligação mantêm a forma da escala escolhida, incluindo a menor melódica.",

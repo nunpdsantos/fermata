@@ -35,7 +35,7 @@ const select = (root: string, type: ScaleType) =>
 
 /** The segment whose visible name is `name`. */
 const segmentShowing = (c: HTMLElement, name: string) =>
-  [...c.querySelectorAll('g[role="button"]')].find((g) => g.querySelector('[data-name]')!.textContent === name) as SVGGElement;
+  [...c.querySelectorAll('g[role="button"]')].find((g) => g.querySelector('[data-name]')!.textContent === name.replace(/#/g, '♯').replace(/b/g, '♭')) as SVGGElement;
 
 describe('1 — accessible name = visible text + action', () => {
   it('every segment, for a spread of keys and modes', () => {
@@ -60,7 +60,7 @@ describe('1 — accessible name = visible text + action', () => {
   it('C# major: "B#° (vii°) — select C minor"; A harmonic minor: "C+ (III+) — select C major"', () => {
     select('C#', 'major');
     let r = render(<CircleOfFifths />);
-    expect(segmentShowing(r.container, 'B#°').getAttribute('aria-label')).toBe('B#° (vii°) — select C minor');
+    expect(segmentShowing(r.container, 'B#°').getAttribute('aria-label')).toBe('B♯° (vii°) — select C minor');
     cleanup();
     select('A', 'harmonic_minor');
     r = render(<CircleOfFifths />);
