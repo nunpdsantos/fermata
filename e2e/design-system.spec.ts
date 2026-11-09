@@ -298,6 +298,10 @@ async function hasDevModules(page: Page) {
   return devModules;
 }
 
+/** 4 (update, offline-ready, install, app toast), or 3 where offline-ready draws no card. */
+const expectedToastCards = (page: Page) =>
+  page.evaluate(() => (matchMedia('(max-width: 639px), (max-height: 500px)').matches ? 3 : 4));
+
 async function raiseToastStack(page: Page): Promise<boolean> {
   if (!(await hasDevModules(page))) return false;
   await page.evaluate(`(async () => {
@@ -319,7 +323,12 @@ async function raiseToastStack(page: Page): Promise<boolean> {
     const ts = await import('/src/state/toastStore.ts');
     ts.toast('Backup downloaded', 'success', 0);
   })()`);
-  await expect(page.locator('.toast-card')).toHaveCount(4);
+  // Phones and short screens (the instrument sheet's SHEET_QUERY): the
+  // offline-ready notice is announced to screen readers, not drawn over the
+  // page (2026-11-09) — three cards there, four elsewhere.
+  const cards = await expectedToastCards(page);
+  await expect(page.locator('.toast-card')).toHaveCount(cards);
+  if (cards === 3) await expect(page.getByTestId('offline-ready-status')).toHaveText('App ready for offline use');
   await page.waitForTimeout(400); // the layout settles (sheet re-measures)
   // The update toast's "What's new" line shows exactly where the region has
   // room for it (PWAPrompts NOTE_MIN_ROOM_PX = 160) — not over a phone's
@@ -351,7 +360,7 @@ async function toastsClear(page: Page, where: string, avoid: string[]) {
   const vp = page.viewportSize()!;
   const cards = page.locator('.toast-card');
   const n = await cards.count();
-  expect.soft(n, `${where}: the toast stack is up`).toBe(4);
+  expect.soft(n, `${where}: the toast stack is up`).toBe(await expectedToastCards(page));
   const avoidBoxes: { sel: string; box: Box }[] = [];
   for (const sel of avoid) {
     const loc = page.locator(sel).first();
@@ -797,10 +806,12 @@ for (const v of VIEWPORTS) {
         expect(overlaps(toast, dock), where('toast vs dock')).toBe(false);
         const detailBox = await boxOf(page, '[data-testid="chord-detail"]');
         if (detailBox.bottom > 0) expect(overlaps(toast, detailBox), where('toast vs chord detail')).toBe(false);
-        // The scale actions "⋯" (Copy / Print / Compare, D-29) and Compare.
+        // The scale actions "⋯" (Copy / Print / Compare, D-29; Practise on
+        // the guitar since 2026-11-09, on the piano too) and Compare.
         await page.getByRole('button', { name: 'Scale actions' }).click();
         await expect(page.getByRole('menu', { name: 'Scale actions' })).toBeVisible();
-        await expect(page.getByRole('menuitem')).toHaveCount(3);
+        await expect(page.getByRole('menuitem')).toHaveCount(4);
+        await expect(page.getByRole('menuitem', { name: 'Practise on the guitar' })).toBeVisible();
         await check(page, v, combo, 'explore-menu');
         await page.getByRole('menuitem', { name: 'Compare scales' }).click();
         const compare = page.getByRole('dialog', { name: 'Compare Scales' });

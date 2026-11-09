@@ -1,5 +1,6 @@
 import { defineConfig } from '@playwright/test';
 import base from './playwright.config';
+import { welcomeSeenState } from './e2e/helpers/welcome';
 
 /**
  * The same browser tests against the PRODUCTION build served by `vite
@@ -12,7 +13,7 @@ const PORT = Number(process.env.PW_PREVIEW_PORT ?? 4173);
 
 export default defineConfig({
   ...base,
-  use: { ...base.use, baseURL: `http://localhost:${PORT}` },
+  use: { ...base.use, baseURL: `http://localhost:${PORT}`, storageState: welcomeSeenState(`http://localhost:${PORT}`) },
   webServer: {
     command: `npx vite preview --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,
