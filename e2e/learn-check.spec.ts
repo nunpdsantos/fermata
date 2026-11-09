@@ -131,6 +131,9 @@ for (const v of VIEWPORTS) {
         expect(submit.y).toBeGreaterThan(844 * 0.6);
         expect(box.y + box.height).toBeGreaterThan(844 / 2);
         expect(submit.y - (box.y + box.height)).toBeLessThan(40);
+        // …and below the question and its feedback (never overlapping them).
+        const prompt = (await page.getByTestId('check-prompt').boundingBox())!;
+        expect(box.y).toBeGreaterThanOrEqual(prompt.y + prompt.height);
       }
       // …right on the second try.
       await option(page, first.right).click();
