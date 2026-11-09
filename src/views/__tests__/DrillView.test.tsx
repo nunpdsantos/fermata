@@ -572,11 +572,24 @@ describe('DrillView — progress counter (W0-02 / D-11)', () => {
   }
 
   it('shows the real session length, not the 24-question target', () => {
+    vi.useFakeTimers();
     startShortSession();
     render(<DrillView />);
     expect(useDrillStore.getState().activeSession!.queue).toHaveLength(3);
-    // 3 new facts, each with its certain second look (seat review, 2026-11-09).
-    expect(screen.getByText('1 of 6')).toBeDefined();
+    // 3 new degree facts + the second looks the store can place: two of them
+    // are siblings, so one second look has nowhere to go (never next to a
+    // sibling) — 5, decided at the start (seat review 2, 2026-11-09).
+    expect(screen.getByText('1 of 5')).toBeDefined();
+    const seen: string[] = [];
+    for (let guard = 0; guard < 10 && screen.queryByText(/^\d+ of \d+$/); guard++) {
+      seen.push(screen.getByText(/^\d+ of \d+$/).textContent!);
+      act(() => answerCurrentCorrectly());
+      act(() => {
+        vi.advanceTimersByTime(600);
+      });
+    }
+    expect(seen).toEqual(['1 of 5', '2 of 5', '3 of 5', '4 of 5', '5 of 5']);
+    expect(screen.getByText('Session complete')).toBeDefined();
   });
 
   it('keeps the answered question number during feedback and advances on Continue', () => {

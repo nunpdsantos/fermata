@@ -98,6 +98,23 @@ describe('Drill first-visit intro (brief 2026-11-09)', () => {
     expect(screen.getByText('A session is up to 24 questions.')).toBeDefined();
   });
 
+  it('one new fact per session: Start reads "1 of 1", and it stays "1 of 1" through a miss', () => {
+    useDrillStore.getState().updateSettings({ newPerSession: 1 });
+    render(<DrillView />);
+    expect(screen.getByText('Each session brings in 1 new fact; the rest are facts you have already met.')).toBeDefined();
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Start' })));
+    expect(counter()?.textContent).toBe('1 of 1');
+    const session = useDrillStore.getState().activeSession!;
+    const item = generateDrillBank({ includeRead: true }).find((i) => i.id === session.queue[0])!;
+    const wrong = item.input.format === 'choice' ? item.input.choices.find((c) => item.answer.kind === 'choice' && c !== item.answer.correct) : undefined;
+    expect(wrong).toBeDefined();
+    act(() => fireEvent.click(screen.getByRole('button', { name: wrong! })));
+    expect(screen.getByText('Not quite')).toBeDefined();
+    expect(counter()?.textContent).toBe('1 of 1');
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Continue' })));
+    expect(screen.getByText('Session complete')).toBeDefined();
+  });
+
   it('PT: the intro is Portuguese', async () => {
     await i18n.changeLanguage('pt');
     render(<DrillView />);

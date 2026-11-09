@@ -17,10 +17,21 @@
  *    on ("9 of 24 · Again").
  *  - The store's session-end rule (`length` answers or the queue runs out),
  *    drillWork and scheduling are unchanged.
- * Rare case: when the store finds no slot for a new fact's second look (it is
- * never put next to itself or a sibling), that look is dropped from the plan
- * at once, so the count still ends on "N of N".
+ * A new fact's second look is only planned when the store will find a place
+ * for it: the store never puts a fact next to itself or a sibling, so e.g. the
+ * only fact of a one-fact session gets no second look, and the total says so
+ * from the start ("1 of 1" throughout). The decision is made once, by running
+ * the store's own second-look insertion (same seed, same order) over the
+ * session as composed (each id's first occurrence — re-asks are only ever
+ * inserted after it) on its all-right path, so the total never changes. When
+ * misses later change the queue, a second look that does find a place after
+ * all is shown as an extra; one that loses its place (rare: a sibling's re-ask
+ * fills it) leaves the session one short of N — the total still never moves.
  */
+import { drillSiblingGroup } from '../../core/utils/drillBank/siblings';
+import { requeueSecondExposure } from '../../services/drillSession';
+import { mulberry32 } from '../../core/utils/prng';
+
 export interface SessionCounter {
   /** 1-based number of the question on screen (meaningless while `extra` > 0). */
   current: number;
@@ -37,7 +48,8 @@ export interface SessionCounter {
  * @param length    The session length setting (the store's answer cap).
  * @param known     Ids the bank still has (a stale id from an older bank is skipped).
  * @param isNew     The fact was new in this session (no state before it, or introduced by it).
- * @param answered  Positions before this index have been answered (the store's pointer).
+ * @param seed      The session's seed (the store's re-queue positions derive from it).
+ * @param groupOf   Sibling groups (the store's own rule by default).
  */
 export function sessionCounter(
   queue: readonly string[],
@@ -45,22 +57,34 @@ export function sessionCounter(
   length: number,
   known: (id: string) => boolean,
   isNew: (id: string) => boolean = () => false,
-  answered: number = at,
+  seed = 0,
+  groupOf: (id: string) => string = drillSiblingGroup,
 ): SessionCounter {
-  const occurrences = new Map<string, number[]>();
-  queue.forEach((id, i) => {
-    if (!known(id)) return;
-    const list = occurrences.get(id);
-    if (list) list.push(i);
-    else occurrences.set(id, [i]);
-  });
-  // Planned asks per fact: 2 for a new fact (its second look), else 1 — and 1
-  // once a new fact's only ask is answered with no second look queued.
-  const plan = new Map<string, number>();
-  for (const [id, places] of occurrences) {
-    const secondLookLost = places.length === 1 && places[0] < answered;
-    plan.set(id, isNew(id) && !secondLookLost ? 2 : 1);
+  // The session as composed: each id's first occurrence, in order.
+  const composed: string[] = [];
+  const firstSeen = new Set<string>();
+  for (const id of queue) {
+    if (firstSeen.has(id)) continue;
+    firstSeen.add(id);
+    composed.push(id);
   }
+  // The store's all-right path: which new facts does it give a second look?
+  const secondLook = new Set<string>();
+  let path = composed;
+  let asked = 0;
+  for (let i = 0; i < path.length && asked < length; i++) {
+    const id = path[i];
+    if (!known(id)) continue;
+    if (isNew(id) && !secondLook.has(id) && path.indexOf(id) === i) {
+      const next = requeueSecondExposure(path, i, id, mulberry32(seed + asked), groupOf);
+      if (next.length > path.length) secondLook.add(id);
+      path = next;
+    }
+    asked++;
+  }
+  // Planned asks per fact: 2 for a new fact the store will show twice, else 1.
+  const plan = new Map<string, number>();
+  for (const id of composed) if (known(id)) plan.set(id, secondLook.has(id) ? 2 : 1);
   let planned = 0;
   for (const asks of plan.values()) planned += asks;
   const total = Math.max(1, Math.min(length, planned));

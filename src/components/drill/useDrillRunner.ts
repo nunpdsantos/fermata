@@ -291,7 +291,7 @@ export function useDrillRunner({ autoStart = true }: { autoStart?: boolean } = {
     const sessionId = activeSession.id;
     const isNew = (id: string) => items[id] === undefined || items[id].introSessionId === sessionId;
     const counter = sessionCounter(
-      activeSession.queue, Math.max(0, at), settings.length, (id) => byId.has(id), isNew, activeSession.index,
+      activeSession.queue, Math.max(0, at), settings.length, (id) => byId.has(id), isNew, activeSession.seed,
     );
     position = counter.current - 1;
     total = counter.total;

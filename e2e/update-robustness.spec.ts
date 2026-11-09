@@ -333,7 +333,13 @@ test('a silent apply whose takeover comes late: the prompt after 4 s, then "Relo
 
 // ── 2. Never silently during a Drill session or a Sprint ──────────────────
 
-/** Seed a real v2 Drill save (a session left after 3 answers) and open Drill. */
+/**
+ * Seed a real v2 Drill save (a session left after 3 answers) and open Drill.
+ * Its header reads "4 of 9" (was "4 of 8" before 2026-11-09): 6 facts, and a
+ * second look for each of the 3 new to that session (triad C, scale C, and
+ * the Roman numeral on screen) — the old total would have grown to 9 the
+ * moment the Roman numeral was answered (sessionCounter.ts).
+ */
 async function openDrillWithSave(page: Page, save: string) {
   await page.evaluate(([key, value]) => localStorage.setItem(key, value), [DRILL_KEY, save] as const);
   await page.getByRole('tab', { name: 'Drill' }).click(); // also makes Drill the view a launch restores
@@ -344,7 +350,7 @@ const drillPrompt = (page: Page) => page.locator('#drill-panel p.text-xl').first
 test('another tab saving idle cannot hide a live Drill session from either update decision', async ({ page, context }) => {
   await firstVisit(page);
   await openDrillWithSave(page, V2_DRILL_SAVE);
-  await expect(page.getByText('4 of 8')).toBeVisible();
+  await expect(page.getByText('4 of 9')).toBeVisible();
   const before = await loads(page);
   const tab2 = await context.newPage();
   await tab2.goto(`${proxy.origin}/?view=explore`);
@@ -363,19 +369,19 @@ test('another tab saving idle cannot hide a live Drill session from either updat
   await page.waitForTimeout(4500);
   expect(await loads(page)).toBe(before);
   expect((await workerState(page)).waiting).toBe('installed');
-  await expect(page.getByText('4 of 8')).toBeVisible();
+  await expect(page.getByText('4 of 9')).toBeVisible();
   await tab2.close();
 });
 
 test('NEVER silently during a Drill session: a cold launch into one asks; Reload resumes it exactly', async ({ page }) => {
   await firstVisit(page);
   await openDrillWithSave(page, V2_DRILL_SAVE);
-  await expect(page.getByText('4 of 8')).toBeVisible(); // the saved session, resumed at question 4
+  await expect(page.getByText('4 of 9')).toBeVisible(); // the saved session, resumed at question 4
   await deployAndFind(page);
   const before = await loads(page);
 
   await coldLaunch(page); // a fresh start — but straight into the session
-  await expect(page.getByText('4 of 8')).toBeVisible();
+  await expect(page.getByText('4 of 9')).toBeVisible();
   await expect(updateToast(page)).toBeVisible({ timeout: 10_000 });
   await page.waitForTimeout(3000);
   expect(await loads(page)).toBe(before + 1); // no reload behind the learner's back
@@ -384,7 +390,7 @@ test('NEVER silently during a Drill session: a cold launch into one asks; Reload
   const question = await drillPrompt(page).textContent();
   await Promise.all([page.waitForEvent('load', { timeout: 20_000 }), updateToast(page).getByRole('button', { name: /^reload$/i }).click()]);
   await expect.poll(() => workerState(page), { timeout: 15_000 }).toEqual({ controlled: true, waiting: null, active: 'activated' });
-  await expect(page.getByText('4 of 8')).toBeVisible();
+  await expect(page.getByText('4 of 9')).toBeVisible();
   await expect(drillPrompt(page)).toHaveText(question!);
 });
 
