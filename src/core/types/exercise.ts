@@ -208,6 +208,12 @@ export interface ExerciseDefinition {
    * back to the lesson section that teaches it (`nudge.ts`).
    */
   nudge?: string;
+  /**
+   * The W4a fingerprint (`exerciseFingerprint`) of the ENGLISH exercise
+   * behind this id — the same in every language, so a translation-only fix
+   * keeps it. Set by the exercise loader; a saved Learn check is keyed by it.
+   */
+  sourceFingerprint?: string;
 }
 
 // Progress tracking types

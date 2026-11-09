@@ -8,6 +8,7 @@ import type { ExerciseDefinition } from '../core/types/exercise';
 import type { ModuleTemplateConfig } from './exercises/exerciseTemplates';
 import type { ContentLanguage } from '../i18n/content/types';
 import { generateAllForLevel, mergeExerciseMaps } from './exercises/exerciseGenerator';
+import { exerciseFingerprint } from './exercises/exerciseFingerprint';
 import { loadExerciseOverlay, loadTemplateOverlay } from '../i18n/content/overlayLoader';
 import { applyExerciseOverlay, applyTemplateOverlay } from '../i18n/content/contentResolver';
 
@@ -39,6 +40,24 @@ const TEMPLATE_IMPORTERS: Record<string, () => Promise<{ default: ModuleTemplate
 
 const exerciseCache = new Map<string, ExerciseMap>();
 
+/**
+ * Every served item carries its ENGLISH item's fingerprint (W4a identity):
+ * the Learn session store keys a saved check by it, so a PT/ES wording fix
+ * no longer discards a check in progress, while an English change to the
+ * question, its keyed answer or its config still does. A few ms per level.
+ */
+export function withSourceFingerprints(served: ExerciseMap, source: ExerciseMap): ExerciseMap {
+  const fingerprints = new Map<string, string>();
+  for (const list of Object.values(source)) for (const ex of list) fingerprints.set(ex.id, exerciseFingerprint(ex));
+  return Object.fromEntries(Object.entries(served).map(([moduleId, list]) => [
+    moduleId,
+    list.map((ex) => {
+      const sourceFingerprint = fingerprints.get(ex.id);
+      return sourceFingerprint === undefined ? ex : { ...ex, sourceFingerprint };
+    }),
+  ]));
+}
+
 export async function loadExercises(
   levelId: string,
   lang: ContentLanguage = 'en',
@@ -61,6 +80,8 @@ export async function loadExercises(
 
   // Apply exercise overlay to hand-authored exercises
   let exercises = applyExerciseOverlay(exerciseMod.default, exerciseOv);
+  // The English items: what each id IS, in every language.
+  let source = exerciseMod.default;
 
   // Apply template overlay + generate
   if (templateMod) {
@@ -68,7 +89,9 @@ export async function loadExercises(
     // The authored items go in so generated ones never repeat them (W4-19).
     const generated = generateAllForLevel(translatedTemplates, lang, exerciseMod.default);
     exercises = mergeExerciseMaps(exercises, generated);
+    source = lang === 'en' ? exercises : mergeExerciseMaps(source, generateAllForLevel(templateMod.default, 'en', exerciseMod.default));
   }
+  exercises = withSourceFingerprints(exercises, source);
 
   // A PT/ES overlay that failed to load comes back null: serve the English
   // fallback this time but don't cache it, so the next load retries.

@@ -28,6 +28,7 @@ import { foldDockForLesson, foldDockAfterLesson } from '../../services/lessonDoc
 import {
   useLearnSessionStore,
   fingerprintsOf,
+  identitiesOf,
   restorableCheck,
   type RunSnapshot,
 } from '../../state/learnSessionStore';
@@ -213,6 +214,7 @@ export function ModuleView({
         kind,
         lang,
         fingerprints: fingerprintsOf(list),
+        identities: identitiesOf(list),
         run: { order: [], index: 0, scores: [], items: [], attempt: 1, selectedNotes: [], tried: [], missed: null, final: null },
         finished: false,
         at: Date.now(),
