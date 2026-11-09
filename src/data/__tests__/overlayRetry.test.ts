@@ -13,6 +13,18 @@ vi.mock('../../i18n/content/overlayLoader', () => ({
   loadSongOverlay: vi.fn(async () => null),
 }));
 
+describe('loadExercises after a failed overlay load', () => {
+  it('serves English, and every item says so (a check answered then is not resumed under the translation)', async () => {
+    const { loadExercises } = await import('../exerciseLoader');
+    const items = Object.values(await loadExercises('l1', 'pt')).flat();
+    expect(items.length).toBeGreaterThan(50);
+    for (const ex of items) {
+      expect(ex.contentLang, ex.id).toBe('en');
+      expect(ex.sourceFingerprint, ex.id).toBeDefined();
+    }
+  });
+});
+
 describe('loadLevel after a failed overlay load', () => {
   it('serves English once, then the translation on the next call', async () => {
     const { loadLevel } = await import('../curriculumLoader');
