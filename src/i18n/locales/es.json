@@ -1136,5 +1136,15 @@
     "open": "Mástil completo",
     "close": "Cerrar el mástil completo"
   },
-  "practice": {"title": "Practicar en la guitarra"}
+  "practice": {"title": "Practicar en la guitarra"},
+  "welcome": {
+    "title": "Te damos la bienvenida a Fermata",
+    "explore": "Elige una tonalidad y ve sus notas y acordes en el piano o la guitarra, y su lugar en el círculo de quintas.",
+    "learn": "Un curso paso a paso en nueve niveles, con una comprobación breve al final de cada lección.",
+    "drill": "Una sesión corta de preguntas rápidas al día. Las que fallas vuelven a salir.",
+    "footer": "Gratis, sin cuenta, funciona sin conexión. Tu progreso se queda en este navegador.",
+    "exploreAction": "Explorar una tonalidad",
+    "learnAction": "Empezar el curso",
+    "drillAction": "Probar una práctica"
+  }
 }

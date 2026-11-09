@@ -875,6 +875,25 @@ body {
     to { transform: none; }
   }
 
+  /* First-visit welcome (WelcomeSheet): the three views, then three actions
+     stacked full width; on a short (sideways) screen they share rows so the
+     sheet's body keeps room above them. */
+  .welcome-views { display: flex; flex-direction: column; gap: 12px; margin: 0; }
+  .welcome-views dd { margin: 2px 0 0; }
+  .welcome-footer { margin-top: 16px; }
+  .welcome-actions { display: flex; flex-direction: column; gap: 8px; }
+  @media (max-height: 500px) {
+    .welcome-actions { flex-direction: row; flex-wrap: wrap; }
+    .welcome-actions > .btn { flex: 1 1 auto; }
+  }
+  /* A phone held sideways: the panel takes the width and the three views
+     stand side by side (one column showed ~100 px, a single view). */
+  @media (max-height: 500px) and (min-width: 640px) {
+    .sheet-panel:has(.welcome-views) { width: min(760px, calc(100vw - 32px)); max-width: none; }
+    .welcome-views { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .welcome-footer { margin-top: 8px; }
+  }
+
   /* Instrument dock — phone pull-up sheet (DetentSheet) */
   .detent-sheet {
     position: relative;

@@ -35,7 +35,11 @@ const PLAY_ICON = (
  * surface (D-29) but stay one tap away. On a phone the key picker opens a
  * sheet with the circle of fifths and the twelve roots.
  */
-export function ExploreHeader({ practiceAction }: { practiceAction?: ReactNode }) {
+export function ExploreHeader({ practiceAction, onPractise }: {
+  practiceAction?: ReactNode;
+  /** "⋯" → Practise on the guitar: always offered, piano or guitar (ExploreView switches to the guitar). */
+  onPractise?: () => void;
+}) {
   const { t, i18n } = useTranslation();
   const { scale, diatonicChords } = useKeyContext();
   const selectedKey = useAppStore((s) => s.selectedKey);
@@ -119,6 +123,9 @@ export function ExploreHeader({ practiceAction }: { practiceAction?: ReactNode }
             { id: 'copy', label: t('explore.copyScaleSummary'), onSelect: () => void copy() },
             { id: 'print', label: t('explore.printScaleDiagram'), onSelect: () => window.print() },
             { id: 'compare', label: t('explore.compareScalesAction'), onSelect: () => setCompare(true) },
+            // A guitarist who never switches the dock to Guitar still finds the
+            // practice tools here (2026-11-09); the toolbar button stays as it is.
+            ...(onPractise ? [{ id: 'practise', label: t('practice.title'), onSelect: onPractise }] : []),
           ]}
         />
       </div>

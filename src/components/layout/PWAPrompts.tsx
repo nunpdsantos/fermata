@@ -3,6 +3,8 @@ import { usePWA } from '../../hooks/usePWA.ts';
 import { noteFor } from '../../services/appVersion.ts';
 import { Button, IconButton } from '../ui/Button';
 import { useToastRoom } from './toastLayout.ts';
+import { useMediaQuery, SHEET_QUERY } from '../../hooks/useMediaQuery.ts';
+import { useWelcomeStore } from '../../state/welcomeGate.ts';
 
 /**
  * The "What's new" line makes a toast two to five lines tall; it shows only
@@ -26,13 +28,35 @@ export function PWAPrompts() {
   const whatsNew = (notes: Parameters<typeof noteFor>[0] | null | undefined) =>
     notes && roomForNote ? t('pwa.whatsNew', { note: noteFor(notes, i18n.language) }) : undefined;
 
-  if (!showUpdate && !finishUpdate && !updated && !offlineReady && !canInstall) return null;
+  // "Ready for offline use" (2026-11-09): news, not a task.
+  //  - Skipped in the page that showed the first-visit welcome: the welcome
+  //    already says the app works offline, and the notice would sit on it.
+  //  - On phones and short (sideways) screens — the instrument sheet's screens,
+  //    SHEET_QUERY — the toast region spans the view's top and the card covered
+  //    the page's heading (a phone's first visit, Learn): there it is announced
+  //    to screen readers only, from a polite live region that is present
+  //    on those screens before the text arrives (so it is announced), and
+  //    draws no card.
+  const welcomeVisit = useWelcomeStore((s) => s.shownThisPage);
+  const compact = useMediaQuery(SHEET_QUERY);
+  const offline = offlineReady && !welcomeVisit;
+  const offlineCard = offline && !compact;
+  const offlineStatus = compact ? (
+    <p className="sr-only" aria-live="polite" aria-atomic="true" data-testid="offline-ready-status">
+      {offline ? t('pwa.offlineReady') : ''}
+    </p>
+  ) : null;
+
+  const anyCard = showUpdate || finishUpdate || !!updated || offlineCard || canInstall;
 
   // ONE stack, highest priority first (update > finish updating > updated > offline-ready > install).
   // Each toast used to fix itself at the same spot, so later ones covered the
   // update toast and its Reload (review B1). The stack itself is placed by
   // ToastRegion, above the instrument dock (W9-22).
   return (
+    <>
+    {offlineStatus}
+    {anyCard && (
     <div className="flex flex-col gap-2 pointer-events-auto" data-testid="pwa-toast-stack">
       {/* Update available toast: one tap reloads (W9-06); "Later" puts it
           off — it stays in the "⋯" menu. */}
@@ -69,7 +93,7 @@ export function PWAPrompts() {
       )}
 
       {/* Offline ready toast (dismisses itself after OFFLINE_READY_MS — usePWA) */}
-      {offlineReady && (
+      {offlineCard && (
         <Toast
           message={t('pwa.offlineReady')}
           onDismiss={dismissOffline}
@@ -86,6 +110,8 @@ export function PWAPrompts() {
         />
       )}
     </div>
+    )}
+    </>
   );
 }
 

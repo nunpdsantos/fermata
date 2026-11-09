@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { TopBar } from './TopBar.tsx';
 import { InstrumentDock } from './InstrumentDock.tsx';
 import { ToastRegion } from './ToastRegion.tsx';
+import { WelcomeHost } from './WelcomeHost.tsx';
 import { useToastAvoid } from './toastLayout.ts';
 import { useAppStore } from '../../state/store.ts';
 import { useMediaQuery, SHEET_QUERY } from '../../hooks/useMediaQuery.ts';
@@ -76,6 +77,8 @@ export function AppShell({ children }: AppShellProps) {
           </div>
         )}
       </div>
+      {/* First visit only (state/welcomeGate.ts): a lazy sheet. */}
+      <WelcomeHost />
     </div>
   );
 }

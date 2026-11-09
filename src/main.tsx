@@ -1,3 +1,6 @@
+// First: the welcome's "nothing saved yet?" check reads storage before any
+// store module loads (and writes). Keep this import on top.
+import './state/welcomeBoot.ts'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './i18n/index.ts'
