@@ -2,7 +2,7 @@
 
 Research: one Claude Opus research agent (WebSearch/WebFetch, PDFs via pdftotext), 16 concepts, all sources accessed 2026-11-05. Seat spot-check (Claude, same day): five quotes re-extracted from P1, P4 and E1 matched verbatim; "sétima dominante", "suspensão" and "escapatória" have 0 hits in P1+P4.
 
-Limits: rae.es and infopedia.pt block automated access (RAE read via Wayback snapshots; Infopédia/Priberam not consulted); the DGE curricula were read from the APEM-hosted copies (DGE header); Latin-American usage mostly not verified.
+Limits: rae.es and infopedia.pt block automated access (RAE read via Wayback snapshots; Infopédia/Priberam not consulted); the Aprendizagens Essenciais curricula (P1–P5) were read from the APEM-hosted copies, whose covers carry República Portuguesa / ANQEP, not the DGE (checked 2026-11-09); Latin-American usage mostly not verified.
 
 ## Decisions (owner delegated all decisions, 5 November 2026)
 
@@ -31,11 +31,11 @@ Row 17: on 5 November PT "bordadura" (73 occurrences) was kept against the curri
 ## Sources (all accessed 2026-11-05)
 
 **Portugal**
-- P1 DGE Aprendizagens Essenciais, ATC 11.º ano (Jul 2020), APEM copy — https://www.apem.org.pt/docs/aprendizagens-essenciais/ensino-artistico-especializado-musica/atc-11.pdf — "as dissonâncias ornamentais (a nota de passagem, o ornato, o retardo, a apojatura, a escapada, a nota pedal e a antecipação)"; "cadências (perfeita, perfeita picarda, plagal, plagal picarda, imperfeita, à dominante e interrompida)" [seat-verified]
-- P2 same series, ATC 10.º ano — https://www.apem.org.pt/docs/aprendizagens-essenciais/ensino-artistico-especializado-musica/atc-10.pdf — "nota de passagem, ornato, escapada e cambiata"; "conceito de dux e de comes"
-- P3 same series, ATC 12.º ano — https://www.apem.org.pt/docs/aprendizagens-essenciais/ensino-artistico-especializado-musica/atc-12.pdf — "paralelismos diatónicos e estritos (por exemplo, na obra de Debussy)"
-- P4 same series, Formação Musical 10.º ano — https://www.apem.org.pt/docs/aprendizagens-essenciais/ensino-artistico-especializado-musica/formacao-musical-10.pdf — "sétima da dominante, sétima menor ou sétima diminuta" [seat-verified]
-- P5 same series, Teoria e Análise Musical (profissional) — https://www.apem.org.pt/docs/aprendizagens-essenciais/ensino-artistico-especializado-musica/Teoria-e-Analise-Musical-ensino-profissional.pdf — "Diferenciar Rondó de Rondó-Sonata"; "posição aberta e/ou posição fechada"; "Escrever acordes suspensos"
+- P1 Aprendizagens Essenciais, ATC 11.º ano, Cursos Artísticos Especializados, República Portuguesa / ANQEP (2020; dated July 2020), APEM copy — https://www.apem.org.pt/docs/aprendizagens-essenciais/ensino-artistico-especializado-musica/atc-11.pdf — "as dissonâncias ornamentais (a nota de passagem, o ornato, o retardo, a apojatura, a escapada, a nota pedal e a antecipação)"; "cadências (perfeita, perfeita picarda, plagal, plagal picarda, imperfeita, à dominante e interrompida)" [seat-verified]
+- P2 same series, ATC 10.º ano, República Portuguesa / ANQEP (2020) — https://www.apem.org.pt/docs/aprendizagens-essenciais/ensino-artistico-especializado-musica/atc-10.pdf — "nota de passagem, ornato, escapada e cambiata"; "conceito de dux e de comes"
+- P3 same series, ATC 12.º ano, República Portuguesa / ANQEP (2020) — https://www.apem.org.pt/docs/aprendizagens-essenciais/ensino-artistico-especializado-musica/atc-12.pdf — "paralelismos diatónicos e estritos (por exemplo, na obra de Debussy)"
+- P4 same series, Formação Musical 10.º ano, República Portuguesa / ANQEP (2020) — https://www.apem.org.pt/docs/aprendizagens-essenciais/ensino-artistico-especializado-musica/formacao-musical-10.pdf — "sétima da dominante, sétima menor ou sétima diminuta" [seat-verified]
+- P5 same series, Teoria e Análise Musical, Cursos Profissionais, República Portuguesa / ANQEP (2020) — https://www.apem.org.pt/docs/aprendizagens-essenciais/ensino-artistico-especializado-musica/Teoria-e-Analise-Musical-ensino-profissional.pdf — "Diferenciar Rondó de Rondó-Sonata"; "posição aberta e/ou posição fechada"; "Escrever acordes suspensos"
 - P6 C. Bochmann, A Linguagem Harmónica do Tonalismo (JMP, 2003), excerpt — https://dspace.uevora.pt/rdpc/bitstream/10174/3000/1/Tonalismo.PDF — contents "VII — Dissonâncias ornamentais … 3. Retardos"
 - P7 L. Lopo, Relatório PES (Évora, 2018) — https://dspace.uevora.pt/rdpc/bitstream/10174/24267/1/ — "Exposição, Desenvolvimento e Reexposição"; "cadência perfeita (tónica) … meia cadência (dominante) … cadência imperfeita"
 - P8 R. M. Pinto, Revista Portuguesa de Musicologia n.s. 7/2 (2020) — https://run.unl.pt/server/api/core/bitstreams/3a3f2d83-2cb5-4cfd-87c6-965dfc1e4452/content — "homónimo maior da tonalidade geral"
