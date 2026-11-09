@@ -22,6 +22,8 @@ import { PianoKeyComponent } from '../../instruments/PianoKey';
 import { DEGREE_COLORS } from '../../../design/tokens/colors';
 import { buildScale, SCALE_FORMULAS } from '../../../core/constants/scales';
 import { SELECTABLE_ROOTS, letterDegree, spellDegree, pcOf, mod12 } from '../../../core/utils/__tests__/theoryOracle';
+import { withGlyphs } from '../../../core/utils/accidentalGlyphs';
+const ascii = (s: string) => s.replace(/𝄪/gu, '##').replace(/𝄫/gu, 'bb').replace(/♯/g, '#').replace(/♭/g, 'b');
 
 vi.mock('framer-motion', async () => {
   const React = await import('react');
@@ -105,7 +107,7 @@ describe('W1-05 / W1-06 / W1-11 — the staff strip\'s degree labels', () => {
           // fill hue as text).
           const labelSpan = b.querySelector('.strip-degree') as HTMLElement;
           if (labelSpan.style.color !== `var(--deg-ink-${num})`) bad.push(`${root} ${type}: colour of ${label}`);
-          if (labelSpan.textContent !== (lm[2] === 'R' ? `${lm[1] ?? ''}1` : label)) bad.push(`${root} ${type}: printed ${labelSpan.textContent} for ${label}`);
+          if (labelSpan.textContent !== withGlyphs(lm[2] === 'R' ? `${lm[1] ?? ''}1` : label)) bad.push(`${root} ${type}: printed ${labelSpan.textContent} for ${label}`);
         }
         cleanup();
       }
@@ -135,8 +137,9 @@ describe('W1-15 — Scale Comparison labels each row from its own spelling', () 
           const cells = [...grid.children].filter((c) => c.querySelectorAll('span').length === 2);
           for (const cell of cells) {
             const [noteEl, labelEl] = [...cell.querySelectorAll('span')];
-            const note = noteEl.textContent ?? '';
-            const label = labelEl.textContent ?? '';
+            // Shown with real ♭ / ♯; the spelling oracle reads the data's ASCII.
+            const note = ascii(noteEl.textContent ?? '');
+            const label = ascii(labelEl.textContent ?? '');
             if (!note) continue;
             const lm = /^(bb|b|##|#)?(\d+|R)$/.exec(label);
             if (!lm || spellDegree(root, lm[2] === 'R' ? '1' : label) !== note) bad.push(`${root} ${a} vs ${b}: "${label}" over ${note}`);

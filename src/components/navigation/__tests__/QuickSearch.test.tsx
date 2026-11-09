@@ -76,7 +76,7 @@ describe('QuickSearch hint completions', () => {
     // 7#9 → "C 7#9"; 7#11 (no 9) → named dominant7sharp11 "C 7#11" (WS14: was algorithmic);
     // 7#5 → augmented7 "C Augmented 7"
     expect(labels).toEqual(
-      expect.arrayContaining(['C 7#9', 'C 7#11', 'C Augmented 7']),
+      expect.arrayContaining(['C 7♯9', 'C 7♯11', 'C Augmented 7']),
     );
   });
 
@@ -97,14 +97,31 @@ describe('QuickSearch hint completions', () => {
 // ───────────────────────────────────────────────────────────────────────────
 // Verbal forms
 // ───────────────────────────────────────────────────────────────────────────
+describe('QuickSearch: ASCII typing finds names shown with ♭ / ♯', () => {
+  it('"Eb", "eb" and "f#" find E♭ / F♯ results; the typed text needs no glyph', () => {
+    for (const q of ['Eb', 'eb']) {
+      const labels = getResults(q).filter((r) => r.type !== 'Lesson').map((r) => r.label);
+      expect(labels.length, q).toBeGreaterThan(0);
+      expect(labels.every((l) => l.startsWith('E♭')), `${q}: ${labels.join(', ')}`).toBe(true);
+    }
+    const sharp = getResults('f#').filter((r) => r.type !== 'Lesson').map((r) => r.label);
+    expect(sharp.length).toBeGreaterThan(0);
+    expect(sharp.every((l) => l.startsWith('F♯')), sharp.join(', ')).toBe(true);
+    // Glyph input still works.
+    const glyph = getResults('E♭').filter((r) => r.type !== 'Lesson').map((r) => r.label);
+    expect(glyph.length).toBeGreaterThan(0);
+    expect(glyph.every((l) => l.startsWith('E♭')), glyph.join(', ')).toBe(true);
+  });
+});
+
 describe('QuickSearch verbal forms', () => {
   it('"c sharp minor" resolves to the C# Minor chord', () => {
     const labels = chordLabels('c sharp minor');
-    expect(labels).toContain('C# Minor');
+    expect(labels).toContain('C♯ Minor');
   });
 
   it('"d flat major seven" resolves to Db Major 7 (spelled-out number)', () => {
-    expect(chordLabels('d flat major seven')).toContain('Db Major 7');
+    expect(chordLabels('d flat major seven')).toContain('D♭ Major 7');
   });
 
   it('"g dominant" resolves to G Dominant 7', () => {
@@ -112,7 +129,7 @@ describe('QuickSearch verbal forms', () => {
   });
 
   it('"f sharp diminished seventh" resolves to F# Diminished 7', () => {
-    expect(chordLabels('f sharp diminished seventh')).toContain('F# Diminished 7');
+    expect(chordLabels('f sharp diminished seventh')).toContain('F♯ Diminished 7');
   });
 });
 

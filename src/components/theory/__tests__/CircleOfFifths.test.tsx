@@ -50,6 +50,7 @@ const select = (root: string, type: ScaleType, extra: Record<string, unknown> = 
 
 const sigText = (count: number, type: string) => (count === 0 ? 'no ♯/♭' : `${count}${type === '#' ? '♯' : '♭'}`);
 
+const ascii = (s: string) => s.replace(/𝄪/gu, '##').replace(/𝄫/gu, 'bb').replace(/♯/g, '#').replace(/♭/g, 'b');
 function readCircle(c: HTMLElement) {
   const text = (id: string) => c.querySelector(`[data-testid="${id}"]`)?.textContent ?? null;
   const segs = [...c.querySelectorAll('g[role="button"]')].map((g) => {
@@ -57,7 +58,9 @@ function readCircle(c: HTMLElement) {
     const [name, ring] = label.split(' ');
     return { pc: pcOf(name), ring, pressed: g.getAttribute('aria-pressed') === 'true', numeral: g.querySelector('[data-numeral]')?.textContent ?? null };
   });
-  return { key: text('cof-centre-key'), sig: text('cof-centre-sig'), segs };
+  // The centre names the key with real ♭ / ♯ (display only); compare its spelling.
+  const key = text('cof-centre-key');
+  return { key: key && ascii(key), sig: text('cof-centre-sig'), segs };
 }
 
 describe('W2-01 — key signature from the spelled parent key', () => {

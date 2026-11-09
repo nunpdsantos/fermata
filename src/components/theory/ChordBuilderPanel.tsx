@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Note, NaturalNote, Accidental, noteToString, ChordIdentification } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { identifyChordFromNotes } from '../../core/utils/reverseChordParser.ts';
 import { qualityName } from '../../utils/qualityName.ts';
@@ -167,7 +168,7 @@ export function ChordBuilderPanel() {
 
   const stepsSorted = useMemo(() => [...active].sort((a, b) => a - b), [active]);
   const intervalsLabel = stepsSorted.map(intervalAtStep).join(', ');
-  const notesLabel = stepsSorted.map((s) => noteToString(noteAtStep(s))).join(' – ');
+  const notesLabel = stepsSorted.map((s) => withGlyphs(noteAtStep(s))).join(' – ');
   const semitonesLabel = stepsSorted.join(', ');
 
   const role = useMemo(() => {
@@ -177,7 +178,7 @@ export function ChordBuilderPanel() {
       (dc) => getPitchClass(dc.chord.root) === rootPc && dc.chord.quality === top.chord.quality
     );
     // Display names, never internal ids (audit W1-10: was "C diminished whole_half").
-    const keyLabel = `${noteToString(scale.root)} ${t(`scaleName.${scale.type}`)}`;
+    const keyLabel = `${withGlyphs(scale.root)} ${t(`scaleName.${scale.type}`)}`;
     if (match) return { label: `${match.numeral} ${t('chordBuilder.ofKey', { key: keyLabel })}`, inKey: true };
     const degIdx = scale.notes.findIndex((n) => getPitchClass(n) === rootPc);
     if (degIdx >= 0) {
@@ -211,7 +212,7 @@ export function ChordBuilderPanel() {
               const v = `${n.natural}${n.accidental}`;
               return (
                 <option key={v} value={v}>
-                  {noteToString(n)}
+                  {withGlyphs(n)}
                 </option>
               );
             })}
@@ -251,7 +252,7 @@ export function ChordBuilderPanel() {
           </span>
           {top ? (
             <span className="text-base font-semibold" style={{ color: 'var(--accent-text)' }}>
-              {noteToString(top.chord.root)}{' '}
+              {withGlyphs(top.chord.root)}{' '}
               {qualityName(top.chord.quality, lang)}
             </span>
           ) : (
@@ -289,7 +290,7 @@ export function ChordBuilderPanel() {
             <ul className="mt-1 ml-4 list-disc space-y-0.5">
               {identification.results.slice(1, 5).map((r, i) => (
                 <li key={i}>
-                  {noteToString(r.chord.root)}{' '}
+                  {withGlyphs(r.chord.root)}{' '}
                   {qualityName(r.chord.quality, lang)}
                   {' — '}
                   <span style={{ color: 'var(--text-dim)' }}>{r.interpretation}</span>

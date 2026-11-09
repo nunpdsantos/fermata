@@ -15,7 +15,7 @@ import { test, expect, type Page } from '@playwright/test';
 test.use({ serviceWorkers: 'block', contextOptions: { reducedMotion: 'reduce' } });
 
 const LESSON = 'The Staff and Clefs';
-const FS_MELODIC_MINOR = /^F#\s*Melodic Minor\s*·/;
+const FS_MELODIC_MINOR = /^F♯\s*Melodic Minor\s*·/;
 const C_MAJOR = /^C\s*Major\s*·/;
 
 async function seedExplore(page: Page) {

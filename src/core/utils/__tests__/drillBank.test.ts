@@ -4,7 +4,7 @@ import { noteToString } from '../../types/music';
 import {
   generateDrillBank,
   getItemsByFamily,
-  displayNote,
+  withGlyphs,
   MAJOR_KEYS,
   DRILL_PROMPT_KEYS,
   DRILL_WHY_KEYS,
@@ -98,7 +98,7 @@ describe('F1 key signatures — goldens', () => {
       const scale = buildScale(majorKey, 'major');
       const alteredNotes = scale.notes
         .filter((n) => n.accidental !== '')
-        .map((n) => displayNote(n));
+        .map((n) => withGlyphs(n));
 
       // The answer tokens are the altered notes in SHARP_ORDER / FLAT_ORDER
       const correctAnswer = (item.answer as { kind: 'choice'; correct: string }).correct;

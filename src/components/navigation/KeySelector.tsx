@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../state/store.ts';
 import { noteToString, type ScaleType } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { SCALE_GROUPS, useRootChoices, useChooseScale } from './keyChoice.ts';
 import { ChipGroup } from '../ui/ChoiceChip.tsx';
@@ -27,7 +28,7 @@ export function RespellButton({ className }: { className?: string }) {
   const label = t('keySelector.respellAs', { note: noteToString(alternative) });
   return (
     <Button variant="quiet" className={className} onClick={respell} aria-label={label} title={label}>
-      <span aria-hidden="true">⇄ </span>{noteToString(alternative)}
+      <span aria-hidden="true">⇄ </span>{withGlyphs(alternative)}
     </Button>
   );
 }
@@ -45,7 +46,7 @@ export function KeyPicker() {
     >
       {roots.map((root, pc) => (
         <option key={pc} value={pc} data-root={noteToString(root)}>
-          {noteToString(root)}
+          {withGlyphs(root)}
         </option>
       ))}
     </SelectTrigger>
@@ -98,7 +99,7 @@ export function RootChips() {
         onChange={chooseRoot}
         options={roots.map((root) => {
           const label = noteToString(root);
-          return { value: getPitchClass(root), label, data: { 'data-root': label } };
+          return { value: getPitchClass(root), label: withGlyphs(root), data: { 'data-root': label } };
         })}
       />
     </div>

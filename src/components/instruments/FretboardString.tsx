@@ -1,6 +1,7 @@
 import { memo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { noteToString } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import type { Note, PitchedNote } from '../../core/types/music.ts';
 import type { ChordShape, FingerNumber } from '../../core/constants/guitarChordShapes.ts';
 import { midiToNote } from '../../core/utils/pianoLayout.ts';
@@ -148,7 +149,7 @@ export const FretboardString = memo(function FretboardString({
         transform: isOpenActive ? 'scale(1.15)' : 'scale(1)',
       }}
     >
-      {label}
+      {withGlyphs(label)}
     </div>
   );
 

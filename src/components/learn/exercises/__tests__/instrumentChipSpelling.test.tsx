@@ -39,7 +39,7 @@ describe('W1-08 — chips spelled by the target key direction', () => {
       <InstrumentInput expectedCount={7} submitted={false} onSubmit={() => {}} accentColor="#888888" spellingContext={buildScale(n('F'), 'major').notes} />,
     );
     tapAll([65, 70]); // F4, Bb4
-    expect(chips(container)).toEqual(['F', 'Bb']);
+    expect(chips(container)).toEqual(['F', 'B♭']);
     expect(useAppStore.getState().highlightedNotes.map((h) => h.natural + h.accidental)).toEqual(['F', 'Bb']);
   });
 
@@ -48,7 +48,7 @@ describe('W1-08 — chips spelled by the target key direction', () => {
       <InstrumentInput expectedCount={3} submitted={false} onSubmit={() => {}} accentColor="#888888" spellingContext={buildChord(n('C'), 'minor').notes} />,
     );
     tapAll([60, 63, 68]); // C, Eb, Ab
-    expect(chips(container)).toEqual(['C', 'Eb', 'Ab']);
+    expect(chips(container)).toEqual(['C', 'E♭', 'A♭']);
   });
 
   it('F# major: F stays F (no E#), black keys sharp', () => {
@@ -56,7 +56,7 @@ describe('W1-08 — chips spelled by the target key direction', () => {
       <InstrumentInput expectedCount={7} submitted={false} onSubmit={() => {}} accentColor="#888888" spellingContext={buildScale(n('F#'), 'major').notes} />,
     );
     tapAll([65, 66]);
-    expect(chips(container)).toEqual(['F', 'F#']);
+    expect(chips(container)).toEqual(['F', 'F♯']);
   });
 
   it('the lit key on the instrument carries the chip name', () => {

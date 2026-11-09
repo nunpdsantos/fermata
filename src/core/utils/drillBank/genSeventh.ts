@@ -15,7 +15,7 @@ import type { DrillItem } from '../../types/drill';
 import type { ChordQuality } from '../../types/music';
 import {
   N,
-  displayNote,
+  withGlyphs,
   shuffleStable,
   FAMILY_BASE,
   KEY_PRIORITY,
@@ -67,12 +67,12 @@ export function genSeventh(): DrillItem[] {
       const chord = buildChord(root, quality);
       const chordNotes = chord.notes; // Note[] — 4 notes
 
-      const correctDisplays = chordNotes.map(displayNote);
+      const correctDisplays = chordNotes.map(withGlyphs);
       const correctAscii = chordNotes.map(noteToString);
 
       // qualityDisplay: e.g. "Major 7th", "Half-Diminished 7th"
       const qualityDisplay = CHORD_QUALITY_NAMES[quality];
-      const chordDisplay = `${displayNote(root)} ${qualityDisplay}`;
+      const chordDisplay = `${withGlyphs(root)} ${qualityDisplay}`;
 
       // ---- name-to-notes (noteChips) ----
       {
@@ -145,35 +145,35 @@ function buildNoteChips(chordNotes: Note[], correctDisplays: string[]): string[]
 
   for (const note of chordNotes) {
     const pc = getPitchClass(note);
-    const correctDisplay = displayNote(note);
+    const correctDisplay = withGlyphs(note);
 
     // Same letter, different accidental
     for (const acc of ['', '#', 'b', '##', 'bb'] as const) {
       if (acc === note.accidental) continue;
-      const candidate = displayNote(N(note.natural, acc));
+      const candidate = withGlyphs(N(note.natural, acc));
       if (!all.includes(candidate)) all.push(candidate);
     }
 
     // Enharmonic spellings from PITCH_CLASS_SPELLINGS
     for (const spelling of PITCH_CLASS_SPELLINGS[pc] ?? []) {
-      const d = displayNote(spelling);
+      const d = withGlyphs(spelling);
       if (d !== correctDisplay && !all.includes(d)) all.push(d);
     }
 
     // Diminished 5th / augmented 5th spellings (real traps for 7th chord tones)
     const d5pc = (pc + 6) % 12;
     for (const spelling of PITCH_CLASS_SPELLINGS[d5pc] ?? []) {
-      const d = displayNote(spelling);
+      const d = withGlyphs(spelling);
       if (!all.includes(d)) all.push(d);
     }
     const p5pc = (pc + 7) % 12;
     for (const spelling of PITCH_CLASS_SPELLINGS[p5pc] ?? []) {
-      const d = displayNote(spelling);
+      const d = withGlyphs(spelling);
       if (!all.includes(d)) all.push(d);
     }
     const aug5pc = (pc + 8) % 12;
     for (const spelling of PITCH_CLASS_SPELLINGS[aug5pc] ?? []) {
-      const d = displayNote(spelling);
+      const d = withGlyphs(spelling);
       if (!all.includes(d)) all.push(d);
     }
   }

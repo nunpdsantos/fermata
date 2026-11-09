@@ -22,7 +22,7 @@ import { DRILL_FAMILY_TO_MODULE } from '../data/drillFamilyToModule';
 import type { DrillItem } from '../core/types/drill';
 import { stringToNote } from '../core/types/music';
 import { CHORD_QUALITY_NAMES } from '../core/constants/chords';
-import { displayNote } from '../core/utils/drillBank/shared';
+import { withGlyphs } from '../core/utils/drillBank/shared';
 
 // Memoize the bank once for the view (the runner memoizes its own; this is the
 // copy fed to the Mastery map + Sprint, which read tier counts off it).
@@ -269,7 +269,7 @@ function useElapsedSeconds(startedAt: number | null): number {
  * ("C# half_diminished7" now reads "C♯ Half-Diminished 7th").
  */
 function canonicalAnswer(item: DrillItem): string {
-  const note = (ascii: string) => displayNote(stringToNote(ascii));
+  const note = (ascii: string) => withGlyphs(stringToNote(ascii));
   switch (item.answer.kind) {
     case 'choice':
       return item.answer.correct;

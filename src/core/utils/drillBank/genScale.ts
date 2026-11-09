@@ -17,7 +17,7 @@ import type { DrillItem } from '../../types/drill';
 import type { NaturalNote } from '../../types/music';
 import {
   N,
-  displayNote,
+  withGlyphs,
   shuffleStable,
   FAMILY_BASE,
   KEY_PRIORITY,
@@ -50,7 +50,7 @@ function keySigWhy(
   if (sig.count === 0) return { whyKey: 'drill.why.scaleNoAccidentals', whyParams: { scale: scaleDisplay } };
   return {
     whyKey: 'drill.why.scaleKeySig',
-    whyParams: { scale: scaleDisplay, accs: sig.accidentals.map(displayNote).join(' ') },
+    whyParams: { scale: scaleDisplay, accs: sig.accidentals.map(withGlyphs).join(' ') },
   };
 }
 
@@ -68,14 +68,14 @@ function degreeWhy(
   const sig = keySignatureOf(signatureKey);
   const base = {
     scale: scaleDisplay,
-    notes: scaleNotes.map(displayNote).join(' '),
+    notes: scaleNotes.map(withGlyphs).join(' '),
     num,
-    answer: displayNote(scaleNotes[num - 1]),
+    answer: withGlyphs(scaleNotes[num - 1]),
   };
   if (sig.count === 0) return { whyKey: 'drill.why.scaleDegreeNoAccidentals', whyParams: base };
   return {
     whyKey: 'drill.why.scaleDegree',
-    whyParams: { ...base, accs: sig.accidentals.map(displayNote).join(' ') },
+    whyParams: { ...base, accs: sig.accidentals.map(withGlyphs).join(' ') },
   };
 }
 
@@ -95,7 +95,7 @@ export function genScale(): DrillItem[] {
     const scale = buildScale(majorTonic, 'major');
 
     const baseRank = keyRankBase(tonicAscii);
-    const scaleDisplay = `${displayNote(majorTonic)} major`;
+    const scaleDisplay = `${withGlyphs(majorTonic)} major`;
 
     // --- spell item ---
     const letters = scale.notes.map((n) => n.natural) as NaturalNote[];
@@ -116,7 +116,7 @@ export function genScale(): DrillItem[] {
     // --- degree-of items (n=2..7) ---
     for (let n = 2; n <= 7; n++) {
       const degreeNote = scale.notes[n - 1];
-      const correct = displayNote(degreeNote);
+      const correct = withGlyphs(degreeNote);
       const choices = buildDegreeChoices(scale.notes, n - 1, correct);
 
       items.push({
@@ -141,7 +141,7 @@ export function genScale(): DrillItem[] {
       const scale = buildScale(minorTonic, type);
 
       const typeName = SCALE_TYPE_DISPLAY[type];
-      const scaleDisplay = `${displayNote(minorTonic)} ${typeName}`;
+      const scaleDisplay = `${withGlyphs(minorTonic)} ${typeName}`;
       const spelledAscii = scale.notes.map(noteToString);
       const letters = scale.notes.map((n) => n.natural) as NaturalNote[];
 
@@ -160,7 +160,7 @@ export function genScale(): DrillItem[] {
       const raisedNotes = isHarmonicOrMelodic
         ? scale.notes.filter((n, i) => noteToString(n) !== noteToString(naturalMinorScale.notes[i]))
         : [];
-      const raisedDisplay = raisedNotes.map(displayNote).join(', ');
+      const raisedDisplay = raisedNotes.map(withGlyphs).join(', ');
 
       // Natural minor shares its relative major's signature (majorTonic).
       const naturalWhy = keySigWhy(majorTonic, scaleDisplay);
@@ -184,7 +184,7 @@ export function genScale(): DrillItem[] {
       if (type === 'natural_minor') {
         for (let n = 2; n <= 7; n++) {
           const degreeNote = scale.notes[n - 1];
-          const correct = displayNote(degreeNote);
+          const correct = withGlyphs(degreeNote);
           const choices = buildDegreeChoices(scale.notes, n - 1, correct);
 
           items.push({
@@ -213,15 +213,15 @@ function buildDegreeChoices(notes: Note[], degreeIdx: number, correct: string): 
   const lures: string[] = [];
 
   // Adjacent degrees' notes
-  if (degreeIdx > 0) lures.push(displayNote(notes[degreeIdx - 1]));
-  if (degreeIdx < notes.length - 1) lures.push(displayNote(notes[degreeIdx + 1]));
+  if (degreeIdx > 0) lures.push(withGlyphs(notes[degreeIdx - 1]));
+  if (degreeIdx < notes.length - 1) lures.push(withGlyphs(notes[degreeIdx + 1]));
 
   // Accidental-flip of correct note
   const note = notes[degreeIdx];
-  if (note.accidental === '#') lures.push(displayNote(N(note.natural, '')));
-  else if (note.accidental === '') lures.push(displayNote(N(note.natural, '#')));
-  else if (note.accidental === 'b') lures.push(displayNote(N(note.natural, '')));
-  else lures.push(displayNote(N(note.natural, 'b')));
+  if (note.accidental === '#') lures.push(withGlyphs(N(note.natural, '')));
+  else if (note.accidental === '') lures.push(withGlyphs(N(note.natural, '#')));
+  else if (note.accidental === 'b') lures.push(withGlyphs(N(note.natural, '')));
+  else lures.push(withGlyphs(N(note.natural, 'b')));
 
   // Unique, correct included
   const candidates = [correct, ...lures.filter((l) => l !== correct)];

@@ -46,3 +46,19 @@ it('distinguishes a second-try half point from a miss', () => {
   expect(screen.getAllByTestId('half-credit')).toHaveLength(1);
   expect(screen.getByTestId('half-credit').textContent).toBe('½ · Right on the second try');
 });
+
+it('names on the result screen look as they did in the check: a build with glyphs, a prose choice as written', () => {
+  const build: ExerciseDefinition = {
+    id: 'build', type: 'scale_build', prompt: 'Build C harmonic minor.',
+    config: { type: 'scale_build', root: 'C', rootAccidental: '', scaleType: 'harmonic_minor' },
+  } as unknown as ExerciseDefinition;
+  render(<ResultScreen title="T" kind="check" passed={false} actions={[]} outcomes={[
+    { exercise: build, answers: ['C D Eb F G A B'], score: 0, answer: 'C Harmonic Minor: C D Eb F G Ab B' },
+    { exercise: mc('sig', ['Key signature: Bb, Eb', 'D#']), answers: ['D#'], score: 0, answer: 'Key signature: Bb, Eb' },
+  ]} />);
+  const answers = screen.getAllByTestId('missed-answer').map((b) => b.textContent);
+  expect(answers).toEqual(['C Harmonic Minor: C D E♭ F G A♭ B', 'Key signature: Bb, Eb']);
+  const rows = screen.getAllByTestId('missed-question').map((r) => r.textContent ?? '');
+  expect(rows[0]).toContain('C D E♭ F G A B');
+  expect(rows[1]).toContain('D♯');
+});

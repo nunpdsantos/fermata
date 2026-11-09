@@ -23,6 +23,7 @@ vi.mock('../../../core/services/audio.ts', async (importOriginal) => ({
 }));
 
 import { CircleOfFifths } from '../CircleOfFifths';
+import { withGlyphs } from '../../../core/utils/accidentalGlyphs';
 
 afterEach(async () => {
   cleanup();
@@ -45,21 +46,21 @@ describe('B2 — hover panel spelled from the displayed segment', () => {
   it('C# major hovering C# reads 7♯ · rel: A#m (not 5♭ · B♭m)', () => {
     select('C#', 'major');
     const { container } = render(<CircleOfFifths />);
-    expect(hover(container, 'C# major')).toMatchObject({ name: 'C#', sig: '7♯ · rel: A#m' });
+    expect(hover(container, 'C# major')).toMatchObject({ name: 'C♯', sig: '7♯ · rel: A♯m' });
     expect(text(container, 'cof-sig-7')).toBe('7♯');
   });
 
   it('Eb phrygian hovering Cb reads 7♭ · rel: Abm (not 5♯ · G♯m)', () => {
     select('Eb', 'phrygian');
     const { container } = render(<CircleOfFifths />);
-    expect(hover(container, 'Cb major')).toMatchObject({ name: 'Cb', sig: '7♭ · rel: Abm' });
+    expect(hover(container, 'Cb major')).toMatchObject({ name: 'C♭', sig: '7♭ · rel: A♭m' });
     expect(text(container, 'cof-sig-5')).toBe('7♭');
   });
 
   it('Ab minor hovering Abm reads 7♭ · rel: Cb', () => {
     select('Ab', 'natural_minor');
     const { container } = render(<CircleOfFifths />);
-    expect(hover(container, 'Ab minor')).toMatchObject({ name: 'Abm', sig: '7♭ · rel: Cb' });
+    expect(hover(container, 'Ab minor')).toMatchObject({ name: 'A♭m', sig: '7♭ · rel: C♭' });
   });
 
   it('every segment, for a spread of selections, matches the oracle (hover and outer labels)', () => {
@@ -73,7 +74,7 @@ describe('B2 — hover panel spelled from the displayed segment', () => {
         const ks = majorKeySignature(major);
         const rel = ring === 'major' ? `${spellDegree(name, '6')}m` : major;
         const h = hover(container, g.getAttribute('data-key')!);
-        const want = `${sigText(ks.count, ks.type)} · rel: ${rel}`;
+        const want = `${sigText(ks.count, ks.type)} · rel: ${withGlyphs(rel)}`;
         if (h.sig !== want) bad.push(`${root} ${type}: hover ${name} ${ring} "${h.sig}" want "${want}"`);
         fireEvent.mouseLeave(g);
         if (ring === 'major') {

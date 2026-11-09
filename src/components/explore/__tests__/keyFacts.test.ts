@@ -28,9 +28,9 @@ describe('key facts', () => {
   });
 
   it('spelled from the root: F♯ major → C♯ / B; A♯ minor → C♯ major, E♯ minor', () => {
-    expect(facts('F#', 'major')).toEqual({ signature: '6♯', relative: 'D# minor', dominant: 'C# major', subdominant: 'B major' });
-    expect(facts('A#', 'natural_minor')).toMatchObject({ signature: '7♯', relative: 'C# major', dominant: 'E# minor', subdominant: 'D# minor' });
-    expect(facts('Eb', 'major')).toMatchObject({ signature: '3♭', relative: 'C minor', dominant: 'Bb major', subdominant: 'Ab major' });
+    expect(facts('F#', 'major')).toEqual({ signature: '6♯', relative: 'D♯ minor', dominant: 'C♯ major', subdominant: 'B major' });
+    expect(facts('A#', 'natural_minor')).toMatchObject({ signature: '7♯', relative: 'C♯ major', dominant: 'E♯ minor', subdominant: 'D♯ minor' });
+    expect(facts('Eb', 'major')).toMatchObject({ signature: '3♭', relative: 'C minor', dominant: 'B♭ major', subdominant: 'A♭ major' });
   });
 
   it('modes name their parent key; scales without a signature say so', () => {

@@ -10,7 +10,7 @@
  */
 
 import { SHARP_ORDER, FLAT_ORDER } from './shared';
-import { displayNote, shuffleStable, FAMILY_BASE } from './shared';
+import { withGlyphs, shuffleStable, FAMILY_BASE } from './shared';
 import { noteToString, stringToNote } from '../../types/music';
 import { spellIntervalAbove, spellIntervalBelow } from '../degreeSpelling';
 import type { DrillItem } from '../../types/drill';
@@ -31,11 +31,11 @@ export function genCircle(): DrillItem[] {
   for (let i = 0; i < SHARP_ORDER.length - 1; i++) {
     const curr = SHARP_ORDER[i];
     const next = SHARP_ORDER[i + 1];
-    const currDisplay = displayNote(curr);
-    const nextDisplay = displayNote(next);
+    const currDisplay = withGlyphs(curr);
+    const nextDisplay = withGlyphs(next);
     const currAscii = noteToString(curr);
 
-    const otherSharps = SHARP_ORDER.filter((_, j) => j !== i && j !== i + 1).map(displayNote);
+    const otherSharps = SHARP_ORDER.filter((_, j) => j !== i && j !== i + 1).map(withGlyphs);
     const lures = shuffleStable(otherSharps, `circle:next-sharp:${currAscii}:lures`).slice(0, 3);
     const choices = shuffleStable([nextDisplay, ...lures], `circle:next-sharp:${currAscii}:choices`);
 
@@ -56,11 +56,11 @@ export function genCircle(): DrillItem[] {
   for (let i = 0; i < FLAT_ORDER.length - 1; i++) {
     const curr = FLAT_ORDER[i];
     const next = FLAT_ORDER[i + 1];
-    const currDisplay = displayNote(curr);
-    const nextDisplay = displayNote(next);
+    const currDisplay = withGlyphs(curr);
+    const nextDisplay = withGlyphs(next);
     const currAscii = noteToString(curr);
 
-    const otherFlats = FLAT_ORDER.filter((_, j) => j !== i && j !== i + 1).map(displayNote);
+    const otherFlats = FLAT_ORDER.filter((_, j) => j !== i && j !== i + 1).map(withGlyphs);
     const lures = shuffleStable(otherFlats, `circle:next-flat:${currAscii}:lures`).slice(0, 3);
     const choices = shuffleStable([nextDisplay, ...lures], `circle:next-flat:${currAscii}:choices`);
 
@@ -86,8 +86,8 @@ export function genCircle(): DrillItem[] {
     // up / 5 down), not read off the next circle slot: a fifth above F♯ is C♯
     // (the slot says D♭, a diminished 6th), a fifth below D♭ is G♭ (audit W1-04).
     const promptNote = stringToNote(asciiKey);
-    const upDisplay = displayNote(spellIntervalAbove(promptNote, 5, 7));
-    const downDisplay = displayNote(spellIntervalBelow(promptNote, 5, 7));
+    const upDisplay = withGlyphs(spellIntervalAbove(promptNote, 5, 7));
+    const downDisplay = withGlyphs(spellIntervalBelow(promptNote, 5, 7));
 
     // Lures for fifth-up: fourth-up (= fifth-down, common confusion), two steps up/down
     const luresUpRaw = [
