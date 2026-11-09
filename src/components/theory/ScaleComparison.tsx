@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../state/store.ts';
 import type { ScaleType } from '../../core/types/music.ts';
-import { noteToString } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { buildScale, SCALE_TYPE_NAMES } from '../../core/constants/scales.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
@@ -91,7 +91,7 @@ export function ScaleComparison({ inSheet = false }: { inSheet?: boolean } = {})
   // Note name map for display (pitch class → note name in each scale)
   const noteNameA = useMemo(() => {
     const m = new Map<number, string>();
-    for (const n of scaleA.notes) m.set(getPitchClass(n), noteToString(n));
+    for (const n of scaleA.notes) m.set(getPitchClass(n), withGlyphs(n));
     return m;
   }, [scaleA]);
 
@@ -100,21 +100,21 @@ export function ScaleComparison({ inSheet = false }: { inSheet?: boolean } = {})
   // chromatic header like "b5" over F#.
   const labelA = useMemo(() => {
     const m = new Map<number, string>();
-    for (const n of scaleA.notes) m.set(getPitchClass(n), formatDegree(degreeOf(scaleA.root, n)));
+    for (const n of scaleA.notes) m.set(getPitchClass(n), withGlyphs(formatDegree(degreeOf(scaleA.root, n))));
     return m;
   }, [scaleA]);
 
   const labelB = useMemo(() => {
     const m = new Map<number, string>();
     if (!scaleB) return m;
-    for (const n of scaleB.notes) m.set(getPitchClass(n), formatDegree(degreeOf(scaleB.root, n)));
+    for (const n of scaleB.notes) m.set(getPitchClass(n), withGlyphs(formatDegree(degreeOf(scaleB.root, n))));
     return m;
   }, [scaleB]);
 
   const noteNameB = useMemo(() => {
     if (!scaleB) return new Map<number, string>();
     const m = new Map<number, string>();
-    for (const n of scaleB.notes) m.set(getPitchClass(n), noteToString(n));
+    for (const n of scaleB.notes) m.set(getPitchClass(n), withGlyphs(n));
     return m;
   }, [scaleB]);
 

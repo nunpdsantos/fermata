@@ -2,6 +2,7 @@ import { Suspense, lazy, useCallback, useId, useLayoutEffect, useMemo, useRef, u
 import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { noteToString, type PitchedNote } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { SCALE_FORMULAS, getScaleDegreeFunctionKey } from '../../core/constants/scales.ts';
 import { getScaleNotesWithOctaves, getMidiNumber } from '../../core/utils/pianoLayout.ts';
@@ -260,13 +261,13 @@ export function ScaleStrip() {
                     play(i);
                   }}
                 >
-                  <span className="strip-name" aria-hidden="true">{name}</span>
+                  <span className="strip-name" aria-hidden="true">{withGlyphs(name)}</span>
                   <span className="strip-sub" aria-hidden="true">
                     <span
                       className="strip-degree"
                       style={{ color: dimmed[i] ? 'var(--text-dim)' : DEGREE_INKS[slot] }}
                     >
-                      {formatDegree(d, '1')}
+                      {withGlyphs(formatDegree(d, '1'))}
                     </span>
                     {fnKey && <span className="strip-fn">{t(fnKey)}</span>}
                   </span>

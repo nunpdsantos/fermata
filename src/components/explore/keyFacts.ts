@@ -12,7 +12,8 @@
  * church modes, the exotic scales that borrow one) names its parent major;
  * a scale without one says so.
  */
-import { noteToString, type Note, type ScaleType } from '../../core/types/music.ts';
+import { type Note, type ScaleType } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { keySignatureForScale, formatKeySignature, spellIntervalAbove, type SignatureInfo } from '../../core/utils/degreeSpelling.ts';
 
 type T = (key: string, opts?: Record<string, unknown>) => string;
@@ -37,8 +38,8 @@ export interface KeyFacts {
   facts: KeyFact[];
 }
 
-const majorKey = (n: Note, t: T) => t('circle.keyMajor', { note: noteToString(n) });
-const minorKey = (n: Note, t: T) => t('circle.keyMinor', { note: noteToString(n) });
+const majorKey = (n: Note, t: T) => t('circle.keyMajor', { note: withGlyphs(n) });
+const minorKey = (n: Note, t: T) => t('circle.keyMinor', { note: withGlyphs(n) });
 
 export function keyFacts(root: Note, type: ScaleType, t: T): KeyFacts {
   const signature = keySignatureForScale(root, type);

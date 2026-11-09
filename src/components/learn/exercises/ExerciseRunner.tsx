@@ -16,6 +16,7 @@ import { playNote, playPitchedNotes, playScale, playTimedNotes, resumeAudio, sto
 import { getSynthConfig } from '../../../services/synthConfig';
 import type { NaturalNote, Accidental, Note, ChordQuality, ScaleType } from '../../../core/types/music';
 import { noteToString } from '../../../core/types/music';
+import { withGlyphs, glyphsIfName } from '../../../core/utils/accidentalGlyphs';
 import { buildChord } from '../../../core/constants/chords';
 import { buildScale } from '../../../core/constants/scales';
 import { directionSpeller } from '../../../core/utils/spelling';
@@ -365,14 +366,14 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
   let feedback: React.ReactNode = null;
   if (final) {
     const right = final.correct;
-    const expectedNotes = isInstrumentBased && buildTargetNotes ? buildTargetNotes.map(noteToString).join(' ') : null;
+    const expectedNotes = isInstrumentBased && buildTargetNotes ? buildTargetNotes.map((n) => withGlyphs(n)).join(' ') : null;
     feedback = (
       <Feedback
         tone={right ? 'correct' : 'wrong'}
         title={right
           ? (final.score === 1 ? t('exercise.correct') : t('lesson.secondTry'))
           : isInstrumentBased || answerWords.length <= SHORT_ANSWER
-            ? t('lesson.itIsAnswer', { answer: isInstrumentBased ? final.expected : answerWords })
+            ? t('lesson.itIsAnswer', { answer: isInstrumentBased ? withGlyphs(final.expected) : glyphsIfName(answerWords) })
             : t('lesson.notQuiteMarked')}
         // Right: the title says it. Final miss: the answer is in the title;
         // below it, what explains it — the item's explanation (its `hint`,
@@ -389,7 +390,7 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
     feedback = (
       <Feedback
         tone="nearMiss"
-        title={missed && missed.length <= SHORT_ANSWER ? t('lesson.notAnswer', { answer: missed }) : t('lesson.notQuiteRetry')}
+        title={missed && missed.length <= SHORT_ANSWER ? t('lesson.notAnswer', { answer: glyphsIfName(missed) }) : t('lesson.notQuiteRetry')}
         hint={nudge
           ? t('exercise.hint', { hint: nudge })
           : pointer

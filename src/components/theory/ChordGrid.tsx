@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import { noteToString } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { CHORD_SYMBOLS } from '../../core/constants/chords.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAppStore } from '../../state/store.ts';
@@ -99,8 +100,8 @@ export function ChordGrid() {
                 {numeral}
               </span>
               <span className="text-body font-semibold leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text)' }}>
-                {rootLabel}
-                <span className="font-normal" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text-dim)' }}>{qualityLabel}</span>
+                {withGlyphs(rootLabel)}
+                <span className="font-normal" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text-dim)' }}>{withGlyphs(qualityLabel)}</span>
               </span>
             </span>
             <span className="text-caption leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text-dim)' }}>

@@ -18,7 +18,7 @@ import {
   MAJOR_KEYS,
   SHARP_ORDER,
   FLAT_ORDER,
-  displayNote,
+  withGlyphs,
   shuffleStable,
   rankFor,
   keySignatureOf,
@@ -32,7 +32,7 @@ import {
 
 /** Format an accidental list in display form as a space-separated string. */
 function accListDisplay(accs: Note[]): string {
-  return accs.map(displayNote).join(' ');
+  return accs.map(withGlyphs).join(' ');
 }
 
 /** Format a count + type as a display chip string: "3♯", "3♭", "0". */
@@ -43,12 +43,12 @@ function countDisplay(count: number, type: '#' | 'b' | 'none'): string {
 
 /** Display a major key name in unicode. */
 function keyDisplayMajor(key: Note): string {
-  return `${displayNote(key)} major`;
+  return `${withGlyphs(key)} major`;
 }
 
 /** Display a minor key name in unicode. */
 function keyDisplayMinor(minorRoot: Note): string {
-  return `${displayNote(minorRoot)} minor`;
+  return `${withGlyphs(minorRoot)} minor`;
 }
 
 /**
@@ -179,8 +179,8 @@ export function genKeysig(): DrillItem[] {
       if (!sigToKeyGenerated.has(sigKey)) {
         sigToKeyGenerated.add(sigKey);
 
-        // Inline sigDisplay: e.g. "3#" → "3♯", "3b" → "3♭"
-        const sigDisplay = sigKey.replace(/#/g, '♯').replace(/b/g, '♭');
+        // sigDisplay: e.g. "3#" → "3♯", "3b" → "3♭"
+        const sigDisplay = withGlyphs(sigKey);
         const minorRoot = getRelativeMinor(majorKey);
         const majorDisplay = keyDisplayMajor(majorKey);
         const minorDisplay = keyDisplayMinor(minorRoot);
@@ -268,11 +268,11 @@ export function genKeysig(): DrillItem[] {
         id: `keysig:rel-minor:${keyAscii}`,
         family: 'keysig',
         promptKey: 'drill.prompts.relMinor',
-        promptParams: { key: displayNote(majorKey) },
+        promptParams: { key: withGlyphs(majorKey) },
         input: { format: 'choice', choices },
         answer: { kind: 'choice', correct },
         whyKey: 'drill.why.relative',
-        whyParams: { key: displayNote(majorKey), answer: correct },
+        whyParams: { key: withGlyphs(majorKey), answer: correct },
         rank: keyRank + 4,
       });
     }
@@ -301,11 +301,11 @@ export function genKeysig(): DrillItem[] {
         id: `keysig:rel-major:${minorAscii}`,
         family: 'keysig',
         promptKey: 'drill.prompts.relMajor',
-        promptParams: { key: displayNote(minorRoot) },
+        promptParams: { key: withGlyphs(minorRoot) },
         input: { format: 'choice', choices },
         answer: { kind: 'choice', correct },
         whyKey: 'drill.why.relative',
-        whyParams: { key: displayNote(minorRoot), answer: correct },
+        whyParams: { key: withGlyphs(minorRoot), answer: correct },
         rank: keyRank + 5,
       });
     }

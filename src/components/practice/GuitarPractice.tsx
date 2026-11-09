@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../state/store';
 import { noteToString, type ScaleType } from '../../core/types/music';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs';
 import { getTuningById } from '../../core/constants/guitarTunings';
 import { EXAM_SCALE_TYPES, ROUTE_SCALE_TYPES, maxScaleOctaves } from '../../core/utils/scaleRoutes';
 import { RIGHT_HAND_PATTERNS, DEFAULT_PROGRESSION } from '../../core/utils/rightHandPatterns';
@@ -43,7 +44,7 @@ export default function GuitarPractice() {
   const playerKey = [noteToString(root), scale, tuning.id, tab, route?.id, route?.octaves, scheme, stroke].join('|');
 
   return <div className="practice-content space-y-4">
-    <p className="text-ui">{t('practice.keyOfPiece', { key: `${noteToString(root)} ${t(`scaleName.${scale}`)}` })}</p>
+    <p className="text-ui">{t('practice.keyOfPiece', { key: `${withGlyphs(root)} ${t(`scaleName.${scale}`)}` })}</p>
     <Segment mode="tabs" className="practice-tabs" label={t('practice.title')} value={tab} onChange={setTab}
       options={(['scales', 'walk', 'technical', 'rightHand'] as const).map((value) => ({ value, label: t(`practice.tabs.${value}`), id: `practice-tab-${value}`, controls: 'practice-panel' }))} />
     <div id="practice-panel" role="tabpanel" aria-labelledby={`practice-tab-${tab}`} className="space-y-3">

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { ChoiceOption } from '../exerciseHelpers';
 import { displayPattern } from '../displayPattern';
 import { optionText } from '../exerciseHelpers';
+import { glyphsIfName } from '../../../../core/utils/accidentalGlyphs';
 import { StaffNotationSkeleton } from '../../../notation/StaffNotationSkeleton';
 
 const StaffNotation = lazy(() =>
@@ -42,7 +43,9 @@ export function ChoiceInput({ options, selected, tried, final, onSelect }: Choic
         const disabled = final || isTried;
         const strike = isTried || showWrong;
         const words = opt.melody ? t('exercise.melodyOption', { letter: opt.label, notes: optionText(opt) }) : opt.label;
-        const displayLabel = displayPattern(opt.label);
+        // A name ("D#", "Bbm7", "F–Ab–C") is shown with real ♭ / ♯; the
+        // value, the grading and the accessible name stay as written.
+        const displayLabel = glyphsIfName(displayPattern(opt.label));
         const space = displayLabel.indexOf(' ');
         const firstWord = space < 0 ? displayLabel : displayLabel.slice(0, space);
         const remaining = space < 0 ? '' : displayLabel.slice(space);

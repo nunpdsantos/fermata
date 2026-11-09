@@ -39,8 +39,10 @@ const OPEN_MIDI: Record<string, number[]> = {
 };
 const MAJOR = [0, 2, 4, 5, 7, 9, 11];
 const ACC: Record<string, number> = { '': 0, '#': 1, '##': 2, b: -1, bb: -2 };
+// Degree labels are shown with real ♭ / ♯; read them back as written in the data.
+const ascii = (s: string) => s.replace(/𝄪/gu, '##').replace(/𝄫/gu, 'bb').replace(/♯/g, '#').replace(/♭/g, 'b');
 const labelSemis = (label: string) => {
-  const m = /^(bb|b|##|#)?(\d+)$/.exec(label)!;
+  const m = /^(bb|b|##|#)?(\d+)$/.exec(ascii(label))!;
   return (((MAJOR[(Number(m[2]) - 1) % 7] + ACC[m[1] ?? '']) % 12) + 12) % 12;
 };
 const LETTER: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };

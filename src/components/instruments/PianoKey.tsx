@@ -1,6 +1,7 @@
 import { memo, useCallback, useEffect, useRef } from 'react';
 import type { PianoKey as PianoKeyData } from '../../core/utils/pianoLayout.ts';
 import { noteToString } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import type { Note } from '../../core/types/music.ts';
 import { writtenOctave } from '../../core/utils/degreeSpelling.ts';
 import { useAppStore } from '../../state/store.ts';
@@ -335,7 +336,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
               className="absolute bottom-1 left-1/2 -translate-x-1/2 font-bold"
               style={{ color: labelColor, fontSize: dims.labelSize }}
             >
-              {label}
+              {withGlyphs(label)}
             </span>
           )}
         </div>
@@ -429,7 +430,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
         className="absolute bottom-2 left-1/2 -translate-x-1/2 font-bold"
         style={{ color: labelColor, fontSize: dims.labelSize }}
       >
-        {showLabel && (isC ? `C${keyData.octave}` : (isHighlighted || isChordTone || isVoicingNote) ? label : '')}
+        {showLabel && (isC ? `C${keyData.octave}` : (isHighlighted || isChordTone || isVoicingNote) ? withGlyphs(label) : '')}
       </span>
     </div>
   );

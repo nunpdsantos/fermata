@@ -80,14 +80,14 @@ describe('read-out wording', () => {
     const one = (focus: FocusNote, scale = cMajor, chord: ReturnType<typeof buildChord> | null = null) =>
       readoutVariants(readoutParts({ focus, scale, chord, spellPitchClass: spellSharpDefault, t }))[0];
     expect(one({ pc: 7, source: 'chord' }, cMajor, g7)).toBe('G — root of G7 · dominant of C Major');
-    expect(one({ pc: 5, source: 'chord' }, cMajor, g7)).toBe('F — b7 of G7 · subdominant of C Major');
-    expect(one({ pc: 1, source: 'piano' })).toBe('C# — not in C Major');
+    expect(one({ pc: 5, source: 'chord' }, cMajor, g7)).toBe('F — ♭7 of G7 · subdominant of C Major');
+    expect(one({ pc: 1, source: 'piano' })).toBe('C♯ — not in C Major');
     // Blues: degrees, not function names; spelled from the scale (Eb, not D#).
-    expect(one({ pc: 3, source: 'staff' }, buildScale(N('A'), 'blues'))).toBe('Eb — b5 of A Blues');
+    expect(one({ pc: 3, source: 'staff' }, buildScale(N('A'), 'blues'))).toBe('E♭ — ♭5 of A Blues');
     expect(one({ pc: 9, source: 'staff' }, buildScale(N('A'), 'blues'))).toBe('A — tonic of A Blues');
     // A chord's own spelling wins (C# major's vii° is B#°: B#, not C).
     const cs = buildScale(N('C#'), 'major');
-    expect(one({ pc: 0, source: 'chord' }, cs, buildChord(N('B#'), 'diminished'))).toBe('B# — root of B#dim · leading note of C# Major');
+    expect(one({ pc: 0, source: 'chord' }, cs, buildChord(N('B#'), 'diminished'))).toBe('B♯ — root of B♯dim · leading note of C♯ Major');
   });
 
   it('PT and ES name it in their own words', async () => {

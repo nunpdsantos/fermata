@@ -11,7 +11,7 @@ import type { Note } from '../../types/music';
 import { noteToString } from '../../types/music';
 import type { DrillItem } from '../../types/drill';
 import {
-  displayNote,
+  withGlyphs,
   shuffleStable,
   FAMILY_BASE,
   MAJOR_KEYS,
@@ -90,7 +90,7 @@ export function genFunction(): DrillItem[] {
     const tonic = majorTonicNote(keyStr);
     const scale = buildScale(tonic, 'major');
     const diatonic = getDiatonicChordsForScale(scale);
-    const keyDisplay = `${displayNote(tonic)} major`;
+    const keyDisplay = `${withGlyphs(tonic)} major`;
 
     // Build numeral → chord-display map from diatonic chords
     const numeralToEntry = new Map<string, { root: Note; quality: string }>();
@@ -102,7 +102,7 @@ export function genFunction(): DrillItem[] {
       const entry = numeralToEntry.get(numeral);
       if (!entry) continue; // should never happen for these 6 numerals in major keys
 
-      const chordStr = `${displayNote(entry.root)} ${entry.quality}`;
+      const chordStr = `${withGlyphs(entry.root)} ${entry.quality}`;
       const chordWithNumeral = `${chordStr} (${numeral})`;
       const fn = NUMERAL_FUNCTION[numeral];
       if (!fn) continue;
@@ -155,16 +155,16 @@ export function genFunction(): DrillItem[] {
     const tonicStr = noteToString(tonic);
     const scale = buildScale(tonic, 'major');
     const deg5 = scale.notes[4]; // degree 5 = perfect 5th above tonic
-    const answer = `${displayNote(deg5)}7`;
+    const answer = `${withGlyphs(deg5)}7`;
 
     // Lure pool: use degree 4 V7, relative-minor's V7, adjacent circle-key V7 — all real traps
     const deg4 = scale.notes[3];
-    const lure1 = `${displayNote(deg4)}7`; // IV7 (confusable neighbor)
+    const lure1 = `${withGlyphs(deg4)}7`; // IV7 (confusable neighbor)
 
     const relMinorTonic = getRelativeMinor(tonic);
     const relMinorScale = buildScale(relMinorTonic, 'major'); // relative MAJOR scale of the relative minor
     const relMinorDeg5 = relMinorScale.notes[4];
-    const lure2 = `${displayNote(relMinorDeg5)}7`; // V7 of relative-minor's own major context
+    const lure2 = `${withGlyphs(relMinorDeg5)}7`; // V7 of relative-minor's own major context
 
     // Circle neighbor: the key a perfect 5th below (previous key in circle of fifths)
     // = the key whose degree 5 IS this tonic. We find it by looking at KEY_PRIORITY neighbors.
@@ -174,7 +174,7 @@ export function genFunction(): DrillItem[] {
     const neighborTonic = MAJOR_KEYS.find((k) => noteToString(k) === neighborStr);
     const neighborScale = neighborTonic ? buildScale(neighborTonic, 'major') : scale;
     const neighborDeg5 = neighborScale.notes[4];
-    const lure3 = `${displayNote(neighborDeg5)}7`;
+    const lure3 = `${withGlyphs(neighborDeg5)}7`;
 
     // Build unique choices (correct + up to 3 lures, deduplicated)
     const rawChoices = [answer, lure1, lure2, lure3];
@@ -182,12 +182,12 @@ export function genFunction(): DrillItem[] {
     // If deduplication collapsed below 4, fill from deg2/deg7
     if (unique.length < 4) {
       const deg2 = scale.notes[1];
-      unique.push(`${displayNote(deg2)}7`);
+      unique.push(`${withGlyphs(deg2)}7`);
     }
     const choices = shuffleStable(unique.slice(0, 4), `function:v7-of:${tonicStr}:choices`);
 
-    const keyDisplay = displayNote(tonic);
-    const fiveDisplay = displayNote(deg5);
+    const keyDisplay = withGlyphs(tonic);
+    const fiveDisplay = withGlyphs(deg5);
 
     items.push({
       id: `function:v7-of:${tonicStr}`,

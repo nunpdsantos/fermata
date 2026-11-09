@@ -50,7 +50,7 @@ export function getItemsByFamily(bank: DrillItem[], family: DrillFamily): DrillI
 }
 
 // Public helpers re-exported so existing `import ... from '../drillBank'` keeps working
-export { displayNote, keySignatureOf, MAJOR_KEYS, SHARP_ORDER, FLAT_ORDER } from './shared';
+export { withGlyphs, keySignatureOf, MAJOR_KEYS, SHARP_ORDER, FLAT_ORDER } from './shared';
 export { drillSiblingGroup } from './siblings';
 export { genRead, READ_LADDER, READ_PROMPT_KEYS, READ_WHY_KEYS } from './genRead';
 

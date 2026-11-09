@@ -16,7 +16,7 @@ import type { Note } from '../../types/music';
 import { noteToString } from '../../types/music';
 import type { DrillItem } from '../../types/drill';
 import {
-  displayNote,
+  withGlyphs,
   shuffleStable,
   FAMILY_BASE,
   KEY_PRIORITY,
@@ -45,7 +45,7 @@ const MINOR_PATTERN_NUMERALS = ['i', 'ii°', 'III', 'iv', 'v', 'VI', 'VII'];
  * Format a chord display string: e.g. "C♯ minor" or "F major".
  */
 function chordDisplay(root: Note, quality: string): string {
-  return `${displayNote(root)} ${TRIAD_QUALITY_DISPLAY[quality] ?? quality}`;
+  return `${withGlyphs(root)} ${TRIAD_QUALITY_DISPLAY[quality] ?? quality}`;
 }
 
 /**
@@ -101,7 +101,7 @@ export function genRoman(): DrillItem[] {
       const entry = majorDiatonic[n - 1];
       const correct = chordDisplay(entry.chord.root, entry.chord.quality);
       const numeral = entry.numeral;
-      const keyDisplay = `${displayNote(majorTonic)} major`;
+      const keyDisplay = `${withGlyphs(majorTonic)} major`;
 
       // Build choice lures: 3 other diatonic chords from the same key
       const otherDisplays = majorDiatonic
@@ -154,7 +154,7 @@ export function genRoman(): DrillItem[] {
     const minorTonic = getRelativeMinor(majorTonic);
     const minorStr = noteToString(minorTonic).toLowerCase();
     const minorDiatonic = getDiatonicTriadsMinor(minorTonic);
-    const keyDisplay = `${displayNote(minorTonic)} minor`;
+    const keyDisplay = `${withGlyphs(minorTonic)} minor`;
     const minorKeyIdx = MAJOR_KEYS.indexOf(majorTonic);
 
     for (let n = 1; n <= 7; n++) {
@@ -276,7 +276,7 @@ export function genRoman(): DrillItem[] {
 
     const majorScale = buildScale(majorTonicNote, 'major');
     const majorDiatonic = getDiatonicChordsForScale(majorScale);
-    const keyDisplay = `${displayNote(majorTonicNote)} major`;
+    const keyDisplay = `${withGlyphs(majorTonicNote)} major`;
 
     // Vary n deterministically: n = (keyIdx % 6) + 2 (degrees 2..7)
     const n = (keyIdx % 6) + 2;

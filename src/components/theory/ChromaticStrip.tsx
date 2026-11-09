@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Note, noteToString } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { DEGREE_COLORS, DEGREE_COLORS_DIM, DEGREE_INKS } from '../../design/tokens/colors.ts';
 
 const INTERVAL_SHORT = [
@@ -148,7 +149,7 @@ export function ChromaticStrip({
               </span>
             )}
             <span className="block text-caption opacity-70">{step}</span>
-            <span className="block text-base font-semibold mt-0.5">{noteLabel}</span>
+            <span className="block text-base font-semibold mt-0.5">{withGlyphs(noteLabel)}</span>
             <span className="block text-caption opacity-80">{intervalLabel}</span>
           </button>
         );

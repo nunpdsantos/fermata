@@ -470,7 +470,7 @@ describe.each(Object.entries(THEMES))('piano focus ring and labels on every key 
         try {
           const label = container.querySelector('span')!;
           const face = label.parentElement!;
-          expect(label.textContent).toBe(isBlack ? 'G#' : 'G');
+          expect(label.textContent).toBe(isBlack ? 'G♯' : 'G');
           const bg = resolve(face.style.backgroundColor);
           const ink = resolve(label.style.color);
           expect(contrast(ink, bg), `${isBlack ? 'black' : 'white'} ${fill ?? 'accent'}`).toBeGreaterThanOrEqual(MIN_TEXT);

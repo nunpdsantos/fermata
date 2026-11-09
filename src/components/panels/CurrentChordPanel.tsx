@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useId, useRef, useMemo, type R
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import { noteToString, type Chord, type Note } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { QUALITY_TO_MODULE } from '../../data/qualityToModule.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
@@ -339,12 +340,12 @@ export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanel
       <div className="chord-detail-main">
       <div className="chord-detail-row">
         <h3 className="chord-detail-name">
-          {noteToString(chord.root)}
+          {withGlyphs(chord.root)}
           <span className="chord-detail-quality">
-            {chord.algorithmicDisplayName ?? qualityName(chord.quality, lang)}
+            {chord.algorithmicDisplayName ? withGlyphs(chord.algorithmicDisplayName) : qualityName(chord.quality, lang)}
           </span>
           {chord.bassNote && (
-            <span style={{ color: 'var(--text-dim)' }}>/{noteToString(chord.bassNote)}</span>
+            <span style={{ color: 'var(--text-dim)' }}>/{withGlyphs(chord.bassNote)}</span>
           )}
         </h3>
         {sourceTab && <span className="chord-detail-source text-caption" data-testid="chord-detail-source">{sourceTab}</span>}
@@ -382,7 +383,7 @@ export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanel
                     playTone(note);
                   }}
                 >
-                  {noteToString(note)}
+                  {withGlyphs(note)}
                 </button>
               );
             })}
@@ -428,7 +429,7 @@ export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanel
                 className="text-caption font-mono px-2 py-0.5 rounded-md"
                 style={{ color: 'var(--text-muted)', backgroundColor: 'var(--bg-raised)', border: '1px solid var(--border-subtle)' }}
               >
-                {label}
+                {withGlyphs(label)}
               </span>
             ))}
           </span>
@@ -437,7 +438,7 @@ export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanel
         {/* Compatible scales: choosing one makes it the key (root = this chord's). */}
         {scaleSuggestions.length > 0 && (
           <div className="chord-detail-group chord-detail-scales" role="group" aria-labelledby={`${toneGroupId}-scales-label`}>
-            <span className="type-label" id={`${toneGroupId}-scales-label`}>{t('panel.compatibleScales')} · {noteToString(chord.root)}</span>
+            <span className="type-label" id={`${toneGroupId}-scales-label`}>{t('panel.compatibleScales')} · {withGlyphs(chord.root)}</span>
             <span id={`${toneGroupId}-key-notes`} className="sr-only">{t('panel.keyOwnNotes')}</span>
             <span className="chord-scale-options" ref={scaleOptionsRef}>
               {scaleSuggestions.map((s) => {

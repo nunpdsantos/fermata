@@ -4,6 +4,7 @@ import type { ItemOutcome } from '../exercises/ExerciseRunner';
 import { passMark } from '../exercises/scoring';
 import { choicesForExercise } from '../exercises/exerciseHelpers';
 import { Button } from '../../ui/Button';
+import { glyphsIfName } from '../../../core/utils/accidentalGlyphs';
 
 export interface ResultAction {
   label: string;
@@ -88,9 +89,9 @@ export function ResultScreen({ title, outcomes, kind, passed, rereadFor, note, a
                   <span className="text-ui min-w-0" style={{ color: 'var(--text)' }}>
                     <span>{o.exercise.prompt}</span>
                     <span style={{ color: 'var(--text-muted)' }}> · {t('lesson.youSaid')} </span>
-                    <span>{o.answers.join(`, ${t('lesson.then')} `)}</span>
+                    <span>{o.answers.map(glyphsIfName).join(`, ${t('lesson.then')} `)}</span>
                     <span style={{ color: 'var(--text-muted)' }}> · {t('lesson.itIs')} </span>
-                    <b data-testid="missed-answer">{o.answer}</b>
+                    <b data-testid="missed-answer">{glyphsIfName(o.answer)}</b>
                     {/* After the answers, so no line starts with a bare "·". */}
                     {o.score === 0.5 && <span className="block text-caption" data-testid="half-credit">{t('lesson.secondTryCredit')}</span>}
                   </span>

@@ -23,7 +23,8 @@ import {
   DIST_FILL_MINOR, DIST_STROKE_MINOR, DIST_TEXT_MINOR,
 } from './circleOfFifthsConstants.ts';
 
-import { innerLabelLayout, circleSpelling } from './circleLabelLayout';
+import { innerLabelLayout } from './circleLabelLayout';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs';
 
 type Ring = 'major' | 'minor';
 
@@ -325,7 +326,7 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
     const dist = fifthsDistance(hoveredIdx, refIdx);
     const shown = hoveredRing === 'major' ? majorSegs[hoveredIdx].note : minorSegs[hoveredIdx].note;
     const major = hoveredRing === 'major' ? shown : relativeMajorOf(shown);
-    const relative = hoveredRing === 'major' ? `${noteToString(relativeMinorOf(shown))}m` : noteToString(major);
+    const relative = withGlyphs(hoveredRing === 'major' ? `${noteToString(relativeMinorOf(shown))}m` : noteToString(major));
     const isSelection = selectedSeg !== null && selectedSeg.ring === hoveredRing && selectedSeg.idx === hoveredIdx;
     // The highlighted segment is the selected key — or, for a mode, its
     // parent key (A dorian highlights G major).
@@ -336,7 +337,7 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
         ? t(isParent ? 'circle.parentKey' : 'circle.currentKey')
         : t(`circle.distance${dist}`);
     return {
-      name: `${noteToString(shown)}${hoveredRing === 'minor' ? 'm' : ''}`,
+      name: withGlyphs(`${noteToString(shown)}${hoveredRing === 'minor' ? 'm' : ''}`),
       sig: formatKeySignature(majorKeySignature(major), t('circle.noAccidentals')),
       relative: t('circle.relative', { key: relative }),
       dist,
@@ -351,7 +352,7 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
   // does — "B♯° (vii°) — select C minor" (WCAG 2.5.3 label in name).
   const segmentLabel = (s: { display: string; numeral?: string; note: Note; i: number }, ring: Ring) => {
     const label = t('circle.segmentLabel', {
-      name: s.numeral ? `${circleSpelling(s.display)} (${s.numeral})` : circleSpelling(s.display),
+      name: s.numeral ? `${withGlyphs(s.display)} (${s.numeral})` : withGlyphs(s.display),
       key: t(ring === 'major' ? 'circle.keyMajor' : 'circle.keyMinor', { note: noteToString(s.note) }),
     });
     return chordMark?.ring === ring && chordMark.idx === s.i ? `${label}, ${t('explore.circleChordRoot')}` : label;
@@ -381,7 +382,7 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
     if (ring === 'minor') {
       return <g>{[false, ...(s.numeral ? [true] : [])].map((numeral) => {
         const lane = innerLabelLayout(s.i, numeral, !!s.numeral, unitFloor ? 12.5 * SIZE / unitFloor : 276, s.display, s.numeral);
-        const text = circleSpelling(numeral ? s.numeral! : s.display);
+        const text = withGlyphs(numeral ? s.numeral! : s.display);
         return <text key={String(numeral)} data-name={!numeral || undefined} data-numeral={numeral || undefined}
           x={lane.x} y={lane.y}
           textAnchor="middle" dominantBaseline="central" fontSize={lane.fontSize}
@@ -410,7 +411,7 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
           className={`${ring === 'major' ? 'font-semibold' : 'font-medium'} select-none pointer-events-none`}
           fill={s.textFill}
         >
-          {circleSpelling(s.display)}
+          {withGlyphs(s.display)}
         </text>
         {s.numeral && (
           <text
@@ -575,7 +576,7 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
           className="font-bold select-none"
           fill="var(--text)"
         >
-          {noteToString(selectedKey)}{isMinorSel ? 'm' : ''}
+          {withGlyphs(selectedKey)}{isMinorSel ? 'm' : ''}
         </text>
       )}
     </svg>

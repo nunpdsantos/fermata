@@ -1,6 +1,7 @@
 import { useCallback, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { noteToString } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { KeyPicker, ScalePicker, RootChips, RespellButton } from '../navigation/KeySelector.tsx';
 import { ScaleComparison } from '../theory/ScaleComparison.tsx';
 import { CircleOfFifths } from '../theory/CircleOfFifths.tsx';
@@ -75,7 +76,7 @@ export function ExploreHeader({ practiceAction }: { practiceAction?: ReactNode }
             data-testid="key-picker"
             onClick={() => setKeySheet(true)}
           >
-            <span aria-hidden="true">{noteToString(selectedKey)}</span>
+            <span aria-hidden="true">{withGlyphs(selectedKey)}</span>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M6 9l6 6 6-6" />
             </svg>

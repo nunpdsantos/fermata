@@ -10,6 +10,7 @@ import type { ChordQuality } from '../../../core/types/music';
 import { CurrentChordPanel } from '../CurrentChordPanel';
 import { ChordBrowser } from '../../theory/ChordBrowser';
 import { buildChord, CHORD_FORMULAS, CHORD_SYMBOLS } from '../../../core/constants/chords';
+import { withGlyphs } from '../../../core/utils/accidentalGlyphs';
 import { useAppStore } from '../../../state/store';
 import i18n from '../../../i18n';
 
@@ -92,10 +93,10 @@ describe('W2-10 — chord browser', () => {
     const items = browsable();
     for (const { quality, text } of items) {
       const twins = QUALITIES.filter((o) => o !== quality && pcs(o) === pcs(quality as ChordQuality));
-      for (const t of twins) expect(text, quality).toContain(`= C${CHORD_SYMBOLS[t]}`);
+      for (const t of twins) expect(text, quality).toContain(withGlyphs(`= C${CHORD_SYMBOLS[t]}`));
       if (twins.length === 0) expect(text, quality).not.toContain('=');
     }
-    expect(items.find((i) => i.quality === 'augmented7')!.text).toContain('= C7#5');
+    expect(items.find((i) => i.quality === 'augmented7')!.text).toContain('= C7♯5');
     expect(items.find((i) => i.quality === 'dominant9sus4')!.text).toContain('= C11');
   });
 });
