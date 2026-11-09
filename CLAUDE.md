@@ -359,6 +359,8 @@ src/
 
 ## Current State
 
+**Session start — read the hand-off first.** Before any work, read the READ THIS FIRST block at the top of `../fermata-programme/HANDOFF.md` (the owner's local programme folder, beside this repo, not in git): the current state, what is left for the owner to judge, and the open follow-ups (`../fermata-programme/notes/followups.md`). The durable record is the vault note `~/Obsidian/Experiments/Music Theory App.md` (§ Status). As of 2026-11-09: main `6c21b07` live (release 8 + #57), nothing in progress.
+
 The app is a lean, single-user personal tool — no accounts, no cloud sync, no
 gamification. Curriculum, exercises, spaced repetition, trilingual content, offline
 PWA, sampled piano, instrument-aware playback, and (WS9, branch `ws9-drill-mode`)
