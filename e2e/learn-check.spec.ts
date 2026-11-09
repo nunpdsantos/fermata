@@ -121,9 +121,16 @@ for (const v of VIEWPORTS) {
       await expect(option(page, first.wrong)).toHaveAttribute('data-state', 'tried');
       await expect(option(page, first.wrong)).toBeDisabled();
       if (v.name === 'phone') {
-        // Answers low on a phone, in thumb reach.
+        // Answers low on a phone, in thumb reach: Submit sits in the lower part
+        // of the screen and the answers run down to it. Their TOP is not
+        // asserted: it depends on which question the shuffle puts first (a long
+        // PT question with two- and three-line options starts at ~316 px,
+        // which failed the old "> 322" one run in eight; 9 Nov 2026).
         const box = (await page.getByTestId('check-answers').boundingBox())!;
-        expect(box.y).toBeGreaterThan(844 / 2 - 100);
+        const submit = (await page.getByRole('button', { name: w.submit, exact: true }).boundingBox())!;
+        expect(submit.y).toBeGreaterThan(844 * 0.6);
+        expect(box.y + box.height).toBeGreaterThan(844 / 2);
+        expect(submit.y - (box.y + box.height)).toBeLessThan(40);
       }
       // …right on the second try.
       await option(page, first.right).click();
