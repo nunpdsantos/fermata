@@ -1136,5 +1136,15 @@
     "open": "Full neck",
     "close": "Close full neck"
   },
-  "practice": {"title": "Practise on the guitar"}
+  "practice": {"title": "Practise on the guitar"},
+  "welcome": {
+    "title": "Welcome to Fermata",
+    "explore": "Pick a key and see its notes and chords on the piano or guitar, and its place on the circle of fifths.",
+    "learn": "A step-by-step course in nine levels, with a short check after each lesson.",
+    "drill": "A short session of quick questions a day. The ones you miss come back.",
+    "footer": "Free, no account, works offline. Your progress stays in this browser.",
+    "exploreAction": "Explore a key",
+    "learnAction": "Start the course",
+    "drillAction": "Try a drill"
+  }
 }

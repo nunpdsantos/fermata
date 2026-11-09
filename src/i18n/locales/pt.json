@@ -1136,5 +1136,15 @@
     "open": "Braço inteiro",
     "close": "Fechar o braço inteiro"
   },
-  "practice": {"title": "Praticar na guitarra"}
+  "practice": {"title": "Praticar na guitarra"},
+  "welcome": {
+    "title": "Boas-vindas ao Fermata",
+    "explore": "Escolhe uma tonalidade e vê as suas notas e acordes no piano ou na guitarra, e o seu lugar no círculo das quintas.",
+    "learn": "Um curso passo a passo em nove níveis, com uma verificação curta no fim de cada lição.",
+    "drill": "Uma sessão curta de perguntas rápidas por dia. As que falhas voltam a aparecer.",
+    "footer": "Grátis, sem conta, funciona offline. O teu progresso fica neste navegador.",
+    "exploreAction": "Explorar uma tonalidade",
+    "learnAction": "Começar o curso",
+    "drillAction": "Experimentar um treino"
+  }
 }

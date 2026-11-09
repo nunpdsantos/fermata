@@ -41,6 +41,12 @@ export function ExploreView() {
   const selectedScale = useAppStore((s) => s.selectedScale);
   const guitar = useAppStore((s) => s.instrument === 'guitar');
   const [practice, setPractice] = useState(false);
+  // From the "⋯" menu: the practice tools are the guitar's, so switch to it first.
+  const openPractice = () => {
+    const app = useAppStore.getState();
+    if (app.instrument !== 'guitar') app.setInstrument('guitar');
+    setPractice(true);
+  };
   const practiceAction = guitar ? <Button data-testid="practice-open" aria-haspopup="dialog" onClick={() => setPractice(true)}>{t('practice.title')}</Button> : null;
 
   // A new key or scale starts with nothing in focus; so does leaving Explore.
@@ -51,7 +57,7 @@ export function ExploreView() {
 
   return (
     <div className="explore-root">
-      <ExploreHeader practiceAction={wide ? practiceAction : undefined} />
+      <ExploreHeader practiceAction={wide ? practiceAction : undefined} onPractise={openPractice} />
       <div className="explore-work" data-testid="explore-work" data-layout={wide ? 'workbench' : phone ? 'phone' : 'column'}>
         <div className="explore-main">
           <ScaleStrip key={`${selectedKey.natural}${selectedKey.accidental}:${selectedScale}`} />
