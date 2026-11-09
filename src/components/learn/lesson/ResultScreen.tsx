@@ -4,7 +4,12 @@ import type { ItemOutcome } from '../exercises/ExerciseRunner';
 import { passMark } from '../exercises/scoring';
 import { choicesForExercise } from '../exercises/exerciseHelpers';
 import { Button } from '../../ui/Button';
-import { glyphsIfName } from '../../../core/utils/accidentalGlyphs';
+import { withGlyphs, glyphsIfName } from '../../../core/utils/accidentalGlyphs';
+
+/** As the check showed it: a build's answer ("C Harmonic Minor: C D E♭ …") and
+ * picks with glyphs, as the in-run verdict does; a choice only when it is a name. */
+const shown = (o: ItemOutcome, s: string) =>
+  o.exercise.config.type === 'scale_build' || o.exercise.config.type === 'chord_build' ? withGlyphs(s) : glyphsIfName(s);
 
 export interface ResultAction {
   label: string;
@@ -89,9 +94,9 @@ export function ResultScreen({ title, outcomes, kind, passed, rereadFor, note, a
                   <span className="text-ui min-w-0" style={{ color: 'var(--text)' }}>
                     <span>{o.exercise.prompt}</span>
                     <span style={{ color: 'var(--text-muted)' }}> · {t('lesson.youSaid')} </span>
-                    <span>{o.answers.map(glyphsIfName).join(`, ${t('lesson.then')} `)}</span>
+                    <span>{o.answers.map((a) => shown(o, a)).join(`, ${t('lesson.then')} `)}</span>
                     <span style={{ color: 'var(--text-muted)' }}> · {t('lesson.itIs')} </span>
-                    <b data-testid="missed-answer">{glyphsIfName(o.answer)}</b>
+                    <b data-testid="missed-answer">{shown(o, o.answer)}</b>
                     {/* After the answers, so no line starts with a bare "·". */}
                     {o.score === 0.5 && <span className="block text-caption" data-testid="half-credit">{t('lesson.secondTryCredit')}</span>}
                   </span>

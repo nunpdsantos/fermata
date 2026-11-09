@@ -38,6 +38,8 @@ const NUMERAL_SUFFIX = /^(?:$|maj|dim|aug|sus|add|alt|M|[0-9°øΔ^])/u;
 const ALTERATION = /(bb|b|##|#)(?=\d)/gu;
 /** Key words that may stand beside a name in a whole-name string ("Db major", "F# maior"). */
 const KEY_WORDS = new Set(['major', 'minor', 'maior', 'menor', 'mayor']);
+/** A bare note (a key's root): letter + accidental, nothing after it. */
+const NOTE_ONLY = /^[A-G](?:bb|b|##|#|𝄫|♭|𝄪|♯)?$/u;
 
 const alter = (rest: string) => rest.replace(ALTERATION, (a) => GLYPH[a]);
 
@@ -73,16 +75,29 @@ export function withGlyphs(name: string | Note): string {
  * or spaces. A sentence with a name in it is not one.
  */
 export function isMusicName(s: string): boolean {
+  // A label or a sentence ("Em A menor: Bb maior (Bb-D-F)" — PT "In A minor:
+  // …", where "Em" would read as E minor) is prose, not a name.
+  if (s.includes(':')) return false;
   const parts = s.trim().split(SEPARATORS);
-  let names = 0;
+  const words: { tok: string; key: boolean; before: string }[] = [];
   for (let i = 0; i < parts.length; i += 2) {
-    const tok = parts[i];
-    if (tok === '') continue;
-    if (KEY_WORDS.has(tok.toLowerCase())) continue;
-    if (nameToken(tok) === null) return false;
-    names++;
+    if (parts[i] === '') continue;
+    const key = KEY_WORDS.has(parts[i].toLowerCase());
+    if (!key && nameToken(parts[i]) === null) return false;
+    words.push({ tok: parts[i], key, before: parts[i - 1] ?? '' });
   }
-  return names > 0;
+  if (words.length === 0 || words.every((w) => w.key)) return false;
+  // With "major" / "minor" in it, it must be keys only: each key word right
+  // after one note ("Db major", "F# maior, C# maior"), nothing else.
+  if (words.some((w) => w.key)) {
+    for (let i = 0; i < words.length; i++) {
+      const w = words[i];
+      const next = words[i + 1];
+      if (w.key) continue;
+      if (!next?.key || next.before.trim() !== '' || !NOTE_ONLY.test(w.tok)) return false;
+    }
+  }
+  return true;
 }
 
 /** A choice that may be a name (a Learn answer): glyphs when it is names only, else as written. */

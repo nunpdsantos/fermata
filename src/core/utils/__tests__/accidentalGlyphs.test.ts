@@ -81,7 +81,7 @@ describe('withGlyphs — one display helper for note, key and chord names', () =
 describe('isMusicName / glyphsIfName — a Learn choice is changed only when it is names only', () => {
   it('names only', () => {
     for (const s of ['F', 'D#', 'Db major', 'F# maior', 'F# mayor', 'C–Eb–G', 'C→B, E→E, G→G#', 'I - bVII - IV - I',
-      'Ab, C, Eb, F# — b6, 1, b3, #4', 'Bbm7', 'Ebmaj7/G']) {
+      'Ab, C, Eb, F# — b6, 1, b3, #4', 'Bbm7', 'Ebmaj7/G', 'Em', 'Em7', 'E♭m', 'Ebm', 'Em Am', 'Bb major, Eb major']) {
       expect(isMusicName(s), s).toBe(true);
     }
     expect(glyphsIfName('D#')).toBe('D♯');
@@ -89,6 +89,12 @@ describe('isMusicName / glyphsIfName — a Learn choice is changed only when it 
   });
 
   it('prose with a name inside stays exactly as written (a content release, not a display change)', () => {
+    // PT "Em" (= "In") is not E minor in a sentence; ES "En" never parsed as a name.
+    for (const s of ['Em A menor: Bb maior (Bb-D-F)', 'Em E menor: F# maior (F#-A#-C#)', 'Em A menor', 'En A menor: Bb mayor',
+      'In A minor: Bb major (Bb-D-F)', 'Em A menor Bb maior', 'major', 'Bb7 major']) {
+      expect(isMusicName(s), s).toBe(false);
+      expect(glyphsIfName(s)).toBe(s);
+    }
     for (const s of ['Key signature: F#', '1 sharp (F#)', 'The relative minor of Eb major is C minor',
       'C7(#9) indica E, Bb, D#', 'Shell de E7: E, G#, D', 'Dbl Harm.', 'About Bb', 'Bebop', 'Major 3rd', '']) {
       expect(isMusicName(s), s).toBe(false);
