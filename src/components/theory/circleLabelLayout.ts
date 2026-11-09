@@ -1,3 +1,4 @@
+import { withGlyphs } from '../../core/utils/accidentalGlyphs';
 import { CENTER, SIZE, MINOR_INNER, MINOR_OUTER, SEG_GAP } from './circleOfFifthsConstants';
 
 /** Horizontal label boxes in the inner wedges. At the diagonal wedges the
@@ -5,7 +6,7 @@ import { CENTER, SIZE, MINOR_INNER, MINOR_OUTER, SEG_GAP } from './circleOfFifth
 export function innerLabelLayout(index: number, numeral: boolean, paired: boolean, size = 276, name = '', degree = '') {
   const fontSize = Math.max(numeral ? 10 : 11, (numeral ? 12 : 12.5) * SIZE / size);
   const cap = numeral ? 19.5 : 27;
-  const text = circleSpelling(numeral ? degree : name);
+  const text = withGlyphs(numeral ? degree : name);
   const width = text ? Math.min(cap, [...text].reduce((w, c) =>
     w + (c === 'm' ? 0.91 : c === 'i' || c === '°' ? 0.34 : c === 'v' ? 0.52 : 0.7), 0) * fontSize) : cap;
   const radians = index * Math.PI / 6;
@@ -60,5 +61,3 @@ export function innerLabelLayout(index: number, numeral: boolean, paired: boolea
   };
 }
 
-/** Music glyphs only at display time; all key identifiers remain unchanged. */
-export const circleSpelling = (s: string) => s.replace(/##/g, '𝄪').replace(/bb/g, '𝄫').replace(/#/g, '♯').replace(/b/g, '♭');

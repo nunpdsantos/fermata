@@ -28,7 +28,7 @@ import type { ReadDrillItem } from '../../types/drill';
 import { TUNING_STANDARD } from '../../constants/guitarTunings';
 import { GUITAR_MAX_FRET, OPEN_POSITION, toRomanNumeral, tuningOpenMidi } from '../guitarPositions';
 import { placesForPitch, placesInPosition, positionWindow } from '../fretboardReading';
-import { displayNote, FAMILY_BASE } from './shared';
+import { withGlyphs, FAMILY_BASE } from './shared';
 
 /** Rank base for the reading family (after every theory family's ranks). */
 export const READ_RANK_BASE = FAMILY_BASE.read;
@@ -77,7 +77,7 @@ function pitchedAt(note: Note, midi: number): PitchedNote {
 }
 
 const ascii = (n: PitchedNote) => `${n.natural}${n.accidental}${n.octave}`;
-const display = (n: PitchedNote) => `${displayNote(n)}${n.octave}`;
+const display = (n: PitchedNote) => `${withGlyphs(n)}${n.octave}`;
 
 const CIRCLED = ['①', '②', '③', '④', '⑤', '⑥'];
 

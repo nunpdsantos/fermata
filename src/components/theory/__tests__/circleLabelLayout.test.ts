@@ -2,7 +2,8 @@ import { render, cleanup } from '@testing-library/react';
 import { createElement } from 'react';
 import { CircleOfFifths } from '../CircleOfFifths';
 import { expect, it } from 'vitest';
-import { innerLabelLayout, circleSpelling } from '../circleLabelLayout';
+import { innerLabelLayout } from '../circleLabelLayout';
+import { withGlyphs } from '../../../core/utils/accidentalGlyphs';
 import { CIRCLE_MAJOR, CIRCLE_MINOR, CENTER, MINOR_INNER, MINOR_OUTER, SEG_GAP } from '../circleOfFifthsConstants';
 import { buildScale } from '../../../core/constants/scales';
 import { getDiatonicChordsForScale } from '../../../core/constants/chords';
@@ -58,7 +59,7 @@ for (const type of ['major', 'natural_minor'] as const) {
   }
 }
 it('uses accidental glyphs without changing musical identifiers', () => {
-  expect(circleSpelling('Bbm Ebm G#m B#°')).toBe('B♭m E♭m G♯m B♯°');
+  expect(withGlyphs('Bbm Ebm G#m B#°')).toBe('B♭m E♭m G♯m B♯°');
 });
 
 it('renders every wedge label horizontally, including its ancestors', () => {

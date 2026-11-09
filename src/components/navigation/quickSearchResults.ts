@@ -7,6 +7,7 @@
 
 import { useAppStore } from '../../state/store.ts';
 import { noteToString, stringToNote, type ScaleType, type ChordQuality } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { buildChord, CHORD_QUALITY_NAMES, CHORD_SYMBOLS } from '../../core/constants/chords.ts';
 import { SCALE_TYPE_NAMES } from '../../core/constants/scales.ts';
 import {
@@ -223,5 +224,7 @@ export function getResults(query: string, localized?: LocalizedModuleIndex | nul
     });
   }
 
-  return results.slice(0, 10);
+  // Names on display with real ♭ / ♯ (the query and every lookup stay ASCII);
+  // lesson titles are prose and stay as written.
+  return results.slice(0, 10).map((r) => (r.type === 'Lesson' ? r : { ...r, label: withGlyphs(r.label) }));
 }

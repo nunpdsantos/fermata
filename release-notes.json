@@ -2,6 +2,16 @@
   "$comment": "Release notes for the update prompt (W9b). Newest first. Adding an entry = a new release: increment `release` by 1, one line per language (EN / PT-PT / ES, max 160 characters, no line breaks). `critical: true` marks an emergency: every app on an older release applies it at the next safe moment, even after the learner chose Later. The build reads this file (vite.config.ts) and publishes dist/version.json; a deploy without a new entry shows no What's-new line. CLAUDE.md, PWA section.",
   "releases": [
     {
+      "release": 8,
+      "date": "2026-11-09",
+      "critical": false,
+      "notes": {
+        "en": "Real ♭ and ♯ in note names, a welcome for new visitors, a Drill intro with a steadier counter, and Learn checks that survive wording fixes.",
+        "pt": "♭ e ♯ verdadeiros nos nomes das notas, boas-vindas a quem chega, introdução ao Treino com contador estável e \"ornato\" em vez de \"bordadura\".",
+        "es": "♭ y ♯ reales en los nombres de las notas, bienvenida a quien llega, introducción a la Práctica con un contador estable y otras mejoras."
+      }
+    },
+    {
       "release": 7,
       "date": "2026-11-05",
       "critical": false,

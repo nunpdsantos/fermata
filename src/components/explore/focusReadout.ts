@@ -9,6 +9,7 @@
  * spelled letter — never from a semitone count.
  */
 import { noteToString, type Chord, type Note, type Scale } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { CHORD_SYMBOLS, getChordShortIntervalLabels } from '../../core/constants/chords.ts';
 import { SCALE_FORMULAS, getScaleDegreeFunctionKey } from '../../core/constants/scales.ts';
@@ -37,14 +38,14 @@ export interface ReadoutParts {
 
 /** "C Major", "A Natural Minor": the key as the rest of Explore names it. */
 export function keyName(scale: Scale, t: T): string {
-  return `${noteToString(scale.root)} ${t(`scaleName.${scale.type}`)}`;
+  return `${withGlyphs(scale.root)} ${t(`scaleName.${scale.type}`)}`;
 }
 
 /** "G", "Dm", "Bdim", "G7": the chord symbol the chord cards print. */
 export function chordSymbol(chord: Chord): string {
-  if (chord.algorithmicDisplayName) return `${noteToString(chord.root)}${chord.algorithmicDisplayName}`;
+  if (chord.algorithmicDisplayName) return withGlyphs(`${noteToString(chord.root)}${chord.algorithmicDisplayName}`);
   const base = `${noteToString(chord.root)}${CHORD_SYMBOLS[chord.quality] ?? ''}`;
-  return chord.bassNote ? `${base}/${noteToString(chord.bassNote)}` : base;
+  return withGlyphs(chord.bassNote ? `${base}/${noteToString(chord.bassNote)}` : base);
 }
 
 /** "root", "3rd", "5th", "b7", "#5": what a chord tone is, from the chord's own formula. */
@@ -59,7 +60,7 @@ function chordToneRole(chord: Chord, pc: number, t: T): string | null {
   const label = labels[idx] ?? '';
   if (label === 'R' || label === '1') return t('explore.readout.rootOf', { chord: symbol });
   // Unaltered tones read as ordinals ("3rd"), altered ones keep their label ("b7").
-  const plain = /^\d+$/.test(label) ? t(`explore.readout.tone${label}`, { defaultValue: label }) : label;
+  const plain = /^\d+$/.test(label) ? t(`explore.readout.tone${label}`, { defaultValue: label }) : withGlyphs(label);
   return t('explore.readout.toneOf', { tone: plain, chord: symbol });
 }
 
@@ -74,14 +75,14 @@ function keyRole(scale: Scale, pc: number, t: T): string {
     if (fnKey) return t('explore.readout.fnOf', { fn: t(fnKey.replace('degreeShort.', 'explore.fn.')), key });
   }
   if (deg.number === 1 && deg.alteration === 0) return t('explore.readout.fnOf', { fn: t('explore.fn.tonic'), key });
-  return t('explore.readout.degreeOf', { degree: formatDegree(deg, '1'), key });
+  return t('explore.readout.degreeOf', { degree: withGlyphs(formatDegree(deg, '1')), key });
 }
 
 /** The note's name in context: a chord tone as the chord spells it, else the scale's, else the context spelling. */
 export function focusNoteName(focus: FocusNote, scale: Scale, chord: Chord | null, spellPitchClass: (pc: number) => Note): string {
   const fromChord = chord ? [...chord.notes, ...(chord.bassNote ? [chord.bassNote] : [])].find((n) => getPitchClass(n) === focus.pc) : undefined;
   const fromScale = scale.notes.find((n) => getPitchClass(n) === focus.pc);
-  return noteToString(fromChord ?? fromScale ?? spellPitchClass(focus.pc));
+  return withGlyphs(fromChord ?? fromScale ?? spellPitchClass(focus.pc));
 }
 
 export function readoutParts({ focus, scale, chord, spellPitchClass, locations, t }: ReadoutInput): ReadoutParts {

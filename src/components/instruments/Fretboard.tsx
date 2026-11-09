@@ -17,6 +17,7 @@ import {
 } from '../../core/utils/guitarPositions.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { noteToString } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAudio } from '../../hooks/useAudio.ts';
 import { useAppStore } from '../../state/store.ts';
@@ -777,7 +778,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
               aria-label={t('fretboard.tuningLabel')}
             >
               {GUITAR_TUNINGS.map((tn) => (
-                <option key={tn.id} value={tn.id}>{tn.id === 'standard' ? t('fretboard.standardTuning') : tn.id === 'drop-d' ? 'Drop D (6=D)' : tn.shortName}</option>
+                <option key={tn.id} value={tn.id}>{tn.id === 'standard' ? t('fretboard.standardTuning') : tn.id === 'drop-d' ? 'Drop D (6=D)' : withGlyphs(tn.shortName)}</option>
               ))}
             </SelectTrigger>
           </label>

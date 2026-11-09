@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { GuitarTuning } from '../../core/constants/guitarTunings';
 import { noteToString, type Note, type ScaleType } from '../../core/types/music';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs';
 import { toRomanNumeral } from '../../core/utils/guitarPositions';
 import type { FingeredNote } from '../../core/utils/guitarFingering';
 import { cancelScheduledAudio, playTimedNotes, resumeAudio } from '../../core/services/audio';
@@ -127,7 +128,7 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
         <div className="text-ui space-y-1" data-testid="practice-current">
           <p>{t('practice.step', { current: index + 1, total: route.events.length })}{current.numeral ? ` · ${current.numeral}` : ''}</p>
           {current.notes.map((n, j) => <p key={j}>
-            <strong>{current.rh[j]} · {noteToString(n.note)}</strong>{' · '}{t('practice.finger', { finger: fingerFor(index, n) })}
+            <strong>{current.rh[j]} · {withGlyphs(n.note)}</strong>{' · '}{t('practice.finger', { finger: fingerFor(index, n) })}
             {' · '}{t('explore.readout.stringFret', { string: 6 - n.stringIndex, fret: n.fret })}
             {n.barre && ` · ${t('practice.barre')}`}{n.reach && ` · ${t('practice.reach')}`}
           </p>)}
@@ -144,7 +145,7 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
           onToggleEdit={() => { stop(); setEditing(!editing); }} onResetFingering={() => clearOverrides(keys)} hasOverrides={keys.some((k) => overrides[k] !== undefined)} />
         {editing && <div className="flex flex-wrap gap-2">
           {current.notes.filter((n) => n.fret > 0).map((n) => <label key={n.stringIndex} className="flex items-center gap-2 text-ui">
-            {t('practice.fingerFor', { note: noteToString(n.note), string: 6 - n.stringIndex })}
+            {t('practice.fingerFor', { note: withGlyphs(n.note), string: 6 - n.stringIndex })}
             <SelectTrigger value={fingerFor(index, n)} onChange={(e) => {
               const value = Number(e.target.value) as OverrideFinger;
               setOverride(keyFor(index, n), value === n.finger ? null : value);
@@ -164,7 +165,7 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
           title={event.notes.map(guideText).filter(Boolean).join(' ')}
           aria-label={[t('practice.event', { number: i + 1, notes: event.notes.map((n) => noteToString(n.note)).join(' + ') }), ...event.notes.map(guideText)].filter(Boolean).join('. ')}>
           <span className="text-caption">{event.rh.join('+')}</span>
-          <span>{event.notes.map((n) => noteToString(n.note)).join('+')}</span>
+          <span>{event.notes.map((n) => withGlyphs(n.note)).join('+')}</span>
           <span className="text-caption">{event.notes.map((n) => fingerFor(i, n)).join('+')}{event.notes.some((n) => n.shift) ? ` ${shiftArrow(event.notes.find((n) => n.shift)!.shift)}` : ''}</span>
         </button>)}
       </div>

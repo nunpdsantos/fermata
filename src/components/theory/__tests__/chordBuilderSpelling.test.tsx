@@ -13,6 +13,7 @@ import type { Note } from '../../../core/types/music';
 import { ChordBuilderPanel } from '../ChordBuilderPanel';
 import { useAppStore } from '../../../state/store';
 import { spellDegree, pcOf, mod12 } from '../../../core/utils/__tests__/theoryOracle';
+const ascii = (s: string) => s.replace(/𝄪/gu, '##').replace(/𝄫/gu, 'bb').replace(/♯/g, '#').replace(/♭/g, 'b');
 
 vi.mock('../../../core/services/audio.ts', () => ({ resumeAudio: vi.fn(() => Promise.resolve()), playChordVoiced: vi.fn() }));
 vi.mock('../../../services/synthConfig.ts', () => ({ getSynthConfig: vi.fn(() => ({})) }));
@@ -60,7 +61,7 @@ describe('W1-07 — Chord Builder spells by the chord', () => {
           for (const d of degrees.slice(1)) {
             await act(async () => { fireEvent.click(strip()[semis(d)]); });
           }
-          const notesRow = screen.getByText('Notes').nextElementSibling!.textContent!;
+          const notesRow = ascii(screen.getByText('Notes').nextElementSibling!.textContent!);
           const tag = `key ${key}, ${root} ${q}`;
           if (notesRow !== want.join(' – ')) bad.push(`${tag}: Notes "${notesRow}" want "${want.join(' – ')}"`);
           const intervals = screen.getByText('Intervals').nextElementSibling!.textContent!;
@@ -88,7 +89,7 @@ describe('W1-07 — Chord Builder spells by the chord', () => {
     render(<ChordBuilderPanel />);
     await act(async () => { fireEvent.click(strip()[3]); });
     await act(async () => { fireEvent.click(strip()[7]); });
-    expect(screen.getByText('Notes').nextElementSibling!.textContent).toBe('C – Eb – G');
+    expect(screen.getByText('Notes').nextElementSibling!.textContent).toBe('C – E♭ – G');
     expect(pcOf('Eb')).toBe(mod12(3));
   });
 });

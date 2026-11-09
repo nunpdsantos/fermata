@@ -14,7 +14,7 @@ import { noteToString } from '../../types/music';
 import type { DrillItem } from '../../types/drill';
 import {
   N,
-  displayNote,
+  withGlyphs,
   shuffleStable,
   FAMILY_BASE,
   PRACTICAL_ROOTS,
@@ -171,7 +171,7 @@ export function genInterval(): DrillItem[] {
       const li = NATURAL_NOTE_ORDER.indexOf(lower.natural);
       const ui = NATURAL_NOTE_ORDER.indexOf(upper.natural);
       const letterCount = ((ui - li + 7) % 7) + 1;
-      const letterText = `${displayNote(lower)}–${displayNote(upper)} = ${letterCount} letters`;
+      const letterText = `${withGlyphs(lower)}–${withGlyphs(upper)} = ${letterCount} letters`;
 
       pushItem({
         id,
@@ -217,7 +217,7 @@ export function genInterval(): DrillItem[] {
 
       const rootAscii = noteToString(root);
       const id = `interval:note-above:${rootAscii}:${abbr}`;
-      const correctDisplay = displayNote(result);
+      const correctDisplay = withGlyphs(result);
 
       const choiceDisplays = buildNoteAboveChoices(result);
       const candidates = [...new Set([correctDisplay, ...choiceDisplays])].slice(0, 4);
@@ -228,11 +228,11 @@ export function genInterval(): DrillItem[] {
         id,
         family: 'interval',
         promptKey: 'drill.prompts.noteAbove',
-        promptParams: { interval: fullLabel, root: displayNote(root) },
+        promptParams: { interval: fullLabel, root: withGlyphs(root) },
         input: { format: 'choice', choices },
         answer: { kind: 'choice', correct: correctDisplay },
         whyKey: 'drill.why.intervalLetterFirst',
-        whyParams: { interval: fullLabel, root: displayNote(root), answer: correctDisplay },
+        whyParams: { interval: fullLabel, root: withGlyphs(root), answer: correctDisplay },
         rank: nextRank(),
       });
     }
@@ -256,13 +256,13 @@ export function genInterval(): DrillItem[] {
     const li = NATURAL_NOTE_ORDER.indexOf(lower.natural);
     const ui = NATURAL_NOTE_ORDER.indexOf(upper.natural);
     const letterCount = ((ui - li + 7) % 7) + 1;
-    const letterText = `${displayNote(lower)}–${displayNote(upper)} = ${letterCount} letters`;
+    const letterText = `${withGlyphs(lower)}–${withGlyphs(upper)} = ${letterCount} letters`;
 
     pushItem({
       id,
       family: 'interval',
       promptKey: 'drill.prompts.pairToName',
-      promptParams: { lower: displayNote(lower), upper: displayNote(upper) },
+      promptParams: { lower: withGlyphs(lower), upper: withGlyphs(upper) },
       input: { format: 'choice', choices },
       answer: { kind: 'choice', correct },
       whyKey: 'drill.why.intervalLetterFirst',
@@ -346,13 +346,13 @@ function buildSemitoneNeighbors(n: number): string[] {
 }
 
 function buildNoteAboveChoices(correct: Note): string[] {
-  const correctDisplay = displayNote(correct);
+  const correctDisplay = withGlyphs(correct);
   const lures: string[] = [];
 
   // Enharmonic of correct (if display differs)
   const pc = getPitchClass(correct);
   for (const spelling of PITCH_CLASS_SPELLINGS[pc] ?? []) {
-    const d = displayNote(spelling);
+    const d = withGlyphs(spelling);
     if (d !== correctDisplay && !lures.includes(d)) {
       lures.push(d);
     }
@@ -364,7 +364,7 @@ function buildNoteAboveChoices(correct: Note): string[] {
   const belowLetter = NATURAL_NOTE_ORDER[(correctIdx - 1 + 7) % 7];
   for (const letter of [aboveLetter, belowLetter]) {
     for (const acc of ['', '#', 'b'] as const) {
-      const d = displayNote(N(letter, acc));
+      const d = withGlyphs(N(letter, acc));
       if (!lures.includes(d) && d !== correctDisplay) lures.push(d);
     }
   }

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../../../state/store';
 import type { Note, PitchedNote } from '../../../../core/types/music';
-import { noteToString } from '../../../../core/types/music';
+import { withGlyphs } from '../../../../core/utils/accidentalGlyphs';
 import { directionSpeller } from '../../../../core/utils/spelling';
 import { Button } from '../../../ui/Button';
 import { accentText } from '../../../../design/tokens/learnColors';
@@ -112,7 +112,7 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
       {toggledPCs.size > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {[...toggledPCs].sort((a, b) => a - b).map((pc) => {
-            const label = noteToString(spell(pc));
+            const label = withGlyphs(spell(pc));
             return (
               <span
                 key={pc}

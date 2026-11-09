@@ -16,6 +16,7 @@
 import { buildScale, getRelativeMinor } from '../../constants/scales';
 import type { Note } from '../../types/music';
 import { noteToString } from '../../types/music';
+import { withGlyphs } from '../accidentalGlyphs';
 import type { NaturalNote } from '../../types/music';
 import type { DrillFamily } from '../../types/drill';
 import { mulberry32, seededShuffle } from '../prng';
@@ -33,14 +34,8 @@ export const N = (natural: NaturalNote, accidental: Note['accidental'] = ''): No
 // Display helpers
 // ---------------------------------------------------------------------------
 
-/** Convert ASCII note string to unicode display (e.g. "F#" → "F♯", "Bb" → "B♭"). */
-export function displayNote(n: Note): string {
-  return noteToString(n)
-    .replace(/##/g, '𝄪')
-    .replace(/#/g, '♯')
-    .replace(/bb/g, '𝄫')
-    .replace(/b/g, '♭');
-}
+/** Note names on display: the app's one glyph helper ("F#" → "F♯", "Bb" → "B♭"). */
+export { withGlyphs };
 
 // ---------------------------------------------------------------------------
 // Chord-spelling chips
@@ -62,7 +57,7 @@ export function qualityNearMisses(chordNotes: Note[]): string[] {
     const i = ACCIDENTAL_LADDER.indexOf(tone.accidental);
     for (const j of [i - 1, i + 1]) {
       const acc = ACCIDENTAL_LADDER[j];
-      if (acc !== undefined) out.push(displayNote(N(tone.natural, acc)));
+      if (acc !== undefined) out.push(withGlyphs(N(tone.natural, acc)));
     }
   }
   return out;

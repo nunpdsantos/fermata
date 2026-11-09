@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { noteToString, type ChordQuality } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { buildChord, CHORD_SYMBOLS, CHORD_FORMULAS } from '../../core/constants/chords.ts';
 import { qualityName } from '../../utils/qualityName.ts';
 import { toContentLanguage } from '../drill/drillText.ts';
@@ -128,14 +129,14 @@ export function ChordBrowser({ detail }: { detail?: ReactNode } = {}) {
         }}
       >
         <span className="text-ui font-bold" style={{ color: ink ?? 'var(--text)' }}>
-          {rootLabel}{symbol}
+          {withGlyphs(`${rootLabel}${symbol}`)}
         </span>
         <span className="text-caption leading-tight mt-0.5" style={{ color: ink ?? 'var(--text-dim)' }}>
           {name}
         </span>
         {SAME_NOTES[quality] && (
           <span className="text-caption leading-tight" style={{ color: ink ?? 'var(--text-dim)' }}>
-            {SAME_NOTES[quality]!.map((o) => `= ${rootLabel}${CHORD_SYMBOLS[o]}`).join(' ')}
+            {withGlyphs(SAME_NOTES[quality]!.map((o) => `= ${rootLabel}${CHORD_SYMBOLS[o]}`).join(' '))}
           </span>
         )}
       </button>

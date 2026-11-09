@@ -1,6 +1,7 @@
 import { memo, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { noteToString } from '../../core/types/music.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import type { Note } from '../../core/types/music.ts';
 import type { FingerNumber } from '../../core/constants/guitarChordShapes.ts';
 import { fingerLabel, readableTextOn } from './fretboardConstants.ts';
@@ -202,7 +203,7 @@ export const FretCell = memo(function FretCell({
               : `2px solid ${dotColor}`,
           }}
         >
-          {fingerLabel(finger) || noteLabel}
+          {fingerLabel(finger) || withGlyphs(noteLabel)}
         </div>
       )}
       {/* Classical position dot */}
@@ -228,7 +229,7 @@ export const FretCell = memo(function FretCell({
             ...(positionDot.isStretch && !positionDot.context ? { outline: '2px dashed var(--text)', outlineOffset: 1 } : undefined),
           }}
         >
-          {positionDot.context ? '' : positionDot.label}
+          {positionDot.context ? '' : withGlyphs(positionDot.label)}
           {positionDot.isEdited && (
             // Small corner mark: this is the learner's own fingering.
             <span
@@ -254,7 +255,7 @@ export const FretCell = memo(function FretCell({
             border: isRoot ? '3px solid #ffffff' : `2px solid ${dotColor}`,
           }}
         >
-          {noteLabel}
+          {withGlyphs(noteLabel)}
         </div>
       )}
       {/* Scale dot (no chord, whole-neck view) */}
@@ -276,7 +277,7 @@ export const FretCell = memo(function FretCell({
             boxShadow: isActive ? `0 0 12px ${color}, 0 0 4px ${color}88` : 'none',
           }}
         >
-          {scaleLabel}
+          {withGlyphs(scaleLabel)}
         </div>
       )}
     </div>

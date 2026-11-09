@@ -62,7 +62,8 @@ describe('KeySelector root notes', () => {
     render(<KeySelector />);
     // 12 root notes; black keys named for the selected scale (C major here,
     // so D-flat rather than C-sharp — audit W1-09).
-    const rootLabels = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
+    // Shown with real ♭ / ♯ (display only; the chip's data-root stays ASCII).
+    const rootLabels = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B'];
     for (const label of rootLabels) {
       expect(screen.getByText(label)).toBeDefined();
     }
@@ -78,14 +79,14 @@ describe('KeySelector root notes', () => {
   it('clicking C# sets accidental correctly (offered as C# in a minor scale)', () => {
     useAppStore.setState({ selectedScale: 'natural_minor' });
     render(<KeySelector />);
-    fireEvent.click(screen.getByText('C#'));
+    fireEvent.click(screen.getByText('C♯'));
     const state = useAppStore.getState();
     expect(state.selectedKey).toEqual({ natural: 'C', accidental: '#' });
   });
 
   it('clicking Eb sets flat accidental', () => {
     render(<KeySelector />);
-    fireEvent.click(screen.getByText('Eb'));
+    fireEvent.click(screen.getByText('E♭'));
     const state = useAppStore.getState();
     expect(state.selectedKey).toEqual({ natural: 'E', accidental: 'b' });
   });
@@ -93,7 +94,8 @@ describe('KeySelector root notes', () => {
   it('the root select offers the same twelve names and sets the key', () => {
     render(<KeyPicker />);
     const select = screen.getByRole('combobox', { name: 'Root' }) as HTMLSelectElement;
-    expect([...select.options].map((o) => o.textContent)).toEqual(['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']);
+    expect([...select.options].map((o) => o.textContent)).toEqual(['C', 'D♭', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B']);
+    expect([...select.options].map((o) => o.dataset.root)).toEqual(['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']);
     expect(select.value).toBe('0');
     fireEvent.change(select, { target: { value: '3' } });
     expect(useAppStore.getState().selectedKey).toEqual({ natural: 'E', accidental: 'b' });

@@ -69,11 +69,11 @@ describe('W1-09 — root spelling chosen by mode', () => {
   it('major offers Db, Eb, F#, Ab, Bb; natural minor offers C#, Eb, F#, G#, Bb', () => {
     select('C', 'major');
     const { container, unmount } = render(<KeySelector />);
-    expect(rootButtons(container).map((b) => b.textContent)).toEqual(['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']);
+    expect(rootButtons(container).map((b) => b.dataset.root)).toEqual(['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']);
     unmount();
     select('A', 'natural_minor');
     const r2 = render(<KeySelector />);
-    expect(rootButtons(r2.container).map((b) => b.textContent)).toEqual(['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B']);
+    expect(rootButtons(r2.container).map((b) => b.dataset.root)).toEqual(['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B']);
   });
 
   it('for every scale type, each offered black-key name is no costlier than its twin', () => {
@@ -82,7 +82,7 @@ describe('W1-09 — root spelling chosen by mode', () => {
     for (const type of Object.keys(SCALE_FORMULAS) as ScaleType[]) {
       select('C', type);
       const { container } = render(<KeySelector />);
-      for (const label of rootButtons(container).map((b) => b.textContent!)) {
+      for (const label of rootButtons(container).map((b) => b.dataset.root!)) {
         const twin = TWIN[label];
         if (!twin) continue;
         const [a, b] = [cost(label, type), cost(twin, type)];
@@ -96,7 +96,7 @@ describe('W1-09 — root spelling chosen by mode', () => {
   it('clicking the black key in major selects D-flat major', () => {
     select('C', 'major');
     render(<KeySelector />);
-    fireEvent.click(screen.getByText('Db'));
+    fireEvent.click(screen.getByText('D♭'));
     expect(str(useAppStore.getState().selectedKey)).toBe('Db');
   });
 
@@ -105,7 +105,7 @@ describe('W1-09 — root spelling chosen by mode', () => {
       select(root, 'major');
       const { container } = render(<KeySelector />);
       const pressed = rootButtons(container).filter((b) => b.getAttribute('aria-checked') === 'true');
-      expect(pressed.map((b) => b.textContent), root).toEqual([root]);
+      expect(pressed.map((b) => b.dataset.root), root).toEqual([root]);
       expect(pcOf(pressed[0].getAttribute('data-root')!)).toBe(pcOf(root));
       cleanup();
     }
@@ -142,7 +142,7 @@ describe('W1-09 — root spelling chosen by mode', () => {
   it('scales without a signature take the smaller MAJOR signature (E♭ over D♯, A♭ over G♯)', () => {
     select('C', 'whole_tone');
     const { container } = render(<KeySelector />);
-    expect(rootButtons(container).map((b) => b.textContent)).toEqual(['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']);
+    expect(rootButtons(container).map((b) => b.dataset.root)).toEqual(['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']);
   });
 
   it('re-clicking the active scale never respells the root', () => {
@@ -166,7 +166,7 @@ describe('W1-09 — root spelling chosen by mode', () => {
     for (const type of Object.keys(SCALE_FORMULAS) as ScaleType[]) {
       select('C', type);
       const { container } = render(<KeySelector />);
-      for (const label of rootButtons(container).map((b) => b.textContent!).filter((l) => l.length === 2)) {
+      for (const label of rootButtons(container).map((b) => b.dataset.root!).filter((l) => l.length === 2)) {
         doubles += buildScale(toNote(label), type).notes.filter((n) => n.accidental.length === 2).length;
       }
       cleanup();
@@ -177,13 +177,13 @@ describe('W1-09 — root spelling chosen by mode', () => {
   it('C# altered is offered (not Db altered with four double flats)', () => {
     select('C', 'altered');
     const { container } = render(<KeySelector />);
-    expect(rootButtons(container)[1].textContent).toBe('C#');
+    expect(rootButtons(container)[1].dataset.root).toBe('C#');
   });
 
   it('Eb blues is offered (not D#), spelled Eb Gb Ab A Bb Db with no double flat', () => {
     select('C', 'blues');
     const { container } = render(<KeySelector />);
-    expect(rootButtons(container)[3].textContent).toBe('Eb');
+    expect(rootButtons(container)[3].dataset.root).toBe('Eb');
     expect(buildScale(toNote('Eb'), 'blues').notes.map(str).join(' ')).toBe('Eb Gb Ab A Bb Db');
   });
 

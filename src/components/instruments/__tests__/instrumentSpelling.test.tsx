@@ -52,19 +52,19 @@ describe('FretCell context spelling', () => {
     const { container } = renderFretCell(N('B', 'bb'), { color: '#abc' });
     const cell = within(container).getByRole('button');
     expect(cell.getAttribute('aria-label')).toBe('Bbb, fret 3, string 6');
-    expect(within(container).getByText('Bbb')).toBeTruthy();
+    expect(within(container).getByText('B𝄫')).toBeTruthy();
   });
 
   it('labels the cell C♭ (not B) for a C♭-chord context', () => {
     const { container } = renderFretCell(N('C', 'b'), { color: '#abc' });
-    expect(within(container).getByText('Cb')).toBeTruthy();
+    expect(within(container).getByText('C♭')).toBeTruthy();
   });
 
   it('regression: a plain sharp-default note still reads its sharp name', () => {
     const { container } = renderFretCell(N('F', '#'), { color: '#abc' });
     const cell = within(container).getByRole('button');
     expect(cell.getAttribute('aria-label')).toBe('F#, fret 3, string 6');
-    expect(within(container).getByText('F#')).toBeTruthy();
+    expect(within(container).getByText('F♯')).toBeTruthy();
   });
 });
 
@@ -112,7 +112,7 @@ describe('PianoKey context spelling', () => {
     const { container } = renderPianoKey(keyData, N('D', 'b'));
     const key = within(container).getByRole('button');
     expect(key.getAttribute('aria-label')).toBe('Db4'); // octave stays physical (4)
-    expect(within(container).getByText('Db')).toBeTruthy();
+    expect(within(container).getByText('D♭')).toBeTruthy();
   });
 
   it('the physical B key (pc 11) reads C♭ when the context spells it so — still WHITE, still B-positioned', () => {
@@ -122,7 +122,7 @@ describe('PianoKey context spelling', () => {
     // Label is C♭ but identity is unchanged: white key at physical octave 4.
     // The SPOKEN name follows the letter (audit W1-17): the B4 key spelled C♭
     // is C♭5 in scientific pitch ("C♭4" would name B3, an octave lower).
-    expect(within(container).getByText('Cb')).toBeTruthy();
+    expect(within(container).getByText('C♭')).toBeTruthy();
     expect(key.getAttribute('aria-label')).toBe('Cb5');
     // White-key marker: it is NOT the absolutely-positioned z-10 black element.
     expect(key.className).not.toContain('z-10');
@@ -134,7 +134,7 @@ describe('PianoKey context spelling', () => {
     // physical when it does apply elsewhere.
     const keyData = makeKey(60, 'C', 4, false); // physical C4
     const { container } = renderPianoKey(keyData, N('B', '#'));
-    expect(within(container).getByText('B#')).toBeTruthy();
+    expect(within(container).getByText('B♯')).toBeTruthy();
     expect(within(container).queryByText('C4')).toBeNull();
   });
 
@@ -149,7 +149,7 @@ describe('PianoKey context spelling', () => {
   it('regression: a black key with no displayNote falls back to its physical sharp name', () => {
     const keyData = makeKey(66, 'F', 4, true); // physical F#4
     const { container } = renderPianoKey(keyData, undefined);
-    expect(within(container).getByText('F#')).toBeTruthy();
+    expect(within(container).getByText('F♯')).toBeTruthy();
     expect(within(container).getByRole('button').getAttribute('aria-label')).toBe('F#4');
   });
 

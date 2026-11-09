@@ -2,6 +2,23 @@
 
 /* ─── Self-hosted fonts ────────────────────────────────────────── */
 
+/* The accidentals ♭ ♮ ♯ 𝄪 𝄫 only (brief C, 9 Nov 2026): Source Serif 4 has
+   none, and the system fallback (Hiragino on macOS) set them wide, "E ♭".
+   A 5-glyph subset of Bravura Text 1.482 (SIL OFL 1.1, renamed: "Bravura" is
+   a Reserved Font Name) — public/fonts/fermata-accidentals.README.md.
+   No layout shift: it is preloaded in index.html (4.9 KB) and precached, so
+   it is ready before the app's script has drawn any name; `block` rather
+   than `swap` means that, were it ever late, the wide fallback is not
+   painted first and then swapped. */
+@font-face {
+  font-family: 'Fermata Accidentals';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('/fonts/fermata-accidentals.woff2') format('woff2');
+  unicode-range: U+266D-266F, U+1D12A-1D12B;
+}
+
 @font-face {
   font-family: 'Source Serif 4';
   font-style: normal;
@@ -80,7 +97,7 @@
 
   /* "All Source Serif" (D-28): monospace utilities (timers, the 3fr badge,
      formulas) use the serif with tabular figures instead of a system mono. */
-  --font-mono: 'Source Serif 4', Georgia, serif;
+  --font-mono: 'Fermata Accidentals', 'Source Serif 4', Georgia, serif;
 }
 
 /* Theme-aware semantic text colours as utilities: text-success, text-danger,
@@ -141,8 +158,8 @@
 /* Fermata day — warm cream/walnut/ivory, editorial/luthier aesthetic (default) */
 :root {
   color-scheme: light;
-  --font-sans: 'Source Serif 4', 'Georgia', serif;
-  --font-serif: 'Source Serif 4', 'Georgia', serif;
+  --font-sans: 'Fermata Accidentals', 'Source Serif 4', 'Georgia', serif;
+  --font-serif: 'Fermata Accidentals', 'Source Serif 4', 'Georgia', serif;
   --bg: #f5efe2;
   --bg-raised: #efe7d5;
   --card: #ede4cf;
@@ -241,8 +258,8 @@
 /* Fermata Night — warm walnut/espresso dark variant of the Fermata aesthetic. */
 :root.fermata-night {
   color-scheme: dark;
-  --font-sans: 'Source Serif 4', 'Georgia', serif;
-  --font-serif: 'Source Serif 4', 'Georgia', serif;
+  --font-sans: 'Fermata Accidentals', 'Source Serif 4', 'Georgia', serif;
+  --font-serif: 'Fermata Accidentals', 'Source Serif 4', 'Georgia', serif;
   --bg: #181208;
   --bg-raised: #211a0f;
   --card: #271f12;

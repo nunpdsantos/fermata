@@ -133,7 +133,7 @@ describe('every query a lesson quotes gets a Cmd+K result', () => {
     ['D natural minor scale', 'Scale', 'D Natural Minor'],
     ['C double harmonic major', 'Scale', 'C Double Harmonic'],
     ['C major chord', 'Chord', 'C Major'],
-    ['Bb major chord', 'Chord', 'Bb Major'],
+    ['Bb major chord', 'Chord', 'B♭ Major'],
   ])('"%s" → first result %s %s', (q, type, label) => {
     const [first] = getResults(q);
     expect(first?.type).toBe(type);

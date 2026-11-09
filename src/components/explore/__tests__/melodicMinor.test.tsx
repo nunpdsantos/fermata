@@ -49,7 +49,7 @@ describe('W10-09: the classical staff reuses the strip, both directions', () => 
     expect(desc.getAttribute('aria-checked')).toBe('true');
     expect(columns().map((c) => c.dataset.note)).toEqual(['A', 'G', 'F', 'E', 'D', 'C', 'B', 'A']);
     expect(columns().map((c) => Number(c.dataset.midi))).toEqual([81, 79, 77, 76, 74, 72, 71, 69]);
-    expect(columns().map((c) => c.querySelector('.strip-degree')?.textContent)).toEqual(['1', 'b7', 'b6', '5', '4', 'b3', '2', '1']);
+    expect(columns().map((c) => c.querySelector('.strip-degree')?.textContent)).toEqual(['1', '♭7', '♭6', '5', '4', '♭3', '2', '1']);
     const drawn = JSON.parse(staff.getAttribute('data-notes')!) as PitchedNote[];
     expect(drawn.map((n) => noteToString(n))).toEqual(['A', 'G', 'F', 'E', 'D', 'C', 'B', 'A']);
     expect(staff.getAttribute('data-follow')).toBe('true'); // guitar keeps D-05 transposition
@@ -131,7 +131,7 @@ describe('classical direction reaches the rendered instruments', () => {
       const matching = dots().filter((el) => dotPc(el) === pc);
       expect(matching.length).toBeGreaterThan(0);
       for (const dot of matching) {
-        expect(dot.textContent).toBe(`b${degree}`);
+        expect(dot.textContent).toBe(`♭${degree}`);
         const expected = document.createElement('div');
         expected.style.backgroundColor = DEGREE_COLORS[degree];
         // Whole-neck dots use translucent fills, with the degree hue on the border.
