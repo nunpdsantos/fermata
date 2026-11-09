@@ -56,6 +56,10 @@ async function fades(page: Page, scroller: string) {
   });
 }
 
+/** [left, right] fade opacity, read until settled: the reduced-motion rule
+ * gives every property a 0.01 ms transition, which reads 0 at its start. */
+const sides = (page: Page, scroller: string) => fades(page, scroller).then((f) => [f.left, f.right]);
+
 async function scrollToEnd(page: Page, scroller: string) {
   await page.locator(scroller).first().evaluate((el) => { el.scrollLeft = el.scrollWidth; });
   await page.waitForTimeout(150);
@@ -73,9 +77,9 @@ for (const theme of ['fermata', 'fermata-night']) {
         const rest = await fades(page, row);
         expect(rest.host, `${row} is wrapped`).toBe(true);
         expect(rest.overflows, `${row} overflows on a phone`).toBe(true);
-        expect([rest.left, rest.right], `${row} at rest`).toEqual([0, 1]);
+        await expect.poll(() => sides(page, row), { message: `${row} at rest` }).toEqual([0, 1]);
         await scrollToEnd(page, row);
-        expect(await fades(page, row).then((f) => [f.left, f.right]), `${row} at its end`).toEqual([1, 0]);
+        await expect.poll(() => sides(page, row), { message: `${row} at its end` }).toEqual([1, 0]);
       }
       // Each fade ends in the colour of the surface under its row.
       const surfaces = await page.evaluate(() => {
@@ -92,11 +96,9 @@ for (const theme of ['fermata', 'fermata-night']) {
       const arrows = async () => strip.evaluate((el) => Array.from(el.querySelectorAll('.scroll-strip-arrow')).map((a) => getComputedStyle(a).visibility));
       const keys = page.locator('.piano-scroll');
       await keys.evaluate((el) => { el.scrollLeft = 0; });
-      await page.waitForTimeout(150);
-      expect(await arrows()).toEqual(['hidden', 'visible']);
+      await expect.poll(arrows).toEqual(['hidden', 'visible']);
       await keys.evaluate((el) => { el.scrollLeft = el.scrollWidth; });
-      await page.waitForTimeout(150);
-      expect(await arrows()).toEqual(['visible', 'hidden']);
+      await expect.poll(arrows).toEqual(['visible', 'hidden']);
       // Its text reads (≥ 4.5:1 is the design sweep's job; here: on screen, 12 px+).
       const text = strip.locator('.scroll-strip-text');
       expect(parseFloat(await text.evaluate((el) => getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(12);
@@ -114,11 +116,10 @@ for (const theme of ['fermata', 'fermata-night']) {
       // Build: the interval steps.
       await page.getByRole('tab', { name: 'Build' }).click();
       await expect(page.locator(STEPS)).toBeVisible();
-      const steps = await fades(page, STEPS);
-      expect(steps.overflows).toBe(true);
-      expect([steps.left, steps.right]).toEqual([0, 1]);
+      expect((await fades(page, STEPS)).overflows).toBe(true);
+      await expect.poll(() => sides(page, STEPS)).toEqual([0, 1]);
       await scrollToEnd(page, STEPS);
-      expect(await fades(page, STEPS).then((f) => [f.left, f.right])).toEqual([1, 0]);
+      await expect.poll(() => sides(page, STEPS)).toEqual([1, 0]);
     } finally {
       await context.close();
     }
@@ -129,14 +130,13 @@ test('laptop 1440×900: rows that fit show no fade', async ({ browser }) => {
   const { context, page } = await open(browser, { w: 1440, h: 900 });
   try {
     for (const row of [CHORD_ROW, OCTAVES]) {
-      const f = await fades(page, row);
-      expect(f.overflows, `${row} fits`).toBe(false);
-      expect([f.left, f.right], row).toEqual([0, 0]);
+      expect((await fades(page, row)).overflows, `${row} fits`).toBe(false);
+      await expect.poll(() => sides(page, row), { message: row }).toEqual([0, 0]);
     }
     await page.getByRole('tab', { name: 'Build' }).click();
-    const steps = await fades(page, STEPS);
-    expect(steps.overflows).toBe(false);
-    expect([steps.left, steps.right]).toEqual([0, 0]);
+    await expect(page.locator(STEPS)).toBeVisible();
+    expect((await fades(page, STEPS)).overflows).toBe(false);
+    await expect.poll(() => sides(page, STEPS)).toEqual([0, 0]);
   } finally {
     await context.close();
   }
