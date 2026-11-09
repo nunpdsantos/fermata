@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useId, useRef, useMemo, type ReactNode } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useId, useRef, useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import { noteToString, type Chord, type Note } from '../../core/types/music.ts';
@@ -42,6 +42,7 @@ import {
 } from '../../core/constants/chords.ts';
 import { LearnMoreButton } from './LearnMoreButton.tsx';
 import { ChipGroup } from '../ui/ChoiceChip.tsx';
+import { Menu } from '../ui/Menu.tsx';
 
 import { landChordDetail } from './chordScrollLanding';
 import { fitScaleChips } from './fitScaleChips';
@@ -207,8 +208,12 @@ export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanel
     [chord, scale],
   );
   const scaleOptionsRef = useRef<HTMLSpanElement>(null);
+  // How many chips the two-row workbench layout (≥ 1440 px) had no room
+  // for: a "+n" menu at the end of the row offers them (5 Nov eye review —
+  // at 1536 px Major Pentatonic was hidden with nothing to say so).
+  const [hiddenScales, setHiddenScales] = useState(0);
   useLayoutEffect(() => {
-    if (scaleOptionsRef.current) return fitScaleChips(scaleOptionsRef.current);
+    if (scaleOptionsRef.current) return fitScaleChips(scaleOptionsRef.current, setHiddenScales);
   }, [scaleSuggestions, lang]);
 
   const handlePlayChord = useCallback(async () => {
@@ -465,6 +470,25 @@ export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanel
                   </button>
                 );
               })}
+              {hiddenScales > 0 && (
+                <span className="chord-scale-more" data-scale-more="">
+                  <Menu
+                    portal
+                    label={t('panel.compatibleScales')}
+                    buttonLabel={t('panel.moreScales', { count: hiddenScales })}
+                    icon={<span aria-hidden="true">+{hiddenScales}</span>}
+                    testId="chord-scale-more"
+                    items={scaleSuggestions.slice(scaleSuggestions.length - hiddenScales).map((s) => ({
+                      id: s.scale,
+                      label: t(`scaleName.${s.scale}`),
+                      onSelect: () => {
+                        setKey(chord.root);
+                        setScale(s.scale);
+                      },
+                    }))}
+                  />
+                </span>
+              )}
             </span>
           </div>
         )}

@@ -1251,13 +1251,33 @@ body {
      the pointer); each column's labels sit below the staff. */
   .strip-frame { min-width: 0; }
   .strip-window { position: relative; max-width: 100%; }
-  .strip-window::after, .strip-window::before {
+  /* The same edge fades on the other sideways rows (chord cards, interval
+     steps, octave chips — `ui/EdgeFade`): shown on a side only while the
+     row has more off that side; they blend into --edge-fade-bg (the
+     surface the row sits on, --card by default). */
+  .edge-fade { position: relative; min-width: 0; }
+  .strip-window::after, .strip-window::before, .edge-fade::after, .edge-fade::before {
     content: ''; position: absolute; top: 0; bottom: 0; width: 18px;
     pointer-events: none; z-index: 4; opacity: 0;
   }
-  .strip-window::after { right: 0; background: linear-gradient(to right, transparent, var(--card)); }
+  .strip-window::after, .edge-fade::after { right: 0; background: linear-gradient(to right, transparent, var(--edge-fade-bg, var(--card))); }
   .strip-window::before { left: var(--strip-clef-width); background: linear-gradient(to left, transparent, var(--card)); }
-  .strip-window[data-more-right]::after, .strip-window[data-more-left]::before { opacity: 1; }
+  .edge-fade::before { left: 0; background: linear-gradient(to left, transparent, var(--edge-fade-bg, var(--card))); }
+  .strip-window[data-more-right]::after, .strip-window[data-more-left]::before,
+  .edge-fade[data-more-right]::after, .edge-fade[data-more-left]::before { opacity: 1; }
+  /* A chip or card reached by keyboard (or scrolled to) stops clear of the
+     fade instead of under it. */
+  .edge-fade > * { scroll-padding-inline: 18px; }
+  /* The phone instrument's drag strip says what it is for, and its ‹ ›
+     which way there is more (ScrollStrip `hint`). */
+  .scroll-strip-hint { gap: 10px; padding-inline: 12px; }
+  /* Nothing off either side (the phone fretboard fits its window): the
+     strip would pan nothing, so it is not there. */
+  .scroll-strip-hint:not([data-more-left]):not([data-more-right]) { display: none !important; }
+  .scroll-strip-text { color: var(--text-dim); white-space: nowrap; line-height: 1; }
+  .scroll-strip-arrow { color: var(--text-dim); font-size: var(--text-ui); line-height: 1; visibility: hidden; }
+  .scroll-strip-hint[data-more-left] .scroll-strip-arrow[data-side="left"],
+  .scroll-strip-hint[data-more-right] .scroll-strip-arrow[data-side="right"] { visibility: visible; }
   .strip-clef { position: absolute; left: 0; top: 0; bottom: 0; width: var(--strip-clef-width); overflow: hidden; background: var(--card); pointer-events: none; z-index: 3; }
   /* Only the guitar's narrow 8vb tail enters the label band. The opaque
      signature prefix must never paint over a degree beneath a notehead. */
@@ -1521,6 +1541,18 @@ body {
     .chord-scale-options [data-fit-hidden] {
       display: none;
     }
+    .chord-scale-more {
+      display: inline-flex;
+      flex: none;
+    }
+    .chord-scale-more .btn {
+      border: 1px solid var(--border);
+      font-variant-numeric: tabular-nums;
+    }
+  }
+  /* "+n" exists only for the two-row layout above (print shows every chip). */
+  @media not screen and (min-width: 1440px) {
+    .chord-scale-more { display: none; }
   }
   @media (max-width: 639px) {
     .chord-detail {
@@ -2175,6 +2207,9 @@ p.explore-prose {
 .dock-piano-tools { flex: 1; min-width: 0; }
 .dock-piano-tools .piano-octave-row { padding: 0; border: 0 !important; }
 .dock-piano-tools .chip-group { flex-wrap: nowrap; overflow-x: auto; }
+/* The octave row's edge fades blend into the surface it sits on. */
+.piano-octave-row .edge-fade { --edge-fade-bg: var(--bg); }
+.dock-piano-tools .edge-fade { --edge-fade-bg: var(--bg-raised); }
 .dock-piano-tools .chip { flex: none; }
 
 @media (max-height: 500px) and (min-width: 640px) {
@@ -2189,7 +2224,7 @@ p.explore-prose {
 }
 @media print {
   .strip-window { width: 100% !important; }
-  .strip-clef, .strip-window::before, .strip-window::after { display: none; }
+  .strip-clef, .strip-window::before, .strip-window::after, .edge-fade::before, .edge-fade::after { display: none; }
 }
 .celebration-panel { display: flex; flex-direction: column; max-height: calc(100dvh - 24px); }
 .celebration-panel > button { flex: none; }

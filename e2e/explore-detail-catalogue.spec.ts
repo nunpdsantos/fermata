@@ -45,11 +45,14 @@ for (const language of ['en', 'pt', 'es'] as const) {
                 const rows = Array.from(el.querySelectorAll<HTMLElement>('.chord-detail-row'));
                 const main = el.querySelector<HTMLElement>('.chord-detail-main')!;
                 const options = el.querySelector<HTMLElement>('.chord-scale-options');
-                const chips = Array.from(options?.querySelectorAll<HTMLButtonElement>('button') ?? []);
+                // The chips are the options' own buttons; the "+n" menu that
+                // offers the hidden ones (9 Nov) sits after them.
+                const chips = Array.from(options?.children ?? []).filter((c): c is HTMLButtonElement => c instanceof HTMLButtonElement);
                 const visible = chips.filter((chip) => getComputedStyle(chip).display !== 'none');
+                const more = options?.querySelector<HTMLElement>('[data-scale-more] button') ?? null;
                 const row = rows[1].getBoundingClientRect();
                 const link = rows[1].querySelector<HTMLElement>('.btn-link')!;
-                const controls = [...visible, link];
+                const controls = [...visible, ...(more ? [more] : []), link];
                 const gap = options ? parseFloat(getComputedStyle(options).columnGap) : 0;
                 const widths = chips.map((chip) => {
                   const hidden = chip.hasAttribute('data-fit-hidden');
@@ -67,6 +70,7 @@ for (const language of ['en', 'pt', 'es'] as const) {
                   visible: visible.map((chip) => chip.dataset.scale),
                   keyVisible: visible.some((chip) => chip.dataset.keyNotes === 'true'),
                   widths, gap, available: options?.getBoundingClientRect().width ?? 0,
+                  more: more ? { text: more.textContent, width: more.getBoundingClientRect().width } : null,
                   controls: controls.map((control) => {
                     const box = control.getBoundingClientRect();
                     return { width: box.width, height: box.height, font: parseFloat(getComputedStyle(control).fontSize),
@@ -91,11 +95,16 @@ for (const language of ['en', 'pt', 'es'] as const) {
                 Number(!!b.keyNotes) - Number(!!a.keyNotes) || priority[a.fit] - priority[b.fit]);
               expect(geometry.visible).toEqual(suggestions.slice(0, geometry.visible.length).map((s) => s.scale));
               if (suggestions.some((s) => s.keyNotes)) expect(geometry.keyVisible).toBe(true);
+              // A hidden chip is announced by "+n" (n = how many); none, no "+n".
+              const hiddenCount = suggestions.length - geometry.visible.length;
+              expect(geometry.more?.text ?? null).toBe(hiddenCount > 0 ? `+${hiddenCount}` : null);
               const next = geometry.visible.length + 1;
               if (next <= suggestions.length) {
-                // Maximal prefix: don't drop a chip that could fit in priority order.
+                // Maximal prefix: don't drop a chip that could fit in priority
+                // order — beside "+n" while chips would still be hidden.
+                const room = next < suggestions.length ? geometry.available - 1 - (geometry.more?.width ?? 0) - geometry.gap : geometry.available - 1;
                 expect(geometry.widths.slice(0, next).reduce((sum, width) => sum + width, 0) + (next - 1) * geometry.gap)
-                  .toBeGreaterThan(geometry.available - 1);
+                  .toBeGreaterThan(room);
               }
             });
           }

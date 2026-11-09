@@ -16,6 +16,7 @@ import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useIsMobile, useIsCompact, useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { ScrollStrip } from './ScrollStrip.tsx';
 import { ChipGroup } from '../ui/ChoiceChip.tsx';
+import { EdgeFade } from '../ui/EdgeFade.tsx';
 import { noteToString } from '../../core/types/music.ts';
 import { writtenOctave } from '../../core/utils/degreeSpelling.ts';
 import { useFocusNote, useFocusNoteStore } from '../../state/focusNoteStore.ts';
@@ -442,13 +443,16 @@ export function Piano() {
   const octaveRow = (
     <div className="piano-octave-row flex items-center gap-2 px-3 max-sm:px-2 py-1.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
       <span className="type-label shrink-0" aria-hidden="true">{t('play.octave')}</span>
-      <ChipGroup
-        label={t('instrument.baseOctave')}
-        className="chip-row-phone min-w-0"
-        value={baseOctave}
-        onChange={setBaseOctave}
-        options={[0, 1, 2, 3, 4, 5, 6, 7, 8].filter((oct) => octaveFits[oct]).map((oct) => ({ value: oct, label: `C${oct}` }))}
-      />
+      {/* One sideways row on a phone: the fade says there are more octaves. */}
+      <EdgeFade>
+        <ChipGroup
+          label={t('instrument.baseOctave')}
+          className="chip-row-phone min-w-0"
+          value={baseOctave}
+          onChange={setBaseOctave}
+          options={[0, 1, 2, 3, 4, 5, 6, 7, 8].filter((oct) => octaveFits[oct]).map((oct) => ({ value: oct, label: `C${oct}` }))}
+        />
+      </EdgeFade>
     </div>
   );
 
@@ -544,7 +548,7 @@ export function Piano() {
       {/* Mobile: dedicated scroll handle. Keys own their touches (taps fire
           notes), so reaching other octaves happens here or via the octave
           buttons above; desktop scrolls by wheel/drag. */}
-      {mobile && <ScrollStrip containerRef={containerRef} label={t('instrument.pianoKeyboard')} />}
+      {mobile && <ScrollStrip containerRef={containerRef} label={t('instrument.pianoKeyboard')} hint={t('instrument.scrollKeys')} />}
     </div>
   );
 }

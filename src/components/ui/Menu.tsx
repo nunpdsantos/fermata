@@ -138,7 +138,12 @@ export function Menu({ label, items, icon = DOTS, testId, badge = false, buttonL
           role="menu"
           aria-label={label}
           className="menu-popup"
-          style={portal ? { position: 'fixed', top: fixedAt?.top ?? 0, right: fixedAt?.right ?? 8, visibility: fixedAt ? undefined : 'hidden' } : undefined}
+          // Unplaced = transparent, not `visibility: hidden`: an item cannot
+          // take focus while hidden, and under reduced motion (index.css
+          // gives every property a 0.01 ms transition, inherited visibility
+          // included) the items were still hidden when the open focused the
+          // first one, so focus stayed on the button (measured, 9 Nov).
+          style={portal ? { position: 'fixed', top: fixedAt?.top ?? 0, right: fixedAt?.right ?? 8, opacity: fixedAt ? undefined : 0 } : undefined}
           onKeyDown={onMenuKey}
         >
           {items.map((item) => (

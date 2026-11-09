@@ -1,5 +1,5 @@
 import { afterEach, expect, it, vi } from 'vitest';
-import { fitScaleChips, scaleChipCount } from '../fitScaleChips';
+import { fitScaleChips, scaleChipCount, scaleChipCountWithMore } from '../fitScaleChips';
 
 afterEach(() => { vi.unstubAllGlobals(); document.body.replaceChildren(); });
 
@@ -37,7 +37,10 @@ it('remeasures full chip widths on resize and font load, and restores all choice
   try {
     const options = document.createElement('span');
     options.style.columnGap = '4px';
-    let available = 205;
+    // The "+n" control's room (here 36 px, one --tap) is kept whenever a
+    // chip is hidden: 120 + 4 + 80 + 4 + 36 = 244.
+    options.style.setProperty('--tap', '36px');
+    let available = 245;
     options.getBoundingClientRect = () => ({ width: available }) as DOMRect;
     let widths = [120, 80, 60];
     const chips = widths.map((_, i) => {
@@ -57,7 +60,7 @@ it('remeasures full chip widths on resize and font load, and restores all choice
     expect(visible()).toEqual([true, true, true]);
     widths = [140, 100, 80];
     fonts.dispatchEvent(new Event('loadingdone'));
-    expect(visible()).toEqual([true, true, false]);
+    expect(visible()).toEqual([true, false, false]);
     available = 100;
     resize();
     expect(visible()).toEqual([true, false, false]);
@@ -74,4 +77,49 @@ it('remeasures full chip widths on resize and font load, and restores all choice
     if (originalFonts) Object.defineProperty(document, 'fonts', originalFonts);
     else Reflect.deleteProperty(document, 'fonts');
   }
+});
+
+it('keeps room for the "+n" control only when a chip is hidden', () => {
+  // All three fit exactly: no "+n", so no room kept for it.
+  expect(scaleChipCountWithMore([120, 80, 60], 268, 4, true, 36)).toBe(3);
+  // One does not fit: the chips that stay leave 4 + 36 px for "+1".
+  expect(scaleChipCountWithMore([120, 80, 60], 267, 4, true, 36)).toBe(2);
+  expect(scaleChipCountWithMore([120, 80, 60], 243, 4, true, 36)).toBe(1);
+  // The key chip stays even where "+n" leaves it no room.
+  expect(scaleChipCountWithMore([120, 80], 100, 4, true, 36)).toBe(1);
+});
+
+it('reports how many chips are hidden, never counts the "+n" control as a chip, and reports 0 on cleanup', async () => {
+  vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+  const media = new EventTarget() as EventTarget & { matches: boolean };
+  media.matches = true;
+  vi.stubGlobal('matchMedia', () => media);
+  const options = document.createElement('span');
+  options.style.columnGap = '4px';
+  options.getBoundingClientRect = () => ({ width: 245 }) as DOMRect;
+  const widths = [120, 80, 60, 90];
+  const chips = widths.map((width) => {
+    const chip = document.createElement('button');
+    chip.getBoundingClientRect = () => ({ width }) as DOMRect;
+    options.append(chip);
+    return chip;
+  });
+  // The rendered "+n" menu (its button nested in a wrapper) measures 40 px.
+  const more = document.createElement('span');
+  more.dataset.scaleMore = '';
+  more.getBoundingClientRect = () => ({ width: 40 }) as DOMRect;
+  more.append(document.createElement('button'));
+  options.append(more);
+  document.body.append(options);
+  const reports: number[] = [];
+  const cleanup = fitScaleChips(options, (n) => reports.push(n));
+  // 120 + 4 + 80 + 4 + 40 = 248 > 244: only the first chip stays, "+3".
+  expect(chips.map((chip) => chip.hasAttribute('data-fit-hidden'))).toEqual([false, true, true, true]);
+  expect(more.hasAttribute('data-fit-hidden')).toBe(false);
+  expect(reports).toEqual([3]);
+  media.matches = false;
+  media.dispatchEvent(new Event('change'));
+  expect(reports).toEqual([3, 0]);
+  cleanup();
+  expect(reports).toEqual([3, 0]);
 });

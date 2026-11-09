@@ -408,7 +408,9 @@
     "label": "Instrumento {{name}}",
     "selectorLabel": "Instrumento",
     "pianoKeyboard": "Teclado de piano",
-    "baseOctave": "Oitava base"
+    "baseOctave": "Oitava base",
+    "scrollKeys": "Desliza aqui para percorrer as teclas",
+    "scrollFrets": "Desliza aqui para percorrer os trastes"
   },
   "review": {
     "title": "Fila de revisão",
@@ -548,6 +550,8 @@
     "formula": "Fórmula",
     "keyOwnNotes": "As notas da tonalidade",
     "compatibleScales": "Escalas compatíveis",
+    "moreScales_one": "+{{count}} escala a mais",
+    "moreScales_other": "+{{count}} escalas a mais",
     "compatibleChords": "Acordes compatíveis",
     "degree": "Grau {{n}}",
     "chord": "Acorde",

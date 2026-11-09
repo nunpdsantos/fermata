@@ -9,6 +9,7 @@ import { qualityName } from '../../utils/qualityName.ts';
 import { toContentLanguage } from '../drill/drillText.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
 import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
+import { EdgeFade } from '../ui/EdgeFade.tsx';
 
 export function ChordGrid() {
   const { t, i18n } = useTranslation();
@@ -45,7 +46,9 @@ export function ChordGrid() {
 
   return (
     // ONE row (W11-B): the chord detail opens under it, in place. On a narrow
-    // screen the row scrolls sideways inside its card; each card keeps 84 px.
+    // screen the row scrolls sideways inside its card; each card keeps 84 px,
+    // and an edge fade says there is more (only while there is).
+    <EdgeFade>
     <div className="chord-row" style={{ gridTemplateColumns: `repeat(${diatonicChords.length}, minmax(84px, 1fr))` }} role="group" aria-label={t('explore.diatonicChordsGroup')}>
       {diatonicChords.map(({ chord, numeral, degree }, i) => {
         const deg = degree as keyof typeof DEGREE_COLORS;
@@ -110,5 +113,6 @@ export function ChordGrid() {
         );
       })}
     </div>
+    </EdgeFade>
   );
 }

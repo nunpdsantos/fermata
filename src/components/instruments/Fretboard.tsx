@@ -953,7 +953,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
     {/* Mobile: dedicated scroll handle. The fretboard surface owns its touches
         (taps fire notes), so reaching other positions happens here, via the
         position chips, or (desktop) wheel/drag. */}
-    {mobile && !neck && <ScrollStrip containerRef={scrollContainerRef} label={t('fretboard.label')} />}
+    {mobile && !neck && <ScrollStrip containerRef={scrollContainerRef} label={t('fretboard.label')} hint={t('instrument.scrollFrets')} />}
     </div>
   );
 }
