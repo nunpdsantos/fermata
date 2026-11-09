@@ -44,7 +44,7 @@ describe('Drill first-visit intro (brief 2026-11-09)', () => {
     expect(intro()).toBeNull();
     expect(useDrillStore.getState().activeSession).not.toBeNull();
     expect(useDrillStore.getState().introDone).toBe(true);
-    expect(counter()?.textContent).toBe('1 of 4');
+    expect(counter()?.textContent).toBe('1 of 8'); // 4 new facts + their second looks
     // Persisted: a reload (re-hydrate from the save) keeps it done.
     expect(JSON.parse(localStorage.getItem(DRILL_STORE_KEY)!).state.introDone).toBe(true);
   });
@@ -88,6 +88,14 @@ describe('Drill first-visit intro (brief 2026-11-09)', () => {
     expect(screen.queryByText('Intervals')).toBeNull();
     expect(screen.getByText('A session is up to 12 questions. Your first one is shorter: just the new facts.')).toBeDefined();
     expect(useDrillStore.getState().activeSession).toBeNull();
+  });
+
+  it('with 0 new facts per session there is no new-facts line, and the length line does not promise new facts', () => {
+    useDrillStore.getState().updateSettings({ newPerSession: 0 });
+    render(<DrillView />);
+    expect(screen.queryByText(/new facts?;/)).toBeNull();
+    expect(screen.queryByText(/brings in 0/)).toBeNull();
+    expect(screen.getByText('A session is up to 24 questions.')).toBeDefined();
   });
 
   it('PT: the intro is Portuguese', async () => {

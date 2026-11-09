@@ -30,6 +30,8 @@ import {
 const DRILL_UI_KEYS: readonly string[] = [
   'drill.progress',
   'drill.reask',
+  'drill.extra',
+  'drill.intro.lengthOnly',
   'drill.intro.title',
   'drill.intro.lead',
   'drill.intro.settings',

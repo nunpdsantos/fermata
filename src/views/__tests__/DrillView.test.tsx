@@ -575,7 +575,8 @@ describe('DrillView — progress counter (W0-02 / D-11)', () => {
     startShortSession();
     render(<DrillView />);
     expect(useDrillStore.getState().activeSession!.queue).toHaveLength(3);
-    expect(screen.getByText('1 of 3')).toBeDefined();
+    // 3 new facts, each with its certain second look (seat review, 2026-11-09).
+    expect(screen.getByText('1 of 6')).toBeDefined();
   });
 
   it('keeps the answered question number during feedback and advances on Continue', () => {
@@ -589,13 +590,14 @@ describe('DrillView — progress counter (W0-02 / D-11)', () => {
       fireEvent.click(screen.getByRole('button', { name: currentWrongChoice() }));
     });
     // Feedback for question 1: still "1 of …" (was "2 of 24" before the fix).
-    // The miss is requeued, but the total stays 4 (brief 2026-11-09: it read
-    // "1 of 5" here — the goalposts moved).
+    // The miss is requeued, but the total stays put (brief 2026-11-09: it read
+    // "1 of 4" then "1 of 5" — the goalposts moved). 4 new facts + their
+    // second looks = 8 from the start.
     expect(useDrillStore.getState().activeSession!.queue).toHaveLength(5);
     expect(screen.getByText('Not quite')).toBeDefined();
-    expect(screen.getByText('1 of 4')).toBeDefined();
+    expect(screen.getByText('1 of 8')).toBeDefined();
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Continue' })));
-    expect(screen.getByText('2 of 4')).toBeDefined();
+    expect(screen.getByText('2 of 8')).toBeDefined();
   });
 
   it('a correct answer also holds its number until the auto-advance', () => {
@@ -672,17 +674,16 @@ describe('DrillView — counter across a full default first session (W7-06)', ()
     const asked = useDrillStore.getState().lifetime.answered;
     expect(seen.length).toBe(asked);
     expect(seen.some((t) => t.endsWith(' of 24'))).toBe(false);
-    // The total never changes (brief 2026-11-09) and the count never goes
-    // back: 4 new facts, then their second looks, marked Again, on "4 of 4".
+    // The total never changes and the count moves every question (brief +
+    // seat review 2026-11-09): 4 new facts and their 4 second looks, 1 … 8 of 8,
+    // the second looks marked Again.
     const totals = new Set(seen.map((t) => t.split(' of ')[1]));
     expect(totals.size).toBe(1);
     const n = Number([...totals][0]);
-    expect(n).toBe(4);
-    expect(asked).toBeGreaterThan(n);
-    const xs = seen.map((t) => Number(t.split(' of ')[0]));
-    expect(xs.every((x, i) => i === 0 || x >= xs[i - 1])).toBe(true);
-    expect(seen[seen.length - 1]).toBe(`${n} of ${n}`);
-    expect(againSeen).toBe(asked - n);
+    expect(n).toBe(8);
+    expect(asked).toBe(n);
+    expect(seen).toEqual(Array.from({ length: n }, (_, i) => `${i + 1} of ${n}`));
+    expect(againSeen).toBe(4);
   });
 });
 

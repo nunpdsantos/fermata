@@ -10,6 +10,8 @@ interface QuestionCardProps {
   total: number;
   /** The question is a re-ask in this session: marked, the total unchanged. */
   again?: boolean;
+  /** k > 0: the k-th extra re-ask outside the planned total — "Extra k" replaces "n of N". */
+  extra?: number;
   prompt: string;
   onEndSession: () => void;
   onOpenSettings: () => void;
@@ -26,6 +28,7 @@ export function QuestionCard({
   asked,
   total,
   again = false,
+  extra = 0,
   prompt,
   onEndSession,
   onOpenSettings,
@@ -45,7 +48,7 @@ export function QuestionCard({
       {/* Slim header: progress · [elapsed] · spacer · settings · end-session */}
       <div className={`drill-question-header flex items-center gap-2 ${stimulus ? 'mb-1' : 'mb-5'}`}>
         <span className="text-ui font-medium tabular-nums" style={{ color: 'var(--text-dim)' }}>
-          {t('drill.progress', { current, total })}
+          {extra > 0 ? t('drill.extra', { n: extra }) : t('drill.progress', { current, total })}
         </span>
         {again && <Badge data-testid="drill-again">{t('drill.reask')}</Badge>}
         {elapsedSeconds !== undefined && (

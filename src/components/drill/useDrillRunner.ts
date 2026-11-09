@@ -96,6 +96,8 @@ export interface DrillRunner {
   total: number;
   /** The question on screen is a re-ask (a miss, or a new fact's second look). */
   again: boolean;
+  /** 0, or k for the k-th extra re-ask outside the planned total (shown as "Extra k"). */
+  extra: number;
   correctCount: number;
   sessionComplete: boolean;
   /** Per-session breakdown for the summary screen (the store's session log). */
@@ -112,6 +114,7 @@ export function useDrillRunner({ autoStart = true }: { autoStart?: boolean } = {
   const { bank, byId } = getBank();
 
   const activeSession = useDrillStore((s) => s.activeSession);
+  const items = useDrillStore((s) => s.items);
   const settings = useDrillStore((s) => s.settings);
   const startSession = useDrillStore((s) => s.startSession);
   const recordAnswer = useDrillStore((s) => s.recordAnswer);
@@ -277,16 +280,23 @@ export function useDrillRunner({ autoStart = true }: { autoStart?: boolean } = {
   let position = 0;
   let total: number = settings.length;
   let again = false;
+  let extra = 0;
   if (activeSession) {
     let at = activeSession.index - 1;
     if (phase === 'answering') {
       at = activeSession.index;
       while (at < activeSession.queue.length && !byId.has(activeSession.queue[at])) at++;
     }
-    const counter = sessionCounter(activeSession.queue, Math.max(0, at), settings.length, (id) => byId.has(id));
+    // New in this session: no state before it, or introduced by it.
+    const sessionId = activeSession.id;
+    const isNew = (id: string) => items[id] === undefined || items[id].introSessionId === sessionId;
+    const counter = sessionCounter(
+      activeSession.queue, Math.max(0, at), settings.length, (id) => byId.has(id), isNew, activeSession.index,
+    );
     position = counter.current - 1;
     total = counter.total;
     again = counter.again;
+    extra = counter.extra;
   }
 
   return {
@@ -298,6 +308,7 @@ export function useDrillRunner({ autoStart = true }: { autoStart?: boolean } = {
     position,
     total,
     again,
+    extra,
     correctCount,
     sessionComplete: complete,
     // Headline numbers track the store/snapshot (authoritative even on resume);

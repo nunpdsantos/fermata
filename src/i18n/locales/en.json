@@ -695,11 +695,13 @@
   "drill": {
     "progress": "{{current}} of {{total}}",
     "reask": "Again",
+    "extra": "Extra {{n}}",
     "intro": {
       "title": "Quick questions on music facts",
       "lead": "Answer from memory, one question at a time. Facts you know well come back less often; facts you miss come back sooner.",
       "settings": "Choose topics",
       "length": "A session is up to {{length}} questions. Your first one is shorter: just the new facts.",
+      "lengthOnly": "A session is up to {{length}} questions.",
       "newFacts_one": "Each session brings in {{count}} new fact; the rest are facts you have already met.",
       "newFacts_other": "Each session brings in {{count}} new facts; the rest are facts you have already met.",
       "comeBack": "A new fact, or a question you miss, comes back later in the session, labelled Again.",

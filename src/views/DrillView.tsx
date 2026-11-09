@@ -55,7 +55,7 @@ export function DrillView() {
   const resetDrillProgress = useDrillStore((s) => s.resetDrillProgress);
   const activeSession = useDrillStore((s) => s.activeSession);
 
-  const { item, presentationKey, phase, result, position, total, again, sessionComplete } = runner;
+  const { item, presentationKey, phase, result, position, total, again, extra, sessionComplete } = runner;
 
   const bank = viewBank();
 
@@ -130,6 +130,7 @@ export function DrillView() {
             position={position}
             total={total}
             again={again}
+            extra={extra}
             startedAt={activeSession?.startedAt ?? null}
             showTimer={settings.showTimer}
             onAnswer={runner.answer}
@@ -157,6 +158,7 @@ interface RunningQuestionProps {
   position: number;
   total: number;
   again: boolean;
+  extra: number;
   startedAt: number | null;
   showTimer: boolean;
   onAnswer: ReturnType<typeof useDrillRunner>['answer'];
@@ -173,6 +175,7 @@ function RunningQuestion({
   position,
   total,
   again,
+  extra,
   startedAt,
   showTimer,
   onAnswer,
@@ -194,6 +197,7 @@ function RunningQuestion({
         asked={position}
         total={total}
         again={again}
+        extra={extra}
         prompt={itemPrompt(item, t, lang)}
         onEndSession={onEndSession}
         onOpenSettings={onOpenSettings}

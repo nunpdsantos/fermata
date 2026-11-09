@@ -695,11 +695,13 @@
   "drill": {
     "progress": "{{current}} de {{total}}",
     "reask": "Outra vez",
+    "extra": "Extra {{n}}",
     "intro": {
       "title": "Perguntas rápidas sobre factos musicais",
       "lead": "Responde de memória, uma pergunta de cada vez. O que já sabes bem volta menos vezes; o que falhas volta mais cedo.",
       "settings": "Escolher tópicos",
       "length": "Uma sessão tem até {{length}} perguntas. A primeira é mais curta: só os factos novos.",
+      "lengthOnly": "Uma sessão tem até {{length}} perguntas.",
       "newFacts_one": "Cada sessão traz {{count}} facto novo; os restantes são factos que já conheces.",
       "newFacts_other": "Cada sessão traz {{count}} factos novos; os restantes são factos que já conheces.",
       "comeBack": "Um facto novo, ou uma pergunta que falhes, volta mais tarde na sessão, com a etiqueta Outra vez.",

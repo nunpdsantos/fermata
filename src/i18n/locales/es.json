@@ -695,11 +695,13 @@
   "drill": {
     "progress": "{{current}} de {{total}}",
     "reask": "Otra vez",
+    "extra": "Extra {{n}}",
     "intro": {
       "title": "Preguntas rápidas sobre conceptos musicales",
       "lead": "Responde de memoria, una pregunta cada vez. Lo que ya sabes bien vuelve menos a menudo; lo que fallas vuelve antes.",
       "settings": "Elegir temas",
       "length": "Una sesión tiene hasta {{length}} preguntas. La primera es más corta: solo los conceptos nuevos.",
+      "lengthOnly": "Una sesión tiene hasta {{length}} preguntas.",
       "newFacts_one": "Cada sesión añade {{count}} concepto nuevo; el resto son conceptos que ya conoces.",
       "newFacts_other": "Cada sesión añade {{count}} conceptos nuevos; el resto son conceptos que ya conoces.",
       "comeBack": "Un concepto nuevo, o una pregunta que falles, vuelve más tarde en la sesión, con la etiqueta Otra vez.",

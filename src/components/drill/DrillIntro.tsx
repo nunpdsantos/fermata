@@ -47,8 +47,9 @@ export function DrillIntro({ settings, onStart, onOpenSettings }: DrillIntroProp
       </div>
 
       <ul className="flex flex-col gap-2 text-body list-disc pl-5" style={{ color: 'var(--text)' }}>
-        <li>{t('drill.intro.length', { length: settings.length })}</li>
-        <li>{t('drill.intro.newFacts', { count: settings.newPerSession })}</li>
+        {/* With no new facts per session the first session is not "just the new facts". */}
+        <li>{t(settings.newPerSession > 0 ? 'drill.intro.length' : 'drill.intro.lengthOnly', { length: settings.length })}</li>
+        {settings.newPerSession > 0 && <li>{t('drill.intro.newFacts', { count: settings.newPerSession })}</li>}
         <li>{t('drill.intro.comeBack')}</li>
       </ul>
 
