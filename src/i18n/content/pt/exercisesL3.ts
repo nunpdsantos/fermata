@@ -442,14 +442,14 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Uma nota de passagem preenche a lacuna entre duas notas do acorde a uma 3.ª de distância. É abordada por grau e resolvida por grau na mesma direção. Exemplo: num acorde de C, D passa entre C e E.',
   },
   l3u11m4e2: {
-    prompt: 'Que padrão tem uma bordadura na nota central sobre um acorde de C maior mantido?',
+    prompt: 'Que padrão tem um ornato na nota central sobre um acorde de C maior mantido?',
     choices: [
       'E4–F4–E4',
       'E4–D4–C4',
       'G4–E4–G4',
       'E4–G4–C5',
     ],
-    hint: 'Uma bordadura (ou nota auxiliar) afasta-se de uma nota do acorde por grau (para cima ou para baixo) e regressa à mesma nota. Decora uma única altura: nota do acorde → grau para fora → grau de volta.',
+    hint: 'Um ornato (ou nota auxiliar) afasta-se de uma nota do acorde por grau (para cima ou para baixo) e regressa à mesma nota. Decora uma única altura: nota do acorde → grau para fora → grau de volta.',
     nudge: 'Sobre um acorde de C maior, compara C–D–C com C–D–E: um deles é uma nota de passagem. O que faz o D no outro?',
   },
   l3u11m4e3: {

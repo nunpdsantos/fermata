@@ -95,14 +95,14 @@ const overlay: ExerciseLevelOverlay = {
   },
   l4u12m3e2: {
     prompt:
-      'O que é uma "cambiata" (também chamada grupo de bordaduras ou bordadura dupla)?',
+      'O que é uma "cambiata" (também chamada grupo de ornatos ou ornato duplo)?',
     choices: [
       "Uma melodia contorna uma nota do acorde usando as duas alturas adjacentes antes de regressar",
       "Uma melodia liga duas notas do acorde por graus conjuntos na mesma direção",
       "Uma melodia repete uma nota do acorde enquanto a harmonia muda por baixo",
       "Uma melodia deixa uma nota do acorde por salto e regressa por grau conjunto",
     ],
-    hint: 'Uma cambiata (grupo de bordaduras) decora uma nota do acorde movendo-se para a bordadura superior, depois para a bordadura inferior (ou vice-versa) antes de regressar. Por exemplo: C-D-B-C ornamenta a nota C.',
+    hint: 'Uma cambiata (grupo de ornatos) decora uma nota do acorde movendo-se para o ornato superior, depois para o ornato inferior (ou vice-versa) antes de regressar. Por exemplo: C-D-B-C ornamenta a nota C.',
   },
   l4u12m3e3: {
     prompt: 'Onde é que um pedal é mais frequentemente encontrado?',
@@ -414,15 +414,15 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Uma nota de passagem cromática preenche o intervalo entre duas notas diatónicas que estão a um tom de distância. Por exemplo, entre C e D, um C# como nota de passagem cromática cria movimento suave por meio-tom: C-C#-D.',
   },
   l4u14m3e2: {
-    prompt: 'O que é uma bordadura cromática?',
+    prompt: 'O que é um ornato cromático?',
     choices: [
       'Uma nota fora da tonalidade que se afasta e regressa por grau conjunto à mesma nota do acorde',
       'Uma nota dentro da tonalidade que se afasta e regressa por grau conjunto à mesma nota do acorde',
       'Uma nota fora da tonalidade que passa por grau conjunto entre duas notas diferentes do acorde',
       'Uma nota dentro da tonalidade que passa por grau conjunto entre duas notas diferentes do acorde',
     ],
-    hint: 'Uma bordadura cromática é um ornamento que se move por meio-tom a partir de uma nota do acorde e regressa: ex. E-D#-E (inferior) ou G-Ab-G (superior). Acrescenta cor sem alterar a direção harmónica, funcionando como decoração de superfície.',
-    nudge: 'Junta as duas palavras: o que faz uma bordadura depois de deixar a nota do acorde, e o que te diz "cromática" sobre o tamanho do passo?',
+    hint: 'Um ornato cromático é um ornamento que se move por meio-tom a partir de uma nota do acorde e regressa: ex. E-D#-E (inferior) ou G-Ab-G (superior). Acrescenta cor sem alterar a direção harmónica, funcionando como decoração de superfície.',
+    nudge: 'Junta as duas palavras: o que faz um ornato depois de deixar a nota do acorde, e o que te diz "cromático" sobre o tamanho do passo?',
   },
   l4u14m3e3: {
     prompt:
@@ -433,7 +433,7 @@ const overlay: ExerciseLevelOverlay = {
       'Ornamentações duram mais do que notas estruturais',
       'Notas estruturais estão sempre no baixo enquanto ornamentações estão nas vozes superiores',
     ],
-    hint: 'Ornamentações cromáticas (notas de passagem, bordaduras) são decorações de superfície que não afetam a harmonia subjacente. Notas cromáticas estruturais (como sensíveis aplicadas ou acordes emprestados) alteram efetivamente o acorde ou tonicizam brevemente uma tonalidade diferente.',
+    hint: 'Ornamentações cromáticas (notas de passagem, ornatos) são decorações de superfície que não afetam a harmonia subjacente. Notas cromáticas estruturais (como sensíveis aplicadas ou acordes emprestados) alteram efetivamente o acorde ou tonicizam brevemente uma tonalidade diferente.',
     nudge: 'Faz um teste de remoção: tira a nota cromática (ou repõe a sua forma diatónica) e pergunta-te o que se perde — só um toque de cor, ou a própria identidade do acorde?',
   },
 

@@ -395,7 +395,7 @@ const overlay: ExerciseLevelOverlay = {
   l9u32m2e1: {
     prompt:
       'Ouve este intervalo ascendente e identifica-o.',
-    hint: 'E para F é um meio-tom (1 meio-tom) entre duas letras diferentes — um meio-tom diatónico, que já está dentro de C maior. Um meio-tom cromático mantém a letra (F para F#). Numa melodia, qualquer um deles funciona muitas vezes como nota de passagem ou bordadura.',
+    hint: 'E para F é um meio-tom (1 meio-tom) entre duas letras diferentes — um meio-tom diatónico, que já está dentro de C maior. Um meio-tom cromático mantém a letra (F para F#). Numa melodia, qualquer um deles funciona muitas vezes como nota de passagem ou ornato.',
   },
   l9u32m2e2: {
     prompt:
@@ -419,7 +419,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l9u32m2e5: {
     prompt: 'Ouve a melodia e escolhe a que ouviste.',
-    hint: 'Uma nota sai mesmo à beira da tonalidade e volta logo: uma bordadura cromática.',
+    hint: 'Uma nota sai mesmo à beira da tonalidade e volta logo: um ornato cromático.',
   },
   l9u32m2e6: {
     prompt: 'Ouve a melodia e escolhe a que ouviste.',

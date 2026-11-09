@@ -74,7 +74,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Tipos de retardo: 4-3, 7-6, 9-8',
           explanation:
-            'Os retardos são nomeados pelos intervalos que formam acima do baixo no momento da dissonância e da resolução. O retardo 4-3 é o mais comum: uma 4.ª acima do baixo resolve para uma 3.ª. O retardo 7-6 retém uma 7.ª que resolve para uma 6.ª — comum em sequências e cadeias de retardos. O retardo 9-8 retém uma 9.ª (ou 2.ª uma oitava acima) que resolve para uma oitava. Todos os três resolvem por grau conjunto descendente. Um retardo ornamentado acrescenta uma ou mais notas entre o retardo e a sua resolução, como uma breve bordadura inferior, antes de a linha chegar à sua resolução um grau abaixo.',
+            'Os retardos são nomeados pelos intervalos que formam acima do baixo no momento da dissonância e da resolução. O retardo 4-3 é o mais comum: uma 4.ª acima do baixo resolve para uma 3.ª. O retardo 7-6 retém uma 7.ª que resolve para uma 6.ª — comum em sequências e cadeias de retardos. O retardo 9-8 retém uma 9.ª (ou 2.ª uma oitava acima) que resolve para uma oitava. Todos os três resolvem por grau conjunto descendente. Um retardo ornamentado acrescenta uma ou mais notas entre o retardo e a sua resolução, como um breve ornato inferior, antes de a linha chegar à sua resolução um grau abaixo.',
           tryThisLabel: 'Imagina manter C sobre este acorde (sus 4-3)',
         },
         {
@@ -149,11 +149,11 @@ const curriculumL4: CurriculumLevelOverlay = {
     // ── U12 M3: Pedal Point and Changing Tones ──────────────────────────────
     l4u12m3: {
       title: 'Pedal e cambiatas',
-      subtitle: 'Notas sustentadas no baixo e ornamentos de bordadura dupla',
+      subtitle: 'Notas sustentadas no baixo e ornatos duplos',
       objectives: [
         'Compreender o pedal como uma nota sustentada sobre harmonias em mudança',
         'Identificar os tipos de pedal: de baixo, invertido, interno e pedal duplo',
-        'Reconhecer as cambiatas (bordadura dupla) como uma figura ornamental emparelhada',
+        'Reconhecer as cambiatas (ornato duplo) como uma figura ornamental emparelhada',
       ],
       concepts: [
         {
@@ -169,9 +169,9 @@ const curriculumL4: CurriculumLevelOverlay = {
           tryThisLabel: 'G é a nota de pedal de dominante em C maior',
         },
         {
-          title: 'Cambiatas (bordadura dupla)',
+          title: 'Cambiatas (ornato duplo)',
           explanation:
-            'As cambiatas são um par de bordaduras em sequência: nota do acorde, bordadura superior, bordadura inferior, regresso à nota original do acorde (ou na ordem inversa). Também chamadas "grupo de bordaduras" ou "bordadura dupla". Criam uma órbita decorativa em torno de uma única altura, ornamentando-a de ambos os lados antes de regressar. A figura ocorre tipicamente numa posição de tempo fraco e acrescenta interesse melódico sem perturbar a harmonia subjacente.',
+            'As cambiatas são um par de ornatos em sequência: nota do acorde, ornato superior, ornato inferior, regresso à nota original do acorde (ou na ordem inversa). Também chamadas "grupo de ornatos" ou "ornato duplo". Criam uma órbita decorativa em torno de uma única altura, ornamentando-a de ambos os lados antes de regressar. A figura ocorre tipicamente numa posição de tempo fraco e acrescenta interesse melódico sem perturbar a harmonia subjacente.',
           tryThisLabel: 'Imagina orbitar em torno de E com F e depois D',
         },
       ],
@@ -186,7 +186,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Uma figura de cambiata em torno de E em C maior: E-F-D-E. O F é a bordadura superior, o D é a bordadura inferior, e a figura regressa a E. Este ornamento de bordadura dupla decora uma única nota do acorde de ambos os lados',
+            'Uma figura de cambiata em torno de E em C maior: E-F-D-E. O F é o ornato superior, o D é o ornato inferior, e a figura regressa a E. Este ornato duplo decora uma única nota do acorde de ambos os lados',
         },
       ],
     },
@@ -538,7 +538,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'Primeira e segunda espécie',
           explanation:
-            'A primeira espécie (1:1) coloca uma nota do contraponto contra cada nota do cantus firmus (melodia dada). Cada intervalo deve ser consonante. Começa e termina em uníssono, 5.ª perfeita ou oitava, usa maioritariamente consonâncias imperfeitas, e nunca se aproxima de consonâncias perfeitas em movimento paralelo. A segunda espécie (2:1) acrescenta duas notas contra cada nota do cantus firmus. Tempos fortes devem ser consonantes; na espécie estrita, a única dissonância permitida num tempo fraco é a nota de passagem, abordada e abandonada por grau conjunto (as bordaduras dissonantes chegam mais tarde, na terceira espécie — embora alguns textos modernos as admitam mais cedo). Os tempos fracos também podem ser consonantes — é permitido um salto para um intervalo consonante. É aqui que as notas estranhas ao acorde entram pela primeira vez no contraponto.',
+            'A primeira espécie (1:1) coloca uma nota do contraponto contra cada nota do cantus firmus (melodia dada). Cada intervalo deve ser consonante. Começa e termina em uníssono, 5.ª perfeita ou oitava, usa maioritariamente consonâncias imperfeitas, e nunca se aproxima de consonâncias perfeitas em movimento paralelo. A segunda espécie (2:1) acrescenta duas notas contra cada nota do cantus firmus. Tempos fortes devem ser consonantes; na espécie estrita, a única dissonância permitida num tempo fraco é a nota de passagem, abordada e abandonada por grau conjunto (os ornatos dissonantes chegam mais tarde, na terceira espécie — embora alguns textos modernos os admitam mais cedo). Os tempos fracos também podem ser consonantes — é permitido um salto para um intervalo consonante. É aqui que as notas estranhas ao acorde entram pela primeira vez no contraponto.',
           tryThisLabel: 'Imagina uma segunda voz contra esta linha',
         },
       ],
@@ -610,15 +610,15 @@ const curriculumL4: CurriculumLevelOverlay = {
       subtitle:
         'Acrescentar cor cromática à harmonia diatónica sem mudar de tonalidade',
       objectives: [
-        'Reconhecer notas de passagem cromáticas e bordaduras cromáticas',
+        'Reconhecer notas de passagem cromáticas e ornatos cromáticos',
         'Distinguir ornamentação cromática (decorativa) de cromatismo estrutural (dominantes secundárias, modulação)',
         'Ouvir como o movimento cromático acrescenta suavidade e cor à condução de vozes',
       ],
       concepts: [
         {
-          title: 'Notas de passagem e bordaduras cromáticas',
+          title: 'Notas de passagem e ornatos cromáticos',
           explanation:
-            'Uma nota de passagem cromática preenche um tom com uma nota não diatónica: C-C#-D usa o C# cromático para ligar dois tons diatónicos suavemente. Uma bordadura cromática orbita uma nota do acorde usando um meio-tom cromático: E-Eb-E cria uma órbita mais apertada do que uma bordadura diatónica. Ambas acrescentam suavidade e cor a linhas diatónicas de outro modo simples. São especialmente comuns em linhas de baixo e vozes interiores, onde o cromatismo acrescentado enriquece a textura sem perturbar a melodia.',
+            'Uma nota de passagem cromática preenche um tom com uma nota não diatónica: C-C#-D usa o C# cromático para ligar dois tons diatónicos suavemente. Um ornato cromático orbita uma nota do acorde usando um meio-tom cromático: E-Eb-E cria uma órbita mais apertada do que um ornato diatónico. Ambos acrescentam suavidade e cor a linhas diatónicas de outro modo simples. São especialmente comuns em linhas de baixo e vozes interiores, onde o cromatismo acrescentado enriquece a textura sem perturbar a melodia.',
           tryThisLabel: 'Ouve todos os 12 passos cromáticos',
         },
         {

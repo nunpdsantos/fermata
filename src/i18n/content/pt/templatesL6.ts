@@ -405,7 +405,7 @@ const overlay: TemplateLevelOverlay = {
       choiceSets: [
         [
           'Uma dissonância em tempo fraco tem de ser nota de passagem, entrando e saindo por grau conjunto',
-          'Uma dissonância em tempo fraco pode ser nota de passagem ou bordadura',
+          'Uma dissonância em tempo fraco pode ser nota de passagem ou ornato',
           'Uma dissonância em tempo forte é sempre permitida desde que depois resolva descendo por grau conjunto',
           'Uma dissonância em tempo fraco pode ser alcançada ou deixada por salto de 3.ª',
         ],
@@ -422,12 +422,12 @@ const overlay: TemplateLevelOverlay = {
       promptTemplate:
         'Qual destas afirmações sobre o contraponto de terceira espécie (4:1) é verdadeira?',
       hintTemplate:
-        'Terceira espécie: quatro notas contra cada nota do cantus. A primeira é consonante; as outras podem ser notas de passagem, bordaduras, uma cambiata (grau conjunto para a dissonância, salto de 3.ª, grau conjunto de volta) ou uma bordadura dupla.',
+        'Terceira espécie: quatro notas contra cada nota do cantus. A primeira é consonante; as outras podem ser notas de passagem, ornatos, uma cambiata (grau conjunto para a dissonância, salto de 3.ª, grau conjunto de volta) ou um ornato duplo.',
       nudgeTemplate: 'A terceira espécie põe quatro notas contra cada nota do cantus. Pergunta qual das quatro cai no tempo e, por isso, tem de ser consonante; em cada figura dissonante, segue o percurso nota a nota: por grau conjunto ou por salto, e regressa ao ponto de partida?',
       choiceSets: [
         [
-      'A primeira nota de cada grupo de quatro é consonante; as restantes podem ser notas de passagem ou bordaduras dissonantes',
-      'A primeira nota de cada grupo de quatro é dissonante; as restantes podem ser notas de passagem ou bordaduras dissonantes',
+      'A primeira nota de cada grupo de quatro é consonante; as restantes podem ser notas de passagem ou ornatos dissonantes',
+      'A primeira nota de cada grupo de quatro é dissonante; as restantes podem ser notas de passagem ou ornatos dissonantes',
       'A primeira nota de cada grupo de quatro é consonante; as restantes podem ser dissonâncias alcançadas e deixadas por salto',
       'A primeira nota de cada grupo de quatro é dissonante; as restantes podem ser dissonâncias alcançadas e deixadas por salto',
     ],
@@ -438,10 +438,10 @@ const overlay: TemplateLevelOverlay = {
           'A cambiata vai por grau conjunto para uma dissonância e continua no mesmo sentido',
         ],
         [
-          "Uma bordadura dupla é uma bordadura superior e uma inferior em sequência em torno de uma nota",
-          "Uma bordadura dupla é um grau conjunto para a dissonância, um salto de terça na mesma direção e um grau conjunto de volta",
-          "Uma bordadura dupla é uma nota de passagem no tempo fraco abordada e deixada por grau conjunto na mesma direção",
-          "Uma bordadura dupla são duas notas de passagem consecutivas abordadas e deixadas por grau conjunto na mesma direção",
+          "Um ornato duplo é um ornato superior e outro inferior em sequência em torno de uma nota",
+          "Um ornato duplo é um grau conjunto para a dissonância, um salto de terça na mesma direção e um grau conjunto de volta",
+          "Um ornato duplo é uma nota de passagem no tempo fraco abordada e deixada por grau conjunto na mesma direção",
+          "Um ornato duplo são duas notas de passagem consecutivas abordadas e deixadas por grau conjunto na mesma direção",
         ],
       ],
     },
