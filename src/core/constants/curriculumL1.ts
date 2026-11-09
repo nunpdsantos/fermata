@@ -29,7 +29,8 @@ const l1u1m1: CurriculumModule = {
       explanation:
         "A clef sits at the beginning of a staff and tells you which pitches the lines and spaces represent. The treble clef (𝄞) centers on G above middle C — it's used for higher instruments and the right hand on piano. The bass clef (𝄢) centers on F below middle C — it's used for lower instruments and the left hand on piano. Without a clef, the staff is just lines — the clef gives them meaning. Guitar uses treble clef with a small 8 below: it sounds an octave lower than written. The optional Guitar Notation unit explains this convention.",
       tryThisQuery: 'key of C',
-      tryThisLabel: 'Explore the key of C',
+      tryThisLabel: 'C to C in treble clef and in bass clef',
+      clefs: true,
     },
   ],
   tasks: [

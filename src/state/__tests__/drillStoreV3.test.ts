@@ -97,7 +97,10 @@ describe('v2 → v3: a production-shaped save loads unchanged and resumes', () =
     expect(s.lifetime).toEqual(f.state.lifetime);
     expect(s.activeSession).toEqual(f.state.activeSession);
     expect(s.sprint).toBeNull();
-    expect(stored()).toEqual({ version: 3, state: { ...f.state, settings: s.settings, sprint: null } });
+    // A save from before the first-visit intro (2026-11-09) gains introDone,
+    // derived from its history — no version bump.
+    expect(s.introDone).toBe(true);
+    expect(stored()).toEqual({ version: 3, state: { ...f.state, settings: s.settings, sprint: null, introDone: true } });
   });
 
   it('the running session carries on: the next answer goes to queue[3], and the save is written back as v3', async () => {

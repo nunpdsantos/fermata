@@ -41,8 +41,8 @@ describe('reading preserves Drill v3 data', () => {
     localStorage.setItem(DRILL_STORE_KEY, saved);
     await useDrillStore.persist.rehydrate();
     const s = useDrillStore.getState();
-    const { items, settings, sprintBests, lifetime, activeSession, sprint } = s;
-    expect({ items, settings, sprintBests, lifetime, activeSession, sprint }).toEqual(JSON.parse(saved).state);
+    const { items, settings, sprintBests, lifetime, activeSession, sprint, introDone } = s;
+    expect({ items, settings, sprintBests, lifetime, activeSession, sprint, introDone }).toEqual(JSON.parse(saved).state);
     expect(activeSession?.feedback).toEqual({ itemId: question.id, correct: false, nearMiss: true });
   });
 

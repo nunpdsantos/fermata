@@ -28,6 +28,8 @@ interface InlineTryThisProps {
   compact?: boolean;
   /** Extra line under the label (a milestone's prompt). */
   prompt?: string;
+  /** The clef lesson: the scale on a treble staff and, an octave lower, on a bass staff. */
+  clefs?: boolean;
 }
 
 /**
@@ -37,7 +39,7 @@ interface InlineTryThisProps {
  * Explore" keeps the old executor behaviour (jump to Explore with it
  * selected) for anyone who wants the full workbench.
  */
-export function InlineTryThis({ query, label, accent, rhythm, compact = false, prompt }: InlineTryThisProps) {
+export function InlineTryThis({ query, label, accent, rhythm, compact = false, prompt, clefs = false }: InlineTryThisProps) {
   const { t } = useTranslation();
   const instrument = useAppStore((s) => s.instrument);
   const currentKey = useAppStore((s) => s.selectedKey);
@@ -104,6 +106,24 @@ export function InlineTryThis({ query, label, accent, rhythm, compact = false, p
       </div>
       {rhythm ? (
         <RhythmStaff pattern={rhythm} />
+      ) : clefs && picture.kind === 'scale' ? (
+        <div className="flex flex-col gap-1 min-w-0" data-testid="try-this-clefs">
+          {(['treble', 'bass'] as const).map((clef) => (
+            <figure key={clef} className="m-0 min-w-0">
+              <figcaption className="text-ui" style={{ color: 'var(--text-muted)' }}>
+                {t(clef === 'treble' ? 'lesson.trebleClef' : 'lesson.bassClef')}
+              </figcaption>
+              <Suspense fallback={<StaffNotationSkeleton height={100} />}>
+                <StaffNotation
+                  notes={clef === 'treble' ? picture.pitches : picture.pitches.map((p) => ({ ...p, octave: p.octave - 1 }))}
+                  clef={clef}
+                  duration="q"
+                  height={100}
+                />
+              </Suspense>
+            </figure>
+          ))}
+        </div>
       ) : picture.kind !== 'none' ? (
         <Suspense fallback={<StaffNotationSkeleton height={100} />}>
           <StaffNotation

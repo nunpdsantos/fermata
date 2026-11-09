@@ -29,6 +29,17 @@ import {
 // Drill UI keys not part of the bank registries but used by the runner/views.
 const DRILL_UI_KEYS: readonly string[] = [
   'drill.progress',
+  'drill.reask',
+  'drill.extra',
+  'drill.intro.lengthOnly',
+  'drill.intro.title',
+  'drill.intro.lead',
+  'drill.intro.settings',
+  'drill.intro.length',
+  'drill.intro.newFacts_one',
+  'drill.intro.newFacts_other',
+  'drill.intro.comeBack',
+  'drill.intro.start',
   'drill.endSession',
   'drill.clear',
   'drill.done',
