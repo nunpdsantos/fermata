@@ -858,6 +858,18 @@ body {
     to { transform: none; }
   }
 
+  /* First-visit welcome (WelcomeSheet): the three views, then three actions
+     stacked full width; on a short (sideways) screen they share rows so the
+     sheet's body keeps room above them. */
+  .welcome-views { display: flex; flex-direction: column; gap: 12px; margin: 0; }
+  .welcome-views dd { margin: 2px 0 0; }
+  .welcome-footer { margin-top: 16px; }
+  .welcome-actions { display: flex; flex-direction: column; gap: 8px; }
+  @media (max-height: 500px) {
+    .welcome-actions { flex-direction: row; flex-wrap: wrap; }
+    .welcome-actions > .btn { flex: 1 1 auto; }
+  }
+
   /* Instrument dock — phone pull-up sheet (DetentSheet) */
   .detent-sheet {
     position: relative;

@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { createServer } from 'node:http';
 import type { AddressInfo } from 'node:net';
+import { seedWelcomeSeen } from './helpers/welcome';
 
 test.describe('PWA basics', () => {
   test('page has correct title', async ({ page }) => {
@@ -109,6 +110,8 @@ test.describe('PWA basics', () => {
       });
 
       // First install: the worker takes control of the open page (clientsClaim).
+      // The proxy is its own origin: the config's "welcome seen" seed is not there.
+      await seedWelcomeSeen(page.context());
       await page.goto(`${origin}/`);
       await expect.poll(async () => (await workerState()).controlled, { timeout: 20_000 }).toBe(true);
       await expect(page.getByRole('alert').filter({ hasText: /offline/i })).toBeVisible({ timeout: 15_000 });
