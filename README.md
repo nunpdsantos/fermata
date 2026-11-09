@@ -27,4 +27,6 @@ npm run build    # production build to dist/
 
 Piano sound: [Salamander Grand Piano](https://archive.org/details/SalamanderGrandPianoV3) by Alexander Holm (CC-BY-3.0), via the [Tone.js audio collection](https://tonejs.github.io/audio/salamander/).
 
+Accidental signs (♭ ♮ ♯ 𝄪 𝄫): a subset of [Bravura Text](https://github.com/steinbergmedia/bravura) by Steinberg Media Technologies (SIL Open Font License 1.1), renamed "Fermata Accidentals" as the licence requires for a modified version; licence and provenance in `public/fonts/`.
+
 Guitar sound: [Spanish Classical Guitar](https://freepats.zenvoid.org/Guitar/acoustic-guitar.html) (nylon-string) from the [FreePats project](https://freepats.zenvoid.org/), recorded by Roberto (CC0 / public domain).
