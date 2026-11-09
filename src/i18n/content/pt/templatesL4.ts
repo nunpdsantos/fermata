@@ -86,7 +86,7 @@ const overlay: TemplateLevelOverlay = {
           'Uma escapada é abordada por grau e deixada por salto na direção oposta',
           'Uma escapada é abordada por salto e deixada por grau na direção oposta',
           'Uma escapada é o mesmo que uma antecipação do acorde seguinte',
-          'Uma escapada tem de voltar à nota de onde saiu, tal como uma bordadura',
+          'Uma escapada tem de voltar à nota de onde saiu, tal como um ornato',
         ],
         [
       'Um retardo ascendente é preparado e mantido como dissonância, depois resolve subindo por grau',

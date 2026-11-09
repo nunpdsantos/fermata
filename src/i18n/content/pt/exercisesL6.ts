@@ -181,7 +181,7 @@ const overlay: ExerciseLevelOverlay = {
       'F–A–C–Eb',
       'F–Ab–C–Eb',
     ],
-    hint: 'A sétima diminuta com nota comum mantém uma nota (a nota comum) do acorde que ornamenta. As outras três vozes movem-se por grau conjunto, criando uma ornamentação cromática por bordaduras.',
+    hint: 'A sétima diminuta com nota comum mantém uma nota (a nota comum) do acorde que ornamenta. As outras três vozes movem-se por grau conjunto, criando uma ornamentação cromática por ornatos.',
   },
   l6u19m2e2: {
     prompt: 'Num CTo7 que ornamenta um acorde de C maior, qual é tipicamente a nota comum?',
@@ -201,7 +201,7 @@ const overlay: ExerciseLevelOverlay = {
       'Substituição da dominante',
       'Modulação para outra tonalidade',
     ],
-    hint: 'Ao contrário do vii°7 (que tem função dominante), o CTo7 é puramente ornamental. Ornamenta um acorde através de movimento por bordaduras cromáticas, acrescentando cor sem mudar a direção harmónica.',
+    hint: 'Ao contrário do vii°7 (que tem função dominante), o CTo7 é puramente ornamental. Ornamenta um acorde através de movimento por ornatos cromáticos, acrescentando cor sem mudar a direção harmónica.',
   },
 
   // ---- l6u19m3: Mediantes Cromáticas ----
@@ -304,7 +304,7 @@ const overlay: ExerciseLevelOverlay = {
       "Duas notas no contraponto contra cada nota do cantus firmus",
       "Uma nota no contraponto contra cada nota do cantus firmus",
     ],
-    hint: 'A terceira espécie coloca quatro semínimas contra cada semibreve do cantus firmus. Isto introduz bordaduras e notas de passagem duplas (duas notas de passagem seguidas, movendo-se por grau conjunto numa só direção para preencher uma quarta) além das notas de passagem da segunda espécie.',
+    hint: 'A terceira espécie coloca quatro semínimas contra cada semibreve do cantus firmus. Isto introduz ornatos e notas de passagem duplas (duas notas de passagem seguidas, movendo-se por grau conjunto numa só direção para preencher uma quarta) além das notas de passagem da segunda espécie.',
   },
 
   // ---- l6u20m2: Contraponto de Espécies 4-5 ----

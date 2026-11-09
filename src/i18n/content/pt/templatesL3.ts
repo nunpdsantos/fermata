@@ -415,21 +415,21 @@ const overlay: TemplateLevelOverlay = {
     {
       // multiple_choice
       promptTemplate:
-        'Qual destas afirmações sobre notas de passagem, bordaduras e antecipações é verdadeira?',
+        'Qual destas afirmações sobre notas de passagem, ornatos e antecipações é verdadeira?',
       hintTemplate:
-        'Nota de passagem: grau–grau na mesma direção entre duas notas do acorde. Bordadura: afasta-se por grau e regressa à mesma nota do acorde (incompleta: um dos lados por salto). Antecipação: uma nota do acorde seguinte que soa mais cedo.',
+        'Nota de passagem: grau–grau na mesma direção entre duas notas do acorde. Ornato: afasta-se por grau e regressa à mesma nota do acorde (incompleto: um dos lados por salto). Antecipação: uma nota do acorde seguinte que soa mais cedo.',
       choiceSets: [
         [
-          'Abordada e deixada por grau na mesma direção: uma nota de passagem',
-          'Abordada e deixada por grau na mesma direção: uma bordadura',
-          'Abordada e deixada por grau na mesma direção: uma antecipação',
-          'Abordada e deixada por grau na mesma direção: uma bordadura incompleta',
+          'Uma nota abordada e deixada por grau na mesma direção: uma nota de passagem',
+          'Uma nota abordada e deixada por grau na mesma direção: um ornato',
+          'Uma nota abordada e deixada por grau na mesma direção: uma antecipação',
+          'Uma nota abordada e deixada por grau na mesma direção: um ornato incompleto',
         ],
         [
           'As notas de passagem podem ser acentuadas (no tempo) ou não acentuadas',
-          'As notas de passagem podem regressar por grau conjunto à nota inicial do acorde (como bordaduras completas)',
+          'As notas de passagem podem regressar por grau conjunto à nota inicial do acorde (como ornatos completos)',
           'As notas de passagem podem anunciar o acorde seguinte cedo (sem ligação por grau conjunto)',
-          'As notas de passagem podem ser alcançadas por grau conjunto e abandonadas por salto (como bordaduras incompletas)',
+          'As notas de passagem podem ser alcançadas por grau conjunto e abandonadas por salto (como ornatos incompletos)',
         ],
         [
           'C–D–E sobre um acorde de C maior: D é uma nota de passagem',
@@ -438,16 +438,16 @@ const overlay: TemplateLevelOverlay = {
           'C–D–E sobre um acorde de C maior: a nota de passagem é a nota E',
         ],
         [
-          'Uma nota que se afasta por grau de uma nota do acorde e regressa a ela: uma bordadura',
+          'Uma nota que se afasta por grau de uma nota do acorde e regressa a ela: um ornato',
           'Uma nota que se afasta por grau de uma nota do acorde e regressa a ela: uma nota de passagem',
           'Uma nota que se afasta por grau de uma nota do acorde e regressa a ela: uma antecipação',
-          'Uma nota que se afasta por grau de uma nota do acorde e regressa a ela: uma bordadura incompleta',
+          'Uma nota que se afasta por grau de uma nota do acorde e regressa a ela: um ornato incompleto',
         ],
         [
-          'Uma bordadura incompleta é a nota central de G4–D4–E4 sobre um acorde de C maior mantido',
-          'Uma bordadura incompleta é a nota central de E4–D4–C4 sobre um acorde de C maior mantido',
-          'Uma bordadura incompleta é a nota central de E4–D4–E4 sobre um acorde de C maior mantido',
-          'Uma bordadura incompleta é a nota central de E4–G4–C5 sobre um acorde de C maior mantido',
+          'Um ornato incompleto é a nota central de G4–D4–E4 sobre um acorde de C maior mantido',
+          'Um ornato incompleto é a nota central de E4–D4–C4 sobre um acorde de C maior mantido',
+          'Um ornato incompleto é a nota central de E4–D4–E4 sobre um acorde de C maior mantido',
+          'Um ornato incompleto é a nota central de E4–G4–C5 sobre um acorde de C maior mantido',
         ],
         [
           'Uma antecipação faz soar uma nota do acorde seguinte antes de esse acorde chegar',

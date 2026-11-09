@@ -1,4 +1,4 @@
-# PT-PT / ES (Spain) music terminology — evidence (researched 2026-11-05)
+# PT-PT / ES (Spain) music terminology — evidence (researched 2026-11-05; row 17, 2026-11-09)
 
 Research: one Claude Opus research agent (WebSearch/WebFetch, PDFs via pdftotext), 16 concepts, all sources accessed 2026-11-05. Seat spot-check (Claude, same day): five quotes re-extracted from P1, P4 and E1 matched verbatim; "sétima dominante", "suspensão" and "escapatória" have 0 hits in P1+P4.
 
@@ -24,8 +24,9 @@ Limits: rae.es and infopedia.pt block automated access (RAE read via Wayback sna
 | 14 | Power chord chip | "Power" (unchanged) | "Power" (unchanged) | low / low | P18, E20 (weak) | loanword is the usage |
 | 15 | Ordinal chips | 6.as … (superscript, period) | 6.as … | medium-high / high | P14, P15; E18, E19 | |
 | 16 | Title case | sentence case | sentence case | medium / high | P15, P16; E17 | RAE DPD §5.2.24–25; EU PT style guide for parts of a larger work |
+| 17 | Neighbour note (decided 9 November 2026) | ornato (ornato superior / inferior, ornato incompleto, ornato duplo) | bordadura (unchanged; a separate question) | 6 PT-PT sources, 0 PT-PT hits for "bordadura" / not assessed | S1, S2 (= P2, P1), S4–S7; S3 | the 5 Nov rule (rename once a second PT-PT source supports "ornato") is met; explicit definition: S6; S3 labels bordadura Brazilian and ornato European Portuguese; "ornato duplo" as a phrase is unattested (S4: "Pode ser duplo") |
 
-Follow-up (not changed): PT "bordadura" (73) vs the curricula's "ornato" (P1, P2) — one source family; needs a second PT-PT source before renaming.
+Row 17: on 5 November PT "bordadura" (73 occurrences) was kept against the curricula's "ornato" (one source family: S1, S2 = *Aprendizagens Essenciais*, Análise e Técnicas de Composição 10.º / 11.º ano (República Portuguesa / ANQEP, 2020), listed above as P2, P1) until a second PT-PT source supported "ornato". The 9 November research found it (sources S3–S7 below; S7 = P7 at a new URL); S6 (C. Pinto, ESMAE 2018) gives the explicit definition. An independent source check for the seat (9 November) confirmed the rule is met: S6 defines "ornato" as the neighbour note, and S1, S2, S5 and S6 have 0 hits for "bordadura". Research record: `/Users/nunosantos/Documents/Base/Music/fermata-programme/notes/2026-11-09/pt-terms-research.md` (section 1 and sources S1–S7). All 73 PT occurrences now read "ornato", with gender agreement (o / um ornato; bordadura dupla → ornato duplo).
 
 ## Sources (all accessed 2026-11-05)
 
@@ -70,24 +71,34 @@ Follow-up (not changed): PT "bordadura" (73) vs the curricula's "ornato" (P1, P2
 - E19 RAE Ortografía cap. V §3.2 — "n.os"
 - E20 eMastered ES (weak) — "acordes de potencia"
 
+**Portugal, neighbour note (row 17; research of 9 November 2026, all accessed 2026-11-09; S-numbers as in the research record named under row 17)**
+- S3 D. F. Martins, *Hierarquização de Camadas Estruturais na Música Pós-Tonal*, doctoral thesis (Universidade de Évora, 2017; supervisor C. Bochmann; the author writes Brazilian Portuguese, inferred by the research) — https://dspace.uevora.pt/rdpc/bitstream/10174/21230/1/Volume%20I%20-%20Tese%20-%20Djalma%20%20Martins.pdf — heading "5.3.1.2. Bordadura38 (ou ornato39)"; footnotes "38 Termo em português brasileiro." and "39 Termo em português europeu."
+- S4 J. P. Brandão, Relatório de Estágio, Mestrado em Ensino da Música (ESMAE / P.Porto, 2016) — https://recipp.ipp.pt/server/api/core/bitstreams/1ea22f25-ebde-455e-aa25-bb2d26a12d79/content — section "5.2.2 Ornato": "Pode ser duplo (inferior e superior); Incompleto: decora a nota anterior ; decora a nota seguinte"; cites Bochmann 2003
+- S5 S. C. M. S. Gomes, Relatório de Estágio, Mestrado em Ensino de Música (ESMAE / P.Porto, 2015) — https://recipp.ipp.pt/server/api/core/bitstreams/053675ed-4470-4481-bf07-46200f6c32c1/content — "ornatos superiores e inferiores"; no Bochmann citation
+- S6 C. Pinto, Relatório de Estágio, Mestrado em Ensino de Música (ESMAE / P.Porto, 2018) — https://recipp.ipp.pt/server/api/core/bitstreams/00c709c8-2ff4-44a9-97ea-d180038a1320/content — "Um ornato pode-se definir como sendo uma nota estranha ao acorde que se precede de uma nota do acorde por grau conjunto e que retorna à mesma."; "*o.s. = ornato superior" / "*o.i. = ornato inferior"; no Bochmann citation
+- S7 = P7 at its new URL (the old one returns 404) — https://dspace.uevora.pt/rdpc/bitstream/10174/24267/1/Mestrado-Ensino_da_M%c3%basica-Lu%c3%ads_Tiago_Cabrita_Lopo-Relat%c3%b3rio_da_Pr%c3%a1tica_de_Ensino_supervisionada....pdf — "acréscimo de notas de passagem, ornatos e apogiaturas"
+- Not found: any PT-PT source using "bordadura" for the neighbour note (0 hits in the 47 PT-PT texts the research opened). S3, S7 (supervised by Bochmann) and S4 (cites him) may share his teaching lineage; S5 and S6 cite no Bochmann and are the most independent pair, though both are ESMAE / P.Porto master's reports (separate authors, same institution).
+
 ## Application in Fermata
 
 PT means European Portuguese; ES follows Spain's conservatory usage. Resolve each occurrence
 against its English source: same-tonic keys are homónimas, while parallel motion, fifths,
 octaves and periods keep paralel-. A non-chord suspension is a retardo; an upward retardation
 is a retardo ascendente. Suspended/sus chords keep acorde suspenso / acorde suspendido.
-Changing tones/cambiata use cambiata; double-neighbor wording remains bordadura dupla (PT)
-and doble bordadura (ES). Canon voices introduce dux / comes with a plain gloss in PT and
+Changing tones/cambiata use cambiata; the neighbour note is ornato in PT (masculine: o / um
+ornato, ornato superior / inferior / incompleto; double neighbour = ornato duplo; row 17)
+and stays bordadura in ES (double neighbour = doble bordadura). Canon voices introduce dux / comes with a plain gloss in PT and
 propuesta / respuesta with a gloss in ES; period phrases keep antecedente / consequente
 (consecuente). Headings use sentence case with proper names and notation preserved.
 
 Unchanged by decision: indicação de compasso / indicación de compás; PT cadência perfeita /
 imperfeita and CAP/CAI; ES cadencia auténtica perfecta (and its existing cadence labels);
 técnicas expandidas in both languages; jazz voicing in L7/L9, with disposição / disposición
-for classical spacing; the Power chord-family chip. PT bordadura remains pending a second
-independent PT-PT source family. Ordinal chips use 6.as, 7.as, 9.as, 11.as, 13.as with only
+for classical spacing; the Power chord-family chip. ES bordadura (the PT term changed to ornato on 9 November
+2026, row 17). Ordinal chips use 6.as, 7.as, 9.as, 11.as, 13.as with only
 “as” raised using markup and the full plural name supplied to assistive technology.
 
 The source list above is the supplied 5 November research record, copied without additional
-network verification during this implementation. Entries without a precise source URL remain
+network verification during this implementation; the row 17 sources are copied the same way
+from the 9 November research record (a separate verifier re-checks them). Entries without a precise source URL remain
 as supplied; no missing URL or bibliographic detail has been reconstructed.
