@@ -205,11 +205,15 @@ test.describe('phone instrument sheet (D-26)', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
 
   test('Peek / Half / Full by keyboard, the Show button, a tap and a drag; remembered per view; Learn starts at Peek', async ({ page }) => {
-    await seed(page, { lastView: 'explore', instrument: 'piano' });
+    // The guitar: its board and controls are taller than Half, so the sheet
+    // has all three stops (the keyboard fits at Half — next test).
+    await seed(page, { lastView: 'explore', instrument: 'guitar' });
     await page.goto('/');
     const dock = page.getByTestId('instrument-dock');
     const handle = page.getByRole('separator', { name: 'Instrument panel' });
     await expect(dock).toHaveAttribute('data-detent', 'half'); // Explore's default
+    await expect(page.locator('.fretboard-scroll')).toBeVisible();
+    await expect(handle).toHaveAttribute('aria-valuemax', '2');
 
     await handle.focus();
     await page.keyboard.press('Home');
@@ -252,6 +256,55 @@ test.describe('phone instrument sheet (D-26)', () => {
     await expect(page.getByTestId('instrument-dock')).toHaveAttribute('data-detent', 'peek');
     await page.getByRole('tab', { name: 'Explore' }).click();
     await expect(page.getByTestId('instrument-dock')).toHaveAttribute('data-detent', 'full');
+  });
+
+  test('never taller than its content: the keyboard leaves no empty band, has no separate Full, and the view stays live', async ({ page }) => {
+    // 9 Nov (brief G): at 390×844 the keyboard ended 91 px above the sheet's
+    // bottom at Half (407 px at Full). A Full the learner chose for the
+    // guitar shows as Half under the keyboard; the guitar keeps its Full.
+    await seed(page, { lastView: 'explore', instrument: 'piano', dockDetents: { explore: 'full', learn: 'peek' }, dockChosen: { explore: true, learn: false } });
+    await page.goto('/');
+    const dock = page.getByTestId('instrument-dock');
+    const handle = page.getByRole('separator', { name: 'Instrument panel' });
+    await expect(dock).toHaveAttribute('data-detent', 'half');
+    await expect(handle).toHaveAttribute('aria-valuetext', 'Half');
+    await expect(handle).toHaveAttribute('aria-valuemax', '1');
+    await expect(page.locator('#main-content')).not.toHaveAttribute('inert', '');
+    const band = () => dock.evaluate((sheet) => {
+      const region = sheet.querySelector('#instrument-region')!.getBoundingClientRect();
+      const s = sheet.getBoundingClientRect();
+      const pad = parseFloat(getComputedStyle(sheet).paddingBottom) || 0;
+      return { band: Math.round(s.bottom - pad - region.bottom), scrolls: sheet.querySelector('.detent-content')!.scrollHeight > sheet.querySelector('.detent-content')!.clientHeight + 1 };
+    });
+    expect(await band()).toEqual({ band: 0, scrolls: false });
+    // The view got the room back: the sheet is the bar + the keyboard.
+    const viewH = (await page.locator('#main-content').boundingBox())!.height;
+    expect(viewH).toBeGreaterThan(844 / 2 + 40);
+    // ↑ / End: nothing more to show; a tap folds it; Enter opens it again.
+    await handle.focus();
+    await page.keyboard.press('End');
+    await page.keyboard.press('ArrowUp');
+    await expect(dock).toHaveAttribute('data-detent', 'half');
+    const box = (await handle.boundingBox())!;
+    await page.mouse.click(box.x + box.width / 2, box.y + 6);
+    await expect(dock).toHaveAttribute('data-detent', 'peek');
+    await handle.focus();
+    await page.keyboard.press('Enter');
+    await expect(dock).toHaveAttribute('data-detent', 'half');
+    expect(await band()).toEqual({ band: 0, scrolls: false });
+    // The guitar does need Full: three stops, and Full ends with the content.
+    await dock.getByRole('radio', { name: 'Guitar' }).click();
+    await expect(page.locator('.fretboard-scroll')).toBeVisible();
+    await expect(handle).toHaveAttribute('aria-valuemax', '2');
+    await handle.focus();
+    await page.keyboard.press('End');
+    await expect(dock).toHaveAttribute('data-detent', 'full');
+    await expect(page.locator('#main-content')).toHaveAttribute('inert', '');
+    await expect.poll(band).toEqual({ band: 0, scrolls: false });
+    // Back to the keyboard: the saved Full shows as Half again.
+    await dock.getByRole('radio', { name: 'Piano' }).click();
+    await expect(dock).toHaveAttribute('data-detent', 'half');
+    await expect(page.locator('#main-content')).not.toHaveAttribute('inert', '');
   });
 
   test('a tap on the handle steps up; the sheet keeps the bottom safe area', async ({ page }) => {

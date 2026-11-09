@@ -5,6 +5,7 @@ import { ChipGroup, ChoiceChip } from '../ui/ChoiceChip.tsx';
 import { Segment } from '../ui/Segment.tsx';
 import { SelectTrigger } from '../ui/SelectTrigger.tsx';
 import { Button, IconButton } from '../ui/Button.tsx';
+import { EdgeFade } from '../ui/EdgeFade.tsx';
 
 // Group labels ("Position:", "Show:") — 14 px muted (D-28 UI step).
 const GROUP_LABEL_CLASS = 'text-ui shrink-0';
@@ -100,16 +101,20 @@ export function ScalePositionSelector({ position, onSelect, onStep, mobile = fal
           <option value="all">{t('fretboard.all')}</option>
         </SelectTrigger>
       ) : (
-        <ChipGroup<number | 'all'>
-          label={t('fretboard.scalePosition')}
-          className="chip-row-scroll min-w-0 flex-1 lg:flex-none"
-          value={position}
-          onChange={onSelect}
-          options={[
-            ...POSITION_NUMBERS.map((n) => ({ value: n as number | 'all', label: name(n), title: title(n) })),
-            { value: 'all' as const, label: t('fretboard.all'), title: t('fretboard.allTitle') },
-          ]}
-        />
+        // One sideways row: the edge fades say there are more positions
+        // (only while there are), like the other chip rows (#53).
+        <EdgeFade className="position-chips min-w-0 flex-1 lg:flex-none">
+          <ChipGroup<number | 'all'>
+            label={t('fretboard.scalePosition')}
+            className="chip-row-scroll"
+            value={position}
+            onChange={onSelect}
+            options={[
+              ...POSITION_NUMBERS.map((n) => ({ value: n as number | 'all', label: name(n), title: title(n) })),
+              { value: 'all' as const, label: t('fretboard.all'), title: t('fretboard.allTitle') },
+            ]}
+          />
+        </EdgeFade>
       )}
       {stepButton(1)}
     </div>

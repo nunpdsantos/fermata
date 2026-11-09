@@ -12,6 +12,12 @@ import { DETENTS, type Detent } from '../../state/dock';
  * (role="separator" with a value), so its state is announced. The bar's own
  * controls sit above the handle and take their own taps. Respects the
  * bottom safe-area inset. The phone instrument dock is one.
+ *
+ * Half and Full are never taller than the content needs (fitDockDetents).
+ * When the whole content fits at Half, there is nothing more for Full to
+ * show: the sheet has two stops, Peek and Half — a Full that was asked for is
+ * shown (and announced) as Half, the handle steps Peek ⇄ Half, and the
+ * learner's saved choice is kept for an instrument that does need Full.
  */
 export interface DetentSheetProps {
   detent: Detent;
@@ -30,6 +36,8 @@ export interface DetentSheetProps {
   bar: ReactNode;
   children: ReactNode;
   testId?: string;
+  /** The detent the sheet SHOWS (a Full with nothing more to show is Half). */
+  onShown?: (detent: Detent) => void;
 }
 
 const TAP_SLOP_PX = 6;
@@ -43,9 +51,10 @@ const HALF_CONTENT_MIN_PX = 160;
 const coarsePointer = () => typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
 const estimatePeek = () => (coarsePointer() ? 44 : 36) + 28;
 
-export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLabel, detentLabels, bar, children, testId }: DetentSheetProps) {
+export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLabel, detentLabels, bar, children, testId, onShown }: DetentSheetProps) {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [geometry, setGeometry] = useState<{ rows: DockRow[]; boardBottom: number }>({ rows: [], boardBottom: 0 });
+  // `content`: the content's natural height (0 until measured: no cap).
+  const [geometry, setGeometry] = useState<{ rows: DockRow[]; boardBottom: number; content: number }>({ rows: [], boardBottom: 0, content: 0 });
   const headRef = useRef<HTMLDivElement>(null);
   // First render: a close estimate (tap + 28 px: grip strip + bar), corrected
   // by measurement before it matters — starting at 0 drew the sheet 1 px tall
@@ -88,12 +97,21 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
       }).filter((r) => r.bottom > r.top);
       const board = content.querySelector('.fretboard-scroll');
       const boardBottom = board ? board.getBoundingClientRect().bottom - origin : 0;
-      setGeometry((prev) => JSON.stringify(prev) === JSON.stringify({ rows, boardBottom }) ? prev : { rows, boardBottom });
+      // How tall the content is on its own: the lowest bottom of its
+      // children (laid out at their natural height even at Peek, where the
+      // scroller is 0 px tall), rounded up so it never needs to scroll.
+      const bottoms = Array.from(content.children).map((el) => el.getBoundingClientRect()).filter((r) => r.height > 0).map((r) => r.bottom - origin);
+      const natural = bottoms.length ? Math.ceil(Math.max(...bottoms) - 0.01) : 0;
+      const next = { rows, boardBottom, content: natural };
+      setGeometry((prev) => JSON.stringify(prev) === JSON.stringify(next) ? prev : next);
     };
     const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
     const observe = () => {
       ro?.disconnect();
       ro?.observe(content);
+      // The children too: the content box keeps the sheet's height, so it
+      // does not resize when the instrument inside it grows or shrinks.
+      Array.from(content.children).forEach((el) => ro?.observe(el));
       content.querySelectorAll('[data-dock-row], [data-dot], .fretboard-controls, .fretboard-scroll').forEach((el) => ro?.observe(el));
       measure();
     };
@@ -108,29 +126,37 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
   const halfFloor = Math.min(peekHeight + HALF_CONTENT_MIN_PX, available - VIEW_MIN_PX);
   const fitted = fitDockDetents(
     Math.min(preferredFull, Math.max(peekHeight, Math.round(available * HALF_SHARE), halfFloor)),
-    preferredFull, available, peekHeight, geometry.rows, geometry.boardBottom,
+    preferredFull, available, peekHeight, geometry.rows, geometry.boardBottom, geometry.content,
   );
   const full = fitted.full;
   const heights: Record<Detent, number> = { peek: peekHeight, half: fitted.half, full };
-  const index = DETENTS.indexOf(detent);
-  const step = (dir: 1 | -1) => DETENTS[Math.min(DETENTS.length - 1, Math.max(0, index + dir))];
+  // The stops this content has: no Full when everything fits at Half.
+  const stops: readonly Detent[] = fitted.fullDistinct ? DETENTS : DETENTS.slice(0, 2);
+  const shown: Detent = stops.includes(detent) ? detent : 'half';
+  const index = stops.indexOf(shown);
+  const step = (dir: 1 | -1) => stops[Math.min(stops.length - 1, Math.max(0, index + dir))];
+  const last = stops[stops.length - 1];
+
+  useLayoutEffect(() => {
+    onShown?.(shown);
+  }, [shown, onShown]);
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     let next: Detent | null = null;
     if (e.key === 'ArrowUp' || e.key === 'ArrowRight') next = step(1);
     else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') next = step(-1);
     else if (e.key === 'Home') next = 'peek';
-    else if (e.key === 'End') next = 'full';
-    else if (e.key === 'Enter' || e.key === ' ') next = detent === 'peek' ? 'half' : 'peek';
+    else if (e.key === 'End') next = last;
+    else if (e.key === 'Enter' || e.key === ' ') next = shown === 'peek' ? 'half' : 'peek';
     if (next) {
       e.preventDefault();
-      if (next !== detent) onDetent(next);
+      if (next !== shown) onDetent(next);
     }
   };
 
   const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0) return;
-    drag.current = { pointer: e.pointerId, startY: e.clientY, startH: heights[detent], moved: false };
+    drag.current = { pointer: e.pointerId, startY: e.clientY, startH: heights[shown], moved: false };
     e.currentTarget.setPointerCapture?.(e.pointerId);
   };
   const onPointerMove = (e: PointerEvent<HTMLDivElement>) => {
@@ -146,28 +172,28 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
     if (!d || d.pointer !== e.pointerId) return;
     drag.current = null;
     if (!d.moved) {
-      // A tap on the handle steps up, and from Full back down to Peek.
-      onDetent(index === DETENTS.length - 1 ? 'peek' : DETENTS[index + 1]);
+      // A tap on the handle steps up, and from the top stop back to Peek.
+      onDetent(shown === last ? 'peek' : stops[index + 1]);
       return;
     }
     const h = Math.min(full, Math.max(peekHeight, d.startH - (e.clientY - d.startY)));
-    const nearest = DETENTS.reduce((best, k) => (Math.abs(heights[k] - h) < Math.abs(heights[best] - h) ? k : best), detent);
+    const nearest = stops.reduce((best, k) => (Math.abs(heights[k] - h) < Math.abs(heights[best] - h) ? k : best), shown);
     setDragHeight(null);
-    if (nearest !== detent) onDetent(nearest);
+    if (nearest !== shown) onDetent(nearest);
   };
   const onPointerCancel = () => {
     drag.current = null;
     setDragHeight(null);
   };
 
-  const height = dragHeight ?? (detent === 'peek' ? undefined : heights[detent]);
-  const collapsed = detent === 'peek' && dragHeight === null;
+  const height = dragHeight ?? (shown === 'peek' ? undefined : heights[shown]);
+  const collapsed = shown === 'peek' && dragHeight === null;
 
   return (
     <section
       className="detent-sheet"
       data-testid={testId}
-      data-detent={detent}
+      data-detent={shown}
       style={height !== undefined ? { height } : undefined}
     >
       <div ref={headRef} className="detent-head">
@@ -177,9 +203,9 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
           aria-orientation="horizontal"
           aria-label={handleLabel}
           aria-valuemin={0}
-          aria-valuemax={DETENTS.length - 1}
+          aria-valuemax={stops.length - 1}
           aria-valuenow={index}
-          aria-valuetext={detentLabels[detent]}
+          aria-valuetext={detentLabels[shown]}
           aria-controls={contentId}
           className="detent-handle"
           data-focus-ring="custom"
@@ -199,7 +225,7 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
         className="detent-content"
         inert={collapsed}
         aria-hidden={collapsed || undefined}
-        style={collapsed ? { height: 0 } : detent === 'half' ? { marginBottom: fitted.halfBottomGap } : undefined}
+        style={collapsed ? { height: 0 } : shown === 'half' ? { marginBottom: fitted.halfBottomGap } : undefined}
       >
         {children}
       </div>

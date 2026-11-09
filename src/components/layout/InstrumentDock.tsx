@@ -22,10 +22,14 @@ import { useMediaQuery, SHEET_QUERY } from '../../hooks/useMediaQuery.ts';
 // precached, so guitar works offline from the first install; ViewSlot gives
 // it a spinner while it loads and a working "Try again" if a download fails.
 // While the fretboard chunk loads, the dock keeps roughly the fretboard's own
-// height (measured on the preview build: ~323 px at 1280×900, ~400 px at
-// 390×844) instead of jumping piano → 20 px spinner → fretboard (review item
-// 3; e2e/fretboard-fit.spec.ts checks the loading height in a real browser).
-const GUITAR_LOADING_SIZE = 'max-md:min-h-[400px] md:min-h-[320px]';
+// height (measured on the preview build: ~323 px at 1280×900) instead of
+// jumping piano → 20 px spinner → fretboard (review item 3;
+// e2e/guitar-dock-loading.spec.ts checks the loading height in a real
+// browser). On a phone the sheet is never taller than its content
+// (DetentSheet), so at Full this placeholder sets the sheet's height until
+// the board arrives: it is the board's own height there (measured
+// 2026-11-09 at 320–430 px wide: 523 px in EN / PT, 539 ES, 445 "All").
+const GUITAR_LOADING_SIZE = 'min-h-[523px] sm:min-h-[400px] md:min-h-[320px]';
 
 const GUITAR_LOADER: Record<'guitar', ViewLoader> = {
   guitar: () => import('../instruments/Fretboard.tsx').then((m) => ({ default: m.Fretboard })),
@@ -57,7 +61,7 @@ function useContextLine(): string {
  * is remembered per view (Learn starts at Peek, D-20). Any code can open it
  * with `useAppStore.getState().requestDock('half')`.
  */
-export function InstrumentDock({ view, available }: { view: DockView; available: number }) {
+export function InstrumentDock({ view, available, onSheetShown }: { view: DockView; available: number; onSheetShown?: (detent: Detent) => void }) {
   const { t } = useTranslation();
   const instrument = useAppStore((s) => s.instrument);
   const detent = useAppStore((s) => s.dockDetents[view]);
@@ -186,6 +190,7 @@ export function InstrumentDock({ view, available }: { view: DockView; available:
         handleLabel={t('dock.handle')}
         detentLabels={{ peek: t('dock.peek'), half: t('dock.half'), full: t('dock.full') }}
         bar={bar}
+        onShown={onSheetShown}
       >
         {region}
         {neck}
