@@ -38,6 +38,9 @@ const NUMERAL_SUFFIX = /^(?:$|maj|dim|aug|sus|add|alt|M|[0-9°øΔ^])/u;
 const ALTERATION = /(bb|b|##|#)(?=\d)/gu;
 /** Key words that may stand beside a name in a whole-name string ("Db major", "F# maior"). */
 const KEY_WORDS = new Set(['major', 'minor', 'maior', 'menor', 'mayor']);
+const N = '[A-G](?:bb|b|##|#|𝄫|♭|𝄪|♯)?';
+/** "Db major (Db-F-Ab)": one key (EN / PT / ES) and a bracketed list of notes (- – — or , between). */
+const KEY_WITH_NOTES = new RegExp(`^${N} (?:[Mm]ajor|[Mm]inor|maior|menor|mayor) \\(${N}(?:\\s*[-–—,]\\s*${N})+\\)$`, 'u');
 /** A bare note (a key's root): letter + accidental, nothing after it. */
 const NOTE_ONLY = /^[A-G](?:bb|b|##|#|𝄫|♭|𝄪|♯)?$/u;
 
@@ -78,6 +81,8 @@ export function isMusicName(s: string): boolean {
   // A label or a sentence ("Em A menor: Bb maior (Bb-D-F)" — PT "In A minor:
   // …", where "Em" would read as E minor) is prose, not a name.
   if (s.includes(':')) return false;
+  // A key with the notes of its triad: "Db major (Db-F-Ab)", "Db maior (Db–F–Ab)".
+  if (KEY_WITH_NOTES.test(s.trim())) return true;
   const parts = s.trim().split(SEPARATORS);
   const words: { tok: string; key: boolean; before: string }[] = [];
   for (let i = 0; i < parts.length; i += 2) {
