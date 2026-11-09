@@ -10,9 +10,13 @@ import { test, expect, type Browser, type Page } from '@playwright/test';
  *  - a chord card's focus ring follows :focus-visible (keyboard only);
  *  - at 1440 px and wider, compatible-scale chips that do not fit are offered
  *    by a "+n" menu, reachable and usable from the keyboard.
+ *  - (brief G, 9 Nov) the guitar position chips wear the same fades. They are
+ *    chips from 640 to 1199 px wide (the sheet on a phone held sideways, the
+ *    docked panel on a tablet); a phone held upright, the laptop dock bar and
+ *    the full-neck view use a select.
  */
 
-async function open(browser: Browser, opts: { w: number; h: number; touch?: boolean; theme?: string; lang?: string }) {
+async function open(browser: Browser, opts: { w: number; h: number; touch?: boolean; theme?: string; lang?: string; instrument?: string; dock?: 'half' | 'full' }) {
   const context = await browser.newContext({
     viewport: { width: opts.w, height: opts.h },
     isMobile: !!opts.touch,
@@ -27,8 +31,9 @@ async function open(browser: Browser, opts: { w: number; h: number; touch?: bool
     sessionStorage.setItem('__seeded', '1');
   }, JSON.stringify({
     state: {
-      themeMode: opts.theme ?? 'fermata', language: opts.lang ?? 'en', lastView: 'explore', instrument: 'piano', baseOctave: 4,
+      themeMode: opts.theme ?? 'fermata', language: opts.lang ?? 'en', lastView: 'explore', instrument: opts.instrument ?? 'piano', baseOctave: 4,
       selectedKey: { natural: 'C', accidental: '' }, selectedScale: 'major', guitarScalePosition: 0,
+      ...(opts.dock ? { dockDetents: { explore: opts.dock, learn: 'peek' }, dockChosen: { explore: true, learn: false } } : {}),
     },
     version: 6,
   }));
@@ -228,6 +233,69 @@ for (const { w, h } of [{ w: 1536, h: 864 }, { w: 1440, h: 900 }]) {
       await expect(menu).toHaveCount(0);
       await expect(page.getByRole('combobox', { name: 'Root' })).toHaveValue('7');
       await expect(page.getByRole('combobox', { name: 'Scale' })).toHaveValue(first);
+    } finally {
+      await context.close();
+    }
+  });
+}
+
+const POSITIONS = '.chip-row-scroll';
+/** The colour of the nearest painted box under the row. */
+const surfaceUnder = (page: Page, scroller: string) => page.locator(scroller).first().evaluate((el) => {
+  for (let n: Element | null = el.parentElement; n; n = n.parentElement) {
+    const c = getComputedStyle(n).backgroundColor;
+    if (c !== 'rgba(0, 0, 0, 0)' && c !== 'transparent') return c;
+  }
+  return '';
+});
+
+for (const theme of ['fermata', 'fermata-night']) {
+  for (const { w, h, where } of [{ w: 844, h: 390, where: 'sheet' }, { w: 820, h: 1180, where: 'panel' }]) {
+    test(`guitar positions ${w}×${h} (${where}) ${theme}: the chips fade only where there are more`, async ({ browser }) => {
+      // Sideways the sheet rests at Peek: open it to Full, where the controls show.
+      const { context, page } = await open(browser, { w, h, touch: true, theme, instrument: 'guitar', dock: 'full' });
+      try {
+        await expect(page.locator(POSITIONS)).toBeVisible({ timeout: 15_000 });
+        await page.locator(POSITIONS).scrollIntoViewIfNeeded();
+        await expect(page.locator(POSITIONS)).toBeInViewport();
+        const rest = await fades(page, POSITIONS);
+        expect(rest.host, 'wrapped in EdgeFade').toBe(true);
+        expect(rest.overflows, 'the row overflows here').toBe(true);
+        await expect.poll(() => sides(page, POSITIONS), { message: 'at rest (Open)' }).toEqual([0, 1]);
+        await page.locator(POSITIONS).evaluate((el) => { el.scrollLeft = (el.scrollWidth - el.clientWidth) / 2; });
+        await expect.poll(() => sides(page, POSITIONS), { message: 'in the middle' }).toEqual([1, 1]);
+        await scrollToEnd(page, POSITIONS);
+        await expect.poll(() => sides(page, POSITIONS), { message: 'at its end' }).toEqual([1, 0]);
+        // The fade ends in the colour of the fretboard's own surface.
+        expect((await fades(page, POSITIONS)).to).toContain(await surfaceUnder(page, POSITIONS));
+        // The ‹ › steppers stay on one line with the row.
+        const tops = await page.getByTestId('position-row').locator(':scope > button').evaluateAll((bs) => bs.map((b) => Math.round(b.getBoundingClientRect().top)));
+        expect(new Set(tops).size).toBe(1);
+      } finally {
+        await context.close();
+      }
+    });
+  }
+}
+
+test('guitar positions 1024×768: the row fits, no fade', async ({ browser }) => {
+  const { context, page } = await open(browser, { w: 1024, h: 768, instrument: 'guitar' });
+  try {
+    await expect(page.locator(POSITIONS)).toBeVisible({ timeout: 15_000 });
+    const f = await fades(page, POSITIONS);
+    expect(f).toMatchObject({ host: true, overflows: false });
+    await expect.poll(() => sides(page, POSITIONS)).toEqual([0, 0]);
+  } finally {
+    await context.close();
+  }
+});
+
+for (const { w, h, touch } of [{ w: 390, h: 844, touch: true }, { w: 1440, h: 900, touch: false }]) {
+  test(`guitar positions ${w}×${h}: a select, no chip row`, async ({ browser }) => {
+    const { context, page } = await open(browser, { w, h, touch, instrument: 'guitar' });
+    try {
+      await expect(page.getByRole('combobox', { name: 'Scale position' })).toBeVisible({ timeout: 15_000 });
+      await expect(page.locator(POSITIONS)).toHaveCount(0);
     } finally {
       await context.close();
     }

@@ -2246,6 +2246,10 @@ p.explore-prose {
 /* The octave row's edge fades blend into the surface it sits on. */
 .piano-octave-row .edge-fade { --edge-fade-bg: var(--bg); }
 .dock-piano-tools .edge-fade { --edge-fade-bg: var(--bg-raised); }
+/* The guitar position chips are chips only on the fretboard's own surface
+   (--bg: the phone sheet sideways, the docked panel below 1200 px); the
+   portrait phone, the laptop dock bar and the full-neck view use a select. */
+.position-chips { --edge-fade-bg: var(--bg); }
 .dock-piano-tools .chip { flex: none; }
 
 @media (max-height: 500px) and (min-width: 640px) {
