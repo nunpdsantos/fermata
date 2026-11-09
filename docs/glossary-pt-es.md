@@ -24,9 +24,9 @@ Limits: rae.es and infopedia.pt block automated access (RAE read via Wayback sna
 | 14 | Power chord chip | "Power" (unchanged) | "Power" (unchanged) | low / low | P18, E20 (weak) | loanword is the usage |
 | 15 | Ordinal chips | 6.as … (superscript, period) | 6.as … | medium-high / high | P14, P15; E18, E19 | |
 | 16 | Title case | sentence case | sentence case | medium / high | P15, P16; E17 | RAE DPD §5.2.24–25; EU PT style guide for parts of a larger work |
-| 17 | Neighbour note (decided 9 November 2026) | ornato (ornato superior / inferior, ornato incompleto, ornato duplo) | bordadura (unchanged; a separate question) | 6 PT-PT sources, 0 PT-PT hits for "bordadura" / not assessed | S1, S2 (= P2, P1), S4–S7; S3 | the 5 Nov rule (rename once a second PT-PT source supports "ornato") is met; explicit definition: S6; S3 labels bordadura Brazilian and ornato European Portuguese; "ornato duplo" as a phrase is unattested (S4: "Pode ser duplo") |
+| 17 | Neighbour note (decided 9 November 2026) | ornato (ornato superior / inferior, ornato incompleto, ornato duplo) | bordadura (unchanged; a separate question) | high / not assessed | S1, S2 (= P2, P1), S4–S7; S3 (6 PT-PT sources use "ornato"; 0 PT-PT hits for "bordadura" in 47 texts) | the 5 Nov rule (rename once a second PT-PT source supports "ornato") is met; explicit definition: S6; S3 labels bordadura Brazilian and ornato European Portuguese; "ornato duplo" as a phrase is unattested (S4: "Pode ser duplo") |
 
-Row 17: on 5 November PT "bordadura" (73 occurrences) was kept against the curricula's "ornato" (one source family: S1, S2 = *Aprendizagens Essenciais*, Análise e Técnicas de Composição 10.º / 11.º ano (República Portuguesa / ANQEP, 2020), listed above as P2, P1) until a second PT-PT source supported "ornato". The 9 November research found it (sources S3–S7 below; S7 = P7 at a new URL); S6 (C. Pinto, ESMAE 2018) gives the explicit definition. An independent source check for the seat (9 November) confirmed the rule is met: S6 defines "ornato" as the neighbour note, and S1, S2, S5 and S6 have 0 hits for "bordadura". Research record: `/Users/nunosantos/Documents/Base/Music/fermata-programme/notes/2026-11-09/pt-terms-research.md` (section 1 and sources S1–S7). All 73 PT occurrences now read "ornato", with gender agreement (o / um ornato; bordadura dupla → ornato duplo).
+Row 17: on 5 November PT "bordadura" (75 occurrences in total: 73 in the content overlays and 2 in `src/data/moduleTitles.pt.ts`, which is generated from them) was kept against the curricula's "ornato" (one source family: S1, S2 = *Aprendizagens Essenciais*, Análise e Técnicas de Composição 10.º / 11.º ano (República Portuguesa / ANQEP, 2020), listed above as P2, P1) until a second PT-PT source supported "ornato". The 9 November research found it (sources S3–S7 below; S7 = P7 at a new URL); S6 (C. Pinto, ESMAE 2018) gives the explicit definition. An independent source check for the seat (9 November) confirmed the rule is met: S6 defines "ornato" as the neighbour note, and S1, S2, S5 and S6 have 0 hits for "bordadura". Research record: `/Users/nunosantos/Documents/Base/Music/fermata-programme/notes/2026-11-09/pt-terms-research.md` (section 1 and sources S1–S7). All 75 PT occurrences (73 + 2) now read "ornato", with gender agreement (o / um ornato; bordadura dupla → ornato duplo).
 
 ## Sources (all accessed 2026-11-05)
 
@@ -94,8 +94,8 @@ propuesta / respuesta with a gloss in ES; period phrases keep antecedente / cons
 Unchanged by decision: indicação de compasso / indicación de compás; PT cadência perfeita /
 imperfeita and CAP/CAI; ES cadencia auténtica perfecta (and its existing cadence labels);
 técnicas expandidas in both languages; jazz voicing in L7/L9, with disposição / disposición
-for classical spacing; the Power chord-family chip. ES bordadura (the PT term changed to ornato on 9 November
-2026, row 17). Ordinal chips use 6.as, 7.as, 9.as, 11.as, 13.as with only
+for classical spacing; the Power chord-family chip. ES keeps bordadura for the neighbour note; the PT term changed
+to ornato on 9 November 2026 (row 17). Ordinal chips use 6.as, 7.as, 9.as, 11.as, 13.as with only
 “as” raised using markup and the full plural name supplied to assistive technology.
 
 The source list above is the supplied 5 November research record, copied without additional
