@@ -577,9 +577,9 @@ const curriculumL3: CurriculumLevelOverlay = {
     l3u11m4: {
       title: 'Notas estranhas ao acorde (parte 1)',
       subtitle:
-        'Notas de passagem, bordaduras e antecipações — o tempero da melodia',
+        'Notas de passagem, ornatos e antecipações — o tempero da melodia',
       objectives: [
-        'Identificar notas de passagem, bordaduras e antecipações numa linha melódica',
+        'Identificar notas de passagem, ornatos e antecipações numa linha melódica',
         'Distinguir notas estranhas acentuadas de não acentuadas',
         'Compreender as notas estranhas como ornamentos por grau que animam notas do acorde estáticas',
       ],
@@ -591,15 +591,15 @@ const curriculumL3: CurriculumLevelOverlay = {
           tryThisLabel: 'Vê C maior — D, F, A e B são notas estranhas contra este acorde',
         },
         {
-          title: 'Notas de passagem e bordaduras',
+          title: 'Notas de passagem e ornatos',
           explanation:
-            'Uma nota de passagem preenche a lacuna entre duas notas do acorde diferentes, abordada e resolvida por grau na mesma direção (C-D-E sobre um acorde de C, onde D é uma nota de passagem entre C e E). Uma bordadura decora uma única nota do acorde — afasta-se por grau e regressa à nota de partida (C-D-C, onde D é uma bordadura superior). Ambos os tipos existem em versões acentuadas (no tempo forte, mais dramáticas) e não acentuadas (no tempo fraco, mais comuns).',
+            'Uma nota de passagem preenche a lacuna entre duas notas do acorde diferentes, abordada e resolvida por grau na mesma direção (C-D-E sobre um acorde de C, onde D é uma nota de passagem entre C e E). Um ornato decora uma única nota do acorde — afasta-se por grau e regressa à nota de partida (C-D-C, onde D é um ornato superior). Ambos os tipos existem em versões acentuadas (no tempo forte, mais dramáticas) e não acentuadas (no tempo fraco, mais comuns).',
           tryThisLabel: 'Vê a escala de C maior — os graus entre notas do acorde são notas de passagem',
         },
         {
-          title: 'Antecipações e bordaduras incompletas',
+          title: 'Antecipações e ornatos incompletos',
           explanation:
-            'Uma antecipação chega cedo — uma nota pertencente ao acorde seguinte soa no final do acorde atual, mantendo-se depois enquanto a harmonia a alcança. Cria impulso para a frente ao saltar à frente da mudança harmónica. Uma bordadura incompleta é abordada por grau mas resolvida por salto (ou vice-versa), tendo apenas uma ligação por grau. As bordaduras incompletas são mais dramáticas e angulares do que as suas contrapartes completas e simétricas.',
+            'Uma antecipação chega cedo — uma nota pertencente ao acorde seguinte soa no final do acorde atual, mantendo-se depois enquanto a harmonia a alcança. Cria impulso para a frente ao saltar à frente da mudança harmónica. Um ornato incompleto é abordado por grau mas resolvido por salto (ou vice-versa), tendo apenas uma ligação por grau. Os ornatos incompletos são mais dramáticos e angulares do que as suas contrapartes completas e simétricas.',
           tryThisLabel: 'Vê G maior — antecipar uma nota do acorde seguinte cria impulso',
         },
       ],
@@ -610,11 +610,11 @@ const curriculumL3: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Canta ou toca E-F-E sobre um acorde de C maior. F é uma bordadura superior — afasta-se de E por grau e regressa a E, decorando a nota do acorde sem mudar a harmonia',
+            'Canta ou toca E-F-E sobre um acorde de C maior. F é um ornato superior — afasta-se de E por grau e regressa a E, decorando a nota do acorde sem mudar a harmonia',
         },
         {
           instruction:
-            'Identifica notas estranhas numa melodia simples que conheças: toca cada nota contra o acorde subjacente e pergunta se pertence. As notas que não pertencem são notas estranhas ao acorde. Classifica cada uma como nota de passagem, bordadura ou antecipação com base na sua abordagem e resolução',
+            'Identifica notas estranhas numa melodia simples que conheças: toca cada nota contra o acorde subjacente e pergunta se pertence. As notas que não pertencem são notas estranhas ao acorde. Classifica cada uma como nota de passagem, ornato ou antecipação com base na sua abordagem e resolução',
         },
       ],
     },

@@ -9,6 +9,13 @@
  *         L3 cadence lesson)
  *     ES: auténtica perfecta (CAP), auténtica imperfecta (CAI), semicadencia,
  *         plagal, rota ("interrumpida" appears once, as the alternative name)
+ * - PT neighbour note = "ornato" (masculine: o / um ornato, ornato superior /
+ *   inferior / incompleto / duplo), never "bordadura", the Brazilian term
+ *   (glossary row 17, 9 November 2026). ES keeps "bordadura" (a separate
+ *   question). The two "ornato is masculine" rules are a floor, not a
+ *   grammar check: they catch a feminine determiner right before "ornato"
+ *   and a feminine adjective right after it, but not agreement several
+ *   words away (a participle, a pronoun, "Ambas").
  *
  * The rules cover the Drill's locale strings too (drill.terms.cadence.*).
  */
@@ -35,6 +42,11 @@ const FORBIDDEN: Record<'pt' | 'es', Array<[RegExp, string]>> = {
     [/\bcadências? suspensivas?\b|\bSuspensiva\b/, 'half cadence = "meia cadência" (suspensiva only as the one alternative mention)'],
     [/\bmeias?-cadências?\b/i, 'write "meia cadência" without a hyphen'],
     [/\bautênticas? (?:im)?perfeitas?\b/i, 'PAC/IAC = "cadência perfeita" / "cadência imperfeita"'],
+    [/\bbordaduras?\b/i, 'neighbour note = "ornato" (PT-PT; "bordadura" is the Brazilian term, glossary row 17)'],
+    // Bare "a" only before the singular: "a ornato" is never PT (the
+    // preposition contracts to "ao"), but "recorre a ornatos" is.
+    [/(?<!\p{L})(?:a\s+ornato(?!s)|(?:as|à|às|uma|umas|da|das|na|nas|pela|pelas|numa|numas|essa|esta|dessa|desta|nessa|nesta|aquela|aquelas|outra|outras|toda|todas|mesma|mesmas)\s+ornatos?)(?!\p{L})/iu, '"ornato" is masculine: o / um / do / no / pelo ornato'],
+    [/(?<!\p{L})ornatos?\s+(?:(?:in)?completas?|duplas?|cromáticas?|diatónicas?)(?!\p{L})/iu, '"ornato" is masculine: incompleto / completo / duplo / cromático / diatónico'],
   ],
   es: [
     [/\bcadencias? interrumpidas?\b|\bInterrumpida[:(]|\bInterrumpida \(/i, 'deceptive cadence = "cadencia rota" (interrumpida only as the one alternative mention)'],
@@ -92,9 +104,40 @@ describe('PT/ES terminology is consistent (D-19)', () => {
       ['es', 'La resolución de engaño V7-vi7 es más suave'],
       ['es', 'la cadencia de engaño V-vi funciona'],
       ['pt', 'A resolução de engano V7-vi7 é mais suave'],
+      ['pt', 'Uma bordadura incompleta é abordada por grau'],
+      ['pt', 'Notas de passagem e Bordaduras'],
+      ['pt', 'D é uma ornato superior'],
+      ['pt', 'movendo-se para à ornato superior'],
+      ['pt', 'Um ornato incompleta é abordado por grau'],
+      ['pt', 'Ornatos duplas também são permitidos'],
+      ['pt', 'mais apertada do que um ornato diatónica'],
+      ['pt', 'F é a ornato superior'],
+      ['pt', 'aquela ornato decora uma nota'],
+      ['pt', 'e outra ornato inferior'],
+      ['pt', 'toda ornato regressa à nota'],
+      ['pt', 'regressa sempre com a mesma ornato'],
     ];
     for (const [lang, text] of planted) {
       expect(FORBIDDEN[lang].some(([re]) => re.test(text)), text).toBe(true);
+    }
+  });
+
+  it('the neighbour-note rules pass correct PT and leave ES "bordadura" alone', () => {
+    const fine: Array<['pt' | 'es', string]> = [
+      ['pt', 'Um ornato incompleto é abordado por grau mas resolvido por salto'],
+      ['pt', 'O F é o ornato superior, o D é o ornato inferior'],
+      ['pt', 'Ornatos duplos (ornato superior e inferior em sequência) também são permitidos.'],
+      ['pt', 'as restantes podem ser notas de passagem ou ornatos dissonantes'],
+      ['pt', 'Uma nota abordada e deixada por grau na mesma direção: um ornato'],
+      ['pt', 'Um ornato duplo é um ornato superior e outro inferior'],
+      ['pt', 'Ornamenta um acorde recorrendo a ornatos cromáticos'],
+      ['pt', 'aquele ornato, o mesmo ornato, todo ornato'],
+      ['pt', 'Ornamentações cromáticas e a ornamentação de um acorde'],
+      ['es', 'Una bordadura incompleta se aborda por grado conjunto'],
+      ['es', 'Notas sostenidas en el bajo y ornamentos de doble bordadura'],
+    ];
+    for (const [lang, text] of fine) {
+      expect(FORBIDDEN[lang].filter(([re]) => re.test(text)).map(([, why]) => why), text).toEqual([]);
     }
   });
 });

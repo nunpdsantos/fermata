@@ -425,7 +425,7 @@ const curriculumL6: CurriculumLevelOverlay = {
       objectives: [
         'Escrever um cantus firmus seguindo regras estabelecidas (8-12 notas, maioritariamente por grau conjunto, um único clímax)',
         'Dominar a primeira espécie (1:1) com consonâncias e a segunda espécie (2:1) com tratamento de dissonância em tempo fraco',
-        'Dominar a terceira espécie (4:1) com notas de passagem, bordaduras, cambiata e bordaduras duplas',
+        'Dominar a terceira espécie (4:1) com notas de passagem, ornatos, cambiata e ornatos duplos',
       ],
       concepts: [
         {
@@ -437,13 +437,13 @@ const curriculumL6: CurriculumLevelOverlay = {
         {
           title: 'Segunda espécie (2:1)',
           explanation:
-            'Duas notas contra cada nota do CF. Os tempos fortes devem ser consonantes com o CF. Os tempos fracos também podem ser consonantes — é permitido um salto para um intervalo consonante. Os tempos fracos só podem ser dissonantes como notas de passagem — abordadas e deixadas por grau conjunto na mesma direção (as bordaduras ficam para a terceira espécie). Sem uníssonos em tempos fortes, exceto no início e no fim. A segunda espécie introduz o princípio fundamental do tratamento da dissonância: a dissonância é permitida apenas quando controlada por movimento por grau conjunto.',
+            'Duas notas contra cada nota do CF. Os tempos fortes devem ser consonantes com o CF. Os tempos fracos também podem ser consonantes — é permitido um salto para um intervalo consonante. Os tempos fracos só podem ser dissonantes como notas de passagem — abordadas e deixadas por grau conjunto na mesma direção (os ornatos ficam para a terceira espécie). Sem uníssonos em tempos fortes, exceto no início e no fim. A segunda espécie introduz o princípio fundamental do tratamento da dissonância: a dissonância é permitida apenas quando controlada por movimento por grau conjunto.',
           tryThisLabel: 'Vê G maior — outra tonalidade comum para CF',
         },
         {
           title: 'Terceira espécie (4:1)',
           explanation:
-            'Quatro notas contra cada nota do CF. A primeira nota de cada grupo deve ser consonante; as restantes três podem ser dissonantes como notas de passagem, bordaduras ou a figura de cambiata (grau conjunto para dissonância, salto de terça, grau conjunto de volta). Bordaduras duplas (bordadura superior e inferior em sequência) também são permitidas. A terceira espécie produz o contraponto mais melodicamente ativo e ornamentado antes da síncopa entrar na quarta espécie.',
+            'Quatro notas contra cada nota do CF. A primeira nota de cada grupo deve ser consonante; as restantes três podem ser dissonantes como notas de passagem, ornatos ou a figura de cambiata (grau conjunto para dissonância, salto de terça, grau conjunto de volta). Ornatos duplos (ornato superior e inferior em sequência) também são permitidos. A terceira espécie produz o contraponto mais melodicamente ativo e ornamentado antes da síncopa entrar na quarta espécie.',
           tryThisLabel: 'Vê D maior — experimenta traçar um cantus firmus',
         },
       ],
@@ -458,7 +458,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Na terceira espécie, a cambiata é uma figura ornamental específica: consonância, grau conjunto para dissonância, salto de terça na mesma direção, depois grau conjunto de volta. Permite que uma nota dissonante seja deixada por salto — uma das poucas exceções à regra de que a dissonância deve resolver por grau conjunto (a bordadura dupla, também permitida na terceira espécie, é outra)',
+            'Na terceira espécie, a cambiata é uma figura ornamental específica: consonância, grau conjunto para dissonância, salto de terça na mesma direção, depois grau conjunto de volta. Permite que uma nota dissonante seja deixada por salto — uma das poucas exceções à regra de que a dissonância deve resolver por grau conjunto (o ornato duplo, também permitido na terceira espécie, é outra)',
         },
       ],
     },
