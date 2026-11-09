@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Note, noteToString } from '../../core/types/music.ts';
 import { DEGREE_COLORS, DEGREE_COLORS_DIM, DEGREE_INKS } from '../../design/tokens/colors.ts';
+import { EdgeFade } from '../ui/EdgeFade.tsx';
 
 const INTERVAL_SHORT = [
   'R', 'm2', 'M2', 'm3', 'M3', 'P4', 'TT', 'P5', 'm6', 'M6', 'm7', 'M7', '8',
@@ -79,7 +80,9 @@ export function ChromaticStrip({
 
   return (
     // Every step is a full --tap target (W11-A): on a narrow screen the strip
-    // scrolls sideways inside its own box instead of squeezing the buttons.
+    // scrolls sideways inside its own box instead of squeezing the buttons,
+    // with an edge fade while there is more off a side.
+    <EdgeFade>
     <div className="overflow-x-auto -mx-1 px-1 py-1" style={{ overscrollBehaviorX: 'contain' }}>
     <div
       className={`grid gap-1.5 ${className}`}
@@ -155,5 +158,6 @@ export function ChromaticStrip({
       })}
     </div>
     </div>
+    </EdgeFade>
   );
 }

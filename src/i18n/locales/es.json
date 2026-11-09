@@ -408,7 +408,9 @@
     "label": "Instrumento {{name}}",
     "selectorLabel": "Instrumento",
     "pianoKeyboard": "Teclado de piano",
-    "baseOctave": "Octava base"
+    "baseOctave": "Octava base",
+    "scrollKeys": "Desliza aquí para recorrer las teclas",
+    "scrollFrets": "Desliza aquí para recorrer los trastes"
   },
   "review": {
     "title": "Cola de repaso",
@@ -548,6 +550,8 @@
     "formula": "F\u00f3rmula",
     "keyOwnNotes": "Las notas de la tonalidad",
     "compatibleScales": "Escalas compatibles",
+    "moreScales_one": "+{{count}} escala más",
+    "moreScales_other": "+{{count}} escalas más",
     "compatibleChords": "Acordes compatibles",
     "degree": "Grado {{n}}",
     "chord": "Acorde",

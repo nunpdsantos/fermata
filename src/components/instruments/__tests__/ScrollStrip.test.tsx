@@ -83,6 +83,28 @@ describe('Piano scroll strip (mobile)', () => {
     expect(strip.style.touchAction).toBe('none');
   });
 
+  it('says what it is for, with a ‹ / › that follow the keys left off each side (5 Nov eye review)', async () => {
+    const { container } = await renderPiano();
+    const strip = screen.getByTestId('scroll-strip');
+    // No more grip dots alone: the strip is labelled.
+    expect(strip.textContent).toContain('instrument.scrollKeys');
+    expect(strip.querySelectorAll('.scroll-strip-arrow')).toHaveLength(2);
+    const scroller = container.querySelector('.piano-scroll') as HTMLElement;
+    Object.defineProperty(scroller, 'clientWidth', { configurable: true, value: 390 });
+    Object.defineProperty(scroller, 'scrollWidth', { configurable: true, value: 2000 });
+    scroller.scrollLeft = 0;
+    fireEvent.scroll(scroller);
+    expect(strip.hasAttribute('data-more-left')).toBe(false);
+    expect(strip.hasAttribute('data-more-right')).toBe(true);
+    scroller.scrollLeft = 800;
+    fireEvent.scroll(scroller);
+    expect(strip.hasAttribute('data-more-left')).toBe(true);
+    expect(strip.hasAttribute('data-more-right')).toBe(true);
+    scroller.scrollLeft = 1610;
+    fireEvent.scroll(scroller);
+    expect(strip.hasAttribute('data-more-right')).toBe(false);
+  });
+
   it('dragging the strip changes container.scrollLeft', async () => {
     const { container } = await renderPiano();
     const scroller = container.querySelector('.piano-scroll') as HTMLElement;
@@ -144,6 +166,11 @@ describe('Fretboard scroll strip (mobile)', () => {
     await renderFretboard();
     const grid = screen.getByRole('grid', { name: 'fretboard.label' });
     expect(grid.style.touchAction).toBe('none');
+  });
+
+  it('says what it is for (the frets)', async () => {
+    await renderFretboard();
+    expect(screen.getByTestId('scroll-strip').textContent).toContain('instrument.scrollFrets');
   });
 
   it('dragging the strip changes the grid scrollLeft', async () => {
