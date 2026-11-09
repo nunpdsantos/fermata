@@ -273,6 +273,11 @@ async function focusWalk(page: Page, where: string, steps = 40) {
   expect.soft(names[0] ?? '', `${where}: the first Tab stop is the skip link`).toMatch(/skip to/i);
   expect.soft(names.length, `${where}: the Tab walk reached no stops`).toBeGreaterThan(5);
   expect.soft(bad, `${where}: focus not visible / off screen / covered ${JSON.stringify(bad.slice(0, 5), null, 1)}`).toEqual([]);
+  // The walk ends with keyboard focus on its last stop, ring and all; a
+  // root changed next by selectOption does not move focus, so the captures
+  // after it showed that ring on a chord card ("ii", 5 Nov eye review) as if
+  // it were selected. A learner changing the root focuses the select.
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
 }
 
 // ── Toasts (W9-22, review B2) ──────────────────────────────────────────────

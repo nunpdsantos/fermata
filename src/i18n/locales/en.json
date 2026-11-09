@@ -408,7 +408,9 @@
     "label": "{{name}} instrument",
     "selectorLabel": "Instrument",
     "pianoKeyboard": "Piano keyboard",
-    "baseOctave": "Base octave"
+    "baseOctave": "Base octave",
+    "scrollKeys": "Slide here to scroll the keys",
+    "scrollFrets": "Slide here to scroll the frets"
   },
   "review": {
     "title": "Review Queue",
@@ -548,6 +550,8 @@
     "learnMore": "Learn about this",
     "keyOwnNotes": "The key’s own notes",
     "compatibleScales": "Compatible Scales",
+    "moreScales_one": "+{{count}} more scale",
+    "moreScales_other": "+{{count}} more scales",
     "compatibleChords": "Compatible Chords",
     "degree": "Degree {{n}}",
     "chord": "Chord",
