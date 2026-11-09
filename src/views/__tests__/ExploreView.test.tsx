@@ -153,3 +153,51 @@ describe('ExploreView — opens without moving focus (design review / audit W2-0
     svgFocusSpy.mockRestore();
   });
 });
+
+// The practice panel itself is not under test here (guitar-practice tests own it).
+vi.mock('../../components/practice/GuitarPractice.tsx', async () => {
+  const React = await import('react');
+  return { default: () => React.createElement('div', { 'data-testid': 'practice-mock' }) };
+});
+
+// 2026-11-09: a guitarist who never switches the dock to Guitar found no
+// practice tools. "⋯" now always offers them; the toolbar button is unchanged.
+describe('ExploreView — "Practise on the guitar" in the scale actions menu', () => {
+  const openMenuItem = () => {
+    fireEvent.click(screen.getByRole('button', { name: 'Scale actions' }));
+    return screen.getByRole('menuitem', { name: 'Practise on the guitar' });
+  };
+
+  it('on the piano: offered in "⋯"; choosing it switches to the guitar and opens the practice panel', async () => {
+    render(<ExploreView />);
+    await screen.findAllByTestId('staff-mock');
+    expect(screen.queryByTestId('practice-open')).toBeNull(); // no toolbar button on the piano (unchanged)
+    fireEvent.click(openMenuItem());
+    expect(useAppStore.getState().instrument).toBe('guitar');
+    expect(await screen.findByRole('dialog', { name: 'Practise on the guitar' })).toBeDefined();
+    expect(await screen.findByTestId('practice-mock')).toBeDefined();
+    // …and the toolbar button is there now, as it always is on the guitar.
+    expect(screen.getByTestId('practice-open')).toBeDefined();
+  });
+
+  it('on the guitar: the menu item opens the same panel and leaves the instrument alone', async () => {
+    useAppStore.setState({ instrument: 'guitar' });
+    render(<ExploreView />);
+    await screen.findAllByTestId('staff-mock');
+    const setInstrument = vi.spyOn(useAppStore.getState(), 'setInstrument');
+    fireEvent.click(openMenuItem());
+    expect(setInstrument).not.toHaveBeenCalled();
+    expect(useAppStore.getState().instrument).toBe('guitar');
+    expect(await screen.findByRole('dialog', { name: 'Practise on the guitar' })).toBeDefined();
+    setInstrument.mockRestore();
+  });
+
+  it('the menu lists it after Copy / Print / Compare', async () => {
+    render(<ExploreView />);
+    await screen.findAllByTestId('staff-mock');
+    fireEvent.click(screen.getByRole('button', { name: 'Scale actions' }));
+    expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual([
+      'Copy scale summary to clipboard', 'Print scale diagram', 'Compare scales', 'Practise on the guitar',
+    ]);
+  });
+});
