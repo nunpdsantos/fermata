@@ -22,6 +22,9 @@ interface DrillIntroProps {
 export function DrillIntro({ settings, onStart, onOpenSettings }: DrillIntroProps) {
   const { t } = useTranslation();
   const topics = DRILL_FAMILIES.filter((family) => settings.families[family]);
+  // At most 2 asks per new fact (fewer when a second look has no place), so
+  // below the length this bound proves the first session is shorter.
+  const firstIsShorter = settings.newPerSession > 0 && 2 * settings.newPerSession < settings.length;
 
   return (
     <section className="drill-run gap-5" aria-labelledby="drill-intro-title" data-testid="drill-intro">
@@ -47,8 +50,10 @@ export function DrillIntro({ settings, onStart, onOpenSettings }: DrillIntroProp
       </div>
 
       <ul className="flex flex-col gap-2 text-body list-disc pl-5" style={{ color: 'var(--text)' }}>
-        {/* With no new facts per session the first session is not "just the new facts". */}
-        <li>{t(settings.newPerSession > 0 ? 'drill.intro.length' : 'drill.intro.lengthOnly', { length: settings.length })}</li>
+        {/* "Your first one is shorter: just the new facts" only when it is: a
+            first session is the new facts, each asked twice (sessionCounter),
+            so it is shorter only while 2 × new facts stays under the length. */}
+        <li>{t(firstIsShorter ? 'drill.intro.length' : 'drill.intro.lengthOnly', { length: settings.length })}</li>
         {settings.newPerSession > 0 && <li>{t('drill.intro.newFacts', { count: settings.newPerSession })}</li>}
         <li>{t('drill.intro.comeBack')}</li>
       </ul>
