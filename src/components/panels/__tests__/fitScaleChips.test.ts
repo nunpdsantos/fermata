@@ -123,3 +123,40 @@ it('reports how many chips are hidden, never counts the "+n" control as a chip, 
   cleanup();
   expect(reports).toEqual([3, 0]);
 });
+
+it('with no width to measure (a hidden ancestor) every chip is back and "+n" goes, until it is laid out again', () => {
+  let resize = () => {};
+  vi.stubGlobal('ResizeObserver', class {
+    constructor(callback: () => void) { resize = callback; }
+    observe() {}
+    disconnect() {}
+  });
+  const media = new EventTarget() as EventTarget & { matches: boolean };
+  media.matches = true;
+  vi.stubGlobal('matchMedia', () => media);
+  const options = document.createElement('span');
+  options.style.columnGap = '4px';
+  let available = 245;
+  options.getBoundingClientRect = () => ({ width: available }) as DOMRect;
+  const chips = [120, 80, 60].map((width) => {
+    const chip = document.createElement('button');
+    chip.getBoundingClientRect = () => ({ width }) as DOMRect;
+    options.append(chip);
+    return chip;
+  });
+  document.body.append(options);
+  const reports: number[] = [];
+  const hidden = () => chips.map((chip) => chip.hasAttribute('data-fit-hidden'));
+  const cleanup = fitScaleChips(options, (n) => reports.push(n));
+  expect(hidden()).toEqual([false, false, true]);
+  expect(reports).toEqual([1]);
+  available = 0;
+  resize();
+  expect(hidden()).toEqual([false, false, false]);
+  expect(reports).toEqual([1, 0]);
+  available = 245;
+  resize();
+  expect(hidden()).toEqual([false, false, true]);
+  expect(reports).toEqual([1, 0, 1]);
+  cleanup();
+});

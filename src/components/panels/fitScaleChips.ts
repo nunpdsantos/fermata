@@ -41,7 +41,9 @@ export function fitScaleChips(options: HTMLElement, onHidden?: (count: number) =
     showAll();
     if (!media?.matches) return report(0);
     const available = options.getBoundingClientRect().width;
-    if (available <= 0) return; // hidden ancestor / not laid out yet
+    // Hidden ancestor / not laid out yet: every chip is back (showAll), so
+    // no "+n" either — it would offer chips that are already there.
+    if (available <= 0) return report(0);
     const widths = chips.map((chip) => chip.getBoundingClientRect().width);
     const style = getComputedStyle(options);
     const gap = parseFloat(style.columnGap) || 0;

@@ -223,6 +223,32 @@ describe('Menu — the "⋯" button', () => {
     expect(document.activeElement).toBe(button);
   });
 
+  it('portal: the unplaced popup is transparent, never visibility:hidden, and the first item takes focus', async () => {
+    // In a browser a visibility:hidden item cannot take focus, and under
+    // reduced motion index.css's 0.01 ms transition on every property kept
+    // the items hidden when the open focused the first one (9 Nov). jsdom has
+    // no transitions or visibility-based focus rules, so this pins the
+    // contract instead: the style the popup is created with (seen as the
+    // mutation's oldValue when it is placed) and where focus lands.
+    const styles: string[] = [];
+    const observer = new MutationObserver((records) => {
+      for (const r of records) {
+        if ((r.target as HTMLElement).getAttribute('role') !== 'menu') continue;
+        styles.push(r.oldValue ?? '', (r.target as HTMLElement).getAttribute('style') ?? '');
+      }
+    });
+    observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['style'], attributeOldValue: true });
+    render(<Menu portal label="Scale actions" items={[{ id: 'c', label: 'Copy', onSelect: vi.fn() }, { id: 'p', label: 'Print', onSelect: vi.fn() }]} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Scale actions' }));
+    await act(async () => { await Promise.resolve(); });
+    observer.disconnect();
+    const menu = screen.getByRole('menu');
+    expect(menu.parentElement).toBe(document.body);
+    expect(styles.some((s) => /opacity:\s*0/.test(s))).toBe(true);
+    expect([...styles, menu.getAttribute('style') ?? ''].some((s) => /visibility/.test(s))).toBe(false);
+    expect(document.activeElement).toBe(screen.getAllByRole('menuitem')[0]);
+  });
+
   it('a pointer down outside closes it', () => {
     const { button } = setup();
     fireEvent.click(button);
