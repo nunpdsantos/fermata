@@ -16,6 +16,8 @@ describe('served items carry their English identity', () => {
     for (const level of LEVELS) {
       for (const [moduleId, list] of Object.entries(await loadExercises(level, 'en'))) {
         for (const ex of list) {
+          expect(ex.sourceFingerprint, ex.id).toBeDefined();
+          expect(ex.contentLang, ex.id).toBe('en');
           expect(ex.sourceFingerprint, ex.id).toBe(exerciseFingerprint(ex));
           expect(ex.sourceFingerprint, ex.id).toBe((snapshot as Record<string, Record<string, string>>)[moduleId]?.[ex.id]);
         }
@@ -31,7 +33,9 @@ describe('served items carry their English identity', () => {
       for (const list of Object.values(await loadExercises(level, lang))) {
         for (const ex of list) {
           items += 1;
+          expect(ex.sourceFingerprint, ex.id).toBeDefined();
           expect(ex.sourceFingerprint, ex.id).toBe(en.get(ex.id));
+          expect(ex.contentLang, ex.id).toBe(lang);
           if (exerciseFingerprint(ex) !== ex.sourceFingerprint) reworded += 1;
         }
       }

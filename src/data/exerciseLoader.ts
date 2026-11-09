@@ -45,15 +45,16 @@ const exerciseCache = new Map<string, ExerciseMap>();
  * the Learn session store keys a saved check by it, so a PT/ES wording fix
  * no longer discards a check in progress, while an English change to the
  * question, its keyed answer or its config still does. A few ms per level.
+ * With `contentLang`, each item also records the language its text is in.
  */
-export function withSourceFingerprints(served: ExerciseMap, source: ExerciseMap): ExerciseMap {
+export function withSourceFingerprints(served: ExerciseMap, source: ExerciseMap, contentLang?: ContentLanguage): ExerciseMap {
   const fingerprints = new Map<string, string>();
   for (const list of Object.values(source)) for (const ex of list) fingerprints.set(ex.id, exerciseFingerprint(ex));
   return Object.fromEntries(Object.entries(served).map(([moduleId, list]) => [
     moduleId,
     list.map((ex) => {
       const sourceFingerprint = fingerprints.get(ex.id);
-      return sourceFingerprint === undefined ? ex : { ...ex, sourceFingerprint };
+      return sourceFingerprint === undefined ? ex : { ...ex, sourceFingerprint, ...(contentLang ? { contentLang } : {}) };
     }),
   ]));
 }
@@ -91,10 +92,10 @@ export async function loadExercises(
     exercises = mergeExerciseMaps(exercises, generated);
     source = lang === 'en' ? exercises : mergeExerciseMaps(source, generateAllForLevel(templateMod.default, 'en', exerciseMod.default));
   }
-  exercises = withSourceFingerprints(exercises, source);
-
   // A PT/ES overlay that failed to load comes back null: serve the English
   // fallback this time but don't cache it, so the next load retries.
-  if (lang === 'en' || (exerciseOv && (!templateMod || templateOv))) exerciseCache.set(cacheKey, exercises);
+  const translated = lang === 'en' || !!(exerciseOv && (!templateMod || templateOv));
+  exercises = withSourceFingerprints(exercises, source, translated ? lang : 'en');
+  if (translated) exerciseCache.set(cacheKey, exercises);
   return exercises;
 }

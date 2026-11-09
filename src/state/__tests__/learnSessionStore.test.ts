@@ -263,9 +263,22 @@ describe('a saved check follows the English identity, not the served wording', (
     expect(useLearnSessionStore.getState().check).toBeNull();
   });
 
-  it('a language switch mid-run still drops it (the saved answers are in the other language)', () => {
-    useLearnSessionStore.getState().setCheck(ptCheck(serve(PT)));
-    expect(restorableCheck('l1u1m1', serve(EN), 'en')).toBeNull();
+  // Same English identities in every case: only the language check can drop these.
+  const ES = [
+    mcItem('l1u1m1e1', '¿Qué clave se enrolla alrededor del sol?', ['Clave de sol', 'Clave de fa', 'Clave de do']),
+    mcItem('l1u1m1e2', '¿Cuántas líneas tiene un pentagrama?', ['Cinco', 'Cuatro', 'Seis']),
+    buildItem('l1u1m1e3', 'Construye do mayor.'),
+  ];
+  it.each([
+    ['PT → EN', () => ptCheck(serve(PT)), serve(EN), 'en'],
+    ['EN → PT', () => ({ ...ptCheck(serve(EN), { items: [{ id: 'l1u1m1e2', answers: ['Five'], score: 1, answer: 'Five' }], tried: [{ value: 'Bass', words: 'Bass' }], missed: 'Bass' }), lang: 'en' }), serve(PT), 'pt'],
+    ['PT → ES', () => ptCheck(serve(PT)), serve(ES), 'es'],
+  ] as const)('a language switch mid-run still drops it, %s (the saved answers are in the other language)', (_, saved, items, lang) => {
+    const check = saved();
+    expect(identitiesOf([...items])).toEqual(check.identities);
+    useLearnSessionStore.getState().setCheck(check);
+    expect(restorableCheck('l1u1m1', [...items], lang)).toBeNull();
+    expect(useLearnSessionStore.getState().check).toBeNull();
   });
 });
 

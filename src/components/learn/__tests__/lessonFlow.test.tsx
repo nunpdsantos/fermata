@@ -208,6 +208,20 @@ describe('check → result → practice', () => {
     expect(screen.getByRole('button', { name: 'no (already tried)' })).toBeTruthy();
     expect(useLearnSessionStore.getState().check!.run.scores).toEqual([1]);
   });
+
+  it('a check answered in English while the translation failed to load is not resumed under the translation', () => {
+    const served = (contentLang: 'en' | 'pt') => EXERCISES.map((ex) => ({ ...ex, contentLang, sourceFingerprint: fingerprintsOf([ex])[ex.id] }));
+    const first = renderModule({ exercises: served('en') });
+    click('Start the check');
+    answer('yes');
+    click('Continue');
+    answer('no');
+    expect(useLearnSessionStore.getState().check!.lang).toBe('en');
+    first.unmount();
+    renderModule({ exercises: served('pt') });
+    expect(screen.queryByTestId('focused-check')).toBeNull();
+    expect(useLearnSessionStore.getState().check).toBeNull();
+  });
 });
 
 describe('through LearnView', () => {

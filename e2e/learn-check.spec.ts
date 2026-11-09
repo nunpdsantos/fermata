@@ -200,8 +200,20 @@ test('a reload in the middle of a check loses nothing: question 4 of 9, same sco
   await context.close();
 });
 
-test('PT: a translation fix shipped between two loads keeps the check: question 4 of 9, same scores, same attempt', async ({ browser }) => {
+test('PT: a translation fix shipped between two loads keeps the check: question 4 of 9, same scores, same attempt', async ({ browser, request }) => {
   test.setTimeout(90_000);
+  // The fix is shipped by rewriting the PT overlay modules the dev server
+  // serves (/src/…); `vite preview` serves them hashed and minified, so there
+  // it is skipped and noted — never silently on the dev server: only a
+  // production build (the one with the PWA manifest) may lack the modules.
+  const overlay = await request.get('/src/i18n/content/pt/exercisesL2.ts');
+  const dev = overlay.ok() && (overlay.headers()['content-type'] ?? '').includes('javascript');
+  if (!dev) {
+    const manifest = await request.get('/manifest.webmanifest');
+    expect((manifest.headers()['content-type'] ?? '').includes('json'), 'dev server without /src modules?').toBe(true);
+    test.info().annotations.push({ type: 'note', description: 'rewriting the PT overlay needs the dev server: skipped on this build' });
+  }
+  test.skip(!dev, 'needs the dev server\'s /src modules');
   const key = answerKey('pt');
   const { context, page } = await open(browser, VIEWPORTS[1], 'pt');
   await openLesson(page, W.pt.lesson);
