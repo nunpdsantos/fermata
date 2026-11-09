@@ -4,7 +4,7 @@
  * that visit, plus that notice on phones (announced, no card over the page).
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, cleanup, fireEvent, act } from '@testing-library/react';
+import { render, screen, cleanup, fireEvent, act, waitFor } from '@testing-library/react';
 import i18n from '../../../i18n';
 import { WelcomeHost } from '../WelcomeHost';
 import { WELCOME_KEY, bootWelcome, useWelcomeStore } from '../../../state/welcomeGate';
@@ -45,7 +45,9 @@ describe('the welcome sheet', () => {
     expect(terms).toEqual(['Explore', 'Learn', 'Drill']);
     expect(dialog.textContent).toContain('nine levels');
     expect(dialog.textContent).toContain('Free, no account, works offline. Your progress stays in this browser.');
-    expect(dialog.contains(document.activeElement)).toBe(true);
+    // The Sheet moves focus in an effect after the dialog mounts: wait for it
+    // (asserting at once failed once on a slow CI runner, main e60cd38).
+    await waitFor(() => expect(dialog.contains(document.activeElement)).toBe(true));
     expect(screen.getAllByRole('button').filter((b) => dialog.contains(b)).map((b) => b.textContent || b.getAttribute('aria-label')))
       .toEqual(['Close', 'Explore a key', 'Start the course', 'Try a drill']);
   });
