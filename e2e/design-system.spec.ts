@@ -1087,11 +1087,15 @@ for (const v of VIEWPORTS) {
       test.setTimeout(240_000);
       const where = (s: string) => `${combo} ${s}`;
 
-      // Drill: question, wrong-answer feedback (+ toasts over it), settings,
-      // mastery map, the session summary, a Sprint.
+      // Drill: the first-visit intro, question, wrong-answer feedback (+ toasts
+      // over it), settings, mastery map, the session summary, a Sprint.
       {
         const { context, page } = await open(browser, v, th.mode, { lastView: 'drill' });
         const panel = page.locator('#drill-panel');
+        await expect(panel.getByTestId('drill-intro')).toBeVisible({ timeout: 15_000 });
+        await check(page, v, combo, 'drill-intro');
+        await focusWalk(page, where('drill-intro'));
+        await panel.getByRole('button', { name: 'Start' }).click();
         await expect(panel.getByTestId('drill-answers')).toBeVisible({ timeout: 15_000 });
         await check(page, v, combo, 'drill-question');
         await focusWalk(page, where('drill-question'));
@@ -1225,8 +1229,8 @@ for (const lang of ['en', 'pt', 'es'] as const) {
 
 // Portuguese and Spanish at 390 px: longer words, same rules.
 const LANGS = [
-  { lang: 'pt', notQuite: /Não é bem isso|Mesmo som/, cont: 'Continuar', more: 'Mais', settings: 'Definições' },
-  { lang: 'es', notQuite: /Incorrecto|Mismo sonido/, cont: 'Continuar', more: 'Más', settings: 'Ajustes' },
+  { lang: 'pt', notQuite: /Não é bem isso|Mesmo som/, cont: 'Continuar', more: 'Mais', settings: 'Definições', start: 'Iniciar' },
+  { lang: 'es', notQuite: /Incorrecto|Mismo sonido/, cont: 'Continuar', more: 'Más', settings: 'Ajustes', start: 'Empezar' },
 ] as const;
 
 for (const L of LANGS) {
@@ -1271,6 +1275,9 @@ for (const L of LANGS) {
       }
       {
         const { context, page } = await open(browser, v, th.mode, { lastView: 'drill' }, { lang: L.lang });
+        await expect(page.locator('#drill-panel').getByTestId('drill-intro')).toBeVisible({ timeout: 15_000 });
+        await check(page, v, combo, 'drill-intro');
+        await page.locator('#drill-panel').getByRole('button', { name: L.start }).click();
         await expect(page.locator('#drill-panel').getByTestId('drill-answers')).toBeVisible({ timeout: 15_000 });
         await check(page, v, combo, 'drill-question');
         await drillWrong(page, L.notQuite, L.cont);

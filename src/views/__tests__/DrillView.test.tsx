@@ -75,6 +75,8 @@ function resetStore(length: 12 | 24 | 40 = 24) {
     length,
     newPerSession: length,
   });
+  // Past the first-visit intro (its own tests below start from a fresh store).
+  useDrillStore.setState({ introDone: true });
 }
 
 /** Read the answer.correct for the question currently on screen, then tap it. */
@@ -274,6 +276,7 @@ const TRIAD_FAMILIES: Record<DrillFamily, boolean> = {
 
 function startTriadSession() {
   useDrillStore.getState().resetDrillData();
+  useDrillStore.setState({ introDone: true }); // past the first-visit intro
   useDrillStore.getState().updateSettings({
     families: TRIAD_FAMILIES,
     length: 12,
@@ -344,6 +347,7 @@ describe('DrillView — noteChips end-to-end (triad family)', () => {
 // ── Task 10: reveal audio + learn deep-link ───────────────────────────────────
 function startDegreeSession() {
   useDrillStore.getState().resetDrillData();
+  useDrillStore.setState({ introDone: true }); // past the first-visit intro
   useDrillStore.getState().updateSettings({
     families: {
       keysig: false, circle: false, degree: true, scale: false, interval: false,
@@ -558,6 +562,7 @@ describe('DrillView — same item twice in a row stays answerable (W0-02 / D-4)'
 describe('DrillView — progress counter (W0-02 / D-11)', () => {
   function startShortSession(newPerSession = 3) {
     useDrillStore.getState().resetDrillData();
+    useDrillStore.setState({ introDone: true }); // past the first-visit intro
     // Degree facts only, 3 new per session, target 24 → the real queue is 3.
     useDrillStore.getState().updateSettings({
       families: { ...CHOICE_FAMILIES, keysig: false, circle: false },
@@ -567,10 +572,24 @@ describe('DrillView — progress counter (W0-02 / D-11)', () => {
   }
 
   it('shows the real session length, not the 24-question target', () => {
+    vi.useFakeTimers();
     startShortSession();
     render(<DrillView />);
     expect(useDrillStore.getState().activeSession!.queue).toHaveLength(3);
-    expect(screen.getByText('1 of 3')).toBeDefined();
+    // 3 new degree facts + the second looks the store can place: two of them
+    // are siblings, so one second look has nowhere to go (never next to a
+    // sibling) — 5, decided at the start (seat review 2, 2026-11-09).
+    expect(screen.getByText('1 of 5')).toBeDefined();
+    const seen: string[] = [];
+    for (let guard = 0; guard < 10 && screen.queryByText(/^\d+ of \d+$/); guard++) {
+      seen.push(screen.getByText(/^\d+ of \d+$/).textContent!);
+      act(() => answerCurrentCorrectly());
+      act(() => {
+        vi.advanceTimersByTime(600);
+      });
+    }
+    expect(seen).toEqual(['1 of 5', '2 of 5', '3 of 5', '4 of 5', '5 of 5']);
+    expect(screen.getByText('Session complete')).toBeDefined();
   });
 
   it('keeps the answered question number during feedback and advances on Continue', () => {
@@ -584,11 +603,14 @@ describe('DrillView — progress counter (W0-02 / D-11)', () => {
       fireEvent.click(screen.getByRole('button', { name: currentWrongChoice() }));
     });
     // Feedback for question 1: still "1 of …" (was "2 of 24" before the fix).
-    // The miss is requeued, so the session grew to 5.
+    // The miss is requeued, but the total stays put (brief 2026-11-09: it read
+    // "1 of 4" then "1 of 5" — the goalposts moved). 4 new facts + their
+    // second looks = 8 from the start.
+    expect(useDrillStore.getState().activeSession!.queue).toHaveLength(5);
     expect(screen.getByText('Not quite')).toBeDefined();
-    expect(screen.getByText('1 of 5')).toBeDefined();
+    expect(screen.getByText('1 of 8')).toBeDefined();
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Continue' })));
-    expect(screen.getByText('2 of 5')).toBeDefined();
+    expect(screen.getByText('2 of 8')).toBeDefined();
   });
 
   it('a correct answer also holds its number until the auto-advance', () => {
@@ -644,13 +666,16 @@ describe('DrillView — counter across a full default first session (W7-06)', ()
   it('never shows the 24 target, never runs past its total, and ends on "N of N"', () => {
     vi.useFakeTimers();
     useDrillStore.getState().resetDrillData(); // defaults: all topics, 4 new, length 24
+    useDrillStore.setState({ introDone: true }); // past the first-visit intro
     render(<DrillView />);
     const seen: string[] = [];
+    let againSeen = 0;
     for (let guard = 0; guard < 40; guard++) {
       const counter = screen.queryByText(/^\d+ of \d+$/);
       if (!counter) break; // summary reached
       const text = counter.textContent!;
       seen.push(text);
+      if (screen.queryByTestId('drill-again')) againSeen++;
       const [x, n] = text.split(' of ').map(Number);
       expect(x, text).toBeLessThanOrEqual(n);
       act(() => answerCurrentCorrectly());
@@ -662,7 +687,16 @@ describe('DrillView — counter across a full default first session (W7-06)', ()
     const asked = useDrillStore.getState().lifetime.answered;
     expect(seen.length).toBe(asked);
     expect(seen.some((t) => t.endsWith(' of 24'))).toBe(false);
-    expect(seen[seen.length - 1]).toBe(`${asked} of ${asked}`);
+    // The total never changes and the count moves every question (brief +
+    // seat review 2026-11-09): 4 new facts and their 4 second looks, 1 … 8 of 8,
+    // the second looks marked Again.
+    const totals = new Set(seen.map((t) => t.split(' of ')[1]));
+    expect(totals.size).toBe(1);
+    const n = Number([...totals][0]);
+    expect(n).toBe(8);
+    expect(asked).toBe(n);
+    expect(seen).toEqual(Array.from({ length: n }, (_, i) => `${i + 1} of ${n}`));
+    expect(againSeen).toBe(4);
   });
 });
 

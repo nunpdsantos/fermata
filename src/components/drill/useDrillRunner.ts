@@ -29,6 +29,7 @@ import {
 } from '../../state/drillStore';
 import { gradeAnswer, type AnswerPayload, type GradeResult } from './grading';
 import { playAnswerAudio } from './answerAudio';
+import { sessionCounter } from './sessionCounter';
 
 // ─── Session log (drives SessionSummary) ─────────────────────────────────────
 // Per-family breakdown + tier-up crossings for the summary. Kept by the store
@@ -88,10 +89,15 @@ export interface DrillRunner {
   /** Zero-based number of the question ON SCREEN (stays put during feedback). */
   position: number;
   /**
-   * Real session length: answered + still queued, capped at the session
-   * target. A short queue no longer reads "x of 24" (audit D-11).
+   * The session's planned questions: its distinct facts, capped at the
+   * session length (a short queue never reads "x of 24", audit D-11). Fixed
+   * for the session — a re-ask never raises it (sessionCounter.ts).
    */
   total: number;
+  /** The question on screen is a re-ask (a miss, or a new fact's second look). */
+  again: boolean;
+  /** 0, or k for the k-th extra re-ask outside the planned total (shown as "Extra k"). */
+  extra: number;
   correctCount: number;
   sessionComplete: boolean;
   /** Per-session breakdown for the summary screen (the store's session log). */
@@ -104,10 +110,11 @@ export interface DrillRunner {
 
 const AUTO_ADVANCE_MS = 600;
 
-export function useDrillRunner(): DrillRunner {
+export function useDrillRunner({ autoStart = true }: { autoStart?: boolean } = {}): DrillRunner {
   const { bank, byId } = getBank();
 
   const activeSession = useDrillStore((s) => s.activeSession);
+  const items = useDrillStore((s) => s.items);
   const settings = useDrillStore((s) => s.settings);
   const startSession = useDrillStore((s) => s.startSession);
   const recordAnswer = useDrillStore((s) => s.recordAnswer);
@@ -149,9 +156,10 @@ export function useDrillRunner(): DrillRunner {
   }, []);
 
   // Auto-start on mount when there is no active session (zero-friction rule).
-  // startSession reads bank + current settings from the store.
+  // startSession reads bank + current settings from the store. Not while the
+  // first-visit intro is up: its Start calls startNewSession.
   useEffect(() => {
-    if (useDrillStore.getState().activeSession === null) {
+    if (autoStart && useDrillStore.getState().activeSession === null) {
       startSession(bank, Date.now());
     }
     // Run once on mount. startNewSession handles deliberate restarts.
@@ -266,17 +274,29 @@ export function useDrillRunner(): DrillRunner {
   const asked = endedSummary?.asked ?? activeSession?.asked ?? 0;
   const correctCount = endedSummary?.correct ?? activeSession?.correct ?? 0;
 
-  // During feedback the store has already counted the answer, so the question
-  // on screen is number `asked`, not `asked + 1` (audit U-6 / D-11).
-  const position = phase === 'feedback' ? Math.max(0, asked - 1) : asked;
-  // Answered so far + answerable ids still queued, capped at the target.
+  // The question on screen sits at the pointer while answering; during
+  // feedback the store has already moved past it, so it is the one just before
+  // (audit U-6 / D-11). The counter reads the queue (sessionCounter.ts).
+  let position = 0;
   let total: number = settings.length;
+  let again = false;
+  let extra = 0;
   if (activeSession) {
-    let remaining = 0;
-    for (let i = activeSession.index; i < activeSession.queue.length; i++) {
-      if (byId.has(activeSession.queue[i])) remaining++;
+    let at = activeSession.index - 1;
+    if (phase === 'answering') {
+      at = activeSession.index;
+      while (at < activeSession.queue.length && !byId.has(activeSession.queue[at])) at++;
     }
-    total = Math.min(settings.length, activeSession.asked + remaining);
+    // New in this session: no state before it, or introduced by it.
+    const sessionId = activeSession.id;
+    const isNew = (id: string) => items[id] === undefined || items[id].introSessionId === sessionId;
+    const counter = sessionCounter(
+      activeSession.queue, Math.max(0, at), settings.length, (id) => byId.has(id), isNew, activeSession.seed,
+    );
+    position = counter.current - 1;
+    total = counter.total;
+    again = counter.again;
+    extra = counter.extra;
   }
 
   return {
@@ -287,6 +307,8 @@ export function useDrillRunner(): DrillRunner {
     asked,
     position,
     total,
+    again,
+    extra,
     correctCount,
     sessionComplete: complete,
     // Headline numbers track the store/snapshot (authoritative even on resume);

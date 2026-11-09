@@ -94,6 +94,7 @@ beforeEach(async () => {
     store.getState().resetDrillData();
     store.getState().updateSettings({ families: CHOICE_FAMILIES, length: 12, newPerSession: 12 });
     store.getState().endSession();
+    store.setState({ introDone: true }); // past the first-visit intro
   });
   cleanup();
   await pageLoad(); // a clean session with these settings

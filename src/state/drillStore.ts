@@ -134,6 +134,12 @@ interface DrillStoreState {
   lifetime: { answered: number; correct: number };
   activeSession: ActiveSession | null;
   sprint: SprintRun | null;
+  /**
+   * The first-visit intro has been passed (brief 2026-11-09): set when any
+   * session starts, so it is never shown again. Added to the v3 save without a
+   * version bump — a save without it derives it from its history.
+   */
+  introDone: boolean;
 
   startSession: (bank: DrillItem[], now: number) => void;
   /**
@@ -331,6 +337,7 @@ export function validatePersistedShape(value: unknown): {
   lifetime: { answered: number; correct: number };
   activeSession: ActiveSession | null;
   sprint: SprintRun | null;
+  introDone: boolean;
 } | null {
   if (!isPlainObject(value)) return null;
 
@@ -384,7 +391,14 @@ export function validatePersistedShape(value: unknown): {
   // sprint (v3) — absent in older saves; a malformed one is closed
   const sprint = sanitizeSprint(value.sprint);
 
-  return { items, settings, sprintBests, lifetime, activeSession, sprint };
+  // introDone — absent in saves made before the intro: any drill history
+  // (an answer, a session, a Sprint) means the learner already knows Drill.
+  const introDone = typeof value.introDone === 'boolean'
+    ? value.introDone
+    : Object.keys(items).length > 0 || lifetime.answered > 0 || activeSession !== null
+      || sprint !== null || Object.keys(sprintBests).length > 0;
+
+  return { items, settings, sprintBests, lifetime, activeSession, sprint, introDone };
 }
 
 /**
@@ -425,6 +439,7 @@ export const useDrillStore = create<DrillStoreState>()(
       lifetime: INITIAL_LIFETIME,
       activeSession: null,
       sprint: null,
+      introDone: false,
 
       startSession: (bank, now) => {
         const { settings, items } = get();
@@ -442,6 +457,7 @@ export const useDrillStore = create<DrillStoreState>()(
             seed,
             missRequeues: {},
           },
+          introDone: true,
         });
       },
 
@@ -560,6 +576,7 @@ export const useDrillStore = create<DrillStoreState>()(
           lifetime: INITIAL_LIFETIME,
           activeSession: null,
           sprint: null,
+          introDone: false,
         }),
 
       resetDrillProgress: () =>
@@ -591,6 +608,7 @@ export const useDrillStore = create<DrillStoreState>()(
         lifetime: state.lifetime,
         activeSession: state.activeSession,
         sprint: state.sprint,
+        introDone: state.introDone,
       }),
       migrate: (persisted: unknown, version: number) => {
         // Any version mismatch or corrupt data → attempt shape rescue or fall back
@@ -603,6 +621,7 @@ export const useDrillStore = create<DrillStoreState>()(
             lifetime: INITIAL_LIFETIME,
             activeSession: null,
             sprint: null,
+            introDone: false,
           };
         }
         // v2 → v3 needs nothing beyond the shape rescue: the new fields are
@@ -623,6 +642,7 @@ export const useDrillStore = create<DrillStoreState>()(
             lifetime: INITIAL_LIFETIME,
             activeSession: null,
             sprint: null,
+            introDone: false,
           };
         }
         return { ...current, ...validated };

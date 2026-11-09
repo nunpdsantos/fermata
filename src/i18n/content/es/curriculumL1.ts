@@ -166,7 +166,7 @@ const curriculumL1: CurriculumLevelOverlay = {
           title: 'Clave de Sol y clave de Fa',
           explanation:
             'Una clave aparece al comienzo de un pentagrama e indica qué alturas representan las líneas y los espacios. La clave de sol (𝄞) se centra en el G por encima del C central — se usa para instrumentos más agudos y la mano derecha en el piano. La clave de fa (𝄢) se centra en el F por debajo del C central — se usa para instrumentos más graves y la mano izquierda en el piano. Sin una clave, el pentagrama es solo líneas — la clave les da significado. La guitarra usa la clave de sol con un pequeño 8 debajo: suena una octava por debajo de lo escrito. La unidad opcional Notación de Guitarra explica esta convención.',
-          tryThisLabel: 'Explora la tonalidad de C',
+          tryThisLabel: 'De C a C en clave de sol y en clave de fa',
         },
       ],
       tasks: [
