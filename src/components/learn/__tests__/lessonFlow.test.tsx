@@ -32,7 +32,7 @@ import { LearnView } from '../../../views/LearnView';
 import { L1_UNITS } from '../../../core/constants/curriculumL1';
 import { L3_UNITS } from '../../../core/constants/curriculumL3';
 import { L9_UNITS } from '../../../core/constants/curriculumL9';
-import { useLearnSessionStore } from '../../../state/learnSessionStore';
+import { useLearnSessionStore, fingerprintsOf } from '../../../state/learnSessionStore';
 import { useProgressStore } from '../../../state/progressStore';
 import { useAppStore } from '../../../state/store';
 import { getDefaultProgress, LEVEL_METADATA } from '../../../data/curriculumLoader';
@@ -191,6 +191,36 @@ describe('check → result → practice', () => {
     expect(screen.getByRole('button', { name: 'no (already tried)' })).toBeTruthy();
     expect(useLearnSessionStore.getState().check!.run.order).toEqual(order);
     expect(useLearnSessionStore.getState().check!.run.scores).toEqual([1]);
+  });
+
+  it('a wording fix between the two loads (same English identity) keeps the check', () => {
+    // As the loader serves a translated item: its own wording, the English item's fingerprint.
+    const served = (prompt: (id: string) => string) => EXERCISES.map((ex) => ({ ...ex, prompt: prompt(ex.id), sourceFingerprint: fingerprintsOf([ex])[ex.id] }));
+    const first = renderModule({ exercises: served((id) => `Onde se enrola a clave de sol (${id})?`) });
+    click('Start the check');
+    answer('yes');
+    click('Continue');
+    answer('no');
+    first.unmount();
+    renderModule({ exercises: served((id) => `Onde se enrola a clave de sol? (${id})`) });
+    expect(screen.getByTestId('check-position').textContent).toBe('2 / 3');
+    expect(screen.getByText(/^Onde se enrola a clave de sol\? \(/)).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'no (already tried)' })).toBeTruthy();
+    expect(useLearnSessionStore.getState().check!.run.scores).toEqual([1]);
+  });
+
+  it('a check answered in English while the translation failed to load is not resumed under the translation', () => {
+    const served = (contentLang: 'en' | 'pt') => EXERCISES.map((ex) => ({ ...ex, contentLang, sourceFingerprint: fingerprintsOf([ex])[ex.id] }));
+    const first = renderModule({ exercises: served('en') });
+    click('Start the check');
+    answer('yes');
+    click('Continue');
+    answer('no');
+    expect(useLearnSessionStore.getState().check!.lang).toBe('en');
+    first.unmount();
+    renderModule({ exercises: served('pt') });
+    expect(screen.queryByTestId('focused-check')).toBeNull();
+    expect(useLearnSessionStore.getState().check).toBeNull();
   });
 });
 

@@ -12,8 +12,9 @@
  * others), NOT the progress store: completions, unlocks, schedules and W4a's
  * retirement are never touched by it. It is transient — not in backups — and
  * expires sensibly: after 24 hours, or when the content under the saved ids
- * changed (W4a's exercise identity), or in another content language (the
- * saved answers are in the old one's words); an expired or malformed save is
+ * changed (W4a's exercise identity, taken from the ENGLISH item, so a PT/ES
+ * wording fix keeps the run), or in another content language (the saved
+ * answers are in the old one's words); an expired or malformed save is
  * simply dropped. Scores themselves are recorded in the progress store as each
  * question is answered — this only lets the run itself continue.
  *
@@ -75,8 +76,18 @@ export interface SavedCheck {
   kind: 'check' | 'review' | 'practice';
   /** The content language the run was answered in. */
   lang: string;
-  /** Exercise id → identity when the run started. */
+  /**
+   * Exercise id → `exerciseFingerprint` of the item AS SERVED in `lang` when
+   * the run started (the only key until 2026-11-09; still written, so a tab
+   * on the previous version reads a new save as before).
+   */
   fingerprints: Record<string, string>;
+  /**
+   * Exercise id → the ENGLISH item's fingerprint (`sourceFingerprint`), the
+   * same in every language. Absent from saves written before 2026-11-09:
+   * those are judged by `fingerprints`, as they always were.
+   */
+  identities?: Record<string, string>;
   run: RunSnapshot;
   /** The run ended (its result screen is showing). */
   finished: boolean;
@@ -135,11 +146,13 @@ export function isValidRun(v: unknown, finished = false): v is RunSnapshot {
   return !finished || (v.index === v.order.length - 1 && f !== null);
 }
 
+const isKeyMap = (m: unknown, order: string[]): boolean => isObj(m) && Object.values(m).every(isStr) && order.every((id) => isStr(m[id]));
+
 function isCheck(v: unknown): v is SavedCheck {
   return isObj(v) && isStr(v.moduleId) && (v.kind === 'check' || v.kind === 'review' || v.kind === 'practice') && isStr(v.lang)
-    && MODULE_INDEX.some((m) => m.id === v.moduleId) && ['en', 'pt', 'es'].includes(v.lang)
-    && isObj(v.fingerprints) && Object.values(v.fingerprints).every(isStr) && typeof v.finished === 'boolean'
-    && isValidRun(v.run, v.finished) && v.run.order.every((id) => isObj(v.fingerprints) && isStr(v.fingerprints[id])) && isNum(v.at);
+    && MODULE_INDEX.some((m) => m.id === v.moduleId) && ['en', 'pt', 'es'].includes(v.lang) && typeof v.finished === 'boolean'
+    && isValidRun(v.run, v.finished) && isKeyMap(v.fingerprints, v.run.order)
+    && (v.identities === undefined || isKeyMap(v.identities, v.run.order)) && isNum(v.at);
 }
 
 export function isValidLearnSession(v: unknown): v is { screen: SavedScreen | null; check: SavedCheck | null } {
@@ -179,33 +192,92 @@ export function restorableScreen(now = Date.now()): SavedScreen | null {
   return s && isScreen(s) && isFresh(s.at, now) ? s : null;
 }
 
-/** Fingerprints of a run's exercises (saved when it starts). */
+/** Fingerprints of a run's exercises as served (saved when it starts). */
 export function fingerprintsOf(exercises: readonly ExerciseDefinition[]): Record<string, string> {
   return Object.fromEntries(exercises.map((ex) => [ex.id, exerciseFingerprint(ex)]));
 }
 
 /**
+ * An exercise's language-independent identity: its English item's
+ * fingerprint, which the loader puts on every served item. An item built
+ * without the loader falls back to its own fingerprint — the same thing in
+ * English; in PT/ES it never matches a saved English one, so the check is
+ * dropped (the safe side).
+ */
+export const identityOf = (ex: ExerciseDefinition): string => ex.sourceFingerprint ?? exerciseFingerprint(ex);
+
+/** Identities of a run's exercises (saved when it starts). */
+export function identitiesOf(exercises: readonly ExerciseDefinition[]): Record<string, string> {
+  return Object.fromEntries(exercises.map((ex) => [ex.id, identityOf(ex)]));
+}
+
+/** The labels a question's options carry as their values (multiple choice; ear chord / scale / progression). */
+function labelledChoices(ex: ExerciseDefinition): { label: string; correct: boolean }[] | null {
+  const c = ex.config;
+  if (c.type === 'multiple_choice') return c.choices;
+  if (c.type === 'ear_training' && c.mode !== 'melody' && c.choices) return c.choices;
+  return null;
+}
+
+/**
+ * The current question's tried options are saved by VALUE, and on these
+ * questions an option's value is its label in the run's language: a wording
+ * fix can leave a saved value naming no option, or another one. So a tried
+ * value counts only while it is, word for word, an option that is still
+ * wrong. Otherwise that question cannot be paired with certainty:
+ *  - its verdict showing: the verdict stays (the score is recorded and the
+ *    exercise is the same), the unpaired option is simply not struck through;
+ *  - mid-retry: the question starts again from its first try — no score was
+ *    recorded for it yet, and dropping the whole check (as before) would have
+ *    restarted it too. Answered questions and their scores are kept.
+ * Other questions' values (notes, numbers, pitches) never depend on wording.
+ */
+export function pairTriedOptions(run: RunSnapshot, current: ExerciseDefinition): RunSnapshot {
+  const choices = labelledChoices(current);
+  if (!choices || run.tried.length === 0) return run;
+  const wrong = new Set(choices.filter((c) => !c.correct).map((c) => c.label));
+  if (run.tried.every((x) => wrong.has(x.value))) return run;
+  if (run.final) return { ...run, tried: run.tried.map((x) => (wrong.has(x.value) ? x : { ...x, value: '' })) };
+  return { ...run, attempt: 1, tried: [], missed: null, selectedNotes: [] };
+}
+
+/**
  * The saved check for this module, if it can continue: fresh, same language,
- * and every saved id still names the same exercise (W4a identity). Returns the
- * run's exercises in their saved order. Anything else drops the save.
+ * and every saved id still names the same exercise (W4a identity of the
+ * English item — a PT/ES wording fix keeps it; a save from before the
+ * identities were written is judged as it was then, by the served
+ * fingerprints). Returns the run's exercises in their saved order, and the
+ * check with the current question's tries paired (`pairTriedOptions`).
+ * Anything else drops the save.
  */
 export function restorableCheck(moduleId: string, exercises: readonly ExerciseDefinition[], lang: string, now = Date.now()): { check: SavedCheck; ordered: ExerciseDefinition[] } | null {
-  const check = useLearnSessionStore.getState().check;
+  const store = useLearnSessionStore.getState();
+  const check = store.check;
   if (!check || check.moduleId !== moduleId) return null;
   if (!isCheck(check)) {
-    useLearnSessionStore.getState().setCheck(null);
+    store.setCheck(null);
     return null;
   }
   const byId = new Map(exercises.map((ex) => [ex.id, ex]));
   const ordered = check.run.order.map((id) => byId.get(id));
-  const unchanged = ordered.every((ex) => ex && check.fingerprints[ex.id] === exerciseFingerprint(ex));
+  const unchanged = ordered.every((ex) => ex && (check.identities
+    ? check.identities[ex.id] === identityOf(ex)
+    : check.fingerprints[ex.id] === exerciseFingerprint(ex)));
   const cfg = ordered[check.run.index]?.config;
   const validSelection = cfg && (cfg.type === 'chord_build' || cfg.type === 'scale_build' || check.run.selectedNotes.length === 0);
   if (!validSelection || !isFresh(check.at, now) || check.lang !== lang || !unchanged || ordered.length === 0) {
-    useLearnSessionStore.getState().setCheck(null);
+    store.setCheck(null);
     return null;
   }
-  return { check, ordered: ordered as ExerciseDefinition[] };
+  const list = ordered as ExerciseDefinition[];
+  const restored: SavedCheck = {
+    ...check,
+    fingerprints: fingerprintsOf(list),
+    identities: identitiesOf(list),
+    run: pairTriedOptions(check.run, list[check.run.index]),
+  };
+  store.setCheck(restored);
+  return { check: restored, ordered: list };
 }
 
 /** True while a check is under way and not finished (W9b asks before a silent update). */

@@ -121,9 +121,19 @@ for (const v of VIEWPORTS) {
       await expect(option(page, first.wrong)).toHaveAttribute('data-state', 'tried');
       await expect(option(page, first.wrong)).toBeDisabled();
       if (v.name === 'phone') {
-        // Answers low on a phone, in thumb reach.
+        // Answers low on a phone, in thumb reach: Submit sits in the lower part
+        // of the screen and the answers run down to it. Their TOP is not
+        // asserted: it depends on which question the shuffle puts first (a long
+        // PT question with two- and three-line options starts at ~316 px,
+        // which failed the old "> 322" one run in eight; 9 Nov 2026).
         const box = (await page.getByTestId('check-answers').boundingBox())!;
-        expect(box.y).toBeGreaterThan(844 / 2 - 100);
+        const submit = (await page.getByRole('button', { name: w.submit, exact: true }).boundingBox())!;
+        expect(submit.y).toBeGreaterThan(844 * 0.6);
+        expect(box.y + box.height).toBeGreaterThan(844 / 2);
+        expect(submit.y - (box.y + box.height)).toBeLessThan(40);
+        // …and below the question and its feedback (never overlapping them).
+        const prompt = (await page.getByTestId('check-prompt').boundingBox())!;
+        expect(box.y).toBeGreaterThanOrEqual(prompt.y + prompt.height);
       }
       // …right on the second try.
       await option(page, first.right).click();
@@ -197,6 +207,74 @@ test('a reload in the middle of a check loses nothing: question 4 of 9, same sco
   await option(page, q4.right).click();
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.getByText(W.en.second)).toBeVisible();
+  await context.close();
+});
+
+test('PT: a translation fix shipped between two loads keeps the check: question 4 of 9, same scores, same attempt', async ({ browser, request }) => {
+  test.setTimeout(90_000);
+  // The fix is shipped by rewriting the PT overlay modules the dev server
+  // serves (/src/…); `vite preview` serves them hashed and minified, so there
+  // it is skipped and noted — never silently on the dev server: only a
+  // production build (the one with the PWA manifest) may lack the modules.
+  const overlay = await request.get('/src/i18n/content/pt/exercisesL2.ts');
+  const dev = overlay.ok() && (overlay.headers()['content-type'] ?? '').includes('javascript');
+  if (!dev) {
+    const manifest = await request.get('/manifest.webmanifest');
+    expect((manifest.headers()['content-type'] ?? '').includes('json'), 'dev server without /src modules?').toBe(true);
+    test.info().annotations.push({ type: 'note', description: 'rewriting the PT overlay needs the dev server: skipped on this build' });
+  }
+  test.skip(!dev, 'needs the dev server\'s /src modules');
+  const key = answerKey('pt');
+  const { context, page } = await open(browser, VIEWPORTS[1], 'pt');
+  await openLesson(page, W.pt.lesson);
+  await page.getByTestId('section-rail').locator('[data-section-link="check"]').click();
+  await page.getByRole('button', { name: W.pt.start }).click();
+  // Q1 wrong then right (½), Q2 and Q3 right (1, 1); Q4: a first miss.
+  const q1 = await correctFor(page, key);
+  await option(page, q1.wrong).click();
+  await page.getByRole('button', { name: W.pt.submit }).click();
+  await option(page, q1.right).click();
+  await page.getByRole('button', { name: W.pt.submit }).click();
+  await page.getByRole('button', { name: W.pt.cont }).click();
+  for (let i = 0; i < 2; i++) {
+    const { right } = await correctFor(page, key);
+    await option(page, right).click();
+    await page.getByRole('button', { name: W.pt.submit }).click();
+    await page.getByRole('button', { name: W.pt.cont }).click();
+  }
+  await expect(page.getByTestId('check-position')).toHaveText('4 / 9');
+  const q4 = await correctFor(page, key);
+  await option(page, q4.wrong).click();
+  await page.getByRole('button', { name: W.pt.submit }).click();
+  const pipsBefore = await page.getByTestId('check-pips').locator('i').evaluateAll((is) => is.map((i) => i.getAttribute('data-score')));
+  const promptBefore = (await question(page)).prompt;
+
+  // The release: every PT question of this lesson reworded (authored items and
+  // the template), the English untouched — a translation-only fix.
+  const patched: string[] = [];
+  await page.route(/\/src\/i18n\/content\/pt\/(exercises|templates)L2\.ts/, async (route) => {
+    const response = await route.fetch();
+    const body = await response.text();
+    expect(body).toContain('export default overlay;');
+    const reword = route.request().url().includes('/exercisesL2.ts')
+      ? "for (const k of Object.keys(overlay)) if (k.startsWith('l2u5m3')) overlay[k] = { ...overlay[k], prompt: overlay[k].prompt + ' (revisto)' };"
+      : "overlay.l2u5m3 = overlay.l2u5m3.map((t) => ({ ...t, promptTemplate: t.promptTemplate + ' (revisto)' }));";
+    patched.push(route.request().url());
+    await route.fulfill({ response, body: body.replace('export default overlay;', `${reword}\nexport default overlay;`) });
+  });
+  await page.reload();
+  await expect(page.getByTestId('focused-check')).toBeVisible({ timeout: 15_000 });
+  expect(patched.length).toBe(2);
+  await expect(page.getByTestId('check-position')).toHaveText('4 / 9');
+  expect((await question(page)).prompt).toBe(`${promptBefore} (revisto)`);
+  expect(await page.getByTestId('check-pips').locator('i').evaluateAll((is) => is.map((i) => i.getAttribute('data-score')))).toEqual(pipsBefore);
+  expect(pipsBefore.slice(0, 3)).toEqual(['0.5', '1', '1']);
+  await expect(page.getByTestId('check-thumb').getByText(W.pt.retry)).toBeVisible();
+  await expect(option(page, q4.wrong)).toHaveAttribute('data-state', 'tried');
+  // …and it carries on: the second try counts ½.
+  await option(page, q4.right).click();
+  await page.getByRole('button', { name: W.pt.submit }).click();
+  await expect(page.getByText(W.pt.second)).toBeVisible();
   await context.close();
 });
 

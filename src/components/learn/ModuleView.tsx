@@ -28,6 +28,7 @@ import { foldDockForLesson, foldDockAfterLesson } from '../../services/lessonDoc
 import {
   useLearnSessionStore,
   fingerprintsOf,
+  identitiesOf,
   restorableCheck,
   type RunSnapshot,
 } from '../../state/learnSessionStore';
@@ -150,6 +151,9 @@ export function ModuleView({
   const instrument = useAppStore((s) => s.instrument);
   const wide = useMediaQuery(RAIL_QUERY);
   const lang = (i18n.language || 'en').slice(0, 2);
+  // The language the check's words are in: English when a PT/ES overlay
+  // failed to load (a run answered then is never resumed under the translation).
+  const contentLang = exercises.find((ex) => ex.contentLang)?.contentLang ?? lang;
   const rootRef = useRef<HTMLDivElement>(null);
   const saveCheck = useLearnSessionStore((s) => s.setCheck);
   const saveSection = useLearnSessionStore((s) => s.setSection);
@@ -211,22 +215,23 @@ export function ModuleView({
       saveCheck({
         moduleId: module.id,
         kind,
-        lang,
+        lang: contentLang,
         fingerprints: fingerprintsOf(list),
+        identities: identitiesOf(list),
         run: { order: [], index: 0, scores: [], items: [], attempt: 1, selectedNotes: [], tried: [], missed: null, final: null },
         finished: false,
         at: Date.now(),
       });
     }
     requestAnimationFrame(() => scrollTo('top'));
-  }, [module.id, lang, saveCheck, scrollTo]);
+  }, [module.id, contentLang, saveCheck, scrollTo]);
 
   // Restore a check that was under way (after a reload) — or start a review.
   const restoredRef = useRef(false);
   useEffect(() => {
     if (restoredRef.current || exercisesState !== 'ready') return;
     restoredRef.current = true;
-    const saved = restorableCheck(module.id, exercises, lang);
+    const saved = restorableCheck(module.id, exercises, contentLang);
     if (saved && (saved.check.kind === 'review') === isReviewMode) {
       const kind = saved.check.kind;
       if (saved.check.finished) {
@@ -246,7 +251,7 @@ export function ModuleView({
       return;
     }
     if (isReviewMode && hasExercises) startRun('review', exercises);
-  }, [exercisesState, exercises, module.id, lang, isReviewMode, hasExercises, startRun]);
+  }, [exercisesState, exercises, module.id, contentLang, isReviewMode, hasExercises, startRun]);
 
   // The lesson drives the instrument (D-20): folded away on opening, showing
   // the section being read (the first concept to begin with). Leaving the

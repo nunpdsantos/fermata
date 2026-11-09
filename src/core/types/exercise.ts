@@ -208,6 +208,19 @@ export interface ExerciseDefinition {
    * back to the lesson section that teaches it (`nudge.ts`).
    */
   nudge?: string;
+  /**
+   * The W4a fingerprint (`exerciseFingerprint`) of the ENGLISH exercise
+   * behind this id — the same in every language, so a translation-only fix
+   * keeps it. Set by the exercise loader; a saved Learn check is keyed by it.
+   */
+  sourceFingerprint?: string;
+  /**
+   * The language this item's text was served in: the requested one, or
+   * 'en' when a PT/ES overlay failed to load and the loader served English.
+   * A saved check records it, so English answers are never resumed under
+   * the translation (set by the exercise loader).
+   */
+  contentLang?: 'en' | 'pt' | 'es';
 }
 
 // Progress tracking types
