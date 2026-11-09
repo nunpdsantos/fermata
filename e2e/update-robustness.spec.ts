@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readdirSync, readFileSync } from 'node:fs';
 import { startDeployProxy, type DeployProxy } from './helpers/deployProxy';
+import { seedWelcomeSeen } from './helpers/welcome';
 
 /**
  * W9b — update robustness, in a real browser on the PRODUCTION build
@@ -40,6 +41,9 @@ test.beforeEach(async ({ page, baseURL }) => {
   const manifest = await page.request.get('/manifest.webmanifest');
   test.skip(!(manifest.headers()['content-type'] ?? '').includes('json'), 'No service worker on the dev server (devOptions disabled)');
   proxy = await startDeployProxy(baseURL!);
+  // Each proxy is its own origin: seed the welcome's "seen" flag there too
+  // (e2e/helpers/welcome.ts) — every tab of this context.
+  await seedWelcomeSeen(page.context());
   // Count this tab's page loads and log every alert's text (sessionStorage
   // survives the reloads), so "silently" and "no reload" can be asserted.
   await page.addInitScript(() => {
