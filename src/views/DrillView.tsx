@@ -11,6 +11,7 @@ import { SessionSummary } from '../components/drill/SessionSummary';
 import { MasteryMap } from '../components/drill/MasteryMap';
 import { DrillSettings } from '../components/drill/DrillSettings';
 import { SprintRunner } from '../components/drill/SprintRunner';
+import { DrillIntro } from '../components/drill/DrillIntro';
 import { sprintFamiliesKey } from '../components/drill/sprintSelectors';
 import { generateDrillBank } from '../core/utils/drillBank';
 import { choiceLabel, itemPrompt, itemWhy, toContentLanguage } from '../components/drill/drillText';
@@ -35,7 +36,10 @@ function viewBank(): DrillItem[] {
 type SubScreen = null | 'settings' | 'mastery' | 'sprint';
 
 export function DrillView() {
-  const runner = useDrillRunner();
+  // A first visit (no drill history) opens on the intro, not a question; any
+  // session starting sets introDone, so it never shows again.
+  const introDone = useDrillStore((s) => s.introDone);
+  const runner = useDrillRunner({ autoStart: introDone });
   // A Sprint left open (a reload, or back from another view) comes back on
   // screen where it was (W9b).
   const [subScreen, setSubScreen] = useState<SubScreen>(() => (useDrillStore.getState().sprint ? 'sprint' : null));
@@ -51,7 +55,7 @@ export function DrillView() {
   const resetDrillProgress = useDrillStore((s) => s.resetDrillProgress);
   const activeSession = useDrillStore((s) => s.activeSession);
 
-  const { item, presentationKey, phase, result, position, total, sessionComplete } = runner;
+  const { item, presentationKey, phase, result, position, total, again, sessionComplete } = runner;
 
   const bank = viewBank();
 
@@ -77,7 +81,8 @@ export function DrillView() {
               setSubScreen(null);
               // activeSession is now null after reset; kick a fresh session
               // explicitly so the runner doesn't sit on a stale frozen displayId.
-              runner.startNewSession();
+              // (From the intro, back to the intro: no session yet.)
+              if (introDone) runner.startNewSession();
             }}
           />
         ) : subScreen === 'mastery' ? (
@@ -100,6 +105,12 @@ export function DrillView() {
             onRecord={recordSprint}
             onExit={() => setSubScreen(null)}
           />
+        ) : !introDone && !activeSession ? (
+          <DrillIntro
+            settings={settings}
+            onStart={runner.startNewSession}
+            onOpenSettings={() => setSubScreen('settings')}
+          />
         ) : sessionComplete ? (
           <SessionSummary
             summary={runner.summary}
@@ -118,6 +129,7 @@ export function DrillView() {
             result={result}
             position={position}
             total={total}
+            again={again}
             startedAt={activeSession?.startedAt ?? null}
             showTimer={settings.showTimer}
             onAnswer={runner.answer}
@@ -144,6 +156,7 @@ interface RunningQuestionProps {
   /** Zero-based number of the question on screen. */
   position: number;
   total: number;
+  again: boolean;
   startedAt: number | null;
   showTimer: boolean;
   onAnswer: ReturnType<typeof useDrillRunner>['answer'];
@@ -159,6 +172,7 @@ function RunningQuestion({
   result,
   position,
   total,
+  again,
   startedAt,
   showTimer,
   onAnswer,
@@ -179,6 +193,7 @@ function RunningQuestion({
         stimulus={item.family === 'read' ? <ReadingStaff staff={item.staff} /> : undefined}
         asked={position}
         total={total}
+        again={again}
         prompt={itemPrompt(item, t, lang)}
         onEndSession={onEndSession}
         onOpenSettings={onOpenSettings}

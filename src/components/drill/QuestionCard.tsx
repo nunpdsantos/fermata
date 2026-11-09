@@ -1,12 +1,15 @@
 import { useRef, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconButton } from '../ui/Button';
+import { Badge } from '../ui/Badge';
 import { useToastAvoid } from '../layout/toastLayout';
 
 interface QuestionCardProps {
   /** Zero-based index of the current question. */
   asked: number;
   total: number;
+  /** The question is a re-ask in this session: marked, the total unchanged. */
+  again?: boolean;
   prompt: string;
   onEndSession: () => void;
   onOpenSettings: () => void;
@@ -22,6 +25,7 @@ interface QuestionCardProps {
 export function QuestionCard({
   asked,
   total,
+  again = false,
   prompt,
   onEndSession,
   onOpenSettings,
@@ -43,6 +47,7 @@ export function QuestionCard({
         <span className="text-ui font-medium tabular-nums" style={{ color: 'var(--text-dim)' }}>
           {t('drill.progress', { current, total })}
         </span>
+        {again && <Badge data-testid="drill-again">{t('drill.reask')}</Badge>}
         {elapsedSeconds !== undefined && (
           <span
             className="font-mono text-ui tabular-nums"

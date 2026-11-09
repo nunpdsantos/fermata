@@ -512,24 +512,6 @@
       "reviewMasterDesc": "Completa 50 revisões SRS"
     }
   },
-  "auth": {
-    "signIn": "Entrar",
-    "signInTitle": "Entrar",
-    "signInSubtitle": "Introduz o teu email para receber um link mágico. Sem palavra-passe.",
-    "emailLabel": "Endere\u00e7o de email",
-    "emailPlaceholder": "nome@exemplo.com",
-    "sendLink": "Enviar link mágico",
-    "sending": "A enviar\u2026",
-    "cancel": "Cancelar",
-    "checkEmail": "Verifica o teu email",
-    "magicLinkSent": "Enviámos um link de acesso para {{email}}",
-    "signOut": "Sair",
-    "accountLabel": "Menu da conta",
-    "syncing": "A sincronizar\u2026",
-    "synced": "Sincronizado",
-    "syncError": "Erro de sincroniza\u00e7\u00e3o",
-    "offline": "Offline"
-  },
   "concepts": {
     "radarTitle": "Domínio de conceitos",
     "needsWork": "A melhorar",
@@ -712,6 +694,17 @@
   },
   "drill": {
     "progress": "{{current}} de {{total}}",
+    "reask": "Outra vez",
+    "intro": {
+      "title": "Perguntas rápidas sobre factos musicais",
+      "lead": "Responde de memória, uma pergunta de cada vez. O que já sabes bem volta menos vezes; o que falhas volta mais cedo.",
+      "settings": "Escolher tópicos",
+      "length": "Uma sessão tem até {{length}} perguntas. A primeira é mais curta: só os factos novos.",
+      "newFacts_one": "Cada sessão traz {{count}} facto novo; os restantes são factos que já conheces.",
+      "newFacts_other": "Cada sessão traz {{count}} factos novos; os restantes são factos que já conheces.",
+      "comeBack": "Um facto novo, ou uma pergunta que falhes, volta mais tarde na sessão, com a etiqueta Outra vez.",
+      "start": "Iniciar"
+    },
     "endSession": "Terminar sessão",
     "settings": {
       "fewerNew": "Menos factos novos",
@@ -1028,6 +1021,8 @@
     "done": "feito",
     "current": "estás aqui",
     "hearIt": "Ouvir",
+    "trebleClef": "Clave de sol",
+    "bassClef": "Clave de fá",
     "showOnPiano": "Mostrar no piano",
     "showOnGuitar": "Mostrar na guitarra",
     "openInExplore": "Abrir em Explorar",

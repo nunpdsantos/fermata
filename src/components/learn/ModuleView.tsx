@@ -512,7 +512,7 @@ export function ModuleView({
             <section key={i} data-section={`c${i}`} className={`mb-12 ${sectionClass}`}>
               <h2 className="text-title font-semibold mb-3" style={{ color: 'var(--text)' }}>{concept.title}</h2>
               <p className="learn-concept-text mb-4" style={{ color: 'var(--text-muted)' }}>{concept.explanation}</p>
-              <InlineTryThis query={concept.tryThisQuery} label={concept.tryThisLabel} rhythm={concept.rhythm} accent={accent} />
+              <InlineTryThis query={concept.tryThisQuery} label={concept.tryThisLabel} rhythm={concept.rhythm} clefs={concept.clefs} accent={accent} />
             </section>
           ))}
 

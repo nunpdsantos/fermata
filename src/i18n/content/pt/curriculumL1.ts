@@ -166,7 +166,7 @@ const curriculumL1: CurriculumLevelOverlay = {
           title: 'Clave de Sol e clave de Fá',
           explanation:
             'Uma clave aparece no início de uma pauta e indica quais alturas as linhas e espaços representam. A clave de sol (𝄞) centra-se no G acima do C central — é usada para instrumentos mais agudos e a mão direita no piano. A clave de fá (𝄢) centra-se no F abaixo do C central — é usada para instrumentos mais graves e a mão esquerda no piano. Sem uma clave, a pauta é apenas linhas — a clave dá-lhes significado. A guitarra usa a clave de sol com um pequeno 8 por baixo: soa uma oitava abaixo do que está escrito. A unidade opcional Notação de Guitarra explica esta convenção.',
-          tryThisLabel: 'Explora a tonalidade de C',
+          tryThisLabel: 'De C a C na clave de sol e na clave de fá',
         },
       ],
       tasks: [

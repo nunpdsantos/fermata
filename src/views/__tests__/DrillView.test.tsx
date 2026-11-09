@@ -75,6 +75,8 @@ function resetStore(length: 12 | 24 | 40 = 24) {
     length,
     newPerSession: length,
   });
+  // Past the first-visit intro (its own tests below start from a fresh store).
+  useDrillStore.setState({ introDone: true });
 }
 
 /** Read the answer.correct for the question currently on screen, then tap it. */
@@ -274,6 +276,7 @@ const TRIAD_FAMILIES: Record<DrillFamily, boolean> = {
 
 function startTriadSession() {
   useDrillStore.getState().resetDrillData();
+  useDrillStore.setState({ introDone: true }); // past the first-visit intro
   useDrillStore.getState().updateSettings({
     families: TRIAD_FAMILIES,
     length: 12,
@@ -344,6 +347,7 @@ describe('DrillView — noteChips end-to-end (triad family)', () => {
 // ── Task 10: reveal audio + learn deep-link ───────────────────────────────────
 function startDegreeSession() {
   useDrillStore.getState().resetDrillData();
+  useDrillStore.setState({ introDone: true }); // past the first-visit intro
   useDrillStore.getState().updateSettings({
     families: {
       keysig: false, circle: false, degree: true, scale: false, interval: false,
@@ -558,6 +562,7 @@ describe('DrillView — same item twice in a row stays answerable (W0-02 / D-4)'
 describe('DrillView — progress counter (W0-02 / D-11)', () => {
   function startShortSession(newPerSession = 3) {
     useDrillStore.getState().resetDrillData();
+    useDrillStore.setState({ introDone: true }); // past the first-visit intro
     // Degree facts only, 3 new per session, target 24 → the real queue is 3.
     useDrillStore.getState().updateSettings({
       families: { ...CHOICE_FAMILIES, keysig: false, circle: false },
@@ -584,11 +589,13 @@ describe('DrillView — progress counter (W0-02 / D-11)', () => {
       fireEvent.click(screen.getByRole('button', { name: currentWrongChoice() }));
     });
     // Feedback for question 1: still "1 of …" (was "2 of 24" before the fix).
-    // The miss is requeued, so the session grew to 5.
+    // The miss is requeued, but the total stays 4 (brief 2026-11-09: it read
+    // "1 of 5" here — the goalposts moved).
+    expect(useDrillStore.getState().activeSession!.queue).toHaveLength(5);
     expect(screen.getByText('Not quite')).toBeDefined();
-    expect(screen.getByText('1 of 5')).toBeDefined();
+    expect(screen.getByText('1 of 4')).toBeDefined();
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Continue' })));
-    expect(screen.getByText('2 of 5')).toBeDefined();
+    expect(screen.getByText('2 of 4')).toBeDefined();
   });
 
   it('a correct answer also holds its number until the auto-advance', () => {
@@ -644,13 +651,16 @@ describe('DrillView — counter across a full default first session (W7-06)', ()
   it('never shows the 24 target, never runs past its total, and ends on "N of N"', () => {
     vi.useFakeTimers();
     useDrillStore.getState().resetDrillData(); // defaults: all topics, 4 new, length 24
+    useDrillStore.setState({ introDone: true }); // past the first-visit intro
     render(<DrillView />);
     const seen: string[] = [];
+    let againSeen = 0;
     for (let guard = 0; guard < 40; guard++) {
       const counter = screen.queryByText(/^\d+ of \d+$/);
       if (!counter) break; // summary reached
       const text = counter.textContent!;
       seen.push(text);
+      if (screen.queryByTestId('drill-again')) againSeen++;
       const [x, n] = text.split(' of ').map(Number);
       expect(x, text).toBeLessThanOrEqual(n);
       act(() => answerCurrentCorrectly());
@@ -662,7 +672,17 @@ describe('DrillView — counter across a full default first session (W7-06)', ()
     const asked = useDrillStore.getState().lifetime.answered;
     expect(seen.length).toBe(asked);
     expect(seen.some((t) => t.endsWith(' of 24'))).toBe(false);
-    expect(seen[seen.length - 1]).toBe(`${asked} of ${asked}`);
+    // The total never changes (brief 2026-11-09) and the count never goes
+    // back: 4 new facts, then their second looks, marked Again, on "4 of 4".
+    const totals = new Set(seen.map((t) => t.split(' of ')[1]));
+    expect(totals.size).toBe(1);
+    const n = Number([...totals][0]);
+    expect(n).toBe(4);
+    expect(asked).toBeGreaterThan(n);
+    const xs = seen.map((t) => Number(t.split(' of ')[0]));
+    expect(xs.every((x, i) => i === 0 || x >= xs[i - 1])).toBe(true);
+    expect(seen[seen.length - 1]).toBe(`${n} of ${n}`);
+    expect(againSeen).toBe(asked - n);
   });
 });
 

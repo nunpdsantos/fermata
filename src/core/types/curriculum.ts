@@ -31,6 +31,11 @@ export interface CurriculumConcept {
    * and plays it as clicks.
    */
   rhythm?: import('./exercise').RhythmPattern;
+  /**
+   * The clef lesson's Try This: draw the query's scale on a treble staff and,
+   * an octave lower, on a bass staff, so the two clefs meet at middle C.
+   */
+  clefs?: boolean;
   /** Simplified explanation for children's audience mode */
   childDescription?: string;
   /** Simplified query for children's audience mode */
