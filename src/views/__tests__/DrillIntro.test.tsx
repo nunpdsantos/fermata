@@ -115,6 +115,20 @@ describe('Drill first-visit intro (brief 2026-11-09)', () => {
     expect(screen.getByText('Session complete')).toBeDefined();
   });
 
+  it('length 12 with 6 new facts: the first session is not shorter, so the intro does not say it is', () => {
+    useDrillStore.getState().updateSettings({ length: 12, newPerSession: 6 });
+    render(<DrillView />);
+    expect(screen.getByText('A session is up to 12 questions.')).toBeDefined();
+    expect(screen.queryByText(/Your first one is shorter/)).toBeNull();
+    expect(screen.getByText('Each session brings in 6 new facts; the rest are facts you have already met.')).toBeDefined();
+  });
+
+  it('length 12 with 5 new facts: the first session (at most 10) is shorter, and the intro says so', () => {
+    useDrillStore.getState().updateSettings({ length: 12, newPerSession: 5 });
+    render(<DrillView />);
+    expect(screen.getByText('A session is up to 12 questions. Your first one is shorter: just the new facts.')).toBeDefined();
+  });
+
   it('PT: the intro is Portuguese', async () => {
     await i18n.changeLanguage('pt');
     render(<DrillView />);
