@@ -6,6 +6,7 @@ import { ToastRegion } from './ToastRegion.tsx';
 import { WelcomeHost } from './WelcomeHost.tsx';
 import { useToastAvoid } from './toastLayout.ts';
 import { useAppStore } from '../../state/store.ts';
+import type { Detent } from '../../state/dock.ts';
 import { useMediaQuery, SHEET_QUERY } from '../../hooks/useMediaQuery.ts';
 
 const estimateAvailable = () => {
@@ -51,9 +52,12 @@ export function AppShell({ children }: AppShellProps) {
   useToastAvoid(dockRef, hasDock);
   // The sheet at Full covers the view: the view is then inert, so Tab never
   // lands on a control hidden under the sheet (WCAG 2.4.11; the W11-A focus
-  // walk found the root / scale chips there).
+  // walk found the root / scale chips there). What the sheet SHOWS decides:
+  // a Full chosen for the guitar is Half under the phone keyboard, which
+  // fits at Half, and the view above it stays live.
   const isSheet = useMediaQuery(SHEET_QUERY);
-  const sheetCoversView = useAppStore((s) => hasDock && isSheet && s.dockDetents[view as 'explore' | 'learn'] === 'full');
+  const [sheetShown, setSheetShown] = useState<Detent | null>(null);
+  const sheetCoversView = hasDock && isSheet && sheetShown === 'full';
 
   return (
     <div className="h-screen supports-[height:100dvh]:h-dvh flex flex-col" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
@@ -73,7 +77,7 @@ export function AppShell({ children }: AppShellProps) {
         </main>
         {hasDock && (
           <div ref={dockRef} className="shrink-0 min-h-0 flex flex-col">
-            <InstrumentDock view={view} available={available} />
+            <InstrumentDock view={view} available={available} onSheetShown={setSheetShown} />
           </div>
         )}
       </div>
