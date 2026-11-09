@@ -114,3 +114,12 @@ describe('the prefixes cover every persisted store', () => {
     }
   });
 });
+
+describe('boot order', () => {
+  it('state/welcomeBoot.ts is the FIRST import of main.tsx (before any store can write)', () => {
+    const main = readFileSync(join(__dirname, '..', '..', 'main.tsx'), 'utf8');
+    const imports = main.split('\n').filter((l) => /^import\s/.test(l));
+    expect(imports[0]).toBe("import './state/welcomeBoot.ts'");
+    expect(imports.length).toBeGreaterThan(3); // a known positive: the scan sees the other imports
+  });
+});
