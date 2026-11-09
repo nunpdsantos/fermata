@@ -51,6 +51,7 @@ describe('W9-12 fonts', () => {
     expect(indexCss).toMatch(/--font-sans:\s*'Fermata Accidentals', 'Source Serif 4'/);
     expect(indexCss).toMatch(/unicode-range: U\+266D-266F, U\+1D12A-1D12B;/);
     expect(indexHtml).toMatch(/<link rel="preload" href="\/fonts\/fermata-accidentals\.woff2" as="font" type="font\/woff2" crossorigin \/>/);
+    expect(Object.keys(fontFiles).some((f) => f.endsWith('/fermata-accidentals.woff2'))).toBe(true);
     expect(indexHtml).toMatch(/<link rel="preload" href="\/fonts\/source-serif-4-latin\.woff2" as="font" type="font\/woff2" crossorigin \/>/);
     expect(Object.keys(fontFiles).some((f) => f.endsWith('/source-serif-4-latin.woff2'))).toBe(true);
   });

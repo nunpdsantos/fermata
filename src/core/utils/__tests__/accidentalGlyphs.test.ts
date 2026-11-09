@@ -85,13 +85,21 @@ describe('isMusicName / glyphsIfName — a Learn choice is changed only when it 
       expect(isMusicName(s), s).toBe(true);
     }
     expect(glyphsIfName('D#')).toBe('D♯');
+    // A key with its triad's notes, in each language and with each joiner.
+    expect(glyphsIfName('Db major (Db-F-Ab)')).toBe('D♭ major (D♭-F-A♭)');
+    expect(glyphsIfName('Db maior (Db-F-Ab)')).toBe('D♭ maior (D♭-F-A♭)');
+    expect(glyphsIfName('Db mayor (Db–F–Ab)')).toBe('D♭ mayor (D♭–F–A♭)');
+    expect(glyphsIfName('Bb menor (Bb, Db, F)')).toBe('B♭ menor (B♭, D♭, F)');
+    expect(glyphsIfName('F# minor (F#-A-C#)')).toBe('F♯ minor (F♯-A-C♯)');
     expect(glyphsIfName('Ab, C, Eb, F# — b6, 1, b3, #4')).toBe('A♭, C, E♭, F♯ — ♭6, 1, ♭3, ♯4');
   });
 
   it('prose with a name inside stays exactly as written (a content release, not a display change)', () => {
     // PT "Em" (= "In") is not E minor in a sentence; ES "En" never parsed as a name.
     for (const s of ['Em A menor: Bb maior (Bb-D-F)', 'Em E menor: F# maior (F#-A#-C#)', 'Em A menor', 'En A menor: Bb mayor',
-      'In A minor: Bb major (Bb-D-F)', 'Em A menor Bb maior', 'major', 'Bb7 major']) {
+      'In A minor: Bb major (Bb-D-F)', 'Em A menor Bb maior', 'major', 'Bb7 major',
+      'In C minor: Db major (Db-F-Ab)', 'Em A menor (A-C-E)', 'Db major (Db-F-Ab) and resolves to C', 'Db major (one flat)',
+      'Db major (Db-F-Ab', 'G major (G–B–D) and resolves to C major', 'Em C maior, bVI é Ab maior (Ab-C-Eb), emprestado de C menor']) {
       expect(isMusicName(s), s).toBe(false);
       expect(glyphsIfName(s)).toBe(s);
     }
