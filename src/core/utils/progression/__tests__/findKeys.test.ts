@@ -129,6 +129,28 @@ describe('findKeys: real-shaped lists', () => {
     const g = findKeys(chords('G G G G D'))[0];
     expect([name(g), g.fitCount, g.distinctCount]).toEqual(['G major', 2, 2]);
   });
+
+  it('a slash chord and its root-position chord are two different chords (the bass is part of what sounds)', () => {
+    const g = findKeys(chords('G G/B C D'))[0];
+    expect([name(g), g.fitCount, g.distinctCount]).toEqual(['G major', 4, 4]);
+    const c = findKeys(chords('C C/E F G'))[0];
+    expect([name(c), c.fitCount, c.distinctCount]).toEqual(['C major', 4, 4]);
+  });
+});
+
+describe('findKeys: how many signs hold comes before which ones', () => {
+  // C F D7 G: C major and G major each fit three different chords (D7 is
+  // outside C major, F outside G major). C major has two signs (the first
+  // chord is its I; its tonic is present); G major has three (the last chord
+  // is its I, D7 → G is V7 → I, its tonic is present). More signs win, even
+  // though C major holds the first sign in the order and G major does not.
+  it('C F D7 G: G major (three signs) before C major (two, the first chord among them)', () => {
+    const [first, second] = findKeys(chords('C F D7 G'));
+    expect([name(first), name(second)]).toEqual(['G major', 'C major']);
+    expect([first.fitCount, second.fitCount]).toEqual([3, 3]);
+    expect(first.signs).toEqual({ firstIsTonic: false, lastIsTonic: true, dominantToTonic: true, tonicPresent: true });
+    expect(second.signs).toEqual({ firstIsTonic: true, lastIsTonic: false, dominantToTonic: false, tonicPresent: true });
+  });
 });
 
 describe('findKeys: ties, spelling and edge cases', () => {

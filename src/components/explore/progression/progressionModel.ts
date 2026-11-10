@@ -97,6 +97,21 @@ export function readSymbol(symbol: string): Chord | null {
   }
 }
 
+/**
+ * The symbols that read, in order (at most 16): the list the chips show, so
+ * that a chip's index is its symbol's index. A saved symbol the parser does
+ * not read (an old or hand-edited save) is left out, and the first edit
+ * writes the list without it.
+ */
+export function readableSymbols(symbols: readonly string[]): string[] {
+  const out: string[] = [];
+  for (const s of symbols) {
+    if (readSymbol(s)) out.push(s);
+    if (out.length >= MAX_PROGRESSION_CHORDS) break;
+  }
+  return out;
+}
+
 /** The symbols that read, as chords, in order (at most 16). */
 export function readChords(symbols: readonly string[]): Chord[] {
   const out: Chord[] = [];

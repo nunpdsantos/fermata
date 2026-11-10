@@ -20,7 +20,7 @@ import { AnotherChordSheet } from './AnotherChordSheet';
 import { PresetList, PresetsSheet } from './PresetsSheet';
 import {
   addChord, capoIdeas, capoShapes, keyChords, keyLine, moveBy, moveChord, panelKeyFor, presetSymbols, readChords,
-  removeChord, scaleForKey,
+  readableSymbols, removeChord, scaleForKey,
 } from './progressionModel';
 import { chordList, chordName, keyLabel, keyLineSentences } from './progressionText';
 import { isLooping, retimeLoop, startLoop, stopLoop, useLoopState } from './loopController';
@@ -45,6 +45,8 @@ export default function ProgressionPanel() {
   const root = useAppStore((s) => s.selectedKey);
   const scale = useAppStore((s) => s.selectedScale);
   const guitar = useAppStore((s) => s.instrument === 'guitar');
+  // The shape library and the capo ideas are for standard tuning only (as the fretboard's chord shapes).
+  const standardTuning = useAppStore((s) => s.guitarTuningId === 'standard');
   const saved: SavedProgression = useAppStore((s) => s.progression) ?? EMPTY_PROGRESSION;
   const capo = useCapoFret();
   const offer = useProgressionOffer();
@@ -57,7 +59,9 @@ export default function ProgressionPanel() {
   const addRowRef = useRef<HTMLDivElement>(null);
 
   const { key, exact } = useMemo(() => panelKeyFor(root, scale), [root, scale]);
-  const parsed = useMemo(() => readChords(saved.chords), [saved.chords]);
+  // The symbols that read: the chips, and the list every chip action edits (same indexes).
+  const symbols = useMemo(() => readableSymbols(saved.chords), [saved.chords]);
+  const parsed = useMemo(() => readChords(symbols), [symbols]);
   const infos = useMemo(() => parsed.map((c) => chordInKey(c, key)), [parsed, key]);
   // The chords as read in the key (C♯ typed in D♭ major is D♭): what the
   // chips show, the loop plays and the instrument lights.
@@ -65,8 +69,8 @@ export default function ProgressionPanel() {
   const line = useMemo(() => keyLine(chords, key), [chords, key]);
   const sentences = line ? keyLineSentences(line, chords, t, lang) : null;
   const own = useMemo(() => keyChords(key), [key]);
-  const full = saved.chords.length >= MAX_PROGRESSION_CHORDS;
-  const ideas = useMemo(() => (guitar ? capoIdeas(chords, key) : []), [guitar, chords, key]);
+  const full = symbols.length >= MAX_PROGRESSION_CHORDS;
+  const ideas = useMemo(() => (guitar && standardTuning ? capoIdeas(chords, key) : []), [guitar, standardTuning, chords, key]);
   const keyText = keyLabel(key, t);
 
   // Leaving the panel (closed, view changed) stops the loop.
@@ -84,8 +88,8 @@ export default function ProgressionPanel() {
     const s = useAppStore.getState();
     s.setProgression({ ...(s.progression ?? EMPTY_PROGRESSION), ...next });
   };
-  const setSymbols = (symbols: string[]) => write({ chords: symbols });
-  const add = (chord: Chord) => setSymbols(addChord(saved.chords, chord));
+  const setSymbols = (next: string[]) => write({ chords: next });
+  const add = (chord: Chord) => setSymbols(addChord(symbols, chord));
   const setTempo = (bpm: number) => {
     const v = Math.min(MAX_BPM, Math.max(MIN_BPM, bpm));
     write({ bpm: v });
@@ -96,7 +100,7 @@ export default function ProgressionPanel() {
     if (isLooping()) retimeLoop(saved.bpm, beats);
   };
   const move = (by: -1 | 1) => {
-    const next = moveBy(root, scale, saved.chords, by);
+    const next = moveBy(root, scale, symbols, by);
     const app = useAppStore.getState();
     // The chords first: the loop stops on either change, the line never shows a mix.
     write({ chords: next.symbols });
@@ -136,7 +140,7 @@ export default function ProgressionPanel() {
         <Button variant="quiet" disabled={full} aria-haspopup="dialog" onClick={() => setSheet('another')} data-testid="progression-another">
           {t('progression.another')}
         </Button>
-        {saved.chords.length > 0 && (
+        {symbols.length > 0 && (
           <Button variant="quiet" aria-haspopup="dialog" onClick={() => setSheet('presets')} data-testid="progression-presets">
             {t('progression.common')}
           </Button>
@@ -148,7 +152,9 @@ export default function ProgressionPanel() {
 
   const offerLine = offer && (
     <div className="prog-offer" role="status" data-testid="progression-offer">
-      <p className="text-ui">{t('progression.offer', { chords: chordList(readChords(offer.chords)) })}</p>
+      <p className="text-ui">{offer.bpm !== undefined
+        ? t('progression.offerTempo', { chords: chordList(readChords(offer.chords)), bpm: offer.bpm })
+        : t('progression.offer', { chords: chordList(readChords(offer.chords)) })}</p>
       <div className="prog-row">
         <Button variant="primary" onClick={() => {
           stopLoop('user');
@@ -160,7 +166,7 @@ export default function ProgressionPanel() {
     </div>
   );
 
-  if (saved.chords.length === 0 || chords.length === 0) {
+  if (symbols.length === 0) {
     return (
       <div className="prog-panel" data-testid="progression-panel" data-state="empty">
         {offerLine}
@@ -176,7 +182,7 @@ export default function ProgressionPanel() {
     );
   }
 
-  const capoChoices = guitar ? [
+  const capoChoices = guitar && standardTuning ? [
     { value: 0, label: t('progression.noCapo') },
     // Each different shape once: the chip stays short (the line names them all, in order).
     ...ideas.map((o) => ({ value: o.fret, label: t('progression.capoIdea', { fret: o.fret, shapes: chordList(distinctChords(o.shapes.map((s) => s.shape))) }) })),
@@ -199,7 +205,7 @@ export default function ProgressionPanel() {
           const outside = info.fits === 'outside';
           return (
             <ChordChip
-              key={`${i}:${saved.chords[i]}`}
+              key={`${i}:${symbols[i]}`}
               name={name}
               numeral={info.numeral}
               outside={outside}
@@ -208,9 +214,9 @@ export default function ProgressionPanel() {
               menuLabel={t('progression.chipMenu', { chord: name })}
               onRef={(el) => { chipRefs.current[i] = el; }}
               actions={[
-                { id: 'left', label: t('progression.moveLeft'), disabled: i === 0, onSelect: () => { setSymbols(moveChord(saved.chords, i, -1)); setFocusChip(i - 1); } },
-                { id: 'right', label: t('progression.moveRight'), disabled: i === infos.length - 1, onSelect: () => { setSymbols(moveChord(saved.chords, i, 1)); setFocusChip(i + 1); } },
-                { id: 'remove', label: t('progression.remove'), onSelect: () => { setSymbols(removeChord(saved.chords, i)); setFocusChip(Math.min(i, infos.length - 2)); } },
+                { id: 'left', label: t('progression.moveLeft'), disabled: i === 0, onSelect: () => { setSymbols(moveChord(symbols, i, -1)); setFocusChip(i - 1); } },
+                { id: 'right', label: t('progression.moveRight'), disabled: i === infos.length - 1, onSelect: () => { setSymbols(moveChord(symbols, i, 1)); setFocusChip(i + 1); } },
+                { id: 'remove', label: t('progression.remove'), onSelect: () => { setSymbols(removeChord(symbols, i)); setFocusChip(Math.min(i, infos.length - 2)); } },
               ]}
             />
           );
@@ -264,7 +270,12 @@ export default function ProgressionPanel() {
       {guitar && (
         <div className="prog-foot">
         <div className="prog-capo" data-testid="progression-capo">
-          {capoChoices.length > 1 ? (
+          {!standardTuning ? (
+            <div className="prog-capo-ideas">
+              <p className="text-caption prog-dim" data-testid="progression-capo-standard" {...termAttr('capo')}>{t('progression.capoStandardOnly')}</p>
+              {capo > 0 && <Button variant="quiet" onClick={() => setCapoFret(0)}>{t('progression.noCapo')}</Button>}
+            </div>
+          ) : capoChoices.length > 1 ? (
             <div className="prog-capo-ideas">
               {/* With a capo on, the row says which shapes to play; else what the ideas are. */}
               {capo > 0

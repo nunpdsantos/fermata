@@ -133,4 +133,17 @@ describe('opening the link', () => {
     await applyProgressionRequest({ chords: Array(30).fill('C') });
     expect(useAppStore.getState().progression!.chords).toEqual(['G', 'D']);
   });
+  it('the same chords at another tempo: the saved tempo is not replaced silently; the tempo is offered', async () => {
+    useAppStore.getState().setProgression({ chords: ['G', 'D'], bpm: 70, beats: 2 });
+    await applyProgressionRequest({ chords: ['G', 'D'], bpm: 96 });
+    expect(useAppStore.getState().progression).toEqual({ chords: ['G', 'D'], bpm: 70, beats: 2 });
+    expect(getProgressionOffer()).toEqual({ chords: ['G', 'D'], bpm: 96 });
+    // The same chords at the same tempo, or with no tempo: nothing to ask, nothing changes.
+    resetProgressionPanel();
+    await applyProgressionRequest({ chords: ['G', 'D'], bpm: 70 });
+    expect(getProgressionOffer()).toBeNull();
+    await applyProgressionRequest({ chords: ['G', 'D'] });
+    expect(getProgressionOffer()).toBeNull();
+    expect(useAppStore.getState().progression).toEqual({ chords: ['G', 'D'], bpm: 70, beats: 2 });
+  });
 });

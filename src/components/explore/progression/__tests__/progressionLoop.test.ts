@@ -54,8 +54,8 @@ describe('one cycle, read independently', () => {
           expect(here.map((n) => midi(n.note)), `${chord.root.natural} beat ${b}`).toEqual(tones);
           for (const n of here) {
             expect(n.at).toBeCloseTo(at, 9);
-            expect(n.duration).toBeLessThan(beat);
-            expect(n.duration).toBeGreaterThan(beat * 0.5);
+            // Each beat's notes last 90 % of the beat (a short breath before the next).
+            expect(n.duration).toBeCloseTo(beat * 0.9, 9);
           }
           // The first beat a little stronger.
           if (b > 0) expect(here[0].volume!).toBeLessThan(body[k - tones.length * (b + 1)].volume!);
@@ -139,12 +139,27 @@ describe('the loop', () => {
     expect(audio.calls).toHaveLength(2);
     const second = audio.calls[1];
     expect(second.at + second.notes[0].at).toBeCloseTo(cycle1End, 9);
+    // Handed to the audio clock well BEFORE the first cycle ends (read
+    // independently of LEAD_S: at least half a second ahead, so a late
+    // timer still leaves no gap).
+    expect(cycle1End - second.at).toBeGreaterThanOrEqual(0.5);
     // No count-in the second time.
     expect(second.notes).toHaveLength(first.notes.length - 4);
     const cycle2End = cycle1End + 4 * 2 * beat;
     clock.advance(cycle2End - audio.now);
     expect(audio.calls[2].at + audio.calls[2].notes[0].at).toBeCloseTo(cycle2End, 9);
     expect(loop.playing).toBe(true);
+    loop.stop('user');
+  });
+
+  it('the first notes are scheduled a little ahead of ▶ (never late), and not noticeably', async () => {
+    const clock = fakeClock();
+    const loop = new ProgressionLoop(clock);
+    await start(loop);
+    const first = audio.calls[0];
+    // `at` is seconds from the moment the notes were handed over.
+    expect(first.notes[0].at).toBeGreaterThanOrEqual(0.02);
+    expect(first.notes[0].at).toBeLessThanOrEqual(0.2);
     loop.stop('user');
   });
 
@@ -156,6 +171,22 @@ describe('the loop', () => {
     clock.advance(10);
     const second = audio.calls[1];
     expect(second.notes[1 * 3].at - second.notes[0].at).toBeCloseTo(1, 9); // one beat = 1 s at 60
+    loop.stop('user');
+  });
+
+  it('a new number of beats per chord applies from the next cycle', async () => {
+    const clock = fakeClock();
+    const loop = new ProgressionLoop(clock);
+    await start(loop); // 120 a minute, 2 beats a chord
+    const first = audio.calls[0];
+    const tones = chords.map((c) => pitches(c).length);
+    expect(first.notes).toHaveLength(4 + tones.reduce((a, n) => a + n * 2, 0));
+    loop.retime(120, 4);
+    clock.advance(10);
+    const second = audio.calls[1];
+    // Four beats of every chord, no count-in; the second chord starts 4 beats (2 s) in.
+    expect(second.notes).toHaveLength(tones.reduce((a, n) => a + n * 4, 0));
+    expect(second.notes[tones[0] * 4].at - second.notes[0].at).toBeCloseTo(2, 9);
     loop.stop('user');
   });
 

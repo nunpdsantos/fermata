@@ -26,11 +26,12 @@
  *
  * How stream S does it (components/explore/ProgressionHost.tsx): the host,
  * mounted in Explore, opens the panel; with chords and an empty progression
- * it loads them; with chords and a progression of the learner's own (other
- * chords), the panel shows a line "A lesson or link brings: G D Em C" with
- * "Use these" (replaces) and "Keep mine" (drops the offer). The request is
- * cleared either way. A request made while Explore is not mounted waits
- * until it is.
+ * it loads them; with the same chords at the same tempo (or no tempo) it
+ * changes nothing; with other chords, or the same chords at another tempo,
+ * the panel shows a line "A lesson or shared link offers these chords: G, D,
+ * Em, C." (naming the tempo when the request has one) with "Use these"
+ * (replaces) and "Keep mine" (drops the offer). The request is cleared
+ * either way. A request made while Explore is not mounted waits until it is.
  */
 import { create } from 'zustand';
 

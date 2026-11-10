@@ -128,3 +128,29 @@ for (const v of [VIEWS[0], VIEWS[1], VIEWS[3]]) {
     });
   }
 }
+
+// Another tuning: the capo row says the ideas need standard tuning (no ideas, no shapes to play).
+for (const v of [VIEWS[0], VIEWS[1], VIEWS[3]]) {
+  for (const th of THEMES) {
+    for (const lang of ['en', 'pt'] as const) {
+      test(`${v.name}-${th.name} ${lang}: another tuning, the capo line passes the design rules`, async ({ browser }) => {
+        test.setTimeout(120_000);
+        const w = WORDS[lang];
+        const { context, page } = await seededBrowser(browser, v, {
+          themeMode: th.mode, language: lang, instrument: 'guitar', lastView: 'explore', guitarTuningId: 'half-step-down',
+          selectedKey: { natural: 'E', accidental: 'b' }, selectedScale: 'major',
+        }, {}, { lang });
+        await page.goto('/');
+        await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+        await page.getByRole('button', { name: w.open, exact: true }).click();
+        for (const c of ['E♭', 'A♭', 'B♭']) await page.getByRole('button', { name: `${w.add} ${c}`, exact: true }).click();
+        const line = page.getByTestId('progression-capo-standard');
+        await expect(line).toBeVisible();
+        await expect(page.getByTestId('progression-capo').getByRole('radio')).toHaveCount(0);
+        await line.scrollIntoViewIfNeeded();
+        await check(page, v, `progression-${v.name}-${th.name}-${lang}--capo-standard-only`);
+        await context.close();
+      });
+    }
+  }
+}

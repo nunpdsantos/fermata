@@ -3,7 +3,7 @@ import i18n from '../../../../i18n';
 import type { Note, ScaleType } from '../../../../core/types/music';
 import { chordSymbol } from '../../../../core/utils/progression';
 import {
-  addChord, capoIdeas, capoShapes, keyChords, keyLine, moveBy, moveChord, panelKeyFor, presetViews, readChords,
+  addChord, capoIdeas, capoShapes, keyChords, keyLine, moveBy, moveChord, panelKeyFor, presetViews, readChords, readableSymbols,
   relativeKey, removeChord, sheetRoots, symbolFor,
 } from '../progressionModel';
 import { fitSentence, keyLineSentences, keyLabel } from '../progressionText';
@@ -48,6 +48,9 @@ describe('the chord list (saved as symbols)', () => {
   it('reads what the parser reads, leaves out the rest, at most 16', () => {
     expect(names(readChords(['G', 'nonsense', 'D/F#', '', 'Em7']))).toEqual(['G', 'D/F#', 'Em7']);
     expect(readChords(Array(40).fill('C'))).toHaveLength(MAX_PROGRESSION_CHORDS);
+    // The symbols behind the chords, index for index (what the chip actions edit).
+    expect(readableSymbols(['G', 'nonsense', 'D/F#', '', 'Axyz', 'Em7'])).toEqual(['G', 'D/F#', 'Em7']);
+    expect(readableSymbols(Array(40).fill('C'))).toHaveLength(MAX_PROGRESSION_CHORDS);
   });
   it('a symbol reads back as the same chord (also an algorithmic one or a double flat)', () => {
     for (const s of ['F#m7', 'G/B', 'C7(#5)', 'Cm(add9)', 'Cadd9', 'Bbm7b5', 'Bbb']) {

@@ -5,7 +5,8 @@ import { useAppStore } from '../../state/store';
 
 /**
  * Apply a request (state/progressionRequest.ts): open the panel; with chords,
- * load them when the learner has none (or the same ones), else OFFER them —
+ * load them when the learner has none (the same ones at the same tempo, or
+ * with no tempo, change nothing), else OFFER them (and the tempo) —
  * the panel asks "Use these" / "Keep mine", so nothing saved is lost
  * silently. The chords go through the app's own chord parser (a symbol it
  * does not read is left out). Resolves once applied.
@@ -23,11 +24,16 @@ export async function applyProgressionRequest(request: ProgressionRequest): Prom
   const bpm = isTempo(request.bpm) ? request.bpm : undefined;
   const s = useAppStore.getState();
   const mine = s.progression?.chords ?? [];
-  const same = mine.length === symbols.length && mine.every((m, i) => m === symbols[i]);
-  if (mine.length === 0 || same) {
+  const sameChords = mine.length === symbols.length && mine.every((m, i) => m === symbols[i]);
+  if (mine.length === 0) {
     s.setProgression({ ...(s.progression ?? EMPTY_PROGRESSION), chords: symbols, ...(bpm !== undefined ? { bpm } : {}) });
     setProgressionOffer(null);
+  } else if (sameChords && (bpm === undefined || bpm === s.progression?.bpm)) {
+    // The learner already has exactly this: nothing to ask, nothing changes.
+    setProgressionOffer(null);
   } else {
+    // Other chords, or the same chords at another tempo: the saved tempo is
+    // the learner's too, so it is offered, never replaced silently.
     setProgressionOffer({ chords: symbols, ...(bpm !== undefined ? { bpm } : {}) });
   }
 }

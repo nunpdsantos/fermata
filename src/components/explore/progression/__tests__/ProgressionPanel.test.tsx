@@ -229,10 +229,49 @@ describe('the capo (guitar only)', () => {
     act(() => setCapoFret(0));
     expect(screen.getByTestId('progression-capo-none').textContent).toBe('Without a capo, each of these chords already has a shape with open strings.');
   });
+  it('another tuning: no capo ideas and no shapes to play (the shapes are for standard tuning only); No capo takes one off', async () => {
+    useAppStore.setState({ instrument: 'guitar', selectedKey: { natural: 'E', accidental: 'b' }, guitarTuningId: 'half-step-down' });
+    try {
+      await openPanel();
+      for (const c of ['E♭', 'A♭', 'B♭']) add(c);
+      expect(screen.queryByRole('radiogroup', { name: 'Capo ideas, for shapes with open strings' })).toBeNull();
+      expect(screen.queryByTestId('progression-capo-none')).toBeNull();
+      expect(screen.getByTestId('progression-capo-standard').textContent).toBe("Capo ideas need standard tuning: Fermata's chord shapes are for standard tuning only.");
+      expect(screen.queryByRole('button', { name: 'No capo' })).toBeNull();
+      act(() => setCapoFret(1));
+      expect(screen.queryByTestId('progression-capo-now')).toBeNull();
+      fireEvent.click(screen.getByRole('button', { name: 'No capo' }));
+      expect(getCapoFret()).toBe(0);
+    } finally {
+      useAppStore.setState({ guitarTuningId: 'standard' });
+    }
+  });
   it('the piano shows no capo', async () => {
     await openPanel();
     add('G');
     expect(screen.queryByTestId('progression-capo')).toBeNull();
+  });
+});
+
+describe('a saved symbol the parser does not read', () => {
+  it('is left out of the chips, and the chip actions act on the chip the learner chose', async () => {
+    useAppStore.getState().setProgression({ chords: ['Axyz', 'G', 'D', 'Em'], bpm: 90, beats: 4 });
+    await openPanel();
+    expect(chips()).toEqual(['GI', 'DV', 'Emvi']);
+    fireEvent.click(screen.getByRole('button', { name: 'G, I, chord 1 of 3' }));
+    fireEvent.click(within(screen.getByRole('menu')).getByRole('menuitem', { name: 'Remove' }));
+    expect(chips()).toEqual(['DV', 'Emvi']);
+    expect(useAppStore.getState().progression!.chords).toEqual(['D', 'Em']);
+    fireEvent.click(screen.getByRole('button', { name: 'Em, vi, chord 2 of 2' }));
+    fireEvent.click(within(screen.getByRole('menu')).getByRole('menuitem', { name: 'Move left' }));
+    expect(chips()).toEqual(['Emvi', 'DV']);
+  });
+  it('none of them reads: the empty panel, and the first chord added replaces them', async () => {
+    useAppStore.getState().setProgression({ chords: ['Axyz', 'Bqq'], bpm: 90, beats: 4 });
+    const panel = await openPanel();
+    expect(panel.getAttribute('data-state')).toBe('empty');
+    add('G');
+    expect(useAppStore.getState().progression!.chords).toEqual(['G']);
   });
 });
 
@@ -248,7 +287,7 @@ describe('a request (a lesson, a link)', () => {
     render(<><ChordsCard /><ProgressionHost /></>);
     act(() => requestProgression({ chords: ['Am', 'F'], bpm: 120 }));
     const offer = await screen.findByTestId('progression-offer');
-    expect(offer.textContent).toContain('A lesson or link brings: Am, F.');
+    expect(offer.textContent).toContain('A lesson or shared link offers these chords at 120 beats a minute: Am, F.');
     expect(chips()).toEqual(['GI', 'CIV']);
     fireEvent.click(within(offer).getByRole('button', { name: 'Keep mine' }));
     expect(screen.queryByTestId('progression-offer')).toBeNull();
@@ -257,5 +296,21 @@ describe('a request (a lesson, a link)', () => {
     fireEvent.click(within(await screen.findByTestId('progression-offer')).getByRole('button', { name: 'Use these' }));
     expect(chips()).toEqual(['Amii', 'F♭VII']);
     expect(useAppStore.getState().progression).toEqual({ chords: ['Am', 'F'], bpm: 120, beats: 4 });
+  });
+  it('the same chords at another tempo: the tempo is offered, not put in silently', async () => {
+    useAppStore.getState().setProgression({ chords: ['G', 'C'], bpm: 70, beats: 4 });
+    render(<><ChordsCard /><ProgressionHost /></>);
+    act(() => requestProgression({ chords: ['G', 'C'], bpm: 96 }));
+    const offer = await screen.findByTestId('progression-offer');
+    expect(offer.textContent).toContain('A lesson or shared link offers these chords at 96 beats a minute: G, C.');
+    expect(useAppStore.getState().progression!.bpm).toBe(70);
+    fireEvent.click(within(offer).getByRole('button', { name: 'Use these' }));
+    expect(useAppStore.getState().progression).toEqual({ chords: ['G', 'C'], bpm: 96, beats: 4 });
+  });
+  it('chords with no tempo: the offer names only the chords', async () => {
+    useAppStore.getState().setProgression({ chords: ['G', 'C'], bpm: 70, beats: 4 });
+    render(<><ChordsCard /><ProgressionHost /></>);
+    act(() => requestProgression({ chords: ['Am', 'F'] }));
+    expect((await screen.findByTestId('progression-offer')).textContent).toContain('A lesson or shared link offers these chords: Am, F.');
   });
 });
