@@ -215,3 +215,18 @@ describe('an open explanation when Explore unmounts', () => {
     expect(useGlossaryUi.getState().request).toBeNull();
   });
 });
+
+// Final review (2026-11-10): Simple view has no circle — on a tablet too
+// (jsdom's media queries match nothing: the tablet column layout).
+describe('the circle on a tablet', () => {
+  it('Full shows it under the work; Simple leaves it out', async () => {
+    const { unmount } = render(<ExploreView />);
+    act(() => useAppStore.setState({ exploreDetail: 'full' }));
+    expect(screen.getByTestId('explore-work').getAttribute('data-layout')).toBe('column');
+    expect(screen.queryByTestId('circle-card')).not.toBeNull();
+    act(() => useAppStore.setState({ exploreDetail: 'simple' }));
+    expect(screen.queryByTestId('circle-card')).toBeNull();
+    unmount();
+    useAppStore.setState({ exploreDetail: undefined });
+  });
+});

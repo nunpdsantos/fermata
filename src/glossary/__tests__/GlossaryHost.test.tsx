@@ -125,6 +125,23 @@ describe('tap a word', () => {
     }
   });
 
+  // Final review (2026-11-10): a tap on a word opens its explanation and
+  // changes nothing else (the e2e compared four layout boxes only).
+  it('tapping each word, open and closed again, changes no selection or setting', () => {
+    useAppStore.setState({ exploreDetail: 'full', selectedChord: buildChord({ natural: 'G', accidental: '' }, 'major'), chordInversion: 1, scaleOctaves: 1 });
+    render(<Explore />);
+    const snapshot = () => JSON.stringify(useAppStore.getState(), (_k, v) => (v instanceof Set ? [...v] : v));
+    const before = snapshot();
+    const words = [...document.querySelectorAll<HTMLButtonElement>('button.term')];
+    expect(words.length).toBeGreaterThan(8); // a known positive: summary, facts, strip, chord detail
+    for (const word of words) {
+      fireEvent.click(word);
+      expect(useGlossaryUi.getState().request?.kind).toBe('term');
+      act(() => useGlossaryUi.getState().close());
+    }
+    expect(snapshot()).toBe(before);
+  });
+
   it('Learn more opens the lesson that teaches it', () => {
     render(<Explore />);
     fireEvent.click(within(screen.getByTestId('key-facts')).getByRole('button', { name: 'Dominant key' }));
@@ -325,5 +342,26 @@ describe('Simple view', () => {
     const input = { focus: { pc: 11, midi: 71, source: 'staff' as const }, scale: buildScale({ natural: 'C', accidental: '' }, 'major'), chord: null, spellPitchClass: () => ({ natural: 'B' as const, accidental: '' as const }), t };
     expect(readoutParts(input).keyRole).toBe('leading note of C Major');
     expect(readoutParts({ ...input, simple: true }).keyRole).toBe('note 7 of C Major');
+  });
+});
+
+// Final review (2026-11-10): "Words on this screen" lists only what is shown;
+// a hidden, folded or inert copy, and the glossary's own panel, never count
+// (mutations of each survived the suite).
+describe('the words on this screen', () => {
+  it('skip hidden, folded and inert words and the glossary panel; each word once, in reading order', () => {
+    document.body.innerHTML = `
+      <span data-term="keySignature"></span>
+      <div hidden><span data-term="tonic"></span></div>
+      <div data-folded><span data-term="dominant"></span></div>
+      <div inert><span data-term="mediant"></span></div>
+      <div data-glossary><span data-term="triad"></span></div>
+      <span data-term="relativeKey keySignature"></span>
+      <span data-term="notAWord"></span>`;
+    try {
+      expect(visibleTermIds()).toEqual(['keySignature', 'relativeKey']);
+    } finally {
+      document.body.innerHTML = '';
+    }
   });
 });

@@ -76,7 +76,9 @@ async function show(lang: 'en' | 'pt' | 'es', showSolfege: boolean | undefined) 
 }
 
 const text = (id: string) => screen.getByTestId(id).textContent;
-const stripNames = () => [...document.querySelectorAll('.strip-col')].map((c) => c.querySelector('.strip-name')!.textContent + (c.querySelector('.strip-solfege')?.textContent ?? ''));
+// In the order they are drawn (final review: reading the name, then the
+// syllable, passed with the syllable drawn first).
+const stripNames = () => [...document.querySelectorAll('.strip-col')].map((c) => [...c.querySelectorAll('.strip-name, .strip-solfege')].map((e) => e.textContent).join(''));
 /** The page's HTML with React's generated ids (useId: _r_4_) made comparable between renders. */
 const html = (el: HTMLElement) => el.innerHTML.replace(/_r_[0-9a-z]+_/g, '_r_');
 const chipNames = () => screen.getAllByRole('radio').filter((r) => r.hasAttribute('data-root')).map((r) => r.textContent);
