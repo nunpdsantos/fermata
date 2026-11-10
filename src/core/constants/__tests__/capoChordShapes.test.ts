@@ -120,6 +120,11 @@ describe('the capo is the nut (isPlayableChordShape)', () => {
     const eBarre = getChordShapes(N('G'), 'major').find((e) => e.shape.name === 'E-shape Barre')!;
     expect(isPlayableChordShape({ shape: eBarre.shape, baseFret: 3 }, 15, 3)).toBe(false);
     expect(isPlayableChordShape({ shape: eBarre.shape, baseFret: 6 }, 15, 3)).toBe(true);
+    // A FINGERED note behind the capo (no barre, no open string): refused.
+    const dShape = getChordShapes(N('F'), 'major').find((e) => e.shape.name === 'D-shape Barre')!;
+    expect(dShape.shape.barreInfo).toBeUndefined();
+    expect(isPlayableChordShape({ shape: dShape.shape, baseFret: 3 }, 15, 3)).toBe(true);
+    expect(isPlayableChordShape({ shape: dShape.shape, baseFret: 3 }, 15, 4)).toBe(false);
   });
 });
 
