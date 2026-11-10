@@ -12,8 +12,9 @@
  * spelling here never changes meaning; every parameter is optional and
  * language-independent):
  *
- *   key    a root as the key picker spells it: a letter A–G, then nothing,
- *          `#` or `b` (`C`, `Eb`, `F#`, `Cb`). The link writes `#` as `%23`
+ *   key    a root in any of the 21 spellings: a letter A–G, then nothing,
+ *          `#` or `b` (`C`, `Eb`, `F#`; also `E#`, `B#`, `Fb` and `Cb`, which
+ *          the key picker never offers). The link writes `#` as `%23`
  *          (a bare `#` starts the URL's fragment). Read leniently: a lower-case
  *          letter and the glyphs ♯ / ♭ are accepted too.
  *   scale  a scale id of the Scale picker (`major`, `natural_minor`, `dorian`,
