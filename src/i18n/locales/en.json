@@ -1285,7 +1285,16 @@
     },
     "chords": {
       "title": "From the chords you know",
-      "line": "Theory that starts from the chords you already play."
+      "line": "Theory that starts from the chords you already play.",
+      "end": {
+        "progression": "Loop your own songs in the Progression panel",
+        "level2": "Go deeper: Level 2"
+      }
+    },
+    "chordList": {
+      "label": "The chords, in order",
+      "showPiano": "{{chord}}: hear it and show it on the piano",
+      "showGuitar": "{{chord}}: hear it and show it on the guitar"
     },
     "startHere": "Start here",
     "otherWays": "Other ways in",

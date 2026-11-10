@@ -109,11 +109,12 @@ describe('the start hint', () => {
   it('one way into Learn, and only from the player hint: lesson 1 of the chords track, once it exists (wave 2)', () => {
     expect(Object.keys(startHint).sort()).toEqual(['dismissStartHint', 'followStartHintLesson', 'raiseStartHint', 'startHintLesson', 'useShownStartHint', 'useStartHintStore']);
     const withChords = new Set(['l1u35m1']);
-    // Not written yet (this branch): no link, and following does nothing.
-    expect(startHint.startHintLesson('player')).toBeNull();
+    // Written in this branch: the default set has it.
+    expect(startHint.startHintLesson('player')).toEqual({ levelId: 'l1', unitId: 'u35', moduleId: 'l1u35m1' });
+    // Not written (an empty set): no link, and following does nothing.
     expect(startHint.startHintLesson('player', new Set())).toBeNull();
     raiseStartHint('player');
-    startHint.followStartHintLesson();
+    startHint.followStartHintLesson(new Set());
     expect(useAppStore.getState().pendingLearnTarget).toBeNull();
     expect(useAppStore.getState().view).toBe('explore');
     expect(owed()).toBe('player');

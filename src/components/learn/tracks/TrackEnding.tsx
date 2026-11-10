@@ -4,6 +4,8 @@ import { TRACK_ENDINGS, type TrackEndingStep } from './trackEndings';
 import { Button } from '../../ui/Button';
 import { executeTheoryQuery } from '../../../utils/queryExecutor';
 import { keepLessonInstrument } from '../../../services/lessonInstrument';
+import { requestProgression } from '../../../state/progressionRequest';
+import { useAppStore } from '../../../state/store';
 
 interface TrackEndingProps {
   track: TrackId;
@@ -24,6 +26,10 @@ export function TrackEnding({ track, accent, onOpenLevel }: TrackEndingProps) {
     if (step.kind === 'explore') {
       keepLessonInstrument();
       executeTheoryQuery(step.query);
+    } else if (step.kind === 'progression') {
+      keepLessonInstrument();
+      requestProgression({});
+      useAppStore.getState().setView('explore');
     } else {
       onOpenLevel(step.levelId);
     }

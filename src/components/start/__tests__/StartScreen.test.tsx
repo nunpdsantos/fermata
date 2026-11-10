@@ -241,14 +241,15 @@ describe('Settings → "How I use Fermata"', () => {
 });
 
 describe('the start hint (shell)', () => {
-  // Wave 2: the player hint's lesson link shows only once the chords track's
-  // lesson 1 exists — not in this branch (StartHintLesson.test.tsx: written).
-  it.each(['new', 'player'] as const)('%s: no link into Learn (new: never; player: not while the chords track is unwritten) — its line and ✕ only', (kind) => {
+  // Wave 2: the player hint's lesson link shows once the chords track's
+  // lesson 1 exists — it does in this branch (StartHintLesson.test.tsx has
+  // the link itself; startDoors.test.ts the unwritten case).
+  it.each(['new', 'player'] as const)('%s: its line, then (player only) the link into lesson 1 of the chords track, then ✕; ✕ ends it', (kind) => {
     act(() => raiseStartHint(kind));
     render(<StartHint />);
     const hint = screen.getByRole('complementary', { name: 'Getting started' });
-    expect(hint.textContent).toBe(kind === 'new' ? 'Tap a piano key to hear it.' : 'Pick the key of a song you play, for example G. The chords below belong to it: tap one.');
-    expect(within(hint).getAllByRole('button').map((b) => b.textContent || b.getAttribute('aria-label'))).toEqual(['Dismiss the tip']);
+    expect(hint.textContent).toBe(kind === 'new' ? 'Tap a piano key to hear it.' : 'Pick the key of a song you play, for example G. The chords below belong to it: tap one. Theory from the chords you know: lesson 1 →');
+    expect(within(hint).getAllByRole('button').map((b) => b.textContent || b.getAttribute('aria-label'))).toEqual(kind === 'new' ? ['Dismiss the tip'] : ['Theory from the chords you know: lesson 1 →', 'Dismiss the tip']);
     expect(within(hint).queryAllByRole('link')).toEqual([]);
     fireEvent.click(within(hint).getByRole('button', { name: 'Dismiss the tip' }));
     expect(useAppStore.getState().view).toBe('explore');
@@ -263,12 +264,12 @@ describe('the start hint (shell)', () => {
     expect(screen.getByTestId('start-hint').textContent).toContain('Tap a string to hear it.');
   });
 
-  it('player: its line and ✕ only; ✕ ends it', () => {
+  it('player: its line, the lesson link and ✕; ✕ ends it', () => {
     act(() => raiseStartHint('player'));
     render(<StartHint />);
     const hint = screen.getByTestId('start-hint');
-    expect(hint.textContent).toBe('Pick the key of a song you play, for example G. The chords below belong to it: tap one.');
-    expect(within(hint).getAllByRole('button')).toHaveLength(1);
+    expect(hint.textContent).toBe('Pick the key of a song you play, for example G. The chords below belong to it: tap one. Theory from the chords you know: lesson 1 →');
+    expect(within(hint).getAllByRole('button')).toHaveLength(2);
     fireEvent.click(screen.getByRole('button', { name: 'Dismiss the tip' }));
     expect(screen.queryByTestId('start-hint')).toBeNull();
     expect(useAppStore.getState().startHint).toBeNull();

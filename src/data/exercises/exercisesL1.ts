@@ -1339,6 +1339,917 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       nudge: 'Replay it and listen to its colour: bright and settled, or darker?',
     },
   ],
+
+  // ---- Track "From the chords you know" (wave 2): answered by ear, on the
+  // instrument, or about numbers and names; never by reading a staff. A
+  // progression's reference is the key's home chord (earReference).
+
+  // ---- l1u35m1: Your Chords Live in a Key ----
+  l1u35m1: [
+    {
+      id: 'l1u35m1e1',
+      type: 'multiple_choice',
+      prompt: 'Put the notes of G, C, D and Em together and leave out the repeats. How many different notes are there?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'Seven notes', correct: true },
+          { label: 'Three notes', correct: false },
+          { label: 'Four notes', correct: false },
+          { label: 'Twelve notes', correct: false },
+        ],
+      },
+      hint: 'Seven: G, A, B, C, D, E and F♯, the notes of the G major scale.',
+      nudge: 'Write out the three notes of each chord, then cross out every note you have already written.',
+    },
+    {
+      id: 'l1u35m1e2',
+      type: 'multiple_choice',
+      prompt: 'Which note belongs to the key of G?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'F♯', correct: true },
+          { label: 'F', correct: false },
+          { label: 'C♯', correct: false },
+          { label: 'B♭', correct: false },
+        ],
+      },
+      hint: 'F♯: it is in the D chord, D, F♯ and A, and the key of G has F♯ in place of F.',
+      nudge: 'Think of the notes of the D chord: which of them is a black key on the piano?',
+    },
+    {
+      id: 'l1u35m1e3',
+      type: 'multiple_choice',
+      prompt: 'What is a key?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'A family of seven notes and the chords built from them', correct: true },
+          { label: 'The chord that sounds like home, played at the start of a song', correct: false },
+          { label: 'The three different notes that make each chord of a song', correct: false },
+          { label: 'Any seven notes, played in order from the lowest up', correct: false },
+        ],
+      },
+      hint: 'A key is a family of seven notes and the chords built from them, named after the note that sounds like home.',
+      nudge: 'Think of G, C, D and Em: what do the four of them share, and where did their chords come from?',
+    },
+    {
+      id: 'l1u35m1e4',
+      type: 'scale_build',
+      prompt: 'Build the G major scale: select its seven notes, the notes of G, C, D and Em together.',
+      config: {
+        type: 'scale_build',
+        root: 'G',
+        rootAccidental: '',
+        scaleType: 'major',
+        noteCount: 7,
+      },
+      hint: 'G, A, B, C, D, E and F♯: every note of the four chords, each once.',
+      nudge: 'Take the three notes of each of the four chords in turn and select each new one, until you have seven.',
+    },
+    {
+      id: 'l1u35m1e5',
+      type: 'ear_training',
+      prompt: 'Listen to this chord from the key of G. Is it major or minor?',
+      config: {
+        type: 'ear_training',
+        mode: 'chord',
+        chordRoot: 'E',
+        chordRootAccidental: '',
+        quality: 'minor',
+        choices: [
+          { label: 'Major', correct: false },
+          { label: 'Minor', correct: true },
+        ],
+      },
+      hint: 'Minor: it was Em, E, G and B, the darker of the chords you played.',
+      nudge: 'Replay it and listen to its colour: bright and open, or darker?',
+    },
+  ],
+
+  // ---- l1u35m2: One, Four, Five ----
+  l1u35m2: [
+    {
+      id: 'l1u35m2e1',
+      type: 'multiple_choice',
+      prompt: 'In the key of G, which note is number 5?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'D', correct: true },
+          { label: 'C', correct: false },
+          { label: 'E', correct: false },
+          { label: 'B', correct: false },
+        ],
+      },
+      hint: 'D: G is 1, A is 2, B is 3, C is 4 and D is 5.',
+      nudge: 'Count up the G major scale from G, which is 1, one note at a time.',
+    },
+    {
+      id: 'l1u35m2e2',
+      type: 'multiple_choice',
+      prompt: 'In the key of C, which chords are I, IV and V?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'C, F and G', correct: true },
+          { label: 'C, E and G', correct: false },
+          { label: 'C, D and G', correct: false },
+          { label: 'C, F and E', correct: false },
+        ],
+      },
+      hint: 'C, F and G: the chords on notes 1, 4 and 5 of C major, all three of them major.',
+      nudge: 'Count up the scale of C to notes 4 and 5, and build a major chord on each.',
+    },
+    {
+      id: 'l1u35m2e3',
+      type: 'multiple_choice',
+      prompt: 'G, C and D in the key of G are I, IV and V. Which chords make the same move in the key of D?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'D, G and A', correct: true },
+          { label: 'D, E and A', correct: false },
+          { label: 'D, A and B', correct: false },
+          { label: 'D, G and B', correct: false },
+        ],
+      },
+      hint: 'D, G and A: notes 1, 4 and 5 of D major. The numbers stay; only the names change.',
+      nudge: 'Count up the D major scale from D to notes 4 and 5.',
+    },
+    {
+      id: 'l1u35m2e4',
+      type: 'ear_training',
+      prompt: 'First you hear the home chord of the key. Then four chords: which numbers are they?',
+      config: {
+        type: 'ear_training',
+        mode: 'progression',
+        root: 'G',
+        rootAccidental: '',
+        progression: ['I', 'IV', 'V', 'I'],
+        choices: [
+          { label: 'I - IV - V - I', correct: true },
+          { label: 'I - V - IV - I', correct: false },
+          { label: 'I - IV - I - V', correct: false },
+        ],
+      },
+      hint: 'I – IV – V – I: home, the chord on 4, the chord on 5, and home again.',
+      nudge: 'Hum the lowest note of each chord. Which chord sounds furthest from home, and where does the last one land?',
+    },
+    {
+      id: 'l1u35m2e5',
+      type: 'ear_training',
+      prompt: 'The home chord again, then four chords in another key. Which numbers are they?',
+      config: {
+        type: 'ear_training',
+        mode: 'progression',
+        root: 'C',
+        rootAccidental: '',
+        progression: ['I', 'V', 'IV', 'I'],
+        choices: [
+          { label: 'I - IV - V - I', correct: false },
+          { label: 'I - V - IV - I', correct: true },
+          { label: 'I - IV - I - V', correct: false },
+        ],
+      },
+      hint: 'I – V – IV – I: home, the chord on 5, the chord on 4, and home again.',
+      nudge: 'Hum the lowest note of each chord. Does the second chord climb higher than the third, or not as high?',
+    },
+    {
+      id: 'l1u35m2e6',
+      type: 'chord_build',
+      prompt: 'Build the IV chord of the key of D.',
+      config: {
+        type: 'chord_build',
+        root: 'G',
+        rootAccidental: '',
+        quality: 'major',
+        noteCount: 3,
+      },
+      hint: 'G major, G, B and D: note 4 of D major is G, and IV is a major chord.',
+      nudge: 'Count up the scale of this key to note 4, then build a major chord on that note.',
+    },
+  ],
+
+  // ---- l1u35m3: The Minor Chords of the Key ----
+  l1u35m3: [
+    {
+      id: 'l1u35m3e1',
+      type: 'multiple_choice',
+      prompt: 'In the key of G, which chord is vi?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'Em', correct: true },
+          { label: 'C', correct: false },
+          { label: 'Am', correct: false },
+          { label: 'Bm', correct: false },
+        ],
+      },
+      hint: 'Em: note 6 of G major is E, and the chord on 6 is minor.',
+      nudge: 'Count up the scale of G to note 6, and remember that a small numeral means a minor chord.',
+    },
+    {
+      id: 'l1u35m3e2',
+      type: 'multiple_choice',
+      prompt: 'Which chords of a major key are minor?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'The chords on 2, 3 and 6', correct: true },
+          { label: 'The chords on 1, 4 and 5', correct: false },
+          { label: 'The chords on 4, 5 and 6', correct: false },
+          { label: 'The chords on 2, 5 and 7', correct: false },
+        ],
+      },
+      hint: 'The chords on 2, 3 and 6: ii, iii and vi, written in small numerals.',
+      nudge: 'Three of the seven chords are major and one is diminished. Which three are left?',
+    },
+    {
+      id: 'l1u35m3e3',
+      type: 'multiple_choice',
+      prompt: 'What kind of chord stands on note 7 of a major key?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'A diminished chord', correct: true },
+          { label: 'A major chord', correct: false },
+          { label: 'A minor chord', correct: false },
+          { label: 'A seventh chord', correct: false },
+        ],
+      },
+      hint: 'A diminished chord, written vii°: in G it is F♯, A and C.',
+      nudge: 'The chords on 1 to 6 are major or minor. The one left over is the odd one out: which kind did the lesson give it?',
+    },
+    {
+      id: 'l1u35m3e4',
+      type: 'multiple_choice',
+      prompt: 'What is the relative minor of C major?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'A minor', correct: true },
+          { label: 'C minor', correct: false },
+          { label: 'E minor', correct: false },
+          { label: 'D minor', correct: false },
+        ],
+      },
+      hint: 'A minor: it starts on note 6 of C major and uses the same seven notes, all the white keys.',
+      nudge: 'The relative minor shares all seven notes and starts on the vi of the major key. Count up the scale of C to note 6.',
+    },
+    {
+      id: 'l1u35m3e5',
+      type: 'ear_training',
+      prompt: 'First the home chord, then four chords. Which numbers are they?',
+      config: {
+        type: 'ear_training',
+        mode: 'progression',
+        root: 'G',
+        rootAccidental: '',
+        progression: ['I', 'vi', 'IV', 'V'],
+        choices: [
+          { label: 'I - vi - IV - V', correct: true },
+          { label: 'I - IV - vi - V', correct: false },
+          { label: 'I - V - vi - IV', correct: false },
+        ],
+      },
+      hint: 'I – vi – IV – V: home, then the darker vi, then IV and V.',
+      nudge: 'Listen for the one minor chord, the darker one. Is it the second chord, the third or the fourth?',
+    },
+    {
+      id: 'l1u35m3e6',
+      type: 'chord_build',
+      prompt: 'Build ii in the key of C: the chord on note 2, from the key\'s own notes.',
+      config: {
+        type: 'chord_build',
+        root: 'D',
+        rootAccidental: '',
+        quality: 'minor',
+        noteCount: 3,
+      },
+      hint: 'Dm, D, F and A: every other note of C major from D.',
+      nudge: 'Start on note 2 of the scale of C and take every other note of the same scale until you have three.',
+    },
+  ],
+
+  // ---- l1u35m4: Home and Away ----
+  l1u35m4: [
+    {
+      id: 'l1u35m4e1',
+      type: 'multiple_choice',
+      prompt: 'In the key of D, which chord pulls hardest back to D?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'A', correct: true },
+          { label: 'G', correct: false },
+          { label: 'Bm', correct: false },
+          { label: 'Em', correct: false },
+        ],
+      },
+      hint: 'A, the V of D: it holds C♯, the 7th note of the key, a half step under D.',
+      nudge: 'The strongest pull home comes from the chord on note 5. Count up the D major scale to it.',
+    },
+    {
+      id: 'l1u35m4e2',
+      type: 'multiple_choice',
+      prompt: 'In the V chord, which note leans hardest towards home?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'The 7th note of the key, a half step under home', correct: true },
+          { label: 'The 5th note of the key, a whole step above the 4th', correct: false },
+          { label: 'The 2nd note of the key, a whole step above home', correct: false },
+          { label: 'The 4th note of the key, a half step above the 3rd', correct: false },
+        ],
+      },
+      hint: 'The 7th note of the key: it is a half step under home, so close that the ear wants it to rise.',
+      nudge: 'Which note of the V chord is the nearest one to the home note?',
+    },
+    {
+      id: 'l1u35m4e3',
+      type: 'multiple_choice',
+      prompt: 'In the key of A, the V chord is E. Which of its notes is a half step under home?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'G♯', correct: true },
+          { label: 'F♯', correct: false },
+          { label: 'B', correct: false },
+          { label: 'E', correct: false },
+        ],
+      },
+      hint: 'G♯: the 7th note of A major, in the E chord, E, G♯ and B.',
+      nudge: 'The note that pulls is the 7th of the key. Which note of the E chord sits that close under the home note?',
+    },
+    {
+      id: 'l1u35m4e4',
+      type: 'ear_training',
+      prompt: 'You hear the home chord first. Then four chords: does the loop end away, on V, or come home to I?',
+      config: {
+        type: 'ear_training',
+        mode: 'progression',
+        root: 'C',
+        rootAccidental: '',
+        progression: ['I', 'IV', 'I', 'V'],
+        choices: [
+          { label: 'I - IV - I - V', correct: true },
+          { label: 'I - IV - V - I', correct: false },
+        ],
+      },
+      hint: 'I - IV - I - V: it ends away, on V, which leans back towards home and leaves the loop unfinished.',
+      nudge: 'Replay it and wait after the last chord. Does it sound finished, or as if one more chord should come?',
+    },
+    {
+      id: 'l1u35m4e5',
+      type: 'ear_training',
+      prompt: 'The home chord, then three chords that go away and come back. Was the way home from IV, the softer way, or from V, the stronger pull?',
+      config: {
+        type: 'ear_training',
+        mode: 'progression',
+        root: 'G',
+        rootAccidental: '',
+        progression: ['I', 'IV', 'I'],
+        choices: [
+          { label: 'I - IV - I', correct: true },
+          { label: 'I - V - I', correct: false },
+        ],
+      },
+      hint: 'I - IV - I: home from IV, C to G, with no note a half step under home, so the return is calm.',
+      nudge: 'Listen to the middle chord: does it lean urgently into home, or settle gently back?',
+    },
+  ],
+
+  // ---- l1u35m5: Major and Minor: One Note ----
+  l1u35m5: [
+    {
+      id: 'l1u35m5e1',
+      type: 'multiple_choice',
+      prompt: 'What changes between D major and D minor?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'Only the middle note, a half step down', correct: true },
+          { label: 'The top note, a half step down', correct: false },
+          { label: 'The lowest note, a half step up', correct: false },
+          { label: 'The middle note, a half step up', correct: false },
+        ],
+      },
+      hint: 'Only the middle note changes, and it moves down a half step: D, F♯ and A become D, F and A.',
+      nudge: 'D major is D, F♯ and A. Which of those three is different in D minor, and which way does it go?',
+    },
+    {
+      id: 'l1u35m5e2',
+      type: 'chord_build',
+      prompt: 'Build A minor: start from A major and lower its middle note by a half step.',
+      config: {
+        type: 'chord_build',
+        root: 'A',
+        rootAccidental: '',
+        quality: 'minor',
+        noteCount: 3,
+      },
+      hint: 'A, C and E: the C♯ of A major moves down a half step to C.',
+      nudge: 'Build A major first, then move only its middle note one key lower.',
+    },
+    {
+      id: 'l1u35m5e3',
+      type: 'chord_build',
+      prompt: 'Build D minor: D major with its middle note a half step lower.',
+      config: {
+        type: 'chord_build',
+        root: 'D',
+        rootAccidental: '',
+        quality: 'minor',
+        noteCount: 3,
+      },
+      hint: 'D, F and A: the F♯ of D major moves down a half step to F.',
+      nudge: 'Build D major first, then move only its middle note one key lower.',
+    },
+    {
+      id: 'l1u35m5e4',
+      type: 'multiple_choice',
+      prompt: 'On the guitar, how do you turn the open A shape into Am?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'Move the note on the B string one fret lower', correct: true },
+          { label: 'Move the note on the B string one fret higher', correct: false },
+          { label: 'Move the note on the G string one fret lower', correct: false },
+          { label: 'Move the note on the D string one fret lower', correct: false },
+        ],
+      },
+      hint: 'The B string plays the middle note, C♯, at fret 2; one fret lower, at fret 1, it is C, and the chord is Am.',
+      nudge: 'Find which string plays the middle note of A major, then decide which way a half step down goes.',
+    },
+    {
+      id: 'l1u35m5e5',
+      type: 'ear_training',
+      prompt: 'Listen to this chord. Is it major or minor?',
+      config: {
+        type: 'ear_training',
+        mode: 'chord',
+        chordRoot: 'D',
+        chordRootAccidental: '',
+        quality: 'major',
+        choices: [
+          { label: 'Major', correct: true },
+          { label: 'Minor', correct: false },
+        ],
+      },
+      hint: 'Major: it sounds bright and open.',
+      nudge: 'Replay it and listen to its middle note: bright and open, or darker?',
+    },
+    {
+      id: 'l1u35m5e6',
+      type: 'ear_training',
+      prompt: 'Listen to one more chord. Is it major or minor?',
+      config: {
+        type: 'ear_training',
+        mode: 'chord',
+        chordRoot: 'B',
+        chordRootAccidental: '',
+        quality: 'minor',
+        choices: [
+          { label: 'Major', correct: false },
+          { label: 'Minor', correct: true },
+        ],
+      },
+      hint: 'Minor: it sounds darker, because its middle note is a half step lower than in the major chord.',
+      nudge: 'Replay it and listen to its middle note: bright and open, or darker?',
+    },
+  ],
+
+  // ---- l1u35m6: What Is Inside a Chord ----
+  l1u35m6: [
+    {
+      id: 'l1u35m6e1',
+      type: 'chord_build',
+      prompt: 'Build C major: the 1st, 3rd and 5th notes of the C major scale.',
+      config: {
+        type: 'chord_build',
+        root: 'C',
+        rootAccidental: '',
+        quality: 'major',
+        noteCount: 3,
+      },
+      hint: 'C, E and G: C, skip D, E, skip F, G.',
+      nudge: 'Start on C and take every other note of its major scale until you have three.',
+    },
+    {
+      id: 'l1u35m6e2',
+      type: 'chord_build',
+      prompt: 'Build D major: its root, 3rd and 5th.',
+      config: {
+        type: 'chord_build',
+        root: 'D',
+        rootAccidental: '',
+        quality: 'major',
+        noteCount: 3,
+      },
+      hint: 'D, F♯ and A: every other note of the D major scale from D.',
+      nudge: 'Start on D and take every other note of the D major scale until you have three.',
+    },
+    {
+      id: 'l1u35m6e3',
+      type: 'chord_build',
+      prompt: 'Build Em, the vi chord of G: every other note of the key of G, starting from E.',
+      config: {
+        type: 'chord_build',
+        root: 'E',
+        rootAccidental: '',
+        quality: 'minor',
+        noteCount: 3,
+      },
+      hint: 'E, G and B: E, skip F♯, G, skip A, B.',
+      nudge: 'Start on E and take every other note of the scale of this key until you have three.',
+    },
+    {
+      id: 'l1u35m6e4',
+      type: 'multiple_choice',
+      prompt: 'An open G chord sounds six strings. How many different notes does it play?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'Three different notes', correct: true },
+          { label: 'Six different notes', correct: false },
+          { label: 'Four different notes', correct: false },
+          { label: 'Five different notes', correct: false },
+        ],
+      },
+      hint: 'Three: from the thickest string, G, B, D, G, B and G. The notes repeat in other octaves.',
+      nudge: 'Name the note of each string, thickest first, and count how many names you used.',
+    },
+    {
+      id: 'l1u35m6e5',
+      type: 'multiple_choice',
+      prompt: 'Which note is the 3rd of the D major chord?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'F♯', correct: true },
+          { label: 'A', correct: false },
+          { label: 'E', correct: false },
+          { label: 'C♯', correct: false },
+        ],
+      },
+      hint: 'F♯: in the D major scale, D is 1, E is 2 and F♯ is 3.',
+      nudge: 'Count up the D major scale from D, which is 1, to its third note.',
+    },
+    {
+      id: 'l1u35m6e6',
+      type: 'multiple_choice',
+      prompt: 'Which note of a chord makes it major or minor?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'The 3rd', correct: true },
+          { label: 'The root', correct: false },
+          { label: 'The 5th', correct: false },
+        ],
+      },
+      hint: 'The 3rd, the middle note: a half step lower in the minor chord.',
+      nudge: 'Think of the last lesson: which of the three notes moved when a major chord turned minor?',
+    },
+  ],
+
+  // ---- l1u35m7: The Seventh ----
+  l1u35m7: [
+    {
+      id: 'l1u35m7e1',
+      type: 'chord_build',
+      prompt: 'Build G7: G major with a fourth note, a whole step under the G above.',
+      config: {
+        type: 'chord_build',
+        root: 'G',
+        rootAccidental: '',
+        quality: 'dominant7',
+        noteCount: 4,
+      },
+      hint: 'G, B, D and F: G major with F, the seventh letter from G, on top.',
+      nudge: 'Build G major first, then add the note two keys under the next G up.',
+    },
+    {
+      id: 'l1u35m7e2',
+      type: 'multiple_choice',
+      prompt: 'Which note does G7 add to the G major chord?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'F', correct: true },
+          { label: 'F♯', correct: false },
+          { label: 'E', correct: false },
+          { label: 'A', correct: false },
+        ],
+      },
+      hint: 'F: a whole step under the G above, the seventh letter counting G as the first.',
+      nudge: 'Count seven letters up from G, with G as the first, then check that it is a whole step under the next G.',
+    },
+    {
+      id: 'l1u35m7e3',
+      type: 'multiple_choice',
+      prompt: 'G7 is the V7 of which key?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'C major', correct: true },
+          { label: 'G major', correct: false },
+          { label: 'D major', correct: false },
+          { label: 'F major', correct: false },
+        ],
+      },
+      hint: 'C major: G is note 5 of C, and G, B, D and F are all notes of C.',
+      nudge: 'Look for the major key whose note 5 is the root of G7 and which has all four of its notes.',
+    },
+    {
+      id: 'l1u35m7e4',
+      type: 'multiple_choice',
+      prompt: 'Which three chords make up the twelve-bar blues in G?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'G7, C7 and D7', correct: true },
+          { label: 'G7, C7 and E7', correct: false },
+          { label: 'G7, D7 and E7', correct: false },
+          { label: 'G7, B7 and C7', correct: false },
+        ],
+      },
+      hint: 'G7, C7 and D7: I7, IV7 and V7 in G.',
+      nudge: 'The blues uses I, IV and V. Count up the G major scale to notes 4 and 5.',
+    },
+    {
+      id: 'l1u35m7e5',
+      type: 'ear_training',
+      prompt: 'Listen to this chord. Is it a plain major chord, or a dominant 7th, with a seventh on top?',
+      config: {
+        type: 'ear_training',
+        mode: 'chord',
+        chordRoot: 'D',
+        chordRootAccidental: '',
+        quality: 'dominant7',
+        choices: [
+          { label: 'Dominant 7th', correct: true },
+          { label: 'Major', correct: false },
+        ],
+      },
+      hint: 'Dominant 7th: D7, with C on top of D, F♯ and A, which makes it lean forward.',
+      nudge: 'Listen to the top of the chord: is there a fourth note that makes it sound restless?',
+    },
+  ],
+
+  // ---- l1u35m8: Moving a Song: Other Keys and the Capo ----
+  l1u35m8: [
+    {
+      id: 'l1u35m8e1',
+      type: 'multiple_choice',
+      prompt: 'Which chords are I–V–vi–IV in the key of D?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'D, A, Bm and G', correct: true },
+          { label: 'D, G, Bm and A', correct: false },
+          { label: 'D, A, Em and G', correct: false },
+          { label: 'D, E, Bm and G', correct: false },
+        ],
+      },
+      hint: 'D, A, Bm and G: notes 1, 5, 6 and 4 of D major, with a minor chord on 6.',
+      nudge: 'Number the notes of D major from 1 to 7, then read the chords in the order the numbers give.',
+    },
+    {
+      id: 'l1u35m8e2',
+      type: 'multiple_choice',
+      prompt: 'A song in G uses G, C and D. You move it to the key of A. Which chords do you play?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'A, D and E', correct: true },
+          { label: 'A, C and D', correct: false },
+          { label: 'A, D and F♯', correct: false },
+          { label: 'A, C and E', correct: false },
+        ],
+      },
+      hint: 'A, D and E: each chord moves up a whole step, as G does to A.',
+      nudge: 'G to A is a whole step. Move each of the other chords up by the same distance.',
+    },
+    {
+      id: 'l1u35m8e3',
+      type: 'multiple_choice',
+      prompt: 'You play G shapes with a capo at fret 2. Which key does it sound in?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'The key of A', correct: true },
+          { label: 'The key of G', correct: false },
+          { label: 'The key of B', correct: false },
+          { label: 'The key of E', correct: false },
+        ],
+      },
+      hint: 'The key of A: two frets are two half steps, a whole step up from G.',
+      nudge: 'Each fret is a half step higher. Count two half steps up from G.',
+    },
+    {
+      id: 'l1u35m8e4',
+      type: 'multiple_choice',
+      prompt: 'You play C shapes with the capo at fret 4. Which key does it sound in?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'The key of E', correct: true },
+          { label: 'The key of D', correct: false },
+          { label: 'The key of F', correct: false },
+          { label: 'The key of C', correct: false },
+        ],
+      },
+      hint: 'The key of E: four half steps up from C, C♯, D, D♯ and E.',
+      nudge: 'Count four half steps up from C, one fret for each.',
+    },
+    {
+      id: 'l1u35m8e5',
+      type: 'ear_training',
+      prompt: 'First the home chord, then a four-chord loop in a new key. Which numbers are they?',
+      config: {
+        type: 'ear_training',
+        mode: 'progression',
+        root: 'A',
+        rootAccidental: '',
+        progression: ['I', 'V', 'vi', 'IV'],
+        choices: [
+          { label: 'I - V - vi - IV', correct: true },
+          { label: 'I - vi - IV - V', correct: false },
+          { label: 'I - IV - V - I', correct: false },
+        ],
+      },
+      hint: 'I – V – vi – IV, in A: A, E, F♯m and D.',
+      nudge: 'Listen for the one minor chord and where it comes, then for the chord that ends the loop.',
+    },
+  ],
+
+  // ---- l1u35m9: Notes for a Melody or a Solo ----
+  l1u35m9: [
+    {
+      id: 'l1u35m9e1',
+      type: 'scale_build',
+      prompt: 'Build the G major pentatonic: the notes of G major without notes 4 and 7.',
+      config: {
+        type: 'scale_build',
+        root: 'G',
+        rootAccidental: '',
+        scaleType: 'pentatonic_major',
+        noteCount: 5,
+      },
+      hint: 'G, A, B, D and E: G major without C, its 4th note, and F♯, its 7th.',
+      nudge: 'Start from the G major scale and leave out its 4th and its 7th notes.',
+    },
+    {
+      id: 'l1u35m9e2',
+      type: 'scale_build',
+      prompt: 'Build the A minor pentatonic: the five notes of C major pentatonic, from A.',
+      config: {
+        type: 'scale_build',
+        root: 'A',
+        rootAccidental: '',
+        scaleType: 'pentatonic_minor',
+        noteCount: 5,
+      },
+      hint: 'A, C, D, E and G: the C major pentatonic, played from A.',
+      nudge: 'Build the major pentatonic of the relative major key, then start it from A.',
+    },
+    {
+      id: 'l1u35m9e3',
+      type: 'multiple_choice',
+      prompt: 'Which two notes of a major key does the major pentatonic leave out?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'Notes 4 and 7', correct: true },
+          { label: 'Notes 2 and 6', correct: false },
+          { label: 'Notes 3 and 5', correct: false },
+          { label: 'Notes 1 and 5', correct: false },
+        ],
+      },
+      hint: 'Notes 4 and 7: each is a half step from a note of the I chord.',
+      nudge: 'Which two notes of the key sit a half step from a note of the home chord?',
+    },
+    {
+      id: 'l1u35m9e4',
+      type: 'multiple_choice',
+      prompt: 'The E minor pentatonic has the same five notes as which major pentatonic?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'G major pentatonic', correct: true },
+          { label: 'E major pentatonic', correct: false },
+          { label: 'C major pentatonic', correct: false },
+          { label: 'D major pentatonic', correct: false },
+        ],
+      },
+      hint: 'G major pentatonic: E minor is the relative minor of G, and both are E, G, A, B and D.',
+      nudge: 'Which major key has E minor as its relative minor?',
+    },
+    {
+      id: 'l1u35m9e5',
+      type: 'ear_training',
+      prompt: 'Listen to this scale. Which one is it?',
+      config: {
+        type: 'ear_training',
+        mode: 'scale',
+        root: 'G',
+        rootAccidental: '',
+        rootOctave: 4,
+        scaleType: 'pentatonic_major',
+        choices: [
+          { label: 'Pentatonic major', correct: true },
+          { label: 'Major', correct: false },
+          { label: 'Pentatonic minor', correct: false },
+        ],
+      },
+      hint: 'Pentatonic major: five notes, no half steps, and a bright third above the first note.',
+      nudge: 'Replay it and count the notes before the top one. Then listen to the third note: bright or dark?',
+    },
+  ],
+
+  // ---- l1u35m10: A Chord from Outside ----
+  l1u35m10: [
+    {
+      id: 'l1u35m10e1',
+      type: 'multiple_choice',
+      prompt: 'Which chord is not one of the chords of the key of G?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'F', correct: true },
+          { label: 'C', correct: false },
+          { label: 'Em', correct: false },
+          { label: 'D', correct: false },
+        ],
+      },
+      hint: 'F: its F is not in G major, which has F♯.',
+      nudge: 'Write out the three notes of each chord and look for a note the key of G does not have.',
+    },
+    {
+      id: 'l1u35m10e2',
+      type: 'multiple_choice',
+      prompt: 'In the key of G, F major is written ♭VII. Why?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'It stands on note 7 of the key, lowered a half step', correct: true },
+          { label: 'It stands on note 7 of the key, raised a half step', correct: false },
+          { label: 'It stands on note 6 of the key, lowered a half step', correct: false },
+          { label: 'It stands on note 4 of the key, lowered a half step', correct: false },
+        ],
+      },
+      hint: 'Note 7 of G major is F♯; lowered a half step it is F, and the chord on it is major, so ♭VII.',
+      nudge: 'Which note of G major is a half step away from F, and in which direction?',
+    },
+    {
+      id: 'l1u35m10e3',
+      type: 'multiple_choice',
+      prompt: 'In the key of G, which chord is ii?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'A minor', correct: true },
+          { label: 'A major', correct: false },
+          { label: 'C major', correct: false },
+          { label: 'C minor', correct: false },
+        ],
+      },
+      hint: 'A minor: A, C and E, all in G major. A major, with C♯, would be II, from outside the key.',
+      nudge: 'Build a chord on note 2 using only the notes of G major, and check its middle note.',
+    },
+    {
+      id: 'l1u35m10e4',
+      type: 'multiple_choice',
+      prompt: 'A song goes G, F, C and G, and keeps coming back to rest on G. Which key is it in?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'G, with one chord from outside', correct: true },
+          { label: 'F, with one chord from outside', correct: false },
+          { label: 'C, with one chord from outside', correct: false },
+          { label: 'D, with one chord from outside', correct: false },
+        ],
+      },
+      hint: 'G: it is the chord the song comes back to rest on, and C belongs to G too; F is borrowed.',
+      nudge: 'Which chord sounds like home? Then check which of the others belong to that key.',
+    },
+    {
+      id: 'l1u35m10e5',
+      type: 'chord_build',
+      prompt: 'Build ♭VII in the key of G: a major chord on note 7 of G major, lowered a half step.',
+      config: {
+        type: 'chord_build',
+        root: 'F',
+        rootAccidental: '',
+        quality: 'major',
+        noteCount: 3,
+      },
+      hint: 'F, A and C: F major, on F, a half step under F♯.',
+      nudge: 'Find note 7 of G major, lower it one key, and build a major chord on it.',
+    },
+  ],
 };
 
 export default exercises;

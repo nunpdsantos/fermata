@@ -1285,7 +1285,16 @@
     },
     "chords": {
       "title": "Desde los acordes que conoces",
-      "line": "Teoría que parte de los acordes que ya tocas."
+      "line": "Teoría que parte de los acordes que ya tocas.",
+      "end": {
+        "progression": "Repetir tus propias canciones en el panel Progresión",
+        "level2": "Profundizar: Nivel 2"
+      }
+    },
+    "chordList": {
+      "label": "Los acordes, en orden",
+      "showPiano": "{{chord}}: escucharlo y mostrarlo en el piano",
+      "showGuitar": "{{chord}}: escucharlo y mostrarlo en la guitarra"
     },
     "startHere": "Empieza aquí",
     "otherWays": "Otras formas de empezar",

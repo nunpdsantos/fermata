@@ -18,7 +18,11 @@ import type { Accidental, ChordQuality, NaturalNote, ScaleType } from '../src/co
  *   lesson with its first Try This open (names, no staff), each new kind of
  *   check (an ear question with written options: "which is higher?" and
  *   "half or whole step?", and after a first miss; an ear scale with
- *   written options), and the closing card —
+ *   written options), and the closing card; for "From the chords you know"
+ *   (L2): a player's overview, the track page, a chord lesson with its chord
+ *   list, its checks (a text question on numbers and names, a progression
+ *   heard after the home chord and after a miss, a chord build on the
+ *   instrument, a seventh chord by ear) and its closing card —
  * at phone 390×844, landscape 844×390, tablet 768×1024 (touch) and laptop
  * 1440×900, day and night, EN; PT and ES at 320 and 360 px.
  *
@@ -50,11 +54,11 @@ const W = {
 
 /** prompt|sorted options → keyed answer (choice items); prompt → pitch classes (builds). */
 type Key = { choice: Map<string, string>; build: Map<string, number[]> };
-function answerKey(lang: Lang): Key {
+function answerKey(lang: Lang, unit: 'l1u34' | 'l1u35' = 'l1u34'): Key {
   const choice = new Map<string, string>();
   const build = new Map<string, number[]>();
   for (const { moduleId, exercise } of levelCorpus(1, lang)) {
-    if (!moduleId.startsWith('l1u34')) continue;
+    if (!moduleId.startsWith(unit)) continue;
     const c = exercise.config;
     const choices = c.type === 'multiple_choice' ? c.choices : c.type === 'ear_training' ? c.choices : undefined;
     if (choices) choice.set(`${exercise.prompt}|${choices.map((x) => x.label).sort().join('§')}`, choices.find((x) => x.correct)!.label);
@@ -131,10 +135,10 @@ async function untilQuestion(page: Page, lang: Lang, key: Key, prompt: RegExp) {
 }
 
 /** Open a track lesson from the overview: the card, then the lesson's row. */
-async function openTrackLesson(page: Page, n: number) {
-  await page.getByTestId('track-card-sound').click();
-  await expect(page.getByTestId('track-page-sound')).toBeVisible({ timeout: 15_000 });
-  await page.getByTestId('track-page-sound').getByRole('listitem').nth(n - 1).getByRole('button').click();
+async function openTrackLesson(page: Page, n: number, track: 'sound' | 'chords' = 'sound') {
+  await page.getByTestId(`track-card-${track}`).click();
+  await expect(page.getByTestId(`track-page-${track}`)).toBeVisible({ timeout: 15_000 });
+  await page.getByTestId(`track-page-${track}`).getByRole('listitem').nth(n - 1).getByRole('button').click();
   await expect(page.getByTestId('inline-try-this').first()).toBeVisible({ timeout: 15_000 });
   await page.waitForTimeout(500);
 }
@@ -240,11 +244,136 @@ for (const v of NARROW) {
   }
 }
 
-// The player hint's lesson link (wave 2) shows only once the chords track's
-// lesson 1 exists — not in this branch. Simulated here through the dev
-// server's own module (its eager set gains 'l1u35m1'), so the hint is
-// measured WITH the link: it must still fit at 320×568 in PT (and ES), above
-// the instrument, under the top bar, and pass the design rules.
+// ── "From the chords you know" (wave 2, L2) ────────────────────────────────
+async function chordScreens(browser: Browser, v: Viewport, theme: string, lang: Lang, combo: string) {
+  const key = answerKey(lang, 'l1u35');
+  const prompts = {
+    number5: { en: /which note is number 5\?$/, pt: /que nota é o número 5\?$/, es: /¿qué nota es el número 5\?$/ }[lang],
+    progression: { en: /^First you hear the home chord of the key/, pt: /^Primeiro ouves o acorde de casa da tonalidade/, es: /^Primero oyes el acorde de casa de la tonalidad/ }[lang],
+    build: { en: /^Build the IV chord/, pt: /^Constrói o acorde IV/, es: /^Construye el acorde IV/ }[lang],
+    seventh: { en: /dominant 7th, with a seventh on top\?$/, pt: /sétima da dominante, com uma sétima por cima\?$/, es: /séptima de dominante, con una séptima encima\?$/ }[lang],
+  };
+  const titles = { en: 'A Chord from Outside', pt: 'Um acorde de fora', es: 'Un acorde de fuera' }[lang];
+  {
+    const { context, page } = await open(browser, v, theme, lang, { learnerProfile: 'player' });
+    await expect(page.getByTestId('tracks-start-here').getByTestId('track-card-chords')).toBeVisible();
+    await check(page, v, combo, 'chords-overview-player');
+    await page.getByTestId('track-card-chords').click();
+    await expect(page.getByTestId('track-page-chords')).toBeVisible({ timeout: 15_000 });
+    await check(page, v, combo, 'chords-track-page');
+    await page.getByTestId('track-page-chords').getByRole('listitem').first().getByRole('button').click();
+    await expect(page.getByTestId('try-this-chords').first()).toBeVisible({ timeout: 15_000 });
+    expect(await page.locator('#learn-panel svg .vf-stave, #learn-panel .staff-skeleton').count()).toBe(0);
+    await check(page, v, combo, 'chords-lesson-1');
+    await context.close();
+  }
+  // Lesson 2's checks: a text question, a progression (then a miss), a build on the instrument.
+  {
+    const { context, page } = await open(browser, v, theme, lang, { learnerProfile: 'player' });
+    await openTrackLesson(page, 2, 'chords');
+    await page.getByRole('button', { name: W[lang].start }).click();
+    await expect(page.getByTestId('focused-check')).toBeVisible();
+    await untilQuestion(page, lang, key, prompts.number5);
+    await check(page, v, combo, 'chords-check-mc');
+    await context.close();
+  }
+  {
+    const { context, page } = await open(browser, v, theme, lang, { learnerProfile: 'player' });
+    await openTrackLesson(page, 2, 'chords');
+    await page.getByRole('button', { name: W[lang].start }).click();
+    const q = await untilQuestion(page, lang, key, prompts.progression);
+    await check(page, v, combo, 'chords-check-progression');
+    await page.getByTestId('check-answers').locator(`button[data-answer="${q.wrong}"]`).click();
+    await page.getByRole('button', { name: W[lang].submit, exact: true }).click();
+    await page.waitForTimeout(300);
+    await check(page, v, combo, 'chords-check-progression-nudge');
+    await context.close();
+  }
+  {
+    const { context, page } = await open(browser, v, theme, lang, { learnerProfile: 'player' });
+    await openTrackLesson(page, 2, 'chords');
+    await page.getByRole('button', { name: W[lang].start }).click();
+    await untilBuild(page, lang, key, prompts.build);
+    await check(page, v, combo, 'chords-check-build');
+    await context.close();
+  }
+  {
+    const { context, page } = await open(browser, v, theme, lang, { learnerProfile: 'player' });
+    await openTrackLesson(page, 7, 'chords');
+    await page.getByRole('button', { name: W[lang].start }).click();
+    await untilQuestion(page, lang, key, prompts.seventh);
+    await check(page, v, combo, 'chords-check-seventh');
+    await context.close();
+  }
+  // The closing card after lesson 10.
+  {
+    const { context, page } = await open(browser, v, theme, lang, { learnerProfile: 'player' });
+    await openTrackLesson(page, 10, 'chords');
+    await expect(page.getByRole('heading', { level: 1, name: titles })).toBeAttached();
+    await page.getByTestId('track-ending').scrollIntoViewIfNeeded();
+    await check(page, v, combo, 'chords-closing-card');
+    await context.close();
+  }
+}
+
+/** Answer the check right until a BUILD question whose prompt matches (it is left on screen, unanswered). */
+async function untilBuild(page: Page, lang: Lang, key: Key, prompt: RegExp) {
+  for (let guard = 0; guard < 8; guard++) {
+    const text = (await page.getByTestId('check-prompt').textContent())!.trim();
+    if (prompt.test(text) && !(await page.getByTestId('check-answers').count())) return;
+    const pos = (await page.getByTestId('check-position').textContent())!.trim();
+    const answers = page.getByTestId('check-answers');
+    if (await answers.count()) {
+      const labels = await answers.locator('button').evaluateAll((bs) => bs.map((b) => b.getAttribute('data-answer') ?? ''));
+      const right = key.choice.get(`${text}|${[...labels].sort().join('§')}`)!;
+      await answers.locator(`button[data-answer="${right.replace(/"/g, '\\"')}"]`).click();
+      await page.getByRole('button', { name: W[lang].submit, exact: true }).click();
+    } else {
+      for (const pc of key.build.get(text) ?? []) {
+        const k = page.locator(`[data-piano-key][data-midi="${60 + pc}"]:visible`).first();
+        await k.scrollIntoViewIfNeeded();
+        const box = (await k.boundingBox())!;
+        await k.click({ position: { x: box.width / 2, y: box.height * 0.8 } });
+      }
+      await page.getByRole('button', { name: W[lang].build, exact: true }).click();
+    }
+    await page.getByRole('button', { name: W[lang].cont, exact: true }).click();
+    await expect(page.getByTestId('check-position')).not.toHaveText(pos);
+  }
+  throw new Error(`no build matching ${prompt}`);
+}
+
+for (const v of VIEWPORTS) {
+  for (const th of THEMES) {
+    const combo = `${v.name}-en-${th.name}`;
+    test(`${combo}: chord-track screens pass the design rules`, async ({ browser }) => {
+      test.setTimeout(240_000);
+      await chordScreens(browser, v, th.mode, 'en', combo);
+    });
+  }
+}
+for (const v of VIEWPORTS.filter((x) => SHOT_SIZES.includes(x.name))) {
+  for (const th of THEMES) {
+    const combo = `${v.name}-pt-${th.name}`;
+    test(`${combo}: chord-track screens in Portuguese pass the design rules`, async ({ browser }) => {
+      test.setTimeout(240_000);
+      await chordScreens(browser, v, th.mode, 'pt', combo);
+    });
+  }
+}
+for (const v of NARROW) {
+  for (const lang of ['pt', 'es'] as const) {
+    const combo = `${v.name}-${lang}-day`;
+    test(`${combo}: the chord-track screens and checks fit`, async ({ browser }) => {
+      test.setTimeout(240_000);
+      await chordScreens(browser, v, 'fermata', lang, combo);
+    });
+  }
+}
+
+// The player hint's lesson link (wave 2): the chords track's lesson 1 exists,
+// so the hint shows WITH the link: it must still fit at 320×568 in PT (and
+// ES), above the instrument, under the top bar, and pass the design rules.
 for (const lang of ['pt', 'es'] as const) {
   test(`phone-320-${lang}: the player hint with its lesson link fits`, async ({ browser }) => {
     const v = NARROW[0];
@@ -260,16 +389,6 @@ for (const lang of ['pt', 'es'] as const) {
     await page.goto('/');
     const hint = page.getByTestId('start-hint');
     await expect(hint).toBeVisible({ timeout: 15_000 });
-    await expect(page.getByTestId('start-hint-lesson')).toHaveCount(0);
-    await page.evaluate(async () => {
-      const tracks = await import(/* @vite-ignore */ '/src/data/tracks.ts' as string);
-      (tracks.WRITTEN_TRACK_LESSONS as Set<string>).add('l1u35m1');
-      // Re-render the hint (what is SHOWN; nothing owed changes).
-      const { useStartHintStore } = await import(/* @vite-ignore */ '/src/state/startHint.ts' as string);
-      useStartHintStore.setState({ shown: null });
-      await new Promise((r) => requestAnimationFrame(() => r(null)));
-      useStartHintStore.setState({ shown: 'player' });
-    });
     await expect(page.getByTestId('start-hint-lesson')).toHaveText(lang === 'pt' ? 'Teoria a partir dos acordes que conheces: lição 1 →' : 'Teoría desde los acordes que conoces: lección 1 →');
     const box = async (sel: string) => (await page.locator(sel).first().boundingBox())!;
     const h = await box('[data-testid="start-hint"]');

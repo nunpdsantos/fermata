@@ -19,8 +19,8 @@ import { WELCOME_KEY } from './helpers/welcome';
  *    on a door;
  *  - the start hint: there from Explore's first paint ("new": the first time
  *    Explore is opened after the door), nothing moves, covers neither the
- *    instrument nor the chord row; no link into Learn ("new": never;
- *    "player": not until the chords track's lesson 1 exists — wave 2); ✕
+ *    instrument nor the chord row; a link into Learn only for "player", to
+ *    lesson 1 of the chords track (wave 2: it exists; "new": never); ✕
  *    and acting on it (a chord picked) end it for good, in both profiles; ✕
  *    sends focus to the key picker;
  *  - the page that showed the start screen skips the offline-ready notice.
@@ -377,8 +377,9 @@ test.describe('the start hint', () => {
       await expect(startScreen(page)).toBeVisible({ timeout: 15_000 });
       await page.getByRole('button', { name: /^I play, but never learned theory/ }).click();
       const hint = page.getByTestId('start-hint');
-      await expect(hint).toHaveText('Pick the key of a song you play, for example G. The chords below belong to it: tap one.', { timeout: 15_000 });
-      await expect(hint.getByRole('button')).toHaveCount(1);
+      await expect(hint).toHaveText('Pick the key of a song you play, for example G. The chords below belong to it: tap one. Theory from the chords you know: lesson 1 →', { timeout: 15_000 });
+      await expect(hint.getByRole('button')).toHaveCount(2);
+      await expect(hint.getByRole('button').first()).toHaveAccessibleName('Theory from the chords you know: lesson 1 →');
       await page.reload();
       await expect(hint).toBeVisible({ timeout: 15_000 });
       // Acting on it: a chord. The line stays while in Explore (nothing jumps under the tap)…

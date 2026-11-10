@@ -29,7 +29,7 @@ const indexed = new Set(MODULE_INDEX.map((m) => m.id));
 
 describe('the tracks in the curriculum', () => {
   it('every track unit is optional, registered, and holds exactly its contract lessons in order', () => {
-    expect(trackUnits.map((u) => u.id)).toEqual(['u34']);
+    expect(trackUnits.map((u) => u.id)).toEqual(['u34', 'u35']);
     for (const unit of trackUnits) {
       const track = TRACKS[unit.track!];
       expect(unit.optional, unit.id).toBe(true);
@@ -45,10 +45,11 @@ describe('the tracks in the curriculum', () => {
       }
     }
     expect(firstLessonOf(TRACKS.sound)).toEqual({ levelId: 'l1', unitId: 'u34', moduleId: 'l1u34m1' });
+    expect(firstLessonOf(TRACKS.chords)).toEqual({ levelId: 'l1', unitId: 'u35', moduleId: 'l1u35m1' });
   });
 
   it('a track unit stands after the level\'s own units (Level 1 keeps u1, u2, u3, u33 first, in order)', () => {
-    expect(L1_UNITS.map((u) => u.id)).toEqual(['u1', 'u2', 'u3', 'u33', 'u34']);
+    expect(L1_UNITS.map((u) => u.id)).toEqual(['u1', 'u2', 'u3', 'u33', 'u34', 'u35']);
   });
 
   it('Level 1 counts stay as on main: 4 units listed, 10 modules (hand-kept metadata included)', () => {
@@ -66,7 +67,9 @@ describe('the tracks in the curriculum', () => {
     const inData = new Set(trackUnits.flatMap((u) => u.modules.map((m) => m.id)));
     expect([...WRITTEN_TRACK_LESSONS].every((id) => inData.has(id))).toBe(true);
     expect(isTrackWritten(TRACKS.sound)).toBe(true);
-    expect(isTrackWritten(TRACKS.chords)).toBe(indexed.has('l1u35m1'));
+    expect(isTrackWritten(TRACKS.chords)).toBe(true);
+    expect(indexed.has('l1u35m1')).toBe(true);
+    expect([...WRITTEN_TRACK_LESSONS]).toEqual([...TRACKS.sound.moduleIds, ...TRACKS.chords.moduleIds]);
     expect(isTrackWritten(TRACKS.chords, new Set(['l1u35m1']))).toBe(true);
   });
 
@@ -79,7 +82,7 @@ describe('the tracks in the curriculum', () => {
     }
   });
 
-  it('every closing card step that opens Explore names a query the app resolves', () => {
+  it('every closing card step that opens Explore names a query the app resolves; the chords card opens the Progression panel and Level 2', () => {
     for (const steps of Object.values(TRACK_ENDINGS)) {
       for (const step of steps ?? []) {
         if (step.kind === 'explore') expect(resolveTheoryQuery(step.query), step.query).not.toBeNull();
@@ -91,6 +94,11 @@ describe('the tracks in the curriculum', () => {
       }
     }
     expect(TRACK_ENDINGS.sound!.map((s) => s.kind)).toEqual(['explore', 'level']);
+    expect(TRACK_ENDINGS.chords).toEqual([
+      { kind: 'progression', label: 'tracks.chords.end.progression' },
+      { kind: 'level', label: 'tracks.chords.end.level2', levelId: 'l2' },
+    ]);
+    expect(en.tracks.chords.end).toEqual({ progression: 'Loop your own songs in the Progression panel', level2: 'Go deeper: Level 2' });
   });
 });
 
@@ -105,6 +113,11 @@ describe('Next / Previous lesson: per unit for optional units (a track never run
     expect(TRACKS.sound.moduleIds.slice(0, -1).map((id) => getNextModuleInLevel(id, L1)?.id)).toEqual(TRACKS.sound.moduleIds.slice(1));
     expect(TRACKS.sound.moduleIds.slice(1).map((id) => getPreviousModuleInLevel(id, L1)?.id)).toEqual(TRACKS.sound.moduleIds.slice(0, -1));
     expect(getNextModuleInLevel('l1u34m5', L1)).toBeUndefined();
+    // The chords track: its own ten, in order (m9 → m10, not m1); the last ends.
+    expect(getPreviousModuleInLevel('l1u35m1', L1)).toBeUndefined();
+    expect(TRACKS.chords.moduleIds.slice(0, -1).map((id) => getNextModuleInLevel(id, L1)?.id)).toEqual(TRACKS.chords.moduleIds.slice(1));
+    expect(TRACKS.chords.moduleIds.slice(1).map((id) => getPreviousModuleInLevel(id, L1)?.id)).toEqual(TRACKS.chords.moduleIds.slice(0, -1));
+    expect(getNextModuleInLevel('l1u35m10', L1)).toBeUndefined();
     // The required course is unchanged: l1u3m4 is Level 1's last.
     expect(getNextModuleInLevel('l1u3m4', L1)).toBeUndefined();
     expect(getNextModuleInLevel('l1u2m2', L1)?.id).toBe('l1u3m1');
@@ -115,6 +128,9 @@ describe('Next / Previous lesson: per unit for optional units (a track never run
     expect(getPreviousModule('l1u34m1')).toBeUndefined();
     expect(getNextModule('l1u34m4')?.id).toBe('l1u34m5');
     expect(getNextModule('l1u34m5')).toBeUndefined();
+    expect(getPreviousModule('l1u35m1')).toBeUndefined();
+    expect(getNextModule('l1u35m9')?.id).toBe('l1u35m10');
+    expect(getNextModule('l1u35m10')).toBeUndefined();
     expect(getNextModule('l1u3m4')?.id).toBe('l2u4m1');
     expect(getPreviousModule('l2u4m1')?.id).toBe('l1u3m4');
   });

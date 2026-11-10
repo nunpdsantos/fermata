@@ -27,6 +27,7 @@ import { conceptForQuestion } from './lesson/rereadSection';
 import { pairsWithLevel } from './lesson/levelPairs';
 import type { ContentLanguage } from '../../i18n/content/types';
 import { showLessonQuery } from '../../services/lessonInstrument';
+import { lessonInstrumentQuery } from '../../utils/queryExecutorChords';
 import { foldDockForLesson, foldDockAfterLesson } from '../../services/lessonDock';
 import { TrackEnding } from './tracks/TrackEnding';
 import {
@@ -152,10 +153,12 @@ export function ModuleView({
   const prevModule = getPreviousModuleInLevel(module.id, level);
   const nextModule = getNextModuleInLevel(module.id, level);
   // A starting track (wave 2): named on its own (not as part of its level),
-  // sound-first Try This for "Start with sound", and the last lesson ends on
-  // the track's closing card instead of a next lesson.
+  // Try This writes notes by name instead of a staff (both tracks need no
+  // reading), "Start with sound" opens at its first Try This, and the last
+  // lesson ends on the track's closing card instead of a next lesson.
   const track = unit.track ?? null;
   const soundFirst = track === 'sound';
+  const noStaff = track !== null;
   const allTasksDone = completedTaskCount >= module.tasks.length;
   const hasExercises = exercises.length > 0;
   const canComplete = allTasksDone && exercisesState === 'ready' && (!hasExercises || exercisesPassed);
@@ -273,7 +276,7 @@ export function ModuleView({
     foldDockForLesson();
     if (!isReviewMode) {
       const first = module.concepts.find((c) => !c.rhythm);
-      if (first) showLessonQuery(first.tryThisQuery);
+      if (first) showLessonQuery(lessonInstrumentQuery(first.tryThisQuery));
     }
     return () => foldDockAfterLesson();
   }, [module, isReviewMode]);
@@ -282,7 +285,7 @@ export function ModuleView({
     if (mode !== 'lesson' || isReviewMode) return;
     const m = /^c(\d+)$/.exec(currentSection);
     const concept = m ? module.concepts[Number(m[1])] : null;
-    if (concept && !concept.rhythm) showLessonQuery(concept.tryThisQuery);
+    if (concept && !concept.rhythm) showLessonQuery(lessonInstrumentQuery(concept.tryThisQuery));
   }, [currentSection, mode, module, isReviewMode]);
 
   // ── Scroll-spy: the section being read ────────────────────────────────────
@@ -560,7 +563,7 @@ export function ModuleView({
             <section key={i} data-section={`c${i}`} className={`mb-12 ${sectionClass}`}>
               <h2 className="text-title font-semibold mb-3" style={{ color: 'var(--text)' }}>{concept.title}</h2>
               <p className="learn-concept-text mb-4" style={{ color: 'var(--text-muted)' }}>{concept.explanation}</p>
-              <InlineTryThis query={concept.tryThisQuery} label={concept.tryThisLabel} rhythm={concept.rhythm} clefs={concept.clefs} names={soundFirst} accent={accent} />
+              <InlineTryThis query={concept.tryThisQuery} label={concept.tryThisLabel} rhythm={concept.rhythm} clefs={concept.clefs} names={noStaff} accent={accent} />
             </section>
           ))}
 
@@ -628,7 +631,7 @@ export function ModuleView({
                       </div>
                       {openQuery && (
                         <div className="px-4 pb-3">
-                          <InlineTryThis compact query={openQuery} label={`‘${openQuery}’`} names={soundFirst} accent={accent} />
+                          <InlineTryThis compact query={openQuery} label={`‘${openQuery}’`} names={noStaff} accent={accent} />
                         </div>
                       )}
                     </div>

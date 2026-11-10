@@ -84,7 +84,7 @@ export function firstLessonOf(track: TrackInfo): { levelId: string; unitId: stri
  * ids in MODULE_INDEX, so it cannot drift: whoever adds a track lesson adds
  * its id here in the same change ('l1u35m1'…'l1u35m10' for the chords track).
  */
-export const WRITTEN_TRACK_LESSONS: ReadonlySet<string> = new Set([...TRACKS.sound.moduleIds]);
+export const WRITTEN_TRACK_LESSONS: ReadonlySet<string> = new Set([...TRACKS.sound.moduleIds, ...TRACKS.chords.moduleIds]);
 
 /** Whether a track's first lesson exists (so a link to it can be offered). */
 export function isTrackWritten(track: TrackInfo, written: ReadonlySet<string> = WRITTEN_TRACK_LESSONS): boolean {

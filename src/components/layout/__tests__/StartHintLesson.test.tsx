@@ -1,16 +1,12 @@
 /**
  * Wave 2: the 'player' start hint ends on one link, "Theory from the chords
- * you know: lesson 1 →", once that lesson exists. Here the chords track's
- * lesson 1 is WRITTEN (the eager set is mocked as it will be after its
- * lessons land); StartScreen.test.tsx pins the unwritten case (no link).
+ * you know: lesson 1 →", once that lesson exists. The chords track's lesson 1
+ * is written (the REAL eager set, `WRITTEN_TRACK_LESSONS`, no mock);
+ * startDoors.test.ts pins the unwritten case (no link).
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act, cleanup, within } from '@testing-library/react';
-
-vi.mock('../../../data/tracks.ts', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../../data/tracks.ts')>();
-  return { ...actual, WRITTEN_TRACK_LESSONS: new Set([...actual.TRACKS.sound.moduleIds, 'l1u35m1']) };
-});
+import { WRITTEN_TRACK_LESSONS } from '../../../data/tracks';
 
 import i18n from '../../../i18n';
 import { useAppStore } from '../../../state/store';
@@ -25,6 +21,10 @@ beforeEach(async () => {
 afterEach(() => cleanup());
 
 describe('the player hint\'s lesson link (chords lesson 1 written)', () => {
+  it('lesson 1 of the chords track is in the real written set', () => {
+    expect(WRITTEN_TRACK_LESSONS.has('l1u35m1')).toBe(true);
+  });
+
   it('player: the line, then the link at its end, then ✕; the link opens lesson 1 and ends the hint', () => {
     act(() => raiseStartHint('player'));
     render(<StartHint />);

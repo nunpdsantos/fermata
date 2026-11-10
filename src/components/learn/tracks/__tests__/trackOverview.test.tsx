@@ -80,8 +80,13 @@ function overview(progress: CurriculumProgress = getDefaultProgress(), onOpenTra
 /** Document order: is `a` before `b`? */
 const before = (a: Element, b: Element) => !!(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
 
-describe('LevelsOverview with the tracks (this branch: "Start with sound" written)', () => {
-  it('the owner (no profile): the sound card BELOW the grid under "Other ways in"; nothing at the top; no level downloaded for it', () => {
+describe('LevelsOverview with the tracks (both written: "Start with sound" and "From the chords you know")', () => {
+  it('the written set the overview reads by default holds both tracks', () => {
+    expect(writtenLessons(TRACKS.chords)).toEqual(TRACKS.chords.moduleIds);
+    expect(writtenLessons(TRACKS.sound)).toEqual(TRACKS.sound.moduleIds);
+  });
+
+  it('the owner (no profile): both cards BELOW the grid under "Other ways in", sound then chords; nothing at the top; no level downloaded for them', () => {
     // Levels 1–2 done, so the Continue banner's module is in Level 3: any
     // Level 1 download would be the tracks'.
     const l1l2 = MODULE_INDEX.filter((m) => (m.level === 'l1' || m.level === 'l2') && !isOptionalModuleId(m.id)).map((m) => m.id);
@@ -95,11 +100,16 @@ describe('LevelsOverview with the tracks (this branch: "Start with sound" writte
     const card = within(other).getByTestId('track-card-sound');
     expect(card.textContent).toContain('Start with sound');
     expect(within(card).getByTestId('track-progress').textContent).toBe('3 of 5 lessons');
-    expect(screen.queryByTestId('track-card-chords')).toBeNull();
+    const chords = within(other).getByTestId('track-card-chords');
+    expect(chords.textContent).toContain('From the chords you know');
+    expect(within(chords).getByTestId('track-progress').textContent).toBe('0 of 10 lessons');
+    expect(before(card, chords)).toBe(true);
     // The Continue banner loads the next REQUIRED module's level; the tracks load none.
     expect(loads.levels).toEqual(['l3']);
     fireEvent.click(card);
     expect(open).toHaveBeenCalledWith(TRACKS.sound);
+    fireEvent.click(chords);
+    expect(open).toHaveBeenLastCalledWith(TRACKS.chords);
   });
 
   it('"I know some theory": the same as the owner', () => {
@@ -107,9 +117,10 @@ describe('LevelsOverview with the tracks (this branch: "Start with sound" writte
     overview();
     expect(screen.queryByTestId('tracks-start-here')).toBeNull();
     expect(within(screen.getByTestId('tracks-other')).getByTestId('track-card-sound')).toBeDefined();
+    expect(within(screen.getByTestId('tracks-other')).getByTestId('track-card-chords')).toBeDefined();
   });
 
-  it('"new": "Start here" with the sound card at the very top, above the level grid', () => {
+  it('"new": "Start here" with the sound card at the very top, the chords card after it, both above the level grid', () => {
     useAppStore.setState({ learnerProfile: 'new' });
     overview();
     const top = screen.getByTestId('tracks-start-here');
@@ -118,16 +129,27 @@ describe('LevelsOverview with the tracks (this branch: "Start with sound" writte
     const grid = screen.getByText('Foundations of Music Literacy').closest('button')!;
     expect(before(top, grid)).toBe(true);
     expect(before(screen.getByRole('heading', { level: 1 }), top)).toBe(true);
-    // No second copy below the grid.
+    // The other track after it, still above the grid; no second copy anywhere.
+    const other = screen.getByTestId('tracks-other');
+    expect(within(other).getByTestId('track-card-chords').textContent).toContain('0 of 10 lessons');
+    expect(before(top, other) && before(other, grid)).toBe(true);
     expect(screen.getAllByTestId('track-card-sound')).toHaveLength(1);
-    expect(screen.queryByTestId('tracks-other')).toBeNull();
+    expect(screen.getAllByTestId('track-card-chords')).toHaveLength(1);
+    expect(within(other).queryByTestId('track-card-sound')).toBeNull();
   });
 
-  it('"player" while the chords track is unwritten: no "Start here"; the sound card below the grid', () => {
+  it('"player": "Start here" with the chords card at the very top, the sound card after it, both above the level grid; progress counts its lessons', () => {
     useAppStore.setState({ learnerProfile: 'player' });
-    overview();
-    expect(screen.queryByTestId('tracks-start-here')).toBeNull();
-    expect(within(screen.getByTestId('tracks-other')).getByTestId('track-card-sound')).toBeDefined();
+    overview({ ...getDefaultProgress(), completedModules: ['l1u35m1', 'l1u35m2', 'l1u34m1'] });
+    const top = screen.getByTestId('tracks-start-here');
+    expect(within(top).getByRole('heading', { level: 2 }).textContent).toBe('Start here');
+    const chords = within(top).getByTestId('track-card-chords');
+    expect(within(chords).getByTestId('track-progress').textContent).toBe('2 of 10 lessons');
+    const other = screen.getByTestId('tracks-other');
+    expect(within(other).getByTestId('track-card-sound').textContent).toContain('1 of 5 lessons');
+    const grid = screen.getByText('Foundations of Music Literacy').closest('button')!;
+    expect(before(top, other) && before(other, grid)).toBe(true);
+    expect(screen.getAllByTestId('track-card-chords')).toHaveLength(1);
   });
 
   it('without onOpenTrack (other callers), no track cards', () => {
@@ -141,12 +163,16 @@ describe('LevelsOverview with the tracks (this branch: "Start with sound" writte
     overview();
     expect(screen.getByTestId('tracks-start-here').textContent).toContain('Começa aqui');
     expect(screen.getByTestId('track-card-sound').textContent).toContain('Começa pelo som');
-    expect(screen.getByTestId('track-progress').textContent).toBe('0 de 5 lições');
+    expect(within(screen.getByTestId('track-card-sound')).getByTestId('track-progress').textContent).toBe('0 de 5 lições');
+    expect(within(screen.getByTestId('track-card-chords')).getByTestId('track-progress').textContent).toBe('0 de 10 lições');
+    expect(screen.getByTestId('track-card-chords').textContent).toContain('A partir dos acordes que conheces');
     cleanup();
     useAppStore.setState({ learnerProfile: null, language: 'es' });
     await i18n.changeLanguage('es');
     overview();
     expect(screen.getByTestId('tracks-other').textContent).toContain('Otras formas de empezar');
     expect(screen.getByTestId('track-card-sound').textContent).toContain('Empieza por el sonido');
+    expect(screen.getByTestId('track-card-chords').textContent).toContain('Desde los acordes que conoces');
+    expect(within(screen.getByTestId('track-card-chords')).getByTestId('track-progress').textContent).toBe('0 de 10 lecciones');
   });
 });
