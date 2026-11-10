@@ -2330,3 +2330,161 @@ p.explore-prose {
 }
 .celebration-panel { display: flex; flex-direction: column; max-height: calc(100dvh - 24px); }
 .celebration-panel > button { flex: none; }
+
+/* ─── Plain words (wave 1, brief C): tap a term for its meaning ───────────
+   A tappable term keeps the look of the label it sits in (font, size,
+   colour, small caps) and adds a discreet dotted underline in --text-dim
+   (≥ 4.5:1 on the page and the cards, day and night). Its tap box is a full
+   --tap tall, but the extra height is padding cancelled by a negative margin,
+   so the line it sits on — and the layout around it — does not move. */
+@layer components {
+  .term {
+    display: inline-block;
+    padding: calc((var(--tap) - 1lh) / 2) 2px;
+    margin: calc((var(--tap) - 1lh) / -2) -2px;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-variant-caps: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    text-align: inherit;
+    cursor: help;
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: var(--text-dim);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    text-decoration-skip-ink: none;
+  }
+  /* Inside a sentence (the key summary) a word is an inline link: no extra
+     height, so a wrapped second line never lies over the first one's words. */
+  .explore-summary .term:not(:only-child) {
+    padding-block: 0;
+    margin-block: 0;
+  }
+  /* Touch: the facts' rows are a full target apart, so one word's tap box
+     never reaches the next word's centre. */
+  @media (pointer: coarse) {
+    .key-facts { row-gap: 10px; }
+  }
+  .term:hover {
+    text-decoration-style: solid;
+    text-decoration-color: var(--accent-text);
+  }
+  @media print {
+    .term { text-decoration: none; }
+  }
+
+  /* The summary keeps its place in the header (the wrapper is transparent to
+     the header's flex row); a phone gives it its own row with "Words". */
+  .explore-summary-row { display: contents; }
+  @media (max-width: 639px) {
+    .explore-summary-row {
+      order: 3;
+      flex-basis: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .explore-summary-row > .explore-summary { flex: 1 1 0; order: 0; }
+  }
+  .words-inline {
+    flex: none;
+    margin-block: calc((var(--tap) - 1.2em) / -2);
+    padding-inline: 4px;
+  }
+  /* Simple view: no circle beside the work — the work column takes the row. */
+  @media (min-width: 1200px) {
+    .explore-root[data-detail="simple"] .explore-work { grid-template-columns: minmax(0, 1fr); }
+    .explore-root[data-detail="simple"] .explore-main { max-width: 1100px; width: 100%; margin: 0 auto; }
+  }
+
+  .glossary-popover {
+    position: fixed;
+    z-index: 75;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 8px 14px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    box-shadow: var(--shadow-lg);
+  }
+  .glossary-popover:focus { outline: none; }
+  .glossary-popover:focus-visible { outline: 2px solid var(--focus-outline); outline-offset: 2px; }
+  .glossary-popover-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .glossary-title {
+    margin: 0;
+    font-size: var(--text-title);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--text);
+  }
+  .glossary-explanation { display: flex; flex-direction: column; gap: 8px; }
+  .glossary-plain, .glossary-intro {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 1.45;
+    color: var(--text);
+  }
+  .glossary-intro { font-size: var(--text-ui); color: var(--text-muted); margin-bottom: 8px; }
+  .glossary-example {
+    margin: 0;
+    font-size: var(--text-ui);
+    line-height: 1.4;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .glossary-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    margin-top: 2px;
+  }
+  .glossary-words {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .glossary-words > li + li { border-top: 1px solid var(--border-subtle); }
+  .glossary-word {
+    display: flex;
+    width: 100%;
+    min-height: var(--tap);
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 2px;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: var(--text-body);
+    font-weight: 600;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+  }
+  .glossary-word > svg { flex: none; color: var(--text-dim); }
+  .glossary-word-body { padding: 0 2px 12px; }
+}
+@layer components {
+  .glossary-also { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 8px; }
+  .glossary-title-also { font-size: var(--text-body); }
+}
+/* The Simple / Full switch's track (2 px padding + 1 px border round --tap
+   buttons) would make the header row 6 px taller than its other controls;
+   it overhangs into the header's own padding instead, so the row — and the
+   1440×900 work column's headroom under it — stays exactly as it was. */
+.explore-detail-switch { margin-block: -3px; }

@@ -1,0 +1,476 @@
+{
+  "entries": {
+    "key": {
+      "title": "Key",
+      "plain": "The home note a piece keeps returning to, together with the set of notes that sound at home with it. A tune in a key feels finished when it lands on that home note.",
+      "example": "On screen: {{key}}, home note {{root}}."
+    },
+    "scale": {
+      "title": "Scale",
+      "plain": "The notes of a key in order, from the home note up to the same note higher. Each scale has its own pattern of big and small steps, which gives it its colour.",
+      "example": "{{key}}: {{notes}}."
+    },
+    "root": {
+      "title": "Root",
+      "plain": "The note a scale or a chord is built on, and named after. Everything else is counted up from it.",
+      "example": "{{key}} is built on {{root}}."
+    },
+    "keySignature": {
+      "title": "Key signature",
+      "plain": "The sharps or flats written once at the start of each line of music; they apply to every note with that letter. Any other sharp or flat is written beside its note, and some scales have no key signature of their own.",
+      "example": "{{key}}: {{signature}}."
+    },
+    "sharpFlat": {
+      "title": "Sharp ♯ and flat ♭",
+      "plain": "A sharp raises a note to the very next key up on a piano (a half step); a flat lowers it to the next key down. They are written before the note, or once in the key signature.",
+      "example": "{{key}} uses {{notes}}.",
+      "exampleNone": "{{key}} uses no sharps or flats."
+    },
+    "halfStep": {
+      "title": "Half step and whole step",
+      "plain": "A half step is the smallest step: from one piano key to the very next one, black or white. A whole step is two half steps. Scales are built from these steps.",
+      "example": "In {{key}}, {{a}} to {{b}} is a half step.",
+      "exampleWhole": "In {{key}}, {{a}} to {{b}} is a whole step."
+    },
+    "octave": {
+      "title": "Octave",
+      "plain": "The same note name, higher or lower: the two sound so alike that they share a name. The last column of the scale is the home note again, an octave up.",
+      "example": "{{root}} and the next {{root}} up are an octave apart."
+    },
+    "staff": {
+      "title": "Staff",
+      "plain": "The five lines music is written on. The higher a note sits on the lines, the higher it sounds; the sign at the start (the clef) fixes which note each line is."
+    },
+    "interval": {
+      "title": "Interval",
+      "plain": "The distance between two notes, counted by letter names with both ends included: three letters apart is a 3rd. In labels, m means minor (smaller), M major (larger), P perfect.",
+      "example": "{{root}} up to {{third}} is a 3rd: {{letters}}."
+    },
+    "tritone": {
+      "title": "Tritone",
+      "plain": "Two notes three whole steps (six half steps) apart: a tense sound that wants to move on. In the notes of the scale it marks a 5th note that is a half step lower than usual.",
+      "example": "{{root}} and {{other}} are a tritone apart."
+    },
+    "relativeKey": {
+      "title": "Relative key",
+      "plain": "A major key and a minor key that use exactly the same notes, from a different home note. The minor one starts three half steps below the major one.",
+      "example": "{{key}} and {{relative}} share every note.",
+      "only": "Only major and minor keys have a relative key."
+    },
+    "dominantKey": {
+      "title": "Dominant key",
+      "plain": "The key that starts on the 5th note of this one. It differs from this key by just one note, so music often travels there and comes back.",
+      "example": "From {{key}}: {{other}}.",
+      "only": "Major and minor keys have a dominant key; this scale does not."
+    },
+    "subdominantKey": {
+      "title": "Subdominant key",
+      "plain": "The key that starts on the 4th note of this one. Like the dominant key, it differs from this key by just one note.",
+      "example": "From {{key}}: {{other}}.",
+      "only": "Major and minor keys have a subdominant key; this scale does not."
+    },
+    "parentKey": {
+      "title": "Parent key",
+      "plain": "The major key whose notes a mode uses. The notes are the same; the mode simply treats a different one as home, which changes the mood.",
+      "example": "{{key}} uses the notes of {{parent}}.",
+      "only": "Only the modes (Dorian, Phrygian, Lydian, Mixolydian, Locrian) have a parent key here."
+    },
+    "circleOfFifths": {
+      "title": "Circle of fifths",
+      "plain": "The twelve keys in a ring, so that neighbours share all their notes but one. Going round clockwise, each key starts a 5th (seven half steps) higher, and the key signature changes by one sharp or flat.",
+      "example": "Next to {{key}}: {{a}} and {{b}}."
+    },
+    "relatedKeys": {
+      "title": "Shared notes",
+      "plain": "How many notes two keys have in common. Neighbours on the circle share six of seven, so moving between them sounds smooth; keys far apart share few and sound distant."
+    },
+    "mode": {
+      "title": "Mode",
+      "plain": "A scale made by taking the notes of another scale (most often the major scale) and treating a different one of them as home. Same notes, a different mood."
+    },
+    "classicalMinor": {
+      "title": "Ascending and descending",
+      "plain": "Classical melodic minor raises its 6th and 7th notes on the way up, for a smooth climb to home, and lowers them again on the way down. Jazz keeps them raised both ways.",
+      "example": "Up: {{up}} · down: {{down}}."
+    },
+    "writtenOctave": {
+      "title": "Written an octave higher",
+      "plain": "Guitar music is written one octave above the notes that actually sound, so that it fits on the treble staff. The small 8 under the clef says so."
+    },
+    "degree": {
+      "title": "Scale degree (1–7)",
+      "plain": "A note's number in the scale, counting up from the home note, which is 1. A ♭ or ♯ beside the number (♭3) means a half step lower or higher than in the major scale.",
+      "example": "{{key}}: {{list}}."
+    },
+    "tonic": {
+      "title": "Tonic",
+      "plain": "The home note, number 1. A tune sounds finished when it lands there, and the key is named after it.",
+      "example": "In {{key}}: {{note}}."
+    },
+    "supertonic": {
+      "title": "Supertonic",
+      "plain": "The 2nd note, one step above home. It often leads back down to home, or on towards the dominant.",
+      "example": "In {{key}}: {{note}}."
+    },
+    "mediant": {
+      "title": "Mediant",
+      "plain": "The 3rd note, halfway from home to the dominant. Whether it is three or four half steps above home largely decides whether the scale sounds dark or bright.",
+      "example": "In {{key}}: {{note}}."
+    },
+    "subdominant": {
+      "title": "Subdominant",
+      "plain": "The 4th note. The chord built on it moves away from home, often on the way to the dominant chord.",
+      "example": "In {{key}}: {{note}}."
+    },
+    "dominant": {
+      "title": "Dominant",
+      "plain": "The 5th note, and the chord built on it. After home it is the most important note: its chord sounds open, like a question that the home chord answers.",
+      "example": "In {{key}}: {{note}}."
+    },
+    "submediant": {
+      "title": "Submediant",
+      "plain": "The 6th note. Its chord shares two notes with the home chord, so it can stand in for home with a softer colour.",
+      "example": "In {{key}}: {{note}}."
+    },
+    "leadingNote": {
+      "title": "Leading note",
+      "plain": "The 7th note when it sits just a half step below home. It pulls up into home so strongly that a tune stopping on it sounds unfinished.",
+      "example": "In {{key}}: {{note}}."
+    },
+    "subtonic": {
+      "title": "Subtonic",
+      "plain": "The 7th note when it is a whole step below home. Without the half-step pull of a leading note it sounds relaxed rather than urgent.",
+      "example": "In {{key}}: {{note}}."
+    },
+    "augFifth": {
+      "title": "Augmented 5th",
+      "plain": "A 5th note that is a half step higher than usual (eight half steps above home). It sounds unsettled and wants to move.",
+      "example": "In {{key}}: {{note}}."
+    },
+    "chord": {
+      "title": "Chord",
+      "plain": "Three or more notes sounding together. Most chords are built by stacking every other note of a scale: a note, the one two letters up, and the one two letters above that.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "chordsInKey": {
+      "title": "Chords in the key",
+      "plain": "The chords you can build from the key's own notes: start on each note of the scale and stack every other note above it. Songs in a key mostly use these chords.",
+      "example": "In {{key}}: {{chords}}."
+    },
+    "romanNumeral": {
+      "title": "Roman numerals (I, ii, V…)",
+      "plain": "They number a chord by the scale note it starts on: I on the 1st note, V on the 5th. Capitals mean a major chord, small letters a minor one, ° a diminished one.",
+      "example": "In {{key}}: {{pairs}}."
+    },
+    "triad": {
+      "title": "Triad",
+      "plain": "A chord of three notes: the root, the note a 3rd above it and the note a 5th above it. Most chords in pop and folk songs are triads.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "majorChord": {
+      "title": "Major chord",
+      "plain": "A triad whose middle note is four half steps above the root. It sounds bright and settled.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "minorChord": {
+      "title": "Minor chord",
+      "plain": "A triad whose middle note is three half steps above the root, one lower than in a major chord. It sounds darker or sadder.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "diminishedChord": {
+      "title": "Diminished chord",
+      "plain": "A chord built from small 3rds (three half steps each) stacked up. It sounds tense and unstable, as if it must move on.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "augmentedChord": {
+      "title": "Augmented chord",
+      "plain": "A chord built from large 3rds (four half steps each) stacked up. It sounds dreamy and unresolved.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "seventhChord": {
+      "title": "Seventh chord",
+      "plain": "A triad with one more note on top, a 7th above the root. The extra note adds colour or tension; which 7th, over which triad, gives each kind its name.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "dominantSeventh": {
+      "title": "Dominant 7th (7)",
+      "plain": "A major chord plus the note ten half steps above the root. It is the chord on the 5th note of a major key, and it pulls hard towards home.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "majorSeventh": {
+      "title": "Major 7th (maj7)",
+      "plain": "A major chord plus the note eleven half steps above the root (a half step below the next root up). Soft and dreamy, common in jazz and soul.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "minorSeventh": {
+      "title": "Minor 7th (m7)",
+      "plain": "A minor chord plus the note ten half steps above the root. Mellow and smooth.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "halfDiminished": {
+      "title": "Half-diminished (m7♭5)",
+      "plain": "A diminished triad plus the note ten half steps above the root. In a major key it is the chord on the 7th note.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "diminishedSeventh": {
+      "title": "Diminished 7th (dim7)",
+      "plain": "Four notes, each three half steps above the last, so they split the octave evenly. Very tense; it can lead to many different chords.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "sixthChord": {
+      "title": "Sixth chord (6, m6, 6/9)",
+      "plain": "A major or minor chord plus the note nine half steps above the root (the 6th); 6/9 adds the 9th as well. Sweet and rounded, a favourite ending in swing.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "susChord": {
+      "title": "Suspended chord (sus)",
+      "plain": "A chord whose middle note is replaced by the 2nd or the 4th. Neither major nor minor, it sounds open, as if waiting to settle.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "powerChord": {
+      "title": "Power chord (5)",
+      "plain": "Just the root and the 5th, often with the root again on top. With no 3rd it is neither major nor minor: the basic chord of rock guitar.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "addedNote": {
+      "title": "Added note (add9, add11)",
+      "plain": "A plain chord with one extra note added (the 9th is the 2nd an octave up, the 11th the 4th), without the 7th that bigger chords would include.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "extendedChord": {
+      "title": "Extended chord (9, 11, 13)",
+      "plain": "A seventh chord with more notes stacked on top: the 9th, 11th and 13th are the 2nd, 4th and 6th an octave higher. Rich and jazzy.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "alteredChord": {
+      "title": "Altered chord (♭5, ♯5, ♭9, ♯9, alt)",
+      "plain": "A chord with some notes moved a half step from their usual place, shown by ♭ or ♯ in its name (or 'alt'). The moved notes add tension, usually just before the chord it leads to.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "inversion": {
+      "title": "Inversion",
+      "plain": "The same chord with a different note at the bottom. Root position has the root lowest; the 1st inversion puts the 3rd lowest, the 2nd the 5th. Same chord, a slightly different colour.",
+      "example": "{{chord}}: root position {{p0}} · 1st inversion {{p1}} · 2nd inversion {{p2}}.",
+      "exampleTwo": "{{chord}}: root position {{p0}} · 1st inversion {{p1}}."
+    },
+    "formula": {
+      "title": "Formula (R 3 5)",
+      "plain": "What a chord is made of, counted from its root: R is the root, 3 the note a 3rd above, 5 a 5th above. ♭3 or ♭7 mean a half step lower than in the major scale.",
+      "example": "{{chord}}: {{formula}} → {{notes}}."
+    },
+    "arpeggio": {
+      "title": "Arpeggio",
+      "plain": "A chord played one note at a time, from the bottom up, instead of all together.",
+      "example": "{{chord}}: {{notes}}."
+    },
+    "compatibleScales": {
+      "title": "Compatible scales",
+      "plain": "Scales whose notes fit over this chord, for a tune or a solo above it. Choosing one makes it the scale on screen, starting from the chord's root."
+    },
+    "slashChord": {
+      "title": "Slash chord",
+      "plain": "A chord with a chosen note at the bottom, written after a slash: the name before the slash is the chord, the note after it is the lowest one played.",
+      "example": "{{chord}}: the notes of {{name}} with {{bass}} lowest."
+    },
+    "outOfKey": {
+      "title": "Out of key",
+      "plain": "A chord that uses at least one note from outside the key's scale. It brings a surprising colour; songs use such chords on purpose."
+    },
+    "fret": {
+      "title": "Fret",
+      "plain": "The metal strips across a guitar's neck. Pressing a string just behind fret 3 plays the note three half steps above the open string, which is played without pressing (0)."
+    },
+    "position": {
+      "title": "Position (I, II, V…)",
+      "plain": "Where your hand sits on the neck, named by a Roman numeral for the fret your 1st finger covers: in position V it is fret 5. Open position uses the open strings and the first frets."
+    },
+    "fingerNumbers": {
+      "title": "Finger numbers",
+      "plain": "The numbers on the dots say which finger of the fretting hand plays each note: 1 index, 2 middle, 3 ring, 4 little finger; 0 is an open string."
+    },
+    "stretch": {
+      "title": "Stretch",
+      "plain": "A note one fret beyond the hand's usual four-fret span: the hand reaches out for it without moving."
+    },
+    "tuning": {
+      "title": "Tuning",
+      "plain": "The notes the six open strings are set to. Standard tuning is E A D G B E from the thickest string; other tunings change some strings for a different sound."
+    },
+    "anchorFret": {
+      "title": "Starting fret (3fr)",
+      "plain": "The number beside a chord shape, such as 3fr, says which fret the shape starts at, so you know where on the neck to play it."
+    },
+    "tirandoApoyando": {
+      "title": "Tirando and apoyando",
+      "plain": "Two ways to pluck with the right hand: tirando (free stroke) lifts the finger clear of the strings; apoyando (rest stroke) lets it come to rest on the next string, for a fuller tone."
+    },
+    "rightHandFingers": {
+      "title": "p, i, m, a",
+      "plain": "The right-hand fingers, by the first letters of their Spanish names (pulgar, índice, medio, anular): p thumb, i index, m middle, a ring. Alternating i–m means plucking with index and middle in turn."
+    },
+    "positionWalk": {
+      "title": "Position walk",
+      "plain": "A scale played through several hand positions one after another, sliding one finger along a string to move from each position to the next."
+    },
+    "technicalSet": {
+      "title": "Technical set",
+      "plain": "Scales, arpeggios and broken chords to practise in one key, like the technical work of a mid-level guitar exam (grade 5 of the UK exam boards)."
+    },
+    "intervalScale": {
+      "title": "Scale in 3rds, 6ths, octaves",
+      "plain": "The scale played in pairs of notes a 3rd, a 6th or an octave apart: one after the other (broken) or both at once (together)."
+    },
+    "brokenChord": {
+      "title": "Broken chord",
+      "plain": "A chord's notes played one or a few at a time in a pattern, instead of all together."
+    },
+    "scale_major": {
+      "plain": "The bright, everyday scale of most songs: whole steps everywhere except two half steps, between notes 3–4 and 7–8.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_natural_minor": {
+      "plain": "The darker partner of major: its 3rd, 6th and 7th notes are a half step lower. It has the same notes as the major scale that starts on its 3rd note.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_harmonic_minor": {
+      "plain": "Natural minor with its 7th note raised a half step, so it leans into home as major does. The wide gap between its 6th and 7th notes gives it a dramatic colour.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_melodic_minor": {
+      "plain": "Natural minor with its 6th and 7th notes raised, for a smooth climb to home. Classical music lowers them again on the way down; jazz keeps them raised.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_dorian": {
+      "plain": "A minor scale with a brighter 6th note than natural minor. A mellow minor, heard in folk, funk and jazz.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_phrygian": {
+      "plain": "A minor scale whose 2nd note is only a half step above home, which gives it a dark, tense colour, common in flamenco and metal.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_lydian": {
+      "plain": "A major scale with its 4th note raised a half step: bright and floating, a favourite of film music.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_mixolydian": {
+      "plain": "A major scale with its 7th note lowered a half step, so it has no strong pull back home: relaxed and bluesy, common in rock and folk.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_locrian": {
+      "plain": "The darkest mode: its 2nd note is a half step above home and its 5th is lowered, so even its home chord sounds unstable. Rarely used for whole pieces.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_pentatonic_major": {
+      "plain": "Five notes: the major scale without its 4th and 7th. With no half steps, almost any order of its notes sounds good; folk songs all over the world use it.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_pentatonic_minor": {
+      "plain": "Five notes: natural minor without its 2nd and 6th. The basic scale of rock and blues solos.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_blues": {
+      "plain": "Minor pentatonic plus one extra note between its 4th and 5th (the 'blue note'), which gives the blues its gritty sound.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_major_blues": {
+      "plain": "Major pentatonic plus one extra note between its 2nd and 3rd, for a bright scale with a bluesy flavour.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_whole_tone": {
+      "plain": "Six notes, each a whole step from the next. With no half steps to pull towards home it sounds dreamy and floating.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_diminished_whole_half": {
+      "plain": "Eight notes, alternating a whole step and a half step. Even and tense; jazz uses it over diminished chords.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_diminished_half_whole": {
+      "plain": "Eight notes, alternating a half step and a whole step. Jazz uses it over dominant 7th chords for a tense, crunchy sound.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_chromatic": {
+      "plain": "All twelve notes in order, each a half step from the next: every key of the piano, black and white, in one octave.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_altered": {
+      "plain": "A jazz scale (the 7th mode of melodic minor) that changes every note of a dominant 7th chord that can be changed, for the most tension just before home.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_lydian_dominant": {
+      "plain": "Lydian with a lowered 7th, or Mixolydian with a raised 4th: bright and bluesy at once. The 4th mode of melodic minor.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_phrygian_dominant": {
+      "plain": "Phrygian with a raised 3rd, so its home chord is major: a sound heard in flamenco and in much Middle Eastern music. The 5th mode of harmonic minor.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_locrian_natural2": {
+      "plain": "Locrian with its 2nd note a whole step above home: a dark minor scale used in jazz over half-diminished chords. The 6th mode of melodic minor.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_bebop_dominant": {
+      "plain": "Mixolydian with one extra note between its 7th and home, so a run of quick even notes lands chord notes on the beats.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_bebop_major": {
+      "plain": "The major scale with one extra note between its 5th and 6th, so a run of quick even notes lands chord notes on the beats.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_bebop_dorian": {
+      "plain": "Dorian with one extra note between its 3rd and 4th, so a run of quick even notes lands chord notes on the beats.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_dorian_b2": {
+      "plain": "Dorian with its 2nd note only a half step above home: dark and exotic. The 2nd mode of melodic minor.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_lydian_augmented": {
+      "plain": "Lydian with its 5th raised as well: very bright and unsettled. The 3rd mode of melodic minor.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_mixolydian_b6": {
+      "plain": "Mixolydian with a lowered 6th: major in its lower half, minor in its upper half. The 5th mode of melodic minor.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_hungarian_minor": {
+      "plain": "Harmonic minor with a raised 4th. Its two wide gaps give it a dramatic colour heard in Central European folk music.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_hungarian_major": {
+      "plain": "A major-sounding scale with a raised 2nd, a raised 4th and a lowered 7th: bright but strange, with a wide gap right after home.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_double_harmonic": {
+      "plain": "A wide gap after the 2nd note and another after the 6th, each with a half step on both sides: the sound often called Arabic or Byzantine.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_persian": {
+      "plain": "Like the double harmonic scale with a lowered 5th: half steps and wide gaps side by side, for a dark, intense colour.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_neapolitan_minor": {
+      "plain": "Harmonic minor with its 2nd note lowered to a half step above home: dark and dramatic.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_neapolitan_major": {
+      "plain": "Melodic minor with its 2nd note lowered to a half step above home: dark at the bottom, bright at the top.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_hirajoshi": {
+      "plain": "A five-note scale from Japan, with two half steps and two wide gaps. It is often used for a calm, haunting sound.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_in_sen": {
+      "plain": "A five-note scale from Japan that starts with a half step: quiet and mysterious.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_iwato": {
+      "plain": "A five-note scale from Japan with two half steps and a lowered 5th: the darkest of the Japanese scales here.",
+      "example": "On {{root}}: {{notes}}."
+    },
+    "scale_egyptian": {
+      "plain": "A five-note scale with no 3rd and no 6th, so it is neither major nor minor: open and ancient-sounding.",
+      "example": "On {{root}}: {{notes}}."
+    }
+  }
+}

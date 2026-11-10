@@ -21,6 +21,10 @@ import { useScaleDirectionStore } from '../../state/scaleDirectionStore.ts';
 import { Segment } from '../ui/Segment.tsx';
 import { stripViewport } from './stripViewport';
 import { scaleStripTrim } from './staffTrim.ts';
+import { Term } from '../../glossary/Term.tsx';
+import { termAttr } from '../../glossary/visibleTerms.ts';
+import { functionTermId } from '../../glossary/termIds.ts';
+import { useExploreSimple } from '../../state/exploreDetail.ts';
 
 const StaffNotation = lazy(() =>
   import('../notation/StaffNotation.tsx').then((m) => ({ default: m.StaffNotation })),
@@ -63,6 +67,9 @@ export function ScaleStrip() {
   const setFocus = useFocusNoteStore((s) => s.set);
   const clearFocus = useFocusNoteStore((s) => s.clear);
   const focus = useFocusNote();
+  // Simple view: letter names and the degree numbers as Full writes them
+  // (♭3 where the scale has one, matching the colours), no degree names.
+  const simple = useExploreSimple();
 
   // The scale as the staff draws it: every note plus the octave tonic, each
   // coloured and labelled by its FUNCTION read from the spelled letter (a
@@ -139,7 +146,7 @@ export function ScaleStrip() {
   }, [xs, minCol]);
   // Function names ("7 · leading") only where a column has room for them
   // (a laptop's strip; on narrower ones the degree alone).
-  const showFunctions = wide && scale.notes.length === 7 && half * 2 >= 104;
+  const showFunctions = !simple && wide && scale.notes.length === 7 && half * 2 >= 104;
 
   // ── Focus + sound ────────────────────────────────────────────────────────
   const noteAt = (i: number): FocusNote => ({ pc: getPitchClass(notes[i]), midi: midis[i], source: 'staff' });
@@ -186,8 +193,10 @@ export function ScaleStrip() {
     <section className="explore-card strip-card" aria-labelledby="strip-title" data-testid="scale-strip">
       <div className="explore-card-head">
         <div>
-          <h2 id="strip-title" className="type-section">{t(melodic ? 'explore.strip.classicalMinor' : 'explore.strip.title')}</h2>
-          {melodic && written && <p className="text-caption explore-card-hint" style={{ color: 'var(--text-dim)' }}>{t('explore.strip.writtenOctave')}</p>}
+          <h2 id="strip-title" className="type-section">
+            <Term id={melodic ? 'classicalMinor' : 'scale'}>{t(melodic ? 'explore.strip.classicalMinor' : 'explore.strip.title')}</Term>
+          </h2>
+          {melodic && written && <p className="text-caption explore-card-hint" style={{ color: 'var(--text-dim)' }}><Term id="writtenOctave">{t('explore.strip.writtenOctave')}</Term></p>}
         </div>
         {/* "Tap a note to hear it" means nothing on paper; the guitar
             staff's octave note still prints. */}
@@ -209,7 +218,7 @@ export function ScaleStrip() {
         ) : (
           <p className="text-caption explore-card-hint" style={{ color: 'var(--text-dim)' }}>
             <span className="no-print">{t('explore.strip.hint')}</span>
-            {written && <><span className="no-print"> · </span>{t('explore.strip.writtenOctave')}</>}
+            {written && <><span className="no-print"> · </span><Term id="writtenOctave">{t('explore.strip.writtenOctave')}</Term></>}
           </p>
         )}
       </div>
@@ -266,10 +275,11 @@ export function ScaleStrip() {
                     <span
                       className="strip-degree"
                       style={{ color: dimmed[i] ? 'var(--text-dim)' : DEGREE_INKS[slot] }}
+                      {...termAttr('degree')}
                     >
                       {withGlyphs(formatDegree(d, '1'))}
                     </span>
-                    {fnKey && <span className="strip-fn">{t(fnKey)}</span>}
+                    {fnKey && <span className="strip-fn" {...termAttr(functionTermId(fnKey))}>{t(fnKey)}</span>}
                   </span>
                 </button>
               );
@@ -278,6 +288,7 @@ export function ScaleStrip() {
           {/* Percent margins (of the strip's width) scale with the drawing. */}
           <div
             className="strip-staff"
+            data-term="staff"
             aria-hidden="true"
             style={{ marginTop: `${(-trim.top / staffWidth) * 100}%`, marginBottom: `${(-trim.bottom / staffWidth) * 100}%` }}
           >

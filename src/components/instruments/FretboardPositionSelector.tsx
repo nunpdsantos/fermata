@@ -25,7 +25,7 @@ export function ChordShapeSelector({ shapeCount, labels, selectedIdx, onSelect }
   const { t } = useTranslation();
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      <span className={GROUP_LABEL_CLASS} style={GROUP_LABEL_STYLE} aria-hidden="true">{t('fretboard.position')}</span>
+      <span className={GROUP_LABEL_CLASS} style={GROUP_LABEL_STYLE} aria-hidden="true" data-term="position">{t('fretboard.position')}</span>
       <ChipGroup
         label={t('fretboard.chordPosition')}
         value={selectedIdx}
@@ -87,7 +87,7 @@ export function ScalePositionSelector({ position, onSelect, onStep, mobile = fal
   // narrow) — at 768 px the steppers used to wrap onto lines of their own.
   return (
     <div className={`flex items-center gap-2 min-w-0${fullRow ? ' basis-full lg:basis-auto' : ''}`} data-testid="position-row">
-      <span className={GROUP_LABEL_CLASS} style={GROUP_LABEL_STYLE} aria-hidden="true">{t('fretboard.position')}</span>
+      <span className={GROUP_LABEL_CLASS} style={GROUP_LABEL_STYLE} aria-hidden="true" data-term="position">{t('fretboard.position')}</span>
       {stepButton(-1)}
       {mobile ? (
         <SelectTrigger
@@ -171,7 +171,7 @@ export function LabelToolbar({
             value={shown}
             onChange={onLabelMode}
             disabled={editing}
-            options={modes.map(({ mode, key }) => ({ value: mode, label: t(key) }))}
+            options={modes.map(({ mode, key }) => ({ value: mode, label: mode === 'finger' ? <span data-term="fingerNumbers">{t(key)}</span> : mode === 'degree' ? <span data-term="degree">{t(key)}</span> : t(key) }))}
           />
         </>
       )}
@@ -223,7 +223,7 @@ export function PositionLegend() {
           gap-1 left it touching its words (W11-A review). */}
       <span className="inline-flex items-center gap-2">
         <span data-legend="stretch" aria-hidden="true" style={{ ...swatch, outline: '2px dashed var(--text)', outlineOffset: 1, marginLeft: 3 }} />
-        {t('fretboard.legendStretch')}
+        <span data-term="stretch">{t('fretboard.legendStretch')}</span>
       </span>
       <span className="inline-flex items-center gap-2">
         <span data-legend="edited" aria-hidden="true" style={swatch}>

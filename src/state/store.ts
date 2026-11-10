@@ -35,6 +35,8 @@ const ALLOWED_VALUES: Record<string, readonly unknown[]> = {
   exploreCircleOpen: [true, false],
   neckNutSide: ['left', 'right'],
   neckTopString: ['high', 'low'],
+  // Optional (wave 1): absent = never chosen; deleting a bad value means the same.
+  exploreDetail: ['simple', 'full'],
 };
 
 // Optional fields (wave 1): saved only once set, so they are guarded only when
@@ -200,6 +202,9 @@ export const useAppStore = create<AppState>()(
           // view, which a save without the field means (merge below).
           ...(state.neckNutSide !== LEGACY_NECK.neckNutSide ? { neckNutSide: state.neckNutSide } : {}),
           ...(state.neckTopString !== LEGACY_NECK.neckTopString ? { neckTopString: state.neckTopString } : {}),
+          // Undefined until the learner chooses: JSON drops it, so an
+          // existing save is written back exactly as it was.
+          exploreDetail: state.exploreDetail,
         };
       },
       migrate: (persisted: unknown, version: number) => {

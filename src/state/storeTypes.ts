@@ -122,6 +122,9 @@ export interface NavigationSlice {
   setPendingLearnTarget: (target: LearnDeepLink | null) => void;
 }
 
+/** Explore's two views (wave 1): Simple for a first-timer, Full = the workbench as it was. */
+export type ExploreDetail = 'simple' | 'full';
+
 export interface PreferencesSlice {
   colorMode: ColorMode;
   themeMode: ThemeMode;
@@ -153,6 +156,11 @@ export interface PreferencesSlice {
    * only while owed.
    */
   startHint: StartHintKind | null;
+  /** Explore's Simple / Full view, once the LEARNER chose one (wave 1,
+   *  `state/exploreDetail.ts`). Undefined = never chosen: the profile
+   *  decides (Simple for a guided profile, else Full). Optional in the v6
+   *  save: absent until chosen, so a save from before it is unchanged. */
+  exploreDetail?: ExploreDetail;
   setColorMode: (mode: ColorMode) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setScaleOctaves: (octaves: 1 | 2) => void;
@@ -161,6 +169,7 @@ export interface PreferencesSlice {
   setPreferencesUpdatedAt: (at: number) => void;
   setDockDetent: (view: DockView, detent: Detent) => void;
   setExploreCircleOpen: (open: boolean) => void;
+  setExploreDetail: (detail: ExploreDetail) => void;
   /**
    * Open (or rest) the instrument dock of the CURRENT view at a detent — the
    * API a Learn exercise calls when it needs the instrument (D-20). No-op in

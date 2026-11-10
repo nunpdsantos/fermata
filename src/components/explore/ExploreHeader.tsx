@@ -21,6 +21,11 @@ import { classicalDescendingNotes } from '../../core/utils/classicalScale.ts';
 import { keyFacts } from './keyFacts.ts';
 import { keyName } from './focusReadout.ts';
 import { toContentLanguage } from '../drill/drillText.ts';
+import { Segment } from '../ui/Segment.tsx';
+import { Term, WordsButton } from '../../glossary/Term.tsx';
+import { scaleTermId } from '../../glossary/termIds.ts';
+import { useExploreSimple } from '../../state/exploreDetail.ts';
+import type { ExploreDetail } from '../../state/storeTypes.ts';
 
 const PLAY_ICON = (
   <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -49,9 +54,34 @@ export function ExploreHeader({ practiceAction, onPractise }: {
   const instrument = useAppStore((s) => s.instrument);
   const baseOctave = useAppStore((s) => s.baseOctave);
   const phone = useMediaQuery(PHONE_QUERY);
+  // The Simple / Full switch is a Segment in the header; a phone's row has
+  // no room for it. There it is in "Words on this screen" (both ways), and
+  // Simple's "⋯" offers the way back to Full in Compare's place — Full's
+  // menu stays exactly as it was.
+  const segmentFits = !phone;
   const [keySheet, setKeySheet] = useState(false);
   const [compare, setCompare] = useState(false);
   const facts = keyFacts(selectedKey, selectedScale, t);
+  const simple = useExploreSimple();
+  const setDetail = useAppStore((s) => s.setExploreDetail);
+  // Simple view's summary in words: "G Major · one sharp" (no relative key).
+  const plainSignature = facts.signature
+    ? facts.signature.count === 0
+      ? t('simpleView.noSharpsFlats')
+      : t(facts.signature.type === '#' ? 'simpleView.sharps' : 'simpleView.flats', { count: facts.signature.count })
+    : null;
+  const detailSegment = (
+    <Segment<ExploreDetail>
+      className="explore-detail-switch"
+      label={t('simpleView.label')}
+      value={simple ? 'simple' : 'full'}
+      onChange={setDetail}
+      options={[
+        { value: 'simple', label: t('simpleView.simple'), data: { 'data-testid': 'detail-simple' } },
+        { value: 'full', label: t('simpleView.full'), data: { 'data-testid': 'detail-full' } },
+      ]}
+    />
+  );
 
   const playScaleNow = useCallback(async () => {
     await resumeAudio();
@@ -91,17 +121,30 @@ export function ExploreHeader({ practiceAction, onPractise }: {
             <RespellButton />
           </>
         )}
-        <ScalePicker className="explore-scale-picker" />
+        <ScalePicker className="explore-scale-picker" short={simple} />
       </div>
 
-      <p className="explore-summary" data-testid="key-summary">
-        <span className="explore-summary-key">{keyName(scale, t)}</span>
-        {' · '}
-        {facts.signatureText}
-        {facts.relative && <>{' · '}{t('explore.relativeKey', { key: facts.relative })}</>}
-      </p>
+      {/* Each part of the summary is a word to tap: the key (its scale), its
+          signature, its relative key. A phone puts "Words" at its end. */}
+      <div className="explore-summary-row">
+        <p className="explore-summary" data-testid="key-summary">
+          <Term id={scaleTermId(selectedScale)} testId="summary-key"><span className="explore-summary-key">{keyName(scale, t)}</span></Term>
+          {simple ? (
+            plainSignature && <>{' · '}<Term id="keySignature" also={['sharpFlat']}>{plainSignature}</Term></>
+          ) : (
+            <>
+              {' · '}
+              <Term id="keySignature" also={['sharpFlat']}>{facts.signatureText}</Term>
+              {facts.relative && <>{' · '}<Term id="relativeKey">{t('explore.relativeKey', { key: facts.relative })}</Term></>}
+            </>
+          )}
+        </p>
+        {phone && <WordsButton inline className="no-print" />}
+      </div>
 
       <div className="explore-actions no-print">
+        {segmentFits && detailSegment}
+        {!phone && <WordsButton />}
         {practiceAction}
         {phone ? (
           <IconButton
@@ -123,10 +166,11 @@ export function ExploreHeader({ practiceAction, onPractise }: {
           items={[
             { id: 'copy', label: t('explore.copyScaleSummary'), onSelect: () => void copy() },
             { id: 'print', label: t('explore.printScaleDiagram'), onSelect: () => window.print() },
-            { id: 'compare', label: t('explore.compareScalesAction'), onSelect: () => setCompare(true) },
+            ...(simple ? [] : [{ id: 'compare', label: t('explore.compareScalesAction'), onSelect: () => setCompare(true) }]),
             // A guitarist who never switches the dock to Guitar still finds the
             // practice tools here (2026-11-09); the toolbar button stays as it is.
             ...(onPractise ? [{ id: 'practise', label: t('practice.title'), onSelect: onPractise }] : []),
+            ...(!segmentFits && simple ? [{ id: 'detail', label: t('simpleView.menuFull'), onSelect: () => setDetail('full') }] : []),
           ]}
         />
       </div>
@@ -140,8 +184,9 @@ export function ExploreHeader({ practiceAction, onPractise }: {
       >
         <div className="space-y-4 pb-2">
           <RootChips />
-          <CircleOfFifths />
-          <KeyFactsList />
+          {/* Simple view keeps the twelve roots and drops the circle. */}
+          {!simple && <CircleOfFifths />}
+          {!simple && <KeyFactsList />}
         </div>
       </Sheet>
       <Sheet

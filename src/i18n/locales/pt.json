@@ -1228,5 +1228,32 @@
     "thinTop": "Corda fina em cima",
     "thickTop": "Corda grossa em cima",
     "stringRangeHighFirst": "Cordas 1 a 6"
+  },
+  "glossary": {
+    "ui": {
+      "words": "Palavras",
+      "wordsLabel": "Palavras neste ecrã",
+      "wordsIntro": "Toca numa palavra para veres o que quer dizer.",
+      "noWords": "Não há palavras para explicar neste ecrã.",
+      "hear": "Ouvir",
+      "learn": "Saber mais",
+      "notHere": "Em {{key}} este nome não se usa.",
+      "sevenOnly": "Estes nomes são das escalas de sete notas; {{key}} tem {{n}} notas.",
+      "loadError": "Não foi possível carregar a explicação. Tenta outra vez."
+    }
+  },
+  "simpleView": {
+    "label": "Quanto mostrar",
+    "simple": "Simples",
+    "full": "Completa",
+    "menuFull": "Vista completa",
+    "allScales": "Todas as escalas…",
+    "seeEverything": "Ver tudo sobre este acorde",
+    "noteOf": "nota {{n}} de {{key}}",
+    "noSharpsFlats": "sem sustenidos nem bemóis",
+    "sharps_one": "um sustenido",
+    "sharps_other": "{{count}} sustenidos",
+    "flats_one": "um bemol",
+    "flats_other": "{{count}} bemóis"
   }
 }

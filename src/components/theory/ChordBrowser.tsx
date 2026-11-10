@@ -8,6 +8,8 @@ import { toContentLanguage } from '../drill/drillText.ts';
 import { chordCategoryLabel } from './chordCategoryLabel';
 import { ChipGroup } from '../ui/ChoiceChip.tsx';
 import { useAppStore } from '../../state/store.ts';
+import { termAttr } from '../../glossary/visibleTerms.ts';
+import { CATEGORY_TERM, qualityTermId } from '../../glossary/termIds.ts';
 
 const CHORD_QUALITY_GROUPS: { labelKey: string; qualities: ChordQuality[] }[] = [
   {
@@ -131,7 +133,7 @@ export function ChordBrowser({ detail }: { detail?: ReactNode } = {}) {
         <span className="text-ui font-bold" style={{ color: ink ?? 'var(--text)' }}>
           {withGlyphs(`${rootLabel}${symbol}`)}
         </span>
-        <span className="text-caption leading-tight mt-0.5" style={{ color: ink ?? 'var(--text-dim)' }}>
+        <span className="text-caption leading-tight mt-0.5" style={{ color: ink ?? 'var(--text-dim)' }} {...termAttr(qualityTermId(quality))}>
           {name}
         </span>
         {SAME_NOTES[quality] && (
@@ -153,7 +155,7 @@ export function ChordBrowser({ detail }: { detail?: ReactNode } = {}) {
           if (selectedChord && !CHORD_QUALITY_GROUPS[next].qualities.some(isActive)) setSelectedChord(null);
           setActiveCategory(next);
         }}
-        options={CHORD_QUALITY_GROUPS.map((g, i) => ({ value: i, ...chordCategoryLabel(t(g.labelKey), lang) }))}
+        options={CHORD_QUALITY_GROUPS.map((g, i) => ({ value: i, ...chordCategoryLabel(t(g.labelKey), lang), data: { 'data-term': CATEGORY_TERM[g.labelKey] } }))}
       />
 
       {/* Chord cards, row by row; the detail opens under the tapped row. */}

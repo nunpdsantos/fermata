@@ -35,6 +35,9 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
     set({ dockDetents: { ...s.dockDetents, [view]: detent }, dockChosen: { ...s.dockChosen, [view]: true } });
   },
   setExploreCircleOpen: (open) => set({ exploreCircleOpen: open }),
+  // No default value: undefined means "not chosen yet" (state/exploreDetail.ts).
+  // Simple has no voicing control: its chord sounds and shows in root position.
+  setExploreDetail: (detail) => set(detail === 'simple' ? { exploreDetail: detail, chordInversion: 0 } : { exploreDetail: detail }),
   // The app opening the dock for an exercise is not the learner's choice.
   requestDock: (detent) => {
     const { view, dockDetents } = get();

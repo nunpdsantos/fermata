@@ -49,12 +49,17 @@ import { landChordDetail } from './chordScrollLanding';
 import { fitScaleChips } from './fitScaleChips';
 
 import { getKeyScaleSuggestions } from '../../core/constants/chordScaleRelationships.ts';
+import { Term } from '../../glossary/Term.tsx';
+import { termAttr } from '../../glossary/visibleTerms.ts';
+import { functionTermId, qualityTermId, scaleTermId } from '../../glossary/termIds.ts';
 
 interface CurrentChordPanelProps {
   chord: Chord;
   sourceTab?: string;
   /** Drawn beside the detail (Explore: the chord on a small staff). */
   aside?: ReactNode;
+  /** Explore's Simple view: name, ▶ Chord / ▶ Arpeggio and the notes only. */
+  simple?: boolean;
 }
 
 const INVERSION_LABEL_KEYS = ['panel.rootPos', 'panel.inv1', 'panel.inv2', 'panel.inv3'];
@@ -134,7 +139,7 @@ const FIT_COLORS_MUTED: Record<keyof typeof FIT_COLORS, string> = {
   color: 'var(--text-dim)',
 };
 
-export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanelProps) {
+export function CurrentChordPanel({ chord, aside, sourceTab, simple = false }: CurrentChordPanelProps) {
   const { t, i18n } = useTranslation();
   const lang = toContentLanguage(i18n.language);
   const { getNoteDegree, invertedNotes, diatonicChords, scale } = useKeyContext();
@@ -270,13 +275,19 @@ export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanel
   }, [notesForPlayback, synthPreset, baseOctave, lightKey, unlightKeys, stopVisuals, instrument, chord.bassNote]);
 
   // The chord's place in the key: "V · dominant" when it is a diatonic chord.
+  // Each part is a word to tap: the numeral, the degree's name.
   const role = useMemo(() => {
     const rootPc = getPitchClass(chord.root);
     const match = diatonicChords.find((d) => getPitchClass(d.chord.root) === rootPc && d.chord.quality === chord.quality);
-    if (!match) return degree ? t('panel.degree', { n: degree }) : null;
+    if (!match) return degree ? <Term id="degree">{t('panel.degree', { n: degree })}</Term> : null;
     const i = scale.notes.findIndex((n) => getPitchClass(n) === rootPc);
     const fnKey = scale.notes.length === 7 && i >= 0 ? getScaleDegreeFunctionKey(i, SCALE_FORMULAS[scale.type]?.[i] ?? 0) : null;
-    return fnKey ? `${match.numeral} · ${t(fnKey.replace('degreeShort.', 'explore.fn.'))}` : match.numeral;
+    // One button for the whole label (its text stays one run): the numeral
+    // first, then the degree's name.
+    const fnTerm = fnKey ? functionTermId(fnKey) : null;
+    return fnKey && fnTerm
+      ? <Term id={fnTerm} also={['romanNumeral']}>{`${match.numeral} · ${t(fnKey.replace('degreeShort.', 'explore.fn.'))}`}</Term>
+      : <Term id="romanNumeral">{match.numeral}</Term>;
   }, [chord, diatonicChords, scale, degree, t]);
 
   // Each tone's sounding pitch in the voicing the instruments light, so a
@@ -347,14 +358,16 @@ export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanel
         <h3 className="chord-detail-name">
           {withGlyphs(chord.root)}
           <span className="chord-detail-quality">
-            {chord.algorithmicDisplayName ? withGlyphs(chord.algorithmicDisplayName) : qualityName(chord.quality, lang)}
+            {chord.algorithmicDisplayName
+              ? withGlyphs(chord.algorithmicDisplayName)
+              : <Term id={qualityTermId(chord.quality)}>{qualityName(chord.quality, lang)}</Term>}
           </span>
           {chord.bassNote && (
             <span style={{ color: 'var(--text-dim)' }}>/{withGlyphs(chord.bassNote)}</span>
           )}
         </h3>
         {sourceTab && <span className="chord-detail-source text-caption" data-testid="chord-detail-source">{sourceTab}</span>}
-        {role && <span className="text-ui" style={{ color: 'var(--text-muted)' }}>{role}</span>}
+        {role && !simple && <span className="text-ui" data-testid="chord-role" style={{ color: 'var(--text-muted)' }}>{role}</span>}
 
         {/* Notes: each tone is the focus note on hover / focus, and plays on a tap. */}
         <div className="chord-detail-group">
@@ -399,8 +412,11 @@ export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanel
             4th inversion and up (5+ note chords) use "Inv n" — never a second
             "Root" (audit W2-09). Controls: not printed (nor ▶ Chord /
             ▶ Arpeggio) — W11-B delta review. */}
-        <div className="chord-detail-group no-print">
-          <span className="type-label" aria-hidden="true">{t('panel.voicing')}</span>
+        {!simple && <div className="chord-detail-group no-print">
+          {/* Hidden from screen readers (the chips carry their own group
+              name), so the word is marked for "Words on this screen" rather
+              than made a button of its own. */}
+          <span className="type-label" aria-hidden="true" {...termAttr('inversion')}>{t('panel.voicing')}</span>
           <ChipGroup
             label={t('panel.chordInversion')}
             value={chordInversion}
@@ -410,7 +426,7 @@ export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanel
               label: i < INVERSION_LABEL_KEYS.length ? t(INVERSION_LABEL_KEYS[i]) : t('chordBuilder.inversion.nth', { n: i }),
             }))}
           />
-        </div>
+        </div>}
 
         <div className="chord-detail-actions no-print">
           {/* Chord is the main action here (primary). */}
@@ -424,9 +440,15 @@ export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanel
       </div>
 
       <div className="chord-detail-row chord-detail-context">
+        {/* Simple view: one line into Full instead of the formula and scales. */}
+        {simple && (
+          <button type="button" className="btn btn-link -ml-1.5 no-print" data-testid="see-everything" onClick={() => useAppStore.getState().setExploreDetail('full')}>
+            {t('simpleView.seeEverything')} <span aria-hidden="true">→</span>
+          </button>
+        )}
         {/* Formula — real interval labels */}
-        <div className="chord-detail-group">
-          <span className="type-label">{t('panel.formula')}</span>
+        {!simple && <div className="chord-detail-group">
+          <span className="type-label"><Term id="formula">{t('panel.formula')}</Term></span>
           <span className="flex items-center gap-1.5">
             {intervalLabels.map((label, i) => (
               <span
@@ -438,12 +460,12 @@ export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanel
               </span>
             ))}
           </span>
-        </div>
+        </div>}
 
         {/* Compatible scales: choosing one makes it the key (root = this chord's). */}
-        {scaleSuggestions.length > 0 && (
+        {!simple && scaleSuggestions.length > 0 && (
           <div className="chord-detail-group chord-detail-scales" role="group" aria-labelledby={`${toneGroupId}-scales-label`}>
-            <span className="type-label" id={`${toneGroupId}-scales-label`}>{t('panel.compatibleScales')} · {withGlyphs(chord.root)}</span>
+            <span className="type-label" id={`${toneGroupId}-scales-label`} {...termAttr('compatibleScales')}>{t('panel.compatibleScales')} · {withGlyphs(chord.root)}</span>
             <span id={`${toneGroupId}-key-notes`} className="sr-only">{t('panel.keyOwnNotes')}</span>
             <span className="chord-scale-options" ref={scaleOptionsRef}>
               {scaleSuggestions.map((s) => {
@@ -467,7 +489,7 @@ export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanel
                     data-scale={s.scale}
                     data-fit={s.fit}
                   >
-                    {t(`scaleName.${s.scale}`)}
+                    <span {...termAttr(scaleTermId(s.scale))}>{t(`scaleName.${s.scale}`)}</span>
                   </button>
                 );
               })}

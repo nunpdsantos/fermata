@@ -4,6 +4,7 @@ import { useAppStore } from '../../state/store.ts';
 import { useFocusNote, useFocusNoteStore } from '../../state/focusNoteStore.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { readoutParts, readoutVariants } from '../explore/focusReadout.ts';
+import { useExploreSimple } from '../../state/exploreDetail.ts';
 
 /** Two lines of the bar's context text: never more, so the bar never grows. */
 const MAX_LINES = 2;
@@ -28,13 +29,14 @@ export function DockReadout({ context }: { context: string }) {
   const focus = useFocusNote();
   const locations = useFocusNoteStore((s) => s.locations);
   const active = view === 'explore' && !exercise && focus !== null;
+  const simple = useExploreSimple();
 
   const variants = useMemo(
     () =>
       active && focus
-        ? readoutVariants(readoutParts({ focus, scale, chord, spellPitchClass, locations: locations?.items, t }))
+        ? readoutVariants(readoutParts({ focus, scale, chord, spellPitchClass, locations: locations?.items, t, simple }))
         : [context],
-    [active, focus, scale, chord, spellPitchClass, locations, t, context],
+    [active, focus, scale, chord, spellPitchClass, locations, t, context, simple],
   );
 
   // The longest variant that fits in MAX_LINES at the bar's current width.

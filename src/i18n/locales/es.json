@@ -1228,5 +1228,32 @@
     "thinTop": "Cuerda fina arriba",
     "thickTop": "Cuerda gruesa arriba",
     "stringRangeHighFirst": "Cuerdas 1 a 6"
+  },
+  "glossary": {
+    "ui": {
+      "words": "Palabras",
+      "wordsLabel": "Palabras en esta pantalla",
+      "wordsIntro": "Toca una palabra para ver qué significa.",
+      "noWords": "No hay palabras que explicar en esta pantalla.",
+      "hear": "Escuchar",
+      "learn": "Saber más",
+      "notHere": "En {{key}} este nombre no se usa.",
+      "sevenOnly": "Estos nombres son de las escalas de siete notas; {{key}} tiene {{n}} notas.",
+      "loadError": "No se pudo cargar la explicación. Inténtalo de nuevo."
+    }
+  },
+  "simpleView": {
+    "label": "Cuánto mostrar",
+    "simple": "Sencilla",
+    "full": "Completa",
+    "menuFull": "Vista completa",
+    "allScales": "Todas las escalas…",
+    "seeEverything": "Ver todo sobre este acorde",
+    "noteOf": "nota {{n}} de {{key}}",
+    "noSharpsFlats": "sin sostenidos ni bemoles",
+    "sharps_one": "un sostenido",
+    "sharps_other": "{{count}} sostenidos",
+    "flats_one": "un bemol",
+    "flats_other": "{{count}} bemoles"
   }
 }
