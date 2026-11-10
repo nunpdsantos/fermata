@@ -1147,5 +1147,36 @@
     "exploreAction": "Explorar uma tonalidade",
     "learnAction": "Começar o curso",
     "drillAction": "Experimentar um treino"
+  },
+  "showMe": {
+    "menuItem": "Mostra-me como funciona",
+    "region": "Visita guiada à app",
+    "step": "Passo {{n}} de {{total}}",
+    "back": "Anterior",
+    "next": "Seguinte",
+    "pause": "Pausa",
+    "resume": "Retomar",
+    "sound": "Som",
+    "tapForSound": "Toca para ativar o som",
+    "close": "Terminar a visita",
+    "end": "Terminar",
+    "pausedTouch": "Em pausa: tocaste na app.",
+    "stayHere": "Ficar aqui",
+    "backToStart": "Voltar para onde estava",
+    "done": "Pronto",
+    "busyCheck": "Termina ou sai primeiro da tua verificação.",
+    "busyDrill": "Termina ou sai primeiro da tua sessão de treino.",
+    "intro": {
+      "key": "A maioria das canções está numa tonalidade. Aqui escolhemos G maior.",
+      "scale": "Estas são as notas dessa tonalidade, destacadas no instrumento.",
+      "chords": "…e estes são os acordes que lhe pertencem.",
+      "chord": "Toca num acorde para o ouvir e ver no instrumento.",
+      "guitar": "O mesmo acorde na guitarra: onde ficam os dedos.",
+      "piano": "O mesmo acorde no piano: as teclas a premir.",
+      "circle": "O círculo mostra que tonalidades são vizinhas: partilham todas as notas menos uma.",
+      "learn": "Aprender: lições curtas, cada uma com uma verificação rápida. Antes de qualquer resposta, há uma dica.",
+      "drill": "Treino: algumas perguntas rápidas por dia ajudam a não esquecer.",
+      "end": "Agora é a tua vez."
+    }
   }
 }

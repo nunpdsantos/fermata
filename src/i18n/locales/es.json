@@ -1147,5 +1147,36 @@
     "exploreAction": "Explorar una tonalidad",
     "learnAction": "Empezar el curso",
     "drillAction": "Probar una práctica"
+  },
+  "showMe": {
+    "menuItem": "Enséñame cómo funciona",
+    "region": "Visita guiada por la app",
+    "step": "Paso {{n}} de {{total}}",
+    "back": "Anterior",
+    "next": "Siguiente",
+    "pause": "Pausa",
+    "resume": "Reanudar",
+    "sound": "Sonido",
+    "tapForSound": "Toca para activar el sonido",
+    "close": "Terminar la visita",
+    "end": "Terminar",
+    "pausedTouch": "En pausa: has tocado la app.",
+    "stayHere": "Quedarme aquí",
+    "backToStart": "Volver a donde estaba",
+    "done": "Listo",
+    "busyCheck": "Termina o sal primero de tu comprobación.",
+    "busyDrill": "Termina o sal primero de tu sesión de práctica.",
+    "intro": {
+      "key": "La mayoría de las canciones están en una tonalidad. Aquí elegimos G mayor.",
+      "scale": "Estas son las notas de esa tonalidad, resaltadas en el instrumento.",
+      "chords": "…y estos son los acordes que le pertenecen.",
+      "chord": "Toca un acorde para oírlo y verlo en el instrumento.",
+      "guitar": "El mismo acorde en la guitarra: dónde van los dedos.",
+      "piano": "El mismo acorde en el piano: las teclas que pulsas.",
+      "circle": "El círculo muestra qué tonalidades son vecinas: comparten todas las notas menos una.",
+      "learn": "Aprender: lecciones cortas, cada una con una comprobación rápida. Antes de cualquier respuesta, hay una pista.",
+      "drill": "Práctica: unas pocas preguntas rápidas al día para no olvidar.",
+      "end": "Ahora te toca a ti."
+    }
   }
 }

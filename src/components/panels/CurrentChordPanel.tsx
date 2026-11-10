@@ -414,7 +414,7 @@ export function CurrentChordPanel({ chord, aside, sourceTab }: CurrentChordPanel
 
         <div className="chord-detail-actions no-print">
           {/* Chord is the main action here (primary). */}
-          <Button variant="primary" onClick={handlePlayChord} startIcon={playIcon}>
+          <Button variant="primary" onClick={handlePlayChord} startIcon={playIcon} data-tour="play-chord">
             {t('panel.chord')}
           </Button>
           <Button onClick={handlePlayArpeggio} startIcon={playIcon}>

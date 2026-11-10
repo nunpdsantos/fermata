@@ -4,6 +4,7 @@ import { TopBar } from './TopBar.tsx';
 import { InstrumentDock } from './InstrumentDock.tsx';
 import { ToastRegion } from './ToastRegion.tsx';
 import { WelcomeHost } from './WelcomeHost.tsx';
+import { TourHost } from '../tour/TourHost.tsx';
 import { useToastAvoid } from './toastLayout.ts';
 import { useAppStore } from '../../state/store.ts';
 import type { Detent } from '../../state/dock.ts';
@@ -83,6 +84,8 @@ export function AppShell({ children }: AppShellProps) {
       </div>
       {/* First visit only (state/welcomeGate.ts): a lazy sheet. */}
       <WelcomeHost />
+      {/* The self-playing tour, when asked for (state/demoRequest.ts): a lazy overlay. */}
+      <TourHost />
     </div>
   );
 }

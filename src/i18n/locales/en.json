@@ -1147,5 +1147,36 @@
     "exploreAction": "Explore a key",
     "learnAction": "Start the course",
     "drillAction": "Try a drill"
+  },
+  "showMe": {
+    "menuItem": "Show me around",
+    "region": "Tour of the app",
+    "step": "Step {{n}} of {{total}}",
+    "back": "Back",
+    "next": "Next",
+    "pause": "Pause",
+    "resume": "Resume",
+    "sound": "Sound",
+    "tapForSound": "Tap for sound",
+    "close": "End the tour",
+    "end": "End",
+    "pausedTouch": "Paused: you touched the app.",
+    "stayHere": "Stay here",
+    "backToStart": "Back to where I was",
+    "done": "Done",
+    "busyCheck": "Finish or leave your check first.",
+    "busyDrill": "Finish or leave your Drill session first.",
+    "intro": {
+      "key": "Most songs live in a key. Here we pick G major.",
+      "scale": "These are the notes of that key, lit on the instrument.",
+      "chords": "…and these are the chords that belong to it.",
+      "chord": "Tap a chord to hear it and see it on the instrument.",
+      "guitar": "The same chord on a guitar: where your fingers go.",
+      "piano": "The same chord on a piano: the keys you press.",
+      "circle": "The circle shows which keys are neighbours: they share all but one note.",
+      "learn": "Learn: short lessons, each with a quick check. A hint comes before any answer.",
+      "drill": "Drill: a few quick questions a day keep it in memory.",
+      "end": "Your turn."
+    }
   }
 }
