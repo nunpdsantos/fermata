@@ -8,6 +8,8 @@ import {
   buildShareUrl,
   MAX_SHARE_VALUE_LENGTH,
   MAX_SHARE_SEARCH_LENGTH,
+  noteBootAddress,
+  openedFromShareLink,
 } from '../shareParams';
 
 describe('shareParams — the contract other branches import', () => {
@@ -78,5 +80,19 @@ describe('buildShareSearch / buildShareUrl', () => {
   it('reads back what it writes', () => {
     const values = { key: 'Bb', scale: 'dorian', chord: 'F#m7b5/C', inst: 'piano' as const, lesson: 'l1u3m1' };
     expect(readShareParams(buildShareSearch(values))).toEqual(values);
+  });
+});
+
+describe('noteBootAddress: the one answer the start screen steps aside on (integration)', () => {
+  it.each([
+    ['?key=D&scale=major&chord=A&inst=guitar', '', true],
+    ['?chord=F', '#m7', true], // a hand-typed ?chord=F#m7
+    ['?lesson=l2u5m3', '', true],
+    ['', '', false],
+    ['?view=drill', '', false], // the installed app's shortcut is not a link
+    ['?foo=1', '#bar', false],
+  ])('%s%s → %s, and openedFromShareLink() says the same', (search, hash, expected) => {
+    expect(noteBootAddress(search, hash)).toBe(expected);
+    expect(openedFromShareLink()).toBe(expected);
   });
 });
