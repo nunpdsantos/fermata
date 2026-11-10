@@ -138,3 +138,47 @@ describe('a track in Learn (wave 2)', () => {
     expect(screen.queryAllByTestId('try-this-names')).toHaveLength(0);
   });
 });
+
+/**
+ * A sound-first lesson opens with its first "Hear it" in reach: when the
+ * button is cut off by the bottom of what the scroller shows — wholly below
+ * it, or across its edge — the lesson opens at its first concept. jsdom has no
+ * layout, so the boxes are given here; e2e/tracks.spec.ts measures the real
+ * thing on one phone size.
+ */
+describe('a sound-first lesson opens with "Hear it" in reach', () => {
+  type Box = { top: number; bottom: number };
+  function layout(hear: Box) {
+    const real = Element.prototype.getBoundingClientRect;
+    const box = (b: Box) => ({ top: b.top, bottom: b.bottom, left: 0, right: 300, width: 300, height: b.bottom - b.top, x: 0, y: b.top, toJSON: () => ({}) }) as DOMRect;
+    Element.prototype.getBoundingClientRect = function (this: Element) {
+      if (this.matches('[data-learn-scroll]')) return box({ top: 0, bottom: 700 });
+      if (this.matches('button') && this.closest('[data-section="c0"] [data-testid="inline-try-this"]')) return box(hear);
+      return box({ top: 0, bottom: 0 });
+    };
+    return () => { Element.prototype.getBoundingClientRect = real; };
+  }
+  const openedAtFirstConcept = () =>
+    (Element.prototype.scrollIntoView as ReturnType<typeof vi.fn>).mock.contexts.some((el) => (el as Element).getAttribute('data-section') === 'c0');
+
+  for (const [name, hear, expected] of [
+    ['wholly below the fold', { top: 760, bottom: 804 }, true],
+    ['across the fold (top shown, bottom cut off)', { top: 680, bottom: 724 }, true],
+    ['wholly in view', { top: 600, bottom: 644 }, false],
+  ] as const) {
+    it(`"Hear it" ${name}: ${expected ? 'opens at the first concept' : 'stays at the top'}`, async () => {
+      (Element.prototype.scrollIntoView as ReturnType<typeof vi.fn>).mockClear();
+      const restore = layout(hear);
+      try {
+        useAppStore.setState({ learnerProfile: 'new', pendingLearnTarget: { levelId: 'l1', unitId: 'u34', moduleId: 'l1u34m1' } });
+        render(<LearnView />);
+        await h1(SOUND.modules[0].title);
+        await new Promise((r) => requestAnimationFrame(() => r(null)));
+        await new Promise((r) => setTimeout(r, 0));
+        expect(openedAtFirstConcept()).toBe(expected);
+      } finally {
+        restore();
+      }
+    });
+  }
+});

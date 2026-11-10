@@ -92,6 +92,46 @@ describe('"From the chords you know" in Learn (wave 2)', () => {
     expect(crumbs().queryByText('Level 1')).toBeNull();
     expect(crumbs().getByText('From the chords you know')).toBeDefined();
     expect(screen.getByRole('button', { name: /Next lesson\s*One, Four, Five/ })).toBeDefined();
+    // Only the LAST lesson of a track ends on the closing card.
+    expect(screen.queryByTestId('track-ending')).toBeNull();
+  });
+
+  it('opening lesson 1 shows its first chord list\'s first chord, G, on the instrument', async () => {
+    useAppStore.setState({ pendingLearnTarget: { levelId: 'l1', unitId: 'u35', moduleId: 'l1u35m1' } });
+    render(<LearnView />);
+    await h1('Your Chords Live in a Key');
+    await waitFor(() => expect(useAppStore.getState().selectedChord).toMatchObject({ root: { natural: 'G', accidental: '' }, quality: 'major' }));
+  });
+
+  it('on a laptop the section rail names the track alone, not "Level 1 ›"', async () => {
+    const before = window.matchMedia;
+    window.matchMedia = ((query: string) => ({
+      matches: query.includes('min-width: 1024px'),
+      media: query, addEventListener: () => {}, removeEventListener: () => {}, onchange: null,
+      addListener: () => {}, removeListener: () => {}, dispatchEvent: () => false,
+    })) as unknown as typeof window.matchMedia;
+    try {
+      useAppStore.setState({ pendingLearnTarget: { levelId: 'l1', unitId: 'u35', moduleId: 'l1u35m3' } });
+      render(<LearnView />);
+      await h1('The Minor Chords of the Key');
+      const rail = screen.getByTestId('section-rail');
+      expect(rail.querySelector('p')?.textContent).toBe('From the chords you know');
+    } finally {
+      window.matchMedia = before;
+    }
+  });
+
+  it('the chord buttons\' names say which instrument shows the chord, in EN, PT and ES', async () => {
+    const words = { en: ['piano', 'guitar'], pt: ['piano', 'guitarra'], es: ['piano', 'guitarra'] } as const;
+    for (const lang of ['en', 'pt', 'es'] as const) {
+      const { default: locale } = await import(`../../i18n/locales/${lang}.json`);
+      const list = locale.tracks.chordList as Record<string, string>;
+      expect(list.showPiano, lang).not.toBe(list.showGuitar);
+      expect(list.showPiano, lang).toContain(words[lang][0]);
+      expect(list.showGuitar, lang).toContain(words[lang][1]);
+      expect(list.showGuitar, lang).not.toContain('piano');
+      expect(list.showGuitar, lang).toContain('{{chord}}');
+    }
   });
 
   it('lesson 1: the chord list shows its chords, sounds them once in order, shows one on the guitar, and opens them in the Progression panel', async () => {

@@ -1,6 +1,7 @@
 /**
- * Lightweight static index of all 126 curriculum modules (118 required + 3
- * optional guitar-notation + 5 "Start with sound" track lessons) for search.
+ * Lightweight static index of all 136 curriculum modules (118 required + 3
+ * optional guitar-notation + 5 "Start with sound" + 10 "From the chords you
+ * know" track lessons) for search.
  *
  * Titles and subtitles are copied from src/core/constants/curriculumL1-9.ts;
  * src/data/__tests__/moduleIndex.test.ts fails if an entry drifts from the
@@ -95,8 +96,8 @@ const RAW: Array<[string, string, string]> = [
   ['l1u35m6', 'What Is Inside a Chord', "1, 3 and 5: every other note from the chord's own note"],
   ['l1u35m7', 'The Seventh', 'A fourth note on top: G7 is G, B, D and F'],
   ['l1u35m8', 'Moving a Song: Other Keys and the Capo', 'The numbers stay, the names change'],
-  ['l1u35m9', 'Notes for a Melody or a Solo', 'The seven notes of the key, and the five safest'],
-  ['l1u35m10', 'A Chord from Outside', 'Borrowed chords, and how to tell the key anyway'],
+  ['l1u35m9', 'Notes for a Melody or a Solo', 'The seven notes of the key, and five safe ones'],
+  ['l1u35m10', 'A Chord from Outside', 'Chords from outside the key, and how to tell the key anyway'],
   ['l2u4m1', 'All Major Keys and the Circle of Fifths', 'The full set of 15 major key signatures and how they connect'],
   ['l2u4m2', 'Scale Degree Names and Functions', 'The seven functional names every musician must know'],
   ['l2u5m1', 'Natural Minor Scale', 'The W-H-W-W-H-W-W pattern and the darker side of tonality'],

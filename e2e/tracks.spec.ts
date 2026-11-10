@@ -188,7 +188,7 @@ test('pt with Dó-Ré-Mi on: lesson 2 gives the solfège names once; the Try Thi
   await expect(page.getByRole('heading', { level: 1, name: 'As sete letras' })).toBeVisible({ timeout: 15_000 });
   const text = await page.locator('[data-section="c0"]').textContent();
   expect(text).toContain('C = Dó, D = Ré, E = Mi, F = Fá, G = Sol, A = Lá, B = Si');
-  expect(text).toContain('Esta aplicação escreve as letras.');
+  expect(text).toContain('Esta aplicação escreve as letras; nas Definições podes mostrar também Dó, Ré, Mi ao lado delas.');
   await expect(page.getByTestId('try-this-names').first()).toHaveText('A (Lá)B (Si)C (Dó)D (Ré)E (Mi)F (Fá)G (Sol)A (Lá)');
   await context.close();
 });
@@ -239,7 +239,7 @@ const P = {
   pt: {
     door: 'Toco, mas nunca aprendi teoria', link: 'Teoria a partir dos acordes que conheces: lição 1 →', track: 'A partir dos acordes que conheces',
     titles: CHORDS.modules.map((m) => ptCurriculumL1.modules[m.id].title!), level: 'Nível 1', progress: (n: number) => `${n} de 10 lições`,
-    end: ['Repetir as tuas músicas no painel Progressão', 'Ir mais fundo: Nível 2'],
+    end: ['Tocar em ciclo os acordes das tuas músicas no painel Progressão', 'Ir mais fundo: Nível 2'],
   },
 } as const;
 

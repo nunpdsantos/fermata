@@ -655,7 +655,7 @@ const soundTrack: CurriculumUnit = {
       concepts: [
         {
           title: 'The Nearest Note: a Half Step',
-          explanation: 'The nearest note above or below any note is a half step away. On the piano it is the very next key, black or white, with nothing in between. On the guitar it is the next fret on the same string. Twelve half steps in a row, every key from one C to the next, make the chromatic scale.',
+          explanation: 'The nearest note above or below any note is a half step away. On the piano it is the very next key, black or white, with nothing in between. On the guitar it is the next fret on the same string. Notes played in order, one after another, make a scale: twelve half steps in a row, every key from one C to the next, make the chromatic scale.',
           tryThisQuery: 'C chromatic scale',
           tryThisLabel: 'Hear twelve half steps in a row, from C up to the next C',
         },
@@ -669,7 +669,7 @@ const soundTrack: CurriculumUnit = {
           title: 'The Notes in Between',
           explanation: 'Between C and D there is one more note: the black key. It has two names. It is C sharp (C♯), a half step above C, and D flat (D♭), a half step below D. Sharp means a half step higher; flat means a half step lower. Every black key has a sharp name and a flat name.',
           tryThisQuery: 'G major scale',
-          tryThisLabel: 'Hear a climb from G with one black key in it, F♯',
+          tryThisLabel: 'Hear a climb from G with one black key in it: F♯, which is also G♭',
         },
         {
           title: 'Where There Is No Black Key',
@@ -716,7 +716,7 @@ const soundTrack: CurriculumUnit = {
         },
         {
           title: 'Home',
-          explanation: 'The first note of the scale is its home. As the scale climbs, the last steps lead the ear back to it, and when the top note arrives the scale sounds finished. Stop one note early, on the seventh, and it sounds as if something is still to come.',
+          explanation: 'The first note of the scale is its home; musicians call it the tonic. As the scale climbs, the last steps lead the ear back to it, and when the top note arrives the scale sounds finished. Stop one note early, on the seventh, and it sounds as if something is still to come.',
           tryThisQuery: 'D major scale',
           tryThisLabel: 'Hear the major scale from D climb back home to D',
         },
@@ -759,7 +759,7 @@ const soundTrack: CurriculumUnit = {
         },
         {
           title: 'Where to Go From Here',
-          explanation: 'You can now hear high and low, name the notes, find half and whole steps, build a major scale and make major and minor chords from it. In Explore you can choose any key and see its scale and its chords on your instrument. To read these notes written down, Level 1 starts with the staff.',
+          explanation: 'You can now hear high and low, name the notes, find half and whole steps, build a major scale and make major and minor chords from it. In Explore you can choose any key and see its scale and its chords on your instrument. To read these notes written down, Level 1 starts with the staff, the five lines that music is written on.',
           tryThisQuery: 'A minor chord',
           tryThisLabel: 'Hear A minor: A, C and E',
         },
@@ -810,13 +810,13 @@ const chordsTrack: CurriculumUnit = {
         },
         {
           title: 'Seven Notes Between Them',
-          explanation: 'Put the notes of the four chords together and leave out the repeats: G, A, B, C, D, E and F♯. That is seven notes, and they are exactly the notes of the G major scale. Notice the F♯, from the D chord: the key of G has F♯ where the key of C has F.',
+          explanation: 'Put the notes of the four chords together and leave out the repeats: G, A, B, C, D, E and F♯. That is seven notes, and they are exactly the notes of the G major scale: the notes of a key, played in order from G up to the next G, are its scale. Notice the F♯, from the D chord: the key of G has F♯ where the key of C has F.',
           tryThisQuery: 'G major scale',
           tryThisLabel: 'Hear the seven notes of G major, from G up to G',
         },
         {
           title: 'What a Key Is',
-          explanation: 'A key is a family of seven notes and the chords built from them. To say that a song is in the key of G means that G sounds like home and that the notes of G major are the ones it is built from. The key is named after its home note: the key of G, or G major.',
+          explanation: 'A key is a family of seven notes and the chords built from them. To say that a song is in the key of G means that G sounds like home and that the notes of G major are the ones it is built from. The key is named after its home note: the key of G, or G major. Musicians call the home note the tonic.',
           tryThisQuery: 'key of G',
           tryThisLabel: 'See the key of G: its seven notes on your instrument',
         },
@@ -866,8 +866,8 @@ const chordsTrack: CurriculumUnit = {
         {
           title: 'A Chart in Numbers',
           explanation: 'A chord chart written in numbers works in every key. I–IV–I–V means home, the chord on 4, home again, the chord on 5. Choose a key, find its notes 1, 4 and 5, and you know which chords to play.',
-          tryThisQuery: 'chords: D G A D',
-          tryThisLabel: 'Hear I, IV, V and I in D: D, G, A and D',
+          tryThisQuery: 'chords: D G D A',
+          tryThisLabel: 'Hear I, IV, I and V in D: D, G, D and A',
         },
       ],
       tasks: [
@@ -896,7 +896,7 @@ const chordsTrack: CurriculumUnit = {
         },
         {
           title: 'The Chord on 7',
-          explanation: 'The chord on 7, built from the key\'s own notes, is diminished: like a minor chord with its top note a half step lower, and it sounds tense. It is written vii°. In G it is F♯ diminished, F♯, A and C; in C it is B diminished, B, D and F.',
+          explanation: 'The chord on 7, built from the key\'s own notes, is diminished: like a minor chord with its top note a half step lower, and it sounds tense. A half step is the nearest note: one fret on the guitar, the very next key on the piano; two half steps make a whole step. It is written vii°. In G it is F♯ diminished, F♯, A and C; in C it is B diminished, B, D and F.',
           tryThisQuery: 'F#dim',
           tryThisLabel: 'Hear vii° in G: F♯, A and C',
         },
@@ -933,7 +933,7 @@ const chordsTrack: CurriculumUnit = {
       concepts: [
         {
           title: 'Home',
-          explanation: 'I is home. When a chord loop comes back to I it sounds settled, the way a scale sounds finished on its top note. Stop the loop on another chord and it sounds as if something is still to come.',
+          explanation: 'I is home. When a chord loop comes back to I it sounds settled, the way a scale sounds finished on its top note. Stop the loop on V, the chord on 5, and it sounds as if something is still to come.',
           tryThisQuery: 'chords: G C D G',
           tryThisLabel: 'Hear G, C, D and back home to G',
         },
@@ -947,7 +947,7 @@ const chordsTrack: CurriculumUnit = {
           title: 'The Same Pull in Every Key',
           explanation: 'In every major key V holds the 7th note of the key, a half step under home. In C, the G chord holds B, under C; in D, the A chord holds C♯, under D; in A, the E chord holds G♯, under A; in E, the B chord holds D♯, under E.',
           tryThisQuery: 'chords: C G C',
-          tryThisLabel: 'Hear the B of the G chord rise to C: C, G and C',
+          tryThisLabel: 'Hear the G chord, with B a half step under C, between two C chords: C, G and C',
         },
         {
           title: 'IV to I: the Softer Way Home',
@@ -1013,7 +1013,7 @@ const chordsTrack: CurriculumUnit = {
       concepts: [
         {
           title: 'Every Other Note',
-          explanation: 'Start on a chord\'s own note and take every other note of its major scale: the 1st, the 3rd and the 5th. From G: G, skip A, B, skip C, D. So G major is G, B and D. From C it gives C, E and G; from D, D, F♯ and A.',
+          explanation: 'For a major chord, start on its own note and take every other note of its major scale: the 1st, the 3rd and the 5th. From G: G, skip A, B, skip C, D. So G major is G, B and D. From C it gives C, E and G; from D, D, F♯ and A. A minor chord takes the same three places, with its 3rd a half step lower.',
           tryThisQuery: 'G major chord',
           tryThisLabel: 'Hear G, B and D together: G major',
         },
@@ -1074,7 +1074,7 @@ const chordsTrack: CurriculumUnit = {
         },
         {
           title: 'The Twelve-Bar Blues',
-          explanation: 'The twelve-bar blues is a pattern of twelve bars on three chords, I, IV and V. In a blues all three are often played as seventh chords: I7, IV7 and V7. Here the sevenths do not lead to another key; they are part of the sound. One common form, in G: G7 for four bars, C7 for two, G7 for two, then D7, C7, G7 and D7 for one bar each.',
+          explanation: 'The twelve-bar blues is a pattern of twelve bars on three chords, I, IV and V. In a blues all three can be played as seventh chords: I7, IV7 and V7. Here the sevenths do not lead to another key; they are part of the sound. One form of it, in G: G7 for four bars, C7 for two, G7 for two, then D7, C7, G7 and D7 for one bar each.',
           tryThisQuery: 'chords: G7 G7 G7 G7 C7 C7 G7 G7 D7 C7 G7 D7',
           tryThisLabel: 'Hear the twelve bars in G, one chord for each bar',
         },
@@ -1119,7 +1119,7 @@ const chordsTrack: CurriculumUnit = {
           title: 'Shape and Sound',
           explanation: 'With a capo each chord has two names: the shape you finger and the chord that sounds. The key is the one that sounds. C shapes with the capo at fret 4 are in the key of E; D shapes with the capo at fret 5 are in the key of G. A chart can be written either way, so check which one it means.',
           tryThisQuery: 'key of E',
-          tryThisLabel: 'See the key of E: what C shapes sound like with the capo at fret 4',
+          tryThisLabel: 'See the key of E: where C shapes with the capo at fret 4 sound',
         },
       ],
       tasks: [
@@ -1133,7 +1133,7 @@ const chordsTrack: CurriculumUnit = {
       unitId: 'u35',
       levelId: 'l1',
       title: 'Notes for a Melody or a Solo',
-      subtitle: 'The seven notes of the key, and the five safest',
+      subtitle: 'The seven notes of the key, and five safe ones',
       objectives: [
         'Know which notes belong with the chords of a key',
         'Play the major pentatonic: five notes of the key',
@@ -1142,13 +1142,13 @@ const chordsTrack: CurriculumUnit = {
       concepts: [
         {
           title: 'The Notes of the Key',
-          explanation: 'Every chord of a key is built from its seven notes, so a melody or a solo made of the same notes belongs with them. In G those are G, A, B, C, D, E and F♯. Held over some chords, a few of them rub, but none of them is out of the key.',
+          explanation: 'Every chord of a key is built from its seven notes, so a melody or a solo made of the same notes belongs with them. In G those are G, A, B, C, D, E and F♯. Held over some chords, a few of them can clash, but none of them is out of the key.',
           tryThisQuery: 'G major scale',
           tryThisLabel: 'Hear the seven notes of G',
         },
         {
           title: 'Five Safe Notes',
-          explanation: 'Leave out notes 4 and 7 and five remain: 1, 2, 3, 5 and 6. That is the major pentatonic scale; in G, G, A, B, D and E. Notes 4 and 7 are each a half step from a note of the I chord, C above B and F♯ under G, the closest two notes can rub. No two of the five are a half step apart, which makes them the safest choice over the chords of the key.',
+          explanation: 'Leave out notes 4 and 7 and five remain: 1, 2, 3, 5 and 6. That is the major pentatonic scale; in G, G, A, B, D and E. Notes 4 and 7 are each a half step from a note of the I chord, C above B and F♯ under G, and a half step is the distance at which two notes clash most. No two of the five are a half step apart, and none is a half step from a note of the I chord, so they are a safe first choice over the home chord. Over the other chords one of them can still clash with a chord note, so listen.',
           tryThisQuery: 'G major pentatonic',
           tryThisLabel: 'Hear the G major pentatonic: G, A, B, D and E',
         },
@@ -1166,7 +1166,7 @@ const chordsTrack: CurriculumUnit = {
         },
       ],
       tasks: [
-        { id: 'l1u35m9t1', instruction: 'Play the G major pentatonic up and down: G, A, B, D, E and G. Then strum G, C or D and answer each chord with one of the five notes.' },
+        { id: 'l1u35m9t1', instruction: 'Play the G major pentatonic up and down: G, A, B, D, E and G. Then strum G, C or D and answer each chord with one of the five notes, listening for any note that clashes.' },
         { id: 'l1u35m9t2', instruction: 'Play the E minor pentatonic, E, G, A, B, D and E. On the guitar it lies on the open strings and frets 2 and 3: thickest string 0 and 3, then 0 and 2 on the next three strings, then 0 and 3 on the last two.' },
       ],
       prerequisites: [],
@@ -1176,7 +1176,7 @@ const chordsTrack: CurriculumUnit = {
       unitId: 'u35',
       levelId: 'l1',
       title: 'A Chord from Outside',
-      subtitle: 'Borrowed chords, and how to tell the key anyway',
+      subtitle: 'Chords from outside the key, and how to tell the key anyway',
       objectives: [
         'Spot a chord that is not one of the key\'s seven',
         'Name F in the key of G as ♭VII, and A major as II, not ii',
@@ -1185,13 +1185,13 @@ const chordsTrack: CurriculumUnit = {
       concepts: [
         {
           title: 'Not Every Chord Is in the Key',
-          explanation: 'Songs do not always keep to the seven chords of their key. A chord with a note the key does not have comes from outside it; it is said to be borrowed. You can spot one by its notes: if one of them is not in the key, the chord is not one of the key\'s seven.',
+          explanation: 'Songs do not always keep to the seven chords of their key. A chord with a note the key does not have comes from outside it. You can spot one by its notes: if one of them is not in the key, the chord is not one of the key\'s seven.',
           tryThisQuery: 'chords: G F C G',
           tryThisLabel: 'Hear a loop with a chord from outside the key: G, F, C and G',
         },
         {
           title: 'F in the Key of G: ♭VII',
-          explanation: 'F major is F, A and C. The key of G has F♯, not F, so F is not one of its chords. It stands on the 7th note of the key lowered by a half step, F instead of F♯, and it is major, so it is written ♭VII. F major is one of the chords of G minor, the minor key on the same home note.',
+          explanation: 'F major is F, A and C. The key of G has F♯, not F, so F is not one of its chords. It stands on the 7th note of the key lowered by a half step, F instead of F♯, and it is major, so it is written ♭VII. F major is one of the chords of G minor, the minor key on the same home note, so F is called a borrowed chord: borrowed from G minor.',
           tryThisQuery: 'F major chord',
           tryThisLabel: 'Hear F: F, A and C, with F instead of F♯',
         },
@@ -1203,7 +1203,7 @@ const chordsTrack: CurriculumUnit = {
         },
         {
           title: 'Telling the Key Anyway',
-          explanation: 'One chord from outside does not change the key. Find the chord the song keeps coming back to and comes to rest on, then check that the other chords belong to that key. G, F, C and G is still in G: G is home, and C belongs to G too. From here, Explore shows any key with its chords, and Level 2 goes further into keys and how chords work together.',
+          explanation: 'One chord from outside does not change the key. Find the chord the song keeps coming back to and comes to rest on, then check that the other chords belong to that key. G, F, C and G is still in G: G is home, and C belongs to G too. G, F and C are also all chords of C major, so here the ear decides: the loop comes to rest on G, not on C. From here, Explore shows any key with its chords, and Level 2 goes further into keys and how chords work together.',
           tryThisQuery: 'key of G',
           tryThisLabel: 'See the key of G and its notes on your instrument',
         },

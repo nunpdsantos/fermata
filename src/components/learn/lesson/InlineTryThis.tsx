@@ -149,11 +149,13 @@ export function InlineTryThis({ query, label, accent, rhythm, compact = false, p
           ))}
         </div>
       ) : names && (picture.kind === 'scale' || picture.kind === 'chord') ? (
-        <p className="try-this-names text-title learn-serif flex flex-wrap gap-x-3 gap-y-1 m-0 min-w-0" style={{ color: 'var(--text)' }} data-testid="try-this-names">
+        // A list, so a screen reader names each note on its own ("C", "D", …)
+        // rather than reading the row as one word.
+        <ul role="list" className="try-this-names text-title learn-serif flex flex-wrap gap-x-3 gap-y-1 m-0 p-0 list-none min-w-0" style={{ color: 'var(--text)' }} data-testid="try-this-names">
           {(picture.kind === 'chord' ? picture.notes : picture.pitches).map((note, i) => (
-            <span key={i}>{noteLabel(note)}</span>
+            <li key={i}>{noteLabel(note)}</li>
           ))}
-        </p>
+        </ul>
       ) : clefs && picture.kind === 'scale' ? (
         <div className="flex flex-col gap-1 min-w-0" data-testid="try-this-clefs">
           {(['treble', 'bass'] as const).map((clef) => (

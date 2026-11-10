@@ -410,7 +410,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u34m1e5: {
     prompt: 'Na guitarra, que corda soa mais aguda quando a tocas solta?',
-    choices: ['A corda mais fina', 'A corda mais grossa', 'A corda do meio', 'A corda mais próxima de ti'],
+    choices: ['A corda mais fina', 'A corda mais grossa', 'A corda do meio', 'A corda a seguir à mais grossa'],
     hint: 'Tocada solta, cada corda mais fina soa mais aguda do que a do lado, por isso a mais fina é a mais aguda.',
     nudge: 'Lembra-te da lição sobre a guitarra: como mudam as cordas da mais grave para a seguinte?',
   },
@@ -438,8 +438,8 @@ const overlay: ExerciseLevelOverlay = {
     nudge: 'Começa no C, a tecla branca imediatamente à esquerda de um grupo de duas teclas pretas, e toma de cada vez a tecla branca seguinte até teres sete.',
   },
   l1u34m2e5: {
-    prompt: 'Duas notas estão a uma oitava de distância. Como se chamam?',
-    choices: ['Com a mesma letra', 'Com a letra seguinte', 'Com a letra anterior', 'Com a letra ao lado'],
+    prompt: 'Duas notas estão a uma oitava de distância. Que letras têm?',
+    choices: ['Têm a mesma letra', 'Têm a letra seguinte', 'Têm a letra anterior', 'Têm a letra ao lado'],
     hint: 'Notas a uma oitava de distância soam tão parecidas que têm a mesma letra: as sete letras recomeçam depois do G.',
     nudge: 'Conta as sete letras a partir de uma nota qualquer. Onde chegas quando os nomes recomeçam?',
   },
@@ -538,7 +538,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Que nota pertence à tonalidade de G?',
     choices: ['F♯', 'F', 'C♯', 'B♭'],
     hint: 'F♯: está no acorde de D, D, F♯ e A, e a tonalidade de G tem F♯ em vez de F.',
-    nudge: 'Pensa nas notas do acorde de D: qual delas é uma tecla preta no piano?',
+    nudge: 'As notas de G, C, D e Em, juntas, são as notas da tonalidade. Qual das opções é uma das notas desses quatro acordes?',
   },
   l1u35m1e3: {
     prompt: 'O que é uma tonalidade?',
@@ -590,11 +590,11 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'De novo o acorde de casa e depois quatro acordes noutra tonalidade. Que números são?',
     choices: ['I - IV - V - I', 'I - V - IV - I', 'I - IV - I - V'],
     hint: 'I – V – IV – I: casa, o acorde sobre o 5, o acorde sobre o 4 e de novo a casa.',
-    nudge: 'Trauteia a nota mais grave de cada acorde. O segundo acorde sobe mais do que o terceiro, ou não tanto?',
+    nudge: 'Trauteia a nota mais grave de cada acorde: nesta tonalidade, o acorde sobre o 5 fica um pouco mais agudo do que o acorde sobre o 4. Qual dos dois vem em segundo lugar, e que acorde termina a sequência?',
   },
   l1u35m2e6: {
     prompt: 'Constrói o acorde IV da tonalidade de D.',
-    hint: 'G maior, G, B e D: a nota 4 de D maior é G, e o IV é um acorde maior.',
+    hint: 'G maior é G, B e D: a nota 4 de D maior é G, e o IV é um acorde maior.',
     nudge: 'Sobe a escala desta tonalidade até à nota 4 e constrói um acorde maior sobre essa nota.',
   },
   l1u35m3e1: {
@@ -611,9 +611,9 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u35m3e3: {
     prompt: 'Que tipo de acorde fica sobre a nota 7 de uma tonalidade maior?',
-    choices: ['Um acorde diminuto', 'Um acorde maior', 'Um acorde menor', 'Um acorde de sétima'],
+    choices: ['Um acorde diminuto', 'Um acorde maior', 'Um acorde menor', 'Um acorde aumentado'],
     hint: 'Um acorde diminuto, escrito vii°: em G é F♯, A e C.',
-    nudge: 'Os acordes sobre o 1 a 6 são maiores ou menores. O que sobra é o diferente: que tipo lhe deu a lição?',
+    nudge: 'Os acordes sobre as notas 1 a 6 são maiores ou menores. O que sobra é o diferente: que tipo lhe deu a lição?',
   },
   l1u35m3e4: {
     prompt: 'Qual é a relativa menor de C maior?',
@@ -629,14 +629,14 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u35m3e6: {
     prompt: 'Constrói o ii da tonalidade de C: o acorde sobre a nota 2, com as notas da própria tonalidade.',
-    hint: 'Dm, D, F e A: uma nota sim, outra não, de C maior a partir de D.',
+    hint: 'Dm é D, F e A: uma nota sim, outra não, de C maior, a começar em D.',
     nudge: 'Começa na nota 2 da escala de C e toma uma nota sim, outra não, da mesma escala até teres três.',
   },
   l1u35m4e1: {
     prompt: 'Na tonalidade de D, que acorde puxa com mais força de volta a D?',
     choices: ['A', 'G', 'Bm', 'Em'],
-    hint: 'A, o V de D: tem C♯, a 7.ª nota da tonalidade, meio-tom abaixo de D.',
-    nudge: 'O puxão mais forte para casa vem do acorde sobre a nota 5. Sobe a escala de D maior até lá.',
+    hint: 'O acorde de A, o V de D, tem C♯, a 7.ª nota da tonalidade, meio-tom abaixo de D.',
+    nudge: 'Segundo a lição, que número da tonalidade leva para casa com mais força? Sobe a escala de D maior até essa nota.',
   },
   l1u35m4e2: {
     prompt: 'No acorde V, que nota se inclina com mais força para casa?',
@@ -669,7 +669,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u35m5e1: {
     prompt: 'O que muda entre D maior e D menor?',
-    choices: ['Só a nota do meio, meio-tom abaixo', 'A nota de cima, meio-tom abaixo', 'A nota mais grave, meio-tom acima', 'A nota do meio, meio-tom acima'],
+    choices: ['Só a nota do meio, meio-tom abaixo', 'Só a nota de cima, meio-tom abaixo', 'Só a nota mais grave, meio-tom acima', 'Só a nota do meio, meio-tom acima'],
     hint: 'Só muda a nota do meio, e desce meio-tom: D, F♯ e A passam a D, F e A.',
     nudge: 'D maior é D, F♯ e A. Qual destas três é diferente em D menor, e para que lado vai?',
   },
@@ -760,7 +760,7 @@ const overlay: ExerciseLevelOverlay = {
   l1u35m7e5: {
     prompt: 'Ouve este acorde. É um simples acorde maior, ou um acorde de sétima da dominante, com uma sétima por cima?',
     choices: ['Sétima da dominante', 'Maior'],
-    hint: 'Sétima da dominante: D7, com C por cima de D, F♯ e A, que o faz inclinar-se para a frente.',
+    hint: 'Sétima da dominante: D7, com C por cima de D, F♯ e A, que o faz puxar para G.',
     nudge: 'Ouve a parte de cima do acorde: há uma quarta nota que o faz soar inquieto?',
   },
   l1u35m8e1: {
@@ -810,7 +810,7 @@ const overlay: ExerciseLevelOverlay = {
     nudge: 'Que duas notas da tonalidade ficam a meio-tom de uma nota do acorde de casa?',
   },
   l1u35m9e4: {
-    prompt: 'A pentatónica menor de E tem as mesmas cinco notas que qual pentatónica maior?',
+    prompt: 'Qual é a pentatónica maior que tem as mesmas cinco notas da pentatónica menor de E?',
     choices: ['A pentatónica de G maior', 'A pentatónica de E maior', 'A pentatónica de C maior', 'A pentatónica de D maior'],
     hint: 'A pentatónica de G maior: a tonalidade de E menor é a relativa menor de G, e ambas as pentatónicas são E, G, A, B e D.',
     nudge: 'Que tonalidade maior tem E menor como relativa menor?',
@@ -847,7 +847,7 @@ const overlay: ExerciseLevelOverlay = {
   l1u35m10e4: {
     prompt: 'Uma música faz G, F, C e G e volta sempre a repousar em G. Em que tonalidade está?',
     choices: ['Em G, com um acorde de fora', 'Em F, com um acorde de fora', 'Em C, com um acorde de fora', 'Em D, com um acorde de fora'],
-    hint: 'Em G: é o acorde em que a música volta a repousar, e C também pertence a G; F é emprestado.',
+    hint: 'Em G: é o acorde em que a música volta a repousar, e C também pertence a G; F é emprestado de G menor.',
     nudge: 'Que acorde soa como a casa? Depois confirma quais dos outros pertencem a essa tonalidade.',
   },
   l1u35m10e5: {

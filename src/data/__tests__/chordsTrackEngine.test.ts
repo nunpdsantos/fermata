@@ -324,6 +324,127 @@ describe('the guitar: shapes, frets and the capo (standard tuning)', () => {
   });
 });
 
+describe('claims the review corrected (2026-11-10), each checked against the engine', () => {
+  const mod = (id: string) => unit.modules.find((m) => m.id === id)!;
+  const ROMAN_DEGREE: Record<string, number> = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7 };
+  const triadOn = (key: string, degree: number) => {
+    const s = scaleOf(key, 'major');
+    return [s[degree - 1], s[(degree + 1) % 7], s[(degree + 3) % 7]];
+  };
+  const sameChord = (a: readonly Note[], b: readonly Note[]) => {
+    expect(pcs(a)).toEqual(pcs(b));
+    expect(getPitchClass(a[0])).toBe(getPitchClass(b[0]));
+  };
+
+  it('every chord list labelled "Hear <numerals> in <key>" plays the key\'s chords on those numbers, in that order (EN, PT, ES)', () => {
+    const overlays = { pt: ptCurriculumL1, es: esCurriculumL1 } as const;
+    let checked = 0;
+    for (const m of unit.modules) {
+      m.concepts.forEach((c, i) => {
+        const list = parseChordListQuery(c.tryThisQuery);
+        const labels = [c.tryThisLabel, overlays.pt.modules[m.id]?.concepts[i]?.tryThisLabel ?? '', overlays.es.modules[m.id]?.concepts[i]?.tryThisLabel ?? ''];
+        for (const label of labels) {
+          const hit = /((?:\b(?:VII|VI|IV|III|II|V|I|vii|vi|iv|iii|ii)\b(?:, | and | e | y )?)+) (?:in|em|en) ([A-G][♯♭]?):/u.exec(label);
+          if (!list || !hit) continue;
+          checked++;
+          const numerals = hit[1].split(/, | and | e | y /).filter(Boolean);
+          expect(numerals.length, `${m.id} c${i}: ${label}`).toBe(list.length);
+          numerals.forEach((r, k) => {
+            const want = triadOn(hit[2], ROMAN_DEGREE[r.toUpperCase()]);
+            sameChord(list[k].chord.notes, want);
+            // Capitals are major, small numerals minor.
+            expect(r === r.toUpperCase(), `${m.id} c${i} ${r}`).toBe((getPitchClass(want[1]) - getPitchClass(want[0]) + 12) % 12 === 4);
+          });
+        }
+      });
+    }
+    // Five such labels (lessons 2, 3 and 8), in each of the three languages.
+    expect(checked).toBe(3 * 5);
+  });
+
+  it('lesson 2: the chart the sentence spells out (I–IV–I–V) is the one its Try This plays', () => {
+    const c = mod('l1u35m2').concepts[3];
+    const chart = /\b((?:I|IV|V)(?:–(?:I|IV|V))+)\b/.exec(c.explanation)![1].split('–');
+    expect(chart).toEqual(['I', 'IV', 'I', 'V']);
+    const list = parseChordListQuery(c.tryThisQuery)!;
+    expect(list.length).toBe(chart.length);
+    chart.forEach((r, k) => sameChord(list[k].chord.notes, triadOn('D', ROMAN_DEGREE[r])));
+  });
+
+  it('lesson 4: the G chord holds B, a half step under C; the label promises no B rising to C (the C chord after it is voiced with no C near B)', () => {
+    const c = mod('l1u35m4').concepts[2];
+    expect(pcs(chordOf('G').notes).has(pcOf('B'))).toBe(true);
+    expect((pcOf('C') - pcOf('B') + 12) % 12).toBe(1);
+    const sounds = chordListSounds(parseChordListQuery(c.tryThisQuery)!);
+    const midi = (p: Note & { octave: number }) => (p.octave + 1) * 12 + getPitchClass(p);
+    const b = sounds[1].pitches.find((p) => getPitchClass(p) === pcOf('B'))!;
+    // The C a half step above the G chord's B is not in the C chord as voiced.
+    expect(sounds[2].pitches.map(midi)).not.toContain(midi(b) + 1);
+    expect(c.tryThisLabel).not.toMatch(/\brise/);
+  });
+
+  it('lesson 6: "every other note of its major scale" builds the MAJOR chord only; a minor chord is those places with the 3rd a half step lower (all twelve roots), and the sentence says so', () => {
+    for (let pc = 0; pc < 12; pc++) {
+      const root = buildScale(C, 'chromatic').notes[pc];
+      const s = buildScale(root, 'major').notes;
+      const stacked = [s[0], s[2], s[4]].map(getPitchClass);
+      expect(buildChord(root, 'major').notes.map(getPitchClass)).toEqual(stacked);
+      const minor = buildChord(root, 'minor').notes.map(getPitchClass);
+      expect(minor).not.toEqual(stacked);
+      expect([minor[0], (minor[1] + 1) % 12, minor[2]]).toEqual(stacked);
+    }
+    const text = mod('l1u35m6').concepts[0].explanation;
+    expect(text.startsWith('For a major chord')).toBe(true);
+    expect(text).toMatch(/minor chord takes the same three places, with its 3rd a half step lower/);
+  });
+
+  it('lesson 9: the major pentatonic is a half step from no note of I in every key, but over IV or V one of its notes is a half step from a chord note; so the lesson calls it safe over the home chord only', () => {
+    const halfStep = (a: number, b: number) => [1, 11].includes((a - b + 12) % 12);
+    for (let pc = 0; pc < 12; pc++) {
+      const key = buildScale(C, 'chromatic').notes[pc];
+      const s = buildScale(key, 'major').notes;
+      const penta = [...pcs(buildScale(key, 'pentatonic_major').notes)];
+      const chordOn = (d: number) => [...pcs(buildChord(s[d - 1], 'major').notes)];
+      expect(penta.some((p) => chordOn(1).some((x) => halfStep(p, x)))).toBe(false);
+      expect(penta.some((p) => chordOn(4).some((x) => halfStep(p, x)))).toBe(true);
+      expect(penta.some((p) => chordOn(5).some((x) => halfStep(p, x)))).toBe(true);
+    }
+    const text = mod('l1u35m9').concepts[1].explanation;
+    expect(text).not.toMatch(/safest choice over the chords of the key/);
+    expect(text).toMatch(/safe first choice over the home chord/);
+    expect(text).toMatch(/Over the other chords one of them can still clash/);
+  });
+
+  it('lesson 10: F is a chord of G minor (borrowed), A major is not (not borrowed: it leans to D); G, F and C are all chords of C major, so the text lets the resting chord decide', () => {
+    const gMinor = scaleOf('G', 'natural_minor');
+    const inGMinor = (sym: string) => chordOf(sym).notes.every((n) => pcs(gMinor).has(getPitchClass(n)));
+    expect(inGMinor('F')).toBe(true);
+    expect(inGMinor('A')).toBe(false);
+    for (const sym of ['G', 'F', 'C']) expect(chordOf(sym).notes.every((n) => pcs(scaleOf('C', 'major')).has(getPitchClass(n)))).toBe(true);
+    const m = mod('l1u35m10');
+    // "Borrowed" names F only: not the subtitle, not the general sentence, not A major.
+    expect(m.subtitle).not.toMatch(/borrow/i);
+    expect(m.concepts[0].explanation).not.toMatch(/borrow/i);
+    expect(m.concepts[2].explanation).not.toMatch(/borrow/i);
+    expect(m.concepts[1].explanation).toMatch(/F is called a borrowed chord: borrowed from G minor/);
+    expect(m.concepts[3].explanation).toMatch(/G, F and C are also all chords of C major/);
+  });
+
+  it('lesson 5: every "X to Xm: the <string> goes from fret a to fret b / to open" sentence moves the string that plays the 3rd, onto the minor 3rd (EN), with a planted wrong string caught', () => {
+    const STRING: Record<string, number> = { 'G string': 3, 'B string': 2, 'thinnest string': 1, 'D string': 4, 'A string': 5 };
+    const CLAIM = /([A-G]) to \1m: the ((?:[A-G]|thinnest) string) goes from fret (\d+) to (?:fret (\d+)|open)/g;
+    const check = (text: string) => [...text.matchAll(CLAIM)].map((m) => {
+      const s = STRING[m[2]];
+      const from = Number(m[3]);
+      const to = m[4] === undefined ? 0 : Number(m[4]);
+      return fretPc(s, from) === getPitchClass(chordOf(m[1]).notes[1]) && fretPc(s, to) === getPitchClass(chordOf(`${m[1]}m`).notes[1]) && from - to === 1;
+    });
+    const got = check(mod('l1u35m5').concepts[1].explanation);
+    expect(got).toEqual([true, true, true]);
+    expect(check('A to Am: the G string goes from fret 2 to fret 1.')).toEqual([false]);
+  });
+});
+
 describe('every Try This plays what its label says (EN, PT, ES)', () => {
   const overlays = { pt: ptCurriculumL1, es: esCurriculumL1 } as const;
   const SYMBOL = /(?<![\p{L}])([A-G](?:♯|♭)?(?:dim|m)?7?)(?![\p{L}\d])/gu;

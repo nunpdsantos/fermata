@@ -13,6 +13,7 @@ import { resolveTheoryQuery } from '../theoryQuery';
 import { clearProgressionRequest, getProgressionRequest } from '../../state/progressionRequest';
 import { useAppStore } from '../../state/store';
 import { getPitchClass } from '../../core/constants/notes';
+import { looksLikeChordSymbol } from '../../core/utils/chordParser';
 
 beforeEach(() => {
   clearProgressionRequest();
@@ -32,6 +33,15 @@ describe('parseChordListQuery', () => {
     'G C D Em', 'chords:', 'chords: G', 'chords: G Hm', 'chords: G Gx', 'chords: G, C', 'progression: G C', 'key of G', 'C major chord',
   ])('is not a chord list: %s', (q) => {
     expect(parseChordListQuery(q)).toBeNull();
+  });
+
+  // Symbols the lenient parser accepts but a chord list must refuse: each must
+  // be ONE plain ASCII symbol (slash chords, lower case, Unicode accidentals,
+  // + / - / ° shorthands are not authored list forms).
+  it.each(['G/B', 'g', 'em', 'G♯', 'G+', 'G-', 'C°'])('refuses the symbol %s, which the chord parser alone would accept', (symbol) => {
+    expect(looksLikeChordSymbol(symbol)).toBe(true);
+    expect(parseChordListQuery(`chords: ${symbol} C`)).toBeNull();
+    expect(parseChordListQuery(`chords: C ${symbol}`)).toBeNull();
   });
 
   it('the one-object resolver (Cmd+K, the lesson instrument) does not read it', () => {

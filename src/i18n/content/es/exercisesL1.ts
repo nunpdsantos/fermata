@@ -410,7 +410,7 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u34m1e5: {
     prompt: 'En la guitarra, ¿qué cuerda suena más aguda cuando la tocas al aire?',
-    choices: ['La cuerda más fina', 'La cuerda más gruesa', 'La cuerda del medio', 'La cuerda más cercana a ti'],
+    choices: ['La cuerda más fina', 'La cuerda más gruesa', 'La cuerda del medio', 'La cuerda que sigue a la más gruesa'],
     hint: 'Tocada al aire, cada cuerda más fina suena más aguda que la de al lado, así que la más fina es la más aguda.',
     nudge: 'Recuerda la lección sobre la guitarra: ¿cómo cambian las cuerdas de la más grave a la siguiente?',
   },
@@ -538,7 +538,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: '¿Qué nota pertenece a la tonalidad de G?',
     choices: ['F♯', 'F', 'C♯', 'B♭'],
     hint: 'F♯: está en el acorde de D, D, F♯ y A, y la tonalidad de G tiene F♯ en lugar de F.',
-    nudge: 'Piensa en las notas del acorde de D: ¿cuál de ellas es una tecla negra en el piano?',
+    nudge: 'Las notas de G, C, D y Em, juntas, son las notas de la tonalidad. ¿Cuál de las opciones es una de las notas de esos cuatro acordes?',
   },
   l1u35m1e3: {
     prompt: '¿Qué es una tonalidad?',
@@ -590,11 +590,11 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Otra vez el acorde de casa y después cuatro acordes en otra tonalidad. ¿Qué números son?',
     choices: ['I - IV - V - I', 'I - V - IV - I', 'I - IV - I - V'],
     hint: 'I – V – IV – I: casa, el acorde sobre el 5, el acorde sobre el 4 y otra vez casa.',
-    nudge: 'Tararea la nota más grave de cada acorde. ¿El segundo acorde sube más que el tercero, o no tanto?',
+    nudge: 'Tararea la nota más grave de cada acorde: en esta tonalidad, el acorde sobre el 5 queda un poco más agudo que el acorde sobre el 4. ¿Cuál de los dos va segundo, y qué acorde cierra la secuencia?',
   },
   l1u35m2e6: {
     prompt: 'Construye el acorde IV de la tonalidad de D.',
-    hint: 'G mayor, G, B y D: la nota 4 de D mayor es G, y el IV es un acorde mayor.',
+    hint: 'G mayor es G, B y D: la nota 4 de D mayor es G, y el IV es un acorde mayor.',
     nudge: 'Sube por la escala de esta tonalidad hasta la nota 4 y construye un acorde mayor sobre esa nota.',
   },
   l1u35m3e1: {
@@ -611,9 +611,9 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u35m3e3: {
     prompt: '¿Qué tipo de acorde está sobre la nota 7 de una tonalidad mayor?',
-    choices: ['Un acorde disminuido', 'Un acorde mayor', 'Un acorde menor', 'Un acorde de séptima'],
+    choices: ['Un acorde disminuido', 'Un acorde mayor', 'Un acorde menor', 'Un acorde aumentado'],
     hint: 'Un acorde disminuido, escrito vii°: en G es F♯, A y C.',
-    nudge: 'Los acordes sobre el 1 al 6 son mayores o menores. El que queda es el diferente: ¿qué tipo le dio la lección?',
+    nudge: 'Los acordes sobre las notas 1 a 6 son mayores o menores. El que queda es el diferente: ¿qué tipo le dio la lección?',
   },
   l1u35m3e4: {
     prompt: '¿Cuál es la relativa menor de C mayor?',
@@ -629,14 +629,14 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u35m3e6: {
     prompt: 'Construye el ii de la tonalidad de C: el acorde sobre la nota 2, con las notas de la propia tonalidad.',
-    hint: 'Dm, D, F y A: una nota sí y otra no de C mayor desde D.',
+    hint: 'Dm es D, F y A: una nota sí y otra no de C mayor, empezando en D.',
     nudge: 'Empieza en la nota 2 de la escala de C y toma una nota sí y otra no de la misma escala hasta tener tres.',
   },
   l1u35m4e1: {
     prompt: 'En la tonalidad de D, ¿qué acorde tira con más fuerza de vuelta a D?',
     choices: ['A', 'G', 'Bm', 'Em'],
     hint: 'A, el V de D: tiene C♯, la 7.ª nota de la tonalidad, un semitono por debajo de D.',
-    nudge: 'El tirón más fuerte hacia casa viene del acorde sobre la nota 5. Sube por la escala de D mayor hasta él.',
+    nudge: 'Según la lección, ¿qué número de la tonalidad lleva a casa con más fuerza? Sube por la escala de D mayor hasta esa nota.',
   },
   l1u35m4e2: {
     prompt: 'En el acorde V, ¿qué nota se inclina con más fuerza hacia casa?',
@@ -662,14 +662,14 @@ const overlay: ExerciseLevelOverlay = {
     nudge: 'Vuelve a escucharlo y espera después del último acorde. ¿Suena terminado, o como si debiera venir un acorde más?',
   },
   l1u35m4e5: {
-    prompt: 'El acorde de casa y después tres acordes que se van y vuelven. ¿La vuelta a casa fue desde el IV, el camino más suave, o desde el V, el tirón más fuerte?',
+    prompt: 'El acorde de casa y después tres acordes que se van y vuelven. ¿La vuelta a casa fue desde el IV, el camino más suave, o desde el V, la atracción más fuerte?',
     choices: ['I - IV - I', 'I - V - I'],
     hint: 'I - IV - I: casa desde el IV, de C a G, sin ninguna nota un semitono por debajo de la casa, así que la vuelta es tranquila.',
     nudge: 'Escucha el acorde del medio: ¿se inclina con urgencia hacia casa, o vuelve a asentarse con suavidad?',
   },
   l1u35m5e1: {
     prompt: '¿Qué cambia entre D mayor y D menor?',
-    choices: ['Solo la nota del medio, un semitono abajo', 'La nota de arriba, un semitono abajo', 'La nota más grave, un semitono arriba', 'La nota del medio, un semitono arriba'],
+    choices: ['Solo la nota del medio, un semitono abajo', 'Solo la nota de arriba, un semitono abajo', 'Solo la nota más grave, un semitono arriba', 'Solo la nota del medio, un semitono arriba'],
     hint: 'Solo cambia la nota del medio, y baja un semitono: D, F♯ y A pasan a ser D, F y A.',
     nudge: 'D mayor es D, F♯ y A. ¿Cuál de las tres es distinta en D menor, y hacia dónde va?',
   },
@@ -717,7 +717,7 @@ const overlay: ExerciseLevelOverlay = {
     nudge: 'Empieza en E y toma una nota sí y otra no de la escala de esta tonalidad hasta tener tres.',
   },
   l1u35m6e4: {
-    prompt: 'Un acorde de G abierto suena en seis cuerdas. ¿Cuántas notas distintas toca?',
+    prompt: 'Un acorde de G abierto suena en seis cuerdas. ¿Cuántas notas distintas tiene?',
     choices: ['Tres notas distintas', 'Seis notas distintas', 'Cuatro notas distintas', 'Cinco notas distintas'],
     hint: 'Tres: desde la cuerda más gruesa, G, B, D, G, B y G. Las notas se repiten en otras octavas.',
     nudge: 'Nombra la nota de cada cuerda, empezando por la más gruesa, y cuenta cuántos nombres has usado.',
@@ -760,7 +760,7 @@ const overlay: ExerciseLevelOverlay = {
   l1u35m7e5: {
     prompt: 'Escucha este acorde. ¿Es un simple acorde mayor, o un acorde de séptima de dominante, con una séptima encima?',
     choices: ['Séptima de dominante', 'Mayor'],
-    hint: 'Séptima de dominante: D7, con C encima de D, F♯ y A, que lo hace inclinarse hacia delante.',
+    hint: 'Séptima de dominante: D7, con C encima de D, F♯ y A, que lo hace tirar hacia G.',
     nudge: 'Escucha la parte de arriba del acorde: ¿hay una cuarta nota que lo hace sonar inquieto?',
   },
   l1u35m8e1: {
@@ -776,13 +776,13 @@ const overlay: ExerciseLevelOverlay = {
     nudge: 'De G a A hay un tono. Sube cada uno de los otros acordes la misma distancia.',
   },
   l1u35m8e3: {
-    prompt: 'Tocas formas de G con un capo en el traste 2. ¿En qué tonalidad suena?',
+    prompt: 'Tocas formas de G con un capo en el traste 2. ¿En qué tonalidad suenan?',
     choices: ['En la tonalidad de A', 'En la tonalidad de G', 'En la tonalidad de B', 'En la tonalidad de E'],
     hint: 'En la tonalidad de A: dos trastes son dos semitonos, un tono por encima de G.',
     nudge: 'Cada traste es un semitono más agudo. Cuenta dos semitonos hacia arriba desde G.',
   },
   l1u35m8e4: {
-    prompt: 'Tocas formas de C con el capo en el traste 4. ¿En qué tonalidad suena?',
+    prompt: 'Tocas formas de C con el capo en el traste 4. ¿En qué tonalidad suenan?',
     choices: ['En la tonalidad de E', 'En la tonalidad de D', 'En la tonalidad de F', 'En la tonalidad de C'],
     hint: 'En la tonalidad de E: cuatro semitonos por encima de C, C♯, D, D♯ y E.',
     nudge: 'Cuenta cuatro semitonos hacia arriba desde C, un traste por cada uno.',
@@ -845,9 +845,9 @@ const overlay: ExerciseLevelOverlay = {
     nudge: 'Construye un acorde sobre la nota 2 solo con las notas de G mayor y comprueba su nota del medio.',
   },
   l1u35m10e4: {
-    prompt: 'Una canción hace G, F, C y G y siempre vuelve a reposar en G. ¿En qué tonalidad está?',
+    prompt: 'Una canción usa los acordes G, F, C y G y siempre vuelve a reposar en G. ¿En qué tonalidad está?',
     choices: ['En G, con un acorde de fuera', 'En F, con un acorde de fuera', 'En C, con un acorde de fuera', 'En D, con un acorde de fuera'],
-    hint: 'En G: es el acorde en el que la canción vuelve a reposar, y C también pertenece a G; F es prestado.',
+    hint: 'En G: es el acorde en el que la canción vuelve a reposar, y C también pertenece a G; F es prestado de G menor.',
     nudge: '¿Qué acorde suena como la casa? Después comprueba cuáles de los otros pertenecen a esa tonalidad.',
   },
   l1u35m10e5: {

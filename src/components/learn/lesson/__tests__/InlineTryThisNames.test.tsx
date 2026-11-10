@@ -32,6 +32,13 @@ describe('sound-first Try This (names, no staff)', () => {
     expect([...screen.getByTestId('try-this-names').children].map((c) => c.textContent)).toEqual(['C', 'E♭', 'G']);
   });
 
+  it('the names are a list, one item per note, so a screen reader names each note on its own', () => {
+    render(<InlineTryThis query="C minor chord" label="Hear C minor" accent="#3b82f6" names />);
+    const list = screen.getByRole('list');
+    expect(list).toBe(screen.getByTestId('try-this-names'));
+    expect(screen.getAllByRole('listitem').map((li) => li.textContent)).toEqual(['C', 'E♭', 'G']);
+  });
+
   it('PT with Dó-Ré-Mi on: the syllable beside each letter', async () => {
     await i18n.changeLanguage('pt');
     act(() => useAppStore.setState({ language: 'pt', showSolfege: true }));

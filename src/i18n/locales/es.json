@@ -1277,9 +1277,9 @@
   "tracks": {
     "sound": {
       "title": "Empieza por el sonido",
-      "line": "Oye agudo y grave, nombra las notas y construye tus primeros acordes. No hace falta leer música.",
+      "line": "Escucha lo agudo y lo grave, nombra las notas y construye tus primeros acordes. No hace falta leer música.",
       "end": {
-        "explore": "Tocar estas notas en Explorar",
+        "explore": "Probar estas notas en Explorar",
         "level1": "Aprender a leer música: Nivel 1"
       }
     },
@@ -1287,7 +1287,7 @@
       "title": "Desde los acordes que conoces",
       "line": "Teoría que parte de los acordes que ya tocas.",
       "end": {
-        "progression": "Repetir tus propias canciones en el panel Progresión",
+        "progression": "Repetir en bucle tus propias canciones en el panel Progresión",
         "level2": "Profundizar: Nivel 2"
       }
     },
