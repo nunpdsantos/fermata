@@ -11,8 +11,11 @@ import { registerInstrumentVoices } from './services/instrumentVoices.ts'
 import { registerDrillWorkInProgress } from './state/drillWork.ts'
 import { registerLearnWorkInProgress } from './state/learnWork.ts'
 import { applyShareLinkRule } from './state/startGate.ts'
+import { noteBootAddress } from './state/shareParams.ts'
 
-// A shared link wins over the start screen on this visit (state/startGate.ts).
+// A shared link wins over the start screen on this visit (state/startGate.ts):
+// one answer, read off the address as it arrived, before the first render.
+noteBootAddress(window.location.search, window.location.hash);
 applyShareLinkRule();
 
 // One-time eviction of the persisted stores for the removed gamification +

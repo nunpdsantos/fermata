@@ -72,7 +72,9 @@ describe('the offline-ready notice', () => {
     setScreen(false);
     const { stub, gate, PWAPrompts } = await prompts();
     const { applyShareLinkRule } = await import('../../../state/startGate');
-    gate.useWelcomeStore.setState({ open: true, shownThisPage: true, bootSearch: '?chord=G' });
+    const { noteBootAddress } = await import('../../../state/shareParams');
+    noteBootAddress('?chord=G');
+    gate.useWelcomeStore.setState({ open: true, shownThisPage: true });
     expect(applyShareLinkRule()).toBe(true);
     render(<PWAPrompts />);
     act(() => stub.lastOptions!.onOfflineReady!());

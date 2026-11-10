@@ -45,16 +45,23 @@ import App from '../../../App';
 import { useAppStore } from '../../../state/store';
 import { WELCOME_KEY, bootWelcome, useWelcomeStore } from '../../../state/welcomeGate';
 import { applyShareLinkRule } from '../../../state/startGate';
+import { noteBootAddress } from '../../../state/shareParams';
 import { clearDemoRequest, getDemoRequest } from '../../../state/demoRequest';
 import { useStartHintStore, raiseStartHint } from '../../../state/startHint';
 import { SettingsSheet } from '../../layout/SettingsSheet';
 import { StartHint } from '../../layout/StartHint';
 
+/** Boot as main.tsx does: the boot address is noted (state/shareParams.ts), then the gate decides from storage. */
+function bootAt(search: string): boolean {
+  noteBootAddress(search);
+  return bootWelcome(localStorage);
+}
+
 beforeEach(async () => {
   clearDemoRequest();
   useAppStore.setState({ view: 'explore', lastView: 'explore', instrument: 'piano', language: 'en', learnerProfile: null, startHint: null, pendingLearnTarget: null });
   useStartHintStore.setState({ shown: null });
-  useWelcomeStore.setState({ open: false, shownThisPage: false, bootSearch: '' });
+  useWelcomeStore.setState({ open: false, shownThisPage: false });
   window.history.replaceState(null, '', '/');
   await i18n.changeLanguage('en');
 });
@@ -62,7 +69,7 @@ afterEach(cleanup);
 
 async function firstVisit(search = '') {
   localStorage.clear();
-  expect(bootWelcome(localStorage, search)).toBe(true);
+  expect(bootAt(search)).toBe(true);
   applyShareLinkRule();
   render(<App />);
 }
@@ -142,7 +149,7 @@ describe('the start screen in the app', () => {
   it('saved data: the app as before', async () => {
     localStorage.clear();
     localStorage.setItem('music-theory-app', JSON.stringify({ state: { lastView: 'learn' }, version: 6 }));
-    expect(bootWelcome(localStorage, '')).toBe(false);
+    expect(bootAt('')).toBe(false);
     useAppStore.setState({ lastView: 'learn' });
     render(<App />);
     expect(await screen.findByText('LEARN_VIEW', {}, { timeout: 8000 })).toBeDefined();

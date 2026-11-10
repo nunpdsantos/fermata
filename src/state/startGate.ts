@@ -4,7 +4,9 @@
  *  - The first-visit gate decides at boot (state/welcomeGate.ts: no saved
  *    data, or the flag 'pending'; never after 'seen').
  *  - A shared link wins (`applyShareLinkRule`, called once by main.tsx): if
- *    the address carried one at boot, this visit shows the linked content.
+ *    the page was opened from one (`openedFromShareLink()`, state/shareParams.ts
+ *    — the one answer, noted from the boot address before the first render),
+ *    this visit shows the linked content.
  *    The flag stays 'pending', so the visitor's NEXT plain visit shows the
  *    start screen (they were never asked; this visit's saved settings do not
  *    count against it), until a door is chosen — unless they have really used
@@ -16,18 +18,13 @@
  *    chosen, it is back.
  */
 import { useWelcomeStore } from './welcomeGate.ts';
-import { hasShareParams } from './shareParams.ts';
+import { openedFromShareLink } from './shareParams.ts';
 import { useDemoRequest } from './demoRequest.ts';
 
 /** Boot, once: a shared link in the boot address keeps the start screen away for this visit. */
 export function applyShareLinkRule(): boolean {
-  const { open, bootSearch } = useWelcomeStore.getState();
-  let shared = false;
-  try {
-    shared = hasShareParams(bootSearch);
-  } catch {
-    shared = false;
-  }
+  const { open } = useWelcomeStore.getState();
+  const shared = openedFromShareLink();
   if (open && shared) useWelcomeStore.setState({ open: false, shownThisPage: false });
   return open && shared;
 }

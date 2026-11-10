@@ -17,7 +17,7 @@ import { BACKUP_KEYS } from '../../utils/backupHelpers';
 
 beforeEach(() => {
   localStorage.clear();
-  useWelcomeStore.setState({ open: false, shownThisPage: false, bootSearch: '' });
+  useWelcomeStore.setState({ open: false, shownThisPage: false });
 });
 
 /** Every persisted store, by the key it writes. */
@@ -57,7 +57,7 @@ describe('who sees the welcome', () => {
       localStorage.setItem(key, '{}');
       expect(hasLearningData(localStorage)).toBe(true);
       expect(shouldShowWelcome(localStorage)).toBe(false);
-      expect(bootWelcome(localStorage, '')).toBe(false);
+      expect(bootWelcome(localStorage)).toBe(false);
       expect(localStorage.getItem(WELCOME_KEY)).toBe('seen');
     },
   );
@@ -76,7 +76,7 @@ describe('who sees the welcome', () => {
 
 describe('boot and close', () => {
   it('boot on an empty browser opens it and marks it pending; closing marks it seen for good', () => {
-    expect(bootWelcome(localStorage, '')).toBe(true);
+    expect(bootWelcome(localStorage)).toBe(true);
     expect(useWelcomeStore.getState()).toMatchObject({ open: true, shownThisPage: true });
     expect(localStorage.getItem(WELCOME_KEY)).toBe('pending');
 
@@ -87,7 +87,7 @@ describe('boot and close', () => {
     // The next load (boot has saved settings by now): nothing.
     localStorage.setItem('music-theory-app', '{}');
     useWelcomeStore.setState({ open: false, shownThisPage: false });
-    expect(bootWelcome(localStorage, '')).toBe(false);
+    expect(bootWelcome(localStorage)).toBe(false);
     expect(useWelcomeStore.getState()).toMatchObject({ open: false, shownThisPage: false });
   });
 
@@ -97,10 +97,12 @@ describe('boot and close', () => {
     expect(localStorage.getItem(WELCOME_KEY)).toBeNull();
   });
 
-  it('keeps the boot address\'s query string for the shared-link rule (and decides as before)', () => {
-    expect(bootWelcome(localStorage, '?key=G&scale=major')).toBe(true);
-    expect(useWelcomeStore.getState().bootSearch).toBe('?key=G&scale=major');
+  it('a shared link in the address is not the gate\'s to judge: it decides from storage alone (the link rule reads openedFromShareLink, state/startGate.ts)', () => {
+    window.history.replaceState(null, '', '/?key=G&scale=major');
+    expect(bootWelcome(localStorage)).toBe(true);
     expect(localStorage.getItem(WELCOME_KEY)).toBe('pending');
+    expect(useWelcomeStore.getState()).toEqual({ open: true, shownThisPage: true });
+    window.history.replaceState(null, '', '/');
   });
 
   it('storage that throws: no welcome (it could never remember being closed)', () => {

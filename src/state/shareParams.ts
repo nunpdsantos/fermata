@@ -125,6 +125,18 @@ export function markOpenedFromShareLink(): void {
 }
 
 /**
+ * Boot, once, before the first render (main.tsx): was this page opened from a
+ * shared link? Read off the address as it arrived (`location.search` and
+ * `location.hash`, so `?chord=F#m7` counts like `?chord=F%23m7`) with the same
+ * reader that opens the link. This is the ONE answer the start screen steps
+ * aside on (state/startGate.ts); App.tsx marks it again when it opens the link.
+ */
+export function noteBootAddress(search: string, hash = ''): boolean {
+  openedFromLink = readShareParams(search, hash) !== null;
+  return openedFromLink;
+}
+
+/**
  * Was this page opened from a shared link? Answers for the whole page life,
  * also after the address bar has been cleaned — for a screen that should step
  * aside when a link is opened (the start screen).

@@ -85,24 +85,18 @@ interface WelcomeState {
   open: boolean;
   /** The welcome was shown in this page (the offline-ready notice is skipped — PWAPrompts). */
   shownThisPage: boolean;
-  /** `location.search` at boot (before anything could rewrite the address). */
-  bootSearch: string;
 }
 
-export const useWelcomeStore = create<WelcomeState>(() => ({ open: false, shownThisPage: false, bootSearch: '' }));
+export const useWelcomeStore = create<WelcomeState>(() => ({ open: false, shownThisPage: false }));
 
 /**
  * Decide once, at boot (state/welcomeBoot.ts). Storage errors: no welcome.
- * The address's query string is kept as it was at boot (`bootSearch`), for
- * the shared-link rule (state/startGate.ts) — this module imports nothing,
- * so no store can load before the check.
+ * This module imports nothing, so no store can load before the check. A
+ * shared link in the address is not judged here: state/startGate.ts reads
+ * the one answer (`openedFromShareLink()`, state/shareParams.ts).
  */
-export function bootWelcome(
-  storage: Storage | undefined = globalThis.localStorage,
-  search: string = globalThis.location?.search ?? '',
-): boolean {
+export function bootWelcome(storage: Storage | undefined = globalThis.localStorage): boolean {
   let show = false;
-  useWelcomeStore.setState({ bootSearch: search });
   try {
     show = !!storage && shouldShowWelcome(storage);
     if (show) storage!.setItem(WELCOME_KEY, 'pending');

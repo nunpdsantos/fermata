@@ -12,10 +12,17 @@ import {
   FIRST_LESSON, useStartHintStore, raiseStartHint, dismissStartHint, startFirstLesson,
 } from '../startHint';
 import { applyShareLinkRule, useStartScreenShown } from '../startGate';
+import { noteBootAddress } from '../shareParams';
 import { requestDemo, clearDemoRequest } from '../demoRequest';
 import { getLearnerProfile } from '../learnerProfile';
 import { MODULE_INDEX } from '../../data/moduleIndex';
 import type { Chord } from '../../core/types/music';
+
+/** Boot as main.tsx does: the boot address is noted (state/shareParams.ts), then the gate decides from storage. */
+function bootAt(search: string): boolean {
+  noteBootAddress(search);
+  return bootWelcome(localStorage);
+}
 
 const G: Chord = { root: { natural: 'G', accidental: '' }, quality: 'major', notes: [] } as unknown as Chord;
 const owed = () => useAppStore.getState().startHint;
@@ -30,13 +37,13 @@ beforeEach(() => {
   });
   useStartHintStore.setState({ shown: null });
   localStorage.clear();
-  useWelcomeStore.setState({ open: false, shownThisPage: false, bootSearch: '' });
+  useWelcomeStore.setState({ open: false, shownThisPage: false });
 });
 
 /** A first visit as boot sees it: empty storage, then the gate decides. */
 function firstVisit(search = '') {
   localStorage.clear();
-  expect(bootWelcome(localStorage, search)).toBe(true);
+  expect(bootAt(search)).toBe(true);
 }
 
 describe('the doors (chooseStartDoor)', () => {
@@ -70,7 +77,7 @@ describe('the doors (chooseStartDoor)', () => {
     firstVisit();
     chooseStartDoor('player', 'guitar', localStorage);
     useWelcomeStore.setState({ open: false, shownThisPage: false });
-    expect(bootWelcome(localStorage, '')).toBe(false);
+    expect(bootAt('')).toBe(false);
   });
 });
 
@@ -150,7 +157,7 @@ describe('when the start screen shows (startGate)', () => {
     expect(localStorage.getItem(WELCOME_KEY)).toBe('pending');
     // Next plain visit: this visit saved settings, but the flag says it is owed.
     localStorage.setItem('music-theory-app', JSON.stringify({ state: { lastView: 'explore' }, version: 6 }));
-    expect(bootWelcome(localStorage, '')).toBe(true);
+    expect(bootAt('')).toBe(true);
     expect(applyShareLinkRule()).toBe(false);
     expect(useWelcomeStore.getState().open).toBe(true);
   });
@@ -162,7 +169,7 @@ describe('when the start screen shows (startGate)', () => {
     // Weeks in Learn and Drill since.
     localStorage.setItem('music-theory-app', JSON.stringify({ state: { lastView: 'learn' }, version: 6 }));
     localStorage.setItem('music-theory-progress', JSON.stringify({ state: {}, version: 1 }));
-    expect(bootWelcome(localStorage, '')).toBe(false);
+    expect(bootAt('')).toBe(false);
     expect(applyShareLinkRule()).toBe(false);
     expect(useWelcomeStore.getState().open).toBe(false);
     expect(localStorage.getItem(WELCOME_KEY)).toBe('seen');
@@ -176,7 +183,7 @@ describe('when the start screen shows (startGate)', () => {
 
   it('with saved data a shared link changes nothing (no flag written)', () => {
     localStorage.setItem('music-theory-progress', '{}');
-    expect(bootWelcome(localStorage, '?chord=G')).toBe(false);
+    expect(bootAt('?chord=G')).toBe(false);
     expect(applyShareLinkRule()).toBe(false);
     expect(localStorage.getItem(WELCOME_KEY)).toBeNull();
   });
