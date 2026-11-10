@@ -8,6 +8,8 @@ import { findQuotedQueries } from '../../utils/theoryQuery';
 import { LearnBreadcrumb } from './LearnBreadcrumb';
 import { Button, IconButton } from '../ui/Button';
 import { Badge } from '../ui/Badge';
+import { Menu } from '../ui/Menu';
+import { shareLessonLink, shareLinkLabel } from '../../services/shareLinkMake';
 import { ExerciseRunner, type ItemOutcome } from './exercises/ExerciseRunner';
 import { passMark } from './exercises/scoring';
 import { ReportMistakeLink } from './ReportMistakeLink';
@@ -483,6 +485,15 @@ export function ModuleView({
                   { label: t('learn.module', { n: moduleIndex + 1 }) },
                 ]}
               />
+              {/* A link to this lesson (wave 1, stream E). */}
+              <div className="ml-auto shrink-0 no-print">
+                <Menu
+                  label={t('share.lessonActions')}
+                  testId="lesson-menu"
+                  portal
+                  items={[{ id: 'link', label: shareLinkLabel(), onSelect: () => void shareLessonLink(module.id, module.title) }]}
+                />
+              </div>
             </div>
             <div className="flex items-center gap-2 flex-wrap mb-3">
               <span className="text-caption font-bold uppercase tracking-widest px-2 py-0.5 rounded-full" style={{ color: accentText(accent), backgroundColor: `${accent}18` }}>

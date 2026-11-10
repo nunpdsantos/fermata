@@ -21,6 +21,7 @@ import { classicalDescendingNotes } from '../../core/utils/classicalScale.ts';
 import { keyFacts } from './keyFacts.ts';
 import { keyName } from './focusReadout.ts';
 import { toContentLanguage } from '../drill/drillText.ts';
+import { shareExploreLink, shareLinkLabel } from '../../services/shareLinkMake.ts';
 
 const PLAY_ICON = (
   <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -121,6 +122,7 @@ export function ExploreHeader({ practiceAction, onPractise }: {
           portal
           items={[
             { id: 'copy', label: t('explore.copyScaleSummary'), onSelect: () => void copy() },
+            { id: 'link', label: shareLinkLabel(), onSelect: () => void shareExploreLink() },
             { id: 'print', label: t('explore.printScaleDiagram'), onSelect: () => window.print() },
             { id: 'compare', label: t('explore.compareScalesAction'), onSelect: () => setCompare(true) },
             // A guitarist who never switches the dock to Guitar still finds the

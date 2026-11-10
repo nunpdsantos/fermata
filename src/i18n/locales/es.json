@@ -1147,5 +1147,26 @@
     "exploreAction": "Explorar una tonalidad",
     "learnAction": "Empezar el curso",
     "drillAction": "Probar una práctica"
+  },
+  "share": {
+    "copyLink": "Copiar enlace",
+    "shareLink": "Compartir enlace",
+    "copied": "Enlace copiado",
+    "lessonActions": "Acciones de la lección",
+    "fallbackTitle": "Copia este enlace",
+    "fallbackHint": "Este navegador no ha dejado que Fermata copie el enlace. Selecciónalo y cópialo tú.",
+    "fallbackField": "Enlace",
+    "waiting": "Este enlace abre {{target}}. Esperará hasta que termines lo que estás haciendo.",
+    "ready": "Listo para abrir el enlace: {{target}}",
+    "open": "Abrir",
+    "unreadable": "No se ha podido leer este enlace, así que Fermata se ha abierto como siempre.",
+    "target": {
+      "chord": "el acorde {{chord}}",
+      "piano": "en el piano",
+      "guitar": "en la guitarra",
+      "pianoAlone": "el piano",
+      "guitarAlone": "la guitarra",
+      "lesson": "la lección «{{title}}»"
+    }
   }
 }

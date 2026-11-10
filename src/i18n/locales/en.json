@@ -1147,5 +1147,26 @@
     "exploreAction": "Explore a key",
     "learnAction": "Start the course",
     "drillAction": "Try a drill"
+  },
+  "share": {
+    "copyLink": "Copy link",
+    "shareLink": "Share link",
+    "copied": "Link copied",
+    "lessonActions": "Lesson actions",
+    "fallbackTitle": "Copy this link",
+    "fallbackHint": "This browser did not let Fermata copy the link. Select it and copy it yourself.",
+    "fallbackField": "Link",
+    "waiting": "This link opens {{target}}. It will wait until you have finished what you are doing.",
+    "ready": "Ready to open the link: {{target}}",
+    "open": "Open",
+    "unreadable": "This link could not be read, so Fermata opened as usual.",
+    "target": {
+      "chord": "the {{chord}} chord",
+      "piano": "on the piano",
+      "guitar": "on the guitar",
+      "pianoAlone": "the piano",
+      "guitarAlone": "the guitar",
+      "lesson": "the lesson “{{title}}”"
+    }
   }
 }

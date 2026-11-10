@@ -7,11 +7,14 @@ export interface Toast {
   type: ToastType;
   message: string;
   duration: number;
+  /** One button beside the message (e.g. a shared link's "Open"): it runs, then the toast closes. */
+  action?: { label: string; onSelect: () => void };
 }
 
 interface ToastState {
   toasts: Toast[];
-  addToast: (toast: Omit<Toast, 'id'>) => void;
+  /** Returns the new toast's id. */
+  addToast: (toast: Omit<Toast, 'id'>) => string;
   removeToast: (id: string) => void;
 }
 
@@ -31,6 +34,7 @@ export const useToastStore = create<ToastState>((set) => ({
         }));
       }, toast.duration);
     }
+    return id;
   },
   removeToast: (id) =>
     set((state) => ({

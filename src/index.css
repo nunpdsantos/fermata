@@ -2268,3 +2268,21 @@ p.explore-prose {
 }
 .celebration-panel { display: flex; flex-direction: column; max-height: calc(100dvh - 24px); }
 .celebration-panel > button { flex: none; }
+
+/* Shared links (wave 1, stream E): the link in a selectable field, when the
+   browser would neither share nor copy it. */
+.share-link-field {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-ui);
+}
+.share-link-field:focus-visible {
+  outline: 2px solid var(--focus-outline);
+  outline-offset: 2px;
+}

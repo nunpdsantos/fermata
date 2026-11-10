@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { AnimatePresence, m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useToastStore, type ToastType } from '../../state/toastStore.ts';
-import { IconButton } from '../ui/Button';
+import { Button, IconButton } from '../ui/Button';
 import { SPRING_SNAPPY } from '../../design/tokens/motion';
 
 // Theme TEXT tokens (≥ 4.5:1 in both themes) for the icon and the edge — the
@@ -58,6 +58,17 @@ export function ToastContainer() {
             >
               <span className="shrink-0 flex">{icon(t.type)}</span>
               <span className="flex-1">{t.message}</span>
+              {t.action && (
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    removeToast(t.id);
+                    t.action!.onSelect();
+                  }}
+                >
+                  {t.action.label}
+                </Button>
+              )}
               <IconButton
                 onClick={() => removeToast(t.id)}
                 aria-label={translate('common.dismiss')}

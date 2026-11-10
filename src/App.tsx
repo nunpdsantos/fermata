@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { LazyMotion, MotionConfig, domAnimation, AnimatePresence, m } from 'framer-motion';
 import { AppShell } from './components/layout/AppShell.tsx';
 import { ViewSlot, type ViewLoader } from './components/ViewSlot.tsx';
@@ -8,6 +8,8 @@ import { useLanguage } from './hooks/useLanguage.ts';
 import { useStopPlaybackOnViewChange } from './hooks/useStopPlaybackOnViewChange.ts';
 import { useAppStore } from './state/store.ts';
 import { pickBootView } from './state/bootView.ts';
+import { readShareParams, cleanedAddress, markOpenedFromShareLink } from './state/shareParams.ts';
+import { ShareLinkHost } from './components/share/ShareLinkHost.tsx';
 import type { ViewMode } from './state/storeTypes.ts';
 
 // Code-split views. ViewSlot owns the lazy() wrappers so a failed download
@@ -33,22 +35,36 @@ function App() {
   //    the persisted lastView. The param is then stripped from the URL so a
   //    plain refresh doesn't re-force it. `view` itself isn't persisted, so on
   //    a fresh boot it is the slice default 'explore' until this resolves it.
+  //  - a shared link (?key= &scale= &chord= &inst= &lesson=, state/shareParams.ts)
+  //    is opened by its own lazy chunk (it needs the chord parser); the view
+  //    waits for it, so the learner never sees the old key flash first. Its
+  //    parameters leave the address bar at once, like ?view=.
+  const [linkOpening, setLinkOpening] = useState(
+    () => readShareParams(window.location.search, window.location.hash) !== null,
+  );
   const bootResolved = useRef(false);
   useLayoutEffect(() => {
     if (bootResolved.current) return; // guard StrictMode's double-invoke
     bootResolved.current = true;
 
-    const params = new URLSearchParams(window.location.search);
+    const { search, hash, pathname } = window.location;
+    const params = new URLSearchParams(search);
     const paramView = params.get('view');
+    const link = readShareParams(search, hash);
     const { setView, lastView } = useAppStore.getState();
-    setView(pickBootView(window.location.search, lastView));
+    setView(pickBootView(search, lastView));
 
-    // Strip ?view= from the URL (keep other params) without a navigation.
-    if (paramView !== null) {
-      params.delete('view');
-      const qs = params.toString();
-      const url = window.location.pathname + (qs ? `?${qs}` : '') + window.location.hash;
-      window.history.replaceState(window.history.state, '', url);
+    // Strip ?view= and the link's parameters (keep other params) without a navigation.
+    if (paramView !== null || link !== null) {
+      window.history.replaceState(window.history.state, '', cleanedAddress(pathname, search, hash));
+    }
+
+    if (link !== null) {
+      markOpenedFromShareLink();
+      import('./services/shareLinkOpen.ts')
+        .then((m) => m.openShareLink(link))
+        .catch((e) => console.warn('[share link] could not open', e))
+        .finally(() => setLinkOpening(false));
     }
   }, []); // run-once on mount
 
@@ -68,11 +84,12 @@ function App() {
             role="tabpanel"
             aria-labelledby={`tab-${view}`}
           >
-            <ViewSlot viewKey={view} loaders={VIEW_LOADERS} />
+            {!linkOpening && <ViewSlot viewKey={view} loaders={VIEW_LOADERS} />}
           </m.div>
         </AnimatePresence>
       </AppShell>
       <QuickSearchHost />
+      <ShareLinkHost />
       </MotionConfig>
     </LazyMotion>
   );

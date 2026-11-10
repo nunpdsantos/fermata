@@ -168,7 +168,8 @@ describe.each(['pt', 'es'] as const)('%s interface has no hard-coded English', (
     expect(screen.getByRole('option', { name: lang === 'pt' ? 'Menor harm.' : 'Menor arm.' })).toBeTruthy();
     expect(screen.getByRole('option', { name: lang === 'pt' ? 'Húngara menor' : 'Húngara menor' })).toBeTruthy();
     expect(screen.getByTestId('dock-readout').textContent).toMatch(lang === 'pt' ? /sensível/ : /sensible/);
-    expect(screen.getAllByRole('menuitem').length).toBe(3);
+    // Copy, Copy link (wave 1, share links), Print, Compare.
+    expect(screen.getAllByRole('menuitem').length).toBe(4);
     expect(screen.getAllByRole('button', { name: /C4/ }).length).toBeGreaterThan(0);
     expect(englishIn(container)).toEqual([]);
     cleanup();
