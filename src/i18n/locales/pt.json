@@ -1156,8 +1156,8 @@
     "fallbackTitle": "Copia esta ligação",
     "fallbackHint": "Este navegador não deixou o Fermata copiar a ligação. Seleciona-a e copia-a tu.",
     "fallbackField": "Ligação",
-    "waiting": "Esta ligação abre {{target}}. Fica à espera até terminares o que estás a fazer.",
-    "ready": "Pronta a abrir a ligação: {{target}}",
+    "waiting": "Esta ligação abre {{target}}. Quando terminares o que estás a fazer, o Fermata propõe-te abri-la.",
+    "ready": "Já podes abrir a ligação: {{target}}",
     "open": "Abrir",
     "unreadable": "Não foi possível ler esta ligação, por isso o Fermata abriu como de costume.",
     "target": {
@@ -1171,6 +1171,6 @@
   },
   "solfege": {
     "setting": "Mostrar também Dó, Ré, Mi",
-    "hint": "Junta Dó, Ré, Mi ao lado das letras. Os nomes dos acordes e as lições continuam com as letras (C = Dó)."
+    "hint": "Acrescenta Dó, Ré, Mi junto às letras. Os nomes dos acordes e as lições continuam a usar as letras (C = Dó)."
   }
 }

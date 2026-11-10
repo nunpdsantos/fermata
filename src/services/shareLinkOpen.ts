@@ -13,8 +13,9 @@
  *     other than the one being checked would drop that check (LearnView
  *     clears a check whose lesson is left), and switching views mid-Sprint
  *     breaks its flow. So while there is work, NOTHING is applied: a toast
- *     says what the link opens and that it will wait; once the work is over
- *     (checked every 1.5 s) a second toast offers it with "Open". Choosing
+ *     says what the link opens and that Fermata will offer it when the work
+ *     is over; once it is (checked every 1.5 s) a second toast offers it with
+ *     "Open" — nothing opens by itself. Choosing
  *     Open when work has started again waits again. The held link lives in
  *     this page only (the address bar was already cleaned): a reload drops it.
  */
@@ -121,12 +122,13 @@ export type OpenResult = 'applied' | 'held' | 'unreadable';
 
 /**
  * Open the link the page was started with (App.tsx, at boot, after the boot
- * view is set). Never throws.
+ * view is set). `asTyped` = the address read without the fragment recovery
+ * (see parseShareLink). Never throws.
  */
-export async function openShareLink(raw: RawShareParams | null): Promise<OpenResult> {
+export async function openShareLink(raw: RawShareParams | null, asTyped?: RawShareParams | null): Promise<OpenResult> {
   let target: ShareTarget = {};
   try {
-    target = parseShareLink(raw);
+    target = parseShareLink(raw, asTyped);
   } catch {
     target = {};
   }

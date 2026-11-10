@@ -76,18 +76,35 @@ export function parseShareLesson(v: unknown): LearnDeepLink | null {
   return hit ? { ...hit } : null;
 }
 
-/** Every valid part of a link; an empty object when nothing in it is valid. */
-export function parseShareLink(raw: RawShareParams | null | undefined): ShareTarget {
+/**
+ * Every valid part of a link; an empty object when nothing in it is valid.
+ *
+ * `asTyped` is the same address read WITHOUT the fragment recovery
+ * (`readShareParams(search)`): where a recovered key or chord is not valid
+ * (`?chord=A#intro` → `A#intro`), the value before the `#` is tried instead,
+ * so a real fragment after a valid value does not wipe it out. A value that
+ * is invalid as typed stays ignored.
+ */
+export function parseShareLink(
+  raw: RawShareParams | null | undefined,
+  asTyped?: RawShareParams | null,
+): ShareTarget {
   const out: ShareTarget = {};
   if (!raw || typeof raw !== 'object') return out;
-  const key = parseShareKey(raw.key);
+  const typed = asTyped && typeof asTyped === 'object' ? asTyped : {};
+  const key = parseShareKey(raw.key) ?? parseShareKey(typed.key);
   if (key) out.key = key;
   const scale = parseShareScale(raw.scale);
   if (scale) out.scale = scale;
-  const chord = parseShareChord(raw.chord);
+  let chordText = raw.chord;
+  let chord = parseShareChord(chordText);
+  if (!chord) {
+    chordText = typed.chord;
+    chord = parseShareChord(chordText);
+  }
   if (chord) {
     out.chord = chord;
-    out.chordSymbol = (raw.chord as string).trim();
+    out.chordSymbol = (chordText as string).trim();
   }
   const inst = parseShareInstrument(raw.inst);
   if (inst) out.inst = inst;

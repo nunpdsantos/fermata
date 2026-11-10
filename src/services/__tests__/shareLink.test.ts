@@ -263,7 +263,7 @@ describe('work in progress: a link never discards it', () => {
     expect(heldShareTarget()?.key).toEqual({ natural: 'D', accidental: '' });
     const toasts = () => useToastStore.getState().toasts;
     expect(toasts()).toHaveLength(1);
-    expect(toasts()[0].message).toBe('This link opens D Major, the A chord, on the guitar. It will wait until you have finished what you are doing.');
+    expect(toasts()[0].message).toBe('This link opens D Major, the A chord, on the guitar. Fermata will offer to open it when you have finished what you are doing.');
     expect(toasts()[0].action).toBeUndefined();
 
     // Still busy: nothing changes, however long.
@@ -288,6 +288,26 @@ describe('work in progress: a link never discards it', () => {
     expect(heldShareTarget()).toBeNull();
   });
 
+  // After review (2026-11-10): the held-link toasts in PT and ES say what
+  // happens — the link waits, then an "Abrir" button is offered; nothing opens by itself.
+  it.each([
+    ['pt', 'Esta ligação abre D maior, o acorde A, na guitarra. Quando terminares o que estás a fazer, o Fermata propõe-te abri-la.', 'Já podes abrir a ligação: D maior, o acorde A, na guitarra'],
+    ['es', 'Este enlace abre D mayor, el acorde A, en la guitarra. Cuando termines lo que estás haciendo, Fermata te propondrá abrirlo.', 'Ya puedes abrir el enlace: D mayor, el acorde A, en la guitarra'],
+  ])('in %s, the waiting and the offer say what happens', async (lang, waiting, ready) => {
+    await i18n.changeLanguage(lang);
+    try {
+      await openShareLink({ key: 'D', scale: 'major', chord: 'A', inst: 'guitar' });
+      expect(useToastStore.getState().toasts.map((t) => t.message)).toEqual([waiting]);
+      busy = false;
+      vi.advanceTimersByTime(HELD_LINK_POLL_MS);
+      const offer = useToastStore.getState().toasts.find((t) => t.action);
+      expect(offer?.message).toBe(ready);
+      expect(offer?.action?.label).toBe('Abrir');
+    } finally {
+      await i18n.changeLanguage('en');
+    }
+  });
+
   it('“Open” while work has started again waits again', async () => {
     await openShareLink({ lesson: 'l2u7m5' });
     busy = false;
@@ -310,5 +330,42 @@ describe('work in progress: a link never discards it', () => {
     unregister();
     unregister = registerWorkInProgress('test-throw', () => { throw new Error('corrupt'); });
     await expect(openShareLink({ key: 'D' })).resolves.toBe('held');
+  });
+});
+
+// After review (2026-11-10): a hand-typed `#` is read as part of a key or
+// chord only when that makes a valid one; a real fragment after a valid value
+// (`?chord=A#intro`) no longer wipes the value out.
+describe('a fragment after a key or chord', () => {
+  const read = (search: string, hash: string) => [readShareParams(search, hash), readShareParams(search)] as const;
+
+  it('a fragment that is not part of the chord leaves the chord as typed', () => {
+    const [raw, plain] = read('?key=D&chord=A', '#intro');
+    expect(raw?.chord).toBe('A#intro');
+    const t = parseShareLink(raw, plain);
+    expect(t.key).toEqual({ natural: 'D', accidental: '' });
+    expect(t.chord?.root).toEqual({ natural: 'A', accidental: '' });
+    expect(t.chordSymbol).toBe('A');
+  });
+
+  it('the same for a key', () => {
+    const [raw, plain] = read('?key=D', '#section');
+    expect(parseShareLink(raw, plain).key).toEqual({ natural: 'D', accidental: '' });
+  });
+
+  it('a # that does make the chord or key still counts', () => {
+    expect(parseShareLink(...read('?chord=C', '#m7')).chordSymbol).toBe('C#m7');
+    expect(parseShareLink(...read('?key=F', '#&inst=guitar'))).toMatchObject({ key: { natural: 'F', accidental: '#' }, inst: 'guitar' });
+  });
+
+  it('an invalid value with no fragment is still ignored (no fallback invents one)', () => {
+    expect(parseShareLink({ chord: 'F#xyz' }, { chord: 'F#xyz' }).chord).toBeUndefined();
+    expect(parseShareLink({ chord: 'F#xyz' }).chord).toBeUndefined();
+  });
+
+  it('openShareLink applies the chord as typed', async () => {
+    const [raw, plain] = read('?chord=A', '#section');
+    await expect(openShareLink(raw, plain)).resolves.toBe('applied');
+    expect(useAppStore.getState().selectedChord?.root).toEqual({ natural: 'A', accidental: '' });
   });
 });

@@ -9,7 +9,8 @@ import { LearnBreadcrumb } from './LearnBreadcrumb';
 import { Button, IconButton } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Menu } from '../ui/Menu';
-import { shareLessonLink, shareLinkLabel } from '../../services/shareLinkMake';
+import { shareLessonLink } from '../../services/shareLinkMake';
+import { useShareLinkLabel } from '../../hooks/useShareLinkLabel';
 import { ExerciseRunner, type ItemOutcome } from './exercises/ExerciseRunner';
 import { passMark } from './exercises/scoring';
 import { ReportMistakeLink } from './ReportMistakeLink';
@@ -141,6 +142,7 @@ export function ModuleView({
   initialSection = null,
 }: ModuleViewProps) {
   const { t, i18n } = useTranslation();
+  const shareLinkLabel = useShareLinkLabel();
   const [showConfetti, setShowConfetti] = useState(false);
   const accent = level.accentColor;
   const prevModule = getPreviousModuleInLevel(module.id, level);
@@ -491,7 +493,7 @@ export function ModuleView({
                   label={t('share.lessonActions')}
                   testId="lesson-menu"
                   portal
-                  items={[{ id: 'link', label: shareLinkLabel(), onSelect: () => void shareLessonLink(module.id, module.title) }]}
+                  items={[{ id: 'link', label: shareLinkLabel, onSelect: () => void shareLessonLink(module.id, module.title) }]}
                 />
               </div>
             </div>

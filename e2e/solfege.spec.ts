@@ -190,11 +190,14 @@ for (const lang of ['pt', 'es'] as const) {
 
 for (const v of [
   { name: 'laptop-1440x900', viewport: { width: 1440, height: 900 }, touch: false },
+  { name: 'laptop-1440x900', viewport: { width: 1440, height: 900 }, touch: false, theme: 'fermata-night' },
   { name: 'landscape-844x390', viewport: { width: 844, height: 390 }, touch: true },
   { name: 'tablet-820x1180', viewport: { width: 820, height: 1180 }, touch: true },
 ] as const) {
-  test(`pt ${v.name}: with the setting on, the workbench passes the audit and nothing overlaps`, async ({ browser }) => {
-    const { context, page } = await open(browser, v.viewport, seed('pt', true), v.touch);
+  const theme = 'theme' in v ? v.theme : 'fermata';
+  const tone = theme === 'fermata' ? 'day' : 'night';
+  test(`pt ${v.name} ${tone}: with the setting on, the workbench passes the audit and nothing overlaps`, async ({ browser }) => {
+    const { context, page } = await open(browser, v.viewport, seed('pt', true, theme), v.touch);
     await expect(page.getByTestId('key-summary')).toHaveText(EXPECT.pt.summary);
     await page.locator('.strip-col[data-note="F#"]').click();
     await page.waitForTimeout(500);
@@ -212,7 +215,7 @@ for (const v of [
       console.log(`[solfege] ${v.name} work column scrollHeight ${scroll.sh} / clientHeight ${scroll.ch}`);
       expect(scroll.sh).toBeLessThanOrEqual(scroll.ch + 1);
     }
-    await shot(page, `solfege-on-pt-${v.name}-explore-day`);
+    await shot(page, `solfege-on-pt-${v.name}-explore-${tone}`);
     await context.close();
   });
 }

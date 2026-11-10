@@ -62,7 +62,7 @@ function App() {
     if (link !== null) {
       markOpenedFromShareLink();
       import('./services/shareLinkOpen.ts')
-        .then((m) => m.openShareLink(link))
+        .then((m) => m.openShareLink(link, readShareParams(search)))
         .catch((e) => console.warn('[share link] could not open', e))
         .finally(() => setLinkOpening(false));
     }

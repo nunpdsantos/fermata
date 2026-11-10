@@ -114,8 +114,8 @@ describe('Settings → Language: offered in Portuguese and Spanish only', () => 
   });
 
   for (const [lang, label, hint] of [
-    ['pt', 'Mostrar também Dó, Ré, Mi', 'Junta Dó, Ré, Mi ao lado das letras. Os nomes dos acordes e as lições continuam com as letras (C = Dó).'],
-    ['es', 'Mostrar también Do, Re, Mi', 'Añade Do, Re, Mi junto a las letras. Los nombres de los acordes y las lecciones siguen con las letras (C = Do).'],
+    ['pt', 'Mostrar também Dó, Ré, Mi', 'Acrescenta Dó, Ré, Mi junto às letras. Os nomes dos acordes e as lições continuam a usar as letras (C = Dó).'],
+    ['es', 'Mostrar también Do, Re, Mi', 'Añade Do, Re, Mi junto a las letras. Los nombres de los acordes y las lecciones siguen usando las letras (C = Do).'],
   ] as const) {
     it(`${lang}: a toggle chip under Language, with the line about the letters`, async () => {
       useAppStore.setState({ language: lang });

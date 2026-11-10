@@ -54,6 +54,8 @@ import App from '../App';
 import { useAppStore } from '../state/store';
 import { openedFromShareLink } from '../state/shareParams';
 import { useToastStore } from '../state/toastStore';
+import { registerWorkInProgress } from '../services/workInProgress';
+import { resetShareLinkOpen } from '../services/shareLinkOpen';
 
 /**
  * Opening a shared link at boot (wave 1, stream E): the link's chunk loads,
@@ -76,6 +78,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  resetShareLinkOpen();
 });
 
 async function boot(search: string) {
@@ -129,5 +132,34 @@ describe('App — opening a shared link', () => {
     await boot('?view=drill&key=D');
     expect(screen.getByText('EXPLORE_VIEW')).toBeDefined();
     expect(useAppStore.getState().selectedKey.natural).toBe('D');
+  });
+
+  // After review (2026-11-10).
+  it('a real fragment after a valid chord does not wipe the chord out', async () => {
+    await boot('?key=D&chord=A#intro');
+    const s = useAppStore.getState();
+    expect(s.selectedKey).toEqual({ natural: 'D', accidental: '' });
+    expect(s.selectedChord?.root).toEqual({ natural: 'A', accidental: '' });
+    expect(window.location.search).toBe('');
+  });
+
+  it('a link opened while work is in progress at boot is held: nothing applied, the address clean, then offered', async () => {
+    let busy = true;
+    const unregister = registerWorkInProgress('boot-test-check', () => busy);
+    try {
+      await boot('?key=D&chord=A&inst=guitar');
+      await waitFor(() => expect(useToastStore.getState().toasts.length).toBe(1));
+      const s = useAppStore.getState();
+      expect(s.selectedKey).toEqual({ natural: 'C', accidental: '' });
+      expect(s.selectedChord).toBeNull();
+      expect(s.instrument).toBe('piano');
+      expect(window.location.search).toBe('');
+      expect(useToastStore.getState().toasts[0].message).toMatch(/^This link opens D Major, the A chord, on the guitar\./);
+      busy = false;
+      await waitFor(() => expect(useToastStore.getState().toasts.some((t) => t.action?.label === 'Open')).toBe(true), { timeout: 4000 });
+      expect(useAppStore.getState().selectedKey).toEqual({ natural: 'C', accidental: '' });
+    } finally {
+      unregister();
+    }
   });
 });

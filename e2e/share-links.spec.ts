@@ -114,7 +114,7 @@ test('a link opened during a check does not lose the check; it waits, then offer
   await expect(page.getByTestId('focused-check')).toBeVisible({ timeout: 15_000 });
   await expect(page.getByTestId('check-position')).toHaveText(position!);
   expect(await page.getByTestId('check-pips').innerHTML()).toBe(pips);
-  await expect(page.getByTestId('toast-region')).toContainText('This link opens D Major, the A chord, on the guitar. It will wait until you have finished what you are doing.');
+  await expect(page.getByTestId('toast-region')).toContainText('This link opens D Major, the A chord, on the guitar. Fermata will offer to open it when you have finished what you are doing.');
   expect(new URL(page.url()).search).toBe('');
   await shot(page, 'share-held-during-check-phone-day-en');
 
@@ -177,10 +177,13 @@ test('phone: Share link hands the address to the share sheet', async ({ browser,
 for (const theme of ['day', 'night'] as const) {
   test(`when the browser refuses to copy, the link is shown in a selectable field (${theme})`, async ({ browser, baseURL }) => {
     const { context, page } = await newPage(browser, PHONE, { state: { themeMode: theme === 'day' ? 'fermata' : 'fermata-night', language: 'en' }, version: 6 });
-    await context.addInitScript(() => {
+    // The share sheet refuses with a DOMException by day and with a plain
+    // TypeError by night (review 2026-11-10): only the learner closing the
+    // sheet (AbortError) may end delivery; every other failure reaches the field.
+    await context.addInitScript((kind) => {
       Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: () => Promise.reject(new Error('denied')) } });
-      Object.defineProperty(navigator, 'share', { configurable: true, value: () => Promise.reject(new DOMException('no', 'NotAllowedError')) });
-    });
+      Object.defineProperty(navigator, 'share', { configurable: true, value: () => Promise.reject(kind === 'type' ? new TypeError('cannot share this') : new DOMException('no', 'NotAllowedError')) });
+    }, theme === 'day' ? 'dom' : 'type');
     await page.goto(LINK);
     await expectDMajorAChordGuitar(page);
     await page.getByTestId('explore-menu').getByRole('button').first().click();

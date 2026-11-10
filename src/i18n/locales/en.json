@@ -1156,7 +1156,7 @@
     "fallbackTitle": "Copy this link",
     "fallbackHint": "This browser did not let Fermata copy the link. Select it and copy it yourself.",
     "fallbackField": "Link",
-    "waiting": "This link opens {{target}}. It will wait until you have finished what you are doing.",
+    "waiting": "This link opens {{target}}. Fermata will offer to open it when you have finished what you are doing.",
     "ready": "Ready to open the link: {{target}}",
     "open": "Open",
     "unreadable": "This link could not be read, so Fermata opened as usual.",

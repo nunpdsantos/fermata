@@ -21,7 +21,8 @@ import { classicalDescendingNotes } from '../../core/utils/classicalScale.ts';
 import { keyFacts } from './keyFacts.ts';
 import { keyName } from './focusReadout.ts';
 import { toContentLanguage } from '../drill/drillText.ts';
-import { shareExploreLink, shareLinkLabel } from '../../services/shareLinkMake.ts';
+import { shareExploreLink } from '../../services/shareLinkMake.ts';
+import { useShareLinkLabel } from '../../hooks/useShareLinkLabel.ts';
 import { useNoteLabel } from '../../hooks/useSolfege.ts';
 
 const PLAY_ICON = (
@@ -54,6 +55,7 @@ export function ExploreHeader({ practiceAction, onPractise }: {
   const [keySheet, setKeySheet] = useState(false);
   const [compare, setCompare] = useState(false);
   const noteLabel = useNoteLabel();
+  const linkLabel = useShareLinkLabel();
   const facts = keyFacts(selectedKey, selectedScale, t, noteLabel);
 
   const playScaleNow = useCallback(async () => {
@@ -124,7 +126,7 @@ export function ExploreHeader({ practiceAction, onPractise }: {
           portal
           items={[
             { id: 'copy', label: t('explore.copyScaleSummary'), onSelect: () => void copy() },
-            { id: 'link', label: shareLinkLabel(), onSelect: () => void shareExploreLink() },
+            { id: 'link', label: linkLabel, onSelect: () => void shareExploreLink() },
             { id: 'print', label: t('explore.printScaleDiagram'), onSelect: () => window.print() },
             { id: 'compare', label: t('explore.compareScalesAction'), onSelect: () => setCompare(true) },
             // A guitarist who never switches the dock to Guitar still finds the

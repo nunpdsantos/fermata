@@ -1154,10 +1154,10 @@
     "copied": "Enlace copiado",
     "lessonActions": "Acciones de la lección",
     "fallbackTitle": "Copia este enlace",
-    "fallbackHint": "Este navegador no ha dejado que Fermata copie el enlace. Selecciónalo y cópialo tú.",
+    "fallbackHint": "Este navegador no ha permitido a Fermata copiar el enlace. Selecciónalo y cópialo tú.",
     "fallbackField": "Enlace",
-    "waiting": "Este enlace abre {{target}}. Esperará hasta que termines lo que estás haciendo.",
-    "ready": "Listo para abrir el enlace: {{target}}",
+    "waiting": "Este enlace abre {{target}}. Cuando termines lo que estás haciendo, Fermata te propondrá abrirlo.",
+    "ready": "Ya puedes abrir el enlace: {{target}}",
     "open": "Abrir",
     "unreadable": "No se ha podido leer este enlace, así que Fermata se ha abierto como siempre.",
     "target": {
@@ -1171,6 +1171,6 @@
   },
   "solfege": {
     "setting": "Mostrar también Do, Re, Mi",
-    "hint": "Añade Do, Re, Mi junto a las letras. Los nombres de los acordes y las lecciones siguen con las letras (C = Do)."
+    "hint": "Añade Do, Re, Mi junto a las letras. Los nombres de los acordes y las lecciones siguen usando las letras (C = Do)."
   }
 }

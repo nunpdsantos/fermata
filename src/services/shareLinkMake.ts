@@ -93,11 +93,14 @@ export function lessonLinkUrl(moduleId: string, origin = window.location.origin)
   return buildShareUrl(origin, { lesson: moduleId });
 }
 
+/** Phones and tablets: where "Share link" opens the device's share sheet. */
+export const COARSE_POINTER_QUERY = '(pointer: coarse)';
+
 /** Where the device offers a share sheet that "Share link" should use (phones and tablets). */
 export function prefersShareSheet(): boolean {
   if (typeof navigator === 'undefined' || typeof navigator.share !== 'function') return false;
   try {
-    return window.matchMedia('(pointer: coarse)').matches;
+    return window.matchMedia(COARSE_POINTER_QUERY).matches;
   } catch {
     return false;
   }
