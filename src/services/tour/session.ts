@@ -7,6 +7,7 @@
 import { createStore, type StoreApi } from 'zustand/vanilla';
 import type { DemoSource, DemoTour } from '../../state/demoRequest';
 import { useAppStore } from '../../state/store';
+import type { ViewMode } from '../../state/storeTypes';
 import { cancelScheduledAudio, getAudioState, resumeAudio } from '../../core/services/audio';
 import { TourEngine, type EngineState } from './engine';
 import type { StepContext, TourStep } from './types';
@@ -164,14 +165,20 @@ export class TourSession {
     this.engine.stop();
     this.clearCueTimer();
     cancelScheduledAudio();
-    const view = choice === 'restore' ? restoreSnapshot(this.snapshot) : useAppStore.getState().view;
-    // Back in Explore from another view, the chords card mounts afresh on In
-    // key: press the tab the viewer had, once it is there.
-    const tab = this.snapshot.chordsTab;
-    if (choice === 'restore' && view === 'explore' && tab && currentChordsTab() !== tab) {
-      if (await waitSettled(chordsTabSelector(tab), new AbortController().signal, 3000)) restoreChordsTab(this.snapshot);
+    let view: ViewMode;
+    // The settings save is released whatever happens: a restore that throws
+    // must not leave it held for the rest of the page.
+    try {
+      view = choice === 'restore' ? restoreSnapshot(this.snapshot) : useAppStore.getState().view;
+      // Back in Explore from another view, the chords card mounts afresh on In
+      // key: press the tab the viewer had, once it is there.
+      const tab = this.snapshot.chordsTab;
+      if (choice === 'restore' && view === 'explore' && tab && currentChordsTab() !== tab) {
+        if (await waitSettled(chordsTabSelector(tab), new AbortController().signal, 3000)) restoreChordsTab(this.snapshot);
+      }
+    } finally {
+      this.release();
     }
-    this.release();
     // Learn saves its (empty) record when its view opens: let it, then take
     // back the one the tour's visit created.
     if (view === 'learn') await waitSettled(SEL.learnHeading, new AbortController().signal, 3000);
@@ -201,8 +208,11 @@ export class TourSession {
     cancelScheduledAudio();
     // Never started: nothing to put back (and a restore would move a viewer
     // in a lesson to Explore, guards.ts).
-    if (this.started) restoreSnapshot(this.snapshot);
-    this.release();
+    try {
+      if (this.started) restoreSnapshot(this.snapshot);
+    } finally {
+      this.release();
+    }
     removeEmptyLearnRecord(this.snapshot);
     this.unsubscribe();
   };

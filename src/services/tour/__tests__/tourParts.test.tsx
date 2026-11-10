@@ -13,7 +13,7 @@ import * as audio from '../../../core/services/audio';
 import { ExploreHeader } from '../../../components/explore/ExploreHeader';
 import { useAppStore } from '../../../state/store';
 import { introTour } from '../introTour';
-import { playTourScale, tourChord } from '../appActions';
+import { playTourScale, tourChord, TOUR_KEY, TOUR_SCALE } from '../appActions';
 import { placeBar } from '../dom';
 import { drillVisitIsQuiet, learnVisitIsQuiet } from '../guards';
 import { LEARN_SESSION_KEY } from '../../../state/learnSessionPersistence';
@@ -57,6 +57,19 @@ describe('captions', () => {
       const button = lookup(dict as Dict, 'panel.chord') as string;
       // The label as a word of its own (capitalised as on the button), not just "chord" in "Tap a chord".
       expect(new RegExp(`(^|\\s)${button}(\\s|$)`).test(caption), `${lang}: "${caption}" names the ${button} button`).toBe(true);
+    }
+  });
+
+  // Final review (2026-11-10): the key step's caption names the key the tour
+  // really picks, in every language (the unit tests pinned EN and PT only).
+  it('the key step names the key the tour picks (G major), as the key summary words it, in EN, PT and ES', () => {
+    expect(TOUR_SCALE).toBe('major');
+    for (const [lang, dict] of [['en', en], ['pt', pt], ['es', es]] as const) {
+      const caption = lookup(dict as Dict, 'showMe.intro.key') as string;
+      const major = (lookup(dict as Dict, 'circle.keyMajor') as string).replace('{{note}}', TOUR_KEY.natural);
+      const minor = (lookup(dict as Dict, 'circle.keyMinor') as string).replace('{{note}}', TOUR_KEY.natural);
+      expect(caption, lang).toContain(major);
+      expect(caption, lang).not.toContain(minor);
     }
   });
 

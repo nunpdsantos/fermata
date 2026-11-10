@@ -256,6 +256,62 @@ describe('the intro tour, played through', () => {
     expect(onDone).toHaveBeenCalledTimes(1);
   });
 
+  // Final review (2026-11-10): the key step's setScale('major') clears a
+  // comparison; the snapshot must give it (and the open chord detail) back.
+  it('stopping gives back an open scale comparison and chord detail, which the key step clears', async () => {
+    useAppStore.setState({
+      view: 'explore', lastView: 'explore', instrument: 'piano', selectedKey: { natural: 'A', accidental: '' }, selectedScale: 'natural_minor',
+      selectedChord: null, comparisonScale: 'harmonic_minor', detailPanelOpen: true,
+    });
+    const { session } = newSession();
+    session.start();
+    while (stepId(session) !== 'scale') await vi.advanceTimersByTimeAsync(100);
+    expect(useAppStore.getState().comparisonScale).toBeNull(); // the tour's G major cleared it
+    await session.finish('restore');
+    expect(useAppStore.getState()).toMatchObject({
+      selectedKey: { natural: 'A', accidental: '' }, selectedScale: 'natural_minor', comparisonScale: 'harmonic_minor', detailPanelOpen: true,
+    });
+  });
+
+  // A lesson borrowing Explore's key (lessonLoan, services/lessonInstrument.ts):
+  // what the tour gives back is Explore's OWN key, never the lesson's.
+  it('a lesson borrowing the key: the restore gives back Explore\'s own key and scale', async () => {
+    useAppStore.setState({
+      view: 'learn', lastView: 'learn', instrument: 'piano',
+      selectedKey: { natural: 'E', accidental: '' }, selectedScale: 'phrygian',
+      lessonLoan: { key: { natural: 'F', accidental: '' }, scale: 'major' },
+    });
+    try {
+      const { session } = newSession();
+      session.start();
+      await vi.advanceTimersByTimeAsync(3000);
+      await session.finish('restore');
+      expect(useAppStore.getState()).toMatchObject({ selectedKey: { natural: 'F', accidental: '' }, selectedScale: 'major' });
+    } finally {
+      useAppStore.setState({ lessonLoan: null });
+    }
+  });
+
+  // Final review: a restore that throws must not leave the settings save held
+  // for the rest of the page (release() runs in a finally).
+  it('a restore that throws still releases the settings save', async () => {
+    useAppStore.setState({ view: 'explore', lastView: 'explore', instrument: 'piano', themeMode: 'fermata' });
+    const { session } = newSession();
+    session.start();
+    await vi.advanceTimersByTimeAsync(1000);
+    let armed = true;
+    const unsubscribe = useAppStore.subscribe(() => {
+      if (armed) { armed = false; throw new Error('restore failed'); }
+    });
+    try {
+      await expect(session.finish('restore')).rejects.toThrow('restore failed');
+    } finally {
+      unsubscribe();
+    }
+    useAppStore.getState().setThemeMode('fermata-night');
+    expect(JSON.parse(localStorage.getItem(APP_KEY)!).state.themeMode).toBe('fermata-night');
+  });
+
   it('"Stay here" keeps what the tour shows and saves it once', async () => {
     useAppStore.setState({ view: 'explore', instrument: 'piano', selectedKey: { natural: 'C', accidental: '' }, selectedScale: 'major', selectedChord: null });
     useAppStore.setState({});
@@ -388,5 +444,31 @@ describe('the intro tour, played through', () => {
     await playToEnd(session);
     expect(audio.setMasterVolume).toHaveBeenCalledWith(0.3);
     await session.finish('restore');
+  });
+
+  // Final review: the volume is applied before EACH sound (the scale and the
+  // chord); with either call left out the test above still passed.
+  it('the saved volume is applied right before the scale AND right before the chord', async () => {
+    useAppStore.setState({ view: 'explore', instrument: 'piano', volume: 0.3 });
+    const order: string[] = [];
+    vi.mocked(audio.setMasterVolume).mockImplementation(() => { order.push('volume'); });
+    const scaleImpl = vi.mocked(audio.playScale).getMockImplementation()!;
+    vi.mocked(audio.playScale).mockImplementation((...args: Parameters<typeof audio.playScale>) => { order.push('scale'); return scaleImpl(...args); });
+    const click = vi.spyOn(HTMLElement.prototype, 'click').mockImplementation(function (this: HTMLElement) {
+      if (this.dataset?.selector?.includes('play-chord')) order.push('chord');
+      HTMLElement.prototype.dispatchEvent.call(this, new MouseEvent('click'));
+    });
+    try {
+      const { session } = newSession();
+      await playToEnd(session);
+      await session.finish('restore');
+    } finally {
+      click.mockRestore();
+      vi.mocked(audio.playScale).mockImplementation(scaleImpl);
+    }
+    const sounds = order.filter((o) => o !== 'volume');
+    expect(sounds).toContain('scale');
+    expect(sounds).toContain('chord');
+    order.forEach((o, i) => { if (o !== 'volume') expect(order[i - 1]).toBe('volume'); });
   });
 });
