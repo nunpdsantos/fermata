@@ -1,0 +1,148 @@
+/* The self-playing tour (brief B, wave 1). In the tour's own lazy chunk.
+   A fixed OVERLAY, never in the page flow: nothing moves when the caption
+   bar comes or goes (the toast rule, CLAUDE.md "ToastRegion"). It sits under
+   the top bar or just above the instrument dock — never over the instrument
+   (services/tour/dom.ts placeBar) — over the top bar itself only on a short
+   screen. Above toasts (65) and the top bar (66), under sheets (70); toasts
+   never reach it anyway: the bar registers with useToastAvoid. */
+.tour-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 67;
+  pointer-events: none;
+}
+
+.tour-layer[data-above-sheet] { z-index: 71; }
+
+.tour-bar {
+  position: fixed;
+  /* top / left / width come from the placement (services/tour/dom.ts placeBar). */
+  box-sizing: border-box;
+  max-width: 720px;
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "dots controls"
+    "caption controls";
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 6px;
+  padding: 8px 8px 8px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  color: var(--text);
+  box-shadow: var(--shadow-lg);
+  transition: top 0.2s ease, left 0.2s ease;
+}
+/* Unplaced = transparent, not visibility: hidden — under reduced motion the
+   app gives every property a tiny transition, so a hidden bar could not take
+   focus in the frame it is placed (the Menu's lesson, 9 Nov). */
+.tour-bar[data-measured="false"] { opacity: 0; pointer-events: none; }
+
+.tour-caption {
+  grid-area: caption;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--text-body);
+  line-height: 1.35;
+  overflow-wrap: break-word;
+}
+.tour-dots {
+  grid-area: dots;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  height: 12px;
+}
+.tour-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-dim);
+}
+.tour-dot[data-current] {
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+}
+
+.tour-controls {
+  grid-area: controls;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+}
+/* Under the rest, in a row of its own (only when there is something in it). */
+.tour-extra {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.tour-note {
+  margin: 0;
+  font-size: var(--text-ui);
+  color: var(--text-dim);
+}
+
+/* Phones: the caption gets the bar's full width; the dots and the controls
+   share the row under it (under 360 px each takes its own row). */
+@media (max-width: 639px) {
+  .tour-bar {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "caption caption"
+      "dots controls";
+    padding: 8px 8px 8px 12px;
+  }
+}
+@media (max-width: 359px) {
+  .tour-bar {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "dots"
+      "caption"
+      "controls";
+  }
+  .tour-controls { justify-content: space-between; }
+}
+
+.tour-spotlight {
+  position: fixed;
+  border-radius: 12px;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
+  transition: top 0.2s ease, left 0.2s ease, width 0.2s ease, height 0.2s ease;
+}
+
+/* The tap cue: where a learner would tap, as the tour taps it. */
+.tour-cue {
+  position: fixed;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  animation: tour-tap 1s ease-out forwards;
+}
+@keyframes tour-tap {
+  0% { transform: scale(0.6); opacity: 0; }
+  20% { transform: scale(1); opacity: 1; }
+  70% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+/* Reduced motion: no moving cue (a still ring), the bar and ring jump. */
+@media (prefers-reduced-motion: reduce) {
+  .tour-bar, .tour-spotlight { transition: none; }
+  .tour-cue { animation: none; }
+}
+
+@media print {
+  .tour-layer { display: none !important; }
+}

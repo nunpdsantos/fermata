@@ -31,7 +31,9 @@ test.describe('"⋯" menu and Settings sheet', () => {
     const menu = page.getByRole('menu', { name: 'More' });
     await expect(menu).toBeVisible();
     await expect(page.getByRole('menuitem', { name: 'Settings' })).toBeFocused();
-    await page.keyboard.press('ArrowDown'); // wraps (one item today)
+    await page.keyboard.press('ArrowDown'); // the next item, then wraps
+    await expect(page.getByRole('menuitem', { name: 'Show me around' })).toBeFocused();
+    await page.keyboard.press('ArrowDown');
     await expect(page.getByRole('menuitem', { name: 'Settings' })).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(menu).toHaveCount(0);

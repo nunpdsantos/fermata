@@ -1138,14 +1138,139 @@
     "close": "Cerrar el mástil completo"
   },
   "practice": {"title": "Practicar en la guitarra"},
-  "welcome": {
-    "title": "Te damos la bienvenida a Fermata",
-    "explore": "Elige una tonalidad y ve sus notas y acordes en el piano o la guitarra, y su lugar en el círculo de quintas.",
-    "learn": "Un curso paso a paso en nueve niveles, con una comprobación breve al final de cada lección.",
-    "drill": "Una sesión corta de preguntas rápidas al día. Las que fallas vuelven a salir.",
-    "footer": "Gratis, sin cuenta, funciona sin conexión. Tu progreso se queda en este navegador.",
-    "exploreAction": "Explorar una tonalidad",
-    "learnAction": "Empezar el curso",
-    "drillAction": "Probar una práctica"
+  "start": {
+    "tagline": "Aprende cómo funciona la música, en un piano o una guitarra que puedes tocar aquí mismo.",
+    "tour": "Ver la visita guiada de un minuto",
+    "instrumentLabel": "Voy a usar:",
+    "doorsHeading": "¿Cuál es tu punto de partida?",
+    "door": {
+      "new": {
+        "title": "La música es nueva para mí",
+        "line": "Empieza por el sonido. No hace falta saber leer música."
+      },
+      "player": {
+        "title": "Toco, pero nunca aprendí teoría",
+        "line": "Descubre por qué los acordes que ya conoces combinan entre sí."
+      },
+      "theory": {
+        "title": "Sé algo de teoría",
+        "line": "Directo a las herramientas: tonalidades, acordes, escalas, el círculo de quintas."
+      }
+    },
+    "footer": "Gratis. Sin cuenta. Tras la primera visita, funciona sin conexión. Tu progreso se queda en este navegador.",
+    "settingsLabel": "Cómo uso Fermata",
+    "profile": {
+      "new": "Estoy empezando",
+      "player": "Toco, sin teoría",
+      "theory": "Sé algo de teoría"
+    },
+    "hint": {
+      "label": "Primeros pasos",
+      "newPiano": "Toca una tecla para oírla.",
+      "newGuitar": "Toca una cuerda para oírla.",
+      "player": "Elige la tonalidad de una canción que toques, por ejemplo G. Los acordes de abajo son de esa tonalidad: toca uno.",
+      "dismiss": "Cerrar el consejo"
+    }
+  },
+  "showMe": {
+    "menuItem": "Enséñame cómo funciona",
+    "region": "Visita guiada por la app",
+    "step": "Paso {{n}} de {{total}}",
+    "back": "Anterior",
+    "next": "Siguiente",
+    "pause": "Pausa",
+    "resume": "Reanudar",
+    "sound": "Sonido",
+    "tapForSound": "Toca para activar el sonido",
+    "close": "Terminar la visita",
+    "end": "Terminar",
+    "pausedTouch": "En pausa: has tocado la app.",
+    "stayHere": "Quedarme aquí",
+    "backToStart": "Volver a donde estaba",
+    "putBack": "Dejarlo como estaba",
+    "elsewhereNote": "Quedarás en Explorar; {{view}} está a un toque.",
+    "done": "Listo",
+    "busyCheck": "Primero termina tu comprobación o sal de ella.",
+    "busyDrill": "Primero termina tu sesión de práctica o sal de ella.",
+    "loadFailed": "No se ha podido abrir la visita.",
+    "intro": {
+      "key": "La mayoría de las canciones usan una familia de notas: la tonalidad. Aquí elegimos G mayor.",
+      "scale": "Estas son las notas de esa tonalidad, resaltadas en el instrumento.",
+      "chords": "…y estos son los acordes que le pertenecen.",
+      "chord": "Toca un acorde para verlo en el instrumento y pulsa Acorde para oírlo.",
+      "word": "Cualquier palabra subrayada con puntos explica lo que significa. Tócala.",
+      "guitar": "El mismo acorde en la guitarra: dónde van los dedos.",
+      "piano": "El mismo acorde en el piano: las teclas que pulsas.",
+      "circle": "El círculo muestra qué tonalidades son vecinas: comparten todas las notas menos una.",
+      "learn": "Aprender: lecciones cortas, cada una con una comprobación rápida. Siempre hay una pista antes de la respuesta.",
+      "drill": "Práctica: unas preguntas rápidas al día ayudan a recordar lo aprendido.",
+      "end": "Ahora te toca a ti."
+    }
+  },
+  "neckView": {
+    "heading": "Mástil de la guitarra",
+    "hint": "Las tablaturas suelen poner la cuerda fina arriba.",
+    "nutSide": "Lado de las cuerdas al aire",
+    "nutLeft": "Cuerdas al aire a la izquierda",
+    "nutRight": "Cuerdas al aire a la derecha",
+    "topString": "Cuerda de arriba",
+    "thinTop": "Cuerda fina arriba",
+    "thickTop": "Cuerda gruesa arriba",
+    "stringRangeHighFirst": "Cuerdas 1 a 6"
+  },
+  "glossary": {
+    "ui": {
+      "words": "Palabras",
+      "wordsLabel": "Palabras en esta pantalla",
+      "wordsIntro": "Toca una palabra para ver qué significa.",
+      "noWords": "No hay palabras que explicar en esta pantalla.",
+      "hear": "Escuchar",
+      "learn": "Saber más",
+      "notHere": "En {{key}} este nombre no se usa.",
+      "sevenOnly": "Estos nombres son de las escalas de siete notas; {{key}} tiene {{n}} notas.",
+      "loadError": "No se pudo cargar la explicación. Inténtalo de nuevo."
+    }
+  },
+  "simpleView": {
+    "label": "Cuánto mostrar",
+    "simple": "Sencilla",
+    "full": "Completa",
+    "menuFull": "Vista completa",
+    "allScales": "Todas las escalas…",
+    "seeEverything": "Ver todo sobre este acorde",
+    "noteOf": "nota {{n}} de {{key}}",
+    "noSharpsFlats": "sin sostenidos ni bemoles",
+    "sharps_one": "un sostenido",
+    "sharps_other": "{{count}} sostenidos",
+    "flats_one": "un bemol",
+    "flats_other": "{{count}} bemoles",
+    "notes_one": "{{count}} nota",
+    "notes_other": "{{count}} notas",
+    "menuSimple": "Vista sencilla"
+  },
+  "share": {
+    "copyLink": "Copiar enlace",
+    "shareLink": "Compartir enlace",
+    "copied": "Enlace copiado",
+    "lessonActions": "Acciones de la lección",
+    "fallbackTitle": "Copia este enlace",
+    "fallbackHint": "Este navegador no ha permitido a Fermata copiar el enlace. Selecciónalo y cópialo tú.",
+    "fallbackField": "Enlace",
+    "waiting": "Este enlace abre {{target}}. Cuando termines lo que estás haciendo, Fermata te propondrá abrirlo.",
+    "ready": "Ya puedes abrir el enlace: {{target}}",
+    "open": "Abrir",
+    "unreadable": "No se ha podido leer este enlace, así que Fermata se ha abierto como siempre.",
+    "target": {
+      "chord": "el acorde {{chord}}",
+      "piano": "en el piano",
+      "guitar": "en la guitarra",
+      "pianoAlone": "el piano",
+      "guitarAlone": "la guitarra",
+      "lesson": "la lección «{{title}}»"
+    }
+  },
+  "solfege": {
+    "setting": "Mostrar también Do, Re, Mi",
+    "hint": "Añade Do, Re, Mi junto a las letras. Los nombres de los acordes y las lecciones siguen usando las letras (C = Do)."
   }
 }

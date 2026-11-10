@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import { create } from 'zustand';
 import { registerSW } from 'virtual:pwa-register';
 import { reloadPage } from '../utils/pageReload';
@@ -495,25 +495,34 @@ export async function applyUpdateOrReload(): Promise<void> {
   reloadOnce();
 }
 
+/**
+ * The browser's install offer, kept from the first moment the app's code
+ * runs (wave 1). On a first visit the start screen stands in place of the
+ * shell, so PWAPrompts (the one user of this hook) is not mounted yet: a
+ * listener inside the hook missed an offer made while the start screen was
+ * up, for the whole visit. This module is in the entry chunk (AppShell →
+ * PWAPrompts), so it listens before the start screen paints.
+ */
+const useInstallOfferStore = create<{ offer: BeforeInstallPromptEvent | null }>(() => ({ offer: null }));
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeinstallprompt', (e: Event) => {
+    e.preventDefault();
+    useInstallOfferStore.setState({ offer: e as BeforeInstallPromptEvent });
+  });
+}
+const setInstallPrompt = (offer: BeforeInstallPromptEvent | null) => useInstallOfferStore.setState({ offer });
+
 export function usePWA() {
   const needRefresh = usePwaUpdateStore((s) => s.needRefresh);
   const offlineReady = usePwaUpdateStore((s) => s.offlineReady);
   const updateDeferred = usePwaUpdateStore((s) => s.updateDeferred);
   const incoming = usePwaUpdateStore((s) => s.incoming);
   const updated = usePwaUpdateStore((s) => s.updated);
-  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  // The install offer, captured at module load (above), whenever it came.
+  const installPrompt = useInstallOfferStore((s) => s.offer);
 
   useEffect(() => {
     startPwaRegistration();
-
-    // Capture install prompt
-    function handleBeforeInstall(e: Event) {
-      e.preventDefault();
-      setInstallPrompt(e as BeforeInstallPromptEvent);
-    }
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
-    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
   }, []);
 
   const install = useCallback(async () => {

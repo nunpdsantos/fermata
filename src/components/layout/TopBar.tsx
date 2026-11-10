@@ -7,6 +7,8 @@ import { Menu } from '../ui/Menu.tsx';
 import { SettingsSheet } from './SettingsSheet.tsx';
 import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { usePwaUpdateStore, applyUpdateOrReload } from '../../hooks/usePWA.ts';
+import { requestDemo } from '../../state/demoRequest.ts';
+import { resumeAudio } from '../../core/services/audio.ts';
 
 const VIEWS: ViewMode[] = ['explore', 'learn', 'drill'];
 const VIEW_KEYS: Record<ViewMode, string> = {
@@ -41,6 +43,11 @@ export function TopBar() {
   // Put off with "Later": a dot on "⋯" says an update is waiting in there.
   const updateDeferred = usePwaUpdateStore((s) => s.needRefresh && s.updateDeferred);
   const openSearch = () => useAppStore.getState().setQuickSearchOpen(true);
+  // The tour plays sound: resume the audio inside this tap, then ask for it.
+  const showMeAround = () => {
+    void resumeAudio().catch(() => undefined);
+    requestDemo('intro', 'menu');
+  };
 
   return (
     <header className="app-topbar" data-testid="app-topbar">
@@ -91,6 +98,7 @@ export function TopBar() {
           items={[
             ...(narrow ? [{ id: 'search', label: t('nav.search'), onSelect: openSearch }] : []),
             { id: 'settings', label: t('settings.title'), onSelect: () => setSettingsOpen(true) },
+            { id: 'show-me', label: t('showMe.menuItem'), onSelect: showMeAround },
             // A waiting update stays one tap away after "Later" (until the reload).
             ...(updateReady ? [{ id: 'update', label: t('pwa.updateReady'), onSelect: () => void applyUpdateOrReload() }] : []),
           ]}

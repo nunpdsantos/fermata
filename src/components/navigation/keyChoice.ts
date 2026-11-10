@@ -38,6 +38,11 @@ export const SCALE_GROUPS: { id: string; options: ScaleType[] }[] = [
   },
 ];
 
+/** Simple view's scales (wave 1): the five a first-timer meets first. */
+export const SHORT_SCALES: readonly ScaleType[] = ['major', 'natural_minor', 'pentatonic_major', 'pentatonic_minor', 'blues'];
+/** The Simple short list's last option: "All scales…" switches Explore to Full. */
+export const ALL_SCALES_OPTION = 'all-scales';
+
 /** The twelve roots as offered for the selected scale, and the respell choice. */
 export function useRootChoices() {
   const selectedKey = useAppStore((s) => s.selectedKey);

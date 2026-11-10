@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Term } from '../../glossary/Term.tsx';
+import { termAttr } from '../../glossary/visibleTerms.ts';
+import { qualityTermId } from '../../glossary/termIds.ts';
 import { Note, NaturalNote, Accidental, noteToString, ChordIdentification } from '../../core/types/music.ts';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
@@ -200,7 +203,7 @@ export function ChordBuilderPanel() {
           batch's (D-25). */}
       <div data-chord-scroll-row className="flex flex-wrap gap-2 items-end">
         <label className="flex flex-col gap-1">
-          <span className="type-label">{t('chordBuilder.chordRoot')}</span>
+          <span className="type-label" {...termAttr('root')}>{t('chordBuilder.chordRoot')}</span>
           <SelectTrigger
             value={`${chordRoot.natural}${chordRoot.accidental}`}
             onChange={(e) => {
@@ -253,7 +256,7 @@ export function ChordBuilderPanel() {
           {top ? (
             <span className="text-base font-semibold" style={{ color: 'var(--accent-text)' }}>
               {withGlyphs(top.chord.root)}{' '}
-              {qualityName(top.chord.quality, lang)}
+              <Term id={qualityTermId(top.chord.quality)}>{qualityName(top.chord.quality, lang)}</Term>
             </span>
           ) : (
             <span style={{ color: 'var(--text-muted)' }}>
@@ -269,6 +272,7 @@ export function ChordBuilderPanel() {
             <span
               className="text-xs font-medium"
               style={{ color: role.inKey ? 'var(--accent-text)' : 'var(--text-muted)' }}
+              {...termAttr(role.inKey ? 'romanNumeral' : 'outOfKey')}
             >
               {role.inKey ? role.label : `(${role.label})`}
             </span>
@@ -278,9 +282,9 @@ export function ChordBuilderPanel() {
         <div className="mt-2 grid gap-y-1 gap-x-6 text-xs" style={{ gridTemplateColumns: 'auto 1fr' }}>
           <span style={{ color: 'var(--text-muted)' }}>{t('chordBuilder.notes')}</span>
           <span>{notesLabel || t('chordBuilder.none')}</span>
-          <span style={{ color: 'var(--text-muted)' }}>{t('chordBuilder.intervals')}</span>
+          <span style={{ color: 'var(--text-muted)' }} {...termAttr('interval')}>{t('chordBuilder.intervals')}</span>
           <span>{intervalsLabel || t('chordBuilder.none')}</span>
-          <span style={{ color: 'var(--text-muted)' }}>{t('chordBuilder.halfSteps')}</span>
+          <span style={{ color: 'var(--text-muted)' }} {...termAttr('halfStep')}>{t('chordBuilder.halfSteps')}</span>
           <span>{semitonesLabel || t('chordBuilder.none')}</span>
         </div>
 

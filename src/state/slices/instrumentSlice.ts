@@ -8,6 +8,10 @@ export const createInstrumentSlice: StateCreator<AppState, [], [], InstrumentSli
   exerciseInputActive: false,
   guitarScalePosition: null,
   guitarTuningId: 'standard',
+  // A browser with nothing saved: the neck as tab and chord charts draw it.
+  // A save from before these fields gets the old view (store.ts merge).
+  neckNutSide: 'left',
+  neckTopString: 'high',
 
   setInstrument: (instrument) =>
     set({ instrument, preferencesUpdatedAt: Date.now() }),
@@ -30,4 +34,6 @@ export const createInstrumentSlice: StateCreator<AppState, [], [], InstrumentSli
   // Positions are generated for any tuning, so the chosen one is kept.
   setGuitarTuningId: (id) =>
     set({ guitarTuningId: id, preferencesUpdatedAt: Date.now() }),
+  setNeckNutSide: (side) => set({ neckNutSide: side, preferencesUpdatedAt: Date.now() }),
+  setNeckTopString: (top) => set({ neckTopString: top, preferencesUpdatedAt: Date.now() }),
 });

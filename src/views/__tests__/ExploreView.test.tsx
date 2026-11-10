@@ -197,7 +197,36 @@ describe('ExploreView — "Practise on the guitar" in the scale actions menu', (
     await screen.findAllByTestId('staff-mock');
     fireEvent.click(screen.getByRole('button', { name: 'Scale actions' }));
     expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual([
-      'Copy scale summary to clipboard', 'Print scale diagram', 'Compare scales', 'Practise on the guitar',
+      'Copy scale summary to clipboard', 'Copy link', 'Print scale diagram', 'Compare scales', 'Practise on the guitar',
     ]);
+  });
+});
+
+// Final review (2026-11-10): an explanation open when Explore goes away (a
+// search result opening a lesson, a tour step) must not come back, detached
+// and taking focus, the next time Explore mounts.
+describe('an open explanation when Explore unmounts', () => {
+  it('is closed', async () => {
+    const { useGlossaryUi } = await import('../../glossary/glossaryUi');
+    const { unmount } = render(<ExploreView />);
+    act(() => useGlossaryUi.getState().openTerm('dominant', null));
+    expect(useGlossaryUi.getState().request).not.toBeNull();
+    unmount();
+    expect(useGlossaryUi.getState().request).toBeNull();
+  });
+});
+
+// Final review (2026-11-10): Simple view has no circle — on a tablet too
+// (jsdom's media queries match nothing: the tablet column layout).
+describe('the circle on a tablet', () => {
+  it('Full shows it under the work; Simple leaves it out', async () => {
+    const { unmount } = render(<ExploreView />);
+    act(() => useAppStore.setState({ exploreDetail: 'full' }));
+    expect(screen.getByTestId('explore-work').getAttribute('data-layout')).toBe('column');
+    expect(screen.queryByTestId('circle-card')).not.toBeNull();
+    act(() => useAppStore.setState({ exploreDetail: 'simple' }));
+    expect(screen.queryByTestId('circle-card')).toBeNull();
+    unmount();
+    useAppStore.setState({ exploreDetail: undefined });
   });
 });

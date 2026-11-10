@@ -11,6 +11,8 @@ import { toContentLanguage } from '../drill/drillText.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
 import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { EdgeFade } from '../ui/EdgeFade.tsx';
+import { termAttr } from '../../glossary/visibleTerms.ts';
+import { qualityTermId } from '../../glossary/termIds.ts';
 
 export function ChordGrid() {
   const { t, i18n } = useTranslation();
@@ -50,7 +52,7 @@ export function ChordGrid() {
     // screen the row scrolls sideways inside its card; each card keeps 84 px,
     // and an edge fade says there is more (only while there is).
     <EdgeFade>
-    <div className="chord-row" style={{ gridTemplateColumns: `repeat(${diatonicChords.length}, minmax(84px, 1fr))` }} role="group" aria-label={t('explore.diatonicChordsGroup')}>
+    <div className="chord-row" data-tour="chord-row" style={{ gridTemplateColumns: `repeat(${diatonicChords.length}, minmax(84px, 1fr))` }} role="group" aria-label={t('explore.diatonicChordsGroup')}>
       {diatonicChords.map(({ chord, numeral, degree }, i) => {
         const deg = degree as keyof typeof DEGREE_COLORS;
         // The degree hue is a FILL (the top line); the numeral is written in
@@ -99,7 +101,7 @@ export function ChordGrid() {
                 headroom with the chord detail open (it wraps back under
                 if a long seventh name has no room). */}
             <span className="flex flex-col items-center gap-0.5 min-[1200px]:flex-row min-[1200px]:flex-wrap min-[1200px]:justify-center min-[1200px]:items-baseline min-[1200px]:gap-x-1.5">
-              <span className="text-ui font-bold leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : ink }}>
+              <span className="text-ui font-bold leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : ink }} {...termAttr('romanNumeral')}>
                 {numeral}
               </span>
               <span className="text-body font-semibold leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text)' }}>
@@ -107,7 +109,7 @@ export function ChordGrid() {
                 <span className="font-normal" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text-dim)' }}>{withGlyphs(qualityLabel)}</span>
               </span>
             </span>
-            <span className="text-caption leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text-dim)' }}>
+            <span className="text-caption leading-tight" style={{ color: isSelected ? 'var(--on-accent)' : 'var(--text-dim)' }} {...termAttr(qualityTermId(chord.quality))}>
               {qualityFull}
             </span>
           </m.button>

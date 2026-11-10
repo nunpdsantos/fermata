@@ -203,7 +203,7 @@ describe('header: pickers, summary, Play, "⋯"', () => {
     expect(screen.queryByRole('button', { name: /Copy scale summary/ })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Scale actions' }));
     expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual([
-      'Copy scale summary to clipboard', 'Print scale diagram', 'Compare scales',
+      'Copy scale summary to clipboard', 'Copy link', 'Print scale diagram', 'Compare scales',
     ]);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Compare scales' }));
     expect(screen.getByRole('dialog', { name: 'Compare Scales' })).toBeTruthy();
@@ -225,6 +225,22 @@ describe('dock read-out', () => {
     expect(text()).toBe('C4 · 1 octave');
     act(() => useAppStore.setState({ exerciseInputActive: false, view: 'learn' }));
     expect(text()).toBe('C4 · 1 octave');
+  });
+
+  // Final review (2026-11-10): Simple view's wording ("note 7 of …", no
+  // degree names) must reach the read-out; nothing tested the wiring.
+  it("in Simple view: the note's number in the key, not its degree name", () => {
+    useAppStore.setState({ exploreDetail: 'simple' });
+    try {
+      render(<DockReadout context="C4 · 1 octave" />);
+      act(() => {
+        useFocusNoteStore.getState().setLocations({ instrument: 'piano', items: ['B4'] });
+        useFocusNoteStore.getState().set('pinned', { pc: 11, midi: 71, source: 'staff' });
+      });
+      expect(document.querySelector('.dock-context-text')!.textContent).toBe('B — note 7 of C Major · B4');
+    } finally {
+      useAppStore.setState({ exploreDetail: undefined });
+    }
   });
 
   it('screen readers hear a burst of notes once, when it settles', () => {

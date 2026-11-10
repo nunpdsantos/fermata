@@ -588,7 +588,7 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
     <div className="cof-caption text-center text-ui mt-1 min-h-[2.9em]" style={{ color: 'var(--text-muted)' }} aria-live="polite">
       {hoveredIdx !== null && hoverInfo ? (
         <>
-          <div data-testid={hoverInfo.distLabel ? 'cof-hover-dist' : undefined} style={{ color: 'var(--text-dim)' }}>{hoverInfo.distLabel || '\u00a0'}</div>
+          <div data-testid={hoverInfo.distLabel ? 'cof-hover-dist' : undefined} data-term={hoverInfo.distLabel ? 'relatedKeys' : undefined} style={{ color: 'var(--text-dim)' }}>{hoverInfo.distLabel || '\u00a0'}</div>
           <div data-testid="cof-hover-sig">{hoverInfo.sig} · {hoverInfo.relative}</div>
         </>
       ) : (

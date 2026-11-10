@@ -875,24 +875,82 @@ body {
     to { transform: none; }
   }
 
-  /* First-visit welcome (WelcomeSheet): the three views, then three actions
-     stacked full width; on a short (sideways) screen they share rows so the
-     sheet's body keeps room above them. */
-  .welcome-views { display: flex; flex-direction: column; gap: 12px; margin: 0; }
-  .welcome-views dd { margin: 2px 0 0; }
-  .welcome-footer { margin-top: 16px; }
-  .welcome-actions { display: flex; flex-direction: column; gap: 8px; }
+  /* Start screen (wave 1, components/start/): a page of its own, in place
+     of the app, on a first visit. One calm column; the page scrolls if it
+     must (a phone held sideways). Doors stack on phones and stand side by
+     side from 720 px. */
+  .start-page {
+    /* body never scrolls (overflow: hidden): the page is its own scroller. */
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+  .start-column {
+    width: 100%;
+    max-width: 880px;
+    /* Centred when there is room, from the top when it scrolls. */
+    margin-block: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .start-head { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .start-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--text-display);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .start-lead { margin: 0; font-size: var(--text-title); line-height: 1.4; max-width: 34em; }
+  .start-tour-failed { margin: 0; font-size: var(--text-ui); color: var(--text-muted); }
+  .start-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  .start-row-label { font-size: var(--text-body); }
+  .start-doors { display: flex; flex-direction: column; gap: 12px; }
+  .start-doors-heading { margin: 0; font-size: var(--text-title); font-weight: 600; line-height: 1.3; }
+  .start-door-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .start-door-list > li { display: flex; }
+  /* (Card's own classes are unlayered and win over this layer: only what
+     they leave alone is set here.) */
+  .start-door { min-height: calc(var(--tap) + 24px); padding: 14px 16px; color: var(--text); }
+  .start-door-title { display: block; font-size: var(--text-body); font-weight: 600; line-height: 1.35; }
+  .start-door-line { display: block; margin-top: 4px; font-size: var(--text-ui); line-height: 1.4; color: var(--text-muted); }
+  .start-footer p { margin: 0; font-size: var(--text-ui); color: var(--text-muted); }
+  @media (min-width: 720px) {
+    .start-door-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  /* A phone held sideways: less air, so more of it is in view at once. */
   @media (max-height: 500px) {
-    .welcome-actions { flex-direction: row; flex-wrap: wrap; }
-    .welcome-actions > .btn { flex: 1 1 auto; }
+    .start-page { padding-top: max(12px, env(safe-area-inset-top)); padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+    .start-column { gap: 14px; }
   }
-  /* A phone held sideways: the panel takes the width and the three views
-     stand side by side (one column showed ~100 px, a single view). */
-  @media (max-height: 500px) and (min-width: 640px) {
-    .sheet-panel:has(.welcome-views) { width: min(760px, calc(100vw - 32px)); max-width: none; }
-    .welcome-views { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-    .welcome-footer { margin-top: 8px; }
+
+  /* Start hint (wave 1, layout/StartHint.tsx): one line in the flow under
+     the top bar, Explore only — it covers nothing, and it is there from
+     Explore's first paint, so nothing moves when it shows. */
+  .start-hint {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px max(4px, env(safe-area-inset-right)) 2px max(16px, env(safe-area-inset-left));
+    background: var(--accent-bg);
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text);
   }
+  .start-hint-text { flex: 1; min-width: 0; margin: 0; font-size: var(--text-ui); line-height: 1.4; }
 
   /* Instrument dock — phone pull-up sheet (DetentSheet) */
   .detent-sheet {
@@ -1253,6 +1311,26 @@ body {
     .explore-work,
     .explore-main,
     .explore-aside {
+      flex: none;
+      min-height: auto;
+      overflow: visible;
+    }
+  }
+  /* A small phone (≤ 600 px tall) while the start hint (wave 1) stands under
+     the top bar: the same one scroller. The hint's two or three lines left
+     such a phone's work area too short for a chord's ▶ Chord above the sheet
+     (320×568 in PT: 85 px, ▶ Chord 11 px under the sheet); with the header
+     scrolling away too, the detail lands as it does without the hint. From
+     640 px tall there is room to spare (≥ 75 px, measured at integration),
+     and there the header stays put, as the start hint's own spec requires.
+     Only a visitor who chose 'new' or 'player' ever has the hint, so nobody
+     else's Explore changes. */
+  @media (max-width: 639px) and (max-height: 600px) {
+    body:has([data-testid="start-hint"]) .explore-root {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    body:has([data-testid="start-hint"]) :is(.explore-work, .explore-main, .explore-aside) {
       flex: none;
       min-height: auto;
       overflow: visible;
@@ -2192,6 +2270,10 @@ p.explore-prose {
   width: min(860px, calc(100% - 32px));
   max-width: 860px;
 }
+/* Settings → Guitar neck (brief D): two plain two-way segments, full width;
+   long PT/ES option names wrap inside their half instead of overflowing. */
+.seg.neck-setting { display: flex; width: 100%; }
+.neck-setting .seg-btn { flex: 1 1 0; min-width: 0; white-space: normal; text-align: center; padding: 4px 10px; }
 .practice-tabs { display: flex; width: 100%; }
 .practice-tabs .seg-btn { flex: 1; white-space: normal; }
 .practice-select-label { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; font-size: var(--text-ui); min-width: 0; }
@@ -2268,3 +2350,201 @@ p.explore-prose {
 }
 .celebration-panel { display: flex; flex-direction: column; max-height: calc(100dvh - 24px); }
 .celebration-panel > button { flex: none; }
+
+/* ─── Plain words (wave 1, brief C): tap a term for its meaning ───────────
+   A tappable term keeps the look of the label it sits in (font, size,
+   colour, small caps) and adds a discreet dotted underline in --text-dim
+   (≥ 4.5:1 on the page and the cards, day and night). Its tap box is a full
+   --tap tall, but the extra height is padding cancelled by a negative margin,
+   so the line it sits on — and the layout around it — does not move. */
+@layer components {
+  .term {
+    display: inline-block;
+    padding: calc((var(--tap) - 1lh) / 2) 2px;
+    margin: calc((var(--tap) - 1lh) / -2) -2px;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-variant-caps: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    text-align: inherit;
+    cursor: help;
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: var(--text-dim);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    text-decoration-skip-ink: none;
+  }
+  /* Inside a sentence (the key summary) a word is an inline link: no extra
+     height, so a wrapped second line never lies over the first one's words. */
+  .explore-summary .term:not(:only-child) {
+    padding-block: 0;
+    margin-block: 0;
+  }
+  /* Touch: the facts' rows are a full target apart, so one word's tap box
+     never reaches the next word's centre. */
+  @media (pointer: coarse) {
+    .key-facts { row-gap: 10px; }
+  }
+  .term:hover {
+    text-decoration-style: solid;
+    text-decoration-color: var(--accent-text);
+  }
+  @media print {
+    .term { text-decoration: none; }
+  }
+
+  /* The summary keeps its place in the header (the wrapper is transparent to
+     the header's flex row); a phone gives it its own row with "Words". */
+  .explore-summary-row { display: contents; }
+  @media (max-width: 639px) {
+    .explore-summary-row {
+      order: 3;
+      flex-basis: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .explore-summary-row > .explore-summary { flex: 1 1 0; order: 0; }
+  }
+  .words-inline {
+    flex: none;
+    margin-block: calc((var(--tap) - 1.2em) / -2);
+    padding-inline: 4px;
+  }
+  /* Simple view: no circle beside the work — the work column takes the row. */
+  @media (min-width: 1200px) {
+    .explore-root[data-detail="simple"] .explore-work { grid-template-columns: minmax(0, 1fr); }
+    .explore-root[data-detail="simple"] .explore-main { max-width: 1100px; width: 100%; margin: 0 auto; }
+  }
+
+  .glossary-popover {
+    position: fixed;
+    z-index: 75;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 8px 14px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    box-shadow: var(--shadow-lg);
+  }
+  .glossary-popover:focus { outline: none; }
+  .glossary-popover:focus-visible { outline: 2px solid var(--focus-outline); outline-offset: 2px; }
+  .glossary-popover-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .glossary-title {
+    margin: 0;
+    font-size: var(--text-title);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--text);
+  }
+  .glossary-explanation { display: flex; flex-direction: column; gap: 8px; }
+  .glossary-plain, .glossary-intro {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 1.45;
+    color: var(--text);
+  }
+  .glossary-intro { font-size: var(--text-ui); color: var(--text-muted); margin-bottom: 8px; }
+  .glossary-example {
+    margin: 0;
+    font-size: var(--text-ui);
+    line-height: 1.4;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .glossary-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    margin-top: 2px;
+  }
+  .glossary-words {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .glossary-words > li + li { border-top: 1px solid var(--border-subtle); }
+  .glossary-word {
+    display: flex;
+    width: 100%;
+    min-height: var(--tap);
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 2px;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: var(--text-body);
+    font-weight: 600;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+  }
+  .glossary-word > svg { flex: none; color: var(--text-dim); }
+  .glossary-word-body { padding: 0 2px 12px; }
+}
+@layer components {
+  .glossary-also { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 8px; }
+  .glossary-title-also { font-size: var(--text-body); }
+}
+/* The Simple / Full switch's track (2 px padding + 1 px border round --tap
+   buttons) would make the header row 6 px taller than its other controls;
+   it overhangs into the header's own padding instead, so the row — and the
+   1440×900 work column's headroom under it — stays exactly as it was. */
+.explore-detail-switch { margin-block: -3px; }
+
+/* Shared links (wave 1, stream E): the link in a selectable field, when the
+   browser would neither share nor copy it. */
+.share-link-field {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-ui);
+}
+.share-link-field:focus-visible {
+  outline: 2px solid var(--focus-outline);
+  outline-offset: 2px;
+}
+
+/* "Also show Dó, Ré, Mi" (wave 1, stream E): the fixed-do name beside the
+   letter — never instead of it. Off by default; only in PT / ES. */
+.chip-solfege {
+  font-weight: 400;
+}
+.strip-solfege {
+  font-size: var(--text-caption);
+  line-height: 1.2;
+  color: var(--text-muted);
+}
+.strip-solfege-inline {
+  margin-left: 4px;
+  font-weight: 500;
+}
+.strip-col[data-dim] .strip-solfege {
+  color: var(--text-dim);
+}
+/* One caption line more under the staff for the names. */
+.strip-body:has(.strip-solfege) .strip-labels-room {
+  height: 56px;
+}

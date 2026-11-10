@@ -2,6 +2,16 @@
   "$comment": "Release notes for the update prompt (W9b). Newest first. Adding an entry = a new release: increment `release` by 1, one line per language (EN / PT-PT / ES, max 160 characters, no line breaks). `critical: true` marks an emergency: every app on an older release applies it at the next safe moment, even after the learner chose Later. The build reads this file (vite.config.ts) and publishes dist/version.json; a deploy without a new entry shows no What's-new line. CLAUDE.md, PWA section.",
   "releases": [
     {
+      "release": 9,
+      "date": "2026-11-10",
+      "critical": false,
+      "notes": {
+        "en": "A start screen, a one-minute tour, tap a word for its meaning, a Simple view, the neck as tab draws it, share links, Do, Re, Mi in Portuguese and Spanish.",
+        "pt": "Ecrã inicial, visita de um minuto, toca numa palavra para a perceber, vista Simples, o braço como nas tablaturas, ligações e Dó, Ré, Mi junto às letras.",
+        "es": "Pantalla de inicio, visita de un minuto, toca una palabra para entenderla, vista Sencilla, mástil como en la tablatura, enlaces y Do, Re, Mi con las letras."
+      }
+    },
+    {
       "release": 8,
       "date": "2026-11-09",
       "critical": false,

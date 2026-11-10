@@ -9,8 +9,25 @@ import { useAppStore } from '../state/store.ts';
 import { useFocusNoteStore } from '../state/focusNoteStore.ts';
 import { Button } from '../components/ui/Button.tsx';
 import { Sheet } from '../components/ui/Sheet.tsx';
+import { useExploreSimple } from '../state/exploreDetail.ts';
+import { useGlossaryUi } from '../glossary/glossaryUi.ts';
+import { toast } from '../state/toastStore.ts';
 
 const GuitarPractice = lazy(() => import('../components/practice/GuitarPractice.tsx'));
+// The explanations (text in three languages, examples, sounds): fetched the
+// first time a word is tapped, never with the page. A failed download says
+// so and is retried on the next tap (a fresh lazy()).
+const loadGlossary = () => lazy(() => import('../glossary/GlossaryHost.tsx').catch(() => ({ default: GlossaryUnavailable })));
+let GlossaryHost = loadGlossary();
+function GlossaryUnavailable() {
+  const { t } = useTranslation();
+  useEffect(() => {
+    useGlossaryUi.setState({ request: null, wanted: false });
+    GlossaryHost = loadGlossary();
+    toast(t('glossary.ui.loadError'), 'error');
+  }, [t]);
+  return null;
+}
 
 /** Laptop widths: the circle of fifths stands beside the work (D-30). */
 export const WORKBENCH_QUERY = '(min-width: 1200px)';
@@ -41,6 +58,13 @@ export function ExploreView() {
   const selectedScale = useAppStore((s) => s.selectedScale);
   const guitar = useAppStore((s) => s.instrument === 'guitar');
   const [practice, setPractice] = useState(false);
+  // Simple view (wave 1): the key, its notes, its chords and the instrument.
+  const simple = useExploreSimple();
+  const glossaryWanted = useGlossaryUi((s) => s.wanted);
+  // An explanation still open when Explore goes away (a search result opening
+  // a lesson, a tour step) is closed: it would come back on the next visit,
+  // detached from its word and taking focus.
+  useEffect(() => () => useGlossaryUi.getState().close(), []);
   // From the "⋯" menu: the practice tools are the guitar's, so switch to it first.
   const openPractice = () => {
     const app = useAppStore.getState();
@@ -56,16 +80,16 @@ export function ExploreView() {
   useEffect(() => () => useFocusNoteStore.getState().clearAll(), []);
 
   return (
-    <div className="explore-root">
+    <div className="explore-root" data-detail={simple ? 'simple' : 'full'} data-testid="explore-root">
       <ExploreHeader practiceAction={wide ? practiceAction : undefined} onPractise={openPractice} />
       <div className="explore-work" data-testid="explore-work" data-layout={wide ? 'workbench' : phone ? 'phone' : 'column'}>
         <div className="explore-main">
           <ScaleStrip key={`${selectedKey.natural}${selectedKey.accidental}:${selectedScale}`} />
           <ChordsCard />
           {guitar && !wide && <section className="explore-card no-print" data-testid="practice-card">{practiceAction}</section>}
-          {!wide && !phone && <CircleNavigator collapsible />}
+          {!wide && !phone && !simple && <CircleNavigator collapsible />}
         </div>
-        {wide && (
+        {wide && !simple && (
           <aside className="explore-aside">
             <CircleNavigator />
           </aside>
@@ -77,6 +101,11 @@ export function ExploreView() {
           {practice && guitar && <GuitarPractice />}
         </Suspense>
       </Sheet>
+      {glossaryWanted && (
+        <Suspense fallback={null}>
+          <GlossaryHost />
+        </Suspense>
+      )}
     </div>
   );
 }

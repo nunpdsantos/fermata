@@ -18,6 +18,18 @@ export type ColorMode = 'functional' | 'absolute';
 export type ThemeMode = 'fermata' | 'fermata-night' | 'auto';
 /** 0 = Open position, 1–12 = I–XII, 'all' = whole neck, null = automatic. */
 export type GuitarPositionChoice = number | 'all' | null;
+/**
+ * Who the learner says they are (wave 1, the start screen). Exported to the
+ * app from state/learnerProfile.ts — import it from there.
+ */
+export type LearnerProfile = 'new' | 'player' | 'theory';
+/** The start hint still owed in Explore (state/startHint.ts): 'theory' gets none. */
+export type StartHintKind = 'new' | 'player';
+/** Which side of the drawn guitar neck the nut is on (brief D, 2026-11-10). */
+export type NeckNutSide = 'left' | 'right';
+/** Which string is drawn on top: 'high' = the thin e (as tab and chord charts
+ *  draw it), 'low' = the thick E (the app's view before 2026-11-10). */
+export type NeckTopString = 'high' | 'low';
 
 /** Explore's key and scale, held while a lesson borrows the instrument. */
 export interface LessonLoan {
@@ -60,6 +72,12 @@ export interface InstrumentSlice {
    *  Kept across key, scale and tuning changes (audit W3-08). */
   guitarScalePosition: GuitarPositionChoice;
   guitarTuningId: string;
+  /** How every guitar surface DRAWS the neck (never what is on it). A browser
+   *  with no saved settings starts at 'left' + 'high' (the tab / chord-chart
+   *  view); a save from before these fields existed is the 'right' + 'low'
+   *  view, which is also saved by leaving the fields out (store.ts). */
+  neckNutSide: NeckNutSide;
+  neckTopString: NeckTopString;
   setInstrument: (instrument: InstrumentType) => void;
   addActiveNote: (midi: number) => void;
   removeActiveNote: (midi: number) => void;
@@ -68,6 +86,8 @@ export interface InstrumentSlice {
   setExerciseInputActive: (active: boolean) => void;
   setGuitarScalePosition: (position: GuitarPositionChoice) => void;
   setGuitarTuningId: (id: string) => void;
+  setNeckNutSide: (side: NeckNutSide) => void;
+  setNeckTopString: (top: NeckTopString) => void;
 }
 
 export interface AudioSlice {
@@ -102,6 +122,9 @@ export interface NavigationSlice {
   setPendingLearnTarget: (target: LearnDeepLink | null) => void;
 }
 
+/** Explore's two views (wave 1): Simple for a first-timer, Full = the workbench as it was. */
+export type ExploreDetail = 'simple' | 'full';
+
 export interface PreferencesSlice {
   colorMode: ColorMode;
   themeMode: ThemeMode;
@@ -121,6 +144,27 @@ export interface PreferencesSlice {
    *  (W11-B; folded by default there so the column is not a long scroll;
    *  remembered). Laptops always show it beside the work. */
   exploreCircleOpen: boolean;
+  /**
+   * The start screen's answer (state/learnerProfile.ts owns the API). null =
+   * never asked (every learner from before wave 1): treat as 'theory'. Saved
+   * only once set — a save without it is unchanged.
+   */
+  learnerProfile: LearnerProfile | null;
+  /**
+   * The one-line start hint a 'new' / 'player' door leaves in Explore, until
+   * it is dismissed or acted on (state/startHint.ts); null = none. Saved
+   * only while owed.
+   */
+  startHint: StartHintKind | null;
+  /** Explore's Simple / Full view, once the LEARNER chose one (wave 1,
+   *  `state/exploreDetail.ts`). Undefined = never chosen: the profile
+   *  decides (Simple for a guided profile, else Full). Optional in the v6
+   *  save: absent until chosen, so a save from before it is unchanged. */
+  exploreDetail?: ExploreDetail;
+  /** PT / ES: show the fixed-do name (Dó, Ré, Mi…) BESIDE the letter where a
+   *  note or key is named and there is room (wave 1, stream E). Off by default;
+   *  no effect in English. Letters stay everywhere (D-18). */
+  showSolfege: boolean;
   setColorMode: (mode: ColorMode) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setScaleOctaves: (octaves: 1 | 2) => void;
@@ -129,6 +173,8 @@ export interface PreferencesSlice {
   setPreferencesUpdatedAt: (at: number) => void;
   setDockDetent: (view: DockView, detent: Detent) => void;
   setExploreCircleOpen: (open: boolean) => void;
+  setExploreDetail: (detail: ExploreDetail) => void;
+  setShowSolfege: (on: boolean) => void;
   /**
    * Open (or rest) the instrument dock of the CURRENT view at a detent — the
    * API a Learn exercise calls when it needs the instrument (D-20). No-op in

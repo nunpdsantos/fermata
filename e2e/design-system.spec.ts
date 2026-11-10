@@ -214,7 +214,7 @@ const learnScreen = (page: Page) => page.locator('#learn-panel [data-learn-scree
  * centre of its visible part hits (nothing covering it: top bar, sheet,
  * toasts). The first stop must be the skip link (review B1).
  */
-async function focusWalk(page: Page, where: string, steps = 40) {
+async function focusWalk(page: Page, where: string, steps = 40, firstStop: RegExp = /skip to/i) {
   await page.evaluate(() => {
     const h = document.documentElement;
     h.setAttribute('tabindex', '-1');
@@ -270,7 +270,7 @@ async function focusWalk(page: Page, where: string, steps = 40) {
     names.push(stop.name);
     if (!stop.indicator || !stop.onScreen || stop.coveredBy) bad.push(stop);
   }
-  expect.soft(names[0] ?? '', `${where}: the first Tab stop is the skip link`).toMatch(/skip to/i);
+  expect.soft(names[0] ?? '', `${where}: the first Tab stop is the skip link`).toMatch(firstStop);
   expect.soft(names.length, `${where}: the Tab walk reached no stops`).toBeGreaterThan(5);
   expect.soft(bad, `${where}: focus not visible / off screen / covered ${JSON.stringify(bad.slice(0, 5), null, 1)}`).toEqual([]);
   // The walk ends with keyboard focus on its last stop, ring and all; a
@@ -812,11 +812,16 @@ for (const v of VIEWPORTS) {
         const detailBox = await boxOf(page, '[data-testid="chord-detail"]');
         if (detailBox.bottom > 0) expect(overlaps(toast, detailBox), where('toast vs chord detail')).toBe(false);
         // The scale actions "⋯" (Copy / Print / Compare, D-29; Practise on
-        // the guitar since 2026-11-09, on the piano too) and Compare.
+        // the guitar since 2026-11-09, on the piano too; Copy link — or Share
+        // link on a touch screen with a share sheet — since wave 1) and Compare;
+        // on a phone, with no room for the Simple / Full switch, "Simple view"
+        // last (the seat's decision 2, 2026-11-10).
         await page.getByRole('button', { name: 'Scale actions' }).click();
         await expect(page.getByRole('menu', { name: 'Scale actions' })).toBeVisible();
-        await expect(page.getByRole('menuitem')).toHaveCount(4);
-        await expect(page.getByRole('menuitem', { name: 'Practise on the guitar' })).toBeVisible();
+        await expect(page.getByRole('menuitem')).toHaveText([
+          'Copy scale summary to clipboard', /^(Copy|Share) link$/, 'Print scale diagram', 'Compare scales', 'Practise on the guitar',
+          ...(v.name === 'phone' ? ['Simple view'] : []),
+        ]);
         await check(page, v, combo, 'explore-menu');
         await page.getByRole('menuitem', { name: 'Compare scales' }).click();
         const compare = page.getByRole('dialog', { name: 'Compare Scales' });
@@ -1396,4 +1401,297 @@ for (const th of THEMES) {
     await questionScreens(page, 'en', (s) => check(page, v, 'phone-landscape-small', s));
     await context.close();
   });
+}
+
+
+// Wave 1: the start screen (a first visit's own page) and the start hint (one
+// line under the top bar in Explore after a "new" / "player" door), same
+// rules: day and night at every sweep viewport, plus PT and ES at 320 px.
+// Day is a real first visit (empty storage); night is the one way the start
+// screen meets a saved theme — still owed ("pending", e.g. after a visit that
+// opened a shared link) with Night saved.
+async function openStart(browser: Browser, v: Viewport, theme: string, lang: string) {
+  const context = await browser.newContext({
+    viewport: v.viewport, isMobile: v.touch, hasTouch: v.touch, reducedMotion: 'reduce', serviceWorkers: 'block',
+    locale: lang === 'pt' ? 'pt-PT' : lang === 'es' ? 'es-ES' : 'en-GB', storageState: { cookies: [], origins: [] },
+  });
+  await context.addInitScript(([blob]) => {
+    if (sessionStorage.getItem('__seeded')) return;
+    localStorage.clear();
+    if (blob) {
+      localStorage.setItem('fermata-welcome-v1', 'pending');
+      localStorage.setItem('music-theory-app', blob);
+    }
+    sessionStorage.setItem('__seeded', '1');
+  }, [theme === 'fermata' ? '' : JSON.stringify({ state: { themeMode: theme, language: lang }, version: 6 })] as const);
+  const page = await context.newPage();
+  await page.goto('/');
+  await expect(page.getByTestId('start-screen')).toBeVisible({ timeout: 15_000 });
+  await page.waitForTimeout(600);
+  return { context, page };
+}
+
+async function startHintScreens(browser: Browser, v: Viewport, theme: string, lang: string, combo: string) {
+  for (const door of ['new', 'player'] as const) {
+    const { context, page } = await open(browser, v, theme, { instrument: door === 'new' ? 'guitar' : 'piano', lastView: 'explore', learnerProfile: door, startHint: door }, { lang });
+    await expect(page.getByTestId('start-hint')).toBeVisible({ timeout: 15_000 });
+    await check(page, v, combo, `start-hint-${door}`);
+    const hint = await boxOf(page, '[data-testid="start-hint"]');
+    const dock = await boxOf(page, DOCK);
+    expect.soft(hint.bottom, `${combo}: the start hint ends above the instrument`).toBeLessThanOrEqual(dock.top + 1);
+    if (v.name === 'phone-landscape') {
+      const mainH = (await page.locator('#main-content').boundingBox())!.height;
+      expect.soft(mainH, `${combo}: landscape room left for the view with the start hint`).toBeGreaterThanOrEqual(120);
+    }
+    await context.close();
+  }
+}
+
+// "Show me" (brief B): the tour's caption bar on top of the real screens it
+// visits — the first step, the chord step (spotlight + bar beside the detail),
+// Learn, and the end card — under the same audit, at every sweep viewport,
+// day and night; PT and ES at 320 px. (Its behaviour: e2e/tour.spec.ts.)
+const TOUR_MENU = { en: { more: 'More', item: 'Show me around', next: 'Next' }, pt: { more: 'Mais', item: 'Mostra-me como funciona', next: 'Seguinte' }, es: { more: 'Más', item: 'Enséñame cómo funciona', next: 'Siguiente' } } as const;
+
+async function tourScreens(page: Page, lang: keyof typeof TOUR_MENU, onScreen: (screen: string) => Promise<void>) {
+  const L = TOUR_MENU[lang];
+  await page.getByRole('button', { name: L.more, exact: true }).click();
+  await page.getByRole('menuitem', { name: L.item }).click();
+  const bar = page.getByTestId('tour-bar');
+  const wanted = new Set(['key', 'chord', 'learn', 'end']);
+  for (let i = 0; i < 12; i++) {
+    await expect(bar).toHaveAttribute('data-phase', 'holding', { timeout: 15_000 });
+    await expect(bar).toHaveAttribute('data-measured', 'true');
+    await page.waitForTimeout(1100); // the tap cue has gone
+    const step = (await bar.getAttribute('data-step'))!;
+    if (wanted.has(step)) await onScreen(`tour-${step}`);
+    const next = page.getByRole('button', { name: L.next, exact: true });
+    if (!(await next.count())) break;
+    await next.click();
+  }
+  await expect(page.getByTestId('tour-restore')).toBeVisible();
+}
+
+for (const v of VIEWPORTS) {
+  for (const th of THEMES) {
+    const combo = `${v.name}-${th.name}`;
+    test(`${combo} start screen and start hint: same rules, keyboard walk`, async ({ browser }) => {
+      test.setTimeout(120_000);
+      const { context, page } = await openStart(browser, v, th.mode, 'en');
+      await check(page, v, combo, 'start');
+      await focusWalk(page, `${combo} start`, 12, /watch the one-minute tour/i);
+      await context.close();
+      await startHintScreens(browser, v, th.mode, 'en', combo);
+    });
+    test(`${combo} tour: the caption bar passes the same rules`, async ({ browser }) => {
+      test.setTimeout(180_000);
+      const { context, page } = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore' });
+      await tourScreens(page, 'en', (s) => check(page, v, combo, s));
+      await context.close();
+    });
+  }
+}
+
+for (const lang of ['pt', 'es'] as const) {
+  for (const th of THEMES) {
+    for (const width of [390, 320] as const) {
+      const v = { name: `phone-${width}`, viewport: { width, height: width === 320 ? 568 : 844 }, touch: true } as unknown as Viewport;
+      const combo = `phone${width}-${lang}-${th.name}`;
+      test(`${combo}: start screen and start hint in ${lang.toUpperCase()}`, async ({ browser }) => {
+        test.setTimeout(120_000);
+        const { context, page } = await openStart(browser, v, th.mode, lang);
+        await check(page, v, combo, 'start');
+        await context.close();
+        await startHintScreens(browser, v, th.mode, lang, combo);
+      });
+    }
+    const v = { name: 'phone-320', viewport: { width: 320, height: 568 }, touch: true } as unknown as Viewport;
+    const combo = `phone320-${lang}-${th.name}`;
+    test(`${combo} tour: the caption bar in ${lang.toUpperCase()} at 320 px`, async ({ browser }) => {
+      test.setTimeout(180_000);
+      const { context, page } = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore' }, { lang });
+      await tourScreens(page, lang, (s) => check(page, v, combo, s));
+      await context.close();
+    });
+  }
+}
+
+// Brief D (2026-11-10): the guitar steps again in the NEW default neck — nut
+// on the left, thin string on top, as tab and chord charts draw it — day and
+// night: the docked / sheet guitar, the whole neck, the practice sheet's four
+// tabs, the landscape full-neck view, the Drill reading board (question and
+// feedback) and Settings with its Guitar neck row. The steps above keep
+// testing the old view (their saves have no neck fields).
+const TAB_NECK = { neckNutSide: 'left', neckTopString: 'high' } as const;
+for (const v of VIEWPORTS) {
+  for (const th of THEMES) {
+    const combo = `${v.name}-${th.name}-tabneck`;
+    test(`${combo}: guitar steps in the tab and chord-chart neck pass the same rules`, async ({ browser }) => {
+      test.setTimeout(240_000);
+      {
+        const { context, page } = await open(browser, v, th.mode, { instrument: 'guitar', lastView: 'explore', ...TAB_NECK });
+        await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+        await check(page, v, combo, 'explore-guitar');
+        await page.getByTestId('practice-open').click();
+        const practice = page.getByTestId('practice-sheet');
+        await expect(practice.getByTestId('practice-player')).toBeVisible();
+        for (const name of ['Scales', 'Position walk', 'Technical set', 'Right hand']) {
+          await practice.getByRole('tab', { name, exact: true }).click();
+          await expect(practice.getByTestId('practice-staff').locator('svg')).toBeVisible();
+          await check(page, v, combo, `guitar-practice-${name}`);
+        }
+        await practice.getByRole('button', { name: 'Close', exact: true }).click();
+        if (v.name === 'phone-landscape') {
+          await page.getByTestId('neck-open').click();
+          const neck = page.getByTestId('neck-view');
+          await expect(neck.locator('[data-string-row="5"]').first()).toBeVisible({ timeout: 15_000 });
+          await page.waitForTimeout(400);
+          await check(page, v, combo, 'guitar-neck');
+          await page.getByRole('button', { name: 'Close full neck' }).click();
+        }
+        await openSettings(page);
+        await expect(page.getByTestId('neck-settings')).toBeVisible();
+        await check(page, v, combo, 'settings');
+        await context.close();
+      }
+      {
+        // The whole neck, at Full on a sheet (the widest board).
+        const sheet = isSheet(v) ? { dockDetents: { explore: 'full', learn: 'peek' }, dockChosen: { explore: true, learn: false } } : {};
+        const { context, page } = await open(browser, v, th.mode, { instrument: 'guitar', lastView: 'explore', guitarScalePosition: 'all', ...sheet, ...TAB_NECK });
+        await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+        await check(page, v, combo, 'explore-guitar-whole-neck');
+        await context.close();
+      }
+      if (v.name !== 'tablet') {
+        const { context, page } = await open(browser, v, th.mode, { lastView: 'drill', instrument: 'piano', ...TAB_NECK }, { drill: readingSave(['read:staff-to-fret:open:C5', 'read:staff-to-fret:open:D5']) });
+        await readingReady(page);
+        await readingTargets(page);
+        await check(page, v, combo, 'reading-open-question');
+        await fret(page, 1, 3).click(); // C3, an octave low: the longest feedback
+        await expect(page.getByRole('button', { name: 'Continue', exact: true })).toBeVisible();
+        await check(page, v, combo, 'reading-open-feedback');
+        if (v.name !== 'phone-landscape') await readingFits(page);
+        await context.close();
+      }
+    });
+  }
+}
+
+// The Guitar neck row's wording in PT and ES at 320 px (and EN), day.
+for (const lang of ['en', 'pt', 'es']) {
+  test(`320-${lang}: Settings → Guitar neck fits and reads`, async ({ browser }) => {
+    const v = { name: 'phone', viewport: { width: 320, height: 568 }, touch: true } as unknown as Viewport;
+    const { context, page } = await open(browser, v, 'fermata', { instrument: 'guitar', lastView: 'explore', ...TAB_NECK }, { lang });
+    await page.getByRole('button', { name: { en: 'More', pt: 'Mais', es: 'Más' }[lang], exact: true }).click();
+    await page.getByRole('menuitem', { name: { en: 'Settings', pt: 'Definições', es: 'Ajustes' }[lang] }).click();
+    const row = page.getByTestId('neck-settings');
+    await row.scrollIntoViewIfNeeded();
+    await check(page, v, `phone320-${lang}`, 'settings-neck');
+    await context.close();
+  });
+}
+
+// Wave 1 (brief C): plain words. Simple view, an open explanation (laptop:
+// the popover; phone / short screen: the sheet) and "Words on this screen"
+// with a word opened, under the same audit — phone, landscape, tablet and
+// laptop, day and night; then PT and ES at 320 px.
+for (const v of VIEWPORTS) {
+  for (const th of THEMES) {
+    const combo = `${v.name}-${th.name}`;
+    test(`${combo} plain words: an explanation, the word list and Simple view pass the same rules`, async ({ browser }) => {
+      test.setTimeout(180_000);
+      const { context, page } = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore' });
+      await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
+      await expect(page.getByTestId('chord-detail')).toBeVisible();
+      await page.waitForTimeout(400);
+      // A word's explanation (the chord detail's "V · dominant").
+      await page.getByTestId('chord-role').locator('.term').click();
+      await expect(page.getByRole('dialog', { name: 'Dominant' })).toBeVisible();
+      await check(page, v, combo, 'words-explanation');
+      await page.keyboard.press('Escape');
+      await expect(page.getByRole('dialog', { name: 'Dominant' })).toBeHidden();
+      // Every word on the screen, one opened.
+      await page.getByTestId('words-open').first().click();
+      const sheet = page.getByTestId('glossary-sheet');
+      await sheet.locator('[data-word="inversion"] button').click();
+      await check(page, v, combo, 'words-list');
+      await page.keyboard.press('Escape');
+      await expect(sheet).toBeHidden();
+      await context.close();
+      // Simple view, a chord open.
+      const simple = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore', exploreDetail: 'simple' });
+      await check(simple.page, v, combo, 'simple');
+      await simple.page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
+      await expect(simple.page.getByTestId('see-everything')).toBeVisible();
+      await simple.page.waitForTimeout(400);
+      await check(simple.page, v, combo, 'simple-chord');
+      await simple.page.getByTestId('key-summary').locator('.term[data-term~="keySignature"]').click();
+      await expect(simple.page.getByRole('dialog', { name: 'Key signature' })).toBeVisible();
+      await check(simple.page, v, combo, 'simple-explanation');
+      await simple.context.close();
+    });
+  }
+}
+
+for (const L of LANGS) {
+  for (const th of THEMES) {
+    const v = { name: 'phone-320', viewport: { width: 320, height: 568 }, touch: true } as unknown as Viewport;
+    const combo = `phone320-${L.lang}-${th.name}`;
+    test(`${combo} plain words: Simple view, the "⋯" switch and an explanation fit at 320 px`, async ({ browser }) => {
+      test.setTimeout(120_000);
+      const { context, page } = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore', exploreDetail: 'simple', dockDetents: { explore: 'peek', learn: 'peek' } }, { lang: L.lang });
+      await check(page, v, combo, 'simple');
+      await page.locator('.chord-row button').nth(4).click();
+      await expect(page.getByTestId('see-everything')).toBeVisible();
+      await page.waitForTimeout(300);
+      await check(page, v, combo, 'simple-chord');
+      await page.getByTestId('key-summary').locator('.term').first().click();
+      await expect(page.getByTestId('glossary-sheet')).toBeVisible();
+      await check(page, v, combo, 'simple-explanation');
+      await page.keyboard.press('Escape');
+      await expect(page.getByTestId('glossary-sheet')).toBeHidden();
+      // The minor and major chord explanations (the seat's decision 6: the
+      // longest plain texts, PT's and ES's minor at the 220 cap) in the sheet.
+      // (V is open: a tap on it again would close it, so ii first.)
+      for (const [row, entry] of [[1, 'minorChord'], [4, 'majorChord']] as const) {
+        await page.locator('.chord-row button').nth(row).click();
+        await expect(page.getByTestId('see-everything')).toBeVisible();
+        await page.getByTestId('chord-detail').locator('.chord-detail-name .term').click();
+        const sheet = page.getByTestId('glossary-sheet');
+        await expect(sheet.locator(`[data-entry="${entry}"]`)).toBeVisible();
+        await page.waitForTimeout(300);
+        await check(page, v, combo, `simple-explanation-${entry}`);
+        await page.keyboard.press('Escape');
+        await expect(sheet).toBeHidden();
+      }
+      await page.getByTestId('explore-menu').getByRole('button').click();
+      await check(page, v, combo, 'simple-menu');
+      await context.close();
+    });
+  }
+}
+
+// The same two explanations in the laptop's popover, PT and ES (the seat's
+// decision 6: PT's and ES's minor-chord texts sit at the 220 cap).
+for (const L of LANGS) {
+  for (const th of THEMES) {
+    const v = VIEWPORTS[3];
+    const combo = `${v.name}-${L.lang}-${th.name}`;
+    test(`${combo} plain words: the major and minor chord explanations fit their popover`, async ({ browser }) => {
+      test.setTimeout(120_000);
+      const { context, page } = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore', exploreDetail: 'simple' }, { lang: L.lang });
+      for (const [row, entry] of [[4, 'majorChord'], [1, 'minorChord']] as const) {
+        await page.locator('.chord-row button').nth(row).click();
+        await expect(page.getByTestId('see-everything')).toBeVisible();
+        await page.getByTestId('chord-detail').locator('.chord-detail-name .term').click();
+        const pop = page.getByTestId('glossary-popover');
+        await expect(pop.locator(`[data-entry="${entry}"]`)).toBeVisible();
+        await page.waitForTimeout(300);
+        await check(page, v, combo, `simple-popover-${entry}`);
+        await page.keyboard.press('Escape');
+        await expect(pop).toHaveCount(0);
+      }
+      await context.close();
+    });
+  }
 }

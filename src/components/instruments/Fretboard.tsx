@@ -37,6 +37,7 @@ import { DockToolsContext } from '../layout/dockTools.ts';
 import { useFocusNote, useFocusNoteStore, type FocusNote } from '../../state/focusNoteStore.ts';
 import { FretboardExercise, type FretboardExerciseProps } from './FretboardExercise.tsx';
 import type { FretboardMode } from './FretboardString.tsx';
+import { useNeckOrientation, fretsAcross, stringsDown, drawnNeighbour, nutScrollLeft } from './neckOrientation.ts';
 
 const EMPTY_POSITION_DOTS = new Map<number, Map<number, PositionDot>>();
 const NO_FRETS: ReadonlySet<number> = new Set();
@@ -91,6 +92,10 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
   const setLocations = useFocusNoteStore((s) => s.setLocations);
   // The linked focus note is Explore's (W11-B); Learn's instrument shows none.
   const exploring = useAppStore((s) => s.view === 'explore');
+  // How the neck is drawn (Settings → Guitar neck); never what is on it.
+  const orientation = useNeckOrientation();
+  const nutLeft = orientation.nut === 'left';
+  const rows = stringsDown(orientation.top);
 
   const tuning: GuitarTuning = useMemo(() => getTuningById(guitarTuningId), [guitarTuningId]);
   const isStandardTuning = tuning.id === 'standard';
@@ -290,6 +295,8 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
     const end = Math.min(FULL_FRETS, Math.max(start + CHORD_FRET_WINDOW - 1, maxUsed + 1));
     return { visibleFrets: range(start, end), isZoomed: true };
   }, [mode, positionNumber, currentShape, neck]);
+  // The same frets in the order they are drawn, left to right.
+  const drawnFrets = useMemo(() => fretsAcross(visibleFrets, orientation.nut), [visibleFrets, orientation.nut]);
 
   // Generate all notes on the fretboard as a Map for O(1) lookup
   const fretNoteMap = useMemo(() => {
@@ -462,22 +469,24 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
 
     const fromRow = 6 - barreInfo.fromString;
     const toRow = 6 - barreInfo.toString;
-    const topRow = Math.min(fromRow, toRow);
-    const bottomRow = Math.max(fromRow, toRow);
+    const firstRow = Math.min(fromRow, toRow);
+    const lastRow = Math.max(fromRow, toRow);
 
     const container = fretboardRef.current;
     const containerRect = container.getBoundingClientRect();
 
-    const topCell = container.querySelector(`[data-string-row="${topRow}"][data-fret="${barreFret}"]`);
-    const bottomCell = container.querySelector(`[data-string-row="${bottomRow}"][data-fret="${barreFret}"]`);
+    const firstCell = container.querySelector(`[data-string-row="${firstRow}"][data-fret="${barreFret}"]`);
+    const lastCell = container.querySelector(`[data-string-row="${lastRow}"][data-fret="${barreFret}"]`);
 
-    if (!topCell || !bottomCell) {
+    if (!firstCell || !lastCell) {
       setBarreStyle(null);
       return;
     }
 
-    const topRect = topCell.getBoundingClientRect();
-    const bottomRect = bottomCell.getBoundingClientRect();
+    // Whichever of the two strings is DRAWN higher (the thin string is on
+    // top when the neck is turned, neckOrientation.ts).
+    const [topRect, bottomRect] = [firstCell.getBoundingClientRect(), lastCell.getBoundingClientRect()]
+      .sort((a, b) => a.top - b.top);
 
     setBarreStyle({
       position: 'absolute',
@@ -492,7 +501,8 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
       pointerEvents: 'none',
       zIndex: 5,
     });
-  }, [mode, currentShape, visibleFrets]);
+    // Either setting moves the barred cells (the nut side moves their column).
+  }, [mode, currentShape, visibleFrets, orientation.top, orientation.nut]);
 
   // ─── Keyboard navigation (roving tabindex on 2D grid) ─
   const [focusedCell, setFocusedCell] = useState<{ stringIdx: number; fret: number } | null>(null);
@@ -516,8 +526,9 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
       setFocusedCell((prev) => {
         // Initialize focus at first visible cell if none selected
         if (!prev) {
+          // The top string as drawn, at the fret nearest the nut.
           const initFret = visibleFrets[visibleFrets.length - 1] ?? 1;
-          return { stringIdx: 0, fret: initFret };
+          return { stringIdx: rows[0], fret: initFret };
         }
 
         if (key === 'Enter' || key === ' ') {
@@ -526,19 +537,18 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
           return prev;
         }
 
+        // The arrows follow the drawing: → is the cell drawn on the right,
+        // ↑ the string drawn above (neckOrientation.ts).
         let { stringIdx, fret } = prev;
-        const minFret = visibleFrets[visibleFrets.length - 1] ?? 0;
-        const maxFret = visibleFrets[0] ?? FULL_FRETS;
-
-        if (key === 'ArrowRight') fret = Math.min(fret + 1, maxFret);
-        if (key === 'ArrowLeft') fret = Math.max(fret - 1, minFret);
-        if (key === 'ArrowUp') stringIdx = Math.max(stringIdx - 1, 0);
-        if (key === 'ArrowDown') stringIdx = Math.min(stringIdx + 1, 5);
+        if (key === 'ArrowRight') fret = drawnNeighbour(drawnFrets, fret, 1);
+        if (key === 'ArrowLeft') fret = drawnNeighbour(drawnFrets, fret, -1);
+        if (key === 'ArrowUp') stringIdx = drawnNeighbour(rows, stringIdx, -1);
+        if (key === 'ArrowDown') stringIdx = drawnNeighbour(rows, stringIdx, 1);
 
         return { stringIdx, fret };
       });
     },
-    [quickSearchOpen, visibleFrets, getFretNote, handleCellActivate]
+    [quickSearchOpen, visibleFrets, drawnFrets, rows, getFretNote, handleCellActivate]
   );
 
   // Announce the focused note for screen readers, with the context-aware
@@ -632,18 +642,19 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
     }
   }, [focusedCell]);
 
-  // Open the board at the NUT end on first paint. The board renders nut-RIGHT
-  // (settled orientation — Nuno's explicit call, 2026-06-09; do not flip), so
-  // scrollLeft 0 shows the HIGH frets and the playing-start position (nut,
-  // open strings, frets 0-5) sits at the far right. Without this, the
-  // fretboard opens at the wrong end of the neck. Zoomed views (a chord shape
-  // or a position) fit without scrolling, so this runs whenever the board
-  // opens onto the whole neck — on mount, or on switching to "All".
+  // Open the board at the NUT end on first paint. With the nut on the RIGHT
+  // (the owner's view since 2026-06-09 — Nuno reads it natively) scrollLeft 0
+  // would show the HIGH frets and the playing-start position (nut, open
+  // strings, frets 0-5) sits at the far right; with the nut on the left
+  // (neckOrientation.ts) it is scrollLeft 0. Zoomed views (a chord shape or a
+  // position) fit without scrolling, so this runs whenever the board opens
+  // onto the whole neck — on mount, on switching to "All", or on turning the
+  // neck in Settings.
   useLayoutEffect(() => {
     if (isZoomed) return;
     const el = scrollContainerRef.current;
-    if (el) el.scrollLeft = el.scrollWidth - el.clientWidth;
-  }, [isZoomed]);
+    if (el) el.scrollLeft = nutScrollLeft(el, orientation.nut);
+  }, [isZoomed, orientation.nut]);
 
   // ─── Display state ────────────────────────────────────
   const isOpenChordShape = mode === 'chord' && currentShape !== null && currentShape.baseFret === 0;
@@ -771,7 +782,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
           {/* Tuning selector — a compact native <select> (one control, so the
               toolbar stays short; review B1). Available in every tuning on phones too. */}
           <label className="flex items-center gap-2">
-            <span className="text-ui" style={{ color: 'var(--text-muted)' }}>{t('fretboard.tuning')}</span>
+            <span className="text-ui" style={{ color: 'var(--text-muted)' }} data-term="tuning">{t('fretboard.tuning')}</span>
             <SelectTrigger
               value={guitarTuningId}
               onChange={(e) => setGuitarTuningId(e.target.value)}
@@ -824,64 +835,80 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
 
       {/* A laptop's docked guitar loses 8 px of padding (the workbench fits 1440×900). */}
       <div className={`px-4 max-sm:px-2 py-2 min-[1200px]:py-1 ${neck ? 'neck-board-content' : ''}`} style={{ minWidth: isZoomed || neck ? 0 : (mobile ? 660 : 800) }}>
-        {/* Fret markers row — carries the loud position badge in chord/position view */}
+        {/* Fret markers row — carries the loud position badge in chord/position view.
+            Mirrored with the nut (neckOrientation.ts): open column · frets · far gutter. */}
         <div className="flex mb-1 items-center">
-          <div style={{ width: 32 }} />
-          <div className="flex flex-1">
-            {visibleFrets.map((f) => (
-              <div
-                key={f}
-                className="flex-1 text-center"
-                style={{ color: 'var(--text-dim)', minWidth: fretMinWidth, fontSize: 12 }}
-              >
-                {anchorFret === f ? (
-                  chordAnchorFret !== null ? (
-                    <span className="inline-block px-1.5 rounded font-bold font-mono" style={badgeStyle}>
-                      {f}fr
-                    </span>
-                  ) : (
-                    <span
-                      data-testid="position-badge"
-                      title={f === 1 ? t('fretboard.positionOneTitle') : t('fretboard.positionTitle', { numeral: toRomanNumeral(f), fret: f })}
-                      className="inline-block px-1.5 rounded font-bold"
-                      style={badgeStyle}
-                    >
-                      {toRomanNumeral(f)}
-                    </span>
-                  )
-                ) : FRET_MARKERS.includes(f) ? (
-                  <span>{DOUBLE_MARKERS.includes(f) ? '••' : '•'}</span>
-                ) : (
-                  ''
+          {(() => {
+            const gutter = <div key="gutter" style={{ width: 32 }} />;
+            const fretMarks = (
+              <div key="frets" className="flex flex-1">
+                {drawnFrets.map((f) => (
+                  <div
+                    key={f}
+                    className="flex-1 text-center"
+                    style={{ color: 'var(--text-dim)', minWidth: fretMinWidth, fontSize: 12 }}
+                  >
+                    {anchorFret === f ? (
+                      chordAnchorFret !== null ? (
+                        <span className="inline-block px-1.5 rounded font-bold font-mono" style={badgeStyle} data-term="anchorFret">
+                          {f}fr
+                        </span>
+                      ) : (
+                        <span
+                          data-testid="position-badge"
+                          title={f === 1 ? t('fretboard.positionOneTitle') : t('fretboard.positionTitle', { numeral: toRomanNumeral(f), fret: f })}
+                          className="inline-block px-1.5 rounded font-bold"
+                          style={badgeStyle}
+                        >
+                          {toRomanNumeral(f)}
+                        </span>
+                      )
+                    ) : FRET_MARKERS.includes(f) ? (
+                      <span>{DOUBLE_MARKERS.includes(f) ? '••' : '•'}</span>
+                    ) : (
+                      ''
+                    )}
+                  </div>
+                ))}
+              </div>
+            );
+            const nutGap = <div key="nut" style={{ width: 6 }} />;
+            const openMark = (
+              <div key="open" style={{ width: 'var(--fret-open-width)', flexShrink: 0 }} className="flex items-center justify-center">
+                {mode === 'position' && positionNumber === OPEN_POSITION && (
+                  <span
+                    ref={setOpenBadge}
+                    data-testid="position-badge"
+                    title={t('fretboard.openPositionTitle')}
+                    className="inline-block px-1 rounded font-bold fretboard-open-badge"
+                    style={badgeStyle}
+                  >
+                    {t('fretboard.open')}
+                  </span>
                 )}
               </div>
-            ))}
-          </div>
-          <div style={{ width: 6 }} />
-          <div style={{ width: 'var(--fret-open-width)', flexShrink: 0 }} className="flex items-center justify-center">
-            {mode === 'position' && positionNumber === OPEN_POSITION && (
-              <span
-                ref={setOpenBadge}
-                data-testid="position-badge"
-                title={t('fretboard.openPositionTitle')}
-                className="inline-block px-1 rounded font-bold fretboard-open-badge"
-                style={badgeStyle}
-              >
-                {t('fretboard.open')}
-              </span>
-            )}
-          </div>
+            );
+            return nutLeft ? [openMark, nutGap, fretMarks, gutter] : [gutter, fretMarks, nutGap, openMark];
+          })()}
         </div>
 
         {/* Fretboard grid with barre overlay */}
         <div ref={fretboardRef} className={`relative${neck ? ' neck-strings' : ''}`}>
           {/* Continuous fret lines overlay */}
-          <div className="absolute inset-0 flex pointer-events-none" style={{ zIndex: 1, left: 32, right: 'calc(var(--fret-open-width) + 6px)' }}>
-            {visibleFrets.map((f) => (
+          {/* Each fret's wire on its nut side (mirrored with the nut). */}
+          <div
+            className="absolute inset-0 flex pointer-events-none"
+            style={nutLeft
+              ? { zIndex: 1, left: 'calc(var(--fret-open-width) + 6px)', right: 32 }
+              : { zIndex: 1, left: 32, right: 'calc(var(--fret-open-width) + 6px)' }}
+          >
+            {drawnFrets.map((f) => (
               <div
                 key={f}
                 className="flex-1"
-                style={{ minWidth: fretMinWidth, borderRight: '1px solid var(--border)' }}
+                style={nutLeft
+                  ? { minWidth: fretMinWidth, borderLeft: '1px solid var(--border)' }
+                  : { minWidth: fretMinWidth, borderRight: '1px solid var(--border)' }}
               />
             ))}
           </div>
@@ -889,12 +916,14 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
           {/* Barre bar overlay */}
           {barreStyle && <div data-testid="barre-overlay" style={barreStyle} />}
 
-          {/* Strings: 6th (low E) at top → 1st (high E) at bottom */}
-          {[0, 1, 2, 3, 4, 5].map((stringIdx) => (
+          {/* Strings in drawn order: 6th (low E) at top → 1st (high e) at
+              bottom, or the thin string on top (neckOrientation.ts). */}
+          {rows.map((stringIdx) => (
             <FretboardString
               key={stringIdx}
               stringIdx={stringIdx}
-              visibleFrets={visibleFrets}
+              visibleFrets={drawnFrets}
+              nutSide={orientation.nut}
               fretMinWidth={fretMinWidth}
               mobile={mobile}
               isChordView={isZoomed}
@@ -921,33 +950,41 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
           ))}
         </div>
 
-        {/* Fret numbers row — larger when zoomed; the anchor fret is accented */}
+        {/* Fret numbers row — larger when zoomed; the anchor fret is accented.
+            Mirrored with the nut, like the markers row. */}
         <div data-dock-row="frets" className="flex mt-1">
-          <div style={{ width: 32 }} />
-          <div className="flex flex-1">
-            {visibleFrets.map((f) => (
-              <div
-                key={f}
-                className="flex-1 text-center"
-                style={{
-                  color: anchorFret === f ? ACCENT_FILL : 'var(--text-dim)',
-                  fontWeight: anchorFret === f ? 700 : 400,
-                  minWidth: fretMinWidth,
-                  fontSize: 12,
-                }}
-              >
-                {f}
+          {(() => {
+            const gutter = <div key="gutter" style={{ width: 32 }} />;
+            const numbers = (
+              <div key="frets" className="flex flex-1">
+                {drawnFrets.map((f) => (
+                  <div
+                    key={f}
+                    className="flex-1 text-center"
+                    style={{
+                      color: anchorFret === f ? ACCENT_FILL : 'var(--text-dim)',
+                      fontWeight: anchorFret === f ? 700 : 400,
+                      minWidth: fretMinWidth,
+                      fontSize: 12,
+                    }}
+                  >
+                    {f}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div style={{ width: atNut ? 6 : 2 }} />
-          <div style={{ width: 'var(--fret-open-width)', flexShrink: 0 }} className="flex items-center justify-center">
-            {mode === 'chord' && !isOpenChordShape ? (
-              <span className="font-mono" style={{ color: 'var(--text-dim)', fontSize: 12 }}>{lowestVisibleFret}fr</span>
-            ) : atNut ? (
-              <span style={{ color: 'var(--text-dim)', fontSize: 12 }}>0</span>
-            ) : null}
-          </div>
+            );
+            const nutGap = <div key="nut" style={{ width: atNut ? 6 : 2 }} />;
+            const openNumber = (
+              <div key="open" style={{ width: 'var(--fret-open-width)', flexShrink: 0 }} className="flex items-center justify-center">
+                {mode === 'chord' && !isOpenChordShape ? (
+                  <span className="font-mono" style={{ color: 'var(--text-dim)', fontSize: 12 }}>{lowestVisibleFret}fr</span>
+                ) : atNut ? (
+                  <span style={{ color: 'var(--text-dim)', fontSize: 12 }}>0</span>
+                ) : null}
+              </div>
+            );
+            return nutLeft ? [openNumber, nutGap, numbers, gutter] : [gutter, numbers, nutGap, openNumber];
+          })()}
         </div>
       </div>
     </div>

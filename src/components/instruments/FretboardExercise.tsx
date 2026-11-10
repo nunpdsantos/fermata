@@ -7,6 +7,7 @@ import { midiToNote } from '../../core/utils/pianoLayout';
 import { FretboardBreak } from './FretboardBreak';
 import { FretCell } from './FretCell';
 import { ScrollStrip } from './ScrollStrip';
+import { fretsAcross, nutScrollLeft, stringsDown, useNeckOrientation } from './neckOrientation';
 
 export interface FretboardExerciseProps {
   spec: FretboardInputSpec;
@@ -16,9 +17,14 @@ export interface FretboardExerciseProps {
   onAnswer: (place: FretPlace) => void;
 }
 
-/** The same nut-right cells and scroll strip, without Explore state or pitch labels. */
+/** The same cells and scroll strip, drawn the way Settings → Guitar neck says
+ * (the owner's view: nut right, thick string on top), without Explore state or pitch labels. */
 export function FretboardExercise({ spec, disabled, accepted, picked, onAnswer }: FretboardExerciseProps) {
   const { t } = useTranslation();
+  const orientation = useNeckOrientation();
+  const nutLeft = orientation.nut === 'left';
+  const rows = stringsDown(orientation.top);
+  const nutBorder = nutLeft ? 'borderRight' : 'borderLeft';
   const scrollRef = useRef<HTMLDivElement>(null);
   const win = spec.window;
   const openMidi = tuningOpenMidi(getTuningById(spec.tuningId));
@@ -27,16 +33,17 @@ export function FretboardExercise({ spec, disabled, accepted, picked, onAnswer }
   const to = win ? Math.min(spec.maxFret, win.toFret + 1) : spec.maxFret;
   // Answered diagrams keep the learner's tap and the nearest accepted place
   // together at full cell size. Omitted frets have explicit breaks; the nut
-  // remains on the right. No distant answer can scroll the tap out of view.
+  // stays where it is drawn. No distant answer can scroll the tap out of view.
   const nearest = accepted?.slice().sort((a, b) => Math.abs(a.fret - (picked?.fret ?? 0)) - Math.abs(b.fret - (picked?.fret ?? 0)))[0];
   const feedbackFrets = disabled && nearest
-    ? [...new Set([0, ...(accepted ?? []).map((p) => p.fret), ...(picked ? [picked.fret] : [])])].sort((a, b) => b - a) : null;
-  const frets = feedbackFrets ?? Array.from({ length: to - from + 1 }, (_, i) => to - i).concat(0);
-  const gapBefore = (i: number) => i > 0 && frets[i - 1] - frets[i] > 1;
+    ? [...new Set([0, ...(accepted ?? []).map((p) => p.fret), ...(picked ? [picked.fret] : [])])] : null;
+  // Left to right as drawn: the open strings (fret 0) at the nut end.
+  const frets = fretsAcross(feedbackFrets ?? Array.from({ length: to - from + 1 }, (_, i) => to - i).concat(0), orientation.nut);
+  const gapBefore = (i: number) => i > 0 && Math.abs(frets[i - 1] - frets[i]) > 1;
   const gaps = frets.filter((_, i) => gapBefore(i)).length;
   const labelStyle = { width: 44, flexShrink: 0, position: 'sticky' as const, left: 0, zIndex: 1,
     backgroundColor: 'var(--card)', paddingInline: 3 };
-  const [focused, setFocused] = useState<FretPlace>({ stringIndex: 0, fret: win?.fromFret ?? 0 });
+  const [focused, setFocused] = useState<FretPlace>({ stringIndex: rows[0], fret: win?.fromFret ?? 0 });
   const locked = useRef(false);
   const matches = (a: FretPlace | null, b: FretPlace) => a?.stringIndex === b.stringIndex && a.fret === b.fret;
   const activate = (place: FretPlace) => {
@@ -47,8 +54,8 @@ export function FretboardExercise({ spec, disabled, accepted, picked, onAnswer }
 
   useLayoutEffect(() => {
     const el = scrollRef.current;
-    if (el) el.scrollLeft = el.scrollWidth - el.clientWidth;
-  }, [from, to]);
+    if (el) el.scrollLeft = nutScrollLeft(el, orientation.nut);
+  }, [from, to, orientation.nut]);
 
   useLayoutEffect(() => {
     if (!disabled) return;
@@ -77,33 +84,36 @@ export function FretboardExercise({ spec, disabled, accepted, picked, onAnswer }
             activate(place);
             return;
           }
+          // Arrows follow the drawing; Home is the nut end, End the far end.
           let col = frets.indexOf(place.fret);
-          let row = place.stringIndex;
+          let row = rows.indexOf(place.stringIndex);
           if (e.key === 'ArrowLeft') col--;
           else if (e.key === 'ArrowRight') col++;
           else if (e.key === 'ArrowUp') row--;
           else if (e.key === 'ArrowDown') row++;
-          else if (e.key === 'Home') col = frets.length - 1;
-          else if (e.key === 'End') col = 0;
+          else if (e.key === 'Home') col = frets.indexOf(0);
+          else if (e.key === 'End') col = nutLeft ? frets.length - 1 : 0;
           else return;
           e.preventDefault();
           const fret = frets[Math.max(0, Math.min(frets.length - 1, col))];
-          row = Math.max(0, Math.min(5, row));
+          row = rows[Math.max(0, Math.min(5, row))];
           const next = scrollRef.current?.querySelector<HTMLElement>(`[data-string-row="${row}"][data-fret="${fret}"]`);
           next?.focus({ preventScroll: true });
           next?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
         }}>
         <div style={{ minWidth: 44 + frets.length * 44 + 6 + gaps * 24 }}>
           <div className="flex text-caption text-center" style={{ color: 'var(--text-dim)' }}>
-            <span data-testid="reading-corner" className="whitespace-nowrap" style={labelStyle} aria-label={t('drill.reading.stringRange')}>⑥–①</span>
+            {orientation.top === 'low'
+              ? <span data-testid="reading-corner" className="whitespace-nowrap" style={labelStyle} aria-label={t('drill.reading.stringRange')}>⑥–①</span>
+              : <span data-testid="reading-corner" className="whitespace-nowrap" style={labelStyle} aria-label={t('neckView.stringRangeHighFirst')}>①–⑥</span>}
             {frets.map((fret, i) => (
               <Fragment key={fret}>
                 {gapBefore(i) && <span style={{ width: 24, flexShrink: 0 }}>…</span>}
-                <span className="flex-1" style={{ minWidth: fret === 0 ? 50 : 44, borderLeft: fret === 0 ? '6px solid transparent' : undefined }}>{fret}</span>
+                <span className="flex-1" style={{ minWidth: fret === 0 ? 50 : 44, [nutBorder]: fret === 0 ? '6px solid transparent' : undefined }}>{fret}</span>
               </Fragment>
             ))}
           </div>
-          {[0, 1, 2, 3, 4, 5].map((stringIndex) => (
+          {rows.map((stringIndex) => (
             <div key={stringIndex} className="flex" style={{ height: 44 }}>
               <span className="flex items-center justify-center text-caption" data-reading-string={6 - stringIndex} style={{ ...labelStyle, color: 'var(--text-muted)' }} aria-hidden="true">{6 - stringIndex}</span>
               {frets.map((fret, i) => {
@@ -114,7 +124,7 @@ export function FretboardExercise({ spec, disabled, accepted, picked, onAnswer }
                 return (
                   <Fragment key={fret}>
                     {gapBefore(i) && <FretboardBreak />}
-                    <div className="flex flex-1" style={{ minWidth: fret === 0 ? 50 : 44, borderLeft: fret === 0 ? '6px solid var(--text-muted)' : undefined }}>
+                    <div className="flex flex-1" style={{ minWidth: fret === 0 ? 50 : 44, [nutBorder]: fret === 0 ? '6px solid var(--text-muted)' : undefined }}>
                       <FretCell fret={fret} stringIdx={stringIndex} displayNote={midiToNote(openMidi[stringIndex] + fret)}
                         color={undefined} dotColor="var(--accent)" isActive={false} isRoot={false} isMuted={false}
                         fretMinWidth={44} isChordView={false} mobile showVoicing={false} finger={undefined} showScaleDot={false}

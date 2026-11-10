@@ -1138,14 +1138,139 @@
     "close": "Close full neck"
   },
   "practice": {"title": "Practise on the guitar"},
-  "welcome": {
-    "title": "Welcome to Fermata",
-    "explore": "Pick a key and see its notes and chords on the piano or guitar, and its place on the circle of fifths.",
-    "learn": "A step-by-step course in nine levels, with a short check after each lesson.",
-    "drill": "A short session of quick questions a day. The ones you miss come back.",
-    "footer": "Free, no account, works offline. Your progress stays in this browser.",
-    "exploreAction": "Explore a key",
-    "learnAction": "Start the course",
-    "drillAction": "Try a drill"
+  "start": {
+    "tagline": "Learn how music works, on a piano or guitar you can play right here.",
+    "tour": "Watch the one-minute tour",
+    "instrumentLabel": "I'll use:",
+    "doorsHeading": "Where are you starting from?",
+    "door": {
+      "new": {
+        "title": "I'm new to music",
+        "line": "Start with sound. You don't need to read music."
+      },
+      "player": {
+        "title": "I play, but never learned theory",
+        "line": "See why the chords you know go together."
+      },
+      "theory": {
+        "title": "I know some theory",
+        "line": "Straight to the tools: keys, chords, scales, the circle of fifths."
+      }
+    },
+    "footer": "Free. No account. Works offline after your first visit. Your progress stays in this browser.",
+    "settingsLabel": "How I use Fermata",
+    "profile": {
+      "new": "New to music",
+      "player": "I play, no theory",
+      "theory": "I know some theory"
+    },
+    "hint": {
+      "label": "Getting started",
+      "newPiano": "Tap a piano key to hear it.",
+      "newGuitar": "Tap a string to hear it.",
+      "player": "Pick the key of a song you play, for example G. The chords below belong to it: tap one.",
+      "dismiss": "Dismiss the tip"
+    }
+  },
+  "showMe": {
+    "menuItem": "Show me around",
+    "region": "Tour of the app",
+    "step": "Step {{n}} of {{total}}",
+    "back": "Back",
+    "next": "Next",
+    "pause": "Pause",
+    "resume": "Resume",
+    "sound": "Sound",
+    "tapForSound": "Tap for sound",
+    "close": "End the tour",
+    "end": "End",
+    "pausedTouch": "Paused: you touched the app.",
+    "stayHere": "Stay here",
+    "backToStart": "Back to where I was",
+    "putBack": "Put things back",
+    "elsewhereNote": "You will be in Explore; {{view}} is one tap away.",
+    "done": "Done",
+    "busyCheck": "Finish or leave your check first.",
+    "busyDrill": "Finish or leave your Drill session first.",
+    "loadFailed": "The tour could not open.",
+    "intro": {
+      "key": "Most songs use one family of notes, called a key. Here we pick G major.",
+      "scale": "These are the notes of that key, lit on the instrument.",
+      "chords": "…and these are the chords that belong to it.",
+      "chord": "Tap a chord to see it on the instrument, then press Chord to hear it.",
+      "word": "Any word with a dotted line explains itself. Tap it.",
+      "guitar": "The same chord on a guitar: where your fingers go.",
+      "piano": "The same chord on a piano: the keys you press.",
+      "circle": "The circle shows which keys are neighbours: they share all but one note.",
+      "learn": "Learn: short lessons, each with a quick check. A hint comes before any answer.",
+      "drill": "Drill: a few quick questions a day keep it in memory.",
+      "end": "Your turn."
+    }
+  },
+  "neckView": {
+    "heading": "Guitar neck",
+    "hint": "The nut is where the open strings start. Guitar tab usually puts the thin string on top.",
+    "nutSide": "Nut side",
+    "nutLeft": "Nut on the left",
+    "nutRight": "Nut on the right",
+    "topString": "String on top",
+    "thinTop": "Thin string on top",
+    "thickTop": "Thick string on top",
+    "stringRangeHighFirst": "Strings 1 to 6"
+  },
+  "glossary": {
+    "ui": {
+      "words": "Words",
+      "wordsLabel": "Words on this screen",
+      "wordsIntro": "Tap a word to see what it means.",
+      "noWords": "There are no words to explain on this screen.",
+      "hear": "Hear it",
+      "learn": "Learn more",
+      "notHere": "In {{key}} this name is not used.",
+      "sevenOnly": "These names belong to seven-note scales; {{key}} has {{n}} notes.",
+      "loadError": "The explanation could not load. Try again."
+    }
+  },
+  "simpleView": {
+    "label": "How much to show",
+    "simple": "Simple",
+    "full": "Full",
+    "menuFull": "Full view",
+    "allScales": "All scales…",
+    "seeEverything": "See everything about this chord",
+    "noteOf": "note {{n}} of {{key}}",
+    "noSharpsFlats": "no sharps or flats",
+    "sharps_one": "one sharp",
+    "sharps_other": "{{count}} sharps",
+    "flats_one": "one flat",
+    "flats_other": "{{count}} flats",
+    "notes_one": "{{count}} note",
+    "notes_other": "{{count}} notes",
+    "menuSimple": "Simple view"
+  },
+  "share": {
+    "copyLink": "Copy link",
+    "shareLink": "Share link",
+    "copied": "Link copied",
+    "lessonActions": "Lesson actions",
+    "fallbackTitle": "Copy this link",
+    "fallbackHint": "This browser did not let Fermata copy the link. Select it and copy it yourself.",
+    "fallbackField": "Link",
+    "waiting": "This link opens {{target}}. Fermata will offer to open it when you have finished what you are doing.",
+    "ready": "Ready to open the link: {{target}}",
+    "open": "Open",
+    "unreadable": "This link could not be read, so Fermata opened as usual.",
+    "target": {
+      "chord": "the {{chord}} chord",
+      "piano": "on the piano",
+      "guitar": "on the guitar",
+      "pianoAlone": "the piano",
+      "guitarAlone": "the guitar",
+      "lesson": "the lesson “{{title}}”"
+    }
+  },
+  "solfege": {
+    "setting": "Also show Do, Re, Mi",
+    "hint": "Adds Do, Re, Mi beside the letters. Chord names and the lessons keep the letters (C = Do)."
   }
 }

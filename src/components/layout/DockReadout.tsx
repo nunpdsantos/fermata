@@ -4,6 +4,8 @@ import { useAppStore } from '../../state/store.ts';
 import { useFocusNote, useFocusNoteStore } from '../../state/focusNoteStore.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { readoutParts, readoutVariants } from '../explore/focusReadout.ts';
+import { useExploreSimple } from '../../state/exploreDetail.ts';
+import { useNoteLabel } from '../../hooks/useSolfege.ts';
 
 /** Two lines of the bar's context text: never more, so the bar never grows. */
 const MAX_LINES = 2;
@@ -28,14 +30,21 @@ export function DockReadout({ context }: { context: string }) {
   const focus = useFocusNote();
   const locations = useFocusNoteStore((s) => s.locations);
   const active = view === 'explore' && !exercise && focus !== null;
+  const simple = useExploreSimple();
+  const noteLabel = useNoteLabel();
 
-  const variants = useMemo(
-    () =>
-      active && focus
-        ? readoutVariants(readoutParts({ focus, scale, chord, spellPitchClass, locations: locations?.items, t }))
-        : [context],
-    [active, focus, scale, chord, spellPitchClass, locations, t, context],
-  );
+  // With the fixed-do names on ("F♯ (Fá♯)", wave 1) each wording is tried
+  // with them, then without, before a shorter wording: the names never push
+  // out what the read-out says about the note — they are left out instead.
+  const variants = useMemo(() => {
+    if (!active || !focus) return [context];
+    const input = { focus, scale, chord, spellPitchClass, locations: locations?.items, t, simple };
+    const plain = readoutVariants(readoutParts(input));
+    const named = readoutVariants(readoutParts({ ...input, noteLabel }));
+    if (named[0] === plain[0]) return plain;
+    const both = plain.flatMap((p, i) => (named[i] !== undefined ? [named[i], p] : [p]));
+    return both.filter((v, i) => both.indexOf(v) === i);
+  }, [active, focus, scale, chord, spellPitchClass, locations, t, context, noteLabel, simple]);
 
   // The longest variant that fits in MAX_LINES at the bar's current width.
   const shownRef = useRef<HTMLSpanElement>(null);
