@@ -311,7 +311,7 @@ const BASE: Record<string, EntrySpec> = {
   dominantKey: {
     learn: 'l2u4m1',
     notHere: (ctx) => (majorOrMinor(ctx.scaleType) ? null : 'only'),
-    example: (ctx, t) => {
+    example: (ctx, t): Example | null => {
       const f = keyFacts(ctx.root, ctx.scaleType, t).facts.find((x) => x.id === 'dominant');
       const key = keyNamedFor(ctx, t);
       return f ? { vars: key ? { key, other: f.value } : { other: f.value } } : null;
@@ -320,7 +320,7 @@ const BASE: Record<string, EntrySpec> = {
   subdominantKey: {
     learn: 'l2u4m1',
     notHere: (ctx) => (majorOrMinor(ctx.scaleType) ? null : 'only'),
-    example: (ctx, t) => {
+    example: (ctx, t): Example | null => {
       const f = keyFacts(ctx.root, ctx.scaleType, t).facts.find((x) => x.id === 'subdominant');
       const key = keyNamedFor(ctx, t);
       return f ? { vars: key ? { key, other: f.value } : { other: f.value } } : null;
