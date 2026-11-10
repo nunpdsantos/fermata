@@ -812,10 +812,12 @@ for (const v of VIEWPORTS) {
         const detailBox = await boxOf(page, '[data-testid="chord-detail"]');
         if (detailBox.bottom > 0) expect(overlaps(toast, detailBox), where('toast vs chord detail')).toBe(false);
         // The scale actions "⋯" (Copy / Print / Compare, D-29; Practise on
-        // the guitar since 2026-11-09, on the piano too) and Compare.
+        // the guitar since 2026-11-09, on the piano too; Copy link — or Share
+        // link on a touch screen with a share sheet — since wave 1) and Compare.
         await page.getByRole('button', { name: 'Scale actions' }).click();
         await expect(page.getByRole('menu', { name: 'Scale actions' })).toBeVisible();
-        await expect(page.getByRole('menuitem')).toHaveCount(4);
+        await expect(page.getByRole('menuitem')).toHaveCount(5);
+        await expect(page.getByRole('menuitem', { name: /^(Copy|Share) link$/ })).toBeVisible();
         await expect(page.getByRole('menuitem', { name: 'Practise on the guitar' })).toBeVisible();
         await check(page, v, combo, 'explore-menu');
         await page.getByRole('menuitem', { name: 'Compare scales' }).click();
