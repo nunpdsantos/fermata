@@ -1397,3 +1397,78 @@ for (const th of THEMES) {
     await context.close();
   });
 }
+
+// Brief D (2026-11-10): the guitar steps again in the NEW default neck — nut
+// on the left, thin string on top, as tab and chord charts draw it — day and
+// night: the docked / sheet guitar, the whole neck, the practice sheet's four
+// tabs, the landscape full-neck view, the Drill reading board (question and
+// feedback) and Settings with its Guitar neck row. The steps above keep
+// testing the old view (their saves have no neck fields).
+const TAB_NECK = { neckNutSide: 'left', neckTopString: 'high' } as const;
+for (const v of VIEWPORTS) {
+  for (const th of THEMES) {
+    const combo = `${v.name}-${th.name}-tabneck`;
+    test(`${combo}: guitar steps in the tab and chord-chart neck pass the same rules`, async ({ browser }) => {
+      test.setTimeout(240_000);
+      {
+        const { context, page } = await open(browser, v, th.mode, { instrument: 'guitar', lastView: 'explore', ...TAB_NECK });
+        await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+        await check(page, v, combo, 'explore-guitar');
+        await page.getByTestId('practice-open').click();
+        const practice = page.getByTestId('practice-sheet');
+        await expect(practice.getByTestId('practice-player')).toBeVisible();
+        for (const name of ['Scales', 'Position walk', 'Technical set', 'Right hand']) {
+          await practice.getByRole('tab', { name, exact: true }).click();
+          await expect(practice.getByTestId('practice-staff').locator('svg')).toBeVisible();
+          await check(page, v, combo, `guitar-practice-${name}`);
+        }
+        await practice.getByRole('button', { name: 'Close', exact: true }).click();
+        if (v.name === 'phone-landscape') {
+          await page.getByTestId('neck-open').click();
+          const neck = page.getByTestId('neck-view');
+          await expect(neck.locator('[data-string-row="5"]').first()).toBeVisible({ timeout: 15_000 });
+          await page.waitForTimeout(400);
+          await check(page, v, combo, 'guitar-neck');
+          await page.getByRole('button', { name: 'Close full neck' }).click();
+        }
+        await openSettings(page);
+        await expect(page.getByTestId('neck-settings')).toBeVisible();
+        await check(page, v, combo, 'settings');
+        await context.close();
+      }
+      {
+        // The whole neck, at Full on a sheet (the widest board).
+        const sheet = isSheet(v) ? { dockDetents: { explore: 'full', learn: 'peek' }, dockChosen: { explore: true, learn: false } } : {};
+        const { context, page } = await open(browser, v, th.mode, { instrument: 'guitar', lastView: 'explore', guitarScalePosition: 'all', ...sheet, ...TAB_NECK });
+        await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+        await check(page, v, combo, 'explore-guitar-whole-neck');
+        await context.close();
+      }
+      if (v.name !== 'tablet') {
+        const { context, page } = await open(browser, v, th.mode, { lastView: 'drill', instrument: 'piano', ...TAB_NECK }, { drill: readingSave(['read:staff-to-fret:open:C5', 'read:staff-to-fret:open:D5']) });
+        await readingReady(page);
+        await readingTargets(page);
+        await check(page, v, combo, 'reading-open-question');
+        await fret(page, 1, 3).click(); // C3, an octave low: the longest feedback
+        await expect(page.getByRole('button', { name: 'Continue', exact: true })).toBeVisible();
+        await check(page, v, combo, 'reading-open-feedback');
+        if (v.name !== 'phone-landscape') await readingFits(page);
+        await context.close();
+      }
+    });
+  }
+}
+
+// The Guitar neck row's wording in PT and ES at 320 px (and EN), day.
+for (const lang of ['en', 'pt', 'es']) {
+  test(`320-${lang}: Settings → Guitar neck fits and reads`, async ({ browser }) => {
+    const v = { name: 'phone', viewport: { width: 320, height: 568 }, touch: true } as unknown as Viewport;
+    const { context, page } = await open(browser, v, 'fermata', { instrument: 'guitar', lastView: 'explore', ...TAB_NECK }, { lang });
+    await page.getByRole('button', { name: { en: 'More', pt: 'Mais', es: 'Más' }[lang], exact: true }).click();
+    await page.getByRole('menuitem', { name: { en: 'Settings', pt: 'Definições', es: 'Ajustes' }[lang] }).click();
+    const row = page.getByTestId('neck-settings');
+    await row.scrollIntoViewIfNeeded();
+    await check(page, v, `phone320-${lang}`, 'settings-neck');
+    await context.close();
+  });
+}

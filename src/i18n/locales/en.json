@@ -1147,5 +1147,16 @@
     "exploreAction": "Explore a key",
     "learnAction": "Start the course",
     "drillAction": "Try a drill"
+  },
+  "neckView": {
+    "heading": "Guitar neck",
+    "hint": "Left with the thin string on top is how tab and chord charts are drawn.",
+    "nutSide": "Nut side",
+    "nutLeft": "Nut on the left",
+    "nutRight": "Nut on the right",
+    "topString": "String on top",
+    "thinTop": "Thin string on top",
+    "thickTop": "Thick string on top",
+    "stringRangeHighFirst": "Strings 1 to 6"
   }
 }

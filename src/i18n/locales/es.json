@@ -1147,5 +1147,16 @@
     "exploreAction": "Explorar una tonalidad",
     "learnAction": "Empezar el curso",
     "drillAction": "Probar una práctica"
+  },
+  "neckView": {
+    "heading": "Mástil de la guitarra",
+    "hint": "Las tablaturas y los diagramas de acordes se dibujan así: cuerdas al aire a la izquierda y la cuerda fina arriba.",
+    "nutSide": "Lado de las cuerdas al aire",
+    "nutLeft": "Cuerdas al aire a la izquierda",
+    "nutRight": "Cuerdas al aire a la derecha",
+    "topString": "Cuerda de arriba",
+    "thinTop": "Cuerda fina arriba",
+    "thickTop": "Cuerda gruesa arriba",
+    "stringRangeHighFirst": "Cuerdas 1 a 6"
   }
 }

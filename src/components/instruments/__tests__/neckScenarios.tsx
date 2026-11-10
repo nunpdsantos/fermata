@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- a test helper (scenarios + serialiser), never hot-reloaded. */
 /**
  * Fixed guitar-neck scenarios shared by the legacy-view freeze
  * (legacyNeck.test.tsx) and the orientation tests (neckOrientation.test.tsx).
