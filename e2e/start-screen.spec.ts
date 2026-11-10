@@ -11,7 +11,8 @@ import { WELCOME_KEY } from './helpers/welcome';
  *  - saved data of any store: never shown;
  *  - the tour button asks for the tour and the screen steps aside; when the
  *    request clears (no door), it is back;
- *  - a shared link wins on its visit; the next plain visit gets the screen;
+ *  - a shared link wins on its visit; the next plain visit gets the screen,
+ *    unless the app was really used since (progress saved);
  *  - the language switch, and a Portuguese / Spanish browser's first visit;
  *  - keyboard only: Tab through every control, arrows in the segments, Enter
  *    on a door;
@@ -193,6 +194,21 @@ test.describe('the tour, a shared link, the language, the keyboard', () => {
       expect(await flag(page)).toBe('pending');
       await page.goto('/');
       await expect(startScreen(page)).toBeVisible({ timeout: 15_000 });
+      await context.close();
+    });
+
+    test(`${v.name}: a shared-link visitor who then uses the app (progress saved) is a returning learner: no start screen`, async ({ browser }) => {
+      const { context, page } = await fresh(browser, v, 'en');
+      await page.goto('/?key=G&scale=major');
+      await expect(page.locator('.app-topbar')).toBeVisible({ timeout: 15_000 });
+      expect(await flag(page)).toBe('pending');
+      // Real use since: a Learn progress save (the store writes only on the learner's work).
+      await page.evaluate(() => localStorage.setItem('music-theory-progress', '{}'));
+      await page.goto('/');
+      await expect(page.getByTestId('explore-header')).toBeVisible({ timeout: 15_000 });
+      await page.waitForTimeout(1500);
+      await expect(startScreen(page)).toHaveCount(0);
+      expect(await flag(page)).toBe('seen');
       await context.close();
     });
   }

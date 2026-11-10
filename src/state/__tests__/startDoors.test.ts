@@ -155,6 +155,19 @@ describe('when the start screen shows (startGate)', () => {
     expect(useWelcomeStore.getState().open).toBe(true);
   });
 
+  it('a shared-link visitor who then really uses the app (progress saved) is a returning learner: the next plain visit does not show it', () => {
+    firstVisit('?key=D&scale=dorian');
+    expect(applyShareLinkRule()).toBe(true);
+    expect(localStorage.getItem(WELCOME_KEY)).toBe('pending');
+    // Weeks in Learn and Drill since.
+    localStorage.setItem('music-theory-app', JSON.stringify({ state: { lastView: 'learn' }, version: 6 }));
+    localStorage.setItem('music-theory-progress', JSON.stringify({ state: {}, version: 1 }));
+    expect(bootWelcome(localStorage, '')).toBe(false);
+    expect(applyShareLinkRule()).toBe(false);
+    expect(useWelcomeStore.getState().open).toBe(false);
+    expect(localStorage.getItem(WELCOME_KEY)).toBe('seen');
+  });
+
   it.each(['', '?view=drill', '?foo=1'])('no shared link (%s): shown', (search) => {
     firstVisit(search);
     expect(applyShareLinkRule()).toBe(false);

@@ -1157,7 +1157,7 @@
         "line": "Direto às ferramentas: tonalidades, acordes, escalas, o círculo das quintas."
       }
     },
-    "footer": "Grátis. Sem conta. Funciona offline. O teu progresso fica neste navegador.",
+    "footer": "Grátis. Sem conta. Depois da primeira visita, funciona offline. O teu progresso fica neste navegador.",
     "settingsLabel": "Como uso o Fermata",
     "profile": {
       "new": "Estou a começar",
@@ -1170,7 +1170,7 @@
       "newGuitar": "Toca numa corda para a ouvir.",
       "whenReady": "Quando quiseres:",
       "firstLesson": "Começar a lição 1 →",
-      "player": "Escolhe a tonalidade de uma música que tocas, por exemplo G. Os acordes abaixo são dessa tonalidade: toca num.",
+      "player": "Escolhe a tonalidade de uma música que tocas, por exemplo G. Os acordes abaixo são dessa tonalidade: toca num deles.",
       "dismiss": "Fechar a dica"
     }
   }

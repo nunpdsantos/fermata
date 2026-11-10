@@ -7,7 +7,10 @@
  *    the address carried one at boot, this visit shows the linked content.
  *    The flag stays 'pending', so the visitor's NEXT plain visit shows the
  *    start screen (they were never asked; this visit's saved settings do not
- *    count against it), until a door is chosen.
+ *    count against it), until a door is chosen — unless they have really used
+ *    the app since (Learn progress, Drill, an open lesson, fingerings: any
+ *    store beyond the settings; `hasLearningData` in welcomeGate.ts). Then
+ *    they are a returning learner: never shown, the flag settles 'seen'.
  *  - While a tour is requested (`useDemoRequest()` not null) it is hidden, so
  *    the app shows behind the tour; when the request clears and no door was
  *    chosen, it is back.

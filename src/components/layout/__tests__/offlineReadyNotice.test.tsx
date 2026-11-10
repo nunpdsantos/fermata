@@ -55,7 +55,7 @@ describe('the offline-ready notice', () => {
     expect(status.textContent).toBe('App ready for offline use');
   });
 
-  it('skipped in the page that showed the start screen (it already says "Works offline"), on any screen', async () => {
+  it('skipped in the page that showed the start screen (it already says "Works offline after your first visit"), on any screen', async () => {
     for (const compact of [false, true]) {
       setScreen(compact);
       const { stub, gate, PWAPrompts } = await prompts();

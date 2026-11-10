@@ -18,7 +18,9 @@ import { create } from 'zustand';
  *   absent    → shown only if no app data exists; then set to 'pending'
  *   'pending' → shown (it was shown and nobody acted on it yet — a reload or a
  *               closed tab must not lose it, although boot has since saved
- *               settings)
+ *               settings) — unless learning data was saved since
+ *               (`hasLearningData`: the app was used without a door, e.g.
+ *               after a shared-link visit); then it is settled 'seen'
  *   'seen'    → never shown
  * Not in backups and not cleared by "Reset app data" (neither lists it).
  */
@@ -47,11 +49,34 @@ export function hasSavedAppData(storage: ReadableStorage): boolean {
   return false;
 }
 
+/**
+ * The settings store: boot writes it on every first load (App's `setView`),
+ * so on its own it says nothing about whether the visitor has used the app.
+ */
+const SETTINGS_KEY = 'music-theory-app';
+
+/**
+ * Has the visitor really used the app — anything saved beyond the settings
+ * boot writes (Learn progress, Drill, fingerings, an open lesson, legacy
+ * stores)? Those stores write only on the learner's own work.
+ */
+export function hasLearningData(storage: ReadableStorage): boolean {
+  for (let i = 0; i < storage.length; i++) {
+    const key = storage.key(i);
+    if (!key || key === WELCOME_KEY || key === SETTINGS_KEY) continue;
+    if (APP_KEY_PREFIXES.some((p) => key.startsWith(p))) return true;
+  }
+  return false;
+}
+
 /** Should the welcome show, judged from storage as it is at boot? */
 export function shouldShowWelcome(storage: ReadableStorage): boolean {
   const flag = storage.getItem(WELCOME_KEY);
   if (flag === 'seen') return false;
-  if (flag === 'pending') return true;
+  // 'pending' survives a reload or a closed tab — but not real use since
+  // (after a shared-link visit, the app was used without a door): that
+  // visitor is a returning learner now and never gets the start screen.
+  if (flag === 'pending') return !hasLearningData(storage);
   return !hasSavedAppData(storage);
 }
 
@@ -81,6 +106,9 @@ export function bootWelcome(
   try {
     show = !!storage && shouldShowWelcome(storage);
     if (show) storage!.setItem(WELCOME_KEY, 'pending');
+    // Owed, but the visitor has been using the app since: settled for good
+    // (also after "Reset app data", which does not clear this flag).
+    else if (storage && storage.getItem(WELCOME_KEY) === 'pending') storage.setItem(WELCOME_KEY, 'seen');
   } catch {
     // Storage unavailable: a welcome that cannot remember being closed would
     // come back on every load — better none.

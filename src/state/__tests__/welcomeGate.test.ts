@@ -8,7 +8,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  WELCOME_KEY, APP_KEY_PREFIXES, hasSavedAppData, shouldShowWelcome, bootWelcome, closeWelcome, useWelcomeStore,
+  WELCOME_KEY, APP_KEY_PREFIXES, hasSavedAppData, hasLearningData, shouldShowWelcome, bootWelcome, closeWelcome, useWelcomeStore,
 } from '../welcomeGate';
 import { DRILL_STORE_KEY } from '../drillStore';
 import { FINGERING_STORE_KEY } from '../fingeringStore';
@@ -47,6 +47,25 @@ describe('who sees the welcome', () => {
     localStorage.setItem(WELCOME_KEY, 'pending');
     localStorage.setItem('music-theory-app', '{"state":{"lastView":"explore"},"version":6}');
     expect(shouldShowWelcome(localStorage)).toBe(true);
+  });
+
+  it.each(STORE_KEYS.filter((k) => k !== 'music-theory-app'))(
+    '"pending" but %s saved since (learning data: the visitor has been using the app): never again, settled "seen"',
+    (key) => {
+      localStorage.setItem(WELCOME_KEY, 'pending');
+      localStorage.setItem('music-theory-app', '{"state":{"lastView":"explore"},"version":6}');
+      localStorage.setItem(key, '{}');
+      expect(hasLearningData(localStorage)).toBe(true);
+      expect(shouldShowWelcome(localStorage)).toBe(false);
+      expect(bootWelcome(localStorage, '')).toBe(false);
+      expect(localStorage.getItem(WELCOME_KEY)).toBe('seen');
+    },
+  );
+
+  it('settings alone are not learning data (boot writes them on every first load)', () => {
+    localStorage.setItem('music-theory-app', '{}');
+    localStorage.setItem(WELCOME_KEY, 'pending');
+    expect(hasLearningData(localStorage)).toBe(false);
   });
 
   it('the welcome flag alone is not "saved data"', () => {
