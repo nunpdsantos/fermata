@@ -11,7 +11,9 @@ import { cancelScheduledAudio, getAudioState, resumeAudio } from '../../core/ser
 import { TourEngine, type EngineState } from './engine';
 import type { StepContext, TourStep } from './types';
 import { waitSettled } from './dom';
-import { holdAppSaving, removeEmptyLearnRecord, restoreSnapshot, takeSnapshot, type TourSnapshot } from './snapshot';
+import {
+  chordsTabSelector, currentChordsTab, holdAppSaving, removeEmptyLearnRecord, restoreChordsTab, restoreSnapshot, takeSnapshot, type TourSnapshot,
+} from './snapshot';
 import { drillVisitIsQuiet, learnVisitIsQuiet } from './guards';
 import { introTour, SEL, SHORT_QUERY, WORKBENCH_QUERY } from './introTour';
 
@@ -80,6 +82,8 @@ export class TourSession {
   private readonly release: () => void;
   private readonly onDone: () => void;
   private cueSeq = 0;
+  /** Whether the tour has started playing (a session disposed before that changed nothing). */
+  private started = false;
   private cueTimer: ReturnType<typeof setTimeout> | null = null;
   private unsubscribe: () => void;
 
@@ -107,6 +111,7 @@ export class TourSession {
   }
 
   start(): void {
+    this.started = true;
     this.engine.start();
     // The tour starts from a tap, so the audio may resume now; if it stays
     // suspended the tour runs silently and offers "Tap for sound".
@@ -155,12 +160,30 @@ export class TourSession {
     this.clearCueTimer();
     cancelScheduledAudio();
     const view = choice === 'restore' ? restoreSnapshot(this.snapshot) : useAppStore.getState().view;
+    // Back in Explore from another view, the chords card mounts afresh on In
+    // key: press the tab the viewer had, once it is there.
+    const tab = this.snapshot.chordsTab;
+    if (choice === 'restore' && view === 'explore' && tab && currentChordsTab() !== tab) {
+      if (await waitSettled(chordsTabSelector(tab), new AbortController().signal, 3000)) restoreChordsTab(this.snapshot);
+    }
     this.release();
     // Learn saves its (empty) record when its view opens: let it, then take
     // back the one the tour's visit created.
     if (view === 'learn') await waitSettled(SEL.learnHeading, new AbortController().signal, 3000);
     removeEmptyLearnRecord(this.snapshot);
     this.unsubscribe();
+    this.onDone();
+  };
+
+  /**
+   * The page is going away (closed, reloaded, navigated) mid-tour: end it as
+   * Close would, at once — the app is put back and saved, so what the
+   * viewer changed themselves while it played (the theme, the language, the
+   * volume) is saved too, and the tour's own changes are not.
+   */
+  leavePage = (): void => {
+    if (this.store.getState().finished) return;
+    this.dispose();
     this.onDone();
   };
 
@@ -171,7 +194,9 @@ export class TourSession {
     this.engine.stop();
     this.clearCueTimer();
     cancelScheduledAudio();
-    restoreSnapshot(this.snapshot);
+    // Never started: nothing to put back (and a restore would move a viewer
+    // in a lesson to Explore, guards.ts).
+    if (this.started) restoreSnapshot(this.snapshot);
     this.release();
     removeEmptyLearnRecord(this.snapshot);
     this.unsubscribe();

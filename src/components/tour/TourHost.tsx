@@ -1,16 +1,22 @@
 import { Component, lazy, Suspense, type ReactNode } from 'react';
+import i18next from 'i18next';
 import { clearDemoRequest, useDemoRequest } from '../../state/demoRequest.ts';
+import { toast } from '../../state/toastStore.ts';
 
 // The tour is its own chunk (precached): only a viewer who asks for it downloads it.
 const TourPlayer = lazy(() => import('./TourPlayer.tsx'));
 
-/** A tour that cannot load (or throws) clears the request: the app (and the start screen) carry on. */
+/**
+ * A tour that cannot load (offline before its chunk was cached) or throws
+ * clears the request and says so: the app (and the start screen) carry on.
+ */
 class TourBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() {
     return { failed: true };
   }
   componentDidCatch() {
+    toast(i18next.t('showMe.loadFailed'), 'info', 5000);
     clearDemoRequest();
   }
   render() {

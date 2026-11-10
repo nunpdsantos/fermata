@@ -50,6 +50,15 @@ describe('captions', () => {
     expect(keys(es.showMe as Dict).sort()).toEqual(enKeys);
   });
 
+  it('the chord step says what a tap does: a chord card only selects it (ChordGrid); its sound is the panel\'s own button, named by its label', () => {
+    for (const [lang, dict] of [['en', en], ['pt', pt], ['es', es]] as const) {
+      const caption = lookup(dict as Dict, 'showMe.intro.chord') as string;
+      const button = lookup(dict as Dict, 'panel.chord') as string;
+      // The label as a word of its own (capitalised as on the button), not just "chord" in "Tap a chord".
+      expect(new RegExp(`(^|\\s)${button}(\\s|$)`).test(caption), `${lang}: "${caption}" names the ${button} button`).toBe(true);
+    }
+  });
+
   it('nine steps on a laptop, eight elsewhere (the circle is beside the work only on a laptop)', () => {
     const ids = (workbench: boolean) => introTour({ startInstrument: 'piano', learnQuiet: true, drillQuiet: true, workbench: () => workbench, short: () => false })
       .filter((s) => !s.available || s.available()).map((s) => s.id);

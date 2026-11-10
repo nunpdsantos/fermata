@@ -3,7 +3,8 @@
    bar comes or goes (the toast rule, CLAUDE.md "ToastRegion"). It sits under
    the top bar or just above the instrument dock — never over the instrument
    (services/tour/dom.ts placeBar) — over the top bar itself only on a short
-   screen. Above toasts (65) and the top bar (66), under sheets (70). */
+   screen. Above toasts (65) and the top bar (66), under sheets (70); toasts
+   never reach it anyway: the bar registers with useToastAvoid. */
 .tour-layer {
   position: fixed;
   inset: 0;

@@ -6,12 +6,18 @@
  * degree, the instrument (and preferencesUpdatedAt, which setInstrument
  * stamps), the dock's detents (and whether the learner chose them), the
  * chord-detail / comparison state, the chord grip shared by dock and full
- * neck, and the classical-minor direction. Lit keys are cleared.
+ * neck, the classical-minor direction, and the chords card's tab (In key /
+ * All chords / Build: the card keeps it in its own state, so it is read off
+ * the page and pressed again). Lit keys are cleared. What lives inside a tab
+ * (the browser's category, a half-built chord in Build) is the card's own
+ * state and is not given back — the same as when the learner changes view.
  *
  * While the tour plays, the saved settings ('music-theory-app') are NOT
- * written: a reload or a closed tab mid-tour boots exactly as before it. The
- * one save happens when the tour ends (`release`), of whatever the app then
- * shows — restored, or kept with "Stay here".
+ * written. The one save happens when the tour ends (`release`), of whatever
+ * the app then shows — restored, or kept with "Stay here". A reload or a
+ * closed tab mid-tour ends it first (`TourSession.leavePage`, on pagehide):
+ * restored, then saved, so it boots on the viewer's own selection with any
+ * setting they changed themselves while the tour was paused.
  */
 import { useAppStore } from '../../state/store';
 import type { AppState, ViewMode } from '../../state/storeTypes';
@@ -35,6 +41,38 @@ export interface TourSnapshot {
   direction: ReturnType<typeof useScaleDirectionStore.getState>['direction'];
   /** Whether Learn's session record existed (Learn's first opening saves an empty one). */
   learnSessionKeyExisted: boolean;
+  /** The chords card's tab, when the card was on screen. */
+  chordsTab: ChordsTab | null;
+}
+
+const CHORDS_TABS = ['diatonic', 'all', 'build'] as const;
+export type ChordsTab = (typeof CHORDS_TABS)[number];
+export const chordsTabSelector = (tab: ChordsTab) => `#chords-tab-${tab}`;
+
+/** The chords card's selected tab (ChordsCard's Segment ids), or null when the card is not on screen. */
+export function currentChordsTab(): ChordsTab | null {
+  if (typeof document === 'undefined') return null;
+  for (const tab of CHORDS_TABS) {
+    if (document.getElementById(`chords-tab-${tab}`)?.getAttribute('aria-selected') === 'true') return tab;
+  }
+  return null;
+}
+
+/**
+ * Press the chords card's saved tab again if another one shows. Its handler
+ * clears the chord, so the snapshot's chord fields are applied after it.
+ * False when the card is not on screen (yet).
+ */
+export function restoreChordsTab(snap: TourSnapshot): boolean {
+  if (!snap.chordsTab || typeof document === 'undefined') return true;
+  const tab = document.getElementById(`chords-tab-${snap.chordsTab}`);
+  if (!tab) return false;
+  if (tab.getAttribute('aria-selected') !== 'true') {
+    tab.click();
+    const { selectedChord, chordInversion, selectedDegree, detailPanelOpen } = snap.app;
+    useAppStore.setState({ selectedChord, chordInversion, selectedDegree, detailPanelOpen });
+  }
+  return true;
 }
 
 export function takeSnapshot(): TourSnapshot {
@@ -59,6 +97,7 @@ export function takeSnapshot(): TourSnapshot {
     shapeChoice: useGuitarShapeStore.getState().shapeChoice,
     direction: useScaleDirectionStore.getState().direction,
     learnSessionKeyExisted: storageHas(LEARN_SESSION_KEY),
+    chordsTab: currentChordsTab(),
   };
 }
 
@@ -79,11 +118,18 @@ export function returnView(snap: TourSnapshot): ViewMode {
   return returnIsQuiet(snap.app.view) ? snap.app.view : 'explore';
 }
 
-/** Put the app back as the snapshot found it. */
+/**
+ * Put the app back as the snapshot found it. The chords card's tab is pressed
+ * here when the card is still on screen; when the view changes back to
+ * Explore the card mounts afresh (on In key), and the session presses the
+ * saved tab once it is there (`restoreChordsTab`).
+ */
 export function restoreSnapshot(snap: TourSnapshot): ViewMode {
   cancelScheduledAudio();
   const view = returnView(snap);
   const app = useAppStore.getState();
+  // Before the chord is put back: pressing a tab clears it.
+  if (app.view === 'explore' && view === 'explore') restoreChordsTab(snap);
   if (app.view !== view) app.setView(view);
   useAppStore.setState({
     ...snap.app,

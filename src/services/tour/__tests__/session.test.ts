@@ -107,6 +107,54 @@ function newSession(source: 'menu' | 'start' = 'menu') {
 
 const stepId = (s: TourSession) => s.engine.current?.id;
 
+/**
+ * The chords card's three tabs as ChordsCard draws them (ids, aria-selected;
+ * pressing one clears the chord), on the page only while Explore is the view,
+ * and mounted afresh on In key — like the real card, whose tab is its own state.
+ */
+function mountChordsCard(initial: 'diatonic' | 'all' | 'build') {
+  const tabs = ['diatonic', 'all', 'build'] as const;
+  let current: (typeof tabs)[number] = initial;
+  let root: HTMLElement | null = null;
+  const mount = () => {
+    root = document.createElement('div');
+    for (const tab of tabs) {
+      const b = document.createElement('button');
+      b.id = `chords-tab-${tab}`;
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-selected', String(tab === current));
+      b.addEventListener('click', () => {
+        useAppStore.getState().setSelectedChord(null);
+        current = tab;
+        for (const t of tabs) document.getElementById(`chords-tab-${t}`)!.setAttribute('aria-selected', String(t === tab));
+      });
+      root.appendChild(b);
+    }
+    document.body.appendChild(root);
+  };
+  const unmountCard = () => {
+    root?.remove();
+    root = null;
+  };
+  mount();
+  let lastView = useAppStore.getState().view;
+  const unsubscribe = useAppStore.subscribe((st) => {
+    if (st.view === lastView) return;
+    lastView = st.view;
+    if (st.view === 'explore') {
+      current = 'diatonic';
+      mount();
+    } else unmountCard();
+  });
+  return {
+    selected: () => (root ? current : null),
+    unmount: () => {
+      unsubscribe();
+      unmountCard();
+    },
+  };
+}
+
 /** Play until the end card. */
 async function playToEnd(session: TourSession, visited: string[] = []) {
   session.start();
@@ -264,6 +312,74 @@ describe('the intro tour, played through', () => {
     await session.enableSound();
     expect(session.store.getState().sound).toBe('on');
     await session.finish('restore');
+  });
+
+  it('stopping while still in Explore puts the chords card back on the tab the viewer had (All chords), with its chord', async () => {
+    const card = mountChordsCard('all');
+    try {
+      const chord = { root: { natural: 'F' as const, accidental: '#' as const }, quality: 'diminished' as const, notes: [] };
+      useAppStore.setState({ view: 'explore', lastView: 'explore', instrument: 'piano', selectedKey: { natural: 'C', accidental: '' }, selectedScale: 'major', selectedChord: chord });
+      const { session } = newSession();
+      session.start();
+      while (stepId(session) !== 'chords') await vi.advanceTimersByTimeAsync(100);
+      await vi.advanceTimersByTimeAsync(300);
+      expect(card.selected()).toBe('diatonic'); // the tour shows the chords in key
+      await session.finish('restore');
+      expect(card.selected()).toBe('all');
+      expect(useAppStore.getState().selectedChord).toBe(chord);
+    } finally {
+      card.unmount();
+    }
+  });
+
+  it('stopped in Learn: the chords card, mounted afresh on In key, is put back on Build once Explore is there', async () => {
+    const card = mountChordsCard('build');
+    try {
+      useAppStore.setState({ view: 'explore', lastView: 'explore', instrument: 'piano', selectedChord: null });
+      const { session } = newSession();
+      session.start();
+      while (stepId(session) !== 'learn') await vi.advanceTimersByTimeAsync(100);
+      while (useAppStore.getState().view !== 'learn') await vi.advanceTimersByTimeAsync(100);
+      expect(card.selected()).toBeNull(); // not on screen
+      await session.finish('restore');
+      expect(useAppStore.getState().view).toBe('explore');
+      expect(card.selected()).toBe('build');
+    } finally {
+      card.unmount();
+    }
+  });
+
+  it('"Stay here" leaves the chords card on In key', async () => {
+    const card = mountChordsCard('all');
+    try {
+      useAppStore.setState({ view: 'explore', lastView: 'explore', instrument: 'piano', selectedChord: null });
+      const { session } = newSession();
+      await playToEnd(session);
+      await session.finish('stay');
+      expect(card.selected()).toBe('diatonic');
+    } finally {
+      card.unmount();
+    }
+  });
+
+  it('closing or reloading the page mid-tour: put back and saved, with what the viewer changed themselves (the theme)', async () => {
+    useAppStore.setState({ view: 'explore', lastView: 'explore', instrument: 'piano', selectedKey: { natural: 'C', accidental: '' }, selectedScale: 'major', themeMode: 'fermata' });
+    useAppStore.setState({});
+    const { session, onDone } = newSession();
+    session.start();
+    while (stepId(session) !== 'scale') await vi.advanceTimersByTimeAsync(100);
+    expect(useAppStore.getState().selectedKey.natural).toBe('G');
+    // The viewer touched the app (paused) and switched to Night in Settings.
+    session.pause('touch');
+    useAppStore.getState().setThemeMode('fermata-night');
+    expect(JSON.parse(localStorage.getItem(APP_KEY)!).state.themeMode).toBe('fermata'); // held
+    session.leavePage();
+    const saved = JSON.parse(localStorage.getItem(APP_KEY)!).state;
+    expect(saved.themeMode).toBe('fermata-night');
+    expect(saved.selectedKey).toEqual({ natural: 'C', accidental: '' });
+    expect(onDone).toHaveBeenCalledTimes(1);
+    session.leavePage();
+    expect(onDone).toHaveBeenCalledTimes(1);
   });
 
   it('the saved volume is applied before playing', async () => {

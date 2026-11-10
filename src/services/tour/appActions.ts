@@ -11,7 +11,7 @@
  *  - ▶ Play scale: the header's call, with a completion callback (the
  *    header's button passes none). KEEP IN STEP with `playScaleNow` in
  *    components/explore/ExploreHeader.tsx — this mirrors it argument for
- *    argument; `appActions.test.ts` pins it.
+ *    argument; `__tests__/tourParts.test.tsx` pins it.
  *
  * Nothing here touches the progress, drill, fingering or learn-session stores.
  */

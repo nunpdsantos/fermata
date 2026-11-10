@@ -108,6 +108,7 @@ const geometry = (page: Page) => page.evaluate(() => {
     instrument: clip(inst),
     dock,
     hScroll: document.scrollingElement!.scrollWidth > innerWidth + 1,
+    width: innerWidth,
   };
 });
 
@@ -121,7 +122,7 @@ async function stepThrough(page: Page, lang: 'en' | 'pt' = 'en') {
     if (g.target) expect.soft(overlap(g.bar, g.target), `${g.step}: the bar covers the spotlighted element`).toBe(0);
     if (g.instrument && g.instrument.bottom > g.instrument.top) expect.soft(overlap(g.bar, g.instrument), `${g.step}: the bar covers the instrument`).toBe(0);
     expect.soft(g.bar.left, `${g.step}: bar on screen`).toBeGreaterThanOrEqual(0);
-    expect.soft(g.bar.right, `${g.step}: bar on screen`).toBeLessThanOrEqual(VIEWPORTS.laptop.viewport.width);
+    expect.soft(g.bar.right, `${g.step}: bar on screen`).toBeLessThanOrEqual(g.width);
     expect.soft(g.hScroll, `${g.step}: sideways page scroll`).toBe(false);
     const next = page.getByRole('button', { name: NEXT[lang], exact: true });
     if (!(await next.count())) break;
@@ -205,6 +206,30 @@ test('stopping mid-way restores the previous key, view and instrument', async ({
   await context.close();
 });
 
+test('stopping in Explore puts the chords card back on the tab the viewer had (All chords), with its chord', async ({ browser }) => {
+  test.setTimeout(90_000);
+  const { context, page } = await open(browser, { where: 'laptop', state: { instrument: 'piano' } });
+  await page.locator('#chords-tab-all').click();
+  await expect(page.locator('#chords-tab-all')).toHaveAttribute('aria-selected', 'true');
+  const pick = page.locator('#chords-panel [data-quality]').nth(1);
+  const quality = (await pick.getAttribute('data-quality'))!;
+  await pick.click();
+  await expect(page.locator(`#chords-panel [data-quality="${quality}"]`)).toHaveAttribute('aria-pressed', 'true');
+  await startTour(page);
+  for (let i = 0; i < 2; i++) {
+    await holding(page);
+    await page.getByRole('button', { name: 'Next', exact: true }).click();
+  }
+  await holding(page);
+  await expect(bar(page)).toHaveAttribute('data-step', 'chords');
+  await expect(page.locator('#chords-tab-diatonic')).toHaveAttribute('aria-selected', 'true'); // the tour shows In key
+  await page.getByRole('button', { name: 'End the tour' }).click();
+  await expect(bar(page)).toHaveCount(0);
+  await expect(page.locator('#chords-tab-all')).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator(`#chords-panel [data-quality="${quality}"]`)).toHaveAttribute('aria-pressed', 'true');
+  await context.close();
+});
+
 test('stopped while in Learn (started from the Learn overview): back on the Learn overview', async ({ browser }) => {
   test.setTimeout(90_000);
   const { context, page } = await open(browser, { where: 'laptop', state: { lastView: 'learn', instrument: 'piano' } });
@@ -221,6 +246,39 @@ test('stopped while in Learn (started from the Learn overview): back on the Lear
   expect(await state(page)).toMatchObject({ view: 'learn', instrument: 'piano' });
   await context.close();
 });
+
+// ─── Toasts keep off the bar ────────────────────────────────────────────────
+for (const where of ['phone', 'laptop', 'landscape'] as const) {
+  test(`${where}: a toast raised during the tour never covers the caption bar (it waits while the bar is under the top bar)`, async ({ browser }) => {
+    test.setTimeout(120_000);
+    const { context, page } = await open(browser, { where });
+    // The app's own toast store, served by the dev server only (as in design-system.spec).
+    const res = await page.request.get('/src/state/toastStore.ts');
+    test.skip(!(res.ok() && (res.headers()['content-type'] ?? '').includes('javascript')), 'needs the dev server\'s /src modules');
+    await startTour(page);
+    await holding(page);
+    await page.evaluate(`(async () => { (await import('/src/state/toastStore.ts')).toast('Backup downloaded', 'success', 0); })()`);
+    let shown = 0;
+    for (let i = 0; i < 12; i++) {
+      await holding(page);
+      await page.waitForTimeout(300); // the toast region re-measures and the card slides in
+      const g = await page.evaluate(() => {
+        const r = (el: Element) => { const b = el.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right }; };
+        const barEl = document.querySelector('[data-testid="tour-bar"]')!;
+        const cards = Array.from(document.querySelectorAll('.toast-card')).filter((c) => !c.hasAttribute('data-toast-queued') && getComputedStyle(c).visibility !== 'hidden').map(r);
+        return { step: barEl.getAttribute('data-step'), slot: barEl.getAttribute('data-slot'), bar: r(barEl), cards };
+      });
+      shown += g.cards.length;
+      for (const c of g.cards) expect.soft(overlap(g.bar, c), `${g.step} (${g.slot}): a toast covers the bar`).toBe(0);
+      const next = page.getByRole('button', { name: 'Next', exact: true });
+      if (!(await next.count())) break;
+      await next.click();
+    }
+    // Not vacuous: the toast did show beside the bar at some step.
+    expect(shown).toBeGreaterThan(0);
+    await context.close();
+  });
+}
 
 // ─── Keyboard only ──────────────────────────────────────────────────────────
 test('keyboard only: open from the menu, step with Enter, Escape or the end card returns focus', async ({ browser }) => {
@@ -388,6 +446,28 @@ test('a returning learner\'s tour points at the Learn and Drill tabs instead of 
     await page.getByRole('button', { name: 'Next', exact: true }).click();
   }
   await page.getByRole('button', { name: 'End the tour' }).click();
+  await context.close();
+});
+
+test('started in Learn with a lesson open: the end card says it lands on Explore (going back would re-save the lesson), and it does', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const { context, page } = await open(browser, { where: 'laptop', state: { lastView: 'learn', instrument: 'piano' }, extra: RETURNING });
+  await expect(page.locator('[data-tab="learn"]')).toHaveAttribute('aria-selected', 'true');
+  const learnBefore = await storage(page, [LEARN]);
+  await startTour(page);
+  for (let i = 0; i < 12; i++) {
+    await holding(page);
+    const next = page.getByRole('button', { name: 'Next', exact: true });
+    if (!(await next.count())) break;
+    await next.click();
+  }
+  await expect(page.getByTestId('tour-caption')).toHaveText('Your turn.');
+  await expect(page.getByRole('button', { name: 'Back to where I was' })).toHaveCount(0);
+  await expect(page.getByTestId('tour-elsewhere')).toHaveText('You will be in Explore; Learn is one tap away.');
+  await page.getByRole('button', { name: 'Put things back' }).click();
+  await expect(bar(page)).toHaveCount(0);
+  expect(await state(page)).toMatchObject({ view: 'explore', instrument: 'piano' });
+  expect(await storage(page, [LEARN])).toEqual(learnBefore);
   await context.close();
 });
 

@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { StrictMode } from 'react';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 vi.mock('../../../core/services/audio', async (orig) => {
@@ -25,6 +26,8 @@ import { clearDemoRequest, getDemoRequest, requestDemo } from '../../../state/de
 import { useAppStore } from '../../../state/store';
 import { useToastStore } from '../../../state/toastStore';
 import { registerWorkInProgress } from '../../../services/workInProgress';
+import { LEARN_SESSION_KEY } from '../../../state/learnSessionPersistence';
+import { resetToastLayoutForTests } from '../../layout/toastLayout';
 
 function setReducedMotion(reduce: boolean) {
   window.matchMedia = ((query: string) => ({
@@ -61,7 +64,7 @@ describe('the tour host and caption bar', () => {
     fireEvent.click(screen.getByRole('menuitem', { name: 'Show me around' }));
     expect(getDemoRequest()).toBe('intro');
     const region = await bar();
-    const caption = await screen.findByText('Most songs live in a key. Here we pick G major.');
+    const caption = await screen.findByText('Most songs use one family of notes, called a key. Here we pick G major.');
     expect(caption.getAttribute('role')).toBe('status');
     expect(region.contains(caption)).toBe(true);
     expect(screen.getByRole('img', { name: /^Step 1 of \d$/ })).toBeTruthy();
@@ -77,7 +80,7 @@ describe('the tour host and caption bar', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Next' }));
     expect(await screen.findByText('These are the notes of that key, lit on the instrument.')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-    expect(await screen.findByText(/Most songs live in a key/)).toBeTruthy();
+    expect(await screen.findByText(/Most songs use one family of notes/)).toBeTruthy();
   });
 
   it('with motion: Pause / Resume', async () => {
@@ -132,6 +135,62 @@ describe('the tour host and caption bar', () => {
     expect(useAppStore.getState().selectedKey.natural).toBe('C');
   });
 
+  for (const strict of [false, true]) it(`started in Learn with a lesson open${strict ? ' (StrictMode: the development double-mount)' : ''}: the end card does not promise "where I was" (the restore lands on Explore) and says where Learn is`, async () => {
+    localStorage.setItem(LEARN_SESSION_KEY, JSON.stringify({ state: { screen: { type: 'module', levelId: 'l1', unitId: 'u1', moduleId: 'l1u1m3', section: null, at: Date.now() }, check: null }, version: 1 }));
+    useAppStore.setState({ view: 'learn', lastView: 'learn' });
+    render(strict ? <StrictMode><TourHost /></StrictMode> : <TourHost />);
+    act(() => requestDemo('intro', 'menu'));
+    await bar();
+    for (let i = 0; i < 12 && !screen.queryByText('Your turn.'); i++) {
+      fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+      await act(async () => { await new Promise((r) => setTimeout(r, 10)); });
+    }
+    expect(screen.queryByRole('button', { name: 'Back to where I was' })).toBeNull();
+    expect(screen.getByText('You will be in Explore; Learn is one tap away.')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Put things back' }));
+    await waitFor(() => expect(getDemoRequest()).toBeNull());
+    expect(useAppStore.getState().view).toBe('explore');
+  });
+
+  it('toasts keep off the caption bar: it registers with the toast layout (useToastAvoid)', async () => {
+    resetToastLayoutForTests();
+    // jsdom lays nothing out: give the bar a height and a box at its placed top.
+    const BAR_H = 80;
+    const offset = vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.classList.contains('tour-bar') ? BAR_H : 0;
+    });
+    const rect = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+      const top = this instanceof HTMLElement && this.classList.contains('tour-bar') ? parseFloat(this.style.top) || 0 : 0;
+      const h = this instanceof HTMLElement && this.classList.contains('tour-bar') ? BAR_H : 0;
+      return { top, bottom: top + h, left: 0, right: h ? 300 : 0, width: h ? 300 : 0, height: h, x: 0, y: top, toJSON: () => ({}) } as DOMRect;
+    });
+    try {
+      render(<TourHost />);
+      act(() => requestDemo('intro', 'menu'));
+      const region = await bar();
+      await waitFor(() => expect(region.getAttribute('data-measured')).toBe('true'));
+      const barTop = parseFloat(region.style.top);
+      expect(barTop).toBeGreaterThan(0);
+      // The toast region (from 8 px under the — absent — top bar) stops 8 px above the bar.
+      await waitFor(() => expect(document.documentElement.style.getPropertyValue('--toast-room')).toBe(`${Math.floor(barTop - 8 - 8)}px`));
+    } finally {
+      offset.mockRestore();
+      rect.mockRestore();
+      resetToastLayoutForTests();
+    }
+  });
+
+  it('closing or reloading the page mid-tour (pagehide) ends it: put back, saved, the request cleared', async () => {
+    render(<TourHost />);
+    act(() => requestDemo('intro', 'menu'));
+    await bar();
+    await waitFor(() => expect(useAppStore.getState().selectedKey.natural).toBe('G'));
+    act(() => { window.dispatchEvent(new Event('pagehide')); });
+    await waitFor(() => expect(getDemoRequest()).toBeNull());
+    expect(useAppStore.getState().selectedKey).toEqual({ natural: 'C', accidental: '' });
+    expect(JSON.parse(localStorage.getItem('music-theory-app')!).state.selectedKey).toEqual({ natural: 'C', accidental: '' });
+  });
+
   it('a start-screen tour (requestDemo with no source) simply ends: one "Done", the app put back, the request cleared', async () => {
     render(<TourHost />);
     act(() => requestDemo('intro'));
@@ -166,7 +225,7 @@ describe('the tour host and caption bar', () => {
     render(<TourHost />);
     act(() => requestDemo('intro', 'menu'));
     expect(await screen.findByRole('region', { name: 'Visita guiada à app' })).toBeTruthy();
-    expect(screen.getByText('A maioria das canções está numa tonalidade. Aqui escolhemos G maior.')).toBeTruthy();
+    expect(screen.getByText('A maioria das canções usa uma família de notas: a tonalidade. Aqui escolhemos G maior.')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Seguinte' })).toBeTruthy();
   });
 });

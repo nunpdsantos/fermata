@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode, type RefObject } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
@@ -6,10 +6,12 @@ import { useStore } from 'zustand';
 import { Button, IconButton } from '../ui/Button.tsx';
 import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { toast } from '../../state/toastStore.ts';
+import { measureToastRoom, useToastAvoid } from '../layout/toastLayout.ts';
 import { getDemoSource, type DemoTour } from '../../state/demoRequest.ts';
 import { useAppStore } from '../../state/store.ts';
 import { TourSession, holdMsFor } from '../../services/tour/session.ts';
 import { busyReason } from '../../services/tour/guards.ts';
+import { returnView } from '../../services/tour/snapshot.ts';
 import { BAR_GUTTER, findTarget, placeBar, type Box, type BarSlot } from '../../services/tour/dom.ts';
 import type { TourStep } from '../../services/tour/types.ts';
 import './tour.css';
@@ -23,6 +25,9 @@ import './tour.css';
  * least the tap size (Button / IconButton). Under prefers-reduced-motion
  * nothing advances by itself (no Pause then) and the cue does not move.
  * Touching the app itself pauses the tour and offers Resume / End.
+ * Toasts keep off the bar (it registers with `useToastAvoid`, like the dock
+ * and Drill's answers): while the bar is under the top bar, toasts wait.
+ * Closing or reloading the page mid-tour ends it (restored, then saved).
  */
 
 // The one playing session, for React (set by the player's own effect).
@@ -63,8 +68,19 @@ export default function TourPlayer({ tour, onDone }: { tour: DemoTour; onDone: (
       onDone,
     });
     setActive(s);
-    s.start();
+    // Started a microtask later: React's development double-mount (StrictMode)
+    // unmounts this session before it has done anything, so the second one
+    // snapshots the app as the viewer left it (a started first session moved
+    // the view to Explore, and from a lesson the restore cannot go back).
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (!cancelled) s.start();
+    });
+    const onPageHide = () => s.leavePage();
+    window.addEventListener('pagehide', onPageHide);
     return () => {
+      cancelled = true;
+      window.removeEventListener('pagehide', onPageHide);
       s.dispose();
       setActive(null);
       // Focus back where the tour was started from (the "⋯" button), else the view's tab.
@@ -205,6 +221,14 @@ function TourOverlay({ session, t }: { session: TourSession; t: T }) {
   const final = !!step?.final;
   const menuTour = session.source === 'menu';
 
+  // Toasts never cover the bar (toastLayout.ts); its place changes with the
+  // step without a resize, so the room is measured again when it moves.
+  const barShown = !finished && !!step && layout.barTop !== null;
+  useToastAvoid(barRef, barShown);
+  useLayoutEffect(() => {
+    if (barShown) measureToastRoom();
+  }, [barShown, layout.barTop, layout.barLeft]);
+
   // Escape closes (not while a sheet / dialog of the app is open: it is that one's).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -260,6 +284,10 @@ function TourOverlay({ session, t }: { session: TourSession; t: T }) {
   const paused = engine.paused;
   const canBack = visible.indexOf(step) > 0;
   const hasExtra = final || engine.pausedBy === 'touch' || sound === 'blocked';
+  // Going back to Learn or Drill would make it write (guards.ts): the restore
+  // then lands on Explore, and the button says so instead of "where I was".
+  const startView = session.snapshot.app.view;
+  const landsElsewhere = final && menuTour && returnView(session.snapshot) !== startView;
 
   return (
     <div className="tour-layer" data-testid="tour">
@@ -328,8 +356,13 @@ function TourOverlay({ session, t }: { session: TourSession; t: T }) {
           <div className="tour-extra">
             {final && menuTour && (
               <>
+                {landsElsewhere && (
+                  <p className="tour-note" data-testid="tour-elsewhere">{t('showMe.elsewhereNote', { view: t(`nav.${startView}`) })}</p>
+                )}
                 <Button variant="secondary" onClick={() => void session.finish('stay')} data-testid="tour-stay">{t('showMe.stayHere')}</Button>
-                <Button variant="primary" onClick={() => void session.finish('restore')} data-testid="tour-restore" data-tour-focus="">{t('showMe.backToStart')}</Button>
+                <Button variant="primary" onClick={() => void session.finish('restore')} data-testid="tour-restore" data-tour-focus="">
+                  {landsElsewhere ? t('showMe.putBack') : t('showMe.backToStart')}
+                </Button>
               </>
             )}
             {final && !menuTour && (
