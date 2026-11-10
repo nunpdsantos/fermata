@@ -3,6 +3,11 @@ import type { CurriculumLevelOverlay } from '../types';
 const curriculumL1: CurriculumLevelOverlay = {
   // ─── Unidades ─────────────────────────────────────────────────────────────
   units: {
+    // Track "Start with sound" (wave 2)
+    u34: {
+      title: 'Empieza por el sonido',
+      description: 'Cinco lecciones cortas, de oído y en tu instrumento: agudo y grave, los nombres de las notas, semitonos y tonos, la escala mayor y tus primeros acordes. No hace falta leer música.',
+    },
     u33: {
       title: 'Notación de guitarra — opcional',
       description: 'Clave, cuerdas, dedos, posiciones y cejillas. Estas tres lecciones no cuentan para completar niveles ni para desbloquearlos.'
@@ -555,6 +560,183 @@ const curriculumL1: CurriculumLevelOverlay = {
           instruction:
             'Toca "C major chord", "G major chord", "D major chord", "F major chord" — escucha la misma cualidad brillante en todas las tonalidades',
         },
+      ],
+    },
+
+    // ── Track "Start with sound" (wave 2) ─────────────────────────────────
+    l1u34m1: {
+      title: 'Agudo y grave',
+      subtitle: 'Cada nota es más aguda o más grave que otra',
+      objectives: [
+        'Oír si una nota es más aguda o más grave que la anterior',
+        'Encontrar las notas más agudas en el piano y en la guitarra',
+        'Oír la misma nota volver más aguda: la octava',
+      ],
+      concepts: [
+        {
+          title: 'Más agudo y más grave',
+          explanation: 'Cada nota musical tiene una altura: lo aguda (alta) o grave (baja) que suena. Cuando se tocan dos notas, una después de otra, la segunda es más aguda, más grave o igual. No necesitas nombres para oírlo. Escucha y pregúntate si el sonido subió o bajó.',
+          tryThisLabel: 'Escucha ocho notas, cada una más aguda que la anterior',
+        },
+        {
+          title: 'Más agudo en el piano',
+          explanation: 'En el piano, las notas se vuelven más agudas de izquierda a derecha. La tecla del extremo izquierdo es la nota más grave y la del extremo derecho, la más aguda. Cada tecla, blanca o negra, es una nota distinta, un poco más aguda que la tecla que tiene justo a su izquierda.',
+          tryThisLabel: 'Escucha todas las teclas, blancas y negras, desde C hasta el C siguiente',
+        },
+        {
+          title: 'Más agudo en la guitarra',
+          explanation: 'En la guitarra, una nota se vuelve más aguda a medida que el dedo avanza por una cuerda hacia el cuerpo de la guitarra, traste a traste. Las cuerdas también van de grave a agudo: tocadas al aire, sin ningún dedo, la cuerda más gruesa suena la más grave y cada cuerda más fina suena más aguda que la de al lado.',
+          tryThisLabel: 'Escucha notas que suben de grave a agudo y luego muéstralas en tu instrumento',
+        },
+        {
+          title: 'La misma nota, más aguda',
+          explanation: 'Sigue subiendo desde cualquier nota y llegarás a una nota que suena como la primera, pero más aguda. Las dos se parecen tanto que comparten nombre. Esa distancia se llama octava. En el piano son doce teclas más a la derecha, contando blancas y negras; en una cuerda de la guitarra son doce trastes más adelante.',
+          tryThisLabel: 'Escucha C subir hasta el C siguiente: el mismo nombre, un sonido más agudo',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca una nota cualquiera y luego una nota a su derecha en el piano, o un traste más cerca del cuerpo en la guitarra. Escucha: la segunda nota es más aguda.' },
+        { instruction: 'Toca una nota y la misma nota una octava más arriba: en el piano, doce teclas a la derecha; en la guitarra, una cuerda al aire y luego la misma cuerda en el traste 12. Escucha lo parecidas que suenan.' },
+      ],
+    },
+    l1u34m2: {
+      title: 'Las siete letras',
+      subtitle: 'Las notas se llaman de A a G y luego los nombres vuelven a empezar',
+      objectives: [
+        'Nombrar las notas con las siete letras, de A a G',
+        'Encontrar el C en el piano',
+        'Nombrar las seis cuerdas al aire de la guitarra',
+      ],
+      concepts: [
+        {
+          title: 'Siete letras, una y otra vez',
+          explanation: 'Las notas se nombran con siete letras: A, B, C, D, E, F y G. Después de G los nombres vuelven a empezar en A, una octava más arriba. Así, las mismas siete letras vuelven una y otra vez, cada vez más agudas. En español también se usan los nombres del solfeo: C = Do, D = Re, E = Mi, F = Fa, G = Sol, A = La, B = Si. Esta aplicación escribe las letras.',
+          tryThisLabel: 'Escucha A, B, C, D, E, F y G, y luego otra vez A, una octava más arriba',
+        },
+        {
+          title: 'Encontrar el C en el piano',
+          explanation: 'Las teclas negras del piano van en grupos de dos y en grupos de tres. La tecla blanca justo a la izquierda de cada grupo de dos teclas negras es C. Desde C, las teclas blancas hacia la derecha son D, E, F, G, A y B, y luego otra vez C.',
+          tryThisLabel: 'Escucha C, D, E, F, G, A y B, y luego otra vez C',
+        },
+        {
+          title: 'Las cuerdas al aire de la guitarra',
+          explanation: 'En una guitarra con la afinación habitual, las seis cuerdas tocadas al aire se llaman, de la más gruesa a la más fina: E, A, D, G, B y E. La más gruesa y la más fina son las dos E, a dos octavas de distancia.',
+          tryThisLabel: 'Escucha las siete letras desde E: E, F, G, A, B, C, D y otra vez E',
+        },
+        {
+          title: 'La letra siguiente',
+          explanation: 'Para pasar de una letra a la siguiente, toca en el piano la tecla blanca siguiente, a la derecha: de C a D, de D a E, y así sucesivamente. En una cuerda de la guitarra, la letra siguiente está dos trastes más adelante, salvo de E a F y de B a C, que están a un solo traste.',
+          tryThisLabel: 'Escucha las letras subir desde F: F, G, A, B, C, D, E y otra vez F',
+        },
+      ],
+      tasks: [
+        { instruction: 'Piano: encuentra todos los C, la tecla blanca justo a la izquierda de cada grupo de dos teclas negras, y tócalos de izquierda a derecha. Guitarra: toca las cuerdas al aire de la más gruesa a la más fina y di sus nombres.' },
+        { instruction: 'Toca C, D, E, F, G, A, B y otra vez C, diciendo cada nombre mientras tocas. En el piano son las teclas blancas desde cualquier C; en la guitarra, C está en el traste 3 de la cuerda A, la segunda más gruesa.' },
+      ],
+    },
+    l1u34m3: {
+      title: 'Semitonos y tonos',
+      subtitle: 'Las distancias más pequeñas entre notas y las notas que quedan en medio',
+      objectives: [
+        'Oír y encontrar un semitono: la nota más cercana',
+        'Formar un tono con dos semitonos',
+        'Nombrar las notas intermedias con sostenidos y bemoles',
+      ],
+      concepts: [
+        {
+          title: 'La nota más cercana: un semitono',
+          explanation: 'La nota más cercana, por encima o por debajo de cualquier nota, está a un semitono. En el piano es la tecla inmediatamente siguiente, negra o blanca, sin nada en medio. En la guitarra es el traste siguiente en la misma cuerda. Doce semitonos seguidos, todas las teclas de un C al siguiente, forman la escala cromática.',
+          tryThisLabel: 'Escucha doce semitonos seguidos, desde C hasta el C siguiente',
+        },
+        {
+          title: 'Dos semitonos: un tono',
+          explanation: 'Dos semitonos forman un tono. En el piano, un tono salta una tecla: de C a D pasa por encima de la tecla negra que hay entre las dos. En la guitarra son dos trastes en la misma cuerda. Una escala hecha solo de tonos se llama escala de tonos enteros.',
+          tryThisLabel: 'Escucha solo tonos, desde C hasta el C siguiente',
+        },
+        {
+          title: 'Las notas intermedias',
+          explanation: 'Entre C y D hay una nota más: la tecla negra. Tiene dos nombres. Es C sostenido (C♯), un semitono por encima de C, y D bemol (D♭), un semitono por debajo de D. Sostenido significa un semitono más agudo; bemol, un semitono más grave. Cada tecla negra tiene un nombre con sostenido y otro con bemol.',
+          tryThisLabel: 'Escucha una subida desde G con una tecla negra, F♯',
+        },
+        {
+          title: 'Donde no hay tecla negra',
+          explanation: 'Dos veces en cada octava, dos teclas blancas están una al lado de la otra sin tecla negra entre ellas: E y F, y B y C. Cada una de esas parejas está a solo un semitono. Todas las demás parejas de teclas blancas vecinas están a un tono, con una tecla negra en medio.',
+          tryThisLabel: 'Escucha las teclas blancas desde C, con semitonos de E a F y de B a C',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca una nota cualquiera y luego la nota un semitono más aguda: la tecla siguiente en el piano o el traste siguiente en la guitarra. Después toca un tono: dos teclas más allá, o dos trastes.' },
+        { instruction: 'Encuentra C sostenido: en el piano, la tecla negra justo a la derecha de C; en la guitarra, el traste 4 de la cuerda A. Di sus dos nombres: C sostenido y D bemol.' },
+      ],
+    },
+    l1u34m4: {
+      title: 'Una escala es una escalera',
+      subtitle: 'La escala mayor: tono, tono, semitono, tono, tono, tono, semitono',
+      objectives: [
+        'Oír una escala mayor subir desde su primera nota hasta la misma nota una octava más arriba',
+        'Construir una escala mayor desde cualquier nota con tonos y semitonos',
+        'Oír la primera nota de la escala como la casa',
+      ],
+      concepts: [
+        {
+          title: 'Notas en orden: una escala',
+          explanation: 'Una escala es un conjunto de notas tocadas en orden, como los peldaños de una escalera, desde una nota de partida hasta la misma nota una octava más arriba. Una de ellas es la escala mayor. Tiene siete notas distintas y luego la primera nota vuelve arriba.',
+          tryThisLabel: 'Escucha la escala de C mayor: siete notas y luego otra vez C, arriba',
+        },
+        {
+          title: 'Tono, tono, semitono, tono, tono, tono, semitono',
+          explanation: 'La escala mayor sube en este orden de pasos: tono, tono, semitono, tono, tono, tono, semitono. Numera sus notas del 1 al 8 desde abajo: los dos semitonos van del 3 al 4 y del 7 al 8. Desde C, los pasos dan C, D, E, F, G, A, B y C: solo teclas blancas, porque los semitonos caen de E a F y de B a C.',
+          tryThisLabel: 'Escucha los pasos desde C: tono, tono, semitono, tono, tono, tono, semitono',
+        },
+        {
+          title: 'Desde cualquier nota',
+          explanation: 'Empieza en cualquier nota, da los mismos pasos y obtendrás la escala mayor de esa nota. Desde G: G, A, B, C, D, E, F♯ y G. El F sube a F♯ para que el último paso, hasta G, sea un semitono y el anterior un tono. En una sola cuerda de la guitarra, los mismos pasos son 2, 2, 1, 2, 2, 2 y 1 trastes.',
+          tryThisLabel: 'Escucha la escala mayor desde G, con F♯',
+        },
+        {
+          title: 'La casa',
+          explanation: 'La primera nota de la escala es su casa. A medida que la escala sube, los últimos pasos llevan el oído de vuelta a ella y, cuando llega la nota de arriba, la escala suena terminada. Si te paras una nota antes, en la séptima, suena como si aún faltara algo.',
+          tryThisLabel: 'Escucha la escala mayor desde D volver a casa, hasta D',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca la escala de C mayor, desde C hasta el C siguiente, diciendo tono o semitono en cada paso mientras tocas.' },
+        { instruction: 'Elige cualquier nota de partida y sube tono, tono, semitono, tono, tono, tono, semitono. En la guitarra puedes hacerlo en una sola cuerda: 2, 2, 1, 2, 2, 2 y 1 trastes. ¿Suena la nota de arriba como la casa?' },
+      ],
+    },
+    l1u34m5: {
+      title: 'Tres notas forman un acorde',
+      subtitle: 'Una nota sí y otra no de la escala, tocadas a la vez',
+      objectives: [
+        'Construir un acorde con una nota sí y otra no de una escala',
+        'Oír la diferencia entre un acorde mayor y uno menor',
+        'Convertir un acorde mayor en uno menor moviendo una nota',
+      ],
+      concepts: [
+        {
+          title: 'Una nota sí y otra no',
+          explanation: 'Un acorde son varias notas tocadas a la vez. El acorde más sencillo toma tres notas de una escala, saltándose una cada vez: la 1.ª, la 3.ª y la 5.ª. Desde la escala de C mayor, eso da C, E y G, el acorde de C mayor.',
+          tryThisLabel: 'Escucha C, E y G juntas: el acorde de C mayor',
+        },
+        {
+          title: 'El mayor suena luminoso',
+          explanation: 'Construido así sobre la primera nota de una escala mayor, el acorde es un acorde mayor y suena luminoso y estable. G mayor es G, B y D; F mayor es F, A y C.',
+          tryThisLabel: 'Escucha G mayor: G, B y D',
+        },
+        {
+          title: 'El menor suena más oscuro',
+          explanation: 'Baja un semitono la nota central de un acorde mayor y obtendrás un acorde menor. C mayor es C, E y G; C menor es C, E♭ y G. Solo cambia esa nota, y el acorde suena más oscuro.',
+          tryThisLabel: 'Escucha C menor: C, E♭ y G',
+        },
+        {
+          title: 'Hacia dónde seguir',
+          explanation: 'Ya sabes oír agudo y grave, nombrar las notas, encontrar semitonos y tonos, construir una escala mayor y formar con ella acordes mayores y menores. En Explorar puedes elegir cualquier tonalidad y ver su escala y sus acordes en tu instrumento. Para leer estas notas escritas, el Nivel 1 empieza por el pentagrama.',
+          tryThisLabel: 'Escucha A menor: A, C y E',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca C, E y G a la vez; en el piano son tres teclas blancas, saltándote una tecla blanca entre cada una. Luego baja el E un semitono, a E bemol, y escucha cómo el acorde se vuelve más oscuro.' },
+        { instruction: 'Construye tú un acorde desde G: la 1.ª, la 3.ª y la 5.ª notas de la escala de G mayor, G, B y D. Tócalas a la vez, o una después de otra, y luego baja el B un semitono para oír G menor.' },
       ],
     },
   },

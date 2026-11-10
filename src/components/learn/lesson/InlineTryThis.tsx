@@ -13,6 +13,7 @@ import { RhythmStaff } from '../../notation/RhythmStaff';
 import { StaffNotationSkeleton } from '../../notation/StaffNotationSkeleton';
 import { accentText } from '../../../design/tokens/learnColors';
 import { tryThisPicture } from './tryThisPicture';
+import { useNoteLabel } from '../../../hooks/useSolfege';
 
 const StaffNotation = lazy(() =>
   import('../../notation/StaffNotation').then((m) => ({ default: m.StaffNotation })),
@@ -30,6 +31,12 @@ interface InlineTryThisProps {
   prompt?: string;
   /** The clef lesson: the scale on a treble staff and, an octave lower, on a bass staff. */
   clefs?: boolean;
+  /**
+   * A sound-first lesson (the "Start with sound" track, wave 2): no staff —
+   * the notes it plays are written out by name instead (letters, with Dó, Ré,
+   * Mi beside them when that setting is on).
+   */
+  names?: boolean;
 }
 
 /**
@@ -39,8 +46,9 @@ interface InlineTryThisProps {
  * Explore" keeps the old executor behaviour (jump to Explore with it
  * selected) for anyone who wants the full workbench.
  */
-export function InlineTryThis({ query, label, accent, rhythm, compact = false, prompt, clefs = false }: InlineTryThisProps) {
+export function InlineTryThis({ query, label, accent, rhythm, compact = false, prompt, clefs = false, names = false }: InlineTryThisProps) {
   const { t } = useTranslation();
+  const noteLabel = useNoteLabel();
   const instrument = useAppStore((s) => s.instrument);
   const currentKey = useAppStore((s) => s.selectedKey);
   const picture = useMemo(() => (rhythm ? { kind: 'none' as const } : tryThisPicture(query, currentKey)), [query, rhythm, currentKey]);
@@ -106,6 +114,12 @@ export function InlineTryThis({ query, label, accent, rhythm, compact = false, p
       </div>
       {rhythm ? (
         <RhythmStaff pattern={rhythm} />
+      ) : names && picture.kind !== 'none' ? (
+        <p className="try-this-names text-title learn-serif flex flex-wrap gap-x-3 gap-y-1 m-0 min-w-0" style={{ color: 'var(--text)' }} data-testid="try-this-names">
+          {(picture.kind === 'chord' ? picture.notes : picture.pitches).map((note, i) => (
+            <span key={i}>{noteLabel(note)}</span>
+          ))}
+        </p>
       ) : clefs && picture.kind === 'scale' ? (
         <div className="flex flex-col gap-1 min-w-0" data-testid="try-this-clefs">
           {(['treble', 'bass'] as const).map((clef) => (

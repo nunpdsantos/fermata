@@ -74,3 +74,19 @@ export function trackOfModule(moduleId: string): TrackInfo | null {
 export function firstLessonOf(track: TrackInfo): { levelId: string; unitId: string; moduleId: string } {
   return { levelId: track.levelId, unitId: track.unitId, moduleId: track.moduleIds[0] };
 }
+
+/**
+ * The track lessons that exist today (wave 2, stream L). Eager and tiny, for
+ * the one reader that cannot wait for the module index: the start hint,
+ * which is in the entry chunk and must render whole with Explore's first
+ * paint (MODULE_INDEX is a lazy chunk of ~20 kB; the entry has no room for
+ * it). `src/data/__tests__/tracks.test.ts` keeps this set EQUAL to the track
+ * ids in MODULE_INDEX, so it cannot drift: whoever adds a track lesson adds
+ * its id here in the same change ('l1u35m1'…'l1u35m10' for the chords track).
+ */
+export const WRITTEN_TRACK_LESSONS: ReadonlySet<string> = new Set([...TRACKS.sound.moduleIds]);
+
+/** Whether a track's first lesson exists (so a link to it can be offered). */
+export function isTrackWritten(track: TrackInfo, written: ReadonlySet<string> = WRITTEN_TRACK_LESSONS): boolean {
+  return written.has(track.moduleIds[0]);
+}

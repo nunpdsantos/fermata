@@ -13,10 +13,16 @@
  * D-10 badges it "pairs with Level n"), so its own lesson text is the
  * reference for its items — they are checked against L9's own earlier text
  * only.
+ *
+ * The starting tracks (wave 2, src/data/tracks.ts — "Start with sound", "From
+ * the chords you know") may be skipped, so their text never counts as taught
+ * for the nine levels; a track's own items are checked against that track's
+ * earlier text only. Level 1's optional guitar notation (u33) keeps counting.
  */
 import { describe, it, expect } from 'vitest';
 import type { ExerciseConfig } from '../../../core/types/exercise';
 import { LEVELS, levelCorpus, modulesInOrder } from './learnCorpus';
+import { trackOfModule } from '../../tracks';
 
 /** [term, pattern in exercises, pattern in lesson text (default: the same)] */
 const TERMS: [string, RegExp, RegExp?][] = [
@@ -82,12 +88,19 @@ const lessonText = order.map(({ module: m }) =>
 const position = new Map(order.map(({ module }, i) => [module.id, i]));
 const isL9 = (moduleId: string) => moduleId.startsWith('l9');
 
-/** Lesson text read up to and including this module (L9: only L9's own modules). */
+/** The track a module belongs to (null: a lesson of the nine levels). */
+const trackOf = (moduleId: string) => trackOfModule(moduleId)?.id ?? null;
+
+/** Lesson text read up to and including this module (L9: only L9's own modules; a track: only its own). */
 function readBy(moduleId: string): string {
   const end = position.get(moduleId)!;
+  const track = trackOf(moduleId);
   return order
     .slice(0, end + 1)
-    .map(({ module }, i) => (isL9(moduleId) && !isL9(module.id) ? '' : lessonText[i]))
+    .map(({ module }, i) => {
+      if (trackOf(module.id) !== track) return '';
+      return isL9(moduleId) && !isL9(module.id) ? '' : lessonText[i];
+    })
     .join(' \n ');
 }
 
@@ -103,6 +116,21 @@ describe('no concept before it is taught (W4-15)', () => {
     const re = TERMS.find(([name]) => name === 'hemiola')![1];
     expect(re.test(planted) && !re.test(readBy('l2u6m2'))).toBe(true);
     expect(/staff/i.test(readBy('l1u1m1'))).toBe(true);
+  });
+
+  it('a track\'s lesson text never counts as taught for the nine levels; guitar notation (u33) still does', () => {
+    // Start with sound (l1u34m*) comes after Level 1's units in course order.
+    const trackText = order.filter(({ module }) => trackOf(module.id) === 'sound').map(({ module }) => module.concepts[0].explanation);
+    expect(trackText.length).toBe(5);
+    const firstAfter = order.find(({ module }) => position.get(module.id)! > position.get('l1u34m5')! && trackOf(module.id) === null)!.module.id;
+    expect(firstAfter).toBe('l2u4m1');
+    const read = readBy(firstAfter);
+    for (const t of trackText) expect(read.includes(t)).toBe(false);
+    // Guitar notation's text is read by Level 2.
+    expect(read).toContain('Circled Numbers Name Strings');
+    // A track item reads its own earlier lessons, and nothing of the levels.
+    expect(readBy('l1u34m3')).toContain(trackText[1]);
+    expect(readBy('l1u34m3')).not.toContain('The five-line grid');
   });
 
   it('every exercise prompt and keyed answer uses only terms its lessons have taught', () => {

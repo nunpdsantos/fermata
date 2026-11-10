@@ -17,6 +17,7 @@ import { ModuleView } from '../components/learn/ModuleView';
 import { LevelAchievement } from '../components/learn/LevelAchievement';
 import { ScreenFrame } from '../components/learn/ScreenFrame';
 import { MilestoneSheet } from '../components/learn/lesson/MilestoneSheet';
+import { TrackDetail } from '../components/learn/tracks/TrackDetail';
 import { useLearnSessionStore, restorableScreen } from '../state/learnSessionStore';
 
 // ─── Screen state machine ───────────────────────────────────────────────────
@@ -234,6 +235,7 @@ export function LearnView() {
               progress={progress}
               onOpenLevel={goToLevel}
               onOpenModule={(moduleId, unitId, levelId) => goToModule(levelId, unitId, moduleId)}
+              onOpenTrack={(track) => goToUnit(track.levelId, track.unitId)}
               onStartReview={(moduleId) => {
                 // Module ids are l{n}u{n}m{n}; level ids are "l{n}" and unit
                 // ids "u{n}". (This used to build the unit id "l1u1", which no
@@ -269,6 +271,18 @@ export function LearnView() {
               const unitIndex = loadedLevel.units.findIndex((u) => u.id === screen.unitId);
               const unit = loadedLevel.units[unitIndex];
               if (!unit) return null;
+              // A starting track (wave 2) has its own page, reached from the overview.
+              if (unit.track) {
+                return (
+                  <TrackDetail
+                    unit={unit}
+                    level={loadedLevel}
+                    completedModules={progress.completedModules}
+                    onOpenModule={(moduleId) => goToModule(screen.levelId, screen.unitId, moduleId)}
+                    onBack={goToLevels}
+                  />
+                );
+              }
               return (
                 <UnitDetail
                   unit={unit}
@@ -334,6 +348,7 @@ export function LearnView() {
                   onBackToLevels={goToLevels}
                   onNavigateModule={(moduleId) => goToModule(screen.levelId, screen.unitId, moduleId)}
                   initialSection={screen.section ?? null}
+                  onOpenLevel={goToLevel}
                 />
               );
             })()}

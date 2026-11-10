@@ -382,6 +382,151 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'Constrói uma tríade de B maior. Seleciona as três notas.',
     hint: 'Uma tríade maior empilha uma 3.ª maior (4 meios-tons a partir da fundamental) e depois uma 3.ª menor por cima (mais 3), resultando em fundamental + 3M + 5P.',
   },
+
+  // ── Track "Start with sound" (wave 2) ──
+  l1u34m1e1: {
+    prompt: 'Ouve duas notas, uma depois da outra. Qual é a mais aguda?',
+    choices: ['A primeira nota', 'A segunda nota', 'Nenhuma: são a mesma nota'],
+    hint: 'A segunda nota era mais aguda: o som subiu.',
+    nudge: 'Ouve outra vez e trauteia. A tua voz tem de subir ou descer para seguir a mudança?',
+  },
+  l1u34m1e2: {
+    prompt: 'Ouve mais duas notas, uma depois da outra. Qual é a mais aguda?',
+    choices: ['A primeira nota', 'A segunda nota', 'Nenhuma: são a mesma nota'],
+    hint: 'A primeira nota era mais aguda: o som desceu.',
+    nudge: 'Ouve outra vez e trauteia. A tua voz tem de subir ou descer para seguir a mudança?',
+  },
+  l1u34m1e3: {
+    prompt: 'Ouve duas notas. Como é a segunda em comparação com a primeira?',
+    choices: ['A mesma nota outra vez, mais aguda', 'A mesma nota outra vez, mais grave', 'Uma nota diferente, mais aguda', 'Uma nota diferente, mais grave'],
+    hint: 'Era uma oitava: a mesma nota outra vez, mais aguda, por isso mantém o nome.',
+    nudge: 'Primeiro decide se o som subiu ou desceu. Depois trauteia as duas: parecem-se, ou são bem diferentes?',
+  },
+  l1u34m1e4: {
+    prompt: 'No piano, onde estão as notas mais agudas?',
+    choices: ['No lado direito', 'No lado esquerdo', 'Nas teclas do meio', 'Nas teclas brancas'],
+    hint: 'No piano, as notas ficam mais agudas da esquerda para a direita: cada tecla é um pouco mais aguda do que a tecla à sua esquerda.',
+    nudge: 'Imagina a tecla mais grave do piano. Para que lado avanças para subir a partir dela?',
+  },
+  l1u34m1e5: {
+    prompt: 'Na guitarra, que corda soa mais aguda quando a tocas solta?',
+    choices: ['A corda mais fina', 'A corda mais grossa', 'A corda do meio', 'A corda mais próxima de ti'],
+    hint: 'Tocada solta, cada corda mais fina soa mais aguda do que a do lado, por isso a mais fina é a mais aguda.',
+    nudge: 'Lembra-te da lição sobre a guitarra: como mudam as cordas da mais grave para a seguinte?',
+  },
+  l1u34m2e1: {
+    prompt: 'Nos nomes das notas, que letra vem logo a seguir a G?',
+    choices: ['A', 'F', 'B', 'E'],
+    hint: 'Há só sete letras, de A a G. Depois do G os nomes recomeçam no A, uma oitava acima.',
+    nudge: 'Há só sete letras. O que acontece aos nomes depois da última?',
+  },
+  l1u34m2e2: {
+    prompt: 'No piano, que tecla branca fica imediatamente à esquerda de um grupo de duas teclas pretas?',
+    choices: ['C', 'D', 'F', 'E'],
+    hint: 'O C é a tecla branca imediatamente à esquerda de cada grupo de duas teclas pretas. Imediatamente à esquerda de cada grupo de três fica o F.',
+    nudge: 'As teclas pretas estão em grupos de duas e de três. Imagina um grupo de duas e a tecla branca à sua esquerda: que letra lhe deu a lição?',
+  },
+  l1u34m2e3: {
+    prompt: 'Numa guitarra com a afinação habitual, como se chamam as cordas soltas, da mais grossa para a mais fina?',
+    choices: ['E, A, D, G, B, E', 'E, B, G, D, A, E', 'E, F, G, A, B, C', 'E, A, D, G, C, F'],
+    hint: 'A partir da mais grossa: E, A, D, G, B e de novo E, duas oitavas acima da primeira.',
+    nudge: 'A corda mais grossa e a mais fina têm a mesma letra, e a ordem começa na corda mais grossa. Que lista serve para as duas coisas?',
+  },
+  l1u34m2e4: {
+    prompt: 'A partir de C, seleciona sete notas, uma para cada letra. No piano, usa só teclas brancas.',
+    hint: 'C, D, E, F, G, A e B: uma nota para cada letra, todas teclas brancas no piano.',
+    nudge: 'Começa no C, a tecla branca imediatamente à esquerda de um grupo de duas teclas pretas, e toma de cada vez a tecla branca seguinte até teres sete.',
+  },
+  l1u34m2e5: {
+    prompt: 'Duas notas estão a uma oitava de distância. Como se chamam?',
+    choices: ['Com a mesma letra', 'Com a letra seguinte', 'Com a letra anterior', 'Com a letra ao lado'],
+    hint: 'Notas a uma oitava de distância soam tão parecidas que têm a mesma letra: as sete letras recomeçam depois do G.',
+    nudge: 'Conta as sete letras a partir de uma nota qualquer. Onde chegas quando os nomes recomeçam?',
+  },
+  l1u34m3e1: {
+    prompt: 'Ouve duas notas. A que distância estão?',
+    choices: ['Um meio-tom', 'Um tom', 'Dois tons'],
+    hint: 'Um meio-tom: as duas notas eram vizinhas, sem nenhuma nota entre elas.',
+    nudge: 'Ouve outra vez e canta as duas notas. Caberia outra nota entre elas, ou não?',
+  },
+  l1u34m3e2: {
+    prompt: 'Ouve mais duas notas. A que distância estão?',
+    choices: ['Um meio-tom', 'Um tom', 'Dois tons'],
+    hint: 'Um tom: dois meios-tons, com uma nota saltada pelo meio.',
+    nudge: 'Ouve outra vez e canta as duas notas. Caberia outra nota entre elas, ou não?',
+  },
+  l1u34m3e3: {
+    prompt: 'O que é C sustenido (C♯)?',
+    choices: ['A nota meio-tom mais aguda do que C', 'A nota meio-tom mais grave do que C', 'A nota um tom mais aguda do que C', 'A nota um tom mais grave do que C'],
+    hint: 'Sustenido quer dizer meio-tom acima: C♯ é a tecla preta imediatamente à direita de C, também chamada D♭.',
+    nudge: 'O sustenido e o bemol movem uma nota pela menor distância que existe. Qual dos dois sobe?',
+  },
+  l1u34m3e4: {
+    prompt: 'Que duas teclas brancas vizinhas estão a apenas meio-tom de distância?',
+    choices: ['B e C', 'C e D', 'F e G', 'G e A'],
+    hint: 'Não há tecla preta entre B e C (nem entre E e F), por isso estão a apenas meio-tom.',
+    nudge: 'Procura duas teclas brancas sem tecla preta entre elas.',
+  },
+  l1u34m3e5: {
+    prompt: 'Seleciona todas as doze notas diferentes de C até B, brancas e pretas, cada uma a meio-tom da seguinte.',
+    hint: 'De C até B há doze notas, cada uma a meio-tom da seguinte: sete teclas brancas e cinco pretas.',
+    nudge: 'Começa no C e toma todas as teclas por ordem, pretas e brancas, até a seguinte voltar a ser C.',
+  },
+  l1u34m4e1: {
+    prompt: 'Constrói a escala maior que começa em C: seleciona as suas sete notas.',
+    hint: 'C, D, E, F, G, A e B: todas as teclas brancas, porque os dois meios-tons calham de E para F e de B para C.',
+    nudge: 'Começa no C e sobe: tom, tom, meio-tom, tom, tom, tom, meio-tom.',
+  },
+  l1u34m4e2: {
+    prompt: 'Constrói a escala maior que começa em G. Usa os mesmos passos que a partir de C.',
+    hint: 'G, A, B, C, D, E e F♯: o F sobe para que o último passo, até G, seja um meio-tom.',
+    nudge: 'Sobe a partir de G: tom, tom, meio-tom, tom, tom, tom, meio-tom. Verifica com cuidado os dois últimos passos.',
+  },
+  l1u34m4e3: {
+    prompt: 'Ouve esta escala. Qual é?',
+    choices: ['Maior', 'Cromática', 'Tons inteiros'],
+    hint: 'Maior: tons e meios-tons misturados, a subir de volta à casa lá em cima.',
+    nudge: 'Ouve outra vez. Os passos eram todos do mesmo tamanho, e quantas notas ouviste?',
+  },
+  l1u34m4e4: {
+    prompt: 'Ouve esta subida. Qual é?',
+    choices: ['Maior', 'Cromática', 'Tons inteiros'],
+    hint: 'Cromática: todas as notas, cada uma a meio-tom da anterior, treze notas de C a C.',
+    nudge: 'Ouve outra vez. Os passos eram todos do mesmo tamanho, e quantas notas ouviste?',
+  },
+  l1u34m4e5: {
+    prompt: 'Numera as notas de uma escala maior de 1 a 8, a partir de baixo. Onde estão os seus dois meios-tons?',
+    choices: ['De 3 para 4 e de 7 para 8', 'De 1 para 2 e de 5 para 6', 'De 2 para 3 e de 6 para 7', 'De 4 para 5 e de 7 para 8'],
+    hint: 'Tom, tom, meio-tom, tom, tom, tom, meio-tom: o terceiro passo (de 3 para 4) e o sétimo (de 7 para 8) são os meios-tons.',
+    nudge: 'Diz os passos por ordem e conta-os pelos dedos: quais são os dois pequenos?',
+  },
+  l1u34m5e1: {
+    prompt: 'Constrói o acorde de C maior: a 1.ª, a 3.ª e a 5.ª notas da escala de C maior.',
+    hint: 'C, E e G: a 1.ª, a 3.ª e a 5.ª notas da escala de C maior.',
+    nudge: 'Começa no C e depois toma uma nota sim, outra não, da escala de C maior até teres três.',
+  },
+  l1u34m5e2: {
+    prompt: 'Constrói C menor: parte de C maior e baixa meio-tom a sua nota do meio.',
+    hint: 'C, E♭ e G: o E de C maior desce meio-tom, para E♭.',
+    nudge: 'Constrói primeiro C maior e depois move só a nota do meio uma tecla para baixo.',
+  },
+  l1u34m5e3: {
+    prompt: 'Constrói G maior: a 1.ª, a 3.ª e a 5.ª notas da escala de G maior.',
+    hint: 'G, B e D: a 1.ª, a 3.ª e a 5.ª notas da escala de G maior.',
+    nudge: 'Sobe a escala de G maior a partir de G e fica com uma nota sim, outra não: a 1.ª, a 3.ª e a 5.ª.',
+  },
+  l1u34m5e4: {
+    prompt: 'Ouve este acorde. É maior ou menor?',
+    choices: ['Maior', 'Menor'],
+    hint: 'Maior: soa luminoso e estável.',
+    nudge: 'Ouve outra vez e repara na sua cor: luminosa e estável, ou mais escura?',
+  },
+  l1u34m5e5: {
+    prompt: 'Ouve mais um acorde. É maior ou menor?',
+    choices: ['Maior', 'Menor'],
+    hint: 'Menor: soa mais escuro, porque a nota do meio está meio-tom abaixo da de um acorde maior.',
+    nudge: 'Ouve outra vez e repara na sua cor: luminosa e estável, ou mais escura?',
+  },
 };
 
 export default overlay;

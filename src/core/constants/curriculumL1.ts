@@ -538,6 +538,241 @@ const guitarNotation: CurriculumUnit = {
   ]
 };
 
+
+// ---------------------------------------------------------------------------
+// Track "Start with sound" (wave 2, 2026-11-10) — src/data/tracks.ts 'sound'.
+// For someone new to music: no notation; every check is answered by ear or on
+// the instrument. Optional (outside the nine levels' required path) and a
+// track: not listed on the Level 1 page; its own card on Learn's overview.
+// ---------------------------------------------------------------------------
+
+const soundTrack: CurriculumUnit = {
+  id: 'u34',
+  levelId: 'l1',
+  optional: true,
+  track: 'sound',
+  icon: 'building-blocks',
+  title: 'Start with sound',
+  description: 'Five short lessons by ear and on your instrument: high and low, the note names, steps, the major scale and your first chords. No reading music needed.',
+  modules: [
+    {
+      id: 'l1u34m1',
+      unitId: 'u34',
+      levelId: 'l1',
+      title: 'High and Low',
+      subtitle: 'Every note is higher or lower than another',
+      objectives: [
+        'Hear whether a note is higher or lower than the one before',
+        'Find the higher notes on the piano and on the guitar',
+        'Hear the same note come back higher: the octave',
+      ],
+      concepts: [
+        {
+          title: 'Higher and Lower',
+          explanation: 'Every musical note has a pitch: how high or low it sounds. When two notes are played one after the other, the second one is higher, lower or the same. You do not need any names to hear this. Listen, and ask yourself whether the sound went up or down.',
+          tryThisQuery: 'A minor scale',
+          tryThisLabel: 'Hear eight notes, each one higher than the one before',
+        },
+        {
+          title: 'Higher on the Piano',
+          explanation: 'On a piano, the notes get higher from left to right. The key at the far left is the lowest note and the key at the far right is the highest. Every key, white or black, is a different note, a little higher than the key just to its left.',
+          tryThisQuery: 'C chromatic scale',
+          tryThisLabel: 'Hear every key, white and black, from C up to the next C',
+        },
+        {
+          title: 'Higher on the Guitar',
+          explanation: 'On a guitar, a note gets higher as your finger moves along a string towards the body of the guitar, one fret at a time. The strings go from low to high too: played open, with no finger on them, the thickest string sounds the lowest and each thinner string sounds higher than the one beside it.',
+          tryThisQuery: 'E minor scale',
+          tryThisLabel: 'Hear notes climb from low to high, then show them on your instrument',
+        },
+        {
+          title: 'The Same Note, Higher',
+          explanation: 'Keep climbing from any note and you reach a note that sounds like the first one again, only higher. The two sound so alike that they share a name. That distance is called an octave. On the piano it is twelve keys further to the right, counting black and white; on a guitar string it is twelve frets further along.',
+          tryThisQuery: 'C major scale',
+          tryThisLabel: 'Hear C climb to the next C: the same name, a higher sound',
+        },
+      ],
+      tasks: [
+        { id: 'l1u34m1t1', instruction: 'Play any note, then a note to its right on the piano, or one fret nearer the body on the guitar. Listen: the second note is higher.' },
+        { id: 'l1u34m1t2', instruction: 'Play a note and the same note an octave higher: on the piano, twelve keys to the right; on the guitar, an open string and then the same string at fret 12. Hear how alike they sound.' },
+      ],
+      prerequisites: [],
+    },
+    {
+      id: 'l1u34m2',
+      unitId: 'u34',
+      levelId: 'l1',
+      title: 'The Seven Letters',
+      subtitle: 'Notes are named A to G, then the names start again',
+      objectives: [
+        'Name notes with the seven letters, A to G',
+        'Find C on the piano',
+        'Name the six open strings of the guitar',
+      ],
+      concepts: [
+        {
+          title: 'Seven Letters, Round and Round',
+          explanation: 'Notes are named with seven letters: A, B, C, D, E, F and G. After G the names start again at A, an octave higher. So the same seven letters come round again and again, each time higher.',
+          tryThisQuery: 'A minor scale',
+          tryThisLabel: 'Hear A, B, C, D, E, F and G, then A again, higher',
+        },
+        {
+          title: 'Finding C on the Piano',
+          explanation: 'The black keys of a piano come in groups of two and groups of three. The white key just to the left of each group of two black keys is C. From C, the white keys going right are D, E, F, G, A and B, then C again.',
+          tryThisQuery: 'C major scale',
+          tryThisLabel: 'Hear C, D, E, F, G, A and B, then C again',
+        },
+        {
+          title: 'The Open Strings of the Guitar',
+          explanation: 'On a guitar in the usual tuning, the six strings played open are named, from the thickest to the thinnest: E, A, D, G, B and E. The thickest and the thinnest strings are both E, two octaves apart.',
+          tryThisQuery: 'E phrygian',
+          tryThisLabel: 'Hear the seven letters from E: E, F, G, A, B, C, D and E again',
+        },
+        {
+          title: 'The Next Letter Up',
+          explanation: 'To go from one letter to the next, take the next white key to the right on the piano: C to D, D to E, and so on. On a guitar string the next letter is two frets further along, except from E to F and from B to C, which are only one fret apart.',
+          tryThisQuery: 'F lydian',
+          tryThisLabel: 'Hear the letters climb from F: F, G, A, B, C, D, E and F again',
+        },
+      ],
+      tasks: [
+        { id: 'l1u34m2t1', instruction: 'Piano: find every C, the white key just left of each group of two black keys, and play them from left to right. Guitar: play the open strings from the thickest to the thinnest and say their names.' },
+        { id: 'l1u34m2t2', instruction: 'Play C, D, E, F, G, A, B and C again, saying each name as you play it. On the piano they are the white keys from any C; on the guitar, C is fret 3 of the A string, the second thickest.' },
+      ],
+      prerequisites: [],
+    },
+    {
+      id: 'l1u34m3',
+      unitId: 'u34',
+      levelId: 'l1',
+      title: 'Half Steps and Whole Steps',
+      subtitle: 'The smallest distances between notes, and the notes in between',
+      objectives: [
+        'Hear and find a half step: the nearest note',
+        'Make a whole step out of two half steps',
+        'Name the notes in between with sharps and flats',
+      ],
+      concepts: [
+        {
+          title: 'The Nearest Note: a Half Step',
+          explanation: 'The nearest note above or below any note is a half step away. On the piano it is the very next key, black or white, with nothing in between. On the guitar it is the next fret on the same string. Twelve half steps in a row, every key from one C to the next, make the chromatic scale.',
+          tryThisQuery: 'C chromatic scale',
+          tryThisLabel: 'Hear twelve half steps in a row, from C up to the next C',
+        },
+        {
+          title: 'Two Half Steps: a Whole Step',
+          explanation: 'Two half steps make a whole step. On the piano a whole step skips one key: from C to D it jumps over the black key between them. On the guitar it is two frets along the same string. A scale made only of whole steps is called the whole-tone scale.',
+          tryThisQuery: 'C whole tone scale',
+          tryThisLabel: 'Hear whole steps only, from C up to the next C',
+        },
+        {
+          title: 'The Notes in Between',
+          explanation: 'Between C and D there is one more note: the black key. It has two names. It is C sharp (C♯), a half step above C, and D flat (D♭), a half step below D. Sharp means a half step higher; flat means a half step lower. Every black key has a sharp name and a flat name.',
+          tryThisQuery: 'G major scale',
+          tryThisLabel: 'Hear a climb from G with one black key in it, F♯',
+        },
+        {
+          title: 'Where There Is No Black Key',
+          explanation: 'Twice in every octave, two white keys sit side by side with no black key between them: E and F, and B and C. Each of those pairs is only a half step apart. Every other pair of neighbouring white keys is a whole step apart, with a black key between them.',
+          tryThisQuery: 'C major scale',
+          tryThisLabel: 'Hear the white keys from C, with half steps from E to F and from B to C',
+        },
+      ],
+      tasks: [
+        { id: 'l1u34m3t1', instruction: 'Play any note, then the note a half step higher: the next key on the piano, or the next fret on the guitar. Then play a whole step: two keys along, or two frets.' },
+        { id: 'l1u34m3t2', instruction: 'Find C sharp: on the piano, the black key just right of C; on the guitar, fret 4 of the A string. Say both of its names: C sharp and D flat.' },
+      ],
+      prerequisites: [],
+    },
+    {
+      id: 'l1u34m4',
+      unitId: 'u34',
+      levelId: 'l1',
+      title: 'A Scale Is a Ladder',
+      subtitle: 'The major scale: whole, whole, half, whole, whole, whole, half',
+      objectives: [
+        'Hear a major scale climb from its first note to the same note an octave higher',
+        'Build a major scale from any note with whole and half steps',
+        'Hear the first note of the scale as home',
+      ],
+      concepts: [
+        {
+          title: 'Notes in Order: a Scale',
+          explanation: 'A scale is a set of notes played in order, like the rungs of a ladder, from a starting note up to the same note an octave higher. One of them is the major scale. It has seven different notes, and then the first note comes back on top.',
+          tryThisQuery: 'C major scale',
+          tryThisLabel: 'Hear the C major scale: seven notes, then C again on top',
+        },
+        {
+          title: 'Whole, Whole, Half, Whole, Whole, Whole, Half',
+          explanation: 'The major scale climbs in this order of steps: whole, whole, half, whole, whole, whole, half. Number its notes 1 to 8 from the bottom: the two half steps are from 3 to 4 and from 7 to 8. From C the steps give C, D, E, F, G, A, B and C: all white keys, because the half steps fall on E to F and B to C.',
+          tryThisQuery: 'key of C',
+          tryThisLabel: 'Hear the steps from C: whole, whole, half, whole, whole, whole, half',
+        },
+        {
+          title: 'From Any Note',
+          explanation: 'Start on any note, take the same steps, and you get the major scale of that note. From G: G, A, B, C, D, E, F♯ and G. The F is raised to F♯ so that the last step, up to G, is a half step and the one before it a whole step. On one guitar string the same steps are 2, 2, 1, 2, 2, 2 and 1 frets.',
+          tryThisQuery: 'G major scale',
+          tryThisLabel: 'Hear the major scale from G, with F♯',
+        },
+        {
+          title: 'Home',
+          explanation: 'The first note of the scale is its home. As the scale climbs, the last steps lead the ear back to it, and when the top note arrives the scale sounds finished. Stop one note early, on the seventh, and it sounds as if something is still to come.',
+          tryThisQuery: 'D major scale',
+          tryThisLabel: 'Hear the major scale from D climb back home to D',
+        },
+      ],
+      tasks: [
+        { id: 'l1u34m4t1', instruction: 'Play the C major scale from C up to the next C, saying whole or half for each step as you play it.' },
+        { id: 'l1u34m4t2', instruction: 'Choose any starting note and climb whole, whole, half, whole, whole, whole, half. On the guitar you can do it on one string: 2, 2, 1, 2, 2, 2 and 1 frets. Does the top note sound like home?' },
+      ],
+      prerequisites: [],
+    },
+    {
+      id: 'l1u34m5',
+      unitId: 'u34',
+      levelId: 'l1',
+      title: 'Three Notes Make a Chord',
+      subtitle: 'Every other note of the scale, played together',
+      objectives: [
+        'Build a chord from every other note of a scale',
+        'Hear the difference between a major and a minor chord',
+        'Turn a major chord into a minor one by moving one note',
+      ],
+      concepts: [
+        {
+          title: 'Every Other Note',
+          explanation: 'A chord is several notes played at the same time. The simplest chord takes three notes of a scale, skipping one each time: the 1st, the 3rd and the 5th. From the C major scale that gives C, E and G, the C major chord.',
+          tryThisQuery: 'C major chord',
+          tryThisLabel: 'Hear C, E and G together: the C major chord',
+        },
+        {
+          title: 'Major Sounds Bright',
+          explanation: 'Built this way on the first note of a major scale, the chord is a major chord, and it sounds bright and settled. G major is G, B and D; F major is F, A and C.',
+          tryThisQuery: 'G major chord',
+          tryThisLabel: 'Hear G major: G, B and D',
+        },
+        {
+          title: 'Minor Sounds Darker',
+          explanation: 'Lower the middle note of a major chord by a half step and you get a minor chord. C major is C, E and G; C minor is C, E♭ and G. Only that one note changes, and the chord sounds darker.',
+          tryThisQuery: 'C minor chord',
+          tryThisLabel: 'Hear C minor: C, E♭ and G',
+        },
+        {
+          title: 'Where to Go From Here',
+          explanation: 'You can now hear high and low, name the notes, find half and whole steps, build a major scale and make major and minor chords from it. In Explore you can choose any key and see its scale and its chords on your instrument. To read these notes written down, Level 1 starts with the staff.',
+          tryThisQuery: 'A minor chord',
+          tryThisLabel: 'Hear A minor: A, C and E',
+        },
+      ],
+      tasks: [
+        { id: 'l1u34m5t1', instruction: 'Play C, E and G together; on the piano they are three white keys with one white key skipped between each. Then lower E by a half step to E flat and hear the chord turn darker.' },
+        { id: 'l1u34m5t2', instruction: 'Build a chord from G yourself: the 1st, 3rd and 5th notes of the G major scale, G, B and D. Play them together, or one after the other, then lower B by a half step to hear G minor.' },
+      ],
+      prerequisites: [],
+    },
+  ],
+};
+
 export const L1_UNITS: CurriculumUnit[] = [
   {
     id: 'u1',
@@ -619,4 +854,8 @@ export const L1_UNITS: CurriculumUnit[] = [
     },
   },
   guitarNotation,
+  // The starting tracks (wave 2, src/data/tracks.ts): after the levels' own
+  // units, in TRACK order. 'u35' ("From the chords you know") goes after
+  // soundTrack.
+  soundTrack,
 ];

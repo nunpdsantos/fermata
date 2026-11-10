@@ -49,7 +49,7 @@ async function captureShare(page: Page) {
 }
 
 for (const v of [PHONE, LAPTOP] as View[]) {
-  test(`newcomer (${v.name}): start screen → tour → start screen → "I'm new" + Piano → Simple with the hint → a word explained → reload, same place`, async ({ browser }) => {
+  test(`newcomer (${v.name}): start screen → tour → start screen → "I'm new" + Piano → lesson 1 of "Start with sound" → Explore: Simple with the hint → a word explained → reload, same place`, async ({ browser }) => {
     test.setTimeout(180_000);
     const { context, page } = await freshBrowser(browser, v);
     await page.goto('/');
@@ -63,6 +63,10 @@ for (const v of [PHONE, LAPTOP] as View[]) {
     await expect(start).toBeVisible();
     await start.getByRole('radio', { name: 'Piano' }).click();
     await page.getByTestId('start-door-new').click();
+    // Wave 2: the door opens lesson 1 of "Start with sound"; the hint waits for Explore.
+    await expect(page.getByRole('heading', { level: 1, name: 'High and Low' })).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByTestId('start-hint')).toHaveCount(0);
+    await page.getByRole('tab', { name: 'Explore' }).click();
     await expect(page.getByTestId('explore-root')).toBeVisible({ timeout: 15_000 });
     expect(await exploreDetail(page)).toBe('simple');
     const hint = page.getByTestId('start-hint');

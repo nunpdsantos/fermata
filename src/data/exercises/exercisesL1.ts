@@ -891,6 +891,454 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       hint: 'A major triad stacks a major 3rd (4 half steps from root) and then a minor 3rd on top (3 more), giving root + M3 + P5.',
     },
   ],
+
+  // ---- Track "Start with sound" (wave 2): answered by ear or on the
+  // instrument, never by reading a staff. The ear items in interval mode
+  // carry authored `choices` (higher / lower, half / whole step).
+
+  // ---- l1u34m1: High and Low ----
+  l1u34m1: [
+    {
+      id: 'l1u34m1e1',
+      type: 'ear_training',
+      prompt: 'Listen to two notes, one after the other. Which one is higher?',
+      config: {
+        type: 'ear_training',
+        mode: 'interval',
+        root: 'C',
+        rootAccidental: '',
+        rootOctave: 4,
+        targetSemitones: 7,
+        direction: 'ascending',
+        choices: [
+          { label: 'The first note', correct: false },
+          { label: 'The second note', correct: true },
+          { label: 'Neither: they are the same note', correct: false },
+        ],
+      },
+      hint: 'The second note was higher: the sound went up.',
+      nudge: 'Play it again and hum along. Does your voice have to go up or down to follow the change?',
+    },
+    {
+      id: 'l1u34m1e2',
+      type: 'ear_training',
+      prompt: 'Listen to two more notes, one after the other. Which one is higher?',
+      config: {
+        type: 'ear_training',
+        mode: 'interval',
+        root: 'E',
+        rootAccidental: '',
+        rootOctave: 4,
+        targetSemitones: 5,
+        direction: 'descending',
+        choices: [
+          { label: 'The first note', correct: true },
+          { label: 'The second note', correct: false },
+          { label: 'Neither: they are the same note', correct: false },
+        ],
+      },
+      hint: 'The first note was higher: the sound went down.',
+      nudge: 'Play it again and hum along. Does your voice have to go up or down to follow the change?',
+    },
+    {
+      id: 'l1u34m1e3',
+      type: 'ear_training',
+      prompt: 'Listen to two notes. How does the second one compare with the first?',
+      config: {
+        type: 'ear_training',
+        mode: 'interval',
+        root: 'C',
+        rootAccidental: '',
+        rootOctave: 4,
+        targetSemitones: 12,
+        direction: 'ascending',
+        choices: [
+          { label: 'The same note again, higher', correct: true },
+          { label: 'The same note again, lower', correct: false },
+          { label: 'A different note, higher', correct: false },
+          { label: 'A different note, lower', correct: false },
+        ],
+      },
+      hint: 'It was an octave: the same note again, higher, so it keeps its name.',
+      nudge: 'First decide whether the sound went up or down. Then hum both: do they feel alike, or quite different?',
+    },
+    {
+      id: 'l1u34m1e4',
+      type: 'multiple_choice',
+      prompt: 'On a piano, where do you find the higher notes?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'On the right side', correct: true },
+          { label: 'On the left side', correct: false },
+          { label: 'On the middle keys', correct: false },
+          { label: 'On the white keys', correct: false },
+        ],
+      },
+      hint: 'On a piano the notes get higher from left to right: every key is a little higher than the key to its left.',
+      nudge: 'Picture the lowest key of a piano. Which way do you move to go up from it?',
+    },
+    {
+      id: 'l1u34m1e5',
+      type: 'multiple_choice',
+      prompt: 'On a guitar, which string sounds the highest when you play it open?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'The thinnest string', correct: true },
+          { label: 'The thickest string', correct: false },
+          { label: 'The string in the middle', correct: false },
+          { label: 'The string nearest to you', correct: false },
+        ],
+      },
+      hint: 'Played open, each thinner string sounds higher than the one beside it, so the thinnest is the highest.',
+      nudge: 'Think of the lesson on the guitar: how do the strings change from the lowest one to the next?',
+    },
+  ],
+
+  // ---- l1u34m2: The Seven Letters ----
+  l1u34m2: [
+    {
+      id: 'l1u34m2e1',
+      type: 'multiple_choice',
+      prompt: 'In the note names, which letter comes straight after G?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'A', correct: true },
+          { label: 'F', correct: false },
+          { label: 'B', correct: false },
+          { label: 'E', correct: false },
+        ],
+      },
+      hint: 'There are only seven letters, A to G. After G the names start again at A, an octave higher.',
+      nudge: 'There are only seven letters. What happens to the names after the last one?',
+    },
+    {
+      id: 'l1u34m2e2',
+      type: 'multiple_choice',
+      prompt: 'On a piano, which white key sits just to the left of a group of two black keys?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'C', correct: true },
+          { label: 'D', correct: false },
+          { label: 'F', correct: false },
+          { label: 'E', correct: false },
+        ],
+      },
+      hint: 'C is the white key just left of each group of two black keys. Just left of each group of three is F.',
+      nudge: 'The black keys come in twos and threes. Picture a group of two and the white key on its left: which letter did the lesson give it?',
+    },
+    {
+      id: 'l1u34m2e3',
+      type: 'multiple_choice',
+      prompt: 'On a guitar in the usual tuning, what are the open strings called, from the thickest to the thinnest?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'E, A, D, G, B, E', correct: true },
+          { label: 'E, B, G, D, A, E', correct: false },
+          { label: 'E, F, G, A, B, C', correct: false },
+          { label: 'E, A, D, G, C, F', correct: false },
+        ],
+      },
+      hint: 'From the thickest: E, A, D, G, B and E again, two octaves higher than the first.',
+      nudge: 'The thickest and the thinnest strings share a letter, and the order runs from the thickest string. Which list fits both?',
+    },
+    {
+      id: 'l1u34m2e4',
+      type: 'scale_build',
+      prompt: 'Starting on C, select seven notes, one for each letter. On the piano, use only white keys.',
+      config: {
+        type: 'scale_build',
+        root: 'C',
+        rootAccidental: '',
+        scaleType: 'major',
+        noteCount: 7,
+      },
+      hint: 'C, D, E, F, G, A and B: one note for each letter, all of them white keys on the piano.',
+      nudge: 'Start on C, the white key just left of a group of two black keys, and take the next white key each time until you have seven.',
+    },
+    {
+      id: 'l1u34m2e5',
+      type: 'multiple_choice',
+      prompt: 'Two notes are an octave apart. How are they named?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'With the same letter', correct: true },
+          { label: 'With the next letter', correct: false },
+          { label: 'With the letter before', correct: false },
+          { label: 'With the letter beside it', correct: false },
+        ],
+      },
+      hint: 'Notes an octave apart sound so alike that they share their letter: the seven letters start again after G.',
+      nudge: 'Count up the seven letters from any note. Where do you land when the names start again?',
+    },
+  ],
+
+  // ---- l1u34m3: Half Steps and Whole Steps ----
+  l1u34m3: [
+    {
+      id: 'l1u34m3e1',
+      type: 'ear_training',
+      prompt: 'Listen to two notes. How far apart are they?',
+      config: {
+        type: 'ear_training',
+        mode: 'interval',
+        root: 'E',
+        rootAccidental: '',
+        rootOctave: 4,
+        targetSemitones: 1,
+        direction: 'ascending',
+        choices: [
+          { label: 'A half step', correct: true },
+          { label: 'A whole step', correct: false },
+          { label: 'Two whole steps', correct: false },
+        ],
+      },
+      hint: 'A half step: the two notes were neighbours, with no note between them.',
+      nudge: 'Replay it and sing the two notes. Could another note fit between them, or not?',
+    },
+    {
+      id: 'l1u34m3e2',
+      type: 'ear_training',
+      prompt: 'Listen to two more notes. How far apart are they?',
+      config: {
+        type: 'ear_training',
+        mode: 'interval',
+        root: 'C',
+        rootAccidental: '',
+        rootOctave: 4,
+        targetSemitones: 2,
+        direction: 'ascending',
+        choices: [
+          { label: 'A half step', correct: false },
+          { label: 'A whole step', correct: true },
+          { label: 'Two whole steps', correct: false },
+        ],
+      },
+      hint: 'A whole step: two half steps, with one note skipped in between.',
+      nudge: 'Replay it and sing the two notes. Could another note fit between them, or not?',
+    },
+    {
+      id: 'l1u34m3e3',
+      type: 'multiple_choice',
+      prompt: 'What is C sharp (C♯)?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'The note a half step above C', correct: true },
+          { label: 'The note a half step below C', correct: false },
+          { label: 'The note a whole step above C', correct: false },
+          { label: 'The note a whole step below C', correct: false },
+        ],
+      },
+      hint: 'Sharp means a half step higher: C♯ is the black key just to the right of C, also called D♭.',
+      nudge: 'Sharp and flat each move a note by the smallest distance there is. Which of them goes up?',
+    },
+    {
+      id: 'l1u34m3e4',
+      type: 'multiple_choice',
+      prompt: 'Which two neighbouring white keys are only a half step apart?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'B and C', correct: true },
+          { label: 'C and D', correct: false },
+          { label: 'F and G', correct: false },
+          { label: 'G and A', correct: false },
+        ],
+      },
+      hint: 'There is no black key between B and C (nor between E and F), so they are only a half step apart.',
+      nudge: 'Look for two white keys with no black key between them.',
+    },
+    {
+      id: 'l1u34m3e5',
+      type: 'scale_build',
+      prompt: 'Select all twelve different notes from C up to B, white and black, each a half step from the next.',
+      config: {
+        type: 'scale_build',
+        root: 'C',
+        rootAccidental: '',
+        scaleType: 'chromatic',
+        noteCount: 12,
+      },
+      hint: 'From C to B there are twelve notes, each a half step from the next: seven white keys and five black keys.',
+      nudge: 'Start on C and take every key in turn, black and white, until the next one would be C again.',
+    },
+  ],
+
+  // ---- l1u34m4: A Scale Is a Ladder ----
+  l1u34m4: [
+    {
+      id: 'l1u34m4e1',
+      type: 'scale_build',
+      prompt: 'Build the major scale that starts on C: select its seven notes.',
+      config: {
+        type: 'scale_build',
+        root: 'C',
+        rootAccidental: '',
+        scaleType: 'major',
+        noteCount: 7,
+      },
+      hint: 'C, D, E, F, G, A and B: all the white keys, because the two half steps fall on E to F and B to C.',
+      nudge: 'Start on C and climb: whole, whole, half, whole, whole, whole, half.',
+    },
+    {
+      id: 'l1u34m4e2',
+      type: 'scale_build',
+      prompt: 'Build the major scale that starts on G. Use the same steps as from C.',
+      config: {
+        type: 'scale_build',
+        root: 'G',
+        rootAccidental: '',
+        scaleType: 'major',
+        noteCount: 7,
+      },
+      hint: 'G, A, B, C, D, E and F♯: the F is raised so that the last step, up to G, is a half step.',
+      nudge: 'Climb from G: whole, whole, half, whole, whole, whole, half. Check the last two steps carefully.',
+    },
+    {
+      id: 'l1u34m4e3',
+      type: 'ear_training',
+      prompt: 'Listen to this scale. Which one is it?',
+      config: {
+        type: 'ear_training',
+        mode: 'scale',
+        root: 'C',
+        rootAccidental: '',
+        rootOctave: 4,
+        scaleType: 'major',
+        choices: [
+          { label: 'Major', correct: true },
+          { label: 'Chromatic', correct: false },
+          { label: 'Whole tone', correct: false },
+        ],
+      },
+      hint: 'Major: whole and half steps mixed, climbing back to home at the top.',
+      nudge: 'Replay it. Were all the steps the same size, and how many notes did you hear?',
+    },
+    {
+      id: 'l1u34m4e4',
+      type: 'ear_training',
+      prompt: 'Listen to this climb. Which one is it?',
+      config: {
+        type: 'ear_training',
+        mode: 'scale',
+        root: 'C',
+        rootAccidental: '',
+        rootOctave: 4,
+        scaleType: 'chromatic',
+        choices: [
+          { label: 'Major', correct: false },
+          { label: 'Chromatic', correct: true },
+          { label: 'Whole tone', correct: false },
+        ],
+      },
+      hint: 'Chromatic: every note, each a half step from the one before, thirteen notes from C to C.',
+      nudge: 'Replay it. Were all the steps the same size, and how many notes did you hear?',
+    },
+    {
+      id: 'l1u34m4e5',
+      type: 'multiple_choice',
+      prompt: 'Number the notes of a major scale 1 to 8 from the bottom. Where are its two half steps?',
+      config: {
+        type: 'multiple_choice',
+        choices: [
+          { label: 'From 3 to 4, and from 7 to 8', correct: true },
+          { label: 'From 1 to 2, and from 5 to 6', correct: false },
+          { label: 'From 2 to 3, and from 6 to 7', correct: false },
+          { label: 'From 4 to 5, and from 7 to 8', correct: false },
+        ],
+      },
+      hint: 'Whole, whole, half, whole, whole, whole, half: the third step (3 to 4) and the seventh (7 to 8) are the half steps.',
+      nudge: 'Say the steps in order and count them on your fingers: which two are the small ones?',
+    },
+  ],
+
+  // ---- l1u34m5: Three Notes Make a Chord ----
+  l1u34m5: [
+    {
+      id: 'l1u34m5e1',
+      type: 'chord_build',
+      prompt: 'Build the C major chord: the 1st, 3rd and 5th notes of the C major scale.',
+      config: {
+        type: 'chord_build',
+        root: 'C',
+        rootAccidental: '',
+        quality: 'major',
+        noteCount: 3,
+      },
+      hint: 'C, E and G: the 1st, 3rd and 5th notes of the C major scale.',
+      nudge: 'Start on C, then take every other note of the C major scale until you have three.',
+    },
+    {
+      id: 'l1u34m5e2',
+      type: 'chord_build',
+      prompt: 'Build C minor: start from C major and lower its middle note by a half step.',
+      config: {
+        type: 'chord_build',
+        root: 'C',
+        rootAccidental: '',
+        quality: 'minor',
+        noteCount: 3,
+      },
+      hint: 'C, E♭ and G: the E of C major moves down a half step to E♭.',
+      nudge: 'Build C major first, then move only the middle note one key lower.',
+    },
+    {
+      id: 'l1u34m5e3',
+      type: 'chord_build',
+      prompt: 'Build G major: the 1st, 3rd and 5th notes of the G major scale.',
+      config: {
+        type: 'chord_build',
+        root: 'G',
+        rootAccidental: '',
+        quality: 'major',
+        noteCount: 3,
+      },
+      hint: 'G, B and D: the 1st, 3rd and 5th notes of the G major scale.',
+      nudge: 'Climb the G major scale from G and keep every other note: the 1st, the 3rd and the 5th.',
+    },
+    {
+      id: 'l1u34m5e4',
+      type: 'ear_training',
+      prompt: 'Listen to this chord. Is it major or minor?',
+      config: {
+        type: 'ear_training',
+        mode: 'chord',
+        chordRoot: 'F',
+        chordRootAccidental: '',
+        quality: 'major',
+        choices: [
+          { label: 'Major', correct: true },
+          { label: 'Minor', correct: false },
+        ],
+      },
+      hint: 'Major: it sounds bright and settled.',
+      nudge: 'Replay it and listen to its colour: bright and settled, or darker?',
+    },
+    {
+      id: 'l1u34m5e5',
+      type: 'ear_training',
+      prompt: 'Listen to one more chord. Is it major or minor?',
+      config: {
+        type: 'ear_training',
+        mode: 'chord',
+        chordRoot: 'A',
+        chordRootAccidental: '',
+        quality: 'minor',
+        choices: [
+          { label: 'Major', correct: false },
+          { label: 'Minor', correct: true },
+        ],
+      },
+      hint: 'Minor: it sounds darker, because its middle note is a half step lower than in a major chord.',
+      nudge: 'Replay it and listen to its colour: bright and settled, or darker?',
+    },
+  ],
 };
 
 export default exercises;

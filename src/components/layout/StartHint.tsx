@@ -1,7 +1,7 @@
 import { flushSync } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../state/store.ts';
-import { useShownStartHint, dismissStartHint } from '../../state/startHint.ts';
+import { useShownStartHint, dismissStartHint, startHintLesson, followStartHintLesson } from '../../state/startHint.ts';
 import { IconButton } from '../ui/Button.tsx';
 
 /** Explore's key picker: the Root select on a laptop, the key button on a phone. */
@@ -46,8 +46,10 @@ function dismissToKeyPicker() {
  * after a door (and on every reload while owed), so nothing moves when it
  * shows — only the learner's own ✕ or action takes it away. One action, ✕,
  * for both kinds; a chord picked is the other way it ends (state/startHint.ts).
- * No link into Learn: "Start lesson 1 →" left at the owner's decision of
- * 2026-11-10 and returns in wave 2 with a sound-first first lesson.
+ * Wave 2: the 'player' hint ends on one link, "Theory from the chords you
+ * know: lesson 1 →", shown only once that lesson exists (decided from eager
+ * data, so the line is whole from its first paint). The 'new' hint has no
+ * link: its door already opened lesson 1 of "Start with sound".
  */
 export function StartHint() {
   const { t } = useTranslation();
@@ -55,10 +57,25 @@ export function StartHint() {
   const view = useAppStore((s) => s.view);
   const guitar = useAppStore((s) => s.instrument === 'guitar');
   if (!shown || view !== 'explore') return null;
+  const lesson = startHintLesson(shown);
   return (
     <aside className="start-hint no-print" aria-label={t('start.hint.label')} data-testid="start-hint" data-hint={shown}>
       <p className="start-hint-text">
         {shown === 'new' ? t(guitar ? 'start.hint.newGuitar' : 'start.hint.newPiano') : t('start.hint.player')}
+        {lesson && (
+          <>
+            {' '}
+            <button
+              type="button"
+              className="start-hint-link"
+              onClick={() => followStartHintLesson()}
+              data-testid="start-hint-lesson"
+              style={{ color: 'var(--accent-text)', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 2 }}
+            >
+              {t('start.hint.playerLesson')}
+            </button>
+          </>
+        )}
       </p>
       <IconButton
         aria-label={t('start.hint.dismiss')}

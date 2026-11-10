@@ -459,10 +459,12 @@ export function choicesForExercise(exercise: ExerciseDefinition, t: TFunc): Choi
     case 'multiple_choice':
       return generateMultipleChoiceOptions(cfg.choices, exercise.id);
     case 'ear_training': {
+      // Authored options win in every mode that offers them (wave 2: a note
+      // or an interval asked as "which is higher?" / "half or whole step?").
+      if (cfg.mode !== 'melody' && cfg.choices) return generateEarChoices(cfg.choices);
       if (cfg.mode === 'note') return generateNoteChoices(cfg.note ?? 'C', cfg.accidental ?? '');
       if (cfg.mode === 'interval') return generateIntervalChoices(cfg.targetSemitones ?? 7);
       if (cfg.mode === 'melody') return generateMelodyChoices(cfg, exercise.id);
-      if ((cfg.mode === 'chord' || cfg.mode === 'scale' || cfg.mode === 'progression') && cfg.choices) return generateEarChoices(cfg.choices);
       return [];
     }
     case 'scale_degree_id':

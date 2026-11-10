@@ -1169,6 +1169,7 @@
       "newPiano": "Toca una tecla para oírla.",
       "newGuitar": "Toca una cuerda para oírla.",
       "player": "Elige la tonalidad de una canción que toques, por ejemplo G. Los acordes de abajo son de esa tonalidad: toca uno.",
+      "playerLesson": "Teoría desde los acordes que conoces: lección 1 →",
       "dismiss": "Cerrar el consejo"
     }
   },
@@ -1272,5 +1273,31 @@
   "solfege": {
     "setting": "Mostrar también Do, Re, Mi",
     "hint": "Añade Do, Re, Mi junto a las letras. Los nombres de los acordes y las lecciones siguen usando las letras (C = Do)."
+  },
+  "tracks": {
+    "sound": {
+      "title": "Empieza por el sonido",
+      "line": "Oye agudo y grave, nombra las notas y construye tus primeros acordes. No hace falta leer música.",
+      "end": {
+        "explore": "Tocar estas notas en Explorar",
+        "level1": "Aprender a leer música: Nivel 1"
+      }
+    },
+    "chords": {
+      "title": "Desde los acordes que conoces",
+      "line": "Teoría que parte de los acordes que ya tocas."
+    },
+    "startHere": "Empieza aquí",
+    "otherWays": "Otras formas de empezar",
+    "progress": "{{done}} de {{total}} lecciones",
+    "eyebrow_one": "{{count}} lección corta",
+    "eyebrow_other": "{{count}} lecciones cortas",
+    "lessonsLabel": "Lecciones",
+    "next": "Siguiente",
+    "lesson": "Lección {{n}}",
+    "end": {
+      "title": "¿Y ahora?",
+      "line": "Has llegado al final de «{{track}}». Dos formas de seguir:"
+    }
   }
 }

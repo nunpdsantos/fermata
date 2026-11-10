@@ -2,8 +2,13 @@ import { describe, it, expect } from 'vitest';
 import { MODULE_INDEX, findModulesByQuery } from '../moduleIndex';
 
 describe('moduleIndex', () => {
-  it('contains 118 required and three optional curriculum modules', () => {
-    expect(MODULE_INDEX).toHaveLength(121);
+  it('contains 118 required modules, three optional guitar-notation modules and the five lessons of "Start with sound"', () => {
+    expect(MODULE_INDEX).toHaveLength(126);
+    // The track's rows stand in curriculum order: after Level 1's guitar
+    // notation, before Level 2 (wave 2).
+    const ids = MODULE_INDEX.map((m) => m.id);
+    const at = ids.indexOf('l1u33m3');
+    expect(ids.slice(at, at + 7)).toEqual(['l1u33m3', 'l1u34m1', 'l1u34m2', 'l1u34m3', 'l1u34m4', 'l1u34m5', 'l2u4m1']);
   });
 
   it('has no duplicate ids', () => {

@@ -1,5 +1,6 @@
 /**
- * Lightweight static index of all 121 curriculum modules (118 required + 3 optional) for search.
+ * Lightweight static index of all 126 curriculum modules (118 required + 3
+ * optional guitar-notation + 5 "Start with sound" track lessons) for search.
  *
  * Titles and subtitles are copied from src/core/constants/curriculumL1-9.ts;
  * src/data/__tests__/moduleIndex.test.ts fails if an entry drifts from the
@@ -79,6 +80,13 @@ const RAW: Array<[string, string, string]> = [
   ['l1u33m1', 'Guitar Notation: Clef and Strings', 'Read sounding pitch and circled string numbers'],
   ['l1u33m2', 'Guitar Notation: The Two Hands', 'Left-hand 0–4 and right-hand p-i-m-a'],
   ['l1u33m3', 'Guitar Notation: Positions and Barres', 'Roman numerals, C and ½C on the neck'],
+  // Track "Start with sound" (wave 2, src/data/tracks.ts). The chords track's
+  // rows (l1u35m1…m10) go straight after these.
+  ['l1u34m1', 'High and Low', 'Every note is higher or lower than another'],
+  ['l1u34m2', 'The Seven Letters', 'Notes are named A to G, then the names start again'],
+  ['l1u34m3', 'Half Steps and Whole Steps', 'The smallest distances between notes, and the notes in between'],
+  ['l1u34m4', 'A Scale Is a Ladder', 'The major scale: whole, whole, half, whole, whole, whole, half'],
+  ['l1u34m5', 'Three Notes Make a Chord', 'Every other note of the scale, played together'],
   ['l2u4m1', 'All Major Keys and the Circle of Fifths', 'The full set of 15 major key signatures and how they connect'],
   ['l2u4m2', 'Scale Degree Names and Functions', 'The seven functional names every musician must know'],
   ['l2u5m1', 'Natural Minor Scale', 'The W-H-W-W-H-W-W pattern and the darker side of tonality'],

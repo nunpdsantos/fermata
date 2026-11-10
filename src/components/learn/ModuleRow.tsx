@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CurriculumModule } from '../../core/types/curriculum';
 import type { ContentLanguage } from '../../i18n/content/types';
@@ -12,9 +13,11 @@ interface ModuleRowProps {
   isComingSoon?: boolean;
   accentColor: string;
   onClick: () => void;
+  /** A badge after the title (a track's next lesson, wave 2). */
+  badge?: ReactNode;
 }
 
-export function ModuleRow({ module, index, isCompleted, isLocked, isComingSoon, accentColor: _accentColor, onClick }: ModuleRowProps) {
+export function ModuleRow({ module, index, isCompleted, isLocked, isComingSoon, accentColor: _accentColor, onClick, badge }: ModuleRowProps) {
   const { t, i18n } = useTranslation();
   const disabled = isComingSoon;
   // Level 9 modules: the theory level each one goes with (D-10, W4-17).
@@ -65,6 +68,8 @@ export function ModuleRow({ module, index, isCompleted, isLocked, isComingSoon, 
           {module.subtitle}
         </span>
       </div>
+
+      {badge}
 
       {pairs && (
         <Badge className="shrink-0" title={pairs.title ? t('lesson.pairsWithTitle', { n: pairs.level, title: pairs.title }) : undefined}>
