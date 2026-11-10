@@ -18,6 +18,8 @@ import { useAppStore } from '../../state/store';
 import { generateDrillBank } from '../../core/utils/drillBank';
 import { PROGRESS_STORAGE_KEY } from '../../services/drillFollow';
 import i18n from '../../i18n';
+import { DRILL_FAMILIES, type DrillFamily } from '../../core/types/drill';
+import { sprintFamiliesKey } from '../../components/drill/sprintSelectors';
 import v2Fixture from '../../state/__tests__/fixtures/drill-v2-store.json';
 
 vi.mock('../../components/drill/answerAudio', () => ({ playAnswerAudio: vi.fn() }));
@@ -55,7 +57,7 @@ describe('a new learner with nothing completed', () => {
     expect(intro()).not.toBeNull();
     expect(screen.getByRole('heading', { name: 'Quick questions on music facts' })).toBeDefined();
     expect(screen.getByTestId('drill-follow-lead').textContent).toBe(
-      'Drill follows your lessons: it asks only about what they have covered, and adds more as you go.',
+      'Drill follows your lessons: it asks about what they have covered, and adds more as you go.',
     );
     // The sound track's first lessons are not in this branch's module index: no title to name.
     expect(screen.getByTestId('drill-follow-empty').textContent).toBe(
@@ -98,8 +100,8 @@ describe('a new learner with nothing completed', () => {
     act(() => fireEvent.click(screen.getByRole('button', { name: /Mastery map/ })));
     const captions = document.querySelectorAll('[data-follow-caption="locked"]');
     expect(captions.length).toBe(10);
-    expect(screen.getAllByText('Opens with “All Major Keys and the Circle of Fifths”').length).toBe(2); // keysig + circle, l2u4m1
-    expect(screen.getAllByText('Opens with a later lesson').length).toBe(2); // scale, triad: the track's own lessons
+    expect(screen.getAllByText('Unlocks with “All Major Keys and the Circle of Fifths”').length).toBe(2); // keysig + circle, l2u4m1
+    expect(screen.getAllByText('Unlocks with a later lesson').length).toBe(2); // scale, triad: the track's own lessons
     // The family names are labels, not toggles, while following.
     expect(screen.queryByRole('button', { name: 'Key signatures' })).toBeNull();
   });
@@ -139,7 +141,7 @@ describe('a new learner after lessons', () => {
     expect(within(screen.getByTestId('drill-follow-summary')).getByText(/^Triads/).textContent).toBe('Triads');
     act(() => fireEvent.click(screen.getByRole('button', { name: /Mastery map/ })));
     expect(document.querySelectorAll('[data-follow-caption]').length).toBe(3); // seventh, roman, function: locked
-    expect(screen.getByText('Opens with “Seventh Chords: The Five Qualities”')).toBeDefined();
+    expect(screen.getByText('Unlocks with “Seventh Chords: The Five Qualities”')).toBeDefined();
   });
 
   it('the lessons are re-read when the page is shown again', () => {
@@ -162,7 +164,7 @@ describe('the switch in the settings', () => {
     expect(screen.getByTestId('drill-follow-switch').getAttribute('aria-pressed')).toBe('true');
     expect(screen.queryByRole('group', { name: 'Topics' })).toBeNull();
     expect(within(screen.getByTestId('drill-follow-summary')).getByText(/^Roman numerals/).textContent)
-      .toBe('Roman numerals · So far: I, IV, V in G, C, D, A, E');
+      .toBe('Roman numerals · So far: chords I, IV, V in the keys G, C, D, A, E');
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Choose topics myself' })));
     expect(useDrillStore.getState().settings.followLessons).toBe(false);
     expect(screen.getByRole('group', { name: 'Topics' })).toBeDefined();
@@ -219,6 +221,36 @@ describe('following with facts already met but nothing unlocked', () => {
   });
 });
 
+describe('Sprint while following', () => {
+  it('draws from the unlocked pool, not the topic chips, and keeps its best under that set', () => {
+    // Topic chips: key signatures only. Known facts: eight triads (review tier).
+    const known = BANK.filter((i) => i.family === 'triad').slice(0, 8);
+    const items = Object.fromEntries(known.map((i) => [i.id, {
+      card: { due: 0, stability: 5, difficulty: 5, elapsed_days: 0, scheduled_days: 5, reps: 3, lapses: 0, state: 2, learning_steps: 0 },
+      history: [], tier: 'review' as const, introCorrectCount: 1,
+    }]));
+    const chips = Object.fromEntries(DRILL_FAMILIES.map((f) => [f, f === 'keysig'])) as Record<DrillFamily, boolean>;
+    const followSet = Object.fromEntries(DRILL_FAMILIES.map((f) => [f, f === 'triad'])) as Record<DrillFamily, boolean>;
+    useAppStore.setState({ learnerProfile: 'new' });
+    useDrillStore.setState({
+      introDone: true,
+      items,
+      settings: { ...DEFAULT_SETTINGS, families: chips, followLessons: true },
+      sprintBests: { [sprintFamiliesKey(followSet)]: 3 },
+    });
+    render(<DrillView />);
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'End session' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Sprint' })));
+    const run = useDrillStore.getState().sprint!;
+    expect(run).not.toBeNull();
+    expect(run.familiesKey).toBe(sprintFamiliesKey(followSet));
+    expect(run.priorBest).toBe(3);
+    expect([...run.pool].sort()).toEqual(known.map((i) => i.id).sort());
+    // The chips are set aside, not changed.
+    expect(useDrillStore.getState().settings.families).toEqual(chips);
+  });
+});
+
 describe('following, with Drill history but nothing left to ask (a progress reset)', () => {
   it('no session starts by itself: the empty intro stands in, until a lesson opens something', () => {
     useAppStore.setState({ learnerProfile: 'new' });
@@ -235,13 +267,41 @@ describe('following, with Drill history but nothing left to ask (a progress rese
   });
 });
 
+describe('PT and ES: what the settings say while following', () => {
+  const CASES = [
+    {
+      lang: 'pt',
+      row: 'Numerais romanos · Por agora: acordes I, IV, V nas tonalidades G, C, D, A, E',
+      hint: 'O Treino pergunta o que as tuas lições já ensinaram e acrescenta mais à medida que avanças.',
+    },
+    {
+      lang: 'es',
+      row: 'Numerales romanos · Por ahora: acordes I, IV, V en las tonalidades G, C, D, A, E',
+      hint: 'La Práctica pregunta lo que tus lecciones ya han enseñado y añade más a medida que avanzas.',
+    },
+  ] as const;
+  for (const c of CASES) {
+    it(`${c.lang}: the part a track lesson opened, and the switch's line`, async () => {
+      await i18n.changeLanguage(c.lang);
+      useAppStore.setState({ learnerProfile: 'player' });
+      seedLessons(['l1u35m2']);
+      useDrillStore.setState({ introDone: true, settings: { ...DEFAULT_SETTINGS, followLessons: true } });
+      render(<DrillView />);
+      act(() => fireEvent.click(screen.getByRole('button', { name: i18n.t('drill.settings.title') })));
+      const summary = screen.getByTestId('drill-follow-summary');
+      expect(within(summary).getByText(new RegExp(`^${c.row.split(' · ')[0]}`)).textContent).toBe(c.row);
+      expect(document.getElementById('drill-follow-hint')!.textContent).toBe(c.hint);
+    });
+  }
+});
+
 describe('PT', () => {
   it('the empty intro is Portuguese', async () => {
     await i18n.changeLanguage('pt');
     useAppStore.setState({ learnerProfile: 'new' });
     render(<DrillView />);
     expect(screen.getByTestId('drill-follow-lead').textContent).toBe(
-      'O Treino segue as tuas lições: só pergunta o que elas já ensinaram, e junta mais à medida que avanças.',
+      'O Treino segue as tuas lições: pergunta o que elas já ensinaram e acrescenta mais à medida que avanças.',
     );
     expect(screen.getByRole('button', { name: 'Abrir a lição' })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Escolher eu os tópicos' })).toBeDefined();

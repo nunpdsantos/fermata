@@ -108,8 +108,8 @@ export interface DrillSettings extends SessionConfig {
   sound: boolean;      // default true
   showTimer: boolean;  // default false
   /**
-   * "Follow my lessons" (wave 2): Drill asks only about what the completed
-   * lessons open. OPTIONAL, saved only once it says something: absent = never
+   * "Follow my lessons" (wave 2): Drill asks about what the completed
+   * lessons open, plus every fact already scheduled. OPTIONAL, saved only once it says something: absent = never
    * set, and the value in force is derived (services/drillFollow.ts
    * `followInForce`: on for a 'new' / 'player' learner with no Drill history,
    * off for everyone else). Written when the learner touches the switch, or by

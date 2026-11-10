@@ -1275,20 +1275,20 @@
   },
   "drillFollow": {
     "switch": "Follow my lessons",
-    "switchHint": "Drill asks only about what your lessons have covered, and adds more as you go.",
-    "follows": "Drill follows your lessons: it asks only about what they have covered, and adds more as you go.",
+    "switchHint": "Drill asks about what your lessons have covered, and adds more as you go.",
+    "follows": "Drill follows your lessons: it asks about what they have covered, and adds more as you go.",
     "unlockedHeading": "Unlocked so far",
     "soFar": "So far: {{list}}",
-    "degreesIn": "{{degrees}} in {{keys}}",
+    "degreesIn": "chords {{degrees}} in the keys {{keys}}",
     "nothingYet": "Nothing unlocked yet.",
     "next": "Next: {{topics}}, with the lesson “{{lesson}}”.",
     "nextLater": "Next: {{topics}}, with a later lesson.",
-    "allOpen": "Every topic is open.",
+    "allOpen": "Every topic is unlocked.",
     "chooseMyself": "Choose topics myself",
     "firstQuestions": "Nothing to ask yet. The first questions come with the lesson “{{lesson}}”.",
     "firstQuestionsLater": "Nothing to ask yet. The first questions come with your lessons.",
     "openLesson": "Open the lesson",
-    "opensWith": "Opens with “{{lesson}}”",
-    "opensLater": "Opens with a later lesson"
+    "opensWith": "Unlocks with “{{lesson}}”",
+    "opensLater": "Unlocks with a later lesson"
   }
 }

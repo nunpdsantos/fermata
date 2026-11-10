@@ -138,6 +138,15 @@ describe('what comes next, and where a lesson lives', () => {
     expect(nextUnlock(['l1u35m2'], TRACKS.chords)).toEqual({ moduleId: 'l1u35m3', families: ['roman'] });
   });
 
+  it('a level lesson that makes a part-open family whole counts as opening more', () => {
+    // Sound track done (scale and triad part-open), then Level 1 and the first
+    // Level 2 lessons: the next lesson named is the one that opens every
+    // scale, not one further on.
+    const done = ['l1u34m4', 'l1u34m5', 'l1u1m1', 'l1u3m3', 'l2u4m1', 'l2u4m2'];
+    expect(nextUnlock(done, TRACKS.sound)).toEqual({ moduleId: 'l2u5m1', families: ['scale'] });
+    expect(nextUnlock([...done, 'l2u5m1'], TRACKS.sound)?.families).toContain('triad');
+  });
+
   it('no track: the first level lesson that opens a family', () => {
     expect(nextUnlock([], null)).toEqual({ moduleId: 'l1u1m1', families: ['read'] });
     expect(nextUnlock(['l1u1m1'], null)).toEqual({ moduleId: 'l1u3m3', families: ['interval'] });
@@ -153,6 +162,68 @@ describe('what comes next, and where a lesson lives', () => {
     expect(learnTargetOf('l1u34m4')).toEqual({ levelId: 'l1', unitId: 'u34', moduleId: 'l1u34m4' });
     expect(learnTargetOf('l2u7m3')).toEqual({ levelId: 'l2', unitId: 'u7', moduleId: 'l2u7m3' });
     expect(learnTargetOf('nope')).toBeNull();
+  });
+});
+
+/**
+ * Each row pinned from outside the table: the exact count and the exact keys,
+ * chords, degrees and kinds of question its items have. Widening a row (a
+ * major 7th, a vii°, another key) or narrowing it fails here.
+ */
+describe('each row, pinned', () => {
+  const values = (items: DrillItem[], f: (i: DrillItem) => string | number | undefined) =>
+    [...new Set(items.map(f).filter((v) => v !== undefined))].map(String).sort();
+  const signature = (lesson: string) => {
+    const items = admitted([lesson]);
+    return {
+      count: items.length,
+      families: values(items, (i) => i.family),
+      keys: values(items, (i) => i.key),
+      chords: values(items, (i) => (i.chord ? `${i.chord.root}:${i.chord.quality}` : undefined)),
+      degrees: values(items, (i) => i.degree),
+      prompts: values(items, (i) => i.promptKey.replace('drill.prompts.', '')),
+    };
+  };
+  const OPEN_CHORDS = ['A:major', 'A:minor', 'C:major', 'D:major', 'D:minor', 'E:major', 'E:minor', 'G:major'];
+  const EXPECTED: Record<string, ReturnType<typeof signature>> = {
+    l1u34m4: { count: 21, families: ['scale'], keys: ['C', 'F', 'G'], chords: [], degrees: [], prompts: ['degreeOf', 'spellScale'] },
+    l1u34m5: {
+      count: 12, families: ['triad'], keys: [], degrees: [], prompts: ['nameChord', 'spellChord'],
+      chords: ['A:minor', 'C:major', 'D:minor', 'E:minor', 'F:major', 'G:major'],
+    },
+    l1u35m2: { count: 30, families: ['roman'], keys: ['A', 'C', 'D', 'E', 'G'], chords: [], degrees: ['1', '4', '5'], prompts: ['chordToDegree', 'degreeToChord'] },
+    l1u35m3: { count: 60, families: ['roman'], keys: ['A', 'C', 'D', 'E', 'G'], chords: [], degrees: ['1', '2', '3', '4', '5', '6'], prompts: ['chordToDegree', 'degreeToChord'] },
+    l1u35m4: { count: 15, families: ['function'], keys: ['C', 'D', 'G'], chords: [], degrees: ['1', '2', '4', '5', '6'], prompts: ['chordFunction'] },
+    l1u35m6: { count: 16, families: ['triad'], keys: [], chords: OPEN_CHORDS, degrees: [], prompts: ['nameChord', 'spellChord'] },
+    l1u35m7: {
+      count: 16, families: ['seventh'], keys: [], degrees: [], prompts: ['nameChord', 'spellChord'],
+      chords: ['A:dominant7', 'A:minor7', 'C:dominant7', 'D:dominant7', 'D:minor7', 'E:dominant7', 'E:minor7', 'G:dominant7'],
+    },
+    l1u35m9: { count: 35, families: ['scale'], keys: ['A', 'C', 'D', 'E', 'G'], chords: [], degrees: [], prompts: ['degreeOf', 'spellScale'] },
+  };
+
+  it('the table has exactly these rows', () => {
+    expect(Object.keys(TRACK_UNLOCKS).sort()).toEqual(Object.keys(EXPECTED).sort());
+  });
+
+  for (const lesson of Object.keys(EXPECTED)) {
+    it(`${lesson} lets through exactly what it was fixed to`, () => {
+      expect(signature(lesson)).toEqual(EXPECTED[lesson]);
+    });
+  }
+
+  it('no track lesson, nor both tracks together, reaches what waits for the levels', () => {
+    const items = admitted([...TRACK_LESSONS]);
+    // No vii° (diminished) in Roman numerals or harmonic function.
+    expect(items.some((i) => (i.family === 'roman' || i.family === 'function') && i.degree === 7)).toBe(false);
+    // No major 7th, half-diminished or diminished seventh.
+    expect(items.some((i) => i.family === 'seventh' && i.chord!.quality !== 'dominant7' && i.chord!.quality !== 'minor7')).toBe(false);
+    // No "is it diatonic?", no patterns, no cadences, no "V7 of".
+    expect(items.some((i) => i.family === 'roman' && !['drill.prompts.degreeToChord', 'drill.prompts.chordToDegree'].includes(i.promptKey))).toBe(false);
+    expect(items.some((i) => i.family === 'function' && i.promptKey !== 'drill.prompts.chordFunction')).toBe(false);
+    // No minor key anywhere (lower-case key = minor), and nothing outside the tracks' five families.
+    expect(items.some((i) => i.key !== undefined && /^[a-g]/.test(i.key))).toBe(false);
+    expect(new Set(items.map((i) => i.family))).toEqual(new Set(['scale', 'triad', 'roman', 'function', 'seventh']));
   });
 });
 

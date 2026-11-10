@@ -30,8 +30,9 @@ const union = (lists: (readonly string[])[]) => [...new Set(lists.flat())];
 
 /**
  * The part of a family the track lessons opened, in letters and symbols the
- * lessons use: "C, G, F, Am, Em, Dm" (chords or keys), "I, IV, V in G, C, D,
- * A, E" (degrees in keys). Language-neutral but for "in".
+ * lessons use: "C, G, F, Am, Em, Dm" (chords or keys), "chords I, IV, V in
+ * the keys G, C, D, A, E" (degrees in keys). Language-neutral but for the
+ * words around the degrees and keys.
  */
 export function partLabel(rows: readonly DrillUnlockRow[], t: TFunction): string {
   const chordLabels = union(rows.map((r) =>
