@@ -1272,5 +1272,23 @@
   "solfege": {
     "setting": "Also show Do, Re, Mi",
     "hint": "Adds Do, Re, Mi beside the letters. Chord names and the lessons keep the letters (C = Do)."
+  },
+  "capo": {
+    "setting": "Capo",
+    "settingHint": "A capo clamps all six strings at one fret, so every string starts from there. Explore's guitar shows it; lessons, Drill and the guitar practice sheet show the neck without it.",
+    "none": "No capo",
+    "onFret": "Capo {{fret}}",
+    "controlLabel": "Capo",
+    "line": "{{chord}}: the {{shape}} shape, capo on fret {{fret}}",
+    "noShape": "No shape for this chord fits above the capo. Showing its notes on the neck.",
+    "openPositionTitle": "Open position at the capo: the strings at fret {{fret}} and frets {{from}}–{{to}}",
+    "announceAt": "String {{string}}, fret {{fret}}, at the capo, {{note}}",
+    "announceAbove_one": "String {{string}}, fret {{fret}}, {{count}} fret above the capo, {{note}}",
+    "announceAbove_other": "String {{string}}, fret {{fret}}, {{count}} frets above the capo, {{note}}",
+    "cellAt": "{{note}}, fret {{fret}}, string {{string}}, at the capo",
+    "cellAbove_one": "{{note}}, fret {{fret}}, string {{string}}, {{count}} fret above the capo",
+    "cellAbove_other": "{{note}}, fret {{fret}}, string {{string}}, {{count}} frets above the capo",
+    "readoutAt": "string {{string}} fret {{fret}} (capo)",
+    "practiceNote": "The capo is not used here: these studies are for the neck without a capo."
   }
 }

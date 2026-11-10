@@ -1272,5 +1272,23 @@
   "solfege": {
     "setting": "Mostrar también Do, Re, Mi",
     "hint": "Añade Do, Re, Mi junto a las letras. Los nombres de los acordes y las lecciones siguen usando las letras (C = Do)."
+  },
+  "capo": {
+    "setting": "Capo",
+    "settingHint": "El capo sujeta las seis cuerdas en un traste, y cada cuerda empieza desde ahí. La guitarra de Explorar lo muestra; las lecciones, Práctica y la hoja de práctica de guitarra muestran el mástil sin él.",
+    "none": "Sin capo",
+    "onFret": "Capo {{fret}}",
+    "controlLabel": "Capo",
+    "line": "{{chord}}: la forma de {{shape}}, capo en el traste {{fret}}",
+    "noShape": "Ninguna forma de este acorde cabe por encima del capo. Se muestran sus notas en el mástil.",
+    "openPositionTitle": "Posición abierta en el capo: las cuerdas en el traste {{fret}} y los trastes {{from}}–{{to}}",
+    "announceAt": "Cuerda {{string}}, traste {{fret}}, en el capo, {{note}}",
+    "announceAbove_one": "Cuerda {{string}}, traste {{fret}}, {{count}} traste por encima del capo, {{note}}",
+    "announceAbove_other": "Cuerda {{string}}, traste {{fret}}, {{count}} trastes por encima del capo, {{note}}",
+    "cellAt": "{{note}}, traste {{fret}}, cuerda {{string}}, en el capo",
+    "cellAbove_one": "{{note}}, traste {{fret}}, cuerda {{string}}, {{count}} traste por encima del capo",
+    "cellAbove_other": "{{note}}, traste {{fret}}, cuerda {{string}}, {{count}} trastes por encima del capo",
+    "readoutAt": "cuerda {{string}} traste {{fret}} (capo)",
+    "practiceNote": "El capo no se usa aquí: estos estudios son para el mástil sin capo."
   }
 }

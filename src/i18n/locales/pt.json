@@ -1272,5 +1272,23 @@
   "solfege": {
     "setting": "Mostrar também Dó, Ré, Mi",
     "hint": "Acrescenta Dó, Ré, Mi junto às letras. Os nomes dos acordes e as lições continuam a usar as letras (C = Dó)."
+  },
+  "capo": {
+    "setting": "Capo",
+    "settingHint": "O capo prende as seis cordas num traste, e cada corda passa a começar aí. A guitarra do Explorar mostra-o; as lições, o Treino e a folha de prática da guitarra mostram o braço sem ele.",
+    "none": "Sem capo",
+    "onFret": "Capo {{fret}}",
+    "controlLabel": "Capo",
+    "line": "{{chord}}: a forma de {{shape}}, capo no traste {{fret}}",
+    "noShape": "Nenhuma forma deste acorde cabe acima do capo. Mostram-se as suas notas no braço.",
+    "openPositionTitle": "Posição aberta no capo: as cordas no traste {{fret}} e os trastes {{from}}–{{to}}",
+    "announceAt": "Corda {{string}}, traste {{fret}}, no capo, {{note}}",
+    "announceAbove_one": "Corda {{string}}, traste {{fret}}, {{count}} traste acima do capo, {{note}}",
+    "announceAbove_other": "Corda {{string}}, traste {{fret}}, {{count}} trastes acima do capo, {{note}}",
+    "cellAt": "{{note}}, traste {{fret}}, corda {{string}}, no capo",
+    "cellAbove_one": "{{note}}, traste {{fret}}, corda {{string}}, {{count}} traste acima do capo",
+    "cellAbove_other": "{{note}}, traste {{fret}}, corda {{string}}, {{count}} trastes acima do capo",
+    "readoutAt": "corda {{string}} traste {{fret}} (capo)",
+    "practiceNote": "O capo não se usa aqui: estes estudos são para o braço sem capo."
   }
 }

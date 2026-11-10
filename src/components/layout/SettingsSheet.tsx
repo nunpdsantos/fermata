@@ -15,6 +15,10 @@ import { Button } from '../ui/Button.tsx';
 import { useLearnerProfile, setLearnerProfile, type LearnerProfile } from '../../state/learnerProfile.ts';
 import { dismissStartHint } from '../../state/startHint.ts';
 import { solfegeLanguage } from '../../i18n/solfege.ts';
+import { useCapoFret, setCapoFret } from '../../state/capo.ts';
+import { SelectTrigger } from '../ui/SelectTrigger.tsx';
+import { CapoOptions } from '../instruments/CapoControl.tsx';
+import { CAPO_TERM } from '../instruments/capoView.ts';
 
 /**
  * The app's Settings (W11-A, opened from the top bar's "⋯" menu): language,
@@ -66,6 +70,7 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
   const setNeckTopString = useAppStore((s) => s.setNeckTopString);
   const showSolfege = useAppStore((s) => s.showSolfege);
   const setShowSolfege = useAppStore((s) => s.setShowSolfege);
+  const capoFret = useCapoFret();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const offline = useServiceWorkerActive();
 
@@ -161,6 +166,16 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
           className="neck-setting"
           options={TOP_STRINGS.map((o) => ({ value: o.value, label: t(o.key) }))}
         />
+        {/* The capo (wave 2): none, 1 … 9. Explore's guitar draws it. */}
+        <div className="flex flex-col items-start gap-1.5 pt-1" data-testid="capo-setting">
+          <label className="flex items-center gap-2">
+            <span className="text-ui" style={{ color: 'var(--text-muted)' }} data-term={CAPO_TERM}>{t('capo.setting')}</span>
+            <SelectTrigger value={capoFret} onChange={(e) => setCapoFret(Number(e.target.value))} aria-describedby="capo-hint">
+              <CapoOptions />
+            </SelectTrigger>
+          </label>
+          <p id="capo-hint" className="text-ui" style={{ color: 'var(--text-dim)' }}>{t('capo.settingHint')}</p>
+        </div>
       </SettingRow>
       <SettingRow label={t('settings.yourData')} meta={t('settings.yourDataMeta')}>
         <div className="flex gap-2 flex-wrap">

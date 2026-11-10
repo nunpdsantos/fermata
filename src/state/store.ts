@@ -47,6 +47,9 @@ const ALLOWED_VALUES: Record<string, readonly unknown[]> = {
 const OPTIONAL_VALUES: Record<string, readonly unknown[]> = {
   learnerProfile: ['new', 'player', 'theory', null],
   startHint: ['new', 'player', null],
+  // Wave 2 (stream C, state/capo.ts): 0 = no capo, 1–9 a capo on that fret
+  // (MAX_CAPO_FRET; capo.test.ts keeps the two in step). Saved only as 1–9.
+  capoFret: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
 };
 
 // Numeric ranges. baseOctave = the piano's octave tabs (0–8, whole numbers);
@@ -210,6 +213,9 @@ export const useAppStore = create<AppState>()(
           // Written only when on: a save from someone who never turns it on
           // stays exactly what it was (the frozen v6 envelope tests).
           ...(state.showSolfege ? { showSolfege: true } : {}),
+          // Wave 2 (stream C): written only while a capo is on, so a save
+          // from someone who never uses one stays exactly what it was.
+          ...(Number.isInteger(state.capoFret) && state.capoFret >= 1 && state.capoFret <= 9 ? { capoFret: state.capoFret } : {}),
         };
       },
       migrate: (persisted: unknown, version: number) => {
