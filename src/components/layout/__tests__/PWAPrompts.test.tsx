@@ -74,3 +74,13 @@ describe('PWA toasts never overlap (review B1)', () => {
     expect(container.innerHTML).toBe('');
   });
 });
+
+describe('the install offer (wave 1: the start screen stands in place of the shell on a first visit)', () => {
+  it('an offer the browser made before PWAPrompts mounted (while the start screen was up) is still offered', async () => {
+    const { PWAPrompts } = await fresh();
+    // The app's code has loaded (the start screen is up), the shell is not mounted.
+    fireInstallPrompt();
+    render(<PWAPrompts />);
+    expect(screen.getByText('Install Fermata?')).toBeTruthy();
+  });
+});
