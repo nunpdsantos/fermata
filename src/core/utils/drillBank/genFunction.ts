@@ -42,6 +42,9 @@ const NUMERAL_FUNCTION: Record<string, string> = {
 
 const FUNCTION_LABELS = ['Tonic', 'Subdominant (pre-dominant)', 'Dominant'];
 
+// The scale degree each of those numerals stands on (the item's `degree`).
+const NUMERAL_DEGREE: Record<string, number> = { I: 1, ii: 2, IV: 4, V: 5, vi: 6, 'vii°': 7 };
+
 // Direction description for each function (for why explanation)
 const FUNCTION_DIRECTION: Record<string, string> = {
   Tonic: 'home — creates rest',
@@ -119,6 +122,8 @@ export function genFunction(): DrillItem[] {
         whyKey: 'drill.why.functionPull',
         whyParams: { chord: chordStr, direction: FUNCTION_DIRECTION[fn] ?? '' },
         rank: rank++,
+        key: keyStr,
+        degree: NUMERAL_DEGREE[numeral],
       });
     }
   }
@@ -199,6 +204,7 @@ export function genFunction(): DrillItem[] {
       whyKey: 'drill.why.v7Derivation',
       whyParams: { key: keyDisplay, five: fiveDisplay, answer },
       rank: rank++,
+      key: tonicStr,
     });
   }
 

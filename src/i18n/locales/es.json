@@ -1272,5 +1272,23 @@
   "solfege": {
     "setting": "Mostrar también Do, Re, Mi",
     "hint": "Añade Do, Re, Mi junto a las letras. Los nombres de los acordes y las lecciones siguen usando las letras (C = Do)."
+  },
+  "drillFollow": {
+    "switch": "Seguir mis lecciones",
+    "switchHint": "La Práctica solo pregunta lo que tus lecciones ya han enseñado, y añade más a medida que avanzas.",
+    "follows": "La Práctica sigue tus lecciones: solo pregunta lo que ya han enseñado, y añade más a medida que avanzas.",
+    "unlockedHeading": "Ya desbloqueado",
+    "soFar": "Por ahora: {{list}}",
+    "degreesIn": "{{degrees}} en {{keys}}",
+    "nothingYet": "Aún no hay nada desbloqueado.",
+    "next": "Después: {{topics}}, con la lección «{{lesson}}».",
+    "nextLater": "Después: {{topics}}, con una lección más adelante.",
+    "allOpen": "Todos los temas están abiertos.",
+    "chooseMyself": "Elegir yo los temas",
+    "firstQuestions": "Aún no hay nada que preguntar. Las primeras preguntas llegan con la lección «{{lesson}}».",
+    "firstQuestionsLater": "Aún no hay nada que preguntar. Las primeras preguntas llegan con tus lecciones.",
+    "openLesson": "Abrir la lección",
+    "opensWith": "Se abre con «{{lesson}}»",
+    "opensLater": "Se abre con una lección más adelante"
   }
 }

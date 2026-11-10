@@ -13,6 +13,11 @@
  * A destructive "Reset drill progress" section at the bottom clears SRS state
  * while preserving settings.
  *
+ * Wave 2: "Follow my lessons" (a toggle chip above the topics). While it is
+ * in force the topic chips are replaced by what the lessons have unlocked and
+ * what comes next; "Choose topics myself" turns it off and gives the chips
+ * back (the topic choices are kept, untouched, meanwhile).
+ *
  * W11-A: on the v2 system — the two selected states (choice chip; the toggle
  * chips use the same "on" look), --tap targets, 12 px floor, tokens only.
  */
@@ -23,6 +28,7 @@ import type { DrillFamily } from '../../core/types/drill';
 import type { DrillSettings as DrillSettingsState } from '../../state/drillStore';
 import { ChipGroup, ChoiceChip } from '../ui/ChoiceChip';
 import { Button, IconButton } from '../ui/Button';
+import { FollowSummary, FollowSwitch, type FollowInfo } from './FollowLessons';
 
 const SESSION_LENGTHS = [12, 24, 40] as const;
 const MIN_NEW = 0;
@@ -34,6 +40,10 @@ interface DrillSettingsProps {
   onBack: () => void;
   onMasteryMap: () => void;
   onResetProgress: () => void;
+  /** The follow switch's value in force (derived when never set). Absent = the switch is not shown. */
+  follow?: boolean;
+  /** What the lessons open, shown while following. */
+  followInfo?: FollowInfo | null;
 }
 
 const BACK_ICON = (
@@ -43,7 +53,7 @@ const BACK_ICON = (
   </svg>
 );
 
-export function DrillSettings({ settings, onUpdate, onBack, onMasteryMap, onResetProgress }: DrillSettingsProps) {
+export function DrillSettings({ settings, onUpdate, onBack, onMasteryMap, onResetProgress, follow, followInfo }: DrillSettingsProps) {
   const { t } = useTranslation();
   const [confirmingReset, setConfirmingReset] = useState(false);
 
@@ -95,7 +105,16 @@ export function DrillSettings({ settings, onUpdate, onBack, onMasteryMap, onRese
         </div>
       </section>
 
-      {/* Topics — several can be on: toggle chips (pressed = on) */}
+      {/* Follow my lessons (wave 2) */}
+      {follow !== undefined && (
+        <FollowSwitch on={follow} onToggle={() => onUpdate({ followLessons: !follow })} />
+      )}
+
+      {/* Topics — several can be on: toggle chips (pressed = on). While
+          following the lessons: what they have unlocked instead. */}
+      {follow && followInfo ? (
+        <FollowSummary info={followInfo} onChooseMyself={() => onUpdate({ followLessons: false })} />
+      ) : (
       <section className="flex flex-col gap-2">
         <p className="type-label">{t('drill.settings.families')}</p>
         <div role="group" aria-label={t('drill.settings.families')} className="chip-group">
@@ -110,6 +129,7 @@ export function DrillSettings({ settings, onUpdate, onBack, onMasteryMap, onRese
           ))}
         </div>
       </section>
+      )}
 
       {/* Answer sound / show timer — on/off toggle chips */}
       <section className="chip-group">

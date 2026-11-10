@@ -26,6 +26,7 @@ import {
   emptySessionLog,
   type ActiveSession,
   type SessionLog,
+  type StartSessionOptions,
 } from '../../state/drillStore';
 import { gradeAnswer, type AnswerPayload, type GradeResult } from './grading';
 import { playAnswerAudio } from './answerAudio';
@@ -110,8 +111,22 @@ export interface DrillRunner {
 
 const AUTO_ADVANCE_MS = 600;
 
-export function useDrillRunner({ autoStart = true }: { autoStart?: boolean } = {}): DrillRunner {
+export function useDrillRunner({
+  autoStart = true,
+  sessionOptions,
+}: {
+  autoStart?: boolean;
+  /**
+   * Wave 2: "Follow my lessons" — handed to every startSession (the switch in
+   * force and its pool). Read at start time, so a new session uses the latest.
+   */
+  sessionOptions?: StartSessionOptions;
+} = {}): DrillRunner {
   const { bank, byId } = getBank();
+  const optionsRef = useRef(sessionOptions);
+  useEffect(() => {
+    optionsRef.current = sessionOptions;
+  });
 
   const activeSession = useDrillStore((s) => s.activeSession);
   const items = useDrillStore((s) => s.items);
@@ -160,7 +175,7 @@ export function useDrillRunner({ autoStart = true }: { autoStart?: boolean } = {
   // first-visit intro is up: its Start calls startNewSession.
   useEffect(() => {
     if (autoStart && useDrillStore.getState().activeSession === null) {
-      startSession(bank, Date.now());
+      startSession(bank, Date.now(), optionsRef.current);
     }
     // Run once on mount. startNewSession handles deliberate restarts.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -263,7 +278,7 @@ export function useDrillRunner({ autoStart = true }: { autoStart?: boolean } = {
     setResult(null);
     setPhase('answering');
     setEndedSummary(null);
-    startSession(bank, Date.now()); // a new session starts with an empty log
+    startSession(bank, Date.now(), optionsRef.current); // a new session starts with an empty log
     // Read the freshly-composed queue's first id immediately.
     const session = useDrillStore.getState().activeSession;
     setDisplayId(session ? currentKnownId(session, byId) : null);

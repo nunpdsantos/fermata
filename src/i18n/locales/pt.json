@@ -1272,5 +1272,23 @@
   "solfege": {
     "setting": "Mostrar também Dó, Ré, Mi",
     "hint": "Acrescenta Dó, Ré, Mi junto às letras. Os nomes dos acordes e as lições continuam a usar as letras (C = Dó)."
+  },
+  "drillFollow": {
+    "switch": "Seguir as minhas lições",
+    "switchHint": "O Treino só pergunta o que as tuas lições já ensinaram, e junta mais à medida que avanças.",
+    "follows": "O Treino segue as tuas lições: só pergunta o que elas já ensinaram, e junta mais à medida que avanças.",
+    "unlockedHeading": "Já desbloqueado",
+    "soFar": "Por agora: {{list}}",
+    "degreesIn": "{{degrees}} em {{keys}}",
+    "nothingYet": "Ainda nada desbloqueado.",
+    "next": "A seguir: {{topics}}, com a lição «{{lesson}}».",
+    "nextLater": "A seguir: {{topics}}, com uma lição mais à frente.",
+    "allOpen": "Todos os tópicos estão abertos.",
+    "chooseMyself": "Escolher eu os tópicos",
+    "firstQuestions": "Ainda não há nada para perguntar. As primeiras perguntas chegam com a lição «{{lesson}}».",
+    "firstQuestionsLater": "Ainda não há nada para perguntar. As primeiras perguntas chegam com as tuas lições.",
+    "openLesson": "Abrir a lição",
+    "opensWith": "Abre com «{{lesson}}»",
+    "opensLater": "Abre com uma lição mais à frente"
   }
 }

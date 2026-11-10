@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDrillRunner } from '../components/drill/useDrillRunner';
 import { ReadingStaff } from '../components/drill/ReadingStaff';
@@ -23,6 +23,18 @@ import type { DrillItem } from '../core/types/drill';
 import { stringToNote } from '../core/types/music';
 import { CHORD_QUALITY_NAMES } from '../core/constants/chords';
 import { withGlyphs } from '../core/utils/drillBank/shared';
+import { useLearnerProfile } from '../state/learnerProfile';
+import { trackForProfile } from '../data/tracks';
+import {
+  isItemUnlocked,
+  learnTargetOf,
+  lessonOpening,
+  nextUnlock,
+  openFamilies,
+  unlockedFor,
+} from '../data/drillUnlocks';
+import { followFamilies, followHasNothing, followInForce, readCompletedLessons } from '../services/drillFollow';
+import type { FollowInfo } from '../components/drill/FollowLessons';
 
 // Memoize the bank once for the view (the runner memoizes its own; this is the
 // copy fed to the Mastery map + Sprint, which read tier counts off it).
@@ -35,11 +47,69 @@ function viewBank(): DrillItem[] {
 /** Navigable sub-screens layered over the base (running question / summary). */
 type SubScreen = null | 'settings' | 'mastery' | 'sprint';
 
+/**
+ * The completed lessons, read from Learn's save (never the progress store):
+ * at mount — each time the Drill view is shown — and when the page is shown
+ * again (a lesson finished in another tab).
+ */
+function useCompletedLessons(): string[] {
+  const [completed, setCompleted] = useState<string[]>(() => readCompletedLessons());
+  useEffect(() => {
+    const onShow = () => {
+      if (document.visibilityState !== 'visible') return;
+      const next = readCompletedLessons();
+      setCompleted((prev) => (prev.length === next.length && prev.every((id, i) => id === next[i]) ? prev : next));
+    };
+    document.addEventListener('visibilitychange', onShow);
+    return () => document.removeEventListener('visibilitychange', onShow);
+  }, []);
+  return completed;
+}
+
 export function DrillView() {
   // A first visit (no drill history) opens on the intro, not a question; any
   // session starting sets introDone, so it never shows again.
   const introDone = useDrillStore((s) => s.introDone);
-  const runner = useDrillRunner({ autoStart: introDone });
+
+  // ── "Follow my lessons" (wave 2) ──────────────────────────────────────────
+  const savedFollow = useDrillStore((s) => s.settings.followLessons);
+  const stateItems = useDrillStore((s) => s.items);
+  const profile = useLearnerProfile();
+  const completed = useCompletedLessons();
+  const follow = followInForce(savedFollow, profile, introDone);
+  const unlock = useMemo(() => unlockedFor(completed), [completed]);
+  const unlocked = useMemo(
+    () => (follow ? (item: DrillItem) => isItemUnlocked(unlock, item) : null),
+    [follow, unlock],
+  );
+  // Following, with nothing the lessons open and no fact already met: no
+  // session may start (the intro says which lesson opens the first questions).
+  const nothingToAsk = useMemo(
+    () => follow && followHasNothing(viewBank(), unlock, stateItems),
+    [follow, unlock, stateItems],
+  );
+  const followInfo = useMemo<FollowInfo | null>(() => {
+    if (!follow) return null;
+    const track = trackForProfile(profile);
+    return {
+      unlock,
+      open: openFamilies(unlock),
+      next: nextUnlock(completed, track),
+      lessonOpening: (family) => lessonOpening(family, track),
+      onOpenLesson: (moduleId) => {
+        const target = learnTargetOf(moduleId);
+        if (target) useAppStore.getState().openLearnTarget(target);
+      },
+    };
+  }, [follow, unlock, completed, profile]);
+  // A learner with Drill history whose pool was empty when the view opened:
+  // the runner did not start a session, so the intro (follow form) stands in.
+  const [openedWithNothing] = useState(() => introDone && nothingToAsk);
+
+  const runner = useDrillRunner({
+    autoStart: introDone && !nothingToAsk,
+    sessionOptions: { followLessons: follow, unlocked },
+  });
   // A Sprint left open (a reload, or back from another view) comes back on
   // screen where it was (W9b).
   const [subScreen, setSubScreen] = useState<SubScreen>(() => (useDrillStore.getState().sprint ? 'sprint' : null));
@@ -58,6 +128,11 @@ export function DrillView() {
   const { item, presentationKey, phase, result, position, total, again, extra, sessionComplete } = runner;
 
   const bank = viewBank();
+  // While following, Sprint's topic set is what the session pool reaches.
+  const sprintFamilies = useMemo(
+    () => (follow ? followFamilies(bank, unlock, items) : settings.families),
+    [follow, bank, unlock, items, settings.families],
+  );
 
   // Open mastery + freeze "now" for its due-today count in one event-time step.
   const goToMastery = () => {
@@ -73,6 +148,8 @@ export function DrillView() {
         {subScreen === 'settings' ? (
           <DrillSettings
             settings={settings}
+            follow={follow}
+            followInfo={followInfo}
             onUpdate={updateSettings}
             onBack={() => setSubScreen(null)}
             onMasteryMap={goToMastery}
@@ -90,6 +167,7 @@ export function DrillView() {
             bank={bank}
             items={items}
             families={settings.families}
+            follow={followInfo}
             now={masteryNow}
             onToggleFamily={(family, enabled) =>
               updateSettings({ families: { ...settings.families, [family]: enabled } })
@@ -100,16 +178,20 @@ export function DrillView() {
           <SprintRunner
             bank={bank}
             items={items}
-            families={settings.families}
-            priorBest={sprintBests[sprintFamiliesKey(settings.families)] ?? 0}
+            families={sprintFamilies}
+            priorBest={sprintBests[sprintFamiliesKey(sprintFamilies)] ?? 0}
             onRecord={recordSprint}
             onExit={() => setSubScreen(null)}
           />
-        ) : !introDone && !activeSession ? (
+        ) : !activeSession && !sessionComplete && (!introDone || openedWithNothing || nothingToAsk) ? (
           <DrillIntro
             settings={settings}
             onStart={runner.startNewSession}
             onOpenSettings={() => setSubScreen('settings')}
+            follow={follow}
+            followInfo={followInfo}
+            nothingToAsk={nothingToAsk}
+            onSetFollow={(on) => updateSettings({ followLessons: on })}
           />
         ) : sessionComplete ? (
           <SessionSummary

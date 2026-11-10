@@ -111,6 +111,7 @@ export function genScale(): DrillItem[] {
       answer: { kind: 'accidentals', spelled: spelledAscii },
       ...majorWhy,
       rank: baseRank,
+      key: tonicAscii,
     });
 
     // --- degree-of items (n=2..7) ---
@@ -128,6 +129,7 @@ export function genScale(): DrillItem[] {
         answer: { kind: 'choice', correct },
         ...degreeWhy(majorTonic, scaleDisplay, scale.notes, n),
         rank: baseRank + n - 1,
+        key: tonicAscii,
       });
     }
   }
@@ -178,6 +180,7 @@ export function genScale(): DrillItem[] {
         whyKey,
         whyParams,
         rank: minorKeyRankBase,
+        key: minorTonicAscii,
       });
 
       // --- degree-of items for natural_minor only (keeps parity with major) ---
@@ -196,6 +199,7 @@ export function genScale(): DrillItem[] {
             answer: { kind: 'choice', correct },
             ...degreeWhy(majorTonic, scaleDisplay, scale.notes, n),
             rank: minorKeyRankBase + n,
+            key: minorTonicAscii,
           });
         }
       }
