@@ -74,6 +74,43 @@ describe('every term has an explanation in EN, PT and ES', () => {
     }
   });
 
+  // After review: the PT text once said a minor chord's middle note is FOUR
+  // half steps up. The numbers in an entry (digits and number words) must be
+  // the same in every language.
+  it('every entry states the same numbers in EN, PT and ES', () => {
+    const WORDS: Record<Lang, Record<string, number>> = {
+      en: { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, seventh: 7 },
+      pt: { um: 1, uma: 1, dois: 2, duas: 2, três: 3, quatro: 4, cinco: 5, seis: 6, sete: 7, oito: 8, nove: 9, dez: 10, onze: 11, doze: 12, sétima: 7 },
+      es: { uno: 1, una: 1, un: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10, once: 11, doce: 12, séptima: 7 },
+    };
+    // 1 and 2 are not compared: "um"/"un" are also articles, and "both ends"
+    // is "as duas pontas" / "los dos extremos". A 7th chord is "de sétima".
+    const numbers = (lang: Lang, s: string) => {
+      const out: number[] = [];
+      for (const m of s.toLocaleLowerCase(lang).matchAll(/\d+|[\p{L}]+/gu)) {
+        const n = /^\d+$/.test(m[0]) ? Number(m[0]) : WORDS[lang][m[0]];
+        if (n !== undefined && n > 2) out.push(n);
+      }
+      return out.sort((a, b) => a - b);
+    };
+    // A known positive: the fault the review found would fail here.
+    expect(numbers('pt', 'Uma tríade cuja nota do meio está quatro meios-tons acima')).not.toEqual(numbers('en', 'A triad whose middle note is three half steps above the root'));
+    const mismatches: string[] = [];
+    for (const id of TERM_IDS) {
+      const base = TEXT.en.entries[id as keyof typeof en.entries] as Record<string, string>;
+      for (const lang of ['pt', 'es'] as const) {
+        const other = TEXT[lang].entries[id as keyof typeof en.entries] as Record<string, string>;
+        for (const field of Object.keys(base)) {
+          if (field === 'title') continue;
+          const a = numbers(lang, other[field]).join(' ');
+          const b = numbers('en', base[field]).join(' ');
+          if (a !== b) mismatches.push(`${lang} ${id}.${field}: [${a}] vs en [${b}]`);
+        }
+      }
+    }
+    expect(mismatches).toEqual([]);
+  });
+
   it('every entry has a spec, and the scale entries cover every scale the app offers', () => {
     for (const id of TERM_IDS) expect(GLOSSARY[id], id).toBeDefined();
     expect(SCALE_TERM_IDS.length).toBe(Object.keys(SCALE_FORMULAS).length);
@@ -186,6 +223,39 @@ describe('every sound demonstration resolves to notes for all twelve roots', () 
     expect(midis.map((m) => m % 12)).toEqual([7, 9, 11, 0, 2, 4, 6, 7]);
     expect(notes[7].at - notes[6].at).toBeGreaterThan(notes[6].at - notes[5].at);
   });
+  // After review: the twelve-roots check above uses a major key only.
+  for (const scaleType of ['natural_minor', 'pentatonic_major', 'pentatonic_minor', 'blues', 'major_blues', 'dorian', 'whole_tone'] as const) {
+    it(`in ${scaleType}, every demonstration that plays plays real notes, in order, for all twelve roots`, () => {
+      for (const root of ROOTS) {
+        for (const id of withHear) {
+          const notes = GLOSSARY[id].hear!({ root, scaleType, chord: null, instrument: 'piano', baseOctave: 4 });
+          if (!notes) continue;
+          expect(notes.length, `${id} ${scaleType}`).toBeGreaterThan(1);
+          let last = -1;
+          for (const n of notes) {
+            const midi = getMidiNumber(n.note, n.note.octave);
+            expect(Number.isInteger(midi) && midi >= 28 && midi <= 96, `${id} ${midi}`).toBe(true);
+            expect(n.at, `${id} ${scaleType}`).toBeGreaterThanOrEqual(last);
+            last = n.at;
+          }
+        }
+      }
+    });
+  }
+  it('relative key: the sound is the key, then the relative the text names, for every major- and minor-family scale', () => {
+    const pc = (n: { note: Note & { octave: number } }) => getMidiNumber(n.note, n.note.octave) % 12;
+    const cases: [ScaleType, number, number][] = [
+      // [scale on C, first pitch class of the key, first of its relative]
+      ['major', 0, 9], ['pentatonic_major', 0, 9], ['major_blues', 0, 9],
+      ['natural_minor', 0, 3], ['harmonic_minor', 0, 3], ['melodic_minor', 0, 3], ['pentatonic_minor', 0, 3], ['blues', 0, 3],
+    ];
+    for (const [scaleType, own, rel] of cases) {
+      const notes = GLOSSARY.relativeKey.hear!(ctx('C', scaleType))!;
+      expect(notes, scaleType).not.toBeNull();
+      expect(pc(notes[0]), scaleType).toBe(own);
+      expect(pc(notes[8]), scaleType).toBe(rel);
+    }
+  });
   it('the inversion: the same three notes, the 3rd lowest the second time', () => {
     const notes = GLOSSARY.inversion.hear!(ctx('C', 'major'))!;
     const first = notes.filter((n) => n.at === 0).map((n) => getMidiNumber(n.note, n.note.octave));
@@ -258,6 +328,31 @@ describe('worked examples come from the engine (keys × scales)', () => {
     expect(line('slashChord', ctx('C', 'major'), t)).toBeNull();
     // No chord of that kind open: one built on the key's root.
     expect(line('minorChord', ctx('D', 'major'), t)).toBe('Dm: D F A.');
+  });
+
+  it('a two-note chord (power chord) has no 2nd inversion', async () => {
+    const t = await makeT('en');
+    const c5 = buildChord(note('C'), 'power');
+    expect(line('inversion', ctx('C', 'major', { chord: c5 }), t)).toBe('C5: root position C G · 1st inversion G C.');
+    for (const lang of ['pt', 'es'] as const) {
+      const tl = await makeT(lang);
+      expect(line('inversion', ctx('C', 'major', { chord: c5 }), tl), lang).not.toMatch(/2/);
+    }
+  });
+
+  it('a scale named beside an open chord (Compatible scales · D) is explained on the chord\'s root; the key\'s own scale on the key\'s', async () => {
+    const t = await makeT('en');
+    const dm7 = buildChord(note('D'), 'minor7');
+    expect(line('scale_dorian', ctx('C', 'major', { chord: dm7 }), t)).toBe('On D: D E F G A B C.');
+    expect(line('scale_major', ctx('C', 'major', { chord: dm7 }), t)).toBe('On C: C D E F G A B.');
+    expect(line('scale_dorian', ctx('C', 'major'), t)).toBe('On C: C D E♭ F G A B♭.');
+    const first = GLOSSARY.scale_dorian.hear!(ctx('C', 'major', { chord: dm7 }))![0];
+    expect(getMidiNumber(first.note, first.note.octave) % 12).toBe(2);
+  });
+
+  it('"Out of key" leads to the lesson on borrowed chords', () => {
+    const lesson = MODULE_INDEX.find((m) => m.id === GLOSSARY.outOfKey.learn);
+    expect(lesson?.title).toMatch(/Borrowed Chords/);
   });
 
   it('every entry renders for a table of keys, in every language, with no placeholder left over', async () => {

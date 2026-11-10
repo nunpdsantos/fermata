@@ -31,7 +31,12 @@ export function Term({ id, also, children, className, testId }: {
       data-term={also?.length ? [id, ...also].join(' ') : id}
       data-testid={testId}
       aria-haspopup="dialog"
-      onClick={(e) => useGlossaryUi.getState().openTerm(id, e.currentTarget, also)}
+      onClick={(e) => {
+        const ui = useGlossaryUi.getState();
+        // Its explanation is open (a laptop's popover beside it): tapping the word again closes it.
+        if (ui.request?.kind === 'term' && ui.request.anchor === e.currentTarget) ui.close();
+        else ui.openTerm(id, e.currentTarget, also);
+      }}
     >
       {children}
     </button>
@@ -54,7 +59,10 @@ export function WordsButton({ className, inline = false }: {
       aria-haspopup="dialog"
       aria-label={t('glossary.ui.wordsLabel')}
       // Inside a modal sheet (the practice sheet) only that sheet's words count.
-      onClick={(e) => useGlossaryUi.getState().openWords(visibleTermIds(e.currentTarget.closest('[role="dialog"]') ?? document), e.currentTarget)}
+      onClick={(e) => {
+        const scope = e.currentTarget.closest('[role="dialog"]') ?? document;
+        useGlossaryUi.getState().openWords(visibleTermIds(scope), e.currentTarget, scope);
+      }}
       startIcon={
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="9.5" />

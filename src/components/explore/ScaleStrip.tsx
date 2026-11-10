@@ -67,7 +67,8 @@ export function ScaleStrip() {
   const setFocus = useFocusNoteStore((s) => s.set);
   const clearFocus = useFocusNoteStore((s) => s.clear);
   const focus = useFocusNote();
-  // Simple view: letter names and the numbers 1–7, no degree names.
+  // Simple view: letter names and the degree numbers as Full writes them
+  // (♭3 where the scale has one, matching the colours), no degree names.
   const simple = useExploreSimple();
 
   // The scale as the staff draws it: every note plus the octave tonic, each
@@ -276,7 +277,7 @@ export function ScaleStrip() {
                       style={{ color: dimmed[i] ? 'var(--text-dim)' : DEGREE_INKS[slot] }}
                       {...termAttr('degree')}
                     >
-                      {simple ? degreeIndex + 1 : withGlyphs(formatDegree(d, '1'))}
+                      {withGlyphs(formatDegree(d, '1'))}
                     </span>
                     {fnKey && <span className="strip-fn" {...termAttr(functionTermId(fnKey))}>{t(fnKey)}</span>}
                   </span>

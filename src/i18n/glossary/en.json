@@ -17,7 +17,7 @@
     },
     "keySignature": {
       "title": "Key signature",
-      "plain": "The sharps or flats written once at the start of each line of music; they apply to every note with that letter. Some scales add others beside single notes, or have none of their own.",
+      "plain": "The sharps or flats written once at the start of each line of music; they apply to every note with that letter. Any other sharp or flat is written beside its note, and some scales have no key signature of their own.",
       "example": "{{key}}: {{signature}}."
     },
     "sharpFlat": {
@@ -48,7 +48,7 @@
     },
     "tritone": {
       "title": "Tritone",
-      "plain": "Two notes three whole steps (six half steps) apart: a tense sound that wants to move on. In the scale strip it names a 5th note that is a half step lower than usual.",
+      "plain": "Two notes three whole steps (six half steps) apart: a tense sound that wants to move on. In the notes of the scale it marks a 5th note that is a half step lower than usual.",
       "example": "{{root}} and {{other}} are a tritone apart."
     },
     "relativeKey": {
@@ -199,7 +199,7 @@
     },
     "majorSeventh": {
       "title": "Major 7th (maj7)",
-      "plain": "A major chord plus the note a half step below the root's octave. Soft and dreamy, common in jazz and soul.",
+      "plain": "A major chord plus the note eleven half steps above the root (a half step below the next root up). Soft and dreamy, common in jazz and soul.",
       "example": "{{chord}}: {{notes}}."
     },
     "minorSeventh": {
@@ -250,7 +250,8 @@
     "inversion": {
       "title": "Inversion",
       "plain": "The same chord with a different note at the bottom. Root position has the root lowest; the 1st inversion puts the 3rd lowest, the 2nd the 5th. Same chord, a slightly different colour.",
-      "example": "{{chord}}: root position {{p0}} · 1st inversion {{p1}} · 2nd inversion {{p2}}."
+      "example": "{{chord}}: root position {{p0}} · 1st inversion {{p1}} · 2nd inversion {{p2}}.",
+      "exampleTwo": "{{chord}}: root position {{p0}} · 1st inversion {{p1}}."
     },
     "formula": {
       "title": "Formula (R 3 5)",
@@ -305,7 +306,7 @@
     },
     "rightHandFingers": {
       "title": "p, i, m, a",
-      "plain": "The right-hand fingers by their Spanish names: p thumb, i index, m middle, a ring. Alternating i–m means plucking with index and middle in turn."
+      "plain": "The right-hand fingers, by the first letters of their Spanish names (pulgar, índice, medio, anular): p thumb, i index, m middle, a ring. Alternating i–m means plucking with index and middle in turn."
     },
     "positionWalk": {
       "title": "Position walk",
@@ -313,7 +314,7 @@
     },
     "technicalSet": {
       "title": "Technical set",
-      "plain": "Scales, arpeggios and broken chords to practise in one key, like the technical work of a grade 5 guitar exam."
+      "plain": "Scales, arpeggios and broken chords to practise in one key, like the technical work of a mid-level guitar exam (grade 5 of the UK exam boards)."
     },
     "intervalScale": {
       "title": "Scale in 3rds, 6ths, octaves",
@@ -368,11 +369,11 @@
       "example": "On {{root}}: {{notes}}."
     },
     "scale_blues": {
-      "plain": "Minor pentatonic plus one extra note between its 4th and 5th (the 'blue note'), which gives the blues its gritty bend.",
+      "plain": "Minor pentatonic plus one extra note between its 4th and 5th (the 'blue note'), which gives the blues its gritty sound.",
       "example": "On {{root}}: {{notes}}."
     },
     "scale_major_blues": {
-      "plain": "Major pentatonic plus one extra note between its 2nd and 3rd, for a bright scale with a bluesy bend.",
+      "plain": "Major pentatonic plus one extra note between its 2nd and 3rd, for a bright scale with a bluesy flavour.",
       "example": "On {{root}}: {{notes}}."
     },
     "scale_whole_tone": {
@@ -392,7 +393,7 @@
       "example": "On {{root}}: {{notes}}."
     },
     "scale_altered": {
-      "plain": "A jazz scale (the 7th mode of melodic minor) that bends every note it can of a dominant 7th chord, for the most tension just before home.",
+      "plain": "A jazz scale (the 7th mode of melodic minor) that changes every note of a dominant 7th chord that can be changed, for the most tension just before home.",
       "example": "On {{root}}: {{notes}}."
     },
     "scale_lydian_dominant": {

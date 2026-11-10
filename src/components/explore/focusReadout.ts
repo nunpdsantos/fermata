@@ -71,8 +71,9 @@ function keyRole(scale: Scale, pc: number, t: T, simple = false): string {
   const key = keyName(scale, t);
   const i = scale.notes.findIndex((n) => getPitchClass(n) === pc);
   if (i < 0) return t('explore.readout.notIn', { key });
-  if (simple) return t('simpleView.noteOf', { n: i + 1, key });
   const deg = degreeOf(scale.root, scale.notes[i]);
+  // Simple: the number the strip shows (♭3 in a minor key), not the degree name.
+  if (simple) return t('simpleView.noteOf', { n: withGlyphs(formatDegree(deg, '1')), key });
   if (scale.notes.length === 7) {
     const fnKey = getScaleDegreeFunctionKey(i, SCALE_FORMULAS[scale.type]?.[i] ?? 0);
     if (fnKey) return t('explore.readout.fnOf', { fn: t(fnKey.replace('degreeShort.', 'explore.fn.')), key });

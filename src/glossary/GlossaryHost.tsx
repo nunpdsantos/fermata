@@ -20,6 +20,7 @@ import { keyName } from '../components/explore/focusReadout.ts';
 import { useGlossaryUi } from './glossaryUi.ts';
 import { GLOSSARY, type GlossaryContext } from './entries.ts';
 import { termTitle } from './termTitle.ts';
+import { visibleTermIds } from './visibleTerms.ts';
 import type { TermId } from './termIds.ts';
 
 const PLAY_ICON = (
@@ -178,7 +179,7 @@ function Popover({ id, also, anchor, onClose, hear }: {
       let top: number;
       let maxHeight: number;
       if (h <= roomBelow || roomBelow >= roomAbove) {
-        top = below;
+        top = Math.max(8, below);
         maxHeight = Math.max(120, roomBelow);
       } else {
         maxHeight = roomAbove;
@@ -188,11 +189,18 @@ function Popover({ id, also, anchor, onClose, hear }: {
     };
     place();
     window.addEventListener('resize', place);
+    // It follows its word when the work column (or anything) scrolls — not its own body.
+    const onScroll = (e: Event) => {
+      if (e.target instanceof Node && el.contains(e.target)) return;
+      place();
+    };
+    window.addEventListener('scroll', onScroll, true);
     // Its height changes once its width applies (and when ▶ Hear it starts).
     const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(place) : null;
     ro?.observe(el);
     return () => {
       window.removeEventListener('resize', place);
+      window.removeEventListener('scroll', onScroll, true);
       ro?.disconnect();
     };
   }, [anchor, id]);
@@ -301,6 +309,30 @@ export default function GlossaryHost() {
   const sheet = useMediaQuery(SHEET_QUERY);
   const hear = useHear();
   const detail = useExploreDetail();
+
+  // However an explanation closes (✕, Escape, the word tapped again), its sound stops.
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    if (wasOpen.current && !request) cancelScheduledAudio();
+    wasOpen.current = !!request;
+  }, [request]);
+
+  // The word list holds the Simple / Full switch: when the page behind it
+  // changes, its words are read again, so it lists what is shown now.
+  const listOpen = request?.kind === 'words';
+  useEffect(() => {
+    if (!listOpen) return;
+    const reread = () => {
+      const r = useGlossaryUi.getState().request;
+      if (r?.kind !== 'words') return;
+      const ids = visibleTermIds(r.scope);
+      if (ids.join(' ') !== r.ids.join(' ')) useGlossaryUi.getState().refreshWords(ids);
+    };
+    reread();
+    // Again once the page has laid itself out (a part that mounts a frame later).
+    const frame = requestAnimationFrame(reread);
+    return () => cancelAnimationFrame(frame);
+  }, [detail, listOpen]);
 
   const close = useCallback((refocus: boolean) => {
     const anchor = useGlossaryUi.getState().request?.anchor;

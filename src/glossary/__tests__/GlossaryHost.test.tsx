@@ -138,7 +138,7 @@ describe('Words on this screen', () => {
     useAppStore.setState({ selectedChord: buildChord({ natural: 'G', accidental: '' }, 'major') });
     render(<Explore />);
     const ids = visibleTermIds();
-    expect(ids.slice(0, 3)).toEqual(['scale_major', 'keySignature', 'relativeKey']);
+    expect(ids.slice(0, 4)).toEqual(['scale_major', 'keySignature', 'sharpFlat', 'relativeKey']);
     expect(ids).toEqual(expect.arrayContaining(['degree', 'staff', 'chordsInKey', 'dominant', 'romanNumeral', 'majorChord', 'minorChord', 'diminishedChord', 'inversion', 'formula', 'compatibleScales', 'scale_mixolydian', 'circleOfFifths', 'dominantKey']));
     expect(new Set(ids).size).toBe(ids.length);
     fireEvent.click(screen.getAllByTestId('words-open')[0]);
@@ -148,6 +148,75 @@ describe('Words on this screen', () => {
     fireEvent.click(within(sheet).getByRole('button', { name: 'Dominant' }));
     expect(within(sheet).getByText(/like a question that the home chord answers/)).toBeTruthy();
     expect(within(sheet).getByRole('button', { name: 'Dominant' }).getAttribute('aria-expanded')).toBe('true');
+  });
+});
+
+describe('after review', () => {
+  it('"Words on this screen" follows the Simple / Full switch inside it', () => {
+    useAppStore.setState({ selectedChord: buildChord({ natural: 'G', accidental: '' }, 'major') });
+    render(<Explore />);
+    fireEvent.click(screen.getAllByTestId('words-open')[0]);
+    const sheet = screen.getByRole('dialog', { name: 'Words on this screen' });
+    const words = () => [...sheet.querySelectorAll('[data-word]')].map((li) => li.getAttribute('data-word'));
+    expect(words()).toEqual(expect.arrayContaining(['formula', 'inversion', 'compatibleScales']));
+    fireEvent.click(within(sheet).getByRole('radio', { name: 'Simple' }));
+    expect(useAppStore.getState().exploreDetail).toBe('simple');
+    // (The circle's facts stay here: this harness renders CircleNavigator itself; ExploreView leaves it out of Simple.)
+    for (const gone of ['formula', 'inversion', 'compatibleScales']) expect(words()).not.toContain(gone);
+    expect(words()).toEqual(expect.arrayContaining(['keySignature', 'degree', 'chordsInKey']));
+    fireEvent.click(within(sheet).getByRole('radio', { name: 'Full' }));
+    expect(words()).toEqual(expect.arrayContaining(['formula', 'inversion', 'compatibleScales']));
+  });
+
+  it('Simple numbers a five- or six-note scale by its degrees, as Full and the colours do', () => {
+    useAppStore.setState({ exploreDetail: 'simple', selectedKey: { natural: 'A', accidental: '' }, selectedScale: 'pentatonic_minor' });
+    render(<Explore />);
+    expect([...document.querySelectorAll('.strip-degree')].map((d) => d.textContent)).toEqual(['1', '♭3', '4', '5', '♭7', '1']);
+    cleanup();
+    useAppStore.setState({ selectedScale: 'blues' });
+    render(<Explore />);
+    expect([...document.querySelectorAll('.strip-degree')].map((d) => d.textContent)).toEqual(['1', '♭3', '4', '♭5', '5', '♭7', '1']);
+  });
+
+  it('Simple\'s dock read-out names a minor key\'s 3rd as ♭3, as the strip does', () => {
+    const t = i18n.t.bind(i18n) as (k: string, o?: Record<string, unknown>) => string;
+    const scale = buildScale({ natural: 'C', accidental: '' }, 'natural_minor');
+    const input = { focus: { pc: 3, midi: 63, source: 'staff' as const }, scale, chord: null, spellPitchClass: () => ({ natural: 'E' as const, accidental: 'b' as const }), t, simple: true };
+    expect(readoutParts(input).keyRole).toBe('note ♭3 of C Natural Minor');
+  });
+
+  it('switching to Simple plays the chord in root position (Simple has no voicing control)', () => {
+    useAppStore.setState({ exploreDetail: 'full', selectedChord: buildChord({ natural: 'G', accidental: '' }, 'major'), chordInversion: 1 });
+    render(<Explore />);
+    fireEvent.click(within(screen.getByRole('radiogroup', { name: 'How much to show' })).getByRole('radio', { name: 'Simple' }));
+    expect(useAppStore.getState().chordInversion).toBe(0);
+    expect(useAppStore.getState().selectedChord?.root.natural).toBe('G');
+  });
+
+  it('the signature in the summary also explains what a sharp and a flat are', () => {
+    useAppStore.setState({ exploreDetail: 'simple', selectedKey: { natural: 'G', accidental: '' } });
+    render(<Explore />);
+    expect(visibleTermIds()).toContain('sharpFlat');
+    fireEvent.click(within(screen.getByTestId('key-summary')).getByRole('button', { name: 'one sharp' }));
+    const dialog = screen.getByRole('dialog', { name: 'Key signature' });
+    expect(within(dialog).getByRole('heading', { name: 'Sharp ♯ and flat ♭' })).toBeTruthy();
+  });
+
+  it('a laptop\'s explanation follows its word when the column scrolls, and tapping the word again closes it', () => {
+    render(<Explore />);
+    const word = within(screen.getByTestId('key-summary')).getByRole('button', { name: 'relative A minor' });
+    let top = 100;
+    word.getBoundingClientRect = () => new DOMRect(40, top, 120, 20);
+    fireEvent.pointerDown(word);
+    fireEvent.click(word);
+    const pop = screen.getByTestId('glossary-popover');
+    expect(pop.style.top).toBe('128px');
+    top = 60;
+    act(() => { document.querySelector('[data-testid="key-summary"]')!.dispatchEvent(new Event('scroll', { bubbles: false })); });
+    expect(pop.style.top).toBe('88px');
+    fireEvent.pointerDown(word);
+    fireEvent.click(word);
+    expect(screen.queryByTestId('glossary-popover')).toBeNull();
   });
 });
 
@@ -177,7 +246,8 @@ describe('Simple view', () => {
     useAppStore.setState({ exploreDetail: 'simple', selectedKey: { natural: 'A', accidental: '' }, selectedScale: 'natural_minor' });
     render(<Explore />);
     const degrees = [...document.querySelectorAll('.strip-degree')].map((d) => d.textContent);
-    expect(degrees).toEqual(['1', '2', '3', '4', '5', '6', '7', '1']);
+    // The degrees as Full writes them (no degree names): A minor's 3rd, 6th and 7th are ♭.
+    expect(degrees).toEqual(['1', '2', '♭3', '4', '5', '♭6', '♭7', '1']);
     expect(document.querySelector('.strip-fn')).toBeNull();
     expect(screen.queryByRole('tablist')).toBeNull();
     fireEvent.click(screen.getAllByRole('button', { name: /E minor chord|E Minor chord/i })[0]);

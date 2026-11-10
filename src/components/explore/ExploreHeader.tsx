@@ -130,11 +130,11 @@ export function ExploreHeader({ practiceAction, onPractise }: {
         <p className="explore-summary" data-testid="key-summary">
           <Term id={scaleTermId(selectedScale)} testId="summary-key"><span className="explore-summary-key">{keyName(scale, t)}</span></Term>
           {simple ? (
-            plainSignature && <>{' · '}<Term id="keySignature">{plainSignature}</Term></>
+            plainSignature && <>{' · '}<Term id="keySignature" also={['sharpFlat']}>{plainSignature}</Term></>
           ) : (
             <>
               {' · '}
-              <Term id="keySignature">{facts.signatureText}</Term>
+              <Term id="keySignature" also={['sharpFlat']}>{facts.signatureText}</Term>
               {facts.relative && <>{' · '}<Term id="relativeKey">{t('explore.relativeKey', { key: facts.relative })}</Term></>}
             </>
           )}

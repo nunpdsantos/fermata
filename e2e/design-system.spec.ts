@@ -1432,7 +1432,7 @@ for (const v of VIEWPORTS) {
       await expect(simple.page.getByTestId('see-everything')).toBeVisible();
       await simple.page.waitForTimeout(400);
       await check(simple.page, v, combo, 'simple-chord');
-      await simple.page.getByTestId('key-summary').locator('.term[data-term="keySignature"]').click();
+      await simple.page.getByTestId('key-summary').locator('.term[data-term~="keySignature"]').click();
       await expect(simple.page.getByRole('dialog', { name: 'Key signature' })).toBeVisible();
       await check(simple.page, v, combo, 'simple-explanation');
       await simple.context.close();

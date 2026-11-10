@@ -11,7 +11,8 @@ import { test, expect, type Browser, type Page } from '@playwright/test';
  *    words, Simple does not);
  *  - Simple ↔ Full keeps the key, the chord and the instrument;
  *  - Simple's contents: the short scale list, the summary in words, the
- *    numbers 1–7, the In key row only, the trimmed chord detail, no circle;
+ *    degree numbers (1–7 in a major key, ♭3 in a minor pentatonic), the In
+ *    key row only, the trimmed chord detail, no circle;
  *  - a guided profile (set through the wave-1 contract's setter) starts in
  *    Simple, and a learner's own choice wins over it after a reload.
  */
@@ -130,6 +131,16 @@ for (const view of ['phone', 'laptop'] as const) {
         const simple = await page.getByTestId('glossary-sheet').locator('[data-word]').evaluateAll((els) => els.map((e) => e.getAttribute('data-word')));
         expect(simple).toEqual(expect.arrayContaining(['keySignature', 'degree', 'chordsInKey']));
         for (const gone of ['inversion', 'formula', 'compatibleScales', 'circleOfFifths', 'relativeKey', 'dominant']) expect(simple).not.toContain(gone);
+        // After review: the list's own Simple / Full switch re-reads the page behind it.
+        const listSheet = page.getByTestId('glossary-sheet');
+        await listSheet.getByRole('radio', { name: lang === 'en' ? 'Full' : 'Completa' }).click();
+        await expect.poll(() => listSheet.locator('[data-word]').evaluateAll((els) => els.map((e) => e.getAttribute('data-word')))).toEqual(expect.arrayContaining(['inversion', 'formula', 'compatibleScales']));
+        await context.close();
+      });
+
+      test('Simple numbers a pentatonic scale by its degrees (as Full and the colours do)', async ({ browser }) => {
+        const { context, page } = await open(browser, view, { language: lang, exploreDetail: 'simple', selectedKey: { natural: 'A', accidental: '' }, selectedScale: 'pentatonic_minor' });
+        await expect(page.locator('.strip-degree')).toHaveText(['1', '♭3', '4', '5', '♭7', '1']);
         await context.close();
       });
 

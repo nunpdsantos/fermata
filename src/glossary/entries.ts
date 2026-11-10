@@ -41,7 +41,7 @@ export interface GlossaryContext {
 
 export interface Example {
   /** Which template of the entry: 'example' unless the entry has another. */
-  template?: 'example' | 'exampleNone' | 'exampleWhole';
+  template?: 'example' | 'exampleNone' | 'exampleWhole' | 'exampleTwo';
   vars: Record<string, string | number>;
 }
 
@@ -148,10 +148,22 @@ const chordEntry = (id: TermId, quality: ChordQuality, learn: string | undefined
   hear: chordHear(id, quality, before),
 });
 
+/**
+ * The root a scale's entry is built on: the key's for the key's own scale;
+ * with a chord open, any other scale is one of its "Compatible scales · D"
+ * chips, which mean that scale on the CHORD's root (choosing one makes the
+ * chord's root the key).
+ */
+const scaleRootFor = (ctx: GlossaryContext, type: ScaleType): Note =>
+  ctx.chord && type !== ctx.scaleType ? ctx.chord.root : ctx.root;
+
 const scaleEntry = (type: ScaleType, learn?: string): EntrySpec => ({
   learn,
-  example: (ctx) => ({ vars: { root: name(ctx.root), notes: list(buildScale(ctx.root, type).notes) } }),
-  hear: (ctx) => phrase(...scalePitches(ctx, type)),
+  example: (ctx) => {
+    const root = scaleRootFor(ctx, type);
+    return { vars: { root: name(root), notes: list(buildScale(root, type).notes) } };
+  },
+  hear: (ctx) => phrase(...scalePitches(ctx, type, scaleRootFor(ctx, type))),
 });
 
 const SCALE_LEARN: Partial<Record<ScaleType, string>> = {
@@ -435,11 +447,14 @@ const BASE: Record<string, EntrySpec> = {
   alteredChord: chordEntry('alteredChord', 'dominant7sharp9', 'l7u21m2', 'dominant7'),
   inversion: {
     learn: 'l2u7m4',
-    example: (ctx) => {
+    example: (ctx): Example => {
       const c = chordFor(ctx, 'inversion', 'major');
       const n = c.notes;
       const rot = (k: number) => list([...n.slice(k), ...n.slice(0, k)]);
-      return { vars: { chord: chordSymbol({ ...c, bassNote: undefined }), p0: rot(0), p1: rot(1), p2: rot(2 % n.length) } };
+      const chord = chordSymbol({ ...c, bassNote: undefined });
+      // A two-note chord (a power chord) has no 2nd inversion.
+      if (n.length < 3) return { template: 'exampleTwo', vars: { chord, p0: rot(0), p1: rot(1) } };
+      return { vars: { chord, p0: rot(0), p1: rot(1), p2: rot(2) } };
     },
     // Root position, then the 1st inversion: same notes, the 3rd lowest.
     hear: (ctx) => {
@@ -478,7 +493,8 @@ const BASE: Record<string, EntrySpec> = {
       return phrase(chordPitches(ctx, base.notes), chordPitches(ctx, base.notes, bass));
     },
   },
-  outOfKey: { learn: 'l4u14m3' },
+  // Mode mixture: the borrowed chords the Build tab marks out of key (♭VII …).
+  outOfKey: { learn: 'l5u16m4' },
   fret: { learn: 'l1u33m1' },
   position: { learn: 'l1u33m3' },
   fingerNumbers: { learn: 'l1u33m2' },
