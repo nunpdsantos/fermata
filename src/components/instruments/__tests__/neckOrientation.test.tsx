@@ -104,6 +104,29 @@ describe.each(COMBOS)('nut %s, %s string on top', (nut, top) => {
     expect(allMarks[all.indexOf(3)].textContent).toBe('•');
   });
 
+  // Final review (2026-11-10): the marker row and the fret wires are mirrored
+  // with the nut, so each sits over its own column (mutations of either
+  // survived: the e2e measures neither).
+  it('the marker row and the fret-wire overlay are laid out from the nut side', async () => {
+    const root = await scenario('dock-laptop-position-V')();
+    const markers = root.querySelector('[data-dock-row="frets"]')!.parentElement!.firstElementChild!;
+    const parts = [...markers.children].map((c) => {
+      const st = (c as HTMLElement).style;
+      return c.classList.contains('flex-1') ? 'frets' : st.width === '32px' ? 'gutter' : st.width === '6px' ? 'nut' : 'open';
+    });
+    expect(parts).toEqual(sideOfNut ? ['open', 'nut', 'frets', 'gutter'] : ['gutter', 'frets', 'nut', 'open']);
+    // The string rows the same way: the open string at the nut end.
+    const firstRow = root.querySelector('[data-dock-row="string"]')!;
+    expect(before(firstRow.querySelector('[data-open-string]')!, firstRow.querySelector('[data-fret]')!)).toBe(sideOfNut);
+    const wires = root.querySelector<HTMLElement>('.absolute.inset-0.flex.pointer-events-none')!;
+    expect(wires.style.left).toBe(sideOfNut ? 'calc(var(--fret-open-width) + 6px)' : '32px');
+    expect(wires.style.right).toBe(sideOfNut ? '32px' : 'calc(var(--fret-open-width) + 6px)');
+    for (const wire of [...wires.children] as HTMLElement[]) {
+      expect(wire.style.borderLeft !== '', 'wire on the nut side').toBe(sideOfNut);
+      expect(wire.style.borderRight !== '').toBe(!sideOfNut);
+    }
+  });
+
   it('the chord\'s "Nfr" and the open "0" are at the nut end', async () => {
     const root = await scenario('dock-laptop-chord-F-barre')();
     const row = root.querySelector('[data-dock-row="frets"]')!;
@@ -135,6 +158,28 @@ describe.each(COMBOS)('nut %s, %s string on top', (nut, top) => {
     fireEvent.keyDown(grid, { key: 'ArrowUp' });
     fireEvent.keyDown(grid, { key: 'ArrowUp' });
     expect(live()).toMatch(new RegExp(`^String ${topString},`));
+  });
+
+  // Final review (2026-11-10): the keyboard's cell on a fret the board no
+  // longer draws (the whole neck → a position) left the arrows dead and the
+  // live region naming a fret that is not there. The next arrow brings it
+  // back onto the board, at the drawn fret nearest to it.
+  it('after the board changes under the keyboard\'s cell, the next arrow lands on a drawn fret', async () => {
+    const root = await scenario('dock-laptop-whole-neck')();
+    const grid = screen.getByRole('grid');
+    const live = () => grid.querySelector('[aria-live]')!.textContent!;
+    fireEvent.keyDown(grid, { key: 'ArrowDown' });
+    const higher = sideOfNut ? 'ArrowRight' : 'ArrowLeft';
+    for (let i = 0; i < 9; i++) fireEvent.keyDown(grid, { key: higher });
+    expect(live()).toMatch(/, fret 10,/);
+    act(() => useAppStore.setState({ guitarScalePosition: 1 }));
+    const drawn = fretNumbers(root);
+    expect(drawn).not.toContain(10);
+    for (const key of ['ArrowLeft', 'ArrowRight'] as const) {
+      fireEvent.keyDown(grid, { key });
+      const fret = Number(/, fret (\d+),/.exec(live())![1]);
+      expect(drawn, `${key}: fret ${fret}`).toContain(fret);
+    }
   });
 
   it('› steps to the higher frets, and ‹ back (the [ ] keys too); the higher frets are drawn on the far side from the nut', async () => {
@@ -309,12 +354,21 @@ describe('the barre overlay follows a change of either setting', () => {
     const barreCell = () => root.querySelector('[data-fret="1"]')!.getBoundingClientRect();
     const expected = () => `${barreCell().left + barreCell().width / 2 - 12}px`;
     expect(overlay().style.left).toBe(expected());
+    // Final review: it spans from the string DRAWN on top to the one drawn at
+    // the bottom of the barre, whichever is on top (a negative height before).
+    const spans = () => {
+      const cells = [...root.querySelectorAll('[data-fret="1"]')].map((c) => c.getBoundingClientRect().top);
+      return { top: `${Math.min(...cells) + 15 - 12}px`, height: `${Math.max(...cells) - Math.min(...cells) + 24}px` };
+    };
+    expect({ top: overlay().style.top, height: overlay().style.height }).toEqual(spans());
+    expect(parseFloat(overlay().style.height)).toBeGreaterThan(24);
     const before = overlay().style.left;
     act(() => useAppStore.getState().setNeckNutSide(nut === 'left' ? 'right' : 'left'));
     expect(overlay().style.left).not.toBe(before);
     expect(overlay().style.left).toBe(expected());
     act(() => useAppStore.getState().setNeckTopString(top === 'high' ? 'low' : 'high'));
     expect(overlay().style.left).toBe(expected());
+    expect({ top: overlay().style.top, height: overlay().style.height }).toEqual(spans());
   });
 });
 
@@ -327,7 +381,10 @@ describe('orientation helpers', () => {
     expect(drawnNeighbour([3, 2, 1], 1, 1)).toBe(1);
     expect(drawnNeighbour([3, 2, 1], 1, -1)).toBe(2);
     expect(drawnNeighbour([5, 4, 3, 2, 1, 0], 5, -1)).toBe(5);
-    expect(drawnNeighbour([1, 2], 9, 1)).toBe(9);
+    // A value the board no longer draws: the drawn one nearest to it (final review).
+    expect(drawnNeighbour([1, 2], 9, 1)).toBe(2);
+    expect(drawnNeighbour([4, 3, 2, 1], 9, -1)).toBe(4);
+    expect(drawnNeighbour([7, 8, 9], 2, -1)).toBe(7);
     const el = { scrollWidth: 500, clientWidth: 200 } as HTMLElement;
     expect(nutScrollLeft(el, 'left')).toBe(0);
     expect(nutScrollLeft(el, 'right')).toBe(300);

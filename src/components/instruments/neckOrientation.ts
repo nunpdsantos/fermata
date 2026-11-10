@@ -50,11 +50,16 @@ export function stringsDown(top: NeckTopString): readonly number[] {
 /**
  * The neighbour of `current` in a drawn sequence (frets left to right, or
  * strings top to bottom), `step` places on (+1 = right / down), clamped at
- * the ends. A value not in the sequence stays where it is.
+ * the ends. A value not in the sequence (a fret the board stopped drawing
+ * when the position changed) comes back onto the board: the drawn value
+ * nearest to it.
  */
 export function drawnNeighbour(drawn: readonly number[], current: number, step: 1 | -1): number {
   const i = drawn.indexOf(current);
-  if (i < 0) return current;
+  if (i < 0) {
+    if (drawn.length === 0) return current;
+    return drawn.reduce((best, v) => (Math.abs(v - current) < Math.abs(best - current) ? v : best));
+  }
   return drawn[Math.max(0, Math.min(drawn.length - 1, i + step))];
 }
 

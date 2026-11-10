@@ -37,17 +37,29 @@ describe('Settings → Guitar neck', () => {
   });
 
   it.each([
-    ['pt', 'Braço da guitarra', 'As tablaturas costumam pôr a corda fina em cima.', 'Cordas soltas à esquerda', 'Corda fina em cima'],
-    ['es', 'Mástil de la guitarra', 'Las tablaturas suelen poner la cuerda fina arriba.', 'Cuerdas al aire a la izquierda', 'Cuerda fina arriba'],
-  ] as const)('%s', async (lang, heading, hint, left, thin) => {
+    ['pt', 'Braço da guitarra', 'As tablaturas costumam pôr a corda fina em cima.', 'Cordas soltas à esquerda', 'Cordas soltas à direita', 'Corda fina em cima', 'Corda grossa em cima'],
+    ['es', 'Mástil de la guitarra', 'Las tablaturas suelen poner la cuerda fina arriba.', 'Cuerdas al aire a la izquierda', 'Cuerdas al aire a la derecha', 'Cuerda fina arriba', 'Cuerda gruesa arriba'],
+  ] as const)('%s', async (lang, heading, hint, left, right, thin, thick) => {
+    // The owner's view (nut right, thick string on top) is shown as such.
+    useAppStore.setState({ neckNutSide: 'right', neckTopString: 'low' });
     await act(() => i18n.changeLanguage(lang));
     render(<SettingsSheet open onClose={() => {}} />);
     const row = screen.getByTestId('neck-settings');
     expect(within(row).getByText(heading)).toBeTruthy();
     // The hint names the THIN string on top, as the option it points to does.
     expect(within(row).getByText(hint)).toBeTruthy();
-    expect(within(row).getByRole('radio', { name: left })).toBeTruthy();
-    expect(within(row).getByRole('radio', { name: thin })).toBeTruthy();
+    // Final review (2026-11-10): each label sets what it says (a swapped
+    // pair passed: only the names were checked).
+    expect(within(row).getByRole('radio', { name: right }).getAttribute('aria-checked')).toBe('true');
+    expect(within(row).getByRole('radio', { name: thick }).getAttribute('aria-checked')).toBe('true');
+    fireEvent.click(within(row).getByRole('radio', { name: left }));
+    expect(useAppStore.getState().neckNutSide).toBe('left');
+    fireEvent.click(within(row).getByRole('radio', { name: right }));
+    expect(useAppStore.getState().neckNutSide).toBe('right');
+    fireEvent.click(within(row).getByRole('radio', { name: thin }));
+    expect(useAppStore.getState().neckTopString).toBe('high');
+    fireEvent.click(within(row).getByRole('radio', { name: thick }));
+    expect(useAppStore.getState().neckTopString).toBe('low');
   });
 
   it('EN, PT and ES carry the same neckView keys, all non-empty', () => {
