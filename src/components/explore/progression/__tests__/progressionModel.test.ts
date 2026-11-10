@@ -138,6 +138,13 @@ describe('the key line: "fit", never "is"', () => {
     expect(keyLineSentences(keyLine(chords, major('G'))!, chords, tFor('pt'), 'pt').current).toBe('Os quatro acordes encaixam em G maior.');
     expect(keyLineSentences(keyLine(chords, major('C'))!, chords, tFor('es'), 'es').current).toBe('Tres de cuatro encajan en C mayor; D no.');
   });
+  it('"more" means more different chords: a key that only fits a repeated chord more often is not offered', () => {
+    // F♯ and C share no key; F♯ major fits the repeated F♯ (two chips), C major the one C.
+    const chords = readChords(['F#', 'F#', 'C']);
+    const line = keyLine(chords, major('C'))!;
+    expect(line.current.fit).toBe(1);
+    expect(line.better).toBeNull();
+  });
   it('no chords, no line', () => {
     expect(keyLine([], major('C'))).toBeNull();
   });
