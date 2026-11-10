@@ -10,6 +10,7 @@ import { GUITAR_TUNINGS } from '../core/constants/guitarTunings.ts';
 import { isAppLanguage } from '../i18n/language.ts';
 import { sanitizeDockDetents, sanitizeDockChosen } from './dock.ts';
 import type { AppState } from './storeTypes.ts';
+import { progressionToSave, sanitizeSavedProgression } from './progressionSave.ts';
 
 // Re-export types so consumers don't need to change imports
 export type { AppState, ViewMode, InstrumentType, ColorMode, ThemeMode, NeckNutSide, NeckTopString } from './storeTypes.ts';
@@ -129,6 +130,10 @@ export function sanitizePersistedAppState(persisted: unknown): Record<string, un
     else if (raw?.explore !== c.explore || raw?.learn !== c.learn) state.dockChosen = c;
   }
 
+  // progression (wave 2, optional): chord symbols, tempo, beats — the same
+  // object when valid (the backup check compares with Object.is), else gone.
+  if ('progression' in state && sanitizeSavedProgression(state.progression) === null) delete state.progression;
+
   // Numeric fields: non-finite or out of range falls back to the default.
   for (const [k, { min, max, integer }] of Object.entries(NUMERIC_RANGES)) {
     const v = state[k];
@@ -210,6 +215,8 @@ export const useAppStore = create<AppState>()(
           // Written only when on: a save from someone who never turns it on
           // stays exactly what it was (the frozen v6 envelope tests).
           ...(state.showSolfege ? { showSolfege: true } : {}),
+          // Wave 2: the Progression panel's chords, only while there is one.
+          ...progressionToSave(state.progression),
         };
       },
       migrate: (persisted: unknown, version: number) => {

@@ -8,6 +8,7 @@
 import type { Note, ScaleType, Chord, PitchedNote } from '../core/types/music.ts';
 import type { SynthPresetName } from '../core/types/visual.ts';
 import type { Detent, DockView } from './dock.ts';
+import type { SavedProgression } from './progressionSave.ts';
 
 // ─── Enums ──────────────────────────────────────────────────────────────────
 
@@ -165,6 +166,10 @@ export interface PreferencesSlice {
    *  note or key is named and there is room (wave 1, stream E). Off by default;
    *  no effect in English. Letters stay everywhere (D-18). */
   showSolfege: boolean;
+  /** The Progression panel's chords, tempo and beats (wave 2, stream S;
+   *  `state/progressionSave.ts`). Undefined until the learner adds a chord.
+   *  Optional in the v6 save: written only while it holds a chord. */
+  progression?: SavedProgression;
   setColorMode: (mode: ColorMode) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setScaleOctaves: (octaves: 1 | 2) => void;
@@ -175,6 +180,7 @@ export interface PreferencesSlice {
   setExploreCircleOpen: (open: boolean) => void;
   setExploreDetail: (detail: ExploreDetail) => void;
   setShowSolfege: (on: boolean) => void;
+  setProgression: (progression: SavedProgression | undefined) => void;
   /**
    * Open (or rest) the instrument dock of the CURRENT view at a detent — the
    * API a Learn exercise calls when it needs the instrument (D-20). No-op in

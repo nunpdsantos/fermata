@@ -41,6 +41,8 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
   // Simple has no voicing control: its chord sounds and shows in root position.
   setExploreDetail: (detail) => set(detail === 'simple' ? { exploreDetail: detail, chordInversion: 0 } : { exploreDetail: detail }),
   setShowSolfege: (on) => set({ showSolfege: on, preferencesUpdatedAt: Date.now() }),
+  // No default value: undefined until the learner's first chord (wave 2).
+  setProgression: (progression) => set({ progression }),
   // The app opening the dock for an exercise is not the learner's choice.
   requestDock: (detent) => {
     const { view, dockDetents } = get();

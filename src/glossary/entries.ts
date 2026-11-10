@@ -27,6 +27,7 @@ import { keyFacts, MINOR_FAMILY } from '../components/explore/keyFacts.ts';
 import { chordSymbol } from '../components/explore/focusReadout.ts';
 import type { InstrumentType } from '../state/storeTypes.ts';
 import { QUALITY_TERM, type TermId, SCALE_TERM_IDS } from './termIds.ts';
+import { getPreset, presetChords } from '../core/utils/progression/index.ts';
 
 export type T = (key: string, opts?: Record<string, unknown>) => string;
 
@@ -549,6 +550,33 @@ const BASE: Record<string, EntrySpec> = {
       return phrase(...ps, top, ...[...ps].reverse());
     },
   },
+  // Wave 2 (the Progression panel, the capo): a common progression in the
+  // key on screen, from the engine — major-family scales I–V–vi–IV, minor
+  // ones i–VII–VI–VII; none for a mode or another scale.
+  progression: {
+    example: (ctx, t) => {
+      const mode = MAJOR_FAMILY.has(ctx.scaleType) ? 'major' : MINOR_FAMILY.has(ctx.scaleType) ? 'minor' : null;
+      if (!mode) return null;
+      const preset = getPreset(mode === 'major' ? 'I-V-vi-IV' : 'i-VII-VI-VII');
+      const chords = presetChords(preset, { root: ctx.root, mode });
+      return {
+        vars: {
+          key: t(mode === 'major' ? 'circle.keyMajor' : 'circle.keyMinor', { note: name(ctx.root) }),
+          numerals: preset.numerals.join('–'),
+          chords: chords.map(chordSymbol).join(' '),
+        },
+      };
+    },
+    hear: (ctx) => {
+      const mode = MAJOR_FAMILY.has(ctx.scaleType) ? 'major' : MINOR_FAMILY.has(ctx.scaleType) ? 'minor' : null;
+      if (!mode) return null;
+      const chords = presetChords(getPreset(mode === 'major' ? 'I-V-vi-IV' : 'i-VII-VI-VII'), { root: ctx.root, mode });
+      return phrase(...chords.map((c) => chordPitches(ctx, c.notes)));
+    },
+  },
+  tempo: {},
+  capo: {},
+  transpose: {},
 };
 
 const SCALES: Record<string, EntrySpec> = Object.fromEntries(

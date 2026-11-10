@@ -13,7 +13,7 @@ import { TourEngine, type EngineState } from './engine';
 import type { StepContext, TourStep } from './types';
 import { waitSettled } from './dom';
 import {
-  chordsTabSelector, currentChordsTab, holdAppSaving, removeEmptyLearnRecord, restoreChordsTab, restoreSnapshot, takeSnapshot, type TourSnapshot,
+  chordsTabSelector, currentChordsTab, holdAppSaving, removeEmptyLearnRecord, restoreChordsTab, restoreProgressionPanel, restoreSnapshot, takeSnapshot, type TourSnapshot,
 } from './snapshot';
 import { drillVisitIsQuiet, learnVisitIsQuiet } from './guards';
 import { introTour, SEL, SHORT_QUERY, WORKBENCH_QUERY } from './introTour';
@@ -176,6 +176,8 @@ export class TourSession {
       if (choice === 'restore' && view === 'explore' && tab && currentChordsTab() !== tab) {
         if (await waitSettled(chordsTabSelector(tab), new AbortController().signal, 3000)) restoreChordsTab(this.snapshot);
       }
+      // Last: the Progression panel hides the tabs (wave 2).
+      if (choice === 'restore' && view === 'explore') restoreProgressionPanel(this.snapshot);
     } finally {
       this.release();
     }
@@ -207,9 +209,11 @@ export class TourSession {
     this.clearCueTimer();
     cancelScheduledAudio();
     // Never started: nothing to put back (and a restore would move a viewer
-    // in a lesson to Explore, guards.ts).
+    // in a lesson to Explore, guards.ts) — but the Progression panel the
+    // snapshot closed opens again.
     try {
-      if (this.started) restoreSnapshot(this.snapshot);
+      if (!this.started) restoreProgressionPanel(this.snapshot);
+      else if (restoreSnapshot(this.snapshot) === 'explore') restoreProgressionPanel(this.snapshot);
     } finally {
       this.release();
     }

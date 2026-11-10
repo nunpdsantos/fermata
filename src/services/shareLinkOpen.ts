@@ -27,6 +27,8 @@ import { withGlyphs } from '../core/utils/accidentalGlyphs.ts';
 import { getModuleTitle, loadModuleIndex } from '../data/moduleIndexI18n.ts';
 import { parseShareLink, isEmptyTarget, type ShareTarget } from './shareLinkParse.ts';
 import type { RawShareParams } from '../state/shareParams.ts';
+import { setCapoFret } from '../state/capo.ts';
+import { requestProgression } from '../state/progressionRequest.ts';
 
 /** How often a held link checks whether the work is over. */
 export const HELD_LINK_POLL_MS = 1500;
@@ -42,20 +44,26 @@ const t = (key: string, opts?: Record<string, unknown>) => i18n.t(key, opts) as 
  * link's key, scale and chord — the view first: leaving Learn gives back a
  * lesson's borrowed selection (lessonInstrument.ts), which must not land on
  * top of the link's.
+ *
+ * Wave 2: `capo` sets the capo; `prog` asks Explore for its Progression panel
+ * (state/progressionRequest.ts) with the chords and tempo — Explore's host
+ * loads them, or offers them when the learner has a progression of their own.
  */
 export function applyShareTarget(target: ShareTarget): void {
   const s = useAppStore.getState();
   if (target.inst && target.inst !== s.instrument) s.setInstrument(target.inst);
+  if (target.capo !== undefined) setCapoFret(target.capo);
   if (target.lesson) {
     useAppStore.getState().openLearnTarget(target.lesson);
     return;
   }
-  if (!target.key && !target.scale && !target.chord) return;
+  if (!target.key && !target.scale && !target.chord && !target.prog) return;
   if (useAppStore.getState().view !== 'explore') useAppStore.getState().setView('explore');
   // Scale before key: setScale never respells, so the link's spelling stands.
   if (target.scale) useAppStore.getState().setScale(target.scale);
   if (target.key) useAppStore.getState().setKey(target.key);
   if (target.chord) useAppStore.getState().setSelectedChord(target.chord);
+  if (target.prog) requestProgression({ chords: target.prog, ...(target.bpm !== undefined ? { bpm: target.bpm } : {}) });
 }
 
 /** "D Major, the A chord, on the guitar" / "the lesson “The Major Scale”", in the app's language. */
@@ -73,6 +81,8 @@ export function describeShareTarget(target: ShareTarget): string {
     parts.push(`${withGlyphs(key)} ${t(`scaleName.${scale}`)}`);
   }
   if (target.chordSymbol) parts.push(t('share.target.chord', { chord: withGlyphs(target.chordSymbol) }));
+  if (target.prog) parts.push(t('progression.target', { chords: target.prog.map((c) => withGlyphs(c)).join(' ') }));
+  if (target.capo !== undefined && target.capo > 0) parts.push(t('progression.targetCapo', { fret: target.capo }));
   if (target.inst) parts.push(t(parts.length ? `share.target.${target.inst}` : `share.target.${target.inst}Alone`));
   return parts.join(', ');
 }
