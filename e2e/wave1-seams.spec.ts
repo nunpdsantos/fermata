@@ -187,16 +187,19 @@ test.describe('3. start screen ↔ plain words', () => {
     for (const instrument of ['piano', 'guitar'] as const) {
       for (const lang of ['en', 'pt', 'es'] as const) {
         const hint = instrument === 'piano' ? 'new' : 'player';
-        test(`${v.name} ${instrument} ${lang}: Simple view with the "${hint}" hint fits; ▶ Chord in view with a chord open`, async ({ browser }) => {
+        // PT / ES: what a door leaves since the owner's 8.1 — Dó-Ré-Mi on.
+        test(`${v.name} ${instrument} ${lang}${lang === 'en' ? '' : ' + Dó-Ré-Mi'}: Simple view with the "${hint}" hint fits; ▶ Chord in view with a chord open`, async ({ browser }) => {
           test.setTimeout(60_000);
           const { context, page } = await seededBrowser(browser, v, {
             lastView: 'explore', language: lang, themeMode: 'fermata', instrument,
             learnerProfile: hint, startHint: hint, neckNutSide: 'left', neckTopString: 'high',
+            ...(lang === 'en' ? {} : { showSolfege: true }),
           }, {}, { lang });
           await page.goto('/');
           const hintEl = page.getByTestId('start-hint');
           await expect(hintEl).toBeVisible({ timeout: 15_000 });
           expect(await exploreDetail(page)).toBe('simple');
+          if (lang !== 'en') await expect(page.getByTestId('key-summary')).toContainText(lang === 'pt' ? 'C (Dó)' : 'C (Do)');
           const where = `${v.name} ${instrument} ${lang}`;
           const topBar = (await boxOf(page, '.app-topbar'))!;
           const hb = (await boxOf(page, '[data-testid="start-hint"]'))!;
@@ -279,20 +282,26 @@ test.describe('4. start screen ↔ guitar neck', () => {
 
 // ─── 5. Tour ↔ Simple view ──────────────────────────────────────────────────
 test.describe('5. tour ↔ Simple view', () => {
-  for (const v of [PHONE, LAPTOP]) {
-    for (const instrument of ['piano', 'guitar'] as const) {
-      test(`${v.name} ${instrument}: a guided learner's tour from the menu runs to its end card in Simple, never over the hint, and "Back to where I was" returns to Simple; the "player" hint survives`, async ({ browser }) => {
+  const RUNS = [
+    ...[PHONE, LAPTOP].flatMap((v) => (['piano', 'guitar'] as const).map((instrument) => ({ v, instrument, lang: 'en' as Lang }))),
+    // A pt-PT newcomer's default screen since 8.1: Simple + the hint + Dó-Ré-Mi.
+    ...[PHONE, LAPTOP].map((v) => ({ v, instrument: 'guitar' as const, lang: 'pt' as Lang })),
+  ];
+  for (const { v, instrument, lang } of RUNS) {
+    {
+      test(`${v.name} ${instrument} ${lang}${lang === 'pt' ? ' + Dó-Ré-Mi' : ''}: a guided learner's tour from the menu runs to its end card in Simple, never over the hint, and "Back to where I was" returns to Simple; the "player" hint survives`, async ({ browser }) => {
         test.setTimeout(150_000);
         const { context, page } = await seededBrowser(browser, v, {
-          lastView: 'explore', language: 'en', themeMode: 'fermata', instrument,
+          lastView: 'explore', language: lang, themeMode: 'fermata', instrument,
           learnerProfile: 'player', startHint: 'player', neckNutSide: 'left', neckTopString: 'high',
           selectedKey: { natural: 'A', accidental: '' }, selectedScale: 'major',
-        });
+          ...(lang === 'pt' ? { showSolfege: true } : {}),
+        }, {}, { lang });
         await page.goto('/');
         await expect(page.getByTestId('start-hint')).toBeVisible({ timeout: 15_000 });
         expect(await exploreDetail(page)).toBe('simple');
-        await menuTour(page);
-        const ids = await stepTo(page, 'en', undefined, async (step) => {
+        await menuTour(page, lang);
+        const ids = await stepTo(page, lang, undefined, async (step) => {
           const b = (await boxOf(page, '[data-testid="tour-bar"]'))!;
           const h = await boxOf(page, '[data-testid="start-hint"]');
           if (h) expect.soft(overlap(b, h), `${v.name} ${instrument} ${step}: the caption bar lies over the start hint`).toBe(0);
@@ -305,7 +314,8 @@ test.describe('5. tour ↔ Simple view', () => {
         await page.getByTestId('tour-restore').click();
         await expect(bar(page)).toHaveCount(0);
         expect(await exploreDetail(page)).toBe('simple');
-        await expect(page.getByTestId('key-summary')).toContainText('A Major');
+        await expect(page.getByTestId('key-summary')).toContainText(lang === 'pt' ? 'A (Lá) maior' : 'A Major');
+        if (lang === 'pt') expect((await savedState(page)).showSolfege).toBe(true);
         // The tour's own chord pick did not end the "player" hint.
         expect((await savedState(page)).startHint).toBe('player');
         await expect(page.getByTestId('start-hint')).toBeVisible();
@@ -479,4 +489,54 @@ test('10. a held share link ("Open") survives a tour and stays tappable after it
   await expect(page.getByTestId('key-summary')).toContainText('D Major', { timeout: 15_000 });
   await expect(page.getByRole('radio', { name: 'Guitar' }).first()).toHaveAttribute('aria-checked', 'true');
   await context.close();
+});
+
+// ─── 8.1 Dó-Ré-Mi for a new PT / ES visitor: where it does and does not come on ──
+test.describe('8.1 Dó-Ré-Mi on for a new PT / ES visitor, at a door only', () => {
+  for (const lang of ['pt', 'es'] as const) {
+    test(`${lang}: the tour from the start screen shows letters only and saves nothing (a known limit); the door then turns both names on`, async ({ browser }) => {
+      test.setTimeout(150_000);
+      const { context, page } = await freshBrowser(browser, LAPTOP, lang);
+      await page.goto('/');
+      await expect(startScreen(page)).toBeVisible({ timeout: 15_000 });
+      await page.getByTestId('start-tour').click();
+      await holding(page);
+      // The tour's first step chooses G major: letters only.
+      await expect(page.getByTestId('key-summary')).toContainText(lang === 'pt' ? 'G maior' : 'G mayor');
+      await expect(page.getByTestId('key-summary')).not.toContainText('(Sol)');
+      await stepTo(page, lang);
+      await page.getByTestId('tour-done').click();
+      await expect(startScreen(page)).toBeVisible();
+      expect(await savedState(page)).not.toHaveProperty('showSolfege');
+      await page.getByTestId('start-door-theory').click();
+      await expect(page.getByTestId('explore-root')).toBeVisible({ timeout: 15_000 });
+      expect((await savedState(page)).showSolfege).toBe(true);
+      await expect(page.getByTestId('key-summary')).toContainText(lang === 'pt' ? 'C (Dó)' : 'C (Do)');
+      await context.close();
+    });
+  }
+
+  test('pt: a new visitor who arrives by a share link sees letters only until a door (a known limit)', async ({ browser }) => {
+    const { context, page } = await freshBrowser(browser, PHONE, 'pt');
+    await page.goto('/?key=D&scale=major&chord=A&inst=guitar');
+    await expect(page.getByTestId('key-summary')).toContainText('D maior', { timeout: 15_000 });
+    await expect(page.getByTestId('key-summary')).not.toContainText('(Ré)');
+    expect(await savedState(page)).not.toHaveProperty('showSolfege');
+    await context.close();
+  });
+
+  test('en: a door in English writes nothing; switching to Portuguese later finds the switch off (a known limit)', async ({ browser }) => {
+    const { context, page } = await freshBrowser(browser, PHONE, 'en');
+    await page.goto('/');
+    await page.getByTestId('start-door-new').click();
+    await expect(page.getByTestId('explore-root')).toBeVisible({ timeout: 15_000 });
+    expect(await savedState(page)).not.toHaveProperty('showSolfege');
+    await page.getByRole('button', { name: /^More/ }).click();
+    await page.getByRole('menuitem', { name: 'Settings' }).click();
+    await page.getByRole('dialog', { name: 'Settings' }).getByRole('radio', { name: 'Português' }).click();
+    const chip = page.getByTestId('solfege-setting').getByRole('button', { name: 'Mostrar também Dó, Ré, Mi' });
+    await expect(chip).toHaveAttribute('aria-pressed', 'false');
+    expect(await savedState(page)).not.toHaveProperty('showSolfege');
+    await context.close();
+  });
 });

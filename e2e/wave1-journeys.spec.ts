@@ -14,9 +14,11 @@ import { PHONE, LAPTOP, type View, freshBrowser, seededBrowser, savedState, neck
  *    (English: nothing about Dó-Ré-Mi is saved.)
  *  - Player: an empty Portuguese browser → the start screen in Portuguese →
  *    "Toco, mas nunca aprendi teoria" + Guitarra → Simple, the guitar docked,
- *    nut on the left, the hint → a key and a chord → the hint gone for good →
- *    Settings: Dó-Ré-Mi on → both names → Copy link → that link in a second
- *    empty browser → the same key, chord and instrument, no start screen.
+ *    nut on the left, the hint, and both names (Dó-Ré-Mi is on after a door
+ *    in PT, the owner's 8.1) → a key and a chord → the hint gone for good →
+ *    Settings: Dó-Ré-Mi off → letters only → reload → still off → on again
+ *    → Copy link → that link in a second empty browser → the same key, chord
+ *    and instrument, no start screen.
  *  - Owner: the production-shaped v6 save and his four other stores → no
  *    start screen, Full view, nut on the right, nothing new saved; "Show me
  *    around" runs and "Back to where I was" puts back his key, scale, chord,
@@ -108,26 +110,46 @@ for (const v of [PHONE, LAPTOP] as View[]) {
     await expect(page.getByRole('radio', { name: 'Guitarra' }).first()).toHaveAttribute('aria-checked', 'true');
     expect(await neckDrawn(page)).toEqual({ strings: [1, 2, 3, 4, 5, 6], nut: 'left' });
     await expect(page.getByTestId('start-hint')).toBeVisible();
+    // Both names, right after the door: no visit to Settings.
+    await expect(page.getByTestId('key-summary')).toContainText('C (Dó) maior');
+    expect((await savedState(page)).showSolfege).toBe(true);
     // The key of a song: G.
     if (v.touch) {
       await page.getByTestId('key-picker').click();
-      await page.getByRole('dialog').getByRole('radio', { name: 'G', exact: true }).click();
+      await page.getByRole('dialog').getByRole('radio', { name: /^G( Sol)?$/ }).click(); // "G Sol": the chip shows both names
       await page.getByRole('dialog').getByRole('button', { name: 'Fechar', exact: true }).click();
     } else {
       await page.getByTestId('key-picker').selectOption({ label: 'G' });
     }
-    await expect(page.getByTestId('key-summary')).toContainText('G maior');
+    await expect(page.getByTestId('key-summary')).toContainText('G (Sol) maior');
     // A chord of that key: the hint is done (it leaves with Explore, never to return).
     await page.locator('[data-tour="chord-row"] > button').nth(3).click();
     await expect(page.getByTestId('chord-detail')).toBeVisible();
     expect((await savedState(page)).startHint).toBeUndefined();
-    // Settings: Dó-Ré-Mi.
-    await page.getByRole('button', { name: /^Mais/ }).click();
-    await page.getByRole('menuitem', { name: 'Definições' }).click();
-    const settings = page.getByRole('dialog', { name: 'Definições' });
-    await settings.getByTestId('solfege-setting').getByRole('button', { name: 'Mostrar também Dó, Ré, Mi' }).click();
-    await settings.getByRole('button', { name: 'Fechar', exact: true }).click();
+    // Settings: Dó-Ré-Mi off → letters only, and still off after a reload; then on again.
+    const toggle = async (pressed: 'true' | 'false') => {
+      await page.getByRole('button', { name: /^Mais/ }).click();
+      await page.getByRole('menuitem', { name: 'Definições' }).click();
+      const settings = page.getByRole('dialog', { name: 'Definições' });
+      const chip = settings.getByTestId('solfege-setting').getByRole('button', { name: 'Mostrar também Dó, Ré, Mi' });
+      await expect(chip).toHaveAttribute('aria-pressed', pressed === 'true' ? 'false' : 'true');
+      await chip.click();
+      await expect(chip).toHaveAttribute('aria-pressed', pressed);
+      await settings.getByRole('button', { name: 'Fechar', exact: true }).click();
+    };
+    await toggle('false');
+    await expect(page.getByTestId('key-summary')).toContainText('G maior');
+    await expect(page.getByTestId('key-summary')).not.toContainText('(Sol)');
+    expect(await savedState(page)).not.toHaveProperty('showSolfege');
+    await page.reload();
+    await expect(page.getByTestId('key-summary')).toContainText('G maior', { timeout: 15_000 });
+    await expect(page.getByTestId('key-summary')).not.toContainText('(Sol)');
+    await toggle('true');
     await expect(page.getByTestId('key-summary')).toContainText('G (Sol) maior');
+    await expect(page.getByTestId('start-hint')).toHaveCount(0); // done for good: gone after that reload
+    // The open chord is not saved: after the reload it is picked again.
+    await page.locator('[data-tour="chord-row"] > button').nth(3).click();
+    await expect(page.getByTestId('chord-detail')).toBeVisible();
     // The link, from Simple's own menu.
     await page.getByRole('button', { name: 'Ações da escala' }).click();
     await page.getByRole('menuitem', { name: v.touch ? 'Partilhar ligação' : 'Copiar ligação' }).click();
