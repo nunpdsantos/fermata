@@ -93,7 +93,7 @@ async function chooseInSettings(page: Page, nut: Nut, top: Top) {
   await page.getByRole('menuitem', { name: 'Settings' }).click();
   const dialog = page.getByRole('dialog', { name: 'Settings' });
   const row = dialog.getByTestId('neck-settings');
-  await expect(row).toContainText('Left with the thin string on top is how tab and chord charts are drawn.');
+  await expect(row).toContainText('The nut is where the open strings start. Guitar tab usually puts the thin string on top.');
   await row.getByRole('radio', { name: NUT_LABEL[nut] }).click();
   await row.getByRole('radio', { name: TOP_LABEL[top] }).click();
   await expect(row.getByRole('radio', { name: NUT_LABEL[nut] })).toHaveAttribute('aria-checked', 'true');

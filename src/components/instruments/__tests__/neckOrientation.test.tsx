@@ -206,6 +206,30 @@ describe.each(COMBOS)('nut %s, %s string on top', (nut, top) => {
       expect(numbers).toEqual(rows[0].frets);
     });
 
+    // Review 2026-11-10: the omitted fret spans keep their breaks in either
+    // drawn order (frets rise left to right when the nut is on the left).
+    it.each(['reading-position-V', 'reading-feedback-wrong'])('%s: omitted fret spans keep their "//" breaks, the header "…" and the width', async (name) => {
+      const root = await scenario(name)();
+      const rows = readingRows(root);
+      const frets = rows[0].frets;
+      const gaps = frets.filter((f, i) => i > 0 && Math.abs(frets[i - 1] - f) > 1).length;
+      expect(gaps).toBeGreaterThan(0);
+      for (const r of rows) {
+        expect(r.frets).toEqual(frets);
+        const row = r.label.parentElement!;
+        expect(row.querySelectorAll('[data-fret-break]').length).toBe(gaps);
+        // Each break sits right before the cell after the jump.
+        for (const brk of row.querySelectorAll('[data-fret-break]')) {
+          const next = brk.nextElementSibling!.querySelector<HTMLElement>('[data-fret]')!;
+          const i = frets.indexOf(Number(next.dataset.fret));
+          expect(Math.abs(frets[i - 1] - frets[i])).toBeGreaterThan(1);
+        }
+      }
+      const header = screen.getByTestId('reading-corner').parentElement!;
+      expect([...header.children].filter((c) => c.textContent === '…').length).toBe(gaps);
+      expect((header.parentElement as HTMLElement).style.minWidth).toBe(`${44 + frets.length * 44 + 6 + gaps * 24}px`);
+    });
+
     it('arrows follow the drawing, Home is the nut end; the tab stop starts on the top string', async () => {
       const root = await scenario('reading-open')();
       const cell = (s: number, f: number) => root.querySelector<HTMLElement>(`[data-string-row="${s}"][data-fret="${f}"]`)!;
@@ -253,6 +277,44 @@ describe('scroll start: the board opens at the nut end', () => {
     act(() => useAppStore.getState().setNeckNutSide(nut));
     const scroller = board.querySelector<HTMLElement>('[role="group"]')!;
     expect(scroller.scrollLeft).toBe(nut === 'left' ? 0 : 360);
+  });
+});
+
+// Review 2026-11-10: the barre pill is measured from the cells' positions, so
+// turning the neck in Settings (either axis) must measure it again.
+describe('the barre overlay follows a change of either setting', () => {
+  let rect: PropertyDescriptor | undefined;
+  beforeEach(() => {
+    rect = Object.getOwnPropertyDescriptor(Element.prototype, 'getBoundingClientRect');
+    // jsdom has no layout: place each cell by its drawn column and row.
+    Element.prototype.getBoundingClientRect = function (this: Element) {
+      const el = this as HTMLElement;
+      const row = el.closest('[data-dock-row="string"]');
+      if (el.dataset?.fret !== undefined && row) {
+        const col = [...row.querySelectorAll('[data-fret]')].indexOf(el);
+        const r = [...row.parentElement!.querySelectorAll('[data-dock-row="string"]')].indexOf(row);
+        return { left: 40 + col * 40, top: r * 30, width: 40, height: 30, right: 80 + col * 40, bottom: r * 30 + 30, x: 0, y: 0, toJSON: () => ({}) } as DOMRect;
+      }
+      return { left: 0, top: 0, width: 0, height: 0, right: 0, bottom: 0, x: 0, y: 0, toJSON: () => ({}) } as DOMRect;
+    };
+  });
+  afterEach(() => {
+    if (rect) Object.defineProperty(Element.prototype, 'getBoundingClientRect', rect);
+  });
+
+  it.each(COMBOS)('from nut %s, %s on top', async (nut, top) => {
+    resetStores({ neckNutSide: nut, neckTopString: top });
+    const root = await scenario('dock-laptop-chord-F-barre')();
+    const overlay = () => root.querySelector<HTMLElement>('[data-testid="barre-overlay"]')!;
+    const barreCell = () => root.querySelector('[data-fret="1"]')!.getBoundingClientRect();
+    const expected = () => `${barreCell().left + barreCell().width / 2 - 12}px`;
+    expect(overlay().style.left).toBe(expected());
+    const before = overlay().style.left;
+    act(() => useAppStore.getState().setNeckNutSide(nut === 'left' ? 'right' : 'left'));
+    expect(overlay().style.left).not.toBe(before);
+    expect(overlay().style.left).toBe(expected());
+    act(() => useAppStore.getState().setNeckTopString(top === 'high' ? 'low' : 'high'));
+    expect(overlay().style.left).toBe(expected());
   });
 });
 

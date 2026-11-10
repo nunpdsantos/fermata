@@ -501,7 +501,8 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
       pointerEvents: 'none',
       zIndex: 5,
     });
-  }, [mode, currentShape, visibleFrets, orientation.top]);
+    // Either setting moves the barred cells (the nut side moves their column).
+  }, [mode, currentShape, visibleFrets, orientation.top, orientation.nut]);
 
   // ─── Keyboard navigation (roving tabindex on 2D grid) ─
   const [focusedCell, setFocusedCell] = useState<{ stringIdx: number; fret: number } | null>(null);

@@ -16,7 +16,7 @@
  * with saved settings keeps — so every test file starts as such a learner:
  * a settings save that exists, without the neck fields. A test of the new
  * default clears storage and rehydrates (or sets the fields) itself.
- * (Same seed as the e2e helpers' `legacyNeckSeed`, e2e/helpers/welcome.ts.)
+ * (Same save as the e2e helpers' `LEGACY_NECK_SAVE`, e2e/helpers/welcome.ts.)
  */
 try {
   localStorage.setItem('music-theory-app', JSON.stringify({ state: {}, version: 6 }));

@@ -1150,7 +1150,7 @@
   },
   "neckView": {
     "heading": "Guitar neck",
-    "hint": "Left with the thin string on top is how tab and chord charts are drawn.",
+    "hint": "The nut is where the open strings start. Guitar tab usually puts the thin string on top.",
     "nutSide": "Nut side",
     "nutLeft": "Nut on the left",
     "nutRight": "Nut on the right",

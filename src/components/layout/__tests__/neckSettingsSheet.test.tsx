@@ -22,7 +22,7 @@ describe('Settings → Guitar neck', () => {
     render(<SettingsSheet open onClose={() => {}} />);
     const row = screen.getByTestId('neck-settings');
     expect(within(row).getByText('Guitar neck')).toBeTruthy();
-    expect(within(row).getByText('Left with the thin string on top is how tab and chord charts are drawn.')).toBeTruthy();
+    expect(within(row).getByText('The nut is where the open strings start. Guitar tab usually puts the thin string on top.')).toBeTruthy();
     const nut = within(row).getByRole('radiogroup', { name: 'Nut side' });
     const top = within(row).getByRole('radiogroup', { name: 'String on top' });
     expect(within(nut).getByRole('radio', { name: 'Nut on the right' }).getAttribute('aria-checked')).toBe('true');
@@ -37,13 +37,15 @@ describe('Settings → Guitar neck', () => {
   });
 
   it.each([
-    ['pt', 'Braço da guitarra', 'Cordas soltas à esquerda', 'Corda fina em cima'],
-    ['es', 'Mástil de la guitarra', 'Cuerdas al aire a la izquierda', 'Cuerda fina arriba'],
-  ] as const)('%s', async (lang, heading, left, thin) => {
+    ['pt', 'Braço da guitarra', 'As tablaturas costumam pôr a corda fina em cima.', 'Cordas soltas à esquerda', 'Corda fina em cima'],
+    ['es', 'Mástil de la guitarra', 'Las tablaturas suelen poner la cuerda fina arriba.', 'Cuerdas al aire a la izquierda', 'Cuerda fina arriba'],
+  ] as const)('%s', async (lang, heading, hint, left, thin) => {
     await act(() => i18n.changeLanguage(lang));
     render(<SettingsSheet open onClose={() => {}} />);
     const row = screen.getByTestId('neck-settings');
     expect(within(row).getByText(heading)).toBeTruthy();
+    // The hint names the THIN string on top, as the option it points to does.
+    expect(within(row).getByText(hint)).toBeTruthy();
     expect(within(row).getByRole('radio', { name: left })).toBeTruthy();
     expect(within(row).getByRole('radio', { name: thin })).toBeTruthy();
   });
