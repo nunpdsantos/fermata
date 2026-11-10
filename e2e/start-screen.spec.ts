@@ -310,7 +310,7 @@ test.describe('the start hint', () => {
       await expect(hint).toBeVisible({ timeout: 15_000 });
       await expect(page.getByTestId('explore-header')).toBeVisible();
       expect(await page.evaluate(() => (window as unknown as { __hintFirst: boolean | null }).__hintFirst)).toBe(true);
-      await expect(hint).toContainText('Tap a key to hear it.');
+      await expect(hint).toContainText('Tap a piano key to hear it.');
       await page.waitForTimeout(800);
       const rects = () => page.evaluate(() => Object.fromEntries(
         ['[data-testid="start-hint"]', '[data-testid="explore-header"]', '[data-testid="instrument-dock"]', '.chord-row', '#main-content']

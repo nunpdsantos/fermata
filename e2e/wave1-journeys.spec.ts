@@ -67,7 +67,7 @@ for (const v of [PHONE, LAPTOP] as View[]) {
     expect(await exploreDetail(page)).toBe('simple');
     const hint = page.getByTestId('start-hint');
     await expect(hint).toBeVisible();
-    await expect(hint).toHaveText('Tap a key to hear it.');
+    await expect(hint).toHaveText('Tap a piano key to hear it.');
     await expect(hint.getByRole('link')).toHaveCount(0);
     await expect(hint.getByRole('button')).toHaveCount(1);
     // A word, its explanation (popover on a laptop, a sheet on a phone).

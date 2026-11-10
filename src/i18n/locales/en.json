@@ -1166,7 +1166,7 @@
     },
     "hint": {
       "label": "Getting started",
-      "newPiano": "Tap a key to hear it.",
+      "newPiano": "Tap a piano key to hear it.",
       "newGuitar": "Tap a string to hear it.",
       "player": "Pick the key of a song you play, for example G. The chords below belong to it: tap one.",
       "dismiss": "Dismiss the tip"

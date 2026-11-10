@@ -229,7 +229,7 @@ describe('the start hint (shell)', () => {
     act(() => raiseStartHint(kind));
     render(<StartHint />);
     const hint = screen.getByRole('complementary', { name: 'Getting started' });
-    expect(hint.textContent).toBe(kind === 'new' ? 'Tap a key to hear it.' : 'Pick the key of a song you play, for example G. The chords below belong to it: tap one.');
+    expect(hint.textContent).toBe(kind === 'new' ? 'Tap a piano key to hear it.' : 'Pick the key of a song you play, for example G. The chords below belong to it: tap one.');
     expect(within(hint).getAllByRole('button').map((b) => b.textContent || b.getAttribute('aria-label'))).toEqual(['Dismiss the tip']);
     expect(within(hint).queryAllByRole('link')).toEqual([]);
     fireEvent.click(within(hint).getByRole('button', { name: 'Dismiss the tip' }));
