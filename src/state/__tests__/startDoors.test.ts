@@ -8,14 +8,12 @@ import { renderHook, act } from '@testing-library/react';
 import { useAppStore } from '../store';
 import { WELCOME_KEY, bootWelcome, useWelcomeStore } from '../welcomeGate';
 import { chooseStartDoor } from '../startDoors';
-import {
-  FIRST_LESSON, useStartHintStore, raiseStartHint, dismissStartHint, startFirstLesson,
-} from '../startHint';
+import * as startHint from '../startHint';
+import { useStartHintStore, raiseStartHint, dismissStartHint } from '../startHint';
 import { applyShareLinkRule, useStartScreenShown } from '../startGate';
 import { noteBootAddress } from '../shareParams';
 import { requestDemo, clearDemoRequest } from '../demoRequest';
 import { getLearnerProfile } from '../learnerProfile';
-import { MODULE_INDEX } from '../../data/moduleIndex';
 import type { Chord } from '../../core/types/music';
 
 /** Boot as main.tsx does: the boot address is noted (state/shareParams.ts), then the gate decides from storage. */
@@ -92,44 +90,39 @@ describe('the start hint', () => {
     }
   });
 
-  it('"Start lesson 1 →" ends it and opens the first lesson of the course', () => {
-    raiseStartHint('new');
-    startFirstLesson();
-    expect(owed()).toBeNull();
-    expect(shown()).toBeNull();
-    expect(useAppStore.getState().view).toBe('learn');
-    expect(useAppStore.getState().pendingLearnTarget).toEqual(FIRST_LESSON);
-    // Known positive: it really is the first module of the index.
-    const first = MODULE_INDEX[0];
-    expect(FIRST_LESSON).toEqual({ levelId: first.level, unitId: first.unitId, moduleId: first.id });
+  it('no way into Learn from the hint, either kind (the owner, 2026-11-10: the link returns in wave 2)', () => {
+    expect(Object.keys(startHint).sort()).toEqual(['dismissStartHint', 'raiseStartHint', 'useShownStartHint', 'useStartHintStore']);
+    for (const kind of ['new', 'player'] as const) {
+      raiseStartHint(kind);
+      expect(useAppStore.getState().pendingLearnTarget).toBeNull();
+      expect(useAppStore.getState().view).toBe('explore');
+    }
   });
 
-  it('player: picking a chord in Explore is acting on it — no longer owed, but the line stays until Explore is left', () => {
-    raiseStartHint('player');
+  it.each(['new', 'player'] as const)('%s: picking a chord in Explore is acting on it — no longer owed, but the line stays until Explore is left', (kind) => {
+    raiseStartHint(kind);
     useAppStore.getState().setSelectedChord(G);
     expect(owed()).toBeNull();
-    expect(shown()).toBe('player'); // nothing jumps under the tap
+    expect(shown()).toBe(kind); // nothing jumps under the tap
     useAppStore.getState().setView('learn');
     expect(shown()).toBeNull();
     useAppStore.getState().setView('explore');
     expect(shown()).toBeNull();
   });
 
-  it('player: a chord picked by a playing tour does not count', () => {
-    raiseStartHint('player');
+  it.each(['new', 'player'] as const)('%s: a chord picked by a playing tour does not count', (kind) => {
+    raiseStartHint(kind);
     requestDemo('intro');
     useAppStore.getState().setSelectedChord(G);
-    expect(owed()).toBe('player');
+    expect(owed()).toBe(kind);
     clearDemoRequest();
   });
 
-  it('new: a chord pick does not end it; leaving Explore while it is owed keeps it (it is Explore\'s hint, back on return)', () => {
-    raiseStartHint('new');
-    useAppStore.getState().setSelectedChord(G);
-    expect(owed()).toBe('new');
+  it.each(['new', 'player'] as const)('%s: leaving Explore while it is owed keeps it (it is Explore\'s hint, back on return)', (kind) => {
+    raiseStartHint(kind);
     useAppStore.getState().setView('drill');
-    expect(shown()).toBe('new');
-    expect(owed()).toBe('new');
+    expect(shown()).toBe(kind);
+    expect(owed()).toBe(kind);
   });
 
   it('a reload while owed shows it again (the shown state starts from the save)', async () => {

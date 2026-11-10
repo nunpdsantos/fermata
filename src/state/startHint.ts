@@ -16,8 +16,9 @@
  *
  * Done (owed → null, remembered) when:
  *  - ✕ (dismissStartHint), either kind;
- *  - 'new': "Start lesson 1 →" (startFirstLesson) — it opens the first lesson;
- *  - 'player': a chord picked in Explore (not while a tour is playing).
+ *  - a chord picked in Explore (not while a tour is playing), either kind.
+ *    ('new' also ended on "Start lesson 1 →" until 2026-11-10: the owner took
+ *    the link out until a sound-first first lesson comes in wave 2.)
  * Changing the profile in Settings never raises a hint.
  */
 import { create } from 'zustand';
@@ -26,9 +27,6 @@ import { getDemoRequest } from './demoRequest.ts';
 import type { StartHintKind } from './storeTypes.ts';
 
 export type { StartHintKind } from './storeTypes.ts';
-
-/** The first lesson of the course (Level 1, unit 1, module 1). */
-export const FIRST_LESSON = { levelId: 'l1', unitId: 'u1', moduleId: 'l1u1m1' } as const;
 
 interface ShownState {
   shown: StartHintKind | null;
@@ -53,17 +51,11 @@ export function dismissStartHint(): void {
   raiseStartHint(null);
 }
 
-/** 'new' hint's action: done, and the first lesson opens. */
-export function startFirstLesson(): void {
-  raiseStartHint(null);
-  useAppStore.getState().openLearnTarget({ ...FIRST_LESSON });
-}
-
-// A 'player' picking a chord in Explore has done what the hint asks; leaving
-// Explore takes away a hint that is no longer owed.
+// A chord picked in Explore has done what either hint asks; leaving Explore
+// takes away a hint that is no longer owed.
 useAppStore.subscribe((state, prev) => {
   if (
-    state.startHint === 'player' &&
+    state.startHint !== null &&
     state.view === 'explore' &&
     state.selectedChord !== null && prev.selectedChord === null &&
     state.lessonLoan === null &&

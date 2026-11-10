@@ -17,8 +17,9 @@ import { WELCOME_KEY } from './helpers/welcome';
  *  - keyboard only: Tab through every control, arrows in the segments, Enter
  *    on a door;
  *  - the start hint: there from Explore's first paint, nothing moves, covers
- *    neither the instrument nor the chord row; "Start lesson 1 →" opens the
- *    first lesson; ✕ and acting on it end it for good;
+ *    neither the instrument nor the chord row; no link into Learn (the
+ *    owner, 2026-11-10: it returns in wave 2); ✕ and acting on it (a chord
+ *    picked) end it for good, in both profiles;
  *  - the page that showed the start screen skips the offline-ready notice.
  */
 
@@ -35,12 +36,12 @@ const WORDS = {
   en: {
     locale: 'en-GB', tour: 'Watch the one-minute tour', heading: 'Where are you starting from?', instrument: "I'll use:",
     doors: { new: "I'm new to music", player: 'I play, but never learned theory', theory: 'I know some theory' },
-    guitar: 'Guitar', piano: 'Piano', lang: 'Language', explore: 'Explore', lesson: 'Start lesson 1 →', lessonTitle: 'The Staff and Clefs', dismiss: 'Dismiss the tip',
+    guitar: 'Guitar', piano: 'Piano', lang: 'Language', explore: 'Explore', dismiss: 'Dismiss the tip',
   },
   pt: {
     locale: 'pt-PT', tour: 'Ver a visita guiada de um minuto', heading: 'Qual é o teu ponto de partida?', instrument: 'Vou usar:',
     doors: { new: 'A música é nova para mim', player: 'Toco, mas nunca aprendi teoria', theory: 'Sei alguma teoria' },
-    guitar: 'Guitarra', piano: 'Piano', lang: 'Idioma', explore: 'Explorar', lesson: 'Começar a lição 1 →', lessonTitle: '', dismiss: 'Fechar a dica',
+    guitar: 'Guitarra', piano: 'Piano', lang: 'Idioma', explore: 'Explorar', dismiss: 'Fechar a dica',
   },
 } as const;
 type Lang = keyof typeof WORDS;
@@ -287,7 +288,7 @@ test.describe('the tour, a shared link, the language, the keyboard', () => {
 
 test.describe('the start hint', () => {
   for (const v of VIEWPORTS) {
-    test(`${v.name}: "new" — there from Explore's first paint, nothing moves, covers nothing; Start lesson 1 opens the first lesson; done for good`, async ({ browser }) => {
+    test(`${v.name}: "new" — there from Explore's first paint, nothing moves, covers nothing; no link into Learn; a chord picked ends it for good`, async ({ browser }) => {
       const { context, page } = await fresh(browser, v, 'en');
       await page.goto('/');
       await expect(startScreen(page)).toBeVisible({ timeout: 15_000 });
@@ -326,11 +327,20 @@ test.describe('the start hint', () => {
       expect(h.bottom).toBeLessThanOrEqual(b['#main-content']!.top + 1);
       expect(h.bottom).toBeLessThanOrEqual(b['[data-testid="instrument-dock"]']!.top + 1);
       if (b['.chord-row']) expect(h.bottom).toBeLessThanOrEqual(b['.chord-row']!.top + 1);
-      // At most two actions.
-      await expect(hint.getByRole('button')).toHaveCount(2);
-      await hint.getByRole('button', { name: 'Start lesson 1 →' }).click();
-      await expect(page.getByRole('heading', { level: 1, name: 'The Staff and Clefs' })).toBeVisible({ timeout: 15_000 });
+      // One action, ✕; no link into Learn.
+      await expect(hint.getByRole('button')).toHaveCount(1);
+      await expect(hint.getByRole('button')).toHaveAccessibleName('Dismiss the tip');
+      await expect(hint.getByRole('link')).toHaveCount(0);
+      // Acting on it: a chord. The line stays while in Explore (nothing jumps under the tap)…
+      const before = await page.getByTestId('explore-header').boundingBox();
+      await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
+      await page.waitForTimeout(400);
+      await expect(hint).toBeVisible();
+      expect(Math.abs((await page.getByTestId('explore-header').boundingBox())!.y - before!.y)).toBeLessThan(2);
       expect(await savedState(page)).not.toHaveProperty('startHint');
+      // …and gone once Explore is left and on the next load.
+      await page.getByRole('tab', { name: 'Learn' }).click();
+      await expect(page.locator('#learn-panel')).toBeVisible({ timeout: 15_000 });
       await page.getByRole('tab', { name: 'Explore' }).click();
       await expect(page.getByTestId('explore-header')).toBeVisible({ timeout: 15_000 });
       await expect(hint).toHaveCount(0);

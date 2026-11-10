@@ -950,7 +950,6 @@ body {
     color: var(--text);
   }
   .start-hint-text { flex: 1; min-width: 0; margin: 0; font-size: var(--text-ui); line-height: 1.4; }
-  .start-hint-action.btn { margin-left: -6px; }
 
   /* Instrument dock — phone pull-up sheet (DetentSheet) */
   .detent-sheet {

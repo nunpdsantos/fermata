@@ -1168,8 +1168,6 @@
       "label": "Primeros pasos",
       "newPiano": "Toca una tecla para oírla.",
       "newGuitar": "Toca una cuerda para oírla.",
-      "whenReady": "Cuando quieras:",
-      "firstLesson": "Empezar la lección 1 →",
       "player": "Elige la tonalidad de una canción que toques, por ejemplo G. Los acordes de abajo son de esa tonalidad: toca uno.",
       "dismiss": "Cerrar el consejo"
     }

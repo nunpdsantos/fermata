@@ -1168,8 +1168,6 @@
       "label": "Getting started",
       "newPiano": "Tap a key to hear it.",
       "newGuitar": "Tap a string to hear it.",
-      "whenReady": "When you are ready:",
-      "firstLesson": "Start lesson 1 →",
       "player": "Pick the key of a song you play, for example G. The chords below belong to it: tap one.",
       "dismiss": "Dismiss the tip"
     }

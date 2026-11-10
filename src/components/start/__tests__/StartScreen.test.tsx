@@ -178,15 +178,16 @@ describe('Settings → "How I use Fermata"', () => {
 });
 
 describe('the start hint (shell)', () => {
-  it('new, piano: one line, "Start lesson 1 →" opens the first lesson and ends it', () => {
-    act(() => raiseStartHint('new'));
+  it.each(['new', 'player'] as const)('%s: no link into Learn — its line and ✕ only (the owner, 2026-11-10)', (kind) => {
+    act(() => raiseStartHint(kind));
     render(<StartHint />);
     const hint = screen.getByRole('complementary', { name: 'Getting started' });
-    expect(hint.textContent).toContain('Tap a key to hear it. When you are ready:');
-    expect(within(hint).getAllByRole('button').map((b) => b.textContent || b.getAttribute('aria-label'))).toEqual(['Start lesson 1 →', 'Dismiss the tip']);
-    fireEvent.click(within(hint).getByRole('button', { name: 'Start lesson 1 →' }));
-    expect(useAppStore.getState().view).toBe('learn');
-    expect(useAppStore.getState().pendingLearnTarget).toEqual({ levelId: 'l1', unitId: 'u1', moduleId: 'l1u1m1' });
+    expect(hint.textContent).toBe(kind === 'new' ? 'Tap a key to hear it.' : 'Pick the key of a song you play, for example G. The chords below belong to it: tap one.');
+    expect(within(hint).getAllByRole('button').map((b) => b.textContent || b.getAttribute('aria-label'))).toEqual(['Dismiss the tip']);
+    expect(within(hint).queryAllByRole('link')).toEqual([]);
+    fireEvent.click(within(hint).getByRole('button', { name: 'Dismiss the tip' }));
+    expect(useAppStore.getState().view).toBe('explore');
+    expect(useAppStore.getState().pendingLearnTarget).toBeNull();
     expect(screen.queryByTestId('start-hint')).toBeNull();
   });
 
@@ -223,8 +224,8 @@ describe('the start hint (shell)', () => {
     await i18n.changeLanguage('pt');
     act(() => raiseStartHint('new'));
     const { unmount } = render(<StartHint />);
-    expect(screen.getByTestId('start-hint').textContent).toContain('Toca numa tecla para a ouvir.');
-    expect(screen.getByRole('button', { name: 'Começar a lição 1 →' })).toBeDefined();
+    expect(screen.getByTestId('start-hint').textContent).toBe('Toca numa tecla para a ouvir.');
+    expect(screen.getAllByRole('button').map((b) => b.getAttribute('aria-label'))).toEqual(['Fechar a dica']);
     unmount();
     await i18n.changeLanguage('es');
     act(() => raiseStartHint('player'));

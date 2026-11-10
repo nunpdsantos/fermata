@@ -9,7 +9,9 @@ import { PHONE, LAPTOP, type View, freshBrowser, seededBrowser, savedState, neck
  *
  *  - Newcomer: an empty browser → the start screen → the tour to its end →
  *    back on the start screen → "I'm new" + Piano → Simple view with the
- *    hint → tap a word → its explanation → reload → the same place.
+ *    hint (no link into Learn) → tap a word → its explanation → reload → the
+ *    same place → ✕ ends the hint for good.
+ *    (English: nothing about Dó-Ré-Mi is saved.)
  *  - Player: an empty Portuguese browser → the start screen in Portuguese →
  *    "Toco, mas nunca aprendi teoria" + Guitarra → Simple, the guitar docked,
  *    nut on the left, the hint → a key and a chord → the hint gone for good →
@@ -63,7 +65,9 @@ for (const v of [PHONE, LAPTOP] as View[]) {
     expect(await exploreDetail(page)).toBe('simple');
     const hint = page.getByTestId('start-hint');
     await expect(hint).toBeVisible();
-    await expect(hint).toContainText('Tap a key to hear it.');
+    await expect(hint).toHaveText('Tap a key to hear it.');
+    await expect(hint.getByRole('link')).toHaveCount(0);
+    await expect(hint.getByRole('button')).toHaveCount(1);
     // A word, its explanation (popover on a laptop, a sheet on a phone).
     await page.getByTestId('summary-key').click();
     const explanation = page.locator(v.touch ? '[data-testid="glossary-sheet"]' : '[data-testid="glossary-popover"]');
@@ -77,6 +81,15 @@ for (const v of [PHONE, LAPTOP] as View[]) {
     expect(await exploreDetail(page)).toBe('simple');
     await expect(hint).toBeVisible();
     expect(await savedState(page)).toMatchObject({ learnerProfile: 'new', startHint: 'new', instrument: 'piano' });
+    expect(await savedState(page)).not.toHaveProperty('showSolfege');
+    // ✕: gone, and still gone after a reload.
+    await hint.getByRole('button', { name: 'Dismiss the tip' }).click();
+    await expect(hint).toHaveCount(0);
+    await page.reload();
+    await expect(page.getByTestId('explore-root')).toBeVisible({ timeout: 15_000 });
+    await page.waitForTimeout(500);
+    await expect(hint).toHaveCount(0);
+    expect(await savedState(page)).not.toHaveProperty('startHint');
     await context.close();
   });
 
