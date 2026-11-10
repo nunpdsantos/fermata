@@ -169,12 +169,12 @@
     },
     "majorChord": {
       "title": "Major chord",
-      "plain": "A triad whose middle note is four half steps above the root. It sounds bright and settled.",
+      "plain": "Three notes played together, with a bright, settled sound. The middle note is four frets (or four piano keys, counting black and white) above the note that names the chord.",
       "example": "{{chord}}: {{notes}}."
     },
     "minorChord": {
       "title": "Minor chord",
-      "plain": "A triad whose middle note is three half steps above the root, one lower than in a major chord. It sounds darker or sadder.",
+      "plain": "Three notes played together, with a darker or sadder sound. The middle note is three frets (or three piano keys, counting black and white) above the note that names the chord: one fewer than in a major chord.",
       "example": "{{chord}}: {{notes}}."
     },
     "diminishedChord": {

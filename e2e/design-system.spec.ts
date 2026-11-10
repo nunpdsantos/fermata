@@ -1649,8 +1649,48 @@ for (const L of LANGS) {
       await expect(page.getByTestId('glossary-sheet')).toBeVisible();
       await check(page, v, combo, 'simple-explanation');
       await page.keyboard.press('Escape');
+      await expect(page.getByTestId('glossary-sheet')).toBeHidden();
+      // The minor and major chord explanations (the seat's decision 6: the
+      // longest plain texts, PT's and ES's minor at the 220 cap) in the sheet.
+      // (V is open: a tap on it again would close it, so ii first.)
+      for (const [row, entry] of [[1, 'minorChord'], [4, 'majorChord']] as const) {
+        await page.locator('.chord-row button').nth(row).click();
+        await expect(page.getByTestId('see-everything')).toBeVisible();
+        await page.getByTestId('chord-detail').locator('.chord-detail-name .term').click();
+        const sheet = page.getByTestId('glossary-sheet');
+        await expect(sheet.locator(`[data-entry="${entry}"]`)).toBeVisible();
+        await page.waitForTimeout(300);
+        await check(page, v, combo, `simple-explanation-${entry}`);
+        await page.keyboard.press('Escape');
+        await expect(sheet).toBeHidden();
+      }
       await page.getByTestId('explore-menu').getByRole('button').click();
       await check(page, v, combo, 'simple-menu');
+      await context.close();
+    });
+  }
+}
+
+// The same two explanations in the laptop's popover, PT and ES (the seat's
+// decision 6: PT's and ES's minor-chord texts sit at the 220 cap).
+for (const L of LANGS) {
+  for (const th of THEMES) {
+    const v = VIEWPORTS[3];
+    const combo = `${v.name}-${L.lang}-${th.name}`;
+    test(`${combo} plain words: the major and minor chord explanations fit their popover`, async ({ browser }) => {
+      test.setTimeout(120_000);
+      const { context, page } = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore', exploreDetail: 'simple' }, { lang: L.lang });
+      for (const [row, entry] of [[4, 'majorChord'], [1, 'minorChord']] as const) {
+        await page.locator('.chord-row button').nth(row).click();
+        await expect(page.getByTestId('see-everything')).toBeVisible();
+        await page.getByTestId('chord-detail').locator('.chord-detail-name .term').click();
+        const pop = page.getByTestId('glossary-popover');
+        await expect(pop.locator(`[data-entry="${entry}"]`)).toBeVisible();
+        await page.waitForTimeout(300);
+        await check(page, v, combo, `simple-popover-${entry}`);
+        await page.keyboard.press('Escape');
+        await expect(pop).toHaveCount(0);
+      }
       await context.close();
     });
   }

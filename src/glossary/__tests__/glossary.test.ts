@@ -311,6 +311,26 @@ describe('every sound demonstration resolves to notes for all twelve roots', () 
     const pcs = notes.map((n) => getMidiNumber(n.note, n.note.octave) % 12);
     expect(pcs).toEqual([9, 11, 0, 2, 4, 6, 8, 9, 7, 5, 4, 2, 0, 11, 9]);
   });
+  // The seat's decision 6 (2026-11-10): the first words a beginner taps in
+  // Simple, explained without jargon (no triad, root or half step), counted
+  // on the frets and keys they play. The brief's PT and ES minor-chord texts
+  // were 222 and 227 characters (the cap is 220): PT "dá o nome" → "dá
+  // nome", ES "en el acorde mayor" → "en el mayor"; nothing else changed.
+  it('major and minor chord: plain words, the middle note counted in frets and piano keys', () => {
+    expect(en.entries.majorChord.plain).toBe('Three notes played together, with a bright, settled sound. The middle note is four frets (or four piano keys, counting black and white) above the note that names the chord.');
+    expect(en.entries.minorChord.plain).toBe('Three notes played together, with a darker or sadder sound. The middle note is three frets (or three piano keys, counting black and white) above the note that names the chord: one fewer than in a major chord.');
+    expect(pt.entries.majorChord.plain).toBe('Três notas tocadas ao mesmo tempo, com um som luminoso e estável. A nota do meio fica quatro trastes (ou quatro teclas, contando brancas e pretas) acima da nota que dá o nome ao acorde.');
+    expect(pt.entries.minorChord.plain).toBe('Três notas tocadas ao mesmo tempo, com um som mais escuro ou mais triste. A nota do meio fica três trastes (ou três teclas, contando brancas e pretas) acima da nota que dá nome ao acorde: menos um do que no acorde maior.');
+    expect(es.entries.majorChord.plain).toBe('Tres notas tocadas a la vez, con un sonido luminoso y estable. La nota del medio está cuatro trastes (o cuatro teclas, contando blancas y negras) por encima de la nota que da nombre al acorde.');
+    expect(es.entries.minorChord.plain).toBe('Tres notas tocadas a la vez, con un sonido más oscuro o más triste. La nota del medio está tres trastes (o tres teclas, contando blancas y negras) por encima de la nota que da nombre al acorde: uno menos que en el mayor.');
+    const JARGON = { en: /triad|root|half step/i, pt: /tríade|fundamental|meio-tom|meios-tons/i, es: /tríada|fundamental|semitono/i } as const;
+    for (const lang of LANGS) {
+      for (const id of ['majorChord', 'minorChord'] as const) {
+        expect(TEXT[lang].entries[id].plain, `${lang} ${id}`).not.toMatch(JARGON[lang]);
+      }
+    }
+  });
+
   it('the relative key is three half steps BELOW the major, in every language', () => {
     expect(en.entries.relativeKey.plain).toContain('three half steps below the major');
     expect(pt.entries.relativeKey.plain).toMatch(/três meios-tons abaixo d[ao] maior/);
