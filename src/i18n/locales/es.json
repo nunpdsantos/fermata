@@ -1275,7 +1275,7 @@
   },
   "capo": {
     "setting": "Capo",
-    "settingHint": "El capo sujeta las seis cuerdas en un traste, y cada cuerda empieza desde ahí. La guitarra de Explorar lo muestra; las lecciones, Práctica y la hoja de práctica de guitarra muestran el mástil sin él.",
+    "settingHint": "El capo sujeta las seis cuerdas en un traste, y cada cuerda empieza ahí. En Explorar, la guitarra lo muestra; las lecciones, Práctica y Practicar en la guitarra muestran el mástil sin él.",
     "none": "Sin capo",
     "onFret": "Capo {{fret}}",
     "controlLabel": "Capo",
@@ -1289,6 +1289,6 @@
     "cellAbove_one": "{{note}}, traste {{fret}}, cuerda {{string}}, {{count}} traste por encima del capo",
     "cellAbove_other": "{{note}}, traste {{fret}}, cuerda {{string}}, {{count}} trastes por encima del capo",
     "readoutAt": "cuerda {{string}} traste {{fret}} (capo)",
-    "practiceNote": "El capo no se usa aquí: estos estudios son para el mástil sin capo."
+    "practiceNote": "Aquí el capo está desactivado: estos ejercicios usan el mástil sin capo."
   }
 }

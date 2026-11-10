@@ -46,7 +46,7 @@ export default function GuitarPractice() {
   const [item, setItem] = useState('scale');
   const [pattern, setPattern] = useState(RIGHT_HAND_PATTERNS[0].id);
   const chooseScale = useChooseScale();
-  // The practice studies are for the neck without a capo (wave 2): say so while one is on.
+  // The practice exercises use the neck without a capo (wave 2): say so while one is on.
   const capo = useCapoFret();
   const range = Math.min(3, maxScaleOctaves(root, tuning));
   const shownOctaves = Math.min(octaves, range);

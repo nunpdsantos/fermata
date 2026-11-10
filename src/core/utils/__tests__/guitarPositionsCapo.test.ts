@@ -79,7 +79,9 @@ describe('positions with a capo = the positions of a neck tuned that many half s
       }
     }
     expect(compared).toBeGreaterThan(20_000);
-  });
+    // More than 20,000 comparisons: about 5 s alone, longer beside other files
+    // under the full coverage run, so it gets its own time limit.
+  }, 60_000);
 
   it('every one of the 37 scales on C, standard tuning, every capo', () => {
     const standard = GUITAR_TUNINGS[0];

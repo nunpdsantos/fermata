@@ -16,6 +16,7 @@ import { useGuitarShapeStore } from '../../../state/guitarShapeStore';
 import { useFocusNoteStore } from '../../../state/focusNoteStore';
 import { setCapoFret, getCapoFret } from '../../../state/capo';
 import { buildChord } from '../../../core/constants/chords';
+import { fingeringKey, OPEN_POSITION } from '../../../core/utils/guitarPositions';
 import type { Note } from '../../../core/types/music';
 import { Fretboard } from '../Fretboard';
 import { NeckView } from '../NeckView';
@@ -58,6 +59,8 @@ afterEach(() => {
 });
 
 const grid = () => screen.getByRole('grid');
+/** The arrow that moves away from the nut on the owner's board (nut right). */
+const nutAway = () => 'ArrowLeft';
 const rowOf = (stringIdx: number) => grid().querySelectorAll(`[data-string-row="${stringIdx}"]`);
 const dotsAt = (pred: (fret: number) => boolean) =>
   [...grid().querySelectorAll<HTMLElement>('[data-dot]')].filter((d) => pred(Number(d.dataset.dotFret)));
@@ -170,7 +173,14 @@ describe('scale positions follow the capo', () => {
   it('the first position starts at the capo; positions behind it are not offered', () => {
     render(<Fretboard />);
     expect(screen.getByTestId('position-badge').textContent).toBe('Open');
-    expect(screen.getByTestId('position-badge').closest('div')!.parentElement).toBeTruthy();
+    // The badge sits over the capo's own column: the same place in the
+    // markers row as fret 3 in the numbers row under the board.
+    const badgeCell = screen.getByTestId('position-badge').parentElement!;
+    const markIdx = [...badgeCell.parentElement!.children].indexOf(badgeCell);
+    const numberCells = [...grid().querySelector('[data-dock-row="frets"]')!.querySelectorAll(':scope > div.flex-1 > div')];
+    expect(numberCells[markIdx].textContent).toBe('3');
+    // Its frets are the capo and the five above it (the stretch fret too).
+    expect([...new Set([...rowOf(0)].map((c) => Number(c.getAttribute('data-fret'))))].sort((a, b) => a - b)).toEqual([3, 4, 5, 6, 7, 8]);
     expect(dotsAt((f) => f < 3)).toHaveLength(0);
     expect(dotsAt((f) => f === 3)).toHaveLength(6);
     const chips = screen.getByRole('radiogroup', { name: 'Scale position' });
@@ -190,7 +200,93 @@ describe('scale positions follow the capo', () => {
   });
 });
 
+describe('fingering in the Open position at a capo', () => {
+  // B♭ major, capo 3, Open = the G major open position, three frets up: the
+  // same hand, so the same saved fingering (key G, pitch class 7), never D♭'s.
+  const gKey = (string: number, fret: number) => fingeringKey('major', 'standard', OPEN_POSITION, 7, string, fret);
+  const dot = (string: number, fret: number) => grid().querySelector<HTMLElement>(`[data-dot][data-dot-string="${string}"][data-dot-fret="${fret}"]`)!;
+
+  it('a finger saved for G\'s open position shows on B♭ with a capo on 3', () => {
+    // G major on string 6: F♯ at fret 2 (finger 2 by default), here fret 5.
+    useFingeringStore.setState({ overrides: { [gKey(0, 2)]: 4 } });
+    render(<Fretboard />);
+    expect(dot(0, 5).textContent).toBe('4');
+  });
+
+  it('an edit is filed under G\'s open position; the capo fret itself takes no finger', () => {
+    render(<Fretboard />);
+    fireEvent.click(screen.getByRole('button', { name: 'Edit fingering' }));
+    const cell = (string: number, fret: number) => [...rowOf(string)].find((c) => c.getAttribute('data-fret') === String(fret))!;
+    // At the capo: the string's "open" note — no finger to change.
+    fireEvent.click(cell(0, 3));
+    expect(useFingeringStore.getState().overrides).toEqual({});
+    // G (fret 6 here, fret 3 in G's open position): its finger moves on one.
+    const before = Number(dot(0, 6).textContent);
+    fireEvent.click(cell(0, 6));
+    expect(useFingeringStore.getState().overrides).toEqual({ [gKey(0, 3)]: (before % 4) + 1 });
+  });
+});
+
+describe('stepping and the bass with a capo', () => {
+  it('› from a saved II (behind the capo, shown as Open) goes to IV', () => {
+    reset({ guitarScalePosition: 2 });
+    render(<Fretboard />);
+    fireEvent.click(screen.getByRole('button', { name: 'Next position' }));
+    expect(useAppStore.getState().guitarScalePosition).toBe(4);
+  });
+
+  it('a requested bass no grip above the capo can put lowest: the board says so', () => {
+    // E°7 over D♭ (third inversion), capo 2: the one bass grip would need fret 16.
+    reset({ selectedChord: buildChord(N('E'), 'diminished7'), chordInversion: 3, capoFret: 2 });
+    render(<Fretboard />);
+    expect(screen.getByText(/in the bass, so the shapes are shown as they are/)).toBeTruthy();
+    expect(voicing()).toEqual({ 2: 14, 3: 15, 4: 14, 5: 15 });
+  });
+
+  it('a grip with its bass on the capo names its anchor fret above the capo', () => {
+    // F♯m/A, capo 5: C♯m's Am-shape barre (fret 4) with the open E bass, moved
+    // up: the bass rings at the capo (fret 5), the barre is on fret 9.
+    reset({ selectedChord: buildChord(N('F', '#'), 'minor'), chordInversion: 1, capoFret: 5 });
+    render(<Fretboard />);
+    expect(voicing()[0]).toBe(5);
+    // (The zoomed window's own "5fr" in the open column is not the anchor.)
+    expect(grid().querySelector('[data-term="anchorFret"]')!.textContent).toBe('9fr');
+  });
+});
+
+describe('the linked focus note with a capo', () => {
+  it('nothing behind the capo is lit or named, from another surface either', () => {
+    reset({ guitarScalePosition: 'all' });
+    render(<Fretboard />);
+    // F from the staff: F is on fret 1 of both E strings, behind the capo.
+    act(() => useFocusNoteStore.setState({ pinned: { pc: 5, source: 'staff' } }));
+    const items = useFocusNoteStore.getState().locations!.items;
+    expect(items.length).toBeGreaterThan(0);
+    for (const item of items) {
+      expect(item).not.toMatch(/open/);
+      const fret = /fret (\d+)/.exec(item);
+      if (fret) expect(Number(fret[1]), item).toBeGreaterThanOrEqual(3);
+    }
+  });
+});
+
 describe('keyboard movement around the capo', () => {
+  it('a cell left on a fret the capo then covers moves to the capo: said and sounded there', () => {
+    reset({ guitarScalePosition: 'all', capoFret: 0 });
+    render(<Fretboard />);
+    const g = grid();
+    fireEvent.keyDown(g, { key: 'ArrowDown' });
+    const said = () => g.querySelector('[aria-live]')!.textContent!;
+    expect(said()).toMatch(/^String 6, fret 1, /);
+    act(() => setCapoFret(3));
+    expect(said()).toBe('String 6, fret 3, at the capo, G');
+    fireEvent.keyDown(g, { key: 'Enter' });
+    // String 6 at fret 3: G2, never the F2 behind the capo.
+    expect(noteOn).toHaveBeenLastCalledWith(expect.objectContaining({ natural: 'G', accidental: '', octave: 2 }), expect.anything());
+    fireEvent.keyDown(g, { key: nutAway() });
+    expect(said()).toMatch(/^String 6, fret 4, 1 fret above the capo/);
+  });
+
   for (const [nut, top] of [['right', 'low'], ['right', 'high'], ['left', 'low'], ['left', 'high']] as const) {
     it(`nut ${nut}, ${top} string on top: the arrows never land behind the capo`, () => {
       reset({ guitarScalePosition: 'all', neckNutSide: nut, neckTopString: top });

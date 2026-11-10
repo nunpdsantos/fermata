@@ -43,14 +43,14 @@ describe('Settings → Guitar neck → Capo', () => {
     expect(select.value).toBe('3');
     fireEvent.change(select, { target: { value: '0' } });
     expect(getCapoFret()).toBe(0);
-    expect(within(row).getByText(/Explore's guitar shows it; lessons, Drill and the guitar practice sheet show the neck without it\./)).toBeTruthy();
+    expect(within(row).getByText(/Explore's guitar shows it; lessons, Drill and Practise on the guitar show the neck without it\./)).toBeTruthy();
     // Inside the Guitar neck row.
     expect(screen.getByTestId('neck-settings').contains(row)).toBe(true);
   });
 
   it.each([
-    ['pt', 'Sem capo', 'Capo 3', /A guitarra do Explorar mostra-o/],
-    ['es', 'Sin capo', 'Capo 3', /La guitarra de Explorar lo muestra/],
+    ['pt', 'Sem capo', 'Capo 3', /Em Explorar, a guitarra mostra-o; as lições, o Treino e Praticar na guitarra mostram o braço sem ele\./],
+    ['es', 'Sin capo', 'Capo 3', /En Explorar, la guitarra lo muestra; las lecciones, Práctica y Practicar en la guitarra muestran el mástil sin él\./],
   ] as const)('%s', async (lang, none, three, hint) => {
     await act(() => i18n.changeLanguage(lang));
     render(<SettingsSheet open onClose={() => {}} />);
@@ -98,8 +98,35 @@ describe('the practice sheet draws the neck without the capo, and says so', () =
     expect(screen.queryByTestId('practice-capo-note')).toBeNull();
     act(() => setCapoFret(2));
     rerender(<GuitarPractice />);
-    expect(screen.getByTestId('practice-capo-note').textContent).toBe('The capo is not used here: these studies are for the neck without a capo.');
+    expect(screen.getByTestId('practice-capo-note').textContent).toBe('The capo is off here: these exercises use the neck without one.');
     // Its neck has no capo drawn.
     expect(screen.getByTestId('practice-neck').querySelector('[data-capo-bar], [data-out-of-play]')).toBeNull();
+  });
+});
+
+describe('the capo\'s words, exactly, in every language', () => {
+  // The line and the notes name the screens by the app's own names (the
+  // practice sheet's title, the Drill tab), and the fret by the glossary's
+  // word: "traste" in PT and ES (docs/glossary-pt-es.md).
+  it.each([
+    ['en', 'B♭: the G shape, capo on fret 3', 'The capo is off here: these exercises use the neck without one.',
+      'No shape for this chord fits above the capo. Showing its notes on the neck.'],
+    ['pt', 'B♭: a forma de G, capo no traste 3', 'O capo está desligado aqui: estes exercícios usam o braço sem capo.',
+      'Nenhuma forma deste acorde cabe acima do capo. Mostram-se as suas notas no braço.'],
+    ['es', 'B♭: la forma de G, capo en el traste 3', 'Aquí el capo está desactivado: estos ejercicios usan el mástil sin capo.',
+      'Ninguna forma de este acorde cabe por encima del capo. Se muestran sus notas en el mástil.'],
+  ] as const)('%s', (lang, line, note, noShape) => {
+    const t = i18n.getFixedT(lang);
+    expect(t('capo.line', { chord: 'B♭', shape: 'G', fret: 3 })).toBe(line);
+    expect(t('capo.practiceNote')).toBe(note);
+    expect(t('capo.noShape')).toBe(noShape);
+    // The practice sheet's and the Drill tab's real names are the ones the hint uses.
+    expect(t('capo.settingHint')).toContain(t('nav.drill'));
+  });
+  it('the hint names the practice sheet by its title', async () => {
+    for (const lang of ['en', 'pt', 'es'] as const) {
+      const title = (await import(`../../../i18n/practice/${lang}.json`)).default.title as string;
+      expect(i18n.getFixedT(lang)('capo.settingHint'), lang).toContain(title);
+    }
   });
 });

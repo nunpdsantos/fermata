@@ -1275,7 +1275,7 @@
   },
   "capo": {
     "setting": "Capo",
-    "settingHint": "A capo clamps all six strings at one fret, so every string starts from there. Explore's guitar shows it; lessons, Drill and the guitar practice sheet show the neck without it.",
+    "settingHint": "A capo clamps all six strings at one fret, so every string starts from there. Explore's guitar shows it; lessons, Drill and Practise on the guitar show the neck without it.",
     "none": "No capo",
     "onFret": "Capo {{fret}}",
     "controlLabel": "Capo",
@@ -1289,6 +1289,6 @@
     "cellAbove_one": "{{note}}, fret {{fret}}, string {{string}}, {{count}} fret above the capo",
     "cellAbove_other": "{{note}}, fret {{fret}}, string {{string}}, {{count}} frets above the capo",
     "readoutAt": "string {{string}} fret {{fret}} (capo)",
-    "practiceNote": "The capo is not used here: these studies are for the neck without a capo."
+    "practiceNote": "The capo is off here: these exercises use the neck without one."
   }
 }

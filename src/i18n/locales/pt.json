@@ -1275,7 +1275,7 @@
   },
   "capo": {
     "setting": "Capo",
-    "settingHint": "O capo prende as seis cordas num traste, e cada corda passa a começar aí. A guitarra do Explorar mostra-o; as lições, o Treino e a folha de prática da guitarra mostram o braço sem ele.",
+    "settingHint": "O capo prende as seis cordas num traste, e cada corda passa a começar aí. Em Explorar, a guitarra mostra-o; as lições, o Treino e Praticar na guitarra mostram o braço sem ele.",
     "none": "Sem capo",
     "onFret": "Capo {{fret}}",
     "controlLabel": "Capo",
@@ -1289,6 +1289,6 @@
     "cellAbove_one": "{{note}}, traste {{fret}}, corda {{string}}, {{count}} traste acima do capo",
     "cellAbove_other": "{{note}}, traste {{fret}}, corda {{string}}, {{count}} trastes acima do capo",
     "readoutAt": "corda {{string}} traste {{fret}} (capo)",
-    "practiceNote": "O capo não se usa aqui: estes estudos são para o braço sem capo."
+    "practiceNote": "O capo está desligado aqui: estes exercícios usam o braço sem capo."
   }
 }

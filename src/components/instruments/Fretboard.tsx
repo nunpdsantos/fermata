@@ -532,7 +532,14 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
   }, [mode, currentShape, visibleFrets, orientation.top, orientation.nut]);
 
   // ─── Keyboard navigation (roving tabindex on 2D grid) ─
-  const [focusedCell, setFocusedCell] = useState<{ stringIdx: number; fret: number } | null>(null);
+  const [keyboardCell, setFocusedCell] = useState<{ stringIdx: number; fret: number } | null>(null);
+  // A capo put on (or moved up) after the keyboard reached a fret behind it:
+  // the cell is taken to the capo, since nothing behind it plays. With no
+  // capo this is the stored cell itself.
+  const focusedCell = useMemo(
+    () => (keyboardCell && keyboardCell.fret < capo ? { ...keyboardCell, fret: capo } : keyboardCell),
+    [keyboardCell, capo],
+  );
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -550,7 +557,9 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
         return;
       }
 
-      setFocusedCell((prev) => {
+      setFocusedCell((stored) => {
+        // Never a fret behind the capo (see focusedCell).
+        const prev = stored && stored.fret < capo ? { ...stored, fret: capo } : stored;
         // Initialize focus at first visible cell if none selected
         if (!prev) {
           // The top string as drawn, at the fret nearest the nut (or the capo).

@@ -31,6 +31,7 @@ const N = (natural: Note['natural'], accidental: Note['accidental'] = ''): Note 
 
 type Placed = { shape: ChordShape; baseFret: number };
 const absFrets = (e: Placed) => e.shape.strings.map((p) => (p.fret === null ? null : e.baseFret + p.fret));
+const lowestPc = (e: Placed) => { const f = absFrets(e); const i = f.findIndex((x) => x !== null); return (OPEN_PCS[i] + f[i]!) % 12; };
 const sounding = (e: Placed) => new Set(absFrets(e).flatMap((f, s) => (f === null ? [] : [(OPEN_PCS[s] + f) % 12])));
 const CAPOS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const TRIADS: Chord[] = SHARP.flatMap((root) => [buildChord(root, 'major'), buildChord(root, 'minor')]);
@@ -70,16 +71,52 @@ describe('the central promise: capo 1–9 × the 24 major and minor triads', () 
     expect(shapeChord.notes).toEqual([N('G'), N('B'), N('D')]);
   });
 
-  it('every grip offered, for every chord in B♭ major (triads and sevenths), is playable with the capo as the nut', () => {
-    for (const { chord } of [...getDiatonicTriads(N('B', 'b')), ...getDiatonicSeventhChords(N('B', 'b'))]) {
+  it('every grip offered, for every chord in B♭ major (triads and sevenths), is playable with the capo as the nut and complete', () => {
+    const triads = getDiatonicTriads(N('B', 'b')).map(({ chord }) => chord);
+    const sevenths = getDiatonicSeventhChords(N('B', 'b')).map(({ chord }) => chord);
+    for (const chord of [...triads, ...sevenths]) {
+      const name = `${chord.root.natural}${chord.root.accidental} ${chord.quality}`;
       const { shapes } = chordShapesForCapo(chord, 0, 3);
-      expect(shapes.length, `${chord.root.natural}${chord.root.accidental} ${chord.quality}`).toBeGreaterThan(0);
+      expect(shapes.length, name).toBeGreaterThan(0);
+      const pcs = chord.notes.map(pcOf);
       for (const e of shapes) {
-        for (const f of absFrets(e)) if (f !== null) expect(f).toBeGreaterThanOrEqual(3);
-        expect(isPlayableChordShape(e, 15, 3)).toBe(true);
-        for (const pc of sounding(e)) expect(chord.notes.map(pcOf)).toContain(pc);
+        for (const f of absFrets(e)) if (f !== null) expect(f, name).toBeGreaterThanOrEqual(3);
+        expect(isPlayableChordShape(e, 15, 3), name).toBe(true);
+        const got = sounding(e);
+        // No note outside the chord…
+        for (const pc of got) expect(pcs, name).toContain(pc);
+        // …and every note the chord needs: a triad all three; a seventh chord
+        // its root, third and seventh (the fifth may be left out, as on any grip).
+        const needed = triads.includes(chord) ? pcs : [pcs[0], pcs[1], pcs[3]];
+        for (const pc of needed) expect([...got], `${name} ${e.shape.name}`).toContain(pc);
       }
     }
+  });
+
+  it('a grip that gains a bass note is checked again with the capo as the nut (and may then not fit)', () => {
+    // B♭7 / A♭ (third inversion), capo 7: the lower chord's D7-shape takes its
+    // bass on string 5; the A7-shape with the bass added would need fret 16.
+    const bb7 = buildChord(N('A', '#'), 'dominant7');
+    const placed = chordShapesForCapo(bb7, 3, 7);
+    expect(placed.bassMatched).toBe(true);
+    expect(placed.shapes.length).toBeGreaterThan(0);
+    for (const e of placed.shapes) {
+      expect(isPlayableChordShape(e, 15, 7), e.shape.name).toBe(true);
+      for (const f of absFrets(e)) if (f !== null) expect(f, e.shape.name).toBeLessThanOrEqual(15);
+    }
+    // The bass is lowest on the first grip: G♯ (pc 8).
+    expect(lowestPc(placed.shapes[0])).toBe(8);
+    expect(absFrets(placed.shapes[0])).toEqual([null, 11, 8, 10, 9, 10]);
+  });
+
+  it('the bass is judged on the grips left once they are moved up: none can take it, so the board says so', () => {
+    // E°7 / D♭ (third inversion: E G B♭ D♭), capo 2: the only bass grip needs fret 16,
+    // so it is dropped, and what remains does not put the bass lowest.
+    const e7 = buildChord(N('E'), 'diminished7');
+    const placed = chordShapesForCapo(e7, 3, 2);
+    expect(placed.bassMatched).toBe(false);
+    expect(placed.shapes.map((e) => absFrets(e))).toEqual([[null, null, 14, 15, 14, 15]]);
+    for (const e of placed.shapes) expect(isPlayableChordShape(e, 15, 2)).toBe(true);
   });
 });
 

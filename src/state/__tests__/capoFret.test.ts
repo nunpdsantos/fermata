@@ -101,6 +101,17 @@ describe('capoFret in the v6 save', () => {
     expect(await validateBackup(broken)).toMatchObject({ ok: false });
   });
 
+  it('a change stamps preferencesUpdatedAt (like every preference); the same value stamps nothing', () => {
+    useAppStore.setState({ preferencesUpdatedAt: 1 });
+    const before = Date.now();
+    setCapoFret(4);
+    const stamped = useAppStore.getState().preferencesUpdatedAt;
+    expect(stamped).toBeGreaterThanOrEqual(before);
+    useAppStore.setState({ preferencesUpdatedAt: 1 });
+    setCapoFret(4);
+    expect(useAppStore.getState().preferencesUpdatedAt).toBe(1);
+  });
+
   it('switching to the piano leaves the capo as it is', () => {
     setCapoFret(5);
     useAppStore.getState().setInstrument('piano');
