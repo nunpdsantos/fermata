@@ -8,7 +8,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  WELCOME_KEY, APP_KEY_PREFIXES, hasSavedAppData, hasLearningData, shouldShowWelcome, bootWelcome, closeWelcome, useWelcomeStore,
+  WELCOME_KEY, APP_KEY_PREFIXES, LEARN_SESSION_STORE_KEY, hasSavedAppData, hasLearningData, shouldShowWelcome, bootWelcome, closeWelcome, useWelcomeStore,
 } from '../welcomeGate';
 import { DRILL_STORE_KEY } from '../drillStore';
 import { FINGERING_STORE_KEY } from '../fingeringStore';
@@ -66,6 +66,27 @@ describe('who sees the welcome', () => {
     localStorage.setItem('music-theory-app', '{}');
     localStorage.setItem(WELCOME_KEY, 'pending');
     expect(hasLearningData(localStorage)).toBe(false);
+  });
+
+  // Final review (2026-11-10): Learn saves this empty record just by being
+  // opened (LearnView's "no lesson open"), so a visitor who came by a shared
+  // link and only looked at the Learn tab must still get the start screen.
+  it('the empty "no lesson open" record Learn writes on opening is not learning data; an open lesson is', () => {
+    expect(LEARN_SESSION_STORE_KEY).toBe(LEARN_SESSION_KEY);
+    localStorage.setItem(WELCOME_KEY, 'pending');
+    localStorage.setItem('music-theory-app', '{"state":{"lastView":"learn"},"version":6}');
+    localStorage.setItem(LEARN_SESSION_KEY, JSON.stringify({ state: { screen: null, check: null }, version: 1 }));
+    expect(hasLearningData(localStorage)).toBe(false);
+    expect(shouldShowWelcome(localStorage)).toBe(true);
+    expect(bootWelcome(localStorage)).toBe(true);
+    expect(localStorage.getItem(WELCOME_KEY)).toBe('pending');
+
+    localStorage.setItem(LEARN_SESSION_KEY, JSON.stringify({
+      state: { screen: { type: 'module', levelId: 'l1', unitId: 'u1', moduleId: 'l1u1m1', section: null, at: 1 }, check: null }, version: 1,
+    }));
+    expect(hasLearningData(localStorage)).toBe(true);
+    expect(bootWelcome(localStorage)).toBe(false);
+    expect(localStorage.getItem(WELCOME_KEY)).toBe('seen');
   });
 
   it('the welcome flag alone is not "saved data"', () => {

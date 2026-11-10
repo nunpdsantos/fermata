@@ -55,15 +55,37 @@ export function hasSavedAppData(storage: ReadableStorage): boolean {
  */
 const SETTINGS_KEY = 'music-theory-app';
 
+/** Learn's session store (state/learnSessionPersistence.ts; a literal: this module imports nothing). */
+export const LEARN_SESSION_STORE_KEY = 'fermata-learn-session-v1';
+
+/**
+ * Learn saves `{ screen: null, check: null }` in its session store the first
+ * time the tab is opened ("no lesson open", views/LearnView.tsx): opening a
+ * tab is not using the app. Anything else under that key (a lesson, a check,
+ * or a record that cannot be read) counts.
+ */
+function isEmptyLearnRecord(raw: string | null): boolean {
+  if (raw === null) return false;
+  try {
+    const saved = JSON.parse(raw) as { state?: { screen?: unknown; check?: unknown } } | null;
+    return !!saved?.state && saved.state.screen == null && saved.state.check == null;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Has the visitor really used the app — anything saved beyond the settings
  * boot writes (Learn progress, Drill, fingerings, an open lesson, legacy
- * stores)? Those stores write only on the learner's own work.
+ * stores)? Those stores write only on the learner's own work, except Learn's
+ * empty "no lesson open" record, which opening the tab writes and which does
+ * not count (`isEmptyLearnRecord`).
  */
 export function hasLearningData(storage: ReadableStorage): boolean {
   for (let i = 0; i < storage.length; i++) {
     const key = storage.key(i);
     if (!key || key === WELCOME_KEY || key === SETTINGS_KEY) continue;
+    if (key === LEARN_SESSION_STORE_KEY && isEmptyLearnRecord(storage.getItem(key))) continue;
     if (APP_KEY_PREFIXES.some((p) => key.startsWith(p))) return true;
   }
   return false;
