@@ -98,18 +98,18 @@ describe('who sees the welcome', () => {
 describe('boot and close', () => {
   it('boot on an empty browser opens it and marks it pending; closing marks it seen for good', () => {
     expect(bootWelcome(localStorage)).toBe(true);
-    expect(useWelcomeStore.getState()).toMatchObject({ open: true, shownThisPage: true });
+    expect(useWelcomeStore.getState()).toEqual({ open: true, shownThisPage: true });
     expect(localStorage.getItem(WELCOME_KEY)).toBe('pending');
 
     closeWelcome(localStorage);
-    expect(useWelcomeStore.getState()).toMatchObject({ open: false, shownThisPage: true });
+    expect(useWelcomeStore.getState()).toEqual({ open: false, shownThisPage: true });
     expect(localStorage.getItem(WELCOME_KEY)).toBe('seen');
 
     // The next load (boot has saved settings by now): nothing.
     localStorage.setItem('music-theory-app', '{}');
     useWelcomeStore.setState({ open: false, shownThisPage: false });
     expect(bootWelcome(localStorage)).toBe(false);
-    expect(useWelcomeStore.getState()).toMatchObject({ open: false, shownThisPage: false });
+    expect(useWelcomeStore.getState()).toEqual({ open: false, shownThisPage: false });
   });
 
   it('boot with saved data writes nothing', () => {

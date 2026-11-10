@@ -3,7 +3,7 @@ import i18n from '../../i18n/index';
 import { useAppStore } from '../../state/store';
 import { useToastStore } from '../../state/toastStore';
 import { registerWorkInProgress } from '../workInProgress';
-import { readShareParams, buildShareUrl, type RawShareParams } from '../../state/shareParams';
+import { readShareParams, buildShareUrl, MAX_SHARE_VALUE_LENGTH, type RawShareParams } from '../../state/shareParams';
 import { parseShareLink, parseShareKey, isEmptyTarget } from '../shareLinkParse';
 import {
   openShareLink,
@@ -134,6 +134,14 @@ describe('parse ⇄ build round trip', () => {
     expect(parseShareKey('B♭')).toEqual({ natural: 'B', accidental: 'b' });
     expect(parseShareKey('e')).toEqual({ natural: 'E', accidental: '' });
     for (const bad of ['C##', 'Cbb', 'H', 'Do', 'C#m', 'C b', '']) expect(parseShareKey(bad), bad).toBeNull();
+  });
+
+  // Final review (2026-11-10): the parsers cap each value themselves, not only
+  // readShareParams (a value padded to a valid key once trimmed).
+  it('a value over the length cap is refused by the parser itself', () => {
+    const padded = (n: number, v: string) => `${' '.repeat(n - v.length)}${v}`;
+    expect(parseShareKey(padded(MAX_SHARE_VALUE_LENGTH, 'D'))).toEqual({ natural: 'D', accidental: '' });
+    expect(parseShareKey(padded(MAX_SHARE_VALUE_LENGTH + 1, 'D'))).toBeNull();
   });
 });
 
@@ -278,6 +286,8 @@ describe('work in progress: a link never discards it', () => {
     expect(offer?.message).toBe('Ready to open the link: D Major, the A chord, on the guitar');
     expect(offer?.duration).toBe(0);
     expect(offer?.action?.label).toBe('Open');
+    // The "will offer" line has gone: the offer replaces it (final review).
+    expect(toasts().map((t) => t.message)).toEqual(['Ready to open the link: D Major, the A chord, on the guitar']);
     expect(snapshot()).toBe(before);
 
     offer!.action!.onSelect();
