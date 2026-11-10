@@ -11,6 +11,12 @@ vi.mock('../../../views/ExploreView.tsx', () => ({ ExploreView: () => <div>EXPLO
 vi.mock('../../../views/LearnView.tsx', () => ({ LearnView: () => <div>LEARN_VIEW</div> }));
 vi.mock('../../../views/DrillView.tsx', () => ({ DrillView: () => <div>DRILL_VIEW</div> }));
 vi.mock('../../../hooks/useTheme.ts', () => ({ useTheme: () => {} }));
+// StartHost registers the service worker itself (the shell is not mounted).
+const pwa = vi.hoisted(() => ({ registrations: 0 }));
+vi.mock('../../../hooks/usePWA.ts', async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  startPwaRegistration: () => { pwa.registrations += 1; },
+}));
 // The tour button resumes the audio INSIDE the tap (iOS: only there).
 const audio = vi.hoisted(() => ({ resumes: 0 }));
 vi.mock('../../../core/services/audio.ts', async (importOriginal) => ({
@@ -105,6 +111,21 @@ describe('the start screen in the app', () => {
       'I play, but never learned theorySee why the chords you know go together.',
       'I know some theoryStraight to the tools: keys, chords, scales, the circle of fifths.',
     ]);
+  });
+
+  // Final review (2026-11-10): two promises no test kept — the start page
+  // starts caching for offline use (it registers the service worker, as the
+  // shell would), and the app's quick search is not mounted under it
+  // (Cmd/Ctrl+K does nothing there).
+  it('registers the service worker; Cmd/Ctrl+K opens no search behind it', async () => {
+    const before = pwa.registrations;
+    await firstVisit();
+    await startPage();
+    await waitFor(() => expect(pwa.registrations).toBe(before + 1));
+    useAppStore.setState({ quickSearchOpen: false });
+    fireEvent.keyDown(window, { key: 'k', metaKey: true });
+    fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
+    expect(useAppStore.getState().quickSearchOpen).toBe(false);
   });
 
   it('"I\'ll use" and the language are segments wired to the saved settings', async () => {

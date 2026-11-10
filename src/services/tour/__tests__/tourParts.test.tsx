@@ -242,6 +242,17 @@ describe('when opening Learn / Drill would write', () => {
     localStorage.setItem(LEARN_SESSION_KEY, JSON.stringify({ state: { screen: { type: 'module', moduleId: 'l1u1m1', at: Date.now() }, check: null }, version: 1 }));
     expect(learnVisitIsQuiet()).toBe(false);
   });
+  // Final review (2026-11-10): a lesson waiting to open (a search result or
+  // "Learn about this" just chose it) makes Learn open it — and save it.
+  it('a lesson waiting to open (pendingLearnTarget): Learn is not quiet', () => {
+    useAppStore.setState({ pendingLearnTarget: { levelId: 'l1', unitId: 'u1', moduleId: 'l1u1m1' } });
+    try {
+      expect(learnVisitIsQuiet()).toBe(false);
+    } finally {
+      useAppStore.setState({ pendingLearnTarget: null });
+    }
+    expect(learnVisitIsQuiet()).toBe(true);
+  });
   it('an empty learn record is quiet', () => {
     localStorage.setItem(LEARN_SESSION_KEY, JSON.stringify({ state: { screen: null, check: null }, version: 1 }));
     expect(learnVisitIsQuiet()).toBe(true);
