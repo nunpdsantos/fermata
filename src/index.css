@@ -1316,6 +1316,23 @@ body {
       overflow: visible;
     }
   }
+  /* A phone while the start hint (wave 1) stands under the top bar: the same
+     one scroller. The hint's two or three lines leave a small phone's work
+     area too short for a chord's ▶ Chord above the sheet (320×568 in PT:
+     85 px); with the header scrolling away too, the detail lands as it does
+     without the hint. Only a visitor who chose 'new' or 'player' ever has
+     the hint, so nobody else's Explore changes. */
+  @media (max-width: 639px) {
+    body:has([data-testid="start-hint"]) .explore-root {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    body:has([data-testid="start-hint"]) :is(.explore-work, .explore-main, .explore-aside) {
+      flex: none;
+      min-height: auto;
+      overflow: visible;
+    }
+  }
 
   .explore-card {
     border-radius: 14px;
