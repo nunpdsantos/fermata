@@ -7,7 +7,7 @@
  * focus stays on the chord.
  */
 import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest';
-import { render, screen, cleanup, act } from '@testing-library/react';
+import { render, screen, cleanup, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import i18n from '../../../i18n';
 import { useAppStore } from '../../../state/store';
@@ -102,5 +102,41 @@ describe('✕ on the start hint', () => {
     // The line stays while in Explore (nothing jumps under the tap), and focus is where the learner put it.
     expect(screen.getByTestId('start-hint')).toBeTruthy();
     expect(document.activeElement).toBe(chord);
+  });
+
+  // The hint is the shell's: it can be dismissed while Explore's code is
+  // still arriving (the e2e on the dev server did, and focus stayed on
+  // <body>). The picker is focused when it appears — unless the learner put
+  // focus somewhere meanwhile.
+  function Loading({ loaded, other }: { loaded: boolean; other?: boolean }) {
+    return (
+      <>
+        <StartHint />
+        {other && <button type="button">Elsewhere</button>}
+        {loaded && <ExploreHeader />}
+      </>
+    );
+  }
+  it('dismissed while Explore is still loading: the key picker gets focus when it appears', async () => {
+    act(() => raiseStartHint('new'));
+    const { rerender } = render(<Loading loaded={false} />);
+    screen.getByRole('button', { name: 'Dismiss the tip' }).focus();
+    await userEvent.setup().keyboard('{Enter}');
+    expect(screen.queryByTestId('start-hint')).toBeNull();
+    expect(document.activeElement).toBe(document.body);
+    rerender(<Loading loaded />);
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByTestId('key-picker')));
+  });
+  it('…but never takes focus back from where the learner has put it meanwhile', async () => {
+    act(() => raiseStartHint('new'));
+    const { rerender } = render(<Loading loaded={false} other />);
+    screen.getByRole('button', { name: 'Dismiss the tip' }).focus();
+    await userEvent.setup().keyboard('{Enter}');
+    const elsewhere = screen.getByRole('button', { name: 'Elsewhere' });
+    elsewhere.focus();
+    rerender(<Loading loaded other />);
+    await new Promise((r) => setTimeout(r, 20));
+    expect(screen.getByTestId('key-picker')).toBeTruthy();
+    expect(document.activeElement).toBe(elsewhere);
   });
 });

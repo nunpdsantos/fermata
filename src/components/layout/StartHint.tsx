@@ -4,16 +4,39 @@ import { useAppStore } from '../../state/store.ts';
 import { useShownStartHint, dismissStartHint } from '../../state/startHint.ts';
 import { IconButton } from '../ui/Button.tsx';
 
+/** Explore's key picker: the Root select on a laptop, the key button on a phone. */
+const keyPicker = () => document.querySelector<HTMLElement>('[data-testid="explore-header"] [data-testid="key-picker"]');
+/** How long a ✕ made while Explore is still loading waits for the picker to appear. */
+const PICKER_WAIT_MS = 10_000;
+
 /**
  * ✕: the hint goes, and focus goes to the first control under where it was,
- * Explore's key picker (the Root select; a phone's key button) — not to
- * <body> (the seat's decision, 2026-11-10). The hint is removed first, so
- * the picker is focused (and, if need be, scrolled to) where it now sits. A
- * chord picked ends the hint too, without this: focus is on the chord.
+ * Explore's key picker — not to <body> (the seat's decision, 2026-11-10).
+ * The hint is removed first, so the picker is focused (and, if need be,
+ * scrolled to) where it now sits. The hint shows from the shell, so it can
+ * be dismissed while Explore's code is still arriving: then the picker is
+ * focused when it appears, unless focus has been put somewhere meanwhile.
+ * A chord picked ends the hint too, without this: focus is on the chord.
  */
 function dismissToKeyPicker() {
   flushSync(dismissStartHint);
-  document.querySelector<HTMLElement>('[data-testid="explore-header"] [data-testid="key-picker"]')?.focus();
+  const now = keyPicker();
+  if (now) {
+    now.focus();
+    return;
+  }
+  const stop = () => {
+    observer.disconnect();
+    window.clearTimeout(timer);
+  };
+  const observer = new MutationObserver(() => {
+    const picker = keyPicker();
+    if (!picker) return;
+    stop();
+    if (!document.activeElement || document.activeElement === document.body) picker.focus();
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+  const timer = window.setTimeout(stop, PICKER_WAIT_MS);
 }
 
 /**
