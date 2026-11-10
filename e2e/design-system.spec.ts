@@ -1442,6 +1442,31 @@ async function startHintScreens(browser: Browser, v: Viewport, theme: string, la
   }
 }
 
+// "Show me" (brief B): the tour's caption bar on top of the real screens it
+// visits — the first step, the chord step (spotlight + bar beside the detail),
+// Learn, and the end card — under the same audit, at every sweep viewport,
+// day and night; PT and ES at 320 px. (Its behaviour: e2e/tour.spec.ts.)
+const TOUR_MENU = { en: { more: 'More', item: 'Show me around', next: 'Next' }, pt: { more: 'Mais', item: 'Mostra-me como funciona', next: 'Seguinte' }, es: { more: 'Más', item: 'Enséñame cómo funciona', next: 'Siguiente' } } as const;
+
+async function tourScreens(page: Page, lang: keyof typeof TOUR_MENU, onScreen: (screen: string) => Promise<void>) {
+  const L = TOUR_MENU[lang];
+  await page.getByRole('button', { name: L.more, exact: true }).click();
+  await page.getByRole('menuitem', { name: L.item }).click();
+  const bar = page.getByTestId('tour-bar');
+  const wanted = new Set(['key', 'chord', 'learn', 'end']);
+  for (let i = 0; i < 12; i++) {
+    await expect(bar).toHaveAttribute('data-phase', 'holding', { timeout: 15_000 });
+    await expect(bar).toHaveAttribute('data-measured', 'true');
+    await page.waitForTimeout(1100); // the tap cue has gone
+    const step = (await bar.getAttribute('data-step'))!;
+    if (wanted.has(step)) await onScreen(`tour-${step}`);
+    const next = page.getByRole('button', { name: L.next, exact: true });
+    if (!(await next.count())) break;
+    await next.click();
+  }
+  await expect(page.getByTestId('tour-restore')).toBeVisible();
+}
+
 for (const v of VIEWPORTS) {
   for (const th of THEMES) {
     const combo = `${v.name}-${th.name}`;
@@ -1452,6 +1477,12 @@ for (const v of VIEWPORTS) {
       await focusWalk(page, `${combo} start`, 12, /watch the one-minute tour/i);
       await context.close();
       await startHintScreens(browser, v, th.mode, 'en', combo);
+    });
+    test(`${combo} tour: the caption bar passes the same rules`, async ({ browser }) => {
+      test.setTimeout(180_000);
+      const { context, page } = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore' });
+      await tourScreens(page, 'en', (s) => check(page, v, combo, s));
+      await context.close();
     });
   }
 }
@@ -1469,5 +1500,13 @@ for (const lang of ['pt', 'es'] as const) {
         await startHintScreens(browser, v, th.mode, lang, combo);
       });
     }
+    const v = { name: 'phone-320', viewport: { width: 320, height: 568 }, touch: true } as unknown as Viewport;
+    const combo = `phone320-${lang}-${th.name}`;
+    test(`${combo} tour: the caption bar in ${lang.toUpperCase()} at 320 px`, async ({ browser }) => {
+      test.setTimeout(180_000);
+      const { context, page } = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore' }, { lang });
+      await tourScreens(page, lang, (s) => check(page, v, combo, s));
+      await context.close();
+    });
   }
 }

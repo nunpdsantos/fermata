@@ -109,9 +109,10 @@ export function ExploreHeader({ practiceAction, onPractise }: {
             aria-label={t(selectedScale === 'melodic_minor' ? 'explore.playScaleClassical' : 'explore.playScaleAscending')}
             onClick={playScaleNow}
             icon={PLAY_ICON}
+            data-tour="play-scale"
           />
         ) : (
-          <Button variant="primary" onClick={playScaleNow} aria-label={t(selectedScale === 'melodic_minor' ? 'explore.playScaleClassical' : 'explore.playScaleAscending')} startIcon={PLAY_ICON}>
+          <Button variant="primary" onClick={playScaleNow} aria-label={t(selectedScale === 'melodic_minor' ? 'explore.playScaleClassical' : 'explore.playScaleAscending')} startIcon={PLAY_ICON} data-tour="play-scale">
             {t(selectedScale === 'melodic_minor' ? 'explore.playScaleBoth' : 'explore.playScale')}
           </Button>
         )}

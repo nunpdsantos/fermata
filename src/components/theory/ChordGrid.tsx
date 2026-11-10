@@ -50,7 +50,7 @@ export function ChordGrid() {
     // screen the row scrolls sideways inside its card; each card keeps 84 px,
     // and an edge fade says there is more (only while there is).
     <EdgeFade>
-    <div className="chord-row" style={{ gridTemplateColumns: `repeat(${diatonicChords.length}, minmax(84px, 1fr))` }} role="group" aria-label={t('explore.diatonicChordsGroup')}>
+    <div className="chord-row" data-tour="chord-row" style={{ gridTemplateColumns: `repeat(${diatonicChords.length}, minmax(84px, 1fr))` }} role="group" aria-label={t('explore.diatonicChordsGroup')}>
       {diatonicChords.map(({ chord, numeral, degree }, i) => {
         const deg = degree as keyof typeof DEGREE_COLORS;
         // The degree hue is a FILL (the top line); the numeral is written in

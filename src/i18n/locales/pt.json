@@ -1173,5 +1173,39 @@
       "player": "Escolhe a tonalidade de uma música que tocas, por exemplo G. Os acordes abaixo são dessa tonalidade: toca num deles.",
       "dismiss": "Fechar a dica"
     }
+  },
+  "showMe": {
+    "menuItem": "Mostra-me como funciona",
+    "region": "Visita guiada à app",
+    "step": "Passo {{n}} de {{total}}",
+    "back": "Anterior",
+    "next": "Seguinte",
+    "pause": "Pausa",
+    "resume": "Retomar",
+    "sound": "Som",
+    "tapForSound": "Toca para ativar o som",
+    "close": "Terminar a visita",
+    "end": "Terminar",
+    "pausedTouch": "Em pausa: mexeste na app.",
+    "stayHere": "Ficar aqui",
+    "backToStart": "Voltar para onde estava",
+    "putBack": "Repor como estava",
+    "elsewhereNote": "Vais ficar em Explorar; {{view}} está a um toque.",
+    "done": "Concluído",
+    "busyCheck": "Primeiro, termina a tua verificação ou sai dela.",
+    "busyDrill": "Primeiro, termina a tua sessão de treino ou sai dela.",
+    "loadFailed": "Não foi possível abrir a visita.",
+    "intro": {
+      "key": "A maioria das canções usa uma família de notas: a tonalidade. Aqui escolhemos G maior.",
+      "scale": "Estas são as notas dessa tonalidade, destacadas no instrumento.",
+      "chords": "…e estes são os acordes que lhe pertencem.",
+      "chord": "Toca num acorde para o ver no instrumento e carrega em Acorde para o ouvir.",
+      "guitar": "O mesmo acorde na guitarra: onde ficam os dedos.",
+      "piano": "O mesmo acorde no piano: as teclas a premir.",
+      "circle": "O círculo mostra quais são as tonalidades vizinhas: partilham todas as notas menos uma.",
+      "learn": "Aprender: lições curtas, cada uma com uma verificação rápida. Antes de qualquer resposta, há uma dica.",
+      "drill": "Treino: algumas perguntas rápidas por dia ajudam a manter tudo na memória.",
+      "end": "Agora é a tua vez."
+    }
   }
 }
