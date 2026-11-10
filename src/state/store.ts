@@ -24,6 +24,8 @@ const ALLOWED_VALUES: Record<string, readonly unknown[]> = {
   lastView: ['explore', 'learn', 'drill'],
   scaleOctaves: [1, 2],
   exploreCircleOpen: [true, false],
+  // Optional since wave 1 (no version bump): a v6 save without it takes the default (off).
+  showSolfege: [true, false],
 };
 
 // Numeric ranges. baseOctave = the piano's octave tabs (0–8, whole numbers);
@@ -170,6 +172,9 @@ export const useAppStore = create<AppState>()(
           dockDetents: state.dockDetents,
           dockChosen: state.dockChosen,
           exploreCircleOpen: state.exploreCircleOpen,
+          // Written only when on: a save from someone who never turns it on
+          // stays exactly what it was (the frozen v6 envelope tests).
+          ...(state.showSolfege ? { showSolfege: true } : {}),
         };
       },
       migrate: (persisted: unknown, version: number) => {

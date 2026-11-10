@@ -154,7 +154,11 @@ describe('detector proven on planted strings (audit examples)', () => {
 describe('PT/ES overlays name notes with letters (D-18)', () => {
   // l9u32m4e1 asks which movable-do SYLLABLE names the tonic; its answer
   // choices are the syllables themselves (Do, La, Sol, Re).
-  const strings = overlayStrings().filter((s) => !s.path.startsWith('l9u32m4e1.choices'));
+  // The `solfege` namespace of pt.json / es.json is the "Also show Dó, Ré, Mi"
+  // setting (wave 1): its subject IS the syllables, beside the letters (C = Dó).
+  const strings = overlayStrings().filter(
+    (s) => !s.path.startsWith('l9u32m4e1.choices') && !(s.file.endsWith('.json') && s.path.startsWith('solfege.')),
+  );
 
   it('reads a meaningful number of strings', () => {
     expect(strings.length).toBeGreaterThan(10_000);

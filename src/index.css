@@ -2286,3 +2286,25 @@ p.explore-prose {
   outline: 2px solid var(--focus-outline);
   outline-offset: 2px;
 }
+
+/* "Also show Dó, Ré, Mi" (wave 1, stream E): the fixed-do name beside the
+   letter — never instead of it. Off by default; only in PT / ES. */
+.chip-solfege {
+  font-weight: 400;
+}
+.strip-solfege {
+  font-size: var(--text-caption);
+  line-height: 1.2;
+  color: var(--text-muted);
+}
+.strip-solfege-inline {
+  margin-left: 4px;
+  font-weight: 500;
+}
+.strip-col[data-dim] .strip-solfege {
+  color: var(--text-dim);
+}
+/* One caption line more under the staff for the names. */
+.strip-body:has(.strip-solfege) .strip-labels-room {
+  height: 56px;
+}

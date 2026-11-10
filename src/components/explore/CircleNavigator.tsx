@@ -3,13 +3,19 @@ import { useTranslation } from 'react-i18next';
 import { CircleOfFifths } from '../theory/CircleOfFifths.tsx';
 import { useAppStore } from '../../state/store.ts';
 import { keyFacts } from './keyFacts.ts';
+import { useNoteLabel } from '../../hooks/useSolfege.ts';
 
-/** Signature, relative, dominant and subdominant keys of the selected key. */
-export function KeyFactsList() {
+/**
+ * Signature, relative, dominant and subdominant keys of the selected key.
+ * `fixedDo` = false: no "B (Si)" here even with the setting on (the laptop's
+ * narrow aside column would wrap every value onto a second line).
+ */
+export function KeyFactsList({ fixedDo = true }: { fixedDo?: boolean }) {
   const { t } = useTranslation();
   const selectedKey = useAppStore((s) => s.selectedKey);
   const selectedScale = useAppStore((s) => s.selectedScale);
-  const { facts } = keyFacts(selectedKey, selectedScale, t);
+  const noteLabel = useNoteLabel();
+  const { facts } = keyFacts(selectedKey, selectedScale, t, fixedDo ? noteLabel : undefined);
   return (
     <dl className="key-facts" data-testid="key-facts">
       {facts.map((f) => (
@@ -63,7 +69,7 @@ export function CircleNavigator({ collapsible = false }: { collapsible?: boolean
           circle and the key facts. */}
       <div id={bodyId} className="circle-body" data-folded={!open || undefined}>
         <CircleOfFifths signatureInFacts />
-        <KeyFactsList />
+        <KeyFactsList fixedDo={collapsible} />
       </div>
     </section>
   );

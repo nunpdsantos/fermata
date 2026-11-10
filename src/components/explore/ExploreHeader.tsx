@@ -22,6 +22,7 @@ import { keyFacts } from './keyFacts.ts';
 import { keyName } from './focusReadout.ts';
 import { toContentLanguage } from '../drill/drillText.ts';
 import { shareExploreLink, shareLinkLabel } from '../../services/shareLinkMake.ts';
+import { useNoteLabel } from '../../hooks/useSolfege.ts';
 
 const PLAY_ICON = (
   <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -52,7 +53,8 @@ export function ExploreHeader({ practiceAction, onPractise }: {
   const phone = useMediaQuery(PHONE_QUERY);
   const [keySheet, setKeySheet] = useState(false);
   const [compare, setCompare] = useState(false);
-  const facts = keyFacts(selectedKey, selectedScale, t);
+  const noteLabel = useNoteLabel();
+  const facts = keyFacts(selectedKey, selectedScale, t, noteLabel);
 
   const playScaleNow = useCallback(async () => {
     await resumeAudio();
@@ -96,7 +98,7 @@ export function ExploreHeader({ practiceAction, onPractise }: {
       </div>
 
       <p className="explore-summary" data-testid="key-summary">
-        <span className="explore-summary-key">{keyName(scale, t)}</span>
+        <span className="explore-summary-key">{keyName(scale, t, noteLabel)}</span>
         {' · '}
         {facts.signatureText}
         {facts.relative && <>{' · '}{t('explore.relativeKey', { key: facts.relative })}</>}

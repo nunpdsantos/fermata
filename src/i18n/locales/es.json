@@ -1168,5 +1168,9 @@
       "guitarAlone": "la guitarra",
       "lesson": "la lección «{{title}}»"
     }
+  },
+  "solfege": {
+    "setting": "Mostrar también Do, Re, Mi",
+    "hint": "Añade Do, Re, Mi junto a las letras. Los nombres de los acordes y las lecciones siguen con las letras (C = Do)."
   }
 }

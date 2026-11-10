@@ -17,6 +17,8 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
   dockChosen: { explore: false, learn: false },
   // Tablet: the circle below the work starts folded (the column stays short).
   exploreCircleOpen: false,
+  // Fixed-do names beside the letters (PT / ES): off until the learner asks.
+  showSolfege: false,
 
   setColorMode: (mode) => set({ colorMode: mode, preferencesUpdatedAt: Date.now() }),
   setThemeMode: (mode) => set({ themeMode: mode, preferencesUpdatedAt: Date.now() }),
@@ -32,6 +34,7 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
     set({ dockDetents: { ...s.dockDetents, [view]: detent }, dockChosen: { ...s.dockChosen, [view]: true } });
   },
   setExploreCircleOpen: (open) => set({ exploreCircleOpen: open }),
+  setShowSolfege: (on) => set({ showSolfege: on, preferencesUpdatedAt: Date.now() }),
   // The app opening the dock for an exercise is not the learner's choice.
   requestDock: (detent) => {
     const { view, dockDetents } = get();

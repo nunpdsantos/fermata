@@ -14,6 +14,7 @@ import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { exploreRegister } from './exploreRegister';
 import { useAppStore } from '../../state/store.ts';
 import { useFocusNoteStore, useFocusNote, focusMatches, type FocusNote } from '../../state/focusNoteStore.ts';
+import { useSolfege } from '../../hooks/useSolfege.ts';
 import { DEGREE_INKS } from '../../design/tokens/colors.ts';
 import { StaffNotationSkeleton } from '../notation/StaffNotationSkeleton.tsx';
 import type { StaffLayoutInfo } from '../notation/useStaffNotation.ts';
@@ -48,6 +49,7 @@ const GUITAR_NOTE_START = 104;
  */
 export function ScaleStrip() {
   const { t } = useTranslation();
+  const solfege = useSolfege();
   const { displayScale: scale } = useKeyContext();
   const selectedScale = useAppStore((s) => s.selectedScale);
   const direction = useScaleDirectionStore((s) => s.direction);
@@ -140,6 +142,9 @@ export function ScaleStrip() {
   // Function names ("7 · leading") only where a column has room for them
   // (a laptop's strip; on narrower ones the degree alone).
   const showFunctions = wide && scale.notes.length === 7 && half * 2 >= 104;
+  // Fixed-do names (wave 1): beside the letter where a column is wide enough
+  // ("F♯ Fá♯"), else on a line of their own under it (the label band grows).
+  const solfegeInline = half * 2 >= 64;
 
   // ── Focus + sound ────────────────────────────────────────────────────────
   const noteAt = (i: number): FocusNote => ({ pc: getPitchClass(notes[i]), midi: midis[i], source: 'staff' });
@@ -261,7 +266,8 @@ export function ScaleStrip() {
                     play(i);
                   }}
                 >
-                  <span className="strip-name" aria-hidden="true">{withGlyphs(name)}</span>
+                  <span className="strip-name" aria-hidden="true">{withGlyphs(name)}{solfegeInline && solfege(n) && <span className="strip-solfege-inline">{solfege(n)}</span>}</span>
+                  {!solfegeInline && solfege(n) && <span className="strip-solfege" aria-hidden="true">{solfege(n)}</span>}
                   <span className="strip-sub" aria-hidden="true">
                     <span
                       className="strip-degree"

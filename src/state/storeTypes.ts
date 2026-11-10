@@ -121,6 +121,10 @@ export interface PreferencesSlice {
    *  (W11-B; folded by default there so the column is not a long scroll;
    *  remembered). Laptops always show it beside the work. */
   exploreCircleOpen: boolean;
+  /** PT / ES: show the fixed-do name (Dó, Ré, Mi…) BESIDE the letter where a
+   *  note or key is named and there is room (wave 1, stream E). Off by default;
+   *  no effect in English. Letters stay everywhere (D-18). */
+  showSolfege: boolean;
   setColorMode: (mode: ColorMode) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setScaleOctaves: (octaves: 1 | 2) => void;
@@ -129,6 +133,7 @@ export interface PreferencesSlice {
   setPreferencesUpdatedAt: (at: number) => void;
   setDockDetent: (view: DockView, detent: Detent) => void;
   setExploreCircleOpen: (open: boolean) => void;
+  setShowSolfege: (on: boolean) => void;
   /**
    * Open (or rest) the instrument dock of the CURRENT view at a detent — the
    * API a Learn exercise calls when it needs the instrument (D-20). No-op in

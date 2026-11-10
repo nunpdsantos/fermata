@@ -1,0 +1,21 @@
+{
+  "state": {
+    "selectedKey": { "natural": "E", "accidental": "b" },
+    "selectedScale": "dorian",
+    "instrument": "guitar",
+    "guitarTuningId": "drop-d",
+    "guitarScalePosition": 5,
+    "baseOctave": 4,
+    "colorMode": "functional",
+    "scaleOctaves": 1,
+    "volume": 0.55,
+    "themeMode": "auto",
+    "language": "pt",
+    "preferencesUpdatedAt": 1794100000000,
+    "lastView": "learn",
+    "dockDetents": { "explore": "full", "learn": "half" },
+    "dockChosen": { "explore": true, "learn": true },
+    "exploreCircleOpen": true
+  },
+  "version": 6
+}

@@ -4,6 +4,7 @@ import { noteToString, type ScaleType } from '../../core/types/music.ts';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { SCALE_GROUPS, useRootChoices, useChooseScale } from './keyChoice.ts';
+import { useSolfege } from '../../hooks/useSolfege.ts';
 import { ChipGroup } from '../ui/ChoiceChip.tsx';
 import { Button } from '../ui/Button.tsx';
 import { SelectTrigger } from '../ui/SelectTrigger.tsx';
@@ -87,6 +88,7 @@ export function ScalePicker({ className }: { className?: string }) {
 export function RootChips() {
   const { t } = useTranslation();
   const { roots, selectedPc, chooseRoot } = useRootChoices();
+  const solfege = useSolfege();
   return (
     <div role="group" aria-label={t('keySelector.label')} data-tour="key-scale">
       <div className="flex items-center gap-2 mb-1.5 h-(--tap)" data-testid="root-label-row">
@@ -99,7 +101,12 @@ export function RootChips() {
         onChange={chooseRoot}
         options={roots.map((root) => {
           const label = noteToString(root);
-          return { value: getPitchClass(root), label: withGlyphs(root), data: { 'data-root': label } };
+          const fixedDo = solfege(root);
+          return {
+            value: getPitchClass(root),
+            label: fixedDo ? <>{withGlyphs(root)}{' '}<span className="chip-solfege">{fixedDo}</span></> : withGlyphs(root),
+            data: { 'data-root': label },
+          };
         })}
       />
     </div>
