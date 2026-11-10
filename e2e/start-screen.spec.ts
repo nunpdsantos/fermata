@@ -19,7 +19,8 @@ import { WELCOME_KEY } from './helpers/welcome';
  *  - the start hint: there from Explore's first paint, nothing moves, covers
  *    neither the instrument nor the chord row; no link into Learn (the
  *    owner, 2026-11-10: it returns in wave 2); ✕ and acting on it (a chord
- *    picked) end it for good, in both profiles;
+ *    picked) end it for good, in both profiles; ✕ sends focus to the key
+ *    picker;
  *  - the page that showed the start screen skips the offline-ready notice.
  */
 
@@ -385,6 +386,8 @@ test.describe('the start hint', () => {
     await expect(hint).toContainText('Escolhe a tonalidade', { timeout: 15_000 });
     await hint.getByRole('button', { name: 'Fechar a dica' }).click();
     await expect(hint).toHaveCount(0);
+    // Focus lands on Explore's key picker, the first control under the hint (the seat's decision 3).
+    await expect(page.getByTestId('explore-header').getByTestId('key-picker')).toBeFocused();
     await page.reload();
     await expect(page.getByTestId('explore-header')).toBeVisible({ timeout: 15_000 });
     await page.waitForTimeout(800);

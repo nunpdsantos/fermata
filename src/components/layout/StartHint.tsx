@@ -1,7 +1,20 @@
+import { flushSync } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../state/store.ts';
 import { useShownStartHint, dismissStartHint } from '../../state/startHint.ts';
 import { IconButton } from '../ui/Button.tsx';
+
+/**
+ * ✕: the hint goes, and focus goes to the first control under where it was,
+ * Explore's key picker (the Root select; a phone's key button) — not to
+ * <body> (the seat's decision, 2026-11-10). The hint is removed first, so
+ * the picker is focused (and, if need be, scrolled to) where it now sits. A
+ * chord picked ends the hint too, without this: focus is on the chord.
+ */
+function dismissToKeyPicker() {
+  flushSync(dismissStartHint);
+  document.querySelector<HTMLElement>('[data-testid="explore-header"] [data-testid="key-picker"]')?.focus();
+}
 
 /**
  * The start hint (state/startHint.ts): one line under the top bar, in the
@@ -26,7 +39,7 @@ export function StartHint() {
       </p>
       <IconButton
         aria-label={t('start.hint.dismiss')}
-        onClick={dismissStartHint}
+        onClick={dismissToKeyPicker}
         icon={
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
             <line x1="18" y1="6" x2="6" y2="18" />
