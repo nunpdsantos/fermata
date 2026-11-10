@@ -118,7 +118,7 @@ const EXPECT: Record<Lang, { summary: string; strip: string[]; readout: RegExp; 
 
 // In the order they are drawn (final review: a syllable drawn before its letter passed).
 const stripNames = (page: Page) => page.locator('.strip-col').evaluateAll((cols) =>
-  cols.map((c) => [...c.querySelectorAll('.strip-name, .strip-solfege')].map((e) => e.textContent ?? '').join('')));
+  cols.map((c) => Array.from(c.querySelectorAll('.strip-name, .strip-solfege'), (e) => e.textContent ?? '').join('')));
 
 for (const lang of ['pt', 'es'] as const) {
   for (const w of WIDTHS) {

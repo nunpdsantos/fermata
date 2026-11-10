@@ -233,6 +233,9 @@ for (const v of [PHONE, LAPTOP] as View[]) {
     const after = JSON.parse((await page.evaluate(() => localStorage.getItem('music-theory-app')))!);
     for (const k of ['learnerProfile', 'startHint', 'exploreDetail', 'neckNutSide', 'neckTopString', 'showSolfege']) expect(after.state).not.toHaveProperty(k);
     expect(after.state).toMatchObject({ selectedKey: save.state.selectedKey, selectedScale: save.state.selectedScale, instrument: 'guitar', guitarTuningId: 'drop-d' });
+    // Final review (2026-11-10): his whole save, not four fields — the tour
+    // leaves nothing of its own (dock, position, octave, volume, stamps).
+    expect(after).toEqual(written);
     await context.close();
   });
 }

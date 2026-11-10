@@ -184,11 +184,11 @@ describe('every term id used in a component has an entry', () => {
 describe('each computed word opens its own entry', () => {
   it('every degree name the strip and read-out show: the entry titled with that name (EN)', () => {
     const fn = enUi.explore.fn as Record<string, string>;
-    const titles = en.entries as Record<string, { title: string }>;
+    const titles = en.entries as unknown as Record<string, { title?: string }>;
     expect(Object.keys(fn).length).toBe(10);
     for (const [key, label] of Object.entries(fn)) {
       const id = functionTermId(`explore.fn.${key}`)!;
-      expect(titles[id].title.toLowerCase(), key).toBe(label.toLowerCase());
+      expect(titles[id].title?.toLowerCase(), key).toBe(label.toLowerCase());
       expect(functionTermId(`degreeShort.${key}`), key).toBe(id);
     }
   });

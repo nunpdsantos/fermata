@@ -278,7 +278,7 @@ const BASE: Record<string, EntrySpec> = {
     // Outside plain major and natural minor (harmonic / melodic minor, the
     // pentatonics, the blues) the line names the KEY, not the scale: "A
     // Harmonic Minor and C major share every note" is untrue (G♯).
-    example: (ctx, t) => {
+    example: (ctx, t): Example | null => {
       const rel = keyFacts(ctx.root, ctx.scaleType, t).relative;
       if (!rel) return null;
       if (ctx.scaleType === 'major' || ctx.scaleType === 'natural_minor') return { vars: { relative: rel } };

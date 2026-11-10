@@ -268,9 +268,9 @@ test.describe('4. start screen ↔ guitar neck', () => {
     // Written back (boot writes the save) with none of the new fields.
     const written = JSON.parse((await page.evaluate(() => localStorage.getItem('music-theory-app')))!);
     expect(written.version).toBe(6);
-    const { preferencesUpdatedAt: _a, ...after } = written.state;
-    const { preferencesUpdatedAt: _b, ...before } = save.state;
-    expect(after).toEqual(before);
+    // Every field, preferencesUpdatedAt included (final review: nothing at
+    // boot stamps it, so leaving it out only hid a possible write).
+    expect(written.state).toEqual(save.state);
     for (const k of ['learnerProfile', 'startHint', 'exploreDetail', 'neckNutSide', 'neckTopString', 'showSolfege']) expect(written.state).not.toHaveProperty(k);
     await page.getByRole('button', { name: /^Mais/ }).click();
     await page.getByRole('menuitem', { name: T.pt.settings }).click();
