@@ -16,6 +16,7 @@ import {
 } from './snapshot';
 import { drillVisitIsQuiet, learnVisitIsQuiet } from './guards';
 import { introTour, SEL, SHORT_QUERY, WORKBENCH_QUERY } from './introTour';
+import { resolveExploreDetail } from '../../state/exploreDetail';
 
 /** 'blocked': the audio is still suspended (no tap reached it) — the bar offers "Tap for sound". */
 export type SoundState = 'on' | 'off' | 'blocked';
@@ -71,6 +72,10 @@ export function stepsFor(_tour: DemoTour, snap: TourSnapshot): TourStep[] {
     drillQuiet: drillVisitIsQuiet(),
     workbench: () => matches(WORKBENCH_QUERY),
     short: () => matches(SHORT_QUERY),
+    simple: () => {
+      const s = useAppStore.getState();
+      return resolveExploreDetail(s.exploreDetail, s.learnerProfile) === 'simple';
+    },
   });
 }
 

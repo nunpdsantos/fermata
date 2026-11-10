@@ -26,6 +26,8 @@ import { classicalDescendingNotes } from '../../core/utils/classicalScale';
 import { exploreRegister } from '../../components/explore/exploreRegister';
 import { noteToString } from '../../core/types/music';
 import { waitUntil } from './dom';
+import { useGlossaryUi } from '../../glossary/glossaryUi';
+import type { TermId } from '../../glossary/termIds';
 
 /** The tour's key: G major (one sharp, familiar on both instruments). */
 export const TOUR_KEY: Note = { natural: 'G', accidental: '' };
@@ -70,6 +72,24 @@ export function hasTourChord(): boolean {
 
 export function chooseTourChord(): void {
   if (!hasTourChord()) app().setSelectedChord(tourChord());
+}
+
+/**
+ * Open the explanation of a dotted word (wave 1, plain words) through the
+ * glossary's own open function, exactly as tapping the word does: its
+ * `data-term` names the word first, then any further words of the same
+ * label ("V · dominant" = the degree's name, then the numeral).
+ */
+export function openWordExplanation(word: Element): boolean {
+  const ids = (word.getAttribute('data-term') ?? '').split(/\s+/).filter(Boolean) as TermId[];
+  if (ids.length === 0) return false;
+  useGlossaryUi.getState().openTerm(ids[0], word instanceof HTMLElement ? word : null, ids.slice(1));
+  return true;
+}
+
+/** Close whatever explanation is open (session-only state: nothing is saved). */
+export function closeWordExplanation(): void {
+  if (useGlossaryUi.getState().request) useGlossaryUi.getState().close();
 }
 
 export function clearChord(): void {

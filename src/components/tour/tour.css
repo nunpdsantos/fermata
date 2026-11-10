@@ -12,6 +12,8 @@
   pointer-events: none;
 }
 
+.tour-layer[data-above-sheet] { z-index: 71; }
+
 .tour-bar {
   position: fixed;
   /* top / left / width come from the placement (services/tour/dom.ts placeBar). */

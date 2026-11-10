@@ -1200,6 +1200,7 @@
       "scale": "Estas son las notas de esa tonalidad, resaltadas en el instrumento.",
       "chords": "…y estos son los acordes que le pertenecen.",
       "chord": "Toca un acorde para verlo en el instrumento y pulsa Acorde para oírlo.",
+      "word": "Cualquier palabra subrayada con puntos explica lo que significa. Tócala.",
       "guitar": "El mismo acorde en la guitarra: dónde van los dedos.",
       "piano": "El mismo acorde en el piano: las teclas que pulsas.",
       "circle": "El círculo muestra qué tonalidades son vecinas: comparten todas las notas menos una.",

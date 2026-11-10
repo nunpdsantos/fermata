@@ -17,7 +17,8 @@
 import type { InstrumentType } from '../../state/storeTypes';
 import type { TourStep } from './types';
 import {
-  chooseTourChord, chooseTourKey, clearChord, goTo, playTourScale, pressPlayChord, setDock, setInstrument, showInKeyChords,
+  chooseTourChord, chooseTourKey, clearChord, closeWordExplanation, goTo, openWordExplanation, playTourScale, pressPlayChord,
+  setDock, setInstrument, showInKeyChords,
 } from './appActions';
 
 export const SEL = {
@@ -29,6 +30,14 @@ export const SEL = {
   chordCard: '[data-tour="chord-row"] > button:nth-of-type(5)',
   chordDetail: '[data-testid="chord-detail"]',
   playChord: '[data-tour="play-chord"]',
+  /**
+   * A dotted word in the chord's detail (plain words): "V · dominant" in Full
+   * view; Simple has no such line, so there the chord's quality ("major").
+   */
+  roleWord: '[data-testid="chord-role"] button.term',
+  detailWord: '[data-testid="chord-detail"] button.term',
+  /** The word's explanation, open and filled in (a laptop's popover, a phone's sheet). */
+  explanation: ':is([data-testid="glossary-popover"], [data-testid="glossary-sheet"]) .glossary-plain',
   /** The Piano / Guitar switch's option that is NOT selected. */
   otherInstrument: '[data-tour="instrument"] [role="radio"][aria-checked="false"]',
   instrument: '[data-tour="play-note"]',
@@ -41,6 +50,12 @@ export const SEL = {
   drillTab: '[data-tab="drill"]',
   drillHeading: '#drill-intro-title',
 } as const;
+
+/** The dotted word the 'word' step explains: "V · dominant" when shown (Full), else the detail's first word. */
+export function wordSelector(): string {
+  if (typeof document !== 'undefined' && document.querySelector(SEL.roleWord)) return SEL.roleWord;
+  return SEL.detailWord;
+}
 
 /** Laptop widths, where the circle stands beside the work (ExploreView's WORKBENCH_QUERY). */
 export const WORKBENCH_QUERY = '(min-width: 1200px)';
@@ -57,6 +72,12 @@ export interface IntroEnv {
   workbench: () => boolean;
   /** A short screen (phone sideways). */
   short: () => boolean;
+  /**
+   * Explore shows its Simple view (plain words, wave 1): no circle there, and
+   * no chords tabs (showInKeyChords finds none and does nothing). Optional:
+   * Full when not given.
+   */
+  simple?: () => boolean;
 }
 
 export function introTour(env: IntroEnv): TourStep[] {
@@ -132,6 +153,31 @@ export function introTour(env: IntroEnv): TourStep[] {
       },
     },
     {
+      // A word that explains itself (plain words, wave 1): the tap cue on a
+      // dotted word of the chord's detail, its explanation opened through the
+      // glossary's own function, closed again when the step is left (Next,
+      // Back, End, the page going away: every exit aborts the step).
+      id: 'word',
+      caption: () => 'showMe.intro.word',
+      target: () => wordSelector(),
+      run: async (c) => {
+        explore(true, start, 'page');
+        c.signal.addEventListener('abort', closeWordExplanation, { once: true });
+        const selector = wordSelector();
+        const word = await c.reveal(selector);
+        if (!word || c.signal.aborted) return;
+        await c.tap(selector);
+        if (c.signal.aborted) return;
+        // The explanation takes focus as a tap would; a viewer stepping with
+        // the keyboard keeps it on the bar's button they pressed.
+        const had = document.activeElement;
+        const inBar = had instanceof HTMLElement && !!had.closest('[data-testid="tour-bar"]');
+        if (!openWordExplanation(word)) return;
+        await c.settled(SEL.explanation);
+        if (inBar && !c.signal.aborted && had.isConnected) had.focus({ preventScroll: true });
+      },
+    },
+    {
       id: 'instrument',
       caption: () => (other === 'guitar' ? 'showMe.intro.guitar' : 'showMe.intro.piano'),
       target: () => SEL.instrument,
@@ -148,7 +194,8 @@ export function introTour(env: IntroEnv): TourStep[] {
       id: 'circle',
       caption: () => 'showMe.intro.circle',
       target: () => SEL.circle,
-      available: () => env.workbench(),
+      // Beside the work on a laptop, in Full view only: Simple has no circle.
+      available: () => env.workbench() && !(env.simple?.() ?? false),
       run: async (c) => {
         explore(true, other, 'page');
         await c.reveal(SEL.circle);

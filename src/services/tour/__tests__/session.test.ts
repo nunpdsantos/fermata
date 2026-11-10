@@ -195,7 +195,7 @@ describe('the intro tour, played through', () => {
     const { session, onDone } = newSession();
     const visited = await playToEnd(session);
     // Learn and Drill would write on opening here (a lesson is open, Drill has history): the tour points at their tabs.
-    expect(visited).toEqual(['key', 'scale', 'chords', 'chord', 'instrument', 'learn', 'drill', 'end']);
+    expect(visited).toEqual(['key', 'scale', 'chords', 'chord', 'word', 'instrument', 'learn', 'drill', 'end']);
     expect(useAppStore.getState().view).toBe('explore');
     // Mid-tour, even the settings save is untouched (a reload boots as before).
     expect(rawKeys()).toEqual(keysBefore);

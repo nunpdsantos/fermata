@@ -122,6 +122,24 @@ export interface BarPlacementInput {
   cue: Box | null;
   /** True when the target is in the top bar (a tab): the bar may then not cover the top bar. */
   targetInTopBar: boolean;
+  /**
+   * Something else the bar must not cover, weighed like the target: a word's
+   * explanation open beside it (the glossary's popover on a laptop). A phone's
+   * explanation sheet is a `floor` instead. Optional: none.
+   */
+  avoid?: Box | null;
+  /**
+   * The bottom of what stands in the page flow right under the top bar (the
+   * start hint, wave 1): the `top` place starts below it, so the bar never
+   * lies over the hint. Optional: the top bar's bottom.
+   */
+  topClear?: number;
+  /**
+   * What the bar must never cover, before even the target (the start hint):
+   * every place that keeps clear of it wins over every place that does not.
+   * The `bottom` place always does, so one is there. Optional: none.
+   */
+  keepClear?: Box | null;
 }
 
 export type BarSlot = 'bottom' | 'top' | 'over-topbar';
@@ -154,7 +172,7 @@ export function placeBar(input: BarPlacementInput): BarPlace {
   const cue = input.cue;
   const tops: { slot: BarSlot; top: number }[] = [
     { slot: 'bottom', top: floor - GAP - barHeight },
-    { slot: 'top', top: topBarBottom + GAP },
+    { slot: 'top', top: Math.max(topBarBottom, input.topClear ?? 0) + GAP },
   ];
   if (!targetInTopBar) tops.push({ slot: 'over-topbar', top: Math.max(0, topBarBottom - barHeight) });
   const width = Math.min(barWidth, viewport.width - 2 * BAR_GUTTER);
@@ -171,7 +189,8 @@ export function placeBar(input: BarPlacementInput): BarPlace {
   for (const row of rows) {
     for (const left of lefts) {
       const b: Box = { top: row.top, bottom: row.top + barHeight, left, right: left + width };
-      const score = (target ? overlapArea(b, target) * 1000 : 0) + (cue ? overlapArea(b, cue) : 0);
+      const score = (input.keepClear ? overlapArea(b, input.keepClear) * 1e7 : 0)
+        + (target ? overlapArea(b, target) * 1000 : 0) + (input.avoid ? overlapArea(b, input.avoid) * 1000 : 0) + (cue ? overlapArea(b, cue) : 0);
       if (score === 0) return { ...row, left };
       if (score < bestScore) {
         best = { ...row, left };

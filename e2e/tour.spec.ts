@@ -158,7 +158,7 @@ for (const where of ['phone', 'laptop'] as const) {
         const { context, page } = await open(browser, { where, lang, state: { instrument } });
         await startTour(page, lang);
         const ids = await stepThrough(page, lang);
-        const expected = ['key', 'scale', 'chords', 'chord', 'instrument', ...(where === 'laptop' ? ['circle'] : []), 'learn', 'drill', 'end'];
+        const expected = ['key', 'scale', 'chords', 'chord', 'word', 'instrument', ...(where === 'laptop' ? ['circle'] : []), 'learn', 'drill', 'end'];
         expect(ids).toEqual(expected);
         // The end card: back on the chord, on the viewer's own instrument.
         expect(await state(page)).toMatchObject({ view: 'explore', key: 'G', chord: 'D', instrument });
@@ -176,7 +176,7 @@ test('landscape phone: the bar keeps off the target and the instrument at every 
   const { context, page } = await open(browser, { where: 'landscape', state: { instrument: 'guitar' } });
   await startTour(page);
   const ids = await stepThrough(page);
-  expect(ids).toEqual(['key', 'scale', 'chords', 'chord', 'instrument', 'learn', 'drill', 'end']);
+  expect(ids).toEqual(['key', 'scale', 'chords', 'chord', 'word', 'instrument', 'learn', 'drill', 'end']);
   await context.close();
 });
 
@@ -188,11 +188,13 @@ test('stopping mid-way restores the previous key, view and instrument', async ({
   expect(before).toMatchObject({ key: 'E♭', instrument: 'guitar', view: 'explore' });
   const savedBefore = await storage(page, [APP]);
   await startTour(page);
-  for (let i = 0; i < 4; i++) {
+  // key, scale, chords, chord, word → the instrument step.
+  for (let i = 0; i < 5; i++) {
     await holding(page);
     await page.getByRole('button', { name: 'Next', exact: true }).click();
   }
   await holding(page);
+  await expect(bar(page)).toHaveAttribute('data-step', 'instrument');
   expect(await state(page)).toMatchObject({ key: 'G', instrument: 'piano', chord: 'D' });
   await page.getByRole('button', { name: 'End the tour' }).click();
   await expect(bar(page)).toHaveCount(0);
@@ -235,7 +237,8 @@ test('stopped while in Learn (started from the Learn overview): back on the Lear
   const { context, page } = await open(browser, { where: 'laptop', state: { lastView: 'learn', instrument: 'piano' } });
   await expect(page.locator('#learn-panel h1')).toBeVisible({ timeout: 15_000 });
   await startTour(page);
-  for (let i = 0; i < 6; i++) {
+  // key, scale, chords, chord, word, instrument, circle → the Learn step.
+  for (let i = 0; i < 7; i++) {
     await holding(page);
     await page.getByRole('button', { name: 'Next', exact: true }).click();
   }

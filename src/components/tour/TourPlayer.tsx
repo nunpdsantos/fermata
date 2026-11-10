@@ -14,6 +14,7 @@ import { busyReason } from '../../services/tour/guards.ts';
 import { returnView } from '../../services/tour/snapshot.ts';
 import { BAR_GUTTER, findTarget, placeBar, type Box, type BarSlot } from '../../services/tour/dom.ts';
 import type { TourStep } from '../../services/tour/types.ts';
+import { useGlossaryUi } from '../../glossary/glossaryUi.ts';
 import './tour.css';
 
 /**
@@ -173,7 +174,16 @@ function useTourLayout(targetSel: string | null, cueSel: string | null, barRef: 
       const cueRect = cueEl ? cueEl.getBoundingClientRect() : null;
       const topBar = document.querySelector('.app-topbar')?.getBoundingClientRect();
       const dock = document.querySelector('[data-testid="instrument-dock"]')?.getBoundingClientRect();
-      const floor = dock && dock.height > 0 && dock.top < vh ? dock.top : vh;
+      // A word's explanation (plain words): a phone's sheet is a floor the
+      // bar stays above; a laptop's popover is a box it keeps off.
+      const sheetPanel = document.querySelector('[data-testid="glossary-sheet"]')?.getBoundingClientRect();
+      const popover = document.querySelector('[data-testid="glossary-popover"]')?.getBoundingClientRect();
+      // The start hint (wave 1) is a line in the flow under the top bar: the bar's top place starts below it.
+      const hint = document.querySelector('[data-testid="start-hint"]')?.getBoundingClientRect();
+      const floor = Math.min(
+        dock && dock.height > 0 && dock.top < vh ? dock.top : vh,
+        sheetPanel && sheetPanel.height > 0 ? sheetPanel.top : vh,
+      );
       const barHeight = barRef.current?.offsetHeight ?? 0;
       const barWidth = Math.min(BAR_MAX_WIDTH, vw - 2 * BAR_GUTTER);
       const placed = barHeight > 0
@@ -186,6 +196,9 @@ function useTourLayout(targetSel: string | null, cueSel: string | null, barRef: 
             target,
             cue: cueRect ? toBox(cueRect) : null,
             targetInTopBar: !!(el && el.closest('.app-topbar')),
+            avoid: popover && popover.height > 0 ? toBox(popover) : null,
+            topClear: hint && hint.height > 0 ? hint.bottom : undefined,
+            keepClear: hint && hint.height > 0 ? toBox(hint) : null,
           })
         : null;
       const next: Layout = {
@@ -216,6 +229,9 @@ function TourOverlay({ session, t }: { session: TourSession; t: T }) {
   const targetSel = step?.target?.() ?? null;
   const layout = useTourLayout(targetSel, cue?.selector ?? null, barRef);
   const reduce = useMediaQuery(REDUCED_MOTION);
+  // While a word's explanation is open (the 'word' step), the bar stays above
+  // a phone's explanation sheet and its scrim, so Next / End stay in reach.
+  const explaining = useGlossaryUi((s) => s.request !== null);
   const visible = session.engine.visibleSteps();
   const position = step ? visible.indexOf(step) : -1;
   const final = !!step?.final;
@@ -290,7 +306,7 @@ function TourOverlay({ session, t }: { session: TourSession; t: T }) {
   const landsElsewhere = final && menuTour && returnView(session.snapshot) !== startView;
 
   return (
-    <div className="tour-layer" data-testid="tour">
+    <div className="tour-layer" data-testid="tour" data-above-sheet={explaining ? '' : undefined}>
       {layout.target && (
         <div
           className="tour-spotlight"
