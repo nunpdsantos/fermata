@@ -17,6 +17,9 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
   dockChosen: { explore: false, learn: false },
   // Tablet: the circle below the work starts folded (the column stays short).
   exploreCircleOpen: false,
+  // Never asked (wave 1): the app as it was — see state/learnerProfile.ts.
+  learnerProfile: null,
+  startHint: null,
 
   setColorMode: (mode) => set({ colorMode: mode, preferencesUpdatedAt: Date.now() }),
   setThemeMode: (mode) => set({ themeMode: mode, preferencesUpdatedAt: Date.now() }),

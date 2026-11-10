@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { TopBar } from './TopBar.tsx';
 import { InstrumentDock } from './InstrumentDock.tsx';
 import { ToastRegion } from './ToastRegion.tsx';
-import { WelcomeHost } from './WelcomeHost.tsx';
+import { StartHint } from './StartHint.tsx';
 import { useToastAvoid } from './toastLayout.ts';
 import { useAppStore } from '../../state/store.ts';
 import type { Detent } from '../../state/dock.ts';
@@ -71,6 +71,9 @@ export function AppShell({ children }: AppShellProps) {
       <TopBar />
       {/* Toasts: a fixed overlay under the top bar (see toastLayout.ts). */}
       <ToastRegion />
+      {/* After a 'new' / 'player' start-screen door (state/startHint.ts):
+          one line in the flow, Explore only — it covers nothing. */}
+      <StartHint />
       <div ref={bodyRef} className="flex-1 min-h-0 flex flex-col">
         <main id="main-content" className="flex-1 overflow-hidden flex flex-col min-h-0" inert={sheetCoversView || undefined}>
           {children}
@@ -81,8 +84,6 @@ export function AppShell({ children }: AppShellProps) {
           </div>
         )}
       </div>
-      {/* First visit only (state/welcomeGate.ts): a lazy sheet. */}
-      <WelcomeHost />
     </div>
   );
 }

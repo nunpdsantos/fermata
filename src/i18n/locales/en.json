@@ -1138,14 +1138,40 @@
     "close": "Close full neck"
   },
   "practice": {"title": "Practise on the guitar"},
-  "welcome": {
-    "title": "Welcome to Fermata",
-    "explore": "Pick a key and see its notes and chords on the piano or guitar, and its place on the circle of fifths.",
-    "learn": "A step-by-step course in nine levels, with a short check after each lesson.",
-    "drill": "A short session of quick questions a day. The ones you miss come back.",
-    "footer": "Free, no account, works offline. Your progress stays in this browser.",
-    "exploreAction": "Explore a key",
-    "learnAction": "Start the course",
-    "drillAction": "Try a drill"
+  "start": {
+    "tagline": "Learn how music works, on a piano or guitar you can play right here.",
+    "tour": "Watch the one-minute tour",
+    "instrumentLabel": "I'll use:",
+    "doorsHeading": "Where are you starting from?",
+    "door": {
+      "new": {
+        "title": "I'm new to music",
+        "line": "Start with sound. You don't need to read music."
+      },
+      "player": {
+        "title": "I play, but never learned theory",
+        "line": "See why the chords you know go together."
+      },
+      "theory": {
+        "title": "I know some theory",
+        "line": "Straight to the tools: keys, chords, scales, the circle of fifths."
+      }
+    },
+    "footer": "Free. No account. Works offline after your first visit. Your progress stays in this browser.",
+    "settingsLabel": "How I use Fermata",
+    "profile": {
+      "new": "New to music",
+      "player": "I play, no theory",
+      "theory": "I know some theory"
+    },
+    "hint": {
+      "label": "Getting started",
+      "newPiano": "Tap a key to hear it.",
+      "newGuitar": "Tap a string to hear it.",
+      "whenReady": "When you are ready:",
+      "firstLesson": "Start lesson 1 →",
+      "player": "Pick the key of a song you play, for example G. The chords below belong to it: tap one.",
+      "dismiss": "Dismiss the tip"
+    }
   }
 }

@@ -214,7 +214,7 @@ const learnScreen = (page: Page) => page.locator('#learn-panel [data-learn-scree
  * centre of its visible part hits (nothing covering it: top bar, sheet,
  * toasts). The first stop must be the skip link (review B1).
  */
-async function focusWalk(page: Page, where: string, steps = 40) {
+async function focusWalk(page: Page, where: string, steps = 40, firstStop: RegExp = /skip to/i) {
   await page.evaluate(() => {
     const h = document.documentElement;
     h.setAttribute('tabindex', '-1');
@@ -270,7 +270,7 @@ async function focusWalk(page: Page, where: string, steps = 40) {
     names.push(stop.name);
     if (!stop.indicator || !stop.onScreen || stop.coveredBy) bad.push(stop);
   }
-  expect.soft(names[0] ?? '', `${where}: the first Tab stop is the skip link`).toMatch(/skip to/i);
+  expect.soft(names[0] ?? '', `${where}: the first Tab stop is the skip link`).toMatch(firstStop);
   expect.soft(names.length, `${where}: the Tab walk reached no stops`).toBeGreaterThan(5);
   expect.soft(bad, `${where}: focus not visible / off screen / covered ${JSON.stringify(bad.slice(0, 5), null, 1)}`).toEqual([]);
   // The walk ends with keyboard focus on its last stop, ring and all; a
@@ -1396,4 +1396,78 @@ for (const th of THEMES) {
     await questionScreens(page, 'en', (s) => check(page, v, 'phone-landscape-small', s));
     await context.close();
   });
+}
+
+
+// Wave 1: the start screen (a first visit's own page) and the start hint (one
+// line under the top bar in Explore after a "new" / "player" door), same
+// rules: day and night at every sweep viewport, plus PT and ES at 320 px.
+// Day is a real first visit (empty storage); night is the one way the start
+// screen meets a saved theme — still owed ("pending", e.g. after a visit that
+// opened a shared link) with Night saved.
+async function openStart(browser: Browser, v: Viewport, theme: string, lang: string) {
+  const context = await browser.newContext({
+    viewport: v.viewport, isMobile: v.touch, hasTouch: v.touch, reducedMotion: 'reduce', serviceWorkers: 'block',
+    locale: lang === 'pt' ? 'pt-PT' : lang === 'es' ? 'es-ES' : 'en-GB', storageState: { cookies: [], origins: [] },
+  });
+  await context.addInitScript(([blob]) => {
+    if (sessionStorage.getItem('__seeded')) return;
+    localStorage.clear();
+    if (blob) {
+      localStorage.setItem('fermata-welcome-v1', 'pending');
+      localStorage.setItem('music-theory-app', blob);
+    }
+    sessionStorage.setItem('__seeded', '1');
+  }, [theme === 'fermata' ? '' : JSON.stringify({ state: { themeMode: theme, language: lang }, version: 6 })] as const);
+  const page = await context.newPage();
+  await page.goto('/');
+  await expect(page.getByTestId('start-screen')).toBeVisible({ timeout: 15_000 });
+  await page.waitForTimeout(600);
+  return { context, page };
+}
+
+async function startHintScreens(browser: Browser, v: Viewport, theme: string, lang: string, combo: string) {
+  for (const door of ['new', 'player'] as const) {
+    const { context, page } = await open(browser, v, theme, { instrument: door === 'new' ? 'guitar' : 'piano', lastView: 'explore', learnerProfile: door, startHint: door }, { lang });
+    await expect(page.getByTestId('start-hint')).toBeVisible({ timeout: 15_000 });
+    await check(page, v, combo, `start-hint-${door}`);
+    const hint = await boxOf(page, '[data-testid="start-hint"]');
+    const dock = await boxOf(page, DOCK);
+    expect.soft(hint.bottom, `${combo}: the start hint ends above the instrument`).toBeLessThanOrEqual(dock.top + 1);
+    if (v.name === 'phone-landscape') {
+      const mainH = (await page.locator('#main-content').boundingBox())!.height;
+      expect.soft(mainH, `${combo}: landscape room left for the view with the start hint`).toBeGreaterThanOrEqual(120);
+    }
+    await context.close();
+  }
+}
+
+for (const v of VIEWPORTS) {
+  for (const th of THEMES) {
+    const combo = `${v.name}-${th.name}`;
+    test(`${combo} start screen and start hint: same rules, keyboard walk`, async ({ browser }) => {
+      test.setTimeout(120_000);
+      const { context, page } = await openStart(browser, v, th.mode, 'en');
+      await check(page, v, combo, 'start');
+      await focusWalk(page, `${combo} start`, 12, /watch the one-minute tour/i);
+      await context.close();
+      await startHintScreens(browser, v, th.mode, 'en', combo);
+    });
+  }
+}
+
+for (const lang of ['pt', 'es'] as const) {
+  for (const th of THEMES) {
+    for (const width of [390, 320] as const) {
+      const v = { name: `phone-${width}`, viewport: { width, height: width === 320 ? 568 : 844 }, touch: true } as unknown as Viewport;
+      const combo = `phone${width}-${lang}-${th.name}`;
+      test(`${combo}: start screen and start hint in ${lang.toUpperCase()}`, async ({ browser }) => {
+        test.setTimeout(120_000);
+        const { context, page } = await openStart(browser, v, th.mode, lang);
+        await check(page, v, combo, 'start');
+        await context.close();
+        await startHintScreens(browser, v, th.mode, lang, combo);
+      });
+    }
+  }
 }

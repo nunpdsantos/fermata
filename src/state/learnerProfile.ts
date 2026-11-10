@@ -1,9 +1,8 @@
 /**
  * Who the learner says they are — the wave-1 contract (2026-11-10).
  *
- * OWNER: the start-screen branch (stream A). It replaces the in-memory body
- * below with the persisted one. Every other branch may only IMPORT the names
- * exported here, and must not change this file.
+ * OWNER: the start-screen branch (stream A). Every other branch may only
+ * IMPORT the names exported here, and must not change this file.
  *
  *   'new'    — new to music
  *   'player' — plays an instrument, never learned theory
@@ -11,29 +10,30 @@
  *   null     — never asked: a learner from before the start screen, or a first
  *              visit not answered yet. Treat null exactly like 'theory' (the
  *              app as it was before wave 1) — use `isGuidedProfile()`.
+ *
+ * Saved with the other preferences (`music-theory-app`, field
+ * `learnerProfile`, so it travels in the backup file): set by a start-screen
+ * door (state/startDoors.ts) or Settings → "How I use Fermata". The field is
+ * written only once set, so the save of anyone never asked is unchanged
+ * (store.ts partialize; persist stays v6).
  */
-import { create } from 'zustand';
+import { useAppStore } from './store.ts';
+import type { LearnerProfile } from './storeTypes.ts';
 
-export type LearnerProfile = 'new' | 'player' | 'theory';
-
-interface LearnerProfileState {
-  profile: LearnerProfile | null;
-}
-
-const useStore = create<LearnerProfileState>(() => ({ profile: null }));
+export type { LearnerProfile } from './storeTypes.ts';
 
 /** React hook: the current profile (re-renders on change). */
 export function useLearnerProfile(): LearnerProfile | null {
-  return useStore((s) => s.profile);
+  return useAppStore((s) => s.learnerProfile);
 }
 
 /** Outside React. */
 export function getLearnerProfile(): LearnerProfile | null {
-  return useStore.getState().profile;
+  return useAppStore.getState().learnerProfile;
 }
 
 export function setLearnerProfile(profile: LearnerProfile | null): void {
-  useStore.setState({ profile });
+  useAppStore.setState({ learnerProfile: profile, preferencesUpdatedAt: Date.now() });
 }
 
 /** True for the two profiles that get the gentler defaults ('new', 'player'). */

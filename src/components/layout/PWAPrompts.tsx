@@ -29,8 +29,9 @@ export function PWAPrompts() {
     notes && roomForNote ? t('pwa.whatsNew', { note: noteFor(notes, i18n.language) }) : undefined;
 
   // "Ready for offline use" (2026-11-09): news, not a task.
-  //  - Skipped in the page that showed the first-visit welcome: the welcome
-  //    already says the app works offline, and the notice would sit on it.
+  //  - Skipped in the page that showed the first-visit start screen (since
+  //    wave 1; the welcome sheet before it): it already says the app works
+  //    offline.
   //  - On phones and short (sideways) screens — the instrument sheet's screens,
   //    SHEET_QUERY — the toast region spans the view's top and the card covered
   //    the page's heading (a phone's first visit, Learn): there it is announced

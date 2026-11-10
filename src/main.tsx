@@ -10,6 +10,10 @@ import { ErrorBoundary } from './components/ErrorBoundary.tsx'
 import { registerInstrumentVoices } from './services/instrumentVoices.ts'
 import { registerDrillWorkInProgress } from './state/drillWork.ts'
 import { registerLearnWorkInProgress } from './state/learnWork.ts'
+import { applyShareLinkRule } from './state/startGate.ts'
+
+// A shared link wins over the start screen on this visit (state/startGate.ts).
+applyShareLinkRule();
 
 // One-time eviction of the persisted stores for the removed gamification +
 // concept-tracking features. After the first load the keys are gone and

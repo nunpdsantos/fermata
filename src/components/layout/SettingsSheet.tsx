@@ -10,7 +10,10 @@ import { BUILD_DATE } from '../../buildInfo.ts';
 import { useServiceWorkerActive } from '../../hooks/useServiceWorkerActive.ts';
 import { Sheet } from '../ui/Sheet.tsx';
 import { Segment } from '../ui/Segment.tsx';
+import { ChipGroup } from '../ui/ChoiceChip.tsx';
 import { Button } from '../ui/Button.tsx';
+import { useLearnerProfile, setLearnerProfile, type LearnerProfile } from '../../state/learnerProfile.ts';
+import { dismissStartHint } from '../../state/startHint.ts';
 
 /**
  * The app's Settings (W11-A, opened from the top bar's "⋯" menu): language,
@@ -25,12 +28,27 @@ const THEMES: { value: ThemeMode; key: string }[] = [
   { value: 'auto', key: 'settings.themeAuto' },
 ];
 
+const PROFILES: LearnerProfile[] = ['new', 'player', 'theory'];
+
+/**
+ * Settings → "How I use Fermata" (wave 1): the start screen's question, to
+ * change later. Never asked (null) reads as 'theory', which is how the app
+ * treats it. A change here raises no start screen and no start hint; a hint
+ * still owed for another profile goes.
+ */
+function chooseProfile(profile: LearnerProfile) {
+  setLearnerProfile(profile);
+  const owed = useAppStore.getState().startHint;
+  if (owed !== null && owed !== profile) dismissStartHint();
+}
+
 export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useTranslation();
   const language = useAppStore((s) => s.language);
   const setLanguage = useAppStore((s) => s.setLanguage);
   const themeMode = useAppStore((s) => s.themeMode);
   const setThemeMode = useAppStore((s) => s.setThemeMode);
+  const profile = useLearnerProfile();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const offline = useServiceWorkerActive();
 
@@ -91,6 +109,14 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
           onChange={setThemeMode}
           className="w-full"
           options={THEMES.map((o) => ({ value: o.value, label: t(o.key) }))}
+        />
+      </SettingRow>
+      <SettingRow label={t('start.settingsLabel')}>
+        <ChipGroup
+          label={t('start.settingsLabel')}
+          value={profile ?? 'theory'}
+          onChange={chooseProfile}
+          options={PROFILES.map((p) => ({ value: p, label: t(`start.profile.${p}`) }))}
         />
       </SettingRow>
       <SettingRow label={t('settings.yourData')} meta={t('settings.yourDataMeta')}>
