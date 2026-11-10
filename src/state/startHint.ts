@@ -57,7 +57,9 @@ useAppStore.subscribe((state, prev) => {
   if (
     state.startHint !== null &&
     state.view === 'explore' &&
-    state.selectedChord !== null && prev.selectedChord === null &&
+    // A chord picked: any new one, also straight after another (a menu
+    // tour's "Stay here" leaves its chord selected).
+    state.selectedChord !== null && state.selectedChord !== prev.selectedChord &&
     state.lessonLoan === null &&
     getDemoRequest() === null
   ) {

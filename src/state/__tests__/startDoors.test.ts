@@ -118,6 +118,40 @@ describe('the start hint', () => {
     clearDemoRequest();
   });
 
+  // Final review (2026-11-10): a chord already selected (a menu tour's "Stay
+  // here" keeps its D major) — the learner's next chord still ends the hint,
+  // but nothing else does: not the chord staying selected while other
+  // settings change, not taking the chord away.
+  it.each(['new', 'player'] as const)('%s: with a chord already selected, the next chord picked ends it; nothing else does', (kind) => {
+    const D = { ...G, root: { natural: 'D', accidental: '' } } as unknown as Chord;
+    raiseStartHint(kind);
+    requestDemo('intro', 'menu');
+    useAppStore.getState().setSelectedChord(D); // the tour's chord, kept by "Stay here"
+    clearDemoRequest();
+    useAppStore.getState().setVolume(0.4);
+    useAppStore.getState().setInstrument('guitar');
+    expect(owed()).toBe(kind);
+    useAppStore.getState().setSelectedChord(G); // straight from D to G
+    expect(owed()).toBeNull();
+    // Taking a chord away is not picking one.
+    raiseStartHint(kind);
+    useAppStore.getState().setSelectedChord(null);
+    expect(owed()).toBe(kind);
+  });
+
+  it.each(['new', 'player'] as const)('%s: a chord a lesson shows (Learn borrowing the instrument) or one picked outside Explore does not count', (kind) => {
+    raiseStartHint(kind);
+    useAppStore.setState({ lessonLoan: { key: { natural: 'C', accidental: '' }, scale: 'major' } });
+    useAppStore.getState().setSelectedChord(G);
+    expect(owed()).toBe(kind);
+    useAppStore.setState({ lessonLoan: null, selectedChord: null });
+    useAppStore.getState().setView('learn');
+    useAppStore.getState().setSelectedChord(G);
+    expect(owed()).toBe(kind);
+    useAppStore.getState().setView('explore');
+    expect(owed()).toBe(kind);
+  });
+
   it.each(['new', 'player'] as const)('%s: leaving Explore while it is owed keeps it (it is Explore\'s hint, back on return)', (kind) => {
     raiseStartHint(kind);
     useAppStore.getState().setView('drill');
