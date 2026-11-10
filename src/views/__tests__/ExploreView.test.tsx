@@ -197,7 +197,7 @@ describe('ExploreView — "Practise on the guitar" in the scale actions menu', (
     await screen.findAllByTestId('staff-mock');
     fireEvent.click(screen.getByRole('button', { name: 'Scale actions' }));
     expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual([
-      'Copy scale summary to clipboard', 'Print scale diagram', 'Compare scales', 'Practise on the guitar',
+      'Copy scale summary to clipboard', 'Copy link', 'Print scale diagram', 'Compare scales', 'Practise on the guitar',
     ]);
   });
 });

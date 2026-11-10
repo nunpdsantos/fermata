@@ -1255,5 +1255,30 @@
     "sharps_other": "{{count}} sharps",
     "flats_one": "one flat",
     "flats_other": "{{count}} flats"
+  },
+  "share": {
+    "copyLink": "Copy link",
+    "shareLink": "Share link",
+    "copied": "Link copied",
+    "lessonActions": "Lesson actions",
+    "fallbackTitle": "Copy this link",
+    "fallbackHint": "This browser did not let Fermata copy the link. Select it and copy it yourself.",
+    "fallbackField": "Link",
+    "waiting": "This link opens {{target}}. Fermata will offer to open it when you have finished what you are doing.",
+    "ready": "Ready to open the link: {{target}}",
+    "open": "Open",
+    "unreadable": "This link could not be read, so Fermata opened as usual.",
+    "target": {
+      "chord": "the {{chord}} chord",
+      "piano": "on the piano",
+      "guitar": "on the guitar",
+      "pianoAlone": "the piano",
+      "guitarAlone": "the guitar",
+      "lesson": "the lesson “{{title}}”"
+    }
+  },
+  "solfege": {
+    "setting": "Also show Do, Re, Mi",
+    "hint": "Adds Do, Re, Mi beside the letters. Chord names and the lessons keep the letters (C = Do)."
   }
 }

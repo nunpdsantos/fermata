@@ -7,6 +7,25 @@
  *
  * `view` is NOT a share parameter on its own: `?view=drill` is the installed
  * app's shortcut (state/bootView.ts) and must keep behaving as it does.
+ *
+ * THE GRAMMAR (stable: links are printed and pasted for years, so a name or a
+ * spelling here never changes meaning; every parameter is optional and
+ * language-independent):
+ *
+ *   key    a root as the key picker spells it: a letter A–G, then nothing,
+ *          `#` or `b` (`C`, `Eb`, `F#`, `Cb`). The link writes `#` as `%23`
+ *          (a bare `#` starts the URL's fragment). Read leniently: a lower-case
+ *          letter and the glyphs ♯ / ♭ are accepted too.
+ *   scale  a scale id of the Scale picker (`major`, `natural_minor`, `dorian`,
+ *          `pentatonic_minor` …; `SCALE_GROUPS` in navigation/keyChoice.ts).
+ *   chord  a chord symbol the core parser reads (`A`, `Am7`, `G/B`, `F%23m7b5`,
+ *          `C7(%235)`) — parseChordSymbol.
+ *   inst   `piano` | `guitar`.
+ *   lesson a lesson's module id (`l2u7m5`; data/moduleIndex.ts).
+ *
+ * Validation lives in services/shareLinkParse.ts (lazy: it needs the chord
+ * parser); this file only reads the raw strings, so it stays in the entry
+ * chunk at almost no cost.
  */
 export const SHARE_PARAM_KEYS = ['key', 'scale', 'chord', 'inst', 'lesson'] as const;
 
@@ -16,4 +35,100 @@ export type ShareParamKey = (typeof SHARE_PARAM_KEYS)[number];
 export function hasShareParams(search: string): boolean {
   const params = new URLSearchParams(search);
   return SHARE_PARAM_KEYS.some((k) => params.has(k));
+}
+
+/** The raw values a link carries (not yet validated). */
+export type RawShareParams = Partial<Record<ShareParamKey, string>>;
+
+/** Longer than this, a value cannot be one of ours (the chord parser itself stops at 50). */
+export const MAX_SHARE_VALUE_LENGTH = 64;
+/** A query string longer than this is not a Fermata link: nothing in it is read. */
+export const MAX_SHARE_SEARCH_LENGTH = 2048;
+
+/**
+ * A hand-typed `?key=F#&inst=guitar` puts everything from the `#` into the
+ * URL's fragment (search `?key=F`, hash `#&inst=guitar`). When the search ends
+ * on a `key` or `chord` value and the fragment carries on from there, read
+ * them as one query with the `#` restored. The app uses no fragment of its own.
+ */
+function joinFragment(search: string, hash: string): { query: string; recovered: boolean } {
+  if (!hash || !hash.startsWith('#') || !search) return { query: search, recovered: false };
+  const last = search.slice(search.lastIndexOf('&') + 1).replace(/^\?/, '');
+  if (!/^(key|chord)=[^=]*$/.test(last)) return { query: search, recovered: false };
+  const rest = hash.slice(1);
+  // The fragment continues the value (`m7`, `5`) or starts the next parameter (`&inst=…`).
+  if (rest !== '' && !/^[^&=]*(&|$)/.test(rest)) return { query: search, recovered: false };
+  return { query: `${search}%23${rest}`, recovered: true };
+}
+
+/**
+ * The share parameters of the address (`location.search`, `location.hash`),
+ * raw, or null when it carries none. Only the first value of each name counts;
+ * an over-long value is dropped here, an over-long query string altogether.
+ */
+export function readShareParams(search: string, hash = ''): RawShareParams | null {
+  const { query } = joinFragment(search, hash);
+  if (!hasShareParams(query)) return null;
+  if (query.length > MAX_SHARE_SEARCH_LENGTH) return {};
+  const params = new URLSearchParams(query);
+  const out: RawShareParams = {};
+  for (const k of SHARE_PARAM_KEYS) {
+    const v = params.get(k);
+    if (v !== null && v.length <= MAX_SHARE_VALUE_LENGTH) out[k] = v;
+  }
+  return out;
+}
+
+/**
+ * The address with the link's parameters (and `view`) taken out — what the
+ * address bar shows once a link has been opened, so a refresh does not open it
+ * again. Other parameters stay; a fragment that held part of a link goes.
+ */
+export function cleanedAddress(pathname: string, search: string, hash = ''): string {
+  const { query, recovered } = joinFragment(search, hash);
+  const params = new URLSearchParams(recovered ? query : search);
+  for (const k of [...SHARE_PARAM_KEYS, 'view']) params.delete(k);
+  const qs = params.toString();
+  return pathname + (qs ? `?${qs}` : '') + (recovered ? '' : hash);
+}
+
+/** The values a link is built from, already in the grammar's spelling. */
+export interface ShareLinkValues {
+  key?: string;
+  scale?: string;
+  chord?: string;
+  inst?: 'piano' | 'guitar';
+  lesson?: string;
+}
+
+/** `?key=D&scale=major&chord=A&inst=guitar` — in the grammar's order, `#` as `%23`. */
+export function buildShareSearch(values: ShareLinkValues): string {
+  const params = new URLSearchParams();
+  for (const k of SHARE_PARAM_KEYS) {
+    const v = values[k];
+    if (v) params.set(k, v);
+  }
+  const qs = params.toString();
+  return qs ? `?${qs}` : '';
+}
+
+/** The full link: the page's own origin (nothing is sent anywhere), the app's root, the parameters. */
+export function buildShareUrl(origin: string, values: ShareLinkValues): string {
+  return `${origin}/${buildShareSearch(values)}`;
+}
+
+let openedFromLink = false;
+
+/** App.tsx calls this at boot when the address carried share parameters (before cleaning it). */
+export function markOpenedFromShareLink(): void {
+  openedFromLink = true;
+}
+
+/**
+ * Was this page opened from a shared link? Answers for the whole page life,
+ * also after the address bar has been cleaned — for a screen that should step
+ * aside when a link is opened (the start screen).
+ */
+export function openedFromShareLink(): boolean {
+  return openedFromLink;
 }

@@ -1255,5 +1255,30 @@
     "sharps_other": "{{count}} sostenidos",
     "flats_one": "un bemol",
     "flats_other": "{{count}} bemoles"
+  },
+  "share": {
+    "copyLink": "Copiar enlace",
+    "shareLink": "Compartir enlace",
+    "copied": "Enlace copiado",
+    "lessonActions": "Acciones de la lección",
+    "fallbackTitle": "Copia este enlace",
+    "fallbackHint": "Este navegador no ha permitido a Fermata copiar el enlace. Selecciónalo y cópialo tú.",
+    "fallbackField": "Enlace",
+    "waiting": "Este enlace abre {{target}}. Cuando termines lo que estás haciendo, Fermata te propondrá abrirlo.",
+    "ready": "Ya puedes abrir el enlace: {{target}}",
+    "open": "Abrir",
+    "unreadable": "No se ha podido leer este enlace, así que Fermata se ha abierto como siempre.",
+    "target": {
+      "chord": "el acorde {{chord}}",
+      "piano": "en el piano",
+      "guitar": "en la guitarra",
+      "pianoAlone": "el piano",
+      "guitarAlone": "la guitarra",
+      "lesson": "la lección «{{title}}»"
+    }
+  },
+  "solfege": {
+    "setting": "Mostrar también Do, Re, Mi",
+    "hint": "Añade Do, Re, Mi junto a las letras. Los nombres de los acordes y las lecciones siguen usando las letras (C = Do)."
   }
 }

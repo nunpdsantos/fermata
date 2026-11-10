@@ -2488,3 +2488,43 @@ p.explore-prose {
    it overhangs into the header's own padding instead, so the row — and the
    1440×900 work column's headroom under it — stays exactly as it was. */
 .explore-detail-switch { margin-block: -3px; }
+
+/* Shared links (wave 1, stream E): the link in a selectable field, when the
+   browser would neither share nor copy it. */
+.share-link-field {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-ui);
+}
+.share-link-field:focus-visible {
+  outline: 2px solid var(--focus-outline);
+  outline-offset: 2px;
+}
+
+/* "Also show Dó, Ré, Mi" (wave 1, stream E): the fixed-do name beside the
+   letter — never instead of it. Off by default; only in PT / ES. */
+.chip-solfege {
+  font-weight: 400;
+}
+.strip-solfege {
+  font-size: var(--text-caption);
+  line-height: 1.2;
+  color: var(--text-muted);
+}
+.strip-solfege-inline {
+  margin-left: 4px;
+  font-weight: 500;
+}
+.strip-col[data-dim] .strip-solfege {
+  color: var(--text-dim);
+}
+/* One caption line more under the staff for the names. */
+.strip-body:has(.strip-solfege) .strip-labels-room {
+  height: 56px;
+}

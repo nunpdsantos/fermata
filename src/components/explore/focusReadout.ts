@@ -29,6 +29,8 @@ export interface ReadoutInput {
   t: T;
   /** Explore's Simple view: the note's number in the scale, not its degree name. */
   simple?: boolean;
+  /** How a note is named ("B", or "B (Si)" with the fixed-do names on — hooks/useSolfege.ts). */
+  noteLabel?: (n: Note) => string;
 }
 
 export interface ReadoutParts {
@@ -39,8 +41,8 @@ export interface ReadoutParts {
 }
 
 /** "C Major", "A Natural Minor": the key as the rest of Explore names it. */
-export function keyName(scale: Scale, t: T): string {
-  return `${withGlyphs(scale.root)} ${t(`scaleName.${scale.type}`)}`;
+export function keyName(scale: Scale, t: T, name: (n: Note) => string = withGlyphs): string {
+  return `${name(scale.root)} ${t(`scaleName.${scale.type}`)}`;
 }
 
 /** "G", "Dm", "Bdim", "G7": the chord symbol the chord cards print. */
@@ -83,15 +85,15 @@ function keyRole(scale: Scale, pc: number, t: T, simple = false): string {
 }
 
 /** The note's name in context: a chord tone as the chord spells it, else the scale's, else the context spelling. */
-export function focusNoteName(focus: FocusNote, scale: Scale, chord: Chord | null, spellPitchClass: (pc: number) => Note): string {
+export function focusNoteName(focus: FocusNote, scale: Scale, chord: Chord | null, spellPitchClass: (pc: number) => Note, name: (n: Note) => string = withGlyphs): string {
   const fromChord = chord ? [...chord.notes, ...(chord.bassNote ? [chord.bassNote] : [])].find((n) => getPitchClass(n) === focus.pc) : undefined;
   const fromScale = scale.notes.find((n) => getPitchClass(n) === focus.pc);
-  return withGlyphs(fromChord ?? fromScale ?? spellPitchClass(focus.pc));
+  return name(fromChord ?? fromScale ?? spellPitchClass(focus.pc));
 }
 
-export function readoutParts({ focus, scale, chord, spellPitchClass, locations, t, simple }: ReadoutInput): ReadoutParts {
+export function readoutParts({ focus, scale, chord, spellPitchClass, locations, t, simple, noteLabel }: ReadoutInput): ReadoutParts {
   return {
-    note: focusNoteName(focus, scale, chord, spellPitchClass),
+    note: focusNoteName(focus, scale, chord, spellPitchClass, noteLabel),
     chordRole: chord ? chordToneRole(chord, focus.pc, t) : null,
     keyRole: keyRole(scale, focus.pc, t, simple),
     locations: locations && locations.length > 0 ? locations.join(', ') : null,

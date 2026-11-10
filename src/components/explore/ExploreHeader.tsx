@@ -26,6 +26,9 @@ import { Term, WordsButton } from '../../glossary/Term.tsx';
 import { scaleTermId } from '../../glossary/termIds.ts';
 import { useExploreSimple } from '../../state/exploreDetail.ts';
 import type { ExploreDetail } from '../../state/storeTypes.ts';
+import { shareExploreLink } from '../../services/shareLinkMake.ts';
+import { useShareLinkLabel } from '../../hooks/useShareLinkLabel.ts';
+import { useNoteLabel } from '../../hooks/useSolfege.ts';
 
 const PLAY_ICON = (
   <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -61,7 +64,9 @@ export function ExploreHeader({ practiceAction, onPractise }: {
   const segmentFits = !phone;
   const [keySheet, setKeySheet] = useState(false);
   const [compare, setCompare] = useState(false);
-  const facts = keyFacts(selectedKey, selectedScale, t);
+  const noteLabel = useNoteLabel();
+  const linkLabel = useShareLinkLabel();
+  const facts = keyFacts(selectedKey, selectedScale, t, noteLabel);
   const simple = useExploreSimple();
   const setDetail = useAppStore((s) => s.setExploreDetail);
   // Simple view's summary in words: "G Major · one sharp" (no relative key).
@@ -128,7 +133,7 @@ export function ExploreHeader({ practiceAction, onPractise }: {
           signature, its relative key. A phone puts "Words" at its end. */}
       <div className="explore-summary-row">
         <p className="explore-summary" data-testid="key-summary">
-          <Term id={scaleTermId(selectedScale)} testId="summary-key"><span className="explore-summary-key">{keyName(scale, t)}</span></Term>
+          <Term id={scaleTermId(selectedScale)} testId="summary-key"><span className="explore-summary-key">{keyName(scale, t, noteLabel)}</span></Term>
           {simple ? (
             plainSignature && <>{' · '}<Term id="keySignature" also={['sharpFlat']}>{plainSignature}</Term></>
           ) : (
@@ -165,6 +170,7 @@ export function ExploreHeader({ practiceAction, onPractise }: {
           portal
           items={[
             { id: 'copy', label: t('explore.copyScaleSummary'), onSelect: () => void copy() },
+            { id: 'link', label: linkLabel, onSelect: () => void shareExploreLink() },
             { id: 'print', label: t('explore.printScaleDiagram'), onSelect: () => window.print() },
             ...(simple ? [] : [{ id: 'compare', label: t('explore.compareScalesAction'), onSelect: () => setCompare(true) }]),
             // A guitarist who never switches the dock to Guitar still finds the

@@ -37,6 +37,8 @@ const ALLOWED_VALUES: Record<string, readonly unknown[]> = {
   neckTopString: ['high', 'low'],
   // Optional (wave 1): absent = never chosen; deleting a bad value means the same.
   exploreDetail: ['simple', 'full'],
+  // Optional since wave 1 (no version bump): a v6 save without it takes the default (off).
+  showSolfege: [true, false],
 };
 
 // Optional fields (wave 1): saved only once set, so they are guarded only when
@@ -202,9 +204,12 @@ export const useAppStore = create<AppState>()(
           // view, which a save without the field means (merge below).
           ...(state.neckNutSide !== LEGACY_NECK.neckNutSide ? { neckNutSide: state.neckNutSide } : {}),
           ...(state.neckTopString !== LEGACY_NECK.neckTopString ? { neckTopString: state.neckTopString } : {}),
-          // Undefined until the learner chooses: JSON drops it, so an
-          // existing save is written back exactly as it was.
-          exploreDetail: state.exploreDetail,
+          // Undefined until the learner chooses: written only once chosen,
+          // so an existing save is written back exactly as it was.
+          ...(state.exploreDetail !== undefined ? { exploreDetail: state.exploreDetail } : {}),
+          // Written only when on: a save from someone who never turns it on
+          // stays exactly what it was (the frozen v6 envelope tests).
+          ...(state.showSolfege ? { showSolfege: true } : {}),
         };
       },
       migrate: (persisted: unknown, version: number) => {

@@ -20,6 +20,8 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
   // Never asked (wave 1): the app as it was — see state/learnerProfile.ts.
   learnerProfile: null,
   startHint: null,
+  // Fixed-do names beside the letters (PT / ES): off until the learner asks.
+  showSolfege: false,
 
   setColorMode: (mode) => set({ colorMode: mode, preferencesUpdatedAt: Date.now() }),
   setThemeMode: (mode) => set({ themeMode: mode, preferencesUpdatedAt: Date.now() }),
@@ -38,6 +40,7 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
   // No default value: undefined means "not chosen yet" (state/exploreDetail.ts).
   // Simple has no voicing control: its chord sounds and shows in root position.
   setExploreDetail: (detail) => set(detail === 'simple' ? { exploreDetail: detail, chordInversion: 0 } : { exploreDetail: detail }),
+  setShowSolfege: (on) => set({ showSolfege: on, preferencesUpdatedAt: Date.now() }),
   // The app opening the dock for an exercise is not the learner's choice.
   requestDock: (detent) => {
     const { view, dockDetents } = get();

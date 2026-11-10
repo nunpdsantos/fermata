@@ -270,7 +270,7 @@ describe('Simple view', () => {
     const seg = screen.getByRole('radiogroup', { name: 'How much to show' });
     expect(within(seg).getByRole('radio', { name: 'Simple' }).getAttribute('aria-checked')).toBe('true');
     fireEvent.click(screen.getByRole('button', { name: 'Scale actions' }));
-    expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Copy scale summary to clipboard', 'Print scale diagram']);
+    expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Copy scale summary to clipboard', 'Copy link', 'Print scale diagram']);
     fireEvent.keyDown(document.activeElement!, { key: 'Escape' });
     fireEvent.click(within(seg).getByRole('radio', { name: 'Full' }));
     expect(useAppStore.getState().exploreDetail).toBe('full');
@@ -287,7 +287,7 @@ describe('Simple view', () => {
       render(<Explore />);
       expect(screen.queryByRole('radiogroup', { name: 'How much to show' })).toBeNull();
       fireEvent.click(screen.getByRole('button', { name: 'Scale actions' }));
-      expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Copy scale summary to clipboard', 'Print scale diagram', 'Compare scales']);
+      expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Copy scale summary to clipboard', 'Copy link', 'Print scale diagram', 'Compare scales']);
       fireEvent.keyDown(document.activeElement!, { key: 'Escape' });
       fireEvent.click(screen.getByTestId('words-open'));
       const sheet = screen.getByRole('dialog', { name: 'Words on this screen' });
@@ -295,7 +295,7 @@ describe('Simple view', () => {
       expect(useAppStore.getState().exploreDetail).toBe('simple');
       fireEvent.keyDown(window, { key: 'Escape' });
       fireEvent.click(screen.getByRole('button', { name: 'Scale actions' }));
-      expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Copy scale summary to clipboard', 'Print scale diagram', 'Full view']);
+      expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Copy scale summary to clipboard', 'Copy link', 'Print scale diagram', 'Full view']);
       fireEvent.click(screen.getByRole('menuitem', { name: 'Full view' }));
       expect(useAppStore.getState().exploreDetail).toBe('full');
     } finally {

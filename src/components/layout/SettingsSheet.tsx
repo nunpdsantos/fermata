@@ -10,10 +10,11 @@ import { BUILD_DATE } from '../../buildInfo.ts';
 import { useServiceWorkerActive } from '../../hooks/useServiceWorkerActive.ts';
 import { Sheet } from '../ui/Sheet.tsx';
 import { Segment } from '../ui/Segment.tsx';
-import { ChipGroup } from '../ui/ChoiceChip.tsx';
+import { ChipGroup, ChoiceChip } from '../ui/ChoiceChip.tsx';
 import { Button } from '../ui/Button.tsx';
 import { useLearnerProfile, setLearnerProfile, type LearnerProfile } from '../../state/learnerProfile.ts';
 import { dismissStartHint } from '../../state/startHint.ts';
+import { solfegeLanguage } from '../../i18n/solfege.ts';
 
 /**
  * The app's Settings (W11-A, opened from the top bar's "⋯" menu): language,
@@ -63,6 +64,8 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
   const setNeckNutSide = useAppStore((s) => s.setNeckNutSide);
   const neckTopString = useAppStore((s) => s.neckTopString);
   const setNeckTopString = useAppStore((s) => s.setNeckTopString);
+  const showSolfege = useAppStore((s) => s.showSolfege);
+  const setShowSolfege = useAppStore((s) => s.setShowSolfege);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const offline = useServiceWorkerActive();
 
@@ -115,6 +118,15 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
           className="w-full"
           options={SUPPORTED_LANGUAGES.map((l) => ({ value: l.code as string, label: <span lang={l.code}>{l.label}</span> }))}
         />
+        {/* Fixed-do names beside the letters: Portuguese and Spanish only (wave 1). */}
+        {solfegeLanguage(language) && (
+          <div className="flex flex-col items-start gap-1.5 pt-1" data-testid="solfege-setting">
+            <ChoiceChip pressed={showSolfege} onClick={() => setShowSolfege(!showSolfege)} aria-describedby="solfege-hint">
+              {t('solfege.setting')}
+            </ChoiceChip>
+            <p id="solfege-hint" className="text-ui" style={{ color: 'var(--text-dim)' }}>{t('solfege.hint')}</p>
+          </div>
+        )}
       </SettingRow>
       <SettingRow label={t('settings.theme')}>
         <Segment

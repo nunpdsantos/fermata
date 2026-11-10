@@ -38,10 +38,10 @@ export interface KeyFacts {
   facts: KeyFact[];
 }
 
-const majorKey = (n: Note, t: T) => t('circle.keyMajor', { note: withGlyphs(n) });
-const minorKey = (n: Note, t: T) => t('circle.keyMinor', { note: withGlyphs(n) });
-
-export function keyFacts(root: Note, type: ScaleType, t: T): KeyFacts {
+/** `name`: how a key's root is named ("B", or "B (Si)" with the fixed-do names on). */
+export function keyFacts(root: Note, type: ScaleType, t: T, name: (n: Note) => string = withGlyphs): KeyFacts {
+  const majorKey = (n: Note, t: T) => t('circle.keyMajor', { note: name(n) });
+  const minorKey = (n: Note, t: T) => t('circle.keyMinor', { note: name(n) });
   const signature = keySignatureForScale(root, type);
   const signatureText = signature ? formatKeySignature(signature, t('circle.noAccidentals')) : t('circle.noStandardSignature');
   const facts: KeyFact[] = [{ id: 'signature', label: t('explore.facts.signature'), value: signatureText }];

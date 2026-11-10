@@ -5,6 +5,7 @@ import { useAppStore } from '../../state/store.ts';
 import { keyFacts, type KeyFact } from './keyFacts.ts';
 import { Term } from '../../glossary/Term.tsx';
 import type { TermId } from '../../glossary/termIds.ts';
+import { useNoteLabel } from '../../hooks/useSolfege.ts';
 
 const FACT_TERM: Record<KeyFact['id'], TermId> = {
   signature: 'keySignature',
@@ -14,12 +15,17 @@ const FACT_TERM: Record<KeyFact['id'], TermId> = {
   parent: 'parentKey',
 };
 
-/** Signature, relative, dominant and subdominant keys of the selected key. */
-export function KeyFactsList() {
+/**
+ * Signature, relative, dominant and subdominant keys of the selected key.
+ * `fixedDo` = false: no "B (Si)" here even with the setting on (the laptop's
+ * narrow aside column would wrap every value onto a second line).
+ */
+export function KeyFactsList({ fixedDo = true }: { fixedDo?: boolean }) {
   const { t } = useTranslation();
   const selectedKey = useAppStore((s) => s.selectedKey);
   const selectedScale = useAppStore((s) => s.selectedScale);
-  const { facts } = keyFacts(selectedKey, selectedScale, t);
+  const noteLabel = useNoteLabel();
+  const { facts } = keyFacts(selectedKey, selectedScale, t, fixedDo ? noteLabel : undefined);
   return (
     <dl className="key-facts" data-testid="key-facts">
       {facts.map((f) => (
@@ -73,7 +79,7 @@ export function CircleNavigator({ collapsible = false }: { collapsible?: boolean
           circle and the key facts. */}
       <div id={bodyId} className="circle-body" data-folded={!open || undefined}>
         <CircleOfFifths signatureInFacts />
-        <KeyFactsList />
+        <KeyFactsList fixedDo={collapsible} />
       </div>
     </section>
   );

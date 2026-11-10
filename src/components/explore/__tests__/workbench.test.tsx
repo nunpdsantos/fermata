@@ -203,7 +203,7 @@ describe('header: pickers, summary, Play, "⋯"', () => {
     expect(screen.queryByRole('button', { name: /Copy scale summary/ })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Scale actions' }));
     expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual([
-      'Copy scale summary to clipboard', 'Print scale diagram', 'Compare scales',
+      'Copy scale summary to clipboard', 'Copy link', 'Print scale diagram', 'Compare scales',
     ]);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Compare scales' }));
     expect(screen.getByRole('dialog', { name: 'Compare Scales' })).toBeTruthy();
