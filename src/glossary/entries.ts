@@ -64,6 +64,20 @@ const scaleOf = (ctx: GlossaryContext) => buildScale(ctx.root, ctx.scaleType);
 const MAJOR_FAMILY = new Set<ScaleType>(['major', 'pentatonic_major', 'major_blues']);
 const majorOrMinor = (type: ScaleType) => MAJOR_FAMILY.has(type) || MINOR_FAMILY.has(type);
 
+/**
+ * The KEY a key-relation example starts from (relative, dominant and
+ * subdominant keys): outside plain major and natural minor (harmonic /
+ * melodic minor, the pentatonics, the blues) the example names the key, not
+ * the scale — "A Harmonic Minor and C major share every note" or "From A
+ * Harmonic Minor: E minor" under "differs from this key by just one note" is
+ * untrue (G♯). Null for plain major and natural minor: the panel's own
+ * `{{key}}` (the scale's name, which is the key's) stays.
+ */
+function keyNamedFor(ctx: GlossaryContext, t: T): string | null {
+  if (ctx.scaleType === 'major' || ctx.scaleType === 'natural_minor') return null;
+  return t(MAJOR_FAMILY.has(ctx.scaleType) ? 'circle.keyMajor' : 'circle.keyMinor', { note: name(ctx.root) });
+}
+
 /** The scale as Explore plays it: every note plus the octave home note. */
 function scalePitches(ctx: GlossaryContext, type: ScaleType = ctx.scaleType, root: Note = ctx.root): PitchedNote[] {
   return getScaleNotesWithOctaves(buildScale(root, type).notes, exploreRegister(ctx.instrument, ctx.baseOctave).octave);
@@ -275,15 +289,13 @@ const BASE: Record<string, EntrySpec> = {
   relativeKey: {
     learn: 'l2u5m3',
     notHere: (ctx) => (majorOrMinor(ctx.scaleType) ? null : 'only'),
-    // Outside plain major and natural minor (harmonic / melodic minor, the
-    // pentatonics, the blues) the line names the KEY, not the scale: "A
-    // Harmonic Minor and C major share every note" is untrue (G♯).
+    // Outside plain major and natural minor the line names the KEY, not the
+    // scale (keyNamedFor).
     example: (ctx, t): Example | null => {
       const rel = keyFacts(ctx.root, ctx.scaleType, t).relative;
       if (!rel) return null;
-      if (ctx.scaleType === 'major' || ctx.scaleType === 'natural_minor') return { vars: { relative: rel } };
-      const key = t(MAJOR_FAMILY.has(ctx.scaleType) ? 'circle.keyMajor' : 'circle.keyMinor', { note: name(ctx.root) });
-      return { vars: { key, relative: rel } };
+      const key = keyNamedFor(ctx, t);
+      return { vars: key ? { key, relative: rel } : { relative: rel } };
     },
     hear: (ctx) => {
       if (!majorOrMinor(ctx.scaleType)) return null;
@@ -294,12 +306,15 @@ const BASE: Record<string, EntrySpec> = {
       return phrase(...scalePitches(ctx, own), { rest: 0.4 }, ...scalePitches(ctx, relType, relRoot));
     },
   },
+  // "From A minor: E minor." — the key, as for the relative key, so that
+  // "It differs from this key by just one note" is true of what it names.
   dominantKey: {
     learn: 'l2u4m1',
     notHere: (ctx) => (majorOrMinor(ctx.scaleType) ? null : 'only'),
     example: (ctx, t) => {
       const f = keyFacts(ctx.root, ctx.scaleType, t).facts.find((x) => x.id === 'dominant');
-      return f ? { vars: { other: f.value } } : null;
+      const key = keyNamedFor(ctx, t);
+      return f ? { vars: key ? { key, other: f.value } : { other: f.value } } : null;
     },
   },
   subdominantKey: {
@@ -307,7 +322,8 @@ const BASE: Record<string, EntrySpec> = {
     notHere: (ctx) => (majorOrMinor(ctx.scaleType) ? null : 'only'),
     example: (ctx, t) => {
       const f = keyFacts(ctx.root, ctx.scaleType, t).facts.find((x) => x.id === 'subdominant');
-      return f ? { vars: { other: f.value } } : null;
+      const key = keyNamedFor(ctx, t);
+      return f ? { vars: key ? { key, other: f.value } : { other: f.value } } : null;
     },
   },
   parentKey: {

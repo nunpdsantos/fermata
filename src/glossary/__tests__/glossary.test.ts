@@ -393,6 +393,42 @@ describe('worked examples come from the engine (keys × scales)', () => {
     expect(line(id as TermId, ctx(root, scale as ScaleType), t)).toBe(expected);
   });
 
+  // The seat's decision 5 (2026-11-10): the dominant and subdominant keys'
+  // example names the KEY outside plain major and natural minor, as the
+  // relative key's does, so that "It differs from this key by just one note"
+  // is true of what it names (A harmonic minor's G♯ is not E minor's).
+  const KEY_NAMED = {
+    en: { from: (k: string, o: string) => `From ${k}: ${o}.`, major: 'major', minor: 'minor' },
+    pt: { from: (k: string, o: string) => `A partir de ${k}: ${o}.`, major: 'maior', minor: 'menor' },
+    es: { from: (k: string, o: string) => `Desde ${k}: ${o}.`, major: 'mayor', minor: 'menor' },
+  } as const;
+  const KEY_CASES: [ScaleType, string, string, 'major' | 'minor', string, string][] = [
+    // [scale, root, the key's root, major or minor, dominant key's root, subdominant key's root]
+    ['harmonic_minor', 'A', 'A', 'minor', 'E', 'D'],
+    ['melodic_minor', 'A', 'A', 'minor', 'E', 'D'],
+    ['pentatonic_minor', 'E', 'E', 'minor', 'B', 'A'],
+    ['pentatonic_major', 'G', 'G', 'major', 'D', 'C'],
+    ['blues', 'E', 'E', 'minor', 'B', 'A'],
+    ['major_blues', 'C', 'C', 'major', 'G', 'F'],
+    ['harmonic_minor', 'F#', 'F♯', 'minor', 'C♯', 'B'],
+    ['blues', 'Bb', 'B♭', 'minor', 'F', 'E♭'],
+  ];
+  for (const lang of LANGS) {
+    it.each(KEY_CASES)(`${lang}: dominant and subdominant keys of %s on %s name the key`, async (scale, root, keyRoot, mode, dom, sub) => {
+      const t = await makeT(lang);
+      const L = KEY_NAMED[lang];
+      const key = `${keyRoot} ${L[mode]}`;
+      const c = ctx(root, scale);
+      expect(line('dominantKey', c, t)).toBe(L.from(key, `${dom} ${L[mode]}`));
+      expect(line('subdominantKey', c, t)).toBe(L.from(key, `${sub} ${L[mode]}`));
+    });
+  }
+  it('plain major and natural minor keep the key as the summary names it', async () => {
+    const t = await makeT('en');
+    expect(line('dominantKey', ctx('F#', 'major'), t)).toBe('From K: C♯ major.');
+    expect(line('subdominantKey', ctx('A', 'natural_minor'), t)).toBe('From K: D minor.');
+  });
+
   it('a chord on screen: its own notes, formula and slash bass', async () => {
     const t = await makeT('en');
     const g7 = buildChord(note('G'), 'dominant7');
