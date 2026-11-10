@@ -1,9 +1,11 @@
 import { create } from 'zustand';
 
 /**
- * The first-visit welcome (2026-11-09): a short sheet that says what Explore,
- * Learn and Drill are. Shown to someone with NO saved state only, until they
- * close it or pick one of its actions; then never again.
+ * The first-visit gate. Since wave 1 (2026-11-10) it opens the START SCREEN
+ * (components/start/), a page of its own in place of the app, with three
+ * doors (state/startDoors.ts) as the only ways out; before that (2026-11-09)
+ * it opened a welcome sheet over Explore. Same flag, same rule: shown to
+ * someone with NO saved state only, until they act on it; then never again.
  *
  * Why a boot snapshot: every persisted store writes on its first `set`, and
  * App's boot `setView` writes `music-theory-app` on the very first load. So
@@ -58,13 +60,24 @@ interface WelcomeState {
   open: boolean;
   /** The welcome was shown in this page (the offline-ready notice is skipped — PWAPrompts). */
   shownThisPage: boolean;
+  /** `location.search` at boot (before anything could rewrite the address). */
+  bootSearch: string;
 }
 
-export const useWelcomeStore = create<WelcomeState>(() => ({ open: false, shownThisPage: false }));
+export const useWelcomeStore = create<WelcomeState>(() => ({ open: false, shownThisPage: false, bootSearch: '' }));
 
-/** Decide once, at boot (state/welcomeBoot.ts). Storage errors: no welcome. */
-export function bootWelcome(storage: Storage | undefined = globalThis.localStorage): boolean {
+/**
+ * Decide once, at boot (state/welcomeBoot.ts). Storage errors: no welcome.
+ * The address's query string is kept as it was at boot (`bootSearch`), for
+ * the shared-link rule (state/startGate.ts) — this module imports nothing,
+ * so no store can load before the check.
+ */
+export function bootWelcome(
+  storage: Storage | undefined = globalThis.localStorage,
+  search: string = globalThis.location?.search ?? '',
+): boolean {
   let show = false;
+  useWelcomeStore.setState({ bootSearch: search });
   try {
     show = !!storage && shouldShowWelcome(storage);
     if (show) storage!.setItem(WELCOME_KEY, 'pending');

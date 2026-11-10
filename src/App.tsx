@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { LazyMotion, MotionConfig, domAnimation, AnimatePresence, m } from 'framer-motion';
 import { AppShell } from './components/layout/AppShell.tsx';
 import { ViewSlot, type ViewLoader } from './components/ViewSlot.tsx';
@@ -9,6 +9,8 @@ import { useStopPlaybackOnViewChange } from './hooks/useStopPlaybackOnViewChange
 import { useAppStore } from './state/store.ts';
 import { pickBootView } from './state/bootView.ts';
 import type { ViewMode } from './state/storeTypes.ts';
+import { StartHost } from './components/start/StartHost.tsx';
+import { useStartScreenOwed, useStartScreenShown } from './state/startGate.ts';
 
 // Code-split views. ViewSlot owns the lazy() wrappers so a failed download
 // can be retried (audit W9-03); this table must stay a stable module constant.
@@ -20,6 +22,19 @@ const VIEW_LOADERS: Record<ViewMode, ViewLoader> = {
 
 function App() {
   const view = useAppStore((s) => s.view);
+  // First visit (wave 1): the start screen is the page, in place of the
+  // shell — the workbench never shows first. Hidden while a tour is asked
+  // for (the app shows behind the tour), back when it ends without a door.
+  const startOwed = useStartScreenOwed();
+  const startShown = useStartScreenShown();
+  const startWasOwed = useRef(startOwed);
+  // A door was chosen: focus goes to the tab of the view now shown.
+  useEffect(() => {
+    if (startWasOwed.current && !startOwed) {
+      document.getElementById(`tab-${useAppStore.getState().view}`)?.focus();
+    }
+    startWasOwed.current = startOwed;
+  }, [startOwed]);
 
   // Sync theme preference to <html> class
   useTheme();
@@ -55,6 +70,7 @@ function App() {
   return (
     <LazyMotion features={domAnimation}>
       <MotionConfig reducedMotion="user">
+      {startShown ? <StartHost /> : (
       <AppShell>
         <AnimatePresence mode="wait">
           <m.div
@@ -72,7 +88,8 @@ function App() {
           </m.div>
         </AnimatePresence>
       </AppShell>
-      <QuickSearchHost />
+      )}
+      {!startShown && <QuickSearchHost />}
       </MotionConfig>
     </LazyMotion>
   );

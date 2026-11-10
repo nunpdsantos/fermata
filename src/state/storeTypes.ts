@@ -18,6 +18,13 @@ export type ColorMode = 'functional' | 'absolute';
 export type ThemeMode = 'fermata' | 'fermata-night' | 'auto';
 /** 0 = Open position, 1–12 = I–XII, 'all' = whole neck, null = automatic. */
 export type GuitarPositionChoice = number | 'all' | null;
+/**
+ * Who the learner says they are (wave 1, the start screen). Exported to the
+ * app from state/learnerProfile.ts — import it from there.
+ */
+export type LearnerProfile = 'new' | 'player' | 'theory';
+/** The start hint still owed in Explore (state/startHint.ts): 'theory' gets none. */
+export type StartHintKind = 'new' | 'player';
 
 /** Explore's key and scale, held while a lesson borrows the instrument. */
 export interface LessonLoan {
@@ -121,6 +128,18 @@ export interface PreferencesSlice {
    *  (W11-B; folded by default there so the column is not a long scroll;
    *  remembered). Laptops always show it beside the work. */
   exploreCircleOpen: boolean;
+  /**
+   * The start screen's answer (state/learnerProfile.ts owns the API). null =
+   * never asked (every learner from before wave 1): treat as 'theory'. Saved
+   * only once set — a save without it is unchanged.
+   */
+  learnerProfile: LearnerProfile | null;
+  /**
+   * The one-line start hint a 'new' / 'player' door leaves in Explore, until
+   * it is dismissed or acted on (state/startHint.ts); null = none. Saved
+   * only while owed.
+   */
+  startHint: StartHintKind | null;
   setColorMode: (mode: ColorMode) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setScaleOctaves: (octaves: 1 | 2) => void;

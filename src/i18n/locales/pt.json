@@ -1138,14 +1138,40 @@
     "close": "Fechar o braço inteiro"
   },
   "practice": {"title": "Praticar na guitarra"},
-  "welcome": {
-    "title": "Boas-vindas ao Fermata",
-    "explore": "Escolhe uma tonalidade e vê as suas notas e acordes no piano ou na guitarra, e o seu lugar no círculo das quintas.",
-    "learn": "Um curso passo a passo em nove níveis, com uma verificação curta no fim de cada lição.",
-    "drill": "Uma sessão curta de perguntas rápidas por dia. As que falhas voltam a aparecer.",
-    "footer": "Grátis, sem conta, funciona offline. O teu progresso fica neste navegador.",
-    "exploreAction": "Explorar uma tonalidade",
-    "learnAction": "Começar o curso",
-    "drillAction": "Experimentar um treino"
+  "start": {
+    "tagline": "Aprende como funciona a música, num piano ou numa guitarra que podes tocar aqui mesmo.",
+    "tour": "Ver a visita guiada de um minuto",
+    "instrumentLabel": "Vou usar:",
+    "doorsHeading": "Qual é o teu ponto de partida?",
+    "door": {
+      "new": {
+        "title": "A música é nova para mim",
+        "line": "Começa pelo som. Não precisas de saber ler música."
+      },
+      "player": {
+        "title": "Toco, mas nunca aprendi teoria",
+        "line": "Percebe porque é que os acordes que já conheces combinam entre si."
+      },
+      "theory": {
+        "title": "Sei alguma teoria",
+        "line": "Direto às ferramentas: tonalidades, acordes, escalas, o círculo das quintas."
+      }
+    },
+    "footer": "Grátis. Sem conta. Funciona offline. O teu progresso fica neste navegador.",
+    "settingsLabel": "Como uso o Fermata",
+    "profile": {
+      "new": "Estou a começar",
+      "player": "Toco, sem teoria",
+      "theory": "Sei alguma teoria"
+    },
+    "hint": {
+      "label": "Primeiros passos",
+      "newPiano": "Toca numa tecla para a ouvir.",
+      "newGuitar": "Toca numa corda para a ouvir.",
+      "whenReady": "Quando quiseres:",
+      "firstLesson": "Começar a lição 1 →",
+      "player": "Escolhe a tonalidade de uma música que tocas, por exemplo G. Os acordes abaixo são dessa tonalidade: toca num.",
+      "dismiss": "Fechar a dica"
+    }
   }
 }

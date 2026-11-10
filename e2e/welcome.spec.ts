@@ -1,95 +1,16 @@
-import { test, expect, type Page } from '@playwright/test';
-import { WELCOME_KEY } from './helpers/welcome';
+import { test, expect } from '@playwright/test';
 
 /**
- * First visit and finding things (2026-11-09):
- *  - the welcome sheet: shown on empty storage only, never with saved data,
- *    each action, Escape, and never again after a reload — but again after a
- *    reload BEFORE anyone acted on it;
+ * Finding things (2026-11-09):
  *  - "Practise on the guitar" in Explore's "⋯", from the piano;
  *  - the offline-ready notice: no card over a phone's page (announced), a card
- *    on a laptop, none at all in the page that showed the welcome.
+ *    on a laptop.
+ * The first-visit welcome sheet tested here until wave 1 was replaced by the
+ * start screen: e2e/start-screen.spec.ts (it also checks that the page that
+ * showed it skips the offline-ready notice).
  */
 
-const welcome = (page: Page) => page.getByRole('dialog', { name: 'Welcome to Fermata' });
-const flag = (page: Page) => page.evaluate((k) => localStorage.getItem(k), WELCOME_KEY);
-
-test.describe('the first-visit welcome', () => {
-  // Empty storage: the config seeds "seen" for every other spec.
-  test.use({ storageState: { cookies: [], origins: [] } });
-
-  test('shown on empty storage over Explore, focus inside; Escape closes it for good', async ({ page }) => {
-    await page.goto('/');
-    await expect(welcome(page)).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator('#explore-panel')).toBeVisible();
-    await expect.poll(() => page.evaluate(() => !!document.activeElement?.closest('[role="dialog"]'))).toBe(true);
-    expect(await flag(page)).toBe('pending');
-
-    // A reload BEFORE acting on it: still there (boot has saved settings by now).
-    await page.reload();
-    await expect(welcome(page)).toBeVisible({ timeout: 15_000 });
-
-    await page.keyboard.press('Escape');
-    await expect(welcome(page)).toHaveCount(0);
-    expect(await flag(page)).toBe('seen');
-    await expect(page.getByRole('tab', { name: 'Explore' })).toBeFocused();
-    await page.reload();
-    await expect(page.getByTestId('explore-header')).toBeVisible({ timeout: 15_000 });
-    await page.waitForTimeout(1000); // the lazy sheet would have loaded by now
-    await expect(welcome(page)).toHaveCount(0);
-  });
-
-  for (const [label, tab, panel] of [
-    ['Explore a key', 'Explore', '#explore-panel'],
-    ['Start the course', 'Learn', '#learn-panel'],
-    ['Try a drill', 'Drill', '#drill-panel'],
-  ] as const) {
-    test(`"${label}" closes it and opens ${tab}; never shown again after a reload`, async ({ page }) => {
-      await page.goto('/');
-      await expect(welcome(page)).toBeVisible({ timeout: 15_000 });
-      await welcome(page).getByRole('button', { name: label }).click();
-      await expect(welcome(page)).toHaveCount(0);
-      await expect(page.getByRole('tab', { name: tab })).toHaveAttribute('aria-selected', 'true');
-      await expect(page.locator(panel)).toBeVisible();
-      await page.reload();
-      await expect(page.locator(panel)).toBeVisible({ timeout: 15_000 });
-      await page.waitForTimeout(1000);
-      await expect(welcome(page)).toHaveCount(0);
-    });
-  }
-
-  for (const key of ['music-theory-app', 'music-theory-progress', 'fermata-drill-v1', 'fermata-fingering-v1', 'fermata-learn-session-v1']) {
-    test(`never shown to someone with saved data (${key})`, async ({ page }) => {
-      await page.addInitScript((k) => {
-        if (!sessionStorage.getItem('e2e:seeded')) {
-          sessionStorage.setItem('e2e:seeded', '1');
-          localStorage.setItem(k, k === 'music-theory-app' ? JSON.stringify({ state: { lastView: 'explore' }, version: 6 }) : '{}');
-        }
-      }, key);
-      await page.goto('/');
-      await expect(page.getByTestId('explore-header')).toBeVisible({ timeout: 15_000 });
-      await page.waitForTimeout(1500);
-      await expect(welcome(page)).toHaveCount(0);
-      expect(await flag(page)).toBeNull();
-    });
-  }
-
-  test('the page that showed the welcome skips the offline-ready notice', async ({ page }) => {
-    await page.goto('/');
-    await expect(welcome(page)).toBeVisible({ timeout: 15_000 });
-    const raised = await page.evaluate(async () => {
-      try { (await import(/* @vite-ignore */ '/src/hooks/usePWA.ts' as string)).showOfflineReady(); return true; } catch { return false; }
-    });
-    test.skip(!raised, 'needs the dev server\'s /src modules');
-    await page.waitForTimeout(300);
-    await expect(page.getByRole('alert').filter({ hasText: /offline/i })).toHaveCount(0);
-    await welcome(page).getByRole('button', { name: 'Start the course' }).click();
-    await page.waitForTimeout(300);
-    await expect(page.getByRole('alert').filter({ hasText: /offline/i })).toHaveCount(0);
-  });
-});
-
-test.describe('the offline-ready notice (no welcome)', () => {
+test.describe('the offline-ready notice (no start screen)', () => {
   for (const vp of [{ width: 390, height: 844, card: false }, { width: 844, height: 390, card: false }, { width: 1440, height: 900, card: true }]) {
     test(`${vp.width}×${vp.height}: ${vp.card ? 'a card' : 'announced, no card over the page'}`, async ({ browser }) => {
       const touch = vp.width < 1000;

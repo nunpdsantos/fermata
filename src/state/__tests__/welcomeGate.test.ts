@@ -1,6 +1,8 @@
 /**
- * The first-visit welcome's gate (state/welcomeGate.ts): shown only to a
- * browser with nothing saved, until it is closed or acted on; never again.
+ * The first-visit gate (state/welcomeGate.ts) — since wave 1 it opens the
+ * start screen instead of the welcome sheet; the flag and its three states
+ * are unchanged: shown only to a browser with nothing saved, until it is
+ * acted on; never again.
  */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
@@ -15,7 +17,7 @@ import { BACKUP_KEYS } from '../../utils/backupHelpers';
 
 beforeEach(() => {
   localStorage.clear();
-  useWelcomeStore.setState({ open: false, shownThisPage: false });
+  useWelcomeStore.setState({ open: false, shownThisPage: false, bootSearch: '' });
 });
 
 /** Every persisted store, by the key it writes. */
@@ -55,25 +57,31 @@ describe('who sees the welcome', () => {
 
 describe('boot and close', () => {
   it('boot on an empty browser opens it and marks it pending; closing marks it seen for good', () => {
-    expect(bootWelcome(localStorage)).toBe(true);
-    expect(useWelcomeStore.getState()).toEqual({ open: true, shownThisPage: true });
+    expect(bootWelcome(localStorage, '')).toBe(true);
+    expect(useWelcomeStore.getState()).toMatchObject({ open: true, shownThisPage: true });
     expect(localStorage.getItem(WELCOME_KEY)).toBe('pending');
 
     closeWelcome(localStorage);
-    expect(useWelcomeStore.getState()).toEqual({ open: false, shownThisPage: true });
+    expect(useWelcomeStore.getState()).toMatchObject({ open: false, shownThisPage: true });
     expect(localStorage.getItem(WELCOME_KEY)).toBe('seen');
 
     // The next load (boot has saved settings by now): nothing.
     localStorage.setItem('music-theory-app', '{}');
     useWelcomeStore.setState({ open: false, shownThisPage: false });
-    expect(bootWelcome(localStorage)).toBe(false);
-    expect(useWelcomeStore.getState()).toEqual({ open: false, shownThisPage: false });
+    expect(bootWelcome(localStorage, '')).toBe(false);
+    expect(useWelcomeStore.getState()).toMatchObject({ open: false, shownThisPage: false });
   });
 
   it('boot with saved data writes nothing', () => {
     localStorage.setItem('fermata-drill-v1', '{}');
     expect(bootWelcome(localStorage)).toBe(false);
     expect(localStorage.getItem(WELCOME_KEY)).toBeNull();
+  });
+
+  it('keeps the boot address\'s query string for the shared-link rule (and decides as before)', () => {
+    expect(bootWelcome(localStorage, '?key=G&scale=major')).toBe(true);
+    expect(useWelcomeStore.getState().bootSearch).toBe('?key=G&scale=major');
+    expect(localStorage.getItem(WELCOME_KEY)).toBe('pending');
   });
 
   it('storage that throws: no welcome (it could never remember being closed)', () => {
@@ -116,6 +124,12 @@ describe('the prefixes cover every persisted store', () => {
 });
 
 describe('boot order', () => {
+  it('the gate imports nothing but zustand (no store can load before the check)', () => {
+    const gate = readFileSync(join(__dirname, '..', 'welcomeGate.ts'), 'utf8');
+    const imports = gate.split('\n').filter((l) => /^import\s/.test(l));
+    expect(imports).toEqual(["import { create } from 'zustand';"]);
+  });
+
   it('state/welcomeBoot.ts is the FIRST import of main.tsx (before any store can write)', () => {
     const main = readFileSync(join(__dirname, '..', '..', 'main.tsx'), 'utf8');
     const imports = main.split('\n').filter((l) => /^import\s/.test(l));

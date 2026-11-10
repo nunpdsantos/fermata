@@ -26,6 +26,14 @@ const ALLOWED_VALUES: Record<string, readonly unknown[]> = {
   exploreCircleOpen: [true, false],
 };
 
+// Optional fields (wave 1): saved only once set, so they are guarded only when
+// present — an absent one takes the slice default (null) and a save from
+// before them is unchanged.
+const OPTIONAL_VALUES: Record<string, readonly unknown[]> = {
+  learnerProfile: ['new', 'player', 'theory', null],
+  startHint: ['new', 'player', null],
+};
+
 // Numeric ranges. baseOctave = the piano's octave tabs (0–8, whole numbers);
 // volume = core audio's master gain (0–1).
 const NUMERIC_RANGES: Record<string, { min: number; max: number; integer?: boolean }> = {
@@ -70,6 +78,9 @@ export function sanitizePersistedAppState(persisted: unknown): Record<string, un
   // falls back to the slice default.
   for (const [k, allowed] of Object.entries(ALLOWED_VALUES)) {
     if (!allowed.includes(state[k])) delete state[k];
+  }
+  for (const [k, allowed] of Object.entries(OPTIONAL_VALUES)) {
+    if (k in state && !allowed.includes(state[k])) delete state[k];
   }
 
   // guitarScalePosition: 0–12 (Open, I–XII), 'all', or null (automatic).
@@ -170,6 +181,10 @@ export const useAppStore = create<AppState>()(
           dockDetents: state.dockDetents,
           dockChosen: state.dockChosen,
           exploreCircleOpen: state.exploreCircleOpen,
+          // Wave 1 (start screen): written only once set, so the save of
+          // anyone never asked stays exactly as it was.
+          ...(state.learnerProfile !== null ? { learnerProfile: state.learnerProfile } : {}),
+          ...(state.startHint !== null ? { startHint: state.startHint } : {}),
         };
       },
       migrate: (persisted: unknown, version: number) => {

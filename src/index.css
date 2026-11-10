@@ -875,24 +875,82 @@ body {
     to { transform: none; }
   }
 
-  /* First-visit welcome (WelcomeSheet): the three views, then three actions
-     stacked full width; on a short (sideways) screen they share rows so the
-     sheet's body keeps room above them. */
-  .welcome-views { display: flex; flex-direction: column; gap: 12px; margin: 0; }
-  .welcome-views dd { margin: 2px 0 0; }
-  .welcome-footer { margin-top: 16px; }
-  .welcome-actions { display: flex; flex-direction: column; gap: 8px; }
+  /* Start screen (wave 1, components/start/): a page of its own, in place
+     of the app, on a first visit. One calm column; the page scrolls if it
+     must (a phone held sideways). Doors stack on phones and stand side by
+     side from 720 px. */
+  .start-page {
+    /* body never scrolls (overflow: hidden): the page is its own scroller. */
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+  .start-column {
+    width: 100%;
+    max-width: 880px;
+    /* Centred when there is room, from the top when it scrolls. */
+    margin-block: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .start-head { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .start-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--text-display);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .start-lead { margin: 0; font-size: var(--text-title); line-height: 1.4; max-width: 34em; }
+  .start-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  .start-row-label { font-size: var(--text-body); }
+  .start-doors { display: flex; flex-direction: column; gap: 12px; }
+  .start-doors-heading { margin: 0; font-size: var(--text-title); font-weight: 600; line-height: 1.3; }
+  .start-door-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .start-door-list > li { display: flex; }
+  /* (Card's own classes are unlayered and win over this layer: only what
+     they leave alone is set here.) */
+  .start-door { min-height: calc(var(--tap) + 24px); padding: 14px 16px; color: var(--text); }
+  .start-door-title { display: block; font-size: var(--text-body); font-weight: 600; line-height: 1.35; }
+  .start-door-line { display: block; margin-top: 4px; font-size: var(--text-ui); line-height: 1.4; color: var(--text-muted); }
+  .start-footer p { margin: 0; font-size: var(--text-ui); color: var(--text-muted); }
+  @media (min-width: 720px) {
+    .start-door-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  /* A phone held sideways: less air, so more of it is in view at once. */
   @media (max-height: 500px) {
-    .welcome-actions { flex-direction: row; flex-wrap: wrap; }
-    .welcome-actions > .btn { flex: 1 1 auto; }
+    .start-page { padding-top: max(12px, env(safe-area-inset-top)); padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+    .start-column { gap: 14px; }
   }
-  /* A phone held sideways: the panel takes the width and the three views
-     stand side by side (one column showed ~100 px, a single view). */
-  @media (max-height: 500px) and (min-width: 640px) {
-    .sheet-panel:has(.welcome-views) { width: min(760px, calc(100vw - 32px)); max-width: none; }
-    .welcome-views { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-    .welcome-footer { margin-top: 8px; }
+
+  /* Start hint (wave 1, layout/StartHint.tsx): one line in the flow under
+     the top bar, Explore only — it covers nothing, and it is there from
+     Explore's first paint, so nothing moves when it shows. */
+  .start-hint {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px max(4px, env(safe-area-inset-right)) 2px max(16px, env(safe-area-inset-left));
+    background: var(--accent-bg);
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text);
   }
+  .start-hint-text { flex: 1; min-width: 0; margin: 0; font-size: var(--text-ui); line-height: 1.4; }
+  .start-hint-action.btn { margin-left: -6px; }
 
   /* Instrument dock — phone pull-up sheet (DetentSheet) */
   .detent-sheet {
