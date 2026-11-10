@@ -140,7 +140,9 @@ function literalTermIds(): { file: string; id: string }[] {
         if (name !== '__tests__') walk(path);
       } else if (/\.tsx?$/.test(name)) {
         const src = readFileSync(path, 'utf8');
-        const res = [/<Term\s+id="([^"]+)"/g, /data-term="([^"]+)"/g, /termAttr\('([^']+)'\)/g, /'data-term': '([^']+)'/g];
+        const res = [/<Term\s+id="([^"]+)"/g, /data-term="([^"]+)"/g, /termAttr\('([^']+)'\)/g, /'data-term': '([^']+)'/g,
+          // A literal inside an expression: data-term={cond ? 'relatedKeys' : undefined} (final review).
+          /data-term=\{[^}]*?\?\s*'([^']+)'/g];
         for (const re of res) for (const m of src.matchAll(re)) out.push({ file: path, id: m[1] });
       }
     }
@@ -154,7 +156,7 @@ describe('every term id used in a component has an entry', () => {
   it('literal ids (found, and known)', () => {
     const used = literalTermIds();
     // Sanity: the scan finds the words it should (a known positive).
-    expect(used.map((u) => u.id)).toEqual(expect.arrayContaining(['keySignature', 'relativeKey', 'chordsInKey', 'degree', 'romanNumeral', 'formula', 'compatibleScales', 'circleOfFifths', 'position', 'tirandoApoyando']));
+    expect(used.map((u) => u.id)).toEqual(expect.arrayContaining(['keySignature', 'relativeKey', 'chordsInKey', 'degree', 'romanNumeral', 'formula', 'compatibleScales', 'circleOfFifths', 'position', 'tirandoApoyando', 'relatedKeys']));
     for (const { file, id } of used) expect(isTermId(id), `${file}: ${id}`).toBe(true);
   });
 
@@ -172,6 +174,30 @@ describe('every term id used in a component has an entry', () => {
         expect(functionTermId(key), `${type} ${i}`).not.toBeNull();
       });
     }
+  });
+});
+
+// Final review (2026-11-10): a word mapped to the wrong entry (the leading
+// note to the subtonic, 7ths to the triad) passed, since only "is an id" was
+// checked. A degree name opens the entry with that name; each All Chords
+// category its family's entry.
+describe('each computed word opens its own entry', () => {
+  it('every degree name the strip and read-out show: the entry titled with that name (EN)', () => {
+    const fn = enUi.explore.fn as Record<string, string>;
+    const titles = en.entries as Record<string, { title: string }>;
+    expect(Object.keys(fn).length).toBe(10);
+    for (const [key, label] of Object.entries(fn)) {
+      const id = functionTermId(`explore.fn.${key}`)!;
+      expect(titles[id].title.toLowerCase(), key).toBe(label.toLowerCase());
+      expect(functionTermId(`degreeShort.${key}`), key).toBe(id);
+    }
+  });
+  it('every All Chords category', () => {
+    expect(CATEGORY_TERM).toEqual({
+      'chordCategory.triads': 'triad', 'chordCategory.sixths': 'sixthChord', 'chordCategory.sevenths': 'seventhChord',
+      'chordCategory.sus': 'susChord', 'chordCategory.power': 'powerChord', 'chordCategory.ninths': 'extendedChord',
+      'chordCategory.altDom': 'alteredChord', 'chordCategory.elevenths': 'extendedChord', 'chordCategory.thirteenths': 'extendedChord',
+    });
   });
 });
 
@@ -256,6 +282,40 @@ describe('every sound demonstration resolves to notes for all twelve roots', () 
       expect(pc(notes[8]), scaleType).toBe(rel);
     }
   });
+  // Final review (2026-11-10): five demonstrations could play the wrong
+  // distance (a half step as 3 half steps, an octave as a 5th) and pass.
+  it.each([
+    // [term, the half steps from the first note to each later onset's lowest note]
+    ['halfStep', [1, 0, 2]],
+    ['sharpFlat', [1, 0, -1]],
+    ['octave', [12, 0]],
+    ['interval', [4, 0]],
+    ['tritone', [6, 0]],
+  ] as const)('%s: the sound is the distance it names', (id, steps) => {
+    for (const root of ROOTS) {
+      const notes = GLOSSARY[id].hear!(ctx(`${root.natural}${root.accidental}`, 'major'))!;
+      const midi = (n: (typeof notes)[number]) => getMidiNumber(n.note, n.note.octave);
+      const onsets = [...new Set(notes.map((n) => n.at))].sort((a, b) => a - b);
+      const lowest = onsets.map((at) => Math.min(...notes.filter((n) => n.at === at).map(midi)));
+      const home = lowest[0];
+      expect(lowest.slice(1, steps.length + 1).map((m) => m - home), `${id} on ${root.natural}${root.accidental}`).toEqual([...steps]);
+      // the last onset, a chord, holds both ends of the distance
+      const last = notes.filter((n) => n.at === onsets[onsets.length - 1]).map(midi);
+      if (id !== 'halfStep' && id !== 'sharpFlat') expect(Math.max(...last) - Math.min(...last)).toBe(steps[0]);
+    }
+  });
+  it('the classical minor: up by the melodic minor, down by the natural minor (A: F♯ G♯ up, G F down)', () => {
+    const ex = GLOSSARY.classicalMinor.example!(ctx('A', 'melodic_minor'), ((k: string) => k) as T)!;
+    expect(ex.vars).toEqual({ up: 'A B C D E F♯ G♯', down: 'G F E D C B A' });
+    const notes = GLOSSARY.classicalMinor.hear!(ctx('A', 'melodic_minor'))!;
+    const pcs = notes.map((n) => getMidiNumber(n.note, n.note.octave) % 12);
+    expect(pcs).toEqual([9, 11, 0, 2, 4, 6, 8, 9, 7, 5, 4, 2, 0, 11, 9]);
+  });
+  it('the relative key is three half steps BELOW the major, in every language', () => {
+    expect(en.entries.relativeKey.plain).toContain('three half steps below the major');
+    expect(pt.entries.relativeKey.plain).toMatch(/três meios-tons abaixo d[ao] maior/);
+    expect(es.entries.relativeKey.plain).toContain('tres semitonos por debajo de la mayor');
+  });
   it('the inversion: the same three notes, the 3rd lowest the second time', () => {
     const notes = GLOSSARY.inversion.hear!(ctx('C', 'major'))!;
     const first = notes.filter((n) => n.at === 0).map((n) => getMidiNumber(n.note, n.note.octave));
@@ -288,6 +348,21 @@ describe('worked examples come from the engine (keys × scales)', () => {
     ['relativeKey', 'A', 'natural_minor', 'K and C major share every note.'],
     ['relativeKey', 'E♭'.replace('♭', 'b'), 'major', 'K and C minor share every note.'],
     ['relativeKey', 'D', 'dorian', 'notHere:only'],
+    // Final review (2026-11-10): outside plain major and natural minor the
+    // line names the KEY (the scale's G♯, B♭ or E♭ are not the relative's).
+    ['relativeKey', 'A', 'harmonic_minor', 'A minor and C major share every note.'],
+    ['relativeKey', 'A', 'melodic_minor', 'A minor and C major share every note.'],
+    ['relativeKey', 'E', 'blues', 'E minor and G major share every note.'],
+    ['relativeKey', 'A', 'pentatonic_minor', 'A minor and C major share every note.'],
+    ['relativeKey', 'C', 'major_blues', 'C major and A minor share every note.'],
+    ['relativeKey', 'G', 'pentatonic_major', 'G major and E minor share every note.'],
+    // The tritone: the scale's own note when it has one (B Locrian shows F),
+    // else the augmented 4th; never a perfect 4th or 5th.
+    ['tritone', 'B', 'locrian', 'B and F are a tritone apart.'],
+    ['tritone', 'C', 'lydian', 'C and F♯ are a tritone apart.'],
+    ['tritone', 'E', 'blues', 'E and B♭ are a tritone apart.'],
+    ['tritone', 'C', 'major', 'C and F♯ are a tritone apart.'],
+    ['interval', 'D', 'major', 'D up to F♯ is a 3rd: D E F.'],
     ['parentKey', 'D', 'dorian', 'K uses the notes of C major.'],
     ['parentKey', 'G', 'mixolydian', 'K uses the notes of C major.'],
     ['parentKey', 'C', 'major', 'notHere:only'],

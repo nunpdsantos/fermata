@@ -260,7 +260,13 @@ const BASE: Record<string, EntrySpec> = {
   },
   tritone: {
     learn: 'l2u7m2',
-    example: (ctx) => ({ vars: { root: name(ctx.root), other: name(spellIntervalAbove(ctx.root, 4, 6)) } }),
+    // The scale's own note six half steps up when it has one (B Locrian's F,
+    // the blues' ♭5: what the strip shows), else the augmented 4th.
+    example: (ctx) => {
+      const pc = (getPitchClass(ctx.root) + 6) % 12;
+      const own = scaleOf(ctx).notes.find((n) => getPitchClass(n) === pc);
+      return { vars: { root: name(ctx.root), other: name(own ?? spellIntervalAbove(ctx.root, 4, 6)) } };
+    },
     hear: (ctx) => {
       const home = scalePitches(ctx)[0];
       return phrase(home, above(home, 6), [home, above(home, 6)]);
@@ -269,9 +275,15 @@ const BASE: Record<string, EntrySpec> = {
   relativeKey: {
     learn: 'l2u5m3',
     notHere: (ctx) => (majorOrMinor(ctx.scaleType) ? null : 'only'),
+    // Outside plain major and natural minor (harmonic / melodic minor, the
+    // pentatonics, the blues) the line names the KEY, not the scale: "A
+    // Harmonic Minor and C major share every note" is untrue (G♯).
     example: (ctx, t) => {
       const rel = keyFacts(ctx.root, ctx.scaleType, t).relative;
-      return rel ? { vars: { relative: rel } } : null;
+      if (!rel) return null;
+      if (ctx.scaleType === 'major' || ctx.scaleType === 'natural_minor') return { vars: { relative: rel } };
+      const key = t(MAJOR_FAMILY.has(ctx.scaleType) ? 'circle.keyMajor' : 'circle.keyMinor', { note: name(ctx.root) });
+      return { vars: { key, relative: rel } };
     },
     hear: (ctx) => {
       if (!majorOrMinor(ctx.scaleType)) return null;

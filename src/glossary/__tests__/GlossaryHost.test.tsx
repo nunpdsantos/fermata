@@ -108,6 +108,23 @@ describe('tap a word', () => {
     expect(notes.length).toBe(16); // C major up (8), then A minor up (8)
   });
 
+  // Final review (2026-11-10): every key fact opens ITS word (the tests only
+  // tapped "Dominant key"), for a major key and for a mode's parent key.
+  it.each([
+    ['major', [['Signature', 'Key signature'], ['Relative', 'Relative key'], ['Dominant key', 'Dominant key'], ['Subdominant key', 'Subdominant key']]],
+    ['dorian', [['Signature', 'Key signature'], ['Parent key', 'Parent key']]],
+  ] as const)('in C %s, each key fact opens its own explanation', (scale, pairs) => {
+    useAppStore.setState({ selectedScale: scale });
+    render(<Explore />);
+    const facts = screen.getByTestId('key-facts');
+    expect(within(facts).getAllByRole('button').map((b) => b.textContent)).toEqual(pairs.map(([label]) => label));
+    for (const [label, title] of pairs) {
+      fireEvent.click(within(facts).getByRole('button', { name: label }));
+      expect(screen.getByRole('dialog', { name: title })).toBeTruthy();
+      act(() => useGlossaryUi.getState().close());
+    }
+  });
+
   it('Learn more opens the lesson that teaches it', () => {
     render(<Explore />);
     fireEvent.click(within(screen.getByTestId('key-facts')).getByRole('button', { name: 'Dominant key' }));

@@ -201,3 +201,17 @@ describe('ExploreView — "Practise on the guitar" in the scale actions menu', (
     ]);
   });
 });
+
+// Final review (2026-11-10): an explanation open when Explore goes away (a
+// search result opening a lesson, a tour step) must not come back, detached
+// and taking focus, the next time Explore mounts.
+describe('an open explanation when Explore unmounts', () => {
+  it('is closed', async () => {
+    const { useGlossaryUi } = await import('../../glossary/glossaryUi');
+    const { unmount } = render(<ExploreView />);
+    act(() => useGlossaryUi.getState().openTerm('dominant', null));
+    expect(useGlossaryUi.getState().request).not.toBeNull();
+    unmount();
+    expect(useGlossaryUi.getState().request).toBeNull();
+  });
+});

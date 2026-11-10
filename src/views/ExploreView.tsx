@@ -61,6 +61,10 @@ export function ExploreView() {
   // Simple view (wave 1): the key, its notes, its chords and the instrument.
   const simple = useExploreSimple();
   const glossaryWanted = useGlossaryUi((s) => s.wanted);
+  // An explanation still open when Explore goes away (a search result opening
+  // a lesson, a tour step) is closed: it would come back on the next visit,
+  // detached from its word and taking focus.
+  useEffect(() => () => useGlossaryUi.getState().close(), []);
   // From the "⋯" menu: the practice tools are the guitar's, so switch to it first.
   const openPractice = () => {
     const app = useAppStore.getState();
