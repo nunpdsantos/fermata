@@ -12,6 +12,20 @@ import { Segment } from '../ui/Segment';
 import { SelectTrigger } from '../ui/SelectTrigger';
 import { ChipGroup } from '../ui/ChoiceChip';
 import { PracticePlayer } from './PracticePlayer';
+import { WordsButton } from '../../glossary/Term';
+import type { TermId } from '../../glossary/termIds';
+
+const TAB_TERM: Partial<Record<string, TermId>> = { walk: 'positionWalk', technical: 'technicalSet', rightHand: 'rightHandFingers' };
+/** The glossary entry for a technical-set exercise, for "Words on this screen". */
+function itemTerm(id: string): TermId | undefined {
+  if (/^(thirds|sixths|octaves)-/.test(id)) return 'intervalScale';
+  if (id.startsWith('brokenChord')) return 'brokenChord';
+  if (id === 'tonicArpeggio') return 'arpeggio';
+  if (id === 'dominantSeventh') return 'dominantSeventh';
+  if (id === 'diminishedSeventh') return 'diminishedSeventh';
+  if (id === 'chromatic') return 'scale_chromatic';
+  return undefined;
+}
 import { keyMode, positionWalkPractice, rightHandPractice, scalePractice, technicalSet } from './practiceModel';
 
 type Tab = 'scales' | 'walk' | 'technical' | 'rightHand';
@@ -44,9 +58,12 @@ export default function GuitarPractice() {
   const playerKey = [noteToString(root), scale, tuning.id, tab, route?.id, route?.octaves, scheme, stroke].join('|');
 
   return <div className="practice-content space-y-4">
-    <p className="text-ui">{t('practice.keyOfPiece', { key: `${withGlyphs(root)} ${t(`scaleName.${scale}`)}` })}</p>
+    <div className="flex items-center justify-between gap-2 flex-wrap">
+      <p className="text-ui" data-term="key">{t('practice.keyOfPiece', { key: `${withGlyphs(root)} ${t(`scaleName.${scale}`)}` })}</p>
+      <WordsButton />
+    </div>
     <Segment mode="tabs" className="practice-tabs" label={t('practice.title')} value={tab} onChange={setTab}
-      options={(['scales', 'walk', 'technical', 'rightHand'] as const).map((value) => ({ value, label: t(`practice.tabs.${value}`), id: `practice-tab-${value}`, controls: 'practice-panel' }))} />
+      options={(['scales', 'walk', 'technical', 'rightHand'] as const).map((value) => ({ value, label: TAB_TERM[value] ? <span data-term={TAB_TERM[value]}>{t(`practice.tabs.${value}`)}</span> : t(`practice.tabs.${value}`), id: `practice-tab-${value}`, controls: 'practice-panel' }))} />
     <div id="practice-panel" role="tabpanel" aria-labelledby={`practice-tab-${tab}`} className="space-y-3">
       {tab === 'walk' && <p className="text-ui">{t('practice.walkHint')}</p>}
       {tab === 'scales' && <>
@@ -61,15 +78,15 @@ export default function GuitarPractice() {
             options={Array.from({ length: range }, (_, i) => ({ value: i + 1, label: t('practice.octaveCount', { count: i + 1 }) }))} />
         </div>
         <div className="flex flex-wrap gap-3">
-          <ChipGroup label={t('practice.alternation')} value={scheme} onChange={setScheme} options={[{ value: 'im', label: 'i–m' }, { value: 'ma', label: 'm–a' }]} />
+          <ChipGroup label={t('practice.alternation')} value={scheme} onChange={setScheme} options={[{ value: 'im', label: 'i–m', data: { 'data-term': 'rightHandFingers' } }, { value: 'ma', label: 'm–a', data: { 'data-term': 'rightHandFingers' } }]} />
           <ChipGroup label={t('practice.stroke')} value={stroke} onChange={setStroke}
-            options={[{ value: 'tirando', label: 'tirando' }, { value: 'apoyando', label: 'apoyando' }]} />
+            options={[{ value: 'tirando', label: 'tirando', data: { 'data-term': 'tirandoApoyando' } }, { value: 'apoyando', label: 'apoyando', data: { 'data-term': 'tirandoApoyando' } }]} />
         </div>
         <p className="text-caption">{t('practice.strokeHint')}</p>
       </>}
       {tab === 'technical' && <>
         <p className="text-ui">{t('practice.technicalHint')}</p>
-        <label className="practice-select-label">{t('practice.exercise')}
+        <label className="practice-select-label" data-term={itemTerm(item)}>{t('practice.exercise')}
           <SelectTrigger data-testid="practice-exercise" value={item} onChange={(e) => setItem(e.target.value)}>
             {items.map((entry) => <option value={entry.id} key={entry.id}>{t(`practice.items.${entry.id}`)} · {t(entry.route ? 'practice.available' : 'practice.unavailable')}</option>)}
           </SelectTrigger>

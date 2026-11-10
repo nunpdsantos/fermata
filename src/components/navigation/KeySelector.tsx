@@ -3,7 +3,7 @@ import { useAppStore } from '../../state/store.ts';
 import { noteToString, type ScaleType } from '../../core/types/music.ts';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
-import { SCALE_GROUPS, useRootChoices, useChooseScale } from './keyChoice.ts';
+import { SCALE_GROUPS, SHORT_SCALES, ALL_SCALES_OPTION, useRootChoices, useChooseScale } from './keyChoice.ts';
 import { ChipGroup } from '../ui/ChoiceChip.tsx';
 import { Button } from '../ui/Button.tsx';
 import { SelectTrigger } from '../ui/SelectTrigger.tsx';
@@ -53,11 +53,43 @@ export function KeyPicker() {
   );
 }
 
+/** Whole words, not the chips' abbreviations ("Major pentatonic", not "Pent. Maj"). */
+function shortScaleName(type: ScaleType, t: (k: string) => string): string {
+  if (type === 'natural_minor') return t('scaleChip.natural_minor');
+  const n = t(`scaleName.${type}`);
+  return n.charAt(0).toLocaleUpperCase() + n.slice(1);
+}
+
+
 /** The scale as a SelectTrigger: every scale, grouped (the old "More scales" included). */
-export function ScalePicker({ className }: { className?: string }) {
+export function ScalePicker({ className, short = false }: { className?: string; short?: boolean }) {
   const { t } = useTranslation();
   const selectedScale = useAppStore((s) => s.selectedScale);
   const chooseScale = useChooseScale();
+  if (short) {
+    // A scale chosen in Full that is not on the short list still shows as
+    // the selected one (first), so the picker never lies about the screen.
+    const offList = !SHORT_SCALES.includes(selectedScale);
+    return (
+      <SelectTrigger
+        aria-label={t('keySelector.scale')}
+        data-testid="scale-picker"
+        data-short=""
+        wrapperClassName={className}
+        value={selectedScale}
+        onChange={(e) => {
+          if (e.target.value === ALL_SCALES_OPTION) useAppStore.getState().setExploreDetail('full');
+          else chooseScale(e.target.value as ScaleType);
+        }}
+      >
+        {offList && <option value={selectedScale} data-scale={selectedScale}>{t(`scaleChip.${selectedScale}`)}</option>}
+        {SHORT_SCALES.map((type) => (
+          <option key={type} value={type} data-scale={type}>{shortScaleName(type, t)}</option>
+        ))}
+        <option value={ALL_SCALES_OPTION} data-all-scales="">{t('simpleView.allScales')}</option>
+      </SelectTrigger>
+    );
+  }
   return (
     <SelectTrigger
       aria-label={t('keySelector.scale')}

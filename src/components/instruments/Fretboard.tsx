@@ -771,7 +771,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
           {/* Tuning selector — a compact native <select> (one control, so the
               toolbar stays short; review B1). Available in every tuning on phones too. */}
           <label className="flex items-center gap-2">
-            <span className="text-ui" style={{ color: 'var(--text-muted)' }}>{t('fretboard.tuning')}</span>
+            <span className="text-ui" style={{ color: 'var(--text-muted)' }} data-term="tuning">{t('fretboard.tuning')}</span>
             <SelectTrigger
               value={guitarTuningId}
               onChange={(e) => setGuitarTuningId(e.target.value)}
@@ -836,7 +836,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
               >
                 {anchorFret === f ? (
                   chordAnchorFret !== null ? (
-                    <span className="inline-block px-1.5 rounded font-bold font-mono" style={badgeStyle}>
+                    <span className="inline-block px-1.5 rounded font-bold font-mono" style={badgeStyle} data-term="anchorFret">
                       {f}fr
                     </span>
                   ) : (

@@ -1147,5 +1147,32 @@
     "exploreAction": "Explore a key",
     "learnAction": "Start the course",
     "drillAction": "Try a drill"
+  },
+  "glossary": {
+    "ui": {
+      "words": "Words",
+      "wordsLabel": "Words on this screen",
+      "wordsIntro": "Tap a word to see what it means.",
+      "noWords": "There are no words to explain on this screen.",
+      "hear": "Hear it",
+      "learn": "Learn more",
+      "notHere": "In {{key}} this name is not used.",
+      "sevenOnly": "These names belong to seven-note scales; {{key}} has {{n}} notes.",
+      "loadError": "The explanation could not load. Try again."
+    }
+  },
+  "simpleView": {
+    "label": "How much to show",
+    "simple": "Simple",
+    "full": "Full",
+    "menuFull": "Full view",
+    "allScales": "All scales…",
+    "seeEverything": "See everything about this chord",
+    "noteOf": "note {{n}} of {{key}}",
+    "noSharpsFlats": "no sharps or flats",
+    "sharps_one": "one sharp",
+    "sharps_other": "{{count}} sharps",
+    "flats_one": "one flat",
+    "flats_other": "{{count}} flats"
   }
 }

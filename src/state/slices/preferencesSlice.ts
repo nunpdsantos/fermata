@@ -32,6 +32,8 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
     set({ dockDetents: { ...s.dockDetents, [view]: detent }, dockChosen: { ...s.dockChosen, [view]: true } });
   },
   setExploreCircleOpen: (open) => set({ exploreCircleOpen: open }),
+  // No default value: undefined means "not chosen yet" (state/exploreDetail.ts).
+  setExploreDetail: (detail) => set({ exploreDetail: detail }),
   // The app opening the dock for an exercise is not the learner's choice.
   requestDock: (detent) => {
     const { view, dockDetents } = get();

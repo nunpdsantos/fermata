@@ -24,6 +24,8 @@ const ALLOWED_VALUES: Record<string, readonly unknown[]> = {
   lastView: ['explore', 'learn', 'drill'],
   scaleOctaves: [1, 2],
   exploreCircleOpen: [true, false],
+  // Optional (wave 1): absent = never chosen; deleting a bad value means the same.
+  exploreDetail: ['simple', 'full'],
 };
 
 // Numeric ranges. baseOctave = the piano's octave tabs (0–8, whole numbers);
@@ -170,6 +172,9 @@ export const useAppStore = create<AppState>()(
           dockDetents: state.dockDetents,
           dockChosen: state.dockChosen,
           exploreCircleOpen: state.exploreCircleOpen,
+          // Undefined until the learner chooses: JSON drops it, so an
+          // existing save is written back exactly as it was.
+          exploreDetail: state.exploreDetail,
         };
       },
       migrate: (persisted: unknown, version: number) => {

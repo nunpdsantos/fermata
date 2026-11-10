@@ -1397,3 +1397,68 @@ for (const th of THEMES) {
     await context.close();
   });
 }
+
+// Wave 1 (brief C): plain words. Simple view, an open explanation (laptop:
+// the popover; phone / short screen: the sheet) and "Words on this screen"
+// with a word opened, under the same audit — phone, landscape, tablet and
+// laptop, day and night; then PT and ES at 320 px.
+for (const v of VIEWPORTS) {
+  for (const th of THEMES) {
+    const combo = `${v.name}-${th.name}`;
+    test(`${combo} plain words: an explanation, the word list and Simple view pass the same rules`, async ({ browser }) => {
+      test.setTimeout(180_000);
+      const { context, page } = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore' });
+      await page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
+      await expect(page.getByTestId('chord-detail')).toBeVisible();
+      await page.waitForTimeout(400);
+      // A word's explanation (the chord detail's "V · dominant").
+      await page.getByTestId('chord-role').locator('.term').click();
+      await expect(page.getByRole('dialog', { name: 'Dominant' })).toBeVisible();
+      await check(page, v, combo, 'words-explanation');
+      await page.keyboard.press('Escape');
+      await expect(page.getByRole('dialog', { name: 'Dominant' })).toBeHidden();
+      // Every word on the screen, one opened.
+      await page.getByTestId('words-open').first().click();
+      const sheet = page.getByTestId('glossary-sheet');
+      await sheet.locator('[data-word="inversion"] button').click();
+      await check(page, v, combo, 'words-list');
+      await page.keyboard.press('Escape');
+      await expect(sheet).toBeHidden();
+      await context.close();
+      // Simple view, a chord open.
+      const simple = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore', exploreDetail: 'simple' });
+      await check(simple.page, v, combo, 'simple');
+      await simple.page.getByRole('button', { name: 'G Major chord, degree 5' }).click();
+      await expect(simple.page.getByTestId('see-everything')).toBeVisible();
+      await simple.page.waitForTimeout(400);
+      await check(simple.page, v, combo, 'simple-chord');
+      await simple.page.getByTestId('key-summary').locator('.term[data-term="keySignature"]').click();
+      await expect(simple.page.getByRole('dialog', { name: 'Key signature' })).toBeVisible();
+      await check(simple.page, v, combo, 'simple-explanation');
+      await simple.context.close();
+    });
+  }
+}
+
+for (const L of LANGS) {
+  for (const th of THEMES) {
+    const v = { name: 'phone-320', viewport: { width: 320, height: 568 }, touch: true } as unknown as Viewport;
+    const combo = `phone320-${L.lang}-${th.name}`;
+    test(`${combo} plain words: Simple view, the "⋯" switch and an explanation fit at 320 px`, async ({ browser }) => {
+      test.setTimeout(120_000);
+      const { context, page } = await open(browser, v, th.mode, { instrument: 'piano', lastView: 'explore', exploreDetail: 'simple', dockDetents: { explore: 'peek', learn: 'peek' } }, { lang: L.lang });
+      await check(page, v, combo, 'simple');
+      await page.locator('.chord-row button').nth(4).click();
+      await expect(page.getByTestId('see-everything')).toBeVisible();
+      await page.waitForTimeout(300);
+      await check(page, v, combo, 'simple-chord');
+      await page.getByTestId('key-summary').locator('.term').first().click();
+      await expect(page.getByTestId('glossary-sheet')).toBeVisible();
+      await check(page, v, combo, 'simple-explanation');
+      await page.keyboard.press('Escape');
+      await page.getByTestId('explore-menu').getByRole('button').click();
+      await check(page, v, combo, 'simple-menu');
+      await context.close();
+    });
+  }
+}

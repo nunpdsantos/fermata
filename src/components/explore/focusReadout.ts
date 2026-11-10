@@ -27,6 +27,8 @@ export interface ReadoutInput {
   /** Where the instrument lights the note ("string 5 fret 2", "B4"), if any. */
   locations?: readonly string[];
   t: T;
+  /** Explore's Simple view: the note's number in the scale, not its degree name. */
+  simple?: boolean;
 }
 
 export interface ReadoutParts {
@@ -65,10 +67,11 @@ function chordToneRole(chord: Chord, pc: number, t: T): string | null {
 }
 
 /** "leading note of C Major", "b3 of A Blues", "not in C Major". */
-function keyRole(scale: Scale, pc: number, t: T): string {
+function keyRole(scale: Scale, pc: number, t: T, simple = false): string {
   const key = keyName(scale, t);
   const i = scale.notes.findIndex((n) => getPitchClass(n) === pc);
   if (i < 0) return t('explore.readout.notIn', { key });
+  if (simple) return t('simpleView.noteOf', { n: i + 1, key });
   const deg = degreeOf(scale.root, scale.notes[i]);
   if (scale.notes.length === 7) {
     const fnKey = getScaleDegreeFunctionKey(i, SCALE_FORMULAS[scale.type]?.[i] ?? 0);
@@ -85,11 +88,11 @@ export function focusNoteName(focus: FocusNote, scale: Scale, chord: Chord | nul
   return withGlyphs(fromChord ?? fromScale ?? spellPitchClass(focus.pc));
 }
 
-export function readoutParts({ focus, scale, chord, spellPitchClass, locations, t }: ReadoutInput): ReadoutParts {
+export function readoutParts({ focus, scale, chord, spellPitchClass, locations, t, simple }: ReadoutInput): ReadoutParts {
   return {
     note: focusNoteName(focus, scale, chord, spellPitchClass),
     chordRole: chord ? chordToneRole(chord, focus.pc, t) : null,
-    keyRole: keyRole(scale, focus.pc, t),
+    keyRole: keyRole(scale, focus.pc, t, simple),
     locations: locations && locations.length > 0 ? locations.join(', ') : null,
   };
 }

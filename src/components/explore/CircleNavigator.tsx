@@ -2,7 +2,17 @@ import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CircleOfFifths } from '../theory/CircleOfFifths.tsx';
 import { useAppStore } from '../../state/store.ts';
-import { keyFacts } from './keyFacts.ts';
+import { keyFacts, type KeyFact } from './keyFacts.ts';
+import { Term } from '../../glossary/Term.tsx';
+import type { TermId } from '../../glossary/termIds.ts';
+
+const FACT_TERM: Record<KeyFact['id'], TermId> = {
+  signature: 'keySignature',
+  relative: 'relativeKey',
+  dominant: 'dominantKey',
+  subdominant: 'subdominantKey',
+  parent: 'parentKey',
+};
 
 /** Signature, relative, dominant and subdominant keys of the selected key. */
 export function KeyFactsList() {
@@ -14,7 +24,7 @@ export function KeyFactsList() {
     <dl className="key-facts" data-testid="key-facts">
       {facts.map((f) => (
         <div key={f.id} className="key-fact">
-          <dt>{f.label}</dt>
+          <dt><Term id={FACT_TERM[f.id]}>{f.label}</Term></dt>
           <dd>{f.value}</dd>
         </div>
       ))}
@@ -52,11 +62,11 @@ export function CircleNavigator({ collapsible = false }: { collapsible?: boolean
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ transform: open ? 'rotate(90deg)' : undefined }}>
                 <path d="M9 6l6 6-6 6" />
               </svg>
-              {t('explore.circleOfFifths')}
+              <span data-term="circleOfFifths">{t('explore.circleOfFifths')}</span>
             </button>
           </h2>
         ) : (
-          <h2 id="circle-title" className="type-section">{t('explore.circleOfFifths')}</h2>
+          <h2 id="circle-title" className="type-section" data-term="circleOfFifths">{t('explore.circleOfFifths')}</h2>
         )}
       </div>
       {/* Folded = hidden, not unmounted: a printed page still carries the

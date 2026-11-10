@@ -11,6 +11,9 @@ import { useAppStore } from '../../state/store.ts';
 import { keyName } from './focusReadout.ts';
 import { staffTrim } from './staffTrim.ts';
 import { StaffNotationSkeleton } from '../notation/StaffNotationSkeleton.tsx';
+import { Term } from '../../glossary/Term.tsx';
+import { termAttr } from '../../glossary/visibleTerms.ts';
+import { useExploreSimple } from '../../state/exploreDetail.ts';
 
 const StaffNotation = lazy(() =>
   import('../notation/StaffNotation.tsx').then((m) => ({ default: m.StaffNotation })),
@@ -65,17 +68,23 @@ export function ChordsCard() {
   const { scale } = useKeyContext();
   const selectedChord = useAppStore((s) => s.selectedChord);
   const cardRef = useRef<HTMLElement>(null);
-  const [mode, setMode] = useState<ChordMode>('diatonic');
-  const detail = selectedChord ? <CurrentChordPanel chord={selectedChord} sourceTab={t(mode === 'diatonic' ? 'explore.inKey' : mode === 'all' ? 'explore.allChords' : 'explore.build')} aside={<ChordStaff />} /> : null;
+  const [tab, setMode] = useState<ChordMode>('diatonic');
+  // Simple view: the In key row only (no All Chords / Build tabs). The tab
+  // chosen in Full is kept for when the learner goes back.
+  const simple = useExploreSimple();
+  const mode: ChordMode = simple ? 'diatonic' : tab;
+  const detail = selectedChord
+    ? <CurrentChordPanel chord={selectedChord} sourceTab={simple ? undefined : t(mode === 'diatonic' ? 'explore.inKey' : mode === 'all' ? 'explore.allChords' : 'explore.build')} aside={<ChordStaff />} simple={simple} />
+    : null;
 
   return (
     <section ref={cardRef} className="explore-card chords-card" aria-labelledby="chords-title" data-testid="chords-card">
       <div className="explore-card-head">
         <h2 id="chords-title" className="type-section">
-          {t('explore.chordsIn', { key: keyName(scale, t) })}
+          <Term id="chordsInKey">{t('explore.chordsIn', { key: keyName(scale, t) })}</Term>
         </h2>
         {/* Tabs switch what the screen shows: not printed. */}
-        <Segment
+        {!simple && <Segment
           className="chords-tabs no-print"
           mode="tabs"
           label={t('explore.chords')}
@@ -89,13 +98,13 @@ export function ChordsCard() {
             if (main && getComputedStyle(main).overflowY === 'auto') main.scrollTop = 0;
           }}
           options={[
-            { value: 'diatonic', label: t('explore.inKey'), id: 'chords-tab-diatonic', controls: 'chords-panel' },
+            { value: 'diatonic', label: <span {...termAttr('chordsInKey')}>{t('explore.inKey')}</span>, id: 'chords-tab-diatonic', controls: 'chords-panel' },
             { value: 'all', label: t('explore.allChords'), id: 'chords-tab-all', controls: 'chords-panel' },
             { value: 'build', label: t('explore.build'), id: 'chords-tab-build', controls: 'chords-panel' },
           ]}
-        />
+        />}
       </div>
-      <div id="chords-panel" role="tabpanel" aria-labelledby={`chords-tab-${mode}`} className="chords-panel">
+      <div id="chords-panel" role={simple ? undefined : 'tabpanel'} aria-labelledby={simple ? undefined : `chords-tab-${mode}`} className="chords-panel">
         {mode === 'diatonic' && (
           <>
             <ChordGrid />
