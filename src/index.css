@@ -2250,6 +2250,10 @@ p.explore-prose {
   width: min(860px, calc(100% - 32px));
   max-width: 860px;
 }
+/* Settings → Guitar neck (brief D): two plain two-way segments, full width;
+   long PT/ES option names wrap inside their half instead of overflowing. */
+.seg.neck-setting { display: flex; width: 100%; }
+.neck-setting .seg-btn { flex: 1 1 0; min-width: 0; white-space: normal; text-align: center; padding: 4px 10px; }
 .practice-tabs { display: flex; width: 100%; }
 .practice-tabs .seg-btn { flex: 1; white-space: normal; }
 .practice-select-label { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; font-size: var(--text-ui); min-width: 0; }

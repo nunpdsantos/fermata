@@ -25,6 +25,11 @@ export type GuitarPositionChoice = number | 'all' | null;
 export type LearnerProfile = 'new' | 'player' | 'theory';
 /** The start hint still owed in Explore (state/startHint.ts): 'theory' gets none. */
 export type StartHintKind = 'new' | 'player';
+/** Which side of the drawn guitar neck the nut is on (brief D, 2026-11-10). */
+export type NeckNutSide = 'left' | 'right';
+/** Which string is drawn on top: 'high' = the thin e (as tab and chord charts
+ *  draw it), 'low' = the thick E (the app's view before 2026-11-10). */
+export type NeckTopString = 'high' | 'low';
 
 /** Explore's key and scale, held while a lesson borrows the instrument. */
 export interface LessonLoan {
@@ -67,6 +72,12 @@ export interface InstrumentSlice {
    *  Kept across key, scale and tuning changes (audit W3-08). */
   guitarScalePosition: GuitarPositionChoice;
   guitarTuningId: string;
+  /** How every guitar surface DRAWS the neck (never what is on it). A browser
+   *  with no saved settings starts at 'left' + 'high' (the tab / chord-chart
+   *  view); a save from before these fields existed is the 'right' + 'low'
+   *  view, which is also saved by leaving the fields out (store.ts). */
+  neckNutSide: NeckNutSide;
+  neckTopString: NeckTopString;
   setInstrument: (instrument: InstrumentType) => void;
   addActiveNote: (midi: number) => void;
   removeActiveNote: (midi: number) => void;
@@ -75,6 +86,8 @@ export interface InstrumentSlice {
   setExerciseInputActive: (active: boolean) => void;
   setGuitarScalePosition: (position: GuitarPositionChoice) => void;
   setGuitarTuningId: (id: string) => void;
+  setNeckNutSide: (side: NeckNutSide) => void;
+  setNeckTopString: (top: NeckTopString) => void;
 }
 
 export interface AudioSlice {

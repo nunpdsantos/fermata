@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppStore, type ThemeMode } from '../../state/store.ts';
+import { useAppStore, type ThemeMode, type NeckNutSide, type NeckTopString } from '../../state/store.ts';
 import { SUPPORTED_LANGUAGES } from '../../i18n/index.ts';
 import { toast } from '../../state/toastStore.ts';
 import { buildBackup, validateBackup, applyBackup, backupSections } from '../../utils/backupHelpers.ts';
@@ -17,8 +17,10 @@ import { dismissStartHint } from '../../state/startHint.ts';
 
 /**
  * The app's Settings (W11-A, opened from the top bar's "⋯" menu): language,
- * theme (Day / Night / Auto) and your data (export / import — the W9 vetting:
- * every section is checked by its own store before anything is offered).
+ * theme (Day / Night / Auto), the guitar neck (which side the nut is drawn
+ * on, which string on top — brief D, 2026-11-10) and your data (export /
+ * import — the W9 vetting: every section is checked by its own store before
+ * anything is offered).
  * Everything that used to sit in the top bar (language select, theme menu,
  * backup menu) lives here now.
  */
@@ -26,6 +28,14 @@ const THEMES: { value: ThemeMode; key: string }[] = [
   { value: 'fermata', key: 'settings.themeDay' },
   { value: 'fermata-night', key: 'settings.themeNight' },
   { value: 'auto', key: 'settings.themeAuto' },
+];
+const NUT_SIDES: { value: NeckNutSide; key: string }[] = [
+  { value: 'left', key: 'neckView.nutLeft' },
+  { value: 'right', key: 'neckView.nutRight' },
+];
+const TOP_STRINGS: { value: NeckTopString; key: string }[] = [
+  { value: 'high', key: 'neckView.thinTop' },
+  { value: 'low', key: 'neckView.thickTop' },
 ];
 
 const PROFILES: LearnerProfile[] = ['new', 'player', 'theory'];
@@ -49,6 +59,10 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
   const themeMode = useAppStore((s) => s.themeMode);
   const setThemeMode = useAppStore((s) => s.setThemeMode);
   const profile = useLearnerProfile();
+  const neckNutSide = useAppStore((s) => s.neckNutSide);
+  const setNeckNutSide = useAppStore((s) => s.setNeckNutSide);
+  const neckTopString = useAppStore((s) => s.neckTopString);
+  const setNeckTopString = useAppStore((s) => s.setNeckTopString);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const offline = useServiceWorkerActive();
 
@@ -119,6 +133,23 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
           options={PROFILES.map((p) => ({ value: p, label: t(`start.profile.${p}`) }))}
         />
       </SettingRow>
+      {/* How the guitar neck is DRAWN on every guitar surface (never what is on it). */}
+      <SettingRow label={t('neckView.heading')} meta={t('neckView.hint')} testId="neck-settings">
+        <Segment
+          label={t('neckView.nutSide')}
+          value={neckNutSide}
+          onChange={setNeckNutSide}
+          className="neck-setting"
+          options={NUT_SIDES.map((o) => ({ value: o.value, label: t(o.key) }))}
+        />
+        <Segment
+          label={t('neckView.topString')}
+          value={neckTopString}
+          onChange={setNeckTopString}
+          className="neck-setting"
+          options={TOP_STRINGS.map((o) => ({ value: o.value, label: t(o.key) }))}
+        />
+      </SettingRow>
       <SettingRow label={t('settings.yourData')} meta={t('settings.yourDataMeta')}>
         <div className="flex gap-2 flex-wrap">
           <Button onClick={handleExport} aria-label={t('backup.export')}>
@@ -150,9 +181,9 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
   );
 }
 
-function SettingRow({ label, meta, children }: { label: string; meta?: string; children: ReactNode }) {
+function SettingRow({ label, meta, testId, children }: { label: string; meta?: string; testId?: string; children: ReactNode }) {
   return (
-    <div className="py-3 flex flex-col gap-2" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+    <div className="py-3 flex flex-col gap-2" style={{ borderBottom: '1px solid var(--border-subtle)' }} data-testid={testId}>
       <div>
         <div className="text-body" style={{ color: 'var(--text)' }}>{label}</div>
         {meta && <div className="text-ui" style={{ color: 'var(--text-dim)' }}>{meta}</div>}

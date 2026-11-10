@@ -12,7 +12,16 @@ import { sanitizeDockDetents, sanitizeDockChosen } from './dock.ts';
 import type { AppState } from './storeTypes.ts';
 
 // Re-export types so consumers don't need to change imports
-export type { AppState, ViewMode, InstrumentType, ColorMode, ThemeMode } from './storeTypes.ts';
+export type { AppState, ViewMode, InstrumentType, ColorMode, ThemeMode, NeckNutSide, NeckTopString } from './storeTypes.ts';
+
+/**
+ * The neck as it was drawn before 2026-11-10 (nut right, thick string on
+ * top) — the owner's view. A save that exists but lacks the neck fields is a
+ * learner from before the switch and keeps this view; the save records it by
+ * LEAVING THE FIELD OUT (partialize), so such a learner's save is written
+ * byte for byte as before.
+ */
+export const LEGACY_NECK = { neckNutSide: 'right', neckTopString: 'low' } as const;
 
 // Allowed values per persisted field (audit W9-18: only types were checked,
 // so e.g. instrument 'banjo' or themeMode 'purple' passed straight through).
@@ -24,6 +33,8 @@ const ALLOWED_VALUES: Record<string, readonly unknown[]> = {
   lastView: ['explore', 'learn', 'drill'],
   scaleOctaves: [1, 2],
   exploreCircleOpen: [true, false],
+  neckNutSide: ['left', 'right'],
+  neckTopString: ['high', 'low'],
 };
 
 // Optional fields (wave 1): saved only once set, so they are guarded only when
@@ -185,6 +196,10 @@ export const useAppStore = create<AppState>()(
           // anyone never asked stays exactly as it was.
           ...(state.learnerProfile !== null ? { learnerProfile: state.learnerProfile } : {}),
           ...(state.startHint !== null ? { startHint: state.startHint } : {}),
+          // Optional (brief D): written only when it differs from the legacy
+          // view, which a save without the field means (merge below).
+          ...(state.neckNutSide !== LEGACY_NECK.neckNutSide ? { neckNutSide: state.neckNutSide } : {}),
+          ...(state.neckTopString !== LEGACY_NECK.neckTopString ? { neckTopString: state.neckTopString } : {}),
         };
       },
       migrate: (persisted: unknown, version: number) => {
@@ -233,6 +248,12 @@ export const useAppStore = create<AppState>()(
         };
         merged.dockChosen = chosen;
         if (!chosen.explore) merged.dockDetents = { ...merged.dockDetents, explore: current.dockDetents.explore };
+        // A save without a neck field (from before 2026-11-10, or the legacy
+        // value left out by partialize): the old view. No save at all never
+        // reaches here (sanitized is null): that browser keeps the slice's
+        // tab / chord-chart default.
+        if (!('neckNutSide' in sanitized)) merged.neckNutSide = LEGACY_NECK.neckNutSide;
+        if (!('neckTopString' in sanitized)) merged.neckTopString = LEGACY_NECK.neckTopString;
         return merged;
       },
     }
