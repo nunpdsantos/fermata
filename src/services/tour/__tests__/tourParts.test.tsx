@@ -16,6 +16,7 @@ import { introTour } from '../introTour';
 import { playTourScale, tourChord, TOUR_KEY, TOUR_SCALE } from '../appActions';
 import { placeBar } from '../dom';
 import { drillVisitIsQuiet, learnVisitIsQuiet } from '../guards';
+import { removeEmptyLearnRecord, type TourSnapshot } from '../snapshot';
 import { LEARN_SESSION_KEY } from '../../../state/learnSessionPersistence';
 import { useGlossaryUi } from '../../../glossary/glossaryUi';
 
@@ -272,5 +273,29 @@ describe('when opening Learn / Drill would write', () => {
   it('corrupt storage counts as not quiet', () => {
     localStorage.setItem('fermata-drill-v1', '{nope');
     expect(drillVisitIsQuiet()).toBe(false);
+  });
+});
+
+// Final review (2026-11-10): the empty learn record the tour's Learn visit
+// creates is taken back; one that was there before, or one with a lesson in
+// it, never is (mutations of both survived the unit suite).
+describe('the learn record after the tour', () => {
+  const EMPTY = JSON.stringify({ state: { screen: null, check: null }, version: 1 });
+  const LESSON = JSON.stringify({ state: { screen: { type: 'module', moduleId: 'l1u1m1', at: 1 }, check: null }, version: 1 });
+  const snap = (existed: boolean) => ({ learnSessionKeyExisted: existed }) as TourSnapshot;
+  it('made by the tour and empty: removed', () => {
+    localStorage.setItem(LEARN_SESSION_KEY, EMPTY);
+    removeEmptyLearnRecord(snap(false));
+    expect(localStorage.getItem(LEARN_SESSION_KEY)).toBeNull();
+  });
+  it('there before the tour: kept, even empty', () => {
+    localStorage.setItem(LEARN_SESSION_KEY, EMPTY);
+    removeEmptyLearnRecord(snap(true));
+    expect(localStorage.getItem(LEARN_SESSION_KEY)).toBe(EMPTY);
+  });
+  it('with a lesson in it: kept', () => {
+    localStorage.setItem(LEARN_SESSION_KEY, LESSON);
+    removeEmptyLearnRecord(snap(false));
+    expect(localStorage.getItem(LEARN_SESSION_KEY)).toBe(LESSON);
   });
 });
