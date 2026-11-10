@@ -813,12 +813,15 @@ for (const v of VIEWPORTS) {
         if (detailBox.bottom > 0) expect(overlaps(toast, detailBox), where('toast vs chord detail')).toBe(false);
         // The scale actions "⋯" (Copy / Print / Compare, D-29; Practise on
         // the guitar since 2026-11-09, on the piano too; Copy link — or Share
-        // link on a touch screen with a share sheet — since wave 1) and Compare.
+        // link on a touch screen with a share sheet — since wave 1) and Compare;
+        // on a phone, with no room for the Simple / Full switch, "Simple view"
+        // last (the seat's decision 2, 2026-11-10).
         await page.getByRole('button', { name: 'Scale actions' }).click();
         await expect(page.getByRole('menu', { name: 'Scale actions' })).toBeVisible();
-        await expect(page.getByRole('menuitem')).toHaveCount(5);
-        await expect(page.getByRole('menuitem', { name: /^(Copy|Share) link$/ })).toBeVisible();
-        await expect(page.getByRole('menuitem', { name: 'Practise on the guitar' })).toBeVisible();
+        await expect(page.getByRole('menuitem')).toHaveText([
+          'Copy scale summary to clipboard', /^(Copy|Share) link$/, 'Print scale diagram', 'Compare scales', 'Practise on the guitar',
+          ...(v.name === 'phone' ? ['Simple view'] : []),
+        ]);
         await check(page, v, combo, 'explore-menu');
         await page.getByRole('menuitem', { name: 'Compare scales' }).click();
         const compare = page.getByRole('dialog', { name: 'Compare Scales' });

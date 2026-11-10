@@ -1245,7 +1245,8 @@
     "flats_one": "one flat",
     "flats_other": "{{count}} flats",
     "notes_one": "{{count}} note",
-    "notes_other": "{{count}} notes"
+    "notes_other": "{{count}} notes",
+    "menuSimple": "Simple view"
   },
   "share": {
     "copyLink": "Copy link",

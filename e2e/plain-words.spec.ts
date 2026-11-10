@@ -23,8 +23,8 @@ const VIEWS = {
 } as const;
 
 const TEXT = {
-  en: { words: 'Words on this screen', relative: 'Relative key', hear: 'Hear it', full: 'Full view', seg: 'How much to show', summary: 'C Major · no sharps or flats', all: 'All scales…', see: 'See everything about this chord' },
-  pt: { words: 'Palavras neste ecrã', relative: 'Tonalidade relativa', hear: 'Ouvir', full: 'Vista completa', seg: 'Quanto mostrar', summary: 'C maior · sem sustenidos nem bemóis', all: 'Todas as escalas…', see: 'Ver tudo sobre este acorde' },
+  en: { words: 'Words on this screen', relative: 'Relative key', hear: 'Hear it', full: 'Full view', simpleView: 'Simple view', seg: 'How much to show', summary: 'C Major · no sharps or flats', all: 'All scales…', see: 'See everything about this chord' },
+  pt: { words: 'Palavras neste ecrã', relative: 'Tonalidade relativa', hear: 'Ouvir', full: 'Vista completa', simpleView: 'Vista simples', seg: 'Quanto mostrar', summary: 'C maior · sem sustenidos nem bemóis', all: 'Todas as escalas…', see: 'Ver tudo sobre este acorde' },
 } as const;
 
 async function open(browser: Browser, view: keyof typeof VIEWS, state: Record<string, unknown> = {}) {
@@ -59,15 +59,12 @@ async function hasDevModules(page: Page) {
 
 
 async function setDetail(page: Page, view: keyof typeof VIEWS, lang: 'en' | 'pt', to: 'simple' | 'full') {
-  if (view === 'phone' && to === 'full') {
-    // Simple's "⋯" offers the way back.
+  if (view === 'phone') {
+    // A phone has no room for the switch: the "⋯" ends with the other view,
+    // both ways (Simple's "Full view"; Full's "Simple view", the seat's
+    // decision of 2026-11-10).
     await page.getByTestId('explore-menu').getByRole('button').click();
-    await page.getByRole('menuitem', { name: TEXT[lang].full }).click();
-  } else if (view === 'phone') {
-    // Full's "⋯" is unchanged: a phone switches from the word list.
-    await page.getByTestId('words-open').click();
-    await page.getByTestId('glossary-sheet').getByRole('radio', { name: lang === 'en' ? 'Simple' : 'Simples' }).click();
-    await page.keyboard.press('Escape');
+    await page.getByRole('menuitem', { name: TEXT[lang][to === 'full' ? 'full' : 'simpleView'] }).click();
   } else {
     await page.getByRole('radiogroup', { name: TEXT[lang].seg }).getByRole('radio', { name: to === 'simple' ? (lang === 'en' ? 'Simple' : 'Simples') : (lang === 'en' ? 'Full' : 'Completa') }).click();
   }
@@ -195,6 +192,13 @@ for (const view of ['phone', 'laptop'] as const) {
         await expect(page.getByTestId('explore-root')).toHaveAttribute('data-detail', 'full');
         expect(await state()).toEqual(expected);
         await expect(page.getByTestId('chord-detail').locator('.chord-detail-scales')).toBeVisible();
+        if (view === 'phone') {
+          // There and back by the "⋯" alone (the seat's decision 2, 2026-11-10).
+          await setDetail(page, view, lang, 'simple');
+          expect(await state()).toEqual(expected);
+          await setDetail(page, view, lang, 'full');
+          expect(await state()).toEqual(expected);
+        }
         await context.close();
       });
     });

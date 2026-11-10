@@ -1245,7 +1245,8 @@
     "flats_one": "un bemol",
     "flats_other": "{{count}} bemoles",
     "notes_one": "{{count}} nota",
-    "notes_other": "{{count}} notas"
+    "notes_other": "{{count}} notas",
+    "menuSimple": "Vista sencilla"
   },
   "share": {
     "copyLink": "Copiar enlace",

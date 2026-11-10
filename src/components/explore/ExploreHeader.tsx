@@ -59,8 +59,9 @@ export function ExploreHeader({ practiceAction, onPractise }: {
   const phone = useMediaQuery(PHONE_QUERY);
   // The Simple / Full switch is a Segment in the header; a phone's row has
   // no room for it. There it is in "Words on this screen" (both ways), and
-  // Simple's "⋯" offers the way back to Full in Compare's place — Full's
-  // menu stays exactly as it was.
+  // the "⋯" ends with the other view: Simple's offers "Full view", Full's
+  // "Simple view" (the seat's decision, 2026-11-10). Where the switch is
+  // shown (tablet, laptop) neither menu has it.
   const segmentFits = !phone;
   const [keySheet, setKeySheet] = useState(false);
   const [compare, setCompare] = useState(false);
@@ -176,7 +177,12 @@ export function ExploreHeader({ practiceAction, onPractise }: {
             // A guitarist who never switches the dock to Guitar still finds the
             // practice tools here (2026-11-09); the toolbar button stays as it is.
             ...(onPractise ? [{ id: 'practise', label: t('practice.title'), onSelect: onPractise }] : []),
-            ...(!segmentFits && simple ? [{ id: 'detail', label: t('simpleView.menuFull'), onSelect: () => setDetail('full') }] : []),
+            // No room for the switch: the other view is the last item, both ways.
+            ...(!segmentFits
+              ? [simple
+                ? { id: 'detail', label: t('simpleView.menuFull'), onSelect: () => setDetail('full') }
+                : { id: 'detail', label: t('simpleView.menuSimple'), onSelect: () => setDetail('simple') }]
+              : []),
           ]}
         />
       </div>

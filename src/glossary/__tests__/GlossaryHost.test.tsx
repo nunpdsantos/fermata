@@ -70,6 +70,14 @@ afterEach(() => {
   setLearnerProfile(null);
 });
 
+/** A phone (no room for the Simple / Full switch) or not: only the phone query matches. */
+function phoneMedia(phone: boolean) {
+  return ((query: string) => ({
+    matches: phone && query.includes('max-width: 639px'), media: query, onchange: null,
+    addEventListener: () => {}, removeEventListener: () => {}, addListener: () => {}, removeListener: () => {}, dispatchEvent: () => false,
+  })) as unknown as typeof window.matchMedia;
+}
+
 function Explore() {
   return (
     <>
@@ -310,31 +318,64 @@ describe('Simple view', () => {
     expect(useAppStore.getState().exploreDetail).toBe('full');
   });
 
-  it('a phone: Full\'s "⋯" menu is unchanged; the word list switches to Simple, Simple\'s menu back to Full', () => {
+  // The seat's decision 2 (2026-11-10): Full on a phone has a visible way
+  // back too — "Simple view" in the "⋯", in the slot Simple's "Full view" has.
+  it('a phone: Full\'s "⋯" offers Simple view, Simple\'s offers Full view; the word list switches too', () => {
     const original = window.matchMedia;
-    window.matchMedia = ((query: string) => ({
-      matches: query.includes('max-width: 639px'), media: query, onchange: null,
-      addEventListener: () => {}, removeEventListener: () => {}, addListener: () => {}, removeListener: () => {}, dispatchEvent: () => false,
-    })) as unknown as typeof window.matchMedia;
+    window.matchMedia = phoneMedia(true);
     try {
       useAppStore.setState({ exploreDetail: undefined });
       render(<Explore />);
       expect(screen.queryByRole('radiogroup', { name: 'How much to show' })).toBeNull();
       fireEvent.click(screen.getByRole('button', { name: 'Scale actions' }));
-      expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Copy scale summary to clipboard', 'Copy link', 'Print scale diagram', 'Compare scales']);
-      fireEvent.keyDown(document.activeElement!, { key: 'Escape' });
-      fireEvent.click(screen.getByTestId('words-open'));
-      const sheet = screen.getByRole('dialog', { name: 'Words on this screen' });
-      fireEvent.click(within(sheet).getByRole('radio', { name: 'Simple' }));
+      expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Copy scale summary to clipboard', 'Copy link', 'Print scale diagram', 'Compare scales', 'Simple view']);
+      fireEvent.click(screen.getByRole('menuitem', { name: 'Simple view' }));
       expect(useAppStore.getState().exploreDetail).toBe('simple');
-      fireEvent.keyDown(window, { key: 'Escape' });
       fireEvent.click(screen.getByRole('button', { name: 'Scale actions' }));
       expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Copy scale summary to clipboard', 'Copy link', 'Print scale diagram', 'Full view']);
       fireEvent.click(screen.getByRole('menuitem', { name: 'Full view' }));
       expect(useAppStore.getState().exploreDetail).toBe('full');
+      // The word list's own switch still works both ways.
+      fireEvent.click(screen.getByTestId('words-open'));
+      const sheet = screen.getByRole('dialog', { name: 'Words on this screen' });
+      fireEvent.click(within(sheet).getByRole('radio', { name: 'Simple' }));
+      expect(useAppStore.getState().exploreDetail).toBe('simple');
+      fireEvent.click(within(sheet).getByRole('radio', { name: 'Full' }));
+      expect(useAppStore.getState().exploreDetail).toBe('full');
     } finally {
       window.matchMedia = original;
     }
+  });
+
+  it.each([
+    // [room for the Simple / Full switch, view, the "⋯" exactly]
+    [true, 'simple', ['Copy scale summary to clipboard', 'Copy link', 'Print scale diagram', 'Practise on the guitar']],
+    [true, 'full', ['Copy scale summary to clipboard', 'Copy link', 'Print scale diagram', 'Compare scales', 'Practise on the guitar']],
+    [false, 'simple', ['Copy scale summary to clipboard', 'Copy link', 'Print scale diagram', 'Practise on the guitar', 'Full view']],
+    [false, 'full', ['Copy scale summary to clipboard', 'Copy link', 'Print scale diagram', 'Compare scales', 'Practise on the guitar', 'Simple view']],
+  ] as const)('the "⋯" with room for the switch: %s, in %s view', (room, detail, items) => {
+    const original = window.matchMedia;
+    window.matchMedia = phoneMedia(!room);
+    try {
+      useAppStore.setState({ exploreDetail: detail });
+      render(<ExploreHeader onPractise={() => {}} />);
+      expect(screen.queryAllByRole('radiogroup', { name: 'How much to show' })).toHaveLength(room ? 1 : 0);
+      fireEvent.click(screen.getByRole('button', { name: 'Scale actions' }));
+      expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual([...items]);
+      const other = detail === 'simple' ? 'full' : 'simple';
+      if (!room) {
+        fireEvent.click(screen.getByRole('menuitem', { name: other === 'full' ? 'Full view' : 'Simple view' }));
+        expect(useAppStore.getState().exploreDetail).toBe(other);
+      }
+    } finally {
+      window.matchMedia = original;
+    }
+  });
+
+  it('"Simple view" in PT and ES', async () => {
+    expect(i18n.t('simpleView.menuSimple', { lng: 'en' })).toBe('Simple view');
+    expect(i18n.t('simpleView.menuSimple', { lng: 'pt' })).toBe('Vista simples');
+    expect(i18n.t('simpleView.menuSimple', { lng: 'es' })).toBe('Vista sencilla');
   });
 
   it('the dock read-out names a note by its number, not its degree name', () => {
