@@ -18,7 +18,7 @@ import { getSynthConfig } from '../../services/synthConfig.ts';
 import { generateScaleSummary, copyToClipboard } from '../../utils/exportHelpers.ts';
 import { toast } from '../../state/toastStore.ts';
 import { classicalDescendingNotes } from '../../core/utils/classicalScale.ts';
-import { keyFacts } from './keyFacts.ts';
+import { keyFacts, plainSummary, plainSummaryText } from './keyFacts.ts';
 import { keyName } from './focusReadout.ts';
 import { toContentLanguage } from '../drill/drillText.ts';
 import { Segment } from '../ui/Segment.tsx';
@@ -69,12 +69,11 @@ export function ExploreHeader({ practiceAction, onPractise }: {
   const facts = keyFacts(selectedKey, selectedScale, t, noteLabel);
   const simple = useExploreSimple();
   const setDetail = useAppStore((s) => s.setExploreDetail);
-  // Simple view's summary in words: "G Major · one sharp" (no relative key).
-  const plainSignature = facts.signature
-    ? facts.signature.count === 0
-      ? t('simpleView.noSharpsFlats')
-      : t(facts.signature.type === '#' ? 'simpleView.sharps' : 'simpleView.flats', { count: facts.signature.count })
-    : null;
+  // Simple view's summary in words, true of the notes shown (no relative
+  // key): "G Major · one sharp", but "G Major Pentatonic · 5 notes" — the
+  // signature's words only when the scale's notes are its seven (keyFacts.ts).
+  const plain = plainSummary(scale.notes, facts.signature);
+  const plainText = plainSummaryText(plain, t);
   const detailSegment = (
     <Segment<ExploreDetail>
       className="explore-detail-switch"
@@ -135,7 +134,8 @@ export function ExploreHeader({ practiceAction, onPractise }: {
         <p className="explore-summary" data-testid="key-summary">
           <Term id={scaleTermId(selectedScale)} testId="summary-key"><span className="explore-summary-key">{keyName(scale, t, noteLabel)}</span></Term>
           {simple ? (
-            plainSignature && <>{' · '}<Term id="keySignature" also={['sharpFlat']}>{plainSignature}</Term></>
+            // No glossary word explains a count of notes: it stays plain text.
+            <>{' · '}{plain.kind === 'signature' ? <Term id="keySignature" also={['sharpFlat']}>{plainText}</Term> : plainText}</>
           ) : (
             <>
               {' · '}

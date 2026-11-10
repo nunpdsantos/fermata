@@ -14,7 +14,8 @@
  */
 import { type Note, type ScaleType } from '../../core/types/music.ts';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
-import { keySignatureForScale, formatKeySignature, spellIntervalAbove, type SignatureInfo } from '../../core/utils/degreeSpelling.ts';
+import { getPitchClass } from '../../core/constants/notes.ts';
+import { keySignatureForScale, formatKeySignature, spellIntervalAbove, spellScale, type SignatureInfo } from '../../core/utils/degreeSpelling.ts';
 
 type T = (key: string, opts?: Record<string, unknown>) => string;
 
@@ -66,4 +67,34 @@ export function keyFacts(root: Note, type: ScaleType, t: T, name: (n: Note) => s
     facts.push({ id: 'parent', label: t('circle.parentKey'), value: majorKey(signature.parent, t) });
   }
   return { signature, signatureText, relative, facts };
+}
+
+/**
+ * The second part of Simple view's summary (the seat's decision, 2026-11-10):
+ * the key signature in words ("one sharp") only when the scale's notes ARE
+ * that signature's seven notes — major, natural minor and the other modes of
+ * the major scale. Any other scale says how many notes it has ("5 notes"):
+ * "G Major Pentatonic · one sharp" over G A B D E, or "A Blues · no sharps or
+ * flats" with E♭ on the strip, would be untrue of what is shown. Decided
+ * from the notes (pitch classes), never from a list of scale names.
+ */
+export type PlainSummary =
+  | { kind: 'signature'; signature: SignatureInfo }
+  | { kind: 'count'; count: number };
+
+export function plainSummary(notes: readonly Note[], signature: SignatureInfo | null): PlainSummary {
+  const pcs = new Set(notes.map(getPitchClass));
+  if (signature && pcs.size === 7) {
+    const own = new Set(spellScale(signature.parent, 'major').map(getPitchClass));
+    if ([...pcs].every((pc) => own.has(pc))) return { kind: 'signature', signature };
+  }
+  return { kind: 'count', count: pcs.size };
+}
+
+/** That part in words: "no sharps or flats", "one sharp", "3 flats" — or "5 notes". */
+export function plainSummaryText(part: PlainSummary, t: T): string {
+  if (part.kind === 'count') return t('simpleView.notes', { count: part.count });
+  const { count, type } = part.signature;
+  if (count === 0) return t('simpleView.noSharpsFlats');
+  return t(type === '#' ? 'simpleView.sharps' : 'simpleView.flats', { count });
 }

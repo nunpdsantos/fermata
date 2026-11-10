@@ -1243,7 +1243,9 @@
     "sharps_one": "one sharp",
     "sharps_other": "{{count}} sharps",
     "flats_one": "one flat",
-    "flats_other": "{{count}} flats"
+    "flats_other": "{{count}} flats",
+    "notes_one": "{{count}} note",
+    "notes_other": "{{count}} notes"
   },
   "share": {
     "copyLink": "Copy link",

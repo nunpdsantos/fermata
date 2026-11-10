@@ -1243,7 +1243,9 @@
     "sharps_one": "un sostenido",
     "sharps_other": "{{count}} sostenidos",
     "flats_one": "un bemol",
-    "flats_other": "{{count}} bemoles"
+    "flats_other": "{{count}} bemoles",
+    "notes_one": "{{count}} nota",
+    "notes_other": "{{count}} notas"
   },
   "share": {
     "copyLink": "Copiar enlace",
