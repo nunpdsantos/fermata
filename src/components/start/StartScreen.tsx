@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore, type InstrumentType } from '../../state/store.ts';
 import { SUPPORTED_LANGUAGES } from '../../i18n/index.ts';
-import { requestDemo } from '../../state/demoRequest.ts';
+import { requestDemo, useDemoFailed } from '../../state/demoRequest.ts';
+import { resumeAudio } from '../../core/services/audio.ts';
 import { chooseStartDoor } from '../../state/startDoors.ts';
 import type { LearnerProfile } from '../../state/learnerProfile.ts';
 import { Button } from '../ui/Button.tsx';
@@ -40,6 +41,15 @@ export default function StartScreen() {
   const setLanguage = useAppStore((s) => s.setLanguage);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const tourRef = useRef<HTMLButtonElement>(null);
+  const tourFailed = useDemoFailed();
+  // The tour plays sound: resume the audio inside this tap (iOS allows it
+  // only there; the tour's own resume runs after its chunk has loaded), then
+  // ask for it — as the menu's "Show me around" does (TopBar).
+  const watchTour = () => {
+    askedForTour = true;
+    void resumeAudio().catch(() => undefined);
+    requestDemo('intro');
+  };
 
   useEffect(() => {
     (askedForTour ? tourRef.current : headingRef.current)?.focus({ preventScroll: true });
@@ -70,9 +80,11 @@ export default function StartScreen() {
             <span>{t('nav.musicTheory')}</span>
           </h1>
           <p className="start-lead">{t('start.tagline')}</p>
-          <Button ref={tourRef} variant="primary" className="start-tour" startIcon={PLAY_ICON} onClick={() => { askedForTour = true; requestDemo('intro'); }} data-testid="start-tour">
+          <Button ref={tourRef} variant="primary" className="start-tour" startIcon={PLAY_ICON} onClick={watchTour} data-testid="start-tour">
             {t('start.tour')}
           </Button>
+          {/* The tour could not open (TourHost): said here, as this page has no toast region. */}
+          {tourFailed && <p className="start-tour-failed" role="status" data-testid="start-tour-failed">{t('showMe.loadFailed')}</p>}
         </header>
 
         <div className="start-row">

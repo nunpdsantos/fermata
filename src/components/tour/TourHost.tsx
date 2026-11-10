@@ -1,14 +1,19 @@
 import { Component, lazy, Suspense, type ReactNode } from 'react';
 import i18next from 'i18next';
-import { clearDemoRequest, useDemoRequest } from '../../state/demoRequest.ts';
+import { clearDemoRequest, noteDemoFailed, useDemoRequest } from '../../state/demoRequest.ts';
 import { toast } from '../../state/toastStore.ts';
 
 // The tour is its own chunk (precached): only a viewer who asks for it downloads it.
-const TourPlayer = lazy(() => import('./TourPlayer.tsx'));
+// React keeps a rejected lazy() for good, so after a failure the next request
+// gets a fresh one and the download is really tried again.
+const loadTourPlayer = () => lazy(() => import('./TourPlayer.tsx'));
+let TourPlayer = loadTourPlayer();
 
 /**
  * A tour that cannot load (offline before its chunk was cached) or throws
- * clears the request and says so: the app (and the start screen) carry on.
+ * clears the request and says so — a toast in the app, a line on the start
+ * screen (`useDemoFailed`; it has no toast region): the app (and the start
+ * screen) carry on, and asking again tries again.
  */
 class TourBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
@@ -16,8 +21,10 @@ class TourBoundary extends Component<{ children: ReactNode }, { failed: boolean 
     return { failed: true };
   }
   componentDidCatch() {
+    TourPlayer = loadTourPlayer();
     toast(i18next.t('showMe.loadFailed'), 'info', 5000);
     clearDemoRequest();
+    noteDemoFailed();
   }
   render() {
     return this.state.failed ? null : this.props.children;

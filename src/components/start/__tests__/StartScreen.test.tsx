@@ -11,6 +11,12 @@ vi.mock('../../../views/ExploreView.tsx', () => ({ ExploreView: () => <div>EXPLO
 vi.mock('../../../views/LearnView.tsx', () => ({ LearnView: () => <div>LEARN_VIEW</div> }));
 vi.mock('../../../views/DrillView.tsx', () => ({ DrillView: () => <div>DRILL_VIEW</div> }));
 vi.mock('../../../hooks/useTheme.ts', () => ({ useTheme: () => {} }));
+// The tour button resumes the audio INSIDE the tap (iOS: only there).
+const audio = vi.hoisted(() => ({ resumes: 0 }));
+vi.mock('../../../core/services/audio.ts', async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  resumeAudio: () => { audio.resumes += 1; return Promise.resolve(); },
+}));
 vi.mock('../../navigation/QuickSearch.tsx', () => ({ QuickSearch: () => null }));
 vi.mock('../../layout/AppShell.tsx', () => ({
   AppShell: (p: { children: React.ReactNode }) => (
@@ -46,7 +52,7 @@ import { useAppStore } from '../../../state/store';
 import { WELCOME_KEY, bootWelcome, useWelcomeStore } from '../../../state/welcomeGate';
 import { applyShareLinkRule } from '../../../state/startGate';
 import { noteBootAddress } from '../../../state/shareParams';
-import { clearDemoRequest, getDemoRequest } from '../../../state/demoRequest';
+import { clearDemoRequest, getDemoRequest, noteDemoFailed, requestDemo } from '../../../state/demoRequest';
 import { useStartHintStore, raiseStartHint } from '../../../state/startHint';
 import { SettingsSheet } from '../../layout/SettingsSheet';
 import { StartHint } from '../../layout/StartHint';
@@ -129,7 +135,9 @@ describe('the start screen in the app', () => {
   it('the tour: asks for it and steps aside; back (focus on the tour button) when the request clears with no door', async () => {
     await firstVisit();
     await startPage();
+    const resumesBefore = audio.resumes;
     fireEvent.click(screen.getByRole('button', { name: 'Watch the one-minute tour' }));
+    expect(audio.resumes).toBe(resumesBefore + 1);
     expect(getDemoRequest()).toBe('intro');
     expect(screen.queryByTestId('start-screen')).toBeNull();
     expect(await screen.findByText('EXPLORE_VIEW', {}, { timeout: 8000 })).toBeDefined();
@@ -137,6 +145,24 @@ describe('the start screen in the app', () => {
     await startPage();
     await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Watch the one-minute tour' })));
     expect(localStorage.getItem(WELCOME_KEY)).toBe('pending');
+  });
+
+  // Final review (2026-11-10): the start screen has no toast region, so a
+  // tour that could not open (its chunk failed: TourHost) is said on the page.
+  it('a tour that could not open: said under the tour button; the next request takes it away', async () => {
+    await firstVisit();
+    await startPage();
+    expect(screen.queryByTestId('start-tour-failed')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Watch the one-minute tour' }));
+    act(() => { clearDemoRequest(); noteDemoFailed(); });
+    await startPage();
+    const line = screen.getByTestId('start-tour-failed');
+    expect(line.getAttribute('role')).toBe('status');
+    expect(line.textContent).toBe('The tour could not open.');
+    act(() => requestDemo('intro'));
+    act(() => clearDemoRequest());
+    await startPage();
+    expect(screen.queryByTestId('start-tour-failed')).toBeNull();
   });
 
   it('a shared link: the app, not the start screen', async () => {

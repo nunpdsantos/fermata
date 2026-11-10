@@ -29,12 +29,14 @@ export type DemoSource = 'start' | 'menu';
 interface DemoRequestState {
   requested: DemoTour | null;
   source: DemoSource;
+  /** The last tour asked for could not open (final review, 2026-11-10). */
+  failed: boolean;
 }
 
-const useStore = create<DemoRequestState>(() => ({ requested: null, source: 'start' }));
+const useStore = create<DemoRequestState>(() => ({ requested: null, source: 'start', failed: false }));
 
 export function requestDemo(tour: DemoTour = 'intro', source: DemoSource = 'start'): void {
-  useStore.setState({ requested: tour, source });
+  useStore.setState({ requested: tour, source, failed: false });
 }
 
 export function clearDemoRequest(): void {
@@ -49,6 +51,20 @@ export function useDemoRequest(): DemoTour | null {
 /** Outside React. */
 export function getDemoRequest(): DemoTour | null {
   return useStore.getState().requested;
+}
+
+/**
+ * The tour host could not open the tour (its chunk failed to load, or it
+ * threw): it clears the request and notes it here, so the start screen —
+ * which has no toast region — can say so. The next `requestDemo` clears it.
+ */
+export function noteDemoFailed(): void {
+  useStore.setState({ failed: true });
+}
+
+/** React hook: the last tour asked for could not open. */
+export function useDemoFailed(): boolean {
+  return useStore((s) => s.failed);
 }
 
 /** Where the pending request came from ('start' when none is pending). */
