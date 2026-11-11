@@ -13,5 +13,6 @@
   "beatsOption": "{{n}} beats",
   "close": "Close the metronome",
   "loopNote": "The Progression loop plays its own clicks to count you in, so the metronome stops when the loop starts.",
+  "rhythmNote": "A rhythm plays its own clicks to count you in, so the metronome stops when a rhythm starts.",
   "unavailable": "This browser cannot play the metronome's click."
 }

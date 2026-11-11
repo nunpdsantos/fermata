@@ -260,3 +260,68 @@ test('the count marks the beat with a fill (and a short pulse) — under reduced
     await context.close();
   }
 });
+
+/**
+ * A phone on its side (844×390) with the guitar practice sheet open (wave 3,
+ * second fix pass: the final review inferred, without measuring, that the
+ * bar's fallback place might overlap the sheet's panel there). Measured: the
+ * bar (portalled into the sheet) covers no control of the sheet, and ▶ / ■
+ * and ✕ are each the element under the pointer at their centre and work.
+ */
+test('landscape 844×390, the guitar practice sheet open: the bar covers no control of the sheet; ▶ / ■ and ✕ can be reached and work', async ({ browser }) => {
+  test.setTimeout(90_000);
+  const v = VIEWS[1];
+  expect(v.viewport).toEqual({ width: 844, height: 390 });
+  const { context, page } = await open(browser, v, 'fermata', 'en');
+  await openBar(page, 'en');
+  await run(page, 'en');
+  const practice = page.getByTestId('practice-open').first();
+  await practice.scrollIntoViewIfNeeded();
+  await practice.click();
+  const sheet = page.getByRole('dialog', { name: 'Practise on the guitar' });
+  await expect(sheet).toBeVisible();
+  const bar = sheet.getByRole('region', { name: 'Metronome' });
+  await expect(bar).toHaveAttribute('data-measured', 'true');
+  await page.waitForTimeout(800); // the sheet's own entrance and the bar's placement settle
+  await shot(page, 'metronome-landscape-practice-sheet');
+
+  const measured = await page.evaluate(() => {
+    const dialog = document.querySelector('[role="dialog"][aria-modal="true"]')!;
+    const barEl = dialog.querySelector('[data-testid="metronome"]')!;
+    const box = (r: DOMRect) => ({ top: r.top, bottom: r.bottom, left: r.left, right: r.right });
+    const panel = dialog.querySelector('.sheet-panel') ?? dialog;
+    const controls = Array.from(dialog.querySelectorAll<HTMLElement>('button, select, input, textarea, a[href], [role="slider"], [role="tab"], [role="switch"], [role="radio"], [role="checkbox"], [tabindex]:not([tabindex="-1"])'))
+      .filter((el) => !barEl.contains(el))
+      .map((el) => ({ name: (el.getAttribute('aria-label') ?? el.textContent ?? '').trim().slice(0, 40), r: el.getBoundingClientRect() }))
+      .filter((c) => c.r.width > 1 && c.r.height > 1)
+      .map((c) => ({ name: c.name, ...box(c.r) }));
+    return { bar: box(barEl.getBoundingClientRect()), panel: box(panel.getBoundingClientRect()), compact: barEl.hasAttribute('data-compact'), controls };
+  });
+  test.info().annotations.push({ type: 'measured', description: `844×390 practice sheet: panel ${JSON.stringify(measured.panel)}, bar ${JSON.stringify(measured.bar)} (compact: ${measured.compact}), ${measured.controls.length} controls` });
+  expect(measured.controls.length, 'known positive: the sheet\'s controls were found').toBeGreaterThan(3);
+  const covered = measured.controls.filter((c) => overlap(measured.bar, c) > 0).map((c) => c.name);
+  expect(covered, 'the bar covers no control of the sheet').toEqual([]);
+  expect(measured.bar.top).toBeGreaterThanOrEqual(0);
+  expect(measured.bar.bottom).toBeLessThanOrEqual(v.viewport.height);
+  expect(measured.bar.left).toBeGreaterThanOrEqual(0);
+  expect(measured.bar.right).toBeLessThanOrEqual(v.viewport.width);
+
+  /** The button is what a finger at its centre touches. */
+  const reachable = async (testId: string) => {
+    const b = (await bar.getByTestId(testId).boundingBox())!;
+    return page.evaluate(([x, y, id]) => document.elementFromPoint(x as number, y as number)?.closest(`[data-testid="${id}"]`) !== null, [b.x + b.width / 2, b.y + b.height / 2, testId] as const);
+  };
+  expect(await reachable('metronome-play'), '■ is under the finger').toBe(true);
+  expect(await reachable('metronome-close'), '✕ is under the finger').toBe(true);
+  await bar.getByRole('button', { name: 'Stop the metronome' }).click();
+  await expect(bar).not.toHaveAttribute('data-running', 'true');
+  expect(await reachable('metronome-play'), '▶ is under the finger').toBe(true);
+  await bar.getByRole('button', { name: 'Start the metronome' }).click();
+  await expect(bar).toHaveAttribute('data-running', 'true');
+  await bar.getByRole('button', { name: 'Close the metronome' }).click();
+  await expect(page.getByTestId('metronome')).toHaveCount(0);
+  await expect(sheet).toBeVisible();
+  // ✕ stopped it and focus stayed in the sheet.
+  expect(await page.evaluate(() => document.activeElement?.closest('[role="dialog"]') !== null)).toBe(true);
+  await context.close();
+});

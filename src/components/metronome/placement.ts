@@ -14,6 +14,15 @@
  * compact bar goes into an EMPTY stretch of the top bar (between the name
  * and the tabs, or the tabs and the search) — over no control of it, and
  * never over the instrument.
+ *
+ * Over a sheet (the guitar practice sheet: the bar is portalled into it) the
+ * sheet's panel is a `hard` box where it does not span the window. Where
+ * neither beside it nor above it leaves room (a phone on its side, 844×390:
+ * the panel stands 8 px from every edge), the compact bar goes into the
+ * empty stretch of the sheet's heading, between its title and its ✕ —
+ * inside the panel but over no control of it (wave 3, second fix pass:
+ * measured there, the last resort below covered the sheet's "Edit
+ * fingering" and its first steps).
  */
 
 export interface Box {
@@ -42,6 +51,8 @@ export interface MetronomePlacementInput {
   soft?: readonly Box[];
   /** The empty stretches of the top bar (no control in them), for the last resort. */
   topBarSpans?: readonly Box[];
+  /** Over a sheet: the empty stretch of its heading (no control in it), tried before the last resort. */
+  sheetHeadingSpans?: readonly Box[];
 }
 
 export interface MetronomePlace {
@@ -50,6 +61,8 @@ export interface MetronomePlace {
   compact: boolean;
   /** In an empty stretch of the top bar (then toasts, under the top bar, never meet it). */
   inTopBar?: boolean;
+  /** In the empty stretch of a sheet's heading. */
+  inSheetHeading?: boolean;
 }
 
 export const GAP = 8;
@@ -96,15 +109,16 @@ export function placeMetronome(input: MetronomePlacementInput): MetronomePlace {
     return best;
   };
 
-  const inTopBar = (): MetronomePlace | null => {
-    for (const span of input.topBarSpans ?? []) {
+  /** The compact bar, centred in the first stretch that holds it. */
+  const inSpan = (spans: readonly Box[] | undefined, where: 'inTopBar' | 'inSheetHeading'): MetronomePlace | null => {
+    for (const span of spans ?? []) {
       const room = span.right - span.left - 2 * GAP;
       if (room < input.compactWidth || span.bottom - span.top < input.compactHeight) continue;
       return {
         top: Math.round(span.top + (span.bottom - span.top - input.compactHeight) / 2),
         left: Math.round(span.left + (span.right - span.left - input.compactWidth) / 2),
         compact: true,
-        inTopBar: true,
+        [where]: true,
       };
     }
     return null;
@@ -112,7 +126,8 @@ export function placeMetronome(input: MetronomePlacementInput): MetronomePlace {
 
   return tryForm(input.fullWidth, input.fullHeight, false)
     ?? tryForm(input.compactWidth, input.compactHeight, true)
-    ?? inTopBar()
+    ?? inSpan(input.topBarSpans, 'inTopBar')
+    ?? inSpan(input.sheetHeadingSpans, 'inSheetHeading')
     // Nowhere free: compact, as low as the floor lets it (never above the top bar).
     ?? { top: Math.max(ceiling, floor - GAP - input.compactHeight), left: leftsFor(input.compactWidth)[0], compact: true };
 }

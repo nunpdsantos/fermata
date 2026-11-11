@@ -1,11 +1,13 @@
 /**
  * The metronome against the REAL audio code (wave 3, stream M, brief "Truth
- * and tests"): another Play — a scale, a chord, a rhythm, a view change, the
+ * and tests"): another Play — a scale, a chord, a view change, the
  * update toast's reload path aside — and core `cancelScheduledAudio()` /
  * `stopPlayback()` leave its next click sounding; ■, "page hidden", Drill,
- * the Progression loop's start leave NO click queued — asserted on the audio
+ * the Progression loop's start and a rhythm's start leave NO click queued — asserted on the audio
  * seam: the sources the metronome handed to its audio clock, in a fake Web
- * Audio whose clock only the test moves.
+ * Audio whose clock only the test moves. A rhythm (a lesson's Hear it, a
+ * check's Play the rhythm) is the one Play that stops it, since it brings its
+ * own count-in (wave 3, second fix pass).
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { cancelScheduledAudio, playChord, playScale, setInstrumentVoice, stopPlayback } from '../../../core/services/audio';
@@ -211,7 +213,6 @@ describe('another Play does not stop it', () => {
     ['stopPlayback()', () => stopPlayback()],
     ['a scale (Explore\'s ▶ Play scale)', () => { cancelScheduledAudio(); playScale([{ natural: 'C', accidental: '' }, { natural: 'D', accidental: '' }, { natural: 'E', accidental: '' }], 4, true, false, 0.3); }],
     ['a chord (the chord panel\'s ▶ Chord)', () => { cancelScheduledAudio(); playChord([{ natural: 'C', accidental: '' }, { natural: 'E', accidental: '' }, { natural: 'G', accidental: '' }], 4, 1); }],
-    ['a rhythm (a lesson\'s Hear it)', () => { void playRhythm({ time: '4/4', notes: 'q q h' }); }],
     ['a view change (Explore → Learn → Explore)', () => { useAppStore.getState().setView('learn'); cancelScheduledAudio(); useAppStore.getState().setView('explore'); }],
   ];
   for (const [name, play] of PLAYS) {
@@ -248,6 +249,8 @@ describe('what stops it leaves no click queued', () => {
       openProgressionPanel();
       startLoop(readChords(['G', 'C']), 90, 4);
     }, 'loop'],
+    // A rhythm brings its own count-in (wave 3, second fix pass): the metronome gives way, as to the loop.
+    ['a rhythm starting (a lesson\'s Hear it, a check\'s Play the rhythm)', () => { void playRhythm({ time: '4/4', notes: 'q q h' }); }, 'rhythm'],
   ];
   for (const [name, stop, reason] of STOPS) {
     it(`${name}`, () => {
@@ -276,6 +279,36 @@ describe('what stops it leaves no click queued', () => {
     startMetronome();
     expect(isLooping()).toBe(false);
     expect(isMetronomeRunning()).toBe(true);
+  });
+
+  it('a rhythm: the metronome stops in the tap (before the rhythm\'s own count-in is queued) and does not start again by itself', async () => {
+    startMetronome();
+    advance(1.3);
+    voice.playNote.mockClear();
+    const played = playRhythm({ time: '4/4', notes: 'q q h' });
+    // Synchronously, inside the call: nothing of the metronome left to sound.
+    expect(isMetronomeRunning()).toBe(false);
+    expect(queuedClicks()).toBe(0);
+    await played;
+    // The rhythm itself was handed to core audio (its count-in and its notes), not to the metronome's clock.
+    expect(voice.playNote).toHaveBeenCalled();
+    const n = metroSources().length;
+    advance(6); // longer than the count-in and the rhythm
+    expect(isMetronomeRunning()).toBe(false);
+    expect(metroSources().length).toBe(n);
+    expect(useMetronome.getState().lastStop).toBe('rhythm');
+    // ▶ again: it runs, and the reason is forgotten.
+    startMetronome();
+    expect(useMetronome.getState()).toMatchObject({ running: true, lastStop: null });
+  });
+
+  it('a rhythm while the metronome is stopped (or never started) changes nothing of the metronome\'s', async () => {
+    await playRhythm({ time: '4/4', notes: 'q q h' });
+    expect(useMetronome.getState()).toMatchObject({ running: false, lastStop: null });
+    startMetronome();
+    stopMetronome('user');
+    await playRhythm({ time: '3/4', notes: 'q q q' });
+    expect(useMetronome.getState().lastStop).toBe('user');
   });
 
   it('the loop starting while the metronome is stopped changes nothing of the metronome\'s', () => {

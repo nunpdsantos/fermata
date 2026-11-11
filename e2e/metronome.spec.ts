@@ -6,7 +6,9 @@ import { seededBrowser, savedState, LAPTOP, PHONE, type View } from './helpers/w
  * start it, change the tempo and the bar, tap a tempo, put it away; it keeps
  * time while a scale plays, while the learner plays notes and opens a chord,
  * and in a lesson; it stops when the Progression loop starts (one line says
- * why) and when the page is hidden; a reload keeps the tempo and does not
+ * why), when a lesson's rhythm starts (it counts in itself: one line says
+ * why; a rhythm played with the metronome never opened loads none of it)
+ * and when the page is hidden; a reload keeps the tempo and does not
  * start it. "Keeps time" is read on the audio seam: the clicks the metronome
  * handed to its audio clock (`clickLog()` of services/metronome/clickVoice.ts,
  * through the dev server's own module) — none taken back, every one on the
@@ -174,6 +176,54 @@ test('it stops when the Progression loop starts — one line says why — and �
   await page.getByTestId('metronome-play').click();
   await expect(bar(page)).toHaveAttribute('data-running', 'true');
   await expect(page.getByTestId('progression-play')).toHaveAttribute('aria-pressed', 'false');
+  await context.close();
+});
+
+test('a lesson\'s rhythm brings its own count-in: never opened, the metronome loads nothing; running, it stops (one line says why), nothing stays queued, and it does not start again', async ({ browser }) => {
+  test.setTimeout(60_000);
+  const { context, page } = await start(browser, LAPTOP);
+  // Every module of the metronome the page asks the dev server for (its chunk, as served by Vite).
+  const metronomeModules: string[] = [];
+  page.on('request', (r) => {
+    const path = new URL(r.url()).pathname;
+    if (/^\/src\/(services|components)\/metronome\//.test(path)) metronomeModules.push(path);
+  });
+  // A real lesson with a rhythm to hear: "Note Values and Rests", its first Try this.
+  await page.keyboard.press('Control+k');
+  const search = page.getByRole('dialog').filter({ has: page.locator('input') });
+  await search.locator('input').fill('Note Values and Rests');
+  await search.getByRole('button', { name: /^Note Values and Rests\s+Lesson$/ }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Note Values and Rests' })).toBeVisible({ timeout: 15_000 });
+  const tryThis = page.getByTestId('inline-try-this').filter({ has: page.getByTestId('rhythm-staff') }).first();
+  const hear = tryThis.getByRole('button', { name: 'Hear it' });
+  await hear.scrollIntoViewIfNeeded();
+  await hear.click();
+  await page.waitForTimeout(1500);
+  expect(metronomeModules, 'a rhythm played with the metronome never opened loads none of it').toEqual([]);
+
+  // Known positive: opening the metronome is what loads it.
+  await openMetronome(page);
+  expect(metronomeModules.length).toBeGreaterThan(0);
+  await page.getByTestId('metronome-play').click();
+  await expect(bar(page)).toHaveAttribute('data-running', 'true');
+  await expect.poll(() => pending(page), { intervals: [50] }).toBeGreaterThan(0);
+  await expect(page.getByTestId('metronome-rhythm-note')).toHaveCount(0);
+
+  await hear.click();
+  await expect(bar(page)).not.toHaveAttribute('data-running', 'true');
+  expect(await pending(page), 'no click of the metronome stays queued').toBe(0);
+  await expect(page.getByTestId('metronome-rhythm-note')).toHaveText('A rhythm plays its own clicks to count you in, so the metronome stops when a rhythm starts.');
+  await expect(page.getByTestId('metronome-loop-note')).toHaveCount(0);
+  const heardBefore = (await clicks(page)).filter((c) => c.cancelledAt === null || c.cancelledAt >= c.at).length;
+  // Past the count-in and the rhythm: it has not started again by itself, and no new click was handed over.
+  await page.waitForTimeout(5000);
+  await expect(bar(page)).not.toHaveAttribute('data-running', 'true');
+  expect((await clicks(page)).filter((c) => c.cancelledAt === null || c.cancelledAt >= c.at).length).toBe(heardBefore);
+  expect(await pending(page)).toBe(0);
+  // ▶ again: it runs, and the line goes.
+  await page.getByTestId('metronome-play').click();
+  await expect(bar(page)).toHaveAttribute('data-running', 'true');
+  await expect(page.getByTestId('metronome-rhythm-note')).toHaveCount(0);
   await context.close();
 });
 

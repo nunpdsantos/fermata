@@ -13,5 +13,6 @@
   "beatsOption": "{{n}} pulsações",
   "close": "Fechar o metrónomo",
   "loopNote": "A repetição da Progressão tem a sua própria contagem inicial, por isso o metrónomo para quando ela começa.",
+  "rhythmNote": "Um ritmo tem a sua própria contagem inicial, por isso o metrónomo para quando um ritmo começa a tocar.",
   "unavailable": "Este navegador não consegue tocar o clique do metrónomo."
 }

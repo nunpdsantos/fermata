@@ -69,6 +69,27 @@ function topBarSpans(): Box[] {
   return spans;
 }
 
+/**
+ * Over a sheet: the empty stretch of its heading, between the title and the
+ * heading's last control (✕), from the panel's top (or below its drag handle,
+ * where one shows) to where the sheet's body begins.
+ */
+function sheetHeadingSpans(panel: Element): Box[] {
+  const heading = panel.querySelector(':scope > .sheet-heading');
+  const title = heading?.querySelector('h2');
+  const controls = heading ? Array.from(heading.querySelectorAll('button')) : [];
+  if (!heading || !title || !controls.length) return [];
+  const p = panel.getBoundingClientRect();
+  const h = heading.getBoundingClientRect();
+  const grab = panel.querySelector(':scope > .sheet-grab')?.getBoundingClientRect();
+  const body = heading.nextElementSibling?.getBoundingClientRect();
+  const left = title.getBoundingClientRect().right;
+  const right = Math.min(...controls.map((c) => c.getBoundingClientRect().left));
+  const top = grab && grab.height > 0 ? grab.bottom : p.top;
+  const bottom = body && body.height > 0 ? body.top : h.bottom;
+  return right > left && bottom > top ? [{ top, bottom, left, right }] : [];
+}
+
 /** The first element for a selector that has a box on screen. */
 function shownBox(selector: string, vh: number): Box | null {
   for (const el of Array.from(document.querySelectorAll(selector))) {
@@ -113,8 +134,11 @@ function usePlacement(barRef: React.RefObject<HTMLElement | null>): MetronomePla
         // wave 3 integration, seam 5): everything under the scrim is out of
         // play, the top bar included, so the bar may go up to the window's
         // top; it never covers the sheet's panel where there is room — above
-        // a phone's bottom sheet (its floor), beside a wider screen's panel.
-        const panel = bar?.closest('.sheet-panel')?.getBoundingClientRect();
+        // a phone's bottom sheet (its floor), beside a wider screen's panel;
+        // where neither has room (a phone on its side), in the empty stretch
+        // of the sheet's heading (wave 3, second fix pass).
+        const panelEl = bar?.closest('.sheet-panel');
+        const panel = panelEl?.getBoundingClientRect();
         const bottomSheet = panel ? panel.width >= vw - 2 * GUTTER : false;
         const floorAt = panel && bottomSheet ? panel.top : dock && dock.height > 0 && dock.top < vh ? dock.top : vh;
         const next = placeMetronome({
@@ -129,8 +153,9 @@ function usePlacement(barRef: React.RefObject<HTMLElement | null>): MetronomePla
           hard: [...(answers && !panel ? [answers] : []), ...(panel && !bottomSheet ? [toBox(panel)] : [])],
           soft: detail && !panel ? [detail] : [],
           topBarSpans: panel ? [] : topBarSpans(),
+          sheetHeadingSpans: panelEl ? sheetHeadingSpans(panelEl) : [],
         });
-        const rounded = { top: Math.round(next.top), left: Math.round(next.left), compact: next.compact, inTopBar: !!next.inTopBar };
+        const rounded = { top: Math.round(next.top), left: Math.round(next.left), compact: next.compact, inTopBar: !!next.inTopBar, inSheetHeading: !!next.inSheetHeading };
         const key = JSON.stringify(rounded);
         if (key !== last) {
           last = key;
@@ -152,7 +177,8 @@ function usePlacement(barRef: React.RefObject<HTMLElement | null>): MetronomePla
  * the beats in a bar, ✕ (which stops it). Never modal: a fixed overlay
  * above the instrument, off a check's answers; toasts keep off it
  * (`useToastAvoid`). One line says why it stopped when the Progression
- * loop started (and while the loop plays).
+ * loop started (and while the loop plays), or when a rhythm started (until
+ * ▶ again or ✕).
  */
 export function MetronomeBar({ onClose, focusOnOpen = true, onFocused }: {
   onClose: () => void;
@@ -165,6 +191,7 @@ export function MetronomeBar({ onClose, focusOnOpen = true, onFocused }: {
   const running = useMetronome((s) => s.running);
   const beat = useMetronome((s) => s.beat);
   const stoppedByLoop = useMetronome((s) => s.lastStop === 'loop');
+  const stoppedByRhythm = useMetronome((s) => s.lastStop === 'rhythm');
   const looping = useLoopState((s) => s.playing);
   const reduce = useMediaQuery(REDUCED_MOTION);
   const phone = useMediaQuery(PHONE_QUERY);
@@ -242,7 +269,8 @@ export function MetronomeBar({ onClose, focusOnOpen = true, onFocused }: {
     if (next !== null) setMetronomeTempo(next);
   };
 
-  const note = available && (looping || stoppedByLoop) ? t('metronomeTool.loopNote') : null;
+  const loopNote = available && (looping || stoppedByLoop);
+  const note = loopNote ? t('metronomeTool.loopNote') : available && stoppedByRhythm ? t('metronomeTool.rhythmNote') : null;
 
   return (
     <section
@@ -254,6 +282,7 @@ export function MetronomeBar({ onClose, focusOnOpen = true, onFocused }: {
       data-running={running || undefined}
       data-compact={compact || undefined}
       data-in-top-bar={place?.inTopBar || undefined}
+      data-in-sheet-heading={place?.inSheetHeading || undefined}
       data-measured={shown ? 'true' : 'false'}
       data-reduced-motion={reduce || undefined}
       onFocus={() => { if (barRef.current) barRef.current.dataset.hadFocus = 'true'; }}
@@ -319,7 +348,7 @@ export function MetronomeBar({ onClose, focusOnOpen = true, onFocused }: {
           <IconButton aria-label={t('metronomeTool.close')} icon={ICONS.close} onClick={close} className="metro-close" data-testid="metronome-close" />
         </div>
       )}
-      {note && !compact && <p className="metro-note" role="status" data-testid="metronome-loop-note">{note}</p>}
+      {note && !compact && <p className="metro-note" role="status" data-testid={loopNote ? 'metronome-loop-note' : 'metronome-rhythm-note'}>{note}</p>}
     </section>
   );
 }

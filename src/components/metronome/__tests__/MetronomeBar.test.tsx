@@ -15,6 +15,7 @@ import { installMockAudioContext } from '../../../test/mockAudioContext';
 import { TopBar } from '../../layout/TopBar';
 import { isMetronomeRunning, stopMetronome, useMetronome } from '../../../services/metronome/metronome';
 import { useLoopState } from '../../explore/progression/loopController';
+import { playRhythm } from '../../../utils/rhythmPlayback';
 import { _resetClicksForTesting } from '../../../services/metronome/clickVoice';
 import { measureToastRoom, resetToastLayoutForTests } from '../../layout/toastLayout';
 import { METRONOME_TEXT } from '../../../i18n/metronomeTool';
@@ -197,6 +198,34 @@ describe('the bar', () => {
     expect(useMetronome.getState().lastStop).toBeNull();
   });
 
+  it('a rhythm starting: it stops, and one line says why, in EN, PT and ES; ▶ again takes the line away', async () => {
+    const bar = await openBar();
+    fireEvent.click(within(bar).getByRole('button', { name: 'Start the metronome' }));
+    expect(isMetronomeRunning()).toBe(true);
+    expect(within(bar).queryByTestId('metronome-rhythm-note')).toBeNull();
+    await act(async () => { await playRhythm({ time: '4/4', notes: 'q q h' }); });
+    expect(isMetronomeRunning()).toBe(false);
+    expect(useMetronome.getState().lastStop).toBe('rhythm');
+    expect(within(bar).getByRole('button', { name: 'Start the metronome' })).toBeTruthy();
+    expect(within(bar).queryByTestId('metronome-loop-note')).toBeNull();
+    expect(within(bar).getByTestId('metronome-rhythm-note').textContent).toBe('A rhythm plays its own clicks to count you in, so the metronome stops when a rhythm starts.');
+    await act(() => i18n.changeLanguage('pt'));
+    expect(within(bar).getByTestId('metronome-rhythm-note').textContent).toBe('Um ritmo tem a sua própria contagem inicial, por isso o metrónomo para quando um ritmo começa a tocar.');
+    await act(() => i18n.changeLanguage('es'));
+    expect(within(bar).getByTestId('metronome-rhythm-note').textContent).toBe('Un ritmo tiene su propia cuenta inicial, así que el metrónomo se para cuando un ritmo empieza a sonar.');
+    await act(() => i18n.changeLanguage('en'));
+    fireEvent.click(within(bar).getByRole('button', { name: 'Start the metronome' }));
+    expect(isMetronomeRunning()).toBe(true);
+    expect(within(bar).queryByTestId('metronome-rhythm-note')).toBeNull();
+  });
+
+  it('a rhythm while it is stopped: no line (it did not stop for the rhythm)', async () => {
+    const bar = await openBar();
+    await act(async () => { await playRhythm({ time: '4/4', notes: 'q q h' }); });
+    expect(within(bar).queryByTestId('metronome-rhythm-note')).toBeNull();
+    expect(useMetronome.getState().lastStop).toBeNull();
+  });
+
   it('a browser without Web Audio: one sentence says so, and ✕ still puts it away', async () => {
     vi.unstubAllGlobals();
     vi.stubGlobal('AudioContext', undefined);
@@ -289,6 +318,30 @@ describe('where the bar goes on the page (the wiring of placement.ts; jsdom lays
     const bar = await openBar();
     await waitFor(() => expect(slot!.contains(bar)).toBe(true));
     expect(within(bar).getByRole('button', { name: 'Start the metronome' })).toBeTruthy();
+  });
+
+  it('a phone on its side with the practice sheet open (no room beside or above its panel): into the empty stretch of the sheet\'s heading, between its title and its ✕', async () => {
+    const size = { w: window.innerWidth, h: window.innerHeight };
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 844 });
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 390 });
+    try {
+      render(<Sheet open onClose={() => {}} title="Practise on the guitar" closeLabel="Close" companions><p>Practice</p></Sheet>);
+      const panel = document.querySelector('.sheet-panel')!;
+      const heading = panel.querySelector(':scope > .sheet-heading')!;
+      box(panel, 8, 382, 16, 828);
+      box(heading, 20, 64, 34, 810);
+      box(heading.querySelector('h2')!, 26, 58, 34, 230);
+      box(heading.querySelector('button')!, 20, 64, 768, 812);
+      box(heading.nextElementSibling!, 68, 382, 34, 810);
+      const bar = await openBar();
+      await waitFor(() => expect(bar.getAttribute('data-in-sheet-heading')).toBe('true'));
+      // The stretch: 230–768 wide, from the panel's top (8) to where the body begins (68); the bar (320 × 52) centred in it.
+      expect({ top: parseFloat(bar.style.top), left: parseFloat(bar.style.left) }).toEqual({ top: 12, left: Math.round(230 + (538 - 320) / 2) });
+      expect(bar.getAttribute('data-compact')).toBe('true');
+    } finally {
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: size.w });
+      Object.defineProperty(window, 'innerHeight', { configurable: true, value: size.h });
+    }
   });
 
   it('✕ inside the sheet: focus stays in the sheet (not on "⋯" behind its scrim)', async () => {

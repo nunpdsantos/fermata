@@ -8,7 +8,9 @@
  * clicks are on an audio clock of their own (`clickVoice.ts`), out of reach
  * of core `cancelScheduledAudio()`. It stops on ■ and ✕, when the page is
  * hidden, when the Progression panel's loop starts (two clocks at once are
- * worse than none — the loop has its own count-in), on the way into Drill
+ * worse than none — the loop has its own count-in), when a rhythm starts
+ * playing (a lesson's or a check's: `playRhythm` counts in too; it says so
+ * through `utils/rhythmStart.ts`, which imports nothing of this), on the way into Drill
  * and when the tour is asked for (the bar is not shown there). Starting it
  * while the loop plays stops the loop: the newer clock wins. While it runs
  * it is work in progress (`services/workInProgress.ts`): an update waits.
@@ -22,16 +24,17 @@ import { useAppStore } from '../../state/store';
 import { DEFAULT_METRONOME, isBeatsInBar, type BeatsInBar, type SavedMetronome } from '../../state/metronomeSave';
 import { registerWorkInProgress } from '../workInProgress';
 import { isLooping, stopLoop, useLoopState } from '../../components/explore/progression/loopController';
+import { onRhythmStart } from '../../utils/rhythmStart';
 import { MetronomeClock, clampTempo, type ClickSink, type LoopTimer } from './clock';
 import { clickSink, pendingClicks, prepareClicks, resumeClicks } from './clickVoice';
 
-export type MetronomeStop = 'user' | 'closed' | 'hidden' | 'loop' | 'drill' | 'tour';
+export type MetronomeStop = 'user' | 'closed' | 'hidden' | 'loop' | 'rhythm' | 'drill' | 'tour';
 
 interface MetronomeState {
   running: boolean;
   /** The place in its bar of the click that last sounded (1…beats), or null. */
   beat: number | null;
-  /** Why it last stopped (the bar's one line for 'loop'; tests). */
+  /** Why it last stopped (the bar's one line for 'loop' and 'rhythm'; tests). */
   lastStop: MetronomeStop | null;
 }
 
@@ -137,4 +140,9 @@ useAppStore.subscribe((state, prev) => {
 
 useLoopState.subscribe((state, prev) => {
   if (state.playing && !prev.playing && clock.running) stopMetronome('loop');
+});
+
+// A rhythm brings its own count-in: the metronome gives way (and does not start again by itself).
+onRhythmStart(() => {
+  if (clock.running) stopMetronome('rhythm');
 });

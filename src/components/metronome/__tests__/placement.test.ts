@@ -63,6 +63,34 @@ describe('placeMetronome', () => {
     expect(narrow.inTopBar).toBeUndefined();
   });
 
+  it('a phone on its side (844×390) with the practice sheet open: no room beside or above its panel, so the compact bar goes into the empty stretch of the sheet\'s heading, never over the panel\'s controls', () => {
+    // The panel as measured there (8 px from the window's top and bottom, 16 px from its sides), the dock under the scrim.
+    const panel = { top: 8, bottom: 382, left: 16, right: 828 };
+    const heading = { top: 8, bottom: 68, left: 230, right: 768 }; // between the title and the sheet's ✕
+    const input: MetronomePlacementInput = {
+      viewport: { width: 844, height: 390 }, topBarBottom: 0, floor: 317, fullWidth: 524, fullHeight: 54, compactWidth: 168, compactHeight: 54,
+      hard: [panel], topBarSpans: [],
+    };
+    // Without the heading's stretch (the place it took before): over the panel's edge.
+    const before = placeMetronome(input);
+    expect(overlapArea({ top: before.top, bottom: before.top + 54, left: before.left, right: before.left + 168 }, panel)).toBeGreaterThan(0);
+    const p = placeMetronome({ ...input, sheetHeadingSpans: [heading] });
+    expect(p).toEqual({ top: 8 + (60 - 54) / 2, left: Math.round(230 + (538 - 168) / 2), compact: true, inSheetHeading: true });
+    const bar = { top: p.top, bottom: p.top + 54, left: p.left, right: p.left + 168 };
+    // Inside the stretch: over neither the title nor the ✕.
+    expect(bar.top).toBeGreaterThanOrEqual(heading.top);
+    expect(bar.bottom).toBeLessThanOrEqual(heading.bottom);
+    expect(bar.left).toBeGreaterThanOrEqual(heading.left + GAP);
+    expect(bar.right).toBeLessThanOrEqual(heading.right - GAP);
+    // A stretch too low or too narrow for the compact bar is passed over (the last resort as before).
+    expect(placeMetronome({ ...input, sheetHeadingSpans: [{ ...heading, bottom: heading.top + 50 }] })).toEqual(before);
+    expect(placeMetronome({ ...input, sheetHeadingSpans: [{ ...heading, right: heading.left + 168 + GAP }] })).toEqual(before);
+    // Where there is room beside the panel (a laptop), the heading is never used.
+    const laptop = placeMetronome({ viewport: { width: 1440, height: 900 }, topBarBottom: 0, floor: 900, fullWidth: 620, fullHeight: 54, compactWidth: 168, compactHeight: 54, hard: [{ top: 84, bottom: 852, left: 564, right: 1424 }], sheetHeadingSpans: [heading] });
+    expect(laptop.inSheetHeading).toBeUndefined();
+    expect(laptop.compact).toBe(false);
+  });
+
   it('the chord\'s detail everywhere: the place covering it least, never off the floor', () => {
     const detail = { top: 0, bottom: 900, left: 0, right: 1440 };
     const p = placeMetronome({ viewport: { width: 1440, height: 900 }, topBarBottom: 52, floor: 640, fullWidth: 620, fullHeight: 46, compactWidth: 200, compactHeight: 46, soft: [detail] });
