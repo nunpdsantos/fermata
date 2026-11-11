@@ -108,6 +108,19 @@ describe('a new learner with nothing completed', () => {
     // The family names are labels, not toggles, while following.
     expect(screen.queryByRole('button', { name: 'Key signatures' })).toBeNull();
   });
+
+  it('integration: a locked topic\'s caption opens the lesson that unlocks it (the track lesson, in its unit)', () => {
+    render(<DrillView />);
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Choose topics myself' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: /^Choose topics$/ })));
+    act(() => fireEvent.click(screen.getByTestId('drill-follow-switch')));
+    act(() => fireEvent.click(screen.getByRole('button', { name: /Mastery map/ })));
+    // Every locked caption that names a lesson is a button.
+    expect(document.querySelectorAll('[data-follow-caption="locked"] button').length).toBe(10);
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Unlocks with “Three Notes Make a Chord”' })));
+    expect(useAppStore.getState().pendingLearnTarget).toEqual({ levelId: 'l1', unitId: 'u34', moduleId: 'l1u34m5' });
+    expect(useAppStore.getState().view).toBe('learn');
+  });
 });
 
 describe('a new learner after lessons', () => {

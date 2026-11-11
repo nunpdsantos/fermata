@@ -19,6 +19,7 @@ import { useCapoFret, setCapoFret } from '../../state/capo.ts';
 import { SelectTrigger } from '../ui/SelectTrigger.tsx';
 import { CapoOptions } from '../instruments/CapoControl.tsx';
 import { CAPO_TERM } from '../instruments/capoView.ts';
+import { WordsButton } from '../../glossary/Term.tsx';
 
 /**
  * The app's Settings (W11-A, opened from the top bar's "⋯" menu): language,
@@ -168,12 +169,18 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
         />
         {/* The capo (wave 2): none, 1 … 9. Explore's guitar draws it. */}
         <div className="flex flex-col items-start gap-1.5 pt-1" data-testid="capo-setting">
-          <label className="flex items-center gap-2">
-            <span className="text-ui" style={{ color: 'var(--text-muted)' }} data-term={CAPO_TERM}>{t('capo.setting')}</span>
-            <SelectTrigger value={capoFret} onChange={(e) => setCapoFret(Number(e.target.value))} aria-describedby="capo-hint">
-              <CapoOptions />
-            </SelectTrigger>
-          </label>
+          <div className="flex items-center gap-2 flex-wrap">
+            <label className="flex items-center gap-2">
+              <span className="text-ui" style={{ color: 'var(--text-muted)' }} data-term={CAPO_TERM}>{t('capo.setting')}</span>
+              <SelectTrigger value={capoFret} onChange={(e) => setCapoFret(Number(e.target.value))} aria-describedby="capo-hint">
+                <CapoOptions />
+              </SelectTrigger>
+            </label>
+            {/* Integration (seam 5): the word "capo" sits inside the select's
+                label, so it is explained from "Words on this screen", which
+                lists the marked words in this sheet (as the practice sheet does). */}
+            <WordsButton />
+          </div>
           <p id="capo-hint" className="text-ui" style={{ color: 'var(--text-dim)' }}>{t('capo.settingHint')}</p>
         </div>
       </SettingRow>

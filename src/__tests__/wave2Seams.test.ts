@@ -15,6 +15,16 @@ import { getDiatonicChordsForScale } from '../core/constants/chords';
 import { buildScale } from '../core/constants/scales';
 import { getPitchClass } from '../core/constants/notes';
 import type { Chord } from '../core/types/music';
+import { MODULE_INDEX } from '../data/moduleIndex';
+import { TRACK_UNLOCKS, lessonIdsNamed, learnTargetOf } from '../data/drillUnlocks';
+import { loadModuleIndex, getModuleTitle } from '../data/moduleIndexI18n';
+import ptCurriculumL1 from '../i18n/content/pt/curriculumL1';
+import esCurriculumL1 from '../i18n/content/es/curriculumL1';
+import { L1_UNITS } from '../core/constants/curriculumL1';
+import { buildChord } from '../core/constants/chords';
+import glossaryEn from '../i18n/glossary/en.json';
+import glossaryPt from '../i18n/glossary/pt.json';
+import glossaryEs from '../i18n/glossary/es.json';
 
 const LOCALES = { en, pt, es } as const;
 
@@ -79,5 +89,59 @@ describe('seam 3: the panel\'s capo line and the neck\'s line name the same shap
     expect(ideas.map((o) => o.fret)).toContain(3);
     expect(capoShapes(chords, key, 3).map(chordSymbol)).toEqual(['G', 'C', 'D']);
     expect(chordSymbol(chordShapesForCapo(chords[0], 0, 3).shapeChord)).toBe('G');
+  });
+});
+
+describe('seam 6: Drill\'s table names lessons that exist, by their titles', () => {
+  it('every lesson the table names is in MODULE_INDEX, and a track lesson opens in its track\'s unit', () => {
+    const ids = new Set(MODULE_INDEX.map((m) => m.id));
+    for (const id of lessonIdsNamed()) expect(ids.has(id), id).toBe(true);
+    for (const id of Object.keys(TRACK_UNLOCKS)) {
+      const unit = L1_UNITS.find((u) => u.modules.some((m) => m.id === id))!;
+      expect(unit.track, id).toBeDefined();
+      expect(learnTargetOf(id)).toEqual({ levelId: 'l1', unitId: unit.id, moduleId: id });
+    }
+  });
+
+  it.each(['pt', 'es'] as const)('%s: each track lesson Drill names has its own title (the lesson\'s, not English)', async (lang) => {
+    await loadModuleIndex(lang);
+    const overlay = lang === 'pt' ? ptCurriculumL1 : esCurriculumL1;
+    for (const id of Object.keys(TRACK_UNLOCKS)) {
+      const title = getModuleTitle(id, lang);
+      expect(title, id).toBe(overlay.modules[id].title);
+      expect(title, id).not.toBe(getModuleTitle(id, 'en'));
+    }
+  });
+
+  it('en: the titles are the lessons\' own', () => {
+    for (const id of Object.keys(TRACK_UNLOCKS)) {
+      const mod = L1_UNITS.flatMap((u) => u.modules).find((m) => m.id === id)!;
+      expect(getModuleTitle(id, 'en')).toBe(mod.title);
+    }
+  });
+});
+
+describe('seam 5: lesson 8, the glossary entry and the neck say the same about the capo', () => {
+  const lesson = L1_UNITS.flatMap((u) => u.modules).find((m) => m.id === 'l1u35m8')!;
+  it('"G shapes with a capo on fret 2 sound in A": the entry and the lesson say it, and the neck draws A with the G shape', () => {
+    expect(glossaryEn.entries.capo.plain).toContain('G shapes with a capo on fret 2 sound in A');
+    expect(lesson.concepts.map((c) => c.explanation).join(' ')).toContain('G shapes with a capo at fret 2 sound in the key of A');
+    expect(glossaryPt.entries.capo.plain).toContain('formas de G com capo no traste 2 soam em A');
+    expect(glossaryEs.entries.capo.plain).toContain('formas de G con capo en el traste 2 suenan en A');
+    const A = { natural: 'A', accidental: '' } as const;
+    expect(chordSymbol(chordShapesForCapo(buildChord(A, 'major'), 0, 2).shapeChord)).toBe('G');
+  });
+  it('the lesson\'s shape-and-sound pairs are what the neck names (capo 2: G→A, C→D, D→E, Em→F♯m; capo 4: C→E; capo 5: D→G)', () => {
+    const pairs: [string, number, string][] = [['A', 2, 'G'], ['D', 2, 'C'], ['E', 2, 'D'], ['F#m', 2, 'Em'], ['E', 4, 'C'], ['G', 5, 'D']];
+    for (const [sounds, capo, shape] of pairs) {
+      const root = { natural: sounds[0], accidental: sounds[1] === '#' ? '#' : '' } as Chord['root'];
+      const chord = buildChord(root, sounds.endsWith('m') ? 'minor' : 'major');
+      expect(chordSymbol(chordShapesForCapo(chord, 0, capo).shapeChord), `${sounds} capo ${capo}`).toBe(shape);
+    }
+  });
+  it('ES never calls the capo "cejilla" outside the entry\'s one note (the app\'s word for the barre)', () => {
+    expect(JSON.stringify(es.capo)).not.toMatch(/cejilla/i);
+    expect(JSON.stringify(es.progression)).not.toMatch(/cejilla/i);
+    expect(JSON.stringify(es.tracks)).not.toMatch(/cejilla/i);
   });
 });

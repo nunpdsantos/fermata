@@ -96,15 +96,23 @@ export function FollowCaption({ info, family }: { info: FollowInfo; family: Dril
   const open = info.open.find((o) => o.family === family);
   if (open?.whole) return null;
   let text: string;
+  let opens: string | null = null;
   if (open) {
     text = t('drillFollow.soFar', { list: partLabel(info.unlock.rows.filter((r) => r.family === family), t) });
   } else {
-    const lesson = title(info.lessonOpening(family));
+    const moduleId = info.lessonOpening(family);
+    const lesson = title(moduleId);
     text = lesson ? t('drillFollow.opensWith', { lesson }) : t('drillFollow.opensLater');
+    if (lesson) opens = moduleId;
   }
   return (
     <p className="text-caption" style={{ color: 'var(--text-muted)' }} data-follow-caption={open ? 'part' : 'locked'}>
-      {text}
+      {/* Integration (seam 6): a locked topic's lesson opens from the map, as from the intro. */}
+      {opens ? (
+        <Button variant="link" className="-ml-1.5 text-left" onClick={() => info.onOpenLesson(opens)} data-follow-lesson={opens}>
+          {text}
+        </Button>
+      ) : text}
     </p>
   );
 }
