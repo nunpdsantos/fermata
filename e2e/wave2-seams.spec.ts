@@ -102,7 +102,7 @@ test.describe('1. a lesson opens the Progression panel', () => {
       await go.click();
       const panel = page.getByTestId('progression-panel');
       await expect(panel).toBeVisible({ timeout: 15_000 });
-      await expect(panel.getByRole('heading', { name: NAME, exact: true })).toBeVisible();
+      await expect(page.getByTestId('chords-card').getByRole('heading', { name: NAME, exact: true })).toBeVisible();
       expect(await chipNames(page)).toEqual(mine.chords);
       await expect(page.getByTestId('progression-offer')).toHaveCount(0);
       // Closed, the card's own button says the same word.
