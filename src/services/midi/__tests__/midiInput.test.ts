@@ -163,6 +163,31 @@ describe('notes', () => {
     expect(sounding()).toEqual([]);
   });
 
+  it('the pedal is per channel: a pedal down on channel 2 holds nothing played on channel 1', () => {
+    key([0xb1, 64, 127]);
+    key(NOTE_ON(60, 80));
+    key(NOTE_OFF(60));
+    expect(sounding()).toEqual([]);
+    key([0x91, 62, 80]);
+    key([0x81, 62, 0]);
+    expect(sounding()).toEqual([62]);
+    key([0xb1, 64, 0]);
+    expect(sounding()).toEqual([]);
+  });
+
+  it('after everything was released (the page hidden), a pedal that was down holds nothing until it is pressed again', () => {
+    key(PEDAL(true));
+    setHidden(true);
+    setHidden(false);
+    key(NOTE_ON(65, 80));
+    key(NOTE_OFF(65));
+    expect(sounding()).toEqual([]);
+    key(PEDAL(true));
+    key(NOTE_ON(67, 80));
+    key(NOTE_OFF(67));
+    expect(sounding()).toEqual([67]);
+  });
+
   it('a key struck again while the pedal holds it starts again', () => {
     key(PEDAL(true));
     key(NOTE_ON(60, 50));

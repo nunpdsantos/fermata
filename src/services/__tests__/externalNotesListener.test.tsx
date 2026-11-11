@@ -345,6 +345,18 @@ describe('every stop path leaves no note held, lit or sounding', () => {
     expect(soundingNow()).toEqual([]);
   });
 
+  it('the question submitted (its answer no longer takes notes): a key held for it is let go', () => {
+    const ui = (submitted: boolean) => <InstrumentInput expectedCount={3} submitted={submitted} onSubmit={() => {}} accentColor="#888888" />;
+    const { rerender } = render(ui(false));
+    expect(externalPlace()).toBe('answer');
+    play(midi(62, true));
+    expect(soundingNow()).toEqual([62]);
+    rerender(ui(true));
+    expect(externalPlace()).toBe('elsewhere');
+    expect(soundingNow()).toEqual([]);
+    expect(heldExternalNotes()).toEqual([]);
+  });
+
   it('the place moved without notice (a dialog opened deeper than <body>): the next note releases the old ones first', async () => {
     play(midi(60, true));
     const wrap = document.createElement('div');
@@ -361,5 +373,25 @@ describe('every stop path leaves no note held, lit or sounding', () => {
     play(midi(62, true));
     expect(soundingNow()).toEqual([62]);
     expect(lit()).toEqual([]);
+  });
+});
+
+describe('the start screen coming or going (App tells the one subscriber)', () => {
+  it('a note held in Explore is let go when the start screen shows, and one held on the start screen when it goes', () => {
+    const host = renderHook(({ start }) => useExternalNotes(start), { initialProps: { start: false } });
+    play(midi(60, true), mic(67, true));
+    expect(soundingNow()).toEqual([60]);
+    expect(lit()).toEqual([60, 67]);
+    host.rerender({ start: true });
+    expect(soundingNow()).toEqual([]);
+    expect(lit()).toEqual([]);
+    expect(heldExternalNotes()).toEqual([]);
+    expect(externalPlace()).toBe('elsewhere');
+    play(midi(64, true));
+    expect(soundingNow()).toEqual([64]);
+    host.rerender({ start: false });
+    expect(soundingNow()).toEqual([]);
+    expect(heldExternalNotes()).toEqual([]);
+    host.unmount();
   });
 });

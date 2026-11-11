@@ -54,7 +54,12 @@ const SPEC: Row[] = [
   { name: 'system reset', status: 0xff, data: 0, channel: false, expect: none },
 ];
 
-const DATA_SAMPLES: [number, number][] = [[60, 100], [0, 0], [127, 127], [64, 63], [64, 64], [120, 0], [123, 0], [1, 1]];
+// The controllers either side of the three the app reads are sampled too (63, 65–67: portamento, sostenuto and
+// the soft pedal are not the damper; 119 and 122 are not "all notes off").
+const DATA_SAMPLES: [number, number][] = [
+  [60, 100], [0, 0], [127, 127], [64, 63], [64, 64], [120, 0], [123, 0], [1, 1],
+  [63, 127], [65, 127], [66, 127], [67, 127], [119, 0], [122, 0],
+];
 
 describe('the MIDI message table, one message per event', () => {
   for (const row of SPEC) {
