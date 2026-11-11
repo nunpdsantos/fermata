@@ -260,6 +260,33 @@ describe('the seat\'s decision S-2: no guitar reading for a piano learner while 
   });
 });
 
+describe('keyboard focus when the switch changes the screen (final review of wave 2)', () => {
+  it('intro, nothing to ask: "Choose topics myself" → the switch (now off) has focus, not <body>', () => {
+    useAppStore.setState({ learnerProfile: 'new' });
+    render(<DrillView />);
+    const choose = screen.getByRole('button', { name: 'Choose topics myself' });
+    choose.focus();
+    act(() => fireEvent.click(choose));
+    expect(document.activeElement).toBe(screen.getByTestId('drill-follow-switch'));
+    // And back on: the empty intro has no switch, so its main action takes focus.
+    act(() => fireEvent.click(screen.getByTestId('drill-follow-switch')));
+    expect(document.activeElement).not.toBe(document.body);
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Open the lesson' }));
+  });
+
+  it('settings: "Choose topics myself" → the switch has focus', () => {
+    useAppStore.setState({ learnerProfile: 'player' });
+    seedLessons(['l1u35m2']);
+    useDrillStore.setState({ introDone: true, settings: { ...DEFAULT_SETTINGS, followLessons: true } });
+    render(<DrillView />);
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Drill settings' })));
+    const choose = screen.getByRole('button', { name: 'Choose topics myself' });
+    choose.focus();
+    act(() => fireEvent.click(choose));
+    expect(document.activeElement).toBe(screen.getByTestId('drill-follow-switch'));
+  });
+});
+
 describe('no empty session can start (final review of wave 2)', () => {
   it('nothing done, the switch turned on mid-session, End, New session: back to the empty intro, never "0 of 0"', () => {
     useAppStore.setState({ learnerProfile: 'new' });

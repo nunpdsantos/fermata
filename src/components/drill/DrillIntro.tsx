@@ -20,6 +20,7 @@ import { DRILL_FAMILIES } from '../../core/types/drill';
 import type { DrillSettings } from '../../state/drillStore';
 import { Button } from '../ui/Button';
 import { FollowSummary, FollowSwitch, type FollowInfo } from './FollowLessons';
+import { useFollowFocus } from './useFollowFocus';
 import { useLessonTitle } from './followText';
 
 interface DrillIntroProps {
@@ -48,9 +49,15 @@ export function DrillIntro({
   // At most 2 asks per new fact (fewer when a second look has no place), so
   // below the length this bound proves the first session is shorter.
   const firstIsShorter = settings.newPerSession > 0 && 2 * settings.newPerSession < settings.length;
+  // The switch swaps this screen's middle: keep keyboard focus on it.
+  const { focusRef, markFocus } = useFollowFocus<HTMLElement>(follow);
+  const setFollow = (on: boolean) => {
+    markFocus();
+    onSetFollow?.(on);
+  };
 
   return (
-    <section className="drill-run gap-5" aria-labelledby="drill-intro-title" data-testid="drill-intro">
+    <section ref={focusRef} className="drill-run gap-5" aria-labelledby="drill-intro-title" data-testid="drill-intro">
       <div className="flex flex-col gap-3">
         <h2 id="drill-intro-title" className="learn-serif text-display" style={{ color: 'var(--text)' }}>
           {t('drill.intro.title')}
@@ -74,8 +81,8 @@ export function DrillIntro({
           ) : (
             <>
               {/* The lead above already says what it does: no second line. */}
-              {onSetFollow && <FollowSwitch on hint={false} onToggle={() => onSetFollow(false)} />}
-              <FollowSummary info={followInfo} onChooseMyself={() => onSetFollow?.(false)} />
+              {onSetFollow && <FollowSwitch on hint={false} onToggle={() => setFollow(false)} />}
+              <FollowSummary info={followInfo} onChooseMyself={() => setFollow(false)} />
             </>
           )}
         </>
@@ -92,7 +99,7 @@ export function DrillIntro({
         </Button>
         {follow !== undefined && onSetFollow && (
           <div className="mt-2">
-            <FollowSwitch on={follow} onToggle={() => onSetFollow(!follow)} />
+            <FollowSwitch on={follow} onToggle={() => setFollow(!follow)} />
           </div>
         )}
       </div>
@@ -117,7 +124,7 @@ export function DrillIntro({
                 {t('drillFollow.openLesson')}
               </Button>
             )}
-            <Button variant="secondary" size="lg" block onClick={() => onSetFollow?.(false)}>
+            <Button variant="secondary" size="lg" block onClick={() => setFollow(false)}>
               {t('drillFollow.chooseMyself')}
             </Button>
           </div>

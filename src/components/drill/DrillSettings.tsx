@@ -29,6 +29,7 @@ import type { DrillSettings as DrillSettingsState } from '../../state/drillStore
 import { ChipGroup, ChoiceChip } from '../ui/ChoiceChip';
 import { Button, IconButton } from '../ui/Button';
 import { FollowSummary, FollowSwitch, type FollowInfo } from './FollowLessons';
+import { useFollowFocus } from './useFollowFocus';
 
 const SESSION_LENGTHS = [12, 24, 40] as const;
 const MIN_NEW = 0;
@@ -56,9 +57,11 @@ const BACK_ICON = (
 export function DrillSettings({ settings, onUpdate, onBack, onMasteryMap, onResetProgress, follow, followInfo }: DrillSettingsProps) {
   const { t } = useTranslation();
   const [confirmingReset, setConfirmingReset] = useState(false);
+  // "Choose topics myself" goes away with the summary: focus to the switch.
+  const { focusRef, markFocus } = useFollowFocus<HTMLDivElement>(follow);
 
   return (
-    <div className="flex flex-col gap-6 py-4">
+    <div ref={focusRef} className="flex flex-col gap-6 py-4">
       {/* Header */}
       <div className="flex items-center gap-2">
         <IconButton onClick={onBack} aria-label={t('drill.settings.back')} icon={BACK_ICON} />
@@ -113,7 +116,7 @@ export function DrillSettings({ settings, onUpdate, onBack, onMasteryMap, onRese
       {/* Topics — several can be on: toggle chips (pressed = on). While
           following the lessons: what they have unlocked instead. */}
       {follow && followInfo ? (
-        <FollowSummary info={followInfo} onChooseMyself={() => onUpdate({ followLessons: false })} />
+        <FollowSummary info={followInfo} onChooseMyself={() => { markFocus(); onUpdate({ followLessons: false }); }} />
       ) : (
       <section className="flex flex-col gap-2">
         <p className="type-label">{t('drill.settings.families')}</p>
