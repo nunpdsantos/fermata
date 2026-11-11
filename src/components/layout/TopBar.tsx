@@ -12,16 +12,20 @@ import { resumeAudio } from '../../core/services/audio.ts';
 
 // Settings is a lazy chunk (wave 2 integration, for the entry file's budget):
 // fetched the first time it is opened, then kept mounted (its close animation
-// and focus return). A failed download says so and is retried on the next
-// open (a fresh lazy(): React keeps a rejected one for good).
+// and focus return). A failed download says so once and leaves it closed; the
+// NEXT open builds a fresh lazy() (React keeps a rejected one for good) and
+// remounts it under a new key, so it really downloads again. (Building the
+// fresh lazy() at once instead retried in the same open, and React then kept
+// the failed fiber, so Settings never opened again: final review of wave 2.)
 type SettingsProps = { open: boolean; onClose: () => void };
 const loadSettings = () => lazy<ComponentType<SettingsProps>>(() =>
   import('./SettingsSheet.tsx').then((m) => ({ default: m.SettingsSheet })).catch(() => ({ default: SettingsUnavailable })));
 let SettingsSheet = loadSettings();
+let settingsFailed = false;
 function SettingsUnavailable({ onClose }: SettingsProps) {
   const { t } = useTranslation();
   useEffect(() => {
-    SettingsSheet = loadSettings();
+    settingsFailed = true;
     onClose();
     toast(t('settings.loadError'), 'error');
   }, [t, onClose]);
@@ -57,7 +61,14 @@ export function TopBar() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   // Mounted from the first open on (the sheet animates out and returns focus).
   const [settingsMounted, setSettingsMounted] = useState(false);
+  // Bumped when a failed download is tried again: a new fiber for the fresh lazy().
+  const [settingsAttempt, setSettingsAttempt] = useState(0);
   const openSettings = () => {
+    if (settingsFailed) {
+      settingsFailed = false;
+      SettingsSheet = loadSettings();
+      setSettingsAttempt((n) => n + 1);
+    }
     setSettingsMounted(true);
     setSettingsOpen(true);
   };
@@ -131,7 +142,7 @@ export function TopBar() {
       </div>
       {settingsMounted && (
         <Suspense fallback={null}>
-          <SettingsSheet open={settingsOpen} onClose={closeSettings} />
+          <SettingsSheet key={settingsAttempt} open={settingsOpen} onClose={closeSettings} />
         </Suspense>
       )}
     </header>

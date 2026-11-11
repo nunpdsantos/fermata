@@ -272,7 +272,9 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
     if (neck) {
       // The whole neck at once: frets 1–12, or 1–15 when the position or
       // the chord shape reaches past the 12th fret.
-      let reach = positionNumber !== null ? positionNumber + 4 : 0;
+      // The Open position at a capo spans the capo and the five frets above
+      // it, as the dock draws it (capo 9: frets 9–14 — final review of wave 2).
+      let reach = positionNumber === null ? 0 : positionNumber === OPEN_POSITION && capo > 0 ? capo + 5 : positionNumber + 4;
       if (mode === 'chord' && currentShape) {
         for (const pos of currentShape.shape.strings) {
           if (pos.fret !== null) reach = Math.max(reach, currentShape.baseFret + pos.fret);
@@ -449,6 +451,15 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
   // Position labels for chord shapes
   const positionLabels = useMemo(() => {
     const baseLabels = chordShapes.map(({ shape, baseFret }) => {
+      if (capo > 0) {
+        // With a capo (the seat's decision S-3, final review of wave 2): the
+        // library's "G shape" / "E barre" in the learner's language, and a
+        // grip the voicing generator named by ITS fret ("Pos 1", "Open": the
+        // lower chord's) named by the fret it is drawn at.
+        const named = /^(.+) (shape|barre)(\/.+)?$/.exec(shape.shortName ?? '');
+        if (named) return t(named[2] === 'shape' ? 'capo.shapeChip' : 'capo.barreChip', { shape: named[1] }) + (named[3] ?? '');
+        return baseFret === capo ? t('fretboard.chordOpen') : t('fretboard.chordFret', { fret: baseFret });
+      }
       if (shape.shortName) return shape.shortName;
       return baseFret === capo ? t('fretboard.chordOpen') : t('fretboard.chordFret', { fret: baseFret });
     });
@@ -750,7 +761,10 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
   // Notice when a chord has no shape to draw (alternate tunings, W3-05), or
   // when no shape can put the requested bass lowest (W3-11).
   const chordNotice = mode === 'highlight' && selectedChord && !exerciseInputActive
-    ? (isStandardTuning ? t(capo > 0 ? 'capo.noShape' : 'fretboard.noChordShape') : t('fretboard.chordShapesStandardOnly'))
+    ? (isStandardTuning
+      ? t(capo > 0 ? 'capo.noShape' : 'fretboard.noChordShape')
+      // With a capo the frets behind it are blank: not "the whole neck" (final review of wave 2).
+      : t(capo > 0 ? 'capo.shapesStandardOnly' : 'fretboard.chordShapesStandardOnly'))
     : mode === 'chord' && !bassMatched && requestedBass
       ? t('fretboard.bassNotice', { bass: noteToString(requestedBass) })
       : null;

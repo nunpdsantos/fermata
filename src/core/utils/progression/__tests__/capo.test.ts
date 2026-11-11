@@ -5,6 +5,7 @@
 import { describe, it, expect } from 'vitest';
 import { chordFromParsed as fromParsed, type ParsedChord } from '../../chordParser';
 import { capoOptions, hasOpenGrip } from '../capo';
+import { chordBelowCapo } from '../../../constants/guitarChordShapes';
 import { chordSymbol } from '../symbol';
 import type { CapoOption } from '../types';
 import { MAJOR_KEYS, chord, chords, key, oracleScaleNote, pcOf, text } from './fixtures';
@@ -100,3 +101,15 @@ function chordFromParsed(symbol: string) {
 function chordFromParsedNotes(p: ParsedChord) {
   return fromParsed(p).notes;
 }
+
+describe('the shape\'s root is named as the key picker names that key (final review of wave 2)', () => {
+  // A minor chord's shape takes the MINOR key's spelling (C♯m, never D♭m);
+  // a major chord's the major key's (D♭, never C♯).
+  const cases: [string, number, string][] = [
+    ['Fm', 4, 'C#m'], ['Bbm', 1, 'Am'], ['Ebm', 2, 'C#m'], ['Abm', 6, 'Dm'], ['Am', 1, 'G#m'], ['Gm', 6, 'C#m'],
+    ['F', 4, 'Db'], ['Bb', 3, 'G'], ['Eb', 2, 'Db'], ['A', 1, 'Ab'], ['Gm7', 6, 'C#m7'], ['F7', 4, 'Db7'],
+  ];
+  it.each(cases)('%s, capo %i: the %s shape', (symbol, fret, shape) => {
+    expect(chordSymbol(chordBelowCapo(fromParsed(chord(symbol)), fret))).toBe(shape);
+  });
+});

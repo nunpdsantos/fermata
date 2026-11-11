@@ -2,8 +2,8 @@
  * Settings is a lazy chunk (wave 2 integration, the entry file's budget).
  * A download that fails says so in a toast and leaves no half-open dialog,
  * and the app (the top bar and its menu) stays usable. (The retry on the
- * next open builds a fresh lazy(); vitest caches a failed module, so that
- * part is read in TopBar.tsx, not tested here.)
+ * next open is proved in settingsRetry.test.tsx, with a module that loads
+ * and fails through its export.)
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react';

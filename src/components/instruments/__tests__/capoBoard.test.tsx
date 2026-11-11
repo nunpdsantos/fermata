@@ -20,6 +20,8 @@ import { fingeringKey, OPEN_POSITION } from '../../../core/utils/guitarPositions
 import type { Note } from '../../../core/types/music';
 import { Fretboard } from '../Fretboard';
 import { NeckView } from '../NeckView';
+import i18n from '../../../i18n';
+import { chordFromParsed, parseChordSymbol } from '../../../core/utils/chordParser';
 
 const noteOn = vi.fn().mockResolvedValue(60);
 vi.mock('../../../hooks/useAudio', () => ({
@@ -361,6 +363,62 @@ describe('the board\'s capo control', () => {
   });
 });
 
+describe('the capo\'s chips and line in the learner\'s language (the seat\'s decision S-3)', () => {
+  const ENGLISH = /\b(shape|barre|Pos|Open|Fret|the|capo on fret)\b/;
+  const chipTexts = () => within(screen.getByRole('radiogroup', { name: i18n.t('fretboard.chordPosition') })).getAllByRole('radio').map((r) => r.textContent ?? '');
+  afterEach(async () => {
+    await act(async () => { await i18n.changeLanguage('en'); });
+  });
+  const cases: [string, string[], string][] = [
+    ['pt', ['forma de G', 'pestana de E', 'pestana de D', 'pestana de A', 'pestana de C'], 'B♭: a forma de G, capo no traste 3'],
+    ['es', ['forma de G', 'cejilla de E', 'cejilla de D', 'cejilla de A', 'cejilla de C'], 'B♭: la forma de G, capo en el traste 3'],
+  ];
+  it.each(cases)('%s: B♭ at capo 3', async (lang, chips, line) => {
+    await act(async () => { await i18n.changeLanguage(lang); });
+    reset({ language: lang, selectedChord: buildChord(BB, 'major') });
+    render(<Fretboard />);
+    expect(chipTexts()).toEqual(chips);
+    expect(screen.getByTestId('capo-line').textContent).toBe(line);
+  });
+  it.each(['pt', 'es'])('%s: no English word on any chip or line, for every chord of B♭ major and a few more', async (lang) => {
+    await act(async () => { await i18n.changeLanguage(lang); });
+    for (const sym of ['Bb', 'Cm', 'Dm', 'Eb', 'F', 'Gm', 'Adim', 'Bbm7', 'F/A', 'Am(add9)', 'Bbmaj7', 'Bbsus4', 'Bb7b9']) {
+      reset({ language: lang, selectedChord: chordFromParsed(parseChordSymbol(sym)!) });
+      const { unmount } = render(<Fretboard />);
+      for (const text of [...chipTexts(), screen.queryByTestId('capo-line')?.textContent ?? '']) expect(text, `${lang} ${sym}`).not.toMatch(ENGLISH);
+      unmount();
+    }
+  });
+  it('a grip the generator built is named by the fret it is drawn at (Am(add9), capo 3), as its anchor badge says', () => {
+    reset({ selectedChord: chordFromParsed(parseChordSymbol('Am(add9)')!) });
+    render(<Fretboard />);
+    const chips = chipTexts();
+    expect(chips.every((c) => /^(Open|Fret \d+)( #\d+)?$/.test(c)), chips.join(' | ')).toBe(true);
+    // The selected grip's chip names the fret its badge shows.
+    const badge = /(\d+)fr/.exec(grid().textContent ?? '');
+    if (badge) expect(chips[0]).toMatch(new RegExp(`^Fret ${badge[1]}\\b`));
+  });
+  it('without a capo the chips are as before (the library\'s own names)', async () => {
+    await act(async () => { await i18n.changeLanguage('pt'); });
+    reset({ language: 'pt', capoFret: 0, selectedChord: buildChord(N('G'), 'major') });
+    render(<Fretboard />);
+    expect(chipTexts()).toContain('E barre');
+  });
+});
+
+describe('another tuning with a capo (final review of wave 2)', () => {
+  it('the notice says the notes show from the capo up, not on the whole neck; without a capo, as before', () => {
+    reset({ guitarTuningId: 'drop-d', selectedChord: buildChord(BB, 'major') });
+    const first = render(<Fretboard />);
+    expect(screen.getByRole('status').textContent).toContain("Chord shapes are for standard tuning only. Showing the chord's notes from the capo up.");
+    expect(grid().querySelectorAll('[data-out-of-play] [data-dot]')).toHaveLength(0);
+    first.unmount();
+    reset({ guitarTuningId: 'drop-d', selectedChord: buildChord(BB, 'major'), capoFret: 0 });
+    render(<Fretboard />);
+    expect(screen.getByRole('status').textContent).toContain("Chord shapes are for standard tuning only. Showing the chord's notes on the whole neck.");
+  });
+});
+
 describe('where the capo does not apply', () => {
   it('Learn and exercise input draw the neck without it', () => {
     for (const extra of [{ view: 'learn' }, { exerciseInputActive: true }]) {
@@ -385,5 +443,17 @@ describe('the landscape full neck', () => {
     expect(voicing()).toEqual({ 0: 6, 1: 5, 2: 3, 3: 3, 4: 3, 5: 6 });
     // Frets 1–12, the two behind the capo out of play.
     expect(view.querySelectorAll('[data-dock-row="string"]')[0].querySelectorAll('[data-out-of-play]')).toHaveLength(3);
+  });
+  it('the Open position at a high capo: every note the dock shows is on the full neck too (capo 9, E major) — final review of wave 2', async () => {
+    const dots = () => [...grid().querySelectorAll<HTMLElement>('[data-dot]')].map((d) => `${d.dataset.dotString}:${d.dataset.dotFret}`).sort();
+    reset({ selectedKey: N('E'), capoFret: 9, guitarScalePosition: OPEN_POSITION });
+    const dock = render(<Fretboard />);
+    const inDock = dots();
+    expect(inDock.length).toBeGreaterThan(12);
+    expect(inDock.some((d) => Number(d.split(':')[1]) > 12)).toBe(true);
+    dock.unmount();
+    render(<Suspense fallback={null}><NeckView onClose={() => {}} /></Suspense>);
+    await screen.findByRole('grid');
+    expect(dots()).toEqual(inDock);
   });
 });

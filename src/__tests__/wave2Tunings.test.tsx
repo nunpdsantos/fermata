@@ -42,7 +42,9 @@ vi.mock('../components/notation/StaffNotation.tsx', async () => {
 });
 
 const BB = { natural: 'B', accidental: 'b' } as const;
-const SHAPES_ONLY_STANDARD = 'Chord shapes are for standard tuning only. Showing the chord\'s notes on the whole neck.';
+// With the capo on (fret 3, set below) the notice says where the notes are:
+// from the capo up, not "the whole neck" (final review of wave 2).
+const SHAPES_ONLY_STANDARD = 'Chord shapes are for standard tuning only. Showing the chord\'s notes from the capo up.';
 const CAPO_ONLY_STANDARD = "Capo ideas need standard tuning: Fermata's chord shapes are for standard tuning only.";
 
 beforeAll(() => {

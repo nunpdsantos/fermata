@@ -140,7 +140,11 @@ describe('seam 5: lesson 8, the glossary entry and the neck say the same about t
     }
   });
   it('ES never calls the capo "cejilla" outside the entry\'s one note (the app\'s word for the barre)', () => {
-    expect(JSON.stringify(es.capo)).not.toMatch(/cejilla/i);
+    // The one exception: the chip of a barre grip under a capo names the barre
+    // (the seat's decision S-3, final review of wave 2), pinned exactly.
+    const { barreChip, ...capoText } = es.capo;
+    expect(barreChip).toBe('cejilla de {{shape}}');
+    expect(JSON.stringify(capoText)).not.toMatch(/cejilla/i);
     expect(JSON.stringify(es.progression)).not.toMatch(/cejilla/i);
     expect(JSON.stringify(es.tracks)).not.toMatch(/cejilla/i);
   });
