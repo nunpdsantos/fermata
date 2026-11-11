@@ -510,12 +510,22 @@ for (const v of [PHONE, LAPTOP]) {
       const all = fs.existsSync(OWNER_FIXTURE) ? JSON.parse(fs.readFileSync(OWNER_FIXTURE, 'utf8')) : {};
       const changedKeys = [...new Set([...Object.keys(before), ...Object.keys(after)])].filter((k) => after[k] !== before[k]);
       all[v.name] = { ...seen, storageUnchanged: changedKeys.length === 0, changedKeys };
+      // Pixel positions depend on the system's fonts: say where they were measured.
+      all.platform = process.platform;
       fs.mkdirSync('e2e/fixtures', { recursive: true });
       fs.writeFileSync(OWNER_FIXTURE, `${JSON.stringify(all, null, 1)}\n`);
       await context.close();
       return;
     }
-    const main = JSON.parse(fs.readFileSync(OWNER_FIXTURE, 'utf8'))[v.name] as OwnerView;
+    const recorded = JSON.parse(fs.readFileSync(OWNER_FIXTURE, 'utf8'));
+    const main = recorded[v.name] as OwnerView;
+    // The recording's pixel positions hold only on the system that made it
+    // (a level card's text wraps differently under another system's fonts:
+    // GitHub's Linux runners draw one card 19 px taller than the Mac that
+    // recorded it). Elsewhere the same promise is proved without pixels from
+    // the recording: the same buttons in the same order, and the additions
+    // moving nothing above them (below).
+    const samePlatform = recorded.platform === process.platform;
 
     // No start screen, no hint; Full view; his neck; no capo.
     await page.locator('[data-tab="explore"]').click();
@@ -535,14 +545,26 @@ for (const v of [PHONE, LAPTOP]) {
     expect(seen.explore.filter((t) => t !== 'Progressão')).toEqual(main.explore);
     // Learn's overview: unchanged above the level grid (same words, every button where it was), the two track cards below it.
     expect(seen.learn).toEqual(main.learn);
-    expect(seen.learnButtons).toEqual(main.learnButtons);
+    type Rect = [number, number, string];
+    expect((seen.learnButtons as Rect[]).map((b) => b[2])).toEqual((main.learnButtons as Rect[]).map((b) => b[2]));
+    if (samePlatform) expect(seen.learnButtons).toEqual(main.learnButtons);
     await page.locator('[data-tab="learn"]').click();
     const other = page.getByTestId('tracks-other');
     await expect(other).toBeVisible({ timeout: 15_000 });
     await expect(page.getByTestId('tracks-start-here')).toHaveCount(0);
     await expect(other.getByTestId('track-card-sound')).toBeVisible();
     await expect(other.getByTestId('track-card-chords')).toBeVisible();
-    const lastLevel = (main.learnButtons as [number, number, string][]).reduce((m, [top, h]) => Math.max(m, top + h), 0);
+    // On every system: every button of the overview stands exactly where it
+    // stands with the track cards taken out of the page, and the cards come
+    // below the last of them.
+    await page.waitForTimeout(300);
+    const withCards = await rectsOf(page, '#learn-panel button', '[data-testid="tracks-other"]') as Rect[];
+    await other.evaluate((el) => { (el as HTMLElement).style.display = 'none'; });
+    const withoutCards = await rectsOf(page, '#learn-panel button', '[data-testid="tracks-other"]') as Rect[];
+    await other.evaluate((el) => { (el as HTMLElement).style.display = ''; });
+    expect(withCards.length).toBe((main.learnButtons as Rect[]).length);
+    expect(withCards).toEqual(withoutCards);
+    const lastLevel = withCards.reduce((m, [top, h]) => Math.max(m, top + h), 0);
     expect((await other.boundingBox())!.y).toBeGreaterThanOrEqual(lastLevel);
     // Level 1: as on main (its counts included).
     expect(seen.level1).toEqual(main.level1);

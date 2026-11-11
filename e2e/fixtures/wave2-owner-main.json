@@ -643,5 +643,6 @@
   ],
   "storageUnchanged": true,
   "changedKeys": []
- }
+ },
+ "platform": "darwin"
 }
