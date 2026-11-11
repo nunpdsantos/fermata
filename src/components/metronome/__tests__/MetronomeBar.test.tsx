@@ -18,6 +18,7 @@ import { useLoopState } from '../../explore/progression/loopController';
 import { _resetClicksForTesting } from '../../../services/metronome/clickVoice';
 import { measureToastRoom, resetToastLayoutForTests } from '../../layout/toastLayout';
 import { METRONOME_TEXT } from '../../../i18n/metronomeTool';
+import { Sheet } from '../../ui/Sheet';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -244,6 +245,60 @@ describe('the bar', () => {
     const word = within(bar).getByText('Tempo');
     expect(word.closest('button')).not.toBeNull();
     expect(word.closest('.metro-label')).not.toBeNull();
+  });
+});
+
+describe('where the bar goes on the page (the wiring of placement.ts; jsdom lays nothing out, so the boxes are given)', () => {
+  const box = (el: Element, top: number, bottom: number, left = 0, right = 1024) => {
+    (el as HTMLElement).getBoundingClientRect = () => ({ top, bottom, left, right, width: right - left, height: bottom - top, x: left, y: top, toJSON: () => ({}) }) as DOMRect;
+  };
+  const placed = (bar: HTMLElement) => ({ top: parseFloat(bar.style.top), bottom: parseFloat(bar.style.top) + 52 });
+  let extra: HTMLElement[] = [];
+  const add = (testId: string, top: number, bottom: number) => {
+    const el = document.createElement('div');
+    el.setAttribute('data-testid', testId);
+    document.body.appendChild(el);
+    box(el, top, bottom);
+    extra.push(el);
+    return el;
+  };
+  afterEach(() => {
+    for (const el of extra) el.remove();
+    extra = [];
+  });
+
+  it('above the instrument: the floor is the TOP of the dock, not the window\'s foot or the dock\'s bottom', async () => {
+    add('instrument-dock', 500, 768);
+    const bar = await openBar();
+    await waitFor(() => expect(placed(bar).bottom).toBeLessThanOrEqual(500));
+    expect(placed(bar).top).toBeGreaterThanOrEqual(0);
+  });
+
+  it('never over a check\'s answers: above them when the place over the instrument would cover them', async () => {
+    add('instrument-dock', 560, 768);
+    add('check-answer-zone', 380, 540);
+    const bar = await openBar();
+    await waitFor(() => expect(placed(bar).bottom).toBeLessThanOrEqual(380));
+  });
+
+  it('with the guitar practice sheet open: the bar is inside the sheet (its companions slot), so ■ is above the scrim', async () => {
+    render(<Sheet open onClose={() => {}} title="Practice" closeLabel="Close" companions><p>Practice</p></Sheet>);
+    const slot = document.querySelector('[data-sheet-companions]');
+    expect(slot).not.toBeNull();
+    expect(slot!.closest('[aria-modal="true"]')).not.toBeNull();
+    const bar = await openBar();
+    await waitFor(() => expect(slot!.contains(bar)).toBe(true));
+    expect(within(bar).getByRole('button', { name: 'Start the metronome' })).toBeTruthy();
+  });
+
+  it('✕ inside the sheet: focus stays in the sheet (not on "⋯" behind its scrim)', async () => {
+    render(<Sheet open onClose={() => {}} title="Practice" closeLabel="Close" companions><p>Practice</p></Sheet>);
+    const bar = await openBar();
+    const dialog = document.querySelector('[data-sheet-companions]')!.closest<HTMLElement>('[aria-modal="true"]')!;
+    await waitFor(() => expect(dialog.contains(bar)).toBe(true));
+    fireEvent.click(within(bar).getByRole('button', { name: 'Close the metronome' }));
+    expect(screen.queryByRole('region', { name: 'Metronome' })).toBeNull();
+    expect(dialog.contains(document.activeElement)).toBe(true);
   });
 });
 

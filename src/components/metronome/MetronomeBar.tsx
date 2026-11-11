@@ -18,6 +18,7 @@ import {
 import { clickAudioAvailable } from '../../services/metronome/clickVoice.ts';
 import { TapTempo } from '../../services/metronome/tapTempo.ts';
 import { GUTTER, placeMetronome, type Box, type MetronomePlace } from './placement.ts';
+import { focusableIn } from '../ui/focus.ts';
 
 const REDUCED_MOTION = '(prefers-reduced-motion: reduce)';
 /** A first guess at the bar's width on a tablet / laptop, before it has been drawn (it is as wide as its controls). */
@@ -220,10 +221,18 @@ export function MetronomeBar({ onClose, focusOnOpen = true, onFocused }: {
   }, [compact]);
 
   const close = () => {
+    // Inside a sheet (the guitar practice sheet), focus stays in the sheet,
+    // where the sheet itself puts it when it opens: "⋯" is behind its scrim
+    // (wave 3 final review). Elsewhere it goes back to "⋯".
+    const bar = barRef.current;
+    const sheet = bar?.closest<HTMLElement>('[aria-modal="true"]') ?? null;
+    const back = sheet
+      ? focusableIn(sheet).find((el) => !bar?.contains(el)) ?? sheet
+      : document.querySelector<HTMLElement>('[data-testid="app-menu"] button');
     stopMetronome('closed');
     tapper.current.reset();
     onClose();
-    document.querySelector<HTMLElement>('[data-testid="app-menu"] button')?.focus({ preventScroll: true });
+    back?.focus({ preventScroll: true });
   };
 
   const toggle = () => (running ? stopMetronome('user') : startMetronome());
