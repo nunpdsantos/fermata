@@ -18,8 +18,10 @@ import {
 } from '../../core/utils/chordParser.ts';
 import { getChordCompletions, parseVerbalChord } from '../../core/utils/chordHints.ts';
 import { parseScaleSymbol, formatParsedScaleName } from '../../core/utils/scaleParser.ts';
-import { findModulesByQuery } from '../../data/moduleIndex.ts';
+import { findModulesByQuery, MODULE_INDEX, type ModuleIndexEntry } from '../../data/moduleIndex.ts';
 import type { LocalizedModuleIndex } from '../../data/moduleIndexI18n.ts';
+import { trackForProfile, trackOfModule } from '../../data/tracks.ts';
+import { getLearnerProfile, type LearnerProfile } from '../../state/learnerProfile.ts';
 import { resolveTheoryQuery, isBareSolfege } from '../../utils/theoryQuery.ts';
 import { applyResolvedTheoryQuery } from '../../utils/queryExecutor.ts';
 
@@ -37,11 +39,38 @@ const MODE_TO_SCALE: Record<string, ScaleType> = {
   aeolian: 'natural_minor',
 };
 
+const LESSON_HITS = 4;
+
+/**
+ * The lesson hits for a learner (the seat's decision S-4, wave 2): the
+ * lessons that are not track lessons — plus, for a 'new' / 'player' learner,
+ * their own track's — ranked as `findModulesByQuery` ranks them, up to four;
+ * any other track lesson only in a slot they leave empty, after them. For no
+ * profile or 'theory' that is exactly main's result, from before the track
+ * lessons joined the index. `ranked` is every match, best first (filtering a
+ * stably sorted list keeps the order a filtered index would give).
+ */
+function lessonHitsFor(ranked: readonly ModuleIndexEntry[], profile: LearnerProfile | null): ModuleIndexEntry[] {
+  const own = trackForProfile(profile)?.id ?? null;
+  const first: ModuleIndexEntry[] = [];
+  const after: ModuleIndexEntry[] = [];
+  for (const entry of ranked) {
+    const track = trackOfModule(entry.id)?.id ?? null;
+    (track === null || track === own ? first : after).push(entry);
+  }
+  return [...first, ...after].slice(0, LESSON_HITS);
+}
+
 /**
  * Ranked Cmd+K results. `localized` is the Portuguese/Spanish module index
- * (when loaded) so lesson hits match and display in the app language.
+ * (when loaded) so lesson hits match and display in the app language;
+ * `profile` (default: the store's) decides where track lessons rank.
  */
-export function getResults(query: string, localized?: LocalizedModuleIndex | null): SearchResult[] {
+export function getResults(
+  query: string,
+  localized?: LocalizedModuleIndex | null,
+  profile: LearnerProfile | null = getLearnerProfile(),
+): SearchResult[] {
   const q = query.trim();
   if (!q) return [];
 
@@ -209,7 +238,8 @@ export function getResults(query: string, localized?: LocalizedModuleIndex | nul
 
   // Learn module lookup — independent of scale/chord parsing so users can
   // search for concepts like "dorian", "tritone", "suspension", "fugue".
-  const moduleHits = findModulesByQuery(q, 4, localized);
+  // Level lessons first for a learner without a track (lessonHitsFor).
+  const moduleHits = lessonHitsFor(findModulesByQuery(q, MODULE_INDEX.length, localized), profile);
   for (const mod of moduleHits) {
     if (results.length >= 10) break;
     const key = `lesson:${mod.id}`;

@@ -6,6 +6,7 @@ import { getResults, type SearchResultType } from './quickSearchResults.ts';
 import { DEGREE_COLORS } from '../../design/tokens/colors.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
 import { useLocalizedModuleIndex } from '../../hooks/useLocalizedModuleIndex.ts';
+import { useLearnerProfile } from '../../state/learnerProfile.ts';
 
 const TYPE_KEYS: Record<SearchResultType, string> = {
   Scale: 'search.typeScale',
@@ -28,8 +29,14 @@ export function QuickSearch() {
   // Portuguese/Spanish lesson titles and keywords (lazy; English until loaded).
   const language = useAppStore((s) => s.language);
   const localizedIndex = useLocalizedModuleIndex(language);
+  // Where track lessons rank among the lesson hits (level lessons first
+  // without a track).
+  const learnerProfile = useLearnerProfile();
 
-  const results = useMemo(() => getResults(query, localizedIndex), [query, localizedIndex]);
+  const results = useMemo(
+    () => getResults(query, localizedIndex, learnerProfile),
+    [query, localizedIndex, learnerProfile],
+  );
 
   // Reset selection when results change
   useEffect(() => {
