@@ -42,6 +42,8 @@ const OPEN_MAJOR = ['C', 'A', 'G', 'E', 'D'] as const;
 const OPEN_MINOR = ['A', 'E', 'D'] as const;
 /** The keys the chords track works in (l1u35m2 onwards). */
 const TRACK_KEYS = ['G', 'C', 'D', 'A', 'E'] as const;
+/** The keys whose seven notes the chords track spells out (G, C, D: see below). */
+const SPELLED_KEYS = ['G', 'C', 'D'] as const;
 
 /**
  * The Roman-numeral questions a track lesson opens: "What is IV in G major?"
@@ -53,31 +55,41 @@ const ROMAN_IN_KEY = ['drill.prompts.degreeToChord', 'drill.prompts.chordToDegre
 
 /**
  * The track lessons' table. Every row was checked against the items it lets
- * through (`drillUnlocks.test.ts` prints five of each, in English):
+ * through (`drillUnlocks.test.ts` prints five of each, in English) and, at
+ * integration (2026-11-10), against the written lessons' text: a row gives
+ * only what a learner who did that lesson (and the track's lessons before
+ * it) has been shown.
+ *  - `scale` (l1u34m4): C and G major. The lesson builds both (G with its
+ *    F♯); F major needs B♭, and nothing in the sound track says why it is
+ *    B♭ and not A♯ (one letter per note), so F waits.
  *  - `roman` (l1u35m2, m3): the two "which chord / which degree" questions
- *    only (not "is it diatonic?"); m3 gives I–vi — vii° (diminished) is not a
- *    minor chord of the key, which is what the lesson is about.
- *  - `function` (l1u35m4): the chord-function question only (cadences need
- *    names the lesson does not give; "V7 of" needs the seventh), in G, C and D
- *    — the bank asks it in C, G, D, F and B♭ only — and without vii°.
- *  - `seventh` (l1u35m7): the open-string dominant sevenths (C7 A7 G7 E7 D7)
- *    and minor sevenths (Am7 Em7 Dm7); major 7th, half-diminished and
- *    diminished sevenths wait for Level 3.
+ *    only (not "is it diatonic?"). m2 gives I, IV and V in G, C, D, A and E,
+ *    as its text does. m3 gives I–vi in G, C and D only: its text names the
+ *    minor chords of those three keys and never those of A or E; vii°
+ *    (diminished) is not a minor chord of the key, which is what it is about.
+ *  - `function` is left to its level lesson: "Home and away" (l1u35m4) calls
+ *    I home and IV the softer way home, but never uses the answers' words
+ *    (tonic / subdominant (pre-dominant) / dominant), nor says what ii or vi do.
+ *  - `seventh` (l1u35m7): the open-string dominant sevenths (C7 A7 G7 E7 D7).
+ *    The lesson builds the dominant 7th and never a minor seventh chord, so
+ *    Am7 / Em7 / Dm7 wait, with major 7th, half-diminished and diminished
+ *    sevenths, for Level 3.
+ *  - `scale` (l1u35m9): G, C and D major, the keys whose seven notes the
+ *    chords track spells out (G in m2 and m9; C's chord roots in m3; D in m3,
+ *    m4 and m9). A and E major are never spelled as scales there.
  *  - `degree` (l1u35m9) is left out: it asks for the degree NAMES (supertonic,
- *    submediant…); the lesson gives the scale for a melody. Its `scale` row
- *    stands.
+ *    submediant…); the lesson gives the scale for a melody.
  */
 export const TRACK_UNLOCKS: Readonly<Record<string, readonly DrillUnlockRow[]>> = {
   // Sound track ("Start with sound")
-  l1u34m4: [{ family: 'scale', keys: ['C', 'G', 'F'] }],
+  l1u34m4: [{ family: 'scale', keys: ['C', 'G'] }],
   l1u34m5: [{ family: 'triad', chords: [...chords('major', 'C', 'G', 'F'), ...chords('minor', 'A', 'E', 'D')] }],
   // Chords track ("From the chords you know")
   l1u35m2: [{ family: 'roman', keys: TRACK_KEYS, degrees: [1, 4, 5], prompts: ROMAN_IN_KEY }],
-  l1u35m3: [{ family: 'roman', keys: TRACK_KEYS, degrees: [1, 2, 3, 4, 5, 6], prompts: ROMAN_IN_KEY }],
-  l1u35m4: [{ family: 'function', keys: ['G', 'C', 'D'], degrees: [1, 2, 4, 5, 6], prompts: ['drill.prompts.chordFunction'] }],
+  l1u35m3: [{ family: 'roman', keys: SPELLED_KEYS, degrees: [1, 2, 3, 4, 5, 6], prompts: ROMAN_IN_KEY }],
   l1u35m6: [{ family: 'triad', chords: [...chords('major', ...OPEN_MAJOR), ...chords('minor', ...OPEN_MINOR)] }],
-  l1u35m7: [{ family: 'seventh', chords: [...chords('dominant7', ...OPEN_MAJOR), ...chords('minor7', ...OPEN_MINOR)] }],
-  l1u35m9: [{ family: 'scale', keys: TRACK_KEYS }],
+  l1u35m7: [{ family: 'seventh', chords: chords('dominant7', ...OPEN_MAJOR) }],
+  l1u35m9: [{ family: 'scale', keys: SPELLED_KEYS }],
 };
 
 /**

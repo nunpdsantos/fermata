@@ -153,7 +153,7 @@ describe('a new learner after lessons', () => {
     seedLessons(['l1u34m4']);
     act(() => document.dispatchEvent(new Event('visibilitychange')));
     expect(screen.queryByTestId('drill-follow-empty')).toBeNull();
-    expect(within(screen.getByTestId('drill-follow-summary')).getByText(/^Scales/).textContent).toBe('Scales · So far: C, G, F');
+    expect(within(screen.getByTestId('drill-follow-summary')).getByText(/^Scales/).textContent).toBe('Scales · So far: C, G'); // integration: F major left out of l1u34m4
   });
 });
 

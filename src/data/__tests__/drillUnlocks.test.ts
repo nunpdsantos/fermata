@@ -122,7 +122,8 @@ describe('unlockedFor', () => {
   it('both tracks done: only the rows, never a whole family', () => {
     const unlock = unlockedFor([...TRACK_LESSONS]);
     expect(unlock.whole.size).toBe(0);
-    expect(new Set(unlock.rows.map((r) => r.family))).toEqual(new Set(['scale', 'triad', 'roman', 'function', 'seventh']));
+    // Integration: no track lesson opens `function` (its words are not taught there).
+    expect(new Set(unlock.rows.map((r) => r.family))).toEqual(new Set(['scale', 'triad', 'roman', 'seventh']));
   });
 });
 
@@ -186,20 +187,19 @@ describe('each row, pinned', () => {
   };
   const OPEN_CHORDS = ['A:major', 'A:minor', 'C:major', 'D:major', 'D:minor', 'E:major', 'E:minor', 'G:major'];
   const EXPECTED: Record<string, ReturnType<typeof signature>> = {
-    l1u34m4: { count: 21, families: ['scale'], keys: ['C', 'F', 'G'], chords: [], degrees: [], prompts: ['degreeOf', 'spellScale'] },
+    l1u34m4: { count: 14, families: ['scale'], keys: ['C', 'G'], chords: [], degrees: [], prompts: ['degreeOf', 'spellScale'] },
     l1u34m5: {
       count: 12, families: ['triad'], keys: [], degrees: [], prompts: ['nameChord', 'spellChord'],
       chords: ['A:minor', 'C:major', 'D:minor', 'E:minor', 'F:major', 'G:major'],
     },
     l1u35m2: { count: 30, families: ['roman'], keys: ['A', 'C', 'D', 'E', 'G'], chords: [], degrees: ['1', '4', '5'], prompts: ['chordToDegree', 'degreeToChord'] },
-    l1u35m3: { count: 60, families: ['roman'], keys: ['A', 'C', 'D', 'E', 'G'], chords: [], degrees: ['1', '2', '3', '4', '5', '6'], prompts: ['chordToDegree', 'degreeToChord'] },
-    l1u35m4: { count: 15, families: ['function'], keys: ['C', 'D', 'G'], chords: [], degrees: ['1', '2', '4', '5', '6'], prompts: ['chordFunction'] },
+    l1u35m3: { count: 36, families: ['roman'], keys: ['C', 'D', 'G'], chords: [], degrees: ['1', '2', '3', '4', '5', '6'], prompts: ['chordToDegree', 'degreeToChord'] },
     l1u35m6: { count: 16, families: ['triad'], keys: [], chords: OPEN_CHORDS, degrees: [], prompts: ['nameChord', 'spellChord'] },
     l1u35m7: {
-      count: 16, families: ['seventh'], keys: [], degrees: [], prompts: ['nameChord', 'spellChord'],
-      chords: ['A:dominant7', 'A:minor7', 'C:dominant7', 'D:dominant7', 'D:minor7', 'E:dominant7', 'E:minor7', 'G:dominant7'],
+      count: 10, families: ['seventh'], keys: [], degrees: [], prompts: ['nameChord', 'spellChord'],
+      chords: ['A:dominant7', 'C:dominant7', 'D:dominant7', 'E:dominant7', 'G:dominant7'],
     },
-    l1u35m9: { count: 35, families: ['scale'], keys: ['A', 'C', 'D', 'E', 'G'], chords: [], degrees: [], prompts: ['degreeOf', 'spellScale'] },
+    l1u35m9: { count: 21, families: ['scale'], keys: ['C', 'D', 'G'], chords: [], degrees: [], prompts: ['degreeOf', 'spellScale'] },
   };
 
   it('the table has exactly these rows', () => {
@@ -216,14 +216,15 @@ describe('each row, pinned', () => {
     const items = admitted([...TRACK_LESSONS]);
     // No vii° (diminished) in Roman numerals or harmonic function.
     expect(items.some((i) => (i.family === 'roman' || i.family === 'function') && i.degree === 7)).toBe(false);
-    // No major 7th, half-diminished or diminished seventh.
-    expect(items.some((i) => i.family === 'seventh' && i.chord!.quality !== 'dominant7' && i.chord!.quality !== 'minor7')).toBe(false);
+    // No minor 7th, major 7th, half-diminished or diminished seventh (integration: the lesson builds only the dominant 7th).
+    expect(items.some((i) => i.family === 'seventh' && i.chord!.quality !== 'dominant7')).toBe(false);
     // No "is it diatonic?", no patterns, no cadences, no "V7 of".
     expect(items.some((i) => i.family === 'roman' && !['drill.prompts.degreeToChord', 'drill.prompts.chordToDegree'].includes(i.promptKey))).toBe(false);
-    expect(items.some((i) => i.family === 'function' && i.promptKey !== 'drill.prompts.chordFunction')).toBe(false);
-    // No minor key anywhere (lower-case key = minor), and nothing outside the tracks' five families.
+    // No harmonic function at all (integration: the track never teaches its words).
+    expect(items.some((i) => i.family === 'function')).toBe(false);
+    // No minor key anywhere (lower-case key = minor), and nothing outside the tracks' four families.
     expect(items.some((i) => i.key !== undefined && /^[a-g]/.test(i.key))).toBe(false);
-    expect(new Set(items.map((i) => i.family))).toEqual(new Set(['scale', 'triad', 'roman', 'function', 'seventh']));
+    expect(new Set(items.map((i) => i.family))).toEqual(new Set(['scale', 'triad', 'roman', 'seventh']));
   });
 });
 
