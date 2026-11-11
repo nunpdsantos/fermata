@@ -293,6 +293,7 @@ describe('what stops it leaves no click queued', () => {
     // The rhythm itself was handed to core audio (its count-in and its notes), not to the metronome's clock.
     expect(voice.playNote).toHaveBeenCalled();
     const n = metroSources().length;
+    await new Promise((r) => setTimeout(r, 30)); // timers too, not only the audio clock
     advance(6); // longer than the count-in and the rhythm
     expect(isMetronomeRunning()).toBe(false);
     expect(metroSources().length).toBe(n);
