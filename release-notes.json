@@ -2,6 +2,16 @@
   "$comment": "Release notes for the update prompt (W9b). Newest first. Adding an entry = a new release: increment `release` by 1, one line per language (EN / PT-PT / ES, max 160 characters, no line breaks). `critical: true` marks an emergency: every app on an older release applies it at the next safe moment, even after the learner chose Later. The build reads this file (vite.config.ts) and publishes dist/version.json; a deploy without a new entry shows no What's-new line. CLAUDE.md, PWA section.",
   "releases": [
     {
+      "release": 10,
+      "date": "2026-11-11",
+      "critical": false,
+      "notes": {
+        "en": "A Progression panel that names the key your chords fit and loops them, a capo on the guitar, two sets of short lessons, and Drill that can follow your lessons.",
+        "pt": "Painel Progressão que diz em que tonalidade os teus acordes encaixam e os repete, capo na guitarra, duas séries de lições e Treino que pode seguir as lições.",
+        "es": "Panel Progresión que dice en qué tonalidad encajan tus acordes y los repite, capo en la guitarra, dos series de lecciones cortas y Práctica que puede seguirlas."
+      }
+    },
+    {
       "release": 9,
       "date": "2026-11-10",
       "critical": false,
