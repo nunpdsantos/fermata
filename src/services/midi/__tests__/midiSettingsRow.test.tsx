@@ -87,6 +87,33 @@ describe('Settings → MIDI keyboard', () => {
     expect(within(row()).getByRole('button', { name: 'Use a MIDI keyboard' }).getAttribute('aria-pressed')).toBe('false');
   });
 
+  it('an error: the chip is off, and the sentence says what one tap does (turn it on again), in EN / PT / ES', async () => {
+    const request = installMidi(() => Promise.reject(Object.assign(new Error('busy'), { name: 'AbortError' })));
+    render(<SettingsSheet open onClose={() => {}} />);
+    await act(() => turnMidiKeyboard(true));
+    expect(useMidiStatus.getState().state).toBe('error');
+    const chip = within(row()).getByRole('button', { name: 'Use a MIDI keyboard' });
+    expect(chip.getAttribute('aria-pressed')).toBe('false');
+    expect(within(row()).getByTestId('midi-status').textContent).toBe(
+      'Your browser could not connect to the MIDI keyboard. Turn this setting on again to try once more.',
+    );
+    expect(MIDI_INPUT_TEXT.pt.error).toBe('O teu navegador não conseguiu aceder ao teclado MIDI. Volta a ativar esta opção para tentar de novo.');
+    expect(MIDI_INPUT_TEXT.es.error).toBe('Tu navegador no ha podido acceder al teclado MIDI. Vuelve a activar esta opción para intentarlo de nuevo.');
+    // One tap on the chip, off as it shows, asks again.
+    await act(async () => {
+      fireEvent.click(chip);
+      await new Promise((r) => setTimeout(r, 0));
+    });
+    expect(request).toHaveBeenCalledTimes(2);
+  });
+
+  it('the browsers named where there is no Web MIDI are ones that have it (MDN browser-compat-data, read 2026-11-11), word for word', () => {
+    // Chrome 43+, and Edge, Opera, Chrome on Android mirroring it; Firefox for Android, Safari and iOS: none.
+    expect(MIDI_INPUT_TEXT.en.unsupported).toBe('This browser cannot use a MIDI keyboard. Chrome, Edge or Opera on a computer, or Chrome on Android, can.');
+    expect(MIDI_INPUT_TEXT.pt.unsupported).toBe('Este navegador não consegue usar um teclado MIDI. O Chrome, o Edge ou o Opera num computador, ou o Chrome no Android, conseguem.');
+    expect(MIDI_INPUT_TEXT.es.unsupported).toBe('Este navegador no puede usar un teclado MIDI. Chrome, Edge u Opera en un ordenador, o Chrome en Android, sí pueden.');
+  });
+
   it.each(['pt', 'es'] as const)('%s: the row in its language', async (lang) => {
     await act(() => i18n.changeLanguage(lang));
     installMidi(async () => fakeAccess([['a', 'Stage Piano']]));

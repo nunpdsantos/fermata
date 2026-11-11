@@ -6,7 +6,7 @@
   "connected": "Connected: {{names}}",
   "none": "No MIDI keyboard is connected. Plug one in and Fermata hears it straight away.",
   "denied": "Your browser did not allow it, so Fermata cannot hear a MIDI keyboard. You can change this in your browser’s settings for this site.",
-  "error": "Your browser could not connect to the MIDI keyboard. Turn this setting off and on again to try once more.",
+  "error": "Your browser could not connect to the MIDI keyboard. Turn this setting on again to try once more.",
   "unsupported": "This browser cannot use a MIDI keyboard. Chrome, Edge or Opera on a computer, or Chrome on Android, can.",
   "soundBlocked": "Click or tap the page once so Fermata can sound what you play."
 }
