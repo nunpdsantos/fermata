@@ -195,7 +195,8 @@ test('4. Drop D: the panel says capo ideas need standard tuning, and the neck sa
   const dock = page.getByTestId('instrument-dock');
   await expect(dock.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
   await page.getByRole('button', { name: 'Bb Major chord, degree 1' }).click();
-  await expect(dock.getByText('Chord shapes are for standard tuning only. Showing the chord\'s notes on the whole neck.')).toBeVisible();
+  // With the capo on (3) the frets behind it are blank: "from the capo up" (final review of wave 2).
+  await expect(dock.getByText('Chord shapes are for standard tuning only. Showing the chord\'s notes from the capo up.')).toBeVisible();
   await expect(dock.getByTestId('capo-line')).toHaveCount(0);
   await page.getByTestId('progression-toggle').click();
   await expect(page.getByTestId('progression-capo-standard')).toHaveText("Capo ideas need standard tuning: Fermata's chord shapes are for standard tuning only.");
