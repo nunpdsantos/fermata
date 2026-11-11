@@ -2,6 +2,16 @@
   "$comment": "Release notes for the update prompt (W9b). Newest first. Adding an entry = a new release: increment `release` by 1, one line per language (EN / PT-PT / ES, max 160 characters, no line breaks). `critical: true` marks an emergency: every app on an older release applies it at the next safe moment, even after the learner chose Later. The build reads this file (vite.config.ts) and publishes dist/version.json; a deploy without a new entry shows no What's-new line. CLAUDE.md, PWA section.",
   "releases": [
     {
+      "release": 11,
+      "date": "2026-11-11",
+      "critical": false,
+      "notes": {
+        "en": "A tuner that listens through the microphone, checks you answer by playing your instrument, MIDI keyboards and a metronome. What you play stays on the device.",
+        "pt": "Afinador que ouve pelo microfone, verificações a que respondes a tocar o teu instrumento, teclados MIDI e metrónomo. O que tocas nunca sai do dispositivo.",
+        "es": "Afinador que escucha por el micrófono, comprobaciones que respondes tocando tu instrumento, teclados MIDI y metrónomo. Lo que tocas nunca sale del dispositivo."
+      }
+    },
+    {
       "release": 10,
       "date": "2026-11-11",
       "critical": false,
