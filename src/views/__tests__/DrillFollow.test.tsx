@@ -28,7 +28,7 @@ vi.mock('../../components/drill/answerAudio', () => ({ playAnswerAudio: vi.fn() 
 
 const BANK = generateDrillBank({ includeRead: true });
 const BY_ID = new Map(BANK.map((i) => [i.id, i]));
-const TRACK_CHORDS = ['C:major', 'G:major', 'F:major', 'A:minor', 'E:minor', 'D:minor'];
+const TRACK_CHORDS = ['C:major', 'G:major', 'F:major', 'A:minor'];
 
 const intro = () => screen.queryByTestId('drill-intro');
 const seedLessons = (ids: string[]) =>
@@ -134,7 +134,7 @@ describe('a new learner after lessons', () => {
     seedLessons(['l1u34m5']);
     render(<DrillView />);
     const summary = screen.getByTestId('drill-follow-summary');
-    expect(within(summary).getByText(/^Triads/).textContent).toBe('Triads · So far: C, G, F, Am, Em, Dm');
+    expect(within(summary).getByText(/^Triads/).textContent).toBe('Triads · So far: C, G, F, Am');
     expect(screen.getByTestId('drill-follow-next').textContent).toBe('Next: Scales, with the lesson “A Scale Is a Ladder”.');
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Start' })));
     const session = useDrillStore.getState().activeSession!;

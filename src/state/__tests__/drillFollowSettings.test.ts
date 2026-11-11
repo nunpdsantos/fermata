@@ -160,7 +160,7 @@ describe('composeSession with the unlock filter', () => {
     for (const id of queue) {
       const item = BY_ID.get(id)!;
       expect(item.family).toBe('triad');
-      expect(['C:major', 'G:major', 'F:major', 'A:minor', 'E:minor', 'D:minor']).toContain(`${item.chord!.root}:${item.chord!.quality}`);
+      expect(['C:major', 'G:major', 'F:major', 'A:minor']).toContain(`${item.chord!.root}:${item.chord!.quality}`);
     }
   });
 

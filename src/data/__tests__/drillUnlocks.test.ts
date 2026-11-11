@@ -82,12 +82,12 @@ describe('unlockedFor', () => {
     expect(nothingUnlocked(unlockedFor(['nope', 'l1u33m3', 'l9u32m5']))).toBe(true);
   });
 
-  it('a track lesson (l1u34m5): only triads, only C G F major and A E D minor chords', () => {
+  it('a track lesson (l1u34m5): only triads, only C G F major and A minor (the chords it spells)', () => {
     const items = admitted(['l1u34m5']);
-    expect(items.length).toBe(12); // 6 chords × (spell, name)
+    expect(items.length).toBe(8); // 4 chords × (spell, name)
     for (const item of items) {
       expect(item.family).toBe('triad');
-      expect(['C:major', 'G:major', 'F:major', 'A:minor', 'E:minor', 'D:minor']).toContain(`${item.chord!.root}:${item.chord!.quality}`);
+      expect(['C:major', 'G:major', 'F:major', 'A:minor']).toContain(`${item.chord!.root}:${item.chord!.quality}`);
     }
     expect(openFamilies(unlockedFor(['l1u34m5']))).toEqual([{ family: 'triad', whole: false }]);
   });
@@ -189,8 +189,8 @@ describe('each row, pinned', () => {
   const EXPECTED: Record<string, ReturnType<typeof signature>> = {
     l1u34m4: { count: 14, families: ['scale'], keys: ['C', 'G'], chords: [], degrees: [], prompts: ['degreeOf', 'spellScale'] },
     l1u34m5: {
-      count: 12, families: ['triad'], keys: [], degrees: [], prompts: ['nameChord', 'spellChord'],
-      chords: ['A:minor', 'C:major', 'D:minor', 'E:minor', 'F:major', 'G:major'],
+      count: 8, families: ['triad'], keys: [], degrees: [], prompts: ['nameChord', 'spellChord'],
+      chords: ['A:minor', 'C:major', 'F:major', 'G:major'],
     },
     l1u35m2: { count: 30, families: ['roman'], keys: ['A', 'C', 'D', 'E', 'G'], chords: [], degrees: ['1', '4', '5'], prompts: ['chordToDegree', 'degreeToChord'] },
     l1u35m3: { count: 36, families: ['roman'], keys: ['C', 'D', 'G'], chords: [], degrees: ['1', '2', '3', '4', '5', '6'], prompts: ['chordToDegree', 'degreeToChord'] },

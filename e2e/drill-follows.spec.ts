@@ -23,7 +23,7 @@ const WORDS = {
 } as const;
 type Lang = keyof typeof WORDS;
 
-const TRACK_CHORDS = ['C:major', 'G:major', 'F:major', 'A:minor', 'E:minor', 'D:minor'];
+const TRACK_CHORDS = ['C:major', 'G:major', 'F:major', 'A:minor'];
 
 async function open(browser: Browser, v: (typeof VIEWS)[number], lang: Lang, completed: string[]) {
   const context = await browser.newContext({ viewport: v.viewport, isMobile: v.touch, hasTouch: v.touch, reducedMotion: 'reduce', serviceWorkers: 'block' });

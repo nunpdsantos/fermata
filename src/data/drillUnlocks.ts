@@ -59,6 +59,10 @@ const ROMAN_IN_KEY = ['drill.prompts.degreeToChord', 'drill.prompts.chordToDegre
  * integration (2026-11-10), against the written lessons' text: a row gives
  * only what a learner who did that lesson (and the track's lessons before
  * it) has been shown.
+ *  - `triad` (l1u34m5): the chords the lesson spells — C, G and F major, and
+ *    A minor (narrowed in the final review of wave 2: E minor and D minor are
+ *    never spelled in the sound track, and building them from the rule needs
+ *    the E and D major chords, which it never spells either).
  *  - `scale` (l1u34m4): C and G major. The lesson builds both (G with its
  *    F♯); F major needs B♭, and nothing in the sound track says why it is
  *    B♭ and not A♯ (one letter per note), so F waits.
@@ -83,7 +87,7 @@ const ROMAN_IN_KEY = ['drill.prompts.degreeToChord', 'drill.prompts.chordToDegre
 export const TRACK_UNLOCKS: Readonly<Record<string, readonly DrillUnlockRow[]>> = {
   // Sound track ("Start with sound")
   l1u34m4: [{ family: 'scale', keys: ['C', 'G'] }],
-  l1u34m5: [{ family: 'triad', chords: [...chords('major', 'C', 'G', 'F'), ...chords('minor', 'A', 'E', 'D')] }],
+  l1u34m5: [{ family: 'triad', chords: [...chords('major', 'C', 'G', 'F'), ...chords('minor', 'A')] }],
   // Chords track ("From the chords you know")
   l1u35m2: [{ family: 'roman', keys: TRACK_KEYS, degrees: [1, 4, 5], prompts: ROMAN_IN_KEY }],
   l1u35m3: [{ family: 'roman', keys: SPELLED_KEYS, degrees: [1, 2, 3, 4, 5, 6], prompts: ROMAN_IN_KEY }],
