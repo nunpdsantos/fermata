@@ -507,7 +507,8 @@ for (const v of [PHONE, LAPTOP]) {
 
     if (process.env.RECORD_OWNER_MAIN) {
       const all = fs.existsSync(OWNER_FIXTURE) ? JSON.parse(fs.readFileSync(OWNER_FIXTURE, 'utf8')) : {};
-      all[v.name] = { ...seen, storageUnchanged: JSON.stringify(after) === JSON.stringify(before), changedKeys: Object.keys(after).filter((k) => after[k] !== before[k]) };
+      const changedKeys = [...new Set([...Object.keys(before), ...Object.keys(after)])].filter((k) => after[k] !== before[k]);
+      all[v.name] = { ...seen, storageUnchanged: changedKeys.length === 0, changedKeys };
       fs.mkdirSync('e2e/fixtures', { recursive: true });
       fs.writeFileSync(OWNER_FIXTURE, `${JSON.stringify(all, null, 1)}\n`);
       await context.close();
