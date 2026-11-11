@@ -647,19 +647,6 @@
     "intermediate": "Intermédio",
     "advanced": "Avançado"
   },
-  "tour": {
-    "step1Title": "Escolhe o instrumento",
-    "step1Body": "Alterne entre piano e guitarra para ver escalas, acordes e notas em cada instrumento.",
-    "step2Title": "Escolhe tonalidade e escala",
-    "step2Body": "Seleciona uma nota fundamental e um tipo de escala. O instrumento abaixo destaca as notas correspondentes.",
-    "step3Title": "Toca uma nota",
-    "step3Body": "Toca ou clica em qualquer tecla para a ouvir. Experimenta agora!",
-    "step4Title": "Pronto para aprender?",
-    "step4Body": "Vai ao separador Aprender para um curr\u00edculo estruturado com exerc\u00edcios e acompanhamento de progresso.",
-    "skip": "Saltar",
-    "next": "Seguinte",
-    "finish": "Entendido"
-  },
   "chordBuilder": {
     "strip": {
       "label": "Faixa cromática a partir de {{note}}",

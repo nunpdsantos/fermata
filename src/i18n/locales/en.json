@@ -647,19 +647,6 @@
     "intermediate": "Intermediate",
     "advanced": "Advanced"
   },
-  "tour": {
-    "step1Title": "Pick Your Instrument",
-    "step1Body": "Switch between piano and guitar to see scales, chords, and notes on either instrument.",
-    "step2Title": "Choose a Key & Scale",
-    "step2Body": "Select a root note and scale type. The instrument below will highlight the matching notes.",
-    "step3Title": "Play a Note",
-    "step3Body": "Tap or click any key to hear it. Try it now!",
-    "step4Title": "Ready to Learn?",
-    "step4Body": "Head to the Learn tab for a structured curriculum with exercises and progress tracking.",
-    "skip": "Skip",
-    "next": "Next",
-    "finish": "Got it"
-  },
   "chordBuilder": {
     "strip": {
       "label": "Chromatic strip from {{note}}",
