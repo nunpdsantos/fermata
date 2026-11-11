@@ -182,15 +182,6 @@
     "pluck": "Pluck",
     "pluckDesc": "Quick decay, bright attack"
   },
-  "metronome": {
-    "title": "Metronome",
-    "startLabel": "Start metronome",
-    "stopLabel": "Stop metronome",
-    "bpm": "BPM",
-    "tempo": "Tempo in BPM",
-    "volume": "Metronome volume",
-    "timeSig": "Time signature"
-  },
   "chordProg": {
     "title": "Chord Progression",
     "clickToAdd": "Click chords below to build a progression.",
@@ -1400,5 +1391,9 @@
     "menuItem": "Tuner",
     "dockButton": "Tune",
     "loadError": "The tuner did not load. Try again."
+  },
+  "metronomeToolEntry": {
+    "menuItem": "Metronome",
+    "loadFailed": "The metronome did not load. Check the connection and try again."
   }
 }

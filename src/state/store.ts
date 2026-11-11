@@ -11,6 +11,7 @@ import { isAppLanguage } from '../i18n/language.ts';
 import { sanitizeDockDetents, sanitizeDockChosen } from './dock.ts';
 import type { AppState } from './storeTypes.ts';
 import { progressionToSave, sanitizeSavedProgression } from './progressionSave.ts';
+import { metronomeToSave, sanitizeSavedMetronome } from './metronomeSave.ts';
 
 // Re-export types so consumers don't need to change imports
 export type { AppState, ViewMode, InstrumentType, ColorMode, ThemeMode, NeckNutSide, NeckTopString } from './storeTypes.ts';
@@ -138,6 +139,8 @@ export function sanitizePersistedAppState(persisted: unknown): Record<string, un
   // progression (wave 2, optional): chord symbols, tempo, beats — the same
   // object when valid (the backup check compares with Object.is), else gone.
   if ('progression' in state && sanitizeSavedProgression(state.progression) === null) delete state.progression;
+  // metronome (wave 3, optional): tempo and beats in a bar — same rule.
+  if ('metronome' in state && sanitizeSavedMetronome(state.metronome) === null) delete state.metronome;
 
   // Numeric fields: non-finite or out of range falls back to the default.
   for (const [k, { min, max, integer }] of Object.entries(NUMERIC_RANGES)) {
@@ -227,6 +230,9 @@ export const useAppStore = create<AppState>()(
           ...(Number.isInteger(state.capoFret) && state.capoFret >= 1 && state.capoFret <= 9 ? { capoFret: state.capoFret } : {}),
           // Wave 3 (stream K): written only while a MIDI keyboard is on.
           ...(state.midiKeyboard === true ? { midiKeyboard: true } : {}),
+          // Wave 3 (stream M): the metronome's tempo and beats, only once the
+          // learner has changed one (never whether it is running).
+          ...metronomeToSave(state.metronome),
         };
       },
       migrate: (persisted: unknown, version: number) => {

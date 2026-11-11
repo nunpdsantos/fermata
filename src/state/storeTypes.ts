@@ -9,6 +9,7 @@ import type { Note, ScaleType, Chord, PitchedNote } from '../core/types/music.ts
 import type { SynthPresetName } from '../core/types/visual.ts';
 import type { Detent, DockView } from './dock.ts';
 import type { SavedProgression } from './progressionSave.ts';
+import type { SavedMetronome } from './metronomeSave.ts';
 
 // ─── Enums ──────────────────────────────────────────────────────────────────
 
@@ -180,6 +181,10 @@ export interface PreferencesSlice {
    *  off, never asked of the browser. Optional in the v6 save: written only
    *  while on (as `true`). */
   midiKeyboard?: true;
+  /** The metronome's tempo and beats in a bar (wave 3, stream M;
+   *  `state/metronomeSave.ts`). Undefined until the learner changes one.
+   *  Optional in the v6 save: written only once set. Running is never saved. */
+  metronome?: SavedMetronome;
   setColorMode: (mode: ColorMode) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setScaleOctaves: (octaves: 1 | 2) => void;
@@ -191,6 +196,7 @@ export interface PreferencesSlice {
   setExploreDetail: (detail: ExploreDetail) => void;
   setShowSolfege: (on: boolean) => void;
   setProgression: (progression: SavedProgression | undefined) => void;
+  setMetronome: (metronome: SavedMetronome | undefined) => void;
   /**
    * Open (or rest) the instrument dock of the CURRENT view at a detent — the
    * API a Learn exercise calls when it needs the instrument (D-20). No-op in

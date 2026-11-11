@@ -46,10 +46,10 @@ describe('tuner entry points', () => {
     expect(screen.queryByRole('dialog', { name: 'Tuner' })).toBeNull();
   });
 
-  it('the menu gains exactly one item, "Tuner", after "Show me around"', () => {
+  it('the menu reads Settings, Show me around, Tuner, Metronome ("Tuner" right after "Show me around")', () => {
     render(<TopBar />);
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
-    expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Settings', 'Show me around', 'Tuner']);
+    expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome']);
   });
 
   it('guitar: the dock bar gains one button, "Tune", which opens the tuner', () => {
