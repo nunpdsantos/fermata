@@ -2,7 +2,7 @@
   "title": "Afinador",
   "close": "Cerrar el afinador",
   "listening": "Escuchando",
-  "why": "Para decirte qué nota tocas y si está afinada, Fermata escucha por el micrófono; el sonido nunca sale de este dispositivo.",
+  "why": "Para decirte qué nota tocas y si está afinada, Fermata escucha a través del micrófono; el sonido nunca sale de este dispositivo.",
   "start": "Empezar a escuchar",
   "stop": "Dejar de escuchar",
   "asking": "Tu navegador está preguntando si Fermata puede usar el micrófono.",
@@ -15,8 +15,8 @@
     "unsupported": "Este navegador no puede usar un micrófono aquí, así que el afinador no te oye.",
     "busy": "No se ha podido activar el micrófono: puede que otra aplicación lo esté usando. Ciérrala y vuelve a intentarlo.",
     "failed": "No se ha podido activar el micrófono. Vuelve a intentarlo.",
-    "hidden": "Se dejó de escuchar cuando Fermata pasó a segundo plano.",
-    "ended": "El micrófono se desconectó, así que se dejó de escuchar."
+    "hidden": "Fermata ha dejado de escuchar porque ya no estaba en pantalla (por ejemplo, has cambiado a otra aplicación o pestaña).",
+    "ended": "El micrófono se ha desconectado, así que Fermata ha dejado de escuchar."
   },
   "byEar": "Puedes seguir afinando de oído: «Escuchar» toca cada cuerda.",
   "playOne": "Toca una nota y déjala sonar.",
@@ -37,7 +37,7 @@
   "meterLabel": "A qué distancia de la nota",
   "meterLow": "Baja",
   "meterHigh": "Alta",
-  "cents": "100 cents son un <term>semitono</term> (un traste).",
+  "cents": "100 cents son un <term>semitono</term> (en la guitarra, un traste).",
   "stringsHeading": "Cuerdas de la guitarra",
   "tuningName": "<term>Afinación</term>: {{name}}",
   "auto": "Encontrar la cuerda automáticamente",

@@ -114,6 +114,26 @@ describe('detectPitch: one note, E2 to C6', () => {
     }
   });
 
+  it('a strong 2nd harmonic (2.5× the fundamental) is not taken for the octave above', () => {
+    // At half the period the 2nd harmonic lines up and the fundamental cancels:
+    // the NSDF there is about (2.5² − 1) / (2.5² + 1) ≈ 0.72 — a peak a looser
+    // key-maximum rule would pick, one octave too high.
+    const misses: string[] = [];
+    for (const rate of RATES) {
+      for (const midi of NOTES) {
+        const f = hz(midi);
+        const out = new Float32Array(FRAME);
+        for (let i = 0; i < FRAME; i++) {
+          const t = 0.1 + i / rate;
+          out[i] = 0.08 * Math.sin(2 * Math.PI * f * t) + 0.2 * Math.sin(2 * Math.PI * 2 * f * t + 0.7);
+        }
+        const got = heard(out, rate);
+        if (got?.midi !== midi) misses.push(`${midi} at ${rate}: heard ${got?.midi ?? 'nothing'}`);
+      }
+    }
+    expect(misses).toEqual([]);
+  });
+
   it('up to C7 the note is still right (sine)', () => {
     for (let midi = C6; midi <= 96; midi++) {
       for (const rate of RATES) {

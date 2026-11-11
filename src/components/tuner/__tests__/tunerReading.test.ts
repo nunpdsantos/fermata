@@ -2,6 +2,11 @@
 import { describe, expect, it } from 'vitest';
 import { createSmoother, heardName, pickString, stringMidi, targetFor, tuneState } from '../tunerReading';
 import { GUITAR_TUNINGS, TUNING_STANDARD } from '../../../core/constants/guitarTunings';
+import { getGuitarPosition, tuningOpenMidi } from '../../../core/utils/guitarPositions';
+import { centsFrom, midiToFrequency, nearestNote } from '../../../services/microphone/pitch';
+import en from '../../../i18n/tuner/en.json';
+import pt from '../../../i18n/tuner/pt.json';
+import es from '../../../i18n/tuner/es.json';
 
 const hz = (midi: number, cents = 0) => 440 * Math.pow(2, (midi - 69 + cents / 100) / 12);
 const STANDARD = TUNING_STANDARD.strings.map(stringMidi);
@@ -13,6 +18,25 @@ describe('tunerReading', () => {
       const m = t.strings.map(stringMidi);
       expect(m).toHaveLength(6);
       expect([...m].sort((a, b) => a - b)).toEqual(m);
+    }
+  });
+
+  it('"100 cents make one half step (on the guitar, one fret)": true on the engine\'s neck in every tuning', () => {
+    // The tuner's cents line, checked against the app's own guitar engine
+    // (guitarPositions: open-string MIDI + fret) and the detector's cents.
+    expect(en.cents).toBe('100 cents make one <term>half step</term> (on the guitar, one fret).');
+    expect(pt.cents).toContain('(na guitarra, um traste)');
+    expect(es.cents).toContain('(en la guitarra, un traste)');
+    for (const t of GUITAR_TUNINGS) {
+      expect(tuningOpenMidi(t)).toEqual(t.strings.map(stringMidi));
+      const position = getGuitarPosition({ natural: 'C', accidental: '' }, 'chromatic', 5, t);
+      expect(position.notes.length).toBeGreaterThan(0);
+      for (const n of position.notes) {
+        expect(n.midi).toBe(tuningOpenMidi(t)[n.stringIndex] + n.fret);
+        // One fret up on the same string: one MIDI step, which is 100 cents.
+        expect(centsFrom(midiToFrequency(n.midi + 1), n.midi)).toBeCloseTo(100, 9);
+        expect(nearestNote(midiToFrequency(n.midi + 1)).midi - nearestNote(midiToFrequency(n.midi)).midi).toBe(1);
+      }
     }
   });
 

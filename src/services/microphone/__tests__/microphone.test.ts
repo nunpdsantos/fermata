@@ -67,10 +67,14 @@ describe('startListening', () => {
   it('its own stop: every track stopped, the context closed, no more frames', async () => {
     const onFrame = vi.fn();
     const onStop = vi.fn();
+    const timersBefore = vi.getTimerCount();
     const s = await startListening({ onFrame, onStop });
     expect(live()).toBe(1);
+    expect(vi.getTimerCount()).toBe(timersBefore + 1);
     s.stop();
     expect(live()).toBe(0);
+    // The analysis timer itself is cleared, not merely ignored.
+    expect(vi.getTimerCount()).toBe(timersBefore);
     expect(mic.contexts.every((c) => c.state === 'closed')).toBe(true);
     expect(isListening()).toBe(false);
     onFrame.mockClear();

@@ -93,6 +93,13 @@ test.describe('the tuner hears the low E string a little flat', () => {
     await expect(sheet.getByTestId('tuner-note')).toHaveText('E');
     await expect(sheet.getByTestId('tuner-target')).toHaveText('String 6 · E');
     await expect(sheet.getByTestId('tuner-words')).toHaveText(/^\d+ cents flat \(too low\)$/);
+    // The reading is smoothed: it eases in from the note's first frames, so
+    // the first "flat" frame can still be on its way (−9 seen under load).
+    // Same bounds, read once it has settled.
+    await expect
+      .poll(async () => Number(await reading.getAttribute('data-cents')), { message: 'the fixture is 18 cents flat', timeout: 5_000 })
+      .toBeGreaterThanOrEqual(-24);
+    await expect.poll(async () => Number(await reading.getAttribute('data-cents')), { timeout: 5_000 }).toBeLessThanOrEqual(-12);
     const cents = Number(await reading.getAttribute('data-cents'));
     expect(cents, 'the fixture is 18 cents flat').toBeGreaterThanOrEqual(-24);
     expect(cents).toBeLessThanOrEqual(-12);
@@ -111,7 +118,7 @@ test.describe('the tuner hears the low E string a little flat', () => {
     await expect(sheet.getByTestId('listening-mark')).toBeVisible();
     await hideThePage(page);
     await expect.poll(() => tracks(page)).toEqual({ live: 0, ended: 1 });
-    await expect(sheet.getByTestId('tuner-message')).toHaveText('Listening stopped when Fermata went to the background.');
+    await expect(sheet.getByTestId('tuner-message')).toHaveText('Listening stopped because Fermata was no longer on screen (for example, you switched to another app or tab).');
     await expect(sheet.getByTestId('listening-mark')).toHaveCount(0);
     await context.close();
   });
@@ -171,7 +178,7 @@ test.describe('when the microphone cannot be used', () => {
       await expect(sheet.getByTestId('tuner-message')).toContainText(sentence);
       await expect(sheet.getByTestId('tuner-message')).toContainText('You can still tune by ear: “Hear” plays each string.');
       await sheet.getByRole('button', { name: 'Hear string 6, E' }).click();
-      await expect(sheet.getByText(/^Playing string 6 \(E\)/)).toBeVisible();
+      await expect(sheet.getByText(/^Fermata is playing string 6 \(E\)/)).toBeVisible();
       expect(await tracks(page)).toEqual({ live: 0, ended: 0 });
       await context.close();
     });
@@ -197,7 +204,7 @@ test.describe('refused by the browser itself', () => {
     await expect(sheet.getByTestId('tuner-message')).toContainText("To allow it, open this site's settings");
     expect(await tracks(page)).toEqual({ live: 0, ended: 0 });
     await sheet.getByRole('button', { name: 'Hear string 1, E' }).click();
-    await expect(sheet.getByText(/^Playing string 1 \(E\)/)).toBeVisible();
+    await expect(sheet.getByText(/^Fermata is playing string 1 \(E\)/)).toBeVisible();
     await context.close();
   });
 

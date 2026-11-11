@@ -49,6 +49,11 @@ const HOLD_READING_MS = 800;
 /** Under reduced motion the reading changes at most this often. */
 const STILL_INTERVAL_MS = 300;
 
+/** `ms` from now on the frame clock (microphone.ts stamps frames with performance.now()). */
+function deadlineIn(ms: number): number {
+  return performance.now() + ms;
+}
+
 export function TunerSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useTranslation();
   const instrument = useAppStore((s) => s.instrument);
@@ -72,9 +77,10 @@ export function TunerSheet({ open, onClose }: { open: boolean; onClose: () => vo
   const session = useRef<MicSession | null>(null);
   const smoother = useRef(createSmoother());
   const last = useRef<{ heardAt: number; target: number | null; shownAt: number; auto: number | null }>({ heardAt: 0, target: null, shownAt: 0, auto: null });
+  // A reference string sounding: nothing heard counts until then, timed
+  // from the press (the frame clock is performance.now()), whether or not
+  // the tuner was listening when "Hear" was pressed.
   const muteUntil = useRef(0);
-  // A reference string asked to play: muted from the next frame's clock on.
-  const muteRequest = useRef(0);
   const reporter = useRef<PlayedNotes | null>(null);
   const live = useRef({ strings, chosen, still });
   useEffect(() => {
@@ -83,14 +89,12 @@ export function TunerSheet({ open, onClose }: { open: boolean; onClose: () => vo
   }, [strings, chosen, still]);
 
   const onFrame = useCallback((estimate: PitchEstimate | null, time: number) => {
-    if (muteRequest.current > 0) {
-      muteUntil.current = time + muteRequest.current;
-      reporter.current?.muteFor(muteRequest.current);
-      muteRequest.current = 0;
+    if (time < muteUntil.current) {
+      reporter.current?.muteFor(muteUntil.current - time);
+      return;
     }
     reporter.current?.onFrame(estimate, time);
     const l = last.current;
-    if (time < muteUntil.current) return;
     const { strings: s, chosen: c, still: motionless } = live.current;
     if (estimate && estimate.clarity >= SURE_CLARITY) {
       const target = targetFor(estimate.frequency, s, c, l.auto);
@@ -180,7 +184,9 @@ export function TunerSheet({ open, onClose }: { open: boolean; onClose: () => vo
     const midi = stringMidi(tuning.strings[index]);
     playGuitarString(midi);
     // The tuner must not read the app's own string as the learner's.
-    muteRequest.current = REFERENCE_SECONDS * 1000 + 500;
+    const ms = REFERENCE_SECONDS * 1000 + 500;
+    muteUntil.current = deadlineIn(ms);
+    reporter.current?.muteFor(ms);
     smoother.current.reset();
     setReading(null);
     setPlaying(index);
@@ -400,7 +406,7 @@ function ReadingView({ reading, playing, guitar, names, strings, still }: {
   );
 }
 
-/** "100 cents make one <term>half step</term> (one fret)." → the word marked for the glossary. */
+/** "100 cents make one <term>half step</term> (on the guitar, one fret)." → the word marked for the glossary. */
 function withTerm(text: string, id: TermId): ReactNode {
   const m = /^(.*)<term>(.*)<\/term>(.*)$/.exec(text);
   if (!m) return text;

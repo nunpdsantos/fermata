@@ -15,7 +15,7 @@
     "unsupported": "This browser can't use a microphone here, so the tuner can't hear you.",
     "busy": "The microphone couldn't start: another app may be using it. Close it, then try again.",
     "failed": "The microphone couldn't start. Try again.",
-    "hidden": "Listening stopped when Fermata went to the background.",
+    "hidden": "Listening stopped because Fermata was no longer on screen (for example, you switched to another app or tab).",
     "ended": "The microphone was disconnected, so listening stopped."
   },
   "byEar": "You can still tune by ear: “Hear” plays each string.",
@@ -37,7 +37,7 @@
   "meterLabel": "How far from the note",
   "meterLow": "Too low",
   "meterHigh": "Too high",
-  "cents": "100 cents make one <term>half step</term> (one fret).",
+  "cents": "100 cents make one <term>half step</term> (on the guitar, one fret).",
   "stringsHeading": "Guitar strings",
   "tuningName": "<term>Tuning</term>: {{name}}",
   "auto": "Find the string automatically",
@@ -47,6 +47,6 @@
   "hear": "Hear",
   "hearLabel": "Hear string {{n}}, {{note}}",
   "target": "String {{n}} · {{note}}",
-  "playing": "Playing string {{n}} ({{note}}). Listen, then play yours until they sound the same.",
+  "playing": "Fermata is playing string {{n}} ({{note}}). Listen, then play yours until they sound the same.",
   "showOnInstrument": "Show what I play on the instrument"
 }

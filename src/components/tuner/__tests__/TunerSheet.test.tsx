@@ -112,8 +112,24 @@ describe('TunerSheet: before and while listening', () => {
       const c = screen.queryByTestId('tuner-reading')?.getAttribute('data-cents');
       if (c) seen.push(Number(c));
     }
+    // A reading on (almost) every frame: an empty list would pass the spread check.
+    expect(seen.length).toBeGreaterThanOrEqual(25);
     const settled = seen.slice(10);
     expect(Math.max(...settled) - Math.min(...settled)).toBeLessThanOrEqual(3);
+  });
+
+  it('the reading holds through a short gap (under 800 ms), then clears', async () => {
+    render(<TunerSheet open onClose={() => undefined} />);
+    await listen(tone(midiHz(40)));
+    await wait(400);
+    expect(screen.getByTestId('tuner-reading').getAttribute('data-state')).toBe('inTune');
+    mic.setSound(null);
+    await wait(600);
+    expect(screen.getByTestId('tuner-reading').getAttribute('data-state')).toBe('inTune');
+    expect(screen.getByTestId('tuner-note').textContent).toBe('E');
+    await wait(500);
+    expect(screen.getByTestId('tuner-reading').getAttribute('data-state')).toBe('none');
+    expect(screen.getByTestId('tuner-note').textContent).toBe('—');
   });
 
   it('a string chosen by the learner is the target, whatever is heard', async () => {
@@ -152,7 +168,10 @@ describe('TunerSheet: before and while listening', () => {
       changes.push(screen.getByTestId('tuner-reading').getAttribute('data-cents') ?? '');
     }
     // 600 ms of frames, at most one change every 300 ms (≤ 3 distinct runs).
+    // A reading all along (no empty frames passing as "one run"), and it does move.
+    expect(changes.every((c) => c !== '')).toBe(true);
     const runs = changes.filter((c, i) => i === 0 || c !== changes[i - 1]).length;
+    expect(runs).toBeGreaterThanOrEqual(2);
     expect(runs).toBeLessThanOrEqual(3);
   });
 });
@@ -189,8 +208,28 @@ describe('TunerSheet: the strings', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Hear string 6, E' }));
     await wait(1000);
     expect(screen.getByTestId('tuner-reading').getAttribute('data-state')).toBe('none');
-    expect(screen.getByTestId('tuner-words').textContent).toMatch(/^Playing string 6 \(E\)/);
+    expect(screen.getByTestId('tuner-words').textContent).toMatch(/^Fermata is playing string 6 \(E\)/);
     await wait(2600);
+    expect(screen.getByTestId('tuner-reading').getAttribute('data-state')).toBe('inTune');
+  });
+
+  it('Hear pressed before listening: the mute runs from the press, so a later Start reads at once', async () => {
+    render(<TunerSheet open onClose={() => undefined} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Hear string 6, E' }));
+    await wait(5000);
+    await listen(tone(midiHz(40, -14)));
+    await wait(600);
+    expect(screen.getByTestId('tuner-reading').getAttribute('data-state')).toBe('flat');
+  });
+
+  it('Hear pressed just before listening: the reference still sounding is not read', async () => {
+    render(<TunerSheet open onClose={() => undefined} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Hear string 6, E' }));
+    await wait(500);
+    await listen(tone(midiHz(40)));
+    await wait(1000);
+    expect(screen.getByTestId('tuner-reading').getAttribute('data-state')).toBe('none');
+    await wait(2000);
     expect(screen.getByTestId('tuner-reading').getAttribute('data-state')).toBe('inTune');
   });
 
@@ -266,7 +305,7 @@ describe('TunerSheet: when the microphone cannot be used, nothing is left runnin
       document.dispatchEvent(new Event('visibilitychange'));
     });
     expect(live()).toBe(0);
-    expect(screen.getByTestId('tuner-message').textContent).toBe('Listening stopped when Fermata went to the background.');
+    expect(screen.getByTestId('tuner-message').textContent).toBe('Listening stopped because Fermata was no longer on screen (for example, you switched to another app or tab).');
     expect(screen.queryByTestId('listening-mark')).toBeNull();
     expect(screen.getByRole('button', { name: 'Try again' })).toBeTruthy();
   });
@@ -299,6 +338,26 @@ describe('TunerSheet: Explore lights what is played', () => {
     expect(heard).toEqual([{ midi: 55, on: true, source: 'mic' }]);
     fireEvent.click(show);
     expect(heard).toEqual([{ midi: 55, on: true, source: 'mic' }, { midi: 55, on: false, source: 'mic' }]);
+    off();
+  });
+
+  it('turned on in Explore, then listening again outside Explore: nothing is reported', async () => {
+    const heard: ExternalNote[] = [];
+    const off = subscribeExternalNotes((n) => heard.push(n));
+    render(<TunerSheet open onClose={() => undefined} />);
+    await listen(tone(midiHz(55)));
+    fireEvent.click(screen.getByRole('button', { name: 'Show what I play on the instrument' }));
+    await wait(400);
+    fireEvent.click(screen.getByRole('button', { name: 'Stop listening' }));
+    const before = heard.length;
+    expect(before).toBe(2);
+    act(() => {
+      useAppStore.setState({ view: 'learn' });
+    });
+    await listen(tone(midiHz(57)));
+    await wait(600);
+    expect(screen.getByTestId('tuner-reading').getAttribute('data-state')).not.toBe('none');
+    expect(heard.length).toBe(before);
     off();
   });
 

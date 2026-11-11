@@ -105,6 +105,71 @@ describe('reportPlayedNotes', () => {
     r.dispose();
   });
 
+  const instrumentKey = () => {
+    const region = document.createElement('div');
+    region.id = 'instrument-region';
+    const key = document.createElement('button');
+    region.appendChild(key);
+    document.body.appendChild(region);
+    return key;
+  };
+  const notes = () => heard.map((n) => [n.midi, n.on]);
+
+  it('a quick tap: its sound is not reported for 1.5 s after the finger lifts', () => {
+    const key = instrumentKey();
+    const r = reportPlayedNotes();
+    key.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+    key.dispatchEvent(new Event('pointerup', { bubbles: true }));
+    // Literal times: the promise is the app's sound tail (a sample rings ~1.5 s).
+    play(r, 60, 1200);
+    expect(heard).toEqual([]);
+    play(r, 60, 600);
+    expect(notes()).toEqual([[60, true]]);
+    r.dispose();
+  });
+
+  it('a key held down longer than APP_SOUND_MS: nothing reported while it is held', () => {
+    const key = instrumentKey();
+    const r = reportPlayedNotes();
+    key.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+    play(r, 60, APP_SOUND_MS + 1000);
+    expect(heard).toEqual([]);
+    key.dispatchEvent(new Event('pointerup', { bubbles: true }));
+    play(r, 60, APP_SOUND_MS + 400);
+    expect(notes()).toEqual([[60, true]]);
+    r.dispose();
+  });
+
+  it('a key press on the on-screen instrument (keyboard play): silenced for APP_SOUND_MS, then heard again', () => {
+    const key = instrumentKey();
+    const r = reportPlayedNotes();
+    play(r, 64);
+    key.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(notes()).toEqual([[64, true], [64, false]]);
+    play(r, 67, 1200);
+    expect(notes()).toEqual([[64, true], [64, false]]);
+    // No pointer-up follows a key press: listening must come back by itself.
+    play(r, 67, 700);
+    expect(notes()).toEqual([[64, true], [64, false], [67, true]]);
+    r.dispose();
+  });
+
+  it('dispose removes every document listener it added', () => {
+    const added: unknown[][] = [];
+    const removed: unknown[][] = [];
+    const add = vi.spyOn(document, 'addEventListener').mockImplementation((...a: unknown[]) => void added.push(a));
+    const remove = vi.spyOn(document, 'removeEventListener').mockImplementation((...a: unknown[]) => void removed.push(a));
+    try {
+      const r = reportPlayedNotes();
+      expect(added.map((a) => a[0]).sort()).toEqual(['keydown', 'pointercancel', 'pointerdown', 'pointerup']);
+      r.dispose();
+      expect(removed).toEqual(added);
+    } finally {
+      add.mockRestore();
+      remove.mockRestore();
+    }
+  });
+
   it('a tap elsewhere (the Check button) does not silence it', () => {
     const button = document.createElement('button');
     document.body.appendChild(button);

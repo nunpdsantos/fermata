@@ -96,10 +96,15 @@ export function UseMyInstrument({ active, nameOf }: {
         attempt.current = null;
         reporter.current = null;
         session.current = null;
-        if (reason === 'hidden' || reason === 'ended' || reason === 'view') {
+        // A view change turns it off with no sentence (the control normally
+        // goes with the view; "went off screen" would not be true).
+        if (reason === 'hidden' || reason === 'ended') {
           setAnswerWanted(false);
-          setState({ kind: 'problem', problem: reason === 'view' ? 'hidden' : reason });
-        } else setState({ kind: 'off' });
+          setState({ kind: 'problem', problem: reason });
+        } else {
+          if (reason === 'view') setAnswerWanted(false);
+          setState({ kind: 'off' });
+        }
       };
       micModule.startListening({ onFrame: (e, time) => notes.onFrame(e, time), onStop }, context).then(
         (s) => {

@@ -175,8 +175,21 @@ describe('Use my instrument', () => {
     });
     expect(live()).toBe(0);
     expect(screen.getByTestId('use-my-instrument-problem').textContent).toBe(
-      'Listening stopped when Fermata went to the background. Turn on “Use my instrument” again to go on.',
+      'Listening stopped because Fermata was no longer on screen (for example, you switched to another app or tab). Turn on “Use my instrument” again to go on.',
     );
+  });
+
+  it('a view change while listening: no track, off, and no untrue "off screen" sentence', async () => {
+    render(ui());
+    await turnOn();
+    expect(live()).toBe(1);
+    act(() => {
+      useAppStore.setState({ view: 'explore' });
+    });
+    expect(live()).toBe(0);
+    expect(screen.getByTestId('use-my-instrument').getAttribute('data-state')).toBe('off');
+    expect(screen.queryByTestId('use-my-instrument-problem')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Use my instrument' }).getAttribute('aria-pressed')).toBe('false');
   });
 
   it('turned off while the browser is still asking: the stream that arrives is stopped', async () => {

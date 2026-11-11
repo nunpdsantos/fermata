@@ -2,7 +2,7 @@
   "title": "Afinador",
   "close": "Fechar o afinador",
   "listening": "A ouvir",
-  "why": "Para te dizer que nota tocas e se está afinada, o Fermata ouve pelo microfone; o som nunca sai deste dispositivo.",
+  "why": "Para te dizer que nota tocas e se está afinada, o Fermata ouve através do microfone; o som nunca sai deste dispositivo.",
   "start": "Começar a ouvir",
   "stop": "Parar de ouvir",
   "asking": "O teu navegador está a perguntar se o Fermata pode usar o microfone.",
@@ -15,8 +15,8 @@
     "unsupported": "Este navegador não pode usar um microfone aqui, por isso o afinador não te ouve.",
     "busy": "Não foi possível ligar o microfone: talvez outra aplicação o esteja a usar. Fecha-a e tenta outra vez.",
     "failed": "Não foi possível ligar o microfone. Tenta outra vez.",
-    "hidden": "Deixou de ouvir quando o Fermata passou para segundo plano.",
-    "ended": "O microfone foi desligado, por isso deixou de ouvir."
+    "hidden": "O Fermata deixou de ouvir porque já não estava no ecrã (por exemplo, mudaste para outra aplicação ou separador).",
+    "ended": "O microfone foi desligado, por isso o Fermata deixou de ouvir."
   },
   "byEar": "Podes continuar a afinar de ouvido: «Ouvir» toca cada corda.",
   "playOne": "Toca uma nota e deixa-a soar.",
@@ -37,7 +37,7 @@
   "meterLabel": "A que distância da nota",
   "meterLow": "Baixa",
   "meterHigh": "Alta",
-  "cents": "100 cents fazem um <term>meio-tom</term> (um traste).",
+  "cents": "100 cents fazem um <term>meio-tom</term> (na guitarra, um traste).",
   "stringsHeading": "Cordas da guitarra",
   "tuningName": "<term>Afinação</term>: {{name}}",
   "auto": "Encontrar a corda automaticamente",
@@ -47,6 +47,6 @@
   "hear": "Ouvir",
   "hearLabel": "Ouvir a corda {{n}}, {{note}}",
   "target": "Corda {{n}} · {{note}}",
-  "playing": "A tocar a corda {{n}} ({{note}}). Ouve e depois toca a tua até soarem iguais.",
+  "playing": "O Fermata está a tocar a corda {{n}} ({{note}}). Ouve e depois toca a tua até soarem iguais.",
   "showOnInstrument": "Mostrar no instrumento o que toco"
 }
