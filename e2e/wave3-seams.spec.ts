@@ -20,6 +20,8 @@ import type { Accidental, ChordQuality, NaturalNote, ScaleType } from '../src/co
  *   3. one microphone session per check      8. the header
  *   4. MIDI and the microphone together      9. the owner
  *   5. the metronome and everything else    10. a newcomer, by playing
+ *  11. nothing heard or played is recorded, stored or sent (and, beside 9,
+ *      the owner in a check answered on the instrument) — wave 3, second fix pass
  * The microphone is Chromium's fake device fed from WAV files of known notes
  * (e2e/helpers/micFixtures.ts); MIDI is a fake MIDIAccess delivering byte
  * messages (e2e/helpers/fakeMidi.ts). No real instrument is involved. A step
@@ -41,7 +43,7 @@ const C4 = micFixture('w3-c4', [{ midi: 60, seconds: 4 }]);
 
 type Settings = Record<string, unknown>;
 
-async function openApp(browser: Browser, baseURL: string, v: View, settings: Settings, opts: { midi?: boolean; grant?: string[] } = {}) {
+async function openApp(browser: Browser, baseURL: string, v: View, settings: Settings, opts: { midi?: boolean; grant?: string[]; init?: () => void } = {}) {
   const context = await micContext(browser, baseURL, {
     viewport: v.viewport, isMobile: v.touch, hasTouch: v.touch, reducedMotion: 'reduce', serviceWorkers: 'block', locale: LOCALE.en,
   });
@@ -53,6 +55,7 @@ async function openApp(browser: Browser, baseURL: string, v: View, settings: Set
     sessionStorage.setItem('__w3seeded', '1');
   }, JSON.stringify({ state: { language: 'en', themeMode: 'fermata', instrument: 'piano', selectedKey: { natural: 'C', accidental: '' }, selectedScale: 'major', ...settings }, version: 6 }));
   await context.addInitScript(RECORD_STREAMS);
+  if (opts.init) await context.addInitScript(opts.init);
   const page = await context.newPage();
   await page.goto('/');
   await expect(page.locator('#root')).not.toBeEmpty();
@@ -184,7 +187,7 @@ async function openTunerListening(page: Page) {
   return sheet;
 }
 
-async function useMyInstrument(page: Page) {
+async function turnOnUseMyInstrument(page: Page) {
   await page.getByRole('button', { name: 'Use my instrument' }).click();
   await expect(page.getByText('To hear the notes you play, Fermata listens through the microphone; the sound never leaves this device.')).toBeVisible();
   await page.getByRole('button', { name: 'Allow the microphone' }).click();
@@ -209,7 +212,7 @@ test.describe('1. the microphone answers a check', () => {
       await probeNotes(page);
       await recordVoice(page);
     }
-    await useMyInstrument(page);
+    await turnOnUseMyInstrument(page);
     await expect.poll(async () => (await chips(page)).sort(), { timeout: 20_000 }).toEqual(['C', 'E', 'G']);
     await page.getByRole('button', { name: 'Check Answer', exact: true }).click();
     const cur = Number((await position(page)).split('/')[0]);
@@ -331,7 +334,7 @@ test.describe('3. one microphone session for the whole check', () => {
     const { context, page } = await openApp(browser, baseURL!, LAPTOP, { lastView: 'learn' });
     const key = answerKey('l1u3m4');
     await checkUntil(page, 'l1u3m4', key, (p) => p === C_MAJOR_L1);
-    await useMyInstrument(page);
+    await turnOnUseMyInstrument(page);
     await expect.poll(async () => (await chips(page)).sort(), { timeout: 20_000 }).toEqual(['C', 'E', 'G']);
     await page.getByRole('button', { name: 'Check Answer', exact: true }).click();
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
@@ -371,7 +374,7 @@ test.describe('4. a MIDI keyboard and the microphone together', () => {
     await checkUntil(page, 'l1u3m4', key, (p) => p === C_MAJOR_L1);
     await probeNotes(page);
     await recordVoice(page);
-    await useMyInstrument(page);
+    await turnOnUseMyInstrument(page);
     // The MIDI key goes down while the microphone already hears "it".
     await sendMidi(page, noteOn(60));
     await page.waitForTimeout(2500);
@@ -795,6 +798,84 @@ for (const v of [PHONE, LAPTOP]) {
   });
 }
 
+/**
+ * The owner in a check answered on the instrument (wave 3, second fix pass:
+ * kept as built, pinned here). Seam 9 opens no check; in a chord_build check
+ * he also sees "Usar o meu instrumento", off, and its mount asks the browser
+ * one thing — whether the microphone is already allowed
+ * (`permissions.query({ name: 'microphone' })`: no prompt, nothing opened), so
+ * that an allowed learner's first tap can start listening inside the tap.
+ * Nothing more may be asked, no track opened, and leaving the check without
+ * answering leaves every store as the same visit leaves it without the
+ * control. (Any lesson he opens, wave 3 or not, folds the dock to Peek and
+ * records where he is — decision D-20 and Learn's session record — so the
+ * visit itself writes those two values: measured with and without the
+ * control in the same run, and named here exactly.)
+ */
+const stamp = (stores: Record<string, string>) => Object.fromEntries(Object.entries(stores).map(([k, val]) => [k, val.replace(/"at":\d+/g, '"at":#')]));
+
+async function ownerCheckVisit(browser: Browser, v: View, control: boolean) {
+  const { context, page } = await ownerBrowser(browser, v);
+  // Without the control: a browser with no microphone API (the control is offered only where one can work).
+  await context.addInitScript(control ? RECORD_STREAMS : () => {
+    if (navigator.mediaDevices) Object.defineProperty(navigator.mediaDevices, 'getUserMedia', { configurable: true, value: undefined });
+  });
+  // "Os teus primeiros acordes — tríades maiores" (l1u3m4): every question of its check is a chord_build.
+  await page.goto('/?lesson=l1u3m4');
+  const start = page.getByRole('button', { name: 'Começar a verificação' });
+  await start.scrollIntoViewIfNeeded();
+  await start.click();
+  await expect(page.getByTestId('focused-check')).toBeVisible();
+  await expect(page.getByTestId('check-answer-zone')).toBeVisible();
+  const button = page.getByRole('button', { name: 'Usar o meu instrumento' });
+  if (control) {
+    await expect(button).toBeVisible();
+    await expect(button).toHaveAttribute('aria-pressed', 'false');
+    await expect(page.getByTestId('use-my-instrument')).toHaveAttribute('data-state', 'off');
+  }
+  await page.waitForTimeout(800);
+  const shown = await button.count();
+  const asked = await page.evaluate(() => (window as unknown as { __asked: string[] }).__asked);
+  const streams = await tracks(page);
+  const recorder = await page.evaluate(() => Array.isArray((window as unknown as { __micStreams?: unknown }).__micStreams));
+  // Left without answering.
+  await page.getByRole('button', { name: 'Sair da verificação' }).click();
+  await expect(page.getByTestId('focused-check')).toHaveCount(0);
+  await page.waitForTimeout(600);
+  const stores = await allStorage(page);
+  const askedAfter = await page.evaluate(() => (window as unknown as { __asked: string[] }).__asked);
+  await context.close();
+  return { shown, asked, askedAfter, streams, recorder, stores };
+}
+
+for (const v of [PHONE, LAPTOP]) {
+  test(`9. the owner in a chord_build check (${v.name}): "Usar o meu instrumento" there and off; asked only whether the microphone is allowed; no track; left unanswered, every store as without the control`, async ({ browser }) => {
+    test.setTimeout(90_000);
+    const before = ownerStores();
+    const withIt = await ownerCheckVisit(browser, v, true);
+    const without = await ownerCheckVisit(browser, v, false);
+    expect(withIt.shown).toBe(1);
+    expect(without.shown, 'known negative: no control where no microphone can work').toBe(0);
+    // Asked: whether the microphone is allowed, and nothing else (no getUserMedia, devices, screen, MIDI, camera).
+    // (Once on the build; React's StrictMode runs the mount's effect twice on the dev server.)
+    expect(withIt.asked.length).toBeGreaterThan(0);
+    expect([...new Set(withIt.asked)]).toEqual(['permissions:microphone']);
+    expect(withIt.askedAfter).toEqual(withIt.asked);
+    expect(without.askedAfter, 'without the control nothing is asked at all').toEqual([]);
+    // No track: the recorder is in place (known positive: its list exists) and holds no stream.
+    expect(withIt.recorder).toBe(true);
+    expect(withIt.streams).toEqual({ streams: 0, live: 0, ended: 0 });
+    // Every store: byte for byte what the same visit leaves without the control (the time it was recorded aside)…
+    expect(stamp(withIt.stores)).toEqual(stamp(without.stores));
+    // …and, against his save before, only the visit's own two values: the dock at Peek in Learn, and where he is.
+    const changed = Object.keys(before).filter((k) => withIt.stores[k] !== before[k]).sort();
+    expect(Object.keys(withIt.stores).sort()).toEqual(Object.keys(before).sort());
+    expect(changed).toEqual(['fermata-learn-session-v1', 'music-theory-app']);
+    expect(withIt.stores['music-theory-app']).toBe(before['music-theory-app'].replace('"learn":"half"', '"learn":"peek"'));
+    expect(stamp(withIt.stores)['fermata-learn-session-v1']).toBe('{"state":{"screen":{"type":"module","levelId":"l1","unitId":"u3","moduleId":"l1u3m4","section":"check","at":#},"check":null},"version":1}');
+  });
+}
+
 // ─── 10. A newcomer, by playing ────────────────────────────────────────────
 test.describe('10. a newcomer on a phone answers a sound-first check by playing', () => {
   let browser: Browser;
@@ -807,7 +888,7 @@ test.describe('10. a newcomer on a phone answers a sound-first check by playing'
     const key = answerKey('l1u34');
     const want = 'Build the C major chord: the 1st, 3rd and 5th notes of the C major scale.';
     await checkUntil(page, 'l1u34m5', key, (p) => p === want);
-    await useMyInstrument(page);
+    await turnOnUseMyInstrument(page);
     await expect.poll(async () => (await chips(page)).sort(), { timeout: 20_000 }).toEqual(['C', 'E', 'G']);
     await page.getByRole('button', { name: 'Check Answer', exact: true }).click();
     const cur = Number((await position(page)).split('/')[0]);
@@ -819,5 +900,171 @@ test.describe('10. a newcomer on a phone answers a sound-first check by playing'
     while (await page.getByTestId('check-position').count()) await answerOnScreen(page, key);
     await expect(page.getByTestId('result-score')).toHaveText(/^5 of 5$/, { timeout: 10_000 });
     await context.close();
+  });
+});
+
+// ─── 11. Nothing heard or played is recorded, stored or sent ───────────────
+/**
+ * The privacy promise in a real browser (wave 3, second fix pass; its unit
+ * half is `watchPrivacy` in services/microphone/__tests__/fakeMic.ts). From the
+ * tap to the end of a session: every request the page makes is a GET to its
+ * own origin (no other method, no other origin, no WebSocket opened, no
+ * beacon); no MediaRecorder is made; after stopping no track is live. A tuner
+ * session leaves localStorage, sessionStorage and IndexedDB byte for byte as
+ * they were; a "Use my instrument" session writes no storage key that the same
+ * check answered on the screen does not write too.
+ */
+const PRIVACY_WATCH = () => {
+  const w = window as unknown as { __recorders: number; __beacons: string[] };
+  w.__recorders = 0;
+  w.__beacons = [];
+  const Recorder = window.MediaRecorder;
+  if (Recorder) {
+    window.MediaRecorder = class extends Recorder {
+      constructor(...args: ConstructorParameters<typeof MediaRecorder>) {
+        super(...args);
+        w.__recorders++;
+      }
+    } as typeof MediaRecorder;
+  }
+  const beacon = navigator.sendBeacon?.bind(navigator);
+  if (beacon) Object.defineProperty(navigator, 'sendBeacon', { configurable: true, value: (url: string | URL, data?: BodyInit | null) => { w.__beacons.push(String(url)); return beacon(url, data); } });
+};
+
+/** Every store the page can write: localStorage, sessionStorage, and each IndexedDB database's object stores. */
+const everyStore = (page: Page) => page.evaluate(async () => {
+  const kv = (st: Storage) => Object.fromEntries(Object.keys(st).sort().map((k) => [k, st.getItem(k)!]));
+  const done = <T,>(r: IDBRequest<T>) => new Promise<T>((res, rej) => { r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+  const idb: Record<string, Record<string, string>> = {};
+  for (const info of (await indexedDB.databases()).sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))) {
+    if (!info.name) continue;
+    const db = await done(indexedDB.open(info.name));
+    idb[info.name] = {};
+    for (const name of Array.from(db.objectStoreNames).sort()) {
+      const store = db.transaction(name, 'readonly').objectStore(name);
+      idb[info.name][name] = JSON.stringify({ keys: await done(store.getAllKeys()), values: await done(store.getAll()) });
+    }
+    db.close();
+  }
+  return { local: kv(localStorage), session: kv(sessionStorage), idb };
+});
+type Stores = Awaited<ReturnType<typeof everyStore>>;
+/** The names a session wrote (new or changed), store by store. */
+const written = (a: Stores, b: Stores) => [
+  ...Object.keys(b.local).filter((k) => a.local[k] !== b.local[k]).map((k) => `local:${k}`),
+  ...Object.keys(a.local).filter((k) => !(k in b.local)).map((k) => `local-removed:${k}`),
+  ...Object.keys(b.session).filter((k) => a.session[k] !== b.session[k]).map((k) => `session:${k}`),
+  ...Object.keys(b.idb).flatMap((db) => Object.keys(b.idb[db]).filter((st) => a.idb[db]?.[st] !== b.idb[db][st]).map((st) => `idb:${db}/${st}`)),
+].sort();
+
+/** From now on: every request that is not a same-origin GET, and every WebSocket opened. */
+function watchTraffic(page: Page, baseURL: string) {
+  const origin = new URL(baseURL).origin;
+  const seen = { gets: 0, other: [] as string[], sockets: [] as string[] };
+  page.context().on('request', (r) => {
+    if (r.method() === 'GET' && new URL(r.url()).origin === origin) seen.gets++;
+    else seen.other.push(`${r.method()} ${r.url()}`);
+  });
+  page.on('websocket', (ws) => seen.sockets.push(ws.url()));
+  return seen;
+}
+async function expectNothingSent(page: Page, seen: ReturnType<typeof watchTraffic>) {
+  expect(seen.gets, 'known positive: the session\'s own code was fetched and seen').toBeGreaterThan(0);
+  expect(seen.other, 'every request a same-origin GET').toEqual([]);
+  expect(seen.sockets, 'no WebSocket opened').toEqual([]);
+  const w = await page.evaluate(() => {
+    const x = window as unknown as { __recorders?: number; __beacons?: string[] };
+    return { recorders: x.__recorders, beacons: x.__beacons, watched: typeof window.MediaRecorder === 'function' };
+  });
+  expect(w).toEqual({ recorders: 0, beacons: [], watched: true });
+}
+
+test.describe('11. nothing heard or played is recorded, stored or sent', () => {
+  let browser: Browser;
+  test.beforeAll(async () => { browser = await launchWithFakeMic(C_E_G); });
+  test.afterAll(async () => { await browser.close(); });
+
+  test('a tuner session in Explore (listening, "show what I play" on, then stopped): only same-origin GETs, no recorder, no live track; every store byte for byte', async ({ baseURL }) => {
+    test.setTimeout(60_000);
+    const { context, page } = await openApp(browser, baseURL!, LAPTOP, { lastView: 'explore' }, { init: PRIVACY_WATCH });
+    await expect(page.getByTestId('instrument-dock')).toBeVisible({ timeout: 15_000 });
+    // Known positive for the IndexedDB reader: a database of its own, there before and after.
+    await page.evaluate(() => new Promise<void>((res, rej) => {
+      const r = indexedDB.open('w3-privacy-probe', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('probe').put('known', 'k');
+      r.onsuccess = () => { r.result.close(); res(); };
+      r.onerror = () => rej(r.error);
+    }));
+    const before = await everyStore(page);
+    expect(before.idb['w3-privacy-probe']).toEqual({ probe: JSON.stringify({ keys: ['k'], values: ['known'] }) });
+    expect(Object.keys(before.local)).toContain('music-theory-app');
+
+    const seen = watchTraffic(page, baseURL!);
+    const sheet = await openTunerListening(page);
+    await sheet.getByTestId('tuner-show').click();
+    // A note fed into the microphone is read and shown on the instrument (C, E or G).
+    await expect.poll(async () => {
+      for (const m of [60, 64, 67]) if ((await pianoKey(page, m).getAttribute('aria-pressed')) === 'true') return true;
+      return false;
+    }, { timeout: 15_000 }).toBe(true);
+    await page.waitForTimeout(1500);
+    await sheet.getByRole('button', { name: 'Stop listening' }).click();
+    await expect.poll(() => tracks(page)).toEqual({ streams: 1, live: 0, ended: 1 });
+    await sheet.getByRole('button', { name: 'Close the tuner' }).click();
+    await page.waitForTimeout(600);
+
+    await expectNothingSent(page, seen);
+    expect(await everyStore(page)).toEqual(before);
+    expect((await tracks(page)).live).toBe(0);
+    await context.close();
+  });
+
+  /** Open l1u3m4's check (every question a chord_build), answer its first question one way, leave it. */
+  async function answerOnce(how: 'microphone' | 'screen', baseURL: string) {
+    const { context, page } = await openApp(browser, baseURL, LAPTOP, { lastView: 'learn' }, { init: PRIVACY_WATCH });
+    await page.goto('/?lesson=l1u3m4');
+    const start = page.getByRole('button', { name: 'Start the check' });
+    await start.scrollIntoViewIfNeeded();
+    await start.click();
+    await expect(page.getByTestId('focused-check')).toBeVisible();
+    await page.waitForTimeout(400);
+    const before = await everyStore(page);
+    const seen = watchTraffic(page, baseURL);
+    if (how === 'microphone') {
+      await turnOnUseMyInstrument(page);
+      await expect.poll(async () => { const c = await chips(page); return ['C', 'E', 'G'].every((n) => c.includes(n)); }, { timeout: 20_000 }).toBe(true);
+      await page.getByRole('button', { name: 'Check Answer', exact: true }).click();
+    } else {
+      const key = answerKey('l1u3m4');
+      const pcs = key.build.get(await prompt(page))!;
+      expect(pcs, 'the question is in the corpus').toBeTruthy();
+      for (const pc of pcs) {
+        const k = page.locator(`[data-piano-key][data-midi="${60 + pc}"]:visible`).first();
+        await k.scrollIntoViewIfNeeded();
+        const box = (await k.boundingBox())!;
+        await k.click({ position: { x: box.width / 2, y: box.height * 0.8 } });
+      }
+      await page.getByRole('button', { name: 'Check Answer', exact: true }).click();
+    }
+    await page.waitForTimeout(400);
+    await page.getByRole('button', { name: 'Exit the check' }).click();
+    await expect(page.getByTestId('focused-check')).toHaveCount(0);
+    await page.waitForTimeout(600);
+    const after = await everyStore(page);
+    if (how === 'microphone') {
+      await expect.poll(() => tracks(page)).toEqual({ streams: 1, live: 0, ended: 1 });
+      await expectNothingSent(page, seen);
+    }
+    await context.close();
+    return written(before, after);
+  }
+
+  test('"Use my instrument" in a chord_build check: only same-origin GETs, no recorder, no live track after; no storage key the same check answered on the screen does not write', async ({ baseURL }) => {
+    test.setTimeout(120_000);
+    const byScreen = await answerOnce('screen', baseURL!);
+    const byMicrophone = await answerOnce('microphone', baseURL!);
+    test.info().annotations.push({ type: 'measured', description: `written on the screen: ${JSON.stringify(byScreen)}; by the microphone: ${JSON.stringify(byMicrophone)}` });
+    expect(byScreen.length, 'known positive: answering on the screen writes something (the check\'s record)').toBeGreaterThan(0);
+    expect(byMicrophone.filter((k) => !byScreen.includes(k)), 'written only when answered by the microphone').toEqual([]);
   });
 });
