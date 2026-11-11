@@ -2647,8 +2647,10 @@ p.explore-prose {
   border-color: var(--text-muted);
 }
 .prog-chip[data-playing] {
-  border: 2px solid var(--accent);
-  box-shadow: inset 0 0 0 1px var(--accent);
+  /* Same weight as before (2 px border + 1 px inset), but the border keeps its
+     1.5 px width, so the chips never move as the loop plays (final review of wave 2). */
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
 }
 .prog-chip-name {
   font-size: var(--text-body);

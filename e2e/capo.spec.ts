@@ -202,6 +202,12 @@ test('Learn draws the neck without the capo; Explore keeps it', async ({ browser
   await expect(dock.locator('[data-capo-bar]')).toHaveCount(6);
   await page.getByRole('tab', { name: 'Learn' }).click();
   await page.waitForTimeout(600);
+  // Learn rests the dock at its bar: show the neck, so the check below can
+  // fail (with the neck hidden there is nothing to count — final review of wave 2).
+  const show = dock.getByRole('button', { name: 'Show' });
+  if (await show.isVisible()) await show.click();
+  await expect(dock.locator('[role="grid"]')).toBeVisible({ timeout: 10_000 });
+  await expect(dock.locator('[role="gridcell"], [data-fret]').first()).toBeAttached();
   await expect(page.locator('[data-capo-bar], [data-out-of-play], [data-testid="capo-control"]')).toHaveCount(0);
   await page.getByRole('tab', { name: 'Explore' }).click();
   await expect(dock.locator('[data-capo-bar]')).toHaveCount(6, { timeout: 10_000 });

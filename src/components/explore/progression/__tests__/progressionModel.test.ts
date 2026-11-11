@@ -8,6 +8,7 @@ import {
 } from '../progressionModel';
 import { chordName, fitSentence, keyLineSentences, keyLabel } from '../progressionText';
 import { MAX_PROGRESSION_CHORDS } from '../../../../state/progressionSave';
+import { PROGRESSION_PRESETS, capoOptions, presetChords } from '../../../../core/utils/progression';
 
 const n = (s: string): Note => ({ natural: s[0] as Note['natural'], accidental: s.slice(1) as Note['accidental'] });
 const major = (s: string) => ({ root: n(s), mode: 'major' as const });
@@ -196,6 +197,21 @@ describe('capo', () => {
   it('G D Em C has open shapes already: no idea', () => {
     expect(capoIdeas(readChords(['G', 'D', 'Em', 'C']), major('G'))).toEqual([]);
     expect(capoShapes(readChords(['G']), major('G'), 0).map(chordSymbol)).toEqual(['G']);
+  });
+  it('an idea always gives more open shapes than no capo (every preset, 24 keys) — final review of wave 2', () => {
+    let ties = 0;
+    for (const preset of PROGRESSION_PRESETS) {
+      for (const root of ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']) {
+        const k = { root: n(root), mode: preset.mode };
+        const chords = presetChords(preset, k);
+        const options = capoOptions(chords, k);
+        const base = options.find((o) => o.fret === 0)!.openCount;
+        if (options.some((o) => o.fret > 0 && o.openCount === base)) ties++;
+        for (const idea of capoIdeas(chords, k)) expect(idea.openCount, `${preset.id} in ${root}`).toBeGreaterThan(base);
+      }
+    }
+    // The rule is exercised: some frets give exactly as many open shapes as no capo.
+    expect(ties).toBeGreaterThan(0);
   });
 });
 

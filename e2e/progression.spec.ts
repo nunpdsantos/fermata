@@ -99,12 +99,19 @@ for (const device of ['phone', 'laptop'] as const) {
         const box = (await play.boundingBox())!;
         expect(box.y + box.height, 'the loop button above the sheet').toBeLessThanOrEqual(sheet.y + 1);
       }
+      const chipBoxes = () => page.locator('.prog-chip').evaluateAll((els) => els.map((e) => {
+        const r = e.getBoundingClientRect();
+        return [r.x, r.y, r.width, r.height].map((v) => Math.round(v * 10) / 10).join(',');
+      }));
+      const still = await chipBoxes();
       await play.click();
       await expect(play).toContainText(w.stop);
       const seen = new Set<string>();
       await expect.poll(async () => {
         const now = await page.locator('.prog-chip[data-playing] .prog-chip-name').allTextContents();
         now.forEach((n) => seen.add(n));
+        // The sounding chip is marked without moving any chip (final review of wave 2).
+        if (now.length > 0) expect(await chipBoxes()).toEqual(still);
         return [...seen].sort().join(' ');
       }, { timeout: 15_000, intervals: [100] }).toBe('C D Em G');
       // On the instrument: the strip fades the notes outside the chord.

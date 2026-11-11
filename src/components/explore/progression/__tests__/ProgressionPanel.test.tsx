@@ -204,7 +204,7 @@ describe('the journey: G D Em C', () => {
       const first = calls.length;
       fireEvent.click(screen.getByTestId('progression-play'));
       await waitFor(() => expect(calls.length).toBe(first + 1));
-      const onsets = (i: number) => [...new Set((calls[i][0] as { at: number }[]).map((n) => Math.round((n.at - (calls[i][0] as { at: number }[])[0].at) * 1000)))];
+      const onsets = (i: number) => [...new Set((calls[i][0] as readonly { at: number }[]).map((n) => Math.round((n.at - (calls[i][0] as readonly { at: number }[])[0].at) * 1000)))];
       // Count-in of four at 0.5 s (120 a minute), then two beats each of G and C.
       expect(onsets(first)).toEqual([0, 500, 1000, 1500, 2000, 2500, 3000, 3500]);
       // The tempo alone: the next time round is at 115 a minute, still two beats a chord.
