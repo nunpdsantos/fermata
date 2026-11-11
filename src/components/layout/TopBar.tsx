@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState, type ComponentType } from 'react';
+import { Suspense, lazy, useEffect, useRef, useState, type ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore, type ViewMode } from '../../state/store.ts';
 import { Segment } from '../ui/Segment.tsx';
@@ -26,7 +26,12 @@ let SettingsSheet = loadSettings();
 let settingsFailed = false;
 function SettingsUnavailable({ onClose }: SettingsProps) {
   const { t } = useTranslation();
+  // Said once: this stays mounted until the next open, and a language change
+  // (a new `t`) must not say it again (wave 3 final review).
+  const said = useRef(false);
   useEffect(() => {
+    if (said.current) return;
+    said.current = true;
     settingsFailed = true;
     onClose();
     toast(t('settings.loadError'), 'error');
@@ -46,7 +51,11 @@ let MetronomeHost = loadMetronome();
 let metronomeFailed = false;
 function MetronomeUnavailable({ onClose }: MetronomeProps) {
   const { t } = useTranslation();
+  // Said once (as SettingsUnavailable): a language change does not repeat it.
+  const said = useRef(false);
   useEffect(() => {
+    if (said.current) return;
+    said.current = true;
     metronomeFailed = true;
     onClose();
     toast(t('metronomeToolEntry.loadFailed'), 'error');

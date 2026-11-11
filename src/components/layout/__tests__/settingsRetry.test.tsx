@@ -13,6 +13,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup, waitFor, act } from '@testing-library/react';
 import { useAppStore } from '../../../state/store';
 import { useToastStore } from '../../../state/toastStore';
+import i18n from '../../../i18n';
 
 const ctl = vi.hoisted(() => ({ fail: true }));
 vi.mock('../SettingsSheet.tsx', async () => {
@@ -45,9 +46,23 @@ beforeEach(() => {
   useAppStore.setState({ view: 'explore', language: 'en' });
   useToastStore.setState({ toasts: [] });
 });
-afterEach(() => cleanup());
+afterEach(async () => {
+  cleanup();
+  await act(() => i18n.changeLanguage('en'));
+});
 
 describe('Settings after a failed download', () => {
+  it('a language change after a failed open says nothing more (the failure is said once)', async () => {
+    render(<TopBar />);
+    await openSettings();
+    await waitFor(() => expect(errors()).toBe(1));
+    await act(() => i18n.changeLanguage('pt'));
+    await flush();
+    await act(() => i18n.changeLanguage('en'));
+    await flush();
+    expect(useToastStore.getState().toasts.filter((t) => t.type === 'error')).toHaveLength(1);
+  });
+
   it('each failed open says so once; the next open downloads again and opens Settings', async () => {
     render(<TopBar />);
     await openSettings();
@@ -69,4 +84,5 @@ describe('Settings after a failed download', () => {
     expect(await screen.findByRole('dialog', { name: 'Settings' })).toBeTruthy();
     expect(errors()).toBe(2);
   });
+
 });

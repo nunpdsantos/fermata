@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, type ComponentType } from 'react';
+import { Suspense, lazy, useEffect, useRef, type ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from '../../state/toastStore.ts';
 import { closeTuner, useTunerRequest } from './tunerRequest.ts';
@@ -21,7 +21,11 @@ useTunerRequest.subscribe((s, prev) => {
 
 function TunerUnavailable() {
   const { t } = useTranslation();
+  // Said once: a language change while this stays mounted does not repeat it (wave 3 final review).
+  const said = useRef(false);
   useEffect(() => {
+    if (said.current) return;
+    said.current = true;
     useTunerRequest.setState({ open: false, failed: true });
     toast(t('tunerEntry.loadError'), 'error');
   }, [t]);
