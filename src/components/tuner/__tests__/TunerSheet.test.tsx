@@ -140,7 +140,10 @@ describe('TunerSheet: before and while listening', () => {
   it('under prefers-reduced-motion the needle does not animate and the reading changes at most every 300 ms', async () => {
     still.value = true;
     render(<TunerSheet open onClose={() => undefined} />);
-    await listen(tone(midiHz(52, -20)));
+    // A string being turned: the pitch glides up 40 cents a second, so the
+    // reading would change on every frame if it were not held.
+    const start = performance.now();
+    await listen((f, r, t) => tone(midiHz(52, -30 + (40 * (t - start)) / 1000))(f, r, t));
     await wait(600);
     expect(document.querySelector('.tuner-meter')!.hasAttribute('data-still')).toBe(true);
     const changes: string[] = [];

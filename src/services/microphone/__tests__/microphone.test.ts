@@ -152,6 +152,20 @@ describe('startListening', () => {
     expect(mic.contexts[0].state).toBe('closed');
   });
 
+  it('an audio context that will not run (outside a tap, some engines): it says it failed, nothing left open', async () => {
+    const { FakeAudioContext } = await import('./fakeMic');
+    const stuck = new FakeAudioContext();
+    stuck.state = 'suspended';
+    stuck.resume = () => new Promise(() => undefined);
+    const pending = startListening({ onFrame: () => undefined }, stuck as unknown as AudioContext);
+    const settled = pending.catch((e: unknown) => e);
+    await vi.advanceTimersByTimeAsync(600);
+    expect(await settled).toMatchObject({ problem: 'failed' });
+    expect(live()).toBe(0);
+    expect(stuck.state).toBe('closed');
+    expect(isListening()).toBe(false);
+  });
+
   it('no microphone support: refused before anything is asked', async () => {
     Object.defineProperty(navigator, 'mediaDevices', { configurable: true, value: undefined });
     await expect(startListening({ onFrame: () => undefined })).rejects.toMatchObject({ problem: 'unsupported' });

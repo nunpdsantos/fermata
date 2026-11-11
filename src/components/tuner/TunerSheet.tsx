@@ -159,9 +159,10 @@ export function TunerSheet({ open, onClose }: { open: boolean; onClose: () => vo
     }
   }
   useEffect(() => {
-    if (open) prepareGuitarStrings();
-    else release();
-  }, [open, release]);
+    // The guitar's samples download only where "Hear" is offered.
+    if (open && guitar) prepareGuitarStrings();
+    if (!open) release();
+  }, [open, guitar, release]);
   useEffect(() => release, [release]);
 
   const toggleShow = () => {
@@ -176,7 +177,6 @@ export function TunerSheet({ open, onClose }: { open: boolean; onClose: () => vo
   };
 
   const hear = (index: number) => {
-    if (!strings && !guitar) return;
     const midi = stringMidi(tuning.strings[index]);
     playGuitarString(midi);
     // The tuner must not read the app's own string as the learner's.

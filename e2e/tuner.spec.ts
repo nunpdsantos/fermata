@@ -78,6 +78,11 @@ test.describe('the tuner hears the low E string a little flat', () => {
 
   test('Tune → Start listening: E, string 6, flat, tighten; closing it stops every track', async ({ baseURL }) => {
     const { context, page } = await openApp(browser, baseURL!, 'guitar');
+    // On the production build (preview serves vercel.json's headers) the page
+    // is served with the policy that lets it use the microphone; the dev
+    // server sends no such headers.
+    const headers = (await page.request.get('/')).headers();
+    if (headers['content-security-policy']) expect(headers['permissions-policy']).toBe('camera=(), microphone=(self), geolocation=()');
     const sheet = await openTunerFromDock(page);
     await expect(sheet.getByText('To tell you which note you play and whether it is in tune, Fermata listens through the microphone; the sound never leaves this device.')).toBeVisible();
     expect(await tracks(page)).toEqual({ live: 0, ended: 0 });

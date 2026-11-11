@@ -48,6 +48,7 @@ export const MIC_CONSTRAINTS: MediaStreamConstraints = {
 
 const FRAME_SIZE = 4096;
 const FRAME_MS = 30;
+const RESUME_WAIT_MS = 500;
 
 interface Live {
   token: object;
@@ -159,14 +160,19 @@ export async function startListening(options: ListenOptions, context?: AudioCont
   }
   session.stream = stream;
 
-  try {
-    if (ctx.state === 'suspended') await ctx.resume();
-  } catch {
-    // Measured below all the same; a context that never runs reads silence.
+  // Outside a tap some engines keep a new context suspended (and may never
+  // settle resume()): wait a moment, then give up rather than listen to
+  // silence while saying "listening".
+  if (ctx.state === 'suspended') {
+    await Promise.race([ctx.resume().catch(() => undefined), new Promise((r) => setTimeout(r, RESUME_WAIT_MS))]);
   }
   if (live !== session) {
     stream.getTracks().forEach((track) => track.stop());
     throw new MicError('stopped');
+  }
+  if ((ctx.state as string) !== 'running') {
+    stopListening('closed');
+    throw new MicError('failed');
   }
 
   const source = ctx.createMediaStreamSource(stream);
