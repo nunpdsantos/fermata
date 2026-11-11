@@ -112,8 +112,11 @@ export function InstrumentDock({ view, available, onSheetShown }: { view: DockVi
       {/* Wave 3: shown only while a MIDI keyboard is connected. */}
       <MidiMark />
       {!pianoTools && <DockReadout context={context} />}
-      {((wideBar && instrument === 'guitar') || pianoTools) && <div ref={setToolsSlot} className={pianoTools ? 'dock-piano-tools' : 'dock-tools'} data-testid="dock-tools" />}
       {/* Wave 3: the tuner, one tap from the guitar (not during a check).
+          Right after the read-out, which gives it the room (integration):
+          every other control of the bar stays exactly where it was — the
+          read-out is the bar's one flexible part, its words start where
+          they did.
           Not on an upright phone: its bar has no room (the context line
           wraps and the bar grows, even for an icon with a capo on: measured,
           design-tuner.spec); there "⋯" → Tuner. */}
@@ -122,6 +125,7 @@ export function InstrumentDock({ view, available, onSheetShown }: { view: DockVi
           {t('tunerEntry.dockButton')}
         </Button>
       )}
+      {((wideBar && instrument === 'guitar') || pianoTools) && <div ref={setToolsSlot} className={pianoTools ? 'dock-piano-tools' : 'dock-tools'} data-testid="dock-tools" />}
       {neckAvailable && !exercise && (
         <IconButton
           variant="secondary"
