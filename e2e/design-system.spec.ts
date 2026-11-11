@@ -664,44 +664,81 @@ async function openFirstLesson(page: Page, heading = 'The Staff and Clefs') {
  * Answer check questions until we have seen an answer selected, a first miss
  * (D-09: the hint and the struck option — no answer shown) and a right one,
  * then finish the set: the result screen (W4b).
+ *
+ * Certain, not lucky (wave 3 final review, the seat's decision S-1): the
+ * helper answers as a learner who knows nothing would — the last option,
+ * then the first one left — and remembers what the app shows as the answer
+ * once a question is final, as a learner does. The Staff and Clefs' clef
+ * question is missed on both tries that way (its options are in a fixed
+ * order, seeded by its id), so the first pass always shows a first miss and
+ * reveals that answer, and its result screen always offers "Start over" (a
+ * question scored 0 of 4 is under the pass mark). If no question happened
+ * to come out right in that pass, the check is taken again, and a question
+ * whose words name it alone (the clef question; the note questions share
+ * one prompt and differ only by their staff) is answered with the answer it
+ * showed: a first-try right answer, every time. Nothing is read that a
+ * learner could not see on the screen.
  */
 async function exerciseStates(page: Page, onState: (state: 'selected' | 'wrong' | 'right' | 'result') => Promise<void>) {
   await startCheck(page);
   const answers = page.getByTestId('check-answers');
   const seen = new Set<string>();
-  for (let i = 0; i < 20; i++) {
-    if (await page.getByTestId('check-result').count()) break;
-    const options = answers.locator('button[data-state="open"]');
-    if (!(await options.count())) break;
-    await options.last().click();
-    if (!seen.has('selected')) {
-      // An answer chosen, Submit showing (review B3: Submit was 74–82 × 29–33 px).
-      seen.add('selected');
-      await page.waitForTimeout(300);
-      await onState('selected');
-    }
-    await page.getByRole('button', { name: 'Submit' }).click();
-    await page.waitForTimeout(400);
-    if ((await answers.locator('[data-state="tried"]').count()) && !(await answers.locator('[data-state="answer"]').count())) {
-      if (!seen.has('wrong')) {
-        seen.add('wrong');
-        await onState('wrong');
+  /** The question's words → the answer the app showed for it once final (null: words shared by questions with different answers). */
+  const learnt = new Map<string, string | null>();
+  const pass = async (useWhatWasLearnt: boolean) => {
+    for (let i = 0; i < 20; i++) {
+      if (await page.getByTestId('check-result').count()) return;
+      const options = answers.locator('button[data-state="open"]');
+      if (!(await options.count())) return;
+      const question = (await page.getByTestId('check-prompt').first().innerText()).trim();
+      const known = useWhatWasLearnt ? learnt.get(question) : undefined;
+      const remembered = known === undefined || known === null ? null : answers.locator(`button[data-state="open"][data-answer="${known.replace(/(["\\])/g, '\\$1')}"]`);
+      if (remembered) await expect(remembered, `the answer remembered for "${question}" is offered`).toHaveCount(1);
+      await (remembered ?? options.last()).click();
+      if (!seen.has('selected')) {
+        // An answer chosen, Submit showing (review B3: Submit was 74–82 × 29–33 px).
+        seen.add('selected');
+        await page.waitForTimeout(300);
+        await onState('selected');
       }
-      await answers.locator('button[data-state="open"]').first().click();
       await page.getByRole('button', { name: 'Submit' }).click();
       await page.waitForTimeout(400);
+      if ((await answers.locator('[data-state="tried"]').count()) && !(await answers.locator('[data-state="answer"]').count())) {
+        if (!seen.has('wrong')) {
+          seen.add('wrong');
+          await onState('wrong');
+        }
+        await answers.locator('button[data-state="open"]').first().click();
+        await page.getByRole('button', { name: 'Submit' }).click();
+        await page.waitForTimeout(400);
+      }
+      if (!seen.has('right') && (await page.getByTestId('check-thumb').getByText(/^Correct/).count())) {
+        seen.add('right');
+        await onState('right');
+      }
+      // Final now: the app marks the answer (right or not); remember it.
+      const shown = answers.locator('[data-state="answer"]');
+      await expect(shown, `the answer is shown once "${question}" is final`).toHaveCount(1);
+      const answer = (await shown.getAttribute('data-answer'))!;
+      if (!useWhatWasLearnt) learnt.set(question, learnt.has(question) && learnt.get(question) !== answer ? null : answer);
+      await page.getByRole('button', { name: 'Continue' }).click();
+      await page.waitForTimeout(300);
     }
-    if (!seen.has('right') && (await page.getByTestId('check-thumb').getByText(/^Correct/).count())) {
-      seen.add('right');
-      await onState('right');
-    }
-    await page.getByRole('button', { name: 'Continue' }).click();
-    await page.waitForTimeout(300);
-  }
+  };
+  await pass(false);
   await expect(page.getByTestId('check-result')).toBeVisible();
   await page.waitForTimeout(300);
   await onState('result');
   seen.add('result');
+  if (!seen.has('right')) {
+    // Nothing came out right by chance: take the check again, knowing the answers it showed.
+    test.info().annotations.push({ type: 'exercise-states', description: 'took the check a second time for a right answer' });
+    await page.getByRole('button', { name: 'Start over' }).click();
+    await expect(page.getByTestId('focused-check')).toBeVisible();
+    await page.waitForTimeout(300);
+    await pass(true);
+    await expect(page.getByTestId('check-result')).toBeVisible();
+  }
   expect([...seen].sort(), 'reached every exercise state').toEqual(['result', 'right', 'selected', 'wrong']);
 }
 
