@@ -65,6 +65,15 @@ describe('ReviewQueue (W9-20)', () => {
     expect(screen.queryByTitle(/Level 2 · Unit 4/)).toBeNull(); // not yet due
   });
 
+  it('a due track lesson names its track, never a level (final review of wave 2)', () => {
+    render(<ReviewQueue progress={withSchedules({ l1u35m3: schedule(-1), l1u1m1: schedule(-1) })} onStartReview={() => {}} />);
+    const track = screen.getByTitle('From the chords you know · Lesson 3');
+    expect(track.closest('div')!.textContent).toMatch(/^.+From the chords you know · /);
+    expect(track.closest('div')!.textContent).not.toMatch(/Foundations of Music Literacy/);
+    // A level lesson keeps its level.
+    expect(screen.getByTitle('Level 1 · Unit 1 · Module 1').closest('div')!.textContent).toMatch(/Foundations of Music Literacy/);
+  });
+
   it('shows at most five rows and says how many more are due', () => {
     const due = Object.fromEntries(['l1u1m1', 'l1u1m2', 'l1u1m3', 'l1u2m1', 'l1u2m2', 'l1u2m3', 'l1u3m1'].map((id) => [id, schedule(-1)]));
     render(<ReviewQueue progress={withSchedules(due)} onStartReview={() => {}} />);

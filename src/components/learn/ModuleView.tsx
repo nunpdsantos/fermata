@@ -335,9 +335,16 @@ export function ModuleView({
     requestAnimationFrame(() => {
       const scroller = scrollerOf(rootRef.current);
       const hear = rootRef.current?.querySelector<HTMLElement>('[data-section="c0"] [data-testid="inline-try-this"] button');
-      if (!scroller || !hear || scroller.scrollTop > 0) return;
-      const shown = scroller.getBoundingClientRect().bottom - (parseFloat(getComputedStyle(scroller).paddingBottom) || 0);
-      if (hear.getBoundingClientRect().bottom > shown) scrollTo('c0', false);
+      if (!scroller || !hear) return;
+      // Measured as if the scroller were at its top: a lesson opened by "Next
+      // lesson" mounts while the scroller is still on its way up from the
+      // bottom of the last one (LearnView's smooth reset), and an early return
+      // on scrollTop > 0 left lessons 2–5 with "Hear it" under the dock (final
+      // review of wave 2). A fresh mount has had no input from the learner yet.
+      const box = scroller.getBoundingClientRect();
+      const shown = box.height - (parseFloat(getComputedStyle(scroller).paddingBottom) || 0);
+      const hearBottom = hear.getBoundingClientRect().bottom - box.top + scroller.scrollTop;
+      if (hearBottom > shown) scrollTo('c0', false);
     });
   }, [soundFirst, isReviewMode, initialSection, mode, scrollTo]);
 

@@ -8,7 +8,10 @@
 import { describe, it, expect } from 'vitest';
 import { TRACKS, TRACK_IDS, WRITTEN_TRACK_LESSONS, isTrackWritten, trackOfModule, firstLessonOf } from '../tracks';
 import { MODULE_INDEX } from '../moduleIndex';
-import { LEVEL_METADATA, getLevelModuleCount, getNextModuleInLevel, getPreviousModuleInLevel } from '../curriculumLoader';
+import {
+  LEVEL_METADATA, computeLevelState, computeLevelStateMeta, getLevelCompletedCountMeta, getLevelCompletedModuleCount, getLevelModuleCount,
+  getNextModuleInLevel, getPreviousModuleInLevel,
+} from '../curriculumLoader';
 import { OPTIONAL_UNIT_IDS, isOptionalModuleId } from '../../core/constants/optionalCurriculum';
 import { getNextModule, getPreviousModule } from '../../core/constants/curriculum';
 import { L1_UNITS } from '../../core/constants/curriculumL1';
@@ -52,6 +55,24 @@ describe('the tracks in the curriculum', () => {
     expect(L1_UNITS.map((u) => u.id)).toEqual(['u1', 'u2', 'u3', 'u33', 'u34', 'u35']);
   });
 
+  it('a track lesson never counts as a Level 1 lesson done (page, bar, overview card, Level 2\'s lock) — final review of wave 2', () => {
+    const trackIds = trackUnits.flatMap((u) => u.modules.map((m) => m.id));
+    expect(trackIds).toHaveLength(15);
+    const levelIds = L1_UNITS.filter((u) => !u.optional).flatMap((u) => u.modules.map((m) => m.id));
+    expect(levelIds).toHaveLength(10);
+    // The level page and its bar (full data).
+    expect(getLevelCompletedModuleCount(L1, trackIds)).toBe(0);
+    expect(getLevelCompletedModuleCount(L1, [...levelIds.slice(0, 3), ...trackIds])).toBe(3);
+    expect(computeLevelState(L1, [L1], trackIds)).toBe('available');
+    // The overview's level cards (metadata only): ten chord lessons do not complete Level 1 or open Level 2.
+    const meta1 = LEVEL_METADATA.find((m) => m.id === 'l1')!;
+    const meta2 = LEVEL_METADATA.find((m) => m.id === 'l2')!;
+    expect(getLevelCompletedCountMeta('l1', trackIds)).toBe(0);
+    expect(computeLevelStateMeta(meta1, LEVEL_METADATA, trackIds)).toBe('available');
+    expect(computeLevelStateMeta(meta2, LEVEL_METADATA, trackIds)).toBe('locked');
+    expect(computeLevelStateMeta(meta1, LEVEL_METADATA, [...levelIds, ...trackIds])).toBe('completed');
+    expect(computeLevelStateMeta(meta2, LEVEL_METADATA, [...levelIds, ...trackIds])).toBe('available');
+  });
   it('Level 1 counts stay as on main: 4 units listed, 10 modules (hand-kept metadata included)', () => {
     const meta = LEVEL_METADATA.find((m) => m.id === 'l1')!;
     expect(L1_UNITS.filter((u) => !u.track)).toHaveLength(4);

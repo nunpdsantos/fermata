@@ -168,6 +168,16 @@ for (const v of [PHONE, LAPTOP] as View[]) {
       for (let i = 0; i < 5; i++) {
         await expect(page.getByRole('heading', { level: 1, name: w.lessons[i] })).toBeVisible({ timeout: 15_000 });
         await page.waitForTimeout(400);
+        if (i > 0) {
+          // Opened by "Next lesson" from the bottom of the one before: its first
+          // Try This is in reach too, one tap from sound (final review of wave 2).
+          await page.waitForTimeout(800);
+          const hearNext = page.getByTestId('inline-try-this').first().getByRole('button', { name: w.hear });
+          const nb = (await hearNext.boundingBox())!;
+          const nd = (await page.getByTestId('instrument-dock').boundingBox())!;
+          expect(nb.y, `lesson ${i + 1}: Hear it is on screen`).toBeGreaterThanOrEqual(0);
+          expect(nb.y + nb.height, `lesson ${i + 1}: Hear it is above the dock`).toBeLessThanOrEqual(nd.y + 1);
+        }
         // No staff anywhere in the lesson; every Try This writes its notes.
         expect(await staves(page, '#learn-panel')).toBe(0);
         const tries = page.getByTestId('inline-try-this');
