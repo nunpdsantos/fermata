@@ -4,8 +4,10 @@
  * default, one sentence before the browser is asked, the notes held on the
  * real instrument EMITTED through the contract (the listener that adds them
  * to the answer is stream K's), the on-screen instrument and Check still
- * working, and no track left running when the question is final, when the
- * control goes, when the page is hidden, or when the microphone is refused.
+ * working; ONE microphone session for the whole check (wave 3 integration,
+ * seam 3: never reopened outside a tap); and no track left running when it
+ * is turned off, when the check ends, when the page is hidden, or when the
+ * microphone is refused.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
@@ -15,7 +17,7 @@ import { stopListening } from '../../../services/microphone/microphone';
 // Loaded up front, as the control loads them on first use.
 import '../../../services/microphone/playedNotes';
 import { InstrumentInput } from '../../learn/exercises/inputs/InstrumentInput';
-import { setAnswerWanted } from '../answerSession';
+import { stopAnswerListening, useAnswerListening } from '../answerSession';
 import { useAppStore } from '../../../state/store';
 import type { Note } from '../../../core/types/music';
 
@@ -25,7 +27,7 @@ let off: () => void;
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'setTimeout', 'clearTimeout', 'performance'] });
   mic = installFakeMic();
-  setAnswerWanted(false);
+  stopAnswerListening();
   heard = [];
   off = subscribeExternalNotes((n) => heard.push(n));
   useAppStore.setState({ view: 'learn', language: 'en', activeNotes: new Set<number>(), highlightedNotes: [], exerciseInputActive: false });
@@ -33,6 +35,7 @@ beforeEach(() => {
 afterEach(() => {
   off();
   cleanup();
+  stopAnswerListening();
   stopListening();
   mic.restore();
   vi.useRealTimers();
@@ -113,19 +116,26 @@ describe('Use my instrument', () => {
     expect(onSubmit).toHaveBeenCalledWith(new Set([0]));
   });
 
-  it('the question final: the microphone stops (no track); the next question listens again by itself', async () => {
+  it('the question final, then the next question: the SAME microphone session goes on (nothing reopened outside a tap)', async () => {
     const { rerender, unmount } = render(ui());
     await turnOn();
     expect(live()).toBe(1);
     rerender(ui(true));
-    expect(live()).toBe(0);
-    expect(mic.contexts.every((c) => c.state === 'closed')).toBe(true);
-    unmount();
-    render(ui());
-    await settle();
-    expect(mic.getUserMedia).toHaveBeenCalledTimes(2);
+    // Final: still listening for the check, and says nothing about playing.
     expect(live()).toBe(1);
+    expect(mic.contexts.filter((c) => c.state !== 'closed')).toHaveLength(1);
+    expect(screen.getByTestId('listening-mark')).toBeTruthy();
+    expect(screen.queryByTestId('use-my-instrument-heard')).toBeNull();
+    unmount();
+    // The next question: on at once, from the same stream, the same context.
+    render(ui());
+    await wait(0);
     expect(screen.getByRole('button', { name: 'Use my instrument' }).getAttribute('aria-pressed')).toBe('true');
+    expect(mic.getUserMedia).toHaveBeenCalledTimes(1);
+    expect(mic.contexts).toHaveLength(1);
+    expect(live()).toBe(1);
+    await play(52);
+    expect(heard.filter((n) => n.on)).toEqual([{ midi: 52, on: true, source: 'mic' }]);
   });
 
   it('turned off: no track, and the next question does not listen', async () => {
@@ -139,11 +149,16 @@ describe('Use my instrument', () => {
     expect(mic.getUserMedia).toHaveBeenCalledTimes(1);
   });
 
-  it('the control gone (the check closed) while listening: no track', async () => {
+  it('the control gone (a question not answered on the instrument) keeps it; the check over (stopAnswerListening, as ExerciseRunner does) leaves no track', async () => {
     const { unmount } = render(ui());
     await turnOn();
     unmount();
+    expect(live()).toBe(1);
+    expect(useAnswerListening.getState().state.kind).toBe('on');
+    act(() => stopAnswerListening());
     expect(live()).toBe(0);
+    expect(mic.contexts.every((c) => c.state === 'closed')).toBe(true);
+    expect(useAnswerListening.getState().state.kind).toBe('off');
   });
 
   it('refused: off, a true sentence, the screen still answers; no track', async () => {

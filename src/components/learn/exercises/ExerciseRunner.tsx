@@ -12,6 +12,8 @@ import { nudgeFor, sectionPointer } from './nudge';
 import { ExercisePrompt } from './ExercisePrompt';
 import { ChoiceInput } from './inputs/ChoiceInput';
 import { InstrumentInput } from './inputs/InstrumentInput';
+import { AnswerListeningMark } from '../../tuner/UseMyInstrument';
+import { stopAnswerListening } from '../../tuner/answerSession';
 import { playNote, playPitchedNotes, playScale, playTimedNotes, resumeAudio, stopPlayback } from '../../../core/services/audio';
 import { getSynthConfig } from '../../../services/synthConfig';
 import type { NaturalNote, Accidental, Note, ChordQuality, ScaleType } from '../../../core/types/music';
@@ -333,6 +335,11 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
   const answersRef = useRef<HTMLDivElement>(null);
   useToastAvoid(answersRef, true);
 
+  // "Use my instrument" keeps one microphone session for the whole check
+  // (wave 3 integration): it ends with the check — finished, exited, or the
+  // check unmounted for any other reason.
+  useEffect(() => () => stopAnswerListening(), []);
+
   // Each question starts at the top of the view (a landscape phone scrolls).
   const rootRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -491,6 +498,8 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
             onSelectionChange={handleSelectionChange}
           />
         ) : (
+          <>
+          <AnswerListeningMark />
           <ChoiceInput
             options={choices}
             selected={selected}
@@ -498,6 +507,7 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
             final={final !== null}
             onSelect={setSelected}
           />
+          </>
         )}
         {final ? (
           <Button ref={continueRef} variant="primary" block onClick={handleNext}>
