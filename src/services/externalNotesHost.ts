@@ -54,8 +54,10 @@ export function isStartScreenShown(): boolean {
 }
 
 useAppStore.subscribe((s, p) => {
-  if (s.instrument !== p.instrument) onPlace?.(true);
-  else if (s.view !== p.view || s.exerciseInputActive !== p.exerciseInputActive) onPlace?.();
+  // A view change or another instrument ends every held note, even between
+  // two views where a note does the same (Learn to Drill: both "elsewhere").
+  if (s.instrument !== p.instrument || s.view !== p.view) onPlace?.(true);
+  else if (s.exerciseInputActive !== p.exerciseInputActive) onPlace?.();
 });
 
 /** App, once: listen to every note reported, for as long as the app runs. */

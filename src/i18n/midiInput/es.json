@@ -6,7 +6,7 @@
   "connected": "Conectado: {{names}}",
   "none": "No hay ningún teclado MIDI conectado. Conecta uno y Fermata lo oye enseguida.",
   "denied": "Tu navegador no lo ha permitido, así que Fermata no puede oír un teclado MIDI. Puedes cambiarlo en los ajustes del navegador para este sitio.",
-  "error": "Tu navegador no ha podido llegar al teclado MIDI. Desactívalo y vuelve a activarlo para intentarlo de nuevo.",
-  "unsupported": "Este navegador no puede usar un teclado MIDI; Chrome, Edge u Opera en un ordenador, o Chrome en Android, sí pueden.",
+  "error": "Tu navegador no ha podido acceder al teclado MIDI. Desactiva esta opción y vuelve a activarla para intentarlo de nuevo.",
+  "unsupported": "Este navegador no puede usar un teclado MIDI. Chrome, Edge u Opera en un ordenador, o Chrome en Android, sí pueden.",
   "soundBlocked": "Haz clic o toca la página una vez para que Fermata pueda hacer sonar lo que tocas."
 }

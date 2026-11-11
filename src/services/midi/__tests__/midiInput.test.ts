@@ -92,6 +92,17 @@ describe('asking the browser', () => {
     expect(request).toHaveBeenCalledTimes(1);
   });
 
+  it('a refusal or a failed restore leaves an owner\'s save untouched (no field, no new preferencesUpdatedAt)', async () => {
+    useAppStore.setState({ midiKeyboard: undefined, preferencesUpdatedAt: 1234 });
+    const refuse = Object.assign(new Error('no'), { name: 'NotAllowedError' });
+    await startMidi('ask', seam({ requestAccess: () => Promise.reject(refuse) }));
+    const broken = Object.assign(new Error('x'), { name: 'InvalidStateError' });
+    await startMidi('ask', seam({ requestAccess: () => Promise.reject(broken) }));
+    await startMidi('restore', seam({ permission: async () => 'prompt' }));
+    expect(useAppStore.getState().preferencesUpdatedAt).toBe(1234);
+    expect(useAppStore.getState().midiKeyboard).toBeUndefined();
+  });
+
   it('turned off while the browser is asking: the late answer is not used', async () => {
     let grant!: (a: MIDIAccess) => void;
     const pending = startMidi('ask', seam({ requestAccess: () => new Promise((r) => { grant = r; }) }));
@@ -170,6 +181,23 @@ describe('notes', () => {
     key([0xb0, 123, 0]);
     expect(sounding()).toEqual([62]);
     key([0xb2, 120, 0]);
+    expect(sounding()).toEqual([]);
+  });
+
+  it('All Notes Off and All Sound Off also end the notes the pedal is holding', () => {
+    key(PEDAL(true));
+    key(NOTE_ON(60, 80));
+    key(NOTE_OFF(60));
+    expect(sounding()).toEqual([60]);
+    key([0xb0, 123, 0]);
+    expect(sounding()).toEqual([]);
+    // A finger-held key and a pedal-held key together, on another channel.
+    key(PEDAL(true, 3));
+    key(NOTE_ON(64, 80, 3));
+    key(NOTE_OFF(64, 3));
+    key(NOTE_ON(67, 80, 3));
+    expect(sounding()).toEqual([64, 67]);
+    key([0xb3, 120, 0]);
     expect(sounding()).toEqual([]);
   });
 

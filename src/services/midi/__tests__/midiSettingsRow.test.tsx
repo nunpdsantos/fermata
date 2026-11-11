@@ -94,6 +94,8 @@ describe('Settings → MIDI keyboard', () => {
     const text = MIDI_INPUT_TEXT[lang];
     expect(within(row()).getByText(text.title)).toBeTruthy();
     expect(within(row()).getByText(text.ask)).toBeTruthy();
+    // The same promise as the English: what it is for, and that nothing leaves the device.
+    expect(text.ask).toMatch(lang === 'pt' ? /ouvir as teclas que tocas.*nunca sai deste dispositivo/ : /oír las teclas que tocas.*nunca sale de este dispositivo/);
     await act(() => turnMidiKeyboard(true));
     expect(within(row()).getByText(text.connected.replace('{{names}}', 'Stage Piano'))).toBeTruthy();
   });

@@ -18,9 +18,10 @@
  * long as it is held (a keyboard may be silent); a `mic` note is never sounded
  * (it is already sounding in the room).
  *
- * Every held note is released — sound and light — when the place changes (a
- * view change, a check opening or closing, a sheet opening), the instrument
- * changes, or the page is hidden. Its later "off" then does nothing.
+ * Every held note is released — sound and light — when the view changes (any
+ * view change, also Learn to Drill), the place changes (a check opening or
+ * closing, a sheet opening), the instrument changes, or the page is hidden.
+ * Its later "off" then does nothing.
  */
 import type { ExternalNote } from './externalNotes.ts';
 import { externalAnswerTarget, watchExternalAnswer } from './externalAnswer.ts';
@@ -92,8 +93,10 @@ function soundOn(midi: number, velocity: number | undefined): void {
   // note at once), not the scheduled one. The audio is woken in the same
   // turn but not waited for: a running context sounds the note now.
   void resumeAudio().catch(() => {});
-  const { octave, ...note } = midiToNote(midi);
-  startSustainedNote(note, octave, { ...config, volume: Math.min(1, base * velocityGain(velocity)) });
+  // midiToNote names only notes from 12 (C0) up; MIDI starts at 0, so ask it
+  // an octave higher and take the octave back (0–11 are C−1…B−1).
+  const { octave, ...note } = midiToNote(midi + 12);
+  startSustainedNote(note, octave - 1, { ...config, volume: Math.min(1, base * velocityGain(velocity)) });
   if (!soundNoticeShown) {
     // A browser starts sound only after a click or tap on the page; a key on
     // a MIDI keyboard does not count. Say so once if the sound is held back.

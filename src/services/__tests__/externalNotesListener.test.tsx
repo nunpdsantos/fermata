@@ -14,6 +14,7 @@ import { useExternalNotes, loadExternalNotesListener } from '../externalNotesHos
 import { heldExternalNotes, releaseAllExternalNotes, externalPlace, velocityGain } from '../externalNotesListener';
 import { setInstrumentVoice } from '../../core/services/audio';
 import { installMockAudioContext } from '../../test/mockAudioContext';
+import { getSynthConfig } from '../synthConfig';
 import { useAppStore } from '../../state/store';
 import { useFocusNoteStore } from '../../state/focusNoteStore';
 import { InstrumentInput } from '../../components/learn/exercises/inputs/InstrumentInput';
@@ -145,6 +146,28 @@ describe('in Explore', () => {
     expect(velocityGain(100 / 127)).toBeCloseTo(1, 1);
   });
 
+  it('the loudness is the preset\'s note volume × the velocity gain, and the learner\'s Volume applies', () => {
+    const volumes: number[] = [];
+    setInstrumentVoice({ ...voice, setVolume: (v: number) => { volumes.push(v); } });
+    useAppStore.setState({ volume: 0.3 });
+    const base = getSynthConfig(useAppStore.getState().synthPreset).volume as number;
+    play(midi(60, true, 0.2), midi(64, true, 1));
+    const v = calls.filter((c) => c.op === 'start').map((c) => c.velocity!);
+    expect(v[0]).toBeCloseTo(Math.min(1, base * velocityGain(0.2)), 10);
+    expect(v[1]).toBeCloseTo(Math.min(1, base * velocityGain(1)), 10);
+    expect(volumes).toContain(0.3);
+  });
+
+  it('every MIDI note sounds at its own pitch, the lowest octave (0–11) included', () => {
+    for (const n of [0, 5, 11, 12, 21, 108, 127]) {
+      calls = [];
+      play(midi(n, true));
+      expect(started(), `note ${n}`).toEqual([n]);
+      play(midi(n, false));
+      expect(stopped(), `note ${n}`).toEqual([n]);
+    }
+  });
+
   it('the same note again while held starts again (struck again under the pedal)', () => {
     play(midi(60, true), midi(60, true));
     expect(calls.map((c) => c.op)).toEqual(['start', 'stop', 'start']);
@@ -269,6 +292,15 @@ describe('every stop path leaves no note held, lit or sounding', () => {
     const before = calls.length;
     play(midi(60, false), midi(64, false), mic(67, false));
     expect(calls.length).toBe(before);
+  });
+
+  it('a view change between two views where a note only sounds (Learn to Drill)', () => {
+    act(() => useAppStore.getState().setView('learn'));
+    play(midi(60, true), midi(64, true));
+    expect(soundingNow()).toEqual([60, 64]);
+    act(() => useAppStore.getState().setView('drill'));
+    expect(soundingNow()).toEqual([]);
+    expect(heldExternalNotes()).toEqual([]);
   });
 
   it('the page hidden (and pagehide)', () => {

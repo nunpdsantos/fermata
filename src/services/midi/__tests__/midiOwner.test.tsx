@@ -82,6 +82,36 @@ describe('with the field absent nothing is asked of the browser', () => {
   });
 });
 
+describe('a save with MIDI on, opened in a browser without Web MIDI', () => {
+  it('loads no MIDI code, asks nothing and keeps the saved "on"', async () => {
+    vi.resetModules();
+    const startMidi = vi.fn(async () => 'on');
+    vi.doMock('../midiInput', () => ({ startMidi, stopMidi: vi.fn() }));
+    try {
+      const { useAppStore: store } = await import('../../../state/store');
+      const { restoreMidiKeyboard: restore } = await import('../midiStatus');
+      store.setState({ midiKeyboard: true });
+      expect('requestMIDIAccess' in navigator).toBe(false);
+      restore();
+      await new Promise((r) => setTimeout(r, 20));
+      expect(startMidi).not.toHaveBeenCalled();
+      expect(store.getState().midiKeyboard).toBe(true);
+      // The same save in a browser with Web MIDI restores (the guard is the browser, not the save).
+      vi.resetModules();
+      const again = await import('../midiStatus');
+      const { useAppStore: store2 } = await import('../../../state/store');
+      store2.setState({ midiKeyboard: true });
+      Object.defineProperty(navigator, 'requestMIDIAccess', { configurable: true, value: vi.fn() });
+      again.restoreMidiKeyboard();
+      await vi.waitFor(() => expect(startMidi).toHaveBeenCalledWith('restore'));
+    } finally {
+      delete (navigator as unknown as Record<string, unknown>).requestMIDIAccess;
+      vi.doUnmock('../midiInput');
+      vi.resetModules();
+    }
+  });
+});
+
 describe('the dock bar mark', () => {
   it('renders nothing while MIDI is off, asking, refused, or on with no device; a mark while one is connected', () => {
     const { container, rerender } = render(<MidiMark />);
