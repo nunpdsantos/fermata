@@ -2844,3 +2844,90 @@ p.explore-prose {
 @media print {
   .prog-controls, .prog-add, .prog-capo-ideas, .prog-clear { display: none; }
 }
+
+/* The tuner (wave 3, brief T, components/tuner/): the listening mark, the
+   cents scale and the six strings. The needle's position is the reading;
+   its move is a short transition, none under reduced motion. */
+.tuner-listening {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-weight: 500;
+}
+.tuner-listening-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-danger);
+}
+.tuner-reading { display: flex; flex-direction: column; gap: 8px; }
+.tuner-meter { display: flex; flex-direction: column; gap: 4px; }
+.tuner-meter-scale {
+  position: relative;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+}
+.tuner-meter-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 45%;
+  width: 10%;
+  background: var(--accent-bg);
+}
+.tuner-meter-tick {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  height: 10px;
+  background: var(--border-light);
+  transform: translateX(-0.5px);
+}
+.tuner-meter-tick[data-major] { top: 0; height: auto; width: 2px; background: var(--text-dim); }
+.tuner-meter-needle {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 4px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--text);
+  transition: left 0.12s linear;
+}
+.tuner-meter-needle[data-in-tune] { background: var(--accent); width: 8px; margin-left: -4px; }
+.tuner-meter[data-still] .tuner-meter-needle { transition: none; }
+@media (prefers-reduced-motion: reduce) { .tuner-meter-needle { transition: none; } }
+.tuner-meter-labels { display: flex; justify-content: space-between; gap: 8px; color: var(--text-dim); }
+.tuner-strings {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px 8px;
+}
+.tuner-string { display: flex; flex-direction: column; align-items: stretch; gap: 2px; min-width: 0; }
+.tuner-string .btn { padding-inline: 4px; white-space: normal; }
+.chip.tuner-string-pick {
+  flex-direction: column;
+  gap: 0;
+  height: auto;
+  min-height: calc(var(--tap) + 12px);
+  padding: 4px;
+  border-radius: 12px;
+  white-space: normal;
+}
+/* The string heard (chosen by itself): a dashed ring outside the chip, so nothing moves. */
+.chip.tuner-string-pick[data-near]:not([aria-checked="true"]) {
+  outline: 2px dashed var(--accent-text);
+  outline-offset: 2px;
+  color: var(--text);
+}
+.chip.tuner-string-pick[data-near]:not([aria-checked="true"]):focus-visible {
+  outline: 2px solid var(--focus-outline);
+}
+.chip.tuner-wrap { white-space: normal; text-align: left; height: auto; padding-block: 6px; }

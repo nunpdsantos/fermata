@@ -1,9 +1,9 @@
 <!doctype html>
-<!-- build 2026-10-31 (W11-A): content change required so the service worker
-     refetches this document — its precached copy carries the response HEADERS
-     from fetch time, so header-only deploys (this one changes the CSP hash of
-     the theme script below, which now also honours the Auto theme) never
-     reach installed PWAs otherwise. -->
+<!-- build 2026-11-11 (wave 3, the microphone): content change required so the
+     service worker refetches this document — its precached copy carries the
+     response HEADERS from fetch time, so header-only deploys (this one lets
+     the page itself use the microphone: Permissions-Policy microphone=(self))
+     never reach installed PWAs otherwise. -->
 <html lang="en">
   <head>
     <meta charset="UTF-8" />

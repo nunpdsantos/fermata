@@ -17,6 +17,7 @@ import { useDockContextStore } from '../../state/dockContextStore.ts';
 import { useExploreCapo } from '../instruments/capoView.ts';
 import type { Detent, DockView } from '../../state/dock.ts';
 import { useMediaQuery, SHEET_QUERY } from '../../hooks/useMediaQuery.ts';
+import { openTuner } from '../tuner/tunerRequest.ts';
 
 // The fretboard (with its chord-shape and position data) is its own chunk —
 // piano users no longer download it with the entry file (audit W9-11). It is
@@ -89,6 +90,8 @@ export function InstrumentDock({ view, available, onSheetShown }: { view: DockVi
   const [toolsSlot, setToolsSlot] = useState<HTMLElement | null>(null);
   // A phone held sideways with the guitar: the full-neck view (D-26 extra).
   const neckAvailable = useMediaQuery(NECK_QUERY) && instrument === 'guitar';
+  // The tuner's button (wave 3) is left off an upright phone's bar (no room).
+  const uprightPhone = useMediaQuery('(max-width: 639px)');
   const [neckOpen, setNeckOpen] = useState(false);
   const showNeck = neckOpen && neckAvailable && !exercise;
 
@@ -107,6 +110,15 @@ export function InstrumentDock({ view, available, onSheetShown }: { view: DockVi
       <InstrumentSelector />
       {!pianoTools && <DockReadout context={context} />}
       {((wideBar && instrument === 'guitar') || pianoTools) && <div ref={setToolsSlot} className={pianoTools ? 'dock-piano-tools' : 'dock-tools'} data-testid="dock-tools" />}
+      {/* Wave 3: the tuner, one tap from the guitar (not during a check).
+          Not on an upright phone: its bar has no room (the context line
+          wraps and the bar grows, even for an icon with a capo on: measured,
+          design-tuner.spec); there "⋯" → Tuner. */}
+      {instrument === 'guitar' && !exercise && !uprightPhone && (
+        <Button variant="secondary" aria-haspopup="dialog" data-testid="dock-tune" onClick={openTuner}>
+          {t('tunerEntry.dockButton')}
+        </Button>
+      )}
       {neckAvailable && !exercise && (
         <IconButton
           variant="secondary"
