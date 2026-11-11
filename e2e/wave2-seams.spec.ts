@@ -398,7 +398,9 @@ test.describe('9. the doors and the tour', () => {
  * the chords card's height). Wave 2 may add only what the briefs name.
  */
 const OWNER_FIXTURE = 'e2e/fixtures/wave2-owner-main.json';
-const ownerSave = () => fs.readFileSync('src/state/__tests__/fixtures/settings-v6-before-start.json', 'utf8');
+/** A store as the app writes it (compact JSON): the fixtures on disk are pretty-printed. */
+const asSaved = (path: string) => JSON.stringify(JSON.parse(fs.readFileSync(path, 'utf8')));
+const ownerSave = () => asSaved('src/state/__tests__/fixtures/settings-v6-before-start.json');
 function ownerStores(): Record<string, string> {
   const done = [
     'l1u1m1', 'l1u1m2', 'l1u1m3', 'l1u2m1', 'l1u2m2', 'l1u3m1', 'l1u3m2', 'l1u3m3', 'l1u4m1', 'l1u4m2',
@@ -413,7 +415,7 @@ function ownerStores(): Record<string, string> {
       exerciseResults: Object.fromEntries(done.map((id) => [id, { scores: {}, totalAttempts: 2, lastAttemptAt: 1793500000000, passed: true }])),
       reviewSchedules: Object.fromEntries(done.map((id, i) => [id, { completedAt: 1790000000000 + i, nextReviewAt: FAR, intervalLevel: 3, reviewCount: 3, lastReviewedAt: 1793000000000 }])),
     } }, version: 4 }),
-    'fermata-drill-v1': fs.readFileSync('src/state/__tests__/fixtures/drill-v3-before-reading.json', 'utf8'),
+    'fermata-drill-v1': asSaved('src/state/__tests__/fixtures/drill-v3-before-reading.json'),
     'fermata-fingering-v1': JSON.stringify({ state: { overrides: {}, labelMode: 'degree' }, version: 1 }),
     'fermata-learn-session-v1': JSON.stringify({ state: { screen: null, check: null }, version: 1 }),
   };
