@@ -767,7 +767,10 @@ for (const v of [PHONE, LAPTOP]) {
       const [l0, t0, w0, h0] = withoutRow[i];
       expect([l, w, h], `${name}: same size and column`).toEqual([l0, w0, h0]);
       if (t0 < rowBox.y) expect(t, `${name} (above the MIDI row) does not move`).toBe(t0);
-      else expect(t - t0, `${name} (below the MIDI row) moves by the row's height`).toBe(Math.round(rowBox.height + gap));
+      // `t` and `t0` are each rounded to a whole pixel, so their difference can be
+      // one off the true shift where a row's height is fractional (GitHub's Linux
+      // fonts: 161 expected, 162 measured). One pixel of rounding, no more.
+      else expect(Math.abs((t - t0) - (rowBox.height + gap)), `${name} (below the MIDI row) moves by the row's height`).toBeLessThanOrEqual(1);
     }
     await page.keyboard.press('Escape');
     // No mark in the dock bar for MIDI (off), no listening mark, no metronome bar anywhere.
