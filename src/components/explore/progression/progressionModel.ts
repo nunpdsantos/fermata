@@ -22,7 +22,6 @@ import {
   PROGRESSION_PRESETS,
   scaleTypeOf,
   transposeProgression,
-  shiftKey,
   type CapoOption,
   type ChordInKey,
   type KeyCandidate,
@@ -32,6 +31,7 @@ import {
 import { chordLinkSymbol } from '../../../services/shareLinkMake';
 import { preferredRootSpelling } from '../../../core/utils/degreeSpelling';
 import { MAX_PROGRESSION_CHORDS } from '../../../state/progressionSave';
+import { chordBelowCapo } from '../../../core/constants/guitarChordShapes';
 
 // ─── The key the panel numbers in ──────────────────────────────────────────
 
@@ -264,10 +264,15 @@ export function keyLine(chords: readonly Chord[], key: MusicKey): KeyLine | null
 
 // ─── Capo (guitar) ────────────────────────────────────────────────────────
 
-/** With a capo on `fret`, the shapes to play for these chords in this key (fret 0: the chords themselves). */
-export function capoShapes(chords: readonly Chord[], key: MusicKey, fret: number): Chord[] {
+/**
+ * With a capo on `fret`, the shapes to play for these chords (fret 0: the
+ * chords themselves). Named by the fretboard's own rule (`chordBelowCapo`), so
+ * this line and the neck's "B♭: the G shape, capo on fret 3" agree chord by
+ * chord (integration seam 3). `_key` is kept for the callers' shape of call.
+ */
+export function capoShapes(chords: readonly Chord[], _key: MusicKey, fret: number): Chord[] {
   if (fret <= 0) return [...chords];
-  return transposeProgression(chords, key, shiftKey(key, -fret));
+  return chords.map((c) => chordBelowCapo(c, fret));
 }
 
 /**

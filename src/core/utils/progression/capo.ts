@@ -2,6 +2,8 @@
  * Capo ideas (`capoOptions`). With a capo on fret f, a shape sounds f half
  * steps higher than it is fingered, so the shapes to play are the chords moved
  * DOWN f half steps: shape + capo = the chord that sounds. Standard tuning.
+ * Each shape is spelled by `chordBelowCapo` (guitarChordShapes.ts), the one
+ * rule the fretboard uses for its "B♭: the G shape, capo on fret 3" line.
  *
  * Whether a shape has an open grip is read from the app's own shape library
  * (`getChordShapesWithFallback` + `isPlayableChordShape`): a playable shape of
@@ -13,12 +15,13 @@ import type { Chord } from '../../types/music';
 import { getPitchClass } from '../../constants/notes';
 import {
   arrangeShapesForBass,
+  chordBelowCapo,
   getChordShapesWithFallback,
   isPlayableChordShape,
   lowestSoundingPitchClass,
 } from '../../constants/guitarChordShapes';
 import { shiftKey } from './key';
-import { transposeProgression } from './transpose';
+import { toChord } from './chordInKey';
 import type { CapoOption, ChordInput, MusicKey } from './types';
 
 type Placed = ReturnType<typeof getChordShapesWithFallback>[number];
@@ -69,7 +72,10 @@ export function capoOptions(
   const options: CapoOption[] = [];
   for (let fret = 0; fret <= top; fret++) {
     const shapeKey = shiftKey(key, -fret);
-    const moved = transposeProgression(inputs, key, shapeKey);
+    // Each shape is named as the fretboard names it with this capo on
+    // (`chordBelowCapo`: the root as the key picker spells it), so the panel's
+    // capo line and the neck's line agree for every chord (integration seam 3).
+    const moved = inputs.map((input) => chordBelowCapo(toChord(input), fret));
     const shapes = moved.map((shape) => ({ shape, open: hasOpenGrip(shape) }));
     const distinct = new Map<string, boolean>();
     for (const s of shapes) distinct.set(chordKey(s.shape), s.open);
