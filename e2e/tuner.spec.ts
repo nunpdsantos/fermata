@@ -1,6 +1,4 @@
 import { test, expect, type Browser, type Page } from '@playwright/test';
-import { readdirSync, readFileSync, statSync } from 'node:fs';
-import { join } from 'node:path';
 import { launchWithFakeMic, micContext, micFixture, RECORD_STREAMS } from './helpers/micFixtures';
 
 /**
@@ -16,9 +14,9 @@ import { launchWithFakeMic, micContext, micFixture, RECORD_STREAMS } from './hel
  *    no track left running (asserted on the tracks themselves) and a true
  *    sentence on screen.
  *  - "Use my instrument" in a real chord_build check: C, E and G played one
- *    at a time are EMITTED (services/externalNotes.ts). Whether the answer
- *    fills in depends on the listener stream K mounts: that assertion runs
- *    once the listener exists and is skipped, with a note, until then.
+ *    at a time are EMITTED (services/externalNotes.ts) and, through the one
+ *    listener (stream K, mounted since the wave-3 integration), fill the
+ *    answer.
  */
 
 const E2_FLAT = micFixture('e2-flat', [{ midi: 40, cents: -18, seconds: 2.4 }, { silence: 0.1 }]);
@@ -226,16 +224,6 @@ test.describe('refused by the browser itself', () => {
   });
 });
 
-/** Does any module (other than the contract and this branch's microphone) listen to played notes? Stream K mounts it. */
-function listenerMounted(): boolean {
-  const walk = (dir: string): string[] => readdirSync(dir).flatMap((f) => {
-    const p = join(dir, f);
-    return statSync(p).isDirectory() ? (f === '__tests__' ? [] : walk(p)) : [p];
-  });
-  return walk('src').some((p) => /\.(ts|tsx)$/.test(p) && !p.endsWith('externalNotes.ts') && !p.includes('/microphone/')
-    && /subscribeExternalNotes\(/.test(readFileSync(p, 'utf8')));
-}
-
 async function answerChoice(page: Page) {
   const answers = page.getByTestId('check-answers');
   await answers.locator('button[data-state="open"]').last().click();
@@ -310,12 +298,8 @@ test.describe('answering a check by playing', () => {
     }
     expect(await tracks(page)).toEqual({ live: 1, ended: 0 });
 
-    // The answer fills in: needs stream K's listener (integration).
-    if (listenerMounted()) {
-      await expect.poll(async () => (await page.getByTestId('check-answer-zone').locator('span.rounded-md').allTextContents()).sort(), { timeout: 15_000 }).toEqual(['C', 'E', 'G']);
-    } else {
-      test.info().annotations.push({ type: 'skipped-assertion', description: 'The answer filling in from the played notes needs the external-notes listener (stream K); no module subscribes to them in this branch.' });
-    }
+    // The answer fills in, through the one listener (stream K; integration).
+    await expect.poll(async () => (await page.getByTestId('check-answer-zone').locator('span.rounded-md').allTextContents()).sort(), { timeout: 15_000 }).toEqual(['C', 'E', 'G']);
 
     // Leaving the check stops the microphone.
     await page.getByRole('button', { name: 'Exit the check' }).click();
@@ -323,8 +307,7 @@ test.describe('answering a check by playing', () => {
     await context.close();
   });
 
-  test('the answer fills in from the notes played (needs the listener)', async ({ baseURL }) => {
-    test.skip(!listenerMounted(), 'Skipped until integration: no module mounts the external-notes listener in this branch (stream K owns it). The emitted notes are proved by the test above.');
+  test('the answer fills in from the notes played (through the one listener)', async ({ baseURL }) => {
     test.setTimeout(90_000);
     const { context, page } = await openApp(browser, baseURL!, 'piano', 'learn');
     await expect(page.getByRole('heading', { name: 'Learn Music Theory' })).toBeVisible({ timeout: 15_000 });
