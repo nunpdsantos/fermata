@@ -1343,5 +1343,23 @@
     "targetCapo": "un capo en el traste {{fret}}",
     "loadError": "El panel Progresión no se ha cargado. Comprueba la conexión y vuelve a intentarlo.",
     "parentChords": "Acordes que van con {{scale}}: los acordes de {{key}}"
+  },
+  "capo": {
+    "setting": "Capo",
+    "settingHint": "El capo sujeta las seis cuerdas en un traste, y cada cuerda empieza ahí. En Explorar, la guitarra lo muestra; las lecciones, Práctica y Practicar en la guitarra muestran el mástil sin él.",
+    "none": "Sin capo",
+    "onFret": "Capo {{fret}}",
+    "controlLabel": "Capo",
+    "line": "{{chord}}: la forma de {{shape}}, capo en el traste {{fret}}",
+    "noShape": "Ninguna forma de este acorde cabe por encima del capo. Se muestran sus notas en el mástil.",
+    "openPositionTitle": "Posición abierta en el capo: las cuerdas en el traste {{fret}} y los trastes {{from}}–{{to}}",
+    "announceAt": "Cuerda {{string}}, traste {{fret}}, en el capo, {{note}}",
+    "announceAbove_one": "Cuerda {{string}}, traste {{fret}}, {{count}} traste por encima del capo, {{note}}",
+    "announceAbove_other": "Cuerda {{string}}, traste {{fret}}, {{count}} trastes por encima del capo, {{note}}",
+    "cellAt": "{{note}}, traste {{fret}}, cuerda {{string}}, en el capo",
+    "cellAbove_one": "{{note}}, traste {{fret}}, cuerda {{string}}, {{count}} traste por encima del capo",
+    "cellAbove_other": "{{note}}, traste {{fret}}, cuerda {{string}}, {{count}} trastes por encima del capo",
+    "readoutAt": "cuerda {{string}} traste {{fret}} (capo)",
+    "practiceNote": "Aquí el capo está desactivado: estos ejercicios usan el mástil sin capo."
   }
 }

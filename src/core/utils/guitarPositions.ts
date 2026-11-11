@@ -132,9 +132,35 @@ function clampPosition(position: number): number {
 
 interface Candidate { stringIndex: number; fret: number; isStretch: boolean }
 
+// ─── A capo (wave 2, stream C) ──────────────────────────────────────────────
+//
+// A capo on fret c is a new nut: every string's "open" note is its note at
+// fret c, and nothing behind it can be played. So the positions with a capo
+// are the positions of a neck tuned c half steps higher, drawn c frets up:
+//
+//   • the Open position starts at the capo: the strings at fret c, then
+//     frets c+1…c+4;
+//   • position N (index finger at fret N) is offered only above the capo
+//     (N > c); its frets are the real ones, so the numeral stays the fret
+//     under the index finger;
+//   • a stretch never reaches back onto the capo (N−1 = c is the capo's
+//     "open" string, as N−1 = 0 is the open string without one).
+
+/** The positions offered with a capo on fret `capo`: Open (at the capo), then every position above it. */
+export function capoPositions(capo: number): number[] {
+  return capo > 0 ? POSITION_NUMBERS.filter((n) => n === OPEN_POSITION || n > capo) : [...POSITION_NUMBERS];
+}
+
+/** A position that needs a fret behind the capo (I … c) is not offered: the Open position (at the capo) stands for it. */
+export function positionForCapo(position: number, capo: number): number {
+  const n = clampPosition(position);
+  return capo > 0 && n !== OPEN_POSITION && n <= capo ? OPEN_POSITION : n;
+}
+
 /**
  * The notes of `scaleType` on `root` in classical position `position`
- * (0 = Open, 1–12 = I–XII) under `tuning`.
+ * (0 = Open, 1–12 = I–XII) under `tuning`, with a capo on fret `capo`
+ * (0 = none; see above). Frets are always the real ones.
  */
 export function getGuitarPosition(
   root: Note,
@@ -142,11 +168,33 @@ export function getGuitarPosition(
   position: number,
   tuning: GuitarTuning = TUNING_STANDARD,
   maxFret: number = GUITAR_MAX_FRET,
+  capo: number = 0,
 ): GuitarPosition {
-  const n = clampPosition(position);
+  if (capo > 0) {
+    const n = positionForCapo(position, capo);
+    // The same position on a neck tuned `capo` half steps higher, frets moved up.
+    const raised = positionOn(root, scaleType, n === OPEN_POSITION ? OPEN_POSITION : n - capo, tuningOpenMidi(tuning).map((m) => m + capo), maxFret - capo);
+    return {
+      ...raised,
+      position: n,
+      windowStart: raised.windowStart + capo,
+      windowEnd: raised.windowEnd + capo,
+      notes: raised.notes.map((note) => ({ ...note, fret: note.fret + capo })),
+    };
+  }
+  return positionOn(root, scaleType, clampPosition(position), tuningOpenMidi(tuning), maxFret);
+}
+
+/** The position `n` (already in range) on strings whose open notes are `openMidi`. */
+function positionOn(
+  root: Note,
+  scaleType: ScaleType,
+  n: number,
+  openMidi: number[],
+  maxFret: number,
+): GuitarPosition {
   const degrees = scaleDegreeMap(root, scaleType);
   const rootPc = getPitchClass(root);
-  const openMidi = tuningOpenMidi(tuning);
 
   const lo = n === OPEN_POSITION ? 0 : n;
   const hi = Math.min(maxFret, n === OPEN_POSITION ? 4 : n + 3);
@@ -286,15 +334,17 @@ export function getGuitarPosition(
 /**
  * Sensible default position for a scale: the lowest one whose window holds
  * the root on the 6th or 5th string (not as a stretch) — where a classical
- * scale study would start.
+ * scale study would start. With a capo, the lowest such position of those
+ * offered above it.
  */
 export function suggestGuitarPosition(
   root: Note,
   scaleType: ScaleType,
   tuning: GuitarTuning = TUNING_STANDARD,
+  capo: number = 0,
 ): number {
-  for (const n of POSITION_NUMBERS) {
-    const pos = getGuitarPosition(root, scaleType, n, tuning);
+  for (const n of capoPositions(capo)) {
+    const pos = getGuitarPosition(root, scaleType, n, tuning, GUITAR_MAX_FRET, capo);
     if (pos.notes.some((x) => x.stringIndex <= 1 && x.isRoot && !x.isStretch)) return n;
   }
   return OPEN_POSITION;

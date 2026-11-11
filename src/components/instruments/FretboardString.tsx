@@ -69,6 +69,15 @@ interface FretboardStringProps {
    * come in DRAWN order (left to right) either way.
    */
   nutSide?: NeckNutSide;
+  /**
+   * A capo on this fret (Explore only, wave 2; absent = none, and the row is
+   * drawn exactly as before). Frets behind it — the open string included —
+   * are out of play: no dot, not tappable, hidden from screen readers. The
+   * capo's own cell is the string's new "open" note.
+   */
+  capo?: number;
+  /** This row is the top / bottom string as drawn: the capo bar's rounded end. */
+  capoEnd?: 'top' | 'bottom';
 }
 
 export const FretboardString = memo(function FretboardString({
@@ -98,6 +107,8 @@ export const FretboardString = memo(function FretboardString({
   rowHeight,
   scaleContext = false,
   nutSide = 'right',
+  capo = 0,
+  capoEnd,
 }: FretboardStringProps) {
   const { t } = useTranslation();
   const openFretNote = getFretNote(stringIdx, 0);
@@ -162,7 +173,10 @@ export const FretboardString = memo(function FretboardString({
   );
 
   let openContent: React.ReactNode = null;
-  if (mode === 'chord') {
+  // Behind a capo the open string cannot sound: no dot (a muted string keeps its ✕).
+  if (capo > 0 && !isMuted) {
+    openContent = null;
+  } else if (mode === 'chord') {
     if (isMuted) {
       openContent = <span className="font-bold" style={{ fontSize: 14, color: 'var(--danger-text)' }}>✕</span>;
     } else if (isOpenVoicing) {
@@ -218,8 +232,21 @@ export const FretboardString = memo(function FretboardString({
         const dotColor = color ?? ACCENT_FILL;
         const isRoot = rootPitchClass !== null && fn.pitchClass === rootPitchClass;
 
+        // A capo (wave 2): out of play behind it, the bar at it, and the
+        // spoken label says where the fret is from the capo.
+        const capoProps = capo > 0
+          ? fret < capo
+            ? { outOfPlay: true }
+            : {
+                ...(fret === capo ? { capoBar: capoEnd ?? ('middle' as const) } : {}),
+                ariaLabel: t(fret === capo ? 'capo.cellAt' : 'capo.cellAbove', {
+                  note: noteToString(displayNote), fret, string: 6 - stringIdx, count: fret - capo,
+                }),
+              }
+          : {};
         return (
           <FretCell
+            {...capoProps}
             key={fret}
             fret={fret}
             stringIdx={stringIdx}
@@ -263,8 +290,19 @@ export const FretboardString = memo(function FretboardString({
     />
   );
 
+  // Behind a capo the open string is out of play: drawn, silent, untouchable.
+  const capoOpenCell = capo > 0 && !isMuted ? (
+    <div
+      key="open"
+      data-open-string=""
+      data-out-of-play=""
+      aria-hidden="true"
+      className="relative flex items-center justify-center self-stretch"
+      style={{ width: 'var(--fret-open-width, 40px)', flexShrink: 0, backgroundColor: 'var(--card)' }}
+    />
+  ) : null;
   // Open string / muted indicator
-  const openCell = (
+  const openCell = capoOpenCell ?? (
     <div
       key="open"
       role="button"

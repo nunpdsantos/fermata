@@ -79,6 +79,12 @@ export interface InstrumentSlice {
    *  view, which is also saved by leaving the fields out (store.ts). */
   neckNutSide: NeckNutSide;
   neckTopString: NeckTopString;
+  /** The capo fret (wave 2, stream C — read and set it through
+   *  `state/capo.ts`): 0 = no capo, 1–9 = a capo on that fret. Explore's
+   *  guitar draws it; Learn, Drill and the practice sheet do not. Optional in
+   *  the v6 save: written only while a capo is on (1–9), so a save without it
+   *  is unchanged. */
+  capoFret: number;
   setInstrument: (instrument: InstrumentType) => void;
   addActiveNote: (midi: number) => void;
   removeActiveNote: (midi: number) => void;
