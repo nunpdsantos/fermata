@@ -347,11 +347,26 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
     [fretNoteMap]
   );
 
-  const activeTimeouts = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+  // Each tapped fret's pending release: its timer and the note it lets go.
+  const activeTimeouts = useRef<Map<ReturnType<typeof setTimeout>, number>>(new Map());
+  const noteOffRef = useRef(noteOff);
+  useEffect(() => {
+    noteOffRef.current = noteOff;
+  }, [noteOff]);
 
   useEffect(() => {
     const timeouts = activeTimeouts.current;
-    return () => { timeouts.forEach(clearTimeout); };
+    // The board going away (an instrument switch, the full neck opening, a
+    // view change) lets its tapped notes go now rather than never: a note
+    // left held stays lit and keeps core audio's "the app is sounding"
+    // signal on, which would leave the microphone deaf (wave 3 final review).
+    return () => {
+      for (const [t, midi] of timeouts) {
+        clearTimeout(t);
+        noteOffRef.current(midi);
+      }
+      timeouts.clear();
+    };
   }, []);
 
   const playFretNote = useCallback(
@@ -363,7 +378,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
             noteOff(midi);
             activeTimeouts.current.delete(t);
           }, 800);
-          activeTimeouts.current.add(t);
+          activeTimeouts.current.set(t, midi);
         },
         (e) => { console.warn('[Fretboard] noteOn failed:', e); }
       );
