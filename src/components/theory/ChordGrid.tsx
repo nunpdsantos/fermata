@@ -13,11 +13,37 @@ import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { EdgeFade } from '../ui/EdgeFade.tsx';
 import { termAttr } from '../../glossary/visibleTerms.ts';
 import { qualityTermId } from '../../glossary/termIds.ts';
+import { useMemo } from 'react';
+import type { ScaleType } from '../../core/types/music.ts';
+import { buildScale } from '../../core/constants/scales.ts';
+import { getDiatonicChordsForScale } from '../../core/constants/chords.ts';
+import { useExploreSimple } from '../../state/exploreDetail.ts';
+import { keyName } from '../explore/focusReadout.ts';
+
+/**
+ * Simple view (wave 2): a scale with no chords of its own shows the chords of
+ * the key it comes from — the major pentatonic and major blues their major
+ * key, the minor pentatonic and the blues scale the natural minor (same
+ * root). Full view keeps the old message.
+ */
+const SIMPLE_PARENT: Partial<Record<ScaleType, ScaleType>> = {
+  pentatonic_major: 'major',
+  major_blues: 'major',
+  pentatonic_minor: 'natural_minor',
+  blues: 'natural_minor',
+};
 
 export function ChordGrid() {
   const { t, i18n } = useTranslation();
   const lang = toContentLanguage(i18n.language);
-  const { diatonicChords } = useKeyContext();
+  const { diatonicChords: ownChords, scale } = useKeyContext();
+  const simple = useExploreSimple();
+  const parentType = simple && ownChords.length === 0 ? SIMPLE_PARENT[scale.type] : undefined;
+  const parentScale = useMemo(() => (parentType ? buildScale(scale.root, parentType) : null), [parentType, scale.root]);
+  const diatonicChords = useMemo(
+    () => (parentScale ? getDiatonicChordsForScale(parentScale).map(({ chord, numeral, degree }) => ({ chord, numeral, degree })) : ownChords),
+    [parentScale, ownChords],
+  );
   const setSelectedChord = useAppStore((s) => s.setSelectedChord);
   const selectedChord = useAppStore((s) => s.selectedChord);
   const degreeColorsOn = useDegreeColorsEnabled();
@@ -47,7 +73,7 @@ export function ChordGrid() {
     );
   }
 
-  return (
+  const row = (
     // ONE row (W11-B): the chord detail opens under it, in place. On a narrow
     // screen the row scrolls sideways inside its card; each card keeps 84 px,
     // and an edge fade says there is more (only while there is).
@@ -117,5 +143,17 @@ export function ChordGrid() {
       })}
     </div>
     </EdgeFade>
+  );
+  if (!parentScale) return row;
+  return (
+    <>
+      <p className="text-ui" style={{ margin: '0 0 6px', color: 'var(--text-muted)' }} data-testid="parent-chords-note">
+        {t('progression.parentChords', {
+          scale: keyName(scale, t),
+          key: t(parentType === 'major' ? 'circle.keyMajor' : 'circle.keyMinor', { note: withGlyphs(scale.root) }),
+        })}
+      </p>
+      {row}
+    </>
   );
 }

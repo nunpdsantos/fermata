@@ -15,15 +15,29 @@
  *   chords — chord symbols the app's parser reads (`parseChordSymbol`:
  *            "G", "Em", "D7", "F#m7"), in playing order. Left out or empty:
  *            the panel opens on whatever progression the learner has.
+ *            Symbols the parser does not read are left out; at most 16 are
+ *            taken.
+ *   bpm    — (optional, added by stream S for share links) the tempo to go
+ *            with the chords, 50–200; anything else is ignored.
  *
  * A request with chords REPLACES the learner's saved progression only when
  * the learner has none; otherwise the panel offers the new chords and the
  * learner chooses (stream S decides how; nothing saved is lost silently).
+ *
+ * How stream S does it (components/explore/ProgressionHost.tsx): the host,
+ * mounted in Explore, opens the panel; with chords and an empty progression
+ * it loads them; with the same chords at the same tempo (or no tempo) it
+ * changes nothing; with other chords, or the same chords at another tempo,
+ * the panel shows a line "A lesson or shared link offers these chords: G, D,
+ * Em, C." (naming the tempo when the request has one) with "Use these"
+ * (replaces) and "Keep mine" (drops the offer). The request is cleared
+ * either way. A request made while Explore is not mounted waits until it is.
  */
 import { create } from 'zustand';
 
 export interface ProgressionRequest {
   chords?: readonly string[];
+  bpm?: number;
 }
 
 interface ProgressionRequestState {

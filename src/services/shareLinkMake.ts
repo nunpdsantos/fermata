@@ -22,6 +22,9 @@ import { buildShareUrl, type ShareLinkValues } from '../state/shareParams.ts';
 import { copyToClipboard } from '../utils/exportHelpers.ts';
 import { showShareFallback } from '../state/shareFallbackStore.ts';
 import type { InstrumentType } from '../state/storeTypes.ts';
+import type { SavedProgression } from '../state/progressionSave.ts';
+import { isProgressionPanelOpen } from '../state/progressionPanel.ts';
+import { getCapoFret } from '../state/capo.ts';
 
 /**
  * Symbols the parser reads as another quality with the same notes: the link
@@ -66,26 +69,40 @@ export function chordLinkSymbol(chord: Chord): string | null {
   return candidates.find((c) => readsBackAs(c, chord)) ?? null;
 }
 
-/** The parameters for what Explore shows. */
+/**
+ * The parameters for what Explore shows. With the Progression panel open
+ * (wave 2, `panel`), the link carries its chords, tempo and the capo (when
+ * one is on) in place of the chord — the selected chord is then the loop's
+ * or the learner's passing choice, not what is shared.
+ */
 export function exploreLinkValues(state: {
   selectedKey: Note;
   selectedScale: ScaleType;
   selectedChord: Chord | null;
   instrument: InstrumentType;
-}): ShareLinkValues {
+}, panel?: { progression: SavedProgression | undefined; capo: number } | null): ShareLinkValues {
   const values: ShareLinkValues = {
     key: noteToString(state.selectedKey),
     scale: state.selectedScale,
     inst: state.instrument,
   };
-  const chord = state.selectedChord ? chordLinkSymbol(state.selectedChord) : null;
-  if (chord) values.chord = chord;
+  const prog = panel?.progression?.chords.length ? panel.progression : null;
+  if (prog) {
+    values.prog = prog.chords.join(',');
+    values.bpm = String(prog.bpm);
+  } else {
+    const chord = state.selectedChord ? chordLinkSymbol(state.selectedChord) : null;
+    if (chord) values.chord = chord;
+  }
+  if (panel && panel.capo > 0) values.capo = String(panel.capo);
   return values;
 }
 
-/** The link for what Explore shows now (key, scale, chord if one is open, instrument). */
+/** The link for what Explore shows now (key, scale, chord if one is open, instrument; the progression while its panel is open). */
 export function exploreLinkUrl(origin = window.location.origin): string {
-  return buildShareUrl(origin, exploreLinkValues(useAppStore.getState()));
+  const s = useAppStore.getState();
+  const panel = isProgressionPanelOpen() ? { progression: s.progression, capo: getCapoFret() } : null;
+  return buildShareUrl(origin, exploreLinkValues(s, panel));
 }
 
 /** The link to a lesson. */

@@ -25,6 +25,8 @@ export const BASE_TERM_IDS = [
   // Guitar (the dock and the practice sheet)
   'fret', 'position', 'fingerNumbers', 'stretch', 'tuning', 'anchorFret',
   'tirandoApoyando', 'rightHandFingers', 'positionWalk', 'technicalSet', 'intervalScale', 'brokenChord',
+  // Playing songs (wave 2: the Progression panel, the capo, the chord-first lessons)
+  'progression', 'tempo', 'capo', 'transpose',
 ] as const;
 
 export type BaseTermId = (typeof BASE_TERM_IDS)[number];

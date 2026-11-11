@@ -9,13 +9,19 @@
  *   chord  → parseChordSymbol → chordFromParsed (the search box's own reading)
  *   inst   → 'piano' | 'guitar'
  *   lesson → a module of the static lesson index (MODULE_INDEX)
+ *   prog   → each comma-separated symbol read as `chord` is (invalid ones
+ *            left out), at most 16 (wave 2)
+ *   bpm    → a whole number 50–200 (only with `prog`)
+ *   capo   → a whole number 0–9
  */
 import type { Chord, Note, NaturalNote, ScaleType } from '../core/types/music.ts';
 import { parseChordSymbol, chordFromParsed } from '../core/utils/chordParser.ts';
 import { SCALE_GROUPS } from '../components/navigation/keyChoice.ts';
 import { MODULE_INDEX } from '../data/moduleIndex.ts';
 import type { LearnDeepLink, InstrumentType } from '../state/storeTypes.ts';
-import { MAX_SHARE_VALUE_LENGTH, type RawShareParams } from '../state/shareParams.ts';
+import { MAX_PROG_LENGTH, MAX_SHARE_VALUE_LENGTH, type RawShareParams } from '../state/shareParams.ts';
+import { MAX_PROGRESSION_CHORDS, isTempo } from '../state/progressionSave.ts';
+import { MAX_CAPO_FRET } from '../state/capo.ts';
 
 /** What a link asks for, every part valid. */
 export interface ShareTarget {
@@ -26,6 +32,12 @@ export interface ShareTarget {
   chordSymbol?: string;
   inst?: InstrumentType;
   lesson?: LearnDeepLink;
+  /** The Progression panel's chords, as the link spelled them (each one the parser reads). */
+  prog?: string[];
+  /** Its tempo (only with `prog`). */
+  bpm?: number;
+  /** The guitar capo fret, 0–9. */
+  capo?: number;
 }
 
 const PICKER_SCALES: ReadonlySet<string> = new Set(SCALE_GROUPS.flatMap((g) => g.options));
@@ -76,6 +88,62 @@ export function parseShareLesson(v: unknown): LearnDeepLink | null {
   return hit ? { ...hit } : null;
 }
 
+/** A symbol in `prog` longer than this is not one the app writes. */
+const MAX_PROG_SYMBOL_LENGTH = 32;
+
+/** Split on the commas between chords, never on one inside parentheses (`C7(b9,#11)`). */
+function splitChords(v: string): string[] {
+  const out: string[] = [];
+  let depth = 0;
+  let cur = '';
+  for (const ch of v) {
+    if (ch === '(') depth++;
+    else if (ch === ')') depth = Math.max(0, depth - 1);
+    if (ch === ',' && depth === 0) {
+      out.push(cur);
+      cur = '';
+      // More pieces than a progression can hold: the rest is not read.
+      if (out.length > MAX_PROGRESSION_CHORDS * 4) return out;
+    } else {
+      cur += ch;
+    }
+  }
+  out.push(cur);
+  return out;
+}
+
+/**
+ * `G,D,Em,C` → the symbols the chord parser reads, in order, at most 16; an
+ * empty piece or one the parser does not read is left out. Null when none is.
+ */
+export function parseShareProgression(v: unknown): string[] | null {
+  if (typeof v !== 'string' || v.length === 0 || v.length > MAX_PROG_LENGTH) return null;
+  const out: string[] = [];
+  for (const piece of splitChords(v)) {
+    const s = piece.trim();
+    if (!s || s.length > MAX_PROG_SYMBOL_LENGTH) continue;
+    if (parseShareChord(s)) out.push(s);
+    if (out.length >= MAX_PROGRESSION_CHORDS) break;
+  }
+  return out.length ? out : null;
+}
+
+/** A whole number written as digits only, within [min, max]; anything else null. */
+function wholeNumber(v: unknown, min: number, max: number): number | null {
+  if (!isText(v) || !/^\d{1,3}$/.test(v.trim())) return null;
+  const n = Number(v.trim());
+  return n >= min && n <= max ? n : null;
+}
+
+export function parseShareBpm(v: unknown): number | null {
+  const n = wholeNumber(v, 0, 999);
+  return n !== null && isTempo(n) ? n : null;
+}
+
+export function parseShareCapo(v: unknown): number | null {
+  return wholeNumber(v, 0, MAX_CAPO_FRET);
+}
+
 /**
  * Every valid part of a link; an empty object when nothing in it is valid.
  *
@@ -110,9 +178,17 @@ export function parseShareLink(
   if (inst) out.inst = inst;
   const lesson = parseShareLesson(raw.lesson);
   if (lesson) out.lesson = lesson;
+  const prog = parseShareProgression(raw.prog) ?? parseShareProgression(typed.prog);
+  if (prog) {
+    out.prog = prog;
+    const bpm = parseShareBpm(raw.bpm);
+    if (bpm !== null) out.bpm = bpm;
+  }
+  const capo = parseShareCapo(raw.capo);
+  if (capo !== null) out.capo = capo;
   return out;
 }
 
 export function isEmptyTarget(t: ShareTarget): boolean {
-  return !t.key && !t.scale && !t.chord && !t.inst && !t.lesson;
+  return !t.key && !t.scale && !t.chord && !t.inst && !t.lesson && !t.prog && t.capo === undefined;
 }
