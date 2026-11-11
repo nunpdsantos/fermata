@@ -20,9 +20,53 @@ import { getPitchClass } from '../../src/core/constants/notes';
 import { validateAnswer } from '../../src/components/learn/exercises/validateExercise';
 import { translateChordQuality, translateScaleType } from '../../src/i18n/content/musicTerms';
 import { canonicalIntervalNumber } from '../../src/core/utils/degreeSpelling';
+import { earIntervalPitches } from '../../src/components/learn/exercises/exerciseHelpers';
+import type { EarTrainingConfig } from '../../src/core/types/exercise';
 
 /** Scale types whose mode name is a correct label too (Ionian = major, Aeolian = natural minor). */
 const MODE_NAMES: Record<string, string> = { major: 'ionian', natural_minor: 'aeolian' };
+
+/**
+ * Wave 2 integration: what each authored answer to an INTERVAL-mode ear item
+ * says about the two notes the item plays (first, then second, as MIDI), so
+ * the key is checked against what is actually played, not against itself.
+ * The pitches come from `earIntervalPitches`, the function the check runner
+ * plays them with. A label with no claim here is a finding (write its claim
+ * before using it).
+ */
+const PLAYED_CLAIMS: Record<string, (first: number, second: number) => boolean> = {
+  'The first note': (a, b) => a > b,
+  'The second note': (a, b) => b > a,
+  'Neither: they are the same note': (a, b) => a === b,
+  'The same note again, higher': (a, b) => b > a && (b - a) % 12 === 0,
+  'The same note again, lower': (a, b) => b < a && (a - b) % 12 === 0,
+  'A different note, higher': (a, b) => b > a && (b - a) % 12 !== 0,
+  'A different note, lower': (a, b) => b < a && (a - b) % 12 !== 0,
+  'A half step': (a, b) => Math.abs(b - a) === 1,
+  'A whole step': (a, b) => Math.abs(b - a) === 2,
+  'Two whole steps': (a, b) => Math.abs(b - a) === 4,
+};
+const midiOf = (n: { natural: string; accidental: string; octave: number }) =>
+  12 + 12 * n.octave + getPitchClass(toNote(n.natural, n.accidental));
+
+/** Findings for an interval / note ear item with authored choices: every option's claim against what is played. */
+function playedChoiceProblems(cfg: EarTrainingConfig): string[] {
+  if (!cfg.choices) return [];
+  if (cfg.mode === 'note') return ['note-mode ear item with authored choices: no oracle for what a single note "is" (write one before using them)'];
+  if (cfg.mode !== 'interval') return [];
+  const pitches = earIntervalPitches(cfg);
+  if (!pitches) return ['interval-mode ear item with choices plays nothing (no root or targetSemitones)'];
+  const [first, second] = pitches.map(midiOf);
+  const problems: string[] = [];
+  for (const c of cfg.choices) {
+    const claim = PLAYED_CLAIMS[c.label];
+    if (!claim) problems.push(`no oracle for the authored answer '${c.label}'`);
+    else if (claim(first, second) !== c.correct) {
+      problems.push(`'${c.label}' is marked ${c.correct ? 'correct' : 'wrong'}, but the item plays MIDI ${first} then ${second}`);
+    }
+  }
+  return problems;
+}
 
 // Dynamic import so script doesn't need to compile the entire module graph
 async function loadAll(): Promise<Record<string, ExerciseDefinition[]>[]> {
@@ -192,6 +236,14 @@ function deriveCorrect(cfg: ExerciseConfig): string | Set<number> | null {
               problem: `duplicate choice labels`,
               prompt: ex.prompt.slice(0, 80),
             });
+          }
+        }
+
+        // Authored choices on an interval / note ear item: each option checked
+        // against the two notes actually played (wave 2 integration).
+        if (ex.config.type === 'ear_training') {
+          for (const problem of playedChoiceProblems(ex.config)) {
+            findings.push({ level: lvl, moduleId, exerciseId: ex.id, type: ex.type, problem, prompt: ex.prompt.slice(0, 80) });
           }
         }
 
