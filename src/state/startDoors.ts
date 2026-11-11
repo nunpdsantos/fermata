@@ -1,12 +1,15 @@
 /**
  * The start screen's three doors (wave 1) — what each one does, in ONE place.
- * Later waves route the 'new' and 'player' doors to their own lesson tracks
- * from here.
  *
- * Every door: saves the profile and the instrument, marks the first-visit
- * flag 'seen' (state/welcomeGate.ts — the start screen never returns) and
- * opens Explore. 'new' and 'player' also leave a start hint in Explore
- * (state/startHint.ts); 'theory' leaves none.
+ * Every door: saves the profile and the instrument and marks the first-visit
+ * flag 'seen' (state/welcomeGate.ts — the start screen never returns).
+ * Where it leads (wave 2, 2026-11-10):
+ *  - 'new'    — lesson 1 of "Start with sound" (data/tracks.ts), through
+ *               openLearnTarget; its start hint is still owed and shows the
+ *               first time they open Explore;
+ *  - 'player' — Explore, with its start hint (which offers lesson 1 of "From
+ *               the chords you know" once that lesson exists);
+ *  - 'theory' — Explore, no hint.
  *
  * Dó-Ré-Mi (the owner's decision, 2026-11-10): a door chosen while the
  * language is Portuguese or Spanish turns `showSolfege` on (and so saves
@@ -20,6 +23,7 @@ import { setLearnerProfile, type LearnerProfile } from './learnerProfile.ts';
 import { closeWelcome } from './welcomeGate.ts';
 import { raiseStartHint } from './startHint.ts';
 import { solfegeLanguage } from '../i18n/solfege.ts';
+import { TRACKS, firstLessonOf } from '../data/tracks.ts';
 
 export function chooseStartDoor(
   profile: LearnerProfile,
@@ -31,6 +35,7 @@ export function chooseStartDoor(
   if (app.instrument !== instrument) app.setInstrument(instrument);
   raiseStartHint(profile === 'theory' ? null : profile);
   if (solfegeLanguage(app.language) && !app.showSolfege) app.setShowSolfege(true);
-  app.setView('explore');
+  if (profile === 'new') app.openLearnTarget(firstLessonOf(TRACKS.sound));
+  else app.setView('explore');
   closeWelcome(storage);
 }

@@ -2,7 +2,8 @@
  * The start screen (wave 1) in the app: a page IN PLACE of the shell on a
  * first visit (the views never mount behind it), its heading structure,
  * first focus and controls; the tour request hides it and its end brings it
- * back; a door lands in Explore. Plus the Settings row and the start hint.
+ * back; a door lands in Explore ("new", since wave 2: lesson 1 of "Start
+ * with sound" in Learn). Plus the Settings row and the start hint.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup, fireEvent, act, waitFor, within } from '@testing-library/react';
@@ -153,6 +154,21 @@ describe('the start screen in the app', () => {
     await waitFor(() => expect(document.activeElement?.id).toBe('tab-explore'));
   });
 
+  it('"new" (wave 2): Learn, lesson 1 of "Start with sound" asked for, the hint still owed, the gate closed, focus on the Learn tab', async () => {
+    await firstVisit();
+    await startPage();
+    fireEvent.click(screen.getByRole('button', { name: /I'm new to music/ }));
+    expect(await screen.findByText('LEARN_VIEW', {}, { timeout: 8000 })).toBeDefined();
+    expect(screen.queryByTestId('start-screen')).toBeNull();
+    expect(screen.queryByText('EXPLORE_VIEW')).toBeNull();
+    expect(useAppStore.getState()).toMatchObject({
+      learnerProfile: 'new', instrument: 'piano', view: 'learn', lastView: 'learn', startHint: 'new',
+      pendingLearnTarget: { levelId: 'l1', unitId: 'u34', moduleId: 'l1u34m1' },
+    });
+    expect(localStorage.getItem(WELCOME_KEY)).toBe('seen');
+    await waitFor(() => expect(document.activeElement?.id).toBe('tab-learn'));
+  });
+
   it('the tour: asks for it and steps aside; back (focus on the tour button) when the request clears with no door', async () => {
     await firstVisit();
     await startPage();
@@ -225,12 +241,15 @@ describe('Settings → "How I use Fermata"', () => {
 });
 
 describe('the start hint (shell)', () => {
-  it.each(['new', 'player'] as const)('%s: no link into Learn — its line and ✕ only (the owner, 2026-11-10)', (kind) => {
+  // Wave 2: the player hint's lesson link shows once the chords track's
+  // lesson 1 exists — it does in this branch (StartHintLesson.test.tsx has
+  // the link itself; startDoors.test.ts the unwritten case).
+  it.each(['new', 'player'] as const)('%s: its line, then (player only) the link into lesson 1 of the chords track, then ✕; ✕ ends it', (kind) => {
     act(() => raiseStartHint(kind));
     render(<StartHint />);
     const hint = screen.getByRole('complementary', { name: 'Getting started' });
-    expect(hint.textContent).toBe(kind === 'new' ? 'Tap a piano key to hear it.' : 'Pick the key of a song you play, for example G. The chords below belong to it: tap one.');
-    expect(within(hint).getAllByRole('button').map((b) => b.textContent || b.getAttribute('aria-label'))).toEqual(['Dismiss the tip']);
+    expect(hint.textContent).toBe(kind === 'new' ? 'Tap a piano key to hear it.' : 'Pick the key of a song you play, for example G. The chords below belong to it: tap one. Theory from the chords you know: lesson 1 →');
+    expect(within(hint).getAllByRole('button').map((b) => b.textContent || b.getAttribute('aria-label'))).toEqual(kind === 'new' ? ['Dismiss the tip'] : ['Theory from the chords you know: lesson 1 →', 'Dismiss the tip']);
     expect(within(hint).queryAllByRole('link')).toEqual([]);
     fireEvent.click(within(hint).getByRole('button', { name: 'Dismiss the tip' }));
     expect(useAppStore.getState().view).toBe('explore');
@@ -245,12 +264,12 @@ describe('the start hint (shell)', () => {
     expect(screen.getByTestId('start-hint').textContent).toContain('Tap a string to hear it.');
   });
 
-  it('player: its line and ✕ only; ✕ ends it', () => {
+  it('player: its line, the lesson link and ✕; ✕ ends it', () => {
     act(() => raiseStartHint('player'));
     render(<StartHint />);
     const hint = screen.getByTestId('start-hint');
-    expect(hint.textContent).toBe('Pick the key of a song you play, for example G. The chords below belong to it: tap one.');
-    expect(within(hint).getAllByRole('button')).toHaveLength(1);
+    expect(hint.textContent).toBe('Pick the key of a song you play, for example G. The chords below belong to it: tap one. Theory from the chords you know: lesson 1 →');
+    expect(within(hint).getAllByRole('button')).toHaveLength(2);
     fireEvent.click(screen.getByRole('button', { name: 'Dismiss the tip' }));
     expect(screen.queryByTestId('start-hint')).toBeNull();
     expect(useAppStore.getState().startHint).toBeNull();

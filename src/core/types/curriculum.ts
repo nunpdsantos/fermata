@@ -89,6 +89,13 @@ export interface CurriculumCompletionContent {
 export interface CurriculumUnit {
   /** Bonus work: excluded from level completion, gating and the main Continue sequence. */
   optional?: boolean;
+  /**
+   * A starting track (wave 2, `src/data/tracks.ts` TrackId): an optional unit
+   * with its own way in — not listed on its level's page or in its counts,
+   * shown as a card on Learn's overview and on its own page, its lessons in
+   * their own order ending on a closing card. Always with `optional: true`.
+   */
+  track?: 'sound' | 'chords';
   id: string;
   levelId: string;
   title: string;

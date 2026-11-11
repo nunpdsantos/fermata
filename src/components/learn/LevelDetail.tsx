@@ -37,6 +37,9 @@ export function LevelDetail({
   const totalModules = getLevelModuleCount(level);
   const completedModules = getLevelCompletedModuleCount(level, progress.completedModules);
   const progressPercent = totalModules > 0 ? (completedModules / totalModules) * 100 : 0;
+  // A starting track (wave 2) lives in this level's data but is not part of
+  // its page: it has its own card on Learn's overview and its own page.
+  const units = level.units.filter((u) => !u.track);
 
   // Continue banner — scoped to this level
   const nextUp = useMemo(() => {
@@ -119,7 +122,7 @@ export function LevelDetail({
       {/* Unit cards */}
       <div className="relative">
         {/* Vertical connecting line */}
-        {level.units.length > 1 && (
+        {units.length > 1 && (
           <div
             className="absolute left-[19px] max-sm:left-[15px] top-6 bottom-6 w-px"
             style={{ backgroundColor: `${accent}20` }}
@@ -127,7 +130,7 @@ export function LevelDetail({
         )}
 
         <div className="space-y-4">
-          {level.units.map((unit, i) => {
+          {units.map((unit, i) => {
             const completed = getUnitCompletedModuleCount(unit.modules.map((m) => m.id));
             const isComplete = unit.modules.length > 0 && completed === unit.modules.length;
             return (

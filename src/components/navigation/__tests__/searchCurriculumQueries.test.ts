@@ -14,6 +14,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { getResults } from '../quickSearchResults';
 import { resolveTheoryQuery, findQuotedQueries, toEnglishTheoryQuery } from '../../../utils/theoryQuery';
+import { parseChordListQuery } from '../../../utils/queryExecutorChords';
 import { MODULE_INDEX, findModulesByQuery } from '../../../data/moduleIndex';
 import { loadModuleIndex, type LocalizedModuleIndex } from '../../../data/moduleIndexI18n';
 import type { CurriculumUnit } from '../../../core/types/curriculum';
@@ -117,11 +118,21 @@ describe('every query a lesson quotes gets a Cmd+K result', () => {
     expect(findQuotedQueries("Type 'E' and then 'Em'").map((q) => q.query)).toEqual(['E', 'Em']);
   });
 
-  it('every Try-This query returns a Cmd+K result', () => {
-    const dead = MODULES.flatMap((m) => m.concepts)
+  it('every Try-This query returns a Cmd+K result (a chord list, wave 2, is the one exception: it is not one theory object)', () => {
+    const queries = MODULES.flatMap((m) => m.concepts)
       .map((c) => c.tryThisQuery)
-      .filter((q): q is string => !!q)
-      .filter((q) => getResults(q).length === 0);
+      .filter((q): q is string => !!q);
+    // The chord-list form (`chords: G C D Em`, utils/queryExecutorChords.ts)
+    // opens Explore's Progression panel through the Try-This executor; no
+    // lesson tells the learner to type it, and search does not read it.
+    const lists = queries.filter((q) => parseChordListQuery(q) !== null);
+    expect(lists.length).toBeGreaterThan(0);
+    for (const q of lists) {
+      expect(q.startsWith('chords: '), q).toBe(true);
+      expect(getResults(q), q).toEqual([]);
+      expect(resolveTheoryQuery(q), q).toBeNull();
+    }
+    const dead = queries.filter((q) => !lists.includes(q)).filter((q) => getResults(q).length === 0);
     expect(dead).toEqual([]);
   });
 

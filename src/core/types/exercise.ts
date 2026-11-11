@@ -153,7 +153,14 @@ export interface EarTrainingConfig {
   scaleType?: string;
   /** For progression mode: diatonic Roman numerals played in the key of root (default C major) */
   progression?: string[];
-  /** Choices for chord, scale and progression modes */
+  /**
+   * The options offered. Required for chord, scale and progression modes.
+   * Optional for note and interval modes (wave 2, the sound-first track):
+   * when present they replace the generated note / interval names, so an
+   * item can ask "which note was higher?" or "a half step or a whole
+   * step?" — the played notes stay the config's, the answer is the option
+   * marked correct. Items without them are unchanged.
+   */
   choices?: { label: string; correct: boolean }[];
   /**
    * Melody mode (melodic dictation, W4-13): the melodies offered, each as

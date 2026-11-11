@@ -1169,6 +1169,7 @@
       "newPiano": "Toca una tecla para oírla.",
       "newGuitar": "Toca una cuerda para oírla.",
       "player": "Elige la tonalidad de una canción que toques, por ejemplo G. Los acordes de abajo son de esa tonalidad: toca uno.",
+      "playerLesson": "Teoría desde los acordes que conoces: lección 1 →",
       "dismiss": "Cerrar el consejo"
     }
   },
@@ -1361,5 +1362,40 @@
     "cellAbove_other": "{{note}}, traste {{fret}}, cuerda {{string}}, {{count}} trastes por encima del capo",
     "readoutAt": "cuerda {{string}} traste {{fret}} (capo)",
     "practiceNote": "Aquí el capo está desactivado: estos ejercicios usan el mástil sin capo."
+  },
+  "tracks": {
+    "sound": {
+      "title": "Empieza por el sonido",
+      "line": "Escucha lo agudo y lo grave, nombra las notas y construye tus primeros acordes. No hace falta leer música.",
+      "end": {
+        "explore": "Probar estas notas en Explorar",
+        "level1": "Aprender a leer música: Nivel 1"
+      }
+    },
+    "chords": {
+      "title": "Desde los acordes que conoces",
+      "line": "Teoría que parte de los acordes que ya tocas.",
+      "end": {
+        "progression": "Repetir en bucle tus propias canciones en el panel Progresión",
+        "level2": "Profundizar: Nivel 2"
+      }
+    },
+    "chordList": {
+      "label": "Los acordes, en orden",
+      "showPiano": "{{chord}}: escucharlo y mostrarlo en el piano",
+      "showGuitar": "{{chord}}: escucharlo y mostrarlo en la guitarra"
+    },
+    "startHere": "Empieza aquí",
+    "otherWays": "Otras formas de empezar",
+    "progress": "{{done}} de {{total}} lecciones",
+    "eyebrow_one": "{{count}} lección corta",
+    "eyebrow_other": "{{count}} lecciones cortas",
+    "lessonsLabel": "Lecciones",
+    "next": "Siguiente",
+    "lesson": "Lección {{n}}",
+    "end": {
+      "title": "¿Y ahora?",
+      "line": "Has llegado al final de «{{track}}». Dos formas de seguir:"
+    }
   }
 }

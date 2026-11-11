@@ -208,12 +208,22 @@ export function areModulePrereqsMet(
   );
 }
 
+/**
+ * The lessons Next / Previous walk through inside a level: its required units
+ * for a required module; for an optional unit (guitar notation, a track —
+ * wave 2) that unit's own lessons only, so the last lesson of one optional
+ * unit never leads into another (a track ends on its closing card instead).
+ */
+function levelSequenceOf(moduleId: string, level: CurriculumLevel): CurriculumModule[] {
+  if (!isOptionalModuleId(moduleId)) return level.units.filter((u) => !u.optional).flatMap((u) => u.modules);
+  return level.units.find((u) => u.modules.some((m) => m.id === moduleId))?.modules ?? [];
+}
+
 export function getNextModuleInLevel(
   currentModuleId: string,
   level: CurriculumLevel,
 ): CurriculumModule | undefined {
-  const optional = isOptionalModuleId(currentModuleId);
-  const allModules = level.units.filter((u) => !!u.optional === optional).flatMap((u) => u.modules);
+  const allModules = levelSequenceOf(currentModuleId, level);
   const index = allModules.findIndex((m) => m.id === currentModuleId);
   if (index === -1 || index === allModules.length - 1) return undefined;
   return allModules[index + 1];
@@ -223,8 +233,7 @@ export function getPreviousModuleInLevel(
   currentModuleId: string,
   level: CurriculumLevel,
 ): CurriculumModule | undefined {
-  const optional = isOptionalModuleId(currentModuleId);
-  const allModules = level.units.filter((u) => !!u.optional === optional).flatMap((u) => u.modules);
+  const allModules = levelSequenceOf(currentModuleId, level);
   const index = allModules.findIndex((m) => m.id === currentModuleId);
   if (index <= 0) return undefined;
   return allModules[index - 1];

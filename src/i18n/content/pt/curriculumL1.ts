@@ -3,6 +3,16 @@ import type { CurriculumLevelOverlay } from '../types';
 const curriculumL1: CurriculumLevelOverlay = {
   // ─── Units ──────────────────────────────────────────────────────────────────
   units: {
+    // Track "Start with sound" (wave 2)
+    u34: {
+      title: 'Começa pelo som',
+      description: 'Cinco lições curtas, de ouvido e no teu instrumento: agudo e grave, os nomes das notas, meios-tons e tons, a escala maior e os teus primeiros acordes. Não precisas de ler música.',
+    },
+    // Track "From the chords you know" (wave 2)
+    u35: {
+      title: 'A partir dos acordes que conheces',
+      description: 'Dez lições curtas que partem dos acordes que já tocas: tonalidades, os números de uma grelha de acordes, porque é que os acordes puxam para casa, as sétimas, o capo e as notas para um solo. Não precisas de ler música.',
+    },
     u33: {
       title: 'Notação de guitarra — opcional',
       description: 'Clave, cordas, dedos, posições e pestanas. Estas três lições não contam para concluir níveis nem para os desbloquear.'
@@ -555,6 +565,529 @@ const curriculumL1: CurriculumLevelOverlay = {
           instruction:
             'Toca "C major chord", "G major chord", "D major chord", "F major chord" — ouve a mesma qualidade brilhante em todas as tonalidades',
         },
+      ],
+    },
+
+    // ── Track "Start with sound" (wave 2) ─────────────────────────────────
+    l1u34m1: {
+      title: 'Agudo e grave',
+      subtitle: 'Cada nota é mais aguda ou mais grave do que outra',
+      objectives: [
+        'Ouvir se uma nota é mais aguda ou mais grave do que a anterior',
+        'Encontrar as notas mais agudas no piano e na guitarra',
+        'Ouvir a mesma nota voltar mais aguda: a oitava',
+      ],
+      concepts: [
+        {
+          title: 'Mais agudo e mais grave',
+          explanation: 'Cada nota musical tem uma altura: o quanto soa aguda (alta) ou grave (baixa). Quando se tocam duas notas, uma depois da outra, a segunda é mais aguda, mais grave ou igual. Não precisas de nomes para ouvir isto. Escuta e pergunta-te se o som subiu ou desceu.',
+          tryThisLabel: 'Ouve oito notas, cada uma mais aguda do que a anterior',
+        },
+        {
+          title: 'Mais agudo no piano',
+          explanation: 'No piano, as notas ficam mais agudas da esquerda para a direita. A tecla mais à esquerda é a nota mais grave e a tecla mais à direita é a mais aguda. Cada tecla, branca ou preta, é uma nota diferente, um pouco mais aguda do que a tecla imediatamente à sua esquerda.',
+          tryThisLabel: 'Ouve todas as teclas, brancas e pretas, de C até ao C seguinte',
+        },
+        {
+          title: 'Mais agudo na guitarra',
+          explanation: 'Na guitarra, uma nota fica mais aguda à medida que o dedo avança ao longo de uma corda em direção ao corpo da guitarra, um trasto de cada vez. As cordas também vão do grave ao agudo: tocadas soltas, sem nenhum dedo, a corda mais grossa soa a mais grave e cada corda mais fina soa mais aguda do que a do lado.',
+          tryThisLabel: 'Ouve notas a subir do grave ao agudo e depois mostra-as no teu instrumento',
+        },
+        {
+          title: 'A mesma nota, mais aguda',
+          explanation: 'Continua a subir a partir de qualquer nota e chegas a uma nota que soa como a primeira, só que mais aguda. As duas soam tão parecidas que têm o mesmo nome. Essa distância chama-se oitava. No piano são doze teclas mais à direita, contando as brancas e as pretas; numa corda da guitarra são doze trastos mais adiante.',
+          tryThisLabel: 'Ouve C a subir até ao C seguinte: o mesmo nome, um som mais agudo',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca uma nota qualquer e depois uma nota à direita dela no piano, ou um trasto mais perto do corpo na guitarra. Escuta: a segunda nota é mais aguda.' },
+        { instruction: 'Toca uma nota e a mesma nota uma oitava acima: no piano, doze teclas à direita; na guitarra, uma corda solta e depois a mesma corda no trasto 12. Ouve como soam parecidas.' },
+      ],
+    },
+    l1u34m2: {
+      title: 'As sete letras',
+      subtitle: 'As notas chamam-se de A a G e depois os nomes recomeçam',
+      objectives: [
+        'Dar nome às notas com as sete letras, de A a G',
+        'Encontrar o C no piano',
+        'Dar nome às seis cordas soltas da guitarra',
+      ],
+      concepts: [
+        {
+          title: 'Sete letras, sempre de novo',
+          explanation: 'As notas têm nomes de sete letras: A, B, C, D, E, F e G. Depois do G os nomes recomeçam no A, uma oitava acima. Assim, as mesmas sete letras voltam uma e outra vez, cada vez mais agudas. Em português também se usam os nomes do solfejo: C = Dó, D = Ré, E = Mi, F = Fá, G = Sol, A = Lá, B = Si. Esta aplicação escreve as letras; nas Definições podes mostrar também Dó, Ré, Mi ao lado delas.',
+          tryThisLabel: 'Ouve A, B, C, D, E, F e G e depois de novo o A, uma oitava acima',
+        },
+        {
+          title: 'Encontrar o C no piano',
+          explanation: 'As teclas pretas do piano estão em grupos de duas e em grupos de três. A tecla branca imediatamente à esquerda de cada grupo de duas teclas pretas é o C. A partir do C, as teclas brancas para a direita são D, E, F, G, A e B, e depois de novo C.',
+          tryThisLabel: 'Ouve C, D, E, F, G, A e B e depois de novo o C',
+        },
+        {
+          title: 'As cordas soltas da guitarra',
+          explanation: 'Numa guitarra com a afinação habitual, as seis cordas tocadas soltas chamam-se, da mais grossa para a mais fina: E, A, D, G, B e E. A corda mais grossa e a mais fina são ambas E, a duas oitavas de distância.',
+          tryThisLabel: 'Ouve as sete letras a partir de E: E, F, G, A, B, C, D e de novo E',
+        },
+        {
+          title: 'A letra seguinte',
+          explanation: 'Para passar de uma letra à seguinte, toca no piano a tecla branca seguinte, à direita: de C para D, de D para E, e assim por diante. Numa corda da guitarra, a letra seguinte está dois trastos mais adiante, exceto de E para F e de B para C, que ficam a apenas um trasto.',
+          tryThisLabel: 'Ouve as letras a subir a partir de F: F, G, A, B, C, D, E e de novo F',
+        },
+      ],
+      tasks: [
+        { instruction: 'Piano: encontra todos os C, a tecla branca imediatamente à esquerda de cada grupo de duas teclas pretas, e toca-os da esquerda para a direita. Guitarra: toca as cordas soltas da mais grossa para a mais fina e diz os seus nomes.' },
+        { instruction: 'Toca C, D, E, F, G, A, B e de novo C, dizendo cada nome enquanto tocas. No piano são as teclas brancas a partir de qualquer C; na guitarra, o C está no trasto 3 da corda A, a segunda mais grossa.' },
+      ],
+    },
+    l1u34m3: {
+      title: 'Meios-tons e tons',
+      subtitle: 'As menores distâncias entre notas e as notas que ficam pelo meio',
+      objectives: [
+        'Ouvir e encontrar um meio-tom: a nota mais próxima',
+        'Formar um tom com dois meios-tons',
+        'Dar nome às notas intermédias com sustenidos e bemóis',
+      ],
+      concepts: [
+        {
+          title: 'A nota mais próxima: um meio-tom',
+          explanation: 'A nota mais próxima, acima ou abaixo de qualquer nota, está a um meio-tom de distância. No piano é a tecla imediatamente a seguir, preta ou branca, sem nada pelo meio. Na guitarra é o trasto seguinte, na mesma corda. Notas tocadas por ordem, uma depois da outra, formam uma escala: doze meios-tons seguidos, todas as teclas de um C ao seguinte, formam a escala cromática.',
+          tryThisLabel: 'Ouve doze meios-tons seguidos, de C até ao C seguinte',
+        },
+        {
+          title: 'Dois meios-tons: um tom',
+          explanation: 'Dois meios-tons formam um tom. No piano, um tom salta uma tecla: de C para D passa por cima da tecla preta que fica entre as duas. Na guitarra são dois trastos na mesma corda. Uma escala feita só de tons chama-se escala de tons inteiros.',
+          tryThisLabel: 'Ouve só tons, de C até ao C seguinte',
+        },
+        {
+          title: 'As notas intermédias',
+          explanation: 'Entre C e D há mais uma nota: a tecla preta. Tem dois nomes. É C sustenido (C♯), meio-tom acima de C, e D bemol (D♭), meio-tom abaixo de D. Sustenido quer dizer meio-tom acima; bemol quer dizer meio-tom abaixo. Cada tecla preta tem um nome com sustenido e um nome com bemol.',
+          tryThisLabel: 'Ouve uma subida a partir de G com uma tecla preta: F♯, que também é G♭',
+        },
+        {
+          title: 'Onde não há tecla preta',
+          explanation: 'Duas vezes em cada oitava, duas teclas brancas estão lado a lado sem tecla preta entre elas: E e F, e B e C. Cada um desses pares está a apenas meio-tom de distância. Todos os outros pares de teclas brancas vizinhas estão a um tom, com uma tecla preta pelo meio.',
+          tryThisLabel: 'Ouve as teclas brancas a partir de C, com meios-tons de E para F e de B para C',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca uma nota qualquer e depois a nota meio-tom acima: a tecla seguinte no piano ou o trasto seguinte na guitarra. Depois toca um tom: duas teclas mais adiante, ou dois trastos.' },
+        { instruction: 'Encontra o C sustenido: no piano, a tecla preta imediatamente à direita de C; na guitarra, o trasto 4 da corda A. Diz os seus dois nomes: C sustenido e D bemol.' },
+      ],
+    },
+    l1u34m4: {
+      title: 'Uma escala é uma escada',
+      subtitle: 'A escala maior: tom, tom, meio-tom, tom, tom, tom, meio-tom',
+      objectives: [
+        'Ouvir uma escala maior subir da primeira nota até à mesma nota uma oitava acima',
+        'Construir uma escala maior a partir de qualquer nota com tons e meios-tons',
+        'Ouvir a primeira nota da escala como a casa',
+      ],
+      concepts: [
+        {
+          title: 'Notas por ordem: uma escala',
+          explanation: 'Uma escala é um conjunto de notas tocadas por ordem, como os degraus de uma escada, desde uma nota de partida até à mesma nota uma oitava acima. Uma delas é a escala maior. Tem sete notas diferentes e depois a primeira nota volta lá em cima.',
+          tryThisLabel: 'Ouve a escala de C maior: sete notas e depois de novo o C, lá em cima',
+        },
+        {
+          title: 'Tom, tom, meio-tom, tom, tom, tom, meio-tom',
+          explanation: 'A escala maior sobe por esta ordem de passos: tom, tom, meio-tom, tom, tom, tom, meio-tom. Numera as suas notas de 1 a 8, a partir de baixo: os dois meios-tons ficam de 3 para 4 e de 7 para 8. A partir de C, os passos dão C, D, E, F, G, A, B e C: só teclas brancas, porque os meios-tons calham de E para F e de B para C.',
+          tryThisLabel: 'Ouve os passos a partir de C: tom, tom, meio-tom, tom, tom, tom, meio-tom',
+        },
+        {
+          title: 'A partir de qualquer nota',
+          explanation: 'Começa em qualquer nota, dá os mesmos passos e obténs a escala maior dessa nota. A partir de G: G, A, B, C, D, E, F♯ e G. O F sobe para F♯ para que o último passo, até G, seja um meio-tom e o anterior um tom. Numa só corda da guitarra, os mesmos passos são 2, 2, 1, 2, 2, 2 e 1 trastos.',
+          tryThisLabel: 'Ouve a escala maior a partir de G, com F♯',
+        },
+        {
+          title: 'A casa',
+          explanation: 'A primeira nota da escala é a sua casa; os músicos chamam-lhe a tónica. À medida que a escala sobe, os últimos passos levam o ouvido de volta a ela e, quando chega a nota de cima, a escala soa terminada. Se parares uma nota antes, na sétima, soa como se ainda faltasse alguma coisa.',
+          tryThisLabel: 'Ouve a escala maior a partir de D subir de volta a casa, até D',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca a escala de C maior, de C até ao C seguinte, dizendo tom ou meio-tom em cada passo enquanto tocas.' },
+        { instruction: 'Escolhe uma nota de partida qualquer e sobe tom, tom, meio-tom, tom, tom, tom, meio-tom. Na guitarra podes fazê-lo numa só corda: 2, 2, 1, 2, 2, 2 e 1 trastos. A nota de cima soa como a casa?' },
+      ],
+    },
+    l1u34m5: {
+      title: 'Três notas fazem um acorde',
+      subtitle: 'Uma nota sim, outra não, da escala, tocadas ao mesmo tempo',
+      objectives: [
+        'Construir um acorde com uma nota sim, outra não, de uma escala',
+        'Ouvir a diferença entre um acorde maior e um acorde menor',
+        'Transformar um acorde maior num menor mudando uma nota',
+      ],
+      concepts: [
+        {
+          title: 'Uma nota sim, outra não',
+          explanation: 'Um acorde são várias notas tocadas ao mesmo tempo. O acorde mais simples junta três notas de uma escala, saltando uma de cada vez: a 1.ª, a 3.ª e a 5.ª. A partir da escala de C maior, isso dá C, E e G, o acorde de C maior.',
+          tryThisLabel: 'Ouve C, E e G juntos: o acorde de C maior',
+        },
+        {
+          title: 'Os acordes maiores soam luminosos',
+          explanation: 'Construído assim sobre a primeira nota de uma escala maior, o acorde é um acorde maior e soa luminoso e estável. G maior é G, B e D; F maior é F, A e C.',
+          tryThisLabel: 'Ouve G maior: G, B e D',
+        },
+        {
+          title: 'Os acordes menores soam mais escuros',
+          explanation: 'Baixa meio-tom a nota do meio de um acorde maior e obténs um acorde menor. C maior é C, E e G; C menor é C, E♭ e G. Só essa nota muda, e o acorde soa mais escuro.',
+          tryThisLabel: 'Ouve C menor: C, E♭ e G',
+        },
+        {
+          title: 'Para onde ir a seguir',
+          explanation: 'Já consegues ouvir agudo e grave, dar nome às notas, encontrar meios-tons e tons, construir uma escala maior e formar a partir dela acordes maiores e menores. Em Explorar podes escolher qualquer tonalidade e ver a sua escala e os seus acordes no teu instrumento. Para leres estas notas escritas, o Nível 1 começa pela pauta, as cinco linhas em que se escreve a música.',
+          tryThisLabel: 'Ouve A menor: A, C e E',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca C, E e G juntos; no piano são três teclas brancas, saltando uma tecla branca entre cada uma. Depois baixa o E meio-tom, para E bemol, e ouve o acorde ficar mais escuro.' },
+        { instruction: 'Constrói tu um acorde a partir de G: a 1.ª, a 3.ª e a 5.ª notas da escala de G maior, G, B e D. Toca-as juntas, ou uma depois da outra, e depois baixa o B meio-tom para ouvires G menor.' },
+      ],
+    },
+    // ── Track "From the chords you know" (wave 2) ─────────────────────────
+    l1u35m1: {
+      title: 'Os teus acordes vivem numa tonalidade',
+      subtitle: 'G, C, D e Em partilham sete notas: as notas de G maior',
+      objectives: [
+        'Encontrar as três notas dentro de acordes que já tocas',
+        'Ver que G, C, D e Em usam só as sete notas de G maior',
+        'Dizer o que é uma tonalidade: uma família de sete notas e os acordes construídos a partir delas',
+      ],
+      concepts: [
+        {
+          title: 'Quatro acordes que pertencem uns aos outros',
+          explanation: 'Toca G, C, D e Em uns a seguir aos outros, como mudas de acorde numa música. Soam como se pertencessem uns aos outros, e há uma razão para isso. Por muitas cordas que toques, cada um destes acordes é feito de três notas diferentes: G é G, B e D; C é C, E e G; D é D, F♯ e A; Em é E, G e B.',
+          tryThisLabel: 'Ouve G, C, D e Em, uns a seguir aos outros',
+        },
+        {
+          title: 'Sete notas entre eles',
+          explanation: 'Junta as notas dos quatro acordes e deixa de fora as repetidas: G, A, B, C, D, E e F♯. São sete notas, e são exatamente as notas da escala de G maior: as notas de uma tonalidade, tocadas por ordem de G até ao G seguinte, são a sua escala. Repara no F♯, que vem do acorde de D: a tonalidade de G tem F♯ onde a tonalidade de C tem F.',
+          tryThisLabel: 'Ouve as sete notas de G maior, de G até G',
+        },
+        {
+          title: 'O que é uma tonalidade',
+          explanation: 'Uma tonalidade é uma família de sete notas e os acordes construídos a partir delas. Dizer que uma música está na tonalidade de G quer dizer que G soa como a casa e que as notas de G maior são aquelas de que a música é feita. A tonalidade tem o nome da sua nota de casa: a tonalidade de G, ou G maior. Os músicos chamam tónica à nota de casa.',
+          tryThisLabel: 'Vê a tonalidade de G: as suas sete notas no teu instrumento',
+        },
+        {
+          title: 'Cada tonalidade tem a sua família',
+          explanation: 'Cada tonalidade maior tem as suas sete notas. A tonalidade de C tem C, D, E, F, G, A e B, sem sustenidos nem bemóis, e entre os seus acordes estão C, F, G e Am. A tonalidade de D tem dois sustenidos, F♯ e C♯, e entre os seus acordes estão D, G, A e Bm.',
+          tryThisLabel: 'Ouve acordes da tonalidade de C: C, F, G e Am',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca G, C, D e Em, um de cada vez, e diz em voz alta as três notas de cada um: G B D, C E G, D F♯ A, E G B.' },
+        { instruction: 'Toca a escala de G maior, de G até G, e depois toca G, C e D. Na guitarra, encontra o F♯ do teu acorde de D: trasto 2 da corda mais fina.' },
+      ],
+    },
+    l1u35m2: {
+      title: 'Um, quatro, cinco',
+      subtitle: 'Os três acordes maiores de uma tonalidade: I, IV e V',
+      objectives: [
+        'Numerar as notas de uma tonalidade de 1 a 7',
+        'Encontrar os três acordes maiores de uma tonalidade maior: I, IV e V',
+        'Ouvir G–C–D em G, C–F–G em C e D–G–A em D como o mesmo movimento',
+      ],
+      concepts: [
+        {
+          title: 'Numera as notas',
+          explanation: 'Numera as sete notas de uma tonalidade a partir da sua nota de casa. Em G, o G é 1, o A é 2, o B é 3, o C é 4, o D é 5, o E é 6 e o F♯ é 7. O número diz onde fica a nota na sua tonalidade, seja qual for o seu nome.',
+          tryThisLabel: 'Ouve as notas de G de 1 a 7, e de novo o 1 lá em cima',
+        },
+        {
+          title: 'Um acorde em cada nota',
+          explanation: 'Uma tonalidade tem um acorde em cada uma das suas sete notas, construído com as notas da própria tonalidade. Os acordes têm o nome do seu número, em numerais romanos: I, II, III, IV, V, VI, VII. Numa tonalidade maior, os acordes sobre o 1, o 4 e o 5 são os seus três acordes maiores, escritos em maiúsculas: I, IV e V. Em G são G, C e D.',
+          tryThisLabel: 'Ouve I, IV, V e I em G: G, C, D e G',
+        },
+        {
+          title: 'O mesmo movimento em todas as tonalidades',
+          explanation: 'Como os números pertencem à tonalidade, I–IV–V–I é o mesmo movimento em qualquer tonalidade; só os nomes mudam. Em C é C, F, G e C; em D, D, G, A e D; em A, A, D, E e A; em E, E, A, B e E.',
+          tryThisLabel: 'Ouve I, IV, V e I em C: C, F, G e C',
+        },
+        {
+          title: 'Uma grelha em números',
+          explanation: 'Uma grelha de acordes escrita em números serve em todas as tonalidades. I–IV–I–V quer dizer casa, o acorde sobre o 4, de novo a casa, o acorde sobre o 5. Escolhe uma tonalidade, encontra as suas notas 1, 4 e 5, e ficas a saber que acordes tocar.',
+          tryThisLabel: 'Ouve I, IV, I e V em D: D, G, D e A',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca I, IV, V e I em G (G, C, D, G) e depois em C (C, F, G, C). O movimento parece o mesmo nas duas tonalidades?' },
+        { instruction: 'Escolhe a tonalidade de uma música que tocas. Sobe a sua escala a partir do 1 até às notas 4 e 5 e toca os seus acordes I, IV e V.' },
+      ],
+    },
+    l1u35m3: {
+      title: 'Os acordes menores da tonalidade',
+      subtitle: 'ii, iii e vi, um acorde diminuto e a relativa menor',
+      objectives: [
+        'Encontrar os três acordes menores de uma tonalidade maior: ii, iii e vi',
+        'Conhecer o acorde diminuto sobre o 7',
+        'Ouvir o acorde vi como a casa da tonalidade relativa menor',
+      ],
+      concepts: [
+        {
+          title: 'Três acordes menores',
+          explanation: 'Numa tonalidade maior, os acordes sobre o 2, o 3 e o 6 são menores. Escrevem-se em numerais romanos minúsculos: ii, iii e vi. Em G são Am, Bm e Em; em C, Dm, Em e Am; em D, Em, F♯m e Bm.',
+          tryThisLabel: 'Ouve I, ii, iii e vi em G: G, Am, Bm e Em',
+        },
+        {
+          title: 'O acorde sobre o 7',
+          explanation: 'O acorde sobre o 7, construído com as notas da tonalidade, é diminuto: como um acorde menor com a nota de cima meio-tom abaixo, e soa tenso. Um meio-tom é a nota mais próxima: um trasto na guitarra, a tecla imediatamente a seguir no piano; dois meios-tons fazem um tom. Escreve-se vii°. Em G é F♯ diminuto, F♯, A e C; em C é B diminuto, B, D e F.',
+          tryThisLabel: 'Ouve o vii° de G: F♯, A e C',
+        },
+        {
+          title: 'A família inteira',
+          explanation: 'Todas as tonalidades maiores têm o mesmo padrão de sete acordes: I, ii, iii, IV, V, vi e vii°. Maiores sobre o 1, o 4 e o 5; menores sobre o 2, o 3 e o 6; diminuto sobre o 7. Em G: G, Am, Bm, C, D, Em e F♯dim. Em C: C, Dm, Em, F, G, Am e Bdim.',
+          tryThisLabel: 'Ouve seis acordes de G: G, Am, Bm, C, D e Em',
+        },
+        {
+          title: 'A relativa menor',
+          explanation: 'O acorde Em, o vi de G, é a casa de uma tonalidade própria, a de E menor, que usa as mesmas sete notas que G maior, a começar no E: E, F♯, G, A, B, C e D. Duas tonalidades que partilham as sete notas são relativas: a de E menor é a relativa menor de G maior. A relativa menor de C é A menor, e a de D, B menor. Qual das duas é a tonalidade depende do acorde que soa como a casa.',
+          tryThisLabel: 'Ouve as mesmas notas com Em como casa: Em, C, D e Em',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca os acordes de G por ordem, G, Am, Bm, C, D e Em, e ouve quais são os três que soam mais escuros.' },
+        { instruction: 'Toca Em, C, D e Em algumas vezes e depois G, C, D e G. As notas são as mesmas: que acorde soa como a casa em cada um?' },
+      ],
+    },
+    l1u35m4: {
+      title: 'Casa e longe de casa',
+      subtitle: 'Porque é que o V leva de volta ao I, e o caminho mais suave para casa',
+      objectives: [
+        'Ouvir o I como a casa e o V como um acorde que quer voltar a ele',
+        'Encontrar a nota que puxa: a 7.ª nota da tonalidade, meio-tom abaixo da casa',
+        'Ouvir o IV a ir para o I como um caminho mais suave para casa',
+      ],
+      concepts: [
+        {
+          title: 'Casa',
+          explanation: 'O I é a casa. Quando uma sequência de acordes volta ao I, soa assente, como uma escala soa terminada na nota de cima. Se parares a sequência no V, o acorde sobre o 5, soa como se ainda faltasse alguma coisa.',
+          tryThisLabel: 'Ouve G, C, D e de volta a casa, a G',
+        },
+        {
+          title: 'O V puxa de volta ao I',
+          explanation: 'O V é o que puxa com mais força para casa. Em G, o acorde V, D, tem F♯: a 7.ª nota da tonalidade, meio-tom abaixo de G. Uma nota tão perto da casa inclina-se para ela, e o ouvido quer que o F♯ suba para G e que o acorde de D passe para G. Toca D e para: soa por terminar.',
+          tryThisLabel: 'Ouve G, depois D a inclinar-se para casa, depois G',
+        },
+        {
+          title: 'O mesmo puxão em todas as tonalidades',
+          explanation: 'Em todas as tonalidades maiores, o V tem a 7.ª nota da tonalidade, meio-tom abaixo da casa. Em C, o acorde de G tem B, abaixo de C; em D, o acorde de A tem C♯, abaixo de D; em A, o acorde de E tem G♯, abaixo de A; em E, o acorde de B tem D♯, abaixo de E.',
+          tryThisLabel: 'Ouve o acorde de G, com B meio-tom abaixo de C, entre dois acordes de C: C, G e C',
+        },
+        {
+          title: 'Do IV para o I: o caminho mais suave',
+          explanation: 'O IV também leva a casa, com mais suavidade. Em G, C vai para G: o acorde de C não tem nenhuma nota meio-tom abaixo de G, por isso nada se inclina para a casa, e o movimento soa calmo em vez de urgente. A partir do V, voltar a casa soa como uma chegada; a partir do IV, como assentar.',
+          tryThisLabel: 'Ouve G, C e G: do IV para o I',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca G, C, D e para no D. Espera e depois toca G. A seguir toca G, D, C, para no C e depois toca G. Qual das paragens soou mais por terminar?' },
+        { instruction: 'Toca D e depois F♯ e G, uma nota a seguir à outra: na guitarra, trastos 2 e 3 da corda mais fina. Ouve o F♯ inclinar-se para G.' },
+      ],
+    },
+    l1u35m5: {
+      title: 'Maior e menor: uma nota',
+      subtitle: 'A nota do meio, meio-tom abaixo',
+      objectives: [
+        'Encontrar a única nota que muda entre um acorde maior e o acorde menor sobre a mesma nota',
+        'Mudá-la na guitarra, um trasto abaixo, ou no piano, uma tecla abaixo',
+        'Distinguir de ouvido um acorde maior de um menor',
+      ],
+      concepts: [
+        {
+          title: 'Uma nota de diferença',
+          explanation: 'G maior é G, B e D; G menor é G, B♭ e D. Só a nota do meio muda, e desce meio-tom. O mesmo acontece com todos os acordes maiores e o acorde menor sobre a mesma nota: C e Cm, D e Dm, E e Em, A e Am.',
+          tryThisLabel: 'Ouve G e depois Gm',
+        },
+        {
+          title: 'Um trasto abaixo',
+          explanation: 'Na guitarra, um meio-tom é um trasto, por isso a corda que toca a nota do meio desce um trasto. De E para Em: a corda G deixa o trasto 1 e fica solta. De A para Am: a corda B passa do trasto 2 para o trasto 1. De D para Dm: a corda mais fina passa do trasto 2 para o trasto 1. Nas formas abertas de G e de C, a nota do meio também está numa corda solta, que não pode descer, por isso Gm e Cm precisam de outras formas. No piano, a nota do meio passa para a tecla imediatamente abaixo.',
+          tryThisLabel: 'Ouve E e depois Em: uma nota desce meio-tom',
+        },
+        {
+          title: 'Luminoso e escuro',
+          explanation: 'Os acordes maiores soam mais luminosos e os menores mais escuros, e essa única nota é toda a diferença. É também por isso que uma tonalidade tem os dois tipos: em G, o acorde sobre o 1 recebe B como nota do meio e é G maior, enquanto o acorde sobre o 2 recebe C, e não C♯, e é A menor.',
+          tryThisLabel: 'Ouve C♯ passar a C: A e depois Am',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca E e depois Em, e repara em que dedo se mexe. Faz o mesmo com A e Am, e com D e Dm.' },
+        { instruction: 'Toca G e depois G menor. Na guitarra, experimenta Gm com uma pestana no trasto 3; no piano, desce o B de G maior uma tecla, para B♭.' },
+      ],
+    },
+    l1u35m6: {
+      title: 'O que há dentro de um acorde',
+      subtitle: '1, 3 e 5: uma nota sim, outra não, a partir da nota do acorde',
+      objectives: [
+        'Construir um acorde com uma nota sim, outra não, de uma escala: 1, 3 e 5',
+        'Dar nome à fundamental, à 3.ª e à 5.ª de um acorde que tocas',
+        'Perceber porque é que seis cordas tocam só três notas diferentes',
+      ],
+      concepts: [
+        {
+          title: 'Uma nota sim, outra não',
+          explanation: 'Para um acorde maior, começa na sua nota e toma uma nota sim, outra não, da sua escala maior: a 1.ª, a 3.ª e a 5.ª. A partir de G: G, salta A, B, salta C, D. Assim, G maior é G, B e D. A partir de C dá C, E e G; a partir de D, D, F♯ e A. Um acorde menor ocupa os mesmos três lugares, com a 3.ª meio-tom abaixo.',
+          tryThisLabel: 'Ouve G, B e D juntos: G maior',
+        },
+        {
+          title: 'Fundamental, terceira e quinta',
+          explanation: 'As três notas têm nome. A fundamental, 1, é a nota do próprio acorde e dá-lhe o nome. A terceira, 3, torna-o maior ou menor: é a nota do meio que mudaste na lição anterior. A quinta, 5, é a mais aguda das três quando se empilham a partir da fundamental.',
+          tryThisLabel: 'Ouve D maior: D, F♯ e A',
+        },
+        {
+          title: 'Seis cordas, três notas',
+          explanation: 'Um acorde de G aberto soa em seis cordas, mas toca só três notas diferentes. A partir da corda mais grossa: G, B, D, G, B e G. O Em aberto é E, B, E, G, B e E. As notas repetem-se noutras oitavas, o que torna o acorde mais cheio; continuam a ser as mesmas três notas.',
+          tryThisLabel: 'Ouve Em: E, G e B, por muitas cordas que os toquem',
+        },
+        {
+          title: 'A mesma receita para todos os acordes da tonalidade',
+          explanation: 'Uma nota sim, outra não, serve para todos os acordes de uma tonalidade, com as notas da própria tonalidade. Em G, a partir do 2 dá A, C e E, o acorde de A menor; a partir do 7 dá F♯, A e C, o acorde de F♯ diminuto. São as notas da tonalidade que decidem o tipo de cada acorde.',
+          tryThisLabel: 'Ouve Am: A, C e E',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca um acorde de G aberto, uma corda de cada vez, a partir da mais grossa, e diz o nome de cada nota: G, B, D, G, B, G.' },
+        { instruction: 'Escolhe um acorde maior que conheças e diz a sua fundamental. Conta uma nota sim, outra não, da escala maior dessa fundamental para encontrares a 3.ª e a 5.ª, e toca as três notas uma a seguir à outra.' },
+      ],
+    },
+    l1u35m7: {
+      title: 'A sétima',
+      subtitle: 'Uma quarta nota por cima: G7 é G, B, D e F',
+      objectives: [
+        'Construir um acorde de sétima: 1, 3, 5 e uma sétima',
+        'Perceber porque é que G7 puxa para C',
+        'Tocar os três acordes de um blues de doze compassos: I7, IV7 e V7',
+      ],
+      concepts: [
+        {
+          title: 'Uma quarta nota',
+          explanation: 'Um acorde de sétima junta uma quarta nota às três: uma sétima acima da fundamental, a sétima letra contando a fundamental como a primeira. G7 é G, B, D e F. O F fica um tom abaixo do G de cima, e é essa a sétima que um simples 7 no nome de um acorde indica.',
+          tryThisLabel: 'Ouve G7: G, B, D e F',
+        },
+        {
+          title: 'G7 puxa para C',
+          explanation: 'O F não é uma das notas de G maior, mas é uma das notas de C maior: G, B, D e F pertencem todas a C. Em C, G é o acorde V, por isso G7 é o V de C com uma sétima, e puxa para C ainda com mais força do que G: o seu B quer subir para C e o seu F descer para E.',
+          tryThisLabel: 'Ouve G7 e depois C',
+        },
+        {
+          title: 'O V7 em cada tonalidade',
+          explanation: 'Cada tonalidade tem o seu V7: o acorde sobre o 5 com esta sétima. O acorde sobre o 5 chama-se dominante, por isso um acorde como G7 ou D7 chama-se acorde de sétima da dominante. D7, com D, F♯, A e C, puxa para G. E7, com E, G♯, B e D, puxa para A. B7, com B, D♯, F♯ e A, puxa para E.',
+          tryThisLabel: 'Ouve D7 e depois G',
+        },
+        {
+          title: 'O blues de doze compassos',
+          explanation: 'O blues de doze compassos é um padrão de doze compassos sobre três acordes, I, IV e V. Num blues, os três podem tocar-se como acordes de sétima: I7, IV7 e V7. Aqui as sétimas não levam a outra tonalidade; fazem parte do som. Uma das formas, em G: G7 durante quatro compassos, C7 durante dois, G7 durante dois, e depois D7, C7, G7 e D7, um compasso cada.',
+          tryThisLabel: 'Ouve os doze compassos em G, um acorde por compasso',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca G7 e depois C, e a seguir G e depois C. Qual dos dois se inclina mais para C?' },
+        { instruction: 'Toca o blues de doze compassos em G, quatro batidas por compasso: G7 durante quatro compassos, C7 durante dois, G7 durante dois, e depois D7, C7, G7 e D7.' },
+      ],
+    },
+    l1u35m8: {
+      title: 'Mudar uma música de tonalidade, e o capo',
+      subtitle: 'Os números ficam, os nomes mudam',
+      objectives: [
+        'Passar uma sequência de acordes para outra tonalidade pelos seus números',
+        'Saber em que tonalidade um capo põe as tuas formas',
+        'Tocar a mesma sequência em duas tonalidades',
+      ],
+      concepts: [
+        {
+          title: 'Os números ficam',
+          explanation: 'Escreve os acordes de uma música em números e podes tocá-la em qualquer tonalidade. I–V–vi–IV é G, D, Em e C em G. Em A é A, E, F♯m e D; em C, C, G, Am e F; em D, D, A, Bm e G.',
+          tryThisLabel: 'Ouve I, V, vi e IV em G: G, D, Em e C',
+        },
+        {
+          title: 'Os nomes mudam',
+          explanation: 'Para passares uma música de G para A, sobe todos os acordes a mesma distância. De G para A é um tom, por isso D passa a E, Em passa a F♯m e C passa a D. Conta em números ou em trastos: o resultado é o mesmo.',
+          tryThisLabel: 'Ouve a mesma sequência em A: A, E, F♯m e D',
+        },
+        {
+          title: 'O que faz um capo',
+          explanation: 'Um capo prende as seis cordas num trasto, por isso cada forma que tocas soa mais aguda, meio-tom por cada trasto até ao capo. Com o capo no trasto 2, a forma de G soa A, a de C soa D, a de D soa E e a de Em soa F♯m. Formas de G com o capo no trasto 2 soam na tonalidade de A.',
+          tryThisLabel: 'Ouve as formas de G, C, D e G com o capo no trasto 2: A, D, E e A',
+        },
+        {
+          title: 'Forma e som',
+          explanation: 'Com um capo, cada acorde tem dois nomes: a forma que fazes com os dedos e o acorde que soa. A tonalidade é a que soa. Formas de C com o capo no trasto 4 estão na tonalidade de E; formas de D com o capo no trasto 5 estão na tonalidade de G. Uma grelha pode estar escrita de qualquer das maneiras, por isso confirma qual delas usa.',
+          tryThisLabel: 'Vê a tonalidade de E: onde soam as formas de C com o capo no trasto 4',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca G, D, Em e C e depois a mesma sequência em A: A, E, F♯m e D. Na guitarra, F♯m pode ser uma pestana no trasto 2.' },
+        { instruction: 'Põe um capo no trasto 2 e toca as tuas formas de G, D, Em e C. Soam A, E, F♯m e D: compara-as com a sequência em A que tocaste sem capo.' },
+      ],
+    },
+    l1u35m9: {
+      title: 'Notas para uma melodia ou um solo',
+      subtitle: 'As sete notas da tonalidade, e cinco notas seguras',
+      objectives: [
+        'Saber que notas combinam com os acordes de uma tonalidade',
+        'Tocar a pentatónica maior: cinco notas da tonalidade',
+        'Encontrar a pentatónica menor a partir da nota de casa da relativa menor',
+      ],
+      concepts: [
+        {
+          title: 'As notas da tonalidade',
+          explanation: 'Todos os acordes de uma tonalidade são feitos das suas sete notas, por isso uma melodia ou um solo feito das mesmas notas combina com eles. Em G são G, A, B, C, D, E e F♯. Mantidas sobre alguns acordes, algumas podem chocar, mas nenhuma está fora da tonalidade.',
+          tryThisLabel: 'Ouve as sete notas de G',
+        },
+        {
+          title: 'Cinco notas seguras',
+          explanation: 'Deixa de fora as notas 4 e 7 e ficam cinco: 1, 2, 3, 5 e 6. É a escala pentatónica maior; em G, G, A, B, D e E. As notas 4 e 7 estão cada uma a meio-tom de uma nota do acorde I, o C acima do B e o F♯ abaixo do G, e o meio-tom é a distância a que duas notas mais chocam. Nenhuma das cinco está a meio-tom de outra, nem de uma nota do acorde I, por isso são uma primeira escolha segura sobre o acorde de casa. Sobre os outros acordes, uma delas ainda pode chocar com uma nota do acorde, por isso escuta.',
+          tryThisLabel: 'Ouve a pentatónica maior de G: G, A, B, D e E',
+        },
+        {
+          title: 'As mesmas cinco a partir da relativa menor',
+          explanation: 'Toca as mesmas cinco notas a partir de E, a nota de casa da relativa menor de G, e ficam E, G, A, B e D: a pentatónica menor de E. É o mesmo conjunto de notas que a pentatónica maior de G, por isso, sobre os acordes de G maior ou de E menor, os dois nomes dão as mesmas cinco notas.',
+          tryThisLabel: 'Ouve a pentatónica menor de E: E, G, A, B e D',
+        },
+        {
+          title: 'Noutras tonalidades',
+          explanation: 'Em C, a pentatónica maior é C, D, E, G e A, e a pentatónica menor da sua relativa, A menor, é A, C, D, E e G. Em D é D, E, F♯, A e B, e a pentatónica menor de B é B, D, E, F♯ e A.',
+          tryThisLabel: 'Ouve a pentatónica menor de A: A, C, D, E e G',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca a pentatónica maior de G a subir e a descer: G, A, B, D, E e G. Depois toca G, C ou D e responde a cada acorde com uma das cinco notas, a ouvir se alguma choca.' },
+        { instruction: 'Toca a pentatónica menor de E: E, G, A, B, D e E. Na guitarra fica nas cordas soltas e nos trastos 2 e 3: corda mais grossa 0 e 3, depois 0 e 2 nas três cordas seguintes, depois 0 e 3 nas duas últimas.' },
+      ],
+    },
+    l1u35m10: {
+      title: 'Um acorde de fora',
+      subtitle: 'Acordes de fora da tonalidade, e como saber a tonalidade mesmo assim',
+      objectives: [
+        'Reconhecer um acorde que não é um dos sete da tonalidade',
+        'Chamar ♭VII ao F na tonalidade de G, e II, não ii, a A maior',
+        'Saber a tonalidade de uma música pelo seu acorde de casa',
+      ],
+      concepts: [
+        {
+          title: 'Nem todos os acordes estão na tonalidade',
+          explanation: 'As músicas nem sempre ficam pelos sete acordes da sua tonalidade. Um acorde com uma nota que a tonalidade não tem vem de fora dela. Podes reconhecê-lo pelas notas: se uma delas não está na tonalidade, o acorde não é um dos sete da tonalidade.',
+          tryThisLabel: 'Ouve uma sequência com um acorde de fora da tonalidade: G, F, C e G',
+        },
+        {
+          title: 'F na tonalidade de G: ♭VII',
+          explanation: 'F maior é F, A e C. A tonalidade de G tem F♯, não F, por isso F não é um dos seus acordes. Fica sobre a 7.ª nota da tonalidade baixada meio-tom, F em vez de F♯, e é maior, por isso escreve-se ♭VII. F maior é um dos acordes de G menor, a tonalidade menor com a mesma nota de casa, por isso diz-se que F é um acorde emprestado: emprestado de G menor.',
+          tryThisLabel: 'Ouve F: F, A e C, com F em vez de F♯',
+        },
+        {
+          title: 'O acorde de A maior em G: II, não ii',
+          explanation: 'O ii de G é A menor: A, C e E. O acorde de A maior tem C♯ em vez de C, uma nota que G maior não tem, por isso não é o ii da tonalidade: escreve-se II, em maiúsculas, por ser um acorde maior. O seu C♯ fica meio-tom abaixo de D, por isso A maior inclina-se para D, o V, como o V se inclina para o I.',
+          tryThisLabel: 'Ouve A maior inclinar-se para D: G, A, D e G',
+        },
+        {
+          title: 'Saber a tonalidade mesmo assim',
+          explanation: 'Um acorde de fora não muda a tonalidade. Procura o acorde a que a música está sempre a voltar e onde repousa, e depois confirma que os outros acordes pertencem a essa tonalidade. G, F, C e G continua em G: G é a casa, e C também pertence a G. G, F e C também são todos acordes de C maior, por isso aqui decide o ouvido: a sequência repousa em G, não em C. A partir daqui, Explorar mostra qualquer tonalidade com os seus acordes, e o Nível 2 vai mais longe nas tonalidades e na forma como os acordes funcionam juntos.',
+          tryThisLabel: 'Vê a tonalidade de G e as suas notas no teu instrumento',
+        },
+      ],
+      tasks: [
+        { instruction: 'Toca G, F, C e G e depois G, C, D e G. Que sequência tem um acorde de fora da tonalidade de G, e que nota o denuncia?' },
+        { instruction: 'Pega numa música que tocas. Encontra o seu acorde de casa, compara cada acorde com os acordes dessa tonalidade e assinala qualquer acorde de fora com a nota que não está na tonalidade.' },
       ],
     },
   },

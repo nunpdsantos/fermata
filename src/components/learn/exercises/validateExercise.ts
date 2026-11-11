@@ -274,6 +274,11 @@ function validateChordBuild(config: ChordBuildConfig, answer: Set<number>, t: Tr
 }
 
 function validateEarTraining(config: EarTrainingConfig, answer: string, t: TranslateFn): ValidationResult {
+  // Authored options (any mode but melody; wave 2 adds them to note and
+  // interval items): the answer is the option marked correct.
+  if (config.mode !== 'melody' && config.choices) {
+    return validateMultipleChoice({ type: 'multiple_choice', choices: config.choices }, answer, t);
+  }
   if (config.mode === 'note' && config.note) {
     return validateNoteId(
       { type: 'note_id', note: config.note, accidental: config.accidental ?? '', octave: config.octave ?? 4, acceptEnharmonic: config.acceptEnharmonic },
@@ -296,13 +301,6 @@ function validateEarTraining(config: EarTrainingConfig, answer: string, t: Trans
     return answer === melodyValue(played.notes)
       ? { correct: true, explanation: t('exerciseFeedback.melodyCorrect', { melody }), expected: melody }
       : { correct: false, explanation: t('exerciseFeedback.melodyIncorrect', { melody }), expected: melody };
-  }
-  if ((config.mode === 'chord' || config.mode === 'scale' || config.mode === 'progression') && config.choices) {
-    return validateMultipleChoice(
-      { type: 'multiple_choice', choices: config.choices },
-      answer,
-      t,
-    );
   }
   return { correct: false, explanation: t('exerciseFeedback.earTrainingInvalid'), expected: '' };
 }

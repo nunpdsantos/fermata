@@ -28,10 +28,20 @@ export function getUnitByModuleId(moduleId: string): CurriculumUnit | undefined 
   return getAllUnits().find((unit) => unit.modules.some((m) => m.id === moduleId));
 }
 
+/**
+ * The lessons a module's Next / Previous walk through: the required course
+ * (every non-optional unit, across levels) for a required module; for an
+ * optional unit (guitar notation, a track — wave 2), that unit's own lessons
+ * only, so one optional unit never runs on into another.
+ */
+function sequenceOf(moduleId: string): CurriculumModule[] {
+  if (!isOptionalModuleId(moduleId)) return getAllUnits().filter((u) => !u.optional).flatMap((u) => u.modules);
+  return getUnitByModuleId(moduleId)?.modules ?? [];
+}
+
 /** Get the next module in sequence (across units and levels) */
 export function getNextModule(currentModuleId: string): CurriculumModule | undefined {
-  const optional = isOptionalModuleId(currentModuleId);
-  const allModules = getAllUnits().filter((u) => !!u.optional === optional).flatMap((u) => u.modules);
+  const allModules = sequenceOf(currentModuleId);
   const index = allModules.findIndex((m) => m.id === currentModuleId);
   if (index === -1 || index === allModules.length - 1) return undefined;
   return allModules[index + 1];
@@ -39,8 +49,7 @@ export function getNextModule(currentModuleId: string): CurriculumModule | undef
 
 /** Get the previous module in sequence */
 export function getPreviousModule(currentModuleId: string): CurriculumModule | undefined {
-  const optional = isOptionalModuleId(currentModuleId);
-  const allModules = getAllUnits().filter((u) => !!u.optional === optional).flatMap((u) => u.modules);
+  const allModules = sequenceOf(currentModuleId);
   const index = allModules.findIndex((m) => m.id === currentModuleId);
   if (index <= 0) return undefined;
   return allModules[index - 1];

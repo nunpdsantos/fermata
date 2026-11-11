@@ -19,6 +19,10 @@ import { ReviewQueue } from './ReviewQueue';
 import { LevelCard } from './LevelCard';
 import { ProgressBar } from './ProgressBar';
 import { useAppStore } from '../../state/store.ts';
+import { useLearnerProfile } from '../../state/learnerProfile.ts';
+import type { TrackInfo } from '../../data/tracks';
+import { TrackSection } from './tracks/TrackCard';
+import { overviewTracks } from './tracks/trackOverview';
 
 type ResolvedNext =
   | { key: string; level: CurriculumLevel; unit: CurriculumUnit; module: CurriculumModule }
@@ -42,6 +46,8 @@ interface LevelsOverviewProps {
   onOpenLevel: (levelId: string) => void;
   onOpenModule: (moduleId: string, unitId: string, levelId: string) => void;
   onStartReview?: (moduleId: string) => void;
+  /** Opens a starting track's page (wave 2). Without it, no track cards. */
+  onOpenTrack?: (track: TrackInfo) => void;
 }
 
 export function LevelsOverview({
@@ -49,9 +55,15 @@ export function LevelsOverview({
   onOpenLevel,
   onOpenModule,
   onStartReview,
+  onOpenTrack,
 }: LevelsOverviewProps) {
   const { t } = useTranslation();
   const language = useAppStore((s) => s.language) as ContentLanguage;
+  // The starting tracks (wave 2): a guided learner's own track at the top;
+  // for everyone else (the owner) below the level grid, so nothing above it
+  // moves. Static data only.
+  const profile = useLearnerProfile();
+  const tracks = useMemo(() => overviewTracks(profile), [profile]);
 
   const translatedMeta = useMemo(
     () => translateLevelMetadata(LEVEL_METADATA, language),
@@ -139,6 +151,28 @@ export function LevelsOverview({
         </div>
 
       </m.div>
+
+      {/* Start here: the learner's own track, then the other one (wave 2) */}
+      {onOpenTrack && tracks.startHere && (
+        <>
+          <TrackSection
+            heading={t('tracks.startHere')}
+            tracks={[tracks.startHere]}
+            completedModules={progress.completedModules}
+            onOpen={onOpenTrack}
+            testId="tracks-start-here"
+            className="mb-6"
+          />
+          <TrackSection
+            heading={t('tracks.otherWays')}
+            tracks={tracks.others}
+            completedModules={progress.completedModules}
+            onOpen={onOpenTrack}
+            testId="tracks-other"
+            className="mb-8"
+          />
+        </>
+      )}
 
       {/* Welcome banner — shown only when zero progress */}
       {totalCompleted === 0 && !nextUp && (
@@ -239,6 +273,18 @@ export function LevelsOverview({
             ))}
           </div>
         </>
+      )}
+
+      {/* Other ways in: both tracks, below the level grid (wave 2) */}
+      {onOpenTrack && tracks.place === 'below' && (
+        <TrackSection
+          heading={t('tracks.otherWays')}
+          tracks={tracks.others}
+          completedModules={progress.completedModules}
+          onOpen={onOpenTrack}
+          testId="tracks-other"
+          className="mt-8"
+        />
       )}
     </div>
   );

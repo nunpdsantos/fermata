@@ -76,6 +76,13 @@ function deriveCorrect(cfg: ExerciseConfig): string | Set<number> | null {
       return correct?.label ?? null;
     }
     case 'ear_training': {
+      // Authored options on a note or interval item (wave 2, "Start with
+      // sound": "which note was higher?", "half or whole step?"): the answer
+      // is the option marked correct, as in chord / scale / progression mode.
+      if ((cfg.mode === 'note' || cfg.mode === 'interval') && cfg.choices) {
+        const correct = cfg.choices.filter(c => c.correct);
+        return correct.length === 1 ? correct[0].label : null;
+      }
       if (cfg.mode === 'note' && cfg.note) return cfg.note + (cfg.accidental ?? '');
       if (cfg.mode === 'interval' && cfg.targetSemitones !== undefined) return String(cfg.targetSemitones);
       if ((cfg.mode === 'chord' || cfg.mode === 'scale' || cfg.mode === 'progression') && cfg.choices) {

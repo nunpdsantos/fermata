@@ -1169,6 +1169,7 @@
       "newPiano": "Tap a piano key to hear it.",
       "newGuitar": "Tap a string to hear it.",
       "player": "Pick the key of a song you play, for example G. The chords below belong to it: tap one.",
+      "playerLesson": "Theory from the chords you know: lesson 1 →",
       "dismiss": "Dismiss the tip"
     }
   },
@@ -1361,5 +1362,40 @@
     "cellAbove_other": "{{note}}, fret {{fret}}, string {{string}}, {{count}} frets above the capo",
     "readoutAt": "string {{string}} fret {{fret}} (capo)",
     "practiceNote": "The capo is off here: these exercises use the neck without one."
+  },
+  "tracks": {
+    "sound": {
+      "title": "Start with sound",
+      "line": "Hear high and low, name the notes and build your first chords. No reading music needed.",
+      "end": {
+        "explore": "Play with these notes in Explore",
+        "level1": "Learn to read music: Level 1"
+      }
+    },
+    "chords": {
+      "title": "From the chords you know",
+      "line": "Theory that starts from the chords you already play.",
+      "end": {
+        "progression": "Loop your own songs in the Progression panel",
+        "level2": "Go deeper: Level 2"
+      }
+    },
+    "chordList": {
+      "label": "The chords, in order",
+      "showPiano": "{{chord}}: hear it and show it on the piano",
+      "showGuitar": "{{chord}}: hear it and show it on the guitar"
+    },
+    "startHere": "Start here",
+    "otherWays": "Other ways in",
+    "progress": "{{done}} of {{total}} lessons",
+    "eyebrow_one": "{{count}} short lesson",
+    "eyebrow_other": "{{count}} short lessons",
+    "lessonsLabel": "Lessons",
+    "next": "Next",
+    "lesson": "Lesson {{n}}",
+    "end": {
+      "title": "Where next?",
+      "line": "You have reached the end of “{{track}}”. Two ways to go on:"
+    }
   }
 }
