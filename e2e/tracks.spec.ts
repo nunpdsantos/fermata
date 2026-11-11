@@ -70,6 +70,25 @@ function answerKey(lang: Lang, unit: 'l1u34' | 'l1u35' = 'l1u34') {
   return { choice, build };
 }
 
+/**
+ * The dev server serves the app's own modules (/src/…); the production build
+ * does not. Never a silent skip on the dev server: only a build (the one that
+ * serves the PWA manifest) may lack them (design-system.spec's rule).
+ */
+let devModules: boolean | undefined;
+async function hasDevModules(page: Page) {
+  if (devModules === undefined) {
+    const res = await page.request.get('/src/core/services/audio.ts');
+    devModules = res.ok() && (res.headers()['content-type'] ?? '').includes('javascript');
+    if (!devModules) {
+      const manifest = await page.request.get('/manifest.webmanifest');
+      expect((manifest.headers()['content-type'] ?? '').includes('json'), 'dev server without /src modules?').toBe(true);
+    }
+  }
+  if (!devModules) test.info().annotations.push({ type: 'note', description: 'the audio-clock check needs the dev server: skipped on this build' });
+  return devModules;
+}
+
 /** VexFlow staves drawn inside an element (the known positive: any Level 1 lesson). */
 const staves = (page: Page, scope: string) => page.locator(`${scope} svg .vf-stave, ${scope} svg.vf-stave, ${scope} [data-testid="rhythm-staff"], ${scope} .staff-skeleton`).count();
 
@@ -136,11 +155,15 @@ for (const v of [PHONE, LAPTOP] as View[]) {
       expect(hb.y + hb.height, 'Hear it is above the dock').toBeLessThanOrEqual(dock.y + 1);
       await expect(first.getByTestId('try-this-names')).toBeVisible();
       await hear.click();
-      // It sounds: the app's audio clock runs after that one tap (the dev server's own module).
-      await expect.poll(() => page.evaluate(async () => {
-        const audio = await import(/* @vite-ignore */ '/src/core/services/audio.ts' as string);
-        return audio.getAudioState();
-      })).toBe('running');
+      // It sounds: the app's audio clock runs after that one tap (the dev server's own module;
+      // the production build has no /src modules, so there this one step is skipped and noted —
+      // integration, as design-system.spec does for its dev-only steps).
+      if (await hasDevModules(page)) {
+        await expect.poll(() => page.evaluate(async () => {
+          const audio = await import(/* @vite-ignore */ '/src/core/services/audio.ts' as string);
+          return audio.getAudioState();
+        })).toBe('running');
+      }
 
       for (let i = 0; i < 5; i++) {
         await expect(page.getByRole('heading', { level: 1, name: w.lessons[i] })).toBeVisible({ timeout: 15_000 });
