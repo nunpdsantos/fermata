@@ -100,3 +100,17 @@ export function followFamilies(
   for (const item of bank) if (!out[item.family] && inPool(item)) out[item.family] = true;
   return out;
 }
+
+const PIANO_EXCLUDED: ReadonlySet<DrillFamily> = new Set<DrillFamily>(['read']);
+const NOTHING_EXCLUDED: ReadonlySet<DrillFamily> = new Set<DrillFamily>();
+
+/**
+ * Families following the lessons never opens for this instrument (the seat's
+ * decision S-2, final review of wave 2): guitar reading (the neck's notes)
+ * is not offered to a learner whose instrument is the piano — neither as
+ * unlocked nor as next. With the guitar selected, as before. The switch off
+ * (the owner) does not read this.
+ */
+export function followExcluded(instrument: string): ReadonlySet<DrillFamily> {
+  return instrument === 'guitar' ? NOTHING_EXCLUDED : PIANO_EXCLUDED;
+}

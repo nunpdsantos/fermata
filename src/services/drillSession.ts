@@ -142,6 +142,7 @@ function pickFresh(
   pool: DrillItem[],
   states: Record<string, ItemSrsState>,
   n: number,
+  spreadGroups: GroupOf | null = null,
 ): DrillItem[] {
   if (n <= 0) return [];
   const byFamily = new Map<DrillFamily, DrillItem[]>();
@@ -156,6 +157,14 @@ function pickFresh(
     else byFamily.set(item.family, [item]);
   }
   for (const list of byFamily.values()) list.sort((a, b) => a.rank - b.rank);
+  // Following the lessons (wave 2), a family may be open in only a few
+  // sibling groups (scales in C and G after "A Scale Is a Ladder"); taken in
+  // rank order its new facts all came from one group and the sibling rule
+  // left a one-question session (final review of wave 2). There, a family's
+  // new facts take its groups in turn, each group in rank order.
+  if (spreadGroups) {
+    for (const [family, list] of byFamily) byFamily.set(family, interleaveGroups(list, spreadGroups));
+  }
   const order = [...byFamily.keys()].sort(
     (a, b) => byFamily.get(a)![0].rank - byFamily.get(b)![0].rank,
   );
@@ -170,6 +179,23 @@ function pickFresh(
     turn++;
   }
   return picked;
+}
+
+/** Items in rank order, re-dealt one per sibling group in turn (groups in the order of their first item). */
+function interleaveGroups(list: DrillItem[], groupOf: GroupOf): DrillItem[] {
+  const groups = new Map<string, DrillItem[]>();
+  for (const item of list) {
+    const g = groupOf(item.id);
+    const bucket = groups.get(g);
+    if (bucket) bucket.push(item);
+    else groups.set(g, [item]);
+  }
+  const buckets = [...groups.values()];
+  const out: DrillItem[] = [];
+  for (let round = 0; out.length < list.length; round++) {
+    for (const b of buckets) if (round < b.length) out.push(b[round]);
+  }
+  return out;
 }
 
 // ─── composeSession ───────────────────────────────────────────────────────────
@@ -232,7 +258,7 @@ export function composeSession(
   //    across families (W7-02). Items WITH states but tier 'new' are
   //    deliberately excluded from every bucket here — state must reach tier
   //    'learning' via an answer before the item re-enters any bucket.
-  const freshItems = pickFresh(pool, states, config.newPerSession);
+  const freshItems = pickFresh(pool, states, config.newPerSession, unlocked ? groupOf : null);
 
   // 5. Confidence: remaining pool items with state and tier review|byHeart
   const confidenceItems = pool

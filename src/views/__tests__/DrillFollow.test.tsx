@@ -16,7 +16,9 @@ import { DrillView } from '../DrillView';
 import { useDrillStore, DEFAULT_SETTINGS, DRILL_STORE_KEY } from '../../state/drillStore';
 import { useAppStore } from '../../state/store';
 import { generateDrillBank } from '../../core/utils/drillBank';
-import { PROGRESS_STORAGE_KEY } from '../../services/drillFollow';
+import { PROGRESS_STORAGE_KEY, followExcluded } from '../../services/drillFollow';
+import { nextUnlock } from '../../data/drillUnlocks';
+import { TRACKS } from '../../data/tracks';
 import i18n from '../../i18n';
 import { DRILL_FAMILIES, type DrillFamily } from '../../core/types/drill';
 import { sprintFamiliesKey } from '../../components/drill/sprintSelectors';
@@ -110,6 +112,8 @@ describe('a new learner with nothing completed', () => {
   });
 
   it('integration: a locked topic\'s caption opens the lesson that unlocks it (the track lesson, in its unit)', () => {
+    // On the guitar, every topic has a lesson that opens it (on the piano, reading does not: S-2, below).
+    useAppStore.setState({ instrument: 'guitar' });
     render(<DrillView />);
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Choose topics myself' })));
     act(() => fireEvent.click(screen.getByRole('button', { name: /^Choose topics$/ })));
@@ -145,6 +149,8 @@ describe('a new learner after lessons', () => {
   });
 
   it('a Level 2 lesson (l2u7m3) opens the whole triad family, and the families before it', () => {
+    // On the guitar, reading is among them (on the piano it is not: S-2, below).
+    useAppStore.setState({ instrument: 'guitar' });
     seedLessons(['l2u7m3']);
     useDrillStore.getState().updateSettings({ newPerSession: 8, length: 40 });
     render(<DrillView />);
@@ -193,6 +199,95 @@ describe('the switch in the settings', () => {
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Drill settings' })));
     act(() => fireEvent.click(screen.getByTestId('drill-follow-switch')));
     expect(useDrillStore.getState().activeSession!.queue).toEqual(first);
+  });
+});
+
+describe('the seat\'s decision S-2: no guitar reading for a piano learner while following', () => {
+  const families = () => new Set(useDrillStore.getState().activeSession!.queue.map((id) => BY_ID.get(id)!.family));
+  beforeEach(() => {
+    useAppStore.setState({ learnerProfile: 'new' });
+    seedLessons(['l1u1m1', 'l2u7m3']); // The Staff and Clefs (reading's lesson), then a Level 2 lesson
+    useDrillStore.getState().updateSettings({ newPerSession: 8, length: 40 });
+  });
+  afterEach(() => useAppStore.setState({ instrument: 'piano' }));
+
+  it('piano: not unlocked (summary, sessions), not next, and the map says why', () => {
+    useAppStore.setState({ instrument: 'piano' });
+    render(<DrillView />);
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Start' })));
+    expect(families().has('read')).toBe(false);
+    expect(families().has('triad')).toBe(true);
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Drill settings' })));
+    const summary = screen.getByTestId('drill-follow-summary');
+    expect(summary.querySelector('[data-family="read"]')).toBeNull();
+    expect(screen.getByTestId('drill-follow-next').textContent).not.toMatch(/Reading/);
+    act(() => fireEvent.click(screen.getByRole('button', { name: /Mastery map/ })));
+    expect(screen.getByText('Unlocks only with the guitar as your instrument')).toBeDefined();
+    expect(document.querySelector('[data-follow-lesson="l1u1m1"]')).toBeNull();
+  });
+
+  it('guitar: as before (reading opens with its lesson)', () => {
+    useAppStore.setState({ instrument: 'guitar' });
+    render(<DrillView />);
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Start' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Drill settings' })));
+    expect(screen.getByTestId('drill-follow-summary').querySelector('[data-family="read"]')).not.toBeNull();
+    act(() => fireEvent.click(screen.getByRole('button', { name: /Mastery map/ })));
+    expect(screen.queryByText('Unlocks only with the guitar as your instrument')).toBeNull();
+  });
+
+  it('piano, the switch off: today\'s Drill (reading among the topics, by its chip)', () => {
+    useAppStore.setState({ instrument: 'piano' });
+    useDrillStore.getState().updateSettings({ followLessons: false, families: Object.fromEntries(DRILL_FAMILIES.map((f) => [f, f === 'read'])) as Record<DrillFamily, boolean> });
+    render(<DrillView />);
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Start' })));
+    // Only the reading chip on: a session of reading questions, as on main.
+    expect([...families()]).toEqual(['read']);
+  });
+
+  it('next: a piano learner of the sound track is never sent to reading; a guitar learner is', () => {
+    const done = ['l1u34m4', 'l1u34m5'];
+    const all: string[] = [];
+    let n = nextUnlock(done, TRACKS.sound, followExcluded('piano'));
+    while (n) {
+      all.push(...n.families);
+      done.push(n.moduleId);
+      n = nextUnlock(done, TRACKS.sound, followExcluded('piano'));
+    }
+    expect(all).not.toContain('read');
+    expect(nextUnlock(['l1u34m4', 'l1u34m5'], TRACKS.sound, followExcluded('guitar'))).toEqual({ moduleId: 'l1u1m1', families: ['read'] });
+    expect(nextUnlock(['l1u34m4', 'l1u34m5'], TRACKS.sound, followExcluded('piano'))!.families).not.toContain('read');
+  });
+});
+
+describe('no empty session can start (final review of wave 2)', () => {
+  it('nothing done, the switch turned on mid-session, End, New session: back to the empty intro, never "0 of 0"', () => {
+    useAppStore.setState({ learnerProfile: 'new' });
+    render(<DrillView />);
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Choose topics myself' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Start' })));
+    expect(useDrillStore.getState().activeSession!.queue.length).toBeGreaterThan(0);
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Drill settings' })));
+    act(() => fireEvent.click(screen.getByTestId('drill-follow-switch')));
+    expect(useDrillStore.getState().settings.followLessons).toBe(true);
+    act(() => fireEvent.click(screen.getAllByRole('button', { name: 'Back' })[0]));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'End session' })));
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'New session' })));
+    // No session with nothing in it; the intro says which lesson opens the first
+    // questions and offers the way back to the topics.
+    expect(useDrillStore.getState().activeSession).toBeNull();
+    expect(intro()).not.toBeNull();
+    expect(screen.getByTestId('drill-follow-empty')).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Choose topics myself' })).toBeDefined();
+    expect(screen.queryByText(/0 of 0/)).toBeNull();
+  });
+
+  it('the store itself never saves an empty session while following', () => {
+    useDrillStore.getState().startSession(BANK, Date.now(), { followLessons: true, unlocked: () => false });
+    expect(useDrillStore.getState().activeSession).toBeNull();
+    // Not following: as before (the owner's path is unchanged).
+    useDrillStore.getState().startSession(BANK, Date.now());
+    expect(useDrillStore.getState().activeSession!.queue.length).toBeGreaterThan(0);
   });
 });
 

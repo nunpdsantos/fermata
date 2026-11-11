@@ -1405,6 +1405,7 @@
     "firstQuestionsLater": "Nothing to ask yet. The first questions come with your lessons.",
     "openLesson": "Open the lesson",
     "opensWith": "Unlocks with “{{lesson}}”",
-    "opensLater": "Unlocks with a later lesson"
+    "opensLater": "Unlocks with a later lesson",
+    "guitarOnly": "Unlocks only with the guitar as your instrument"
   }
 }

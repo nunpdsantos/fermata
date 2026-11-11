@@ -17,6 +17,8 @@ export interface FollowInfo {
   open: { family: DrillFamily; whole: boolean }[];
   /** The next lesson that opens something, and what; null = nothing left. */
   next: { moduleId: string; families: DrillFamily[] } | null;
+  /** Families the learner's instrument rules out (S-2: guitar reading on the piano). */
+  excluded?: ReadonlySet<DrillFamily>;
   /** The lesson that opens a family the learner has nothing of yet. */
   lessonOpening: (family: DrillFamily) => string;
   /** Open a lesson in Learn. */
@@ -99,6 +101,8 @@ export function FollowCaption({ info, family }: { info: FollowInfo; family: Dril
   let opens: string | null = null;
   if (open) {
     text = t('drillFollow.soFar', { list: partLabel(info.unlock.rows.filter((r) => r.family === family), t) });
+  } else if (info.excluded?.has(family)) {
+    text = t('drillFollow.guitarOnly');
   } else {
     const moduleId = info.lessonOpening(family);
     const lesson = title(moduleId);

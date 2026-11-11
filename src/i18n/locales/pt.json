@@ -1405,6 +1405,7 @@
     "firstQuestionsLater": "Ainda não há nada para perguntar. As primeiras perguntas chegam com as tuas lições.",
     "openLesson": "Abrir a lição",
     "opensWith": "Desbloqueia com «{{lesson}}»",
-    "opensLater": "Desbloqueia com uma lição mais à frente"
+    "opensLater": "Desbloqueia com uma lição mais à frente",
+    "guitarOnly": "Desbloqueia só com a guitarra como instrumento"
   }
 }

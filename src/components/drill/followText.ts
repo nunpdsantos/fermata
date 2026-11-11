@@ -39,10 +39,37 @@ export function partLabel(rows: readonly DrillUnlockRow[], t: TFunction): string
     (r.chords ?? []).map((c) => `${withGlyphs(stringToNote(c.root))}${CHORD_SUFFIX[c.quality] ?? ` ${c.quality}`}`),
   ));
   const keys = union(rows.map((r) => (r.keys ?? []).map(keyLabel))).join(', ');
-  const degrees = [...new Set(rows.flatMap((r) => r.degrees ?? []))].sort((a, b) => a - b);
   if (chordLabels.length > 0) return chordLabels.join(', ');
-  if (degrees.length > 0) return t('drillFollow.degreesIn', { degrees: degrees.map((d) => NUMERALS[d - 1]).join(', '), keys });
+  if (rows.some((r) => (r.degrees ?? []).length > 0)) return degreesInKeys(rows, t);
   return keys;
+}
+
+/**
+ * The degrees each key opened, keys with the same degrees named together:
+ * l1u35m2 + m3 give "chords I, ii, iii, IV, V, vi in the keys G, C, D; chords
+ * I, IV, V in the keys A, E" — never ii, iii and vi in A and E, which no
+ * lesson opened (final review of wave 2).
+ */
+function degreesInKeys(rows: readonly DrillUnlockRow[], t: TFunction): string {
+  const byKey = new Map<string, Set<number>>();
+  for (const r of rows) {
+    for (const k of r.keys ?? []) {
+      const set = byKey.get(k) ?? new Set<number>();
+      for (const d of r.degrees ?? []) set.add(d);
+      byKey.set(k, set);
+    }
+  }
+  const groups = new Map<string, { degrees: number[]; keys: string[] }>();
+  for (const [k, set] of byKey) {
+    const degrees = [...set].sort((a, b) => a - b);
+    const id = degrees.join(',');
+    const group = groups.get(id) ?? { degrees, keys: [] };
+    group.keys.push(keyLabel(k));
+    groups.set(id, group);
+  }
+  return [...groups.values()]
+    .map((g) => t('drillFollow.degreesIn', { degrees: g.degrees.map((d) => NUMERALS[d - 1]).join(', '), keys: g.keys.join(', ') }))
+    .join('; ');
 }
 
 /** A lesson's title in the learner's language, or null when the index does not know it. */

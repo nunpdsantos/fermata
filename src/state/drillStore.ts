@@ -472,6 +472,14 @@ export const useDrillStore = create<DrillStoreState>()(
         const seed = now % 0x80000000; // now % 2^31 — deterministic
         const id = `s${now}`;
         const queue = composeSession(bank, items, settings, now, seed, undefined, options?.unlocked ?? null);
+        // Following the lessons with nothing they open and no fact met: no
+        // session starts (an empty one is a dead end, "0 of 0", that was
+        // saved and came back — final review of wave 2). The view shows the
+        // intro instead. Not following: as before.
+        if (queue.length === 0 && options?.unlocked) {
+          set({ activeSession: null });
+          return;
+        }
         // The first session saves the follow switch's value in force (it is
         // derived from "no Drill history", which this session ends). Later
         // sessions, and a learner who set it, write nothing new.

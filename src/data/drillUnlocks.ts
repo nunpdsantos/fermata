@@ -110,20 +110,26 @@ export interface DrillUnlock {
   rows: readonly DrillUnlockRow[];
 }
 
-/** Pure: what Drill may ask after these lessons. */
-export function unlockedFor(completedModuleIds: Iterable<string>): DrillUnlock {
+const NONE: ReadonlySet<DrillFamily> = new Set();
+
+/**
+ * Pure: what Drill may ask after these lessons. `excluded`: families the
+ * learner's instrument rules out (the seat's decision S-2 of the final review
+ * of wave 2: guitar reading for a piano learner) — never open, never next.
+ */
+export function unlockedFor(completedModuleIds: Iterable<string>, excluded: ReadonlySet<DrillFamily> = NONE): DrillUnlock {
   const done = new Set(completedModuleIds);
   let furthest = -1;
   for (const id of done) furthest = Math.max(furthest, COURSE_POSITION.get(id) ?? -1);
   const whole = new Set<DrillFamily>();
   for (const family of DRILL_FAMILIES) {
     const at = COURSE_POSITION.get(DRILL_FAMILY_TO_MODULE[family]);
-    if (at !== undefined && at <= furthest) whole.add(family);
+    if (at !== undefined && at <= furthest && !excluded.has(family)) whole.add(family);
   }
   const rows: DrillUnlockRow[] = [];
   for (const id of Object.keys(TRACK_UNLOCKS)) {
     if (!done.has(id)) continue;
-    for (const row of TRACK_UNLOCKS[id]) if (!whole.has(row.family)) rows.push(row);
+    for (const row of TRACK_UNLOCKS[id]) if (!whole.has(row.family) && !excluded.has(row.family)) rows.push(row);
   }
   return { whole, rows };
 }
@@ -167,8 +173,8 @@ function unlockingLessons(track: TrackInfo | null): string[] {
 }
 
 /** Does completing `moduleId` add anything to `unlock`? */
-function opensMore(unlock: DrillUnlock, done: ReadonlySet<string>, moduleId: string): DrillFamily[] {
-  const after = unlockedFor([...done, moduleId]);
+function opensMore(unlock: DrillUnlock, done: ReadonlySet<string>, moduleId: string, excluded: ReadonlySet<DrillFamily>): DrillFamily[] {
+  const after = unlockedFor([...done, moduleId], excluded);
   const before = openFamilies(unlock);
   return openFamilies(after)
     .filter(({ family, whole }) => {
@@ -191,12 +197,13 @@ function opensMore(unlock: DrillUnlock, done: ReadonlySet<string>, moduleId: str
 export function nextUnlock(
   completedModuleIds: Iterable<string>,
   track: TrackInfo | null,
+  excluded: ReadonlySet<DrillFamily> = NONE,
 ): { moduleId: string; families: DrillFamily[] } | null {
   const done = new Set(completedModuleIds);
-  const unlock = unlockedFor(done);
+  const unlock = unlockedFor(done, excluded);
   for (const moduleId of unlockingLessons(track)) {
     if (done.has(moduleId)) continue;
-    const families = opensMore(unlock, done, moduleId);
+    const families = opensMore(unlock, done, moduleId, excluded);
     if (families.length > 0) return { moduleId, families };
   }
   return null;

@@ -33,7 +33,7 @@ import {
   openFamilies,
   unlockedFor,
 } from '../data/drillUnlocks';
-import { followFamilies, followHasNothing, followInForce, readCompletedLessons } from '../services/drillFollow';
+import { followExcluded, followFamilies, followHasNothing, followInForce, readCompletedLessons } from '../services/drillFollow';
 import type { FollowInfo } from '../components/drill/FollowLessons';
 
 // Memoize the bank once for the view (the runner memoizes its own; this is the
@@ -77,7 +77,10 @@ export function DrillView() {
   const profile = useLearnerProfile();
   const completed = useCompletedLessons();
   const follow = followInForce(savedFollow, profile, introDone);
-  const unlock = useMemo(() => unlockedFor(completed), [completed]);
+  // The piano learner is never offered guitar reading while following (S-2).
+  const instrument = useAppStore((s) => s.instrument);
+  const excluded = useMemo(() => followExcluded(instrument), [instrument]);
+  const unlock = useMemo(() => unlockedFor(completed, excluded), [completed, excluded]);
   const unlocked = useMemo(
     () => (follow ? (item: DrillItem) => isItemUnlocked(unlock, item) : null),
     [follow, unlock],
@@ -94,14 +97,15 @@ export function DrillView() {
     return {
       unlock,
       open: openFamilies(unlock),
-      next: nextUnlock(completed, track),
+      next: nextUnlock(completed, track, excluded),
+      excluded,
       lessonOpening: (family) => lessonOpening(family, track),
       onOpenLesson: (moduleId) => {
         const target = learnTargetOf(moduleId);
         if (target) useAppStore.getState().openLearnTarget(target);
       },
     };
-  }, [follow, unlock, completed, profile]);
+  }, [follow, unlock, completed, profile, excluded]);
   // A learner with Drill history whose pool was empty when the view opened:
   // the runner did not start a session, so the intro (follow form) stands in.
   const [openedWithNothing] = useState(() => introDone && nothingToAsk);

@@ -88,6 +88,8 @@ describe('the guard', () => {
     const v = validatePersistedShape({ settings: { ...partial, followLessons: true } })!;
     expect(v.settings.followLessons).toBe(true);
     expect(v.settings.sound).toBe(true); // the default filled in
+    // "Choose topics myself" survives an older or imported backup too (final review of wave 2).
+    expect(validatePersistedShape({ settings: { ...partial, followLessons: false } })!.settings.followLessons).toBe(false);
   });
 
   it('drops a malformed value and keeps every other setting', () => {
