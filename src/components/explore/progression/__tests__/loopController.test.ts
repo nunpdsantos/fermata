@@ -8,11 +8,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 type Callbacks = { onNotePlay: (i: number) => void; onComplete: () => void };
-const audio = vi.hoisted(() => ({ calls: [] as { cb?: Callbacks }[], cancelled: 0 }));
+const audio = vi.hoisted(() => ({ calls: [] as { cb?: Callbacks; notes?: unknown[] }[], cancelled: 0 }));
 vi.mock('../../../../core/services/audio', async (orig) => ({
   ...(await orig<object>()),
   resumeAudio: () => Promise.resolve(),
-  playTimedNotes: (_n: unknown, _c: unknown, cb?: Callbacks) => { audio.calls.push({ cb }); },
+  playTimedNotes: (n: unknown[], _c: unknown, cb?: Callbacks) => { audio.calls.push({ cb, notes: n }); },
   cancelScheduledAudio: () => {
     audio.cancelled++;
     audio.calls.splice(0).forEach((c) => c.cb?.onComplete());
@@ -56,6 +56,24 @@ describe('while it plays', () => {
     stopLoop('user');
     expect(hasWorkInProgress()).toBe(false);
   });
+  it('each chord in turn is the selected chord and the chip marked as sounding (final review of wave 2)', async () => {
+    startLoop(chords, 90, 4);
+    await flush();
+    const { cb, notes } = audio.calls[0];
+    const shown: (string | null)[] = [];
+    const marked: (number | null)[] = [];
+    for (let i = 0; i < notes!.length; i++) {
+      cb!.onNotePlay(i);
+      const sel = useAppStore.getState().selectedChord;
+      if (shown[shown.length - 1] !== (sel === before ? null : `${sel?.root.natural}${sel?.quality}`)) {
+        shown.push(sel === before ? null : `${sel?.root.natural}${sel?.quality}`);
+        marked.push(useLoopState.getState().index);
+      }
+    }
+    // The count-in leaves the chord alone, then G, D, Em, C, each once, in order.
+    expect(shown).toEqual([null, 'Gmajor', 'Dmajor', 'Eminor', 'Cmajor']);
+    expect(marked).toEqual([null, 0, 1, 2, 3]);
+  });
   it('a new tempo or beats does not stop it', async () => {
     await play();
     useAppStore.getState().setProgression({ chords: useAppStore.getState().progression!.chords, bpm: 120, beats: 2 });
@@ -71,6 +89,9 @@ describe('what stops it', () => {
     ['a new key', () => useAppStore.getState().setKey({ natural: 'A', accidental: '' }), 'changed'],
     ['a new scale', () => useAppStore.getState().setScale('dorian'), 'changed'],
     ['a changed list of chords', () => useAppStore.getState().setProgression({ chords: ['G', 'D'], bpm: 90, beats: 4 }), 'changed'],
+    // Same length, new order (a chip moved; a common progression of the same size) — final review of wave 2.
+    ['the chips reordered', () => useAppStore.getState().setProgression({ chords: ['G', 'Em', 'D', 'C'], bpm: 90, beats: 4 }), 'changed'],
+    ['the list replaced by another of the same length', () => useAppStore.getState().setProgression({ chords: ['C', 'G', 'Am', 'F'], bpm: 90, beats: 4 }), 'changed'],
     ['the page hidden', () => {
       Object.defineProperty(document, 'hidden', { configurable: true, get: () => true });
       document.dispatchEvent(new Event('visibilitychange'));

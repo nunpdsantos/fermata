@@ -13,7 +13,8 @@ import { ProgressionHost } from '../../ProgressionHost';
 import { closeProgressionPanel, isProgressionPanelOpen, resetProgressionPanel } from '../../../../state/progressionPanel';
 import { requestProgression } from '../../../../state/progressionRequest';
 import { setCapoFret, getCapoFret } from '../../../../state/capo';
-import { stopLoop } from '../loopController';
+import { setLoopClock, stopLoop } from '../loopController';
+import { playTimedNotes } from '../../../../core/services/audio';
 
 vi.mock('../../../../core/services/audio', async (orig) => ({
   ...(await orig<Record<string, unknown>>()),
@@ -191,6 +192,37 @@ describe('the journey: G D Em C', () => {
     await waitFor(() => expect(screen.getByTestId('progression-play').textContent).toContain('Stop'));
     fireEvent.click(screen.getByTestId('progression-play'));
     expect(screen.getByTestId('progression-play').textContent).toContain('Loop');
+  });
+  it('the loop plays at the chosen tempo and beats, and a change while it plays reaches the next time round (final review of wave 2)', async () => {
+    const timers: (() => void)[] = [];
+    let now = 0;
+    setLoopClock({ now: () => now, setTimeout: (fn) => { timers.push(fn); return 0 as never; }, clearTimeout: () => {} });
+    try {
+      useAppStore.setState({ progression: { chords: ['G', 'C'], bpm: 120, beats: 2 } });
+      await openPanel();
+      const calls = vi.mocked(playTimedNotes).mock.calls;
+      const first = calls.length;
+      fireEvent.click(screen.getByTestId('progression-play'));
+      await waitFor(() => expect(calls.length).toBe(first + 1));
+      const onsets = (i: number) => [...new Set((calls[i][0] as { at: number }[]).map((n) => Math.round((n.at - (calls[i][0] as { at: number }[])[0].at) * 1000)))];
+      // Count-in of four at 0.5 s (120 a minute), then two beats each of G and C.
+      expect(onsets(first)).toEqual([0, 500, 1000, 1500, 2000, 2500, 3000, 3500]);
+      // The tempo alone: the next time round is at 115 a minute, still two beats a chord.
+      fireEvent.click(screen.getByRole('button', { name: 'Slower' }));
+      expect(useAppStore.getState().progression).toMatchObject({ bpm: 115, beats: 2 });
+      now = 5;
+      timers.shift()!();
+      expect(calls.length).toBe(first + 2);
+      expect(onsets(first + 1)).toEqual(Array.from({ length: 4 }, (_, i) => Math.round(i * 60000 / 115)));
+      // Then the beats alone: four of each chord.
+      fireEvent.click(screen.getByRole('radio', { name: '4' }));
+      now = 10;
+      timers.shift()!();
+      expect(calls.length).toBe(first + 3);
+      expect(onsets(first + 2)).toEqual(Array.from({ length: 8 }, (_, i) => Math.round(i * 60000 / 115)));
+    } finally {
+      setLoopClock();
+    }
   });
   it('Clear empties it (and the save loses the field)', async () => {
     await openPanel();

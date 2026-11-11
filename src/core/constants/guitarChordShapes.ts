@@ -3328,12 +3328,28 @@ export function chordBelowCapo(chord: Chord, capo: number): Chord {
   const root = preferredRootSpelling(rootPc - capo, minor ? 'natural_minor' : 'major');
   const move = (n: Note): Note =>
     spellIntervalAbove(root, letterDistance(chord.root.natural, n.natural) + 1, (getPitchClass(n) - rootPc + 12) % 12);
+  const bassNote = chord.bassNote ? move(chord.bassNote) : undefined;
   return {
     ...chord,
     root,
     notes: chord.notes.map(move),
-    ...(chord.bassNote ? { bassNote: move(chord.bassNote) } : {}),
+    ...(bassNote ? { bassNote } : {}),
+    // A chord the parser built carries its whole name: give it the new root
+    // and bass too ("Am(add9)", capo 3 → "F♯m(add9)", never "F♯Am(add9)").
+    ...(chord.algorithmicDisplayName ? { algorithmicDisplayName: renameRootAndBass(chord, root, bassNote) } : {}),
   };
+}
+
+/** An algorithmic chord's name with `root` (and `bass`) in place of its own. */
+function renameRootAndBass(chord: Chord, root: Note, bass: Note | undefined): string {
+  let s = chord.algorithmicDisplayName ?? '';
+  const oldRoot = noteToString(chord.root);
+  if (s.startsWith(oldRoot)) s = noteToString(root) + s.slice(oldRoot.length);
+  if (chord.bassNote && bass) {
+    const oldBass = `/${noteToString(chord.bassNote)}`;
+    if (s.endsWith(oldBass)) s = `${s.slice(0, -oldBass.length)}/${noteToString(bass)}`;
+  }
+  return s;
 }
 
 /** The bass a learner asks for: a slash chord's bass, else the inversion's lowest tone, else none. */

@@ -47,7 +47,9 @@ export function keyName(scale: Scale, t: T, name: (n: Note) => string = withGlyp
 
 /** "G", "Dm", "Bdim", "G7": the chord symbol the chord cards print. */
 export function chordSymbol(chord: Chord): string {
-  if (chord.algorithmicDisplayName) return withGlyphs(`${noteToString(chord.root)}${chord.algorithmicDisplayName}`);
+  // A chord the parser built ("Am(add9)", "Cm(add9)/G") carries its whole
+  // name, root and bass included (final review of wave 2: "AAm(add9)").
+  if (chord.algorithmicDisplayName) return withGlyphs(chord.algorithmicDisplayName);
   const base = `${noteToString(chord.root)}${CHORD_SYMBOLS[chord.quality] ?? ''}`;
   return withGlyphs(chord.bassNote ? `${base}/${noteToString(chord.bassNote)}` : base);
 }

@@ -6,7 +6,7 @@ import {
   addChord, capoIdeas, capoShapes, keyChords, keyLine, moveBy, moveChord, panelKeyFor, presetViews, readChords, readableSymbols,
   relativeKey, removeChord, sheetRoots, symbolFor,
 } from '../progressionModel';
-import { fitSentence, keyLineSentences, keyLabel } from '../progressionText';
+import { chordName, fitSentence, keyLineSentences, keyLabel } from '../progressionText';
 import { MAX_PROGRESSION_CHORDS } from '../../../../state/progressionSave';
 
 const n = (s: string): Note => ({ natural: s[0] as Note['natural'], accidental: s.slice(1) as Note['accidental'] });
@@ -91,6 +91,34 @@ describe('moving by half steps keeps the numbers and spells for the new key', ()
     expect(panelKeyFor(r.root, 'dorian').key).toEqual(r.key);
     expect(r.key.mode).toBe('major');
     expect(names(readChords(r.symbols)).length).toBe(2);
+    // Exactly: the chords move with their numbers in the parent key (i and IV of D Dorian).
+    expect(r).toEqual({ root: n('Eb'), key: major('Db'), symbols: ['Ebm', 'Ab'] });
+    expect(moveBy(n('D'), 'dorian', ['Dm', 'G', 'C', 'Bb'], -1)).toEqual({ root: n('C#'), key: major('B'), symbols: ['C#m', 'F#', 'B', 'A'] });
+  });
+});
+
+describe('final review of wave 2: the key line\'s guards', () => {
+  const t = tFor('en');
+  it('a tie is named from either key of the pair (F G in A minor: A minor and C major)', () => {
+    const chords = readChords(['F', 'G']);
+    const line = keyLine(chords, minor('A'))!;
+    expect(line.current.keys).toEqual([minor('A'), major('C')]);
+    expect(fitSentence(line.current, chords, t, 'en')).toBe('Both chords fit A minor and C major.');
+  });
+  it('a key that fits more different chords but fewer chips is not offered as better (C C C F♯ D♭ in C major)', () => {
+    const chords = readChords(['C', 'C', 'C', 'F#', 'Db']);
+    const line = keyLine(chords, major('C'))!;
+    expect(line.current.fit).toBe(3);
+    expect(line.better).toBeNull();
+  });
+});
+
+describe('final review of wave 2: a chord the parser builds is named once', () => {
+  it('chips, lists and capo shapes never double the root (Am(add9), G7♭9♯11, Cm(add9)/G)', () => {
+    const cs = readChords(['Am(add9)', 'G7b9#11', 'Dm9b5', 'Cm(add9)/G']);
+    expect(cs.map(chordName)).toEqual(['Am(add9)', 'G7♭9♯11', 'Dm9♭5', 'Cm(add9)/G']);
+    // Capo 3: the shapes three half steps lower, named the same way.
+    expect(capoShapes(cs, major('C'), 3).map(chordName)).toEqual(['F♯m(add9)', 'E7♭9♯11', 'Bm9♭5', 'Am(add9)/E']);
   });
 });
 
