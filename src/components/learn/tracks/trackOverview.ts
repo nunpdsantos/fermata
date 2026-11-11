@@ -61,3 +61,23 @@ export function overviewTracks(profile: LearnerProfile | null, indexed: Readonly
   if (own && listed.includes(own)) return { startHere: own, others: listed.filter((t) => t !== own), place: 'top' };
   return { startHere: null, others: listed, place: 'below' };
 }
+
+/**
+ * Where Learn's Continue banner goes for a learner who came in by a track's
+ * door (the seat's decision S-1, final review of wave 2): while their own
+ * track ('new' → sound, 'player' → chords) has a lesson not done, the first
+ * such lesson, in track order. null — the track finished, no profile (the
+ * owner) or 'theory' — means Continue is exactly what it was: the levels'
+ * next module (`findNextModuleEntry`). Static data only, no level download.
+ */
+export function trackContinue(
+  profile: LearnerProfile | null,
+  completed: readonly string[],
+  indexed: ReadonlySet<string> = INDEXED,
+): { track: TrackInfo; moduleId: string; lesson: number } | null {
+  const own = trackForProfile(profile);
+  if (!own || !isTrackListed(own, indexed)) return null;
+  const next = trackProgress(own, completed, indexed).next;
+  return next ? { track: own, moduleId: next, lesson: own.moduleIds.indexOf(next) + 1 } : null;
+}
+

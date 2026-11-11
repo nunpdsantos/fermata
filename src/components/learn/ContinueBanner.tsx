@@ -9,9 +9,11 @@ interface ContinueBannerProps {
   unit: CurriculumUnit;
   level: CurriculumLevel;
   onClick: () => void;
+  /** The line under the title in place of "Level n · unit · subtitle" (a track lesson names no level). */
+  context?: string;
 }
 
-export function ContinueBanner({ module, unit, level, onClick }: ContinueBannerProps) {
+export function ContinueBanner({ module, unit, level, onClick, context }: ContinueBannerProps) {
   const { t } = useTranslation();
   const accent = level.accentColor;
 
@@ -45,7 +47,7 @@ export function ContinueBanner({ module, unit, level, onClick }: ContinueBannerP
           <p className="text-xs mt-0.5" style={{ color: 'var(--text-dim)' }}>
             {/* unit.title is empty when the banner was built from the static
                 index because the level could not load (offline, W9-19). */}
-            {[t('learn.level', { n: level.number }), unit.title, module.subtitle].filter(Boolean).join(' \u00b7 ')}
+            {context ?? [t('learn.level', { n: level.number }), unit.title, module.subtitle].filter(Boolean).join(' \u00b7 ')}
           </p>
         </div>
         <svg
