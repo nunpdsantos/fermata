@@ -80,7 +80,9 @@ export async function recordVoice(page: Page): Promise<boolean> {
   const res = await page.request.get('/src/core/services/audio.ts');
   if (!res.ok() || !(res.headers()['content-type'] ?? '').includes('javascript')) return false;
   await page.evaluate(async () => {
-    const audio = await import(/* @vite-ignore */ '/src/core/services/audio.ts');
+    const audio = (await import(/* @vite-ignore */ '/src/core/services/audio.ts' as string)) as {
+      setInstrumentVoice: (voice: unknown) => void;
+    };
     const w = window as unknown as { __voice: { op: string; midi: number; delayMs: number }[]; __midiSentAt?: number };
     w.__voice = [];
     const rec = (op: string, midi: number) => w.__voice.push({ op, midi, delayMs: performance.now() - (w.__midiSentAt ?? performance.now()) });
