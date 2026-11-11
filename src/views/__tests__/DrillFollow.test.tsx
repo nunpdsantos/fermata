@@ -149,21 +149,25 @@ describe('a new learner after lessons', () => {
   });
 
   it('a Level 2 lesson (l2u7m3) opens the whole triad family, and the families before it', () => {
-    // On the guitar, reading is among them (on the piano it is not: S-2, below).
+    // On the guitar too, reading is NOT among them: since wave 3 it opens with
+    // its own lesson, the guitar-notation unit's first (l1u33m1); on the piano
+    // never (S-2, below).
     useAppStore.setState({ instrument: 'guitar' });
     seedLessons(['l2u7m3']);
     useDrillStore.getState().updateSettings({ newPerSession: 8, length: 40 });
     render(<DrillView />);
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Start' })));
     const families = new Set(useDrillStore.getState().activeSession!.queue.map((id) => BY_ID.get(id)!.family));
-    expect([...families].every((f) => ['triad', 'read', 'interval', 'keysig', 'circle', 'degree', 'scale'].includes(f))).toBe(true);
+    expect([...families].every((f) => ['triad', 'interval', 'keysig', 'circle', 'degree', 'scale'].includes(f))).toBe(true);
     expect(families.has('triad')).toBe(true);
     // Whole: the summary lists Triads with no "So far", and the map gives it no caption.
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Drill settings' })));
     expect(within(screen.getByTestId('drill-follow-summary')).getByText(/^Triads/).textContent).toBe('Triads');
     act(() => fireEvent.click(screen.getByRole('button', { name: /Mastery map/ })));
-    expect(document.querySelectorAll('[data-follow-caption]').length).toBe(3); // seventh, roman, function: locked
+    expect(document.querySelectorAll('[data-follow-caption]').length).toBe(4); // read, seventh, roman, function: locked
     expect(screen.getByText('Unlocks with “Seventh Chords: The Five Qualities”')).toBeDefined();
+    expect(screen.getByText('Unlocks with “Guitar Notation: Clef and Strings”')).toBeDefined();
+    expect(document.querySelector('[data-follow-lesson="l1u33m1"]')).not.toBeNull();
   });
 
   it('the lessons are re-read when the page is shown again', () => {
@@ -206,7 +210,7 @@ describe('the seat\'s decision S-2: no guitar reading for a piano learner while 
   const families = () => new Set(useDrillStore.getState().activeSession!.queue.map((id) => BY_ID.get(id)!.family));
   beforeEach(() => {
     useAppStore.setState({ learnerProfile: 'new' });
-    seedLessons(['l1u1m1', 'l2u7m3']); // The Staff and Clefs (reading's lesson), then a Level 2 lesson
+    seedLessons(['l1u33m1', 'l2u7m3']); // Guitar Notation: Clef and Strings (reading's lesson since wave 3), then a Level 2 lesson
     useDrillStore.getState().updateSettings({ newPerSession: 8, length: 40 });
   });
   afterEach(() => useAppStore.setState({ instrument: 'piano' }));
@@ -223,10 +227,10 @@ describe('the seat\'s decision S-2: no guitar reading for a piano learner while 
     expect(screen.getByTestId('drill-follow-next').textContent).not.toMatch(/Reading/);
     act(() => fireEvent.click(screen.getByRole('button', { name: /Mastery map/ })));
     expect(screen.getByText('Unlocks only with the guitar as your instrument')).toBeDefined();
-    expect(document.querySelector('[data-follow-lesson="l1u1m1"]')).toBeNull();
+    expect(document.querySelector('[data-follow-lesson="l1u33m1"]')).toBeNull();
   });
 
-  it('guitar: as before (reading opens with its lesson)', () => {
+  it('guitar: reading opens with its lesson (l1u33m1)', () => {
     useAppStore.setState({ instrument: 'guitar' });
     render(<DrillView />);
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Start' })));
@@ -234,6 +238,19 @@ describe('the seat\'s decision S-2: no guitar reading for a piano learner while 
     expect(screen.getByTestId('drill-follow-summary').querySelector('[data-family="read"]')).not.toBeNull();
     act(() => fireEvent.click(screen.getByRole('button', { name: /Mastery map/ })));
     expect(screen.queryByText('Unlocks only with the guitar as your instrument')).toBeNull();
+  });
+
+  it('guitar, The Staff and Clefs done but not the guitar-notation lesson: no reading yet, and the map names l1u33m1 (wave 3)', () => {
+    useAppStore.setState({ instrument: 'guitar' });
+    seedLessons(['l1u1m1', 'l2u7m3']);
+    render(<DrillView />);
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Start' })));
+    expect(families().has('read')).toBe(false);
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Drill settings' })));
+    expect(screen.getByTestId('drill-follow-summary').querySelector('[data-family="read"]')).toBeNull();
+    act(() => fireEvent.click(screen.getByRole('button', { name: /Mastery map/ })));
+    expect(screen.getByText('Unlocks with “Guitar Notation: Clef and Strings”')).toBeDefined();
+    expect(document.querySelector('[data-follow-lesson="l1u1m1"]')).toBeNull();
   });
 
   it('piano, the switch off: today\'s Drill (reading among the topics, by its chip)', () => {
@@ -255,8 +272,8 @@ describe('the seat\'s decision S-2: no guitar reading for a piano learner while 
       n = nextUnlock(done, TRACKS.sound, followExcluded('piano'));
     }
     expect(all).not.toContain('read');
-    expect(nextUnlock(['l1u34m4', 'l1u34m5'], TRACKS.sound, followExcluded('guitar'))).toEqual({ moduleId: 'l1u1m1', families: ['read'] });
-    expect(nextUnlock(['l1u34m4', 'l1u34m5'], TRACKS.sound, followExcluded('piano'))!.families).not.toContain('read');
+    expect(nextUnlock(['l1u34m4', 'l1u34m5', 'l1u3m3'], TRACKS.sound, followExcluded('guitar'))).toEqual({ moduleId: 'l1u33m1', families: ['read'] });
+    expect(nextUnlock(['l1u34m4', 'l1u34m5', 'l1u3m3'], TRACKS.sound, followExcluded('piano'))!.families).not.toContain('read');
   });
 });
 

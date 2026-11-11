@@ -14,6 +14,7 @@ import { TRACKS, TRACK_IDS } from '../tracks';
 import { DRILL_FAMILY_TO_MODULE } from '../drillFamilyToModule';
 import {
   TRACK_UNLOCKS,
+  FOLLOW_OPENS,
   LEVEL_COURSE_ORDER,
   unlockedFor,
   isItemUnlocked,
@@ -92,9 +93,9 @@ describe('unlockedFor', () => {
     expect(openFamilies(unlockedFor(['l1u34m5']))).toEqual([{ family: 'triad', whole: false }]);
   });
 
-  it('a level lesson opens its family whole, and every family whose lesson comes earlier', () => {
+  it('a level lesson opens its family whole, and every family whose lesson comes earlier (not guitar reading: its own lesson)', () => {
     const unlock = unlockedFor(['l2u7m3']); // The Four Triad Types
-    expect([...unlock.whole].sort()).toEqual(['circle', 'degree', 'interval', 'keysig', 'read', 'scale', 'triad']);
+    expect([...unlock.whole].sort()).toEqual(['circle', 'degree', 'interval', 'keysig', 'scale', 'triad']);
     const triads = BANK.filter((i) => i.family === 'triad');
     expect(admitted(['l2u7m3']).filter((i) => i.family === 'triad')).toEqual(triads);
     expect(admitted(['l2u7m3']).some((i) => i.family === 'seventh' || i.family === 'roman' || i.family === 'function')).toBe(false);
@@ -110,6 +111,21 @@ describe('unlockedFor', () => {
     const unlock = unlockedFor(['l1u34m5', 'l2u7m3']);
     expect(unlock.rows.some((r) => r.family === 'triad')).toBe(false);
     expect(unlock.whole.has('triad')).toBe(true);
+  });
+
+  it('guitar reading opens whole with the guitar-notation unit\'s first lesson (l1u33m1), and with nothing else (wave 3 integration)', () => {
+    expect(FOLLOW_OPENS).toEqual({ read: 'l1u33m1' });
+    expect([...unlockedFor(['l1u33m1']).whole]).toEqual(['read']);
+    expect(admitted(['l1u33m1'])).toEqual(BANK.filter((i) => i.family === 'read'));
+    // Not with The Staff and Clefs (its Drill link's lesson, no guitar in it), nor any later lesson, nor the unit's other lessons.
+    for (const done of [['l1u1m1'], ['l8u27m5'], ['l1u33m2', 'l1u33m3'], LEVEL_COURSE_ORDER]) {
+      expect(unlockedFor(done).whole.has('read'), done.join(',').slice(0, 40)).toBe(false);
+    }
+    // A piano learner (S-2): never, not even with that lesson done.
+    expect(unlockedFor(['l1u33m1'], new Set(['read'])).whole.has('read')).toBe(false);
+    expect(lessonOpening('read', null)).toBe('l1u33m1');
+    expect(lessonOpening('read', TRACKS.sound)).toBe('l1u33m1');
+    expect(lessonIdsNamed()).toContain('l1u33m1');
   });
 
   it('everything completed: the whole bank', () => {
@@ -131,7 +147,8 @@ describe('what comes next, and where a lesson lives', () => {
   it('the sound track: scales with l1u34m4, then triads with l1u34m5, then the levels', () => {
     expect(nextUnlock([], TRACKS.sound)).toEqual({ moduleId: 'l1u34m4', families: ['scale'] });
     expect(nextUnlock(['l1u34m4'], TRACKS.sound)).toEqual({ moduleId: 'l1u34m5', families: ['triad'] });
-    expect(nextUnlock(['l1u34m4', 'l1u34m5'], TRACKS.sound)).toEqual({ moduleId: 'l1u1m1', families: ['read'] });
+    expect(nextUnlock(['l1u34m4', 'l1u34m5'], TRACKS.sound)).toEqual({ moduleId: 'l1u3m3', families: ['interval'] });
+    expect(nextUnlock(['l1u34m4', 'l1u34m5', 'l1u3m3'], TRACKS.sound)).toEqual({ moduleId: 'l1u33m1', families: ['read'] });
   });
 
   it('the chords track: Roman numerals with l1u35m2; m3 widens them', () => {
@@ -143,14 +160,17 @@ describe('what comes next, and where a lesson lives', () => {
     // Sound track done (scale and triad part-open), then Level 1 and the first
     // Level 2 lessons: the next lesson named is the one that opens every
     // scale, not one further on.
-    const done = ['l1u34m4', 'l1u34m5', 'l1u1m1', 'l1u3m3', 'l2u4m1', 'l2u4m2'];
+    const done = ['l1u34m4', 'l1u34m5', 'l1u33m1', 'l1u3m3', 'l2u4m1', 'l2u4m2'];
     expect(nextUnlock(done, TRACKS.sound)).toEqual({ moduleId: 'l2u5m1', families: ['scale'] });
     expect(nextUnlock([...done, 'l2u5m1'], TRACKS.sound)?.families).toContain('triad');
   });
 
   it('no track: the first level lesson that opens a family', () => {
-    expect(nextUnlock([], null)).toEqual({ moduleId: 'l1u1m1', families: ['read'] });
+    expect(nextUnlock([], null)).toEqual({ moduleId: 'l1u3m3', families: ['interval'] });
     expect(nextUnlock(['l1u1m1'], null)).toEqual({ moduleId: 'l1u3m3', families: ['interval'] });
+    // Guitar reading comes with the guitar-notation unit, in course-index order (after Level 1's l1u3m3).
+    expect(nextUnlock(['l1u3m3'], null)).toEqual({ moduleId: 'l1u33m1', families: ['read'] });
+    expect(nextUnlock(['l1u3m3'], null, new Set(['read']))).toEqual({ moduleId: 'l2u4m1', families: ['keysig', 'circle'] });
   });
 
   it('the lesson that opens a family: the track\'s first, else the level lesson', () => {
