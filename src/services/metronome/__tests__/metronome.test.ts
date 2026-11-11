@@ -17,7 +17,7 @@ import { readChords } from '../../../components/explore/progression/progressionM
 import { resetProgressionPanel, openProgressionPanel } from '../../../state/progressionPanel';
 import type { LoopTimer } from '../clock';
 import { AHEAD_S, LOOP_MS, START_LEAD_S } from '../clock';
-import { CLICK_S, _resetClicksForTesting, pendingClicks, prepareClicks, ACCENT_MIDI, BEAT_MIDI } from '../clickVoice';
+import { ACCENT_VELOCITY, BEAT_VELOCITY, CLICK_S, METRONOME_LEVEL, _resetClicksForTesting, pendingClicks, prepareClicks, ACCENT_MIDI, BEAT_MIDI } from '../clickVoice';
 import {
   isMetronomeRunning, metronomeSettings, queuedClicks, setMetronomeBeats, setMetronomeClock, setMetronomeTempo,
   startMetronome, stopMetronome, useMetronome,
@@ -25,20 +25,29 @@ import {
 
 // ─── A fake Web Audio: one shared clock, every scheduled source recorded per context ───
 const clock = { t: 100 };
-interface Src { ctx: number; kind: 'buffer' | 'osc'; rate: number; freq: number; starts: number[]; stops: number[]; onended: (() => void) | null }
+interface Src { ctx: number; kind: 'buffer' | 'osc'; rate: number; freq: number; starts: number[]; stops: number[]; onended: (() => void) | null; to: unknown[] }
 const made: Src[] = [];
 let ctxCount = 0;
+/** Every context made, so a test can reach its destination (the speakers). */
+const contexts: FakeAudioContext[] = [];
+type Param = ReturnType<typeof param>;
+/** A gain node of the fake: its gain, and what it was connected to. */
+interface FakeGain { gain: Param; to: unknown[]; connect: (t: unknown) => void; disconnect: () => void }
 const param = () => ({ value: 1, setValueAtTime: vi.fn(), setTargetAtTime: vi.fn(), linearRampToValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn(), cancelScheduledValues: vi.fn() });
 class FakeAudioContext {
   id = ++ctxCount;
   state = 'running';
   sampleRate = 8000;
   destination = {};
+  constructor() { contexts.push(this); }
   get currentTime() { return clock.t; }
   resume = vi.fn(async () => {});
-  createGain() { return { gain: param(), connect: vi.fn(), disconnect: vi.fn() }; }
+  createGain(): FakeGain {
+    const g: FakeGain = { gain: param(), to: [], connect: (t: unknown) => { g.to.push(t); }, disconnect: vi.fn() };
+    return g;
+  }
   private source(kind: Src['kind']) {
-    const s: Src = { ctx: this.id, kind, rate: 1, freq: 0, starts: [], stops: [], onended: null };
+    const s: Src = { ctx: this.id, kind, rate: 1, freq: 0, starts: [], stops: [], onended: null, to: [] };
     made.push(s);
     const node = {
       buffer: null as unknown,
@@ -46,7 +55,7 @@ class FakeAudioContext {
       frequency: { ...param(), get value() { return s.freq; }, set value(v: number) { s.freq = v; } },
       detune: param(),
       type: 'sine',
-      connect: vi.fn(),
+      connect: (t: unknown) => { s.to.push(t); },
       disconnect: vi.fn(),
       start: (t = 0) => { s.starts.push(t); },
       stop: (t = 0) => { s.stops.push(t); },
@@ -134,6 +143,29 @@ describe('the clicks on the audio seam', () => {
     expect(queuedClicks()).toBeGreaterThan(0);
   });
 
+  it('every click reaches the speakers through the metronome\'s own level (0.8), the first beat louder', () => {
+    startMetronome();
+    advance(1.3);
+    const ctx = contexts.find((c) => c.id === metroCtx)!;
+    const s = metroSources();
+    expect(s.length).toBeGreaterThan(1);
+    // The level is a fixed number, not read back from the code under test.
+    expect(METRONOME_LEVEL).toBe(0.8);
+    s.forEach((src, i) => {
+      // source → its own gain (the click's velocity) → the metronome's level → the destination.
+      expect(src.to).toHaveLength(1);
+      const click = src.to[0] as FakeGain;
+      expect(click.to).toHaveLength(1);
+      const level = click.to[0] as FakeGain;
+      expect(level.gain.value).toBe(0.8);
+      expect(level.to).toEqual([ctx.destination]);
+      // The sample path sets the click's gain to its velocity at its start: 1 on the first beat, 0.7 on the others.
+      const velocity = i % 4 === 0 ? 1 : 0.7;
+      expect(click.gain.setValueAtTime).toHaveBeenCalledWith(velocity, src.starts[0]);
+    });
+    expect([ACCENT_VELOCITY, BEAT_VELOCITY]).toEqual([1, 0.7]);
+  });
+
   it('without the samples (offline, never cached) a synthesized click of the same pitch sounds', async () => {
     _resetClicksForTesting();
     vi.stubGlobal('fetch', vi.fn(async () => { throw new Error('offline'); }));
@@ -146,6 +178,30 @@ describe('the clicks on the audio seam', () => {
     expect(s.every((x) => x.kind === 'osc')).toBe(true);
     expect(s[0].freq).toBeCloseTo(783.99, 1);
     expect(s[1].freq).toBeCloseTo(523.25, 1);
+  });
+
+  it('opened offline, then online: the next ▶ fetches the samples again and the clicks are the piano\'s', async () => {
+    _resetClicksForTesting();
+    const offline = vi.fn(async () => { throw new Error('offline'); });
+    vi.stubGlobal('fetch', offline);
+    await prepareClicks();
+    expect(offline).toHaveBeenCalledTimes(2);
+    const ctx = ctxCount;
+    const online = vi.fn(async () => ({ ok: true, arrayBuffer: async () => new ArrayBuffer(8) }));
+    vi.stubGlobal('fetch', online);
+    startMetronome(); // ▶ asks for the samples again
+    await vi.waitFor(() => expect(online).toHaveBeenCalledTimes(2));
+    await prepareClicks(); // the load ▶ started has finished
+    stopMetronome('user');
+    const from = made.length;
+    startMetronome();
+    advance(0.8);
+    const after = made.slice(from).filter((x) => x.ctx === ctx);
+    expect(after.length).toBeGreaterThan(0);
+    expect(after.every((x) => x.kind === 'buffer')).toBe(true);
+    // Once both are in, nothing is fetched again.
+    startMetronome();
+    expect(online).toHaveBeenCalledTimes(2);
   });
 });
 

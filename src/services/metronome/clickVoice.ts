@@ -10,12 +10,13 @@
  * first, and which cancel every one-shot the instrument voices and the synth
  * hold — never reach these clicks, and nothing about how other playback is
  * cancelled changes. Only the metronome takes its clicks back
- * (`cancel`, `cancelAll`).
+ * (`clickSink.cancel`, called by the clock on ■ and on a tempo or bar change).
  *
  * The piano's own C5 and F♯5 samples (G5 = F♯5 a half step up, as the
  * sampler plays it) are fetched when the bar opens (~120 kB, through the
  * service worker's sample cache); until they are decoded, or offline before
  * they were ever cached, a short synthesized click of the same pitch sounds.
+ * A load that left a sample missing is tried again on the next open or ▶.
  */
 import { resolveSample } from '../pianoSampler';
 import type { ClickSink } from './clock';
@@ -68,7 +69,12 @@ export function clickAudioAvailable(): boolean {
   return typeof window !== 'undefined' && !!(window.AudioContext ?? (window as typeof window & { webkitAudioContext?: unknown }).webkitAudioContext);
 }
 
-/** Fetch and decode the two samples once (the bar calls it when it opens). Never throws. */
+/**
+ * Fetch and decode the two samples (the bar calls it when it opens, ▶ too).
+ * Once both are in, or while a load is under way, it does nothing more; a
+ * load that left one missing (offline) is forgotten, so the next call tries
+ * again. Never throws.
+ */
 export function prepareClicks(): Promise<void> {
   if (loading) return loading;
   const c = context();
@@ -85,7 +91,9 @@ export function prepareClicks(): Promise<void> {
         // Offline before the samples were cached: the synthesized click covers it.
       }
     }),
-  ).then(() => undefined);
+  ).then(() => {
+    if (!buffers.has(ACCENT_MIDI) || !buffers.has(BEAT_MIDI)) loading = null;
+  });
   return loading;
 }
 

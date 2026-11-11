@@ -7,7 +7,7 @@ import { Menu } from '../ui/Menu.tsx';
 import { toast } from '../../state/toastStore.ts';
 import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { usePwaUpdateStore, applyUpdateOrReload } from '../../hooks/usePWA.ts';
-import { requestDemo } from '../../state/demoRequest.ts';
+import { requestDemo, useDemoRequest } from '../../state/demoRequest.ts';
 import { resumeAudio } from '../../core/services/audio.ts';
 
 // Settings is a lazy chunk (wave 2 integration, for the entry file's budget):
@@ -109,6 +109,9 @@ export function TopBar() {
     document.querySelector<HTMLElement>('[data-testid="metronome-play"]')?.focus({ preventScroll: true });
   };
   const [closeMetronome] = useState(() => () => setMetronomeOpen(false));
+  // Where its bar is never shown (Drill, the tour playing) the menu does not offer it.
+  const tourPlaying = useDemoRequest() !== null;
+  const offerMetronome = view !== 'drill' && !tourPlaying;
   // Below 360 px the three tabs need the room: search moves into the menu.
   const narrow = useMediaQuery('(max-width: 359px)');
   const updateReady = usePwaUpdateStore((s) => s.needRefresh);
@@ -171,7 +174,7 @@ export function TopBar() {
             ...(narrow ? [{ id: 'search', label: t('nav.search'), onSelect: openSearch }] : []),
             { id: 'settings', label: t('settings.title'), onSelect: openSettings },
             { id: 'show-me', label: t('showMe.menuItem'), onSelect: showMeAround },
-            { id: 'metronome', label: t('metronomeToolEntry.menuItem'), onSelect: openMetronome },
+            ...(offerMetronome ? [{ id: 'metronome', label: t('metronomeToolEntry.menuItem'), onSelect: openMetronome }] : []),
             // A waiting update stays one tap away after "Later" (until the reload).
             ...(updateReady ? [{ id: 'update', label: t('pwa.updateReady'), onSelect: () => void applyUpdateOrReload() }] : []),
           ]}

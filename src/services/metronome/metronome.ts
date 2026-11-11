@@ -23,7 +23,7 @@ import { DEFAULT_METRONOME, isBeatsInBar, type BeatsInBar, type SavedMetronome }
 import { registerWorkInProgress } from '../workInProgress';
 import { isLooping, stopLoop, useLoopState } from '../../components/explore/progression/loopController';
 import { MetronomeClock, clampTempo, type ClickSink, type LoopTimer } from './clock';
-import { clickSink, pendingClicks, resumeClicks } from './clickVoice';
+import { clickSink, pendingClicks, prepareClicks, resumeClicks } from './clickVoice';
 
 export type MetronomeStop = 'user' | 'closed' | 'hidden' | 'loop' | 'drill' | 'tour';
 
@@ -78,6 +78,8 @@ function write(next: Partial<SavedMetronome>): SavedMetronome {
 /** ▶ — called inside the learner's tap (the audio clock resumes there). */
 export function startMetronome(): void {
   void resumeClicks();
+  // The samples, if a load while offline left them missing (the synthesized click covers it meanwhile).
+  void prepareClicks();
   if (isLooping()) stopLoop('user');
   const { bpm, beats } = metronomeSettings();
   clock.start(bpm, beats);
@@ -91,13 +93,18 @@ export function startMetronome(): void {
   unwatchBeat = () => clearInterval(id);
 }
 
-/** ■ and everything else that stops it: nothing stays queued. */
+/**
+ * ■ and everything else that stops it: nothing stays queued. Closing the bar
+ * (✕) also forgets why it last stopped, so the loop's line is not shown again
+ * when the bar is opened later.
+ */
 export function stopMetronome(reason: MetronomeStop = 'user'): void {
   unwatchBeat?.();
   unwatchBeat = null;
   const was = clock.running;
   clock.stop();
-  if (was || useMetronome.getState().running) useMetronome.setState({ running: false, beat: null, lastStop: reason });
+  if (was || useMetronome.getState().running) useMetronome.setState({ running: false, beat: null, lastStop: reason === 'closed' ? null : reason });
+  else if (reason === 'closed' && useMetronome.getState().lastStop !== null) useMetronome.setState({ lastStop: null });
 }
 
 /** − / + / typed / tapped: from the next beat (also while it runs). */

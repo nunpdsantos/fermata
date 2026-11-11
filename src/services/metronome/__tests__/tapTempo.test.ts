@@ -89,6 +89,11 @@ describe('a long pause', () => {
   it('a clock that went backwards starts a new count', () => {
     expect(readings([1000, 500, 1000])).toEqual([null, null, 120]);
   });
+  it('a tap at the same moment as the last (a doubled event) starts a new count, never a 0 ms gap', () => {
+    // A 0 ms gap would read 60000 / 0 = Infinity, held at 240.
+    expect(readings([1000, 1000])).toEqual([null, null]);
+    expect(readings([0, 500, 1000, 1000, 1500])).toEqual([null, 120, 120, null, 120]);
+  });
   it('reset forgets the taps', () => {
     const t = new TapTempo();
     t.tap(0);

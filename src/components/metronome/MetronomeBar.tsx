@@ -24,6 +24,8 @@ const REDUCED_MOTION = '(prefers-reduced-motion: reduce)';
 const BAR_MAX_WIDTH = 720;
 /** Below this the bar takes the window's width (less the gutters), as the tour's does on a phone. */
 const PHONE_QUERY = '(max-width: 639px)';
+/** From this width the visible labels show (metronome.css hides them below 900 px). */
+const LABELS_QUERY = '(min-width: 900px)';
 
 const svg = (d: React.ReactNode) => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{d}</svg>
@@ -152,6 +154,7 @@ export function MetronomeBar({ onClose }: { onClose: () => void }) {
   const looping = useLoopState((s) => s.playing);
   const reduce = useMediaQuery(REDUCED_MOTION);
   const phone = useMediaQuery(PHONE_QUERY);
+  const labels = useMediaQuery(LABELS_QUERY);
   const barRef = useRef<HTMLElement>(null);
   const playRef = useRef<HTMLButtonElement>(null);
   const tapper = useRef(new TapTempo());
@@ -245,7 +248,8 @@ export function MetronomeBar({ onClose }: { onClose: () => void }) {
                 ))}
               </span>
               <div className="metro-group" role="group" aria-label={t('metronomeTool.tempo')}>
-                <span className="metro-label"><Term id="tempo">{t('metronomeTool.tempo')}</Term></span>
+                {/* The word is a glossary button only where it shows: a hidden one would be an invisible Tab stop (the group's name says "Tempo" anyway). */}
+                {labels && <span className="metro-label"><Term id="tempo">{t('metronomeTool.tempo')}</Term></span>}
                 <IconButton variant="secondary" aria-label={t('metronomeTool.slower')} icon="−" disabled={bpm <= MIN_TEMPO} onClick={() => setMetronomeTempo(bpm - 1)} data-testid="metronome-slower" />
                 <TempoInput bpm={bpm} label={t('metronomeTool.tempoInput')} />
                 <IconButton variant="secondary" aria-label={t('metronomeTool.faster')} icon="+" disabled={bpm >= MAX_TEMPO} onClick={() => setMetronomeTempo(bpm + 1)} data-testid="metronome-faster" />

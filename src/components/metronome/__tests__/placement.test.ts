@@ -75,6 +75,26 @@ describe('placeMetronome', () => {
     expect(p.compact).toBe(true);
   });
 
+  it('answers that reach under the instrument: the place above them is passed over when it would cover the instrument', () => {
+    // A low bar (20 px). The answers' upper row (440–475) covers the place above the instrument (472–492); their
+    // lower row starts below the floor, so "just above it" (480–500, clear of both rows) would end past
+    // floor − GAP = 492, on the instrument: only the floor rule turns it down.
+    const upper = { top: 440, bottom: 475, left: 0, right: 390 };
+    const lower = { top: 508, bottom: 700, left: 0, right: 390 };
+    const p = placeMetronome(phone({ floor: 500, fullHeight: 20, hard: [upper, lower] }));
+    expect(p.top + 20).toBeLessThanOrEqual(500 - GAP);
+    expect(p).toEqual({ top: 440 - GAP - 20, left: GUTTER, compact: false });
+  });
+
+  it('never off the window\'s left edge, even for a bar wider than the window less a gutter', () => {
+    // 290 px in a 300 px window: the right-edge place would be at −2. A detail at the right edge makes it the
+    // place that covers least, so only the left ≥ 0 rule keeps it out.
+    const detail = { top: 0, bottom: 900, left: 289, right: 300 };
+    const p = placeMetronome({ viewport: { width: 300, height: 900 }, topBarBottom: 52, floor: 640, fullWidth: 290, fullHeight: 46, compactWidth: 200, compactHeight: 46, soft: [detail] });
+    expect(p.left).toBeGreaterThanOrEqual(0);
+    expect(p.left).toBe(5);
+  });
+
   it('no room at all: compact, as low as it can go, never above the top bar', () => {
     const p = placeMetronome(phone({ floor: 90 }));
     expect(p).toEqual({ top: 60 + GAP, left: GUTTER, compact: true });

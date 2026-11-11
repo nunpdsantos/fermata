@@ -28,9 +28,15 @@ function setup(startAt = 12.345) {
   return { sink, timer, clock };
 }
 
-/** Run until `n` clicks have been handed (and not taken back). */
+/**
+ * Run until `n` clicks have been handed (and not taken back), or 300 s of
+ * audio clock have gone by (64 clicks at 30 beats a minute take 128 s): a
+ * clock that stops queueing ends the run with a short list, which the
+ * callers' length checks then fail on, instead of spinning.
+ */
 function runUntil(sink: FakeSink, timer: FakeTimer, n: number) {
-  for (let guard = 0; sink.sounding().length < n && guard < 1e6; guard++) timer.run(LOOP_MS / 1000);
+  const end = sink.t + 300;
+  while (sink.sounding().length < n && sink.t < end) timer.run(LOOP_MS / 1000);
 }
 
 describe('the first 64 clicks', () => {
@@ -73,6 +79,7 @@ describe('a tempo change mid-bar', () => {
       expect(Math.abs(after[0].at - (lastOld + 60 / to))).toBeLessThan(TENTH_MS);
       runUntil(sink, timer, 20);
       const later = sink.sounding().filter((c) => c.at > lastOld + 1e-9).slice(0, 10);
+      expect(later).toHaveLength(10);
       later.forEach((c, i) => expect(Math.abs(c.at - (lastOld + ((i + 1) * 60) / to))).toBeLessThan(TENTH_MS));
       // The bar goes on counting: the 8th click is beat 4, the 9th the next bar's first.
       expect(later.map((c) => c.accent).slice(0, 6)).toEqual([false, true, false, false, false, true]);
@@ -123,6 +130,7 @@ describe('a change of the beats in a bar', () => {
     clock.setBeats(3);
     runUntil(sink, timer, 12);
     const s = sink.sounding();
+    expect(s.length).toBeGreaterThanOrEqual(12);
     s.forEach((c, i) => expect(Math.abs(c.at - (t0 + i * 0.5))).toBeLessThan(TENTH_MS));
     // 1 2 | 1 2 3 | 1 2 3 | …
     expect(s.slice(0, 11).map((c) => c.accent)).toEqual([true, false, true, false, false, true, false, false, true, false, false]);
@@ -141,6 +149,8 @@ describe('a busy page', () => {
       timer.stall(0.2);
       runUntil(sink, timer, 40);
       const s = sink.sounding().slice(0, 40);
+      // All 40 are checked: a clock that stopped queueing after the late loop would hand fewer.
+      expect(s).toHaveLength(40);
       s.forEach((c, i) => {
         expect(Math.abs(c.at - (t0 + (i * 60) / bpm))).toBeLessThan(TENTH_MS);
         expect(c.handedAt).toBeLessThan(c.at);

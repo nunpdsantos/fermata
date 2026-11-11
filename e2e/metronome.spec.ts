@@ -149,7 +149,7 @@ test('it stops when the Progression loop starts — one line says why — and �
   await expect(page.getByTestId('progression-play')).toHaveAttribute('aria-pressed', 'true');
   await expect(bar(page)).not.toHaveAttribute('data-running', 'true');
   expect(await pending(page)).toBe(0);
-  await expect(page.getByTestId('metronome-loop-note')).toHaveText('The Progression loop has its own count-in: the metronome stops while it plays.');
+  await expect(page.getByTestId('metronome-loop-note')).toHaveText('The Progression loop plays its own clicks to count you in, so the metronome stops when the loop starts.');
 
   // ▶ on the metronome: the newer clock wins.
   await page.getByTestId('metronome-play').click();
@@ -183,6 +183,11 @@ test('not in Drill, not while the tour plays', async ({ browser }) => {
   await page.getByRole('tab', { name: 'Drill' }).click();
   await expect(bar(page)).toHaveCount(0);
   expect(await pending(page)).toBe(0);
+  // Where the bar is never shown the menu does not offer it.
+  await page.getByRole('button', { name: 'More', exact: true }).click();
+  await expect(page.getByRole('menuitem', { name: 'Show me around' })).toBeVisible();
+  await expect(page.getByRole('menuitem', { name: 'Metronome' })).toHaveCount(0);
+  await page.keyboard.press('Escape');
   await page.getByRole('tab', { name: 'Explore' }).click();
   await expect(bar(page)).toBeVisible();
   await expect(bar(page)).not.toHaveAttribute('data-running', 'true');

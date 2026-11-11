@@ -8,10 +8,10 @@
   "slower": "Mais lento",
   "faster": "Mais rápido",
   "tap": "Marcar",
-  "tapLabel": "Marcar o andamento",
+  "tapLabel": "Marcar o andamento ao ritmo dos teus toques",
   "beats": "Pulsações por compasso",
   "beatsOption": "{{n}} pulsações",
   "close": "Fechar o metrónomo",
-  "loopNote": "A repetição da Progressão tem a sua própria contagem inicial: o metrónomo para enquanto ela toca.",
+  "loopNote": "A repetição da Progressão tem a sua própria contagem inicial, por isso o metrónomo para quando ela começa.",
   "unavailable": "Este navegador não consegue tocar o clique do metrónomo."
 }

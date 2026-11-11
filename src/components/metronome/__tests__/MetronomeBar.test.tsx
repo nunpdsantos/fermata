@@ -16,6 +16,7 @@ import { TopBar } from '../../layout/TopBar';
 import { isMetronomeRunning, stopMetronome, useMetronome } from '../../../services/metronome/metronome';
 import { useLoopState } from '../../explore/progression/loopController';
 import { _resetClicksForTesting } from '../../../services/metronome/clickVoice';
+import { measureToastRoom, resetToastLayoutForTests } from '../../layout/toastLayout';
 import { METRONOME_TEXT } from '../../../i18n/metronomeTool';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -175,7 +176,23 @@ describe('the bar', () => {
     const bar = await openBar();
     expect(within(bar).queryByTestId('metronome-loop-note')).toBeNull();
     act(() => useLoopState.setState({ playing: true }));
-    expect(within(bar).getByTestId('metronome-loop-note').textContent).toBe('The Progression loop has its own count-in: the metronome stops while it plays.');
+    expect(within(bar).getByTestId('metronome-loop-note').textContent).toBe('The Progression loop plays its own clicks to count you in, so the metronome stops when the loop starts.');
+  });
+
+  it('the loop\'s line is forgotten when the bar is put away: opened again later, it does not show', async () => {
+    const bar = await openBar();
+    fireEvent.click(within(bar).getByRole('button', { name: 'Start the metronome' }));
+    act(() => useLoopState.setState({ playing: true }));
+    expect(useMetronome.getState().lastStop).toBe('loop');
+    act(() => useLoopState.setState({ playing: false }));
+    // After the loop: still shown (true: the metronome stopped when the loop started).
+    expect(within(bar).getByTestId('metronome-loop-note')).toBeTruthy();
+    fireEvent.click(within(bar).getByRole('button', { name: 'Close the metronome' }));
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Metronome' }));
+    const again = await screen.findByRole('region', { name: 'Metronome' });
+    expect(within(again).queryByTestId('metronome-loop-note')).toBeNull();
+    expect(useMetronome.getState().lastStop).toBeNull();
   });
 
   it('a browser without Web Audio: one sentence says so, and ✕ still puts it away', async () => {
@@ -196,11 +213,59 @@ describe('the bar', () => {
     fireEvent.click(screen.getByRole('menuitem', { name: 'Metrónomo' }));
     const bar = await screen.findByRole('region', { name: 'Metrónomo' });
     expect(within(bar).getByRole('button', { name: 'Iniciar o metrónomo' })).toBeTruthy();
-    expect(within(bar).getByRole('button', { name: 'Marcar o andamento' }).textContent).toBe('Marcar');
+    expect(within(bar).getByRole('button', { name: 'Marcar o andamento ao ritmo dos teus toques' }).textContent).toBe('Marcar');
     expect(within(bar).getByRole('combobox', { name: 'Pulsações por compasso' })).toBeTruthy();
     await act(() => i18n.changeLanguage('es'));
     expect(within(bar).getByRole('button', { name: 'Iniciar el metrónomo' })).toBeTruthy();
     expect(within(bar).getByRole('combobox', { name: 'Pulsos por compás' })).toBeTruthy();
+    expect(within(bar).getByRole('button', { name: 'Marcar el tempo al ritmo de tus toques' }).textContent).toBe('Marcar');
+  });
+
+  it('toasts keep off it: the bar is registered with useToastAvoid', async () => {
+    resetToastLayoutForTests();
+    const bar = await openBar();
+    vi.spyOn(bar, 'getBoundingClientRect').mockReturnValue({ top: 500, bottom: 552, left: 12, right: 332, width: 320, height: 52, x: 12, y: 500, toJSON: () => ({}) } as DOMRect);
+    measureToastRoom();
+    // The room ends 8 px above the bar (the top bar measures 0 in jsdom: toasts start at 8).
+    expect(document.documentElement.style.getPropertyValue('--toast-room')).toBe(`${500 - 8 - 8}px`);
+    resetToastLayoutForTests();
+  });
+
+  it('the "Tempo" word is a glossary button only where it shows (900 px and wider), never a hidden Tab stop', async () => {
+    // Below 900 px (jsdom matches no media query): the label is hidden by metronome.css, so no button.
+    let bar = await openBar();
+    expect(within(bar).queryByRole('button', { name: /^Tempo/ })).toBeNull();
+    expect(within(bar).getByRole('group', { name: 'Tempo' })).toBeTruthy();
+    cleanup();
+    act(() => stopMetronome('closed'));
+    vi.stubGlobal('matchMedia', (q: string) => ({ matches: q === '(min-width: 900px)', media: q, addEventListener: () => {}, removeEventListener: () => {} }));
+    bar = await openBar();
+    const word = within(bar).getByText('Tempo');
+    expect(word.closest('button')).not.toBeNull();
+    expect(word.closest('.metro-label')).not.toBeNull();
+  });
+});
+
+describe('where the bar is never shown, the menu does not offer it', () => {
+  const items = () => {
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    const labels = screen.getAllByRole('menuitem').map((m) => m.textContent);
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
+    return labels;
+  };
+  it('in Drill: Settings and Show me around only; back in Explore, Metronome again', () => {
+    useAppStore.setState({ view: 'drill' });
+    render(<TopBar />);
+    expect(items()).toEqual(['Settings', 'Show me around']);
+    act(() => useAppStore.setState({ view: 'explore' }));
+    expect(items()).toEqual(['Settings', 'Show me around', 'Metronome']);
+  });
+  it('while the tour plays', () => {
+    render(<TopBar />);
+    act(() => requestDemo('intro', 'menu'));
+    expect(items()).toEqual(['Settings', 'Show me around']);
+    act(() => clearDemoRequest());
+    expect(items()).toEqual(['Settings', 'Show me around', 'Metronome']);
   });
 });
 
