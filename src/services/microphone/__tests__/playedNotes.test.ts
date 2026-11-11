@@ -37,6 +37,37 @@ describe('createNoteTracker', () => {
     expect(events).toEqual([]);
   });
 
+  it('the hold and the release in milliseconds (not read from the constants they pin): 100 ms to start, 150 ms to end', () => {
+    const events: [number, boolean, number][] = [];
+    const tr = createNoteTracker((m, on) => events.push([m, on, t]));
+    let t = 0;
+    // Heard for 60 ms (three frames 30 ms apart): no note yet.
+    for (; t <= 60; t += 30) tr.push(sure(60), t);
+    expect(events).toEqual([]);
+    tr.push(sure(60), 90);
+    expect(events).toEqual([]);
+    t = 100;
+    tr.push(sure(60), t);
+    expect(events).toEqual([[60, true, 100]]);
+    // Nothing heard: still on 150 ms after it was last heard, off just after.
+    t = 250;
+    tr.push(null, t);
+    expect(events).toHaveLength(1);
+    t = 251;
+    tr.push(null, t);
+    expect(events).toEqual([[60, true, 100], [60, false, 251]]);
+  });
+
+  it('a held note ends when only unsure frames are heard (an unsure frame does not keep it on)', () => {
+    const events: [number, boolean][] = [];
+    const tr = createNoteTracker((m, on) => events.push([m, on]));
+    for (let t = 0; t <= 300; t += 30) tr.push(sure(60), t);
+    expect(events).toEqual([[60, true]]);
+    // The same pitch, but no longer sure (the string dying away, a noisy room).
+    for (let t = 330; t <= 900; t += 30) tr.push({ frequency: midiHz(60), clarity: 0.6 }, t);
+    expect(events).toEqual([[60, true], [60, false]]);
+  });
+
   it('one stray frame inside a held note changes nothing', () => {
     const events: [number, boolean][] = [];
     const tr = createNoteTracker((m, on) => events.push([m, on]));

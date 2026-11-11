@@ -8,7 +8,7 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
-import { installFakeMic, midiHz, tone, type FakeMic } from '../../../services/microphone/__tests__/fakeMic';
+import { installFakeMic, midiHz, tone, watchPrivacy, type FakeMic } from '../../../services/microphone/__tests__/fakeMic';
 import { subscribeExternalNotes, type ExternalNote } from '../../../services/externalNotes';
 import { stopListening } from '../../../services/microphone/microphone';
 import { useAppStore } from '../../../state/store';
@@ -320,6 +320,29 @@ describe('TunerSheet: when the microphone cannot be used, nothing is left runnin
     await wait(0);
     expect(mic.tracks.length).toBe(1);
     expect(live()).toBe(0);
+  });
+});
+
+describe('TunerSheet: nothing heard is kept', () => {
+  it('a whole session (listen, strings heard, "Show what I play" on, closed): nothing stored, logged, recorded, sent or played back', async () => {
+    const { rerender } = render(<TunerSheet open onClose={() => undefined} />);
+    await wait(0);
+    const watch = watchPrivacy();
+    try {
+      await listen(tone(midiHz(40, -14)));
+      await wait(600);
+      fireEvent.click(screen.getByRole('button', { name: 'Show what I play on the instrument' }));
+      mic.setSound(tone(midiHz(45, 3)));
+      await wait(900);
+      expect(screen.getByTestId('tuner-target').textContent).toBe('String 5 · A');
+      rerender(<TunerSheet open={false} onClose={() => undefined} />);
+      await wait(0);
+      expect(live()).toBe(0);
+      expect(watch.findings()).toEqual([]);
+    } finally {
+      watch.stop();
+      mic.setSound(null);
+    }
   });
 });
 

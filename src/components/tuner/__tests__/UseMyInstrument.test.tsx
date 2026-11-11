@@ -11,7 +11,7 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { installFakeMic, midiHz, tone, type FakeMic } from '../../../services/microphone/__tests__/fakeMic';
+import { installFakeMic, midiHz, tone, watchPrivacy, type FakeMic } from '../../../services/microphone/__tests__/fakeMic';
 import { subscribeExternalNotes, type ExternalNote } from '../../../services/externalNotes';
 import { stopListening } from '../../../services/microphone/microphone';
 // Loaded up front, as the control loads them on first use.
@@ -104,6 +104,48 @@ describe('Use my instrument', () => {
       { midi: 55, on: true, source: 'mic' }, { midi: 55, on: false, source: 'mic' },
     ]);
     expect(screen.getByTestId('use-my-instrument-heard').textContent).toBe('Heard: G');
+  });
+
+  it('nothing heard is stored, logged, recorded, sent or played back (a whole session: on, three notes, off)', async () => {
+    // The question on screen first (it opens the dock to Half, which is saved, as before wave 3): then the session.
+    render(ui());
+    await wait(0);
+    const watch = watchPrivacy();
+    try {
+      await turnOn();
+      await play(48);
+      await play(52);
+      await play(55);
+      fireEvent.click(screen.getByRole('button', { name: 'Use my instrument' }));
+      await wait(0);
+      expect(heard.filter((n) => n.on).map((n) => n.midi)).toEqual([48, 52, 55]);
+      expect(watch.findings()).toEqual([]);
+    } finally {
+      watch.stop();
+    }
+  });
+
+  it('the audio context is made inside the tap that turns it on (iOS Safari starts audio only there), before anything is awaited', () => {
+    render(ui());
+    fireEvent.click(screen.getByRole('button', { name: 'Use my instrument' }));
+    expect(mic.contexts).toHaveLength(0);
+    fireEvent.click(screen.getByRole('button', { name: 'Allow the microphone' }));
+    // Synchronously, in the same turn as the tap: the context exists; the microphone's code has not even loaded yet.
+    expect(mic.contexts).toHaveLength(1);
+    expect(mic.getUserMedia).not.toHaveBeenCalled();
+  });
+
+  it('turned off while a note is held: that note is reported ended (nothing stays held), and nothing more is heard', async () => {
+    render(ui());
+    await turnOn();
+    mic.setSound(tone(midiHz(57)));
+    await wait(300);
+    expect(heard).toEqual([{ midi: 57, on: true, source: 'mic' }]);
+    act(() => stopAnswerListening());
+    expect(heard).toEqual([{ midi: 57, on: true, source: 'mic' }, { midi: 57, on: false, source: 'mic' }]);
+    await wait(500);
+    expect(heard).toHaveLength(2);
+    mic.setSound(null);
   });
 
   it('the on-screen instrument and Check still work while it listens; the check never waits for it', async () => {

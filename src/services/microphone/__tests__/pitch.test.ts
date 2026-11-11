@@ -10,7 +10,7 @@
  * two notes at once give nothing or a clarity under "sure", never a sure note.
  */
 import { describe, expect, it } from 'vitest';
-import { detectPitch, SURE_CLARITY } from '../pitch';
+import { detectPitch, nearestNote, SURE_CLARITY } from '../pitch';
 
 const FRAME = 4096;
 const RATES = [44100, 48000];
@@ -110,6 +110,31 @@ describe('detectPitch: one note, E2 to C6', () => {
         const got = heard(plucked(hz(midi, -15), rate, midi), rate);
         expect(got?.midi, `midi ${midi} at ${rate}`).toBe(midi);
         expect(Math.abs(got!.cents + 15)).toBeLessThanOrEqual(5);
+      }
+    }
+  });
+
+  it('the bottom of the range, C2 and C♯2 (CLAUDE.md: C2–C7): sine and plucked, in tune and ±20 cents', () => {
+    for (const midi of [36, 37]) {
+      for (const rate of RATES) {
+        for (const cents of DETUNE) {
+          for (const [kind, frame] of [['sine', sine(hz(midi, cents), rate)], ['plucked', plucked(hz(midi, cents), rate, midi + cents)]] as const) {
+            const got = heard(frame, rate);
+            expect(got?.midi, `${kind} midi ${midi} ${cents} cents at ${rate}`).toBe(midi);
+            expect(Math.abs(got!.cents - cents), `${kind} midi ${midi} ${cents} cents at ${rate}`).toBeLessThanOrEqual(5);
+          }
+        }
+      }
+    }
+  });
+
+  it('nearestNote names a note from A4 = 440 Hz (a reading of 440 Hz is A4, 0 cents)', () => {
+    expect(nearestNote(440)).toEqual({ midi: 69, cents: 0 });
+    for (const midi of [40, 60, 64, 84]) {
+      for (const cents of [-20, 0, 20]) {
+        const got = nearestNote(hz(midi, cents));
+        expect(got.midi).toBe(midi);
+        expect(Math.abs(got.cents - cents)).toBeLessThan(0.01);
       }
     }
   });
