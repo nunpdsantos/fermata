@@ -182,15 +182,6 @@
     "pluck": "Pluck",
     "pluckDesc": "Quick decay, bright attack"
   },
-  "metronome": {
-    "title": "Metronome",
-    "startLabel": "Start metronome",
-    "stopLabel": "Stop metronome",
-    "bpm": "BPM",
-    "tempo": "Tempo in BPM",
-    "volume": "Metronome volume",
-    "timeSig": "Time signature"
-  },
   "chordProg": {
     "title": "Chord Progression",
     "clickToAdd": "Click chords below to build a progression.",
@@ -1407,5 +1398,9 @@
     "opensWith": "Unlocks with “{{lesson}}”",
     "opensLater": "Unlocks with a later lesson",
     "guitarOnly": "Unlocks only with the guitar as your instrument"
+  },
+  "metronomeToolEntry": {
+    "menuItem": "Metronome",
+    "loadFailed": "The metronome did not load. Check the connection and try again."
   }
 }

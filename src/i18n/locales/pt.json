@@ -182,15 +182,6 @@
     "pluck": "Pizzicato",
     "pluckDesc": "Decaimento r\u00e1pido, ataque brilhante"
   },
-  "metronome": {
-    "title": "Metr\u00f3nomo",
-    "startLabel": "Iniciar metr\u00f3nomo",
-    "stopLabel": "Parar metr\u00f3nomo",
-    "bpm": "BPM",
-    "tempo": "Tempo em BPM",
-    "volume": "Volume do metr\u00f3nomo",
-    "timeSig": "Compasso"
-  },
   "chordProg": {
     "title": "Progressão de acordes",
     "clickToAdd": "Clica nos acordes abaixo para criar uma progress\u00e3o.",
@@ -1407,5 +1398,9 @@
     "opensWith": "Desbloqueia com «{{lesson}}»",
     "opensLater": "Desbloqueia com uma lição mais à frente",
     "guitarOnly": "Desbloqueia só com a guitarra como instrumento"
+  },
+  "metronomeToolEntry": {
+    "menuItem": "Metrónomo",
+    "loadFailed": "O metrónomo não carregou. Verifica a ligação e tenta de novo."
   }
 }

@@ -1,0 +1,17 @@
+{
+  "region": "Metronome",
+  "start": "Start the metronome",
+  "stop": "Stop the metronome",
+  "tempo": "Tempo",
+  "tempoInput": "Tempo, beats a minute",
+  "tempoNow": "{{bpm}} beats a minute",
+  "slower": "Slower",
+  "faster": "Faster",
+  "tap": "Tap",
+  "tapLabel": "Tap the tempo",
+  "beats": "Beats in a bar",
+  "beatsOption": "{{n}} beats",
+  "close": "Close the metronome",
+  "loopNote": "The Progression loop has its own count-in: the metronome stops while it plays.",
+  "unavailable": "This browser cannot play the metronome's click."
+}

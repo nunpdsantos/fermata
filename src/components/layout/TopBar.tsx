@@ -32,6 +32,26 @@ function SettingsUnavailable({ onClose }: SettingsProps) {
   return null;
 }
 
+// The metronome (wave 3, stream M) is a lazy chunk too: its bar, clock and
+// words are fetched the first time "⋯" → "Metronome" is chosen, then kept
+// mounted (a running metronome survives the bar's re-renders). A failed
+// download says so once; the next choice builds a fresh lazy() under a new
+// key, as Settings does.
+type MetronomeProps = { open: boolean; onClose: () => void };
+const loadMetronome = () => lazy<ComponentType<MetronomeProps>>(() =>
+  import('../metronome/MetronomeHost.tsx').catch(() => ({ default: MetronomeUnavailable })));
+let MetronomeHost = loadMetronome();
+let metronomeFailed = false;
+function MetronomeUnavailable({ onClose }: MetronomeProps) {
+  const { t } = useTranslation();
+  useEffect(() => {
+    metronomeFailed = true;
+    onClose();
+    toast(t('metronomeToolEntry.loadFailed'), 'error');
+  }, [t, onClose]);
+  return null;
+}
+
 const VIEWS: ViewMode[] = ['explore', 'learn', 'drill'];
 const VIEW_KEYS: Record<ViewMode, string> = {
   explore: 'nav.explore',
@@ -73,6 +93,22 @@ export function TopBar() {
     setSettingsOpen(true);
   };
   const [closeSettings] = useState(() => () => setSettingsOpen(false));
+  const [metronomeOpen, setMetronomeOpen] = useState(false);
+  // Mounted from the first open on (a running metronome lives in it).
+  const [metronomeMounted, setMetronomeMounted] = useState(false);
+  const [metronomeAttempt, setMetronomeAttempt] = useState(0);
+  const openMetronome = () => {
+    if (metronomeFailed) {
+      metronomeFailed = false;
+      MetronomeHost = loadMetronome();
+      setMetronomeAttempt((n) => n + 1);
+    }
+    setMetronomeMounted(true);
+    setMetronomeOpen(true);
+    // Already open: back to its ▶.
+    document.querySelector<HTMLElement>('[data-testid="metronome-play"]')?.focus({ preventScroll: true });
+  };
+  const [closeMetronome] = useState(() => () => setMetronomeOpen(false));
   // Below 360 px the three tabs need the room: search moves into the menu.
   const narrow = useMediaQuery('(max-width: 359px)');
   const updateReady = usePwaUpdateStore((s) => s.needRefresh);
@@ -135,6 +171,7 @@ export function TopBar() {
             ...(narrow ? [{ id: 'search', label: t('nav.search'), onSelect: openSearch }] : []),
             { id: 'settings', label: t('settings.title'), onSelect: openSettings },
             { id: 'show-me', label: t('showMe.menuItem'), onSelect: showMeAround },
+            { id: 'metronome', label: t('metronomeToolEntry.menuItem'), onSelect: openMetronome },
             // A waiting update stays one tap away after "Later" (until the reload).
             ...(updateReady ? [{ id: 'update', label: t('pwa.updateReady'), onSelect: () => void applyUpdateOrReload() }] : []),
           ]}
@@ -143,6 +180,11 @@ export function TopBar() {
       {settingsMounted && (
         <Suspense fallback={null}>
           <SettingsSheet key={settingsAttempt} open={settingsOpen} onClose={closeSettings} />
+        </Suspense>
+      )}
+      {metronomeMounted && (
+        <Suspense fallback={null}>
+          <MetronomeHost key={metronomeAttempt} open={metronomeOpen} onClose={closeMetronome} />
         </Suspense>
       )}
     </header>
