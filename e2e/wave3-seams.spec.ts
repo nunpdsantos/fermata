@@ -266,6 +266,7 @@ test.describe('2. the app does not hear itself', () => {
   });
 
   test('while the Progression loop plays: the tuner still reads E, no note is reported', async ({ baseURL }) => {
+    test.setTimeout(60_000);
     const { context, page } = await openApp(browser, baseURL!, LAPTOP, { lastView: 'explore', progression: { chords: ['G', 'D', 'Em', 'C'], bpm: 120, beats: 4 } });
     const dev = await devModules(page);
     await page.getByTestId('progression-toggle').click();
@@ -274,7 +275,9 @@ test.describe('2. the app does not hear itself', () => {
     if (dev) await probeNotes(page);
     const sheet = await openTunerListening(page);
     await sheet.getByTestId('tuner-show').click();
-    await hearsButReportsNothing(page, sheet, 3000);
+    // Four chords of four beats at 120 a minute: a cycle lasts 8 s. Watched for 9 s, so at least one handover from
+    // one cycle to the next (queued 0.75 s before the end) is heard too (wave 3 final review: 3 s saw part of one).
+    await hearsButReportsNothing(page, sheet, 9000);
     if (dev) expect(await micOns(page)).toEqual([]);
     await context.close();
   });
@@ -778,7 +781,10 @@ for (const v of [PHONE, LAPTOP]) {
     await expect(page.getByTestId('listening-mark')).toHaveCount(0);
     await expect(page.getByTestId('metronome')).toHaveCount(0);
     // Still nothing asked; his whole save, every store, byte for byte, after a session through every view.
-    expect((await page.evaluate(() => (window as unknown as { __asked: string[] }).__asked)).filter((a) => /getUserMedia|enumerateDevices|requestMIDIAccess|microphone|midi/.test(a))).toEqual([]);
+    // (The same two checks as above: exactly what wave3/base asked, and nothing of a microphone, a camera, a screen or MIDI.)
+    const askedAfter = await page.evaluate(() => (window as unknown as { __asked: string[] }).__asked);
+    expect(askedAfter).toEqual(base.asked);
+    expect(askedAfter.filter((a) => /getUserMedia|enumerateDevices|getDisplayMedia|requestMIDIAccess|microphone|midi|camera/.test(a))).toEqual([]);
     expect(after).toEqual(before);
     // And once more after these measurements, back where he was.
     await page.locator('[data-tab="learn"]').click();
