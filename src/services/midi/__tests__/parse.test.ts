@@ -32,8 +32,12 @@ const SPEC: Row[] = [
     name: 'control change', status: 0xb0, data: 2, channel: true,
     expect: (channel, cc, value) =>
       cc === 64 ? [{ type: 'sustain', channel, down: value >= 64 }]
-        : cc === 120 || cc === 123 ? [{ type: 'allNotesOff', channel }]
-          : [],
+        // 120 all sound off, 123 all notes off; 124–127 (omni off / on, mono on, poly on) "also cause All Notes Off".
+        : cc === 120 || cc === 123 || (cc >= 124 && cc <= 127) ? [{ type: 'allNotesOff', channel }]
+          // 121 reset all controllers: the pedal back to its default, up.
+          : cc === 121 ? [{ type: 'sustain', channel, down: false }]
+            // 122 local control (and every other controller): nothing for Fermata.
+            : [],
   },
   { name: 'program change', status: 0xc0, data: 1, channel: true, expect: none },
   { name: 'channel pressure', status: 0xd0, data: 1, channel: true, expect: none },
@@ -54,11 +58,14 @@ const SPEC: Row[] = [
   { name: 'system reset', status: 0xff, data: 0, channel: false, expect: none },
 ];
 
-// The controllers either side of the three the app reads are sampled too (63, 65–67: portamento, sostenuto and
-// the soft pedal are not the damper; 119 and 122 are not "all notes off").
+// The controllers either side of the ones the app reads are sampled too (63, 65–67: portamento, sostenuto and
+// the soft pedal are not the damper; 119 is not "all sound off"; 122, local control, is ignored). The channel mode
+// messages are each sampled with 0, and 121, 122 and 126 with a second value too (127, 127, 4): the value changes
+// nothing of what Fermata makes of them.
 const DATA_SAMPLES: [number, number][] = [
   [60, 100], [0, 0], [127, 127], [64, 63], [64, 64], [120, 0], [123, 0], [1, 1],
   [63, 127], [65, 127], [66, 127], [67, 127], [119, 0], [122, 0],
+  [121, 0], [121, 127], [122, 127], [124, 0], [125, 0], [126, 0], [126, 4], [127, 0],
 ];
 
 describe('the MIDI message table, one message per event', () => {

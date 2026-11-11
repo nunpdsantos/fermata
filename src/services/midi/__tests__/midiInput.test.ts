@@ -226,6 +226,52 @@ describe('notes', () => {
     expect(sounding()).toEqual([]);
   });
 
+  it('Reset All Controllers (CC 121) lifts that channel\'s pedal: a key still held goes on, a note held only by the pedal ends', () => {
+    key(PEDAL(true));
+    key(NOTE_ON(60, 80));
+    key(NOTE_OFF(60)); // held by the pedal only
+    key(NOTE_ON(64, 80)); // held by the finger
+    // The pedal of another channel, holding a note of its own: untouched.
+    key(PEDAL(true, 5));
+    key(NOTE_ON(67, 80, 5));
+    key(NOTE_OFF(67, 5));
+    expect(sounding()).toEqual([60, 64, 67]);
+    key([0xb0, 121, 0]);
+    expect(sounding()).toEqual([64, 67]);
+    expect(offs()).toEqual([60]);
+    // The pedal is up now: a key let go ends at once, as after a pedal lift.
+    key(NOTE_OFF(64));
+    expect(sounding()).toEqual([67]);
+    key(NOTE_ON(62, 80));
+    key(NOTE_OFF(62));
+    expect(sounding()).toEqual([67]);
+  });
+
+  it('Local Control (CC 122) is ignored: the pedal still holds, the keys still sound', () => {
+    key(PEDAL(true));
+    key(NOTE_ON(60, 80));
+    key(NOTE_OFF(60));
+    key(NOTE_ON(64, 80));
+    key([0xb0, 122, 0]);
+    key([0xb0, 122, 127]);
+    expect(sounding()).toEqual([60, 64]);
+    expect(offs()).toEqual([]);
+  });
+
+  for (const [cc, name] of [[124, 'Omni Off'], [125, 'Omni On'], [126, 'Mono On'], [127, 'Poly On']] as const) {
+    it(`${name} (CC ${cc}) also ends that channel's notes, held and pedal-held; another channel's go on`, () => {
+      key(PEDAL(true, 1));
+      key([0x91, 60, 80]);
+      key([0x81, 60, 0]); // held by the pedal only
+      key([0x91, 64, 80]); // held by the finger
+      key(NOTE_ON(67, 80, 2));
+      expect(sounding()).toEqual([60, 64, 67]);
+      key([0xb1, cc, 0]);
+      expect(sounding()).toEqual([67]);
+      expect([...offs()].sort((a, b) => a - b)).toEqual([60, 64]);
+    });
+  }
+
   it('two keyboards holding one pitch make one note, which ends when the last lets go', () => {
     const second = access.plug('in-2', 'Pad');
     expect(useMidiStatus.getState().devices).toEqual(['Digital Piano', 'Pad']);
