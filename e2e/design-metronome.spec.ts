@@ -123,10 +123,30 @@ async function open(browser: Browser, v: View, theme: string, lang: Lang, instru
   return { context, page };
 }
 
+/**
+ * The dev server serves the app's own modules (/src/…); the production build
+ * (playwright.preview.config.ts) does not. The two steps that drive the app
+ * through them (the sheet's detents, a toast) run on the dev server and are
+ * skipped, with a note, on the build — never silently on the dev server: only
+ * a build (the one that serves the PWA manifest) may lack them (the
+ * design-system sweep's rule; wave 3 integration).
+ */
+async function hasDevModules(page: Page): Promise<boolean> {
+  const res = await page.request.get('/src/state/store.ts');
+  const dev = res.ok() && (res.headers()['content-type'] ?? '').includes('javascript');
+  if (!dev) {
+    const manifest = await page.request.get('/manifest.webmanifest');
+    expect((manifest.headers()['content-type'] ?? '').includes('json'), 'dev server without /src modules?').toBe(true);
+    test.info().annotations.push({ type: 'note', description: 'the detent and toast steps drive the app through /src modules: dev server only, skipped on this build' });
+  }
+  return dev;
+}
+
 async function sweep(browser: Browser, v: View, theme: string, themeName: string, lang: Lang, full = true) {
   const w = WORDS[lang];
   const combo = `metronome-${v.name}-${themeName}-${lang}`;
   const { context, page } = await open(browser, v, theme, lang);
+  const dev = await hasDevModules(page);
 
   // Opening it moves nothing: the instrument and the view, with and without the bar, in this run.
   const without = { dock: await boxOf(page, DOCK), main: await boxOf(page, '#main-content') };
@@ -139,7 +159,7 @@ async function sweep(browser: Browser, v: View, theme: string, themeName: string
   await run(page, lang);
   await check(page, v, `${combo}--explore-running`);
 
-  if (full && (v.name === 'phone' || v.name === 'landscape')) {
+  if (full && dev && (v.name === 'phone' || v.name === 'landscape')) {
     // Over the phone's sheet at each detent (the guitar has a Full).
     for (const d of ['peek', 'half', 'full'] as const) {
       await setDetent(page, d);
@@ -150,7 +170,7 @@ async function sweep(browser: Browser, v: View, theme: string, themeName: string
     await page.waitForTimeout(700);
   }
 
-  if (full) {
+  if (full && dev) {
     // A toast comes and goes: it never covers the bar, and the bar moves < 2 px.
     const before = (await boxOf(page, BAR))!;
     await page.evaluate("import('/src/state/toastStore.ts').then((m) => m.toast('Copied to clipboard', 'success', 30000))");

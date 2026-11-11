@@ -23,6 +23,25 @@ const audioNow = (page: Page) =>
 
 const bar = (page: Page) => page.getByRole('region', { name: 'Metronome' });
 
+/**
+ * "Keeps time" is read on the metronome's audio clock through the dev
+ * server's own module; the production build (playwright.preview.config.ts)
+ * serves no /src modules, so there this spec is skipped with a note — never
+ * silently on the dev server: only a build (the one serving the PWA
+ * manifest) may lack them (the design-system sweep's rule; wave 3
+ * integration). The bar on the build is covered by design-metronome.spec.ts
+ * and e2e/wave3-seams.spec.ts.
+ */
+test.beforeEach(async ({ request }) => {
+  const res = await request.get('/src/services/metronome/clickVoice.ts');
+  const dev = res.ok() && (res.headers()['content-type'] ?? '').includes('javascript');
+  if (!dev) {
+    const manifest = await request.get('/manifest.webmanifest');
+    expect((manifest.headers()['content-type'] ?? '').includes('json'), 'dev server without /src modules?').toBe(true);
+  }
+  test.skip(!dev, 'the clicks are read on the audio clock through the dev server\'s own module: skipped on the production build');
+});
+
 async function start(browser: Browser, v: View, settings: Record<string, unknown> = {}) {
   const { context, page } = await seededBrowser(browser, v, {
     themeMode: 'fermata', language: 'en', lastView: 'explore', instrument: 'piano',
