@@ -275,6 +275,7 @@ describe('the guitar: shapes, frets and the capo (standard tuning)', () => {
     expect(spell('320003', 'G').join(' ')).toBe('G B D G B G');
     expect(spell('022000', 'Em').join(' ')).toBe('E B E G B E');
     expect(new Set(shapePcs('320003')).size).toBe(3);
+    expect(new Set(shapePcs('022000')).size).toBe(3);
   });
 
   it('E→Em, A→Am, D→Dm: the string with the middle note goes one fret lower (G string 1→0, B string 2→1, thinnest 2→1)', () => {
@@ -479,7 +480,7 @@ describe('every Try This plays what its label says (EN, PT, ES)', () => {
         }
       });
     }
-    expect(lists).toBeGreaterThanOrEqual(5);
+    expect(lists).toBe(23);
     // Lessons 1, 2, 3, 7 and 8 each let the learner hear their chords as a loop.
     for (const n of [1, 2, 3, 7, 8]) {
       expect(unit.modules[n - 1].concepts.some((c) => c.tryThisQuery.startsWith('chords:')), `lesson ${n}`).toBe(true);
