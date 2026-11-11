@@ -6,16 +6,27 @@
  * contract: they are already sounding in the room).
  *
  * What the app plays itself must not come back as the learner's note: while
- * the on-screen instrument is being played (a tap or key press in the dock
- * or the full-neck view) and for APP_SOUND_MS after, and while a reference
- * the app plays sounds (`muteFor`), nothing is reported and a held note ends.
+ * the app is sounding (core audio's one signal, `appSoundingUntil`: every
+ * Play, chord, strip, circle, loop, held key, MIDI-sounded note, the
+ * metronome's clicks, the tuner's string — wave 3 integration) and for
+ * APP_SOUND_TAIL_MS after; while the on-screen instrument is being played
+ * (a tap or key press in the dock or the full-neck view) and for
+ * APP_SOUND_MS after; and while a reference the app plays sounds
+ * (`muteFor`), nothing is reported and a held note ends.
  */
+import { appSoundingUntil } from '../../core/services/audio.ts';
 import { emitExternalNote } from '../externalNotes.ts';
 import { createNoteTracker } from './noteTracker.ts';
 import type { PitchEstimate } from './pitch.ts';
 
 /** How long after the on-screen instrument was played its sound is ignored. */
 export const APP_SOUND_MS = 1500;
+/**
+ * How long after the app stops sounding what is heard is still ignored: the
+ * room's echo, the speaker's and the microphone's latency, and the analysis
+ * frame (4,096 samples, 85 ms at 48 kHz) that still holds the app's sound.
+ */
+export const APP_SOUND_TAIL_MS = 300;
 const INSTRUMENT_SELECTOR = '#instrument-region, .neck-view';
 
 export interface PlayedNotes {
@@ -33,6 +44,8 @@ export function reportPlayedNotes(onNote?: (midi: number, on: boolean) => void):
   });
   let quietUntil = 0;
   let pressing = false;
+  /** The app was last heard sounding until this (plus the tail). */
+  let appQuietUntil = 0;
 
   const fromInstrument = (e: Event) => e.target instanceof Element && e.target.closest(INSTRUMENT_SELECTOR) !== null;
   const onDown = (e: Event) => {
@@ -53,7 +66,9 @@ export function reportPlayedNotes(onNote?: (midi: number, on: boolean) => void):
 
   return {
     onFrame(estimate, time) {
-      if (pressing || performance.now() < quietUntil) {
+      const now = performance.now();
+      if (appSoundingUntil(now) > now) appQuietUntil = now + APP_SOUND_TAIL_MS;
+      if (pressing || now < quietUntil || now < appQuietUntil) {
         tracker.reset();
         return;
       }

@@ -264,6 +264,103 @@ function fadeOutAndStop(entry: { oscillator: OscillatorNode; gainNode: GainNode 
   }
 }
 
+// ============================================================================
+// The app is sounding (wave 3 integration)
+// ============================================================================
+
+/**
+ * One honest answer to "is the app making sound now, and until when?", for
+ * the microphone, which must not report the app's own notes as the
+ * learner's (`services/microphone/playedNotes.ts`; the app would hear
+ * itself). Every path that starts or schedules sound feeds it:
+ *  - `playNote`, so every one-shot whichever voice plays it (the sampled
+ *    piano or guitar, Karplus-Strong, the FM synth): single notes, chords,
+ *    arpeggios, scales, sequences and every `playTimedNotes` phrase (the
+ *    Progression loop, rhythms, melodies), each from its start for its
+ *    length plus the voices' release;
+ *  - the sustained notes (a key or fret held, a MIDI key): sounding while
+ *    held, then for the release;
+ *  - outside core, the engines with an audio clock of their own (the
+ *    metronome's clicks, the tuner's reference string), through
+ *    `noteAppSound`.
+ * A one-shot cancelled by `cancelScheduledAudio()` / `stopPlayback()` stops
+ * counting then (one not yet started never counts). Times are
+ * `performance.now()` milliseconds, the clock the microphone stamps its
+ * frames with. Nothing is heard or kept here: it is the app's own schedule.
+ */
+
+/** How long a voice may still ring after a note's written end (the piano's 0.25 s release time-constant is about 35 dB down after 1 s). */
+export const APP_SOUND_RELEASE_S = 1.0;
+/** What is left of a one-shot after it was cancelled (the voices fade in 30–40 ms). */
+const CANCELLED_TAIL_MS = 100;
+
+interface SoundSpan {
+  from: number;
+  to: number;
+  /** A core one-shot: cancelled with the rest of core's playback. */
+  oneShot: boolean;
+}
+const soundSpans: Set<SoundSpan> = new Set();
+const heldSounds: Set<number> = new Set();
+
+function soundClockMs(): number {
+  return typeof performance !== 'undefined' ? performance.now() : Date.now();
+}
+
+function addSoundSpan(inS: number, forS: number, oneShot: boolean): SoundSpan {
+  const now = soundClockMs();
+  for (const span of soundSpans) if (span.to < now - 1000) soundSpans.delete(span);
+  const start = Math.max(0, Number.isFinite(inS) ? inS : 0);
+  const length = Math.max(0, Number.isFinite(forS) ? forS : 0);
+  const span = { from: now + start * 1000, to: now + (start + length) * 1000, oneShot };
+  soundSpans.add(span);
+  return span;
+}
+
+/**
+ * Another engine is about to sound (its own audio clock: the metronome, the
+ * tuner's string): from `inS` seconds from now, for `forS` seconds. Returns
+ * the function that takes it back when that sound is cancelled.
+ */
+export function noteAppSound(inS: number, forS: number): () => void {
+  const span = addSoundSpan(inS, forS, false);
+  return () => {
+    const now = soundClockMs();
+    if (span.from > now) soundSpans.delete(span);
+    else span.to = Math.min(span.to, now + CANCELLED_TAIL_MS);
+  };
+}
+
+/**
+ * Is the app sounding at `at` (default: now)? Returns the time until which
+ * it sounds (Infinity while a sustained note is held), or 0 when it is
+ * silent then. A sound scheduled to start later is not sounding yet.
+ */
+export function appSoundingUntil(at: number = soundClockMs()): number {
+  if (heldSounds.size > 0) return Infinity;
+  let until = 0;
+  for (const span of soundSpans) {
+    if (span.from <= at && span.to > at && span.to > until) until = span.to;
+  }
+  return until;
+}
+
+/** Core's one-shots were cancelled: those not started never sound, the others fade now. */
+function cancelOneShotSpans(): void {
+  const now = soundClockMs();
+  for (const span of [...soundSpans]) {
+    if (!span.oneShot) continue;
+    if (span.from > now) soundSpans.delete(span);
+    else span.to = Math.min(span.to, now + CANCELLED_TAIL_MS);
+  }
+}
+
+/** For tests: forget every sound noted. */
+export function _resetAppSoundForTesting(): void {
+  soundSpans.clear();
+  heldSounds.clear();
+}
+
 /**
  * Cancel every scheduled or still-sounding ONE-SHOT note — the registered
  * voice's (sampled piano / guitar / KS) and the FM fallback's — with a short
@@ -275,6 +372,7 @@ function fadeOutAndStop(entry: { oscillator: OscillatorNode; gainNode: GainNode 
  */
 export function cancelScheduledAudio(): void {
   instrumentVoice?.cancelScheduled();
+  cancelOneShotSpans();
   settleVisualPhrases();
   const ctx = audioContext;
   if (!ctx) return;
@@ -301,6 +399,7 @@ export function stopPlayback(): void {
   // stay; the FM fallback's own sustained notes are still cleared below, as
   // before.
   instrumentVoice?.cancelScheduled();
+  cancelOneShotSpans();
 
   const ctx = audioContext;
   const now = ctx?.currentTime ?? 0;
@@ -454,6 +553,8 @@ export function playNote(
   // The registered voice takes over when it can handle this note
   const midiNumber = 12 + octave * 12 + getPitchClass(note);
   const whenOffset = startTime !== undefined ? Math.max(0, startTime - ctx.currentTime) : 0;
+  // The app is sounding (wave 3): whichever voice plays it, from its start.
+  addSoundSpan(whenOffset, duration + APP_SOUND_RELEASE_S, true);
   if (instrumentVoice?.playNote(midiNumber, whenOffset, duration, synthConfig.volume)) {
     return;
   }
@@ -624,6 +725,8 @@ export function startSustainedNote(
   const frequency = getNoteFrequency(note, octave);
   const synthConfig = { ...DEFAULT_SYNTH_CONFIG, ...config };
   const midiNumber = 12 + octave * 12 + getPitchClass(note);
+  // The app is sounding (wave 3) for as long as the note is held.
+  heldSounds.add(midiNumber);
 
   // If already playing this note, don't restart
   if (sustainedNotes.has(midiNumber)) return midiNumber;
@@ -746,6 +849,8 @@ export function startSustainedNote(
 
 // Stop a sustained note with a smooth release
 export function stopSustainedNote(midiNumber: number): void {
+  // Released (wave 3): still sounding for the voice's release.
+  if (heldSounds.delete(midiNumber)) addSoundSpan(0, APP_SOUND_RELEASE_S, false);
   const entry = sustainedNotes.get(midiNumber);
   if (!entry) {
     // The active voice may own this note (no synth entry was created)

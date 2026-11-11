@@ -6,7 +6,7 @@
  */
 import * as guitarSampler from '../../services/guitarSampler.ts';
 import * as ks from '../../services/karplusStrong.ts';
-import { cancelScheduledAudio } from '../../core/services/audio.ts';
+import { APP_SOUND_RELEASE_S, cancelScheduledAudio, noteAppSound } from '../../core/services/audio.ts';
 
 /** How long a reference string sounds, in seconds. */
 export const REFERENCE_SECONDS = 2.5;
@@ -22,4 +22,8 @@ export function playGuitarString(midi: number): void {
   void guitarSampler.resumeContext().catch(() => undefined);
   void ks.resumeContext().catch(() => undefined);
   if (!guitarSampler.playNote(midi, 0, REFERENCE_SECONDS, 0.9)) ks.playNote(midi, 0, REFERENCE_SECONDS, 0.9);
+  // The voices are called directly here, not through core's playNote: say
+  // that the app is sounding (wave 3 integration), so the microphone does
+  // not report the reference as the learner's note.
+  noteAppSound(0, REFERENCE_SECONDS + APP_SOUND_RELEASE_S);
 }

@@ -19,6 +19,7 @@
  * A load that left a sample missing is tried again on the next open or ▶.
  */
 import { resolveSample } from '../pianoSampler';
+import { noteAppSound } from '../../core/services/audio';
 import type { ClickSink } from './clock';
 
 const SAMPLE_BASE_URL = '/samples/piano';
@@ -39,6 +40,8 @@ interface Voice {
   source: AudioScheduledSourceNode;
   gain: GainNode;
   at: number;
+  /** Takes back the "app is sounding" note for this click (core audio, wave 3). */
+  unnote: () => void;
 }
 
 let ctx: AudioContext | null = null;
@@ -130,7 +133,10 @@ function spawn(c: AudioContext, at: number, accent: boolean): Voice {
   source.connect(gain);
   source.start(at);
   source.stop(at + CLICK_S + 6 * FADE_S);
-  return { source, gain, at };
+  // The app is sounding while the click rings (core audio's one signal, so
+  // the microphone never reports a click as the learner's note).
+  const unnote = noteAppSound(at - c.currentTime, CLICK_S + 6 * FADE_S);
+  return { source, gain, at, unnote };
 }
 
 /** The clicks, on the metronome's own audio clock. */
@@ -161,6 +167,7 @@ export const clickSink: ClickSink = {
     const now = ctx?.currentTime ?? 0;
     const entry = log.find((l) => l.id === id);
     if (entry) entry.cancelledAt = now;
+    voice.unnote();
     try {
       if (voice.at > now) {
         // Not started yet: a stop before its start means it never sounds.
