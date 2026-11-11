@@ -20,6 +20,9 @@ import { SelectTrigger } from '../ui/SelectTrigger.tsx';
 import { CapoOptions } from '../instruments/CapoControl.tsx';
 import { CAPO_TERM } from '../instruments/capoView.ts';
 import { WordsButton } from '../../glossary/Term.tsx';
+import { useMidiStatus, midiSupported, turnMidiKeyboard } from '../../services/midi/midiStatus.ts';
+// The MIDI keyboard row's words load with this chunk (wave 3, the `midiInput` namespace).
+import '../../i18n/midiInput/index.ts';
 
 /**
  * The app's Settings (W11-A, opened from the top bar's "⋯" menu): language,
@@ -184,6 +187,7 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
           <p id="capo-hint" className="text-ui" style={{ color: 'var(--text-dim)' }}>{t('capo.settingHint')}</p>
         </div>
       </SettingRow>
+      <MidiRow />
       <SettingRow label={t('settings.yourData')} meta={t('settings.yourDataMeta')}>
         <div className="flex gap-2 flex-wrap">
           <Button onClick={handleExport} aria-label={t('backup.export')}>
@@ -212,6 +216,46 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
         {footer}
       </p>
     </Sheet>
+  );
+}
+
+/**
+ * Settings → "MIDI keyboard" (wave 3, stream K): off by default; turning it
+ * on asks the browser (services/midi/); the row then names the keyboards
+ * heard or says none is connected. A browser without Web MIDI gets one
+ * sentence and nothing to press.
+ */
+function MidiRow() {
+  const { t } = useTranslation();
+  const saved = useAppStore((s) => s.midiKeyboard === true);
+  const state = useMidiStatus((s) => s.state);
+  const devices = useMidiStatus((s) => s.devices);
+  if (!midiSupported()) {
+    return (
+      <SettingRow label={t('midiInput.title')} testId="midi-setting">
+        <p className="text-ui" style={{ color: 'var(--text-dim)' }} data-testid="midi-status">{t('midiInput.unsupported')}</p>
+      </SettingRow>
+    );
+  }
+  const on = saved || state === 'asking';
+  const status =
+    state === 'asking' ? t('midiInput.asking')
+      : state === 'on' ? (devices.length > 0 ? t('midiInput.connected', { names: devices.join(', ') }) : t('midiInput.none'))
+        : state === 'denied' ? t('midiInput.denied')
+          : state === 'error' ? t('midiInput.error')
+            : '';
+  return (
+    <SettingRow label={t('midiInput.title')} testId="midi-setting">
+      <div className="flex flex-col items-start gap-1.5">
+        <ChoiceChip pressed={on} onClick={() => void turnMidiKeyboard(!on)} aria-describedby="midi-status midi-hint">
+          {t('midiInput.toggle')}
+        </ChoiceChip>
+        <p id="midi-status" className="text-ui" style={{ color: 'var(--text-muted)' }} aria-live="polite" data-testid="midi-status" hidden={!status}>
+          {status}
+        </p>
+        {state !== 'on' && <p id="midi-hint" className="text-ui" style={{ color: 'var(--text-dim)' }}>{t('midiInput.ask')}</p>}
+      </div>
+    </SettingRow>
   );
 }
 

@@ -13,6 +13,8 @@ import { ShareLinkHost } from './components/share/ShareLinkHost.tsx';
 import type { ViewMode } from './state/storeTypes.ts';
 import { StartHost } from './components/start/StartHost.tsx';
 import { useStartScreenOwed, useStartScreenShown } from './state/startGate.ts';
+import { useExternalNotes } from './services/externalNotesHost.ts';
+import { restoreMidiKeyboard } from './services/midi/midiStatus.ts';
 
 // Code-split views. ViewSlot owns the lazy() wrappers so a failed download
 // can be retried (audit W9-03); this table must stay a stable module constant.
@@ -44,6 +46,10 @@ function App() {
   useLanguage();
   // Leaving a view stops its playback (W8-01)
   useStopPlaybackOnViewChange();
+  // Notes played on a real instrument (wave 3): the one listener, above the
+  // start screen and the shell; a MIDI keyboard left on comes back if allowed.
+  useExternalNotes(startShown);
+  useEffect(() => restoreMidiKeyboard(), []);
 
   // Boot view resolution (runs ONCE, before first paint of the view):
   //  - a valid ?view= param wins (PWA shortcut / deep link), else restore

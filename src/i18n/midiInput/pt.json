@@ -1,0 +1,12 @@
+{
+  "title": "Teclado MIDI",
+  "toggle": "Usar um teclado MIDI",
+  "ask": "Ao ativar, o teu navegador pergunta se o Fermata pode ouvir as teclas que tocas num teclado MIDI; o que tocas nunca sai deste dispositivo.",
+  "asking": "À espera da resposta do navegador…",
+  "connected": "Ligado: {{names}}",
+  "none": "Não há nenhum teclado MIDI ligado. Liga um e o Fermata ouve-o de imediato.",
+  "denied": "O teu navegador não o permitiu, por isso o Fermata não consegue ouvir um teclado MIDI. Podes mudar isto nas definições do navegador para este site.",
+  "error": "O teu navegador não conseguiu chegar ao teclado MIDI. Desativa e volta a ativar para tentar de novo.",
+  "unsupported": "Este navegador não consegue usar um teclado MIDI; o Chrome, o Edge ou o Opera num computador, ou o Chrome no Android, conseguem.",
+  "soundBlocked": "Clica ou toca uma vez na página para o Fermata poder fazer soar o que tocas."
+}

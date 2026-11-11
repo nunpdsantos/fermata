@@ -209,20 +209,8 @@
     "deleteRecording": "Eliminar grabaci\u00f3n {{n}}",
     "take": "Toma {{n}}"
   },
-  "midi": {
-    "title": "Salida MIDI",
-    "enable": "Activar salida MIDI",
-    "selectDevice": "Seleccionar dispositivo de salida MIDI",
-    "noDevice": "Ning\u00fan dispositivo seleccionado",
-    "noDevices": "No se encontraron dispositivos de salida MIDI. Conecta un dispositivo MIDI y actualiza."
-  },
-  "midiInput": {
-    "title": "Entrada MIDI",
-    "enable": "Activar entrada MIDI",
-    "selectDevice": "Seleccionar dispositivo de entrada MIDI",
-    "noDevice": "Todos los dispositivos (autodetecci\u00f3n)",
-    "noDevices": "No se encontraron dispositivos de entrada MIDI. Conecta un controlador MIDI y actualiza.",
-    "badge": "MIDI"
+  "midiInputEntry": {
+    "mark": "Teclado MIDI conectado"
   },
   "songRef": {
     "title": "Canciones que usan esto"
