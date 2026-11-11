@@ -7,6 +7,7 @@ import { directionSpeller } from '../../../../core/utils/spelling';
 import { Button } from '../../../ui/Button';
 import { accentText } from '../../../../design/tokens/learnColors';
 import { openDockForLesson, foldDockAfterLesson } from '../../../../services/lessonDock';
+import { setExternalAnswerTarget } from '../../../../services/externalAnswer';
 
 interface InstrumentInputProps {
   expectedCount: number;
@@ -74,6 +75,17 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
       });
     }
   }
+
+  // A note played on a real instrument (a MIDI keyboard, the microphone —
+  // wave 3, services/externalAnswer.ts) ADDS its note, as a tap that turns it
+  // on does; it never removes one. Only while the learner can still answer.
+  useEffect(() => {
+    if (submitted) return;
+    return setExternalAnswerTarget((midi) => {
+      const pc = ((midi % 12) + 12) % 12;
+      setToggledPCs((prev) => (prev.has(pc) ? prev : new Set(prev).add(pc)));
+    });
+  }, [submitted]);
 
   // Update highlighted notes on instrument whenever toggled set changes
   useEffect(() => {

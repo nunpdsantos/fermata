@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Piano } from '../instruments/Piano.tsx';
 import { DockReadout } from './DockReadout.tsx';
+import { MidiMark } from './MidiMark.tsx';
 import { DockToolsContext, DOCK_TOOLS_QUERY, NECK_QUERY } from './dockTools.ts';
 import { SHORT_SCREEN_QUERY, defaultExploreDetent } from '../../state/dock.ts';
 
@@ -105,6 +106,8 @@ export function InstrumentDock({ view, available, onSheetShown }: { view: DockVi
   const bar = (
     <div className="dock-bar-row">
       <InstrumentSelector />
+      {/* Wave 3: shown only while a MIDI keyboard is connected. */}
+      <MidiMark />
       {!pianoTools && <DockReadout context={context} />}
       {((wideBar && instrument === 'guitar') || pianoTools) && <div ref={setToolsSlot} className={pianoTools ? 'dock-piano-tools' : 'dock-tools'} data-testid="dock-tools" />}
       {neckAvailable && !exercise && (

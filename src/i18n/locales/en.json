@@ -209,20 +209,8 @@
     "deleteRecording": "Delete recording {{n}}",
     "take": "Take {{n}}"
   },
-  "midi": {
-    "title": "MIDI Output",
-    "enable": "Enable MIDI output",
-    "selectDevice": "Select MIDI output device",
-    "noDevice": "No device selected",
-    "noDevices": "No MIDI output devices found. Connect a MIDI device and refresh."
-  },
-  "midiInput": {
-    "title": "MIDI Input",
-    "enable": "Enable MIDI input",
-    "selectDevice": "Select MIDI input device",
-    "noDevice": "All devices (auto-detect)",
-    "noDevices": "No MIDI input devices found. Connect a MIDI controller and refresh.",
-    "badge": "MIDI"
+  "midiInputEntry": {
+    "mark": "MIDI keyboard connected"
   },
   "songRef": {
     "title": "Songs That Use This"

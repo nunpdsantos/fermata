@@ -51,6 +51,8 @@ const OPTIONAL_VALUES: Record<string, readonly unknown[]> = {
   // Wave 2 (stream C, state/capo.ts): 0 = no capo, 1–9 a capo on that fret
   // (MAX_CAPO_FRET; state/__tests__/capoFret.test.ts keeps the two in step). Saved only as 1–9.
   capoFret: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+  // Wave 3 (stream K, services/midi/): saved only while a MIDI keyboard is on.
+  midiKeyboard: [true],
 };
 
 // Numeric ranges. baseOctave = the piano's octave tabs (0–8, whole numbers);
@@ -223,6 +225,8 @@ export const useAppStore = create<AppState>()(
           // Wave 2 (stream C): written only while a capo is on, so a save
           // from someone who never uses one stays exactly what it was.
           ...(Number.isInteger(state.capoFret) && state.capoFret >= 1 && state.capoFret <= 9 ? { capoFret: state.capoFret } : {}),
+          // Wave 3 (stream K): written only while a MIDI keyboard is on.
+          ...(state.midiKeyboard === true ? { midiKeyboard: true } : {}),
         };
       },
       migrate: (persisted: unknown, version: number) => {

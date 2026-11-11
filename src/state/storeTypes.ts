@@ -176,6 +176,10 @@ export interface PreferencesSlice {
    *  `state/progressionSave.ts`). Undefined until the learner adds a chord.
    *  Optional in the v6 save: written only while it holds a chord. */
   progression?: SavedProgression;
+  /** A MIDI keyboard is on (wave 3, stream K; `services/midi/`). Undefined =
+   *  off, never asked of the browser. Optional in the v6 save: written only
+   *  while on (as `true`). */
+  midiKeyboard?: true;
   setColorMode: (mode: ColorMode) => void;
   setThemeMode: (mode: ThemeMode) => void;
   setScaleOctaves: (octaves: 1 | 2) => void;

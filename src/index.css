@@ -1038,6 +1038,12 @@ body {
     gap: 10px;
     min-width: 0;
   }
+  /* Wave 3: a MIDI keyboard is connected (components/layout/MidiMark.tsx). */
+  .midi-mark {
+    flex: none;
+    display: inline-flex;
+    color: var(--text-muted);
+  }
   /* Wraps (up to two short lines) rather than ellipsize: PT/ES "Posição
      aberta" / "1 oitava" were cut off at 390 px (W11-A review). */
   .dock-context {
