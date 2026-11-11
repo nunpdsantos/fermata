@@ -178,6 +178,29 @@ export function MetronomeBar({ onClose, focusOnOpen = true, onFocused }: {
   const shown = place !== null;
   // In the top bar's empty stretch toasts (under the top bar) never meet it — and it must not take their room.
   useToastAvoid(barRef, shown && !place?.inTopBar);
+  // Standing over the foot of the view (just above the instrument), the bar
+  // would hide the scrollers' last lines for good: while it is there they
+  // end below it (index.css, html[data-metro-room]; wave 3 integration —
+  // stream M's known limit, "the last ~110 px stay under the bar").
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    const bar = barRef.current;
+    const inSheet = !!bar?.closest('.sheet-panel');
+    if (!shown || place?.inTopBar || inSheet || !bar) {
+      delete root.dataset.metroRoom;
+      root.style.removeProperty('--metro-room');
+      return;
+    }
+    const dock = document.querySelector('[data-testid="instrument-dock"]')?.getBoundingClientRect();
+    const floor = dock && dock.height > 0 && dock.top < window.innerHeight ? dock.top : window.innerHeight;
+    const room = Math.max(0, Math.round(floor - (place?.top ?? floor)));
+    root.dataset.metroRoom = '';
+    root.style.setProperty('--metro-room', `${room}px`);
+    return () => {
+      delete root.dataset.metroRoom;
+      root.style.removeProperty('--metro-room');
+    };
+  }, [shown, place?.top, place?.inTopBar, compact]);
   useLayoutEffect(() => {
     if (shown) measureToastRoom();
   }, [shown, place?.top, place?.left, compact]);

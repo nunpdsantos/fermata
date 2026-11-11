@@ -838,6 +838,12 @@ body {
      containing block, moving and clipping it for those 0.18 s). */
   .sheet-companions { display: contents; }
   .sheet-panel:has(> .sheet-companions > *) { animation: none; }
+  /* A phone's bottom sheet leaves the tool's compact form its room above it
+     (one control row, --tap, plus the bar's padding and a gap each side),
+     so the tool never covers the sheet's heading. */
+  @media (max-width: 639px) {
+    .sheet-panel:has(> .sheet-companions > *) { max-height: calc(100dvh - 24px - var(--tap) - 28px); }
+  }
   .sheet-heading .btn { flex: none; }
   .sheet-actions { padding-top: 12px; }
   .scroll-body-frame { position: relative; display: flex; min-height: 0; flex: 1 1 auto; padding-block: 6px; }
@@ -2316,6 +2322,16 @@ p.explore-prose {
 
 /* Learn's viewport is the shell's free area, not the window. */
 .learn-scroll { scroll-padding-top: var(--learn-top, 8px); scroll-padding-bottom: var(--learn-bottom, 8px); padding-bottom: var(--learn-bottom, 8px); }
+/* The metronome's bar (wave 3) over the foot of the view: while it stands
+   there (MetronomeBar sets html[data-metro-room] and --metro-room, the room
+   it takes above the instrument), Explore's and Learn's scrollers end below
+   it, so their last lines can be scrolled out from under it. Without the
+   bar nothing here applies. */
+html[data-metro-room] .explore-main { padding-bottom: calc(var(--metro-room) + 8px); }
+html[data-metro-room] .learn-scroll {
+  padding-bottom: calc(var(--learn-bottom, 8px) + var(--metro-room));
+  scroll-padding-bottom: calc(var(--learn-bottom, 8px) + var(--metro-room));
+}
 .learn-scroll-target { scroll-margin-top: 0; }
 @media (max-height: 500px) and (min-width: 640px) {
   .check-run { max-width: 1100px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 16px; align-items: start; padding-top: 0; }
