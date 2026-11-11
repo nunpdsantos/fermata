@@ -107,6 +107,28 @@ export interface SprintRun {
 export interface DrillSettings extends SessionConfig {
   sound: boolean;      // default true
   showTimer: boolean;  // default false
+  /**
+   * "Follow my lessons" (wave 2): Drill asks about what the completed
+   * lessons open, plus every fact already scheduled. OPTIONAL, saved only once it says something: absent = never
+   * set, and the value in force is derived (services/drillFollow.ts
+   * `followInForce`: on for a 'new' / 'player' learner with no Drill history,
+   * off for everyone else). Written when the learner touches the switch, or by
+   * their first session. Persist stays v3 (as `introDone`, no version bump);
+   * a save without it is written back without it.
+   */
+  followLessons?: boolean;
+}
+
+/** What the view hands startSession (wave 2): the follow switch in force and its pool. */
+export interface StartSessionOptions {
+  /** The switch's value in force; saved by the FIRST session when the learner never set it. */
+  followLessons?: boolean;
+  /**
+   * While following: what the completed lessons open (data/drillUnlocks.ts
+   * `isItemUnlocked`); facts already scheduled stay in as well. null/absent =
+   * the topic choices, as before.
+   */
+  unlocked?: ((item: DrillItem) => boolean) | null;
 }
 
 // ─── Defaults ─────────────────────────────────────────────────────────────────
@@ -141,7 +163,7 @@ interface DrillStoreState {
    */
   introDone: boolean;
 
-  startSession: (bank: DrillItem[], now: number) => void;
+  startSession: (bank: DrillItem[], now: number, options?: StartSessionOptions) => void;
   /**
    * Record an answer: SRS update, requeue, counters, the session log, and the
    * verdict now on screen (`feedback`, cleared by clearFeedback()).
@@ -249,6 +271,8 @@ function isValidSettings(v: unknown): v is DrillSettings {
   if (!isPlainObject(v.families)) return false;
   if (typeof v.sound !== 'boolean') return false;
   if (typeof v.showTimer !== 'boolean') return false;
+  // Optional (wave 2); a malformed one sends the settings down the partial path, which drops it.
+  if (v.followLessons !== undefined && typeof v.followLessons !== 'boolean') return false;
   return true;
 }
 
@@ -363,6 +387,8 @@ export function validatePersistedShape(value: unknown): {
         : DEFAULT_FAMILIES,
       sound: typeof s.sound === 'boolean' ? s.sound : DEFAULT_SETTINGS.sound,
       showTimer: typeof s.showTimer === 'boolean' ? s.showTimer : DEFAULT_SETTINGS.showTimer,
+      // Kept only when it says something; absent stays absent (never `undefined`).
+      ...(typeof s.followLessons === 'boolean' ? { followLessons: s.followLessons } : {}),
     };
   } else {
     settings = DEFAULT_SETTINGS;
@@ -441,12 +467,17 @@ export const useDrillStore = create<DrillStoreState>()(
       sprint: null,
       introDone: false,
 
-      startSession: (bank, now) => {
-        const { settings, items } = get();
+      startSession: (bank, now, options) => {
+        const { settings, items, introDone } = get();
         const seed = now % 0x80000000; // now % 2^31 — deterministic
         const id = `s${now}`;
-        const queue = composeSession(bank, items, settings, now, seed);
+        const queue = composeSession(bank, items, settings, now, seed, undefined, options?.unlocked ?? null);
+        // The first session saves the follow switch's value in force (it is
+        // derived from "no Drill history", which this session ends). Later
+        // sessions, and a learner who set it, write nothing new.
+        const saveFollow = !introDone && settings.followLessons === undefined && options?.followLessons !== undefined;
         set({
+          ...(saveFollow ? { settings: { ...settings, followLessons: options.followLessons } } : {}),
           activeSession: {
             id,
             queue,

@@ -193,6 +193,12 @@ function pickFresh(
  *
  * A single rand = mulberry32(seed) drives both shuffles in fixed order:
  *   first review, then confidence.
+ *
+ * `unlocked` (wave 2, "Follow my lessons"): when given, it REPLACES the
+ * family filter in step 1 — the pool is what the completed lessons open
+ * (data/drillUnlocks.ts `isItemUnlocked`) plus every fact that already has a
+ * saved state, so a scheduled card is never dropped; the topic choices are
+ * set aside. Everything after step 1 is unchanged.
  */
 export function composeSession(
   bank: DrillItem[],
@@ -201,11 +207,14 @@ export function composeSession(
   now: number,
   seed: number,
   groupOf: GroupOf = drillSiblingGroup,
+  unlocked: ((item: DrillItem) => boolean) | null = null,
 ): string[] {
   const rand = mulberry32(seed);
 
-  // 1. Family-filtered pool
-  const pool = bank.filter((item) => config.families[item.family]);
+  // 1. Family-filtered pool (or, following the lessons, what they open)
+  const pool = unlocked
+    ? bank.filter((item) => states[item.id] !== undefined || unlocked(item))
+    : bank.filter((item) => config.families[item.family]);
 
   // 2. Due items (tier != 'new', card.due <= now), sorted most-overdue first
   const dueItems = pool

@@ -1397,5 +1397,23 @@
       "title": "E agora?",
       "line": "Chegaste ao fim de «{{track}}». Duas formas de continuar:"
     }
+  },
+  "drillFollow": {
+    "switch": "Seguir as minhas lições",
+    "switchHint": "O Treino pergunta o que as tuas lições já ensinaram e acrescenta mais à medida que avanças.",
+    "follows": "O Treino segue as tuas lições: pergunta o que elas já ensinaram e acrescenta mais à medida que avanças.",
+    "unlockedHeading": "Já desbloqueado",
+    "soFar": "Por agora: {{list}}",
+    "degreesIn": "acordes {{degrees}} nas tonalidades {{keys}}",
+    "nothingYet": "Ainda nada desbloqueado.",
+    "next": "A seguir: {{topics}}, com a lição «{{lesson}}».",
+    "nextLater": "A seguir: {{topics}}, com uma lição mais à frente.",
+    "allOpen": "Todos os tópicos estão desbloqueados.",
+    "chooseMyself": "Escolher eu os tópicos",
+    "firstQuestions": "Ainda não há nada para perguntar. As primeiras perguntas chegam com a lição «{{lesson}}».",
+    "firstQuestionsLater": "Ainda não há nada para perguntar. As primeiras perguntas chegam com as tuas lições.",
+    "openLesson": "Abrir a lição",
+    "opensWith": "Desbloqueia com «{{lesson}}»",
+    "opensLater": "Desbloqueia com uma lição mais à frente"
   }
 }

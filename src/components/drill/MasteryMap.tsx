@@ -10,6 +10,11 @@
  * Tier colours are theme TEXT tokens (≥ 3:1 against the track in both themes,
  * W11-A: the pastel palette hues were ~1.4–2.3:1) plus a neutral for 'new'.
  * The family name is a toggle chip (pressed = drilled; D-28 choice-chip look).
+ *
+ * Wave 2, "Follow my lessons": while the switch is in force (`follow` given)
+ * the topic choices are set aside, so the family name is plain text, and a
+ * locked topic names the lesson that opens it (a part-open one, what is open
+ * so far). Without `follow` the map is exactly as before.
  */
 import { useTranslation } from 'react-i18next';
 import { DRILL_FAMILIES } from '../../core/types/drill';
@@ -23,6 +28,7 @@ import {
   totalByHeart,
   type FamilyMastery,
 } from './masterySelectors';
+import { FollowCaption, type FollowInfo } from './FollowLessons';
 
 interface MasteryMapProps {
   bank: DrillItem[];
@@ -32,6 +38,8 @@ interface MasteryMapProps {
   now: number;
   onToggleFamily: (family: DrillFamily, enabled: boolean) => void;
   onBack: () => void;
+  /** Following the lessons (wave 2): what they open. Absent = the map as before. */
+  follow?: FollowInfo | null;
 }
 
 /** Tier → bar color. 'new' uses a neutral surface token (no semantic weight). */
@@ -76,6 +84,7 @@ export function MasteryMap({
   now,
   onToggleFamily,
   onBack,
+  follow = null,
 }: MasteryMapProps) {
   const { t } = useTranslation();
   const mastery = computeMasteryByFamily(bank, items);
@@ -120,14 +129,21 @@ export function MasteryMap({
           return (
             <li key={family} className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between gap-3">
+                {follow ? (
+                  <span className="text-ui font-medium" style={{ color: 'var(--text)' }} data-family-name={family}>
+                    {t(`drill.families.${family}`)}
+                  </span>
+                ) : (
                 <ChoiceChip pressed={enabled} onClick={() => onToggleFamily(family, !enabled)}>
                   {t(`drill.families.${family}`)}
                 </ChoiceChip>
+                )}
                 <span className="text-caption tabular-nums" style={{ color: 'var(--text-dim)' }}>
                   {t('drill.mastery.counts', { byHeart: m.byHeart, total: m.total })}
                 </span>
               </div>
               <StackedBar m={m} />
+              {follow && <FollowCaption info={follow} family={family} />}
               {family === 'read' && (
                 <ol className="flex flex-col gap-2 pl-3 mt-2">
                   {reading.map((stage, i) => (

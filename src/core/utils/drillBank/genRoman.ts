@@ -122,6 +122,8 @@ export function genRoman(): DrillItem[] {
         whyKey: 'drill.why.diatonicMember',
         whyParams: { numeral, key: keyDisplay, chord: correct },
         rank: majorRankBase + (n - 1),
+        key: majorStr,
+        degree: n,
       });
 
       // chord-to-degree: the 4 numerals as choices
@@ -143,6 +145,8 @@ export function genRoman(): DrillItem[] {
         whyKey: 'drill.why.diatonicMember',
         whyParams: { numeral, key: keyDisplay, chord: correct },
         rank: majorRankBase + (n - 1) + 7,
+        key: majorStr,
+        degree: n,
       });
     }
   }
@@ -180,6 +184,8 @@ export function genRoman(): DrillItem[] {
         whyKey: 'drill.why.diatonicMember',
         whyParams: { numeral, key: keyDisplay, chord: correct },
         rank: minorRankOffset + (minorKeyIdx * 16) + (n - 1),
+        key: minorStr,
+        degree: n,
       });
 
       const otherNumerals = minorDiatonic
@@ -200,6 +206,8 @@ export function genRoman(): DrillItem[] {
         whyKey: 'drill.why.diatonicMember',
         whyParams: { numeral, key: keyDisplay, chord: correct },
         rank: minorRankOffset + (minorKeyIdx * 16) + (n - 1) + 7,
+        key: minorStr,
+        degree: n,
       });
     }
   }
@@ -297,6 +305,8 @@ export function genRoman(): DrillItem[] {
       whyKey: 'drill.why.diatonicMember',
       whyParams: { numeral: entry.numeral, key: keyDisplay, chord: yesChord },
       rank: rank++,
+      key: keyStr,
+      degree: n,
     });
 
     items.push({
@@ -309,6 +319,8 @@ export function genRoman(): DrillItem[] {
       whyKey: 'drill.why.notDiatonic',
       whyParams: { numeral: entry.numeral, key: keyDisplay, chord: noChord, diatonic: yesChord },
       rank: rank++,
+      key: keyStr,
+      degree: n,
     });
   }
 
