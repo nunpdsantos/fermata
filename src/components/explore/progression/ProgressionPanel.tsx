@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { Chord } from '../../../core/types/music';
 import { chordInKey, hasOpenGrip, type MusicKey } from '../../../core/utils/progression';
 import { buildScale } from '../../../core/constants/scales';
+import { hasChordShapes } from '../../../core/constants/guitarTunings';
 import { useAppStore } from '../../../state/store';
 import { useCapoFret, setCapoFret } from '../../../state/capo';
 import { setProgressionOffer, useProgressionOffer } from '../../../state/progressionPanel';
@@ -46,7 +47,8 @@ export default function ProgressionPanel() {
   const scale = useAppStore((s) => s.selectedScale);
   const guitar = useAppStore((s) => s.instrument === 'guitar');
   // The shape library and the capo ideas are for standard tuning only (as the fretboard's chord shapes).
-  const standardTuning = useAppStore((s) => s.guitarTuningId === 'standard');
+  // The fretboard's own rule for its grips (core/constants/guitarTunings.ts), so both surfaces agree.
+  const standardTuning = useAppStore((s) => hasChordShapes(s.guitarTuningId));
   const saved: SavedProgression = useAppStore((s) => s.progression) ?? EMPTY_PROGRESSION;
   const capo = useCapoFret();
   const offer = useProgressionOffer();

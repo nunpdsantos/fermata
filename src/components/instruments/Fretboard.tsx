@@ -1,7 +1,7 @@
 import { useMemo, useCallback, useState, useEffect, useRef, useLayoutEffect, useContext } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { getTuningById, getTuningPitchClasses, getTuningStringLabels, GUITAR_TUNINGS } from '../../core/constants/guitarTunings.ts';
+import { getTuningById, getTuningPitchClasses, getTuningStringLabels, GUITAR_TUNINGS, hasChordShapes } from '../../core/constants/guitarTunings.ts';
 import type { GuitarTuning } from '../../core/constants/guitarTunings.ts';
 import { midiToNote } from '../../core/utils/pianoLayout.ts';
 import { chordShapesForCapo } from '../../core/constants/guitarChordShapes.ts';
@@ -107,7 +107,8 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
   const rows = stringsDown(orientation.top);
 
   const tuning: GuitarTuning = useMemo(() => getTuningById(guitarTuningId), [guitarTuningId]);
-  const isStandardTuning = tuning.id === 'standard';
+  // The one rule the Progression panel's capo ideas use too (wave 2 integration).
+  const isStandardTuning = hasChordShapes(tuning.id);
   const tuningPitchClasses = useMemo(() => getTuningPitchClasses(tuning), [tuning]);
   const stringNames = useMemo(() => getTuningStringLabels(tuning), [tuning]);
 
