@@ -832,6 +832,12 @@ body {
     animation: sheet-up 0.18s ease-out;
   }
   .sheet-heading, .sheet-actions, .sheet-grab { flex: none; }
+  /* A tool kept in reach over the sheet (wave 3: the metronome's bar, which
+     is position: fixed). No box of its own; while it holds one, the panel's
+     entrance does not animate (a transform would make the panel the bar's
+     containing block, moving and clipping it for those 0.18 s). */
+  .sheet-companions { display: contents; }
+  .sheet-panel:has(> .sheet-companions > *) { animation: none; }
   .sheet-heading .btn { flex: none; }
   .sheet-actions { padding-top: 12px; }
   .scroll-body-frame { position: relative; display: flex; min-height: 0; flex: 1 1 auto; padding-block: 6px; }

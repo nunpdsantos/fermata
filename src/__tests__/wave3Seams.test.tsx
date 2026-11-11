@@ -42,7 +42,8 @@ const C: Note = { natural: 'C', accidental: '' };
 const RELEASE_MS = APP_SOUND_RELEASE_S * 1000;
 
 const voice = {
-  playNote: vi.fn(() => true), startNote: vi.fn(() => true), stopNote: vi.fn(), setVolume: vi.fn(),
+  playNote: vi.fn((_midi: number, _when: number, _duration: number, _velocity: number) => true),
+  startNote: vi.fn((_midi: number, _velocity: number) => true), stopNote: vi.fn(), setVolume: vi.fn(),
   resume: vi.fn(() => Promise.resolve()), cancelScheduled: vi.fn(),
 };
 
@@ -102,7 +103,7 @@ describe('core audio: "the app is sounding now, until t"', () => {
   });
 
   it('a scale (scheduled one-shots): every note counts from its own start', () => {
-    playScale([C, { natural: 'D', accidental: '' }, { natural: 'E', accidental: '' }], 4, 0.4);
+    playScale([C, { natural: 'D', accidental: '' }, { natural: 'E', accidental: '' }], 4, true, false, 0.4);
     // Something sounds at each moment through the whole scale.
     for (let ms = 0; ms < 3 * 400; ms += 100) expect(appSoundingUntil(t0 + ms), `${ms} ms`).toBeGreaterThan(t0 + ms);
   });

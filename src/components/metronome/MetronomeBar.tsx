@@ -108,18 +108,26 @@ function usePlacement(barRef: React.RefObject<HTMLElement | null>): MetronomePla
         // Before a form has been drawn at this width: a guess that errs on the large side.
         const fullSize = full ?? { w: cap(BAR_MAX_WIDTH), h: (small?.h ?? 52) * 2 };
         const smallSize = small ?? { w: cap(240), h: fullSize.h };
+        // Kept in reach over a sheet (MetronomeHost portals it into the sheet:
+        // wave 3 integration, seam 5): everything under the scrim is out of
+        // play, the top bar included, so the bar may go up to the window's
+        // top; it never covers the sheet's panel where there is room — above
+        // a phone's bottom sheet (its floor), beside a wider screen's panel.
+        const panel = bar?.closest('.sheet-panel')?.getBoundingClientRect();
+        const bottomSheet = panel ? panel.width >= vw - 2 * GUTTER : false;
+        const floorAt = panel && bottomSheet ? panel.top : dock && dock.height > 0 && dock.top < vh ? dock.top : vh;
         const next = placeMetronome({
           viewport: { width: vw, height: vh },
-          topBarBottom: topBar?.bottom ?? 0,
-          topClear: hint && hint.height > 0 ? hint.bottom : undefined,
-          floor: dock && dock.height > 0 && dock.top < vh ? dock.top : vh,
+          topBarBottom: panel ? 0 : topBar?.bottom ?? 0,
+          topClear: !panel && hint && hint.height > 0 ? hint.bottom : undefined,
+          floor: floorAt,
           fullWidth: cap(fullSize.w),
           fullHeight: fullSize.h,
           compactWidth: cap(smallSize.w),
           compactHeight: smallSize.h,
-          hard: answers ? [answers] : [],
-          soft: detail ? [detail] : [],
-          topBarSpans: topBarSpans(),
+          hard: [...(answers && !panel ? [answers] : []), ...(panel && !bottomSheet ? [toBox(panel)] : [])],
+          soft: detail && !panel ? [detail] : [],
+          topBarSpans: panel ? [] : topBarSpans(),
         });
         const rounded = { top: Math.round(next.top), left: Math.round(next.left), compact: next.compact, inTopBar: !!next.inTopBar };
         const key = JSON.stringify(rounded);
@@ -145,7 +153,12 @@ function usePlacement(barRef: React.RefObject<HTMLElement | null>): MetronomePla
  * (`useToastAvoid`). One line says why it stopped when the Progression
  * loop started (and while the loop plays).
  */
-export function MetronomeBar({ onClose }: { onClose: () => void }) {
+export function MetronomeBar({ onClose, focusOnOpen = true, onFocused }: {
+  onClose: () => void;
+  /** ▶ takes focus once it is placed (false when the bar only moved into or out of a sheet). */
+  focusOnOpen?: boolean;
+  onFocused?: () => void;
+}) {
   const { t } = useTranslation();
   const { bpm, beats } = useMetronomeSettings();
   const running = useMetronome((s) => s.running);
@@ -170,12 +183,13 @@ export function MetronomeBar({ onClose }: { onClose: () => void }) {
   }, [shown, place?.top, place?.left, compact]);
 
   // Focus on ▶ when the bar opens (it was opened from the "⋯" menu).
-  const focused = useRef(false);
+  const focused = useRef(!focusOnOpen);
   useEffect(() => {
     if (focused.current || !shown) return;
     focused.current = true;
     (playRef.current ?? barRef.current?.querySelector<HTMLElement>('button'))?.focus({ preventScroll: true });
-  }, [shown]);
+    onFocused?.();
+  }, [shown, onFocused]);
 
   // A control that went away with the compact form: focus stays in the bar.
   useLayoutEffect(() => {

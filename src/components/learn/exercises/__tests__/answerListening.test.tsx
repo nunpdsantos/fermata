@@ -37,7 +37,7 @@ const choice: ExerciseDefinition = {
 };
 const EXERCISES = [build('b1'), choice, build('b2')];
 /** A fixed order (the saved-run shape a reload resumes): build, choice, build. */
-const RESUME = { order: ['b1', 'mc', 'b2'], index: 0, scores: [], items: [], attempt: 1, selectedNotes: [], tried: [], missed: null, final: null };
+const RESUME = { order: ['b1', 'mc', 'b2'], index: 0, scores: [], items: [], attempt: 1 as const, selectedNotes: [], tried: [], missed: null, final: null };
 
 let mic: FakeMic;
 beforeEach(async () => {
