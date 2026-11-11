@@ -76,8 +76,12 @@ function modalOpen(): boolean {
   if (typeof document === 'undefined') return false;
   // The landscape full-neck view is a dialog, but it IS Explore's instrument.
   // The tuner is a sheet whose "Show what I play on the instrument" exists to
-  // light Explore's instrument behind it (wave 3 integration): not "over".
-  return document.querySelector('[aria-modal="true"]:not([data-testid="neck-view"]):not([data-testid="tuner-sheet"])') !== null;
+  // light Explore's instrument behind it (wave 3 integration): not "over" —
+  // in Explore. Anywhere else (over a check, in Drill) it is a sheet like any
+  // other, so a key played then adds nothing to an answer hidden behind it
+  // (wave 3 final review).
+  const tuner = useAppStore.getState().view === 'explore' ? ':not([data-testid="tuner-sheet"])' : '';
+  return document.querySelector(`[aria-modal="true"]:not([data-testid="neck-view"])${tuner}`) !== null;
 }
 
 /** Where a note played now lands. */

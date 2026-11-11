@@ -88,6 +88,28 @@ describe('seam 1: the tuner sheet over Explore', () => {
     settings.remove();
     tuner.remove();
   });
+
+  it('the tuner sheet over a check (anywhere but Explore) is a sheet over it: a key played adds nothing to the hidden answer', () => {
+    const added: number[] = [];
+    useAppStore.setState({ view: 'learn', exerciseInputActive: true });
+    const untarget = setExternalAnswerTarget((m) => added.push(m));
+    expect(externalPlace()).toBe('answer');
+    const tuner = modal('tuner-sheet');
+    expect(externalPlace()).toBe('elsewhere');
+    applyExternalNote({ midi: 61, on: true, source: 'midi', velocity: 0.8 });
+    applyExternalNote({ midi: 61, on: false, source: 'midi' });
+    applyExternalNote({ midi: 62, on: true, source: 'mic' });
+    applyExternalNote({ midi: 62, on: false, source: 'mic' });
+    expect(added).toEqual([]);
+    tuner.remove();
+    expect(externalPlace()).toBe('answer');
+    untarget();
+    // In Drill too it is a sheet over the view.
+    useAppStore.setState({ view: 'drill', exerciseInputActive: false });
+    const again = modal('tuner-sheet');
+    expect(externalPlace()).toBe('elsewhere');
+    again.remove();
+  });
 });
 
 describe('core audio: "the app is sounding now, until t"', () => {
@@ -100,6 +122,30 @@ describe('core audio: "the app is sounding now, until t"', () => {
     expect(appSoundingUntil(t0)).toBe(t0 + 500 + RELEASE_MS);
     expect(appSoundingUntil(t0 + 500 + RELEASE_MS - 1)).toBeGreaterThan(0);
     expect(appSoundingUntil(t0 + 500 + RELEASE_MS + 1)).toBe(0);
+  });
+
+  it('the release and the tail, in milliseconds (not read from the constants they pin): 1 s, 300 ms', () => {
+    // A note of half a second sounds until 1.5 s after it starts.
+    playNote(C, 4, 0.5);
+    expect(appSoundingUntil(t0 + 1490)).toBe(t0 + 1500);
+    expect(appSoundingUntil(t0 + 1501)).toBe(0);
+    // The microphone hears a steady E from 1.5 s on: nothing until 300 ms after the app stopped (1.8 s), then the
+    // E held 100 ms more is the learner's.
+    const heard: number[] = [];
+    const off = subscribeExternalNotes((n) => {
+      if (n.source === 'mic' && n.on) heard.push(performance.now() - t0);
+    });
+    const r = reportPlayedNotes();
+    for (let ms = 30; ms <= 2400; ms += 30) {
+      vi.advanceTimersByTime(30);
+      r.onFrame({ frequency: midiHz(64), clarity: 0.97 }, performance.now());
+    }
+    // (Frames come every 30 ms, so the last frame that met the app's sound may be up to one frame before 1.5 s.)
+    expect(heard).toHaveLength(1);
+    expect(heard[0]).toBeGreaterThanOrEqual(1800 + 100 - 30);
+    expect(heard[0]).toBeLessThanOrEqual(1800 + 100 + 60);
+    r.dispose();
+    off();
   });
 
   it('a scale (scheduled one-shots): every note counts from its own start', () => {
@@ -240,12 +286,19 @@ describe('seam 4: a MIDI keyboard and the microphone together', () => {
     voice.startNote.mockClear();
     act(() => applyExternalNote({ midi: 60, on: true, source: 'midi', velocity: 0.8 }));
     expect(voice.startNote.mock.calls.map((c) => c[0])).toEqual([60]);
-    // The speaker's C reaches the microphone while the key is held, and after it.
+    // The speaker's C reaches the microphone while the key is held for 2 s, and through its release and the tail after.
+    let releasedAt: number | null = null;
     for (let t = 0; t < 2000 + RELEASE_MS + APP_SOUND_TAIL_MS; t += 30) {
       vi.advanceTimersByTime(30);
-      if (t === 2000) act(() => applyExternalNote({ midi: 60, on: false, source: 'midi' }));
+      if (releasedAt === null && t >= 2000) {
+        releasedAt = t;
+        act(() => applyExternalNote({ midi: 60, on: false, source: 'midi' }));
+      }
       r.onFrame({ frequency: midiHz(60), clarity: 0.97 }, performance.now());
     }
+    // The key really was let go, with the release and the tail still heard after it.
+    expect(releasedAt).not.toBeNull();
+    expect(2000 + RELEASE_MS + APP_SOUND_TAIL_MS - releasedAt!).toBeGreaterThan(RELEASE_MS);
     expect(heard.filter((n) => n.source === 'mic')).toEqual([]);
     expect(voice.startNote).toHaveBeenCalledTimes(1);
     expect(added).toEqual([60]);
