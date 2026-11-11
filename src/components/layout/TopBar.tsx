@@ -1,14 +1,36 @@
-import { useState } from 'react';
+import { Suspense, lazy, useEffect, useState, type ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore, type ViewMode } from '../../state/store.ts';
 import { Segment } from '../ui/Segment.tsx';
 import { Button } from '../ui/Button.tsx';
 import { Menu } from '../ui/Menu.tsx';
-import { SettingsSheet } from './SettingsSheet.tsx';
+import { toast } from '../../state/toastStore.ts';
 import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { usePwaUpdateStore, applyUpdateOrReload } from '../../hooks/usePWA.ts';
 import { requestDemo } from '../../state/demoRequest.ts';
 import { resumeAudio } from '../../core/services/audio.ts';
+
+// Settings is a lazy chunk (wave 2 integration, for the entry file's budget):
+// fetched the first time it is opened, then kept mounted (its close animation
+// and focus return). A failed download says so once and leaves it closed; the
+// NEXT open builds a fresh lazy() (React keeps a rejected one for good) and
+// remounts it under a new key, so it really downloads again. (Building the
+// fresh lazy() at once instead retried in the same open, and React then kept
+// the failed fiber, so Settings never opened again: final review of wave 2.)
+type SettingsProps = { open: boolean; onClose: () => void };
+const loadSettings = () => lazy<ComponentType<SettingsProps>>(() =>
+  import('./SettingsSheet.tsx').then((m) => ({ default: m.SettingsSheet })).catch(() => ({ default: SettingsUnavailable })));
+let SettingsSheet = loadSettings();
+let settingsFailed = false;
+function SettingsUnavailable({ onClose }: SettingsProps) {
+  const { t } = useTranslation();
+  useEffect(() => {
+    settingsFailed = true;
+    onClose();
+    toast(t('settings.loadError'), 'error');
+  }, [t, onClose]);
+  return null;
+}
 
 const VIEWS: ViewMode[] = ['explore', 'learn', 'drill'];
 const VIEW_KEYS: Record<ViewMode, string> = {
@@ -37,6 +59,20 @@ export function TopBar() {
   const view = useAppStore((s) => s.view);
   const setView = useAppStore((s) => s.setView);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  // Mounted from the first open on (the sheet animates out and returns focus).
+  const [settingsMounted, setSettingsMounted] = useState(false);
+  // Bumped when a failed download is tried again: a new fiber for the fresh lazy().
+  const [settingsAttempt, setSettingsAttempt] = useState(0);
+  const openSettings = () => {
+    if (settingsFailed) {
+      settingsFailed = false;
+      SettingsSheet = loadSettings();
+      setSettingsAttempt((n) => n + 1);
+    }
+    setSettingsMounted(true);
+    setSettingsOpen(true);
+  };
+  const [closeSettings] = useState(() => () => setSettingsOpen(false));
   // Below 360 px the three tabs need the room: search moves into the menu.
   const narrow = useMediaQuery('(max-width: 359px)');
   const updateReady = usePwaUpdateStore((s) => s.needRefresh);
@@ -97,14 +133,18 @@ export function TopBar() {
           buttonLabel={updateDeferred ? t('nav.moreUpdateReady') : undefined}
           items={[
             ...(narrow ? [{ id: 'search', label: t('nav.search'), onSelect: openSearch }] : []),
-            { id: 'settings', label: t('settings.title'), onSelect: () => setSettingsOpen(true) },
+            { id: 'settings', label: t('settings.title'), onSelect: openSettings },
             { id: 'show-me', label: t('showMe.menuItem'), onSelect: showMeAround },
             // A waiting update stays one tap away after "Later" (until the reload).
             ...(updateReady ? [{ id: 'update', label: t('pwa.updateReady'), onSelect: () => void applyUpdateOrReload() }] : []),
           ]}
         />
       </div>
-      <SettingsSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      {settingsMounted && (
+        <Suspense fallback={null}>
+          <SettingsSheet key={settingsAttempt} open={settingsOpen} onClose={closeSettings} />
+        </Suspense>
+      )}
     </header>
   );
 }

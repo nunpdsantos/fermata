@@ -19,6 +19,13 @@ import { ReviewQueue } from './ReviewQueue';
 import { LevelCard } from './LevelCard';
 import { ProgressBar } from './ProgressBar';
 import { useAppStore } from '../../state/store.ts';
+import { useLearnerProfile } from '../../state/learnerProfile.ts';
+import type { TrackInfo } from '../../data/tracks';
+import { TrackSection } from './tracks/TrackCard';
+import { overviewTracks, trackContinue } from './tracks/trackOverview';
+import { MODULE_INDEX } from '../../data/moduleIndex';
+import { getModuleTitle } from '../../data/moduleIndexI18n';
+import { useLocalizedModuleIndex } from '../../hooks/useLocalizedModuleIndex';
 
 type ResolvedNext =
   | { key: string; level: CurriculumLevel; unit: CurriculumUnit; module: CurriculumModule }
@@ -42,6 +49,8 @@ interface LevelsOverviewProps {
   onOpenLevel: (levelId: string) => void;
   onOpenModule: (moduleId: string, unitId: string, levelId: string) => void;
   onStartReview?: (moduleId: string) => void;
+  /** Opens a starting track's page (wave 2). Without it, no track cards. */
+  onOpenTrack?: (track: TrackInfo) => void;
 }
 
 export function LevelsOverview({
@@ -49,9 +58,15 @@ export function LevelsOverview({
   onOpenLevel,
   onOpenModule,
   onStartReview,
+  onOpenTrack,
 }: LevelsOverviewProps) {
   const { t } = useTranslation();
   const language = useAppStore((s) => s.language) as ContentLanguage;
+  // The starting tracks (wave 2): a guided learner's own track at the top;
+  // for everyone else (the owner) below the level grid, so nothing above it
+  // moves. Static data only.
+  const profile = useLearnerProfile();
+  const tracks = useMemo(() => overviewTracks(profile), [profile]);
 
   const translatedMeta = useMemo(
     () => translateLevelMetadata(LEVEL_METADATA, language),
@@ -63,7 +78,20 @@ export function LevelsOverview({
   // loaded, for its translated titles (was: all nine levels, and one failed
   // download made the banner vanish, unhandled). If the load fails (offline),
   // the banner is built from the static index instead.
-  const nextEntry = useMemo(() => findNextModuleEntry(progress), [progress]);
+  // A learner who came in by a track's door continues in that track while it
+  // has a lesson left (the seat's decision S-1); built from static data, so
+  // no level is downloaded for it. Otherwise (the owner) as before.
+  const trackNext = useMemo(() => trackContinue(profile, progress.completedModules), [profile, progress.completedModules]);
+  const localizedIndex = useLocalizedModuleIndex(language);
+  const trackBanner = useMemo(() => {
+    if (!trackNext) return null;
+    const entry = MODULE_INDEX.find((md) => md.id === trackNext.moduleId);
+    const meta = translatedMeta.find((l) => l.id === trackNext.track.levelId);
+    if (!entry || !meta) return null;
+    const title = (localizedIndex ? getModuleTitle(entry.id, language) : null) ?? entry.title;
+    return { ...fallbackNextUp({ ...entry, title }, meta), context: `${t(`tracks.${trackNext.track.id}.title`)} \u00b7 ${t('tracks.lesson', { n: trackNext.lesson })}` };
+  }, [trackNext, translatedMeta, localizedIndex, language, t]);
+  const nextEntry = useMemo(() => (trackNext ? undefined : findNextModuleEntry(progress)), [progress, trackNext]);
   const nextKey = nextEntry ? `${language}:${nextEntry.id}` : null;
   const [resolved, setResolved] = useState<ResolvedNext | null>(null);
   useEffect(() => {
@@ -140,8 +168,30 @@ export function LevelsOverview({
 
       </m.div>
 
+      {/* Start here: the learner's own track, then the other one (wave 2) */}
+      {onOpenTrack && tracks.startHere && (
+        <>
+          <TrackSection
+            heading={t('tracks.startHere')}
+            tracks={[tracks.startHere]}
+            completedModules={progress.completedModules}
+            onOpen={onOpenTrack}
+            testId="tracks-start-here"
+            className="mb-6"
+          />
+          <TrackSection
+            heading={t('tracks.otherWays')}
+            tracks={tracks.others}
+            completedModules={progress.completedModules}
+            onOpen={onOpenTrack}
+            testId="tracks-other"
+            className="mb-8"
+          />
+        </>
+      )}
+
       {/* Welcome banner — shown only when zero progress */}
-      {totalCompleted === 0 && !nextUp && (
+      {totalCompleted === 0 && !nextUp && !trackBanner && (
         <m.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -181,8 +231,17 @@ export function LevelsOverview({
         </m.div>
       )}
 
-      {/* Continue banner */}
-      {nextUp && (
+      {/* Continue banner: the learner's track while it has a lesson left (S-1), else the levels' next module */}
+      {trackBanner && (
+        <ContinueBanner
+          module={trackBanner.module}
+          unit={trackBanner.unit}
+          level={trackBanner.level}
+          context={trackBanner.context}
+          onClick={() => onOpenModule(trackBanner.module.id, trackBanner.unit.id, trackBanner.level.id)}
+        />
+      )}
+      {!trackBanner && nextUp && (
         <ContinueBanner
           module={nextUp.module}
           unit={nextUp.unit}
@@ -239,6 +298,18 @@ export function LevelsOverview({
             ))}
           </div>
         </>
+      )}
+
+      {/* Other ways in: both tracks, below the level grid (wave 2) */}
+      {onOpenTrack && tracks.place === 'below' && (
+        <TrackSection
+          heading={t('tracks.otherWays')}
+          tracks={tracks.others}
+          completedModules={progress.completedModules}
+          onOpen={onOpenTrack}
+          testId="tracks-other"
+          className="mt-8"
+        />
       )}
     </div>
   );

@@ -14,6 +14,7 @@ import { readoutParts, readoutVariants, chordSymbol } from '../focusReadout';
 import { buildScale } from '../../../core/constants/scales';
 import { buildChord } from '../../../core/constants/chords';
 import { spellSharpDefault } from '../../../core/utils/spelling';
+import { chordFromParsed, parseChordSymbol } from '../../../core/utils/chordParser';
 import type { Note } from '../../../core/types/music';
 
 const N = (s: string): Note => ({ natural: s[0], accidental: s.slice(1) }) as Note;
@@ -106,5 +107,11 @@ describe('read-out wording', () => {
   it('chord symbols as the cards print them', () => {
     expect(chordSymbol(buildChord(N('D'), 'minor'))).toBe('Dm');
     expect(chordSymbol(buildChord(N('B'), 'diminished'))).toBe('Bdim');
+  });
+  it('a chord the parser built is named once, root and bass included (final review of wave 2)', () => {
+    const parsed = (s: string) => chordFromParsed(parseChordSymbol(s)!);
+    expect(chordSymbol(parsed('Am(add9)'))).toBe('Am(add9)');
+    expect(chordSymbol(parsed('G7b9#11'))).toBe('G7♭9♯11');
+    expect(chordSymbol(parsed('Cm(add9)/G'))).toBe('Cm(add9)/G');
   });
 });

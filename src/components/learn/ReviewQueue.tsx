@@ -17,6 +17,7 @@ import {
 import { translateLevelMetadata } from '../../i18n/content/levelMetaResolver';
 import type { ContentLanguage } from '../../i18n/content/types';
 import { getModuleTitle } from '../../data/moduleIndexI18n';
+import { trackOfModule } from '../../data/tracks';
 import { useLocalizedModuleIndex } from '../../hooks/useLocalizedModuleIndex';
 import { useAppStore } from '../../state/store';
 import { Card } from '../ui/Card';
@@ -141,16 +142,21 @@ export function ReviewQueue({ progress, onStartReview }: ReviewQueueProps) {
       <div className="space-y-2">
         {shown.map((moduleId) => {
           const schedule = (progress.reviewSchedules ?? {})[moduleId];
-          const levelTitle = levelTitles.get(moduleId.slice(0, 2)) ?? '';
+          // A track lesson belongs to no level (its lesson page names none): the
+          // row names its track (final review of wave 2).
+          const track = trackOfModule(moduleId);
+          const levelTitle = track ? t(`tracks.${track.id}.title`) : levelTitles.get(moduleId.slice(0, 2)) ?? '';
           const parsed = parseModuleId(moduleId);
           const next = schedule ? describeNextReview(schedule, now) : null;
           // Due rows are (by definition) due now; the chip says so.
           const reviewStatus = !next ? '' : next.kind === 'dueNow' ? t('review.dueNow') : wordNextReview(next, t);
           const span = schedule ? getIntervalSpan(schedule.intervalLevel) : null;
           const interval = span ? t(`review.span.${span.unit}`, { count: span.count }) : '';
-          const position = parsed
-            ? `${t('learn.level', { n: parsed.level })} · ${t('learn.unit', { n: parsed.unit })} · ${t('learn.module', { n: parsed.module })}`
-            : moduleId;
+          const position = track
+            ? `${levelTitle} · ${t('tracks.lesson', { n: track.moduleIds.indexOf(moduleId) + 1 })}`
+            : parsed
+              ? `${t('learn.level', { n: parsed.level })} · ${t('learn.unit', { n: parsed.unit })} · ${t('learn.module', { n: parsed.module })}`
+              : moduleId;
           // The module's real name (W6-17); the level/unit/module position is
           // the fallback for an id the index does not know.
           const moduleTitle = (localizedIndex ? getModuleTitle(moduleId, language) : getModuleTitle(moduleId, 'en')) ?? position;

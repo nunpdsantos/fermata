@@ -10,6 +10,7 @@ import { GUITAR_TUNINGS } from '../core/constants/guitarTunings.ts';
 import { isAppLanguage } from '../i18n/language.ts';
 import { sanitizeDockDetents, sanitizeDockChosen } from './dock.ts';
 import type { AppState } from './storeTypes.ts';
+import { progressionToSave, sanitizeSavedProgression } from './progressionSave.ts';
 
 // Re-export types so consumers don't need to change imports
 export type { AppState, ViewMode, InstrumentType, ColorMode, ThemeMode, NeckNutSide, NeckTopString } from './storeTypes.ts';
@@ -47,6 +48,9 @@ const ALLOWED_VALUES: Record<string, readonly unknown[]> = {
 const OPTIONAL_VALUES: Record<string, readonly unknown[]> = {
   learnerProfile: ['new', 'player', 'theory', null],
   startHint: ['new', 'player', null],
+  // Wave 2 (stream C, state/capo.ts): 0 = no capo, 1–9 a capo on that fret
+  // (MAX_CAPO_FRET; state/__tests__/capoFret.test.ts keeps the two in step). Saved only as 1–9.
+  capoFret: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
 };
 
 // Numeric ranges. baseOctave = the piano's octave tabs (0–8, whole numbers);
@@ -129,6 +133,10 @@ export function sanitizePersistedAppState(persisted: unknown): Record<string, un
     else if (raw?.explore !== c.explore || raw?.learn !== c.learn) state.dockChosen = c;
   }
 
+  // progression (wave 2, optional): chord symbols, tempo, beats — the same
+  // object when valid (the backup check compares with Object.is), else gone.
+  if ('progression' in state && sanitizeSavedProgression(state.progression) === null) delete state.progression;
+
   // Numeric fields: non-finite or out of range falls back to the default.
   for (const [k, { min, max, integer }] of Object.entries(NUMERIC_RANGES)) {
     const v = state[k];
@@ -210,6 +218,11 @@ export const useAppStore = create<AppState>()(
           // Written only when on: a save from someone who never turns it on
           // stays exactly what it was (the frozen v6 envelope tests).
           ...(state.showSolfege ? { showSolfege: true } : {}),
+          // Wave 2: the Progression panel's chords, only while there is one.
+          ...progressionToSave(state.progression),
+          // Wave 2 (stream C): written only while a capo is on, so a save
+          // from someone who never uses one stays exactly what it was.
+          ...(Number.isInteger(state.capoFret) && state.capoFret >= 1 && state.capoFret <= 9 ? { capoFret: state.capoFret } : {}),
         };
       },
       migrate: (persisted: unknown, version: number) => {

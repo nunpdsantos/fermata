@@ -1,7 +1,7 @@
 import { Suspense, lazy, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { RhythmPattern } from '../../../core/types/exercise';
-import { cancelScheduledAudio, playChordVoiced, playScale, resumeAudio } from '../../../core/services/audio';
+import { cancelScheduledAudio, playChordVoiced, playScale, playTimedNotes, resumeAudio } from '../../../core/services/audio';
 import { getSynthConfig } from '../../../services/synthConfig';
 import { executeTheoryQuery } from '../../../utils/queryExecutor';
 import { showLessonQuery, keepLessonInstrument } from '../../../services/lessonInstrument';
@@ -13,6 +13,9 @@ import { RhythmStaff } from '../../notation/RhythmStaff';
 import { StaffNotationSkeleton } from '../../notation/StaffNotationSkeleton';
 import { accentText } from '../../../design/tokens/learnColors';
 import { tryThisPicture } from './tryThisPicture';
+import { useNoteLabel } from '../../../hooks/useSolfege';
+import { chordListSounds } from '../../../utils/queryExecutorChords';
+import { withGlyphs } from '../../../core/utils/accidentalGlyphs';
 
 const StaffNotation = lazy(() =>
   import('../../notation/StaffNotation').then((m) => ({ default: m.StaffNotation })),
@@ -30,6 +33,12 @@ interface InlineTryThisProps {
   prompt?: string;
   /** The clef lesson: the scale on a treble staff and, an octave lower, on a bass staff. */
   clefs?: boolean;
+  /**
+   * A sound-first lesson (the "Start with sound" track, wave 2): no staff —
+   * the notes it plays are written out by name instead (letters, with Dó, Ré,
+   * Mi beside them when that setting is on).
+   */
+  names?: boolean;
 }
 
 /**
@@ -39,8 +48,9 @@ interface InlineTryThisProps {
  * Explore" keeps the old executor behaviour (jump to Explore with it
  * selected) for anyone who wants the full workbench.
  */
-export function InlineTryThis({ query, label, accent, rhythm, compact = false, prompt, clefs = false }: InlineTryThisProps) {
+export function InlineTryThis({ query, label, accent, rhythm, compact = false, prompt, clefs = false, names = false }: InlineTryThisProps) {
   const { t } = useTranslation();
+  const noteLabel = useNoteLabel();
   const instrument = useAppStore((s) => s.instrument);
   const currentKey = useAppStore((s) => s.selectedKey);
   const picture = useMemo(() => (rhythm ? { kind: 'none' as const } : tryThisPicture(query, currentKey)), [query, rhythm, currentKey]);
@@ -54,7 +64,15 @@ export function InlineTryThis({ query, label, accent, rhythm, compact = false, p
     cancelScheduledAudio();
     await resumeAudio();
     const cfg = getSynthConfig('piano');
-    if (picture.kind === 'scale') playScale(picture.notes, picture.pitches[0]?.octave ?? 4, true, false, 0.35, undefined, undefined, cfg);
+    if (picture.kind === 'chords') {
+      // A chord list (wave 2): each chord once, in order, over its root.
+      const volume = typeof cfg.volume === 'number' ? cfg.volume : 0.65;
+      playTimedNotes(
+        chordListSounds(picture.chords).flatMap(({ at, duration, pitches }) =>
+          pitches.map((note) => ({ note, at, duration, volume: volume / (1 + 0.2 * (pitches.length - 1)) }))),
+        cfg,
+      );
+    } else if (picture.kind === 'scale') playScale(picture.notes, picture.pitches[0]?.octave ?? 4, true, false, 0.35, undefined, undefined, cfg);
     else playChordVoiced(picture.notes, 4, 1.4, cfg, picture.bass);
   };
 
@@ -62,12 +80,23 @@ export function InlineTryThis({ query, label, accent, rhythm, compact = false, p
     if (showLessonQuery(query)) openDockForLesson();
   };
 
+  /** One chord of a chord list: it sounds and stands on the instrument. */
+  const showChord = async (symbol: string) => {
+    if (picture.kind !== 'chords') return;
+    const entry = picture.chords.find((c) => c.symbol === symbol);
+    if (showLessonQuery(symbol)) openDockForLesson();
+    if (!entry) return;
+    cancelScheduledAudio();
+    await resumeAudio();
+    playChordVoiced(entry.chord.notes, 3, 1.2, getSynthConfig('piano'), entry.chord.bassNote);
+  };
+
   const openInExplore = () => {
     keepLessonInstrument();
     executeTheoryQuery(query);
   };
 
-  const canShow = !rhythm && picture.kind !== 'none';
+  const canShow = !rhythm && picture.kind !== 'none' && picture.kind !== 'chords';
   return (
     <div
       className={`rounded-2xl grid gap-3 items-center ${compact ? 'p-3' : 'p-3.5 sm:grid-cols-[1fr_minmax(0,1fr)]'}`}
@@ -106,6 +135,27 @@ export function InlineTryThis({ query, label, accent, rhythm, compact = false, p
       </div>
       {rhythm ? (
         <RhythmStaff pattern={rhythm} />
+      ) : picture.kind === 'chords' ? (
+        <div role="group" aria-label={t('tracks.chordList.label')} className="flex flex-wrap gap-2 min-w-0" data-testid="try-this-chords">
+          {picture.chords.map(({ symbol }, i) => (
+            <Button
+              key={i}
+              variant="secondary"
+              aria-label={t(instrument === 'guitar' ? 'tracks.chordList.showGuitar' : 'tracks.chordList.showPiano', { chord: withGlyphs(symbol) })}
+              onClick={() => { void showChord(symbol); }}
+            >
+              <span className="learn-serif text-title">{withGlyphs(symbol)}</span>
+            </Button>
+          ))}
+        </div>
+      ) : names && (picture.kind === 'scale' || picture.kind === 'chord') ? (
+        // A list, so a screen reader names each note on its own ("C", "D", …)
+        // rather than reading the row as one word.
+        <ul role="list" className="try-this-names text-title learn-serif flex flex-wrap gap-x-3 gap-y-1 m-0 p-0 list-none min-w-0" style={{ color: 'var(--text)' }} data-testid="try-this-names">
+          {(picture.kind === 'chord' ? picture.notes : picture.pitches).map((note, i) => (
+            <li key={i}>{noteLabel(note)}</li>
+          ))}
+        </ul>
       ) : clefs && picture.kind === 'scale' ? (
         <div className="flex flex-col gap-1 min-w-0" data-testid="try-this-clefs">
           {(['treble', 'bass'] as const).map((clef) => (
@@ -124,7 +174,7 @@ export function InlineTryThis({ query, label, accent, rhythm, compact = false, p
             </figure>
           ))}
         </div>
-      ) : picture.kind !== 'none' ? (
+      ) : picture.kind === 'scale' || picture.kind === 'chord' ? (
         <Suspense fallback={<StaffNotationSkeleton height={100} />}>
           <StaffNotation
             notes={picture.pitches}

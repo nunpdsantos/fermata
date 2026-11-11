@@ -14,6 +14,7 @@ import { DetentSheet } from '../ui/DetentSheet.tsx';
 import { Button, IconButton } from '../ui/Button.tsx';
 import { useAppStore } from '../../state/store.ts';
 import { useDockContextStore } from '../../state/dockContextStore.ts';
+import { useExploreCapo } from '../instruments/capoView.ts';
 import type { Detent, DockView } from '../../state/dock.ts';
 import { useMediaQuery, SHEET_QUERY } from '../../hooks/useMediaQuery.ts';
 
@@ -45,12 +46,17 @@ function useContextLine(): string {
   const baseOctave = useAppStore((s) => s.baseOctave);
   const octaves = useAppStore((s) => s.scaleOctaves);
   const position = useDockContextStore((s) => s.guitarPosition);
+  // A capo on Explore's guitar (wave 2) is said beside what the board shows.
+  const capo = useExploreCapo();
   if (exercise) return t('dock.exerciseInput');
   const count = t('dock.octaves', { count: octaves });
   if (instrument === 'piano') return `C${baseOctave} · ${count}`;
-  if (position === null) return '';
-  if (position === 'all') return t('fretboard.allTitle');
-  return position === 0 ? t('dock.openPosition') : t('dock.position', { numeral: ROMAN[position] ?? String(position) });
+  const capoWords = capo > 0 ? t('capo.onFret', { fret: capo }) : null;
+  if (position === null) return capoWords ?? '';
+  const shown = position === 'all'
+    ? t('fretboard.allTitle')
+    : position === 0 ? t('dock.openPosition') : t('dock.position', { numeral: ROMAN[position] ?? String(position) });
+  return capoWords ? `${shown} · ${capoWords}` : shown;
 }
 
 /**

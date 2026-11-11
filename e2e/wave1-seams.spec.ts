@@ -162,10 +162,15 @@ test.describe('2. start screen ↔ share links (one rule: openedFromShareLink)',
 // ─── 3. Start screen ↔ plain words ──────────────────────────────────────────
 test.describe('3. start screen ↔ plain words', () => {
   for (const door of ['new', 'player', 'theory'] as const) {
-    test(`door "${door}" lands in Explore in ${door === 'theory' ? 'Full' : 'Simple'} view`, async ({ browser }) => {
+    // Wave 2: "new" lands in lesson 1 of "Start with sound"; Explore, opened next, is Simple.
+    test(`door "${door}" ${door === 'new' ? 'opens lesson 1, then Explore is' : 'lands in Explore'} in ${door === 'theory' ? 'Full' : 'Simple'} view`, async ({ browser }) => {
       const { context, page } = await freshBrowser(browser, LAPTOP);
       await page.goto('/');
       await page.getByTestId(`start-door-${door}`).click();
+      if (door === 'new') {
+        await expect(page.getByRole('heading', { level: 1, name: 'High and Low' })).toBeVisible({ timeout: 15_000 });
+        await page.getByRole('tab', { name: 'Explore' }).click();
+      }
       await expect(page.getByTestId('explore-root')).toBeVisible({ timeout: 15_000 });
       expect(await exploreDetail(page)).toBe(door === 'theory' ? 'full' : 'simple');
       await expect(page.getByTestId('start-hint')).toHaveCount(door === 'theory' ? 0 : 1);
@@ -529,7 +534,8 @@ test.describe('8.1 Dó-Ré-Mi on for a new PT / ES visitor, at a door only', () 
     const { context, page } = await freshBrowser(browser, PHONE, 'en');
     await page.goto('/');
     await page.getByTestId('start-door-new').click();
-    await expect(page.getByTestId('explore-root')).toBeVisible({ timeout: 15_000 });
+    // Wave 2: the door opens lesson 1 of "Start with sound" (Learn).
+    await expect(page.getByRole('heading', { level: 1, name: 'High and Low' })).toBeVisible({ timeout: 15_000 });
     expect(await savedState(page)).not.toHaveProperty('showSolfege');
     await page.getByRole('button', { name: /^More/ }).click();
     await page.getByRole('menuitem', { name: 'Settings' }).click();

@@ -6,7 +6,8 @@ import { WELCOME_KEY } from './helpers/welcome';
  * 390×844 and laptop 1440×900, English and Portuguese:
  *  - an empty browser gets the start screen as its own page: the workbench
  *    never appears before a door (watched from the first DOM node);
- *  - each door saves the profile and the instrument and lands in Explore;
+ *  - each door saves the profile and the instrument; "new" lands in lesson 1
+ *    of "Start with sound" in Learn (wave 2), the other two in Explore;
  *    after a door, never again (reload);
  *  - saved data of any store: never shown;
  *  - the tour button asks for the tour and the screen steps aside; when the
@@ -16,11 +17,12 @@ import { WELCOME_KEY } from './helpers/welcome';
  *  - the language switch, and a Portuguese / Spanish browser's first visit;
  *  - keyboard only: Tab through every control, arrows in the segments, Enter
  *    on a door;
- *  - the start hint: there from Explore's first paint, nothing moves, covers
- *    neither the instrument nor the chord row; no link into Learn (the
- *    owner, 2026-11-10: it returns in wave 2); ✕ and acting on it (a chord
- *    picked) end it for good, in both profiles; ✕ sends focus to the key
- *    picker;
+ *  - the start hint: there from Explore's first paint ("new": the first time
+ *    Explore is opened after the door), nothing moves, covers neither the
+ *    instrument nor the chord row; a link into Learn only for "player", to
+ *    lesson 1 of the chords track (wave 2: it exists; "new": never); ✕
+ *    and acting on it (a chord picked) end it for good, in both profiles; ✕
+ *    sends focus to the key picker;
  *  - the page that showed the start screen skips the offline-ready notice.
  */
 
@@ -38,11 +40,13 @@ const WORDS = {
     locale: 'en-GB', tour: 'Watch the one-minute tour', heading: 'Where are you starting from?', instrument: "I'll use:",
     doors: { new: "I'm new to music", player: 'I play, but never learned theory', theory: 'I know some theory' },
     guitar: 'Guitar', piano: 'Piano', lang: 'Language', explore: 'Explore', dismiss: 'Dismiss the tip',
+    learn: 'Learn', soundLesson1: 'High and Low',
   },
   pt: {
     locale: 'pt-PT', tour: 'Ver a visita guiada de um minuto', heading: 'Qual é o teu ponto de partida?', instrument: 'Vou usar:',
     doors: { new: 'A música é nova para mim', player: 'Toco, mas nunca aprendi teoria', theory: 'Sei alguma teoria' },
     guitar: 'Guitarra', piano: 'Piano', lang: 'Idioma', explore: 'Explorar', dismiss: 'Fechar a dica',
+    learn: 'Aprender', soundLesson1: 'Agudo e grave',
   },
 } as const;
 type Lang = keyof typeof WORDS;
@@ -115,22 +119,33 @@ for (const v of VIEWPORTS) {
     });
 
     for (const [door, instrument] of [['new', 'guitar'], ['player', 'piano'], ['theory', 'guitar']] as const) {
-      test(`${combo}: "${W.doors[door]}" with the ${instrument} saves both, lands in Explore; never again after a reload`, async ({ browser }) => {
+      const lands = door === 'new' ? 'lesson 1 of "Start with sound" in Learn' : 'Explore';
+      test(`${combo}: "${W.doors[door]}" with the ${instrument} saves both, lands in ${lands}; never again after a reload`, async ({ browser }) => {
         const { context, page } = await fresh(browser, v, lang);
         await page.goto('/');
         await expect(startScreen(page)).toBeVisible({ timeout: 15_000 });
         await page.getByRole('radiogroup', { name: W.instrument }).getByRole('radio', { name: instrument === 'guitar' ? W.guitar : W.piano }).click();
         await page.getByRole('button', { name: new RegExp(`^${W.doors[door]}`) }).click();
         await expect(startScreen(page)).toHaveCount(0);
-        await expect(page.getByTestId('explore-header')).toBeVisible({ timeout: 15_000 });
-        await expect(page.getByRole('tab', { name: W.explore })).toHaveAttribute('aria-selected', 'true');
-        await expect(page.getByRole('tab', { name: W.explore })).toBeFocused();
-        expect(await savedState(page)).toMatchObject({ learnerProfile: door, instrument, lastView: 'explore' });
+        // Wave 2: "new" opens the first sound-first lesson; the others, Explore.
+        const tab = door === 'new' ? W.learn : W.explore;
+        const landed = () => (door === 'new'
+          ? page.getByRole('heading', { level: 1, name: W.soundLesson1 })
+          : page.getByTestId('explore-header'));
+        await expect(landed()).toBeVisible({ timeout: 15_000 });
+        await expect(page.getByRole('tab', { name: tab })).toHaveAttribute('aria-selected', 'true');
+        await expect(page.getByRole('tab', { name: tab })).toBeFocused();
+        expect(await savedState(page)).toMatchObject({ learnerProfile: door, instrument, lastView: door === 'new' ? 'learn' : 'explore' });
         expect(await flag(page)).toBe('seen');
-        if (instrument === 'guitar') await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
-        await expect(page.getByTestId('start-hint')).toHaveCount(door === 'theory' ? 0 : 1);
+        // The guitar is the instrument: drawn in Explore; in Learn the dock rests
+        // folded on a laptop (D-20), so its Piano / Guitar switch says it.
+        if (instrument === 'guitar' && door !== 'new') await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+        if (instrument === 'guitar' && door === 'new') await expect(page.getByRole('radio', { name: W.guitar }).first()).toHaveAttribute('aria-checked', 'true');
+        // The hint shows in Explore only; "new" still owes it (shown on the first visit to Explore).
+        await expect(page.getByTestId('start-hint')).toHaveCount(door === 'player' ? 1 : 0);
+        expect((await savedState(page)).startHint ?? null).toBe(door === 'theory' ? null : door);
         await page.reload();
-        await expect(page.getByTestId('explore-header')).toBeVisible({ timeout: 15_000 });
+        await expect(landed()).toBeVisible({ timeout: 15_000 });
         await page.waitForTimeout(1000);
         await expect(startScreen(page)).toHaveCount(0);
         expect(await savedState(page)).toMatchObject({ learnerProfile: door, instrument });
@@ -279,8 +294,9 @@ test.describe('the tour, a shared link, the language, the keyboard', () => {
       await page.keyboard.press('Tab');
       await expect(page.getByRole('button', { name: /^I'm new to music/ })).toBeFocused();
       await page.keyboard.press('Enter');
-      await expect(page.getByTestId('explore-header')).toBeVisible({ timeout: 15_000 });
-      await expect(page.getByRole('tab', { name: 'Explore' })).toBeFocused();
+      // Wave 2: "new" opens lesson 1 of "Start with sound"; focus on the Learn tab.
+      await expect(page.getByRole('heading', { level: 1, name: 'High and Low' })).toBeVisible({ timeout: 15_000 });
+      await expect(page.getByRole('tab', { name: 'Learn' })).toBeFocused();
       expect(await savedState(page)).toMatchObject({ learnerProfile: 'new', instrument: 'guitar' });
       await context.close();
     });
@@ -289,11 +305,12 @@ test.describe('the tour, a shared link, the language, the keyboard', () => {
 
 test.describe('the start hint', () => {
   for (const v of VIEWPORTS) {
-    test(`${v.name}: "new" — there from Explore's first paint, nothing moves, covers nothing; no link into Learn; a chord picked ends it for good`, async ({ browser }) => {
+    test(`${v.name}: "new" — after lesson 1, there from Explore's first paint, nothing moves, covers nothing; no link into Learn; a chord picked ends it for good`, async ({ browser }) => {
       const { context, page } = await fresh(browser, v, 'en');
       await page.goto('/');
       await expect(startScreen(page)).toBeVisible({ timeout: 15_000 });
       // Watch from the door on: was the hint in the DOM when the Explore header first was?
+      // (Wave 2: the door opens lesson 1 of "Start with sound"; Explore comes when they open it.)
       await page.evaluate(() => {
         const w = window as unknown as { __hintFirst: boolean | null };
         w.__hintFirst = null;
@@ -306,7 +323,10 @@ test.describe('the start hint', () => {
         mo.observe(document, { childList: true, subtree: true });
       });
       await page.getByRole('button', { name: /^I'm new to music/ }).click();
+      await expect(page.getByRole('heading', { level: 1, name: 'High and Low' })).toBeVisible({ timeout: 15_000 });
       const hint = page.getByTestId('start-hint');
+      await expect(hint).toHaveCount(0);
+      await page.getByRole('tab', { name: 'Explore' }).click();
       await expect(hint).toBeVisible({ timeout: 15_000 });
       await expect(page.getByTestId('explore-header')).toBeVisible();
       expect(await page.evaluate(() => (window as unknown as { __hintFirst: boolean | null }).__hintFirst)).toBe(true);
@@ -357,8 +377,9 @@ test.describe('the start hint', () => {
       await expect(startScreen(page)).toBeVisible({ timeout: 15_000 });
       await page.getByRole('button', { name: /^I play, but never learned theory/ }).click();
       const hint = page.getByTestId('start-hint');
-      await expect(hint).toHaveText('Pick the key of a song you play, for example G. The chords below belong to it: tap one.', { timeout: 15_000 });
-      await expect(hint.getByRole('button')).toHaveCount(1);
+      await expect(hint).toHaveText('Pick the key of a song you play, for example G. The chords below belong to it: tap one. Theory from the chords you know: lesson 1 →', { timeout: 15_000 });
+      await expect(hint.getByRole('button')).toHaveCount(2);
+      await expect(hint.getByRole('button').first()).toHaveAccessibleName('Theory from the chords you know: lesson 1 →');
       await page.reload();
       await expect(hint).toBeVisible({ timeout: 15_000 });
       // Acting on it: a chord. The line stays while in Explore (nothing jumps under the tap)…

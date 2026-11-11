@@ -1,9 +1,10 @@
 /**
  * The address-bar parameters of a shared link — the wave-1 contract (2026-11-10).
  *
- * OWNER: the share-links branch (stream E). It may extend this file (parsing,
- * building links); every other branch may only IMPORT the names exported
- * here, and must not change this file.
+ * OWNER: the share-links branch (stream E) in wave 1; the progression branch
+ * (stream S) in wave 2, which added `prog`, `bpm` and `capo`. It may extend
+ * this file (parsing, building links); every other branch may only IMPORT
+ * the names exported here, and must not change this file.
  *
  * `view` is NOT a share parameter on its own: `?view=drill` is the installed
  * app's shortcut (state/bootView.ts) and must keep behaving as it does.
@@ -23,12 +24,20 @@
  *          `C7(%235)`) — parseChordSymbol.
  *   inst   `piano` | `guitar`.
  *   lesson a lesson's module id (`l2u7m5`; data/moduleIndex.ts).
+ *   prog   (wave 2) the Progression panel's chords: symbols the chord parser
+ *          reads, separated by commas, in playing order (`G,D,Em,C`,
+ *          `F%23m7,B7`), at most 16 (more are ignored). Its own length limit
+ *          (`MAX_PROG_LENGTH`): the shared one would cut a real progression.
+ *          A link with `prog` opens Explore with the panel open.
+ *   bpm    (wave 2) the panel's tempo, a whole number 50–200; read only
+ *          beside `prog`.
+ *   capo   (wave 2) the guitar capo, a whole number 0–9 (setCapoFret).
  *
  * Validation lives in services/shareLinkParse.ts (lazy: it needs the chord
  * parser); this file only reads the raw strings, so it stays in the entry
  * chunk at almost no cost.
  */
-export const SHARE_PARAM_KEYS = ['key', 'scale', 'chord', 'inst', 'lesson'] as const;
+export const SHARE_PARAM_KEYS = ['key', 'scale', 'chord', 'inst', 'lesson', 'prog', 'bpm', 'capo'] as const;
 
 export type ShareParamKey = (typeof SHARE_PARAM_KEYS)[number];
 
@@ -45,17 +54,21 @@ export type RawShareParams = Partial<Record<ShareParamKey, string>>;
 export const MAX_SHARE_VALUE_LENGTH = 64;
 /** A query string longer than this is not a Fermata link: nothing in it is read. */
 export const MAX_SHARE_SEARCH_LENGTH = 2048;
+/** `prog` carries up to 16 symbols and their commas: longer than this, it is not one of ours. */
+export const MAX_PROG_LENGTH = 400;
+
+const maxLength = (k: ShareParamKey) => (k === 'prog' ? MAX_PROG_LENGTH : MAX_SHARE_VALUE_LENGTH);
 
 /**
  * A hand-typed `?key=F#&inst=guitar` puts everything from the `#` into the
  * URL's fragment (search `?key=F`, hash `#&inst=guitar`). When the search ends
- * on a `key` or `chord` value and the fragment carries on from there, read
+ * on a `key`, `chord` or `prog` value and the fragment carries on from there, read
  * them as one query with the `#` restored. The app uses no fragment of its own.
  */
 function joinFragment(search: string, hash: string): { query: string; recovered: boolean } {
   if (!hash || !hash.startsWith('#') || !search) return { query: search, recovered: false };
   const last = search.slice(search.lastIndexOf('&') + 1).replace(/^\?/, '');
-  if (!/^(key|chord)=[^=]*$/.test(last)) return { query: search, recovered: false };
+  if (!/^(key|chord|prog)=[^=]*$/.test(last)) return { query: search, recovered: false };
   const rest = hash.slice(1);
   // The fragment continues the value (`m7`, `5`) or starts the next parameter (`&inst=…`).
   if (rest !== '' && !/^[^&=]*(&|$)/.test(rest)) return { query: search, recovered: false };
@@ -75,7 +88,7 @@ export function readShareParams(search: string, hash = ''): RawShareParams | nul
   const out: RawShareParams = {};
   for (const k of SHARE_PARAM_KEYS) {
     const v = params.get(k);
-    if (v !== null && v.length <= MAX_SHARE_VALUE_LENGTH) out[k] = v;
+    if (v !== null && v.length <= maxLength(k)) out[k] = v;
   }
   return out;
 }
@@ -100,6 +113,10 @@ export interface ShareLinkValues {
   chord?: string;
   inst?: 'piano' | 'guitar';
   lesson?: string;
+  /** Symbols already joined with commas (`G,D,Em,C`). */
+  prog?: string;
+  bpm?: string;
+  capo?: string;
 }
 
 /** `?key=D&scale=major&chord=A&inst=guitar` — in the grammar's order, `#` as `%23`. */
@@ -109,7 +126,9 @@ export function buildShareSearch(values: ShareLinkValues): string {
     const v = values[k];
     if (v) params.set(k, v);
   }
-  const qs = params.toString();
+  // The commas between a progression's chords stay readable (`prog=G,D,Em,C`):
+  // a comma is allowed in a query and reads back as the same comma.
+  const qs = params.toString().replace(/%2C/gi, ',');
   return qs ? `?${qs}` : '';
 }
 

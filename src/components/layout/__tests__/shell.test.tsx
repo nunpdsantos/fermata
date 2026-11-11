@@ -55,13 +55,14 @@ describe('TopBar', () => {
     expect(useAppStore.getState().view).toBe('learn');
   });
 
-  it('search opens Quick Search; "⋯" → Settings opens the sheet', () => {
+  it('search opens Quick Search; "⋯" → Settings opens the sheet', async () => {
     render(<TopBar />);
     fireEvent.click(screen.getByRole('button', { name: 'Quick search, Command+K' }));
     expect(useAppStore.getState().quickSearchOpen).toBe(true);
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
     fireEvent.click(screen.getByRole('menuitem', { name: 'Settings' }));
-    expect(screen.getByRole('dialog', { name: 'Settings' })).toBeTruthy();
+    // A lazy chunk since the wave-2 integration (the entry file's budget).
+    expect(await screen.findByRole('dialog', { name: 'Settings' })).toBeTruthy();
   });
 });
 

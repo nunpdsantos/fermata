@@ -85,6 +85,7 @@ export function genTriad(): DrillItem[] {
             notes: correctDisplays.join(' '),
           },
           rank: baseRank + offset,
+          chord: { root: rootAscii, quality },
         });
         offset++;
       }
@@ -111,6 +112,7 @@ export function genTriad(): DrillItem[] {
             notes: correctDisplays.join(' '),
           },
           rank: baseRank + offset,
+          chord: { root: rootAscii, quality },
         });
         offset++;
       }

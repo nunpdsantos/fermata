@@ -2883,18 +2883,22 @@ import { GUITAR_MAX_FRET } from '../utils/guitarPositions';
  *  - a barre never lies across a string that rings open or is fretted below
  *    it, and both of its ends sit on the barre fret;
  *  - nothing is past the frets the board draws.
+ * With a capo on fret `capo` (wave 2) the capo is the nut: a string at the
+ * capo rings "open" (no finger), nothing may sit behind it, and a barre lies
+ * above it.
  */
 export function isPlayableChordShape(
   entry: { shape: ChordShape; baseFret: number },
-  maxFret: number = GUITAR_MAX_FRET
+  maxFret: number = GUITAR_MAX_FRET,
+  capo: number = 0
 ): boolean {
   const { shape, baseFret } = entry;
   const fingerFret = new Map<number, number>();
   for (const p of shape.strings) {
     if (p.fret === null) continue;
     const abs = baseFret + p.fret;
-    if (abs < 0 || abs > maxFret) return false;
-    if (abs === 0) continue;
+    if (abs < capo || abs > maxFret) return false;
+    if (abs === capo) continue;
     if (p.finger === undefined || p.finger === 0) return false;
     const f = p.finger === 'bar' ? 1 : p.finger;
     const prev = fingerFret.get(f);
@@ -2903,14 +2907,14 @@ export function isPlayableChordShape(
   }
   if (shape.barreInfo) {
     const bf = baseFret + shape.barreInfo.fret;
-    if (bf < 1) return false;
+    if (bf <= capo) return false;
     const a = 6 - shape.barreInfo.fromString;
     const b = 6 - shape.barreInfo.toString;
     for (let s = Math.min(a, b); s <= Math.max(a, b); s++) {
       const p = shape.strings[s];
       if (p.fret === null) continue;
       const abs = baseFret + p.fret;
-      if (abs === 0 || abs < bf) return false;
+      if (abs === capo || abs < bf) return false;
     }
     for (const end of [a, b]) {
       const p = shape.strings[end];
@@ -3293,4 +3297,95 @@ export function arrangeShapesForBass(
     .filter((e): e is { shape: ChordShape; baseFret: number } => e !== null);
   if (extended.length > 0) return { shapes: [...extended, ...shapes], bassMatched: true };
   return { shapes, bassMatched: false };
+}
+
+// ── A capo (wave 2, stream C) ─────────────────────────────────────────────────
+//
+// With a capo on fret c a guitarist plays the SHAPES of the chord c half steps
+// lower, moved c frets up: B♭ with a capo on 3 is played as the open G shape
+// at the capo. So the grips for a chord are the grips of that lower chord
+// (the same pipeline, its same order: the nut-closest first becomes the
+// capo-closest), each drawn c frets higher; every one is checked again with
+// the capo as the nut.
+
+import { preferredRootSpelling, spellIntervalAbove, letterDistance } from '../utils/degreeSpelling';
+import { noteToString } from '../types/music';
+
+/**
+ * The chord the hand makes under a capo on fret `capo`: `chord` moved DOWN
+ * `capo` half steps. Spelled by the engine, never from a semitone count
+ * alone: the root takes the name the key picker gives its pitch class (as a
+ * major or a minor key, by the chord's third — the open shapes' own names: G,
+ * Am, E, D…), and every other tone keeps its letter distance from the root,
+ * so the chord's spelling pattern (3rd, 5th, ♭7…) is the same as the
+ * original's.
+ */
+export function chordBelowCapo(chord: Chord, capo: number): Chord {
+  if (capo === 0) return chord;
+  const rootPc = getPitchClass(chord.root);
+  const pcs = new Set(chord.notes.map((n) => getPitchClass(n)));
+  const minor = pcs.has((rootPc + 3) % 12) && !pcs.has((rootPc + 4) % 12);
+  const root = preferredRootSpelling(rootPc - capo, minor ? 'natural_minor' : 'major');
+  const move = (n: Note): Note =>
+    spellIntervalAbove(root, letterDistance(chord.root.natural, n.natural) + 1, (getPitchClass(n) - rootPc + 12) % 12);
+  const bassNote = chord.bassNote ? move(chord.bassNote) : undefined;
+  return {
+    ...chord,
+    root,
+    notes: chord.notes.map(move),
+    ...(bassNote ? { bassNote } : {}),
+    // A chord the parser built carries its whole name: give it the new root
+    // and bass too ("Am(add9)", capo 3 → "F♯m(add9)", never "F♯Am(add9)").
+    ...(chord.algorithmicDisplayName ? { algorithmicDisplayName: renameRootAndBass(chord, root, bassNote) } : {}),
+  };
+}
+
+/** An algorithmic chord's name with `root` (and `bass`) in place of its own. */
+function renameRootAndBass(chord: Chord, root: Note, bass: Note | undefined): string {
+  let s = chord.algorithmicDisplayName ?? '';
+  const oldRoot = noteToString(chord.root);
+  if (s.startsWith(oldRoot)) s = noteToString(root) + s.slice(oldRoot.length);
+  if (chord.bassNote && bass) {
+    const oldBass = `/${noteToString(chord.bassNote)}`;
+    if (s.endsWith(oldBass)) s = `${s.slice(0, -oldBass.length)}/${noteToString(bass)}`;
+  }
+  return s;
+}
+
+/** The bass a learner asks for: a slash chord's bass, else the inversion's lowest tone, else none. */
+function requestedBassOf(chord: Chord, inversion: number): Note | null {
+  if (chord.bassNote) return chord.bassNote;
+  if (inversion > 0 && chord.notes.length > 0) return chord.notes[inversion % chord.notes.length];
+  return null;
+}
+
+/**
+ * Every grip the fretboard offers for `chord` (in `inversion`) with a capo on
+ * fret `capo`, in order (the first is the default), whether one puts the
+ * requested bass lowest, and the chord whose shapes they are. With no capo
+ * this is exactly the pipeline the fretboard has always used
+ * (`getChordShapesWithFallback` → `sortShapesForDefault` →
+ * `arrangeShapesForBass`). With a capo: that pipeline for
+ * `chordBelowCapo(chord, capo)` (its grips kept within the frets left above
+ * the capo), each grip moved `capo` frets up and kept only if it is playable
+ * with the capo as the nut.
+ */
+export function chordShapesForCapo(
+  chord: Chord,
+  inversion: number,
+  capo: number
+): { shapes: { shape: ChordShape; baseFret: number }[]; bassMatched: boolean; shapeChord: Chord } {
+  const shapeChord = chordBelowCapo(chord, capo);
+  const bass = requestedBassOf(shapeChord, inversion);
+  const bassPc = bass ? getPitchClass(bass) : null;
+  const sorted = sortShapesForDefault(getChordShapesWithFallback(shapeChord));
+  const reachable = capo > 0 ? sorted.filter((e) => isPlayableChordShape(e, GUITAR_MAX_FRET - capo)) : sorted;
+  const arranged = arrangeShapesForBass(reachable, shapeChord, bassPc, bass ? noteToString(bass) : '');
+  if (capo === 0) return { shapes: arranged.shapes, bassMatched: arranged.bassMatched, shapeChord };
+  const shapes = arranged.shapes
+    .map((e) => ({ shape: e.shape, baseFret: e.baseFret + capo }))
+    .filter((e) => isPlayableChordShape(e, GUITAR_MAX_FRET, capo));
+  const realBassPc = bassPc === null ? null : (bassPc + capo) % 12;
+  const bassMatched = realBassPc === null || (arranged.bassMatched && shapes.length > 0 && lowestSoundingPitchClass(shapes[0]) === realBassPc);
+  return { shapes, bassMatched, shapeChord };
 }

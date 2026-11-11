@@ -155,3 +155,13 @@ export const GUITAR_TUNINGS: GuitarTuning[] = [
 export function getTuningById(id: string): GuitarTuning {
   return GUITAR_TUNINGS.find((t) => t.id === id) ?? TUNING_STANDARD;
 }
+
+/**
+ * The ONE rule for "the chord shapes apply" (wave 2 integration): the shape
+ * library, the neck's grips and the Progression panel's capo ideas are for
+ * standard tuning only. Read through `getTuningById`, so an id the app does
+ * not know is treated exactly as the neck draws it.
+ */
+export function hasChordShapes(tuningId: string): boolean {
+  return getTuningById(tuningId).id === TUNING_STANDARD.id;
+}

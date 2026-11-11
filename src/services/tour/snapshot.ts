@@ -26,6 +26,7 @@ import { useScaleDirectionStore } from '../../state/scaleDirectionStore';
 import { LEARN_SESSION_KEY } from '../../state/learnSessionPersistence';
 import { cancelScheduledAudio } from '../../core/services/audio';
 import { returnIsQuiet } from './guards';
+import { closeProgressionPanel, isProgressionPanelOpen, openProgressionPanel } from '../../state/progressionPanel';
 
 type Saved = Pick<AppState,
   | 'view' | 'lastView' | 'selectedChord' | 'chordInversion' | 'selectedDegree'
@@ -43,19 +44,31 @@ export interface TourSnapshot {
   learnSessionKeyExisted: boolean;
   /** The chords card's tab, when the card was on screen. */
   chordsTab: ChordsTab | null;
+  /** The chords card showed its Progression panel (wave 2): the tour closes it, its restore opens it again. */
+  progressionOpen: boolean;
 }
 
 const CHORDS_TABS = ['diatonic', 'all', 'build'] as const;
 export type ChordsTab = (typeof CHORDS_TABS)[number];
 export const chordsTabSelector = (tab: ChordsTab) => `#chords-tab-${tab}`;
 
-/** The chords card's selected tab (ChordsCard's Segment ids), or null when the card is not on screen. */
+/**
+ * The chords card's selected tab (ChordsCard's Segment ids), or null when the
+ * card is not on screen. While the Progression panel hides the tabs, the card
+ * names the tab they will show again (`data-chords-tab`).
+ */
 export function currentChordsTab(): ChordsTab | null {
   if (typeof document === 'undefined') return null;
   for (const tab of CHORDS_TABS) {
     if (document.getElementById(`chords-tab-${tab}`)?.getAttribute('aria-selected') === 'true') return tab;
   }
-  return null;
+  const hidden = document.querySelector('[data-chords-tab]')?.getAttribute('data-chords-tab');
+  return (CHORDS_TABS as readonly string[]).includes(hidden ?? '') ? (hidden as ChordsTab) : null;
+}
+
+/** Open the Progression panel again if the snapshot found it open (after the tab is back). */
+export function restoreProgressionPanel(snap: TourSnapshot): void {
+  if (snap.progressionOpen) openProgressionPanel();
 }
 
 /**
@@ -76,6 +89,12 @@ export function restoreChordsTab(snap: TourSnapshot): boolean {
 }
 
 export function takeSnapshot(): TourSnapshot {
+  // The tour reads the chords card's tabs: the Progression panel (wave 2)
+  // closes first. Its loop stops at once and gives back the chord selected
+  // before it played, so the snapshot holds the learner's own selection.
+  const progressionOpen = isProgressionPanelOpen();
+  const chordsTab = currentChordsTab();
+  if (progressionOpen) closeProgressionPanel();
   const s = useAppStore.getState();
   const own = s.lessonLoan ?? { key: s.selectedKey, scale: s.selectedScale };
   return {
@@ -97,7 +116,8 @@ export function takeSnapshot(): TourSnapshot {
     shapeChoice: useGuitarShapeStore.getState().shapeChoice,
     direction: useScaleDirectionStore.getState().direction,
     learnSessionKeyExisted: storageHas(LEARN_SESSION_KEY),
-    chordsTab: currentChordsTab(),
+    chordsTab,
+    progressionOpen,
   };
 }
 

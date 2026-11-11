@@ -1,5 +1,7 @@
 /**
- * Lightweight static index of all 121 curriculum modules (118 required + 3 optional) for search.
+ * Lightweight static index of all 136 curriculum modules (118 required + 3
+ * optional guitar-notation + 5 "Start with sound" + 10 "From the chords you
+ * know" track lessons) for search.
  *
  * Titles and subtitles are copied from src/core/constants/curriculumL1-9.ts;
  * src/data/__tests__/moduleIndex.test.ts fails if an entry drifts from the
@@ -79,6 +81,23 @@ const RAW: Array<[string, string, string]> = [
   ['l1u33m1', 'Guitar Notation: Clef and Strings', 'Read sounding pitch and circled string numbers'],
   ['l1u33m2', 'Guitar Notation: The Two Hands', 'Left-hand 0–4 and right-hand p-i-m-a'],
   ['l1u33m3', 'Guitar Notation: Positions and Barres', 'Roman numerals, C and ½C on the neck'],
+  // The starting tracks (wave 2, src/data/tracks.ts), in curriculum order:
+  // "Start with sound", then "From the chords you know".
+  ['l1u34m1', 'High and Low', 'Every note is higher or lower than another'],
+  ['l1u34m2', 'The Seven Letters', 'Notes are named A to G, then the names start again'],
+  ['l1u34m3', 'Half Steps and Whole Steps', 'The smallest distances between notes, and the notes in between'],
+  ['l1u34m4', 'A Scale Is a Ladder', 'The major scale: whole, whole, half, whole, whole, whole, half'],
+  ['l1u34m5', 'Three Notes Make a Chord', 'Every other note of the scale, played together'],
+  ['l1u35m1', 'Your Chords Live in a Key', 'G, C, D and Em share seven notes: the notes of G major'],
+  ['l1u35m2', 'One, Four, Five', 'The three major chords of a key: I, IV and V'],
+  ['l1u35m3', 'The Minor Chords of the Key', 'ii, iii and vi, one diminished chord, and the relative minor'],
+  ['l1u35m4', 'Home and Away', 'Why V leads back to I, and the softer way home'],
+  ['l1u35m5', 'Major and Minor: One Note', 'The middle note, a half step lower'],
+  ['l1u35m6', 'What Is Inside a Chord', "1, 3 and 5: every other note from the chord's own note"],
+  ['l1u35m7', 'The Seventh', 'A fourth note on top: G7 is G, B, D and F'],
+  ['l1u35m8', 'Moving a Song: Other Keys and the Capo', 'The numbers stay, the names change'],
+  ['l1u35m9', 'Notes for a Melody or a Solo', 'The seven notes of the key, and five safe ones'],
+  ['l1u35m10', 'A Chord from Outside', 'Chords from outside the key, and how to tell the key anyway'],
   ['l2u4m1', 'All Major Keys and the Circle of Fifths', 'The full set of 15 major key signatures and how they connect'],
   ['l2u4m2', 'Scale Degree Names and Functions', 'The seven functional names every musician must know'],
   ['l2u5m1', 'Natural Minor Scale', 'The W-H-W-W-H-W-W pattern and the darker side of tonality'],

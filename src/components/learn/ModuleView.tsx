@@ -27,7 +27,9 @@ import { conceptForQuestion } from './lesson/rereadSection';
 import { pairsWithLevel } from './lesson/levelPairs';
 import type { ContentLanguage } from '../../i18n/content/types';
 import { showLessonQuery } from '../../services/lessonInstrument';
+import { lessonInstrumentQuery } from '../../utils/queryExecutorChords';
 import { foldDockForLesson, foldDockAfterLesson } from '../../services/lessonDock';
+import { TrackEnding } from './tracks/TrackEnding';
 import {
   useLearnSessionStore,
   fingerprintsOf,
@@ -114,6 +116,8 @@ interface ModuleViewProps {
   initialSection?: string | null;
   /** Legacy hook kept for callers that still pass it; level celebrations now run in LearnView. */
   onLevelComplete?: () => void;
+  /** Opens a level's page (a track's closing card, wave 2). */
+  onOpenLevel?: (levelId: string) => void;
 }
 
 export function ModuleView({
@@ -140,6 +144,7 @@ export function ModuleView({
   onNavigateModule,
   onOpenLesson,
   initialSection = null,
+  onOpenLevel,
 }: ModuleViewProps) {
   const { t, i18n } = useTranslation();
   const shareLinkLabel = useShareLinkLabel();
@@ -147,6 +152,13 @@ export function ModuleView({
   const accent = level.accentColor;
   const prevModule = getPreviousModuleInLevel(module.id, level);
   const nextModule = getNextModuleInLevel(module.id, level);
+  // A starting track (wave 2): named on its own (not as part of its level),
+  // Try This writes notes by name instead of a staff (both tracks need no
+  // reading), "Start with sound" opens at its first Try This, and the last
+  // lesson ends on the track's closing card instead of a next lesson.
+  const track = unit.track ?? null;
+  const soundFirst = track === 'sound';
+  const noStaff = track !== null;
   const allTasksDone = completedTaskCount >= module.tasks.length;
   const hasExercises = exercises.length > 0;
   const canComplete = allTasksDone && exercisesState === 'ready' && (!hasExercises || exercisesPassed);
@@ -264,7 +276,7 @@ export function ModuleView({
     foldDockForLesson();
     if (!isReviewMode) {
       const first = module.concepts.find((c) => !c.rhythm);
-      if (first) showLessonQuery(first.tryThisQuery);
+      if (first) showLessonQuery(lessonInstrumentQuery(first.tryThisQuery));
     }
     return () => foldDockAfterLesson();
   }, [module, isReviewMode]);
@@ -273,7 +285,7 @@ export function ModuleView({
     if (mode !== 'lesson' || isReviewMode) return;
     const m = /^c(\d+)$/.exec(currentSection);
     const concept = m ? module.concepts[Number(m[1])] : null;
-    if (concept && !concept.rhythm) showLessonQuery(concept.tryThisQuery);
+    if (concept && !concept.rhythm) showLessonQuery(lessonInstrumentQuery(concept.tryThisQuery));
   }, [currentSection, mode, module, isReviewMode]);
 
   // ── Scroll-spy: the section being read ────────────────────────────────────
@@ -311,6 +323,30 @@ export function ModuleView({
     pendingScroll.current = null;
     requestAnimationFrame(() => scrollTo(id, false));
   }, [mode, scrollTo]);
+
+  // A sound-first lesson (wave 2) opens with its first Try This in reach — one
+  // tap from sound: when the intro pushes "Hear it" below what the scroller
+  // shows (a phone), the lesson opens at its first concept instead. Only on
+  // opening (not a restored section), before the learner has done anything.
+  const openedAtSound = useRef(false);
+  useLayoutEffect(() => {
+    if (!soundFirst || isReviewMode || initialSection || mode !== 'lesson' || openedAtSound.current) return;
+    openedAtSound.current = true;
+    requestAnimationFrame(() => {
+      const scroller = scrollerOf(rootRef.current);
+      const hear = rootRef.current?.querySelector<HTMLElement>('[data-section="c0"] [data-testid="inline-try-this"] button');
+      if (!scroller || !hear) return;
+      // Measured as if the scroller were at its top: a lesson opened by "Next
+      // lesson" mounts while the scroller is still on its way up from the
+      // bottom of the last one (LearnView's smooth reset), and an early return
+      // on scrollTop > 0 left lessons 2–5 with "Hear it" under the dock (final
+      // review of wave 2). A fresh mount has had no input from the learner yet.
+      const box = scroller.getBoundingClientRect();
+      const shown = box.height - (parseFloat(getComputedStyle(scroller).paddingBottom) || 0);
+      const hearBottom = hear.getBoundingClientRect().bottom - box.top + scroller.scrollTop;
+      if (hearBottom > shown) scrollTo('c0', false);
+    });
+  }, [soundFirst, isReviewMode, initialSection, mode, scrollTo]);
 
   const jump = useCallback((id: string) => {
     setCurrentSection(id);
@@ -446,7 +482,7 @@ export function ModuleView({
   }
 
   const pairs = pairsWithLevel(module.id, lang as ContentLanguage);
-  const crumb = `${t('learn.level', { n: level.number })} › ${unit.title}`;
+  const crumb = track ? unit.title : `${t('learn.level', { n: level.number })} › ${unit.title}`;
   const sectionClass = 'learn-scroll-target';
 
   return (
@@ -480,7 +516,11 @@ export function ModuleView({
               />
               <LearnBreadcrumb
                 accentColor={accent}
-                segments={[
+                segments={track ? [
+                  { label: t('nav.learn'), onClick: onBackToLevels },
+                  { label: unit.title, onClick: onBack },
+                  { label: t('tracks.lesson', { n: moduleIndex + 1 }) },
+                ] : [
                   { label: t('nav.learn'), onClick: onBackToLevels },
                   { label: t('learn.level', { n: level.number }), onClick: onBack },
                   { label: unit.title, onClick: onBack },
@@ -530,7 +570,7 @@ export function ModuleView({
             <section key={i} data-section={`c${i}`} className={`mb-12 ${sectionClass}`}>
               <h2 className="text-title font-semibold mb-3" style={{ color: 'var(--text)' }}>{concept.title}</h2>
               <p className="learn-concept-text mb-4" style={{ color: 'var(--text-muted)' }}>{concept.explanation}</p>
-              <InlineTryThis query={concept.tryThisQuery} label={concept.tryThisLabel} rhythm={concept.rhythm} clefs={concept.clefs} accent={accent} />
+              <InlineTryThis query={concept.tryThisQuery} label={concept.tryThisLabel} rhythm={concept.rhythm} clefs={concept.clefs} names={noStaff} accent={accent} />
             </section>
           ))}
 
@@ -598,7 +638,7 @@ export function ModuleView({
                       </div>
                       {openQuery && (
                         <div className="px-4 pb-3">
-                          <InlineTryThis compact query={openQuery} label={`‘${openQuery}’`} accent={accent} />
+                          <InlineTryThis compact query={openQuery} label={`‘${openQuery}’`} names={noStaff} accent={accent} />
                         </div>
                       )}
                     </div>
@@ -647,6 +687,11 @@ export function ModuleView({
               {isModuleCompleted && <span className="text-ui text-success">{t('lesson.lessonComplete')}</span>}
             </div>
           </section>
+
+          {/* ─── A track's last lesson: its closing card (wave 2) ────────── */}
+          {track && !nextModule && onOpenLevel && (
+            <TrackEnding track={track} accent={accent} onOpenLevel={onOpenLevel} />
+          )}
 
           {/* ─── Previous / next lesson ─────────────────────────────────── */}
           <div className="flex items-center justify-between gap-3 pt-6 border-t" style={{ borderColor: 'var(--border-subtle)' }}>

@@ -12,6 +12,7 @@ import { Sheet } from '../components/ui/Sheet.tsx';
 import { useExploreSimple } from '../state/exploreDetail.ts';
 import { useGlossaryUi } from '../glossary/glossaryUi.ts';
 import { toast } from '../state/toastStore.ts';
+import { ProgressionHost } from '../components/explore/ProgressionHost.tsx';
 
 const GuitarPractice = lazy(() => import('../components/practice/GuitarPractice.tsx'));
 // The explanations (text in three languages, examples, sounds): fetched the
@@ -101,6 +102,8 @@ export function ExploreView() {
           {practice && guitar && <GuitarPractice />}
         </Suspense>
       </Sheet>
+      {/* A lesson or a link asking for the Progression panel (wave 2). */}
+      <ProgressionHost />
       {glossaryWanted && (
         <Suspense fallback={null}>
           <GlossaryHost />

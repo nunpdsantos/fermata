@@ -647,19 +647,6 @@
     "intermediate": "Intermédio",
     "advanced": "Avançado"
   },
-  "tour": {
-    "step1Title": "Escolhe o instrumento",
-    "step1Body": "Alterne entre piano e guitarra para ver escalas, acordes e notas em cada instrumento.",
-    "step2Title": "Escolhe tonalidade e escala",
-    "step2Body": "Seleciona uma nota fundamental e um tipo de escala. O instrumento abaixo destaca as notas correspondentes.",
-    "step3Title": "Toca uma nota",
-    "step3Body": "Toca ou clica em qualquer tecla para a ouvir. Experimenta agora!",
-    "step4Title": "Pronto para aprender?",
-    "step4Body": "Vai ao separador Aprender para um curr\u00edculo estruturado com exerc\u00edcios e acompanhamento de progresso.",
-    "skip": "Saltar",
-    "next": "Seguinte",
-    "finish": "Entendido"
-  },
   "chordBuilder": {
     "strip": {
       "label": "Faixa cromática a partir de {{note}}",
@@ -917,7 +904,8 @@
     "export": "Exportar",
     "import": "Importar",
     "build": "versão de {{date}}",
-    "worksOffline": "funciona offline"
+    "worksOffline": "funciona offline",
+    "loadError": "As Definições não carregaram. Verifica a ligação e tenta de novo."
   },
   "dock": {
     "handle": "Painel do instrumento",
@@ -1169,6 +1157,7 @@
       "newPiano": "Toca numa tecla para a ouvir.",
       "newGuitar": "Toca numa corda para a ouvir.",
       "player": "Escolhe a tonalidade de uma música que tocas, por exemplo G. Os acordes abaixo são dessa tonalidade: toca num deles.",
+      "playerLesson": "Teoria a partir dos acordes que conheces: lição 1 →",
       "dismiss": "Fechar a dica"
     }
   },
@@ -1272,5 +1261,151 @@
   "solfege": {
     "setting": "Mostrar também Dó, Ré, Mi",
     "hint": "Acrescenta Dó, Ré, Mi junto às letras. Os nomes dos acordes e as lições continuam a usar as letras (C = Dó)."
+  },
+  "progression": {
+    "open": "Progressão",
+    "back": "Acordes",
+    "backLabel": "Voltar aos acordes",
+    "title": "Progressão",
+    "empty": "Põe os acordes pela ordem em que os tocas: o Fermata encontra a tonalidade em que encaixam, repete-os enquanto experimentas uma melodia e passa-os para outra tonalidade.",
+    "chips": "Os teus acordes, por ordem",
+    "chip": "{{chord}}, {{numeral}}, acorde {{n}} de {{total}}",
+    "chipOutside": "{{chord}}, {{numeral}}, fora de {{key}}, acorde {{n}} de {{total}}",
+    "chipMenu": "{{chord}}: mover ou remover",
+    "outsideLegend": "Contorno tracejado: um acorde fora de {{key}}.",
+    "moveLeft": "Mover para a esquerda",
+    "moveRight": "Mover para a direita",
+    "remove": "Remover",
+    "add": "Adicionar",
+    "addLabel": "Adicionar um acorde de {{key}}",
+    "addChord": "Adicionar {{chord}}",
+    "another": "Outro acorde",
+    "common": "Progressões comuns",
+    "full": "O máximo são 16 acordes.",
+    "root": "Fundamental",
+    "kind": "Tipo",
+    "kindMajor": "Maior",
+    "kindMinor": "Menor",
+    "typeLabel": "Ou escreve um acorde",
+    "typeHint": "Por exemplo F#m7 ou G/B",
+    "typeInvalid": "O Fermata não lê «{{text}}» como um acorde.",
+    "addThis": "Adicionar {{chord}}",
+    "presetIn": "em {{key}}",
+    "blues": "Blues de doze compassos",
+    "presetReplaces": "Escolher uma substitui os teus acordes.",
+    "numbers": "zero,um,dois,três,quatro,cinco,seis,sete,oito,nove,dez,onze,doze,treze,catorze,quinze,dezasseis",
+    "fitAll": "Os {{number}} acordes encaixam em {{key}}.",
+    "fitBoth": "Os dois acordes encaixam em {{key}}.",
+    "fitSingle": "{{chord}} encaixa em {{key}}.",
+    "fitSingleNot": "{{chord}} não encaixa em {{key}}.",
+    "fitSome": "{{fit}} de {{total}} encaixam em {{key}}",
+    "fitSomeOne": "Um de {{total}} encaixa em {{key}}",
+    "fitNone": "Nenhum encaixa em {{key}}.",
+    "notOne": "{{chords}} não.",
+    "notMany": "{{chords}} não.",
+    "keyNote": "{{scale}}: os números contam-se em {{key}}.",
+    "switchTo": "Mudar para {{key}}",
+    "loop": "Repetir",
+    "stop": "Parar",
+    "tempo": "Andamento",
+    "slower": "Mais lento",
+    "faster": "Mais rápido",
+    "bpm": "{{bpm}} pulsações por minuto",
+    "beats": "Pulsações por acorde",
+    "move": "Mover",
+    "moveDown": "Meio-tom abaixo",
+    "moveUp": "Meio-tom acima",
+    "moveGroup": "Passar para outra tonalidade: agora {{key}}",
+    "capoNow": "Capo no traste {{fret}}: toca {{shapes}}.",
+    "capoIdeas": "Ideias de capo, para formas com cordas soltas",
+    "capoIdea": "Traste {{fret}}: {{shapes}}",
+    "capoNoIdea": "Nenhum capo dá a estes acordes mais formas com cordas soltas.",
+    "capoAllOpen": "Sem capo, cada um destes acordes já tem uma forma com cordas soltas.",
+    "capoStandardOnly": "As ideias de capo precisam da afinação padrão: as formas de acordes do Fermata só existem para essa afinação.",
+    "noCapo": "Sem capo",
+    "clear": "Limpar",
+    "offer": "Uma lição ou uma ligação partilhada propõe estes acordes: {{chords}}.",
+    "offerTempo": "Uma lição ou uma ligação partilhada propõe estes acordes a {{bpm}} pulsações por minuto: {{chords}}.",
+    "useOffer": "Usar estes",
+    "keepMine": "Manter os meus",
+    "target": "a progressão {{chords}}",
+    "targetCapo": "um capo no traste {{fret}}",
+    "loadError": "O painel Progressão não carregou. Verifica a ligação e tenta de novo.",
+    "parentChords": "Acordes que combinam com {{scale}}: os acordes de {{key}}"
+  },
+  "capo": {
+    "setting": "Capo",
+    "settingHint": "O capo prende as seis cordas num traste, e cada corda passa a começar aí. Em Explorar, a guitarra mostra-o; as lições, o Treino e Praticar na guitarra mostram o braço sem ele.",
+    "none": "Sem capo",
+    "onFret": "Capo {{fret}}",
+    "controlLabel": "Capo",
+    "line": "{{chord}}: a forma de {{shape}}, capo no traste {{fret}}",
+    "noShape": "Nenhuma forma deste acorde cabe acima do capo. Mostram-se as suas notas no braço.",
+    "shapesStandardOnly": "As formas de acordes só existem para a afinação padrão. Mostram-se as notas do acorde do capo para cima.",
+    "shapeChip": "forma de {{shape}}",
+    "barreChip": "pestana de {{shape}}",
+    "openPositionTitle": "Posição aberta no capo: as cordas no traste {{fret}} e os trastes {{from}}–{{to}}",
+    "announceAt": "Corda {{string}}, traste {{fret}}, no capo, {{note}}",
+    "announceAbove_one": "Corda {{string}}, traste {{fret}}, {{count}} traste acima do capo, {{note}}",
+    "announceAbove_other": "Corda {{string}}, traste {{fret}}, {{count}} trastes acima do capo, {{note}}",
+    "cellAt": "{{note}}, traste {{fret}}, corda {{string}}, no capo",
+    "cellAbove_one": "{{note}}, traste {{fret}}, corda {{string}}, {{count}} traste acima do capo",
+    "cellAbove_other": "{{note}}, traste {{fret}}, corda {{string}}, {{count}} trastes acima do capo",
+    "readoutAt": "corda {{string}} traste {{fret}} (capo)",
+    "practiceNote": "O capo está desligado aqui: estes exercícios usam o braço sem capo."
+  },
+  "tracks": {
+    "sound": {
+      "title": "Começa pelo som",
+      "line": "Ouve agudo e grave, dá nome às notas e constrói os teus primeiros acordes. Não precisas de ler música.",
+      "end": {
+        "explore": "Tocar estas notas em Explorar",
+        "level1": "Aprender a ler música: Nível 1"
+      }
+    },
+    "chords": {
+      "title": "A partir dos acordes que conheces",
+      "line": "Teoria que parte dos acordes que já tocas.",
+      "end": {
+        "progression": "Tocar em ciclo os acordes das tuas músicas no painel Progressão",
+        "level2": "Ir mais fundo: Nível 2"
+      }
+    },
+    "chordList": {
+      "label": "Os acordes, por ordem",
+      "showPiano": "{{chord}}: ouvir e mostrar no piano",
+      "showGuitar": "{{chord}}: ouvir e mostrar na guitarra"
+    },
+    "startHere": "Começa aqui",
+    "otherWays": "Outras formas de começar",
+    "progress": "{{done}} de {{total}} lições",
+    "eyebrow_one": "{{count}} lição curta",
+    "eyebrow_other": "{{count}} lições curtas",
+    "lessonsLabel": "Lições",
+    "next": "A seguir",
+    "lesson": "Lição {{n}}",
+    "end": {
+      "title": "E agora?",
+      "line": "Chegaste ao fim de «{{track}}». Duas formas de continuar:"
+    }
+  },
+  "drillFollow": {
+    "switch": "Seguir as minhas lições",
+    "switchHint": "O Treino pergunta o que as tuas lições já ensinaram e acrescenta mais à medida que avanças.",
+    "follows": "O Treino segue as tuas lições: pergunta o que elas já ensinaram e acrescenta mais à medida que avanças.",
+    "unlockedHeading": "Já desbloqueado",
+    "soFar": "Por agora: {{list}}",
+    "degreesIn": "acordes {{degrees}} nas tonalidades {{keys}}",
+    "nothingYet": "Ainda nada desbloqueado.",
+    "next": "A seguir: {{topics}}, com a lição «{{lesson}}».",
+    "nextLater": "A seguir: {{topics}}, com uma lição mais à frente.",
+    "allOpen": "Todos os tópicos estão desbloqueados.",
+    "chooseMyself": "Escolher eu os tópicos",
+    "firstQuestions": "Ainda não há nada para perguntar. As primeiras perguntas chegam com a lição «{{lesson}}».",
+    "firstQuestionsLater": "Ainda não há nada para perguntar. As primeiras perguntas chegam com as tuas lições.",
+    "openLesson": "Abrir a lição",
+    "opensWith": "Desbloqueia com «{{lesson}}»",
+    "opensLater": "Desbloqueia com uma lição mais à frente",
+    "guitarOnly": "Desbloqueia só com a guitarra como instrumento"
   }
 }

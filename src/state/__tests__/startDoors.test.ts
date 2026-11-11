@@ -45,21 +45,25 @@ function firstVisit(search = '') {
 }
 
 describe('the doors (chooseStartDoor)', () => {
+  // Wave 2: 'new' opens lesson 1 of "Start with sound" (its hint still owed,
+  // for the first visit to Explore); the other two open Explore.
+  const SOUND_LESSON_1 = { levelId: 'l1', unitId: 'u34', moduleId: 'l1u34m1' };
   it.each([
-    ['new', 'piano', 'new'],
-    ['new', 'guitar', 'new'],
-    ['player', 'guitar', 'player'],
-    ['player', 'piano', 'player'],
-    ['theory', 'guitar', null],
-    ['theory', 'piano', null],
-  ] as const)('%s with the %s: profile, instrument, flag seen, Explore, hint %s', (profile, instrument, hint) => {
+    ['new', 'piano', 'new', 'learn', SOUND_LESSON_1],
+    ['new', 'guitar', 'new', 'learn', SOUND_LESSON_1],
+    ['player', 'guitar', 'player', 'explore', null],
+    ['player', 'piano', 'player', 'explore', null],
+    ['theory', 'guitar', null, 'explore', null],
+    ['theory', 'piano', null, 'explore', null],
+  ] as const)('%s with the %s: profile, instrument, flag seen, hint %s, opens %s', (profile, instrument, hint, view, lesson) => {
     firstVisit();
-    useAppStore.setState({ view: 'learn' });
+    useAppStore.setState({ view: view === 'learn' ? 'explore' : 'learn' });
     chooseStartDoor(profile, instrument, localStorage);
     expect(getLearnerProfile()).toBe(profile);
     expect(useAppStore.getState().instrument).toBe(instrument);
-    expect(useAppStore.getState().view).toBe('explore');
-    expect(useAppStore.getState().lastView).toBe('explore');
+    expect(useAppStore.getState().view).toBe(view);
+    expect(useAppStore.getState().lastView).toBe(view);
+    expect(useAppStore.getState().pendingLearnTarget).toEqual(lesson);
     expect(localStorage.getItem(WELCOME_KEY)).toBe('seen');
     expect(useWelcomeStore.getState()).toMatchObject({ open: false, shownThisPage: true });
     expect(owed()).toBe(hint);
@@ -69,6 +73,18 @@ describe('the doors (chooseStartDoor)', () => {
     expect(saved.learnerProfile).toBe(profile);
     expect(saved.instrument).toBe(instrument);
     expect(saved.startHint ?? null).toBe(hint);
+    expect(saved.lastView).toBe(view);
+  });
+
+  it('"new": the hint is still owed after the door, and shows the first time Explore opens (no lesson link)', () => {
+    firstVisit();
+    chooseStartDoor('new', 'piano', localStorage);
+    expect(useAppStore.getState().view).toBe('learn');
+    expect(owed()).toBe('new');
+    expect(shown()).toBe('new');
+    useAppStore.getState().setView('explore');
+    expect(shown()).toBe('new');
+    expect(startHint.startHintLesson('new')).toBeNull();
   });
 
   it('after a door the gate never opens again (the next boot, with saved data)', () => {
@@ -90,13 +106,33 @@ describe('the start hint', () => {
     }
   });
 
-  it('no way into Learn from the hint, either kind (the owner, 2026-11-10: the link returns in wave 2)', () => {
-    expect(Object.keys(startHint).sort()).toEqual(['dismissStartHint', 'raiseStartHint', 'useShownStartHint', 'useStartHintStore']);
-    for (const kind of ['new', 'player'] as const) {
-      raiseStartHint(kind);
-      expect(useAppStore.getState().pendingLearnTarget).toBeNull();
-      expect(useAppStore.getState().view).toBe('explore');
-    }
+  it('one way into Learn, and only from the player hint: lesson 1 of the chords track, once it exists (wave 2)', () => {
+    expect(Object.keys(startHint).sort()).toEqual(['dismissStartHint', 'followStartHintLesson', 'raiseStartHint', 'startHintLesson', 'useShownStartHint', 'useStartHintStore']);
+    const withChords = new Set(['l1u35m1']);
+    // Written in this branch: the default set has it.
+    expect(startHint.startHintLesson('player')).toEqual({ levelId: 'l1', unitId: 'u35', moduleId: 'l1u35m1' });
+    // Not written (an empty set): no link, and following does nothing.
+    expect(startHint.startHintLesson('player', new Set())).toBeNull();
+    raiseStartHint('player');
+    startHint.followStartHintLesson(new Set());
+    expect(useAppStore.getState().pendingLearnTarget).toBeNull();
+    expect(useAppStore.getState().view).toBe('explore');
+    expect(owed()).toBe('player');
+    // Written: the link opens it and the hint is done.
+    expect(startHint.startHintLesson('player', withChords)).toEqual({ levelId: 'l1', unitId: 'u35', moduleId: 'l1u35m1' });
+    expect(startHint.startHintLesson('new', withChords)).toBeNull();
+    expect(startHint.startHintLesson(null, withChords)).toBeNull();
+    startHint.followStartHintLesson(withChords);
+    expect(useAppStore.getState().pendingLearnTarget).toEqual({ levelId: 'l1', unitId: 'u35', moduleId: 'l1u35m1' });
+    expect(useAppStore.getState().view).toBe('learn');
+    expect(owed()).toBeNull();
+    expect(shown()).toBeNull();
+    // The 'new' hint never leads into Learn.
+    useAppStore.setState({ view: 'explore', pendingLearnTarget: null });
+    raiseStartHint('new');
+    startHint.followStartHintLesson(withChords);
+    expect(useAppStore.getState().pendingLearnTarget).toBeNull();
+    expect(owed()).toBe('new');
   });
 
   it.each(['new', 'player'] as const)('%s: picking a chord in Explore is acting on it — no longer owed, but the line stays until Explore is left', (kind) => {

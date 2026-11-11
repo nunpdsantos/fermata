@@ -122,7 +122,7 @@ describe.each(['pt', 'es'] as const)('%s interface has no hard-coded English', (
     await i18n.changeLanguage(lang);
   });
 
-  it('top bar, "⋯" menu and the Settings sheet', () => {
+  it('top bar, "⋯" menu and the Settings sheet', async () => {
     useAppStore.setState({ language: lang, view: 'explore' });
     // An update put off with "Later": the "⋯" name and the menu item too.
     usePwaUpdateStore.setState({ needRefresh: true, updateDeferred: true });
@@ -132,7 +132,8 @@ describe.each(['pt', 'es'] as const)('%s interface has no hard-coded English', (
     expect(englishIn(document.body)).toEqual([]);
     expect(screen.getByRole('menuitem', { name: lang === 'pt' ? 'Atualização pronta: recarregar' : 'Actualización lista: recargar' })).toBeTruthy();
     fireEvent.click(screen.getByRole('menuitem', { name: lang === 'pt' ? 'Definições' : 'Ajustes' }));
-    expect(screen.getByRole('dialog', { name: lang === 'pt' ? 'Definições' : 'Ajustes' })).toBeTruthy();
+    // A lazy chunk since the wave-2 integration (the entry file's budget).
+    expect(await screen.findByRole('dialog', { name: lang === 'pt' ? 'Definições' : 'Ajustes' })).toBeTruthy();
     expect(screen.getByRole('radio', { name: lang === 'pt' ? 'Noite' : 'Noche' })).toBeTruthy();
     expect(englishIn(document.body)).toEqual([]);
   });

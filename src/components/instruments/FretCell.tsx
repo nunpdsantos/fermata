@@ -46,6 +46,16 @@ interface FretCellProps {
   /** A real mouse entered (true) / left (false) the cell. */
   onHover?: (on: boolean) => void;
   onClick: () => void;
+  /**
+   * A capo (Explore, wave 2; absent = none, the cell exactly as before).
+   * `outOfPlay`: a fret behind the capo — drawn, but no dot, not tappable,
+   * hidden from screen readers. `capoBar`: the capo's own fret, drawn as a
+   * bar across the strings ('top' / 'bottom' = its rounded ends).
+   * `ariaLabel`: what the cell says instead of the plain label.
+   */
+  outOfPlay?: boolean;
+  capoBar?: 'top' | 'middle' | 'bottom';
+  ariaLabel?: string;
   /** Reading input: locations only, with the answer revealed after grading. */
   exercise?: {
     label: string;
@@ -81,6 +91,9 @@ export const FretCell = memo(function FretCell({
   onHover,
   onClick,
   exercise,
+  outOfPlay = false,
+  capoBar,
+  ariaLabel,
 }: FretCellProps) {
   const { t } = useTranslation();
   const noteLabel = noteToString(displayNote);
@@ -123,12 +136,31 @@ export const FretCell = memo(function FretCell({
   const scaleLabel = scaleDotLabel ?? noteLabel;
   const scaleSolid = isActive || isRoot;
 
+  // Behind the capo: the string runs on, faded; nothing to tap or read out.
+  if (outOfPlay) {
+    return (
+      <div
+        data-fret={fret}
+        data-string-row={stringIdx}
+        data-out-of-play=""
+        aria-hidden="true"
+        className="flex-1 flex items-center justify-center relative"
+        style={{ minWidth: fretMinWidth, backgroundColor: 'var(--card)' }}
+      >
+        <div
+          className="absolute w-full"
+          style={{ height: 1 + (5 - stringIdx) * 0.3, backgroundColor: 'var(--border)', top: '50%', transform: 'translateY(-50%)' }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       data-fret={fret}
       data-string-row={stringIdx}
       role="button"
-      aria-label={exercise?.label ?? t('fretboard.cellLabel', { note: noteLabel, fret, string: 6 - stringIdx })}
+      aria-label={exercise?.label ?? ariaLabel ?? t('fretboard.cellLabel', { note: noteLabel, fret, string: 6 - stringIdx })}
       aria-disabled={exercise?.disabled}
       tabIndex={exercise?.tabIndex}
       onFocus={exercise?.onFocus}
@@ -175,8 +207,27 @@ export const FretCell = memo(function FretCell({
           transform: 'translateY(-50%)',
         }}
       />
+      {/* The capo: a bar across all six strings at its fret, under the dots. */}
+      {capoBar && (
+        <div
+          data-capo-bar={capoBar}
+          aria-hidden="true"
+          className="absolute"
+          style={{
+            width: 14,
+            left: 'calc(50% - 7px)',
+            top: capoBar === 'top' ? '12%' : 0,
+            bottom: capoBar === 'bottom' ? '12%' : 0,
+            backgroundColor: 'var(--text-muted)',
+            borderTopLeftRadius: capoBar === 'top' ? 7 : 0,
+            borderTopRightRadius: capoBar === 'top' ? 7 : 0,
+            borderBottomLeftRadius: capoBar === 'bottom' ? 7 : 0,
+            borderBottomRightRadius: capoBar === 'bottom' ? 7 : 0,
+          }}
+        />
+      )}
       {/* A scale note outside the chord: a small faded dot, no label. */}
-      {contextColor && !showVoicing && !positionDot && !showHighlight && !showScaleDot && (
+      {contextColor && !capoBar && !showVoicing && !positionDot && !showHighlight && !showScaleDot && (
         <div
           {...dotData('context')}
           aria-hidden="true"
@@ -268,6 +319,9 @@ export const FretCell = memo(function FretCell({
             height: scaleSolid ? (mobile ? 26 : 24) : (mobile ? 24 : 22),
             fontSize: 12,
             backgroundColor: scaleSolid ? color : `${color}30`,
+            // On the capo bar the pale tint keeps the page colour under it,
+            // so its label never sits on the dark bar.
+            ...(capoBar && !scaleSolid ? { backgroundImage: `linear-gradient(${color}30, ${color}30)`, backgroundColor: 'var(--bg)' } : undefined),
             // Non-root dots keep the pale tint but print their label in the
             // body text colour — ≥ 4.5:1 in both themes (audit W3-14; the old
             // label was the degree colour on its own tint, ~1.5:1).

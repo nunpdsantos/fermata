@@ -1,4 +1,4 @@
-import { Suspense, lazy, useMemo, useState, useRef } from 'react';
+import { Suspense, lazy, useEffect, useMemo, useState, useRef, type ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChordGrid } from '../theory/ChordGrid.tsx';
 import { ChordBrowser } from '../theory/ChordBrowser.tsx';
@@ -14,6 +14,10 @@ import { StaffNotationSkeleton } from '../notation/StaffNotationSkeleton.tsx';
 import { Term } from '../../glossary/Term.tsx';
 import { termAttr } from '../../glossary/visibleTerms.ts';
 import { useExploreSimple } from '../../state/exploreDetail.ts';
+import { closeProgressionPanel, openProgressionPanel, useProgressionPanelOpen } from '../../state/progressionPanel.ts';
+import { Button } from '../ui/Button.tsx';
+import { SHEET_QUERY } from '../../hooks/useMediaQuery.ts';
+import { toast } from '../../state/toastStore.ts';
 
 const StaffNotation = lazy(() =>
   import('../notation/StaffNotation.tsx').then((m) => ({ default: m.StaffNotation })),
@@ -55,6 +59,21 @@ function ChordStaff() {
 
 type ChordMode = 'diatonic' | 'all' | 'build';
 
+// The Progression panel (wave 2): a lazy chunk, fetched the first time it is
+// opened. A failed download says so, closes the panel and is retried on the
+// next open (a fresh lazy()).
+const loadProgressionPanel = () => lazy<ComponentType>(() => import('./progression/ProgressionPanel.tsx').catch(() => ({ default: ProgressionUnavailable })));
+let ProgressionPanel = loadProgressionPanel();
+function ProgressionUnavailable() {
+  const { t } = useTranslation();
+  useEffect(() => {
+    ProgressionPanel = loadProgressionPanel();
+    closeProgressionPanel();
+    toast(t('progression.loadError'), 'error');
+  }, [t]);
+  return null;
+}
+
 /**
  * CHORDS IN <KEY> (W11-B, D-25): In key / All / Build, a Segment in tabs mode
  * (it switches the panel). The selected chord's detail opens IN PLACE, under
@@ -72,19 +91,25 @@ export function ChordsCard() {
   // Simple view: the In key row only (no All Chords / Build tabs). The tab
   // chosen in Full is kept for when the learner goes back.
   const simple = useExploreSimple();
+  // The Progression panel takes the card's body, tabs included (wave 2).
+  const progression = useProgressionPanelOpen();
   const mode: ChordMode = simple ? 'diatonic' : tab;
-  const detail = selectedChord
+  const detail = selectedChord && !progression
     ? <CurrentChordPanel chord={selectedChord} sourceTab={simple ? undefined : t(mode === 'diatonic' ? 'explore.inKey' : mode === 'all' ? 'explore.allChords' : 'explore.build')} aside={<ChordStaff />} simple={simple} />
     : null;
 
   return (
-    <section ref={cardRef} className="explore-card chords-card" aria-labelledby="chords-title" data-testid="chords-card">
+    <section ref={cardRef} className="explore-card chords-card" aria-labelledby="chords-title" data-testid="chords-card"
+      // While the panel hides the tabs, the tab they will show again (the tour reads it).
+      data-chords-tab={progression && !simple ? mode : undefined}>
       <div className="explore-card-head">
         <h2 id="chords-title" className="type-section">
-          <Term id="chordsInKey">{t('explore.chordsIn', { key: keyName(scale, t) })}</Term>
+          {progression
+            ? <Term id="progression">{t('progression.title')}</Term>
+            : <Term id="chordsInKey">{t('explore.chordsIn', { key: keyName(scale, t) })}</Term>}
         </h2>
         {/* Tabs switch what the screen shows: not printed. */}
-        {!simple && <Segment
+        {!simple && !progression && <Segment
           className="chords-tabs no-print"
           mode="tabs"
           label={t('explore.chords')}
@@ -103,7 +128,32 @@ export function ChordsCard() {
             { value: 'build', label: t('explore.build'), id: 'chords-tab-build', controls: 'chords-panel' },
           ]}
         />}
+        {/* ONE button for both ways, so focus stays on it. Its tap box is a
+            full --tap tall but takes one line in the row (index.css), so the
+            heading row never grows. */}
+        <Button variant="quiet" className="prog-toggle no-print" data-testid="progression-toggle"
+          aria-label={progression ? t('progression.backLabel') : undefined}
+          onClick={() => {
+            if (progression) { closeProgressionPanel(); return; }
+            openProgressionPanel();
+            // A phone or a short screen: the work area scrolls; bring the
+            // panel's top up, so its chords and the loop sit above the sheet.
+            if (typeof window.matchMedia === 'function' && window.matchMedia(SHEET_QUERY).matches) {
+              requestAnimationFrame(() => cardRef.current?.scrollIntoView?.({ block: 'start' }));
+            }
+          }}>
+          {progression
+            ? <><span aria-hidden="true">‹</span> {t('progression.back')}</>
+            : <span {...termAttr('progression')}>{t('progression.open')}</span>}
+        </Button>
       </div>
+      {progression ? (
+        <div id="chords-panel" className="chords-panel">
+          <Suspense fallback={<div className="prog-loading" aria-busy="true" />}>
+            <ProgressionPanel />
+          </Suspense>
+        </div>
+      ) : (
       <div id="chords-panel" role={simple ? undefined : 'tabpanel'} aria-labelledby={simple ? undefined : `chords-tab-${mode}`} className="chords-panel">
         {mode === 'diatonic' && (
           <>
@@ -119,6 +169,7 @@ export function ChordsCard() {
           </>
         )}
       </div>
+      )}
     </section>
   );
 }

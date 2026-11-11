@@ -3,15 +3,22 @@ import { buildScale } from '../../../core/constants/scales';
 import { getScaleNotesWithOctaves, chordVoicingPitches } from '../../../core/utils/pianoLayout';
 import { chordFromParsed } from '../../../core/utils/chordParser';
 import { resolveTheoryQuery } from '../../../utils/theoryQuery';
+import { parseChordListQuery, type ChordListEntry } from '../../../utils/queryExecutorChords';
 
-/** What a Try-This query shows inline: a scale or a key (its scale) up one octave, or a chord. */
+/**
+ * What a Try-This query shows inline: a scale or a key (its scale) up one
+ * octave, a chord, or a list of chords in playing order (wave 2: `chords: G C D Em`).
+ */
 export type TryThisPicture =
   | { kind: 'scale'; notes: Note[]; pitches: PitchedNote[] }
   | { kind: 'chord'; notes: Note[]; bass?: Note; pitches: PitchedNote[] }
+  | { kind: 'chords'; chords: ChordListEntry[] }
   | { kind: 'none' };
 
 /** The same resolver as the Try-This executor and Cmd+K (W9-01). */
 export function tryThisPicture(query: string, currentKey: Note): TryThisPicture {
+  const list = parseChordListQuery(query);
+  if (list) return { kind: 'chords', chords: list };
   const resolved = resolveTheoryQuery(query);
   if (!resolved) return { kind: 'none' };
   const scaleOf = (root: Note, type: Parameters<typeof buildScale>[1]): TryThisPicture => {

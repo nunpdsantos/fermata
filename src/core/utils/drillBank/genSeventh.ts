@@ -92,6 +92,7 @@ export function genSeventh(): DrillItem[] {
           whyKey: 'drill.why.seventhLadder',
           whyParams: { chord: chordDisplay, step: STEP_LABEL[quality] ?? '' },
           rank: baseRank + offset,
+          chord: { root: rootAscii, quality },
         });
         offset++;
       }
@@ -117,6 +118,7 @@ export function genSeventh(): DrillItem[] {
           whyKey: 'drill.why.seventhLadder',
           whyParams: { chord: chordDisplay, step: STEP_LABEL[quality] ?? '' },
           rank: baseRank + offset,
+          chord: { root: rootAscii, quality },
         });
         offset++;
       }

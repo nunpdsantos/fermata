@@ -324,6 +324,23 @@
       "title": "Broken chord",
       "plain": "A chord's notes played one or a few at a time in a pattern, instead of all together."
     },
+    "progression": {
+      "title": "Progression",
+      "plain": "Chords played one after another, in the order a song uses them. Its numbers in the key (such as I–V–vi–IV) stay the same when it moves to another key.",
+      "example": "In {{key}}: {{numerals}} is {{chords}}."
+    },
+    "tempo": {
+      "title": "Tempo",
+      "plain": "How fast the music goes, counted in beats a minute: 60 is one beat a second, 120 is two beats a second."
+    },
+    "capo": {
+      "title": "Capo",
+      "plain": "A clamp across all the strings at one fret. The open strings then sound higher, so the same chord shapes sound in a higher key: G shapes with a capo on fret 2 sound in A."
+    },
+    "transpose": {
+      "title": "Moving to another key (transposing)",
+      "plain": "Playing the same chords or tune higher or lower: every note moves by the same number of half steps, so the numbers (I, IV, V) stay the same."
+    },
     "scale_major": {
       "plain": "The bright, everyday scale of most songs: whole steps everywhere except two half steps, between notes 3–4 and 7–8.",
       "example": "On {{root}}: {{notes}}."

@@ -8,7 +8,11 @@ import { foldDockForLesson, openDockForLesson, foldDockAfterLesson } from '../..
 import { executeTheoryQuery } from '../../../../utils/queryExecutor';
 import { useAppStore } from '../../../../state/store';
 
-const levelText = (n: number) => EN_UNITS[n].flatMap((u) => u.modules).map((m) => `${m.title} ${m.objectives.join(' ')} ${m.concepts.map((c) => `${c.title} ${c.explanation}`).join(' ')}`).join(' ').toLowerCase();
+// A starting track (wave 2, a unit with `track`, kept in Level 1's data) is
+// not part of a level: a learner may skip it, so its lessons are not what a
+// level teaches (as conceptOrder.corpus.test.ts reads them).
+const levelUnits = (n: number) => EN_UNITS[n].filter((u) => !u.track);
+const levelText = (n: number) => levelUnits(n).flatMap((u) => u.modules).map((m) => `${m.title} ${m.objectives.join(' ')} ${m.concepts.map((c) => `${c.title} ${c.explanation}`).join(' ')}`).join(' ').toLowerCase();
 
 describe('Level 9 "pairs with Level n" (D-10, W4-17)', () => {
   it('every Level 9 module has a pairing, and only those', () => {
@@ -23,8 +27,10 @@ describe('Level 9 "pairs with Level n" (D-10, W4-17)', () => {
     const firstMentioned = (re: RegExp) => [1, 2, 3, 4, 5, 6, 7, 8].find((n) => re.test(levelText(n)));
     expect(firstMentioned(/\bdorian\b/)).toBe(L9_PAIRS.l9u31m2);
     expect(firstMentioned(/\bpentatonic\b|\bblues scale\b/)).toBe(L9_PAIRS.l9u31m3);
+    // (The chords track does teach the pentatonic, in Level 1's data: it is left out above on purpose.)
+    expect(EN_UNITS[1].filter((u) => u.track).some((u) => u.modules.some((m) => m.concepts.some((c) => /\bpentatonic\b/.test(c.explanation))))).toBe(true);
     // …or the subject of one of its lessons (a module title).
-    const firstLesson = (re: RegExp) => [1, 2, 3, 4, 5, 6, 7, 8].find((n) => EN_UNITS[n].some((u) => u.modules.some((m) => re.test(m.title.toLowerCase()))));
+    const firstLesson = (re: RegExp) => [1, 2, 3, 4, 5, 6, 7, 8].find((n) => levelUnits(n).some((u) => u.modules.some((m) => re.test(m.title.toLowerCase()))));
     expect(firstLesson(/secondary dominants/)).toBe(L9_PAIRS.l9u32m2);
     expect(firstLesson(/seventh chords/)).toBe(L9_PAIRS.l9u31m5);
     expect(firstLesson(/cadences/)).toBe(L9_PAIRS.l9u32m3);

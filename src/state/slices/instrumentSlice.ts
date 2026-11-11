@@ -12,6 +12,8 @@ export const createInstrumentSlice: StateCreator<AppState, [], [], InstrumentSli
   // A save from before these fields gets the old view (store.ts merge).
   neckNutSide: 'left',
   neckTopString: 'high',
+  // No capo (state/capo.ts sets it; saved only while 1–9).
+  capoFret: 0,
 
   setInstrument: (instrument) =>
     set({ instrument, preferencesUpdatedAt: Date.now() }),

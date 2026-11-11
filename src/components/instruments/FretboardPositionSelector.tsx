@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { POSITION_NUMBERS, MAX_POSITION, OPEN_POSITION, toRomanNumeral } from '../../core/utils/guitarPositions.ts';
+import { POSITION_NUMBERS, OPEN_POSITION, toRomanNumeral } from '../../core/utils/guitarPositions.ts';
 import type { FretboardLabelMode } from '../../state/fingeringStore.ts';
 import { ChipGroup, ChoiceChip } from '../ui/ChoiceChip.tsx';
 import { Segment } from '../ui/Segment.tsx';
@@ -47,6 +47,10 @@ interface ScalePositionSelectorProps {
   /** Takes a row of its own below 1024 px (the dock's controls); false in
    *  the laptop dock bar and the full-neck view's header. */
   fullRow?: boolean;
+  /** The positions offered (default Open, I–XII). With a capo: Open (at the capo) and those above it. */
+  positions?: readonly number[];
+  /** A capo on this fret (0 = none): the Open position's title says it starts at the capo. */
+  capo?: number;
 }
 
 /**
@@ -54,19 +58,19 @@ interface ScalePositionSelectorProps {
  * announce themselves as tabs without behaving like tabs); on phones a
  * select. ‹ › step one position.
  */
-export function ScalePositionSelector({ position, onSelect, onStep, mobile = false, fullRow = true }: ScalePositionSelectorProps) {
+export function ScalePositionSelector({ position, onSelect, onStep, mobile = false, fullRow = true, positions = POSITION_NUMBERS, capo = 0 }: ScalePositionSelectorProps) {
   const { t } = useTranslation();
   const name = (n: number) => (n === OPEN_POSITION ? t('fretboard.open') : toRomanNumeral(n));
   // The numeral names the position; the fret is a plain number (review B2).
   // Position I gets its own line so it reads differently from Open (#4).
   const title = (n: number) =>
     n === OPEN_POSITION
-      ? t('fretboard.openPositionTitle')
+      ? capo > 0 ? t('capo.openPositionTitle', { fret: capo, from: capo + 1, to: capo + 4 }) : t('fretboard.openPositionTitle')
       : n === 1
         ? t('fretboard.positionOneTitle')
         : t('fretboard.positionTitle', { numeral: toRomanNumeral(n), fret: n });
-  const prevDisabled = position === OPEN_POSITION;
-  const nextDisabled = position === MAX_POSITION;
+  const prevDisabled = position === positions[0];
+  const nextDisabled = position === positions[positions.length - 1];
 
   const stepButton = (delta: 1 | -1) => {
     const disabled = delta === -1 ? prevDisabled : nextDisabled;
@@ -95,7 +99,7 @@ export function ScalePositionSelector({ position, onSelect, onStep, mobile = fal
           onChange={(e) => onSelect(e.target.value === 'all' ? 'all' : Number(e.target.value))}
           aria-label={t('fretboard.scalePosition')}
         >
-          {POSITION_NUMBERS.map((n) => (
+          {positions.map((n) => (
             <option key={n} value={n}>{name(n)}</option>
           ))}
           <option value="all">{t('fretboard.all')}</option>
@@ -110,7 +114,7 @@ export function ScalePositionSelector({ position, onSelect, onStep, mobile = fal
             value={position}
             onChange={onSelect}
             options={[
-              ...POSITION_NUMBERS.map((n) => ({ value: n as number | 'all', label: name(n), title: title(n) })),
+              ...positions.map((n) => ({ value: n as number | 'all', label: name(n), title: title(n) })),
               { value: 'all' as const, label: t('fretboard.all'), title: t('fretboard.allTitle') },
             ]}
           />

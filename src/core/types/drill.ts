@@ -48,6 +48,18 @@ interface DrillItemBase {
   whyKey: string;
   whyParams: Record<string, string | number>;
   rank: number;
+  /**
+   * The key the question is set in (wave 2, "Drill follows the lessons"):
+   * its tonic spelled in ASCII, UPPER case for a major key ('C', 'F#', 'Bb'),
+   * lower case for a minor one ('a', 'f#', 'bb'). Set at generation for the
+   * scale, Roman-numeral and function items that name a key; absent on an
+   * item that is not about one key. Read this, never the id.
+   */
+  key?: string;
+  /** The chord a triad / seventh item spells or names (root in ASCII + quality). */
+  chord?: { root: string; quality: ChordQuality };
+  /** The scale degree (1–7) a Roman-numeral or chord-function item asks about. */
+  degree?: number;
 }
 
 /** Reading is a normal Drill item, with its staff and stage required. */

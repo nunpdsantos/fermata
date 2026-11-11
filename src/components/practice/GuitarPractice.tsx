@@ -13,6 +13,8 @@ import { SelectTrigger } from '../ui/SelectTrigger';
 import { ChipGroup } from '../ui/ChoiceChip';
 import { PracticePlayer } from './PracticePlayer';
 import { WordsButton } from '../../glossary/Term';
+import { useCapoFret } from '../../state/capo';
+import { CAPO_TERM } from '../instruments/capoView';
 import type { TermId } from '../../glossary/termIds';
 
 const TAB_TERM: Partial<Record<string, TermId>> = { walk: 'positionWalk', technical: 'technicalSet', rightHand: 'rightHandFingers' };
@@ -44,6 +46,8 @@ export default function GuitarPractice() {
   const [item, setItem] = useState('scale');
   const [pattern, setPattern] = useState(RIGHT_HAND_PATTERNS[0].id);
   const chooseScale = useChooseScale();
+  // The practice exercises use the neck without a capo (wave 2): say so while one is on.
+  const capo = useCapoFret();
   const range = Math.min(3, maxScaleOctaves(root, tuning));
   const shownOctaves = Math.min(octaves, range);
   const scaleRoute = useMemo(() => tab === 'scales' ? scalePractice(root, scale, tuning, shownOctaves, scheme) : null, [tab, root, scale, tuning, shownOctaves, scheme]);
@@ -62,6 +66,7 @@ export default function GuitarPractice() {
       <p className="text-ui" data-term="key">{t('practice.keyOfPiece', { key: `${withGlyphs(root)} ${t(`scaleName.${scale}`)}` })}</p>
       <WordsButton />
     </div>
+    {capo > 0 && <p className="text-ui" data-testid="practice-capo-note" data-term={CAPO_TERM}>{t('capo.practiceNote')}</p>}
     <Segment mode="tabs" className="practice-tabs" label={t('practice.title')} value={tab} onChange={setTab}
       options={(['scales', 'walk', 'technical', 'rightHand'] as const).map((value) => ({ value, label: TAB_TERM[value] ? <span data-term={TAB_TERM[value]}>{t(`practice.tabs.${value}`)}</span> : t(`practice.tabs.${value}`), id: `practice-tab-${value}`, controls: 'practice-panel' }))} />
     <div id="practice-panel" role="tabpanel" aria-labelledby={`practice-tab-${tab}`} className="space-y-3">
