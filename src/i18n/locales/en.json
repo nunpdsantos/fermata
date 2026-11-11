@@ -904,7 +904,8 @@
     "export": "Export",
     "import": "Import",
     "build": "build {{date}}",
-    "worksOffline": "works offline"
+    "worksOffline": "works offline",
+    "loadError": "Settings did not load. Check the connection and try again."
   },
   "dock": {
     "handle": "Instrument panel",

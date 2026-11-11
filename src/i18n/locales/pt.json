@@ -904,7 +904,8 @@
     "export": "Exportar",
     "import": "Importar",
     "build": "versão de {{date}}",
-    "worksOffline": "funciona offline"
+    "worksOffline": "funciona offline",
+    "loadError": "As Definições não carregaram. Verifica a ligação e tenta de novo."
   },
   "dock": {
     "handle": "Painel do instrumento",

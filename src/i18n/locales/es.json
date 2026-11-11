@@ -904,7 +904,8 @@
     "export": "Exportar",
     "import": "Importar",
     "build": "versión del {{date}}",
-    "worksOffline": "funciona sin conexión"
+    "worksOffline": "funciona sin conexión",
+    "loadError": "Los Ajustes no se han cargado. Comprueba la conexión y vuelve a intentarlo."
   },
   "dock": {
     "handle": "Panel del instrumento",
