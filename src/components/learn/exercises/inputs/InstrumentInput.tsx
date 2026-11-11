@@ -8,6 +8,7 @@ import { Button } from '../../../ui/Button';
 import { accentText } from '../../../../design/tokens/learnColors';
 import { openDockForLesson, foldDockAfterLesson } from '../../../../services/lessonDock';
 import { setExternalAnswerTarget } from '../../../../services/externalAnswer';
+import { UseMyInstrument } from '../../../tuner/UseMyInstrument';
 
 interface InstrumentInputProps {
   expectedCount: number;
@@ -105,6 +106,9 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
     setToggledPCs(new Set());
   }, []);
 
+  // "Use my instrument" names a heard note as the chips below do.
+  const nameOf = useCallback((midi: number) => withGlyphs(spell(((midi % 12) + 12) % 12)), [spell]);
+
   const handleCheck = useCallback(() => {
     onSubmit(toggledPCs);
   }, [toggledPCs, onSubmit]);
@@ -119,6 +123,9 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
           {t('exercise.instrumentToggle')}
         </span>
       </div>
+
+      {/* Wave 3: answer by playing a real instrument (the microphone). */}
+      <UseMyInstrument active={!submitted} nameOf={nameOf} />
 
       {/* Toggled notes display */}
       {toggledPCs.size > 0 && (

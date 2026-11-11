@@ -1395,5 +1395,10 @@
     "opensWith": "Unlocks with “{{lesson}}”",
     "opensLater": "Unlocks with a later lesson",
     "guitarOnly": "Unlocks only with the guitar as your instrument"
+  },
+  "tunerEntry": {
+    "menuItem": "Tuner",
+    "dockButton": "Tune",
+    "loadError": "The tuner did not load. Try again."
   }
 }

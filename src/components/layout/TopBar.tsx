@@ -9,6 +9,8 @@ import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { usePwaUpdateStore, applyUpdateOrReload } from '../../hooks/usePWA.ts';
 import { requestDemo } from '../../state/demoRequest.ts';
 import { resumeAudio } from '../../core/services/audio.ts';
+import { TunerHost } from '../tuner/TunerHost.tsx';
+import { openTuner } from '../tuner/tunerRequest.ts';
 
 // Settings is a lazy chunk (wave 2 integration, for the entry file's budget):
 // fetched the first time it is opened, then kept mounted (its close animation
@@ -135,11 +137,13 @@ export function TopBar() {
             ...(narrow ? [{ id: 'search', label: t('nav.search'), onSelect: openSearch }] : []),
             { id: 'settings', label: t('settings.title'), onSelect: openSettings },
             { id: 'show-me', label: t('showMe.menuItem'), onSelect: showMeAround },
+            { id: 'tuner', label: t('tunerEntry.menuItem'), onSelect: openTuner },
             // A waiting update stays one tap away after "Later" (until the reload).
             ...(updateReady ? [{ id: 'update', label: t('pwa.updateReady'), onSelect: () => void applyUpdateOrReload() }] : []),
           ]}
         />
       </div>
+      <TunerHost />
       {settingsMounted && (
         <Suspense fallback={null}>
           <SettingsSheet key={settingsAttempt} open={settingsOpen} onClose={closeSettings} />

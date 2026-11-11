@@ -1395,5 +1395,10 @@
     "opensWith": "Se desbloquea con «{{lesson}}»",
     "opensLater": "Se desbloquea con una lección más adelante",
     "guitarOnly": "Se desbloquea solo con la guitarra como instrumento"
+  },
+  "tunerEntry": {
+    "menuItem": "Afinador",
+    "dockButton": "Afinar",
+    "loadError": "El afinador no se ha cargado. Vuelve a intentarlo."
   }
 }
