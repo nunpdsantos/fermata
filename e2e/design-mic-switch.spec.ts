@@ -237,6 +237,32 @@ test.describe('the microphone switch: off, asking, on, a problem — in the top 
   }
 });
 
+
+/**
+ * The top bar holds still (brief U2): the switch is offered only where a
+ * played note can be used, so the bar keeps its place by width — 360–639 px
+ * the switch takes the magnifier's place where it is offered ("Search" first
+ * in "⋯"), elsewhere main's bar; below 360 px and from 640 to 1023 px an
+ * empty, inert slot of its width where it is not offered; from 1024 px no
+ * slot. Measured in Explore, Learn, Drill, a check answered on the instrument
+ * (l1u3m4) and the tour, each at every width (the window resized in place),
+ * on a touch screen up to 1024 px and with a mouse from 640 px.
+ */
+const WIDTHS = [320, 344, 360, 390, 393, 412, 430, 639, 640, 667, 744, 768, 820, 1023, 1024, 1200, 1440];
+const touchWidths = (touch: boolean) => WIDTHS.filter((w) => (touch ? w <= 1024 : w >= 640));
+type Where = 'explore' | 'learn' | 'drill' | 'tour' | 'check';
+// The check last: a check left unfinished is restored by the next load (and the tour is not started over work in progress).
+const WHERE: Where[] = ['explore', 'learn', 'drill', 'tour', 'check'];
+const MORE_WORDS = {
+  en: { search: 'Search', searchButton: 'Quick search, Command+K', tour: 'Show me around' },
+  pt: { search: 'Pesquisar', searchButton: 'Pesquisa rápida, Command+K', tour: 'Mostra-me como funciona' },
+  es: { search: 'Buscar', searchButton: 'Búsqueda rápida, Command+K', tour: 'Enséñame cómo funciona' },
+} as const;
+const NO_MIC = () => {
+  if (navigator.mediaDevices) Object.defineProperty(navigator.mediaDevices, 'getUserMedia', { configurable: true, value: undefined });
+};
+const MEASURE_OUT = process.env.MIC_BAR_OUT;
+
 /** The top bar's tabs and controls, measured. */
 const topBar = (page: Page) => page.evaluate(() => {
   const bar = document.querySelector('.app-topbar')!;
@@ -249,84 +275,236 @@ const topBar = (page: Page) => page.evaluate(() => {
     const t = range.getBoundingClientRect();
     worstEdge = Math.min(worstEdge, t.left - track.left, track.right - t.right);
   }
+  const r1 = (n: number) => Math.round(n * 10) / 10;
   const controls = Array.from(bar.querySelectorAll('button')).filter((b) => (b as HTMLElement).offsetParent !== null).map((b) => {
     const r = b.getBoundingClientRect();
-    return { name: (b.getAttribute('aria-label') ?? b.textContent ?? '').trim().slice(0, 24), x: Math.round(r.left * 10) / 10, w: Math.round(r.width * 10) / 10, h: Math.round(r.height * 10) / 10 };
+    return { name: (b.getAttribute('aria-label') ?? b.textContent ?? '').trim().slice(0, 24), x: r1(r.left), w: r1(r.width), h: r1(r.height) };
   });
+  const slot = bar.querySelector('[data-testid="mic-slot"]') as HTMLElement | null;
   const brand = bar.querySelector('.app-brand')!.getBoundingClientRect();
   return {
-    worstEdge: Math.round(worstEdge * 10) / 10,
+    tabsLeft: track.left,
+    tabsWidth: track.width,
+    worstEdge: r1(worstEdge),
     tabsWhole: Array.from(tabs.querySelectorAll('button')).every((b) => b.scrollWidth <= b.clientWidth + 0.5),
     controls,
-    brand: [Math.round(brand.left * 10) / 10, Math.round(brand.width * 10) / 10],
+    slot: slot && slot.offsetParent !== null ? { x: r1(slot.getBoundingClientRect().left), w: r1(slot.getBoundingClientRect().width) } : null,
+    brand: [r1(brand.left), r1(brand.width)],
     search: controls.some((c) => /Command/.test(c.name)),
     pageScroll: document.documentElement.scrollWidth - innerWidth,
     barScroll: bar.scrollWidth - bar.clientWidth,
   };
 });
+type Bar = Awaited<ReturnType<typeof topBar>>;
 
-async function openExplore(browser: Browser, width: number, lang: Lang, touch: boolean) {
-  const context = await browser.newContext({ baseURL: base, viewport: { width, height: 800 }, isMobile: touch, hasTouch: touch, reducedMotion: 'reduce', serviceWorkers: 'block' });
+async function barSession(browser: Browser, lang: Lang, touch: boolean, noMic = false) {
+  const context = await browser.newContext({ baseURL: base, viewport: { width: touch ? 390 : 1440, height: 800 }, isMobile: touch, hasTouch: touch, reducedMotion: 'reduce', serviceWorkers: 'block' });
   await context.addInitScript((l) => {
     if (sessionStorage.getItem('__seeded')) return;
-    localStorage.setItem('music-theory-app', JSON.stringify({ state: { themeMode: 'fermata', language: l, lastView: 'explore' }, version: 6 }));
+    localStorage.setItem('music-theory-app', JSON.stringify({ state: { themeMode: 'fermata', language: l, lastView: 'explore', instrument: 'piano' }, version: 6 }));
     sessionStorage.setItem('__seeded', '1');
   }, lang);
-  const page = await context.newPage();
-  await page.goto('/');
-  await expect(page.getByTestId('explore-root')).toBeVisible({ timeout: 15_000 });
-  await page.evaluate(() => document.fonts.ready);
-  await page.waitForTimeout(300);
-  return { context, page };
+  if (noMic) await context.addInitScript(NO_MIC);
+  return { context, page: await context.newPage() };
 }
 
-test.describe('the top bar with the switch', () => {
+/** Into a view (from a fresh load): Explore, Learn, Drill, the tour (from "⋯", over Explore) or a chord_build check. */
+async function goTo(page: Page, lang: Lang, where: Where) {
+  if (where === 'check') {
+    await page.goto('/?lesson=l1u3m4');
+    const start = page.getByRole('button', { name: WORDS[lang].checkStart });
+    await expect(start).toBeAttached({ timeout: 15_000 });
+    await start.scrollIntoViewIfNeeded();
+    await start.click();
+    await expect(page.getByTestId('focused-check')).toBeVisible();
+  } else {
+    await page.goto(`/?view=${where === 'tour' ? 'explore' : where}`);
+    await expect(page.locator(`#${where === 'tour' ? 'explore' : where}-panel`)).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator(`[data-tab="${where === 'tour' ? 'explore' : where}"]`)).toHaveAttribute('aria-selected', 'true');
+  }
+  if (where === 'tour') {
+    await page.getByRole('button', { name: WORDS[lang].more, exact: true }).click();
+    await page.getByRole('menuitem', { name: MORE_WORDS[lang].tour }).click();
+    await expect(page.getByTestId('tour-bar')).toBeVisible({ timeout: 15_000 });
+  }
+  await page.evaluate(() => document.fonts.ready);
+}
+
+async function resize(page: Page, width: number) {
+  await page.setViewportSize({ width, height: 800 });
+  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+  await page.waitForTimeout(150);
+}
+
+const px = (n: number) => Math.round(n * 10) / 10;
+
+test.describe('the top bar holds still between views (brief U2)', () => {
   for (const lang of ['en', 'pt', 'es'] as const) {
-    test(`${lang}: a phone's top bar at 320, 360, 390 and 430 px — the three tabs whole, every control a full --tap target, nothing scrolls; where Search is`, async ({ browser, baseURL }) => {
-      base = baseURL!;
-      test.setTimeout(120_000);
-      const searchAt: Record<number, boolean> = {};
-      for (const width of [320, 360, 390, 430]) {
-        const { context, page } = await openExplore(browser, width, lang, true);
-        const m = await topBar(page);
-        test.info().annotations.push({ type: 'measured', description: `${lang} ${width}px: tabs' words ${m.worstEdge} px inside their pill; search in the bar: ${m.search}; ${JSON.stringify(m.controls)}` });
-        expect(m.controls.map((c) => c.name)).toContain(WORDS[lang].mic);
-        expect(m.tabsWhole, `${lang} ${width}: the tabs whole`).toBe(true);
-        expect(m.worstEdge, `${lang} ${width}: every tab's word ≥ 4 px inside the pill`).toBeGreaterThanOrEqual(4);
-        for (const c of m.controls) expect(Math.min(c.w, c.h), `${lang} ${width}: ${c.name} a full --tap (44 px on touch)`).toBeGreaterThanOrEqual(44);
-        expect(m.pageScroll, `${lang} ${width}: no sideways scroll`).toBeLessThanOrEqual(0);
-        expect(m.barScroll, `${lang} ${width}: the bar does not scroll`).toBeLessThanOrEqual(0);
-        searchAt[width] = m.search;
+    for (const touch of [true, false]) {
+      test(`${lang}, ${touch ? 'touch up to 1024' : 'mouse from 640'} px: the tab strip's left edge and width the same in Explore, Learn, Drill, a check and the tour; no tab clipped; every control a full --tap; no sideways scroll`, async ({ browser, baseURL }) => {
+        base = baseURL!;
+        test.setTimeout(240_000);
+        const tap = touch ? 44 : 36;
+        const widths = touchWidths(touch);
+        const { context, page } = await barSession(browser, lang, touch);
+        const seen: Record<string, Record<number, Bar>> = {};
+        for (const where of WHERE) {
+          await goTo(page, lang, where);
+          seen[where] = {};
+          for (const width of widths) {
+            await resize(page, width);
+            const m = await topBar(page);
+            seen[where][width] = m;
+            const at = `${lang} ${width}px ${touch ? 'touch' : 'mouse'} ${where}`;
+            // Where the switch is offered it is in the bar (known positive for the views that show it).
+            const offered = where === 'explore' || where === 'check';
+            expect.soft(m.controls.filter((c) => c.name === WORDS[lang].mic).length, `${at}: the switch`).toBe(offered ? 1 : 0);
+            expect.soft(m.tabsWhole, `${at}: the tabs whole`).toBe(true);
+            expect.soft(m.worstEdge, `${at}: every tab's word ≥ 4 px inside its pill`).toBeGreaterThanOrEqual(4);
+            for (const c of m.controls) expect.soft(Math.min(c.w, c.h), `${at}: ${c.name} a full --tap (${tap} px)`).toBeGreaterThanOrEqual(tap);
+            expect.soft(m.pageScroll, `${at}: no sideways scroll`).toBeLessThanOrEqual(0);
+            expect.soft(m.barScroll, `${at}: the bar does not scroll`).toBeLessThanOrEqual(0);
+          }
+        }
+        const rows: string[] = [];
+        for (const width of widths) {
+          const e = seen.explore[width];
+          rows.push(`${lang} ${touch ? 'touch' : 'mouse'} ${String(width).padStart(4)}px  tabs ${WHERE.map((w) => `${w} ${px(seen[w][width].tabsLeft)}+${px(seen[w][width].tabsWidth)}`).join(' | ')}`);
+          for (const where of WHERE) {
+            const m = seen[where][width];
+            expect.soft(Math.abs(m.tabsLeft - e.tabsLeft), `${lang} ${width}px ${where}: the tabs' left edge as in Explore (${px(m.tabsLeft)} / ${px(e.tabsLeft)})`).toBeLessThanOrEqual(0.5);
+            expect.soft(Math.abs(m.tabsWidth - e.tabsWidth), `${lang} ${width}px ${where}: the tabs' width as in Explore (${px(m.tabsWidth)} / ${px(e.tabsWidth)})`).toBeLessThanOrEqual(0.5);
+          }
+        }
+        console.log(rows.join('\n'));
+        test.info().annotations.push({ type: 'measured', description: rows.join('\n') });
+        if (MEASURE_OUT) {
+          fs.mkdirSync(MEASURE_OUT, { recursive: true });
+          fs.writeFileSync(`${MEASURE_OUT}/tabs-${lang}-${touch ? 'touch' : 'mouse'}.json`, JSON.stringify(seen, null, 1));
+        }
         await context.close();
-      }
-      // Where Search moved into "⋯": below 360 px in English (as before), below 405 px in PT and ES (brief U).
-      expect(searchAt).toEqual(lang === 'en' ? { 320: false, 360: true, 390: true, 430: true } : { 320: false, 360: false, 390: false, 430: true });
-    });
+      });
+    }
   }
 
   for (const lang of ['en', 'pt', 'es'] as const) {
-    test(`${lang}: from 1024 px up the switch moves nothing else in the top bar (with and without it, the same run); 640–820 px measured and logged, where the square still shifts the tabs`, async ({ browser, baseURL }) => {
+    for (const touch of [true, false]) {
+      test(`${lang}, ${touch ? 'touch' : 'mouse'}: Learn's and Drill's bar is main's (the microphone unsupported, the same run) from 360 to 639 px and from 1024 px; in Explore the switch stands exactly where Learn's magnifier stands; elsewhere the slot's shift logged`, async ({ browser, baseURL }) => {
+        base = baseURL!;
+        test.setTimeout(240_000);
+        const widths = touchWidths(touch);
+        const runs: Record<'mic' | 'none', Record<string, Record<number, Bar>>> = { mic: {}, none: {} };
+        for (const kind of ['mic', 'none'] as const) {
+          const { context, page } = await barSession(browser, lang, touch, kind === 'none');
+          for (const where of ['learn', 'drill', 'explore'] as const) {
+            await goTo(page, lang, where);
+            runs[kind][where] = {};
+            for (const width of widths) {
+              await resize(page, width);
+              runs[kind][where][width] = await topBar(page);
+            }
+          }
+          await context.close();
+        }
+        const rows: string[] = [];
+        for (const width of widths) {
+          const phone = width >= 360 && width < 640;
+          for (const where of ['learn', 'drill'] as const) {
+            const withCode = runs.mic[where][width];
+            const main = runs.none[where][width];
+            // Known positive: without a microphone API there is no switch and no slot, anywhere.
+            expect.soft(main.slot, `${lang} ${width}px ${where}: no slot without a microphone`).toBeNull();
+            expect.soft(main.controls.map((c) => c.name)).not.toContain(WORDS[lang].mic);
+            const shift = px(withCode.tabsLeft - main.tabsLeft);
+            rows.push(`${lang} ${touch ? 'touch' : 'mouse'} ${String(width).padStart(4)}px ${where}: slot ${withCode.slot ? `at ${withCode.slot.x}+${withCode.slot.w}` : 'none'}; tabs ${px(withCode.tabsLeft)}+${px(withCode.tabsWidth)} vs main ${px(main.tabsLeft)}+${px(main.tabsWidth)} (shift ${shift})`);
+            if (phone || width >= 1024) {
+              expect.soft(withCode.slot, `${lang} ${width}px ${where}: no slot`).toBeNull();
+              expect.soft(withCode.controls, `${lang} ${width}px ${where}: every control of the bar as on main`).toEqual(main.controls);
+              expect.soft(withCode.brand, `${lang} ${width}px ${where}: the name as on main`).toEqual(main.brand);
+              expect.soft(px(withCode.tabsLeft), `${lang} ${width}px ${where}: the tabs as on main`).toBe(px(main.tabsLeft));
+            } else {
+              // The slot stands where the switch stands in Explore.
+              const sw = runs.mic.explore[width].controls.find((c) => c.name === WORDS[lang].mic);
+              expect.soft(withCode.slot, `${lang} ${width}px ${where}: the slot`).not.toBeNull();
+              expect.soft(withCode.slot, `${lang} ${width}px ${where}: the slot where Explore's switch is`).toEqual(sw ? { x: sw.x, w: sw.w } : 'no switch');
+            }
+          }
+          if (phone) {
+            const sw = runs.mic.explore[width].controls.find((c) => c.name === WORDS[lang].mic);
+            const magnifier = runs.mic.learn[width].controls.find((c) => c.name === MORE_WORDS[lang].searchButton.slice(0, 24));
+            expect.soft(magnifier, `${lang} ${width}px: Learn's magnifier (known positive)`).toBeTruthy();
+            expect.soft(sw, `${lang} ${width}px: Explore's switch where Learn's magnifier stands`).toEqual(magnifier ? { ...magnifier, name: WORDS[lang].mic } : 'no magnifier');
+            expect.soft(runs.mic.explore[width].search, `${lang} ${width}px: no magnifier beside the switch`).toBe(false);
+          }
+        }
+        console.log(rows.join('\n'));
+        test.info().annotations.push({ type: 'measured', description: rows.join('\n') });
+        if (MEASURE_OUT) {
+          fs.mkdirSync(MEASURE_OUT, { recursive: true });
+          fs.writeFileSync(`${MEASURE_OUT}/main-${lang}-${touch ? 'touch' : 'mouse'}.txt`, rows.join('\n'));
+        }
+      });
+    }
+  }
+
+  for (const lang of ['en', 'pt', 'es'] as const) {
+    test(`${lang}: "Search" is reachable in every view at 320, 390, 768 and 1440 px — by the magnifier or first in "⋯", never both, never neither — and it opens Quick Search`, async ({ browser, baseURL }) => {
+      base = baseURL!;
+      test.setTimeout(240_000);
+      const w = MORE_WORDS[lang];
+      for (const touch of [true, false]) {
+        const { context, page } = await barSession(browser, lang, touch);
+        for (const where of WHERE) {
+          await goTo(page, lang, where);
+          for (const width of touch ? [320, 390, 768] : [1440]) {
+            await resize(page, width);
+            const at = `${lang} ${width}px ${where}`;
+            const magnifier = page.locator('.app-topbar').getByRole('button', { name: w.searchButton });
+            const inBar = await magnifier.isVisible();
+            await page.getByRole('button', { name: WORDS[lang].more, exact: true }).click();
+            const items = await page.getByRole('menuitem').allTextContents();
+            const inMenu = items.filter((i) => i === w.search).length;
+            expect.soft(Number(inBar) + inMenu, `${at}: Search once (bar ${inBar}, menu ${JSON.stringify(items)})`).toBe(1);
+            if (inMenu) expect.soft(items[0], `${at}: Search first in "⋯"`).toBe(w.search);
+            if (inMenu) await page.getByRole('menuitem', { name: w.search }).click();
+            else {
+              await page.keyboard.press('Escape');
+              await magnifier.click();
+            }
+            const dialog = page.getByRole('dialog', { name: 'Quick search' });
+            await expect(dialog, `${at}: Quick Search opens`).toBeVisible();
+            await page.keyboard.press('Escape');
+            await expect(dialog).toHaveCount(0);
+          }
+        }
+        await context.close();
+      }
+    });
+  }
+});
+
+test.describe('the top bar with the switch, from 1024 px', () => {
+  for (const lang of ['en', 'pt', 'es'] as const) {
+    test(`${lang}: from 1024 px up the switch moves nothing else in the top bar (with and without it, the same run)`, async ({ browser, baseURL }) => {
       base = baseURL!;
       test.setTimeout(120_000);
-      // Every width measured and logged; asserted from 1024 px (below it, at the narrowest tablet widths, the square
-      // can still shift the centred tabs: on this Mac up to 690 px in English, 800 px in Portuguese, 760 px in Spanish — reported).
-      for (const width of [640, 768, 820, 1024, 1280, 1440]) {
+      for (const width of [1024, 1200, 1280, 1440]) {
         for (const touch of width === 1440 ? [false] : [false, true]) {
-          const { context, page } = await openExplore(browser, width, lang, touch);
+          const { context, page } = await barSession(browser, lang, touch);
+          await page.setViewportSize({ width, height: 800 });
+          await goTo(page, lang, 'explore');
+          await page.waitForTimeout(300);
           const withIt = await topBar(page);
           await page.locator('[data-testid="mic-switch"]').evaluate((el) => { (el as HTMLElement).style.display = 'none'; });
           await page.waitForTimeout(150);
           const without = await topBar(page);
           const others = withIt.controls.filter((c) => c.name !== WORDS[lang].mic);
-          const same = JSON.stringify(others) === JSON.stringify(without.controls) && JSON.stringify(withIt.brand) === JSON.stringify(without.brand);
-          test.info().annotations.push({ type: 'measured', description: `${lang} ${width}px${touch ? ' touch' : ''}: moves nothing else: ${same}; with ${JSON.stringify(withIt.controls)}; without ${JSON.stringify(without.controls)}` });
+          test.info().annotations.push({ type: 'measured', description: `${lang} ${width}px${touch ? ' touch' : ''}: with ${JSON.stringify(withIt.controls)}; without ${JSON.stringify(without.controls)}` });
           expect(withIt.pageScroll, `${lang} ${width}: no sideways scroll`).toBeLessThanOrEqual(0);
           expect(withIt.tabsWhole).toBe(true);
-          if (width >= 1024) {
-            expect(others.length, 'known positive: the tabs, search and "⋯" are measured').toBe(5);
-            expect(others, `${lang} ${width}${touch ? ' touch' : ''}: every other control where it was`).toEqual(without.controls);
-            expect(withIt.brand).toEqual(without.brand);
-          }
+          expect(others.length, 'known positive: the tabs, search and "⋯" are measured').toBe(5);
+          expect(others, `${lang} ${width}${touch ? ' touch' : ''}: every other control where it was`).toEqual(without.controls);
+          expect(withIt.brand).toEqual(without.brand);
           await context.close();
         }
       }
