@@ -14,8 +14,6 @@ const searchLabels = {
   pt: 'Pesquisa rápida, Command+K',
   es: 'Búsqueda rápida, Command+K',
 } as const;
-// Below 405 px in PT and ES (brief U: the microphone switch takes its room) search is in the "⋯" menu.
-const menuSearch = { pt: { more: 'Mais', item: 'Pesquisar' }, es: { more: 'Más', item: 'Buscar' } } as const;
 
 async function audit(page: Page, touch: boolean) {
   await page.evaluate(() => document.fonts.ready);
@@ -93,12 +91,8 @@ for (const lang of ['en', 'pt', 'es'] as const) {
     const page = await context.newPage();
     await page.goto('/');
     for (const title of labels[lang].modules) {
-      if (lang === 'en') await page.getByTestId('app-topbar').getByRole('button', { name: searchLabels[lang], exact: true }).click();
-      else {
-        await expect(page.getByTestId('app-topbar').getByRole('button', { name: searchLabels[lang], exact: true })).toHaveCount(0);
-        await page.getByTestId('app-topbar').getByRole('button', { name: menuSearch[lang].more, exact: true }).click();
-        await page.getByRole('menuitem', { name: menuSearch[lang].item }).click();
-      }
+      // Learn's reading pages offer no microphone switch: the magnifier stays in a phone's bar in every language (brief U2).
+      await page.getByTestId('app-topbar').getByRole('button', { name: searchLabels[lang], exact: true }).click();
       const dialog = page.getByRole('dialog').filter({ has: page.locator('input') });
       await expect(dialog).toBeVisible();
       await dialog.locator('input').fill(title);
