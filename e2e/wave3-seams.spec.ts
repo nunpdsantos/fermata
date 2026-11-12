@@ -744,7 +744,7 @@ for (const v of [PHONE, LAPTOP]) {
     expect(seen.level1).toEqual(base.level1);
     expect(seen.explore).toEqual(base.explore);
     expect(seen.drill).toEqual(base.drill);
-    // Explore's "⋯": the same items, then Afinador, Metrónomo and (2026-11-12) Comunicar um problema — on his phone (390 px) with "Pesquisar" first:
+    // Explore's "⋯": the same items, then Afinador, Metrónomo and (2026-11-12) Comunicar problema — on his phone (390 px) with "Pesquisar" first:
     // from 360 to 639 px the switch takes the magnifier's place in Explore's bar (brief U2); Learn's below.
     const phone = v.viewport.width < 640;
     expect(seen.menu).toEqual([...(phone ? ['Pesquisar'] : []), ...base.menu, ...ADDED_MENU]);

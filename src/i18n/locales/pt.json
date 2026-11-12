@@ -1402,7 +1402,7 @@
     "loadFailed": "O metrónomo não carregou. Verifica a ligação e tenta de novo."
   },
   "report": {
-    "menuItem": "Comunicar um problema (formulário Google)",
+    "menuItem": "Comunicar problema (formulário Google)",
     "offline": "Estás sem ligação. O formulário precisa de internet."
   }
 }
