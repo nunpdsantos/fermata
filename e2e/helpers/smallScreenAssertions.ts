@@ -19,7 +19,8 @@ export async function smallScreenAssertions(page: Page, screen: string) {
         const b = box(tab);
         if (text.left < b.left + 4 || text.right > b.right - 4) errors.push(`1: nav word lacks padding: ${tab.textContent}`);
       }
-      const search = document.querySelector('.app-topbar button:has(circle)');
+      // From 360 px the microphone switch stands where the magnifier was wherever it is offered (brief U2): the same gap.
+      const search = document.querySelector('.app-topbar button:has(circle)') ?? (innerWidth >= 360 ? document.querySelector('.app-topbar [data-testid="mic-switch"]') : null);
       if (search && box(search).left - track.right < 8 - 0.5) errors.push('1: pill/search gap below 8px');
     }
     for (const wrapper of Array.from(document.querySelectorAll('.select-trigger'))) {

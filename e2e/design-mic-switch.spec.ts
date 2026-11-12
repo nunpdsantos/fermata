@@ -466,6 +466,11 @@ test.describe('the top bar holds still between views (brief U2)', () => {
             const inMenu = items.filter((i) => i === w.search).length;
             expect.soft(Number(inBar) + inMenu, `${at}: Search once (bar ${inBar}, menu ${JSON.stringify(items)})`).toBe(1);
             if (inMenu) expect.soft(items[0], `${at}: Search first in "⋯"`).toBe(w.search);
+            if (!inBar && !inMenu) {
+              // Neither (already failed above): nothing to open here.
+              await page.keyboard.press('Escape');
+              continue;
+            }
             if (inMenu) await page.getByRole('menuitem', { name: w.search }).click();
             else {
               await page.keyboard.press('Escape');

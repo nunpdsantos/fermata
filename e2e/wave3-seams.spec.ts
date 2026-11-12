@@ -556,14 +556,25 @@ test.describe('8. the header (production build)', () => {
  * the "Teclado MIDI" row in Settings, and (brief U) the microphone switch
  * ("Microfone", off) in Explore's top bar — not in Learn's or Drill's — and
  * the same switch in a check answered on the instrument (inline, and in the
- * top bar while the check is open); on a phone below 405 px in Portuguese
- * (his, 390 px) search moved into "⋯" to give the switch its room, so his
- * phone's menu starts with "Pesquisar". Nothing is asked of the browser on any
+ * top bar while the check is open). The top bar holds still between views
+ * (brief U2): on a phone 360–639 px wide (his, 390 px), in Explore (and in
+ * such a check), the switch stands where the magnifier was and "Pesquisar" is
+ * the first item under "⋯"; in Learn and Drill his phone's bar is main's
+ * (the magnifier, and no "Pesquisar" in "⋯"). Below 360 px and from 640 to
+ * 1023 px an empty, inert slot of the switch's width stands in Learn's and
+ * Drill's bar (and while the tour plays), so there the tabs sit further left
+ * than on main in every view — measured on this Mac (design-mic-switch.spec.ts,
+ * Learn against the microphone unsupported in the same run): 24 px at 320 and
+ * 344 px in every language; on a touch screen 43.1 / 48 / 48 px at 640 px (EN /
+ * PT / ES), 29.6 / 48 / 48 at 667, 0 / 33.8 / 19.6 at 744, 0 / 21.8 / 7.6 at
+ * 768, 0 from 820 px; with a mouse 27.1 / 40 / 40 at 640, 13.6 / 40 / 40 at
+ * 667, 0 / 17.8 / 3.6 at 744, 0 / 5.8 / 0 at 768, 0 from 820 px; from 1024 px
+ * no slot and nothing moves. Nothing is asked of the browser on any
  * view or in any check until he taps the switch. Words are compared on every
  * system; pixel positions only on the system that recorded them; "the
  * additions move nothing" is measured with and without them in the same run
- * (the switch: from 640 px up — on a phone it takes its room from the tabs'
- * row, measured in design-mic-switch.spec.ts).
+ * (the switch: from 1024 px up, and on his phone against Learn's bar in the
+ * same run).
  */
 const OWNER_FIXTURE = 'e2e/fixtures/wave3-owner-base.json';
 const asSaved = (path: string) => JSON.stringify(JSON.parse(fs.readFileSync(path, 'utf8')));
@@ -731,10 +742,11 @@ for (const v of [PHONE, LAPTOP]) {
     expect(seen.level1).toEqual(base.level1);
     expect(seen.explore).toEqual(base.explore);
     expect(seen.drill).toEqual(base.drill);
-    // "⋯": the same items, then Afinador and Metrónomo — on his phone (390 px, Portuguese) with "Pesquisar" first:
-    // below 405 px in PT and ES the microphone switch takes search's room in the bar (brief U), in every view.
-    expect(seen.menu).toEqual([...(v.viewport.width < 405 ? ['Pesquisar'] : []), ...base.menu, ...ADDED_MENU]);
-    if (v.viewport.width < 405) expect(base.menu, 'on wave3/base search was in his phone\'s bar').not.toContain('Pesquisar');
+    // Explore's "⋯": the same items, then Afinador and Metrónomo — on his phone (390 px) with "Pesquisar" first:
+    // from 360 to 639 px the switch takes the magnifier's place in Explore's bar (brief U2); Learn's below.
+    const phone = v.viewport.width < 640;
+    expect(seen.menu).toEqual([...(phone ? ['Pesquisar'] : []), ...base.menu, ...ADDED_MENU]);
+    if (phone) expect(base.menu, 'on wave3/base search was in his phone\'s bar').not.toContain('Pesquisar');
     // Settings: the same words outside the one new row; the row is there.
     expect(seen.settings).toEqual(base.settings);
     // The dock's bar: the same words, plus "Afinar" from 640 px.
@@ -774,7 +786,11 @@ for (const v of [PHONE, LAPTOP]) {
     await expect(mic).toHaveAttribute('data-place', 'bar');
     await expect(mic).toHaveAttribute('aria-pressed', 'false');
     await expect(mic).toHaveAccessibleName('Microfone');
+    await expect(mic).toHaveAttribute('title', 'Microfone: Desligado');
     if (v.viewport.width >= 1200) await expect(mic).toHaveText('Microfone Desligado');
+    const micBox = await rectsOf(page, '.app-topbar [data-testid="mic-switch"]');
+    const exploreTabs = await page.locator('.app-tabs').boundingBox();
+    await expect(page.getByTestId('mic-slot'), 'no slot where the switch stands').toHaveCount(0);
     if (wide) {
       const topOthers = '.app-topbar button:not([data-testid="mic-switch"]), .app-topbar .app-brand';
       const withMic = await rectsOf(page, topOthers);
@@ -842,6 +858,18 @@ for (const v of [PHONE, LAPTOP]) {
     await expect(page.locator('#learn-panel')).toBeVisible();
     await page.waitForTimeout(500);
     await expect(page.getByTestId('mic-switch')).toHaveCount(0);
+    // Learn's bar (brief U2): the tabs exactly where they are in Explore; no slot at 390 or 1440 px; on his phone
+    // the magnifier where Explore's switch stands, and "⋯" as wave3/base's plus Afinador and Metrónomo, no "Pesquisar".
+    await expect(page.getByTestId('mic-slot')).toHaveCount(0);
+    const learnTabs = (await page.locator('.app-tabs').boundingBox())!;
+    expect(Math.abs(learnTabs.x - exploreTabs!.x), 'the tabs\' left edge in Learn as in Explore').toBeLessThanOrEqual(0.5);
+    expect(Math.abs(learnTabs.width - exploreTabs!.width), 'the tabs\' width in Learn as in Explore').toBeLessThanOrEqual(0.5);
+    const magnifier = page.locator('.app-topbar').getByRole('button', { name: 'Pesquisa rápida, Command+K' });
+    await expect(magnifier).toBeVisible();
+    if (phone) expect((await rectsOf(page, '.app-topbar button[aria-label="Pesquisa rápida, Command+K"]')).map((r) => r.slice(0, 4)), 'the magnifier where Explore\'s switch stands').toEqual(micBox.map((r) => r.slice(0, 4)));
+    await page.getByRole('button', { name: /^Mais/ }).click();
+    expect(await page.getByRole('menuitem').allTextContents()).toEqual([...base.menu, ...ADDED_MENU]);
+    await page.keyboard.press('Escape');
     expect(await allStorage(page)).toEqual(before);
     await context.close();
   });
