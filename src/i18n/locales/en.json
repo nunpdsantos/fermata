@@ -182,15 +182,6 @@
     "pluck": "Pluck",
     "pluckDesc": "Quick decay, bright attack"
   },
-  "metronome": {
-    "title": "Metronome",
-    "startLabel": "Start metronome",
-    "stopLabel": "Stop metronome",
-    "bpm": "BPM",
-    "tempo": "Tempo in BPM",
-    "volume": "Metronome volume",
-    "timeSig": "Time signature"
-  },
   "chordProg": {
     "title": "Chord Progression",
     "clickToAdd": "Click chords below to build a progression.",
@@ -209,20 +200,8 @@
     "deleteRecording": "Delete recording {{n}}",
     "take": "Take {{n}}"
   },
-  "midi": {
-    "title": "MIDI Output",
-    "enable": "Enable MIDI output",
-    "selectDevice": "Select MIDI output device",
-    "noDevice": "No device selected",
-    "noDevices": "No MIDI output devices found. Connect a MIDI device and refresh."
-  },
-  "midiInput": {
-    "title": "MIDI Input",
-    "enable": "Enable MIDI input",
-    "selectDevice": "Select MIDI input device",
-    "noDevice": "All devices (auto-detect)",
-    "noDevices": "No MIDI input devices found. Connect a MIDI controller and refresh.",
-    "badge": "MIDI"
+  "midiInputEntry": {
+    "mark": "MIDI keyboard connected"
   },
   "songRef": {
     "title": "Songs That Use This"
@@ -1407,5 +1386,19 @@
     "opensWith": "Unlocks with “{{lesson}}”",
     "opensLater": "Unlocks with a later lesson",
     "guitarOnly": "Unlocks only with the guitar as your instrument"
+  },
+  "tunerEntry": {
+    "menuItem": "Tuner",
+    "dockButton": "Tune",
+    "loadError": "The tuner did not load. Try again."
+  },
+  "micSwitchEntry": {
+    "label": "Microphone",
+    "on": "On",
+    "off": "Off"
+  },
+  "metronomeToolEntry": {
+    "menuItem": "Metronome",
+    "loadFailed": "The metronome did not load. Check the connection and try again."
   }
 }

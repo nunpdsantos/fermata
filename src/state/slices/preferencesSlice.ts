@@ -43,6 +43,8 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
   setShowSolfege: (on) => set({ showSolfege: on, preferencesUpdatedAt: Date.now() }),
   // No default value: undefined until the learner's first chord (wave 2).
   setProgression: (progression) => set({ progression }),
+  // No default value: undefined until the learner changes the metronome (wave 3).
+  setMetronome: (metronome) => set({ metronome }),
   // The app opening the dock for an exercise is not the learner's choice.
   requestDock: (detent) => {
     const { view, dockDetents } = get();

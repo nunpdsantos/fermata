@@ -182,15 +182,6 @@
     "pluck": "Pizzicato",
     "pluckDesc": "Decaimento r\u00e1pido, ataque brilhante"
   },
-  "metronome": {
-    "title": "Metr\u00f3nomo",
-    "startLabel": "Iniciar metr\u00f3nomo",
-    "stopLabel": "Parar metr\u00f3nomo",
-    "bpm": "BPM",
-    "tempo": "Tempo em BPM",
-    "volume": "Volume do metr\u00f3nomo",
-    "timeSig": "Compasso"
-  },
   "chordProg": {
     "title": "Progressão de acordes",
     "clickToAdd": "Clica nos acordes abaixo para criar uma progress\u00e3o.",
@@ -209,20 +200,8 @@
     "deleteRecording": "Apagar grava\u00e7\u00e3o {{n}}",
     "take": "Take {{n}}"
   },
-  "midi": {
-    "title": "Sa\u00edda MIDI",
-    "enable": "Ativar sa\u00edda MIDI",
-    "selectDevice": "Selecionar dispositivo de sa\u00edda MIDI",
-    "noDevice": "Nenhum dispositivo selecionado",
-    "noDevices": "Nenhum dispositivo de saída MIDI encontrado. Liga um dispositivo MIDI e atualiza."
-  },
-  "midiInput": {
-    "title": "Entrada MIDI",
-    "enable": "Ativar entrada MIDI",
-    "selectDevice": "Selecionar dispositivo de entrada MIDI",
-    "noDevice": "Todos os dispositivos (dete\u00e7\u00e3o autom\u00e1tica)",
-    "noDevices": "Nenhum dispositivo de entrada MIDI encontrado. Liga um controlador MIDI e atualiza.",
-    "badge": "MIDI"
+  "midiInputEntry": {
+    "mark": "Teclado MIDI ligado"
   },
   "songRef": {
     "title": "Músicas que usam isto"
@@ -1407,5 +1386,19 @@
     "opensWith": "Desbloqueia com «{{lesson}}»",
     "opensLater": "Desbloqueia com uma lição mais à frente",
     "guitarOnly": "Desbloqueia só com a guitarra como instrumento"
+  },
+  "tunerEntry": {
+    "menuItem": "Afinador",
+    "dockButton": "Afinar",
+    "loadError": "O afinador não carregou. Tenta de novo."
+  },
+  "micSwitchEntry": {
+    "label": "Microfone",
+    "on": "Ligado",
+    "off": "Desligado"
+  },
+  "metronomeToolEntry": {
+    "menuItem": "Metrónomo",
+    "loadFailed": "O metrónomo não carregou. Verifica a ligação e tenta de novo."
   }
 }

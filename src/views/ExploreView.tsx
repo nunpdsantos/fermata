@@ -97,7 +97,7 @@ export function ExploreView() {
         )}
       </div>
       <Sheet open={practice && guitar} onClose={() => setPractice(false)} title={t('practice.title')}
-        closeLabel={t('common.close')} testId="practice-sheet">
+        closeLabel={t('common.close')} testId="practice-sheet" companions>
         <Suspense fallback={<p role="status">{t('common.loading')}</p>}>
           {practice && guitar && <GuitarPractice />}
         </Suspense>

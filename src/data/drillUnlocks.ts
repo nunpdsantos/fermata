@@ -13,6 +13,10 @@
  *  - The two tracks (`data/tracks.ts`): a lesson opens part of a family, only
  *    the keys / chords / degrees it uses. See TRACK_UNLOCKS for what each one
  *    gives, and why some rows are narrower than the first plan.
+ *  - Guitar reading (`read`) is the one family that opens with a lesson of
+ *    its own outside course order (FOLLOW_OPENS, wave 3 integration): the
+ *    guitar-notation unit's first lesson, "Clef and Strings" (l1u33m1). Its
+ *    Drill link's lesson, The Staff and Clefs, has no guitar in it.
  */
 import type { ChordQuality } from '../core/types/music';
 import type { DrillFamily, DrillItem } from '../core/types/drill';
@@ -106,6 +110,17 @@ export const LEVEL_COURSE_ORDER: readonly string[] = MODULE_INDEX
 
 const COURSE_POSITION = new Map(LEVEL_COURSE_ORDER.map((id, i) => [id, i]));
 
+/**
+ * Families that open, for a learner who follows the lessons, with a lesson
+ * other than their Drill link's (wave 3 integration, the follow-up from wave
+ * 2): guitar reading opens WHOLE with the guitar-notation unit's first lesson
+ * (l1u33m1, "Guitar Notation: Clef and Strings", the optional unit) — not
+ * with The Staff and Clefs (l1u1m1), which has no guitar content, nor with
+ * any later lesson. A piano learner still never gets it (`excluded`, S-2);
+ * with "Follow my lessons" off nothing here is read.
+ */
+export const FOLLOW_OPENS: Readonly<Partial<Record<DrillFamily, string>>> = { read: 'l1u33m1' };
+
 /** What the completed lessons open. */
 export interface DrillUnlock {
   /** Families open in full (a level lesson reached them). */
@@ -127,8 +142,14 @@ export function unlockedFor(completedModuleIds: Iterable<string>, excluded: Read
   for (const id of done) furthest = Math.max(furthest, COURSE_POSITION.get(id) ?? -1);
   const whole = new Set<DrillFamily>();
   for (const family of DRILL_FAMILIES) {
+    if (excluded.has(family)) continue;
+    const own = FOLLOW_OPENS[family];
+    if (own !== undefined) {
+      if (done.has(own)) whole.add(family);
+      continue;
+    }
     const at = COURSE_POSITION.get(DRILL_FAMILY_TO_MODULE[family]);
-    if (at !== undefined && at <= furthest && !excluded.has(family)) whole.add(family);
+    if (at !== undefined && at <= furthest) whole.add(family);
   }
   const rows: DrillUnlockRow[] = [];
   for (const id of Object.keys(TRACK_UNLOCKS)) {
@@ -172,7 +193,10 @@ export function openFamilies(unlock: DrillUnlock): { family: DrillFamily; whole:
 /** The lesson ids that open something, in the order a learner meets them (the track first). */
 function unlockingLessons(track: TrackInfo | null): string[] {
   const trackIds = track ? track.moduleIds.filter((id) => id in TRACK_UNLOCKS) : [];
-  const levelIds = LEVEL_COURSE_ORDER.filter((id) => DRILL_FAMILIES.some((f) => DRILL_FAMILY_TO_MODULE[f] === id));
+  // The levels' lessons that open a family, and FOLLOW_OPENS's, in MODULE_INDEX order.
+  const own = new Set(Object.values(FOLLOW_OPENS));
+  const levelIds = MODULE_INDEX.map((m) => m.id).filter((id) => own.has(id)
+    || (COURSE_POSITION.has(id) && DRILL_FAMILIES.some((f) => FOLLOW_OPENS[f] === undefined && DRILL_FAMILY_TO_MODULE[f] === id)));
   return [...trackIds, ...levelIds];
 }
 
@@ -222,7 +246,7 @@ export function lessonOpening(family: DrillFamily, track: TrackInfo | null): str
     const fromTrack = track.moduleIds.find((id) => TRACK_UNLOCKS[id]?.some((r) => r.family === family));
     if (fromTrack) return fromTrack;
   }
-  return DRILL_FAMILY_TO_MODULE[family];
+  return FOLLOW_OPENS[family] ?? DRILL_FAMILY_TO_MODULE[family];
 }
 
 /** Where `openLearnTarget` finds a lesson: a track's, or one of the nine levels'. null = unknown id. */
@@ -235,5 +259,5 @@ export function learnTargetOf(moduleId: string): { levelId: string; unitId: stri
 
 /** Every lesson id this file names (for the contract test). */
 export function lessonIdsNamed(): string[] {
-  return [...Object.keys(TRACK_UNLOCKS), ...Object.values(DRILL_FAMILY_TO_MODULE)];
+  return [...Object.keys(TRACK_UNLOCKS), ...Object.values(DRILL_FAMILY_TO_MODULE), ...Object.values(FOLLOW_OPENS)];
 }

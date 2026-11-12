@@ -1,0 +1,20 @@
+{
+  "why": "Para ouvir as notas que tocas, o Fermata ouve através do microfone; o som nunca sai deste dispositivo.",
+  "allow": "Ligar o microfone",
+  "notNow": "Agora não",
+  "asking": "O teu navegador está a perguntar se o Fermata pode usar o microfone.",
+  "here": "Com o microfone ligado, as notas que tocas são acrescentadas à tua resposta.",
+  "on": "Toca as notas uma de cada vez e deixa cada uma soar.",
+  "heard": "Nota ouvida: {{note}}",
+  "idle": "O microfone desligou-se sozinho, ao fim de três minutos sem reconhecer nenhuma nota.",
+  "onScreen": "Podes continuar a responder no ecrã.",
+  "problem": {
+    "refused": "O microfone está bloqueado para o Fermata. Para o permitir, abre as definições deste site (ao lado do endereço, ou nas definições do telemóvel para este navegador).",
+    "missing": "Não foi encontrado nenhum microfone neste dispositivo.",
+    "unsupported": "Este navegador não pode usar um microfone aqui.",
+    "busy": "Não foi possível ligar o microfone: talvez outra aplicação o esteja a usar.",
+    "failed": "Não foi possível ligar o microfone.",
+    "hidden": "O microfone desligou-se porque o Fermata já não estava no ecrã (por exemplo, mudaste para outra aplicação ou separador).",
+    "ended": "O microfone foi retirado ou desconectado, por isso desligou-se."
+  }
+}

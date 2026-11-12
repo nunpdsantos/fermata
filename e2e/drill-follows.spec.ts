@@ -119,7 +119,8 @@ for (const v of VIEWS) {
       const queue = await savedQueue(page);
       expect(queue.length).toBeGreaterThan(0);
       for (const id of queue) {
-        expect(['triad', 'read', 'interval', 'keysig', 'circle', 'degree', 'scale'], id).toContain(id.split(':')[0]);
+        // Not guitar reading: since wave 3 it opens with its own lesson (l1u33m1, data/drillUnlocks.ts FOLLOW_OPENS).
+        expect(['triad', 'interval', 'keysig', 'circle', 'degree', 'scale'], id).toContain(id.split(':')[0]);
       }
       await context.close();
     });

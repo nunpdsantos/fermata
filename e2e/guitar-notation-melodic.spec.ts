@@ -91,6 +91,7 @@ for (const lang of ['en', 'pt', 'es'] as const) {
     const page = await context.newPage();
     await page.goto('/');
     for (const title of labels[lang].modules) {
+      // Learn's reading pages offer no microphone switch: the magnifier stays in a phone's bar in every language (brief U2).
       await page.getByTestId('app-topbar').getByRole('button', { name: searchLabels[lang], exact: true }).click();
       const dialog = page.getByRole('dialog').filter({ has: page.locator('input') });
       await expect(dialog).toBeVisible();

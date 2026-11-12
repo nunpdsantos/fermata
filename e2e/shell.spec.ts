@@ -30,9 +30,16 @@ test.describe('"⋯" menu and Settings sheet', () => {
     await page.keyboard.press('Enter');
     const menu = page.getByRole('menu', { name: 'More' });
     await expect(menu).toBeVisible();
+    // Wave 3: the whole menu, exactly, in this order (Search only below
+    // 360 px, Update only while one waits).
+    await expect(page.getByRole('menuitem')).toHaveText(['Settings', 'Show me around', 'Tuner', 'Metronome']);
     await expect(page.getByRole('menuitem', { name: 'Settings' })).toBeFocused();
-    await page.keyboard.press('ArrowDown'); // the next item, then wraps
+    await page.keyboard.press('ArrowDown'); // the next items, then wraps
     await expect(page.getByRole('menuitem', { name: 'Show me around' })).toBeFocused();
+    await page.keyboard.press('ArrowDown'); // wave 3: the tuner
+    await expect(page.getByRole('menuitem', { name: 'Tuner' })).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(page.getByRole('menuitem', { name: 'Metronome' })).toBeFocused();
     await page.keyboard.press('ArrowDown');
     await expect(page.getByRole('menuitem', { name: 'Settings' })).toBeFocused();
     await page.keyboard.press('Escape');

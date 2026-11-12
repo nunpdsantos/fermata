@@ -24,11 +24,19 @@ export interface SheetProps {
   actions?: ReactNode;
   /** data-testid on the dialog. */
   testId?: string;
+  /**
+   * Room inside the dialog for a non-modal tool that must stay in reach
+   * while this sheet is open (wave 3: the metronome's bar over the guitar
+   * practice sheet, practising to a click being the point). Whatever is
+   * portalled into it is above the scrim, in the sheet's Tab cycle and in
+   * its screen-reader content. Empty, it renders no box.
+   */
+  companions?: boolean;
 }
 
 const DISMISS_DRAG_PX = 96;
 
-export function Sheet({ open, onClose, title, closeLabel, children, actions, testId }: SheetProps) {
+export function Sheet({ open, onClose, title, closeLabel, children, actions, testId, companions }: SheetProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
   const titleId = useId();
@@ -117,6 +125,7 @@ export function Sheet({ open, onClose, title, closeLabel, children, actions, tes
         </div>
         <ScrollBody>{children}</ScrollBody>
         {actions && <div className="sheet-actions">{actions}</div>}
+        {companions && <div className="sheet-companions" data-sheet-companions="" />}
       </div>
     </div>,
     document.body,

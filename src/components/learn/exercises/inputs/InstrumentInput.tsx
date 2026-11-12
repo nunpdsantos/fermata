@@ -7,6 +7,9 @@ import { directionSpeller } from '../../../../core/utils/spelling';
 import { Button } from '../../../ui/Button';
 import { accentText } from '../../../../design/tokens/learnColors';
 import { openDockForLesson, foldDockAfterLesson } from '../../../../services/lessonDock';
+import { setExternalAnswerTarget } from '../../../../services/externalAnswer';
+import { MicSwitch } from '../../../tuner/MicSwitch';
+import { MicLines } from '../../../tuner/MicLines';
 
 interface InstrumentInputProps {
   expectedCount: number;
@@ -75,6 +78,17 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
     }
   }
 
+  // A note played on a real instrument (a MIDI keyboard, the microphone —
+  // wave 3, services/externalAnswer.ts) ADDS its note, as a tap that turns it
+  // on does; it never removes one. Only while the learner can still answer.
+  useEffect(() => {
+    if (submitted) return;
+    return setExternalAnswerTarget((midi) => {
+      const pc = ((midi % 12) + 12) % 12;
+      setToggledPCs((prev) => (prev.has(pc) ? prev : new Set(prev).add(pc)));
+    });
+  }, [submitted]);
+
   // Update highlighted notes on instrument whenever toggled set changes
   useEffect(() => {
     if (submitted) return;
@@ -93,6 +107,9 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
     setToggledPCs(new Set());
   }, []);
 
+  // The microphone switch names a heard note as the chips below do.
+  const nameOf = useCallback((midi: number) => withGlyphs(spell(((midi % 12) + 12) % 12)), [spell]);
+
   const handleCheck = useCallback(() => {
     onSubmit(toggledPCs);
   }, [toggledPCs, onSubmit]);
@@ -106,6 +123,13 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
         <span className="text-caption flex items-center gap-1.5" style={{ color: 'var(--text-dim)' }}>
           {t('exercise.instrumentToggle')}
         </span>
+      </div>
+
+      {/* Answer by playing a real instrument: the app's one microphone switch
+          (brief U), off until the learner taps it, and what it does here. */}
+      <div className="flex flex-col gap-2 items-start" data-testid="check-mic">
+        <MicSwitch place="check" />
+        <MicLines place="check" here active={!submitted} nameOf={nameOf} />
       </div>
 
       {/* Toggled notes display */}

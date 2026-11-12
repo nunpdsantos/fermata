@@ -752,6 +752,15 @@ body {
       font-size: var(--text-caption);
     }
   }
+  /* Below 360 px the microphone switch (or, where it is not offered, its
+     empty slot) and "⋯" leave PT's and ES's longer tab words too little room
+     (brief U, measured: 178 px for tabs of 187 / 196 px): the decorative
+     mark goes (the name stays for screen readers) and the bar's columns
+     close up, in every view alike. English fits. */
+  @media (max-width: 359px) {
+    :root:not(:lang(en)) .app-topbar { column-gap: 4px; }
+    :root:not(:lang(en)) .app-mark { display: none; }
+  }
 
 
   /* "⋯" menu */
@@ -832,6 +841,18 @@ body {
     animation: sheet-up 0.18s ease-out;
   }
   .sheet-heading, .sheet-actions, .sheet-grab { flex: none; }
+  /* A tool kept in reach over the sheet (wave 3: the metronome's bar, which
+     is position: fixed). No box of its own; while it holds one, the panel's
+     entrance does not animate (a transform would make the panel the bar's
+     containing block, moving and clipping it for those 0.18 s). */
+  .sheet-companions { display: contents; }
+  .sheet-panel:has(> .sheet-companions > *) { animation: none; }
+  /* A phone's bottom sheet leaves the tool's compact form its room above it
+     (one control row, --tap, plus the bar's padding and a gap each side),
+     so the tool never covers the sheet's heading. */
+  @media (max-width: 639px) {
+    .sheet-panel:has(> .sheet-companions > *) { max-height: calc(100dvh - 24px - var(--tap) - 28px); }
+  }
   .sheet-heading .btn { flex: none; }
   .sheet-actions { padding-top: 12px; }
   .scroll-body-frame { position: relative; display: flex; min-height: 0; flex: 1 1 auto; padding-block: 6px; }
@@ -1037,6 +1058,12 @@ body {
     align-items: center;
     gap: 10px;
     min-width: 0;
+  }
+  /* Wave 3: a MIDI keyboard is connected (components/layout/MidiMark.tsx). */
+  .midi-mark {
+    flex: none;
+    display: inline-flex;
+    color: var(--text-muted);
   }
   /* Wraps (up to two short lines) rather than ellipsize: PT/ES "Posição
      aberta" / "1 oitava" were cut off at 390 px (W11-A review). */
@@ -2304,6 +2331,16 @@ p.explore-prose {
 
 /* Learn's viewport is the shell's free area, not the window. */
 .learn-scroll { scroll-padding-top: var(--learn-top, 8px); scroll-padding-bottom: var(--learn-bottom, 8px); padding-bottom: var(--learn-bottom, 8px); }
+/* The metronome's bar (wave 3) over the foot of the view: while it stands
+   there (MetronomeBar sets html[data-metro-room] and --metro-room, the room
+   it takes above the instrument), Explore's and Learn's scrollers end below
+   it, so their last lines can be scrolled out from under it. Without the
+   bar nothing here applies. */
+html[data-metro-room] .explore-main { padding-bottom: calc(var(--metro-room) + 8px); }
+html[data-metro-room] .learn-scroll {
+  padding-bottom: calc(var(--learn-bottom, 8px) + var(--metro-room));
+  scroll-padding-bottom: calc(var(--learn-bottom, 8px) + var(--metro-room));
+}
 .learn-scroll-target { scroll-margin-top: 0; }
 @media (max-height: 500px) and (min-width: 640px) {
   .check-run { max-width: 1100px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 16px; align-items: start; padding-top: 0; }
@@ -2844,3 +2881,125 @@ p.explore-prose {
 @media print {
   .prog-controls, .prog-add, .prog-capo-ideas, .prog-clear { display: none; }
 }
+
+/* The microphone switch (brief U, components/tuner/MicSwitch.tsx): a toggle
+   chip, the same everywhere. On = the chip's solid "on" look AND the
+   microphone without its slash AND a dot AND the word: never colour alone.
+   Nothing pulses. In the top bar it is an icon-only --tap square (its name
+   is its aria-label) below 1200 px, icon and words from 1200 px: measured
+   (brief U), the words beside search and "⋯" pushed the tabs sideways up to
+   919 px in English and 1,075 px in Spanish on this Mac (and made a 640 px
+   page scroll sideways in PT / ES); Linux's text is about 8 % wider. */
+.chip.mic-switch { gap: 6px; padding: 0 10px; }
+.mic-switch-text b { font-weight: 600; }
+.mic-switch-icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='3' width='6' height='11' rx='3'/%3E%3Cpath d='M5 11a7 7 0 0 0 14 0M12 18v3M4 4l16 16'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='3' width='6' height='11' rx='3'/%3E%3Cpath d='M5 11a7 7 0 0 0 14 0M12 18v3M4 4l16 16'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.mic-switch[aria-pressed="true"] .mic-switch-icon {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='3' width='6' height='11' rx='3' fill='black'/%3E%3Cpath d='M5 11a7 7 0 0 0 14 0M12 18v3'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='3' width='6' height='11' rx='3' fill='black'/%3E%3Cpath d='M5 11a7 7 0 0 0 14 0M12 18v3'/%3E%3C/svg%3E");
+}
+.mic-switch-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+@media (max-width: 1199px) {
+  .chip.mic-switch[data-place="bar"] { position: relative; width: var(--tap); padding: 0; }
+  .mic-switch[data-place="bar"] .mic-switch-text { display: none; }
+  .mic-switch[data-place="bar"] .mic-switch-dot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; }
+}
+/* The switch's place in the top bar where it is not offered (brief U2,
+   TopBar.tsx: below 360 px and from 640 to 1023 px, so the tabs never move
+   between views): empty, inert, aria-hidden, exactly the square's width. */
+.mic-slot { flex: none; width: var(--tap); }
+/* What the top bar's switch has to say: an overlay just under the bar, at its
+   right edge (the page does not move). */
+.mic-bar-note {
+  position: fixed;
+  top: calc(var(--tap) + 16px + env(safe-area-inset-top) + 4px);
+  right: max(8px, env(safe-area-inset-right));
+  width: min(360px, calc(100vw - 16px));
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-md);
+}
+
+/* The tuner (wave 3, brief T, components/tuner/): the cents scale and the
+   six strings. The needle's position is the reading; its move is a short
+   transition, none under reduced motion. */
+.tuner-reading { display: flex; flex-direction: column; gap: 8px; }
+.tuner-meter { display: flex; flex-direction: column; gap: 4px; }
+.tuner-meter-scale {
+  position: relative;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+}
+.tuner-meter-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 45%;
+  width: 10%;
+  background: var(--accent-bg);
+}
+.tuner-meter-tick {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  height: 10px;
+  background: var(--border-light);
+  transform: translateX(-0.5px);
+}
+.tuner-meter-tick[data-major] { top: 0; height: auto; width: 2px; background: var(--text-dim); }
+.tuner-meter-needle {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 4px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--text);
+  transition: left 0.12s linear;
+}
+.tuner-meter-needle[data-in-tune] { background: var(--accent); width: 8px; margin-left: -4px; }
+.tuner-meter[data-still] .tuner-meter-needle { transition: none; }
+@media (prefers-reduced-motion: reduce) { .tuner-meter-needle { transition: none; } }
+.tuner-meter-labels { display: flex; justify-content: space-between; gap: 8px; color: var(--text-dim); }
+.tuner-strings {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px 8px;
+}
+.tuner-string { display: flex; flex-direction: column; align-items: stretch; gap: 2px; min-width: 0; }
+.tuner-string .btn { padding-inline: 4px; white-space: normal; }
+.chip.tuner-string-pick {
+  flex-direction: column;
+  gap: 0;
+  height: auto;
+  min-height: calc(var(--tap) + 12px);
+  padding: 4px;
+  border-radius: 12px;
+  white-space: normal;
+}
+/* The string heard (chosen by itself): a dashed ring outside the chip, so nothing moves. */
+.chip.tuner-string-pick[data-near]:not([aria-checked="true"]) {
+  outline: 2px dashed var(--accent-text);
+  outline-offset: 2px;
+  color: var(--text);
+}
+.chip.tuner-string-pick[data-near]:not([aria-checked="true"]):focus-visible {
+  outline: 2px solid var(--focus-outline);
+}
+.chip.tuner-wrap { white-space: normal; text-align: left; height: auto; padding-block: 6px; }

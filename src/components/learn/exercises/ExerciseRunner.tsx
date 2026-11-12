@@ -12,6 +12,10 @@ import { nudgeFor, sectionPointer } from './nudge';
 import { ExercisePrompt } from './ExercisePrompt';
 import { ChoiceInput } from './inputs/ChoiceInput';
 import { InstrumentInput } from './inputs/InstrumentInput';
+import { MicSwitch } from '../../tuner/MicSwitch';
+import { MicLines } from '../../tuner/MicLines';
+import { micOff, useMic } from '../../../services/microphone/micSwitch';
+import { openMicCheck } from '../../../services/microphone/micPlaces';
 import { playNote, playPitchedNotes, playScale, playTimedNotes, resumeAudio, stopPlayback } from '../../../core/services/audio';
 import { getSynthConfig } from '../../../services/synthConfig';
 import type { NaturalNote, Accidental, Note, ChordQuality, ScaleType } from '../../../core/types/music';
@@ -333,6 +337,19 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
   const answersRef = useRef<HTMLDivElement>(null);
   useToastAvoid(answersRef, true);
 
+  // The microphone (brief U): ONE session for the whole check, opened only
+  // by the learner's tap on the switch. A check with a question answered on
+  // the instrument offers the switch (inline, and in the top bar) for as long
+  // as it is open; it ends with the check — finished, exited, or the check
+  // unmounted for any other reason — and the microphone with it.
+  const playable = useMemo(() => orderedExercises.some((ex) => ex.config.type === 'chord_build' || ex.config.type === 'scale_build'), [orderedExercises]);
+  useEffect(() => (playable ? openMicCheck() : undefined), [playable]);
+  useEffect(() => () => micOff(), []);
+  useEffect(() => {
+    if (finished) micOff();
+  }, [finished]);
+  const micShown = useMic((s) => s.state.kind !== 'off');
+
   // Each question starts at the top of the view (a landscape phone scrolls).
   const rootRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -491,6 +508,14 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
             onSelectionChange={handleSelectionChange}
           />
         ) : (
+          <>
+          {/* The microphone left on for the check (or saying why it is off): the switch, as on the questions answered on the instrument. */}
+          {micShown && playable && (
+            <div className="flex flex-col gap-2 items-start" data-testid="check-mic">
+              <MicSwitch place="check" />
+              <MicLines place="check" />
+            </div>
+          )}
           <ChoiceInput
             options={choices}
             selected={selected}
@@ -498,6 +523,7 @@ export function ExerciseRunner({ exercises, accentColor, title, reviewMode = fal
             final={final !== null}
             onSelect={setSelected}
           />
+          </>
         )}
         {final ? (
           <Button ref={continueRef} variant="primary" block onClick={handleNext}>

@@ -1,0 +1,154 @@
+/* The metronome's bar (wave 3, stream M). In the metronome's own lazy chunk.
+   A fixed OVERLAY, never in the page flow: nothing moves when it comes or
+   goes (the toast rule, CLAUDE.md "ToastRegion"). Placed as the tour's bar
+   is (placement.ts): just above the instrument, under the top bar, never
+   over either, never over a check's answers. Under the menus (60), toasts
+   (65), the top bar (66), the tour (67) and sheets (70); toasts never reach
+   it anyway: the bar registers with useToastAvoid. */
+.metro-bar {
+  position: fixed;
+  z-index: 59;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: calc(100vw - 24px);
+  padding: 4px 6px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  color: var(--text);
+  box-shadow: var(--shadow-lg);
+  transition: top 0.2s ease, left 0.2s ease;
+}
+/* In an empty stretch of the top bar (the last resort, placement.ts): above it. */
+.metro-bar[data-in-top-bar] { z-index: 67; box-shadow: none; }
+/* Unplaced = transparent (as the tour's bar: it can take focus in the frame it is placed). */
+.metro-bar[data-measured="false"] { opacity: 0; pointer-events: none; }
+
+.metro-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+/* One row as wide as its controls: nothing in it is squeezed (a squeezed select cuts its words off). */
+.metro-row > * { flex-shrink: 0; }
+.metro-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.metro-label {
+  font-size: var(--text-ui);
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+/* The visible labels only where there is room for them on one row. */
+@media (max-width: 899px) {
+  .metro-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+.metro-input {
+  box-sizing: border-box;
+  width: 3.4em;
+  min-height: var(--tap);
+  padding: 0 4px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  /* 16 px: iOS zooms the page into a smaller field. */
+  font-size: var(--text-body);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.metro-tap { flex: none; }
+
+/* The count: the place in the bar of the click that last sounded. */
+.metro-count,
+.metro-now {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--text-ui);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+}
+.metro-beat {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+}
+.metro-beat[data-current] {
+  background: var(--accent);
+  color: var(--on-accent);
+  animation: metro-pulse 0.12s ease-out;
+}
+.metro-now .metro-beat[data-current] { animation: none; }
+@keyframes metro-pulse {
+  from { transform: scale(1.18); }
+  to { transform: scale(1); }
+}
+/* Reduced motion: no fill that comes and goes with every click, no pulse —
+   the number in the place is only underlined and set in the text colour. */
+@media (prefers-reduced-motion: reduce) {
+  .metro-bar { transition: none; }
+  .metro-beat[data-current] {
+    background: none;
+    color: var(--text);
+    animation: none;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+}
+.metro-tempo-text {
+  font-size: var(--text-body);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  padding: 0 4px;
+}
+.metro-note {
+  margin: 2px 6px 4px;
+  font-size: var(--text-ui);
+  color: var(--text-dim);
+  max-width: 60ch;
+}
+
+/* Phones: two rows across the window — ▶, the tempo, ✕; then Tap, the
+   beats in a bar and the count. */
+@media (max-width: 639px) {
+  .metro-bar:not([data-compact]) .metro-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "play tempo close"
+      "tap beats count";
+    gap: 4px 6px;
+    align-items: center;
+  }
+  .metro-bar:not([data-compact]) .metro-row > [data-testid="metronome-play"] { grid-area: play; }
+  .metro-bar:not([data-compact]) .metro-row > .metro-group[role="group"] { grid-area: tempo; justify-self: center; }
+  .metro-bar:not([data-compact]) .metro-row > .metro-close { grid-area: close; }
+  .metro-bar:not([data-compact]) .metro-row > .metro-tap { grid-area: tap; }
+  .metro-bar:not([data-compact]) .metro-row > .metro-beats { grid-area: beats; min-width: 0; }
+  .metro-bar:not([data-compact]) .metro-row > .metro-count { grid-area: count; flex-wrap: wrap; justify-content: flex-end; }
+}
+/* Narrow phones (360 and 320 px): the count on a row of its own, so the
+   beats in a bar keep the room their words need ("4 pulsações"). */
+@media (max-width: 374px) {
+  .metro-bar:not([data-compact]) .metro-row {
+    grid-template-areas:
+      "play tempo close"
+      "tap beats beats"
+      "count count count";
+  }
+  .metro-bar:not([data-compact]) .metro-row > .metro-count { justify-content: center; }
+}
+
+@media print {
+  .metro-bar { display: none !important; }
+}
