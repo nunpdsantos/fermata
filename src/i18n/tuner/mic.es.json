@@ -14,7 +14,7 @@
     "unsupported": "Este navegador no puede usar un micrófono aquí.",
     "busy": "No se ha podido activar el micrófono: puede que otra aplicación lo esté usando.",
     "failed": "No se ha podido activar el micrófono.",
-    "hidden": "Fermata ha dejado de escuchar porque ya no estaba en pantalla (por ejemplo, has cambiado a otra aplicación o pestaña).",
-    "ended": "El micrófono se ha desconectado, así que Fermata ha dejado de escuchar."
+    "hidden": "El micrófono se ha desactivado porque Fermata ya no estaba en pantalla (por ejemplo, has cambiado a otra aplicación o pestaña).",
+    "ended": "El micrófono se ha desenchufado o desconectado, así que se ha desactivado."
   }
 }

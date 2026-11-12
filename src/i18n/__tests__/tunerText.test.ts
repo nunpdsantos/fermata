@@ -78,7 +78,30 @@ describe('tuner text', () => {
       'Com o microfone ligado, as notas que tocas são acrescentadas à tua resposta.',
       'Con el micrófono activado, las notas que tocas se añaden a tu respuesta.',
     ]);
-    expect(aen.idle).toBe('The microphone turned itself off: no note was heard for three minutes.');
+    expect([aen.idle, apt.idle, aes.idle]).toEqual([
+      'The microphone turned itself off: no note was heard for three minutes.',
+      'O microfone desligou-se sozinho: não se ouviu nenhuma nota durante três minutos.',
+      'El micrófono se ha desactivado solo: no se ha oído ninguna nota en tres minutos.',
+    ]);
+  });
+
+  it('"off" is said in the switch\'s own word everywhere (not "listening stopped"), word for word: the page hidden, the microphone unplugged', () => {
+    for (const set of [[en, aen], [pt, apt], [es, aes]] as const) {
+      expect(set[0].problem.hidden).toBe(set[1].problem.hidden);
+      expect(set[0].problem.ended).toBe(set[1].problem.ended);
+    }
+    expect([aen.problem.hidden, apt.problem.hidden, aes.problem.hidden]).toEqual([
+      'The microphone turned off because Fermata was no longer on screen (for example, you switched to another app or tab).',
+      'O microfone desligou-se porque o Fermata já não estava no ecrã (por exemplo, mudaste para outra aplicação ou separador).',
+      'El micrófono se ha desactivado porque Fermata ya no estaba en pantalla (por ejemplo, has cambiado a otra aplicación o pestaña).',
+    ]);
+    expect([aen.problem.ended, apt.problem.ended, aes.problem.ended]).toEqual([
+      'The microphone was unplugged or disconnected, so it turned off.',
+      'O microfone foi retirado ou desconectado, por isso desligou-se.',
+      'El micrófono se ha desenchufado o desconectado, así que se ha desactivado.',
+    ]);
+    // "Ligar" is the switch's "turn on" in PT: "connect one" names the microphone and the device.
+    expect(pt.problem.missingHow).toBe('Liga um microfone ao dispositivo, ou permite-o nas definições do dispositivo, e tenta outra vez.');
     expect([aen.allow, apt.allow, aes.allow]).toEqual(['Turn on the microphone', 'Ligar o microfone', 'Activar el micrófono']);
   });
 });

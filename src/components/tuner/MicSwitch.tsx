@@ -16,7 +16,9 @@ import { microphoneSupported } from '../../services/microphone/support.ts';
  * are a lazy chunk. In the top bar they show in a note under the bar
  * (`MicBarNote`); inline, the place shows them under the switch.
  */
-const BarNote = lazy(() => import('./MicBarNote.tsx'));
+// A note that cannot be downloaded shows nothing (it never takes the app shell
+// down with it): the switch stays, nothing is asked without its sentence.
+const BarNote = lazy(() => import('./MicBarNote.tsx').catch(() => ({ default: () => null })));
 
 export function MicSwitch({ place, note }: {
   place: 'bar' | 'check' | 'tuner';

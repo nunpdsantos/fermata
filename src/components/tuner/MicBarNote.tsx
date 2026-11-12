@@ -19,7 +19,8 @@ export default function MicBarNote() {
       micOff();
     };
     const key = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return;
+      // Not an Escape another control already took, nor one meant for an open dialog (Quick Search listens later, on window).
+      if (e.key !== 'Escape' || e.defaultPrevented || document.querySelector('[aria-modal="true"]')) return;
       micOff();
       document.querySelector<HTMLElement>('[data-testid="mic-switch"][data-place="bar"]')?.focus();
     };

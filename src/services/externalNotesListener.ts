@@ -14,8 +14,8 @@
  *              nothing is submitted.
  *   elsewhere  Drill, a multiple-choice check, the start screen, a sheet or
  *              dialog open over the app (not the landscape full neck, nor
- *              the tuner, whose "Show what I play" lights Explore's
- *              instrument): nothing but the sound.
+ *              the tuner, over which, with the microphone on, the notes
+ *              played light Explore's instrument): nothing but the sound.
  * Everywhere, a `midi` note SOUNDS in the selected instrument's voice for as
  * long as it is held (a keyboard may be silent); a `mic` note is never sounded
  * (it is already sounding in the room).
@@ -75,8 +75,9 @@ export function velocityGain(velocity: number | undefined): number {
 function modalOpen(): boolean {
   if (typeof document === 'undefined') return false;
   // The landscape full-neck view is a dialog, but it IS Explore's instrument.
-  // The tuner is a sheet whose "Show what I play on the instrument" exists to
-  // light Explore's instrument behind it (wave 3 integration): not "over" —
+  // The tuner is a sheet over which, with the microphone on, the notes played
+  // light Explore's instrument behind it (wave 3 integration; since brief U
+  // the microphone switch, with no second control): not "over" —
   // in Explore. Anywhere else (over a check, in Drill) it is a sheet like any
   // other, so a key played then adds nothing to an answer hidden behind it
   // (wave 3 final review).

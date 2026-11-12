@@ -64,6 +64,26 @@ describe('where the top bar offers the switch', () => {
     expect(screen.queryByTestId('mic-bar-note')).toBeNull();
   });
 
+  it('Explore with the tuner open: the switch stays in the bar, but its sentences are the tuner\'s (no note under the bar)', async () => {
+    const { openTuner, closeTuner } = await import('../tunerRequest');
+    const inBar = () => screen.getByTestId('app-topbar').querySelector('[data-testid="mic-switch"][data-place="bar"]');
+    render(<TopBar />);
+    try {
+      act(() => openTuner());
+      act(() => setMic({ kind: 'problem', problem: 'missing' }));
+      // Long enough for the note's lazy chunk to have resolved, were it asked for.
+      await act(() => new Promise((resolve) => setTimeout(resolve, 100)));
+      expect(inBar()).toBeTruthy();
+      expect(screen.queryByTestId('mic-bar-note')).toBeNull();
+      // Known positive: the tuner closed, the same kind of state shows its note under the bar.
+      act(() => closeTuner());
+      act(() => setMic({ kind: 'problem', problem: 'busy' }));
+      expect(await screen.findByTestId('mic-bar-note')).toBeTruthy();
+    } finally {
+      act(() => closeTuner());
+    }
+  });
+
   it('while the tour plays: no switch; "Show me around" turns the microphone off', () => {
     render(<TopBar />);
     act(() => setMic({ kind: 'on', heard: null }));
@@ -107,6 +127,42 @@ describe('the note under the bar', () => {
     expect(document.activeElement).toBe(bar());
   });
 
+  it('keyboard: "Not now" and "Turn on the microphone" each give focus back to the switch (never to the page body); the note is an alert (inserted with its sentence)', async () => {
+    render(<TopBar />);
+    fireEvent.click(bar()!);
+    await screen.findByTestId('mic-bar-note');
+    expect(screen.getByTestId('mic-lines').getAttribute('role')).toBe('alert');
+    const notNow = screen.getByRole('button', { name: 'Not now' });
+    notNow.focus();
+    fireEvent.click(notNow);
+    expect(useMic.getState().state).toEqual({ kind: 'off' });
+    expect(document.activeElement).toBe(bar());
+    fireEvent.click(bar()!);
+    const allow = await screen.findByRole('button', { name: 'Turn on the microphone' });
+    allow.focus();
+    fireEvent.click(allow);
+    expect(document.activeElement).toBe(bar());
+    await vi.waitFor(() => expect(useMic.getState().state.kind).toBe('on'));
+    expect(document.activeElement).toBe(bar());
+  });
+
+  it('Escape meant for an open dialog (Quick Search) leaves the note and the focus alone', async () => {
+    render(<TopBar />);
+    fireEvent.click(bar()!);
+    await screen.findByTestId('mic-bar-note');
+    const dialog = document.createElement('div');
+    dialog.setAttribute('aria-modal', 'true');
+    document.body.append(dialog);
+    try {
+      fireEvent.keyDown(document, { key: 'Escape' });
+      expect(useMic.getState().state).toEqual({ kind: 'asking', step: 'explain' });
+    } finally {
+      dialog.remove();
+    }
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(useMic.getState().state).toEqual({ kind: 'off' });
+  });
+
   it('a tap inside the note does not close it; "Turn on the microphone" turns it on and the note goes', async () => {
     render(<TopBar />);
     fireEvent.click(bar()!);
@@ -122,8 +178,8 @@ describe('the note under the bar', () => {
   it.each([
     ['idle', 'The microphone turned itself off: no note was heard for three minutes.'],
     ['refused', "The microphone is blocked for Fermata. To allow it, open this site's settings (beside the address, or your phone's settings for this browser)."],
-    ['hidden', 'Listening stopped because Fermata was no longer on screen (for example, you switched to another app or tab).'],
-    ['ended', 'The microphone was disconnected, so listening stopped.'],
+    ['hidden', 'The microphone turned off because Fermata was no longer on screen (for example, you switched to another app or tab).'],
+    ['ended', 'The microphone was unplugged or disconnected, so it turned off.'],
   ] as const)('off with a sentence (%s): said in Explore\'s own words, until the next tap', async (problem, sentence) => {
     render(<TopBar />);
     act(() => setMic({ kind: 'problem', problem }));

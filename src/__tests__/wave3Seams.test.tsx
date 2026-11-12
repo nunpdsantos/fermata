@@ -2,9 +2,11 @@
  * Wave 3 integration, the seams that need no browser (the browser half is
  * `e2e/wave3-seams.spec.ts`).
  *
- * Seam 1: in Explore the tuner's "Show what I play on the instrument" lights
- * the note: the tuner is a sheet, but the one listener does not count it as
- * "something open over Explore" (the landscape full neck is the other such).
+ * Seam 1: in Explore, with the microphone on, a note played with the tuner
+ * open lights the instrument (since brief U there is no "Show what I play"
+ * control; the microphone switch alone decides): the tuner is a sheet, but
+ * the one listener does not count it as "something open over Explore" (the
+ * landscape full neck is the other such).
  *
  * Seams 2 and 4: the app must not hear itself.
  *

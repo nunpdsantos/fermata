@@ -181,8 +181,48 @@ describe('one microphone session for the whole check', () => {
     fireEvent.click(screen.getByText('Right answer'));
     fireEvent.click(screen.getByText('Submit'));
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
-    expect(screen.getByTestId('mic-problem').textContent).toMatch(/^Listening stopped because Fermata was no longer on screen/);
+    expect(screen.getByTestId('mic-problem').textContent).toMatch(/^The microphone turned off because Fermata was no longer on screen/);
     expect(toggle().getAttribute('aria-pressed')).toBe('false');
     expect(mic.getUserMedia).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('a check whose questions answered on the instrument are all scale_build', () => {
+  const scale: ExerciseDefinition = {
+    id: 's1',
+    type: 'scale_build',
+    prompt: 'Build a C major scale.',
+    config: { type: 'scale_build', root: 'C', rootAccidental: '', scaleType: 'major', noteCount: 7 },
+  };
+  const SCALE_RESUME = { ...RESUME, order: ['s1', 'mc'] };
+
+  it('is a check answered on the instrument: the switch is offered for it, stays on screen on the screen-answered question, and the tuner closing over it keeps the microphone on', async () => {
+    renderHook(() => useExternalNotes(false));
+    const { unmount } = render(
+      <ExerciseRunner exercises={[scale, choice]} accentColor="#8b5cf6" onRecordResult={vi.fn()} onComplete={vi.fn()} onExit={vi.fn()} resume={SCALE_RESUME} />,
+    );
+    // Offered while the check is open (the top bar reads this; TopBar's own test covers the bar).
+    expect(useMic.getState().check).toBe(true);
+    await turnOn();
+    for (const m of [60, 62, 64, 65, 67, 69, 71]) {
+      mic.setSound(tone(midiHz(m)));
+      await wait(300);
+      mic.setSound(null);
+      await wait(250);
+    }
+    expect(chips()).toEqual(['C', 'D', 'E', 'F', 'G', 'A', 'B']);
+    fireEvent.click(screen.getByRole('button', { name: 'Check Answer' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    // The screen-answered question: the switch, pressed, is still there to turn it off.
+    expect(screen.getByText('Which statement is true?')).toBeTruthy();
+    expect(toggle().getAttribute('aria-pressed')).toBe('true');
+    expect(live()).toBe(1);
+    // The tuner closing over this check: it stays on (the check behind can use it).
+    const { micSheetClosed } = await import('../../../../services/microphone/micPlaces');
+    micSheetClosed();
+    expect(useMic.getState().state.kind).toBe('on');
+    unmount();
+    expect(useMic.getState()).toEqual({ state: { kind: 'off' }, check: false });
+    expect(live()).toBe(0);
   });
 });

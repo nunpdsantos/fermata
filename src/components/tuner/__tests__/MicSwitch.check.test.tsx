@@ -93,6 +93,26 @@ describe('the microphone switch in a check answered on the instrument', () => {
     expect(mic.contexts).toHaveLength(0);
   });
 
+  it('the answer submitted (locked): the "notes are added to your answer" line goes, since none would be; the switch stays, in a polite region that was there before', async () => {
+    const { rerender } = render(ui());
+    expect(screen.getByTestId('mic-lines').getAttribute('aria-live')).toBe('polite');
+    expect(screen.getByText('With the microphone on, the notes you play are added to your answer.')).toBeTruthy();
+    rerender(ui(true));
+    expect(screen.queryByText('With the microphone on, the notes you play are added to your answer.')).toBeNull();
+    expect(toggle().getAttribute('data-place')).toBe('check');
+  });
+
+  it('keyboard: "Turn on the microphone" gives focus back to the check\'s switch, not the page body', async () => {
+    render(ui());
+    fireEvent.click(toggle());
+    await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Turn on the microphone' })).toBeTruthy());
+    const allow = screen.getByRole('button', { name: 'Turn on the microphone' });
+    allow.focus();
+    fireEvent.click(allow);
+    expect(document.activeElement).toBe(toggle());
+    await settle();
+  });
+
   it('the first tap says why (and that the sound stays here) before the browser is asked; "Not now": off', async () => {
     render(ui());
     fireEvent.click(toggle());
@@ -253,7 +273,7 @@ describe('the microphone switch in a check answered on the instrument', () => {
     });
     expect(live()).toBe(0);
     expect(screen.getByTestId('mic-problem').textContent).toBe(
-      'Listening stopped because Fermata was no longer on screen (for example, you switched to another app or tab). You can still answer on the screen.',
+      'The microphone turned off because Fermata was no longer on screen (for example, you switched to another app or tab). You can still answer on the screen.',
     );
     expect(pressed()).toBe('false');
   });

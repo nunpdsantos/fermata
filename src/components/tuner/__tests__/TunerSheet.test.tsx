@@ -344,8 +344,19 @@ describe('TunerSheet: when the microphone cannot be used, nothing is left runnin
       document.dispatchEvent(new Event('visibilitychange'));
     });
     expect(live()).toBe(0);
-    expect(screen.getByTestId('tuner-message').textContent).toBe('Listening stopped because Fermata was no longer on screen (for example, you switched to another app or tab).');
+    expect(screen.getByTestId('tuner-message').textContent).toBe('The microphone turned off because Fermata was no longer on screen (for example, you switched to another app or tab).');
     expect(toggle().getAttribute('aria-pressed')).toBe('false');
+  });
+
+  it('three minutes with no note heard: off, and the tuner says exactly that (its own line, not the why-sentence); every track stopped', async () => {
+    render(<TunerSheet open onClose={() => undefined} />);
+    await listen();
+    expect(useMic.getState().state.kind).toBe('on');
+    await wait(3 * 60 * 1000 + 500);
+    expect(useMic.getState().state).toEqual({ kind: 'problem', problem: 'idle' });
+    expect(screen.getByTestId('tuner-message').textContent).toBe('The microphone turned itself off: no note was heard for three minutes.');
+    expect(toggle().getAttribute('aria-pressed')).toBe('false');
+    expect(live()).toBe(0);
   });
 
   it('closed (in Learn) while the browser is still asking: the stream is stopped when it arrives', async () => {

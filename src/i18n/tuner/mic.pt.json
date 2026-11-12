@@ -14,7 +14,7 @@
     "unsupported": "Este navegador não pode usar um microfone aqui.",
     "busy": "Não foi possível ligar o microfone: talvez outra aplicação o esteja a usar.",
     "failed": "Não foi possível ligar o microfone.",
-    "hidden": "O Fermata deixou de ouvir porque já não estava no ecrã (por exemplo, mudaste para outra aplicação ou separador).",
-    "ended": "O microfone foi desligado, por isso o Fermata deixou de ouvir."
+    "hidden": "O microfone desligou-se porque o Fermata já não estava no ecrã (por exemplo, mudaste para outra aplicação ou separador).",
+    "ended": "O microfone foi retirado ou desconectado, por isso desligou-se."
   }
 }

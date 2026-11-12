@@ -157,6 +157,23 @@ describe('off until the learner taps it', () => {
     expect(state()).toEqual({ kind: 'off' });
   });
 
+  it('tapped off after the browser was asked "is it allowed?" and before it answered: the late "granted" opens nothing', async () => {
+    let answer: (v: { state: string }) => void = () => undefined;
+    query.mockImplementation(() => new Promise((resolve) => { answer = resolve; }));
+    tapMic();
+    // The session has loaded and the question is out (this is the moment the guard is for).
+    await vi.waitFor(() => expect(query).toHaveBeenCalledTimes(1));
+    expect(state()).toEqual({ kind: 'asking', step: 'opening' });
+    micOff();
+    expect(state()).toEqual({ kind: 'off' });
+    answer({ state: 'granted' });
+    await wait(0);
+    await wait(0);
+    expect(mic.getUserMedia).not.toHaveBeenCalled();
+    expect(nothingRunning()).toEqual({ live: 0, contexts: 0 });
+    expect(state()).toEqual({ kind: 'off' });
+  });
+
   it('on, notes held are reported (source mic) and the last one is named; nothing stored, logged, recorded, sent or played back', async () => {
     const heard: ExternalNote[] = [];
     const off = subscribeExternalNotes((n) => heard.push(n));

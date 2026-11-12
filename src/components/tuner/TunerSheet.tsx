@@ -267,7 +267,7 @@ function PhaseText({ mic, supported, guitar }: { mic: MicState; supported: boole
           ))}
         </div>
       )}
-      {ask && <MicAsk />}
+      {ask && <MicAsk place="tuner" />}
     </div>
   );
 }

@@ -129,7 +129,7 @@ test.describe('the tuner hears the low E string a little flat', () => {
     await turnOnMic(sheet);
     await hideThePage(page);
     await expect.poll(() => tracks(page)).toEqual({ live: 0, ended: 1 });
-    await expect(sheet.getByTestId('tuner-message')).toHaveText('Listening stopped because Fermata was no longer on screen (for example, you switched to another app or tab).');
+    await expect(sheet.getByTestId('tuner-message')).toHaveText('The microphone turned off because Fermata was no longer on screen (for example, you switched to another app or tab).');
     await expect(sheet.getByRole('button', { name: 'Microphone' })).toHaveAttribute('aria-pressed', 'false');
     await context.close();
   });
@@ -154,6 +154,22 @@ test.describe('the tuner hears the low E string a little flat', () => {
     await expect.poll(() => tracks(page)).toEqual({ live: 0, ended: 1 });
     await page.getByRole('tab', { name: 'Explore' }).click();
     await expect(barSwitch(page)).toHaveAttribute('data-state', 'off');
+    await expect(page.getByTestId('mic-bar-note')).toHaveCount(0);
+    await context.close();
+  });
+
+  test('off at every start: a reload with the microphone on comes back off — the switch reads Off, nothing asked, no track opened', async ({ baseURL }) => {
+    const { context, page } = await openApp(browser, baseURL!, 'piano');
+    await turnOnMic(page);
+    await expect(barSwitch(page)).toHaveAttribute('aria-pressed', 'true');
+    expect(await tracks(page)).toEqual({ live: 1, ended: 0 });
+    await page.reload();
+    await expect(barSwitch(page)).toBeVisible({ timeout: 15_000 });
+    await expect(barSwitch(page)).toHaveAttribute('data-state', 'off');
+    await expect(barSwitch(page)).toHaveAttribute('aria-pressed', 'false');
+    await page.waitForTimeout(1_000);
+    // The reloaded page opened no stream at all (RECORD_STREAMS counts every getUserMedia of this document).
+    expect(await page.evaluate(() => ((window as unknown as { __micStreams?: MediaStream[] }).__micStreams ?? []).length)).toBe(0);
     await expect(page.getByTestId('mic-bar-note')).toHaveCount(0);
     await context.close();
   });
@@ -191,7 +207,7 @@ test.describe('the tuner hears the low E string a little flat', () => {
       t.dispatchEvent(new Event('ended'));
     });
     await expect.poll(() => tracks(page)).toEqual({ live: 0, ended: 1 });
-    await expect(page.getByTestId('mic-problem')).toHaveText('The microphone was disconnected, so listening stopped.');
+    await expect(page.getByTestId('mic-problem')).toHaveText('The microphone was unplugged or disconnected, so it turned off.');
     await expect(barSwitch(page)).toHaveAttribute('aria-pressed', 'false');
     await context.close();
   });

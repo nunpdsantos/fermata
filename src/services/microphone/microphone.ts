@@ -1,8 +1,8 @@
 /**
  * The microphone (wave 3, brief T): opened only on the learner's action,
  * one session at a time, and closed — every track stopped, the audio
- * context closed — when its owner stops it (the tuner or "Use my
- * instrument" closes), when the page is hidden, when the app changes view,
+ * context closed — when its owner stops it (the microphone switch turns
+ * off, `micSession.ts`), when the page is hidden, when the app changes view,
  * or when the device goes away. Nothing heard is stored or sent anywhere:
  * each frame is measured and dropped.
  *
