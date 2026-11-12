@@ -1,12 +1,8 @@
 {
   "title": "Tuner",
   "close": "Close the tuner",
-  "listening": "Listening",
   "why": "To tell you which note you play and whether it is in tune, Fermata listens through the microphone; the sound never leaves this device.",
-  "start": "Start listening",
-  "stop": "Stop listening",
   "asking": "Your browser is asking whether Fermata may use the microphone.",
-  "tryAgain": "Try again",
   "problem": {
     "refused": "The microphone is blocked for Fermata, so the tuner can't hear you.",
     "refusedHow": "To allow it, open this site's settings (beside the address, or your phone's settings for this browser), allow the microphone, then try again.",
@@ -47,6 +43,5 @@
   "hear": "Hear",
   "hearLabel": "Hear string {{n}}, {{note}}",
   "target": "String {{n}} · {{note}}",
-  "playing": "Fermata is playing string {{n}} ({{note}}). Listen, then play yours until they sound the same.",
-  "showOnInstrument": "Show what I play on the instrument"
+  "playing": "Fermata is playing string {{n}} ({{note}}). Listen, then play yours until they sound the same."
 }

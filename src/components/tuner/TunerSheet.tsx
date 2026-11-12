@@ -11,32 +11,33 @@ import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import { getTuningById } from '../../core/constants/guitarTunings.ts';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { noteToString } from '../../core/types/music.ts';
-import { MicError, startListening, stopListening, type MicProblem, type MicSession, type MicStopReason } from '../../services/microphone/microphone.ts';
 import { microphoneSupported } from '../../services/microphone/support.ts';
+import { useMic, type MicState } from '../../services/microphone/micSwitch.ts';
+import { micSheetClosed } from '../../services/microphone/micPlaces.ts';
+import { muteMic, subscribeMicFrames } from '../../services/microphone/micSession.ts';
 import { centsFrom, nearestNote, SURE_CLARITY, type PitchEstimate } from '../../services/microphone/pitch.ts';
-import { reportPlayedNotes, type PlayedNotes } from '../../services/microphone/playedNotes.ts';
 import { createSmoother, FAR_CENTS, heardName, stringMidi, targetFor, tuneState } from './tunerReading.ts';
 import { playGuitarString, prepareGuitarStrings, REFERENCE_SECONDS } from './hearString.ts';
+import { MicSwitch } from './MicSwitch.tsx';
+import { MicAsk } from './MicLines.tsx';
 
 /**
- * THE TUNER (wave 3, brief T): a Sheet reached from "⋯" → Tuner and from
- * the guitar dock's "Tune". Before the browser is asked, one sentence says
- * why and that the sound never leaves the device. Listening, it names the
- * note heard and how far it is from the target — in words and cents, and a
- * needle on a scale (never colour alone), steadied by a median + average,
- * still under prefers-reduced-motion. With the guitar: the six strings of
- * the current tuning, the nearest picked by itself or chosen by the learner,
- * each with "Hear" (the app's own guitar voice), so it works with no
- * microphone at all. In Explore, "Show what I play on the instrument"
- * reports each held note through `services/externalNotes.ts`.
+ * THE TUNER (wave 3, brief T; its microphone since brief U): a Sheet reached
+ * from "⋯" → Tuner and from the guitar dock's "Tune". At its top, the app's
+ * ONE microphone switch (`MicSwitch`, `services/microphone/micSwitch.ts`):
+ * off until the learner taps it; before the browser is asked, one sentence
+ * says why and that the sound never leaves the device. On, the tuner reads
+ * the frames of that one session (`micSession.ts`): it names the note heard
+ * and how far it is from the target — in words and cents, and a needle on a
+ * scale (never colour alone), steadied by a median + average, still under
+ * prefers-reduced-motion. With the guitar: the six strings of the current
+ * tuning, the nearest picked by itself or chosen by the learner, each with
+ * "Hear" (the app's own guitar voice), so it works with no microphone at
+ * all. In Explore the notes played light the instrument behind it (the one
+ * listener counts the tuner there as Explore). Closing the tuner turns the
+ * microphone off unless what is behind it can use it (Explore, a check
+ * answered on the instrument).
  */
-type Phase =
-  | { kind: 'idle' }
-  | { kind: 'asking' }
-  | { kind: 'listening' }
-  | { kind: 'problem'; problem: MicProblem }
-  | { kind: 'stopped'; reason: 'hidden' | 'ended' };
-
 interface Reading {
   heard: number;
   target: number;
@@ -58,14 +59,13 @@ export function TunerSheet({ open, onClose }: { open: boolean; onClose: () => vo
   const { t } = useTranslation();
   const instrument = useAppStore((s) => s.instrument);
   const tuningId = useAppStore((s) => s.guitarTuningId);
-  const view = useAppStore((s) => s.view);
   const still = useMediaQuery('(prefers-reduced-motion: reduce)');
   const supported = useMemo(() => microphoneSupported(), []);
-  const [phase, setPhase] = useState<Phase>(() => (supported ? { kind: 'idle' } : { kind: 'problem', problem: 'unsupported' }));
+  const mic = useMic((s) => s.state);
+  const listening = supported && mic.kind === 'on';
   const [reading, setReading] = useState<Reading | null>(null);
   const [chosen, setChosen] = useState<number | null>(null);
   const [playing, setPlaying] = useState<number | null>(null);
-  const [showOnInstrument, setShowOnInstrument] = useState(false);
 
   const tuning = getTuningById(tuningId);
   const guitar = instrument === 'guitar';
@@ -74,14 +74,12 @@ export function TunerSheet({ open, onClose }: { open: boolean; onClose: () => vo
   const tuningName = tuning.id === 'standard' ? t('fretboard.standardTuning') : tuning.id === 'drop-d' ? 'Drop D (6=D)' : withGlyphs(tuning.shortName);
 
   // Everything the frame loop reads lives in refs (no re-subscription per render).
-  const session = useRef<MicSession | null>(null);
   const smoother = useRef(createSmoother());
   const last = useRef<{ heardAt: number; target: number | null; shownAt: number; auto: number | null }>({ heardAt: 0, target: null, shownAt: 0, auto: null });
   // A reference string sounding: nothing heard counts until then, timed
   // from the press (the frame clock is performance.now()), whether or not
-  // the tuner was listening when "Hear" was pressed.
+  // the microphone was on when "Hear" was pressed.
   const muteUntil = useRef(0);
-  const reporter = useRef<PlayedNotes | null>(null);
   const live = useRef({ strings, chosen, still });
   useEffect(() => {
     live.current = { strings, chosen, still };
@@ -89,11 +87,7 @@ export function TunerSheet({ open, onClose }: { open: boolean; onClose: () => vo
   }, [strings, chosen, still]);
 
   const onFrame = useCallback((estimate: PitchEstimate | null, time: number) => {
-    if (time < muteUntil.current) {
-      reporter.current?.muteFor(muteUntil.current - time);
-      return;
-    }
-    reporter.current?.onFrame(estimate, time);
+    if (time < muteUntil.current) return;
     const l = last.current;
     const { strings: s, chosen: c, still: motionless } = live.current;
     if (estimate && estimate.clarity >= SURE_CLARITY) {
@@ -113,80 +107,44 @@ export function TunerSheet({ open, onClose }: { open: boolean; onClose: () => vo
     }
   }, []);
 
-  // Set from Start until the browser has answered (one token per Start).
-  const asking = useRef<object | null>(null);
-  const release = useCallback(() => {
-    // Stopped while the browser asks: the stream that arrives is closed at once.
-    if (asking.current) stopListening();
-    asking.current = null;
-    session.current?.stop();
-    session.current = null;
-    reporter.current?.dispose();
-    reporter.current = null;
-  }, []);
-
-  const start = () => {
-    setPhase({ kind: 'asking' });
-    const onStop = (reason: MicStopReason) => {
-      session.current = null;
-      reporter.current?.dispose();
-      reporter.current = null;
+  // Open and on: read the one session's frames. Off (or closed): the reading clears.
+  useEffect(() => {
+    if (!open || !listening) return;
+    const stop = subscribeMicFrames(onFrame);
+    const smoothing = smoother.current;
+    const seen = last.current;
+    return () => {
+      stop();
+      smoothing.reset();
+      seen.target = null;
       setReading(null);
-      setPhase(reason === 'hidden' || reason === 'ended' ? { kind: 'stopped', reason } : { kind: 'idle' });
     };
-    const token = {};
-    asking.current = token;
-    startListening({ onFrame, onStop }).then(
-      (s) => {
-        if (asking.current === token) asking.current = null;
-        session.current = s;
-        if (showOnInstrument && useAppStore.getState().view === 'explore') reporter.current = reportPlayedNotes();
-        setPhase({ kind: 'listening' });
-      },
-      (error: unknown) => {
-        if (asking.current === token) asking.current = null;
-        const problem = error instanceof MicError ? error.problem : 'failed';
-        if (problem === 'stopped') return;
-        setPhase({ kind: 'problem', problem });
-      },
-    );
-  };
+  }, [open, listening, onFrame]);
 
-  // Closing the tuner closes the microphone; so does leaving it unmounted.
+  // Closing the tuner: the microphone goes off unless what is behind it can use it.
   const [wasOpen, setWasOpen] = useState(open);
   if (open !== wasOpen) {
     setWasOpen(open);
-    if (!open) {
-      setPhase((p) => (p.kind === 'problem' && p.problem === 'unsupported' ? p : { kind: 'idle' }));
-      setPlaying(null);
-      setReading(null);
-    }
+    if (!open) setPlaying(null);
   }
+  const shown = useRef(open);
   useEffect(() => {
     // The guitar's samples download only where "Hear" is offered.
     if (open && guitar) prepareGuitarStrings();
-    if (!open) release();
-  }, [open, guitar, release]);
-  useEffect(() => release, [release]);
-
-  const toggleShow = () => {
-    const next = !showOnInstrument;
-    setShowOnInstrument(next);
-    if (!next) {
-      reporter.current?.dispose();
-      reporter.current = null;
-    } else if (session.current && !reporter.current) {
-      reporter.current = reportPlayedNotes();
-    }
-  };
+    if (!open && shown.current) micSheetClosed();
+    shown.current = open;
+  }, [open, guitar]);
+  useEffect(() => () => {
+    if (shown.current) micSheetClosed();
+  }, []);
 
   const hear = (index: number) => {
     const midi = stringMidi(tuning.strings[index]);
     playGuitarString(midi);
-    // The tuner must not read the app's own string as the learner's.
+    // The tuner must not read the app's own string as the learner's, nor report it as a note played.
     const ms = REFERENCE_SECONDS * 1000 + 500;
     muteUntil.current = deadlineIn(ms);
-    reporter.current?.muteFor(ms);
+    muteMic(ms);
     smoother.current.reset();
     setReading(null);
     setPlaying(index);
@@ -197,7 +155,6 @@ export function TunerSheet({ open, onClose }: { open: boolean; onClose: () => vo
     return () => clearTimeout(id);
   }, [playing]);
 
-  const listening = phase.kind === 'listening';
   const stringLabel = (index: number) => t('tuner.stringLabel', { n: 6 - index, note: names[index] });
 
   return (
@@ -206,25 +163,12 @@ export function TunerSheet({ open, onClose }: { open: boolean; onClose: () => vo
       onClose={onClose}
       testId="tuner-sheet"
       closeLabel={t('tuner.close')}
-      title={
-        <span className="inline-flex items-center gap-2 flex-wrap">
-          {t('tuner.title')}
-          {listening && <ListeningMark label={t('tuner.listening')} />}
-        </span>
-      }
+      title={t('tuner.title')}
     >
-      <div className="flex flex-col gap-4 pb-1" data-testid="tuner" data-phase={phase.kind}>
-        <section className="flex flex-col gap-2" aria-live="polite">
-          <PhaseText phase={phase} guitar={guitar} />
-          <div className="flex flex-wrap gap-2">
-            {phase.kind === 'listening' ? (
-              <Button variant="secondary" onClick={() => { release(); setReading(null); setPhase({ kind: 'idle' }); }} data-testid="tuner-stop">{t('tuner.stop')}</Button>
-            ) : phase.kind === 'problem' && phase.problem === 'unsupported' ? null : (
-              <Button variant="primary" onClick={start} disabled={phase.kind === 'asking'} data-testid="tuner-start">
-                {phase.kind === 'problem' || phase.kind === 'stopped' ? t('tuner.tryAgain') : t('tuner.start')}
-              </Button>
-            )}
-          </div>
+      <div className="flex flex-col gap-4 pb-1" data-testid="tuner" data-phase={supported ? mic.kind : 'unsupported'}>
+        <section className="flex flex-col gap-2 items-start">
+          <MicSwitch place="tuner" />
+          <PhaseText mic={mic} supported={supported} guitar={guitar} />
         </section>
 
         {listening && (
@@ -236,12 +180,6 @@ export function TunerSheet({ open, onClose }: { open: boolean; onClose: () => vo
             strings={strings}
             still={still}
           />
-        )}
-
-        {listening && view === 'explore' && (
-          <ChoiceChip pressed={showOnInstrument} onClick={toggleShow} className="self-start tuner-wrap" data-testid="tuner-show">
-            {t('tuner.showOnInstrument')}
-          </ChoiceChip>
         )}
 
         {guitar && (
@@ -297,33 +235,39 @@ export function TunerSheet({ open, onClose }: { open: boolean; onClose: () => vo
   );
 }
 
-function ListeningMark({ label }: { label: string }) {
-  return (
-    <span className="tuner-listening text-caption" data-testid="listening-mark">
-      <span className="tuner-listening-dot" aria-hidden="true" />
-      {label}
-    </span>
-  );
-}
-
-function PhaseText({ phase, guitar }: { phase: Phase; guitar: boolean }) {
+/** What the tuner says under its switch: why (off), the two buttons (before the browser is asked), the browser asking, what went wrong. */
+function PhaseText({ mic, supported, guitar }: { mic: MicState; supported: boolean; guitar: boolean }) {
   const { t } = useTranslation();
   const lines: string[] = [];
-  if (phase.kind === 'idle') lines.push(t('tuner.why'));
-  else if (phase.kind === 'asking') lines.push(t('tuner.asking'));
-  else if (phase.kind === 'stopped') lines.push(t(`tuner.problem.${phase.reason}`));
-  else if (phase.kind === 'problem') {
-    lines.push(t(`tuner.problem.${phase.problem}`));
-    if (phase.problem === 'refused') lines.push(t('tuner.problem.refusedHow'));
-    if (phase.problem === 'missing') lines.push(t('tuner.problem.missingHow'));
+  let ask = false;
+  if (!supported) {
+    lines.push(t('tuner.problem.unsupported'));
     if (guitar) lines.push(t('tuner.byEar'));
+  } else if (mic.kind === 'off' || (mic.kind === 'asking' && mic.step !== 'browser')) {
+    lines.push(t('tuner.why'));
+    ask = mic.kind === 'asking' && mic.step === 'explain';
+  } else if (mic.kind === 'asking') lines.push(t('tuner.asking'));
+  else if (mic.kind === 'problem') {
+    const p = mic.problem;
+    if (p === 'idle') lines.push(t('tuner.mic.idle'));
+    else if (p === 'hidden' || p === 'ended') lines.push(t(`tuner.problem.${p}`));
+    else {
+      lines.push(t(`tuner.problem.${p}`));
+      if (p === 'refused') lines.push(t('tuner.problem.refusedHow'));
+      if (p === 'missing') lines.push(t('tuner.problem.missingHow'));
+      if (guitar) lines.push(t('tuner.byEar'));
+    }
   }
-  if (lines.length === 0) return null;
   return (
-    <div className="flex flex-col gap-1" data-testid="tuner-message">
-      {lines.map((line) => (
-        <p key={line} className="text-body" style={{ color: 'var(--text)' }}>{line}</p>
-      ))}
+    <div className="flex flex-col gap-2" aria-live="polite">
+      {lines.length > 0 && (
+        <div className="flex flex-col gap-1" data-testid="tuner-message">
+          {lines.map((line) => (
+            <p key={line} className="text-body" style={{ color: 'var(--text)' }}>{line}</p>
+          ))}
+        </div>
+      )}
+      {ask && <MicAsk />}
     </div>
   );
 }

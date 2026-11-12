@@ -31,16 +31,6 @@ export function microphoneSupported(): boolean {
   return true;
 }
 
-/** Has the learner already allowed the microphone for this site? ('unknown' where the browser cannot say.) */
-export async function microphonePermission(): Promise<'granted' | 'denied' | 'prompt' | 'unknown'> {
-  try {
-    const status = await navigator.permissions?.query({ name: 'microphone' as PermissionName });
-    return status?.state ?? 'unknown';
-  } catch {
-    return 'unknown';
-  }
-}
-
 /** A new audio context, made where it is called (inside the learner's tap: iOS starts audio only there). */
 export function makeAudioContext(): AudioContext {
   const w = window as unknown as { AudioContext?: typeof AudioContext; webkitAudioContext?: typeof AudioContext };

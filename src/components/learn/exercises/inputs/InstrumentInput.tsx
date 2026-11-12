@@ -8,7 +8,8 @@ import { Button } from '../../../ui/Button';
 import { accentText } from '../../../../design/tokens/learnColors';
 import { openDockForLesson, foldDockAfterLesson } from '../../../../services/lessonDock';
 import { setExternalAnswerTarget } from '../../../../services/externalAnswer';
-import { UseMyInstrument } from '../../../tuner/UseMyInstrument';
+import { MicSwitch } from '../../../tuner/MicSwitch';
+import { MicLines } from '../../../tuner/MicLines';
 
 interface InstrumentInputProps {
   expectedCount: number;
@@ -106,7 +107,7 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
     setToggledPCs(new Set());
   }, []);
 
-  // "Use my instrument" names a heard note as the chips below do.
+  // The microphone switch names a heard note as the chips below do.
   const nameOf = useCallback((midi: number) => withGlyphs(spell(((midi % 12) + 12) % 12)), [spell]);
 
   const handleCheck = useCallback(() => {
@@ -124,8 +125,12 @@ export function InstrumentInput({ expectedCount, submitted, onSubmit, accentColo
         </span>
       </div>
 
-      {/* Wave 3: answer by playing a real instrument (the microphone). */}
-      <UseMyInstrument active={!submitted} nameOf={nameOf} />
+      {/* Answer by playing a real instrument: the app's one microphone switch
+          (brief U), off until the learner taps it, and what it does here. */}
+      <div className="flex flex-col gap-2 items-start" data-testid="check-mic">
+        <MicSwitch place="check" />
+        <MicLines place="check" here active={!submitted} nameOf={nameOf} />
+      </div>
 
       {/* Toggled notes display */}
       {toggledPCs.size > 0 && (

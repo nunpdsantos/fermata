@@ -1392,6 +1392,11 @@
     "dockButton": "Tune",
     "loadError": "The tuner did not load. Try again."
   },
+  "micSwitchEntry": {
+    "label": "Microphone",
+    "on": "On",
+    "off": "Off"
+  },
   "metronomeToolEntry": {
     "menuItem": "Metronome",
     "loadFailed": "The metronome did not load. Check the connection and try again."

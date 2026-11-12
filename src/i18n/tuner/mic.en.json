@@ -1,0 +1,20 @@
+{
+  "why": "To hear the notes you play, Fermata listens through the microphone; the sound never leaves this device.",
+  "allow": "Turn on the microphone",
+  "notNow": "Not now",
+  "asking": "Your browser is asking whether Fermata may use the microphone.",
+  "here": "With the microphone on, the notes you play are added to your answer.",
+  "on": "Play the notes one at a time and let each one ring.",
+  "heard": "Heard: {{note}}",
+  "idle": "The microphone turned itself off: no note was heard for three minutes.",
+  "onScreen": "You can still answer on the screen.",
+  "problem": {
+    "refused": "The microphone is blocked for Fermata. To allow it, open this site's settings (beside the address, or your phone's settings for this browser).",
+    "missing": "No microphone was found on this device.",
+    "unsupported": "This browser can't use a microphone here.",
+    "busy": "The microphone couldn't start: another app may be using it.",
+    "failed": "The microphone couldn't start.",
+    "hidden": "Listening stopped because Fermata was no longer on screen (for example, you switched to another app or tab).",
+    "ended": "The microphone was disconnected, so listening stopped."
+  }
+}

@@ -1,23 +1,24 @@
 /**
- * "Use my instrument" in a check answered on the instrument (brief T), with
- * a fake microphone: offered only where a microphone can work, off by
- * default, one sentence before the browser is asked, the notes held on the
+ * The microphone switch in a check answered on the instrument (brief U; it
+ * replaced wave 3's "Use my instrument", whose promises it keeps), with a
+ * fake microphone: offered only where a microphone can work, off by default,
+ * nothing asked of the browser until the tap, one sentence before the
+ * browser is asked, one line saying what it does here; the notes held on the
  * real instrument EMITTED through the contract (the listener that adds them
  * to the answer is stream K's), the on-screen instrument and Check still
- * working; ONE microphone session for the whole check (wave 3 integration,
- * seam 3: never reopened outside a tap); and no track left running when it
- * is turned off, when the check ends, when the page is hidden, or when the
- * microphone is refused.
+ * working; ONE microphone session for the whole check (never reopened
+ * outside a tap); and no track left running when it is turned off, when the
+ * check ends, when the page is hidden, or when the microphone is refused.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { installFakeMic, midiHz, tone, watchPrivacy, type FakeMic } from '../../../services/microphone/__tests__/fakeMic';
 import { subscribeExternalNotes, type ExternalNote } from '../../../services/externalNotes';
 import { stopListening } from '../../../services/microphone/microphone';
-// Loaded up front, as the control loads them on first use.
-import '../../../services/microphone/playedNotes';
+// Loaded up front, as the switch loads it in the tap.
+import '../../../services/microphone/micSession';
 import { InstrumentInput } from '../../learn/exercises/inputs/InstrumentInput';
-import { stopAnswerListening, useAnswerListening } from '../answerSession';
+import { micOff, useMic } from '../../../services/microphone/micSwitch';
 import { useAppStore } from '../../../state/store';
 import type { Note } from '../../../core/types/music';
 
@@ -27,7 +28,7 @@ let off: () => void;
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'setTimeout', 'clearTimeout', 'performance'] });
   mic = installFakeMic();
-  stopAnswerListening();
+  micOff();
   heard = [];
   off = subscribeExternalNotes((n) => heard.push(n));
   useAppStore.setState({ view: 'learn', language: 'en', activeNotes: new Set<number>(), highlightedNotes: [], exerciseInputActive: false });
@@ -35,7 +36,7 @@ beforeEach(() => {
 afterEach(() => {
   off();
   cleanup();
-  stopAnswerListening();
+  micOff();
   stopListening();
   mic.restore();
   vi.useRealTimers();
@@ -47,19 +48,23 @@ const live = () => mic.tracks.filter((t) => t.readyState === 'live').length;
 const ui = (submitted = false, onSubmit = vi.fn()) => (
   <InstrumentInput expectedCount={3} submitted={submitted} onSubmit={onSubmit} accentColor="#888888" spellingContext={C_MAJOR} />
 );
+const toggle = () => screen.getByRole('button', { name: 'Microphone' });
+const pressed = () => toggle().getAttribute('aria-pressed');
 async function wait(ms: number) {
   await act(async () => {
     await vi.advanceTimersByTimeAsync(ms);
   });
 }
+/** The tap, the sentence, "Turn on the microphone"; until the browser has answered. */
 async function turnOn() {
-  fireEvent.click(screen.getByRole('button', { name: 'Use my instrument' }));
-  fireEvent.click(screen.getByRole('button', { name: 'Allow the microphone' }));
+  fireEvent.click(toggle());
+  await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Turn on the microphone' })).toBeTruthy());
+  fireEvent.click(screen.getByRole('button', { name: 'Turn on the microphone' }));
   await settle();
 }
-/** Until the browser has answered (the control is on, or says why not). */
+/** Until the browser has answered (the switch is on, or says why not). */
 async function settle() {
-  await vi.waitFor(() => expect(screen.getByTestId('use-my-instrument').getAttribute('data-state')).toMatch(/^(on|problem)$/));
+  await vi.waitFor(() => expect(toggle().getAttribute('data-state')).toMatch(/^(on|problem)$/));
   await wait(0);
 }
 async function play(midi: number, ms = 300, gap = 200) {
@@ -69,32 +74,44 @@ async function play(midi: number, ms = 300, gap = 200) {
   await wait(gap);
 }
 
-describe('Use my instrument', () => {
+describe('the microphone switch in a check answered on the instrument', () => {
   it('not offered where the microphone cannot work (no support: the check as before)', () => {
     Object.defineProperty(navigator, 'mediaDevices', { configurable: true, value: undefined });
     render(ui());
-    expect(screen.queryByRole('button', { name: 'Use my instrument' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Microphone' })).toBeNull();
     expect(screen.getByRole('button', { name: 'Check Answer' })).toBeTruthy();
   });
 
-  it('off by default; the first tap says why (and that the sound stays here) before the browser is asked', () => {
+  it('off, "Microphone Off", and one line saying what it does here; opening the question asks the browser NOTHING', async () => {
     render(ui());
-    const toggle = screen.getByRole('button', { name: 'Use my instrument' });
-    expect(toggle.getAttribute('aria-pressed')).toBe('false');
-    fireEvent.click(toggle);
-    expect(screen.getByText('To hear the notes you play, Fermata listens through the microphone; the sound never leaves this device.')).toBeTruthy();
+    await wait(50);
+    expect(pressed()).toBe('false');
+    expect(toggle().textContent).toBe('Microphone Off');
+    expect(screen.getByText('With the microphone on, the notes you play are added to your answer.')).toBeTruthy();
+    expect(navigator.permissions.query).not.toHaveBeenCalled();
     expect(mic.getUserMedia).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole('button', { name: 'Not now' }));
-    expect(mic.getUserMedia).not.toHaveBeenCalled();
-    expect(screen.getByTestId('use-my-instrument').getAttribute('data-state')).toBe('off');
+    expect(mic.contexts).toHaveLength(0);
   });
 
-  it('C, E and G played one at a time are emitted, each on then off, source mic', async () => {
+  it('the first tap says why (and that the sound stays here) before the browser is asked; "Not now": off', async () => {
+    render(ui());
+    fireEvent.click(toggle());
+    await vi.waitFor(() => expect(screen.getByText('To hear the notes you play, Fermata listens through the microphone; the sound never leaves this device.')).toBeTruthy());
+    expect(mic.getUserMedia).not.toHaveBeenCalled();
+    expect(pressed()).toBe('false');
+    fireEvent.click(screen.getByRole('button', { name: 'Not now' }));
+    expect(mic.getUserMedia).not.toHaveBeenCalled();
+    expect(toggle().getAttribute('data-state')).toBe('off');
+  });
+
+  it('C, E and G played one at a time are emitted, each on then off, source mic; on reads "Microphone On" with the dot', async () => {
     render(ui());
     await turnOn();
     expect(mic.getUserMedia).toHaveBeenCalledTimes(1);
-    expect(screen.getByTestId('listening-mark').textContent).toBe('Listening');
-    expect(screen.getByTestId('use-my-instrument-heard').textContent).toBe('Play the notes one at a time and let each one ring.');
+    expect(pressed()).toBe('true');
+    expect(toggle().textContent).toBe('Microphone On');
+    expect(toggle().querySelector('.mic-switch-dot')).toBeTruthy();
+    expect(screen.getByTestId('mic-heard').textContent).toBe('Play the notes one at a time and let each one ring.');
     await play(48);
     await play(52);
     await play(55);
@@ -103,7 +120,7 @@ describe('Use my instrument', () => {
       { midi: 52, on: true, source: 'mic' }, { midi: 52, on: false, source: 'mic' },
       { midi: 55, on: true, source: 'mic' }, { midi: 55, on: false, source: 'mic' },
     ]);
-    expect(screen.getByTestId('use-my-instrument-heard').textContent).toBe('Heard: G');
+    expect(screen.getByTestId('mic-heard').textContent).toBe('Heard: G');
   });
 
   it('nothing heard is stored, logged, recorded, sent or played back (a whole session: on, three notes, off)', async () => {
@@ -116,7 +133,7 @@ describe('Use my instrument', () => {
       await play(48);
       await play(52);
       await play(55);
-      fireEvent.click(screen.getByRole('button', { name: 'Use my instrument' }));
+      fireEvent.click(toggle());
       await wait(0);
       expect(heard.filter((n) => n.on).map((n) => n.midi)).toEqual([48, 52, 55]);
       expect(watch.findings()).toEqual([]);
@@ -125,13 +142,15 @@ describe('Use my instrument', () => {
     }
   });
 
-  it('the audio context is made inside the tap that turns it on (iOS Safari starts audio only there), before anything is awaited', () => {
+  it('the audio context is made inside each tap (iOS Safari starts audio only there), before anything is awaited', async () => {
     render(ui());
-    fireEvent.click(screen.getByRole('button', { name: 'Use my instrument' }));
-    expect(mic.contexts).toHaveLength(0);
-    fireEvent.click(screen.getByRole('button', { name: 'Allow the microphone' }));
-    // Synchronously, in the same turn as the tap: the context exists; the microphone's code has not even loaded yet.
+    fireEvent.click(toggle());
+    // Synchronously, in the same turn as the tap: the context exists; nothing has been asked or loaded yet.
     expect(mic.contexts).toHaveLength(1);
+    expect(navigator.permissions.query).not.toHaveBeenCalled();
+    await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Turn on the microphone' })).toBeTruthy());
+    fireEvent.click(screen.getByRole('button', { name: 'Turn on the microphone' }));
+    expect(mic.contexts).toHaveLength(2);
     expect(mic.getUserMedia).not.toHaveBeenCalled();
   });
 
@@ -141,7 +160,7 @@ describe('Use my instrument', () => {
     mic.setSound(tone(midiHz(57)));
     await wait(300);
     expect(heard).toEqual([{ midi: 57, on: true, source: 'mic' }]);
-    act(() => stopAnswerListening());
+    act(() => micOff());
     expect(heard).toEqual([{ midi: 57, on: true, source: 'mic' }, { midi: 57, on: false, source: 'mic' }]);
     await wait(500);
     expect(heard).toHaveLength(2);
@@ -163,18 +182,18 @@ describe('Use my instrument', () => {
     await turnOn();
     expect(live()).toBe(1);
     rerender(ui(true));
-    // Final: still listening for the check, and says nothing about playing.
+    // Final: still on for the check, and says nothing about playing.
     expect(live()).toBe(1);
     expect(mic.contexts.filter((c) => c.state !== 'closed')).toHaveLength(1);
-    expect(screen.getByTestId('listening-mark')).toBeTruthy();
-    expect(screen.queryByTestId('use-my-instrument-heard')).toBeNull();
+    expect(pressed()).toBe('true');
+    expect(screen.queryByTestId('mic-heard')).toBeNull();
     unmount();
     // The next question: on at once, from the same stream, the same context.
     render(ui());
     await wait(0);
-    expect(screen.getByRole('button', { name: 'Use my instrument' }).getAttribute('aria-pressed')).toBe('true');
+    expect(pressed()).toBe('true');
     expect(mic.getUserMedia).toHaveBeenCalledTimes(1);
-    expect(mic.contexts).toHaveLength(1);
+    expect(mic.contexts.filter((c) => c.state !== 'closed')).toHaveLength(1);
     expect(live()).toBe(1);
     await play(52);
     expect(heard.filter((n) => n.on)).toEqual([{ midi: 52, on: true, source: 'mic' }]);
@@ -183,34 +202,36 @@ describe('Use my instrument', () => {
   it('turned off: no track, and the next question does not listen', async () => {
     const { unmount } = render(ui());
     await turnOn();
-    fireEvent.click(screen.getByRole('button', { name: 'Use my instrument' }));
+    fireEvent.click(toggle());
     expect(live()).toBe(0);
     unmount();
     render(ui());
     await wait(0);
+    expect(pressed()).toBe('false');
     expect(mic.getUserMedia).toHaveBeenCalledTimes(1);
   });
 
-  it('the control gone (a question not answered on the instrument) keeps it; the check over (stopAnswerListening, as ExerciseRunner does) leaves no track', async () => {
+  it('the input gone (a question not answered on the instrument) keeps it; the check over (micOff, as ExerciseRunner does) leaves no track', async () => {
     const { unmount } = render(ui());
     await turnOn();
     unmount();
     expect(live()).toBe(1);
-    expect(useAnswerListening.getState().state.kind).toBe('on');
-    act(() => stopAnswerListening());
+    expect(useMic.getState().state.kind).toBe('on');
+    act(() => micOff());
     expect(live()).toBe(0);
     expect(mic.contexts.every((c) => c.state === 'closed')).toBe(true);
-    expect(useAnswerListening.getState().state.kind).toBe('off');
+    expect(useMic.getState().state.kind).toBe('off');
   });
 
   it('refused: off, a true sentence, the screen still answers; no track', async () => {
     mic.failWith('NotAllowedError');
     render(ui());
     await turnOn();
-    expect(screen.getByTestId('use-my-instrument-problem').textContent).toBe(
+    expect(screen.getByTestId('mic-problem').textContent).toBe(
       "The microphone is blocked for Fermata. To allow it, open this site's settings (beside the address, or your phone's settings for this browser). You can still answer on the screen.",
     );
-    expect(screen.getByRole('button', { name: 'Use my instrument' }).getAttribute('aria-pressed')).toBe('false');
+    expect(pressed()).toBe('false');
+    expect(toggle().textContent).toBe('Microphone Off');
     expect(live()).toBe(0);
     expect(screen.getByRole('button', { name: 'Check Answer' })).toBeTruthy();
   });
@@ -219,7 +240,7 @@ describe('Use my instrument', () => {
     mic.failWith('NotFoundError');
     render(ui());
     await turnOn();
-    expect(screen.getByTestId('use-my-instrument-problem').textContent).toBe('No microphone was found on this device. You can still answer on the screen.');
+    expect(screen.getByTestId('mic-problem').textContent).toBe('No microphone was found on this device. You can still answer on the screen.');
     expect(live()).toBe(0);
   });
 
@@ -231,9 +252,10 @@ describe('Use my instrument', () => {
       document.dispatchEvent(new Event('visibilitychange'));
     });
     expect(live()).toBe(0);
-    expect(screen.getByTestId('use-my-instrument-problem').textContent).toBe(
-      'Listening stopped because Fermata was no longer on screen (for example, you switched to another app or tab). Turn on “Use my instrument” again to go on.',
+    expect(screen.getByTestId('mic-problem').textContent).toBe(
+      'Listening stopped because Fermata was no longer on screen (for example, you switched to another app or tab). You can still answer on the screen.',
     );
+    expect(pressed()).toBe('false');
   });
 
   it('a view change while listening: no track, off, and no untrue "off screen" sentence', async () => {
@@ -244,19 +266,20 @@ describe('Use my instrument', () => {
       useAppStore.setState({ view: 'explore' });
     });
     expect(live()).toBe(0);
-    expect(screen.getByTestId('use-my-instrument').getAttribute('data-state')).toBe('off');
-    expect(screen.queryByTestId('use-my-instrument-problem')).toBeNull();
-    expect(screen.getByRole('button', { name: 'Use my instrument' }).getAttribute('aria-pressed')).toBe('false');
+    expect(toggle().getAttribute('data-state')).toBe('off');
+    expect(screen.queryByTestId('mic-problem')).toBeNull();
+    expect(pressed()).toBe('false');
   });
 
   it('turned off while the browser is still asking: the stream that arrives is stopped', async () => {
     const gate = mic.hold();
     render(ui());
-    fireEvent.click(screen.getByRole('button', { name: 'Use my instrument' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Allow the microphone' }));
-    await wait(0);
-    expect(screen.getByText('Your browser is asking whether Fermata may use the microphone.')).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: 'Use my instrument' }));
+    fireEvent.click(toggle());
+    await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Turn on the microphone' })).toBeTruthy());
+    fireEvent.click(screen.getByRole('button', { name: 'Turn on the microphone' }));
+    await vi.waitFor(() => expect(screen.getByText('Your browser is asking whether Fermata may use the microphone.')).toBeTruthy());
+    await vi.waitFor(() => expect(mic.getUserMedia).toHaveBeenCalledTimes(1));
+    fireEvent.click(toggle());
     gate.release();
     await wait(0);
     await wait(0);
@@ -264,12 +287,14 @@ describe('Use my instrument', () => {
     expect(live()).toBe(0);
   });
 
-  it('already allowed for this site: the first tap listens at once', async () => {
+  it('already allowed for this site: the first tap listens at once (asked only in that tap)', async () => {
     (navigator.permissions.query as ReturnType<typeof vi.fn>).mockResolvedValue({ state: 'granted' });
     render(ui());
     await wait(0);
-    fireEvent.click(screen.getByRole('button', { name: 'Use my instrument' }));
+    expect(navigator.permissions.query).not.toHaveBeenCalled();
+    fireEvent.click(toggle());
     await settle();
+    expect(navigator.permissions.query).toHaveBeenCalledTimes(1);
     expect(mic.getUserMedia).toHaveBeenCalledTimes(1);
     expect(screen.queryByText(/^To hear the notes you play/)).toBeNull();
   });

@@ -3,16 +3,20 @@
  * proves its own; this proves they coexist with each other and with waves 1
  * and 2. `music-theory-app` (persist stays v6) gains `midiKeyboard` (stream
  * K: `true` while a MIDI keyboard is on) and `metronome` (stream M: { bpm,
- * beats }, once the learner changed one). The microphone (stream T) saves
- * nothing: "Use my instrument" lives in memory for one check only. Every
+ * beats }, once the learner changed one). The microphone saves nothing: its
+ * one switch (brief U) is in memory only, off at every start — no store
+ * field, nothing in localStorage, sessionStorage or IndexedDB. Every
  * field is optional, written only when it says something, guarded by the
  * same check the load and the backup use, and carried in the backup file.
  */
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { useAppStore, sanitizePersistedAppState, invalidAppStateFields } from '../store';
 import { buildBackup, validateBackup } from '../../utils/backupHelpers';
+import { installFakeMic } from '../../services/microphone/__tests__/fakeMic';
+import { micOff, tapMic, useMic } from '../../services/microphone/micSwitch';
+import '../../services/microphone/micSession';
 
 const WAVE3 = { midiKeyboard: true, metronome: { bpm: 72, beats: 3 } } as const;
 const WAVE2 = { progression: { chords: ['G', 'D', 'Em', 'C'], bpm: 96, beats: 2 }, capoFret: 3 } as const;
@@ -93,6 +97,38 @@ describe('music-theory-app: midiKeyboard and metronome in one v6 save', () => {
       const broken = JSON.parse(JSON.stringify(backup));
       breakIt(broken.data['music-theory-app'].state);
       expect(await validateBackup(broken)).toMatchObject({ ok: false });
+    }
+  });
+
+  it('the microphone switch saves nothing: turned on over a frozen v6 save, the save is written back byte for byte, no key is added anywhere; a reload comes back off', async () => {
+    const mic = installFakeMic();
+    try {
+      // As the app starts (the tests above leave waves 1 and 2's fields in the store): then the frozen save.
+      useAppStore.setState(useAppStore.getInitialState(), true);
+      localStorage.setItem('music-theory-app', FROZEN);
+      sessionStorage.clear();
+      await useAppStore.persist.rehydrate();
+      const idbOpen = vi.fn();
+      vi.stubGlobal('indexedDB', { open: idbOpen });
+      (navigator.permissions.query as ReturnType<typeof vi.fn>).mockResolvedValue({ state: 'granted' });
+      tapMic();
+      await vi.waitFor(() => expect(useMic.getState().state.kind).toBe('on'));
+      expect(mic.tracks.filter((t) => t.readyState === 'live')).toHaveLength(1);
+      touch();
+      // Known positive: the save was written again just now, with the microphone on.
+      expect(saved()).toBe(JSON.stringify(frozen()));
+      expect(Object.keys(localStorage)).toEqual(['music-theory-app']);
+      expect(Object.keys(sessionStorage)).toEqual([]);
+      expect(idbOpen).not.toHaveBeenCalled();
+      expect(Object.keys(savedState()).filter((k) => /mic|tuner|listen|instrumentAnswer/i.test(k))).toEqual([]);
+      // A reload: the modules start again from what was saved — the switch is off.
+      vi.resetModules();
+      const fresh = await import('../../services/microphone/micSwitch');
+      expect(fresh.useMic.getState().state).toEqual({ kind: 'off' });
+    } finally {
+      micOff();
+      vi.unstubAllGlobals();
+      mic.restore();
     }
   });
 });

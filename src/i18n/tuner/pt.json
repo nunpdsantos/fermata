@@ -1,12 +1,8 @@
 {
   "title": "Afinador",
   "close": "Fechar o afinador",
-  "listening": "A ouvir",
   "why": "Para te dizer que nota tocas e se está afinada, o Fermata ouve através do microfone; o som nunca sai deste dispositivo.",
-  "start": "Começar a ouvir",
-  "stop": "Parar de ouvir",
   "asking": "O teu navegador está a perguntar se o Fermata pode usar o microfone.",
-  "tryAgain": "Tentar outra vez",
   "problem": {
     "refused": "O microfone está bloqueado para o Fermata, por isso o afinador não te ouve.",
     "refusedHow": "Para o permitir, abre as definições deste site (ao lado do endereço, ou nas definições do telemóvel para este navegador), permite o microfone e tenta outra vez.",
@@ -47,6 +43,5 @@
   "hear": "Ouvir",
   "hearLabel": "Ouvir a corda {{n}}, {{note}}",
   "target": "Corda {{n}} · {{note}}",
-  "playing": "O Fermata está a tocar a corda {{n}} ({{note}}). Ouve e depois toca a tua até soarem iguais.",
-  "showOnInstrument": "Mostrar no instrumento o que toco"
+  "playing": "O Fermata está a tocar a corda {{n}} ({{note}}). Ouve e depois toca a tua até soarem iguais."
 }

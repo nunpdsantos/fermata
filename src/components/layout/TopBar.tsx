@@ -10,7 +10,9 @@ import { usePwaUpdateStore, applyUpdateOrReload } from '../../hooks/usePWA.ts';
 import { requestDemo, useDemoRequest } from '../../state/demoRequest.ts';
 import { resumeAudio } from '../../core/services/audio.ts';
 import { TunerHost } from '../tuner/TunerHost.tsx';
-import { openTuner } from '../tuner/tunerRequest.ts';
+import { openTuner, useTunerRequest } from '../tuner/tunerRequest.ts';
+import { MicSwitch } from '../tuner/MicSwitch.tsx';
+import { micOff, useMic } from '../../services/microphone/micSwitch.ts';
 
 // Settings is a lazy chunk (wave 2 integration, for the entry file's budget):
 // fetched the first time it is opened, then kept mounted (its close animation
@@ -128,14 +130,28 @@ export function TopBar() {
   // sheet listening to it would stand between the tour and what it shows
   // (wave 3 integration).
   const offerTuner = !tourPlaying;
+  // The microphone switch (brief U): where a note played can be used — Explore,
+  // and a check answered on the instrument — never while the tour plays (the
+  // tour turns it off: nothing it shows can use a played note).
+  const checkOpen = useMic((s) => s.check);
+  const offerMic = !tourPlaying && (view === 'explore' || checkOpen);
+  // Its sentences show under the bar only where no other switch carries them (inline in a check, at the tuner's top).
+  const tunerOpen = useTunerRequest((s) => s.open);
   // Below 360 px the three tabs need the room: search moves into the menu.
-  const narrow = useMediaQuery('(max-width: 359px)');
+  // In Portuguese and Spanish, whose tab words are longer, below 405 px: the
+  // microphone switch (brief U) takes its room (measured on this Mac: they
+  // keep 4 px inside their pill beside search from 390 / 393 px; Linux's
+  // text is a few pixels wider). In every view alike.
+  const long = useAppStore((s) => s.language !== 'en');
+  const narrow = useMediaQuery(long ? '(max-width: 404px)' : '(max-width: 359px)');
   const updateReady = usePwaUpdateStore((s) => s.needRefresh);
   // Put off with "Later": a dot on "⋯" says an update is waiting in there.
   const updateDeferred = usePwaUpdateStore((s) => s.needRefresh && s.updateDeferred);
   const openSearch = () => useAppStore.getState().setQuickSearchOpen(true);
   // The tour plays sound: resume the audio inside this tap, then ask for it.
+  // The microphone goes off (nothing the tour shows can use a played note).
   const showMeAround = () => {
+    micOff();
     void resumeAudio().catch(() => undefined);
     requestDemo('intro', 'menu');
   };
@@ -143,7 +159,7 @@ export function TopBar() {
   return (
     <header className="app-topbar" data-testid="app-topbar">
       <div className="flex items-center gap-2 min-w-0">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" className="shrink-0" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" className="shrink-0 app-mark" aria-hidden="true">
           <path d="M4 14 A 8 8 0 0 1 20 14" />
           <circle cx="12" cy="16" r="1.8" fill="var(--accent)" />
         </svg>
@@ -166,6 +182,7 @@ export function TopBar() {
       />
 
       <div className="flex items-center gap-1 justify-end">
+        {offerMic && <MicSwitch place="bar" note={!checkOpen && !tunerOpen} />}
         {/* One search button: icon only (a --tap square) on phones. */}
         {!narrow && (
           <Button

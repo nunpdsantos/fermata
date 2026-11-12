@@ -1,16 +1,18 @@
 /**
- * The tuner's text (brief T): the same keys and placeholders in EN, PT and
- * ES, in its own lazy files (not the entry's locale files, which carry only
- * `tunerEntry`); every sentence that asks for the microphone says what it is
- * for and that the sound never leaves the device, in the same sentence.
+ * The tuner's text (brief T) and the microphone switch's (brief U): the same
+ * keys and placeholders in EN, PT and ES, in their own lazy files (not the
+ * entry's locale files, which carry only `tunerEntry` and the switch's own
+ * words, `micSwitchEntry`); every sentence that asks for the microphone says
+ * what it is for and that the sound never leaves the device, in the same
+ * sentence; the old controls' words are gone.
  */
 import { describe, expect, it } from 'vitest';
 import en from '../tuner/en.json';
 import pt from '../tuner/pt.json';
 import es from '../tuner/es.json';
-import aen from '../tuner/answer.en.json';
-import apt from '../tuner/answer.pt.json';
-import aes from '../tuner/answer.es.json';
+import aen from '../tuner/mic.en.json';
+import apt from '../tuner/mic.pt.json';
+import aes from '../tuner/mic.es.json';
 import localeEn from '../locales/en.json';
 import localePt from '../locales/pt.json';
 import localeEs from '../locales/es.json';
@@ -22,7 +24,7 @@ const placeholders = (s: string) => [...s.matchAll(/\{\{(\w+)\}\}|<\/?term>/g)].
 // PT and ES plurals: i18next uses _one / _other in all three.
 
 describe('tuner text', () => {
-  for (const [name, set] of [['tuner', { en, pt, es }], ['tuner.answer', { en: aen, pt: apt, es: aes }]] as const) {
+  for (const [name, set] of [['tuner', { en, pt, es }], ['tuner.mic', { en: aen, pt: apt, es: aes }]] as const) {
     it(`${name}: same keys and placeholders in EN, PT and ES, none empty`, () => {
       const base = flat(set.en as Tree);
       for (const lang of ['pt', 'es'] as const) {
@@ -47,10 +49,36 @@ describe('tuner text', () => {
     }
   });
 
-  it('the entry files carry only tunerEntry (menu item, dock button, load error)', () => {
+  it('the entry files carry only tunerEntry (menu item, dock button, load error) and micSwitchEntry (the switch\'s name, On, Off)', () => {
     for (const locale of [localeEn, localePt, localeEs] as Tree[]) {
       expect(Object.keys(locale.tunerEntry as Tree).sort()).toEqual(['dockButton', 'loadError', 'menuItem']);
+      expect(Object.keys(locale.micSwitchEntry as Tree).sort()).toEqual(['label', 'off', 'on']);
       expect(locale.tuner).toBeUndefined();
     }
+    expect([localeEn, localePt, localeEs].map((l) => (l as Tree).micSwitchEntry)).toEqual([
+      { label: 'Microphone', on: 'On', off: 'Off' },
+      { label: 'Microfone', on: 'Ligado', off: 'Desligado' },
+      { label: 'Micrófono', on: 'Activado', off: 'Desactivado' },
+    ]);
+  });
+
+  it('the three old controls and their words are gone (one switch now): no "Start / Stop listening", "Show what I play", "Use my instrument", "Listening" mark, "Try again"', () => {
+    const all = JSON.stringify([en, pt, es, aen, apt, aes, localeEn, localePt, localeEs]);
+    for (const dead of ['Start listening', 'Stop listening', 'Show what I play', 'Use my instrument', 'Usar o meu instrumento', 'Usar mi instrumento', 'Começar a ouvir', 'Parar de ouvir', 'Empezar a escuchar', 'Dejar de escuchar', 'Mostrar no instrumento', 'Mostrar en el instrumento', 'Allow the microphone']) {
+      expect(all.includes(dead), dead).toBe(false);
+    }
+    for (const set of [en, pt, es] as Tree[]) {
+      expect(Object.keys(set).filter((k) => ['start', 'stop', 'listening', 'tryAgain', 'showOnInstrument'].includes(k))).toEqual([]);
+    }
+  });
+
+  it('the line saying what the switch does in a check, and the three-minute line, word for word', () => {
+    expect([aen.here, apt.here, aes.here]).toEqual([
+      'With the microphone on, the notes you play are added to your answer.',
+      'Com o microfone ligado, as notas que tocas são acrescentadas à tua resposta.',
+      'Con el micrófono activado, las notas que tocas se añaden a tu respuesta.',
+    ]);
+    expect(aen.idle).toBe('The microphone turned itself off: no note was heard for three minutes.');
+    expect([aen.allow, apt.allow, aes.allow]).toEqual(['Turn on the microphone', 'Ligar o microfone', 'Activar el micrófono']);
   });
 });

@@ -1,16 +1,23 @@
 /**
- * The tuner (brief T) with a fake microphone: it says why before the browser
+ * The tuner (brief T; its microphone since brief U is the app's one switch,
+ * inline at its top) with a fake microphone: it says why before the browser
  * is asked; it names the note and how far off it is, in words and cents;
  * the guitar's strings follow the current tuning, picked by themselves or
  * chosen; "Hear" plays a string with no microphone at all; and refused, no
- * microphone, no support, closed while listening and hidden while listening
- * each leave no track running and a true sentence on screen.
+ * microphone, no support, closed while listening (over a view that cannot
+ * use a played note) and hidden while listening each leave no track running
+ * and a true sentence on screen. In Explore the notes played are reported
+ * (the one listener lights them); closing the tuner there keeps it on.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, renderHook, screen, within } from '@testing-library/react';
 import { installFakeMic, midiHz, tone, watchPrivacy, type FakeMic } from '../../../services/microphone/__tests__/fakeMic';
 import { subscribeExternalNotes, type ExternalNote } from '../../../services/externalNotes';
 import { stopListening } from '../../../services/microphone/microphone';
+import { micOff, useMic } from '../../../services/microphone/micSwitch';
+import '../../../services/microphone/micSession';
+import { useExternalNotes, loadExternalNotesListener } from '../../../services/externalNotesHost';
+import { releaseAllExternalNotes } from '../../../services/externalNotesListener';
 import { useAppStore } from '../../../state/store';
 
 const { played, still } = vi.hoisted(() => ({ played: [] as number[], still: { value: false } }));
@@ -32,11 +39,14 @@ beforeEach(() => {
   mic = installFakeMic();
   played.length = 0;
   still.value = false;
-  useAppStore.setState({ view: 'explore', language: 'en', instrument: 'guitar', guitarTuningId: 'standard' });
+  micOff();
+  useAppStore.setState({ view: 'explore', language: 'en', instrument: 'guitar', guitarTuningId: 'standard', activeNotes: new Set<number>() });
 });
 afterEach(() => {
   cleanup();
+  micOff();
   stopListening();
+  releaseAllExternalNotes();
   mic.restore();
   vi.useRealTimers();
   Object.defineProperty(document, 'visibilityState', { configurable: true, value: 'visible' });
@@ -44,9 +54,14 @@ afterEach(() => {
 
 const live = () => mic.tracks.filter((t) => t.readyState === 'live').length;
 
+const toggle = () => screen.getByRole('button', { name: 'Microphone' });
+/** The switch at the tuner's top, the sentence's "Turn on the microphone"; until the browser has answered. */
 async function listen(sound?: ReturnType<typeof tone>) {
   if (sound) mic.setSound(sound);
-  fireEvent.click(screen.getByRole('button', { name: 'Start listening' }));
+  fireEvent.click(toggle());
+  await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Turn on the microphone' })).toBeTruthy());
+  fireEvent.click(screen.getByRole('button', { name: 'Turn on the microphone' }));
+  await vi.waitFor(() => expect(useMic.getState().state.kind).toMatch(/^(on|problem)$/));
   await act(async () => {
     await vi.advanceTimersByTimeAsync(0);
   });
@@ -58,19 +73,31 @@ async function wait(ms: number) {
 }
 
 describe('TunerSheet: before and while listening', () => {
-  it('says why, in one sentence with the privacy promise, before the browser is asked', () => {
+  it('says why, in one sentence with the privacy promise; the switch, off, at its top; opening it asks the browser nothing', async () => {
     render(<TunerSheet open onClose={() => undefined} />);
+    await wait(50);
     expect(screen.getByRole('dialog', { name: 'Tuner' })).toBeTruthy();
     expect(screen.getByText('To tell you which note you play and whether it is in tune, Fermata listens through the microphone; the sound never leaves this device.')).toBeTruthy();
+    expect(toggle().getAttribute('aria-pressed')).toBe('false');
+    expect(toggle().getAttribute('data-place')).toBe('tuner');
     expect(mic.getUserMedia).not.toHaveBeenCalled();
-    expect(screen.queryByTestId('listening-mark')).toBeNull();
+    expect(navigator.permissions.query).not.toHaveBeenCalled();
+    // The tap: the same sentence, now with the two buttons; still nothing opened.
+    fireEvent.click(toggle());
+    await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Not now' })).toBeTruthy());
+    expect(screen.getByText('To tell you which note you play and whether it is in tune, Fermata listens through the microphone; the sound never leaves this device.')).toBeTruthy();
+    expect(mic.getUserMedia).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Not now' }));
+    expect(toggle().getAttribute('data-state')).toBe('off');
+    expect(screen.queryByRole('button', { name: 'Not now' })).toBeNull();
   });
 
-  it('the low E string a little flat: "flat", "tighten", string 6, and the listening mark', async () => {
+  it('the low E string a little flat: "flat", "tighten", string 6, and the switch on', async () => {
     render(<TunerSheet open onClose={() => undefined} />);
     await listen(tone(midiHz(40, -14)));
     expect(mic.getUserMedia).toHaveBeenCalledTimes(1);
-    expect(screen.getByTestId('listening-mark').textContent).toBe('Listening');
+    expect(toggle().getAttribute('aria-pressed')).toBe('true');
+    expect(toggle().textContent).toBe('Microphone On');
     await wait(600);
     const reading = screen.getByTestId('tuner-reading');
     expect(reading.getAttribute('data-state')).toBe('flat');
@@ -257,7 +284,8 @@ describe('TunerSheet: when the microphone cannot be used, nothing is left runnin
     expect(message).toContain('You can still tune by ear: “Hear” plays each string.');
     expect(live()).toBe(0);
     expect(mic.contexts.every((c) => c.state === 'closed')).toBe(true);
-    expect(screen.getByRole('button', { name: 'Try again' })).toBeTruthy();
+    // Off; the switch is how to try again.
+    expect(toggle().getAttribute('aria-pressed')).toBe('false');
     fireEvent.click(screen.getByRole('button', { name: 'Hear string 5, A' }));
     expect(played).toEqual([45]);
   });
@@ -270,27 +298,38 @@ describe('TunerSheet: when the microphone cannot be used, nothing is left runnin
     expect(live()).toBe(0);
   });
 
-  it('no microphone support in the browser: says so, offers no Start, Hear still works', () => {
+  it('no microphone support in the browser: says so, offers no switch, Hear still works', () => {
     Object.defineProperty(navigator, 'mediaDevices', { configurable: true, value: undefined });
     render(<TunerSheet open onClose={() => undefined} />);
     expect(screen.getByTestId('tuner-message').textContent).toContain("This browser can't use a microphone here");
-    expect(screen.queryByRole('button', { name: 'Start listening' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Microphone' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Hear string 4, D' }));
     expect(played).toEqual([50]);
   });
 
-  it('the tuner closed while listening: every track stopped', async () => {
+  it.each(['learn', 'drill'] as const)('the tuner closed while listening in %s (nothing behind it can use a played note): off, every track stopped, every context closed', async (view) => {
+    useAppStore.setState({ view });
     const { rerender } = render(<TunerSheet open onClose={() => undefined} />);
     await listen(tone(midiHz(40)));
     expect(live()).toBe(1);
     rerender(<TunerSheet open={false} onClose={() => undefined} />);
     expect(live()).toBe(0);
-    expect(mic.contexts[0].state).toBe('closed');
+    expect(mic.contexts.every((c) => c.state === 'closed')).toBe(true);
+    expect(useMic.getState().state).toEqual({ kind: 'off' });
     rerender(<TunerSheet open onClose={() => undefined} />);
-    expect(screen.getByRole('button', { name: 'Start listening' })).toBeTruthy();
+    expect(toggle().getAttribute('aria-pressed')).toBe('false');
   });
 
-  it('the tuner unmounted while listening: every track stopped', async () => {
+  it('the tuner closed while listening in Explore: it stays on (the top bar\'s switch says so; Explore lights what is played)', async () => {
+    const { rerender } = render(<TunerSheet open onClose={() => undefined} />);
+    await listen(tone(midiHz(40)));
+    rerender(<TunerSheet open={false} onClose={() => undefined} />);
+    expect(live()).toBe(1);
+    expect(useMic.getState().state.kind).toBe('on');
+  });
+
+  it('the tuner unmounted while listening in Learn: every track stopped', async () => {
+    useAppStore.setState({ view: 'learn' });
     const { unmount } = render(<TunerSheet open onClose={() => undefined} />);
     await listen(tone(midiHz(40)));
     unmount();
@@ -306,14 +345,17 @@ describe('TunerSheet: when the microphone cannot be used, nothing is left runnin
     });
     expect(live()).toBe(0);
     expect(screen.getByTestId('tuner-message').textContent).toBe('Listening stopped because Fermata was no longer on screen (for example, you switched to another app or tab).');
-    expect(screen.queryByTestId('listening-mark')).toBeNull();
-    expect(screen.getByRole('button', { name: 'Try again' })).toBeTruthy();
+    expect(toggle().getAttribute('aria-pressed')).toBe('false');
   });
 
-  it('closed while the browser is still asking: the stream is stopped when it arrives', async () => {
+  it('closed (in Learn) while the browser is still asking: the stream is stopped when it arrives', async () => {
+    useAppStore.setState({ view: 'learn' });
     const gate = mic.hold();
     const { rerender } = render(<TunerSheet open onClose={() => undefined} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Start listening' }));
+    fireEvent.click(toggle());
+    await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Turn on the microphone' })).toBeTruthy());
+    fireEvent.click(screen.getByRole('button', { name: 'Turn on the microphone' }));
+    await vi.waitFor(() => expect(mic.getUserMedia).toHaveBeenCalledTimes(1));
     expect(screen.getByText('Your browser is asking whether Fermata may use the microphone.')).toBeTruthy();
     rerender(<TunerSheet open={false} onClose={() => undefined} />);
     gate.release();
@@ -324,14 +366,14 @@ describe('TunerSheet: when the microphone cannot be used, nothing is left runnin
 });
 
 describe('TunerSheet: nothing heard is kept', () => {
-  it('a whole session (listen, strings heard, "Show what I play" on, closed): nothing stored, logged, recorded, sent or played back', async () => {
+  it('a whole session (listen, strings heard, notes reported, closed in Learn): nothing stored, logged, recorded, sent or played back', async () => {
+    useAppStore.setState({ view: 'learn' });
     const { rerender } = render(<TunerSheet open onClose={() => undefined} />);
     await wait(0);
     const watch = watchPrivacy();
     try {
       await listen(tone(midiHz(40, -14)));
       await wait(600);
-      fireEvent.click(screen.getByRole('button', { name: 'Show what I play on the instrument' }));
       mic.setSound(tone(midiHz(45, 3)));
       await wait(900);
       expect(screen.getByTestId('tuner-target').textContent).toBe('String 5 · A');
@@ -346,48 +388,38 @@ describe('TunerSheet: nothing heard is kept', () => {
   });
 });
 
-describe('TunerSheet: Explore lights what is played', () => {
-  it('"Show what I play on the instrument" reports each held note (source mic); off by default', async () => {
+describe('TunerSheet: what is played, through the one listener', () => {
+  beforeEach(async () => {
+    await loadExternalNotesListener();
+  });
+
+  it('in Explore, with the microphone on, each note held is reported (source mic) and lights the instrument behind the tuner — no second control', async () => {
+    renderHook(() => useExternalNotes(false));
     const heard: ExternalNote[] = [];
     const off = subscribeExternalNotes((n) => heard.push(n));
     render(<TunerSheet open onClose={() => undefined} />);
     await listen(tone(midiHz(55)));
     await wait(400);
-    expect(heard).toEqual([]);
-    const show = screen.getByRole('button', { name: 'Show what I play on the instrument' });
-    expect(show.getAttribute('aria-pressed')).toBe('false');
-    fireEvent.click(show);
-    await wait(400);
     expect(heard).toEqual([{ midi: 55, on: true, source: 'mic' }]);
-    fireEvent.click(show);
+    expect([...useAppStore.getState().activeNotes]).toEqual([55]);
+    act(() => micOff());
     expect(heard).toEqual([{ midi: 55, on: true, source: 'mic' }, { midi: 55, on: false, source: 'mic' }]);
+    expect([...useAppStore.getState().activeNotes]).toEqual([]);
     off();
   });
 
-  it('turned on in Explore, then listening again outside Explore: nothing is reported', async () => {
+  it('outside Explore (the tuner a sheet over Learn): the notes are reported, the one listener applies them nowhere', async () => {
+    useAppStore.setState({ view: 'learn' });
+    renderHook(() => useExternalNotes(false));
     const heard: ExternalNote[] = [];
     const off = subscribeExternalNotes((n) => heard.push(n));
     render(<TunerSheet open onClose={() => undefined} />);
-    await listen(tone(midiHz(55)));
-    fireEvent.click(screen.getByRole('button', { name: 'Show what I play on the instrument' }));
-    await wait(400);
-    fireEvent.click(screen.getByRole('button', { name: 'Stop listening' }));
-    const before = heard.length;
-    expect(before).toBe(2);
-    act(() => {
-      useAppStore.setState({ view: 'learn' });
-    });
     await listen(tone(midiHz(57)));
     await wait(600);
     expect(screen.getByTestId('tuner-reading').getAttribute('data-state')).not.toBe('none');
-    expect(heard.length).toBe(before);
-    off();
-  });
-
-  it('not offered outside Explore', async () => {
-    useAppStore.setState({ view: 'learn' });
-    render(<TunerSheet open onClose={() => undefined} />);
-    await listen(tone(midiHz(55)));
+    expect(heard.filter((n) => n.on)).toEqual([{ midi: 57, on: true, source: 'mic' }]);
+    expect([...useAppStore.getState().activeNotes]).toEqual([]);
     expect(screen.queryByRole('button', { name: 'Show what I play on the instrument' })).toBeNull();
+    off();
   });
 });

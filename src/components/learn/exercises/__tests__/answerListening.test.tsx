@@ -1,11 +1,14 @@
 /**
- * Wave 3 integration, seam 3: "Use my instrument" keeps ONE microphone
- * session for the whole check. It is opened by the learner's tap and never
- * reopened from an effect (a browser that starts audio only inside a tap,
- * iOS Safari, would leave a reopened one silent): the next questions, a
- * question answered on the screen between them included, use the same
- * stream and the same audio context. The listening mark stays on screen the
- * whole time. Every way the check ends leaves no track running.
+ * Wave 3 integration, seam 3 (since brief U through the one microphone
+ * switch): ONE microphone session for the whole check. It is opened by the
+ * learner's tap and never reopened from an effect (a browser that starts
+ * audio only inside a tap, iOS Safari, would leave a reopened one silent):
+ * the next questions, a question answered on the screen between them
+ * included, use the same stream and the same audio context. The switch,
+ * pressed, stays on screen the whole time. A check with a question answered
+ * on the instrument offers the switch while it is open; every way the check
+ * ends — finished, left, unmounted — turns the microphone off and leaves no
+ * track running.
  *
  * A real check (ExerciseRunner + InstrumentInput + the one external-notes
  * listener), with a fake microphone: only getUserMedia and Web Audio are fake.
@@ -14,11 +17,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, renderHook, screen } from '@testing-library/react';
 import { installFakeMic, midiHz, tone, type FakeMic } from '../../../../services/microphone/__tests__/fakeMic';
 import { stopListening } from '../../../../services/microphone/microphone';
-import '../../../../services/microphone/playedNotes';
+import '../../../../services/microphone/micSession';
 import { useExternalNotes, loadExternalNotesListener } from '../../../../services/externalNotesHost';
 import { releaseAllExternalNotes } from '../../../../services/externalNotesListener';
 import { _resetAppSoundForTesting } from '../../../../core/services/audio';
-import { stopAnswerListening, useAnswerListening } from '../../../tuner/answerSession';
+import { micOff, useMic } from '../../../../services/microphone/micSwitch';
 import { ExerciseRunner } from '../ExerciseRunner';
 import { useAppStore } from '../../../../state/store';
 import type { ExerciseDefinition } from '../../../../core/types/exercise';
@@ -44,13 +47,13 @@ beforeEach(async () => {
   vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'setTimeout', 'clearTimeout', 'performance'] });
   mic = installFakeMic();
   _resetAppSoundForTesting();
-  stopAnswerListening();
+  micOff();
   useAppStore.setState({ view: 'learn', language: 'en', activeNotes: new Set<number>(), highlightedNotes: [], exerciseInputActive: false });
   await loadExternalNotesListener();
 });
 afterEach(() => {
   cleanup();
-  stopAnswerListening();
+  micOff();
   stopListening();
   releaseAllExternalNotes();
   mic.restore();
@@ -71,6 +74,13 @@ async function playCEG() {
     await wait(250);
   }
 }
+const toggle = () => screen.getByRole('button', { name: 'Microphone' });
+async function turnOn() {
+  fireEvent.click(toggle());
+  await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Turn on the microphone' })).toBeTruthy());
+  fireEvent.click(screen.getByRole('button', { name: 'Turn on the microphone' }));
+  await vi.waitFor(() => expect(useMic.getState().state.kind).toBe('on'));
+}
 const chips = () => [...screen.getByTestId('check-answer-zone').querySelectorAll('span.rounded-md')].map((s) => s.textContent);
 
 function mount() {
@@ -86,9 +96,7 @@ function mount() {
 describe('one microphone session for the whole check', () => {
   it('turned on in question 1: question 2 (on the screen) shows it listening, question 3 uses the same stream; nothing reopened', async () => {
     const { unmount } = mount();
-    fireEvent.click(screen.getByRole('button', { name: 'Use my instrument' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Allow the microphone' }));
-    await vi.waitFor(() => expect(useAnswerListening.getState().state.kind).toBe('on'));
+    await turnOn();
     await wait(0);
     expect(mic.getUserMedia).toHaveBeenCalledTimes(1);
     await playCEG();
@@ -99,8 +107,8 @@ describe('one microphone session for the whole check', () => {
 
     // Question 2, answered on the screen: still listening, and it says so.
     expect(screen.getByText('Which statement is true?')).toBeTruthy();
-    expect(screen.getByTestId('listening-mark').textContent).toBe('Listening');
-    expect(screen.getByRole('button', { name: 'Use my instrument' }).getAttribute('aria-pressed')).toBe('true');
+    expect(toggle().getAttribute('aria-pressed')).toBe('true');
+    expect(toggle().textContent).toBe('Microphone On');
     expect(live()).toBe(1);
     fireEvent.click(screen.getByText('Right answer'));
     fireEvent.click(screen.getByText('Submit'));
@@ -108,60 +116,59 @@ describe('one microphone session for the whole check', () => {
 
     // Question 3: on at once, through the session opened in question 1.
     await wait(0);
-    expect(screen.getByRole('button', { name: 'Use my instrument' }).getAttribute('aria-pressed')).toBe('true');
+    expect(toggle().getAttribute('aria-pressed')).toBe('true');
     expect(chips()).toEqual([]);
     await playCEG();
     expect(chips()).toEqual(['C', 'E', 'G']);
     expect(mic.getUserMedia).toHaveBeenCalledTimes(1);
-    expect(mic.contexts).toHaveLength(1);
+    // Two taps made two contexts (the first closed when the sentence showed); one is open, the one the session uses.
+    expect(mic.contexts).toHaveLength(2);
+    expect(mic.contexts.filter((c) => c.state !== 'closed')).toHaveLength(1);
     expect(live()).toBe(1);
 
-    // The check over (the result screen replaces the runner): no track.
+    // The check over: off the moment it finishes (before the result screen replaces the runner), no track.
+    expect(useMic.getState().check).toBe(true);
     fireEvent.click(screen.getByRole('button', { name: 'Check Answer' }));
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
-    unmount();
     expect(live()).toBe(0);
     expect(mic.contexts.every((c) => c.state === 'closed')).toBe(true);
-    expect(useAnswerListening.getState().state).toEqual({ kind: 'off' });
+    expect(useMic.getState().state).toEqual({ kind: 'off' });
+    unmount();
+    expect(useMic.getState().check).toBe(false);
+    expect(live()).toBe(0);
   });
 
   it('turned off on the screen-answered question: no track, and question 3 does not listen', async () => {
     mount();
-    fireEvent.click(screen.getByRole('button', { name: 'Use my instrument' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Allow the microphone' }));
-    await vi.waitFor(() => expect(useAnswerListening.getState().state.kind).toBe('on'));
+    await turnOn();
     await playCEG();
     fireEvent.click(screen.getByRole('button', { name: 'Check Answer' }));
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Use my instrument' }));
+    fireEvent.click(toggle());
     expect(live()).toBe(0);
-    expect(screen.queryByTestId('listening-mark')).toBeNull();
     // Off, a screen-answered question is exactly as before: no control at all.
-    expect(screen.queryByRole('button', { name: 'Use my instrument' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Microphone' })).toBeNull();
     fireEvent.click(screen.getByText('Right answer'));
     fireEvent.click(screen.getByText('Submit'));
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
     await wait(100);
-    expect(screen.getByRole('button', { name: 'Use my instrument' }).getAttribute('aria-pressed')).toBe('false');
+    expect(toggle().getAttribute('aria-pressed')).toBe('false');
     expect(mic.getUserMedia).toHaveBeenCalledTimes(1);
   });
 
   it('✕ Exit while listening: no track', async () => {
     const { onExit, unmount } = mount();
-    fireEvent.click(screen.getByRole('button', { name: 'Use my instrument' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Allow the microphone' }));
-    await vi.waitFor(() => expect(useAnswerListening.getState().state.kind).toBe('on'));
+    await turnOn();
     fireEvent.click(screen.getByRole('button', { name: 'Exit the check' }));
     expect(onExit).toHaveBeenCalled();
     unmount(); // ModuleView goes back to the lesson
     expect(live()).toBe(0);
+    expect(useMic.getState()).toEqual({ state: { kind: 'off' }, check: false });
   });
 
   it('the page hidden between questions: no track, a true sentence on the next instrument question', async () => {
     mount();
-    fireEvent.click(screen.getByRole('button', { name: 'Use my instrument' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Allow the microphone' }));
-    await vi.waitFor(() => expect(useAnswerListening.getState().state.kind).toBe('on'));
+    await turnOn();
     await playCEG();
     fireEvent.click(screen.getByRole('button', { name: 'Check Answer' }));
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
@@ -174,7 +181,8 @@ describe('one microphone session for the whole check', () => {
     fireEvent.click(screen.getByText('Right answer'));
     fireEvent.click(screen.getByText('Submit'));
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
-    expect(screen.getByTestId('use-my-instrument-problem').textContent).toMatch(/^Listening stopped because Fermata was no longer on screen/);
+    expect(screen.getByTestId('mic-problem').textContent).toMatch(/^Listening stopped because Fermata was no longer on screen/);
+    expect(toggle().getAttribute('aria-pressed')).toBe('false');
     expect(mic.getUserMedia).toHaveBeenCalledTimes(1);
   });
 });

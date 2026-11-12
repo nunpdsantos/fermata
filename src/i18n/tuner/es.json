@@ -1,12 +1,8 @@
 {
   "title": "Afinador",
   "close": "Cerrar el afinador",
-  "listening": "Escuchando",
   "why": "Para decirte qué nota tocas y si está afinada, Fermata escucha a través del micrófono; el sonido nunca sale de este dispositivo.",
-  "start": "Empezar a escuchar",
-  "stop": "Dejar de escuchar",
   "asking": "Tu navegador está preguntando si Fermata puede usar el micrófono.",
-  "tryAgain": "Volver a intentarlo",
   "problem": {
     "refused": "El micrófono está bloqueado para Fermata, así que el afinador no te oye.",
     "refusedHow": "Para permitirlo, abre los ajustes de este sitio (junto a la dirección, o en los ajustes del móvil para este navegador), permite el micrófono y vuelve a intentarlo.",
@@ -47,6 +43,5 @@
   "hear": "Escuchar",
   "hearLabel": "Escuchar la cuerda {{n}}, {{note}}",
   "target": "Cuerda {{n}} · {{note}}",
-  "playing": "Suena la cuerda {{n}} ({{note}}). Escucha y luego toca la tuya hasta que suenen igual.",
-  "showOnInstrument": "Mostrar en el instrumento lo que toco"
+  "playing": "Suena la cuerda {{n}} ({{note}}). Escucha y luego toca la tuya hasta que suenen igual."
 }

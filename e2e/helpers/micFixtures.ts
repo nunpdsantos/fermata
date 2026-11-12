@@ -10,7 +10,7 @@
  * Each note is a plucked-string-like tone (harmonics 1–8, a weaker
  * fundamental, a slow decay), A4 = 440 Hz.
  */
-import { chromium, type Browser, type BrowserContext, type BrowserContextOptions } from '@playwright/test';
+import { chromium, expect, type Browser, type BrowserContext, type BrowserContextOptions, type Locator, type Page } from '@playwright/test';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { welcomeSeenState } from './welcome';
 import { tmpdir } from 'node:os';
@@ -117,3 +117,26 @@ export const RECORD_STREAMS = () => {
     return stream;
   };
 };
+
+/**
+ * The microphone switch (brief U): tap it (in `scope`, or the first one on
+ * the page); if the app first says why ("Turn on the microphone" / "Not
+ * now": the browser has not allowed it yet), tap "Turn on the microphone".
+ * `tapMicOn` stops there (the browser may refuse); `turnOnMic` waits until
+ * the switch is on. `allowWord` names that button in the learner's language.
+ */
+export async function tapMicOn(scope: Page | Locator, allowWord = 'Turn on the microphone') {
+  const sw = scope.locator('[data-testid="mic-switch"]').first();
+  await expect(sw).toHaveAttribute('aria-pressed', 'false');
+  await sw.click();
+  // The sentence and its buttons are where the switch is (the top bar's are in a note beside it).
+  const allow = ('page' in scope ? scope : scope.locator('[data-testid="mic-bar-note"]')).getByRole('button', { name: allowWord });
+  await expect.poll(async () => /^(on|problem)$/.test((await sw.getAttribute('data-state')) ?? '') || (await allow.count()) > 0, { timeout: 10_000 }).toBe(true);
+  if (await allow.count()) await allow.first().click();
+  return sw;
+}
+export async function turnOnMic(scope: Page | Locator, allowWord = 'Turn on the microphone') {
+  const sw = await tapMicOn(scope, allowWord);
+  await expect(sw).toHaveAttribute('aria-pressed', 'true', { timeout: 10_000 });
+  return sw;
+}

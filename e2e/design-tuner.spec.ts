@@ -5,12 +5,13 @@ import { smallScreenAssertions, dialogButtonsFit } from './helpers/smallScreenAs
 import { launchWithFakeMic, micContext, micFixture, RECORD_STREAMS } from './helpers/micFixtures';
 
 /**
- * Wave 3, brief T: the tuner and "Use my instrument" under the design
- * system's rules (type ≥ 12 px, targets ≥ 44 px on touch / 36 px with a
- * mouse, contrast on what is painted, nothing cut off, no sideways scroll):
- * the tuner off (before asking), asking, listening (a flat low E), in tune,
- * refused; the guitar's string row in standard tuning and in Drop D; "Use
- * my instrument" in a check, before asking and listening. Phone 390×844,
+ * Wave 3, brief T: the tuner and (since brief U) the microphone switch in a
+ * check under the design system's rules (type ≥ 12 px, targets ≥ 44 px on
+ * touch / 36 px with a mouse, contrast on what is painted, nothing cut off,
+ * no sideways scroll): the tuner off, the sentence before asking, asking,
+ * listening (a flat low E), in tune, refused; the guitar's string row in
+ * standard tuning and in Drop D; the switch in a check, before asking and
+ * listening. (The switch itself, everywhere it is: design-mic-switch.spec.ts.) Phone 390×844,
  * phone sideways 844×390, tablet 768×1024 (touch) and laptop 1440×900, day
  * and night; PT and ES at 320 and 360 px (and 390 / 1440 for PT's shots).
  * The microphone is Chromium's fake device playing a WAV (micFixtures.ts).
@@ -38,9 +39,9 @@ const SHOT_SIZES = new Set(['390x844', '844x390', '1440x900']);
 let base = '';
 
 const WORDS = {
-  en: { more: 'More', tuner: 'Tuner', tune: 'Tune', start: 'Start listening', stop: 'Stop listening', close: 'Close the tuner', use: 'Use my instrument', allow: 'Allow the microphone', checkStart: 'Start the check', submit: 'Submit', next: /^(Continue|Next)$/, check: 'Check Answer' },
-  pt: { more: 'Mais', tuner: 'Afinador', tune: 'Afinar', start: 'Começar a ouvir', stop: 'Parar de ouvir', close: 'Fechar o afinador', use: 'Usar o meu instrumento', allow: 'Permitir o microfone', checkStart: 'Começar a verificação', submit: 'Enviar', next: /^(Continuar|Seguinte)$/, check: 'Verificar resposta' },
-  es: { more: 'Más', tuner: 'Afinador', tune: 'Afinar', start: 'Empezar a escuchar', stop: 'Dejar de escuchar', close: 'Cerrar el afinador', use: 'Usar mi instrumento', allow: 'Permitir el micrófono', checkStart: 'Empezar la comprobación', submit: 'Enviar', next: /^(Continuar|Siguiente)$/, check: 'Comprobar respuesta' },
+  en: { more: 'More', tuner: 'Tuner', tune: 'Tune', mic: 'Microphone', close: 'Close the tuner', allow: 'Turn on the microphone', checkStart: 'Start the check', submit: 'Submit', next: /^(Continue|Next)$/, check: 'Check Answer' },
+  pt: { more: 'Mais', tuner: 'Afinador', tune: 'Afinar', mic: 'Microfone', close: 'Fechar o afinador', allow: 'Ligar o microfone', checkStart: 'Começar a verificação', submit: 'Enviar', next: /^(Continuar|Seguinte)$/, check: 'Verificar resposta' },
+  es: { more: 'Más', tuner: 'Afinador', tune: 'Afinar', mic: 'Micrófono', close: 'Cerrar el afinador', allow: 'Activar el micrófono', checkStart: 'Empezar la comprobación', submit: 'Enviar', next: /^(Continuar|Siguiente)$/, check: 'Comprobar respuesta' },
 } as const;
 
 async function open(browser: Browser, v: Viewport, theme: string, state: Record<string, unknown>, lang: Lang = 'en', init?: () => void, path = '/') {
@@ -144,18 +145,22 @@ async function tunerScreens(browser: Browser, v: Viewport, theme: string, combo:
     const sheet = await openTuner(page, lang, 'dock');
     await expect(sheet.getByTestId('tuner-strings')).toHaveAttribute('data-tuning', 'standard');
     await check(page, v, combo, 'tuner-off');
-    await sheet.getByRole('button', { name: w.start }).click();
+    await sheet.getByRole('button', { name: w.mic }).click();
+    await expect(sheet.getByRole('button', { name: w.allow })).toBeVisible();
+    await check(page, v, combo, 'tuner-explain');
+    await sheet.getByRole('button', { name: w.allow }).click();
     await expect(sheet.getByTestId('tuner-reading')).toHaveAttribute('data-state', 'flat', { timeout: 10_000 });
     await check(page, v, combo, 'tuner-listening-flat');
-    await sheet.getByRole('button', { name: w.stop }).click();
-    await expect(sheet.getByTestId('tuner')).toHaveAttribute('data-phase', 'idle');
+    await sheet.getByRole('button', { name: w.mic }).click();
+    await expect(sheet.getByTestId('tuner')).toHaveAttribute('data-phase', 'off');
     await context.close();
   }
   // Asking (the browser's question still open), from the menu.
   {
     const { context, page } = await open(browser, v, theme, { instrument: 'guitar', lastView: 'explore' }, lang, ASKING);
     const sheet = await openTuner(page, lang, 'menu');
-    await sheet.getByRole('button', { name: w.start }).click();
+    await sheet.getByRole('button', { name: w.mic }).click();
+    await sheet.getByRole('button', { name: w.allow }).click();
     await expect(sheet.getByTestId('tuner')).toHaveAttribute('data-phase', 'asking');
     await check(page, v, combo, 'tuner-asking');
     await context.close();
@@ -165,7 +170,8 @@ async function tunerScreens(browser: Browser, v: Viewport, theme: string, combo:
     const { context, page } = await open(browser, v, theme, { instrument: 'guitar', lastView: 'explore', guitarTuningId: 'drop-d' }, lang, REFUSED);
     const sheet = await openTuner(page, lang, 'dock');
     await expect(sheet.getByTestId('tuner-strings')).toHaveAttribute('data-tuning', 'drop-d');
-    await sheet.getByRole('button', { name: w.start }).click();
+    await sheet.getByRole('button', { name: w.mic }).click();
+    await sheet.getByRole('button', { name: w.allow }).click();
     await expect(sheet.getByTestId('tuner')).toHaveAttribute('data-phase', 'problem');
     await check(page, v, combo, 'tuner-refused-drop-d');
     await context.close();
@@ -188,7 +194,7 @@ async function answerChoice(page: Page, lang: Lang) {
   await page.waitForTimeout(300);
 }
 
-/** "Use my instrument" in a chord_build check: before asking, then listening. */
+/** The microphone switch in a chord_build check: before asking, then listening. */
 async function answerScreens(browser: Browser, v: Viewport, theme: string, combo: string, lang: Lang) {
   const w = WORDS[lang];
   // A share link opens the lesson (wave 1): "Your First Chords — Major Triads".
@@ -201,13 +207,14 @@ async function answerScreens(browser: Browser, v: Viewport, theme: string, combo
   const checkAnswer = page.getByRole('button', { name: w.check });
   for (let i = 0; i < 12 && !(await checkAnswer.count()); i++) await answerChoice(page, lang);
   await expect(checkAnswer).toBeVisible();
-  const toggle = page.getByRole('button', { name: w.use });
+  const zone = page.getByTestId('check-mic');
+  const toggle = zone.getByRole('button', { name: w.mic });
   await toggle.scrollIntoViewIfNeeded();
   await toggle.click();
-  await expect(page.getByTestId('use-my-instrument')).toHaveAttribute('data-state', 'explain');
+  await expect(zone.getByRole('button', { name: w.allow })).toBeVisible();
   await check(page, v, combo, 'answer-explain');
-  await page.getByRole('button', { name: w.allow }).click();
-  await expect(page.getByTestId('use-my-instrument')).toHaveAttribute('data-state', 'on', { timeout: 10_000 });
+  await zone.getByRole('button', { name: w.allow }).click();
+  await expect(toggle).toHaveAttribute('data-state', 'on', { timeout: 10_000 });
   await check(page, v, combo, 'answer-listening');
   await context.close();
 }
@@ -229,7 +236,7 @@ test.describe('the tuner and the answer control (a flat low E)', () => {
         test.setTimeout(180_000);
         await tunerScreens(browser, v, th.mode, combo, 'en');
       });
-      test(`${combo}: "Use my instrument" in a check`, async ({ baseURL }) => {
+      test(`${combo}: the microphone switch in a check`, async ({ baseURL }) => {
         base = baseURL!;
         test.setTimeout(180_000);
         await answerScreens(browser, v, th.mode, combo, 'en');
@@ -327,7 +334,8 @@ test.describe('the tuner in tune', () => {
         test.setTimeout(120_000);
         const { context, page } = await open(browser, v, th.mode, { instrument: 'guitar', lastView: 'explore' });
         const sheet = await openTuner(page, 'en', 'dock');
-        await sheet.getByRole('button', { name: WORDS.en.start }).click();
+        await sheet.getByRole('button', { name: WORDS.en.mic }).click();
+        await sheet.getByRole('button', { name: WORDS.en.allow }).click();
         await expect(sheet.getByTestId('tuner-reading')).toHaveAttribute('data-state', 'inTune', { timeout: 10_000 });
         await check(page, v, combo, 'tuner-in-tune');
         await context.close();

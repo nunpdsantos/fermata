@@ -1,0 +1,20 @@
+{
+  "why": "Para oír las notas que tocas, Fermata escucha a través del micrófono; el sonido nunca sale de este dispositivo.",
+  "allow": "Activar el micrófono",
+  "notNow": "Ahora no",
+  "asking": "Tu navegador está preguntando si Fermata puede usar el micrófono.",
+  "here": "Con el micrófono activado, las notas que tocas se añaden a tu respuesta.",
+  "on": "Toca las notas de una en una y deja sonar cada una.",
+  "heard": "Nota oída: {{note}}",
+  "idle": "El micrófono se ha desactivado solo: no se ha oído ninguna nota en tres minutos.",
+  "onScreen": "Puedes seguir respondiendo en la pantalla.",
+  "problem": {
+    "refused": "El micrófono está bloqueado para Fermata. Para permitirlo, abre los ajustes de este sitio (junto a la dirección, o en los ajustes del móvil para este navegador).",
+    "missing": "No se ha encontrado ningún micrófono en este dispositivo.",
+    "unsupported": "Este navegador no puede usar un micrófono aquí.",
+    "busy": "No se ha podido activar el micrófono: puede que otra aplicación lo esté usando.",
+    "failed": "No se ha podido activar el micrófono.",
+    "hidden": "Fermata ha dejado de escuchar porque ya no estaba en pantalla (por ejemplo, has cambiado a otra aplicación o pestaña).",
+    "ended": "El micrófono se ha desconectado, así que Fermata ha dejado de escuchar."
+  }
+}

@@ -1392,6 +1392,11 @@
     "dockButton": "Afinar",
     "loadError": "O afinador não carregou. Tenta de novo."
   },
+  "micSwitchEntry": {
+    "label": "Microfone",
+    "on": "Ligado",
+    "off": "Desligado"
+  },
   "metronomeToolEntry": {
     "menuItem": "Metrónomo",
     "loadFailed": "O metrónomo não carregou. Verifica a ligação e tenta de novo."
