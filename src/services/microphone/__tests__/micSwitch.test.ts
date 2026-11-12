@@ -136,6 +136,8 @@ describe('off until the learner taps it', () => {
     await vi.waitFor(() => expect(mic.getUserMedia).toHaveBeenCalledTimes(1));
     tapMic();
     expect(state()).toEqual({ kind: 'off' });
+    // At once, before the browser has answered (it may never): the context is closed.
+    expect(nothingRunning()).toEqual({ live: 0, contexts: 0 });
     gate.release();
     await wait(0);
     await wait(0);
