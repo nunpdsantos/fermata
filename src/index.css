@@ -752,10 +752,11 @@ body {
       font-size: var(--text-caption);
     }
   }
-  /* Below 360 px the microphone switch and "⋯" leave PT's and ES's longer
-     tab words too little room (brief U, measured: 178 px for tabs of 187 /
-     196 px): the decorative mark goes (the name stays for screen readers)
-     and the bar's columns close up, in every view alike. English fits. */
+  /* Below 360 px the microphone switch (or, where it is not offered, its
+     empty slot) and "⋯" leave PT's and ES's longer tab words too little room
+     (brief U, measured: 178 px for tabs of 187 / 196 px): the decorative
+     mark goes (the name stays for screen readers) and the bar's columns
+     close up, in every view alike. English fits. */
   @media (max-width: 359px) {
     :root:not(:lang(en)) .app-topbar { column-gap: 4px; }
     :root:not(:lang(en)) .app-mark { display: none; }
@@ -2915,6 +2916,10 @@ html[data-metro-room] .learn-scroll {
   .mic-switch[data-place="bar"] .mic-switch-text { display: none; }
   .mic-switch[data-place="bar"] .mic-switch-dot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; }
 }
+/* The switch's place in the top bar where it is not offered (brief U2,
+   TopBar.tsx: below 360 px and from 640 to 1023 px, so the tabs never move
+   between views): empty, inert, aria-hidden, exactly the square's width. */
+.mic-slot { flex: none; width: var(--tap); }
 /* What the top bar's switch has to say: an overlay just under the bar, at its
    right edge (the page does not move). */
 .mic-bar-note {

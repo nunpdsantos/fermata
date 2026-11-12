@@ -32,6 +32,7 @@ export function MicSwitch({ place, note }: {
   const on = state.kind === 'on';
   // The note's chunk loads with the tap; it shows only when it has something to say.
   const noted = note && !on && state.kind !== 'off';
+  const word = t(on ? 'micSwitchEntry.on' : 'micSwitchEntry.off');
   return (
     <>
       <button
@@ -39,6 +40,8 @@ export function MicSwitch({ place, note }: {
         className="chip mic-switch"
         aria-pressed={on}
         aria-label={t('micSwitchEntry.label')}
+        // The bar's switch shows no words below 1200 px: a mouse reads its name and state here (brief U2).
+        title={place === 'bar' ? `${t('micSwitchEntry.label')}: ${word}` : undefined}
         onClick={tapMic}
         data-testid="mic-switch"
         data-place={place}
@@ -47,7 +50,7 @@ export function MicSwitch({ place, note }: {
         {/* The microphone, slashed while off (drawn in index.css: .mic-switch-icon). */}
         <span className="mic-switch-icon" aria-hidden="true" />
         <span className="mic-switch-text">
-          {t('micSwitchEntry.label')} <b>{t(on ? 'micSwitchEntry.on' : 'micSwitchEntry.off')}</b>
+          {t('micSwitchEntry.label')} <b>{word}</b>
         </span>
         {on && <span className="mic-switch-dot" aria-hidden="true" />}
       </button>

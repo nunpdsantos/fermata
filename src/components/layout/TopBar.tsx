@@ -13,6 +13,7 @@ import { TunerHost } from '../tuner/TunerHost.tsx';
 import { openTuner, useTunerRequest } from '../tuner/tunerRequest.ts';
 import { MicSwitch } from '../tuner/MicSwitch.tsx';
 import { micOff, useMic } from '../../services/microphone/micSwitch.ts';
+import { microphoneSupported } from '../../services/microphone/support.ts';
 
 // Settings is a lazy chunk (wave 2 integration, for the entry file's budget):
 // fetched the first time it is opened, then kept mounted (its close animation
@@ -137,13 +138,24 @@ export function TopBar() {
   const offerMic = !tourPlaying && (view === 'explore' || checkOpen);
   // Its sentences show under the bar only where no other switch carries them (inline in a check, at the tuner's top).
   const tunerOpen = useTunerRequest((s) => s.open);
-  // Below 360 px the three tabs need the room: search moves into the menu.
-  // In Portuguese and Spanish, whose tab words are longer, below 405 px: the
-  // microphone switch (brief U) takes its room (measured on this Mac: they
-  // keep 4 px inside their pill beside search from 390 / 393 px; Linux's
-  // text is a few pixels wider). In every view alike.
-  const long = useAppStore((s) => s.language !== 'en');
-  const narrow = useMediaQuery(long ? '(max-width: 404px)' : '(max-width: 359px)');
+  // The tabs never move between views (brief U2). The switch is offered only
+  // where a played note can be used, so the bar keeps its place by width:
+  // - below 360 px the three tabs need the room: search lives in "⋯" (as on
+  //   main), and where the switch is not offered an empty slot of its width
+  //   stands in its place;
+  // - 360–639 px: where the switch is offered it takes the magnifier's place
+  //   and Search is the first item of "⋯"; elsewhere the bar is main's;
+  // - 640–1023 px: the slot again (the right column is full there, so the
+  //   square moves the centred tabs: now it does so in every view alike);
+  // - from 1024 px the right column has room: no slot (measured, nothing moves).
+  // Where no microphone can work there is no switch, no slot and no swap.
+  const [micWorks] = useState(microphoneSupported);
+  const micShown = micWorks && offerMic;
+  const tiny = useMediaQuery('(max-width: 359px)');
+  const phone = useMediaQuery('(max-width: 639px)');
+  const tablet = useMediaQuery('(min-width: 640px) and (max-width: 1023px)');
+  const narrow = tiny || (micShown && phone);
+  const micSlot = micWorks && !offerMic && (tiny || tablet);
   const updateReady = usePwaUpdateStore((s) => s.needRefresh);
   // Put off with "Later": a dot on "⋯" says an update is waiting in there.
   const updateDeferred = usePwaUpdateStore((s) => s.needRefresh && s.updateDeferred);
@@ -182,7 +194,9 @@ export function TopBar() {
       />
 
       <div className="flex items-center gap-1 justify-end">
-        {offerMic && <MicSwitch place="bar" note={!checkOpen && !tunerOpen} />}
+        {micShown && <MicSwitch place="bar" note={!checkOpen && !tunerOpen} />}
+        {/* The switch's place, kept where it is not offered: empty, inert, unseen by screen readers. */}
+        {micSlot && <span className="mic-slot" aria-hidden="true" data-testid="mic-slot" />}
         {/* One search button: icon only (a --tap square) on phones. */}
         {!narrow && (
           <Button
