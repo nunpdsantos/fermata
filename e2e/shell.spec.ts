@@ -1,3 +1,4 @@
+import * as fs from 'node:fs';
 import { test, expect, type Page } from '@playwright/test';
 
 /**
@@ -17,6 +18,8 @@ const seed = (page: Page, state: Record<string, unknown>) =>
   }, JSON.stringify({ state: { language: 'en', themeMode: 'fermata', ...state }, version: 6 }));
 
 const more = (page: Page) => page.getByRole('button', { name: 'More', exact: true });
+// "Report a problem" (2026-11-12), the row after the metronome where it is offered: its words from the locale file.
+const REPORT = (lang: 'en' | 'pt' | 'es') => (JSON.parse(fs.readFileSync(`src/i18n/locales/${lang}.json`, 'utf8')) as { report: { menuItem: string } }).report.menuItem;
 
 test.describe('"⋯" menu and Settings sheet', () => {
   test.beforeEach(async ({ page }) => {
@@ -31,8 +34,8 @@ test.describe('"⋯" menu and Settings sheet', () => {
     const menu = page.getByRole('menu', { name: 'More' });
     await expect(menu).toBeVisible();
     // Wave 3: the whole menu, exactly, in this order (Search only below
-    // 360 px, Update only while one waits).
-    await expect(page.getByRole('menuitem')).toHaveText(['Settings', 'Show me around', 'Tuner', 'Metronome']);
+    // 360 px, Update only while one waits); since 2026-11-12 "Report a problem" last.
+    await expect(page.getByRole('menuitem')).toHaveText(['Settings', 'Show me around', 'Tuner', 'Metronome', REPORT('en')]);
     await expect(page.getByRole('menuitem', { name: 'Settings' })).toBeFocused();
     await page.keyboard.press('ArrowDown'); // the next items, then wraps
     await expect(page.getByRole('menuitem', { name: 'Show me around' })).toBeFocused();
@@ -40,6 +43,8 @@ test.describe('"⋯" menu and Settings sheet', () => {
     await expect(page.getByRole('menuitem', { name: 'Tuner' })).toBeFocused();
     await page.keyboard.press('ArrowDown');
     await expect(page.getByRole('menuitem', { name: 'Metronome' })).toBeFocused();
+    await page.keyboard.press('ArrowDown'); // 2026-11-12: Report a problem
+    await expect(page.getByRole('menuitem', { name: REPORT('en'), exact: true })).toBeFocused();
     await page.keyboard.press('ArrowDown');
     await expect(page.getByRole('menuitem', { name: 'Settings' })).toBeFocused();
     await page.keyboard.press('Escape');

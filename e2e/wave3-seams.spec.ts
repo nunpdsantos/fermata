@@ -491,7 +491,7 @@ test.describe('5. the metronome', () => {
 });
 
 // ─── 6. One menu ───────────────────────────────────────────────────────────
-test('6. one menu: Settings, Show me around, Tuner, Metronome; in Drill no Metronome; during the tour neither', async ({ browser, baseURL }) => {
+test('6. one menu: Settings, Show me around, Tuner, Metronome (+ Report a problem since 2026-11-12); in Drill no Metronome; during the tour neither (nor Report a problem)', async ({ browser, baseURL }) => {
   test.setTimeout(60_000);
   const { context, page } = await openApp(browser, baseURL!, LAPTOP, { lastView: 'explore' });
   const items = async () => {
@@ -500,10 +500,10 @@ test('6. one menu: Settings, Show me around, Tuner, Metronome; in Drill no Metro
     await page.keyboard.press('Escape');
     return list;
   };
-  expect(await items()).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome']);
+  expect(await items()).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome', REPORT('en')]);
   await page.getByRole('tab', { name: 'Drill' }).click();
   await expect(page.locator('#drill-panel')).toBeVisible({ timeout: 15_000 });
-  expect(await items()).toEqual(['Settings', 'Show me around', 'Tuner']);
+  expect(await items()).toEqual(['Settings', 'Show me around', 'Tuner', REPORT('en')]);
   await page.getByRole('tab', { name: 'Explore' }).click();
   await page.getByRole('button', { name: /^More/ }).click();
   await page.getByRole('menuitem', { name: 'Show me around' }).click();
@@ -511,7 +511,7 @@ test('6. one menu: Settings, Show me around, Tuner, Metronome; in Drill no Metro
   expect(await items()).toEqual(['Settings', 'Show me around']);
   await page.getByTestId('tour-close').click();
   await expect(page.getByTestId('tour')).toHaveCount(0);
-  expect(await items()).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome']);
+  expect(await items()).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome', REPORT('en')]);
   await context.close();
 });
 
@@ -652,8 +652,10 @@ const allStorage = (page: Page) => page.evaluate(() => Object.fromEntries(Object
 interface OwnerView {
   learn: string[]; level1: string[]; explore: string[]; dockBar: string[]; dockBarButtons: Rect[]; menu: string[]; settings: string[]; drill: string[];
 }
-/** Wave 3's additions for him, by what they say (PT). */
-const ADDED_MENU = ['Afinador', 'Metrónomo'];
+// "Report a problem" (2026-11-12), the row after the metronome where it is offered: its words from the locale file.
+const REPORT = (lang: 'en' | 'pt' | 'es') => (JSON.parse(fs.readFileSync(`src/i18n/locales/${lang}.json`, 'utf8')) as { report: { menuItem: string } }).report.menuItem;
+/** Wave 3's additions for him, by what they say (PT); since 2026-11-12 also "Report a problem" (its PT words). */
+const ADDED_MENU = ['Afinador', 'Metrónomo', REPORT('pt')];
 const TUNE = 'Afinar';
 const MIDI_ROW = '[data-testid="midi-setting"]';
 
@@ -742,7 +744,7 @@ for (const v of [PHONE, LAPTOP]) {
     expect(seen.level1).toEqual(base.level1);
     expect(seen.explore).toEqual(base.explore);
     expect(seen.drill).toEqual(base.drill);
-    // Explore's "⋯": the same items, then Afinador and Metrónomo — on his phone (390 px) with "Pesquisar" first:
+    // Explore's "⋯": the same items, then Afinador, Metrónomo and (2026-11-12) Comunicar um problema — on his phone (390 px) with "Pesquisar" first:
     // from 360 to 639 px the switch takes the magnifier's place in Explore's bar (brief U2); Learn's below.
     const phone = v.viewport.width < 640;
     expect(seen.menu).toEqual([...(phone ? ['Pesquisar'] : []), ...base.menu, ...ADDED_MENU]);

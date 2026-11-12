@@ -1,5 +1,9 @@
 import { test, expect, type Browser, type Page } from '@playwright/test';
+import * as fs from 'node:fs';
 import { seededBrowser, savedState, LAPTOP, PHONE, type View } from './helpers/wave1';
+
+// "Report a problem" (2026-11-12), the row after the metronome where it is offered: its words from the locale file.
+const REPORT = (lang: 'en' | 'pt' | 'es') => (JSON.parse(fs.readFileSync(`src/i18n/locales/${lang}.json`, 'utf8')) as { report: { menuItem: string } }).report.menuItem;
 
 /**
  * The metronome (wave 3, stream M) in a real browser: open it from "⋯",
@@ -256,8 +260,8 @@ test('not in Drill, not while the tour plays', async ({ browser }) => {
   await page.getByRole('button', { name: 'More', exact: true }).click();
   await expect(page.getByRole('menuitem', { name: 'Show me around' })).toBeVisible();
   await expect(page.getByRole('menuitem', { name: 'Metronome' })).toHaveCount(0);
-  // Wave 3 integration: the Drill menu, exactly (the tuner stays: it is a sheet, not tied to a view).
-  await expect(page.getByRole('menuitem')).toHaveText(['Settings', 'Show me around', 'Tuner']);
+  // Wave 3 integration: the Drill menu, exactly (the tuner stays: it is a sheet, not tied to a view); since 2026-11-12 "Report a problem" last.
+  await expect(page.getByRole('menuitem')).toHaveText(['Settings', 'Show me around', 'Tuner', REPORT('en')]);
   await page.keyboard.press('Escape');
   await page.getByRole('tab', { name: 'Explore' }).click();
   await expect(bar(page)).toBeVisible();
@@ -324,7 +328,7 @@ test('the owner: nothing new on any screen but the menu item, and his save untou
     await expect(page.getByTestId('metronome')).toHaveCount(0);
   }
   await page.getByRole('button', { name: 'More', exact: true }).click();
-  await expect(page.getByRole('menuitem')).toHaveText(['Settings', 'Show me around', 'Tuner', 'Metronome']);
+  await expect(page.getByRole('menuitem')).toHaveText(['Settings', 'Show me around', 'Tuner', 'Metronome', REPORT('en')]);
   await page.keyboard.press('Escape');
   // Opening it, starting and stopping it writes nothing; only a change of tempo or bar does.
   await openMetronome(page);
