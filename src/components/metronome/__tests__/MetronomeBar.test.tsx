@@ -25,6 +25,8 @@ import { join } from 'node:path';
 
 // From disk: i18next merges lazily added namespaces into the imported locale objects.
 const locale = (lang: string) => JSON.parse(readFileSync(join(__dirname, '../../../i18n/locales', `${lang}.json`), 'utf8')) as Record<string, object>;
+// "Report a problem" (2026-11-12): the row after the metronome (where offered), read from the locale file.
+const REPORT = (locale('en').report as { menuItem: string }).menuItem;
 
 beforeEach(() => {
   installMockAudioContext(1);
@@ -61,8 +63,8 @@ describe('the "⋯" menu', () => {
   it('lists Settings, Show me around, Tuner, then Metronome — and nothing else for a learner who has never opened it', () => {
     render(<TopBar />);
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
-    // Wave 3 integration: the tuner (stream T) sits between Show me around and Metronome.
-    expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome']);
+    // Wave 3 integration: the tuner (stream T) sits between Show me around and Metronome; since 2026-11-12 "Report a problem" follows.
+    expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome', REPORT]);
     // The bar is not there until it is chosen.
     expect(screen.queryByRole('region', { name: 'Metronome' })).toBeNull();
     expect(document.querySelector('[data-testid="metronome"]')).toBeNull();
@@ -365,16 +367,16 @@ describe('where the bar is never shown, the menu does not offer it', () => {
   it('in Drill: Settings, Show me around and Tuner only; back in Explore, Metronome again', () => {
     useAppStore.setState({ view: 'drill' });
     render(<TopBar />);
-    expect(items()).toEqual(['Settings', 'Show me around', 'Tuner']);
+    expect(items()).toEqual(['Settings', 'Show me around', 'Tuner', REPORT]);
     act(() => useAppStore.setState({ view: 'explore' }));
-    expect(items()).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome']);
+    expect(items()).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome', REPORT]);
   });
   it('while the tour plays (neither the tuner nor the metronome)', () => {
     render(<TopBar />);
     act(() => requestDemo('intro', 'menu'));
     expect(items()).toEqual(['Settings', 'Show me around']);
     act(() => clearDemoRequest());
-    expect(items()).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome']);
+    expect(items()).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome', REPORT]);
   });
 });
 

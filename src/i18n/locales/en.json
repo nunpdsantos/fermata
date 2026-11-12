@@ -259,7 +259,7 @@
     "lockedBy": "Complete Level {{n}}",
     "unit": "Unit {{n}}",
     "module": "Module {{n}}",
-    "reportMistake": "Found a mistake? Tell me",
+    "reportMistake": "Found a mistake? Tell me (Google form)",
     "learningObjectives": "Learning Objectives",
     "practiceTasks": "Practice Tasks",
     "tryThis": "Try This",
@@ -1400,5 +1400,9 @@
   "metronomeToolEntry": {
     "menuItem": "Metronome",
     "loadFailed": "The metronome did not load. Check the connection and try again."
+  },
+  "report": {
+    "menuItem": "Report a problem (Google form)",
+    "offline": "You’re offline. The report form needs a connection."
   }
 }

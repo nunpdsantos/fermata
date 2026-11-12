@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useAppStore } from '../../../state/store';
 import { closeTuner, useTunerRequest } from '../tunerRequest';
+import en from '../../../i18n/locales/en.json';
 
 vi.mock('../../instruments/Piano.tsx', () => ({ Piano: () => <div data-testid="piano-mock" /> }));
 vi.mock('../../instruments/Fretboard.tsx', () => ({ Fretboard: () => <div data-testid="fret-mock" /> }));
@@ -46,10 +47,11 @@ describe('tuner entry points', () => {
     expect(screen.queryByRole('dialog', { name: 'Tuner' })).toBeNull();
   });
 
-  it('the menu reads Settings, Show me around, Tuner, Metronome ("Tuner" right after "Show me around")', () => {
+  it('the menu reads Settings, Show me around, Tuner, Metronome, Report a problem ("Tuner" right after "Show me around")', () => {
     render(<TopBar />);
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
-    expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome']);
+    // Since 2026-11-12 "Report a problem" (its words from the locale file) ends the list.
+    expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome', en.report.menuItem]);
   });
 
   it('guitar: the dock bar gains one button, "Tune", which opens the tuner', () => {
