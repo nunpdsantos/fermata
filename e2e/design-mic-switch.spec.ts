@@ -341,7 +341,7 @@ const px = (n: number) => Math.round(n * 10) / 10;
 test.describe('the top bar holds still between views (brief U2)', () => {
   for (const lang of ['en', 'pt', 'es'] as const) {
     for (const touch of [true, false]) {
-      test(`${lang}, ${touch ? 'touch up to 1024' : 'mouse from 640'} px: the tab strip's left edge and width the same in Explore, Learn, Drill, a check and the tour; no tab clipped; every control a full --tap; no sideways scroll`, async ({ browser, baseURL }) => {
+      test(`${lang}, ${touch ? 'touch up to 1024' : 'mouse from 640'} px: the tab strip holds its place in Explore, Learn, Drill, a check and the tour (it moves only by its own bolder selected word); no tab clipped; every control a full --tap; no sideways scroll`, async ({ browser, baseURL }) => {
         base = baseURL!;
         test.setTimeout(240_000);
         const tap = touch ? 44 : 36;
@@ -372,8 +372,15 @@ test.describe('the top bar holds still between views (brief U2)', () => {
           rows.push(`${lang} ${touch ? 'touch' : 'mouse'} ${String(width).padStart(4)}px  tabs ${WHERE.map((w) => `${w} ${px(seen[w][width].tabsLeft)}+${px(seen[w][width].tabsWidth)}`).join(' | ')}`);
           for (const where of WHERE) {
             const m = seen[where][width];
-            expect.soft(Math.abs(m.tabsLeft - e.tabsLeft), `${lang} ${width}px ${where}: the tabs' left edge as in Explore (${px(m.tabsLeft)} / ${px(e.tabsLeft)})`).toBeLessThanOrEqual(0.5);
-            expect.soft(Math.abs(m.tabsWidth - e.tabsWidth), `${lang} ${width}px ${where}: the tabs' width as in Explore (${px(m.tabsWidth)} / ${px(e.tabsWidth)})`).toBeLessThanOrEqual(0.5);
+            // The selected tab's word is bolder (as on main), so the strip's OWN width changes with the view: by
+            // under half a pixel on a Mac, by one or two whole pixels under Linux's text (GitHub's run on ad19cf5:
+            // 162 / 163 px in English, 201 / 203 px in Portuguese, 209 / 210 / 212 px in Spanish). Nothing else may
+            // move it: each edge moves by no more than that width change, which itself stays within 3 px (a switch
+            // or a slot out of place moves the strip by 24 to 48 px).
+            const dw = Math.abs(m.tabsWidth - e.tabsWidth);
+            expect.soft(dw, `${lang} ${width}px ${where}: the tabs' width as in Explore but for the bolder selected word (${px(m.tabsWidth)} / ${px(e.tabsWidth)})`).toBeLessThanOrEqual(3);
+            expect.soft(Math.abs(m.tabsLeft - e.tabsLeft), `${lang} ${width}px ${where}: the tabs' left edge as in Explore (${px(m.tabsLeft)} / ${px(e.tabsLeft)}; width change ${px(dw)})`).toBeLessThanOrEqual(dw + 0.5);
+            expect.soft(Math.abs(m.tabsLeft + m.tabsWidth - e.tabsLeft - e.tabsWidth), `${lang} ${width}px ${where}: the tabs' right edge as in Explore (${px(m.tabsLeft + m.tabsWidth)} / ${px(e.tabsLeft + e.tabsWidth)}; width change ${px(dw)})`).toBeLessThanOrEqual(dw + 0.5);
           }
         }
         console.log(rows.join('\n'));

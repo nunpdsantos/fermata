@@ -862,8 +862,12 @@ for (const v of [PHONE, LAPTOP]) {
     // the magnifier where Explore's switch stands, and "⋯" as wave3/base's plus Afinador and Metrónomo, no "Pesquisar".
     await expect(page.getByTestId('mic-slot')).toHaveCount(0);
     const learnTabs = (await page.locator('.app-tabs').boundingBox())!;
-    expect(Math.abs(learnTabs.x - exploreTabs!.x), 'the tabs\' left edge in Learn as in Explore').toBeLessThanOrEqual(0.5);
-    expect(Math.abs(learnTabs.width - exploreTabs!.width), 'the tabs\' width in Learn as in Explore').toBeLessThanOrEqual(0.5);
+    // (The selected tab's word is bolder, as on main, so the strip's own width changes by a pixel or two under
+    // Linux's text: each edge may move by that much and no more. A switch or slot out of place moves it by 24 px or more.)
+    const widthChange = Math.abs(learnTabs.width - exploreTabs!.width);
+    expect(widthChange, 'the tabs\' width in Learn as in Explore, but for the bolder selected word').toBeLessThanOrEqual(3);
+    expect(Math.abs(learnTabs.x - exploreTabs!.x), 'the tabs\' left edge in Learn as in Explore').toBeLessThanOrEqual(widthChange + 0.5);
+    expect(Math.abs(learnTabs.x + learnTabs.width - exploreTabs!.x - exploreTabs!.width), 'the tabs\' right edge in Learn as in Explore').toBeLessThanOrEqual(widthChange + 0.5);
     const magnifier = page.locator('.app-topbar').getByRole('button', { name: 'Pesquisa rápida, Command+K' });
     await expect(magnifier).toBeVisible();
     if (phone) expect((await rectsOf(page, '.app-topbar button[aria-label="Pesquisa rápida, Command+K"]')).map((r) => r.slice(0, 4)), 'the magnifier where Explore\'s switch stands').toEqual(micBox.map((r) => r.slice(0, 4)));
