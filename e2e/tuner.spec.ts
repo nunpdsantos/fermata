@@ -243,7 +243,7 @@ test.describe('three minutes with no note heard (the page\'s clock advanced)', (
     expect(await tracks(page)).toEqual({ live: 1, ended: 0 });
     await page.clock.fastForward('00:03');
     await expect(barSwitch(page)).toHaveAttribute('aria-pressed', 'false');
-    await expect(page.getByTestId('mic-problem')).toHaveText('The microphone turned itself off: no note was heard for three minutes.');
+    await expect(page.getByTestId('mic-problem')).toHaveText('The microphone turned itself off after three minutes without recognising a note.');
     await expect.poll(() => tracks(page)).toEqual({ live: 0, ended: 1 });
     // Until the next tap: a tap anywhere else closes the line.
     await page.getByTestId('explore-root').click({ position: { x: 5, y: 5 } });

@@ -354,7 +354,7 @@ describe('TunerSheet: when the microphone cannot be used, nothing is left runnin
     expect(useMic.getState().state.kind).toBe('on');
     await wait(3 * 60 * 1000 + 500);
     expect(useMic.getState().state).toEqual({ kind: 'problem', problem: 'idle' });
-    expect(screen.getByTestId('tuner-message').textContent).toBe('The microphone turned itself off: no note was heard for three minutes.');
+    expect(screen.getByTestId('tuner-message').textContent).toBe('The microphone turned itself off after three minutes without recognising a note.');
     expect(toggle().getAttribute('aria-pressed')).toBe('false');
     expect(live()).toBe(0);
   });

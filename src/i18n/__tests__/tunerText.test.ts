@@ -79,9 +79,9 @@ describe('tuner text', () => {
       'Con el micrófono activado, las notas que tocas se añaden a tu respuesta.',
     ]);
     expect([aen.idle, apt.idle, aes.idle]).toEqual([
-      'The microphone turned itself off: no note was heard for three minutes.',
-      'O microfone desligou-se sozinho: não se ouviu nenhuma nota durante três minutos.',
-      'El micrófono se ha desactivado solo: no se ha oído ninguna nota en tres minutos.',
+      'The microphone turned itself off after three minutes without recognising a note.',
+      'O microfone desligou-se sozinho, ao fim de três minutos sem reconhecer nenhuma nota.',
+      'El micrófono se ha desactivado solo, tras tres minutos sin reconocer ninguna nota.',
     ]);
   });
 

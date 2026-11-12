@@ -6,7 +6,7 @@
   "here": "Con el micrófono activado, las notas que tocas se añaden a tu respuesta.",
   "on": "Toca las notas de una en una y deja sonar cada una.",
   "heard": "Nota oída: {{note}}",
-  "idle": "El micrófono se ha desactivado solo: no se ha oído ninguna nota en tres minutos.",
+  "idle": "El micrófono se ha desactivado solo, tras tres minutos sin reconocer ninguna nota.",
   "onScreen": "Puedes seguir respondiendo en la pantalla.",
   "problem": {
     "refused": "El micrófono está bloqueado para Fermata. Para permitirlo, abre los ajustes de este sitio (junto a la dirección, o en los ajustes del móvil para este navegador).",

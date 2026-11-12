@@ -6,7 +6,7 @@
   "here": "Com o microfone ligado, as notas que tocas são acrescentadas à tua resposta.",
   "on": "Toca as notas uma de cada vez e deixa cada uma soar.",
   "heard": "Nota ouvida: {{note}}",
-  "idle": "O microfone desligou-se sozinho: não se ouviu nenhuma nota durante três minutos.",
+  "idle": "O microfone desligou-se sozinho, ao fim de três minutos sem reconhecer nenhuma nota.",
   "onScreen": "Podes continuar a responder no ecrã.",
   "problem": {
     "refused": "O microfone está bloqueado para o Fermata. Para o permitir, abre as definições deste site (ao lado do endereço, ou nas definições do telemóvel para este navegador).",

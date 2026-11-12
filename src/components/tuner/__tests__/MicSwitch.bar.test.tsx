@@ -176,7 +176,7 @@ describe('the note under the bar', () => {
   });
 
   it.each([
-    ['idle', 'The microphone turned itself off: no note was heard for three minutes.'],
+    ['idle', 'The microphone turned itself off after three minutes without recognising a note.'],
     ['refused', "The microphone is blocked for Fermata. To allow it, open this site's settings (beside the address, or your phone's settings for this browser)."],
     ['hidden', 'The microphone turned off because Fermata was no longer on screen (for example, you switched to another app or tab).'],
     ['ended', 'The microphone was unplugged or disconnected, so it turned off.'],
