@@ -126,6 +126,10 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 
  * cell under it (the overlay never takes a tap).
  */
 async function fretLines(neck: Locator) {
+  // Under reduced motion the app gives every property a 0.01 ms transition
+  // (index.css), so a new inset (the break coming or going) reaches the
+  // overlay's box a frame or two after the cells: measure once it has.
+  await neck.locator('[data-fret-wires]').evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
   return neck.evaluate((root) => {
     const header = root.querySelector(':scope > .flex.text-caption')!;
     const numbers = Array.from(header.children).map((c) => Number(c.textContent));
