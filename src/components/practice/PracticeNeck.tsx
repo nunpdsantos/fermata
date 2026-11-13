@@ -31,8 +31,9 @@ export function PracticeNeck({ route, index, tuning, fingerFor, edited, onNote }
   const orientation = useNeckOrientation();
   const nutLeft = orientation.nut === 'left';
   const frets = fretsAcross(layoutFrets, orientation.nut);
-  // The fret numbers sit over the cells: the gutter (32) on the far side, the
-  // nut (6) + open column (40) + any break (24) on the nut side.
+  // The fret numbers and the fret wires sit over the cells: the gutter (32) on
+  // the far side, the nut (6) + open column (40: the sheet sets no
+  // --fret-open-width) + any break (24) on the nut side.
   const nutSidePad = 46 + (low > 1 ? 24 : 0);
   const guideText = guide ? t('practice.guide', { finger: guide.shift!.finger, string: 6 - guide.stringIndex,
     from: toRomanNumeral(guide.shift!.fromPosition), to: toRomanNumeral(guide.shift!.toPosition) }) : '';
@@ -50,21 +51,31 @@ export function PracticeNeck({ route, index, tuning, fingerFor, edited, onNote }
         style={nutLeft ? { paddingLeft: nutSidePad, paddingRight: 32 } : { paddingLeft: 32, paddingRight: nutSidePad }}>
         {frets.map((f) => <span className="flex-1" key={f}>{f}</span>)}
       </div>
-      {stringsDown(orientation.top).map((s) => {
-        const dots = new Map<number, PositionDot>();
-        for (const { event, note: n, currentShape } of places.values()) {
-          if (n.stringIndex !== s) continue;
-          const isGuide = guide && (n === guide || n === departure);
-          dots.set(n.fret, { context: !currentShape, label: !currentShape ? '' : `${fingerFor(event, n)}${isGuide ? shiftArrow(guide.shift) : ''}`, isRoot: false, isStretch: !!n.reach || (n.position !== null && (n.fret < n.position || n.fret > n.position + 3)),
-            isEdited: currentShape && edited(event, n), description: !currentShape ? '' : isGuide ? guideText : t('practice.finger', { finger: fingerFor(event, n) }) });
-        }
-        return <FretboardString key={s} stringIdx={s} visibleFrets={frets} nutSide={orientation.nut} fretMinWidth={0} mobile={false}
-          isChordView atNut showFretBreak={low > 1} mode="position" stringName={names[s]} activeNotes={new Set()}
-          rootPitchClass={null} getNoteColor={color} spellPitchClass={(pc) => [...places.values()].find(({ note }) => note.midi % 12 === pc)?.note.note ?? midiToNote(60 + pc)}
-          getFretNote={getFretNote} onCellActivate={activate} currentShape={null} voicingLookup={EMPTY}
-          positionDots={dots} scaleLabelFor={() => ''} highlightPcs={null} focusedFret={null}
-          focusFrets={new Set(current.notes.filter((n) => n.stringIndex === s).map((n) => n.fret))} rowHeight={34} />;
-      })}
+      {/* The six rows, with each drawn fret's wire over them as the dock draws
+          it (Fretboard.tsx): 1 px on the fret's nut side, inset like the
+          numbers. The wrapper adds no size; the wires never take a tap. */}
+      <div className="relative">
+        <div data-fret-wires="" aria-hidden="true" className="absolute inset-y-0 flex pointer-events-none"
+          style={nutLeft ? { zIndex: 1, left: nutSidePad, right: 32 } : { zIndex: 1, left: 32, right: nutSidePad }}>
+          {frets.map((f) => <div key={f} className="flex-1"
+            style={nutLeft ? { borderLeft: '1px solid var(--border)' } : { borderRight: '1px solid var(--border)' }} />)}
+        </div>
+        {stringsDown(orientation.top).map((s) => {
+          const dots = new Map<number, PositionDot>();
+          for (const { event, note: n, currentShape } of places.values()) {
+            if (n.stringIndex !== s) continue;
+            const isGuide = guide && (n === guide || n === departure);
+            dots.set(n.fret, { context: !currentShape, label: !currentShape ? '' : `${fingerFor(event, n)}${isGuide ? shiftArrow(guide.shift) : ''}`, isRoot: false, isStretch: !!n.reach || (n.position !== null && (n.fret < n.position || n.fret > n.position + 3)),
+              isEdited: currentShape && edited(event, n), description: !currentShape ? '' : isGuide ? guideText : t('practice.finger', { finger: fingerFor(event, n) }) });
+          }
+          return <FretboardString key={s} stringIdx={s} visibleFrets={frets} nutSide={orientation.nut} fretMinWidth={0} mobile={false}
+            isChordView atNut showFretBreak={low > 1} mode="position" stringName={names[s]} activeNotes={new Set()}
+            rootPitchClass={null} getNoteColor={color} spellPitchClass={(pc) => [...places.values()].find(({ note }) => note.midi % 12 === pc)?.note.note ?? midiToNote(60 + pc)}
+            getFretNote={getFretNote} onCellActivate={activate} currentShape={null} voicingLookup={EMPTY}
+            positionDots={dots} scaleLabelFor={() => ''} highlightPcs={null} focusedFret={null}
+            focusFrets={new Set(current.notes.filter((n) => n.stringIndex === s).map((n) => n.fret))} rowHeight={34} />;
+        })}
+      </div>
     </div>
   );
 }
