@@ -257,7 +257,7 @@
     "parallelTrack": "Recorrido paralelo",
     "level": "Nivel {{n}}",
     "lockedBy": "Completa el nivel {{n}}",
-    "reportMistake": "\u00bfEncontraste un error? Av\u00edsame",
+    "reportMistake": "¿Encontraste un error? Avísame (formulario de Google)",
     "unit": "Unidad {{n}}",
     "module": "M\u00f3dulo {{n}}",
     "learningObjectives": "Objetivos de aprendizaje",
@@ -1400,5 +1400,9 @@
   "metronomeToolEntry": {
     "menuItem": "Metrónomo",
     "loadFailed": "El metrónomo no se ha cargado. Comprueba la conexión y vuelve a intentarlo."
+  },
+  "report": {
+    "menuItem": "Avisar de un problema (formulario de Google)",
+    "offline": "No tienes conexión. El formulario necesita internet."
   }
 }

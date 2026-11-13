@@ -14,6 +14,7 @@ import { openTuner, useTunerRequest } from '../tuner/tunerRequest.ts';
 import { MicSwitch } from '../tuner/MicSwitch.tsx';
 import { micOff, useMic } from '../../services/microphone/micSwitch.ts';
 import { microphoneSupported } from '../../services/microphone/support.ts';
+import { openReportForm, reportDetails, reportUrl } from '../../services/reportProblem.ts';
 
 // Settings is a lazy chunk (wave 2 integration, for the entry file's budget):
 // fetched the first time it is opened, then kept mounted (its close animation
@@ -89,7 +90,7 @@ const SEARCH_ICON = (
  * moved from here into Settings ("⋯" → Settings).
  */
 export function TopBar() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const view = useAppStore((s) => s.view);
   const setView = useAppStore((s) => s.setView);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -167,6 +168,14 @@ export function TopBar() {
     void resumeAudio().catch(() => undefined);
     requestDemo('intro', 'menu');
   };
+  // "Report a problem" (2026-11-12): the form in the learner's language, in a
+  // new tab, its details box saying where they were. Built at the tap; nothing
+  // is sent before it. Not while the tour plays (the tour drives the screen).
+  const offerReport = !tourPlaying;
+  const reportProblem = () => {
+    const language = i18n.language;
+    openReportForm(reportUrl(language, reportDetails({ view, language })), t('report.offline'));
+  };
 
   return (
     <header className="app-topbar" data-testid="app-topbar">
@@ -223,6 +232,7 @@ export function TopBar() {
             { id: 'show-me', label: t('showMe.menuItem'), onSelect: showMeAround },
             ...(offerTuner ? [{ id: 'tuner', label: t('tunerEntry.menuItem'), onSelect: openTuner }] : []),
             ...(offerMetronome ? [{ id: 'metronome', label: t('metronomeToolEntry.menuItem'), onSelect: openMetronome }] : []),
+            ...(offerReport ? [{ id: 'report', label: t('report.menuItem'), onSelect: reportProblem }] : []),
             // A waiting update stays one tap away after "Later" (until the reload).
             ...(updateReady ? [{ id: 'update', label: t('pwa.updateReady'), onSelect: () => void applyUpdateOrReload() }] : []),
           ]}
