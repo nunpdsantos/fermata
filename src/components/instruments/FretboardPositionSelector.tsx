@@ -142,6 +142,8 @@ interface LabelToolbarProps {
   onToggleEdit: () => void;
   onResetFingering: () => void;
   hasOverrides: boolean;
+  /** Right after the fingering editor's chip, on its line ("Flip neck", 2026-11-14). */
+  afterEdit?: React.ReactNode;
 }
 
 export function LabelToolbar({
@@ -153,6 +155,7 @@ export function LabelToolbar({
   onToggleEdit,
   onResetFingering,
   hasOverrides,
+  afterEdit,
 }: LabelToolbarProps) {
   const { t } = useTranslation();
   const modes: { mode: FretboardLabelMode; key: string }[] = [
@@ -184,6 +187,7 @@ export function LabelToolbar({
           <ChoiceChip pressed={editing} onClick={onToggleEdit}>
             {editing ? t('fretboard.doneEditing') : t('fretboard.editFingering')}
           </ChoiceChip>
+          {afterEdit}
           {editing && (
             <>
               <Button disabled={!hasOverrides} onClick={onResetFingering}>

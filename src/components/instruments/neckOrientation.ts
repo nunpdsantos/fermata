@@ -34,6 +34,16 @@ export function useNeckOrientation(): NeckOrientation {
   return { nut, top };
 }
 
+/**
+ * "Flip neck" (2026-11-14): the neck mirrored on BOTH axes — the nut to the
+ * other side and the other string on top. From the default (nut right, thick
+ * string on top: facing a player) it gives the tab view (nut left, thin
+ * string on top) and back; a mixed combination set in Settings mirrors too.
+ */
+export function flippedNeck({ nut, top }: NeckOrientation): NeckOrientation {
+  return { nut: nut === 'left' ? 'right' : 'left', top: top === 'high' ? 'low' : 'high' };
+}
+
 /** Frets in the order they are drawn, left to right: the nut end first when the nut is on the left. */
 export function fretsAcross(frets: readonly number[], nut: NeckNutSide): number[] {
   return [...frets].sort(nut === 'left' ? (a, b) => a - b : (a, b) => b - a);

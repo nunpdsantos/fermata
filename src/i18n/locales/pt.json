@@ -1185,7 +1185,9 @@
     "topString": "Corda em cima",
     "thinTop": "Corda fina em cima",
     "thickTop": "Corda grossa em cima",
-    "stringRangeHighFirst": "Cordas 1 a 6"
+    "stringRangeHighFirst": "Cordas 1 a 6",
+    "flip": "Virar braço",
+    "flipName": "{{action}}. Agora: {{nut}}, {{top}}."
   },
   "glossary": {
     "ui": {

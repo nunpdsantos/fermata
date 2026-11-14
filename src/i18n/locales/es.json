@@ -1185,7 +1185,9 @@
     "topString": "Cuerda de arriba",
     "thinTop": "Cuerda fina arriba",
     "thickTop": "Cuerda gruesa arriba",
-    "stringRangeHighFirst": "Cuerdas 1 a 6"
+    "stringRangeHighFirst": "Cuerdas 1 a 6",
+    "flip": "Girar mástil",
+    "flipName": "{{action}}. Ahora: {{nut}}, {{top}}."
   },
   "glossary": {
     "ui": {

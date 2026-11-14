@@ -1185,7 +1185,9 @@
     "topString": "String on top",
     "thinTop": "Thin string on top",
     "thickTop": "Thick string on top",
-    "stringRangeHighFirst": "Strings 1 to 6"
+    "stringRangeHighFirst": "Strings 1 to 6",
+    "flip": "Flip neck",
+    "flipName": "{{action}}. Now: {{nut}}, {{top}}."
   },
   "glossary": {
     "ui": {
