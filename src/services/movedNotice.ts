@@ -153,9 +153,10 @@ export function refreshMovedToast(): void {
   raise();
 }
 
-/** The toast's action (the toast closes itself). */
+/** The toast's action (the toast closes itself; opened any other way, it goes too). */
 export function openMovedPanel(): void {
   if (!onOldAddress()) return;
+  if (toastUp()) useToastStore.getState().removeToast(toastId!);
   toastId = null;
   stopPolling();
   useMovedPanel.setState({ open: true, opened: true });
