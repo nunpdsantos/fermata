@@ -7,6 +7,7 @@ Interactive music theory, from the instrument out. A virtual piano or guitar fre
 - English, Portuguese, and Spanish
 - Offline-capable PWA (installable, Workbox precaching)
 - Single-user and local-first: progress lives in your browser, no accounts
+- Every lesson and the glossary also as plain pages that read without JavaScript, in all three languages (https://fermatina.com/en/, generated at build time from the app's own data: `src/site/`, `scripts/pages/`)
 
 **Stack:** React 19 + TypeScript + Vite + Tailwind CSS v4 + Zustand, with VexFlow for staff notation and the Web Audio API for sound.
 
