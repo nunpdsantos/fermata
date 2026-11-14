@@ -9,6 +9,7 @@ import { useStopPlaybackOnViewChange } from './hooks/useStopPlaybackOnViewChange
 import { useAppStore } from './state/store.ts';
 import { pickBootView } from './state/bootView.ts';
 import { readShareParams, cleanedAddress, markOpenedFromShareLink } from './state/shareParams.ts';
+import { LANG_PARAM } from './i18n/language.ts';
 import { ShareLinkHost } from './components/share/ShareLinkHost.tsx';
 import type { ViewMode } from './state/storeTypes.ts';
 import { StartHost } from './components/start/StartHost.tsx';
@@ -75,8 +76,10 @@ function App() {
     const { setView, lastView } = useAppStore.getState();
     setView(pickBootView(search, lastView));
 
-    // Strip ?view= and the link's parameters (keep other params) without a navigation.
-    if (paramView !== null || link !== null) {
+    // Strip ?view=, ?lang= (i18n/language.ts: it has chosen the language of a
+    // first visit by now, or was ignored) and the link's parameters (keep
+    // other params) without a navigation.
+    if (paramView !== null || link !== null || params.has(LANG_PARAM)) {
       window.history.replaceState(window.history.state, '', cleanedAddress(pathname, search, hash));
     }
 

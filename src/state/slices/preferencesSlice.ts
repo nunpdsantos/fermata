@@ -1,6 +1,6 @@
 import type { StateCreator } from 'zustand';
 import type { AppState, PreferencesSlice } from '../storeTypes.ts';
-import { detectBrowserLanguage } from '../../i18n/language.ts';
+import { firstRunLanguage } from '../../i18n/language.ts';
 import { initialDockDetents } from '../dock.ts';
 
 export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesSlice> = (set, get) => ({
@@ -8,9 +8,10 @@ export const createPreferencesSlice: StateCreator<AppState, [], [], PreferencesS
   themeMode: 'fermata',
   scaleOctaves: 1,
   baseOctave: 4,
-  // First run follows the browser (pt/es/en); a persisted choice overrides
-  // this default in the persist merge.
-  language: detectBrowserLanguage(),
+  // First run follows the browser (pt/es/en) — or a search page's `?lang=`
+  // when nothing at all is saved; a persisted choice overrides this default
+  // in the persist merge.
+  language: firstRunLanguage(),
   preferencesUpdatedAt: 0,
   lastView: 'explore',
   dockDetents: initialDockDetents(),

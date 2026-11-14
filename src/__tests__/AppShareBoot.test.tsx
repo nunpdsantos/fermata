@@ -52,7 +52,7 @@ vi.mock('framer-motion', async () => {
 
 import App from '../App';
 import { useAppStore } from '../state/store';
-import { openedFromShareLink } from '../state/shareParams';
+import { noteBootAddress, openedFromShareLink } from '../state/shareParams';
 import { useToastStore } from '../state/toastStore';
 import { registerWorkInProgress } from '../services/workInProgress';
 import { resetShareLinkOpen } from '../services/shareLinkOpen';
@@ -132,6 +132,25 @@ describe('App — opening a shared link', () => {
     await boot('?view=drill&key=D');
     expect(screen.getByText('EXPLORE_VIEW')).toBeDefined();
     expect(useAppStore.getState().selectedKey.natural).toBe('D');
+  });
+
+  // The search pages' links (2026-11-14): `lang` is no share link, and leaves the address bar.
+  it('?lang=pt alone is not a shared link: no link opened, the address bar loses it', async () => {
+    noteBootAddress('?lang=pt'); // as main.tsx does before the first render
+    await boot('?lang=pt');
+    expect(screen.getByText('EXPLORE_VIEW')).toBeDefined();
+    expect(openedFromShareLink()).toBe(false);
+    expect(useToastStore.getState().toasts).toEqual([]);
+    expect(window.location.search).toBe('');
+  });
+
+  it('?lesson=…&lang=pt opens the lesson as ?lesson=… does, and the address bar loses both', async () => {
+    expect(noteBootAddress('?debug=1&lesson=l2u5m3&lang=pt')).toBe(true);
+    await boot('?debug=1&lesson=l2u5m3&lang=pt');
+    expect(screen.getByText('LEARN_VIEW')).toBeDefined();
+    expect(useAppStore.getState().pendingLearnTarget).toEqual({ levelId: 'l2', unitId: 'u5', moduleId: 'l2u5m3' });
+    expect(openedFromShareLink()).toBe(true);
+    expect(window.location.search).toBe('?debug=1');
   });
 
   // After review (2026-11-10).
