@@ -1,0 +1,485 @@
+/* The search pages' own rules. The tokens and fonts above them are the app's
+   (src/index.css, read at build time by src/site/style.ts). Five type steps
+   (12 · 14 · 16 · 20 · 28 px), nothing smaller; a button or a link that
+   stands alone is at least --tap in both directions (36 px with a mouse,
+   44 px on touch); readable at 320 px with no sideways scroll. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-size: var(--text-body);
+  line-height: 1.6;
+  font-optical-sizing: auto;
+  overflow-wrap: break-word;
+}
+a {
+  color: var(--accent-text);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+a:hover {
+  text-decoration-thickness: 2px;
+}
+:focus-visible {
+  outline: 2px solid var(--focus-outline);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip link: off screen until focused (as the app's). */
+.skip {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip:focus {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0 16px;
+  min-height: var(--tap);
+  display: inline-flex;
+  align-items: center;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  border-radius: 8px;
+  background: var(--card-hover);
+  color: var(--text);
+}
+
+/* A comfortable measure on a laptop, a 16 px gutter on a phone. */
+.wrap {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* ─── Top bar: the mark and the name (→ the landing page), Lessons, Words ── */
+.top {
+  border-bottom: 1px solid var(--border-subtle);
+}
+.top .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--tap);
+  color: var(--text);
+  text-decoration: none;
+  font-size: var(--text-title);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.mark {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+.top-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.top-nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  min-width: var(--tap);
+  padding: 0 10px;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: var(--text-ui);
+  text-decoration: none;
+}
+.top-nav a:hover {
+  background: var(--card);
+}
+.top-nav a[aria-current='page'] {
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.35em;
+}
+
+main.wrap {
+  padding-top: 8px;
+  padding-bottom: 40px;
+}
+
+/* The page in the other two languages. */
+.langs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px;
+  margin: 0 0 4px;
+  font-size: var(--text-ui);
+}
+.langs a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  min-width: var(--tap);
+  padding: 0 8px;
+}
+
+/* ─── Type ─────────────────────────────────────────────────────────────── */
+h1 {
+  margin: 4px 0 8px;
+  font-size: var(--text-display);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+h2 {
+  margin: 40px 0 12px;
+  font-size: var(--text-title);
+  font-weight: 600;
+  line-height: 1.3;
+}
+h3 {
+  margin: 28px 0 4px;
+  font-size: var(--text-body);
+  font-weight: 600;
+  line-height: 1.4;
+}
+p,
+ul,
+ol,
+dl {
+  margin: 0 0 16px;
+}
+.lead {
+  margin-bottom: 16px;
+  color: var(--text-muted);
+}
+.muted {
+  color: var(--text-muted);
+}
+.small {
+  font-size: var(--text-ui);
+}
+.eyebrow {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--text-muted);
+  font-size: var(--text-caption);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+/* A section label, as the app's .type-label. */
+.label {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+  font-size: var(--text-ui);
+  font-variant-caps: all-small-caps;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.prose {
+  line-height: 1.75;
+}
+
+/* ─── Blocks ───────────────────────────────────────────────────────────── */
+.card {
+  margin: 24px 0;
+  padding: 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--card);
+}
+.card > :last-child {
+  margin-bottom: 0;
+}
+.card ul {
+  padding-left: 1.25em;
+}
+.card li + li {
+  margin-top: 6px;
+}
+
+/* The one button: open the lesson (or Fermatina) in the app. */
+.open {
+  margin: 20px 0 24px;
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  min-width: var(--tap);
+  padding: 8px 18px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+}
+.button:hover {
+  background: var(--accent-hover);
+  color: var(--on-accent);
+}
+
+/* A concept the app lets you hear and play. */
+.try {
+  padding-left: 12px;
+  border-left: 2px solid var(--border);
+  color: var(--text-muted);
+  font-size: var(--text-ui);
+}
+
+/* Lists of links: lessons, the three doors, the index and glossary. */
+.lessons {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border-subtle);
+}
+.lessons li {
+  border-bottom: 1px solid var(--border-subtle);
+}
+.lessons a {
+  display: block;
+  min-height: var(--tap);
+  padding: 10px 4px;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.lessons .lt {
+  display: block;
+  color: var(--accent-text);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+.lessons a:hover .lt {
+  text-decoration-thickness: 2px;
+}
+.lessons .ls {
+  display: block;
+  font-size: var(--text-ui);
+}
+.more {
+  margin-top: 32px;
+}
+
+/* The lesson index's contents. */
+.toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+.toc a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  min-width: var(--tap);
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--text);
+  font-size: var(--text-ui);
+  text-decoration: none;
+}
+.level,
+.unit,
+.term {
+  scroll-margin-top: 12px;
+}
+.level > h2 {
+  margin-top: 48px;
+}
+
+/* Where a lesson sits. */
+.crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-ui);
+}
+.crumbs li {
+  display: inline-flex;
+  align-items: center;
+}
+.crumbs li + li::before {
+  content: '›';
+  padding: 0 6px;
+  color: var(--text-dim);
+}
+.crumbs a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  min-width: var(--tap);
+}
+
+.tasks {
+  padding-left: 1.25em;
+}
+.tasks li + li {
+  margin-top: 10px;
+}
+.query {
+  font-weight: 600;
+}
+.songs {
+  padding: 0 !important;
+  list-style: none;
+}
+.songs li + li {
+  margin-top: 0 !important;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+.songs li {
+  padding-bottom: 10px;
+}
+.song {
+  font-weight: 600;
+}
+.artist,
+.songs p {
+  color: var(--text-muted);
+}
+.songs p {
+  margin: 2px 0 0;
+  font-size: var(--text-ui);
+}
+
+/* Previous / next lesson. */
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+}
+.pager a {
+  display: block;
+  max-width: 48%;
+  min-height: var(--tap);
+  padding: 4px 0;
+  text-decoration: none;
+}
+.pager .next {
+  margin-left: auto;
+  text-align: right;
+}
+.pager .pl {
+  display: block;
+  color: var(--text-muted);
+  font-size: var(--text-ui);
+}
+.pager .pt {
+  display: block;
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+/* The landing page. */
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.inside {
+  padding-left: 1.25em;
+}
+.inside li + li {
+  margin-top: 10px;
+}
+
+/* The glossary. */
+.terms {
+  border-top: 1px solid var(--border-subtle);
+}
+.term {
+  padding: 16px 0 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.term dt {
+  margin: 0;
+}
+.term dfn {
+  font-size: var(--text-title);
+  font-style: normal;
+  font-weight: 600;
+}
+.term dd {
+  margin: 4px 0 0;
+}
+.term dd p {
+  margin: 0 0 8px;
+}
+.term .more {
+  margin: 0;
+}
+.term .more a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  font-size: var(--text-ui);
+}
+
+.foot {
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: var(--text-ui);
+}
+.foot .wrap {
+  padding-top: 16px;
+  padding-bottom: 32px;
+}
+.foot p {
+  margin: 0;
+}

@@ -8,7 +8,17 @@
  * - `<html lang>` follows the app language, so screen readers and spellcheck
  *   treat Portuguese and Spanish text as such (W6-15). Portuguese is declared
  *   as pt-PT (the content is European Portuguese), Spanish as es-ES.
+ * - `?lang=en|pt|es` in the address (2026-11-14): the search pages' "Open in
+ *   Fermatina" links say the language of the page they come from. It counts
+ *   only on a visit where NO app data is saved (nothing chose a language
+ *   yet); then the visit starts in it instead of the browser's. Otherwise it
+ *   is ignored — a saved language always wins. Either way the address bar
+ *   loses it as it loses a shared link's parameters (state/shareParams.ts
+ *   `cleanedAddress`). It is not a shared link: `?lang=pt` alone still shows
+ *   the start screen, in Portuguese.
  */
+
+import { hasSavedAppData } from '../state/welcomeGate';
 
 export const APP_LANGUAGES = ['en', 'pt', 'es'] as const;
 export type AppLanguage = (typeof APP_LANGUAGES)[number];
@@ -38,6 +48,59 @@ export function detectBrowserLanguage(languages: readonly string[] = browserLang
     if (isAppLanguage(primary)) return primary;
   }
   return 'en';
+}
+
+/** The address parameter the search pages' links carry. */
+export const LANG_PARAM = 'lang';
+
+/** The app language a query string's `?lang=` names (case and spaces forgiven), or null. */
+export function addressLanguage(search: string): AppLanguage | null {
+  try {
+    const value = new URLSearchParams(search).get(LANG_PARAM)?.trim().toLowerCase();
+    return isAppLanguage(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+type ReadableStorage = Pick<Storage, 'getItem' | 'length' | 'key'>;
+
+/**
+ * The address's language when it may choose the visit's language: only when
+ * this storage holds no app data at all (state/welcomeGate.ts
+ * `hasSavedAppData`, the first-visit gate's own test). Storage that cannot be
+ * read: null (the browser's language, as before).
+ */
+export function linkLanguage(search: string, storage: ReadableStorage | undefined): AppLanguage | null {
+  const lang = addressLanguage(search);
+  if (!lang || !storage) return null;
+  try {
+    return hasSavedAppData(storage) ? null : lang;
+  } catch {
+    return null;
+  }
+}
+
+let bootLinkLanguage: AppLanguage | null | undefined;
+
+/**
+ * The language a visit starts in when no saved choice says otherwise: a
+ * search page's `?lang=` on a visit with nothing saved, else the browser's
+ * (W6-16). The address and storage are read ONCE, at the first call — the
+ * i18n bootstrap, before any store exists or writes — so i18next and the
+ * preferences slice's default agree.
+ */
+export function firstRunLanguage(): AppLanguage {
+  if (bootLinkLanguage === undefined) {
+    let storage: Storage | undefined;
+    try {
+      storage = globalThis.localStorage;
+    } catch {
+      storage = undefined;
+    }
+    bootLinkLanguage = typeof location === 'undefined' ? null : linkLanguage(location.search, storage);
+  }
+  return bootLinkLanguage ?? detectBrowserLanguage();
 }
 
 const HTML_LANG: Record<AppLanguage, string> = { en: 'en', pt: 'pt-PT', es: 'es-ES' };

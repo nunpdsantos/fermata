@@ -18,8 +18,10 @@ import { LAPTOP, LOCALE, PHONE, audit, type Lang, type View } from './helpers/wa
  *    same test from an old-shape save on the old address, lands in the app
  *    with that save, byte for byte, no door chosen; a file that is not a
  *    backup says so by the link and changes nothing;
- *  - robots.txt, sitemap.xml and the canonical link (and, on the build, a
- *    page the service worker controls still gets the two files).
+ *  - robots.txt, sitemap.xml (the build's, since 2026-11-14 written with the
+ *    search pages: on the dev server only robots.txt) and the canonical link
+ *    (and, on the build, a page the service worker controls still gets the
+ *    two files).
  * How the old hostname is run: every request to https://fermata-music.vercel.app
  * is answered from this run's own server (relayed by the test, `relay`), any
  * WebSocket to it or to fermatina.com is closed unopened, any request to
@@ -448,10 +450,17 @@ test('robots.txt and sitemap.xml are served as files; the page names https://fer
   expect(robots.status()).toBe(200);
   expect(robots.headers()['content-type']).toMatch(/^text\/plain/);
   expect(await robots.text()).toBe('User-agent: *\nAllow: /\n\nSitemap: https://fermatina.com/sitemap.xml\n');
-  const sitemap = await request.get('/sitemap.xml');
-  expect(sitemap.status()).toBe(200);
-  expect(sitemap.headers()['content-type']).toMatch(/xml/);
-  expect(await sitemap.text()).toContain('<loc>https://fermatina.com/</loc>');
+  // Since 2026-11-14 the sitemap is written by the build with the search pages
+  // (scripts/pages/): the dev server has neither (e2e/search-pages.spec.ts).
+  const built = (await (await request.get('/en/')).text()).includes('<h1 class="hero">');
+  if (built) {
+    const sitemap = await request.get('/sitemap.xml');
+    expect(sitemap.status()).toBe(200);
+    expect(sitemap.headers()['content-type']).toMatch(/xml/);
+    expect(await sitemap.text()).toContain('<loc>https://fermatina.com/</loc>');
+  } else {
+    test.info().annotations.push({ type: 'note', description: 'dev server: no sitemap.xml (the build writes it with the search pages)' });
+  }
   await page.goto('/');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://fermatina.com/');
   await expect(page).toHaveTitle(/^Fermatina — /);

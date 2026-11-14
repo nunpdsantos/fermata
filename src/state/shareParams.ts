@@ -33,10 +33,17 @@
  *          beside `prog`.
  *   capo   (wave 2) the guitar capo, a whole number 0–9 (setCapoFret).
  *
+ * NOT share parameters either: `view` (above) and `lang` (2026-11-14, the
+ * search pages' links: i18n/language.ts `LANG_PARAM`), which chooses the
+ * language of a first visit only. Both leave the address bar with the rest
+ * (`cleanedAddress`).
+ *
  * Validation lives in services/shareLinkParse.ts (lazy: it needs the chord
  * parser); this file only reads the raw strings, so it stays in the entry
  * chunk at almost no cost.
  */
+import { LANG_PARAM } from '../i18n/language.ts';
+
 export const SHARE_PARAM_KEYS = ['key', 'scale', 'chord', 'inst', 'lesson', 'prog', 'bpm', 'capo'] as const;
 
 export type ShareParamKey = (typeof SHARE_PARAM_KEYS)[number];
@@ -94,14 +101,15 @@ export function readShareParams(search: string, hash = ''): RawShareParams | nul
 }
 
 /**
- * The address with the link's parameters (and `view`) taken out — what the
- * address bar shows once a link has been opened, so a refresh does not open it
- * again. Other parameters stay; a fragment that held part of a link goes.
+ * The address with the link's parameters (and `view` and `lang`) taken out —
+ * what the address bar shows once a link has been opened, so a refresh does
+ * not open it again. Other parameters stay; a fragment that held part of a
+ * link goes.
  */
 export function cleanedAddress(pathname: string, search: string, hash = ''): string {
   const { query, recovered } = joinFragment(search, hash);
   const params = new URLSearchParams(recovered ? query : search);
-  for (const k of [...SHARE_PARAM_KEYS, 'view']) params.delete(k);
+  for (const k of [...SHARE_PARAM_KEYS, 'view', LANG_PARAM]) params.delete(k);
   const qs = params.toString();
   return pathname + (qs ? `?${qs}` : '') + (recovered ? '' : hash);
 }

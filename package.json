@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && tsx scripts/pages/build.ts",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
@@ -14,13 +14,16 @@
     "test:e2e:preview": "npm run build && npx playwright test -c playwright.preview.config.ts",
     "check:sw": "node scripts/check-sw-coverage.mjs",
     "check:bundle": "node scripts/check-bundle.mjs",
+    "check:pages": "tsx scripts/pages/check-pages.ts",
     "audit:engine": "npx tsx scripts/audit/verify-engine.ts",
     "audit:exercises": "npx tsx scripts/audit/verify-exercises.ts",
     "audit:generated": "npx tsx scripts/audit/verify-generated.ts",
     "audit:all": "npm run audit:engine && npm run audit:exercises && npm run audit:generated",
     "i18n:module-titles": "npx tsx scripts/i18n/extract-module-titles.ts",
     "i18n:rehash": "npx tsx scripts/i18n/rehash-sources.ts",
-    "progress:retire": "npx tsx scripts/progress/retire-exercise-ids.ts"
+    "progress:retire": "npx tsx scripts/progress/retire-exercise-ids.ts",
+    "pages:slugs": "tsx scripts/pages/make-slugs.ts",
+    "pages:og": "tsx scripts/pages/make-og.ts"
   },
   "dependencies": {
     "framer-motion": "^12.33.0",

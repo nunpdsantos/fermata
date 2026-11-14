@@ -113,23 +113,28 @@ describe('Portuguese: one article with the name', () => {
 });
 
 describe('the address search engines are given', () => {
-  it('index.html names https://fermatina.com/ as canonical, and asks nothing of it (no preconnect, no prefetch)', () => {
+  it('index.html names https://fermatina.com/ as canonical and its three landing pages as language twins, and asks nothing of it (no preconnect, no prefetch)', () => {
     expect(indexHtml).toContain('<link rel="canonical" href="https://fermatina.com/" />');
     const toNew = [...indexHtml.matchAll(/<link[^>]*fermatina\.com[^>]*>/g)].map((m) => m[0]);
-    expect(toNew).toEqual(['<link rel="canonical" href="https://fermatina.com/" />']);
+    // Since 2026-11-14 the search pages (scripts/pages/) are the home's language twins.
+    expect(toNew).toEqual([
+      '<link rel="canonical" href="https://fermatina.com/" />',
+      '<link rel="alternate" hreflang="en" href="https://fermatina.com/en/" />',
+      '<link rel="alternate" hreflang="pt" href="https://fermatina.com/pt/" />',
+      '<link rel="alternate" hreflang="es" href="https://fermatina.com/es/" />',
+      '<link rel="alternate" hreflang="x-default" href="https://fermatina.com/" />',
+    ]);
     expect(indexHtml).not.toMatch(/rel="(preconnect|dns-prefetch|prefetch|preload)"[^>]*fermatina/);
   });
 
-  it('robots.txt allows everything and names the sitemap; the sitemap lists the one address', () => {
+  it('robots.txt allows everything and names the sitemap; the sitemap is the build\'s (scripts/pages/, src/site/__tests__), not a file in public/', () => {
     expect(read('../../public/robots.txt')).toBe('User-agent: *\nAllow: /\n\nSitemap: https://fermatina.com/sitemap.xml\n');
-    const sitemap = read('../../public/sitemap.xml');
-    expect(sitemap.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')).toBe(true);
-    expect([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1])).toEqual(['https://fermatina.com/']);
+    expect(() => read('../../public/sitemap.xml')).toThrow();
   });
 
-  it('the service worker hands both files to the server, never the app\'s page; vercel.json has no redirect or rewrite', () => {
+  it('the service worker hands both files and the search pages to the server, never the app\'s page; vercel.json has no redirect or rewrite', () => {
     const vite = read('../../vite.config.ts');
-    expect(vite).toContain('navigateFallbackDenylist: [/^\\/robots\\.txt$/, /^\\/sitemap\\.xml$/],');
+    expect(vite).toContain('navigateFallbackDenylist: [/^\\/robots\\.txt$/, /^\\/sitemap\\.xml$/, /^\\/(?:en|pt|es)(?:[/?#]|$)/],');
     const vercel = JSON.parse(read('../../vercel.json')) as Record<string, unknown>;
     expect(Object.keys(vercel)).toEqual(['headers']);
   });

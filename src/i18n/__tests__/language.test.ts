@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import i18n from '../index';
-import { detectBrowserLanguage, htmlLangFor } from '../language';
+import { addressLanguage, detectBrowserLanguage, htmlLangFor, linkLanguage } from '../language';
 
 /**
  * W6-15 — <html lang> follows the app language.
@@ -87,5 +87,85 @@ describe('first-run language in the persisted store', () => {
     localStorage.setItem('music-theory-app', JSON.stringify({ state: { language: 'klingon' }, version: 6 }));
     setBrowserLanguages(['es-AR']);
     expect((await freshStore()).getState().language).toBe('es');
+  });
+});
+
+/**
+ * `?lang=` (2026-11-14): the search pages' "Open in Fermatina" links carry the
+ * page's language. It chooses the language of a visit with NO app data saved;
+ * a saved language (any saved data) always wins.
+ */
+describe('?lang= in the address', () => {
+  const storage = (entries: Record<string, string>) => ({
+    length: Object.keys(entries).length,
+    key: (i: number) => Object.keys(entries)[i] ?? null,
+    getItem: (k: string) => entries[k] ?? null,
+  });
+
+  it('reads en, pt or es (case and spaces forgiven), nothing else', () => {
+    expect(addressLanguage('?lang=pt')).toBe('pt');
+    expect(addressLanguage('?lesson=l1u3m1&lang=es')).toBe('es');
+    expect(addressLanguage('?lang=EN%20')).toBe('en');
+    expect(addressLanguage('?lang=fr')).toBeNull();
+    expect(addressLanguage('?lang=')).toBeNull();
+    expect(addressLanguage('')).toBeNull();
+  });
+
+  it('counts only with no app data saved (the first-visit gate\'s flag alone is not app data)', () => {
+    expect(linkLanguage('?lang=pt', storage({}))).toBe('pt');
+    expect(linkLanguage('?lang=pt', storage({ 'fermata-welcome-v1': 'pending' }))).toBe('pt');
+    expect(linkLanguage('?lang=pt', storage({ 'music-theory-app': JSON.stringify({ state: { language: 'en' }, version: 6 }) }))).toBeNull();
+    expect(linkLanguage('?lang=pt', storage({ 'music-theory-progress': '{}' }))).toBeNull();
+    expect(linkLanguage('?lang=pt', storage({ 'fermata-drill-v1': '{}' }))).toBeNull();
+    expect(linkLanguage('?lang=pt', undefined)).toBeNull();
+    const broken = { length: 1, key: () => { throw new Error('blocked'); }, getItem: () => null };
+    expect(linkLanguage('?lang=pt', broken)).toBeNull();
+  });
+
+  describe('at boot', () => {
+    const original = Object.getOwnPropertyDescriptor(window.navigator, 'languages');
+    async function boot(search: string) {
+      window.history.replaceState(null, '', `/${search}`);
+      vi.resetModules();
+      const { useAppStore } = await import('../../state/store');
+      const fresh = (await import('../index')).default;
+      return { store: useAppStore.getState().language, i18n: fresh.language };
+    }
+    afterEach(() => {
+      localStorage.clear();
+      window.history.replaceState(null, '', '/');
+      if (original) Object.defineProperty(window.navigator, 'languages', original);
+      else delete (window.navigator as unknown as Record<string, unknown>).languages;
+    });
+
+    it('a first visit by a Portuguese page\'s link, in an English browser, starts in Portuguese (store and i18next)', async () => {
+      localStorage.clear();
+      Object.defineProperty(window.navigator, 'languages', { value: ['en-GB'], configurable: true });
+      expect(await boot('?lesson=l1u3m1&lang=pt')).toEqual({ store: 'pt', i18n: 'pt' });
+    });
+
+    it('a saved language wins over the link', async () => {
+      localStorage.setItem('music-theory-app', JSON.stringify({ state: { language: 'es' }, version: 6 }));
+      Object.defineProperty(window.navigator, 'languages', { value: ['en-GB'], configurable: true });
+      expect(await boot('?lang=pt')).toEqual({ store: 'es', i18n: 'es' });
+    });
+
+    it('any saved data, even with no language in it, leaves the browser\'s language', async () => {
+      localStorage.setItem('music-theory-progress', JSON.stringify({ state: {}, version: 4 }));
+      Object.defineProperty(window.navigator, 'languages', { value: ['es-ES'], configurable: true });
+      expect(await boot('?lang=pt')).toEqual({ store: 'es', i18n: 'es' });
+    });
+
+    it('decided once, at boot: what is saved afterwards does not change the answer within the page', async () => {
+      localStorage.clear();
+      Object.defineProperty(window.navigator, 'languages', { value: ['en-GB'], configurable: true });
+      window.history.replaceState(null, '', '/?lang=es');
+      vi.resetModules();
+      const language = await import('../language');
+      expect(language.firstRunLanguage()).toBe('es');
+      localStorage.setItem('music-theory-app', '{}');
+      window.history.replaceState(null, '', '/');
+      expect(language.firstRunLanguage()).toBe('es');
+    });
   });
 });

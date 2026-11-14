@@ -1,0 +1,682 @@
+{
+  "l1u1m1": {
+    "en": "the-staff-and-clefs",
+    "pt": "a-pauta-e-as-claves",
+    "es": "el-pentagrama-y-las-claves"
+  },
+  "l1u1m2": {
+    "en": "ledger-lines-and-the-grand-staff",
+    "pt": "linhas-suplementares-e-a-pauta-dupla",
+    "es": "lineas-adicionales-y-el-sistema-de-pentagramas"
+  },
+  "l1u1m3": {
+    "en": "half-steps-whole-steps-and-accidentals",
+    "pt": "meios-tons-tons-e-acidentes",
+    "es": "semitonos-tonos-y-alteraciones"
+  },
+  "l1u1m4": {
+    "en": "the-chromatic-scale",
+    "pt": "a-escala-cromatica",
+    "es": "la-escala-cromatica"
+  },
+  "l1u2m1": {
+    "en": "note-values-and-rests",
+    "pt": "figuras-ritmicas-e-pausas",
+    "es": "figuras-ritmicas-y-silencios"
+  },
+  "l1u2m2": {
+    "en": "meter-and-time-signatures",
+    "pt": "compasso-e-indicacao-de-compasso",
+    "es": "compas-e-indicacion-de-compas"
+  },
+  "l1u3m1": {
+    "en": "the-major-scale",
+    "pt": "a-escala-maior",
+    "es": "la-escala-mayor"
+  },
+  "l1u3m2": {
+    "en": "key-signatures-first-four-keys",
+    "pt": "armacoes-de-clave-primeiras-quatro-tonalidades",
+    "es": "armaduras-de-clave-primeras-cuatro-tonalidades"
+  },
+  "l1u3m3": {
+    "en": "intervals-by-number",
+    "pt": "intervalos-por-numero",
+    "es": "intervalos-por-numero"
+  },
+  "l1u3m4": {
+    "en": "your-first-chords-major-triads",
+    "pt": "os-teus-primeiros-acordes-triades-maiores",
+    "es": "tus-primeros-acordes-triadas-mayores"
+  },
+  "l1u33m1": {
+    "en": "guitar-notation-clef-and-strings",
+    "pt": "notacao-de-guitarra-clave-e-cordas",
+    "es": "notacion-de-guitarra-clave-y-cuerdas"
+  },
+  "l1u33m2": {
+    "en": "guitar-notation-the-two-hands",
+    "pt": "notacao-de-guitarra-as-duas-maos",
+    "es": "notacion-de-guitarra-las-dos-manos"
+  },
+  "l1u33m3": {
+    "en": "guitar-notation-positions-and-barres",
+    "pt": "notacao-de-guitarra-posicoes-e-pestanas",
+    "es": "notacion-de-guitarra-posiciones-y-cejillas"
+  },
+  "l1u34m1": {
+    "en": "high-and-low",
+    "pt": "agudo-e-grave",
+    "es": "agudo-y-grave"
+  },
+  "l1u34m2": {
+    "en": "the-seven-letters",
+    "pt": "as-sete-letras",
+    "es": "las-siete-letras"
+  },
+  "l1u34m3": {
+    "en": "half-steps-and-whole-steps",
+    "pt": "meios-tons-e-tons",
+    "es": "semitonos-y-tonos"
+  },
+  "l1u34m4": {
+    "en": "a-scale-is-a-ladder",
+    "pt": "uma-escala-e-uma-escada",
+    "es": "una-escala-es-una-escalera"
+  },
+  "l1u34m5": {
+    "en": "three-notes-make-a-chord",
+    "pt": "tres-notas-fazem-um-acorde",
+    "es": "tres-notas-forman-un-acorde"
+  },
+  "l1u35m1": {
+    "en": "your-chords-live-in-a-key",
+    "pt": "os-teus-acordes-vivem-numa-tonalidade",
+    "es": "tus-acordes-viven-en-una-tonalidad"
+  },
+  "l1u35m2": {
+    "en": "one-four-five",
+    "pt": "um-quatro-cinco",
+    "es": "uno-cuatro-cinco"
+  },
+  "l1u35m3": {
+    "en": "the-minor-chords-of-the-key",
+    "pt": "os-acordes-menores-da-tonalidade",
+    "es": "los-acordes-menores-de-la-tonalidad"
+  },
+  "l1u35m4": {
+    "en": "home-and-away",
+    "pt": "casa-e-longe-de-casa",
+    "es": "en-casa-y-lejos-de-casa"
+  },
+  "l1u35m5": {
+    "en": "major-and-minor-one-note",
+    "pt": "maior-e-menor-uma-nota",
+    "es": "mayor-y-menor-una-nota"
+  },
+  "l1u35m6": {
+    "en": "what-is-inside-a-chord",
+    "pt": "o-que-ha-dentro-de-um-acorde",
+    "es": "que-hay-dentro-de-un-acorde"
+  },
+  "l1u35m7": {
+    "en": "the-seventh",
+    "pt": "a-setima",
+    "es": "la-septima"
+  },
+  "l1u35m8": {
+    "en": "moving-a-song-other-keys-and-the-capo",
+    "pt": "mudar-uma-musica-de-tonalidade-e-o-capo",
+    "es": "transportar-una-cancion-otras-tonalidades-y-el-capo"
+  },
+  "l1u35m9": {
+    "en": "notes-for-a-melody-or-a-solo",
+    "pt": "notas-para-uma-melodia-ou-um-solo",
+    "es": "notas-para-una-melodia-o-un-solo"
+  },
+  "l1u35m10": {
+    "en": "a-chord-from-outside",
+    "pt": "um-acorde-de-fora",
+    "es": "un-acorde-de-fuera"
+  },
+  "l2u4m1": {
+    "en": "all-major-keys-and-the-circle-of-fifths",
+    "pt": "todas-as-tonalidades-maiores-e-o-circulo-de-quintas",
+    "es": "todas-las-tonalidades-mayores-y-el-circulo-de-quintas"
+  },
+  "l2u4m2": {
+    "en": "scale-degree-names-and-functions",
+    "pt": "nomes-e-funcoes-dos-graus-da-escala",
+    "es": "nombres-y-funciones-de-los-grados-de-la-escala"
+  },
+  "l2u5m1": {
+    "en": "natural-minor-scale",
+    "pt": "escala-menor-natural",
+    "es": "escala-menor-natural"
+  },
+  "l2u5m2": {
+    "en": "harmonic-and-melodic-minor",
+    "pt": "menor-harmonica-e-melodica",
+    "es": "menor-armonica-y-melodica"
+  },
+  "l2u5m3": {
+    "en": "relative-and-parallel-keys",
+    "pt": "tonalidades-relativas-e-homonimas",
+    "es": "tonalidades-relativas-y-homonimas"
+  },
+  "l2u6m1": {
+    "en": "compound-meter-6-8-9-8-12-8",
+    "pt": "compasso-composto-6-8-9-8-12-8",
+    "es": "compas-compuesto-6-8-9-8-12-8"
+  },
+  "l2u6m2": {
+    "en": "syncopation-and-triplets",
+    "pt": "sincopa-e-tercinas",
+    "es": "sincopa-y-tresillos"
+  },
+  "l2u7m1": {
+    "en": "interval-quality-perfect-major-minor",
+    "pt": "qualidade-do-intervalo-perfeito-maior-menor",
+    "es": "cualidad-del-intervalo-justo-mayor-menor"
+  },
+  "l2u7m2": {
+    "en": "augmented-diminished-and-compound-intervals",
+    "pt": "intervalos-aumentados-diminutos-e-compostos",
+    "es": "intervalos-aumentados-disminuidos-y-compuestos"
+  },
+  "l2u7m3": {
+    "en": "the-four-triad-types",
+    "pt": "os-quatro-tipos-de-triades",
+    "es": "los-cuatro-tipos-de-triadas"
+  },
+  "l2u7m4": {
+    "en": "triad-inversions-and-figured-bass",
+    "pt": "inversoes-de-triades-e-baixo-cifrado",
+    "es": "inversiones-de-triadas-y-bajo-cifrado"
+  },
+  "l2u7m5": {
+    "en": "diatonic-triads-and-roman-numerals",
+    "pt": "triades-diatonicas-e-numeracao-romana",
+    "es": "triadas-diatonicas-y-numeros-romanos"
+  },
+  "l3u9m1": {
+    "en": "seventh-chords-the-five-qualities",
+    "pt": "acordes-de-setima-as-cinco-qualidades",
+    "es": "acordes-de-septima-las-cinco-cualidades"
+  },
+  "l3u9m2": {
+    "en": "seventh-chord-inversions",
+    "pt": "inversoes-de-acordes-de-setima",
+    "es": "inversiones-de-acordes-de-septima"
+  },
+  "l3u9m3": {
+    "en": "diatonic-seventh-chords-in-major",
+    "pt": "acordes-de-setima-diatonicos-em-maior",
+    "es": "acordes-de-septima-diatonicos-en-mayor"
+  },
+  "l3u9m4": {
+    "en": "diatonic-seventh-chords-in-minor",
+    "pt": "acordes-de-setima-diatonicos-em-menor",
+    "es": "acordes-de-septima-diatonicos-en-menor"
+  },
+  "l3u10m1": {
+    "en": "voice-leading-satb-basics",
+    "pt": "conducao-de-vozes-nocoes-basicas-de-satb",
+    "es": "conduccion-de-voces-nociones-basicas-de-satb"
+  },
+  "l3u10m2": {
+    "en": "forbidden-parallels-and-voice-motion-in-common-practice",
+    "pt": "quintas-e-oitavas-paralelas-proibidas-e-movimento-de-vozes",
+    "es": "quintas-y-octavas-paralelas-prohibidas-y-movimiento-de-voces"
+  },
+  "l3u10m3": {
+    "en": "root-position-part-writing",
+    "pt": "escrita-a-partes-em-estado-fundamental",
+    "es": "escritura-a-partes-en-estado-fundamental"
+  },
+  "l3u10m4": {
+    "en": "triads-in-inversion",
+    "pt": "triades-em-inversao",
+    "es": "triadas-en-inversion"
+  },
+  "l3u11m1": {
+    "en": "cadences-the-complete-set",
+    "pt": "cadencias-o-conjunto-completo",
+    "es": "cadencias-el-conjunto-completo"
+  },
+  "l3u11m2": {
+    "en": "phrases-and-periods",
+    "pt": "frases-e-periodos",
+    "es": "frases-y-periodos"
+  },
+  "l3u11m3": {
+    "en": "harmonic-rhythm",
+    "pt": "ritmo-harmonico",
+    "es": "ritmo-armonico"
+  },
+  "l3u11m4": {
+    "en": "non-chord-tones-part-1",
+    "pt": "notas-estranhas-ao-acorde-parte-1",
+    "es": "notas-extranas-al-acorde-parte-1"
+  },
+  "l3u11m5": {
+    "en": "transposition",
+    "pt": "transposicao",
+    "es": "transposicion"
+  },
+  "l4u12m1": {
+    "en": "suspensions",
+    "pt": "retardos",
+    "es": "retardos"
+  },
+  "l4u12m2": {
+    "en": "appoggiatura-escape-tone-and-retardation",
+    "pt": "apogiatura-escapada-e-retardo-ascendente",
+    "es": "apoyatura-escapada-y-retardo-ascendente"
+  },
+  "l4u12m3": {
+    "en": "pedal-point-and-changing-tones",
+    "pt": "pedal-e-cambiatas",
+    "es": "nota-pedal-y-cambiatas"
+  },
+  "l4u12m4": {
+    "en": "the-dominant-seventh-resolution-rules",
+    "pt": "a-setima-da-dominante-regras-de-resolucao",
+    "es": "la-septima-de-dominante-reglas-de-resolucion"
+  },
+  "l4u12m5": {
+    "en": "v7-inversions-and-their-resolutions",
+    "pt": "inversoes-de-v7-e-as-suas-resolucoes",
+    "es": "inversiones-de-v7-y-sus-resoluciones"
+  },
+  "l4u13m1": {
+    "en": "pre-dominant-seventh-chords-ii7-and-iv7",
+    "pt": "acordes-de-setima-pre-dominantes-ii7-e-iv7",
+    "es": "acordes-de-septima-predominantes-ii7-y-iv7"
+  },
+  "l4u13m2": {
+    "en": "mediant-submediant-and-tonic-sevenths",
+    "pt": "setimas-da-mediante-submediante-e-tonica",
+    "es": "septimas-de-mediante-submediante-y-tonica"
+  },
+  "l4u13m3": {
+    "en": "leading-tone-sevenths-vii-7-and-viio7",
+    "pt": "setimas-da-sensivel-vii-7-e-vii-7",
+    "es": "septimas-de-sensible-vii-7-y-vii-7"
+  },
+  "l4u13m4": {
+    "en": "harmonic-function-t-pd-d-t",
+    "pt": "funcao-harmonica-t-pd-d-t",
+    "es": "funcion-armonica-t-pd-d-t"
+  },
+  "l4u13m5": {
+    "en": "harmonic-sequences",
+    "pt": "sequencias-harmonicas",
+    "es": "secuencias-armonicas"
+  },
+  "l4u14m1": {
+    "en": "first-and-second-species-counterpoint",
+    "pt": "contraponto-de-primeira-e-segunda-especie",
+    "es": "contrapunto-de-primera-y-segunda-especie"
+  },
+  "l4u14m2": {
+    "en": "asymmetric-and-mixed-meters",
+    "pt": "compassos-assimetricos-e-mistos",
+    "es": "compases-asimetricos-y-mixtos"
+  },
+  "l4u14m3": {
+    "en": "chromatic-embellishment",
+    "pt": "ornamentacao-cromatica",
+    "es": "ornamentacion-cromatica"
+  },
+  "l4u14m4": {
+    "en": "roman-numeral-analysis-practice",
+    "pt": "pratica-de-analise-com-numerais-romanos",
+    "es": "practica-de-analisis-con-numeros-romanos"
+  },
+  "l4u14m5": {
+    "en": "minor-key-harmony-in-detail",
+    "pt": "harmonia-em-modo-menor-em-detalhe",
+    "es": "armonia-en-modo-menor-en-detalle"
+  },
+  "l5u15m1": {
+    "en": "secondary-dominants-v-v-and-v7-v",
+    "pt": "dominantes-secundarias-v-v-e-v7-v",
+    "es": "dominantes-secundarias-v-v-y-v7-v"
+  },
+  "l5u15m2": {
+    "en": "secondary-dominants-of-ii-iii-iv-vi",
+    "pt": "dominantes-secundarias-de-ii-iii-iv-vi",
+    "es": "dominantes-secundarias-de-ii-iii-iv-vi"
+  },
+  "l5u15m3": {
+    "en": "secondary-leading-tone-chords",
+    "pt": "acordes-de-sensivel-secundaria",
+    "es": "acordes-de-sensible-secundaria"
+  },
+  "l5u15m4": {
+    "en": "tonicization-vs-modulation",
+    "pt": "tonicizacao-vs-modulacao",
+    "es": "tonicizacion-vs-modulacion"
+  },
+  "l5u15m5": {
+    "en": "dominant-chains-and-sequential-tonicization",
+    "pt": "cadeias-de-dominantes-e-tonicizacao-sequencial",
+    "es": "cadenas-de-dominantes-y-tonicizacion-secuencial"
+  },
+  "l5u16m1": {
+    "en": "pivot-chord-modulation",
+    "pt": "modulacao-por-acorde-pivot",
+    "es": "modulacion-por-acorde-pivote"
+  },
+  "l5u16m2": {
+    "en": "modulation-to-closely-related-keys",
+    "pt": "modulacao-para-tonalidades-proximas",
+    "es": "modulacion-a-tonalidades-cercanas"
+  },
+  "l5u16m3": {
+    "en": "direct-common-tone-and-chromatic-modulation",
+    "pt": "modulacao-direta-por-nota-comum-e-cromatica",
+    "es": "modulacion-directa-por-nota-comun-y-cromatica"
+  },
+  "l5u16m4": {
+    "en": "mode-mixture-borrowed-chords",
+    "pt": "mistura-modal-acordes-de-emprestimo",
+    "es": "mezcla-modal-acordes-prestados"
+  },
+  "l5u16m5": {
+    "en": "picardy-third-and-mode-mixture-in-minor",
+    "pt": "terca-de-picardia-e-mistura-modal-no-modo-menor",
+    "es": "tercera-de-picardia-y-mezcla-modal-en-el-modo-menor"
+  },
+  "l5u17m1": {
+    "en": "binary-and-ternary-forms",
+    "pt": "forma-binaria-e-ternaria",
+    "es": "forma-binaria-y-ternaria"
+  },
+  "l5u17m2": {
+    "en": "song-forms-and-large-forms-introduction",
+    "pt": "formas-de-cancao-e-introducao-as-grandes-formas",
+    "es": "formas-de-cancion-e-introduccion-a-las-grandes-formas"
+  },
+  "l5u17m3": {
+    "en": "texture",
+    "pt": "textura",
+    "es": "textura"
+  },
+  "l5u17m4": {
+    "en": "guide-tone-lines",
+    "pt": "linhas-de-notas-guia",
+    "es": "lineas-de-notas-guia"
+  },
+  "l6u18m1": {
+    "en": "the-neapolitan-chord-bii",
+    "pt": "o-acorde-napolitano-bii",
+    "es": "el-acorde-napolitano-bii"
+  },
+  "l6u18m2": {
+    "en": "italian-and-french-augmented-sixth-chords",
+    "pt": "sexta-italiana-e-sexta-francesa",
+    "es": "sexta-italiana-y-sexta-francesa"
+  },
+  "l6u18m3": {
+    "en": "german-augmented-sixth-and-its-dual-identity",
+    "pt": "sexta-alema-e-a-sua-dupla-identidade",
+    "es": "sexta-alemana-y-su-doble-identidad"
+  },
+  "l6u18m4": {
+    "en": "enharmonic-modulation-gr-6-v7",
+    "pt": "modulacao-enarmonica-gr-6-v7",
+    "es": "modulacion-enarmonica-gr-6-v7"
+  },
+  "l6u19m1": {
+    "en": "enharmonic-modulation-diminished-seventh",
+    "pt": "modulacao-enarmonica-setima-diminuta",
+    "es": "modulacion-enarmonica-septima-disminuida"
+  },
+  "l6u19m2": {
+    "en": "common-tone-diminished-seventh",
+    "pt": "setima-diminuta-com-nota-comum",
+    "es": "septima-disminuida-con-nota-comun"
+  },
+  "l6u19m3": {
+    "en": "chromatic-mediants-and-altered-dominants",
+    "pt": "mediantes-cromaticas-e-dominantes-alteradas",
+    "es": "mediantes-cromaticas-y-dominantes-alteradas"
+  },
+  "l6u19m4": {
+    "en": "late-romantic-harmonic-techniques",
+    "pt": "tecnicas-harmonicas-tardo-romanticas",
+    "es": "tecnicas-armonicas-tardorromanticas"
+  },
+  "l6u20m1": {
+    "en": "species-counterpoint-first-through-third-species",
+    "pt": "contraponto-de-especies-primeira-a-terceira-especie",
+    "es": "contrapunto-de-especies-primera-a-tercera-especie"
+  },
+  "l6u20m2": {
+    "en": "species-counterpoint-fourth-and-fifth-species",
+    "pt": "contraponto-de-especies-quarta-e-quinta-especie",
+    "es": "contrapunto-de-especies-cuarta-y-quinta-especie"
+  },
+  "l6u20m3": {
+    "en": "three-part-counterpoint-and-invertible-counterpoint",
+    "pt": "contraponto-a-tres-partes-e-contraponto-invertivel",
+    "es": "contrapunto-a-tres-partes-y-contrapunto-invertible"
+  },
+  "l6u20m4": {
+    "en": "advanced-part-writing-and-score-reading",
+    "pt": "escrita-a-partes-avancada-e-leitura-de-partitura",
+    "es": "escritura-a-partes-avanzada-y-lectura-de-partitura"
+  },
+  "l7u21m1": {
+    "en": "jazz-chord-symbols-and-extensions",
+    "pt": "cifras-de-jazz-e-extensoes",
+    "es": "cifrado-jazz-y-extensiones"
+  },
+  "l7u21m2": {
+    "en": "shell-voicings-and-altered-chords",
+    "pt": "voicings-de-shell-e-acordes-alterados",
+    "es": "voicings-de-shell-y-acordes-alterados"
+  },
+  "l7u21m3": {
+    "en": "the-ii-v-i-progression",
+    "pt": "a-progressao-ii-v-i",
+    "es": "la-progresion-ii-v-i"
+  },
+  "l7u21m4": {
+    "en": "tritone-substitution",
+    "pt": "substituicao-tritonica",
+    "es": "sustitucion-tritonal"
+  },
+  "l7u21m5": {
+    "en": "blues-forms",
+    "pt": "formas-de-blues",
+    "es": "formas-de-blues"
+  },
+  "l7u21m6": {
+    "en": "rhythm-changes-and-turnarounds",
+    "pt": "rhythm-changes-e-turnarounds",
+    "es": "rhythm-changes-y-turnarounds"
+  },
+  "l7u22m1": {
+    "en": "chord-scale-theory",
+    "pt": "teoria-acorde-escala",
+    "es": "teoria-acorde-escala"
+  },
+  "l7u22m2": {
+    "en": "upper-structures-and-reharmonization",
+    "pt": "estruturas-superiores-e-rearmonizacao",
+    "es": "estructuras-superiores-y-rearmonizacion"
+  },
+  "l7u22m3": {
+    "en": "coltrane-changes-and-advanced-jazz-harmony",
+    "pt": "mudancas-de-coltrane-e-harmonia-jazz-avancada",
+    "es": "cambios-de-coltrane-y-armonia-jazz-avanzada"
+  },
+  "l7u22m4": {
+    "en": "modal-harmony-fundamentals",
+    "pt": "fundamentos-de-harmonia-modal",
+    "es": "fundamentos-de-armonia-modal"
+  },
+  "l7u22m5": {
+    "en": "quartal-quintal-voicings-and-drones",
+    "pt": "voicings-quartais-quintais-e-pedais",
+    "es": "voicings-cuartales-quintales-y-pedales"
+  },
+  "l7u23m1": {
+    "en": "pop-progressions-and-nashville-numbers",
+    "pt": "progressoes-pop-e-numeros-de-nashville",
+    "es": "progresiones-pop-y-numeros-de-nashville"
+  },
+  "l7u23m2": {
+    "en": "modal-mixture-and-chromatic-mediants-in-pop",
+    "pt": "mistura-modal-e-mediantes-cromaticas-no-pop",
+    "es": "mezcla-modal-y-mediantes-cromaticas-en-el-pop"
+  },
+  "l7u23m3": {
+    "en": "scales-melodic-minor-modes",
+    "pt": "escalas-modos-da-menor-melodica",
+    "es": "escalas-modos-de-la-menor-melodica"
+  },
+  "l7u23m4": {
+    "en": "scales-harmonic-minor-modes-symmetric-and-world",
+    "pt": "escalas-modos-da-menor-harmonica-simetricas-e-do-mundo",
+    "es": "escalas-modos-de-la-menor-armonica-simetricas-y-del-mundo"
+  },
+  "l7u23m5": {
+    "en": "complete-chord-taxonomy",
+    "pt": "taxonomia-completa-de-acordes",
+    "es": "taxonomia-completa-de-acordes"
+  },
+  "l8u25m1": {
+    "en": "fugue-exposition-and-subject-answer",
+    "pt": "fuga-exposicao-e-sujeito-resposta",
+    "es": "fuga-exposicion-y-sujeto-respuesta"
+  },
+  "l8u25m2": {
+    "en": "fugue-episodes-stretto-and-devices",
+    "pt": "fuga-episodios-stretto-e-procedimentos",
+    "es": "fuga-episodios-stretto-y-procedimientos"
+  },
+  "l8u25m3": {
+    "en": "canon-and-other-imitative-forms",
+    "pt": "canone-e-outras-formas-imitativas",
+    "es": "canon-y-otras-formas-imitativas"
+  },
+  "l8u26m1": {
+    "en": "sonata-form-in-depth",
+    "pt": "a-forma-sonata-em-detalhe",
+    "es": "la-forma-sonata-en-detalle"
+  },
+  "l8u26m2": {
+    "en": "variation-rondo-and-ritornello-forms",
+    "pt": "variacoes-rondo-e-ritornello",
+    "es": "variaciones-rondo-y-ritornello"
+  },
+  "l8u26m3": {
+    "en": "orchestration-and-instrumentation-awareness",
+    "pt": "orquestracao-e-consciencia-de-instrumentacao",
+    "es": "orquestacion-y-conciencia-de-instrumentacion"
+  },
+  "l8u27m1": {
+    "en": "pitch-class-sets-and-set-theory",
+    "pt": "conjuntos-de-classes-de-altura-e-teoria-dos-conjuntos",
+    "es": "conjuntos-de-clases-de-altura-y-teoria-de-conjuntos"
+  },
+  "l8u27m2": {
+    "en": "twelve-tone-technique",
+    "pt": "tecnica-dos-doze-sons",
+    "es": "tecnica-dodecafonica"
+  },
+  "l8u27m3": {
+    "en": "20th-century-techniques-planing-polytonality-pandiatonicism",
+    "pt": "tecnicas-do-seculo-xx-paralelismo-politonalidade",
+    "es": "tecnicas-del-siglo-xx-paralelismo-politonalidad"
+  },
+  "l8u27m4": {
+    "en": "minimalism-aleatory-and-extended-techniques",
+    "pt": "minimalismo-aleatoriedade-e-tecnicas-expandidas",
+    "es": "minimalismo-aleatoriedad-y-tecnicas-expandidas"
+  },
+  "l8u27m5": {
+    "en": "advanced-rhythm-polyrhythm-hemiola-metric-modulation",
+    "pt": "ritmo-avancado-polirritmia-hemiola-modulacao-metrica",
+    "es": "ritmo-avanzado-polirritmia-hemiola-modulacion-metrica"
+  },
+  "l9u30m1": {
+    "en": "pitch-matching-and-direction",
+    "pt": "correspondencia-de-altura-e-direcao",
+    "es": "correspondencia-de-altura-y-direccion"
+  },
+  "l9u30m2": {
+    "en": "major-vs-minor-recognition",
+    "pt": "reconhecimento-maior-vs-menor",
+    "es": "reconocimiento-mayor-frente-a-menor"
+  },
+  "l9u30m3": {
+    "en": "interval-recognition-p1-p5",
+    "pt": "reconhecimento-de-intervalos-1p-5p",
+    "es": "reconocimiento-de-intervalos-1j-5j"
+  },
+  "l9u30m4": {
+    "en": "interval-recognition-m6-p8",
+    "pt": "reconhecimento-de-intervalos-6m-8p",
+    "es": "reconocimiento-de-intervalos-6m-8j"
+  },
+  "l9u30m5": {
+    "en": "harmonic-intervals-and-compounds",
+    "pt": "intervalos-harmonicos-e-compostos",
+    "es": "intervalos-armonicos-y-compuestos"
+  },
+  "l9u31m1": {
+    "en": "scale-recognition-major-and-minor-forms",
+    "pt": "reconhecimento-de-escalas-formas-maiores-e-menores",
+    "es": "reconocimiento-de-escalas-formas-mayores-y-menores"
+  },
+  "l9u31m2": {
+    "en": "scale-recognition-modes",
+    "pt": "reconhecimento-de-escalas-modos",
+    "es": "reconocimiento-de-escalas-modos"
+  },
+  "l9u31m3": {
+    "en": "scale-recognition-pentatonic-blues-symmetric",
+    "pt": "reconhecimento-de-escalas-pentatonica-blues-simetrica",
+    "es": "reconocimiento-de-escalas-pentatonica-blues-simetrica"
+  },
+  "l9u31m4": {
+    "en": "triad-quality-recognition",
+    "pt": "reconhecimento-de-qualidade-de-triades",
+    "es": "reconocimiento-de-cualidad-de-triadas"
+  },
+  "l9u31m5": {
+    "en": "seventh-chord-quality-recognition",
+    "pt": "reconhecimento-de-qualidade-de-acordes-de-setima",
+    "es": "reconocimiento-de-cualidad-de-acordes-de-septima"
+  },
+  "l9u32m1": {
+    "en": "melodic-dictation-diatonic",
+    "pt": "ditado-melodico-diatonico",
+    "es": "dictado-melodico-diatonico"
+  },
+  "l9u32m2": {
+    "en": "melodic-dictation-chromatic",
+    "pt": "ditado-melodico-cromatico",
+    "es": "dictado-melodico-cromatico"
+  },
+  "l9u32m3": {
+    "en": "harmonic-dictation-cadences-and-progressions",
+    "pt": "ditado-harmonico-cadencias-e-progressoes",
+    "es": "dictado-armonico-cadencias-y-progresiones"
+  },
+  "l9u32m4": {
+    "en": "sight-singing-fundamentals",
+    "pt": "fundamentos-de-leitura-a-primeira-vista",
+    "es": "fundamentos-de-lectura-a-primera-vista"
+  },
+  "l9u32m5": {
+    "en": "contextual-listening",
+    "pt": "audicao-contextual",
+    "es": "escucha-contextual"
+  }
+}

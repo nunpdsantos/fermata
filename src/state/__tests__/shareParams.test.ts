@@ -57,6 +57,24 @@ describe('readShareParams', () => {
   });
 });
 
+describe('lang (2026-11-14): the search pages\' language, not a shared link', () => {
+  it('does not count as a share parameter, alone or beside one', () => {
+    expect(hasShareParams('?lang=pt')).toBe(false);
+    expect(readShareParams('?lang=pt')).toBeNull();
+    expect(readShareParams('?lesson=l1u3m1&lang=pt')).toEqual({ lesson: 'l1u3m1' });
+    expect(noteBootAddress('?lang=es')).toBe(false);
+    expect(openedFromShareLink()).toBe(false);
+    expect(noteBootAddress('?lesson=l1u3m1&lang=es')).toBe(true);
+    noteBootAddress('');
+  });
+
+  it('leaves the address bar with the link\'s parameters', () => {
+    expect(cleanedAddress('/', '?lang=pt')).toBe('/');
+    expect(cleanedAddress('/', '?lesson=l1u3m1&lang=pt')).toBe('/');
+    expect(cleanedAddress('/', '?debug=1&lang=es', '#x')).toBe('/?debug=1#x');
+  });
+});
+
 describe('cleanedAddress', () => {
   it('takes out the link and view, keeps the rest', () => {
     expect(cleanedAddress('/', '?key=D&scale=major&inst=guitar')).toBe('/');

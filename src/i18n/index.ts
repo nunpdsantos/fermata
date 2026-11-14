@@ -4,12 +4,13 @@ import en from './locales/en.json';
 import pt from './locales/pt.json';
 import es from './locales/es.json';
 
-import { detectBrowserLanguage, isAppLanguage, syncDocumentLanguage } from './language';
+import { firstRunLanguage, isAppLanguage, syncDocumentLanguage } from './language';
 
 // Read the persisted language from localStorage (same storage key as the
-// Zustand store). Nothing saved yet (first run) → follow the browser language,
-// exactly as the preferences slice's default does, so i18next and the store
-// agree from the first render.
+// Zustand store). Nothing saved yet (first run) → a search page's `?lang=` on
+// a visit with no app data at all, else the browser language — exactly as
+// the preferences slice's default does (`firstRunLanguage`, decided once), so
+// i18next and the store agree from the first render.
 function getInitialLanguage(): string {
   try {
     const raw = localStorage.getItem('music-theory-app');
@@ -20,7 +21,7 @@ function getInitialLanguage(): string {
   } catch {
     // ignore
   }
-  return detectBrowserLanguage();
+  return firstRunLanguage();
 }
 
 i18n.use(initReactI18next).init({
