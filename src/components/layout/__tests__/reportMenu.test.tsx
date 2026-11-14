@@ -1,5 +1,5 @@
 /**
- * "⋯" → "Report a problem" (2026-11-12): offered in Explore, Learn and Drill,
+ * "⋯" → "Feedback or a problem" (2026-11-12, "Report a problem" until 2026-11-14): offered in Explore, Learn and Drill,
  * after the metronome (where offered) and before "Update ready"; not while
  * the tour plays. The tap opens the form for the app's language in a new
  * tab (window.open mocked: no test contacts Google); offline, the notice and

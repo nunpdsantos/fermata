@@ -25,7 +25,7 @@ import { join } from 'node:path';
 
 // From disk: i18next merges lazily added namespaces into the imported locale objects.
 const locale = (lang: string) => JSON.parse(readFileSync(join(__dirname, '../../../i18n/locales', `${lang}.json`), 'utf8')) as Record<string, object>;
-// "Report a problem" (2026-11-12): the row after the metronome (where offered), read from the locale file.
+// "Feedback or a problem" (2026-11-12, "Report a problem" until 2026-11-14): the row after the metronome (where offered), read from the locale file.
 const REPORT = (locale('en').report as { menuItem: string }).menuItem;
 
 beforeEach(() => {
@@ -63,7 +63,7 @@ describe('the "⋯" menu', () => {
   it('lists Settings, Show me around, Tuner, then Metronome — and nothing else for a learner who has never opened it', () => {
     render(<TopBar />);
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
-    // Wave 3 integration: the tuner (stream T) sits between Show me around and Metronome; since 2026-11-12 "Report a problem" follows.
+    // Wave 3 integration: the tuner (stream T) sits between Show me around and Metronome; since 2026-11-12 "Feedback or a problem" follows.
     expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome', REPORT]);
     // The bar is not there until it is chosen.
     expect(screen.queryByRole('region', { name: 'Metronome' })).toBeNull();

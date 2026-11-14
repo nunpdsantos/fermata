@@ -262,9 +262,12 @@ describe('where it is not', () => {
 });
 
 describe('release 14 (2026-11-14): What\'s new', () => {
-  it('is the newest entry: not critical, one line per language within 160 characters, naming the button by its own word', async () => {
+  it('is its own entry, right after release 13 (release 15, "Feedback or a problem", followed the same day): not critical, one line per language within 160 characters, naming the button by its own word', async () => {
     const { parseReleaseNotes, MAX_NOTE_LENGTH } = await import('../../../release/releaseNotes');
-    const [newest, previous] = parseReleaseNotes(JSON.parse(releaseNotesSource));
+    const releases = parseReleaseNotes(JSON.parse(releaseNotesSource));
+    const at = releases.findIndex((r) => r.release === 14);
+    expect(at).toBeGreaterThanOrEqual(0);
+    const [newest, previous] = releases.slice(at);
     expect([newest.release, newest.date, newest.critical]).toEqual([14, '2026-11-14', false]);
     expect(previous.release).toBe(13);
     for (const lang of ['en', 'pt', 'es'] as const) {
