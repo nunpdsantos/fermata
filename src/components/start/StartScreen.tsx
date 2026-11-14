@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore, type InstrumentType } from '../../state/store.ts';
 import { SUPPORTED_LANGUAGES } from '../../i18n/index.ts';
@@ -9,6 +9,8 @@ import type { LearnerProfile } from '../../state/learnerProfile.ts';
 import { Button } from '../ui/Button.tsx';
 import { Card } from '../ui/Card.tsx';
 import { Segment } from '../ui/Segment.tsx';
+import { onOldAddress } from '../../services/appAddress.ts';
+import { AddressLink } from '../moved/AddressLink.tsx';
 
 const DOORS: LearnerProfile[] = ['new', 'player', 'theory'];
 const INSTRUMENTS: InstrumentType[] = ['piano', 'guitar'];
@@ -42,6 +44,7 @@ export default function StartScreen() {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const tourRef = useRef<HTMLButtonElement>(null);
   const tourFailed = useDemoFailed();
+  const [movedHere] = useState(() => onOldAddress());
   // The tour plays sound: resume the audio inside this tap (iOS allows it
   // only there; the tour's own resume runs after its chunk has loaded), then
   // ask for it — as the menu's "Show me around" does (TopBar).
@@ -80,6 +83,14 @@ export default function StartScreen() {
             <span>{t('nav.musicTheory')}</span>
           </h1>
           <p className="start-lead">{t('start.tagline')}</p>
+          {/* The old address only (2026-11-14): this page has no toast region,
+              so the reminder is a line here, its address a link. Nobody here
+              has saved anything to bring along (the start screen's own rule). */}
+          {movedHere && (
+            <p className="start-moved" data-testid="start-moved">
+              <AddressLink text={t('movedEntry.toast')} testId="start-moved-link" />
+            </p>
+          )}
           <Button ref={tourRef} variant="primary" className="start-tour" startIcon={PLAY_ICON} onClick={watchTour} data-testid="start-tour">
             {t('start.tour')}
           </Button>

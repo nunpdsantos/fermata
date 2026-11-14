@@ -1404,5 +1404,9 @@
   "report": {
     "menuItem": "Report a problem (Google form)",
     "offline": "You’re offline. The report form needs a connection."
+  },
+  "movedEntry": {
+    "toast": "Fermata is now Fermatina, at fermatina.com.",
+    "action": "Move my progress"
   }
 }

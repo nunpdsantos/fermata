@@ -1,0 +1,12 @@
+{
+  "title": "Moving to fermatina.com",
+  "intro": "This app has a new name and a new address. Your progress is saved in this browser under the old address, so it does not move by itself. It takes three steps.",
+  "step1": "Save your progress to a file.",
+  "export": "Export my progress",
+  "step2": "Open fermatina.com.",
+  "step3": "There, choose “I have a progress file” on the first screen, or go to Settings → Your data → Import.",
+  "nothingSaved": "Nothing saved here? Then just open fermatina.com.",
+  "keepsWorking": "This address keeps working, with everything you saved on it.",
+  "stop": "Don’t remind me again",
+  "settingsLine": "This app has moved to fermatina.com. Export here, import there."
+}

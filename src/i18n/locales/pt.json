@@ -1404,5 +1404,9 @@
   "report": {
     "menuItem": "Comunicar problema (formulário Google)",
     "offline": "Estás sem ligação. O formulário precisa de internet."
+  },
+  "movedEntry": {
+    "toast": "O Fermata chama-se agora Fermatina e está em fermatina.com.",
+    "action": "Levar o meu progresso"
   }
 }
