@@ -2,6 +2,16 @@
   "$comment": "Release notes for the update prompt (W9b). Newest first. Adding an entry = a new release: increment `release` by 1, one line per language (EN / PT-PT / ES, max 160 characters, no line breaks). `critical: true` marks an emergency: every app on an older release applies it at the next safe moment, even after the learner chose Later. The build reads this file (vite.config.ts) and publishes dist/version.json; a deploy without a new entry shows no What's-new line. CLAUDE.md, PWA section.",
   "releases": [
     {
+      "release": 14,
+      "date": "2026-11-14",
+      "critical": false,
+      "notes": {
+        "en": "The guitar neck now starts as if you were facing a player. “Flip neck”, under the guitar, shows it the way tab is drawn.",
+        "pt": "O braço da guitarra começa agora como se estivesses de frente para quem toca. «Virar braço», debaixo da guitarra, mostra-o como numa tablatura.",
+        "es": "El mástil de la guitarra empieza ahora como si estuvieras frente a quien toca. «Girar mástil», bajo la guitarra, lo muestra como en una tablatura."
+      }
+    },
+    {
       "release": 13,
       "date": "2026-11-14",
       "critical": false,

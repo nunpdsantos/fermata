@@ -18,10 +18,12 @@ export type { AppState, ViewMode, InstrumentType, ColorMode, ThemeMode, NeckNutS
 
 /**
  * The neck as it was drawn before 2026-11-10 (nut right, thick string on
- * top) — the owner's view. A save that exists but lacks the neck fields is a
- * learner from before the switch and keeps this view; the save records it by
- * LEAVING THE FIELD OUT (partialize), so such a learner's save is written
- * byte for byte as before.
+ * top) — the owner's view, what you see facing a right-handed player, and
+ * since 2026-11-14 the view of a browser with nothing saved too
+ * (instrumentSlice.ts). A save that exists but lacks the neck fields keeps
+ * this view; the save records it by LEAVING THE FIELD OUT (partialize), so
+ * such a learner's save is written byte for byte as before, and a new
+ * browser saves nothing about the neck until the learner changes it.
  */
 export const LEGACY_NECK = { neckNutSide: 'right', neckTopString: 'low' } as const;
 
@@ -284,7 +286,9 @@ export const useAppStore = create<AppState>()(
         // A save without a neck field (from before 2026-11-10, or the legacy
         // value left out by partialize): the old view. No save at all never
         // reaches here (sanitized is null): that browser keeps the slice's
-        // tab / chord-chart default.
+        // default, the same view since 2026-11-14 (between 2026-11-10 and
+        // then it was the tab view, which such a browser saved explicitly
+        // and keeps).
         if (!('neckNutSide' in sanitized)) merged.neckNutSide = LEGACY_NECK.neckNutSide;
         if (!('neckTopString' in sanitized)) merged.neckTopString = LEGACY_NECK.neckTopString;
         return merged;

@@ -12,8 +12,10 @@ import { smallScreenAssertions, dialogButtonsFit } from './helpers/smallScreenAs
  * control), the whole neck with a capo, the Open position at the capo, the
  * landscape full neck, and Settings with its Capo row. Phone 390×844, phone
  * sideways 844×390, tablet 768×1024 (touch) and laptop 1440×900, day and
- * night, in the owner's neck (nut right, thick string on top) and the new
- * visitor's (nut left, thin string on top); PT and ES at 320 and 360 px.
+ * night, in the owner's neck (nut right, thick string on top — since
+ * 2026-11-14 also a new visitor's) and the tab view (nut left, thin string on
+ * top: a visitor of 10–14 November, or "Flip neck"); PT and ES at 320 and
+ * 360 px.
  *
  * `open` / `settle` / `check` repeat design-system.spec.ts's (they are local
  * to that spec). DESIGN_AUDIT_OUT=<dir> writes each screen's audit + a

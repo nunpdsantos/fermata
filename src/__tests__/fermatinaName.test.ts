@@ -141,10 +141,12 @@ describe('the address search engines are given', () => {
 });
 
 describe('release 13 (2026-11-14): the rename, in What\'s new', () => {
-  it('is the newest entry: not critical, one line per language within 160 characters, each naming the new address and where to export', async () => {
+  it('is its own entry, right after release 12 (release 14, the neck, followed the same day): not critical, one line per language within 160 characters, each naming the new address and where to export', async () => {
     const { parseReleaseNotes, MAX_NOTE_LENGTH } = await import('../release/releaseNotes');
     const releases = parseReleaseNotes(JSON.parse(read('../../release-notes.json')));
-    const [newest, previous] = releases;
+    const at = releases.findIndex((r) => r.release === 13);
+    expect(at).toBeGreaterThanOrEqual(0);
+    const [newest, previous] = releases.slice(at);
     expect([newest.release, newest.date, newest.critical]).toEqual([13, '2026-11-14', false]);
     expect(previous.release).toBe(12);
     const locales = { en: JSON.parse(read('../i18n/locales/en.json')), pt: JSON.parse(read('../i18n/locales/pt.json')), es: JSON.parse(read('../i18n/locales/es.json')) };

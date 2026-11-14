@@ -14,7 +14,8 @@ import { PHONE, LAPTOP, type View, freshBrowser, seededBrowser, savedState, neck
  *    (English: nothing about Dó-Ré-Mi is saved.)
  *  - Player: an empty Portuguese browser → the start screen in Portuguese →
  *    "Toco, mas nunca aprendi teoria" + Guitarra → Simple, the guitar docked,
- *    nut on the left, the hint, and both names (Dó-Ré-Mi is on after a door
+ *    the neck as seen facing a player (nut on the right, thick string on
+ *    top: the default since 2026-11-14, nothing about it saved), the hint, and both names (Dó-Ré-Mi is on after a door
  *    in PT, the owner's 8.1) → a key and a chord → the hint gone for good →
  *    Settings: Dó-Ré-Mi off → letters only → reload → still off → on again
  *    → Copy link → that link in a second empty browser → the same key, chord
@@ -99,7 +100,7 @@ for (const v of [PHONE, LAPTOP] as View[]) {
     await context.close();
   });
 
-  test(`player (${v.name}, pt-PT): start screen in Portuguese → guitar player → nut-left Simple → key + chord → hint gone → Dó-Ré-Mi → Copy link → a second empty browser opens the same`, async ({ browser }) => {
+  test(`player (${v.name}, pt-PT): start screen in Portuguese → guitar player → Simple, the neck facing a player → key + chord → hint gone → Dó-Ré-Mi → Copy link → a second empty browser opens the same`, async ({ browser }) => {
     test.setTimeout(150_000);
     const { context, page } = await freshBrowser(browser, v, 'pt');
     await captureShare(page);
@@ -112,7 +113,9 @@ for (const v of [PHONE, LAPTOP] as View[]) {
     await expect(page.getByTestId('explore-root')).toBeVisible({ timeout: 15_000 });
     expect(await exploreDetail(page)).toBe('simple');
     await expect(page.getByRole('radio', { name: 'Guitarra' }).first()).toHaveAttribute('aria-checked', 'true');
-    expect(await neckDrawn(page)).toEqual({ strings: [1, 2, 3, 4, 5, 6], nut: 'left' });
+    expect(await neckDrawn(page)).toEqual({ strings: [6, 5, 4, 3, 2, 1], nut: 'right' });
+    expect(await savedState(page)).not.toHaveProperty('neckNutSide');
+    expect(await savedState(page)).not.toHaveProperty('neckTopString');
     await expect(page.getByTestId('start-hint')).toBeVisible();
     // Both names, right after the door: no visit to Settings.
     await expect(page.getByTestId('key-summary')).toContainText('C (Dó) maior');
