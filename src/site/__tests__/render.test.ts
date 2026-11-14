@@ -5,7 +5,7 @@ import { getNextModuleInLevel, getPreviousModuleInLevel, loadLevel } from '../..
 import { findQuotedQueries } from '../../utils/theoryQuery';
 import type { CurriculumLevel, CurriculumModule } from '../../core/types/curriculum';
 import { siteLessons, SITE_LANGS, type SiteLang } from '../content';
-import { buildSite, ORIGIN, sitePath, STYLESHEET, appUrl, type Site, type SitePage } from '../render';
+import { buildSite, ORIGIN, sitePath, STYLESHEET, appUrl, lessonTitle, TITLE_WITH_NAME_MAX, type Site, type SitePage } from '../render';
 import { checkSite, textOf, type SiteFiles } from '../check';
 import { rawQueryTokens } from '../html';
 import { NEW_STRINGS } from '../strings';
@@ -246,5 +246,42 @@ describe('the pages are text, not the app', () => {
       expect(p.html.match(/<script\b/g)).toHaveLength(1);
       expect(textOf(p.html)).not.toMatch(/music-theory-app|fermata-drill|localStorage/);
     }
+  });
+});
+
+describe('a lesson page\'s title: the site\'s name only while the whole title fits the limit', () => {
+  it('carries the site\'s name while it fits, and is the lesson\'s own title, unshortened, when it does not', () => {
+    expect(TITLE_WITH_NAME_MAX).toBe(60);
+    expect(lessonTitle('The Major Scale')).toBe('The Major Scale · Fermatina');
+    const atLimit = 'x'.repeat(TITLE_WITH_NAME_MAX - ' · Fermatina'.length);
+    expect(lessonTitle(atLimit)).toBe(`${atLimit} · Fermatina`);
+    expect(lessonTitle(`${atLimit}y`)).toBe(`${atLimit}y`);
+  });
+
+  it('holds over every lesson page of the build: named up to the limit, never cut, never empty, all different', () => {
+    const site = buildSite(registry as SlugRegistry);
+    const titles: string[] = [];
+    let alone = 0;
+    for (const lang of SITE_LANGS) {
+      const own = new Map(siteLessons(lang).map((l) => [l.module.id, l.module.title]));
+      for (const page of site.pages.filter((p) => p.kind === 'lesson' && p.lang === lang)) {
+        titles.push(`${lang}:${page.title}`);
+        expect(page.title.trim().length, page.path).toBeGreaterThan(0);
+        expect(/<title>([^<]*)<\/title>/.exec(page.html)?.[1]?.trim().length ?? 0, page.path).toBeGreaterThan(0);
+        if (page.title.endsWith(' · Fermatina')) {
+          expect(page.title.length, page.title).toBeLessThanOrEqual(TITLE_WITH_NAME_MAX);
+          expect(page.title, page.path).toBe(`${own.get(page.key)} · Fermatina`);
+        } else {
+          alone++;
+          expect(page.title, page.path).toBe(own.get(page.key));
+          expect(`${page.title} · Fermatina`.length, page.title).toBeGreaterThan(TITLE_WITH_NAME_MAX);
+        }
+      }
+    }
+    expect(titles.length).toBe(136 * 3);
+    expect(new Set(titles).size).toBe(titles.length);
+    // Known positive: some titles are long enough to stand alone, most are not.
+    expect(alone).toBeGreaterThan(0);
+    expect(alone).toBeLessThan(60);
   });
 });
