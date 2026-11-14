@@ -305,6 +305,9 @@ test('old address: "Don\'t remind me again" is saved and kept across visits; Set
   await panel.getByRole('button', { name: MOVED[lang].stop }).click();
   await expect(panel).toHaveCount(0);
   await expect(movedToast(page, lang)).toHaveCount(0);
+  // Focus goes to the top bar's "⋯" (Settings, with the moved line, is behind it), not to <body>.
+  await expect(page.getByRole('button', { name: new RegExp(`^${WORDS[lang].nav.more}`) })).toBeFocused();
+  expect(await page.evaluate(() => document.activeElement === document.body)).toBe(false);
   expect(await page.evaluate((k) => localStorage.getItem(k), FLAG)).toBe('{"stopped":true}');
   expect(await flagTouches(page)).toContain('setItem');
 

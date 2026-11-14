@@ -1,3 +1,4 @@
+import { flushSync } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { Sheet } from '../ui/Sheet.tsx';
 import { Button } from '../ui/Button.tsx';
@@ -16,12 +17,22 @@ import '../../i18n/moved/index.ts';
  * there — and "Don't remind me again". A lazy chunk: only the old address
  * ever downloads it.
  */
+/** The top bar's "⋯" button: Settings, where the moved line stays, is behind it. */
+const moreButton = () => document.querySelector<HTMLElement>('[data-testid="app-menu"] button[aria-haspopup="menu"]');
+
 export default function MovedPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useTranslation();
   const exportNow = () => {
     downloadBackup(localStorage);
     toast(t('backup.exported'), 'success');
     noteMovedExport();
+  };
+  // "Don't remind me again": the panel closes (synchronously, so the sheet has
+  // let go of focus) and focus goes to "⋯" — never to <body>: the toast's
+  // button, which opened the panel and where focus would return, is gone.
+  const stop = () => {
+    flushSync(stopMovedReminder);
+    moreButton()?.focus();
   };
   return (
     <Sheet open={open} onClose={onClose} title={t('moved.title')} closeLabel={t('common.close')} testId="moved-panel">
@@ -42,7 +53,7 @@ export default function MovedPanel({ open, onClose }: { open: boolean; onClose: 
         <p>{t('moved.nothingSaved')}</p>
         <p>{t('moved.keepsWorking')}</p>
         <div>
-          <Button variant="quiet" onClick={stopMovedReminder} data-testid="moved-stop">{t('moved.stop')}</Button>
+          <Button variant="quiet" onClick={stop} data-testid="moved-stop">{t('moved.stop')}</Button>
         </div>
       </div>
     </Sheet>

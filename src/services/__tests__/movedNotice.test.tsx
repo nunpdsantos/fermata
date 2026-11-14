@@ -43,6 +43,7 @@ import {
 import { MovedNoticeHost } from '../../components/moved/MovedNoticeHost';
 import { ToastRegion } from '../../components/layout/ToastRegion';
 import { SettingsSheet } from '../../components/layout/SettingsSheet';
+import { TopBar } from '../../components/layout/TopBar';
 import StartScreen from '../../components/start/StartScreen';
 
 const LOCALES = { en, pt, es };
@@ -248,6 +249,20 @@ describe('the panel (MovedNoticeHost in the shell)', () => {
     expect(screen.queryByRole('dialog', { name: movedEn.title })).toBeNull();
     expect(localStorage.getItem(MOVED_FLAG_KEY)).toBe('{"stopped":true}');
     expect(movedToasts()).toHaveLength(0);
+  });
+
+  it('"Don\'t remind me again" sends keyboard focus to the top bar\'s "⋯" button, never to <body>', async () => {
+    render(<><TopBar /><ToastRegion /><MovedNoticeHost /></>);
+    const action = within(screen.getByTestId('toast-region')).getByRole('button', { name: en.movedEntry.action });
+    action.focus();
+    fireEvent.click(action);
+    const panel = await screen.findByRole('dialog', { name: movedEn.title }, { timeout: 8000 });
+    const stop = within(panel).getByRole('button', { name: movedEn.stop });
+    stop.focus();
+    fireEvent.click(stop);
+    expect(screen.queryByRole('dialog', { name: movedEn.title })).toBeNull();
+    expect(document.activeElement).not.toBe(document.body);
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: en.nav.more }));
   });
 
   it.each(ELSEWHERE)('on %s it renders nothing and offers nothing', async (elsewhere) => {
