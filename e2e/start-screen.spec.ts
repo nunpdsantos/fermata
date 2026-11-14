@@ -260,7 +260,7 @@ test.describe('the tour, a shared link, the language, the keyboard', () => {
       await expect(startScreen(page)).toBeVisible({ timeout: 15_000 });
       await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
       const stops: string[] = [];
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 7; i++) {
         await page.keyboard.press('Tab');
         stops.push(await page.evaluate(() => {
           const el = document.activeElement as HTMLElement;
@@ -280,9 +280,12 @@ test.describe('the tour, a shared link, the language, the keyboard', () => {
         "button:I'm new to musicStart wi",
         'button:I play, but never learne',
         'button:I know some theoryStraig',
+        // 2026-11-14: "I have a progress file", under the doors.
+        'button:I have a progress file',
         'radio:English',
       ]);
       // Arrows in "I'll use" move AND select (one Tab stop for the segment).
+      await page.keyboard.press('Shift+Tab');
       await page.keyboard.press('Shift+Tab');
       await page.keyboard.press('Shift+Tab');
       await page.keyboard.press('Shift+Tab');
