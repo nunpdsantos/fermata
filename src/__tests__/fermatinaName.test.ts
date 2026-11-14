@@ -134,7 +134,8 @@ describe('the address search engines are given', () => {
 
   it('the service worker hands both files and the search pages to the server, never the app\'s page; vercel.json has no redirect or rewrite', () => {
     const vite = read('../../vite.config.ts');
-    expect(vite).toContain('navigateFallbackDenylist: [/^\\/robots\\.txt$/, /^\\/sitemap\\.xml$/, /^\\/(?:en|pt|es)(?:[/?#]|$)/],');
+    // Since 2026-11-14 the tester's sheet, /test/, is left to the server too (check:sw tests it).
+    expect(vite).toContain('navigateFallbackDenylist: [/^\\/robots\\.txt$/, /^\\/sitemap\\.xml$/, /^\\/(?:en|pt|es)(?:[/?#]|$)/, /^\\/test(?:[/?#]|$)/],');
     const vercel = JSON.parse(read('../../vercel.json')) as Record<string, unknown>;
     expect(Object.keys(vercel)).toEqual(['headers']);
   });
