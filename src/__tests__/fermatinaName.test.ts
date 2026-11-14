@@ -134,3 +134,23 @@ describe('the address search engines are given', () => {
     expect(Object.keys(vercel)).toEqual(['headers']);
   });
 });
+
+describe('release 13 (2026-11-14): the rename, in What\'s new', () => {
+  it('is the newest entry: not critical, one line per language within 160 characters, each naming the new address and where to export', async () => {
+    const { parseReleaseNotes, MAX_NOTE_LENGTH } = await import('../release/releaseNotes');
+    const releases = parseReleaseNotes(JSON.parse(read('../../release-notes.json')));
+    const [newest, previous] = releases;
+    expect([newest.release, newest.date, newest.critical]).toEqual([13, '2026-11-14', false]);
+    expect(previous.release).toBe(12);
+    const locales = { en: JSON.parse(read('../i18n/locales/en.json')), pt: JSON.parse(read('../i18n/locales/pt.json')), es: JSON.parse(read('../i18n/locales/es.json')) };
+    for (const lang of ['en', 'pt', 'es'] as const) {
+      const note = newest.notes[lang];
+      expect(note.length, lang).toBeLessThanOrEqual(MAX_NOTE_LENGTH);
+      expect(note).toContain('fermatina.com');
+      // The way there, in the app's own labels: Settings → Your data → Export.
+      const s = locales[lang].settings;
+      expect(note, lang).toContain(`${s.title} → ${s.yourData} → ${s.export}`);
+    }
+    expect([newest.notes.en.length, newest.notes.pt.length, newest.notes.es.length]).toEqual([122, 138, 128]);
+  });
+});
