@@ -22,7 +22,7 @@ export interface NewStrings {
   languages: string;
   /** The landing page's heading over what the app holds. */
   inside: string;
-  /** The landing page's line on the metronome ({{min}}, {{max}}, {{bars}} from the app's own limits). */
+  /** The landing page's line on the metronome ({{min}}, {{max}}, {{bars}} from the app's own limits; the metronome's own words). Shown as its bold label and the rest. */
   metronome: string;
   /** The link to the lesson index ({{count}} lessons). */
   allLessons: string;
@@ -30,8 +30,12 @@ export interface NewStrings {
   indexDescription: string;
   /** The glossary's heading (h1, title) and its link text. */
   wordsTitle: string;
-  /** The glossary's lead line and description ({{count}} words). */
+  /** The glossary's lead line ({{count}} words); its meta description is `glossaryWord: lead`. */
   wordsLead: string;
+  /** The word people search for, opening the glossary's meta description ("Glossary: 108 music words, …"). */
+  glossaryWord: string;
+  /** The landing page's <title>. */
+  landingTitle: string;
 }
 
 export const NEW_STRINGS: Record<SiteLang, NewStrings> = {
@@ -46,7 +50,9 @@ export const NEW_STRINGS: Record<SiteLang, NewStrings> = {
     allLessons: 'All {{count}} lessons',
     indexDescription: '{{count}} lessons in nine levels, from reading music to jazz harmony and ear training, and two short ways in: by ear, or from the chords you play.',
     wordsTitle: 'Music words, in plain language',
-    wordsLead: '{{count}} words of music, each explained in a sentence or two.',
+    wordsLead: '{{count}} music words, each explained in a sentence or two.',
+    glossaryWord: 'Glossary',
+    landingTitle: 'Fermatina: learn music theory on a piano or guitar in your browser',
   },
   pt: {
     openLesson: 'Abrir esta lição na Fermatina',
@@ -55,11 +61,13 @@ export const NEW_STRINGS: Record<SiteLang, NewStrings> = {
     onInstrument: 'No teu instrumento',
     languages: 'Em inglês, português e espanhol.',
     inside: 'O que há lá dentro',
-    metronome: 'Metrónomo: cliques regulares de {{min}} a {{max}} batimentos por minuto, com {{bars}} tempos por compasso.',
+    metronome: 'Metrónomo: cliques regulares de {{min}} a {{max}} pulsações por minuto, com {{bars}} pulsações por compasso.',
     allLessons: 'Todas as {{count}} lições',
-    indexDescription: '{{count}} lições em nove níveis, da leitura de música à harmonia de jazz e ao treino auditivo, e duas formas curtas de começar: de ouvido ou a partir dos acordes que tocas.',
-    wordsTitle: 'Palavras da música, em linguagem simples',
-    wordsLead: '{{count}} palavras da música, cada uma explicada numa ou duas frases.',
+    indexDescription: '{{count}} lições em nove níveis, da leitura de música à harmonia de jazz e ao treino auditivo, e duas formas curtas de começar: de ouvido ou pelos acordes que tocas.',
+    wordsTitle: 'Palavras da teoria musical, em linguagem simples',
+    wordsLead: '{{count}} palavras da teoria musical, cada uma explicada numa ou duas frases.',
+    glossaryWord: 'Glossário',
+    landingTitle: 'Fermatina: aprende teoria musical num piano ou numa guitarra',
   },
   es: {
     openLesson: 'Abrir esta lección en Fermatina',
@@ -67,12 +75,14 @@ export const NEW_STRINGS: Record<SiteLang, NewStrings> = {
     tryInApp: 'En Fermatina puedes oírlo y tocarlo en un piano o una guitarra.',
     onInstrument: 'En tu instrumento',
     languages: 'En inglés, portugués y español.',
-    inside: 'Qué hay dentro',
-    metronome: 'Metrónomo: clics regulares de {{min}} a {{max}} pulsaciones por minuto, con {{bars}} tiempos por compás.',
+    inside: 'Lo que hay dentro',
+    metronome: 'Metrónomo: clics regulares de {{min}} a {{max}} pulsos por minuto, con {{bars}} pulsos por compás.',
     allLessons: 'Las {{count}} lecciones',
-    indexDescription: '{{count}} lecciones en nueve niveles, de la lectura musical a la armonía de jazz y el entrenamiento auditivo, y dos formas cortas de empezar: de oído o desde los acordes que tocas.',
+    indexDescription: '{{count}} lecciones en nueve niveles, de la lectura musical a la armonía de jazz y el entrenamiento auditivo, y dos formas de empezar: de oído o desde tus acordes.',
     wordsTitle: 'Palabras de la música, en lenguaje sencillo',
     wordsLead: '{{count}} palabras de la música, cada una explicada en una o dos frases.',
+    glossaryWord: 'Glosario',
+    landingTitle: 'Fermatina: aprende teoría musical en un piano o una guitarra',
   },
 };
 
