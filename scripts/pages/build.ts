@@ -17,7 +17,8 @@ import { fileURLToPath } from 'node:url';
 import { buildSite, STYLESHEET } from '../../src/site/render';
 import { SITE_LANGS } from '../../src/site/content';
 import { pageStylesheet } from '../../src/site/style';
-import { printReport, verifyDist } from './verify';
+import { printReport, verifyDist, verifyTestPage } from './verify';
+import { writeTestSheet } from './test-sheet';
 
 const started = performance.now();
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -52,4 +53,16 @@ const written = performance.now();
 const report = verifyDist(dist, slugs);
 printReport(report, 'pages');
 console.log(`pages: wrote ${site.pages.length} pages + sitemap.xml + ${STYLESHEET.slice(1)} (${bytes} B) in ${Math.round(written - started)} ms; checked in ${Math.round(performance.now() - written)} ms`);
-process.exit(report.problems.length ? 1 : 0);
+
+// The tester's sheet, /test/ (2026-11-14): its own page, script and stylesheet, and its own checks.
+let sheetSizes: Record<string, number>;
+try {
+  sheetSizes = await writeTestSheet(root, dist);
+} catch (e) {
+  console.error(`test sheet: ${(e as Error).message}`);
+  process.exit(1);
+}
+const sheetProblems = verifyTestPage(dist);
+console.log(`test sheet: wrote ${Object.entries(sheetSizes).map(([f, b]) => `${f} (${b} B)`).join(', ')}; ${sheetProblems.length} problem(s)`);
+for (const p of sheetProblems) console.error(`  PROBLEM ${p}`);
+process.exit(report.problems.length || sheetProblems.length ? 1 : 0);

@@ -20,13 +20,19 @@
  *  - the worker imports the window-count add-on (sw-window-count.js, W9b);
  *  - the search pages (/en/, /pt/, /es/, /pages.css, /og.png) are NOT
  *    precached, and every page's address is on the navigation fallback's
- *    denylist (the app's own addresses are not).
+ *    denylist (the app's own addresses are not);
+ *  - the tester's sheet (/test/, 2026-11-14) likewise: nothing under test/
+ *    precached, vite.config.ts's globIgnores still lists `test/**` (the
+ *    sheet is written after `vite build`, so its files never reach Workbox's
+ *    glob today: without this line, dropping the entry would go unseen), and
+ *    /test (with a slash, a query or a hash) on the denylist.
  *
  * Usage: node scripts/check-sw-coverage.mjs [distDir=dist]
  * Exit 0 = all good; 1 = problems (listed); 2 = no build / parser out of date.
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const dist = path.resolve(process.argv[2] ?? 'dist');
 const swPath = path.join(dist, 'sw.js');
@@ -206,4 +212,27 @@ for (const p of ['/', '/?lesson=l1u3m1&lang=pt', '/?lang=es', '/?view=drill', '/
 console.log(`check-sw-coverage: search pages — ${pagePaths.length} page(s), ${servedByServer.length} address(es) left to the server, ${pagesProblems.length} problem(s)`);
 for (const p of pagesProblems) console.log(`  PAGES ${p}`);
 
-process.exit(notPrecached.length || missingDeps.length || overlayProblems.length || otherProblems.length || pagesProblems.length ? 1 : 0);
+// The tester's sheet (/test/, 2026-11-14, scripts/pages/test-sheet.ts):
+// written after `vite build` with the search pages. Never precached, and a
+// page the worker controls gets it from the server, never the app's shell
+// (a tester with the app installed who opens /test/ gets the sheet).
+const sheetProblems = [];
+if (!fs.existsSync(path.join(dist, 'test', 'index.html'))) {
+  console.error('check-sw-coverage: no dist/test/index.html — run `npm run build` (it writes the test sheet after vite build).');
+  process.exit(2);
+}
+for (const u of precached) if (/^test\//.test(u)) sheetProblems.push(`${u}: a file of the test sheet is precached (vite.config.ts globIgnores 'test/**')`);
+const viteConfig = fs.readFileSync(fileURLToPath(new URL('../vite.config.ts', import.meta.url)), 'utf8');
+const ignores = viteConfig.match(/globIgnores:\s*\[([^\]]*)\]/);
+if (!ignores) {
+  console.error('check-sw-coverage: no globIgnores array found in vite.config.ts — parser out of date?');
+  process.exit(2);
+}
+if (!/['"]test\/\*\*['"]/.test(ignores[1])) sheetProblems.push(`vite.config.ts globIgnores [${ignores[1].trim()}] does not list 'test/**'`);
+const sheetAddresses = ['/test/', '/test', '/test/?lang=pt', '/test/#player', '/test/?lang=es#watching', '/test/index.html'];
+for (const p of sheetAddresses) if (!denied(p)) sheetProblems.push(`${p}: the worker would answer the test sheet with the app's shell (vite.config.ts navigateFallbackDenylist)`);
+for (const p of ['/', '/?lang=pt', '/?view=drill', '/index.html']) if (denied(p)) sheetProblems.push(`${p}: the app's own address is on the denylist`);
+console.log(`check-sw-coverage: test sheet — ${sheetAddresses.length} address(es) left to the server, ${sheetProblems.length} problem(s)`);
+for (const p of sheetProblems) console.log(`  SHEET ${p}`);
+
+process.exit(notPrecached.length || missingDeps.length || overlayProblems.length || otherProblems.length || pagesProblems.length || sheetProblems.length ? 1 : 0);
