@@ -290,6 +290,16 @@ const topBar = (page: Page) => page.evaluate(() => {
     controls,
     slot: slot && slot.offsetParent !== null ? { x: r1(slot.getBoundingClientRect().left), w: r1(slot.getBoundingClientRect().width) } : null,
     brand: [r1(brand.left), r1(brand.width)],
+    // 2026-11-14: once, on GitHub (run 43595472893, attempt 1), five single
+    // measurements in Spanish came out about 33 px narrower and re-centred, and
+    // were never seen again. If it returns, these say what the strip held:
+    // each tab's words and width, and whether a font was still loading.
+    labels: Array.from(tabs.querySelectorAll('button')).map((b) => `${(b.textContent ?? '').trim()}=${r1(b.getBoundingClientRect().width)}`),
+    fonts: (() => {
+      let loading = 0;
+      document.fonts.forEach((f) => { if (f.status === 'loading') loading += 1; });
+      return `${document.fonts.status}, ${loading} loading`;
+    })(),
     search: controls.some((c) => /Command/.test(c.name)),
     pageScroll: document.documentElement.scrollWidth - innerWidth,
     barScroll: bar.scrollWidth - bar.clientWidth,
@@ -378,7 +388,7 @@ test.describe('the top bar holds still between views (brief U2)', () => {
             // move it: each edge moves by no more than that width change, which itself stays within 3 px (a switch
             // or a slot out of place moves the strip by 24 to 48 px).
             const dw = Math.abs(m.tabsWidth - e.tabsWidth);
-            expect.soft(dw, `${lang} ${width}px ${where}: the tabs' width as in Explore but for the bolder selected word (${px(m.tabsWidth)} / ${px(e.tabsWidth)})`).toBeLessThanOrEqual(3);
+            expect.soft(dw, `${lang} ${width}px ${where}: the tabs' width as in Explore but for the bolder selected word (${px(m.tabsWidth)} / ${px(e.tabsWidth)}) [here: ${m.labels.join(' ')}; fonts ${m.fonts} | Explore: ${e.labels.join(' ')}; fonts ${e.fonts}]`).toBeLessThanOrEqual(3);
             expect.soft(Math.abs(m.tabsLeft - e.tabsLeft), `${lang} ${width}px ${where}: the tabs' left edge as in Explore (${px(m.tabsLeft)} / ${px(e.tabsLeft)}; width change ${px(dw)})`).toBeLessThanOrEqual(dw + 0.5);
             expect.soft(Math.abs(m.tabsLeft + m.tabsWidth - e.tabsLeft - e.tabsWidth), `${lang} ${width}px ${where}: the tabs' right edge as in Explore (${px(m.tabsLeft + m.tabsWidth)} / ${px(e.tabsLeft + e.tabsWidth)}; width change ${px(dw)})`).toBeLessThanOrEqual(dw + 0.5);
           }

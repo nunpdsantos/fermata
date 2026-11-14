@@ -4,7 +4,7 @@ import { toast } from '../state/toastStore';
 /**
  * "Report a problem" (2026-11-12): one Google Form per language, opened in a
  * new tab by the learner's tap ("⋯" → Report a problem, and the link at the
- * foot of a lesson). The form's fourth box ("Details added by Fermata") is
+ * foot of a lesson). The form's fourth box ("Details added by Fermatina") is
  * filled in through the link with one line saying where the learner was.
  * Nothing is sent before the tap: no request, no preconnect; the link is
  * built on the device and the browser opens it only when tapped. Offline,

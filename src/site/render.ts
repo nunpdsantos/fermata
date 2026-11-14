@@ -126,6 +126,24 @@ export function wholeSentences(sentences: readonly string[], max = MAX_DESCRIPTI
   return out;
 }
 
+/**
+ * The longest lesson page title that still carries the site's name. Google
+ * publishes no figure: its title-link guide says a title is cut "as needed,
+ * typically to fit the device width" (read 2026-11-14). 60 characters is a
+ * common rule of thumb, chosen here; it is not a measured limit.
+ */
+export const TITLE_WITH_NAME_MAX = 60;
+/**
+ * A lesson page's title: the lesson's own title and the site's name. Where
+ * the two together run past the limit above, the lesson's title stands alone:
+ * the room in a result line goes to the lesson's name. The lesson's title is
+ * never shortened, and the site's name is still in the page (og:site_name).
+ */
+export function lessonTitle(title: string): string {
+  const withName = `${title} · Fermatina`;
+  return withName.length <= TITLE_WITH_NAME_MAX ? withName : title;
+}
+
 /** A lesson's description: its subtitle, then its objectives, as whole sentences within the limit (its own words). */
 export function lessonDescription(module: CurriculumModule): string {
   return wholeSentences([module.subtitle, ...module.objectives].filter((s) => s.trim()).map(sentence));
@@ -432,7 +450,7 @@ ${pager}`;
   const description = lessonDescription(module);
   return {
     main,
-    title: `${module.title} · Fermatina`,
+    title: lessonTitle(module.title),
     description,
     jsonLd: {
       '@context': 'https://schema.org',
