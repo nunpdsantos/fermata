@@ -17,7 +17,10 @@
  *  - dist/version.json (the build's release + What's-new note, W9b) exists, is
  *    well-formed and is NOT precached (the network copy describes the
  *    waiting version);
- *  - the worker imports the window-count add-on (sw-window-count.js, W9b).
+ *  - the worker imports the window-count add-on (sw-window-count.js, W9b);
+ *  - the search pages (/en/, /pt/, /es/, /pages.css, /og.png) are NOT
+ *    precached, and every page's address is on the navigation fallback's
+ *    denylist (the app's own addresses are not).
  *
  * Usage: node scripts/check-sw-coverage.mjs [distDir=dist]
  * Exit 0 = all good; 1 = problems (listed); 2 = no build / parser out of date.
@@ -141,4 +144,66 @@ if (!fs.existsSync(path.join(dist, 'sw-window-count.js'))) otherProblems.push('d
 console.log(`check-sw-coverage: samples, version.json, window-count add-on — ${otherProblems.length} problem(s)`);
 for (const p of otherProblems) console.log(`  PROBLEM ${p}`);
 
-process.exit(notPrecached.length || missingDeps.length || overlayProblems.length || otherProblems.length ? 1 : 0);
+// The search pages (2026-11-14, scripts/pages/): written by `npm run build`
+// after `vite build` — per language a landing page, the lesson index, the
+// lessons and the glossary under /en/, /pt/, /es/, with /pages.css and the
+// shared preview image /og.png. A learner's install must never download them
+// (none precached), and a page the worker controls must get them from the
+// server, never the app's shell (every page's address on the navigation
+// fallback's denylist). The app's own addresses must still get the shell.
+const pagesProblems = [];
+const pagePaths = [];
+for (const lang of ['en', 'pt', 'es']) {
+  const dir = path.join(dist, lang);
+  if (!fs.existsSync(dir)) continue;
+  for (const rel of fs.readdirSync(dir, { recursive: true })) {
+    const file = String(rel).split(path.sep).join('/');
+    if (file === 'index.html' || file.endsWith('/index.html')) pagePaths.push(`/${lang}/${file.slice(0, -'index.html'.length)}`);
+  }
+}
+if (pagePaths.length === 0) {
+  console.error('check-sw-coverage: no search pages under dist/en, dist/pt, dist/es — run `npm run build` (it writes them after vite build).');
+  process.exit(2);
+}
+for (const u of precached) {
+  if (/^(en|pt|es)\//.test(u) || u === 'pages.css' || u === 'og.png') pagesProblems.push(`${u}: a search page or its stylesheet / image is precached (vite.config.ts globIgnores)`);
+}
+// The navigation route's denylist, as emitted: NavigationRoute(…,{denylist:[/re/,/re/]}).
+function denylistOf(source) {
+  const at = source.indexOf('denylist:[');
+  if (at < 0) return null;
+  const out = [];
+  let i = at + 'denylist:['.length;
+  while (source[i] === '/') {
+    let j = i + 1;
+    let inClass = false;
+    for (; j < source.length; j++) {
+      const c = source[j];
+      if (c === '\\') { j++; continue; }
+      if (c === '[') inClass = true;
+      else if (c === ']') inClass = false;
+      else if (c === '/' && !inClass) break;
+    }
+    const flags = source.slice(j + 1).match(/^[a-z]*/)[0];
+    out.push(new RegExp(source.slice(i + 1, j), flags));
+    i = j + 1 + flags.length;
+    if (source[i] === ',') i++;
+  }
+  return out;
+}
+const denylist = denylistOf(sw);
+if (!denylist || !denylist.some((re) => re.test('/robots.txt'))) {
+  console.error('check-sw-coverage: no navigation denylist with /robots.txt found in sw.js — parser out of date?');
+  process.exit(2);
+}
+const denied = (p) => denylist.some((re) => re.test(p));
+const servedByServer = [...pagePaths, ...pagePaths.map((p) => `${p}?utm_source=test`), '/en', '/pt', '/es', '/robots.txt', '/sitemap.xml'];
+const notDenied = servedByServer.filter((p) => !denied(p));
+for (const p of notDenied) pagesProblems.push(`${p}: the worker would answer this page with the app's shell (vite.config.ts navigateFallbackDenylist)`);
+for (const p of ['/', '/?lesson=l1u3m1&lang=pt', '/?lang=es', '/?view=drill', '/?key=D&scale=major', '/index.html']) {
+  if (denied(p)) pagesProblems.push(`${p}: the app's own address is on the denylist — the worker would not answer it offline`);
+}
+console.log(`check-sw-coverage: search pages — ${pagePaths.length} page(s), ${servedByServer.length} address(es) left to the server, ${pagesProblems.length} problem(s)`);
+for (const p of pagesProblems) console.log(`  PAGES ${p}`);
+
+process.exit(notPrecached.length || missingDeps.length || overlayProblems.length || otherProblems.length || pagesProblems.length ? 1 : 0);

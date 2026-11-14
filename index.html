@@ -21,6 +21,27 @@
          (fermata-music.vercel.app): search engines are told which is the
          app's own. A canonical link is never fetched. -->
     <link rel="canonical" href="https://fermatina.com/" />
+    <!-- The app's home opens in the visitor's own language; the pages that
+         read without JavaScript (2026-11-14, scripts/pages/) are its language
+         twins, and the home is their x-default. Nothing here is fetched. -->
+    <link rel="alternate" hreflang="en" href="https://fermatina.com/en/" />
+    <link rel="alternate" hreflang="pt" href="https://fermatina.com/pt/" />
+    <link rel="alternate" hreflang="es" href="https://fermatina.com/es/" />
+    <link rel="alternate" hreflang="x-default" href="https://fermatina.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Fermatina" />
+    <meta property="og:title" content="Fermatina — Music theory, from the instrument out" />
+    <meta property="og:description" content="Fermatina — interactive music theory through your instrument. Explore scales, chords, and keys with a piano or guitar always in reach." />
+    <meta property="og:url" content="https://fermatina.com/" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:image" content="https://fermatina.com/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Fermatina — Learn how music works, on a piano or guitar you can play right here." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Fermatina — Music theory, from the instrument out" />
+    <meta name="twitter:description" content="Fermatina — interactive music theory through your instrument. Explore scales, chords, and keys with a piano or guitar always in reach." />
+    <meta name="twitter:image" content="https://fermatina.com/og.png" />
     <!-- Saved night theme before first paint (no light flash); "auto" follows
          the system setting. The CSP allows exactly this script by its sha256
          hash (vercel.json): ANY edit here, even whitespace, needs the new hash

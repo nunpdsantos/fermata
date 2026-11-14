@@ -1,0 +1,76 @@
+<!doctype html>
+<!-- The shared link-preview image (public/og.png, 1200×630): the fermata mark,
+     the name and one line, in the app's colours and serif. Remade by
+     `npm run pages:og` (scripts/pages/make-og.ts fills the slots: the app's
+     day tokens and fonts from src/index.css, the start screen's tagline). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+/*FONTS*/
+:root {
+/*TOKENS*/
+}
+html,
+body {
+  margin: 0;
+  width: 1200px;
+  height: 630px;
+  background: var(--bg);
+}
+body {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 104px;
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+}
+.frame {
+  position: absolute;
+  inset: 32px;
+  border: 2px solid var(--border-subtle);
+  border-radius: 32px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.mark {
+  width: 128px;
+  height: 128px;
+  flex-shrink: 0;
+  /* The drawing starts 4 units into its 24-unit box: line its arc up with the text below. */
+  margin-left: -21px;
+  color: var(--accent);
+}
+.name {
+  margin: 0;
+  font-size: 136px;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+.line {
+  max-width: 960px;
+  margin: 36px 0 0;
+  color: var(--text-muted);
+  font-size: 46px;
+  line-height: 1.28;
+}
+</style>
+</head>
+<body>
+<div class="frame"></div>
+<div class="row">
+<svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 14 A 8 8 0 0 1 20 14"/><circle cx="12" cy="16" r="1.8" fill="currentColor"/></svg>
+<p class="name">Fermatina</p>
+</div>
+<p class="line"><!--LINE--></p>
+</body>
+</html>
