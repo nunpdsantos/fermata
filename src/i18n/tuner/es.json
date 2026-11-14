@@ -1,17 +1,17 @@
 {
   "title": "Afinador",
   "close": "Cerrar el afinador",
-  "why": "Para decirte qué nota tocas y si está afinada, Fermata escucha a través del micrófono; el sonido nunca sale de este dispositivo.",
-  "asking": "Tu navegador está preguntando si Fermata puede usar el micrófono.",
+  "why": "Para decirte qué nota tocas y si está afinada, Fermatina escucha a través del micrófono; el sonido nunca sale de este dispositivo.",
+  "asking": "Tu navegador está preguntando si Fermatina puede usar el micrófono.",
   "problem": {
-    "refused": "El micrófono está bloqueado para Fermata, así que el afinador no te oye.",
+    "refused": "El micrófono está bloqueado para Fermatina, así que el afinador no te oye.",
     "refusedHow": "Para permitirlo, abre los ajustes de este sitio (junto a la dirección, o en los ajustes del móvil para este navegador), permite el micrófono y vuelve a intentarlo.",
     "missing": "No se ha encontrado ningún micrófono en este dispositivo, así que el afinador no te oye.",
     "missingHow": "Conecta uno, o permítelo en los ajustes del dispositivo, y vuelve a intentarlo.",
     "unsupported": "Este navegador no puede usar un micrófono aquí, así que el afinador no te oye.",
     "busy": "No se ha podido activar el micrófono: puede que otra aplicación lo esté usando. Ciérrala y vuelve a intentarlo.",
     "failed": "No se ha podido activar el micrófono. Vuelve a intentarlo.",
-    "hidden": "El micrófono se ha desactivado porque Fermata ya no estaba en pantalla (por ejemplo, has cambiado a otra aplicación o pestaña).",
+    "hidden": "El micrófono se ha desactivado porque Fermatina ya no estaba en pantalla (por ejemplo, has cambiado a otra aplicación o pestaña).",
     "ended": "El micrófono se ha desenchufado o desconectado, así que se ha desactivado."
   },
   "byEar": "Puedes seguir afinando de oído: «Escuchar» toca cada cuerda.",

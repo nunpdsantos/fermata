@@ -90,7 +90,7 @@ test.describe('the tuner hears the low E string a little flat', () => {
     const headers = (await page.request.get('/')).headers();
     if (headers['content-security-policy']) expect(headers['permissions-policy']).toBe('camera=(), microphone=(self), geolocation=()');
     const sheet = await openTunerFromDock(page);
-    await expect(sheet.getByText('To tell you which note you play and whether it is in tune, Fermata listens through the microphone; the sound never leaves this device.')).toBeVisible();
+    await expect(sheet.getByText('To tell you which note you play and whether it is in tune, Fermatina listens through the microphone; the sound never leaves this device.')).toBeVisible();
     await expect(sheet.getByRole('button', { name: 'Microphone' })).toHaveAttribute('aria-pressed', 'false');
     expect(await tracks(page)).toEqual({ live: 0, ended: 0 });
     await turnOnMic(sheet);
@@ -129,7 +129,7 @@ test.describe('the tuner hears the low E string a little flat', () => {
     await turnOnMic(sheet);
     await hideThePage(page);
     await expect.poll(() => tracks(page)).toEqual({ live: 0, ended: 1 });
-    await expect(sheet.getByTestId('tuner-message')).toHaveText('The microphone turned off because Fermata was no longer on screen (for example, you switched to another app or tab).');
+    await expect(sheet.getByTestId('tuner-message')).toHaveText('The microphone turned off because Fermatina was no longer on screen (for example, you switched to another app or tab).');
     await expect(sheet.getByRole('button', { name: 'Microphone' })).toHaveAttribute('aria-pressed', 'false');
     await context.close();
   });
@@ -281,7 +281,7 @@ test.describe('when the microphone cannot be used', () => {
   });
 
   for (const [name, error, sentence] of [
-    ['refused', 'NotAllowedError', "The microphone is blocked for Fermata, so the tuner can't hear you."],
+    ['refused', 'NotAllowedError', "The microphone is blocked for Fermatina, so the tuner can't hear you."],
     ['missing', 'NotFoundError', "No microphone was found on this device, so the tuner can't hear you."],
     ['busy', 'NotReadableError', "The microphone couldn't start: another app may be using it. Close it, then try again."],
   ] as const) {
@@ -297,7 +297,7 @@ test.describe('when the microphone cannot be used', () => {
       await expect(sheet.getByTestId('tuner-message')).toContainText('You can still tune by ear: “Hear” plays each string.');
       await expect(sheet.getByRole('button', { name: 'Microphone' })).toHaveAttribute('aria-pressed', 'false');
       await sheet.getByRole('button', { name: 'Hear string 6, E' }).click();
-      await expect(sheet.getByText(/^Fermata is playing string 6 \(E\)/)).toBeVisible();
+      await expect(sheet.getByText(/^Fermatina is playing string 6 \(E\)/)).toBeVisible();
       expect(await tracks(page)).toEqual({ live: 0, ended: 0 });
       await context.close();
     });
@@ -319,11 +319,11 @@ test.describe('refused by the browser itself', () => {
     const sheet = await openTunerFromDock(page);
     await tapMicOn(sheet);
     await expect(sheet.getByTestId('tuner')).toHaveAttribute('data-phase', 'problem', { timeout: 10_000 });
-    await expect(sheet.getByTestId('tuner-message')).toContainText("The microphone is blocked for Fermata, so the tuner can't hear you.");
+    await expect(sheet.getByTestId('tuner-message')).toContainText("The microphone is blocked for Fermatina, so the tuner can't hear you.");
     await expect(sheet.getByTestId('tuner-message')).toContainText("To allow it, open this site's settings");
     expect(await tracks(page)).toEqual({ live: 0, ended: 0 });
     await sheet.getByRole('button', { name: 'Hear string 1, E' }).click();
-    await expect(sheet.getByText(/^Fermata is playing string 1 \(E\)/)).toBeVisible();
+    await expect(sheet.getByText(/^Fermatina is playing string 1 \(E\)/)).toBeVisible();
     await context.close();
   });
 
@@ -336,7 +336,7 @@ test.describe('refused by the browser itself', () => {
     const checkAnswer = page.getByRole('button', { name: 'Check Answer' });
     for (let i = 0; i < 12 && !(await checkAnswer.count()); i++) await answerChoice(page);
     await tapMicOn(page.getByTestId('check-mic'));
-    await expect(page.getByTestId('mic-problem')).toHaveText("The microphone is blocked for Fermata. To allow it, open this site's settings (beside the address, or your phone's settings for this browser). You can still answer on the screen.");
+    await expect(page.getByTestId('mic-problem')).toHaveText("The microphone is blocked for Fermatina. To allow it, open this site's settings (beside the address, or your phone's settings for this browser). You can still answer on the screen.");
     await expect(page.getByTestId('check-mic').getByRole('button', { name: 'Microphone' })).toHaveAttribute('aria-pressed', 'false');
     expect(await tracks(page)).toEqual({ live: 0, ended: 0 });
     await expect(checkAnswer).toBeVisible();
@@ -404,7 +404,7 @@ test.describe('answering a check by playing', () => {
     // The top bar shows the same switch while the check is open.
     await expect(page.getByTestId('app-topbar').getByRole('button', { name: 'Microphone' })).toHaveAttribute('aria-pressed', 'false');
     await toggle.click();
-    await expect(page.getByText('To hear the notes you play, Fermata listens through the microphone; the sound never leaves this device.')).toBeVisible();
+    await expect(page.getByText('To hear the notes you play, Fermatina listens through the microphone; the sound never leaves this device.')).toBeVisible();
     await page.getByRole('button', { name: 'Turn on the microphone' }).click();
     await expect(toggle).toHaveAttribute('aria-pressed', 'true');
     await expect(page.getByTestId('app-topbar').getByRole('button', { name: 'Microphone' })).toHaveAttribute('aria-pressed', 'true');

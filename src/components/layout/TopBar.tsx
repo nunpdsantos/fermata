@@ -82,7 +82,7 @@ const SEARCH_ICON = (
 );
 
 /**
- * Top bar (W11-A, D-26/D-28): Fermata · Explore / Learn / Drill · search · "⋯".
+ * Top bar (W11-A, D-26/D-28): Fermatina · Explore / Learn / Drill · search · "⋯".
  * The tabs are a Segment in tabs mode: the selected tab paints its own
  * highlight, so it can never sit misaligned after a font load, a resize, an
  * orientation change or a language change (the old sliding indicator was
@@ -184,7 +184,16 @@ export function TopBar() {
           <path d="M4 14 A 8 8 0 0 1 20 14" />
           <circle cx="12" cy="16" r="1.8" fill="var(--accent)" />
         </svg>
-        <span className="app-brand max-sm:sr-only">{t('nav.musicTheory')}</span>
+        {/* The word is drawn from 744 px (2026-11-14): narrower, "Fermatina" ran
+            under the tab strip in PT / ES. Below that the mark stands alone, as
+            on phones; the name stays for screen readers. Tailwind's max-[N] is
+            "below N", so 744 here: drawn at 744, not at 743 (e2e/shell.spec.ts).
+            Nor on a short screen (a phone on its side, 844×390): the metronome's
+            compact bar goes into the empty stretch between the name and the tabs
+            when the sheet is at Full (metronome/placement.ts), and with the longer
+            word that stretch was too small under Linux's wider text, so the bar
+            fell over the instrument (GitHub's run of design-metronome, 14 Nov). */}
+        <span className="app-brand max-[744px]:sr-only [@media(max-height:500px)]:sr-only">{t('nav.musicTheory')}</span>
       </div>
 
       <Segment

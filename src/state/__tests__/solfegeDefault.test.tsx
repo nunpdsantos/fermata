@@ -70,7 +70,7 @@ describe('never anywhere else', () => {
     expect(saved()).not.toHaveProperty('showSolfege');
   });
 
-  it('not when "How I use Fermata" is changed later in Settings (PT)', async () => {
+  it('not when "How I use Fermatina" is changed later in Settings (PT)', async () => {
     useAppStore.setState({ language: 'pt', learnerProfile: 'theory' });
     await act(async () => { await i18n.changeLanguage('pt'); });
     render(<SettingsSheet open onClose={() => {}} />);

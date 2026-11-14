@@ -5,6 +5,7 @@ import { InstrumentDock } from './InstrumentDock.tsx';
 import { ToastRegion } from './ToastRegion.tsx';
 import { StartHint } from './StartHint.tsx';
 import { TourHost } from '../tour/TourHost.tsx';
+import { MovedNoticeHost } from '../moved/MovedNoticeHost.tsx';
 import { useToastAvoid } from './toastLayout.ts';
 import { useAppStore } from '../../state/store.ts';
 import type { Detent } from '../../state/dock.ts';
@@ -72,6 +73,8 @@ export function AppShell({ children }: AppShellProps) {
       <TopBar />
       {/* Toasts: a fixed overlay under the top bar (see toastLayout.ts). */}
       <ToastRegion />
+      {/* On the old address only: "we've moved" (a toast there) and its panel. */}
+      <MovedNoticeHost />
       {/* After a 'new' / 'player' start-screen door (state/startHint.ts):
           one line in the flow, Explore only — it covers nothing. */}
       <StartHint />

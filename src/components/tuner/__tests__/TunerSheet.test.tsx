@@ -77,7 +77,7 @@ describe('TunerSheet: before and while listening', () => {
     render(<TunerSheet open onClose={() => undefined} />);
     await wait(50);
     expect(screen.getByRole('dialog', { name: 'Tuner' })).toBeTruthy();
-    expect(screen.getByText('To tell you which note you play and whether it is in tune, Fermata listens through the microphone; the sound never leaves this device.')).toBeTruthy();
+    expect(screen.getByText('To tell you which note you play and whether it is in tune, Fermatina listens through the microphone; the sound never leaves this device.')).toBeTruthy();
     expect(toggle().getAttribute('aria-pressed')).toBe('false');
     expect(toggle().getAttribute('data-place')).toBe('tuner');
     expect(mic.getUserMedia).not.toHaveBeenCalled();
@@ -85,7 +85,7 @@ describe('TunerSheet: before and while listening', () => {
     // The tap: the same sentence, now with the two buttons; still nothing opened.
     fireEvent.click(toggle());
     await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Not now' })).toBeTruthy());
-    expect(screen.getByText('To tell you which note you play and whether it is in tune, Fermata listens through the microphone; the sound never leaves this device.')).toBeTruthy();
+    expect(screen.getByText('To tell you which note you play and whether it is in tune, Fermatina listens through the microphone; the sound never leaves this device.')).toBeTruthy();
     expect(mic.getUserMedia).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: 'Not now' }));
     expect(toggle().getAttribute('data-state')).toBe('off');
@@ -235,7 +235,7 @@ describe('TunerSheet: the strings', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Hear string 6, E' }));
     await wait(1000);
     expect(screen.getByTestId('tuner-reading').getAttribute('data-state')).toBe('none');
-    expect(screen.getByTestId('tuner-words').textContent).toMatch(/^Fermata is playing string 6 \(E\)/);
+    expect(screen.getByTestId('tuner-words').textContent).toMatch(/^Fermatina is playing string 6 \(E\)/);
     await wait(2600);
     expect(screen.getByTestId('tuner-reading').getAttribute('data-state')).toBe('inTune');
   });
@@ -279,7 +279,7 @@ describe('TunerSheet: when the microphone cannot be used, nothing is left runnin
     render(<TunerSheet open onClose={() => undefined} />);
     await listen();
     const message = screen.getByTestId('tuner-message').textContent;
-    expect(message).toContain("The microphone is blocked for Fermata, so the tuner can't hear you.");
+    expect(message).toContain("The microphone is blocked for Fermatina, so the tuner can't hear you.");
     expect(message).toContain("To allow it, open this site's settings");
     expect(message).toContain('You can still tune by ear: “Hear” plays each string.');
     expect(live()).toBe(0);
@@ -344,7 +344,7 @@ describe('TunerSheet: when the microphone cannot be used, nothing is left runnin
       document.dispatchEvent(new Event('visibilitychange'));
     });
     expect(live()).toBe(0);
-    expect(screen.getByTestId('tuner-message').textContent).toBe('The microphone turned off because Fermata was no longer on screen (for example, you switched to another app or tab).');
+    expect(screen.getByTestId('tuner-message').textContent).toBe('The microphone turned off because Fermatina was no longer on screen (for example, you switched to another app or tab).');
     expect(toggle().getAttribute('aria-pressed')).toBe('false');
   });
 
@@ -367,7 +367,7 @@ describe('TunerSheet: when the microphone cannot be used, nothing is left runnin
     await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Turn on the microphone' })).toBeTruthy());
     fireEvent.click(screen.getByRole('button', { name: 'Turn on the microphone' }));
     await vi.waitFor(() => expect(mic.getUserMedia).toHaveBeenCalledTimes(1));
-    expect(screen.getByText('Your browser is asking whether Fermata may use the microphone.')).toBeTruthy();
+    expect(screen.getByText('Your browser is asking whether Fermatina may use the microphone.')).toBeTruthy();
     rerender(<TunerSheet open={false} onClose={() => undefined} />);
     gate.release();
     await wait(0);

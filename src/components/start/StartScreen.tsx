@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore, type InstrumentType } from '../../state/store.ts';
 import { SUPPORTED_LANGUAGES } from '../../i18n/index.ts';
@@ -9,6 +9,10 @@ import type { LearnerProfile } from '../../state/learnerProfile.ts';
 import { Button } from '../ui/Button.tsx';
 import { Card } from '../ui/Card.tsx';
 import { Segment } from '../ui/Segment.tsx';
+import { onOldAddress } from '../../services/appAddress.ts';
+import { AddressLink } from '../moved/AddressLink.tsx';
+import { readBackupFile } from '../../utils/backupFile.ts';
+import { bringInFromStartScreen } from '../../state/startImport.ts';
 
 const DOORS: LearnerProfile[] = ['new', 'player', 'theory'];
 const INSTRUMENTS: InstrumentType[] = ['piano', 'guitar'];
@@ -25,9 +29,9 @@ const PLAY_ICON = (
 
 /**
  * The start screen (wave 1; a lazy chunk, StartHost mounts it IN PLACE of the
- * app): what Fermata is for, the tour, the instrument, three doors — the only
+ * app): what Fermatina is for, the tour, the instrument, three doors — the only
  * ways out (state/startDoors.ts) — the language and what it costs. A page,
- * not a modal: h1 Fermata, h2 the doors' question; focus starts on the h1
+ * not a modal: h1 Fermatina, h2 the doors' question; focus starts on the h1
  * (on the tour button when the visitor comes back from the tour).
  *
  * "I'll use" stands BEFORE the doors (the brief listed it after them): a door
@@ -42,6 +46,21 @@ export default function StartScreen() {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const tourRef = useRef<HTMLButtonElement>(null);
   const tourFailed = useDemoFailed();
+  const [movedHere] = useState(() => onOldAddress());
+  // "I have a progress file" (2026-11-14): Settings' import, from this page
+  // (state/startImport.ts). A file that is not one says so here, by the
+  // link: this page has no toast region.
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [importFailed, setImportFailed] = useState(false);
+  const importFile = async (file: File) => {
+    setImportFailed(false);
+    const result = await readBackupFile(file);
+    if (!result.ok) {
+      setImportFailed(true);
+      return;
+    }
+    bringInFromStartScreen(result.backup);
+  };
   // The tour plays sound: resume the audio inside this tap (iOS allows it
   // only there; the tour's own resume runs after its chunk has loaded), then
   // ask for it — as the menu's "Show me around" does (TopBar).
@@ -80,6 +99,14 @@ export default function StartScreen() {
             <span>{t('nav.musicTheory')}</span>
           </h1>
           <p className="start-lead">{t('start.tagline')}</p>
+          {/* The old address only (2026-11-14): this page has no toast region,
+              so the reminder is a line here, its address a link. Nobody here
+              has saved anything to bring along (the start screen's own rule). */}
+          {movedHere && (
+            <p className="start-moved" data-testid="start-moved">
+              <AddressLink text={t('movedEntry.toast')} testId="start-moved-link" />
+            </p>
+          )}
           <Button ref={tourRef} variant="primary" className="start-tour" startIcon={PLAY_ICON} onClick={watchTour} data-testid="start-tour">
             {t('start.tour')}
           </Button>
@@ -116,6 +143,28 @@ export default function StartScreen() {
               </li>
             ))}
           </ul>
+          {/* Under the doors: a progress file brought from another address or
+              device. Nothing is chosen for the visitor — the file decides. */}
+          <div className="start-import">
+            <Button variant="link" className="start-import-link" onClick={() => fileRef.current?.click()} data-testid="start-import">
+              {t('start.progressFile')}
+            </Button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              aria-hidden="true"
+              tabIndex={-1}
+              data-testid="start-import-input"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                e.target.value = '';
+                if (file) void importFile(file);
+              }}
+            />
+            {importFailed && <p className="start-import-error" role="alert" data-testid="start-import-error">{t('backup.invalidFile')}</p>}
+          </div>
         </section>
 
         <div className="start-row">

@@ -199,7 +199,7 @@ test('4. Drop D: the panel says capo ideas need standard tuning, and the neck sa
   await expect(dock.getByText('Chord shapes are for standard tuning only. Showing the chord\'s notes from the capo up.')).toBeVisible();
   await expect(dock.getByTestId('capo-line')).toHaveCount(0);
   await page.getByTestId('progression-toggle').click();
-  await expect(page.getByTestId('progression-capo-standard')).toHaveText("Capo ideas need standard tuning: Fermata's chord shapes are for standard tuning only.");
+  await expect(page.getByTestId('progression-capo-standard')).toHaveText("Capo ideas need standard tuning: Fermatina's chord shapes are for standard tuning only.");
   await expect(page.getByRole('radiogroup', { name: 'Capo ideas, for shapes with open strings' })).toHaveCount(0);
   await expect(page.getByTestId('progression-capo-now')).toHaveCount(0);
   await context.close();

@@ -4,7 +4,7 @@ import fs from 'node:fs';
 /**
  * Shared links (wave 1, stream E), dev server and preview (production
  * headers + service worker):
- *  - a student who has never opened Fermata opens "D major, the A chord, on
+ *  - a student who has never opened Fermatina opens "D major, the A chord, on
  *    guitar" and sees exactly that (phone and laptop); the address bar is
  *    clean afterwards;
  *  - a lesson link opens the lesson;
@@ -88,7 +88,7 @@ test('a broken or hostile link opens the app as usual and says so', async ({ bro
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto(`/?key=%3Cscript%3Ealert(1)%3C%2Fscript%3E&scale=constructor&chord=${'C7'.repeat(40)}&lesson=..%2F..%2F&inst=banjo`);
   await expect(page.locator('#explore-panel')).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByTestId('toast-region')).toContainText('This link could not be read, so Fermata opened as usual.');
+  await expect(page.getByTestId('toast-region')).toContainText('This link could not be read, so Fermatina opened as usual.');
   await expect(page.getByTestId('key-summary')).toContainText('C Major');
   expect(new URL(page.url()).search).toBe('');
   expect(errors).toEqual([]);
@@ -114,7 +114,7 @@ test('a link opened during a check does not lose the check; it waits, then offer
   await expect(page.getByTestId('focused-check')).toBeVisible({ timeout: 15_000 });
   await expect(page.getByTestId('check-position')).toHaveText(position!);
   expect(await page.getByTestId('check-pips').innerHTML()).toBe(pips);
-  await expect(page.getByTestId('toast-region')).toContainText('This link opens D Major, the A chord, on the guitar. Fermata will offer to open it when you have finished what you are doing.');
+  await expect(page.getByTestId('toast-region')).toContainText('This link opens D Major, the A chord, on the guitar. Fermatina will offer to open it when you have finished what you are doing.');
   expect(new URL(page.url()).search).toBe('');
   await shot(page, 'share-held-during-check-phone-day-en');
 

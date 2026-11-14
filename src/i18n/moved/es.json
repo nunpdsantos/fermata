@@ -1,0 +1,12 @@
+{
+  "title": "Pasar a fermatina.com",
+  "intro": "La app tiene un nombre nuevo y una dirección nueva. Tu progreso está guardado en este navegador, en la dirección antigua, así que no se traslada solo. Son tres pasos.",
+  "step1": "Guarda tu progreso en un archivo.",
+  "export": "Exportar mi progreso",
+  "step2": "Abre fermatina.com.",
+  "step3": "Allí, elige «Tengo un archivo de progreso» en la primera pantalla, o ve a Ajustes → Tus datos → Importar.",
+  "nothingSaved": "¿No tienes nada guardado aquí? Entonces solo tienes que abrir fermatina.com.",
+  "keepsWorking": "Esta dirección sigue funcionando, con todo lo que guardaste en ella.",
+  "stop": "No volver a recordármelo",
+  "settingsLine": "La app se ha mudado a fermatina.com. Exporta aquí, importa allí."
+}

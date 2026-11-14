@@ -181,7 +181,7 @@ describe('one microphone session for the whole check', () => {
     fireEvent.click(screen.getByText('Right answer'));
     fireEvent.click(screen.getByText('Submit'));
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
-    expect(screen.getByTestId('mic-problem').textContent).toMatch(/^The microphone turned off because Fermata was no longer on screen/);
+    expect(screen.getByTestId('mic-problem').textContent).toMatch(/^The microphone turned off because Fermatina was no longer on screen/);
     expect(toggle().getAttribute('aria-pressed')).toBe('false');
     expect(mic.getUserMedia).toHaveBeenCalledTimes(1);
   });

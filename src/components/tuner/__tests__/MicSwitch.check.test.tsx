@@ -116,7 +116,7 @@ describe('the microphone switch in a check answered on the instrument', () => {
   it('the first tap says why (and that the sound stays here) before the browser is asked; "Not now": off', async () => {
     render(ui());
     fireEvent.click(toggle());
-    await vi.waitFor(() => expect(screen.getByText('To hear the notes you play, Fermata listens through the microphone; the sound never leaves this device.')).toBeTruthy());
+    await vi.waitFor(() => expect(screen.getByText('To hear the notes you play, Fermatina listens through the microphone; the sound never leaves this device.')).toBeTruthy());
     expect(mic.getUserMedia).not.toHaveBeenCalled();
     expect(pressed()).toBe('false');
     fireEvent.click(screen.getByRole('button', { name: 'Not now' }));
@@ -248,7 +248,7 @@ describe('the microphone switch in a check answered on the instrument', () => {
     render(ui());
     await turnOn();
     expect(screen.getByTestId('mic-problem').textContent).toBe(
-      "The microphone is blocked for Fermata. To allow it, open this site's settings (beside the address, or your phone's settings for this browser). You can still answer on the screen.",
+      "The microphone is blocked for Fermatina. To allow it, open this site's settings (beside the address, or your phone's settings for this browser). You can still answer on the screen.",
     );
     expect(pressed()).toBe('false');
     expect(toggle().textContent).toBe('Microphone Off');
@@ -273,7 +273,7 @@ describe('the microphone switch in a check answered on the instrument', () => {
     });
     expect(live()).toBe(0);
     expect(screen.getByTestId('mic-problem').textContent).toBe(
-      'The microphone turned off because Fermata was no longer on screen (for example, you switched to another app or tab). You can still answer on the screen.',
+      'The microphone turned off because Fermatina was no longer on screen (for example, you switched to another app or tab). You can still answer on the screen.',
     );
     expect(pressed()).toBe('false');
   });
@@ -297,7 +297,7 @@ describe('the microphone switch in a check answered on the instrument', () => {
     fireEvent.click(toggle());
     await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Turn on the microphone' })).toBeTruthy());
     fireEvent.click(screen.getByRole('button', { name: 'Turn on the microphone' }));
-    await vi.waitFor(() => expect(screen.getByText('Your browser is asking whether Fermata may use the microphone.')).toBeTruthy());
+    await vi.waitFor(() => expect(screen.getByText('Your browser is asking whether Fermatina may use the microphone.')).toBeTruthy());
     await vi.waitFor(() => expect(mic.getUserMedia).toHaveBeenCalledTimes(1));
     fireEvent.click(toggle());
     gate.release();

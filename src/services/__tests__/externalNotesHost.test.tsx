@@ -54,7 +54,7 @@ describe('the host', () => {
     await act(async () => {
       await vi.advanceTimersByTimeAsync(500);
     });
-    expect(useToastStore.getState().toasts.map((t) => t.message)).toEqual(['Click or tap the page once so Fermata can sound what you play.']);
+    expect(useToastStore.getState().toasts.map((t) => t.message)).toEqual(['Click or tap the page once so Fermatina can sound what you play.']);
     releaseAllExternalNotes();
   });
 

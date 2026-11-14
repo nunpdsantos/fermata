@@ -94,7 +94,7 @@ test.describe('"⋯" menu and Settings sheet', () => {
     // that control explicitly — reading it once raced it (W11-B delta
     // review). The dev server has no worker: never controlled there.
     const footer = sheet.getByTestId('settings-footer');
-    await expect(footer).toContainText(/Fermata · build \d{4}-\d{2}-\d{2}/);
+    await expect(footer).toContainText(/Fermatina · build \d{4}-\d{2}-\d{2}/);
     const manifest = await page.request.get('/manifest.webmanifest');
     const productionBuild = (manifest.headers()['content-type'] ?? '').includes('json');
     if (productionBuild) {
@@ -192,6 +192,58 @@ for (const vp of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
     await context.close();
   });
 }
+
+// 2026-11-14: "Fermatina" is two letters longer than "Fermata", and from 640 to 743 px it ran
+// under the tab strip in PT / ES. The word is drawn from 744 px only; below, the mark alone (as on
+// phones), the name kept for screen readers. Drawn = a real box beside the mark; not drawn = the
+// screen-reader-only box (1 px, clipped). Every language, touch and mouse, Explore and Learn.
+test('the wordmark is drawn from 744 px only (not at 743): never under the tabs, always named', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const names = { en: 'Explore', pt: 'Explorar', es: 'Explorar' } as const;
+  for (const lang of ['en', 'pt', 'es'] as const) {
+    for (const touch of [true, false]) {
+      const context = await browser.newContext({ viewport: { width: 743, height: 800 }, isMobile: touch, hasTouch: touch, reducedMotion: 'reduce', serviceWorkers: 'block' });
+      const page = await context.newPage();
+      await seed(page, { language: lang, lastView: 'explore' });
+      await page.goto('/');
+      await expect(page.getByRole('tab', { name: names[lang] })).toBeVisible();
+      for (const width of [639, 640, 743, 744, 768, 1024]) {
+        await page.setViewportSize({ width, height: 800 });
+        await page.waitForTimeout(150);
+        const m = await page.evaluate(() => {
+          const brand = document.querySelector('.app-brand') as HTMLElement;
+          const b = brand.getBoundingClientRect();
+          const tabs = document.querySelector('.app-tabs')!.getBoundingClientRect();
+          return { width: b.width, right: b.right, tabsLeft: tabs.left, clip: getComputedStyle(brand).clipPath, text: brand.textContent };
+        });
+        const where = `${lang} ${touch ? 'touch' : 'mouse'} ${width}px`;
+        expect(m.text, `${where}: the name is there for screen readers`).toBe('Fermatina');
+        if (width >= 744) {
+          expect(m.width, `${where}: the word is drawn`).toBeGreaterThan(40);
+          expect(m.clip, `${where}: not clipped`).toBe('none');
+          expect(m.right, `${where}: the word ends before the tabs begin`).toBeLessThanOrEqual(m.tabsLeft);
+        } else {
+          expect(m.width, `${where}: the word is not drawn (screen-reader only)`).toBeLessThanOrEqual(1);
+        }
+      }
+      // A short screen (a phone on its side): the mark alone at any width, so the metronome's
+      // compact bar keeps its stretch of the top bar; a tall screen of the same width draws the word.
+      for (const [width, height, drawn] of [[844, 390, false], [844, 500, false], [844, 501, true], [932, 430, false]] as const) {
+        await page.setViewportSize({ width, height });
+        await page.waitForTimeout(150);
+        const m = await page.evaluate(() => {
+          const brand = document.querySelector('.app-brand') as HTMLElement;
+          return { width: brand.getBoundingClientRect().width, text: brand.textContent };
+        });
+        const where = `${lang} ${touch ? 'touch' : 'mouse'} ${width}×${height}`;
+        expect(m.text, `${where}: the name is there for screen readers`).toBe('Fermatina');
+        if (drawn) expect(m.width, `${where}: the word is drawn`).toBeGreaterThan(40);
+        else expect(m.width, `${where}: the word is not drawn on a short screen`).toBeLessThanOrEqual(1);
+      }
+      await context.close();
+    }
+  }
+});
 
 test('choice chips: one Tab stop, arrow keys move and select', async ({ page }) => {
   // The piano's octave chips (the root chips moved into the phone's key

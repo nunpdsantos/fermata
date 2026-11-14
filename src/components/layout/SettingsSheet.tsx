@@ -4,8 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { useAppStore, type ThemeMode, type NeckNutSide, type NeckTopString } from '../../state/store.ts';
 import { SUPPORTED_LANGUAGES } from '../../i18n/index.ts';
 import { toast } from '../../state/toastStore.ts';
-import { buildBackup, validateBackup, applyBackup, backupSections } from '../../utils/backupHelpers.ts';
+import { applyBackup, backupSections } from '../../utils/backupHelpers.ts';
+import { downloadBackup, readBackupFile } from '../../utils/backupFile.ts';
 import { reloadPage } from '../../utils/pageReload.ts';
+import { onOldAddress } from '../../services/appAddress.ts';
+import { AddressLink } from '../moved/AddressLink.tsx';
 import { BUILD_DATE } from '../../buildInfo.ts';
 import { useServiceWorkerActive } from '../../hooks/useServiceWorkerActive.ts';
 import { Sheet } from '../ui/Sheet.tsx';
@@ -23,6 +26,8 @@ import { WordsButton } from '../../glossary/Term.tsx';
 import { useMidiStatus, midiSupported, turnMidiKeyboard } from '../../services/midi/midiStatus.ts';
 // The MIDI keyboard row's words load with this chunk (wave 3, the `midiInput` namespace).
 import '../../i18n/midiInput/index.ts';
+// "This app has moved to fermatina.com …" under Your data, on the old address (the `moved` namespace).
+import '../../i18n/moved/index.ts';
 
 /**
  * The app's Settings (W11-A, opened from the top bar's "⋯" menu): language,
@@ -50,7 +55,7 @@ const TOP_STRINGS: { value: NeckTopString; key: string }[] = [
 const PROFILES: LearnerProfile[] = ['new', 'player', 'theory'];
 
 /**
- * Settings → "How I use Fermata" (wave 1): the start screen's question, to
+ * Settings → "How I use Fermatina" (wave 1): the start screen's question, to
  * change later. Never asked (null) reads as 'theory', which is how the app
  * treats it. A change here raises no start screen and no start hint; a hint
  * still owed for another profile goes.
@@ -79,27 +84,14 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
   const offline = useServiceWorkerActive();
 
   const handleExport = () => {
-    const backup = buildBackup(localStorage);
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `fermata-backup-${backup.exportedAt.slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadBackup(localStorage);
     toast(t('backup.exported'), 'success');
   };
 
   const handleImportFile = async (file: File) => {
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(await file.text());
-    } catch {
-      toast(t('backup.invalidFile'), 'error');
-      return;
-    }
-    // Every section is vetted by its own store before anything is offered.
-    const result = await validateBackup(parsed);
+    // Every section is vetted by its own store before anything is offered
+    // (the same reading as the start screen's "I have a progress file").
+    const result = await readBackupFile(file);
     if (!result.ok) {
       toast(t('backup.invalidFile'), 'error');
       return;
@@ -197,6 +189,12 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
             {t('settings.import')}
           </Button>
         </div>
+        {/* The old address only (2026-11-14), reminder stopped or not: the way out stays findable. */}
+        {onOldAddress() && (
+          <p className="text-ui" style={{ color: 'var(--text-muted)' }} data-testid="settings-moved">
+            <AddressLink text={t('moved.settingsLine')} testId="settings-moved-link" />
+          </p>
+        )}
         <input
           ref={fileInputRef}
           type="file"

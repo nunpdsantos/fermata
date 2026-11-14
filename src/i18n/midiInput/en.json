@@ -1,12 +1,12 @@
 {
   "title": "MIDI keyboard",
   "toggle": "Use a MIDI keyboard",
-  "ask": "Turning this on asks your browser to let Fermata hear the keys you play on a MIDI keyboard; what you play never leaves this device.",
+  "ask": "Turning this on asks your browser to let Fermatina hear the keys you play on a MIDI keyboard; what you play never leaves this device.",
   "asking": "Waiting for your browser’s answer…",
   "connected": "Connected: {{names}}",
-  "none": "No MIDI keyboard is connected. Plug one in and Fermata hears it straight away.",
-  "denied": "Your browser did not allow it, so Fermata cannot hear a MIDI keyboard. You can change this in your browser’s settings for this site.",
+  "none": "No MIDI keyboard is connected. Plug one in and Fermatina hears it straight away.",
+  "denied": "Your browser did not allow it, so Fermatina cannot hear a MIDI keyboard. You can change this in your browser’s settings for this site.",
   "error": "Your browser could not connect to the MIDI keyboard. Turn this setting on again to try once more.",
   "unsupported": "This browser cannot use a MIDI keyboard. Chrome, Edge or Opera on a computer, or Chrome on Android, can.",
-  "soundBlocked": "Click or tap the page once so Fermata can sound what you play."
+  "soundBlocked": "Click or tap the page once so Fermatina can sound what you play."
 }

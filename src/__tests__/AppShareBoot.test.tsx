@@ -125,7 +125,7 @@ describe('App — opening a shared link', () => {
     expect(screen.getByText('LEARN_VIEW')).toBeDefined();
     expect(useAppStore.getState().selectedKey).toEqual({ natural: 'C', accidental: '' });
     expect(window.location.search).toBe('');
-    expect(useToastStore.getState().toasts.map((t) => t.message)).toEqual(['This link could not be read, so Fermata opened as usual.']);
+    expect(useToastStore.getState().toasts.map((t) => t.message)).toEqual(['This link could not be read, so Fermatina opened as usual.']);
   });
 
   it('content wins over view: ?view=drill&key=D opens Explore on D', async () => {

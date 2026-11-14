@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fermatina.com/sitemap.xml

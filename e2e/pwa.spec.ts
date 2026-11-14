@@ -6,7 +6,7 @@ import { seedWelcomeSeen } from './helpers/welcome';
 test.describe('PWA basics', () => {
   test('page has correct title', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle('Fermata — Music theory, from the instrument out');
+    await expect(page).toHaveTitle('Fermatina — Music theory, from the instrument out');
   });
 
   test('manifest is served at /manifest.webmanifest', async ({ page }) => {
@@ -23,7 +23,7 @@ test.describe('PWA basics', () => {
     expect(response!.status()).toBe(200);
 
     const manifest = await response!.json();
-    expect(manifest.name).toBe('Fermata — Music Theory');
+    expect(manifest.name).toBe('Fermatina — Music Theory');
     expect(manifest.display).toBe('standalone');
     expect(manifest.icons).toBeDefined();
     expect(manifest.icons.length).toBeGreaterThan(0);

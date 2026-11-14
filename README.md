@@ -1,8 +1,8 @@
-# Fermata
+# Fermatina
 
 Interactive music theory, from the instrument out. A virtual piano or guitar fretboard is always in reach; theory — scales, chords, intervals, keys, the circle of fifths — is explored on it directly. Alongside the explorer sits a structured 9-level curriculum (118 modules, 870 exercises) with spaced-repetition review.
 
-**Live:** https://fermata-music.vercel.app/
+**Live:** https://fermatina.com/ (called Fermata until 14 November 2026; the old address, https://fermata-music.vercel.app/, keeps working and tells learners how to bring their progress along: a browser keeps progress per address, so it moves by Export there and Import here).
 
 - English, Portuguese, and Spanish
 - Offline-capable PWA (installable, Workbox precaching)
