@@ -1553,12 +1553,14 @@ for (const lang of ['pt', 'es'] as const) {
   }
 }
 
-// Brief D (2026-11-10): the guitar steps again in the NEW default neck — nut
-// on the left, thin string on top, as tab and chord charts draw it — day and
-// night: the docked / sheet guitar, the whole neck, the practice sheet's four
-// tabs, the landscape full-neck view, the Drill reading board (question and
-// feedback) and Settings with its Guitar neck row. The steps above keep
-// testing the old view (their saves have no neck fields).
+// Brief D (2026-11-10): the guitar steps again in the TAB view — nut on the
+// left, thin string on top, as tab and chord charts draw it (the no-save
+// default from 10 to 14 November, kept by those saves; "Flip neck" turns any
+// neck to it) — day and night: the docked / sheet guitar, the whole neck, the
+// practice sheet's four tabs, the landscape full-neck view, the Drill reading
+// board (question and feedback) and Settings with its Guitar neck row. The
+// steps above test the view facing a player (their saves have no neck
+// fields), which is also a new browser's since 2026-11-14.
 const TAB_NECK = { neckNutSide: 'left', neckTopString: 'high' } as const;
 for (const v of VIEWPORTS) {
   for (const th of THEMES) {
