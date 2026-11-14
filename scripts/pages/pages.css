@@ -483,3 +483,12 @@ dl {
 .foot p {
   margin: 0;
 }
+/* The feedback form (2026-11-14): a link on its own line, so a full tap target. */
+.foot .feedback {
+  margin-top: 8px;
+}
+.foot .feedback a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+}

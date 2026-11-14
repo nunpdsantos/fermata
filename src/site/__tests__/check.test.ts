@@ -3,7 +3,9 @@ import registry from '../../../scripts/pages/slugs.json';
 import indexHtml from '../../../index.html?raw';
 import { buildSite, STYLESHEET, type Site } from '../render';
 import { checkSite, MAX_PAGE_BYTES, pageKindOf, type SiteFiles } from '../check';
+import { appText } from '../content';
 import type { SlugRegistry } from '../slugs';
+import { REPORT_FORMS, TEST_FORM } from '../../services/feedbackForms';
 
 /**
  * Each whole-output check can fail: one planted fault at a time in the real
@@ -127,6 +129,72 @@ describe('the whole-output checks catch', () => {
     }));
     expect(p.some((x) => x.startsWith('/pt/: description ends mid-sentence') && x.endsWith('Depois da'))).toBe(true);
     expect(p.some((x) => x.startsWith('/es/palabras/: description is 169 characters, above 160'))).toBe(true);
+  });
+
+  describe('the foot\'s feedback link (2026-11-14): the one link allowed to another host', () => {
+    // The forms and labels as the app has them, read here, never typed.
+    const footLink = (path: string) => site.pages.find((p) => p.path === path)!.html.match(/<p class="feedback"><a href="([^"]*)"[^>]*>([^<]*)<\/a><\/p>/)!;
+    const enHref = () => footLink(LESSON)[1];
+
+    it('every page has it: its language\'s form, the page\'s path in the details, the menu\'s label, a new tab (the real output)', () => {
+      for (const page of site.pages) {
+        const [, href, text] = footLink(page.path);
+        const url = new URL(href.replaceAll('&amp;', '&'));
+        const form = REPORT_FORMS[page.lang];
+        expect(`${url.origin}${url.pathname}`, page.path).toBe(form.url);
+        expect([...url.searchParams.keys()], page.path).toEqual(['usp', `entry.${form.detailsEntry}`]);
+        expect(url.searchParams.get(`entry.${form.detailsEntry}`), page.path).toBe(`page · ${page.path} · ${page.lang}`);
+        expect(text, page.path).toBe(appText(page.lang, 'report.menuItem'));
+      }
+      expect(site.pages).toHaveLength(417);
+    });
+
+    it('a link to any other host (and the test sheet\'s form, which is not for these pages)', () => {
+      const p = problems(files((pages) => {
+        replaceIn(pages, LESSON, '<p class="lead">', '<p class="lead"><a href="https://evil.example/x">x</a> ');
+        replaceIn(pages, '/pt/', '<p class="lead">', `<p class="lead"><a href="${TEST_FORM.url}">x</a> `);
+        replaceIn(pages, '/es/', '<p class="lead">', '<p class="lead"><a href="http://docs.google.com/forms/d/e/x/viewform">x</a> ');
+      }));
+      expect(p).toContain(`${LESSON}: links out of the site: https://evil.example/x`);
+      expect(p).toContain(`/pt/: links out of the site: ${TEST_FORM.url}`);
+      expect(p).toContain('/es/: links out of the site: http://docs.google.com/forms/d/e/x/viewform');
+    });
+
+    it('a missing link, or a second one', () => {
+      const p = problems(files((pages) => {
+        replaceIn(pages, LESSON, /<p class="feedback">[\s\S]*?<\/p>/, '');
+        replaceIn(pages, '/pt/', '<p class="lead">', `<p class="lead"><a href="${footLink('/pt/')[1]}" target="_blank" rel="noopener noreferrer">${appText('pt', 'report.menuItem')}</a> `);
+      }));
+      expect(p).toContain(`${LESSON}: 0 feedback-form link(s): exactly one, in the foot`);
+      expect(p).toContain('/pt/: 2 feedback-form link(s): exactly one, in the foot');
+      expect(p).toContain('/pt/: feedback link is not in the <footer>');
+    });
+
+    it('another language\'s form, another page\'s path, another language in the details, an extra parameter', () => {
+      const ptForm = REPORT_FORMS.pt;
+      const p = problems(files((pages) => {
+        replaceIn(pages, LESSON, `${REPORT_FORMS.en.url}?usp=pp_url&amp;entry.${REPORT_FORMS.en.detailsEntry}=`, `${ptForm.url}?usp=pp_url&amp;entry.${ptForm.detailsEntry}=`);
+        replaceIn(pages, '/en/words/', encodeURIComponent('/en/words/'), encodeURIComponent('/en/'));
+        replaceIn(pages, '/es/', encodeURIComponent(' · es'), encodeURIComponent(' · en'));
+        replaceIn(pages, '/pt/licoes/', 'usp=pp_url&amp;', 'usp=pp_url&amp;hl=pt&amp;');
+      }));
+      expect(p).toContain(`${LESSON}: feedback link to ${ptForm.url}: not the en form`);
+      expect(p).toContain(`/en/words/: feedback link's details "page · /en/ · en", expected "page · /en/words/ · en"`);
+      expect(p).toContain(`/es/: feedback link's details "page · /es/ · en", expected "page · /es/ · es"`);
+      expect(p.some((x) => x.startsWith('/pt/licoes/: feedback link\'s query'))).toBe(true);
+      expect(enHref()).toContain('&amp;entry.'); // known positive: the planted text was the page's own
+    });
+
+    it('a label that is not the menu\'s, or a link that keeps an opener or opens in place', () => {
+      const p = problems(files((pages) => {
+        replaceIn(pages, LESSON, `>${appText('en', 'report.menuItem')}</a>`, '>Report a problem (Google form)</a>');
+        replaceIn(pages, '/es/', 'target="_blank" rel="noopener noreferrer"', 'target="_blank" rel="noopener"');
+        replaceIn(pages, '/pt/palavras/', ' target="_blank" rel="noopener noreferrer"', '');
+      }));
+      expect(p).toContain(`${LESSON}: feedback link reads "Report a problem (Google form)", not the menu's "${appText('en', 'report.menuItem')}"`);
+      expect(p).toContain('/es/: feedback link has target="_blank" rel="noopener": expected target="_blank" rel="noopener noreferrer"');
+      expect(p).toContain('/pt/palavras/: feedback link has target="undefined" rel="undefined": expected target="_blank" rel="noopener noreferrer"');
+    });
   });
 
   it('a page no link reaches', () => {

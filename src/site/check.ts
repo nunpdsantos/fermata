@@ -7,7 +7,8 @@
  * is known; anything outside it is itself a finding).
  */
 import { htmlLangFor } from '../i18n/language';
-import { SITE_LANGS, type SiteLang } from './content';
+import { REPORT_FORMS } from '../services/feedbackForms';
+import { SITE_LANGS, appText, type SiteLang } from './content';
 import { MAX_DESCRIPTION, ORIGIN, OG_IMAGE, PATH_WORDS, SENTENCE_END, type PageKind } from './render';
 
 export interface SiteFiles {
@@ -56,6 +57,15 @@ export function pageKindOf(path: string): { kind: PageKind; lang: SiteLang } | n
   return null;
 }
 
+/**
+ * The only addresses on another host a page may link to (2026-11-14): the
+ * three feedback forms, one per language, from the foot. Anything else that
+ * leaves the site is a finding; so is a feedback link that is not the page's
+ * own (its language's form, its path in the details box, the menu's label).
+ */
+const FEEDBACK_FORMS: readonly string[] = Object.values(REPORT_FORMS).map((f) => f.url);
+export const isFeedbackFormHref = (href: string) => FEEDBACK_FORMS.some((url) => href === url || href.startsWith(`${url}?`));
+
 const decode = (s: string) =>
   s.replace(/&(amp|lt|gt|quot|#39|#(\d+)|#x([0-9a-f]+));/gi, (_, name: string, dec?: string, hex?: string) => {
     if (dec) return String.fromCodePoint(Number(dec));
@@ -91,6 +101,8 @@ interface Parsed {
   jsonLd: string[];
   scripts: number;
   h1: string | null;
+  /** Links to a feedback form: their attributes, text and whether they sit in the <footer>. */
+  formLinks: { href: string; target?: string; rel?: string; text: string; inFoot: boolean }[];
 }
 
 function parse(html: string): Parsed {
@@ -102,6 +114,14 @@ function parse(html: string): Parsed {
   for (const l of alt) alternates.set(l.hreflang, l.href);
   const titles = [...html.matchAll(/<title>([^<]*)<\/title>/g)].map((m) => decode(m[1]));
   const h1 = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/);
+  const foot = { start: html.search(/<footer\b/), end: html.indexOf('</footer>') };
+  const formLinks = [...html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)]
+    .map((m) => {
+      const a = attrs(m[1]);
+      const at = m.index ?? 0;
+      return { href: a.href ?? '', target: a.target, rel: a.rel, text: textOf(m[2]), inFoot: foot.start >= 0 && at > foot.start && at < foot.end };
+    })
+    .filter((l) => isFeedbackFormHref(l.href));
   return {
     lang: html.match(/<html lang="([^"]+)">/)?.[1] ?? null,
     title: titles.length === 1 ? titles[0] : null,
@@ -120,6 +140,7 @@ function parse(html: string): Parsed {
     jsonLd: [...html.matchAll(JSON_LD)].map((m) => m[1]),
     scripts: (html.match(/<script\b/g) ?? []).length,
     h1: h1 ? textOf(h1[1]) : null,
+    formLinks,
   };
 }
 
@@ -220,6 +241,24 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
       seen.add(id);
     }
 
+    // The foot's feedback link: exactly one, to the form of the page's own
+    // language, its details box naming this page, the menu's own label, in a
+    // new tab with no opener and no referrer.
+    const form = REPORT_FORMS[kind.lang];
+    const details = `page · ${path} · ${kind.lang}`;
+    const label = appText(kind.lang, 'report.menuItem');
+    if (p.formLinks.length !== 1) where(`${p.formLinks.length} feedback-form link(s): exactly one, in the foot`);
+    for (const l of p.formLinks) {
+      const url = new URL(l.href);
+      if (`${url.origin}${url.pathname}` !== form.url) where(`feedback link to ${url.origin}${url.pathname}: not the ${kind.lang} form`);
+      const keys = [...url.searchParams.keys()].join(',');
+      if (keys !== `usp,entry.${form.detailsEntry}` || url.searchParams.get('usp') !== 'pp_url' || url.hash) where(`feedback link's query "${url.search}${url.hash}": expected usp=pp_url&entry.${form.detailsEntry}=… and nothing else`);
+      else if (url.searchParams.get(`entry.${form.detailsEntry}`) !== details) where(`feedback link's details "${url.searchParams.get(`entry.${form.detailsEntry}`)}", expected "${details}"`);
+      if (l.target !== '_blank' || l.rel !== 'noopener noreferrer') where(`feedback link has target="${l.target}" rel="${l.rel}": expected target="_blank" rel="noopener noreferrer"`);
+      if (l.text !== label) where(`feedback link reads "${l.text}", not the menu's "${label}"`);
+      if (!l.inFoot) where('feedback link is not in the <footer>');
+    }
+
     // Files the page loads: same origin, existing.
     for (const url of p.loads) {
       if (!url.startsWith('/') || url.startsWith('//')) where(`loads ${url} (not this site)`);
@@ -232,6 +271,8 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
     const where = (msg: string) => problems.push(`${path}: ${msg}`);
     for (const href of p.hrefs) {
       links++;
+      // The foot's feedback form: the one link allowed off the site (checked above, page by page).
+      if (isFeedbackFormHref(href)) continue;
       let target = href;
       if (href.startsWith(`${ORIGIN}/?`)) {
         const q = new URLSearchParams(href.slice(ORIGIN.length + 2));

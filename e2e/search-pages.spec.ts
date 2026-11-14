@@ -4,6 +4,7 @@ import { test, expect, type Browser, type BrowserContext, type Page, type Route 
 import { auditPage } from './helpers/designAudit';
 import { LOCALE, type Lang } from './helpers/wave1';
 import { MODULE_INDEX } from '../src/data/moduleIndex';
+import { REPORT_FORMS } from '../src/services/feedbackForms';
 import ptTitles from '../src/data/moduleTitles.pt';
 import esTitles from '../src/data/moduleTitles.es';
 
@@ -27,6 +28,10 @@ import esTitles from '../src/data/moduleTitles.es';
  *    from this run's own server (`relay`) and resolved to this machine, so
  *    the live site is never contacted;
  *  - `?lang=pt` alone opens the start screen, in Portuguese;
+ *  - (2026-11-14) the only links to another host are the foot's feedback
+ *    form of the page's language, its details box naming the page; the link
+ *    opens that form (a stub: docs.google.com is routed, never contacted) in
+ *    a new tab with no opener;
  *  - once the app's service worker controls the browser, a lesson page is
  *    still the page (from the server), and no page was precached.
  * With PAGES_SHOTS=<dir>, the screenshots for the seat and the owner.
@@ -36,7 +41,7 @@ test.use({ launchOptions: { args: ['--host-resolver-rules=MAP fermatina.com 127.
 
 const SLUGS = JSON.parse(fs.readFileSync('scripts/pages/slugs.json', 'utf8')) as Record<string, Record<Lang, string>>;
 const json = <T,>(file: string) => JSON.parse(fs.readFileSync(file, 'utf8')) as T;
-type Words = { start: { tagline: string; doorsHeading: string }; learn: { title: string }; nav: { musicTheory: string } };
+type Words = { start: { tagline: string; doorsHeading: string }; learn: { title: string }; nav: { musicTheory: string }; report: { menuItem: string } };
 const WORDS: Record<Lang, Words> = { en: json('src/i18n/locales/en.json'), pt: json('src/i18n/locales/pt.json'), es: json('src/i18n/locales/es.json') };
 const LANGS: Lang[] = ['en', 'pt', 'es'];
 const PATHS: Record<Lang, { lessons: string; words: string }> = { en: { lessons: 'lessons', words: 'words' }, pt: { lessons: 'licoes', words: 'palavras' }, es: { lessons: 'lecciones', words: 'palabras' } };
@@ -123,6 +128,63 @@ test('the pages load only files of their own site: zero requests to another orig
   expect(requests.filter((u) => !u.startsWith(`${origin}/`))).toEqual([]);
   await context.close();
 });
+
+// ─── The foot's feedback link (2026-11-14) ──────────────────────────────────
+
+/** The three feedback forms, from the store-free module the pages are built from. */
+const FORMS = REPORT_FORMS;
+const STUB = '<!doctype html><title>Feedback form (stub)</title><p>stub</p>';
+
+test('the only links to another host are the foot\'s feedback form of the page\'s language, carrying the page\'s path (landing, index, lesson, glossary, each language)', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  const own = new URL(baseURL!).host;
+  for (const lang of LANGS) {
+    for (const p of pagesOf(lang)) {
+      await page.goto(p.path);
+      const hrefs = await page.locator('a[href]').evaluateAll((as) => as.map((a) => (a as HTMLAnchorElement).href));
+      expect(hrefs.length, p.path).toBeGreaterThan(10); // known positive: the page's links are read
+      // Another host = neither this server nor fermatina.com (the app's own links name it: canonical).
+      const away = hrefs.filter((h) => ![own, 'fermatina.com'].includes(new URL(h).host));
+      const form = FORMS[lang];
+      const expected = `${form.url}?usp=pp_url&entry.${form.detailsEntry}=${encodeURIComponent(`page · ${p.path} · ${lang}`)}`;
+      expect(away, p.path).toEqual([expected]);
+      const foot = page.locator('footer a[href^="https://docs.google.com/"]');
+      await expect(foot, p.path).toHaveText(WORDS[lang].report.menuItem);
+      await expect(foot, p.path).toHaveAttribute('target', '_blank');
+      await expect(foot, p.path).toHaveAttribute('rel', 'noopener noreferrer');
+    }
+  }
+  await context.close();
+});
+
+for (const lang of ['en', 'pt'] as const) {
+  test(`${lang}: a lesson page's foot link opens its language's form (a stub) in a new tab, the details box saying which page; nothing asked of Google before the tap`, async ({ browser }) => {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, colorScheme: 'light' });
+    const toGoogle: string[] = [];
+    await context.route('https://docs.google.com/**', (route) => {
+      toGoogle.push(route.request().url());
+      return route.fulfill({ status: 200, contentType: 'text/html', body: STUB });
+    });
+    const page = await context.newPage();
+    await page.goto(lessonPath(lang));
+    const link = page.getByRole('link', { name: WORDS[lang].report.menuItem, exact: true });
+    await link.scrollIntoViewIfNeeded();
+    await expect(link).toBeVisible();
+    // A full tap target on a phone (--tap, 44 px under a coarse pointer).
+    expect((await link.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    expect(toGoogle).toEqual([]);
+    const [popup] = await Promise.all([context.waitForEvent('page'), link.click()]);
+    await popup.waitForLoadState('domcontentloaded');
+    const url = new URL(popup.url());
+    expect(`${url.origin}${url.pathname}`).toBe(FORMS[lang].url);
+    expect(url.searchParams.get('usp')).toBe('pp_url');
+    expect(url.searchParams.get(`entry.${FORMS[lang].detailsEntry}`)).toBe(`page · ${lessonPath(lang)} · ${lang}`);
+    expect(await popup.evaluate(() => window.opener)).toBeNull();
+    expect(toGoogle).toEqual([popup.url()]);
+    await context.close();
+  });
+}
 
 test('under the production headers (vite preview serves vercel.json\'s CSP) the JSON-LD block raises no CSP report and no console message', async ({ browser, baseURL }) => {
   const vercel = json<{ headers: { source: string; headers: { key: string; value: string }[] }[] }>('vercel.json');
