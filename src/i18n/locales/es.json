@@ -1407,7 +1407,7 @@
     "offline": "No tienes conexión. El formulario necesita internet."
   },
   "movedEntry": {
-    "toast": "Fermata ahora se llama Fermatina y está en fermatina.com.",
-    "action": "Llevar mi progreso"
+    "toast": "Fermata es ahora Fermatina, en fermatina.com.",
+    "action": "Llevar progreso"
   }
 }

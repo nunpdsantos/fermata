@@ -234,6 +234,67 @@ for (const [v, lang] of [[PHONE, 'en'], [LAPTOP, 'pt']] as const) {
   });
 }
 
+/** The reminder's card where it stands: its box, its lines, and whether it is shown whole (not queued, not covered). */
+async function toastAt(page: Page, lang: Lang) {
+  const card = movedToast(page, lang);
+  await expect(card).toHaveCount(1, { timeout: 15_000 });
+  await page.waitForTimeout(800);
+  return card.evaluate((el) => {
+    const lines = (node: Element | null) => {
+      if (!node) return 0;
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      return new Set(Array.from(range.getClientRects()).filter((r) => r.width > 0).map((r) => Math.round(r.top))).size;
+    };
+    const r = el.getBoundingClientRect();
+    const message = el.querySelector('span.flex-1');
+    const button = el.querySelector('button.btn-primary');
+    const bar = document.querySelector('[data-testid="app-topbar"]')!.getBoundingClientRect();
+    const dock = document.querySelector('[data-testid="instrument-dock"]');
+    return {
+      height: Math.round(r.height * 10) / 10,
+      lines: lines(message),
+      buttonLines: lines(button),
+      queued: el.hasAttribute('data-toast-queued') || (el as HTMLElement).inert,
+      shown: (el as HTMLElement).checkVisibility({ opacityProperty: true, visibilityProperty: true }),
+      clipped: !!message && message.scrollHeight > message.clientHeight + 0.5,
+      top: r.top, bottom: r.bottom, barBottom: bar.bottom,
+      dockTop: dock ? dock.getBoundingClientRect().top : innerHeight,
+      room: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--toast-room')) || null,
+      detent: dock?.getAttribute('data-detent') ?? null,
+    };
+  });
+}
+
+// 2026-11-14 follow-up: the owner's phone (390×844), Explore, the guitar sheet at Full — the toast
+// region keeps one toast's room there (toastLayout.ts, unchanged); the reminder must fit it in every
+// language, whole. Measured in Learn too (the dock at its resting detent).
+test('old address, 390×844, Explore with the instrument at Full: the reminder is shown whole in EN, PT and ES', async ({ browser, baseURL }) => {
+  test.setTimeout(150_000);
+  for (const lang of ['en', 'pt', 'es'] as const) {
+    const { context, page } = await oldAddress(browser, baseURL!, PHONE, lang, oldSave({ language: lang, lastView: 'explore', themeMode: 'fermata' }));
+    await page.goto(`${OLD}/`);
+    await appReady(page);
+    await expect(page.getByTestId('explore-root')).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByTestId('instrument-dock')).toHaveAttribute('data-detent', 'full');
+    const explore = await toastAt(page, lang);
+    const where = `${lang} 390×844 Explore at Full`;
+    expect.soft(explore.detent, where).toBe('full');
+    expect.soft(explore.queued, `${where}: not queued`).toBe(false);
+    expect.soft(explore.shown, `${where}: shown`).toBe(true);
+    expect.soft(explore.clipped, `${where}: its words not cut`).toBe(false);
+    expect.soft(explore.top, `${where}: under the top bar`).toBeGreaterThanOrEqual(explore.barBottom - 0.5);
+    expect.soft(explore.bottom, `${where}: above the instrument sheet`).toBeLessThanOrEqual(explore.dockTop + 0.5);
+    await page.locator('[data-tab="learn"]').click();
+    await expect(page.locator('#learn-panel')).toBeVisible({ timeout: 15_000 });
+    const learn = await toastAt(page, lang);
+    expect.soft(learn.queued, `${lang} Learn: not queued`).toBe(false);
+    test.info().annotations.push({ type: 'toast', description: `${lang}: Explore at Full ${explore.height} px, ${explore.lines} line(s) + button ${explore.buttonLines} line(s), room ${explore.room} px; Learn (${learn.detent}) ${learn.height} px, ${learn.lines} line(s) + button ${learn.buttonLines} line(s)` });
+    console.log(`[toast] ${lang}: Explore at Full ${explore.height} px, ${explore.lines} line(s), button ${explore.buttonLines} line(s), queued=${explore.queued}, room ${explore.room} px; Learn (${learn.detent}) ${learn.height} px, ${learn.lines} line(s), button ${learn.buttonLines} line(s); dockTop ${explore.dockTop}, barBottom ${explore.barBottom}`);
+    await context.close();
+  }
+});
+
 test('old address: "Don\'t remind me again" is saved and kept across visits; Settings\' line stays', async ({ browser, baseURL }) => {
   test.setTimeout(90_000);
   const lang: Lang = 'en';
