@@ -50,6 +50,8 @@ export function appUrl(lang: SiteLang, lessonId?: string): string {
 }
 
 const OG_LOCALE: Record<SiteLang, string> = { en: 'en_GB', pt: 'pt_PT', es: 'es_ES' };
+/** Lists in the page's language ("2, 3, 4 or 6": British English, no serial comma). */
+const LIST_LOCALE: Record<SiteLang, string> = { en: 'en-GB', pt: 'pt-PT', es: 'es-ES' };
 
 export type PageKind = 'landing' | 'index' | 'lesson' | 'glossary';
 export type Alternates = Record<SiteLang | 'x-default', string>;
@@ -81,24 +83,65 @@ const levelAnchor = (n: number) => `level-${n}`;
 /** A glossary entry's anchor: its term id in kebab case (relativeKey → relative-key, scale_major → scale-major). */
 export const termAnchor = (id: string) => id.replace(/_/g, '-').replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 
-/** At most `max` characters, cut at a word, with an ellipsis. */
-function clip(text: string, max = 160): string {
-  if (text.length <= max) return text;
-  const cut = text.slice(0, max - 1);
-  return `${cut.slice(0, Math.max(cut.lastIndexOf(' '), 40)).replace(/[\s,;:—–-]+$/, '')}…`;
+/** A meta description's limit: whole sentences only, never cut. */
+export const MAX_DESCRIPTION = 160;
+/** Ends a sentence: . ! or ?, perhaps inside a closing quote or bracket. */
+export const SENTENCE_END = /[.!?]["”»’)]?$/;
+
+const sentence = (s: string) => (SENTENCE_END.test(s.trim()) ? s.trim() : `${s.trim()}.`);
+
+/**
+ * The sentences of a text: split after . ! or ? and a space, where the next
+ * word opens a sentence (a capital, a digit, ¿ ¡ or an opening quote) — never
+ * after an abbreviation or an initial ("polirritmia vs. polimetria", "J.S. Bach").
+ */
+const ABBREVIATION = /(?:^|[\s(])(?:vs|e\.g|i\.e|etc|cf|approx|Op|No|Nr|Nº|St|[A-Z])\.$/;
+function sentencesOf(text: string): string[] {
+  const out: string[] = [];
+  let start = 0;
+  for (const m of text.matchAll(/[.!?]["”»’)]?\s+(?=[\p{Lu}\d¿¡«“"(])/gu)) {
+    const end = (m.index ?? 0) + m[0].trimEnd().length;
+    if (ABBREVIATION.test(text.slice(start, end))) continue;
+    out.push(text.slice(start, end).trim());
+    start = (m.index ?? 0) + m[0].length;
+  }
+  out.push(text.slice(start).trim());
+  return out.filter(Boolean);
 }
 
-const sentence = (s: string) => (/[.!?…»”"]$/.test(s.trim()) ? s.trim() : `${s.trim()}.`);
-
-/** A lesson's description: its subtitle, then its objectives while they fit in 160 characters (its own words). */
-export function lessonDescription(module: CurriculumModule): string {
-  const parts = [module.subtitle, ...module.objectives].filter((s) => s.trim()).map(sentence);
-  let out = parts[0] ?? module.title;
-  for (const p of parts.slice(1)) {
-    if (`${out} ${p}`.length > 160) break;
-    out = `${out} ${p}`;
+/**
+ * A description of WHOLE sentences: as many as fit in MAX_DESCRIPTION
+ * characters, in order. If not even the first fits, the build fails (a
+ * description is never cut mid-sentence; checkSite checks it on every page).
+ */
+export function wholeSentences(sentences: readonly string[], max = MAX_DESCRIPTION): string {
+  const all = sentences.flatMap(sentencesOf).map(sentence);
+  let out = '';
+  for (const s of all) {
+    const next = out ? `${out} ${s}` : s;
+    if (next.length > max) break;
+    out = next;
   }
-  return clip(out);
+  if (!out) throw new Error(`site: no whole sentence of "${all[0] ?? ''}" fits in ${max} characters`);
+  return out;
+}
+
+/** A lesson's description: its subtitle, then its objectives, as whole sentences within the limit (its own words). */
+export function lessonDescription(module: CurriculumModule): string {
+  return wholeSentences([module.subtitle, ...module.objectives].filter((s) => s.trim()).map(sentence));
+}
+
+/** A line of the landing page's list: the name in bold, no colon, then the sentence (a sentence that opens on that same name and a colon loses them). */
+function labelled(name: string, text: string): string {
+  const own = `${name}: `;
+  let rest = text;
+  if (text.startsWith(own)) {
+    rest = text.slice(own.length);
+    rest = rest.charAt(0).toLocaleUpperCase() + rest.slice(1);
+  } else if (/^[^:]{1,20}: /.test(text)) {
+    throw new Error(`site: "${text}" opens on a label that is not "${name}"`);
+  }
+  return `<li><strong>${esc(name)}</strong> ${esc(rest)}</li>`;
 }
 
 interface HeadInput {
@@ -223,7 +266,7 @@ function landingMain(ctx: Ctx): { main: string; title: string; description: stri
   const firstOf = (track: TrackId) => lessonHref(ctx, TRACKS[track].moduleIds[0]);
   const door = (profile: 'new' | 'player' | 'theory', href: string) =>
     `<li><a href="${esc(href)}"><span class="lt">${esc(t(`start.door.${profile}.title`))}</span><span class="ls">${esc(t(`start.door.${profile}.line`))}</span></a></li>`;
-  const bars = new Intl.ListFormat(htmlLangFor(lang), { type: 'disjunction' }).format(BAR_CHOICES.map(String));
+  const bars = new Intl.ListFormat(LIST_LOCALE[lang], { type: 'disjunction' }).format(BAR_CHOICES.map(String));
   const count = ctx.lessons.length;
   const tagline = t('start.tagline');
   const main = `<h1 class="hero">${MARK.replace('width="22" height="22"', 'width="32" height="32"')}<span>${esc(t('nav.musicTheory'))}</span></h1>
@@ -241,11 +284,11 @@ ${door('theory', appUrl(lang))}
 <section aria-labelledby="inside">
 <h2 id="inside">${esc(newText(lang, 'inside'))}</h2>
 <ul class="inside">
-<li>${esc(`${t('nav.explore')}: ${t('start.door.theory.line')}`)}</li>
-<li>${esc(t('showMe.intro.learn'))}</li>
-<li>${esc(t('showMe.intro.drill'))}</li>
-<li>${esc(`${t('tunerEntry.menuItem')}: ${t('tuner.why')}`)}</li>
-<li>${esc(newText(lang, 'metronome', { min: MIN_TEMPO, max: MAX_TEMPO, bars }))}</li>
+${labelled(t('nav.explore'), t('start.door.theory.line'))}
+${labelled(t('nav.learn'), t('showMe.intro.learn'))}
+${labelled(t('nav.drill'), t('showMe.intro.drill'))}
+${labelled(t('tunerEntry.menuItem'), t('tuner.why'))}
+${labelled(t('metronomeToolEntry.menuItem'), newText(lang, 'metronome', { min: MIN_TEMPO, max: MAX_TEMPO, bars }))}
 </ul>
 </section>
 <ul class="lessons more">
@@ -254,8 +297,8 @@ ${door('theory', appUrl(lang))}
 </ul>`;
   return {
     main,
-    title: `${t('nav.musicTheory')}: ${tagline.replace(/[.!]$/, '')}`,
-    description: clip(`${tagline} ${t('start.footer')}`),
+    title: newText(lang, 'landingTitle'),
+    description: wholeSentences([tagline, t('start.footer')]),
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
@@ -307,7 +350,7 @@ ${toc}
 ${tracks.map((u) => unitBlock(u, t('tracks.eyebrow', { count: u.modules.length }))).join('\n')}
 </section>
 ${levelBlocks}`;
-  const description = clip(newText(lang, 'indexDescription', { count: ctx.lessons.length }));
+  const description = wholeSentences([newText(lang, 'indexDescription', { count: ctx.lessons.length })]);
   return {
     main,
     title: `${t('learn.title')} · Fermatina`,
@@ -438,7 +481,7 @@ function glossaryMain(ctx: Ctx): { main: string; title: string; description: str
 ${items}
 </dl>`,
     title: `${title} · Fermatina`,
-    description: clip(lead),
+    description: wholeSentences([`${newText(lang, 'glossaryWord')}: ${lead}`]),
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'DefinedTermSet',

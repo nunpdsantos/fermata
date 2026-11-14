@@ -120,6 +120,15 @@ describe('the whole-output checks catch', () => {
     expect(p).toContain('/es/: id "doors" twice');
   });
 
+  it('a meta description cut mid-sentence, or over 160 characters', () => {
+    const p = problems(files((pages) => {
+      replaceIn(pages, '/pt/', /<meta name="description" content="[^"]*">/, '<meta name="description" content="Aprende como funciona a música, num piano ou numa guitarra que podes tocar aqui mesmo. Grátis. Sem conta. Depois da">');
+      replaceIn(pages, '/es/palabras/', /<meta name="description" content="[^"]*">/, `<meta name="description" content="${'Una frase larga. '.repeat(10).trim()}">`);
+    }));
+    expect(p.some((x) => x.startsWith('/pt/: description ends mid-sentence') && x.endsWith('Depois da'))).toBe(true);
+    expect(p.some((x) => x.startsWith('/es/palabras/: description is 169 characters, above 160'))).toBe(true);
+  });
+
   it('a page no link reaches', () => {
     const p = problems(files((pages) => {
       // Every English link to one lesson cut (its Portuguese and Spanish twins still link to it).

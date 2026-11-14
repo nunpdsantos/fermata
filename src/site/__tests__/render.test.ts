@@ -165,6 +165,41 @@ describe('the head of every page', () => {
     expect(home.querySelector('meta[property="og:image"]')?.getAttribute('content')).toBe(`${ORIGIN}/og.png`);
   });
 
+  it('the landing pages: the reviewed title; a description of whole sentences; "What is inside" as bold names, no colon', () => {
+    const want = {
+      en: { title: 'Fermatina: learn music theory on a piano or guitar in your browser', description: 124, names: ['Explore', 'Learn', 'Drill', 'Tuner', 'Metronome'] },
+      pt: { title: 'Fermatina: aprende teoria musical num piano ou numa guitarra', description: 150, names: ['Explorar', 'Aprender', 'Treino', 'Afinador', 'Metrónomo'] },
+      es: { title: 'Fermatina: aprende teoría musical en un piano o una guitarra', description: 155, names: ['Explorar', 'Aprender', 'Práctica', 'Afinador', 'Metrónomo'] },
+    } as const;
+    for (const lang of SITE_LANGS) {
+      const d = doc(`/${lang}/`);
+      expect(d.title).toBe(want[lang].title);
+      const description = d.querySelector('meta[name="description"]')!.getAttribute('content')!;
+      expect(description.length).toBe(want[lang].description);
+      expect(description).toMatch(/\.$/);
+      const items = [...d.querySelectorAll('ul.inside li')];
+      expect(items.map((li) => text(li.querySelector('strong')))).toEqual(want[lang].names);
+      for (const li of items) {
+        const rest = text(li).slice(text(li.querySelector('strong')).length).trim();
+        expect(rest, text(li)).toMatch(/^[\p{Lu}]/u);
+        expect(rest.slice(0, 20), text(li)).not.toMatch(/^[^ ]+: /);
+      }
+    }
+    expect(text(doc('/en/').querySelectorAll('ul.inside li')[4])).toBe('Metronome Steady clicks from 30 to 240 beats a minute, with 2, 3, 4 or 6 beats in a bar.');
+    expect(text(doc('/pt/').querySelectorAll('ul.inside li')[4])).toBe('Metrónomo Cliques regulares de 30 a 240 pulsações por minuto, com 2, 3, 4 ou 6 pulsações por compasso.');
+  });
+
+  it('the glossary\'s description opens on the word people type, its count computed', () => {
+    const lead = { en: 'Glossary: 108 music words', pt: 'Glossário: 108 palavras da teoria musical', es: 'Glosario: 108 palabras de la música' } as const;
+    for (const lang of SITE_LANGS) {
+      const d = doc(sitePath.glossary(lang));
+      expect(d.querySelector('meta[name="description"]')!.getAttribute('content')).toMatch(new RegExp(`^${lead[lang]}, `));
+      expect(text(d.querySelector('.lead'))).toMatch(/^108 /);
+      expect(d.querySelectorAll('.term')).toHaveLength(108);
+    }
+    expect(doc('/pt/palavras/').title).toBe('Palavras da teoria musical, em linguagem simples · Fermatina');
+  });
+
   it('JSON-LD cannot be closed by its text: < > & are \\u escapes, and it parses back', () => {
     const glossary = byPath.get('/en/words/')!.html;
     const block = glossary.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)![1];

@@ -8,7 +8,7 @@
  */
 import { htmlLangFor } from '../i18n/language';
 import { SITE_LANGS, type SiteLang } from './content';
-import { ORIGIN, OG_IMAGE, PATH_WORDS, type PageKind } from './render';
+import { MAX_DESCRIPTION, ORIGIN, OG_IMAGE, PATH_WORDS, SENTENCE_END, type PageKind } from './render';
 
 export interface SiteFiles {
   /** Every generated page: its path ('/en/lessons/the-major-scale/') → its HTML. */
@@ -38,7 +38,7 @@ export interface CheckReport {
 /** Above this a page is not "a page of text" any more. */
 export const MAX_PAGE_BYTES = 250_000;
 
-const ALLOWED_TAGS = ['html', 'head', 'meta', 'title', 'link', 'script', 'body', 'a', 'header', 'nav', 'main', 'footer', 'section', 'div', 'h1', 'h2', 'h3', 'p', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'dfn', 'span', 'svg', 'path', 'circle'];
+const ALLOWED_TAGS = ['html', 'head', 'meta', 'title', 'link', 'script', 'body', 'a', 'header', 'nav', 'main', 'footer', 'section', 'div', 'h1', 'h2', 'h3', 'p', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'dfn', 'span', 'strong', 'svg', 'path', 'circle'];
 const STRAY_LT = new RegExp(`<(?!!doctype html>|/?(?:${ALLOWED_TAGS.join('|')})[\\s>/])`, 'i');
 const BAD_AMP = /&(?!(?:amp|lt|gt|quot|#39|#\d+|#x[0-9a-f]+);)/i;
 const JSON_LD = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/g;
@@ -174,7 +174,8 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
     else if (titles.has(titleKey)) where(`title "${p.title}" is also ${titles.get(titleKey)}'s`);
     else titles.set(titleKey, path);
     if (!p.description) where('needs exactly one meta description');
-    else if (p.description.length > 200) where(`description is ${p.description.length} characters`);
+    else if (p.description.length > MAX_DESCRIPTION) where(`description is ${p.description.length} characters, above ${MAX_DESCRIPTION}`);
+    else if (!SENTENCE_END.test(p.description)) where(`description ends mid-sentence: …${p.description.slice(-40)}`);
     else if (descriptions.has(descriptionKey)) where(`description is also ${descriptions.get(descriptionKey)}'s`);
     else descriptions.set(descriptionKey, path);
     if (p.canonical.length !== 1 || p.canonical[0] !== canonical) where(`canonical ${JSON.stringify(p.canonical)}, expected ${canonical}`);
