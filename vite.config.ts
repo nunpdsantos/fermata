@@ -181,6 +181,12 @@ export default defineConfig({
         // Audio samples stay on demand (runtime-cached below). `npm run
         // check:sw` fails if any JS/CSS file is not precached.
         globPatterns: ['**/*.{css,html,ico,png,svg,woff2}', 'assets/**/*.js'],
+        // The worker answers every NAVIGATION with the app's index.html (its
+        // navigation fallback). robots.txt and sitemap.xml (public/, for search
+        // engines: 2026-11-14) are files, not pages of the app: a browser the
+        // worker controls gets the files from the server too. Neither is
+        // precached (the globs take no .txt or .xml).
+        navigateFallbackDenylist: [/^\/robots\.txt$/, /^\/sitemap\.xml$/],
         // A precached file's static imports, transitively — a no-op while the
         // globs take every chunk; kept so narrowing them can never leave a
         // precached file with an import that is not.
