@@ -235,23 +235,33 @@ test.describe('3. start screen ↔ plain words', () => {
 
 // ─── 4. Start screen ↔ guitar neck ──────────────────────────────────────────
 test.describe('4. start screen ↔ guitar neck', () => {
-  test('new browser → language switched on the start screen → reload → "player" + Guitar: nut left, thin string on top, still after a reload', async ({ browser }) => {
+  test('new browser → language switched on the start screen → reload → "player" + Guitar: the view facing a player (nut right, thick string on top), nothing about the neck saved, still after a reload; "Virar braço" turns it to the tab view, which a reload keeps', async ({ browser }) => {
     test.setTimeout(90_000);
     const { context, page } = await freshBrowser(browser, LAPTOP);
     await page.goto('/');
     await expect(startScreen(page)).toBeVisible({ timeout: 15_000 });
     await startScreen(page).getByRole('radio', { name: 'Português' }).click();
     await expect(page.getByText('Qual é o teu ponto de partida?')).toBeVisible();
-    // That first write must not make a new visitor a "legacy" one.
+    // That first write says nothing about the neck (since 2026-11-14 a new
+    // visitor's view is the legacy one, which a save leaves out).
     const first = await savedState(page);
-    expect(first).toMatchObject({ language: 'pt', neckNutSide: 'left', neckTopString: 'high' });
+    expect(first).toMatchObject({ language: 'pt' });
+    expect(first).not.toHaveProperty('neckNutSide');
+    expect(first).not.toHaveProperty('neckTopString');
     await page.reload();
     await expect(startScreen(page)).toBeVisible({ timeout: 15_000 });
     await startScreen(page).getByRole('radio', { name: T.pt.guitar }).click();
     await page.getByTestId('start-door-player').click();
-    expect(await neckDrawn(page)).toEqual({ strings: [1, 2, 3, 4, 5, 6], nut: 'left' });
+    expect(await neckDrawn(page)).toEqual({ strings: [6, 5, 4, 3, 2, 1], nut: 'right' });
+    expect(await savedState(page)).not.toHaveProperty('neckNutSide');
     await page.reload();
     await expect(startScreen(page)).toHaveCount(0);
+    expect(await neckDrawn(page)).toEqual({ strings: [6, 5, 4, 3, 2, 1], nut: 'right' });
+    // The tab view stays one tap away, on the board.
+    await page.getByTestId('flip-neck').click();
+    expect(await neckDrawn(page)).toEqual({ strings: [1, 2, 3, 4, 5, 6], nut: 'left' });
+    expect(await savedState(page)).toMatchObject({ neckNutSide: 'left', neckTopString: 'high' });
+    await page.reload();
     expect(await neckDrawn(page)).toEqual({ strings: [1, 2, 3, 4, 5, 6], nut: 'left' });
     await context.close();
   });

@@ -10,13 +10,16 @@
 (globalThis as { BroadcastChannel?: unknown }).BroadcastChannel = undefined;
 
 /**
- * The guitar neck (brief D, 2026-11-10): a browser with NO saved settings now
- * draws the neck as tab and chord charts do (nut left, thin string on top).
- * The existing tests were written against the old view, which a learner
- * with saved settings keeps — so every test file starts as such a learner:
- * a settings save that exists, without the neck fields. A test of the new
- * default clears storage and rehydrates (or sets the fields) itself.
- * (Same save as the e2e helpers' `LEGACY_NECK_SAVE`, e2e/helpers/welcome.ts.)
+ * Every test file starts as a learner with a settings save that exists,
+ * without the neck fields (brief D, 2026-11-10). From 2026-11-10 to
+ * 2026-11-14 a browser with NO save drew the tab view and this seed kept the
+ * suites on the old one; since 2026-11-14 both draw the same view (nut
+ * right, thick string on top: facing a player), so the seed no longer
+ * decides the neck. It stays so the suites keep booting the way they were
+ * written (a save exists: the store's merge runs on load). A test of a
+ * browser with nothing saved clears storage and rehydrates itself; a test of
+ * the tab view sets the fields. (Same save as the e2e helpers'
+ * `LEGACY_NECK_SAVE`, e2e/helpers/welcome.ts.)
  */
 try {
   localStorage.setItem('music-theory-app', JSON.stringify({ state: {}, version: 6 }));

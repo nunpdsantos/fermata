@@ -8,10 +8,12 @@ export const createInstrumentSlice: StateCreator<AppState, [], [], InstrumentSli
   exerciseInputActive: false,
   guitarScalePosition: null,
   guitarTuningId: 'standard',
-  // A browser with nothing saved: the neck as tab and chord charts draw it.
-  // A save from before these fields gets the old view (store.ts merge).
-  neckNutSide: 'left',
-  neckTopString: 'high',
+  // A browser with nothing saved (since 2026-11-14): the neck as you see it
+  // facing a right-handed player — open strings on the right, thick string
+  // on top: LEGACY_NECK (store.ts), which partialize never writes, so a new
+  // browser saves nothing about the neck until the learner changes it.
+  neckNutSide: 'right',
+  neckTopString: 'low',
   // No capo (state/capo.ts sets it; saved only while 1–9).
   capoFret: 0,
 

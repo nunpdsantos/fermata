@@ -1,9 +1,12 @@
 /**
  * Brief D (2026-11-10): the guitar neck's two saved settings.
- *  - A browser with NO saved settings draws the neck as tab and chord charts
- *    do: nut LEFT, thin string on top ('left' + 'high').
+ *  - A browser with NO saved settings draws the neck as you see it facing a
+ *    player: nut RIGHT, thick string on top ('right' + 'low') — since
+ *    2026-11-14 (from 2026-11-10 until then it drew the tab view, nut left +
+ *    thin string on top, and saved it; such a save keeps it). Nothing about
+ *    the neck is saved until the learner changes it.
  *  - A saved-settings object that exists but lacks the fields is a learner
- *    from before the switch — the owner, months of data — and keeps today's
+ *    from before the switch — the owner, months of data — and keeps that
  *    view ('right' + 'low'). That view is saved by leaving the field out, so
  *    such a learner's save is written back byte for byte as it was.
  * Persist stays at version 6; no migration step.
@@ -45,15 +48,27 @@ async function boot(saved: string | null) {
 afterEach(() => localStorage.clear());
 
 describe('guitar neck defaults', () => {
-  it('a browser with no saved settings gets the tab / chord-chart view, and saves it', async () => {
+  it('a browser with no saved settings gets the facing view (nut right, thick string on top) and saves nothing about the neck', async () => {
     const store = await boot(null);
-    expect(store.getState().neckNutSide).toBe('left');
-    expect(store.getState().neckTopString).toBe('high');
+    expect(store.getState().neckNutSide).toBe('right');
+    expect(store.getState().neckTopString).toBe('low');
     store.getState().setView('explore'); // boot writes the save (as App does)
     const saved = JSON.parse(localStorage.getItem(KEY)!);
     expect(saved.version).toBe(6);
-    expect(saved.state).toMatchObject({ neckNutSide: 'left', neckTopString: 'high' });
+    expect(saved.state).not.toHaveProperty('neckNutSide');
+    expect(saved.state).not.toHaveProperty('neckTopString');
     // …and a reload keeps it.
+    const again = await boot(localStorage.getItem(KEY));
+    expect(again.getState()).toMatchObject({ neckNutSide: 'right', neckTopString: 'low' });
+  });
+
+  it('a save with the tab view (nut left, thin string on top: a visitor of 10–14 November) loads as it is and is written back byte for byte', async () => {
+    const raw = JSON.stringify({ state: { ...FROZEN_V6, neckNutSide: 'left', neckTopString: 'high' }, version: 6 });
+    const store = await boot(raw);
+    expect(store.getState()).toMatchObject({ ...FROZEN_V6, neckNutSide: 'left', neckTopString: 'high' });
+    // The real persist serializer, without changing a preference.
+    store.setState({ guitarTuningId: 'drop-d' });
+    expect(localStorage.getItem(KEY)).toBe(raw);
     const again = await boot(localStorage.getItem(KEY));
     expect(again.getState()).toMatchObject({ neckNutSide: 'left', neckTopString: 'high' });
   });

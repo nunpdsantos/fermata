@@ -43,6 +43,7 @@ import type { FretboardMode } from './FretboardString.tsx';
 import { useNeckOrientation, fretsAcross, stringsDown, drawnNeighbour, nutScrollLeft } from './neckOrientation.ts';
 import { useExploreCapo } from './capoView.ts';
 import { CapoControl } from './CapoControl.tsx';
+import { FlipNeckButton } from './FlipNeckButton.tsx';
 import { chordSymbol } from '../explore/focusReadout.ts';
 
 const EMPTY_POSITION_DOTS = new Map<number, Map<number, PositionDot>>();
@@ -813,8 +814,14 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
       fullRow={!barTools && !neck}
     />
   ) : null;
+  // "Flip neck" (2026-11-14): on the line of "Edit fingering", right after
+  // it; where that chip is not shown (a chord, the whole neck), the row's own
+  // item just before the tuning. Never in the full neck (no controls row), an
+  // exercise, Drill or the practice sheet.
+  const flipAfterEdit = scaleView && mode === 'position';
   const labelToolbar = (part: 'all' | 'labels' | 'edit') => (
     <LabelToolbar
+      afterEdit={part !== 'labels' && flipAfterEdit ? <FlipNeckButton place="after-edit" /> : undefined}
       part={part}
       labelMode={labelMode}
       onLabelMode={setLabelMode}
@@ -869,6 +876,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
           {capoLine && <p className="text-ui" style={{ color: 'var(--text-muted)' }} data-testid="capo-line">{capoLine}</p>}
           {!barTools && positionSelector}
           {scaleView && labelToolbar(barTools ? 'edit' : 'all')}
+          {!flipAfterEdit && <FlipNeckButton place="before-tuning" />}
 
           {/* Tuning selector — a compact native <select> (one control, so the
               toolbar stays short; review B1). Available in every tuning on phones too. */}

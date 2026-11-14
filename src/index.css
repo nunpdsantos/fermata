@@ -473,6 +473,56 @@ body {
     width: var(--tap);
     padding: 0;
   }
+  /* "⇄ Flip neck" under the guitar (FlipNeckButton.tsx, 2026-11-14). The word
+     shows only where it costs no height (measured with and without the
+     button, EN / PT / ES, normal text and 8 % wider): beside "Edit fingering"
+     (data-place="after-edit", where that chip sits alone on its line) below
+     440 px wide, and everywhere from 1280 px. Elsewhere — 440 to 1279 px, and
+     before the tuning (no "Edit fingering": a chord, the whole neck) below
+     1280 px — the glyph stands alone in a --tap square and the word is for
+     screen readers only (the tooltip and the name never change). One rule for
+     every language. Known: a few uncommon screens still gain a line (CLAUDE.md,
+     Gotchas, orientation). */
+  .flip-neck-glyph {
+    font-size: 18px;
+    line-height: 1;
+  }
+  @media (min-width: 440px) and (max-width: 1279px) {
+    .flip-neck {
+      flex: none;
+      width: var(--tap);
+      padding: 0;
+    }
+    .flip-neck .flip-neck-word {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+  }
+  @media (max-width: 439px) {
+    .flip-neck[data-place="before-tuning"] {
+      flex: none;
+      width: var(--tap);
+      padding: 0;
+    }
+    .flip-neck[data-place="before-tuning"] .flip-neck-word {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+  }
   .btn-block {
     width: 100%;
   }
