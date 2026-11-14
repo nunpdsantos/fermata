@@ -1,5 +1,5 @@
 /**
- * "Report a problem" (2026-11-12): the form per language, the details line
+ * "Feedback or a problem" (2026-11-12, "Report a problem" until 2026-11-14): the form per language, the details line
  * (exactly the listed fields, in order, capped), and the tap — offline a
  * notice and nothing opened, online the exact address in a new tab without
  * an opener or a referrer. `window.open` is mocked: no test contacts Google.

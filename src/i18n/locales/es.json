@@ -1405,7 +1405,7 @@
     "loadFailed": "El metrónomo no se ha cargado. Comprueba la conexión y vuelve a intentarlo."
   },
   "report": {
-    "menuItem": "Avisar de un problema (formulario de Google)",
+    "menuItem": "Opinión o problema (formulario de Google)",
     "offline": "No tienes conexión. El formulario necesita internet."
   },
   "movedEntry": {

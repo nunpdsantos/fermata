@@ -491,7 +491,7 @@ test.describe('5. the metronome', () => {
 });
 
 // ─── 6. One menu ───────────────────────────────────────────────────────────
-test('6. one menu: Settings, Show me around, Tuner, Metronome (+ Report a problem since 2026-11-12); in Drill no Metronome; during the tour neither (nor Report a problem)', async ({ browser, baseURL }) => {
+test('6. one menu: Settings, Show me around, Tuner, Metronome (+ Feedback or a problem since 2026-11-12); in Drill no Metronome; during the tour neither (nor Feedback or a problem)', async ({ browser, baseURL }) => {
   test.setTimeout(60_000);
   const { context, page } = await openApp(browser, baseURL!, LAPTOP, { lastView: 'explore' });
   const items = async () => {
@@ -652,9 +652,9 @@ const allStorage = (page: Page) => page.evaluate(() => Object.fromEntries(Object
 interface OwnerView {
   learn: string[]; level1: string[]; explore: string[]; dockBar: string[]; dockBarButtons: Rect[]; menu: string[]; settings: string[]; drill: string[];
 }
-// "Report a problem" (2026-11-12), the row after the metronome where it is offered: its words from the locale file.
+// "Feedback or a problem" (2026-11-12, "Report a problem" until 2026-11-14), the row after the metronome where it is offered: its words from the locale file.
 const REPORT = (lang: 'en' | 'pt' | 'es') => (JSON.parse(fs.readFileSync(`src/i18n/locales/${lang}.json`, 'utf8')) as { report: { menuItem: string } }).report.menuItem;
-/** Wave 3's additions for him, by what they say (PT); since 2026-11-12 also "Report a problem" (its PT words). */
+/** Wave 3's additions for him, by what they say (PT); since 2026-11-12 also "Feedback or a problem" (its PT words). */
 const ADDED_MENU = ['Afinador', 'Metrónomo', REPORT('pt')];
 const TUNE = 'Afinar';
 const MIDI_ROW = '[data-testid="midi-setting"]';

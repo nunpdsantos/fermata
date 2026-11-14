@@ -12,6 +12,8 @@ import { checkSite, pageKindOf, type CheckReport } from '../../src/site/check';
 import { rawQueryTokens } from '../../src/site/html';
 import { sitePath } from '../../src/site/render';
 import type { SlugRegistry } from '../../src/site/slugs';
+import { checkTestPage } from '../../src/site/testSheet/check';
+import { TEST_PATH, TEST_SCRIPT } from '../../src/site/testSheet/page';
 
 function walk(dir: string, base = dir, out: string[] = []): string[] {
   for (const name of readdirSync(dir)) {
@@ -56,4 +58,33 @@ export function printReport(report: CheckReport, label: string): void {
   console.log(`${label}: ${c.landing} landing + ${c.index} index + ${c.lesson} lesson + ${c.glossary} glossary pages, ${report.links} links checked, ${report.totalBytes} B in all, largest ${report.largest.path} ${report.largest.bytes} B`);
   for (const p of report.problems) console.error(`  PROBLEM ${p}`);
   console.log(`${label}: ${report.problems.length} problem(s)`);
+}
+
+/**
+ * The test page (/test/, 2026-11-14) read back from dist/ and checked on its
+ * own (src/site/testSheet/check.ts): noindex, its script external and
+ * same-origin, its data block whole, and linked from nowhere — not the
+ * sitemap, not robots.txt, no search page, nothing of the app.
+ */
+export function verifyTestPage(dist: string): string[] {
+  const read = (rel: string) => readFileSync(path.join(dist, rel), 'utf8');
+  if (!existsSync(path.join(dist, TEST_PATH.slice(1), 'index.html'))) return [`${TEST_PATH}: not in the build (dist${TEST_PATH}index.html is missing)`];
+  const all = walk(dist);
+  const pages = new Map<string, string>();
+  const appCode = new Map<string, string>();
+  for (const file of all) {
+    const dirPath = file.endsWith('/index.html') ? file.slice(0, -'index.html'.length) : null;
+    if (dirPath && pageKindOf(dirPath)) pages.set(dirPath, read(file));
+    else if (/^\/assets\/.*\.js$|^\/sw\.js$|^\/workbox-[^/]*\.js$|^\/manifest\.webmanifest$/.test(file)) appCode.set(file, read(file));
+  }
+  return checkTestPage({
+    html: read(`${TEST_PATH.slice(1)}index.html`),
+    script: existsSync(path.join(dist, TEST_SCRIPT.slice(1))) ? read(TEST_SCRIPT.slice(1)) : '',
+    files: new Set(all),
+    sitemap: existsSync(path.join(dist, 'sitemap.xml')) ? read('sitemap.xml') : '',
+    robots: existsSync(path.join(dist, 'robots.txt')) ? read('robots.txt') : '',
+    home: read('index.html'),
+    pages,
+    appCode,
+  });
 }

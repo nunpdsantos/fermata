@@ -187,16 +187,21 @@ export default defineConfig({
         // the app: never precached (a learner's install never downloads them;
         // the pages are written after `vite build`, the image is in public/).
         // The workbox default ignore is kept. `npm run check:sw` fails if one
-        // of them is precached.
-        globIgnores: ['**/node_modules/**/*', 'en/**', 'pt/**', 'es/**', 'pages.css', 'og.png'],
+        // of them is precached. The tester's sheet (2026-11-14, /test/: its
+        // page, script and stylesheet, written after `vite build` like the
+        // search pages) is not the app either: `test/**` is never precached
+        // (check:sw fails if this entry or a precached test/ file appears).
+        globIgnores: ['**/node_modules/**/*', 'en/**', 'pt/**', 'es/**', 'pages.css', 'og.png', 'test/**'],
         // The worker answers every NAVIGATION with the app's index.html (its
         // navigation fallback). robots.txt and sitemap.xml (for search
         // engines: 2026-11-14) are files, not pages of the app, and the search
         // pages are pages of their own: a browser the worker controls gets
         // them from the server too — someone with the app installed who
-        // follows a link to a lesson page gets the page, not the app.
+        // follows a link to a lesson page gets the page, not the app. So does
+        // the tester's sheet, /test/ (2026-11-14): a tester with the app
+        // installed who opens /test/ gets the sheet, not the app.
         // `npm run check:sw` tests every generated page against this list.
-        navigateFallbackDenylist: [/^\/robots\.txt$/, /^\/sitemap\.xml$/, /^\/(?:en|pt|es)(?:[/?#]|$)/],
+        navigateFallbackDenylist: [/^\/robots\.txt$/, /^\/sitemap\.xml$/, /^\/(?:en|pt|es)(?:[/?#]|$)/, /^\/test(?:[/?#]|$)/],
         // A precached file's static imports, transitively — a no-op while the
         // globs take every chunk; kept so narrowing them can never leave a
         // precached file with an import that is not.

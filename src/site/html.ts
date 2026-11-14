@@ -50,11 +50,15 @@ export function rawQueryTokens(text: string): string[] {
  * read as markup; JSON.parse reads it back unchanged.
  */
 export function jsonLdHtml(data: unknown): string {
-  const json = JSON.stringify(data)
+  return `<script type="application/ld+json">${safeJson(data)}</script>`;
+}
+
+/** JSON that can sit inside a <script> data block: no text in it can close the element or be read as markup. */
+export function safeJson(data: unknown): string {
+  return JSON.stringify(data)
     .replace(/</g, '\\u003c')
     .replace(/>/g, '\\u003e')
     .replace(/&/g, '\\u0026')
     .replace(/\u2028/g, '\\u2028')
     .replace(/\u2029/g, '\\u2029');
-  return `<script type="application/ld+json">${json}</script>`;
 }

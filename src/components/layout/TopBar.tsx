@@ -168,7 +168,7 @@ export function TopBar() {
     void resumeAudio().catch(() => undefined);
     requestDemo('intro', 'menu');
   };
-  // "Report a problem" (2026-11-12): the form in the learner's language, in a
+  // "Feedback or a problem" (2026-11-12, "Report a problem" until 2026-11-14): the form in the learner's language, in a
   // new tab, its details box saying where they were. Built at the tap; nothing
   // is sent before it. Not while the tour plays (the tour drives the screen).
   const offerReport = !tourPlaying;

@@ -2,7 +2,7 @@ import { test, expect, type Browser, type Page } from '@playwright/test';
 import * as fs from 'node:fs';
 import { seededBrowser, savedState, LAPTOP, PHONE, type View } from './helpers/wave1';
 
-// "Report a problem" (2026-11-12), the row after the metronome where it is offered: its words from the locale file.
+// "Feedback or a problem" (2026-11-12, "Report a problem" until 2026-11-14), the row after the metronome where it is offered: its words from the locale file.
 const REPORT = (lang: 'en' | 'pt' | 'es') => (JSON.parse(fs.readFileSync(`src/i18n/locales/${lang}.json`, 'utf8')) as { report: { menuItem: string } }).report.menuItem;
 
 /**
@@ -260,7 +260,7 @@ test('not in Drill, not while the tour plays', async ({ browser }) => {
   await page.getByRole('button', { name: 'More', exact: true }).click();
   await expect(page.getByRole('menuitem', { name: 'Show me around' })).toBeVisible();
   await expect(page.getByRole('menuitem', { name: 'Metronome' })).toHaveCount(0);
-  // Wave 3 integration: the Drill menu, exactly (the tuner stays: it is a sheet, not tied to a view); since 2026-11-12 "Report a problem" last.
+  // Wave 3 integration: the Drill menu, exactly (the tuner stays: it is a sheet, not tied to a view); since 2026-11-12 "Feedback or a problem" last.
   await expect(page.getByRole('menuitem')).toHaveText(['Settings', 'Show me around', 'Tuner', REPORT('en')]);
   await page.keyboard.press('Escape');
   await page.getByRole('tab', { name: 'Explore' }).click();

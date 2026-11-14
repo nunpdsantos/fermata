@@ -106,10 +106,12 @@ describe('appText: the app\'s own strings', () => {
 
 describe('never published', () => {
   // Read off the source: nothing under src/site imports the checks, a store or progress.
-  const sources = import.meta.glob('../*.ts', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+  // The pages' modules and, since 2026-11-14, the test sheet's (src/site/testSheet/).
+  const sources = import.meta.glob(['../*.ts', '../testSheet/*.ts'], { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 
   it('no module of the pages imports an exercise, a store or saved data', () => {
-    expect(Object.keys(sources).length).toBeGreaterThanOrEqual(7);
+    expect(Object.keys(sources).length).toBeGreaterThanOrEqual(15);
+    expect(Object.keys(sources)).toContain('../testSheet/client.ts');
     // Known positive: the scan reads the imports (content.ts imports the curriculum).
     expect(sources['../content.ts']).toMatch(/^import \{ L1_UNITS \} from '\.\.\/core\/constants\/curriculumL1';$/m);
     for (const [file, source] of Object.entries(sources)) {

@@ -47,10 +47,10 @@ describe('tuner entry points', () => {
     expect(screen.queryByRole('dialog', { name: 'Tuner' })).toBeNull();
   });
 
-  it('the menu reads Settings, Show me around, Tuner, Metronome, Report a problem ("Tuner" right after "Show me around")', () => {
+  it('the menu reads Settings, Show me around, Tuner, Metronome, Feedback or a problem ("Tuner" right after "Show me around")', () => {
     render(<TopBar />);
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
-    // Since 2026-11-12 "Report a problem" (its words from the locale file) ends the list.
+    // Since 2026-11-12 "Feedback or a problem" (its words from the locale file) ends the list.
     expect(screen.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(['Settings', 'Show me around', 'Tuner', 'Metronome', en.report.menuItem]);
   });
 

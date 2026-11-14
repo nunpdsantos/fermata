@@ -1,30 +1,22 @@
 import { APP_RELEASE, BUILD_DATE } from '../buildInfo';
 import { toast } from '../state/toastStore';
+import { REPORT_FORMS, type ReportForm } from './feedbackForms';
+
+export { REPORT_FORMS, type ReportForm, type ReportLanguage } from './feedbackForms';
 
 /**
- * "Report a problem" (2026-11-12): one Google Form per language, opened in a
- * new tab by the learner's tap ("⋯" → Report a problem, and the link at the
- * foot of a lesson). The form's fourth box ("Details added by Fermatina") is
- * filled in through the link with one line saying where the learner was.
- * Nothing is sent before the tap: no request, no preconnect; the link is
- * built on the device and the browser opens it only when tapped. Offline,
- * a one-line notice says the form needs a connection and nothing opens.
+ * "Feedback or a problem" ("Report a problem" from 2026-11-12 until
+ * 2026-11-14, when the forms were widened to an idea, a comment or a fault):
+ * one Google Form per language, opened in a new tab by the learner's tap
+ * ("⋯" → Feedback or a problem, and the link at the foot of a lesson). The
+ * form's fourth box ("Details added by Fermatina") is filled in through the
+ * link with one line saying where the learner was. Nothing is sent before
+ * the tap: no request, no preconnect; the link is built on the device and
+ * the browser opens it only when tapped. Offline, a one-line notice says the
+ * form needs a connection and nothing opens. The forms' addresses and entry
+ * ids live in services/feedbackForms.ts (it imports nothing, so the public
+ * pages and the test sheet read them too).
  */
-
-export type ReportLanguage = 'en' | 'pt' | 'es';
-
-export interface ReportForm {
-  /** The form's public address (`…/viewform`). */
-  url: string;
-  /** The entry id of its "details" box (pre-filled through `entry.<id>`). */
-  detailsEntry: string;
-}
-
-export const REPORT_FORMS: Readonly<Record<ReportLanguage, ReportForm>> = {
-  en: { url: 'https://docs.google.com/forms/d/e/1FAIpQLSfI4qQGg8oRbptK9oy4zASrremaS4T2n7mDRyeYVppSTpZyUw/viewform', detailsEntry: '1697729701' },
-  pt: { url: 'https://docs.google.com/forms/d/e/1FAIpQLSf2rxSG77Ob4ATDFYbblTLabkLJtVpIIPYnLGXvBH_ROtFMyQ/viewform', detailsEntry: '202781657' },
-  es: { url: 'https://docs.google.com/forms/d/e/1FAIpQLSfMzJEA18XRIx3wQxFD-PKVvY7NLbPwI-XkmK4g-RceatMaUA/viewform', detailsEntry: '1963274376' },
-};
 
 /** A lesson's title is cut to this many characters in the details. */
 export const REPORT_TITLE_MAX = 60;

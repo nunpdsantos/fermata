@@ -1405,8 +1405,8 @@
     "loadFailed": "The metronome did not load. Check the connection and try again."
   },
   "report": {
-    "menuItem": "Report a problem (Google form)",
-    "offline": "You’re offline. The report form needs a connection."
+    "menuItem": "Feedback or a problem (Google form)",
+    "offline": "You’re offline. The form needs a connection."
   },
   "movedEntry": {
     "toast": "Fermata is now Fermatina, at fermatina.com.",

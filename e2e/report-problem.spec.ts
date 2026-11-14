@@ -4,11 +4,11 @@ import { test, expect, type BrowserContext, type Page } from '@playwright/test';
 import { seededBrowser, LAPTOP, PHONE, type Lang, type View } from './helpers/wave1';
 
 /**
- * "Report a problem" (2026-11-12) in a real browser, in both configs (dev
+ * "Feedback or a problem" (2026-11-12, "Report a problem" until 2026-11-14) in a real browser, in both configs (dev
  * server and the production build under its CSP):
  * - nothing leaves the device before the tap: loading the app and visiting
  *   Explore, Learn, Drill and a lesson ask no other origin for anything;
- * - "⋯" → "Report a problem" opens the English form in a new tab, the details
+ * - "⋯" → "Feedback or a problem" opens the English form in a new tab, the details
  *   box filled in through the link; in Portuguese, the Portuguese form;
  * - offline, a one-line notice and no new tab;
  * - the link at a lesson's foot points at the same form, carrying the lesson.
@@ -98,7 +98,7 @@ test('nothing leaves the device before the tap: loading and visiting Explore, Le
 });
 
 for (const v of [LAPTOP, PHONE]) {
-  test(`${v.name}: "⋯" → "Report a problem" opens the English form in a new tab, the details in the link`, async ({ browser }) => {
+  test(`${v.name}: "⋯" → "Feedback or a problem" opens the English form in a new tab, the details in the link`, async ({ browser }) => {
     const { context, page, toGoogle } = await start(browser, v, 'en');
     await page.goto('/');
     await expect(page.getByTestId('explore-root')).toBeVisible({ timeout: 15_000 });

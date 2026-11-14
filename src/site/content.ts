@@ -67,6 +67,9 @@ import esGlossary from '../i18n/glossary/es.json';
 import enTuner from '../i18n/tuner/en.json';
 import ptTuner from '../i18n/tuner/pt.json';
 import esTuner from '../i18n/tuner/es.json';
+import enMidi from '../i18n/midiInput/en.json';
+import ptMidi from '../i18n/midiInput/pt.json';
+import esMidi from '../i18n/midiInput/es.json';
 
 export const SITE_LANGS = ['en', 'pt', 'es'] as const;
 export type SiteLang = (typeof SITE_LANGS)[number];
@@ -83,12 +86,28 @@ const OVERLAYS: Record<Exclude<SiteLang, 'en'>, Record<string, CurriculumLevelOv
 
 const SONG_OVERLAYS: Record<Exclude<SiteLang, 'en'>, SongOverlay> = { pt: ptSongs, es: esSongs };
 
-/** The app's own locale files (entry namespaces) plus the lazy ones the pages quote. */
+/**
+ * The app's own locale files (entry namespaces) plus the lazy ones the pages
+ * and the test sheet quote (the MIDI keyboard's words since 2026-11-14:
+ * the sheet's "Settings → MIDI keyboard → Use a MIDI keyboard"), each under
+ * the key the app adds it at (i18n/midiInput/index.ts: `midiInput`).
+ */
 const LOCALES: Record<SiteLang, Record<string, unknown>> = {
-  en: { ...enLocale, glossary: { ...enLocale.glossary, ...enGlossary }, tuner: enTuner },
-  pt: { ...ptLocale, glossary: { ...ptLocale.glossary, ...ptGlossary }, tuner: ptTuner },
-  es: { ...esLocale, glossary: { ...esLocale.glossary, ...esGlossary }, tuner: esTuner },
+  en: { ...enLocale, glossary: { ...enLocale.glossary, ...enGlossary }, tuner: enTuner, midiInput: enMidi },
+  pt: { ...ptLocale, glossary: { ...ptLocale.glossary, ...ptGlossary }, tuner: ptTuner, midiInput: ptMidi },
+  es: { ...esLocale, glossary: { ...esLocale.glossary, ...esGlossary }, tuner: esTuner, midiInput: esMidi },
 };
+
+/** Every string of the app's locale files (the LOCALES above) in a language: for checks that a quoted phrase is or is not the app's. */
+export function allAppStrings(lang: SiteLang): string[] {
+  const out: string[] = [];
+  const walk = (node: unknown) => {
+    if (typeof node === 'string') out.push(node);
+    else if (node && typeof node === 'object') for (const v of Object.values(node)) walk(v);
+  };
+  walk(LOCALES[lang]);
+  return out;
+}
 
 /**
  * One level as `loadLevel(levelId, lang)` builds it (data/curriculumLoader.ts):

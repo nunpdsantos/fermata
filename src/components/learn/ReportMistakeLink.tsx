@@ -11,7 +11,7 @@ interface ReportMistakeLinkProps {
 /**
  * Small inline link at the bottom of a module that lets the reader flag an
  * error: a real link to the report form in the learner's language (the same
- * form as "⋯" → Report a problem), opened in a new tab, with the lesson in
+ * form as "⋯" → Feedback or a problem), opened in a new tab, with the lesson in
  * its details box. Offline, the tap says the form needs a connection and
  * goes nowhere. Nothing is sent before the tap.
  */

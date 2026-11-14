@@ -15,6 +15,7 @@
  */
 import type { CurriculumModule } from '../core/types/curriculum';
 import { htmlLangFor } from '../i18n/language';
+import { REPORT_FORMS } from '../services/feedbackForms';
 import { BAR_CHOICES, MAX_TEMPO, MIN_TEMPO } from '../state/metronomeSave';
 import { TRACKS, type TrackId } from '../data/tracks';
 import {
@@ -43,6 +44,22 @@ export const sitePath = {
   lesson: (lang: SiteLang, slug: string) => `/${lang}/${PATH_WORDS[lang].lessons}/${slug}/`,
   glossary: (lang: SiteLang) => `/${lang}/${PATH_WORDS[lang].words}/`,
 };
+
+/**
+ * The line put in the feedback form's "Details added by Fermatina" box from
+ * a page's foot: `page · <the page's path> · <lang>`. A page has no script,
+ * so nothing else (no user agent, no window size) — the app's own line is
+ * services/reportProblem.ts `reportDetails`.
+ */
+export function pageFeedbackDetails(lang: SiteLang, path: string): string {
+  return `page · ${path} · ${lang}`;
+}
+
+/** The feedback form of the page's language, its details box filled in (`?usp=pp_url&entry.<id>=…`, as the app builds it). */
+export function pageFeedbackUrl(lang: SiteLang, path: string): string {
+  const form = REPORT_FORMS[lang];
+  return `${form.url}?usp=pp_url&entry.${form.detailsEntry}=${encodeURIComponent(pageFeedbackDetails(lang, path))}`;
+}
 
 /** The app, opened on a lesson or on its home, in this language (`?lesson=…&lang=…`, state/shareParams.ts). */
 export function appUrl(lang: SiteLang, lessonId?: string): string {
@@ -215,7 +232,13 @@ function head(h: HeadInput): string {
   ].join('\n');
 }
 
-/** The page: head, the top bar (the mark and the name → the landing page; Lessons, Words), main, foot. */
+/**
+ * The page: head, the top bar (the mark and the name → the landing page;
+ * Lessons, Words), main, foot. The foot carries the one link that leaves the
+ * site (2026-11-14): the feedback form of the page's language, in a new tab,
+ * under the app's own menu label ("Feedback or a problem (Google form)"),
+ * its details box saying which page (checkSite checks every one of them).
+ */
 function page(h: HeadInput, opts: { current: 'index' | 'glossary' | null; twins: string; main: string }): string {
   const { lang } = h;
   const nav = (href: string, label: string, here: boolean) => `<a href="${href}"${here ? ' aria-current="page"' : ''}>${esc(label)}</a>`;
@@ -242,6 +265,7 @@ ${opts.main}
 <footer class="foot">
 <div class="wrap">
 <p>${esc(appText(lang, 'start.footer'))}</p>
+<p class="feedback"><a href="${esc(pageFeedbackUrl(lang, h.path))}" target="_blank" rel="noopener noreferrer">${esc(appText(lang, 'report.menuItem'))}</a></p>
 </div>
 </footer>
 </body>
