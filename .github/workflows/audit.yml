@@ -15,10 +15,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || format('run-{0}', github.run_id) }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# Every job names its image. `ubuntu-latest` moved from 24.04 to 26.04 between
+# 13 and 14 November 2026, and Playwright 1.58.2 cannot install Chromium there
+# ("Playwright does not support chromium on ubuntu26.04-x64"): all sixteen
+# browser shards failed before running a test. Move to a newer image together
+# with a Playwright that supports it, never by itself.
 jobs:
   static:
     name: Lint, types, audits, build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -56,7 +61,7 @@ jobs:
 
   unit:
     name: Unit tests + coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -70,7 +75,7 @@ jobs:
 
   e2e-dev:
     name: Browser tests (dev, shard ${{ matrix.shard }}/8)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       # A failing shard must not cancel the other specs.
       fail-fast: false
@@ -115,7 +120,7 @@ jobs:
   e2e-preview:
     name: Browser tests (preview, shard ${{ matrix.shard }}/8)
     needs: static
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       # A failing shard must not cancel the other specs.
       fail-fast: false
@@ -168,7 +173,7 @@ jobs:
     name: Lint, types, tests + coverage, audits, build, browser tests
     if: always()
     needs: [static, unit, e2e-dev, e2e-preview]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Require every job and shard to succeed
         env:
