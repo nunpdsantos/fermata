@@ -109,7 +109,7 @@ describe('the note under the bar', () => {
     render(<TopBar />);
     fireEvent.click(bar()!);
     const note = await screen.findByTestId('mic-bar-note');
-    expect(note.textContent).toBe('To hear the notes you play, Fermata listens through the microphone; the sound never leaves this device.Turn on the microphoneNot now');
+    expect(note.textContent).toBe('To hear the notes you play, Fermatina listens through the microphone; the sound never leaves this device.Turn on the microphoneNot now');
     expect(mic.getUserMedia).not.toHaveBeenCalled();
     expect(bar()!.getAttribute('aria-pressed')).toBe('false');
     fireEvent.pointerDown(document.body);
@@ -177,8 +177,8 @@ describe('the note under the bar', () => {
 
   it.each([
     ['idle', 'The microphone turned itself off after three minutes without recognising a note.'],
-    ['refused', "The microphone is blocked for Fermata. To allow it, open this site's settings (beside the address, or your phone's settings for this browser)."],
-    ['hidden', 'The microphone turned off because Fermata was no longer on screen (for example, you switched to another app or tab).'],
+    ['refused', "The microphone is blocked for Fermatina. To allow it, open this site's settings (beside the address, or your phone's settings for this browser)."],
+    ['hidden', 'The microphone turned off because Fermatina was no longer on screen (for example, you switched to another app or tab).'],
     ['ended', 'The microphone was unplugged or disconnected, so it turned off.'],
   ] as const)('off with a sentence (%s): said in Explore\'s own words, until the next tap', async (problem, sentence) => {
     render(<TopBar />);

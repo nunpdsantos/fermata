@@ -82,7 +82,7 @@ const SEARCH_ICON = (
 );
 
 /**
- * Top bar (W11-A, D-26/D-28): Fermata · Explore / Learn / Drill · search · "⋯".
+ * Top bar (W11-A, D-26/D-28): Fermatina · Explore / Learn / Drill · search · "⋯".
  * The tabs are a Segment in tabs mode: the selected tab paints its own
  * highlight, so it can never sit misaligned after a font load, a resize, an
  * orientation change or a language change (the old sliding indicator was

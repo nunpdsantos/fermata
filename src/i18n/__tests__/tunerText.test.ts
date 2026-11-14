@@ -91,9 +91,9 @@ describe('tuner text', () => {
       expect(set[0].problem.ended).toBe(set[1].problem.ended);
     }
     expect([aen.problem.hidden, apt.problem.hidden, aes.problem.hidden]).toEqual([
-      'The microphone turned off because Fermata was no longer on screen (for example, you switched to another app or tab).',
-      'O microfone desligou-se porque o Fermata já não estava no ecrã (por exemplo, mudaste para outra aplicação ou separador).',
-      'El micrófono se ha desactivado porque Fermata ya no estaba en pantalla (por ejemplo, has cambiado a otra aplicación o pestaña).',
+      'The microphone turned off because Fermatina was no longer on screen (for example, you switched to another app or tab).',
+      'O microfone desligou-se porque a Fermatina já não estava no ecrã (por exemplo, mudaste para outra aplicação ou separador).',
+      'El micrófono se ha desactivado porque Fermatina ya no estaba en pantalla (por ejemplo, has cambiado a otra aplicación o pestaña).',
     ]);
     expect([aen.problem.ended, apt.problem.ended, aes.problem.ended]).toEqual([
       'The microphone was unplugged or disconnected, so it turned off.',

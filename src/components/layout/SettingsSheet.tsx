@@ -50,7 +50,7 @@ const TOP_STRINGS: { value: NeckTopString; key: string }[] = [
 const PROFILES: LearnerProfile[] = ['new', 'player', 'theory'];
 
 /**
- * Settings → "How I use Fermata" (wave 1): the start screen's question, to
+ * Settings → "How I use Fermatina" (wave 1): the start screen's question, to
  * change later. Never asked (null) reads as 'theory', which is how the app
  * treats it. A change here raises no start screen and no start hint; a hint
  * still owed for another profile goes.
@@ -84,7 +84,7 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `fermata-backup-${backup.exportedAt.slice(0, 10)}.json`;
+    a.download = `fermatina-backup-${backup.exportedAt.slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
     toast(t('backup.exported'), 'success');

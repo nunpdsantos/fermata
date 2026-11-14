@@ -94,7 +94,7 @@ test.describe('"⋯" menu and Settings sheet', () => {
     // that control explicitly — reading it once raced it (W11-B delta
     // review). The dev server has no worker: never controlled there.
     const footer = sheet.getByTestId('settings-footer');
-    await expect(footer).toContainText(/Fermata · build \d{4}-\d{2}-\d{2}/);
+    await expect(footer).toContainText(/Fermatina · build \d{4}-\d{2}-\d{2}/);
     const manifest = await page.request.get('/manifest.webmanifest');
     const productionBuild = (manifest.headers()['content-type'] ?? '').includes('json');
     if (productionBuild) {

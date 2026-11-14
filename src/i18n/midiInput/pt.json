@@ -1,12 +1,12 @@
 {
   "title": "Teclado MIDI",
   "toggle": "Usar um teclado MIDI",
-  "ask": "Ao ativar, o teu navegador pergunta se o Fermata pode ouvir as teclas que tocas num teclado MIDI; o que tocas nunca sai deste dispositivo.",
+  "ask": "Ao ativar, o teu navegador pergunta se a Fermatina pode ouvir as teclas que tocas num teclado MIDI; o que tocas nunca sai deste dispositivo.",
   "asking": "À espera da resposta do navegador…",
   "connected": "Ligado: {{names}}",
-  "none": "Não há nenhum teclado MIDI ligado. Liga um ao dispositivo e o Fermata ouve-o de imediato.",
-  "denied": "O teu navegador não o permitiu, por isso o Fermata não consegue ouvir um teclado MIDI. Podes mudar isto nas definições do navegador para este site.",
+  "none": "Não há nenhum teclado MIDI ligado. Liga um ao dispositivo e a Fermatina ouve-o de imediato.",
+  "denied": "O teu navegador não o permitiu, por isso a Fermatina não consegue ouvir um teclado MIDI. Podes mudar isto nas definições do navegador para este site.",
   "error": "O teu navegador não conseguiu aceder ao teclado MIDI. Volta a ativar esta opção para tentar de novo.",
   "unsupported": "Este navegador não consegue usar um teclado MIDI. O Chrome, o Edge ou o Opera num computador, ou o Chrome no Android, conseguem.",
-  "soundBlocked": "Clica ou toca uma vez na página para o Fermata poder fazer soar o que tocas."
+  "soundBlocked": "Clica ou toca uma vez na página para a Fermatina poder fazer soar o que tocas."
 }

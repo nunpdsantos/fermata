@@ -81,6 +81,6 @@ describe('the install offer (wave 1: the start screen stands in place of the she
     // The app's code has loaded (the start screen is up), the shell is not mounted.
     fireInstallPrompt();
     render(<PWAPrompts />);
-    expect(screen.getByText('Install Fermata?')).toBeTruthy();
+    expect(screen.getByText('Install Fermatina?')).toBeTruthy();
   });
 });

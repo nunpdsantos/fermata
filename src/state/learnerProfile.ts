@@ -13,7 +13,7 @@
  *
  * Saved with the other preferences (`music-theory-app`, field
  * `learnerProfile`, so it travels in the backup file): set by a start-screen
- * door (state/startDoors.ts) or Settings → "How I use Fermata". The field is
+ * door (state/startDoors.ts) or Settings → "How I use Fermatina". The field is
  * written only once set, so the save of anyone never asked is unchanged
  * (store.ts partialize; persist stays v6).
  */

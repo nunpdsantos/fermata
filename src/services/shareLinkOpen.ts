@@ -13,7 +13,7 @@
  *     other than the one being checked would drop that check (LearnView
  *     clears a check whose lesson is left), and switching views mid-Sprint
  *     breaks its flow. So while there is work, NOTHING is applied: a toast
- *     says what the link opens and that Fermata will offer it when the work
+ *     says what the link opens and that Fermatina will offer it when the work
  *     is over; once it is (checked every 1.5 s) a second toast offers it with
  *     "Open" — nothing opens by itself. Choosing
  *     Open when work has started again waits again. The held link lives in

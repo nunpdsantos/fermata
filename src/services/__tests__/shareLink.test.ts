@@ -271,7 +271,7 @@ describe('work in progress: a link never discards it', () => {
     expect(heldShareTarget()?.key).toEqual({ natural: 'D', accidental: '' });
     const toasts = () => useToastStore.getState().toasts;
     expect(toasts()).toHaveLength(1);
-    expect(toasts()[0].message).toBe('This link opens D Major, the A chord, on the guitar. Fermata will offer to open it when you have finished what you are doing.');
+    expect(toasts()[0].message).toBe('This link opens D Major, the A chord, on the guitar. Fermatina will offer to open it when you have finished what you are doing.');
     expect(toasts()[0].action).toBeUndefined();
 
     // Still busy: nothing changes, however long.
@@ -301,8 +301,8 @@ describe('work in progress: a link never discards it', () => {
   // After review (2026-11-10): the held-link toasts in PT and ES say what
   // happens — the link waits, then an "Abrir" button is offered; nothing opens by itself.
   it.each([
-    ['pt', 'Esta ligação abre D maior, o acorde A, na guitarra. Quando terminares o que estás a fazer, o Fermata propõe-te abri-la.', 'Já podes abrir a ligação: D maior, o acorde A, na guitarra'],
-    ['es', 'Este enlace abre D mayor, el acorde A, en la guitarra. Cuando termines lo que estás haciendo, Fermata te propondrá abrirlo.', 'Ya puedes abrir el enlace: D mayor, el acorde A, en la guitarra'],
+    ['pt', 'Esta ligação abre D maior, o acorde A, na guitarra. Quando terminares o que estás a fazer, a Fermatina propõe-te abri-la.', 'Já podes abrir a ligação: D maior, o acorde A, na guitarra'],
+    ['es', 'Este enlace abre D mayor, el acorde A, en la guitarra. Cuando termines lo que estás haciendo, Fermatina te propondrá abrirlo.', 'Ya puedes abrir el enlace: D mayor, el acorde A, en la guitarra'],
   ])('in %s, the waiting and the offer say what happens', async (lang, waiting, ready) => {
     await i18n.changeLanguage(lang);
     try {

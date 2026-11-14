@@ -98,7 +98,7 @@ describe('the start screen in the app', () => {
     expect(screen.queryByText('EXPLORE_VIEW')).toBeNull();
     expect(page.tagName).toBe('MAIN');
     // Headings: h1 the name, h2 the doors' question.
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Fermata');
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Fermatina');
     expect(screen.getByRole('heading', { level: 2 }).textContent).toBe('Where are you starting from?');
     expect(page.textContent).toContain('Learn how music works, on a piano or guitar you can play right here.');
     expect(page.textContent).toContain('Free. No account. Works offline after your first visit. Your progress stays in this browser.');
@@ -220,10 +220,10 @@ describe('the start screen in the app', () => {
   });
 });
 
-describe('Settings → "How I use Fermata"', () => {
+describe('Settings → "How I use Fermatina"', () => {
   it('three choices; never asked reads as theory; a change saves the profile, raises nothing and drops a hint owed for another profile', () => {
     render(<SettingsSheet open onClose={() => {}} />);
-    const group = screen.getByRole('radiogroup', { name: 'How I use Fermata' });
+    const group = screen.getByRole('radiogroup', { name: 'How I use Fermatina' });
     const chips = within(group).getAllByRole('radio');
     expect(chips.map((c) => c.textContent)).toEqual(['New to music', 'I play, no theory', 'I know some theory']);
     expect(chips.map((c) => c.getAttribute('aria-checked'))).toEqual(['false', 'false', 'true']);

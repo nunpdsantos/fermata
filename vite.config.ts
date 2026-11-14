@@ -87,7 +87,7 @@ function isTranslatedContent(modulePath: string): boolean {
 }
 
 export default defineConfig({
-  // The build's UTC date, shown in Settings ("Fermata · build 2026-10-31",
+  // The build's UTC date, shown in Settings ("Fermatina · build 2026-10-31",
   // W11-A). src/buildInfo.ts reads it; unit tests run without it.
   define: {
     __BUILD_DATE__: JSON.stringify(BUILD_DATE),
@@ -110,9 +110,12 @@ export default defineConfig({
       // a few seconds after launch without asking.
       registerType: 'prompt',
       manifest: {
-        name: 'Fermata — Music Theory',
-        short_name: 'Fermata',
-        description: 'Fermata — interactive music theory through your instrument. Explore scales, chords, and keys with a piano or guitar always in reach.',
+        // The name a person reads (2026-11-14: Fermata became Fermatina). The
+        // installed app's start_url, scope, icons and shortcuts are unchanged
+        // (there is no `id`): an installed copy keeps being the same app.
+        name: 'Fermatina — Music Theory',
+        short_name: 'Fermatina',
+        description: 'Fermatina — interactive music theory through your instrument. Explore scales, chords, and keys with a piano or guitar always in reach.',
         theme_color: '#f5efe2',
         background_color: '#f5efe2',
         display: 'standalone',

@@ -25,9 +25,9 @@ const PLAY_ICON = (
 
 /**
  * The start screen (wave 1; a lazy chunk, StartHost mounts it IN PLACE of the
- * app): what Fermata is for, the tour, the instrument, three doors — the only
+ * app): what Fermatina is for, the tour, the instrument, three doors — the only
  * ways out (state/startDoors.ts) — the language and what it costs. A page,
- * not a modal: h1 Fermata, h2 the doors' question; focus starts on the h1
+ * not a modal: h1 Fermatina, h2 the doors' question; focus starts on the h1
  * (on the tour button when the visitor comes back from the tour).
  *
  * "I'll use" stands BEFORE the doors (the brief listed it after them): a door

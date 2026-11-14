@@ -195,7 +195,7 @@ async function turnOnCheckMic(page: Page) {
   const zone = page.getByTestId('check-mic');
   await expect(zone.getByText('With the microphone on, the notes you play are added to your answer.')).toBeVisible();
   await zone.getByRole('button', { name: 'Microphone' }).click();
-  await expect(zone.getByText('To hear the notes you play, Fermata listens through the microphone; the sound never leaves this device.')).toBeVisible();
+  await expect(zone.getByText('To hear the notes you play, Fermatina listens through the microphone; the sound never leaves this device.')).toBeVisible();
   await zone.getByRole('button', { name: 'Turn on the microphone' }).click();
   await expect(zone.getByRole('button', { name: 'Microphone' })).toHaveAttribute('aria-pressed', 'true', { timeout: 10_000 });
 }
@@ -804,7 +804,7 @@ for (const v of [PHONE, LAPTOP]) {
       await mic.evaluate((el) => { (el as HTMLElement).style.display = ''; });
       test.info().annotations.push({ type: 'measured', description: `${v.name} top bar with the switch ${JSON.stringify(withMic)} / without ${JSON.stringify(withoutMic)}` });
       // Known positive: the tabs, search, "⋯" and the name are all measured.
-      expect(withMic.map((r) => r[4])).toEqual(expect.arrayContaining(['Explorar', 'Aprender', 'Treino', 'Mais', 'Fermata']));
+      expect(withMic.map((r) => r[4])).toEqual(expect.arrayContaining(['Explorar', 'Aprender', 'Treino', 'Mais', 'Fermatina']));
       expect(barWith, 'the top bar does not grow with the switch').toEqual(barWithout);
       expect(withMic).toEqual(withoutMic);
     }
@@ -937,7 +937,7 @@ async function ownerCheckVisit(browser: Browser, v: View, control: boolean) {
     await start.click();
     const inline = page.getByTestId('check-mic').getByRole('button', { name: 'Microfone' });
     await inline.click();
-    await expect(page.getByTestId('check-mic')).toContainText('Para ouvir as notas que tocas, o Fermata ouve através do microfone; o som nunca sai deste dispositivo.');
+    await expect(page.getByTestId('check-mic')).toContainText('Para ouvir as notas que tocas, a Fermatina ouve através do microfone; o som nunca sai deste dispositivo.');
     await page.getByRole('button', { name: 'Agora não' }).click();
     await expect(inline).toHaveAttribute('data-state', 'off');
     askedOnTap = await page.evaluate(() => (window as unknown as { __asked: string[] }).__asked);

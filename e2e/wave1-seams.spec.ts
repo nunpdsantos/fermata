@@ -438,7 +438,7 @@ test.describe('8. share links ↔ Simple view', () => {
 });
 
 // ─── 9. Settings ────────────────────────────────────────────────────────────
-test.describe('9. Settings: "How I use Fermata", "Guitar neck", Do-Re-Mi', () => {
+test.describe('9. Settings: "How I use Fermatina", "Guitar neck", Do-Re-Mi', () => {
   for (const lang of ['pt', 'es'] as const) {
     for (const theme of ['fermata', 'fermata-night'] as const) {
       test(`${lang} 320 px ${theme === 'fermata' ? 'day' : 'night'}: the three additions coexist and pass the audit`, async ({ browser }) => {
@@ -452,7 +452,7 @@ test.describe('9. Settings: "How I use Fermata", "Guitar neck", Do-Re-Mi', () =>
         await expect(dialog).toBeVisible();
         await page.waitForTimeout(300);
         await expect(dialog.getByTestId('solfege-setting')).toBeVisible();
-        await expect(dialog.getByText(lang === 'pt' ? 'Como uso o Fermata' : 'Cómo uso Fermata').first()).toBeVisible();
+        await expect(dialog.getByText(lang === 'pt' ? 'Como uso a Fermatina' : 'Cómo uso Fermatina').first()).toBeVisible();
         await expect(dialog.getByTestId('neck-settings')).toBeAttached();
         await audit(page, PHONE_320, `${lang} settings top`);
         await dialog.getByTestId('neck-settings').scrollIntoViewIfNeeded();

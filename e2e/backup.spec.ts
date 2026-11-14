@@ -97,7 +97,7 @@ test.describe('Progress backup', () => {
       buffer: Buffer.from(JSON.stringify(bad)),
     });
 
-    await expect(page.getByText(/not a valid Fermata backup|invalid/i).first()).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/not a valid Fermatina backup|invalid/i).first()).toBeVisible({ timeout: 10_000 });
     expect(dialogs).toBe(0);
     const stored = await page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? 'null'), PROGRESS_KEY);
     expect(stored?.state?.progress?.completedModules).toEqual(['l1u1m1', 'l1u1m2']);

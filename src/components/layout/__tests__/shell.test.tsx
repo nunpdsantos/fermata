@@ -88,7 +88,7 @@ describe('SettingsSheet', () => {
     render(<SettingsSheet open onClose={() => {}} />);
     fireEvent.click(screen.getByRole('button', { name: 'Export backup' }));
     expect(createObjectURL).toHaveBeenCalled();
-    expect(clicks[0]).toMatch(/^fermata-backup-\d{4}-\d{2}-\d{2}\.json$/);
+    expect(clicks[0]).toMatch(/^fermatina-backup-\d{4}-\d{2}-\d{2}\.json$/);
     expect(useToastStore.getState().toasts.map((t) => t.message)).toEqual(['Backup downloaded']);
   });
 
@@ -99,7 +99,7 @@ describe('SettingsSheet', () => {
     const file = (body: string) => Object.assign(new File([body], 'b.json', { type: 'application/json' }), { text: async () => body });
 
     fireEvent.change(input, { target: { files: [file('{not json')] } });
-    await waitFor(() => expect(useToastStore.getState().toasts.at(-1)?.message).toBe('Not a valid Fermata backup file'));
+    await waitFor(() => expect(useToastStore.getState().toasts.at(-1)?.message).toBe('Not a valid Fermatina backup file'));
 
     const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
     const backup = {
@@ -116,7 +116,7 @@ describe('SettingsSheet', () => {
 
   it('footer: "works offline" only while a service worker controls the page', () => {
     const { unmount } = render(<SettingsSheet open onClose={() => {}} />);
-    expect(screen.getByTestId('settings-footer').textContent).toBe('Fermata');
+    expect(screen.getByTestId('settings-footer').textContent).toBe('Fermatina');
     unmount();
     Object.defineProperty(navigator, 'serviceWorker', {
       configurable: true,
@@ -124,7 +124,7 @@ describe('SettingsSheet', () => {
     });
     try {
       render(<SettingsSheet open onClose={() => {}} />);
-      expect(screen.getByTestId('settings-footer').textContent).toBe('Fermata · works offline');
+      expect(screen.getByTestId('settings-footer').textContent).toBe('Fermatina · works offline');
     } finally {
       delete (navigator as unknown as { serviceWorker?: unknown }).serviceWorker;
     }

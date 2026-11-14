@@ -268,7 +268,7 @@ describe('the capo (guitar only)', () => {
       for (const c of ['E♭', 'A♭', 'B♭']) add(c);
       expect(screen.queryByRole('radiogroup', { name: 'Capo ideas, for shapes with open strings' })).toBeNull();
       expect(screen.queryByTestId('progression-capo-none')).toBeNull();
-      expect(screen.getByTestId('progression-capo-standard').textContent).toBe("Capo ideas need standard tuning: Fermata's chord shapes are for standard tuning only.");
+      expect(screen.getByTestId('progression-capo-standard').textContent).toBe("Capo ideas need standard tuning: Fermatina's chord shapes are for standard tuning only.");
       expect(screen.queryByRole('button', { name: 'No capo' })).toBeNull();
       act(() => setCapoFret(1));
       expect(screen.queryByTestId('progression-capo-now')).toBeNull();

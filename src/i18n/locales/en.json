@@ -2,7 +2,7 @@
   "nav": {
     "moreUpdateReady": "More — update ready",
     "more": "More",
-    "musicTheory": "Fermata",
+    "musicTheory": "Fermatina",
     "explore": "Explore",
     "play": "Play",
     "learn": "Learn",
@@ -32,7 +32,7 @@
     "export": "Export backup",
     "import": "Import backup",
     "exported": "Backup downloaded",
-    "invalidFile": "Not a valid Fermata backup file",
+    "invalidFile": "Not a valid Fermatina backup file",
     "confirmImport": "Replace current data with this backup ({{sections}})? The app will reload."
   },
   "common": {
@@ -360,7 +360,7 @@
     "updateReady": "Update ready: reload",
     "newVersion": "New version available",
     "offlineReady": "App ready for offline use",
-    "installPrompt": "Install Fermata?",
+    "installPrompt": "Install Fermatina?",
     "whatsNew": "What’s new: {{note}}",
     "updated": "Updated to the latest version",
     "finishUpdate": "Reload to finish updating"
@@ -1125,7 +1125,7 @@
       }
     },
     "footer": "Free. No account. Works offline after your first visit. Your progress stays in this browser.",
-    "settingsLabel": "How I use Fermata",
+    "settingsLabel": "How I use Fermatina",
     "profile": {
       "new": "New to music",
       "player": "I play, no theory",
@@ -1222,12 +1222,12 @@
     "copied": "Link copied",
     "lessonActions": "Lesson actions",
     "fallbackTitle": "Copy this link",
-    "fallbackHint": "This browser did not let Fermata copy the link. Select it and copy it yourself.",
+    "fallbackHint": "This browser did not let Fermatina copy the link. Select it and copy it yourself.",
     "fallbackField": "Link",
-    "waiting": "This link opens {{target}}. Fermata will offer to open it when you have finished what you are doing.",
+    "waiting": "This link opens {{target}}. Fermatina will offer to open it when you have finished what you are doing.",
     "ready": "Ready to open the link: {{target}}",
     "open": "Open",
-    "unreadable": "This link could not be read, so Fermata opened as usual.",
+    "unreadable": "This link could not be read, so Fermatina opened as usual.",
     "target": {
       "chord": "the {{chord}} chord",
       "piano": "on the piano",
@@ -1246,7 +1246,7 @@
     "back": "Chords",
     "backLabel": "Back to the chords",
     "title": "Progression",
-    "empty": "Put chords in the order you play them: Fermata finds the key they fit, loops them while you try a tune, and moves them to another key.",
+    "empty": "Put chords in the order you play them: Fermatina finds the key they fit, loops them while you try a tune, and moves them to another key.",
     "chips": "Your chords, in order",
     "chip": "{{chord}}, {{numeral}}, chord {{n}} of {{total}}",
     "chipOutside": "{{chord}}, {{numeral}}, from outside {{key}}, chord {{n}} of {{total}}",
@@ -1267,7 +1267,7 @@
     "kindMinor": "Minor",
     "typeLabel": "Or type a chord",
     "typeHint": "For example F#m7 or G/B",
-    "typeInvalid": "Fermata does not read “{{text}}” as a chord.",
+    "typeInvalid": "Fermatina does not read “{{text}}” as a chord.",
     "addThis": "Add {{chord}}",
     "presetIn": "in {{key}}",
     "blues": "Twelve-bar blues",
@@ -1300,7 +1300,7 @@
     "capoIdea": "Fret {{fret}}: {{shapes}}",
     "capoNoIdea": "No capo gives these chords more shapes with open strings.",
     "capoAllOpen": "Without a capo, each of these chords already has a shape with open strings.",
-    "capoStandardOnly": "Capo ideas need standard tuning: Fermata's chord shapes are for standard tuning only.",
+    "capoStandardOnly": "Capo ideas need standard tuning: Fermatina's chord shapes are for standard tuning only.",
     "noCapo": "No capo",
     "clear": "Clear",
     "offer": "A lesson or shared link offers these chords: {{chords}}.",
