@@ -226,6 +226,20 @@ test('the wordmark is drawn from 744 px only (not at 743): never under the tabs,
           expect(m.width, `${where}: the word is not drawn (screen-reader only)`).toBeLessThanOrEqual(1);
         }
       }
+      // A short screen (a phone on its side): the mark alone at any width, so the metronome's
+      // compact bar keeps its stretch of the top bar; a tall screen of the same width draws the word.
+      for (const [width, height, drawn] of [[844, 390, false], [844, 500, false], [844, 501, true], [932, 430, false]] as const) {
+        await page.setViewportSize({ width, height });
+        await page.waitForTimeout(150);
+        const m = await page.evaluate(() => {
+          const brand = document.querySelector('.app-brand') as HTMLElement;
+          return { width: brand.getBoundingClientRect().width, text: brand.textContent };
+        });
+        const where = `${lang} ${touch ? 'touch' : 'mouse'} ${width}×${height}`;
+        expect(m.text, `${where}: the name is there for screen readers`).toBe('Fermatina');
+        if (drawn) expect(m.width, `${where}: the word is drawn`).toBeGreaterThan(40);
+        else expect(m.width, `${where}: the word is not drawn on a short screen`).toBeLessThanOrEqual(1);
+      }
       await context.close();
     }
   }

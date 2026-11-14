@@ -187,8 +187,13 @@ export function TopBar() {
         {/* The word is drawn from 744 px (2026-11-14): narrower, "Fermatina" ran
             under the tab strip in PT / ES. Below that the mark stands alone, as
             on phones; the name stays for screen readers. Tailwind's max-[N] is
-            "below N", so 744 here: drawn at 744, not at 743 (e2e/shell.spec.ts). */}
-        <span className="app-brand max-[744px]:sr-only">{t('nav.musicTheory')}</span>
+            "below N", so 744 here: drawn at 744, not at 743 (e2e/shell.spec.ts).
+            Nor on a short screen (a phone on its side, 844×390): the metronome's
+            compact bar goes into the empty stretch between the name and the tabs
+            when the sheet is at Full (metronome/placement.ts), and with the longer
+            word that stretch was too small under Linux's wider text, so the bar
+            fell over the instrument (GitHub's run of design-metronome, 14 Nov). */}
+        <span className="app-brand max-[744px]:sr-only [@media(max-height:500px)]:sr-only">{t('nav.musicTheory')}</span>
       </div>
 
       <Segment
