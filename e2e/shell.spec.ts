@@ -193,6 +193,44 @@ for (const vp of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
   });
 }
 
+// 2026-11-14: "Fermatina" is two letters longer than "Fermata", and from 640 to 743 px it ran
+// under the tab strip in PT / ES. The word is drawn from 744 px only; below, the mark alone (as on
+// phones), the name kept for screen readers. Drawn = a real box beside the mark; not drawn = the
+// screen-reader-only box (1 px, clipped). Every language, touch and mouse, Explore and Learn.
+test('the wordmark is drawn from 744 px only (not at 743): never under the tabs, always named', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const names = { en: 'Explore', pt: 'Explorar', es: 'Explorar' } as const;
+  for (const lang of ['en', 'pt', 'es'] as const) {
+    for (const touch of [true, false]) {
+      const context = await browser.newContext({ viewport: { width: 743, height: 800 }, isMobile: touch, hasTouch: touch, reducedMotion: 'reduce', serviceWorkers: 'block' });
+      const page = await context.newPage();
+      await seed(page, { language: lang, lastView: 'explore' });
+      await page.goto('/');
+      await expect(page.getByRole('tab', { name: names[lang] })).toBeVisible();
+      for (const width of [639, 640, 743, 744, 768, 1024]) {
+        await page.setViewportSize({ width, height: 800 });
+        await page.waitForTimeout(150);
+        const m = await page.evaluate(() => {
+          const brand = document.querySelector('.app-brand') as HTMLElement;
+          const b = brand.getBoundingClientRect();
+          const tabs = document.querySelector('.app-tabs')!.getBoundingClientRect();
+          return { width: b.width, right: b.right, tabsLeft: tabs.left, clip: getComputedStyle(brand).clipPath, text: brand.textContent };
+        });
+        const where = `${lang} ${touch ? 'touch' : 'mouse'} ${width}px`;
+        expect(m.text, `${where}: the name is there for screen readers`).toBe('Fermatina');
+        if (width >= 744) {
+          expect(m.width, `${where}: the word is drawn`).toBeGreaterThan(40);
+          expect(m.clip, `${where}: not clipped`).toBe('none');
+          expect(m.right, `${where}: the word ends before the tabs begin`).toBeLessThanOrEqual(m.tabsLeft);
+        } else {
+          expect(m.width, `${where}: the word is not drawn (screen-reader only)`).toBeLessThanOrEqual(1);
+        }
+      }
+      await context.close();
+    }
+  }
+});
+
 test('choice chips: one Tab stop, arrow keys move and select', async ({ page }) => {
   // The piano's octave chips (the root chips moved into the phone's key
   // picker sheet with the Explore workbench, W11-B).
