@@ -1125,6 +1125,7 @@
       }
     },
     "footer": "Gratis. Sin cuenta. Tras la primera visita, funciona sin conexión. Tu progreso se queda en este navegador.",
+    "progressFile": "Tengo un archivo de progreso",
     "settingsLabel": "Cómo uso Fermatina",
     "profile": {
       "new": "Estoy empezando",

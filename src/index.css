@@ -3033,5 +3033,6 @@ html[data-metro-room] .learn-scroll {
   line-height: 1.45;
   max-width: 34em;
 }
+.start-import-link { margin-left: -6px; }
 .start-import { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 .start-import-error { margin: 0; font-size: var(--text-ui); color: var(--danger-text); }

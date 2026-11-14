@@ -1125,6 +1125,7 @@
       }
     },
     "footer": "Free. No account. Works offline after your first visit. Your progress stays in this browser.",
+    "progressFile": "I have a progress file",
     "settingsLabel": "How I use Fermatina",
     "profile": {
       "new": "New to music",

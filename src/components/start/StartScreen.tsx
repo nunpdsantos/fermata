@@ -11,6 +11,8 @@ import { Card } from '../ui/Card.tsx';
 import { Segment } from '../ui/Segment.tsx';
 import { onOldAddress } from '../../services/appAddress.ts';
 import { AddressLink } from '../moved/AddressLink.tsx';
+import { readBackupFile } from '../../utils/backupFile.ts';
+import { bringInFromStartScreen } from '../../state/startImport.ts';
 
 const DOORS: LearnerProfile[] = ['new', 'player', 'theory'];
 const INSTRUMENTS: InstrumentType[] = ['piano', 'guitar'];
@@ -45,6 +47,20 @@ export default function StartScreen() {
   const tourRef = useRef<HTMLButtonElement>(null);
   const tourFailed = useDemoFailed();
   const [movedHere] = useState(() => onOldAddress());
+  // "I have a progress file" (2026-11-14): Settings' import, from this page
+  // (state/startImport.ts). A file that is not one says so here, by the
+  // link: this page has no toast region.
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [importFailed, setImportFailed] = useState(false);
+  const importFile = async (file: File) => {
+    setImportFailed(false);
+    const result = await readBackupFile(file);
+    if (!result.ok) {
+      setImportFailed(true);
+      return;
+    }
+    bringInFromStartScreen(result.backup);
+  };
   // The tour plays sound: resume the audio inside this tap (iOS allows it
   // only there; the tour's own resume runs after its chunk has loaded), then
   // ask for it — as the menu's "Show me around" does (TopBar).
@@ -127,6 +143,28 @@ export default function StartScreen() {
               </li>
             ))}
           </ul>
+          {/* Under the doors: a progress file brought from another address or
+              device. Nothing is chosen for the visitor — the file decides. */}
+          <div className="start-import">
+            <Button variant="link" className="start-import-link" onClick={() => fileRef.current?.click()} data-testid="start-import">
+              {t('start.progressFile')}
+            </Button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              aria-hidden="true"
+              tabIndex={-1}
+              data-testid="start-import-input"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                e.target.value = '';
+                if (file) void importFile(file);
+              }}
+            />
+            {importFailed && <p className="start-import-error" role="alert" data-testid="start-import-error">{t('backup.invalidFile')}</p>}
+          </div>
         </section>
 
         <div className="start-row">
