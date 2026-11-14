@@ -93,7 +93,7 @@ export const UI_TEMPLATES: Record<SheetLang, SheetUi> = {
     ua: 'Your browser’s own description is added at the end, so a problem can be reproduced.',
     sendButton: 'Send my answers',
     sendNote: 'A Google form opens with your answers already filled in. Press the button at the bottom of that page to send them.',
-    tooLong: 'What you wrote is too long for this button. Shorten it, or use “{{sheet:copy}}” and send them in a message to the person who gave you this page.',
+    tooLong: 'What you wrote is too long for this button. Shorten it, or use “{{sheet:copy}}” and send the copied text in a message to the person who gave you this page.',
     offline: '{{app:report.offline}}',
     copy: 'Copy my answers',
     copied: 'Copied. Now paste it into a message.',
@@ -133,11 +133,11 @@ export const UI_TEMPLATES: Record<SheetLang, SheetUi> = {
       lang: 'A língua que usaste na app',
     },
     send: 'Envia as tuas respostas',
-    sendtext: 'Esta página não guarda nada online: as tuas respostas ficam neste navegador até as enviares.',
+    sendtext: 'Esta página não guarda nada na internet: as tuas respostas ficam neste navegador até as enviares.',
     ua: 'A descrição que o teu navegador dá de si próprio é acrescentada no fim, para ser possível reproduzir um problema.',
     sendButton: 'Enviar as minhas respostas',
     sendNote: 'Abre-se um formulário Google com as tuas respostas já preenchidas. Carrega no botão no fim dessa página para as enviares.',
-    tooLong: 'O que escreveste é demasiado longo para este botão. Encurta-o, ou usa «{{sheet:copy}}» e envia-as numa mensagem a quem te deu esta página.',
+    tooLong: 'O que escreveste é demasiado longo para este botão. Encurta-o ou usa «{{sheet:copy}}» e envia o texto copiado numa mensagem a quem te deu esta página.',
     offline: '{{app:report.offline}}',
     copy: 'Copiar as minhas respostas',
     copied: 'Copiado. Agora cola numa mensagem.',
@@ -152,7 +152,7 @@ export const UI_TEMPLATES: Record<SheetLang, SheetUi> = {
   },
   es: {
     title: 'Hoja de prueba de Fermatina',
-    lead: 'Cuenta con unos veinte minutos. Aquí nada de lo que hagas está mal: cuando algo cuesta encontrarlo, la culpa es de la app, y es justo lo que queremos saber.',
+    lead: 'Calcula unos veinte minutos. Aquí nada de lo que hagas está mal: cuando algo es difícil de encontrar, la culpa es de la app, y es justo lo que queremos saber.',
     open: '{{site:openApp}}',
     appnote: 'Se abre en una pestaña nueva. Vuelve a esta página para marcar cada tarea.',
     languageLabel: '{{app:nav.languageLabel}}',
@@ -162,7 +162,7 @@ export const UI_TEMPLATES: Record<SheetLang, SheetUi> = {
     check: { ok: 'Funcionó', hard: 'En parte', no: 'No funcionó' },
     result: 'Resultado',
     hint: '¿No lo encuentras? Ver una pista',
-    nohint: 'Esta no tiene pista. Si no lo encuentras, eso es justo lo que nos interesa saber.',
+    nohint: 'Esta tarea no tiene pista. Si no lo encuentras, eso es justo lo que nos interesa saber.',
     where: 'Dónde',
     expect: 'Qué debería pasar',
     notes: '¿Qué ha pasado? (opcional)',
@@ -170,18 +170,18 @@ export const UI_TEMPLATES: Record<SheetLang, SheetUi> = {
     before: 'Antes de terminar',
     q: {
       what: 'Con tus palabras, ¿para qué sirve esta app?',
-      confusing: '¿Cuál fue el momento más confuso?',
+      confusing: '¿Cuál ha sido el momento más confuso?',
       again: '¿Volverías a abrirla? ¿Para qué?',
-      surprise: '¿Te sorprendió algo, para bien o para mal?',
+      surprise: '¿Te ha sorprendido algo, para bien o para mal?',
       device: 'Tu dispositivo y navegador (por ejemplo: iPhone 13, Safari)',
-      lang: 'El idioma que usaste en la app',
+      lang: 'El idioma que has usado en la app',
     },
     send: 'Envía tus respuestas',
     sendtext: 'Esta página no guarda nada en internet: tus respuestas se quedan en este navegador hasta que las envíes.',
     ua: 'Al final se añade la descripción que tu navegador da de sí mismo, para poder reproducir un problema.',
     sendButton: 'Enviar mis respuestas',
     sendNote: 'Se abre un formulario de Google con tus respuestas ya rellenadas. Pulsa el botón al final de esa página para enviarlas.',
-    tooLong: 'Lo que has escrito es demasiado largo para este botón. Acórtalo, o usa «{{sheet:copy}}» y envíalas en un mensaje a quien te dio esta página.',
+    tooLong: 'Lo que has escrito es demasiado largo para este botón. Acórtalo o usa «{{sheet:copy}}» y envía el texto copiado en un mensaje a quien te dio esta página.',
     offline: '{{app:report.offline}}',
     copy: 'Copiar mis respuestas',
     copied: 'Copiado. Ahora pégalo en un mensaje.',
@@ -189,7 +189,7 @@ export const UI_TEMPLATES: Record<SheetLang, SheetUi> = {
     clear: 'Borrar esta hoja',
     clear2: 'Pulsa otra vez para borrar',
     none: 'sin respuesta',
-    hintused: 'usó la pista',
+    hintused: 'pista usada',
     browser: 'Navegador',
     sheetword: 'Prueba de Fermatina',
     noscript: 'Esta hoja necesita JavaScript para funcionar.',
@@ -205,7 +205,7 @@ const OPEN_GOAL: T3 = {
 const DOTTED_HINT: T3 = {
   en: 'Words with a dotted line under them can be tapped.',
   pt: 'Podes tocar nas palavras com um sublinhado pontilhado.',
-  es: 'Puedes pulsar las palabras que tienen debajo una línea de puntos.',
+  es: 'Puedes pulsar las palabras subrayadas con puntos.',
 };
 const TELL_GOAL: T3 = {
   en: 'Suppose something in the app looks wrong and you want to tell the people who make it. Find where you would do that. You don’t need to send anything.',
@@ -242,7 +242,7 @@ export const SHEET_TEMPLATES: Record<SheetId, SheetTemplate> = {
         goal: {
           en: 'Do the first lesson you are offered, right to the end.',
           pt: 'Faz a primeira lição que te é proposta, até ao fim.',
-          es: 'Haz la primera lección que se te proponga, hasta el final.',
+          es: 'Haz hasta el final la primera lección que te proponga la app.',
         },
         hint: {
           en: 'It is the first lesson of “{{app:tracks.sound.title}}”, under {{app:nav.learn}}.',
@@ -316,7 +316,7 @@ export const SHEET_TEMPLATES: Record<SheetId, SheetTemplate> = {
     intro: {
       en: 'For someone who plays guitar or piano but never learned the theory behind it. Have a song in mind whose chords you know.',
       pt: 'Para quem toca guitarra ou piano mas nunca aprendeu a teoria. Pensa numa música de que saibas os acordes.',
-      es: 'Para quien toca la guitarra o el piano pero nunca aprendió la teoría que hay detrás. Piensa en una canción cuyos acordes conozcas.',
+      es: 'Para quien toca la guitarra o el piano pero nunca ha aprendido la teoría que hay detrás. Piensa en una canción cuyos acordes conozcas.',
     },
     tasks: [
       {
@@ -333,7 +333,7 @@ export const SHEET_TEMPLATES: Record<SheetId, SheetTemplate> = {
         goal: {
           en: 'Take the chords of a song you know (or use G, D, Em and C). Get the app to tell you which key they belong to.',
           pt: 'Pega nos acordes de uma música que conheças (ou usa Sol, Ré, Mi menor e Dó: G, D, Em e C). Faz com que a app te diga a que tonalidade pertencem.',
-          es: 'Toma los acordes de una canción que conozcas (o usa Sol, Re, Mi menor y Do: G, D, Em y C). Haz que la app te diga a qué tonalidad pertenecen.',
+          es: 'Elige los acordes de una canción que conozcas (o usa Sol, Re, Mi menor y Do: G, D, Em y C). Haz que la app te diga a qué tonalidad pertenecen.',
         },
         hint: {
           en: 'In {{app:nav.explore}}, open “{{app:progression.open}}” and add your chords.',
@@ -346,12 +346,12 @@ export const SHEET_TEMPLATES: Record<SheetId, SheetTemplate> = {
         goal: {
           en: 'Make the app play those chords round and round. Then slow it down.',
           pt: 'Põe a app a tocar esses acordes em ciclo. Depois torna-a mais lenta.',
-          es: 'Haz que la app toque esos acordes una y otra vez. Luego hazlo más lento.',
+          es: 'Haz que la app toque esos acordes una y otra vez. Luego haz que suene más despacio.',
         },
         hint: {
           en: '“{{app:progression.loop}}” starts it. “{{app:progression.tempo}}” has slower and faster.',
           pt: '«{{app:progression.loop}}» começa a tocar. «{{app:progression.tempo}}» tem mais lento e mais rápido.',
-          es: '«{{app:progression.loop}}» lo pone en marcha. «{{app:progression.tempo}}» tiene más lento y más rápido.',
+          es: '«{{app:progression.loop}}» lo pone en marcha. «{{app:progression.tempo}}» tiene botones para ir más lento y más rápido.',
         },
       },
       {
@@ -377,7 +377,7 @@ export const SHEET_TEMPLATES: Record<SheetId, SheetTemplate> = {
         hint: {
           en: 'In the row of buttons under the guitar neck there is a button “⇄” called “{{app:neckView.flip}}” (on a phone, drag the instrument panel at the bottom of the screen upwards if you don’t see it).',
           pt: 'Na linha de botões por baixo do braço da guitarra há um botão «⇄», chamado «{{app:neckView.flip}}» (num telemóvel, puxa para cima o painel do instrumento, ao fundo do ecrã, se não o vires).',
-          es: 'En la fila de botones bajo el mástil de la guitarra hay un botón «⇄» llamado «{{app:neckView.flip}}» (en un móvil, arrastra hacia arriba el panel del instrumento, al pie de la pantalla, si no lo ves).',
+          es: 'En la fila de botones debajo del mástil de la guitarra hay un botón «⇄» llamado «{{app:neckView.flip}}» (en un móvil, arrastra hacia arriba el panel del instrumento, al pie de la pantalla, si no lo ves).',
         },
       },
       {
@@ -424,7 +424,7 @@ export const SHEET_TEMPLATES: Record<SheetId, SheetTemplate> = {
     intro: {
       en: 'For anyone with a real instrument to hand, somewhere fairly quiet. These parts were only ever tested with computer-made sound, so a real guitar, piano or voice in a real room is the test. A phone is the most useful device to try.',
       pt: 'Para quem tem um instrumento à mão, num sítio sossegado. Estas partes só foram testadas com som gerado por computador; por isso o teste é uma guitarra, um piano ou uma voz a sério, numa sala a sério. O telemóvel é o dispositivo mais útil para experimentar.',
-      es: 'Para quien tenga un instrumento a mano, en un sitio bastante tranquilo. Estas partes solo se han probado con sonido generado por ordenador, así que la prueba es una guitarra, un piano o una voz de verdad, en una sala de verdad. El móvil es el dispositivo más útil para probarlo.',
+      es: 'Para quien tenga un instrumento a mano, en un sitio bastante tranquilo. Estas partes solo se han probado con sonido generado por ordenador, así que hay que probarlas con una guitarra, un piano o una voz de verdad, en una sala de verdad. El móvil es el dispositivo más útil para la prueba.',
     },
     tasks: [
       {
@@ -450,7 +450,7 @@ export const SHEET_TEMPLATES: Record<SheetId, SheetTemplate> = {
         goal: {
           en: 'Turn the microphone off. Is it obvious at a glance that it is off?',
           pt: 'Desliga o microfone. Percebe-se logo, à primeira vista, que está desligado?',
-          es: 'Apaga el micrófono. ¿Se ve a simple vista que está apagado?',
+          es: 'Desactiva el micrófono. ¿Se ve a simple vista que está desactivado?',
         },
         where: {
           en: 'The same {{app:micSwitchEntry.label}} switch.',
@@ -509,7 +509,7 @@ export const SHEET_TEMPLATES: Record<SheetId, SheetTemplate> = {
         expect: {
           en: 'The microphone turns itself off. When you come back to {{app:nav.explore}} it is still off.',
           pt: 'O microfone desliga-se sozinho. Quando voltas a {{app:nav.explore}}, continua desligado.',
-          es: 'El micrófono se apaga solo. Cuando vuelves a {{app:nav.explore}}, sigue apagado.',
+          es: 'El micrófono se desactiva solo. Cuando vuelves a {{app:nav.explore}}, sigue desactivado.',
         },
       },
       {
@@ -522,7 +522,7 @@ export const SHEET_TEMPLATES: Record<SheetId, SheetTemplate> = {
         expect: {
           en: 'The microphone is off when you return.',
           pt: 'O microfone está desligado quando voltas.',
-          es: 'Cuando vuelves, el micrófono está apagado.',
+          es: 'Cuando vuelves, el micrófono está desactivado.',
         },
       },
       {
@@ -535,7 +535,7 @@ export const SHEET_TEMPLATES: Record<SheetId, SheetTemplate> = {
         expect: {
           en: 'It turns itself off and says why in one line.',
           pt: 'Desliga-se sozinho e diz porquê numa linha.',
-          es: 'Se apaga solo y explica por qué en una línea.',
+          es: 'Se desactiva solo y explica por qué en una línea.',
         },
       },
       {
@@ -543,7 +543,7 @@ export const SHEET_TEMPLATES: Record<SheetId, SheetTemplate> = {
         goal: {
           en: 'Start the metronome and set its speed by tapping.',
           pt: 'Põe o metrónomo a funcionar e marca o andamento com toques.',
-          es: 'Pon en marcha el metrónomo y marca la velocidad con toques.',
+          es: 'Pon en marcha el metrónomo y marca el tempo con toques.',
         },
         where: {
           en: '“⋯” menu → {{app:metronomeToolEntry.menuItem}}.',
@@ -553,7 +553,7 @@ export const SHEET_TEMPLATES: Record<SheetId, SheetTemplate> = {
         expect: {
           en: 'A steady click that follows the speed you tap. Is the sound pleasant enough to practise with?',
           pt: 'Um clique regular que segue o andamento que marcas. O som é agradável o suficiente para estudar com ele?',
-          es: 'Un clic regular que sigue la velocidad que marcas. ¿El sonido es lo bastante agradable para practicar con él?',
+          es: 'Un clic regular que sigue el tempo que marcas. ¿El sonido es lo bastante agradable para practicar con él?',
         },
       },
       {
@@ -600,12 +600,12 @@ export const GUIDE_TEMPLATE: GuideTemplate = {
   title: {
     en: 'If you are watching someone try it',
     pt: 'Se estiveres a observar alguém a experimentar',
-    es: 'Si estás observando a alguien probarla',
+    es: 'Si estás observando a alguien mientras prueba la app',
   },
   intro: {
     en: 'You learn most by staying quiet. Three to five people are usually enough: by then the same problems start to repeat.',
     pt: 'Aprende-se mais ficando calado. Três a cinco pessoas costumam bastar: a partir daí, os mesmos problemas começam a repetir-se.',
-    es: 'Se aprende más estando en silencio. Con tres a cinco personas suele bastar: a partir de ahí, los mismos problemas empiezan a repetirse.',
+    es: 'Se aprende más estando en silencio. De tres a cinco personas suelen bastar: a partir de ahí, los mismos problemas empiezan a repetirse.',
   },
   sections: [
     {
@@ -623,7 +623,7 @@ export const GUIDE_TEMPLATE: GuideTemplate = {
         },
         {
           en: 'Ask them to say out loud what they are looking for as they go.',
-          pt: 'Pede-lhe que vá dizendo em voz alta o que está à procura.',
+          pt: 'Pede-lhe que vá dizendo em voz alta o que procura.',
           es: 'Pídele que vaya diciendo en voz alta lo que está buscando.',
         },
       ],
@@ -649,12 +649,12 @@ export const GUIDE_TEMPLATE: GuideTemplate = {
         {
           en: 'Write down their own words for things. What they call a part of the screen tells you what its label should be.',
           pt: 'Escreve as palavras que a pessoa usa para as coisas. O nome que dá a uma parte do ecrã diz-te como essa parte se devia chamar.',
-          es: 'Apunta las palabras que usa para las cosas. Cómo llama a una parte de la pantalla te dice cómo debería llamarse.',
+          es: 'Apunta las palabras que usa para las cosas. El nombre que le da a una parte de la pantalla te dice cómo debería llamarse.',
         },
         {
           en: 'Note every tap that does nothing, and every time they scroll around looking for something.',
           pt: 'Aponta cada toque que não faz nada e cada vez que a pessoa anda para cima e para baixo à procura de algo.',
-          es: 'Anota cada toque que no hace nada y cada vez que se desplaza arriba y abajo buscando algo.',
+          es: 'Anota cada toque que no hace nada y cada vez que sube y baja por la pantalla buscando algo.',
         },
         {
           en: 'No sound on an iPhone? Check the silent switch and the volume first, and note which it was.',
@@ -694,7 +694,7 @@ export const GUIDE_TEMPLATE: GuideTemplate = {
         {
           en: 'Whether the first lesson makes a sound within its first few seconds.',
           pt: 'Se a primeira lição produz som nos primeiros segundos.',
-          es: 'Si la primera lección suena en sus primeros segundos.',
+          es: 'Si la primera lección produce sonido en los primeros segundos.',
         },
         {
           en: 'Which musical words stop them.',
@@ -729,7 +729,7 @@ export const GUIDE_TEMPLATE: GuideTemplate = {
         {
           en: 'Whether the number under each chord means anything to them.',
           pt: 'Se o número por baixo de cada acorde lhe diz alguma coisa.',
-          es: 'Si el número bajo cada acorde le dice algo.',
+          es: 'Si el número debajo de cada acorde le dice algo.',
         },
         {
           en: 'Whether the capo line makes sense to them (for example “{{app:capo.line|chord=E|shape=D|fret=2}}”).',
