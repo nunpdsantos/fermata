@@ -14,6 +14,7 @@ import { DRILL_STORE_KEY } from '../drillStore';
 import { FINGERING_STORE_KEY } from '../fingeringStore';
 import { LEARN_SESSION_KEY } from '../learnSessionPersistence';
 import { BACKUP_KEYS } from '../../utils/backupHelpers';
+import { SHEET_STORAGE_KEY } from '../../site/testSheet/model';
 
 beforeEach(() => {
   localStorage.clear();
@@ -135,6 +136,35 @@ describe('boot and close', () => {
     } as unknown as Storage;
     expect(bootWelcome(broken)).toBe(false);
     expect(() => closeWelcome(broken)).not.toThrow();
+  });
+});
+
+describe('the test sheet\'s key (/test/, 2026-11-14) is never app data', () => {
+  // The sheet lives on the app's own address and saves its answers under
+  // SHEET_STORAGE_KEY. A tester who opens /test/ first must still get the
+  // start screen when they open the app.
+  it('its name starts with neither prefix (fermatina-, not fermata-)', () => {
+    expect(SHEET_STORAGE_KEY).toBe('fermatina-test-sheet-v1');
+    expect(APP_KEY_PREFIXES.some((p) => SHEET_STORAGE_KEY.startsWith(p))).toBe(false);
+  });
+
+  it('a browser holding only the sheet\'s answers has saved nothing of the app: the start screen shows, and the gate goes to pending', () => {
+    localStorage.setItem(SHEET_STORAGE_KEY, JSON.stringify({ lang: 'pt', a: { n1: { r: 'ok', note: '', hint: false } }, q: {} }));
+    expect(hasSavedAppData(localStorage)).toBe(false);
+    expect(hasLearningData(localStorage)).toBe(false);
+    expect(shouldShowWelcome(localStorage)).toBe(true);
+    expect(bootWelcome(localStorage)).toBe(true);
+    expect(localStorage.getItem(WELCOME_KEY)).toBe('pending');
+    // Pending and the sheet's answers (no learning data): still shown on the next visit.
+    expect(shouldShowWelcome(localStorage)).toBe(true);
+    // The answers are left exactly as they were.
+    expect(JSON.parse(localStorage.getItem(SHEET_STORAGE_KEY)!).a.n1.r).toBe('ok');
+  });
+
+  it('known positive: under the sheet\'s OLD name (fermata-test-sheet-v1, the private page\'s) the same answers WOULD have hidden the start screen', () => {
+    localStorage.setItem('fermata-test-sheet-v1', '{}');
+    expect(hasSavedAppData(localStorage)).toBe(true);
+    expect(shouldShowWelcome(localStorage)).toBe(false);
   });
 });
 
