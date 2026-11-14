@@ -486,10 +486,10 @@ test.describe('screenshots', () => {
   const shot = (page: Page, name: string, clip?: { x: number; y: number; width: number; height: number }) =>
     page.screenshot({ path: path.join(SHOTS!, `${name}.png`), ...(clip ? { clip } : {}) });
 
-  test('the top bar at 640, 768, 1024 and 1440 px (EN, PT)', async ({ browser }) => {
+  test('the top bar at 640, 667, 744, 768, 1024 and 1440 px (EN, PT)', async ({ browser }) => {
     test.setTimeout(180_000);
     for (const lang of ['en', 'pt'] as const) {
-      for (const width of [640, 768, 1024, 1440]) {
+      for (const width of [640, 667, 744, 768, 1024, 1440]) {
         const v: View = { name: `w${width}`, viewport: { width, height: 800 }, touch: width < 1024 };
         const { context, page } = await normalAddress(browser, v, lang, oldSave({ language: lang, lastView: 'explore', themeMode: 'fermata' }));
         await page.goto('/');
@@ -552,7 +552,7 @@ test.describe('screenshots', () => {
     }
     // A phone in Explore with the instrument at Full (the owner's saved detent): the toast region keeps one
     // toast line above the sheet; a card taller than that waits, queued and inert (layout/toastLayout.ts).
-    for (const lang of ['en', 'pt'] as const) {
+    for (const lang of ['en', 'pt', 'es'] as const) {
       const { context, page } = await oldAddress(browser, baseURL!, PHONE, lang, oldSave({ language: lang, lastView: 'explore', themeMode: 'fermata' }));
       await page.goto(`${OLD}/`);
       await appReady(page);
