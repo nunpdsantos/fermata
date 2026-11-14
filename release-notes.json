@@ -6,9 +6,9 @@
       "date": "2026-11-14",
       "critical": false,
       "notes": {
-        "en": "The guitar neck now starts as if you were facing a player, and “Flip neck”, on the guitar, switches to the tablature view.",
-        "pt": "O braço da guitarra começa agora como se estivesses de frente para quem toca, e «Virar braço», na guitarra, muda para a vista da tablatura.",
-        "es": "El mástil de la guitarra empieza ahora como si estuvieras de frente a quien toca, y «Girar mástil», en la guitarra, cambia a la vista de tablatura."
+        "en": "The guitar neck now starts as if you were facing a player. “Flip neck”, under the guitar, shows it the way tab is drawn.",
+        "pt": "O braço da guitarra começa agora como se estivesses de frente para quem toca. «Virar braço», debaixo da guitarra, mostra-o como numa tablatura.",
+        "es": "El mástil de la guitarra empieza ahora como si estuvieras frente a quien toca. «Girar mástil», bajo la guitarra, lo muestra como en una tablatura."
       }
     },
     {

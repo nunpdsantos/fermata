@@ -271,6 +271,6 @@ describe('release 14 (2026-11-14): What\'s new', () => {
       expect(newest.notes[lang].length, lang).toBeLessThanOrEqual(MAX_NOTE_LENGTH);
       expect(newest.notes[lang], lang).toContain(LOCALES[lang].neckView.flip);
     }
-    expect([newest.notes.en.length, newest.notes.pt.length, newest.notes.es.length]).toEqual([122, 139, 147]);
+    expect([newest.notes.en.length, newest.notes.pt.length, newest.notes.es.length]).toEqual([120, 143, 146]);
   });
 });
