@@ -287,9 +287,9 @@ test('interaction after SKIP_WAITING but before takeover blocks the plugin too; 
   // DevTools attached (Playwright) a restarted worker is never stopped when
   // idle, so the takeover never came: 21 of 24 traced runs, the app's 4 s
   // fallback asking instead (its safe path). Obeyed late, the page is quiet
-  // when the old worker stops (in those runs every fetch after the request
-  // had started within 0.53 s of it), and the takeover is still inside the
-  // app's 4 s window (asserted below).
+  // when the old worker stops (in 56 traced runs every fetch after the
+  // request had started within 0.61 s of it), and the takeover is still
+  // inside the app's 4 s window (asserted below).
   await deployAndFind(page, { lateSkipWaitingMs: 1500 });
   const before = await loads(page);
   // Observe the real activation request, then interact in the same task.
