@@ -1,7 +1,86 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+import { createHash } from 'node:crypto';
+import fs from 'node:fs';
 import { createServer } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { seedWelcomeSeen } from './helpers/welcome';
+
+// ─── The site's icon for search engines (2026-11-15) ─────────────────────────
+// Google's search results take an icon in BMP, GIF, ICO, PNG, JPEG, PPM or
+// TIFF (not SVG) from the home page's rel="icon"; /favicon.ico answers
+// whatever asks without reading a page. Both are FILES: from the server
+// without a worker (a crawler), and still the files once the app's worker
+// controls the browser (neither is ever the app's shell).
+const ICON_TYPE = /^image\/(?:x-icon|vnd\.microsoft\.icon)$/;
+const sha256 = (b: Buffer) => createHash('sha256').update(b).digest('hex');
+const SITE_ICONS = [
+  { url: '/favicon.ico', type: ICON_TYPE, file: 'public/favicon.ico' },
+  { url: '/icon-192.png', type: /^image\/png$/, file: 'public/icon-192.png' },
+] as const;
+async function isBuild(page: Page): Promise<boolean> {
+  const manifest = await page.request.get('/manifest.webmanifest');
+  return (manifest.headers()['content-type'] ?? '').includes('json');
+}
+
+test.describe('the site\'s icon for search engines (2026-11-15)', () => {
+  test('without a worker (a crawler): /favicon.ico and /icon-192.png are the files; the built home page lists the PNG as rel="icon" first, then the SVG', async ({ page }) => {
+    test.skip(!(await isBuild(page)), 'the built files and headers: run with playwright.preview.config.ts');
+    for (const icon of SITE_ICONS) {
+      const res = await page.request.get(icon.url);
+      expect(res.status(), icon.url).toBe(200);
+      expect(res.headers()['content-type'], icon.url).toMatch(icon.type);
+      expect(sha256(await res.body()), `${icon.url} is ${icon.file}, byte for byte`).toBe(sha256(fs.readFileSync(icon.file)));
+    }
+    const home = await (await page.request.get('/')).text();
+    const icons = [...home.matchAll(/<link\b[^>]*\brel="(?:icon|apple-touch-icon)"[^>]*>/g)].map((m) => m[0]);
+    expect(icons, 'the built index.html').toEqual([
+      '<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />',
+      '<link rel="icon" type="image/svg+xml" href="/icon.svg" />',
+      '<link rel="apple-touch-icon" href="/icon-192.png" />',
+    ]);
+    expect(home).not.toMatch(/<link\b[^>]*favicon/);
+  });
+
+  test('with the app\'s worker in control: fetched, drawn and typed as an address, both are still the files, never the app\'s shell; favicon.ico is not precached', async ({ page }) => {
+    test.skip(!(await isBuild(page)), 'no service worker on the dev server (devOptions disabled)');
+    await page.goto('/');
+    await page.waitForFunction(() => navigator.serviceWorker.controller?.state === 'activated', undefined, { timeout: 20_000 });
+    for (const icon of SITE_ICONS) {
+      // As the page (or the browser's own icon request) fetches it: not a navigation.
+      const got = await page.evaluate(async (url) => {
+        const r = await fetch(url);
+        const digest = await crypto.subtle.digest('SHA-256', await r.arrayBuffer());
+        const img = new Image();
+        img.src = url;
+        await img.decode();
+        return { status: r.status, type: r.headers.get('content-type'), sha: [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join(''), drawn: [img.naturalWidth, img.naturalHeight] };
+      }, icon.url);
+      expect(got.status, icon.url).toBe(200);
+      expect(got.type, icon.url).toMatch(icon.type);
+      expect(got.sha, `${icon.url} is ${icon.file}, byte for byte`).toBe(sha256(fs.readFileSync(icon.file)));
+      expect(got.drawn[0], `${icon.url} decodes as an image`).toBeGreaterThan(0);
+      expect(got.drawn[0], `${icon.url} is square`).toBe(got.drawn[1]);
+      expect(await page.evaluate(() => !!navigator.serviceWorker.controller)).toBe(true);
+    }
+    // As a typed address (a navigation): the worker's fallback answers every
+    // navigation with the app's index.html unless it is precached (the PNG,
+    // the manifest's icon) or on the denylist (favicon.ico).
+    for (const icon of SITE_ICONS) {
+      const res = (await page.goto(icon.url))!;
+      expect(res.status(), icon.url).toBe(200);
+      expect(res.headers()['content-type'], icon.url).toMatch(icon.type);
+      expect(sha256(await res.body()), `${icon.url}, typed, is ${icon.file}`).toBe(sha256(fs.readFileSync(icon.file)));
+      expect(res.fromServiceWorker(), `${icon.url}: from the precache (png) or the server (ico)`).toBe(icon.url === '/icon-192.png');
+    }
+    const cached = await page.evaluate(async () => {
+      const out: string[] = [];
+      for (const name of await caches.keys()) for (const req of await (await caches.open(name)).keys()) out.push(new URL(req.url).pathname);
+      return out;
+    });
+    expect(cached).toContain('/icon-192.png'); // known positive: the precache is there and readable
+    expect(cached.filter((u) => /favicon/.test(u))).toEqual([]);
+  });
+});
 
 test.describe('PWA basics', () => {
   test('page has correct title', async ({ page }) => {

@@ -122,6 +122,24 @@ describe('the whole-output checks catch', () => {
     expect(p).toContain('/es/: id "doors" twice');
   });
 
+  it('icons other than the PNG, then the SVG, then the apple-touch icon, on a page or on the home (2026-11-15)', () => {
+    let home = '';
+    const p = problems(files((pages, rest) => {
+      replaceIn(pages, LESSON, '<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">\n', '');
+      replaceIn(pages, '/pt/', /(<link rel="icon" type="image\/png"[^>]*>)\n(<link rel="icon" type="image\/svg\+xml"[^>]*>)/, '$2\n$1');
+      replaceIn(pages, '/es/palabras/', '<link rel="apple-touch-icon" href="/icon-192.png">', '<link rel="apple-touch-icon" href="/icon-192.png">\n<link rel="shortcut icon" href="/favicon.ico">');
+      home = rest.home;
+      rest.home = rest.home.replace(/ *<link rel="icon" type="image\/png"[^>]*>\n/, '');
+      expect(rest.home, 'the planted fault changed nothing on index.html').not.toBe(home);
+    }));
+    expect(p.some((x) => x.startsWith(`${LESSON}: icons ["icon image/svg+xml - /icon.svg","apple-touch-icon - - /icon-192.png"]: expected`))).toBe(true);
+    expect(p.some((x) => x.startsWith('/pt/: icons ["icon image/svg+xml - /icon.svg","icon image/png 192x192 /icon-192.png",'))).toBe(true);
+    expect(p.some((x) => x.startsWith('/es/palabras/: icons') && x.includes('"shortcut icon - - /favicon.ico"]: expected'))).toBe(true);
+    expect(p.some((x) => x.startsWith('index.html: icons ["icon image/svg+xml - /icon.svg"'))).toBe(true);
+    expect(p).toHaveLength(4); // nothing else: the files all exist
+    expect(home).toContain('<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />'); // known positive
+  });
+
   it('a meta description cut mid-sentence, or over 160 characters', () => {
     const p = problems(files((pages) => {
       replaceIn(pages, '/pt/', /<meta name="description" content="[^"]*">/, '<meta name="description" content="Aprende como funciona a música, num piano ou numa guitarra que podes tocar aqui mesmo. Grátis. Sem conta. Depois da">');

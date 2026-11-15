@@ -191,7 +191,10 @@ export default defineConfig({
         // page, script and stylesheet, written after `vite build` like the
         // search pages) is not the app either: `test/**` is never precached
         // (check:sw fails if this entry or a precached test/ file appears).
-        globIgnores: ['**/node_modules/**/*', 'en/**', 'pt/**', 'es/**', 'pages.css', 'og.png', 'test/**'],
+        // /favicon.ico (2026-11-15) is for whatever asks for it without
+        // reading a page (search engines, old browsers); no page links it
+        // and the app never uses it: not precached (check:sw fails if it is).
+        globIgnores: ['**/node_modules/**/*', 'en/**', 'pt/**', 'es/**', 'pages.css', 'og.png', 'test/**', 'favicon.ico'],
         // The worker answers every NAVIGATION with the app's index.html (its
         // navigation fallback). robots.txt and sitemap.xml (for search
         // engines: 2026-11-14) are files, not pages of the app, and the search
@@ -199,9 +202,11 @@ export default defineConfig({
         // them from the server too — someone with the app installed who
         // follows a link to a lesson page gets the page, not the app. So does
         // the tester's sheet, /test/ (2026-11-14): a tester with the app
-        // installed who opens /test/ gets the sheet, not the app.
+        // installed who opens /test/ gets the sheet, not the app. So does
+        // /favicon.ico (2026-11-15): not precached, so a typed address would
+        // otherwise get the app's shell (measured on the build).
         // `npm run check:sw` tests every generated page against this list.
-        navigateFallbackDenylist: [/^\/robots\.txt$/, /^\/sitemap\.xml$/, /^\/(?:en|pt|es)(?:[/?#]|$)/, /^\/test(?:[/?#]|$)/],
+        navigateFallbackDenylist: [/^\/robots\.txt$/, /^\/sitemap\.xml$/, /^\/favicon\.ico$/, /^\/(?:en|pt|es)(?:[/?#]|$)/, /^\/test(?:[/?#]|$)/],
         // A precached file's static imports, transitively — a no-op while the
         // globs take every chunk; kept so narrowing them can never leave a
         // precached file with an import that is not.

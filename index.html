@@ -7,6 +7,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- The PNG first (2026-11-15): Google's search results list PNG, ICO
+         and others, not SVG. The SVG after it, so a browser that takes the
+         last icon it can use keeps the SVG in the tab. /favicon.ico is
+         linked from nowhere on purpose (src/site/__tests__/searchIcon.test.ts). -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
