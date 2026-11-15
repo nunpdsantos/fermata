@@ -63,6 +63,21 @@ export function pageKindOf(path: string): { kind: PageKind; lang: SiteLang } | n
  * leaves the site is a finding; so is a feedback link that is not the page's
  * own (its language's form, its path in the details box, the menu's label).
  */
+/**
+ * The icons every page and the home (index.html) declare, in this order
+ * (2026-11-15), as `rel type sizes href`: the PNG first, because Google's
+ * search results take BMP, GIF, ICO, PNG, JPEG, PPM or TIFF and do not list
+ * SVG (developers.google.com/search/docs/appearance/favicon-in-search); then
+ * the SVG, which a browser that takes the last icon it can use keeps in its
+ * tab; then the apple-touch icon. Nothing else: /favicon.ico is linked from
+ * nowhere (a linked ICO can win the tab over the SVG).
+ */
+export const PAGE_ICONS: readonly string[] = [
+  'icon image/png 192x192 /icon-192.png',
+  'icon image/svg+xml - /icon.svg',
+  'apple-touch-icon - - /icon-192.png',
+];
+
 const FEEDBACK_FORMS: readonly string[] = Object.values(REPORT_FORMS).map((f) => f.url);
 export const isFeedbackFormHref = (href: string) => FEEDBACK_FORMS.some((url) => href === url || href.startsWith(`${url}?`));
 
@@ -91,6 +106,8 @@ interface Parsed {
   title: string | null;
   description: string | null;
   canonical: string[];
+  /** Every icon link (any rel with an icon token), as `rel type sizes href`, in order. */
+  icons: string[];
   alternates: Map<string, string>;
   alternateCount: number;
   ogUrl: string | null;
@@ -127,6 +144,9 @@ function parse(html: string): Parsed {
     title: titles.length === 1 ? titles[0] : null,
     description: meta('name', 'description').length === 1 ? meta('name', 'description')[0] : null,
     canonical: links.filter((l) => l.rel === 'canonical').map((l) => l.href),
+    icons: links
+      .filter((l) => (l.rel ?? '').split(/\s+/).some((t) => /^(?:icon|apple-touch-icon(?:-precomposed)?)$/i.test(t)))
+      .map((l) => `${l.rel} ${l.type ?? '-'} ${l.sizes ?? '-'} ${l.href}`),
     alternates,
     alternateCount: alt.length,
     ogUrl: meta('property', 'og:url')[0] ?? null,
@@ -204,6 +224,7 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
     if (p.alternateCount !== 4 || !['en', 'pt', 'es', 'x-default'].every((l) => p.alternates.has(l))) where(`alternates ${show(p.alternates)}: needs en, pt, es and x-default, once each`);
     if (p.alternates.get(kind.lang) !== canonical) where(`its own ${kind.lang} alternate is ${p.alternates.get(kind.lang)}, not its canonical`);
     if (p.images.length !== 2 || p.images.some((u) => u !== `${ORIGIN}${OG_IMAGE}`)) where(`og:image / twitter:image ${JSON.stringify(p.images)}`);
+    if (p.icons.join('\n') !== PAGE_ICONS.join('\n')) where(`icons ${JSON.stringify(p.icons)}: expected ${JSON.stringify(PAGE_ICONS)} (the PNG first: Google's search results do not list SVG)`);
     if (!p.h1) where('has no <h1>');
 
     // Markup: only the tags the generator writes; every & an entity; no script but the one data block.
@@ -329,11 +350,12 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
 
   if (!site.files.has(OG_IMAGE)) problems.push(`the shared image ${OG_IMAGE} is not in the build`);
 
-  // The home (index.html) names the landing pages back.
+  // The home (index.html) names the landing pages back, and declares the same icons.
   const home = parse(site.home);
   const landingAlts = parsed.get('/en/')?.alternates;
   if (!landingAlts || !sameMap(home.alternates, landingAlts)) problems.push(`index.html: alternates (${show(home.alternates)}) are not the landing pages' (${landingAlts ? show(landingAlts) : 'none'})`);
   if (home.canonical.length !== 1 || home.canonical[0] !== `${ORIGIN}/`) problems.push(`index.html: canonical ${JSON.stringify(home.canonical)}`);
+  if (home.icons.join('\n') !== PAGE_ICONS.join('\n')) problems.push(`index.html: icons ${JSON.stringify(home.icons)}: expected ${JSON.stringify(PAGE_ICONS)} (the PNG first: Google's search results do not list SVG)`);
 
   // The sitemap: the home and every page, each with the page's own alternates.
   if (!site.sitemap.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">')) problems.push('sitemap.xml: not the expected header');

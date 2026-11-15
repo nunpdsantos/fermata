@@ -209,6 +209,9 @@ function head(h: HeadInput): string {
     '<meta name="color-scheme" content="light dark">',
     '<meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)">',
     '<meta name="theme-color" content="#181208" media="(prefers-color-scheme: dark)">',
+    // The PNG first, as on the home page (2026-11-15): Google's search
+    // results list PNG, not SVG. checkSite pins the three on every page.
+    '<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">',
     '<link rel="icon" type="image/svg+xml" href="/icon.svg">',
     '<link rel="apple-touch-icon" href="/icon-192.png">',
     '<link rel="preload" href="/fonts/source-serif-4-latin.woff2" as="font" type="font/woff2" crossorigin>',
