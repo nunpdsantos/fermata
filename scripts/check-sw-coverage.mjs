@@ -25,7 +25,8 @@
  *    precached, vite.config.ts's globIgnores still lists `test/**` (the
  *    sheet is written after `vite build`, so its files never reach Workbox's
  *    glob today: without this line, dropping the entry would go unseen), and
- *    /test (with a slash, a query or a hash) on the denylist.
+ *    /test (with a slash, a query or a hash) on the denylist;
+ *  - /favicon.ico (2026-11-15) shipped, NOT precached, and on the denylist.
  *
  * Usage: node scripts/check-sw-coverage.mjs [distDir=dist]
  * Exit 0 = all good; 1 = problems (listed); 2 = no build / parser out of date.
@@ -235,4 +236,15 @@ for (const p of ['/', '/?lang=pt', '/?view=drill', '/index.html']) if (denied(p)
 console.log(`check-sw-coverage: test sheet — ${sheetAddresses.length} address(es) left to the server, ${sheetProblems.length} problem(s)`);
 for (const p of sheetProblems) console.log(`  SHEET ${p}`);
 
-process.exit(notPrecached.length || missingDeps.length || overlayProblems.length || otherProblems.length || pagesProblems.length || sheetProblems.length ? 1 : 0);
+// /favicon.ico (2026-11-15, public/): for whatever asks for it without
+// reading a page. Shipped, never precached (globPatterns take *.ico, so only
+// vite.config.ts's globIgnores keeps it out), and a typed /favicon.ico gets
+// the file from the server, never the app's shell.
+const faviconProblems = [];
+if (!fs.existsSync(path.join(dist, 'favicon.ico'))) faviconProblems.push('dist/favicon.ico is missing (public/favicon.ico)');
+if (precached.has('favicon.ico')) faviconProblems.push("favicon.ico is precached (vite.config.ts globIgnores 'favicon.ico')");
+if (!denied('/favicon.ico')) faviconProblems.push("/favicon.ico: the worker would answer a navigation with the app's shell (vite.config.ts navigateFallbackDenylist)");
+console.log(`check-sw-coverage: favicon.ico — ${faviconProblems.length} problem(s)`);
+for (const p of faviconProblems) console.log(`  FAVICON ${p}`);
+
+process.exit(notPrecached.length || missingDeps.length || overlayProblems.length || otherProblems.length || pagesProblems.length || sheetProblems.length || faviconProblems.length ? 1 : 0);
