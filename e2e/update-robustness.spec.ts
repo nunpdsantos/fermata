@@ -277,7 +277,20 @@ test('a tab in a Learn check is not reloaded by another tab\'s cold launch (B1);
 test('interaction after SKIP_WAITING but before takeover blocks the plugin too; Reload still takes one click', async ({ page }) => {
   await firstVisit(page);
   await interact(page);
-  await deployAndFind(page);
+  // The new worker obeys SKIP_WAITING 1.5 s late, and that is the precondition
+  // of this test, not a looser one (traced 2026-11-15, CLAUDE.md "Update
+  // robustness"). The interaction below is a tap: on a fresh page it starts
+  // the piano warm-up (services/instrumentVoices.ts), 30 sample fetches
+  // through the OLD worker, which still controls the page. Chromium activates
+  // a worker that called skipWaiting() by stopping the old one first; a fetch
+  // that reaches the old worker while it stops starts it again, and with
+  // DevTools attached (Playwright) a restarted worker is never stopped when
+  // idle, so the takeover never came: 21 of 24 traced runs, the app's 4 s
+  // fallback asking instead (its safe path). Obeyed late, the page is quiet
+  // when the old worker stops (in those runs every fetch after the request
+  // had started within 0.53 s of it), and the takeover is still inside the
+  // app's 4 s window (asserted below).
+  await deployAndFind(page, { lateSkipWaitingMs: 1500 });
   const before = await loads(page);
   // Observe the real activation request, then interact in the same task.
   // The worker cannot deliver controllerchange until this task has ended.
