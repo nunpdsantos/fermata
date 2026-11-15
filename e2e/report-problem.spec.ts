@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
-import { seededBrowser, LAPTOP, PHONE, type Lang, type View } from './helpers/wave1';
+import { seededBrowser, LAPTOP, PHONE, PHONE_320, type Lang, type View } from './helpers/wave1';
 
 /**
  * "Feedback or a problem" (2026-11-12, "Report a problem" until 2026-11-14) in a real browser, in both configs (dev
@@ -15,8 +15,10 @@ import { seededBrowser, LAPTOP, PHONE, type Lang, type View } from './helpers/wa
  * Google is never contacted: docs.google.com is routed to a stub page and
  * the tests read the new tab's address. The words come from the locale
  * files, so a wording fix never breaks this spec.
- * With REPORT_SHOTS=<dir>, the open menu at 320 / 360 / 390 px in EN / PT / ES
- * is saved there as screenshots.
+ * The open menu at 320 / 360 / 390 px, touch, in EN / PT / ES: the row on at
+ * most two lines, nothing cut, at least --tap high, the menu on screen; the
+ * measured figures go to the log. With REPORT_SHOTS=<dir>, it is saved there
+ * as screenshots too.
  */
 
 type Locale = { report: { menuItem: string; offline: string }; learn: { reportMistake: string }; nav: { more: string } };
@@ -188,12 +190,17 @@ for (const lang of ['en', 'pt'] as const) {
   });
 }
 
-// The open menu with the new row, at the narrowest phones, in the three languages:
-// no row cut, the menu on screen, no sideways scroll.
+// The open menu with the row, at the narrowest phones, touch, in the three
+// languages (pinned 2026-11-15: the row is close to its limit, two lines at
+// all three widths on a Mac). For "Feedback or a problem": its words on at most two lines,
+// nothing cut (no ellipsis, nothing clipped, no line wider than the room),
+// the row at least --tap high, the menu inside the screen, no sideways
+// scroll. One line per case goes to the log with the measured figures, so
+// GitHub's Linux run shows how close it is.
 for (const lang of ['en', 'pt', 'es'] as const) {
-  test(`${lang}: the open "⋯" menu at 320, 360 and 390 px — the row whole, the menu on screen, no sideways scroll`, async ({ browser }) => {
+  test(`${lang}: the open "⋯" menu at 320, 360 and 390 px — the row whole on at most two lines, the menu on screen, no sideways scroll`, async ({ browser }) => {
     const shots = process.env.REPORT_SHOTS;
-    const { context, page } = await start(browser, { name: 'phone-320', viewport: { width: 320, height: 568 }, touch: true }, lang);
+    const { context, page } = await start(browser, PHONE_320, lang);
     await page.goto('/');
     await expect(page.getByTestId('explore-root')).toBeVisible({ timeout: 15_000 });
     for (const width of [320, 360, 390]) {
@@ -202,34 +209,69 @@ for (const lang of ['en', 'pt', 'es'] as const) {
       await more(page, lang).click();
       const menu = page.getByRole('menu', { name: WORDS[lang].nav.more });
       await expect(menu).toBeVisible();
+      await expect(reportRow(page, lang)).toBeVisible();
       await page.waitForTimeout(300);
       const fit = await page.evaluate((label) => {
-        const m = document.querySelector('[role="menu"]')!.getBoundingClientRect();
-        const row = Array.from(document.querySelectorAll('[role="menuitem"]')).find((e) => e.textContent === label) as HTMLElement;
+        const menuEl = document.querySelector<HTMLElement>('[role="menu"]')!;
+        const m = menuEl.getBoundingClientRect();
+        const row = Array.from(document.querySelectorAll<HTMLElement>('[role="menuitem"]')).find((e) => e.textContent === label)!;
         const r = row.getBoundingClientRect();
         const text = row.querySelector('span')!;
-        const style = getComputedStyle(text);
+        const t = text.getBoundingClientRect();
+        // The words' line boxes: a rect starts a new line unless its middle
+        // falls inside a line already seen (a fallback glyph sits a little
+        // higher or lower on the same line).
+        const range = document.createRange();
+        range.selectNodeContents(text);
+        const lines: { top: number; bottom: number; left: number; right: number }[] = [];
+        for (const q of Array.from(range.getClientRects())) {
+          if (q.width === 0) continue;
+          const mid = (q.top + q.bottom) / 2;
+          const line = lines.find((l) => mid >= l.top && mid <= l.bottom);
+          if (line) {
+            line.left = Math.min(line.left, q.left);
+            line.right = Math.max(line.right, q.right);
+          } else lines.push({ top: q.top, bottom: q.bottom, left: q.left, right: q.right });
+        }
+        const overflow = (el: HTMLElement) => el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1;
+        const ellipsis = [text, row].some((el) => getComputedStyle(el).textOverflow === 'ellipsis');
         return {
-          menuLeft: m.left, menuRight: m.right, vw: document.documentElement.clientWidth,
+          tap: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tap')),
+          menu: { left: m.left, right: m.right, top: m.top, bottom: m.bottom },
+          vw: document.documentElement.clientWidth, vh: window.innerHeight,
           rowLeft: r.left, rowRight: r.right, rowHeight: r.height,
-          textCut: text.scrollWidth > text.clientWidth + 1 || style.textOverflow === 'ellipsis' && text.scrollWidth > text.clientWidth,
+          available: t.width,
+          lineWidths: lines.map((l) => l.right - l.left),
+          // Cut: an ellipsis, anything clipped in the words, the row or the
+          // menu, or a line reaching outside the words' box or the row.
+          ellipsis,
+          clipped: overflow(text) || overflow(row) || overflow(menuEl),
+          outside: lines.some((l) => l.left < t.left - 0.5 || l.right > t.right + 0.5 || l.top < r.top - 0.5 || l.bottom > r.bottom + 0.5),
           sideways: document.documentElement.scrollWidth > document.documentElement.clientWidth,
-          lines: (() => { const range = document.createRange(); range.selectNodeContents(text); return new Set(Array.from(range.getClientRects()).map((q) => Math.round(q.top))).size; })(),
         };
       }, WORDS[lang].report.menuItem);
+      const px = (n: number) => n.toFixed(1);
+      console.log(`menu row "${WORDS[lang].report.menuItem}" ${lang} ${width}px: ${fit.lineWidths.length} line(s), ${fit.lineWidths.map(px).join(' + ')} px of ${px(fit.available)} px available; row ${px(fit.rowHeight)} px (--tap ${fit.tap} px)`);
       if (shots) {
         fs.mkdirSync(shots, { recursive: true });
         await page.screenshot({ path: path.join(shots, `menu-${lang}-${width}.png`) });
         fs.writeFileSync(path.join(shots, `menu-${lang}-${width}.json`), JSON.stringify(fit, null, 1));
       }
       const at = `${lang} ${width}px`;
-      expect(fit.menuLeft, `${at}: the menu's left edge on screen`).toBeGreaterThanOrEqual(0);
-      expect(fit.menuRight, `${at}: the menu's right edge on screen`).toBeLessThanOrEqual(fit.vw);
+      expect(fit.tap, `${at}: touch, so --tap is 44 px`).toBe(44);
+      expect(fit.lineWidths.length, `${at}: the row's words on one or two lines`).toBeGreaterThanOrEqual(1);
+      expect(fit.lineWidths.length, `${at}: the row's words on at most two lines`).toBeLessThanOrEqual(2);
+      expect(fit.ellipsis, `${at}: no ellipsis`).toBe(false);
+      expect(fit.clipped, `${at}: nothing clipped`).toBe(false);
+      expect(fit.outside, `${at}: every line inside the row`).toBe(false);
+      expect(fit.rowHeight, `${at}: the row at least --tap high`).toBeGreaterThanOrEqual(fit.tap);
+      expect(fit.menu.left, `${at}: the menu's left edge on screen`).toBeGreaterThanOrEqual(0);
+      expect(fit.menu.right, `${at}: the menu's right edge on screen`).toBeLessThanOrEqual(fit.vw);
+      expect(fit.menu.top, `${at}: the menu's top on screen`).toBeGreaterThanOrEqual(0);
+      expect(fit.menu.bottom, `${at}: the menu's bottom on screen`).toBeLessThanOrEqual(fit.vh);
       expect(fit.rowLeft).toBeGreaterThanOrEqual(0);
       expect(fit.rowRight).toBeLessThanOrEqual(fit.vw);
-      expect(fit.textCut, `${at}: the row's words are not cut`).toBe(false);
       expect(fit.sideways, `${at}: no sideways scroll`).toBe(false);
-      expect(fit.rowHeight, `${at}: a full tap target`).toBeGreaterThanOrEqual(44);
       await page.keyboard.press('Escape');
       await expect(menu).toHaveCount(0);
     }
