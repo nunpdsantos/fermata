@@ -14,6 +14,8 @@ import {
   backfillSchedules,
 } from '../services/spacedRepetition';
 import { RETIRED_EXERCISE_IDS } from './retiredExerciseIds';
+import { bindTabSafe, tabSafeStorage } from './tabSafe';
+import { followOtherTabs, ruleMerge, type Rule } from './tabSync';
 
 function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((item) => typeof item === 'string');
@@ -101,6 +103,23 @@ export function retireChangedExerciseScores(progress: CurriculumProgress, fromVe
   }
   return { ...progress, exerciseResults: next };
 }
+
+/**
+ * Two tabs' progress, written together (audit A1): ticks, completions,
+ * unlocks and exemptions are sets (each tab's additions and removals apply);
+ * a module's attempts add up, its last attempt is the later one and "passed"
+ * stays passed; a score or a review schedule is the latest tab's.
+ */
+export const PROGRESS_MERGE_RULE: Rule = {
+  progress: {
+    completedModules: 'set',
+    moduleProgress: { '*': 'set' },
+    exemptedModules: 'set',
+    unlockedLevels: 'set',
+    exerciseResults: { '*': { scores: { '*': 'atomic' }, totalAttempts: 'sum', lastAttemptAt: 'max', passed: 'or' } },
+    reviewSchedules: { '*': 'atomic' },
+  },
+};
 
 interface ProgressStore {
   progress: CurriculumProgress;
@@ -268,7 +287,7 @@ export const useProgressStore = create<ProgressStore>()(
     {
       name: 'music-theory-progress',
       version: PROGRESS_STORE_VERSION,
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => tabSafeStorage('music-theory-progress', ruleMerge(PROGRESS_MERGE_RULE))),
       partialize: (state) => ({ progress: state.progress }),
       // Migrate from old format (raw CurriculumProgress) to wrapped { progress },
       // then retire the per-exercise scores of exercises that changed since
@@ -290,6 +309,10 @@ export const useProgressStore = create<ProgressStore>()(
     },
   ),
 );
+
+// Another tab's progress is never written over, and this tab shows it as it is saved (A1).
+bindTabSafe('music-theory-progress', useProgressStore);
+followOtherTabs('music-theory-progress', useProgressStore);
 
 /** The pre-W4a migration: any older saved shape → { progress } (defaults when unusable). */
 function migrateShape(persisted: unknown, version: number): { progress: CurriculumProgress } {

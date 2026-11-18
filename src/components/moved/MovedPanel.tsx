@@ -2,8 +2,7 @@ import { flushSync } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { Sheet } from '../ui/Sheet.tsx';
 import { Button } from '../ui/Button.tsx';
-import { toast } from '../../state/toastStore.ts';
-import { downloadBackup } from '../../utils/backupFile.ts';
+import { exportAndTell } from '../../utils/backupFile.ts';
 import { noteMovedExport, stopMovedReminder } from '../../services/movedNotice.ts';
 import { AddressLink } from './AddressLink.tsx';
 // The panel's words load with it (the `moved` namespace), not with the entry.
@@ -22,9 +21,9 @@ const moreButton = () => document.querySelector<HTMLElement>('[data-testid="app-
 
 export default function MovedPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useTranslation();
+  // The same export and the same line as Settings (A16: checked first, a damaged part named).
   const exportNow = () => {
-    downloadBackup(localStorage);
-    toast(t('backup.exported'), 'success');
+    void exportAndTell(localStorage);
     noteMovedExport();
   };
   // "Don't remind me again": the panel closes (synchronously, so the sheet has

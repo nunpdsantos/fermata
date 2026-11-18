@@ -30,6 +30,7 @@ import { exerciseFingerprint } from '../data/exercises/exerciseFingerprint';
 import { registerWorkInProgress } from '../services/workInProgress';
 import { MODULE_INDEX } from '../data/moduleIndex';
 import { isFresh, LEARN_SESSION_KEY, LEARN_SESSION_VERSION } from './learnSessionPersistence';
+import { bindTabSafe, same, tabSafeStorage, type TabMerge } from './tabSafe';
 
 export { isFresh, LEARN_SESSION_KEY, LEARN_SESSION_VERSION, LEARN_SESSION_TTL_MS } from './learnSessionPersistence';
 
@@ -161,6 +162,18 @@ export function isValidLearnSession(v: unknown): v is { screen: SavedScreen | nu
 
 const EMPTY = { screen: null, check: null };
 
+/**
+ * Two tabs, one saved place (A1): a tab whose check moved on saves its place
+ * and check together (a reload there continues it); a tab that only opened
+ * another lesson saves that lesson and leaves the other tab's check saved.
+ */
+type Saved = { screen?: unknown; check?: unknown } | undefined;
+export const learnSessionMerge: TabMerge = (base, mine, theirs) => {
+  const [b, m, t] = [base, mine, theirs] as Saved[];
+  if (!same(b?.check, m?.check)) return m;
+  return { screen: same(b?.screen, m?.screen) ? t?.screen ?? null : m?.screen ?? null, check: t?.check ?? null };
+};
+
 export const useLearnSessionStore = create<LearnSessionState>()(
   persist(
     (set) => ({
@@ -172,7 +185,7 @@ export const useLearnSessionStore = create<LearnSessionState>()(
     {
       name: LEARN_SESSION_KEY,
       version: LEARN_SESSION_VERSION,
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => tabSafeStorage(LEARN_SESSION_KEY, learnSessionMerge)),
       partialize: (s) => ({ screen: s.screen, check: s.check }),
       // No older format exists; anything from another version starts empty.
       migrate: (persisted, version) => (version === LEARN_SESSION_VERSION && isValidLearnSession(persisted) ? persisted : EMPTY) as LearnSessionState,
@@ -183,6 +196,8 @@ export const useLearnSessionStore = create<LearnSessionState>()(
     },
   ),
 );
+
+bindTabSafe(LEARN_SESSION_KEY, useLearnSessionStore);
 
 // ─── Freshness ──────────────────────────────────────────────────────────────
 

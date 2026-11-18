@@ -5,7 +5,7 @@ import { useAppStore, type ThemeMode, type NeckNutSide, type NeckTopString } fro
 import { SUPPORTED_LANGUAGES } from '../../i18n/index.ts';
 import { toast } from '../../state/toastStore.ts';
 import { applyBackup, backupSections } from '../../utils/backupHelpers.ts';
-import { downloadBackup, readBackupFile } from '../../utils/backupFile.ts';
+import { exportAndTell, readBackupFile, toastImportFailed } from '../../utils/backupFile.ts';
 import { reloadPage } from '../../utils/pageReload.ts';
 import { onOldAddress } from '../../services/appAddress.ts';
 import { AddressLink } from '../moved/AddressLink.tsx';
@@ -83,10 +83,8 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
   const fileInputRef = useRef<HTMLInputElement>(null);
   const offline = useServiceWorkerActive();
 
-  const handleExport = () => {
-    downloadBackup(localStorage);
-    toast(t('backup.exported'), 'success');
-  };
+  // The file is checked by the importer's own check first; the line says what went into it (A16).
+  const handleExport = () => void exportAndTell(localStorage);
 
   const handleImportFile = async (file: File) => {
     // Every section is vetted by its own store before anything is offered
@@ -98,7 +96,12 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
     }
     const sections = backupSections(result.backup).map((s) => t(`backup.section.${s}`)).join(', ');
     if (!window.confirm(t('backup.confirmImport', { sections }))) return;
-    applyBackup(result.backup, localStorage);
+    // Every section or none (A15): a refused write puts every key back and says so; no reload.
+    const applied = applyBackup(result.backup, localStorage);
+    if (!applied.ok) {
+      toastImportFailed(applied);
+      return;
+    }
     // Reload so every store rehydrates through its shape guards + migrations.
     reloadPage();
   };

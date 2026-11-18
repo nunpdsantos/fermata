@@ -12,6 +12,7 @@ import { sanitizeDockDetents, sanitizeDockChosen } from './dock.ts';
 import type { AppState } from './storeTypes.ts';
 import { progressionToSave, sanitizeSavedProgression } from './progressionSave.ts';
 import { metronomeToSave, sanitizeSavedMetronome } from './metronomeSave.ts';
+import { bindTabSafe, tabSafeStorage } from './tabSafe.ts';
 
 // Re-export types so consumers don't need to change imports
 export type { AppState, ViewMode, InstrumentType, ColorMode, ThemeMode, NeckNutSide, NeckTopString } from './storeTypes.ts';
@@ -186,7 +187,8 @@ export const useAppStore = create<AppState>()(
     {
       name: 'music-theory-app',
       version: 6,
-      storage: createJSONStorage(() => localStorage),
+      // Another tab's settings are never written over (A1): only the fields this tab changed.
+      storage: createJSONStorage(() => tabSafeStorage('music-theory-app')),
       partialize: (state) => {
         // While a lesson borrows the instrument (lessonInstrument.ts, D-20)
         // the selection on screen is the lesson's; the save keeps Explore's
@@ -296,3 +298,4 @@ export const useAppStore = create<AppState>()(
     }
   )
 );
+bindTabSafe('music-theory-app', useAppStore);

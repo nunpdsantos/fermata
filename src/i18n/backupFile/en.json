@@ -1,0 +1,9 @@
+{
+  "importFailed": "The backup was not imported: this browser would not save it (its storage may be full). Nothing has changed.",
+  "importFailedPartly_one": "The backup was not imported in full: this browser would not save it (its storage may be full). This part now comes from the backup: {{sections}}. Everything else is as it was.",
+  "importFailedPartly_other": "The backup was not imported in full: this browser would not save it (its storage may be full). These parts now come from the backup: {{sections}}. Everything else is as it was.",
+  "exportedWithout_one": "Backup downloaded, but without this part, which is damaged in this browser and could not be read: {{sections}}.",
+  "exportedWithout_other": "Backup downloaded, but without these parts, which are damaged in this browser and could not be read: {{sections}}.",
+  "exportedPartly_one": "Backup downloaded. This part was partly damaged in this browser, and the file holds what could still be read: {{sections}}.",
+  "exportedPartly_other": "Backup downloaded. These parts were partly damaged in this browser, and the file holds what could still be read: {{sections}}."
+}

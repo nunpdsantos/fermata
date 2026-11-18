@@ -11,7 +11,7 @@ import { Card } from '../ui/Card.tsx';
 import { Segment } from '../ui/Segment.tsx';
 import { onOldAddress } from '../../services/appAddress.ts';
 import { AddressLink } from '../moved/AddressLink.tsx';
-import { readBackupFile } from '../../utils/backupFile.ts';
+import { importFailedText, readBackupFile } from '../../utils/backupFile.ts';
 import { bringInFromStartScreen } from '../../state/startImport.ts';
 
 const DOORS: LearnerProfile[] = ['new', 'player', 'theory'];
@@ -51,15 +51,17 @@ export default function StartScreen() {
   // (state/startImport.ts). A file that is not one says so here, by the
   // link: this page has no toast region.
   const fileRef = useRef<HTMLInputElement>(null);
-  const [importFailed, setImportFailed] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
   const importFile = async (file: File) => {
-    setImportFailed(false);
+    setImportError(null);
     const result = await readBackupFile(file);
     if (!result.ok) {
-      setImportFailed(true);
+      setImportError(t('backup.invalidFile'));
       return;
     }
-    bringInFromStartScreen(result.backup);
+    // A15: a file the browser would not save is put back and said so, here by the link.
+    const applied = bringInFromStartScreen(result.backup);
+    if (!applied.ok) setImportError(importFailedText(applied));
   };
   // The tour plays sound: resume the audio inside this tap (iOS allows it
   // only there; the tour's own resume runs after its chunk has loaded), then
@@ -163,7 +165,7 @@ export default function StartScreen() {
                 if (file) void importFile(file);
               }}
             />
-            {importFailed && <p className="start-import-error" role="alert" data-testid="start-import-error">{t('backup.invalidFile')}</p>}
+            {importError && <p className="start-import-error" role="alert" data-testid="start-import-error">{importError}</p>}
           </div>
         </section>
 

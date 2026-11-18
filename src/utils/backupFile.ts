@@ -2,13 +2,25 @@
  * The progress file, as a person handles it: the ONE export (Settings → Your
  * data → Export, and "Export my progress" in the old address's moving panel —
  * the same file either way). The envelope and its vetting are
- * utils/backupHelpers.ts; this module only turns it into a download.
+ * utils/backupHelpers.ts; this module turns it into a download and says, in
+ * the learner's language, what happened (audit A15 / A16, 2026-11-18: an
+ * export with a damaged part and an import the browser would not save used to
+ * end on the success line, or on nothing).
  *
  * The file is named after the app (`fermatina-backup-<date>.json`, since
  * 2026-11-14); what is inside it is not: its `format` stays 'fermata-backup',
  * so a file exported before the rename, or by the old address, imports as is.
  */
-import { buildBackup, validateBackup, type BackupValidation } from './backupHelpers.ts';
+import i18n from '../i18n';
+import '../i18n/backupFile/index.ts';
+import { toast } from '../state/toastStore.ts';
+import {
+  buildCheckedBackup, validateBackup, SECTION_OF,
+  type ApplyResult, type BackupKey, type BackupValidation,
+} from './backupHelpers.ts';
+
+/** A long sentence stays long enough to be read. */
+const LONG_TOAST_MS = 8000;
 
 /**
  * A chosen file, read and vetted — the ONE way in, for Settings → Your data →
@@ -30,9 +42,23 @@ export function backupFileName(exportedAt: string): string {
   return `fermatina-backup-${exportedAt.slice(0, 10)}.json`;
 }
 
-/** Download every saved store as one JSON file. Returns the file's name. */
-export function downloadBackup(storage: Pick<Storage, 'getItem'> = localStorage): string {
-  const backup = buildBackup(storage);
+/** The parts of the learner's data, in their language ("Learn progress, Drill memory"). */
+const sectionNames = (keys: readonly BackupKey[]) => keys.map((k) => i18n.t(`backup.section.${SECTION_OF[k]}`)).join(', ');
+
+export interface ExportReport {
+  fileName: string;
+  /** Damaged and unreadable: not in the file's data. */
+  missing: BackupKey[];
+  /** Damaged: the file holds what could be read. */
+  partly: BackupKey[];
+}
+
+/**
+ * Download every saved store as one JSON file, checked by the importer's own
+ * check before anything is said (A16). Returns what went into it.
+ */
+export async function downloadBackup(storage: Pick<Storage, 'getItem'> = localStorage): Promise<ExportReport> {
+  const { backup, missing, partly } = await buildCheckedBackup(storage);
   const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -40,5 +66,31 @@ export function downloadBackup(storage: Pick<Storage, 'getItem'> = localStorage)
   a.download = backupFileName(backup.exportedAt);
   a.click();
   URL.revokeObjectURL(url);
-  return a.download;
+  return { fileName: a.download, missing, partly };
+}
+
+/**
+ * Export, then say what happened: "Backup downloaded" only when every part
+ * went in whole; otherwise one line for the parts left out and one for the
+ * parts saved as far as they could be read.
+ */
+export async function exportAndTell(storage: Pick<Storage, 'getItem'> = localStorage): Promise<ExportReport> {
+  const report = await downloadBackup(storage);
+  const { missing, partly } = report;
+  if (missing.length === 0 && partly.length === 0) toast(i18n.t('backup.exported'), 'success');
+  if (missing.length > 0) toast(i18n.t('backupFile.exportedWithout', { count: missing.length, sections: sectionNames(missing) }), 'warning', LONG_TOAST_MS);
+  if (partly.length > 0) toast(i18n.t('backupFile.exportedPartly', { count: partly.length, sections: sectionNames(partly) }), 'warning', LONG_TOAST_MS);
+  return report;
+}
+
+/** The sentence for an import the browser would not save (A15): nothing changed, or which parts now come from the file. */
+export function importFailedText(result: Extract<ApplyResult, { ok: false }>): string {
+  return result.notRestored.length === 0
+    ? i18n.t('backupFile.importFailed')
+    : i18n.t('backupFile.importFailedPartly', { count: result.notRestored.length, sections: sectionNames(result.notRestored) });
+}
+
+/** Settings' way to say it: a toast that stays long enough to read. */
+export function toastImportFailed(result: Extract<ApplyResult, { ok: false }>): void {
+  toast(importFailedText(result), 'error', LONG_TOAST_MS);
 }

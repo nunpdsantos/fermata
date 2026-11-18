@@ -14,6 +14,7 @@
  * ts-fsrs, joins the entry chunk).
  */
 import { useAppStore, invalidAppStateFields } from '../state/store.ts';
+import { same, savedNow, tabLine } from '../state/tabSafe.ts';
 
 export const BACKUP_KEYS = [
   'music-theory-app',
@@ -31,10 +32,18 @@ export interface FermataBackup {
   version: 1;
   exportedAt: string;
   data: Partial<Record<BackupKey, Record<string, unknown>>>;
+  /**
+   * A16 (2026-11-18): the saved text of each section that was damaged in the
+   * browser, exactly as it was, kept for repair. Only written when there is
+   * one (a healthy export is byte for byte as before). The importer reads
+   * `data` only, so a file with it imports everywhere.
+   */
+  damaged?: Partial<Record<BackupKey, string>>;
 }
 
 type ReadableStorage = Pick<Storage, 'getItem'>;
-type WritableStorage = Pick<Storage, 'setItem'>;
+/** What an import needs of the storage: read (to keep the old data), write, and remove (to put back a key that was absent). */
+type WritableStorage = Pick<Storage, 'getItem' | 'setItem'> & Partial<Pick<Storage, 'removeItem'>>;
 
 export function buildBackup(storage: ReadableStorage): FermataBackup {
   const data: FermataBackup['data'] = {};
@@ -161,10 +170,110 @@ export async function validateBackup(raw: unknown): Promise<BackupValidation> {
   return { ok: true, backup: candidate as unknown as FermataBackup };
 }
 
-export function applyBackup(backup: FermataBackup, storage: WritableStorage): void {
-  for (const [key, value] of Object.entries(backup.data)) {
-    storage.setItem(key, JSON.stringify(value));
+export type ApplyResult =
+  | { ok: true }
+  /** Nothing written stays, unless putting it back failed too: `notRestored` then holds the backup's version. */
+  | { ok: false; restored: boolean; notRestored: BackupKey[] };
+
+/**
+ * Write a vetted backup: every section, or none (audit A15). What each key
+ * holds is kept first; if any write fails (the browser's storage is full),
+ * every key written is put back exactly as it was — a key that did not exist
+ * is removed again — and the result says so, naming any key that could not
+ * be put back. Nothing is thrown: the caller says what happened.
+ */
+export function applyBackup(backup: FermataBackup, storage: WritableStorage): ApplyResult {
+  const keys = Object.keys(backup.data) as BackupKey[];
+  let before: Map<BackupKey, string | null>;
+  try {
+    before = new Map(keys.map((k) => [k, storage.getItem(k)]));
+  } catch {
+    return { ok: false, restored: true, notRestored: [] };
   }
+  const tried: BackupKey[] = [];
+  try {
+    for (const key of keys) {
+      tried.push(key);
+      storage.setItem(key, JSON.stringify(backup.data[key]));
+    }
+    return { ok: true };
+  } catch {
+    const notRestored: BackupKey[] = [];
+    for (const key of tried.reverse()) {
+      const old = before.get(key) ?? null;
+      try {
+        if (old !== null) storage.setItem(key, old);
+        else storage.removeItem?.(key);
+        if (storage.getItem(key) !== old) notRestored.push(key);
+      } catch {
+        notRestored.push(key);
+      }
+    }
+    return { ok: false, restored: notRestored.length === 0, notRestored };
+  }
+}
+
+/** Each section's store, loaded on demand (Learn progress and Drill stay out of the entry chunk). */
+const STORE_MODULES: Record<BackupKey, () => Promise<unknown>> = {
+  'music-theory-app': () => import('../state/store.ts'),
+  'music-theory-progress': () => import('../state/progressStore.ts'),
+  'fermata-drill-v1': () => import('../state/drillStore.ts'),
+  'fermata-fingering-v1': () => import('../state/fingeringStore.ts'),
+};
+
+export interface CheckedBackup {
+  backup: FermataBackup;
+  /** Damaged, and nothing of it could be read: not in `data` (its text is in `damaged`). */
+  missing: BackupKey[];
+  /** Damaged, and the file holds what the app could read of it (its text is in `damaged` too). */
+  partly: BackupKey[];
+}
+
+/**
+ * The export, checked (audit A16): every section read as today; a section
+ * the importer would refuse (or that is not even JSON) is damaged. For a
+ * damaged one, the file keeps what can be recovered — the store's own
+ * reading of it, i.e. what the app shows: memory read before the damage, or
+ * what its guard rescues record by record — unless that is nothing but the
+ * store's defaults; and the damaged text itself, under `damaged`. Then the
+ * importer's own check (`validateBackup`) reads the assembled file exactly as
+ * it will be read back; a section it still refuses is left out too. A
+ * healthy export is exactly `buildBackup`'s.
+ */
+export async function buildCheckedBackup(storage: ReadableStorage): Promise<CheckedBackup> {
+  const backup = buildBackup(storage);
+  const damaged: Partial<Record<BackupKey, string>> = {};
+  const missing: BackupKey[] = [];
+  const partly: BackupKey[] = [];
+  for (const key of BACKUP_KEYS) {
+    const raw = storage.getItem(key);
+    const payload = backup.data[key];
+    if (raw === null || (payload && !(await sectionProblem(key, payload)))) continue;
+    damaged[key] = raw;
+    delete backup.data[key];
+    await STORE_MODULES[key]();
+    const store = tabLine(key)?.store;
+    const live = store && { state: savedNow(store), version: store.persist.getOptions().version };
+    const defaults = store && savedNow({ ...store, getState: store.getInitialState });
+    if (live && isPlainObject(live.state) && !same(live.state, defaults) && !(await sectionProblem(key, live as Record<string, unknown>))) {
+      backup.data[key] = live as Record<string, unknown>;
+      partly.push(key);
+    } else {
+      missing.push(key);
+    }
+  }
+  for (;;) {
+    const check = await validateBackup(JSON.parse(JSON.stringify(backup)));
+    if (check.ok) break;
+    const key = BACKUP_KEYS.find((k) => k in backup.data && check.reason.startsWith(`${k}:`));
+    if (!key) throw new Error(`backup: ${check.reason}`);
+    delete backup.data[key];
+    damaged[key] ??= storage.getItem(key) ?? '';
+    if (partly.includes(key)) partly.splice(partly.indexOf(key), 1);
+    missing.push(key);
+  }
+  if (Object.keys(damaged).length > 0) backup.damaged = damaged;
+  return { backup, missing, partly };
 }
 
 export type BackupSection = 'preferences' | 'learnProgress' | 'drillProgress' | 'guitarFingerings';
@@ -174,12 +283,13 @@ export type BackupSection = 'preferences' | 'learnProgress' | 'drillProgress' | 
  * (`backup.section.<key>`), so the question reads in the learner's language
  * (audit W6-05: the names used to be English in PT/ES).
  */
+export const SECTION_OF: Record<BackupKey, BackupSection> = {
+  'music-theory-app': 'preferences',
+  'music-theory-progress': 'learnProgress',
+  'fermata-drill-v1': 'drillProgress',
+  'fermata-fingering-v1': 'guitarFingerings',
+};
+
 export function backupSections(backup: FermataBackup): BackupSection[] {
-  const names: Record<BackupKey, BackupSection> = {
-    'music-theory-app': 'preferences',
-    'music-theory-progress': 'learnProgress',
-    'fermata-drill-v1': 'drillProgress',
-    'fermata-fingering-v1': 'guitarFingerings',
-  };
-  return (Object.keys(backup.data) as BackupKey[]).map((k) => names[k]);
+  return (Object.keys(backup.data) as BackupKey[]).map((k) => SECTION_OF[k]);
 }
