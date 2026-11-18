@@ -554,7 +554,8 @@
     "typeScale": "Scale",
     "typeChord": "Chord",
     "typeKey": "Key",
-    "typeLesson": "Lesson"
+    "typeLesson": "Lesson",
+    "dialogLabel": "Quick search"
   },
   "chordCategory": {
     "triads": "Triads",

@@ -549,12 +549,13 @@
     "locrianMood": "Inestable, tensa, oscura"
   },
   "search": {
-    "placeholder": "Prueba \"Cmaj7#11\", \"D harmonic minor\", \"lydian dominant\"...",
-    "noMatch": "Sin resultados. Prueba un acorde (Cmaj7#11), escala (D harmonic minor) o nota (Ab).",
+    "placeholder": "Prueba \"Cmaj7#11\", \"D menor armónica\", \"D lidio dominante\"...",
+    "noMatch": "Sin resultados. Prueba un acorde (Cmaj7#11), escala (D menor armónica) o nota (Ab).",
     "typeScale": "Escala",
     "typeChord": "Acorde",
     "typeKey": "Tonalidad",
-    "typeLesson": "Lecci\u00f3n"
+    "typeLesson": "Lecci\u00f3n",
+    "dialogLabel": "Búsqueda rápida"
   },
   "chordCategory": {
     "triads": "Tr\u00edadas",

@@ -29,8 +29,12 @@ export function applyResolvedTheoryQuery(resolved: ResolvedTheoryQuery): Exclude
   const store = useAppStore.getState();
   switch (resolved.kind) {
     case 'key':
+      // The root AND the scale together (audit A2, 2026-11-18): "key of G
+      // major" from A minor used to keep the minor scale. A key named with no
+      // quality is major ("key of G" = G major, as the lessons use it), and a
+      // minor key is the natural minor (the In key convention).
       store.setKey(resolved.root);
-      if (resolved.minor) store.setScale('natural_minor');
+      store.setScale(resolved.minor ? 'natural_minor' : 'major');
       return 'key';
     case 'circle':
       return 'circle'; // Explore renders it; nothing to select

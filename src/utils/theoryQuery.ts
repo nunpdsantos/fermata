@@ -235,10 +235,6 @@ export function toEnglishTheoryQuery(query: string): string | null {
 }
 
 /**
- * Resolve a typed query (English, Portuguese or Spanish) to a theory object,
- * or null when nothing matches.
- */
-/**
  * A bare solfège syllable ("do", "Ré", "sol"). Read as the note (do = C), not
  * through the chord parser, which would take "do" as D diminished.
  */
@@ -246,17 +242,102 @@ export function isBareSolfege(query: string): boolean {
   return /^(?:d[oó]|r[eé]|mi|f[aá]|sol|l[aá]|si)$/i.test(query.trim());
 }
 
-export function resolveTheoryQuery(query: string): ResolvedTheoryQuery | null {
+// ─── A solfège syllable glued to a chord symbol (audit A3, 2026-11-18) ────────
+//
+// "Sol7", "Ré7", "Fá#m7", "Sib7", "Do/Mi": the WHOLE syllable is the root,
+// read before the chord symbol, so "Do7" is C7 (not D + o7 = D°7, which the
+// letter reading still offers). Syllables in either language, with or without
+// accents, any case; accidentals as PT and ES write them (# b ♯ ♭, doubled,
+// or the word after a space: "Fa sostenido 7"). The symbol after it is read
+// exactly as after a letter (case matters there: M7 ≠ m7).
+
+const SYLLABLE_SYMBOL = /^(do|re|mi|fa|sol|la|si)(##|bb|#|b)?(?:\s+(sustenido|sostenido|bemol)(?=\s|$))?\s*(.*)$/i;
+const SYLLABLE_BASS = /\/(do|re|mi|fa|sol|la|si)(##|bb|#|b)?$/i;
+/**
+ * After a syllable, a symbol made of letters only is accepted only if it is one
+ * of these: words that merely BEGIN with a syllable ("Solo", "Lamb", "Mix",
+ * "Dorian") are prose, not chords. Anything with a digit or a sign (7, maj7,
+ * m7b5, °, /E) is read as a symbol.
+ */
+const LETTER_SUFFIXES = new Set(['', 'm', 'M', 'maj', 'min', 'dim', 'aug', 'alt']);
+
+/** "Fá#m7" → "F#m7", "Do/Mi" → "C/E"; null when it is not a syllable + chord symbol. */
+export function solfegeChordSymbol(query: string): string | null {
+  const q = stripDiacritics(query.trim()).replace(/♯/g, '#').replace(/♭/g, 'b');
+  const m = SYLLABLE_SYMBOL.exec(q);
+  if (!m) return null;
+  const accidental = m[2] ?? (m[3] ? (m[3].toLowerCase() === 'bemol' ? 'b' : '#') : '');
+  let rest = m[4];
+  if (/\s/.test(rest)) return null;
+  rest = rest.replace(SYLLABLE_BASS, (_all, s: string, acc?: string) => `/${SOLFEGE_TO_LETTER[s.toLowerCase()]}${acc ?? ''}`);
+  if (/^[A-Za-z]*$/.test(rest) && !LETTER_SUFFIXES.has(rest)) return null;
+  return `${SOLFEGE_TO_LETTER[m[1].toLowerCase()]}${accidental}${rest}`;
+}
+
+/**
+ * How a reading was found: `letters` (the query as typed: English words and
+ * chord symbols with letter roots), `words` (Portuguese / Spanish words, letter
+ * or solfège root: "escala de Ré maior", "Do mayor"), `solfege` (a bare
+ * syllable, or a syllable glued to a chord symbol: "Sol7").
+ */
+export type ReadingSource = 'letters' | 'words' | 'solfege';
+
+export interface TheoryReading {
+  resolved: ResolvedTheoryQuery;
+  via: ReadingSource;
+}
+
+const readingKey = (r: ResolvedTheoryQuery): string => {
+  switch (r.kind) {
+    case 'chord': {
+      const p = r.parsed;
+      return `chord ${p.root.natural}${p.root.accidental} ${p.quality} ${p.algorithmicDisplayName ?? ''} ${p.bassNote ? p.bassNote.natural + p.bassNote.accidental : ''}`;
+    }
+    case 'scale': return `scale ${r.root.natural}${r.root.accidental} ${r.scaleType}`;
+    case 'key': return `key ${r.root.natural}${r.root.accidental} ${r.minor}`;
+    case 'rootlessScale': return `rootless ${r.scaleType}`;
+    case 'circle': return 'circle';
+  }
+};
+
+/**
+ * Every reading of a typed query (English, Portuguese or Spanish), the letter
+ * reading first: "Do7" → [D°7 (letters), C7 (solfège)]. Search orders them by
+ * the learner's language; everything that takes ONE reading
+ * (`resolveTheoryQuery`: Try This, the lesson's instrument) takes the first,
+ * which is what it was before the solfège reading existed whenever there was
+ * one at all.
+ */
+export function resolveTheoryReadings(query: string): TheoryReading[] {
   const q = query.trim();
-  if (!q) return null;
+  if (!q) return [];
   if (isBareSolfege(q)) {
     const note = toEnglishTheoryQuery(q);
-    return note ? resolveEnglish(note) : null;
+    const r = note ? resolveEnglish(note) : null;
+    return r ? [{ resolved: r, via: 'solfege' }] : [];
   }
+  const out: TheoryReading[] = [];
+  const add = (resolved: ResolvedTheoryQuery | null, via: ReadingSource) => {
+    if (resolved && !out.some((o) => readingKey(o.resolved) === readingKey(resolved))) out.push({ resolved, via });
+  };
   const direct = resolveEnglish(q);
-  if (direct) return direct;
-  const translated = toEnglishTheoryQuery(q);
-  return translated ? resolveEnglish(translated) : null;
+  add(direct, 'letters');
+  if (!direct) {
+    const translated = toEnglishTheoryQuery(q);
+    add(translated ? resolveEnglish(translated) : null, 'words');
+  }
+  const symbol = solfegeChordSymbol(q);
+  const glued = symbol ? resolveEnglish(symbol) : null;
+  if (glued?.kind === 'chord') add(glued, 'solfege');
+  return out;
+}
+
+/**
+ * Resolve a typed query (English, Portuguese or Spanish) to a theory object,
+ * or null when nothing matches.
+ */
+export function resolveTheoryQuery(query: string): ResolvedTheoryQuery | null {
+  return resolveTheoryReadings(query)[0]?.resolved ?? null;
 }
 
 // ─── Quoted queries inside lesson text ─────────────────────────────────────
@@ -293,7 +374,10 @@ export function findQuotedQueries(text: string): QuotedQuery[] {
     if (/^[a-z]$/.test(query)) continue;
     // A quoted syllable ("do", «Mi») is about solfège, not a query.
     if (isBareSolfege(query)) continue;
-    if (resolveTheoryQuery(query) !== null) {
+    // Lessons write note names in letters (D-18): a token that only the
+    // solfège reading understands ("Solo" is not G°) stays prose.
+    const first = resolveTheoryReadings(query)[0];
+    if (first && first.via !== 'solfege') {
       out.push({ index: m.index ?? 0, length: m[0].length, query });
     }
   }

@@ -58,7 +58,7 @@ async function openLesson(page: Page, title: string) {
   const dialog = page.getByRole('dialog').filter({ has: page.locator('input') });
   await expect(dialog).toBeVisible();
   await dialog.locator('input').fill(title);
-  await dialog.getByRole('button', { name: new RegExp(`^${title}`) }).first().click();
+  await dialog.getByRole('option', { name: new RegExp(`^${title}`) }).first().click();
   await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible({ timeout: 15_000 });
 }
 

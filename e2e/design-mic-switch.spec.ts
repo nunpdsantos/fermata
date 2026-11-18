@@ -493,7 +493,8 @@ test.describe('the top bar holds still between views (brief U2)', () => {
               await page.keyboard.press('Escape');
               await magnifier.click();
             }
-            const dialog = page.getByRole('dialog', { name: 'Quick search' });
+            // Named in the learner's language since the 2026-11-18 audit (A13 / A14).
+            const dialog = page.getByRole('dialog', { name: { en: 'Quick search', pt: 'Pesquisa rápida', es: 'Búsqueda rápida' }[lang] });
             await expect(dialog, `${at}: Quick Search opens`).toBeVisible();
             await page.keyboard.press('Escape');
             await expect(dialog).toHaveCount(0);

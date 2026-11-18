@@ -14,8 +14,9 @@ import {
 
 describe('shareParams — the contract other branches import', () => {
   it('keeps its exported names and meaning', () => {
-    // Wave 2 (stream S) added prog, bpm and capo after the wave-1 five.
-    expect(SHARE_PARAM_KEYS).toEqual(['key', 'scale', 'chord', 'inst', 'lesson', 'prog', 'bpm', 'capo']);
+    // Wave 2 (stream S) added prog, bpm and capo after the wave-1 five; the
+    // audit round of 2026-11-18 (stream B) added inv (A6).
+    expect(SHARE_PARAM_KEYS).toEqual(['key', 'scale', 'chord', 'inst', 'lesson', 'prog', 'bpm', 'capo', 'inv']);
     expect(hasShareParams('?key=D')).toBe(true);
     expect(hasShareParams('?lesson=l2u7m5')).toBe(true);
     // `view` alone is the Drill shortcut, not a shared link.

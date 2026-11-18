@@ -164,7 +164,7 @@ test('a lesson\'s "Build a C major triad" check answered from the keyboard is gr
   await page.keyboard.press('Control+k');
   const search = page.getByRole('dialog', { name: 'Quick search' });
   await search.locator('input').fill('Your First Chords');
-  await search.getByRole('button', { name: /^Your First Chords/ }).first().click();
+  await search.getByRole('option', { name: /^Your First Chords/ }).first().click();
   await expect(page.getByRole('heading', { level: 1, name: /Your First Chords/ })).toBeVisible();
   await page.getByRole('button', { name: 'Start the check' }).click();
   await expect(page.getByTestId('focused-check')).toBeVisible();
