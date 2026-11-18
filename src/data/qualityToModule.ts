@@ -26,6 +26,7 @@ export const QUALITY_TO_MODULE: Record<ChordQuality, string | null> = {
   six_nine: 'l7u23m5',
   minor_six_nine: 'l7u23m5',
   add9: 'l7u21m1', // Jazz Chord Symbols and Extensions (extensions vs added tones, add9)
+  minor_add9: 'l7u21m1',
   add11: 'l7u23m5',
 
   // Sevenths

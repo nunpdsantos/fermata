@@ -3024,6 +3024,7 @@ function essentialPitchClasses(chord: Chord): Set<number> {
     six_nine: [9, 2],
     minor_six_nine: [9, 2],
     add9: [2],
+    minor_add9: [2],
     add11: [5],
     dominant7flat9: [1],
     dominant7sharp9: [3],

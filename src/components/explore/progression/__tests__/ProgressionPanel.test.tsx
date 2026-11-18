@@ -244,10 +244,11 @@ describe('the capo (guitar only)', () => {
     await openPanel();
     for (const c of ['E♭', 'A♭', 'B♭']) add(c);
     const ideas = screen.getByRole('radiogroup', { name: 'Capo ideas, for shapes with open strings' });
-    expect(within(ideas).getAllByRole('radio').map((r) => r.textContent)).toEqual(['No capo', 'Fret 1: D, G, A', 'Fret 6: A, D, E', 'Fret 3: C, F, G']);
-    fireEvent.click(within(ideas).getByRole('radio', { name: 'Fret 3: C, F, G' }));
-    expect(getCapoFret()).toBe(3);
-    expect(screen.getByTestId('progression-capo-now').textContent).toBe('Capo on fret 3: play C, F, G.');
+    // Fret 3 (C, F, G) is no idea since audit Q11: F has no open shape.
+    expect(within(ideas).getAllByRole('radio').map((r) => r.textContent)).toEqual(['No capo', 'Fret 1: D, G, A', 'Fret 6: A, D, E']);
+    fireEvent.click(within(ideas).getByRole('radio', { name: 'Fret 6: A, D, E' }));
+    expect(getCapoFret()).toBe(6);
+    expect(screen.getByTestId('progression-capo-now').textContent).toBe('Capo on fret 6: play A, D, E.');
     fireEvent.click(within(ideas).getByRole('radio', { name: 'No capo' }));
     expect(getCapoFret()).toBe(0);
     expect(screen.queryByTestId('progression-capo-now')).toBeNull();
@@ -345,4 +346,37 @@ describe('a request (a lesson, a link)', () => {
     act(() => requestProgression({ chords: ['Am', 'F'] }));
     expect((await screen.findByTestId('progression-offer')).textContent).toContain('A lesson or shared link offers these chords: Am, F.');
   });
+});
+
+// Audit 2026-11-18, Q11: F B♭ C was offered "Fret 1: E, A, B" and "Fret 5:
+// C, F, G" under "Capo ideas, for shapes with open strings". Only fret 3 gives
+// all three an open shape (D, G, A). F C Dm B♭ has no such fret at all: none
+// is offered, and the line says so plainly.
+describe('Q11: capo ideas only where every shape is open; none said plainly (EN / PT / ES)', () => {
+  const words = {
+    en: ['Capo ideas, for shapes with open strings', 'No capo', 'Fret 3: D, G, A', 'No capo gives every one of these chords a shape with open strings.'],
+    pt: ['Ideias de capo, para formas com cordas soltas', 'Sem capo', 'Traste 3: D, G, A', 'Nenhum capo dá a todos estes acordes uma forma com cordas soltas.'],
+    es: ['Ideas de capo, para formas con cuerdas al aire', 'Sin capo', 'Traste 3: D, G, A', 'Ningún capo da a todos estos acordes una forma con cuerdas al aire.'],
+  } as const;
+  for (const lang of ['en', 'pt', 'es'] as const) {
+    it(lang, async () => {
+      const { default: i18n } = await import('../../../../i18n');
+      await i18n.changeLanguage(lang);
+      const [group, none, fret3, plain] = words[lang];
+      try {
+        useAppStore.setState({ instrument: 'guitar', selectedKey: { natural: 'F', accidental: '' }, language: lang, progression: { chords: ['F', 'Bb', 'C'], bpm: 90, beats: 4 } });
+        await openPanel();
+        const ideas = screen.getByRole('radiogroup', { name: group });
+        expect(within(ideas).getAllByRole('radio').map((r) => r.textContent)).toEqual([none, fret3]);
+        cleanup();
+        resetProgressionPanel();
+        useAppStore.setState({ progression: { chords: ['F', 'C', 'Dm', 'Bb'], bpm: 90, beats: 4 } });
+        await openPanel();
+        expect(screen.queryByRole('radiogroup', { name: group })).toBeNull();
+        expect(screen.getByTestId('progression-capo-none').textContent).toBe(plain);
+      } finally {
+        await i18n.changeLanguage('en');
+      }
+    });
+  }
 });

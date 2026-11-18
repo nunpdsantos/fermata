@@ -37,6 +37,7 @@ const QUALITY_NUMERAL: Record<ChordQuality, readonly [ChordFamily, string]> = {
   sus2: ['neutral', 'sus2'],
   sus4: ['neutral', 'sus4'],
   add9: ['major', 'add9'],
+  minor_add9: ['minor', '(add9)'],
   minor_major7: ['minor', 'maj7'],
   power: ['neutral', '5'],
   dominant7sus4: ['neutral', '7sus4'],

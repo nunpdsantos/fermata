@@ -103,6 +103,8 @@
     "keySheetTitle": "Key",
     "relativeKey": "relative {{key}}",
     "chordsIn": "Chords in {{key}}",
+    "chordsOnRoot": "All chords on {{root}}",
+    "buildTitle": "Build a chord",
     "inKey": "In key",
     "circleChordRoot": "root of the selected chord",
     "strip": {
@@ -646,8 +648,8 @@
     "noMatch": "no exact match — add or remove a note",
     "otherInterpretations": "Other interpretations",
     "ofKey": "of {{key}}",
-    "nonDiatonicAt": "non-diatonic (root is the {{numeral}} of {{key}})",
-    "outOfKey": "out of key ({{key}})",
+    "nonDiatonicAt": "the root is the {{numeral}} of {{key}}; {{notes}} outside the key",
+    "outOfKey": "out of key: {{key}}",
     "staff": "Staff",
     "staffChord": "Chord",
     "staffArpeggio": "Arpeggio",
@@ -658,7 +660,7 @@
     },
     "inversion": {
       "root": "Root",
-      "nth": "Inv {{n}}"
+      "nth": "{{n}}th Inv"
     },
     "play": "Play"
   },
@@ -1301,7 +1303,7 @@
     "capoNow": "Capo on fret {{fret}}: play {{shapes}}.",
     "capoIdeas": "Capo ideas, for shapes with open strings",
     "capoIdea": "Fret {{fret}}: {{shapes}}",
-    "capoNoIdea": "No capo gives these chords more shapes with open strings.",
+    "capoNoIdea": "No capo gives every one of these chords a shape with open strings.",
     "capoAllOpen": "Without a capo, each of these chords already has a shape with open strings.",
     "capoStandardOnly": "Capo ideas need standard tuning: Fermatina's chord shapes are for standard tuning only.",
     "noCapo": "No capo",

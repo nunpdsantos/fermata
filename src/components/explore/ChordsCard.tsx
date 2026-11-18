@@ -18,6 +18,7 @@ import { closeProgressionPanel, openProgressionPanel, useProgressionPanelOpen } 
 import { Button } from '../ui/Button.tsx';
 import { SHEET_QUERY } from '../../hooks/useMediaQuery.ts';
 import { toast } from '../../state/toastStore.ts';
+import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 
 const StaffNotation = lazy(() =>
   import('../notation/StaffNotation.tsx').then((m) => ({ default: m.StaffNotation })),
@@ -86,6 +87,7 @@ export function ChordsCard() {
   const { t } = useTranslation();
   const { scale } = useKeyContext();
   const selectedChord = useAppStore((s) => s.selectedChord);
+  const selectedKey = useAppStore((s) => s.selectedKey);
   const cardRef = useRef<HTMLElement>(null);
   const [tab, setMode] = useState<ChordMode>('diatonic');
   // Simple view: the In key row only (no All Chords / Build tabs). The tab
@@ -103,10 +105,17 @@ export function ChordsCard() {
       // While the panel hides the tabs, the tab they will show again (the tour reads it).
       data-chords-tab={progression && !simple ? mode : undefined}>
       <div className="explore-card-head">
+        {/* The heading names what the panel lists (audit 2026-11-18, Q10):
+            the key's chords, every chord on the key's root, or a chord built
+            from any root. */}
         <h2 id="chords-title" className="type-section">
           {progression
             ? <Term id="progression">{t('progression.title')}</Term>
-            : <Term id="chordsInKey">{t('explore.chordsIn', { key: keyName(scale, t) })}</Term>}
+            : mode === 'all'
+              ? t('explore.chordsOnRoot', { root: withGlyphs(selectedKey) })
+              : mode === 'build'
+                ? t('explore.buildTitle')
+                : <Term id="chordsInKey">{t('explore.chordsIn', { key: keyName(scale, t) })}</Term>}
         </h2>
         {/* Tabs switch what the screen shows: not printed. */}
         {!simple && !progression && <Segment

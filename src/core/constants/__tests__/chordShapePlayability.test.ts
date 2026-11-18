@@ -33,6 +33,7 @@ const ORACLE_CHORD: Record<string, number[]> = {
   major6: [0, 4, 7, 9], minor6: [0, 3, 7, 9], major7: [0, 4, 7, 11], minor7: [0, 3, 7, 10],
   dominant7: [0, 4, 7, 10], diminished7: [0, 3, 6, 9], half_diminished7: [0, 3, 6, 10],
   augmented7: [0, 4, 8, 10], sus2: [0, 2, 7], sus4: [0, 5, 7], add9: [0, 2, 4, 7],
+  minor_add9: [0, 2, 3, 7], // 1 2 ♭3 5 (audit 2026-11-18 Q2)
   minor_major7: [0, 3, 7, 11], power: [0, 7], dominant7sus4: [0, 5, 7, 10],
   major9: [0, 2, 4, 7, 11], minor9: [0, 2, 3, 7, 10], dominant9: [0, 2, 4, 7, 10],
   dominant7flat9: [0, 1, 4, 7, 10], dominant7sharp9: [0, 3, 4, 7, 10], dominant7flat5: [0, 4, 6, 10],

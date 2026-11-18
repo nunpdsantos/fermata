@@ -22,6 +22,7 @@ import { useAppStore } from '../../state/store.ts';
 import { resumeAudio, playChordVoiced, playPitchedNotes, cancelScheduledAudio } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import { ChromaticStrip } from './ChromaticStrip.tsx';
+import { builderRole } from './builderRole.ts';
 import { SelectTrigger } from '../ui/SelectTrigger.tsx';
 import { Button } from '../ui/Button.tsx';
 
@@ -174,28 +175,10 @@ export function ChordBuilderPanel() {
   const notesLabel = stepsSorted.map((s) => withGlyphs(noteAtStep(s))).join(' – ');
   const semitonesLabel = stepsSorted.join(', ');
 
-  const role = useMemo(() => {
-    if (!top || top.confidence !== 'exact') return null;
-    const rootPc = getPitchClass(top.chord.root);
-    const match = diatonicChords.find(
-      (dc) => getPitchClass(dc.chord.root) === rootPc && dc.chord.quality === top.chord.quality
-    );
-    // Display names, never internal ids (audit W1-10: was "C diminished whole_half").
-    const keyLabel = `${withGlyphs(scale.root)} ${t(`scaleName.${scale.type}`)}`;
-    if (match) return { label: `${match.numeral} ${t('chordBuilder.ofKey', { key: keyLabel })}`, inKey: true };
-    const degIdx = scale.notes.findIndex((n) => getPitchClass(n) === rootPc);
-    if (degIdx >= 0) {
-      return {
-        label: t('chordBuilder.nonDiatonicAt', {
-          numeral: diatonicChords.find((dc) => getPitchClass(dc.chord.root) === rootPc)?.numeral
-            ?? `${degreeOf(scale.root, scale.notes[degIdx]).number}`,
-          key: keyLabel,
-        }),
-        inKey: false,
-      };
-    }
-    return { label: t('chordBuilder.outOfKey', { key: keyLabel }), inKey: false };
-  }, [top, diatonicChords, scale, t]);
+  const role = useMemo(
+    () => builderRole(top && top.confidence === 'exact' ? top.chord : null, scale, diatonicChords, t),
+    [top, diatonicChords, scale, t],
+  );
 
   return (
     <div className="space-y-3">
@@ -274,7 +257,7 @@ export function ChordBuilderPanel() {
               style={{ color: role.inKey ? 'var(--accent-text)' : 'var(--text-muted)' }}
               {...termAttr(role.inKey ? 'romanNumeral' : 'outOfKey')}
             >
-              {role.inKey ? role.label : `(${role.label})`}
+              {role.text}
             </span>
           )}
         </div>

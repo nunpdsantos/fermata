@@ -8,7 +8,8 @@ import {
 } from '../progressionModel';
 import { chordName, fitSentence, keyLineSentences, keyLabel } from '../progressionText';
 import { MAX_PROGRESSION_CHORDS } from '../../../../state/progressionSave';
-import { PROGRESSION_PRESETS, capoOptions, presetChords } from '../../../../core/utils/progression';
+import { PROGRESSION_PRESETS, capoOptions, hasOpenGrip, presetChords } from '../../../../core/utils/progression';
+import { chordBelowCapo } from '../../../../core/constants/guitarChordShapes';
 
 const n = (s: string): Note => ({ natural: s[0] as Note['natural'], accidental: s.slice(1) as Note['accidental'] });
 const major = (s: string) => ({ root: n(s), mode: 'major' as const });
@@ -186,11 +187,11 @@ describe('the key line: "fit", never "is"', () => {
 });
 
 describe('capo', () => {
-  it('E♭ A♭ B♭ in E♭: up to three ideas, best first (fret 1: D G A)', () => {
+  it('E♭ A♭ B♭ in E♭: up to three ideas, best first (fret 1: D G A); fret 3 (C F G) is no idea, F has no open shape (Q11)', () => {
     const chords = readChords(['Eb', 'Ab', 'Bb']);
     const ideas = capoIdeas(chords, major('Eb'));
     expect(ideas.map((o) => [o.fret, o.shapes.map((s) => chordSymbol(s.shape))])).toEqual([
-      [1, ['D', 'G', 'A']], [6, ['A', 'D', 'E']], [3, ['C', 'F', 'G']],
+      [1, ['D', 'G', 'A']], [6, ['A', 'D', 'E']],
     ]);
     expect(capoShapes(chords, major('Eb'), 3).map(chordSymbol)).toEqual(['C', 'F', 'G']);
   });
@@ -212,6 +213,54 @@ describe('capo', () => {
     }
     // The rule is exercised: some frets give exactly as many open shapes as no capo.
     expect(ties).toBeGreaterThan(0);
+  });
+});
+
+// Audit 2026-11-18, Q11: "Capo ideas, for shapes with open strings" offered
+// barre chords — for D♭ G♭ A♭ "Fret 1: C, F, G", for F B♭ C "Fret 1: E, A, B"
+// and "Fret 5: C, F, G" (F and B have no open shape in standard tuning). A fret
+// is offered only when EVERY shape it gives is an open-string shape as the
+// app's own shape library defines one (hasOpenGrip: a playable library shape
+// of type "open" at base fret 0), read here shape by shape, never from the
+// idea's own flags.
+describe('Q11: a capo idea is offered only when every shape is an open shape', () => {
+  const ROOTS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
+  it('the oracle knows its open shapes: E A D G C Am Em Dm are open; F and B are not', () => {
+    for (const s of ['E', 'A', 'D', 'G', 'C', 'Am', 'Em', 'Dm']) expect(hasOpenGrip(readChords([s])[0]), s).toBe(true);
+    for (const s of ['F', 'B', 'Bb', 'F#m']) expect(hasOpenGrip(readChords([s])[0]), s).toBe(false);
+  });
+  it('the audit\'s two progressions', () => {
+    const shown = (symbols: string[], k: ReturnType<typeof major>) =>
+      capoIdeas(readChords(symbols), k).map((o) => `Fret ${o.fret}: ${o.shapes.map((s) => chordSymbol(s.shape)).join(', ')}`);
+    expect(shown(['Db', 'Gb', 'Ab'], major('Db'))).not.toContain('Fret 1: C, F, G');
+    const f = shown(['F', 'Bb', 'C'], major('F'));
+    expect(f).not.toContain('Fret 1: E, A, B');
+    expect(f).not.toContain('Fret 5: C, F, G');
+  });
+  it('every preset, in each of the 24 keys the panel can count in (its own mode and, as the panel shows it, the relative key)', () => {
+    let offered = 0;
+    let none = 0;
+    const wrong: string[] = [];
+    for (const mode of ['major', 'minor'] as const) {
+      for (const root of ROOTS) {
+        const panelKey = { root: n(root), mode };
+        for (const view of presetViews(panelKey)) {
+          const ideas = capoIdeas(view.chords, view.key);
+          if (ideas.length === 0) none++;
+          for (const idea of ideas) {
+            offered++;
+            for (const chord of view.chords) {
+              const shape = chordBelowCapo(chord, idea.fret);
+              if (!hasOpenGrip(shape)) wrong.push(`${view.preset.id} in ${root} ${mode} (${view.key.root.natural}${view.key.root.accidental} ${view.key.mode}): fret ${idea.fret} gives ${chordSymbol(shape)}, no open shape`);
+            }
+          }
+        }
+      }
+    }
+    // Both branches are exercised: frets are still offered, and some lists offer none.
+    expect(offered).toBeGreaterThan(0);
+    expect(none).toBeGreaterThan(0);
+    expect(wrong.slice(0, 10), `${wrong.length} shapes without open strings`).toEqual([]);
   });
 });
 

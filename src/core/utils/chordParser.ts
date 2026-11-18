@@ -172,6 +172,11 @@ function parseQualityString(q: string): ChordQuality | null {
     return 'minor_major7';
   if (raw === 'dimM7' || raw === 'dim(M7)' || raw === 'dimΔ7' || raw === '°M7' || raw === 'oM7')
     return 'diminished_major7';
+  // Minor add 9 (audit 2026-11-18 Q2): a minor triad with an added 9th and no
+  // 7th. Read case-sensitively: "M(add9)" is a major chord. Until then it was
+  // built algorithmically and kept the add9 quality, so the chord panel
+  // offered it the MAJOR scales (E, not E♭).
+  if (/^(m|mi|min|-)\(?add[29]\)?$/.test(raw)) return 'minor_add9';
 
   // Now lowercase for case-insensitive matching
   const s = raw.toLowerCase();
@@ -875,6 +880,7 @@ export function formatParsedChordName(parsed: ParsedChord): string {
     sus2: 'Sus2',
     sus4: 'Sus4',
     add9: 'Add9',
+    minor_add9: 'Minor Add9',
     minor_major7: 'Minor-Major 7',
     power: 'Power',
     dominant7sus4: '7sus4',

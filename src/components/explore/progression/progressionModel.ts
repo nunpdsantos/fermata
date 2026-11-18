@@ -276,16 +276,18 @@ export function capoShapes(chords: readonly Chord[], _key: MusicKey, fret: numbe
 }
 
 /**
- * Up to three capo ideas: frets 1–7 whose shapes have more open grips than
- * playing without a capo, best first (the engine's ranking: all open, then
- * more open shapes, then the lower fret). None when no capo helps.
+ * Up to three capo ideas: frets 1–7 where EVERY shape has an open grip (the
+ * line promises "shapes with open strings"; audit 2026-11-18, Q11: a fret was
+ * offered when only most of them had one, so "Fret 1: E, A, B" put a barred B
+ * among them), and more of them than without a capo, best first (the
+ * engine's ranking: then the lower fret). None when no fret gives that.
  */
 export function capoIdeas(chords: readonly Chord[], key: MusicKey): CapoOption[] {
   if (chords.length === 0) return [];
   const options = capoOptions(chords, key);
   const none = options.find((o) => o.fret === 0);
   const base = none?.openCount ?? 0;
-  return options.filter((o) => o.fret > 0 && o.openCount > base).slice(0, 3);
+  return options.filter((o) => o.fret > 0 && o.allOpen && o.openCount > base).slice(0, 3);
 }
 
 // ─── Common progressions ──────────────────────────────────────────────────

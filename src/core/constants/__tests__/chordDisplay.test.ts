@@ -181,6 +181,7 @@ function essentialsFor(quality: ChordQuality): Essentials {
     minor_six_nine: [9, 2],
     // add chords: the added tone is the whole point.
     add9: [2], // M9 ≡ pc 2
+    minor_add9: [2], // m(add9): the same added 9th (audit 2026-11-18 Q2)
     add11: [5], // P11 ≡ pc 5
     // altered 9ths on dominants: the altered 9 is identity.
     dominant7flat9: [1],
@@ -398,6 +399,6 @@ describe('600-cell matrix report', () => {
         failures.map((f) => `  [${f.kind}] ${f.chord}: ${f.detail}`).join('\n'),
     );
     // The per-cell tests above already assert correctness; this block reports.
-    expect(cells).toBe(50 * 12);
+    expect(cells).toBe(51 * 12); // 51 qualities since minor_add9 (audit 2026-11-18 Q2)
   });
 });
