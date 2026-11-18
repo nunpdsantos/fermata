@@ -24,6 +24,7 @@ import { getResults, type SearchResult } from '../quickSearchResults';
 import { useAppStore } from '../../../state/store';
 import { noteToString, type ScaleType } from '../../../core/types/music';
 import { showLessonQuery, returnLessonInstrument } from '../../../services/lessonInstrument';
+import { findQuotedQueries, resolveTheoryQuery } from '../../../utils/theoryQuery';
 
 vi.mock('framer-motion', async () => {
   const React = await import('react');
@@ -198,6 +199,13 @@ describe('A3 — the whole solfège syllable is read before the chord symbol', (
       expect(chords('Do7'), lang).toContain('Ddiminished7');
       expect(chords('Dom7'), lang).toContain('Cminor7');
     }
+  });
+
+  it('lesson text: a quoted token only the solfège reading understands stays prose (lessons write letters, D-18)', () => {
+    const text = "Play 'Sol7', then «Ré7» and 'Solo'; then 'G7' and 'D7'.";
+    expect(findQuotedQueries(text).map((t) => t.query)).toEqual(['G7', 'D7']);
+    // …while the resolver itself reads them (Try This, the lesson's instrument).
+    expect(resolveTheoryQuery('Sol7')?.kind).toBe('chord');
   });
 
   // Words that begin like a syllable keep exactly the chord results they had

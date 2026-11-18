@@ -203,10 +203,11 @@ test.describe('A14 + Q14: the list as a screen reader and a keyboard meet it', (
         const row = selected();
         await expect(row, `${key} → row ${index}`).toHaveText(await rows.nth(index).textContent() ?? '');
         const box = (await row.boundingBox())!;
-        expect(box.y, `row ${index} top in view`).toBeGreaterThanOrEqual(listBox.y - 0.5);
-        expect(box.y + box.height, `row ${index} bottom in view`).toBeLessThanOrEqual(listBox.y + listBox.height + 0.5);
-        await expect(input).toHaveAttribute('aria-activedescendant', (await row.getAttribute('id')) ?? 'missing');
+        expect(box.y, `${key} → row ${index}: its top is in the list's view`).toBeGreaterThanOrEqual(listBox.y - 0.5);
+        expect(box.y + box.height, `${key} → row ${index}: its bottom is in the list's view`).toBeLessThanOrEqual(listBox.y + listBox.height + 0.5);
         expect(await pageScroll(), 'the page did not scroll').toEqual(scrollBefore);
+        // Soft, so a missing announcement does not hide a row out of sight.
+        expect.soft(await input.getAttribute('aria-activedescendant'), `${key} → row ${index}: aria-activedescendant`).toBe((await row.getAttribute('id')) ?? 'an option id');
       }
       await expect(input).toBeFocused();
       await expect(input).toHaveAttribute('role', 'combobox');
