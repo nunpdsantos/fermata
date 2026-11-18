@@ -176,36 +176,51 @@ const ON_THE_APP: Record<Lang, RegExp> = {
   pt: /(?:da aplicação|em Explorar)/u,
   es: /(?:de la aplicación|en Explorar)/u,
 };
+/**
+ * A labelled aside for one instrument, opening a clause ("Play D, then F♯ and
+ * G: on the guitar, frets 2 and 3 …", "… together; on the piano they are …",
+ * "On the guitar, F♯m can be a barre"), up to the end of its sentence. The
+ * task around it must stand on its own on either instrument.
+ */
+const ASIDE = /(?:^|(?<=[.;:]\s))[Oo]n the (?:guitar|piano)\b[^.;]*[.;]?/gu;
+/**
+ * True when an English task sends the learner to one instrument: judged on
+ * what is left once its asides are taken out ("Play G, then strum …" is
+ * caught though an aside follows) — or on the whole text when the asides are
+ * all there is ("On the piano, find the group of 2 black keys …").
+ */
+function oneInstrument(text: string): boolean {
+  const names = (s: string) => PIANO.en.test(s) || GUITAR.en.test(s);
+  if (ON_THE_APP.en.test(text) || (PIANO.en.test(text) && GUITAR.en.test(text)) || !names(text)) return false;
+  const rest = text.replace(ASIDE, ' ');
+  return rest.split(/\s+/).filter((w) => /\p{L}/u.test(w)).length >= 4 ? names(rest) : true;
+}
 /** Tasks that name one instrument and may stay so, each with its reason. */
-const ASIDE = 'the task itself is the same on both instruments; one instrument has a labelled aside ("On the guitar, …")';
 const ONE_INSTRUMENT_ALLOWED: Readonly<Record<string, string>> = {
   l1u33m2t1: 'guitar only (an open string stopped by fingers 1 to 4): no wording makes it a piano task; it waits for a per-instrument task, which needs the seat',
   l1u33m3t2: 'reading the barre marks aloud: no instrument is played',
-  l1u34m4t2: ASIDE,
-  l1u34m5t1: ASIDE,
-  l1u35m1t2: ASIDE,
-  l1u35m4t2: ASIDE,
-  l1u35m6t1: ASIDE,
-  l1u35m8t1: ASIDE,
-  l1u35m9t2: ASIDE,
   l1u35m8t2: 'guitar only (the capo): it waits for a per-instrument task, which needs the seat',
   l9u32m5t3: 'the orchestra\'s strings, not the guitar',
 };
 
 describe('practice tasks: true on the instrument the learner holds (Q5)', () => {
   it('the reader fires on a piano-only task and a guitar-only task, and passes both ways of saying both', () => {
-    const one = (text: string) => PIANO.en.test(text) !== GUITAR.en.test(text) && !ON_THE_APP.en.test(text);
-    expect(one('Look at the piano keyboard — notes go from low (left) to high (right)')).toBe(true);
-    expect(one('Put a capo at fret 2 and play your G, D, Em and C shapes.')).toBe(true);
-    expect(one('Find E and F — on the piano there is no black key between them; on the guitar they are one fret apart.')).toBe(false);
-    expect(one('Choose position V on the app fretboard.')).toBe(false);
-    expect(one('Play two notes simultaneously: C and E (M3).')).toBe(false);
+    expect(oneInstrument('Look at the piano keyboard — notes go from low (left) to high (right)')).toBe(true);
+    expect(oneInstrument('On the piano, find the group of 2 black keys — the white key just below the group is always C')).toBe(true);
+    expect(oneInstrument('Find E and F on the piano — notice there is no black key between them.')).toBe(true);
+    expect(oneInstrument('Put a capo at fret 2 and play your G, D, Em and C shapes.')).toBe(true);
+    expect(oneInstrument('Play the G major scale, then strum G, C and D. On the guitar, find the F♯ in your D chord: fret 2 of the thinnest string.')).toBe(true);
+    expect(oneInstrument('Find E and F — on the piano there is no black key between them; on the guitar they are one fret apart.')).toBe(false);
+    expect(oneInstrument('Play the G major scale, then play the chords G, C and D. On the guitar, find the F♯ in your D chord: fret 2 of the thinnest string.')).toBe(false);
+    expect(oneInstrument('Play C, E and G together; on the piano they are three white keys with one white key skipped between each. Then lower E.')).toBe(false);
+    expect(oneInstrument('Choose position V on the app fretboard.')).toBe(false);
+    expect(oneInstrument('Play two notes simultaneously: C and E (M3).')).toBe(false);
   });
 
   it('EN: no task sends the learner to one instrument only, outside the listed exceptions', () => {
     const one = allTasks()
       .filter((t) => !SKIPPED_UNTIL_INTEGRATION.has(t.module) && !(t.id in ONE_INSTRUMENT_ALLOWED))
-      .filter((t) => PIANO.en.test(t.text.en!) !== GUITAR.en.test(t.text.en!) && !ON_THE_APP.en.test(t.text.en!))
+      .filter((t) => oneInstrument(t.text.en!))
       .map((t) => `${t.id}: ${t.text.en}`);
     expect(one).toEqual([]);
   });
@@ -215,7 +230,7 @@ describe('practice tasks: true on the instrument the learner holds (Q5)', () => 
     for (const id of Object.keys(ONE_INSTRUMENT_ALLOWED)) {
       const text = byId.get(id);
       expect(text, id).toBeTypeOf('string');
-      expect(PIANO.en.test(text!) !== GUITAR.en.test(text!), `${id}: ${text}`).toBe(true);
+      expect(oneInstrument(text!), `${id}: ${text}`).toBe(true);
     }
   });
 
