@@ -230,6 +230,8 @@
     "distance5": "2 shared notes",
     "distance6": "Tritone \u00b7 2 shared notes",
     "segmentLabel": "{{name}} \u2014 select {{key}}",
+    "segmentChordLabel": "{{chord}} ({{numeral}}) in {{scale}} \u2014 select {{key}}",
+    "opens": "Opens {{key}}",
     "keyMajor": "{{note}} major",
     "keyMinor": "{{note}} minor"
   },

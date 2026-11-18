@@ -3087,3 +3087,49 @@ html[data-metro-room] .learn-scroll {
 .start-import-link { margin-left: -6px; }
 .start-import { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 .start-import-error { margin: 0; font-size: var(--text-ui); color: var(--danger-text); }
+
+/* ─── Audit 2026-11-18, stream C (Explore tools) ─────────────────────────
+   Q4: Build's "Detected" readout sat half under the column's edge at
+   1440×900 with the piano showing, and a built chord's detail landed with
+   the readout scrolled away. On the workbench (≥ 1200 px, screen) its facts
+   share one line (three label / value pairs), "Other interpretations"
+   follows them, and the readout is a landing row (data-chord-scroll-row),
+   so the detail opens with the readout — and the note strip, where it
+   fits — above it. Phones and tablets keep the two-column list. */
+.builder-facts { grid-template-columns: auto 1fr; }
+/* "Other interpretations" is a full --tap target; the extra height is
+   padding cancelled by a negative margin, as for the glossary's words, so
+   the readout does not grow (it was 17 px tall, hidden below the fold until
+   the readout landed in view). */
+.builder-others > summary {
+  padding-block: calc((var(--tap) - 1lh) / 2);
+  margin-block: calc((var(--tap) - 1lh) / -2);
+}
+@media screen and (min-width: 1200px) {
+  .builder-readout {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 24px;
+    row-gap: 4px;
+    padding-block: 8px;
+  }
+  .builder-readout > :first-child { flex-basis: 100%; }
+  .builder-readout > .builder-facts {
+    margin-top: 0;
+    grid-template-columns: repeat(3, auto auto);
+    column-gap: 8px;
+  }
+  .builder-readout > .builder-facts > :nth-child(2n + 3) { margin-left: 16px; }
+  .builder-readout > .builder-others { margin-top: 0; }
+  /* With the label beside its select and 8 px between the builder's rows,
+     the whole builder — controls, the 13 notes, the readout — is on screen
+     at 1440×900 before anything is built (it ended 10 px under the edge). */
+  .builder-root-field { flex-direction: row; align-items: center; gap: 8px; }
+  .chord-builder > :not(:last-child) { margin-block-end: 8px; }
+}
+/* The detail's screen-reader-only words (the key's own notes) are placed
+   against the detail, not the page: below the work column's fold they
+   stretched the PAGE, which then scrolled by 27 px at 1366×768 (Q4; the
+   page never scrolls, CLAUDE.md "What scrolls"). */
+.chord-detail { position: relative; }

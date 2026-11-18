@@ -380,3 +380,43 @@ describe('Q11: capo ideas only where every shape is open; none said plainly (EN 
     });
   }
 });
+
+// Audit 2026-11-18, A7: in F natural minor the preset "ii–V–I: B♭m E♭ A♭ · in
+// A♭ major" opened as iv–VII–III in F minor — the promised cadence was gone.
+// A preset is read in the key it advertises: one shown in another key moves
+// Explore there (as the panel's own "Switch to" does), so its chips carry
+// the preset's own numbers. Every preset, from every scale the picker offers.
+describe('A7: a common progression is numbered in the key it names', () => {
+  const numerals = () => Array.from(screen.getByTestId('progression-chips').querySelectorAll('.prog-chip-numeral')).map((e) => e.textContent);
+  it('F natural minor → ii–V–I in A♭ major: B♭m ii, E♭ V, A♭ I, and Explore is in A♭ major', async () => {
+    useAppStore.setState({ selectedKey: { natural: 'F', accidental: '' }, selectedScale: 'natural_minor' });
+    await openPanel();
+    fireEvent.click(screen.getByRole('button', { name: 'ii–V–I: B♭m E♭ A♭ · in A♭ major' }));
+    expect(chips()).toEqual(['B♭mii', 'E♭V', 'A♭I']);
+    expect(useAppStore.getState().selectedScale).toBe('major');
+    expect(useAppStore.getState().selectedKey).toEqual({ natural: 'A', accidental: 'b' });
+  });
+  it('every preset from every picker scale (37) reads with the preset\'s own numerals', async () => {
+    const { SCALE_GROUPS } = await import('../../../navigation/keyChoice');
+    const { preferredRootSpelling } = await import('../../../../core/utils/degreeSpelling');
+    const { PROGRESSION_PRESETS } = await import('../../../../core/utils/progression');
+    const types = SCALE_GROUPS.flatMap((g) => g.options);
+    expect(types).toHaveLength(37);
+    const wrong: string[] = [];
+    render(<><ChordsCard /><ProgressionHost /></>);
+    fireEvent.click(screen.getByTestId('progression-toggle'));
+    await screen.findByTestId('progression-panel');
+    for (const type of types) {
+      for (const preset of PROGRESSION_PRESETS) {
+        act(() => useAppStore.setState({ selectedKey: preferredRootSpelling(5, type), selectedScale: type, progression: undefined }));
+        // By the exact id: jsdom matches [data-preset="i-iv-v"] to "I-IV-V" too.
+        const button = Array.from(screen.getByTestId('progression-preset-list').querySelectorAll<HTMLButtonElement>('[data-preset]')).find((b) => b.dataset.preset === preset.id)!;
+        const label = button.getAttribute('aria-label');
+        fireEvent.click(button);
+        const got = numerals();
+        if (got.join(' ') !== preset.numerals.join(' ')) wrong.push(`${type} → "${label}": ${got.join(' ')}`);
+      }
+    }
+    expect(wrong.slice(0, 10), `${wrong.length} presets read in another key`).toEqual([]);
+  }, 60_000);
+});

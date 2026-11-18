@@ -181,11 +181,11 @@ export function ChordBuilderPanel() {
   );
 
   return (
-    <div className="space-y-3">
+    <div className="chord-builder space-y-3">
       {/* W11-A: v2 controls (36 / 44 px, tokens); the layout is the Explore
           batch's (D-25). */}
       <div data-chord-scroll-row className="flex flex-wrap gap-2 items-end">
-        <label className="flex flex-col gap-1">
+        <label className="builder-root-field flex flex-col gap-1">
           <span className="type-label" {...termAttr('root')}>{t('chordBuilder.chordRoot')}</span>
           <SelectTrigger
             value={`${chordRoot.natural}${chordRoot.accidental}`}
@@ -213,6 +213,9 @@ export function ChordBuilderPanel() {
         </Button>
       </div>
 
+      {/* A landing row (chordScrollLanding): the detail opening below keeps
+          the strip and the readout in view where they fit (audit 2026-11-18, Q4). */}
+      <div data-chord-scroll-row>
       <ChromaticStrip
         rootNote={chordRoot}
         noteAtStep={noteAtStep}
@@ -223,9 +226,15 @@ export function ChordBuilderPanel() {
         pitchClassAtStep={pitchClassAtStep}
         intervalAtStep={intervalAtStep}
       />
+      </div>
 
+      {/* The readout. On the workbench (≥ 1200 px) its facts share one line
+          and it is a landing row, so the detail opens with it in view
+          (index.css, stream C; audit 2026-11-18, Q4). */}
       <div
-        className="rounded-xl p-3 text-sm"
+        className="builder-readout rounded-xl p-3 text-sm"
+        data-chord-scroll-row
+        data-testid="builder-readout"
         style={{
           backgroundColor: 'var(--bg-raised)',
           border: '1px solid var(--border-subtle)',
@@ -262,7 +271,7 @@ export function ChordBuilderPanel() {
           )}
         </div>
 
-        <div className="mt-2 grid gap-y-1 gap-x-6 text-xs" style={{ gridTemplateColumns: 'auto 1fr' }}>
+        <div className="builder-facts mt-2 grid gap-y-1 gap-x-6 text-xs">
           <span style={{ color: 'var(--text-muted)' }}>{t('chordBuilder.notes')}</span>
           <span>{notesLabel || t('chordBuilder.none')}</span>
           <span style={{ color: 'var(--text-muted)' }} {...termAttr('interval')}>{t('chordBuilder.intervals')}</span>
@@ -272,7 +281,7 @@ export function ChordBuilderPanel() {
         </div>
 
         {identification.results.length > 1 && (
-          <details className="mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+          <details className="builder-others mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
             <summary className="cursor-pointer">{t('chordBuilder.otherInterpretations')}</summary>
             <ul className="mt-1 ml-4 list-disc space-y-0.5">
               {identification.results.slice(1, 5).map((r, i) => (

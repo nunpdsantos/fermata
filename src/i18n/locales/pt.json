@@ -230,6 +230,8 @@
     "distance5": "2 notas em comum",
     "distance6": "Tr\u00edtono \u00b7 2 notas em comum",
     "segmentLabel": "{{name}} \u2014 escolher {{key}}",
+    "segmentChordLabel": "{{chord}} ({{numeral}}) em {{scale}} \u2014 escolher {{key}}",
+    "opens": "Abre {{key}}",
     "keyMajor": "{{note}} maior",
     "keyMinor": "{{note}} menor"
   },

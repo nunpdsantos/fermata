@@ -9,7 +9,15 @@ import { chordName, keyLabel } from './progressionText';
 const distinct = <T,>(xs: readonly T[], id: (x: T) => string) => xs.filter((x, i) => xs.findIndex((y) => id(y) === id(x)) === i);
 
 /** One preset as a button: its numerals over its chords in the key ("I–V–vi–IV" / "G D Em C"). */
-function PresetButton({ view, onPick }: { view: PresetView; onPick: (chords: readonly Chord[]) => void }) {
+/**
+ * What a pick hands the panel: the chords, and the key they are shown in when
+ * that is not the panel's (a preset of the other mode, on the relative key) —
+ * the panel then counts them in that key, the one the button names (audit
+ * 2026-11-18, A7: "ii–V–I … in A♭ major" read iv–VII–III in F minor).
+ */
+export type PresetPick = (chords: readonly Chord[], inKey: MusicKey | null) => void;
+
+function PresetButton({ view, onPick }: { view: PresetView; onPick: PresetPick }) {
   const { t } = useTranslation();
   const blues = view.preset.id === 'twelve-bar-blues';
   // The blues is twelve bars long: its name, and each of its numbers and chords once.
@@ -18,7 +26,7 @@ function PresetButton({ view, onPick }: { view: PresetView; onPick: (chords: rea
   const where = view.relative ? ` · ${t('progression.presetIn', { key: keyLabel(view.key, t) })}` : '';
   const title = blues ? `${t('progression.blues')} · ${numerals}` : numerals;
   return (
-    <button type="button" className="prog-preset" onClick={() => onPick(view.chords)} data-preset={view.preset.id}
+    <button type="button" className="prog-preset" onClick={() => onPick(view.chords, view.relative ? view.key : null)} data-preset={view.preset.id}
       aria-label={`${title}: ${chords}${where}`}>
       <span className="prog-preset-numerals" data-term="romanNumeral">{title}</span>
       <span className="prog-preset-chords">{chords}{where}</span>
@@ -27,7 +35,7 @@ function PresetButton({ view, onPick }: { view: PresetView; onPick: (chords: rea
 }
 
 /** The engine's common progressions in the panel's key (presets of the other mode on its relative key). */
-export function PresetList({ keyForPresets, onPick }: { keyForPresets: MusicKey; onPick: (chords: readonly Chord[]) => void }) {
+export function PresetList({ keyForPresets, onPick }: { keyForPresets: MusicKey; onPick: PresetPick }) {
   const views = useMemo(() => presetViews(keyForPresets), [keyForPresets]);
   return (
     <div className="prog-presets" data-testid="progression-preset-list">
@@ -40,7 +48,7 @@ export function PresetsSheet({ open, onClose, keyForPresets, onPick }: {
   open: boolean;
   onClose: () => void;
   keyForPresets: MusicKey;
-  onPick: (chords: readonly Chord[]) => void;
+  onPick: PresetPick;
 }) {
   const { t } = useTranslation();
   return (

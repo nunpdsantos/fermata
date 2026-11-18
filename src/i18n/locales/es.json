@@ -230,6 +230,8 @@
     "distance5": "2 notas en com\u00fan",
     "distance6": "Tritono \u00b7 2 notas en com\u00fan",
     "segmentLabel": "{{name}} \u2014 elegir {{key}}",
+    "segmentChordLabel": "{{chord}} ({{numeral}}) en {{scale}} \u2014 elegir {{key}}",
+    "opens": "Abre {{key}}",
     "keyMajor": "{{note}} mayor",
     "keyMinor": "{{note}} menor"
   },

@@ -113,8 +113,12 @@ export default function ProgressionPanel() {
     app.setScale(scaleForKey(k));
     app.setKey(k.root);
   };
-  const usePreset = (cs: readonly Chord[]) => {
+  // A preset shown in another key (the other mode's, on the relative key) is
+  // read in THAT key: the chords first, then Explore moves there, as "Switch
+  // to" does (audit 2026-11-18, A7).
+  const usePreset = (cs: readonly Chord[], inKey: MusicKey | null) => {
     setSymbols(presetSymbols(cs));
+    if (inKey) switchTo(inKey);
     setSheet(null);
   };
 
