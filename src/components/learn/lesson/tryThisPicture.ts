@@ -10,13 +10,24 @@ import { parseChordListQuery, type ChordListEntry } from '../../../utils/queryEx
  * octave, a chord, or a list of chords in playing order (wave 2: `chords: G C D Em`).
  */
 export type TryThisPicture =
-  | { kind: 'scale'; notes: Note[]; pitches: PitchedNote[] }
+  | { kind: 'scale'; notes: Note[]; pitches: PitchedNote[]; descending?: true }
   | { kind: 'chord'; notes: Note[]; bass?: Note; pitches: PitchedNote[] }
   | { kind: 'chords'; chords: ChordListEntry[] }
   | { kind: 'none' };
 
-/** The same resolver as the Try-This executor and Cmd+K (W9-01). */
-export function tryThisPicture(query: string, currentKey: Note): TryThisPicture {
+/**
+ * The same resolver as the Try-This executor and Cmd+K (W9-01). With
+ * `descending` (a concept's `descending` flag, audit A22) a scale is the same
+ * notes from the top down: the upper tonic first, the lower tonic last.
+ */
+export function tryThisPicture(query: string, currentKey: Note, options: { descending?: boolean } = {}): TryThisPicture {
+  const picture = ascendingPicture(query, currentKey);
+  return options.descending && picture.kind === 'scale'
+    ? { ...picture, pitches: [...picture.pitches].reverse(), descending: true }
+    : picture;
+}
+
+function ascendingPicture(query: string, currentKey: Note): TryThisPicture {
   const list = parseChordListQuery(query);
   if (list) return { kind: 'chords', chords: list };
   const resolved = resolveTheoryQuery(query);

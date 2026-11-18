@@ -198,7 +198,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       objectives: [
         'Comprender las líneas adicionales como extensiones por encima o por debajo del pentagrama',
         'Saber que el sistema de pentagramas combina las claves de sol y de fa unidas por una llave',
-        'Localizar el C central como la línea adicional entre los dos pentagramas',
+        'Localizar el C central entre los dos pentagramas, en una línea adicional por debajo del pentagrama de clave de sol o por encima del pentagrama de clave de fa',
       ],
       concepts: [
         {
@@ -210,7 +210,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'El sistema de pentagramas',
           explanation:
-            'La música para piano usa el sistema de pentagramas — un pentagrama de clave de sol arriba y un pentagrama de clave de fa abajo, unidos por una llave y conectados por una línea adicional compartida del C central. La mano derecha lee típicamente la clave de sol; la izquierda lee la clave de fa. Juntos, cubren la mayor parte de la extensión del piano. Por eso los pianistas aprenden ambas claves desde el principio.',
+            'La música para piano usa el sistema de pentagramas — un pentagrama de clave de sol arriba y un pentagrama de clave de fa abajo, unidos a la izquierda por una llave y una línea. El C central queda entre ambos, pero no hay una línea fija para él: se escribe en una pequeña línea adicional propia, justo por debajo del pentagrama de clave de sol o justo por encima del pentagrama de clave de fa, donde haga falta la nota. La mano derecha lee típicamente la clave de sol; la izquierda lee la clave de fa. Juntos, cubren la mayor parte de la extensión del piano. Por eso los pianistas aprenden ambas claves desde el principio.',
           tryThisLabel: 'Explora el C en todo el teclado',
         },
       ],
@@ -444,7 +444,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: '¿Qué es una armadura de clave?',
           explanation:
-            'Una armadura de clave es una abreviatura — en lugar de escribir un sostenido o bemol junto a cada nota afectada, se listan una vez al comienzo. La armadura de clave de G mayor tiene un sostenido (F#), lo que significa que todos los F en la pieza se tocan como F#. Esto ahorra espacio e indica la tonalidad de un vistazo.',
+            'Una armadura de clave es una abreviatura — en lugar de escribir un sostenido o bemol junto a cada nota afectada, se listan una vez al comienzo. La armadura de clave de G mayor tiene un sostenido (F#), lo que significa que todos los F en la pieza se tocan como F#, salvo que un becuadro (♮) escrito delante de un F anule el sostenido. Esto ahorra espacio y muestra de un vistazo qué notas usa la tonalidad.',
           tryThisLabel: 'Observa la armadura de G — un sostenido',
         },
         {
@@ -456,22 +456,22 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'Escala vs. tonalidad',
           explanation:
-            'Una escala es un patrón de notas en orden. Una tonalidad es el contexto musical que usa esas notas, con una nota como «casa». Cuando estás «en la tonalidad de G mayor», la escala de G mayor proporciona tus notas, G es la casa, y la armadura de clave indica que F es siempre sostenido.',
+            'Una escala es un patrón de notas en orden. Una tonalidad es el contexto musical que usa esas notas, con una nota como «casa». Cuando estás «en la tonalidad de G mayor», la escala de G mayor proporciona tus notas, G es la casa, y la armadura de clave indica que toques F como F#, salvo que un becuadro (♮) indique lo contrario. La misma armadura de un sostenido la usa también la tonalidad de E menor, con las mismas notas y E como casa: la armadura da las notas, y la música dice cuál de ellas es la casa.',
           tryThisLabel: 'Observa la armadura de F — un bemol',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escribe "key of G" — ¿cuántos sostenidos tiene la armadura de clave?',
+            'Pulsa "key of G" — ¿cuántos sostenidos tiene la armadura de clave?',
         },
         {
           instruction:
-            'Escribe "key of D" — ¿qué nuevo sostenido se añadió además del F# de G mayor?',
+            'Pulsa "key of D" — ¿qué nuevo sostenido se añadió además del F# de G mayor?',
         },
         {
           instruction:
-            'Escribe "key of F" — esta es la primera tonalidad con bemol. ¿Qué nota lleva bemol?',
+            'Pulsa "key of F" — esta es la primera tonalidad con bemol. ¿Qué nota lleva bemol?',
         },
       ],
     },

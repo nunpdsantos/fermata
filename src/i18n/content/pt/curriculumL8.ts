@@ -187,7 +187,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Ouve o cânone das Variações Goldberg de Bach (uma em cada três variações é um cânone). Compara o Cânone ao Uníssono (Var. 3), o Cânone à 2.ª (Var. 6) e o Cânone à 3.ª (Var. 9). Como é que o intervalo canónico afeta o carácter?',
+            'Ouve os cânones das Variações Goldberg de Bach: da Var. 3 à Var. 27, uma em cada três variações é um cânone, cada um a um intervalo mais largo, do uníssono à 9.ª; a Var. 30, onde caberia um décimo cânone, é antes um quodlibet. Compara o Cânone ao Uníssono (Var. 3), o Cânone à 2.ª (Var. 6) e o Cânone à 3.ª (Var. 9). Como é que o intervalo canónico afeta o carácter?',
         },
         {
           instruction:

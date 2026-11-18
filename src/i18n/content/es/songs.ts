@@ -102,7 +102,7 @@ const overlay: SongOverlay = {
   // ---- L2U6: Compás Compuesto y Síncopa ----
 
   'l2u6m1': [
-    'El acompañamiento arpegiado en compás 6/8 demuestra el compás compuesto binario, donde cada uno de los dos tiempos principales se subdivide en grupos de tres corcheas (algunas ediciones lo escriben en 12/8; la sensación de compás compuesto binario es la misma).',
+    'El acompañamiento arpegiado en compás 6/8 demuestra el compás compuesto binario, donde cada uno de los dos tiempos principales se subdivide en grupos de tres corcheas. Algunas ediciones lo escriben en 12/8, que cuenta cuatro tiempos por compás en lugar de dos (un compás de 12/8 contiene dos de 6/8). La música puede sonar igual escrita de una u otra forma: lo que las dos comparten es la división de cada tiempo en tres; lo que cambia es cuántos tiempos cuenta un compás escrito.',
     'El verso está en 6/8 antes de que el estribillo cambie de sensación — un contraste entre compás compuesto y simple.',
     'Alterna entre 6/8 y 3/4 — las mismas seis corcheas reagrupadas, la hemiolia clásica entre compás compuesto y simple.',
   ],
@@ -192,8 +192,8 @@ const overlay: SongOverlay = {
     'Rica en notas extrañas al acorde — retardos, apoyaturas y notas de paso crean su cualidad onírica.',
   ],
   'l3u11m5': [
-    'La línea melódica ornamentada está construida sobre cadenas de retardos y notas de paso sobre un bajo simple.',
-    'La melodía ornamentada entrelaza notas de paso cromáticas y notas auxiliares en torno a las notas estructurales del acorde.',
+    'En su arreglo para violín de 1871, August Wilhelmj llevó esta aria de la Suite orquestal n.º 3 de Bach de D mayor a C mayor, lo bastante grave para tocar toda la melodía en la cuerda más grave del violín, la cuerda G. Una transposición le dio nombre a la pieza.',
+    'La canción suena en F mayor, pero Paul McCartney afinó la guitarra un tono más grave y la tocó con posiciones de acordes de G mayor: la afinación transpuso cada acorde una 2.ª mayor hacia abajo, como hace una trompeta en Bb con cada nota escrita.',
   ],
 
   // =========================================================================

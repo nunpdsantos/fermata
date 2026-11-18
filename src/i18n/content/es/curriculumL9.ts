@@ -165,7 +165,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Asociaciones con canciones: intervalos pequeños',
           explanation:
-            'Una técnica mnemónica comprobada: asociar cada intervalo con el comienzo de una melodía familiar. 2.ª menor ascendente = tema de Tiburón. 2.ª mayor = Cumpleaños Feliz. 3.ª menor = Greensleeves. 3.ª mayor = When the Saints (oh-when). 4.ª justa = Marcha Nupcial. Tritono = The Simpsons (The-Simp). 5.ª justa = Brilla Brilla Estrellita. Estas son ruedas de entrenamiento — el objetivo es interiorizar el sonido de cada intervalo directamente y después abandonar la muleta. Comienza solo con intervalos ascendentes y después añade descendentes cuando los ascendentes estén sólidos.',
+            'Una técnica mnemónica comprobada: asociar cada intervalo con el comienzo de una melodía familiar. 2.ª menor ascendente = tema de Tiburón. 2.ª mayor = Cumpleaños Feliz (compara las 2.ª y 3.ª notas; las dos primeras tienen la misma altura). 3.ª menor = Greensleeves. 3.ª mayor = When the Saints (oh-when). 4.ª justa = Marcha Nupcial de Wagner (Here Comes the Bride). Tritono = The Simpsons (The-Simp). 5.ª justa = Brilla Brilla Estrellita (compara las 2.ª y 3.ª notas; las dos primeras tienen la misma altura). Estas son ruedas de entrenamiento — el objetivo es interiorizar el sonido de cada intervalo directamente y después abandonar la muleta. Comienza solo con intervalos ascendentes y después añade descendentes cuando los ascendentes estén sólidos.',
           tryThisLabel:
             'Toca C mayor — escucha cada intervalo a partir de la fundamental',
         },
@@ -186,7 +186,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "C major chord" — el intervalo de C a E es una 3.ª mayor, y de C a G es una 5.ª justa. Canta los dos intervalos por separado. Memoriza cada sonido',
+            'Pulsa "C major chord" — el intervalo de C a E es una 3.ª mayor, y de C a G es una 5.ª justa. Canta los dos intervalos por separado. Memoriza cada sonido',
         },
         {
           instruction:
@@ -194,7 +194,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "C7" — encuentra el tritono (E a Bb). Es el intervalo más inestable. Contrástalo con la 5.ª justa (C a G) en "C major chord". Estable frente a tenso — escucha la diferencia',
+            'Pulsa "C7" — encuentra el tritono (E a Bb). Es el intervalo más inestable. Contrástalo con la 5.ª justa (C a G) en "C major chord". Estable frente a tenso — escucha la diferencia',
         },
       ],
     },
@@ -213,7 +213,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Asociaciones con canciones: intervalos amplios',
           explanation:
-            'Continuando el enfoque mnemónico para la mitad superior de la octava. 6.ª menor = The Entertainer (ascendente: el salto de E a C que sigue a las notas iniciales D-D#-E; el tema «Where Do I Begin» de Love Story es el ejemplo descendente clásico). 6.ª mayor = My Bonnie (my-bon). 7.ª menor = Somewhere (West Side Story). 7.ª mayor = Take On Me (take-on). Octava = Somewhere Over the Rainbow. Los intervalos amplios son más difíciles de identificar porque parecen «grandes saltos» y las diferencias de tamaño entre ellos son proporcionalmente menores. Las sextas y séptimas son particularmente difíciles — son inversiones de terceras y segundas, por lo que su carácter está relacionado pero es más amplio. Practica contrastando pares: 6m frente a 6M, 7m frente a 7.ª mayor.',
+            'Continuando el enfoque mnemónico para la mitad superior de la octava. 6.ª menor = The Entertainer (ascendente: el salto de E a C que sigue a las notas iniciales D-D#-E; el tema «Where Do I Begin» de Love Story es el ejemplo descendente clásico). 6.ª mayor = My Bonnie (my-bon). 7.ª menor = Somewhere (West Side Story). 7.ª mayor = Take On Me (take-on). Octava = Somewhere Over the Rainbow. Los intervalos amplios son más difíciles de identificar porque parecen «grandes saltos» y las diferencias de tamaño entre ellos son proporcionalmente menores. Las sextas y séptimas son particularmente difíciles — son inversiones de terceras y segundas, por lo que su carácter está relacionado pero es más amplio. Practica contrastando pares: 6m frente a 6M, 7m frente a 7M.',
           tryThisLabel: 'Escucha el intervalo de 7.ª mayor (C a B)',
         },
         {

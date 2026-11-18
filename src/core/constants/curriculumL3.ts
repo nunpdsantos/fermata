@@ -727,7 +727,7 @@ const l3u11m5: CurriculumModule = {
     {
       title: 'Two Transposition Methods',
       explanation:
-        'The interval method: determine the interval between the original key and the target key, then shift every note by that exact interval. C major to Eb major is up a minor third, so every note goes up a minor third. The key signature method: change the key signature to the target key and adjust any accidentals to match. Both produce the same result; the interval method is more reliable for short passages.',
+        'The interval method: determine the interval between the original key and the target key, then shift every note by that exact interval. C major to Eb major is up a minor third, so every note goes up a minor third. The key signature method: write the target key\'s signature, then move each note to the same scale degree in the new key (the 1st degree to the new 1st, the 2nd to the new 2nd, and so on). C–D–E in C major, degrees 1–2–3, becomes G–A–B in G major. A note with an accidental moves the same way and keeps its change: F# in C major, a raised 4th degree, becomes C# in G major. Both produce the same result; the interval method is more reliable for short passages.',
       tryThisQuery: 'Eb major scale',
       tryThisLabel: 'See Eb major — C major transposed up a minor third',
     },

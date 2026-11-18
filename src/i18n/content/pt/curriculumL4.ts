@@ -263,17 +263,17 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'Terceira inversão (V4/2)',
           explanation:
             'V4/2 coloca a 7.ª do acorde no baixo. Como a 7.ª é uma nota de tendência que deve resolver por grau conjunto descendente, V4/2 resolve quase sempre para I6 (tónica em primeira inversão). Em G7, a 7.ª é F; F deve descer por grau conjunto para E, dando C/E (I6) como resolução. Esta restrição é absoluta na condução de vozes rigorosa — V4/2 para I em estado fundamental deixaria a 7.ª do baixo sem resolução.',
-          tryThisLabel: 'Toca G7/F para ouvir o movimento do baixo de V4/2 (F → E quando a 7.ª resolve)',
+          tryThisLabel: 'Ouve G7/F a resolver para C/E: o baixo desce de F para E quando a 7.ª resolve',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escreve "G7" — estado fundamental, baixo é G. O baixo desce uma 5.ª até C ao resolver para I. Este é o movimento de baixo V7-I mais forte e enfático',
+            'Carrega em "G7" — estado fundamental, baixo é G. O baixo desce uma 5.ª até C ao resolver para I. Este é o movimento de baixo V7-I mais forte e enfático',
         },
         {
           instruction:
-            'Escreve "G7/B" — isto é V6/5 com a sensível B no baixo. B deve subir por grau conjunto até C, dando um movimento de baixo suave por grau conjunto para a tónica. Compara o efeito com G7 em estado fundamental',
+            'Carrega em "G7/B" — isto é V6/5 com a sensível B no baixo. B deve subir por grau conjunto até C, dando um movimento de baixo suave por grau conjunto para a tónica. Compara o efeito com G7 em estado fundamental',
         },
         {
           instruction:
@@ -683,7 +683,7 @@ const curriculumL4: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "C/E" — isto é C maior em primeira inversão (I6 em C maior). A nota do baixo é E, mas o acorde continua a ser C maior. Pratica a identificação da fundamental, não apenas da nota mais grave',
+            'Carrega em "C/E" — isto é C maior em primeira inversão (I6 em C maior). A nota do baixo é E, mas o acorde continua a ser C maior. Pratica a identificação da fundamental, não apenas da nota mais grave',
         },
         {
           instruction:
@@ -691,7 +691,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Acrescenta uma inversão: C-Dm/F-G7-C torna-se I-ii6-V7-I. O acorde ii em primeira inversão coloca F no baixo, criando uma linha de baixo suave por grau conjunto: C-F-G-C. As inversões são uma ferramenta para controlar a condução da voz do baixo',
+            'Acrescenta uma inversão: C-Dm/F-G7-C torna-se I-ii6-V7-I. O acorde ii em primeira inversão coloca F no baixo, a mesma nota de baixo do IV: a linha de baixo C–F–G–C salta uma 4.ª acima até F, sobe por grau conjunto até G e salta uma 4.ª acima (ou uma 5.ª abaixo) até C. As inversões são uma ferramenta para controlar a condução da voz do baixo',
         },
       ],
     },
@@ -729,11 +729,11 @@ const curriculumL4: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "A natural minor scale" depois "A harmonic minor scale" — a única diferença é G vs. G#. Essa única nota elevada transforma o acorde v em V e o acorde VII em vii°, alterando as possibilidades harmónicas',
+            'Carrega em "A natural minor scale" e depois em "A harmonic minor scale" — a única diferença é G vs. G#. Essa única nota elevada transforma o acorde v em V e o acorde VII em vii°, alterando as possibilidades harmónicas',
         },
         {
           instruction:
-            'Toca "Am" depois "E major chord" (V-i com a sensível G# da menor harmónica). Agora toca "Am" depois "Em" (v-i com o G natural da menor natural). Ouve como o V maior cria uma resolução muito mais forte para a tónica',
+            'Toca "E major chord" depois "Am" (V-i com a sensível G# da menor harmónica, que sobe meio-tom até A). Agora toca "Em" depois "Am" (v-i com o G natural da menor natural, um tom abaixo de A). Ouve como o V maior cria uma resolução muito mais forte para a tónica',
         },
         {
           instruction:

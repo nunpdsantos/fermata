@@ -2,7 +2,10 @@
  * The chord-list form of a Try This query (wave 2, "From the chords you
  * know"): `chords: G C D Em` — chord symbols the app's parser reads
  * (`parseChordSymbol`: "G", "Em", "D7", "F#m"), in playing order, separated
- * by spaces, at least two of them.
+ * by spaces, at least two of them. Since the audit fixes of 18 November 2026
+ * a symbol may name its bass after a slash ("G7/F", "C/E", "C7/G"), so a
+ * lesson can play a bass line: V4/2 resolving to I6, a passing diminished
+ * chord between IV7 and I7.
  *
  * "Hear it" plays the chords in order, once; "Open in Explore" asks Explore
  * for its Progression panel with these chords (`requestProgression`,
@@ -33,10 +36,13 @@ export function parseChordListQuery(query: string): ChordListEntry[] | null {
   const out: ChordListEntry[] = [];
   for (const symbol of symbols) {
     // The symbol must be ONE whole symbol: the parser is lenient about
-    // trailing text, so "Gx" must not quietly become G.
-    if (!looksLikeChordSymbol(symbol) || !/^[A-G][#b]?[a-z0-9#b]*$/.test(symbol)) return null;
+    // trailing text, so "Gx" must not quietly become G. A slash bass is one
+    // plain letter with an optional # or b ("G7/F", "C7/G").
+    if (!looksLikeChordSymbol(symbol) || !/^[A-G][#b]?[a-z0-9#b]*(?:\/[A-G][#b]?)?$/.test(symbol)) return null;
     const parsed = parseChordSymbol(symbol);
     if (!parsed) return null;
+    // A slash must have been read as the bass, never dropped.
+    if (symbol.includes('/') && !parsed.bassNote) return null;
     out.push({ symbol, chord: chordFromParsed(parsed) });
   }
   return out;
@@ -59,14 +65,32 @@ export interface ChordListSound {
 }
 
 /**
+ * The octave a chord of a list is voiced from, chosen so that EVERY chord's
+ * lowest note sits in octave 3 and a list's bass line is heard as it is
+ * written: a root-position chord is voiced from its root in octave 3 (open
+ * voicing, as an ear-training progression sounds); a slash chord is voiced
+ * as a slash chord sounds in any lesson Try This (`chordVoicingPitches` from
+ * octave 4, its bass one octave lower: octave 3). F7 → F♯dim7 → C7/G thus
+ * climbs F3, F♯3, G3, and G7/F → C/E falls F3 to E3.
+ */
+export function chordListOctave(chord: Chord): number {
+  return chord.bassNote ? 4 : 3;
+}
+
+/** The pitches one chord of a list sounds (its bass, or root, in octave 3). */
+export function chordListPitches(chord: Chord): PitchedNote[] {
+  return chordVoicingPitches(chord.notes as Note[], chordListOctave(chord), chord.bassNote);
+}
+
+/**
  * What "Hear it" plays for a chord list: each chord once, in order, one per
- * second, in root position over its root as a clear bass (open voicing from
- * octave 3, as an ear-training progression sounds its chords).
+ * second, over its root (or the bass a slash names) as a clear bass in
+ * octave 3 (`chordListPitches`).
  */
 export function chordListSounds(entries: readonly ChordListEntry[]): ChordListSound[] {
   return entries.map((e, i) => ({
     at: i * CHORD_LIST_STEP_S,
     duration: CHORD_LIST_CHORD_S,
-    pitches: chordVoicingPitches(e.chord.notes as Note[], 3, e.chord.bassNote),
+    pitches: chordListPitches(e.chord),
   }));
 }

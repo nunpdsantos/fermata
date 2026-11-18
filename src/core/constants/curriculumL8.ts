@@ -159,7 +159,7 @@ const l8u25m3: CurriculumModule = {
     {
       id: 'l8u25m3t2',
       instruction:
-        'Listen to the canon from Bach\'s Goldberg Variations (every third variation is a canon). Compare Canon at the Unison (Var. 3), Canon at the Second (Var. 6), and Canon at the Third (Var. 9). How does the canonic interval affect the character?',
+        'Listen to the canons in Bach\'s Goldberg Variations: every third variation from No. 3 to No. 27 is a canon, each at a wider interval, from the unison to the ninth; No. 30, where a tenth canon would fall, is a quodlibet instead. Compare Canon at the Unison (Var. 3), Canon at the Second (Var. 6), and Canon at the Third (Var. 9). How does the canonic interval affect the character?',
     },
     {
       id: 'l8u25m3t3',

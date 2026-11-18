@@ -263,17 +263,17 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'Tercera inversión (V4/2)',
           explanation:
             'V4/2 coloca la 7.ª del acorde en el bajo. Como la 7.ª es una nota de tendencia que debe resolver por grado conjunto descendente, V4/2 resuelve casi siempre a I6 (tónica en primera inversión). En G7, la 7.ª es F; F debe descender por grado conjunto a E, dando C/E (I6) como resolución. Esta restricción es absoluta en la conducción de voces rigurosa — V4/2 a I en estado fundamental dejaría la 7.ª del bajo sin resolver.',
-          tryThisLabel: 'Toca G7/F para escuchar el movimiento del bajo de V4/2 (F → E cuando la 7.ª resuelve)',
+          tryThisLabel: 'Escucha G7/F resolver a C/E: el bajo desciende de F a E cuando la 7.ª resuelve',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escribe "G7" — estado fundamental, bajo es G. El bajo desciende una 5.ª hasta C al resolver a I. Este es el movimiento de bajo V7-I más fuerte y enfático',
+            'Pulsa "G7" — estado fundamental, bajo es G. El bajo desciende una 5.ª hasta C al resolver a I. Este es el movimiento de bajo V7-I más fuerte y enfático',
         },
         {
           instruction:
-            'Escribe "G7/B" — esto es V6/5 con la sensible B en el bajo. B debe subir por grado conjunto hasta C, dando un movimiento de bajo suave por grado conjunto hacia la tónica. Compara el efecto con G7 en estado fundamental',
+            'Pulsa "G7/B" — esto es V6/5 con la sensible B en el bajo. B debe subir por grado conjunto hasta C, dando un movimiento de bajo suave por grado conjunto hacia la tónica. Compara el efecto con G7 en estado fundamental',
         },
         {
           instruction:
@@ -683,7 +683,7 @@ const curriculumL4: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "C/E" — esto es C mayor en primera inversión (I6 en C mayor). La nota del bajo es E, pero el acorde sigue siendo C mayor. Practica la identificación de la fundamental, no solo de la nota más grave',
+            'Pulsa "C/E" — esto es C mayor en primera inversión (I6 en C mayor). La nota del bajo es E, pero el acorde sigue siendo C mayor. Practica la identificación de la fundamental, no solo de la nota más grave',
         },
         {
           instruction:
@@ -691,7 +691,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Añade una inversión: C-Dm/F-G7-C se convierte en I-ii6-V7-I. El acorde ii en primera inversión coloca F en el bajo, creando una línea de bajo suave por grado conjunto: C-F-G-C. Las inversiones son una herramienta para controlar la conducción de la voz del bajo',
+            'Añade una inversión: C-Dm/F-G7-C se convierte en I-ii6-V7-I. El acorde ii en primera inversión coloca F en el bajo, la misma nota de bajo que el IV: la línea de bajo C–F–G–C salta una 4.ª hacia arriba hasta F, sube por grado conjunto hasta G y salta una 4.ª hacia arriba (o una 5.ª hacia abajo) hasta C. Las inversiones son una herramienta para controlar la conducción de la voz del bajo',
         },
       ],
     },
@@ -729,11 +729,11 @@ const curriculumL4: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "A natural minor scale" después "A harmonic minor scale" — la única diferencia es G vs. G#. Esa única nota elevada transforma el acorde v en V y el acorde VII en vii°, alterando las posibilidades armónicas',
+            'Pulsa "A natural minor scale" y después "A harmonic minor scale" — la única diferencia es G vs. G#. Esa única nota elevada transforma el acorde v en V y el acorde VII en vii°, alterando las posibilidades armónicas',
         },
         {
           instruction:
-            'Toca "Am" después "E major chord" (V-i con la sensible G# de la menor armónica). Ahora toca "Am" después "Em" (v-i con el G natural de la menor natural). Escucha cómo el V mayor crea una resolución mucho más fuerte hacia la tónica',
+            'Toca "E major chord" después "Am" (V-i con la sensible G# de la menor armónica, que sube un semitono hasta A). Ahora toca "Em" después "Am" (v-i con el G natural de la menor natural, un tono por debajo de A). Escucha cómo el V mayor crea una resolución mucho más fuerte hacia la tónica',
         },
         {
           instruction:

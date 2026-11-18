@@ -260,7 +260,7 @@
     },
     "arpeggio": {
       "title": "Arpeggio",
-      "plain": "A chord played one note at a time, from the bottom up, instead of all together.",
+      "plain": "A chord played one note at a time instead of all together, going up or down: for a C chord, both C, E, G and G, E, C are arpeggios.",
       "example": "{{chord}}: {{notes}}."
     },
     "compatibleScales": {

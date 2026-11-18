@@ -145,7 +145,7 @@ const l9u30m3: CurriculumModule = {
     {
       title: 'Song Associations: Small Intervals',
       explanation:
-        'A proven mnemonic technique: associate each interval with a familiar melody opening. Minor 2nd ascending = Jaws theme. Major 2nd = Happy Birthday. Minor 3rd = Greensleeves. Major 3rd = When the Saints (oh-when). Perfect 4th = Here Comes the Bride. Tritone = The Simpsons (The-Simp). Perfect 5th = Twinkle Twinkle. These are training wheels — the goal is to internalize each interval sound directly, then retire the crutch. Start with ascending intervals only, then add descending once ascending is solid.',
+        'A proven mnemonic technique: associate each interval with a familiar melody opening. Minor 2nd ascending = Jaws theme. Major 2nd = Happy Birthday (compare its 2nd and 3rd notes; the first two are the same pitch). Minor 3rd = Greensleeves. Major 3rd = When the Saints (oh-when). Perfect 4th = Here Comes the Bride. Tritone = The Simpsons (The-Simp). Perfect 5th = Twinkle Twinkle (compare its 2nd and 3rd notes; the first two are the same pitch). These are training wheels — the goal is to internalize each interval sound directly, then retire the crutch. Start with ascending intervals only, then add descending once ascending is solid.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Play C major — hear each interval from the root',
     },
@@ -168,7 +168,7 @@ const l9u30m3: CurriculumModule = {
     {
       id: 'l9u30m3t1',
       instruction:
-        "Type 'C major chord' — the interval from C to E is a major 3rd, and C to G is a perfect 5th. Sing the two intervals separately. Memorize each sound",
+        "Tap 'C major chord' — the interval from C to E is a major 3rd, and C to G is a perfect 5th. Sing the two intervals separately. Memorize each sound",
       query: 'C major chord',
     },
     {
@@ -179,7 +179,7 @@ const l9u30m3: CurriculumModule = {
     {
       id: 'l9u30m3t3',
       instruction:
-        "Type 'C7' — find the tritone (E to Bb). This is the most unstable interval. Contrast it with the perfect 5th (C to G) in 'C major chord'. Stable vs. tense — hear the difference",
+        "Tap 'C7' — find the tritone (E to Bb). This is the most unstable interval. Contrast it with the perfect 5th (C to G) in 'C major chord'. Stable vs. tense — hear the difference",
       query: 'C7',
     },
   ],
@@ -211,6 +211,8 @@ const l9u30m4: CurriculumModule = {
         'Descending intervals sound different from ascending even though the distance is the same. A descending perfect 5th (G down to C) sounds like a resolution or grounding motion. A descending major 6th sounds warm and nostalgic. Descending 7ths sound dramatic and wide. Train descending intervals separately — many students who master ascending intervals struggle with descending ones. Use descending song associations: descending P5 = the first two notes of "Feelings" (Feel-ings) or of the Flintstones theme (Flint-stones), descending m3 = Hey Jude (hey-Jude). Build the descending set as its own skill.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Play C major descending — hear intervals in reverse',
+      // Heard and written from the upper C down to the lower C (audit A22).
+      descending: true,
     },
     {
       title: 'Interval Inversion Relationships',

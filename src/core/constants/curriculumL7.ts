@@ -84,9 +84,9 @@ const l7u21m2: CurriculumModule = {
     {
       title: 'The Alt Chord: Maximum Chromatic Tension',
       explanation:
-        'C7alt is a dominant 7th with every extension altered: b9, #9, #11 (enharmonic with b5), and b13 (enharmonic with #5). It packs the maximum chromatic tension possible before resolution — every non-shell tone is chromatically displaced. The alt chord pairs with the altered scale, which is mode 7 of melodic minor a half step above the root (C altered = Db melodic minor). This is the go-to dominant sound for resolving to minor chords in jazz.',
+        'C7alt is a dominant 7th (C, E, Bb) with an altered 5th, an altered 9th, or both. Four alterations are available: b9, #9, #11 (enharmonic with b5), and b13 (enharmonic with #5). A voicing needs one or more of them over the shell: C, E and Bb with D# (#9) and Ab (b13) is already a C7alt. The app\'s C7alt plays all four at once, the maximum chromatic tension possible before resolution — every non-shell tone is chromatically displaced. The alt chord pairs with the altered scale, which holds all four: it is mode 7 of melodic minor a half step above the root (C altered = Db melodic minor). This is the go-to dominant sound for resolving to minor chords in jazz.',
       tryThisQuery: 'C7alt',
-      tryThisLabel: 'Build C7alt — every extension altered',
+      tryThisLabel: 'Build C7alt — here with all four alterations',
     },
     {
       title: 'Suspended Dominants: 7sus4',
@@ -100,12 +100,12 @@ const l7u21m2: CurriculumModule = {
     {
       id: 'l7u21m2t1',
       instruction:
-        "Build shells across qualities: type 'Cmaj7', 'Cm7', 'C7', 'Cm7b5'. In each, identify the root, 3rd, and 7th. The 3rd and 7th tell Cmaj7, Cm7 and C7 apart, but Cm7 and Cm7b5 share the same 3rd and 7th (Eb and Bb) — only the flatted 5th (Gb) separates them, so keep it in the m7b5 shell.",
+        "Build shells across qualities: tap 'Cmaj7', 'Cm7', 'C7', 'Cm7b5'. In each, identify the root, 3rd, and 7th. The 3rd and 7th tell Cmaj7, Cm7 and C7 apart, but Cm7 and Cm7b5 share the same 3rd and 7th (Eb and Bb) — only the flatted 5th (Gb) separates them, so keep it in the m7b5 shell.",
     },
     {
       id: 'l7u21m2t2',
       instruction:
-        "Type 'C7alt' — this is a dominant 7th with all altered extensions (b9, #9, #11/b5, b13/#5). Count the chromatic notes compared to a plain C7. This chord is maximum tension before resolution.",
+        "Tap 'C7alt' — the app plays a dominant 7th with all four available alterations (b9, #9, #11/b5, b13/#5); a C7alt voicing needs only one or more of them. Count the chromatic notes compared to a plain C7. With all four, this chord is maximum tension before resolution.",
     },
     {
       id: 'l7u21m2t3',
@@ -236,7 +236,7 @@ const l7u21m5: CurriculumModule = {
     'Play the basic 12-bar blues form using dominant 7th chords throughout',
     'Understand the jazz blues enrichment: ii-V insertions, tritone subs, diminished passing chords',
     'Build a minor blues form with minor 7th chords and bVI7',
-    'Recognize why all chords in the blues are dominant — the pervasive tension IS the blues sound',
+    'Recognise why every chord of the basic blues is dominant — the pervasive tension IS the blues sound',
   ],
   concepts: [
     {
@@ -250,8 +250,9 @@ const l7u21m5: CurriculumModule = {
       title: 'Jazz Blues',
       explanation:
         'Jazz blues enriches the basic 12-bar form with ii-V insertions, tritone substitutions, and diminished passing chords. A common jazz blues in C: C7 / F7 / C7 / C7 / F7 / F#dim7 / C7 / A7 / Dm7 / G7 / C7-A7 / Dm7-G7. The #IVdim7 (F#dim7) acts as a chromatic passing chord between IV7 and I7. A7 (V7/ii) pulls to Dm7, supplying the ii-V logic of bars 8–9 and the turnaround. The final four bars become a turnaround with a ii-V (Dm7-G7) that cycles back to the top. Bird blues (Charlie Parker) adds even more substitutions and ii-V chains.',
-      tryThisQuery: 'F7',
-      tryThisLabel: 'Build F7 — the IV7 of C blues',
+      // The passing diminished chord with its bass line F–F#–G (audit A29).
+      tryThisQuery: 'chords: F7 F#dim7 C7/G',
+      tryThisLabel: 'Hear F7 → F#dim7 → C7/G: the bass climbs F–F#–G',
     },
     {
       title: 'Minor Blues',
@@ -270,7 +271,7 @@ const l7u21m5: CurriculumModule = {
     {
       id: 'l7u21m5t2',
       instruction:
-        "Add the jazz blues passing chord: play 'F7' then 'F#dim7' then 'C7'. The diminished chord connects IV7 to I7 with a chromatic bass ascent (F-F#-G, where G is the 5th of C). This is the signature jazz blues move.",
+        "Add the jazz blues passing chord: play 'F7' then 'F#dim7' then 'C7/G' (C7 with its 5th, G, in the bass). The diminished chord connects IV7 to I7 with a chromatic bass ascent (F-F#-G). This is the signature jazz blues move.",
     },
     {
       id: 'l7u21m5t3',
@@ -758,7 +759,7 @@ const l7u23m3: CurriculumModule = {
     {
       title: 'The Melodic Minor Parent Scale',
       explanation:
-        'In jazz, this ascending form is used in both directions. Explore labels its up-and-down practice as classical melodic minor, whose descent uses natural minor. The ascending melodic minor scale raises both the 6th and 7th of natural minor, creating a scale with a minor 3rd but major 6th and 7th. Its interval pattern (W-H-W-W-W-W-H) generates seven modes, each with a distinct character and jazz application. Mode 1 (jazz minor itself) pairs with minor-major 7th chords — the m(maj7) sound. Unlike the diatonic modes which all share the same notes, melodic minor modes each have a unique chromatic flavor that makes them essential for navigating altered jazz harmony.',
+        'In jazz, this ascending form is used in both directions. Explore labels its up-and-down practice as classical melodic minor, whose descent uses natural minor. The ascending melodic minor scale raises both the 6th and 7th of natural minor, creating a scale with a minor 3rd but major 6th and 7th. Its interval pattern (W-H-W-W-W-W-H) generates seven modes, each with a distinct character and jazz application. Mode 1 (jazz minor itself) pairs with minor-major 7th chords — the m(maj7) sound. Like the modes of the major scale, the seven modes of one melodic minor scale all share its notes; each still has its own chromatic colour, which makes them essential for navigating altered jazz harmony.',
       tryThisQuery: 'C melodic minor',
       tryThisLabel: 'See C melodic minor — the parent of 7 modes',
     },
@@ -781,17 +782,17 @@ const l7u23m3: CurriculumModule = {
     {
       id: 'l7u23m3t1',
       instruction:
-        "Explore the melodic minor family: type 'C melodic minor', then 'C lydian dominant', then 'C altered scale'. These are modes 1, 4, and 7 of the same parent scale (on different roots). Each has a completely different character.",
+        "Explore the melodic minor family: tap 'C melodic minor', then 'F lydian dominant', then 'B altered scale'. These are modes 1, 4, and 7 of one parent scale, C melodic minor: the same seven notes (C D Eb F G A B), starting on C, F and B. Each has a completely different character.",
     },
     {
       id: 'l7u23m3t2',
       instruction:
-        "Verify the altered scale shortcut: type 'C altered scale', then type 'Db melodic minor'. They contain the same notes — the altered scale on any root is the melodic minor a half step above. This is the fastest way to find any altered scale.",
+        "Verify the altered scale shortcut: tap 'C altered scale', then tap 'Db melodic minor'. They contain the same notes — the altered scale on any root is the melodic minor a half step above. This is the fastest way to find any altered scale.",
     },
     {
       id: 'l7u23m3t3',
       instruction:
-        "Match mode to chord: type 'C lydian dominant' alongside 'C7#11'. Every note of the chord sits inside the scale. Now try 'C altered scale' alongside 'C7alt'. The scale contains every altered extension — perfect alignment.",
+        "Match mode to chord: tap 'C lydian dominant' alongside 'C7#11'. Every note of the chord sits inside the scale. Now try 'C altered scale' alongside 'C7alt'. The scale contains every altered extension — perfect alignment.",
     },
   ],
   prerequisites: ['l7u23m2'],

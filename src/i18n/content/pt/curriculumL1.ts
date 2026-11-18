@@ -198,7 +198,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       objectives: [
         'Compreender as linhas suplementares como extensões acima ou abaixo da pauta',
         'Saber que a pauta dupla combina as claves de sol e de fá unidas por uma chaveta',
-        'Localizar o C central como a linha suplementar entre as duas pautas',
+        'Localizar o C central entre as duas pautas, numa linha suplementar abaixo da pauta de clave de sol ou acima da pauta de clave de fá',
       ],
       concepts: [
         {
@@ -210,7 +210,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'A pauta dupla',
           explanation:
-            'A música para piano usa a pauta dupla — uma pauta de clave de sol em cima e uma pauta de clave de fá em baixo, unidas por uma chaveta e ligadas por uma linha suplementar partilhada de C central. A mão direita lê tipicamente a clave de sol; a esquerda lê a clave de fá. Juntas, cobrem a maior parte da extensão do piano. É por isso que os pianistas aprendem ambas as claves desde o início.',
+            'A música para piano usa a pauta dupla — uma pauta de clave de sol em cima e uma pauta de clave de fá em baixo, unidas à esquerda por uma chaveta e uma linha. O C central fica entre as duas, mas não há uma linha permanente para ele: escreve-se numa pequena linha suplementar só sua, logo abaixo da pauta de clave de sol ou logo acima da pauta de clave de fá, onde a nota for precisa. A mão direita lê tipicamente a clave de sol; a esquerda lê a clave de fá. Juntas, cobrem a maior parte da extensão do piano. É por isso que os pianistas aprendem ambas as claves desde o início.',
           tryThisLabel: 'Explora o C em todo o teclado',
         },
       ],
@@ -444,7 +444,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'O que é uma armação de clave?',
           explanation:
-            'Uma armação de clave é uma abreviatura — em vez de escrever um sustenido ou bemol junto de cada nota afetada, listam-se uma vez no início. A armação de clave de G maior tem um sustenido (F#), o que significa que todos os F na peça são tocados como F#. Isto poupa espaço e indica a tonalidade de relance.',
+            'Uma armação de clave é uma abreviatura — em vez de escrever um sustenido ou bemol junto de cada nota afetada, listam-se uma vez no início. A armação de clave de G maior tem um sustenido (F#), o que significa que todos os F na peça são tocados como F#, a menos que um bequadro (♮) escrito antes de um F lhe anule o sustenido. Isto poupa espaço e mostra de relance que notas a tonalidade usa.',
           tryThisLabel: 'Vê a armação de G — um sustenido',
         },
         {
@@ -456,22 +456,22 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'Escala vs. tonalidade',
           explanation:
-            'Uma escala é um padrão de notas em ordem. Uma tonalidade é o contexto musical que usa essas notas, com uma nota como "casa". Quando estás "na tonalidade de G maior", a escala de G maior fornece as tuas notas, G é a casa, e a armação de clave indica que F é sempre sustenido.',
+            'Uma escala é um padrão de notas em ordem. Uma tonalidade é o contexto musical que usa essas notas, com uma nota como "casa". Quando estás "na tonalidade de G maior", a escala de G maior fornece as tuas notas, G é a casa, e a armação de clave indica que deves tocar F como F#, a menos que um bequadro (♮) indique o contrário. A mesma armação de um sustenido serve também a tonalidade de E menor, que usa as mesmas notas com E como casa: a armação dá as notas, e a música diz qual delas é a casa.',
           tryThisLabel: 'Vê a armação de F — um bemol',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escreve "key of G" — quantos sustenidos tem a armação de clave?',
+            'Carrega em "key of G" — quantos sustenidos tem a armação de clave?',
         },
         {
           instruction:
-            'Escreve "key of D" — que novo sustenido foi acrescentado além do F# de G maior?',
+            'Carrega em "key of D" — que novo sustenido foi acrescentado além do F# de G maior?',
         },
         {
           instruction:
-            'Escreve "key of F" — esta é a primeira tonalidade com bemol. Que nota é bemolizada?',
+            'Carrega em "key of F" — esta é a primeira tonalidade com bemol. Que nota é bemolizada?',
         },
       ],
     },

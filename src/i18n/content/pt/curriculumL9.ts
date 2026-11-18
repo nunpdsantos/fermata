@@ -165,7 +165,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Associações com canções: intervalos pequenos',
           explanation:
-            'Uma técnica mnemónica comprovada: associar cada intervalo com o início de uma melodia familiar. 2.ª menor ascendente = tema de Tubarão. 2.ª maior = Parabéns a Você. 3.ª menor = Greensleeves. 3.ª maior = When the Saints (oh-when). 4.ª perfeita = Marcha Nupcial. Trítono = The Simpsons (The-Simp). 5.ª perfeita = Brilha Brilha Estrelinha. Estas são rodinhas de treino — o objetivo é internalizar o som de cada intervalo diretamente e depois abandonar a muleta. Começa apenas com intervalos ascendentes, depois acrescenta descendentes quando os ascendentes estiverem sólidos.',
+            'Uma técnica mnemónica comprovada: associar cada intervalo com o início de uma melodia familiar. 2.ª menor ascendente = tema de Tubarão. 2.ª maior = Parabéns a Você (compara as 2.ª e 3.ª notas; as duas primeiras têm a mesma altura). 3.ª menor = Greensleeves. 3.ª maior = When the Saints (oh-when). 4.ª perfeita = Marcha Nupcial de Wagner (Here Comes the Bride). Trítono = The Simpsons (The-Simp). 5.ª perfeita = Brilha Brilha Estrelinha (compara as 2.ª e 3.ª notas; as duas primeiras têm a mesma altura). Estas são rodinhas de treino — o objetivo é internalizar o som de cada intervalo diretamente e depois abandonar a muleta. Começa apenas com intervalos ascendentes, depois acrescenta descendentes quando os ascendentes estiverem sólidos.',
           tryThisLabel:
             'Toca C maior — ouve cada intervalo a partir da fundamental',
         },
@@ -186,7 +186,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "C major chord" — o intervalo de C a E é uma 3.ª maior, e de C a G é uma 5.ª perfeita. Canta os dois intervalos separadamente. Memoriza cada som',
+            'Carrega em "C major chord" — o intervalo de C a E é uma 3.ª maior, e de C a G é uma 5.ª perfeita. Canta os dois intervalos separadamente. Memoriza cada som',
         },
         {
           instruction:
@@ -194,7 +194,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escreve "C7" — encontra o trítono (E a Bb). Este é o intervalo mais instável. Contrasta-o com a 5.ª perfeita (C a G) em "C major chord". Estável vs. tenso — ouve a diferença',
+            'Carrega em "C7" — encontra o trítono (E a Bb). Este é o intervalo mais instável. Contrasta-o com a 5.ª perfeita (C a G) em "C major chord". Estável vs. tenso — ouve a diferença',
         },
       ],
     },
