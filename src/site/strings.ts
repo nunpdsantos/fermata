@@ -7,7 +7,13 @@
  * new-strings.md). European Portuguese with "tu" and "a Fermatina"; Spain's
  * Spanish with "tú" and no article.
  */
-import type { SiteLang } from './content';
+/**
+ * The site's three languages, spelled here rather than imported from
+ * content.ts (whose SiteLang is the same three) so that a browser test can
+ * import these words without the app's content (2026-11-18). Every caller
+ * passes a SiteLang: a fourth language there fails to compile here.
+ */
+type SiteLang = 'en' | 'pt' | 'es';
 
 export interface NewStrings {
   /** The button on every lesson page, at its top and its foot. */
@@ -36,6 +42,20 @@ export interface NewStrings {
   glossaryWord: string;
   /** The landing page's <title>. */
   landingTitle: string;
+  /**
+   * Every page's foot, the landing page's line and the start of its
+   * description (2026-11-18, audit A17). The app's start-screen footer
+   * (`start.footer`) with its offline sentence replaced: a visit to a reading
+   * page installs nothing, and the app's worker leaves these pages to the
+   * server by design, so the sentence says what to open while online and that
+   * the app, not these pages, then works offline. The other sentences are the
+   * app's own (render.test.ts keeps them equal).
+   */
+  footer: string;
+  /** The not-found page (/404.html, 2026-11-18, audits A21 / Q12): its heading in this language. */
+  notFoundTitle: string;
+  /** The not-found page: its one sentence in this language. */
+  notFoundLine: string;
 }
 
 export const NEW_STRINGS: Record<SiteLang, NewStrings> = {
@@ -53,6 +73,9 @@ export const NEW_STRINGS: Record<SiteLang, NewStrings> = {
     wordsLead: '{{count}} music words, each explained in a sentence or two.',
     glossaryWord: 'Glossary',
     landingTitle: 'Fermatina: learn music theory on a piano or guitar in your browser',
+    footer: 'Free. No account. Open Fermatina once while you are online, and from then on the app works offline; these reading pages need a connection. Your progress stays in this browser.',
+    notFoundTitle: 'Page not found',
+    notFoundLine: 'There is no page at this address.',
   },
   pt: {
     openLesson: 'Abrir esta lição na Fermatina',
@@ -68,6 +91,9 @@ export const NEW_STRINGS: Record<SiteLang, NewStrings> = {
     wordsLead: '{{count}} palavras da teoria musical, cada uma explicada numa ou duas frases.',
     glossaryWord: 'Glossário',
     landingTitle: 'Fermatina: aprende teoria musical num piano ou numa guitarra',
+    footer: 'Grátis. Sem conta. Abre a Fermatina uma vez com ligação à internet e, a partir daí, a app funciona offline; estas páginas de leitura precisam de ligação. O teu progresso fica neste navegador.',
+    notFoundTitle: 'Página não encontrada',
+    notFoundLine: 'Não há nenhuma página neste endereço.',
   },
   es: {
     openLesson: 'Abrir esta lección en Fermatina',
@@ -83,6 +109,9 @@ export const NEW_STRINGS: Record<SiteLang, NewStrings> = {
     wordsLead: '{{count}} palabras de la música, cada una explicada en una o dos frases.',
     glossaryWord: 'Glosario',
     landingTitle: 'Fermatina: aprende teoría musical en un piano o una guitarra',
+    footer: 'Gratis. Sin cuenta. Abre Fermatina una vez con conexión a internet y, a partir de entonces, la app funciona sin conexión; estas páginas de lectura necesitan conexión. Tu progreso se queda en este navegador.',
+    notFoundTitle: 'Página no encontrada',
+    notFoundLine: 'No hay ninguna página en esta dirección.',
   },
 };
 

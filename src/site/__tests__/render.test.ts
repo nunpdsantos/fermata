@@ -167,15 +167,16 @@ describe('the head of every page', () => {
 
   it('the landing pages: the reviewed title; a description of whole sentences; "What is inside" as bold names, no colon', () => {
     const want = {
-      en: { title: 'Fermatina: learn music theory on a piano or guitar in your browser', description: 124, names: ['Explore', 'Learn', 'Drill', 'Tuner', 'Metronome'] },
-      pt: { title: 'Fermatina: aprende teoria musical num piano ou numa guitarra', description: 150, names: ['Explorar', 'Aprender', 'Treino', 'Afinador', 'Metrónomo'] },
-      es: { title: 'Fermatina: aprende teoría musical en un piano o una guitarra', description: 155, names: ['Explorar', 'Aprender', 'Práctica', 'Afinador', 'Metrónomo'] },
+      en: { title: 'Fermatina: learn music theory on a piano or guitar in your browser', description: 'Learn how music works, on a piano or guitar you can play right here. Free. No account.', names: ['Explore', 'Learn', 'Drill', 'Tuner', 'Metronome'] },
+      pt: { title: 'Fermatina: aprende teoria musical num piano ou numa guitarra', description: 'Aprende como funciona a música, num piano ou numa guitarra que podes tocar aqui mesmo. Grátis. Sem conta.', names: ['Explorar', 'Aprender', 'Treino', 'Afinador', 'Metrónomo'] },
+      es: { title: 'Fermatina: aprende teoría musical en un piano o una guitarra', description: 'Aprende cómo funciona la música, en un piano o una guitarra que puedes tocar aquí mismo. Gratis. Sin cuenta.', names: ['Explorar', 'Aprender', 'Práctica', 'Afinador', 'Metrónomo'] },
     } as const;
     for (const lang of SITE_LANGS) {
       const d = doc(`/${lang}/`);
       expect(d.title).toBe(want[lang].title);
       const description = d.querySelector('meta[name="description"]')!.getAttribute('content')!;
-      expect(description.length).toBe(want[lang].description);
+      // Since 2026-11-18 (audit A17) the pages' own footer follows the tagline; its offline sentence is too long to fit, so it is left out whole.
+      expect(description).toBe(want[lang].description);
       expect(description).toMatch(/\.$/);
       const items = [...d.querySelectorAll('ul.inside li')];
       expect(items.map((li) => text(li.querySelector('strong')))).toEqual(want[lang].names);

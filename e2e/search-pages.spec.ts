@@ -297,8 +297,9 @@ test('?lang=pt alone (the landing page\'s "Abrir a Fermatina") shows the start s
 test('with the app\'s service worker installed, a lesson page is still the page, from the server; no page, stylesheet or image was precached', async ({ page }) => {
   await page.goto('/');
   await expect.poll(() => page.evaluate(() => !!navigator.serviceWorker.controller), { timeout: 20_000 }).toBe(true);
-  // Known positive: an address that is no file gets the app's shell FROM the worker.
-  const shell = await page.goto('/no-such-page');
+  // Known positive: an address of the app the precache does not hold literally gets the app's shell FROM the worker
+  // (its navigation fallback; since 2026-11-18 it answers the app's own address only: e2e/not-found.spec.ts).
+  const shell = await page.goto('/?view=explore');
   expect(shell!.fromServiceWorker()).toBe(true);
   await expect(page.locator('script[type="module"]')).toHaveCount(1);
   for (const lang of LANGS) {

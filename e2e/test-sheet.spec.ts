@@ -307,8 +307,9 @@ test('the app\'s exported backup does not carry the sheet\'s answers', async ({ 
 test('with the app\'s service worker installed, /test/ is still the sheet (from the server), and nothing of it is cached', async ({ page }) => {
   await page.goto('/');
   await expect.poll(() => page.evaluate(() => !!navigator.serviceWorker.controller), { timeout: 20_000 }).toBe(true);
-  // Known positive: an address that is no file gets the app's shell FROM the worker.
-  const shell = await page.goto('/no-such-page');
+  // Known positive: an address of the app the precache does not hold literally gets the app's shell FROM the worker
+  // (its navigation fallback; since 2026-11-18 it answers the app's own address only: e2e/not-found.spec.ts).
+  const shell = await page.goto('/?view=explore');
   expect(shell!.fromServiceWorker()).toBe(true);
   for (const target of ['/test/', '/test/?lang=pt#player']) {
     const res = await page.goto(target);
