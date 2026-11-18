@@ -577,6 +577,14 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
         return;
       }
 
+      // Enter / Space play the keyboard's cell here, never inside the state
+      // updater below: React runs updaters twice in development, which played
+      // the note twice (found checking QA audit A10, 2026-11-18).
+      if ((key === 'Enter' || key === ' ') && focusedCell) {
+        handleCellActivate(getFretNote(focusedCell.stringIdx, focusedCell.fret));
+        return;
+      }
+
       setFocusedCell((stored) => {
         // Never a fret behind the capo (see focusedCell).
         const prev = stored && stored.fret < capo ? { ...stored, fret: capo } : stored;
@@ -587,11 +595,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
           return { stringIdx: rows[0], fret: initFret };
         }
 
-        if (key === 'Enter' || key === ' ') {
-          const fn = getFretNote(prev.stringIdx, prev.fret);
-          handleCellActivate(fn);
-          return prev;
-        }
+        if (key === 'Enter' || key === ' ') return prev;
 
         // The arrows follow the drawing: → is the cell drawn on the right,
         // ↑ the string drawn above (neckOrientation.ts).
@@ -604,7 +608,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
         return { stringIdx, fret };
       });
     },
-    [quickSearchOpen, visibleFrets, playableFrets, capo, rows, getFretNote, handleCellActivate]
+    [quickSearchOpen, visibleFrets, playableFrets, capo, rows, getFretNote, handleCellActivate, focusedCell]
   );
 
   // Announce the focused note for screen readers, with the context-aware
@@ -1078,7 +1082,10 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
             const openNumber = (
               <div key="open" style={{ width: 'var(--fret-open-width)', flexShrink: 0 }} className="flex items-center justify-center">
                 {mode === 'chord' && !isOpenChordShape ? (
-                  <span className="font-mono" style={{ color: 'var(--text-dim)', fontSize: 12 }}>{lowestVisibleFret}fr</span>
+                  // The window's first fret is already numbered beside this
+                  // column, so "2fr" printed it twice (QA audit Q6): it is
+                  // kept for a screen reader only, which hears the row as before.
+                  <span className="sr-only">{lowestVisibleFret}fr</span>
                 ) : atNut ? (
                   <span style={{ color: 'var(--text-dim)', fontSize: 12 }}>0</span>
                 ) : null}

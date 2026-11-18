@@ -10,6 +10,12 @@ import { readableTextOn } from './fretboardConstants.ts';
 
 import { PIANO_DIMS, type SizeMode } from './pianoDimensions';
 
+/**
+ * A bare click (assistive technology, element.click()) holds its note this
+ * long; and a click this soon after a press ends is that press's own click.
+ */
+const CLICK_MS = 500;
+
 interface PianoKeyProps {
   keyData: PianoKeyData;
   /**
@@ -86,6 +92,17 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
   const elementRef = useRef<HTMLDivElement>(null);
   const dims = PIANO_DIMS[sizeMode];
 
+  //  • A BARE CLICK (QA audit A10, 2026-11-18): assistive technology and
+  //    element.click() send a click with no press before it, and the key used
+  //    to stay silent. Such a click plays the key once: note-on, note-off
+  //    CLICK_MS later (the piano's own release, so it lands even if the key
+  //    is gone by then). The click that ends a mouse press or a touch, or
+  //    comes with Enter / Space, belongs to that press, which already
+  //    sounded: `pressEnd` is Infinity while a press is on (until the pointer
+  //    lifts anywhere: desktop note-off is the container's, or the key comes
+  //    up), then the time it ended.
+  const pressEnd = useRef(-Infinity);
+
   const refreshTouchNote = useCallback(() => {
     const desired = touchPointers.current.size > 0;
     if (desired && !touchNoteOn.current) {
@@ -122,6 +139,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) {
         e.preventDefault();
+        pressEnd.current = Infinity;
         if (!isPressed.current) {
           isPressed.current = true;
           onNoteOn(keyData);
@@ -136,6 +154,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       if ((e.key === 'Enter' || e.key === ' ') && isPressed.current) {
         isPressed.current = false;
+        pressEnd.current = performance.now();
         onNoteOff(keyData);
       }
       onKeyUp?.(e, keyData);
@@ -151,6 +170,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
     onKeyBlur?.();
     if (isPressed.current) {
       isPressed.current = false;
+      pressEnd.current = performance.now();
       onNoteOff(keyData);
     }
   }, [keyData, onNoteOff, onKeyBlur]);
@@ -164,6 +184,10 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
+      pressEnd.current = Infinity;
+      const end = () => { pressEnd.current = performance.now(); };
+      window.addEventListener('pointerup', end, { capture: true, once: true });
+      window.addEventListener('pointercancel', end, { capture: true, once: true });
       if (isMobile) {
         // Own the touch: capture so this pointer's up/cancel always lands here
         // even if the finger slides off the key. Guarded — jsdom lacks capture.
@@ -184,6 +208,12 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
     },
     [keyData, onNoteOn, refreshTouchNote, isMobile]
   );
+
+  const handleClick = useCallback(() => {
+    if (performance.now() - pressEnd.current < CLICK_MS) return;
+    onNoteOn(keyData);
+    setTimeout(() => onNoteOff(keyData), CLICK_MS);
+  }, [keyData, onNoteOn, onNoteOff]);
 
   const handlePointerUp = useCallback(
     (e: React.PointerEvent) => {
@@ -312,6 +342,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
         onPointerCancel={handlePointerUp}
+        onClick={handleClick}
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
         onFocus={handleFocus}
@@ -421,6 +452,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
       onPointerCancel={handlePointerUp}
+      onClick={handleClick}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       onFocus={handleFocus}

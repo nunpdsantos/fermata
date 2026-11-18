@@ -3087,3 +3087,18 @@ html[data-metro-room] .learn-scroll {
 .start-import-link { margin-left: -6px; }
 .start-import { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 .start-import-error { margin: 0; font-size: var(--text-ui); color: var(--danger-text); }
+
+/* Instruments stream (builder D), QA audit 2026-11-18 Q14: a phone's octave
+   row that does not fit rests on whole pills. Its window ends between two
+   pills, as the staff strip's resting edge ends between noteheads, and the
+   edge fade still says there is more (the row scrolls as before). The
+   wrapper is the row's free width; the window takes the whole pills that fit:
+   a pill is exactly var(--tap) wide here (44 px on a touch screen, whatever
+   the font), 6 px apart, and the scroller pads 2 px inside a -2 px margin
+   (.chip-row-phone). A browser without round() or container units keeps the
+   plain scrolling row. */
+@media (max-width: 639px) and (pointer: coarse) {
+  .octave-fit { flex: 1 1 0; min-width: 0; container-type: inline-size; }
+  .octave-fit > .edge-fade { max-width: calc(round(down, 100cqw + 4px, var(--tap) + 6px) - 4px); }
+  .octave-fit .chip { width: var(--tap); padding: 0; }
+}

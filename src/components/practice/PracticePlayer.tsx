@@ -64,7 +64,18 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
       document.removeEventListener('visibilitychange', hidden);
     };
   }, [stop]);
-  useEffect(() => { cursor.current?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' }); }, [index]);
+  // Bring the active chip into view by scrolling its strip sideways, and only
+  // the strip: scrollIntoView also scrolled the sheet, which opened (and
+  // reopened on every tab) 134 px down, hiding the key and the tabs (QA audit Q3).
+  useEffect(() => {
+    const chip = cursor.current;
+    const strip = chip?.parentElement;
+    if (!chip || !strip) return;
+    const box = strip.getBoundingClientRect();
+    const at = chip.getBoundingClientRect();
+    if (at.left < box.left) strip.scrollLeft -= box.left - at.left;
+    else if (at.right > box.right) strip.scrollLeft += at.right - box.right;
+  }, [index]);
 
   const play = async (event?: number) => {
     stop();
