@@ -14,9 +14,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useAppStore } from '../store';
 import { WELCOME_KEY, bootWelcome, useWelcomeStore } from '../welcomeGate';
-import { START_DOORS, chooseStartDoor } from '../startDoors';
-import { START_PARAM, applyShareLinkRule, applyStartLinkRule, readStartDoor, takeLinkedDoor } from '../startGate';
-import { carryViewRequest, takeViewRequest } from '../bootView';
+import { chooseStartDoor } from '../startDoors';
+import { START_DOORS, carryViewRequest, takeViewRequest } from '../startDoors';
+import { START_PARAM, applyShareLinkRule, startLinkPending } from '../startGate';
+import { applyStartLink, readStartDoor } from '../startLink';
 import { noteBootAddress, MAX_SHARE_SEARCH_LENGTH, MAX_SHARE_VALUE_LENGTH } from '../shareParams';
 import { useStartHintStore } from '../startHint';
 import i18n from '../../i18n';
@@ -38,18 +39,18 @@ beforeEach(async () => {
 });
 
 /**
- * Boot as main.tsx does, at this address: the gate, the shared-link rule, the
- * start-link rule, and — when it names a door — that door taken (its module
- * fetched) before the first render.
+ * Boot as main.tsx does, at this address: the gate, the shared-link rule,
+ * then — only when `startLinkPending` says so — the lazy start-link module
+ * (fetched as main.tsx fetches it) before the first render.
  */
 async function bootAt(search: string, pathname = '/', hash = '') {
   noteBootAddress(search, hash);
   bootWelcome(localStorage);
   applyShareLinkRule();
   const replaceState = vi.fn();
-  const door = applyStartLinkRule({ pathname, search, hash }, { replaceState, state: null });
-  if (door) await takeLinkedDoor(door);
-  return { door, address: replaceState.mock.calls.at(-1)?.[2] as string | undefined, cleaned: replaceState.mock.calls.length };
+  const pending = startLinkPending(search);
+  const door = pending ? (await import('../startLink')).applyStartLink({ pathname, search, hash }, { replaceState, state: null }) : null;
+  return { door, pending, address: replaceState.mock.calls.at(-1)?.[2] as string | undefined, cleaned: replaceState.mock.calls.length };
 }
 
 /** The settings save as the persisted store writes it, timestamps out. */
@@ -167,6 +168,18 @@ describe('a door link on a first visit (A19)', () => {
 
   it('an address without `start` is left alone (App cleans `view`, `lang` and a link itself)', async () => {
     expect((await bootAt('?view=drill&lang=pt', '/', '#x')).cleaned).toBe(0);
+    expect(applyStartLink({ pathname: '/', search: '?lang=pt', hash: '' }, { replaceState: vi.fn(), state: null })).toBeNull();
+  });
+
+  it('the lazy module is fetched only when the address needs it: a door, or a view while the start screen is owed', async () => {
+    expect((await bootAt('?start=theory')).pending).toBe(true);
+    localStorage.clear();
+    expect((await bootAt('?view=drill')).pending).toBe(true); // owed: a first visit
+    localStorage.setItem(WELCOME_KEY, 'seen');
+    expect((await bootAt('?view=drill')).pending).toBe(false); // the installed app's shortcut, for a returning learner: nothing to wait for
+    expect((await bootAt('?lang=pt')).pending).toBe(false);
+    expect((await bootAt('')).pending).toBe(false);
+    expect((await bootAt('?start=new')).pending).toBe(true); // saved data: still fetched, so `start` leaves the address bar
   });
 
   it('the rest of the address survives the cleaning: other parameters, the path, the fragment', async () => {

@@ -10,17 +10,13 @@ import { ErrorBoundary } from './components/ErrorBoundary.tsx'
 import { registerInstrumentVoices } from './services/instrumentVoices.ts'
 import { registerDrillWorkInProgress } from './state/drillWork.ts'
 import { registerLearnWorkInProgress } from './state/learnWork.ts'
-import { applyShareLinkRule, applyStartLinkRule, takeLinkedDoor } from './state/startGate.ts'
+import { applyShareLinkRule, startLinkPending } from './state/startGate.ts'
 import { noteBootAddress } from './state/shareParams.ts'
 
 // A shared link wins over the start screen on this visit (state/startGate.ts):
 // one answer, read off the address as it arrived, before the first render.
 noteBootAddress(window.location.search, window.location.hash);
 applyShareLinkRule();
-// A door chosen on a public page (`?start=`), and a view asked for, while the
-// start screen is owed (state/startGate.ts; audit 2026-11-18, A19 and Q13).
-// The door is taken before the first render, so the start screen never shows.
-const linkedDoor = applyStartLinkRule();
 
 // One-time eviction of the persisted stores for the removed gamification +
 // concept-tracking features. After the first load the keys are gone and
@@ -46,5 +42,8 @@ const render = () => createRoot(document.getElementById('root')!).render(
     </ErrorBoundary>
   </StrictMode>,
 )
-if (linkedDoor) void takeLinkedDoor(linkedDoor).catch(() => undefined).finally(render)
+// A door chosen on a public page (`?start=`), or a view asked for while the
+// start screen is owed (audit 2026-11-18, A19 and Q13): its lazy module runs
+// before the first render, so a linked door's start screen never shows.
+if (startLinkPending(window.location.search)) import('./state/startLink.ts').then((m) => m.applyStartLink()).catch(() => undefined).finally(render)
 else render()

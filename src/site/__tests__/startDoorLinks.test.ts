@@ -16,7 +16,7 @@ import { buildSite, STYLESHEET, appDoorUrl, START_DOOR_IDS, ORIGIN, type Site } 
 import { checkSite, type SiteFiles } from '../check';
 import { appText } from '../content';
 import { START_DOORS } from '../../state/startDoors';
-import { readStartDoor } from '../../state/startGate';
+import { readStartDoor } from '../../state/startLink';
 import type { SlugRegistry } from '../slugs';
 
 let site: Site;
