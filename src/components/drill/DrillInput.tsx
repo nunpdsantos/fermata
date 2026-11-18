@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import type { DrillItem } from '../../core/types/drill';
 import { isEnharmonicNoteChoice, type AnswerPayload } from './grading';
 import { choiceLabel, toContentLanguage } from './drillText';
+import '../../i18n/drillTerms'; // the Drill's terms load with the Drill (A12)
 import { ReadingInput } from './ReadingInput';
 import { ChoiceChips } from './ChoiceChips';
 import { NoteChips } from './NoteChips';

@@ -4,15 +4,17 @@
  *
  * The bank keeps English display strings (they are the grading values); the
  * view translates degree, function and cadence names, Yes/No, and key/scale/
- * triad names ("C major" → "C maior" / "C mayor") at render time. Interval
- * labels, seventh-chord quality names and Roman numerals stay as they are
- * (nomenclature convention; chord-quality symbols stay symbols per D-17).
- * English must render exactly as before.
+ * triad names ("C major" → "C maior" / "C mayor") at render time — and,
+ * since audit A12 (the owner's ruling of 18 November 2026, reversing D-17 for
+ * them), interval names and seventh-chord names too. Roman numerals stay as
+ * they are; chord-quality symbols stay symbols (D-17). English must render
+ * exactly as before.
  *
  * Ported from the auditors' render-drill probe (all items × EN/PT/ES).
  */
 import { describe, it, expect } from 'vitest';
 import i18n from '../../../i18n';
+import '../../../i18n/drillTerms'; // as the Drill view loads it
 import { generateDrillBank } from '../../../core/utils/drillBank';
 import type { DrillItem } from '../../../core/types/drill';
 import { choiceLabel, itemPrompt, itemWhy, localizeTerm } from '../drillText';
@@ -129,9 +131,13 @@ describe('Yes / No and key names in PT/ES (W6-07, D-17)', () => {
     expect(prompt('roman:pattern:major:2', 'pt')).toBe('Em qualquer tonalidade maior, a tríade do grau 2 é…?');
   });
 
-  it('nomenclature stays: interval labels, seventh-chord names, numerals', () => {
-    expect(labels('interval:pair-to-name:C:E', 'pt')).toContain('Major 3rd');
-    expect(prompt('seventh:name-to-notes:C:major7', 'pt')).toBe('Soletra C Major 7th');
+  it('interval and seventh-chord names are translated (A12, the owner reversed D-17 for them); numerals stay', () => {
+    expect(labels('interval:pair-to-name:C:E', 'pt')).toEqual(['3.ª menor', '2.ª maior', '3.ª maior', '4.ª perfeita']);
+    expect(labels('interval:pair-to-name:C:E', 'es')).toEqual(['3.ª menor', '2.ª mayor', '3.ª mayor', '4.ª justa']);
+    expect(labels('interval:pair-to-name:C:E', 'en')).toEqual(['Minor 3rd', 'Major 2nd', 'Major 3rd', 'Perfect 4th']);
+    expect(prompt('seventh:name-to-notes:C:major7', 'pt')).toBe('Soletra C maior com 7.ª M');
+    expect(prompt('seventh:name-to-notes:C:major7', 'es')).toBe('Deletrea C mayor con 7.ª M');
+    expect(prompt('seventh:name-to-notes:C:major7', 'en')).toBe('Spell C Major 7th');
     expect(prompt('roman:degree-to-chord:C:major:6', 'pt')).toBe('O que é vi em C maior?');
   });
 });
@@ -192,8 +198,8 @@ describe('text polish (W7-12)', () => {
     }
     expect(why('interval:semitones-to-name:12', 'en')).toContain('the Octave spans 12 semitones');
     expect(why('interval:semitones-to-name:1', 'en')).toContain('the Minor 2nd spans 1 semitone.');
-    expect(why('interval:semitones-to-name:1', 'pt')).toContain('1 meio-tom forma Minor 2nd');
-    expect(why('interval:semitones-to-name:1', 'es')).toContain('1 semitono forma Minor 2nd');
+    expect(why('interval:semitones-to-name:1', 'pt')).toContain('1 meio-tom forma uma 2.ª menor.');
+    expect(why('interval:semitones-to-name:1', 'es')).toContain('1 semitono forma una 2.ª menor.');
   });
 
   it('Spanish wrong-answer title is a plain "wrong", not "Casi" (almost)', () => {

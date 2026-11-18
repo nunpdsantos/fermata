@@ -5,6 +5,7 @@
  * calls (drillText, qualityName), never from the bank's raw strings.
  */
 import i18n from '../../../i18n';
+import '../../../i18n/drillTerms'; // as the Drill view loads it
 import { generateDrillBank } from '../../../core/utils/drillBank';
 import type { DrillItem } from '../../../core/types/drill';
 import { qualityName } from '../../../utils/qualityName';

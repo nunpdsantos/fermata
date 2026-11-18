@@ -27,6 +27,7 @@ import { gradeAnswer, type AnswerPayload } from './grading';
 import { DrillInput } from './DrillInput';
 import { useToastAvoid } from '../layout/toastLayout';
 import { itemPrompt, toContentLanguage } from './drillText';
+import '../../i18n/drillTerms'; // the Drill's terms load with the Drill (A12)
 import {
   eligibleSprintItems,
   sprintFamiliesKey,

@@ -15,6 +15,8 @@ import { sprintFamiliesKey } from '../components/drill/sprintSelectors';
 import { generateDrillBank } from '../core/utils/drillBank';
 import { itemPrompt, itemWhy, toContentLanguage } from '../components/drill/drillText';
 import { answerLabel } from '../components/drill/answerText';
+// The Drill's terms (interval names, explanation clauses) load with this view (A12).
+import '../i18n/drillTerms';
 import { useDrillStore } from '../state/drillStore';
 import { useAppStore } from '../state/store';
 import { MODULE_INDEX } from '../data/moduleIndex';

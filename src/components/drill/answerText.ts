@@ -4,15 +4,15 @@
  * note names with ♯/♭/𝄪 and chord-quality names — never ASCII spellings or
  * the internal quality id ("C# half_diminished7" reads "C♯ Half-Diminished
  * 7th"). Drill-only module: it reads the guitar-reading formatter, which the
- * other importers of drillText.ts do not need.
+ * other importers of drillText.ts do not need. In PT / ES a chord's name is
+ * its root and the quality its chip shows ("C♯ meio-diminuto", audit A12).
  */
 import type { DrillItem } from '../../core/types/drill';
 import { stringToNote } from '../../core/types/music';
-import { CHORD_QUALITY_NAMES } from '../../core/constants/chords';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs';
 import { formatPlaces } from '../../core/utils/drillBank/genRead';
 import type { ContentLanguage } from '../../i18n/content/types';
-import { choiceLabel, type Translate } from './drillText';
+import { choiceLabel, chordName, type Translate } from './drillText';
 
 export function answerLabel(item: DrillItem, t: Translate, lang: ContentLanguage): string {
   const note = (ascii: string) => withGlyphs(stringToNote(ascii));
@@ -26,6 +26,6 @@ export function answerLabel(item: DrillItem, t: Translate, lang: ContentLanguage
     case 'fretPitch':
       return formatPlaces(item.answer.accepted);
     case 'rootQuality':
-      return `${note(item.answer.root)} ${CHORD_QUALITY_NAMES[item.answer.quality] ?? item.answer.quality}`;
+      return chordName(note(item.answer.root), item.answer.quality, lang);
   }
 }
