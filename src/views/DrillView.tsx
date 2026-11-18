@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDrillRunner } from '../components/drill/useDrillRunner';
 import { ReadingStaff } from '../components/drill/ReadingStaff';
-import { formatPlaces } from '../core/utils/drillBank/genRead';
 import { QuestionCard } from '../components/drill/QuestionCard';
 import { DrillInput } from '../components/drill/DrillInput';
 import { FeedbackStrip } from '../components/drill/FeedbackStrip';
@@ -14,15 +13,13 @@ import { SprintRunner } from '../components/drill/SprintRunner';
 import { DrillIntro } from '../components/drill/DrillIntro';
 import { sprintFamiliesKey } from '../components/drill/sprintSelectors';
 import { generateDrillBank } from '../core/utils/drillBank';
-import { choiceLabel, itemPrompt, itemWhy, toContentLanguage } from '../components/drill/drillText';
+import { itemPrompt, itemWhy, toContentLanguage } from '../components/drill/drillText';
+import { answerLabel } from '../components/drill/answerText';
 import { useDrillStore } from '../state/drillStore';
 import { useAppStore } from '../state/store';
 import { MODULE_INDEX } from '../data/moduleIndex';
 import { DRILL_FAMILY_TO_MODULE } from '../data/drillFamilyToModule';
 import type { DrillItem } from '../core/types/drill';
-import { stringToNote } from '../core/types/music';
-import { CHORD_QUALITY_NAMES } from '../core/constants/chords';
-import { withGlyphs } from '../core/utils/drillBank/shared';
 import { useLearnerProfile } from '../state/learnerProfile';
 import { trackForProfile } from '../data/tracks';
 import {
@@ -299,11 +296,7 @@ function RunningQuestion({
           <FeedbackStrip
             reading={item.family === 'read'}
             result={result}
-            answerText={
-              item.answer.kind === 'choice'
-                ? choiceLabel(item, item.answer.correct, t, lang)
-                : canonicalAnswer(item)
-            }
+            answerText={answerLabel(item, t, lang)}
             whyText={item.family === 'read' ? t('drill.reading.explanation', item.whyParams) : itemWhy(item, t, lang)}
             // Deep link on wrong / near-miss only (correct answers
             // auto-advance and need no remediation prompt).
@@ -347,27 +340,6 @@ function useElapsedSeconds(startedAt: number | null): number {
   // First paint (now still null) shows 0:00 until the first tick lands.
   const reference = now ?? startedAt;
   return Math.max(0, Math.floor((reference - startedAt) / 1000));
-}
-
-/**
- * The answer as the chips show it (audit W1-10): note names with ♯/♭/𝄪 and
- * chord-quality names — never ASCII spellings or the internal quality id
- * ("C# half_diminished7" now reads "C♯ Half-Diminished 7th").
- */
-function canonicalAnswer(item: DrillItem): string {
-  const note = (ascii: string) => withGlyphs(stringToNote(ascii));
-  switch (item.answer.kind) {
-    case 'choice':
-      return item.answer.correct;
-    case 'notes':
-      return item.answer.notes.map(note).join(' ');
-    case 'accidentals':
-      return item.answer.spelled.map(note).join(' ');
-    case 'fretPitch':
-      return formatPlaces(item.answer.accepted);
-    case 'rootQuality':
-      return `${note(item.answer.root)} ${CHORD_QUALITY_NAMES[item.answer.quality] ?? item.answer.quality}`;
-  }
 }
 
 /**
