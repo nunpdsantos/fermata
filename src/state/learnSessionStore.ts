@@ -30,7 +30,7 @@ import { exerciseFingerprint } from '../data/exercises/exerciseFingerprint';
 import { registerWorkInProgress } from '../services/workInProgress';
 import { MODULE_INDEX } from '../data/moduleIndex';
 import { isFresh, LEARN_SESSION_KEY, LEARN_SESSION_VERSION } from './learnSessionPersistence';
-import { bindTabSafe, tabSafeStorage } from './tabSafe';
+import { tabSafeStorage, type TabStore } from './tabSafe';
 
 export { isFresh, LEARN_SESSION_KEY, LEARN_SESSION_VERSION, LEARN_SESSION_TTL_MS } from './learnSessionPersistence';
 
@@ -186,7 +186,7 @@ export const useLearnSessionStore = create<LearnSessionState>()(
     {
       name: LEARN_SESSION_KEY,
       version: LEARN_SESSION_VERSION,
-      storage: createJSONStorage(() => tabSafeStorage(LEARN_SESSION_KEY, learnSessionMerge)),
+      storage: createJSONStorage(() => tabSafeStorage(LEARN_SESSION_KEY, (): TabStore => useLearnSessionStore, learnSessionMerge)),
       partialize: (s) => ({ screen: s.screen, check: s.check }),
       // No older format exists; anything from another version starts empty.
       migrate: (persisted, version) => (version === LEARN_SESSION_VERSION && isValidLearnSession(persisted) ? persisted : EMPTY) as LearnSessionState,
@@ -198,7 +198,6 @@ export const useLearnSessionStore = create<LearnSessionState>()(
   ),
 );
 
-bindTabSafe(LEARN_SESSION_KEY, useLearnSessionStore);
 
 // ─── Freshness ──────────────────────────────────────────────────────────────
 

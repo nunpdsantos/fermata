@@ -253,7 +253,7 @@ export async function buildCheckedBackup(storage: ReadableStorage): Promise<Chec
     damaged[key] = raw;
     delete backup.data[key];
     await STORE_MODULES[key]();
-    const store = tabLine(key)?.store;
+    const store = tabLine(key)?.store?.();
     const live = store && { state: savedNow(store), version: store.persist.getOptions().version };
     const defaults = store && savedNow(store, true);
     if (live && isPlainObject(live.state) && !same(live.state, defaults) && !(await sectionProblem(key, live as Record<string, unknown>))) {

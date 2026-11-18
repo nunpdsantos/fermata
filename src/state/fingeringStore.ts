@@ -15,7 +15,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { SCALE_FORMULAS } from '../core/constants/scales.ts';
-import { bindTabSafe, tabSafeStorage } from './tabSafe.ts';
+import { tabSafeStorage, type TabStore } from './tabSafe.ts';
 
 export const FINGERING_STORE_KEY = 'fermata-fingering-v1';
 
@@ -122,7 +122,7 @@ export const useFingeringStore = create<FingeringStoreState>()(
       name: FINGERING_STORE_KEY,
       version: 1,
       // Two tabs (A1): each override is its own; the latest tab's label mode.
-      storage: createJSONStorage(() => tabSafeStorage(FINGERING_STORE_KEY, { overrides: { '*': 'atomic' }, labelMode: 'atomic' })),
+      storage: createJSONStorage(() => tabSafeStorage(FINGERING_STORE_KEY, (): TabStore => useFingeringStore, { overrides: { '*': 'atomic' }, labelMode: 'atomic' })),
       partialize: (s) => ({ overrides: s.overrides, labelMode: s.labelMode }),
       migrate: (persisted: unknown) => sanitize(persisted),
       // zustand skips migrate() when the version matches — corrupt
@@ -132,5 +132,4 @@ export const useFingeringStore = create<FingeringStoreState>()(
   ),
 );
 
-bindTabSafe(FINGERING_STORE_KEY, useFingeringStore);
 void import('./tabSync.ts').then((m) => m.followOtherTabs(FINGERING_STORE_KEY, useFingeringStore));

@@ -78,7 +78,7 @@ describe('SettingsSheet', () => {
     expect(useAppStore.getState().language).toBe('es');
   });
 
-  it('Export downloads a dated backup file and says so', () => {
+  it('Export downloads a dated backup file and says so', async () => {
     const createObjectURL = vi.fn(() => 'blob:x');
     Object.assign(URL, { createObjectURL, revokeObjectURL: vi.fn() });
     const clicks: string[] = [];
@@ -87,7 +87,8 @@ describe('SettingsSheet', () => {
     });
     render(<SettingsSheet open onClose={() => {}} />);
     fireEvent.click(screen.getByRole('button', { name: 'Export backup' }));
-    expect(createObjectURL).toHaveBeenCalled();
+    // The file is checked by the importer's own check first (A16), so it comes a moment after the tap.
+    await waitFor(() => expect(createObjectURL).toHaveBeenCalled());
     expect(clicks[0]).toMatch(/^fermatina-backup-\d{4}-\d{2}-\d{2}\.json$/);
     expect(useToastStore.getState().toasts.map((t) => t.message)).toEqual(['Backup downloaded']);
   });

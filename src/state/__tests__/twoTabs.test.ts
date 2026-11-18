@@ -21,11 +21,18 @@ const SESSION = 'fermata-learn-session-v1';
 type Safe = typeof import('../tabSafe');
 const opened: { safe: Safe; key: string }[] = [];
 
-/** A new tab: the module loaded again from scratch, reading what the browser holds now. */
+/**
+ * A new tab: the module loaded again from scratch, reading what the browser
+ * holds now, once its lazy parts have arrived (the merging write, and the
+ * following for the stores that follow), as they do a moment after a page opens.
+ */
 async function openTab<M>(key: string, load: () => Promise<M>): Promise<M> {
   vi.resetModules();
   const mod = await load();
   const safe = await import('../tabSafe');
+  await import('../tabMerge');
+  await import('../tabSync');
+  await new Promise((resolve) => setTimeout(resolve, 0));
   opened.push({ safe, key });
   return mod;
 }
@@ -300,6 +307,43 @@ describe('music-theory-app (settings, with the optional fields)', () => {
     localStorage.setItem(SETTINGS, newer);
     b.useAppStore.getState().setThemeMode('fermata-night');
     expect(localStorage.getItem(SETTINGS)).toBe(newer);
+  });
+});
+
+describe('the first moments of a tab, and what counts as this tab\'s change', () => {
+  it('before the merging write has arrived, a write after another tab\'s waits in memory, then is made on top of it: never written whole, never dropped', async () => {
+    vi.resetModules();
+    let arrive!: () => void;
+    const gate = new Promise<void>((resolve) => { arrive = resolve; });
+    vi.doMock('../tabMerge', async () => {
+      await gate;
+      return vi.importActual('../tabMerge');
+    });
+    try {
+      const b = await import('../progressStore');
+      localStorage.setItem(PROGRESS, JSON.stringify({ state: { progress: { completedModules: ['l1u1m1'], moduleProgress: { l1u1m1: ['t1'] } } }, version: 4 }));
+      b.useProgressStore.getState().toggleTask('l1u34m1', 'l1u34m1t1');
+      // Waiting: the other tab's save is untouched.
+      expect(saved(PROGRESS).state.progress).toEqual({ completedModules: ['l1u1m1'], moduleProgress: { l1u1m1: ['t1'] } });
+      arrive();
+      await vi.waitFor(() => expect(saved(PROGRESS).state.progress.moduleProgress).toEqual({ l1u1m1: ['t1'], l1u34m1: ['l1u34m1t1'] }));
+      expect(saved(PROGRESS).state.progress.completedModules).toEqual(['l1u1m1']);
+      opened.push({ safe: await import('../tabSafe'), key: PROGRESS });
+    } finally {
+      vi.doUnmock('../tabMerge');
+    }
+  });
+
+  it('a tab that has not written yet: what its store\'s own guard made of the save (here the dock choice derived for an old save) is not its change, so another tab\'s choice stays', async () => {
+    const old = { ...settingsV6.state } as Record<string, unknown>;
+    delete old.dockChosen; // a save from before W11-B: the store derives the choice on reading
+    localStorage.setItem(SETTINGS, JSON.stringify({ state: old, version: 6 }));
+    const b = await settingsTab();
+    expect(b.useAppStore.getState().dockChosen).toEqual({ explore: true, learn: true });
+    // Tab A (newer memory) says the learner chose none: Learn back to its default.
+    localStorage.setItem(SETTINGS, JSON.stringify({ state: { ...old, dockDetents: { explore: 'full', learn: 'peek' }, dockChosen: { explore: true, learn: false } }, version: 6 }));
+    b.useAppStore.getState().setThemeMode('fermata-night');
+    expect(saved(SETTINGS).state).toMatchObject({ themeMode: 'fermata-night', dockDetents: { explore: 'full', learn: 'peek' }, dockChosen: { explore: true, learn: false } });
   });
 });
 

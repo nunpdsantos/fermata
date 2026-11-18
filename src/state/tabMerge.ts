@@ -34,7 +34,7 @@ function isObj(v: unknown): v is Record<string, unknown> {
 }
 
 /** What a store's memory (or, with `initial`, its defaults) saves, as plain JSON. */
-export function savedNow(store: NonNullable<TabLine['store']>, initial?: boolean): unknown {
+export function savedNow(store: ReturnType<NonNullable<TabLine['store']>>, initial?: boolean): unknown {
   const partialize = store.persist.getOptions().partialize ?? ((s: unknown) => s);
   return JSON.parse(JSON.stringify(partialize((initial ? store.getInitialState() : store.getState()) as never)) ?? 'null');
 }
@@ -86,18 +86,37 @@ export function mergeBy(rule: Rule, b: unknown, m: unknown, t: unknown): unknown
   return out;
 }
 
+/**
+ * This tab's saved state at its last read or write. After a write it is what
+ * was written. After a read with no write since, it is what the store's
+ * memory saved then: the read through the store's own guard (its `merge`),
+ * as hydration did — so what that guard cleaned or added never counts as
+ * this tab's change. (A save the store migrated on reading was written at
+ * once, so a fresh line is never in an older version.)
+ */
+export function baseOf(line: TabLine): unknown {
+  if (line.base !== undefined) return line.base;
+  const read = (parse(line.seen) as { state?: unknown } | undefined)?.state;
+  const store = line.store?.();
+  if (!line.fresh || !store) return read;
+  const opts = store.persist.getOptions();
+  const merged = opts.merge ? opts.merge(read, store.getInitialState() as never) : { ...store.getInitialState(), ...(read as object) };
+  return JSON.parse(JSON.stringify((opts.partialize ?? ((s: unknown) => s))(merged as never)) ?? 'null');
+}
+
 /** A write after the save changed underneath (1 above). */
 export function mergeWrite(name: string, line: TabLine, raw: string): void {
   const current = localStorage.getItem(name);
   const mine = JSON.parse(raw) as { state: unknown; version: number };
-  const base = line.base === undefined ? (parse(line.seen) as { state?: unknown } | undefined)?.state : line.base;
+  const base = baseOf(line);
   if (same(mine.state, base)) return; // nothing of this tab's to save
   const env = parse(current) as { state?: unknown; version?: unknown } | undefined;
-  const opts = line.store?.persist.getOptions();
+  const store = line.store?.();
+  const opts = store?.persist.getOptions();
   let theirs: unknown;
   if (current === null) {
     // Removed since (Reset app data): this tab's change goes on the defaults, never its old data.
-    theirs = line.store ? savedNow(line.store, true) : {};
+    theirs = store ? savedNow(store, true) : {};
   } else if (!isObj(env) || typeof env.version !== 'number') {
     theirs = undefined; // not a save at all: written over, as before
   } else if (env.version > mine.version) {
@@ -109,6 +128,7 @@ export function mergeWrite(name: string, line: TabLine, raw: string): void {
   localStorage.setItem(name, out);
   line.seen = out;
   line.base = mine.state;
+  line.fresh = false;
   line.behind = out !== raw;
   if (line.behind) line.adopt?.();
 }

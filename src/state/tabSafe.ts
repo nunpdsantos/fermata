@@ -6,7 +6,7 @@
  * every change. Until this fix a tab holding older memory erased what another
  * tab had saved since (a task ticked in one tab, another task in a second:
  * the first tick gone). This is the storage every persisted store writes
- * through (`createJSONStorage(() => tabSafeStorage(name, rule?))`):
+ * through (`createJSONStorage(() => tabSafeStorage(name, () => store, rule?))`):
  *
  *  - It remembers the text it last read or wrote for its key (`seen`) and the
  *    saved state that stood for in this tab (`base`).
@@ -24,19 +24,27 @@
 import type { StateStorage } from 'zustand/middleware';
 import type { Rule } from './tabMerge';
 
-interface PersistApi {
+/** What the tab-safe storage needs of a persisted store. */
+export interface TabStore {
   getState: () => object;
   setState: (s: object) => void;
   getInitialState: () => object;
-  persist: { getOptions: () => { partialize?: (s: never) => unknown; migrate?: (s: unknown, v: number) => unknown; version?: number } };
+  persist: {
+    getOptions: () => {
+      partialize?: (s: never) => unknown;
+      migrate?: (s: unknown, v: number) => unknown;
+      merge?: (persisted: unknown, current: never) => unknown;
+      version?: number;
+    };
+  };
 }
 
 export interface TabLine {
-  /** The text this tab last read or wrote for the key; undefined = never read. */
+  /** The text this tab last read or wrote for the key (every store reads at creation). */
   seen?: string | null;
   /** This tab's saved state at that moment; undefined = the state `seen` holds. */
   base?: unknown;
-  /** Read and not written since: memory is what the read gave (its guard may have cleaned it). */
+  /** Read and not written since: memory saved what the read gave, through the store's own guard (tabMerge's `baseOf`). */
   fresh?: boolean;
   /** Memory lacks something the save holds: every write merges. */
   behind?: boolean;
@@ -44,7 +52,8 @@ export interface TabLine {
   waits?: boolean;
   /** The store's own merge rules (absent: each top-level field this tab changed wins). */
   merge?: Rule;
-  store?: PersistApi;
+  /** The store (a getter: the storage exists before the store does). */
+  store?: () => TabStore;
   /** Set by state/tabSync.ts for stores whose memory follows the save. */
   adopt?: () => void;
   /** Stops following (tests). */
@@ -57,10 +66,11 @@ export const tabLine = (name: string) => lines.get(name);
 let merging: typeof import('./tabMerge') | undefined;
 
 /** The storage a persisted store writes through (see above). One per key. */
-export function tabSafeStorage(name: string, merge?: Rule): StateStorage {
-  const line: TabLine = { merge };
+export function tabSafeStorage(name: string, store: () => TabStore, merge?: Rule): StateStorage {
+  const line: TabLine = { store, merge };
   lines.set(name, line);
   return {
+    // A read (hydration, or following another tab) puts memory and the save in step again.
     getItem: (key) => {
       line.base = undefined;
       line.behind = false;
@@ -68,11 +78,11 @@ export function tabSafeStorage(name: string, merge?: Rule): StateStorage {
       return (line.seen = localStorage.getItem(key));
     },
     setItem: (key, raw) => {
-      line.fresh = false;
-      if (line.seen === undefined || (localStorage.getItem(key) === line.seen && !line.behind)) {
+      if (localStorage.getItem(key) === line.seen && !line.behind) {
         localStorage.setItem(key, raw);
         line.seen = raw;
         line.base = undefined;
+        line.fresh = false;
       } else if (merging) merging.mergeWrite(key, line, raw);
       else line.waits = true;
     },
@@ -83,27 +93,13 @@ export function tabSafeStorage(name: string, merge?: Rule): StateStorage {
   };
 }
 
-/**
- * Once the store exists: its defaults and migration are known, and `base`
- * becomes what its memory saves (its own guard may have cleaned the save it read).
- */
-export function bindTabSafe(name: string, store: PersistApi): void {
-  const line = lines.get(name);
-  if (line) settle(line, (line.store = store));
-}
-
-function settle(line: TabLine, store?: PersistApi): void {
-  if (merging && store && line.fresh && !line.waits) line.base = merging.savedNow(store);
-}
-
-// The merging write (state/tabMerge.ts) arrives: `base` is what memory saves, and a write that waited is made now.
+// The merging write (state/tabMerge.ts) arrives; a write that waited for it is made now.
 void import('./tabMerge').then((m) => {
   merging = m;
   for (const line of lines.values()) {
-    settle(line, line.store);
     if (line.waits) {
       line.waits = false;
-      line.store?.setState({});
+      line.store?.().setState({});
     }
   }
 });
