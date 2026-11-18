@@ -10,7 +10,7 @@ import { ErrorBoundary } from './components/ErrorBoundary.tsx'
 import { registerInstrumentVoices } from './services/instrumentVoices.ts'
 import { registerDrillWorkInProgress } from './state/drillWork.ts'
 import { registerLearnWorkInProgress } from './state/learnWork.ts'
-import { applyShareLinkRule, applyStartLinkRule } from './state/startGate.ts'
+import { applyShareLinkRule, applyStartLinkRule, takeLinkedDoor } from './state/startGate.ts'
 import { noteBootAddress } from './state/shareParams.ts'
 
 // A shared link wins over the start screen on this visit (state/startGate.ts):
@@ -19,7 +19,8 @@ noteBootAddress(window.location.search, window.location.hash);
 applyShareLinkRule();
 // A door chosen on a public page (`?start=`), and a view asked for, while the
 // start screen is owed (state/startGate.ts; audit 2026-11-18, A19 and Q13).
-applyStartLinkRule();
+// The door is taken before the first render, so the start screen never shows.
+const linkedDoor = applyStartLinkRule();
 
 // One-time eviction of the persisted stores for the removed gamification +
 // concept-tracking features. After the first load the keys are gone and
@@ -38,10 +39,12 @@ registerDrillWorkInProgress();
 // Protect a saved check before the lazy Learn view/store or an update decision.
 registerLearnWorkInProgress();
 
-createRoot(document.getElementById('root')!).render(
+const render = () => createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <App />
     </ErrorBoundary>
   </StrictMode>,
 )
+if (linkedDoor) void takeLinkedDoor(linkedDoor).catch(() => undefined).finally(render)
+else render()

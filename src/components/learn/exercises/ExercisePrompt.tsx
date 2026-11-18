@@ -76,16 +76,19 @@ export function ExercisePrompt({ exercise }: ExercisePromptProps) {
       {staff && (
         <div data-testid="check-staff" className="check-staff rounded-xl px-3 py-2" style={{ backgroundColor: 'var(--card)' }}>
           <div className="check-staff-ink" role="img" aria-label={staffWords ?? undefined} style={{ '--staff-trim-top': `${trimTop}px`, '--staff-trim-bottom': `${trimBottom}px` } as React.CSSProperties}>
-            <Suspense fallback={<StaffNotationSkeleton height={100} />}>
-              <StaffNotation
-                notes={staff.notes}
-                clef={staff.clef}
-                keySignature={staff.keySignature}
-                chord={staff.chord}
-                height={100}
-                duration={staff.duration}
-              />
-            </Suspense>
+            {/* The drawing is the picture the name describes: nothing of it is read on its own. */}
+            <div aria-hidden="true">
+              <Suspense fallback={<StaffNotationSkeleton height={100} />}>
+                <StaffNotation
+                  notes={staff.notes}
+                  clef={staff.clef}
+                  keySignature={staff.keySignature}
+                  chord={staff.chord}
+                  height={100}
+                  duration={staff.duration}
+                />
+              </Suspense>
+            </div>
           </div>
         </div>
       )}

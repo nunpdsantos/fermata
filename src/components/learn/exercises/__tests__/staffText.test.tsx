@@ -66,6 +66,7 @@ describe('the check\'s staff has a text alternative (A9)', () => {
         // The drawing (lazy) comes inside it: the picture, not separate content.
         const drawing = await screen.findByTestId('vexflow');
         expect(img!.contains(drawing)).toBe(true);
+        expect(drawing.closest('[aria-hidden="true"]'), 'the drawing itself is hidden from a screen reader').not.toBeNull();
         expect(img!.getAttribute('aria-label')).toBe(words);
       });
     }

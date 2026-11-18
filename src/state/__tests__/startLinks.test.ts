@@ -15,7 +15,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useAppStore } from '../store';
 import { WELCOME_KEY, bootWelcome, useWelcomeStore } from '../welcomeGate';
 import { START_DOORS, chooseStartDoor } from '../startDoors';
-import { START_PARAM, applyShareLinkRule, applyStartLinkRule, readStartDoor } from '../startGate';
+import { START_PARAM, applyShareLinkRule, applyStartLinkRule, readStartDoor, takeLinkedDoor } from '../startGate';
 import { carryViewRequest, takeViewRequest } from '../bootView';
 import { noteBootAddress, MAX_SHARE_SEARCH_LENGTH, MAX_SHARE_VALUE_LENGTH } from '../shareParams';
 import { useStartHintStore } from '../startHint';
@@ -37,13 +37,18 @@ beforeEach(async () => {
   localStorage.clear();
 });
 
-/** Boot as main.tsx does, at this address: the gate, the shared-link rule, then the start-link rule. */
-function bootAt(search: string, pathname = '/', hash = '') {
+/**
+ * Boot as main.tsx does, at this address: the gate, the shared-link rule, the
+ * start-link rule, and — when it names a door — that door taken (its module
+ * fetched) before the first render.
+ */
+async function bootAt(search: string, pathname = '/', hash = '') {
   noteBootAddress(search, hash);
   bootWelcome(localStorage);
   applyShareLinkRule();
   const replaceState = vi.fn();
   const door = applyStartLinkRule({ pathname, search, hash }, { replaceState, state: null });
+  if (door) await takeLinkedDoor(door);
   return { door, address: replaceState.mock.calls.at(-1)?.[2] as string | undefined, cleaned: replaceState.mock.calls.length };
 }
 
@@ -70,7 +75,7 @@ describe('readStartDoor (sanitised as a shared link\'s values)', () => {
     expect(readStartDoor(search)).toBe(door);
   });
 
-  it('the parameter is `start`; the doors are the start screen\'s three', () => {
+  it('the parameter is `start`; the doors are the start screen\'s three', async () => {
     expect(START_PARAM).toBe('start');
     expect([...START_DOORS]).toEqual(['new', 'player', 'theory']);
   });
@@ -91,7 +96,7 @@ describe('a door link on a first visit (A19)', () => {
         useAppStore.setState({ view: 'explore', lastView: 'explore', learnerProfile: null, startHint: null, showSolfege: false, pendingLearnTarget: null, language: lang });
         useStartHintStore.setState({ shown: null });
         localStorage.clear();
-        const { door: taken, address } = bootAt(`?start=${door}&lang=${lang}`);
+        const { door: taken, address } = await bootAt(`?start=${door}&lang=${lang}`);
         expect(taken).toBe(door);
         expect(useWelcomeStore.getState().open).toBe(false);
         expect({ saved: saved(), view: useAppStore.getState().view, target: useAppStore.getState().pendingLearnTarget, hint: useAppStore.getState().startHint, flag: localStorage.getItem(WELCOME_KEY) }).toEqual(tapped);
@@ -105,8 +110,8 @@ describe('a door link on a first visit (A19)', () => {
     }
   }
 
-  it.each(['?start=expert', '?start=', `?start=${'x'.repeat(80)}`])('a bad value (%s): nothing taken, the start screen owed as on a plain visit; the address cleaned', (search) => {
-    const { door, address } = bootAt(search);
+  it.each(['?start=expert', '?start=', `?start=${'x'.repeat(80)}`])('a bad value (%s): nothing taken, the start screen owed as on a plain visit; the address cleaned', async (search) => {
+    const { door, address } = await bootAt(search);
     expect(door).toBeNull();
     expect(useWelcomeStore.getState().open).toBe(true);
     expect(localStorage.getItem(WELCOME_KEY)).toBe('pending');
@@ -114,11 +119,11 @@ describe('a door link on a first visit (A19)', () => {
     expect(address).toBe('/');
   });
 
-  it('saved data (the owner\'s kind of save, no profile): never re-profiled; his save untouched; the address cleaned', () => {
+  it('saved data (the owner\'s kind of save, no profile): never re-profiled; his save untouched; the address cleaned', async () => {
     const settings = JSON.stringify({ state: { language: 'pt', lastView: 'learn', instrument: 'guitar' }, version: 6 });
     localStorage.setItem('music-theory-app', settings);
     for (const door of START_DOORS) {
-      const { door: taken, address } = bootAt(`?start=${door}&view=drill`);
+      const { door: taken, address } = await bootAt(`?start=${door}&view=drill`);
       expect(taken).toBeNull();
       expect(useAppStore.getState().learnerProfile).toBeNull();
       expect(localStorage.getItem('music-theory-app')).toBe(settings);
@@ -129,43 +134,43 @@ describe('a door link on a first visit (A19)', () => {
     }
   });
 
-  it('a flag already `seen` (a door chosen before): the link changes nothing', () => {
+  it('a flag already `seen` (a door chosen before): the link changes nothing', async () => {
     localStorage.setItem(WELCOME_KEY, 'seen');
     localStorage.setItem('music-theory-app', JSON.stringify({ state: { learnerProfile: 'new', lastView: 'learn' }, version: 6 }));
     useAppStore.setState({ learnerProfile: 'new' });
-    expect(bootAt('?start=theory').door).toBeNull();
+    expect((await bootAt('?start=theory')).door).toBeNull();
     expect(useAppStore.getState().learnerProfile).toBe('new');
   });
 
-  it('`pending` with learning data since (a returning learner): not profiled', () => {
+  it('`pending` with learning data since (a returning learner): not profiled', async () => {
     localStorage.setItem(WELCOME_KEY, 'pending');
     localStorage.setItem('music-theory-progress', JSON.stringify({ state: {}, version: 4 }));
-    expect(bootAt('?start=player').door).toBeNull();
+    expect((await bootAt('?start=player')).door).toBeNull();
     expect(useAppStore.getState().learnerProfile).toBeNull();
     expect(localStorage.getItem(WELCOME_KEY)).toBe('seen');
   });
 
-  it('`pending` with only settings (shown before, no door yet): the door is taken — the first time this visitor is profiled', () => {
+  it('`pending` with only settings (shown before, no door yet): the door is taken — the first time this visitor is profiled', async () => {
     localStorage.setItem(WELCOME_KEY, 'pending');
     localStorage.setItem('music-theory-app', JSON.stringify({ state: { language: 'en', lastView: 'explore' }, version: 6 }));
-    expect(bootAt('?start=player').door).toBe('player');
+    expect((await bootAt('?start=player')).door).toBe('player');
     expect(useAppStore.getState().learnerProfile).toBe('player');
   });
 
-  it('a shared link in the same address wins: nothing taken, the flag stays pending', () => {
-    const { door } = bootAt('?lesson=l1u3m1&start=theory');
+  it('a shared link in the same address wins: nothing taken, the flag stays pending', async () => {
+    const { door } = await bootAt('?lesson=l1u3m1&start=theory');
     expect(door).toBeNull();
     expect(useWelcomeStore.getState().open).toBe(false);
     expect(localStorage.getItem(WELCOME_KEY)).toBe('pending');
     expect(useAppStore.getState().learnerProfile).toBeNull();
   });
 
-  it('an address without `start` is left alone (App cleans `view`, `lang` and a link itself)', () => {
-    expect(bootAt('?view=drill&lang=pt', '/', '#x').cleaned).toBe(0);
+  it('an address without `start` is left alone (App cleans `view`, `lang` and a link itself)', async () => {
+    expect((await bootAt('?view=drill&lang=pt', '/', '#x')).cleaned).toBe(0);
   });
 
-  it('the rest of the address survives the cleaning: other parameters, the path, the fragment', () => {
-    expect(bootAt('?foo=1&start=theory&view=drill', '/app/', '#k').address).toBe('/app/?foo=1&view=drill#k');
+  it('the rest of the address survives the cleaning: other parameters, the path, the fragment', async () => {
+    expect((await bootAt('?foo=1&start=theory&view=drill', '/app/', '#k')).address).toBe('/app/?foo=1&view=drill#k');
   });
 });
 
@@ -177,8 +182,8 @@ describe('a view carried through the start screen (Q13)', () => {
     ['new', 'learn', 'learn', SOUND_LESSON_1], // "new" keeps its lesson where the view asked for is Learn
     ['theory', 'learn', 'learn', null],
     ['new', 'explore', 'explore', null],
-  ] as const)('%s with ?view=%s: opens %s', (door, asked, view, target) => {
-    const { door: taken } = bootAt(`?view=${asked}`);
+  ] as const)('%s with ?view=%s: opens %s', async (door, asked, view, target) => {
+    const { door: taken } = await bootAt(`?view=${asked}`);
     expect(taken).toBeNull();
     expect(useWelcomeStore.getState().open).toBe(true); // the start screen still asks
     chooseStartDoor(door, 'piano');
@@ -186,26 +191,26 @@ describe('a view carried through the start screen (Q13)', () => {
     expect(localStorage.getItem(WELCOME_KEY)).toBe('seen');
   });
 
-  it('taken once: a later door (none should come) goes to its own place', () => {
+  it('taken once: a later door (none should come) goes to its own place', async () => {
     carryViewRequest('drill');
     expect(takeViewRequest()).toBe('drill');
     expect(takeViewRequest()).toBeNull();
   });
 
-  it('an invalid ?view= carries nothing', () => {
-    bootAt('?view=settings');
+  it('an invalid ?view= carries nothing', async () => {
+    await bootAt('?view=settings');
     chooseStartDoor('theory', 'piano');
     expect(useAppStore.getState().view).toBe('explore');
   });
 
-  it('a door link with ?view=drill: the door, then Drill', () => {
-    expect(bootAt('?start=player&view=drill').door).toBe('player');
+  it('a door link with ?view=drill: the door, then Drill', async () => {
+    expect((await bootAt('?start=player&view=drill')).door).toBe('player');
     expect(useAppStore.getState()).toMatchObject({ view: 'drill', learnerProfile: 'player', startHint: 'player' });
   });
 
-  it('nothing is carried when the start screen is not owed (a returning learner)', () => {
+  it('nothing is carried when the start screen is not owed (a returning learner)', async () => {
     localStorage.setItem('music-theory-app', JSON.stringify({ state: {}, version: 6 }));
-    bootAt('?view=drill');
+    await bootAt('?view=drill');
     expect(takeViewRequest()).toBeNull();
   });
 });

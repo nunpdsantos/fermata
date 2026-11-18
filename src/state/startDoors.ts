@@ -33,8 +33,7 @@ import { solfegeLanguage } from '../i18n/solfege.ts';
 import { TRACKS, firstLessonOf } from '../data/tracks.ts';
 import { takeViewRequest } from './bootView.ts';
 
-/** The three doors, in the start screen's order (the public pages' doors carry the same ids). */
-export const START_DOORS: readonly LearnerProfile[] = ['new', 'player', 'theory'];
+export { START_DOORS } from './startGate.ts';
 
 export function chooseStartDoor(
   profile: LearnerProfile,
@@ -51,4 +50,9 @@ export function chooseStartDoor(
   if (profile === 'new' && (asked ?? home) === 'learn') app.openLearnTarget(firstLessonOf(TRACKS.sound));
   else app.setView(asked ?? home);
   closeWelcome(storage);
+}
+
+/** A door taken as the start screen's tap takes it: with the instrument chosen so far (StartScreen). */
+export function chooseStartDoorAsTapped(profile: LearnerProfile): void {
+  chooseStartDoor(profile, useAppStore.getState().instrument);
 }
