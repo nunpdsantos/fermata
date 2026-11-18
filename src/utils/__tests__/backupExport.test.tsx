@@ -106,6 +106,7 @@ describe('a healthy export', () => {
     const text = await exportFromSettings();
     expect(text).toBe(TODAYS_FILE);
     expect(toasts()).toEqual([{ type: 'success', message: i18n.t('backup.exported') }]);
+    expect(screen.queryByTestId('data-note')).toBeNull();
   });
 });
 
@@ -119,7 +120,11 @@ describe('a damaged save', () => {
     expect(Object.keys(file.data).sort()).toEqual(['fermata-drill-v1', 'fermata-fingering-v1', 'music-theory-app']);
     for (const k of Object.keys(file.data)) expect(JSON.stringify(file.data[k])).toBe(SAVED[k as Key]);
     expect(file.damaged).toEqual({ 'music-theory-progress': '{"state":{"progress":{"completedModules":["l1u1m1"' });
-    expect(toasts()).toEqual([{ type: 'warning', message: i18n.t('backupFile.exportedWithout', { count: 1, sections: i18n.t('backup.section.learnProgress') }) }]);
+    const line = i18n.t('backupFile.exportedWithout', { count: 1, sections: i18n.t('backup.section.learnProgress') });
+    expect(toasts()).toEqual([{ type: 'warning', message: line }]);
+    // The open sheet covers the toasts: the same sentence stands in the sheet, by the buttons.
+    const notes = await screen.findAllByTestId('data-note');
+    expect(notes.map((n) => [n.textContent, n.getAttribute('role')])).toEqual([[line, 'alert']]);
   });
 
   it('progress that is JSON of the wrong shape: the importer accepts the file (it used to refuse it whole), the section is named and its text kept', async () => {

@@ -69,18 +69,24 @@ export async function downloadBackup(storage: Pick<Storage, 'getItem'> = localSt
   return { fileName: a.download, missing, partly };
 }
 
+/** What an export with a damaged part has to say (none for a whole one): the parts left out, then the parts saved as far as they could be read. */
+export function exportWarnings({ missing, partly }: Pick<ExportReport, 'missing' | 'partly'>): string[] {
+  return [
+    ...(missing.length > 0 ? [i18n.t('backupFile.exportedWithout', { count: missing.length, sections: sectionNames(missing) })] : []),
+    ...(partly.length > 0 ? [i18n.t('backupFile.exportedPartly', { count: partly.length, sections: sectionNames(partly) })] : []),
+  ];
+}
+
 /**
  * Export, then say what happened: "Backup downloaded" only when every part
- * went in whole; otherwise one line for the parts left out and one for the
- * parts saved as far as they could be read.
+ * went in whole; otherwise the warnings above. Returns the warnings, for a
+ * sheet to show them in place (a toast is drawn under an open sheet).
  */
-export async function exportAndTell(storage: Pick<Storage, 'getItem'> = localStorage): Promise<ExportReport> {
-  const report = await downloadBackup(storage);
-  const { missing, partly } = report;
-  if (missing.length === 0 && partly.length === 0) toast(i18n.t('backup.exported'), 'success');
-  if (missing.length > 0) toast(i18n.t('backupFile.exportedWithout', { count: missing.length, sections: sectionNames(missing) }), 'warning', LONG_TOAST_MS);
-  if (partly.length > 0) toast(i18n.t('backupFile.exportedPartly', { count: partly.length, sections: sectionNames(partly) }), 'warning', LONG_TOAST_MS);
-  return report;
+export async function exportAndTell(storage: Pick<Storage, 'getItem'> = localStorage): Promise<string[]> {
+  const warnings = exportWarnings(await downloadBackup(storage));
+  if (warnings.length === 0) toast(i18n.t('backup.exported'), 'success');
+  for (const line of warnings) toast(line, 'warning', LONG_TOAST_MS);
+  return warnings;
 }
 
 /** The sentence for an import the browser would not save (A15): nothing changed, or which parts now come from the file. */

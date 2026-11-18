@@ -128,6 +128,8 @@ describe('Settings → Your data → Import, storage full half-way', () => {
       await waitFor(() => expect(useToastStore.getState().toasts.map((t) => t.message)).toEqual([i18n.t('backupFile.importFailed')]));
       expect(useToastStore.getState().toasts[0].type).toBe('error');
       expect(i18n.t('backupFile.importFailed')).not.toBe('backupFile.importFailed');
+      // The open sheet covers the toasts: the same sentence stands in the sheet, by the buttons.
+      expect(screen.getAllByTestId('data-note').map((n) => [n.textContent, n.getAttribute('role')])).toEqual([[i18n.t('backupFile.importFailed'), 'alert']]);
       expect(reloadPage).not.toHaveBeenCalled();
       expect(allStorage()).toEqual(before);
     });
