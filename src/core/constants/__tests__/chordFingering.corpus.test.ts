@@ -31,7 +31,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { buildChord, CHORD_FORMULAS } from '../chords';
-import { CHORD_SHAPE_LIBRARY, chordShapesForCapo, getChordShapes, type ChordShape } from '../guitarChordShapes';
+import { CHORD_SHAPE_LIBRARY, chordShapesForCapo, getChordShapes, isPlayableChordShape, type ChordShape } from '../guitarChordShapes';
 import type { ChordQuality, Note } from '../../types/music';
 
 const MAX_FRET = 15;
@@ -136,6 +136,55 @@ describe('the validator itself', () => {
     expect(fingeringFaults(placed([{ fret: 0, finger: 'bar' }, { fret: 2, finger: 3 }, { fret: 2, finger: 4 }, { fret: 1, finger: 2 }, { fret: 0, finger: 'bar' }, { fret: 0, finger: 'bar' }], 1, { fret: 0, fromString: 6, toString: 1 }))).toEqual([]);
     expect(fingeringFaults(placed([{ fret: null }, { fret: 0, finger: 'bar' }, { fret: 2, finger: 3 }, { fret: 2, finger: 3 }, { fret: 2, finger: 3 }, { fret: 0, finger: 'bar' }], 1, { fret: 0, fromString: 5, toString: 1 }))).toEqual([]);
     expect(fingeringFaults(placed([{ fret: null }, { fret: 3, finger: 3 }, { fret: 2, finger: 2 }, { fret: 0, finger: 0 }, { fret: 1, finger: 1 }, { fret: 0, finger: 0 }], 0))).toEqual([]);
+  });
+});
+
+describe('the app\'s own check (isPlayableChordShape) refuses what a hand cannot play', () => {
+  const placed = (strings: ChordShape['strings'], baseFret: number, barreInfo?: ChordShape['barreInfo']): Placed => ({
+    shape: { name: 'planted', shortName: 'D shape', type: 'barre', cagedShape: 'D', rootString: 4, rootFretOffset: 0, strings, ...(barreInfo ? { barreInfo } : {}) },
+    baseFret,
+  });
+  const muted = { fret: null } as const;
+  it('the six grips of the audit as the library had them, the old Gmaj7 and an out-of-reach bass', () => {
+    const old: [string, Placed][] = [
+      ['C7, D shape', placed([muted, muted, { fret: 0, finger: 1 }, { fret: 2, finger: 3 }, { fret: 1, finger: 2 }, { fret: 2, finger: 3 }], 10)],
+      ['Cdim7, D shape', placed([muted, muted, { fret: 0, finger: 1 }, { fret: 1, finger: 2 }, { fret: 0, finger: 1 }, { fret: 1, finger: 2 }], 10)],
+      ['Cm6, E shape', placed([{ fret: 0, finger: 'bar' }, { fret: 2, finger: 3 }, { fret: 2, finger: 4 }, { fret: 0, finger: 'bar' }, { fret: 2, finger: 4 }, { fret: 0, finger: 'bar' }], 8, { fret: 0, fromString: 6, toString: 1 })],
+      ['Csus2sus4, E shape', placed([{ fret: 0, finger: 'bar' }, { fret: 2, finger: 2 }, { fret: 2, finger: 3 }, { fret: 2, finger: 4 }, { fret: 0, finger: 'bar' }, { fret: 2, finger: 4 }], 8, { fret: 0, fromString: 6, toString: 2 })],
+      ['C13, A shape', placed([muted, { fret: 0, finger: 'bar' }, { fret: 2, finger: 3 }, { fret: 0, finger: 'bar' }, { fret: 2, finger: 3 }, { fret: 2, finger: 4 }], 3)],
+      ['Cmaj13, A shape', placed([muted, { fret: 0, finger: 1 }, { fret: 2, finger: 3 }, { fret: 1, finger: 2 }, { fret: 2, finger: 3 }, { fret: 2, finger: 4 }], 3)],
+      ['Gmaj7 open', placed([{ fret: 3, finger: 2 }, { fret: 2, finger: 1 }, { fret: 0, finger: 0 }, { fret: 0, finger: 0 }, { fret: 0, finger: 0 }, { fret: 2, finger: 3 }], 0)],
+      ['D♭m11 / C♭: middle finger three frets past the index barre', placed([{ fret: 3, finger: 2 }, { fret: 0, finger: 'bar' }, { fret: 0, finger: 'bar' }, { fret: 0, finger: 'bar' }, { fret: 0, finger: 'bar' }, { fret: -4, finger: 0 }], 4)],
+      ['a drawn barre held by the middle finger', placed([{ fret: -2, finger: 1 }, { fret: 0, finger: 2 }, { fret: 0, finger: 2 }, { fret: 0, finger: 2 }, { fret: 0, finger: 2 }, { fret: 0, finger: 2 }], 3, { fret: 0, fromString: 5, toString: 1 })],
+    ];
+    for (const [name, entry] of old) {
+      expect(fingeringFaults(entry), `${name}: the independent rules flag it`).not.toEqual([]);
+      expect(isPlayableChordShape(entry), name).toBe(false);
+    }
+    // ... and the same grips as fingered now pass both.
+    const now: [string, Placed][] = [
+      ['C7, D shape', placed([muted, muted, { fret: 0, finger: 1 }, { fret: 2, finger: 3 }, { fret: 1, finger: 2 }, { fret: 2, finger: 4 }], 10)],
+      ['Cmaj13, A shape', placed([muted, { fret: 0, finger: 1 }, { fret: 2, finger: 3 }, { fret: 1, finger: 2 }, { fret: 2, finger: 4 }, { fret: 2, finger: 4 }], 3)],
+      ['Gmaj7 open', placed([{ fret: 3, finger: 3 }, { fret: 2, finger: 2 }, { fret: 0, finger: 0 }, { fret: 0, finger: 0 }, { fret: 0, finger: 0 }, { fret: 2, finger: 1 }], 0)],
+    ];
+    for (const [name, entry] of now) {
+      expect(fingeringFaults(entry), name).toEqual([]);
+      expect(isPlayableChordShape(entry), name).toBe(true);
+    }
+  });
+});
+
+describe('grips that used to overreach are still offered, fingered within reach (Q1)', () => {
+  const frets = (e: Placed) => e.shape.strings.map((p) => (p.fret === null ? null : e.baseFret + p.fret));
+  const fingers = (e: Placed) => e.shape.strings.map((p) => (p.fret === null ? null : p.finger === 'bar' ? 1 : p.finger));
+  const offered = (root: string, quality: ChordQuality, inversion: number) =>
+    chordShapesForCapo(buildChord(toNote(root), quality), inversion, 0).shapes.map((e) => ({ frets: frets(e), fingers: fingers(e) }));
+  it('a generated voicing: B7♭5♯9 x 0 0 4 4 1, the ring finger on G and B (the middle finger cannot reach three frets)', () => {
+    expect(offered('B', 'dominant7flat5sharp9', 0)).toContainEqual({ frets: [null, 0, 0, 4, 4, 1], fingers: [null, 0, 0, 3, 3, 1] });
+  });
+  it('a bass added below a barre: D♭m11 / C♭ 7 4 4 4 4 0 and F7♯9 / G♯ 4 0 1 1 1 1, the ring finger on the bass', () => {
+    expect(offered('Db', 'minor11', 3)[0]).toEqual({ frets: [7, 4, 4, 4, 4, 0], fingers: [3, 1, 1, 1, 1, 0] });
+    expect(offered('F', 'dominant7sharp9', 4)[0]).toEqual({ frets: [4, 0, 1, 1, 1, 1], fingers: [3, 0, 1, 1, 1, 1] });
   });
 });
 
