@@ -116,7 +116,7 @@ for (const [w, h] of LAPTOPS) {
       // line in the column is placed inside it.
       const escaped = await page.evaluate(() => {
         const main = document.querySelector('.explore-main')!;
-        return [...main.querySelectorAll<HTMLElement>('.sr-only')].filter((e) => !e.offsetParent || !main.contains(e.offsetParent)).map((e) => e.textContent);
+        return Array.from(main.querySelectorAll<HTMLElement>('.sr-only')).filter((e) => !e.offsetParent || !main.contains(e.offsetParent)).map((e) => e.textContent);
       });
       expect(escaped, `${where}: screen-reader lines placed against the page`).toEqual([]);
       expect(whole(g.actions, g), `${where}: ▶ Chord in view`).toBe(true);
@@ -150,7 +150,7 @@ test('Q14: Explore has one h1, before every h2 (EN / PT / ES)', async ({ browser
     await expect(h1).toHaveText(name);
     const before = await page.evaluate(() => {
       const one = document.querySelector('h1')!;
-      return [...document.querySelectorAll('h2')].every((h2) => !!(one.compareDocumentPosition(h2) & Node.DOCUMENT_POSITION_FOLLOWING));
+      return Array.from(document.querySelectorAll('h2')).every((h2) => !!(one.compareDocumentPosition(h2) & Node.DOCUMENT_POSITION_FOLLOWING));
     });
     expect(before, `${lang}: the h1 comes before every h2`).toBe(true);
     // Read, not drawn: nothing on screen moved for it.
