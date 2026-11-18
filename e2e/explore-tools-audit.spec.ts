@@ -110,6 +110,15 @@ for (const [w, h] of LAPTOPS) {
       g = await geometry(page);
       expect(g.dockHeight, `${where}: the instrument is still shown`).toBe(dockHeight);
       expect(g.pageScroll, `${where}: the page never scrolls, a chord open`).toBeLessThanOrEqual(0);
+      // What made it scroll at 1366×768: the detail's screen-reader-only line
+      // (absolutely placed) was positioned against the page, not the work
+      // column, so below the fold it stretched the page by 27 px. Every such
+      // line in the column is placed inside it.
+      const escaped = await page.evaluate(() => {
+        const main = document.querySelector('.explore-main')!;
+        return [...main.querySelectorAll<HTMLElement>('.sr-only')].filter((e) => !e.offsetParent || !main.contains(e.offsetParent)).map((e) => e.textContent);
+      });
+      expect(escaped, `${where}: screen-reader lines placed against the page`).toEqual([]);
       expect(whole(g.actions, g), `${where}: ▶ Chord in view`).toBe(true);
       const fits = !!g.readout && !!g.actions && g.actions.bottom - g.readout.top <= g.bottom - g.top - 8;
       console.log(`[q4] ${where} chord: readout ${whole(g.readout, g) ? 'in view' : 'scrolled away'}, notes ${whole(g.notes, g) ? 'in view' : 'scrolled away'}, detail ${whole(g.detail, g) ? 'whole' : 'partly'}; readout + actions ${Math.round(g.actions!.bottom - g.readout!.top)} of ${Math.round(g.bottom - g.top - 8)} px`);
