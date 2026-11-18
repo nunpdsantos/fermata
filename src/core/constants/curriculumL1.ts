@@ -34,8 +34,8 @@ const l1u1m1: CurriculumModule = {
     },
   ],
   tasks: [
-    { id: 'l1u1m1t1', instruction: 'Look at the piano keyboard — notes go from low (left) to high (right), just like the staff goes from low (bottom) to high (top)' },
-    { id: 'l1u1m1t2', instruction: "Type 'C major scale' and notice how each note occupies a higher position as the pitch rises" },
+    { id: 'l1u1m1t1', instruction: 'Look at your instrument — notes go from low to high, just like the staff goes from low (bottom) to high (top): on the piano from left to right, on the guitar fret by fret towards the body' },
+    { id: 'l1u1m1t2', instruction: "Tap 'C major scale' and notice how each note occupies a higher position as the pitch rises" },
   ],
   prerequisites: [],
 };
@@ -109,9 +109,9 @@ const l1u1m3: CurriculumModule = {
     },
   ],
   tasks: [
-    { id: 'l1u1m3t1', instruction: "Play adjacent notes on the chromatic scale — each step is a half step. Type 'C chromatic scale' to see them all" },
-    { id: 'l1u1m3t2', instruction: 'Find E and F on the piano — notice there is no black key between them. This pair is a natural half step' },
-    { id: 'l1u1m3t3', instruction: "Type 'key of G' — which note needs a sharp? The F becomes F# to maintain the major scale pattern" },
+    { id: 'l1u1m3t1', instruction: "Play adjacent notes on the chromatic scale — each step is a half step. Tap 'C chromatic scale' to see them all" },
+    { id: 'l1u1m3t2', instruction: 'Find E and F — on the piano there is no black key between them; on the guitar they are one fret apart. This pair is a natural half step' },
+    { id: 'l1u1m3t3', instruction: "Tap 'key of G' — which note needs a sharp? The F becomes F# to maintain the major scale pattern" },
   ],
   prerequisites: ['l1u1m2'],
 };
@@ -144,8 +144,8 @@ const l1u1m4: CurriculumModule = {
     },
   ],
   tasks: [
-    { id: 'l1u1m4t1', instruction: "Type 'C chromatic scale' and count all 12 notes before the pattern repeats" },
-    { id: 'l1u1m4t2', instruction: 'On the piano, find the group of 2 black keys — the white key just below the group is always C' },
+    { id: 'l1u1m4t1', instruction: "Tap 'C chromatic scale' and count all 12 notes before the pattern repeats" },
+    { id: 'l1u1m4t2', instruction: 'Find C on your instrument — on the piano, it is always the white key just below a group of 2 black keys; on the guitar, C is fret 3 of the A string, the second thickest' },
   ],
   prerequisites: ['l1u1m3'],
 };
@@ -278,9 +278,9 @@ const l1u3m1: CurriculumModule = {
     },
   ],
   tasks: [
-    { id: 'l1u3m1t1', instruction: "Type 'C major scale' and trace the W-W-H-W-W-W-H pattern on the piano" },
-    { id: 'l1u3m1t2', instruction: "Type 'G major scale' — which note needs a sharp to maintain the pattern?" },
-    { id: 'l1u3m1t3', instruction: "Type 'F major scale' — this one needs a flat. Which note?" },
+    { id: 'l1u3m1t1', instruction: "Tap 'C major scale' and trace the W-W-H-W-W-W-H pattern on your instrument" },
+    { id: 'l1u3m1t2', instruction: "Tap 'G major scale' — which note needs a sharp to maintain the pattern?" },
+    { id: 'l1u3m1t3', instruction: "Tap 'F major scale' — this one needs a flat. Which note?" },
   ],
   prerequisites: ['l1u2m2'],
 };
@@ -362,8 +362,8 @@ const l1u3m3: CurriculumModule = {
     },
   ],
   tasks: [
-    { id: 'l1u3m3t1', instruction: "Type 'C major chord' — the interval from C to E is a 3rd, and C to G is a 5th. Count the letters to verify" },
-    { id: 'l1u3m3t2', instruction: "Type 'C major scale' — each adjacent pair is a 2nd (a step). Play non-adjacent notes to hear larger intervals" },
+    { id: 'l1u3m3t1', instruction: "Tap 'C major chord' — the interval from C to E is a 3rd, and C to G is a 5th. Count the letters to verify" },
+    { id: 'l1u3m3t2', instruction: "Tap 'C major scale' — each adjacent pair is a 2nd (a step). Play non-adjacent notes to hear larger intervals" },
     { id: 'l1u3m3t3', instruction: 'Open the Circle of Fifths — each step around the circle is a 5th interval. Count the letters to confirm', query: 'circle of fifths' },
   ],
   prerequisites: ['l1u3m2'],
@@ -404,8 +404,8 @@ const l1u3m4: CurriculumModule = {
     },
   ],
   tasks: [
-    { id: 'l1u3m4t1', instruction: "Type 'C major chord' and count the half steps: C to E = 4 (major 3rd), E to G = 3 (minor 3rd), C to G = 7 (perfect 5th)" },
-    { id: 'l1u3m4t2', instruction: "Type 'G major chord' — identify the root, 3rd, and 5th. Same interval pattern, different starting note" },
+    { id: 'l1u3m4t1', instruction: "Tap 'C major chord' and count the half steps: C to E = 4 (major 3rd), E to G = 3 (minor 3rd), C to G = 7 (perfect 5th)" },
+    { id: 'l1u3m4t2', instruction: "Tap 'G major chord' — identify the root, 3rd, and 5th. Same interval pattern, different starting note" },
     { id: 'l1u3m4t3', instruction: "Play 'C major chord', 'G major chord', 'D major chord', 'F major chord' — hear the same bright quality in every key" },
   ],
   prerequisites: ['l1u3m3'],
@@ -451,7 +451,7 @@ const guitarNotation: CurriculumUnit = {
         },
         {
           id: 'l1u33m1t2',
-          instruction: 'On your guitar, point to ① and ⑥. Say their sounding pitches in standard tuning, then find ③.'
+          instruction: 'On your guitar or the app fretboard, point to ① and ⑥. Say their sounding pitches in standard tuning, then find ③.'
         }
       ],
       id: 'l1u33m1',
@@ -829,7 +829,7 @@ const chordsTrack: CurriculumUnit = {
       ],
       tasks: [
         { id: 'l1u35m1t1', instruction: 'Play G, C, D and Em in turn, and say the three notes of each one aloud: G B D, C E G, D F♯ A, E G B.' },
-        { id: 'l1u35m1t2', instruction: 'Play the G major scale from G up to G, then strum G, C and D. On the guitar, find the F♯ in your D chord: fret 2 of the thinnest string.' },
+        { id: 'l1u35m1t2', instruction: 'Play the G major scale from G up to G, then play the chords G, C and D. On the guitar, find the F♯ in your D chord: fret 2 of the thinnest string.' },
       ],
       prerequisites: [],
     },
@@ -1037,7 +1037,7 @@ const chordsTrack: CurriculumUnit = {
         },
       ],
       tasks: [
-        { id: 'l1u35m6t1', instruction: 'Play an open G chord one string at a time, from the thickest, and name each note: G, B, D, G, B, G.' },
+        { id: 'l1u35m6t1', instruction: 'Play a G chord one note at a time, from the lowest, and name each note. On the guitar, an open G chord gives G, B, D, G, B, G from the thickest string.' },
         { id: 'l1u35m6t2', instruction: 'Choose a major chord you know and say its root. Count every other note of the root\'s major scale to find its 3rd and 5th, and play the three notes one after the other.' },
       ],
       prerequisites: [],
@@ -1081,7 +1081,7 @@ const chordsTrack: CurriculumUnit = {
       ],
       tasks: [
         { id: 'l1u35m7t1', instruction: 'Play G7 and then C, then G and then C. Which of the two leans harder into C?' },
-        { id: 'l1u35m7t2', instruction: 'Play the twelve-bar blues in G, four strums to a bar: G7 for four bars, C7 for two, G7 for two, then D7, C7, G7 and D7.' },
+        { id: 'l1u35m7t2', instruction: 'Play the twelve-bar blues in G, four beats to a bar: G7 for four bars, C7 for two, G7 for two, then D7, C7, G7 and D7.' },
       ],
       prerequisites: [],
     },
@@ -1166,7 +1166,7 @@ const chordsTrack: CurriculumUnit = {
         },
       ],
       tasks: [
-        { id: 'l1u35m9t1', instruction: 'Play the G major pentatonic up and down: G, A, B, D, E and G. Then strum G, C or D and answer each chord with one of the five notes, listening for any note that clashes.' },
+        { id: 'l1u35m9t1', instruction: 'Play the G major pentatonic up and down: G, A, B, D, E and G. Then play G, C or D and answer each chord with one of the five notes, listening for any note that clashes.' },
         { id: 'l1u35m9t2', instruction: 'Play the E minor pentatonic, E, G, A, B, D and E. On the guitar it lies on the open strings and frets 2 and 3: thickest string 0 and 3, then 0 and 2 on the next three strings, then 0 and 3 on the last two.' },
       ],
       prerequisites: [],

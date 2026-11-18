@@ -110,11 +110,11 @@ const curriculumL2: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "Ab major scale" — ¿cuántos bemoles necesita? ¿Puedes nombrarlos en orden?',
+            'Pulsa "Ab major scale" — ¿cuántos bemoles necesita? ¿Puedes nombrarlos en orden?',
         },
         {
           instruction:
-            'Escribe "E major scale" — el último sostenido es D#. Sube un semitono: E. ¡El truco funciona!',
+            'Pulsa "E major scale" — el último sostenido es D#. Sube un semitono: E. ¡El truco funciona!',
         },
       ],
     },
@@ -159,7 +159,7 @@ const curriculumL2: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "A natural minor scale" y después "A harmonic minor scale" — ¿cuál de ellas eleva el 7.º grado para crear una sensible?',
+            'Pulsa "A natural minor scale" y después "A harmonic minor scale" — ¿cuál de ellas eleva el 7.º grado para crear una sensible?',
         },
       ],
     },
@@ -194,11 +194,11 @@ const curriculumL2: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "D minor scale" — ¿qué nota necesita un bemol para mantener el patrón T-S-T-T-S-T-T?',
+            'Pulsa "D minor scale" — ¿qué nota necesita un bemol para mantener el patrón T-S-T-T-S-T-T?',
         },
         {
           instruction:
-            'Escribe "E minor scale" — ¿cuántos sostenidos necesita? Compara con G mayor (su relativa mayor)',
+            'Pulsa "E minor scale" — ¿cuántos sostenidos necesita? Compara con G mayor (su relativa mayor)',
         },
       ],
     },
@@ -239,11 +239,11 @@ const curriculumL2: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "D harmonic minor scale" — ¿qué nota se eleva con respecto a D menor natural?',
+            'Pulsa "D harmonic minor scale" — ¿qué nota se eleva con respecto a D menor natural?',
         },
         {
           instruction:
-            'Escribe "E melodic minor scale" — identifica las dos notas elevadas con respecto a la menor natural',
+            'Pulsa "E melodic minor scale" — identifica las dos notas elevadas con respecto a la menor natural',
         },
       ],
     },
@@ -274,11 +274,11 @@ const curriculumL2: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "Eb major scale" — ¿cuál es el 6.º grado? Esa es la relativa menor. Verifica con el Círculo de Quintas',
+            'Pulsa "Eb major scale" — ¿cuál es el 6.º grado? Esa es la relativa menor. Verifica con el Círculo de Quintas',
         },
         {
           instruction:
-            'Escribe "C major scale" y después "C minor scale" — ¿qué tres notas cambian? (3.ª, 6.ª, 7.ª). Estas son tonalidades homónimas',
+            'Pulsa "C major scale" y después "C minor scale" — ¿qué tres notas cambian? (3.ª, 6.ª, 7.ª). Estas son tonalidades homónimas',
         },
         {
           instruction:
@@ -389,11 +389,11 @@ const curriculumL2: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "C major chord" y después "Cm" — la única diferencia es E vs. Eb. 3.ª mayor (4 semitonos) vs. 3.ª menor (3 semitonos). Un semitono lo cambia todo',
+            'Pulsa "C major chord" y después "Cm" — la única diferencia es E vs. Eb. 3.ª mayor (4 semitonos) vs. 3.ª menor (3 semitonos). Un semitono lo cambia todo',
         },
         {
           instruction:
-            'Escribe "C major scale" — cada intervalo de C a cada nota superior es justo (4.ª, 5.ª, octava) o mayor (2.ª, 3.ª, 6.ª, 7.ª). Este es el conjunto de referencia',
+            'Pulsa "C major scale" — cada intervalo de C a cada nota superior es justo (4.ª, 5.ª, octava) o mayor (2.ª, 3.ª, 6.ª, 7.ª). Este es el conjunto de referencia',
         },
         {
           instruction:
@@ -438,11 +438,11 @@ const curriculumL2: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "C7" y escucha — el tritono entre E y Bb es lo que da al acorde de séptima de dominante su tensión y necesidad de resolver',
+            'Pulsa "C7" y escucha — el tritono entre E y Bb es lo que da al acorde de séptima de dominante su tensión y necesidad de resolver',
         },
         {
           instruction:
-            'Escribe "Cmaj9" — la 9.ª (D) es el 2.º grado una octava más arriba. ¿Cuál es la cualidad de C a D? 2.ª mayor, por lo tanto 9.ª mayor',
+            'Pulsa "Cmaj9" — la 9.ª (D) es el 2.º grado una octava más arriba. ¿Cuál es la cualidad de C a D? 2.ª mayor, por lo tanto 9.ª mayor',
         },
       ],
     },
@@ -483,11 +483,11 @@ const curriculumL2: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "Fdim" y cuenta: de la fundamental a la 3.ª son 3 semitonos (3m), de la 3.ª a la 5.ª son 3 semitonos (3m). Ambas terceras son menores — eso es lo que la hace disminuida',
+            'Pulsa "Fdim" y cuenta: de la fundamental a la 3.ª son 3 semitonos (3m), de la 3.ª a la 5.ª son 3 semitonos (3m). Ambas terceras son menores — eso es lo que la hace disminuida',
         },
         {
           instruction:
-            'Escribe "Caug" y cuenta: de la fundamental a la 3.ª son 4 semitonos (3M), de la 3.ª a la 5.ª son 4 semitonos (3M). Ambas terceras son mayores — aumentada',
+            'Pulsa "Caug" y cuenta: de la fundamental a la 3.ª son 4 semitonos (3M), de la 3.ª a la 5.ª son 4 semitonos (3M). Ambas terceras son mayores — aumentada',
         },
       ],
     },
@@ -524,15 +524,15 @@ const curriculumL2: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "C major chord", "C/E" y "C/G" en secuencia — las mismas tres notas, pero escucha cómo el carácter cambia con cada nota en el bajo',
+            'Pulsa "C major chord", "C/E" y "C/G" en secuencia — las mismas tres notas, pero escucha cómo el carácter cambia con cada nota en el bajo',
         },
         {
           instruction:
-            'Escribe "C/E" — E está en el bajo. Los intervalos por encima son una 3.ª (E a G) y una 6.ª (E a C). Por eso se llama posición 6',
+            'Pulsa "C/E" — E está en el bajo. Los intervalos por encima son una 3.ª (E a G) y una 6.ª (E a C). Por eso se llama posición 6',
         },
         {
           instruction:
-            'Escribe "Am/C" — el acorde de A menor con C en el bajo. C es la 3.ª de Am, por lo tanto es 1.ª inversión. Escucha cómo suena más ligero que Am en estado fundamental',
+            'Pulsa "Am/C" — el acorde de A menor con C en el bajo. C es la 3.ª de Am, por lo tanto es 1.ª inversión. Escucha cómo suena más ligero que Am en estado fundamental',
         },
       ],
     },

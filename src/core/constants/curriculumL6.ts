@@ -43,13 +43,13 @@ const l6u18m1: CurriculumModule = {
     {
       id: 'l6u18m1t1',
       instruction:
-        "Type 'Db major chord' to hear the Neapolitan chord of C minor. Notice how Db-F-Ab sounds dark and dramatic compared to a standard Dm or F chord in this context",
+        "Tap 'Db major chord' to hear the Neapolitan chord of C minor. Notice how Db-F-Ab sounds dark and dramatic compared to a standard Dm or F chord in this context",
       query: 'Db major chord',
     },
     {
       id: 'l6u18m1t2',
       instruction:
-        "Type 'Db/F' to hear the first inversion Neapolitan. The bass note F connects smoothly to G (dominant). This is the standard bII6 voicing used in classical music",
+        "Tap 'Db/F' to hear the first inversion Neapolitan. The bass note F connects smoothly to G (dominant). This is the standard bII6 voicing used in classical music",
       query: 'Db/F',
     },
     {
@@ -109,7 +109,7 @@ const l6u18m2: CurriculumModule = {
     {
       id: 'l6u18m2t3',
       instruction:
-        "Type 'Ab major chord' and listen. Now imagine adding F# in an upper voice. The interval Ab to F# is the augmented sixth that defines this entire chord family",
+        "Tap 'Ab major chord' and listen. Now imagine adding F# in an upper voice. The interval Ab to F# is the augmented sixth that defines this entire chord family",
       query: 'Ab major chord',
     },
   ],
@@ -165,7 +165,7 @@ const l6u18m3: CurriculumModule = {
     {
       id: 'l6u18m3t3',
       instruction:
-        "Type 'Ab7' to hear the chord. This is simultaneously V7 of Db and Gr+6 in C. The resolution you choose determines which key the listener perceives",
+        "Tap 'Ab7' to hear the chord. This is simultaneously V7 of Db and Gr+6 in C. The resolution you choose determines which key the listener perceives",
       query: 'Ab7',
     },
   ],
@@ -221,7 +221,7 @@ const l6u18m4: CurriculumModule = {
     {
       id: 'l6u18m4t3',
       instruction:
-        "Type 'Db major chord' and hear the arrival key. A single enharmonic reinterpretation moved us from C to Db \u2014 five positions around the circle of fifths in one step",
+        "Tap 'Db major chord' and hear the arrival key. A single enharmonic reinterpretation moved us from C to Db \u2014 five positions around the circle of fifths in one step",
       query: 'Db major chord',
     },
   ],
@@ -272,7 +272,7 @@ const l6u19m1: CurriculumModule = {
     {
       id: 'l6u19m1t1',
       instruction:
-        "Type 'Bdim7' \u2014 this chord can resolve to C minor, Eb minor, Gb minor, or A minor. All four resolutions are equally valid. Enharmonic spelling determines the destination key",
+        "Tap 'Bdim7' \u2014 this chord can resolve to C minor, Eb minor, Gb minor, or A minor. All four resolutions are equally valid. Enharmonic spelling determines the destination key",
       query: 'Bdim7',
     },
     {
@@ -338,7 +338,7 @@ const l6u19m2: CurriculumModule = {
     {
       id: 'l6u19m2t3',
       instruction:
-        "Type 'C major chord' and hear the resolution target. Now imagine the CTo7 chord (C-D#-F#-A) approaching it \u2014 three voices shift by step (two by half step, one by whole step) while C sustains. This is pure chromatic embellishment, not modulation",
+        "Tap 'C major chord' and hear the resolution target. Now imagine the CTo7 chord (C-D#-F#-A) approaching it \u2014 three voices shift by step (two by half step, one by whole step) while C sustains. This is pure chromatic embellishment, not modulation",
       query: 'C major chord',
     },
   ],
@@ -395,7 +395,7 @@ const l6u19m3: CurriculumModule = {
     {
       id: 'l6u19m3t3',
       instruction:
-        "Type 'C7#5' to hear an altered dominant. The raised fifth creates additional chromatic tension that intensifies the resolution to the tonic. Compare it to a plain C7",
+        "Tap 'C7#5' to hear an altered dominant. The raised fifth creates additional chromatic tension that intensifies the resolution to the tonic. Compare it to a plain C7",
       query: 'C7#5',
     },
   ],
@@ -440,13 +440,13 @@ const l6u19m4: CurriculumModule = {
     {
       id: 'l6u19m4t1',
       instruction:
-        "Type 'whole tone scale' \u2014 every adjacent interval is a whole step. No half steps, no leading tones, no dominant pull. This is pure tonal ambiguity, the foundation of Debussy\u2019s harmonic language",
+        "Tap 'whole tone scale' \u2014 every adjacent interval is a whole step. No half steps, no leading tones, no dominant pull. This is pure tonal ambiguity, the foundation of Debussy\u2019s harmonic language",
       query: 'whole tone scale',
     },
     {
       id: 'l6u19m4t2',
       instruction:
-        "Type 'C diminished scale' \u2014 this alternating whole-half pattern creates a symmetric eight-note scale made of two complete diminished seventh chords interlocked, so it contains eight minor thirds and four tritones, and its pattern repeats every minor third, dividing the octave into four equal parts",
+        "Tap 'C diminished scale' \u2014 this alternating whole-half pattern creates a symmetric eight-note scale made of two complete diminished seventh chords interlocked, so it contains eight minor thirds and four tritones, and its pattern repeats every minor third, dividing the octave into four equal parts",
       query: 'C diminished scale',
     },
     {
