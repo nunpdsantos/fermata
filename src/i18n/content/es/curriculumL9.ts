@@ -190,7 +190,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Toca pares de notas en el piano a partir de C: C-Db (2m), C-D (2M), C-Eb (3m), C-E (3M), C-F (4J), C-Gb (tritono), C-G (5J). Nombra cada uno antes de verificar',
+            'Toca pares de notas a partir de C: C-Db (2m), C-D (2M), C-Eb (3m), C-E (3M), C-F (4J), C-Gb (tritono), C-G (5J). Nombra cada uno antes de verificar',
         },
         {
           instruction:
@@ -238,7 +238,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Toca C a Ab (6m) y después C a A (6M) en el piano. La 6.ª menor suena más sombría y punzante. La 6.ª mayor suena más cálida y abierta. Repite a partir de diferentes fundamentales hasta poder distinguirlas con fiabilidad',
+            'Toca C a Ab (6m) y después C a A (6M). La 6.ª menor suena más sombría y punzante. La 6.ª mayor suena más cálida y abierta. Repite a partir de diferentes fundamentales hasta poder distinguirlas con fiabilidad',
         },
         {
           instruction:

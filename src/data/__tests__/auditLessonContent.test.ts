@@ -20,6 +20,7 @@ import { parseChordSymbol, chordFromParsed } from '../../core/utils/chordParser'
 import { findQuotedQueries, resolveTheoryQuery } from '../../utils/theoryQuery';
 import { getSongReferences } from '../songReferences';
 import { EN_UNITS, curriculumOverlay, songOverlay, exerciseOverlay, type Lang } from '../../i18n/content/__tests__/overlayEntries';
+import { TUNING_STANDARD } from '../../core/constants/guitarTunings';
 import exercisesL7 from '../exercises/exercisesL7';
 import templatesL7 from '../exercises/templatesL7';
 import enGlossary from '../../i18n/glossary/en.json';
@@ -92,6 +93,27 @@ describe('nothing is typed: a quoted query in a task is a link the learner taps'
       for (const lang of ['pt', 'es'] as const) {
         expect(moduleIn(lang, id).tasks[i], `${lang} ${id} task ${i}`).toMatch(TAP[lang]);
       }
+    }
+  });
+});
+
+describe('a task speaks to the learner\'s own instrument (the seat\'s note of 18 November, beside Q5)', () => {
+  const ON_PIANO: Record<AnyLang, RegExp> = { en: /on the piano/, pt: /no piano/, es: /en el piano/ };
+  it('l9u30m3 t2 and l9u30m4 t2 no longer say "on the piano"', () => {
+    for (const lang of LANGS) {
+      expect(moduleIn(lang, 'l9u30m3').tasks[1], lang).not.toMatch(ON_PIANO[lang]);
+      expect(moduleIn(lang, 'l9u30m4').tasks[1], lang).not.toMatch(ON_PIANO[lang]);
+    }
+  });
+  it('l1u1m2 t1 names middle C on both instruments; on a standard-tuned guitar it is fret 1 of the B string (the engine agrees)', () => {
+    const b = TUNING_STANDARD.strings[4]; // [6th … 1st]: the 2nd string, the second thinnest
+    expect(`${b.natural}${b.accidental}`).toBe('B');
+    expect(12 * (b.octave + 1) + getPitchClass(b) + 1).toBe(60); // fret 1 = C4, middle C
+    const WHERE: Record<AnyLang, RegExp> = { en: /fret 1 of the B string/, pt: /trasto 1 da corda B/, es: /traste 1 de la cuerda B/ };
+    for (const lang of LANGS) {
+      const t = moduleIn(lang, 'l1u1m2').tasks[0];
+      expect(t, lang).toMatch(ON_PIANO[lang]);
+      expect(t, lang).toMatch(WHERE[lang]);
     }
   });
 });

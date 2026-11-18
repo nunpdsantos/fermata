@@ -174,7 +174,7 @@ const l9u30m3: CurriculumModule = {
     {
       id: 'l9u30m3t2',
       instruction:
-        'Play pairs of notes on the piano from C: C-Db (m2), C-D (M2), C-Eb (m3), C-E (M3), C-F (P4), C-Gb (tritone), C-G (P5). Name each before checking',
+        'Play pairs of notes from C: C-Db (m2), C-D (M2), C-Eb (m3), C-E (M3), C-F (P4), C-Gb (tritone), C-G (P5). Name each before checking',
     },
     {
       id: 'l9u30m3t3',
@@ -232,7 +232,7 @@ const l9u30m4: CurriculumModule = {
     {
       id: 'l9u30m4t2',
       instruction:
-        'Play C to Ab (m6) then C to A (M6) on the piano. Minor 6th sounds darker and more poignant. Major 6th sounds warmer and more open. Repeat from different roots until you can distinguish them reliably',
+        'Play C to Ab (m6) then C to A (M6). Minor 6th sounds darker and more poignant. Major 6th sounds warmer and more open. Repeat from different roots until you can distinguish them reliably',
     },
     {
       id: 'l9u30m4t3',

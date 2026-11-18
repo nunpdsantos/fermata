@@ -190,7 +190,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Toca pares de notas no piano a partir de C: C-Db (2m), C-D (2M), C-Eb (3m), C-E (3M), C-F (4P), C-Gb (trítono), C-G (5P). Nomeia cada um antes de verificar',
+            'Toca pares de notas a partir de C: C-Db (2m), C-D (2M), C-Eb (3m), C-E (3M), C-F (4P), C-Gb (trítono), C-G (5P). Nomeia cada um antes de verificar',
         },
         {
           instruction:
@@ -238,7 +238,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Toca C a Ab (6m) e depois C a A (6M) no piano. A 6.ª menor soa mais sombria e pungente. A 6.ª maior soa mais quente e aberta. Repete a partir de diferentes fundamentais até as conseguires distinguir com fiabilidade',
+            'Toca C a Ab (6m) e depois C a A (6M). A 6.ª menor soa mais sombria e pungente. A 6.ª maior soa mais quente e aberta. Repete a partir de diferentes fundamentais até as conseguires distinguir com fiabilidade',
         },
         {
           instruction:

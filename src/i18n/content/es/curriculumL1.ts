@@ -217,7 +217,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Encuentra el C central en el piano — está entre las dos mitades del sistema de pentagramas',
+            'Encuentra el C central en el piano, o en la guitarra en el traste 1 de la cuerda B (la segunda más fina) — está entre las dos mitades del sistema de pentagramas',
         },
         {
           instruction:

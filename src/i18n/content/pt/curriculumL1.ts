@@ -217,7 +217,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Encontra o C central no piano — está entre as duas metades da pauta dupla',
+            'Encontra o C central no piano, ou na guitarra no trasto 1 da corda B (a segunda mais fina) — está entre as duas metades da pauta dupla',
         },
         {
           instruction:

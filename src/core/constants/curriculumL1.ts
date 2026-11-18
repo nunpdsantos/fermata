@@ -68,7 +68,7 @@ const l1u1m2: CurriculumModule = {
     },
   ],
   tasks: [
-    { id: 'l1u1m2t1', instruction: 'Find middle C on the piano — it sits between the two halves of the grand staff' },
+    { id: 'l1u1m2t1', instruction: 'Find middle C on the piano, or on the guitar at fret 1 of the B string (the second thinnest) — it sits between the two halves of the grand staff' },
     { id: 'l1u1m2t2', instruction: 'Play notes below and above middle C to hear how the grand staff spans both registers' },
   ],
   prerequisites: ['l1u1m1'],
