@@ -25,6 +25,9 @@ import { useAppStore } from '../../../state/store';
 import { noteToString, type ScaleType } from '../../../core/types/music';
 import { showLessonQuery, returnLessonInstrument } from '../../../services/lessonInstrument';
 import { findQuotedQueries, resolveTheoryQuery } from '../../../utils/theoryQuery';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { SEARCH_SAMPLE } from './searchSample';
 
 vi.mock('framer-motion', async () => {
   const React = await import('react');
@@ -221,6 +224,56 @@ describe('A3 — the whole solfège syllable is read before the chord symbol', (
 const PROSE_AT_BASE: Record<string, string[]> = Object.fromEntries(
   ['Solo', 'Lamb', 'Mix', 'Fade', 'Rest', 'Simple', 'Solid', 'Domain', 'Minor', 'Sixth', 'Repeat', 'Lament', 'Dorian'].map((q) => [q, []]),
 );
+
+// ─── A3: never lose a query that works today ────────────────────────────────
+describe('A3 — every result of 6de6c0e is still there, in its order; the solfège rows are added to it', () => {
+  const BASE = JSON.parse(readFileSync(resolve(process.cwd(), 'src/components/navigation/__tests__/fixtures/searchResults.6de6c0e.json'), 'utf8')) as Record<string, string[]>;
+
+  /** What a result opens, as the fixture recorded it (chosen from Explore on C major). */
+  function opens(r: SearchResult): string {
+    at('explore');
+    useAppStore.setState({ pendingLearnTarget: null });
+    r.action();
+    const s = useAppStore.getState();
+    const c = s.selectedChord;
+    const what = s.pendingLearnTarget ? s.pendingLearnTarget.moduleId
+      : c ? `${noteToString(c.root)}${c.quality}${c.bassNote ? `/${noteToString(c.bassNote)}` : ''}${c.algorithmicDisplayName ? ` ${c.algorithmicDisplayName}` : ''}`
+        : `${noteToString(s.selectedKey)} ${s.selectedScale}`;
+    return `${r.type}|${what}`;
+  }
+
+  it.each(['en', 'pt', 'es'] as const)('%s: the recorded sample', async (lang) => {
+    await speak(lang);
+    expect(Object.keys(BASE).filter((k) => k.startsWith(`${lang} `)).length).toBe(SEARCH_SAMPLE.length);
+    const lost: string[] = [];
+    for (const q of SEARCH_SAMPLE) {
+      at('explore');
+      const now = getResults(q).filter((r) => !r.solfege).map(opens);
+      // At 6de6c0e a few queries listed the same scale twice ("Dorian" and
+      // "C Dorian", one opening exactly what the other did); named alike now
+      // (A13), they are one row. Every other result stays, in its order; a
+      // list that was cut at ten may show the next one.
+      const base = BASE[`${lang} ${q}`].filter((x, i, xs) => xs.indexOf(x) === i);
+      const same = JSON.stringify(now.slice(0, base.length)) === JSON.stringify(base) && (now.length === base.length || BASE[`${lang} ${q}`].length === 10);
+      if (!same) lost.push(`${q}: ${JSON.stringify(BASE[`${lang} ${q}`])} → ${JSON.stringify(now)}`);
+      expect(new Set(now).size, `${lang} "${q}": no row opens what another opens`).toBe(now.length);
+    }
+    expect(lost).toEqual([]);
+    // The ones that had a duplicate at 6de6c0e.
+    const doubled = SEARCH_SAMPLE.filter((q) => new Set(BASE[`${lang} ${q}`]).size !== BASE[`${lang} ${q}`].length);
+    expect(doubled).toEqual(['major', 'minor', 'lydian dominant', 'Dorian']);
+  });
+
+  it('"dom" keeps its "Dominant 7th" chords; the solfège C minor is added (first in ES, after the names in EN)', async () => {
+    const en = getResults('dom');
+    expect(en.filter((r) => r.type === 'Chord' && /Dominant 7th/.test(r.label)).length).toBeGreaterThan(0);
+    expect(en.findIndex((r) => r.solfege)).toBe(en.findIndex((r) => r.type === 'Lesson') - 1);
+    await speak('es');
+    const es = getResults('dom');
+    expect(es[0].solfege && es[0].label).toBe('C Menor');
+    expect(es.filter((r) => !r.solfege).length).toBe(BASE['es dom'].length);
+  });
+});
 
 // ─── A4 ──────────────────────────────────────────────────────────────────────
 describe('A4 — choosing a chord, scale or key from search opens Explore with it', () => {

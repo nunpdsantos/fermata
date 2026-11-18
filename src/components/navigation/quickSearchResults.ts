@@ -22,7 +22,7 @@ import { findModulesByQuery, MODULE_INDEX, type ModuleIndexEntry } from '../../d
 import type { LocalizedModuleIndex } from '../../data/moduleIndexI18n.ts';
 import { trackForProfile, trackOfModule } from '../../data/tracks.ts';
 import { getLearnerProfile, type LearnerProfile } from '../../state/learnerProfile.ts';
-import { resolveTheoryReadings, isBareSolfege, type TheoryReading } from '../../utils/theoryQuery.ts';
+import { resolveTheoryReadings, isBareSolfege } from '../../utils/theoryQuery.ts';
 import { applyResolvedTheoryQuery } from '../../utils/queryExecutor.ts';
 import { qualityName } from '../../utils/qualityName.ts';
 import { solfegeLanguage, solfegeName, withSolfege } from '../../i18n/solfege.ts';
@@ -35,6 +35,8 @@ export interface SearchResult {
   type: SearchResultType;
   label: string;
   action: () => void;
+  /** A solfège chord ("Sol7", "Do7" as C7: A3), added to what search found before. */
+  solfege?: true;
 }
 
 // Mode names that need mapping to ScaleType
@@ -138,12 +140,6 @@ function lessonHitsFor(ranked: readonly ModuleIndexEntry[], profile: LearnerProf
   return [...first, ...after].slice(0, LESSON_HITS);
 }
 
-/** The readings in the learner's order: "Do7" is C7 first in PT / ES (and with Dó-Ré-Mi on), D°7 first otherwise. */
-function orderedReadings(q: string, solfegeFirst: boolean): TheoryReading[] {
-  const readings = resolveTheoryReadings(q);
-  if (!solfegeFirst) return readings;
-  return [...readings.filter((r) => r.via === 'solfege'), ...readings.filter((r) => r.via !== 'solfege')];
-}
 
 /**
  * Ranked Cmd+K results. `localized` is the Portuguese/Spanish module index
@@ -197,12 +193,12 @@ export function getResults(
   // 0. The shared Try-This resolver (W9-01): the exact forms lessons tell the
   //    learner to type — "C major scale", "C major chord", "C whole tone
   //    scale", "key of G", "D natural minor scale" — their Portuguese and
-  //    Spanish phrasings ("escala de C maior", "acorde de Ré menor") and the
-  //    solfège chord symbols ("Sol7", "Ré7"; "Do7" is C7 AND D°7: A3). Every
-  //    reading is offered, in the learner's order.
-  //    Chord readings are pushed with the other chords below (same order as
-  //    before: scales and keys first).
-  const readings = orderedReadings(q, names.solfegeFirst);
+  //    Spanish phrasings ("escala de C maior", "acorde de Ré menor"). Chord
+  //    readings are pushed with the other chords below (scales and keys
+  //    first). The solfège chord symbols ("Sol7"; "Do7" as C7 — A3) are added
+  //    at the end, to the list built exactly as before.
+  const all = resolveTheoryReadings(q);
+  const readings = all.filter((r) => r.via !== 'solfege');
   for (const { resolved } of readings) {
     if (resolved.kind === 'scale') {
       pushScale(resolved.root, resolved.scaleType, () => { applyResolvedTheoryQuery(resolved); });
@@ -230,7 +226,7 @@ export function getResults(
   }
 
   // 0'. Chords read by the resolver ("C major chord", "acorde de Ré menor",
-  //     "Sol7"; "Do7" in the learner's order).
+  //     "Do7" as D°7).
   for (const { resolved } of readings) if (resolved.kind === 'chord') pushChord(resolved.parsed);
 
   // A bare solfège syllable ("do", "sol") is a note name: the resolver above
@@ -262,9 +258,13 @@ export function getResults(
     for (const [scaleType, name] of Object.entries(SCALE_TYPE_NAMES)) {
       if (results.length >= 8) break;
       const key = `scale:fuzzy:${scaleType}`;
-      if (seen.has(key)) continue;
+      // Named with Explore's root now (A13): the same scale on that root, found
+      // by the parser, is the same row.
+      const onRoot = `scale:${noteToString(explore.key)}:${scaleType}`;
+      if (seen.has(key) || seen.has(onRoot)) continue;
       if (name.toLowerCase().includes(lower)) {
         seen.add(key);
+        seen.add(onRoot);
         results.push({
           type: 'Scale',
           label: scaleResultName(explore.key, scaleType as ScaleType, names),
@@ -284,9 +284,11 @@ export function getResults(
     for (const [quality, name] of Object.entries(CHORD_QUALITY_NAMES)) {
       if (results.length >= 8) break;
       const key = `chord:fuzzy:${quality}`;
-      if (seen.has(key)) continue;
+      const onRoot = `chord:${noteToString(explore.key)}:${quality}:`;
+      if (seen.has(key) || seen.has(onRoot)) continue;
       if (name.toLowerCase().includes(lower)) {
         seen.add(key);
+        seen.add(onRoot);
         results.push({
           type: 'Chord',
           label: chordResultName(buildChord(explore.key, quality as ChordQuality), names.lang),
@@ -332,7 +334,31 @@ export function getResults(
     });
   }
 
+  // A3: a solfège syllable glued to a chord symbol ("Sol7", "Ré7", "Do7" as
+  // C7). Added to the list as it was built before, so nothing it found is
+  // lost or pushed out (a solfège "Dom" = C minor must not cost "dom" its
+  // "Dominant 7th"): first in PT / ES and with Dó-Ré-Mi on, else after the
+  // chords and names, before the lessons.
+  const listed = results.slice(0, 10);
+  const solfege: SearchResult[] = [];
+  for (const { resolved, via } of all) {
+    if (via !== 'solfege' || resolved.kind !== 'chord') continue;
+    const parsed = resolved.parsed;
+    const key = `chord:${noteToString(parsed.root)}:${parsed.quality}:${parsed.bassNote ? noteToString(parsed.bassNote) : ''}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const chord = chordFromParsed(parsed);
+    solfege.push({
+      type: 'Chord',
+      label: chordResultName(chord, names.lang),
+      action: inExplore(() => useAppStore.getState().setSelectedChord(chord)),
+      solfege: true,
+    });
+  }
+  const lessonAt = listed.findIndex((r) => r.type === 'Lesson');
+  listed.splice(names.solfegeFirst ? 0 : lessonAt < 0 ? listed.length : lessonAt, 0, ...solfege);
+
   // Names on display with real ♭ / ♯ (the query and every lookup stay ASCII);
   // lesson titles are prose and stay as written.
-  return results.slice(0, 10).map((r) => (r.type === 'Lesson' ? r : { ...r, label: withGlyphs(r.label) }));
+  return listed.map((r) => (r.type === 'Lesson' ? r : { ...r, label: withGlyphs(r.label) }));
 }

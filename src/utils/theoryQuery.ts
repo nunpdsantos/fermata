@@ -277,8 +277,9 @@ export function solfegeChordSymbol(query: string): string | null {
 /**
  * How a reading was found: `letters` (the query as typed: English words and
  * chord symbols with letter roots), `words` (Portuguese / Spanish words, letter
- * or solfège root: "escala de Ré maior", "Do mayor"), `solfege` (a bare
- * syllable, or a syllable glued to a chord symbol: "Sol7").
+ * or solfège root: "escala de Ré maior", "Do mayor", a bare syllable "sol"),
+ * `solfege` (a syllable glued to a chord symbol: "Sol7" — audit A3, the only
+ * reading that did not exist before 2026-11-18).
  */
 export type ReadingSource = 'letters' | 'words' | 'solfege';
 
@@ -314,7 +315,7 @@ export function resolveTheoryReadings(query: string): TheoryReading[] {
   if (isBareSolfege(q)) {
     const note = toEnglishTheoryQuery(q);
     const r = note ? resolveEnglish(note) : null;
-    return r ? [{ resolved: r, via: 'solfege' }] : [];
+    return r ? [{ resolved: r, via: 'words' }] : [];
   }
   const out: TheoryReading[] = [];
   const add = (resolved: ResolvedTheoryQuery | null, via: ReadingSource) => {
