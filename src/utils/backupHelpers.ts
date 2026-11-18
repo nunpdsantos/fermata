@@ -14,7 +14,7 @@
  * ts-fsrs, joins the entry chunk).
  */
 import { useAppStore, invalidAppStateFields } from '../state/store.ts';
-import { same, savedNow, tabLine } from '../state/tabSafe.ts';
+import { tabLine } from '../state/tabSafe.ts';
 
 export const BACKUP_KEYS = [
   'music-theory-app',
@@ -242,6 +242,7 @@ export interface CheckedBackup {
  */
 export async function buildCheckedBackup(storage: ReadableStorage): Promise<CheckedBackup> {
   const backup = buildBackup(storage);
+  const { same, savedNow } = await import('../state/tabMerge.ts');
   const damaged: Partial<Record<BackupKey, string>> = {};
   const missing: BackupKey[] = [];
   const partly: BackupKey[] = [];
@@ -254,7 +255,7 @@ export async function buildCheckedBackup(storage: ReadableStorage): Promise<Chec
     await STORE_MODULES[key]();
     const store = tabLine(key)?.store;
     const live = store && { state: savedNow(store), version: store.persist.getOptions().version };
-    const defaults = store && savedNow({ ...store, getState: store.getInitialState });
+    const defaults = store && savedNow(store, true);
     if (live && isPlainObject(live.state) && !same(live.state, defaults) && !(await sectionProblem(key, live as Record<string, unknown>))) {
       backup.data[key] = live as Record<string, unknown>;
       partly.push(key);

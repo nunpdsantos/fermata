@@ -15,7 +15,7 @@ import {
 } from '../services/spacedRepetition';
 import { RETIRED_EXERCISE_IDS } from './retiredExerciseIds';
 import { bindTabSafe, tabSafeStorage } from './tabSafe';
-import { followOtherTabs, ruleMerge, type Rule } from './tabSync';
+import type { Rule } from './tabMerge';
 
 function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((item) => typeof item === 'string');
@@ -287,7 +287,7 @@ export const useProgressStore = create<ProgressStore>()(
     {
       name: 'music-theory-progress',
       version: PROGRESS_STORE_VERSION,
-      storage: createJSONStorage(() => tabSafeStorage('music-theory-progress', ruleMerge(PROGRESS_MERGE_RULE))),
+      storage: createJSONStorage(() => tabSafeStorage('music-theory-progress', PROGRESS_MERGE_RULE)),
       partialize: (state) => ({ progress: state.progress }),
       // Migrate from old format (raw CurriculumProgress) to wrapped { progress },
       // then retire the per-exercise scores of exercises that changed since
@@ -312,7 +312,7 @@ export const useProgressStore = create<ProgressStore>()(
 
 // Another tab's progress is never written over, and this tab shows it as it is saved (A1).
 bindTabSafe('music-theory-progress', useProgressStore);
-followOtherTabs('music-theory-progress', useProgressStore);
+void import('./tabSync').then((m) => m.followOtherTabs('music-theory-progress', useProgressStore));
 
 /** The pre-W4a migration: any older saved shape → { progress } (defaults when unusable). */
 function migrateShape(persisted: unknown, version: number): { progress: CurriculumProgress } {

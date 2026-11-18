@@ -198,13 +198,14 @@ test.describe('every other saved store (A1)', () => {
     await a.goto('/');
     await devOnly(a);
     await b.goto('/');
-    const answer = (page: Page, ids: string[], t0: number) => page.evaluate(async ([list, at]) => {
+    // The app's own Drill store (the dev server's module), answering as the view does.
+    const answer = (page: Page, ids: string[], t0: number) => page.evaluate(`(async () => {
       const m = await import('/src/state/drillStore.ts');
-      const item = (id: string) => ({ id, family: 'interval', promptKey: 'p', promptParams: {}, input: { format: 'choice', choices: ['A', 'B'] }, answer: { kind: 'choice', correct: 'A' }, whyKey: 'w', whyParams: {}, rank: 0 });
-      const s = m.useDrillStore.getState();
-      s.startSession((list as string[]).map(item) as never, at as number);
-      (list as string[]).forEach((id, i) => m.useDrillStore.getState().recordAnswer(item(id) as never, true, 800, (at as number) + 10 + i));
-    }, [ids, t0] as const);
+      const item = (id) => ({ id, family: 'interval', promptKey: 'p', promptParams: {}, input: { format: 'choice', choices: ['A', 'B'] }, answer: { kind: 'choice', correct: 'A' }, whyKey: 'w', whyParams: {}, rank: 0 });
+      const ids = ${JSON.stringify(ids)};
+      m.useDrillStore.getState().startSession(ids.map(item), ${t0});
+      ids.forEach((id, i) => m.useDrillStore.getState().recordAnswer(item(id), true, 800, ${t0} + 10 + i));
+    })()`);
     await answer(a, ['f1', 'f2'], 1_800_000_000_000);
     await answer(b, ['f2', 'f3'], 1_800_000_100_000);
     await answer(a, ['f4'], 1_800_000_200_000);
@@ -223,19 +224,16 @@ test.describe('every other saved store (A1)', () => {
     await a.goto('/');
     await devOnly(a);
     await b.goto('/');
-    await a.evaluate(async () => (await import('/src/state/fingeringStore.ts')).useFingeringStore.getState().setOverride('major|standard|p2|0|1', 2));
-    await b.evaluate(async () => (await import('/src/state/fingeringStore.ts')).useFingeringStore.getState().setOverride('major|standard|p2|1|0', 1));
+    const fingering = (page: Page, key: string, finger: number) =>
+      page.evaluate(`import('/src/state/fingeringStore.ts').then((m) => m.useFingeringStore.getState().setOverride('${key}', ${finger}))`);
+    await fingering(a, 'major|standard|p2|0|1', 2);
+    await fingering(b, 'major|standard|p2|1|0', 1);
     expect((await read(a, 'fermata-fingering-v1')).state.overrides).toEqual({ 'major|standard|p2|0|1': 2, 'major|standard|p2|1|0': 1 });
     // Both tabs in Learn (its store loads with Learn); a check under way in A; B then opens another lesson: A's check stays saved.
-    for (const p of [a, b]) await p.evaluate(async () => void (await import('/src/state/learnSessionStore.ts')));
-    await a.evaluate(async () => {
-      const m = await import('/src/state/learnSessionStore.ts');
-      m.useLearnSessionStore.getState().setCheck({ moduleId: 'l1u1m1', kind: 'check', lang: 'en', fingerprints: { l1u1m1e1: 'f' }, run: { order: ['l1u1m1e1'], index: 0, scores: [], items: [], attempt: 1, selectedNotes: [], tried: [], missed: null, final: null }, finished: false, at: Date.now() });
-    });
-    await b.evaluate(async () => {
-      const m = await import('/src/state/learnSessionStore.ts');
-      m.useLearnSessionStore.getState().setScreen({ type: 'module', levelId: 'l1', unitId: 'u34', moduleId: 'l1u34m1', section: null, at: Date.now() });
-    });
+    const learn = (page: Page, call: string) => page.evaluate(`import('/src/state/learnSessionStore.ts').then((m) => { ${call} })`);
+    for (const p of [a, b]) await learn(p, '');
+    await learn(a, `m.useLearnSessionStore.getState().setCheck({ moduleId: 'l1u1m1', kind: 'check', lang: 'en', fingerprints: { l1u1m1e1: 'f' }, run: { order: ['l1u1m1e1'], index: 0, scores: [], items: [], attempt: 1, selectedNotes: [], tried: [], missed: null, final: null }, finished: false, at: Date.now() })`);
+    await learn(b, `m.useLearnSessionStore.getState().setScreen({ type: 'module', levelId: 'l1', unitId: 'u34', moduleId: 'l1u34m1', section: null, at: Date.now() })`);
     const session = (await read(a, 'fermata-learn-session-v1')).state;
     expect(session.check?.moduleId).toBe('l1u1m1');
     expect(session.screen?.moduleId).toBe('l1u34m1');

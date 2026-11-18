@@ -30,7 +30,7 @@ import { exerciseFingerprint } from '../data/exercises/exerciseFingerprint';
 import { registerWorkInProgress } from '../services/workInProgress';
 import { MODULE_INDEX } from '../data/moduleIndex';
 import { isFresh, LEARN_SESSION_KEY, LEARN_SESSION_VERSION } from './learnSessionPersistence';
-import { bindTabSafe, same, tabSafeStorage, type TabMerge } from './tabSafe';
+import { bindTabSafe, tabSafeStorage } from './tabSafe';
 
 export { isFresh, LEARN_SESSION_KEY, LEARN_SESSION_VERSION, LEARN_SESSION_TTL_MS } from './learnSessionPersistence';
 
@@ -168,11 +168,12 @@ const EMPTY = { screen: null, check: null };
  * another lesson saves that lesson and leaves the other tab's check saved.
  */
 type Saved = { screen?: unknown; check?: unknown } | undefined;
-export const learnSessionMerge: TabMerge = (base, mine, theirs) => {
+const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+export function learnSessionMerge(base: unknown, mine: unknown, theirs: unknown): unknown {
   const [b, m, t] = [base, mine, theirs] as Saved[];
   if (!same(b?.check, m?.check)) return m;
   return { screen: same(b?.screen, m?.screen) ? t?.screen ?? null : m?.screen ?? null, check: t?.check ?? null };
-};
+}
 
 export const useLearnSessionStore = create<LearnSessionState>()(
   persist(

@@ -17,7 +17,7 @@ import type {
 } from '../core/types/drill';
 import { applyAnswer, capHistory, migrateTierV1 } from '../services/drillScheduler';
 import { bindTabSafe, tabSafeStorage } from './tabSafe';
-import { followOtherTabs, ruleMerge, type Rule } from './tabSync';
+import type { Rule } from './tabMerge';
 import {
   composeSession,
   requeueAfterMiss,
@@ -673,7 +673,7 @@ export const useDrillStore = create<DrillStoreState>()(
       // way is saved (`sprint`). Older saves load as they are: no verdict
       // showing, an empty tally, no Sprint open.
       version: 3,
-      storage: createJSONStorage(() => tabSafeStorage(DRILL_STORE_KEY, ruleMerge(DRILL_MERGE_RULE))),
+      storage: createJSONStorage(() => tabSafeStorage(DRILL_STORE_KEY, DRILL_MERGE_RULE)),
       // Persist every store change. SprintRunner also saves on pagehide /
       // hidden; a visible crash resumes its last save (up to 5 s earlier).
       partialize: (state) => ({
@@ -732,4 +732,4 @@ setDrillWorkStateReader(useDrillStore.getState);
 // Another tab's answers are never written over and show here too (A1); this
 // tab's session and Sprint under way stay its own.
 bindTabSafe(DRILL_STORE_KEY, useDrillStore);
-followOtherTabs(DRILL_STORE_KEY, useDrillStore, ['activeSession', 'sprint']);
+void import('./tabSync').then((m) => m.followOtherTabs(DRILL_STORE_KEY, useDrillStore, ['activeSession', 'sprint']));
