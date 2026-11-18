@@ -60,3 +60,22 @@ export function renderItem(item: DrillItem, lang: Lang): RenderedItem {
 export function renderBank(lang: Lang): RenderedItem[] {
   return BANK.map((item) => renderItem(item, lang));
 }
+
+/**
+ * The noun rule of docs/pt-diacritic-todo.md, as `ambiguousLetterStarts` in
+ * src/i18n/content/__tests__/noteNames.test.ts states it for the lesson
+ * overlays (copied here, not imported: importing a test file runs its tests
+ * again). drillLanguage.corpus.test.ts checks the two bodies stay identical.
+ */
+export function ambiguousLetterStarts(lang: 'pt' | 'es', text: string): string[] {
+  const lead = lang === 'pt' ? '(?:A|E)' : '(?:La|A)';
+  if (new RegExp(`^${lead}(?:#|b)? (?:menor|maior|mayor)$`, 'u').test(text.trim())) return [];
+  const start = '(?:^|[.!?:;]\\s+|—\\s+)';
+  const qual = '(?:[Mm]enor|[Mm]aior|[Mm]ayor|[Nn]atural|[Hh]armónica|[Aa]rmónica|[Mm]elódica)';
+  // A letter carrying an accidental ("Ab maior") cannot be read as a word, and
+  // a chord spelled out right after its name ("A maior (A, C#, E) — …") is
+  // unambiguous.
+  const out = [...text.matchAll(new RegExp(`${start}(${lead}\\s+${qual})(?![\\p{L}])(?! \\([A-G])`, 'gu'))].map((m) => m[1]);
+  if (lang === 'pt') out.push(...[...text.matchAll(new RegExp(`${start}(E\\s+(?:está|é))(?![\\p{L}])`, 'gu'))].map((m) => m[1]));
+  return out;
+}

@@ -11,9 +11,18 @@
  *    resources (never through the English fallback), and the bundles hold no
  *    clause the registry does not list;
  *  - every interval name the interval items show parses to a key, and each of
- *    those keys has a PT and an ES name and article form — no more, no fewer.
+ *    those keys has a PT and an ES name and article form — no more, no fewer;
+ *  - (fix pass after the review of 2d07ebe) the PT and ES tables equal their
+ *    recording word for word (fixtures/drill-terms-pt-es.json; RECORD_DRILL_TERMS=1
+ *    re-records, for a deliberate edit only), and say what the English says:
+ *    each ladder step names the same chord tones, the same size of step and the
+ *    same chord symbols; each stack is the English one in the house order; each
+ *    function clause keeps its V, tonic, home / rest / tension / resolve; each
+ *    interval name is its number and quality in the lessons' words.
  */
 import { describe, expect, it } from 'vitest';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import i18n from '../index';
 import '../drillTerms';
 import { DRILL_TERMS } from '../drillTerms';
@@ -133,4 +142,112 @@ describe('interval names: every name the interval items show has a PT and an ES 
   it('English has no interval table: its names are the bank\'s own (graded) strings', () => {
     expect(Object.keys(DRILL_TERMS.en)).toEqual(['clauses']);
   });
+});
+
+// ─── The PT / ES wording is pinned, and checked against its meaning ────────────
+
+const TERMS_FIXTURE = resolve(process.cwd(), 'src/i18n/__tests__/fixtures/drill-terms-pt-es.json');
+if (process.env.RECORD_DRILL_TERMS) {
+  writeFileSync(TERMS_FIXTURE, `${JSON.stringify({ pt: DRILL_TERMS.pt, es: DRILL_TERMS.es }, null, 1)}\n`);
+}
+
+describe('the PT and ES tables equal their recording, word for word', () => {
+  it('every clause, interval name and article form', () => {
+    const recorded = JSON.parse(readFileSync(TERMS_FIXTURE, 'utf8')) as Record<'pt' | 'es', unknown>;
+    expect(DRILL_TERMS.pt).toEqual(recorded.pt);
+    expect(DRILL_TERMS.es).toEqual(recorded.es);
+  });
+});
+
+type Clauses = Record<string, Record<string, Record<string, string>>>;
+const clauseText = (lng: 'en' | 'pt' | 'es', tmpl: string, param: string, token: string) =>
+  (DRILL_TERMS[lng].clauses as Clauses)[tmpl][param][token];
+const count = (s: string, re: RegExp) => [...s.matchAll(re)].length;
+const SYMBOLS = /(?<![\p{L}\p{N}])(?:maj7|m7|ø7)(?![\p{L}\p{N}])/gu;
+const symbols = (s: string) => [...s.matchAll(SYMBOLS)].map((m) => m[0]).sort();
+/** Chord tones named: "the 3rd" / "a 3.ª" → 3. */
+const tonesEn = (s: string) => [...new Set([...s.matchAll(/(\d)(?:st|nd|rd|th)\b/g)].map((m) => m[1]))].sort();
+const tonesPtEs = (s: string) => [...new Set([...s.matchAll(/(\d)\.ª/g)].map((m) => m[1]))].sort();
+/** A stack of thirds, in the house order: EN "M3+m3" → ['3M', '3m']; PT / ES "3M+3m" → the same; ES "5J" = "5P". */
+const stackEn = (s: string) =>
+  [...s.replace(SYMBOLS, '').matchAll(/(?<![\p{L}\p{N}])([MmPAd])(\d)(?![\p{L}\p{N}])/gu)].map((m) => `${m[2]}${m[1]}`);
+const stackPtEs = (s: string) =>
+  [...s.matchAll(/(?<![\p{L}\p{N}.])(\d)([MmPJAd])(?![\p{L}\p{N}])/gu)].map((m) => `${m[1]}${m[2].replace('J', 'P')}`);
+
+/** What each language calls the same thing. */
+const WORDS: Record<string, { en: RegExp; pt: RegExp; es: RegExp }> = {
+  halfStep: { en: /half step/g, pt: /meio-tom/g, es: /semitono/g },
+  wholeStep: { en: /whole step/g, pt: /(?<![\p{L}-])tom(?![\p{L}-])/gu, es: /(?<!\p{L})tono(?!\p{L})/gu },
+  lowered: { en: /lowered/g, pt: /baixad[ao]/g, es: /rebajad[ao]/g },
+  raised: { en: /raised/g, pt: /elevad[ao]/g, es: /elevad[ao]/g },
+  also: { en: /\balso\b/g, pt: /também/g, es: /también/g },
+  again: { en: /\bagain\b/g, pt: /outra vez/g, es: /otra vez/g },
+  dominantSeventh: { en: /dominant 7\b/g, pt: /sétima da dominante/g, es: /séptima de dominante/g },
+  doubleFlatSeventh: { en: /double-flat 7/g, pt: /7\.ª diminuta/g, es: /7\.ª disminuida/g },
+  referenceStack: { en: /reference stack/g, pt: /empilhamento de referência/g, es: /apilamiento de referencia/g },
+  five: { en: /(?<!\p{L})V(?!\p{L})/gu, pt: /(?<!\p{L})V(?!\p{L})/gu, es: /(?<!\p{L})V(?!\p{L})/gu },
+  tonic: { en: /tonic/g, pt: /tónica/g, es: /tónica/g },
+  home: { en: /home/g, pt: /casa/g, es: /casa/g },
+  rest: { en: /\brest\b/g, pt: /repouso/g, es: /reposo/g },
+  tension: { en: /tension/g, pt: /tensão/g, es: /tensión/g },
+  resolve: { en: /resolve/g, pt: /resolver/g, es: /resolver/g },
+};
+
+/** Where a PT / ES clause and its English disagree, in words. */
+export function clauseMismatches(en: string, lng: 'pt' | 'es', text: string): string[] {
+  const out: string[] = [];
+  if (JSON.stringify(tonesEn(en)) !== JSON.stringify(tonesPtEs(text))) out.push(`tones ${tonesEn(en)} ≠ ${tonesPtEs(text)}`);
+  if (JSON.stringify(stackEn(en)) !== JSON.stringify(stackPtEs(text))) out.push(`stack ${stackEn(en)} ≠ ${stackPtEs(text)}`);
+  if (JSON.stringify(symbols(en)) !== JSON.stringify(symbols(text))) out.push(`symbols ${symbols(en)} ≠ ${symbols(text)}`);
+  for (const [name, w] of Object.entries(WORDS)) {
+    if (count(en, w.en) !== count(text, w[lng])) out.push(`${name} ${count(en, w.en)} ≠ ${count(text, w[lng])}`);
+  }
+  return out;
+}
+
+describe('each PT / ES clause says what its English says', () => {
+  it('the check catches a changed step, tone, stack or symbol (planted)', () => {
+    const en = clauseText('en', 'seventhLadder', 'step', 'dominant7');
+    expect(clauseMismatches(en, 'es', 'el maj7 con la 7.ª rebajada un tono')).toEqual(['halfStep 1 ≠ 0', 'wholeStep 0 ≠ 1']);
+    expect(clauseMismatches(clauseText('en', 'seventhLadder', 'step', 'minor7'), 'pt', 'a sétima da dominante com a 5.ª também baixada')).toEqual([
+      'tones 3 ≠ 5',
+    ]);
+    expect(clauseMismatches('M3 + m3', 'pt', '3m + 3M')).toEqual(['stack 3M,3m ≠ 3m,3M']);
+    expect(clauseMismatches(en, 'pt', 'o m7 com a 7.ª baixada meio-tom')).toEqual(['symbols maj7 ≠ m7']);
+  });
+
+  for (const lng of ['pt', 'es'] as const) {
+    it(`${lng.toUpperCase()}: every clause of every template`, () => {
+      const bad: string[] = [];
+      for (const id of registered) {
+        const [whyKey, param, token] = id.split('|');
+        const tmpl = whyKey.replace(/^drill\.why\./, '');
+        const en = clauseText('en', tmpl, param, token);
+        const text = clauseText(lng, tmpl, param, token);
+        for (const m of clauseMismatches(en, lng, text)) bad.push(`${id}: ${m} ("${en}" / "${text}")`);
+      }
+      expect(bad).toEqual([]);
+    });
+  }
+});
+
+describe('each PT / ES interval name is its number and quality in the lessons\' words', () => {
+  const QUALITY = {
+    pt: { P: 'perfeita', M: 'maior', m: 'menor', A: 'aumentada', d: 'diminuta' },
+    es: { P: 'justa', M: 'mayor', m: 'menor', A: 'aumentada', d: 'disminuida' },
+  } as const;
+  const SPECIAL = {
+    pt: { P1: 'Uníssono', P8: 'Oitava', TT: 'Trítono' },
+    es: { P1: 'Unísono', P8: 'Octava', TT: 'Tritono' },
+  } as const;
+  for (const lng of ['pt', 'es'] as const) {
+    it(`${lng.toUpperCase()}`, () => {
+      const table = DRILL_TERMS[lng].interval as Record<string, string>;
+      for (const [code, name] of Object.entries(table)) {
+        const special = (SPECIAL[lng] as Record<string, string>)[code];
+        const q = code[0] as keyof (typeof QUALITY)['pt'];
+        expect(name, `${lng} ${code}`).toBe(special ?? `${code.slice(1)}.ª ${QUALITY[lng][q]}`);
+      }
+    });
+  }
 });

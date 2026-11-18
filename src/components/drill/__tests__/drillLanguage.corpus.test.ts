@@ -20,8 +20,12 @@
  * DRILL_LANG_REPORT=<file> writes the counts per language, family and field.
  */
 import { describe, expect, it } from 'vitest';
-import { writeFileSync } from 'node:fs';
-import { renderBank, type Lang, type RenderedItem } from './drillCorpus';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { BANK, ambiguousLetterStarts, renderBank, type Lang, type RenderedItem } from './drillCorpus';
+import type { DrillItem } from '../../../core/types/drill';
+import { DRILL_TERMS } from '../../../i18n/drillTerms';
+import { qualityName } from '../../../utils/qualityName';
 
 const SPLIT = /[\s,;:!?¿¡()"“”«»…—–=·+/]+/u;
 
@@ -33,17 +37,26 @@ export function tokens(text: string): string[] {
     .filter((w) => /[\p{L}\p{N}]/u.test(w));
 }
 
-const NOTE_OR_PITCH = /^[A-G](?:𝄪|𝄫|♯|♭)?\d*$/u; // C, F♯, B3 (a pitch), G7 / B♭7 (a chord symbol)
+const NOTE = /^[A-G](?:𝄪|𝄫|♯|♭)?$/u; // C, F♯ (letter names, D-18)
+// B3 (a pitch, guitar reading), G7 / B♭7 (a chord symbol, V7 items). Shaped
+// like an English-order augmented interval ("A4"), so it passes only where the
+// item's own bank values carry it (ownSymbols): a translation never adds one.
+const PITCH_OR_CHORD_SYMBOL = /^[A-G](?:𝄪|𝄫|♯|♭)?\d+$/u;
 const ROMAN = /^[IVXivx]+(?:°|ø|\+)?7?$/u; // I, ii, vii°, V7, IX
 const NUMBER_OR_ORDINAL = /^\d+(?:\.[ªº]s?|[♯♭])?$/u; // 7, 3.ª, a signature's 3♯ / 2♭
 const FRET_PLACE = /^[①②③④⑤⑥]\d+$/u; // guitar reading: ⑥3 = string 6, fret 3
 const CHORD_QUALITY_SYMBOLS = new Set(['maj7', 'm7', 'ø7']);
 const ENGLISH_ORDER_INTERVAL = /^[PMmAd][1-8]$/u; // M3, m3, P5 (PT/ES write 3M, 3m, 5P / 5J)
 
-/** Written the same in every language: never a word to check. */
-function isSymbol(token: string): boolean {
+/**
+ * Written the same in every language: never a word to check. A pitch or chord
+ * symbol counts only when `own` (the item's bank values) holds it; without
+ * `own` (building the English vocabulary) any one counts.
+ */
+function isSymbol(token: string, own?: ReadonlySet<string>): boolean {
+  if (PITCH_OR_CHORD_SYMBOL.test(token)) return own ? own.has(token) : true;
   return (
-    NOTE_OR_PITCH.test(token) ||
+    NOTE.test(token) ||
     ROMAN.test(token) ||
     NUMBER_OR_ORDINAL.test(token) ||
     FRET_PLACE.test(token) ||
@@ -89,12 +102,15 @@ function englishVocabulary(): Set<string> {
   return vocab;
 }
 
-/** The English words (or English-order interval abbreviations) in one translated string. */
-export function englishIn(text: string, lang: 'pt' | 'es', vocab: ReadonlySet<string>): string[] {
+/**
+ * The English words (or English-order interval abbreviations, or a pitch /
+ * chord symbol the item does not carry) in one translated string.
+ */
+export function englishIn(text: string, lang: 'pt' | 'es', vocab: ReadonlySet<string>, own: ReadonlySet<string>): string[] {
   const found: string[] = [];
   for (const tok of tokens(text)) {
-    if (isSymbol(tok)) continue;
-    if (ENGLISH_ORDER_INTERVAL.test(tok)) {
+    if (isSymbol(tok, own)) continue;
+    if (ENGLISH_ORDER_INTERVAL.test(tok) || PITCH_OR_CHORD_SYMBOL.test(tok)) {
       found.push(tok);
       continue;
     }
@@ -112,13 +128,30 @@ interface Leak {
   words: string[];
 }
 
+/** The symbols an item's own bank values carry (params, chips, answer): pitches, chord symbols. */
+function ownSymbols(item: DrillItem): Set<string> {
+  const values: string[] = [];
+  const add = (v: unknown) => {
+    if (typeof v === 'string') values.push(v);
+    else if (Array.isArray(v)) v.forEach(add);
+    else if (v && typeof v === 'object') Object.values(v).forEach(add);
+  };
+  add(item.promptParams);
+  add(item.whyParams);
+  add(item.input);
+  add(item.answer);
+  return new Set(values.flatMap(tokens));
+}
+
 function leaksFor(lang: 'pt' | 'es', vocab: ReadonlySet<string>): Leak[] {
   const leaks: Leak[] = [];
-  for (const r of renderBank(lang)) {
+  const rendered = renderBank(lang);
+  for (const [i, r] of rendered.entries()) {
     const texts = fieldTexts(r);
+    const own = ownSymbols(BANK[i]);
     for (const field of FIELDS) {
       for (const text of texts[field]) {
-        const words = englishIn(text, lang, vocab);
+        const words = englishIn(text, lang, vocab, own);
         if (words.length) leaks.push({ id: r.id, family: r.family, field, text, words });
       }
     }
@@ -145,6 +178,7 @@ function counts(leaks: Leak[]) {
 }
 
 const VOCAB = englishVocabulary();
+const NONE: ReadonlySet<string> = new Set();
 
 describe('the detector itself', () => {
   it('has a real English vocabulary to check against', () => {
@@ -155,20 +189,24 @@ describe('the detector itself', () => {
   });
 
   it('finds planted English and passes what stays as written', () => {
-    expect(englishIn('Uma Major 3rd acima de C?', 'pt', VOCAB)).toEqual(['Major', '3rd']);
-    expect(englishIn('C maior puxa home — creates rest — é essa a sua função harmónica.', 'pt', VOCAB)).toEqual([
+    expect(englishIn('Uma Major 3rd acima de C?', 'pt', VOCAB, NONE)).toEqual(['Major', '3rd']);
+    expect(englishIn('C maior puxa home — creates rest — é essa a sua função harmónica.', 'pt', VOCAB, NONE)).toEqual([
       'home',
       'creates',
       'rest',
     ]);
-    expect(englishIn('C mayor apila M3 + m3 desde la fundamental: C E G.', 'es', VOCAB)).toEqual(['M3', 'm3']);
-    expect(englishIn('Soletra C Half-Diminished 7th', 'pt', VOCAB)).toEqual(['Half', 'Diminished', '7th']);
-    expect(englishIn('¿Cuál es el V7 de B♭? G7, E♭7, vii°, B3, 3.ª menor, 3M + 3m, el m7 y el ø7', 'es', VOCAB)).toEqual([]);
-    expect(englishIn('G maior tem 1♯; F maior 1♭. ⑥3 · ⑤8', 'pt', VOCAB)).toEqual([]);
-    expect(englishIn('A escala de A menor natural: as letras e a cadência plagal no fim.', 'pt', VOCAB)).toEqual([]);
-    expect(englishIn('No, a la tónica: menor natural, cadencia plagal.', 'es', VOCAB)).toEqual([]);
+    expect(englishIn('C mayor apila M3 + m3 desde la fundamental: C E G.', 'es', VOCAB, NONE)).toEqual(['M3', 'm3']);
+    expect(englishIn('Soletra C Half-Diminished 7th', 'pt', VOCAB, NONE)).toEqual(['Half', 'Diminished', '7th']);
+    expect(englishIn('¿Cuál es el V7 de B♭? G7, E♭7, vii°, B3, 3.ª menor, 3M + 3m, el m7 y el ø7', 'es', VOCAB, new Set(['G7', 'E♭7', 'B3']))).toEqual([]);
+    expect(englishIn('G maior tem 1♯; F maior 1♭. ⑥3 · ⑤8', 'pt', VOCAB, NONE)).toEqual([]);
+    expect(englishIn('A escala de A menor natural: as letras e a cadência plagal no fim.', 'pt', VOCAB, NONE)).toEqual([]);
+    expect(englishIn('No, a la tónica: menor natural, cadencia plagal.', 'es', VOCAB, NONE)).toEqual([]);
+    // An English-order augmented interval shaped like a pitch is caught, unless the item carries that pitch.
+    expect(englishIn('Uma A4 acima de C; de C a A5.', 'pt', VOCAB, NONE)).toEqual(['A4', 'A5']);
+    expect(englishIn('A4 escrito soa A3.', 'pt', VOCAB, new Set(['A4', 'A3']))).toEqual([]);
+    expect(englishIn('A4 escrito soa A3.', 'pt', VOCAB, new Set(['A4']))).toEqual(['A3']);
     // A word shared with Portuguese is still English in Spanish ("as").
-    expect(englishIn('Funciona as V', 'es', VOCAB)).toEqual(['as']);
+    expect(englishIn('Funciona as V', 'es', VOCAB, NONE)).toEqual(['as']);
   });
 });
 
@@ -196,3 +234,98 @@ describe('no English in Portuguese or Spanish Drill text (A12)', () => {
 });
 
 export type { Lang };
+
+// ─── Sentences, not only words (fix pass after the review of 2d07ebe) ─────────
+
+/** The body of a function named `name` in a source file, whitespace folded. */
+function functionBody(path: string, name: string): string {
+  const src = readFileSync(resolve(process.cwd(), path), 'utf8');
+  const at = src.indexOf(`export function ${name}(`);
+  expect(at, `${name} in ${path}`).toBeGreaterThan(-1);
+  const open = src.indexOf('{', src.indexOf(')', at));
+  let depth = 0;
+  for (let i = open; i < src.length; i++) {
+    if (src[i] === '{') depth++;
+    else if (src[i] === '}' && --depth === 0) return src.slice(open, i + 1).replace(/\s+/g, ' ');
+  }
+  throw new Error(`unbalanced ${name}`);
+}
+
+/** Every question and explanation of the bank in one language (sentences; chips are labels). */
+function sentences(lang: 'pt' | 'es'): Array<{ id: string; text: string }> {
+  return renderBank(lang).flatMap((r) => [
+    { id: `${r.id} [question]`, text: r.question },
+    { id: `${r.id} [explanation]`, text: r.explanation },
+  ]);
+}
+
+describe('PT / ES Drill sentences never open on a bare note letter that reads as a word (noun rule)', () => {
+  it('the rule is the lessons\' own, word for word (noteNames.test.ts)', () => {
+    expect(functionBody('src/components/drill/__tests__/drillCorpus.ts', 'ambiguousLetterStarts')).toBe(
+      functionBody('src/i18n/content/__tests__/noteNames.test.ts', 'ambiguousLetterStarts'),
+    );
+  });
+
+  it('it catches what it should, on Drill sentences', () => {
+    expect(ambiguousLetterStarts('pt', 'A menor puxa para casa — cria repouso.')).toEqual(['A menor']);
+    expect(ambiguousLetterStarts('pt', 'E menor é o acorde diatónico.')).toEqual(['E menor']);
+    expect(ambiguousLetterStarts('es', 'A menor tira hacia casa.')).toEqual(['A menor']);
+    expect(ambiguousLetterStarts('pt', 'Conta as letras. C: A menor.')).toEqual(['A menor']);
+    expect(ambiguousLetterStarts('pt', 'O acorde de A menor puxa para casa.')).toEqual([]);
+    expect(ambiguousLetterStarts('es', 'La relativa de C es A menor.')).toEqual([]);
+  });
+
+  for (const lang of ['pt', 'es'] as const) {
+    it(`${lang.toUpperCase()}: no question or explanation of the bank breaks it`, () => {
+      const hits = sentences(lang).filter((s) => ambiguousLetterStarts(lang, s.text).length > 0);
+      expect(hits.slice(0, 20)).toEqual([]);
+    });
+  }
+});
+
+/**
+ * A chip's name stands capitalised on its own ("Trítono", "Meio-diminuto");
+ * inside running text the Drill writes it in lower case ("formam um trítono",
+ * "C♯ meio-diminuto"). No such name may stand capitalised in the middle of a
+ * sentence — today none can (no pair-to-name item answers a tritone, unison
+ * or octave), so this guards "A resposta é Trítono." for later.
+ */
+function capitalisedNames(lang: 'pt' | 'es'): string[] {
+  const intervals = Object.values((DRILL_TERMS[lang] as { interval: Record<string, string> }).interval);
+  const qualities = (['major', 'minor', 'diminished', 'augmented', 'major7', 'dominant7', 'minor7', 'half_diminished7', 'diminished7'] as const).map(
+    (q) => qualityName(q, lang),
+  );
+  return [...intervals, ...qualities].filter((n) => /^\p{Lu}/u.test(n));
+}
+
+export function capitalisedMidSentence(text: string, names: readonly string[]): string[] {
+  const found: string[] = [];
+  for (const name of names) {
+    const re = new RegExp(`(?<![\\p{L}\\p{N}])${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'gu');
+    for (const m of text.matchAll(re)) {
+      const before = text.slice(0, m.index);
+      if (!/(?:^|[.!?]\s+|[¿¡]|—\s+)$/u.test(before)) found.push(name);
+    }
+  }
+  return found;
+}
+
+describe('no chip name stands capitalised inside running text', () => {
+  it('the names it watches, and planted cases', () => {
+    expect(capitalisedNames('pt')).toEqual(expect.arrayContaining(['Uníssono', 'Trítono', 'Oitava', 'Meio-diminuto', 'Sétima da dominante']));
+    expect(capitalisedNames('es')).toEqual(expect.arrayContaining(['Unísono', 'Tritono', 'Octava', 'Semidisminuido', 'Séptima de dominante']));
+    const pt = capitalisedNames('pt');
+    expect(capitalisedMidSentence('Conta primeiro as letras. A resposta é Trítono.', pt)).toEqual(['Trítono']);
+    expect(capitalisedMidSentence('Isso dá C♯ Meio-diminuto.', pt)).toEqual(['Meio-diminuto']);
+    expect(capitalisedMidSentence('Trítono é o nome. 6 meios-tons formam um trítono.', pt)).toEqual([]);
+    expect(capitalisedMidSentence('¿Tritono o 5.ª justa?', capitalisedNames('es'))).toEqual([]);
+  });
+
+  for (const lang of ['pt', 'es'] as const) {
+    it(`${lang.toUpperCase()}: none in any question or explanation of the bank`, () => {
+      const names = capitalisedNames(lang);
+      const hits = sentences(lang).flatMap((s) => capitalisedMidSentence(s.text, names).map((n) => `${s.id}: ${n} in "${s.text}"`));
+      expect(hits.slice(0, 20)).toEqual([]);
+    });
+  }
+});
