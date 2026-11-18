@@ -46,12 +46,11 @@ async function openLesson(page: Page, id: string) {
 }
 
 /** What the instrument is showing (the lesson borrows the main store's selection). */
-const selection = (page: Page) =>
-  page.evaluate(async () => {
-    const { useAppStore } = await import(/* @vite-ignore */ '/src/state/store.ts');
-    const s = useAppStore.getState();
-    return `${s.selectedKey.natural}${s.selectedKey.accidental} ${s.selectedScale}`;
-  });
+const selection = (page: Page): Promise<string> =>
+  page.evaluate(`(async () => {
+    const s = (await import('/src/state/store.ts')).useAppStore.getState();
+    return s.selectedKey.natural + s.selectedKey.accidental + ' ' + s.selectedScale;
+  })()`);
 
 for (const lang of ['en', 'pt', 'es'] as const) {
   for (const instrument of ['piano', 'guitar'] as const) {
