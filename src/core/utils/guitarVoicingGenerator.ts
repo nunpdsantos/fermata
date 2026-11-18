@@ -633,15 +633,26 @@ function assignFingers(voicing: Voicing, baseFret: number): Record<number, numbe
   // For barre chords, index finger (1) is used for the barre
   // Other fingers start from 2
   let nextFinger = isBarreChord ? 2 : 1;
+  // Fingers already down, and the lowest finger that still reaches `fret`
+  // from all of them: fingers a < b at most (b − a) + 1 frets apart (QA audit
+  // Q1, 2026-11-18: B7♭5♯9 x 0 0 4 4 1 put the middle finger three frets
+  // past the index; the ring finger reaches it).
+  const down: { finger: number; fret: number }[] = [];
+  const reaching = (fret: number) => down.reduce((need, d) => Math.max(need, d.finger + (fret - d.fret) - 1), 1);
+  const place = (s: number, finger: number, fret: number) => {
+    assignments[s] = finger;
+    down.push({ finger, fret });
+  };
 
   frets.forEach((fret) => {
     const strings = byFret[fret];
 
     if (fret === 0 && isBarreChord) {
       // Barre position - all notes on lowest fret use index finger
-      strings.forEach((s) => (assignments[s] = 1));
+      strings.forEach((s) => place(s, 1, fret));
       // nextFinger already set to 2
     } else {
+      nextFinger = Math.max(nextFinger, reaching(fret));
       // Assign fingers based on fret position relative to lowest fret
       // Notes on the same fret can sometimes share a finger (mini-barre)
       // but typically each gets its own finger
@@ -656,19 +667,19 @@ function assignFingers(voicing: Voicing, baseFret: number): Record<number, numbe
 
         if (isAdjacent && sortedStrings.length <= 3) {
           // Mini-barre with one finger
-          sortedStrings.forEach((s) => (assignments[s] = nextFinger));
+          sortedStrings.forEach((s) => place(s, nextFinger, fret));
           nextFinger++;
         } else {
           // Each string gets its own finger
           sortedStrings.forEach((s) => {
-            assignments[s] = nextFinger;
+            place(s, nextFinger, fret);
             nextFinger++;
           });
         }
       } else {
         // Single note on this fret
         sortedStrings.forEach((s) => {
-          assignments[s] = nextFinger;
+          place(s, nextFinger, fret);
           nextFinger++;
         });
       }

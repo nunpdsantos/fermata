@@ -6,6 +6,7 @@ import type { GuitarTuning } from '../../core/constants/guitarTunings.ts';
 import { midiToNote } from '../../core/utils/pianoLayout.ts';
 import { chordShapesForCapo } from '../../core/constants/guitarChordShapes.ts';
 import type { FingerNumber } from '../../core/constants/guitarChordShapes.ts';
+import { chordChipLabel } from './chordChipLabel.ts';
 import {
   getGuitarPosition,
   suggestGuitarPosition,
@@ -464,21 +465,12 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
     return () => window.removeEventListener('keydown', onKey);
   }, [scaleView, stepPosition]);
 
-  // Position labels for chord shapes
+  // Position labels for chord shapes: the learner's name in the learner's
+  // language, with or without a capo (chordChipLabel.ts; the capo rule of the
+  // seat's decision S-3, final review of wave 2, now for every grip — QA
+  // audit Q1: "AMaj13 barre" and "Pos 5" reached the screen).
   const positionLabels = useMemo(() => {
-    const baseLabels = chordShapes.map(({ shape, baseFret }) => {
-      if (capo > 0) {
-        // With a capo (the seat's decision S-3, final review of wave 2): the
-        // library's "G shape" / "E barre" in the learner's language, and a
-        // grip the voicing generator named by ITS fret ("Pos 1", "Open": the
-        // lower chord's) named by the fret it is drawn at.
-        const named = /^(.+) (shape|barre)(\/.+)?$/.exec(shape.shortName ?? '');
-        if (named) return t(named[2] === 'shape' ? 'capo.shapeChip' : 'capo.barreChip', { shape: named[1] }) + (named[3] ?? '');
-        return baseFret === capo ? t('fretboard.chordOpen') : t('fretboard.chordFret', { fret: baseFret });
-      }
-      if (shape.shortName) return shape.shortName;
-      return baseFret === capo ? t('fretboard.chordOpen') : t('fretboard.chordFret', { fret: baseFret });
-    });
+    const baseLabels = chordShapes.map((entry) => chordChipLabel(entry, capo, t));
     const counts = new Map<string, number>();
     for (const l of baseLabels) counts.set(l, (counts.get(l) ?? 0) + 1);
     const indexTracker = new Map<string, number>();

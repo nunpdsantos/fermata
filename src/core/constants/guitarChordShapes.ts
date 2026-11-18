@@ -479,7 +479,10 @@ const DOMINANT7_SHAPES: ChordShape[] = [
       { fret: 0, finger: 1 }, // 4th - root (index)
       { fret: 2, finger: 3 }, // 3rd - 5th (ring)
       { fret: 1, finger: 2 }, // 2nd - b7 (middle)
-      { fret: 2, finger: 3 }, // 1st - 3rd (ring barring with 3rd string)
+      // 1st - 3rd (little finger). The ring finger cannot hold the 3rd and
+      // 1st strings across the 2nd, a fret lower (QA audit Q1, 2026-11-18);
+      // fingers 1 3 2 4 as fachords.com gives Eb7 x x 1 3 2 3.
+      { fret: 2, finger: 4 },
     ],
   },
 ];
@@ -643,12 +646,14 @@ const MAJOR7_SHAPES: ChordShape[] = [
     rootString: 6,
     rootFretOffset: 3,
     strings: [
-      { fret: 3, finger: 2 }, // 6th - G (root)
-      { fret: 2, finger: 1 }, // 5th - B
+      // Ring, middle, index (fachords.com, Gmaj7 3 2 0 0 0 2): the old 2 1 . . . 3
+      // put the middle finger a fret beyond the ring (QA audit Q1).
+      { fret: 3, finger: 3 }, // 6th - G (root)
+      { fret: 2, finger: 2 }, // 5th - B
       { fret: 0, finger: 0 }, // 4th - D
       { fret: 0, finger: 0 }, // 3rd - G
       { fret: 0, finger: 0 }, // 2nd - B
-      { fret: 2, finger: 3 }, // 1st - F# (7)
+      { fret: 2, finger: 1 }, // 1st - F# (7)
     ],
   },
   // Amaj7 Open
@@ -1113,10 +1118,12 @@ const DIMINISHED7_SHAPES: ChordShape[] = [
     strings: [
       { fret: null, finger: 0 }, // 6th - muted
       { fret: null, finger: 0 }, // 5th - muted
+      // Fingers 1 3 2 4 (fachords.com, Ebdim7 x x 1 2 1 2): one finger cannot
+      // hold the 3rd and 1st strings across the 2nd, a fret lower (QA audit Q1).
       { fret: 0, finger: 1 }, // 4th - root
-      { fret: 1, finger: 2 }, // 3rd - b5
-      { fret: 0, finger: 1 }, // 2nd - bb7
-      { fret: 1, finger: 2 }, // 1st - b3
+      { fret: 1, finger: 3 }, // 3rd - b5
+      { fret: 0, finger: 2 }, // 2nd - bb7
+      { fret: 1, finger: 4 }, // 1st - b3
     ],
   },
 ];
@@ -1264,9 +1271,12 @@ const MINOR6_SHAPES: ChordShape[] = [
     rootString: 6,
     rootFretOffset: 0,
     strings: [
+      // Fingers 1 2 3 1 4 1 (tabs4acoustic.com, Fm6 1 3 3 1 3 1): the little
+      // finger cannot hold the 4th and 2nd strings across the barred 3rd
+      // (QA audit Q1).
       { fret: 0, finger: 'bar' }, // 6th - root
-      { fret: 2, finger: 3 }, // 5th - 5th
-      { fret: 2, finger: 4 }, // 4th - root
+      { fret: 2, finger: 2 }, // 5th - 5th
+      { fret: 2, finger: 3 }, // 4th - root
       { fret: 0, finger: 'bar' }, // 3rd - b3
       { fret: 2, finger: 4 }, // 2nd - 6th
       { fret: 0, finger: 'bar' }, // 1st - root
@@ -1368,7 +1378,7 @@ const ADD9_SHAPES: ChordShape[] = [
   // Eadd9-shape Barre (moveable) - root on 6th string
   {
     name: 'Eadd9-shape Barre',
-    shortName: 'E add9 barre',
+    shortName: 'E barre',
     type: 'barre',
     cagedShape: 'E',
     rootString: 6,
@@ -1386,7 +1396,7 @@ const ADD9_SHAPES: ChordShape[] = [
   // Aadd9-shape Barre (moveable) - root on 5th string
   {
     name: 'Aadd9-shape Barre',
-    shortName: 'A add9 barre',
+    shortName: 'A barre',
     type: 'barre',
     cagedShape: 'A',
     rootString: 5,
@@ -1404,7 +1414,7 @@ const ADD9_SHAPES: ChordShape[] = [
   // Dadd9-shape Barre (moveable) - root on 4th string
   {
     name: 'Dadd9-shape Barre',
-    shortName: 'D add9 barre',
+    shortName: 'D barre',
     type: 'barre',
     cagedShape: 'D',
     rootString: 4,
@@ -1597,7 +1607,7 @@ const MINOR_MAJOR7_SHAPES: ChordShape[] = [
   // AmMaj7 Open
   {
     name: 'AmMaj7 Open',
-    shortName: 'Am(M7) shape',
+    shortName: 'A shape',
     type: 'open',
     cagedShape: 'A',
     rootString: 5,
@@ -1614,7 +1624,7 @@ const MINOR_MAJOR7_SHAPES: ChordShape[] = [
   // EmMaj7 Open
   {
     name: 'EmMaj7 Open',
-    shortName: 'Em(M7) shape',
+    shortName: 'E shape',
     type: 'open',
     cagedShape: 'E',
     rootString: 6,
@@ -1631,7 +1641,7 @@ const MINOR_MAJOR7_SHAPES: ChordShape[] = [
   // E-shape mMaj7 Barre - root on 6th string
   {
     name: 'E-shape mMaj7 Barre',
-    shortName: 'Em(M7) barre',
+    shortName: 'E barre',
     type: 'barre',
     cagedShape: 'E',
     rootString: 6,
@@ -1649,7 +1659,7 @@ const MINOR_MAJOR7_SHAPES: ChordShape[] = [
   // A-shape mMaj7 Barre - root on 5th string
   {
     name: 'A-shape mMaj7 Barre',
-    shortName: 'Am(M7) barre',
+    shortName: 'A barre',
     type: 'barre',
     cagedShape: 'A',
     rootString: 5,
@@ -1751,7 +1761,7 @@ const MAJOR9_SHAPES: ChordShape[] = [
   // CMaj9 Open
   {
     name: 'CMaj9 Open',
-    shortName: 'CMaj9 shape',
+    shortName: 'C shape',
     type: 'open',
     cagedShape: 'C',
     rootString: 5,
@@ -1768,7 +1778,7 @@ const MAJOR9_SHAPES: ChordShape[] = [
   // A-shape Maj9 Barre - root on 5th string
   {
     name: 'A-shape Maj9 Barre',
-    shortName: 'AMaj9 barre',
+    shortName: 'A barre',
     type: 'barre',
     cagedShape: 'A',
     rootString: 5,
@@ -1786,7 +1796,7 @@ const MAJOR9_SHAPES: ChordShape[] = [
   // E-shape Maj9 Barre - root on 6th string
   {
     name: 'E-shape Maj9 Barre',
-    shortName: 'EMaj9 barre',
+    shortName: 'E barre',
     type: 'barre',
     cagedShape: 'E',
     rootString: 6,
@@ -2029,7 +2039,7 @@ const MAJOR11_SHAPES: ChordShape[] = [
   // AMaj11-shape Barre - root on 5th string
   {
     name: 'A-shape Maj11 Barre',
-    shortName: 'AMaj11 barre',
+    shortName: 'A barre',
     type: 'barre',
     cagedShape: 'A',
     rootString: 5,
@@ -2047,7 +2057,7 @@ const MAJOR11_SHAPES: ChordShape[] = [
   // EMaj11-shape Barre - root on 6th string
   {
     name: 'E-shape Maj11 Barre',
-    shortName: 'EMaj11 barre',
+    shortName: 'E barre',
     type: 'barre',
     cagedShape: 'E',
     rootString: 6,
@@ -2139,11 +2149,15 @@ const DOMINANT13_SHAPES: ChordShape[] = [
     rootFretOffset: 0,
     strings: [
       { fret: null, finger: 0 }, // 6th - muted
+      // The open A13 (x 0 2 0 2 2: index, middle, ring on the 4th, 2nd and
+      // 1st strings, akordy.kytary.cz) with the index barring the open
+      // strings: x 1 2 1 3 4. The ring finger cannot hold the 4th and 2nd
+      // strings across the barred 3rd (QA audit Q1).
       { fret: 0, finger: 'bar' }, // 5th - root (index barre)
-      { fret: 2, finger: 3 }, // 4th - 5th (ring)
+      { fret: 2, finger: 2 }, // 4th - 5th (middle)
       { fret: 0, finger: 'bar' }, // 3rd - b7 (index barre)
-      { fret: 2, finger: 3 }, // 2nd - 9th
-      { fret: 2, finger: 4 }, // 1st - 13th (6th)
+      { fret: 2, finger: 3 }, // 2nd - 3rd (ring)
+      { fret: 2, finger: 4 }, // 1st - 13th (6th) (little)
     ],
   },
   // E13-shape Barre - root on 6th string
@@ -2174,24 +2188,28 @@ const MAJOR13_SHAPES: ChordShape[] = [
   // AMaj13-shape Barre - root on 5th string
   {
     name: 'A-shape Maj13 Barre',
-    shortName: 'AMaj13 barre',
+    shortName: 'A barre',
     type: 'barre',
     cagedShape: 'A',
     rootString: 5,
     rootFretOffset: 0,
     strings: [
       { fret: null, finger: 0 }, // 6th - muted
+      // Fingers 1 3 2 4 4: the ring finger cannot hold the 4th and 2nd
+      // strings across the 3rd, a fret lower (QA audit Q1); the little finger
+      // takes the 2nd and 1st strings together, as fachords.com does for
+      // Cmaj13 8 x 9 9 10 10.
       { fret: 0, finger: 1 }, // 5th - root (index)
       { fret: 2, finger: 3 }, // 4th - 5th (ring)
       { fret: 1, finger: 2 }, // 3rd - M7 (middle)
-      { fret: 2, finger: 3 }, // 2nd - 9th (ring barre)
-      { fret: 2, finger: 4 }, // 1st - 13th (6th) (pinky)
+      { fret: 2, finger: 4 }, // 2nd - 3rd (little, with the 1st string)
+      { fret: 2, finger: 4 }, // 1st - 13th (6th) (little)
     ],
   },
   // EMaj13-shape Barre - root on 6th string
   {
     name: 'E-shape Maj13 Barre',
-    shortName: 'EMaj13 barre',
+    shortName: 'E barre',
     type: 'barre',
     cagedShape: 'E',
     rootString: 6,
@@ -2308,7 +2326,7 @@ const SIXNINE_SHAPES: ChordShape[] = [
   // C6/9 Open
   {
     name: 'C6/9 Open',
-    shortName: 'C6/9 shape',
+    shortName: 'C shape',
     type: 'open',
     cagedShape: 'C',
     rootString: 5,
@@ -2332,7 +2350,7 @@ const MINORSIXNINE_SHAPES: ChordShape[] = [
   // Am6/9 Open
   {
     name: 'Am6/9 Open',
-    shortName: 'Am6/9 shape',
+    shortName: 'A shape',
     type: 'open',
     cagedShape: 'A',
     rootString: 5,
@@ -2349,7 +2367,7 @@ const MINORSIXNINE_SHAPES: ChordShape[] = [
   // A-shape m6/9 Barre - root on 5th string
   {
     name: 'A-shape m6/9 Barre',
-    shortName: 'Am6/9 barre',
+    shortName: 'A barre',
     type: 'barre',
     cagedShape: 'A',
     rootString: 5,
@@ -2440,10 +2458,15 @@ const SUS2SUS4_SHAPES: ChordShape[] = [
     rootString: 6,
     rootFretOffset: 0,
     strings: [
+      // Fingers 1 3 3 3 1 4: the ring finger lies across the 5th, 4th and 3rd
+      // strings (as in the E-shape add9 barre above) and the little finger
+      // takes the 1st. The old 1 2 3 4 1 4 held the 3rd and 1st strings with
+      // one finger across the barred 2nd (QA audit Q1). No reference found
+      // for this grip: for the teacher to confirm.
       { fret: 0, finger: 'bar' }, // 6th - root
-      { fret: 2, finger: 2 }, // 5th - 5th
+      { fret: 2, finger: 3 }, // 5th - 5th
       { fret: 2, finger: 3 }, // 4th - root
-      { fret: 2, finger: 4 }, // 3rd - 4th
+      { fret: 2, finger: 3 }, // 3rd - 4th
       { fret: 0, finger: 'bar' }, // 2nd - 5th
       { fret: 2, finger: 4 }, // 1st - 2nd
     ],
@@ -2477,7 +2500,7 @@ const AUGMENTED_MAJOR7_SHAPES: ChordShape[] = [
   // EMaj7#5-shape Barre - root on 6th string
   {
     name: 'E-shape Maj7#5 Barre',
-    shortName: 'EMaj7#5 barre',
+    shortName: 'E barre',
     type: 'barre',
     cagedShape: 'E',
     rootString: 6,
@@ -2501,7 +2524,7 @@ const MAJOR7FLAT5_SHAPES: ChordShape[] = [
   // EMaj7b5-shape Barre - root on 6th string
   {
     name: 'E-shape Maj7b5 Barre',
-    shortName: 'EMaj7b5 barre',
+    shortName: 'E barre',
     type: 'barre',
     cagedShape: 'E',
     rootString: 6,
@@ -2525,7 +2548,7 @@ const DIMINISHED_MAJOR7_SHAPES: ChordShape[] = [
   // EdimMaj7-shape Barre - root on 6th string
   {
     name: 'E-shape dimMaj7 Barre',
-    shortName: 'EdimMaj7 barre',
+    shortName: 'E barre',
     type: 'barre',
     cagedShape: 'E',
     rootString: 6,
@@ -2883,6 +2906,14 @@ import { GUITAR_MAX_FRET } from '../utils/guitarPositions';
  *  - a barre never lies across a string that rings open or is fretted below
  *    it, and both of its ends sit on the barre fret;
  *  - nothing is past the frets the board draws.
+ * And (QA audit Q1, 2026-11-18) the hand itself:
+ *  - a finger on several strings lies across every string between them, so
+ *    each of those must sound at that fret under the same finger, or higher
+ *    under another finger: never open, muted or lower (one finger on G12 and
+ *    e12 cannot let B ring at 11);
+ *  - fingers lie in order along the neck, and fingers a < b are at most
+ *    (b − a) + 1 frets apart (one finger per fret plus one fret of stretch);
+ *  - the drawn barre is the index finger's.
  * With a capo on fret `capo` (wave 2) the capo is the nut: a string at the
  * capo rings "open" (no finger), nothing may sit behind it, and a barre lies
  * above it.
@@ -2894,7 +2925,9 @@ export function isPlayableChordShape(
 ): boolean {
   const { shape, baseFret } = entry;
   const fingerFret = new Map<number, number>();
-  for (const p of shape.strings) {
+  const fingerOn: (number | null)[] = shape.strings.map(() => null);
+  for (let i = 0; i < 6; i++) {
+    const p = shape.strings[i];
     if (p.fret === null) continue;
     const abs = baseFret + p.fret;
     if (abs < capo || abs > maxFret) return false;
@@ -2904,6 +2937,22 @@ export function isPlayableChordShape(
     const prev = fingerFret.get(f);
     if (prev !== undefined && prev !== abs) return false;
     fingerFret.set(f, abs);
+    fingerOn[i] = f;
+  }
+  for (const [f, fret] of fingerFret) {
+    const first = fingerOn.indexOf(f);
+    const last = fingerOn.lastIndexOf(f);
+    for (let i = first + 1; i < last; i++) {
+      const p = shape.strings[i];
+      if (p.fret === null || fingerOn[i] === null) return false;
+      const abs = baseFret + p.fret;
+      if (abs < fret || (abs === fret && fingerOn[i] !== f)) return false;
+    }
+  }
+  for (const [a, fa] of fingerFret) {
+    for (const [b, fb] of fingerFret) {
+      if (a < b && (fa > fb || fb - fa > b - a + 1)) return false;
+    }
   }
   if (shape.barreInfo) {
     const bf = baseFret + shape.barreInfo.fret;
@@ -2919,6 +2968,8 @@ export function isPlayableChordShape(
     for (const end of [a, b]) {
       const p = shape.strings[end];
       if (p.fret === null || baseFret + p.fret !== bf) return false;
+      // The drawn barre is the index finger's (Q1).
+      if (p.finger !== 'bar' && p.finger !== 1) return false;
     }
   }
   return true;
@@ -3171,8 +3222,33 @@ export function lowestSoundingPitchClass(entry: { shape: ChordShape; baseFret: n
  * string: open if that string's open note is the bass, otherwise fretted
  * within a 4-fret hand span with a free finger that keeps finger order
  * (lower fret → lower finger). Returns null when no string can take it.
+ *
+ * When every finger is already down (the D7 shape since its fingering was
+ * corrected, QA audit Q1), the bass may instead REPLACE the same note higher
+ * up, the way a guitarist turns the D-shape E7 (x x 2 4 3 4) into E7/G♯
+ * (4 x 2 4 3 x): that string is muted and its finger takes the bass. Only a
+ * note under its own finger, never one under the index barre.
  */
 function withBassAdded(
+  entry: { shape: ChordShape; baseFret: number },
+  bassPc: number,
+  bassLabel: string
+): { shape: ChordShape; baseFret: number } | null {
+  const added = addBassBelow(entry, bassPc, bassLabel);
+  if (added) return added;
+  const { shape, baseFret } = entry;
+  for (let i = 5; i >= 0; i--) {
+    const p = shape.strings[i];
+    if (p.fret === null || p.finger === 'bar' || !p.finger) continue;
+    if ((OPEN_STRING_PITCH_CLASSES[i] + baseFret + p.fret + 120) % 12 !== bassPc) continue;
+    const strings = shape.strings.map((q, j) => (j === i ? { fret: null, finger: 0 as FingerNumber } : { ...q })) as ChordShape['strings'];
+    const freed = addBassBelow({ shape: { ...shape, strings }, baseFret }, bassPc, bassLabel);
+    if (freed) return freed;
+  }
+  return null;
+}
+
+function addBassBelow(
   entry: { shape: ChordShape; baseFret: number },
   bassPc: number,
   bassLabel: string
@@ -3195,10 +3271,16 @@ function withBassAdded(
         const all = [...fretted.map((n) => n.abs), fret];
         if (Math.max(...all) - Math.min(...all) > 3) continue;
         const used = new Set(fretted.map((n) => n.finger));
+        // A free finger in order along the neck AND within reach of every
+        // finger already down (Q1: Db m11 / C♭ put the middle finger three
+        // frets past the index barre; the little finger reaches it).
         const candidate = ([1, 2, 3, 4] as const).find(
           (f) =>
             !used.has(f) &&
-            fretted.every((n) => (n.abs < fret ? n.finger < f : n.abs > fret ? n.finger > f : true))
+            fretted.every((n) =>
+              n.abs < fret ? n.finger < f && fret - n.abs <= f - n.finger + 1
+                : n.abs > fret ? n.finger > f && n.abs - fret <= n.finger - f + 1
+                  : true)
         );
         if (candidate === undefined) continue;
         finger = candidate;
