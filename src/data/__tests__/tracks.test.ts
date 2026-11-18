@@ -73,10 +73,13 @@ describe('the tracks in the curriculum', () => {
     expect(computeLevelStateMeta(meta1, LEVEL_METADATA, [...levelIds, ...trackIds])).toBe('completed');
     expect(computeLevelStateMeta(meta2, LEVEL_METADATA, [...levelIds, ...trackIds])).toBe('available');
   });
-  it('Level 1 counts stay as on main: 4 units listed, 10 modules (hand-kept metadata included)', () => {
+  it('Level 1 lists 4 units on its page (the tracks are not among them); its card counts the 3 required units and 10 modules, and the optional one apart (audit Q7)', () => {
     const meta = LEVEL_METADATA.find((m) => m.id === 'l1')!;
     expect(L1_UNITS.filter((u) => !u.track)).toHaveLength(4);
-    expect(meta.unitCount).toBe(L1_UNITS.filter((u) => !u.track).length);
+    expect(meta.unitCount).toBe(L1_UNITS.filter((u) => !u.track && !u.optional).length);
+    expect(meta.unitCount).toBe(3);
+    expect(meta.optionalUnitCount).toBe(L1_UNITS.filter((u) => !u.track && u.optional).length);
+    expect(meta.optionalUnitCount).toBe(1);
     expect(getLevelModuleCount(L1)).toBe(10);
     expect(meta.moduleCount).toBe(10);
   });

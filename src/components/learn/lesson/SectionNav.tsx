@@ -5,7 +5,10 @@ import { Button } from '../../ui/Button';
 
 export interface LessonSection {
   id: string;
+  /** The words shown beside the marker (a concept's title alone: the marker carries its number — audit Q8). */
   label: string;
+  /** The name a screen reader hears, when it is not the label (a concept: "1 · Its title"; the marker is hidden from it). */
+  name?: string;
   /** Shown in the marker: a number, ♪ (tasks) or ? (the check). */
   marker: string;
   /** Read past, ticked (tasks) or passed (the check). */
@@ -39,7 +42,7 @@ function SectionButton({ section, current, onJump, fill }: { section: LessonSect
       type="button"
       onClick={() => onJump(section.id)}
       aria-current={current ? 'location' : undefined}
-      aria-label={state ? `${section.label} (${state})` : section.label}
+      aria-label={state ? `${section.name ?? section.label} (${state})` : section.name ?? section.label}
       data-section-link={section.id}
       className={`w-full flex items-center gap-2.5 min-h-[max(var(--tap),40px)] px-2.5 py-1.5 rounded-[10px] text-left text-ui transition-colors ${fill ? '' : 'hover:bg-[var(--card-hover)]'}`}
       style={current ? { backgroundColor: 'var(--card)', color: 'var(--text)', fontWeight: 600 } : { color: 'var(--text-muted)' }}

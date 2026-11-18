@@ -9,7 +9,7 @@
 import { htmlLangFor } from '../i18n/language';
 import { REPORT_FORMS } from '../services/feedbackForms';
 import { SITE_LANGS, appText, type SiteLang } from './content';
-import { MAX_DESCRIPTION, ORIGIN, OG_IMAGE, PATH_WORDS, SENTENCE_END, type PageKind } from './render';
+import { MAX_DESCRIPTION, ORIGIN, OG_IMAGE, PATH_WORDS, SENTENCE_END, START_DOOR_IDS, type PageKind } from './render';
 
 export interface SiteFiles {
   /** Every generated page: its path ('/en/lessons/the-major-scale/') → its HTML. */
@@ -298,7 +298,7 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
       if (href.startsWith(`${ORIGIN}/?`)) {
         const q = new URLSearchParams(href.slice(ORIGIN.length + 2));
         const keys = [...q.keys()].join(',');
-        if (!(keys === 'lang' || keys === 'lesson,lang') || !SITE_LANGS.includes(q.get('lang') as SiteLang) || (q.has('lesson') && !/^l\du\d+m\d+$/.test(q.get('lesson')!))) where(`app link ${href}`);
+        if (!(keys === 'lang' || keys === 'lesson,lang' || keys === 'start,lang') || !SITE_LANGS.includes(q.get('lang') as SiteLang) || (q.has('lesson') && !/^l\du\d+m\d+$/.test(q.get('lesson')!)) || (q.has('start') && !(START_DOOR_IDS as readonly string[]).includes(q.get('start')!))) where(`app link ${href}`);
         continue;
       }
       if (href.startsWith(ORIGIN)) target = href.slice(ORIGIN.length);

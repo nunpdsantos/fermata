@@ -1,0 +1,39 @@
+{
+  "optionalUnits_one": "+ {{count}} unidad opcional",
+  "optionalUnits_other": "+ {{count}} unidades opcionales",
+  "staff": {
+    "clef": "{{clef}}.",
+    "clefSignature": "{{clef}}, {{signature}}.",
+    "noSignature": "sin sostenidos ni bemoles en la armadura de clave",
+    "sharps_one": "un sostenido en la armadura de clave: {{places}}",
+    "sharps_other": "{{count}} sostenidos en la armadura de clave: {{places}}",
+    "flats_one": "un bemol en la armadura de clave: {{places}}",
+    "flats_other": "{{count}} bemoles en la armadura de clave: {{places}}",
+    "sigLine": "en la línea del {{letter}}",
+    "sigSpace": "en el espacio del {{letter}}",
+    "sigSpaceAbove": "en el espacio del {{letter}} por encima del pentagrama",
+    "sigSpaceBelow": "en el espacio del {{letter}} por debajo del pentagrama",
+    "oneNote": "Una nota, {{place}}.",
+    "notesInOrder": "{{count}} notas, una después de otra: {{places}}.",
+    "chord": "{{count}} notas superpuestas en un solo acorde, de la más grave a la más aguda: {{places}}.",
+    "then": ", después ",
+    "place": {
+      "line": "en la línea {{n}}",
+      "space": "en el espacio {{n}}",
+      "spaceBelowStaff": "en el espacio justo debajo del pentagrama",
+      "spaceAboveStaff": "en el espacio justo encima del pentagrama",
+      "ledgerBelow": "en la línea adicional {{n}} por debajo del pentagrama",
+      "ledgerAbove": "en la línea adicional {{n}} por encima del pentagrama",
+      "spaceUnderLedger": "en el espacio debajo de la línea adicional {{n}}, bajo el pentagrama",
+      "spaceOverLedger": "en el espacio encima de la línea adicional {{n}}, sobre el pentagrama"
+    },
+    "acc": {
+      "sharp": "con un sostenido",
+      "flat": "con un bemol",
+      "doubleSharp": "con un doble sostenido",
+      "doubleFlat": "con un doble bemol",
+      "natural": "con un becuadro"
+    },
+    "counted": "Las líneas y los espacios se cuentan de abajo arriba."
+  }
+}

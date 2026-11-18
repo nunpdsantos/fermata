@@ -9,6 +9,7 @@ import { staffPlan, staffLayout, staffInkBounds } from '../../../utils/notationH
 import { exerciseStaff } from './exerciseStaff';
 import { displayPattern } from './displayPattern';
 import { useReferenceLine } from './referenceLine';
+import { describeStaff } from '../../notation/staffDescription';
 
 /** A rhythm the question points at: drawn, and playable (count-in, then clicks). */
 function RhythmStimulus({ pattern }: { pattern: RhythmPattern }) {
@@ -42,6 +43,7 @@ interface ExercisePromptProps {
 }
 
 export function ExercisePrompt({ exercise }: ExercisePromptProps) {
+  const { t, i18n } = useTranslation();
   // No instrument highlight here: a note-ID answer lit on the instrument
   // (which shows note names) would give the answer away (audit W4-21). The
   // build input owns the highlight channel and clears it itself.
@@ -56,6 +58,10 @@ export function ExercisePrompt({ exercise }: ExercisePromptProps) {
   const trimTop = layout && ink ? Math.max(0, layout.staveY + ink.top - 4) : 0;
   const trimBottom = layout && ink ? Math.max(0, layout.height - layout.staveY - ink.bottom - 4) : 0;
   const reference = useReferenceLine(exercise);
+  // What the staff draws, in words (audit A9): a screen reader gets the clef,
+  // the key signature's places and each note's line or space — never the answer.
+  const lang = (['en', 'pt', 'es'] as const).find((l) => i18n.language?.startsWith(l)) ?? 'en';
+  const staffWords = staff && plan ? describeStaff({ notes: plan.written, clef: plan.clef, keySignature: staff.keySignature, chord: staff.chord }, t, lang) : null;
 
   return (
     <div className="flex flex-col gap-3">
@@ -69,7 +75,7 @@ export function ExercisePrompt({ exercise }: ExercisePromptProps) {
       )}
       {staff && (
         <div data-testid="check-staff" className="check-staff rounded-xl px-3 py-2" style={{ backgroundColor: 'var(--card)' }}>
-          <div className="check-staff-ink" style={{ '--staff-trim-top': `${trimTop}px`, '--staff-trim-bottom': `${trimBottom}px` } as React.CSSProperties}>
+          <div className="check-staff-ink" role="img" aria-label={staffWords ?? undefined} style={{ '--staff-trim-top': `${trimTop}px`, '--staff-trim-bottom': `${trimBottom}px` } as React.CSSProperties}>
             <Suspense fallback={<StaffNotationSkeleton height={100} />}>
               <StaffNotation
                 notes={staff.notes}

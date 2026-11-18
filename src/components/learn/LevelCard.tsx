@@ -8,6 +8,7 @@ import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { DEGREE_COLORS } from '../../design/tokens/colors';
 import { accentText } from '../../design/tokens/learnColors';
+import '../../i18n/learnWords/index.ts';
 
 interface LevelCardProps {
   level: LevelMeta;
@@ -89,12 +90,25 @@ export function LevelCard({ level, state, completedModuleCount, index, onClick }
           {level.description}
         </p>
 
-        {/* Stats */}
-        <div className="text-caption mb-3" style={{ color: 'var(--text-dim)' }}>
+        {/* Stats: the REQUIRED units and modules (what the bar counts), and an
+            optional unit named apart (audit Q7: "4 units · 10 modules" counted
+            Level 1's optional unit but not its modules). It wraps whole onto
+            its own line where the card is narrow. */}
+        <div className="text-caption mb-3" style={{ color: 'var(--text-dim)' }} data-testid="level-card-counts">
           {level.unitCount > 0 ? (
-            <span>
-              {t('learn.unitsModules', { units: level.unitCount, unitLabel: level.unitCount === 1 ? t('learn.unitSingular') : t('learn.unitPlural'), modules: totalModules })}
-            </span>
+            <>
+              <span>
+                {t('learn.unitsModules', { units: level.unitCount, unitLabel: level.unitCount === 1 ? t('learn.unitSingular') : t('learn.unitPlural'), modules: totalModules })}
+              </span>
+              {(level.optionalUnitCount ?? 0) > 0 && (
+                <>
+                  {' '}
+                  <span className="whitespace-nowrap" data-testid="level-card-optional">
+                    {t('learnWords.optionalUnits', { count: level.optionalUnitCount })}
+                  </span>
+                </>
+              )}
+            </>
           ) : (
             <span>{t('status.contentInDevelopment')}</span>
           )}

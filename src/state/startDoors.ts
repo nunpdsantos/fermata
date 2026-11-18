@@ -17,6 +17,13 @@
  * a language change, a profile change in Settings, a share link, a backup or
  * a tour, and never for an existing save (none of them reaches a door). A
  * learner who turns it off stays off: nothing turns it on again.
+ *
+ * A view the boot address asked for (`?view=drill`, the installed app's
+ * shortcut, on a first visit: audit 2026-11-18, Q13) is where the door
+ * leads instead; "new" still opens its lesson when that view is Learn.
+ * A door can also be taken by a link (`?start=<door>`, the public pages'
+ * doors: state/startGate.ts `applyStartLinkRule`) — through this same
+ * function, so the saved fields and the first screen are a tap's.
  */
 import { useAppStore, type InstrumentType } from './store.ts';
 import { setLearnerProfile, type LearnerProfile } from './learnerProfile.ts';
@@ -24,6 +31,10 @@ import { closeWelcome } from './welcomeGate.ts';
 import { raiseStartHint } from './startHint.ts';
 import { solfegeLanguage } from '../i18n/solfege.ts';
 import { TRACKS, firstLessonOf } from '../data/tracks.ts';
+import { takeViewRequest } from './bootView.ts';
+
+/** The three doors, in the start screen's order (the public pages' doors carry the same ids). */
+export const START_DOORS: readonly LearnerProfile[] = ['new', 'player', 'theory'];
 
 export function chooseStartDoor(
   profile: LearnerProfile,
@@ -35,7 +46,9 @@ export function chooseStartDoor(
   if (app.instrument !== instrument) app.setInstrument(instrument);
   raiseStartHint(profile === 'theory' ? null : profile);
   if (solfegeLanguage(app.language) && !app.showSolfege) app.setShowSolfege(true);
-  if (profile === 'new') app.openLearnTarget(firstLessonOf(TRACKS.sound));
-  else app.setView('explore');
+  const asked = takeViewRequest();
+  const home = profile === 'new' ? 'learn' : 'explore';
+  if (profile === 'new' && (asked ?? home) === 'learn') app.openLearnTarget(firstLessonOf(TRACKS.sound));
+  else app.setView(asked ?? home);
   closeWelcome(storage);
 }

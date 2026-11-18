@@ -1,0 +1,39 @@
+{
+  "optionalUnits_one": "+ {{count}} unidade opcional",
+  "optionalUnits_other": "+ {{count}} unidades opcionais",
+  "staff": {
+    "clef": "{{clef}}.",
+    "clefSignature": "{{clef}}, {{signature}}.",
+    "noSignature": "sem sustenidos nem bemóis na armação de clave",
+    "sharps_one": "um sustenido na armação de clave: {{places}}",
+    "sharps_other": "{{count}} sustenidos na armação de clave: {{places}}",
+    "flats_one": "um bemol na armação de clave: {{places}}",
+    "flats_other": "{{count}} bemóis na armação de clave: {{places}}",
+    "sigLine": "na linha do {{letter}}",
+    "sigSpace": "no espaço do {{letter}}",
+    "sigSpaceAbove": "no espaço do {{letter}} acima da pauta",
+    "sigSpaceBelow": "no espaço do {{letter}} abaixo da pauta",
+    "oneNote": "Uma nota, {{place}}.",
+    "notesInOrder": "{{count}} notas, uma depois da outra: {{places}}.",
+    "chord": "{{count}} notas sobrepostas num só acorde, da mais grave para a mais aguda: {{places}}.",
+    "then": ", depois ",
+    "place": {
+      "line": "na linha {{n}}",
+      "space": "no espaço {{n}}",
+      "spaceBelowStaff": "no espaço logo abaixo da pauta",
+      "spaceAboveStaff": "no espaço logo acima da pauta",
+      "ledgerBelow": "na linha suplementar {{n}} abaixo da pauta",
+      "ledgerAbove": "na linha suplementar {{n}} acima da pauta",
+      "spaceUnderLedger": "no espaço abaixo da linha suplementar {{n}}, sob a pauta",
+      "spaceOverLedger": "no espaço acima da linha suplementar {{n}}, sobre a pauta"
+    },
+    "acc": {
+      "sharp": "com um sustenido",
+      "flat": "com um bemol",
+      "doubleSharp": "com um dobrado sustenido",
+      "doubleFlat": "com um dobrado bemol",
+      "natural": "com um bequadro"
+    },
+    "counted": "As linhas e os espaços contam-se de baixo para cima."
+  }
+}

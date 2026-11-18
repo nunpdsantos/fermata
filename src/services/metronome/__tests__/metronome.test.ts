@@ -271,6 +271,29 @@ describe('what stops it leaves no click queued', () => {
     });
   }
 
+  // Audit 2026-11-18, Q9: the landscape full-neck view covers the whole app,
+  // the bar with it — nothing on screen could stop the clicks there.
+  it('the full-neck view opening over everything: stops it, nothing queued; closing it starts nothing; ▶ works again', async () => {
+    startMetronome();
+    advance(1.3);
+    expect(pendingClicks()).toBeGreaterThan(0); // known positive
+    const cover = document.createElement('div');
+    cover.dataset.testid = 'neck-view';
+    document.body.appendChild(cover);
+    await vi.waitFor(() => expect(isMetronomeRunning()).toBe(false));
+    expect(pendingClicks()).toBe(0);
+    expect(queuedClicks()).toBe(0);
+    expect(useMetronome.getState()).toMatchObject({ running: false, beat: null, lastStop: 'covered' });
+    const n = metroSources().length;
+    advance(3);
+    expect(metroSources().length).toBe(n);
+    cover.remove();
+    await new Promise((r) => setTimeout(r, 0));
+    expect(isMetronomeRunning()).toBe(false);
+    startMetronome();
+    expect(isMetronomeRunning()).toBe(true);
+  });
+
   it('▶ while the loop plays stops the loop: the newer clock wins', () => {
     setLoopClock({ now: () => clock.t, setTimeout: () => 0 as unknown as ReturnType<typeof setTimeout>, clearTimeout: () => {} });
     openProgressionPanel();
