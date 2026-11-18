@@ -62,8 +62,10 @@ async function sweep(browser: Browser, v: View, theme: string, themeName: string
   await expect(page.getByTestId('progression-panel')).toBeVisible();
   await check(page, v, `${combo}--empty`);
 
-  // Filled: E♭ A♭ B♭ C m (the capo has ideas in E♭).
-  for (const c of ['E♭', 'A♭', 'B♭', 'Cm']) await page.getByRole('button', { name: `${w.add} ${c}`, exact: true }).click();
+  // Filled: E♭ A♭ B♭ Fm (the capo has an idea in E♭: fret 1, D G A Em, every
+  // shape open). Until audit 2026-11-18 Q11 this was E♭ A♭ B♭ Cm, whose frets
+  // all leave a barre shape (Bm, F, F♯m), so it no longer gets an idea.
+  for (const c of ['E♭', 'A♭', 'B♭', 'Fm']) await page.getByRole('button', { name: `${w.add} ${c}`, exact: true }).click();
   await page.getByTestId('chords-card').scrollIntoViewIfNeeded();
   await check(page, v, `${combo}--filled`);
   if (!full) { await context.close(); return; }

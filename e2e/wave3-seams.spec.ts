@@ -739,10 +739,12 @@ for (const v of [PHONE, LAPTOP]) {
     // Nothing asked of a microphone, a camera or MIDI (not even whether it is allowed).
     expect(asked).toEqual(base.asked);
     expect(asked.filter((a) => /getUserMedia|enumerateDevices|getDisplayMedia|requestMIDIAccess|microphone|midi|camera/.test(a))).toEqual([]);
-    // Learn, Level 1, Explore's view and Drill: the same words.
+    // Learn, Level 1, Explore's view and Drill: the same words — Explore's
+    // led, since audit 2026-11-18 Q14, by its one top heading, read by screen
+    // readers and not drawn (e2e/explore-tools-audit.spec.ts).
     expect(seen.learn).toEqual(base.learn);
     expect(seen.level1).toEqual(base.level1);
-    expect(seen.explore).toEqual(base.explore);
+    expect(seen.explore).toEqual(['Explorar', ...base.explore]);
     expect(seen.drill).toEqual(base.drill);
     // Explore's "⋯": the same items, then Afinador, Metrónomo and (2026-11-12) Comunicar problema — on his phone (390 px) with "Pesquisar" first:
     // from 360 to 639 px the switch takes the magnifier's place in Explore's bar (brief U2); Learn's below.
