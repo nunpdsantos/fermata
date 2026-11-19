@@ -20,8 +20,9 @@
  *    nothing this tab removes survives). Both modules are in the entry
  *    bundle: writing never waits for, or depends on, a second download.
  *  - A store says what it can read (`valid`, asked of a save as saved, in
- *    its version) and marks a reset done in place (`replace`, Drill's "Reset
- *    progress": the next write writes what it reset whole).
+ *    its version), and an action marks what its write does on purpose,
+ *    whatever the save holds (`markNext`: Drill's resets, "Reset to
+ *    suggested", the score just recorded, a Sprint just finished).
  *  - Following other tabs in memory (Learn progress, Drill, fingerings) is
  *    `state/tabSync.ts`, lazy, which each of those stores loads itself
  *    (`followOtherTabsLater` there): a nicety, not needed to save. A failed
@@ -59,8 +60,8 @@ export interface TabLine {
   merge?: Rule;
   /** The store can read this save, as saved in `version` (before any migration), as real data (absent: any object). */
   valid?: (state: unknown, version: number) => boolean;
-  /** This tab's next write is a reset of these fields: they are written as this tab has them (tabMerge). */
-  replace?: string[];
+  /** What this tab's next write does on purpose, whatever the save holds (tabMerge): set by the action, cleared by any write. */
+  marks?: Mark[];
   /** The store (a getter: the storage exists before the store does). */
   store?: () => TabStore;
   /** Set by state/tabSync.ts for stores whose memory follows the save. */
@@ -69,8 +70,16 @@ export interface TabLine {
   stop?: () => void;
 }
 
+/** A leaf this action sets or removes on purpose (a reset, "Reset to suggested", the score just recorded): its path, and what the merged value there becomes (undefined: removed). */
+export type Mark = [path: string[], to: (merged: unknown) => unknown];
+
 const lines = new Map<string, TabLine>();
 export const tabLine = (name: string) => lines.get(name);
+/** Marks for the write the action about to run makes. */
+export const markNext = (name: string, ...marks: Mark[]) => {
+  const line = lines.get(name);
+  if (line) line.marks = marks;
+};
 
 /** The storage a persisted store writes through (see above). One per key. */
 export function tabSafeStorage(name: string, store: () => TabStore, merge?: Rule, valid?: TabLine['valid']): StateStorage {
@@ -86,11 +95,11 @@ export function tabSafeStorage(name: string, store: () => TabStore, merge?: Rule
     },
     setItem: (key, raw) => {
       if (localStorage.getItem(key) === line.seen && !line.behind) {
+        line.marks = undefined; // before writing: a refused write never leaves them to the next one
         localStorage.setItem(key, raw);
         line.seen = raw;
         line.base = undefined;
         line.fresh = false;
-        line.replace = undefined;
       } else mergeWrite(key, line, raw);
     },
     removeItem: (key) => {

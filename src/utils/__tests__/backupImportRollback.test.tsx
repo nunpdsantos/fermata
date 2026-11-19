@@ -149,6 +149,44 @@ describe('applyBackup: all sections or none', () => {
   });
 });
 
+describe('a key that cannot even be read back (third review)', () => {
+  /** progress refuses every write, and refuses to be read once the import began. */
+  function unreadable() {
+    const mem = new Map([['music-theory-app', 'OLD-APP'], ['music-theory-progress', 'OLD-PROGRESS']]);
+    let reads = 0;
+    return {
+      mem,
+      storage: {
+        getItem: (k: string) => { if (k === 'music-theory-progress' && ++reads > 1) throw new DOMException('denied', 'SecurityError'); return mem.get(k) ?? null; },
+        setItem: (k: string, v: string) => { if (k === 'music-theory-progress') throw quota(); mem.set(k, v); },
+        removeItem: (k: string) => { mem.delete(k); },
+      },
+    };
+  }
+  const backup = { format: 'fermata-backup', version: 1, exportedAt: 'x', data: { 'music-theory-app': { a: 1 }, 'music-theory-progress': { b: 2 } } } as unknown as FermataBackup;
+
+  it('its state is unknown: never listed as coming from the backup', () => {
+    const { storage, mem } = unreadable();
+    expect(applyBackup(backup, storage)).toEqual({ ok: false, restored: false, notRestored: [], unknown: ['music-theory-progress'] });
+    expect(mem.get('music-theory-app')).toBe('OLD-APP');
+  });
+
+  for (const lang of ['en', 'pt', 'es'] as const) {
+    it(`${lang}: the sentence says so in its own sentence, and never that the part comes from the backup`, async () => {
+      await i18n.changeLanguage(lang);
+      const { importFailedText } = await import('../backupFile');
+      const part = i18n.t('backup.section.learnProgress');
+      const text = importFailedText({ ok: false, restored: false, notRestored: [], unknown: ['music-theory-progress'] });
+      expect(text).toBe([i18n.t('backupFile.importNotInFull'), i18n.t('backupFile.importUnknown', { count: 1, sections: part }), i18n.t('backupFile.importRestAsItWas')].join(' '));
+      expect(text).toContain(part);
+      expect(text).not.toContain(i18n.t('backupFile.importFromBackup', { count: 1, sections: part }));
+      const both = importFailedText({ ok: false, restored: false, notRestored: ['music-theory-app'], unknown: ['music-theory-progress'] });
+      expect(both).toContain(i18n.t('backupFile.importFromBackup', { count: 1, sections: i18n.t('backup.section.preferences') }));
+      expect(both).toContain(i18n.t('backupFile.importUnknown', { count: 1, sections: part }));
+    });
+  }
+});
+
 describe('Settings → Your data → Import, storage full half-way', () => {
   for (const lang of ['en', 'pt', 'es'] as const) {
     it.each([1, 2, 3, 4])(`${lang}: write %i refused — nothing changed, no reload, and one plain sentence`, async (n) => {

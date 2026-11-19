@@ -16,7 +16,7 @@ import type {
   SerializedCard,
 } from '../core/types/drill';
 import { applyAnswer, migrateTierV1 } from '../services/drillScheduler';
-import { tabLine, tabSafeStorage, type TabStore } from './tabSafe';
+import { markNext, tabSafeStorage, type TabStore } from './tabSafe';
 import { followSoon } from './tabFollow';
 import { mergeBy, type Rule } from './tabMerge';
 import {
@@ -493,7 +493,8 @@ const DRILL_FIELDS: Rule = {
  * passed stays passed; the session and Sprint under way by `slot`, settings
  * field by field. "Reset progress" in a tab (the latest action) writes what
  * it reset whole (`resetting`): no fact, best, count, session or Sprint any
- * tab made before comes back. Then the store's own guard reads the result,
+ * tab made before comes back. A Sprint just finished writes its score where
+ * it beats the saved best, whatever this tab remembered (`recordSprint`). Then the store's own guard reads the result,
  * and that is what is written (a record it would drop is not written), with
  * the intro passed wherever a fact or a session is saved — the only saves
  * the store itself makes.
@@ -504,12 +505,10 @@ export const DRILL_MERGE_RULE: Rule = (b, m, t) => {
   return out ?? m;
 };
 
-/** What "Reset progress" clears, and what "Reset all Drill data" clears: written whole by the reset's own write. */
-const RESET_PROGRESS: (keyof DrillStoreState)[] = ['items', 'sprintBests', 'lifetime', 'activeSession', 'sprint'];
-const resetting = (fields: (keyof DrillStoreState)[]) => {
-  const line = tabLine(DRILL_STORE_KEY);
-  if (line) line.replace = fields;
-};
+/** What "Reset progress" clears (and "Reset all Drill data", with the settings and the intro): written whole by the reset's own write. */
+const RESET_PROGRESS = { items: {}, sprintBests: {}, lifetime: INITIAL_LIFETIME, activeSession: null, sprint: null };
+const resetting = (values: Record<string, unknown>) =>
+  markNext(DRILL_STORE_KEY, ...Object.entries(values).map(([k, v]): [string[], () => unknown] => [[k], () => v]));
 
 /**
  * Whether another tab's save is real Drill data, as saved (v1–v3 share the
@@ -682,16 +681,19 @@ export const useDrillStore = create<DrillStoreState>()(
           settings: { ...prev.settings, ...patch },
         })),
 
-      recordSprint: (familiesKey, score) =>
+      recordSprint: (familiesKey, score) => {
+        // The run just finished: its score where it beats the SAVED best, whatever this tab remembered.
+        markNext(DRILL_STORE_KEY, [['sprintBests', familiesKey], (saved) => Math.max(isFiniteNumber(saved) ? saved : 0, score)]);
         set((prev) => ({
           sprintBests: {
             ...prev.sprintBests,
             [familiesKey]: Math.max(prev.sprintBests[familiesKey] ?? 0, score),
           },
-        })),
+        }));
+      },
 
       resetDrillData: () => {
-        resetting([...RESET_PROGRESS, 'settings', 'introDone']);
+        resetting({ ...RESET_PROGRESS, settings: DEFAULT_SETTINGS, introDone: false });
         set({
           items: {},
           settings: DEFAULT_SETTINGS,

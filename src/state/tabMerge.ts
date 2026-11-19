@@ -26,8 +26,10 @@
  *    store cannot read as real data, in any version (`valid`, asked of the
  *    save as it is, before any migration: a migration answers garbage with
  *    the defaults), is broken and no one's work: this tab's memory is written
- *    whole over it. A reset done here (`replace`, Drill's "Reset progress")
- *    writes the fields it reset as they are here, whatever the save holds.
+ *    whole over it. What an action does on purpose (`marks`: a reset, the
+ *    keys "Reset to suggested" clears, the score an answer just recorded, a
+ *    Sprint's best) is written so whatever the save holds; the marks belong
+ *    to one write, saved or refused.
  *
  * 2. The rules (`mergeBy`, a store's `Rule`): a node this tab did not change
  *    keeps the saved value; a node only this tab changed takes this tab's;
@@ -132,12 +134,12 @@ export function baseOf(line: TabLine): unknown {
 
 /** A write after the save changed underneath (1 above). */
 export function mergeWrite(name: string, line: TabLine, raw: string): void {
+  const marks = line.marks;
+  line.marks = undefined; // this write's, whether or not it is saved
   const current = localStorage.getItem(name);
   const mine = JSON.parse(raw) as { state: Record<string, unknown>; version: number };
   const base = baseOf(line);
-  const reset = line.replace;
-  line.replace = undefined;
-  if (same(mine.state, base) && !reset) {
+  if (same(mine.state, base) && !marks) {
     // Nothing of this tab's to save; its memory is behind what is saved now (following catches up).
     line.behind = true;
     return;
@@ -157,8 +159,18 @@ export function mergeWrite(name: string, line: TabLine, raw: string): void {
   } // else: a save the store cannot read is no one's work — this tab's memory heals it
   let out = raw;
   if (isObj(theirs)) {
-    const state = mergeBy(line.merge ?? 'fields', base, mine.state, theirs) as Record<string, unknown>;
-    for (const k of reset ?? []) state[k] = mine.state[k];
+    const state = mergeBy(line.merge ?? 'fields', base, mine.state, theirs);
+    // What this action does on purpose, whatever the save held (a record the merge left out stays out).
+    for (const [path, to] of marks ?? []) {
+      let o = state;
+      for (const k of path.slice(0, -1)) o = isObj(o) ? o[k] : undefined;
+      const k = path[path.length - 1];
+      if (isObj(o)) {
+        const v = to(o[k]);
+        if (v === undefined) delete o[k];
+        else o[k] = v;
+      }
+    }
     out = JSON.stringify({ state, version: mine.version });
   }
   localStorage.setItem(name, out);

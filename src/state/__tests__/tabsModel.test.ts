@@ -2,8 +2,9 @@
  * Several tabs at random, against a reference (second review of the A1 fix,
  * 2026-11-19; the reviewer's model, kept). Each seed opens 3 tabs of the app
  * (all five saved stores, each tab its own copy of every module) and runs
- * random actions in them: ticks, scores, "passed", completions, reviews, Drill
- * answers, Sprint bests, Drill settings, fingers, label mode, capo, theme,
+ * random actions in them: ticks, scores (an exercise answered again too),
+ * "passed", completions, un-completions, reviews, Drill answers, Sprint bests,
+ * Drill settings, fingers, "Reset to suggested", label mode, capo, theme,
  * language, metronome, progression; "Reset app data" and a backup import in
  * one tab (that tab reloads); Drill's own "Reset progress" in place; reloads.
  * Each write tells the other tabs (a `storage` event) — delivered late, in any
@@ -12,7 +13,8 @@
  * After EVERY step the saves are checked against what one learner's actions,
  * in time order, would have saved (state/tabMerge.ts, the rule): nothing lost,
  * nothing removed coming back, every Drill fact equal to its answers since its
- * last removal replayed through the scheduler, the counters, the bests, the
+ * last removal replayed through the scheduler, every review schedule equal to
+ * its reviews replayed through the store's own step, the counters, the bests, the
  * fingers, every settings value a tab changed, and every save one its store's
  * guard reads back unchanged. At the end every event is delivered and every
  * following tab must show the save; the export must call nothing damaged.
@@ -55,12 +57,14 @@ async function loadTab() {
   const sess = await import('../learnSessionStore');
   const safe = await import('../tabSafe');
   const sched = await import('../../services/drillScheduler');
+  const sr = await import('../../services/spacedRepetition');
   await import('../tabSync');
   await new Promise((resolve) => setTimeout(resolve, 0));
-  return { progress, drill, app, fing, sess, safe, sched, sessions: 0 };
+  return { progress, drill, app, fing, sess, safe, sched, sr, sessions: 0 };
 }
 type Tab = Awaited<ReturnType<typeof loadTab>>;
 type ItemState = import('../../core/types/drill').ItemSrsState;
+type Schedule = import('../../core/types/exercise').ModuleReviewSchedule;
 type Answer = { correct: boolean; ms: number; ts: number; sid: string };
 
 const stop = (tab: Tab) => { for (const k of Object.values(KEYS)) tab.safe.tabLine(k)?.stop?.(); };
@@ -89,7 +93,7 @@ const item = (id: string) => ({
   answer: { kind: 'choice' as const, correct: 'A' }, whyKey: 'w', whyParams: {}, rank: 0,
 });
 const SCHED = { completedAt: 1, nextReviewAt: 2, intervalLevel: 1, reviewCount: 1, lastReviewedAt: 1 };
-const KINDS = ['tick', 'tick', 'untick', 'rec', 'rec', 'pass', 'comp', 'uncomp', 'review', 'ans', 'ans', 'ans', 'sprint', 'dset', 'fing', 'fing', 'flabel', 'capo', 'theme', 'lang', 'metro', 'prog', 'reset', 'import', 'drillreset'] as const;
+const KINDS = ['tick', 'tick', 'untick', 'rec', 'rec', 'pass', 'comp', 'uncomp', 'review', 'review', 'ans', 'ans', 'ans', 'sprint', 'dset', 'fing', 'fing', 'fclear', 'flabel', 'capo', 'theme', 'lang', 'metro', 'prog', 'reset', 'import', 'drillreset'] as const;
 
 type Divergences = Record<string, { seed: number; step: number; detail: string }[]>;
 
@@ -111,7 +115,7 @@ async function runSeed(seed: number, V: Divergences) {
     scores: {} as Record<string, Record<string, number>>, passed: {} as Record<string, boolean>,
     drillAns: {} as Record<string, Answer[]>, drillBase: {} as Record<string, ItemState>,
     lifetime: { answered: 0, correct: 0 }, bests: {} as Record<string, number>,
-    fing: {} as Record<string, number>, labelMode: undefined as string | undefined,
+    fing: {} as Record<string, number>, labelMode: undefined as string | undefined, sched: {} as Record<string, Schedule>,
     leaves: {} as Record<string, unknown>, touched: new Set<string>(),
   });
   let M = fresh();
@@ -152,6 +156,7 @@ async function runSeed(seed: number, V: Divergences) {
     const comp = new Set(p.completedModules ?? []);
     for (const m of MODS) if ((M.done[m] === true) !== comp.has(m)) viol('progress-completion', `${label} ${m} want ${M.done[m] === true}`);
     for (const m of Object.keys(p.reviewSchedules ?? {})) if (!comp.has(m)) viol('progress-orphan-schedule', `${label} ${m}`);
+    if (J(Object.entries(p.reviewSchedules ?? {}).sort()) !== J(Object.entries(M.sched).sort())) viol('progress-schedules', `${label} want ${J(M.sched)} got ${J(p.reviewSchedules)}`);
     for (const m of MODS) {
       const r = p.exerciseResults?.[m];
       if ((M.attempts[m] ?? 0) !== (r?.totalAttempts ?? 0)) viol('progress-attempts', `${label} ${m} want ${M.attempts[m] ?? 0} got ${r?.totalAttempts}`);
@@ -236,10 +241,13 @@ async function runSeed(seed: number, V: Divergences) {
         }
         case 'rec': {
           const m = pick(MODS);
-          const e = `e${++uid}`;
+          // An exercise answered again (one this tab remembers), or a new one.
+          const known = Object.keys(mem.exerciseResults?.[m]?.scores ?? {});
+          const e = known.length && R() < 0.4 ? pick(known) : `e${++uid}`;
           const sc = pick([0, 0.5, 1] as const);
           prog.recordExerciseResult(m, e, sc);
           (M.scores[m] ??= {})[e] = sc;
+          dead.exs.delete(`${m}:${e}`); // answered again after its removal: a new answer, alive
           M.attempts[m] = (M.attempts[m] ?? 0) + 1;
           emit(t, KEYS.progress);
           break;
@@ -257,20 +265,26 @@ async function runSeed(seed: number, V: Divergences) {
           const m = pick(MODS);
           const changes = !mem.completedModules.includes(m);
           prog.completeModule(m);
-          if (changes) { M.done[m] = true; emit(t, KEYS.progress); }
+          // A completion of a module already completed (in a tab that never heard of it) changes nothing.
+          if (changes) { if (!M.done[m]) M.sched[m] = JSON.parse(J(t.sr.createInitialSchedule(clock))); M.done[m] = true; emit(t, KEYS.progress); }
           break;
         }
         case 'uncomp': {
           const m = pick(MODS);
-          const changes = mem.completedModules.includes(m);
+          // Un-completing is on purpose: the module and its schedule leave the save, whatever this tab remembered.
           prog.uncompleteModule(m);
-          if (changes) { M.done[m] = false; emit(t, KEYS.progress); }
+          M.done[m] = false;
+          delete M.sched[m];
+          emit(t, KEYS.progress);
           break;
         }
         case 'review': {
           const m = pick(MODS);
           const changes = !!mem.reviewSchedules?.[m];
-          prog.recordReviewResult(m, R() < 0.5);
+          const passed = R() < 0.5;
+          prog.recordReviewResult(m, passed);
+          // A review counts on the schedule there is, through the store's own step.
+          if (changes && M.sched[m]) M.sched[m] = JSON.parse(J(t.sr.updateScheduleAfterReview(M.sched[m], passed, clock)));
           if (changes) emit(t, KEYS.progress);
           break;
         }
@@ -291,9 +305,9 @@ async function runSeed(seed: number, V: Divergences) {
         case 'sprint': {
           const k = pick(['a', 'b']);
           const sc = Math.floor(R() * 30);
-          const had = drillOf(t).sprintBests[k];
           drillOf(t).recordSprint(k, sc);
-          if (had === undefined || sc > had) M.bests[k] = Math.max(M.bests[k] ?? 0, sc);
+          // The run just finished counts against the SAVED best, whatever this tab remembered.
+          M.bests[k] = Math.max(M.bests[k] ?? 0, sc);
           emit(t, KEYS.drill);
           break;
         }
@@ -313,6 +327,14 @@ async function runSeed(seed: number, V: Divergences) {
             else M.fing[k] = v;
             emit(t, KEYS.fing);
           }
+          break;
+        }
+        case 'fclear': {
+          // "Reset to suggested" for a position: these keys, on purpose, whatever this tab remembered.
+          const keys = FSK.filter(() => R() < 0.5);
+          t.fing.useFingeringStore.getState().clearOverrides(keys);
+          for (const k of keys) delete M.fing[k];
+          emit(t, KEYS.fing);
           break;
         }
         case 'flabel': {
@@ -366,6 +388,7 @@ async function runSeed(seed: number, V: Divergences) {
           M.scores.l1u1m3 = { [ex]: 1 };
           M.attempts.l1u1m3 = 7;
           M.passed.l1u1m3 = true;
+          M.sched = { l1u1m3: SCHED };
           const f4 = tabs[0].sched.applyAnswer(undefined, true, 9000 + (++uid), clock - 1000, 'imp');
           localStorage.setItem(KEYS.drill, J({ state: { items: { f4 }, settings: tabs[0].drill.DEFAULT_SETTINGS, sprintBests: { a: 9 }, lifetime: { answered: 3, correct: 2 }, activeSession: null, sprint: null, introDone: true }, version: 3 }));
           M.drillBase.f4 = JSON.parse(J(f4));

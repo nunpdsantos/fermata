@@ -173,8 +173,12 @@ export async function validateBackup(raw: unknown): Promise<BackupValidation> {
 
 export type ApplyResult =
   | { ok: true }
-  /** Nothing written stays, unless putting it back failed too: `notRestored` then names each key read back without its old data. */
-  | { ok: false; restored: boolean; notRestored: BackupKey[] };
+  /**
+   * Nothing written stays, unless putting it back failed too: `notRestored`
+   * then names each key read back without its old data, and `unknown` (only
+   * when there is one) each key that could not even be read back.
+   */
+  | { ok: false; restored: boolean; notRestored: BackupKey[]; unknown?: BackupKey[] };
 
 /**
  * Write a vetted backup: every section, or none (audit A15). What each key
@@ -200,6 +204,7 @@ export function applyBackup(backup: FermataBackup, storage: WritableStorage): Ap
     return { ok: true };
   } catch {
     const notRestored: BackupKey[] = [];
+    const unknown: BackupKey[] = [];
     for (const key of tried.reverse()) {
       const old = before.get(key) ?? null;
       try {
@@ -210,15 +215,17 @@ export function applyBackup(backup: FermataBackup, storage: WritableStorage): Ap
       }
       // Read back before saying anything (second fix pass, 2026-11-19): a key that refused both
       // the backup's write and the putting back still holds its old data, and is not reported.
-      let now: string | null | undefined;
+      let now: string | null;
       try {
         now = storage.getItem(key);
       } catch {
-        now = undefined;
+        // Not even readable: what it holds is unknown — never said to be the backup's (second review).
+        unknown.push(key);
+        continue;
       }
       if (now !== old) notRestored.push(key);
     }
-    return { ok: false, restored: notRestored.length === 0, notRestored };
+    return { ok: false, restored: notRestored.length + unknown.length === 0, notRestored, ...(unknown.length ? { unknown } : {}) };
   }
 }
 

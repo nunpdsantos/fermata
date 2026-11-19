@@ -15,7 +15,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { SCALE_FORMULAS } from '../core/constants/scales.ts';
-import { tabSafeStorage, type TabStore } from './tabSafe.ts';
+import { markNext, tabSafeStorage, type TabStore } from './tabSafe.ts';
 import { followSoon } from './tabFollow.ts';
 import { mergeBy } from './tabMerge.ts';
 
@@ -112,12 +112,15 @@ export const useFingeringStore = create<FingeringStoreState>()(
           if (!isOverrideFinger(finger)) return s;
           return { overrides: { ...s.overrides, [key]: finger } };
         }),
-      clearOverrides: (keys) =>
+      clearOverrides: (keys) => {
+        // "Reset to suggested" clears these keys on purpose: out of the save too, even one this tab never heard of.
+        markNext(FINGERING_STORE_KEY, ...keys.map((k): [string[], () => undefined] => [['overrides', k], () => undefined]));
         set((s) => {
           const next = { ...s.overrides };
           for (const k of keys) delete next[k];
           return { overrides: next };
-        }),
+        });
+      },
       setLabelMode: (mode) => set((s) => ((LABEL_MODES as readonly string[]).includes(mode) ? { labelMode: mode } : s)),
     }),
     {

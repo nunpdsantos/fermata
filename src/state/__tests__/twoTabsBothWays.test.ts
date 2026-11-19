@@ -399,3 +399,128 @@ describe('finding 8: a record the store could not have written; the hydration ra
     expect(saved(PROGRESS).state.progress.moduleProgress).toEqual({ l1u1m1: ['a'], l1u1m2: ['b'], l1u1m3: ['c'] });
   });
 });
+
+describe('third review (1ccd14d): marks that belong to one write; schedules; what an action does on purpose', () => {
+  const quota = () => new DOMException('The quota has been exceeded.', 'QuotaExceededError');
+
+  it('item 1: a reset the browser refused leaves no mark on the next write — B\'s answer, made after it, stays', async () => {
+    const a = await drillTab();
+    const b = await drillTab();
+    a.useDrillStore.getState().startSession([fact('f1')], NOW);
+    for (let i = 0; i < 4; i++) a.useDrillStore.getState().recordAnswer(fact('f1'), true, 800, NOW + DAY * i);
+    const real = Storage.prototype.setItem;
+    let refuse = true;
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (this: Storage, k: string, v: string) {
+      if (k === DRILL && refuse) { refuse = false; throw quota(); }
+      return real.call(this, k, v);
+    });
+    expect(() => a.useDrillStore.getState().resetDrillProgress()).toThrow();
+    b.useDrillStore.getState().startSession([fact('f2')], NOW + 10 * DAY);
+    b.useDrillStore.getState().recordAnswer(fact('f2'), true, 700, NOW + 10 * DAY + 5);
+    a.useDrillStore.getState().startSession([fact('f1')], NOW + 11 * DAY);
+    a.useDrillStore.getState().recordAnswer(fact('f1'), true, 800, NOW + 11 * DAY + 5);
+    const s = printed('drill-refused-reset', DRILL).state;
+    expect(s.items.f2).toEqual(JSON.parse(JSON.stringify(applyAnswer(undefined, true, 700, NOW + 10 * DAY + 5, `s${NOW + 10 * DAY}`))));
+  });
+
+  it('item 1, the merge path: a reset refused while the save had changed underneath leaves no mark either', async () => {
+    const a = await drillTab();
+    const b = await drillTab();
+    a.useDrillStore.getState().startSession([fact('f1')], NOW);
+    a.useDrillStore.getState().recordAnswer(fact('f1'), true, 800, NOW + 1);
+    b.useDrillStore.getState().recordSprint('k', 4); // the save changed under A: A's reset goes through the merge
+    const real = Storage.prototype.setItem;
+    let refuse = true;
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (this: Storage, k: string, v: string) {
+      if (k === DRILL && refuse) { refuse = false; throw quota(); }
+      return real.call(this, k, v);
+    });
+    expect(() => a.useDrillStore.getState().resetDrillProgress()).toThrow();
+    b.useDrillStore.getState().startSession([fact('f3')], NOW + 10 * DAY);
+    b.useDrillStore.getState().recordAnswer(fact('f3'), true, 700, NOW + 10 * DAY + 5);
+    b.useDrillStore.getState().recordSprint('k', 9);
+    a.useDrillStore.getState().startSession([fact('f1')], NOW + 11 * DAY);
+    const s = printed('drill-refused-reset-merge', DRILL).state;
+    expect(Object.keys(s.items).sort()).toEqual(['f3']);
+    expect(s.sprintBests).toEqual({ k: 9 });
+  });
+
+  it('item 2: A completes a module and passes two reviews; B, never told, "completes" it: the schedule and its reviews stay', async () => {
+    const a = await progressTab();
+    const b = await progressTab();
+    a.useProgressStore.getState().completeModule('l1u1m1');
+    vi.setSystemTime(NOW + 2 * DAY);
+    a.useProgressStore.getState().recordReviewResult('l1u1m1', true);
+    vi.setSystemTime(NOW + 6 * DAY);
+    a.useProgressStore.getState().recordReviewResult('l1u1m1', true);
+    const reviewed = saved(PROGRESS).state.progress.reviewSchedules.l1u1m1;
+    expect([reviewed.intervalLevel, reviewed.reviewCount]).toEqual([2, 2]);
+    vi.setSystemTime(NOW + 7 * DAY);
+    b.useProgressStore.getState().completeModule('l1u1m1');
+    expect(printed('progress-stale-completion', PROGRESS).state.progress.reviewSchedules.l1u1m1).toEqual(reviewed);
+  });
+
+  it('item 2: both tabs pass one review of the same module: both count, through the store\'s own step', async () => {
+    const S0 = { completedAt: NOW, nextReviewAt: NOW + DAY, intervalLevel: 0, reviewCount: 0, lastReviewedAt: NOW };
+    localStorage.setItem(PROGRESS, JSON.stringify({ state: { progress: { completedModules: ['l1u1m1'], moduleProgress: {}, exerciseResults: {}, reviewSchedules: { l1u1m1: S0 } } }, version: 4 }));
+    const a = await progressTab();
+    const b = await progressTab();
+    vi.setSystemTime(NOW + 2 * DAY);
+    a.useProgressStore.getState().recordReviewResult('l1u1m1', true);
+    vi.setSystemTime(NOW + 3 * DAY);
+    b.useProgressStore.getState().recordReviewResult('l1u1m1', true);
+    const { updateScheduleAfterReview } = await import('../../services/spacedRepetition');
+    const replayed = updateScheduleAfterReview(updateScheduleAfterReview(S0, true, NOW + 2 * DAY), true, NOW + 3 * DAY);
+    expect(printed('progress-two-reviews', PROGRESS).state.progress.reviewSchedules.l1u1m1).toEqual(replayed);
+    expect([replayed.intervalLevel, replayed.reviewCount]).toEqual([2, 2]);
+  });
+
+  it('item 3: "Reset to suggested" in B clears a finger B never heard of', async () => {
+    const a = await fingeringTab();
+    const b = await fingeringTab();
+    a.useFingeringStore.getState().setOverride('major|standard|p2|0|1', 2);
+    deliver(FINGERING); // B hears of K1 …
+    a.useFingeringStore.getState().setOverride('major|standard|p2|1|0', 3); // … not of K2
+    b.useFingeringStore.getState().clearOverrides(['major|standard|p2|0|1', 'major|standard|p2|1|0']);
+    expect(printed('fingering-reset-to-suggested', FINGERING).state.overrides).toEqual({});
+  });
+
+  it('item 3, the same shape in Learn progress: un-completing a module this tab never saw completed takes it out of the save', async () => {
+    const a = await progressTab();
+    const b = await progressTab();
+    a.useProgressStore.getState().completeModule('l1u1m1');
+    b.useProgressStore.getState().uncompleteModule('l1u1m1');
+    const p = printed('progress-uncomplete-unseen', PROGRESS).state.progress;
+    expect([p.completedModules, p.reviewSchedules]).toEqual([[], {}]);
+  });
+
+  it('item 4: the score an answer just recorded is written, whatever this tab remembered of the exercise', async () => {
+    const a = await progressTab();
+    const b = await progressTab();
+    b.useProgressStore.getState().recordExerciseResult('l1u1m1', 'l1u1m1e1', 1);
+    deliver(PROGRESS); // A hears
+    a.useProgressStore.getState().recordExerciseResult('l1u1m1', 'l1u1m1e1', 0);
+    b.useProgressStore.getState().recordExerciseResult('l1u1m1', 'l1u1m1e1', 1); // B, not told, answers it right again
+    const r = printed('progress-score-again', PROGRESS).state.progress.exerciseResults.l1u1m1;
+    expect([r.scores, r.totalAttempts]).toEqual([{ l1u1m1e1: 1 }, 3]);
+  });
+
+  it('item 4: after a reset elsewhere, an answer to an exercise this tab had answered: the attempt and its score', async () => {
+    const b = await progressTab();
+    b.useProgressStore.getState().recordExerciseResult('l1u1m1', 'l1u1m1e1', 1);
+    localStorage.removeItem(PROGRESS);
+    b.useProgressStore.getState().recordExerciseResult('l1u1m1', 'l1u1m1e1', 1);
+    expect(printed('progress-score-after-reset', PROGRESS).state.progress.exerciseResults).toEqual({ l1u1m1: { scores: { l1u1m1e1: 1 }, totalAttempts: 1, lastAttemptAt: NOW, passed: false } });
+  });
+
+  it('item 4: a Sprint that beats the saved best is written — after a reset elsewhere, below what this tab remembered', async () => {
+    const a = await drillTab();
+    a.useDrillStore.getState().recordSprint('k', 16);
+    localStorage.removeItem(DRILL);
+    a.useDrillStore.getState().recordSprint('k', 5);
+    expect(printed('drill-sprint-after-reset', DRILL).state.sprintBests).toEqual({ k: 5 });
+    // Below the saved best: the saved best stays.
+    a.useDrillStore.getState().recordSprint('k', 3);
+    expect(saved(DRILL).state.sprintBests).toEqual({ k: 5 });
+  });
+});

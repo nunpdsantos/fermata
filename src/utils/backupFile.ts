@@ -112,11 +112,25 @@ export async function exportAndTell(storage: Pick<Storage, 'getItem'> = localSto
   return warnings.map((text) => ({ text, tone: 'warning' }));
 }
 
-/** The sentence for an import the browser would not save (A15): nothing changed, or which parts now come from the file. */
+/**
+ * The sentence for an import the browser would not save (A15): nothing
+ * changed, or which parts now come from the file — and, for a part that
+ * could not even be read back afterwards, that what it holds is unknown, in
+ * its own sentence (never that it holds the backup's data).
+ */
 export function importFailedText(result: Extract<ApplyResult, { ok: false }>): string {
-  return result.notRestored.length === 0
-    ? i18n.t('backupFile.importFailed')
-    : i18n.t('backupFile.importFailedPartly', { count: result.notRestored.length, sections: sectionNames(result.notRestored) });
+  const { notRestored, unknown = [] } = result;
+  if (unknown.length === 0) {
+    return notRestored.length === 0
+      ? i18n.t('backupFile.importFailed')
+      : i18n.t('backupFile.importFailedPartly', { count: notRestored.length, sections: sectionNames(notRestored) });
+  }
+  return [
+    i18n.t('backupFile.importNotInFull'),
+    ...(notRestored.length ? [i18n.t('backupFile.importFromBackup', { count: notRestored.length, sections: sectionNames(notRestored) })] : []),
+    i18n.t('backupFile.importUnknown', { count: unknown.length, sections: sectionNames(unknown) }),
+    i18n.t('backupFile.importRestAsItWas'),
+  ].join(' ');
 }
 
 /** Settings' way to say it: a toast that stays long enough to read. */
