@@ -81,6 +81,15 @@ describe('installAppHistory', () => {
     }
   });
 
+  it('no entry of ours (a first load, the error screen\'s resets): a record left in this tab is dropped as the module starts', async () => {
+    window.history.replaceState(null, '');
+    sessionStorage.setItem('fermatina-history-v1', JSON.stringify([[0, 'learn', 'unit/l1/u34'], [1, 'learn', 'module/l1/u34/l1u34m2']]));
+    const { useAppStore } = await import('../store');
+    useAppStore.setState({ view: 'learn' });
+    await import('../appHistory');
+    expect(sessionStorage.getItem('fermatina-history-v1')).toBeNull();
+  });
+
   it('review 2, item 5: a reset (no entry of ours) starts with nothing known', async () => {
     window.history.replaceState(null, '');
     sessionStorage.setItem('fermatina-history-v1', JSON.stringify([[0, 'learn', 'unit/l1/u34']]));
@@ -92,4 +101,5 @@ describe('installAppHistory', () => {
     h.backTo('learn', 'unit/l1/u34');
     expect(go).not.toHaveBeenCalled();
   });
+
 });

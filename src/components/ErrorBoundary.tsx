@@ -80,7 +80,9 @@ interface State {
  * A recovery's reload: this tab's history entry forgets its place first
  * (state/appHistory.ts keeps it across a reload), so the app comes back where
  * a fresh start puts it, not on the screen that may have crashed (second
- * audit round, review A7).
+ * audit round, review A7). With no entry of its own, the history module also
+ * drops this tab's record of entries as it starts (kept out of this file,
+ * which is in the entry bundle).
  */
 function forgetPlace(): void {
   try {
