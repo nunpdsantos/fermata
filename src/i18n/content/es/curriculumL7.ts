@@ -125,7 +125,7 @@ const curriculumL7: CurriculumLevelOverlay = {
           title: 'Voicings de shell: fundamental, tercera, séptima',
           explanation:
             'Los voicings de shell reducen el acorde a lo esencial: fundamental, tercera y séptima. Estas tres notas definen la cualidad — tercera mayor + séptima mayor = maj7, tercera menor + séptima menor = m7, tercera mayor + séptima menor = séptima de dominante. En los acordes maj7, m7 y de séptima de dominante la quinta es justa, así que no aporta información de cualidad y se omite. En los acordes m7b5 y dim7 la quinta disminuida es la nota que los define y se queda en el voicing: Cm7 y Cm7b5 comparten la misma fundamental, tercera y séptima (C, Eb, Bb). Las extensiones se superponen al shell. Los voicings de shell son el punto de partida para el acompañamiento de piano jazz y el chord-melody en guitarra: aprende los shells, luego vístelos con extensiones.',
-          tryThisLabel: 'Construye Dm7 — escucha el shell menor (D, F, C)',
+          tryThisLabel: 'Escucha el shell de Dm7, D, F y C, y después el Dm7 completo, con la 5.ª (A)',
         },
         {
           title: 'El acorde alt: tensión cromática máxima',
@@ -557,7 +557,7 @@ const curriculumL7: CurriculumLevelOverlay = {
           title: 'Voicings cuartales',
           explanation:
             'Los acordes cuartales se construyen apilando cuartas justas en lugar de terceras. Un voicing cuartal sobre D: D-G-C-F. Puede implicar Dm7, Dm11 o simplemente una sonoridad cuartal flotante sin identidad mayor/menor clara. La ambigüedad es intencional y perfecta para la música modal — los voicings cuartales no tiran hacia la resolución como las tríadas. McCoy Tyner construyó toda su sonoridad de firma sobre apilamientos cuartales, moviéndolos frecuentemente en paralelo sobre un pedal de bajo. En la mano derecha: cuartas. En la mano izquierda: la tónica modal como pedal.',
-          tryThisLabel: 'Escucha Dm11 — un apilamiento cuartal en forma de acorde',
+          tryThisLabel: 'Escucha D–G–C–F — cuartas justas apiladas sobre D, una a una y después juntas',
         },
         {
           title: 'Voicings quintales y espaciado abierto',
@@ -569,7 +569,7 @@ const curriculumL7: CurriculumLevelOverlay = {
           title: 'Pedales y notas tenidas',
           explanation:
             'Un pedal es una nota de bajo sostenida o repetida sobre la cual las armonías superiores cambian libremente. Una nota tenida (drone) es un sonido continuo que ancla el centro tonal. En la música modal, pedales y drones sustituyen la función dominante — la tónica se establece por pura persistencia en lugar de gravedad armónica. La música clásica india está enteramente construida sobre un drone (la tanpura). Miles Davis usó pedales en el jazz modal para liberar la armonía de cambios de acordes funcionales, permitiendo al solista explorar el modo libremente.',
-          tryThisLabel: 'Observa D menor natural — una escala sobre un pedal de D',
+          tryThisLabel: 'Escucha D menor natural sobre un pedal de D — un D grave suena bajo cada nota de la escala',
         },
       ],
       tasks: [
@@ -796,7 +796,7 @@ const curriculumL7: CurriculumLevelOverlay = {
           title: 'Acordes con extensiones: novenas hasta trecenas',
           explanation:
             'Los acordes con extensiones continúan el proceso de apilamiento de terceras más allá de la séptima. Las cualidades mayor, menor y dominante producen familias de extensiones distintas. Cmaj9 añade una novena mayor a Cmaj7. Cm11 añade una oncena justa a Cm9. G13 añade una trecena mayor a G9 (con la oncena generalmente omitida en acordes dominantes para evitar el choque tercera/oncena). Las extensiones alteradas (b9, #9, #11, b13) crean la tensión cromática esencial para la conducción de voces jazz. El motor soporta todas las extensiones estándar en todas las cualidades.',
-          tryThisLabel: 'Construye Cmaj13 — el apilamiento completo de extensiones mayores',
+          tryThisLabel: 'Escucha el apilamiento completo de terceras, C, E, G, B, D, F y A, y después Cmaj13 como suele tocarse: sin la 11.ª (F), que choca con la 3.ª (E)',
         },
         {
           title: 'Acordes suspendidos y de nota añadida',

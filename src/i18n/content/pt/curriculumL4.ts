@@ -81,7 +81,7 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'O retardo de baixo 2-3',
           explanation:
             'O retardo 2-3 é único: ocorre na voz do baixo em vez de numa voz superior. A nota do baixo é retida do acorde anterior, formando uma 2.ª contra uma voz superior que fica parada, e depois resolve por grau conjunto descendente. A designação "2-3" descreve o intervalo acima do baixo: quando o baixo desce, esse intervalo cresce de uma 2.ª para uma 3.ª — a voz superior não se move. O baixo, como em todos os retardos padrão, resolve por grau conjunto descendente. (Kostka/Payne, Tonal Harmony, cap. 12.)',
-          tryThisLabel: 'Mantém E numa voz superior enquanto o baixo desce D → C — o intervalo acima do baixo cresce de uma 2.ª para uma 3.ª',
+          tryThisLabel: 'Ouve o E mantido numa voz superior enquanto o baixo desce de D para C — o intervalo acima do baixo cresce de uma 2.ª para uma 3.ª',
         },
       ],
       tasks: [

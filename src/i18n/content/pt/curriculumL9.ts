@@ -167,7 +167,7 @@ const curriculumL9: CurriculumLevelOverlay = {
           explanation:
             'Uma técnica mnemónica comprovada: associar cada intervalo com o início de uma melodia familiar. 2.ª menor ascendente = tema de Tubarão. 2.ª maior = Parabéns a Você (compara as 2.ª e 3.ª notas; as duas primeiras têm a mesma altura). 3.ª menor = Greensleeves. 3.ª maior = When the Saints (oh-when). 4.ª perfeita = Marcha Nupcial de Wagner (Here Comes the Bride). Trítono = The Simpsons (The-Simp). 5.ª perfeita = Brilha Brilha Estrelinha (compara as 2.ª e 3.ª notas; as duas primeiras têm a mesma altura). Estas são rodinhas de treino — o objetivo é internalizar o som de cada intervalo diretamente e depois abandonar a muleta. Começa apenas com intervalos ascendentes, depois acrescenta descendentes quando os ascendentes estiverem sólidos.',
           tryThisLabel:
-            'Toca C maior — ouve cada intervalo a partir da fundamental',
+            'Ouve os intervalos pequenos de C maior a partir da fundamental: C–D, C–E, C–F e C–G',
         },
         {
           title: 'Consonância perfeita vs. imperfeita',

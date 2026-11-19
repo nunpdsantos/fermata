@@ -571,7 +571,7 @@ export function ModuleView({
             <section key={i} data-section={`c${i}`} className={`mb-12 ${sectionClass}`}>
               <h2 className="text-title font-semibold mb-3" style={{ color: 'var(--text)' }}>{concept.title}</h2>
               <p className="learn-concept-text mb-4" style={{ color: 'var(--text-muted)' }}>{concept.explanation}</p>
-              <InlineTryThis query={concept.tryThisQuery} label={concept.tryThisLabel} rhythm={concept.rhythm} clefs={concept.clefs} descending={concept.descending} names={noStaff} accent={accent} />
+              <InlineTryThis query={concept.tryThisQuery} label={concept.tryThisLabel} rhythm={concept.rhythm} clefs={concept.clefs} descending={concept.descending} demo={concept.demo} names={noStaff} accent={accent} />
             </section>
           ))}
 
@@ -639,7 +639,7 @@ export function ModuleView({
                       </div>
                       {openQuery && (
                         <div className="px-4 pb-3">
-                          <InlineTryThis compact query={openQuery} label={`‘${openQuery}’`} names={noStaff} accent={accent} />
+                          <InlineTryThis compact query={openQuery} label={`‘${openQuery}’`} demo={task.demos?.[openQuery]} names={noStaff} accent={accent} />
                         </div>
                       )}
                     </div>

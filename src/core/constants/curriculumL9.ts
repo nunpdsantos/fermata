@@ -1,4 +1,5 @@
 import type { CurriculumUnit, CurriculumModule } from '../types/curriculum';
+import { demonstration, run, rest } from '../utils/demonstration';
 
 // ---------------------------------------------------------------------------
 // Level 9: Ear Training & Aural Skills (Parallel Track)
@@ -147,7 +148,20 @@ const l9u30m3: CurriculumModule = {
       explanation:
         'A proven mnemonic technique: associate each interval with a familiar melody opening. Minor 2nd ascending = Jaws theme. Major 2nd = Happy Birthday (compare its 2nd and 3rd notes; the first two are the same pitch). Minor 3rd = Greensleeves. Major 3rd = When the Saints (oh-when). Perfect 4th = Here Comes the Bride. Tritone = The Simpsons (The-Simp). Perfect 5th = Twinkle Twinkle (compare its 2nd and 3rd notes; the first two are the same pitch). These are training wheels — the goal is to internalise each interval sound directly, then retire the crutch. Start with ascending intervals only, then add descending once ascending is solid.',
       tryThisQuery: 'C major scale',
-      tryThisLabel: 'Play C major — hear each interval from the root',
+      tryThisLabel: "Hear C major's small intervals from its root: C–D, C–E, C–F and C–G",
+      // Second audit, M56: each pair starts on C, a silence between pairs.
+      demo: demonstration('l9u30m3 c0', {
+        tempo: 120,
+        voices: [{
+          staff: 'treble',
+          events: [
+            ...run('q', ['C4', 'D4']), rest('q'),
+            ...run('q', ['C4', 'E4']), rest('q'),
+            ...run('q', ['C4', 'F4']), rest('q'),
+            ...run('q', ['C4', 'G4']),
+          ],
+        }],
+      }),
     },
     {
       title: 'Perfect vs. Imperfect Consonance',

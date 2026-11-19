@@ -1,0 +1,26 @@
+{
+  "staff": {
+    "treble": "Pauta em clave de sol",
+    "bass": "Pauta em clave de fá",
+    "grand": "Pauta dupla, claves de sol e de fá"
+  },
+  "sharps_one": "um sustenido na armação de clave: {{notes}}",
+  "sharps_other": "{{count}} sustenidos na armação de clave: {{notes}}",
+  "flats_one": "um bemol na armação de clave: {{notes}}",
+  "flats_other": "{{count}} bemóis na armação de clave: {{notes}}",
+  "noSigns": "sem sustenidos nem bemóis na armação de clave",
+  "time": "em {{time}}",
+  "upper": "Voz superior",
+  "lower": "Voz inferior",
+  "onTreble": "na pauta de clave de sol",
+  "onBass": "na pauta de clave de fá",
+  "together": "{{notes}} em simultâneo",
+  "then": ", depois ",
+  "and": " e ",
+  "values": {
+    "w": "semibreves",
+    "h": "mínimas",
+    "q": "semínimas",
+    "8": "colcheias"
+  }
+}

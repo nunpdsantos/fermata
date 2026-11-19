@@ -125,7 +125,7 @@ const curriculumL7: CurriculumLevelOverlay = {
           title: 'Voicings de shell: fundamental, terça, sétima',
           explanation:
             'Os voicings de shell reduzem o acorde ao essencial: fundamental, terça e sétima. Estas três notas definem a qualidade — terça maior + sétima maior = maj7, terça menor + sétima menor = m7, terça maior + sétima menor = sétima da dominante. Nos acordes maj7, m7 e de sétima da dominante a quinta é perfeita, por isso não acrescenta informação de qualidade e é omitida. Nos acordes m7b5 e dim7 a quinta diminuta é a nota que os define e fica no voicing: Cm7 e Cm7b5 partilham a mesma fundamental, terça e sétima (C, Eb, Bb). As extensões são sobrepostas ao shell. Os voicings de shell são o ponto de partida para o acompanhamento de piano jazz e a chord-melody na guitarra: aprende os shells, depois veste-os com extensões.',
-          tryThisLabel: 'Constrói Dm7 — ouve o shell menor (D, F, C)',
+          tryThisLabel: 'Ouve o shell de Dm7, D, F e C, e depois o Dm7 completo, com a 5.ª (A)',
         },
         {
           title: 'O acorde alt: tensão cromática máxima',
@@ -557,7 +557,7 @@ const curriculumL7: CurriculumLevelOverlay = {
           title: 'Voicings quartais',
           explanation:
             'Os acordes quartais constroem-se empilhando quartas perfeitas em vez de terças. Um voicing quartal sobre D: D-G-C-F. Pode implicar Dm7, Dm11 ou simplesmente uma sonoridade quartal flutuante sem identidade maior/menor clara. A ambiguidade é intencional e perfeita para música modal — os voicings quartais não puxam para a resolução como as tríades. McCoy Tyner construiu toda a sua sonoridade de assinatura sobre empilhamentos quartais, movendo-os frequentemente em paralelo sobre um pedal de baixo. Na mão direita: quartas. Na mão esquerda: a tónica modal como pedal.',
-          tryThisLabel: 'Ouve Dm11 — um empilhamento quartal em forma de acorde',
+          tryThisLabel: 'Ouve D–G–C–F — quartas perfeitas empilhadas sobre D, uma de cada vez e depois juntas',
         },
         {
           title: 'Voicings quintais e espaçamento aberto',
@@ -569,7 +569,7 @@ const curriculumL7: CurriculumLevelOverlay = {
           title: 'Pedais e notas sustidas',
           explanation:
             'Um pedal é uma nota de baixo sustida ou repetida sobre a qual as harmonias superiores mudam livremente. Uma nota sustida (drone) é um som contínuo que ancora o centro tonal. Na música modal, pedais e drones substituem a função dominante — a tónica é estabelecida por pura persistência em vez de gravidade harmónica. A música clássica indiana é inteiramente construída sobre um drone (a tanpura). Miles Davis usou pedais no jazz modal para libertar a harmonia de mudanças de acordes funcionais, permitindo ao solista explorar o modo livremente.',
-          tryThisLabel: 'Vê D menor natural — uma escala sobre um pedal de D',
+          tryThisLabel: 'Ouve D menor natural sobre um pedal de D — um D grave soa debaixo de cada nota da escala',
         },
       ],
       tasks: [
@@ -796,7 +796,7 @@ const curriculumL7: CurriculumLevelOverlay = {
           title: 'Acordes com extensões: nonas até décimas terceiras',
           explanation:
             'Os acordes com extensões continuam o processo de empilhamento de terças além da sétima. As qualidades maior, menor e dominante produzem famílias de extensões distintas. Cmaj9 acrescenta uma nona maior a Cmaj7. Cm11 acrescenta uma décima primeira perfeita a Cm9. G13 acrescenta uma décima terceira maior a G9 (com a décima primeira geralmente omitida em acordes dominantes para evitar o choque terça/décima primeira). Extensões alteradas (b9, #9, #11, b13) criam a tensão cromática essencial à condução de vozes jazz. O motor suporta todas as extensões padrão em todas as qualidades.',
-          tryThisLabel: 'Constrói Cmaj13 — o empilhamento completo de extensões maiores',
+          tryThisLabel: 'Ouve o empilhamento completo de terças, C, E, G, B, D, F e A, e depois Cmaj13 como costuma ser tocado: sem a 11.ª (F), que choca com a 3.ª (E)',
         },
         {
           title: 'Acordes suspensos e de nota adicionada',

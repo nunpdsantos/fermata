@@ -1,0 +1,26 @@
+{
+  "staff": {
+    "treble": "Treble staff",
+    "bass": "Bass staff",
+    "grand": "Grand staff, treble and bass"
+  },
+  "sharps_one": "one sharp in the key signature: {{notes}}",
+  "sharps_other": "{{count}} sharps in the key signature: {{notes}}",
+  "flats_one": "one flat in the key signature: {{notes}}",
+  "flats_other": "{{count}} flats in the key signature: {{notes}}",
+  "noSigns": "no sharps or flats in the key signature",
+  "time": "in {{time}}",
+  "upper": "Upper voice",
+  "lower": "Lower voice",
+  "onTreble": "on the treble staff",
+  "onBass": "on the bass staff",
+  "together": "{{notes}} together",
+  "then": ", then ",
+  "and": " and ",
+  "values": {
+    "w": "whole notes",
+    "h": "half notes",
+    "q": "quarter notes",
+    "8": "eighth notes"
+  }
+}

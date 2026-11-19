@@ -1,4 +1,5 @@
 import type { CurriculumUnit, CurriculumModule } from '../types/curriculum';
+import { demonstration, run, chord, note } from '../utils/demonstration';
 
 // ---------------------------------------------------------------------------
 // Level 7, Unit 21: Jazz Harmony (6 modules)
@@ -79,7 +80,12 @@ const l7u21m2: CurriculumModule = {
       explanation:
         'Shell voicings strip a chord to its essentials: root, 3rd, and 7th. These three notes define the quality — major 3rd + major 7th = maj7, minor 3rd + minor 7th = m7, major 3rd + minor 7th = dominant 7. In maj7, m7 and dominant 7 chords the 5th is perfect, so it adds no quality information and is omitted. In m7b5 and dim7 chords the flatted 5th is the defining tone and stays in the voicing: Cm7 and Cm7b5 share the same root, 3rd and 7th (C, Eb, Bb). Extensions are layered on top of the shell. Shell voicings are the starting point for jazz piano comping and guitar chord-melody: learn the shells, then dress them with extensions.',
       tryThisQuery: 'Dm7',
-      tryThisLabel: 'Build Dm7 — hear the minor shell (D, F, C)',
+      tryThisLabel: 'Hear the Dm7 shell, D, F and C, then the full Dm7 with its 5th (A)',
+      // Second audit, M53: the shell first, without its 5th, then the whole chord to compare.
+      demo: demonstration('l7u21m2 c0', {
+        tempo: 120,
+        voices: [{ staff: 'treble', events: [chord('w', ['D4', 'F4', 'C5']), chord('w', ['D4', 'F4', 'A4', 'C5'])] }],
+      }),
     },
     {
       title: 'The Alt Chord: Maximum Chromatic Tension',
@@ -590,7 +596,12 @@ const l7u22m5: CurriculumModule = {
       explanation:
         'Quartal chords are built by stacking perfect fourths instead of thirds. A quartal voicing on D: D-G-C-F. This could imply Dm7, Dm11, or simply a floating quartal sonority with no clear major/minor identity. The ambiguity is intentional and perfect for modal music — quartal voicings do not pull towards resolution the way triads do. McCoy Tyner built his entire signature sound on quartal stacks, often moving them in parallel over a bass pedal. In the right hand: fourths. In the left hand: the modal tonic as a drone.',
       tryThisQuery: 'Dm11',
-      tryThisLabel: 'Hear Dm11 — a quartal stack in chord form',
+      tryThisLabel: 'Hear D–G–C–F — perfect fourths stacked on D, one at a time, then together',
+      // Second audit, M51: the voicing the sentence names, five half steps between neighbours.
+      demo: demonstration('l7u22m5 c0', {
+        tempo: 100,
+        voices: [{ staff: 'treble', events: [...run('q', ['D4', 'G4', 'C5', 'F5']), chord('w', ['D4', 'G4', 'C5', 'F5'])] }],
+      }),
     },
     {
       title: 'Quintal Voicings and Open Spacing',
@@ -604,7 +615,17 @@ const l7u22m5: CurriculumModule = {
       explanation:
         'A pedal point is a sustained or repeated bass note over which the upper harmonies change freely. A drone is a continuously sounding pitch (or fifth) that anchors the tonal centre. In modal music, pedal points and drones replace dominant function — the tonic is established by sheer persistence rather than by harmonic gravity. Indian classical music is entirely built on a drone (the tanpura). Miles Davis used pedal points in modal jazz to free the harmony from functional chord changes, allowing the soloist to explore the mode freely.',
       tryThisQuery: 'D natural minor scale',
-      tryThisLabel: 'See D natural minor — a scale over a D pedal',
+      tryThisLabel: 'Hear D natural minor over a D pedal — a low D sounds under every note of the scale',
+      // Second audit, M52: the scale climbs over a low D struck again each bar
+      // (a repeated pedal: on a piano a held note fades).
+      demo: demonstration('l7u22m5 c2', {
+        tempo: 100,
+        time: '4/4',
+        voices: [
+          { staff: 'treble', events: run('q', ['D4', 'E4', 'F4', 'G4', 'A4', 'Bb4', 'C5', 'D5']) },
+          { staff: 'bass', events: [note('w', 'D3'), note('w', 'D3')] },
+        ],
+      }),
     },
   ],
   tasks: [
@@ -871,7 +892,13 @@ const l7u23m5: CurriculumModule = {
       explanation:
         'Extended chords continue the third-stacking process beyond the seventh. Major, minor, and dominant qualities each produce distinct extension families. Cmaj9 adds a major 9th to Cmaj7. Cm11 adds a perfect 11th to Cm9. G13 adds a major 13th to G9 (with the 11th usually omitted in dominant chords to avoid the 3rd/11 clash). Altered extensions (b9, #9, #11, b13) create the chromatic tension essential to jazz voice leading. The engine supports all standard extensions across every quality.',
       tryThisQuery: 'Cmaj13',
-      tryThisLabel: 'Build Cmaj13 — the full major extension stack',
+      tryThisLabel: 'Hear the full stack of thirds, C, E, G, B, D, F and A, then Cmaj13 as it is usually played: without the 11th (F), which clashes with the 3rd (E)',
+      // Second audit, M55: every third up to the 13th, then the chord as the
+      // engine (and common practice) voices it, F left out.
+      demo: demonstration('l7u23m5 c0', {
+        tempo: 120,
+        voices: [{ staff: 'treble', events: [...run('q', ['C4', 'E4', 'G4', 'B4', 'D5', 'F5', 'A5']), chord('w', ['C4', 'E4', 'G4', 'B4', 'D5', 'A5'])] }],
+      }),
     },
     {
       title: 'Suspended and Added-Tone Chords',

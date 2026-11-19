@@ -1,4 +1,5 @@
 import type { CurriculumUnit, CurriculumModule } from '../types/curriculum';
+import { demonstration, note } from '../utils/demonstration';
 
 // ---------------------------------------------------------------------------
 // Level 4, Unit 12: Non-Chord Tones and Dominant Seventh
@@ -35,7 +36,16 @@ const l4u12m1: CurriculumModule = {
       explanation:
         'The 2-3 suspension is unique: it occurs in the bass voice rather than an upper voice. The bass note is held from the previous chord, forming a 2nd against a stationary upper voice, then resolves downwards by step. The label "2-3" describes the interval above the bass: as the bass descends, that interval grows from a 2nd to a 3rd — the upper voice does not move. The bass, like all standard suspensions, resolves by step downwards. (Kostka/Payne, Tonal Harmony, Ch. 12.)',
       tryThisQuery: 'C major chord',
-      tryThisLabel: 'Hold E in an upper voice while the bass descends D → C — the interval above the bass grows from a 2nd to a 3rd',
+      tryThisLabel: 'Hear E held in an upper voice while the bass falls from D to C — the interval above the bass grows from a 2nd to a 3rd',
+      // Second audit, M54: the E sounds once and holds; under it the bass
+      // strikes D (a 2nd below E), then C (a 3rd below).
+      demo: demonstration('l4u12m1 c2', {
+        tempo: 80,
+        voices: [
+          { staff: 'treble', events: [note('w', 'E4')] },
+          { staff: 'treble', events: [note('h', 'D4'), note('h', 'C4')] },
+        ],
+      }),
     },
   ],
   tasks: [

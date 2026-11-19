@@ -165,9 +165,9 @@ const overlay: TemplateLevelOverlay = {
     {
       // ear_training (note)
       promptTemplate:
-        'Ouve esta altura de uma melodia por graus e identifica-a.',
+        'Ouve esta nota e identifica-a.',
       hintTemplate:
-        'Em melodias por graus, cada nota está a meio-tom ou um tom da anterior. Canta a escala para te orientares.',
+        'Parte do C que ouves primeiro e canta a escala de C maior a subir, um grau de cada vez, até chegares a esta nota.',
     },
     {
       // ear_training (interval)
