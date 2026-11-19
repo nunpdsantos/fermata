@@ -6,6 +6,7 @@ import { ToastRegion } from './ToastRegion.tsx';
 import { StartHint } from './StartHint.tsx';
 import { TourHost } from '../tour/TourHost.tsx';
 import { MovedNoticeHost } from '../moved/MovedNoticeHost.tsx';
+import { LanguageOffer } from './LanguageOffer.tsx';
 import { useToastAvoid } from './toastLayout.ts';
 import { useAppStore } from '../../state/store.ts';
 import type { Detent } from '../../state/dock.ts';
@@ -75,6 +76,8 @@ export function AppShell({ children }: AppShellProps) {
       <ToastRegion />
       {/* On the old address only: "we've moved" (a toast there) and its panel. */}
       <MovedNoticeHost />
+      {/* A returning visit's link in another language: a one-tap offer (a toast there). */}
+      <LanguageOffer />
       {/* After a 'new' / 'player' start-screen door (state/startHint.ts):
           one line in the flow, Explore only — it covers nothing. */}
       <StartHint />
