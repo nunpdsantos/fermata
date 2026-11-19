@@ -22,6 +22,7 @@ import { useAppStore } from '../../state/store.ts';
 import { resumeAudio, playChordVoiced, playPitchedNotes, cancelScheduledAudio } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import { ChromaticStrip } from './ChromaticStrip.tsx';
+import { builderRole, matchText, otherReadings } from './builderRole.ts';
 import { SelectTrigger } from '../ui/SelectTrigger.tsx';
 import { Button } from '../ui/Button.tsx';
 
@@ -174,35 +175,20 @@ export function ChordBuilderPanel() {
   const notesLabel = stepsSorted.map((s) => withGlyphs(noteAtStep(s))).join(' – ');
   const semitonesLabel = stepsSorted.join(', ');
 
-  const role = useMemo(() => {
-    if (!top || top.confidence !== 'exact') return null;
-    const rootPc = getPitchClass(top.chord.root);
-    const match = diatonicChords.find(
-      (dc) => getPitchClass(dc.chord.root) === rootPc && dc.chord.quality === top.chord.quality
-    );
-    // Display names, never internal ids (audit W1-10: was "C diminished whole_half").
-    const keyLabel = `${withGlyphs(scale.root)} ${t(`scaleName.${scale.type}`)}`;
-    if (match) return { label: `${match.numeral} ${t('chordBuilder.ofKey', { key: keyLabel })}`, inKey: true };
-    const degIdx = scale.notes.findIndex((n) => getPitchClass(n) === rootPc);
-    if (degIdx >= 0) {
-      return {
-        label: t('chordBuilder.nonDiatonicAt', {
-          numeral: diatonicChords.find((dc) => getPitchClass(dc.chord.root) === rootPc)?.numeral
-            ?? `${degreeOf(scale.root, scale.notes[degIdx]).number}`,
-          key: keyLabel,
-        }),
-        inKey: false,
-      };
-    }
-    return { label: t('chordBuilder.outOfKey', { key: keyLabel }), inKey: false };
-  }, [top, diatonicChords, scale, t]);
+  // Every other reading of the notes built, the main one never again (fix pass).
+  const others = useMemo(() => otherReadings(top, identification.results), [top, identification]);
+
+  const role = useMemo(
+    () => builderRole(top && top.confidence === 'exact' ? top.chord : null, scale, diatonicChords, t),
+    [top, diatonicChords, scale, t],
+  );
 
   return (
-    <div className="space-y-3">
+    <div className="chord-builder space-y-3">
       {/* W11-A: v2 controls (36 / 44 px, tokens); the layout is the Explore
           batch's (D-25). */}
       <div data-chord-scroll-row className="flex flex-wrap gap-2 items-end">
-        <label className="flex flex-col gap-1">
+        <label className="builder-root-field flex flex-col gap-1">
           <span className="type-label" {...termAttr('root')}>{t('chordBuilder.chordRoot')}</span>
           <SelectTrigger
             value={`${chordRoot.natural}${chordRoot.accidental}`}
@@ -230,6 +216,9 @@ export function ChordBuilderPanel() {
         </Button>
       </div>
 
+      {/* A landing row (chordScrollLanding): the detail opening below keeps
+          the strip and the readout in view where they fit (audit 2026-11-18, Q4). */}
+      <div data-chord-scroll-row>
       <ChromaticStrip
         rootNote={chordRoot}
         noteAtStep={noteAtStep}
@@ -240,9 +229,15 @@ export function ChordBuilderPanel() {
         pitchClassAtStep={pitchClassAtStep}
         intervalAtStep={intervalAtStep}
       />
+      </div>
 
+      {/* The readout. On the workbench (≥ 1200 px) its facts share one line
+          and it is a landing row, so the detail opens with it in view
+          (index.css, stream C; audit 2026-11-18, Q4). */}
       <div
-        className="rounded-xl p-3 text-sm"
+        className="builder-readout rounded-xl p-3 text-sm"
+        data-chord-scroll-row
+        data-testid="builder-readout"
         style={{
           backgroundColor: 'var(--bg-raised)',
           border: '1px solid var(--border-subtle)',
@@ -265,7 +260,7 @@ export function ChordBuilderPanel() {
           )}
           {top && top.confidence !== 'exact' && (
             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-              ({top.interpretation})
+              ({matchText(top, t)})
             </span>
           )}
           {role && (
@@ -274,12 +269,12 @@ export function ChordBuilderPanel() {
               style={{ color: role.inKey ? 'var(--accent-text)' : 'var(--text-muted)' }}
               {...termAttr(role.inKey ? 'romanNumeral' : 'outOfKey')}
             >
-              {role.inKey ? role.label : `(${role.label})`}
+              {role.text}
             </span>
           )}
         </div>
 
-        <div className="mt-2 grid gap-y-1 gap-x-6 text-xs" style={{ gridTemplateColumns: 'auto 1fr' }}>
+        <div className="builder-facts mt-2 grid gap-y-1 gap-x-6 text-xs">
           <span style={{ color: 'var(--text-muted)' }}>{t('chordBuilder.notes')}</span>
           <span>{notesLabel || t('chordBuilder.none')}</span>
           <span style={{ color: 'var(--text-muted)' }} {...termAttr('interval')}>{t('chordBuilder.intervals')}</span>
@@ -288,16 +283,16 @@ export function ChordBuilderPanel() {
           <span>{semitonesLabel || t('chordBuilder.none')}</span>
         </div>
 
-        {identification.results.length > 1 && (
-          <details className="mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+        {others.length > 0 && (
+          <details className="builder-others mt-2 text-xs" style={{ color: 'var(--text-muted)' }} data-testid="builder-others">
             <summary className="cursor-pointer">{t('chordBuilder.otherInterpretations')}</summary>
             <ul className="mt-1 ml-4 list-disc space-y-0.5">
-              {identification.results.slice(1, 5).map((r, i) => (
+              {others.map((r, i) => (
                 <li key={i}>
                   {withGlyphs(r.chord.root)}{' '}
                   {qualityName(r.chord.quality, lang)}
                   {' — '}
-                  <span style={{ color: 'var(--text-dim)' }}>{r.interpretation}</span>
+                  <span style={{ color: 'var(--text-dim)' }}>{matchText(r, t)}</span>
                 </li>
               ))}
             </ul>

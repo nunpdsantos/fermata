@@ -90,6 +90,7 @@ export const QUALITY_TERM: Record<ChordQuality, TermId> = {
   sus2sus4: 'susChord',
   power: 'powerChord',
   add9: 'addedNote',
+  minor_add9: 'addedNote',
   add11: 'addedNote',
   major9: 'extendedChord',
   minor9: 'extendedChord',

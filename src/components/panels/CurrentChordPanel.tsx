@@ -64,6 +64,20 @@ interface CurrentChordPanelProps {
 
 const INVERSION_LABEL_KEYS = ['panel.rootPos', 'panel.inv1', 'panel.inv2', 'panel.inv3'];
 
+/**
+ * A parsed chord's own name after its root and without its slash bass, both
+ * of which the heading writes itself: "G7b9#11" → "7♭9♯11" (audit 2026-11-18:
+ * the heading read "GG7♭9♯11", as the dock read-out did until wave 2).
+ */
+function algorithmicQuality(chord: Chord): string {
+  let s = chord.algorithmicDisplayName ?? '';
+  const root = noteToString(chord.root);
+  if (s.startsWith(root)) s = s.slice(root.length);
+  const bass = chord.bassNote ? `/${noteToString(chord.bassNote)}` : '';
+  if (bass && s.endsWith(bass)) s = s.slice(0, -bass.length);
+  return withGlyphs(s);
+}
+
 /** How far a toast slides into place (Toast.tsx: `initial y: 12`). */
 const TOAST_TRAVEL = 12;
 
@@ -359,7 +373,7 @@ export function CurrentChordPanel({ chord, aside, sourceTab, simple = false }: C
           {withGlyphs(chord.root)}
           <span className="chord-detail-quality">
             {chord.algorithmicDisplayName
-              ? withGlyphs(chord.algorithmicDisplayName)
+              ? algorithmicQuality(chord)
               : <Term id={qualityTermId(chord.quality)}>{qualityName(chord.quality, lang)}</Term>}
           </span>
           {chord.bassNote && (

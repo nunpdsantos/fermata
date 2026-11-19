@@ -31,6 +31,7 @@ import {
 import { chordLinkSymbol } from '../../../services/shareLinkMake';
 import { preferredRootSpelling } from '../../../core/utils/degreeSpelling';
 import { MAX_PROGRESSION_CHORDS } from '../../../state/progressionSave';
+import { MAX_CAPO_FRET } from '../../../state/capo';
 import { chordBelowCapo } from '../../../core/constants/guitarChordShapes';
 
 // ─── The key the panel numbers in ──────────────────────────────────────────
@@ -276,16 +277,21 @@ export function capoShapes(chords: readonly Chord[], _key: MusicKey, fret: numbe
 }
 
 /**
- * Up to three capo ideas: frets 1–7 whose shapes have more open grips than
- * playing without a capo, best first (the engine's ranking: all open, then
- * more open shapes, then the lower fret). None when no capo helps.
+ * Up to three capo ideas: frets 1 … MAX_CAPO_FRET (every fret the app's capo
+ * can be set to; fix pass: the search stopped at 7, so E♭ major's I–V–vi–IV,
+ * G D Em C at fret 8, was missed while the panel said no capo could) where
+ * EVERY shape has an open grip (the line promises "shapes with open strings";
+ * audit 2026-11-18, Q11: a fret was offered when only most of them had one,
+ * so "Fret 1: E, A, B" put a barred B among them), and more of them than
+ * without a capo, best first (the engine's ranking: then the lower fret).
+ * None when no fret gives that.
  */
 export function capoIdeas(chords: readonly Chord[], key: MusicKey): CapoOption[] {
   if (chords.length === 0) return [];
-  const options = capoOptions(chords, key);
+  const options = capoOptions(chords, key, { maxFret: MAX_CAPO_FRET });
   const none = options.find((o) => o.fret === 0);
   const base = none?.openCount ?? 0;
-  return options.filter((o) => o.fret > 0 && o.openCount > base).slice(0, 3);
+  return options.filter((o) => o.fret > 0 && o.allOpen && o.openCount > base).slice(0, 3);
 }
 
 // ─── Common progressions ──────────────────────────────────────────────────
@@ -297,6 +303,24 @@ export interface PresetView {
   /** The preset's key differs from the panel key (the line names it). */
   relative: boolean;
   chords: Chord[];
+}
+
+/**
+ * The key a list is NUMBERED in when it is exactly a common progression of
+ * the other mode as the panel shows it (on the relative key: from F minor,
+ * "ii–V–I: B♭m E♭ A♭ · in A♭ major"), else null (the panel's key). The
+ * advertised key, derived from the list itself, so it holds across a reload
+ * and ends with the learner's first change (fix pass of audit 2026-11-18 A7).
+ */
+export function presetKeyFor(symbols: readonly string[], key: MusicKey): MusicKey | null {
+  if (symbols.length === 0) return null;
+  const same = (chords: readonly Chord[]) => {
+    const s = presetSymbols(chords);
+    return s.length === symbols.length && s.every((x, i) => x === symbols[i]);
+  };
+  const views = presetViews(key);
+  if (views.some((v) => !v.relative && same(v.chords))) return null;
+  return views.find((v) => v.relative && same(v.chords))?.key ?? null;
 }
 
 /** The relative key: minor on the major's 6th, major on the minor's 3rd, spelled from the key's own scale. */

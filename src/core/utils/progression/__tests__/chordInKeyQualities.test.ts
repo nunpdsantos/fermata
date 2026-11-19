@@ -36,6 +36,7 @@ const ON_TWO: Record<ChordQuality, string> = {
   sus2: 'IIsus2',
   sus4: 'IIsus4',
   add9: 'IIadd9',
+  minor_add9: 'ii(add9)',
   minor_major7: 'iimaj7',
   power: 'II5',
   dominant7sus4: 'II7sus4',

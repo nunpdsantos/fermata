@@ -648,8 +648,6 @@
     "noMatch": "sem correspondência exata — adiciona ou remove uma nota",
     "otherInterpretations": "Outras interpretações",
     "ofKey": "de {{key}}",
-    "nonDiatonicAt": "não diatónico (a fundamental é o {{numeral}} de {{key}})",
-    "outOfKey": "fora da tonalidade ({{key}})",
     "staff": "Pauta",
     "staffChord": "Acorde",
     "staffArpeggio": "Arpejo",
@@ -660,7 +658,7 @@
     },
     "inversion": {
       "root": "Fund.",
-      "nth": "{{n}}\u00aa Inv"
+      "nth": "{{n}}.\u00aa Inv"
     },
     "play": "Tocar"
   },
@@ -1303,7 +1301,7 @@
     "capoNow": "Capo no traste {{fret}}: toca {{shapes}}.",
     "capoIdeas": "Ideias de capo, para formas com cordas soltas",
     "capoIdea": "Traste {{fret}}: {{shapes}}",
-    "capoNoIdea": "Nenhum capo dá a estes acordes mais formas com cordas soltas.",
+    "capoNoIdea": "Nenhum capo dá a todos estes acordes uma forma com cordas soltas.",
     "capoAllOpen": "Sem capo, cada um destes acordes já tem uma forma com cordas soltas.",
     "capoStandardOnly": "As ideias de capo precisam da afinação padrão: as formas de acordes da Fermatina só existem para essa afinação.",
     "noCapo": "Sem capo",

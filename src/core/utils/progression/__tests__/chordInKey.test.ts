@@ -145,10 +145,20 @@ describe('chordInKey: suffixes, slash chords, every root spelling', () => {
   });
 
   it('algorithmic chords keep their own suffix and the case of their third', () => {
-    const r = chordInKey(chord('Am(add9)'), key('G', 'major'));
+    // Am(add9) was this test's algorithmic chord until it got its own quality
+    // (minor_add9, audit 2026-11-18 Q2): Am(add11) still is, and its closest
+    // explicit quality (add11) is a major one, so the case comes from its notes.
+    const r = chordInKey(chord('Am(add11)'), key('G', 'major'));
     expect(r.chord.algorithmicDisplayName).toBeTruthy();
-    expect(r.numeral).toBe('ii(add9)');
+    expect(r.chord.quality).toBe('add11');
+    expect(r.numeral).toBe('ii(add11)');
     expect(r.family).toBe('minor');
+    // Am(add9) reads the same as before, from its own quality.
+    const named = chordInKey(chord('Am(add9)'), key('G', 'major'));
+    expect(named.chord.algorithmicDisplayName).toBeUndefined();
+    expect(named.chord.quality).toBe('minor_add9');
+    expect(named.numeral).toBe('ii(add9)');
+    expect(named.family).toBe('minor');
   });
 
   it('a slash bass does not change the numeral; the result says what it is', () => {

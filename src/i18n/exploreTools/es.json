@@ -1,0 +1,17 @@
+{
+  "chordsOnRoot": "Todos los acordes sobre {{root}}",
+  "buildTitle": "Construir un acorde",
+  "rootInKey": "la fundamental es el grado {{degree}} de {{key}}; {{notes}} fuera de la tonalidad",
+  "rootOutside": "la fundamental es el grado {{degree}}, que no está en {{key}}; {{notes}} fuera de la tonalidad",
+  "match": {
+    "perfect": "Coincidencia perfecta",
+    "added_one": "Coincidencia con {{count}} nota añadida",
+    "added_other": "Coincidencia con {{count}} notas añadidas",
+    "missing_one": "Falta {{count}} nota",
+    "missing_other": "Faltan {{count}} notas",
+    "both": "{{missing}} de menos, {{extra}} de más"
+  },
+  "circleChordLabel": "{{chord}} ({{numeral}}) en {{scale}} — elegir {{key}}",
+  "circleOpens": "Abre {{key}}",
+  "presetCounted": "Los números se cuentan en {{key}}, la tonalidad de esta progresión común."
+}

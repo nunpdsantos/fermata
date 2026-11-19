@@ -91,6 +91,7 @@ export type ChordQuality =
   | 'sus2'
   | 'sus4'
   | 'add9'
+  | 'minor_add9' // m(add9) — minor triad + 9th, no 7th (audit 2026-11-18 Q2: Build named Cadd9 but not Cm(add9))
   // Additional chord types
   | 'minor_major7'
   | 'power'

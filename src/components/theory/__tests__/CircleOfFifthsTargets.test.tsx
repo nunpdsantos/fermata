@@ -1,8 +1,10 @@
 /**
  * Circle of fifths, final review follow-ups:
  *  1. A segment showing a chord name (B♯°, C+) is still a KEY button: its
- *     accessible name contains the visible text plus the action — "B♯° (vii°)
- *     — select C minor" (WCAG 2.5.3 label in name), in EN/PT/ES.
+ *     accessible name contains the visible text plus the action — since audit
+ *     2026-11-18 A8 the chord's key too, and the action's key with ♯ / ♭:
+ *     "B♯° (vii°) in C♯ Major — select C minor" (WCAG 2.5.3 label in name),
+ *     in EN/PT/ES. circleDestination.test.tsx covers every picker scale.
  *  2. Clicks never land on awkward spellings: every segment of every scale
  *     type on every selectable root selects a key with at most 7 accidentals
  *     (C♯ major's "G♯ V" selects A♭ major, its "B♯°" C minor).
@@ -14,6 +16,7 @@ import { useAppStore } from '../../../state/store';
 import { SCALE_FORMULAS } from '../../../core/constants/scales';
 import i18n from '../../../i18n';
 import { SELECTABLE_ROOTS, spellDegree, majorKeySignature } from '../../../core/utils/__tests__/theoryOracle';
+import { withGlyphs } from '../../../core/utils/accidentalGlyphs';
 
 vi.mock('../../../core/services/audio.ts', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
@@ -50,26 +53,26 @@ describe('1 — accessible name = visible text + action', () => {
         const [key, ring] = g.getAttribute('data-key')!.split(' ');
         if (!label.includes(visible)) bad.push(`${root} ${type}: "${label}" lacks "${visible}"`);
         if (numeral && !label.includes(numeral)) bad.push(`${root} ${type}: "${label}" lacks numeral ${numeral}`);
-        if (!label.endsWith(`select ${key} ${ring}`)) bad.push(`${root} ${type}: "${label}" lacks the action for ${key} ${ring}`);
+        if (!label.endsWith(`select ${withGlyphs(key)} ${ring}`)) bad.push(`${root} ${type}: "${label}" lacks the action for ${key} ${ring}`);
       }
       cleanup();
     }
     expect(bad).toEqual([]);
   });
 
-  it('C# major: "B#° (vii°) — select C minor"; A harmonic minor: "C+ (III+) — select C major"', () => {
+  it('C# major: "B#° (vii°) in C♯ Major — select C minor"; A harmonic minor: "C+ (III+) in A Harmonic Minor — select C major"', () => {
     select('C#', 'major');
     let r = render(<CircleOfFifths />);
-    expect(segmentShowing(r.container, 'B#°').getAttribute('aria-label')).toBe('B♯° (vii°) — select C minor');
+    expect(segmentShowing(r.container, 'B#°').getAttribute('aria-label')).toBe('B♯° (vii°) in C♯ Major — select C minor');
     cleanup();
     select('A', 'harmonic_minor');
     r = render(<CircleOfFifths />);
-    expect(segmentShowing(r.container, 'C+').getAttribute('aria-label')).toBe('C+ (III+) — select C major');
+    expect(segmentShowing(r.container, 'C+').getAttribute('aria-label')).toBe('C+ (III+) in A Harmonic Minor — select C major');
   });
 
   it('in PT and ES', async () => {
     select('A', 'harmonic_minor');
-    for (const [lang, want] of [['pt', 'C+ (III+) — escolher C maior'], ['es', 'C+ (III+) — elegir C mayor']] as const) {
+    for (const [lang, want] of [['pt', 'C+ (III+) em A menor harmónica — escolher C maior'], ['es', 'C+ (III+) en A menor armónica — elegir C mayor']] as const) {
       await i18n.changeLanguage(lang);
       const { container } = render(<CircleOfFifths />);
       expect(segmentShowing(container, 'C+').getAttribute('aria-label'), lang).toBe(want);

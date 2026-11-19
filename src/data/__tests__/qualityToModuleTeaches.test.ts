@@ -43,6 +43,7 @@ const TEACHES: Record<ChordQuality, RegExp> = {
   six_nine: /6\/9/,
   minor_six_nine: /6\/9/,
   add9: /add9/,
+  minor_add9: /add9/,
   add11: /added-tone/i,
   major7: /maj7/,
   minor7: /m7/,

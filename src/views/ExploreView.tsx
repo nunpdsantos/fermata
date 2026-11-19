@@ -82,6 +82,10 @@ export function ExploreView() {
 
   return (
     <div className="explore-root" data-detail={simple ? 'simple' : 'full'} data-testid="explore-root">
+      {/* The view's one top heading (audit 2026-11-18, Q14: Explore started at
+          <h2>). Learn's views carry a visible h1; Explore's header has no room
+          for a title line, so it is read, not drawn. */}
+      <h1 className="sr-only">{t('nav.explore')}</h1>
       <ExploreHeader practiceAction={wide ? practiceAction : undefined} onPractise={openPractice} />
       <div className="explore-work" data-testid="explore-work" data-layout={wide ? 'workbench' : phone ? 'phone' : 'column'}>
         <div className="explore-main">
