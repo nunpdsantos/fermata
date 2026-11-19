@@ -1166,7 +1166,7 @@ test.describe('review B-1', () => {
       await next.click();
       await page.waitForTimeout(500);
     }
-    const view = await page.locator('[role="tab"][aria-selected="true"]').getAttribute('data-tab');
+    const view = await page.locator('[role="tab"][data-tab][aria-selected="true"]').getAttribute('data-tab');
     await page.getByTestId('tour-stay').click();
     await expect(page.getByTestId('tour-bar')).toHaveCount(0);
     expect(view).not.toBe('explore');
