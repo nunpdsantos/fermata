@@ -44,7 +44,7 @@ import { choicesForExercise, optionText } from '../../../components/learn/exerci
 import { answerLeak, exactLeak } from '../../../components/learn/exercises/answerLeak';
 import { staffPlan } from '../../../utils/notationHelpers';
 import {
-  describeStaff, staffPosition, keySignatureMarks, KEY_SIGNATURE_COUNT, KEY_SIGNATURE_LINES,
+  describeStaff, staffPosition, keySignatureMarks, KEY_SIGNATURE_LINES,
 } from '../../../components/notation/staffDescription';
 import { describeRhythm } from '../../../components/notation/rhythmDescription';
 
@@ -71,7 +71,7 @@ const ALL_SYLLABLES = new Set<string>([...Object.values(SOLFEGE.pt), ...Object.v
 const GLYPH: Record<string, string> = { '': '', '#': '♯', b: '♭', '##': '𝄪', bb: '𝄫' };
 const ACC_WORDS: Record<string, string[]> = {
   '#': ['sharp', 'sustenido', 'sostenido'], b: ['flat', 'bemol'],
-  '##': ['double sharp', 'dobrado sustenido', 'doble sostenido'], bb: ['double flat', 'dobrado bemol', 'doble bemol'], '': [],
+  '##': ['double sharp', 'duplo sustenido', 'dobrado sustenido', 'doble sostenido'], bb: ['double flat', 'duplo bemol', 'dobrado bemol', 'doble bemol'], '': [],
 };
 
 /** The text's tokens: letters, digits and accidental signs kept together ("F♯", "line", "3"). */
@@ -226,10 +226,14 @@ describe('VexFlow is the oracle: the description says where it draws', () => {
     expect(Tables.keyProperties('f/5', 'treble').line).toBe(5);
   });
 
-  it('every key signature, treble and bass: the same accidentals on the same lines as VexFlow draws them', () => {
-    for (const [spec, { type, count }] of Object.entries(KEY_SIGNATURE_COUNT)) {
+  it('every key signature the drawing takes (15 major, 15 minor names), treble and bass: the same accidentals on the same lines as VexFlow draws them', () => {
+    const SPECS = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb',
+      'Am', 'Em', 'Bm', 'F#m', 'C#m', 'G#m', 'D#m', 'A#m', 'Dm', 'Gm', 'Cm', 'Fm', 'Bbm', 'Ebm', 'Abm'];
+    for (const spec of SPECS) {
       const vf = Tables.keySignature(spec);
-      expect(vf.length, spec).toBe(count);
+      const type = (vf[0]?.type ?? '#') as '#' | 'b';
+      const count = vf.length;
+      expect(keySignatureMarks(spec, 'treble')?.length, spec).toBe(count);
       expect(vf.every((a: { type: string }) => a.type === type), spec).toBe(true);
       expect(vf.map((a: { line: number }) => a.line), spec).toEqual(KEY_SIGNATURE_LINES[type].lines.slice(0, count));
       for (const clef of ['treble', 'bass'] as const) {
@@ -303,21 +307,16 @@ describe('every served question with a staff has a description that never holds 
     expect(d('en', 'l1u3m2g2')).toBe('Treble clef, no sharps or flats in the key signature.');
     expect(d('pt', 'l1u3m2g1')).toBe('Clave de sol, um bemol na armação de clave: na linha do B.');
     expect(d('es', 'l2u4m1g1')).toBe('Clave de sol, 5 sostenidos en la armadura de clave: en la línea del F, en el espacio del C, en el espacio del G por encima del pentagrama, en la línea del D y en el espacio del A.');
-    expect(d('en', 'l1u1m1e1')).toBe('Treble clef. One note, on ledger line 1 below the staff.');
-    expect(d('en', 'l1u1m2e1')).toBe('Treble clef. One note, on ledger line 2 below the staff.');
-    expect(d('en', 'l1u1m2g5')).toBe('Treble clef. One note, in the space below ledger line 2, under the staff.');
-    expect(d('en', 'l1u1m2g3')).toBe('Bass clef. One note, in the space above ledger line 1, over the staff.');
+    expect(d('en', 'l1u1m1e1')).toBe('Treble clef. One note, on ledger line 1 below the staff. Ledger lines are counted outwards from the staff.');
+    expect(d('en', 'l1u1m2e1')).toBe('Treble clef. One note, on ledger line 2 below the staff. Ledger lines are counted outwards from the staff.');
+    expect(d('en', 'l1u1m2g5')).toBe('Treble clef. One note, in the space below ledger line 2, under the staff. Ledger lines are counted outwards from the staff.');
+    expect(d('en', 'l1u1m2g3')).toBe('Bass clef. One note, in the space above ledger line 1, over the staff. Ledger lines are counted outwards from the staff.');
     expect(d('en', 'l1u1m4g1')).toBe('Treble clef. One note, in the space just below the staff, with a flat.');
-    expect(d('pt', 'l1u1m4e1')).toBe('Clave de sol. Uma nota, no espaço 1, com um sustenido. As linhas e os espaços contam-se de baixo para cima.');
-    expect(d('es', 'l1u1m2e2')).toBe('Clave de sol. Una nota, en la línea adicional 2 por encima del pentagrama.');
-    expect(d('en', 'l2u7m2g3')).toBe('Treble clef. 2 notes, one after the other: in the space just below the staff, then in the space above ledger line 1, over the staff.');
+    expect(d('pt', 'l1u1m4e1')).toBe('Clave de sol. Uma nota, no espaço 1, com um sustenido. As linhas e os espaços da pauta contam-se de baixo para cima.');
+    expect(d('es', 'l1u1m2e2')).toBe('Clave de sol. Una nota, en la línea adicional 2 por encima del pentagrama. Las líneas adicionales se cuentan desde el pentagrama hacia fuera.');
+    expect(d('en', 'l2u7m2g3')).toBe('Treble clef. 2 notes, one after the other: in the space just below the staff, then in the space above ledger line 1, over the staff. Ledger lines are counted outwards from the staff.');
   });
 
-  it('no served staff draws a double sharp, a double flat or a natural sign (their PT words are not yet confirmed for Portugal: confirm them before one is drawn)', () => {
-    const drawn = new Set(cases.flatMap((c) => exerciseStaff(c.item.exercise.config)!.notes.map((n) => n.accidental)));
-    expect([...drawn].sort()).toEqual(['', '#', 'b']);
-    expect(cases.some((c) => /natural|bequadro|becuadro|dobrado|doble|double/.test(c.description))).toBe(false);
-  });
 
   it('a rhythm question: its staff\'s text alternative holds none of its answer (the app\'s leak detector, every language)', () => {
     const found: string[] = [];

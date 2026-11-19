@@ -127,6 +127,8 @@ afterEach(() => {
   useAppStore.setState({ metronome: undefined, progression: undefined, view: 'explore' });
 });
 
+import { requestMetronomeStop } from '../stopRequest';
+
 describe('the clicks on the audio seam', () => {
   it('▶ hands the piano\'s G5 (first beat) and C5 to its own audio clock, ahead of time', () => {
     startMetronome();
@@ -292,6 +294,20 @@ describe('what stops it leaves no click queued', () => {
     expect(isMetronomeRunning()).toBe(false);
     startMetronome();
     expect(isMetronomeRunning()).toBe(true);
+  });
+
+  // Review of e92e44e: the app's error boundary replaced the whole screen.
+  it('the error boundary\'s request (the whole screen replaced): stops it, nothing queued', () => {
+    startMetronome();
+    advance(1.3);
+    expect(pendingClicks()).toBeGreaterThan(0); // known positive
+    requestMetronomeStop();
+    expect(isMetronomeRunning()).toBe(false);
+    expect(pendingClicks()).toBe(0);
+    expect(useMetronome.getState()).toMatchObject({ running: false, beat: null, lastStop: 'crash' });
+    const n = metroSources().length;
+    advance(3);
+    expect(metroSources().length).toBe(n);
   });
 
   it('▶ while the loop plays stops the loop: the newer clock wins', () => {

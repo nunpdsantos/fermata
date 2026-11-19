@@ -34,6 +34,7 @@
       "doubleFlat": "con un doble bemol",
       "natural": "con un becuadro"
     },
-    "counted": "Las líneas y los espacios se cuentan de abajo arriba."
+    "counted": "Las líneas y los espacios del pentagrama se cuentan de abajo arriba.",
+    "countedLedger": "Las líneas adicionales se cuentan desde el pentagrama hacia fuera."
   }
 }

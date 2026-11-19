@@ -30,10 +30,11 @@
     "acc": {
       "sharp": "com um sustenido",
       "flat": "com um bemol",
-      "doubleSharp": "com um dobrado sustenido",
-      "doubleFlat": "com um dobrado bemol",
+      "doubleSharp": "com um duplo sustenido",
+      "doubleFlat": "com um duplo bemol",
       "natural": "com um bequadro"
     },
-    "counted": "As linhas e os espaços contam-se de baixo para cima."
+    "counted": "As linhas e os espaços da pauta contam-se de baixo para cima.",
+    "countedLedger": "As linhas suplementares contam-se a partir da pauta, para fora."
   }
 }

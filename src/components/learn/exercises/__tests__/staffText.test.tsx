@@ -37,18 +37,18 @@ const item = (id: string, lang: 'en' | 'pt' | 'es'): ExerciseDefinition => {
 const WANT = {
   en: {
     l1u3m2g4: 'Treble clef, 2 sharps in the key signature: on the F line and in the C space.',
-    l1u1m1e3: 'Treble clef. One note, on line 2. Lines and spaces are counted from the bottom.',
-    l1u3m3g1: 'Treble clef. 2 notes, one after the other: on line 2, then on line 3. Lines and spaces are counted from the bottom.',
+    l1u1m1e3: "Treble clef. One note, on line 2. The staff's lines and spaces are counted from the bottom.",
+    l1u3m3g1: "Treble clef. 2 notes, one after the other: on line 2, then on line 3. The staff's lines and spaces are counted from the bottom.",
   },
   pt: {
     l1u3m2g4: 'Clave de sol, 2 sustenidos na armação de clave: na linha do F e no espaço do C.',
-    l1u1m1e3: 'Clave de sol. Uma nota, na linha 2. As linhas e os espaços contam-se de baixo para cima.',
-    l1u3m3g1: 'Clave de sol. 2 notas, uma depois da outra: na linha 2, depois na linha 3. As linhas e os espaços contam-se de baixo para cima.',
+    l1u1m1e3: 'Clave de sol. Uma nota, na linha 2. As linhas e os espaços da pauta contam-se de baixo para cima.',
+    l1u3m3g1: 'Clave de sol. 2 notas, uma depois da outra: na linha 2, depois na linha 3. As linhas e os espaços da pauta contam-se de baixo para cima.',
   },
   es: {
     l1u3m2g4: 'Clave de sol, 2 sostenidos en la armadura de clave: en la línea del F y en el espacio del C.',
-    l1u1m1e3: 'Clave de sol. Una nota, en la línea 2. Las líneas y los espacios se cuentan de abajo arriba.',
-    l1u3m3g1: 'Clave de sol. 2 notas, una después de otra: en la línea 2, después en la línea 3. Las líneas y los espacios se cuentan de abajo arriba.',
+    l1u1m1e3: 'Clave de sol. Una nota, en la línea 2. Las líneas y los espacios del pentagrama se cuentan de abajo arriba.',
+    l1u3m3g1: 'Clave de sol. 2 notas, una después de otra: en la línea 2, después en la línea 3. Las líneas y los espacios del pentagrama se cuentan de abajo arriba.',
   },
 } as const;
 

@@ -11,10 +11,14 @@
  *  - a key signature: its sharps or flats and where each stands, by the line
  *    or space it sits on, named by letter ("two sharps in the key signature:
  *    on the F line and in the C space") — never the key;
- *  - each note: its line or space, NUMBERED from the bottom ("on line 2", "in
- *    space 3", "on ledger line 1 below the staff"), and the accidental printed
- *    before it — never its letter. Numbers, not ordinals: "the third line"
- *    would hold the word of an interval answer ("3rd", "third").
+ *  - each note: its line or space, NUMBERED — the staff's from the bottom
+ *    ("on line 2", "in space 3"), ledger lines outward from the staff ("on
+ *    ledger line 1 below the staff"), and one sentence says how whichever of
+ *    the two it uses is counted — and the accidental PRINTED before it (what
+ *    the drawing prints, `vexAccidentals`: under a key signature, or after an
+ *    earlier note on the same line, maybe nothing or a natural) — never its
+ *    letter. Numbers, not ordinals: "the third line" would hold the word of an
+ *    interval answer ("3rd", "third").
  *
  * Every served question with a staff is checked by
  * `src/data/exercises/__tests__/staffDescriptions.corpus.test.ts`: it has a
@@ -24,8 +28,9 @@
  * Pure: no React, no VexFlow (the description is ready before the drawing).
  */
 import type { TFunction } from 'i18next';
-import type { Accidental, NaturalNote, PitchedNote } from '../../core/types/music';
-import { staffAccidentals, writtenOctave, type StaffAccidental } from '../../core/utils/degreeSpelling';
+import type { NaturalNote, PitchedNote } from '../../core/types/music';
+import { writtenOctave, type StaffAccidental } from '../../core/utils/degreeSpelling';
+import { keySignatureAlterations, vexAccidentals } from '../../utils/notationHelpers';
 import '../../i18n/learnWords/index.ts';
 
 export type Clef = 'treble' | 'bass';
@@ -70,14 +75,27 @@ export const KEY_SIGNATURE_LINES = {
   b: { letters: ['B', 'E', 'A', 'D', 'G', 'C', 'F'] as const, lines: [2, 0.5, 2.5, 1, 3, 1.5, 3.5] },
 } as const;
 
-/** The major keys a stimulus names (VexFlow's names), with their number of sharps or flats. */
-export const KEY_SIGNATURE_COUNT: Record<string, { type: '#' | 'b'; count: number }> = {
-  C: { type: '#', count: 0 },
-  G: { type: '#', count: 1 }, D: { type: '#', count: 2 }, A: { type: '#', count: 3 }, E: { type: '#', count: 4 },
-  B: { type: '#', count: 5 }, 'F#': { type: '#', count: 6 }, 'C#': { type: '#', count: 7 },
-  F: { type: 'b', count: 1 }, Bb: { type: 'b', count: 2 }, Eb: { type: 'b', count: 3 }, Ab: { type: 'b', count: 4 },
-  Db: { type: 'b', count: 5 }, Gb: { type: 'b', count: 6 }, Cb: { type: 'b', count: 7 },
-};
+/**
+ * The sharps or flats a key signature draws, read as the drawing reads its
+ * name (`keySignatureAlterations` of utils/notationHelpers.ts — the letters
+ * it alters, major and minor names alike: "Eb" and "Cm" both B♭ E♭ A♭), in
+ * the order they are written. Null for a name it cannot read.
+ */
+function signatureSpec(keySignature: string): { type: '#' | 'b'; count: number } | null {
+  let alterations;
+  try {
+    alterations = keySignatureAlterations(keySignature);
+  } catch {
+    return null;
+  }
+  const kinds = Object.values(alterations);
+  if (kinds.some((a) => a !== '#' && a !== 'b') || new Set(kinds).size > 1) return null;
+  const type = (kinds[0] ?? '#') as '#' | 'b';
+  const letters = KEY_SIGNATURE_LINES[type].letters.slice(0, kinds.length);
+  // Exactly the first n of the written order, or it is no key signature the table draws.
+  if (!letters.every((l) => alterations[l] === type)) return null;
+  return { type, count: kinds.length };
+}
 
 export interface KeySignatureMark {
   type: '#' | 'b';
@@ -88,7 +106,7 @@ export interface KeySignatureMark {
 
 /** The sharps or flats a key signature draws, in order, each with its place; null for an unknown key. */
 export function keySignatureMarks(keySignature: string, clef: Clef): KeySignatureMark[] | null {
-  const spec = KEY_SIGNATURE_COUNT[keySignature];
+  const spec = signatureSpec(keySignature);
   if (!spec) return null;
   const table = KEY_SIGNATURE_LINES[spec.type];
   return table.lines.slice(0, spec.count).map((line, i) => ({
@@ -116,18 +134,21 @@ const ACCIDENTAL_WORD: Record<Exclude<StaffAccidental, null>, string> = {
 };
 const LIST_LOCALE: Record<Lang, string> = { en: 'en-GB', pt: 'pt-PT', es: 'es-ES' };
 
-/** What each note prints before it: its own accidental, or — under a key signature — only what the signature does not supply. */
+/**
+ * What each note prints before it — exactly what the drawing prints
+ * (`vexAccidentals`, useStaffNotation's own call): nothing where the key
+ * signature, or an earlier note on the same line, already supplies it; a
+ * natural where one of them would otherwise alter it.
+ */
 function printedAccidentals(staff: DescribedStaff): StaffAccidental[] {
-  const marks = staff.keySignature ? keySignatureMarks(staff.keySignature, staff.clef) : null;
-  if (!marks) return staff.notes.map((n) => (n.accidental ? (n.accidental as StaffAccidental) : null));
-  const signature: Partial<Record<NaturalNote, Accidental>> = Object.fromEntries(marks.map((m) => [m.letter, m.type]));
-  return staffAccidentals(staff.notes, signature);
+  const sig = staff.keySignature && keySignatureMarks(staff.keySignature, staff.clef) ? staff.keySignature : null;
+  return vexAccidentals(staff.notes, sig);
 }
 
 /**
  * The description, in the language of `t` (`lang` for its lists). Each part
  * is a sentence: the clef (and the key signature), the notes, and — when a
- * line or space is numbered — how they are counted.
+ * line or space is numbered — how those numbers are counted.
  */
 export function describeStaff(staff: DescribedStaff, t: TFunction, lang: Lang): string {
   const k = (key: string, values?: Record<string, unknown>) => t(`learnWords.staff.${key}`, values ?? {}) as string;
@@ -148,14 +169,16 @@ export function describeStaff(staff: DescribedStaff, t: TFunction, lang: Lang): 
     sentences.push(k('clef', { clef }));
   }
 
-  let numbered = false;
+  let numberedStaff = false;
+  let numberedLedger = false;
   const printed = printedAccidentals(staff);
   const order = staff.notes.map((n, i) => ({ n, i }));
   // A chord is read from its lowest note up; a melody in the order it is written.
   if (staff.chord) order.sort((a, b) => staffStep(a.n) - staffStep(b.n));
   const places = order.map(({ n, i }) => {
     const place = staffPlace(staffPosition(n, staff.clef));
-    if (place.kind === 'line' || place.kind === 'space') numbered = true;
+    if (place.kind === 'line' || place.kind === 'space') numberedStaff = true;
+    if ('n' in place && place.kind !== 'line' && place.kind !== 'space') numberedLedger = true;
     const where = k(`place.${place.kind}`, 'n' in place ? { n: place.n } : {});
     const acc = printed[i];
     return acc ? `${where}, ${k(`acc.${ACCIDENTAL_WORD[acc]}`)}` : where;
@@ -163,6 +186,8 @@ export function describeStaff(staff: DescribedStaff, t: TFunction, lang: Lang): 
   if (places.length === 1) sentences.push(k('oneNote', { place: places[0] }));
   else if (places.length > 1 && staff.chord) sentences.push(k('chord', { count: places.length, places: list(places) }));
   else if (places.length > 1) sentences.push(k('notesInOrder', { count: places.length, places: places.join(k('then')) }));
-  if (numbered) sentences.push(k('counted'));
+  // How the numbers are counted, for exactly the kinds the description numbers.
+  if (numberedStaff) sentences.push(k('counted'));
+  if (numberedLedger) sentences.push(k('countedLedger'));
   return sentences.join(' ');
 }

@@ -34,6 +34,7 @@
       "doubleFlat": "with a double flat",
       "natural": "with a natural sign"
     },
-    "counted": "Lines and spaces are counted from the bottom."
+    "counted": "The staff's lines and spaces are counted from the bottom.",
+    "countedLedger": "Ledger lines are counted outwards from the staff."
   }
 }

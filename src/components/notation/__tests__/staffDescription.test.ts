@@ -46,25 +46,25 @@ describe('places', () => {
 describe('sentences', () => {
   it('a chord: from its lowest note, whatever order it was written in', () => {
     expect(describeStaff({ notes: [n('G4'), n('C4'), n('E4')], clef: 'treble', chord: true }, en, 'en'))
-      .toBe('Treble clef. 3 notes stacked as one chord, from the lowest: on ledger line 1 below the staff, on line 1 and on line 2. Lines and spaces are counted from the bottom.');
+      .toBe('Treble clef. 3 notes stacked as one chord, from the lowest: on ledger line 1 below the staff, on line 1 and on line 2. The staff\'s lines and spaces are counted from the bottom. Ledger lines are counted outwards from the staff.');
     expect(describeStaff({ notes: [n('G4'), n('C4'), n('E4')], clef: 'treble', chord: true }, pt, 'pt'))
-      .toBe('Clave de sol. 3 notas sobrepostas num só acorde, da mais grave para a mais aguda: na linha suplementar 1 abaixo da pauta, na linha 1 e na linha 2. As linhas e os espaços contam-se de baixo para cima.');
+      .toBe('Clave de sol. 3 notas sobrepostas num só acorde, da mais grave para a mais aguda: na linha suplementar 1 abaixo da pauta, na linha 1 e na linha 2. As linhas e os espaços da pauta contam-se de baixo para cima. As linhas suplementares contam-se a partir da pauta, para fora.');
   });
 
   it('a melody in the order written', () => {
     expect(describeStaff({ notes: [n('E4'), n('F#4'), n('G4')], clef: 'treble' }, es, 'es'))
-      .toBe('Clave de sol. 3 notas, una después de otra: en la línea 1, después en el espacio 1, con un sostenido, después en la línea 2. Las líneas y los espacios se cuentan de abajo arriba.');
+      .toBe('Clave de sol. 3 notas, una después de otra: en la línea 1, después en el espacio 1, con un sostenido, después en la línea 2. Las líneas y los espacios del pentagrama se cuentan de abajo arriba.');
   });
 
   it('under a key signature only what it does not supply is printed — a natural included', () => {
     // D major (F♯, C♯): F♯4 prints nothing, F4 prints a natural, C♯5 nothing, B♭4 a flat.
     expect(describeStaff({ notes: [n('F#4'), n('F4'), n('C#5'), n('Bb4')], clef: 'treble', keySignature: 'D' }, en, 'en'))
-      .toBe('Treble clef, 2 sharps in the key signature: on the F line and in the C space. 4 notes, one after the other: in space 1, then in space 1, with a natural sign, then in space 3, then on line 3, with a flat. Lines and spaces are counted from the bottom.');
+      .toBe('Treble clef, 2 sharps in the key signature: on the F line and in the C space. 4 notes, one after the other: in space 1, then in space 1, with a natural sign, then in space 3, then on line 3, with a flat. The staff\'s lines and spaces are counted from the bottom.');
   });
 
   it('double accidentals and a bass key signature down to its F♭ below the staff', () => {
     expect(describeStaff({ notes: [n('C##4'), n('Ebb4')], clef: 'treble' }, en, 'en'))
-      .toBe('Treble clef. 2 notes, one after the other: on ledger line 1 below the staff, with a double sharp, then on line 1, with a double flat. Lines and spaces are counted from the bottom.');
+      .toBe('Treble clef. 2 notes, one after the other: on ledger line 1 below the staff, with a double sharp, then on line 1, with a double flat. The staff\'s lines and spaces are counted from the bottom. Ledger lines are counted outwards from the staff.');
     expect(describeStaff({ notes: [], clef: 'bass', keySignature: 'Cb' }, en, 'en'))
       .toBe('Bass clef, 7 flats in the key signature: on the B line, in the E space, in the A space, on the D line, on the G line, in the C space and in the F space below the staff.');
     expect(keySignatureMarks('Cb', 'bass')!.at(-1)).toEqual({ type: 'b', letter: 'F', pos: -1 });
@@ -75,6 +75,6 @@ describe('sentences', () => {
   it('an unknown key signature is not described as one (and nothing is invented for it)', () => {
     expect(keySignatureMarks('H', 'treble')).toBeNull();
     expect(describeStaff({ notes: [n('G4')], clef: 'treble', keySignature: 'H' }, en, 'en'))
-      .toBe('Treble clef. One note, on line 2. Lines and spaces are counted from the bottom.');
+      .toBe("Treble clef. One note, on line 2. The staff's lines and spaces are counted from the bottom.");
   });
 });

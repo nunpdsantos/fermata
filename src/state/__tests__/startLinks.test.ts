@@ -18,7 +18,7 @@ import { chooseStartDoor } from '../startDoors';
 import { START_DOORS, carryViewRequest, takeViewRequest } from '../startDoors';
 import { START_PARAM, applyShareLinkRule, startLinkPending } from '../startGate';
 import { applyStartLink, readStartDoor } from '../startLink';
-import { noteBootAddress, MAX_SHARE_SEARCH_LENGTH, MAX_SHARE_VALUE_LENGTH } from '../shareParams';
+import { noteBootAddress, cleanedAddress, MAX_SHARE_SEARCH_LENGTH, MAX_SHARE_VALUE_LENGTH } from '../shareParams';
 import { useStartHintStore } from '../startHint';
 import i18n from '../../i18n';
 
@@ -156,6 +156,20 @@ describe('a door link on a first visit (A19)', () => {
     localStorage.setItem('music-theory-app', JSON.stringify({ state: { language: 'en', lastView: 'explore' }, version: 6 }));
     expect((await bootAt('?start=player')).door).toBe('player');
     expect(useAppStore.getState().learnerProfile).toBe('player');
+  });
+
+  it('a shared link with a bare # and a door after it (`?chord=F#m7&start=new`): the link wins, and the address App leaves holds no `start` — a reload takes no door (review of e92e44e)', async () => {
+    const { door } = await bootAt('?chord=F', '/', '#m7&start=new');
+    expect(door).toBeNull();
+    expect(useAppStore.getState().learnerProfile).toBeNull();
+    // What App writes into the address bar (state/shareParams.ts), then the reload from it.
+    const left = cleanedAddress('/', '?chord=F', '#m7&start=new');
+    expect(left).toBe('/');
+    expect(cleanedAddress('/', '?chord=F%23m7&start=new&lang=pt&view=drill&foo=1')).toBe('/?foo=1');
+    const reload = await bootAt(new URL(left, 'https://x').search);
+    expect(reload.door).toBeNull();
+    expect(useAppStore.getState().learnerProfile).toBeNull();
+    expect(useWelcomeStore.getState().open).toBe(true); // the plain visit after a link: the start screen asks
   });
 
   it('a shared link in the same address wins: nothing taken, the flag stays pending', async () => {

@@ -214,6 +214,21 @@ test.describe('A19: a door chosen on a public entrance page', () => {
     await context.close();
   });
 
+  test('a chord link with a bare # and a door after it: the link wins, and a reload takes no door (review of e92e44e)', async ({ browser }) => {
+    const { context, page } = await browserWith(browser, 'en');
+    await page.goto('/?chord=F#m7&start=new');
+    await expect(page.getByTestId('explore-header')).toBeVisible({ timeout: 15_000 });
+    expect(await startSeen(page)).toBe(false);
+    await expect.poll(() => page.evaluate(() => location.search + location.hash)).toBe('');
+    expect(await savedFields(page)).not.toHaveProperty('learnerProfile');
+    // The plain visit after the link: the start screen asks; no door was taken from the old address.
+    await page.reload();
+    await expect(page.getByTestId('start-screen')).toBeVisible({ timeout: 15_000 });
+    expect(await savedFields(page)).not.toHaveProperty('learnerProfile');
+    expect(await flag(page)).toBe('pending');
+    await context.close();
+  });
+
   test('with the Drill shortcut too: the door is taken, then Drill opens', async ({ browser }) => {
     const { context, page } = await browserWith(browser, 'en');
     await page.goto('/?start=theory&view=drill&lang=en');
