@@ -1,6 +1,7 @@
 import { test, expect, type Browser, type Page } from '@playwright/test';
 import * as fs from 'node:fs';
 import { WELCOME_KEY } from './helpers/welcome';
+import { TRACKS } from '../src/data/tracks';
 
 /**
  * Audit fixes, 18 November 2026 (stream E), in a real browser:
@@ -239,25 +240,35 @@ test.describe('A19: a door chosen on a public entrance page', () => {
   });
 });
 
-test.describe('A19 on the build: the public landing pages\' own door links', () => {
+test.describe('A19 on the build: the public landing pages\' own door links (the owner\'s ruling, 19 November 2026)', () => {
+  const SLUGS = json<Record<string, Record<Lang, string>>>('scripts/pages/slugs.json');
+  const LESSONS: Record<Lang, string> = { en: 'lessons', pt: 'licoes', es: 'lecciones' };
+  const pageOf = (id: string, lang: Lang) => `/${lang}/${LESSONS[lang]}/${SLUGS[id][lang]}/`;
   for (const lang of ['en', 'pt', 'es'] as const) {
-    test(`${lang}: each door of /${lang}/ opens the app with that door taken, no start screen`, async ({ browser, request, baseURL }) => {
+    test(`${lang}: "new" and "I play" open their track's first lesson page; "I know some theory" opens the app with that door taken, no start screen`, async ({ browser, request, baseURL }) => {
       const res = await request.get(`/${lang}/`);
       const html = res.ok() ? await res.text() : '';
       test.skip(!html.includes('id="doors"'), 'the public pages exist only in the build: skipped on the dev server');
       const section = html.slice(html.indexOf('id="doors"'), html.indexOf('</section>', html.indexOf('id="doors"')));
       const hrefs = [...section.matchAll(/href="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, '&'));
-      expect(hrefs).toEqual(DOORS.map((door) => `https://fermatina.com/?start=${door}&lang=${lang}`));
-      for (const [i, href] of hrefs.entries()) {
-        // The live site is never asked: the same address on this run's own server.
-        const local = href.replace('https://fermatina.com', baseURL!);
+      expect(hrefs).toEqual([pageOf(TRACKS.sound.moduleIds[0], lang), pageOf(TRACKS.chords.moduleIds[0], lang), `https://fermatina.com/?start=theory&lang=${lang}`]);
+      // The two reading links: the lesson's own page, read without the app (no script), in the page's language.
+      for (const [i, id] of [TRACKS.sound.moduleIds[0], TRACKS.chords.moduleIds[0]].entries()) {
         const { context, page } = await browserWith(browser, lang);
-        await page.goto(local);
-        await landed(page, DOORS[i], lang);
+        await page.goto(hrefs[i]);
+        await expect(page.locator('html')).toHaveAttribute('lang', lang === 'en' ? 'en' : lang === 'pt' ? 'pt-PT' : 'es-ES');
+        await expect(page.locator('script[type="module"]')).toHaveCount(0);
+        await expect(page.locator(`a.button[href="https://fermatina.com/?lesson=${id}&lang=${lang}"]`).first()).toBeVisible();
         expect(await startSeen(page)).toBe(false);
-        expect(await savedFields(page)).toMatchObject({ learnerProfile: DOORS[i], language: lang });
         await context.close();
       }
+      // The theory door: the app, its door taken. The live site is never asked: the same address on this run's own server.
+      const { context, page } = await browserWith(browser, lang);
+      await page.goto(hrefs[2].replace('https://fermatina.com', baseURL!));
+      await landed(page, 'theory', lang);
+      expect(await startSeen(page)).toBe(false);
+      expect(await savedFields(page)).toMatchObject({ learnerProfile: 'theory', language: lang });
+      await context.close();
     });
   }
 });

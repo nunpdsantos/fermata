@@ -17,6 +17,7 @@ import type { CurriculumModule } from '../core/types/curriculum';
 import { htmlLangFor } from '../i18n/language';
 import { REPORT_FORMS } from '../services/feedbackForms';
 import { BAR_CHOICES, MAX_TEMPO, MIN_TEMPO } from '../state/metronomeSave';
+import { TRACKS, type TrackId } from '../data/tracks';
 import {
   SITE_LANGS, appText, lessonNeighbours, siteGlossary, siteLessons, siteLevels, siteSongs,
   type SiteLang, type SiteLesson,
@@ -71,8 +72,10 @@ export type StartDoorId = (typeof START_DOOR_IDS)[number];
 
 /**
  * The app, with a door of its start screen already chosen (`?start=…&lang=…`,
- * state/startGate.ts — audit 2026-11-18, A19): on a first visit the app takes
- * that door as a tap would, instead of asking again.
+ * state/startLink.ts — audit 2026-11-18, A19): on a first visit the app takes
+ * that door as a tap would, instead of asking again. The landing pages offer
+ * it for "I know some theory" only (the owner's ruling, 19 November 2026:
+ * the other two doors are reading pages, below); the app takes all three.
  */
 export function appDoorUrl(lang: SiteLang, door: StartDoorId): string {
   return `${ORIGIN}/?start=${door}&lang=${lang}`;
@@ -345,6 +348,10 @@ function lessonList(ctx: Ctx, modules: readonly CurriculumModule[]): string {
 function landingMain(ctx: Ctx): { main: string; title: string; description: string; jsonLd: unknown } {
   const { lang } = ctx;
   const t = (k: string, v?: Record<string, string | number>) => appText(lang, k, v);
+  // The two newcomers' doors are the first lesson PAGE of their track, read
+  // without the app (as before the audit; the owner's ruling, 19 November
+  // 2026); "I know some theory" opens the app with its door chosen (A19).
+  const firstOf = (track: TrackId) => lessonHref(ctx, TRACKS[track].moduleIds[0]);
   const door = (profile: 'new' | 'player' | 'theory', href: string) =>
     `<li><a href="${esc(href)}"><span class="lt">${esc(t(`start.door.${profile}.title`))}</span><span class="ls">${esc(t(`start.door.${profile}.line`))}</span></a></li>`;
   const bars = new Intl.ListFormat(LIST_LOCALE[lang], { type: 'disjunction' }).format(BAR_CHOICES.map(String));
@@ -357,8 +364,8 @@ ${button(appUrl(lang), newText(lang, 'openApp'))}
 <section aria-labelledby="doors">
 <h2 id="doors">${esc(t('start.doorsHeading'))}</h2>
 <ul class="lessons">
-${door('new', appDoorUrl(lang, 'new'))}
-${door('player', appDoorUrl(lang, 'player'))}
+${door('new', firstOf('sound'))}
+${door('player', firstOf('chords'))}
 ${door('theory', appDoorUrl(lang, 'theory'))}
 </ul>
 </section>
