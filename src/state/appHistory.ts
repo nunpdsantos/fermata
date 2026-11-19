@@ -89,6 +89,7 @@ import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useAppStore } from './store';
 import type { AppState, ViewMode } from './storeTypes';
 import type { Note } from '../core/types/music';
+import { HISTORY_RECORD_KEY } from './savedPlace';
 import { useWelcomeStore } from './welcomeGate';
 import { getDemoRequest } from './demoRequest';
 import { useToastStore } from './toastStore';
@@ -158,7 +159,7 @@ const known = new Map<number, { v: ViewMode; s?: string }>();
  * shape and agrees with the entry on screen (another document of this tab,
  * left and come back to, has its own).
  */
-const KNOWN_KEY = 'fermatina-history-v1';
+const KNOWN_KEY = HISTORY_RECORD_KEY;
 const KNOWN_KEEP = 50;
 function saveKnown(): void {
   try {

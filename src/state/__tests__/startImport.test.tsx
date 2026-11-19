@@ -79,12 +79,19 @@ describe('a backup file as the app exports it today', () => {
   });
 
   it('Settings → Your data → Import: asks first, then every store comes back byte for byte', async () => {
+    // This tab was on Explore with Settings open; the file's save was on Learn.
+    window.history.replaceState({ fm: 1, i: 3, v: 'explore', s: '', l: 1 }, '');
+    sessionStorage.setItem('fermatina-history-v1', '[[3,"explore",""]]');
     const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
     render(<SettingsSheet open onClose={() => {}} />);
     fireEvent.change(screen.getByTestId('backup-file-input'), { target: { files: [file(TODAYS_FILE)] } });
     await waitFor(() => expect(reloadPage).toHaveBeenCalledTimes(1));
     expect(confirm).toHaveBeenCalledTimes(1);
     for (const [k, v] of Object.entries(SAVED)) expect(localStorage.getItem(k), k).toBe(v);
+    // The place is the imported save's (its Learn), at the same position; the tab's old record is gone.
+    expect(window.history.state).toEqual({ fm: 1, i: 3, v: 'learn', l: 0 });
+    expect(sessionStorage.getItem('fermatina-history-v1')).toBeNull();
+    window.history.replaceState(null, '');
   });
 
   it('the start screen\'s "I have a progress file": no question, every store byte for byte, no door chosen, the gate settled', async () => {
@@ -107,6 +114,20 @@ describe('a backup file as the app exports it today', () => {
     expect(localStorage.getItem(WELCOME_KEY)).toBe('seen');
     expect(shouldShowWelcome(localStorage)).toBe(false);
     expect(screen.queryByTestId('start-import-error')).toBeNull();
+  });
+
+  it('the start screen\'s import opens the imported save\'s view, not the start screen\'s entry (merged-branch run, moved.spec)', async () => {
+    localStorage.setItem(WELCOME_KEY, 'pending');
+    localStorage.setItem('music-theory-app', JSON.stringify({ state: { language: 'en', lastView: 'explore' }, version: 6 }));
+    window.history.replaceState({ fm: 1, i: 0, v: 'explore', l: 0 }, '');
+    render(<StartScreen />);
+    const picker = screen.getByTestId('start-import-input') as HTMLInputElement;
+    vi.spyOn(picker, 'click').mockImplementation(() => {});
+    fireEvent.click(screen.getByRole('button', { name: en.start.progressFile }));
+    fireEvent.change(picker, { target: { files: [file(TODAYS_FILE)] } });
+    await waitFor(() => expect(reloadPage).toHaveBeenCalledTimes(1));
+    expect(window.history.state).toEqual({ fm: 1, i: 0, v: 'learn', l: 0 });
+    window.history.replaceState(null, '');
   });
 
   it('a file with settings only lands in the app too (left "pending", the start screen would come back)', async () => {
