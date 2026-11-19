@@ -93,6 +93,14 @@ export interface SavedCheck {
   /** The run ended (its result screen is showing). */
   finished: boolean;
   at: number;
+  /**
+   * Put away (second audit round, P3): the browser's Back (or the app moving
+   * on inside Learn) left the run while it was under way; it is kept, and
+   * its lesson's card offers it again. Absent = the run is Learn's current
+   * screen, as every save before it says (written only when true). A check
+   * put away is not work in progress: nothing on screen can be cut off.
+   */
+  away?: true;
 }
 
 interface LearnSessionState {
@@ -153,7 +161,8 @@ function isCheck(v: unknown): v is SavedCheck {
   return isObj(v) && isStr(v.moduleId) && (v.kind === 'check' || v.kind === 'review' || v.kind === 'practice') && isStr(v.lang)
     && MODULE_INDEX.some((m) => m.id === v.moduleId) && ['en', 'pt', 'es'].includes(v.lang) && typeof v.finished === 'boolean'
     && isValidRun(v.run, v.finished) && isKeyMap(v.fingerprints, v.run.order)
-    && (v.identities === undefined || isKeyMap(v.identities, v.run.order)) && isNum(v.at);
+    && (v.identities === undefined || isKeyMap(v.identities, v.run.order)) && isNum(v.at)
+    && (v.away === undefined || v.away === true);
 }
 
 export function isValidLearnSession(v: unknown): v is { screen: SavedScreen | null; check: SavedCheck | null } {
@@ -263,22 +272,14 @@ export function pairTriedOptions(run: RunSnapshot, current: ExerciseDefinition):
 }
 
 /**
- * The saved check for this module, if it can continue: fresh, same language,
- * and every saved id still names the same exercise (W4a identity of the
- * English item — a PT/ES wording fix keeps it; a save from before the
- * identities were written is judged as it was then, by the served
- * fingerprints). Returns the run's exercises in their saved order, and the
- * check with the current question's tries paired (`pairTriedOptions`).
- * Anything else drops the save.
+ * Can this saved check continue? Fresh, same language, and every saved id
+ * still names the same exercise (W4a identity of the English item — a PT/ES
+ * wording fix keeps it; a save from before the identities were written is
+ * judged as it was then, by the served fingerprints). Pure: the run's
+ * exercises in their saved order, or null.
  */
-export function restorableCheck(moduleId: string, exercises: readonly ExerciseDefinition[], lang: string, now = Date.now()): { check: SavedCheck; ordered: ExerciseDefinition[] } | null {
-  const store = useLearnSessionStore.getState();
-  const check = store.check;
-  if (!check || check.moduleId !== moduleId) return null;
-  if (!isCheck(check)) {
-    store.setCheck(null);
-    return null;
-  }
+export function resumableCheck(check: SavedCheck | null, moduleId: string, exercises: readonly ExerciseDefinition[], lang: string, now = Date.now()): ExerciseDefinition[] | null {
+  if (!check || check.moduleId !== moduleId || !isCheck(check)) return null;
   const byId = new Map(exercises.map((ex) => [ex.id, ex]));
   const ordered = check.run.order.map((id) => byId.get(id));
   const unchanged = ordered.every((ex) => ex && (check.identities
@@ -286,13 +287,29 @@ export function restorableCheck(moduleId: string, exercises: readonly ExerciseDe
     : check.fingerprints[ex.id] === exerciseFingerprint(ex)));
   const cfg = ordered[check.run.index]?.config;
   const validSelection = cfg && (cfg.type === 'chord_build' || cfg.type === 'scale_build' || check.run.selectedNotes.length === 0);
-  if (!validSelection || !isFresh(check.at, now) || check.lang !== lang || !unchanged || ordered.length === 0) {
+  if (!validSelection || !isFresh(check.at, now) || check.lang !== lang || !unchanged || ordered.length === 0) return null;
+  return ordered as ExerciseDefinition[];
+}
+
+/**
+ * The saved check for this module, if it can continue (`resumableCheck`, the
+ * ONE test the lesson's card and the resume share — second audit round, P3).
+ * Returns the run's exercises in their saved order, and the check with the
+ * current question's tries paired (`pairTriedOptions`), brought back to the
+ * screen (no longer `away`). Anything else for this module drops the save.
+ */
+export function restorableCheck(moduleId: string, exercises: readonly ExerciseDefinition[], lang: string, now = Date.now()): { check: SavedCheck; ordered: ExerciseDefinition[] } | null {
+  const store = useLearnSessionStore.getState();
+  const check = store.check;
+  if (!check || check.moduleId !== moduleId) return null;
+  const list = resumableCheck(check, moduleId, exercises, lang, now);
+  if (!list) {
     store.setCheck(null);
     return null;
   }
-  const list = ordered as ExerciseDefinition[];
+  const { away: _away, ...onScreen } = check;
   const restored: SavedCheck = {
-    ...check,
+    ...onScreen,
     fingerprints: fingerprintsOf(list),
     identities: identitiesOf(list),
     run: pairTriedOptions(check.run, list[check.run.index]),
@@ -301,10 +318,22 @@ export function restorableCheck(moduleId: string, exercises: readonly ExerciseDe
   return { check: restored, ordered: list };
 }
 
-/** True while a check is under way and not finished (W9b asks before a silent update). */
+/** The saved run no longer Learn's current screen (Back, or Learn moving on): kept, and not work in progress. */
+export function putCheckAway(): void {
+  const store = useLearnSessionStore.getState();
+  const c = store.check;
+  if (c && !c.finished && !c.away) store.setCheck({ ...c, away: true });
+}
+
+/**
+ * True while a check is under way, not finished, and Learn's current screen
+ * (W9b asks before a silent update; a shared link and the tour wait). A
+ * check put away by Back is kept and is not work in progress (the seat's
+ * ruling, second audit round: it is what 153caab counted).
+ */
 export function learnCheckInProgress(now = Date.now()): boolean {
   const c = useLearnSessionStore.getState().check;
-  return !!c && !c.finished && isFresh(c.at, now);
+  return !!c && !c.finished && !c.away && isFresh(c.at, now);
 }
 
 // Replace the startup persisted reader: another tab's save must not mask work here.

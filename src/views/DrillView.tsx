@@ -34,7 +34,7 @@ import {
 } from '../data/drillUnlocks';
 import { followExcluded, followFamilies, followHasNothing, followInForce, readCompletedLessons } from '../services/drillFollow';
 import type { FollowInfo } from '../components/drill/FollowLessons';
-import { goTo, notePlace, placeToOpen, useShowPlace, useWorkKeeper } from '../state/appHistory';
+import { backTo, goTo, notePlace, placeToOpen, useShowPlace, useWorkKeeper } from '../state/appHistory';
 import { drillStateHasWork } from '../state/drillWork';
 
 // Memoize the bank once for the view (the runner memoizes its own; this is the
@@ -167,12 +167,18 @@ export function DrillView() {
     setSubScreen(next);
   };
   const goToMastery = () => openSub('mastery');
+  // The sub-screens' own ways back (Back, "← Mastery", the Sprint's ✕ / Done) are Back to Drill's first screen.
+  const closeSub = () => {
+    backTo('drill', '');
+    setSubScreen(null);
+  };
   useEffect(() => {
     notePlace('drill', subScreen ?? '');
   }, [subScreen]);
   // Back / Forward, and the Drill tab tapped while Drill shows (P10): the screen the entry names.
   useShowPlace('drill', (place) => {
-    const asked = subScreenOf(place);
+    // An entry with no screen named: what the Drill tab opens (a Sprint left open, else the question).
+    const asked = place === undefined ? (useDrillStore.getState().sprint ? 'sprint' : null) : subScreenOf(place);
     if (asked === undefined) return;
     const next = reopenable(asked);
     if (next === 'mastery') setMasteryNow(Date.now());
@@ -198,11 +204,11 @@ export function DrillView() {
             follow={follow}
             followInfo={followInfo}
             onUpdate={updateSettings}
-            onBack={() => setSubScreen(null)}
+            onBack={closeSub}
             onMasteryMap={goToMastery}
             onResetProgress={() => {
               resetDrillProgress();
-              setSubScreen(null);
+              closeSub();
               // activeSession is now null after reset; kick a fresh session
               // explicitly so the runner doesn't sit on a stale frozen displayId.
               // (From the intro, back to the intro: no session yet.)
@@ -219,7 +225,7 @@ export function DrillView() {
             onToggleFamily={(family, enabled) =>
               updateSettings({ families: { ...settings.families, [family]: enabled } })
             }
-            onBack={() => setSubScreen(null)}
+            onBack={closeSub}
           />
         ) : subScreen === 'sprint' ? (
           <SprintRunner
@@ -228,7 +234,7 @@ export function DrillView() {
             families={sprintFamilies}
             priorBest={sprintBests[sprintFamiliesKey(sprintFamilies)] ?? 0}
             onRecord={recordSprint}
-            onExit={() => setSubScreen(null)}
+            onExit={closeSub}
           />
         ) : !activeSession && !sessionComplete && (!introDone || openedWithNothing || nothingToAsk) ? (
           <DrillIntro

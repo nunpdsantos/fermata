@@ -8,9 +8,13 @@ import { clearDemoRequest, requestDemo } from '../demoRequest';
 import { useToastStore } from '../toastStore';
 import { pickBootView } from '../bootView';
 import {
+  activates,
   armForTests,
+  backTo,
   currentEntry,
   goTo,
+  isArmedForTests,
+  onPageShow,
   isHistoryEntry,
   notePlace,
   placeToOpen,
@@ -116,7 +120,7 @@ describe('entries', () => {
 
 describe('Back and Forward', () => {
   function ShowLearn({ seen }: { seen: string[] }) {
-    useShowPlace('learn', (s) => seen.push(s));
+    useShowPlace('learn', (s) => seen.push(s ?? "(the tab)"));
     return null;
   }
 
@@ -155,13 +159,100 @@ describe('Back and Forward', () => {
     notePlace('learn', '');
     pop({ fm: 1, i: 0, v: 'learn', s: '', l: 0 });
     expect(go).toHaveBeenCalledWith(-1);
-    pop({ fm: 1, i: 1, v: 'learn', l: 0 }); // the view decides: nothing new either
+  });
+
+  it('an entry with no screen named is no screen of the view shown (review A10): it is shown as the tab would, not passed over', () => {
+    const seen: string[] = [];
+    render(<ShowLearn seen={seen} />);
+    armForTests();
+    act(() => useAppStore.getState().setView('learn')); // {learn} with no screen yet (a tab tapped and tapped back at once)
+    goTo('learn', 'level/l1');
+    pop({ fm: 1, i: 1, v: 'learn', l: 0 });
+    expect(go).not.toHaveBeenCalled();
+    expect(seen).toEqual(['(the tab)']);
+  });
+
+  it('an equal index is not Back nor Forward: landing on ours again from an entry the app did not write moves nothing (review A1)', () => {
+    const seen: string[] = [];
+    render(<ShowLearn seen={seen} />);
+    armForTests();
+    act(() => useAppStore.getState().setView('learn'));
+    notePlace('learn', '');
+    const here = currentEntry();
+    pop(null as unknown as HistoryEntry); // the skip link's old entry, or any other
+    pop(here);
+    expect(go).not.toHaveBeenCalled();
+    expect(seen).toEqual([]);
+    // And an equal index without a foreign entry between: no bounce either.
+    pop(here);
+    expect(go).not.toHaveBeenCalled();
+  });
+
+  it('a fragment link\'s entry is rewritten as ours, under the next index, and the address keeps no fragment', () => {
+    armForTests();
+    act(() => useAppStore.getState().setView('learn'));
+    notePlace('learn', '');
+    window.history.pushState(null, '', '/#main-content'); // what a plain href="#…" does
+    act(() => {
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    });
+    expect(window.history.state).toEqual({ fm: 1, i: 2, v: 'learn', s: '', l: 0 });
+    expect(window.location.hash).toBe('');
+    // Back from it shows nothing new: passed over.
+    pop({ fm: 1, i: 1, v: 'learn', s: '', l: 0 });
+    expect(go).toHaveBeenCalledWith(-1);
+  });
+
+  it('a traversal of the app\'s own holds every write until it lands (review A9: a replaceState landed on the wrong entry)', () => {
+    armForTests();
+    act(() => useAppStore.getState().setView('learn'));
+    notePlace('learn', 'module/l1/u3/l1u3m4');
+    let closed = 0;
+    armForTests(false);
+    const layer = render(<Sheetish open onClose={() => { closed += 1; }} />); // no entry of its own (no activation)
+    pop({ fm: 1, i: 0, v: 'explore', l: 0 }); // Back: the layer closes, and the app goes back to entry 1
+    expect(closed).toBe(1);
     expect(go).toHaveBeenLastCalledWith(1);
+    (window.history.replaceState as unknown as ReturnType<typeof vi.fn>).mockClear();
+    notePlace('learn', ''); // the screen changed meanwhile
+    expect(window.history.replaceState).not.toHaveBeenCalled();
+    pop({ fm: 1, i: 1, v: 'learn', s: 'module/l1/u3/l1u3m4', l: 0 }); // the hop lands
+    expect(window.history.replaceState).toHaveBeenLastCalledWith({ fm: 1, i: 1, v: 'learn', s: '', l: 0 }, '');
+    layer.unmount();
+  });
+
+  it('the app\'s own way back is Back to the screen\'s earlier entry in this view, when the tab has one; else it rewrites the entry', () => {
+    armForTests();
+    act(() => useAppStore.getState().setView('drill'));
+    notePlace('drill', '');
+    goTo('drill', 'settings');
+    goTo('drill', 'mastery');
+    backTo('drill', ''); // "← Mastery"
+    expect(go).toHaveBeenLastCalledWith(-3 + 1);
+    pop({ fm: 1, i: 1, v: 'drill', s: '', l: 0 });
+    expect(currentEntry()).toMatchObject({ i: 1, s: '' });
+    // Nothing earlier names it: the entry is rewritten.
+    go.mockClear();
+    backTo('drill', 'never-seen');
+    expect(go).not.toHaveBeenCalled();
+    expect(currentEntry()).toMatchObject({ i: 1, s: 'never-seen' });
+    // Another view between: rewritten, not traversed past it.
+    act(() => useAppStore.getState().setView('learn'));
+    notePlace('learn', '');
+    armForTests();
+    goTo('learn', 'level/l1');
+    act(() => useAppStore.getState().setView('drill'));
+    backTo('drill', '');
+    expect(go).not.toHaveBeenCalled();
   });
 
   it('a reload keeps the place: the boot view is the entry\'s (a ?view= still wins), else the saved one', () => {
     const kept = { fm: 1, i: 3, v: 'drill', s: 'mastery', l: 0 };
     expect(pickBootView('', 'explore', kept)).toBe('drill');
+    // Every view, Explore included: this tab on Explore while another tab moved on to Learn stays on Explore (review A5).
+    for (const v of ['explore', 'learn', 'drill'] as const) {
+      for (const last of ['explore', 'learn', 'drill'] as const) expect(pickBootView('', last, { fm: 1, i: 0, v, l: 0 }), `${v} over ${last}`).toBe(v);
+    }
     expect(pickBootView('?view=learn', 'explore', kept)).toBe('learn');
     expect(pickBootView('', 'learn', null)).toBe('learn');
     expect(pickBootView('', 'learn', { v: 'home' })).toBe('learn');
@@ -169,11 +260,12 @@ describe('Back and Forward', () => {
   });
 });
 
+function Sheetish({ open, onClose }: { open: boolean; onClose: () => void }) {
+  useBackLayer(open, onClose);
+  return null;
+}
+
 describe('sheets and dialogs (layers)', () => {
-  function Sheetish({ open, onClose }: { open: boolean; onClose: () => void }) {
-    useBackLayer(open, onClose);
-    return null;
-  }
   function Two() {
     const [a, setA] = useState(true);
     const [b, setB] = useState(true);
@@ -242,6 +334,20 @@ describe('sheets and dialogs (layers)', () => {
     expect(pushes()).toHaveLength(2);
   });
 
+  it('Forward onto an entry that shows nothing new, with none known beyond it: no traversal, nothing held — a sheet opened next gets its own entry', () => {
+    armForTests();
+    const first = render(<Sheetish open onClose={() => undefined} />);
+    first.unmount(); // closed by its own control: its entry (1) stays
+    pop({ fm: 1, i: 0, v: 'explore', l: 0 }); // Back: passed over
+    go.mockClear();
+    pop({ fm: 1, i: 1, v: 'explore', l: 1 }); // Forward onto it: nothing beyond
+    expect(go).not.toHaveBeenCalled();
+    armForTests();
+    render(<Sheetish open onClose={() => undefined} />);
+    render(<Sheetish open onClose={() => undefined} />);
+    expect(pushes().map((e) => e.l)).toEqual([1, 2]);
+  });
+
   it('Forward never reopens a closed one', () => {
     armForTests();
     let closed = 0;
@@ -252,6 +358,109 @@ describe('sheets and dialogs (layers)', () => {
     expect(closed).toBe(1);
   });
 });
+
+describe('what arms a push (the HTML Standard\'s activation-triggering events, and less)', () => {
+  it('a back/forward-cache restore (pageshow, persisted) disarms; a normal load arms nothing (review A12)', () => {
+    armForTests(true);
+    onPageShow(new PageTransitionEvent('pageshow', { persisted: true }));
+    expect(isArmedForTests()).toBe(false);
+    onPageShow(new PageTransitionEvent('pageshow', { persisted: false }));
+    expect(isArmedForTests()).toBe(false);
+    armForTests(true);
+    onPageShow(new PageTransitionEvent('pageshow', { persisted: false }));
+    expect(isArmedForTests()).toBe(true);
+  });
+
+  it('a trusted keydown, mousedown or a tap\'s pointerup activates; untrusted events, Escape, a modifier alone, a shortcut, a mouse\'s pointerup and touchend do not (the real events: e2e)', () => {
+    const t = (e: Record<string, unknown>) => activates({ isTrusted: true, ...e } as Parameters<typeof activates>[0]);
+    expect(t({ type: 'keydown', key: 'Enter' })).toBe(true);
+    expect(t({ type: 'keydown', key: 'ArrowRight' })).toBe(true);
+    expect(t({ type: 'mousedown' })).toBe(true);
+    expect(t({ type: 'pointerup', pointerType: 'touch' })).toBe(true);
+    expect(t({ type: 'pointerup', pointerType: 'pen' })).toBe(true);
+    expect(activates({ isTrusted: false, type: 'keydown', key: 'Enter' })).toBe(false);
+    expect(activates({ isTrusted: false, type: 'mousedown' })).toBe(false);
+    for (const key of ['Escape', 'Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'NumLock']) expect(t({ type: 'keydown', key }), key).toBe(false);
+    expect(t({ type: 'keydown', key: 'ArrowLeft', altKey: true })).toBe(false); // the browser's Back
+    expect(t({ type: 'keydown', key: '[', metaKey: true })).toBe(false);
+    expect(t({ type: 'keydown', key: 'k', ctrlKey: true })).toBe(false);
+    expect(t({ type: 'pointerup', pointerType: 'mouse' })).toBe(false);
+    expect(t({ type: 'touchend' })).toBe(false);
+    expect(t({ type: 'pointerdown', pointerType: 'touch' })).toBe(false);
+    // jsdom's events are untrusted: none of them arms.
+    armForTests(false);
+    for (const e of [new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }), new MouseEvent('mousedown', { bubbles: true })]) window.dispatchEvent(e);
+    expect(isArmedForTests()).toBe(false);
+  });
+});
+
+describe('the active tab, menus and the tour', () => {
+  function Shows({ view, seen }: { view: 'learn' | 'drill'; seen: string[] }) {
+    useShowPlace(view, (s) => seen.push(s ?? '(the tab)'));
+    return <button role="tab" data-tab={view} aria-selected="true">tab</button>;
+  }
+
+  it('tapping the selected Drill tab on a sub-screen opens Drill\'s first screen as a screen of its own (P10), through the keepers', () => {
+    const seen: string[] = [];
+    render(<><Shows view="drill" seen={seen} /><KeeperOf view="drill" text="Your Sprint is paused, with the time it had left." /></>);
+    armForTests();
+    act(() => useAppStore.getState().setView('drill'));
+    goTo('drill', 'sprint');
+    fireEvent.click(screen.getByRole('tab'));
+    expect(seen).toEqual(['']);
+    expect(currentEntry()).toMatchObject({ v: 'drill', s: '' });
+    expect(pushes().at(-1)).toMatchObject({ s: '' });
+    const [toast] = useToastStore.getState().toasts;
+    expect(toast.message).toBe('Your Sprint is paused, with the time it had left.');
+    toast.action!.onSelect();
+    expect(go).toHaveBeenLastCalledWith(-1);
+    // On its first screen already, the tab does nothing more.
+    fireEvent.click(screen.getByRole('tab'));
+    expect(seen).toEqual(['']);
+  });
+
+  it('a menu opened from the keyboard (ArrowDown on its button) is a layer too', () => {
+    armForTests();
+    render(<Menu label="More" items={[{ id: 'a', label: 'Settings', onSelect: () => undefined }]} />);
+    fireEvent.keyDown(screen.getByRole('button', { name: 'More' }), { key: 'ArrowDown' });
+    expect(screen.queryByRole('menu')).not.toBeNull();
+    expect(pushes().map((e) => e.l)).toEqual([1]);
+  });
+
+  it('a menu closed by its own item is dropped before Back counts what is open (prune): Back then passes over its entry', () => {
+    armForTests();
+    render(<Menu label="More" items={[{ id: 'a', label: 'Settings', onSelect: () => undefined }]} />);
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Settings' }));
+    pop({ fm: 1, i: 0, v: 'explore', l: 0 });
+    expect(go).toHaveBeenLastCalledWith(-1);
+  });
+
+  it('while the tour plays, only its own layer is written; when it ends elsewhere ("Stay here"), the entry follows the view shown', () => {
+    armForTests();
+    requestDemo('intro', 'menu');
+    const sheet = render(<Sheetish open onClose={() => undefined} />);
+    expect(pushes()).toEqual([]);
+    sheet.unmount();
+    function TourLayer() {
+      useBackLayer(true, () => undefined, true);
+      return null;
+    }
+    const tour = render(<TourLayer />);
+    expect(pushes().map((e) => e.l)).toEqual([1]);
+    act(() => useAppStore.getState().setView('drill')); // the tour's own screens: not written
+    expect(currentEntry().v).toBe('explore');
+    clearDemoRequest();
+    tour.unmount(); // "Stay here": the tour ends on Drill
+    expect(currentEntry()).toMatchObject({ v: 'drill' });
+    expect(window.history.state).toMatchObject({ v: 'drill' });
+  });
+});
+
+function KeeperOf({ view, text }: { view: 'learn' | 'drill'; text: string }) {
+  useWorkKeeper(view, () => text);
+  return null;
+}
 
 describe('work in progress', () => {
   function Keeper({ text }: { text: string | null }) {

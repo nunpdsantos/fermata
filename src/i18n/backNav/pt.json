@@ -6,5 +6,13 @@
   "continueCheck": "Continuar a verificação",
   "continuePractice": "Continuar a prática",
   "drillKept": "A tua sessão de Treino ficou guardada, na pergunta em que estavas.",
-  "sprintKept": "O teu sprint está em pausa, com o tempo que lhe restava."
+  "sprintKept": "O teu sprint está em pausa, com o tempo que lhe restava.",
+  "otherCheckKept": "A tua verificação em «{{title}}» ficou guardada: pergunta {{current}} de {{total}}.",
+  "otherReviewKept": "A tua revisão de «{{title}}» ficou guardada: pergunta {{current}} de {{total}}.",
+  "otherPracticeKept": "A tua ronda de prática em «{{title}}» ficou guardada: pergunta {{current}} de {{total}}.",
+  "startCheckLetsGo": "Se começares esta verificação, essa perde-se.",
+  "startReviewLetsGo": "Se começares esta revisão, essa perde-se.",
+  "backToKept": "Voltar a «{{title}}»",
+  "startCheckHere": "Começar esta verificação",
+  "startReviewHere": "Começar esta revisão"
 }

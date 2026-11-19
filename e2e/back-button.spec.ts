@@ -45,7 +45,8 @@ async function open(browser: Browser, mode: Mode, seed: Seed = {}, path = '/', w
   const context = await browser.newContext({ viewport: mode.viewport, isMobile: mode.touch, hasTouch: mode.touch, reducedMotion: 'reduce', serviceWorkers: workers });
   await context.addInitScript(([seedJson]) => {
     const s = JSON.parse(seedJson) as Seed;
-    if (!sessionStorage.getItem('__seeded')) {
+    // Once per context (a second tab of it, or a reload, must keep what the first saved).
+    if (!localStorage.getItem('__seeded')) {
       localStorage.clear();
       if (!s.fresh) {
         localStorage.setItem('fermata-welcome-v1', 'seen');
@@ -53,7 +54,7 @@ async function open(browser: Browser, mode: Mode, seed: Seed = {}, path = '/', w
       }
       if (s.progress) localStorage.setItem('music-theory-progress', JSON.stringify(s.progress));
       if (s.drill) localStorage.setItem('fermata-drill-v1', s.drill);
-      sessionStorage.setItem('__seeded', '1');
+      localStorage.setItem('__seeded', '1');
     }
     // Every entry the app pushes, with the user activation it had.
     const pushes: { active: boolean | null; state: unknown }[] = [];
@@ -396,15 +397,13 @@ for (const mode of MODES) {
       await press(mode, page.getByTestId('practice-open'));
       const practice = page.getByTestId('practice-sheet');
       await expect(practice).toBeVisible();
-      const word = practice.locator('.term[data-term]').first();
-      if (await word.count()) {
-        await press(mode, word);
-        const explanation = mode.touch ? page.getByTestId('glossary-sheet') : page.getByTestId('glossary-popover');
-        await expect(explanation).toBeVisible();
-        await back(page);
-        await expect(explanation).toHaveCount(0);
-        await expect(practice).toBeVisible();
-      }
+      // Its "Words on this screen": a second sheet over it. Back closes that one first.
+      await press(mode, practice.getByRole('button', { name: /Words on this screen/ }).first());
+      const words = page.getByTestId('glossary-sheet');
+      await expect(words).toBeVisible();
+      await back(page);
+      await expect(words).toHaveCount(0);
+      await expect(practice).toBeVisible();
       await back(page);
       await expect(practice).toHaveCount(0);
       await expectView(page, 'explore');
@@ -750,4 +749,383 @@ test('the build, with the service worker in control and then offline: Back, Forw
   await expectView(page, 'explore');
   await noPushWithoutActivation(page);
   await context.close();
+});
+
+// ── The cold review's faults (second audit round, review B-1), each in a real browser ─────────────
+
+/** The dev server's own modules (the build has none): for what only the app's state can show. */
+async function devModule<T>(page: Page, path: string, fn: string): Promise<T | undefined> {
+  const probe = await page.request.get(path);
+  if (!(probe.headers()['content-type'] ?? '').includes('javascript')) return undefined;
+  return page.evaluate(async ([p, f]) => {
+    const m = (await import(/* @vite-ignore */ p)) as Record<string, () => unknown>;
+    return m[f]() as T;
+  }, [path, fn] as const);
+}
+
+/** A check of LESSON started from its card, with question 1 missed once (an answer given; its second try pending). */
+async function startAnswered(mode: Mode, page: Page, key: Map<string, string>) {
+  await press(mode, tab(page, 'learn'));
+  await press(mode, levelOneCard(page));
+  await press(mode, page.locator('#learn-panel').getByRole('button', { name: new RegExp(LESSON.unit) }).first());
+  await press(mode, page.locator('#learn-panel').getByRole('button', { name: new RegExp(LESSON.title) }).first());
+  await press(mode, page.getByTestId('check-start'));
+  await expect(page.getByTestId('focused-check')).toBeVisible();
+  const q1 = await keyed(page, key);
+  await answer(mode, page, q1.wrong);
+  return { q1, state: await checkState(page) };
+}
+
+test.describe('review B-1', () => {
+  test('A1: the skip link moves focus and adds no entry; an entry the app did not write never traps Back', async ({ browser }) => {
+    const { context, page } = await open(browser, MODES[0]);
+    await tab(page, 'learn').click();
+    await expect(overview(page)).toBeVisible();
+    const length = await historyLength(page);
+    await page.locator('a[href="#main-content"]').focus();
+    await page.keyboard.press('Enter');
+    await expect.poll(() => page.evaluate(() => document.activeElement?.id)).toBe('main-content');
+    expect(await historyLength(page)).toBe(length);
+    expect(page.url()).not.toContain('#');
+    // Any other fragment link (none in the app today): its entry is ours at once, and Back passes it.
+    await page.evaluate(() => {
+      const a = Object.assign(document.createElement('a'), { href: '#somewhere', textContent: 'x' });
+      document.getElementById('main-content')!.appendChild(a);
+    });
+    await page.locator('a[href="#somewhere"]').click();
+    await expect.poll(() => page.evaluate(() => (history.state as { fm?: number } | null)?.fm ?? 0)).toBe(1);
+    expect(page.url()).not.toContain('#');
+    await back(page);
+    await expectView(page, 'explore');
+    // An entry written by something else (a library's pushState): Back from it lands on ours, no bounce; the next Back moves on.
+    await forward(page);
+    await expectView(page, 'learn');
+    await page.evaluate(() => history.pushState(null, '', location.pathname));
+    await back(page);
+    await page.waitForTimeout(500);
+    await expectView(page, 'learn');
+    expect(await page.evaluate(() => (history.state as { fm?: number } | null)?.fm ?? 0)).toBe(1);
+    await back(page);
+    await expectView(page, 'explore');
+    await context.close();
+  });
+
+  test('A2: starting another lesson\'s check asks first when a kept one has an answer: back to it, or start here', async ({ browser }) => {
+    test.setTimeout(90_000);
+    const mode = MODES[0];
+    const key = answerKey();
+    const { context, page } = await open(browser, mode);
+    const { state } = await startAnswered(mode, page, key);
+    await back(page);
+    await expect(page.getByTestId('check-kept')).toBeVisible();
+    await back(page);
+    await expect(unitPage(page)).toBeVisible();
+    await page.locator('#learn-panel').getByRole('button', { name: /Meter and Time Signatures|Time Signatures/ }).first().click();
+    await expect(page.locator('#learn-panel h1')).toBeVisible();
+    await page.getByTestId('check-start').click();
+    const choice = page.getByTestId('kept-choice');
+    await expect(choice).toContainText(`Your check in “${LESSON.title}” is kept: question 1 of ${LESSON.questions}. If you start this check, that one is lost.`);
+    await expect(page.getByTestId('kept-back')).toBeFocused();
+    await expect(page.getByTestId('focused-check')).toHaveCount(0);
+    // Back to it: the same question, exactly.
+    await page.getByTestId('kept-back').click();
+    await expect(page.getByTestId('focused-check')).toBeVisible();
+    expect(await checkState(page)).toEqual(state);
+    await expect(lessonHeading(page, LESSON.title)).toHaveCount(0);
+    // Again, and this time start here: the kept one goes.
+    await back(page);
+    await expect(page.locator('#learn-panel h1')).toBeVisible();
+    await page.getByTestId('check-start').click();
+    await page.getByTestId('kept-start').click();
+    await expect(page.getByTestId('focused-check')).toBeVisible();
+    await expect(page.getByTestId('check-position')).toHaveText(/^1 \/ \d+$/);
+    await noPushWithoutActivation(page);
+    await context.close();
+  });
+
+  for (const how of ['older than a day', 'its question changed'] as const) {
+    test(`A3: a kept check ${how} is dropped when its lesson opens: the card promises nothing`, async ({ browser }) => {
+      test.setTimeout(90_000);
+      const mode = MODES[0];
+      const { context, page } = await open(browser, mode);
+      await startAnswered(mode, page, answerKey());
+      await back(page);
+      await expect(page.getByTestId('check-kept')).toBeVisible();
+      await page.evaluate((h) => {
+        const raw = JSON.parse(localStorage.getItem('fermata-learn-session-v1')!);
+        if (h === 'older than a day') raw.state.check.at = Date.now() - 25 * 60 * 60 * 1000;
+        else raw.state.check.identities[raw.state.check.run.order[0]] = 'an exercise that no longer is';
+        localStorage.setItem('fermata-learn-session-v1', JSON.stringify(raw));
+      }, how);
+      await page.reload();
+      await expect(lessonHeading(page, LESSON.title)).toBeVisible({ timeout: 15_000 });
+      await expect(page.getByTestId('check-start')).toBeVisible();
+      await expect(page.getByTestId('check-kept')).toHaveCount(0);
+      await expect(page.getByTestId('check-continue')).toHaveCount(0);
+      expect(await page.evaluate(() => JSON.parse(localStorage.getItem('fermata-learn-session-v1')!).state.check)).toBeNull();
+      await context.close();
+    });
+  }
+
+  test('A4: a check on screen holds the tour, a shared link and an update; one Back has put away holds nothing', async ({ browser }) => {
+    test.setTimeout(90_000);
+    const mode = MODES[0];
+    const { context, page } = await open(browser, mode);
+    await startAnswered(mode, page, answerKey());
+    // On screen: work in progress.
+    expect(await devModule<boolean>(page, '/src/services/workInProgress.ts', 'hasWorkInProgress') ?? true).toBe(true);
+    const linked = await context.newPage();
+    await linked.goto('/?key=G&scale=major');
+    await expect(linked.getByTestId('toast-region')).toContainText(/G/, { timeout: 15_000 });
+    await linked.waitForTimeout(800);
+    await expect(linked.locator('[data-testid="key-summary"]', { hasText: 'G Major' })).toHaveCount(0); // held: not applied
+    await linked.close();
+    await page.getByTestId('app-menu').getByRole('button').first().click();
+    await page.getByRole('menuitem', { name: 'Show me around' }).click();
+    await expect(page.getByTestId('toast-region')).toContainText('Finish or leave your check first.');
+    await expect(page.getByTestId('tour-bar')).toHaveCount(0);
+    // Put away by Back: kept, and nothing is held.
+    await page.keyboard.press('Escape');
+    await back(page);
+    await expect(page.getByTestId('check-kept')).toBeVisible();
+    expect(await devModule<boolean>(page, '/src/services/workInProgress.ts', 'hasWorkInProgress') ?? false).toBe(false);
+    const linked2 = await context.newPage();
+    await linked2.goto('/?key=G&scale=major');
+    await expect(linked2.getByTestId('key-summary')).toContainText('G Major', { timeout: 15_000 });
+    await linked2.close();
+    await page.getByTestId('app-menu').getByRole('button').first().click();
+    await page.getByRole('menuitem', { name: 'Show me around' }).click();
+    await expect(page.getByTestId('tour-bar')).toBeVisible({ timeout: 15_000 });
+    await context.close();
+  });
+
+  test('A6: Back into Explore brings the chord back as it was left (its detail open); tapping Explore\'s own tab still clears it', async ({ browser }) => {
+    const { context, page } = await open(browser, MODES[0]);
+    await page.getByTestId('chords-card').getByRole('button').filter({ hasText: /^V/ }).first().click();
+    const detail = page.getByTestId('chord-detail');
+    await expect(detail).toBeVisible();
+    const before = (await detail.innerText()).slice(0, 40);
+    await detail.getByRole('button', { name: /Learn about this/ }).click();
+    await expectView(page, 'learn');
+    await back(page);
+    await expectView(page, 'explore');
+    await expect(detail).toBeVisible();
+    expect((await detail.innerText()).slice(0, 40)).toBe(before);
+    await tab(page, 'explore').click();
+    await expect(detail).toHaveCount(0);
+    await context.close();
+  });
+
+  test('A8: the active tab tapped mid-check or mid-Sprint leaves it with the same notice as Back, and Continue returns', async ({ browser }) => {
+    test.setTimeout(90_000);
+    const mode = MODES[0];
+    const { context, page } = await open(browser, mode, { drill: SPRINT_READY });
+    const { state } = await startAnswered(mode, page, answerKey());
+    await tab(page, 'learn').click();
+    await expect(overview(page)).toBeVisible();
+    await expect(page.getByTestId('toast-region')).toContainText(`Your check is kept: question 1 of ${LESSON.questions}.`);
+    await page.getByTestId('toast-region').getByRole('button', { name: 'Continue' }).click();
+    await expect(page.getByTestId('focused-check')).toBeVisible();
+    expect(await checkState(page)).toEqual(state);
+    // A Sprint.
+    await tab(page, 'drill').click();
+    const panel = page.locator('#drill-panel');
+    await panel.getByRole('button', { name: 'End session' }).click();
+    await panel.getByRole('button', { name: 'Sprint', exact: true }).click();
+    await expect(panel.getByText(/^\d+s$/)).toBeVisible();
+    await tab(page, 'drill').click();
+    await expect(panel.getByText('Session complete')).toBeVisible();
+    await expect(page.getByTestId('toast-region')).toContainText('Your Sprint is paused, with the time it had left.');
+    await page.getByTestId('toast-region').getByRole('button', { name: 'Continue' }).click();
+    await expect(panel.getByText(/^\d+s$/)).toBeVisible();
+    await context.close();
+  });
+
+  test('A9: the last lesson of a level — Back closes the milestone, then the celebration, and moves nowhere else; a reload and Forward agree', async ({ browser }) => {
+    test.setTimeout(90_000);
+    const src = readFileSync(new URL('../src/core/constants/curriculumL1.ts', import.meta.url), 'utf8');
+    const tasks = [...new Set(src.match(/l1u3m4t\d+/g) ?? [])];
+    const done = ['l1u1m1', 'l1u1m2', 'l1u1m3', 'l1u1m4', 'l1u2m1', 'l1u2m2', 'l1u3m1', 'l1u3m2', 'l1u3m3'];
+    const now = Date.now();
+    const schedules = Object.fromEntries(done.map((id) => [id, { completedAt: now - 1000, nextReviewAt: now + 86_400_000, intervalLevel: 0, reviewCount: 0, lastReviewedAt: now - 1000 }]));
+    const progress = { state: { progress: { completedModules: done, moduleProgress: { l1u3m4: tasks }, exerciseResults: { l1u3m4: { scores: {}, totalAttempts: 1, lastAttemptAt: now, passed: true } }, reviewSchedules: schedules } }, version: 2 };
+    const { context, page } = await open(browser, MODES[0], { progress });
+    await tab(page, 'learn').click();
+    await levelOneCard(page).click();
+    await page.locator('#learn-panel').getByRole('button', { name: /Your First Chords/ }).first().click(); // the level's Continue
+    const lesson = page.getByRole('heading', { level: 1, name: /Your First Chords/ });
+    await expect(lesson).toBeVisible();
+    await page.getByRole('button', { name: 'Complete the lesson' }).first().click();
+    const milestone = page.getByRole('dialog', { name: 'Unit complete' });
+    await expect(milestone).toBeVisible();
+    const entryHere = (await entry(page))!;
+    await back(page);
+    await expect(milestone).toHaveCount(0);
+    const celebration = page.getByText('Level 1 Complete!');
+    await expect(celebration).toBeVisible();
+    await back(page);
+    await expect(celebration).toHaveCount(0);
+    await page.waitForTimeout(800);
+    await expect(lesson).toBeVisible();
+    // The entry under the learner names the lesson shown, at an index that is its own.
+    const now2 = (await entry(page))!;
+    expect(now2.s).toBe('module/l1/u3/l1u3m4');
+    expect(now2.i).toBeLessThanOrEqual(entryHere.i);
+    await page.reload();
+    await expect(lesson).toBeVisible({ timeout: 15_000 });
+    await forward(page);
+    await page.waitForTimeout(800);
+    await expect(lesson).toBeVisible();
+    await back(page);
+    await expect(levelOnePage(page)).toBeVisible();
+    await context.close();
+  });
+
+  test('A10: Learn and Drill tapped in one moment leave Drill\'s entry with no screen named; Back from Drill settings is Drill\'s question, not Learn', async ({ browser }) => {
+    const { context, page } = await open(browser, MODES[0], { drill: DRILL_SAVE });
+    await tab(page, 'drill').click();
+    const panel = page.locator('#drill-panel');
+    await expect(panel.getByText('4 of 9')).toBeVisible();
+    await page.evaluate(() => {
+      (document.querySelector('[role="tab"][data-tab="learn"]') as HTMLElement).click();
+      (document.querySelector('[role="tab"][data-tab="drill"]') as HTMLElement).click();
+    });
+    await page.waitForTimeout(800);
+    await panel.getByRole('button', { name: 'Drill settings' }).click();
+    await expect(panel.getByRole('heading', { name: 'Drill settings' })).toBeVisible();
+    await back(page);
+    await expectView(page, 'drill');
+    await expect(panel.getByText('4 of 9')).toBeVisible();
+    await context.close();
+  });
+
+  test('A11: after the app\'s own ← a Back never shows the screen it left nor one it went back past; closed layers cost no press', async ({ browser }) => {
+    const { context, page } = await open(browser, MODES[0], { drill: DRILL_SAVE });
+    await tab(page, 'drill').click();
+    const panel = page.locator('#drill-panel');
+    await expect(panel.getByText('4 of 9')).toBeVisible();
+    await panel.getByRole('button', { name: 'Drill settings' }).click();
+    await panel.getByRole('button', { name: /Mastery map/ }).click();
+    await expect(panel.getByRole('heading', { name: 'Mastery' })).toBeVisible();
+    await panel.getByRole('button', { name: 'Back' }).click(); // "← Mastery": to Drill's question
+    await expect(panel.getByText('4 of 9')).toBeVisible();
+    await back(page);
+    await expectView(page, 'explore');
+    // Learn: a lesson, Next lesson, its ← to the unit, then Back: the level, not either lesson.
+    await tab(page, 'learn').click();
+    await levelOneCard(page).click();
+    await page.locator('#learn-panel').getByRole('button', { name: new RegExp(LESSON.unit) }).first().click();
+    await page.locator('#learn-panel').getByRole('button', { name: new RegExp(LESSON.title) }).first().click();
+    await page.getByRole('button', { name: /Next lesson/ }).last().click();
+    await expect(lessonHeading(page, LESSON.title)).toHaveCount(0);
+    await page.getByRole('button', { name: 'Back', exact: true }).first().click(); // the lesson's ←: its unit
+    await expect(unitPage(page)).toBeVisible();
+    await back(page);
+    await expect(levelOnePage(page)).toBeVisible();
+    // A sheet, the menu and Quick Search opened and closed by their own controls: one Back still changes the screen.
+    await forward(page);
+    await expect(unitPage(page)).toBeVisible();
+    await page.getByTestId('app-menu').getByRole('button').first().click();
+    await page.getByRole('menuitem', { name: 'Settings' }).click();
+    await page.getByTestId('settings-sheet').getByRole('button', { name: 'Close' }).click();
+    await page.getByTestId('app-menu').getByRole('button').first().click();
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Control+k');
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('menu')).toHaveCount(0);
+    await back(page);
+    await expect(levelOnePage(page)).toBeVisible();
+    await context.close();
+  });
+
+  test('A13: after Back changes the screen, focus is on its heading (its name is read), not on the page body', async ({ browser }) => {
+    const { context, page } = await open(browser, MODES[0]);
+    await tab(page, 'learn').click();
+    await levelOneCard(page).click();
+    await expect(levelOnePage(page)).toBeVisible();
+    await back(page);
+    await expect(overview(page)).toBeVisible();
+    await expect.poll(() => page.evaluate(() => document.activeElement?.textContent?.trim())).toBe('Learn Music Theory');
+    await back(page);
+    await expectView(page, 'explore');
+    await expect.poll(() => page.evaluate(() => !!document.activeElement?.closest('#explore-panel') && /^H[12]$/.test(document.activeElement.tagName))).toBe(true);
+    await context.close();
+  });
+
+  test('A14: only a real activation arms a push — not Escape, a modifier alone or a shortcut (the app\'s own state, dev server)', async ({ browser }) => {
+    const { context, page } = await open(browser, MODES[0]);
+    if ((await devModule<boolean>(page, '/src/state/appHistory.ts', 'isArmedForTests')) === undefined) {
+      test.info().annotations.push({ type: 'note', description: 'reads the app\'s own module: dev server only' });
+      await context.close();
+      return;
+    }
+    await tab(page, 'learn').click();
+    await back(page); // a traversal disarms
+    expect(await devModule<boolean>(page, '/src/state/appHistory.ts', 'isArmedForTests')).toBe(false);
+    for (const key of ['Escape', 'Shift', 'Control', 'Alt', 'Meta', 'Alt+ArrowLeft', 'Meta+BracketLeft']) {
+      await page.keyboard.press(key);
+      expect(await devModule<boolean>(page, '/src/state/appHistory.ts', 'isArmedForTests'), key).toBe(false);
+    }
+    await page.keyboard.press('a');
+    expect(await devModule<boolean>(page, '/src/state/appHistory.ts', 'isArmedForTests')).toBe(true);
+    await context.close();
+  });
+
+  test('two tabs: A on Explore, B moves to Learn, A reloads and stays on Explore (this tab\'s entry before any tab\'s last view)', async ({ browser }) => {
+    const { context, page } = await open(browser, MODES[0]);
+    const b = await context.newPage();
+    await b.goto('/');
+    await b.locator('[role="tab"][data-tab="learn"]').click();
+    await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('music-theory-app')!).state.lastView)).toBe('learn');
+    await page.reload();
+    await expectView(page, 'explore');
+    await b.close();
+    await context.close();
+  });
+
+  test('a running Sprint: Back, reload, Forward — the same question, score and time', async ({ browser }) => {
+    const { context, page } = await open(browser, MODES[0], { drill: SPRINT_READY });
+    await tab(page, 'drill').click();
+    const panel = page.locator('#drill-panel');
+    await panel.getByRole('button', { name: 'End session' }).click();
+    await panel.getByRole('button', { name: 'Sprint', exact: true }).click();
+    const clock = panel.getByText(/^\d+s$/);
+    await expect(clock).toBeVisible();
+    const prompt = panel.locator('p.text-xl').first();
+    const question = await prompt.textContent();
+    const seconds = Number((await clock.textContent())!.replace('s', ''));
+    await back(page);
+    await expect(panel.getByText('Session complete')).toBeVisible();
+    await page.reload();
+    // Drill's first screen again (the summary is not kept across a reload, as before: a new session starts), the Sprint paused.
+    await expectView(page, 'drill');
+    await expect(clock).toHaveCount(0);
+    await forward(page);
+    await expect(prompt).toHaveText(question!);
+    const after = Number((await clock.textContent())!.replace('s', ''));
+    expect(after).toBeLessThanOrEqual(seconds);
+    expect(after).toBeGreaterThanOrEqual(seconds - 2);
+    await context.close();
+  });
+
+  test('the tour ended with "Stay here": the entry follows the view it ended on, and Back goes on from there', async ({ browser }) => {
+    test.setTimeout(90_000);
+    const { context, page } = await open(browser, MODES[0]);
+    await page.getByTestId('app-menu').getByRole('button').first().click();
+    await page.getByRole('menuitem', { name: 'Show me around' }).click();
+    await expect(page.getByTestId('tour-bar')).toBeVisible({ timeout: 15_000 });
+    for (let i = 0; i < 16 && !(await page.getByTestId('tour-stay').count()); i++) {
+      const next = page.getByTestId('tour-next');
+      if (!(await next.count())) break;
+      await next.click();
+      await page.waitForTimeout(500);
+    }
+    const view = await page.locator('[role="tab"][aria-selected="true"]').getAttribute('data-tab');
+    await page.getByTestId('tour-stay').click();
+    await expect(page.getByTestId('tour-bar')).toHaveCount(0);
+    expect(view).not.toBe('explore');
+    expect((await entry(page))!.v).toBe(view);
+    await expectView(page, view as 'learn' | 'drill');
+    await context.close();
+  });
 });
