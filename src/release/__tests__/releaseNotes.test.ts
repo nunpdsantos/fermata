@@ -26,6 +26,25 @@ describe('the shipped release-notes.json', () => {
   });
 });
 
+describe('release 16 (2026-11-19): the audit fixes', () => {
+  it('follows release 15: not critical, one line per language within 160 characters, Drill by its name in each language', async () => {
+    const releases = parseReleaseNotes(JSON.parse(releaseNotesSource));
+    const at = releases.findIndex((r) => r.release === 16);
+    expect(at).toBeGreaterThanOrEqual(0);
+    const [note, previous] = releases.slice(at);
+    expect([note.release, note.date, note.critical]).toEqual([16, '2026-11-19', false]);
+    expect(previous.release).toBe(15);
+    for (const lang of ['en', 'pt', 'es'] as const) expect(note.notes[lang].length, lang).toBeLessThanOrEqual(MAX_NOTE_LENGTH);
+    // The Drill is wholly in Portuguese and Spanish since this release: the note names it as the top bar does.
+    const { default: pt } = await import('../../i18n/locales/pt.json');
+    const { default: es } = await import('../../i18n/locales/es.json');
+    expect(note.notes.pt).toContain(pt.nav.drill);
+    expect(note.notes.es).toContain(es.nav.drill);
+    expect(note.notes.en).toContain('British spelling');
+    expect([note.notes.en.length, note.notes.pt.length, note.notes.es.length]).toEqual([157, 160, 157]);
+  });
+});
+
 describe('parseReleaseNotes rejects what must never ship', () => {
   const problem = (raw: unknown) => {
     try {
