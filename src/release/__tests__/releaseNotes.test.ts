@@ -45,6 +45,27 @@ describe('release 16 (2026-11-19): the audit fixes', () => {
   });
 });
 
+describe('release 17 (2026-11-20): the second audit round', () => {
+  it('follows release 16: not critical, one line per language within 160 characters, the app\'s own words for what it names', async () => {
+    const releases = parseReleaseNotes(JSON.parse(releaseNotesSource));
+    const [note, previous] = releases;
+    expect([note.release, note.date, note.critical]).toEqual([17, '2026-11-20', false]);
+    expect(previous.release).toBe(16);
+    for (const lang of ['en', 'pt', 'es'] as const) expect(note.notes[lang].length, lang).toBeLessThanOrEqual(MAX_NOTE_LENGTH);
+    // Drill and the lesson's "Next lesson" button, each as the app says it in that language.
+    const { default: en } = await import('../../i18n/locales/en.json');
+    const { default: pt } = await import('../../i18n/locales/pt.json');
+    const { default: es } = await import('../../i18n/locales/es.json');
+    expect(note.notes.en).toContain(en.nav.drill);
+    expect(note.notes.pt).toContain(pt.nav.drill);
+    expect(note.notes.es).toContain(es.nav.drill);
+    expect(note.notes.en).toContain(`“${en.lesson.nextLesson}”`);
+    expect(note.notes.pt).toContain(`«${pt.lesson.nextLesson}»`);
+    expect(note.notes.es).toContain(`«${es.lesson.nextLesson}»`);
+    expect([note.notes.en.length, note.notes.pt.length, note.notes.es.length]).toEqual([149, 160, 157]);
+  });
+});
+
 describe('parseReleaseNotes rejects what must never ship', () => {
   const problem = (raw: unknown) => {
     try {
