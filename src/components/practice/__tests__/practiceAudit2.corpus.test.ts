@@ -21,7 +21,7 @@ import { RIGHT_HAND_PATTERNS } from '../../../core/utils/rightHandPatterns';
 import { maxScaleOctaves } from '../../../core/utils/scaleRoutes';
 import { isValidFingeringKey } from '../../../state/fingeringStore';
 import {
-  barreCues, fingerClashes, heldWith, positionWalkPractice, practiceSchedule, rightHandPractice, ringWindow,
+  allowedFingers, barreCues, fingerClashes, heldWith, positionWalkPractice, practiceSchedule, rightHandPractice, ringWindow,
   routeFingerKey, scalePractice, technicalSet, type PracticeRoute,
 } from '../practiceModel';
 
@@ -156,5 +156,40 @@ describe('every route the editor offers (M37, M38)', () => {
     expect(Object.fromEntries(refused)).toEqual({});
     expect(clashes.length, clashes.slice(0, 5).join('\n')).toBe(0);
     expect(cueDiff.length, cueDiff.slice(0, 5).join('\n')).toBe(0);
+  });
+});
+
+describe('the rules, case by case', () => {
+  // A ringing group of three (a broken chord's), built by hand: strings 4, 3, 2 (indices 2, 3, 4).
+  const note = (stringIndex: number, fret: number, finger: number) => ({
+    midi: 40 + stringIndex * 5 + fret, note: { natural: 'C', accidental: '' }, pitched: { natural: 'C', accidental: '', octave: 3 },
+    stringIndex, fret, finger, position: null, frame: null, segment: 0, shift: null, reach: null, barre: false,
+  }) as PracticeRoute['events'][number]['notes'][number];
+  const group = (...notes: ReturnType<typeof note>[]): PracticeRoute => ({
+    id: 'brokenChord', octaves: 1, overRinging: true, events: notes.map((n) => ({ notes: [n], degrees: [1], rh: ['p'] })),
+  });
+
+  it('a finger laid across a string that sounds open or lower is a clash, with that string named', () => {
+    const r = group(note(2, 2, 1), note(3, 0, 0), note(4, 2, 1));
+    expect(fingerClashes(heldWith(r, 0)).map((c) => [c.finger, 6 - c.a.note.stringIndex, 6 - c.b.note.stringIndex, c.between && 6 - c.between.stringIndex]))
+      .toEqual([[1, 4, 2, 3]]);
+    const lower = group(note(2, 3, 2), note(3, 2, 1), note(4, 3, 2));
+    expect(fingerClashes(heldWith(lower, 0)).map((c) => c.between && 6 - c.between.stringIndex)).toEqual([3]);
+    // The same fret or higher between, under another finger: a barré, allowed.
+    const higher = group(note(2, 2, 1), note(3, 4, 3), note(4, 2, 1));
+    expect(fingerClashes(heldWith(higher, 0))).toEqual([]);
+    expect(barreCues(higher, 0)).toEqual([{ finger: 1, fret: 2, from: 2, to: 4 }]);
+  });
+
+  it('allowedFingers: the group\'s own fingers at other frets are not offered; at the same fret only when nothing lower lies between', () => {
+    const r = group(note(2, 2, 1), note(3, 0, 0), note(4, 3, 3));
+    expect(allowedFingers(r, 2, r.events[2].notes[0])).toEqual([2, 3, 4]); // 1 holds fret 2
+    const same = group(note(2, 3, 2), note(3, 0, 0), note(4, 3, 4));
+    expect(allowedFingers(same, 2, same.events[2].notes[0])).toEqual([1, 3, 4]); // 2 at fret 3 would lie over the open 3rd string
+    const adjacent = group(note(2, 2, 1), note(3, 2, 2), note(4, 4, 4));
+    expect(allowedFingers(adjacent, 1, adjacent.events[1].notes[0])).toEqual([1, 2, 3]); // 1 across strings 4-3 at fret 2: a barré
+    // Outside the group nothing is held: a scale's next note may take any finger.
+    const line: PracticeRoute = { ...r, overRinging: false };
+    expect(allowedFingers(line, 2, line.events[2].notes[0])).toEqual([1, 2, 3, 4]);
   });
 });
