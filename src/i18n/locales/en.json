@@ -103,8 +103,6 @@
     "keySheetTitle": "Key",
     "relativeKey": "relative {{key}}",
     "chordsIn": "Chords in {{key}}",
-    "chordsOnRoot": "All chords on {{root}}",
-    "buildTitle": "Build a chord",
     "inKey": "In key",
     "circleChordRoot": "root of the selected chord",
     "strip": {
@@ -230,8 +228,6 @@
     "distance5": "2 shared notes",
     "distance6": "Tritone \u00b7 2 shared notes",
     "segmentLabel": "{{name}} \u2014 select {{key}}",
-    "segmentChordLabel": "{{chord}} ({{numeral}}) in {{scale}} \u2014 select {{key}}",
-    "opens": "Opens {{key}}",
     "keyMajor": "{{note}} major",
     "keyMinor": "{{note}} minor"
   },
@@ -650,8 +646,6 @@
     "noMatch": "no exact match — add or remove a note",
     "otherInterpretations": "Other interpretations",
     "ofKey": "of {{key}}",
-    "nonDiatonicAt": "the root is the {{numeral}} of {{key}}; {{notes}} outside the key",
-    "outOfKey": "out of key: {{key}}",
     "staff": "Staff",
     "staffChord": "Chord",
     "staffArpeggio": "Arpeggio",

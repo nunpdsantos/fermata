@@ -103,8 +103,6 @@
     "keySheetTitle": "Tonalidad",
     "relativeKey": "relativa {{key}}",
     "chordsIn": "Acordes en {{key}}",
-    "chordsOnRoot": "Todos los acordes sobre {{root}}",
-    "buildTitle": "Construir un acorde",
     "inKey": "En la tonalidad",
     "circleChordRoot": "fundamental del acorde elegido",
     "strip": {
@@ -230,8 +228,6 @@
     "distance5": "2 notas en com\u00fan",
     "distance6": "Tritono \u00b7 2 notas en com\u00fan",
     "segmentLabel": "{{name}} \u2014 elegir {{key}}",
-    "segmentChordLabel": "{{chord}} ({{numeral}}) en {{scale}} \u2014 elegir {{key}}",
-    "opens": "Abre {{key}}",
     "keyMajor": "{{note}} mayor",
     "keyMinor": "{{note}} menor"
   },
@@ -650,8 +646,6 @@
     "noMatch": "sin coincidencia exacta — añade o quita una nota",
     "otherInterpretations": "Otras interpretaciones",
     "ofKey": "de {{key}}",
-    "nonDiatonicAt": "la fundamental es el {{numeral}} de {{key}}; {{notes}} fuera de la tonalidad",
-    "outOfKey": "fuera de la tonalidad: {{key}}",
     "staff": "Pentagrama",
     "staffChord": "Acorde",
     "staffArpeggio": "Arpegio",

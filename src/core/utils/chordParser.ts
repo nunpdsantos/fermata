@@ -176,7 +176,15 @@ function parseQualityString(q: string): ChordQuality | null {
   // 7th. Read case-sensitively: "M(add9)" is a major chord. Until then it was
   // built algorithmically and kept the add9 quality, so the chord panel
   // offered it the MAJOR scales (E, not E♭).
-  if (/^(m|mi|min|-)\(?add[29]\)?$/.test(raw)) return 'minor_add9';
+  if (/^(m|mi|min|-)(\(?add\(?[29]\)?\)?|2)$/.test(raw)) return 'minor_add9';
+  // A capital M is MAJOR (fix pass, review of audit 2026-11-18): the lower-case
+  // matching below would read "M(add9)", "M6/9", "M7b9" as minor. The forms the
+  // table names come first; any other M-symbol goes to the algorithmic
+  // builder, which reads a leading M as "maj" (algorithmicChordBuilder.ts).
+  if (/^M\(?add\(?[29]\)?\)?$/.test(raw) || raw === 'M2') return 'add9';
+  if (/^M\(?add\(?11\)?\)?$/.test(raw)) return 'add11';
+  if (raw === 'M6/9' || raw === 'M69') return 'six_nine';
+  if (/^M(?![aA])/.test(raw)) return null;
 
   // Now lowercase for case-insensitive matching
   const s = raw.toLowerCase();
@@ -688,7 +696,7 @@ function mapAlgorithmicToExplicitQuality(parsed: ParsedChordSymbol): ChordQualit
   }
 
   // Add chords
-  if (!seventhType && addedTones.includes('9') && !addedTones.includes('6')) return 'add9';
+  if (!seventhType && addedTones.includes('9') && !addedTones.includes('6')) return triadQuality === 'minor' ? 'minor_add9' : 'add9';
   if (!seventhType && addedTones.includes('11')) return 'add11';
 
   // No 7th - triads

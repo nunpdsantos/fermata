@@ -25,6 +25,7 @@ import {
 
 import { innerLabelLayout } from './circleLabelLayout';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs';
+import '../../i18n/exploreTools';
 
 type Ring = 'major' | 'minor';
 
@@ -353,7 +354,7 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
       distLabel,
       // A wedge that shows a chord's name selects a key of another name
       // (audit 2026-11-18, A8): say which, before the tap.
-      opens: seg.differs ? t('circle.opens', { key: destinationName(shown, hoveredRing, t) }) : null,
+      opens: seg.differs ? t('exploreTools.circleOpens', { key: destinationName(shown, hoveredRing, t) }) : null,
     };
   }, [hoveredIdx, hoveredRing, refIdx, majorSegs, minorSegs, selectedSeg, selectedKey, neutral, t]);
 
@@ -367,7 +368,7 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
   // select F minor".
   const segmentLabel = (s: { display: string; numeral?: string; note: Note; i: number }, ring: Ring) => {
     const label = s.numeral
-      ? t('circle.segmentChordLabel', {
+      ? t('exploreTools.circleChordLabel', {
         chord: withGlyphs(s.display), numeral: s.numeral,
         scale: `${withGlyphs(selectedKey)} ${t(`scaleName.${selectedScale}`)}`, key: destinationName(s.note, ring, t),
       })

@@ -1,0 +1,16 @@
+{
+  "chordsOnRoot": "All chords on {{root}}",
+  "buildTitle": "Build a chord",
+  "rootInKey": "the root is degree {{degree}} of {{key}}; {{notes}} outside the key",
+  "rootOutside": "the root is degree {{degree}}, not in {{key}}; {{notes}} outside the key",
+  "match": {
+    "perfect": "Perfect match",
+    "added_one": "Match with {{count}} added note",
+    "added_other": "Match with {{count}} added notes",
+    "missing_one": "Missing {{count}} note",
+    "missing_other": "Missing {{count}} notes",
+    "both": "{{missing}} missing, {{extra}} added"
+  },
+  "circleChordLabel": "{{chord}} ({{numeral}}) in {{scale}} — select {{key}}",
+  "circleOpens": "Opens {{key}}"
+}

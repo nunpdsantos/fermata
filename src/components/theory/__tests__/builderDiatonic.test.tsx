@@ -23,8 +23,11 @@ import { buildChord, CHORD_FORMULAS, getDiatonicChordsForScale } from '../../../
 import { getPitchClass, getSimplestSpelling } from '../../../core/constants/notes';
 import { letterDistance, preferredRootSpelling } from '../../../core/utils/degreeSpelling';
 import { identifyChordFromNotes } from '../../../core/utils/reverseChordParser';
-import type { ChordQuality, Note } from '../../../core/types/music';
+import type { ChordQuality, Note, ScaleType } from '../../../core/types/music';
 import { useAppStore } from '../../../state/store';
+import enLocale from '../../../i18n/locales/en.json';
+import ptLocale from '../../../i18n/locales/pt.json';
+import esLocale from '../../../i18n/locales/es.json';
 
 vi.mock('../../../core/services/audio.ts', () => ({
   resumeAudio: vi.fn(() => Promise.resolve()),
@@ -50,49 +53,113 @@ function romanOf(numeral: string): string {
   return numeral.replace(/^[♭♯]+/, '').match(/^(VII|VI|IV|V|III|II|I|vii|vi|iv|v|iii|ii|i)/)?.[0] ?? '';
 }
 
-describe('Q2 oracle: Build names a chord in the key exactly when all its tones are the scale\'s', () => {
+// Every sentence Build says, written out here word for word (fix pass, item 1:
+// a Portuguese sentence saying a note was INSIDE the key passed every test).
+const SAYS = {
+  en: {
+    inKey: (numeral: string, key: string) => `${numeral} of ${key}`,
+    rootIn: (degree: string, key: string, notes: string) => `the root is degree ${degree} of ${key}; ${notes} outside the key`,
+    rootOut: (degree: string, key: string, notes: string) => `the root is degree ${degree}, not in ${key}; ${notes} outside the key`,
+  },
+  pt: {
+    inKey: (numeral: string, key: string) => `${numeral} de ${key}`,
+    rootIn: (degree: string, key: string, notes: string) => `a fundamental é o grau ${degree} de ${key}; ${notes} fora da tonalidade`,
+    rootOut: (degree: string, key: string, notes: string) => `a fundamental é o grau ${degree}, que não está em ${key}; ${notes} fora da tonalidade`,
+  },
+  es: {
+    inKey: (numeral: string, key: string) => `${numeral} de ${key}`,
+    rootIn: (degree: string, key: string, notes: string) => `la fundamental es el grado ${degree} de ${key}; ${notes} fuera de la tonalidad`,
+    rootOut: (degree: string, key: string, notes: string) => `la fundamental es el grado ${degree}, que no está en ${key}; ${notes} fuera de la tonalidad`,
+  },
+} as const;
+const SCALE_NAMES = { en: enLocale.scaleName, pt: ptLocale.scaleName, es: esLocale.scaleName } as Record<string, Record<string, string>>;
+
+/** A note as the screen writes it: the letter, then ♯ ♭ 𝄪 𝄫. */
+const GLYPH: Record<string, string> = { '': '', '#': '♯', b: '♭', '##': '𝄪', bb: '𝄫' };
+const glyph = (n: Note) => `${n.natural}${GLYPH[n.accidental]}`;
+const NATURAL_PC: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+const ACC: Record<string, number> = { '': 0, '#': 1, b: -1, '##': 2, bb: -2 };
+const pcOf = (n: Note) => (NATURAL_PC[n.natural] + ACC[n.accidental] + 12) % 12;
+const MAJOR = [0, 2, 4, 5, 7, 9, 11];
+/**
+ * A note's degree from the tonic, read off its LETTER against the major scale
+ * on the tonic, written as the staff strip writes it: 1, ♭3, ♯4, 7.
+ */
+function degreeOracle(tonic: Note, note: Note): string {
+  const n = (letterDistance(tonic.natural, note.natural) + 7) % 7;
+  let alt = (pcOf(note) - pcOf(tonic) - MAJOR[n] + 24) % 12;
+  if (alt > 6) alt -= 12;
+  if (n === 0 && alt === 0) return '1';
+  // A double accidental is one glyph, as the strip writes it (𝄫7, 𝄪4).
+  const mark = alt === -2 ? '𝄫' : alt === 2 ? '𝄪' : alt < 0 ? '♭'.repeat(-alt) : '♯'.repeat(alt);
+  return `${mark}${n + 1}`;
+}
+/** Both everyday names of a pitch that is not one of the scale's notes. */
+const NAMES: Record<number, string[]> = {
+  0: ['C'], 1: ['C#', 'Db'], 2: ['D'], 3: ['D#', 'Eb'], 4: ['E'], 5: ['F'], 6: ['F#', 'Gb'], 7: ['G'], 8: ['G#', 'Ab'], 9: ['A'], 10: ['A#', 'Bb'], 11: ['B'],
+};
+const noteOf = (s: string): Note => ({ natural: s[0], accidental: s.slice(1) }) as Note;
+
+describe('Q2 oracle: Build names a chord in the key exactly when all its tones are the scale\'s, and says the rest word for word', () => {
   for (const lang of ['en', 'pt', 'es'] as const) {
-    it(`${lang}: every picker scale × every picker root × every quality on every root`, async () => {
+    it(`${lang}: every picker scale × every picker root × every quality on every root (both names of a root outside)`, async () => {
       await i18n.changeLanguage(lang);
       const t = i18n.t.bind(i18n);
       expect(PICKER_SCALES).toHaveLength(37);
       const wrong: string[] = [];
       let inKeyCount = 0;
+      let rootInCount = 0;
+      let rootOutCount = 0;
       for (const type of PICKER_SCALES) {
         for (let pc = 0; pc < 12; pc++) {
           const scale = buildScale(preferredRootSpelling(pc, type), type);
           const diatonic = getDiatonicChordsForScale(scale);
-          const pcs = new Set(scale.notes.map(getPitchClass));
+          const pcs = new Set(scale.notes.map(pcOf));
+          const key = `${glyph(scale.root)} ${SCALE_NAMES[lang][type]}`;
           for (let rootPc = 0; rootPc < 12; rootPc++) {
-            const scaleNote = scale.notes.find((n) => getPitchClass(n) === rootPc);
-            const root: Note = scaleNote ?? getSimplestSpelling(rootPc as Parameters<typeof getSimplestSpelling>[0]);
-            for (const quality of QUALITIES) {
-              const chord = buildChord(root, quality);
-              const inScale = chord.notes.every((n) => pcs.has(getPitchClass(n)));
-              const role = builderRole(chord, scale, diatonic, t)!;
-              const where = `${scale.root.natural}${scale.root.accidental} ${type}: ${root.natural}${root.accidental} ${quality} → "${role.text}"`;
-              if (role.inKey !== inScale) wrong.push(`${where} (inKey ${role.inKey}, oracle ${inScale})`);
-              if (NESTED.test(role.text)) wrong.push(`${where} (nested brackets)`);
-              if (!inScale) continue;
-              inKeyCount++;
-              if (NON_DIATONIC.test(role.text)) wrong.push(`${where} (called non-diatonic)`);
-              // The numeral's number: the scale's note on that root, counted from the tonic.
-              const n = letterDistance(scale.root.natural, scaleNote!.natural);
-              const has = new Set(CHORD_FORMULAS[quality].map((s) => s % 12));
-              const minor = has.has(3) && !has.has(4);
-              const major = has.has(4) && !has.has(3);
-              const roman = romanOf(role.text.split(' ')[0]);
-              const want = ROMAN[n];
-              if (roman.toUpperCase() !== want) wrong.push(`${where} (number ${roman}, oracle ${want})`);
-              if (minor && roman !== want.toLowerCase()) wrong.push(`${where} (case: a minor-3rd chord is lower case)`);
-              if (major && roman !== want) wrong.push(`${where} (case: a major-3rd chord is upper case)`);
+            const scaleNote = scale.notes.find((n) => pcOf(n) === rootPc);
+            const roots: Note[] = scaleNote ? [scaleNote] : NAMES[rootPc].map(noteOf);
+            for (const root of roots) {
+              for (const quality of QUALITIES) {
+                const chord = buildChord(root, quality);
+                const inScale = chord.notes.every((n) => pcs.has(pcOf(n)));
+                const role = builderRole(chord, scale, diatonic, t)!;
+                const where = `${scale.root.natural}${scale.root.accidental} ${type}: ${root.natural}${root.accidental} ${quality} → "${role.text}"`;
+                if (role.inKey !== inScale) wrong.push(`${where} (inKey ${role.inKey}, oracle ${inScale})`);
+                if (NESTED.test(role.text)) wrong.push(`${where} (nested brackets)`);
+                if (!inScale) {
+                  const outside = chord.notes.filter((n, i) => !pcs.has(pcOf(n)) && chord.notes.findIndex((m) => pcOf(m) === pcOf(n)) === i).map(glyph).join(', ');
+                  const want = scaleNote
+                    ? SAYS[lang].rootIn(degreeOracle(scale.root, scaleNote), key, outside)
+                    : SAYS[lang].rootOut(degreeOracle(scale.root, root), key, outside);
+                  if (scaleNote) rootInCount++; else rootOutCount++;
+                  if (role.text !== want) wrong.push(`${where} (want "${want}")`);
+                  continue;
+                }
+                inKeyCount++;
+                if (NON_DIATONIC.test(role.text)) wrong.push(`${where} (called non-diatonic)`);
+                const numeral = role.text.split(' ')[0];
+                if (role.text !== SAYS[lang].inKey(numeral, key)) wrong.push(`${where} (want "${SAYS[lang].inKey(numeral, key)}")`);
+                // The numeral's number: the scale's note on that root, counted from the tonic.
+                const n = letterDistance(scale.root.natural, scaleNote!.natural);
+                const has = new Set(CHORD_FORMULAS[quality].map((s) => s % 12));
+                const minor = has.has(3) && !has.has(4);
+                const major = has.has(4) && !has.has(3);
+                const roman = romanOf(numeral);
+                const wantRoman = ROMAN[n];
+                if (roman.toUpperCase() !== wantRoman) wrong.push(`${where} (number ${roman}, oracle ${wantRoman})`);
+                if (minor && roman !== wantRoman.toLowerCase()) wrong.push(`${where} (case: a minor-3rd chord is lower case)`);
+                if (major && roman !== wantRoman) wrong.push(`${where} (case: a major-3rd chord is upper case)`);
+              }
             }
           }
         }
       }
       expect(inKeyCount).toBeGreaterThan(10_000);
+      expect(rootInCount).toBeGreaterThan(50_000);
+      expect(rootOutCount).toBeGreaterThan(50_000);
       expect(wrong.slice(0, 20), `${wrong.length} wrong`).toEqual([]);
-    }, 120_000);
+    }, 180_000);
   }
 });
 
@@ -130,19 +197,46 @@ describe('Q2: the audit\'s own chords, read off the textbook (C major / A minor)
     });
   }
 
-  it('a chord with a note outside says which, in plain words, without nested brackets (C7 in C major)', () => {
-    const scale = buildScale(C, 'major');
-    const role = builderRole(buildChord(C, 'dominant7'), scale, getDiatonicChordsForScale(scale), i18n.t.bind(i18n))!;
-    expect(role.inKey).toBe(false);
-    expect(role.text).toBe('the root is the I of C Major; B♭ outside the key');
-  });
-
-  it('a chord whose root is outside the key (D♭ in C major): no nested brackets', () => {
-    const scale = buildScale(C, 'major');
-    const role = builderRole(buildChord(n('Db'), 'major'), scale, getDiatonicChordsForScale(scale), i18n.t.bind(i18n))!;
-    expect(role.inKey).toBe(false);
-    expect(role.text).toBe('out of key: C Major');
-  });
+  // Fix pass, item 2: a chord with a note outside names its root's DEGREE (as
+  // the strip writes degrees), never a triad's numeral ("the vii°" for a B
+  // MAJOR chord, "the v" for E7 in A minor) nor a bare number ("the 3").
+  const outside: [string, string, string, ChordQuality, Record<'en' | 'pt' | 'es', string>][] = [
+    ['C', 'major', 'C', 'dominant7', {
+      en: 'the root is degree 1 of C Major; B♭ outside the key',
+      pt: 'a fundamental é o grau 1 de C maior; B♭ fora da tonalidade',
+      es: 'la fundamental es el grado 1 de C mayor; B♭ fuera de la tonalidad' }],
+    ['C', 'major', 'B', 'major', {
+      en: 'the root is degree 7 of C Major; D♯, F♯ outside the key',
+      pt: 'a fundamental é o grau 7 de C maior; D♯, F♯ fora da tonalidade',
+      es: 'la fundamental es el grado 7 de C mayor; D♯, F♯ fuera de la tonalidad' }],
+    ['A', 'natural_minor', 'E', 'dominant7', {
+      en: 'the root is degree 5 of A Natural Minor; G♯ outside the key',
+      pt: 'a fundamental é o grau 5 de A menor natural; G♯ fora da tonalidade',
+      es: 'la fundamental es el grado 5 de A menor natural; G♯ fuera de la tonalidad' }],
+    ['C', 'blues', 'Eb', 'major7', {
+      en: 'the root is degree ♭3 of C Blues; D outside the key',
+      pt: 'a fundamental é o grau ♭3 de C blues; D fora da tonalidade',
+      es: 'la fundamental es el grado ♭3 de C blues; D fuera de la tonalidad' }],
+    ['C', 'major', 'Db', 'major', {
+      en: 'the root is degree ♭2, not in C Major; D♭, A♭ outside the key',
+      pt: 'a fundamental é o grau ♭2, que não está em C maior; D♭, A♭ fora da tonalidade',
+      es: 'la fundamental es el grado ♭2, que no está en C mayor; D♭, A♭ fuera de la tonalidad' }],
+    ['C', 'lydian', 'F', 'major', {
+      en: 'the root is degree 4, not in C Lydian; F outside the key',
+      pt: 'a fundamental é o grau 4, que não está em C lídio; F fora da tonalidade',
+      es: 'la fundamental es el grado 4, que no está en C lidio; F fuera de la tonalidad' }],
+  ];
+  for (const [tonic, type, root, quality, says] of outside) {
+    for (const lang of ['en', 'pt', 'es'] as const) {
+      it(`${lang}: ${root} ${quality} in ${tonic} ${type}: "${says[lang]}"`, async () => {
+        await i18n.changeLanguage(lang);
+        const scale = buildScale(n(tonic), type as ScaleType);
+        const role = builderRole(buildChord(n(root), quality), scale, getDiatonicChordsForScale(scale), i18n.t.bind(i18n))!;
+        expect(role.inKey).toBe(false);
+        expect(role.text).toBe(says[lang]);
+      });
+    }
+  }
 
   it('Cm(add9) is named, as Cadd9 is (an exact match, not "Match with 1 added note")', () => {
     for (const [notes, quality] of [[['C', 'D', 'Eb', 'G'], 'minor_add9'], [['C', 'D', 'E', 'G'], 'add9']] as const) {

@@ -1,0 +1,16 @@
+{
+  "chordsOnRoot": "Todos os acordes sobre {{root}}",
+  "buildTitle": "Construir um acorde",
+  "rootInKey": "a fundamental é o grau {{degree}} de {{key}}; {{notes}} fora da tonalidade",
+  "rootOutside": "a fundamental é o grau {{degree}}, que não está em {{key}}; {{notes}} fora da tonalidade",
+  "match": {
+    "perfect": "Correspondência perfeita",
+    "added_one": "Correspondência com {{count}} nota a mais",
+    "added_other": "Correspondência com {{count}} notas a mais",
+    "missing_one": "Falta {{count}} nota",
+    "missing_other": "Faltam {{count}} notas",
+    "both": "{{missing}} em falta, {{extra}} a mais"
+  },
+  "circleChordLabel": "{{chord}} ({{numeral}}) em {{scale}} — escolher {{key}}",
+  "circleOpens": "Abre {{key}}"
+}

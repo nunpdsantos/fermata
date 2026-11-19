@@ -19,6 +19,7 @@ import { Button } from '../ui/Button.tsx';
 import { SHEET_QUERY } from '../../hooks/useMediaQuery.ts';
 import { toast } from '../../state/toastStore.ts';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
+import '../../i18n/exploreTools';
 
 const StaffNotation = lazy(() =>
   import('../notation/StaffNotation.tsx').then((m) => ({ default: m.StaffNotation })),
@@ -112,9 +113,9 @@ export function ChordsCard() {
           {progression
             ? <Term id="progression">{t('progression.title')}</Term>
             : mode === 'all'
-              ? t('explore.chordsOnRoot', { root: withGlyphs(selectedKey) })
+              ? t('exploreTools.chordsOnRoot', { root: withGlyphs(selectedKey) })
               : mode === 'build'
-                ? t('explore.buildTitle')
+                ? t('exploreTools.buildTitle')
                 : <Term id="chordsInKey">{t('explore.chordsIn', { key: keyName(scale, t) })}</Term>}
         </h2>
         {/* Tabs switch what the screen shows: not printed. */}

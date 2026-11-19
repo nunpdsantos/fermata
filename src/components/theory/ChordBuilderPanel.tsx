@@ -22,7 +22,7 @@ import { useAppStore } from '../../state/store.ts';
 import { resumeAudio, playChordVoiced, playPitchedNotes, cancelScheduledAudio } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import { ChromaticStrip } from './ChromaticStrip.tsx';
-import { builderRole } from './builderRole.ts';
+import { builderRole, matchText, otherReadings } from './builderRole.ts';
 import { SelectTrigger } from '../ui/SelectTrigger.tsx';
 import { Button } from '../ui/Button.tsx';
 
@@ -175,6 +175,9 @@ export function ChordBuilderPanel() {
   const notesLabel = stepsSorted.map((s) => withGlyphs(noteAtStep(s))).join(' – ');
   const semitonesLabel = stepsSorted.join(', ');
 
+  // Every other reading of the notes built, the main one never again (fix pass).
+  const others = useMemo(() => otherReadings(top, identification.results), [top, identification]);
+
   const role = useMemo(
     () => builderRole(top && top.confidence === 'exact' ? top.chord : null, scale, diatonicChords, t),
     [top, diatonicChords, scale, t],
@@ -257,7 +260,7 @@ export function ChordBuilderPanel() {
           )}
           {top && top.confidence !== 'exact' && (
             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-              ({top.interpretation})
+              ({matchText(top, t)})
             </span>
           )}
           {role && (
@@ -280,16 +283,16 @@ export function ChordBuilderPanel() {
           <span>{semitonesLabel || t('chordBuilder.none')}</span>
         </div>
 
-        {identification.results.length > 1 && (
-          <details className="builder-others mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+        {others.length > 0 && (
+          <details className="builder-others mt-2 text-xs" style={{ color: 'var(--text-muted)' }} data-testid="builder-others">
             <summary className="cursor-pointer">{t('chordBuilder.otherInterpretations')}</summary>
             <ul className="mt-1 ml-4 list-disc space-y-0.5">
-              {identification.results.slice(1, 5).map((r, i) => (
+              {others.map((r, i) => (
                 <li key={i}>
                   {withGlyphs(r.chord.root)}{' '}
                   {qualityName(r.chord.quality, lang)}
                   {' — '}
-                  <span style={{ color: 'var(--text-dim)' }}>{r.interpretation}</span>
+                  <span style={{ color: 'var(--text-dim)' }}>{matchText(r, t)}</span>
                 </li>
               ))}
             </ul>
