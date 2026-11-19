@@ -8,7 +8,8 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { siteLessons, SITE_LANGS } from '../../src/site/content';
-import { checkSite, pageKindOf, type CheckReport } from '../../src/site/check';
+import { checkNotFoundPage, checkSite, pageKindOf, type CheckReport } from '../../src/site/check';
+import { NOT_FOUND_FILE } from '../../src/site/notFound';
 import { rawQueryTokens } from '../../src/site/html';
 import { sitePath } from '../../src/site/render';
 import type { SlugRegistry } from '../../src/site/slugs';
@@ -58,6 +59,21 @@ export function printReport(report: CheckReport, label: string): void {
   console.log(`${label}: ${c.landing} landing + ${c.index} index + ${c.lesson} lesson + ${c.glossary} glossary pages, ${report.links} links checked, ${report.totalBytes} B in all, largest ${report.largest.path} ${report.largest.bytes} B`);
   for (const p of report.problems) console.error(`  PROBLEM ${p}`);
   console.log(`${label}: ${report.problems.length} problem(s)`);
+}
+
+/**
+ * The not-found page (/404.html, 2026-11-18, audits A21 / Q12) read back
+ * from dist/ and checked on its own (src/site/check.ts checkNotFoundPage):
+ * there, noindex, no script, its links and words, every address absolute and
+ * in the build, not in the sitemap. A build without it is a problem.
+ */
+export function verifyNotFoundPage(dist: string): string[] {
+  const file = path.join(dist, NOT_FOUND_FILE);
+  return checkNotFoundPage({
+    html: existsSync(file) ? readFileSync(file, 'utf8') : null,
+    files: new Set(walk(dist)),
+    sitemap: existsSync(path.join(dist, 'sitemap.xml')) ? readFileSync(path.join(dist, 'sitemap.xml'), 'utf8') : '',
+  });
 }
 
 /**

@@ -2,9 +2,10 @@
  * The search pages (2026-11-14), written into dist/ after `vite build`
  * (`npm run build` = tsc -b && vite build && this): per language a landing
  * page, the lesson index, one page per lesson and the glossary, plain HTML
- * that reads without JavaScript; /pages.css; and dist/sitemap.xml. Every page
- * is generated from the app's own data (src/site/content.ts) — no lesson
- * text lives here. Then every page is read back and checked
+ * that reads without JavaScript; /pages.css; dist/sitemap.xml; and
+ * (2026-11-18) /404.html, the page the host answers an unknown address with.
+ * Every page is generated from the app's own data (src/site/content.ts) — no
+ * lesson text lives here. Then every page is read back and checked
  * (scripts/pages/verify.ts); a finding fails the build. No network.
  *
  * The service worker neither precaches these files nor answers their
@@ -14,10 +15,11 @@
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildSite, STYLESHEET } from '../../src/site/render';
+import { buildSite, notFoundPage, STYLESHEET } from '../../src/site/render';
 import { SITE_LANGS } from '../../src/site/content';
+import { NOT_FOUND_FILE } from '../../src/site/notFound';
 import { pageStylesheet } from '../../src/site/style';
-import { printReport, verifyDist, verifyTestPage } from './verify';
+import { printReport, verifyDist, verifyNotFoundPage, verifyTestPage } from './verify';
 import { writeTestSheet } from './test-sheet';
 
 const started = performance.now();
@@ -48,11 +50,16 @@ const write = (rel: string, content: string) => {
 for (const page of site.pages) write(`${page.path.slice(1)}index.html`, page.html);
 write('sitemap.xml', site.sitemap);
 write(STYLESHEET.slice(1), pageStylesheet(readFileSync(path.join(root, 'src/index.css'), 'utf8'), readFileSync(path.join(root, 'scripts/pages/pages.css'), 'utf8')));
+// The not-found page (2026-11-18, audits A21 / Q12): Vercel answers every
+// address that is no file with it, status 404 (src/site/notFound.ts).
+write(NOT_FOUND_FILE, notFoundPage());
 const written = performance.now();
 
 const report = verifyDist(dist, slugs);
 printReport(report, 'pages');
-console.log(`pages: wrote ${site.pages.length} pages + sitemap.xml + ${STYLESHEET.slice(1)} (${bytes} B) in ${Math.round(written - started)} ms; checked in ${Math.round(performance.now() - written)} ms`);
+const notFoundProblems = verifyNotFoundPage(dist);
+for (const p of notFoundProblems) console.error(`  PROBLEM ${p}`);
+console.log(`pages: wrote ${site.pages.length} pages + sitemap.xml + ${STYLESHEET.slice(1)} + ${NOT_FOUND_FILE} (${bytes} B) in ${Math.round(written - started)} ms; checked in ${Math.round(performance.now() - written)} ms; ${NOT_FOUND_FILE}: ${notFoundProblems.length} problem(s)`);
 
 // The tester's sheet, /test/ (2026-11-14): its own page, script and stylesheet, and its own checks.
 let sheetSizes: Record<string, number>;
@@ -65,4 +72,4 @@ try {
 const sheetProblems = verifyTestPage(dist);
 console.log(`test sheet: wrote ${Object.entries(sheetSizes).map(([f, b]) => `${f} (${b} B)`).join(', ')}; ${sheetProblems.length} problem(s)`);
 for (const p of sheetProblems) console.error(`  PROBLEM ${p}`);
-process.exit(report.problems.length || sheetProblems.length ? 1 : 0);
+process.exit(report.problems.length || notFoundProblems.length || sheetProblems.length ? 1 : 0);

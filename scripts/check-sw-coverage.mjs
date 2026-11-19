@@ -26,7 +26,11 @@
  *    sheet is written after `vite build`, so its files never reach Workbox's
  *    glob today: without this line, dropping the entry would go unseen), and
  *    /test (with a slash, a query or a hash) on the denylist;
- *  - /favicon.ico (2026-11-15) shipped, NOT precached, and on the denylist.
+ *  - /favicon.ico (2026-11-15) shipped, NOT precached, and on the denylist;
+ *  - the not-found page (/404.html, 2026-11-18) shipped, NOT precached,
+ *    listed in globIgnores, and the navigation fallback answering the app's
+ *    own address only (its allowlist): every other address is left to the
+ *    server, which answers 404 with that page.
  *
  * Usage: node scripts/check-sw-coverage.mjs [distDir=dist]
  * Exit 0 = all good; 1 = problems (listed); 2 = no build / parser out of date.
@@ -175,12 +179,12 @@ if (pagePaths.length === 0) {
 for (const u of precached) {
   if (/^(en|pt|es)\//.test(u) || u === 'pages.css' || u === 'og.png') pagesProblems.push(`${u}: a search page or its stylesheet / image is precached (vite.config.ts globIgnores)`);
 }
-// The navigation route's denylist, as emitted: NavigationRoute(…,{denylist:[/re/,/re/]}).
-function denylistOf(source) {
-  const at = source.indexOf('denylist:[');
+// The navigation route's lists, as emitted: NavigationRoute(…,{allowlist:[/re/],denylist:[/re/,/re/]}).
+function denylistOf(source, key = 'denylist') {
+  const at = source.indexOf(`${key}:[`);
   if (at < 0) return null;
   const out = [];
-  let i = at + 'denylist:['.length;
+  let i = at + `${key}:[`.length;
   while (source[i] === '/') {
     let j = i + 1;
     let inClass = false;
@@ -200,7 +204,9 @@ function denylistOf(source) {
 }
 const denylist = denylistOf(sw);
 if (!denylist || !denylist.some((re) => re.test('/robots.txt'))) {
-  console.error('check-sw-coverage: no navigation denylist with /robots.txt found in sw.js — parser out of date?');
+  // Also the only check that sees the denylist go: while the allowlist stands no address on it reaches the
+  // fallback, so no browser test can (2026-11-19).
+  console.error('check-sw-coverage: no navigation denylist denying /robots.txt in sw.js — vite.config.ts navigateFallbackDenylist emptied or removed, or this parser is out of date');
   process.exit(2);
 }
 const denied = (p) => denylist.some((re) => re.test(p));
@@ -247,4 +253,53 @@ if (!denied('/favicon.ico')) faviconProblems.push("/favicon.ico: the worker woul
 console.log(`check-sw-coverage: favicon.ico — ${faviconProblems.length} problem(s)`);
 for (const p of faviconProblems) console.log(`  FAVICON ${p}`);
 
-process.exit(notPrecached.length || missingDeps.length || overlayProblems.length || otherProblems.length || pagesProblems.length || sheetProblems.length || faviconProblems.length ? 1 : 0);
+// The not-found page (/404.html, 2026-11-18, audits A21 / Q12, written by
+// scripts/pages/ after `vite build`): the server answers every address that
+// is no file with it, status 404. It must be in the build, never precached
+// (vite.config.ts globIgnores lists it: Workbox never globs it today, so only
+// reading the config can see the entry go), and the worker's navigation
+// fallback answers ONLY the app's own address (navigateFallbackAllowlist):
+// any other address goes to the server, which answers 404 with the page —
+// before this, an installed app showed itself at a mistyped address.
+const notFoundProblems = [];
+if (!fs.existsSync(path.join(dist, '404.html'))) notFoundProblems.push('dist/404.html is missing (scripts/pages/build.ts writes it)');
+if (precached.has('404.html')) notFoundProblems.push("404.html is precached (vite.config.ts globIgnores '404.html')");
+if (!/['"]404\.html['"]/.test(ignores[1])) notFoundProblems.push(`vite.config.ts globIgnores [${ignores[1].trim()}] does not list '404.html'`);
+const allowlist = denylistOf(sw, 'allowlist');
+if (!allowlist || !allowlist.some((re) => re.test('/'))) {
+  notFoundProblems.push("sw.js has no navigation allowlist answering '/' (vite.config.ts navigateFallbackAllowlist): the worker would answer every address with the app's shell");
+}
+// What the worker answers a navigation with: its precache route first, then
+// its navigation fallback. The precache tries, as Workbox's
+// generateURLVariations does (workbox-precaching 7.4.1), the address itself,
+// then without utm_ / fbclid parameters, then with index.html after a final
+// slash, then with ".html" added unless cleanURLs is off (2026-11-19:
+// vite.config.ts workerExactPrecache turns it off; with it on, an installed
+// app answered /index with the app while the server answers 404). The
+// fallback tests pathname + search against its two lists.
+const cleanURLsOff = /\.precacheAndRoute\(\[[^\]]*\],\{cleanURLs:!1\}\)/.test(sw);
+if (!cleanURLsOff) notFoundProblems.push('sw.js: precacheAndRoute keeps cleanURLs on (vite.config.ts workerExactPrecache): the precache answers <address>.html, so an installed app answers /index with the app');
+const precacheAnswers = (p) => {
+  // Path and query by hand: `new URL('//', base)` reads a host-less address and throws.
+  const hashless = p.split('#')[0];
+  const q = hashless.indexOf('?');
+  const params = new URLSearchParams(q < 0 ? '' : hashless.slice(q + 1));
+  for (const k of [...params.keys()]) if (/^utm_/.test(k) || k === 'fbclid') params.delete(k);
+  if ([...params.keys()].length) return false; // the precache's keys carry no query
+  const at = (q < 0 ? hashless : hashless.slice(0, q)).slice(1);
+  return [at, ...(at === '' || at.endsWith('/') ? [`${at}index.html`] : []), ...(cleanURLsOff ? [] : [`${at}.html`])].some((v) => precached.has(v));
+};
+// Known positives for the simulation: / is index.html, a query that is not ignored matches nothing.
+if (!precacheAnswers('/') || !precacheAnswers('/?utm_source=x') || precacheAnswers('/?lesson=l1u3m1')) {
+  console.error('check-sw-coverage: the precache simulation does not answer / and /?utm_source=x from index.html, or answers /?lesson= — parser out of date?');
+  process.exit(2);
+}
+const answers = (p) => precacheAnswers(p) || ((allowlist ?? [/./]).some((re) => re.test(p)) && !denied(p));
+const appAddresses = ['/', '/index.html', '/?lesson=l1u3m1&lang=pt', '/?lang=es', '/?view=drill', '/?key=D&scale=major', '/?prog=G,D,Em,C&bpm=96', '/?utm_source=test'];
+const unknownAddresses = ['/this-page-does-not-exist/', '/no-such-page', '/en/lessons/the-staff-and-clef/', '/404.html', '/404', '/index', '/index?utm_source=test', '/index?lang=pt', '/index.htm', '/index.html/', '/lessons/', '/explore', '/drill?view=drill', '//', '/assets/'];
+for (const p of appAddresses) if (!answers(p)) notFoundProblems.push(`${p}: the app's own address, but the worker's navigation fallback would not answer it offline`);
+for (const p of unknownAddresses) if (answers(p)) notFoundProblems.push(`${p}: no address of the app, but the worker would answer it with the app's shell instead of the server's not-found page`);
+console.log(`check-sw-coverage: not-found page — ${appAddresses.length} app address(es) answered offline, ${unknownAddresses.length} unknown address(es) left to the server, ${notFoundProblems.length} problem(s)`);
+for (const p of notFoundProblems) console.log(`  NOT-FOUND ${p}`);
+
+process.exit(notPrecached.length || missingDeps.length || overlayProblems.length || otherProblems.length || pagesProblems.length || sheetProblems.length || faviconProblems.length || notFoundProblems.length ? 1 : 0);

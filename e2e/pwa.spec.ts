@@ -62,9 +62,10 @@ test.describe('the site\'s icon for search engines (2026-11-15)', () => {
       expect(got.drawn[0], `${icon.url} is square`).toBe(got.drawn[1]);
       expect(await page.evaluate(() => !!navigator.serviceWorker.controller)).toBe(true);
     }
-    // As a typed address (a navigation): the worker's fallback answers every
-    // navigation with the app's index.html unless it is precached (the PNG,
-    // the manifest's icon) or on the denylist (favicon.ico).
+    // As a typed address (a navigation): a precached file comes from the
+    // precache (the PNG, the manifest's icon); the worker's fallback answers
+    // only the app's own address (since 2026-11-18), and favicon.ico is on
+    // its denylist too, so it comes from the server.
     for (const icon of SITE_ICONS) {
       const res = (await page.goto(icon.url))!;
       expect(res.status(), icon.url).toBe(200);
