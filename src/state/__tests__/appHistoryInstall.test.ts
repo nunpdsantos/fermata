@@ -61,7 +61,7 @@ describe('installAppHistory', () => {
 
   it('review 2, item 5: a record that is not ours in shape, or that disagrees with the entry on screen (another document of this tab), is not read', async () => {
     for (const stored of [
-      '[[0,"learn","unit/l1/u34"],[3,"learn","module/l1/u34/l1u34m3"]]', // another screen at this index
+      '[[0,"learn","unit/l1/u34"],[1,"learn","module/l1/u34/l1u34m2"],[2,"learn","module/l1/u34/l1u34m3"],[3,"learn","module/l1/u34/l1u34m3"]]', // whole, but another screen at this index
       '[[0,"learn","unit/l1/u34"],[3,"home","x"]]',
       '[[0,"learn",5],[3,"learn","module/l1/u34/l1u34m4"]]',
       '{"0":"learn"}',

@@ -1258,6 +1258,10 @@ test.describe('review B-2', () => {
   async function leaveAndComeBack(page: Page) {
     await tab(page, 'learn').click();
     await expectView(page, 'learn');
+    // Explore gone for good: a Back within its fade would revive the same Explore (framer-motion's
+    // AnimatePresence), its card's own state intact, and test nothing.
+    await expect(page.locator('#explore-panel')).toHaveCount(0);
+    await expect(overview(page)).toBeVisible();
     await back(page);
     await expectView(page, 'explore');
     await expect(page.getByTestId('chords-card')).toBeVisible();
@@ -1590,6 +1594,17 @@ test.describe('review B-2', () => {
     }
     expect(seen.slice(1), seen.join(' ')).not.toContain('body');
     expect(seen.slice(1).every((s) => s === 'main-content' || /^H[12]$/.test(s)), seen.join(' ')).toBe(true);
+    // The review's own case: Drill settings, then Back to the question (its button that had focus has gone).
+    await page.locator('#drill-panel').getByRole('button', { name: 'Drill settings' }).click();
+    await expect(page.locator('#drill-panel').getByRole('heading', { name: 'Drill settings' })).toBeVisible();
+    await back(page);
+    await expect(page.locator('#drill-panel').getByRole('heading', { name: 'Drill settings' })).toHaveCount(0);
+    const inDrill: string[] = [];
+    for (let k = 0; k < 6; k++) {
+      inDrill.push(await page.evaluate(() => (document.activeElement === document.body ? 'body' : document.activeElement?.id || document.activeElement?.tagName) ?? 'none'));
+      await page.waitForTimeout(100);
+    }
+    expect(inDrill.slice(1), inDrill.join(' ')).not.toContain('body');
     await context.close();
   });
 });
