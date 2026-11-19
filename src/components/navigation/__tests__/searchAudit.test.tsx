@@ -70,11 +70,11 @@ function choose(r: SearchResult | undefined): string {
   const s = useAppStore.getState();
   const chord = s.selectedChord;
   return chord
-    ? `${s.view} ${noteToString(chord.root)}${chord.quality}${chord.bassNote ? `/${noteToString(chord.bassNote)}` : ''}`
+    ? `${s.view} ${noteToString(chord.root)}${chord.quality}${chord.bassNote ? `/${noteToString(chord.bassNote)}` : ''}${s.chordInversion ? ` inv${s.chordInversion}` : ''}`
     : `${s.view} ${noteToString(s.selectedKey)} ${s.selectedScale}`;
 }
 
-/** Every chord result of a query, as `Root+quality[/bass]`, in order (each chosen from Explore on C major). */
+/** Every chord result of a query, as `Root+quality[/bass][ invN]`, in order (each chosen from Explore on C major). */
 function chords(q: string): string[] {
   const out: string[] = [];
   for (const r of getResults(q).filter((x) => x.type === 'Chord')) {
@@ -183,7 +183,8 @@ describe('A3 — the whole solfège syllable is read before the chord symbol', (
     ['Fá#m7', 'F#minor7'], ['Fa#m7', 'F#minor7'], ['Fá♯m7', 'F#minor7'],
     ['Sib7', 'Bbdominant7'], ['Si♭7', 'Bbdominant7'], ['Mibmaj7', 'Ebmajor7'], ['Mi♭maj7', 'Ebmajor7'],
     ['Lam', 'Aminor'], ['Lám7', 'Aminor7'], ['Solmaj7', 'Gmajor7'], ['Dom', 'Cminor'], ['Dosus4', 'Csus4'],
-    ['Do/Mi', 'Cmajor/E'], ['Sol7/Si', 'Gdominant7/B'], ['Ré/Fá#', 'Dmajor/F#'],
+    // A bass that is a chord tone opens as that inversion (review of b94d761, item 7).
+    ['Do/Mi', 'Cmajor inv1'], ['Sol7/Si', 'Gdominant7 inv1'], ['Ré/Fá#', 'Dmajor inv1'], ['Do/Re', 'Cmajor/D'],
     ['Sol°', 'Gdiminished'], ['Si°7', 'Bdiminished7'],
   ])('ES: "%s" → %s first', async (q, expected) => {
     await speak('es');
@@ -237,10 +238,13 @@ describe('A3 — every result of 6de6c0e is still there, in its order; the solf�
     const s = useAppStore.getState();
     const c = s.selectedChord;
     const what = s.pendingLearnTarget ? s.pendingLearnTarget.moduleId
-      : c ? `${noteToString(c.root)}${c.quality}${c.bassNote ? `/${noteToString(c.bassNote)}` : ''}${c.algorithmicDisplayName ? ` ${c.algorithmicDisplayName}` : ''}`
+      : c ? `${noteToString(c.root)}${c.quality}${c.bassNote ? `/${noteToString(c.bassNote)}` : ''}${c.algorithmicDisplayName ? ` ${c.algorithmicDisplayName}` : ''}${s.chordInversion ? ` inv${s.chordInversion}` : ''}`
         : `${noteToString(s.selectedKey)} ${s.selectedScale}`;
     return `${r.type}|${what}`;
   }
+
+  /** What 6de6c0e recorded that a finding changed on purpose: Cmaj7/G opens as C major 7th, 2nd inversion (review item 7). */
+  const CHANGED: Record<string, string> = { 'Chord|Cmajor7/G': 'Chord|Cmajor7 inv2' };
 
   it.each(['en', 'pt', 'es'] as const)('%s: the recorded sample', async (lang) => {
     await speak(lang);
@@ -248,14 +252,20 @@ describe('A3 — every result of 6de6c0e is still there, in its order; the solf�
     const lost: string[] = [];
     for (const q of SEARCH_SAMPLE) {
       at('explore');
-      const now = getResults(q).filter((r) => !r.solfege).map(opens);
+      const full = getResults(q);
+      const now = full.filter((r) => !r.solfege && r.type !== 'Tool').map(opens);
       // At 6de6c0e a few queries listed the same scale twice ("Dorian" and
       // "C Dorian", one opening exactly what the other did); named alike now
-      // (A13), they are one row. Every other result stays, in its order; a
-      // list that was cut at ten may show the next one.
-      const base = BASE[`${lang} ${q}`].filter((x, i, xs) => xs.indexOf(x) === i);
-      const same = JSON.stringify(now.slice(0, base.length)) === JSON.stringify(base) && (now.length === base.length || BASE[`${lang} ${q}`].length === 10);
-      if (!same) lost.push(`${q}: ${JSON.stringify(BASE[`${lang} ${q}`])} → ${JSON.stringify(now)}`);
+      // (A13), they are one row. Every other result stays, in its order. A
+      // list that was cut at ten may show the next one; the solfège row that
+      // ranks first or a tool may push the last one out of the ten (review
+      // item 3: ten rows at most) — never one from the middle.
+      const raw = BASE[`${lang} ${q}`];
+      const base = raw.filter((x, i, xs) => xs.indexOf(x) === i).map((x) => CHANGED[x] ?? x);
+      const k = Math.min(now.length, base.length);
+      const same = JSON.stringify(now.slice(0, k)) === JSON.stringify(base.slice(0, k))
+        && (now.length === base.length || (now.length > base.length && raw.length === 10) || (now.length < base.length && full.length === 10));
+      if (!same) lost.push(`${q}: ${JSON.stringify(raw)} → ${JSON.stringify(now)}`);
       expect(new Set(now).size, `${lang} "${q}": no row opens what another opens`).toBe(now.length);
     }
     expect(lost).toEqual([]);
@@ -264,14 +274,20 @@ describe('A3 — every result of 6de6c0e is still there, in its order; the solf�
     expect(doubled).toEqual(['major', 'minor', 'lydian dominant', 'Dorian']);
   });
 
-  it('"dom" keeps its "Dominant 7th" chords; the solfège C minor is added (first in ES, after the names in EN)', async () => {
-    const en = getResults('dom');
-    expect(en.filter((r) => r.type === 'Chord' && /Dominant 7th/.test(r.label)).length).toBeGreaterThan(0);
-    expect(en.findIndex((r) => r.solfege)).toBe(en.findIndex((r) => r.type === 'Lesson') - 1);
+  it('"dom" keeps every row it had, "Dominant 7th" included, in every language; "Dom" (a chord symbol) opens on C minor in ES', async () => {
+    for (const lang of ['en', 'pt', 'es'] as const) {
+      await speak(lang);
+      at('explore');
+      const rows = getResults('dom');
+      expect(rows.filter((r) => r.type === 'Chord' && /Dominant 7th|Sétima da dominante|Séptima de dominante/.test(r.label)).length, lang).toBeGreaterThan(0);
+      expect(rows.filter((r) => !r.solfege).map(opens), lang).toEqual(BASE[`${lang} dom`].slice(0, rows.filter((r) => !r.solfege).length));
+      // A bare lower-case word: its solfège chord never above what the list held.
+      const at0 = rows.findIndex((r) => r.solfege);
+      if (at0 >= 0) expect(at0, lang).toBe(BASE[`${lang} dom`].length);
+    }
     await speak('es');
-    const es = getResults('dom');
+    const es = getResults('Dom');
     expect(es[0].solfege && es[0].label).toBe('C Menor');
-    expect(es.filter((r) => !r.solfege).length).toBe(BASE['es dom'].length);
   });
 });
 

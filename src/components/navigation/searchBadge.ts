@@ -20,6 +20,8 @@ export const SEARCH_BADGE_DEGREE: Record<SearchResultType, keyof typeof DEGREE_C
   Chord: 5,
   Key: 4,
   Lesson: 2,
+  // The app's tools (tuner, metronome: review of b94d761, item 8).
+  Tool: 1,
 };
 
 /** The tint's alpha, as the two hex digits appended to the hue. */

@@ -66,10 +66,15 @@ describe('executeTheoryQuery', () => {
     expect(executeTheoryQuery('G13')).toBe('chord');
   });
 
-  it('handles slash chords, keeping the bass note', () => {
+  it('handles slash chords: a chord-tone bass is that inversion (C/E = 1st, review of b94d761 item 7); another bass is kept', () => {
     expect(executeTheoryQuery('C/E')).toBe('chord');
     const chord = useAppStore.getState().selectedChord;
-    expect(chord?.bassNote?.natural).toBe('E');
+    expect(chord?.bassNote).toBeUndefined();
+    expect(chord?.quality).toBe('major');
+    expect(useAppStore.getState().chordInversion).toBe(1);
+    expect(executeTheoryQuery('C/D')).toBe('chord');
+    expect(useAppStore.getState().selectedChord?.bassNote?.natural).toBe('D');
+    expect(useAppStore.getState().chordInversion).toBe(0);
   });
 
   it('handles scale queries including exotic ones', () => {

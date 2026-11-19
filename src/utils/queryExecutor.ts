@@ -20,6 +20,7 @@ import { useAppStore } from '../state/store';
 import { chordFromParsed } from '../core/utils/chordParser';
 import { resolveTheoryQuery, type ResolvedTheoryQuery } from './theoryQuery';
 import { parseChordListQuery } from './queryExecutorChords';
+import { selectChordAsWritten } from './chordSelection';
 import { requestProgression } from '../state/progressionRequest';
 
 export type TheoryQueryResult = 'chord' | 'scale' | 'key' | 'circle' | 'progression' | 'fallback';
@@ -46,7 +47,8 @@ export function applyResolvedTheoryQuery(resolved: ResolvedTheoryQuery): Exclude
       store.setScale(resolved.scaleType);
       return 'scale';
     case 'chord':
-      store.setSelectedChord(chordFromParsed(resolved.parsed));
+      // C/E opens as C major, first inversion (utils/chordSelection.ts).
+      selectChordAsWritten(chordFromParsed(resolved.parsed));
       return 'chord';
   }
 }

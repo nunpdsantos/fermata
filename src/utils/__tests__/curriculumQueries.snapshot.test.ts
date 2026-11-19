@@ -112,12 +112,15 @@ function resolution(q: string): string {
 /** The store after running the query from Learn, A natural minor, no chord. */
 function effect(q: string): string {
   useAppStore.getState().setView('learn');
-  useAppStore.setState({ selectedKey: { natural: 'A', accidental: '' }, selectedScale: 'natural_minor', selectedChord: null });
+  useAppStore.setState({ selectedKey: { natural: 'A', accidental: '' }, selectedScale: 'natural_minor', selectedChord: null, chordInversion: 0 });
   clearProgressionRequest();
   const kind = executeTheoryQuery(q);
   const s = useAppStore.getState();
   const prog = getProgressionRequest();
-  return `${kind} ${s.view} ${noteToString(s.selectedKey)} ${s.selectedScale} ${chordText(s.selectedChord)}${prog ? ` prog=${(prog.chords ?? []).join(',')}` : ''}`;
+  // The inversion only when there is one (at 6de6c0e a query never set it, so
+  // the recorded values keep their form).
+  const inv = s.chordInversion ? ` inv=${s.chordInversion}` : '';
+  return `${kind} ${s.view} ${noteToString(s.selectedKey)} ${s.selectedScale} ${chordText(s.selectedChord)}${inv}${prog ? ` prog=${(prog.chords ?? []).join(',')}` : ''}`;
 }
 
 function collect(): Record<string, Row> {
@@ -161,9 +164,13 @@ function collect(): Record<string, Row> {
 /**
  * Every recorded value that the fixes change, with the finding that says the
  * old one was wrong (`fixtures/curriculumQueries.changes.json`): `field` →
- * [old, new]. All 129 are A2 — a lesson's "key of X" (no quality), which
- * opened X natural minor when the learner was in a minor key, and now opens X
- * major, the key the lesson means.
+ * [old, new]. 129 are A2 — a lesson's "key of X" (no quality), which opened X
+ * natural minor when the learner was in a minor key, and now opens X major,
+ * the key the lesson means. 68 are the review of b94d761, item 7 — a lesson's
+ * slash chord whose bass is a chord tone (C/E, C/G, G7/F, Dm7/C, Db/F …),
+ * which opened with the bass doubled under a root-position chord and the
+ * Voicing chip on Root, and now opens as that inversion (C/E = C major,
+ * 1st inversion: utils/chordSelection.ts).
  */
 const CHANGED = JSON.parse(readFileSync(resolve(process.cwd(), 'src/utils/__tests__/fixtures/curriculumQueries.changes.json'), 'utf8')) as Record<
   string,
@@ -201,6 +208,6 @@ describe('the curriculum queries resolve as they did at 6de6c0e, except where a 
     }
     expect(unexpected).toEqual([]);
     expect(listedButSame).toEqual([]);
-    expect(Object.values(CHANGED).filter((c) => !['A2', 'A3'].includes(c.finding))).toEqual([]);
+    expect(Object.values(CHANGED).filter((c) => !['A2', 'A3', 'review item 7'].includes(c.finding))).toEqual([]);
   });
 });

@@ -555,7 +555,8 @@
     "typeChord": "Acorde",
     "typeKey": "Tonalidad",
     "typeLesson": "Lecci\u00f3n",
-    "dialogLabel": "Búsqueda rápida"
+    "dialogLabel": "Búsqueda rápida",
+    "typeTool": "Herramienta"
   },
   "chordCategory": {
     "triads": "Tr\u00edadas",

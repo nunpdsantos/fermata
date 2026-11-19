@@ -7,7 +7,7 @@
 
 import i18n from '../../i18n/index.ts';
 import { useAppStore } from '../../state/store.ts';
-import { noteToString, stringToNote, type Chord, type Note, type ScaleType, type ChordQuality } from '../../core/types/music.ts';
+import { noteToString, type Chord, type Note, type ScaleType, type ChordQuality } from '../../core/types/music.ts';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { buildChord, CHORD_QUALITY_NAMES } from '../../core/constants/chords.ts';
 import { SCALE_TYPE_NAMES } from '../../core/constants/scales.ts';
@@ -28,16 +28,45 @@ import { qualityName } from '../../utils/qualityName.ts';
 import { solfegeLanguage, solfegeName, withSolfege } from '../../i18n/solfege.ts';
 import { keyName } from '../explore/focusReadout.ts';
 import type { ContentLanguage } from '../../i18n/content/types.ts';
+import { selectChordAsWritten } from '../../utils/chordSelection.ts';
+import { openTuner } from '../tuner/tunerRequest.ts';
+import { requestMetronome } from '../../state/metronomeRequest.ts';
+import { getDemoRequest } from '../../state/demoRequest.ts';
 
-export type SearchResultType = 'Scale' | 'Chord' | 'Key' | 'Lesson';
+export type SearchResultType = 'Scale' | 'Chord' | 'Key' | 'Lesson' | 'Tool';
+
+/**
+ * Where a result comes from — every place this file makes a result's action
+ * names one (`source: '…'`), and a test chooses each kind from Learn and from
+ * Drill (searchAudit2.test.tsx, review of b94d761 item 1): all but lessons
+ * and tools must open Explore (`inExplore`).
+ */
+export type ResultSource =
+  | 'reading-scale' | 'reading-rootless' | 'reading-key' | 'parsed-scale'
+  | 'chord' | 'solfege-chord' | 'fuzzy-scale' | 'fuzzy-chord' | 'lesson' | 'tool';
 
 export interface SearchResult {
   type: SearchResultType;
   label: string;
   action: () => void;
+  source: ResultSource;
   /** A solfège chord ("Sol7", "Do7" as C7: A3), added to what search found before. */
   solfege?: true;
 }
+
+/**
+ * The app's tools as results (review of b94d761, item 8): named by the "⋯"
+ * menu's own labels, found by them and by their obvious words in the three
+ * languages, opened exactly as the menu opens them, and offered only where the
+ * menu offers them (layout/TopBar.tsx: the tuner everywhere but while the
+ * tour plays; the metronome neither in Drill nor while the tour plays).
+ */
+const TOOLS: readonly { label: string; words: readonly string[]; offered: (view: string, tour: boolean) => boolean; open: () => void }[] = [
+  { label: 'tunerEntry.menuItem', words: ['tuner', 'tune', 'tuning', 'afinador', 'afinar', 'afinacao', 'afinacion'], offered: (_view, tour) => !tour, open: openTuner },
+  { label: 'metronomeToolEntry.menuItem', words: ['metronome', 'metronomo'], offered: (view, tour) => view !== 'drill' && !tour, open: requestMetronome },
+];
+
+const fold = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
 
 // Mode names that need mapping to ScaleType
 const MODE_TO_SCALE: Record<string, ScaleType> = {
@@ -160,11 +189,11 @@ export function getResults(
   const seen = new Set<string>();
   const explore = exploreSelection();
 
-  const pushScale = (root: Note, scaleType: ScaleType, apply: () => void) => {
+  const pushScale = (root: Note, scaleType: ScaleType, source: ResultSource, apply: () => void) => {
     const key = `scale:${noteToString(root)}:${scaleType}`;
     if (seen.has(key)) return;
     seen.add(key);
-    results.push({ type: 'Scale', label: scaleResultName(root, scaleType, names), action: inExplore(apply) });
+    results.push({ type: 'Scale', label: scaleResultName(root, scaleType, names), action: inExplore(apply), source });
   };
 
   // ── Chords ────────────────────────────────────────────────────────────────
@@ -184,7 +213,8 @@ export function getResults(
     results.push({
       type: 'Chord',
       label: chordResultName(chord, names.lang),
-      action: inExplore(() => useAppStore.getState().setSelectedChord(chord)),
+      action: inExplore(() => selectChordAsWritten(chord)),
+      source: 'chord',
     });
     chordCount++;
     return true;
@@ -201,15 +231,16 @@ export function getResults(
   const readings = all.filter((r) => r.via !== 'solfege');
   for (const { resolved } of readings) {
     if (resolved.kind === 'scale') {
-      pushScale(resolved.root, resolved.scaleType, () => { applyResolvedTheoryQuery(resolved); });
+      pushScale(resolved.root, resolved.scaleType, 'reading-scale', () => { applyResolvedTheoryQuery(resolved); });
     } else if (resolved.kind === 'rootlessScale') {
       seen.add(`scale:fuzzy:${resolved.scaleType}`);
-      pushScale(explore.key, resolved.scaleType, () => { applyResolvedTheoryQuery(resolved); });
+      pushScale(explore.key, resolved.scaleType, 'reading-rootless', () => { applyResolvedTheoryQuery(resolved); });
     } else if (resolved.kind === 'key') {
       results.push({
         type: 'Key',
         label: scaleResultName(resolved.root, resolved.minor ? 'natural_minor' : 'major', names),
         action: inExplore(() => { applyResolvedTheoryQuery(resolved); }),
+        source: 'reading-key',
       });
     }
   }
@@ -219,7 +250,7 @@ export function getResults(
   if (parsedScale) {
     // Map mode names to ScaleType
     const scaleType = (MODE_TO_SCALE[parsedScale.scaleType] ?? parsedScale.scaleType) as ScaleType;
-    pushScale(parsedScale.root, scaleType, () => {
+    pushScale(parsedScale.root, scaleType, 'parsed-scale', () => {
       useAppStore.getState().setKey(parsedScale.root);
       useAppStore.getState().setScale(scaleType);
     });
@@ -271,6 +302,7 @@ export function getResults(
           action: inExplore(() => {
             useAppStore.getState().setScale(scaleType as ScaleType);
           }),
+          source: 'fuzzy-scale',
         });
       }
     }
@@ -296,23 +328,9 @@ export function getResults(
             const root = useAppStore.getState().selectedKey;
             useAppStore.getState().setSelectedChord(buildChord(root, quality as ChordQuality));
           }),
+          source: 'fuzzy-chord',
         });
       }
-    }
-  }
-
-  // Try just a root note → set key
-  if (results.length === 0) {
-    const noteMatch = q.match(/^([A-Ga-g][#b♯♭]?)$/);
-    if (noteMatch) {
-      const root = stringToNote(noteMatch[1]);
-      results.push({
-        type: 'Key',
-        label: scaleResultName(root, explore.scale, names),
-        action: inExplore(() => {
-          useAppStore.getState().setKey(root);
-        }),
-      });
     }
   }
 
@@ -331,34 +349,54 @@ export function getResults(
       action: () => {
         useAppStore.getState().openLearnTarget({ levelId: mod.level, unitId: mod.unitId, moduleId: mod.id });
       },
+      source: 'lesson',
     });
   }
 
   // A3: a solfège syllable glued to a chord symbol ("Sol7", "Ré7", "Do7" as
-  // C7). Added to the list as it was built before, so nothing it found is
-  // lost or pushed out (a solfège "Dom" = C minor must not cost "dom" its
-  // "Dominant 7th"): first in PT / ES and with Dó-Ré-Mi on, else after the
-  // chords and names, before the lessons.
+  // C7). Added to the list as it was built before, so it never costs a result
+  // the place that decides what else is found (a solfège "Dom" = C minor took
+  // one of the four slots below which "dom" finds "Dominant 7th"). First in
+  // PT / ES and with Dó-Ré-Mi on; otherwise — and always for one bare
+  // lower-case word with no digit and no sharp or flat ("sim", "dom", "lam",
+  // also ordinary words: review of b94d761, item 2) — after everything the
+  // list held. Ten rows at most (item 3): a solfège reading that ranks first
+  // is kept, one that comes after may not fit.
   const listed = results.slice(0, 10);
-  const solfege: SearchResult[] = [];
-  for (const { resolved, via } of all) {
+  const solfegeFirst: SearchResult[] = [];
+  const solfegeAfter: SearchResult[] = [];
+  for (const { resolved, via, plainWord } of all) {
     if (via !== 'solfege' || resolved.kind !== 'chord') continue;
     const parsed = resolved.parsed;
     const key = `chord:${noteToString(parsed.root)}:${parsed.quality}:${parsed.bassNote ? noteToString(parsed.bassNote) : ''}`;
     if (seen.has(key)) continue;
     seen.add(key);
     const chord = chordFromParsed(parsed);
-    solfege.push({
+    const row: SearchResult = {
       type: 'Chord',
       label: chordResultName(chord, names.lang),
-      action: inExplore(() => useAppStore.getState().setSelectedChord(chord)),
+      action: inExplore(() => selectChordAsWritten(chord)),
+      source: 'solfege-chord',
       solfege: true,
-    });
+    };
+    (names.solfegeFirst && !plainWord ? solfegeFirst : solfegeAfter).push(row);
   }
-  const lessonAt = listed.findIndex((r) => r.type === 'Lesson');
-  listed.splice(names.solfegeFirst ? 0 : lessonAt < 0 ? listed.length : lessonAt, 0, ...solfege);
+  listed.unshift(...solfegeFirst);
+  listed.push(...solfegeAfter);
+
+  // The app's tools (item 8), before the lessons, where the menu offers them.
+  const word = fold(q);
+  if (word.length >= 3) {
+    const { view } = useAppStore.getState();
+    const tour = getDemoRequest() !== null;
+    const tools: SearchResult[] = TOOLS
+      .filter((tool) => tool.offered(view, tour) && tool.words.some((w) => w.startsWith(word) || word === fold(names.t(tool.label))))
+      .map((tool) => ({ type: 'Tool' as const, label: names.t(tool.label), action: tool.open, source: 'tool' as const }));
+    const lessonAt = listed.findIndex((r) => r.type === 'Lesson');
+    listed.splice(lessonAt < 0 ? listed.length : lessonAt, 0, ...tools);
+  }
 
   // Names on display with real ♭ / ♯ (the query and every lookup stay ASCII);
   // lesson titles are prose and stay as written.
-  return listed.map((r) => (r.type === 'Lesson' ? r : { ...r, label: withGlyphs(r.label) }));
+  return listed.slice(0, 10).map((r) => (r.type === 'Lesson' || r.type === 'Tool' ? r : { ...r, label: withGlyphs(r.label) }));
 }

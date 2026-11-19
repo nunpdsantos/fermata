@@ -4,7 +4,8 @@ import { seededBrowser, audit, PHONE, PHONE_320, LANDSCAPE, LAPTOP, type Lang, t
 
 /**
  * Quick Search under the design system's rules (audit 2026-11-18, stream B):
- * the open list with every category label shown (Chord, Scale, Key, Lesson),
+ * the open list with every category label shown (Chord, Scale, Key, Lesson,
+ * Tool),
  * at rest and with a lower row selected by the arrows — type ≥ 12 px, targets
  * ≥ 44 px on touch / 36 px with a mouse, every text against what is painted
  * under it ≥ 4.5:1 (A11: the labels were 1.17–3.69:1 by day), nothing cut
@@ -20,9 +21,9 @@ const THEMES = [
 ] as const;
 /** Together they bring all four categories (and enough rows to scroll on a phone). */
 const QUERIES: Record<Lang, readonly string[]> = {
-  en: ['key of G', 'D dorian', 'C', 'tritone'],
-  pt: ['tonalidade de Sol', 'D dórico', 'C', 'trítono'],
-  es: ['tonalidad de Sol', 'D dórico', 'C', 'tritono'],
+  en: ['key of G', 'D dorian', 'C', 'tritone', 'tuner'],
+  pt: ['tonalidade de Sol', 'D dórico', 'C', 'trítono', 'afinador'],
+  es: ['tonalidad de Sol', 'D dórico', 'C', 'tritono', 'afinador'],
 };
 
 async function openSearch(browser: Browser, v: View, lang: Lang, theme: string): Promise<{ page: Page; close: () => Promise<void> }> {
@@ -91,7 +92,7 @@ for (const lang of ['en', 'pt', 'es'] as const) {
       for (const t of await dialog.locator('[data-search-type]').evaluateAll((els) => els.map((e) => e.getAttribute('data-search-type')))) seen.add(t!);
       await page.keyboard.press('Escape');
     }
-    expect([...seen].sort()).toEqual(['Chord', 'Key', 'Lesson', 'Scale']);
+    expect([...seen].sort()).toEqual(['Chord', 'Key', 'Lesson', 'Scale', 'Tool']);
     await close();
   });
 }

@@ -95,7 +95,7 @@ function renderedBadges(): Map<string, { fill: string; text: string }> {
   const found = new Map<string, { fill: string; text: string }>();
   render(<QuickSearch />);
   const input = screen.getByRole('dialog').querySelector('input')!;
-  for (const q of ['key of G', 'D dorian', 'Dm7', 'major scale', 'dorian']) {
+  for (const q of ['key of G', 'D dorian', 'Dm7', 'major scale', 'dorian', 'tuner']) {
     fireEvent.change(input, { target: { value: q } });
     // `[data-search-type]` since the fix; the base commit's markup (a button
     // per row, the label its last span) is read too, so the test measures it.
@@ -111,7 +111,8 @@ describe('A11 — search category labels reach 4.5:1 on the row at rest and sele
   it('every label, both themes, both row states', () => {
     useAppStore.setState({ quickSearchOpen: true, language: 'en' });
     const badges = renderedBadges();
-    expect([...badges.keys()].sort()).toEqual(['Chord', 'Key', 'Lesson', 'Scale']);
+    // Tool: the tuner and the metronome as results (review of b94d761, item 8).
+    expect([...badges.keys()].sort()).toEqual(['Chord', 'Key', 'Lesson', 'Scale', 'Tool']);
     const table: Record<string, number> = {};
     const failures: string[] = [];
     for (const [theme, vars] of Object.entries(THEMES)) {

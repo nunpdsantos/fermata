@@ -76,6 +76,12 @@ const CHORD_WORD_SUFFIXES: Array<[RegExp, string]> = [
 function normalizeChordWords(q: string): string | null {
   const stripped = q.replace(/\s+(?:chord|triad)$/i, '');
   if (stripped === q && !/\s/.test(q)) return null; // plain symbol, no normalizing needed
+  // "G chord", «acorde de Sol»: a root and the word, no quality — the major
+  // triad, as the bare "G" is (review of b94d761, item 9).
+  if (stripped !== q && /^[A-Ga-g][#b]?$/.test(stripped.trim())) {
+    const root = stripped.trim();
+    return `${root[0].toUpperCase()}${root.slice(1)}`;
+  }
   for (const [pattern, suffix] of CHORD_WORD_SUFFIXES) {
     if (pattern.test(stripped)) {
       const root = stripped.replace(pattern, '').trim();
@@ -174,6 +180,17 @@ const WORDS: Record<string, string> = {
   jonio: 'ionian', jonico: 'ionian', jonia: 'ionian',
 };
 
+/** The PT / ES scale and chord words of a phrase, in English (phrases first). */
+function translateWords(text: string): string {
+  let out = text;
+  for (const [pattern, replacement] of PHRASES) out = out.replace(pattern, replacement);
+  return out
+    .split(' ')
+    .filter(Boolean)
+    .map((w) => WORDS[w] ?? w)
+    .join(' ');
+}
+
 function stripDiacritics(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '');
 }
@@ -215,18 +232,21 @@ export function toEnglishTheoryQuery(query: string): string | null {
 
   // Root: letter or solfège, optional accidental word or sign.
   const root = q.match(/^(do|re|mi|fa|sol|la|si|[a-g])(#|b)?(?: (sustenido|sostenido|bemol))?(?= |$)/);
-  if (!root) return null;
+  if (!root) {
+    // No root: a scale's name alone («dórico», «menor harmónica», «escala
+    // dórica») reads as its English form does ("dorian", "harmonic minor") —
+    // review of b94d761, item 9. Not after "tonalidade" (a key needs a root).
+    if (prefix) return null;
+    const words = translateWords(q);
+    const bare = `${words}${suffix}`;
+    return words !== q ? bare : null;
+  }
   let letter = root[1].length === 1 ? root[1].toUpperCase() : SOLFEGE_TO_LETTER[root[1]];
   if (root[2]) letter += root[2];
   else if (root[3]) letter += root[3] === 'bemol' ? 'b' : '#';
   let rest = q.slice(root[0].length).trim();
 
-  for (const [pattern, replacement] of PHRASES) rest = rest.replace(pattern, replacement);
-  rest = rest
-    .split(' ')
-    .filter(Boolean)
-    .map((w) => WORDS[w] ?? w)
-    .join(' ');
+  rest = translateWords(rest);
 
   const out = `${prefix}${letter}${rest ? ` ${rest}` : ''}${suffix}`;
   // Nothing translated → not a PT/ES query (avoid re-resolving English input).
@@ -251,7 +271,12 @@ export function isBareSolfege(query: string): boolean {
 // or the word after a space: "Fa sostenido 7"). The symbol after it is read
 // exactly as after a letter (case matters there: M7 ≠ m7).
 
-const SYLLABLE_SYMBOL = /^(do|re|mi|fa|sol|la|si)(##|bb|#|b)?(?:\s+(sustenido|sostenido|bemol)(?=\s|$))?\s*(.*)$/i;
+// The syllable, then its accidental — a word after a space, the symbol joined
+// to it or not ("Fa sostenido 7", "Fa sostenido7"), or a sign, joined or set
+// apart by a space ("Sib7", "Si b 7") — then the symbol (review of b94d761,
+// item 4). The word is tried before the sign: "Sol bemol7" is G♭7, not G♭
+// + "emol7".
+const SYLLABLE_SYMBOL = /^(do|re|mi|fa|sol|la|si)(?:\s+(sustenido|sostenido|bemol)|\s*(##|bb|#|b))?\s*(.*)$/i;
 const SYLLABLE_BASS = /\/(do|re|mi|fa|sol|la|si)(##|bb|#|b)?$/i;
 /**
  * After a syllable, a symbol made of letters only is accepted only if it is one
@@ -261,17 +286,32 @@ const SYLLABLE_BASS = /\/(do|re|mi|fa|sol|la|si)(##|bb|#|b)?$/i;
  */
 const LETTER_SUFFIXES = new Set(['', 'm', 'M', 'maj', 'min', 'dim', 'aug', 'alt']);
 
+/** A syllable read with its chord symbol: "Fá#m7" → { symbol "F#m7", accidental "#" }. */
+export interface SolfegeSymbol {
+  symbol: string;
+  /** '' when the syllable has no sharp or flat ("Sim", "Dom7"). */
+  accidental: string;
+}
+
 /** "Fá#m7" → "F#m7", "Do/Mi" → "C/E"; null when it is not a syllable + chord symbol. */
-export function solfegeChordSymbol(query: string): string | null {
-  const q = stripDiacritics(query.trim()).replace(/♯/g, '#').replace(/♭/g, 'b');
+export function readSolfegeSymbol(query: string): SolfegeSymbol | null {
+  let q = stripDiacritics(query.trim()).replace(/♯/g, '#').replace(/♭/g, 'b');
+  // ALL CAPS is read as capitalised (SIM = Sim, DOM7 = Dom7): an M means
+  // major only in mixed case (SiM, DoM7) — review of b94d761, item 2.
+  if (/[A-Z]/.test(q) && !/[a-z]/.test(q)) q = q.toLowerCase();
   const m = SYLLABLE_SYMBOL.exec(q);
   if (!m) return null;
-  const accidental = m[2] ?? (m[3] ? (m[3].toLowerCase() === 'bemol' ? 'b' : '#') : '');
+  const accidental = m[3] ?? (m[2] ? (m[2].toLowerCase() === 'bemol' ? 'b' : '#') : '');
   let rest = m[4];
   if (/\s/.test(rest)) return null;
   rest = rest.replace(SYLLABLE_BASS, (_all, s: string, acc?: string) => `/${SOLFEGE_TO_LETTER[s.toLowerCase()]}${acc ?? ''}`);
   if (/^[A-Za-z]*$/.test(rest) && !LETTER_SUFFIXES.has(rest)) return null;
-  return `${SOLFEGE_TO_LETTER[m[1].toLowerCase()]}${accidental}${rest}`;
+  return { symbol: `${SOLFEGE_TO_LETTER[m[1].toLowerCase()]}${accidental}${rest}`, accidental };
+}
+
+/** "Fá#m7" → "F#m7", "Do/Mi" → "C/E"; null when it is not a syllable + chord symbol. */
+export function solfegeChordSymbol(query: string): string | null {
+  return readSolfegeSymbol(query)?.symbol ?? null;
 }
 
 /**
@@ -286,6 +326,13 @@ export type ReadingSource = 'letters' | 'words' | 'solfege';
 export interface TheoryReading {
   resolved: ResolvedTheoryQuery;
   via: ReadingSource;
+  /**
+   * A solfège reading of one bare lower-case word with no digit and no
+   * sharp or flat ("sim", "dom", "lam"): also an ordinary Portuguese or
+   * Spanish word, so search never ranks it above what it found before
+   * (review of b94d761, item 2).
+   */
+  plainWord?: true;
 }
 
 const readingKey = (r: ResolvedTheoryQuery): string => {
@@ -327,9 +374,12 @@ export function resolveTheoryReadings(query: string): TheoryReading[] {
     const translated = toEnglishTheoryQuery(q);
     add(translated ? resolveEnglish(translated) : null, 'words');
   }
-  const symbol = solfegeChordSymbol(q);
-  const glued = symbol ? resolveEnglish(symbol) : null;
-  if (glued?.kind === 'chord') add(glued, 'solfege');
+  const read = readSolfegeSymbol(q);
+  const glued = read ? resolveEnglish(read.symbol) : null;
+  if (glued?.kind === 'chord' && !out.some((o) => readingKey(o.resolved) === readingKey(glued))) {
+    const plainWord = /^\p{Ll}+$/u.test(q) && read!.accidental === '';
+    out.push({ resolved: glued, via: 'solfege', ...(plainWord ? { plainWord: true as const } : {}) });
+  }
   return out;
 }
 

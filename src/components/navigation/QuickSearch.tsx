@@ -13,7 +13,40 @@ const TYPE_KEYS: Record<SearchResultType, string> = {
   Chord: 'search.typeChord',
   Key: 'search.typeKey',
   Lesson: 'search.typeLesson',
+  Tool: 'search.typeTool',
 };
+
+/** Explore's key picker: the Root select on a laptop, the key button on a phone (as the start hint's ✕). */
+const keyPicker = () => document.querySelector<HTMLElement>('#explore-panel [data-testid="explore-header"] [data-testid="key-picker"]');
+/** How long focus waits for Explore's code to arrive. */
+const EXPLORE_FOCUS_WAIT_MS = 10_000;
+
+/**
+ * After a result opened Explore from Learn or Drill (review of b94d761, item
+ * 9): focus goes to Explore's first control, its key picker — never left on
+ * <body> where the element it came from went with its view. Explore may still
+ * be loading: then the picker is focused when it appears, unless the learner
+ * put focus somewhere meanwhile.
+ */
+function focusExplore(): void {
+  const now = keyPicker();
+  if (now) {
+    now.focus({ preventScroll: true });
+    return;
+  }
+  const stop = () => {
+    observer.disconnect();
+    window.clearTimeout(timer);
+  };
+  const observer = new MutationObserver(() => {
+    const picker = keyPicker();
+    if (!picker) return;
+    stop();
+    if (!document.activeElement || document.activeElement === document.body) picker.focus({ preventScroll: true });
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+  const timer = window.setTimeout(stop, EXPLORE_FOCUS_WAIT_MS);
+}
 
 // The app's own magnifier — the same drawing as the top bar's search button
 // (layout/TopBar.tsx SEARCH_ICON; audit Q14: the dialog showed the 🔎 emoji).
@@ -43,9 +76,11 @@ export function QuickSearch() {
   const dialogRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
-  // Set by the arrow keys: the next selection change scrolls it into view (a
-  // mouse pointing at a row never scrolls the list under it).
-  const revealRef = useRef(false);
+  // The row the arrow keys moved to: the selection change it makes scrolls it
+  // into view. Cleared once used, on an arrow press that moved nothing (the
+  // last row), and when a mouse points at a row — a mouse never scrolls the
+  // list under it (review of b94d761, item 5).
+  const revealRef = useRef<number | null>(null);
   const listId = useId();
   const optionId = (i: number) => `${listId}-option-${i}`;
 
@@ -73,8 +108,8 @@ export function QuickSearch() {
 
   // Keep the selected result in view — the list scrolls, nothing else does.
   useEffect(() => {
-    if (!revealRef.current) return;
-    revealRef.current = false;
+    if (revealRef.current !== selectedIdx) return;
+    revealRef.current = null;
     const list = listRef.current;
     const option = list?.querySelector<HTMLElement>(`[data-index="${selectedIdx}"]`);
     if (!list || !option) return;
@@ -124,10 +159,29 @@ export function QuickSearch() {
   const executeResult = useCallback(
     (idx: number) => {
       const r = results[idx];
-      if (r) {
-        r.action();
+      if (!r) return;
+      if (r.type === 'Tool') {
+        // A tool opens as the "⋯" menu opens it: search closes and focus is
+        // back where it was first, so the tuner's sheet (or the metronome's
+        // bar) takes it from there and gives it back there.
         setQuickSearchOpen(false);
         setQuery('');
+        previousFocusRef.current?.focus({ preventScroll: true });
+        previousFocusRef.current = null;
+        requestAnimationFrame(() => r.action());
+        return;
+      }
+      const before = useAppStore.getState().view;
+      r.action();
+      setQuickSearchOpen(false);
+      setQuery('');
+      if (before !== 'explore' && useAppStore.getState().view === 'explore') {
+        previousFocusRef.current = null;
+        // The input lets go first: while the dialog fades out it would still
+        // hold focus, and a picker arriving meanwhile must find nothing focused.
+        inputRef.current?.blur();
+        requestAnimationFrame(focusExplore);
+      } else {
         restoreFocus();
       }
     },
@@ -136,14 +190,11 @@ export function QuickSearch() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'ArrowDown') {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
         e.preventDefault();
-        revealRef.current = true;
-        setSelectedIdx((prev) => Math.min(prev + 1, results.length - 1));
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        revealRef.current = true;
-        setSelectedIdx((prev) => Math.max(prev - 1, 0));
+        const next = e.key === 'ArrowDown' ? Math.min(selectedIdx + 1, results.length - 1) : Math.max(selectedIdx - 1, 0);
+        revealRef.current = next === selectedIdx ? null : next;
+        setSelectedIdx(next);
       } else if (e.key === 'Enter') {
         e.preventDefault();
         executeResult(selectedIdx);
@@ -248,7 +299,10 @@ export function QuickSearch() {
                       style={{
                         backgroundColor: i === active ? 'var(--card-hover)' : 'transparent',
                       }}
-                      onMouseEnter={() => setSelectedIdx(i)}
+                      onMouseEnter={() => {
+                        revealRef.current = null;
+                        setSelectedIdx(i);
+                      }}
                     >
                       <span className="text-sm" style={{ color: 'var(--text)' }}>{r.label}</span>
                       <span

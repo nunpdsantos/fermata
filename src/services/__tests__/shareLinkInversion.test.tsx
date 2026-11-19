@@ -7,7 +7,7 @@
  * and hears E as the lowest note.
  */
 import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, act, renderHook } from '@testing-library/react';
 import { useAppStore } from '../../state/store';
 import { readShareParams, buildShareUrl, SHARE_PARAM_KEYS } from '../../state/shareParams';
 import { parseShareLink, isEmptyTarget } from '../shareLinkParse';
@@ -17,6 +17,9 @@ import { buildChord, CHORD_SYMBOLS } from '../../core/constants/chords';
 import { noteToString, type ChordQuality, type Note } from '../../core/types/music';
 import { CurrentChordPanel } from '../../components/panels/CurrentChordPanel';
 import * as audio from '../../core/services/audio';
+import { useKeyContext } from '../../hooks/useKeyContext';
+import { getResults } from '../../components/navigation/quickSearchResults';
+import { executeTheoryQuery } from '../../utils/queryExecutor';
 
 vi.mock('framer-motion', async () => {
   const React = await import('react');
@@ -174,4 +177,44 @@ describe('opening a link', () => {
     expect(heard.length).toBe(3);
     expect(Math.min(...heard) % 12).toBe(4); // E
   });
+});
+
+/**
+ * Review of b94d761, item 7 (from the second audit): "C/E" opened as
+ * "C Major/E" with the Voicing chip on Root and E3 and E4 lit. A slash chord
+ * whose bass is a chord tone IS an inversion — from search, a lesson's Try
+ * This and a shared link — and the chip, the lit keys, the block chord and the
+ * arpeggio agree.
+ */
+describe('a slash chord whose bass is a chord tone opens as that inversion, and everything agrees', () => {
+  const sorted = (xs: Iterable<number>) => [...xs].sort((a, b) => a - b);
+
+  async function heardFor(button: 'Chord' | 'Arpeggio') {
+    heard.length = 0;
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: button })); });
+    await act(async () => { await new Promise((ok) => setTimeout(ok, 1200)); });
+    return sorted(heard);
+  }
+
+  const OPENERS: [string, (symbol: string) => void | Promise<unknown>][] = [
+    ['search', (symbol) => getResults(symbol).find((r) => r.type === 'Chord')!.action()],
+    ['a lesson\'s Try This', (symbol) => executeTheoryQuery(symbol)],
+    ['a shared link', (symbol) => openShareLink({ chord: symbol })],
+  ];
+
+  for (const [from, open] of OPENERS) {
+    it.each([['C/E', '1st Inv', 1, 4], ['C/G', '2nd Inv', 2, 7], ['G7/F', '3rd Inv', 3, 5]] as const)(`${from}: %s → %s, the lowest note its bass, heard == lit, no note doubled`, async (symbol, chip, inv, bassPc) => {
+      await open(symbol);
+      const s = useAppStore.getState();
+      expect(s.chordInversion).toBe(inv);
+      expect(s.selectedChord?.bassNote).toBeUndefined();
+      const lit = sorted(renderHook(() => useKeyContext()).result.current.chordVoicingMidi);
+      expect(lit.length).toBe(s.selectedChord!.notes.length);
+      expect(lit[0] % 12).toBe(bassPc);
+      render(<CurrentChordPanel chord={s.selectedChord!} />);
+      expect(screen.getByRole('radio', { name: chip }).getAttribute('aria-checked')).toBe('true');
+      expect(await heardFor('Chord')).toEqual(lit);
+      expect(await heardFor('Arpeggio')).toEqual(lit);
+    });
+  }
 });

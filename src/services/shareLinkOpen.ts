@@ -29,8 +29,7 @@ import { parseShareLink, isEmptyTarget, type ShareTarget } from './shareLinkPars
 import type { RawShareParams } from '../state/shareParams.ts';
 import { setCapoFret } from '../state/capo.ts';
 import { requestProgression } from '../state/progressionRequest.ts';
-import { resolveExploreDetail } from '../state/exploreDetail.ts';
-import { getLearnerProfile } from '../state/learnerProfile.ts';
+import { selectChordAsWritten, inversionOfBass, exploreIsSimple } from '../utils/chordSelection.ts';
 
 /** How often a held link checks whether the work is over. */
 export const HELD_LINK_POLL_MS = 1500;
@@ -64,12 +63,13 @@ export function applyShareTarget(target: ShareTarget): void {
   // Scale before key: setScale never respells, so the link's spelling stands.
   if (target.scale) useAppStore.getState().setScale(target.scale);
   if (target.key) useAppStore.getState().setKey(target.key);
-  if (target.chord) useAppStore.getState().setSelectedChord(target.chord);
-  // The inversion after the chord (selecting a chord resets it), and not in
-  // Simple view, which has no inversions and resets them (wave 1).
-  if (target.chord && target.inversion) {
-    const s2 = useAppStore.getState();
-    if (resolveExploreDetail(s2.exploreDetail, getLearnerProfile()) !== 'simple') s2.setChordInversion(target.inversion);
+  // A slash chord whose bass is a chord tone opens as that inversion
+  // (C/E = first: utils/chordSelection.ts); otherwise `inv` sets it — after
+  // the chord (selecting a chord resets it), and not in Simple view, which has
+  // no inversions and resets them (wave 1).
+  if (target.chord) selectChordAsWritten(target.chord);
+  if (target.chord && target.inversion && inversionOfBass(target.chord) === null && !exploreIsSimple()) {
+    useAppStore.getState().setChordInversion(target.inversion);
   }
   if (target.prog) requestProgression({ chords: target.prog, ...(target.bpm !== undefined ? { bpm: target.bpm } : {}) });
 }

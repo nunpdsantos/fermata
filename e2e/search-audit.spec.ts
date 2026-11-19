@@ -253,6 +253,86 @@ test.describe('A6: a shared link carries the inversion', () => {
   });
 });
 
+// ─── The fix pass after the review of b94d761 ────────────────────────────────
+test.describe('review of b94d761', () => {
+  test('item 5: after the arrows ran past the last row, the mouse pointing at a half-hidden row scrolls nothing', async ({ browser }) => {
+    const { context, page } = await open(browser, LAPTOP, 'en');
+    const dialog = await search(page, 'C');
+    const rows = rowsOf(dialog);
+    const count = await rows.count();
+    for (let i = 0; i < count + 3; i++) await page.keyboard.press('ArrowDown');
+    const list = dialog.getByRole('listbox');
+    const box = (await list.boundingBox())!;
+    expect(await list.evaluate((el) => el.scrollTop), 'the arrows scrolled to the last row').toBeGreaterThan(0);
+    // The learner drags the list's scroll bar back to the top (no row is
+    // pointed at on the way)…
+    await list.evaluate((el) => { el.scrollTop = 0; });
+    // …then points straight at the row the list's bottom edge cuts in half.
+    const cut = await rows.evaluateAll((els, bottom) => els.findIndex((el) => {
+      const r = el.getBoundingClientRect();
+      return r.top < bottom && r.bottom > bottom;
+    }), box.y + box.height);
+    expect(cut, 'a row is cut by the list\'s bottom edge').toBeGreaterThan(0);
+    const rowBox = (await rows.nth(cut).boundingBox())!;
+    await page.mouse.move(rowBox.x + 40, box.y + box.height - 4, { steps: 1 });
+    await expect(rows.nth(cut)).toHaveAttribute('aria-selected', 'true');
+    await page.waitForTimeout(200);
+    expect(await list.evaluate((el) => el.scrollTop), 'the mouse scrolled the list').toBe(0);
+    await context.close();
+  });
+
+  test('item 7: "C/E" opens C major in 1st inversion, E the lowest tone; Copy link carries it', async ({ browser, baseURL }) => {
+    const { context, page } = await open(browser, LAPTOP, 'en', {}, { permissions: ['clipboard-read', 'clipboard-write'] });
+    const dialog = await search(page, 'C/E');
+    await chooseRow(dialog, /^C Major\/E/);
+    await expect(page.getByRole('radio', { name: '1st Inv' })).toHaveAttribute('aria-checked', 'true');
+    await expect(page.getByTestId('chord-detail').getByRole('group', { name: 'Notes' }).getByRole('button').first()).toHaveText(/^E/);
+    await page.getByTestId('explore-menu').getByRole('button').first().click();
+    await page.getByRole('menuitem', { name: 'Copy link' }).click();
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(`${baseURL}/?key=C&scale=major&chord=C&inst=piano&inv=1`);
+    await context.close();
+  });
+
+  test('item 8: "tuner" opens the tuner, "metronome" the metronome, as the "⋯" menu does; in Drill no metronome', async ({ browser }) => {
+    const { context, page } = await open(browser, LAPTOP, 'en');
+    let dialog = await search(page, 'tuner');
+    await chooseRow(dialog, /^Tuner\s*Tool$/);
+    await expect(page.getByRole('dialog', { name: /^Tuner/ })).toBeVisible({ timeout: 15_000 });
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog', { name: /^Tuner/ })).toHaveCount(0);
+    dialog = await search(page, 'metronome');
+    await chooseRow(dialog, /^Metronome\s*Tool$/);
+    await expect(page.getByTestId('metronome-play')).toBeFocused({ timeout: 15_000 });
+    await context.close();
+
+    const drill = await open(browser, LAPTOP, 'pt', { lastView: 'drill' });
+    await drill.page.keyboard.press('Control+k');
+    const d = dialogOf(drill.page);
+    await d.locator('input').fill('metrónomo');
+    await drill.page.waitForTimeout(300);
+    await expect(d.locator('[data-search-type="Tool"]')).toHaveCount(0);
+    await d.locator('input').fill('afinador');
+    await expect(rowsOf(d).filter({ hasText: /^Afinador\s*Ferramenta$/ })).toHaveCount(1);
+    await drill.context.close();
+  });
+
+  for (const from of ['drill', 'learn'] as const) {
+    test(`item 9: a chord chosen from ${from} leaves focus on Explore's key picker, not on <body>`, async ({ browser }) => {
+      const { context, page } = await open(browser, LAPTOP, 'en', { lastView: from });
+      if (from === 'drill') {
+        await page.locator('#drill-panel').getByRole('button', { name: 'Start' }).click();
+        await expect(page.getByTestId('drill-answers')).toBeVisible({ timeout: 15_000 });
+        await page.getByTestId('drill-answers').getByRole('button').first().focus();
+      }
+      const dialog = await search(page, 'Dm7');
+      await page.keyboard.press('Enter');
+      await expect(dialog).toHaveCount(0);
+      await expect(page.locator('#explore-panel [data-testid="key-picker"]')).toBeFocused({ timeout: 15_000 });
+      await context.close();
+    });
+  }
+});
+
 // ─── Screenshots: the list in EN / PT / ES, day and night ────────────────────
 test.describe('screenshots', () => {
   test.skip(!SHOTS, 'SEARCH_SHOTS=<dir> writes the screenshots');

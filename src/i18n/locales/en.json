@@ -555,7 +555,8 @@
     "typeChord": "Chord",
     "typeKey": "Key",
     "typeLesson": "Lesson",
-    "dialogLabel": "Quick search"
+    "dialogLabel": "Quick search",
+    "typeTool": "Tool"
   },
   "chordCategory": {
     "triads": "Triads",
