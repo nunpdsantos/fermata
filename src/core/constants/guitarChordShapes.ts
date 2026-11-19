@@ -3704,7 +3704,7 @@ function searchedAcrossTheNeck(
     }
     if (found.size > 0) break;
   }
-  return boardOrder([...found.values()], !!bassLabel).slice(0, 4);
+  return boardOrder([...found.values()], bassLabel ? { pc: bassPc, outside: bassOutsideChord(chord, bassPc) } : null).slice(0, 4);
 }
 
 /**
@@ -3862,30 +3862,80 @@ function onePerGrip<T extends Placed>(list: T[]): T[] {
   });
 }
 
+/** The bass a request asks for, and whether it is a tone of the chord (`boardOrder`). */
+type AskedBass = { pc: number; outside: boolean };
+
 /**
- * The board's order (music audit 2, review item 5), applied to grips of equal
- * standing — every one offered has the asked bass and, but for the second
- * pass's (after the whole ones), every named tone, and a hand can play it:
- *   1. the C- and G-shape major barres after every other grip (as before);
- *   2. a grip on four strings or more before one on three or fewer;
- *   3. the lowest position first (`lowestFrettedFret`: an all-open grip is 0);
- *   4. for a bass asked other than the root (an inversion, a slash chord), at
- *      one position more strings first: C/E 0 3 2 0 1 0 before x x 2 0 1 0,
- *      Em/G 3 x 2 0 0 0 before 3 x 2 4 5 x. Not in root position, whose order
- *      is the hand-made library's: there it moved Fmaj7 from x x 3 2 1 0 to
- *      the barre 1 3 2 2 1 1, one of the commonest chords;
- *   5. otherwise as found (hand-made before generated, as before). (Weighing
- *      how far up the hand reaches was tried: it put the generator's grips
- *      with muted inner strings first, G/B x 2 0 0 0 x.)
- * So D/F♯ opens on x x 4 2 3 2 and C/G on 3 3 2 0 1 0, not on the three
- * strings x x x 11 10 10 and x x x 0 1 0.
+ * Whether `bassPc` lies outside the chord's own tones: D/C's C, not C/E's E.
+ * A chord the parser built carries a foreign slash bass FIRST in `notes`
+ * (`chordFromParsed`); that note is not one of its tones. The root is always
+ * one (C/C).
  */
-function boardOrder<T extends Placed>(list: T[], bassAsked: boolean): T[] {
+function bassOutsideChord(chord: Chord, bassPc: number): boolean {
+  const pcs = chord.notes.map((n) => getPitchClass(n));
+  if (bassPc === getPitchClass(chord.root)) return false;
+  const prepended = !!chord.bassNote && chord.notes.length > 0 && getPitchClass(chord.notes[0]) === bassPc && !pcs.slice(1).includes(bassPc);
+  return !(prepended ? pcs.slice(1) : pcs).includes(bassPc);
+}
+
+/**
+ * The open position, as the Progression panel's "open grip" has it
+ * (`inOpenPositionOrNot`, `hasOpenGrip`): strings sounding at the nut, and
+ * every stopped fret at 5 or below. Read from the grip's own frets, so a
+ * library shape and a searched grip are judged alike.
+ */
+function inOpenPosition(e: Placed): boolean {
+  const frets = e.shape.strings.map((p) => (p.fret === null ? null : e.baseFret + p.fret));
+  return frets.some((f) => f === 0) && frets.every((f) => f === null || f <= 5);
+}
+
+/** How many strings sound this pitch class. */
+function soundsHowOften(e: Placed, pc: number): number {
+  return e.shape.strings.filter((p, s) => p.fret !== null && (OPEN_STRING_MIDI[s] + e.baseFret + p.fret) % 12 === pc).length;
+}
+
+/**
+ * The board's order (music audit 2, review item 5, and the coordinator's
+ * refinement of 19 November), applied to grips of equal standing — every
+ * one offered has the asked bass and, but for the second pass's (after the
+ * whole ones), every named tone, and a hand can play it:
+ *   1. the C- and G-shape major barres after every other grip (as before);
+ *   2. for an asked bass that is NOT a tone of the chord, a grip that sounds
+ *      it once — as its lowest note — before one that sounds it again higher
+ *      up: D/C x 3 0 2 3 2, not x 3 0 2 1 2, which is D7/C to the ear (the
+ *      piano voices an outside bass once since this round). A bass that is a
+ *      chord tone may be doubled. First among the new rules because it is
+ *      about what the chord IS; the rest are about the hand;
+ *   3. for an asked bass, a grip in the open position (`inOpenPosition`)
+ *      before one that is not: G/D x x 0 0 0 3, not x 5 5 4 3 3; A/C♯
+ *      x 4 2 2 2 0, not x 4 2 2 2 5 (the little finger stretched to fret 5).
+ *      Before the string count, as the grip a teacher shows first is the open
+ *      one, even on four strings;
+ *   4. a grip on four strings or more before one on three or fewer;
+ *   5. the lowest position first (`lowestFrettedFret`: an all-open grip is 0);
+ *   6. for an asked bass (an inversion, a slash chord), at one position more
+ *      strings first: C/E 0 3 2 0 1 0 before x x 2 0 1 0, Em/G 3 2 2 0 0 0
+ *      before x x x 0 0 0;
+ *   7. otherwise as found (hand-made before generated, as before).
+ * Rules 2, 3 and 6 are for an asked bass only: in root position the order is
+ * the hand-made library's (rule 6 there moved Fmaj7 from x x 3 2 1 0 to the
+ * barre 1 3 2 2 1 1, one of the commonest chords). (Weighing how far up the
+ * hand reaches was tried: it put the generator's grips with muted inner
+ * strings first, G/B x 2 0 0 0 x.)
+ */
+function boardOrder<T extends Placed>(list: T[], asked: AskedBass | null): T[] {
   const strings = (e: T) => e.shape.strings.filter((p) => p.fret !== null).length;
-  const rank = (e: T) => [OFFERED_NOT_DEFAULT.has(e.shape.name) ? 1 : 0, strings(e) <= 3 ? 1 : 0, lowestFrettedFret(e), bassAsked ? -strings(e) : 0];
+  const rank = (e: T) => [
+    OFFERED_NOT_DEFAULT.has(e.shape.name) ? 1 : 0,
+    asked && asked.outside && soundsHowOften(e, asked.pc) > 1 ? 1 : 0,
+    asked && !inOpenPosition(e) ? 1 : 0,
+    strings(e) <= 3 ? 1 : 0,
+    lowestFrettedFret(e),
+    asked ? -strings(e) : 0,
+  ];
   return list
     .map((e, i) => ({ e, i, r: rank(e) }))
-    .sort((a, b) => a.r[0] - b.r[0] || a.r[1] - b.r[1] || a.r[2] - b.r[2] || a.r[3] - b.r[3] || a.i - b.i)
+    .sort((a, b) => a.r.reduce((d, x, k) => d || x - b.r[k], 0) || a.i - b.i)
     .map((x) => x.e);
 }
 
@@ -3940,7 +3990,7 @@ function shapesAtUncached(chord: Chord, inversion: number, maxFret: number): { s
     const arranged = arrangeShapesForBass(sorted, chord, bassPc, asked.label, { maxFret, required });
     return { all: arranged.shapes, matching: arranged.shapes.filter((e) => lowestSoundingPitchClass(e) === bassPc) };
   };
-  const bassAsked = asked.label !== '';
+  const bassAsked: AskedBass | null = asked.label !== '' ? { pc: bassPc, outside: bassOutsideChord(chord, bassPc) } : null;
   const strict = offer(true);
   if (strict.matching.length > 0) return { shapes: boardOrder(onePerGrip(strict.matching), bassAsked).slice(0, BOARD_GRIPS), bassMatched: true };
   const relaxed = offer(false);

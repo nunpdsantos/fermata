@@ -42,16 +42,16 @@ describe('the Progression panel\'s capo ideas (hasOpenGrip)', () => {
     if (hasOpenGrip(request(key))) now.push(key);
   }
 
-  it('says yes exactly where the recording says, of 7,956 chords and slash chords (358; 224 at 153caab)', () => {
+  it('says yes exactly where the recording says, of 7,956 chords and slash chords (360; 224 at 153caab)', () => {
     expect(now).toEqual(recorded.open.now);
-    expect(recorded.open.now).toHaveLength(358);
+    expect(recorded.open.now).toHaveLength(360);
   });
 
-  it('never says no where it said yes at 153caab, but for Em6/G', () => {
-    // Em6/G's open grip was the three-string x x x 0 2 0; the board now offers
-    // eight four-string grips before it (3 2 2 0 2 0 first), and the panel
-    // reads the board's own list for a slash chord, which no longer reaches it.
-    expect(recorded.open.atBase.filter((k) => !now.includes(k))).toEqual(['E|minor6|G']);
+  it('never says no where it said yes at 153caab', () => {
+    // Em6/G was the one, at aef144d: its open grips came after eight others,
+    // past the board's eight; open-position grips first (the coordinator's
+    // refinement) brought them back into the list.
+    expect(recorded.open.atBase.filter((k) => !now.includes(k))).toEqual([]);
     expect(recorded.open.atBase).toHaveLength(224);
   });
 

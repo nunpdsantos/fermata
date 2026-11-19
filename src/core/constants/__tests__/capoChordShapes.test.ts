@@ -192,12 +192,30 @@ describe('inversions and the bass with a capo', () => {
 describe('no capo: exactly the pipeline the board uses', () => {
   // Since music audit 2: root position asks for the root (M43), only grips
   // with the asked bass are offered when one has it, one chip per grip, and
-  // the board's order (the review of builder K, item 5), written here from
-  // its rule: four strings or more first, then the lowest fretted fret, then
-  // (for an asked bass other than the root) more strings, then as found.
+  // the board's order (the review of builder K, item 5, and the
+  // coordinator's refinement), written here from its rule: for an asked bass
+  // outside the chord, a grip that sounds it once first; for any asked bass,
+  // an open-position grip first (an open string, every stopped fret at 5 or
+  // below); four strings or more first; the lowest fretted fret; for an
+  // asked bass, more strings; then as found.
   const fretsOf = (e: { shape: ChordShape; baseFret: number }) => e.shape.strings.map((p) => (p.fret === null ? 'x' : e.baseFret + p.fret)).join('-');
   const sounding = (e: { shape: ChordShape }) => e.shape.strings.filter((p) => p.fret !== null).length;
   const lowestFretted = (e: { shape: ChordShape; baseFret: number }) => Math.min(Infinity, ...e.shape.strings.flatMap((p) => (p.fret === null || e.baseFret + p.fret === 0 ? [] : [e.baseFret + p.fret])));
+  const absOf = (e: { shape: ChordShape; baseFret: number }) => e.shape.strings.map((p) => (p.fret === null ? null : e.baseFret + p.fret));
+  const openPosition = (e: { shape: ChordShape; baseFret: number }) => absOf(e).includes(0) && absOf(e).every((f) => f === null || f <= 5);
+  const timesSounded = (e: { shape: ChordShape; baseFret: number }, pc: number) => absOf(e).filter((f, s) => f !== null && (OPEN_PCS[s] + f) % 12 === pc).length;
+  const order = <T extends { shape: ChordShape; baseFret: number }>(offered: T[], bassPc: number | null, outside: boolean) => {
+    const rank = (e: T) => [
+      /^(C|G)-shape Barre$/.test(e.shape.name) ? 1 : 0,
+      bassPc !== null && outside && timesSounded(e, bassPc) > 1 ? 1 : 0,
+      bassPc !== null && !openPosition(e) ? 1 : 0,
+      sounding(e) <= 3 ? 1 : 0,
+      lowestFretted(e) === Infinity ? 0 : lowestFretted(e),
+      bassPc !== null ? -sounding(e) : 0,
+    ];
+    const cmp = (a: number[], b: number[]) => { for (let k = 0; k < a.length; k++) if (a[k] !== b[k]) return a[k] - b[k]; return 0; };
+    return offered.map((e, i) => ({ e, i, r: rank(e) })).sort((a, b) => cmp(a.r, b.r) || a.i - b.i).map((x) => x.e).slice(0, 8);
+  };
   it('all 24 triads, root position and both inversions', () => {
     for (const chord of TRIADS) {
       for (const inversion of [0, 1, 2]) {
@@ -211,14 +229,36 @@ describe('no capo: exactly the pipeline the board uses', () => {
         expect(arranged.bassMatched).toBe(true);
         const seen = new Set<string>();
         const offered = arranged.shapes.filter((e) => lowestSoundingPitchClass(e) === pcOf(bass) && !seen.has(fretsOf(e)) && seen.add(fretsOf(e)));
-        const rank = (e: (typeof offered)[number]) => [/^(C|G)-shape Barre$/.test(e.shape.name) ? 1 : 0, sounding(e) <= 3 ? 1 : 0, lowestFretted(e) === Infinity ? 0 : lowestFretted(e), inversion > 0 ? -sounding(e) : 0];
         // … and eight grips at most, the first of that order.
-        const expected = offered.map((e, i) => ({ e, i, r: rank(e) })).sort((a, b) => a.r[0] - b.r[0] || a.r[1] - b.r[1] || a.r[2] - b.r[2] || a.r[3] - b.r[3] || a.i - b.i).map((x) => x.e).slice(0, 8);
+        const expected = order(offered, inversion > 0 ? pcOf(bass) : null, false);
         const got = chordShapesForCapo(chord, inversion, 0);
         expect(got.shapes.map(fretsOf), `${chord.root.natural}${chord.root.accidental} ${chord.quality} inv ${inversion}`).toEqual(expected.map(fretsOf));
         expect(got.bassMatched).toBe(true);
         expect(got.shapeChord).toBe(chord);
       }
     }
+  });
+
+  it('the 24 triads over every bass outside the chord (D/C, G/F♯, C/B♭…): the outside bass sounded once comes first', () => {
+    let outsideFirst = 0;
+    let doubledLater = 0;
+    for (const chord of TRIADS) {
+      const tones = new Set(chord.notes.map(pcOf));
+      for (const [bassPc, name] of ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'].entries()) {
+        if (tones.has(bassPc)) continue;
+        const request = { ...chord, bassNote: { natural: name[0], accidental: name.slice(1) } as typeof chord.root };
+        const arranged = arrangeShapesForBass(sortShapesForDefault(getChordShapesWithFallback(request)), request, bassPc, name);
+        if (!arranged.bassMatched) continue;
+        const seen = new Set<string>();
+        const offered = arranged.shapes.filter((e) => lowestSoundingPitchClass(e) === bassPc && !seen.has(fretsOf(e)) && seen.add(fretsOf(e)));
+        const got = chordShapesForCapo(request, 0, 0);
+        expect(got.shapes.map(fretsOf), `${chord.root.natural}${chord.root.accidental} ${chord.quality}/${name}`).toEqual(order(offered, bassPc, true).map(fretsOf));
+        if (timesSounded(got.shapes[0], bassPc) === 1) outsideFirst++;
+        if (offered.some((e) => timesSounded(e, bassPc) > 1)) doubledLater++;
+      }
+    }
+    // The walk met grips that double the bass, and put one that does not first.
+    expect(doubledLater).toBeGreaterThan(10);
+    expect(outsideFirst).toBeGreaterThan(100);
   });
 });
