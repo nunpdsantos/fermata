@@ -16,7 +16,7 @@ import type {
   SerializedCard,
 } from '../core/types/drill';
 import { applyAnswer, migrateTierV1 } from '../services/drillScheduler';
-import { markNext, tabSafeStorage, type TabStore } from './tabSafe';
+import { markNext, tabSafeStorage, type Mark, type TabStore } from './tabSafe';
 import { followSoon } from './tabFollow';
 import { mergeBy, type Rule } from './tabMerge';
 import {
@@ -113,8 +113,15 @@ export interface SprintRun {
  * choice recorded yet, and its value in force is derived where it is read
  * (services/drillFollow.ts `readingInForce`: on with Drill history, else only
  * on the guitar). Written when the learner touches its chip, or by the first
- * session (the value in force). Persist stays v3; a save from before reading
- * with history loads with it on, as it always did.
+ * session (the value in force). Persist stays v3. Saves written by release
+ * 16 and earlier always hold `read` once a session has started (written as
+ * the default) and are read exactly as before; one from before the intro
+ * field with history is filled on, byte for byte as release 16 wrote it back.
+ * One shape differs: a save WITH the intro field and WITHOUT `read`, which no
+ * release-16 browser writes but which arises from "Reset all Drill data" in
+ * one tab and an answer from a stale other tab: release 16 wrote it back with
+ * `read: true`, this one writes it without; in force it is on either way
+ * (history) — drillReadingDefault.test.ts.
  */
 export type DrillFamilies = Omit<Record<DrillFamily, boolean>, 'read'> & { read?: boolean };
 
@@ -154,7 +161,7 @@ export interface StartSessionOptions {
 
 // ─── Defaults ─────────────────────────────────────────────────────────────────
 
-/** Every topic on, reading included: how a save from before the reading choice reads (and 153caab's defaults). */
+/** Every topic on, reading included: how a save from before the reading choice reads (and release 16's defaults). */
 const ALL_FAMILIES: Record<DrillFamily, boolean> = Object.fromEntries(
   DRILL_FAMILIES.map((f) => [f, true]),
 ) as Record<DrillFamily, boolean>;
@@ -166,12 +173,14 @@ const DEFAULT_FAMILIES: DrillFamilies = Object.fromEntries(
 
 /**
  * The saved topic record, filled: every topic the save lacks is on. Reading
- * is filled on (153caab's rule) only for a save written before the Drill had
- * an intro (no `introDone` field), whose history shows it was used — so its
- * first write after this change is byte for byte the one 153caab made. Every
- * save the app writes now carries `introDone`: its missing reading stays
- * missing (no choice recorded), and is derived where it is read. Key order as
- * before (reading last).
+ * is filled on (release 16's rule) only for a save without the intro's field
+ * (`introDone`: written by every release since the intro, 9 November 2026)
+ * whose history shows it was used — so the first write of such a save,
+ * written by release 16 and earlier, is byte for byte the one release 16
+ * made. Every save the app writes now carries `introDone`: its missing
+ * reading stays missing (no choice recorded), and is derived where it is
+ * read (the one shape this changes on writing: see DrillFamilies). Key order
+ * as before (reading last).
  */
 function savedFamilies(families: Record<string, unknown> | null, fillReading: boolean): DrillFamilies {
   const out = { ...ALL_FAMILIES, ...(families ?? {}) } as Record<string, unknown>;
@@ -439,8 +448,9 @@ export function validatePersistedShape(value: unknown): {
     ? value.introDone
     : Object.keys(items).length > 0 || lifetime.answered > 0 || activeSession !== null
       || sprint !== null || Object.keys(sprintBests).length > 0;
-  // P4: a save from before the intro (and so before the reading choice) that
-  // was used reads with reading on, as it always did; see savedFamilies.
+  // P4: a save without the intro's field (one written by release 16 or
+  // earlier, before the intro existed) that was used reads with reading on,
+  // byte for byte as release 16 read it; see savedFamilies.
   const fillReading = typeof value.introDone !== 'boolean' && introDone;
 
   // settings — fill missing fields with defaults rather than rejecting
@@ -518,17 +528,19 @@ const slot = (id: string): Rule => (b, m, t) =>
   m === null && isPlainObject(t) && (!isPlainObject(b) || b[id] !== t[id]) ? t : m;
 
 /**
- * Reading's saved choice (P4) where both tabs changed it: a tab that knew of
- * no choice (its base had none) and now holds one recorded it at its first
- * session — the value in force there, not a choice — so a choice another tab
- * saved meanwhile stands. A chip the learner touched is marked
+ * A value a first session records where the learner had made no choice —
+ * guitar reading (P4) and "Follow my lessons" (the review of bd14071, item 5)
+ * — where both tabs changed it: a tab that knew of no choice (its base had
+ * none) and now holds one recorded it at its first session — the value in
+ * force there, not a choice — so a choice another tab saved meanwhile stands.
+ * The learner's own tap (reading's chip, the follow switch) is marked
  * (`updateSettings`) and written whatever the save holds.
  */
 const keepRecorded: Rule = (b, m, t) => (b === undefined && t !== undefined ? t : m);
 
 const DRILL_FIELDS: Rule = {
   items: { '*': mergeDrillItem },
-  settings: { families: { '*': 'atomic', read: keepRecorded } },
+  settings: { families: { '*': 'atomic', read: keepRecorded }, followLessons: keepRecorded },
   sprintBests: { '*': 'max' },
   lifetime: { answered: 'sum', correct: 'sum' },
   activeSession: slot('id'),
@@ -743,14 +755,21 @@ export const useDrillStore = create<DrillStoreState>()(
       endSession: () => set({ activeSession: null }),
 
       updateSettings: (patch) => {
-        // The learner sets reading's chip (P4): their choice is the latest
-        // action, written whatever another tab saved meanwhile — unlike the
-        // value a first session records, which never writes over a recorded
-        // one (DRILL_FIELDS).
+        // The learner sets reading's chip (P4) or the follow switch: their
+        // choice is the latest action, written whatever another tab saved
+        // meanwhile — unlike the value a first session records, which never
+        // writes over a recorded one (DRILL_FIELDS, keepRecorded).
         const read = patch.families?.read;
+        const marks: Mark[] = [];
         if (typeof read === 'boolean' && read !== get().settings.families.read) {
-          markNext(DRILL_STORE_KEY, [['settings', 'families', 'read'], () => read]);
+          marks.push([['settings', 'families', 'read'], () => read]);
         }
+        // The follow switch tapped: the same (review of bd14071, item 5).
+        const follow = patch.followLessons;
+        if (typeof follow === 'boolean' && follow !== get().settings.followLessons) {
+          marks.push([['settings', 'followLessons'], () => follow]);
+        }
+        if (marks.length > 0) markNext(DRILL_STORE_KEY, ...marks);
         set((prev) => ({
           settings: { ...prev.settings, ...patch },
         }));

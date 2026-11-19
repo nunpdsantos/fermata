@@ -167,6 +167,31 @@ describe('P4: guitar reading follows the instrument until the learner chooses', 
     }
   });
 
+  it('the view, Drill history and no recorded choice (no read key): reading on in force, piano or guitar (review of bd14071)', () => {
+    for (const instrument of ['piano', 'guitar'] as const) {
+      cleanup();
+      useDrillStore.getState().resetDrillData();
+      useAppStore.setState({ instrument });
+      useDrillStore.setState({ introDone: true, lifetime: { answered: 12, correct: 10 } });
+      expect(useDrillStore.getState().settings.families).not.toHaveProperty('read');
+      render(<DrillView />);
+      act(() => fireEvent.click(screen.getByRole('button', { name: 'Drill settings' })));
+      expect(chip(READING).getAttribute('aria-pressed'), instrument).toBe('true');
+    }
+  });
+
+  it('a guitar learner whose only topic on is Reading, never touched: Start, and a reading-only session (review of bd14071)', () => {
+    useAppStore.setState({ instrument: 'guitar' });
+    useDrillStore.getState().updateSettings({ families: Object.fromEntries(DRILL_FAMILIES.filter((f) => f !== 'read').map((f) => [f, false])) as Record<Exclude<DrillFamily, 'read'>, boolean> });
+    expect(useDrillStore.getState().settings.families).not.toHaveProperty('read');
+    render(<DrillView />);
+    expect(screen.queryByTestId('drill-nothing')).toBeNull();
+    expect(screen.getByText(READING)).toBeDefined();
+    act(() => fireEvent.click(chip('Start')));
+    expect([...queueFamilies()]).toEqual(['read']);
+    expect(savedDrill()!.settings.families.read).toBe(true);
+  });
+
   it('PT and ES: the topic is not listed for a piano learner', async () => {
     for (const [lang, name] of [['pt', 'Leitura (guitarra)'], ['es', 'Lectura (guitarra)']] as const) {
       cleanup();

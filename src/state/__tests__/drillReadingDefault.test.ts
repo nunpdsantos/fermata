@@ -266,6 +266,47 @@ describe('a second tab', () => {
     expect(saved().state.settings.families.read).toBe(true);
   });
 
+  it('"Reset all Drill data" in one tab, then an answer from a stale tab: history and no reading saved — on in force (153caab saved read: true here)', async () => {
+    const a = await openTab();
+    const b = await openTab();
+    b.useDrillStore.getState().startSession(BANK, NOW, { reading: false });
+    deliver();
+    a.useDrillStore.getState().resetDrillData();
+    const q = BANK.find((i) => i.id === b.useDrillStore.getState().activeSession!.queue[0])!;
+    b.useDrillStore.getState().recordAnswer(q, true, 1500, NOW + 3000);
+    const after = saved().state;
+    // What is written: the intro passed, the answer, and no reading choice (the reset removed it).
+    expect(after.introDone).toBe(true);
+    expect(Object.keys(after.items)).toEqual([q.id]);
+    expect(after.settings.families).not.toHaveProperty('read');
+    // What is in force: on (history), on any instrument — as 153caab, which wrote read: true into this save.
+    for (const instrument of ['piano', 'guitar']) expect(readingInForce(after.settings.families.read, instrument, after.introDone)).toBe(true);
+    // Read back, it stays so (no choice is made up), and the next session records on.
+    useDrillStore.getState().resetDrillData();
+    localStorage.setItem(DRILL_STORE_KEY, JSON.stringify({ state: after, version: 3 }));
+    await useDrillStore.persist.rehydrate();
+    expect(useDrillStore.getState().settings.families).not.toHaveProperty('read');
+    useDrillStore.getState().endSession();
+    useDrillStore.getState().startSession(BANK, NOW + 9000, { reading: readingInForce(undefined, 'piano', true) });
+    expect(saved().state.settings.families.read).toBe(true);
+  });
+
+  it('a stale tab tapping ANOTHER chip never writes its old reading over another tab\'s newer choice (review of bd14071)', async () => {
+    const a = await openTab();
+    const b = await openTab();
+    a.useDrillStore.getState().updateSettings({ families: { ...a.useDrillStore.getState().settings.families, read: true } });
+    deliver();
+    expect(b.useDrillStore.getState().settings.families.read).toBe(true);
+    b.useDrillStore.getState().updateSettings({ families: { ...b.useDrillStore.getState().settings.families, read: false } });
+    expect(saved().state.settings.families.read).toBe(false);
+    // A, never told, still holds reading on; its learner taps Intervals (the chip writes the whole record).
+    const families = a.useDrillStore.getState().settings.families;
+    expect(families.read).toBe(true);
+    a.useDrillStore.getState().updateSettings({ families: { ...families, interval: false } });
+    expect(saved().state.settings.families.read).toBe(false);
+    expect(saved().state.settings.families.interval).toBe(false);
+  });
+
   it('a choice made in one tab is never undone by the other tab\'s first session (its derived value differs)', async () => {
     const a = await openTab();
     const b = await openTab();
